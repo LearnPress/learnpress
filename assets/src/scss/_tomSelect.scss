@@ -5,7 +5,78 @@
 * @version 1.0.0
 */
 
-.search-box {
+.lp-tom-select {
+	min-width: 150px;
+
+	&[multiple] {
+		display: block;
+		height: 36px !important;
+		border: 1px solid #d0d0d0;
+	}
+
+	&.ts-wrapper {
+		min-width: 200px;
+		width: fit-content;
+
+		dropdown-active .ts-control {
+			input.dropdown-input {
+				border-color: #d0d0d0;
+			}
+		}
+
+		input.dropdown-input {
+			margin: 0 auto 5px;
+			padding: 0 8px;
+			box-shadow: none;
+		}
+
+		&.multi.has-items .ts-control {
+			padding: 3px 0 3px 3px;
+		}
+
+		.ts-control {
+			min-height: 35px;
+			padding: 4px;
+
+			input[type=text] {
+				min-width: 30px;
+			}
+
+			li {
+				margin: 0 5px 3px 0;
+				padding: 3px 8px;
+				background: #eee;
+				border-radius: var(--lp-border-radius);
+			}
+
+			.item {
+				margin: 0 5px 2px 0;
+				//padding: 3px;
+				padding: 1px 2px;
+				background: #eee;
+				border-radius: var(--lp-border-radius);
+			}
+		}
+
+		.ts-dropdown {
+			border: 1px solid #d0d0d0;
+			padding-top: 5px;
+			border-radius: 3px;
+
+			// spinner is class of WP, so hide spinner of TomSelect
+			.spinner {
+				visibility: visible;
+
+				&::after {
+					content: '';
+					border: none;
+				}
+			}
+		}
+	}
+}
+
+/*.search-box {
 	.ts-wrapper {
 		float: left;
 		margin-right: 4px;
@@ -19,45 +90,4 @@
 			}
 		}
 	}
-}
-
-.lp-tom-select.ts-wrapper {
-	min-width: 200px;
-	width: fit-content;
-
-	&.multi.has-items .ts-control {
-		padding: 3px 0 3px 3px;
-	}
-
-	.ts-control {
-		input[type=text] {
-			min-width: 30px;
-		}
-
-		li {
-			margin: 0 5px 3px 0;
-			padding: 3px 8px;
-			background: #eee;
-			border-radius: var(--lp-border-radius);
-		}
-
-		.item {
-			margin: 0 5px 2px 0;
-			//padding: 3px;
-			padding: 1px 2px;
-			background: #eee;
-			border-radius: var(--lp-border-radius);
-		}
-	}
-
-	.ts-dropdown {
-		// spinner is class of WP, so hide spinner of TomSelect
-		.spinner {
-			visibility: visible;
-			&::after {
-				content: '';
-				border: none;
-			}
-		}
-	}
-}
+}*/
