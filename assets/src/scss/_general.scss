@@ -1,5 +1,7 @@
 $remove-icon-color: #e74c3c;
 
+@import "tomSelect";
+
 /**
  * Styles for displaying list of table
  */
@@ -569,56 +571,4 @@ ul .clearfix {
 	font-weight: 500;
 	text-decoration: none;
 	cursor: pointer;
-}
-
-.search-box {
-	.ts-wrapper {
-		float: left;
-		margin-right: 4px;
-
-		.ts-control {
-			padding: 3px;
-			height: 30px;
-
-			li {
-				margin: 0;
-			}
-		}
-	}
-}
-
-.ts-wrapper {
-	min-width: 200px;
-	width: fit-content;
-
-	.ts-control {
-		input[type=text] {
-			width: auto;
-		}
-
-		li {
-			margin: 0 5px 5px 0;
-			padding: 3px 8px;
-			background: #eee;
-			border-radius: var(--lp-border-radius);
-		}
-
-		.item {
-			margin: 0 8px 5px 0;
-			padding: 3px 8px;
-			background: #eee;
-			border-radius: var(--lp-border-radius);
-		}
-	}
-
-	.ts-dropdown {
-		// spinner is class of WP, so hide spinner of TomSelect
-		.spinner {
-			visibility: visible;
-			&::after {
-				content: '';
-				border: none;
-			}
-		}
-	}
 }

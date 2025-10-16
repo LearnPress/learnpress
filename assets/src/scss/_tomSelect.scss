@@ -1,0 +1,63 @@
+/**
+* Style for the Tom Select
+* @link https://tom-select.js.org/
+* @since 4.2.9.5
+* @version 1.0.0
+*/
+
+.search-box {
+	.ts-wrapper {
+		float: left;
+		margin-right: 4px;
+
+		.ts-control {
+			padding: 3px;
+			height: 30px;
+
+			li {
+				margin: 0;
+			}
+		}
+	}
+}
+
+.lp-tom-select.ts-wrapper {
+	min-width: 200px;
+	width: fit-content;
+
+	&.multi.has-items .ts-control {
+		padding: 3px 0 3px 3px;
+	}
+
+	.ts-control {
+		input[type=text] {
+			min-width: 30px;
+		}
+
+		li {
+			margin: 0 5px 3px 0;
+			padding: 3px 8px;
+			background: #eee;
+			border-radius: var(--lp-border-radius);
+		}
+
+		.item {
+			margin: 0 5px 2px 0;
+			//padding: 3px;
+			padding: 1px 2px;
+			background: #eee;
+			border-radius: var(--lp-border-radius);
+		}
+	}
+
+	.ts-dropdown {
+		// spinner is class of WP, so hide spinner of TomSelect
+		.spinner {
+			visibility: visible;
+			&::after {
+				content: '';
+				border: none;
+			}
+		}
+	}
+}

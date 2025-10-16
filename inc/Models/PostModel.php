@@ -13,6 +13,7 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress;
+use LearnPress\Filters\FilterBase;
 use LP_Course_Cache;
 use LP_Course_DB;
 use LP_Course_Filter;
@@ -152,12 +153,12 @@ class PostModel {
 	 * If not exists, return false.
 	 * If exists, return PostModel.
 	 *
-	 * @param LP_Course_Filter $filter
+	 * @param LP_Post_Type_Filter|FilterBase $filter
 	 *
 	 * @return PostModel|false|static
 	 * @version 1.0.1
 	 */
-	public static function get_item_model_from_db( LP_Post_Type_Filter $filter ) {
+	public static function get_item_model_from_db( $filter ) {
 		$lp_post_db = LP_Post_DB::getInstance();
 		$post_model = false;
 
