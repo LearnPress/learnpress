@@ -97,7 +97,7 @@ class SingleCourseTemplate {
 		}
 
 		$short_description = $course->get_short_description();
-		if ( empty( $short_description ) || $number_words === 0 ) {
+		if ( empty( $short_description ) ) {
 			return '';
 		}
 
