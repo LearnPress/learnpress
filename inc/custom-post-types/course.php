@@ -378,6 +378,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				unset( $columns['instructor'] );
 			}
 
+			if ( isset( $columns['author'] ) ) { // remove default author column
+				unset( $columns['author'] );
+			}
+
 			return apply_filters( 'lp/admin/courses/columns', $columns );
 		}
 
