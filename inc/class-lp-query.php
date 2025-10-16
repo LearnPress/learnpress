@@ -284,6 +284,11 @@ class LP_Query {
 						'index.php?is_course_builder=1&tab=' . $tab_slug . '&post_id=post-new',
 				];
 
+				$rules['course-builder'][ $tab_key . '_page' ] = [
+					"^{$page}/({$tab_slug})/(page)/?([0-9]*)/?$" =>
+						'index.php?is_course_builder=1&tab=' . $tab_slug . '&paged=$matches[3]',
+				];
+
 				$rules['course-builder'][ $tab_key ] = [
 					"^{$page}/({$tab_slug})/?([0-9]*)/?$" =>
 						'index.php?is_course_builder=1&tab=' . $tab_slug . '&post_id=$matches[2]',

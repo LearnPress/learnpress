@@ -8,6 +8,7 @@
  */
 
 defined( 'ABSPATH' ) || exit();
+wp_head();
 
 ?>
 	<div id="lp-course-builder">
@@ -16,3 +17,4 @@ defined( 'ABSPATH' ) || exit();
 		</div>
 	</div>
 <?php
+wp_footer();
