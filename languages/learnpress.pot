@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-08T07:24:38+03:00\n"
+"POT-Creation-Date: 2025-10-15T09:31:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -822,14 +822,6 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:116
 msgid "Submitting…"
-msgstr ""
-
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:1833
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:1849
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:1865
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:1885
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:1896
-msgid "Edit with AI"
 msgstr ""
 
 #. Plugin Name of the plugin
@@ -6851,32 +6843,32 @@ msgstr ""
 
 #: inc/Databases/class-lp-db.php:861
 #: inc/Databases/class-lp-db.php:923
-#: inc/Databases/DataBase.php:783
-#: inc/Databases/DataBase.php:845
+#: inc/Databases/DataBase.php:794
+#: inc/Databases/DataBase.php:856
 msgid "Data must be an array!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:869
 #: inc/Databases/class-lp-db.php:919
-#: inc/Databases/DataBase.php:791
-#: inc/Databases/DataBase.php:841
+#: inc/Databases/DataBase.php:802
+#: inc/Databases/DataBase.php:852
 msgid "Filter must have property all_fields!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:873
 #: inc/Databases/class-lp-db.php:931
-#: inc/Databases/DataBase.php:795
-#: inc/Databases/DataBase.php:853
+#: inc/Databases/DataBase.php:806
+#: inc/Databases/DataBase.php:864
 msgid "Table name is required!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:877
-#: inc/Databases/DataBase.php:799
+#: inc/Databases/DataBase.php:810
 msgid "Key auto increment must be a string!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:927
-#: inc/Databases/DataBase.php:849
+#: inc/Databases/DataBase.php:860
 msgid "Invalid where key!"
 msgstr ""
 
@@ -6909,11 +6901,6 @@ msgstr ""
 
 #: inc/Databases/class-lp-user-items-db.php:80
 msgid "Invalid user item id!"
-msgstr ""
-
-#: inc/Databases/DataBase.php:787
-#: inc/Databases/DataBase.php:837
-msgid "Invalid filter!"
 msgstr ""
 
 #: inc/Databases/QuizQuestionsDB.php:136

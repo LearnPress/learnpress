@@ -77,51 +77,69 @@
 			text-decoration: line-through;
 		}
 	}
-}
 
-.wp-list-table {
+	.wp-list-table {
 
-	.column-preview {
-		float: none;
-		text-align: left;
-	}
+		.column-preview {
+			float: none;
+			text-align: left;
+		}
 
-	.column-instructor {
-		width: 150px;
+		.column-instructor {
+			width: 80px;
 
-		.post-author {
-			display: inline-block;
-
-			img {
-				width: 30px;
-				height: 30px;
-				margin-right: 5px;
-				border-radius: 50%;
-				vertical-align: middle;
-			}
-
-			a {
+			.post-author {
 				display: inline-block;
-				vertical-align: middle;
+
+				img {
+					width: 30px;
+					height: 30px;
+					margin-right: 5px;
+					border-radius: 50%;
+					vertical-align: middle;
+				}
+
+				a {
+					display: inline-block;
+					vertical-align: middle;
+				}
 			}
 		}
-	}
 
-	.column-students {
-		width: 80px;
-	}
+		.column-students {
+			width: 60px;
+		}
 
-	.column-price {
-		width: 120px;
-	}
+		.column-price {
+			width: 120px;
+		}
 
-	.column-thumbnail {
-		width: 100px;
-		padding-top: 11px;
+		.column-thumbnail {
+			width: 80px;
+			padding-top: 11px;
 
-		img {
-			max-width: 100%;
-			height: auto;
+			@media only screen and (max-width: 782px) {
+				display: none;
+				
+				&::before {
+					opacity: 0;
+				}
+			}
+
+			img {
+				max-width: 100%;
+				height: auto;
+
+				@media only screen and (max-width: 782px) {
+					max-width: 60px;
+				}
+			}
+		}
+
+		.column-title {
+			@media only screen and (min-width: 783px) {
+				width: 14%;
+			}
 		}
 	}
 }
