@@ -88,7 +88,7 @@ class CoursesTable extends WP_Posts_List_Table {
 		}
 
 		$singleCourseTemplate = SingleCourseTemplate::instance();
-		echo $singleCourseTemplate->html_image( $courseModel, [ 'size' => 'thumbnail' ] );
+		echo $singleCourseTemplate->html_image( $courseModel, [ 'size' => 'post-thumbnail' ] );
 	}
 
 	/**
