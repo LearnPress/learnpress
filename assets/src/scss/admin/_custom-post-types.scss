@@ -2,15 +2,12 @@
  * Order
  */
 .post-type-lp_order {
-
 	.wp-list-table {
-
 		.column-order_status {
 			width: 150px;
 		}
 
 		.order_status {
-
 			span {
 				display: inline-block;
 				padding: 3px 6px;
@@ -67,49 +64,7 @@
 }
 
 .post-type-lp_course {
-
-	.column-price {
-
-		.origin-price {
-			margin-right: 10px;
-			color: #f00;
-			font-size: 0.75rem;
-			text-decoration: line-through;
-		}
-	}
-
 	.wp-list-table {
-
-		.column-preview {
-			float: none;
-			text-align: left;
-		}
-
-		.column-instructor {
-			width: 80px;
-
-			.post-author {
-				display: inline-block;
-
-				img {
-					width: 30px;
-					height: 30px;
-					margin-right: 5px;
-					border-radius: 50%;
-					vertical-align: middle;
-				}
-
-				a {
-					display: inline-block;
-					vertical-align: middle;
-				}
-			}
-		}
-
-		.column-students {
-			width: 60px;
-		}
-
 		.column-price {
 			width: 120px;
 		}
@@ -120,27 +75,64 @@
 
 			@media only screen and (max-width: 782px) {
 				display: none;
-				
+
 				&::before {
 					opacity: 0;
 				}
 			}
 
 			img {
-				max-width: 100%;
+				width: 100%;
 				height: auto;
-
-				@media only screen and (max-width: 782px) {
-					max-width: 60px;
-				}
 			}
 		}
 
 		.column-title {
-			@media only screen and (min-width: 783px) {
-				width: 14%;
+			width: 150px;
+		}
+
+		.column-date {
+			width: 100px;
+		}
+	}
+}
+
+.wp-list-table {
+	.column-author, .column-instructor {
+		width: 80px;
+
+		.post-author {
+			display: inline-block;
+
+			img {
+				width: 30px;
+				height: 30px;
+				margin: 0;
+				border-radius: 50%;
+				vertical-align: middle;
+			}
+
+			a {
+				display: inline-block;
+				vertical-align: middle;
 			}
 		}
+	}
+
+	.column-curriculum {
+		width: 80px;
+	}
+
+	.column-student {
+		width: 60px;
+	}
+
+	.column-taxonomy-course_category {
+		width: 100px;
+	}
+
+	.column-gradebook {
+		width: 80px;
 	}
 }
 
