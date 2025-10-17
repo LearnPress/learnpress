@@ -36,7 +36,7 @@
 		gap: 4px;
 		flex-wrap: wrap;
 		i {
-			color: #ffb606;
+			color: $color-primary;
 		}
 	}
 	.info-meta-left {
@@ -98,9 +98,9 @@ Breadcrumb
 	cursor: pointer;
 	margin: 20px auto;
 	&:hover {
-		background: #ffb606;
+		background: $color-primary;
 		color: $color-white;
-		border-color: #ffb606;
+		border-color: $color-primary
 	}
 }
 
@@ -237,9 +237,9 @@ Breadcrumb
 		}
 
 		&:hover {
-			border-color: var( --lp-primary-color, #ffb606 );
+			border-color: $color-primary;
 			color: #fff;
-			background: var( --lp-primary-color, #ffb606 );
+			background: $color-primary;
 		}
 	}
 }
@@ -248,18 +248,18 @@ Breadcrumb
 	cursor: pointer;
 	width: 100%;
 	padding: 12px 24px;
-	background-color: #ffb606;
+	background-color: $color-primary;
 	border-width: 0;
 	border-radius: $border-radius-global;
-	border-color: #ffb606;
+	border-color: $color-primary;
 	color: $color-white;
 	font-size: $font-size-base;
 	text-align: center;
 	text-decoration: none;
 	@include transition( all 0.25s );
 	&:hover {
-		background-color: #442e66;
-		border-color: #442e66;
+		background-color: $color-secondary;
+		border-color: $color-secondary;
 	}
 	&.loading {
 		pointer-events: none;

@@ -20,7 +20,7 @@
 	img {
 		opacity: 0;
 		visibility: hidden;
-	
+
 	}
 }
 
@@ -48,7 +48,7 @@
 		border-radius: $border-radius-global 0 $border-radius-global 0;
 		text-transform: capitalize;
 		cursor: pointer;
-		color: #ffb606;
+		color: $color-primary;
 		text-decoration: none;
 		opacity: 0;
 		visibility: hidden;
