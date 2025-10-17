@@ -8,6 +8,14 @@
 .lp-tom-select {
 	min-width: 150px;
 
+	&.plugin-dropdown_input {
+		.dropdown-input {
+			width: 95%;
+			border: 1px solid #2271b1;;
+			//border: 1px solid #d0d0d0;;
+		}
+	}
+
 	&[multiple] {
 		display: block;
 		height: 36px !important;
@@ -62,6 +70,7 @@
 			border: 1px solid #d0d0d0;
 			padding-top: 5px;
 			border-radius: 3px;
+			margin-top: -1px;
 
 			// spinner is class of WP, so hide spinner of TomSelect
 			.spinner {
