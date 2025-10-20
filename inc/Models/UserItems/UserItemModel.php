@@ -12,6 +12,7 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
@@ -214,13 +215,13 @@ class UserItemModel {
 	 * If not exists, return false.
 	 * If exists, return UserItemModel.
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 *
 	 * @return UserItemModel|false|static
 	 * @since 4.2.5
 	 * @version 1.0.2
 	 */
-	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter ) {
+	public static function get_user_item_model_from_db( $filter ) {
 		$lp_user_item_db = LP_User_Items_DB::getInstance();
 		$user_item_model = false;
 
