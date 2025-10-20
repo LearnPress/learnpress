@@ -5,6 +5,10 @@
 * @version 1.0.0
 */
 
+.swal2-container {
+	z-index: 99999;
+}
+
 .swal2-popup {
 	.swal2-actions {
 		width: 100%;

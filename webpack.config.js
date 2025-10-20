@@ -17,6 +17,7 @@ module.exports = {
 		'./assets/js/dist/admin/admin-order': './assets/src/js/admin/admin-order.js',
 		'./assets/js/dist/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
 		//'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
+		'./assets/dist/js/admin/admin-courses': './assets/src/js/admin/admin-courses.js',
 		'./assets/dist/js/admin/edit-curriculum': './assets/src/js/admin/edit-curriculum.js',
 		//'./assets/dist/js/admin/edit-curriculum/edit-course-ai': './assets/src/js/admin/edit-curriculum/edit-course-ai.js',
 		'./assets/dist/js/admin/edit-quiz': './assets/src/js/admin/edit-quiz.js',

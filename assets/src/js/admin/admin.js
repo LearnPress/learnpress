@@ -1,6 +1,5 @@
 import { initElsTomSelect, searchUserOnListPost } from './init-tom-select.js';
 import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
-import {CourseAI} from './edit-curriculum/edit-course-ai'
 
 ( function( $ ) {
 	/**
