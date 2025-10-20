@@ -65,9 +65,7 @@
 
 .post-type-lp_course {
 	.wp-list-table {
-		.check-column{
-			width: 1.2em;
-		}
+
 		.column-price {
 			width: 80px;
 		}
@@ -90,11 +88,23 @@
 
 			}
 		}
-
-		.column-title {
-			@media only screen and (min-width: 783px) {
-				width: 20%;
+		.column-certificate{
+			box-sizing: border-box;
+			max-width: 70px;
+			img{
+				max-width: 100% !important;
 			}
+		}
+		@media only screen and (min-width: 1024px) {
+			.check-column{
+				width: 1.2em;
+			}
+		}
+		@media only screen and (min-width: 783px) {
+			.column-title {
+ 				width: 20%;
+			}
+
 		}
 	}
 }
