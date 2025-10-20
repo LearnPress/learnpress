@@ -65,34 +65,36 @@
 
 .post-type-lp_course {
 	.wp-list-table {
+		.check-column{
+			width: 1.2em;
+		}
 		.column-price {
-			width: 120px;
+			width: 80px;
 		}
 
 		.column-thumbnail {
-			width: 80px;
+			width: 60px;
 			padding-top: 11px;
+			box-sizing: border-box;
 
+			img {
+				width: 100%;
+				height: auto;
+			}
 			@media only screen and (max-width: 782px) {
 				display: none;
 
 				&::before {
 					opacity: 0;
 				}
-			}
 
-			img {
-				width: 100%;
-				height: auto;
 			}
 		}
 
 		.column-title {
-			width: 150px;
-		}
-
-		.column-date {
-			width: 100px;
+			@media only screen and (min-width: 783px) {
+				width: 20%;
+			}
 		}
 	}
 }
@@ -102,8 +104,10 @@
 		width: 80px;
 
 		.post-author {
-			display: inline-block;
-
+ 			display: flex;
+			align-items: center;
+			gap: 8px;
+			line-height: 1.1em;
 			img {
 				width: 30px;
 				height: 30px;
