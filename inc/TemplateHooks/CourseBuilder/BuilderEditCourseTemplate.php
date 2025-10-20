@@ -13,15 +13,33 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\ListCourseCategories;
+use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 
 class BuilderEditCourseTemplate {
 	use Singleton;
 
 	public function init() {
+		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
 		add_action( 'learn-press/course-builder/courses/overview/layout', [ $this, 'section_overview' ] );
 		add_action( 'learn-press/course-builder/courses/curriculum/layout', [ $this, 'section_curriculum' ] );
 		add_action( 'learn-press/course-builder/courses/settings/layout', [ $this, 'section_settings' ] );
 	}
+
+	/**
+	 * Allow callback for AJAX.
+	 * @use self::render_edit_course_curriculum
+	 * @use self::render_html
+	 *
+	 * @param array $callbacks
+	 *
+	 * @return array
+	 */
+	public function allow_callback( array $callbacks ): array {
+		$callbacks[] = AdminEditCurriculumTemplate::class . ':render_edit_course_curriculum';
+
+		return $callbacks;
+	}
+
 
 	public function section_overview() {
 		$cousre_id = CourseBuilder::get_post_id();
@@ -38,6 +56,7 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
+		$html_header        = $this->header_overview( $course_model );
 		$html_edit_title    = $this->edit_title( $course_model );
 		$html_edit_desc     = $this->edit_desc( $course_model );
 		$html_edit_cat      = $this->edit_categories( $course_model );
@@ -46,7 +65,7 @@ class BuilderEditCourseTemplate {
 
 		$section = [
 			'wrapper'       => '<div class="cb-section__content">',
-			'section_title' => sprintf( '<h3 class="lp-cb-tab__title">%s</h3>', __( 'Edit Course', 'learnpress' ) ),
+			'header'        => $html_header,
 			'edit_title'    => $html_edit_title,
 			'edit_desc'     => $html_edit_desc,
 			'edit_cat'      => $html_edit_cat,
@@ -56,6 +75,24 @@ class BuilderEditCourseTemplate {
 		];
 
 		echo Template::combine_components( $section );
+	}
+
+	public function header_overview( CourseModel $course_model ) {
+		$status     = $course_model->get_status();
+		$btn_update = sprintf( '<div class="cb-button">%s</div>', $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
+		$btn_draft  = sprintf( '<div class="cb-button">%s</div>', __( 'Save Draft', 'learnpress' ) );
+		$btn_trash  = sprintf( '<div class="cb-button">%s</div>', __( 'Trash', 'learnpress' ) );
+		$header     = [
+			'wrapper'        => '<div class="cb-section__header">',
+			'section_title'  => sprintf( '<h3 class="lp-cb-section__title">%s</h3>', __( 'Edit Course', 'learnpress' ) ),
+			'action_wrapper' => '<div class="cb-section__header-action">',
+			'btn_update'     => $btn_update,
+			'btn_draft'      => $btn_draft,
+			'btn_trash'      => $btn_trash,
+			'action_end'     => '</div>',
+			'wrapper_end'    => '</div>',
+		];
+		return Template::combine_components( $header );
 	}
 
 	public function edit_title( CourseModel $course_model ) {
@@ -242,11 +279,68 @@ class BuilderEditCourseTemplate {
 	}
 
 	public function section_curriculum() {
-		echo 'curriculum';
+		wp_enqueue_script( 'lp-cb-edit-curriculum' );
+		wp_enqueue_style( 'lp-cb-edit-curriculum' );
+		wp_enqueue_script( 'lp-cb-admin-learnpress' );
+
+		$cousre_id = CourseBuilder::get_post_id();
+
+		if ( $cousre_id === 'post-new' ) {
+			echo 'Please save Course before add Section';
+			return;
+		}
+
+		if ( absint( $cousre_id ) ) {
+			$course_model = CourseModel::find( $cousre_id, true );
+			if ( empty( $course_model ) ) {
+				return;
+			}
+		}
+
+		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin-assets.php';
+		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
+
+		\LP_Admin_Assets::instance();
+		AdminEditCurriculumTemplate::instance();
+
+		do_action( 'learn-press/admin/edit-curriculum/layout', $course_model );
 	}
 
 
 	public function section_settings() {
-		echo 'settings';
+		wp_enqueue_script( 'lp-cb-edit-curriculum' );
+		wp_enqueue_style( 'lp-cb-edit-curriculum' );
+		wp_enqueue_script( 'lp-cb-learnpress' );
+
+		$cousre_id = CourseBuilder::get_post_id();
+
+		if ( $cousre_id === 'post-new' ) {
+			echo 'Please save Course before setting course';
+			return;
+		}
+
+		if ( absint( $cousre_id ) ) {
+			$course_model = CourseModel::find( $cousre_id, true );
+			if ( empty( $course_model ) ) {
+				return;
+			}
+		}
+
+		if ( ! class_exists( 'LP_Meta_Box_Course' ) ) {
+			require_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
+		}
+
+		$metabox = new \LP_Meta_Box_Course();
+		ob_start();
+		$metabox->output( $course_model );
+		$settings = ob_get_clean();
+
+		$output = [
+			'wrapper'     => '<div id="course-settings">',
+			'settings'    => $settings,
+			'wrapper_end' => '</div>',
+		];
+
+		echo Template::combine_components( $output );
 	}
 }
