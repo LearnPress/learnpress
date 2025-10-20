@@ -1169,7 +1169,7 @@ class CourseModel {
 	/**
 	 * Get item model assigned to this course
 	 *
-	 * @return mixed|false|null|WP_Post
+	 * @return mixed|false|null|WP_Post|PostModel
 	 * @since v4.2.7.6
 	 * @version 1.0.1
 	 */

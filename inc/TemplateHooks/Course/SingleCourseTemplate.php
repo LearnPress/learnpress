@@ -97,7 +97,7 @@ class SingleCourseTemplate {
 		}
 
 		$short_description = $course->get_short_description();
-		if ( empty( $short_description ) || $number_words === 0 ) {
+		if ( empty( $short_description ) ) {
 			return '';
 		}
 
@@ -722,7 +722,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_btn_external( CourseModel $courseModel, $userModel ): string {
 		$external_link = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
@@ -744,7 +744,7 @@ class SingleCourseTemplate {
 			__( 'Contact To Request', 'learnpress' )
 		);
 
-		return apply_filters( 'learn-press/course/html-address', $content, $courseModel, $userModel );
+		return apply_filters( 'learn-press/course/html-button-external', $content, $courseModel, $userModel );
 	}
 
 	/**
@@ -755,7 +755,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function html_btn_purchase_course( CourseModel $courseModel, $userModel ): string {
 		$html_btn     = '';
@@ -771,7 +771,7 @@ class SingleCourseTemplate {
 			}
 		} else {
 			$html_btn = sprintf(
-				'<button class="lp-button button button-purchase-course">%s</button>',
+				'<button class="lp-button button-purchase-course">%s</button>',
 				__( 'Buy Now', 'learnpress' )
 			);
 		}

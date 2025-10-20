@@ -10,7 +10,13 @@ export const edit = ( props ) => {
 					<h3 className="section-title">{ 'Instructor' }</h3>
 					<div className="lp-instructor-info">
 						<div className="instructor-avatar">
-							<img src="https://placehold.co/160x160?text=Instructor" />
+							<img
+								src="/wp-content/plugins/learnpress/assets/images/no-image.png"
+								alt="Instructor avatar placeholder"
+								height={ 160 }
+								width={ 160 }
+								style={ { aspectRatio: '1 / 1', objectFit: 'cover' } }
+							></img>
 						</div>
 						<div className="lp-section-instructor">
 							<span className="instructor-display-name">

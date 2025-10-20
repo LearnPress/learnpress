@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 
@@ -102,12 +103,14 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get users items
 	 *
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
+	 *
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @since 4.1.6.9
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
-	public function get_user_items( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+	public function get_user_items( $filter, int &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
@@ -173,14 +176,14 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get items by user_item_id | this is id where item_id = course_id
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 * @param bool $force_cache
 	 *
 	 * @return object
 	 * @throws Exception
 	 * Todo: tungnx need set paginate - apply when do load API
 	 */
-	public function get_user_course_items( LP_User_Items_Filter $filter, bool $force_cache = false ) {
+	public function get_user_course_items( $filter, bool $force_cache = false ) {
 		$key_first_cache    = 'course_items/' . $filter->user_id . '/' . $filter->parent_id;
 		$course_items_cache = LP_Cache::cache_load_first( 'get', $key_first_cache );
 		if ( false !== $course_items_cache && ! $force_cache ) {
@@ -210,13 +213,13 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Remove items' of course and user learned
 	 *
-	 * @param LP_User_Items_Filter $filter .
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter .
 	 *
 	 * @return bool|int
 	 * @throws Exception .
 	 * @TODO tungnx - recheck this function
 	 */
-	public function remove_items_of_user_course( LP_User_Items_Filter $filter ) {
+	public function remove_items_of_user_course( $filter ) {
 		$query_extra = '';
 
 		// Check valid user.
@@ -370,7 +373,7 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get number status by status, graduation...
 	 *
-	 * @param LP_User_Items_Filter $filter {user_id, item_type}
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter {user_id, item_type}
 	 *
 	 * @author tungnx
 	 * @since 4.1.5
@@ -378,7 +381,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @return object|null
 	 * @throws Exception
 	 */
-	public function count_status_by_items( LP_User_Items_Filter $filter ) {
+	public function count_status_by_items( $filter ) {
 		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s', LP_COURSE_GRADUATION_IN_PROGRESS, LP_COURSE_GRADUATION_IN_PROGRESS );
 		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s', LP_COURSE_GRADUATION_FAILED, LP_COURSE_GRADUATION_FAILED );
 		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s', LP_COURSE_GRADUATION_PASSED, LP_COURSE_GRADUATION_PASSED );
@@ -411,13 +414,13 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get the newest item is course of user
 	 *
-	 * @param LP_User_Items_Filter $filter {course_id, user_id}
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter {course_id, user_id}
 	 * @param bool $force_cache Reset first cache
 	 *
 	 * @return null|object
 	 * @throws Exception
 	 */
-	public function get_last_user_course( LP_User_Items_Filter $filter, bool $force_cache = false ) {
+	public function get_last_user_course( $filter, bool $force_cache = false ) {
 		$query = $this->wpdb->prepare(
 			"SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time
 			FROM $this->tb_lp_user_items
@@ -442,13 +445,13 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get item of user and course
 	 *
-	 * @param LP_User_Items_Filter $filter {parent_id, item_id, user_id}
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter {parent_id, item_id, user_id}
 	 * @param bool $force_cache Reset first cache
 	 *
 	 * @return null|object
 	 * @throws Exception
 	 */
-	public function get_user_course_item( LP_User_Items_Filter $filter, bool $force_cache = false ) {
+	public function get_user_course_item( $filter, bool $force_cache = false ) {
 		$key_load_first = 'user_course_item/' . $filter->user_id . '/' . $filter->item_id;
 		$user_course    = LP_Cache::cache_load_first( 'get', $key_load_first );
 
@@ -499,10 +502,10 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get items of course by item type
 	 *
-	 * @param LP_User_Items_Filter $filter {$filter->parent_id, $filter->item_type, [$filter->item_id]}
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter {$filter->parent_id, $filter->item_type, [$filter->item_id]}
 	 * @throws Exception
 	 */
-	public function get_user_course_items_by_item_type( LP_User_Items_Filter $filter ) {
+	public function get_user_course_items_by_item_type( $filter ) {
 
 		$AND = '';
 
@@ -533,11 +536,11 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get user_item_id by course_id
 	 *
-	 * @param LP_User_Items_Filter $filter $filter->item_id
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter $filter->item_id
 	 *
 	 * @return array
 	 */
-	public function get_user_items_by_course( LP_User_Items_Filter $filter ): array {
+	public function get_user_items_by_course( $filter ): array {
 		try {
 			// Check valid user.
 			if ( ! is_user_logged_in() ) {
@@ -563,13 +566,13 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get items of course has user
 	 *
-	 * @param LP_User_Items_Filter $filter user_item_ids
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter user_item_ids
 	 *
 	 * @throws Exception
 	 * @since 4.1.4
 	 * @version 1.0.0
 	 */
-	public function get_item_ids_of_user_course( LP_User_Items_Filter $filter ): array {
+	public function get_item_ids_of_user_course( $filter ): array {
 		if ( empty( $filter->user_item_ids ) ) {
 			return [];
 		}
@@ -591,13 +594,13 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Remove rows IN user_item_ids
 	 *
-	 * @param LP_User_Items_Filter $filter $filter->user_item_ids, $filter->user_id
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter $filter->user_item_ids, $filter->user_id
 	 *
 	 * @throws Exception
 	 * @since 4.1.4
 	 * @version 1.0.0
 	 */
-	public function remove_user_item_ids( LP_User_Items_Filter $filter ) {
+	public function remove_user_item_ids( $filter ) {
 		// Check valid user.
 		/*if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
 			throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FUNCTION__ );
@@ -624,13 +627,13 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Remove user_itemmeta has list user_item_ids
 	 *
-	 * @param LP_User_Items_Filter $filter $filter->user_item_ids, $filter->user_id
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter $filter->user_item_ids, $filter->user_id
 	 *
 	 * @throws Exception
 	 * @since 4.1.4
 	 * @version 1.0.0
 	 */
-	public function remove_user_itemmeta( LP_User_Items_Filter $filter ) {
+	public function remove_user_itemmeta( $filter ) {
 		// Check valid user.
 		/*if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
 			throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FUNCTION__ );
@@ -723,12 +726,12 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Update user_id for lp_user_item with Order buy User Guest
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 *
 	 * @return bool|int
 	 * @throws Exception
 	 */
-	public function update_user_id_by_order( LP_User_Items_Filter $filter ) {
+	public function update_user_id_by_order( $filter ) {
 		// Check valid user.
 		if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
 			throw new Exception( __FUNCTION__ . ': Invalid user!' );
@@ -750,11 +753,14 @@ class LP_User_Items_DB extends LP_Database {
 
 	/**
 	 * Count items by type and total by status
+	 *
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter {parent_id, status, graduation}
+	 *
 	 * @throws Exception
 	 *
 	 * @return null|object
 	 */
-	public function count_items_of_course_with_status( LP_User_Items_Filter $filter ) {
+	public function count_items_of_course_with_status( $filter ) {
 		$item_types       = CourseModel::item_types_support();
 		$count_item_types = count( $item_types );
 		$i                = 0;
@@ -789,15 +795,15 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get quizzes of user
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 * @param int $total_rows
 	 *
 	 * @return array|int|string|null
 	 * @throws Exception
 	 * @since 4.1.4.1
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function get_user_quizzes( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+	public function get_user_quizzes( $filter, int &$total_rows = 0 ) {
 		$filter->item_type = LP_QUIZ_CPT;
 		$filter->ref_type  = LP_COURSE_CPT;
 
@@ -807,16 +813,16 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get courses only by course's user are learning
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 * @param int $total_rows
 	 *
 	 * @author tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.1.5
 	 * @return null|array|string|int
 	 * @throws Exception
 	 */
-	public function get_user_courses( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+	public function get_user_courses( $filter, int &$total_rows = 0 ) {
 		$filter->collection_alias = 'ui';
 
 		// Get courses publish, private
@@ -860,14 +866,14 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get list students attend
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 * @param int $total_rows
 	 *
 	 * @return array|int|string|null
 	 * @since 4.1.6.9
 	 * @throws Exception
 	 */
-	public function get_students( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+	public function get_students( $filter, int &$total_rows = 0 ) {
 		$default_fields         = $this->get_cols_of_table( $this->tb_users );
 		$filter->fields         = array_merge( $default_fields, $filter->fields );
 		$filter->exclude_fields = [ 'user_pass', 'user_login', 'user_status', 'user_activation_key' ];
@@ -905,12 +911,12 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Count students on category course.
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 * @return int
 	 * @since 4.2.5.4
 	 * @version 1.0.0
 	 */
-	public function count_students( LP_User_Items_Filter $filter ): int {
+	public function count_students( $filter ): int {
 		$count = 0;
 
 		try {

@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.9.1
+Stable tag: 4.2.9.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -35,6 +35,19 @@ Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.env
 
 - [Create a WordPress Udemy with Eduma](https://eduma.thimpress.com/demo-udemy/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 - [Create a WordPress Coursera with Eduma](https://eduma.thimpress.com/demo-coursera/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
+
+###Build Your LearnPress Site Your Way: Elementor or Gutenberg###
+LearnPress now gives you the flexibility to build courses with two different page builders, depending on your style and workflow.
+
+**Elementor**
+Design with a powerful drag-and-drop interface, live previews, and advanced customization options.
+Take it further with [Thim Elementor Kit](https://wordpress.org/plugins/thim-elementor-kit/) - our ready-made widgets and layouts optimized for LearnPress, so you can build professional course pages quickly and beautifully.
+👉 Try the Elementor demo: [EduPress | Free LearnPress Theme](https://thimpress.com/product/education-wordpress-starter-theme-for-learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
+
+**Gutenberg**
+Enjoy the speed and simplicity of WordPress’s native block editor, lightweight and fully integrated.
+Add [Thim Blocks](https://wordpress.org/plugins/thim-blocks/) - our Page Builder, Gutenberg Blocks for the Block Editor - you can unlock extended blocks tailored for LearnPress to create clean, modern, and highly functional course layouts without extra plugins.
+👉 Try the Gutenberg demo: [Theme Online Learning | Free Gutenberg WordPress Theme](https://wordpress.org/themes/online-learning/)
 
 ###LearnPress Mobile App###
 
@@ -247,6 +260,20 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.2.9.4 (2025-10-08) =
+~ Fixed: security.
+~ Fixed: error save config answer option (Question) with LaTeX.
+~ Added: feature export LP user data for GDPR when use tool "Export Personal Data".
+
+= 4.2.9.3 (2025-09-23) =
+~ Fixed: show price's course with case buy with Guest.
+~ Fixed: error don't show popup allow repurchase with theme Gutenberg.
+~ Added: feature eraser LP user data when use tool "Erase Personal Data".
+
+= 4.2.9.2 (2025-09-15) =
+~ Fixed: error some hooks emails.
+~ Require PHP 7.4+.
 
 = 4.2.9.1 (2025-09-10) =
 ~ Fixed: various deprecated functions for compatibility with PHP 8.4.

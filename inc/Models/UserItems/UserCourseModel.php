@@ -11,6 +11,7 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\QuizPostModel;
@@ -220,12 +221,12 @@ class UserCourseModel extends UserItemModel {
 	/**
 	 * Count students.
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 * @return int
 	 * @since 4.2.5.4
 	 * @version 1.0.0
 	 */
-	public static function count_students( LP_User_Items_Filter $filter ): int {
+	public static function count_students( $filter ): int {
 		// Check cache
 		$key_cache = 'count-courses-student-' . md5( json_encode( $filter ) );
 		$count     = LP_Cache::cache_load_first( 'get', $key_cache );

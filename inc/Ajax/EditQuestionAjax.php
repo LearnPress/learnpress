@@ -202,7 +202,7 @@ class EditQuestionAjax extends AbstractAjax {
 			$data             = self::check_valid();
 			$question_id      = $data['question_id'] ?? 0;
 			$question_answers = $data['answers'] ?? [];
-			$question_answers = LP_Helper::sanitize_params_submitted( $question_answers, 'html' );
+			$question_answers = LP_Helper::sanitize_params_submitted( $question_answers, 'html', false );
 
 			$questionPostModel = QuestionPostModel::find( $question_id, true );
 			if ( ! $questionPostModel ) {

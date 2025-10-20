@@ -8,6 +8,9 @@
 namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Material_Files_DB;
 use stdClass;
@@ -44,6 +47,11 @@ class CourseMaterialTemplate {
 		return $callbacks;
 	}
 
+	/**
+	 * Layout for course material.
+	 *
+	 * @throws Exception
+	 */
 	public function sections( array $data = array() ) {
 		$html_wrapper = apply_filters(
 			'learn-press/course-material/sections/wrapper',
@@ -68,13 +76,20 @@ class CourseMaterialTemplate {
 		$total_rows  = $material_db->get_total( $item_id );
 		$total_pages = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
 
-		$args     = array(
-			'id_url'      => 'course-material',
-			'item_id'     => $item_id,
-			'paged'       => 1,
-			'per_page'    => $per_page,
-			'total_pages' => $total_pages,
+		$args = array_merge(
+			[
+				'id_url'      => 'course-material',
+				'item_id'     => $item_id,
+				'paged'       => 1,
+				'per_page'    => $per_page,
+				'total_pages' => $total_pages,
+			],
+			$data
 		);
+		if ( get_post_type( $item_id ) !== LP_COURSE_CPT ) {
+			$args['course_id'] = $item->get_course_id();
+		}
+
 		$callback = array(
 			'class'  => self::class,
 			'method' => 'render_material_items',
@@ -88,9 +103,46 @@ class CourseMaterialTemplate {
 		echo Template::combine_components( $section );
 	}
 
-	public static function render_material_items( $args ) {
+	public static function render_material_items( $args ): stdClass {
 		$content = new stdClass();
+
 		try {
+			$userModel = UserModel::find( get_current_user_id(), true );
+			$course_id = $args['course_id'] ?? 0;
+			$item_id   = $args['item_id'] ?? 0;
+			if ( get_post_type( $item_id ) === LP_COURSE_CPT ) {
+				$courseModel = CourseModel::find( $item_id, true );
+			} elseif ( $course_id ) {
+				$courseModel = CourseModel::find( $course_id, true );
+			} else {
+				throw new Exception( esc_html__( 'Course not found!', 'learnpress' ) );
+			}
+
+			$can_show = false;
+			if ( $userModel instanceof UserModel ) {
+				if ( $courseModel->check_user_is_author( $userModel )
+					|| user_can( $userModel->get_id(), ADMIN_ROLE ) ) {
+					$can_show = true;
+				} else {
+					$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+					if ( $userCourseModel &&
+						( $userCourseModel->has_enrolled_or_finished()
+							|| $userCourseModel->has_purchased() ) ) {
+						$can_show = true;
+					}
+				}
+			} elseif ( $courseModel->has_no_enroll_requirement() ) {
+				$can_show = true;
+			}
+
+			$can_show = apply_filters( 'learn-press/course-material/can-show', $can_show, $courseModel, $userModel );
+
+			$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
+			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $courseModel->get_id() );
+			if ( ! $can_show || $file_per_page == 0 || $count_files <= 0 ) {
+				throw new Exception( '' );
+			}
+
 			$material_db = LP_Material_Files_DB::getInstance();
 			$paged       = absint( $args['paged'] ?? 1 );
 			$per_page    = intval( $args['per_page'] ?? 1 );
@@ -126,7 +178,11 @@ class CourseMaterialTemplate {
 				$content->paged       = $args['paged'];
 			}
 		} catch ( Throwable $e ) {
-			$content->content = Template::print_message( $e->getMessage(), 'error', false );
+			if ( $e->getMessage() === '' ) {
+				$content->content = '';
+			} else {
+				$content->content = Template::print_message( $e->getMessage(), 'error', false );
+			}
 		}
 		return $content;
 	}

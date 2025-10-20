@@ -27,28 +27,28 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_indexes' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 			'list-tables-indexs'   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_list_tables_indexs' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 			'clean-tables'         => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'clean_tables' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 			'admin-notices'        => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'admin_notices' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 			'search-course'        => array(
@@ -103,9 +103,19 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$lp_db    = LP_Database::getInstance();
 
 		try {
-			$tables     = $request->get_param( 'tables' );
-			$table      = $request->get_param( 'table' );
-			$table_keys = array();
+			$tables_valid = [
+				$lp_db->tb_lp_user_items,
+				$lp_db->tb_lp_user_itemmeta,
+				$lp_db->tb_lp_quiz_questions,
+				$lp_db->tb_lp_question_answers,
+				$lp_db->tb_lp_question_answermeta,
+				$lp_db->tb_lp_order_items,
+				$lp_db->tb_lp_order_itemmeta,
+				$lp_db->tb_lp_sections,
+				$lp_db->tb_lp_section_items,
+			];
+			$table        = $request->get_param( 'table' );
+			$tables       = $request->get_param( 'tables' );
 
 			$lp_db->wpdb->query( 'SET autocommit = 0' );
 
@@ -115,9 +125,8 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				$table_keys = array_keys( $tables );
 			}
 
-			if ( empty( $table ) ) {
-				$table = $lp_db->tb_lp_user_items;
-			} elseif ( array_key_exists( $table, $table_keys ) ) {
+			if ( ! array_key_exists( $table, $tables )
+				|| ! in_array( $table, $tables_valid ) ) {
 				throw new Exception( 'Table invalid!' );
 			}
 

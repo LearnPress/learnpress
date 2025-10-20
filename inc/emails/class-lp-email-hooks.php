@@ -26,7 +26,7 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 		protected function __construct() {
 			// Define class handle send email with hook corresponding
 			$this->actions = apply_filters(
-				'learn-press/email-actions',
+				'learn-press/email-actions-hooks',
 				[
 					// preview course
 					'learn_press_course_submit_rejected',

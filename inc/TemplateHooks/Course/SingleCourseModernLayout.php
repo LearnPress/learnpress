@@ -255,7 +255,7 @@ class SingleCourseModernLayout {
 		);
 
 		$html_price = '';
-		if ( ! $userCourseModel
+		if ( ! $userCourseModel || $user_id === 0
 			|| $userCourseModel->get_status() === UserItemModel::STATUS_CANCEL ) {
 			$html_price = $this->singleCourseTemplate->html_price( $course );
 		}

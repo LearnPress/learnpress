@@ -58,7 +58,13 @@ export const edit = ( props ) => {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<div className="lp-user-cover-image_background">
-					<img src="https://placehold.co/1280x285?text=Background" />
+					<img
+						src="/wp-content/plugins/learnpress/assets/images/no-image.png"
+						alt="Instructor background placeholder"
+						height={ 285 }
+						width={ 1280 }
+						style={ { aspectRatio: 4.5, objectFit: 'cover' } }
+					></img>
 				</div>
 			</div>
 		</>

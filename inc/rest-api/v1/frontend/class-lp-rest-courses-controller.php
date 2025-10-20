@@ -389,16 +389,21 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 				do_action( 'learnpress/user/course-enrolled', $userCourse->ref_id, $course_id, $user->get_id() );
 
-				// Send mail user enrolled course
+				/**
+				 * Send mail user enrolled course
+				 * @uses SendEmailAjax::send_mail_user_enrolled_course()
+				 */
 				$data_send = [
 					$userCourse->ref_id,
 					$course_id,
 					$user->get_id(),
 				];
-				LPBackgroundAjax::handle( [
-					'params'       => $data_send,
-					'lp-load-ajax' => 'send_mail_user_enrolled_course',
-				] );
+				LPBackgroundAjax::handle(
+					[
+						'params'       => $data_send,
+						'lp-load-ajax' => 'send_mail_user_enrolled_course',
+					]
+				);
 			} else { // Case enroll course free
 				$cart     = LearnPress::instance()->cart;
 				$checkout = LP_Checkout::instance();

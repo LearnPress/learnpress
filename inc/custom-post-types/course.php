@@ -4,11 +4,12 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.1
+ * @version 3.0.2
  */
 
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\WPTables\CoursesTable;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -22,11 +23,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @var null
 		 */
 		protected static $_instance = null;
-
-		/**
-		 * @var string
-		 */
-		protected $_post_type = LP_COURSE_CPT;
+		protected $_post_type       = LP_COURSE_CPT;
+		protected $_screen_list     = 'edit-' . LP_COURSE_CPT;
 
 		/**
 		 * Constructor
@@ -46,7 +44,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			// Support Quick Edit multiple courses change author
 			add_post_type_support( LP_COURSE_CPT, 'author' );
 
-			$settings         = LP_Settings::instance();
 			$labels           = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
 				'singular_name'      => _x( 'Course', 'Post Type Singular Name', 'learnpress' ),
@@ -169,6 +166,23 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
+		 * Declare class name of table list courses.
+		 *
+		 * @param string $class_name
+		 * @param array  $args
+		 *
+		 * @return string
+		 * @since 4.2.9.5
+		 */
+		public function wp_list_table_class_name( $class_name, $args ) {
+			if ( $this->check_class_name_handle_table( $args['screen'] ) ) {
+				$class_name = CoursesTable::class;
+			}
+
+			return $class_name;
+		}
+
+		/**
 		 * Delete course sections before delete course.
 		 *
 		 * @param int $post_id
@@ -278,7 +292,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 			}
 
-			$not_in = $wpdb->prepare(
+			/*$not_in = $wpdb->prepare(
 				"
 				SELECT ID
 				FROM {$wpdb->posts} p
@@ -289,7 +303,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'yes'
 			);
 
-			$where .= " AND {$wpdb->posts}.ID NOT IN( {$not_in} )";
+			$where .= " AND {$wpdb->posts}.ID NOT IN( {$not_in} )";*/
 
 			return $where;
 		}
@@ -311,148 +325,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			return $orderby;
-		}
-
-		/**
-		 * @param $columns
-		 *
-		 * @return mixed
-		 */
-		public function sortable_columns( $columns ) {
-			$columns['instructor'] = 'author';
-			$columns['price']      = 'price';
-
-			return $columns;
-		}
-
-		/**
-		 * Add columns to admin manage course page
-		 *
-		 * @param array $columns
-		 *
-		 * @return array
-		 */
-		public function columns_head( $columns ) {
-			$user   = wp_get_current_user();
-			$keys   = array_keys( $columns );
-			$values = array_values( $columns );
-			$pos    = array_search( 'title', $keys );
-
-			if ( ! empty( $columns['author'] ) ) {
-				unset( $columns['author'] );
-			}
-
-			if ( $pos !== false ) {
-				array_splice( $keys, $pos + 1, 0, array( 'instructor', 'sections', 'students', 'price' ) );
-				array_splice(
-					$values,
-					$pos + 1,
-					0,
-					array(
-						esc_html__( 'Author', 'learnpress' ),
-						esc_html__( 'Content', 'learnpress' ),
-						esc_html__( 'Students', 'learnpress' ),
-						esc_html__( 'Price', 'learnpress' ),
-					)
-				);
-
-				if ( $pos === 0 ) {
-					array_unshift( $keys, 'thumbnail' );
-					array_unshift( $values, esc_html__( 'Thumbnail', 'learnpress' ) );
-				} else {
-					array_splice( $keys, $pos, 0, array( 'thumbnail' ) );
-					array_splice( $values, $pos, 0, array( esc_html__( 'Thumbnail', 'learnpress' ) ) );
-				}
-
-				$columns = array_combine( $keys, $values );
-			} else {
-				$columns['instructor'] = esc_html__( 'Author', 'learnpress' );
-				$columns['sections']   = esc_html__( 'Content', 'learnpress' );
-				$columns['students']   = esc_html__( 'Students', 'learnpress' );
-				$columns['price']      = esc_html__( 'Price', 'learnpress' );
-			}
-
-			$columns['taxonomy-course_category'] = esc_html__( 'Categories', 'learnpress' );
-
-			if ( in_array( 'lp_teacher', $user->roles ) ) {
-				unset( $columns['instructor'] );
-			}
-
-			return apply_filters( 'lp/admin/courses/columns', $columns );
-		}
-
-		/**
-		 * Print content for custom column
-		 *
-		 * @param string $column
-		 * @param int $post_id
-		 *
-		 * @throws Exception
-		 */
-		public function columns_content( $column, $post_id = 0 ) {
-			global $post;
-
-			$course = learn_press_get_course( $post->ID );
-
-			switch ( $column ) {
-				case 'thumbnail':
-					echo wp_kses_post( $course->get_image( 'thumbnail' ) );
-					break;
-				case 'instructor':
-					$this->column_instructor( $post->ID );
-					break;
-				case 'sections':
-					$curd            = new LP_Course_CURD();
-					$number_sections = $curd->count_sections( $post_id );
-					if ( $number_sections ) {
-						$output     = sprintf( _n( '<strong>%d</strong> section', '<strong>%d</strong> sections', $number_sections, 'learnpress' ), $number_sections );
-						$html_items = array();
-						//$post_types = get_post_types( null, 'objects' );
-
-						$course_item_types = CourseModel::item_types_support();
-						foreach ( $course_item_types as $item_type ) {
-							$count_item = $course->count_items( $item_type );
-
-							if ( ! $count_item ) {
-								continue;
-							}
-
-							/*$post_type_object = $post_types[ $item_type ];
-							$singular_name    = $post_type_object->labels->singular_name;
-							$plural_name      = $post_type_object->label;
-							if ( $count_item > 1 || $count_item == 0 ) {
-								$label_item = $plural_name;
-							} else {
-								$label_item = $singular_name;
-							}*/
-							$html_items[] = sprintf(
-								'<strong>%1$d</strong> %2$s',
-								$count_item,
-								LP_Helper::get_i18n_string_plural( $count_item, $item_type, false )
-							);
-						}
-
-						$html_items = apply_filters( 'learn-press/course-count-items', $html_items );
-
-						if ( $html_items ) {
-							$output .= ' (' . implode( ', ', $html_items ) . ')';
-						}
-
-						echo wp_kses_post( $output );
-					} else {
-						esc_html_e( 'No content', 'learnpress' );
-					}
-
-					break;
-
-				case 'price':
-					echo wp_kses_post( $course->get_course_price_html() );
-					break;
-				case 'students':
-					$count = $course->get_total_user_enrolled_or_purchased();
-					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . ( $count ? $count : 0 ) . '</span>';
-					break;
-			}
 		}
 
 		/**

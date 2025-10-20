@@ -6,106 +6,264 @@
 */
 
 .lp-ico {
-    svg {
-        width: 20px;
-        height: 20px;
-    }
+	svg {
+		width: 20px;
+		height: 20px;
+	}
 }
 
 .lp-hidden {
-    display: none !important;
+	display: none !important;
 }
 
 .course-price {
-    .origin-price {
-        text-decoration: line-through;
-        margin-right: 4px;
-        font-size: calc( var( --lp-font-size-base, 1em) * 0.925);
-        opacity: 0.6;
-    }
+	.origin-price {
+		text-decoration: line-through;
+		margin-right: 4px;
+		font-size: calc( var( --lp-font-size-base, 1em ) * 0.925 );
+		opacity: 0.6;
+	}
 }
 
 [class*='wp-block-learnpress'],
 .block-editor-block-list__block {
-    img {
-        max-width: 100%;
-        height: auto;
-    }
-    .info-meta-item {
-        display: flex;
-        gap: 4px;
-        flex-wrap: wrap;
-        i {
-            color: $color-primary;
-        }
-    }
-    .info-meta-left {
-        display: flex;
-        gap: 8px;
-        align-items: center;
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+	.info-meta-item {
+		display: flex;
+		gap: 4px;
+		flex-wrap: wrap;
+		i {
+			color: $color-primary;
+		}
+	}
+	.info-meta-left {
+		display: flex;
+		gap: 8px;
+		align-items: center;
 		letter-spacing: 0;
-    }
-    a {
-        text-decoration: none;
-    }
+	}
+	a {
+		text-decoration: none;
+	}
 }
 
 .wp-block-learnpress-course-image {
-    overflow: hidden;
+	overflow: hidden;
 }
 
 .wp-block-learnpress-course-instructor,
 .wp-block-learnpress-course-categories {
-    >div>* {
-        display: inline;
-        vertical-align: middle;
-    }
+	> div > * {
+		display: inline;
+		vertical-align: middle;
+	}
 }
-
 
 /*
 Breadcrumb
  */
 
 .wp-block-learnpress-breadcrumb {
-    ul {
-        margin: 0 auto;
-        list-style: none;
-        padding: 0;
-    }
-    li {
-        display: inline-block;
-        margin: 0;
-        a {
-            &:hover {
-                color: var( --lp-primary-color);
-            }
-        }
-    }
-    i {
-        margin: 0 8px;
-    }
-    a {
-        color: inherit;
-    }
+	ul {
+		margin: 0 auto;
+		list-style: none;
+		padding: 0;
+	}
+	li {
+		display: inline-block;
+		margin: 0;
+	}
+	i {
+		margin: 0 8px;
+	}
+	a {
+		color: inherit;
+	}
 }
 
 .courses-btn-load-more {
-    padding: $spacing-base-2x $spacing-base-6x;
-    border-radius: $border-radius-global;
-    color: $text-color-base;
-    border: 1px solid $text-color-base;
-    font-size: var( --lp-font-size-base, 1em);
-    transition: all 0.3s;
-    display: block;
-    background: transparent;
-    text-decoration: none;
-    text-align: center;
-    cursor: pointer;
-    margin: 20px auto;
-    &:hover {
-        background: $color-primary;
-        color: $color-white;
-        border-color: $color-primary;
-    }
+	padding: $spacing-base-2x $spacing-base-6x;
+	border-radius: $border-radius-global;
+	color: $text-color-base;
+	border: 1px solid $text-color-base;
+	font-size: var( --lp-font-size-base, 1em );
+	transition: all 0.3s;
+	display: block;
+	background: transparent;
+	text-decoration: none;
+	text-align: center;
+	cursor: pointer;
+	margin: 20px auto;
+	&:hover {
+		background: $color-primary;
+		color: $color-white;
+		border-color: $color-primary
+	}
+}
+
+.lp-overlay {
+	display: none;
+	position: fixed;
+	z-index: 99999;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba( 209, 213, 219, 0.8 );
+	transition-timing-function: cubic-bezier( 0.4, 0, 0.2, 1 );
+	transition-duration: 150ms;
+	transition-property: opacity;
+}
+
+.lp-modal-dialog {
+	display: flex;
+	position: fixed;
+	z-index: 9999;
+	top: 0;
+	right: 0;
+	left: 0;
+	width: 100%;
+	min-height: 100vh;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+
+	.learn-press-message {
+		width: auto;
+		margin: 0 !important;
+	}
+
+	.lp-modal-content {
+		display: inline-block;
+		overflow: hidden;
+		z-index: 2;
+		width: auto;
+		max-width: 600px;
+		border-radius: 8px;
+		text-align: left;
+		vertical-align: middle;
+		background: white;
+		color: black;
+
+		h2,
+		h3 {
+			margin: 0;
+		}
+
+		.lp-group-step {
+			h3 {
+				border-bottom: 1px solid #eee;
+			}
+		}
+
+		.main-content {
+			.terms-upgrade {
+				.pd-2em {
+					padding: 0 1em;
+				}
+			}
+		}
+	}
+
+	.lp-modal-header {
+		background: #7c60d9;
+		border-bottom: 1px solid #eee;
+		padding: 1em;
+
+		h3 {
+			margin: 0;
+			color: white;
+			font-weight: 400;
+		}
+	}
+
+	.lp-modal-body {
+		.main-content {
+			max-height: 500px;
+			overflow: auto;
+			overscroll-behavior: contain;
+
+			h3,
+			h2,
+			.pd-2em {
+				padding: 1em;
+			}
+		}
+	}
+
+	.lp-modal-footer {
+		padding: 20px;
+		background-color: #f9fafb;
+		text-align: right;
+	}
+
+	.btn-yes {
+		color: #fff;
+		background-color: #7c60d9;
+	}
+
+	.lp_allow_repurchase_select {
+		padding: 20px;
+		background: #f7f7f7;
+
+		& > ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		& > ul li label {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+	}
+
+	.lp-button {
+		cursor: pointer;
+		border: 1px solid $border-color;
+		border-radius: $border-radius-global;
+		padding: $spacing-base-2x $spacing-base-4x;
+
+		&.loading {
+			pointer-events: none;
+			opacity: 0.8;
+			@include loading();
+		}
+
+		&:hover {
+			border-color: $color-primary;
+			color: #fff;
+			background: $color-primary;
+		}
+	}
+}
+
+.lp-button.btn-finish-course {
+	cursor: pointer;
+	width: 100%;
+	padding: 12px 24px;
+	background-color: $color-primary;
+	border-width: 0;
+	border-radius: $border-radius-global;
+	border-color: $color-primary;
+	color: $color-white;
+	font-size: $font-size-base;
+	text-align: center;
+	text-decoration: none;
+	@include transition( all 0.25s );
+	&:hover {
+		background-color: $color-secondary;
+		border-color: $color-secondary;
+	}
+	&.loading {
+		pointer-events: none;
+		opacity: 0.8;
+		@include loading();
+	}
 }

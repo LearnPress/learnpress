@@ -5,7 +5,13 @@ export const edit = ( props ) => {
 		<>
 			<div { ...blockProps }>
 				<div className="instructor-avatar">
-					<img src="https://placehold.co/300x300?text=Avatar+Instructor" />
+					<img
+						src="/wp-content/plugins/learnpress/assets/images/no-image.png"
+						alt="Instructor avatar placeholder"
+						height={ 300 }
+						width={ 300 }
+						style={ { aspectRatio: '1 / 1', objectFit: 'cover' } }
+					></img>
 				</div>
 			</div>
 		</>

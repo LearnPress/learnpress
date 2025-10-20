@@ -1,17 +1,20 @@
 <?php
-/**
- * Class LP_Database
- *
- * @author tungnx
- * @since 3.2.7.5
- * @version 2.0.3
- */
 
+namespace LearnPress\Databases;
+
+use Exception;
 use LearnPress\Filters\FilterBase;
+use wpdb;
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Database {
+/**
+ * Class DataBase
+ *
+ * @since 4.2.9.3
+ * @version 1.0.0
+ */
+class DataBase {
 	private static $_instance;
 	public $wpdb, $tb_users;
 	public $tb_lp_courses;
@@ -68,7 +71,7 @@ class LP_Database {
 	/**
 	 * Get Instance
 	 *
-	 * @return LP_Database
+	 * @return DataBase
 	 */
 	public static function getInstance() {
 		if ( is_null( self::$_instance ) ) {
@@ -96,73 +99,6 @@ class LP_Database {
 
 	public function get_collate(): string {
 		return $this->collate;
-	}
-
-	/**
-	 * Get total Item by post type and user id
-	 *
-	 * @param LP_Post_Type_Filter $filter
-	 *
-	 * @return int
-	 * @since 3.2.8
-	 * @deprecated 4.2.9.3
-	 */
-	public function get_count_post_of_user( LP_Post_Type_Filter $filter ): int {
-		_deprecated_function( __METHOD__, '4.2.9.3' );
-		return 0;
-
-		$query_append = '';
-
-		$cache_key = _count_posts_cache_key( $filter->post_type );
-
-		// Get cache
-		$counts = wp_cache_get( $cache_key );
-		if ( false !== $counts ) {
-			return $counts;
-		}
-
-		if ( ! empty( $filter->post_status ) ) {
-			$query_append .= $this->wpdb->prepare( ' AND post_status = %s', $filter->post_status );
-		}
-
-		$query = $this->wpdb->prepare(
-			"SELECT Count(ID) FROM $this->tb_posts
-			WHERE post_type = %s
-			AND post_author = %d
-			$query_append",
-			$filter->post_type,
-			$filter->post_author
-		);
-
-		$query = apply_filters( 'learnpress/query/get_total_post_of_user', $query );
-
-		$counts = (int) $this->wpdb->get_var( $query );
-
-		// Set cache
-		wp_cache_set( $cache_key, $counts );
-
-		return $counts;
-	}
-
-	/**
-	 * Get post by post_type and slug
-	 *
-	 * @param string $post_type .
-	 * @param string $slug .
-	 *
-	 * @return int
-	 */
-	public function getPostAuthorByTypeAndSlug( string $post_type = '', string $slug = '' ): int {
-		$query = $this->wpdb->prepare(
-			"
-			SELECT post_author FROM $this->tb_posts
-			WHERE post_type = %s
-			AND post_name = %s",
-			$post_type,
-			$slug
-		);
-
-		return (int) $this->wpdb->get_var( $query );
 	}
 
 	/**
@@ -571,10 +507,7 @@ class LP_Database {
 			return 0;
 		}
 
-		$total_pages = floor( $total_rows / $limit );
-		if ( $total_rows % $limit !== 0 ) {
-			++$total_pages;
-		}
+		$total_pages = (int) ceil( $total_rows / $limit );
 
 		return (int) $total_pages;
 	}
@@ -582,7 +515,7 @@ class LP_Database {
 	/**
 	 * Get query string single row
 	 *
-	 * @param LP_Filter|FilterBase $filter
+	 * @param FilterBase $filter
 	 *
 	 * @since 4.2.5
 	 * @version 1.0.1
@@ -596,7 +529,7 @@ class LP_Database {
 	/**
 	 * Get result query
 	 *
-	 * @param LP_Filter|FilterBase $filter
+	 * @param FilterBase $filter
 	 * @param int $total_rows
 	 *
 	 * @return array|object|null|int|string
@@ -747,7 +680,7 @@ class LP_Database {
 	/**
 	 * Query update
 	 *
-	 * @param LP_Filter|FilterBase $filter
+	 * @param FilterBase $filter
 	 *
 	 * @throws Exception
 	 * @since 4.1.7
@@ -783,13 +716,13 @@ class LP_Database {
 	/**
 	 * Query delete
 	 *
-	 * @param LP_Filter|FilterBase $filter
+	 * @param FilterBase $filter
 	 * @param string $table
 	 *
-	 * @return bool|int|mysqli_result|string|null
+	 * @return bool|int|\mysqli_result|string|null
 	 * @throws Exception
 	 * @since 4.1.7
-	 * @version 1.0.2
+	 * @version 1.0.1
 	 */
 	public function delete_execute( $filter, string $table = '' ) {
 		$COLLECTION = $filter->collection;
@@ -847,7 +780,7 @@ class LP_Database {
 	 *
 	 * @return int
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.9
 	 */
 	public function insert_data( array $args ): int {
@@ -861,7 +794,7 @@ class LP_Database {
 			throw new Exception( __( 'Data must be an array!', 'learnpress' ) . ' | ' . __FUNCTION__ );
 		}
 
-		/*if ( ! $filter instanceof LP_Filter ) {
+		/*if ( ! $filter instanceof FilterBase ) {
 			throw new Exception( __( 'Invalid filter!', 'learnpress' ) . ' | ' . __FUNCTION__ );
 		}*/
 
@@ -911,7 +844,7 @@ class LP_Database {
 		$where_key  = $args['where_key'] ?? '';
 		$where_key  = sanitize_key( $where_key );
 
-		/*if ( ! $filter instanceof LP_Filter ) {
+		/*if ( ! $filter instanceof FilterBase ) {
 			throw new Exception( __( 'Invalid filter!', 'learnpress' ) . ' | ' . __FUNCTION__ );
 		}*/
 

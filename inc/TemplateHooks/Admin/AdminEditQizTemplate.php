@@ -93,6 +93,9 @@ class AdminEditQizTemplate {
 			throw new Exception( __( 'Quiz not found', 'learnpress' ) );
 		}
 
+		// Check permission
+		$quizPostModel->check_capabilities_create_item_course();
+
 		$content          = new stdClass();
 		$content->content = self::instance()->html_edit_quiz( $quizPostModel );
 

@@ -165,11 +165,7 @@ window.lpCourseFilter = {
 			const key = pair[ 0 ];
 			const value = formData.getAll( key );
 			if ( ! filterCourses.hasOwnProperty( key ) ) {
-				let value_convert = value;
-				if ( 'object' === typeof value ) {
-					value_convert = value.join( ',' );
-				}
-				filterCourses[ key ] = value_convert;
+				filterCourses[ key ] = value.join( ',' );
 			}
 		}
 

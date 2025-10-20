@@ -13,6 +13,7 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress;
+use LearnPress\Filters\FilterBase;
 use LP_Course_Cache;
 use LP_Course_DB;
 use LP_Course_Filter;
@@ -152,12 +153,12 @@ class PostModel {
 	 * If not exists, return false.
 	 * If exists, return PostModel.
 	 *
-	 * @param LP_Course_Filter $filter
+	 * @param LP_Post_Type_Filter|FilterBase $filter
 	 *
 	 * @return PostModel|false|static
 	 * @version 1.0.1
 	 */
-	public static function get_item_model_from_db( LP_Post_Type_Filter $filter ) {
+	public static function get_item_model_from_db( $filter ) {
 		$lp_post_db = LP_Post_DB::getInstance();
 		$post_model = false;
 
@@ -206,6 +207,30 @@ class PostModel {
 		}
 
 		return $this->meta_data;
+	}
+
+	/**
+	 * Check capabilities to create new post.
+	 *
+	 * @return bool
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function check_capabilities_create(): bool {
+		return true;
+	}
+
+
+
+	/**
+	 * Check capabilities to update post.
+	 *
+	 * @return bool
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function check_capabilities_update(): bool {
+		return true;
 	}
 
 	/**
@@ -271,10 +296,19 @@ class PostModel {
 
 		// Check if exists course id.
 		if ( empty( $this->ID ) ) { // Insert data.
+			if ( ! $this->check_capabilities_create() ) {
+				throw new Exception( __( 'You do not have permission to create item.', 'learnpress' ) );
+			}
+
 			$this->check_capabilities_create_item_course();
+
 			unset( $data['ID'] );
 			$post_id = wp_insert_post( $data, true );
 		} else { // Update data.
+			if ( ! $this->check_capabilities_update() ) {
+				throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+			}
+
 			$this->check_capabilities_update_item_course();
 			$post_id = wp_update_post( $data, true );
 		}
