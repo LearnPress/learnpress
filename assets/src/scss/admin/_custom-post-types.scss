@@ -104,10 +104,7 @@
 		width: 80px;
 
 		.post-author {
- 			display: flex;
-			align-items: center;
-			gap: 8px;
-			line-height: 1.1em;
+ 			display:  inline-block;
 			img {
 				width: 30px;
 				height: 30px;
