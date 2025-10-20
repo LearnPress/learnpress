@@ -135,8 +135,8 @@
   "learnpress-coming-soon-courses": {
     "name": "Coming Soon Add-On for LearnPress",
     "basename": "learnpress-coming-soon-courses/learnpress-coming-soon-courses.php",
-    "version": "4.0.7",
-    "require_lp": "4.2.8",
+    "version": "4.0.8",
+    "require_lp": "4.2.9.3",
     "description": "Coming Soon is a great way to promote your courses and make it desirable for people. You can add a lot of cool features such as text, images, countdown and description of the course that will make a lot easier for people to know all they are wishing about your brand new course!",
     "image": "https://plugins.thimpress.com/downloads/images/lp-collections.png",
     "link": "https://thimpress.com/product/coming-soon-add-on-learnpress/",
