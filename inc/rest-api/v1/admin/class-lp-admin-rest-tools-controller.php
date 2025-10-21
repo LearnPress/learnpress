@@ -570,6 +570,16 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					throw new Exception( 'User or Course is invalid', 'learnpress' );
 				}
 
+				$can_handle = apply_filters(
+					'learn-press/assign-courses-to-users/can-handle',
+					true,
+					$user_id,
+					$course_id
+				);
+				if ( ! $can_handle ) {
+					continue;
+				}
+
 				// Delete data user who already enrolled this course.
 				LP_User_Items_DB::getInstance()->delete_user_items_old( $user_id, $course_id );
 				// End
