@@ -51,7 +51,7 @@ export class CreateCourseViaAI {
 				confirmButton: 'generate-button',
 				actions: 'input-section',
 			},
-			width: '80%',
+			width: '60%',
 			showCloseButton: true,
 			didOpen: () => {
 				const popup = SweetAlert.getPopup();
