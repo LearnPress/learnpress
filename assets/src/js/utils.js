@@ -233,7 +233,8 @@ export const getDataOfForm = ( form ) => {
 		const key = pair[ 0 ];
 		const value = formData.getAll( key );
 		if ( ! dataSend.hasOwnProperty( key ) ) {
-			dataSend[ key ] = value;
+			// Convert value array to string.
+			dataSend[ key ] = value.join( ',' );
 		}
 	}
 
