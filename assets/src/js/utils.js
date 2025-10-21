@@ -271,3 +271,25 @@ export const mergeDataWithDatForm = ( elForm, dataHandle ) => {
 
 	return dataHandle;
 };
+
+/**
+ * Event trigger
+ * For each list of event handlers, listen event on document.
+ *
+ * eventName: 'click', 'change', ...
+ * eventHandlers = [ { selector: '.lp-button', callBack: function(){} } ]
+ *
+ * @param eventName
+ * @param eventHandlers
+ */
+export const eventHandlers = ( eventName, eventHandlers ) => {
+	document.addEventListener( eventName, ( e ) => {
+		const target = e.target;
+
+		eventHandlers.forEach( ( eventHandler ) => {
+			if ( target.closest( eventHandler.selector ) ) {
+				eventHandler.callBack( e, target );
+			}
+		} );
+	} );
+};
