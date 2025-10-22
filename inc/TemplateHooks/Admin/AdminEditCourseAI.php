@@ -37,11 +37,12 @@ class AdminEditCourseAI {
 			return;
 		}
 
-		$ai_course_modal_html = $this->_get_html_ai_course_modal();
+		/*$ai_course_modal_html = $this->_get_html_ai_course_modal();
 		printf(
 			'<script type="text/template" id="lp-ai-course-modal-template">%s</script>',
 			$ai_course_modal_html
-		);
+		);*/
+
 		$title_modal_html = $this->_get_html_course_title_modal();
 		printf(
 			'<script type="text/template" id="lp-ai-title-modal-template">%s</script>',
@@ -418,7 +419,7 @@ class AdminEditCourseAI {
 		return Template::combine_components( $components );
 	}
 
-	public function _get_html_ai_course_modal(): string {
+	/*public function _get_html_ai_course_modal(): string {
 
 		$components = [
 			'container_open'     => '<div class="course-builder-container">',
@@ -433,66 +434,9 @@ class AdminEditCourseAI {
 		];
 
 		return Template::combine_components( $components );
-	}
+	}*/
 
-	private function _get_html_stepper_header(): string {
-		$components = [
-			'header_open'  => '<div class="stepper-header">',
-			'step_1'       => sprintf(
-				'<div class="stepper-item active" data-step="1"><span class="step-number">1</span> <span class="step-text">%s</span></div>',
-				esc_html__( 'Course Intent', 'learnpress' )
-			),
-			'step_2'       => sprintf(
-				'<div class="stepper-item" data-step="2"><span class="step-number">2</span> <span class="step-text">%s</span></div>',
-				esc_html__( 'AI Settings', 'learnpress' )
-			),
-			'step_3'       => sprintf(
-				'<div class="stepper-item" data-step="3"><span class="step-number">3</span> <span class="step-text">%s</span></div>',
-				esc_html__( 'Course Structure', 'learnpress' )
-			),
-			'step_4'       => sprintf(
-				'<div class="stepper-item" data-step="4"><span class="step-number">4</span> <span class="step-text">%s</span></div>',
-				esc_html__( 'Generate', 'learnpress' )
-			),
-			'header_close' => '</div>',
-		];
-
-		return Template::combine_components( $components );
-	}
-
-	private function _get_html_step_1(): string {
-		$options    = $this->_get_config();
-		$components = [
-			'step_open'       => '<div id="step-1" class="step-content active">',
-			'header'          => sprintf(
-				'<div class="step-header"><h2>%s</h2><p>%s</p></div>',
-				esc_html__( 'Step 1 — Course Intent', 'learnpress' ),
-				esc_html__( 'Define the course goal and the authoring role/persona.', 'learnpress' )
-			),
-			'role_group'      => sprintf(
-				'<div class="form-group"><label for="role-persona">%s</label><input type="text" id="role-persona" value="Front-end Trainer + Instructional Designer"></div>',
-				esc_html__( 'Role / Persona (critical)', 'learnpress' )
-			),
-			'audience_group'  => sprintf(
-				'<div class="form-group"><label for="swal-audience">%s</label><select id="swal-audience" multiple>%s</select></div>',
-				esc_html__( 'Target audience', 'learnpress' ),
-				$this->build_select_options( $options['audience'] ?? [] )
-			),
-			'objective_group' => sprintf(
-				'<div class="form-group"><label for="course-objective">%s</label><textarea id="course-objective">Act as a Front-end Training Expert + Instructional Designer. Create a Basic HTML course for absolute beginners. Learners should understand HTML5 structure, semantic tags, accessibility basics, and simple SEO on-page.</textarea></div>',
-				esc_html__( 'Course objective', 'learnpress' )
-			),
-			'nav_buttons'     => sprintf(
-				'<div class="navigation-buttons"><button class="btn btn-primary next-btn">%s &rarr;</button></div>',
-				esc_html__( 'Next', 'learnpress' )
-			),
-			'step_close'      => '</div>',
-		];
-
-		return Template::combine_components( $components );
-	}
-
-	private function _get_html_step_2(): string {
+	/*private function _get_html_step_2(): string {
 		$options         = $this->_get_config();
 		$grid_components = [
 			'grid_open'     => '<div class="form-grid">',
@@ -543,9 +487,9 @@ class AdminEditCourseAI {
 		];
 
 		return Template::combine_components( $components );
-	}
+	}*/
 
-	private function _get_html_step_3(): string {
+	/*private function _get_html_step_3(): string {
 		$grid_components = [
 			'grid_open'  => '<div class="form-grid">',
 			'sections'   => sprintf(
@@ -596,7 +540,7 @@ class AdminEditCourseAI {
 		];
 
 		return Template::combine_components( $components );
-	}
+	}*/
 
 	private function _get_step_4_header(): string {
 		$components = [
@@ -684,7 +628,7 @@ class AdminEditCourseAI {
 	}
 
 
-	private function _get_html_step_4(): string {
+	/*private function _get_html_step_4(): string {
 		$layout_components = [
 			'layout_open'  => '<div class="step4-layout">',
 			'left_panel'   => $this->_get_step_4_left_panel(),
@@ -707,5 +651,5 @@ class AdminEditCourseAI {
 		];
 
 		return Template::combine_components( $components );
-	}
+	}*/
 }

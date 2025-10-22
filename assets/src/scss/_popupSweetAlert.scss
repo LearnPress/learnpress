@@ -10,6 +10,13 @@
 }
 
 .swal2-popup {
+	.content-title {
+		margin: 0 0 20px 0;
+		padding: 0;
+		text-align: center;
+		font-size: 1.5em;
+	}
+
 	.swal2-actions {
 		width: 100%;
 		padding: 0 30px;
@@ -55,5 +62,10 @@
 
 	.swal2-html-container {
 		font-size: 1em;
+	}
+
+	.lp-tom-select.ts-wrapper .ts-dropdown {
+		max-height: 200px;
+		overflow: hidden;
 	}
 }

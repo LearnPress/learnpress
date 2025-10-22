@@ -10,6 +10,7 @@ export class CreateCourseViaAI {
 	constructor() {
 		this.init();
 	}
+
 	init() {
 		lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
 			el.insertAdjacentHTML(
@@ -22,42 +23,64 @@ export class CreateCourseViaAI {
 	}
 
 	events() {
-		document.addEventListener( 'click', ( e ) => {
-			const target = e.target;
-			if ( target.classList.contains( 'lp-btn-generate-course-with-ai' ) ) {
-				this.showPopupCreateFullCourse();
-			}
-		} );
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: '.lp-btn-generate-course-with-ai',
+				callBack: this.showPopupCreateFullCourse,
+			},
+			{
+				selector: '.lp-btn-next-step',
+				callBack: this.nextStep,
+			},
+		] );
 	}
 
 	showPopupCreateFullCourse() {
 		const modalTemplate = document.querySelector(
-			'#lp-ai-course-modal-template'
+			'#lp-tmpl-create-course-ai'
 		);
 
 		if ( ! modalTemplate ) {
 			console.error( 'AI Create Full Course Modal Template not found!' );
 			return;
 		}
+
 		const modalHtml = modalTemplate.innerHTML;
 
 		SweetAlert.fire( {
-			title: lpDataAdmin.i18n.createFullCourse,
 			html: modalHtml,
-			showConfirmButton: false,
-			confirmButtonText: lpDataAdmin.i18n.generate,
-			customClass: {
-				popup: 'create-full-course-modal',
-				confirmButton: 'generate-button',
-				actions: 'input-section',
-			},
 			width: '60%',
 			showCloseButton: true,
+			showConfirmButton: false,
 			didOpen: () => {
 				const popup = SweetAlert.getPopup();
-				const steps = popup.querySelectorAll( '.step-content' );
+
+				// Initialize TomSelect elements
+				const elTomSelects = popup.querySelectorAll( '.lp-tom-select' );
+				elTomSelects.forEach( ( el ) => {
+					new TomSelect( el, {
+						plugins: {
+							dropdown_input: {},
+							remove_button: {},
+						},
+					} );
+				} );
+				// End Initialize TomSelect elements
+
+				/*const nextButtons = popup.querySelectorAll( '.lp-btn-next-step' );
+
+				nextButtons.forEach( ( button ) => {
+					button.addEventListener( 'click', () => {
+						if ( currentStep < steps.length ) {
+							currentStep++;
+							updateSteps();
+						}
+					} );
+				} );*/
+
+				return;
 				const stepperItems = popup.querySelectorAll( '.stepper-item' );
-				const nextButtons = popup.querySelectorAll( '.next-btn' );
+
 				const prevButtons = popup.querySelectorAll( '.prev-btn' );
 				const generatePromptBtn = popup.querySelector(
 					'#generate-prompt-btn'
@@ -94,15 +117,6 @@ export class CreateCourseViaAI {
 						);
 					} );
 				};
-
-				nextButtons.forEach( ( button ) => {
-					button.addEventListener( 'click', () => {
-						if ( currentStep < steps.length ) {
-							currentStep++;
-							updateSteps();
-						}
-					} );
-				} );
 
 				prevButtons.forEach( ( button ) => {
 					button.addEventListener( 'click', () => {
@@ -436,19 +450,6 @@ export class CreateCourseViaAI {
 
 				updateSteps();
 
-				const audienceSelect = new TomSelect( '#swal-audience', {
-					plugins: [ 'remove_button', 'dropdown_input' ],
-				} );
-				const toneSelect = new TomSelect( '#swal-tone', {
-					plugins: [ 'remove_button' ],
-				} );
-				const languageSelect = new TomSelect( '#swal-language', {
-					plugins: [ 'remove_button' ],
-				} );
-				const levelSelect = new TomSelect( '#swal-levels', {
-					plugins: [ 'remove_button' ],
-				} );
-
 				try {
 					const savedAudience =
 						localStorage.getItem( 'lp_ai_audience' );
@@ -477,9 +478,11 @@ export class CreateCourseViaAI {
 					);
 				}
 			},
-			preConfirm: () => {
-				return false;
-			},
 		} ).then( ( result ) => {} );
+	}
+
+	nextStep( e, target ) {
+		console.log(11111);
+		e.preventDefault();
 	}
 }
