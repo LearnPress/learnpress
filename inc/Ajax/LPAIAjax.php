@@ -10,8 +10,13 @@ use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserModel;
+use LP_Helper;
+use LP_Request;
+use LP_REST_Response;
 use LP_Settings;
 use LP_Abstract_API;
+use Throwable;
 
 /**
  * class LPAIAjax
@@ -201,34 +206,30 @@ class LPAIAjax extends AbstractAjax {
 		$this->success( $data_response, $success_text );
 	}
 
-	public function generate_full_course() {
+	/**
+	 * Generate prompt course with AI
+	 */
+	public function ai_generate_prompt_course() {
+		$response = new LP_REST_Response();
+
 		try {
-
-			$this->_check_permission();
-			$params = $_REQUEST;
-			$prompt = $params['prompt'] ?? AiModel::get_completions_prompt( $params )['prompt'];
-
-			$data_response = [ 'prompt' => $prompt ];
-
-			if ( empty( $params['prompt'] ) ) {
-				$this->success(
-					$data_response,
-					sprintf( __( 'Generate %s successfully!', 'learnpress' ), str_replace( '-', ' ', $params['type'] ) )
-				);
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+				return;
 			}
+
+			$data_str = LP_Request::get_param( 'data' );
+			$data     = LP_Helper::json_decode( $data_str, true );
+			$prompt   = AiModel::get_generate_full_course_prompt( $data );
 
 			$args = [
 				'model'             => $this->text_model_type,
 				'frequency_penalty' => floatval( $this->frequency_penalty ),
 				'presence_penalty'  => floatval( $this->presence_penalty ),
-				'n'                 => isset( $params['outputs'] ) ? intval( $params['outputs'] ) : 1,
+				'n'                 => intval( $data['outputs'] ?? 1 ),
 				'temperature'       => floatval( $this->creativity_level ),
 				'response_format'   => [ 'type' => 'json_object' ],
 			];
-
-			//          if (!empty($this->max_token)) {
-			//              $args['max_tokens'] = intval($this->max_token);
-			//          }
 
 			if ( in_array(
 				$this->text_model_type,
@@ -245,7 +246,7 @@ class LPAIAjax extends AbstractAjax {
 						'content' => $prompt,
 					],
 				];
-			} elseif ( in_array( $this->text_model_type, [ 'gpt-3.5-turbo-instruct' ] ) ) {
+			} elseif ( $this->text_model_type == 'gpt-3.5-turbo-instruct' ) {
 				$this->text_model_type_url = 'https://api.openai.com/v1/completions';
 				unset( $args['response_format'] );
 				$args['prompt'] = $prompt;
@@ -253,7 +254,7 @@ class LPAIAjax extends AbstractAjax {
 				throw new Exception( __( 'Invalid model', 'learnpress' ), 400 );
 			}
 
-			$response = wp_remote_post(
+			$responsex = wp_remote_post(
 				$this->text_model_type_url,
 				[
 					'headers' => [
@@ -265,11 +266,11 @@ class LPAIAjax extends AbstractAjax {
 				]
 			);
 
-			if ( is_wp_error( $response ) ) {
-				throw new Exception( $response->get_error_message(), 400 );
+			if ( is_wp_error( $responsex ) ) {
+				throw new Exception( $responsex->get_error_message(), 400 );
 			}
 
-			$body   = wp_remote_retrieve_body( $response );
+			$body   = wp_remote_retrieve_body( $responsex );
 			$result = json_decode( $body, true );
 
 			if ( isset( $result['error'] ) ) {
@@ -303,16 +304,18 @@ class LPAIAjax extends AbstractAjax {
 					$data_response['number_quiz']     = $total_quizzes;
 					$data_response['number_question'] = $total_questions;
 				}
+			} else {
+				throw new Exception( __( 'No content generated from AI.', 'learnpress' ), 500 );
 			}
 
-			$success_text = sprintf(
-				__( 'Generate %s successfully!', 'learnpress' ),
-				str_replace( '-', ' ', $params['type'] )
-			);
-			$this->success( $data_response, $success_text );
-		} catch ( Exception $e ) {
-			$this->error( 'Error generating course:' . $e->getMessage(), 400 );
+			$response->status  = 'success';
+			$response->message = __( 'Generate prompt successfully!', 'learnpress' );
+			$response->data    = $data_response;
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
 		}
+
+		wp_send_json( $response );
 	}
 
 	public function save_course() {

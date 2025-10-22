@@ -542,7 +542,7 @@ class AdminEditCourseAI {
 		return Template::combine_components( $components );
 	}*/
 
-	private function _get_step_4_header(): string {
+	/*private function _get_step_4_header(): string {
 		$components = [
 			'header_open'  => '<div class="step-header">',
 			'title'        => sprintf( '<h2>%s</h2>', esc_html__( 'Step 4 — Generated Course', 'learnpress' ) ),
@@ -553,9 +553,9 @@ class AdminEditCourseAI {
 			'header_close' => '</div>',
 		];
 		return Template::combine_components( $components );
-	}
+	}*/
 
-	private function _get_step_4_left_panel(): string {
+	/*private function _get_step_4_left_panel(): string {
 		$course_details_components = [
 			'title'                   => '<h3 id="lp-ai-full-course-title"></h3>',
 			'cover'                   => sprintf(
@@ -582,10 +582,10 @@ class AdminEditCourseAI {
 		];
 
 		return Template::combine_components( $components );
-	}
+	}*/
 
 
-	private function _get_step_4_right_panel(): string {
+	/*private function _get_step_4_right_panel(): string {
 		$summary_list = ' <ul class="summary-list">
             <li><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg> <span id="lp-ai-full-course-number-section"></span> Sections</li>
             <li><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg> <span id="lp-ai-full-course-number-lesson"></span> Lessons</li>
@@ -618,14 +618,14 @@ class AdminEditCourseAI {
 			'panel_close' => '</div>',
 		];
 		return Template::combine_components( $components );
-	}
+	}*/
 
-	private function _get_step_4_nav_buttons(): string {
+	/*private function _get_step_4_nav_buttons(): string {
 		return sprintf(
 			'<div class="navigation-buttons"><button class="btn btn-secondary prev-btn">&larr; %s</button></div>',
 			esc_html__( 'Previous', 'learnpress' )
 		);
-	}
+	}*/
 
 
 	/*private function _get_html_step_4(): string {

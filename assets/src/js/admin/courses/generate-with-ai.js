@@ -4,7 +4,26 @@
 
 import * as lpUtils from './../../utils.js';
 import SweetAlert from 'sweetalert2';
-import TomSelect from 'tom-select';
+import Toastify from 'toastify-js';
+import 'toastify-js/src/toastify.css';
+
+const argsToastify = {
+	text: '',
+	gravity: lpDataAdmin.toast.gravity, // `top` or `bottom`
+	position: lpDataAdmin.toast.position, // `left`, `center` or `right`
+	className: `${ lpDataAdmin.toast.classPrefix }`,
+	close: lpDataAdmin.toast.close == 1,
+	stopOnFocus: lpDataAdmin.toast.stopOnFocus == 1,
+	duration: lpDataAdmin.toast.duration,
+};
+const showToast = ( message, status = 'success' ) => {
+	const toastify = new Toastify( {
+		...argsToastify,
+		text: message,
+		className: `${ lpDataAdmin.toast.classPrefix } ${ status }`,
+	} );
+	toastify.showToast();
+};
 
 export class CreateCourseViaAI {
 	constructor() {
@@ -29,8 +48,12 @@ export class CreateCourseViaAI {
 				callBack: this.showPopupCreateFullCourse,
 			},
 			{
-				selector: '.lp-btn-next-step',
-				callBack: this.nextStep,
+				selector: '.lp-btn-step',
+				callBack: this.showStep,
+			},
+			{
+				selector: '.lp-btn-generate-prompt',
+				callBack: this.generatePrompt,
 			},
 		] );
 	}
@@ -45,27 +68,16 @@ export class CreateCourseViaAI {
 			return;
 		}
 
-		const modalHtml = modalTemplate.innerHTML;
-
 		SweetAlert.fire( {
-			html: modalHtml,
+			html: modalTemplate.innerHTML,
 			width: '60%',
 			showCloseButton: true,
 			showConfirmButton: false,
 			didOpen: () => {
 				const popup = SweetAlert.getPopup();
-
-				// Initialize TomSelect elements
-				const elTomSelects = popup.querySelectorAll( '.lp-tom-select' );
-				elTomSelects.forEach( ( el ) => {
-					new TomSelect( el, {
-						plugins: {
-							dropdown_input: {},
-							remove_button: {},
-						},
-					} );
-				} );
-				// End Initialize TomSelect elements
+				const elCreateCourseWrap = popup.querySelector( '.lp-create-course-ai-wrap' );
+				// Click to show tomSelect style
+				elCreateCourseWrap.click();
 
 				/*const nextButtons = popup.querySelectorAll( '.lp-btn-next-step' );
 
@@ -478,11 +490,86 @@ export class CreateCourseViaAI {
 					);
 				}
 			},
-		} ).then( ( result ) => {} );
+		} ).then( ( result ) => {
+			if ( result.isDismissed ) {}
+		} );
 	}
 
-	nextStep( e, target ) {
-		console.log(11111);
+	showStep( e, target ) {
 		e.preventDefault();
+
+		const elBtnActions = target.closest( '.button-actions' );
+		const elCreateCourseAIWrap = elBtnActions.closest( '.lp-create-course-ai-wrap' );
+		let step = parseInt( elBtnActions.dataset.step );
+		const stepMax = parseInt( elBtnActions.dataset.stepMax );
+		const elBtnNext = elBtnActions.querySelector( '.lp-btn-step[data-action=next]' );
+		const elBtnPrev = elBtnActions.querySelector( '.lp-btn-step[data-action=prev]' );
+		const elBtnGeneratePrompt = elBtnActions.querySelector( '.lp-btn-generate-prompt' );
+
+		const stepAction = target.dataset.action;
+		if ( stepAction === 'next' ) {
+			step++;
+		} else if ( stepAction === 'prev' ) {
+			step--;
+		}
+
+		elBtnActions.dataset.step = step;
+		const elForm = target.closest( 'form' );
+		const elContentStep = elForm.querySelector( `.step-content[data-step="${ step }"]` );
+		const elItemStep = elCreateCourseAIWrap.querySelector( `.step-item[data-step="${ step }"]` );
+		elForm.querySelectorAll( '.step-content' ).forEach( ( el ) => el.classList.remove( 'active' ) );
+		elContentStep.classList.add( 'active' );
+		elCreateCourseAIWrap.querySelectorAll( '.step-item' ).forEach( ( el ) => el.classList.remove( 'active' ) );
+		elItemStep.classList.add( 'active' );
+
+		if ( step === 1 ) {
+			lpUtils.lpShowHideEl( elBtnPrev, 0 );
+		} else {
+			lpUtils.lpShowHideEl( elBtnPrev, 1 );
+		}
+
+		if ( step === stepMax || step > stepMax ) {
+			lpUtils.lpShowHideEl( elBtnNext, 0 );
+		} else {
+			lpUtils.lpShowHideEl( elBtnNext, 1 );
+		}
+
+		if ( step === 3 ) {
+			lpUtils.lpShowHideEl( elBtnNext, 0 );
+			lpUtils.lpShowHideEl( elBtnGeneratePrompt, 1 );
+		} else {
+			lpUtils.lpShowHideEl( elBtnGeneratePrompt, 0 );
+		}
+	}
+
+	generatePrompt( e, target ) {
+		e.preventDefault();
+		lpUtils.lpSetLoadingEl( target, true );
+
+		// Get dataSend
+		const form = target.closest( 'form' );
+		const dataSend = lpUtils.getDataOfForm( form );
+		dataSend.action = target.dataset.action;
+
+		// Ajax to generate prompt
+		const callBack = {
+			success: ( response ) => {
+				const { message, status, data } = response;
+
+				showToast( message, status );
+
+                console.log(data);
+
+				if ( status === 'success' ) {
+
+				}
+			},
+			error: ( error ) => {
+				showToast( error, 'error' );
+			},
+			completed: () => {},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 }

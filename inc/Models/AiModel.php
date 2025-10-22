@@ -40,22 +40,22 @@ class AiModel {
 		];
 	}
 
-	public static function get_generate_full_course_prompt( array $params ): array {
+	public static function get_generate_full_course_prompt( array $params ): string {
 		// Course Intent
-		$role_persona     = trim( $params['role_persona'] ?? '' ) ?: 'Expert Instructional Designer';
-		$target_audience  = trim( implode( ',', $params['target_audience'] ) ?? '' ) ?: 'Beginners';
+		$role_persona     = trim( $params['role_persona'] ?? 'Expert Instructional Designer' );
+		$target_audience  = $params['target_audience']?? 'Beginners';
 		$course_objective = trim( $params['course_objective'] ?? '' );
 
 		// AI Settings
-		$language        = trim( $params['language'] ?? '' ) ?: 'English';
-		$tone            = trim( implode( ',', $params['tone'] ) ?? '' ) ?: 'Informative and encouraging';
+		$language        = trim( $params['language'] ?? 'English' );
+		$tone            = trim( $params['tone'] ?? 'Informative and encouraging' );
 		$lesson_length   = max( 50, (int) ( $params['lesson_length'] ?? 300 ) );
-		$reading_level   = trim( $params['reading_level'] ?? '' ) ?: 'High school';
+		$reading_level   = trim( $params['reading_level'] ?? 'High school' );
 		$seo_emphasis    = trim( $params['seo_emphasis'] ?? '' );
 		$target_keywords = trim( $params['target_keywords'] ?? '' );
 
 		// Course Structure
-		$sections            = max( 1, (int) ( $params['sections'] ?? 3 ) );
+		$sections            = max( 1, (int) ( $params['section_number'] ?? 3 ) );
 		$lessons_per_section = max( 1, (int) ( $params['lessons_per_section'] ?? 5 ) );
 		$quizzes_per_section = max( 0, (int) ( $params['quizzes_per_section'] ?? 1 ) );
 		$questions_per_quiz  = max( 1, (int) ( $params['questions_per_quiz'] ?? 5 ) );
@@ -131,22 +131,22 @@ JSON;
 			        - Do not include any introductory text, explanations, or markdown code fences like ```json.
 			        - The JSON structure must strictly follow this example:
 			        <json_example>
-			{
-			  "course_title": "Compelling Course Title Here",
-			  "course_description": "A brief summary of the course.",
-			  "sections": [
-			    {
-			      "section_title": "Section 1 Title Here",
-			      "section_description": "Section 1 description Here",
-			      "lessons": [
-			        {
-			          "lesson_title": "Lesson 1.1 Title Here",
-			          "lesson_content": "Detailed content for lesson 1.1..."
-			        }
-			      ]%s
-			    }
-			  ]
-			}
+						{
+						  "course_title": "Compelling Course Title Here",
+						  "course_description": "A brief summary of the course.",
+						  "sections": [
+						    {
+						      "section_title": "Section 1 Title Here",
+						      "section_description": "Section 1 description Here",
+						      "lessons": [
+						        {
+						          "lesson_title": "Lesson 1.1 Title Here",
+						          "lesson_content": "Detailed content for lesson 1.1..."
+						        }
+						      ]%s
+						    }
+						  ]
+						}
 			        </json_example>
 			    </output_format>
 			</prompt>
@@ -166,9 +166,7 @@ JSON;
 			$quiz_json_example
 		);
 
-		return [
-			'prompt' => $prompt,
-		];
+		return $prompt;
 	}
 
 	public static function get_lesson_title_prompt( $params ) {

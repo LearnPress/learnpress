@@ -451,9 +451,17 @@ $white: #FFFFFF;
 		border: 1px solid;
 		background-color: $input-bg;
 		border-radius: 12px;
-		padding: 30px 40px;
+		padding: 20px;
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 		text-align: left;
+		max-height: 600px;
+		overflow: auto;
+
+		.step-title {
+			font-size: 1.1em;
+			font-weight: 700;
+			margin-bottom: 10px;
+		}
 
 		.step-content {
 			display: none;
@@ -542,14 +550,12 @@ $white: #FFFFFF;
 			color: $text-dark;
 		}
 
-		.navigation-buttons {
+		.button-actions {
 			display: flex;
 			justify-content: flex-end;
 			gap: 12px;
-			margin-top: 20px;
-			padding-top: 20px;
-			border-top: 1px solid #f0f0f0;
 		}
+
 		.generate-prompt{
 			display: flex;
 			justify-items: center;

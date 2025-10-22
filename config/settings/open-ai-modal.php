@@ -139,7 +139,7 @@ return apply_filters(
 			'Minimalism'    => esc_html__( 'Minimalism', 'learnpress' ),
 			'Fauvism'       => esc_html__( 'Fauvism', 'learnpress' ),
 		],
-		'levels'               => [
+		'reading_level'        => [
 			'Introductory' => esc_html__( 'Introductory', 'learnpress' ),
 			'Foundational' => esc_html__( 'Foundational', 'learnpress' ),
 			'Intermediate' => esc_html__( 'Intermediate', 'learnpress' ),
