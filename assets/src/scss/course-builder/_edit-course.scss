@@ -191,7 +191,7 @@
 	}
 
 	.cb-featured-image-placeholder {
-		width: 200px;
+		width: 300px;
 		height: 200px;
 		display: flex;
 		flex-direction: column;
@@ -324,6 +324,38 @@
 
 	div.mce-statusbar {
 		border-top: none;
+	}
+
+	.btn-add-new {
+		font-size: 18px;
+		font-weight: 600;
+		padding: 15px 0;
+		cursor: pointer;
+	}
+
+	.cb-course-edit-terms__form-add-category,
+	.cb-course-edit-terms__form-add-term {
+		display: flex;
+		gap: 10px;
+	}
+
+	.cb-course-edit-category__input,
+	.cb-course-edit-terms__input {
+		width: 100%;
+		padding: 10px 12px;
+		font-size: 14px;
+		border: 1px solid #ddd;
+		border-radius: 6px;
+		outline: none;
+	}
+
+	.cb-course-edit-category__btn-save,
+	.cb-course-edit-terms__btn-save {
+		background: #1e1e1e;
+		color: white;
+		border-radius: 5px;
+		padding: 5px 20px;
+		border: 0;
 	}
 
 	@media ( max-width: 768px ) {
