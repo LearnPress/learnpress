@@ -102,10 +102,21 @@
 		margin-bottom: 12px;
 	}
 
-	.cb-course-edit-categories__checkbox {
+	.cb-course-edit-terms-categories-wrapper {
 		display: flex;
-		align-items: center;
-		margin-bottom: 8px;
+		gap: 60px;
+	}
+
+	.cb-course-edit-terms__wrapper,
+	.cb-course-edit-categories__wrapper {
+		flex: 1;
+	}
+
+	.cb-course-edit-terms__checkbox-wrapper,
+	.cb-course-edit-categories__checkbox-wrapper {
+		display: flex;
+		gap: 10px 40px;
+		flex-wrap: wrap;
 	}
 
 	.cb-course-edit-categories__checkbox input[type='checkbox'] {
@@ -250,7 +261,7 @@
 		background: #fff;
 		cursor: pointer;
 		position: relative;
-		margin-right: 10px;
+		margin: 0 10px 0 0;
 		transition: all 0.2s ease;
 		flex-shrink: 0;
 	}
@@ -299,7 +310,7 @@
 	.cb-course-edit-terms__checkbox {
 		display: flex;
 		align-items: center;
-		margin-bottom: 12px;
+		margin-bottom: 0;
 		padding: 4px 0;
 	}
 
@@ -329,8 +340,11 @@
 	.btn-add-new {
 		font-size: 18px;
 		font-weight: 600;
-		padding: 15px 0;
+		margin-top: 15px;
+		padding: 5px 0;
 		cursor: pointer;
+		border: none;
+		background: none;
 	}
 
 	.cb-course-edit-terms__form-add-category,
