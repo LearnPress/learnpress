@@ -5,8 +5,6 @@ namespace LearnPress\TemplateHooks\Admin;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-use LP_Meta_Box_Select_Field;
-use LP_Settings;
 
 /**
  * Class AdminEditCourseAI
@@ -57,7 +55,7 @@ class AdminCreateCourseAITemplate {
 				'<div class="button-actions" data-step="1" data-step-max="4">
 					<button class="btn btn-secondary lp-btn-step lp-hidden" data-action="prev" type="button">&larr; %s</button>
 					<button class="btn btn-primary lp-btn-step" data-action="next" type="button">%s &rarr;</button>
-					<button class="lp-button btn-primary lp-btn-generate-prompt lp-hidden" data-action="ai_generate_prompt_course" type="button">%s</button>
+					<button class="lp-button btn-primary lp-btn-generate-prompt lp-hidden" data-action="openai_generate_prompt_course" type="button">%s</button>
 					<button class="lp-button btn-primary lp-btn-create-course lp-hidden" type="button">%s</button>
 				</div>',
 				esc_html__( 'Previous', 'learnpress' ),
@@ -233,56 +231,56 @@ class AdminCreateCourseAITemplate {
 			'sections-number'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="number" name="section_number" value="2" max="3">
+					<input type="number" name="section_number" value="2" min="0">
 				</div>',
 				esc_html__( 'Sections number', 'learnpress' )
 			),
 			'sections-title-length' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="number" name="section_title_length" value="2" max="3">
+					<input type="number" name="section_title_length" value="2" min="0">
 				</div>',
 				esc_html__( 'Each section title length', 'learnpress' )
 			),
 			'sections-des-length'   => sprintf(
 				'<div class="form-group">
 					<labe>%s</labe>
-					<input type="number" name="section_description_length" value="2" max="3">
+					<input type="number" name="section_description_length" value="2" min="0">
 				</div>',
 				esc_html__( 'Each section description length', 'learnpress' )
 			),
 			'lesson-number'         => sprintf(
 				'<div class="form-group">
 					<label for="lessons-per-section">%s</label>
-					<input type="number" name="lessons_per_section" value="2" max="5">
+					<input type="number" name="lessons_per_section" value="2" min="0">
 				</div>',
 				esc_html__( 'Lessons per Section', 'learnpress' )
 			),
 			'lesson-title-length'   => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="number" name="lessons_title_length" value="2" max="5">
+					<input type="number" name="lessons_title_length" value="2" min="0">
 				</div>',
 				esc_html__( 'Lessons per Section', 'learnpress' )
 			),
 			'lesson-des-length'     => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="number" name="lessons_description_length" value="2" max="5">
+					<input type="number" name="lessons_description_length" value="2" min="0">
 				</div>',
 				esc_html__( 'Lessons per Section', 'learnpress' )
 			),
 			'quizzes'               => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="number" name="quizzes_per_section" value="2" max="5">
+					<input type="number" name="quizzes_per_section" value="2" min="0">
 				</div>',
 				esc_html__( 'Quizzes per Section', 'learnpress' )
 			),
 			'questions'             => sprintf(
 				'<div class="form-group">
 					<label for="questions-per-quiz">%s</label>
-				<input type="number" name="questions_per_quiz" value="2" max="10"></div>',
+				<input type="number" name="questions_per_quiz" value="2" min="0"></div>',
 				esc_html__( 'Questions per Quiz', 'learnpress' )
 			),
 			'grid-end'              => '</div>',

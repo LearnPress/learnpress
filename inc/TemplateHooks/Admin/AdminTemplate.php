@@ -148,7 +148,8 @@ class AdminTemplate {
 		$name          = $args['name'] ?? '';
 		$class_name    = $args['class_name'] ?? '';
 		$default_value = $args['default_value'] ?? '';
-		$multiple      = $args['multiple'] ? 'multiple' : '';
+		$multiple      = $args['multiple'] ?? false;
+		$multiple      = $multiple ? 'multiple' : '';
 		foreach ( $options as $key => $value ) {
 			if ( is_array( $default_value ) ) {
 				$selected = in_array( $key, $default_value, true ) ? 'selected' : '';

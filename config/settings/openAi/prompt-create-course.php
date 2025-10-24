@@ -1,0 +1,118 @@
+<?php
+/**
+ * Prompt to create a course
+ */
+if ( ! isset( $params ) ) {
+	return;
+}
+
+// Course Intent
+$role_persona     = trim( $params['role_persona'] ?? '' );
+$target_audience  = $params['target_audience'] ?? 'Beginners';
+$course_objective = trim( $params['course_objective'] ?? '' );
+
+// AI Settings
+$language        = trim( $params['language'] ?? 'English' );
+$tone            = trim( $params['tone'] ?? 'Informative and encouraging' );
+$lesson_length   = max( 50, (int) ( $params['lesson_length'] ?? 300 ) );
+$reading_level   = trim( $params['reading_level'] ?? 'High school' );
+$seo_emphasis    = trim( $params['seo_emphasis'] ?? '' );
+$target_keywords = trim( $params['target_keywords'] ?? '' );
+
+// Course Structure
+$sections            = max( 1, (int) ( $params['section_number'] ?? 3 ) );
+$lessons_per_section = max( 1, (int) ( $params['lessons_per_section'] ?? 5 ) );
+$quizzes_per_section = max( 0, (int) ( $params['quizzes_per_section'] ?? 1 ) );
+$questions_per_quiz  = max( 1, (int) ( $params['questions_per_quiz'] ?? 5 ) );
+
+$quiz_structure_requirements = '';
+$quiz_json_example           = '';
+if ( $quizzes_per_section > 0 ) {
+	$quiz_instructions = <<<XML
+        <quiz_requirements>
+            - Each section MUST contain exactly **{$quizzes_per_section}** quiz object(s) within a "quizzes" array.
+            - Each quiz MUST have a relevant "quiz_title" and "quiz_description".
+            - Each quiz MUST contain exactly **{$questions_per_quiz}** question object(s) in a "questions" array.
+            - Each question must be multiple-choice, testing concepts from the lessons in THAT SAME section.
+            - Each question object MUST contain: "question_title", "options" (an array of 4 strings), and "correct_answer" (a string matching one of the options).
+        </quiz_requirements>
+XML;
+	$quiz_json_example = ',' . <<<JSON
+        "quizzes": [
+          {
+            "quiz_title": "Quiz Title Here",
+            "quiz_description": "Brief description of the quiz...",
+            "questions": [
+              {
+                "question_title": "Question title here...",
+                "options": ["Option A", "Option B", "Correct Option", "Option D"],
+                "correct_answer": "Correct Option"
+              }
+            ]
+          }
+        ]
+JSON;
+}
+
+return <<<XML
+<prompt>
+    <role_definition>
+        You are an AI assistant specialized in instructional design and content creation. Your persona for this task is: **$role_persona**.
+    </role_definition>
+
+    <course_context>
+        <objective>
+            The primary goal of this course is: $course_objective
+        </objective>
+        <audience>
+            The target audience is: $target_audience
+        </audience>
+        <content_parameters>
+            <language>$language</language>
+            <tone>$tone</tone>
+            <lesson_length_words>Approximately $lesson_length words per lesson</lesson_length_words>
+            <reading_level>$reading_level</reading_level>
+        </content_parameters>
+        <seo_parameters>
+            <emphasis>$seo_emphasis</emphasis>
+            <keywords>$target_keywords</keywords>
+        </seo_parameters>
+    </course_context>
+
+    <task_instructions>
+        Your main task is to generate a complete, well-structured, and engaging online course based on all the provided context.
+
+        <structure_requirements>
+            - The course MUST have a compelling "course_title" and a concise "course_description".
+            - The course MUST be divided into exactly **$sections** section(s).
+            - Each section MUST contain a relevant "section_title" and exactly **$lessons_per_section** lesson(s).
+            - Each lesson MUST have a "lesson_title" and detailed "lesson_description".
+        </structure_requirements>
+        $quiz_structure_requirements
+    </task_instructions>
+
+    <output_format>
+        - You MUST respond with ONLY a single, valid JSON object.
+        - Do not include any introductory text, explanations, or markdown code fences like ```json.
+        - The JSON structure must strictly follow this example:
+        <json_example>
+			{
+			  "course_title": "Compelling Course Title Here",
+			  "course_description": "A brief summary of the course.",
+			  "sections": [
+			    {
+			      "section_title": "Section 1 Title Here",
+			      "section_description": "Section 1 description Here",
+			      "lessons": [
+			        {
+			          "lesson_title": "Lesson 1.1 Title Here",
+			          "lesson_description": "Detailed content for lesson 1.1..."
+			        }
+			      ]$quiz_json_example
+			    }
+			  ]
+			}
+        </json_example>
+    </output_format>
+</prompt>
+XML;

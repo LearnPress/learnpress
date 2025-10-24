@@ -558,16 +558,17 @@ export class CreateCourseViaAI {
 
 				showToast( message, status );
 
-                console.log(data);
-
 				if ( status === 'success' ) {
-
+					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
+					elBtnNext.click();
 				}
 			},
 			error: ( error ) => {
 				showToast( error, 'error' );
 			},
-			completed: () => {},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( target, false );
+			},
 		};
 
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
