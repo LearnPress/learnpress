@@ -165,8 +165,8 @@
   "learnpress-content-drip": {
     "name": "Content Drip add-on for LearnPress",
     "basename": "learnpress-content-drip/learnpress-content-drip.php",
-    "version": "4.0.7",
-    "require_lp": "4.2.7",
+    "version": "4.0.8",
+    "require_lp": "4.2.9.4",
     "description": "Restrict the access of students to each lesson by progress, or time. Allows you to manage course's opening time.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-content-drip.png",
     "link": "https://thimpress.com/product/content-drip-add-on-for-learnpress/",
