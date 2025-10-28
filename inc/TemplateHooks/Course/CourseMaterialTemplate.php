@@ -53,14 +53,6 @@ class CourseMaterialTemplate {
 	 * @throws Exception
 	 */
 	public function sections( array $data = array() ) {
-		$html_wrapper = apply_filters(
-			'learn-press/course-material/sections/wrapper',
-			array(
-				'<div class="lp-list-material">' => '</div>',
-			),
-			$data
-		);
-
 		$item    = LP_Global::course_item();
 		$item_id = 0;
 		if ( ! $item && get_post_type( get_the_ID() ) === LP_COURSE_CPT ) {
@@ -96,9 +88,9 @@ class CourseMaterialTemplate {
 		);
 		$content  = TemplateAJAX::load_content_via_ajax( $args, $callback );
 		$section  = array(
-			'wrap'     => '<div class="lp-list-material"><div class="lp-material-skeleton">',
+			'wrap'     => '<div class="lp-material-skeleton">',
 			'content'  => $content,
-			'wrap_end' => '</div></div>',
+			'wrap_end' => '</div>',
 		);
 		echo Template::combine_components( $section );
 	}
@@ -162,6 +154,7 @@ class CourseMaterialTemplate {
 				}
 				if ( $args['paged'] === 1 ) {
 					$sections         = array(
+						'wrap'           => '<div class="lp-list-material">',
 						'table_wrap'     => '<table class="course-material-table" >',
 						'table_header'   => self::table_header(),
 						'table_body'     => '<tbody>',
@@ -169,6 +162,7 @@ class CourseMaterialTemplate {
 						'table_body_end' => '</tbody>',
 						'table_wrap_end' => '</table>',
 						'loadmore_btn'   => self::html_load_more_btn( $args ),
+						'wrap_end'       => '</div>',
 					);
 					$content->content = Template::combine_components( $sections );
 				} else {
