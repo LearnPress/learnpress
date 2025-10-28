@@ -210,8 +210,8 @@
   "learnpress-gradebook": {
     "name": "Gradebook Add-On for LearnPress",
     "basename": "learnpress-gradebook/learnpress-gradebook.php",
-    "version": "4.0.7",
-    "require_lp": "4.2.6.5",
+    "version": "4.0.8",
+    "require_lp": "4.2.9.3",
     "description": "Track process and result of students in each LMS course. Allow to export the gradebook to CSV.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-gradebook.png",
     "link": "https://thimpress.com/product/gradebook-add-on-for-learnpress/",
