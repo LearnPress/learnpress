@@ -30,6 +30,7 @@ use LearnPress\Ajax\SendEmailAjax;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
+use LearnPress\Shortcodes\CourseButtonShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
@@ -456,6 +457,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			SingleInstructorShortcode::instance();
 			ListInstructorsShortcode::instance();
 			CourseMaterialShortcode::instance();
+			CourseButtonShortcode::instance();
 			FilterCourseShortcode::instance();
 			//ListCourseRecentShortcode::instance();
 			include_once 'inc/class-lp-shortcodes.php';
