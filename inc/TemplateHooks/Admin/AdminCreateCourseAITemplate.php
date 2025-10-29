@@ -62,7 +62,10 @@ class AdminCreateCourseAITemplate {
 					<button class="lp-button btn-primary lp-btn-call-open-ai lp-hidden"
 						data-send="%s" type="button">%s
 					</button>
-					<button class="lp-button btn-primary lp-btn-create-course lp-hidden" type="button">%s</button>
+					<button class="lp-button btn-primary lp-btn-create-course lp-hidden"
+					 	data-send="%s"
+						type="button">%s
+					</button>
 				</div>',
 				esc_html__( 'Previous', 'learnpress' ),
 				esc_html__( 'Next', 'learnpress' ),
@@ -80,6 +83,12 @@ class AdminCreateCourseAITemplate {
 					]
 				),
 				esc_html__( 'Generate Data Course', 'learnpress' ),
+				Template::convert_data_to_json(
+					[
+						'action' => 'openai_create_course',
+						'id_url' => 'openai_create_course',
+					]
+				),
 				esc_html__( 'Create Course', 'learnpress' ),
 			),
 			'form-end'                 => '</form>',

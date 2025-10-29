@@ -12,14 +12,10 @@
 namespace LearnPress\Models;
 
 use Exception;
-use LearnPress;
-use LP_Course_Cache;
+use LearnPress\Databases\CourseSectionDB;
 use LP_Course_Filter;
-use LP_Datetime;
 
-use Throwable;
-use WP_Post;
-use WP_Term;
+use LP_Helper;
 
 class CoursePostModel extends PostModel {
 	/**
@@ -66,33 +62,6 @@ class CoursePostModel extends PostModel {
 	const META_KEY_SAMPLE_DATA              = '_lp_sample_data';
 
 	/**
-	 * Get the price of course.
-	 *
-	 * @return float
-	 */
-	public function get_price(): float {
-		$key_cache = "{$this->ID}/price";
-		$price     = LP_Course_Cache::cache_load_first( 'get', $key_cache );
-
-		if ( false === $price ) {
-			if ( $this->has_sale_price() ) {
-				$price = $this->get_sale_price();
-			} else {
-				$price = $this->get_regular_price();
-			}
-
-			// Save price only on page Single Course
-			/*if ( LP_PAGE_SINGLE_COURSE === LP_Page_Controller::page_current() ) {
-				update_post_meta( $this->get_id(), '_lp_price', $price );
-			}*/
-
-			LP_Course_Cache::cache_load_first( 'set', $key_cache, $price );
-		}
-
-		return apply_filters( 'learnPress/course/price', (float) $price, $this->get_id() );
-	}
-
-	/**
 	 * Get the regular price of course.
 	 *
 	 * @return float
@@ -126,46 +95,6 @@ class CoursePostModel extends PostModel {
 	}
 
 	/**
-	 * Check course has 'sale price'
-	 *
-	 * @return bool
-	 */
-	public function has_sale_price(): bool {
-		$has_sale_price = false;
-		$regular_price  = $this->get_regular_price();
-		$sale_price     = $this->get_sale_price();
-		$start_date     = $this->get_meta_value_by_key( self::META_KEY_SALE_START );
-		$end_date       = $this->get_meta_value_by_key( self::META_KEY_SALE_END );
-
-		if ( $regular_price > $sale_price && is_float( $sale_price ) ) {
-			$has_sale_price = true;
-		}
-
-		// Check in days sale
-		if ( $has_sale_price && ! empty( $start_date ) && ! empty( $end_date ) ) {
-			$nowObj = new LP_Datetime();
-			// Compare via timezone WP
-			$nowStr = $nowObj->toSql( true );
-			$now    = strtotime( $nowStr );
-			$end    = strtotime( $end_date );
-			$start  = strtotime( $start_date );
-
-			$has_sale_price = $now >= $start && $now <= $end;
-		}
-
-		return apply_filters( 'learnPress/course/has-sale-price', $has_sale_price, $this );
-	}
-
-	/**
-	 * Check if a course is Free
-	 *
-	 * @return bool
-	 */
-	public function is_free(): bool {
-		return $this->get_price() == 0;
-	}
-
-	/**
 	 * Get post course by ID
 	 *
 	 * @param int $post_id
@@ -178,6 +107,78 @@ class CoursePostModel extends PostModel {
 		$filter_post->ID = $post_id;
 
 		return self::get_item_model_from_db( $filter_post );
+	}
+
+	/**
+	 * Add section to course
+	 *
+	 * @throws Exception
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public function add_section( array $data ): CourseSectionModel {
+		$course_id    = $this->get_id();
+		$section_name = trim( $data['section_name'] ?? '' );
+		if ( empty( $section_name ) ) {
+			throw new Exception( __( 'Section title is required', 'learnpress' ) );
+		}
+
+		$section_description = LP_Helper::sanitize_params_submitted( $data['section_description'] ?? '', 'html' );
+
+		// Get max section order
+		$max_order = CourseSectionDB::getInstance()->get_last_number_order( $course_id );
+
+		$sectionNew                      = new CourseSectionModel();
+		$sectionNew->section_name        = $section_name;
+		$sectionNew->section_description = $section_description;
+		$sectionNew->section_course_id   = $course_id;
+		$sectionNew->section_order       = $max_order + 1;
+		$sectionNew->save();
+
+		return $sectionNew;
+	}
+
+	/**
+	 * Update section
+	 *
+	 * @throws Exception
+	 * @since  4.3.0
+	 * @version 1.0.0
+	 */
+	public static function update_section( CourseSectionModel $courseSectionModel, array $data ) {
+		foreach ( $data as $key => $value ) {
+			if ( $key !== 'section_id' && property_exists( $courseSectionModel, $key ) ) {
+				$courseSectionModel->{$key} = $value;
+			}
+		}
+
+		$courseSectionModel->save();
+	}
+
+	/**
+	 * Update sections position
+	 * new_position => list of section id by order
+	 *
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.3.0
+	 */
+	public function update_sections_position( array $data ) {
+		$new_position = $data['new_position'] ?? [];
+		if ( ! is_array( $new_position ) ) {
+			throw new Exception( __( 'Invalid section position', 'learnpress' ) );
+		}
+
+		$course_id   = $this->get_id();
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		CourseSectionDB::getInstance()->update_sections_position( $new_position, $course_id );
+
+		$courseModel->sections_items = null;
+		$courseModel->save();
 	}
 
 	public function check_capabilities_create(): bool {
