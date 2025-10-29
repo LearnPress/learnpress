@@ -740,6 +740,12 @@ $white: #FFFFFF;
 			}
 		}
 	}
+
+	.lp-ai-course-data-preview-wrap {
+		max-height: 400px;
+		overflow-y: auto;
+		margin-bottom: 20px;
+	}
 }
 
 .fui-loading-spinner-3 {

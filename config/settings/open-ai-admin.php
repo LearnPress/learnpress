@@ -51,8 +51,10 @@ return apply_filters(
 					'default' => 'chatgpt-4o-latest',
 					'type'    => 'select',
 					'options' => array(
-						'chatgpt-4o-latest'      => esc_html__( 'ChatGPT 4o-Latest ', 'learnpress' ),
-						'gpt-4o'                 => esc_html__( 'GPT 4o ', 'learnpress' ),
+						'gpt-5'                  => esc_html__( 'ChatGPT 5', 'learnpress' ),
+						'gpt-4.1'                => esc_html__( 'ChatGPT 4.1', 'learnpress' ),
+						'chatgpt-4o-latest'      => esc_html__( 'ChatGPT 4o-Latest', 'learnpress' ),
+						'gpt-4o'                 => esc_html__( 'GPT 4o', 'learnpress' ),
 						'gpt-4o-mini'            => esc_html__( 'GPT 4o Mini', 'learnpress' ),
 						'gpt-4'                  => esc_html__( 'GPT 4', 'learnpress' ),
 						'gpt-3.5-turbo'          => esc_html__( 'GPT 3.5 Turbo', 'learnpress' ),

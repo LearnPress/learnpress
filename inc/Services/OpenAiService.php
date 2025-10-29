@@ -96,8 +96,12 @@ class OpenAiService {
 		}
 
 		$body = wp_remote_retrieve_body( $response );
+		$data = LP_Helper::json_decode( $body, true );
+		if ( isset( $result['error'] ) ) {
+			throw new Exception( $result['error']['message'] );
+		}
 
-		return LP_Helper::json_decode( $body, true );
+		return $this->detected_data( $data );
 	}
 
 	/**
@@ -157,76 +161,36 @@ class OpenAiService {
 			'model'             => $this->text_model_type,
 			'temperature'       => $this->creativity_level,
 			'max_output_tokens' => $this->max_token,
-			//'n'                 => $args['outputs'] ?? 1,
 			'input'             => $params['prompt'] ?? '',
 		];
 	}
 
 	/**
-	 * Send request for chat completion
-	 *
-	 * @docs https://platform.openai.com/docs/api-reference/chat/create
+	 * Detect data from response
 	 *
 	 * @throws Exception
 	 */
-	public function send_request_chat_completion( $args ) {
-		$args_default = [
-			'model'             => $this->text_model_type,
-			'frequency_penalty' => $this->frequency_penalty,
-			'presence_penalty'  => $this->presence_penalty,
-			'n'                 => $args['outputs'] ?? 1,
-			'temperature'       => $this->creativity_level,
-			'response_format'   => [ 'type' => 'json_object' ],
-		];
+	public function detected_data( array $data ): array {
+		$data['structure_data'] = [];
 
-		$args   = array_merge( $args_default, $args );
-		$prompt = $args['prompt'] ?? '';
-
-		unset( $args['prompt'] );
-
-		$url = $this->urlChartCompletion;
-
-		if ( in_array(
-			$this->text_model_type,
-			[ 'chatgpt-4o-latest', 'gpt-4o', 'gpt-4o-mini', 'gpt-4', 'gpt-3.5-turbo' ]
-		) ) {
-			$args['messages'] = [
-				[
-					'role'    => 'system',
-					'content' => 'You are an AI assistant specialized in education and course design.',
-				],
-				[
-					'role'    => 'user',
-					'content' => $prompt ?? '',
-				],
-			];
-		} elseif ( $this->text_model_type == 'gpt-3.5-turbo-instruct' ) {
-			$url = $this->urlCompletionLegacy;
-			unset( $args['response_format'] );
-			$args['prompt'] = $prompt;
+		if ( isset( $data['choices'] ) && is_array( $data['choices'] ) ) {
+			$results = [];
+			foreach ( $data['choices'] as $choice ) {
+				if ( isset( $choice['message']['content'] ) ) {
+					$results[] = LP_Helper::json_decode( $choice['message']['content'], true );
+				} elseif ( isset( $choice['text'] ) ) {
+					$results[] = LP_Helper::json_decode( $choice['text'], true );
+				}
+			}
+			return $results;
+		} elseif ( isset( $data['output'] ) ) {
+			foreach ( $data['output'] as $output ) {
+				foreach ( $output['content'] as $content ) {
+					$data['structure_data'][] = LP_Helper::json_decode( $content['text'] ?? '', true );
+				}
+			}
 		}
 
-		return $this->send_request( $url, $args );
-	}
-
-	/**
-	 * Send request for responses
-	 *
-	 * @docs https://platform.openai.com/docs/api-reference/responses/create
-	 *
-	 * @throws Exception
-	 */
-	public function send_request_responses( $args ) {
-		$args_default = [
-			'model'             => $this->text_model_type,
-			'temperature'       => $this->creativity_level,
-			'max_output_tokens' => $this->max_token,
-		];
-
-		$args          = array_merge( $args_default, $args );
-		$args['input'] = $args['prompt'] ?? '';
-		unset( $args['prompt'] );
-
-		return $this->send_request( $this->urlResponses, $args );
+		return $data;
 	}
 }

@@ -51,16 +51,35 @@ class AdminCreateCourseAITemplate {
 			'step_2'                   => $this->html_step_2(),
 			'step_3'                   => $this->html_step_3(),
 			'step_4'                   => $this->html_step_4(),
+			'step_5'                   => $this->html_step_5(),
 			'buttons'                  => sprintf(
 				'<div class="button-actions" data-step="1" data-step-max="4">
 					<button class="btn btn-secondary lp-btn-step lp-hidden" data-action="prev" type="button">&larr; %s</button>
 					<button class="btn btn-primary lp-btn-step" data-action="next" type="button">%s &rarr;</button>
-					<button class="lp-button btn-primary lp-btn-generate-prompt lp-hidden" data-action="openai_generate_prompt_course" type="button">%s</button>
+					<button class="lp-button btn-primary lp-btn-generate-prompt lp-hidden"
+						data-send="%s" type="button">%s
+					</button>
+					<button class="lp-button btn-primary lp-btn-call-open-ai lp-hidden"
+						data-send="%s" type="button">%s
+					</button>
 					<button class="lp-button btn-primary lp-btn-create-course lp-hidden" type="button">%s</button>
 				</div>',
 				esc_html__( 'Previous', 'learnpress' ),
 				esc_html__( 'Next', 'learnpress' ),
+				Template::convert_data_to_json(
+					[
+						'action' => 'openai_generate_prompt_course',
+						'id_url' => 'generate_prompt_openai',
+					]
+				),
 				esc_html__( 'Generate Prompt', 'learnpress' ),
+				Template::convert_data_to_json(
+					[
+						'action' => 'openai_generate_data_course',
+						'id_url' => 'submit_to_openai',
+					]
+				),
+				esc_html__( 'Generate Data Course', 'learnpress' ),
 				esc_html__( 'Create Course', 'learnpress' ),
 			),
 			'form-end'                 => '</form>',
@@ -88,7 +107,14 @@ class AdminCreateCourseAITemplate {
 			),
 			'step_4'   => sprintf(
 				'<div class="step-item" data-step="4"><span class="step-number">4</span><span class="step-text">%s</span></div>',
-				esc_html__( 'Generate', 'learnpress' )
+				esc_html__( 'Prompt', 'learnpress' )
+			),
+			'step_5'   => sprintf(
+				'<div class="step-item" data-step="5">
+					<span class="step-number">5</span>
+					<span class="step-text">%s</span>
+				</div>',
+				esc_html__( 'Create course', 'learnpress' )
 			),
 			'wrap-end' => '</div>',
 		];
@@ -303,35 +329,156 @@ class AdminCreateCourseAITemplate {
 		return Template::combine_components( $components );
 	}
 
+	/**
+	 * Generated prompt to submit OpenAI
+	 *
+	 * @return string
+	 */
 	public function html_step_4(): string {
-		$layout_components = [
-			'layout_open'  => '<div class="step4-layout">',
-			//'left_panel'   => $this->_get_step_4_left_panel(),
-			//'right_panel'  => $this->_get_step_4_right_panel(),
-			'layout_close' => '</div>',
-		];
-		$layout            = Template::combine_components( $layout_components );
-
-		$content_components = [
-			//'header' => $this->_get_step_4_header(),
-			'layout' => $layout,
-		];
-		$content            = Template::combine_components( $content_components );
-
 		$components = [
-			'step'        => '<div class="step-content" data-step="4">',
+			'step'     => '<div class="step-content" data-step="4">',
+			'title'    => sprintf(
+				'<div class="step-title">%s</div>',
+				esc_html__( 'Step 4 — Prompt Generated', 'learnpress' ),
+			),
+			'prompt'   => sprintf(
+				'<div class="form-group">
+					<textarea name="lp-openai-prompt-generated-field" rows="20"></textarea>
+					<i>%s</i>
+				</div>',
+				__( 'You can edit prompt before submit OpenAI.', 'learnpress' )
+			),
+			'step-end' => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	/**
+	 * Preview Course and create
+	 *
+	 * @return string
+	 */
+	public function html_step_5(): string {
+		$components = [
+			'step'        => '<div class="step-content" data-step="5">',
 			'title'       => sprintf(
 				'<div class="step-title">%s</div>',
-				esc_html__( 'Step 4 — Generated Course', 'learnpress' ),
+				esc_html__( 'Step 5 — Create Course', 'learnpress' ),
 			),
 			'description' => sprintf(
 				'<p class="step-description">%s</p>',
-				esc_html__( 'Review the generated course structure and content below.', 'learnpress' )
+				esc_html__( 'Create Course with data AI.', 'learnpress' )
 			),
-			'content'     => $content,
+			'preview'     => '<div class="lp-ai-course-data-preview-wrap"></div>',
 			'step-end'    => '</div>',
 		];
 
 		return Template::combine_components( $components );
+	}
+
+	/**
+	 * HTML preview with data received from OpenAI
+	 *
+	 * @param array $data_received
+	 *
+	 * @return string
+	 */
+	public static function html_preview_with_data( array $data_received ): string {
+		$html = '';
+		$data = $data_received['structure_data'] ?? [];
+
+		if ( empty( $data ) ) {
+			return '';
+		}
+
+		$data               = $data[0];
+		$course_title       = $data['course_title'] ?? '';
+		$course_description = $data['course_description'] ?? '';
+		$sections           = $data['sections'] ?? [];
+
+		$html_section = '';
+		foreach ( $sections as $section ) {
+			$section_title = $section['section_title'] ?? '';
+			$section_des   = $section['section_description'] ?? '';
+			$lessons       = $section['lessons'] ?? [];
+			$quizzes       = $section['quizzes'] ?? [];
+
+			$html_lessons = '';
+			foreach ( $lessons as $lesson ) {
+				$lesson_title = $lesson['lesson_title'] ?? '';
+				$lesson_des   = $lesson['lesson_description'] ?? '';
+
+				$arr_lesson_components = [
+					'wrap'     => '<div class="course-lesson-item">',
+					'title'    => sprintf( '<div class="lesson-title">%s</div>', esc_html( $lesson_title ) ),
+					'des'      => sprintf( '<div class="lesson-description">%s</div>', esc_html( $lesson_des ) ),
+					'wrap-end' => '</div>',
+				];
+
+				$html_lessons .= Template::combine_components( $arr_lesson_components );
+			}
+
+			// Quizzes
+			$html_quizzes = '';
+			foreach ( $quizzes as $quiz ) {
+				$quiz_title = $quiz['quiz_title'] ?? '';
+				$quiz_des   = $quiz['quiz_description'] ?? '';
+				$questions  = $quiz['questions'] ?? [];
+
+				$html_questions = '';
+				foreach ( $questions as $question ) {
+					$question_title = $question['question_title'] ?? '';
+					$question_des   = $question['question_description'] ?? '';
+					$options        = $question['options'] ?? [];
+
+					$html_options = '';
+					foreach ( $options as $option ) {
+						$html_options .= sprintf( '<li class="question-option">%s</li>', esc_html( $option ) );
+					}
+
+					$arr_question_components = [
+						'wrap'     => '<div class="quiz-question-item">',
+						'title'    => sprintf( '<div class="question-title">%s</div>', esc_html( $question_title ) ),
+						'desc'     => sprintf( '<div class="question-desc">%s</div>', esc_html( $question_des ) ),
+						'options'  => sprintf( '<ul>%s</ul>', $html_options ),
+						'wrap-end' => '</div>',
+					];
+
+					$html_questions .= Template::combine_components( $arr_question_components );
+				}
+
+				$arr_quiz_components = [
+					'wrap'      => '<div class="course-quiz-item">',
+					'title'     => sprintf( '<div class="quiz-title">%s</div>', esc_html( $quiz_title ) ),
+					'des'       => sprintf( '<div class="quiz-description">%s</div>', esc_html( $quiz_des ) ),
+					'questions' => $html_questions,
+					'wrap-end'  => '</div>',
+				];
+
+				$html_quizzes .= Template::combine_components( $arr_quiz_components );
+			}
+
+			$arr_section_components = [
+				'wrap'     => '<div class="course-section-item">',
+				'title'    => sprintf( '<div class="section-title">%s</div>', esc_html( $section_title ) ),
+				'des'      => sprintf( '<div class="section-description">%s</div>', esc_html( $section_des ) ),
+				'lessons'  => $html_lessons,
+				'quizzes'  => $html_quizzes,
+				'wrap-end' => '</div>',
+			];
+
+			$html_section .= Template::combine_components( $arr_section_components );
+		}
+
+		$section = [
+			'wrap'     => '<div class="lp-ai-course-data-preview">',
+			'title'    => sprintf( '<div class="course-title">%s</div>', esc_html( $course_title ) ),
+			'des'      => sprintf( '<div class="course-description">%s</div', esc_html( $course_description ) ),
+			'sections' => $html_section,
+			'wrap-end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 }

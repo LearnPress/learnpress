@@ -34,7 +34,7 @@ if ( $quizzes_per_section > 0 ) {
             - Each quiz MUST have a relevant "quiz_title" and "quiz_description".
             - Each quiz MUST contain exactly **{$questions_per_quiz}** question object(s) in a "questions" array.
             - Each question must be multiple-choice, testing concepts from the lessons in THAT SAME section.
-            - Each question object MUST contain: "question_title", "options" (an array of 4 strings), and "correct_answer" (a string matching one of the options).
+            - Each question object MUST contain: "question_title", "question_description", "options" (an array of 4 strings), and "correct_answer" (a string matching one of the options).
         </quiz_requirements>
 XML;
 	$quiz_json_example = ',' . <<<JSON
@@ -45,6 +45,7 @@ XML;
             "questions": [
               {
                 "question_title": "Question title here...",
+                "question_description": "Question description task here...",
                 "options": ["Option A", "Option B", "Correct Option", "Option D"],
                 "correct_answer": "Correct Option"
               }

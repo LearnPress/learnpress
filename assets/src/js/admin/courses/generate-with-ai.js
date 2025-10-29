@@ -55,6 +55,10 @@ export class CreateCourseViaAI {
 				selector: '.lp-btn-generate-prompt',
 				callBack: this.generatePrompt,
 			},
+			{
+				selector: '.lp-btn-call-open-ai',
+				callBack: this.generateDataCourse,
+			},
 		] );
 	}
 
@@ -505,6 +509,8 @@ export class CreateCourseViaAI {
 		const elBtnNext = elBtnActions.querySelector( '.lp-btn-step[data-action=next]' );
 		const elBtnPrev = elBtnActions.querySelector( '.lp-btn-step[data-action=prev]' );
 		const elBtnGeneratePrompt = elBtnActions.querySelector( '.lp-btn-generate-prompt' );
+		const elBtnCallOpenAI = elBtnActions.querySelector( '.lp-btn-call-open-ai' );
+		const elBtnCreateCourse = elBtnActions.querySelector( '.lp-btn-create-course' );
 
 		const stepAction = target.dataset.action;
 		if ( stepAction === 'next' ) {
@@ -540,16 +546,34 @@ export class CreateCourseViaAI {
 		} else {
 			lpUtils.lpShowHideEl( elBtnGeneratePrompt, 0 );
 		}
+
+		if ( step === 4 ) {
+			lpUtils.lpShowHideEl( elBtnCallOpenAI, 1 );
+		} else {
+			lpUtils.lpShowHideEl( elBtnCallOpenAI, 0 );
+		}
+
+		if ( step === 5 ) {
+			lpUtils.lpShowHideEl( elBtnCreateCourse, 1 );
+		} else {
+			lpUtils.lpShowHideEl( elBtnCreateCourse, 0 );
+		}
 	}
 
+	/**
+	 * Create prompt from data config
+	 *
+	 * @param e
+	 * @param target
+	 */
 	generatePrompt( e, target ) {
 		e.preventDefault();
 		lpUtils.lpSetLoadingEl( target, true );
 
 		// Get dataSend
 		const form = target.closest( 'form' );
-		const dataSend = lpUtils.getDataOfForm( form );
-		dataSend.action = target.dataset.action;
+		let dataSend = JSON.parse( target.dataset.send );
+		dataSend = lpUtils.mergeDataWithDatForm( form, dataSend );
 
 		// Ajax to generate prompt
 		const callBack = {
@@ -561,6 +585,50 @@ export class CreateCourseViaAI {
 				if ( status === 'success' ) {
 					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
 					elBtnNext.click();
+
+					const elPromptTextarea = form.querySelector( 'textarea[name=lp-openai-prompt-generated-field]' );
+					elPromptTextarea.value = data;
+				}
+			},
+			error: ( error ) => {
+				showToast( error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( target, false );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	/**
+	 * Submit prompt to OpenAI to generate course data
+	 *
+	 * @param e
+	 * @param target
+	 */
+	generateDataCourse( e, target ) {
+		e.preventDefault();
+		lpUtils.lpSetLoadingEl( target, true );
+
+		// Get dataSend
+		const form = target.closest( 'form' );
+		let dataSend = JSON.parse( target.dataset.send );
+		dataSend = lpUtils.mergeDataWithDatForm( form, dataSend );
+
+		// Ajax to generate prompt
+		const callBack = {
+			success: ( response ) => {
+				const { message, status, data } = response;
+
+				showToast( message, status );
+
+				if ( status === 'success' ) {
+					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
+					elBtnNext.click();
+
+					const elPreviewWrap = form.querySelector( '.lp-ai-course-data-preview-wrap' );
+					elPreviewWrap.innerHTML = data.html_preview;
 				}
 			},
 			error: ( error ) => {
