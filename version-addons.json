@@ -30,8 +30,8 @@
   "learnpress-assignments": {
     "name": "Assignments Add-On for LearnPress",
     "basename": "learnpress-assignments/learnpress-assignments.php",
-    "version": "4.1.8",
-    "require_lp": "4.2.9.2",
+    "version": "4.1.9",
+    "require_lp": "4.2.9.4",
     "description": "Assignment Add-on for LearnPress is a great way to assign tasks, essays for your students so they can do at home and submit. Instructors can check students’ work after that and grade the assignment.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-assigment.png",
     "link": "https://thimpress.com/product/assignments-add-on-for-learnpress/",
