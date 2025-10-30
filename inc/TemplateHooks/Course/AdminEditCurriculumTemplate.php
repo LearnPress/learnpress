@@ -37,7 +37,7 @@ class AdminEditCurriculumTemplate {
 	 */
 	public function edit_course_curriculum_layout( CourseModel $courseModel ) {
 		wp_enqueue_style( 'lp-edit-curriculum' );
-		wp_enqueue_script( 'lp-edit-curriculum' );
+		wp_enqueue_script( 'lp-edit-course' );
 
 		$args      = [
 			'id_url'    => 'edit-course-curriculum',

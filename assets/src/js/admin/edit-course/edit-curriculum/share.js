@@ -4,7 +4,7 @@
  * @since 4.2.8.6
  * @version 1.0.1
  */
-import * as lpUtils from '../../utils.js';
+import * as lpUtils from '../../../utils.js';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 
