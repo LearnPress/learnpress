@@ -173,13 +173,13 @@ class OpenAiService {
 	public function detected_data( array $data ): array {
 		$data['lp_structure_data'] = [];
 
-		if ( isset( $data['choices'] ) && is_array( $data['choices'] ) ) {
+		if ( isset( $data['choices'] ) ) {
 			$results = [];
 			foreach ( $data['choices'] as $choice ) {
 				if ( isset( $choice['message']['content'] ) ) {
-					$results[] = LP_Helper::json_decode( $choice['message']['content'], true );
+					$data['lp_structure_data'][] = LP_Helper::json_decode( $choice['message']['content'], true );
 				} elseif ( isset( $choice['text'] ) ) {
-					$results[] = LP_Helper::json_decode( $choice['text'], true );
+					$data['lp_structure_data'][] = LP_Helper::json_decode( $choice['text'], true );
 				}
 			}
 			return $results;

@@ -112,6 +112,8 @@ class CoursePostModel extends PostModel {
 	/**
 	 * Add section to course
 	 *
+	 * @param array $data [ 'section_name' => '', 'section_description' => '' ]
+	 *
 	 * @throws Exception
 	 * @since 4.3.0
 	 * @version 1.0.0

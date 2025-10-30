@@ -125,8 +125,7 @@ class OpenAiAjax extends AbstractAjax {
 				$lesson_items        = $data_section['lessons'] ?? [];
 				$quiz_items          = $data_section['quizzes'] ?? [];
 
-				$courseSectionModel = $courseService->add_section(
-					$coursePostModel,
+				$courseSectionModel = $coursePostModel->add_section(
 					[
 						'section_name'        => $section_name,
 						'section_description' => $section_description,
