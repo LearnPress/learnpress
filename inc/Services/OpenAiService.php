@@ -61,7 +61,7 @@ class OpenAiService {
 	 *
 	 * @throws Exception
 	 */
-	public function send_request( array $args ) {
+	public function send_request( array $args ): array {
 		// Handle args before send request
 		$url = '';
 
@@ -97,8 +97,8 @@ class OpenAiService {
 
 		$body = wp_remote_retrieve_body( $response );
 		$data = LP_Helper::json_decode( $body, true );
-		if ( isset( $result['error'] ) ) {
-			throw new Exception( $result['error']['message'] );
+		if ( isset( $data['error'] ) ) {
+			throw new Exception( $data['error']['message'] );
 		}
 
 		return $this->detected_data( $data );
@@ -171,7 +171,7 @@ class OpenAiService {
 	 * @throws Exception
 	 */
 	public function detected_data( array $data ): array {
-		$data['structure_data'] = [];
+		$data['lp_structure_data'] = [];
 
 		if ( isset( $data['choices'] ) && is_array( $data['choices'] ) ) {
 			$results = [];
@@ -186,7 +186,7 @@ class OpenAiService {
 		} elseif ( isset( $data['output'] ) ) {
 			foreach ( $data['output'] as $output ) {
 				foreach ( $output['content'] as $content ) {
-					$data['structure_data'][] = LP_Helper::json_decode( $content['text'] ?? '', true );
+					$data['lp_structure_data'][] = LP_Helper::json_decode( $content['text'] ?? '', true );
 				}
 			}
 		}

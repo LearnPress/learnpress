@@ -7,6 +7,11 @@ $border-color: #E5E7EB;
 $input-bg: #F7FAFC;
 $white: #FFFFFF;
 
+.lp-btn-generate-course-with-ai {
+	position: absolute;
+	margin: 10px 0 0 10px !important;
+}
+
 .create-course-modal {
 	padding: 0;
 	display: flex !important;
@@ -745,6 +750,16 @@ $white: #FFFFFF;
 		max-height: 400px;
 		overflow-y: auto;
 		margin-bottom: 20px;
+	}
+}
+
+
+.lp-ai-course-data-preview-wrap {
+	.course-title {
+		font-size: 1.5em;
+		font-weight: 700;
+		margin-bottom: 10px;
+		color: $text-dark;
 	}
 }
 

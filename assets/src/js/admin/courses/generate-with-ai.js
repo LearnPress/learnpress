@@ -24,10 +24,9 @@ const showToast = ( message, status = 'success' ) => {
 	} );
 	toastify.showToast();
 };
+let lp_structure_course;
 
 export class CreateCourseViaAI {
-	structure_data;
-
 	constructor() {
 		this.init();
 	}
@@ -211,6 +210,13 @@ export class CreateCourseViaAI {
 		let dataSend = JSON.parse( target.dataset.send );
 		dataSend = lpUtils.mergeDataWithDatForm( form, dataSend );
 
+		const btnPrev = form.querySelector( '.lp-btn-step[data-action=prev]' );
+		lpUtils.lpShowHideEl( btnPrev, 0 );
+
+		setTimeout( () => {
+			showToast( 'Generating course data. This may take a few moments...', 'info' );
+		}, 1000 );
+
 		// Ajax to generate prompt
 		const callBack = {
 			success: ( response ) => {
@@ -219,13 +225,15 @@ export class CreateCourseViaAI {
 				showToast( message, status );
 
 				if ( status === 'success' ) {
-					this.structure_data = data.structure_data;
+					// Save structure data
+					lp_structure_course = data.lp_structure_course;
+
+					// Set preview HTML
+					const elPreviewWrap = form.querySelector( '.lp-ai-course-data-preview-wrap' );
+					elPreviewWrap.innerHTML = data.lp_html_preview;
 
 					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
 					elBtnNext.click();
-
-					const elPreviewWrap = form.querySelector( '.lp-ai-course-data-preview-wrap' );
-					elPreviewWrap.innerHTML = data.html_preview;
 				}
 			},
 			error: ( error ) => {
@@ -233,6 +241,7 @@ export class CreateCourseViaAI {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
+				lpUtils.lpShowHideEl( btnPrev, 1 );
 			},
 		};
 
@@ -249,11 +258,13 @@ export class CreateCourseViaAI {
 		e.preventDefault();
 		lpUtils.lpSetLoadingEl( target, true );
 
-		//console.log( this.structure_data );
-
 		// Get dataSend
 		const dataSend = JSON.parse( target.dataset.send );
-		//dataSend.structure_data = this.structure_data[0];
+		dataSend.lp_structure_course = lp_structure_course;
+
+		const form = target.closest( 'form' );
+		const elBtnPrev = form.querySelector( '.lp-btn-step[data-action=prev]' );
+		lpUtils.lpShowHideEl( elBtnPrev, 0 );
 
 		// Ajax to generate prompt
 		const callBack = {
@@ -263,16 +274,20 @@ export class CreateCourseViaAI {
 				showToast( message, status );
 
 				if ( status === 'success' ) {
+					target.text = data.button_label;
 					setTimeout(
 						() => {
 							window.location.href = data.edit_course_url;
 						},
 						1000
 					);
+				} else {
+					lpUtils.lpShowHideEl( elBtnPrev, 1 );
 				}
 			},
 			error: ( error ) => {
 				showToast( error, 'error' );
+				lpUtils.lpShowHideEl( elBtnPrev, 1 );
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );

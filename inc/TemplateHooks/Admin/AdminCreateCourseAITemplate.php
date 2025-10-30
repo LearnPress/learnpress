@@ -104,7 +104,7 @@ class AdminCreateCourseAITemplate {
 			'wrap'     => '<div class="step-header">',
 			'step_1'   => sprintf(
 				'<div class="step-item active" data-step="1"><span class="step-number">1</span><span class="step-text">%s</span></div>',
-				esc_html__( 'Course Intent', 'learnpress' )
+				esc_html__( 'Course Goal', 'learnpress' )
 			),
 			'step_2'   => sprintf(
 				'<div class="step-item" data-step="2"><span class="step-number">2</span><span class="step-text">%s</span></div>',
@@ -138,7 +138,7 @@ class AdminCreateCourseAITemplate {
 			'step'        => '<div class="step-content active" data-step="1">',
 			'title'       => sprintf(
 				'<div class="step-title">%s</div>',
-				esc_html__( 'Step 1 — Course Intent', 'learnpress' ),
+				esc_html__( 'Step 1 — Course Goal', 'learnpress' ),
 			),
 			'description' => sprintf(
 				'<p class="step-description">%s</p>',
@@ -329,7 +329,7 @@ class AdminCreateCourseAITemplate {
 			),
 			'description' => sprintf(
 				'<p class="step-description">%s</p>',
-				esc_html__( 'Define the LearnPress structure. The Prompt will be generated based on these controls.', 'learnpress' )
+				esc_html__( 'Define the LearnPress Curriculum structure. The Prompt will be generated based on these controls.', 'learnpress' )
 			),
 			'form_grid'   => Template::combine_components( $grid_components ),
 			'step-end'    => '</div>',
@@ -369,6 +369,10 @@ class AdminCreateCourseAITemplate {
 	 * @return string
 	 */
 	public function html_step_5(): string {
+		$html_dummy = <<<EOD
+
+EOD;
+
 		$components = [
 			'step'        => '<div class="step-content" data-step="5">',
 			'title'       => sprintf(
@@ -377,9 +381,9 @@ class AdminCreateCourseAITemplate {
 			),
 			'description' => sprintf(
 				'<p class="step-description">%s</p>',
-				esc_html__( 'Create Course with data AI.', 'learnpress' )
+				esc_html__( 'Data preview before create course.', 'learnpress' )
 			),
-			'preview'     => '<div class="lp-ai-course-data-preview-wrap"></div>',
+			'preview'     => '<div class="lp-ai-course-data-preview-wrap">' . $html_dummy . '</div>',
 			'step-end'    => '</div>',
 		];
 
@@ -394,17 +398,9 @@ class AdminCreateCourseAITemplate {
 	 * @return string
 	 */
 	public static function html_preview_with_data( array $data_received ): string {
-		$html = '';
-		$data = $data_received['structure_data'] ?? [];
-
-		if ( empty( $data ) ) {
-			return '';
-		}
-
-		$data               = $data[0];
-		$course_title       = $data['course_title'] ?? '';
-		$course_description = $data['course_description'] ?? '';
-		$sections           = $data['sections'] ?? [];
+		$course_title       = $data_received['course_title'] ?? '';
+		$course_description = $data_received['course_description'] ?? '';
+		$sections           = $data_received['sections'] ?? [];
 
 		$html_section = '';
 		foreach ( $sections as $section ) {
@@ -419,10 +415,10 @@ class AdminCreateCourseAITemplate {
 				$lesson_des   = $lesson['lesson_description'] ?? '';
 
 				$arr_lesson_components = [
-					'wrap'     => '<div class="course-lesson-item">',
+					'wrap'     => '<li class="course-lesson-item">',
 					'title'    => sprintf( '<div class="lesson-title">%s</div>', esc_html( $lesson_title ) ),
 					'des'      => sprintf( '<div class="lesson-description">%s</div>', esc_html( $lesson_des ) ),
-					'wrap-end' => '</div>',
+					'wrap-end' => '</li>',
 				];
 
 				$html_lessons .= Template::combine_components( $arr_lesson_components );
@@ -447,11 +443,11 @@ class AdminCreateCourseAITemplate {
 					}
 
 					$arr_question_components = [
-						'wrap'     => '<div class="quiz-question-item">',
+						'wrap'     => '<li class="quiz-question-item">',
 						'title'    => sprintf( '<div class="question-title">%s</div>', esc_html( $question_title ) ),
 						'desc'     => sprintf( '<div class="question-desc">%s</div>', esc_html( $question_des ) ),
-						'options'  => sprintf( '<ul>%s</ul>', $html_options ),
-						'wrap-end' => '</div>',
+						'options'  => sprintf( '<ul class="course-question-options">%s</ul>', $html_options ),
+						'wrap-end' => '</li>',
 					];
 
 					$html_questions .= Template::combine_components( $arr_question_components );
@@ -461,7 +457,7 @@ class AdminCreateCourseAITemplate {
 					'wrap'      => '<div class="course-quiz-item">',
 					'title'     => sprintf( '<div class="quiz-title">%s</div>', esc_html( $quiz_title ) ),
 					'des'       => sprintf( '<div class="quiz-description">%s</div>', esc_html( $quiz_des ) ),
-					'questions' => $html_questions,
+					'questions' => sprintf( '<ul class="course-questions">%s</ul>', $html_questions ),
 					'wrap-end'  => '</div>',
 				];
 
@@ -469,12 +465,12 @@ class AdminCreateCourseAITemplate {
 			}
 
 			$arr_section_components = [
-				'wrap'     => '<div class="course-section-item">',
+				'wrap'     => '<li class="course-section-item">',
 				'title'    => sprintf( '<div class="section-title">%s</div>', esc_html( $section_title ) ),
 				'des'      => sprintf( '<div class="section-description">%s</div>', esc_html( $section_des ) ),
-				'lessons'  => $html_lessons,
-				'quizzes'  => $html_quizzes,
-				'wrap-end' => '</div>',
+				'lessons'  => sprintf( '<ul class="course-section-items">%s</ul>', $html_lessons ),
+				'quizzes'  => sprintf( '<ul class="course-section-items">%s</ul>', $html_quizzes ),
+				'wrap-end' => '</li>',
 			];
 
 			$html_section .= Template::combine_components( $arr_section_components );
@@ -483,8 +479,9 @@ class AdminCreateCourseAITemplate {
 		$section = [
 			'wrap'     => '<div class="lp-ai-course-data-preview">',
 			'title'    => sprintf( '<div class="course-title">%s</div>', esc_html( $course_title ) ),
-			'des'      => sprintf( '<div class="course-description">%s</div', esc_html( $course_description ) ),
-			'sections' => $html_section,
+			'img'      => '<div class="course-img"><img src="/wp-content/plugins/learnpress/assets/images/no-image.png" alt="course thumbnail"></div>',
+			'des'      => sprintf( '<div class="course-description">%s</div>', esc_html( $course_description ) ),
+			'sections' => sprintf( '<ul class="course-sections">%s</ul>', $html_section ),
 			'wrap-end' => '</div>',
 		];
 

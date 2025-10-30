@@ -5,8 +5,6 @@ namespace LearnPress\Ajax\AI;
 use Exception;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\Helpers\Config;
-use LearnPress\Models\Question\QuestionPostModel;
-use LearnPress\Models\Question\QuestionPostSingleChoiceModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
@@ -68,13 +66,16 @@ class OpenAiAjax extends AbstractAjax {
 			$data_str = LP_Request::get_param( 'data' );
 			$params   = LP_Helper::json_decode( $data_str, true );
 			$prompt   = $params['lp-openai-prompt-generated-field'] ?? '';
-
-			$args   = [
+			$args     = [
 				'prompt' => $prompt,
 			];
-			$result = OpenAiService::instance()->send_request( $args );
 
-			$result['html_preview'] = AdminCreateCourseAITemplate::html_preview_with_data( $result );
+			$result            = OpenAiService::instance()->send_request( $args );
+			$lp_structure_data = $result['lp_structure_data'] ?? [];
+			if ( count( $lp_structure_data ) > 0 ) {
+				$result['lp_structure_course'] = $lp_structure_data[0];
+				$result['lp_html_preview']     = AdminCreateCourseAITemplate::html_preview_with_data( $result['lp_structure_course'] );
+			}
 
 			$response->data    = $result;
 			$response->status  = 'success';
@@ -92,82 +93,6 @@ class OpenAiAjax extends AbstractAjax {
 	public function openai_create_course() {
 		$response = new LP_REST_Response();
 
-		$data_dumy = <<<EOD
-  {
-    "course_title": "Introduction to HTML5: Building the Web from Scratch",
-    "course_description": "Get started with writing code. This introductory course will walk you through the basics of HTML5, semantic tags, accessibility, and elementary on-page SEO techniques.",
-    "sections": [
-      {
-        "section_title": "Basic HTML5 and Semantic Tags",
-        "section_description": "Become familiar with the structure of an HTML5 webpage and understand how semantic tags improve the usability and accessibility of your site.",
-        "lessons": [
-          {
-            "lesson_title": "HTML5 Structure Basics",
-            "lesson_description": "Discover the foundational elements of HTML5 - doctype, html, head, and body tags. Explore the hierarchy of these elements and their individual functionalities. Conclude by creating a simple HTML5 page structure."
-          },
-          {
-            "lesson_title": "A Guide to Semantic Tags",
-            "lesson_description": "Learn the importance of using semantic tags such as header, nav, section, article, footer, etc., which bear inherent meaning to develop more meaningful, accessible, and SEO-friendly web content."
-          }
-        ],
-        "quizzes": [
-          {
-            "quiz_title": "Understanding HTML5 and Semantic Tags",
-            "quiz_description": "Test your knowledge about HTML5 structure and semantic tags usage.",
-            "questions": [
-              {
-                "question_title": "Which HTML5 tag defines the main content of a web document?",
-                "question_description": "Choose the correct HTML5 element",
-                "options": [
-                  "<main>",
-                  "<header>",
-                  "<body>",
-                  "<article>"
-                ],
-                "correct_answer": "<main>"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "section_title": "Accessibility and Elementary On-Page SEO",
-        "section_description": "Improve your webpage’s visibility and usability. Discover how to make your site accessible and introduce yourself to the basics of on-page SEO.",
-        "lessons": [
-          {
-            "lesson_title": "Web Accessibility Essentials",
-            "lesson_description": "Understand the importance of making your web content accessible to all users, including people with disabilities. Get to know essential techniques such as correct use of alt tags for images, color contrast, hierarchy, ARIA roles and more."
-          },
-          {
-            "lesson_title": "Introduction to On-Page SEO",
-            "lesson_description": "Uncover the essence of on-page SEO. Learn how to optimize your tags (title, meta, heading tags) and your content to increase your page's visibility on search engines, improve click-through-rate (CTR), and boost traffic to your site."
-          }
-        ],
-        "quizzes": [
-          {
-            "quiz_title": "Recognition of Web Accessibility and On-Page SEO",
-            "quiz_description": "Demonstrate your understanding of web accessibility and basic on-page SEO practices.",
-            "questions": [
-              {
-                "question_title": "Which tag can improve your ranking on search engine results pages (SERPs)?",
-                "question_description": "Identify the HTML tag useful in SEO",
-                "options": [
-                  "<title>",
-                  "<h1>",
-                  "<meta name='description'>",
-                  "All of the above"
-                ],
-                "correct_answer": "All of the above"
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    "course_author": "AI Assistant"
-  }
-EOD;
-
 		try {
 			// Check permission
 			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
@@ -175,25 +100,25 @@ EOD;
 				throw new Exception( __( 'You do not have permission to perform this action.', 'learnpress' ) );
 			}
 
-			$data_str = LP_Request::get_param( 'data' );
-			$data_str = $data_dumy;
-			$data     = LP_Helper::json_decode( $data_str, true );
-			if ( empty( $data ) || ! is_array( $data ) ) {
+			$data_str              = LP_Request::get_param( 'data' );
+			$data                  = LP_Helper::json_decode( $data_str, true );
+			$data_structure_course = $data['lp_structure_course'] ?? [];
+			if ( empty( $data_structure_course ) ) {
 				throw new Exception( __( 'Invalid data to create course!', 'learnpress' ) );
 			}
 
 			$courseService = CourseService::instance();
 
 			$data_info_main  = [
-				'post_title'   => $data['course_title'] ?? 'AI Generated Course',
-				'post_content' => $data['course_description'] ?? '',
+				'post_title'   => $data_structure_course['course_title'] ?? 'AI Generated Course',
+				'post_content' => $data_structure_course['course_description'] ?? '',
 				'post_status'  => 'draft',
 				'post_author'  => get_current_user_id(),
 			];
 			$coursePostModel = $courseService->create_info_main( $data_info_main );
 
 			// Create section
-			$data_sections = $data['sections'] ?? [];
+			$data_sections = $data_structure_course['sections'] ?? [];
 			foreach ( $data_sections as $data_section ) {
 				$section_name        = $data_section['section_title'] ?? '';
 				$section_description = $data_section['section_description'] ?? '';
@@ -268,6 +193,7 @@ EOD;
 			$course_edit_url = $coursePostModel->get_edit_link();
 
 			$response->data->edit_course_url = $course_edit_url;
+			$response->data->button_label = __( 'Redirecting...', 'learnpress' );
 			$response->status                = 'success';
 			$response->message               = __( 'Create Course Successfully!', 'learnpress' );
 		} catch ( Throwable $e ) {
