@@ -6,8 +6,8 @@
  */
 
 import * as lpEditCurriculumShare from './edit-curriculum/share.js';
-import * as sectionEdit from './edit-curriculum/edit-section.js';
-import * as sectionItemEdit from './edit-curriculum/edit-section-item.js';
+import sectionEdit from './edit-curriculum/edit-section.js';
+import sectionItemEdit from './edit-curriculum/edit-section-item.js';
 
 const { className } = lpEditCurriculumShare;
 
@@ -167,4 +167,3 @@ export class EditCourseCurriculum {
 		elSectionItemsCount.querySelector( '.count' ).textContent = itemsCount;
 	}
 }
-
