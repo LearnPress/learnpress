@@ -5,4 +5,6 @@
  * @version 1.0.0
  */
 
-import * as EditCurriculum from './edit-course/edit-curriculum.js';
+import { EditCourseCurriculum } from './edit-course/edit-curriculum.js';
+
+new EditCourseCurriculum();
