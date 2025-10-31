@@ -192,9 +192,87 @@ class OpenAiAjax extends AbstractAjax {
 			$course_edit_url = $coursePostModel->get_edit_link();
 
 			$response->data->edit_course_url = $course_edit_url;
-			$response->data->button_label = __( 'Redirecting...', 'learnpress' );
+			$response->data->button_label    = __( 'Redirecting...', 'learnpress' );
 			$response->status                = 'success';
 			$response->message               = __( 'Create Course Successfully!', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Generate prompt title with AI
+	 */
+	public function openai_generate_prompt_title() {
+		$response = new LP_REST_Response();
+
+		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
+				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+				throw new Exception( __( 'You do not have permission to perform this action.', 'learnpress' ) );
+			}
+
+			$data_str = LP_Request::get_param( 'data' );
+			$params   = LP_Helper::json_decode( $data_str, true );
+			$prompt   = Config::instance()->get( 'prompt-create-title-course', 'settings/openAi', compact( 'params' ) );
+
+			$response->data    = $prompt;
+			$response->status  = 'success';
+			$response->message = __( 'Generate prompt successfully!', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Generate data course with prompt submitted
+	 */
+	public function openai_generate_title() {
+		$response = new LP_REST_Response();
+
+		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
+				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+				throw new Exception( __( 'You do not have permission to perform this action.', 'learnpress' ) );
+			}
+
+			$data_str = LP_Request::get_param( 'data' );
+			$params   = LP_Helper::json_decode( $data_str, true );
+			$prompt   = $params['lp-openai-prompt-generated-field'] ?? '';
+			$args     = [
+				'prompt' => $prompt,
+			];
+
+			$result                    = OpenAiService::instance()->send_request( $args );
+			$lp_structure_data         = $result['lp_structure_data'] ?? [];
+			$result['lp_html_preview'] = '';
+			if ( count( $lp_structure_data ) > 0 ) {
+				foreach ( $lp_structure_data[0] as $index => $data_item ) {
+					$title                      = $data_item['title'] ?? '';
+					$result['lp_html_preview'] .= sprintf(
+						'<div class="lp-ai-generated-title-item">
+							<label>%1$s</label>
+							<textarea>%2$s</textarea>
+							<button class="button lp-btn-copy" data-copy="%2$s" type="button">%3$s</button>
+							<button class="button lp-btn-apply button-primary" data-apply="%2$s" type="button">%4$s</button>
+						</div>',
+						sprintf( __( 'Title %d', 'learnpress' ), $index + 1 ),
+						esc_attr( $title ),
+						__( 'Copy', 'learnpress' ),
+						__( 'Apply', 'learnpress' ),
+					);
+				}
+			}
+
+			$response->data    = $result;
+			$response->status  = 'success';
+			$response->message = __( 'Generate course successfully!', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

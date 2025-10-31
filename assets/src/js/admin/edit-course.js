@@ -6,5 +6,7 @@
  */
 
 import { EditCourseCurriculum } from './edit-course/edit-curriculum.js';
+import { GenerateWithOpenai } from './generate-with-openai.js';
 
 new EditCourseCurriculum();
+new GenerateWithOpenai();

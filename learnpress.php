@@ -38,6 +38,7 @@ use LearnPress\TemplateHooks\Admin\AdminCreateCourseAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditCourseAI;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
@@ -338,6 +339,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
 			AdminCreateCourseAITemplate::instance();
+			AdminEditWithAITemplate::instance();
 			AdminEditCourseAI::instance();
 
 			// WP GDPR

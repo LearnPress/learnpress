@@ -1,8 +1,8 @@
 /**
- * Create course with AI
+ * Generate data with OpenAI
  */
 
-import * as lpUtils from './../../utils.js';
+import * as lpUtils from './../utils.js';
 import SweetAlert from 'sweetalert2';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
@@ -26,19 +26,24 @@ const showToast = ( message, status = 'success' ) => {
 };
 let lp_structure_course;
 
-export class CreateCourseViaAI {
+export class GenerateWithOpenai {
 	constructor() {
 		this.init();
 		this.selector = {
 			elGenerateDataAiWrap: '.lp-generate-data-ai-wrap',
 		};
+		this.dataGenerate = '';
 	}
 
 	init() {
-		lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
+		lpUtils.lpOnElementReady( '#titlewrap', ( el ) => {
 			el.insertAdjacentHTML(
 				'afterend',
-				`<button type="button" class="lp-btn-generate-course-with-ai lp-button button-primary ">Generate with AI</button>`
+				`<button type="button"
+					class="lp-btn-generate-title-with-ai lp-button button-secondary"
+					data-template="#lp-tmpl-edit-title-ai">
+					Generate Title with AI
+				</button>`
 			);
 		} );
 
@@ -48,9 +53,9 @@ export class CreateCourseViaAI {
 	events() {
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: '.lp-btn-generate-course-with-ai',
+				selector: '.lp-btn-generate-title-with-ai',
 				class: this,
-				callBack: this.showPopupCreateFullCourse.name,
+				callBack: this.showPopup.name,
 			},
 			{
 				selector: '.lp-btn-step',
@@ -65,23 +70,29 @@ export class CreateCourseViaAI {
 			{
 				selector: '.lp-btn-call-open-ai',
 				class: this,
-				callBack: this.generateDataCourse.name,
+				callBack: this.generateData.name,
 			},
 			{
-				selector: '.lp-btn-create-course',
+				selector: '.lp-btn-copy',
 				class: this,
-				callBack: this.createCourse.name,
+				callBack: this.copyGeneratedData.name,
+			},
+			{
+				selector: '.lp-btn-apply',
+				class: this,
+				callBack: this.applyGeneratedData.name,
 			},
 		] );
 	}
 
-	showPopupCreateFullCourse() {
-		const modalTemplate = document.querySelector(
-			'#lp-tmpl-create-course-ai'
-		);
+	showPopup( args ) {
+		const { e, target } = args;
+		const templateId = target.dataset.template;
+
+		const modalTemplate = document.querySelector( templateId );
 
 		if ( ! modalTemplate ) {
-			console.error( 'AI Create Full Course Modal Template not found!' );
+			console.error( `Template ${ templateId } not found!` );
 			return;
 		}
 
@@ -92,6 +103,7 @@ export class CreateCourseViaAI {
 			showConfirmButton: false,
 			didOpen: () => {
 				const popup = SweetAlert.getPopup();
+				// Click to show tomSelect style
 				popup.click();
 			},
 		} ).then( ( result ) => {
@@ -141,23 +153,18 @@ export class CreateCourseViaAI {
 			lpUtils.lpShowHideEl( elBtnNext, 1 );
 		}
 
-		if ( step === 3 ) {
+		if ( step === 2 ) {
 			lpUtils.lpShowHideEl( elBtnNext, 0 );
 			lpUtils.lpShowHideEl( elBtnGeneratePrompt, 1 );
 		} else {
 			lpUtils.lpShowHideEl( elBtnGeneratePrompt, 0 );
 		}
 
-		if ( step === 4 ) {
+		if ( step === 3 ) {
+			lpUtils.lpShowHideEl( elBtnNext, 0 );
 			lpUtils.lpShowHideEl( elBtnCallOpenAI, 1 );
 		} else {
 			lpUtils.lpShowHideEl( elBtnCallOpenAI, 0 );
-		}
-
-		if ( step === 5 ) {
-			lpUtils.lpShowHideEl( elBtnCreateCourse, 1 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnCreateCourse, 0 );
 		}
 	}
 
@@ -205,7 +212,7 @@ export class CreateCourseViaAI {
 	 * Submit prompt to OpenAI to generate course data
 	 * @param args
 	 */
-	generateDataCourse( args ) {
+	generateData( args ) {
 		const { e, target } = args;
 		e.preventDefault();
 		lpUtils.lpSetLoadingEl( target, true );
@@ -234,11 +241,11 @@ export class CreateCourseViaAI {
 					lp_structure_course = data.lp_structure_course;
 
 					// Set preview HTML
-					const elPreviewWrap = form.querySelector( '.lp-ai-course-data-preview-wrap' );
-					elPreviewWrap.innerHTML = data.lp_html_preview;
+					const elResults = form.querySelector( '.lp-ai-generated-results' );
+					elResults.innerHTML = data.lp_html_preview;
 
-					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
-					elBtnNext.click();
+					// const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
+					// elBtnNext.click();
 				}
 			},
 			error: ( error ) => {
@@ -253,51 +260,25 @@ export class CreateCourseViaAI {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
-	/**
-	 * Create course with data of OpenAI
-	 * @param args
-	 */
-	createCourse( args ) {
+	applyGeneratedData( args ) {
 		const { e, target } = args;
 		e.preventDefault();
-		lpUtils.lpSetLoadingEl( target, true );
 
-		// Get dataSend
-		const dataSend = JSON.parse( target.dataset.send );
-		dataSend.lp_structure_course = lp_structure_course;
+		const dataApply = target.dataset.apply;
+		const elPostTitle = document.querySelector( 'input[name=post_title]' );
+		elPostTitle.value = dataApply;
+	}
 
-		const form = target.closest( 'form' );
-		const elBtnPrev = form.querySelector( '.lp-btn-step[data-action=prev]' );
-		lpUtils.lpShowHideEl( elBtnPrev, 0 );
+	copyGeneratedData( args ) {
+		const { e, target } = args;
+		e.preventDefault();
 
-		// Ajax to generate prompt
-		const callBack = {
-			success: ( response ) => {
-				const { message, status, data } = response;
+		const dataCopy = target.dataset.copy;
 
-				showToast( message, status );
-
-				if ( status === 'success' ) {
-					target.text = data.button_label;
-					setTimeout(
-						() => {
-							window.location.href = data.edit_course_url;
-						},
-						1000
-					);
-				} else {
-					lpUtils.lpShowHideEl( elBtnPrev, 1 );
-				}
-			},
-			error: ( error ) => {
-				showToast( error, 'error' );
-				lpUtils.lpShowHideEl( elBtnPrev, 1 );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( target, false );
-			},
-		};
-
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		navigator.clipboard.writeText( dataCopy ).then( () => {
+			showToast( 'Copied to clipboard!', 'success' );
+		} ).catch( ( err ) => {
+			showToast( 'Failed to copy text: ' + err, 'error' );
+		} );
 	}
 }

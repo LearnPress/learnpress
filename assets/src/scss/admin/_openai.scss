@@ -405,7 +405,7 @@ $white: #FFFFFF;
 	}
 }
 
-.lp-create-course-ai-wrap{
+.lp-generate-data-ai-wrap {
 	width: 100%;
 	max-height: 90%;
 
@@ -452,15 +452,19 @@ $white: #FFFFFF;
 		}
 	}
 
-	.lp-form-create-course-ai {
+	.lp-form-generate-data-ai {
 		border: 1px solid;
 		background-color: $input-bg;
 		border-radius: 12px;
 		padding: 20px;
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 		text-align: left;
-		max-height: 600px;
-		overflow: auto;
+
+		.lp-form-fields {
+			min-height: 400px;
+			max-height: 600px;
+			overflow: auto;
+		}
 
 		.step-title {
 			font-size: 1.1em;
@@ -521,6 +525,7 @@ $white: #FFFFFF;
 				font-size: 15px;
 				box-sizing: border-box;
 				transition: border-color 0.2s, box-shadow 0.2s;
+				margin: 0;
 
 				&:focus {
 					outline: none;
@@ -752,7 +757,6 @@ $white: #FFFFFF;
 		margin-bottom: 20px;
 	}
 }
-
 
 .lp-ai-course-data-preview-wrap {
 	.course-title {

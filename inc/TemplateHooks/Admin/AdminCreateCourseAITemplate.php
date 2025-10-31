@@ -40,13 +40,13 @@ class AdminCreateCourseAITemplate {
 	public function html_create_course_via_ai(): string {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-create-course-ai">',
-			'wrap'                     => '<div class="lp-create-course-ai-wrap">',
+			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'AI Course Builder for LearnPress', 'learnpress' )
 			),
 			'header'                   => $this->html_step_header(),
-			'form'                     => '<form class="lp-form-create-course-ai">',
+			'form'                     => '<form class="lp-form-generate-data-ai">',
 			'step_1'                   => $this->html_step_1(),
 			'step_2'                   => $this->html_step_2(),
 			'step_3'                   => $this->html_step_3(),
