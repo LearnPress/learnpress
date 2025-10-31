@@ -226,7 +226,7 @@ class LP_User extends LP_Abstract_User {
 			$result_check->message = $th->getMessage();
 		}
 
-		return apply_filters( 'learn-press/user/is-course-enrolled', $return_bool ? $result_check->check : $result_check, $course_id, $return_bool );
+		return apply_filters( 'learn-press/user/is-course-enrolled', $return_bool ? $result_check->check : $result_check, $this->get_id(), $course_id, $return_bool );
 	}
 
 	/**
