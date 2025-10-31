@@ -46,23 +46,28 @@ export class CreateCourseViaAI {
 		lpUtils.eventHandlers( 'click', [
 			{
 				selector: '.lp-btn-generate-course-with-ai',
-				callBack: this.showPopupCreateFullCourse,
+				class: this,
+				callBack: this.showPopupCreateFullCourse.name,
 			},
 			{
 				selector: '.lp-btn-step',
-				callBack: this.showStep,
+				class: this,
+				callBack: this.showStep.name,
 			},
 			{
 				selector: '.lp-btn-generate-prompt',
-				callBack: this.generatePrompt,
+				class: this,
+				callBack: this.generatePrompt.name,
 			},
 			{
 				selector: '.lp-btn-call-open-ai',
-				callBack: this.generateDataCourse,
+				class: this,
+				callBack: this.generateDataCourse.name,
 			},
 			{
 				selector: '.lp-btn-create-course',
-				callBack: this.createCourse,
+				class: this,
+				callBack: this.createCourse.name,
 			},
 		] );
 	}
@@ -93,7 +98,8 @@ export class CreateCourseViaAI {
 		} );
 	}
 
-	showStep( e, target ) {
+	showStep( args ) {
+		const { e, target } = args;
 		e.preventDefault();
 
 		const elBtnActions = target.closest( '.button-actions' );
@@ -156,11 +162,10 @@ export class CreateCourseViaAI {
 
 	/**
 	 * Create prompt from data config
-	 *
-	 * @param e
-	 * @param target
+	 * @param args
 	 */
-	generatePrompt( e, target ) {
+	generatePrompt( args ) {
+		const { e, target } = args;
 		e.preventDefault();
 		lpUtils.lpSetLoadingEl( target, true );
 
@@ -197,11 +202,10 @@ export class CreateCourseViaAI {
 
 	/**
 	 * Submit prompt to OpenAI to generate course data
-	 *
-	 * @param e
-	 * @param target
+	 * @param args
 	 */
-	generateDataCourse( e, target ) {
+	generateDataCourse( args ) {
+		const { e, target } = args;
 		e.preventDefault();
 		lpUtils.lpSetLoadingEl( target, true );
 
@@ -250,11 +254,10 @@ export class CreateCourseViaAI {
 
 	/**
 	 * Create course with data of OpenAI
-	 *
-	 * @param e
-	 * @param target
+	 * @param args
 	 */
-	createCourse( e, target ) {
+	createCourse( args ) {
+		const { e, target } = args;
 		e.preventDefault();
 		lpUtils.lpSetLoadingEl( target, true );
 
