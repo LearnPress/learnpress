@@ -36,6 +36,11 @@ Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.env
 - [Create a WordPress Udemy with Eduma](https://eduma.thimpress.com/demo-udemy/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 - [Create a WordPress Coursera with Eduma](https://eduma.thimpress.com/demo-coursera/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 
+### Exciting News: LearnPress Officially Integrates with Gutenberg! ###
+Get ready to revolutionize your online course creation experience! We are thrilled to announce the official LearnPress [Gutenberg integration](https://learnpresslms.com/blog/learnpress-gutenberg-integration/). This powerful combination brings the flexibility and intuitive nature of WordPress’s block editor to your favorite WordPress LMS plugin, [LearnPress](https://learnpresslms.com/). Now, crafting beautiful and engaging course layouts is easier and more dynamic than ever before.
+
+Important Note: To harness the full potential of this integration, please ensure you are using a theme that supports Gutenberg and its full-site editing features.
+
 ###Build Your LearnPress Site Your Way: Elementor or Gutenberg###
 LearnPress now gives you the flexibility to build courses with two different page builders, depending on your style and workflow.
 
