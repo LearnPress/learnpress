@@ -117,6 +117,7 @@
 	}
 
 	.course-thumbnail {
+		width: 300px;
 		border-radius: 10px;
 		aspect-ratio: 16/10;
 		overflow: hidden;
@@ -325,16 +326,24 @@
 		}
 	}
 
-	.course-status span {
-		font-size: 14px;
-		padding: 5px 20px;
-		border-radius: 20px;
-		background-color: #f5f5f5;
-	}
+	.course-status {
+		span {
+			font-size: 14px;
+			padding: 5px 20px;
+			border-radius: 20px;
+			background-color: #f5f5f5;
+			text-transform: capitalize;
+		}
 
-	.course-status.publish span {
-		color: #fff;
-		background-color: #1e1e1e;
+		&.publish span {
+			color: #fff;
+			background-color: #1e1e1e;
+		}
+
+		&.trash span {
+			color: #fff;
+			background-color: #dc2626;
+		}
 	}
 
 	/* Responsive Design */

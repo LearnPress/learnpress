@@ -46,8 +46,10 @@ class BuilderTabCourseTemplate {
 		try {
 			$user = UserModel::find( get_current_user_id(), true );
 			// Query courses of user
-			$filter = new LP_Course_Filter();
-			Courses::handle_params_for_query_courses( $filter, [] );
+			$filter            = new LP_Course_Filter();
+			$param['c_status'] = 'publish,private,draft,pending,trash';
+
+			Courses::handle_params_for_query_courses( $filter, $param );
 			$filter->post_author = $user->get_id();
 			$filter->limit       = 10;
 			$filter->page        = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;

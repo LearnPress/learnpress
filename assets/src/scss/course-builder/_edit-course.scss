@@ -337,9 +337,9 @@
 		border-top: none;
 	}
 
-	.btn-add-new {
-		font-size: 18px;
-		font-weight: 600;
+	.cb-course-edit-category__btn-add-new,
+	.cb-course-edit-term__btn-add-new {
+		font-size: 16px;
 		margin-top: 15px;
 		padding: 5px 0;
 		cursor: pointer;
@@ -370,6 +370,42 @@
 		border-radius: 5px;
 		padding: 5px 20px;
 		border: 0;
+	}
+
+	.cb-section__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.cb-section__header-action {
+		display: flex;
+		gap: 20px;
+	}
+
+	.cb-button {
+		padding: 8px 25px;
+		border-radius: 5px;
+		background: #ccc;
+		font-size: 16px;
+		font-weight: 500;
+		cursor: pointer;
+
+		&.cb-btn-update {
+			background: #1e1e1e;
+			color: #fff;
+		}
+
+		&.cb-btn-trash {
+			background: rgb( 220 38 38 );
+			color: #fff;
+		}
+
+		&.loading {
+			pointer-events: none;
+			opacity: 0.8;
+			@include loading();
+		}
 	}
 
 	@media ( max-width: 768px ) {

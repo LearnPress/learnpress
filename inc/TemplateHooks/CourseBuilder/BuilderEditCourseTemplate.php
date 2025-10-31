@@ -64,7 +64,7 @@ class BuilderEditCourseTemplate {
 		$html_edit_features = $this->edit_featured_image( $course_model );
 		$html_edit_tags     = $this->edit_tags( $course_model );
 		$section            = [
-			'wrapper'                => '<div class="cb-section__content">',
+			'wrapper'                => sprintf( '<div class="cb-section__course-overview" data-course-id="%s">', $cousre_id ),
 			'header'                 => $html_header,
 			'edit_title'             => $html_edit_title,
 			'edit_desc'              => $html_edit_desc,
@@ -81,7 +81,7 @@ class BuilderEditCourseTemplate {
 
 	public function header_overview( CourseModel $course_model ) {
 		$status     = $course_model->get_status();
-		$btn_update = sprintf( '<div class="cb-button cb-btn-update">%s</div>', $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
+		$btn_update = sprintf( '<div class="cb-button cb-btn-update" data-title-update="%s" data-title-publish="%s">%s</div>', __( 'Update', 'learnpress' ), __( 'Publish', 'learnpress' ), $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
 		$btn_draft  = sprintf( '<div class="cb-button cb-btn-darft">%s</div>', __( 'Save Draft', 'learnpress' ) );
 		$btn_trash  = sprintf( '<div class="cb-button cb-btn-trash">%s</div>', __( 'Trash', 'learnpress' ) );
 		$header     = [
@@ -102,7 +102,7 @@ class BuilderEditCourseTemplate {
 		$edit = [
 			'wrapper'     => '<div class="cb-course-edit-title">',
 			'label'       => sprintf( '<label for="title" class="cb-course-edit-title__label">%s</label>', __( 'Course Title', 'learnpress' ) ),
-			'input'       => sprintf( '<input type="text" name="post_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', $course_model->get_title() ),
+			'input'       => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', $course_model->get_title() ),
 			'wrapper_end' => '</div>',
 		];
 
@@ -140,8 +140,12 @@ class BuilderEditCourseTemplate {
 
 	public function edit_categories( CourseModel $course_model ) {
 		$course_cat  = $course_model->get_categories();
-		$categories  = ListCourseCategories::get_all_categories_id_name( [] );
-		$btn_add_cat = sprintf( '<button class="btn-add-new">%s</button>', __( 'Add New Category', 'learnpress' ) );
+		$categories  = ListCourseCategories::get_all_categories_id_name(
+			[
+				'hide_empty' => false,
+			]
+		);
+		$btn_add_cat = sprintf( '<button class="cb-course-edit-category__btn-add-new">%s</button>', __( 'Add New Category', 'learnpress' ) );
 
 		$selected_cat_ids = array_map(
 			function ( $term ) {
@@ -163,14 +167,17 @@ class BuilderEditCourseTemplate {
 		}
 
 		$edit = [
-			'wrapper'              => '<div class="cb-course-edit-categories__wrapper">',
-			'label'                => sprintf( '<label for="title" class="cb-course-edit-categories__label">%s</label>', __( 'Course Categories', 'learnpress' ) ),
-			'wrapper_checkbox'     => '<div class="cb-course-edit-categories__checkbox-wrapper">',
-			'checkbox'             => $html_checkbox,
-			'wrapper_checkbox_end' => '</div>',
-			'btn_add_new'          => $btn_add_cat,
-			'form_add_term'        => '<div class="cb-course-edit-terms__form-add-category" style="display:none;"><input type="text" class="cb-course-edit-category__input" placeholder="' . esc_attr__( 'Enter Category Name', 'learnpress' ) . '"/><button type="button" class="cb-course-edit-category__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button></div>',
-			'wrapper_end'          => '</div>',
+			'wrapper'                       => '<div class="cb-course-edit-categories__wrapper">',
+			'label'                         => sprintf( '<label for="title" class="cb-course-edit-categories__label">%s</label>', __( 'Course Categories', 'learnpress' ) ),
+			'wrapper_checkbox'              => '<div class="cb-course-edit-categories__checkbox-wrapper">',
+			'checkbox'                      => $html_checkbox,
+			'wrapper_checkbox_end'          => '</div>',
+			'btn_add_new'                   => $btn_add_cat,
+			'form_add_category_wrapper'     => '<div class="cb-course-edit-terms__form-add-category" style="display:none;">',
+			'input'                         => '<input type="text" class="cb-course-edit-category__input" placeholder="' . esc_attr__( 'Enter Category Name', 'learnpress' ) . '"/>',
+			'button'                        => '<button type="button" class="cb-course-edit-category__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button>',
+			'form_add_category_wrapper_end' => '</div>',
+			'wrapper_end'                   => '</div>',
 		];
 
 		return Template::combine_components( $edit );
@@ -178,7 +185,7 @@ class BuilderEditCourseTemplate {
 
 	public function edit_tags( CourseModel $course_model ) {
 		$course_terms = $course_model->get_tags();
-		$btn_add_cat  = sprintf( '<button class="btn-add-new">%s</button>', __( 'Add New Tag', 'learnpress' ) );
+		$btn_add_cat  = sprintf( '<button class="cb-course-edit-term__btn-add-new">%s</button>', __( 'Add New Tag', 'learnpress' ) );
 		$terms        = get_terms(
 			[
 				'taxonomy'   => LP_COURSE_TAXONOMY_TAG,
@@ -209,14 +216,17 @@ class BuilderEditCourseTemplate {
 		}
 
 		$edit = [
-			'wrapper'              => '<div class="cb-course-edit-terms__wrapper">',
-			'label'                => sprintf( '<label for="title" class="cb-course-edit-terms__label">%s</label>', __( 'Course Tags', 'learnpress' ) ),
-			'wrapper_checkbox'     => '<div class="cb-course-edit-terms__checkbox-wrapper">',
-			'checkbox'             => $html_checkbox,
-			'wrapper_checkbox_end' => '</div>',
-			'btn_add_new'          => $btn_add_cat,
-			'form_add_term'        => '<div class="cb-course-edit-terms__form-add-term" style="display:none;"><input type="text" class="cb-course-edit-terms__input" placeholder="' . esc_attr__( 'Enter Tag Name', 'learnpress' ) . '"/><button type="button" class="cb-course-edit-terms__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button></div>',
-			'wrapper_end'          => '</>',
+			'wrapper'                   => '<div class="cb-course-edit-terms__wrapper">',
+			'label'                     => sprintf( '<label for="title" class="cb-course-edit-terms__label">%s</label>', __( 'Course Tags', 'learnpress' ) ),
+			'wrapper_checkbox'          => '<div class="cb-course-edit-terms__checkbox-wrapper">',
+			'checkbox'                  => $html_checkbox,
+			'wrapper_checkbox_end'      => '</div>',
+			'btn_add_new'               => $btn_add_cat,
+			'form_add_term_wrapper'     => '<div class="cb-course-edit-terms__form-add-term" style="display:none;">',
+			'input'                     => '<input type="text" class="cb-course-edit-terms__input" placeholder="' . esc_attr__( 'Enter Tag Name', 'learnpress' ) . '"/>',
+			'button'                    => '<button type="button" class="cb-course-edit-terms__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button>',
+			'form_add_term_wrapper_end' => '</div>',
+			'wrapper_end'               => '</div>',
 		];
 
 		return Template::combine_components( $edit );
