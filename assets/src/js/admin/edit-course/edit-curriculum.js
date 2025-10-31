@@ -6,8 +6,11 @@
  */
 
 import * as lpEditCurriculumShare from './edit-curriculum/share.js';
-import sectionEdit from './edit-curriculum/edit-section.js';
+import { EditSection } from './edit-curriculum/edit-section.js';
 import sectionItemEdit from './edit-curriculum/edit-section-item.js';
+import * as lpUtils from '../../utils.js';
+
+const sectionEdit = new EditSection();
 
 const { className } = lpEditCurriculumShare;
 
@@ -48,6 +51,22 @@ export class EditCourseCurriculum {
 	}
 
 	attachEvents() {
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: `${ sectionEdit.className.elBtnAddSection }`,
+				class: sectionEdit,
+				callBack: sectionEdit.addSection.name,
+				className: sectionEdit.className,
+			},
+		] );
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: `${ sectionEdit.className.elSectionTitleNewInput }`,
+				class: sectionEdit,
+				callBack: sectionEdit.addSection.name,
+				checkIsEventEnter: true,
+			},
+		] );
 		document.addEventListener( 'click', ( e ) => this.handleClick( e ) );
 		document.addEventListener( 'keydown', ( e ) => this.handleKeyDown( e ) );
 		document.addEventListener( 'keyup', ( e ) => this.handleKeyUp( e ) );
@@ -60,7 +79,6 @@ export class EditCourseCurriculum {
 		const target = e.target;
 
 		/*** Event of Section ***/
-		sectionEdit.addSection( e, target );
 		sectionEdit.setFocusTitleInput( e, target );
 		sectionEdit.toggleSection( e, target );
 		sectionEdit.updateSectionDescription( e, target );
@@ -93,7 +111,6 @@ export class EditCourseCurriculum {
 	handleKeyDown( e ) {
 		const target = e.target;
 		if ( e.key === 'Enter' ) {
-			sectionEdit.addSection( e, target );
 			sectionEdit.updateSectionTitle( e, target );
 			sectionEdit.updateSectionDescription( e, target );
 			sectionItemEdit.addItemToSection( e, target );

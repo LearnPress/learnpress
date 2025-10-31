@@ -38,6 +38,7 @@ class EditSection {
 		this.lpUtils = null;
 		this.updateCountItems = null;
 		this.sortAbleItem = null;
+		this.className = className;
 	}
 
 	init() {
@@ -96,18 +97,8 @@ class EditSection {
 	}
 
 	/* Add new section */
-	addSection( e, target, callBackNest ) {
-		let canHandle = false;
-
-		if ( target.closest( `${ className.elBtnAddSection }` ) ) {
-			canHandle = true;
-		} else if ( target.closest( `${ className.elSectionTitleNewInput }` ) && e.key === 'Enter' ) {
-			canHandle = true;
-		}
-
-		if ( ! canHandle ) {
-			return;
-		}
+	addSection( args ) {
+		const { e, target, callBackNest } = args;
 
 		const elAddNewSection = target.closest( `${ className.elDivAddNewSection }` );
 		if ( ! elAddNewSection ) {
@@ -610,5 +601,4 @@ class EditSection {
 }
 
 // Export singleton so other modules can call methods the same way as before
-export default new EditSection();
-export { EditSection, className };
+export { EditSection };
