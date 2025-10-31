@@ -521,7 +521,7 @@ class UserCourseModel extends UserItemModel {
 			$timestamp_remaining = 0;
 		}
 
-		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
+		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining,  $course->get_id(), $user->get_id() );
 	}
 
 	/**
@@ -573,7 +573,7 @@ class UserCourseModel extends UserItemModel {
 			$timestamp_remaining = 0;
 		}
 
-		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
+		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining, $courseModel->get_id(), $userModel->get_id() );
 	}
 
 	/**
