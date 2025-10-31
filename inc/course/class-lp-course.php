@@ -226,7 +226,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$timestamp_remaining = 0;
 			}
 
-			return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
+			return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining, $this->get_id(), $user->get_id() );
 		}
 
 		/**
