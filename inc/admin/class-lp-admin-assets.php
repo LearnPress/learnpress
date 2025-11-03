@@ -56,7 +56,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'theme'                    => get_stylesheet(),
 				'lp_version'               => LP()->version,
 				'lp_rest_url'              => get_rest_url(),
-				'lp_rest_load_ajax'        => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
+				'lp_rest_load_ajax'        => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ), // @deprecated 4.3.0
 				'lpAjaxUrl'                => LP_Settings::url_handle_lp_ajax(),
 				'nonce'                    => wp_create_nonce( 'wp_rest' ),
 				'courses_url'              => learn_press_get_page_link( 'courses' ),
