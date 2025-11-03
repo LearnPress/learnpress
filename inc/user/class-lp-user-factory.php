@@ -318,6 +318,17 @@ class LP_User_Factory {
 				$courseModel
 			);
 
+			if ( isset( $user_item_data['_lp_pms_keep_progress'] ) && $user_item_data['_lp_pms_keep_progress'] ) {
+				$keep_progress_items_course = true;
+				$is_update_user_item = true;
+				if ( $userCourse ) {
+					$user_item_data['user_item_id'] = $userCourse->get_user_item_id();
+					$user_item_data['graduation'] = $userCourse->graduation;
+					$user_item_data['start_time'] = $userCourse->start_time;
+				}
+				unset( $user_item_data['_lp_pms_keep_progress'] );
+			}
+
 			// Delete items old
 			if ( ! $keep_progress_items_course ) {
 				// Check if user is guest.
