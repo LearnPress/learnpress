@@ -174,7 +174,6 @@ class OpenAiService {
 		$data['lp_structure_data'] = [];
 
 		if ( isset( $data['choices'] ) ) {
-			$results = [];
 			foreach ( $data['choices'] as $choice ) {
 				if ( isset( $choice['message']['content'] ) ) {
 					$data['lp_structure_data'][] = LP_Helper::json_decode( $choice['message']['content'], true );
@@ -182,7 +181,7 @@ class OpenAiService {
 					$data['lp_structure_data'][] = LP_Helper::json_decode( $choice['text'], true );
 				}
 			}
-			return $results;
+			return $data;
 		} elseif ( isset( $data['output'] ) ) {
 			foreach ( $data['output'] as $output ) {
 				foreach ( $output['content'] as $content ) {

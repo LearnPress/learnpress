@@ -25,6 +25,7 @@ const showToast = ( message, status = 'success' ) => {
 	toastify.showToast();
 };
 let lp_structure_course;
+let popupSweetAlert = null;
 
 export class GenerateWithOpenai {
 	constructor() {
@@ -43,6 +44,16 @@ export class GenerateWithOpenai {
 					class="lp-btn-generate-title-with-ai lp-button button-secondary"
 					data-template="#lp-tmpl-edit-title-ai">
 					Generate Title with AI
+				</button>`
+			);
+		} );
+		lpUtils.lpOnElementReady( '#wp-content-media-buttons', ( el ) => {
+			el.insertAdjacentHTML(
+				'afterend',
+				`<button type="button"
+					class="lp-btn-generate-description-with-ai lp-button button-secondary"
+					data-template="#lp-tmpl-edit-description-ai">
+					Generate Description with AI
 				</button>`
 			);
 		} );
@@ -102,9 +113,9 @@ export class GenerateWithOpenai {
 			showCloseButton: true,
 			showConfirmButton: false,
 			didOpen: () => {
-				const popup = SweetAlert.getPopup();
+				popupSweetAlert = SweetAlert.getPopup();
 				// Click to show tomSelect style
-				popup.click();
+				popupSweetAlert.click();
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {}
@@ -190,11 +201,11 @@ export class GenerateWithOpenai {
 				showToast( message, status );
 
 				if ( status === 'success' ) {
-					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
-					elBtnNext.click();
-
 					const elPromptTextarea = form.querySelector( 'textarea[name=lp-openai-prompt-generated-field]' );
 					elPromptTextarea.value = data;
+
+					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
+					elBtnNext.click();
 				}
 			},
 			error: ( error ) => {
@@ -244,8 +255,8 @@ export class GenerateWithOpenai {
 					const elResults = form.querySelector( '.lp-ai-generated-results' );
 					elResults.innerHTML = data.lp_html_preview;
 
-					// const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
-					// elBtnNext.click();
+					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
+					elBtnNext.click();
 				}
 			},
 			error: ( error ) => {
@@ -267,6 +278,9 @@ export class GenerateWithOpenai {
 		const dataApply = target.dataset.apply;
 		const elPostTitle = document.querySelector( 'input[name=post_title]' );
 		elPostTitle.value = dataApply;
+		if ( popupSweetAlert ) {
+			SweetAlert.close();
+		}
 	}
 
 	copyGeneratedData( args ) {
@@ -275,10 +289,33 @@ export class GenerateWithOpenai {
 
 		const dataCopy = target.dataset.copy;
 
-		navigator.clipboard.writeText( dataCopy ).then( () => {
+		if ( navigator.clipboard ) {
+			navigator.clipboard.writeText( dataCopy ).then( () => {
+				showToast( 'Copied to clipboard!', 'success' );
+			} ).catch( ( err ) => {
+				showToast( 'Failed to copy text: ' + err, 'error' );
+			} );
+		} else {
+			// Fallback when clipboard API is unavailable
+			const textarea = document.createElement( 'textarea' );
+			textarea.value = dataCopy;
+			textarea.style.position = 'fixed';
+			textarea.style.left = '-9999px';
+			document.body.appendChild( textarea );
+			textarea.select();
+			try {
+				const successful = document.execCommand( 'copy' );
+				showToast( successful ? 'Copied to clipboard!' : 'Failed to copy text', successful ? 'success' : 'error' );
+			} catch ( err ) {
+				showToast( 'Failed to copy text: ' + err, 'error' );
+			}
+			document.body.removeChild( textarea );
+		}
+
+		/*navigator.clipboard.writeText( dataCopy ).then( () => {
 			showToast( 'Copied to clipboard!', 'success' );
 		} ).catch( ( err ) => {
 			showToast( 'Failed to copy text: ' + err, 'error' );
-		} );
+		} );*/
 	}
 }

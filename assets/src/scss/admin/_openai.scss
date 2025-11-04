@@ -749,6 +749,19 @@ $white: #FFFFFF;
 				}
 			}
 		}
+
+		textarea[name=lp-openai-prompt-generated-field] {
+			min-height: 300px;
+		}
+
+		textarea.lp-ai-string-result {
+			width: 100%;
+		}
+
+		.lp-ai-generated-results {
+			display: grid;
+			gap: 10px;
+		}
 	}
 
 	.lp-ai-course-data-preview-wrap {

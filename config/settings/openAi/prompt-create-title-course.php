@@ -18,19 +18,45 @@ $tone     = $params['tone'] ?? 'analytical';
 $length   = $params['length'] ?? 60;
 $output   = $params['output'] ?? 1;
 
-return <<<PROMPT
-You are an expert course title creator.
-Create a concise, compelling course title with the following details:
-- Topic: {$topic}
-- Goal: {$goal}
-- Audience: {$audience}
-- Tone: {$tone}
-- Language: {$language}
+return <<<XML
+<prompt>
+    <course_context>
+        <objective>
+            The primary goal of this course is: $course_objective
+        </objective>
+        <audience>
+            The target audience is: $audience
+        </audience>
+        <content_parameters>
+            <language>$language</language>
+            <tone>$tone</tone>
+        </content_parameters>
+    </course_context>
 
-Constraints:
-- The title must be {$length} characters.
-- Do not include quotation marks
-- Do not add explanation or extra text
+    <task_instructions>
+        You are an expert course title creator.
+		Create a concise, compelling course title with the following details:
+		- Topic: {$topic}
+		- Goal: {$goal}
 
-Generate {$output} different. Respond in JSON format exactly as an array of objects with the key 'title'. Example format: [{\"title\": \"Title 1\"}, {\"title\": \"Title 2\"}]. Do not include any text or explanation outside the JSON.
-PROMPT;
+        <structure_requirements>
+        	- Generate EXACTLY **{$output}** course title(s) in a JSON array.
+            - Each title MUST contain a relevant "title".
+        </structure_requirements>
+    </task_instructions>
+
+    <output_format>
+        - You MUST respond valid JSON array object.
+        - Do not include any introductory text, explanations, or markdown code fences like ```json.
+        - The JSON structure must strictly follow this example:
+        <json_example>
+			{
+				"titles": [
+					{ "title": "Compelling Course Title Here" },
+					{ "title": "Another Engaging Title" }
+				]
+			}
+        </json_example>
+    </output_format>
+</prompt>
+XML;

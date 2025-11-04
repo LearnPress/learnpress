@@ -80,7 +80,7 @@ class AdminEditCurriculumTemplate {
 		}
 
 		$coursePostModel = new CoursePostModel( $courseModel );
-		if ( $coursePostModel->check_capabilities_create() ) {
+		if ( ! $coursePostModel->check_capabilities_create() ) {
 			throw new Exception( __( 'You do not have permission to edit this course', 'learnpress' ) );
 		}
 

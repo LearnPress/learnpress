@@ -114,7 +114,7 @@ class AdminEditWithAITemplate {
 				esc_html__( 'Prompt', 'learnpress' )
 			),
 			'step_4'   => sprintf(
-				'<div class="step-item" data-step="3"><span class="step-number">3</span><span class="step-text">%s</span></div>',
+				'<div class="step-item" data-step="4"><span class="step-number">4</span><span class="step-text">%s</span></div>',
 				esc_html__( 'Result', 'learnpress' )
 			),
 			'wrap-end' => '</div>',
@@ -268,6 +268,39 @@ class AdminEditWithAITemplate {
 		];
 
 		return Template::combine_components( $components );
+	}
+
+	/**
+	 * @param int|null $index
+	 * @param string|null $title
+	 *
+	 * @return string
+	 */
+	public function html_list_results( int $index, string $title ): string {
+		$section = [
+			'wrap'         => '<div class="lp-ai-generated-result-item">',
+			'label'        => sprintf(
+				'<label>%s</label>',
+				sprintf( __( 'Title %d', 'learnpress' ), $index + 1 )
+			),
+			'textarea'     => sprintf(
+				'<textarea class="lp-ai-string-result">%s</textarea>',
+				esc_attr( $title )
+			),
+			'copy_button'  => sprintf(
+				'<button class="button lp-btn-copy" data-copy="%s" type="button">%s</button>',
+				esc_attr( $title ),
+				__( 'Copy', 'learnpress' )
+			),
+			'apply_button' => sprintf(
+				'<button class="button lp-btn-apply button-primary" data-apply="%s" type="button">%s</button>',
+				esc_attr( $title ),
+				__( 'Apply', 'learnpress' )
+			),
+			'wrap_end'     => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	public function html_edit_description_via_ai(): string {

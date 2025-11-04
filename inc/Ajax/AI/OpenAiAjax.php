@@ -10,6 +10,7 @@ use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
 use LearnPress\Services\OpenAiService;
 use LearnPress\TemplateHooks\Admin\AdminCreateCourseAITemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditWithAITemplate;
 use LP_Helper;
 use LP_Request;
 use LP_REST_Response;
@@ -88,7 +89,7 @@ class OpenAiAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Generate data course with prompt submitted
+	 * Create course with data generated
 	 */
 	public function openai_create_course() {
 		$response = new LP_REST_Response();
@@ -253,20 +254,14 @@ class OpenAiAjax extends AbstractAjax {
 			$lp_structure_data         = $result['lp_structure_data'] ?? [];
 			$result['lp_html_preview'] = '';
 			if ( count( $lp_structure_data ) > 0 ) {
-				foreach ( $lp_structure_data[0] as $index => $data_item ) {
+				$titles = $lp_structure_data[0];
+				if ( isset( $titles['titles'] ) ) {
+					$titles = $titles['titles'];
+				}
+
+				foreach ( $titles as $index => $data_item ) {
 					$title                      = $data_item['title'] ?? '';
-					$result['lp_html_preview'] .= sprintf(
-						'<div class="lp-ai-generated-title-item">
-							<label>%1$s</label>
-							<textarea>%2$s</textarea>
-							<button class="button lp-btn-copy" data-copy="%2$s" type="button">%3$s</button>
-							<button class="button lp-btn-apply button-primary" data-apply="%2$s" type="button">%4$s</button>
-						</div>',
-						sprintf( __( 'Title %d', 'learnpress' ), $index + 1 ),
-						esc_attr( $title ),
-						__( 'Copy', 'learnpress' ),
-						__( 'Apply', 'learnpress' ),
-					);
+					$result['lp_html_preview'] .= AdminEditWithAITemplate::instance()->html_list_results( $index, $title );
 				}
 			}
 
