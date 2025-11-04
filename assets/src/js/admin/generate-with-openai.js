@@ -41,7 +41,7 @@ export class GenerateWithOpenai {
 			el.insertAdjacentHTML(
 				'afterend',
 				`<button type="button"
-					class="lp-btn-generate-title-with-ai lp-button button-secondary"
+					class="lp-btn-generate-with-ai lp-btn-generate-title-with-ai lp-button button-secondary"
 					data-template="#lp-tmpl-edit-title-ai">
 					Generate Title with AI
 				</button>`
@@ -49,9 +49,9 @@ export class GenerateWithOpenai {
 		} );
 		lpUtils.lpOnElementReady( '#wp-content-media-buttons', ( el ) => {
 			el.insertAdjacentHTML(
-				'afterend',
+				'beforeend',
 				`<button type="button"
-					class="lp-btn-generate-description-with-ai lp-button button-secondary"
+					class="lp-btn-generate-with-ai lp-btn-generate-description-with-ai lp-button button-secondary"
 					data-template="#lp-tmpl-edit-description-ai">
 					Generate Description with AI
 				</button>`
@@ -64,7 +64,7 @@ export class GenerateWithOpenai {
 	events() {
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: '.lp-btn-generate-title-with-ai',
+				selector: '.lp-btn-generate-with-ai',
 				class: this,
 				callBack: this.showPopup.name,
 			},
@@ -192,6 +192,10 @@ export class GenerateWithOpenai {
 		const form = target.closest( 'form' );
 		let dataSend = JSON.parse( target.dataset.send );
 		dataSend = lpUtils.mergeDataWithDatForm( form, dataSend );
+		// For case generate description need title
+		dataSend.title = document.querySelector( 'input[name=post_title]' ).value;
+		// For case generate image, curriculum need description
+		dataSend.description = window.tinymce.get( 'content' ).getContent( { format: 'text' } );
 
 		// Ajax to generate prompt
 		const callBack = {
@@ -276,8 +280,19 @@ export class GenerateWithOpenai {
 		e.preventDefault();
 
 		const dataApply = target.dataset.apply;
-		const elPostTitle = document.querySelector( 'input[name=post_title]' );
-		elPostTitle.value = dataApply;
+		const dataTarget = target.dataset.target;
+
+		if ( dataTarget ) {
+			if ( dataTarget === 'set-wp-editor-content' ) {
+				this.setWPEditorContent( dataApply );
+			} else {
+				const elTarget = document.querySelector( dataTarget );
+				if ( elTarget ) {
+					elTarget.value = dataApply;
+				}
+			}
+		}
+
 		if ( popupSweetAlert ) {
 			SweetAlert.close();
 		}
@@ -317,5 +332,10 @@ export class GenerateWithOpenai {
 		} ).catch( ( err ) => {
 			showToast( 'Failed to copy text: ' + err, 'error' );
 		} );*/
+	}
+
+	setWPEditorContent( htmlContent ) {
+		const editor = window.tinymce.get( 'content' );
+		editor.setContent( htmlContent );
 	}
 }

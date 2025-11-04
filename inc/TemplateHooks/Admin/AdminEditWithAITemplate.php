@@ -77,15 +77,18 @@ class AdminEditWithAITemplate {
 				esc_html__( 'Next', 'learnpress' ),
 				Template::convert_data_to_json(
 					[
-						'action' => 'openai_generate_prompt_title',
-						'id_url' => 'generate_prompt_openai',
+						'action'         => 'openai_generate_prompt',
+						'lp-prompt-type' => 'course-title', // define type prompt to generate title.
+						'id_url'         => 'generate_prompt_openai',
 					]
 				),
 				esc_html__( 'Generate Prompt', 'learnpress' ),
 				Template::convert_data_to_json(
 					[
-						'action' => 'openai_generate_title',
-						'id_url' => 'submit_to_openai',
+						'action'         => 'openai_generate_data',
+						'lp-prompt-type' => 'course-title', // define type prompt to generate title.
+						'target-apply'   => 'input[name="post_title"]', // Click apply to apply title to this field.
+						'id_url'         => 'submit_to_openai',
 					]
 				),
 				esc_html__( 'Generate Title Course', 'learnpress' ),
@@ -271,30 +274,39 @@ class AdminEditWithAITemplate {
 	}
 
 	/**
-	 * @param int|null $index
-	 * @param string|null $title
+	 * HTML list results openAI returned.
+	 *
+	 * @param array $args
 	 *
 	 * @return string
 	 */
-	public function html_list_results( int $index, string $title ): string {
+	public function html_list_results( array $args ): string {
+		$index = $args['index'] ?? 0;
+		$value = $args['value'] ?? '';
+		// Target is element html to apply value.
+		$target = $args['target-apply'] ?? '';
+
 		$section = [
 			'wrap'         => '<div class="lp-ai-generated-result-item">',
 			'label'        => sprintf(
 				'<label>%s</label>',
-				sprintf( __( 'Title %d', 'learnpress' ), $index + 1 )
+				sprintf( __( 'Result %d', 'learnpress' ), $index + 1 )
 			),
 			'textarea'     => sprintf(
 				'<textarea class="lp-ai-string-result">%s</textarea>',
-				esc_attr( $title )
+				esc_attr( $value )
 			),
 			'copy_button'  => sprintf(
 				'<button class="button lp-btn-copy" data-copy="%s" type="button">%s</button>',
-				esc_attr( $title ),
+				esc_attr( $value ),
 				__( 'Copy', 'learnpress' )
 			),
 			'apply_button' => sprintf(
-				'<button class="button lp-btn-apply button-primary" data-apply="%s" type="button">%s</button>',
-				esc_attr( $title ),
+				'<button class="button lp-btn-apply button-primary"
+					data-apply="%s" type="button" data-target="%s">%s
+				</button>',
+				esc_attr( $value ),
+				esc_attr( $target ),
 				__( 'Apply', 'learnpress' )
 			),
 			'wrap_end'     => '</div>',
@@ -303,7 +315,229 @@ class AdminEditWithAITemplate {
 		return Template::combine_components( $section );
 	}
 
+	/***************** Description ************/
+	/**
+	 * HTML generate title with AI.
+	 *
+	 * @return string
+	 */
 	public function html_edit_description_via_ai(): string {
-		return '';
+		$components = [
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-description-ai">',
+			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'h2'                       => sprintf(
+				'<div class="content-title">%s</div>',
+				esc_html__( 'Generate Course Description', 'learnpress' )
+			),
+			'header'                   => $this->html_description_step_header(),
+			'form'                     => '<form class="lp-form-generate-data-ai">',
+			'wrap-fields'              => '<div class="lp-form-fields">',
+			'step_1'                   => $this->html_description_step_1(),
+			'step_2'                   => $this->html_description_step_2(),
+			'step_3'                   => $this->html_description_step_3(),
+			'step_4'                   => $this->html_description_step_4(),
+			'wrap-fields-end'          => '</div>',
+			'buttons'                  => sprintf(
+				'<div class="button-actions" data-step="1" data-step-max="4">
+					<button class="btn btn-secondary lp-btn-step lp-hidden" data-action="prev" type="button">&larr; %s</button>
+					<button class="btn btn-primary lp-btn-step" data-action="next" type="button">%s &rarr;</button>
+					<button class="lp-button btn-primary lp-btn-generate-prompt lp-hidden"
+						data-send="%s" type="button">%s
+					</button>
+					<button class="lp-button btn-primary lp-btn-call-open-ai lp-hidden"
+						data-send="%s" type="button">%s
+					</button>
+				</div>',
+				esc_html__( 'Previous', 'learnpress' ),
+				esc_html__( 'Next', 'learnpress' ),
+				Template::convert_data_to_json(
+					[
+						'action'         => 'openai_generate_prompt',
+						'lp-prompt-type' => 'course-description',
+						'id_url'         => 'generate_prompt_openai',
+					]
+				),
+				esc_html__( 'Generate Prompt', 'learnpress' ),
+				Template::convert_data_to_json(
+					[
+						'action'         => 'openai_generate_data',
+						'lp-prompt-type' => 'course-description',
+						'target-apply'   => 'set-wp-editor-content', // Click apply to apply title to this field.
+						'id_url'         => 'submit_to_openai',
+					]
+				),
+				esc_html__( 'Generate Description Course', 'learnpress' ),
+			),
+			'form-end'                 => '</form>',
+			'wrap-end'                 => '</div>',
+			'wrap-script-template-end' => '</script>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_description_step_header(): string {
+		$components = [
+			'wrap'     => '<div class="step-header">',
+			'step_1'   => sprintf(
+				'<div class="step-item active" data-step="1"><span class="step-number">1</span><span class="step-text">%s</span></div>',
+				esc_html__( 'Course Goal', 'learnpress' )
+			),
+			'step_2'   => sprintf(
+				'<div class="step-item" data-step="2"><span class="step-number">2</span><span class="step-text">%s</span></div>',
+				esc_html__( 'AI Settings', 'learnpress' )
+			),
+			'step_3'   => sprintf(
+				'<div class="step-item" data-step="3"><span class="step-number">3</span><span class="step-text">%s</span></div>',
+				esc_html__( 'Prompt', 'learnpress' )
+			),
+			'step_4'   => sprintf(
+				'<div class="step-item" data-step="4"><span class="step-number">4</span><span class="step-text">%s</span></div>',
+				esc_html__( 'Result', 'learnpress' )
+			),
+			'wrap-end' => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_description_step_1(): string {
+		$options = $this->config;
+
+		$components = [
+			'step'           => '<div class="step-content active" data-step="1">',
+			'title'          => sprintf(
+				'<div class="step-title">%s</div>',
+				esc_html__( 'Step 1 — Config Description', 'learnpress' ),
+			),
+			'description'    => sprintf(
+				'<p class="step-description">%s</p>',
+				esc_html__( 'Config your description you want.', 'learnpress' )
+			),
+			'describe-topic' => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<textarea type="text" name="topic">Create description about course learning Php</textarea>
+				</div>',
+				esc_html__( 'Describe what makes this course stand out?', 'learnpress' )
+			),
+			'length'         => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<input type="text" name="length" value="1000" />
+				</div>',
+				esc_html__( 'Description Length (characters)', 'learnpress' )
+			),
+			'step_close'     => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_description_step_2(): string {
+		$options = $this->config;
+
+		$components = [
+			'step'          => '<div class="step-content" data-step="2">',
+			'title'         => sprintf(
+				'<div class="step-title">%s</div>',
+				esc_html__( 'Step 2 — AI Settings', 'learnpress' ),
+			),
+			'description'   => sprintf(
+				'<p class="step-description">%s</p>',
+				esc_html__( 'Configure content quality controls for ChatGPT output.', 'learnpress' )
+			),
+			'form-grid'     => '<div class="form-grid">',
+			'audience'      => sprintf(
+				'<div class="form-group">
+					<label>%s</label>%s
+				</div>',
+				esc_html__( 'Target Audience', 'learnpress' ),
+				AdminTemplate::html_tom_select(
+					[
+						'name'          => 'target_audience',
+						'class_name'    => '',
+						'options'       => $options['audience'] ?? [],
+						'default_value' => 'Students',
+						'multiple'      => true,
+					]
+				)
+			),
+			'tone'          => sprintf(
+				'<div class="form-group">
+					<label for="swal-tone">%s</label>%s
+				</div>',
+				esc_html__( 'Tone', 'learnpress' ),
+				AdminTemplate::html_tom_select(
+					[
+						'name'          => 'tone',
+						'options'       => $options['tone'] ?? [],
+						'multiple'      => true,
+						'default_value' => [ 'Analytical' ],
+					]
+				)
+			),
+			'language'      => sprintf(
+				'<div class="form-group">
+					<label>%s</label>%s
+				</div>',
+				esc_html__( 'Language', 'learnpress' ),
+				AdminTemplate::html_tom_select(
+					[
+						'name'    => 'language',
+						'options' => $options['language'] ?? [],
+					]
+				)
+			),
+			'output'        => sprintf(
+				'<div class="form-group">
+					<label>%s</label>%s
+				</div>',
+				esc_html__( 'Outputs', 'learnpress' ),
+				'<input name="output" value="2" />'
+			),
+			'form-grid-end' => '</div>',
+			'step_close'    => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_description_step_3(): string {
+		$options = $this->config;
+
+		$components = [
+			'step'       => '<div class="step-content" data-step="3">',
+			'title'      => sprintf(
+				'<div class="step-title">%s</div>',
+				esc_html__( 'Step 3 — Prompt Generated', 'learnpress' ),
+			),
+			'prompt'     => sprintf(
+				'<div class="form-group">
+					<label>%s</label>%s
+				</div>',
+				esc_html__( 'Generated Prompt', 'learnpress' ),
+				'<textarea name="lp-openai-prompt-generated-field"></textarea>',
+			),
+			'step_close' => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_description_step_4(): string {
+		$options = $this->config;
+
+		$components = [
+			'step'       => '<div class="step-content" data-step="4">',
+			'title'      => sprintf(
+				'<div class="step-title">%s</div>',
+				esc_html__( 'Step 4 — Result', 'learnpress' ),
+			),
+			'results'    => '<div class="lp-ai-generated-results"></div>',
+			'step_close' => '</div>',
+		];
+
+		return Template::combine_components( $components );
 	}
 }

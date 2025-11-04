@@ -206,7 +206,7 @@ class OpenAiAjax extends AbstractAjax {
 	/**
 	 * Generate prompt title with AI
 	 */
-	public function openai_generate_prompt_title() {
+	public function openai_generate_prompt() {
 		$response = new LP_REST_Response();
 
 		try {
@@ -216,9 +216,24 @@ class OpenAiAjax extends AbstractAjax {
 				throw new Exception( __( 'You do not have permission to perform this action.', 'learnpress' ) );
 			}
 
-			$data_str = LP_Request::get_param( 'data' );
-			$params   = LP_Helper::json_decode( $data_str, true );
-			$prompt   = Config::instance()->get( 'prompt-create-title-course', 'settings/openAi', compact( 'params' ) );
+			$data_str       = LP_Request::get_param( 'data' );
+			$params         = LP_Helper::json_decode( $data_str, true );
+			$lp_prompt_type = $params['lp-prompt-type'] ?? '';
+
+			switch ( $lp_prompt_type ) {
+				case 'course-description':
+					$prompt = Config::instance()->get( 'prompt-create-description-course', 'settings/openAi', compact( 'params' ) );
+					break;
+				case 'course-title':
+					$prompt = Config::instance()->get( 'prompt-create-title-course', 'settings/openAi', compact( 'params' ) );
+					break;
+				case $lp_prompt_type:
+					$prompt = apply_filters( 'lp-prompt-type', '', $lp_prompt_type, $params );
+					break;
+				default:
+					$prompt = '';
+					break;
+			}
 
 			$response->data    = $prompt;
 			$response->status  = 'success';
@@ -233,7 +248,7 @@ class OpenAiAjax extends AbstractAjax {
 	/**
 	 * Generate data course with prompt submitted
 	 */
-	public function openai_generate_title() {
+	public function openai_generate_data() {
 		$response = new LP_REST_Response();
 
 		try {
@@ -254,14 +269,30 @@ class OpenAiAjax extends AbstractAjax {
 			$lp_structure_data         = $result['lp_structure_data'] ?? [];
 			$result['lp_html_preview'] = '';
 			if ( count( $lp_structure_data ) > 0 ) {
-				$titles = $lp_structure_data[0];
-				if ( isset( $titles['titles'] ) ) {
-					$titles = $titles['titles'];
-				}
+				$lp_prompt_type = $params['lp-prompt-type'] ?? '';
+				switch ( $lp_prompt_type ) {
+					case 'course-description':
+					case 'course-title':
+						$results = $lp_structure_data[0];
+						if ( isset( $results['results'] ) ) {
+							$results = $results['results'];
+						}
 
-				foreach ( $titles as $index => $data_item ) {
-					$title                      = $data_item['title'] ?? '';
-					$result['lp_html_preview'] .= AdminEditWithAITemplate::instance()->html_list_results( $index, $title );
+						foreach ( $results as $index => $data_item ) {
+							$data_item                  = $data_item['item'] ?? '';
+							$args                       = [
+								'index'        => $index,
+								'value'        => $data_item,
+								'target-apply' => $params['target-apply'] ?? '',
+							];
+							$result['lp_html_preview'] .= AdminEditWithAITemplate::instance()->html_list_results( $args );
+						}
+						break;
+					case $lp_prompt_type:
+						$result['lp_html_preview'] = apply_filters( 'lp-openai-render-data-generated', '', $lp_prompt_type, $lp_structure_data );
+						break;
+					default:
+						break;
 				}
 			}
 

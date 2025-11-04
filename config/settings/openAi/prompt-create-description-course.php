@@ -7,6 +7,7 @@ if ( ! isset( $params ) ) {
 }
 
 // Course Intent
+$title            = $params['title'] ?? '';
 $topic            = $params['topic'] ?? '';
 $goal             = $params['goals'] ?? '';
 $course_objective = trim( $params['course_objective'] ?? '' );
@@ -15,7 +16,7 @@ $course_objective = trim( $params['course_objective'] ?? '' );
 $language = $params['language'] ?? 'English';
 $audience = $params['audience'] ?? 'Students';
 $tone     = $params['tone'] ?? 'analytical';
-$length   = $params['length'] ?? 60;
+$length   = $params['length'] ?? 200;
 $output   = $params['output'] ?? 1;
 
 return <<<XML
@@ -31,14 +32,17 @@ return <<<XML
     </course_context>
 
     <task_instructions>
-        You are an expert course title creator.
-		Create a concise, compelling course title with the following details:
-		- Topic: {$topic}
-		- Goal: {$goal}
+        You are an expert course description creator.
+		Create a course description directly based on the following:
+		Course Title: {$title}
+		Topic: {$topic}
+		Paragraph number: 1
+		Goal: Course about Subject "$title", content have html like list, heading h3, paragraph to make content easy to read and eye-catching.
 
         <structure_requirements>
-			- The title must not exceed {$length} characters.
-        	- Generate EXACTLY **{$output}** course title(s) in a JSON array.
+        	- The description must not exceed {$length} characters.
+        	- Generate EXACTLY **{$output}** course description(s) in a JSON array.
+            - Each item MUST contain a relevant "item".
         </structure_requirements>
     </task_instructions>
 
@@ -49,8 +53,8 @@ return <<<XML
         <json_example>
 			{
 				"results": [
-					{ "item": "Compelling Course Title Here" },
-					{ "item": "Another Engaging Title" }
+					{ "item": "Compelling Course Description Here" },
+					{ "item": "Another Engaging Description" }
 				]
 			}
         </json_example>
