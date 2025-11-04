@@ -83,6 +83,10 @@
 		transition: background-color 0.2s;
 	}
 
+	.cb-btn-back a {
+		text-decoration: none;
+	}
+
 	.cb-btn-add-new:hover {
 		background-color: #333;
 	}
@@ -104,7 +108,6 @@
 	.course {
 		background: #fff;
 		border-radius: 20px;
-		overflow: hidden;
 		box-shadow: 0 2px 8px rgba( 0, 0, 0, 0.08 );
 		transition: all 0.3s;
 	}
@@ -142,7 +145,12 @@
 	}
 
 	.wap-course-title {
+		margin-top: 0px;
 		margin-bottom: 12px;
+	}
+
+	.wap-course-title a {
+		text-decoration: none;
 	}
 
 	.course-permalink {
@@ -159,6 +167,7 @@
 	}
 
 	.course-title {
+		text-decoration: none;
 		line-height: 1.4;
 	}
 
@@ -243,10 +252,62 @@
 		font-size: 18px;
 	}
 
+	.highlight-new-course {
+		box-shadow: #c8b4fb 0px 0px 20px 1px;
+	}
+
 	.course-action {
-		padding: 15px 20px;
+		position: relative;
 		display: flex;
+		align-items: flex-start;
 		gap: 10px;
+	}
+
+	.course-action-editor {
+		padding: 15px 0 15px 20px;
+	}
+
+	.course-action-expanded {
+		cursor: pointer;
+		padding: 15px 20px 15px 0;
+	}
+
+	.course-action-expanded__items {
+		display: flex;
+		position: absolute;
+		min-width: 160px;
+		top: 0;
+		right: 0;
+		transform: translate( 100%, 10px );
+		padding: 10px;
+		flex-direction: column;
+		background-color: #fff;
+		border-radius: 12px;
+		box-shadow: rgba( 0, 0, 0, 0.1 ) 0px 4px 12px;
+		font-size: 16px;
+		font-weight: 500;
+
+		&.active {
+			display: flex !important;
+		}
+
+		.course-action-expanded__view,
+		.course-action-expanded__duplicate,
+		.course-action-expanded__delete {
+			padding: 10px;
+			cursor: pointer;
+			text-decoration: none;
+			border-radius: 6px;
+
+			&:hover {
+				background-color: #f5f5f5;
+			}
+		}
+	}
+
+	.course-action-expanded:hover + .course-action-expanded__items,
+	.course-action-expanded__items:hover {
+		display: flex !important;
 	}
 
 	.course-action .wap-course-title {
@@ -311,14 +372,15 @@
 	}
 
 	.btn-edit-course {
-		border: 1px solid #1e1e1e;
-		text-decoration: none;
-		font-size: 16px;
-		border-radius: 8px;
-		padding: 5px 15px;
 		display: flex;
 		align-items: center;
+		text-decoration: none;
+		font-size: 16px;
+		font-weight: 500;
+		border-radius: 8px;
+		padding: 5px 15px;
 		gap: 5px;
+		border: 1px solid #1e1e1e;
 
 		svg {
 			width: 1rem;
@@ -327,6 +389,8 @@
 	}
 
 	.course-status {
+		display: flex;
+
 		span {
 			font-size: 14px;
 			padding: 5px 20px;

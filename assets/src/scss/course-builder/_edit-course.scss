@@ -107,12 +107,12 @@
 		gap: 60px;
 	}
 
-	.cb-course-edit-terms__wrapper,
+	.cb-course-edit-tags__wrapper,
 	.cb-course-edit-categories__wrapper {
 		flex: 1;
 	}
 
-	.cb-course-edit-terms__checkbox-wrapper,
+	.cb-course-edit-tags__checkbox-wrapper,
 	.cb-course-edit-categories__checkbox-wrapper {
 		display: flex;
 		gap: 10px 40px;
@@ -135,7 +135,7 @@
 	}
 
 	/* Course Tags Section */
-	.cb-course-edit-terms__wrapper {
+	.cb-course-edit-tags__wrapper {
 		margin-bottom: 24px;
 	}
 
@@ -338,7 +338,9 @@
 	}
 
 	.cb-course-edit-category__btn-add-new,
-	.cb-course-edit-term__btn-add-new {
+	.cb-course-edit-tag__btn-add-new,
+	.cb-course-edit-category__btn-cancel,
+	.cb-course-edit-tag__btn-cancel {
 		font-size: 16px;
 		margin-top: 15px;
 		padding: 5px 0;
@@ -348,13 +350,13 @@
 	}
 
 	.cb-course-edit-terms__form-add-category,
-	.cb-course-edit-terms__form-add-term {
+	.cb-course-edit-terms__form-add-tag {
 		display: flex;
 		gap: 10px;
 	}
 
 	.cb-course-edit-category__input,
-	.cb-course-edit-terms__input {
+	.cb-course-edit-tags__input {
 		width: 100%;
 		padding: 10px 12px;
 		font-size: 14px;
@@ -364,12 +366,18 @@
 	}
 
 	.cb-course-edit-category__btn-save,
-	.cb-course-edit-terms__btn-save {
+	.cb-course-edit-tags__btn-save {
 		background: #1e1e1e;
 		color: white;
 		border-radius: 5px;
 		padding: 5px 20px;
 		border: 0;
+
+		&.loading {
+			pointer-events: none;
+			opacity: 0.8;
+			@include loading();
+		}
 	}
 
 	.cb-section__header {
