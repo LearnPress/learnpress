@@ -7,14 +7,18 @@ const className = {
 	elBtnUpdateCourse: '.cb-btn-update',
 	elBtnDraftCourse: '.cb-btn-darft',
 	elBtnTrashCourse: '.cb-btn-trash',
+	elWrapperCheckBoxCategory: '.cb-course-edit-categories__checkbox-wrapper',
 	elFormCategoryAddNew: '.cb-course-edit-terms__form-add-category',
-	elBtnAddCategoryNew: '.cb-course-edit-category__btn-add-new ',
+	elBtnAddCategoryNew: '.cb-course-edit-category__btn-add-new',
+	elBtnCancelCategoryNew: '.cb-course-edit-category__btn-cancel',
 	elBtnSaveCategory: '.cb-course-edit-category__btn-save',
 	elInputCategory: '.cb-course-edit-category__input',
-	elFormTermAddNew: '.cb-course-edit-terms__form-add-term',
-	elBtnAddTermNew: '.cb-course-edit-term__btn-add-new ',
-	elBtnSaveTerm: '.cb-course-edit-terms__btn-save',
-	elInputAddTerm: 'cb-course-edit-terms__input',
+	elWrapperCheckBoxTag: '.cb-course-edit-tags__checkbox-wrapper',
+	elFormTagAddNew: '.cb-course-edit-terms__form-add-tag',
+	elBtnAddTagNew: '.cb-course-edit-tag__btn-add-new',
+	elBtnCancelTagNew: '.cb-course-edit-tag__btn-cancel',
+	elBtnSaveTag: '.cb-course-edit-tags__btn-save',
+	elInputAddTag: '.cb-course-edit-tags__input',
 	elBtnRemoveFeatured: '.cb-remove-featured-image',
 	elBtnSetFeatured: '.cb-set-featured-image',
 	elFeaturedImagePreview: '.cb-featured-image-preview',
@@ -85,10 +89,10 @@ const getCourseDataForUpdate = () => {
 		data.course_categories.push( checkbox.value );
 	} );
 
-	data.course_terms = [];
-	const tagCheckboxes = document.querySelectorAll( 'input[name="course_terms[]"]:checked' );
+	data.course_tags = [];
+	const tagCheckboxes = document.querySelectorAll( 'input[name="course_tags[]"]:checked' );
 	tagCheckboxes.forEach( ( checkbox ) => {
-		data.course_terms.push( checkbox.value );
+		data.course_tags.push( checkbox.value );
 	} );
 
 	const thumbnailInput = document.querySelector( className.elThumbnailInput );
@@ -142,8 +146,8 @@ const updateCourse = ( e, target ) => {
 		dataSend.course_categories = courseData.course_categories.join( ',' );
 	}
 
-	if ( courseData.course_terms && courseData.course_terms.length > 0 ) {
-		dataSend.course_terms = courseData.course_terms.join( ',' );
+	if ( courseData.course_tags && courseData.course_tags.length > 0 ) {
+		dataSend.course_tags = courseData.course_tags.join( ',' );
 	}
 
 	if ( courseData.course_thumbnail_id ) {
@@ -152,8 +156,14 @@ const updateCourse = ( e, target ) => {
 
 	const callBack = {
 		success: ( response ) => {
-			const { status, message } = response;
+			const { status, message, data } = response;
 			showToast( message, status );
+
+			if ( data?.course_id_new ) {
+				const currentUrl = window.location.href;
+				const newUrl = currentUrl.replace( /post-new\/?/, `${ data.course_id_new }/` );
+				window.location.href = newUrl;
+			}
 		},
 		error: ( error ) => {
 			showToast( error.message || error, 'error' );
@@ -202,21 +212,33 @@ const trashCourse = ( e, target ) => {
 };
 
 const toggleAddCategoryForm = ( e, target ) => {
-	const elBtnAddCategoryNew = target.closest( `${ className.elBtnAddCategoryNew }` );
-	if ( ! elBtnAddCategoryNew ) {
+	let elBtnAddCategoryNew = target.closest( `${ className.elBtnAddCategoryNew }` );
+	let elBtnCancelCategoryNew = target.closest( `${ className.elBtnCancelCategoryNew }` );
+	if ( ! elBtnAddCategoryNew && ! elBtnCancelCategoryNew ) {
 		return;
+	}
+
+	const isVisible = elBtnAddCategoryNew ? true : false;
+
+	if ( ! elBtnAddCategoryNew ) {
+		elBtnAddCategoryNew = document.querySelector( className.elBtnAddCategoryNew );
+	}
+
+	if ( ! elBtnCancelCategoryNew ) {
+		elBtnCancelCategoryNew = document.querySelector( className.elBtnCancelCategoryNew );
 	}
 
 	const form = document.querySelector( className.elFormCategoryAddNew );
 
 	if ( form ) {
-		const isVisible = form.style.display !== 'none';
-		form.style.display = isVisible ? 'none' : 'flex';
-		if ( elBtnAddCategoryNew ) {
-			elBtnAddCategoryNew.textContent = isVisible ? 'Add New Category' : 'Cancel';
-		}
-
 		if ( ! isVisible ) {
+			form.style.display = 'none';
+			elBtnCancelCategoryNew.style.display = 'none';
+			elBtnAddCategoryNew.style.display = 'inline-block';
+		} else {
+			elBtnAddCategoryNew.style.display = 'none';
+			elBtnCancelCategoryNew.style.display = 'inline-block';
+			form.style.display = 'flex';
 			const input = form.querySelector( '.cb-course-edit-category__input' );
 			if ( input ) {
 				setTimeout( () => input.focus(), 100 );
@@ -226,143 +248,174 @@ const toggleAddCategoryForm = ( e, target ) => {
 };
 
 const addNewCategory = ( e, target ) => {
-	const elBtnSaveCategory = target.closest( `${ className.elBtnSaveCategory }` );
-	const elInputCategory = target.closest( className.elInputCategory );
+	if ( ! target && e ) {
+		target = e.target;
+	}
+
+	let canHandle = false;
+
+	let elBtnSaveCategory = target.closest( className.elBtnSaveCategory );
+	let elInputCategory = target.closest( className.elInputCategory );
+
+	if ( elBtnSaveCategory ) {
+		canHandle = true;
+	} else if ( elInputCategory && e.key === 'Enter' ) {
+		canHandle = true;
+	}
+
+	if ( ! canHandle ) {
+		return;
+	}
+
+	if ( ! elBtnSaveCategory ) {
+		elBtnSaveCategory = document.querySelector( className.elBtnSaveCategory );
+	}
+
+	if ( ! elInputCategory ) {
+		elInputCategory = document.querySelector( className.elInputCategory );
+	}
+
 	if ( ! elBtnSaveCategory && ! elInputCategory ) {
 		return;
 	}
 
-	const elInputCategory = document.querySelector( className.elInputCategory );
-	const categoryValue = elInputCategory ? elInputCategory.value.trim() : '';
+	lpUtils.lpSetLoadingEl( elBtnSaveCategory, 1 );
 
-	if ( ! categoryName ) {
-		return;
-	}
+	const categoryName = elInputCategory.value?.trim() ?? '';
 
-	const formData = new FormData();
-	formData.append( 'action', 'add_course_category' );
-	formData.append( 'category_name', categoryName );
+	const dataSend = {
+		action: 'add_course_category',
+		args: {
+			id_url: 'add-course-category',
+		},
+		name: categoryName ?? '',
+	};
 
-	const postId = document.querySelector( className.elDataCourse )?.getAttribute( 'data-course-id' );
-	if ( postId ) {
-		formData.append( 'post_id', postId );
-	}
+	const callBack = {
+		success: ( response ) => {
+			const { status, message, data } = response;
+			showToast( message, status );
 
-	fetch( ajaxurl || '/wp-admin/admin-ajax.php', {
-		method: 'POST',
-		body: formData,
-		credentials: 'same-origin',
-	} )
-		.then( ( response ) => response.json() )
-		.then( ( data ) => {
-			console.log( 'Category added:', data );
-
-			if ( data.success && data.data ) {
-				const wrapper = document.querySelector( '.cb-course-edit-categories__wrapper' );
-				const btnAddNew = wrapper.querySelector( '.btn-add-new' );
-
-				const newCheckbox = document.createElement( 'div' );
-				newCheckbox.className = 'cb-course-edit-categories__checkbox';
-				newCheckbox.innerHTML = `
-          <input type="checkbox" name="course_categories[]" value="${ data.data.term_id }" 
-                 id="course_category_${ data.data.term_id }" checked="checked">
-          <label for="course_category_${ data.data.term_id }">${ data.data.name }</label>
-        `;
-
-				wrapper.insertBefore( newCheckbox, btnAddNew );
-
-				// Reset form
-				input.value = '';
-				toggleAddCategoryForm();
-
-				alert( 'Category đã được thêm thành công!' );
-			} else {
-				alert( 'Lỗi: ' + ( data.message || 'Không thể thêm category' ) );
+			if ( data?.html ) {
+				const wrapper = document.querySelector( className.elWrapperCheckBoxCategory );
+				wrapper.insertAdjacentHTML( 'beforeend', data.html );
+				elInputCategory.value = '';
+				const elBtnCancelCategoryNew = document.querySelector( className.elBtnCancelCategoryNew );
+				toggleAddCategoryForm( e, elBtnCancelCategoryNew );
 			}
-		} )
-		.catch( ( error ) => {
-			console.error( 'Error adding category:', error );
-			alert( 'Có lỗi xảy ra khi thêm category!' );
-		} );
+		},
+		error: ( error ) => {
+			showToast( error.message || error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elBtnSaveCategory, 0 );
+		},
+	};
+
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
 const toggleAddTagForm = ( e, target ) => {
-	const elBtnAddTermNew = target.closest( `${ className.elBtnAddTermNew }` );
-	if ( ! elBtnAddTermNew ) {
+	let elBtnAddTagNew = target.closest( `${ className.elBtnAddTagNew }` );
+	let elBtnCancelTagNew = target.closest( `${ className.elBtnCancelTagNew }` );
+	if ( ! elBtnAddTagNew && ! elBtnCancelTagNew ) {
 		return;
 	}
-	const form = document.querySelector( className.elFormTermAddNew );
+
+	const isVisible = elBtnAddTagNew ? true : false;
+
+	if ( ! elBtnAddTagNew ) {
+		elBtnAddTagNew = document.querySelector( className.elBtnAddTagNew );
+	}
+
+	if ( ! elBtnCancelTagNew ) {
+		elBtnCancelTagNew = document.querySelector( className.elBtnCancelTagNew );
+	}
+
+	const form = document.querySelector( className.elFormTagAddNew );
 
 	if ( form ) {
-		const isVisible = form.style.display !== 'none';
-		form.style.display = isVisible ? 'none' : 'flex';
-		if ( elBtnAddTermNew ) {
-			elBtnAddTermNew.textContent = isVisible ? 'Add New Tag' : 'Cancel';
-		}
-
-		if ( ! isVisible ) {
-			const input = form.querySelector( className.elInputAddTerm );
+		if ( isVisible ) {
+			form.style.display = 'flex';
+			elBtnAddTagNew.style.display = 'none';
+			elBtnCancelTagNew.style.display = 'inline-block';
+			const input = form.querySelector( className.elInputAddTag );
 			if ( input ) {
 				setTimeout( () => input.focus(), 100 );
 			}
+		} else {
+			form.style.display = 'none';
+			elBtnCancelTagNew.style.display = 'none';
+			elBtnAddTagNew.style.display = 'inline-block';
 		}
 	}
 };
 
-const addNewTag = () => {
-	const input = document.querySelector( '.cb-course-edit-terms__input' );
-	const tagName = input ? input.value.trim() : '';
+const addNewTag = ( e, target ) => {
+	if ( ! target && e ) {
+		target = e.target;
+	}
 
-	if ( ! tagName ) {
+	let canHandle = false;
+
+	let elBtnSaveTag = target.closest( className.elBtnSaveTag );
+	let elInputAddTag = target.closest( className.elInputAddTag );
+
+	if ( elBtnSaveTag ) {
+		canHandle = true;
+	} else if ( elInputAddTag && e.key === 'Enter' ) {
+		canHandle = true;
+	}
+
+	if ( ! canHandle ) {
 		return;
 	}
 
-	const formData = new FormData();
-	formData.append( 'action', 'add_course_tag' );
-	formData.append( 'tag_name', tagName );
-
-	const postId = document
-		.querySelector( className.elBtnSetFeatured )
-		?.getAttribute( 'data-post-id' );
-	if ( postId ) {
-		formData.append( 'post_id', postId );
+	if ( ! elBtnSaveTag ) {
+		elBtnSaveTag = document.querySelector( className.elBtnSaveTag );
 	}
 
-	fetch( ajaxurl || '/wp-admin/admin-ajax.php', {
-		method: 'POST',
-		body: formData,
-		credentials: 'same-origin',
-	} )
-		.then( ( response ) => response.json() )
-		.then( ( data ) => {
-			console.log( 'Tag added:', data );
+	if ( ! elInputAddTag ) {
+		elInputAddTag = document.querySelector( className.elInputAddTag );
+	}
 
-			if ( data.success && data.data ) {
-				const wrapper = document.querySelector( '.cb-course-edit-terms__wrapper' );
-				const btnAddNew = wrapper.querySelector( '.btn-add-new' );
+	if ( ! elBtnSaveTag && ! elInputAddTag ) {
+		return;
+	}
 
-				const newCheckbox = document.createElement( 'div' );
-				newCheckbox.className = 'cb-course-edit-terms__checkbox';
-				newCheckbox.innerHTML = `
-          <input type="checkbox" name="course_terms[]" value="${ data.data.term_id }" 
-                 id="course_category_${ data.data.term_id }" checked="checked">
-          <label for="course_category_${ data.data.term_id }">${ data.data.name }</label>
-        `;
+	lpUtils.lpSetLoadingEl( elBtnSaveTag, 1 );
 
-				wrapper.insertBefore( newCheckbox, btnAddNew );
+	const tagName = elInputAddTag.value?.trim() ?? '';
 
-				input.value = '';
-				toggleAddTagForm();
+	const dataSend = {
+		action: 'add_course_tag',
+		args: {
+			id_url: 'add-course-tag',
+		},
+		name: tagName ?? '',
+	};
 
-				alert( 'Tag đã được thêm thành công!' );
-			} else {
-				alert( 'Lỗi: ' + ( data.message || 'Không thể thêm tag' ) );
+	const callBack = {
+		success: ( response ) => {
+			const { status, message, data } = response;
+			showToast( message, status );
+			if ( data?.html ) {
+				const wrapper = document.querySelector( className.elWrapperCheckBoxTag );
+				wrapper.insertAdjacentHTML( 'beforeend', data.html );
+				elInputAddTag.value = '';
+				const elBtnCancelTagNew = document.querySelector( className.elBtnCancelTagNew );
+				toggleAddTagForm( e, elBtnCancelTagNew );
 			}
-		} )
-		.catch( ( error ) => {
-			console.error( 'Error adding tag:', error );
-			alert( 'Có lỗi xảy ra khi thêm tag!' );
-		} );
+		},
+		error: ( error ) => {
+			showToast( error.message || error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elBtnSaveTag, 0 );
+		},
+	};
+
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
 const openMediaUploader = ( e, target ) => {
@@ -420,16 +473,11 @@ const setFeaturedImage = ( attachment ) => {
 
 	const img = document.createElement( 'img' );
 	img.src = imgUrl;
-	// img.alt = attachment.alt || attachment.title || 'Featured Image';
-	// img.style.maxWidth = '100%';
-	// img.style.height = 'auto';
-	// img.style.display = 'block';
-
 	previewContainer.appendChild( img );
 
-	const setButton = document.querySelector( className.elBtnSetFeatured );
-	if ( setButton ) {
-		setButton.textContent = 'Change Featured Image';
+	const elRemoveButton = document.querySelector( className.elBtnRemoveFeatured );
+	if ( elRemoveButton ) {
+		elRemoveButton.style.display = 'inline-block';
 	}
 };
 
@@ -457,12 +505,8 @@ const removeFeaturedImage = ( e, target ) => {
 
 	thumbnailInput.value = '0';
 
-	if ( setButton ) {
-		setButton.textContent = 'Set Featured Image';
-	}
-
 	if ( elRemoveButton ) {
-		elRemoveButton.remove();
+		elRemoveButton.style.display = 'none';
 	}
 };
 

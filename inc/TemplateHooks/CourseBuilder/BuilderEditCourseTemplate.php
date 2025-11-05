@@ -46,8 +46,7 @@ class BuilderEditCourseTemplate {
 		$cousre_id = CourseBuilder::get_post_id();
 
 		if ( $cousre_id === 'post-new' ) {
-			echo 'post new';
-			return;
+			$course_model = '';
 		}
 
 		if ( absint( $cousre_id ) ) {
@@ -79,8 +78,8 @@ class BuilderEditCourseTemplate {
 		echo Template::combine_components( $section );
 	}
 
-	public function header_overview( CourseModel $course_model ) {
-		$status     = $course_model->get_status();
+	public function header_overview( $course_model ) {
+		$status     = ! empty( $course_model ) ? $course_model->get_status() : '';
 		$btn_update = sprintf( '<div class="cb-button cb-btn-update" data-title-update="%s" data-title-publish="%s">%s</div>', __( 'Update', 'learnpress' ), __( 'Publish', 'learnpress' ), $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
 		$btn_draft  = sprintf( '<div class="cb-button cb-btn-darft">%s</div>', __( 'Save Draft', 'learnpress' ) );
 		$btn_trash  = sprintf( '<div class="cb-button cb-btn-trash">%s</div>', __( 'Trash', 'learnpress' ) );
@@ -97,20 +96,20 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $header );
 	}
 
-	public function edit_title( CourseModel $course_model ) {
-
-		$edit = [
+	public function edit_title( $course_model ) {
+		$title = ! empty( $course_model ) ? $course_model->get_title() : '';
+		$edit  = [
 			'wrapper'     => '<div class="cb-course-edit-title">',
 			'label'       => sprintf( '<label for="title" class="cb-course-edit-title__label">%s</label>', __( 'Course Title', 'learnpress' ) ),
-			'input'       => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', $course_model->get_title() ),
+			'input'       => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', $title ),
 			'wrapper_end' => '</div>',
 		];
 
 		return Template::combine_components( $edit );
 	}
 
-	public function edit_desc( CourseModel $course_model ) {
-		$desc            = $course_model->get_description();
+	public function edit_desc( $course_model ) {
+		$desc            = ! empty( $course_model ) ? $course_model->get_description() : '';
 		$editor_id       = 'course_description_editor';
 		$editor_settings = array(
 			'textarea_name' => 'course_description',
@@ -138,14 +137,15 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
-	public function edit_categories( CourseModel $course_model ) {
-		$course_cat  = $course_model->get_categories();
+	public function edit_categories( $course_model ) {
+		$course_cat  = ! empty( $course_model ) ? $course_model->get_categories() : [];
 		$categories  = ListCourseCategories::get_all_categories_id_name(
 			[
 				'hide_empty' => false,
 			]
 		);
 		$btn_add_cat = sprintf( '<button class="cb-course-edit-category__btn-add-new">%s</button>', __( 'Add New Category', 'learnpress' ) );
+		$btn_cancel  = sprintf( '<button class="cb-course-edit-category__btn-cancel"  style="display:none;">%s</button>', __( 'Cancel', 'learnpress' ) );
 
 		$selected_cat_ids = array_map(
 			function ( $term ) {
@@ -159,10 +159,7 @@ class BuilderEditCourseTemplate {
 		if ( ! empty( $categories ) ) {
 			foreach ( $categories as $category_id => $category_name ) {
 				$is_checked     = in_array( (int) $category_id, $selected_cat_ids, true );
-				$html_checkbox .= '<div class="cb-course-edit-categories__checkbox">';
-				$html_checkbox .= sprintf( '<input type="checkbox" name="course_categories[]" value="%s" id="course_category_%s" %s>', $category_id, $category_id, checked( $is_checked, true, false ) );
-				$html_checkbox .= sprintf( '<label for="course_category_%s">%s</label>', $category_id, $category_name );
-				$html_checkbox .= '</div>';
+				$html_checkbox .= $this->input_checkbox_category_item( $category_id, $category_name, $is_checked );
 			}
 		}
 
@@ -173,6 +170,7 @@ class BuilderEditCourseTemplate {
 			'checkbox'                      => $html_checkbox,
 			'wrapper_checkbox_end'          => '</div>',
 			'btn_add_new'                   => $btn_add_cat,
+			'btn_cancel'                    => $btn_cancel,
 			'form_add_category_wrapper'     => '<div class="cb-course-edit-terms__form-add-category" style="display:none;">',
 			'input'                         => '<input type="text" class="cb-course-edit-category__input" placeholder="' . esc_attr__( 'Enter Category Name', 'learnpress' ) . '"/>',
 			'button'                        => '<button type="button" class="cb-course-edit-category__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button>',
@@ -183,10 +181,11 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
-	public function edit_tags( CourseModel $course_model ) {
-		$course_terms = $course_model->get_tags();
-		$btn_add_cat  = sprintf( '<button class="cb-course-edit-term__btn-add-new">%s</button>', __( 'Add New Tag', 'learnpress' ) );
-		$terms        = get_terms(
+	public function edit_tags( $course_model ) {
+		$course_terms = ! empty( $course_model ) ? $course_model->get_tags() : [];
+		$btn_add_cat  = sprintf( '<button class="cb-course-edit-tag__btn-add-new">%s</button>', __( 'Add New Tag', 'learnpress' ) );
+		$btn_cancel   = sprintf( '<button class="cb-course-edit-tag__btn-cancel"  style="display:none;">%s</button>', __( 'Cancel', 'learnpress' ) );
+		$tags         = get_terms(
 			[
 				'taxonomy'   => LP_COURSE_TAXONOMY_TAG,
 				'hide_empty' => false,
@@ -194,7 +193,7 @@ class BuilderEditCourseTemplate {
 			]
 		);
 
-		$selected_term_ids = array_map(
+		$selected_tag_ids = array_map(
 			function ( $term ) {
 				return (int) $term->term_id;
 			},
@@ -203,39 +202,55 @@ class BuilderEditCourseTemplate {
 
 		$html_checkbox = '';
 
-		if ( ! empty( $terms ) ) {
-			foreach ( $terms as$term ) {
-				$term_id        = $term->term_id;
-				$term_name      = $term->name;
-				$is_checked     = in_array( (int) $term_id, $selected_term_ids, true );
-				$html_checkbox .= '<div class="cb-course-edit-terms__checkbox">';
-				$html_checkbox .= sprintf( '<input type="checkbox" name="course_terms[]" value="%s" id="course_category_%s" %s>', $term_id, $term_id, checked( $is_checked, true, false ) );
-				$html_checkbox .= sprintf( '<label for="course_category_%s">%s</label>', $term_id, $term_name );
-				$html_checkbox .= '</div>';
+		if ( ! empty( $tags ) ) {
+			foreach ( $tags as $tag ) {
+				$tag_id         = $tag->term_id;
+				$tag_name       = $tag->name;
+				$is_checked     = in_array( (int) $tag_id, $selected_tag_ids, true );
+				$html_checkbox .= $this->input_checkbox_tag_item( $tag_id, $tag_name, $is_checked );
 			}
 		}
 
 		$edit = [
-			'wrapper'                   => '<div class="cb-course-edit-terms__wrapper">',
-			'label'                     => sprintf( '<label for="title" class="cb-course-edit-terms__label">%s</label>', __( 'Course Tags', 'learnpress' ) ),
-			'wrapper_checkbox'          => '<div class="cb-course-edit-terms__checkbox-wrapper">',
-			'checkbox'                  => $html_checkbox,
-			'wrapper_checkbox_end'      => '</div>',
-			'btn_add_new'               => $btn_add_cat,
-			'form_add_term_wrapper'     => '<div class="cb-course-edit-terms__form-add-term" style="display:none;">',
-			'input'                     => '<input type="text" class="cb-course-edit-terms__input" placeholder="' . esc_attr__( 'Enter Tag Name', 'learnpress' ) . '"/>',
-			'button'                    => '<button type="button" class="cb-course-edit-terms__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button>',
-			'form_add_term_wrapper_end' => '</div>',
-			'wrapper_end'               => '</div>',
+			'wrapper'                  => '<div class="cb-course-edit-tags__wrapper">',
+			'label'                    => sprintf( '<label for="title" class="cb-course-edit-tags__label">%s</label>', __( 'Course Tags', 'learnpress' ) ),
+			'wrapper_checkbox'         => '<div class="cb-course-edit-tags__checkbox-wrapper">',
+			'checkbox'                 => $html_checkbox,
+			'wrapper_checkbox_end'     => '</div>',
+			'btn_add_new'              => $btn_add_cat,
+			'btn_cancel'               => $btn_cancel,
+			'form_add_tag_wrapper'     => '<div class="cb-course-edit-terms__form-add-tag" style="display:none;">',
+			'input'                    => '<input type="text" class="cb-course-edit-tags__input" placeholder="' . esc_attr__( 'Enter Tag Name', 'learnpress' ) . '"/>',
+			'button'                   => '<button type="button" class="cb-course-edit-tags__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button>',
+			'form_add_tag_wrapper_end' => '</div>',
+			'wrapper_end'              => '</div>',
 		];
 
 		return Template::combine_components( $edit );
 	}
 
-	public function edit_featured_image( CourseModel $course_model ) {
-		$post_id = $course_model->get_id();
+	public function input_checkbox_category_item( $term_id, $term_name, $is_checked ) {
+		$html  = '<div class="cb-course-edit-categories__checkbox">';
+		$html .= sprintf( '<input type="checkbox" name="course_categories[]" value="%s" id="course_category_%s" %s>', $term_id, $term_id, checked( $is_checked, true, false ) );
+		$html .= sprintf( '<label for="course_category_%s">%s</label>', $term_id, $term_name );
+		$html .= '</div>';
 
-		$thumbnail_id  = get_post_thumbnail_id( $post_id );
+		return $html;
+	}
+
+	public function input_checkbox_tag_item( $term_id, $term_name, $is_checked ) {
+		$html  = '<div class="cb-course-edit-terms__checkbox">';
+		$html .= sprintf( '<input type="checkbox" name="course_tags[]" value="%s" id="course_tag_%s" %s>', $term_id, $term_id, checked( $is_checked, true, false ) );
+		$html .= sprintf( '<label for="course_tag_%s">%s</label>', $term_id, $term_name );
+		$html .= '</div>';
+
+		return $html;
+	}
+
+	public function edit_featured_image( $course_model ) {
+		$post_id = ! empty( $course_model ) ? $course_model->get_id() : '';
+
+		$thumbnail_id  = ! empty( $post_id ) ? get_post_thumbnail_id( $post_id ) : '';
 		$thumbnail_url = '';
 		$thumbnail_alt = '';
 
@@ -273,12 +288,12 @@ class BuilderEditCourseTemplate {
 			$thumbnail_id ? __( 'Change Image', 'learnpress' ) : __( 'Set Featured Image', 'learnpress' )
 		);
 
-		if ( $thumbnail_id ) {
-			$featured_image_html .= sprintf(
-				'<button type="button" class="button cb-remove-featured-image">%s</button>',
-				__( 'Remove Image', 'learnpress' )
-			);
-		}
+		$featured_image_html .= sprintf(
+			'<button type="button" class="button cb-remove-featured-image" %s>%s</button>',
+			$thumbnail_id ? '' : 'style="display:none;"',
+			__( 'Remove Image', 'learnpress' ),
+		);
+
 		$featured_image_html .= '</div>';
 
 		$featured_image_html .= '</div>';
@@ -304,7 +319,7 @@ class BuilderEditCourseTemplate {
 		$cousre_id = CourseBuilder::get_post_id();
 
 		if ( $cousre_id === 'post-new' ) {
-			echo 'Please save Course before add Section';
+			echo __( 'Please save Course before add Section' );
 			return;
 		}
 
@@ -333,7 +348,7 @@ class BuilderEditCourseTemplate {
 		$cousre_id = CourseBuilder::get_post_id();
 
 		if ( $cousre_id === 'post-new' ) {
-			echo 'Please save Course before setting course';
+			echo __( 'Please save Course before setting course', 'learnpress' );
 			return;
 		}
 

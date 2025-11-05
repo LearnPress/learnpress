@@ -9,8 +9,11 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderEditCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
 use LP_Course_CURD;
 use LP_Course_Post_Type;
 use LP_Helper;
@@ -33,7 +36,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 
 		$params       = LP_Helper::json_decode( $params, true );
-		$course_id    = (int) $params['course_id'] ?? 0;
+		$course_id    = ! empty( $params['course_id'] ) ? (int) $params['course_id'] : 0;
 		$course_model = CoursePostModel::find( $course_id, true );
 		if ( empty( $course_model ) ) {
 			$params['insert'] = true;
@@ -62,17 +65,16 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			if ( $data['insert'] ) {
 				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
-				$terms      = ! empty( $data['course_terms'] ) ? array_map( 'absint', explode( ',', $data['course_terms'] ) ) : array();
+				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
 				$course_id  = wp_insert_post(
 					array(
 						'post_type'    => LP_COURSE_CPT,
 						'post_title'   => sanitize_text_field( $data['course_title'] ?? '' ),
 						'post_content' => wp_unslash( $data['course_description'] ?? '' ),
 						'post_status'  => ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish',
-						'post_name'    => sanitize_text_field( $data['course_permalink'] ),
 						'tax_input'    => array(
 							'course_category' => $categories,
-							'course_tag'      => $terms,
+							'course_tag'      => $tags,
 						),
 					),
 					true
@@ -91,7 +93,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
-				$terms      = ! empty( $data['course_terms'] ) ? array_map( 'absint', explode( ',', $data['course_terms'] ) ) : array();
+				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
 
 				$update = wp_update_post(
 					array(
@@ -102,7 +104,7 @@ class CourseBuilderAjax extends AbstractAjax {
 						'post_status'  => ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish',
 						'tax_input'    => array(
 							'course_category' => $categories,
-							'course_tag'      => $terms,
+							'course_tag'      => $tags,
 						),
 					)
 				);
@@ -152,8 +154,9 @@ class CourseBuilderAjax extends AbstractAjax {
 			$course_post_type = LP_Course_Post_Type::instance();
 			$course_post_type->save_post( $course_id, null, true );
 
-			$response->status  = 'success';
-			$response->message = $data['insert'] ? __( 'Insert course successfully!', 'learnpress' ) : __( 'Update course successfully!', 'learnpress' );
+			$response->status              = 'success';
+			$response->message             = $data['insert'] ? __( 'Insert course successfully!', 'learnpress' ) : __( 'Update course successfully!', 'learnpress' );
+			$response->data->course_id_new = $data['insert'] ? $course_id : '';
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -288,6 +291,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				throw new Exception( __( 'You are not allowed to duplicate this course', 'learnpress' ) );
 			}
 
+			if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
+				require_once LP_PLUGIN_PATH . 'inc/admin/lp-admin-functions.php';
+			}
+
 			$curd        = new LP_Course_CURD();
 			$new_item_id = $curd->duplicate(
 				$course_id,
@@ -309,9 +316,11 @@ class CourseBuilderAjax extends AbstractAjax {
 				throw new Exception( $new_item_id->get_error_message() );
 			}
 
-			$response->status   = 'success';
-			$response->data->id = $new_item_id;
-			$response->message  = __( 'Course duplicated successfully', 'learnpress' );
+			$course_model         = CourseModel::find( $new_item_id, true );
+			$html                 = BuilderTabCourseTemplate::render_course( $course_model );
+			$response->status     = 'success';
+			$response->data->html = $html;
+			$response->message    = __( 'Course duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -334,7 +343,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$co_instructor_ids = ! empty( $co_instructor_ids ) ? $co_instructor_ids : array();
 
 			if ( absint( $course_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) && ! in_array( get_current_user_id(), $co_instructor_ids ) ) {
-				throw new Exception( __( 'You are not allowed to delete this course', 'learnpress-frontend-editor' ) );
+				throw new Exception( __( 'You are not allowed to delete this course', 'learnpress' ) );
 			}
 
 			if ( $status === 'delete' ) {
@@ -365,28 +374,22 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 	}
 
-	public function add_category() {
+	public function add_course_category() {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
 
 		try {
-			$name       = sanitize_text_field( wp_unslash( $_REQUEST['name'] ?? '' ) );
-			$slug       = sanitize_title( wp_unslash( $_REQUEST['slug'] ?? '' ) );
-			$parent_id  = absint( $_REQUEST['parent_id'] ?? 0 );
-			$term_array = array(
-				'cat_name'        => $name,
-				'slug'            => $slug,
-				'category_parent' => $parent_id,
-			);
-
-			$term = wp_insert_term( $name, 'course_category', $term_array );
+			$data = self::check_valid();
+			$name = sanitize_text_field( $data['name'] ?? '' );
+			$term = wp_insert_term( $name, 'course_category', array() );
 
 			if ( is_wp_error( $term ) ) {
 				throw new Exception( $term->get_error_message() );
 			}
 
+			$html                 = BuilderEditCourseTemplate::instance()->input_checkbox_category_item( $term['term_id'], $name, false );
 			$response->status     = 'success';
-			$response->data->term = $term;
+			$response->data->html = $html;
 			$response->message    = __( 'Insert category successfully!', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
@@ -396,22 +399,22 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 	}
 
-	public function add_term() {
+	public function add_course_tag() {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
 
 		try {
-			$name = sanitize_text_field( wp_unslash( $_REQUEST['name'] ?? '' ) );
-			$slug = sanitize_title( wp_unslash( $_REQUEST['slug'] ?? '' ) );
-
-			$term = wp_insert_term( $name, 'course_tag', array( 'slug' => $slug ) );
+			$data = self::check_valid();
+			$name = sanitize_text_field( wp_unslash( $data['name'] ?? '' ) );
+			$term = wp_insert_term( $name, 'course_tag', array() );
 
 			if ( is_wp_error( $term ) ) {
 				throw new Exception( $term->get_error_message() );
 			}
 
+			$html                 = BuilderEditCourseTemplate::instance()->input_checkbox_tag_item( $term['term_id'], $name, false );
 			$response->status     = 'success';
-			$response->data->term = $term;
+			$response->data->html = $html;
 			$response->message    = __( 'Insert term successfully!', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {

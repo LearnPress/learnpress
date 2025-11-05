@@ -94,7 +94,8 @@
 		margin-bottom: 24px;
 	}
 
-	.cb-course-edit-categories__label {
+	.cb-course-edit-categories__label,
+	.cb-course-edit-tags__label {
 		display: block;
 		font-size: 14px;
 		font-weight: 600;
@@ -137,14 +138,6 @@
 	/* Course Tags Section */
 	.cb-course-edit-tags__wrapper {
 		margin-bottom: 24px;
-	}
-
-	.cb-course-edit-terms__label {
-		display: block;
-		font-size: 14px;
-		font-weight: 600;
-		color: #1a1a1a;
-		margin-bottom: 12px;
 	}
 
 	.cb-course-edit-terms__checkbox {
