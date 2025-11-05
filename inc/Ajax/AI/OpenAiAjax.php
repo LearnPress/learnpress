@@ -331,9 +331,8 @@ class OpenAiAjax extends AbstractAjax {
 			$params   = LP_Helper::json_decode( $data_str, true );
 			$prompt   = $params['lp-openai-prompt-generated-field'] ?? '';
 			$args     = [
-				'prompt'          => $prompt,
-				'n'               => intval( $params['outputs'] ?? 1 ),
-				'response_format' => 'b64_json',
+				'prompt' => $prompt,
+				'n'      => intval( $params['outputs'] ?? 1 ),
 			];
 
 			$result                    = OpenAiService::instance()->send_request_create_image( $args );

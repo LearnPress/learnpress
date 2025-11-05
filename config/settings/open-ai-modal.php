@@ -151,7 +151,7 @@ return apply_filters(
 			'Renaissance'   => esc_html__( 'Renaissance', 'learnpress' ),
 			'Gothic'        => esc_html__( 'Gothic', 'learnpress' ),
 			'Pop Art'       => esc_html__( 'Pop Art', 'learnpress' ),
-			'Art Nouveau:'  => esc_html__( 'Art Nouveau:', 'learnpress' ),
+			'Art Nouveau:'  => esc_html__( 'Art Nouveau', 'learnpress' ),
 			'Minimalism'    => esc_html__( 'Minimalism', 'learnpress' ),
 			'Fauvism'       => esc_html__( 'Fauvism', 'learnpress' ),
 		],

@@ -8,8 +8,8 @@ if ( ! isset( $params ) ) {
 
 // Course Intent
 $topic       = $params['topic'] ?? '';
-$title       = $params['title'] ?? '';
-$description = $params['description'] ?? '';
+$title       = $params['post-title'] ?? '';
+$description = $params['post-content'] ?? '';
 // Trim description to 30 words, because it can be too long
 $description = wp_trim_words( $description, 30 );
 $outputs     = $params['outputs'] ?? 1;

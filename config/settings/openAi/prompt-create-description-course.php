@@ -7,7 +7,7 @@ if ( ! isset( $params ) ) {
 }
 
 // Course Intent
-$title            = $params['title'] ?? '';
+$title            = $params['post-title'] ?? '';
 $topic            = $params['topic'] ?? '';
 $goal             = $params['goals'] ?? '';
 $course_objective = trim( $params['course_objective'] ?? '' );
@@ -17,7 +17,7 @@ $language = $params['language'] ?? 'English';
 $audience = $params['audience'] ?? 'Students';
 $tone     = $params['tone'] ?? 'analytical';
 $length   = $params['length'] ?? 200;
-$output   = $params['output'] ?? 1;
+$outputs  = $params['outputs'] ?? 1;
 
 return <<<XML
 <prompt>
@@ -41,7 +41,7 @@ return <<<XML
 
         <structure_requirements>
         	- The description must not exceed {$length} characters.
-        	- Generate EXACTLY **{$output}** course description(s) in a JSON array.
+        	- Generate EXACTLY **{$outputs}** course description(s) in a JSON array.
             - Each item MUST contain a relevant "item".
         </structure_requirements>
     </task_instructions>

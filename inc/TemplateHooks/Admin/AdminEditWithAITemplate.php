@@ -67,12 +67,20 @@ class AdminEditWithAITemplate {
 			'wrap-fields-end'          => '</div>',
 			'buttons'                  => sprintf(
 				'<div class="button-actions" data-step="1" data-step-max="4">
-					<button class="btn btn-secondary lp-btn-step lp-hidden" data-action="prev" type="button">&larr; %s</button>
-					<button class="btn btn-primary lp-btn-step" data-action="next" type="button">%s &rarr;</button>
+					<button class="btn btn-secondary lp-btn-step lp-hidden"
+					data-step-show="2,3,4"
+					data-action="prev" type="button">&larr; %s
+					</button>
+					<button class="btn btn-primary lp-btn-step"
+						data-step-show="1"
+						data-action="next" type="button">%s &rarr;
+					</button>
 					<button class="lp-button btn-primary lp-btn-generate-prompt lp-hidden"
+						data-step-show="2"
 						data-send="%s" type="button">%s
 					</button>
 					<button class="lp-button btn-primary lp-btn-call-open-ai lp-hidden"
+						data-step-show="3"
 						data-send="%s" type="button">%s
 					</button>
 				</div>',
@@ -224,7 +232,7 @@ class AdminEditWithAITemplate {
 					]
 				)
 			),
-			'output'        => sprintf(
+			'outputs'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
 				</div>',
@@ -342,12 +350,20 @@ class AdminEditWithAITemplate {
 			'wrap-fields-end'          => '</div>',
 			'buttons'                  => sprintf(
 				'<div class="button-actions" data-step="1" data-step-max="4">
-					<button class="btn btn-secondary lp-btn-step lp-hidden" data-action="prev" type="button">&larr; %s</button>
-					<button class="btn btn-primary lp-btn-step" data-action="next" type="button">%s &rarr;</button>
+					<button class="btn btn-secondary lp-btn-step lp-hidden"
+						data-step-show="2,3,4"
+						data-action="prev" type="button">&larr; %s
+					</button>
+					<button class="btn btn-primary lp-btn-step"
+						data-step-show="1"
+						data-action="next" type="button">%s &rarr;
+					</button>
 					<button class="lp-button btn-primary lp-btn-generate-prompt lp-hidden"
+						data-step-show="2"
 						data-send="%s" type="button">%s
 					</button>
 					<button class="lp-button btn-primary lp-btn-call-open-ai lp-hidden"
+						data-step-show="3"
 						data-send="%s" type="button">%s
 					</button>
 				</div>',
@@ -416,6 +432,13 @@ class AdminEditWithAITemplate {
 			'description'    => sprintf(
 				'<p class="step-description">%s</p>',
 				esc_html__( 'Config your description you want.', 'learnpress' )
+			),
+			'refer-title'    => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<textarea type="text" name="post-title" readonly></textarea>
+				</div>',
+				esc_html__( 'Title refer', 'learnpress' )
 			),
 			'describe-topic' => sprintf(
 				'<div class="form-group">
@@ -492,7 +515,7 @@ class AdminEditWithAITemplate {
 					]
 				)
 			),
-			'output'        => sprintf(
+			'outputs'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
 				</div>',
@@ -561,18 +584,20 @@ class AdminEditWithAITemplate {
 			'step-3'                   => $this->html_image_step_3(),
 			'wrap-fields-end'          => '</div>',
 			'buttons'                  => sprintf(
-				'<div class="button-actions" data-step="1" data-step-max="4">
+				'<div class="button-actions" data-step="1" data-step-max="3">
 					<button class="btn btn-secondary lp-btn-step lp-hidden"
+						data-step-show="2,3"
 						data-action="prev" type="button">&larr; %s
 					</button>
 					<button class="btn btn-primary lp-btn-step lp-hidden"
+						data-step-show="0"
 						data-action="next" type="button">%s &rarr;
 					</button>
 					<button class="lp-button btn-primary lp-btn-generate-prompt"
 						data-step-show="1"
 						data-send="%s" type="button">%s
 					</button>
-					<button class="lp-button btn-primary lp-btn-call-open-ai"
+					<button class="lp-button btn-primary lp-btn-call-open-ai lp-hidden"
 						data-step-show="2"
 						data-send="%s" type="button">%s
 					</button>
@@ -709,7 +734,7 @@ class AdminEditWithAITemplate {
 					]
 				)
 			),
-			'output'            => sprintf(
+			'outputs'           => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input name="outputs" value="2" type="number" />

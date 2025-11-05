@@ -195,7 +195,19 @@ export class GenerateWithOpenai {
 		elCreateCourseAIWrap.querySelectorAll( '.step-item' ).forEach( ( el ) => el.classList.remove( 'active' ) );
 		elItemStep.classList.add( 'active' );
 
-		if ( step === 1 ) {
+		// Get all buttons step to show/hide
+		const form = target.closest( 'form' );
+		const elBtnSteps = form.querySelectorAll( 'button[data-step-show]' );
+		elBtnSteps.forEach( ( el ) => {
+			const stepsShow = el.dataset.stepShow.split( ',' ).map( ( s ) => parseInt( s.trim() ) );
+			if ( stepsShow.includes( step ) ) {
+				lpUtils.lpShowHideEl( el, 1 );
+			} else {
+				lpUtils.lpShowHideEl( el, 0 );
+			}
+		} );
+
+		/*if ( step === 1 ) {
 			lpUtils.lpShowHideEl( elBtnPrev, 0 );
 		} else {
 			lpUtils.lpShowHideEl( elBtnPrev, 1 );
@@ -219,7 +231,7 @@ export class GenerateWithOpenai {
 			lpUtils.lpShowHideEl( elBtnCallOpenAI, 1 );
 		} else {
 			lpUtils.lpShowHideEl( elBtnCallOpenAI, 0 );
-		}
+		}*/
 	}
 
 	/**
@@ -235,10 +247,6 @@ export class GenerateWithOpenai {
 		const form = target.closest( 'form' );
 		let dataSend = JSON.parse( target.dataset.send );
 		dataSend = lpUtils.mergeDataWithDatForm( form, dataSend );
-		// For case generate description need title
-		dataSend.post_title = document.querySelector( 'input[name=post_title]' ).value;
-		// For case generate image, curriculum need description
-		dataSend.post_description = window.tinymce.get( 'content' ).getContent( { format: 'text' } );
 
 		// Ajax to generate prompt
 		const callBack = {
@@ -399,7 +407,7 @@ export class GenerateWithOpenai {
 				if ( status === 'success' ) {
 					// Set image
 					const elImagePreview = document.querySelector( '#postimagediv .inside' );
-					elImagePreview.innerHTML = data.html_image;
+					elImagePreview.outerHTML = data.html_image;
 
 					if ( popupSweetAlert ) {
 						SweetAlert.close();

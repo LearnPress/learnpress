@@ -16,7 +16,7 @@ $language = $params['language'] ?? 'English';
 $audience = $params['audience'] ?? 'Students';
 $tone     = $params['tone'] ?? 'analytical';
 $length   = $params['length'] ?? 60;
-$output   = $params['output'] ?? 1;
+$outputs   = $params['outputs'] ?? 1;
 
 return <<<XML
 <prompt>
@@ -38,7 +38,7 @@ return <<<XML
 
         <structure_requirements>
 			- The title must not exceed {$length} characters.
-        	- Generate EXACTLY **{$output}** course title(s) in a JSON array.
+        	- Generate EXACTLY **{$outputs}** course title(s) in a JSON array.
         </structure_requirements>
     </task_instructions>
 
