@@ -2,7 +2,7 @@
 return apply_filters(
 	'lp-open-ai-modal-config',
 	[
-		'language'             => [
+		'language'                  => [
 			'US English' => esc_html__( 'US English', 'learnpress' ),
 			'UK English' => esc_html__( 'UK English', 'learnpress' ),
 			'Arabic'     => esc_html__( 'Arabic', 'learnpress' ),
@@ -36,7 +36,7 @@ return apply_filters(
 			'Turkish'    => esc_html__( 'Turkish', 'learnpress' ),
 			'Vietnamese' => esc_html__( 'Vietnamese', 'learnpress' ),
 		],
-		'audience'             => [
+		'audience'                  => [
 			'Activists'                => esc_html__( 'Activists', 'learnpress' ),
 			'Artists'                  => esc_html__( 'Artists', 'learnpress' ),
 			'Authors'                  => esc_html__( 'Authors', 'learnpress' ),
@@ -84,7 +84,7 @@ return apply_filters(
 			'Video Creators'           => esc_html__( 'Video Creators', 'learnpress' ),
 			'Writers'                  => esc_html__( 'Writers', 'learnpress' ),
 		],
-		'tone'                 => [
+		'tone'                      => [
 			'Analytical'     => esc_html__( 'Analytical', 'learnpress' ),
 			'Argumentative'  => esc_html__( 'Argumentative', 'learnpress' ),
 			'Casual'         => esc_html__( 'Casual', 'learnpress' ),
@@ -110,21 +110,37 @@ return apply_filters(
 			'Subjective'     => esc_html__( 'Subjective', 'learnpress' ),
 			'Technical'      => esc_html__( 'Technical', 'learnpress' ),
 		],
-		'image-dall-e-2-sizes' => [
+		'image-size-gpt-image-1'    => [
+			'auto'      => esc_html__( 'Auto', 'learnpress' ),
+			'1024x1024' => esc_html__( '1024x1024', 'learnpress' ),
+			'1536x1024' => esc_html__( '1536x1024 (landscape)', 'learnpress' ),
+			'1024x1536' => esc_html__( '1024x1536 (portrait)', 'learnpress' ),
+		],
+		'image-size-dall-e-2'       => [
 			'256x256'   => esc_html__( '256x256', 'learnpress' ),
 			'512x512'   => esc_html__( '512x512', 'learnpress' ),
 			'1024x1024' => esc_html__( '1024x1024', 'learnpress' ),
 		],
-		'image-dall-e-3-sizes' => [
+		'image-size-dall-e-3'       => [
 			'1024x1024' => esc_html__( '1024x1024', 'learnpress' ),
 			'1024x1792' => esc_html__( '1024x1792', 'learnpress' ),
 			'1792x1024' => esc_html__( '1792x1024', 'learnpress' ),
 		],
-		'image-quality'        => [
-			'standard' => esc_html__( 'Standard', 'learnpress' ),
-			'hd'       => esc_html__( 'HD', 'learnpress' ),
+		'image-quality-gpt-image-1' => [
+			'auto'   => esc_html__( 'Auto', 'learnpress' ),
+			'high'   => esc_html__( 'High', 'learnpress' ),
+			'medium' => esc_html__( 'low', 'learnpress' ),
 		],
-		'image-style'          => [
+		'image-quality-dall-e-3'    => [
+			'auto'     => esc_html__( 'Auto', 'learnpress' ),
+			'hd'       => esc_html__( 'HD', 'learnpress' ),
+			'standard' => esc_html__( 'Standard', 'learnpress' ),
+		],
+		'image-quality'             => [
+			'auto'     => esc_html__( 'Auto', 'learnpress' ),
+			'standard' => esc_html__( 'Standard', 'learnpress' ),
+		],
+		'image-style'               => [
 			'Impressionism' => esc_html__( 'Impressionism', 'learnpress' ),
 			'Cubism'        => esc_html__( 'Cubism', 'learnpress' ),
 			'Surrealism'    => esc_html__( 'Surrealism', 'learnpress' ),
@@ -139,7 +155,7 @@ return apply_filters(
 			'Minimalism'    => esc_html__( 'Minimalism', 'learnpress' ),
 			'Fauvism'       => esc_html__( 'Fauvism', 'learnpress' ),
 		],
-		'reading_level'        => [
+		'reading_level'             => [
 			'Introductory' => esc_html__( 'Introductory', 'learnpress' ),
 			'Foundational' => esc_html__( 'Foundational', 'learnpress' ),
 			'Intermediate' => esc_html__( 'Intermediate', 'learnpress' ),

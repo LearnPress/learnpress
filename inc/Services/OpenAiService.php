@@ -23,6 +23,7 @@ class OpenAiService {
 	public string $urlChartCompletion;
 	public string $urlResponses;
 	public string $urlCompletionLegacy;
+	public string $urlImage;
 
 	public string $secret_key;
 	public string $text_model_type;
@@ -36,6 +37,7 @@ class OpenAiService {
 		$this->urlChartCompletion  = $this->baseUrl . 'chat/completions';
 		$this->urlCompletionLegacy = $this->baseUrl . 'completion';
 		$this->urlResponses        = $this->baseUrl . 'responses';
+		$this->urlImage            = $this->baseUrl . 'images/generations';
 		$this->get_settings();
 	}
 
@@ -102,6 +104,52 @@ class OpenAiService {
 		}
 
 		return $this->detected_data( $data );
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function send_request_create_image( $args ) {
+		$args_default = [
+			'model'  => $this->image_model_type,
+			'prompt' => '',
+		];
+
+		$args = array_merge( $args_default, $args );
+
+		$model_type = LP_Settings::get_option( 'open_ai_image_model_type', 'gpt-image-1' );
+		if ( $model_type === 'gpt-image-1' ) {
+			unset( $args['n'] );
+		}
+
+		if ( $model_type == 'dall-e-3' ) {
+			// only n=1 is supported.
+			$args['n'] = 1;
+		}
+
+		$response = wp_remote_post(
+			$this->urlImage,
+			[
+				'headers' => [
+					'Authorization' => 'Bearer ' . $this->secret_key,
+					'Content-Type'  => 'application/json',
+				],
+				'body'    => json_encode( $args ),
+				'timeout' => 3600,
+			]
+		);
+
+		if ( is_wp_error( $response ) ) {
+			throw new Exception( $response->get_error_message(), 400 );
+		}
+
+		$body = wp_remote_retrieve_body( $response );
+		$data = LP_Helper::json_decode( $body, true );
+		if ( isset( $data['error'] ) ) {
+			throw new Exception( $data['error']['message'] );
+		}
+
+		return $data;
 	}
 
 	/**
@@ -181,6 +229,7 @@ class OpenAiService {
 					$data['lp_structure_data'][] = LP_Helper::json_decode( $choice['text'], true );
 				}
 			}
+
 			return $data;
 		} elseif ( isset( $data['output'] ) ) {
 			foreach ( $data['output'] as $output ) {

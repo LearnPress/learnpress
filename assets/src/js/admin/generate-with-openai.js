@@ -41,7 +41,7 @@ export class GenerateWithOpenai {
 			el.insertAdjacentHTML(
 				'afterend',
 				`<button type="button"
-					class="lp-btn-generate-with-ai lp-btn-generate-title-with-ai lp-button button-secondary"
+					class="lp-btn-generate-with-ai button-secondary"
 					data-template="#lp-tmpl-edit-title-ai">
 					Generate Title with AI
 				</button>`
@@ -51,9 +51,32 @@ export class GenerateWithOpenai {
 			el.insertAdjacentHTML(
 				'beforeend',
 				`<button type="button"
-					class="lp-btn-generate-with-ai lp-btn-generate-description-with-ai lp-button button-secondary"
+					class="lp-btn-generate-with-ai button-secondary"
 					data-template="#lp-tmpl-edit-description-ai">
 					Generate Description with AI
+				</button>`
+			);
+		} );
+		lpUtils.lpOnElementReady( '#postimagediv', ( el ) => {
+			const elInside = el.querySelector( '.postbox-header' );
+			elInside.insertAdjacentHTML(
+				'afterend',
+				`<button type="button"
+					style="margin: 12px 12px 0 12px;"
+					class="lp-btn-generate-with-ai button-secondary"
+					data-template="#lp-tmpl-edit-image-ai">
+					Generate Image with AI
+				</button>`
+			);
+		} );
+		lpUtils.lpOnElementReady( '#lp-course-edit-curriculum', ( el ) => {
+			const elInside = el.querySelector( '.count-sections' );
+			elInside.insertAdjacentHTML(
+				'afterend',
+				`<button type="button"
+					class="lp-btn-generate-with-ai button-secondary"
+					data-template="#lp-tmpl-edit-curriculum-ai">
+					Generate Curriculum with AI
 				</button>`
 			);
 		} );
@@ -93,6 +116,11 @@ export class GenerateWithOpenai {
 				class: this,
 				callBack: this.applyGeneratedData.name,
 			},
+			{
+				selector: '.lp-btn-ai-apply-image',
+				class: this,
+				callBack: this.applyImageData.name,
+			},
 		] );
 	}
 
@@ -116,6 +144,21 @@ export class GenerateWithOpenai {
 				popupSweetAlert = SweetAlert.getPopup();
 				// Click to show tomSelect style
 				popupSweetAlert.click();
+
+				// Set post title and post content to hidden fields of form to AI prompt reference
+				const post_title = document.querySelector( 'input[name=post_title]' ).value;
+				const post_content = window.tinymce.get( 'content' ).getContent( { format: 'text' } );
+
+				const form = popupSweetAlert.querySelector( 'form' );
+				const elPostTitle = form.querySelector( '[name=post-title]' );
+				if ( elPostTitle ) {
+					elPostTitle.value = post_title;
+				}
+
+				const elPostContent = form.querySelector( '[name=post-content]' );
+				if ( elPostContent ) {
+					elPostContent.value = post_content;
+				}
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {}
@@ -193,9 +236,9 @@ export class GenerateWithOpenai {
 		let dataSend = JSON.parse( target.dataset.send );
 		dataSend = lpUtils.mergeDataWithDatForm( form, dataSend );
 		// For case generate description need title
-		dataSend.title = document.querySelector( 'input[name=post_title]' ).value;
+		dataSend.post_title = document.querySelector( 'input[name=post_title]' ).value;
 		// For case generate image, curriculum need description
-		dataSend.description = window.tinymce.get( 'content' ).getContent( { format: 'text' } );
+		dataSend.post_description = window.tinymce.get( 'content' ).getContent( { format: 'text' } );
 
 		// Ajax to generate prompt
 		const callBack = {
@@ -337,5 +380,40 @@ export class GenerateWithOpenai {
 	setWPEditorContent( htmlContent ) {
 		const editor = window.tinymce.get( 'content' );
 		editor.setContent( htmlContent );
+	}
+
+	applyImageData( args ) {
+		const { e, target } = args;
+		let dataSend = JSON.parse( target.dataset.send );
+		dataSend = lpUtils.mergeDataWithDatForm( target.closest( 'form' ), dataSend );
+		//e.preventDefault();
+		lpUtils.lpSetLoadingEl( target, true );
+
+		// Ajax to generate prompt
+		const callBack = {
+			success: ( response ) => {
+				const { message, status, data } = response;
+
+				showToast( message, status );
+
+				if ( status === 'success' ) {
+					// Set image
+					const elImagePreview = document.querySelector( '#postimagediv .inside' );
+					elImagePreview.innerHTML = data.html_image;
+
+					if ( popupSweetAlert ) {
+						SweetAlert.close();
+					}
+				}
+			},
+			error: ( error ) => {
+				showToast( error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( target, false );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 }

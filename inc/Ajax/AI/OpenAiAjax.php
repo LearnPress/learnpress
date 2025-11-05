@@ -5,6 +5,7 @@ namespace LearnPress\Ajax\AI;
 use Exception;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
@@ -227,6 +228,9 @@ class OpenAiAjax extends AbstractAjax {
 				case 'course-title':
 					$prompt = Config::instance()->get( 'prompt-create-title-course', 'settings/openAi', compact( 'params' ) );
 					break;
+				case 'course-image':
+					$prompt = Config::instance()->get( 'prompt-create-image-course', 'settings/openAi', compact( 'params' ) );
+					break;
 				case $lp_prompt_type:
 					$prompt = apply_filters( 'lp-prompt-type', '', $lp_prompt_type, $params );
 					break;
@@ -299,6 +303,160 @@ class OpenAiAjax extends AbstractAjax {
 			$response->data    = $result;
 			$response->status  = 'success';
 			$response->message = __( 'Generate course successfully!', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Generate image with prompt submitted
+	 * Send data to Open AI to generate image
+	 *
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public function openai_generate_image() {
+		$response = new LP_REST_Response();
+
+		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
+				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+				throw new Exception( __( 'You do not have permission to perform this action.', 'learnpress' ) );
+			}
+
+			$data_str = LP_Request::get_param( 'data' );
+			$params   = LP_Helper::json_decode( $data_str, true );
+			$prompt   = $params['lp-openai-prompt-generated-field'] ?? '';
+			$args     = [
+				'prompt'          => $prompt,
+				'n'               => intval( $params['outputs'] ?? 1 ),
+				'response_format' => 'b64_json',
+			];
+
+			$result                    = OpenAiService::instance()->send_request_create_image( $args );
+			$html_image                = '';
+			$result['lp_html_preview'] = '';
+			$data                      = $result['data'] ?? [];
+			if ( ! empty( $data ) ) {
+				$result['lp_html_preview'] = '<div class="lp-ai-images-warp">';
+				foreach ( $data as $index => $data_item ) {
+					$image_base_64 = $data_item['b64_json'] ?? '';
+					$image_url     = $data_item['url'] ?? '';
+
+					if ( ! empty( $image_url ) ) {
+						$html_image = sprintf(
+							'<img src="%s" alt="AI Generated Image" />',
+							esc_url( $image_url )
+						);
+					} elseif ( ! empty( $image_base_64 ) ) {
+						$html_image = sprintf(
+							'<img src="data:image/png;base64,%s" alt="AI Generated Image" />',
+							esc_attr( $image_base_64 )
+						);
+					}
+
+					if ( empty( $html_image ) ) {
+						continue;
+					}
+
+					$result['lp_html_preview'] .= '<div class="lp-ai-image-item">';
+					$result['lp_html_preview'] .= $html_image;
+					$result['lp_html_preview'] .= sprintf(
+						'<button class="lp-btn-ai-apply-image lp-button" type="button"
+							data-send="%s">%s
+						</button>',
+						Template::convert_data_to_json(
+							[
+								'action'       => 'openai_apply_image_feature',
+								'image-url'    => ! empty( $image_url ) ? $image_url : '',
+								'image-base64' => ! empty( $image_base_64 ) ? $image_base_64 : '',
+								'id_url'       => 'apply-image-feature',
+							]
+						),
+						__( 'Apply Image', 'learnpress' )
+					);
+					$result['lp_html_preview'] .= '</div>';
+				}
+				$result['lp_html_preview'] .= '</div>';
+			}
+
+			$response->data    = $result;
+			$response->status  = 'success';
+			$response->message = __( 'Generate image successfully!', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	public function openai_apply_image_feature() {
+		$response = new LP_REST_Response();
+
+		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
+				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+				throw new Exception( __( 'You do not have permission to perform this action.', 'learnpress' ) );
+			}
+
+			$data_str     = $_POST['data'] ?? '';
+			$params       = LP_Helper::json_decode( wp_unslash( $data_str ), true );
+			$image_base64 = $params['image-base64'] ?? '';
+			$image_url    = $params['image-url'] ?? '';
+
+			$params     = LP_Helper::sanitize_params_submitted( $params );
+			$post_id    = $params['post-id'] ?? '';
+			$post_title = $params['post-title'] ?? uniqid();
+			$post_slug  = sanitize_title( $post_title );
+
+			if ( empty( $post_id ) ) {
+				throw new Exception( __( 'Invalid post ID.', 'learnpress' ) );
+			}
+
+			if ( ! function_exists( 'media_handle_sideload' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/media.php';
+				require_once ABSPATH . 'wp-admin/includes/file.php';
+				require_once ABSPATH . 'wp-admin/includes/image.php';
+			}
+
+			if ( ! empty( $image_url ) ) {
+				$tmp      = download_url( $image_url );
+				$fileExt  = pathinfo( parse_url( $image_url, PHP_URL_PATH ), PATHINFO_EXTENSION );
+				$filename = sanitize_file_name( $post_slug . '-' . uniqid() . '.' . $fileExt );
+
+			} elseif ( ! empty( $image_base64 ) ) {
+				$decoded_image = base64_decode( $image_base64 );
+				$tmp           = wp_tempnam();
+				file_put_contents( $tmp, $decoded_image );
+				$filename = sanitize_file_name( $post_slug . '-' . uniqid() . '.png' );
+			} else {
+				throw new Exception( __( 'No image data provided.', 'learnpress' ) );
+			}
+
+			$file_array    = [
+				'name'     => $filename,
+				'tmp_name' => $tmp,
+			];
+			$attachment_id = media_handle_sideload( $file_array, $post_id );
+
+			if ( ! is_wp_error( $attachment_id ) ) {
+				set_post_thumbnail( $post_id, $attachment_id );
+			} else {
+				throw new Exception( $attachment_id->get_error_message() );
+			}
+
+			$args = [
+				'src'     => wp_get_attachment_url( $attachment_id ),
+				'post-id' => $post_id,
+			];
+
+			$response->data->html_image = AdminEditWithAITemplate::instance()->html_feature_image_created( $args );
+			$response->status           = 'success';
+			$response->message          = __( 'Apply image successfully!', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

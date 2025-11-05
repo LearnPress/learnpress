@@ -64,12 +64,12 @@ return apply_filters(
 				[
 					'title'   => __( 'Image Model Type', 'learnpress' ),
 					'id'      => 'open_ai_image_model_type',
-					'default' => 'dall-e-3',
+					'default' => 'gpt-image-1',
 					'type'    => 'select',
 					'options' => array(
-						'dall-e-3' => esc_html__( 'DALL E 3', 'learnpress' ),
-						'dall-e-2' => esc_html__( 'DALL E 2 ', 'learnpress' ),
-
+						'gpt-image-1' => esc_html__( 'GPT image 1', 'learnpress' ),
+						'dall-e-3'    => esc_html__( 'DALL E 3', 'learnpress' ),
+						'dall-e-2'    => esc_html__( 'DALL E 2 ', 'learnpress' ),
 					),
 				],
 				[

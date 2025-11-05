@@ -5,6 +5,7 @@ namespace LearnPress\TemplateHooks\Admin;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LP_Settings;
 
 /**
  * Class AdminEditCourseAI
@@ -39,6 +40,8 @@ class AdminEditWithAITemplate {
 		$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
 		echo $this->html_edit_title_via_ai();
 		echo $this->html_edit_description_via_ai();
+		echo $this->html_edit_image_via_ai();
+		echo $this->html_edit_curriculum_via_ai();
 	}
 
 	/**
@@ -226,7 +229,7 @@ class AdminEditWithAITemplate {
 					<label>%s</label>%s
 				</div>',
 				esc_html__( 'Outputs', 'learnpress' ),
-				'<input name="output" value="2" />'
+				'<input name="outputs" value="2" />'
 			),
 			'form-grid-end' => '</div>',
 			'step_close'    => '</div>',
@@ -315,7 +318,7 @@ class AdminEditWithAITemplate {
 		return Template::combine_components( $section );
 	}
 
-	/***************** Description ************/
+	/***************** Description *****************/
 	/**
 	 * HTML generate title with AI.
 	 *
@@ -494,7 +497,7 @@ class AdminEditWithAITemplate {
 					<label>%s</label>%s
 				</div>',
 				esc_html__( 'Outputs', 'learnpress' ),
-				'<input name="output" value="2" />'
+				'<input name="outputs" value="2" />'
 			),
 			'form-grid-end' => '</div>',
 			'step_close'    => '</div>',
@@ -536,6 +539,292 @@ class AdminEditWithAITemplate {
 			),
 			'results'    => '<div class="lp-ai-generated-results"></div>',
 			'step_close' => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	/***************** Image *****************/
+	public function html_edit_image_via_ai(): string {
+		$components = [
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-image-ai">',
+			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'h2'                       => sprintf(
+				'<div class="content-title">%s</div>',
+				esc_html__( 'Generate Course Image', 'learnpress' )
+			),
+			'header'                   => $this->html_image_step_header(), // You can add header if needed.
+			'form'                     => '<form class="lp-form-generate-data-ai">',
+			'wrap-fields'              => '<div class="lp-form-fields">',
+			'step-1'                   => $this->html_image_step_1(),
+			'step-2'                   => $this->html_image_step_2(),
+			'step-3'                   => $this->html_image_step_3(),
+			'wrap-fields-end'          => '</div>',
+			'buttons'                  => sprintf(
+				'<div class="button-actions" data-step="1" data-step-max="4">
+					<button class="btn btn-secondary lp-btn-step lp-hidden"
+						data-action="prev" type="button">&larr; %s
+					</button>
+					<button class="btn btn-primary lp-btn-step lp-hidden"
+						data-action="next" type="button">%s &rarr;
+					</button>
+					<button class="lp-button btn-primary lp-btn-generate-prompt"
+						data-step-show="1"
+						data-send="%s" type="button">%s
+					</button>
+					<button class="lp-button btn-primary lp-btn-call-open-ai"
+						data-step-show="2"
+						data-send="%s" type="button">%s
+					</button>
+				</div>',
+				esc_html__( 'Previous', 'learnpress' ),
+				esc_html__( 'Next', 'learnpress' ),
+				Template::convert_data_to_json(
+					[
+						'action'         => 'openai_generate_prompt',
+						'lp-prompt-type' => 'course-image',
+						'id_url'         => 'generate_prompt_openai',
+					]
+				),
+				esc_html__( 'Generate Prompt', 'learnpress' ),
+				Template::convert_data_to_json(
+					[
+						'action'         => 'openai_generate_image',
+						'lp-prompt-type' => 'course-image',
+						'target-apply'   => 'set-wp-editor-content', // Click apply to apply title to this field.
+						'id_url'         => 'submit_to_openai',
+					]
+				),
+				esc_html__( 'Generate Image Course', 'learnpress' ),
+			),
+			'post-id'                  => sprintf(
+				'<input type="hidden" name="post-id" value="%d" />',
+				get_the_ID()
+			),
+			'form-end'                 => '</form>',
+			'wrap-end'                 => '</div>',
+			'wrap-script-template-end' => '</script>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_image_step_header(): string {
+		$components = [
+			'wrap'     => '<div class="step-header">',
+			'step_1'   => sprintf(
+				'<div class="step-item active" data-step="1"><span class="step-number">1</span><span class="step-text">%s</span></div>',
+				esc_html__( 'Course Image config', 'learnpress' )
+			),
+			'step_2'   => sprintf(
+				'<div class="step-item" data-step="2"><span class="step-number">2</span><span class="step-text">%s</span></div>',
+				esc_html__( 'Prompt', 'learnpress' )
+			),
+			'step_3'   => sprintf(
+				'<div class="step-item" data-step="3"><span class="step-number">3</span><span class="step-text">%s</span></div>',
+				esc_html__( 'Result', 'learnpress' )
+			),
+			'wrap-end' => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_image_step_1(): string {
+		$model_type   = LP_Settings::instance()->get( 'open_ai_image_model_type' );
+		$options      = $this->config;
+		$size_opts    = $options[ "image-size-$model_type" ] ?? [];
+		$quality_opts = $options[ "image-quality-$model_type" ] ?? $options['image-quality'] ?? [];
+
+		$components = [
+			'step'              => '<div class="step-content active" data-step="1">',
+			'title'             => sprintf(
+				'<div class="step-title">%s</div>',
+				esc_html__( 'Step 1 — Config Image', 'learnpress' ),
+			),
+			'description'       => sprintf(
+				'<p class="step-description">%s</p>',
+				esc_html__( 'Config your image you want, data will refer course title, course description to generate image.', 'learnpress' )
+			),
+			'form-grid'         => '<div class="form-grid">',
+			'from-title'        => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<textarea type="text" name="post-title" readonly>Create description about course learning Php</textarea>
+				</div>',
+				esc_html__( 'Course Title current', 'learnpress' )
+			),
+			'from-description'  => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<textarea type="text" name="post-content" readonly>Create description about course learning Php</textarea>
+				</div>',
+				esc_html__( 'Course Description current', 'learnpress' )
+			),
+			'style'             => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					%s
+				</div>',
+				esc_html__( 'Style', 'learnpress' ),
+				AdminTemplate::html_tom_select(
+					[
+						'name'          => 'style',
+						'options'       => $options['image-style'] ?? [],
+						'default_value' => 'Realistic',
+					]
+				)
+			),
+			'write-requirement' => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<input type="text" name="topic" placeholder="%s" />
+				</div>',
+				esc_html__( 'Images or icons should be include', 'learnpress' ),
+				esc_html__( 'e.g., books, laptop, graduation cap', 'learnpress' )
+			),
+			'size'              => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					%s
+				</div>',
+				esc_html__( 'Size', 'learnpress' ),
+				AdminTemplate::html_tom_select(
+					[
+						'name'    => 'size',
+						'options' => $size_opts,
+					]
+				)
+			),
+			'quality'           => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					%s
+				</div>',
+				esc_html__( 'Quality', 'learnpress' ),
+				AdminTemplate::html_tom_select(
+					[
+						'name'    => 'quality',
+						'options' => $quality_opts,
+					]
+				)
+			),
+			'output'            => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<input name="outputs" value="2" type="number" />
+				</div>',
+				esc_html__( 'Outputs (model dall-e-3 only 1 supported)', 'learnpress' )
+			),
+			'form-grid-end'     => '</div>',
+			'step_close'        => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_image_step_2(): string {
+		$options = $this->config;
+
+		$components = [
+			'step'       => '<div class="step-content" data-step="2">',
+			'title'      => sprintf(
+				'<div class="step-title">%s</div>',
+				esc_html__( 'Step 2 — Prompt Generated', 'learnpress' ),
+			),
+			'prompt'     => sprintf(
+				'<div class="form-group">
+					<label>%s</label>%s
+				</div>',
+				esc_html__( 'Generated Prompt', 'learnpress' ),
+				'<textarea name="lp-openai-prompt-generated-field"></textarea>',
+			),
+			'step_close' => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_image_step_3(): string {
+		$options = $this->config;
+
+		$components = [
+			'step'       => '<div class="step-content" data-step="3">',
+			'title'      => sprintf(
+				'<div class="step-title">%s</div>',
+				esc_html__( 'Step 3 — Result', 'learnpress' ),
+			),
+			'results'    => '<div class="lp-ai-generated-results"></div>',
+			'step_close' => '</div>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_feature_image_created( $args ): string {
+		$src     = $args['src'] ?? '';
+		$post_id = $args['post-id'] ?? '';
+
+		$section = [
+			'wrap'     => '<div class="inside">',
+			'preview'  => sprintf(
+				'<p class="hide-if-no-js">
+				<a href="%s" id="set-post-thumbnail" aria-describedby="set-post-thumbnail-desc" class="thickbox">
+					<img width="266" height="266" src="%s" alt="" />
+				</a>
+			</p>',
+				admin_url( "media-upload.php?post_id=$post_id&amp;type=image&amp;TB_iframe=1" ),
+				$src
+			),
+			'desc'     => '<p class="hide-if-no-js howto" id="set-post-thumbnail-desc">Click the image to edit or update</p>',
+			'remove'   => sprintf(
+				'<p class="hide-if-no-js"><a href="#" id="remove-post-thumbnail">%s</a></p>',
+				__( 'Remove featured image' )
+			),
+			'input'    => '<input type="hidden" id="_thumbnail_id" name="_thumbnail_id" value="37">',
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/***************** Curriculum *****************/
+	public function html_edit_curriculum_via_ai(): string {
+		$components = [
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-curriculum-ai">',
+			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'h2'                       => sprintf(
+				'<div class="content-title">%s</div>',
+				esc_html__( 'Generate Course Curriculum', 'learnpress' )
+			),
+			'header'                   => '', // You can add header if needed.
+			'form'                     => '<form class="lp-form-generate-data-ai">',
+			'wrap-fields'              => '<div class="lp-form-fields">',
+			// Add steps for curriculum generation here.
+			'wrap-fields-end'          => '</div>',
+			'buttons'                  => sprintf(
+				'<div class="button-actions" data-step="1" data-step-max="1">
+					<button class="lp-button btn-primary lp-btn-call-open-ai lp-hidden"
+						data-send="%s" type="button">%s
+					</button>
+				</div>',
+				Template::convert_data_to_json(
+					[
+						'action'         => 'openai_generate_data',
+						'lp-prompt-type' => 'course-curriculum',
+						'target-apply'   => 'set-course-curriculum', // Click apply to apply curriculum to this field.
+						'id_url'         => 'submit_to_openai',
+					]
+				),
+				esc_html__( 'Generate Course Curriculum', 'learnpress' ),
+			),
+			'post-id'                  => sprintf(
+				'<input type="hidden" name="post-id" value="%d" />',
+				get_the_ID()
+			),
+			'form-end'                 => '</form>',
+			'wrap-end'                 => '</div>',
+			'wrap-script-template-end' => '</script>',
 		];
 
 		return Template::combine_components( $components );

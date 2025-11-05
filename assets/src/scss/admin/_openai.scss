@@ -564,6 +564,7 @@ $white: #FFFFFF;
 			display: flex;
 			justify-content: flex-end;
 			gap: 12px;
+			margin-top: 20px;
 		}
 
 		.generate-prompt{
@@ -777,6 +778,44 @@ $white: #FFFFFF;
 		font-weight: 700;
 		margin-bottom: 10px;
 		color: $text-dark;
+	}
+}
+
+.lp-ai-images-warp {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 15px;
+	margin-top: 20px;
+	max-height: 400px;
+	overflow-y: auto;
+
+	.lp-ai-image-item {
+		position: relative;
+
+		img {
+			object-fit: contain;
+			width: 100%;
+		}
+
+		.lp-btn-ai-apply-image {
+			position: absolute;
+			top: 5px;
+			right: 0;
+			transform: translateX(-5%);
+			background-color: rgba(0, 0, 0, 0.6);
+			color: #fff;
+			border: none;
+			padding: 6px 12px;
+			border-radius: 4px;
+			font-size: 0.875rem;
+			cursor: pointer;
+			opacity: 0;
+			transition: opacity 0.2s;
+		}
+
+		&:hover .lp-btn-ai-apply-image {
+			opacity: 1;
+		}
 	}
 }
 
