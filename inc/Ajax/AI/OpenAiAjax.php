@@ -231,6 +231,9 @@ class OpenAiAjax extends AbstractAjax {
 				case 'course-image':
 					$prompt = Config::instance()->get( 'prompt-create-image-course', 'settings/openAi', compact( 'params' ) );
 					break;
+				case 'course-curriculum':
+					$prompt = Config::instance()->get( 'prompt-curriculum-course', 'settings/openAi', compact( 'params' ) );
+					break;
 				case $lp_prompt_type:
 					$prompt = apply_filters( 'lp-prompt-type', '', $lp_prompt_type, $params );
 					break;
@@ -292,6 +295,10 @@ class OpenAiAjax extends AbstractAjax {
 							$result['lp_html_preview'] .= AdminEditWithAITemplate::instance()->html_list_results( $args );
 						}
 						break;
+					case 'course-curriculum':
+						$result['lp_structure_course'] = $lp_structure_data[0];
+						$result['lp_html_preview']     = AdminCreateCourseAITemplate::html_preview_with_data( $result['lp_structure_course'] );
+						break;
 					case $lp_prompt_type:
 						$result['lp_html_preview'] = apply_filters( 'lp-openai-render-data-generated', '', $lp_prompt_type, $lp_structure_data );
 						break;
@@ -299,6 +306,11 @@ class OpenAiAjax extends AbstractAjax {
 						break;
 				}
 			}
+
+			$result['lp_html_preview'] .= sprintf(
+				'<input type="hidden" name="lp-openai-generated-data" value="%s" />',
+				Template::convert_data_to_json( $lp_structure_data )
+			);
 
 			$response->data    = $result;
 			$response->status  = 'success';

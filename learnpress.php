@@ -36,6 +36,7 @@ use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
 use LearnPress\TemplateHooks\Admin\AdminCreateCourseAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditCourseAI;
+use LearnPress\TemplateHooks\Admin\AdminEditCourseCurriculumWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditWithAITemplate;
@@ -341,6 +342,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminCreateCourseAITemplate::instance();
 			AdminEditWithAITemplate::instance();
 			AdminEditCourseAI::instance();
+			AdminEditCourseCurriculumWithAITemplate::instance();
 
 			// WP GDPR
 			ErasePersonalData::instance();

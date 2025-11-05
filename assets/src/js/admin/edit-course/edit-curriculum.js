@@ -58,12 +58,24 @@ export class EditCourseCurriculum {
 				callBack: sectionEdit.addSection.name,
 				className: sectionEdit.className,
 			},
+			{
+				selector: `${ sectionEdit.className.elBtnUpdateDes }`,
+				class: sectionEdit,
+				callBack: sectionEdit.updateSectionDescription.name,
+				className: sectionEdit.className,
+			},
 		] );
 		lpUtils.eventHandlers( 'keydown', [
 			{
 				selector: `${ sectionEdit.className.elSectionTitleNewInput }`,
 				class: sectionEdit,
 				callBack: sectionEdit.addSection.name,
+				checkIsEventEnter: true,
+			},
+			{
+				selector: `${ sectionEdit.className.elSectionDesInput }`,
+				class: sectionEdit,
+				callBack: sectionEdit.updateSectionDescription.name,
 				checkIsEventEnter: true,
 			},
 		] );
@@ -81,7 +93,6 @@ export class EditCourseCurriculum {
 		/*** Event of Section ***/
 		sectionEdit.setFocusTitleInput( e, target );
 		sectionEdit.toggleSection( e, target );
-		sectionEdit.updateSectionDescription( e, target );
 		sectionEdit.cancelSectionDescription( e, target );
 		sectionEdit.deleteSection( e, target );
 		sectionEdit.updateSectionTitle( e, target );

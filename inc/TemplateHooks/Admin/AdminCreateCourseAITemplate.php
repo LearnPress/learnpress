@@ -273,20 +273,20 @@ class AdminCreateCourseAITemplate {
 			'sections-title-length' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="number" name="section_title_length" value="2" min="0">
+					<input type="number" name="section_title_length" value="60" min="0">
 				</div>',
 				esc_html__( 'Each section title length', 'learnpress' )
 			),
 			'sections-des-length'   => sprintf(
 				'<div class="form-group">
-					<labe>%s</labe>
-					<input type="number" name="section_description_length" value="2" min="0">
+					<label>%s</label>
+					<input type="number" name="section_description_length" value="200" min="0">
 				</div>',
 				esc_html__( 'Each section description length', 'learnpress' )
 			),
 			'lesson-number'         => sprintf(
 				'<div class="form-group">
-					<label for="lessons-per-section">%s</label>
+					<label>%s</label>
 					<input type="number" name="lessons_per_section" value="2" min="0">
 				</div>',
 				esc_html__( 'Lessons per Section', 'learnpress' )
@@ -294,16 +294,16 @@ class AdminCreateCourseAITemplate {
 			'lesson-title-length'   => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="number" name="lessons_title_length" value="2" min="0">
+					<input type="number" name="lessons_title_length" value="60" min="0">
 				</div>',
-				esc_html__( 'Lessons per Section', 'learnpress' )
+				esc_html__( 'Each lesson title length', 'learnpress' )
 			),
 			'lesson-des-length'     => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="number" name="lessons_description_length" value="2" min="0">
+					<input type="number" name="lessons_description_length" value="1000" min="0">
 				</div>',
-				esc_html__( 'Lessons per Section', 'learnpress' )
+				esc_html__( 'Each lesson description length', 'learnpress' )
 			),
 			'quizzes'               => sprintf(
 				'<div class="form-group">

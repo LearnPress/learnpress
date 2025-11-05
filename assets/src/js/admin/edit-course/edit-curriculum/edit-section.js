@@ -383,19 +383,8 @@ class EditSection {
 	}
 
 	/* Update section description to server */
-	updateSectionDescription( e, target, callBackNest ) {
-		let canHandle = false;
-
-		if ( target.closest( `${ className.elBtnUpdateDes }` ) ) {
-			canHandle = true;
-		} else if ( target.closest( `${ className.elSectionDesInput }` ) && e.key === 'Enter' ) {
-			canHandle = true;
-		}
-
-		if ( ! canHandle ) {
-			return;
-		}
-
+	updateSectionDescription( args ) {
+		const { e, target, callBackNest } = args;
 		e.preventDefault();
 
 		const elSectionDesc = target.closest( `${ className.elSectionDesc }` );

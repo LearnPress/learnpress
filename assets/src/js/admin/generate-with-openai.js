@@ -69,17 +69,6 @@ export class GenerateWithOpenai {
 				</button>`
 			);
 		} );
-		lpUtils.lpOnElementReady( '#lp-course-edit-curriculum', ( el ) => {
-			const elInside = el.querySelector( '.count-sections' );
-			elInside.insertAdjacentHTML(
-				'afterend',
-				`<button type="button"
-					class="lp-btn-generate-with-ai button-secondary"
-					data-template="#lp-tmpl-edit-curriculum-ai">
-					Generate Curriculum with AI
-				</button>`
-			);
-		} );
 
 		this.events();
 	}
@@ -172,12 +161,6 @@ export class GenerateWithOpenai {
 		const elBtnActions = target.closest( '.button-actions' );
 		const elCreateCourseAIWrap = elBtnActions.closest( this.selector.elGenerateDataAiWrap );
 		let step = parseInt( elBtnActions.dataset.step );
-		const stepMax = parseInt( elBtnActions.dataset.stepMax );
-		const elBtnNext = elBtnActions.querySelector( '.lp-btn-step[data-action=next]' );
-		const elBtnPrev = elBtnActions.querySelector( '.lp-btn-step[data-action=prev]' );
-		const elBtnGeneratePrompt = elBtnActions.querySelector( '.lp-btn-generate-prompt' );
-		const elBtnCallOpenAI = elBtnActions.querySelector( '.lp-btn-call-open-ai' );
-		const elBtnCreateCourse = elBtnActions.querySelector( '.lp-btn-create-course' );
 
 		const stepAction = target.dataset.action;
 		if ( stepAction === 'next' ) {
@@ -206,32 +189,6 @@ export class GenerateWithOpenai {
 				lpUtils.lpShowHideEl( el, 0 );
 			}
 		} );
-
-		/*if ( step === 1 ) {
-			lpUtils.lpShowHideEl( elBtnPrev, 0 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnPrev, 1 );
-		}
-
-		if ( step === stepMax || step > stepMax ) {
-			lpUtils.lpShowHideEl( elBtnNext, 0 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnNext, 1 );
-		}
-
-		if ( step === 2 ) {
-			lpUtils.lpShowHideEl( elBtnNext, 0 );
-			lpUtils.lpShowHideEl( elBtnGeneratePrompt, 1 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnGeneratePrompt, 0 );
-		}
-
-		if ( step === 3 ) {
-			lpUtils.lpShowHideEl( elBtnNext, 0 );
-			lpUtils.lpShowHideEl( elBtnCallOpenAI, 1 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnCallOpenAI, 0 );
-		}*/
 	}
 
 	/**
