@@ -64,7 +64,9 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			}
 
 			$singleCourseTemplate = SingleCourseTemplate::instance();
-			$tag                  = $attributes['tag'] ?? 'h3';
+			$tag                  = sanitize_text_field( $attributes['tag'] ?? 'h3' );
+			$allowed_aligns       = [ 'span', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+			$tag                  = in_array( $tag, $allowed_aligns, true ) ? $tag : 'h3';
 			$is_link              = $attributes['isLink'] ?? false;
 			$target               = $attributes['target'] ?? false;
 
