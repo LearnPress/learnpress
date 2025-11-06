@@ -29,6 +29,9 @@ const showToast = ( message, status = 'success' ) => {
 };
 const popupSweetAlert = null;
 
+let editSection = null;
+let editSectionItem = null;
+
 export class EditCurriculumAi {
 	constructor() {
 		this.init();
@@ -82,71 +85,145 @@ export class EditCurriculumAi {
 			showToast( 'No sections found in the generated data.', 'error' );
 		}
 
-		//console.log( 'Generated Sections:', sections );
+		console.log( 'Generated Sections:', sections );
 
 		SweetAlert.close();
 
-		const editSection = new EditSection();
+		// Wait half second to ensure SweetAlert is closed completely
+		await new Promise( ( resolve ) => setTimeout( resolve, 500 ) );
+
+		// New edit section instance
+		editSection = new EditSection();
 		editSection.init();
-		for ( const section of sections ) {
-			// generate code sleep 1 second between each add section to avoid conflict
 
-			const section_title = section.section_title || '';
-			const section_description = section.section_description || '';
+		// New edit section item instance
+		editSectionItem = new EditSectionItem();
+		editSectionItem.init();
 
+		// Scroll to element add section
+		const elEditCurriculum = document.querySelector( editSection.className.idElEditCurriculum );
+		const elDivAddNewSection = elEditCurriculum.querySelector( editSection.className.elDivAddNewSection );
+		elDivAddNewSection.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+
+		// Wait 800ms to ensure scroll completely
+		await new Promise( ( resolve ) => setTimeout( resolve, 800 ) );
+
+		for ( const sectionData of sections ) {
 			// Set title
-			const elCurriculum = document.querySelector( editSection.className.idElEditCurriculum );
-			const elSectionTitleNewInput = elCurriculum.querySelector( editSection.className.elSectionTitleNewInput );
-			const elBtnAddSection = elCurriculum.querySelector( editSection.className.elBtnAddSection );
-			elSectionTitleNewInput.value = section_title;
+			const elSectionTitleNewInput = elEditCurriculum.querySelector( editSection.className.elSectionTitleNewInput );
+			const elBtnAddSection = elEditCurriculum.querySelector( editSection.className.elBtnAddSection );
+			elSectionTitleNewInput.value = sectionData.section_title || '';
 
-			const CBAfterSetSectionDescription = {
-				success: ( response ) => {
-					console.log( 'Set section description response:', response );
-				},
-				error: ( error ) => {
+			await new Promise( ( resolve ) => {
+				editSection.addSection( {
+					e: new PointerEvent( 'click' ),
+					target: elBtnAddSection,
+					callBackNest: this.updateSectionDescription( { sectionData, elEditCurriculum } ),
+					resolve,
+				} );
+			} );
+		}
+	}
 
-				},
-				completed: () => {
-				},
-			};
+	/**
+	 * Update section description after create new section
+	 * @param args
+	 */
+	updateSectionDescription( args ) {
+		const { sectionData, elEditCurriculum } = args;
 
-			const CBAfterAddSection = {
-				success: async ( newSection, response ) => {
-					// Wait 1 second to run next section
-					await new Promise( ( resolve ) => setTimeout( resolve, 1500 ) );
+		return {
+			success: async ( args ) => {
+				const { elSection } = args;
+				await new Promise( ( resolve ) => setTimeout( resolve, 1000 ) );
 
-					const elSectionDesInput = newSection.querySelector( editSection.className.elSectionDesInput );
-					// Set description for the new section
-					elSectionDesInput.value = section_description;
+				// Set description for the new section
+				const elSectionDesInput = elSection.querySelector( editSection.className.elSectionDesInput );
+				elSectionDesInput.value = sectionData.section_description || '';
 
-					// Call AJAX to save description
+				// Call AJAX to save description
+				await new Promise( ( resolve ) => {
 					editSection.updateSectionDescription( {
 						e: new PointerEvent( 'click' ),
 						target: elSectionDesInput,
-						callBackNest: CBAfterSetSectionDescription,
+						callBackNest: this.addSectionItems( { sectionData, elEditCurriculum } ),
+						resolve,
 					} );
-				},
-				error: ( error ) => {
+				} );
 
-				},
-				completed: () => {
+				setTimeout( args.resolve, 1 );
+			},
+			error: ( error ) => {
 
-				},
-			};
+			},
+			completed: () => {
 
-			editSection.addSection( {
+			},
+		};
+	}
+
+	addSectionItems( args ) {
+		const { sectionData, elEditCurriculum } = args;
+		const lessons = sectionData.lessons || [];
+		const quizzes = sectionData.quizzes || [];
+
+		return {
+			success: async ( args ) => {
+				//await new Promise( ( resolve ) => setTimeout( resolve, 1000 ) );
+				const { elSection } = args;
+
+				const elBtnSelectItemTypeLesson = elSection.querySelector(
+					`${ editSectionItem.className.elBtnSelectItemType }[data-item-type=lp_lesson]` );
+
+				const elBtnSelectItemTypeQuiz = elSection.querySelector(
+					`${ editSectionItem.className.elBtnSelectItemType }[data-item-type=lp_quiz]` );
+
+				for ( const itemData of lessons ) {
+					elBtnSelectItemTypeLesson.click();
+
+					await this.addItemToSection( { itemData, elSection, elEditCurriculum } );
+				}
+
+				for ( const itemData of quizzes ) {
+					elBtnSelectItemTypeQuiz.click();
+
+					await this.addItemToSection( { itemData, elSection, elEditCurriculum } );
+				}
+
+				setTimeout( args.resolve, 1 );
+			},
+			error: ( error ) => {
+
+			},
+			completed: () => {
+			},
+		};
+	}
+
+	async addItemToSection( args ) {
+		const { itemData, elSection, elEditCurriculum } = args;
+
+		const elBtnAddItem = elSection.querySelector( editSectionItem.className.elBtnAddItem );
+		const elAddItemTypeTitleInput = elSection.querySelector( editSectionItem.className.elAddItemTypeTitleInput );
+		elAddItemTypeTitleInput.value = itemData.lesson_title || itemData.quiz_title || '';
+
+		// Scroll to element add item
+		elBtnAddItem.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+
+		// Call AJAX to add item to section
+		await new Promise( ( resolve ) => {
+			editSectionItem.addItemToSection( {
 				e: new PointerEvent( 'click' ),
-				target: elBtnAddSection,
-				callBackNest: CBAfterAddSection,
+				target: elBtnAddItem,
+				resolve,
+				callBackNest: {
+					completed: async ( args ) => {
+						setTimeout( resolve, 1000 );
+					},
+				},
 			} );
+		} );
 
-			// Set description
-			const elSectionDesInput = elCurriculum.querySelector( editSection.className.elSectionDesInput );
-			elSectionDesInput.value = section_description;
-
-			// Wait 1 second to run next section
-			await new Promise( ( resolve ) => setTimeout( resolve, 1500 ) );
-		}
+		setTimeout( args.resolve, 1 );
 	}
 }

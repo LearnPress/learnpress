@@ -42,7 +42,7 @@ const className = {
 
 const idUrlHandle = 'edit-course-curriculum';
 
-class EditSectionItem {
+export class EditSectionItem {
 	constructor() {
 		this.courseId = null;
 		this.elCurriculumSections = null;
@@ -55,6 +55,7 @@ class EditSectionItem {
 		this.sectionIdSelected = null;
 		this.elPopupSelectItems = null;
 		this.timeSearchTitleItem = null;
+		this.className = className;
 	}
 
 	init() {
@@ -68,11 +69,10 @@ class EditSectionItem {
 	}
 
 	/* Add item type */
-	addItemType( e, target ) {
-		const elBtnSelectItemType = target.closest( `${ className.elBtnSelectItemType }` );
-		if ( ! elBtnSelectItemType ) {
-			return;
-		}
+	addItemType( args ) {
+		const { e, target } = args;
+
+		const elBtnSelectItemType = target;
 
 		const itemType = elBtnSelectItemType.dataset.itemType;
 		const itemPlaceholder = elBtnSelectItemType.dataset.placeholder;
@@ -111,19 +111,8 @@ class EditSectionItem {
 	}
 
 	/* Add item to section */
-	addItemToSection( e, target ) {
-		let canHandle = false;
-
-		if ( target.closest( `${ className.elBtnAddItem }` ) ) {
-			canHandle = true;
-		} else if ( target.closest( `${ className.elAddItemTypeTitleInput }` ) && e.key === 'Enter' ) {
-			canHandle = true;
-		}
-
-		if ( ! canHandle ) {
-			return;
-		}
-
+	addItemToSection( args ) {
+		const { e, target, callBackNest } = args;
 		e.preventDefault();
 
 		const elAddItemType = target.closest( `${ className.elAddItemType }` );
@@ -167,6 +156,12 @@ class EditSectionItem {
 					const { section_item, item_link } = data || {};
 					elItemNew.dataset.itemId = section_item.item_id || 0;
 					elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item_link || '' );
+
+					// Call callback nest if exists
+					if ( callBackNest && typeof callBackNest.success === 'function' ) {
+						args.elItemNew = elItemNew;
+						callBackNest.success( args );
+					}
 				}
 			},
 			error: ( error ) => {
@@ -176,6 +171,13 @@ class EditSectionItem {
 			completed: () => {
 				this.lpUtils.lpSetLoadingEl( elItemNew, 0 );
 				this.updateCountItems( elSection );
+
+				// Call callback nest if exists
+				console.log( callBackNest.completed );
+				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
+					args.elItemNew = elItemNew;
+					callBackNest.completed( args );
+				}
 			},
 		};
 
@@ -885,7 +887,3 @@ class EditSectionItem {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 }
-
-// Export singleton to preserve existing API
-export default new EditSectionItem();
-export { EditSectionItem, className };

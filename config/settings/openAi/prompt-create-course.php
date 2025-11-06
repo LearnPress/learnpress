@@ -28,7 +28,7 @@ $questions_per_quiz  = max( 1, (int) ( $params['questions_per_quiz'] ?? 5 ) );
 $quiz_structure_requirements = '';
 $quiz_json_example           = '';
 if ( $quizzes_per_section > 0 ) {
-	$quiz_instructions = <<<XML
+	$quiz_structure_requirements = <<<XML
         <quiz_requirements>
             - Each section MUST contain exactly **{$quizzes_per_section}** quiz object(s) within a "quizzes" array.
             - Each quiz MUST have a relevant "quiz_title" and "quiz_description".

@@ -15,28 +15,32 @@ $course_objective = trim( $params['course_objective'] ?? '' );
 // AI Settings
 $language        = trim( $params['language'] ?? 'English' );
 $tone            = trim( $params['tone'] ?? 'Informative and encouraging' );
-$lesson_length   = max( 50, (int) ( $params['lesson_length'] ?? 300 ) );
 $reading_level   = trim( $params['reading_level'] ?? 'High school' );
 $target_keywords = trim( $params['target_keywords'] ?? '' );
 
-// Course Structure
-$sections            = max( 1, (int) ( $params['section_number'] ?? 3 ) );
-$lessons_per_section = max( 1, (int) ( $params['lessons_per_section'] ?? 5 ) );
-$quizzes_per_section = max( 0, (int) ( $params['quizzes_per_section'] ?? 1 ) );
-$questions_per_quiz  = max( 1, (int) ( $params['questions_per_quiz'] ?? 5 ) );
+$sections             = $params['section_number'] ?? 3;
+$section_title_length = $params['section_title_length'] ?? 60;
+$section_description_length = $params['section_description_length'] ?? 100;
+$lessons_per_section  = $params['lessons_per_section'] ?? 5;
+$lesson_length        = $params['lesson_length'] ?? 300;
+$quizzes_per_section  = $params['quizzes_per_section'] ?? 1;
+$quiz_title_length    = $params['quiz_title_length'] ?? 60;
+$questions_per_quiz   = $params['questions_per_quiz'] ?? 2;
 
 $quiz_structure_requirements = '';
 $quiz_json_example           = '';
 if ( $quizzes_per_section > 0 ) {
-	$quiz_instructions = <<<XML
+	$quiz_structure_requirements = <<<XML
         <quiz_requirements>
             - Each section MUST contain exactly **{$quizzes_per_section}** quiz object(s) within a "quizzes" array.
             - Each quiz MUST have a relevant "quiz_title" and "quiz_description".
+            - Each "quiz_title" approximately {$quiz_title_length} words.
             - Each quiz MUST contain exactly **{$questions_per_quiz}** question object(s) in a "questions" array.
             - Each question must be multiple-choice, testing concepts from the lessons in THAT SAME section.
             - Each question object MUST contain: "question_title", "question_description", "options" (an array of 4 strings), and "correct_answer" (a string matching one of the options).
         </quiz_requirements>
 XML;
+
 	$quiz_json_example = ',' . <<<JSON
         "quizzes": [
           {
@@ -83,6 +87,8 @@ return <<<XML
 
         <structure_requirements>
             - The course MUST be divided into exactly **$sections** section(s).
+            - Each "section_title" approximately {$section_title_length} words.
+            - Each "section_description" approximately {$section_description_length} words.
             - Each section MUST contain a relevant "section_title" and exactly **$lessons_per_section** lesson(s).
             - Each lesson MUST have a "lesson_title" and detailed "lesson_description".
         </structure_requirements>

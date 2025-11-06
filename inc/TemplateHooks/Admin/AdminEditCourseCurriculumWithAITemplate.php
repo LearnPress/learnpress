@@ -28,6 +28,9 @@ class AdminEditCourseCurriculumWithAITemplate {
 		add_action( 'admin_footer', [ $this, 'layout_popup' ] );
 	}
 
+	/**
+	 * Layout popup to generate course curriculum with AI
+	 */
 	public function layout_popup() {
 		$screen  = get_current_screen();
 		$screens = [
@@ -38,8 +41,6 @@ class AdminEditCourseCurriculumWithAITemplate {
 		}
 
 		$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
-
-		$data_dummy = '[{&quot;sections&quot;:[{&quot;section_title&quot;:&quot;Mastering Core Concepts in Advanced PHP 8&quot;,&quot;section_description&quot;:&quot;This section dives deep into the core functionality and logic-enhancing tools that set advanced PHP 8 programming apart. Students will explore complex constructs like closures and anonymous functions, while also learning how to utilize generators for efficient memory management.&quot;,&quot;lessons&quot;:[{&quot;lesson_title&quot;:&quot;Unpacking Closures and Anonymous Functions&quot;,&quot;lesson_description&quot;:&quot;In this lesson, students will explore the difference between closures and anonymous functions, and learn how both enhance code modularity and reusability. Through hands-on examples, students will create and invoke closures, understand variable scope, and learn how to pass closures as parameters to other functions. By the end, students will be able to integrate closures and anonymous functions into real-world PHP applications to improve code organization and performance.&quot;},{&quot;lesson_title&quot;:&quot;Harnessing the Power of Generators&quot;,&quot;lesson_description&quot;:&quot;This lesson introduces students to generators in PHP 8—an efficient way of iterating through large datasets without consuming excessive memory. Students will learn how to use the \u0027yield\u0027 keyword, build simple and recursive generators, and compare generators with traditional iterators. Through contextual examples, this lesson demonstrates how generators can streamline complex data processing tasks while keeping applications fast and efficient.&quot;}],&quot;quizzes&quot;:[{&quot;quiz_title&quot;:&quot;Core PHP 8 Functions Quiz&quot;,&quot;quiz_description&quot;:&quot;Assess your understanding of closures, anonymous functions, and generators.&quot;,&quot;questions&quot;:[{&quot;question_title&quot;:&quot;What is a key advantage of using a closure in PHP?&quot;,&quot;question_description&quot;:&quot;Choose the most accurate benefit from the options below.&quot;,&quot;options&quot;:[&quot;Consumes more memory&quot;,&quot;Must be declared globally&quot;,&quot;Allows access to outer scope variables&quot;,&quot;Cannot be passed to other functions&quot;],&quot;correct_answer&quot;:&quot;Allows access to outer scope variables&quot;},{&quot;question_title&quot;:&quot;What keyword is used to build a generator function in PHP?&quot;,&quot;question_description&quot;:&quot;Select the keyword that enables generator behavior.&quot;,&quot;options&quot;:[&quot;return&quot;,&quot;yield&quot;,&quot;generate&quot;,&quot;function&quot;],&quot;correct_answer&quot;:&quot;yield&quot;}]}]},{&quot;section_title&quot;:&quot;Putting PHP 8 Features Into Practice&quot;,&quot;section_description&quot;:&quot;This section focuses on leveraging the newest and most powerful features of PHP 8 for practical and scalable application development. Students will explore advanced tools such as match expressions and named arguments through real-world examples and scenarios.&quot;,&quot;lessons&quot;:[{&quot;lesson_title&quot;:&quot;Advanced Control Flow with Match Expressions&quot;,&quot;lesson_description&quot;:&quot;Students will learn how PHP 8\u0027s match expression improves upon traditional switch statements by offering strict comparison, returnable values, and more concise syntax. Through interactive code samples, students will practice building robust control flow structures that enhance readability and reduce bugs in logic-heavy applications.&quot;},{&quot;lesson_title&quot;:&quot;Boosting Readability with Named Arguments&quot;,&quot;lesson_description&quot;:&quot;This lesson explores how named arguments simplify function calls by explicitly stating parameter names, increasing clarity especially in functions with multiple optional parameters. Students will practice rewriting traditional function invocations using named arguments and apply this feature to build clearer, more maintainable code structures across different PHP 8 projects.&quot;}],&quot;quizzes&quot;:[{&quot;quiz_title&quot;:&quot;Modern PHP 8 Features Quiz&quot;,&quot;quiz_description&quot;:&quot;Test your knowledge of PHP 8\u0027s match expressions and named arguments.&quot;,&quot;questions&quot;:[{&quot;question_title&quot;:&quot;How do match expressions differ from switch statements?&quot;,&quot;question_description&quot;:&quot;Identify the key improvement match expressions offer over switch statements.&quot;,&quot;options&quot;:[&quot;Match uses loose comparisons&quot;,&quot;Match supports variable variables&quot;,&quot;Match returns values and uses strict comparison&quot;,&quot;Match allows function returns inside case blocks&quot;],&quot;correct_answer&quot;:&quot;Match returns values and uses strict comparison&quot;},{&quot;question_title&quot;:&quot;What is the benefit of using named arguments in function calls?&quot;,&quot;question_description&quot;:&quot;Choose the most significant advantage of using named arguments.&quot;,&quot;options&quot;:[&quot;Shorter function syntax&quot;,&quot;Prevents function overloading&quot;,&quot;Improves code clarity and flexibility&quot;,&quot;Eliminates the need for function parameters&quot;],&quot;correct_answer&quot;:&quot;Improves code clarity and flexibility&quot;}]}]}]}]';
 
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-course-curriculum-ai">',
@@ -74,7 +75,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 						data-step-show="3"
 						data-send="%s" type="button">%s
 					</button>
-					<button class="lp-button btn-primary lp-btn-apply-curriculum"
+					<button class="lp-button btn-primary lp-btn-apply-curriculum lp-hidden"
 						data-step-show="4"
 						data-send="%s" type="button">%s
 					</button>
@@ -104,10 +105,6 @@ class AdminEditCourseCurriculumWithAITemplate {
 					]
 				),
 				esc_html__( 'Apply Sections Data To Curriculum', 'learnpress' ),
-			),
-			'dummy' 				 => sprintf(
-				'<input name="lp-openai-generated-data" value="%s">',
-				$data_dummy
 			),
 			'form-end'                 => '</form>',
 			'wrap-end'                 => '</div>',
@@ -161,14 +158,14 @@ class AdminEditCourseCurriculumWithAITemplate {
 					<label>%s</label>
 					<input type="text" name="post-title" readonly />
 				</div>',
-				esc_html__( 'Course Title', 'learnpress' )
+				esc_html__( 'Course title refer', 'learnpress' )
 			),
 			'post-content'          => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea type="text" name="post-content" readonly></textarea>
 				</div>',
-				esc_html__( 'Course Description', 'learnpress' )
+				esc_html__( 'Course description refer', 'learnpress' )
 			),
 			'sections-number'       => sprintf(
 				'<div class="form-group">
@@ -187,7 +184,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 			'sections-des-length'   => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="number" name="section_description_length" value="200" min="0">
+					<input type="number" name="section_description_length" value="50" min="0">
 				</div>',
 				esc_html__( 'Each section description length', 'learnpress' )
 			),
@@ -205,13 +202,6 @@ class AdminEditCourseCurriculumWithAITemplate {
 				</div>',
 				esc_html__( 'Each lesson title length', 'learnpress' )
 			),
-			'lesson-des-length'     => sprintf(
-				'<div class="form-group">
-					<label>%s</label>
-					<input type="number" name="lessons_description_length" value="1000" min="0">
-				</div>',
-				esc_html__( 'Each lesson description length', 'learnpress' )
-			),
 			'quizzes'               => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
@@ -219,11 +209,12 @@ class AdminEditCourseCurriculumWithAITemplate {
 				</div>',
 				esc_html__( 'Quizzes per Section', 'learnpress' )
 			),
-			'questions'             => sprintf(
+			'quiz-title-length'     => sprintf(
 				'<div class="form-group">
-					<label for="questions-per-quiz">%s</label>
-				<input type="number" name="questions_per_quiz" value="2" min="0"></div>',
-				esc_html__( 'Questions per Quiz', 'learnpress' )
+					<label>%s</label>
+					<input type="number" name="quiz_title_length" value="60" min="0">
+				</div>',
+				esc_html__( 'Each quiz title length', 'learnpress' )
 			),
 			'form-grid-end'         => '</div>',
 			'step_close'            => '</div>',

@@ -7,10 +7,11 @@
 
 import * as lpEditCurriculumShare from './edit-curriculum/share.js';
 import { EditSection } from './edit-curriculum/edit-section.js';
-import sectionItemEdit from './edit-curriculum/edit-section-item.js';
+import { EditSectionItem } from './edit-curriculum/edit-section-item.js';
 import * as lpUtils from '../../utils.js';
 
 const sectionEdit = new EditSection();
+const sectionItemEdit = new EditSectionItem();
 
 const { className } = lpEditCurriculumShare;
 
@@ -64,6 +65,18 @@ export class EditCourseCurriculum {
 				callBack: sectionEdit.updateSectionDescription.name,
 				className: sectionEdit.className,
 			},
+			{
+				selector: `${ sectionItemEdit.className.elBtnSelectItemType }`,
+				class: sectionItemEdit,
+				callBack: sectionItemEdit.addItemType.name,
+				className: sectionItemEdit.className,
+			},
+			{
+				selector: `${ sectionItemEdit.className.elBtnAddItem }`,
+				class: sectionItemEdit,
+				callBack: sectionItemEdit.addItemToSection.name,
+				className: sectionItemEdit.className,
+			},
 		] );
 		lpUtils.eventHandlers( 'keydown', [
 			{
@@ -76,6 +89,12 @@ export class EditCourseCurriculum {
 				selector: `${ sectionEdit.className.elSectionDesInput }`,
 				class: sectionEdit,
 				callBack: sectionEdit.updateSectionDescription.name,
+				checkIsEventEnter: true,
+			},
+			{
+				selector: `${ sectionItemEdit.className.elBtnAddItem }`,
+				class: sectionItemEdit,
+				callBack: sectionItemEdit.addItemToSection.name,
 				checkIsEventEnter: true,
 			},
 		] );
@@ -100,9 +119,9 @@ export class EditCourseCurriculum {
 		/*** End Event of Section ***/
 
 		/*** Event of Section Item ***/
-		sectionItemEdit.addItemType( e, target );
+		//sectionItemEdit.addItemType( e, target );
 		sectionItemEdit.cancelAddItemType( e, target );
-		sectionItemEdit.addItemToSection( e, target );
+		//sectionItemEdit.addItemToSection( e, target );
 		sectionItemEdit.showPopupItemsToSelect( e, target );
 		sectionItemEdit.showItemsSelected( e, target );
 		sectionItemEdit.chooseTabItemsType( e, target );

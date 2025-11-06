@@ -29,7 +29,7 @@ const className = {
 
 const idUrlHandle = 'edit-course-curriculum';
 
-class EditSection {
+export class EditSection {
 	constructor() {
 		this.courseId = null;
 		this.elEditCurriculum = null;
@@ -147,7 +147,9 @@ class EditSection {
 					}
 
 					if ( callBackNest && typeof callBackNest.success === 'function' ) {
-						callBackNest.success( newSection, response );
+						args.elSection = newSection;
+						args.response = response;
+						callBackNest.success( args );
 					}
 				}
 
@@ -157,7 +159,8 @@ class EditSection {
 				newSection.remove();
 				this.showToast( error, 'error' );
 				if ( callBackNest && typeof callBackNest.error === 'function' ) {
-					callBackNest.error( newSection, error );
+					args.error = error;
+					callBackNest.error( args );
 				}
 			},
 			completed: () => {
@@ -168,7 +171,8 @@ class EditSection {
 				this.updateCountSections();
 				delete lpEditCurriculumShare.hasChange.titleNew;
 				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
-					callBackNest.completed( newSection );
+					args.elSection = newSection;
+					callBackNest.completed( args );
 				}
 			},
 		};
@@ -413,8 +417,12 @@ class EditSection {
 				const { message, status } = response;
 
 				if ( callBackNest && typeof callBackNest.success === 'function' ) {
-					callBackNest.success( elSection, response );
+					args.elSection = elSection;
+					args.response = response;
+					callBackNest.success( args );
 				}
+
+				console.log('show toats Desc');
 
 				this.showToast( message, status );
 			},
@@ -588,6 +596,3 @@ class EditSection {
 		elCountSections.querySelector( '.count' ).textContent = sectionsCount;
 	}
 }
-
-// Export singleton so other modules can call methods the same way as before
-export { EditSection };

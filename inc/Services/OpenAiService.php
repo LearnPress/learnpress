@@ -233,6 +233,11 @@ class OpenAiService {
 			return $data;
 		} elseif ( isset( $data['output'] ) ) {
 			foreach ( $data['output'] as $output ) {
+				$content_data = $output['content'] ?? [];
+				if ( empty( $content_data ) ) {
+					continue;
+				}
+
 				foreach ( $output['content'] as $content ) {
 					try {
 						$data['lp_structure_data'][] = LP_Helper::json_decode( $content['text'] ?? '', true );
