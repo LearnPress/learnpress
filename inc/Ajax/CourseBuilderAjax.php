@@ -59,7 +59,6 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			global $wpdb;
 			$data      = self::check_valid();
 			$course_id = $data['course_id'] ?? 0;
 
@@ -119,43 +118,9 @@ class CourseBuilderAjax extends AbstractAjax {
 				delete_post_thumbnail( $course_id );
 			}
 
-			$userModel = UserModel::find( get_current_user_id(), true );
-
-			// Save settings post_meta.
-			if ( ! empty( $data['settings'] ) ) {
-				foreach ( $data['settings'] as $setting_content ) {
-					if ( ! empty( $setting_content['content'] ) ) {
-						foreach ( $setting_content['content'] as $setting ) {
-							if ( $userModel->is_instructor() && in_array(
-								$setting['id'],
-								array(
-									'_lp_course_author',
-									'_lp_co_teacher',
-								)
-							) ) {
-								continue;
-							}
-
-							$this->update_setting( $course_id, $setting );
-
-							// Update post_author.
-							if ( $setting['id'] === '_lp_course_author' && ! empty( $setting['value'] ) ) {
-								$wpdb->update(
-									$wpdb->posts,
-									[ 'post_author' => absint( wp_unslash( $setting['value'] ) ) ],
-									[ 'ID' => $course_id ]
-								);
-							}
-						}
-					}
-				}
-			}
-
-			$course_post_type = LP_Course_Post_Type::instance();
-			$course_post_type->save_post( $course_id, null, true );
-
 			$response->status              = 'success';
 			$response->message             = $data['insert'] ? __( 'Insert course successfully!', 'learnpress' ) : __( 'Update course successfully!', 'learnpress' );
+			$response->data->button_title  = $data['course_status'] === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 			$response->data->course_id_new = $data['insert'] ? $course_id : '';
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {

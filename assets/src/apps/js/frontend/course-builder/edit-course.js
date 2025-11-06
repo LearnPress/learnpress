@@ -159,6 +159,15 @@ const updateCourse = ( e, target ) => {
 			const { status, message, data } = response;
 			showToast( message, status );
 
+			if ( data?.button_title ) {
+				if ( elBtnUpdateCourse ) {
+					elBtnUpdateCourse.textContent = data?.button_title;
+				} else {
+					const elBtnUpdate = document.querySelector( className.elBtnUpdateCourse );
+					elBtnUpdate.textContent = data?.button_title;
+				}
+			}
+
 			if ( data?.course_id_new ) {
 				const currentUrl = window.location.href;
 				const newUrl = currentUrl.replace( /post-new\/?/, `${ data.course_id_new }/` );

@@ -160,12 +160,12 @@ class CourseBuilderTemplate {
 			$section_data = $tab_data['sections'][ $section ];
 			$title        = $section_data['title'];
 			$slug         = $section_data['slug'];
-			$link         = CourseBuilder::get_tab_link( $tab, $post_id, $section );
+			$link         = $section === $section_current ? '#' : CourseBuilder::get_tab_link( $tab, $post_id, $section );
 		} else {
 			$classes[] = $tab === $tab_current ? $tab . ' active' : $tab;
 			$title     = $tab_data['title'];
 			$slug      = $tab_data['slug'];
-			$link      = CourseBuilder::get_tab_link( $slug );
+			$link      = $tab === $tab_current ? '#' : CourseBuilder::get_tab_link( $slug );
 		}
 
 		$content = sprintf(
