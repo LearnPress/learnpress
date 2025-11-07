@@ -7,7 +7,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 
 /**
- * Class AdminEditCourseAI
+ * Class AdminEditCourseAITemplate
  *
  * @since 4.3.0
  * @version 1.0.0

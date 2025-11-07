@@ -8,7 +8,7 @@ use LearnPress\Helpers\Template;
 use LP_Settings;
 
 /**
- * Class AdminEditCourseAI
+ * Class AdminEditWithAITemplate
  *
  * @since 4.2.9
  * @version 1.1.0

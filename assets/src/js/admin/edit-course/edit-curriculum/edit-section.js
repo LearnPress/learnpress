@@ -422,8 +422,6 @@ export class EditSection {
 					callBackNest.success( args );
 				}
 
-				console.log('show toats Desc');
-
 				this.showToast( message, status );
 			},
 			error: ( error ) => {

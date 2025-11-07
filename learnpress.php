@@ -35,7 +35,6 @@ use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
 use LearnPress\TemplateHooks\Admin\AdminCreateCourseAITemplate;
-use LearnPress\TemplateHooks\Admin\AdminEditCourseAI;
 use LearnPress\TemplateHooks\Admin\AdminEditCourseCurriculumWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
@@ -341,7 +340,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			CourseMaterialTemplate::instance();
 			AdminCreateCourseAITemplate::instance();
 			AdminEditWithAITemplate::instance();
-			AdminEditCourseAI::instance();
 			AdminEditCourseCurriculumWithAITemplate::instance();
 
 			// WP GDPR
@@ -694,7 +692,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
 					SendEmailAjax::catch_lp_ajax();
-					LPAIAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
 				},
 				11

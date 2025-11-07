@@ -2,7 +2,6 @@
 
 
 use LearnPress\Helpers\Config;
-use LearnPress\TemplateHooks\Admin\AdminEditCourseAI;
 
 /**
  * Class LP_Settings_OpenAi
