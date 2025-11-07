@@ -7,8 +7,9 @@
 import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
-import * as lpUtils from '../../../utils.js';
-import * as lpToastify from '../../../lpToastify.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
+import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import { EditSectionItem } from './edit-section-item.js';
 
 const className = {
 	...lpEditCurriculumShare.className,
@@ -258,9 +259,10 @@ export class EditSection {
 					const { section } = data;
 					newSection.dataset.sectionId = section.section_id || '';
 
-					if ( lpEditCurriculumShare.sortAbleItem ) {
-						lpEditCurriculumShare.sortAbleItem();
-					}
+					// Initialize EditSectionItem for the new section to make its items sortable
+					const editSectionItem = new EditSectionItem();
+					editSectionItem.init();
+					editSectionItem.sortAbleItem();
 
 					if ( callBackNest && typeof callBackNest.success === 'function' ) {
 						args.elSection = newSection;
@@ -309,8 +311,8 @@ export class EditSection {
 			icon: 'warning',
 			showCloseButton: true,
 			showCancelButton: true,
-			cancelButtonText: lpDataAdmin.i18n.cancel,
-			confirmButtonText: lpDataAdmin.i18n.yes,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
@@ -442,13 +444,9 @@ export class EditSection {
 			},
 		};
 
-		const dataSend = {
-			action: 'course_update_section',
-			course_id: this.courseId,
-			section_id: sectionId,
-			section_name: titleValue,
-			args: { id_url: idUrlHandle },
-		};
+		const dataSend = JSON.parse( elSectionTitleInput.dataset.send );
+		dataSend.section_id = sectionId;
+		dataSend.section_name = titleValue;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
@@ -470,7 +468,6 @@ export class EditSection {
 	/* Update section description to server */
 	updateSectionDescription( args ) {
 		const { e, target, callBackNest } = args;
-		e.preventDefault();
 
 		const elSectionDesc = target.closest( `${ className.elSectionDesc }` );
 		if ( ! elSectionDesc ) {
@@ -481,6 +478,8 @@ export class EditSection {
 		if ( ! elSectionDesInput ) {
 			return;
 		}
+
+		e.preventDefault();
 
 		const elSection = elSectionDesInput.closest( `${ className.elSection }` );
 		const sectionId = elSection.dataset.sectionId;
@@ -522,13 +521,9 @@ export class EditSection {
 			},
 		};
 
-		const dataSend = {
-			action: 'update_section',
-			course_id: this.courseId,
-			section_id: sectionId,
-			section_description: descValue,
-			args: { id_url: idUrlHandle },
-		};
+		const dataSend = JSON.parse( elSectionDesInput.dataset.send );
+		dataSend.section_id = sectionId;
+		dataSend.section_description = descValue;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
@@ -542,7 +537,8 @@ export class EditSection {
 	}
 
 	/* Typing in description input */
-	changeDescription( e, target ) {
+	changeDescription( ags ) {
+		const { e, target } = ags;
 		const elSectionDesInput = target.closest( `${ className.elSectionDesInput }` );
 		if ( ! elSectionDesInput ) {
 			return;
