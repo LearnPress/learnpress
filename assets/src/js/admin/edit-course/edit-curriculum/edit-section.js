@@ -53,6 +53,13 @@ export class EditSection {
 	}
 
 	events() {
+		// Check and attach events only once
+		if ( EditSection._loadedEvents ) {
+			return;
+		}
+
+		EditSection._loadedEvents = this;
+
 		// Click events
 		lpUtils.eventHandlers( 'click', [
 			{

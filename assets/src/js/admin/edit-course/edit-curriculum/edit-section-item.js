@@ -63,6 +63,147 @@ export class EditSectionItem {
 		const elLPTarget = this.elEditCurriculum.closest( `${ className.LPTarget }` );
 		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		this.courseId = dataSend.args.course_id;
+
+		this.events();
+		this.sortAbleItem();
+	}
+
+	/* Events */
+	events() {
+		// Check and attach events only once
+		if ( EditSectionItem._loadedEvents ) {
+			return;
+		}
+
+		EditSectionItem._loadedEvents = this;
+
+		// Click events
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: this.className.elBtnSelectItemType,
+				class: this,
+				callBack: this.addItemType.name,
+			},
+			{
+				selector: this.className.elBtnAddItem,
+				class: this,
+				callBack: this.addItemToSection.name,
+			},
+			{
+				selector: this.className.elBtnAddItemCancel,
+				class: this,
+				callBack: this.cancelAddItemType.name,
+			},
+			{
+				selector: this.className.elBtnUpdateItemTitle,
+				class: this,
+				callBack: this.updateTitle.name,
+			},
+			{
+				selector: this.className.elBtnCancelUpdateTitle,
+				class: this,
+				callBack: this.cancelUpdateTitle.name,
+			},
+			{
+				selector: this.className.elBtnDeleteItem,
+				class: this,
+				callBack: this.deleteItem.name,
+			},
+			{
+				selector: this.className.elBtnShowPopupItemsToSelect,
+				class: this,
+				callBack: this.showPopupItemsToSelect.name,
+			},
+			{
+				selector: this.className.elBtnCountItemsSelected,
+				class: this,
+				callBack: this.showItemsSelected.name,
+			},
+			{
+				selector: '.tab',
+				class: this,
+				callBack: this.chooseTabItemsType.name,
+			},
+			{
+				selector: this.className.elSelectItem,
+				class: this,
+				callBack: this.selectItemsFromList.name,
+			},
+			{
+				selector: this.className.elBtnAddItemsSelected,
+				class: this,
+				callBack: this.addItemsSelectedToSection.name,
+			},
+			{
+				selector: this.className.elBtnBackListItems,
+				class: this,
+				callBack: this.backToSelectItems.name,
+			},
+			{
+				selector: this.className.elItemSelected,
+				class: this,
+				callBack: this.removeItemSelected.name,
+			},
+			{
+				selector: this.className.elBtnSetPreviewItem,
+				class: this,
+				callBack: this.updatePreviewItem.name,
+			},
+		] );
+
+		// Keyup events
+		lpUtils.eventHandlers( 'keyup', [
+			{
+				selector: this.className.elItemTitleInput,
+				class: this,
+				callBack: this.changeTitle.name,
+			},
+			{
+				selector: this.className.elAddItemTypeTitleInput,
+				class: this,
+				callBack: this.changeTitleAddNew.name,
+			},
+			{
+				selector: '.lp-search-title-item',
+				class: this,
+				callBack: this.searchTitleItemToSelect.name,
+			},
+		] );
+
+		// Keydown events
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: this.className.elAddItemTypeTitleInput,
+				class: this,
+				callBack: this.addItemToSection.name,
+				checkIsEventEnter: true,
+			},
+			{
+				selector: this.className.elItemTitleInput,
+				class: this,
+				callBack: this.updateTitle.name,
+				checkIsEventEnter: true,
+			},
+		] );
+
+		// Focusin events
+		lpUtils.eventHandlers( 'focusin', [
+			{
+				selector: this.className.elItemTitleInput,
+				class: this,
+				callBack: this.focusTitleInput.name,
+			},
+		] );
+
+		// Focusout events
+		lpUtils.eventHandlers( 'focusout', [
+			{
+				selector: this.className.elItemTitleInput,
+				class: this,
+				callBack: this.focusTitleInput.name,
+				focusIn: false,
+			},
+		] );
 	}
 
 	/* Add item type */
@@ -95,12 +236,8 @@ export class EditSectionItem {
 	}
 
 	/* Cancel add item type */
-	cancelAddItemType( e, target ) {
-		const elBtnAddItemCancel = target.closest( `${ className.elBtnAddItemCancel }` );
-		if ( ! elBtnAddItemCancel ) {
-			return;
-		}
-
+	cancelAddItemType( args ) {
+		const { e, target } = args;
 		const elAddItemType = target.closest( `${ className.elAddItemType }` );
 		if ( elAddItemType ) {
 			elAddItemType.remove();
@@ -189,7 +326,8 @@ export class EditSectionItem {
 	}
 
 	/* Typing in title input */
-	changeTitle( e, target ) {
+	changeTitle( args ) {
+		const { target } = args;
 		const elItemTitleInput = target.closest( `${ className.elItemTitleInput }` );
 		if ( ! elItemTitleInput ) {
 			return;
@@ -211,7 +349,9 @@ export class EditSectionItem {
 	}
 
 	/* Focus in item title input */
-	focusTitleInput( e, target, isFocus = true ) {
+	focusTitleInput( args ) {
+		const { target, focusIn = true } = args;
+
 		const elItemTitleInput = target.closest( `${ className.elItemTitleInput }` );
 		if ( ! elItemTitleInput ) {
 			return;
@@ -222,14 +362,15 @@ export class EditSectionItem {
 			return;
 		}
 
-		if ( isFocus ) {
+		if ( focusIn ) {
 			elSectionItem.classList.add( 'focus' );
 		} else {
 			elSectionItem.classList.remove( 'focus' );
 		}
 	}
 
-	changeTitleAddNew( e, target ) {
+	changeTitleAddNew( args ) {
+		const { target } = args;
 		const elAddItemTypeTitleInput = target.closest( `${ className.elAddItemTypeTitleInput }` );
 		if ( ! elAddItemTypeTitleInput ) {
 			return;
@@ -254,18 +395,8 @@ export class EditSectionItem {
 	}
 
 	/* Update item title */
-	updateTitle( e, target ) {
-		let canHandle = false;
-
-		if ( target.closest( `${ className.elBtnUpdateItemTitle }` ) ) {
-			canHandle = true;
-		} else if ( target.closest( `${ className.elItemTitleInput }` ) && e.key === 'Enter' ) {
-			canHandle = true;
-		}
-
-		if ( ! canHandle ) {
-			return;
-		}
+	updateTitle( args ) {
+		const { e, target } = args;
 
 		e.preventDefault();
 
@@ -337,7 +468,8 @@ export class EditSectionItem {
 	}
 
 	/* Cancel update item title */
-	cancelUpdateTitle( e, target ) {
+	cancelUpdateTitle( args ) {
+		const { e, target } = args;
 		const elBtnCancelUpdateTitle = target.closest( `${ className.elBtnCancelUpdateTitle }` );
 		if ( ! elBtnCancelUpdateTitle ) {
 			return;
@@ -350,7 +482,8 @@ export class EditSectionItem {
 	}
 
 	/* Delete item from section */
-	deleteItem( e, target ) {
+	deleteItem( args ) {
+		const { e, target } = args;
 		const elBtnDeleteItem = target.closest( `${ className.elBtnDeleteItem }` );
 		if ( ! elBtnDeleteItem ) {
 			return;
@@ -487,7 +620,8 @@ export class EditSectionItem {
 	}
 
 	/* Show popup items to select */
-	showPopupItemsToSelect( e, target ) {
+	showPopupItemsToSelect( args ) {
+		const { e, target } = args;
 		const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
 		if ( ! elBtnShowPopupItemsToSelect ) {
 			return;
@@ -521,7 +655,8 @@ export class EditSectionItem {
 	}
 
 	/* Choose tab items type */
-	chooseTabItemsType( e, target ) {
+	chooseTabItemsType( args ) {
+		const { e, target } = args;
 		const elTabType = target.closest( '.tab' );
 		if ( ! elTabType ) {
 			return;
@@ -568,7 +703,8 @@ export class EditSectionItem {
 	}
 
 	/* Choose item from list */
-	selectItemsFromList( e, target ) {
+	selectItemsFromList( args ) {
+		const { e, target } = args;
 		const elItemAttend = target.closest( `${ className.elSelectItem }` );
 		if ( ! elItemAttend ) {
 			return;
@@ -607,7 +743,8 @@ export class EditSectionItem {
 	}
 
 	/* Search title item */
-	searchTitleItemToSelect( e, target ) {
+	searchTitleItemToSelect( args ) {
+		const { e, target } = args;
 		const elInputSearch = target.closest( '.lp-search-title-item' );
 		if ( ! elInputSearch ) {
 			return;
@@ -645,7 +782,8 @@ export class EditSectionItem {
 	}
 
 	/* Show list of items selected */
-	showItemsSelected( e, target ) {
+	showItemsSelected( args ) {
+		const { e, target } = args;
 		const elBtnCountItemsSelected = target.closest( `${ className.elBtnCountItemsSelected }` );
 		if ( ! elBtnCountItemsSelected ) {
 			return;
@@ -689,7 +827,8 @@ export class EditSectionItem {
 	}
 
 	/* Back to list of items */
-	backToSelectItems( e, target ) {
+	backToSelectItems( args ) {
+		const { e, target } = args;
 		const elBtnBack = target.closest( `${ className.elBtnBackListItems }` );
 		if ( ! elBtnBack ) {
 			return;
@@ -710,7 +849,8 @@ export class EditSectionItem {
 	}
 
 	/* Remove item selected from list items selected */
-	removeItemSelected( e, target ) {
+	removeItemSelected( args ) {
+		const { e, target } = args;
 		const elRemoveItemSelected = target.closest( `${ className.elItemSelected }` );
 		if ( ! elRemoveItemSelected ) {
 			return;
@@ -759,7 +899,8 @@ export class EditSectionItem {
 	}
 
 	/* Add items selected to section */
-	addItemsSelectedToSection( e, target ) {
+	addItemsSelectedToSection( args ) {
+		const { e, target } = args;
 		const elBtnAddItems = target.closest( `${ className.elBtnAddItemsSelected }` );
 		if ( ! elBtnAddItems ) {
 			return;
@@ -827,7 +968,8 @@ export class EditSectionItem {
 	}
 
 	/* Enable/disable preview item */
-	updatePreviewItem( e, target ) {
+	updatePreviewItem( args ) {
+		const { e, target } = args;
 		const elBtnSetPreviewItem = target.closest( `${ className.elBtnSetPreviewItem }` );
 		if ( ! elBtnSetPreviewItem ) {
 			return;

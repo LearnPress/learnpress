@@ -42,39 +42,12 @@ export class EditCourseCurriculum {
 
 			// Set variables use for edit section item
 			sectionItemEdit.init();
-			sectionItemEdit.sortAbleItem();
 		} );
 
 		this.attachEvents();
 	}
 
 	attachEvents() {
-		lpUtils.eventHandlers( 'click', [
-			// {
-			// 	selector: `${ sectionEdit.className.elBtnAddSection }`,
-			// 	class: sectionEdit,
-			// 	callBack: sectionEdit.addSection.name,
-			// 	className: sectionEdit.className,
-			// },
-			// {
-			// 	selector: `${ sectionEdit.className.elBtnUpdateDes }`,
-			// 	class: sectionEdit,
-			// 	callBack: sectionEdit.updateSectionDescription.name,
-			// 	className: sectionEdit.className,
-			// },
-			{
-				selector: `${ sectionItemEdit.className.elBtnSelectItemType }`,
-				class: sectionItemEdit,
-				callBack: sectionItemEdit.addItemType.name,
-				className: sectionItemEdit.className,
-			},
-			{
-				selector: `${ sectionItemEdit.className.elBtnAddItem }`,
-				class: sectionItemEdit,
-				callBack: sectionItemEdit.addItemToSection.name,
-				className: sectionItemEdit.className,
-			},
-		] );
 		lpUtils.eventHandlers( 'keydown', [
 			// {
 			// 	selector: `${ sectionEdit.className.elSectionTitleNewInput }`,
@@ -116,20 +89,19 @@ export class EditCourseCurriculum {
 		/*** End Event of Section ***/
 
 		/*** Event of Section Item ***/
-		//sectionItemEdit.addItemType( e, target );
-		sectionItemEdit.cancelAddItemType( e, target );
-		//sectionItemEdit.addItemToSection( e, target );
-		sectionItemEdit.showPopupItemsToSelect( e, target );
-		sectionItemEdit.showItemsSelected( e, target );
-		sectionItemEdit.chooseTabItemsType( e, target );
-		sectionItemEdit.updateTitle( e, target );
-		sectionItemEdit.cancelUpdateTitle( e, target );
-		sectionItemEdit.deleteItem( e, target );
-		sectionItemEdit.selectItemsFromList( e, target );
-		sectionItemEdit.addItemsSelectedToSection( e, target );
-		sectionItemEdit.backToSelectItems( e, target );
-		sectionItemEdit.removeItemSelected( e, target );
-		sectionItemEdit.updatePreviewItem( e, target );
+		// sectionItemEdit.cancelAddItemType( e, target );
+		// sectionItemEdit.addItemToSection( e, target );
+		// sectionItemEdit.showPopupItemsToSelect( e, target );
+		// sectionItemEdit.showItemsSelected( e, target );
+		// sectionItemEdit.chooseTabItemsType( e, target );
+		// sectionItemEdit.updateTitle( e, target );
+		// sectionItemEdit.cancelUpdateTitle( e, target );
+		// sectionItemEdit.deleteItem( e, target );
+		// sectionItemEdit.selectItemsFromList( e, target );
+		// sectionItemEdit.addItemsSelectedToSection( e, target );
+		// sectionItemEdit.backToSelectItems( e, target );
+		// sectionItemEdit.removeItemSelected( e, target );
+		// sectionItemEdit.updatePreviewItem( e, target );
 		/*** End Event of Section Item ***/
 
 		//this.toggleSectionAll( e, target );
@@ -150,21 +122,21 @@ export class EditCourseCurriculum {
 		// sectionEdit.changeTitleBeforeAdd( e, target );
 		// sectionEdit.changeTitle( e, target );
 		// sectionEdit.changeDescription( e, target );
-		sectionItemEdit.changeTitle( e, target );
-		sectionItemEdit.changeTitleAddNew( e, target );
-		sectionItemEdit.searchTitleItemToSelect( e, target );
+		// sectionItemEdit.changeTitle( e, target );
+		// sectionItemEdit.changeTitleAddNew( e, target );
+		// sectionItemEdit.searchTitleItemToSelect( e, target );
 	}
 
 	handleFocusIn( e ) {
 		//sectionEdit.focusTitleNewInput( e, e.target );
 		//sectionEdit.focusTitleInput( e, e.target );
-		sectionItemEdit.focusTitleInput( e, e.target );
+		//sectionItemEdit.focusTitleInput( e, e.target );
 	}
 
 	handleFocusOut( e ) {
 		//sectionEdit.focusTitleNewInput( e, e.target, false );
 		//sectionEdit.focusTitleInput( e, e.target, false );
-		sectionItemEdit.focusTitleInput( e, e.target, false );
+		//sectionItemEdit.focusTitleInput( e, e.target, false );
 	}
 
 	handleBeforeUnload( e ) {
