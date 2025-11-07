@@ -44,8 +44,6 @@ export class EditCourseCurriculum {
 			// Set variables use for edit section item
 			sectionItemEdit.init();
 			sectionItemEdit.sortAbleItem();
-			// Share sortAbleItem function, for when create new section, will call this function to sort items in section.
-			lpEditCurriculumShare.setVariable( 'sortAbleItem', sectionItemEdit.sortAbleItem );
 		} );
 
 		this.attachEvents();

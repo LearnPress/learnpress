@@ -299,10 +299,18 @@ class AdminEditCurriculumTemplate {
 				value="%1$s"
 				data-old="%1$s"
 				placeholder="%2$s"
-				data-mess-empty-title="%3$s">',
+				data-mess-empty-title="%3$s"
+				data-send="%4$s">',
 			esc_attr( $section_name ),
 			esc_attr__( 'Update section title', 'learnpress' ),
-			esc_attr__( 'Section title is required', 'learnpress' )
+			esc_attr__( 'Section title is required', 'learnpress' ),
+			Template::convert_data_to_json(
+				[
+					'action'    => 'course_update_section',
+					'course_id' => $this->courseModel->get_id(),
+					'id_url'    => 'course-update-section-title',
+				]
+			)
 		);
 	}
 
@@ -318,11 +326,18 @@ class AdminEditCurriculumTemplate {
 			'<textarea class="lp-section-description-input"
 				name="lp-section-description-input"
 				type="text"
-				value="%1$s"
 				data-old="%1$s"
-				placeholder="%2$s">%1$s</textarea>',
+				placeholder="%2$s"
+				data-send="%3$s">%1$s</textarea>',
 			esc_attr( $section_description ),
-			esc_attr__( '+ Add Description', 'learnpress' )
+			esc_attr__( '+ Add Description', 'learnpress' ),
+			Template::convert_data_to_json(
+				[
+					'action'    => 'course_update_section',
+					'course_id' => $this->courseModel->get_id(),
+					'id_url'    => 'course-update-section-description',
+				]
+			)
 		);
 	}
 
