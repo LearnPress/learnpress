@@ -18,7 +18,7 @@ export const argsToastify = {
 	stopOnFocus: lpData.toast.stopOnFocus == 1,
 	duration: lpData.toast.duration,
 };
-export const showToastify = ( message, status = 'success' ) => {
+export const show = ( message, status = 'success' ) => {
 	const toastify = new Toastify( {
 		...argsToastify,
 		text: message,

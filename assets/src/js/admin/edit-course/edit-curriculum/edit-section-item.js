@@ -1,12 +1,14 @@
 /**
  * Edit Section item Script on Curriculum
  *
- * @version 1.0.2
+ * @version 1.0.3
  * @since 4.2.8.6
  */
 import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
+import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 
 const className = {
 	...lpEditCurriculumShare.className,
@@ -46,8 +48,6 @@ export class EditSectionItem {
 	constructor() {
 		this.courseId = null;
 		this.elCurriculumSections = null;
-		this.showToast = null;
-		this.lpUtils = null;
 
 		// runtime state
 		this.itemsSelectedData = [];
@@ -58,12 +58,11 @@ export class EditSectionItem {
 	}
 
 	init() {
-		( {
-			courseId: this.courseId,
-			elCurriculumSections: this.elCurriculumSections,
-			showToast: this.showToast,
-			lpUtils: this.lpUtils,
-		} = lpEditCurriculumShare );
+		this.elEditCurriculum = document.querySelector( `${ className.idElEditCurriculum }` );
+		this.elCurriculumSections = this.elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
+		const elLPTarget = this.elEditCurriculum.closest( `${ className.LPTarget }` );
+		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		this.courseId = dataSend.args.course_id;
 	}
 
 	/* Add item type */
@@ -87,7 +86,7 @@ export class EditSectionItem {
 
 		elNewItemByType.classList.remove( 'clone' );
 		elNewItemByType.classList.add( itemType );
-		this.lpUtils.lpShowHideEl( elNewItemByType, 1 );
+		lpUtils.lpShowHideEl( elNewItemByType, 1 );
 		elAddItemTypeInput.setAttribute( 'placeholder', itemPlaceholder );
 		elAddItemTypeInput.dataset.itemType = itemType;
 		elBtnAddItem.textContent = itemBtnAddText;
@@ -122,7 +121,7 @@ export class EditSectionItem {
 		const message = elAddItemTypeTitleInput.dataset.messEmptyTitle;
 
 		if ( titleValue.length === 0 ) {
-			this.showToast( message, 'error' );
+			lpToastify.show( message, 'error' );
 			return;
 		}
 
@@ -134,8 +133,8 @@ export class EditSectionItem {
 		elItemNew.classList.remove( 'clone' );
 		elItemNew.classList.add( typeValue );
 		elItemNew.dataset.itemType = typeValue;
-		this.lpUtils.lpShowHideEl( elItemNew, 1 );
-		this.lpUtils.lpSetLoadingEl( elItemNew, 1 );
+		lpUtils.lpShowHideEl( elItemNew, 1 );
+		lpUtils.lpSetLoadingEl( elItemNew, 1 );
 		elItemTitleInput.value = titleValue;
 		elItemTitleInput.dataset.old = titleValue;
 		elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
@@ -146,7 +145,7 @@ export class EditSectionItem {
 			success: ( response ) => {
 				const { message, status, data } = response;
 
-				this.showToast( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'error' ) {
 					elItemNew.remove();
@@ -163,15 +162,14 @@ export class EditSectionItem {
 				}
 			},
 			error: ( error ) => {
-				this.showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 				elItemNew.remove();
 			},
 			completed: () => {
-				this.lpUtils.lpSetLoadingEl( elItemNew, 0 );
+				lpUtils.lpSetLoadingEl( elItemNew, 0 );
 				this.updateCountItems( elSection );
 
 				// Call callback nest if exists
-				console.log( callBackNest.completed );
 				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
 					args.elItemNew = elItemNew;
 					callBackNest.completed( args );
@@ -292,7 +290,7 @@ export class EditSectionItem {
 		const titleOld = elItemTitleInput.dataset.old;
 		const message = elItemTitleInput.dataset.messEmptyTitle;
 		if ( itemTitleValue.length === 0 ) {
-			this.showToast( message, 'error' );
+			lpToastify.show( message, 'error' );
 			return;
 		}
 
@@ -303,7 +301,7 @@ export class EditSectionItem {
 		// Un-focus input item title
 		elItemTitleInput.blur();
 		// show loading
-		this.lpUtils.lpSetLoadingEl( elSectionItem, 1 );
+		lpUtils.lpSetLoadingEl( elSectionItem, 1 );
 		// Call ajax to update item title
 		const callBack = {
 			success: ( response ) => {
@@ -315,13 +313,13 @@ export class EditSectionItem {
 					elItemTitleInput.value = titleOld;
 				}
 
-				this.showToast( message, status );
+				lpToastify.show( message, status );
 			},
 			error: ( error ) => {
-				this.showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
-				this.lpUtils.lpSetLoadingEl( elSectionItem, 0 );
+				lpUtils.lpSetLoadingEl( elSectionItem, 0 );
 				elSectionItem.classList.remove( 'editing' );
 			},
 		};
@@ -378,24 +376,24 @@ export class EditSectionItem {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
-				this.lpUtils.lpSetLoadingEl( elSectionItem, 1 );
+				lpUtils.lpSetLoadingEl( elSectionItem, 1 );
 
 				// Call ajax to delete item from section
 				const callBack = {
 					success: ( response ) => {
 						const { message, status } = response;
 
-						this.showToast( message, status );
+						lpToastify.show( message, status );
 
 						if ( status === 'success' ) {
 							elSectionItem.remove();
 						}
 					},
 					error: ( error ) => {
-						this.showToast( error, 'error' );
+						lpToastify.show( error, 'error' );
 					},
 					completed: () => {
-						this.lpUtils.lpSetLoadingEl( elSectionItem, 0 );
+						lpUtils.lpSetLoadingEl( elSectionItem, 0 );
 						this.updateCountItems( elSection );
 					},
 				};
@@ -459,13 +457,13 @@ export class EditSectionItem {
 						success: ( response ) => {
 							const { message, status } = response;
 
-							this.showToast( message, status );
+							lpToastify.show( message, status );
 						},
 						error: ( error ) => {
-							this.showToast( error, 'error' );
+							lpToastify.show( error, 'error' );
 						},
 						completed: () => {
-							this.lpUtils.lpSetLoadingEl( elItemDragged, 0 );
+							lpUtils.lpSetLoadingEl( elItemDragged, 0 );
 							this.updateCountItems( section );
 							if ( sectionIdChoose !== sectionIdEnd ) {
 								this.updateCountItems( elSectionChoose );
@@ -473,7 +471,7 @@ export class EditSectionItem {
 						},
 					};
 
-					this.lpUtils.lpSetLoadingEl( elItemDragged, 1 );
+					lpUtils.lpSetLoadingEl( elItemDragged, 1 );
 					window.lpAJAXG.fetchAJAX( dataSend, callBack );
 				},
 				onMove: ( /*evt*/ ) => {},
@@ -501,7 +499,7 @@ export class EditSectionItem {
 		const elPopupItemsToSelectClone = document.querySelector( `${ className.elPopupItemsToSelectClone }` );
 		this.elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
 		this.elPopupSelectItems.classList.remove( 'clone' );
-		this.lpUtils.lpShowHideEl( this.elPopupSelectItems, 1 );
+		lpUtils.lpShowHideEl( this.elPopupSelectItems, 1 );
 
 		SweetAlert.fire( {
 			html: this.elPopupSelectItems,
@@ -560,7 +558,7 @@ export class EditSectionItem {
 				elLPTarget.innerHTML = data.content || '';
 			},
 			error: ( error ) => {
-				this.showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
 				window.lpAJAXG.showHideLoading( elLPTarget, 0 );
@@ -637,7 +635,7 @@ export class EditSectionItem {
 					elLPTarget.innerHTML = data.content || '';
 				},
 				error: ( error ) => {
-					this.showToast( error, 'error' );
+					lpToastify.show( error, 'error' );
 				},
 				completed: () => {
 					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
@@ -666,12 +664,12 @@ export class EditSectionItem {
 		const elItemClone = elListItemsSelected.querySelector( `${ className.elItemSelectedClone }` );
 		elHeaderItemsSelected.innerHTML = elBtnCountItemsSelected.innerHTML;
 
-		this.lpUtils.lpShowHideEl( elListItemsWrap, 0 );
-		this.lpUtils.lpShowHideEl( elBtnCountItemsSelected, 0 );
-		this.lpUtils.lpShowHideEl( elTabs, 0 );
-		this.lpUtils.lpShowHideEl( elBtnBack, 1 );
-		this.lpUtils.lpShowHideEl( elHeaderItemsSelected, 1 );
-		this.lpUtils.lpShowHideEl( elListItemsSelected, 1 );
+		lpUtils.lpShowHideEl( elListItemsWrap, 0 );
+		lpUtils.lpShowHideEl( elBtnCountItemsSelected, 0 );
+		lpUtils.lpShowHideEl( elTabs, 0 );
+		lpUtils.lpShowHideEl( elBtnBack, 1 );
+		lpUtils.lpShowHideEl( elHeaderItemsSelected, 1 );
+		lpUtils.lpShowHideEl( elListItemsSelected, 1 );
 
 		elListItemsSelected.querySelectorAll( `${ className.elItemSelected }:not(.clone)` ).forEach( ( elItem ) => elItem.remove() );
 		this.itemsSelectedData.forEach( ( item ) => {
@@ -684,7 +682,7 @@ export class EditSectionItem {
 			elItemSelected.querySelector( '.item-id' ).textContent = item.item_id || '';
 			elItemSelected.querySelector( '.item-type' ).textContent = item.item_type || '';
 
-			this.lpUtils.lpShowHideEl( elItemSelected, 1 );
+			lpUtils.lpShowHideEl( elItemSelected, 1 );
 
 			elItemClone.insertAdjacentElement( 'beforebegin', elItemSelected );
 		} );
@@ -703,12 +701,12 @@ export class EditSectionItem {
 		const elListItemsWrap = elParent.querySelector( `${ className.elListItemsWrap }` );
 		const elHeaderCountItemSelected = elParent.querySelector( `${ className.elHeaderCountItemSelected }` );
 		const elListItemsSelected = elParent.querySelector( `${ className.elListItemsSelected }` );
-		this.lpUtils.lpShowHideEl( elBtnCountItemsSelected, 1 );
-		this.lpUtils.lpShowHideEl( elListItemsWrap, 1 );
-		this.lpUtils.lpShowHideEl( elTabs, 1 );
-		this.lpUtils.lpShowHideEl( elBtnBack, 0 );
-		this.lpUtils.lpShowHideEl( elHeaderCountItemSelected, 0 );
-		this.lpUtils.lpShowHideEl( elListItemsSelected, 0 );
+		lpUtils.lpShowHideEl( elBtnCountItemsSelected, 1 );
+		lpUtils.lpShowHideEl( elListItemsWrap, 1 );
+		lpUtils.lpShowHideEl( elTabs, 1 );
+		lpUtils.lpShowHideEl( elBtnBack, 0 );
+		lpUtils.lpShowHideEl( elHeaderCountItemSelected, 0 );
+		lpUtils.lpShowHideEl( elListItemsSelected, 0 );
 	}
 
 	/* Remove item selected from list items selected */
@@ -785,8 +783,8 @@ export class EditSectionItem {
 			elItemNew.dataset.itemType = item.item_type;
 			elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.item_edit_link || '' );
 			elInputTitleNew.value = item.item_title || '';
-			this.lpUtils.lpSetLoadingEl( elItemNew, 1 );
-			this.lpUtils.lpShowHideEl( elItemNew, 1 );
+			lpUtils.lpSetLoadingEl( elItemNew, 1 );
+			lpUtils.lpShowHideEl( elItemNew, 1 );
 			elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
 		} );
 
@@ -802,7 +800,7 @@ export class EditSectionItem {
 		window.lpAJAXG.fetchAJAX( dataSend, {
 			success: ( response ) => {
 				const { message, status } = response;
-				this.showToast( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'error' ) {
 					this.itemsSelectedData.forEach( ( item ) => {
@@ -814,12 +812,12 @@ export class EditSectionItem {
 				}
 			},
 			error: ( error ) => {
-				this.showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
 				this.itemsSelectedData.forEach( ( item ) => {
 					const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
-					this.lpUtils.lpSetLoadingEl( elItemAdded, 0 );
+					lpUtils.lpSetLoadingEl( elItemAdded, 0 );
 				} );
 
 				this.itemsSelectedData = [];
@@ -850,14 +848,14 @@ export class EditSectionItem {
 		const itemId = elSectionItem.dataset.itemId;
 		const itemType = elSectionItem.dataset.itemType;
 
-		this.lpUtils.lpSetLoadingEl( elSectionItem, 1 );
+		lpUtils.lpSetLoadingEl( elSectionItem, 1 );
 
 		// Call ajax to update item preview
 		const callBack = {
 			success: ( response ) => {
 				const { message, status } = response;
 
-				this.showToast( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'error' ) {
 					icon.classList.toggle( 'lp-icon-eye' );
@@ -865,12 +863,12 @@ export class EditSectionItem {
 				}
 			},
 			error: ( error ) => {
-				this.showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 				icon.classList.toggle( 'lp-icon-eye' );
 				icon.classList.toggle( 'lp-icon-eye-slash' );
 			},
 			completed: () => {
-				this.lpUtils.lpSetLoadingEl( elSectionItem, 0 );
+				lpUtils.lpSetLoadingEl( elSectionItem, 0 );
 			},
 		};
 

@@ -2,7 +2,7 @@
  * Edit Section Script on Curriculum
  *
  * @since 4.2.8.6
- * @version 1.0.2
+ * @version 1.0.3
  */
 import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
@@ -40,8 +40,6 @@ export class EditSection {
 	}
 
 	init() {
-		( { } = lpEditCurriculumShare );
-
 		this.elEditCurriculum = document.querySelector( `${ className.idElEditCurriculum }` );
 		this.elCurriculumSections = this.elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
 		const elLPTarget = this.elEditCurriculum.closest( `${ className.LPTarget }` );
@@ -233,7 +231,7 @@ export class EditSection {
 		const titleValue = elSectionTitleNewInput.value.trim();
 		const message = elSectionTitleNewInput.dataset.messEmptyTitle;
 		if ( titleValue.length === 0 ) {
-			lpToastify.showToastify( message, 'error' );
+			lpToastify.show( message, 'error' );
 			return;
 		}
 
@@ -274,11 +272,11 @@ export class EditSection {
 					}
 				}
 
-				lpToastify.showToastify( message, status );
+				lpToastify.show( message, status );
 			},
 			error: ( error ) => {
 				newSection.remove();
-				lpToastify.showToastify( error, 'error' );
+				lpToastify.show( error, 'error' );
 				if ( callBackNest && typeof callBackNest.error === 'function' ) {
 					args.error = error;
 					callBackNest.error( args );
@@ -331,10 +329,10 @@ export class EditSection {
 					success: ( response ) => {
 						const { message, status } = response;
 
-						lpToastify.showToastify( message, status );
+						lpToastify.show( message, status );
 					},
 					error: ( error ) => {
-						lpToastify.showToastify( error, 'error' );
+						lpToastify.show( error, 'error' );
 					},
 					completed: () => {
 						lpUtils.lpSetLoadingEl( elSection, 0 );
@@ -417,7 +415,7 @@ export class EditSection {
 		const titleValueOld = elSectionTitleInput.dataset.old || '';
 		const message = elSectionTitleInput.dataset.messEmptyTitle;
 		if ( titleValue.length === 0 ) {
-			lpToastify.showToastify( message, 'error' );
+			lpToastify.show( message, 'error' );
 			return;
 		}
 
@@ -433,14 +431,14 @@ export class EditSection {
 			success: ( response ) => {
 				const { message, status } = response;
 
-				lpToastify.showToastify( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
 					elSectionTitleInput.dataset.old = titleValue;
 				}
 			},
 			error: ( error ) => {
-				lpToastify.showToastify( error, 'error' );
+				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( elSection, 0 );
@@ -507,10 +505,10 @@ export class EditSection {
 					callBackNest.success( args );
 				}
 
-				lpToastify.showToastify( message, status );
+				lpToastify.show( message, status );
 			},
 			error: ( error ) => {
-				lpToastify.showToastify( error, 'error' );
+				lpToastify.show( error, 'error' );
 				if ( callBackNest && typeof callBackNest.error === 'function' ) {
 					callBackNest.error( elSection, error );
 				}
@@ -643,10 +641,10 @@ export class EditSection {
 					success: ( response ) => {
 						const { message, status } = response;
 
-						lpToastify.showToastify( message, status );
+						lpToastify.show( message, status );
 					},
 					error: ( error ) => {
-						lpToastify.showToastify( error, 'error' );
+						lpToastify.show( error, 'error' );
 					},
 					completed: () => {
 						lpUtils.lpSetLoadingEl( elSection, 0 );
