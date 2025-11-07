@@ -7,6 +7,7 @@
 import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
+import * as lpUtils from '../../../utils.js';
 
 const className = {
 	...lpEditCurriculumShare.className,
@@ -51,14 +52,136 @@ export class EditSection {
 			updateCountItems: this.updateCountItems,
 			sortAbleItem: this.sortAbleItem,
 		} = lpEditCurriculumShare );
+
+		this.events();
+	}
+
+	events() {
+		// Click events
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: `${ this.className.elBtnAddSection }`,
+				class: this,
+				callBack: this.addSection.name,
+			},
+			{
+				selector: `${ this.className.elBtnUpdateDes }`,
+				class: this,
+				callBack: this.updateSectionDescription.name,
+			},
+			{
+				selector: `${ this.className.etBtnEditTitle }`,
+				class: this,
+				callBack: this.setFocusTitleInput.name,
+			},
+			{
+				selector: `${ this.className.elSectionToggle }`,
+				class: this,
+				callBack: this.toggleSection.name,
+			},
+			{
+				selector: `${ this.className.elBtnCancelUpdateDes }`,
+				class: this,
+				callBack: this.cancelSectionDescription.name,
+			},
+			{
+				selector: `${ this.className.elBtnDeleteSection }`,
+				class: this,
+				callBack: this.deleteSection.name,
+			},
+			{
+				selector: `${ this.className.elBtnUpdateTitle }`,
+				class: this,
+				callBack: this.updateSectionTitle.name,
+			},
+			{
+				selector: `${ this.className.elBtnCancelUpdateTitle }`,
+				class: this,
+				callBack: this.cancelSectionTitle.name,
+			},
+			{
+				selector: this.className.elToggleAllSections,
+				class: this,
+				callBack: this.toggleSectionAll.name,
+			},
+		] );
+
+		// Keyup events
+		lpUtils.eventHandlers( 'keyup', [
+			{
+				selector: this.className.elSectionTitleNewInput,
+				class: this,
+				callBack: this.changeTitleBeforeAdd.name,
+			},
+			{
+				selector: this.className.elSectionTitleInput,
+				class: this,
+				callBack: this.changeTitle.name,
+			},
+			{
+				selector: this.className.elSectionDesInput,
+				class: this,
+				callBack: this.changeDescription.name,
+			},
+		] );
+
+		// Keydown events
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: this.className.elSectionTitleNewInput,
+				class: this,
+				callBack: this.addSection.name,
+				checkIsEventEnter: true,
+			},
+			{
+				selector: this.className.elSectionDesInput,
+				class: this,
+				callBack: this.updateSectionDescription.name,
+				checkIsEventEnter: true,
+			},
+			{
+				selector: this.className.elSectionTitleInput,
+				class: this,
+				callBack: this.updateSectionTitle.name,
+				checkIsEventEnter: true,
+			},
+		] );
+
+		// Focusin events
+		lpUtils.eventHandlers( 'focusin', [
+			{
+				selector: this.className.elSectionTitleNewInput,
+				class: this,
+				callBack: this.focusTitleNewInput.name,
+			},
+			{
+				selector: this.className.elSectionTitleInput,
+				class: this,
+				callBack: this.focusTitleInput.name,
+			},
+		] );
+
+		// Focusin events
+		lpUtils.eventHandlers( 'focusout', [
+			{
+				selector: this.className.elSectionTitleNewInput,
+				class: this,
+				callBack: this.focusTitleNewInput.name,
+				focusIn: false,
+			},
+			{
+				selector: `${ this.className.elSectionTitleInput }`,
+				class: this,
+				callBack: this.focusTitleInput.name,
+				focusIn: false,
+			},
+		] );
 	}
 
 	/* Typing in new section title input */
-	changeTitleBeforeAdd( e, target ) {
-		const elSectionTitleNewInput = target.closest( `${ className.elSectionTitleNewInput }` );
-		if ( ! elSectionTitleNewInput ) {
-			return;
-		}
+	changeTitleBeforeAdd( args ) {
+		const { e, target } = args;
+		const elSectionTitleNewInput = target;
 
 		const elAddNewSection = elSectionTitleNewInput.closest( `${ className.elDivAddNewSection }` );
 		if ( ! elAddNewSection ) {
@@ -78,13 +201,9 @@ export class EditSection {
 	}
 
 	/* Focus on new section title input */
-	focusTitleNewInput( e, target, focusIn = true ) {
-		const elSectionTitleNewInput = target.closest( `${ className.elSectionTitleNewInput }` );
-		if ( ! elSectionTitleNewInput ) {
-			return;
-		}
-
-		const elAddNewSection = elSectionTitleNewInput.closest( `${ className.elDivAddNewSection }` );
+	focusTitleNewInput( args ) {
+		const { e, target, focusIn = true } = args;
+		const elAddNewSection = target.closest( `${ className.elDivAddNewSection }` );
 		if ( ! elAddNewSection ) {
 			return;
 		}
@@ -100,14 +219,14 @@ export class EditSection {
 	addSection( args ) {
 		const { e, target, callBackNest } = args;
 
-		const elAddNewSection = target.closest( `${ className.elDivAddNewSection }` );
-		if ( ! elAddNewSection ) {
+		const elDivAddNewSection = target.closest( `${ className.elDivAddNewSection }` );
+		if ( ! elDivAddNewSection ) {
 			return;
 		}
 
 		e.preventDefault();
 
-		const elSectionTitleNewInput = elAddNewSection.querySelector( `${ className.elSectionTitleNewInput }` );
+		const elSectionTitleNewInput = elDivAddNewSection.querySelector( `${ className.elSectionTitleNewInput }` );
 		const titleValue = elSectionTitleNewInput.value.trim();
 		const message = elSectionTitleNewInput.dataset.messEmptyTitle;
 		if ( titleValue.length === 0 ) {
@@ -192,11 +311,9 @@ export class EditSection {
 	}
 
 	/* Delete section */
-	deleteSection( e, target ) {
-		const elBtnDeleteSection = target.closest( `${ className.elBtnDeleteSection }` );
-		if ( ! elBtnDeleteSection ) {
-			return;
-		}
+	deleteSection( args ) {
+		const { e, target } = args;
+		const elBtnDeleteSection = target;
 
 		SweetAlert.fire( {
 			title: elBtnDeleteSection.dataset.title,
@@ -244,13 +361,9 @@ export class EditSection {
 	}
 
 	/* Focus on section title input */
-	focusTitleInput( e, target, focusIn = true ) {
-		const elSectionTitleInput = target.closest( `${ className.elSectionTitleInput }` );
-		if ( ! elSectionTitleInput ) {
-			return;
-		}
-
-		const elSection = elSectionTitleInput.closest( `${ className.elSection }` );
+	focusTitleInput( args ) {
+		const { e, target, focusIn = true } = args;
+		const elSection = target.closest( `${ className.elSection }` );
 		if ( ! elSection ) {
 			return;
 		}
@@ -263,13 +376,10 @@ export class EditSection {
 	}
 
 	/* Set focus on section title input */
-	setFocusTitleInput( e, target ) {
-		const etBtnEditTitle = target.closest( `${ className.etBtnEditTitle }` );
-		if ( ! etBtnEditTitle ) {
-			return;
-		}
+	setFocusTitleInput( args ) {
+		const { e, target } = args;
 
-		const elSection = etBtnEditTitle.closest( `${ className.elSection }` );
+		const elSection = target.closest( `${ className.elSection }` );
 		if ( ! elSection ) {
 			return;
 		}
@@ -280,12 +390,9 @@ export class EditSection {
 	}
 
 	/* Typing in section title input */
-	changeTitle( e, target ) {
-		const elSectionTitleInput = target.closest( `${ className.elSectionTitleInput }` );
-		if ( ! elSectionTitleInput ) {
-			return;
-		}
-
+	changeTitle( args ) {
+		const { e, target } = args;
+		const elSectionTitleInput = target;
 		const elSection = elSectionTitleInput.closest( `${ className.elSection }` );
 		const titleValue = elSectionTitleInput.value.trim();
 		const titleValueOld = elSectionTitleInput.dataset.old || '';
@@ -300,25 +407,14 @@ export class EditSection {
 	}
 
 	/* Update section title to server */
-	updateSectionTitle( e, target ) {
-		let canHandle = false;
-
-		if ( target.closest( `${ className.elBtnUpdateTitle }` ) ) {
-			canHandle = true;
-		} else if ( target.closest( `${ className.elSectionTitleInput }` ) && e.key === 'Enter' ) {
-			canHandle = true;
-		}
-
-		if ( ! canHandle ) {
-			return;
-		}
-
-		e.preventDefault();
-
+	updateSectionTitle( args ) {
+		const { e, target } = args;
 		const elSection = target.closest( `${ className.elSection }` );
 		if ( ! elSection ) {
 			return;
 		}
+
+		e.preventDefault();
 
 		const elSectionTitleInput = elSection.querySelector( `${ className.elSectionTitleInput }` );
 		if ( ! elSectionTitleInput ) {
@@ -373,7 +469,8 @@ export class EditSection {
 	}
 
 	/* Cancel updating section title */
-	cancelSectionTitle( e, target ) {
+	cancelSectionTitle( args ) {
+		const { e, target } = args;
 		const elBtnCancelUpdateTitle = target.closest( `${ className.elBtnCancelUpdateTitle }` );
 		if ( ! elBtnCancelUpdateTitle ) {
 			return;
@@ -452,13 +549,9 @@ export class EditSection {
 	}
 
 	/* Cancel updating section description */
-	cancelSectionDescription( e, target ) {
-		const elBtnCancelUpdateDes = target.closest( `${ className.elBtnCancelUpdateDes }` );
-		if ( ! elBtnCancelUpdateDes ) {
-			return;
-		}
-
-		const elSectionDesc = elBtnCancelUpdateDes.closest( `${ className.elSectionDesc }` );
+	cancelSectionDescription( args ) {
+		const { e, target } = args;
+		const elSectionDesc = target.closest( `${ className.elSectionDesc }` );
 		const elSectionDesInput = elSectionDesc.querySelector( `${ className.elSectionDesInput }` );
 		elSectionDesInput.value = elSectionDesInput.dataset.old || '';
 		elSectionDesc.classList.remove( 'editing' );
@@ -482,14 +575,27 @@ export class EditSection {
 		}
 	}
 
-	/* Toggle section */
-	toggleSection( e, target ) {
-		const elSectionToggle = target.closest( `${ className.elSectionToggle }` );
-		if ( ! elSectionToggle ) {
+	toggleSectionAll( args ) {
+		const { e, target } = args;
+		const elToggleAllSections = target.closest( `${ className.elToggleAllSections }` );
+		if ( ! elToggleAllSections ) {
 			return;
 		}
 
-		const elSection = elSectionToggle.closest( `${ className.elSection }` );
+		const elSections = lpEditCurriculumShare.elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
+
+		elToggleAllSections.classList.toggle( `${ className.elCollapse }` );
+
+		elSections.forEach( ( el ) => {
+			const shouldCollapse = elToggleAllSections.classList.contains( `${ className.elCollapse }` );
+			el.classList.toggle( `${ className.elCollapse }`, shouldCollapse );
+		} );
+	}
+
+	/* Toggle section */
+	toggleSection( args ) {
+		const { e, target } = args;
+		const elSection = target.closest( `${ className.elSection }` );
 
 		const elCurriculumSections = elSection.closest( `${ className.elCurriculumSections }` );
 		if ( ! elCurriculumSections ) {

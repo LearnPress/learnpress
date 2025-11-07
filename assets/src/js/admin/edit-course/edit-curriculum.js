@@ -53,18 +53,18 @@ export class EditCourseCurriculum {
 
 	attachEvents() {
 		lpUtils.eventHandlers( 'click', [
-			{
-				selector: `${ sectionEdit.className.elBtnAddSection }`,
-				class: sectionEdit,
-				callBack: sectionEdit.addSection.name,
-				className: sectionEdit.className,
-			},
-			{
-				selector: `${ sectionEdit.className.elBtnUpdateDes }`,
-				class: sectionEdit,
-				callBack: sectionEdit.updateSectionDescription.name,
-				className: sectionEdit.className,
-			},
+			// {
+			// 	selector: `${ sectionEdit.className.elBtnAddSection }`,
+			// 	class: sectionEdit,
+			// 	callBack: sectionEdit.addSection.name,
+			// 	className: sectionEdit.className,
+			// },
+			// {
+			// 	selector: `${ sectionEdit.className.elBtnUpdateDes }`,
+			// 	class: sectionEdit,
+			// 	callBack: sectionEdit.updateSectionDescription.name,
+			// 	className: sectionEdit.className,
+			// },
 			{
 				selector: `${ sectionItemEdit.className.elBtnSelectItemType }`,
 				class: sectionItemEdit,
@@ -79,18 +79,18 @@ export class EditCourseCurriculum {
 			},
 		] );
 		lpUtils.eventHandlers( 'keydown', [
-			{
-				selector: `${ sectionEdit.className.elSectionTitleNewInput }`,
-				class: sectionEdit,
-				callBack: sectionEdit.addSection.name,
-				checkIsEventEnter: true,
-			},
-			{
-				selector: `${ sectionEdit.className.elSectionDesInput }`,
-				class: sectionEdit,
-				callBack: sectionEdit.updateSectionDescription.name,
-				checkIsEventEnter: true,
-			},
+			// {
+			// 	selector: `${ sectionEdit.className.elSectionTitleNewInput }`,
+			// 	class: sectionEdit,
+			// 	callBack: sectionEdit.addSection.name,
+			// 	checkIsEventEnter: true,
+			// },
+			// {
+			// 	selector: `${ sectionEdit.className.elSectionDesInput }`,
+			// 	class: sectionEdit,
+			// 	callBack: sectionEdit.updateSectionDescription.name,
+			// 	checkIsEventEnter: true,
+			// },
 			{
 				selector: `${ sectionItemEdit.className.elBtnAddItem }`,
 				class: sectionItemEdit,
@@ -110,12 +110,12 @@ export class EditCourseCurriculum {
 		const target = e.target;
 
 		/*** Event of Section ***/
-		sectionEdit.setFocusTitleInput( e, target );
-		sectionEdit.toggleSection( e, target );
-		sectionEdit.cancelSectionDescription( e, target );
-		sectionEdit.deleteSection( e, target );
-		sectionEdit.updateSectionTitle( e, target );
-		sectionEdit.cancelSectionTitle( e, target );
+		// sectionEdit.setFocusTitleInput( e, target );
+		// sectionEdit.toggleSection( e, target );
+		// sectionEdit.cancelSectionDescription( e, target );
+		// sectionEdit.deleteSection( e, target );
+		// sectionEdit.updateSectionTitle( e, target );
+		// sectionEdit.cancelSectionTitle( e, target );
 		/*** End Event of Section ***/
 
 		/*** Event of Section Item ***/
@@ -135,38 +135,38 @@ export class EditCourseCurriculum {
 		sectionItemEdit.updatePreviewItem( e, target );
 		/*** End Event of Section Item ***/
 
-		this.toggleSectionAll( e, target );
+		//this.toggleSectionAll( e, target );
 	}
 
 	handleKeyDown( e ) {
 		const target = e.target;
 		if ( e.key === 'Enter' ) {
-			sectionEdit.updateSectionTitle( e, target );
-			sectionEdit.updateSectionDescription( e, target );
-			sectionItemEdit.addItemToSection( e, target );
-			sectionItemEdit.updateTitle( e, target );
+			// sectionEdit.updateSectionTitle( e, target );
+			// sectionEdit.updateSectionDescription( e, target );
+			//sectionItemEdit.addItemToSection( e, target );
+			//sectionItemEdit.updateTitle( e, target );
 		}
 	}
 
 	handleKeyUp( e ) {
 		const target = e.target;
-		sectionEdit.changeTitleBeforeAdd( e, target );
-		sectionEdit.changeTitle( e, target );
-		sectionEdit.changeDescription( e, target );
+		// sectionEdit.changeTitleBeforeAdd( e, target );
+		// sectionEdit.changeTitle( e, target );
+		// sectionEdit.changeDescription( e, target );
 		sectionItemEdit.changeTitle( e, target );
 		sectionItemEdit.changeTitleAddNew( e, target );
 		sectionItemEdit.searchTitleItemToSelect( e, target );
 	}
 
 	handleFocusIn( e ) {
-		sectionEdit.focusTitleNewInput( e, e.target );
-		sectionEdit.focusTitleInput( e, e.target );
+		//sectionEdit.focusTitleNewInput( e, e.target );
+		//sectionEdit.focusTitleInput( e, e.target );
 		sectionItemEdit.focusTitleInput( e, e.target );
 	}
 
 	handleFocusOut( e ) {
-		sectionEdit.focusTitleNewInput( e, e.target, false );
-		sectionEdit.focusTitleInput( e, e.target, false );
+		//sectionEdit.focusTitleNewInput( e, e.target, false );
+		//sectionEdit.focusTitleInput( e, e.target, false );
 		sectionItemEdit.focusTitleInput( e, e.target, false );
 	}
 
@@ -177,22 +177,6 @@ export class EditCourseCurriculum {
 
 		e.preventDefault();
 		e.returnValue = '';
-	}
-
-	toggleSectionAll( e, target ) {
-		const elToggleAllSections = target.closest( `${ className.elToggleAllSections }` );
-		if ( ! elToggleAllSections ) {
-			return;
-		}
-
-		const elSections = lpEditCurriculumShare.elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
-
-		elToggleAllSections.classList.toggle( `${ className.elCollapse }` );
-
-		elSections.forEach( ( el ) => {
-			const shouldCollapse = elToggleAllSections.classList.contains( `${ className.elCollapse }` );
-			el.classList.toggle( `${ className.elCollapse }`, shouldCollapse );
-		} );
 	}
 
 	updateCountItems( elSection ) {
