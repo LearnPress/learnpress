@@ -24,6 +24,13 @@ use stdClass;
 class AdminEditCurriculumTemplate {
 	use Singleton;
 
+	/**
+	 * Course model.
+	 *
+	 * @var CourseModel
+	 */
+	public $courseModel;
+
 	public function init() {
 		add_action( 'learn-press/admin/edit-curriculum/layout', [ $this, 'edit_course_curriculum_layout' ] );
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
@@ -78,6 +85,8 @@ class AdminEditCurriculumTemplate {
 		if ( ! $courseModel ) {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
+
+		self::instance()->courseModel = $courseModel;
 
 		$coursePostModel = new CoursePostModel( $courseModel );
 		if ( ! $coursePostModel->check_capabilities_create() ) {
@@ -213,7 +222,17 @@ class AdminEditCurriculumTemplate {
 				__( 'Edit section title', 'learnpress' )
 			),
 			'btn-delete'           => sprintf(
-				'<button type="button" class="lp-btn-delete-section button" data-title="%s" data-content="%s">%s</button>',
+				'<button type="button" class="lp-btn-delete-section button"
+					data-send="%s"
+					data-title="%s" data-content="%s">%s
+				</button>',
+				Template::convert_data_to_json(
+					[
+						'action'    => 'course_delete_section',
+						'course_id' => $courseModel->get_id(),
+						'id_url'    => 'course-delete-section',
+					]
+				),
 				__( 'Are you sure?', 'learnpress' ),
 				__( 'This section will be deleted. The items in this section will no longer be assigned to this course, but will not be permanently deleted.', 'learnpress' ),
 				__( 'Delete Section', 'learnpress' )
@@ -322,12 +341,22 @@ class AdminEditCurriculumTemplate {
 					type="text"
 					title="%1$s"
 					placeholder="%1$s"
-					data-mess-empty-title="%2$s">',
+					data-mess-empty-title="%2$s"
+					data-send="%3$s">',
 				esc_attr__( 'Create a new section', 'learnpress' ),
-				esc_attr__( 'Section title is required', 'learnpress' )
+				esc_attr__( 'Section title is required', 'learnpress' ),
+				Template::convert_data_to_json(
+					[
+						'action'    => 'course_add_section',
+						'course_id' => $this->courseModel->get_id(),
+						'id_url'    => 'course-add-section',
+					]
+				),
 			),
 			'button'   => sprintf(
-				'<button type="button" class="lp-btn-add-section button lp-btn-edit-primary">%s</button>',
+				'<button type="button"
+					class="lp-btn-add-section button lp-btn-edit-primary">%s
+				</button>',
 				__( 'Add Section', 'learnpress' )
 			),
 			'wrap_end' => '</div>',

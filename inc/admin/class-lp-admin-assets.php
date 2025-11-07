@@ -31,6 +31,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	public function load_scripts_styles_on_head() {
 		LP_Helper::print_inline_script_tag( 'lpDataAdmin', $this->localize_data_global(), [ 'id' => 'lpDataAdmin' ] );
+		LP_Helper::print_inline_script_tag( 'lpData', $this->localize_data_global(), [ 'id' => 'lpData' ] );
 	}
 
 	/**

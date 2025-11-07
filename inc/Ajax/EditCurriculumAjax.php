@@ -49,7 +49,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * @since 4.2.8.6
 	 * @version 1.0.0
 	 */
-	public static function add_section() {
+	public static function course_add_section() {
 		$response = new LP_REST_Response();
 
 		try {
@@ -94,7 +94,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * @since  4.2.8.6
 	 * @version 1.0.0
 	 */
-	public static function update_section() {
+	public static function course_update_section() {
 		$response = new LP_REST_Response();
 
 		try {
@@ -137,7 +137,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * @since 4.2.8.6
 	 * @version 1.0.0
 	 */
-	public static function delete_section() {
+	public static function course_delete_section() {
 		$response = new LP_REST_Response();
 
 		try {

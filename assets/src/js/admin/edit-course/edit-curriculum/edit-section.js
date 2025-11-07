@@ -8,6 +8,7 @@ import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
 import * as lpUtils from '../../../utils.js';
+import * as lpToastify from '../../../lpToastify.js';
 
 const className = {
 	...lpEditCurriculumShare.className,
@@ -35,7 +36,6 @@ export class EditSection {
 		this.courseId = null;
 		this.elEditCurriculum = null;
 		this.elCurriculumSections = null;
-		this.showToast = null;
 		this.lpUtils = null;
 		this.updateCountItems = null;
 		this.sortAbleItem = null;
@@ -47,7 +47,6 @@ export class EditSection {
 			courseId: this.courseId,
 			elEditCurriculum: this.elEditCurriculum,
 			elCurriculumSections: this.elCurriculumSections,
-			showToast: this.showToast,
 			lpUtils: this.lpUtils,
 			updateCountItems: this.updateCountItems,
 			sortAbleItem: this.sortAbleItem,
@@ -230,7 +229,7 @@ export class EditSection {
 		const titleValue = elSectionTitleNewInput.value.trim();
 		const message = elSectionTitleNewInput.dataset.messEmptyTitle;
 		if ( titleValue.length === 0 ) {
-			this.showToast( message, 'error' );
+			lpToastify.showToastify( message, 'error' );
 			return;
 		}
 
@@ -272,11 +271,11 @@ export class EditSection {
 					}
 				}
 
-				this.showToast( message, status );
+				lpToastify.showToastify( message, status );
 			},
 			error: ( error ) => {
 				newSection.remove();
-				this.showToast( error, 'error' );
+				lpToastify.showToastify( error, 'error' );
 				if ( callBackNest && typeof callBackNest.error === 'function' ) {
 					args.error = error;
 					callBackNest.error( args );
@@ -296,17 +295,8 @@ export class EditSection {
 			},
 		};
 
-		this.addSectionAPI( { section_name: titleValue }, callBack );
-	}
-
-	addSectionAPI( data, callBack ) {
-		const dataSend = {
-			action: 'add_section',
-			course_id: this.courseId,
-			section_name: data.section_name || '',
-			args: { id_url: idUrlHandle },
-			...data,
-		};
+		const dataSend = JSON.parse( elSectionTitleNewInput.dataset.send );
+		dataSend.section_name = titleValue;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
@@ -336,10 +326,10 @@ export class EditSection {
 					success: ( response ) => {
 						const { message, status } = response;
 
-						this.showToast( message, status );
+						lpToastify.showToastify( message, status );
 					},
 					error: ( error ) => {
-						this.showToast( error, 'error' );
+						lpToastify.showToastify( error, 'error' );
 					},
 					completed: () => {
 						this.lpUtils.lpSetLoadingEl( elSection, 0 );
@@ -349,12 +339,8 @@ export class EditSection {
 					},
 				};
 
-				const dataSend = {
-					action: 'delete_section',
-					course_id: this.courseId,
-					section_id: sectionId,
-					args: { id_url: idUrlHandle },
-				};
+				const dataSend = JSON.parse( elBtnDeleteSection.dataset.send );
+				dataSend.section_id = sectionId;
 				window.lpAJAXG.fetchAJAX( dataSend, callBack );
 			}
 		} );
@@ -426,7 +412,7 @@ export class EditSection {
 		const titleValueOld = elSectionTitleInput.dataset.old || '';
 		const message = elSectionTitleInput.dataset.messEmptyTitle;
 		if ( titleValue.length === 0 ) {
-			this.showToast( message, 'error' );
+			lpToastify.showToastify( message, 'error' );
 			return;
 		}
 
@@ -442,14 +428,14 @@ export class EditSection {
 			success: ( response ) => {
 				const { message, status } = response;
 
-				this.showToast( message, status );
+				lpToastify.showToastify( message, status );
 
 				if ( status === 'success' ) {
 					elSectionTitleInput.dataset.old = titleValue;
 				}
 			},
 			error: ( error ) => {
-				this.showToast( error, 'error' );
+				lpToastify.showToastify( error, 'error' );
 			},
 			completed: () => {
 				this.lpUtils.lpSetLoadingEl( elSection, 0 );
@@ -459,7 +445,7 @@ export class EditSection {
 		};
 
 		const dataSend = {
-			action: 'update_section',
+			action: 'course_update_section',
 			course_id: this.courseId,
 			section_id: sectionId,
 			section_name: titleValue,
@@ -519,10 +505,10 @@ export class EditSection {
 					callBackNest.success( args );
 				}
 
-				this.showToast( message, status );
+				lpToastify.showToastify( message, status );
 			},
 			error: ( error ) => {
-				this.showToast( error, 'error' );
+				lpToastify.showToastify( error, 'error' );
 				if ( callBackNest && typeof callBackNest.error === 'function' ) {
 					callBackNest.error( elSection, error );
 				}
@@ -657,10 +643,10 @@ export class EditSection {
 					success: ( response ) => {
 						const { message, status } = response;
 
-						this.showToast( message, status );
+						lpToastify.showToastify( message, status );
 					},
 					error: ( error ) => {
-						this.showToast( error, 'error' );
+						lpToastify.showToastify( error, 'error' );
 					},
 					completed: () => {
 						this.lpUtils.lpSetLoadingEl( elSection, 0 );
