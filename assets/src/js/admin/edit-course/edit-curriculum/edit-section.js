@@ -30,28 +30,28 @@ const className = {
 	elCountSections: '.count-sections',
 };
 
-const idUrlHandle = 'edit-course-curriculum';
-
 export class EditSection {
 	constructor() {
 		this.courseId = null;
 		this.elEditCurriculum = null;
 		this.elCurriculumSections = null;
-		this.updateCountItems = null;
-		this.sortAbleItem = null;
 		this.className = className;
+		this.editSectionItem = new EditSectionItem();
 	}
 
 	init() {
-		( {
-			courseId: this.courseId,
-			elEditCurriculum: this.elEditCurriculum,
-			elCurriculumSections: this.elCurriculumSections,
-			updateCountItems: this.updateCountItems,
-			sortAbleItem: this.sortAbleItem,
-		} = lpEditCurriculumShare );
+		( { } = lpEditCurriculumShare );
+
+		this.elEditCurriculum = document.querySelector( `${ className.idElEditCurriculum }` );
+		this.elCurriculumSections = this.elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
+		const elLPTarget = this.elEditCurriculum.closest( `${ className.LPTarget }` );
+		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		this.courseId = dataSend.args.course_id;
+
+		this.editSectionItem.init();
 
 		this.events();
+		this.sortAbleSection();
 	}
 
 	events() {
@@ -217,6 +217,11 @@ export class EditSection {
 	addSection( args ) {
 		const { e, target, callBackNest } = args;
 
+		const elEditCurriculum = target.closest( `${ className.idElEditCurriculum }` );
+		if ( ! elEditCurriculum ) {
+			return;
+		}
+
 		const elDivAddNewSection = target.closest( `${ className.elDivAddNewSection }` );
 		if ( ! elDivAddNewSection ) {
 			return;
@@ -260,9 +265,7 @@ export class EditSection {
 					newSection.dataset.sectionId = section.section_id || '';
 
 					// Initialize EditSectionItem for the new section to make its items sortable
-					const editSectionItem = new EditSectionItem();
-					editSectionItem.init();
-					editSectionItem.sortAbleItem();
+					this.editSectionItem.sortAbleItem();
 
 					if ( callBackNest && typeof callBackNest.success === 'function' ) {
 						args.elSection = newSection;
@@ -286,7 +289,7 @@ export class EditSection {
 				newSection.classList.remove( `${ className.elCollapse }` );
 				const elSectionDesInput = newSection.querySelector( `${ className.elSectionDesInput }` );
 				elSectionDesInput.focus();
-				this.updateCountSections();
+				this.updateCountSections( elEditCurriculum );
 				delete lpEditCurriculumShare.hasChange.titleNew;
 				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
 					args.elSection = newSection;
@@ -304,6 +307,8 @@ export class EditSection {
 	deleteSection( args ) {
 		const { e, target } = args;
 		const elBtnDeleteSection = target;
+
+		const elEditCurriculum = elBtnDeleteSection.closest( `${ className.idElEditCurriculum }` );
 
 		SweetAlert.fire( {
 			title: elBtnDeleteSection.dataset.title,
@@ -334,8 +339,8 @@ export class EditSection {
 					completed: () => {
 						lpUtils.lpSetLoadingEl( elSection, 0 );
 						elSection.remove();
-						this.updateCountItems( elSection );
-						this.updateCountSections();
+						this.editSectionItem.updateCountItems( elSection );
+						this.updateCountSections( elEditCurriculum );
 					},
 				};
 
@@ -562,7 +567,8 @@ export class EditSection {
 			return;
 		}
 
-		const elSections = lpEditCurriculumShare.elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
+		const elEditCurriculum = elToggleAllSections.closest( `${ className.idElEditCurriculum }` );
+		const elSections = elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
 
 		elToggleAllSections.classList.toggle( `${ className.elCollapse }` );
 
@@ -649,10 +655,10 @@ export class EditSection {
 				};
 
 				const dataSend = {
-					action: 'update_section_position',
+					action: 'course_update_section_position',
 					course_id: this.courseId,
 					new_position: sectionIds,
-					args: { id_url: idUrlHandle },
+					args: { id_url: 'course-update-section-position' },
 				};
 
 				clearTimeout( timeout );
@@ -671,9 +677,9 @@ export class EditSection {
 	}
 
 	/* Update count sections, when add or delete section */
-	updateCountSections() {
-		const elCountSections = this.elEditCurriculum.querySelector( `${ className.elCountSections }` );
-		const elSections = this.elCurriculumSections.querySelectorAll( `${ className.elSection }:not(.clone)` );
+	updateCountSections( elEditCurriculum ) {
+		const elCountSections = elEditCurriculum.querySelector( `${ className.elCountSections }` );
+		const elSections = elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
 		const sectionsCount = elSections.length;
 
 		elCountSections.dataset.count = sectionsCount;

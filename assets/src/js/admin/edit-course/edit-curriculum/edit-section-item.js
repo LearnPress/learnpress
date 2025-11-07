@@ -48,7 +48,6 @@ export class EditSectionItem {
 		this.elCurriculumSections = null;
 		this.showToast = null;
 		this.lpUtils = null;
-		this.updateCountItems = null;
 
 		// runtime state
 		this.itemsSelectedData = [];
@@ -64,7 +63,6 @@ export class EditSectionItem {
 			elCurriculumSections: this.elCurriculumSections,
 			showToast: this.showToast,
 			lpUtils: this.lpUtils,
-			updateCountItems: this.updateCountItems,
 		} = lpEditCurriculumShare );
 	}
 
@@ -885,5 +883,25 @@ export class EditSectionItem {
 			args: { id_url: idUrlHandle },
 		};
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	/* Update count items when item add/delete or section delete */
+	updateCountItems( elSection ) {
+		const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
+		const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
+		const elItemsAll = elEditCurriculum.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
+		const itemsAllCount = elItemsAll.length;
+
+		elCountItemsAll.dataset.count = itemsAllCount;
+		elCountItemsAll.querySelector( '.count' ).textContent = itemsAllCount;
+
+		// Count items in section
+		const elSectionItemsCount = elSection.querySelector( '.section-items-counts' );
+
+		const elItems = elSection.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
+		const itemsCount = elItems.length;
+
+		elSectionItemsCount.dataset.count = itemsCount;
+		elSectionItemsCount.querySelector( '.count' ).textContent = itemsCount;
 	}
 }

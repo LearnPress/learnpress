@@ -175,7 +175,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * @since 4.2.8.6
 	 * @version 1.0.0
 	 */
-	public static function update_section_position() {
+	public static function course_update_section_position() {
 		$response = new LP_REST_Response();
 
 		try {

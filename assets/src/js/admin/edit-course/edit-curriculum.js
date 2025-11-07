@@ -39,7 +39,6 @@ export class EditCourseCurriculum {
 
 			// Set variables use for section edit
 			sectionEdit.init();
-			sectionEdit.sortAbleSection();
 
 			// Set variables use for edit section item
 			sectionItemEdit.init();
@@ -175,24 +174,5 @@ export class EditCourseCurriculum {
 
 		e.preventDefault();
 		e.returnValue = '';
-	}
-
-	updateCountItems( elSection ) {
-		const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
-		const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
-		const elItemsAll = elEditCurriculum.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
-		const itemsAllCount = elItemsAll.length;
-
-		elCountItemsAll.dataset.count = itemsAllCount;
-		elCountItemsAll.querySelector( '.count' ).textContent = itemsAllCount;
-
-		// Count items in section
-		const elSectionItemsCount = elSection.querySelector( '.section-items-counts' );
-
-		const elItems = elSection.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
-		const itemsCount = elItems.length;
-
-		elSectionItemsCount.dataset.count = itemsCount;
-		elSectionItemsCount.querySelector( '.count' ).textContent = itemsCount;
 	}
 }
