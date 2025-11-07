@@ -106,12 +106,6 @@ export class CreateCourseViaAI {
 		const elBtnActions = target.closest( '.button-actions' );
 		const elCreateCourseAIWrap = elBtnActions.closest( this.selector.elGenerateDataAiWrap );
 		let step = parseInt( elBtnActions.dataset.step );
-		const stepMax = parseInt( elBtnActions.dataset.stepMax );
-		const elBtnNext = elBtnActions.querySelector( '.lp-btn-step[data-action=next]' );
-		const elBtnPrev = elBtnActions.querySelector( '.lp-btn-step[data-action=prev]' );
-		const elBtnGeneratePrompt = elBtnActions.querySelector( '.lp-btn-generate-prompt' );
-		const elBtnCallOpenAI = elBtnActions.querySelector( '.lp-btn-call-open-ai' );
-		const elBtnCreateCourse = elBtnActions.querySelector( '.lp-btn-create-course' );
 
 		const stepAction = target.dataset.action;
 		if ( stepAction === 'next' ) {
@@ -129,36 +123,17 @@ export class CreateCourseViaAI {
 		elCreateCourseAIWrap.querySelectorAll( '.step-item' ).forEach( ( el ) => el.classList.remove( 'active' ) );
 		elItemStep.classList.add( 'active' );
 
-		if ( step === 1 ) {
-			lpUtils.lpShowHideEl( elBtnPrev, 0 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnPrev, 1 );
-		}
-
-		if ( step === stepMax || step > stepMax ) {
-			lpUtils.lpShowHideEl( elBtnNext, 0 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnNext, 1 );
-		}
-
-		if ( step === 3 ) {
-			lpUtils.lpShowHideEl( elBtnNext, 0 );
-			lpUtils.lpShowHideEl( elBtnGeneratePrompt, 1 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnGeneratePrompt, 0 );
-		}
-
-		if ( step === 4 ) {
-			lpUtils.lpShowHideEl( elBtnCallOpenAI, 1 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnCallOpenAI, 0 );
-		}
-
-		if ( step === 5 ) {
-			lpUtils.lpShowHideEl( elBtnCreateCourse, 1 );
-		} else {
-			lpUtils.lpShowHideEl( elBtnCreateCourse, 0 );
-		}
+		// Get all buttons step to show/hide
+		const form = target.closest( 'form' );
+		const elBtnSteps = form.querySelectorAll( 'button[data-step-show]' );
+		elBtnSteps.forEach( ( el ) => {
+			const stepsShow = el.dataset.stepShow.split( ',' ).map( ( s ) => parseInt( s.trim() ) );
+			if ( stepsShow.includes( step ) ) {
+				lpUtils.lpShowHideEl( el, 1 );
+			} else {
+				lpUtils.lpShowHideEl( el, 0 );
+			}
+		} );
 	}
 
 	/**

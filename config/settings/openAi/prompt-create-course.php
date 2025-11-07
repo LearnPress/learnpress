@@ -37,6 +37,7 @@ if ( $quizzes_per_section > 0 ) {
             - Each question object MUST contain: "question_title", "question_description", "options" (an array of 4 strings), and "correct_answer" (a string matching one of the options).
         </quiz_requirements>
 XML;
+
 	$quiz_json_example = ',' . <<<JSON
         "quizzes": [
           {

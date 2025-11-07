@@ -35,7 +35,7 @@ class OpenAiService {
 
 	public function init() {
 		$this->urlChartCompletion  = $this->baseUrl . 'chat/completions';
-		$this->urlCompletionLegacy = $this->baseUrl . 'completion';
+		$this->urlCompletionLegacy = $this->baseUrl . 'completions';
 		$this->urlResponses        = $this->baseUrl . 'responses';
 		$this->urlImage            = $this->baseUrl . 'images/generations';
 		$this->get_settings();
@@ -189,11 +189,11 @@ class OpenAiService {
 	 */
 	public function handle_params_for_send_completion_legacy( $params ): array {
 		return [
-			'model'             => $this->text_model_type,
-			'temperature'       => $this->creativity_level,
-			'max_output_tokens' => $this->max_token,
-			'n'                 => $args['outputs'] ?? 1,
-			'prompt'            => $params['prompt'] ?? '',
+			'model'       => $this->text_model_type,
+			'temperature' => $this->creativity_level,
+			'max_tokens'  => $this->max_token,
+			'n'           => $args['outputs'] ?? 1,
+			'prompt'      => $params['prompt'] ?? '',
 		];
 	}
 
@@ -207,7 +207,7 @@ class OpenAiService {
 	public function handle_params_for_send_responses( $params ): array {
 		return [
 			'model'             => $this->text_model_type,
-			'temperature'       => $this->creativity_level,
+			//'temperature'       => $this->creativity_level,
 			'max_output_tokens' => $this->max_token,
 			'input'             => $params['prompt'] ?? '',
 		];
@@ -223,14 +223,11 @@ class OpenAiService {
 
 		if ( isset( $data['choices'] ) ) {
 			foreach ( $data['choices'] as $choice ) {
-				if ( isset( $choice['message']['content'] ) ) {
-					$data['lp_structure_data'][] = LP_Helper::json_decode( $choice['message']['content'], true );
-				} elseif ( isset( $choice['text'] ) ) {
-					$data['lp_structure_data'][] = LP_Helper::json_decode( $choice['text'], true );
-				}
-			}
+				$text = $choice['message']['content'] ?? $choice['text'] ?? '';
+				$text = str_replace( [ "\\n", "\\r", "\n", "\r", "\t" ], '', $text );
 
-			return $data;
+				$data['lp_structure_data'][] = LP_Helper::json_decode( $text, true );
+			}
 		} elseif ( isset( $data['output'] ) ) {
 			foreach ( $data['output'] as $output ) {
 				$content_data = $output['content'] ?? [];
@@ -240,7 +237,9 @@ class OpenAiService {
 
 				foreach ( $output['content'] as $content ) {
 					try {
-						$data['lp_structure_data'][] = LP_Helper::json_decode( $content['text'] ?? '', true );
+						$text                        = $content['text'] ?? '';
+						$text                        = str_replace( [ "\\n", "\\r", "\n", "\r", "\t" ], '', $text );
+						$data['lp_structure_data'][] = LP_Helper::json_decode( $text, true );
 					} catch ( Exception $e ) {
 						$data['lp_structure_data'][] = $content['text'] ?? '';
 					}

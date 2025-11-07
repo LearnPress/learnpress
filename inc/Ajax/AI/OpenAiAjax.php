@@ -75,8 +75,13 @@ class OpenAiAjax extends AbstractAjax {
 			$result            = OpenAiService::instance()->send_request( $args );
 			$lp_structure_data = $result['lp_structure_data'] ?? [];
 			if ( count( $lp_structure_data ) > 0 ) {
-				$result['lp_structure_course'] = $lp_structure_data[0];
-				$result['lp_html_preview']     = AdminCreateCourseAITemplate::html_preview_with_data( $result['lp_structure_course'] );
+				$result['lp_structure_course'] = $lp_structure_data[0] ?? '';
+				if ( empty( $result['lp_structure_course'] )
+					|| ! is_array( $result['lp_structure_course'] ) ) {
+					throw new Exception( __( 'Error: no data structure course generated!', 'learnpress' ) );
+				}
+
+				$result['lp_html_preview'] = AdminCreateCourseAITemplate::html_preview_with_data( $result['lp_structure_course'] );
 			}
 
 			$response->data    = $result;

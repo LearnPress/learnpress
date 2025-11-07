@@ -54,15 +54,24 @@ class AdminCreateCourseAITemplate {
 			'step_5'                   => $this->html_step_5(),
 			'buttons'                  => sprintf(
 				'<div class="button-actions" data-step="1" data-step-max="4">
-					<button class="btn btn-secondary lp-btn-step lp-hidden" data-action="prev" type="button">&larr; %s</button>
-					<button class="btn btn-primary lp-btn-step" data-action="next" type="button">%s &rarr;</button>
+					<button class="btn btn-secondary lp-btn-step lp-hidden"
+						data-step-show="2,3,4,5"
+					 	data-action="prev" type="button">&larr; %s
+					 </button>
+					<button class="btn btn-primary lp-btn-step"
+						data-step-show="1,2"
+					 	data-action="next" type="button">%s &rarr;
+					 </button>
 					<button class="lp-button btn-primary lp-btn-generate-prompt lp-hidden"
+						data-step-show="3"
 						data-send="%s" type="button">%s
 					</button>
 					<button class="lp-button btn-primary lp-btn-call-open-ai lp-hidden"
+						data-step-show="4"
 						data-send="%s" type="button">%s
 					</button>
 					<button class="lp-button btn-primary lp-btn-create-course lp-hidden"
+						data-step-show="5"
 					 	data-send="%s"
 						type="button">%s
 					</button>
