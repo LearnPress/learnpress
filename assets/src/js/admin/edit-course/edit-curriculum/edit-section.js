@@ -36,7 +36,6 @@ export class EditSection {
 		this.courseId = null;
 		this.elEditCurriculum = null;
 		this.elCurriculumSections = null;
-		this.lpUtils = null;
 		this.updateCountItems = null;
 		this.sortAbleItem = null;
 		this.className = className;
@@ -47,7 +46,6 @@ export class EditSection {
 			courseId: this.courseId,
 			elEditCurriculum: this.elEditCurriculum,
 			elCurriculumSections: this.elCurriculumSections,
-			lpUtils: this.lpUtils,
 			updateCountItems: this.updateCountItems,
 			sortAbleItem: this.sortAbleItem,
 		} = lpEditCurriculumShare );
@@ -241,8 +239,8 @@ export class EditSection {
 		const elSectionClone = this.elCurriculumSections.querySelector( `${ className.elSectionClone }` );
 		const newSection = elSectionClone.cloneNode( true );
 		newSection.classList.remove( 'clone' );
-		this.lpUtils.lpShowHideEl( newSection, 1 );
-		this.lpUtils.lpSetLoadingEl( newSection, 1 );
+		lpUtils.lpShowHideEl( newSection, 1 );
+		lpUtils.lpSetLoadingEl( newSection, 1 );
 		const elSectionTitleInput = newSection.querySelector( `${ className.elSectionTitleInput }` );
 		elSectionTitleInput.value = titleValue;
 		this.elCurriculumSections.insertAdjacentElement( 'beforeend', newSection );
@@ -282,7 +280,7 @@ export class EditSection {
 				}
 			},
 			completed: () => {
-				this.lpUtils.lpSetLoadingEl( newSection, 0 );
+				lpUtils.lpSetLoadingEl( newSection, 0 );
 				newSection.classList.remove( `${ className.elCollapse }` );
 				const elSectionDesInput = newSection.querySelector( `${ className.elSectionDesInput }` );
 				elSectionDesInput.focus();
@@ -319,7 +317,7 @@ export class EditSection {
 				const elSection = elBtnDeleteSection.closest( '.section' );
 				const sectionId = elSection.dataset.sectionId;
 
-				this.lpUtils.lpSetLoadingEl( elSection, 1 );
+				lpUtils.lpSetLoadingEl( elSection, 1 );
 
 				// Call ajax to delete section
 				const callBack = {
@@ -332,7 +330,7 @@ export class EditSection {
 						lpToastify.showToastify( error, 'error' );
 					},
 					completed: () => {
-						this.lpUtils.lpSetLoadingEl( elSection, 0 );
+						lpUtils.lpSetLoadingEl( elSection, 0 );
 						elSection.remove();
 						this.updateCountItems( elSection );
 						this.updateCountSections();
@@ -421,7 +419,7 @@ export class EditSection {
 		}
 
 		elSectionTitleInput.blur();
-		this.lpUtils.lpSetLoadingEl( elSection, 1 );
+		lpUtils.lpSetLoadingEl( elSection, 1 );
 
 		// Call ajax to update section title
 		const callBack = {
@@ -438,7 +436,7 @@ export class EditSection {
 				lpToastify.showToastify( error, 'error' );
 			},
 			completed: () => {
-				this.lpUtils.lpSetLoadingEl( elSection, 0 );
+				lpUtils.lpSetLoadingEl( elSection, 0 );
 				elSection.classList.remove( 'editing' );
 				delete lpEditCurriculumShare.hasChange.title;
 			},
@@ -493,7 +491,7 @@ export class EditSection {
 			return;
 		}
 
-		this.lpUtils.lpSetLoadingEl( elSection, 1 );
+		lpUtils.lpSetLoadingEl( elSection, 1 );
 
 		const callBack = {
 			success: ( response ) => {
@@ -514,7 +512,7 @@ export class EditSection {
 				}
 			},
 			completed: () => {
-				this.lpUtils.lpSetLoadingEl( elSection, 0 );
+				lpUtils.lpSetLoadingEl( elSection, 0 );
 				const elSectionDesc = elSectionDesInput.closest( `${ className.elSectionDesc }` );
 				elSectionDesc.classList.remove( 'editing' );
 				elSectionDesInput.dataset.old = descValue;
@@ -649,7 +647,7 @@ export class EditSection {
 						lpToastify.showToastify( error, 'error' );
 					},
 					completed: () => {
-						this.lpUtils.lpSetLoadingEl( elSection, 0 );
+						lpUtils.lpSetLoadingEl( elSection, 0 );
 						isUpdateSectionPosition = 0;
 					},
 				};
@@ -663,7 +661,7 @@ export class EditSection {
 
 				clearTimeout( timeout );
 				timeout = setTimeout( () => {
-					this.lpUtils.lpSetLoadingEl( elSection, 1 );
+					lpUtils.lpSetLoadingEl( elSection, 1 );
 					window.lpAJAXG.fetchAJAX( dataSend, callBack );
 				}, 1000 );
 			},
