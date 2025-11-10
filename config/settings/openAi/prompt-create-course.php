@@ -7,23 +7,23 @@ if ( ! isset( $params ) ) {
 }
 
 // Course Intent
-$role_persona     = trim( $params['role_persona'] ?? '' );
+$role_persona     = $params['role_persona'] ?? '';
 $target_audience  = $params['target_audience'] ?? 'Beginners';
-$course_objective = trim( $params['course_objective'] ?? '' );
+$course_objective = $params['course_objective'] ?? '';
 
 // AI Settings
-$language        = trim( $params['language'] ?? 'English' );
-$tone            = trim( $params['tone'] ?? 'Informative and encouraging' );
-$lesson_length   = max( 50, (int) ( $params['lesson_length'] ?? 300 ) );
-$reading_level   = trim( $params['reading_level'] ?? 'High school' );
-$seo_emphasis    = trim( $params['seo_emphasis'] ?? '' );
-$target_keywords = trim( $params['target_keywords'] ?? '' );
+$language        = $params['language'] ?? 'English';
+$tone            = $params['tone'] ?? '';
+$lesson_length   = $params['lessons_title_length'] ?? 300;
+$reading_level   = $params['reading_level'] ?? 'High school';
+$seo_emphasis    = $params['seo_emphasis'] ?? '';
+$target_keywords = $params['target_keywords'] ?? '';
 
 // Course Structure
-$sections            = max( 1, (int) ( $params['section_number'] ?? 3 ) );
-$lessons_per_section = max( 1, (int) ( $params['lessons_per_section'] ?? 5 ) );
-$quizzes_per_section = max( 0, (int) ( $params['quizzes_per_section'] ?? 1 ) );
-$questions_per_quiz  = max( 1, (int) ( $params['questions_per_quiz'] ?? 5 ) );
+$sections            = $params['section_number'] ?? 1;
+$lessons_per_section = $params['lessons_per_section'] ?? 1;
+$quizzes_per_section = $params['quizzes_per_section'] ?? 0;
+$questions_per_quiz  = $params['questions_per_quiz'] ?? 0;
 
 $quiz_structure_requirements = '';
 $quiz_json_example           = '';

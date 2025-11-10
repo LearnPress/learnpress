@@ -679,13 +679,6 @@ class AdminEditWithAITemplate {
 				</div>',
 				esc_html__( 'Course Title current', 'learnpress' )
 			),
-			'from-description'  => sprintf(
-				'<div class="form-group">
-					<label>%s</label>
-					<textarea type="text" name="post-content" readonly>Create description about course learning Php</textarea>
-				</div>',
-				esc_html__( 'Course Description current', 'learnpress' )
-			),
 			'style'             => sprintf(
 				'<div class="form-group">
 					<label>%s</label>

@@ -156,7 +156,7 @@ class AdminCreateCourseAITemplate {
 			'role'        => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="text" name="role_persona" value="Front-end Trainer + Instructional Designer">
+					<input type="text" name="role_persona" placeholder="">
 				</div>',
 				esc_html__( 'Role / Persona (critical)', 'learnpress' )
 			),
@@ -178,9 +178,10 @@ class AdminCreateCourseAITemplate {
 			'objective'   => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea name="course_objective">Act as a Front-end Training Expert + Instructional Designer. Create a Basic HTML course for absolute beginners. Learners should understand HTML5 structure, semantic tags, accessibility basics, and simple SEO on-page.</textarea>
+					<textarea name="course_objective" placeholder="%s"></textarea>
 				</div>',
-				esc_html__( 'Course objective', 'learnpress' )
+				esc_html__( 'Course objective', 'learnpress' ),
+				esc_html__( 'Enter description about course you want AI generate', 'learnpress' )
 			),
 			'step_close'  => '</div>',
 		];
@@ -305,7 +306,7 @@ class AdminCreateCourseAITemplate {
 					<label>%s</label>
 					<input type="number" name="lessons_title_length" value="60" min="0">
 				</div>',
-				esc_html__( 'Each lesson title length', 'learnpress' )
+				esc_html__( 'Each lesson title length (words)', 'learnpress' )
 			),
 			'lesson-des-length'     => sprintf(
 				'<div class="form-group">
