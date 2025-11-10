@@ -16,8 +16,8 @@
   "learnpress-announcements": {
     "name": "Announcement add-on for LearnPress",
     "basename": "learnpress-announcements/learnpress-announcements.php",
-    "version": "4.1.1",
-    "require_lp": "4.2.8",
+    "version": "4.1.2",
+    "require_lp": "4.2.9.4",
     "description": "Announcement is a great way to promote your courses and update new features + contents to your courses, including email notification.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-announcement.png",
     "link": "https://thimpress.com/product/announcement-add-on-for-learnpress/",
@@ -321,8 +321,8 @@
   "learnpress-qpay": {
     "name": "LearnPress - QPay",
     "basename": "learnpress-qpay/learnpress-qpay.php",
-    "version": "4.0.0",
-    "require_lp": "4.2.7.7",
+    "version": "4.0.1",
+    "require_lp": "4.2.9.4",
     "description": "Accept payments with bank transfers, mobile money designed specifically for Mongolian customers, and QR codes.",
     "image": "https://thimpress.com/wp-content/uploads/2025/02/logo-qpay-50x50-1.png",
     "link": "https://thimpress.com/product/qpay-add-on-for-learnpress/",
