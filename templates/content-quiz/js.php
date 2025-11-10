@@ -62,12 +62,13 @@ if ( $userModel ) {
 	);
 
 	if ( $userQuizModel instanceof UserQuizModel ) {
-		$status       = $userQuizModel->get_status();
-		$quiz_results = $userQuizModel->get_result();
-		$user_js      = array(
+		$status            = $userQuizModel->get_status();
+		$quiz_results      = $userQuizModel->get_result();
+		$checked_questions = $userQuizModel->get_checked_questions();
+		$user_js           = array(
 			'status'            => $status,
 			'attempts'          => $userQuizModel->get_history(),
-			'checked_questions' => $userQuizModel->get_checked_questions(),
+			'checked_questions' => $checked_questions,
 			'start_time'        => $userQuizModel->get_start_time(),
 			'retaken'           => $userQuizModel->get_retaken_count(),
 			'total_time'        => $userQuizModel->get_time_remaining(),
