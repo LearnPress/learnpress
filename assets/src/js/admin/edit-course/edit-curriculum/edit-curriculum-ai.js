@@ -2,32 +2,12 @@
  * Generate data with OpenAI
  */
 
-import * as lpUtils from './../../../utils.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
+import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
-import Toastify from 'toastify-js';
-import 'toastify-js/src/toastify.css';
 import { EditSection } from './edit-section.js';
 import { EditSectionItem } from './edit-section-item.js';
-import * as lpEditCurriculumShare from './share';
-
-const argsToastify = {
-	text: '',
-	gravity: lpDataAdmin.toast.gravity, // `top` or `bottom`
-	position: lpDataAdmin.toast.position, // `left`, `center` or `right`
-	className: `${ lpDataAdmin.toast.classPrefix }`,
-	close: lpDataAdmin.toast.close == 1,
-	stopOnFocus: lpDataAdmin.toast.stopOnFocus == 1,
-	duration: lpDataAdmin.toast.duration,
-};
-const showToast = ( message, status = 'success' ) => {
-	const toastify = new Toastify( {
-		...argsToastify,
-		text: message,
-		className: `${ lpDataAdmin.toast.classPrefix } ${ status }`,
-	} );
-	toastify.showToast();
-};
-const popupSweetAlert = null;
+import { EditCourseCurriculum } from 'lpAssetsJsPath/admin/edit-course/edit-curriculum.js';
 
 let editSection = null;
 let editSectionItem = null;
@@ -35,16 +15,16 @@ let editSectionItem = null;
 export class EditCurriculumAi {
 	constructor() {
 		this.init();
-		this.selector = {
-			elGenerateDataAiWrap: '.lp-generate-data-ai-wrap',
-		};
-		this.dataGenerate = '';
 	}
 
+	static selectors = {
+		elBtnApplyCurriculum: '.lp-btn-apply-curriculum',
+	};
+
 	init() {
-		lpUtils.lpOnElementReady( '#lp-course-edit-curriculum', ( el ) => {
-			const elInside = el.querySelector( '.count-sections' );
-			elInside.insertAdjacentHTML(
+		lpUtils.lpOnElementReady( EditCourseCurriculum.selectors.idElEditCurriculum, ( el ) => {
+			const elCountSections = el.querySelector( EditSection.selectors.elCountSections );
+			elCountSections.insertAdjacentHTML(
 				'afterend',
 				`<button type="button"
 					class="lp-btn-generate-with-ai button-secondary"
@@ -58,9 +38,14 @@ export class EditCurriculumAi {
 	}
 
 	events() {
+		if ( EditCurriculumAi._loadedEvents ) {
+			return;
+		}
+		EditCurriculumAi._loadedEvents = true;
+
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: '.lp-btn-apply-curriculum',
+				selector: EditCurriculumAi.selectors.elBtnApplyCurriculum,
 				class: this,
 				callBack: this.applyData.name,
 			},
@@ -82,7 +67,7 @@ export class EditCurriculumAi {
 
 		const sections = data[ 0 ].sections;
 		if ( ! sections || sections.length === 0 ) {
-			showToast( 'No sections found in the generated data.', 'error' );
+			lpToastify.show( 'No sections found in the generated data.', 'error' );
 		}
 
 		console.log( 'Generated Sections:', sections );
@@ -101,8 +86,8 @@ export class EditCurriculumAi {
 		editSectionItem.init();
 
 		// Scroll to element add section
-		const elEditCurriculum = document.querySelector( editSection.className.idElEditCurriculum );
-		const elDivAddNewSection = elEditCurriculum.querySelector( editSection.className.elDivAddNewSection );
+		const elEditCurriculum = document.querySelector( EditCourseCurriculum.selectors.idElEditCurriculum );
+		const elDivAddNewSection = elEditCurriculum.querySelector( EditSection.selectors.elDivAddNewSection );
 		elDivAddNewSection.scrollIntoView( { behavior: 'smooth', block: 'center' } );
 
 		// Wait 800ms to ensure scroll completely
@@ -110,8 +95,8 @@ export class EditCurriculumAi {
 
 		for ( const sectionData of sections ) {
 			// Set title
-			const elSectionTitleNewInput = elEditCurriculum.querySelector( editSection.className.elSectionTitleNewInput );
-			const elBtnAddSection = elEditCurriculum.querySelector( editSection.className.elBtnAddSection );
+			const elSectionTitleNewInput = elEditCurriculum.querySelector( EditSection.selectors.elSectionTitleNewInput );
+			const elBtnAddSection = elEditCurriculum.querySelector( EditSection.selectors.elBtnAddSection );
 			elSectionTitleNewInput.value = sectionData.section_title || '';
 
 			await new Promise( ( resolve ) => {
@@ -138,7 +123,7 @@ export class EditCurriculumAi {
 				await new Promise( ( resolve ) => setTimeout( resolve, 1000 ) );
 
 				// Set description for the new section
-				const elSectionDesInput = elSection.querySelector( editSection.className.elSectionDesInput );
+				const elSectionDesInput = elSection.querySelector( EditSection.selectors.elSectionDesInput );
 				elSectionDesInput.value = sectionData.section_description || '';
 
 				// Call AJAX to save description
@@ -173,10 +158,10 @@ export class EditCurriculumAi {
 				const { elSection } = args;
 
 				const elBtnSelectItemTypeLesson = elSection.querySelector(
-					`${ editSectionItem.className.elBtnSelectItemType }[data-item-type=lp_lesson]` );
+					`${ EditSectionItem.selectors.elBtnSelectItemType }[data-item-type=lp_lesson]` );
 
 				const elBtnSelectItemTypeQuiz = elSection.querySelector(
-					`${ editSectionItem.className.elBtnSelectItemType }[data-item-type=lp_quiz]` );
+					`${ EditSectionItem.selectors.elBtnSelectItemType }[data-item-type=lp_quiz]` );
 
 				for ( const itemData of lessons ) {
 					elBtnSelectItemTypeLesson.click();
@@ -203,8 +188,8 @@ export class EditCurriculumAi {
 	async addItemToSection( args ) {
 		const { itemData, elSection, elEditCurriculum } = args;
 
-		const elBtnAddItem = elSection.querySelector( editSectionItem.className.elBtnAddItem );
-		const elAddItemTypeTitleInput = elSection.querySelector( editSectionItem.className.elAddItemTypeTitleInput );
+		const elBtnAddItem = elSection.querySelector( EditSectionItem.selectors.elBtnAddItem );
+		const elAddItemTypeTitleInput = elSection.querySelector( EditSectionItem.selectors.elAddItemTypeTitleInput );
 		elAddItemTypeTitleInput.value = itemData.lesson_title || itemData.quiz_title || '';
 
 		// Scroll to element add item

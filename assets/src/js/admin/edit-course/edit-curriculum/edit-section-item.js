@@ -4,43 +4,12 @@
  * @version 1.0.3
  * @since 4.2.8.6
  */
-import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
-
-const className = {
-	...lpEditCurriculumShare.className,
-	elSectionListItems: '.section-list-items',
-	elItemClone: '.section-item.clone',
-	elSectionItem: '.section-item',
-	elBtnSelectItemType: '.lp-btn-select-item-type',
-	elAddItemTypeClone: '.lp-add-item-type.clone',
-	elSectionActions: '.section-actions',
-	elAddItemType: '.lp-add-item-type',
-	elAddItemTypeTitleInput: '.lp-add-item-type-title-input',
-	elBtnAddItemCancel: '.lp-btn-add-item-cancel',
-	elBtnAddItem: '.lp-btn-add-item',
-	elItemTitleInput: '.lp-item-title-input',
-	elBtnUpdateItemTitle: '.lp-btn-update-item-title',
-	elBtnCancelUpdateTitle: '.lp-btn-cancel-update-item-title',
-	elBtnDeleteItem: '.lp-btn-delete-item',
-	elBtnShowPopupItemsToSelect: '.lp-btn-show-popup-items-to-select',
-	elPopupItemsToSelectClone: '.lp-popup-items-to-select.clone',
-	elPopupItemsToSelect: '.lp-popup-items-to-select',
-	elSelectItem: '.lp-select-item',
-	elListItemsWrap: '.list-items-wrap',
-	elListItems: '.list-items',
-	elBtnAddItemsSelected: '.lp-btn-add-items-selected',
-	elBtnCountItemsSelected: '.lp-btn-count-items-selected',
-	elBtnBackListItems: '.lp-btn-back-to-select-items',
-	elHeaderCountItemSelected: '.header-count-items-selected',
-	elListItemsSelected: '.list-items-selected',
-	elItemSelectedClone: '.li-item-selected.clone',
-	elItemSelected: '.li-item-selected',
-	elBtnSetPreviewItem: '.lp-btn-set-preview-item',
-};
+import { EditCourseCurriculum } from '../edit-curriculum.js';
+import { EditSection } from './edit-section.js';
 
 const idUrlHandle = 'edit-course-curriculum';
 
@@ -54,13 +23,43 @@ export class EditSectionItem {
 		this.sectionIdSelected = null;
 		this.elPopupSelectItems = null;
 		this.timeSearchTitleItem = null;
-		this.className = className;
 	}
 
+	static selectors = {
+		elSectionListItems: '.section-list-items',
+		elItemClone: '.section-item.clone',
+		elSectionItem: '.section-item',
+		elBtnSelectItemType: '.lp-btn-select-item-type',
+		elAddItemTypeClone: '.lp-add-item-type.clone',
+		elSectionActions: '.section-actions',
+		elAddItemType: '.lp-add-item-type',
+		elAddItemTypeTitleInput: '.lp-add-item-type-title-input',
+		elBtnAddItemCancel: '.lp-btn-add-item-cancel',
+		elBtnAddItem: '.lp-btn-add-item',
+		elItemTitleInput: '.lp-item-title-input',
+		elBtnUpdateItemTitle: '.lp-btn-update-item-title',
+		elBtnCancelUpdateTitle: '.lp-btn-cancel-update-item-title',
+		elBtnDeleteItem: '.lp-btn-delete-item',
+		elBtnShowPopupItemsToSelect: '.lp-btn-show-popup-items-to-select',
+		elPopupItemsToSelectClone: '.lp-popup-items-to-select.clone',
+		elPopupItemsToSelect: '.lp-popup-items-to-select',
+		elSelectItem: '.lp-select-item',
+		elListItemsWrap: '.list-items-wrap',
+		elListItems: '.list-items',
+		elBtnAddItemsSelected: '.lp-btn-add-items-selected',
+		elBtnCountItemsSelected: '.lp-btn-count-items-selected',
+		elBtnBackListItems: '.lp-btn-back-to-select-items',
+		elHeaderCountItemSelected: '.header-count-items-selected',
+		elListItemsSelected: '.list-items-selected',
+		elItemSelectedClone: '.li-item-selected.clone',
+		elItemSelected: '.li-item-selected',
+		elBtnSetPreviewItem: '.lp-btn-set-preview-item',
+	};
+
 	init() {
-		this.elEditCurriculum = document.querySelector( `${ className.idElEditCurriculum }` );
-		this.elCurriculumSections = this.elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
-		const elLPTarget = this.elEditCurriculum.closest( `${ className.LPTarget }` );
+		this.elEditCurriculum = document.querySelector( `${ EditCourseCurriculum.selectors.idElEditCurriculum }` );
+		this.elCurriculumSections = this.elEditCurriculum.querySelector( `${ EditCourseCurriculum.selectors.elCurriculumSections }` );
+		const elLPTarget = this.elEditCurriculum.closest( `${ EditCourseCurriculum.selectors.LPTarget }` );
 		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		this.courseId = dataSend.args.course_id;
 
@@ -80,42 +79,42 @@ export class EditSectionItem {
 		// Click events
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: this.className.elBtnSelectItemType,
+				selector: EditSectionItem.selectors.elBtnSelectItemType,
 				class: this,
 				callBack: this.addItemType.name,
 			},
 			{
-				selector: this.className.elBtnAddItem,
+				selector: EditSectionItem.selectors.elBtnAddItem,
 				class: this,
 				callBack: this.addItemToSection.name,
 			},
 			{
-				selector: this.className.elBtnAddItemCancel,
+				selector: EditSectionItem.selectors.elBtnAddItemCancel,
 				class: this,
 				callBack: this.cancelAddItemType.name,
 			},
 			{
-				selector: this.className.elBtnUpdateItemTitle,
+				selector: EditSectionItem.selectors.elBtnUpdateItemTitle,
 				class: this,
 				callBack: this.updateTitle.name,
 			},
 			{
-				selector: this.className.elBtnCancelUpdateTitle,
+				selector: EditSectionItem.selectors.elBtnCancelUpdateTitle,
 				class: this,
 				callBack: this.cancelUpdateTitle.name,
 			},
 			{
-				selector: this.className.elBtnDeleteItem,
+				selector: EditSectionItem.selectors.elBtnDeleteItem,
 				class: this,
 				callBack: this.deleteItem.name,
 			},
 			{
-				selector: this.className.elBtnShowPopupItemsToSelect,
+				selector: EditSectionItem.selectors.elBtnShowPopupItemsToSelect,
 				class: this,
 				callBack: this.showPopupItemsToSelect.name,
 			},
 			{
-				selector: this.className.elBtnCountItemsSelected,
+				selector: EditSectionItem.selectors.elBtnCountItemsSelected,
 				class: this,
 				callBack: this.showItemsSelected.name,
 			},
@@ -125,27 +124,27 @@ export class EditSectionItem {
 				callBack: this.chooseTabItemsType.name,
 			},
 			{
-				selector: this.className.elSelectItem,
+				selector: EditSectionItem.selectors.elSelectItem,
 				class: this,
 				callBack: this.selectItemsFromList.name,
 			},
 			{
-				selector: this.className.elBtnAddItemsSelected,
+				selector: EditSectionItem.selectors.elBtnAddItemsSelected,
 				class: this,
 				callBack: this.addItemsSelectedToSection.name,
 			},
 			{
-				selector: this.className.elBtnBackListItems,
+				selector: EditSectionItem.selectors.elBtnBackListItems,
 				class: this,
 				callBack: this.backToSelectItems.name,
 			},
 			{
-				selector: this.className.elItemSelected,
+				selector: EditSectionItem.selectors.elItemSelected,
 				class: this,
 				callBack: this.removeItemSelected.name,
 			},
 			{
-				selector: this.className.elBtnSetPreviewItem,
+				selector: EditSectionItem.selectors.elBtnSetPreviewItem,
 				class: this,
 				callBack: this.updatePreviewItem.name,
 			},
@@ -154,12 +153,12 @@ export class EditSectionItem {
 		// Keyup events
 		lpUtils.eventHandlers( 'keyup', [
 			{
-				selector: this.className.elItemTitleInput,
+				selector: EditSectionItem.selectors.elItemTitleInput,
 				class: this,
 				callBack: this.changeTitle.name,
 			},
 			{
-				selector: this.className.elAddItemTypeTitleInput,
+				selector: EditSectionItem.selectors.elAddItemTypeTitleInput,
 				class: this,
 				callBack: this.changeTitleAddNew.name,
 			},
@@ -173,13 +172,13 @@ export class EditSectionItem {
 		// Keydown events
 		lpUtils.eventHandlers( 'keydown', [
 			{
-				selector: this.className.elAddItemTypeTitleInput,
+				selector: EditSectionItem.selectors.elAddItemTypeTitleInput,
 				class: this,
 				callBack: this.addItemToSection.name,
 				checkIsEventEnter: true,
 			},
 			{
-				selector: this.className.elItemTitleInput,
+				selector: EditSectionItem.selectors.elItemTitleInput,
 				class: this,
 				callBack: this.updateTitle.name,
 				checkIsEventEnter: true,
@@ -189,7 +188,7 @@ export class EditSectionItem {
 		// Focusin events
 		lpUtils.eventHandlers( 'focusin', [
 			{
-				selector: this.className.elItemTitleInput,
+				selector: EditSectionItem.selectors.elItemTitleInput,
 				class: this,
 				callBack: this.focusTitleInput.name,
 			},
@@ -198,7 +197,7 @@ export class EditSectionItem {
 		// Focusout events
 		lpUtils.eventHandlers( 'focusout', [
 			{
-				selector: this.className.elItemTitleInput,
+				selector: EditSectionItem.selectors.elItemTitleInput,
 				class: this,
 				callBack: this.focusTitleInput.name,
 				focusIn: false,
@@ -216,14 +215,14 @@ export class EditSectionItem {
 		const itemPlaceholder = elBtnSelectItemType.dataset.placeholder;
 		const itemBtnAddText = elBtnSelectItemType.dataset.buttonAddText;
 
-		const elSection = elBtnSelectItemType.closest( `${ className.elSection }` );
-		const elSectionActions = elSection.querySelector( `${ className.elSectionActions }` );
+		const elSection = elBtnSelectItemType.closest( `${ EditSection.selectors.elSection }` );
+		const elSectionActions = elSection.querySelector( `${ EditSectionItem.selectors.elSectionActions }` );
 
 		// Insert input item type to add
-		const elAddItemTypeClone = elSectionActions.querySelector( `${ className.elAddItemTypeClone }` );
+		const elAddItemTypeClone = elSectionActions.querySelector( `${ EditSectionItem.selectors.elAddItemTypeClone }` );
 		const elNewItemByType = elAddItemTypeClone.cloneNode( true );
-		const elAddItemTypeInput = elNewItemByType.querySelector( `${ className.elAddItemTypeTitleInput }` );
-		const elBtnAddItem = elNewItemByType.querySelector( `${ className.elBtnAddItem }` );
+		const elAddItemTypeInput = elNewItemByType.querySelector( `${ EditSectionItem.selectors.elAddItemTypeTitleInput }` );
+		const elBtnAddItem = elNewItemByType.querySelector( `${ EditSectionItem.selectors.elBtnAddItem }` );
 
 		elNewItemByType.classList.remove( 'clone' );
 		elNewItemByType.classList.add( itemType );
@@ -238,7 +237,7 @@ export class EditSectionItem {
 	/* Cancel add item type */
 	cancelAddItemType( args ) {
 		const { e, target } = args;
-		const elAddItemType = target.closest( `${ className.elAddItemType }` );
+		const elAddItemType = target.closest( `${ EditSectionItem.selectors.elAddItemType }` );
 		if ( elAddItemType ) {
 			elAddItemType.remove();
 		}
@@ -249,10 +248,10 @@ export class EditSectionItem {
 		const { e, target, callBackNest } = args;
 		e.preventDefault();
 
-		const elAddItemType = target.closest( `${ className.elAddItemType }` );
-		const elSection = elAddItemType.closest( `${ className.elSection }` );
+		const elAddItemType = target.closest( `${ EditSectionItem.selectors.elAddItemType }` );
+		const elSection = elAddItemType.closest( `${ EditSection.selectors.elSection }` );
 		const sectionId = elSection.dataset.sectionId;
-		const elAddItemTypeTitleInput = elAddItemType.querySelector( `${ className.elAddItemTypeTitleInput }` );
+		const elAddItemTypeTitleInput = elAddItemType.querySelector( `${ EditSectionItem.selectors.elAddItemTypeTitleInput }` );
 		const titleValue = elAddItemTypeTitleInput.value.trim();
 		const typeValue = elAddItemTypeTitleInput.dataset.itemType;
 		const message = elAddItemTypeTitleInput.dataset.messEmptyTitle;
@@ -263,9 +262,9 @@ export class EditSectionItem {
 		}
 
 		// Clone new section item
-		const elItemClone = elSection.querySelector( `${ className.elItemClone }` );
+		const elItemClone = elSection.querySelector( `${ EditSectionItem.selectors.elItemClone }` );
 		const elItemNew = elItemClone.cloneNode( true );
-		const elItemTitleInput = elItemNew.querySelector( `${ className.elItemTitleInput }` );
+		const elItemTitleInput = elItemNew.querySelector( `${ EditSectionItem.selectors.elItemTitleInput }` );
 
 		elItemNew.classList.remove( 'clone' );
 		elItemNew.classList.add( typeValue );
@@ -328,12 +327,12 @@ export class EditSectionItem {
 	/* Typing in title input */
 	changeTitle( args ) {
 		const { target } = args;
-		const elItemTitleInput = target.closest( `${ className.elItemTitleInput }` );
+		const elItemTitleInput = target.closest( `${ EditSectionItem.selectors.elItemTitleInput }` );
 		if ( ! elItemTitleInput ) {
 			return;
 		}
 
-		const elSectionItem = elItemTitleInput.closest( `${ className.elSectionItem }` );
+		const elSectionItem = elItemTitleInput.closest( `${ EditSectionItem.selectors.elSectionItem }` );
 		if ( ! elSectionItem ) {
 			return;
 		}
@@ -352,12 +351,12 @@ export class EditSectionItem {
 	focusTitleInput( args ) {
 		const { target, focusIn = true } = args;
 
-		const elItemTitleInput = target.closest( `${ className.elItemTitleInput }` );
+		const elItemTitleInput = target.closest( `${ EditSectionItem.selectors.elItemTitleInput }` );
 		if ( ! elItemTitleInput ) {
 			return;
 		}
 
-		const elSectionItem = elItemTitleInput.closest( `${ className.elSectionItem }` );
+		const elSectionItem = elItemTitleInput.closest( `${ EditSectionItem.selectors.elSectionItem }` );
 		if ( ! elSectionItem ) {
 			return;
 		}
@@ -371,17 +370,17 @@ export class EditSectionItem {
 
 	changeTitleAddNew( args ) {
 		const { target } = args;
-		const elAddItemTypeTitleInput = target.closest( `${ className.elAddItemTypeTitleInput }` );
+		const elAddItemTypeTitleInput = target.closest( `${ EditSectionItem.selectors.elAddItemTypeTitleInput }` );
 		if ( ! elAddItemTypeTitleInput ) {
 			return;
 		}
 
-		const elAddItemType = elAddItemTypeTitleInput.closest( `${ className.elAddItemType }` );
+		const elAddItemType = elAddItemTypeTitleInput.closest( `${ EditSectionItem.selectors.elAddItemType }` );
 		if ( ! elAddItemType ) {
 			return;
 		}
 
-		const elBtnAddItem = elAddItemType.querySelector( `${ className.elBtnAddItem }` );
+		const elBtnAddItem = elAddItemType.querySelector( `${ EditSectionItem.selectors.elBtnAddItem }` );
 		if ( ! elBtnAddItem ) {
 			return;
 		}
@@ -400,17 +399,17 @@ export class EditSectionItem {
 
 		e.preventDefault();
 
-		const elSectionItem = target.closest( `${ className.elSectionItem }` );
+		const elSectionItem = target.closest( `${ EditSectionItem.selectors.elSectionItem }` );
 		if ( ! elSectionItem ) {
 			return;
 		}
 
-		const elSection = elSectionItem.closest( `${ className.elSection }` );
+		const elSection = elSectionItem.closest( `${ EditSection.selectors.elSection }` );
 		if ( ! elSection ) {
 			return;
 		}
 
-		const elItemTitleInput = elSectionItem.querySelector( `${ className.elItemTitleInput }` );
+		const elItemTitleInput = elSectionItem.querySelector( `${ EditSectionItem.selectors.elItemTitleInput }` );
 		if ( ! elItemTitleInput ) {
 			return;
 		}
@@ -470,13 +469,13 @@ export class EditSectionItem {
 	/* Cancel update item title */
 	cancelUpdateTitle( args ) {
 		const { e, target } = args;
-		const elBtnCancelUpdateTitle = target.closest( `${ className.elBtnCancelUpdateTitle }` );
+		const elBtnCancelUpdateTitle = target.closest( `${ EditSectionItem.selectors.elBtnCancelUpdateTitle }` );
 		if ( ! elBtnCancelUpdateTitle ) {
 			return;
 		}
 
-		const elSectionItem = elBtnCancelUpdateTitle.closest( `${ className.elSectionItem }` );
-		const elItemTitleInput = elSectionItem.querySelector( `${ className.elItemTitleInput }` );
+		const elSectionItem = elBtnCancelUpdateTitle.closest( `${ EditSectionItem.selectors.elSectionItem }` );
+		const elItemTitleInput = elSectionItem.querySelector( `${ EditSectionItem.selectors.elItemTitleInput }` );
 		elItemTitleInput.value = elItemTitleInput.dataset.old || '';
 		elSectionItem.classList.remove( 'editing' );
 	}
@@ -484,18 +483,18 @@ export class EditSectionItem {
 	/* Delete item from section */
 	deleteItem( args ) {
 		const { e, target } = args;
-		const elBtnDeleteItem = target.closest( `${ className.elBtnDeleteItem }` );
+		const elBtnDeleteItem = target.closest( `${ EditSectionItem.selectors.elBtnDeleteItem }` );
 		if ( ! elBtnDeleteItem ) {
 			return;
 		}
 
-		const elSectionItem = elBtnDeleteItem.closest( `${ className.elSectionItem }` );
+		const elSectionItem = elBtnDeleteItem.closest( `${ EditSectionItem.selectors.elSectionItem }` );
 		if ( ! elSectionItem ) {
 			return;
 		}
 
 		const itemId = elSectionItem.dataset.itemId;
-		const elSection = elSectionItem.closest( `${ className.elSection }` );
+		const elSection = elSectionItem.closest( `${ EditSection.selectors.elSection }` );
 		const sectionId = elSection.dataset.sectionId;
 
 		SweetAlert.fire( {
@@ -545,7 +544,7 @@ export class EditSectionItem {
 
 	/* Sortable items, can drop on multiple sections */
 	sortAbleItem() {
-		const elSectionListItems = this.elCurriculumSections.querySelectorAll( `${ className.elSectionListItems }` );
+		const elSectionListItems = this.elCurriculumSections.querySelectorAll( `${ EditSectionItem.selectors.elSectionListItems }` );
 		let itemIdChoose = 0;
 		let elSectionChoose;
 		let sectionIdChoose = 0;
@@ -560,7 +559,7 @@ export class EditSectionItem {
 					const dataSectionsItems = [];
 
 					const elItemDragged = evt.item;
-					sectionIdEnd = elItemDragged.closest( `${ className.elSection }` ).dataset.sectionId;
+					sectionIdEnd = elItemDragged.closest( `${ EditSection.selectors.elSection }` ).dataset.sectionId;
 
 					const dataSend = { course_id: this.courseId, args: { id_url: idUrlHandle } };
 					if ( sectionIdChoose === sectionIdEnd ) {
@@ -575,7 +574,7 @@ export class EditSectionItem {
 
 					// Send list items position
 					const section = this.elCurriculumSections.querySelector( `.section[data-section-id="${ sectionIdEnd }"]` );
-					const items = section.querySelectorAll( `${ className.elSectionItem }` );
+					const items = section.querySelectorAll( `${ EditSectionItem.selectors.elSectionItem }` );
 					items.forEach( ( elItem ) => {
 						const itemId = parseInt( elItem.dataset.itemId || 0 );
 						if ( itemId === 0 ) {
@@ -611,7 +610,7 @@ export class EditSectionItem {
 				onChoose: ( evt ) => {
 					const elChooseItem = evt.item;
 					itemIdChoose = elChooseItem.dataset.itemId;
-					elSectionChoose = elChooseItem.closest( `${ className.elSection }` );
+					elSectionChoose = elChooseItem.closest( `${ EditSection.selectors.elSection }` );
 					sectionIdChoose = elSectionChoose.dataset.sectionId;
 				},
 				onUpdate: ( /*evt*/ ) => {},
@@ -622,15 +621,15 @@ export class EditSectionItem {
 	/* Show popup items to select */
 	showPopupItemsToSelect( args ) {
 		const { e, target } = args;
-		const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
+		const elBtnShowPopupItemsToSelect = target.closest( `${ EditSectionItem.selectors.elBtnShowPopupItemsToSelect }` );
 		if ( ! elBtnShowPopupItemsToSelect ) {
 			return;
 		}
 
-		const elSection = elBtnShowPopupItemsToSelect.closest( `${ className.elSection }` );
+		const elSection = elBtnShowPopupItemsToSelect.closest( `${ EditSection.selectors.elSection }` );
 		this.sectionIdSelected = elSection.dataset.sectionId;
 
-		const elPopupItemsToSelectClone = document.querySelector( `${ className.elPopupItemsToSelectClone }` );
+		const elPopupItemsToSelectClone = document.querySelector( `${ EditSectionItem.selectors.elPopupItemsToSelectClone }` );
 		this.elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
 		this.elPopupSelectItems.classList.remove( 'clone' );
 		lpUtils.lpShowHideEl( this.elPopupSelectItems, 1 );
@@ -668,7 +667,7 @@ export class EditSectionItem {
 			return;
 		}
 
-		const elSelectItemsToAdd = elTabs.closest( `${ className.elPopupItemsToSelect }` );
+		const elSelectItemsToAdd = elTabs.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
 		const elInputSearch = elSelectItemsToAdd.querySelector( '.lp-search-title-item' );
 
 		const itemType = elTabType.dataset.type;
@@ -677,7 +676,7 @@ export class EditSectionItem {
 		elTabType.classList.add( 'active' );
 		elInputSearch.value = '';
 
-		const elLPTarget = elSelectItemsToAdd.querySelector( `${ className.LPTarget }` );
+		const elLPTarget = elSelectItemsToAdd.querySelector( `${ EditCourseCurriculum.selectors.LPTarget }` );
 
 		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		dataSend.args.item_type = itemType;
@@ -705,7 +704,7 @@ export class EditSectionItem {
 	/* Choose item from list */
 	selectItemsFromList( args ) {
 		const { e, target } = args;
-		const elItemAttend = target.closest( `${ className.elSelectItem }` );
+		const elItemAttend = target.closest( `${ EditSectionItem.selectors.elSelectItem }` );
 		if ( ! elItemAttend ) {
 			return;
 		}
@@ -716,7 +715,7 @@ export class EditSectionItem {
 			return;
 		}
 
-		const elUl = elItemAttend.closest( `${ className.elListItems }` );
+		const elUl = elItemAttend.closest( `${ EditSectionItem.selectors.elListItems }` );
 		if ( ! elUl ) {
 			return;
 		}
@@ -750,12 +749,12 @@ export class EditSectionItem {
 			return;
 		}
 
-		const elPopupItemsToSelect = elInputSearch.closest( `${ className.elPopupItemsToSelect }` );
+		const elPopupItemsToSelect = elInputSearch.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
 		if ( ! elPopupItemsToSelect ) {
 			return;
 		}
 
-		const elLPTarget = elPopupItemsToSelect.querySelector( `${ className.LPTarget }` );
+		const elLPTarget = elPopupItemsToSelect.querySelector( `${ EditCourseCurriculum.selectors.LPTarget }` );
 
 		clearTimeout( this.timeSearchTitleItem );
 
@@ -784,22 +783,22 @@ export class EditSectionItem {
 	/* Show list of items selected */
 	showItemsSelected( args ) {
 		const { e, target } = args;
-		const elBtnCountItemsSelected = target.closest( `${ className.elBtnCountItemsSelected }` );
+		const elBtnCountItemsSelected = target.closest( `${ EditSectionItem.selectors.elBtnCountItemsSelected }` );
 		if ( ! elBtnCountItemsSelected ) {
 			return;
 		}
 
-		const elParent = elBtnCountItemsSelected.closest( `${ className.elPopupItemsToSelect }` );
+		const elParent = elBtnCountItemsSelected.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
 		if ( ! elParent ) {
 			return;
 		}
 
-		const elBtnBack = elParent.querySelector( `${ className.elBtnBackListItems }` );
+		const elBtnBack = elParent.querySelector( `${ EditSectionItem.selectors.elBtnBackListItems }` );
 		const elTabs = elParent.querySelector( '.tabs' );
-		const elListItemsWrap = elParent.querySelector( `${ className.elListItemsWrap }` );
-		const elHeaderItemsSelected = elParent.querySelector( `${ className.elHeaderCountItemSelected }` );
-		const elListItemsSelected = elParent.querySelector( `${ className.elListItemsSelected }` );
-		const elItemClone = elListItemsSelected.querySelector( `${ className.elItemSelectedClone }` );
+		const elListItemsWrap = elParent.querySelector( `${ EditSectionItem.selectors.elListItemsWrap }` );
+		const elHeaderItemsSelected = elParent.querySelector( `${ EditSectionItem.selectors.elHeaderCountItemSelected }` );
+		const elListItemsSelected = elParent.querySelector( `${ EditSectionItem.selectors.elListItemsSelected }` );
+		const elItemClone = elListItemsSelected.querySelector( `${ EditSectionItem.selectors.elItemSelectedClone }` );
 		elHeaderItemsSelected.innerHTML = elBtnCountItemsSelected.innerHTML;
 
 		lpUtils.lpShowHideEl( elListItemsWrap, 0 );
@@ -809,7 +808,7 @@ export class EditSectionItem {
 		lpUtils.lpShowHideEl( elHeaderItemsSelected, 1 );
 		lpUtils.lpShowHideEl( elListItemsSelected, 1 );
 
-		elListItemsSelected.querySelectorAll( `${ className.elItemSelected }:not(.clone)` ).forEach( ( elItem ) => elItem.remove() );
+		elListItemsSelected.querySelectorAll( `${ EditSectionItem.selectors.elItemSelected }:not(.clone)` ).forEach( ( elItem ) => elItem.remove() );
 		this.itemsSelectedData.forEach( ( item ) => {
 			const elItemSelected = elItemClone.cloneNode( true );
 			elItemSelected.classList.remove( 'clone' );
@@ -829,17 +828,17 @@ export class EditSectionItem {
 	/* Back to list of items */
 	backToSelectItems( args ) {
 		const { e, target } = args;
-		const elBtnBack = target.closest( `${ className.elBtnBackListItems }` );
+		const elBtnBack = target.closest( `${ EditSectionItem.selectors.elBtnBackListItems }` );
 		if ( ! elBtnBack ) {
 			return;
 		}
 
-		const elParent = elBtnBack.closest( `${ className.elPopupItemsToSelect }` );
-		const elBtnCountItemsSelected = elParent.querySelector( `${ className.elBtnCountItemsSelected }` );
+		const elParent = elBtnBack.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
+		const elBtnCountItemsSelected = elParent.querySelector( `${ EditSectionItem.selectors.elBtnCountItemsSelected }` );
 		const elTabs = elParent.querySelector( '.tabs' );
-		const elListItemsWrap = elParent.querySelector( `${ className.elListItemsWrap }` );
-		const elHeaderCountItemSelected = elParent.querySelector( `${ className.elHeaderCountItemSelected }` );
-		const elListItemsSelected = elParent.querySelector( `${ className.elListItemsSelected }` );
+		const elListItemsWrap = elParent.querySelector( `${ EditSectionItem.selectors.elListItemsWrap }` );
+		const elHeaderCountItemSelected = elParent.querySelector( `${ EditSectionItem.selectors.elHeaderCountItemSelected }` );
+		const elListItemsSelected = elParent.querySelector( `${ EditSectionItem.selectors.elListItemsSelected }` );
 		lpUtils.lpShowHideEl( elBtnCountItemsSelected, 1 );
 		lpUtils.lpShowHideEl( elListItemsWrap, 1 );
 		lpUtils.lpShowHideEl( elTabs, 1 );
@@ -851,7 +850,7 @@ export class EditSectionItem {
 	/* Remove item selected from list items selected */
 	removeItemSelected( args ) {
 		const { e, target } = args;
-		const elRemoveItemSelected = target.closest( `${ className.elItemSelected }` );
+		const elRemoveItemSelected = target.closest( `${ EditSectionItem.selectors.elItemSelected }` );
 		if ( ! elRemoveItemSelected ) {
 			return;
 		}
@@ -873,10 +872,10 @@ export class EditSectionItem {
 			return;
 		}
 
-		const elBtnAddItemsSelected = this.elPopupSelectItems.querySelector( `${ className.elBtnAddItemsSelected }` );
-		const elBtnCountItemsSelected = this.elPopupSelectItems.querySelector( `${ className.elBtnCountItemsSelected }` );
+		const elBtnAddItemsSelected = this.elPopupSelectItems.querySelector( `${ EditSectionItem.selectors.elBtnAddItemsSelected }` );
+		const elBtnCountItemsSelected = this.elPopupSelectItems.querySelector( `${ EditSectionItem.selectors.elBtnCountItemsSelected }` );
 		const elSpanCount = elBtnCountItemsSelected.querySelector( 'span' );
-		const elHeaderCount = this.elPopupSelectItems.querySelector( `${ className.elHeaderCountItemSelected }` );
+		const elHeaderCount = this.elPopupSelectItems.querySelector( `${ EditSectionItem.selectors.elHeaderCountItemSelected }` );
 		if ( this.itemsSelectedData.length !== 0 ) {
 			elBtnCountItemsSelected.disabled = false;
 			elBtnAddItemsSelected.disabled = false;
@@ -889,7 +888,7 @@ export class EditSectionItem {
 			elHeaderCount.textContent = '';
 		}
 
-		const elListItems = this.elPopupSelectItems.querySelector( `${ className.elListItems }` );
+		const elListItems = this.elPopupSelectItems.querySelector( `${ EditSectionItem.selectors.elListItems }` );
 		const elInputs = elListItems.querySelectorAll( 'input[type="checkbox"]' );
 		elInputs.forEach( ( elInputItem ) => {
 			const itemSelected = { item_id: elInputItem.value, item_type: elInputItem.dataset.type || '', item_title: elInputItem.dataset.title || '' };
@@ -901,22 +900,22 @@ export class EditSectionItem {
 	/* Add items selected to section */
 	addItemsSelectedToSection( args ) {
 		const { e, target } = args;
-		const elBtnAddItems = target.closest( `${ className.elBtnAddItemsSelected }` );
+		const elBtnAddItems = target.closest( `${ EditSectionItem.selectors.elBtnAddItemsSelected }` );
 		if ( ! elBtnAddItems ) {
 			return;
 		}
 
-		const elPopupItemsToSelect = elBtnAddItems.closest( `${ className.elPopupItemsToSelect }` );
+		const elPopupItemsToSelect = elBtnAddItems.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
 		if ( ! elPopupItemsToSelect ) {
 			return;
 		}
 
 		const elSection = document.querySelector( `.section[data-section-id="${ this.sectionIdSelected }"]` );
-		const elItemClone = elSection.querySelector( `${ className.elItemClone }` );
+		const elItemClone = elSection.querySelector( `${ EditSectionItem.selectors.elItemClone }` );
 
 		this.itemsSelectedData.forEach( ( item ) => {
 			const elItemNew = elItemClone.cloneNode( true );
-			const elInputTitleNew = elItemNew.querySelector( `${ className.elItemTitleInput }` );
+			const elInputTitleNew = elItemNew.querySelector( `${ EditSectionItem.selectors.elItemTitleInput }` );
 
 			elItemNew.dataset.itemId = item.item_id;
 			elItemNew.classList.add( item.item_type );
@@ -945,7 +944,7 @@ export class EditSectionItem {
 
 				if ( status === 'error' ) {
 					this.itemsSelectedData.forEach( ( item ) => {
-						const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
+						const elItemAdded = elSection.querySelector( `${ EditSectionItem.selectors.elSectionItem }[data-item-id="${ item.item_id }"]` );
 						if ( elItemAdded ) {
 							elItemAdded.remove();
 						}
@@ -957,7 +956,7 @@ export class EditSectionItem {
 			},
 			completed: () => {
 				this.itemsSelectedData.forEach( ( item ) => {
-					const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
+					const elItemAdded = elSection.querySelector( `${ EditSectionItem.selectors.elSectionItem }[data-item-id="${ item.item_id }"]` );
 					lpUtils.lpSetLoadingEl( elItemAdded, 0 );
 				} );
 
@@ -970,12 +969,12 @@ export class EditSectionItem {
 	/* Enable/disable preview item */
 	updatePreviewItem( args ) {
 		const { e, target } = args;
-		const elBtnSetPreviewItem = target.closest( `${ className.elBtnSetPreviewItem }` );
+		const elBtnSetPreviewItem = target.closest( `${ EditSectionItem.selectors.elBtnSetPreviewItem }` );
 		if ( ! elBtnSetPreviewItem ) {
 			return;
 		}
 
-		const elSectionItem = elBtnSetPreviewItem.closest( `${ className.elSectionItem }` );
+		const elSectionItem = elBtnSetPreviewItem.closest( `${ EditSectionItem.selectors.elSectionItem }` );
 		if ( ! elSectionItem ) {
 			return;
 		}
@@ -1027,9 +1026,9 @@ export class EditSectionItem {
 
 	/* Update count items when item add/delete or section delete */
 	updateCountItems( elSection ) {
-		const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
+		const elEditCurriculum = this.elEditCurriculum;
 		const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
-		const elItemsAll = elEditCurriculum.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
+		const elItemsAll = elEditCurriculum.querySelectorAll( `${ EditSectionItem.selectors.elSectionItem }:not(.clone)` );
 		const itemsAllCount = elItemsAll.length;
 
 		elCountItemsAll.dataset.count = itemsAllCount;
@@ -1038,7 +1037,7 @@ export class EditSectionItem {
 		// Count items in section
 		const elSectionItemsCount = elSection.querySelector( '.section-items-counts' );
 
-		const elItems = elSection.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
+		const elItems = elSection.querySelectorAll( `${ EditSectionItem.selectors.elSectionItem }:not(.clone)` );
 		const itemsCount = elItems.length;
 
 		elSectionItemsCount.dataset.count = itemsCount;
