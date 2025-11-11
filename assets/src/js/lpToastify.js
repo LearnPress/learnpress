@@ -8,6 +8,7 @@
  * @version 1.0.0
  */
 import Toastify from 'toastify-js';
+import 'toastify-js/src/toastify.css';
 
 export const argsToastify = {
 	text: '',

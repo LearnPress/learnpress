@@ -2,43 +2,25 @@
  * Create course with AI
  */
 
-import * as lpUtils from './../../utils.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import SweetAlert from 'sweetalert2';
-import Toastify from 'toastify-js';
-import 'toastify-js/src/toastify.css';
-
-const argsToastify = {
-	text: '',
-	gravity: lpDataAdmin.toast.gravity, // `top` or `bottom`
-	position: lpDataAdmin.toast.position, // `left`, `center` or `right`
-	className: `${ lpDataAdmin.toast.classPrefix }`,
-	close: lpDataAdmin.toast.close == 1,
-	stopOnFocus: lpDataAdmin.toast.stopOnFocus == 1,
-	duration: lpDataAdmin.toast.duration,
-};
-const showToast = ( message, status = 'success' ) => {
-	const toastify = new Toastify( {
-		...argsToastify,
-		text: message,
-		className: `${ lpDataAdmin.toast.classPrefix } ${ status }`,
-	} );
-	toastify.showToast();
-};
+import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 let lp_structure_course;
 
 export class CreateCourseViaAI {
 	constructor() {
 		this.init();
-		this.selector = {
-			elGenerateDataAiWrap: '.lp-generate-data-ai-wrap',
-		};
 	}
+
+	static selectors = {
+		elGenerateDataAiWrap: '.lp-generate-data-ai-wrap',
+	};
 
 	init() {
 		lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
 			el.insertAdjacentHTML(
 				'afterend',
-				`<button type="button" class="lp-btn-generate-course-with-ai lp-button button-primary ">Generate with AI</button>`
+				`<button type="button" class="lp-btn-generate-course-with-ai button-primary">Generate with AI</button>`
 			);
 		} );
 
@@ -46,6 +28,11 @@ export class CreateCourseViaAI {
 	}
 
 	events() {
+		if ( CreateCourseViaAI._loadedEvents ) {
+			return;
+		}
+		CreateCourseViaAI._loadedEvents = true;
+
 		lpUtils.eventHandlers( 'click', [
 			{
 				selector: '.lp-btn-generate-course-with-ai',
@@ -104,7 +91,7 @@ export class CreateCourseViaAI {
 		e.preventDefault();
 
 		const elBtnActions = target.closest( '.button-actions' );
-		const elCreateCourseAIWrap = elBtnActions.closest( this.selector.elGenerateDataAiWrap );
+		const elCreateCourseAIWrap = elBtnActions.closest( CreateCourseViaAI.selectors.elGenerateDataAiWrap );
 		let step = parseInt( elBtnActions.dataset.step );
 
 		const stepAction = target.dataset.action;
@@ -155,7 +142,7 @@ export class CreateCourseViaAI {
 			success: ( response ) => {
 				const { message, status, data } = response;
 
-				showToast( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
 					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
@@ -166,7 +153,7 @@ export class CreateCourseViaAI {
 				}
 			},
 			error: ( error ) => {
-				showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
@@ -194,7 +181,7 @@ export class CreateCourseViaAI {
 		lpUtils.lpShowHideEl( btnPrev, 0 );
 
 		setTimeout( () => {
-			showToast( 'Generating course data. This may take a few moments...', 'info' );
+			lpToastify.show( 'Generating course data. This may take a few moments...', 'info' );
 		}, 1000 );
 
 		// Ajax to generate prompt
@@ -202,7 +189,7 @@ export class CreateCourseViaAI {
 			success: ( response ) => {
 				const { message, status, data } = response;
 
-				showToast( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
 					// Save structure data
@@ -217,7 +204,7 @@ export class CreateCourseViaAI {
 				}
 			},
 			error: ( error ) => {
-				showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
@@ -250,7 +237,7 @@ export class CreateCourseViaAI {
 			success: ( response ) => {
 				const { message, status, data } = response;
 
-				showToast( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
 					target.text = data.button_label;
@@ -265,7 +252,7 @@ export class CreateCourseViaAI {
 				}
 			},
 			error: ( error ) => {
-				showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 				lpUtils.lpShowHideEl( elBtnPrev, 1 );
 			},
 			completed: () => {
