@@ -489,7 +489,6 @@ EOD;
 		$section = [
 			'wrap'     => '<div class="lp-ai-course-data-preview">',
 			'title'    => sprintf( '<div class="course-title">%s</div>', esc_html( $course_title ) ),
-			'img'      => '<div class="course-img"><img src="/wp-content/plugins/learnpress/assets/images/no-image.png" alt="course thumbnail"></div>',
 			'des'      => sprintf( '<div class="course-description">%s</div>', esc_html( $course_description ) ),
 			'sections' => sprintf( '<ul class="course-sections">%s</ul>', $html_section ),
 			'wrap-end' => '</div>',

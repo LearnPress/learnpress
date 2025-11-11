@@ -322,4 +322,97 @@ class AdminEditCourseCurriculumWithAITemplate {
 
 		return Template::combine_components( $components );
 	}
+
+	/**
+	 * HTML preview with data received from OpenAI
+	 *
+	 * @param array $data_received
+	 *
+	 * @return string
+	 */
+	public static function html_preview_with_data( array $data_received ): string {
+		$sections = $data_received['sections'] ?? [];
+
+		$html_section = '';
+		foreach ( $sections as $section ) {
+			$section_title = $section['section_title'] ?? '';
+			$section_des   = $section['section_description'] ?? '';
+			$lessons       = $section['lessons'] ?? [];
+			$quizzes       = $section['quizzes'] ?? [];
+
+			$html_lessons = '';
+			foreach ( $lessons as $lesson ) {
+				$lesson_title = $lesson['lesson_title'] ?? '';
+				$lesson_des   = $lesson['lesson_description'] ?? '';
+
+				$arr_lesson_components = [
+					'wrap'     => '<li class="course-lesson-item">',
+					'title'    => sprintf( '<div class="lesson-title">%s</div>', esc_html( $lesson_title ) ),
+					'des'      => sprintf( '<div class="lesson-description">%s</div>', esc_html( $lesson_des ) ),
+					'wrap-end' => '</li>',
+				];
+
+				$html_lessons .= Template::combine_components( $arr_lesson_components );
+			}
+
+			// Quizzes
+			$html_quizzes = '';
+			foreach ( $quizzes as $quiz ) {
+				$quiz_title = $quiz['quiz_title'] ?? '';
+				$quiz_des   = $quiz['quiz_description'] ?? '';
+				$questions  = $quiz['questions'] ?? [];
+
+				$html_questions = '';
+				foreach ( $questions as $question ) {
+					$question_title = $question['question_title'] ?? '';
+					$question_des   = $question['question_description'] ?? '';
+					$options        = $question['options'] ?? [];
+
+					$html_options = '';
+					foreach ( $options as $option ) {
+						$html_options .= sprintf( '<li class="question-option">%s</li>', esc_html( $option ) );
+					}
+
+					$arr_question_components = [
+						'wrap'     => '<li class="quiz-question-item">',
+						'title'    => sprintf( '<div class="question-title">%s</div>', esc_html( $question_title ) ),
+						'desc'     => sprintf( '<div class="question-desc">%s</div>', esc_html( $question_des ) ),
+						'options'  => sprintf( '<ul class="course-question-options">%s</ul>', $html_options ),
+						'wrap-end' => '</li>',
+					];
+
+					$html_questions .= Template::combine_components( $arr_question_components );
+				}
+
+				$arr_quiz_components = [
+					'wrap'      => '<div class="course-quiz-item">',
+					'title'     => sprintf( '<div class="quiz-title">%s</div>', esc_html( $quiz_title ) ),
+					'des'       => sprintf( '<div class="quiz-description">%s</div>', esc_html( $quiz_des ) ),
+					'questions' => sprintf( '<ul class="course-questions">%s</ul>', $html_questions ),
+					'wrap-end'  => '</div>',
+				];
+
+				$html_quizzes .= Template::combine_components( $arr_quiz_components );
+			}
+
+			$arr_section_components = [
+				'wrap'     => '<li class="course-section-item">',
+				'title'    => sprintf( '<div class="section-title">%s</div>', esc_html( $section_title ) ),
+				'des'      => sprintf( '<div class="section-description">%s</div>', esc_html( $section_des ) ),
+				'lessons'  => sprintf( '<ul class="course-section-items">%s</ul>', $html_lessons ),
+				'quizzes'  => sprintf( '<ul class="course-section-items">%s</ul>', $html_quizzes ),
+				'wrap-end' => '</li>',
+			];
+
+			$html_section .= Template::combine_components( $arr_section_components );
+		}
+
+		$section = [
+			'wrap'     => '<div class="lp-ai-course-data-preview">',
+			'sections' => sprintf( '<ul class="course-sections">%s</ul>', $html_section ),
+			'wrap-end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
 }

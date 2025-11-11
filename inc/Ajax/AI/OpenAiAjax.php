@@ -12,6 +12,7 @@ use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
 use LearnPress\Services\OpenAiService;
 use LearnPress\TemplateHooks\Admin\AdminCreateCourseAITemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditCourseCurriculumWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditWithAITemplate;
 use LP_Helper;
 use LP_Request;
@@ -303,7 +304,9 @@ class OpenAiAjax extends AbstractAjax {
 						break;
 					case 'course-curriculum':
 						$result['lp_structure_course'] = $lp_structure_data[0];
-						$result['lp_html_preview']     = AdminCreateCourseAITemplate::html_preview_with_data( $result['lp_structure_course'] );
+						$result['lp_html_preview']     = AdminEditCourseCurriculumWithAITemplate::html_preview_with_data(
+							$result['lp_structure_course']
+						);
 						break;
 					case $lp_prompt_type:
 						$result['lp_html_preview'] = apply_filters( 'lp-openai-render-data-generated', '', $lp_prompt_type, $lp_structure_data );
