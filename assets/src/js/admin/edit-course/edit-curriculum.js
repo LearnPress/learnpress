@@ -25,12 +25,15 @@ export class EditCourseCurriculum {
 	};
 
 	init() {
-		lpUtils.lpOnElementReady( `${ EditCourseCurriculum.selectors.idElEditCurriculum }`, ( elEditCurriculum ) => {
-			// Set variables use for section edit
-			sectionEdit.init();
+		lpUtils.lpOnElementReady(
+			`${ EditCourseCurriculum.selectors.idElEditCurriculum }`,
+			( elEditCurriculum ) => {
+				// Set variables use for section edit
+				sectionEdit.init();
 
-			// Set variables use for edit section item
-			sectionItemEdit.init();
-		} );
+				// Set variables use for edit section item
+				sectionItemEdit.init();
+			}
+		);
 	}
 }

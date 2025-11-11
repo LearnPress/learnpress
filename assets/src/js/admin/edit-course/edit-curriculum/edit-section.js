@@ -39,9 +39,15 @@ export class EditSection {
 	};
 
 	init() {
-		this.elEditCurriculum = document.querySelector( `${ EditCourseCurriculum.selectors.idElEditCurriculum }` );
-		this.elCurriculumSections = this.elEditCurriculum.querySelector( `${ EditCourseCurriculum.selectors.elCurriculumSections }` );
-		const elLPTarget = this.elEditCurriculum.closest( `${ EditCourseCurriculum.selectors.LPTarget }` );
+		this.elEditCurriculum = document.querySelector(
+			`${ EditCourseCurriculum.selectors.idElEditCurriculum }`
+		);
+		this.elCurriculumSections = this.elEditCurriculum.querySelector(
+			`${ EditCourseCurriculum.selectors.elCurriculumSections }`
+		);
+		const elLPTarget = this.elEditCurriculum.closest(
+			`${ EditCourseCurriculum.selectors.LPTarget }`
+		);
 		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		this.courseId = dataSend.args.course_id;
 
@@ -185,12 +191,16 @@ export class EditSection {
 		const { e, target } = args;
 		const elSectionTitleNewInput = target;
 
-		const elAddNewSection = elSectionTitleNewInput.closest( `${ EditSection.selectors.elDivAddNewSection }` );
+		const elAddNewSection = elSectionTitleNewInput.closest(
+			`${ EditSection.selectors.elDivAddNewSection }`
+		);
 		if ( ! elAddNewSection ) {
 			return;
 		}
 
-		const elBtnAddSection = elAddNewSection.querySelector( `${ EditSection.selectors.elBtnAddSection }` );
+		const elBtnAddSection = elAddNewSection.querySelector(
+			`${ EditSection.selectors.elBtnAddSection }`
+		);
 
 		const titleValue = elSectionTitleNewInput.value.trim();
 		if ( titleValue.length === 0 ) {
@@ -203,7 +213,9 @@ export class EditSection {
 	/* Focus on new section title input */
 	focusTitleNewInput( args ) {
 		const { e, target, focusIn = true } = args;
-		const elAddNewSection = target.closest( `${ EditSection.selectors.elDivAddNewSection }` );
+		const elAddNewSection = target.closest(
+			`${ EditSection.selectors.elDivAddNewSection }`
+		);
 		if ( ! elAddNewSection ) {
 			return;
 		}
@@ -219,14 +231,18 @@ export class EditSection {
 	addSection( args ) {
 		const { e, target, callBackNest } = args;
 
-		const elDivAddNewSection = target.closest( `${ EditSection.selectors.elDivAddNewSection }` );
+		const elDivAddNewSection = target.closest(
+			`${ EditSection.selectors.elDivAddNewSection }`
+		);
 		if ( ! elDivAddNewSection ) {
 			return;
 		}
 
 		e.preventDefault();
 
-		const elSectionTitleNewInput = elDivAddNewSection.querySelector( `${ EditSection.selectors.elSectionTitleNewInput }` );
+		const elSectionTitleNewInput = elDivAddNewSection.querySelector(
+			`${ EditSection.selectors.elSectionTitleNewInput }`
+		);
 		const titleValue = elSectionTitleNewInput.value.trim();
 		const message = elSectionTitleNewInput.dataset.messEmptyTitle;
 		if ( titleValue.length === 0 ) {
@@ -239,14 +255,21 @@ export class EditSection {
 		elSectionTitleNewInput.blur();
 
 		// Add and set data for new section
-		const elSectionClone = this.elCurriculumSections.querySelector( `${ EditSection.selectors.elSectionClone }` );
+		const elSectionClone = this.elCurriculumSections.querySelector(
+			`${ EditSection.selectors.elSectionClone }`
+		);
 		const newSection = elSectionClone.cloneNode( true );
 		newSection.classList.remove( 'clone' );
 		lpUtils.lpShowHideEl( newSection, 1 );
 		lpUtils.lpSetLoadingEl( newSection, 1 );
-		const elSectionTitleInput = newSection.querySelector( `${ EditSection.selectors.elSectionTitleInput }` );
+		const elSectionTitleInput = newSection.querySelector(
+			`${ EditSection.selectors.elSectionTitleInput }`
+		);
 		elSectionTitleInput.value = titleValue;
-		this.elCurriculumSections.insertAdjacentElement( 'beforeend', newSection );
+		this.elCurriculumSections.insertAdjacentElement(
+			'beforeend',
+			newSection
+		);
 		// End
 
 		// Call ajax to add new section
@@ -264,7 +287,10 @@ export class EditSection {
 					// Initialize EditSectionItem for the new section to make its items sortable
 					this.editSectionItem.sortAbleItem();
 
-					if ( callBackNest && typeof callBackNest.success === 'function' ) {
+					if (
+						callBackNest &&
+						typeof callBackNest.success === 'function'
+					) {
 						args.elSection = newSection;
 						args.response = response;
 						callBackNest.success( args );
@@ -276,18 +302,28 @@ export class EditSection {
 			error: ( error ) => {
 				newSection.remove();
 				lpToastify.show( error, 'error' );
-				if ( callBackNest && typeof callBackNest.error === 'function' ) {
+				if (
+					callBackNest &&
+					typeof callBackNest.error === 'function'
+				) {
 					args.error = error;
 					callBackNest.error( args );
 				}
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( newSection, 0 );
-				newSection.classList.remove( `${ EditCourseCurriculum.selectors.elCollapse }` );
-				const elSectionDesInput = newSection.querySelector( `${ EditSection.selectors.elSectionDesInput }` );
+				newSection.classList.remove(
+					`${ EditCourseCurriculum.selectors.elCollapse }`
+				);
+				const elSectionDesInput = newSection.querySelector(
+					`${ EditSection.selectors.elSectionDesInput }`
+				);
 				elSectionDesInput.focus();
 				this.updateCountSections( this.elEditCurriculum );
-				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
+				if (
+					callBackNest &&
+					typeof callBackNest.completed === 'function'
+				) {
 					args.elSection = newSection;
 					callBackNest.completed( args );
 				}
@@ -304,7 +340,9 @@ export class EditSection {
 		const { e, target } = args;
 		const elBtnDeleteSection = target;
 
-		const elEditCurriculum = elBtnDeleteSection.closest( `${ EditCourseCurriculum.selectors.idElEditCurriculum }` );
+		const elEditCurriculum = elBtnDeleteSection.closest(
+			`${ EditCourseCurriculum.selectors.idElEditCurriculum }`
+		);
 
 		SweetAlert.fire( {
 			title: elBtnDeleteSection.dataset.title,
@@ -350,7 +388,9 @@ export class EditSection {
 	/* Focus on section title input */
 	focusTitleInput( args ) {
 		const { e, target, focusIn = true } = args;
-		const elSection = target.closest( `${ EditSection.selectors.elSection }` );
+		const elSection = target.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 		if ( ! elSection ) {
 			return;
 		}
@@ -366,13 +406,20 @@ export class EditSection {
 	setFocusTitleInput( args ) {
 		const { e, target } = args;
 
-		const elSection = target.closest( `${ EditSection.selectors.elSection }` );
+		const elSection = target.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 		if ( ! elSection ) {
 			return;
 		}
 
-		const elSectionTitleInput = elSection.querySelector( `${ EditSection.selectors.elSectionTitleInput }` );
-		elSectionTitleInput.setSelectionRange( elSectionTitleInput.value.length, elSectionTitleInput.value.length );
+		const elSectionTitleInput = elSection.querySelector(
+			`${ EditSection.selectors.elSectionTitleInput }`
+		);
+		elSectionTitleInput.setSelectionRange(
+			elSectionTitleInput.value.length,
+			elSectionTitleInput.value.length
+		);
 		elSectionTitleInput.focus();
 	}
 
@@ -380,7 +427,9 @@ export class EditSection {
 	changeTitle( args ) {
 		const { e, target } = args;
 		const elSectionTitleInput = target;
-		const elSection = elSectionTitleInput.closest( `${ EditSection.selectors.elSection }` );
+		const elSection = elSectionTitleInput.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 		const titleValue = elSectionTitleInput.value.trim();
 		const titleValueOld = elSectionTitleInput.dataset.old || '';
 
@@ -394,14 +443,18 @@ export class EditSection {
 	/* Update section title to server */
 	updateSectionTitle( args ) {
 		const { e, target } = args;
-		const elSection = target.closest( `${ EditSection.selectors.elSection }` );
+		const elSection = target.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 		if ( ! elSection ) {
 			return;
 		}
 
 		e.preventDefault();
 
-		const elSectionTitleInput = elSection.querySelector( `${ EditSection.selectors.elSectionTitleInput }` );
+		const elSectionTitleInput = elSection.querySelector(
+			`${ EditSection.selectors.elSectionTitleInput }`
+		);
 		if ( ! elSectionTitleInput ) {
 			return;
 		}
@@ -451,13 +504,19 @@ export class EditSection {
 	/* Cancel updating section title */
 	cancelSectionTitle( args ) {
 		const { e, target } = args;
-		const elBtnCancelUpdateTitle = target.closest( `${ EditSection.selectors.elBtnCancelUpdateTitle }` );
+		const elBtnCancelUpdateTitle = target.closest(
+			`${ EditSection.selectors.elBtnCancelUpdateTitle }`
+		);
 		if ( ! elBtnCancelUpdateTitle ) {
 			return;
 		}
 
-		const elSection = elBtnCancelUpdateTitle.closest( `${ EditSection.selectors.elSection }` );
-		const elSectionTitleInput = elSection.querySelector( `${ EditSection.selectors.elSectionTitleInput }` );
+		const elSection = elBtnCancelUpdateTitle.closest(
+			`${ EditSection.selectors.elSection }`
+		);
+		const elSectionTitleInput = elSection.querySelector(
+			`${ EditSection.selectors.elSectionTitleInput }`
+		);
 		elSectionTitleInput.value = elSectionTitleInput.dataset.old || '';
 		elSection.classList.remove( 'editing' );
 	}
@@ -466,19 +525,25 @@ export class EditSection {
 	updateSectionDescription( args ) {
 		const { e, target, callBackNest } = args;
 
-		const elSectionDesc = target.closest( `${ EditSection.selectors.elSectionDesc }` );
+		const elSectionDesc = target.closest(
+			`${ EditSection.selectors.elSectionDesc }`
+		);
 		if ( ! elSectionDesc ) {
 			return;
 		}
 
-		const elSectionDesInput = elSectionDesc.querySelector( `${ EditSection.selectors.elSectionDesInput }` );
+		const elSectionDesInput = elSectionDesc.querySelector(
+			`${ EditSection.selectors.elSectionDesInput }`
+		);
 		if ( ! elSectionDesInput ) {
 			return;
 		}
 
 		e.preventDefault();
 
-		const elSection = elSectionDesInput.closest( `${ EditSection.selectors.elSection }` );
+		const elSection = elSectionDesInput.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 		const sectionId = elSection.dataset.sectionId;
 		const descValue = elSectionDesInput.value.trim();
 		const descValueOld = elSectionDesInput.dataset.old || '';
@@ -493,7 +558,10 @@ export class EditSection {
 			success: ( response ) => {
 				const { message, status } = response;
 
-				if ( callBackNest && typeof callBackNest.success === 'function' ) {
+				if (
+					callBackNest &&
+					typeof callBackNest.success === 'function'
+				) {
 					args.elSection = elSection;
 					args.response = response;
 					callBackNest.success( args );
@@ -503,16 +571,24 @@ export class EditSection {
 			},
 			error: ( error ) => {
 				lpToastify.show( error, 'error' );
-				if ( callBackNest && typeof callBackNest.error === 'function' ) {
+				if (
+					callBackNest &&
+					typeof callBackNest.error === 'function'
+				) {
 					callBackNest.error( elSection, error );
 				}
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( elSection, 0 );
-				const elSectionDesc = elSectionDesInput.closest( `${ EditSection.selectors.elSectionDesc }` );
+				const elSectionDesc = elSectionDesInput.closest(
+					`${ EditSection.selectors.elSectionDesc }`
+				);
 				elSectionDesc.classList.remove( 'editing' );
 				elSectionDesInput.dataset.old = descValue;
-				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
+				if (
+					callBackNest &&
+					typeof callBackNest.completed === 'function'
+				) {
 					callBackNest.completed( elSection );
 				}
 			},
@@ -527,8 +603,12 @@ export class EditSection {
 	/* Cancel updating section description */
 	cancelSectionDescription( args ) {
 		const { e, target } = args;
-		const elSectionDesc = target.closest( `${ EditSection.selectors.elSectionDesc }` );
-		const elSectionDesInput = elSectionDesc.querySelector( `${ EditSection.selectors.elSectionDesInput }` );
+		const elSectionDesc = target.closest(
+			`${ EditSection.selectors.elSectionDesc }`
+		);
+		const elSectionDesInput = elSectionDesc.querySelector(
+			`${ EditSection.selectors.elSectionDesInput }`
+		);
 		elSectionDesInput.value = elSectionDesInput.dataset.old || '';
 		elSectionDesc.classList.remove( 'editing' );
 	}
@@ -536,12 +616,16 @@ export class EditSection {
 	/* Typing in description input */
 	changeDescription( ags ) {
 		const { e, target } = ags;
-		const elSectionDesInput = target.closest( `${ EditSection.selectors.elSectionDesInput }` );
+		const elSectionDesInput = target.closest(
+			`${ EditSection.selectors.elSectionDesInput }`
+		);
 		if ( ! elSectionDesInput ) {
 			return;
 		}
 
-		const elSectionDesc = elSectionDesInput.closest( `${ EditSection.selectors.elSectionDesc }` );
+		const elSectionDesc = elSectionDesInput.closest(
+			`${ EditSection.selectors.elSectionDesc }`
+		);
 		const descValue = elSectionDesInput.value.trim();
 		const descValueOld = elSectionDesInput.dataset.old || '';
 
@@ -554,34 +638,53 @@ export class EditSection {
 
 	toggleSectionAll( args ) {
 		const { e, target } = args;
-		const elToggleAllSections = target.closest( `${ EditCourseCurriculum.selectors.elToggleAllSections }` );
+		const elToggleAllSections = target.closest(
+			`${ EditCourseCurriculum.selectors.elToggleAllSections }`
+		);
 		if ( ! elToggleAllSections ) {
 			return;
 		}
 
-		const elEditCurriculum = elToggleAllSections.closest( `${ EditCourseCurriculum.selectors.idElEditCurriculum }` );
-		const elSections = elEditCurriculum.querySelectorAll( `${ EditSection.selectors.elSection }:not(.clone)` );
+		const elEditCurriculum = elToggleAllSections.closest(
+			`${ EditCourseCurriculum.selectors.idElEditCurriculum }`
+		);
+		const elSections = elEditCurriculum.querySelectorAll(
+			`${ EditSection.selectors.elSection }:not(.clone)`
+		);
 
-		elToggleAllSections.classList.toggle( `${ EditCourseCurriculum.selectors.elCollapse }` );
+		elToggleAllSections.classList.toggle(
+			`${ EditCourseCurriculum.selectors.elCollapse }`
+		);
 
 		elSections.forEach( ( el ) => {
-			const shouldCollapse = elToggleAllSections.classList.contains( `${ EditCourseCurriculum.selectors.elCollapse }` );
-			el.classList.toggle( `${ EditCourseCurriculum.selectors.elCollapse }`, shouldCollapse );
+			const shouldCollapse = elToggleAllSections.classList.contains(
+				`${ EditCourseCurriculum.selectors.elCollapse }`
+			);
+			el.classList.toggle(
+				`${ EditCourseCurriculum.selectors.elCollapse }`,
+				shouldCollapse
+			);
 		} );
 	}
 
 	/* Toggle section */
 	toggleSection( args ) {
 		const { e, target } = args;
-		const elSection = target.closest( `${ EditSection.selectors.elSection }` );
+		const elSection = target.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 
-		const elCurriculumSections = elSection.closest( `${ EditCourseCurriculum.selectors.elCurriculumSections }` );
+		const elCurriculumSections = elSection.closest(
+			`${ EditCourseCurriculum.selectors.elCurriculumSections }`
+		);
 		if ( ! elCurriculumSections ) {
 			return;
 		}
 
 		// Toggle section
-		elSection.classList.toggle( `${ EditCourseCurriculum.selectors.elCollapse }` );
+		elSection.classList.toggle(
+			`${ EditCourseCurriculum.selectors.elCollapse }`
+		);
 
 		// Check all sections collapsed
 		this.checkAllSectionsCollapsed();
@@ -589,21 +692,33 @@ export class EditSection {
 
 	/* Check if all sections are collapsed */
 	checkAllSectionsCollapsed() {
-		const elSections = this.elEditCurriculum.querySelectorAll( `${ EditSection.selectors.elSection }:not(.clone)` );
-		const elToggleAllSections = this.elEditCurriculum.querySelector( `${ EditCourseCurriculum.selectors.elToggleAllSections }` );
+		const elSections = this.elEditCurriculum.querySelectorAll(
+			`${ EditSection.selectors.elSection }:not(.clone)`
+		);
+		const elToggleAllSections = this.elEditCurriculum.querySelector(
+			`${ EditCourseCurriculum.selectors.elToggleAllSections }`
+		);
 
 		let isAllExpand = true;
 		elSections.forEach( ( el ) => {
-			if ( el.classList.contains( `${ EditCourseCurriculum.selectors.elCollapse }` ) ) {
+			if (
+				el.classList.contains(
+					`${ EditCourseCurriculum.selectors.elCollapse }`
+				)
+			) {
 				isAllExpand = false;
 				return false; // Break the loop
 			}
 		} );
 
 		if ( isAllExpand ) {
-			elToggleAllSections.classList.remove( `${ EditCourseCurriculum.selectors.elCollapse }` );
+			elToggleAllSections.classList.remove(
+				`${ EditCourseCurriculum.selectors.elCollapse }`
+			);
 		} else {
-			elToggleAllSections.classList.add( `${ EditCourseCurriculum.selectors.elCollapse }` );
+			elToggleAllSections.classList.add(
+				`${ EditCourseCurriculum.selectors.elCollapse }`
+			);
 		}
 	}
 
@@ -621,8 +736,12 @@ export class EditSection {
 					return;
 				}
 
-				const elSection = target.closest( `${ EditSection.selectors.elSection }` );
-				const elSections = this.elCurriculumSections.querySelectorAll( `${ EditSection.selectors.elSection }` );
+				const elSection = target.closest(
+					`${ EditSection.selectors.elSection }`
+				);
+				const elSections = this.elCurriculumSections.querySelectorAll(
+					`${ EditSection.selectors.elSection }`
+				);
 				const sectionIds = [];
 
 				elSections.forEach( ( elSection ) => {
@@ -670,8 +789,12 @@ export class EditSection {
 
 	/* Update count sections, when add or delete section */
 	updateCountSections( elEditCurriculum ) {
-		const elCountSections = elEditCurriculum.querySelector( `${ EditSection.selectors.elCountSections }` );
-		const elSections = elEditCurriculum.querySelectorAll( `${ EditSection.selectors.elSection }:not(.clone)` );
+		const elCountSections = elEditCurriculum.querySelector(
+			`${ EditSection.selectors.elCountSections }`
+		);
+		const elSections = elEditCurriculum.querySelectorAll(
+			`${ EditSection.selectors.elSection }:not(.clone)`
+		);
 		const sectionsCount = elSections.length;
 
 		elCountSections.dataset.count = sectionsCount;

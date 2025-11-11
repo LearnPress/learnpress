@@ -57,9 +57,15 @@ export class EditSectionItem {
 	};
 
 	init() {
-		this.elEditCurriculum = document.querySelector( `${ EditCourseCurriculum.selectors.idElEditCurriculum }` );
-		this.elCurriculumSections = this.elEditCurriculum.querySelector( `${ EditCourseCurriculum.selectors.elCurriculumSections }` );
-		const elLPTarget = this.elEditCurriculum.closest( `${ EditCourseCurriculum.selectors.LPTarget }` );
+		this.elEditCurriculum = document.querySelector(
+			`${ EditCourseCurriculum.selectors.idElEditCurriculum }`
+		);
+		this.elCurriculumSections = this.elEditCurriculum.querySelector(
+			`${ EditCourseCurriculum.selectors.elCurriculumSections }`
+		);
+		const elLPTarget = this.elEditCurriculum.closest(
+			`${ EditCourseCurriculum.selectors.LPTarget }`
+		);
 		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		this.courseId = dataSend.args.course_id;
 
@@ -215,14 +221,24 @@ export class EditSectionItem {
 		const itemPlaceholder = elBtnSelectItemType.dataset.placeholder;
 		const itemBtnAddText = elBtnSelectItemType.dataset.buttonAddText;
 
-		const elSection = elBtnSelectItemType.closest( `${ EditSection.selectors.elSection }` );
-		const elSectionActions = elSection.querySelector( `${ EditSectionItem.selectors.elSectionActions }` );
+		const elSection = elBtnSelectItemType.closest(
+			`${ EditSection.selectors.elSection }`
+		);
+		const elSectionActions = elSection.querySelector(
+			`${ EditSectionItem.selectors.elSectionActions }`
+		);
 
 		// Insert input item type to add
-		const elAddItemTypeClone = elSectionActions.querySelector( `${ EditSectionItem.selectors.elAddItemTypeClone }` );
+		const elAddItemTypeClone = elSectionActions.querySelector(
+			`${ EditSectionItem.selectors.elAddItemTypeClone }`
+		);
 		const elNewItemByType = elAddItemTypeClone.cloneNode( true );
-		const elAddItemTypeInput = elNewItemByType.querySelector( `${ EditSectionItem.selectors.elAddItemTypeTitleInput }` );
-		const elBtnAddItem = elNewItemByType.querySelector( `${ EditSectionItem.selectors.elBtnAddItem }` );
+		const elAddItemTypeInput = elNewItemByType.querySelector(
+			`${ EditSectionItem.selectors.elAddItemTypeTitleInput }`
+		);
+		const elBtnAddItem = elNewItemByType.querySelector(
+			`${ EditSectionItem.selectors.elBtnAddItem }`
+		);
 
 		elNewItemByType.classList.remove( 'clone' );
 		elNewItemByType.classList.add( itemType );
@@ -230,14 +246,19 @@ export class EditSectionItem {
 		elAddItemTypeInput.setAttribute( 'placeholder', itemPlaceholder );
 		elAddItemTypeInput.dataset.itemType = itemType;
 		elBtnAddItem.textContent = itemBtnAddText;
-		elSectionActions.insertAdjacentElement( 'beforebegin', elNewItemByType );
+		elSectionActions.insertAdjacentElement(
+			'beforebegin',
+			elNewItemByType
+		);
 		elAddItemTypeInput.focus();
 	}
 
 	/* Cancel add item type */
 	cancelAddItemType( args ) {
 		const { e, target } = args;
-		const elAddItemType = target.closest( `${ EditSectionItem.selectors.elAddItemType }` );
+		const elAddItemType = target.closest(
+			`${ EditSectionItem.selectors.elAddItemType }`
+		);
 		if ( elAddItemType ) {
 			elAddItemType.remove();
 		}
@@ -248,10 +269,16 @@ export class EditSectionItem {
 		const { e, target, callBackNest } = args;
 		e.preventDefault();
 
-		const elAddItemType = target.closest( `${ EditSectionItem.selectors.elAddItemType }` );
-		const elSection = elAddItemType.closest( `${ EditSection.selectors.elSection }` );
+		const elAddItemType = target.closest(
+			`${ EditSectionItem.selectors.elAddItemType }`
+		);
+		const elSection = elAddItemType.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 		const sectionId = elSection.dataset.sectionId;
-		const elAddItemTypeTitleInput = elAddItemType.querySelector( `${ EditSectionItem.selectors.elAddItemTypeTitleInput }` );
+		const elAddItemTypeTitleInput = elAddItemType.querySelector(
+			`${ EditSectionItem.selectors.elAddItemTypeTitleInput }`
+		);
 		const titleValue = elAddItemTypeTitleInput.value.trim();
 		const typeValue = elAddItemTypeTitleInput.dataset.itemType;
 		const message = elAddItemTypeTitleInput.dataset.messEmptyTitle;
@@ -262,9 +289,13 @@ export class EditSectionItem {
 		}
 
 		// Clone new section item
-		const elItemClone = elSection.querySelector( `${ EditSectionItem.selectors.elItemClone }` );
+		const elItemClone = elSection.querySelector(
+			`${ EditSectionItem.selectors.elItemClone }`
+		);
 		const elItemNew = elItemClone.cloneNode( true );
-		const elItemTitleInput = elItemNew.querySelector( `${ EditSectionItem.selectors.elItemTitleInput }` );
+		const elItemTitleInput = elItemNew.querySelector(
+			`${ EditSectionItem.selectors.elItemTitleInput }`
+		);
 
 		elItemNew.classList.remove( 'clone' );
 		elItemNew.classList.add( typeValue );
@@ -288,10 +319,15 @@ export class EditSectionItem {
 				} else if ( status === 'success' ) {
 					const { section_item, item_link } = data || {};
 					elItemNew.dataset.itemId = section_item.item_id || 0;
-					elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item_link || '' );
+					elItemNew
+						.querySelector( '.edit-link' )
+						.setAttribute( 'href', item_link || '' );
 
 					// Call callback nest if exists
-					if ( callBackNest && typeof callBackNest.success === 'function' ) {
+					if (
+						callBackNest &&
+						typeof callBackNest.success === 'function'
+					) {
 						args.elItemNew = elItemNew;
 						callBackNest.success( args );
 					}
@@ -306,7 +342,10 @@ export class EditSectionItem {
 				this.updateCountItems( elSection );
 
 				// Call callback nest if exists
-				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
+				if (
+					callBackNest &&
+					typeof callBackNest.completed === 'function'
+				) {
 					args.elItemNew = elItemNew;
 					callBackNest.completed( args );
 				}
@@ -327,12 +366,16 @@ export class EditSectionItem {
 	/* Typing in title input */
 	changeTitle( args ) {
 		const { target } = args;
-		const elItemTitleInput = target.closest( `${ EditSectionItem.selectors.elItemTitleInput }` );
+		const elItemTitleInput = target.closest(
+			`${ EditSectionItem.selectors.elItemTitleInput }`
+		);
 		if ( ! elItemTitleInput ) {
 			return;
 		}
 
-		const elSectionItem = elItemTitleInput.closest( `${ EditSectionItem.selectors.elSectionItem }` );
+		const elSectionItem = elItemTitleInput.closest(
+			`${ EditSectionItem.selectors.elSectionItem }`
+		);
 		if ( ! elSectionItem ) {
 			return;
 		}
@@ -351,12 +394,16 @@ export class EditSectionItem {
 	focusTitleInput( args ) {
 		const { target, focusIn = true } = args;
 
-		const elItemTitleInput = target.closest( `${ EditSectionItem.selectors.elItemTitleInput }` );
+		const elItemTitleInput = target.closest(
+			`${ EditSectionItem.selectors.elItemTitleInput }`
+		);
 		if ( ! elItemTitleInput ) {
 			return;
 		}
 
-		const elSectionItem = elItemTitleInput.closest( `${ EditSectionItem.selectors.elSectionItem }` );
+		const elSectionItem = elItemTitleInput.closest(
+			`${ EditSectionItem.selectors.elSectionItem }`
+		);
 		if ( ! elSectionItem ) {
 			return;
 		}
@@ -370,17 +417,23 @@ export class EditSectionItem {
 
 	changeTitleAddNew( args ) {
 		const { target } = args;
-		const elAddItemTypeTitleInput = target.closest( `${ EditSectionItem.selectors.elAddItemTypeTitleInput }` );
+		const elAddItemTypeTitleInput = target.closest(
+			`${ EditSectionItem.selectors.elAddItemTypeTitleInput }`
+		);
 		if ( ! elAddItemTypeTitleInput ) {
 			return;
 		}
 
-		const elAddItemType = elAddItemTypeTitleInput.closest( `${ EditSectionItem.selectors.elAddItemType }` );
+		const elAddItemType = elAddItemTypeTitleInput.closest(
+			`${ EditSectionItem.selectors.elAddItemType }`
+		);
 		if ( ! elAddItemType ) {
 			return;
 		}
 
-		const elBtnAddItem = elAddItemType.querySelector( `${ EditSectionItem.selectors.elBtnAddItem }` );
+		const elBtnAddItem = elAddItemType.querySelector(
+			`${ EditSectionItem.selectors.elBtnAddItem }`
+		);
 		if ( ! elBtnAddItem ) {
 			return;
 		}
@@ -399,17 +452,23 @@ export class EditSectionItem {
 
 		e.preventDefault();
 
-		const elSectionItem = target.closest( `${ EditSectionItem.selectors.elSectionItem }` );
+		const elSectionItem = target.closest(
+			`${ EditSectionItem.selectors.elSectionItem }`
+		);
 		if ( ! elSectionItem ) {
 			return;
 		}
 
-		const elSection = elSectionItem.closest( `${ EditSection.selectors.elSection }` );
+		const elSection = elSectionItem.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 		if ( ! elSection ) {
 			return;
 		}
 
-		const elItemTitleInput = elSectionItem.querySelector( `${ EditSectionItem.selectors.elItemTitleInput }` );
+		const elItemTitleInput = elSectionItem.querySelector(
+			`${ EditSectionItem.selectors.elItemTitleInput }`
+		);
 		if ( ! elItemTitleInput ) {
 			return;
 		}
@@ -469,13 +528,19 @@ export class EditSectionItem {
 	/* Cancel update item title */
 	cancelUpdateTitle( args ) {
 		const { e, target } = args;
-		const elBtnCancelUpdateTitle = target.closest( `${ EditSectionItem.selectors.elBtnCancelUpdateTitle }` );
+		const elBtnCancelUpdateTitle = target.closest(
+			`${ EditSectionItem.selectors.elBtnCancelUpdateTitle }`
+		);
 		if ( ! elBtnCancelUpdateTitle ) {
 			return;
 		}
 
-		const elSectionItem = elBtnCancelUpdateTitle.closest( `${ EditSectionItem.selectors.elSectionItem }` );
-		const elItemTitleInput = elSectionItem.querySelector( `${ EditSectionItem.selectors.elItemTitleInput }` );
+		const elSectionItem = elBtnCancelUpdateTitle.closest(
+			`${ EditSectionItem.selectors.elSectionItem }`
+		);
+		const elItemTitleInput = elSectionItem.querySelector(
+			`${ EditSectionItem.selectors.elItemTitleInput }`
+		);
 		elItemTitleInput.value = elItemTitleInput.dataset.old || '';
 		elSectionItem.classList.remove( 'editing' );
 	}
@@ -483,18 +548,24 @@ export class EditSectionItem {
 	/* Delete item from section */
 	deleteItem( args ) {
 		const { e, target } = args;
-		const elBtnDeleteItem = target.closest( `${ EditSectionItem.selectors.elBtnDeleteItem }` );
+		const elBtnDeleteItem = target.closest(
+			`${ EditSectionItem.selectors.elBtnDeleteItem }`
+		);
 		if ( ! elBtnDeleteItem ) {
 			return;
 		}
 
-		const elSectionItem = elBtnDeleteItem.closest( `${ EditSectionItem.selectors.elSectionItem }` );
+		const elSectionItem = elBtnDeleteItem.closest(
+			`${ EditSectionItem.selectors.elSectionItem }`
+		);
 		if ( ! elSectionItem ) {
 			return;
 		}
 
 		const itemId = elSectionItem.dataset.itemId;
-		const elSection = elSectionItem.closest( `${ EditSection.selectors.elSection }` );
+		const elSection = elSectionItem.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 		const sectionId = elSection.dataset.sectionId;
 
 		SweetAlert.fire( {
@@ -544,7 +615,9 @@ export class EditSectionItem {
 
 	/* Sortable items, can drop on multiple sections */
 	sortAbleItem() {
-		const elSectionListItems = this.elCurriculumSections.querySelectorAll( `${ EditSectionItem.selectors.elSectionListItems }` );
+		const elSectionListItems = this.elCurriculumSections.querySelectorAll(
+			`${ EditSectionItem.selectors.elSectionListItems }`
+		);
 		let itemIdChoose = 0;
 		let elSectionChoose;
 		let sectionIdChoose = 0;
@@ -559,9 +632,14 @@ export class EditSectionItem {
 					const dataSectionsItems = [];
 
 					const elItemDragged = evt.item;
-					sectionIdEnd = elItemDragged.closest( `${ EditSection.selectors.elSection }` ).dataset.sectionId;
+					sectionIdEnd = elItemDragged.closest(
+						`${ EditSection.selectors.elSection }`
+					).dataset.sectionId;
 
-					const dataSend = { course_id: this.courseId, args: { id_url: idUrlHandle } };
+					const dataSend = {
+						course_id: this.courseId,
+						args: { id_url: idUrlHandle },
+					};
 					if ( sectionIdChoose === sectionIdEnd ) {
 						dataSend.action = 'update_items_position';
 						dataSend.section_id = sectionIdEnd;
@@ -573,8 +651,12 @@ export class EditSectionItem {
 					}
 
 					// Send list items position
-					const section = this.elCurriculumSections.querySelector( `.section[data-section-id="${ sectionIdEnd }"]` );
-					const items = section.querySelectorAll( `${ EditSectionItem.selectors.elSectionItem }` );
+					const section = this.elCurriculumSections.querySelector(
+						`.section[data-section-id="${ sectionIdEnd }"]`
+					);
+					const items = section.querySelectorAll(
+						`${ EditSectionItem.selectors.elSectionItem }`
+					);
 					items.forEach( ( elItem ) => {
 						const itemId = parseInt( elItem.dataset.itemId || 0 );
 						if ( itemId === 0 ) {
@@ -610,7 +692,9 @@ export class EditSectionItem {
 				onChoose: ( evt ) => {
 					const elChooseItem = evt.item;
 					itemIdChoose = elChooseItem.dataset.itemId;
-					elSectionChoose = elChooseItem.closest( `${ EditSection.selectors.elSection }` );
+					elSectionChoose = elChooseItem.closest(
+						`${ EditSection.selectors.elSection }`
+					);
 					sectionIdChoose = elSectionChoose.dataset.sectionId;
 				},
 				onUpdate: ( /*evt*/ ) => {},
@@ -621,15 +705,21 @@ export class EditSectionItem {
 	/* Show popup items to select */
 	showPopupItemsToSelect( args ) {
 		const { e, target } = args;
-		const elBtnShowPopupItemsToSelect = target.closest( `${ EditSectionItem.selectors.elBtnShowPopupItemsToSelect }` );
+		const elBtnShowPopupItemsToSelect = target.closest(
+			`${ EditSectionItem.selectors.elBtnShowPopupItemsToSelect }`
+		);
 		if ( ! elBtnShowPopupItemsToSelect ) {
 			return;
 		}
 
-		const elSection = elBtnShowPopupItemsToSelect.closest( `${ EditSection.selectors.elSection }` );
+		const elSection = elBtnShowPopupItemsToSelect.closest(
+			`${ EditSection.selectors.elSection }`
+		);
 		this.sectionIdSelected = elSection.dataset.sectionId;
 
-		const elPopupItemsToSelectClone = document.querySelector( `${ EditSectionItem.selectors.elPopupItemsToSelectClone }` );
+		const elPopupItemsToSelectClone = document.querySelector(
+			`${ EditSectionItem.selectors.elPopupItemsToSelectClone }`
+		);
 		this.elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
 		this.elPopupSelectItems.classList.remove( 'clone' );
 		lpUtils.lpShowHideEl( this.elPopupSelectItems, 1 );
@@ -645,7 +735,9 @@ export class EditSectionItem {
 				container: 'lp-select-items-container',
 			},
 			willOpen: () => {
-				const tabLesson = this.elPopupSelectItems.querySelector( 'li[data-type="lp_lesson"]' );
+				const tabLesson = this.elPopupSelectItems.querySelector(
+					'li[data-type="lp_lesson"]'
+				);
 				if ( tabLesson ) {
 					tabLesson.click();
 				}
@@ -667,8 +759,12 @@ export class EditSectionItem {
 			return;
 		}
 
-		const elSelectItemsToAdd = elTabs.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
-		const elInputSearch = elSelectItemsToAdd.querySelector( '.lp-search-title-item' );
+		const elSelectItemsToAdd = elTabs.closest(
+			`${ EditSectionItem.selectors.elPopupItemsToSelect }`
+		);
+		const elInputSearch = elSelectItemsToAdd.querySelector(
+			'.lp-search-title-item'
+		);
 
 		const itemType = elTabType.dataset.type;
 		const elTabLis = elTabs.querySelectorAll( '.tab' );
@@ -676,7 +772,9 @@ export class EditSectionItem {
 		elTabType.classList.add( 'active' );
 		elInputSearch.value = '';
 
-		const elLPTarget = elSelectItemsToAdd.querySelector( `${ EditCourseCurriculum.selectors.LPTarget }` );
+		const elLPTarget = elSelectItemsToAdd.querySelector(
+			`${ EditCourseCurriculum.selectors.LPTarget }`
+		);
 
 		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		dataSend.args.item_type = itemType;
@@ -704,7 +802,9 @@ export class EditSectionItem {
 	/* Choose item from list */
 	selectItemsFromList( args ) {
 		const { e, target } = args;
-		const elItemAttend = target.closest( `${ EditSectionItem.selectors.elSelectItem }` );
+		const elItemAttend = target.closest(
+			`${ EditSectionItem.selectors.elSelectItem }`
+		);
 		if ( ! elItemAttend ) {
 			return;
 		}
@@ -715,7 +815,9 @@ export class EditSectionItem {
 			return;
 		}
 
-		const elUl = elItemAttend.closest( `${ EditSectionItem.selectors.elListItems }` );
+		const elUl = elItemAttend.closest(
+			`${ EditSectionItem.selectors.elListItems }`
+		);
 		if ( ! elUl ) {
 			return;
 		}
@@ -727,12 +829,16 @@ export class EditSectionItem {
 			item_edit_link: elInput.dataset.editLink || '',
 		};
 		if ( elInput.checked ) {
-			const exists = this.itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
+			const exists = this.itemsSelectedData.some(
+				( item ) => item.item_id === itemSelected.item_id
+			);
 			if ( ! exists ) {
 				this.itemsSelectedData.push( itemSelected );
 			}
 		} else {
-			const index = this.itemsSelectedData.findIndex( ( item ) => item.item_id === itemSelected.item_id );
+			const index = this.itemsSelectedData.findIndex(
+				( item ) => item.item_id === itemSelected.item_id
+			);
 			if ( index !== -1 ) {
 				this.itemsSelectedData.splice( index, 1 );
 			}
@@ -749,12 +855,16 @@ export class EditSectionItem {
 			return;
 		}
 
-		const elPopupItemsToSelect = elInputSearch.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
+		const elPopupItemsToSelect = elInputSearch.closest(
+			`${ EditSectionItem.selectors.elPopupItemsToSelect }`
+		);
 		if ( ! elPopupItemsToSelect ) {
 			return;
 		}
 
-		const elLPTarget = elPopupItemsToSelect.querySelector( `${ EditCourseCurriculum.selectors.LPTarget }` );
+		const elLPTarget = elPopupItemsToSelect.querySelector(
+			`${ EditCourseCurriculum.selectors.LPTarget }`
+		);
 
 		clearTimeout( this.timeSearchTitleItem );
 
@@ -783,22 +893,36 @@ export class EditSectionItem {
 	/* Show list of items selected */
 	showItemsSelected( args ) {
 		const { e, target } = args;
-		const elBtnCountItemsSelected = target.closest( `${ EditSectionItem.selectors.elBtnCountItemsSelected }` );
+		const elBtnCountItemsSelected = target.closest(
+			`${ EditSectionItem.selectors.elBtnCountItemsSelected }`
+		);
 		if ( ! elBtnCountItemsSelected ) {
 			return;
 		}
 
-		const elParent = elBtnCountItemsSelected.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
+		const elParent = elBtnCountItemsSelected.closest(
+			`${ EditSectionItem.selectors.elPopupItemsToSelect }`
+		);
 		if ( ! elParent ) {
 			return;
 		}
 
-		const elBtnBack = elParent.querySelector( `${ EditSectionItem.selectors.elBtnBackListItems }` );
+		const elBtnBack = elParent.querySelector(
+			`${ EditSectionItem.selectors.elBtnBackListItems }`
+		);
 		const elTabs = elParent.querySelector( '.tabs' );
-		const elListItemsWrap = elParent.querySelector( `${ EditSectionItem.selectors.elListItemsWrap }` );
-		const elHeaderItemsSelected = elParent.querySelector( `${ EditSectionItem.selectors.elHeaderCountItemSelected }` );
-		const elListItemsSelected = elParent.querySelector( `${ EditSectionItem.selectors.elListItemsSelected }` );
-		const elItemClone = elListItemsSelected.querySelector( `${ EditSectionItem.selectors.elItemSelectedClone }` );
+		const elListItemsWrap = elParent.querySelector(
+			`${ EditSectionItem.selectors.elListItemsWrap }`
+		);
+		const elHeaderItemsSelected = elParent.querySelector(
+			`${ EditSectionItem.selectors.elHeaderCountItemSelected }`
+		);
+		const elListItemsSelected = elParent.querySelector(
+			`${ EditSectionItem.selectors.elListItemsSelected }`
+		);
+		const elItemClone = elListItemsSelected.querySelector(
+			`${ EditSectionItem.selectors.elItemSelectedClone }`
+		);
 		elHeaderItemsSelected.innerHTML = elBtnCountItemsSelected.innerHTML;
 
 		lpUtils.lpShowHideEl( elListItemsWrap, 0 );
@@ -808,16 +932,23 @@ export class EditSectionItem {
 		lpUtils.lpShowHideEl( elHeaderItemsSelected, 1 );
 		lpUtils.lpShowHideEl( elListItemsSelected, 1 );
 
-		elListItemsSelected.querySelectorAll( `${ EditSectionItem.selectors.elItemSelected }:not(.clone)` ).forEach( ( elItem ) => elItem.remove() );
+		elListItemsSelected
+			.querySelectorAll(
+				`${ EditSectionItem.selectors.elItemSelected }:not(.clone)`
+			)
+			.forEach( ( elItem ) => elItem.remove() );
 		this.itemsSelectedData.forEach( ( item ) => {
 			const elItemSelected = elItemClone.cloneNode( true );
 			elItemSelected.classList.remove( 'clone' );
 			elItemSelected.dataset.id = item.item_id;
 			elItemSelected.dataset.type = item.item_type || '';
 
-			elItemSelected.querySelector( '.item-title' ).textContent = item.item_title || '';
-			elItemSelected.querySelector( '.item-id' ).textContent = item.item_id || '';
-			elItemSelected.querySelector( '.item-type' ).textContent = item.item_type || '';
+			elItemSelected.querySelector( '.item-title' ).textContent =
+				item.item_title || '';
+			elItemSelected.querySelector( '.item-id' ).textContent =
+				item.item_id || '';
+			elItemSelected.querySelector( '.item-type' ).textContent =
+				item.item_type || '';
 
 			lpUtils.lpShowHideEl( elItemSelected, 1 );
 
@@ -828,17 +959,29 @@ export class EditSectionItem {
 	/* Back to list of items */
 	backToSelectItems( args ) {
 		const { e, target } = args;
-		const elBtnBack = target.closest( `${ EditSectionItem.selectors.elBtnBackListItems }` );
+		const elBtnBack = target.closest(
+			`${ EditSectionItem.selectors.elBtnBackListItems }`
+		);
 		if ( ! elBtnBack ) {
 			return;
 		}
 
-		const elParent = elBtnBack.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
-		const elBtnCountItemsSelected = elParent.querySelector( `${ EditSectionItem.selectors.elBtnCountItemsSelected }` );
+		const elParent = elBtnBack.closest(
+			`${ EditSectionItem.selectors.elPopupItemsToSelect }`
+		);
+		const elBtnCountItemsSelected = elParent.querySelector(
+			`${ EditSectionItem.selectors.elBtnCountItemsSelected }`
+		);
 		const elTabs = elParent.querySelector( '.tabs' );
-		const elListItemsWrap = elParent.querySelector( `${ EditSectionItem.selectors.elListItemsWrap }` );
-		const elHeaderCountItemSelected = elParent.querySelector( `${ EditSectionItem.selectors.elHeaderCountItemSelected }` );
-		const elListItemsSelected = elParent.querySelector( `${ EditSectionItem.selectors.elListItemsSelected }` );
+		const elListItemsWrap = elParent.querySelector(
+			`${ EditSectionItem.selectors.elListItemsWrap }`
+		);
+		const elHeaderCountItemSelected = elParent.querySelector(
+			`${ EditSectionItem.selectors.elHeaderCountItemSelected }`
+		);
+		const elListItemsSelected = elParent.querySelector(
+			`${ EditSectionItem.selectors.elListItemsSelected }`
+		);
 		lpUtils.lpShowHideEl( elBtnCountItemsSelected, 1 );
 		lpUtils.lpShowHideEl( elListItemsWrap, 1 );
 		lpUtils.lpShowHideEl( elTabs, 1 );
@@ -850,13 +993,20 @@ export class EditSectionItem {
 	/* Remove item selected from list items selected */
 	removeItemSelected( args ) {
 		const { e, target } = args;
-		const elRemoveItemSelected = target.closest( `${ EditSectionItem.selectors.elItemSelected }` );
+		const elRemoveItemSelected = target.closest(
+			`${ EditSectionItem.selectors.elItemSelected }`
+		);
 		if ( ! elRemoveItemSelected ) {
 			return;
 		}
 
-		const itemRemove = { item_id: elRemoveItemSelected.dataset.id, item_type: elRemoveItemSelected.dataset.type };
-		const index = this.itemsSelectedData.findIndex( ( item ) => item.item_id === itemRemove.item_id );
+		const itemRemove = {
+			item_id: elRemoveItemSelected.dataset.id,
+			item_type: elRemoveItemSelected.dataset.type,
+		};
+		const index = this.itemsSelectedData.findIndex(
+			( item ) => item.item_id === itemRemove.item_id
+		);
 		if ( index !== -1 ) {
 			this.itemsSelectedData.splice( index, 1 );
 		}
@@ -872,10 +1022,16 @@ export class EditSectionItem {
 			return;
 		}
 
-		const elBtnAddItemsSelected = this.elPopupSelectItems.querySelector( `${ EditSectionItem.selectors.elBtnAddItemsSelected }` );
-		const elBtnCountItemsSelected = this.elPopupSelectItems.querySelector( `${ EditSectionItem.selectors.elBtnCountItemsSelected }` );
+		const elBtnAddItemsSelected = this.elPopupSelectItems.querySelector(
+			`${ EditSectionItem.selectors.elBtnAddItemsSelected }`
+		);
+		const elBtnCountItemsSelected = this.elPopupSelectItems.querySelector(
+			`${ EditSectionItem.selectors.elBtnCountItemsSelected }`
+		);
 		const elSpanCount = elBtnCountItemsSelected.querySelector( 'span' );
-		const elHeaderCount = this.elPopupSelectItems.querySelector( `${ EditSectionItem.selectors.elHeaderCountItemSelected }` );
+		const elHeaderCount = this.elPopupSelectItems.querySelector(
+			`${ EditSectionItem.selectors.elHeaderCountItemSelected }`
+		);
 		if ( this.itemsSelectedData.length !== 0 ) {
 			elBtnCountItemsSelected.disabled = false;
 			elBtnAddItemsSelected.disabled = false;
@@ -888,11 +1044,21 @@ export class EditSectionItem {
 			elHeaderCount.textContent = '';
 		}
 
-		const elListItems = this.elPopupSelectItems.querySelector( `${ EditSectionItem.selectors.elListItems }` );
-		const elInputs = elListItems.querySelectorAll( 'input[type="checkbox"]' );
+		const elListItems = this.elPopupSelectItems.querySelector(
+			`${ EditSectionItem.selectors.elListItems }`
+		);
+		const elInputs = elListItems.querySelectorAll(
+			'input[type="checkbox"]'
+		);
 		elInputs.forEach( ( elInputItem ) => {
-			const itemSelected = { item_id: elInputItem.value, item_type: elInputItem.dataset.type || '', item_title: elInputItem.dataset.title || '' };
-			const exists = this.itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
+			const itemSelected = {
+				item_id: elInputItem.value,
+				item_type: elInputItem.dataset.type || '',
+				item_title: elInputItem.dataset.title || '',
+			};
+			const exists = this.itemsSelectedData.some(
+				( item ) => item.item_id === itemSelected.item_id
+			);
 			elInputItem.checked = exists;
 		} );
 	}
@@ -900,28 +1066,40 @@ export class EditSectionItem {
 	/* Add items selected to section */
 	addItemsSelectedToSection( args ) {
 		const { e, target } = args;
-		const elBtnAddItems = target.closest( `${ EditSectionItem.selectors.elBtnAddItemsSelected }` );
+		const elBtnAddItems = target.closest(
+			`${ EditSectionItem.selectors.elBtnAddItemsSelected }`
+		);
 		if ( ! elBtnAddItems ) {
 			return;
 		}
 
-		const elPopupItemsToSelect = elBtnAddItems.closest( `${ EditSectionItem.selectors.elPopupItemsToSelect }` );
+		const elPopupItemsToSelect = elBtnAddItems.closest(
+			`${ EditSectionItem.selectors.elPopupItemsToSelect }`
+		);
 		if ( ! elPopupItemsToSelect ) {
 			return;
 		}
 
-		const elSection = document.querySelector( `.section[data-section-id="${ this.sectionIdSelected }"]` );
-		const elItemClone = elSection.querySelector( `${ EditSectionItem.selectors.elItemClone }` );
+		const elSection = document.querySelector(
+			`.section[data-section-id="${ this.sectionIdSelected }"]`
+		);
+		const elItemClone = elSection.querySelector(
+			`${ EditSectionItem.selectors.elItemClone }`
+		);
 
 		this.itemsSelectedData.forEach( ( item ) => {
 			const elItemNew = elItemClone.cloneNode( true );
-			const elInputTitleNew = elItemNew.querySelector( `${ EditSectionItem.selectors.elItemTitleInput }` );
+			const elInputTitleNew = elItemNew.querySelector(
+				`${ EditSectionItem.selectors.elItemTitleInput }`
+			);
 
 			elItemNew.dataset.itemId = item.item_id;
 			elItemNew.classList.add( item.item_type );
 			elItemNew.classList.remove( 'clone' );
 			elItemNew.dataset.itemType = item.item_type;
-			elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.item_edit_link || '' );
+			elItemNew
+				.querySelector( '.edit-link' )
+				.setAttribute( 'href', item.item_edit_link || '' );
 			elInputTitleNew.value = item.item_title || '';
 			lpUtils.lpSetLoadingEl( elItemNew, 1 );
 			lpUtils.lpShowHideEl( elItemNew, 1 );
@@ -944,7 +1122,9 @@ export class EditSectionItem {
 
 				if ( status === 'error' ) {
 					this.itemsSelectedData.forEach( ( item ) => {
-						const elItemAdded = elSection.querySelector( `${ EditSectionItem.selectors.elSectionItem }[data-item-id="${ item.item_id }"]` );
+						const elItemAdded = elSection.querySelector(
+							`${ EditSectionItem.selectors.elSectionItem }[data-item-id="${ item.item_id }"]`
+						);
 						if ( elItemAdded ) {
 							elItemAdded.remove();
 						}
@@ -956,7 +1136,9 @@ export class EditSectionItem {
 			},
 			completed: () => {
 				this.itemsSelectedData.forEach( ( item ) => {
-					const elItemAdded = elSection.querySelector( `${ EditSectionItem.selectors.elSectionItem }[data-item-id="${ item.item_id }"]` );
+					const elItemAdded = elSection.querySelector(
+						`${ EditSectionItem.selectors.elSectionItem }[data-item-id="${ item.item_id }"]`
+					);
 					lpUtils.lpSetLoadingEl( elItemAdded, 0 );
 				} );
 
@@ -969,12 +1151,16 @@ export class EditSectionItem {
 	/* Enable/disable preview item */
 	updatePreviewItem( args ) {
 		const { e, target } = args;
-		const elBtnSetPreviewItem = target.closest( `${ EditSectionItem.selectors.elBtnSetPreviewItem }` );
+		const elBtnSetPreviewItem = target.closest(
+			`${ EditSectionItem.selectors.elBtnSetPreviewItem }`
+		);
 		if ( ! elBtnSetPreviewItem ) {
 			return;
 		}
 
-		const elSectionItem = elBtnSetPreviewItem.closest( `${ EditSectionItem.selectors.elSectionItem }` );
+		const elSectionItem = elBtnSetPreviewItem.closest(
+			`${ EditSectionItem.selectors.elSectionItem }`
+		);
 		if ( ! elSectionItem ) {
 			return;
 		}
@@ -1027,17 +1213,24 @@ export class EditSectionItem {
 	/* Update count items when item add/delete or section delete */
 	updateCountItems( elSection ) {
 		const elEditCurriculum = this.elEditCurriculum;
-		const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
-		const elItemsAll = elEditCurriculum.querySelectorAll( `${ EditSectionItem.selectors.elSectionItem }:not(.clone)` );
+		const elCountItemsAll =
+			elEditCurriculum.querySelector( '.total-items' );
+		const elItemsAll = elEditCurriculum.querySelectorAll(
+			`${ EditSectionItem.selectors.elSectionItem }:not(.clone)`
+		);
 		const itemsAllCount = elItemsAll.length;
 
 		elCountItemsAll.dataset.count = itemsAllCount;
 		elCountItemsAll.querySelector( '.count' ).textContent = itemsAllCount;
 
 		// Count items in section
-		const elSectionItemsCount = elSection.querySelector( '.section-items-counts' );
+		const elSectionItemsCount = elSection.querySelector(
+			'.section-items-counts'
+		);
 
-		const elItems = elSection.querySelectorAll( `${ EditSectionItem.selectors.elSectionItem }:not(.clone)` );
+		const elItems = elSection.querySelectorAll(
+			`${ EditSectionItem.selectors.elSectionItem }:not(.clone)`
+		);
 		const itemsCount = elItems.length;
 
 		elSectionItemsCount.dataset.count = itemsCount;

@@ -4,37 +4,20 @@
 
 import * as lpUtils from './../utils.js';
 import SweetAlert from 'sweetalert2';
-import Toastify from 'toastify-js';
-import 'toastify-js/src/toastify.css';
+import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 
-const argsToastify = {
-	text: '',
-	gravity: lpDataAdmin.toast.gravity, // `top` or `bottom`
-	position: lpDataAdmin.toast.position, // `left`, `center` or `right`
-	className: `${ lpDataAdmin.toast.classPrefix }`,
-	close: lpDataAdmin.toast.close == 1,
-	stopOnFocus: lpDataAdmin.toast.stopOnFocus == 1,
-	duration: lpDataAdmin.toast.duration,
-};
-const showToast = ( message, status = 'success' ) => {
-	const toastify = new Toastify( {
-		...argsToastify,
-		text: message,
-		className: `${ lpDataAdmin.toast.classPrefix } ${ status }`,
-	} );
-	toastify.showToast();
-};
 let lp_structure_course;
 let popupSweetAlert = null;
 
 export class GenerateWithOpenai {
 	constructor() {
 		this.init();
-		this.selector = {
-			elGenerateDataAiWrap: '.lp-generate-data-ai-wrap',
-		};
-		this.dataGenerate = '';
 	}
+
+	static selectors = {
+		elBtnGenerateWithAi: '.lp-btn-generate-with-ai',
+		elGenerateDataAiWrap: '.lp-generate-data-ai-wrap',
+	};
 
 	init() {
 		lpUtils.lpOnElementReady( '#titlewrap', ( el ) => {
@@ -76,7 +59,7 @@ export class GenerateWithOpenai {
 	events() {
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: '.lp-btn-generate-with-ai',
+				selector: GenerateWithOpenai.selectors.elBtnGenerateWithAi,
 				class: this,
 				callBack: this.showPopup.name,
 			},
@@ -115,7 +98,7 @@ export class GenerateWithOpenai {
 
 	showPopup( args ) {
 		const { e, target } = args;
-		const templateId = target.dataset.template;
+		const templateId = target.dataset.template || '';
 
 		const modalTemplate = document.querySelector( templateId );
 
@@ -135,8 +118,12 @@ export class GenerateWithOpenai {
 				popupSweetAlert.click();
 
 				// Set post title and post content to hidden fields of form to AI prompt reference
-				const post_title = document.querySelector( 'input[name=post_title]' ).value;
-				const post_content = window.tinymce.get( 'content' ).getContent( { format: 'text' } );
+				const post_title = document.querySelector(
+					'input[name=post_title]'
+				).value;
+				const post_content = window.tinymce
+					.get( 'content' )
+					.getContent( { format: 'text' } );
 
 				const form = popupSweetAlert.querySelector( 'form' );
 				const elPostTitle = form.querySelector( '[name=post-title]' );
@@ -144,13 +131,16 @@ export class GenerateWithOpenai {
 					elPostTitle.value = post_title;
 				}
 
-				const elPostContent = form.querySelector( '[name=post-content]' );
+				const elPostContent = form.querySelector(
+					'[name=post-content]'
+				);
 				if ( elPostContent ) {
 					elPostContent.value = post_content;
 				}
 			},
 		} ).then( ( result ) => {
-			if ( result.isDismissed ) {}
+			if ( result.isDismissed ) {
+			}
 		} );
 	}
 
@@ -159,7 +149,9 @@ export class GenerateWithOpenai {
 		e.preventDefault();
 
 		const elBtnActions = target.closest( '.button-actions' );
-		const elCreateCourseAIWrap = elBtnActions.closest( this.selector.elGenerateDataAiWrap );
+		const elCreateCourseAIWrap = elBtnActions.closest(
+			GenerateWithOpenai.selectors.elGenerateDataAiWrap
+		);
 		let step = parseInt( elBtnActions.dataset.step );
 
 		const stepAction = target.dataset.action;
@@ -171,18 +163,28 @@ export class GenerateWithOpenai {
 
 		elBtnActions.dataset.step = step;
 		const elForm = target.closest( 'form' );
-		const elContentStep = elForm.querySelector( `.step-content[data-step="${ step }"]` );
-		const elItemStep = elCreateCourseAIWrap.querySelector( `.step-item[data-step="${ step }"]` );
-		elForm.querySelectorAll( '.step-content' ).forEach( ( el ) => el.classList.remove( 'active' ) );
+		const elContentStep = elForm.querySelector(
+			`.step-content[data-step="${ step }"]`
+		);
+		const elItemStep = elCreateCourseAIWrap.querySelector(
+			`.step-item[data-step="${ step }"]`
+		);
+		elForm
+			.querySelectorAll( '.step-content' )
+			.forEach( ( el ) => el.classList.remove( 'active' ) );
 		elContentStep.classList.add( 'active' );
-		elCreateCourseAIWrap.querySelectorAll( '.step-item' ).forEach( ( el ) => el.classList.remove( 'active' ) );
+		elCreateCourseAIWrap
+			.querySelectorAll( '.step-item' )
+			.forEach( ( el ) => el.classList.remove( 'active' ) );
 		elItemStep.classList.add( 'active' );
 
 		// Get all buttons step to show/hide
 		const form = target.closest( 'form' );
 		const elBtnSteps = form.querySelectorAll( 'button[data-step-show]' );
 		elBtnSteps.forEach( ( el ) => {
-			const stepsShow = el.dataset.stepShow.split( ',' ).map( ( s ) => parseInt( s.trim() ) );
+			const stepsShow = el.dataset.stepShow
+				.split( ',' )
+				.map( ( s ) => parseInt( s.trim() ) );
 			if ( stepsShow.includes( step ) ) {
 				lpUtils.lpShowHideEl( el, 1 );
 			} else {
@@ -210,18 +212,22 @@ export class GenerateWithOpenai {
 			success: ( response ) => {
 				const { message, status, data } = response;
 
-				showToast( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
-					const elPromptTextarea = form.querySelector( 'textarea[name=lp-openai-prompt-generated-field]' );
+					const elPromptTextarea = form.querySelector(
+						'textarea[name=lp-openai-prompt-generated-field]'
+					);
 					elPromptTextarea.value = data;
 
-					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
+					const elBtnNext = form.querySelector(
+						'.lp-btn-step[data-action=next]'
+					);
 					elBtnNext.click();
 				}
 			},
 			error: ( error ) => {
-				showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
@@ -249,7 +255,10 @@ export class GenerateWithOpenai {
 		lpUtils.lpShowHideEl( btnPrev, 0 );
 
 		setTimeout( () => {
-			showToast( 'Generating course data. This may take a few moments...', 'info' );
+			lpToastify.show(
+				'Generating course data. This may take a few moments...',
+				'info'
+			);
 		}, 1000 );
 
 		// Ajax to generate prompt
@@ -257,22 +266,26 @@ export class GenerateWithOpenai {
 			success: ( response ) => {
 				const { message, status, data } = response;
 
-				showToast( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
 					// Save structure data
 					lp_structure_course = data.lp_structure_course;
 
 					// Set preview HTML
-					const elResults = form.querySelector( '.lp-ai-generated-results' );
+					const elResults = form.querySelector(
+						'.lp-ai-generated-results'
+					);
 					elResults.innerHTML = data.lp_html_preview;
 
-					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
+					const elBtnNext = form.querySelector(
+						'.lp-btn-step[data-action=next]'
+					);
 					elBtnNext.click();
 				}
 			},
 			error: ( error ) => {
-				showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
@@ -313,11 +326,14 @@ export class GenerateWithOpenai {
 		const dataCopy = target.dataset.copy;
 
 		if ( navigator.clipboard ) {
-			navigator.clipboard.writeText( dataCopy ).then( () => {
-				showToast( 'Copied to clipboard!', 'success' );
-			} ).catch( ( err ) => {
-				showToast( 'Failed to copy text: ' + err, 'error' );
-			} );
+			navigator.clipboard
+				.writeText( dataCopy )
+				.then( () => {
+					lpToastify.show( 'Copied to clipboard!', 'success' );
+				} )
+				.catch( ( err ) => {
+					lpToastify.show( 'Failed to copy text: ' + err, 'error' );
+				} );
 		} else {
 			// Fallback when clipboard API is unavailable
 			const textarea = document.createElement( 'textarea' );
@@ -328,17 +344,20 @@ export class GenerateWithOpenai {
 			textarea.select();
 			try {
 				const successful = document.execCommand( 'copy' );
-				showToast( successful ? 'Copied to clipboard!' : 'Failed to copy text', successful ? 'success' : 'error' );
+				lpToastify.show(
+					successful ? 'Copied to clipboard!' : 'Failed to copy text',
+					successful ? 'success' : 'error'
+				);
 			} catch ( err ) {
-				showToast( 'Failed to copy text: ' + err, 'error' );
+				lpToastify.show( 'Failed to copy text: ' + err, 'error' );
 			}
 			document.body.removeChild( textarea );
 		}
 
 		/*navigator.clipboard.writeText( dataCopy ).then( () => {
-			showToast( 'Copied to clipboard!', 'success' );
+			lpToastify.show( 'Copied to clipboard!', 'success' );
 		} ).catch( ( err ) => {
-			showToast( 'Failed to copy text: ' + err, 'error' );
+			lpToastify.show( 'Failed to copy text: ' + err, 'error' );
 		} );*/
 	}
 
@@ -350,7 +369,10 @@ export class GenerateWithOpenai {
 	applyImageData( args ) {
 		const { e, target } = args;
 		let dataSend = JSON.parse( target.dataset.send );
-		dataSend = lpUtils.mergeDataWithDatForm( target.closest( 'form' ), dataSend );
+		dataSend = lpUtils.mergeDataWithDatForm(
+			target.closest( 'form' ),
+			dataSend
+		);
 		//e.preventDefault();
 		lpUtils.lpSetLoadingEl( target, true );
 
@@ -359,11 +381,13 @@ export class GenerateWithOpenai {
 			success: ( response ) => {
 				const { message, status, data } = response;
 
-				showToast( message, status );
+				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
 					// Set image
-					const elImagePreview = document.querySelector( '#postimagediv .inside' );
+					const elImagePreview = document.querySelector(
+						'#postimagediv .inside'
+					);
 					elImagePreview.outerHTML = data.html_image;
 
 					if ( popupSweetAlert ) {
@@ -372,7 +396,7 @@ export class GenerateWithOpenai {
 				}
 			},
 			error: ( error ) => {
-				showToast( error, 'error' );
+				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );

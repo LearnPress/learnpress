@@ -767,13 +767,17 @@ class AdminEditWithAITemplate {
 		$options = $this->config;
 
 		$components = [
-			'step'       => '<div class="step-content" data-step="3">',
-			'title'      => sprintf(
+			'step'        => '<div class="step-content" data-step="3">',
+			'title'       => sprintf(
 				'<div class="step-title">%s</div>',
 				esc_html__( 'Step 3 — Result', 'learnpress' ),
 			),
-			'results'    => '<div class="lp-ai-generated-results"></div>',
-			'step_close' => '</div>',
+			'description' => sprintf(
+				'<p class="step-description">%s</p>',
+				esc_html__( 'Note: when applying an image, the process can be very slow (about 1 minute or more), depends on the image size. Please wait until it finishes.', 'learnpress' )
+			),
+			'results'     => '<div class="lp-ai-generated-results"></div>',
+			'step_close'  => '</div>',
 		];
 
 		return Template::combine_components( $components );

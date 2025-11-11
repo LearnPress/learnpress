@@ -22,17 +22,22 @@ export class EditCurriculumAi {
 	};
 
 	init() {
-		lpUtils.lpOnElementReady( EditCourseCurriculum.selectors.idElEditCurriculum, ( el ) => {
-			const elCountSections = el.querySelector( EditSection.selectors.elCountSections );
-			elCountSections.insertAdjacentHTML(
-				'afterend',
-				`<button type="button"
+		lpUtils.lpOnElementReady(
+			EditCourseCurriculum.selectors.idElEditCurriculum,
+			( el ) => {
+				const elCountSections = el.querySelector(
+					EditSection.selectors.elCountSections
+				);
+				elCountSections.insertAdjacentHTML(
+					'afterend',
+					`<button type="button"
 					class="lp-btn-generate-with-ai button-secondary"
 					data-template="#lp-tmpl-edit-course-curriculum-ai">
 					Generate Curriculum with AI
 				</button>`
-			);
-		} );
+				);
+			}
+		);
 
 		this.events();
 	}
@@ -55,7 +60,10 @@ export class EditCurriculumAi {
 	async applyData( args ) {
 		const { e, target } = args;
 		let dataSend = JSON.parse( target.dataset.send );
-		dataSend = lpUtils.mergeDataWithDatForm( target.closest( 'form' ), dataSend );
+		dataSend = lpUtils.mergeDataWithDatForm(
+			target.closest( 'form' ),
+			dataSend
+		);
 
 		if ( ! dataSend[ 'lp-openai-generated-data' ] ) {
 			return;
@@ -67,7 +75,10 @@ export class EditCurriculumAi {
 
 		const sections = data[ 0 ].sections;
 		if ( ! sections || sections.length === 0 ) {
-			lpToastify.show( 'No sections found in the generated data.', 'error' );
+			lpToastify.show(
+				'No sections found in the generated data.',
+				'error'
+			);
 		}
 
 		console.log( 'Generated Sections:', sections );
@@ -86,24 +97,38 @@ export class EditCurriculumAi {
 		editSectionItem.init();
 
 		// Scroll to element add section
-		const elEditCurriculum = document.querySelector( EditCourseCurriculum.selectors.idElEditCurriculum );
-		const elDivAddNewSection = elEditCurriculum.querySelector( EditSection.selectors.elDivAddNewSection );
-		elDivAddNewSection.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+		const elEditCurriculum = document.querySelector(
+			EditCourseCurriculum.selectors.idElEditCurriculum
+		);
+		const elDivAddNewSection = elEditCurriculum.querySelector(
+			EditSection.selectors.elDivAddNewSection
+		);
+		elDivAddNewSection.scrollIntoView( {
+			behavior: 'smooth',
+			block: 'center',
+		} );
 
 		// Wait 800ms to ensure scroll completely
 		await new Promise( ( resolve ) => setTimeout( resolve, 800 ) );
 
 		for ( const sectionData of sections ) {
 			// Set title
-			const elSectionTitleNewInput = elEditCurriculum.querySelector( EditSection.selectors.elSectionTitleNewInput );
-			const elBtnAddSection = elEditCurriculum.querySelector( EditSection.selectors.elBtnAddSection );
+			const elSectionTitleNewInput = elEditCurriculum.querySelector(
+				EditSection.selectors.elSectionTitleNewInput
+			);
+			const elBtnAddSection = elEditCurriculum.querySelector(
+				EditSection.selectors.elBtnAddSection
+			);
 			elSectionTitleNewInput.value = sectionData.section_title || '';
 
 			await new Promise( ( resolve ) => {
 				editSection.addSection( {
 					e: new PointerEvent( 'click' ),
 					target: elBtnAddSection,
-					callBackNest: this.updateSectionDescription( { sectionData, elEditCurriculum } ),
+					callBackNest: this.updateSectionDescription( {
+						sectionData,
+						elEditCurriculum,
+					} ),
 					resolve,
 				} );
 			} );
@@ -123,7 +148,9 @@ export class EditCurriculumAi {
 				await new Promise( ( resolve ) => setTimeout( resolve, 1000 ) );
 
 				// Set description for the new section
-				const elSectionDesInput = elSection.querySelector( EditSection.selectors.elSectionDesInput );
+				const elSectionDesInput = elSection.querySelector(
+					EditSection.selectors.elSectionDesInput
+				);
 				elSectionDesInput.value = sectionData.section_description || '';
 
 				// Call AJAX to save description
@@ -131,19 +158,18 @@ export class EditCurriculumAi {
 					editSection.updateSectionDescription( {
 						e: new PointerEvent( 'click' ),
 						target: elSectionDesInput,
-						callBackNest: this.addSectionItems( { sectionData, elEditCurriculum } ),
+						callBackNest: this.addSectionItems( {
+							sectionData,
+							elEditCurriculum,
+						} ),
 						resolve,
 					} );
 				} );
 
 				setTimeout( args.resolve, 1 );
 			},
-			error: ( error ) => {
-
-			},
-			completed: () => {
-
-			},
+			error: ( error ) => {},
+			completed: () => {},
 		};
 	}
 
@@ -158,39 +184,51 @@ export class EditCurriculumAi {
 				const { elSection } = args;
 
 				const elBtnSelectItemTypeLesson = elSection.querySelector(
-					`${ EditSectionItem.selectors.elBtnSelectItemType }[data-item-type=lp_lesson]` );
+					`${ EditSectionItem.selectors.elBtnSelectItemType }[data-item-type=lp_lesson]`
+				);
 
 				const elBtnSelectItemTypeQuiz = elSection.querySelector(
-					`${ EditSectionItem.selectors.elBtnSelectItemType }[data-item-type=lp_quiz]` );
+					`${ EditSectionItem.selectors.elBtnSelectItemType }[data-item-type=lp_quiz]`
+				);
 
 				for ( const itemData of lessons ) {
 					elBtnSelectItemTypeLesson.click();
 
-					await this.addItemToSection( { itemData, elSection, elEditCurriculum } );
+					await this.addItemToSection( {
+						itemData,
+						elSection,
+						elEditCurriculum,
+					} );
 				}
 
 				for ( const itemData of quizzes ) {
 					elBtnSelectItemTypeQuiz.click();
 
-					await this.addItemToSection( { itemData, elSection, elEditCurriculum } );
+					await this.addItemToSection( {
+						itemData,
+						elSection,
+						elEditCurriculum,
+					} );
 				}
 
 				setTimeout( args.resolve, 1 );
 			},
-			error: ( error ) => {
-
-			},
-			completed: () => {
-			},
+			error: ( error ) => {},
+			completed: () => {},
 		};
 	}
 
 	async addItemToSection( args ) {
 		const { itemData, elSection, elEditCurriculum } = args;
 
-		const elBtnAddItem = elSection.querySelector( EditSectionItem.selectors.elBtnAddItem );
-		const elAddItemTypeTitleInput = elSection.querySelector( EditSectionItem.selectors.elAddItemTypeTitleInput );
-		elAddItemTypeTitleInput.value = itemData.lesson_title || itemData.quiz_title || '';
+		const elBtnAddItem = elSection.querySelector(
+			EditSectionItem.selectors.elBtnAddItem
+		);
+		const elAddItemTypeTitleInput = elSection.querySelector(
+			EditSectionItem.selectors.elAddItemTypeTitleInput
+		);
+		elAddItemTypeTitleInput.value =
+			itemData.lesson_title || itemData.quiz_title || '';
 
 		// Scroll to element add item
 		elBtnAddItem.scrollIntoView( { behavior: 'smooth', block: 'center' } );

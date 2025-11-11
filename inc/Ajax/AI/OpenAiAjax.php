@@ -3,6 +3,7 @@
 namespace LearnPress\Ajax\AI;
 
 use Exception;
+use LearnPress;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
@@ -409,10 +410,18 @@ class OpenAiAjax extends AbstractAjax {
 		wp_send_json( $response );
 	}
 
+	/**
+	 * Apply image feature to post
+	 * Upload image to media and set as feature image for post
+	 *
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
 	public function openai_apply_image_feature() {
 		$response = new LP_REST_Response();
 
 		try {
+			set_time_limit( 0 );
 			// Check permission
 			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
 				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
@@ -476,6 +485,8 @@ class OpenAiAjax extends AbstractAjax {
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
+
+		set_time_limit( LearnPress::$time_limit_default_of_sever );
 
 		wp_send_json( $response );
 	}
