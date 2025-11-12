@@ -7,6 +7,8 @@ const className = {
 	elCourseItem: '.course-item',
 	elCourseExpandedItems: '.course-action-expanded__items',
 	elCourseDuplicate: '.course-action-expanded__duplicate',
+	elCourseTrash: '.course-action-expanded__trash',
+	elCourseDraft: '.course-action-expanded__draft',
 	elCourseDelete: '.course-action-expanded__delete',
 	elCourseActionExpanded: '.course-action-expanded',
 };
@@ -84,6 +86,109 @@ const courseDuplicate = ( e, target ) => {
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( elCourseDuplicate, 0 );
+		},
+	};
+
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+const courseTrash = ( e, target ) => {
+	const elCourseTrash = target.closest( className.elCourseTrash );
+
+	if ( ! elCourseTrash ) {
+		return;
+	}
+
+	const elCourseItem = elCourseTrash.closest( className.elCourseItem );
+
+	if ( ! elCourseItem ) {
+		return;
+	}
+
+	lpUtils.lpSetLoadingEl( elCourseTrash, 1 );
+
+	const courseId = elCourseItem.getAttribute( attributeData.courseId ) ?? '';
+
+	const dataSend = {
+		action: 'move_trash_course',
+		args: {
+			id_url: 'move-trash-course',
+		},
+		course_id: courseId ?? '',
+	};
+
+	const callBack = {
+		success: ( response ) => {
+			const { status, message, data } = response;
+			showToast( message, status );
+
+			if ( data?.status ) {
+				const elCourse = elCourseTrash.closest( '.course' );
+				const elStatus = elCourse.querySelector( '.course-status' );
+				const elSpanStatus = elCourse.querySelector( '.course-status span' );
+				if ( elSpanStatus && elStatus ) {
+					elStatus.className = 'course-status ' + data.status;
+					elSpanStatus.textContent = data.status;
+				}
+			}
+		},
+		error: ( error ) => {
+			showToast( error.message || error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elCourseTrash, 0 );
+		},
+	};
+
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+const courseDraft = ( e, target ) => {
+	const elCourseDraft = target.closest( className.elCourseDraft );
+
+	if ( ! elCourseDraft ) {
+		return;
+	}
+
+	const elCourseItem = elCourseDraft.closest( className.elCourseItem );
+
+	if ( ! elCourseItem ) {
+		return;
+	}
+
+	lpUtils.lpSetLoadingEl( elCourseDraft, 1 );
+
+	const courseId = elCourseItem.getAttribute( attributeData.courseId ) ?? '';
+
+	const dataSend = {
+		action: 'move_trash_course',
+		args: {
+			id_url: 'move-trash-course',
+		},
+		course_id: courseId || 0,
+		status: 'draft',
+	};
+
+	const callBack = {
+		success: ( response ) => {
+			const { status, message, data } = response;
+			showToast( message, status );
+
+			if ( data?.status ) {
+				const elCourse = elCourseDraft.closest( '.course' );
+				const elStatus = elCourse.querySelector( '.course-status' );
+				const elSpanStatus = elCourse.querySelector( '.course-status span' );
+				if ( elSpanStatus && elStatus ) {
+					elStatus.className = 'course-status ' + data.status;
+					elSpanStatus.textContent = data.status;
+				}
+			}
+		},
+		error: ( error ) => {
+			showToast( error.message || error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elCourseDraft, 0 );
 		},
 	};
 
@@ -186,4 +291,4 @@ const activeCourseExpanded = ( e, target ) => {
 	elCourseActionExpanded.classList.toggle( 'active' );
 };
 
-export { courseDuplicate, courseDelete, activeCourseExpanded };
+export { courseDuplicate, courseTrash, courseDraft, courseDelete, activeCourseExpanded };

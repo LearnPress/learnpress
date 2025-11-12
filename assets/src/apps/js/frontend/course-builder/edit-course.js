@@ -173,6 +173,14 @@ const updateCourse = ( e, target ) => {
 				const newUrl = currentUrl.replace( /post-new\/?/, `${ data.course_id_new }/` );
 				window.location.href = newUrl;
 			}
+
+			if ( data?.status ) {
+				const elStatus = document.querySelector( '.course-status' );
+				if ( elStatus ) {
+					elStatus.className = 'course-status ' + data.status;
+					elStatus.textContent = data.status;
+				}
+			}
 		},
 		error: ( error ) => {
 			showToast( error.message || error, 'error' );
@@ -201,13 +209,20 @@ const trashCourse = ( e, target ) => {
 			id_url: 'move-trash-course',
 		},
 		course_id: courseData.course_id || 0,
-		status,
 	};
 
 	const callBack = {
 		success: ( response ) => {
-			const { status, message } = response;
+			const { status, message, data } = response;
 			showToast( message, status );
+
+			if ( data?.status ) {
+				const elStatus = document.querySelector( '.course-status' );
+				if ( elStatus ) {
+					elStatus.className = 'course-status ' + data.status;
+					elStatus.textContent = data.status;
+				}
+			}
 		},
 		error: ( error ) => {
 			showToast( error.message || error, 'error' );

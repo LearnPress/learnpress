@@ -1,13 +1,41 @@
 .lp-course-builder-content__section {
-	.cb-course-edit-title {
-		margin-bottom: 24px;
+	.cb-section__header-left {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 20px;
+		margin-top: 28px;
 	}
 
 	.lp-cb-section__title {
 		font-size: 28px;
 		font-weight: 600;
-		margin-bottom: 20px;
+		margin-top: 0;
+		margin-bottom: 0;
 		color: #1e1e1e;
+	}
+
+	.course-status {
+		padding: 5px 12px;
+		font-size: 12px;
+		font-weight: 500;
+		background: #ccc;
+		border-radius: 5px;
+		text-transform: capitalize;
+
+		&.publish {
+			color: #fff;
+			background: #1e1e1e;
+		}
+
+		&.trash {
+			color: #fff;
+			background-color: #dc2626;
+		}
+	}
+
+	.cb-course-edit-title {
+		margin-bottom: 24px;
 	}
 
 	.cb-course-edit-title__label {

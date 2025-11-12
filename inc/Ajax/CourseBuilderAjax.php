@@ -11,12 +11,15 @@ namespace LearnPress\Ajax;
 use Exception;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderEditCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
 use LP_Course_CURD;
 use LP_Course_Post_Type;
 use LP_Helper;
+use LP_Lesson_CURD;
 use LP_REST_Response;
 use stdClass;
 
@@ -29,7 +32,7 @@ class CourseBuilderAjax extends AbstractAjax {
 	 * @since 4.3
 	 * @version 1.0.0
 	 */
-	public static function check_valid() {
+	public static function check_valid_course() {
 		$params = wp_unslash( $_REQUEST['data'] ?? '' );
 		if ( empty( $params ) ) {
 			throw new Exception( 'Error: params invalid!' );
@@ -48,6 +51,25 @@ class CourseBuilderAjax extends AbstractAjax {
 		return $params;
 	}
 
+	public static function check_valid_lesson() {
+		$params = wp_unslash( $_REQUEST['data'] ?? '' );
+		if ( empty( $params ) ) {
+			throw new Exception( 'Error: params invalid!' );
+		}
+
+		$params       = LP_Helper::json_decode( $params, true );
+		$lesson_id    = ! empty( $params['lesson_id'] ) ? (int) $params['lesson_id'] : 0;
+		$lesson_model = LessonPostModel::find( $lesson_id, true );
+		if ( empty( $lesson_model ) ) {
+			$params['insert'] = true;
+		} else {
+			$params['insert']       = false;
+			$params['lesson_model'] = $lesson_model;
+		}
+
+		return $params;
+	}
+
 	/**
 	 * Save Course.
 	 *
@@ -59,7 +81,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data      = self::check_valid();
+			$data      = self::check_valid_course();
 			$course_id = $data['course_id'] ?? 0;
 
 			if ( $data['insert'] ) {
@@ -88,7 +110,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$co_instructor_ids = $course_model->get_meta_value_by_key( '_lp_co_teacher', [] );
 				if ( absint( $course_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' )
 				&& ! in_array( get_current_user_id(), $co_instructor_ids ) ) {
-					throw new Exception( __( 'You are not allowed to update this course', 'learnpress-frontend-editor' ) );
+					throw new Exception( __( 'You are not allowed to update this course', 'learnpress' ) );
 				}
 
 				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
@@ -120,6 +142,7 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			$response->status              = 'success';
 			$response->message             = $data['insert'] ? __( 'Insert course successfully!', 'learnpress' ) : __( 'Update course successfully!', 'learnpress' );
+			$response->data->status        = $data['course_status'];
 			$response->data->button_title  = $data['course_status'] === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 			$response->data->course_id_new = $data['insert'] ? $course_id : '';
 			wp_send_json( $response );
@@ -248,7 +271,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data         = self::check_valid();
+			$data         = self::check_valid_course();
 			$course_id    = $data['course_id'] ?? 0;
 			$course_model = $data['course_model'];
 
@@ -299,7 +322,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data         = self::check_valid();
+			$data         = self::check_valid_course();
 			$course_id    = $data['course_id'] ?? 0;
 			$course_model = $data['course_model'];
 			$status       = $data['status'] ?? 'trash';
@@ -319,6 +342,20 @@ class CourseBuilderAjax extends AbstractAjax {
 				wp_delete_post( $course_id, true );
 
 				$message = __( 'Course has been deleted', 'learnpress' );
+			} elseif ( $status === 'draft' ) {
+				$update = wp_update_post(
+					array(
+						'ID'          => $course_id,
+						'post_type'   => LP_COURSE_CPT,
+						'post_status' => 'draft',
+					)
+				);
+
+				if ( ! $update ) {
+					throw new Exception( __( 'Course cannot be moved to draft', 'learnpress' ) );
+				}
+
+				$message = __( 'Course has been moved to draft', 'learnpress' );
 			} else {
 				$delete = wp_trash_post( $course_id );
 
@@ -329,8 +366,9 @@ class CourseBuilderAjax extends AbstractAjax {
 				$message = __( 'Course moved to trash', 'learnpress' );
 			}
 
-			$response->status  = 'success';
-			$response->message = $message;
+			$response->status       = 'success';
+			$response->data->status = $status;
+			$response->message      = $message;
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -344,7 +382,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data = self::check_valid();
+			$data = self::check_valid_course();
 			$name = sanitize_text_field( $data['name'] ?? '' );
 			$term = wp_insert_term( $name, 'course_category', array() );
 
@@ -369,7 +407,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data = self::check_valid();
+			$data = self::check_valid_course();
 			$name = sanitize_text_field( wp_unslash( $data['name'] ?? '' ) );
 			$term = wp_insert_term( $name, 'course_tag', array() );
 
@@ -387,5 +425,217 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
 		}
+	}
+
+	/**
+	 * Duplicate for course.
+	 *
+	 */
+	public function duplicate_lesson() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data         = self::check_valid_lesson();
+			$lesson_id    = $data['lesson_id'] ?? 0;
+			$lesson_model = $data['lesson_model'];
+
+			if ( absint( $lesson_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+				throw new Exception( __( 'You are not allowed to duplicate this lesson', 'learnpress' ) );
+			}
+
+			if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
+				require_once LP_PLUGIN_PATH . 'inc/admin/lp-admin-functions.php';
+			}
+
+			$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => 'publish' ) );
+			$curd           = new LP_Lesson_CURD();
+			$new_item_id    = $curd->duplicate( $lesson_id, $duplicate_args );
+
+			if ( is_wp_error( $new_item_id ) ) {
+				throw new Exception( $new_item_id->get_error_message() );
+			}
+			$lesson_model_new     = LessonPostModel::find( $new_item_id, true );
+			$html                 = BuilderTabLessonTemplate::render_lesson( $lesson_model_new );
+			$response->status     = 'success';
+			$response->data->html = $html;
+			$response->message    = __( 'Lesson duplicated successfully', 'learnpress' );
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	public function update_lesson() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data         = self::check_valid_lesson();
+			$lesson_id    = $data['lesson_id'] ?? 0;
+			$title        = $data['lesson_title'] ?? '';
+			$description  = $data['lesson_description'] ?? '';
+			$settings     = $data['lesson_settings'] ?? [];
+			$is_elementor = $data['is_elementor'] ?? false;
+			$insert       = $data['insert'];
+			$is_publish   = $data['isPublic'] ?? false;
+
+			if ( $insert ) {
+				$lesson_id = wp_insert_post(
+					array(
+						'post_type'    => LP_LESSON_CPT,
+						'post_title'   => sanitize_text_field( $title ?? '' ),
+						'post_content' => $description ?? '',
+						'post_status'  => 'publish',
+					),
+					true
+				);
+
+				if ( is_wp_error( $lesson_id ) ) {
+					throw new Exception( $lesson_id->get_error_message() );
+				}
+			} else {
+				$lesson_model = $data['lesson_model'];
+
+				if ( ! $lesson_model ) {
+					throw new Exception( __( 'Lesson not found', 'learnpress' ) );
+				}
+
+				$course_id = $this->get_course_by_item_id( $lesson_id );
+
+				// Support for co-instructor.
+				$co_instructor_ids = get_post_meta( $course_id, '_lp_co_teacher', false );
+				$co_instructor_ids = ! empty( $co_instructor_ids ) ? $co_instructor_ids : array();
+
+				if ( absint( $lesson_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) && ! in_array( get_current_user_id(), $co_instructor_ids ) ) {
+					throw new Exception( __( 'You are not allowed to update this lesson', 'learnpress' ) );
+				}
+
+				$update_arg = array(
+					'ID'           => $lesson_id,
+					'post_type'    => LP_LESSON_CPT,
+					'post_title'   => sanitize_text_field( $title ?? '' ),
+					'post_content' => $description ?? '',
+				);
+
+				if ( defined( 'ELEMENTOR_VERSION' ) ) {
+					\Elementor\Plugin::$instance->documents->get( $lesson_id )->set_is_built_with_elementor( ! empty( $is_elementor ) );
+				}
+
+				if ( $is_publish ) {
+					$update_arg['post_status'] = 'publish';
+				}
+
+				$update = wp_update_post( $update_arg );
+
+				if ( is_wp_error( $update ) ) {
+					throw new Exception( $update->get_error_message() );
+				}
+			}
+
+			if ( ! empty( $settings ) ) {
+				foreach ( $settings as $item_setting ) {
+					$this->update_setting( $lesson_id, $item_setting );
+				}
+			}
+
+			$response->status              = 'success';
+			$response->data->lesson_id_new = $data['insert'] ? $lesson_id : '';
+			$response->message             = $insert ? esc_html__( 'Insert lesson successfully', 'learnpress' ) : esc_html__( 'Update lesson successfully', 'learnpress' );
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	public function move_trash_lesson() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data         = self::check_valid_lesson();
+			$lesson_id    = $data['lesson_id'] ?? 0;
+			$status       = $data['status'] ?? 'trash';
+			$lesson_model = $data['lesson_model'] ?? [];
+
+			if ( ! $lesson_model ) {
+				throw new Exception( __( 'Lesson not found', 'learnpress' ) );
+			}
+
+			if ( absint( $lesson_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+				throw new Exception( __( 'You are not allowed to delete this lesson', 'learnpress' ) );
+			}
+
+			if ( $status === 'trash' ) {
+				$move_trash = wp_trash_post( $lesson_id );
+
+				if ( is_wp_error( $move_trash ) ) {
+					throw new Exception( esc_html__( 'Cannot move this lesson to trash', 'learnpress' ) );
+				}
+				$message = esc_html__( 'Delete this lesson successfully', 'learnpress' );
+			} elseif ( $status === 'delete' ) {
+				$delete = wp_delete_post( $lesson_id );
+
+				if ( is_wp_error( $delete ) ) {
+					throw new Exception( esc_html__( 'Cannot delete this lesson.', 'learnpress' ) );
+				}
+				$message = esc_html__( 'This lesson has been moved to trash.', 'learnpress' );
+
+			} elseif ( $status === 'publish' ) {
+				$update = wp_update_post(
+					array(
+						'ID'          => $lesson_id,
+						'post_type'   => LP_LESSON_CPT,
+						'post_status' => 'publish',
+					)
+				);
+				if ( ! $update ) {
+					throw new Exception( __( 'Lesson cannot be moved to publish', 'learnpress' ) );
+				}
+
+				$message = __( 'Lesson has been moved to publish', 'learnpress' );
+			}
+
+			$response->status  = 'success';
+			$response->message = $message;
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	protected function get_course_by_item_id( $item_id ) {
+		static $output;
+
+		global $wpdb;
+
+		if ( empty( $item_id ) ) {
+			return false;
+		}
+
+		if ( ! isset( $output ) ) {
+			$output = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT c.ID FROM {$wpdb->posts} c
+					INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
+					INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
+					WHERE si.item_id = %d ORDER BY si.section_id DESC LIMIT 1
+					",
+					$item_id
+				)
+			);
+		}
+
+		if ( $output ) {
+			return absint( $output );
+		}
+
+		return false;
 	}
 }

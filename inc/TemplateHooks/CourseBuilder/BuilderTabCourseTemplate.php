@@ -45,10 +45,11 @@ class BuilderTabCourseTemplate {
 	}
 
 	public function html_search() {
-		$args = lp_archive_skeleton_get_args();
+		$args     = lp_archive_skeleton_get_args();
+		$link_tab = CourseBuilder::get_tab_link( 'courses' );
 
 		$search = [
-			'wrapper'       => '<form class="cb-search-form" method="get" action="">',
+			'wrapper'       => sprintf( '<form class="cb-search-form" method="get" action="%s">', $link_tab ),
 			'search_course' => '<button class="cb-search-btn" type="submit"> <i class="lp-icon-search"> </i></button>',
 			'input'         => sprintf( '<input class="cb-input-search-course" type="search" placeholder="%s" name="c_search" value="%s">', __( 'Search', 'learnpress' ), $args['c_search'] ?? '' ),
 			'wrapper_end'   => '</form>',
@@ -251,8 +252,10 @@ class BuilderTabCourseTemplate {
 					'action_expanded_button'      => '<div class="course-action-expanded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></div>',
 					'action_expanded_wrapper'     => '<div style="display:none;" class="course-action-expanded__items">',
 					'action_expanded_view'        => sprintf( '<a class="course-action-expanded__view" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_url_raw( $course->get_permalink() ), __( 'View', 'learnpress' ) ),
-					'action_expanded_duplicate'   => '<span class="course-action-expanded__duplicate">Duplicate</span>',
-					'action_expanded_delete'      => '<span class="course-action-expanded__delete">Delete</span>',
+					'action_expanded_duplicate'   => sprintf( '<span class="course-action-expanded__duplicate">%s</span>', __( 'Duplicate', 'learnpress' ) ),
+					'action_expanded_restore'     => sprintf( '<span class="course-action-expanded__draft">%s</span>', __( 'Draft', 'learnpress' ) ),
+					'action_expanded_trash'       => sprintf( '<span class="course-action-expanded__trash">%s</span>', __( 'Trash', 'learnpress' ) ),
+					'action_expanded_delete'      => sprintf( '<span class="course-action-expanded__delete">%s</span>', __( 'Delete', 'learnpress' ) ),
 					'action_expanded_wrapper_end' => '</div>',
 					'wrapper_end'                 => '</div>',
 				],
