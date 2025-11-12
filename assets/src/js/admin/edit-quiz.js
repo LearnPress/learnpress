@@ -10,7 +10,9 @@ import Sortable from 'sortablejs';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import 'toastify-js/src/toastify.css';
 import * as lpPopupSelectItemToAdd from 'lpAssetsJsPath/lpPopupSelectItemToAdd.js';
-import * as editQuestion from './edit-question.js';
+import { EditQuestion } from './edit-question.js';
+
+let editQuestion;
 
 class EditQuiz {
 	constructor() {
@@ -56,8 +58,8 @@ class EditQuiz {
 			this.elPopupSelectItems.classList.remove( 'clone', 'lp-hidden' );
 
 			this.sortAbleQuestion();
-			editQuestion.events();
-			editQuestion.initTinyMCE();
+			editQuestion = new EditQuestion();
+			editQuestion.init();
 			const elQuestionEditMains = elEditQuizWrapFound.querySelectorAll( `${ EditQuiz.selectors.elQuestionEditMain }` );
 			elQuestionEditMains.forEach( ( elQuestionEditMain ) => {
 				editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
