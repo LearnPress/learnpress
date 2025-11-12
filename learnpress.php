@@ -49,6 +49,7 @@ use LearnPress\TemplateHooks\Course\SingleCourseClassicTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileCoursesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileGeneralInfoTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
@@ -332,6 +333,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ProfileGeneralInfoTemplate::instance();
 			FilterCourseTemplate::instance();
 			ProfileQuizzesTemplate::instance();
+			ProfileCoursesTemplate::instance();
 
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
