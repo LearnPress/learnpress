@@ -22,6 +22,11 @@ use stdClass;
 class AdminEditQizTemplate {
 	use Singleton;
 
+	/**
+	 * @var QuizPostModel
+	 */
+	public $quizPostModel;
+
 	public function init() {
 		add_action( 'learn-press/admin/edit-quiz/layout', [ $this, 'edit_quiz_layout' ] );
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
@@ -95,6 +100,8 @@ class AdminEditQizTemplate {
 
 		// Check permission
 		$quizPostModel->check_capabilities_create_item_course();
+
+		self::instance()->quizPostModel = $quizPostModel;
 
 		$content          = new stdClass();
 		$content->content = self::instance()->html_edit_quiz( $quizPostModel );
@@ -303,9 +310,17 @@ class AdminEditQizTemplate {
 					type="text"
 					title="%1$s"
 					placeholder="%1$s"
-					data-mess-empty-title="%2$s">',
+					data-mess-empty-title="%2$s"
+					data-send="%3$s">',
 				esc_attr__( 'Create a new question', 'learnpress' ),
-				esc_attr__( 'Question title is required', 'learnpress' )
+				esc_attr__( 'Question title is required', 'learnpress' ),
+				Template::convert_data_to_json(
+					[
+						'id_url'  => 'create-question-add-to-quiz',
+						'quiz_id' => $this->quizPostModel->get_id(),
+						'action'  => 'create_question_add_to_quiz',
+					]
+				),
 			),
 			'types'            => $html_question_types,
 			'button'           => sprintf(

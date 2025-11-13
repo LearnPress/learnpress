@@ -1453,42 +1453,6 @@ export class EditQuestion {
 	}
 	/***** End Fill in the blank question type *****/
 
-	/**
-	 * Toggle section
-	 *
-	 * @param e
-	 * @param target
-	 * @param el_trigger  is class name or id name, to find of element to trigger toggle
-	 * @param els_exclude
-	 */
-	toggleSection( e, target, el_trigger = '', els_exclude = [] ) {
-		if ( ! el_trigger ) {
-			el_trigger = EditQuestion.selectors.elTriggerToggle;
-		}
-
-		if ( els_exclude && els_exclude.length > 0 ) {
-			for ( const elExclude of els_exclude ) {
-				if ( target.closest( elExclude ) ) {
-					return;
-				}
-			}
-		}
-
-		const elTinymceHeader = target.closest( el_trigger );
-		if ( ! elTinymceHeader ) {
-			return;
-		}
-
-		const elSectionToggle = elTinymceHeader.closest(
-			`${ EditQuestion.selectors.elSectionToggle }`
-		);
-		if ( ! elSectionToggle ) {
-			return;
-		}
-
-		elSectionToggle.classList.toggle( `${ EditQuestion.selectors.elCollapse }` );
-	}
-
 	// Generate a random string of specified length, for set unique id
 	randomString( length = 10 ) {
 		const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';

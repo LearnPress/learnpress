@@ -288,8 +288,9 @@ class EditQuiz {
 		elCountItemsAll.querySelector( '.count' ).textContent = itemsAllCount;
 	}
 
+	// Add question to quiz
 	addQuestion( args ) {
-		const { e, target } = args;
+		const { e, target, callBackNest } = args;
 		e.preventDefault();
 
 		const elAddNewQuestion = target.closest( `.${ EditQuiz.selectors.elAddNewQuestion }` );
@@ -339,6 +340,11 @@ class EditQuiz {
 					editQuestion.initTinyMCE();
 					const elQuestionEditMain = elQuestionItemCreated.querySelector( `${ EditQuiz.selectors.elQuestionEditMain }` );
 					editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
+
+					// Callback nest
+					if ( callBackNest && typeof callBackNest.success === 'function' ) {
+						callBackNest.success( { response, elQuestionItemCreated } );
+					}
 				}
 
 				lpToastify.show( message, status );
@@ -346,19 +352,25 @@ class EditQuiz {
 			error: ( error ) => {
 				newQuestionItem.remove();
 				lpToastify.show( error, 'error' );
+
+				if ( callBackNest && typeof callBackNest.error === 'function' ) {
+					callBackNest.error( { error, newQuestionItem } );
+				}
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( newQuestionItem, 0 );
 				this.checkCanAddQuestion( { e, target: elQuestionTitleNewInput } );
+
+				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
+					callBackNest.completed( { newQuestionItem } );
+				}
 			},
 		};
 
-		const dataSend = {
-			action: 'create_question_add_to_quiz',
-			quiz_id: this.quizID,
+		let dataSend = JSON.parse( elQuestionTitleNewInput.dataset.send );
+		dataSend = { ...dataSend,
 			question_title: questionTitle,
 			question_type: questionType,
-			args: { id_url: this.idUrlHandle },
 		};
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}

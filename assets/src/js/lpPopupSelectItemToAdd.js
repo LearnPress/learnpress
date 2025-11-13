@@ -4,7 +4,7 @@
  *  Handles load(search) item from API, show in popup and select item.
  */
 
-import * as lpUtils from './utils.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import Toastify from 'toastify-js';
 import SweetAlert from 'sweetalert2';
 
