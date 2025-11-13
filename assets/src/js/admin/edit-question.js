@@ -133,26 +133,26 @@ export class EditQuestion {
 				callBack: this.fibDeleteBlank.name,
 				class: this,
 			},
-			/*{
-				selector: EditQuestion.selectors.elTriggerToggle,
-				callBack: this.toggleSection.name,
+			{
+				selector: EditQuestion.selectors.elFibOptionMatchCaseInput,
+				callBack: this.fibShowHideMatchCaseOption.name,
 				class: this,
-			},*/
-			// {
-			// 	selector: EditQuestion.selectors.elFibOptionTitleInput,
-			// 	callBack: this.fibAutoUpdateOptionBlank.name,
-			// 	class: this,
-			// },
-			// {
-			// 	selector: EditQuestion.selectors.elFibOptionMatchCaseInput,
-			// 	callBack: this.fibAutoUpdateOptionBlank.name,
-			// 	class: this,
-			// },
-			// {
-			// 	selector: EditQuestion.selectors.elFibOptionComparisonInput,
-			// 	callBack: this.fibAutoUpdateOptionBlank.name,
-			// 	class: this,
-			// },
+			},
+			{
+				selector: EditQuestion.selectors.elFibOptionComparisonInput,
+				callBack: ( args ) => {
+					const { e, target } = args;
+					const elQuestionEditMain = target.closest(
+						`${ EditQuestion.selectors.elQuestionEditMain }`
+					);
+
+					const elBtnFibSaveContent = elQuestionEditMain.querySelector(
+						`${ EditQuestion.selectors.elBtnFibSaveContent }`
+					);
+
+					elBtnFibSaveContent.click();
+				},
+			},
 		] );
 
 		// Toggle collapse
@@ -166,6 +166,16 @@ export class EditQuestion {
 			{
 				selector: EditQuestion.selectors.elQuestionAnswerTitleNewInput,
 				callBack: this.checkCanAddAnswer.name,
+				class: this,
+			},
+			{
+				selector: EditQuestion.selectors.elFibOptionTitleInput,
+				callBack: this.fibOptionTitleInputChange.name,
+				class: this,
+			},
+			{
+				selector: EditQuestion.selectors.elAutoSaveQuestion,
+				callBack: this.autoUpdateQuestion.name,
 				class: this,
 			},
 		] );
@@ -218,12 +228,18 @@ export class EditQuestion {
 		editor.on( 'change', ( e ) => {
 			// Auto save if it has class lp-auto-save
 			elTextarea.value = editor.getContent();
-			this.autoUpdateQuestion( e, elTextarea );
+			this.autoUpdateQuestion( {
+				e,
+				target: elTextarea,
+			} );
 		} );
 		editor.on( 'keyup', ( e ) => {
 			// Auto save if it has class lp-auto-save
 			elTextarea.value = editor.getContent();
-			this.autoUpdateQuestion( e, elTextarea );
+			this.autoUpdateQuestion( {
+				e,
+				target: elTextarea,
+			} );
 		} );
 		editor.on( 'blur', ( e ) => {
 			//console.log( 'Editor blurred:', e.target.id );
@@ -328,7 +344,8 @@ export class EditQuestion {
 		editor.on( 'Redo', function( e ) {} );
 	}
 
-	autoUpdateQuestion( e, target, key, value ) {
+	autoUpdateQuestion( args ) {
+		let { e, target, key, value } = args;
 		const elAutoSave = target.closest(
 			`${ EditQuestion.selectors.elAutoSaveQuestion }`
 		);
@@ -588,7 +605,8 @@ export class EditQuestion {
 	}
 
 	// Auto update question answer
-	autoUpdateAnswer( e, target ) {
+	autoUpdateAnswer( args ) {
+		const { e, target } = args;
 		const elAutoSaveAnswer = target.closest(
 			`${ EditQuestion.selectors.elAutoSaveAnswer }`
 		);
@@ -1236,7 +1254,8 @@ export class EditQuestion {
 	}
 
 	// Change title of blank option
-	fibOptionTitleInputChange( e, target ) {
+	fibOptionTitleInputChange( args ) {
+		const { e, target } = args;
 		const elFibOptionTitleInput = target.closest(
 			`${ EditQuestion.selectors.elFibOptionTitleInput }`
 		);
@@ -1382,7 +1401,8 @@ export class EditQuestion {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 	// Show/hide match case option
-	fibShowHideMatchCaseOption( e, target ) {
+	fibShowHideMatchCaseOption( args ) {
+		const { e, target } = args;
 		const elFibOptionMatchCaseInput = target.closest(
 			`${ EditQuestion.selectors.elFibOptionMatchCaseInput }`
 		);
@@ -1406,6 +1426,16 @@ export class EditQuestion {
 		} else {
 			lpUtils.lpShowHideEl( elFibOptionMatchCaseWrap, 0 );
 		}
+
+		const elQuestionEditMain = elFibOptionMatchCaseInput.closest(
+			`${ EditQuestion.selectors.elQuestionEditMain }`
+		);
+
+		const elBtnFibSaveContent = elQuestionEditMain.querySelector(
+			`${ EditQuestion.selectors.elBtnFibSaveContent }`
+		);
+
+		elBtnFibSaveContent.click();
 	}
 	/***** End Fill in the blank question type *****/
 
