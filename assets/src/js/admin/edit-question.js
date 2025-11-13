@@ -235,6 +235,14 @@ export class EditQuestion {
 		editor.settings.force_p_newlines = false;
 		editor.settings.forced_root_block = '';
 		editor.settings.force_br_newlines = true;
+
+		// Config use absolute url
+		editor.settings.relative_urls = false;
+		editor.settings.remove_script_host = false;
+		editor.settings.convert_urls = true;
+		editor.settings.document_base_url = lpData.site_url;
+		// End config use absolute url
+
 		// Events focus in TinyMCE editor
 		editor.on( 'change', ( e ) => {
 			// Auto save if it has class lp-auto-save
