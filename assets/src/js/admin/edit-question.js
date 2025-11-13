@@ -91,7 +91,9 @@ export class EditQuestion {
 		elQuestionEditMains.forEach( ( elQuestionEditMain ) => {
 			this.sortAbleQuestionAnswer( elQuestionEditMain );
 		} );
+		// End sortable
 
+		// Event click
 		lpUtils.eventHandlers( 'click', [
 			{
 				selector: EditQuestion.selectors.elBtnQuestionCreateType,
@@ -187,6 +189,15 @@ export class EditQuestion {
 				callBack: this.addQuestionAnswer.name,
 				class: this,
 				checkIsEventEnter: true,
+			},
+		] );
+
+		// Event change
+		lpUtils.eventHandlers( 'change', [
+			{
+				selector: EditQuestion.selectors.elAutoSaveAnswer,
+				callBack: this.autoUpdateAnswer.name,
+				class: this,
 			},
 		] );
 	}
@@ -754,7 +765,10 @@ export class EditQuestion {
 							elQuestionAnswerItem.querySelector(
 								`${ EditQuestion.selectors.elAutoSaveAnswer }`
 							);
-						this.autoUpdateAnswer( null, elAutoSaveAnswer );
+						this.autoUpdateAnswer( {
+							e: null,
+							target: elAutoSaveAnswer,
+						} );
 					}, 1000 );
 				},
 				onMove: ( evt ) => {
