@@ -6,6 +6,8 @@ import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import SweetAlert from 'sweetalert2';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 let lp_structure_course;
+let lp_is_generating_course_data = false;
+let lp_is_creating_course = false;
 
 export class CreateCourseViaAI {
 	constructor() {
@@ -82,7 +84,19 @@ export class CreateCourseViaAI {
 				popup.click();
 			},
 		} ).then( ( result ) => {
-			if ( result.isDismissed ) {}
+			if ( result.isDismissed ) {
+				if (lp_is_generating_course_data || lp_is_creating_course) {
+					SweetAlert.fire({
+						title: 'Generating course data is closed',
+						text: 'The process of generating course data has been canceled.',
+						showCloseButton: true,
+						showConfirmButton: true,
+					});
+
+					lp_is_generating_course_data = false;
+					lp_is_creating_course = false;
+				}
+			}
 		} );
 	}
 
@@ -209,9 +223,11 @@ export class CreateCourseViaAI {
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
 				lpUtils.lpShowHideEl( btnPrev, 1 );
+				lp_is_generating_course_data = false;
 			},
 		};
 
+		lp_is_generating_course_data = true;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
@@ -257,9 +273,11 @@ export class CreateCourseViaAI {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
+				lp_is_creating_course = false;
 			},
 		};
 
+		lp_is_creating_course = true;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 }
