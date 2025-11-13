@@ -7,7 +7,6 @@ import SweetAlert from 'sweetalert2';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 let lp_structure_course;
 let lp_is_generating_course_data = false;
-let lp_is_creating_course = false;
 
 export class CreateCourseViaAI {
 	constructor() {
@@ -79,22 +78,25 @@ export class CreateCourseViaAI {
 			width: '60%',
 			showCloseButton: true,
 			showConfirmButton: false,
+			allowOutsideClick: false,
 			didOpen: () => {
 				const popup = SweetAlert.getPopup();
 				popup.click();
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
-				if (lp_is_generating_course_data || lp_is_creating_course) {
+				const closeWarningModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-course-ai'
+				);
+
+				if (lp_is_generating_course_data ) {
 					SweetAlert.fire({
-						title: 'Generating course data is closed',
-						text: 'The process of generating course data has been canceled.',
+						html: closeWarningModalTemplate.innerHTML,
 						showCloseButton: true,
 						showConfirmButton: true,
 					});
 
 					lp_is_generating_course_data = false;
-					lp_is_creating_course = false;
 				}
 			}
 		} );
@@ -257,11 +259,19 @@ export class CreateCourseViaAI {
 
 				if ( status === 'success' ) {
 					target.text = data.button_label;
+
+					const createCourseAiSuccessModal = document.querySelector('#lp-tmpl-create-course-ai-success');
+					SweetAlert.fire({
+						html: createCourseAiSuccessModal.innerHTML,
+						showCloseButton: false,
+						showConfirmButton: false,
+					});
+
 					setTimeout(
 						() => {
 							window.location.href = data.edit_course_url;
 						},
-						1000
+						3000
 					);
 				} else {
 					lpUtils.lpShowHideEl( elBtnPrev, 1 );
@@ -273,11 +283,9 @@ export class CreateCourseViaAI {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
-				lp_is_creating_course = false;
 			},
 		};
 
-		lp_is_creating_course = true;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 }
