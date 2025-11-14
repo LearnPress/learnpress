@@ -263,7 +263,7 @@ class CourseSectionModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function add_items( array $data ) {
 		$courseModel = $this->get_course_model();
@@ -275,8 +275,12 @@ class CourseSectionModel {
 
 		$items = $data['items'] ?? [];
 		foreach ( $items as $item ) {
-			$item_id   = intval( $item['item_id'] ?? 0 );
-			$item_type = $item['item_type'] ?? '';
+			if ( ! key_exists( 'id', $item ) || ! key_exists( 'type', $item ) ) {
+				throw new Exception( __( 'Keys data invalid!', 'learnpress' ) );
+			}
+
+			$item_id   = intval( $item['id'] ?? 0 );
+			$item_type = $item['type'] ?? '';
 			if ( ! $item_id ) {
 				continue;
 			}
