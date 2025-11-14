@@ -4,9 +4,8 @@ namespace LearnPress\TemplateHooks\Admin;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-
 /**
- * Class AdminCreateCourseAITemplate
+ * Class AdminEditWithAICloseWarningTemplate
  *
  * @since 4.3.0
  * @version 1.0.0
@@ -35,10 +34,12 @@ class AdminEditWithAICloseWarningTemplate {
 			return;
 		}
 
-		echo $this->html();
+		echo $this->html_title();
+		echo $this->html_desc();
+		echo $this->html_image();
 	}
 
-	public function html(): string {
+	public function html_title(): string {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-close-warning-edit-title-ai">',
 			'wrap'                     => '<div class="lp-close-warning-edit-title-ai-wrap">',
@@ -47,6 +48,38 @@ class AdminEditWithAICloseWarningTemplate {
 				esc_html__( 'Generating course title is closed', 'learnpress' )
 			),
 			'desc' 					   => '<p class="desc">'.esc_html__( 'The process of generating course title has been canceled.', 'learnpress' ).'</p>',
+			'wrap-end'                 => '</div>',
+			'wrap-script-template-end' => '</script>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_desc(): string {
+		$components = [
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-close-warning-edit-description-ai">',
+			'wrap'                     => '<div class="lp-close-warning-edit-description-ai-wrap">',
+			'h2'                       => sprintf(
+				'<div class="content-title">%s</div>',
+				esc_html__( 'Generating course description is closed', 'learnpress' )
+			),
+			'desc' 					   => '<p class="desc">'.esc_html__( 'The process of generating course description has been canceled.', 'learnpress' ).'</p>',
+			'wrap-end'                 => '</div>',
+			'wrap-script-template-end' => '</script>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	public function html_image(): string {
+		$components = [
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-close-warning-edit-image-ai">',
+			'wrap'                     => '<div class="lp-close-warning-edit-image-ai-wrap">',
+			'h2'                       => sprintf(
+				'<div class="content-title">%s</div>',
+				esc_html__( 'Generating course image is closed', 'learnpress' )
+			),
+			'desc' 					   => '<p class="desc">'.esc_html__( 'The process of generating course image has been canceled.', 'learnpress' ).'</p>',
 			'wrap-end'                 => '</div>',
 			'wrap-script-template-end' => '</script>',
 		];

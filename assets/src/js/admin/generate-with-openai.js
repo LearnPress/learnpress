@@ -8,7 +8,7 @@ import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 
 let lp_structure_course;
 let popupSweetAlert = null;
-let lp_is_generating_course_title_data = false;
+let lp_is_generating_course_data = false;
 
 export class GenerateWithOpenai {
 	constructor() {
@@ -100,6 +100,7 @@ export class GenerateWithOpenai {
 	showPopup( args ) {
 		const { e, target } = args;
 		const templateId = target.dataset.template || '';
+		console.log(templateId);
 		const modalTemplate = document.querySelector( templateId );
 
 		if ( ! modalTemplate ) {
@@ -141,18 +142,39 @@ export class GenerateWithOpenai {
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
-				const closeWarningModalTemplate = document.querySelector(
+				let html = '';
+				const closeTitleModalTemplate = document.querySelector(
 					'#lp-tmpl-close-warning-edit-title-ai'
 				);
 
-				if (lp_is_generating_course_title_data ) {
+				const closeDesModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-edit-description-ai'
+				);
+
+				const closeImageModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-edit-image-ai'
+				);
+
+				if (templateId === '#lp-tmpl-edit-title-ai') {
+					html = closeTitleModalTemplate.innerHTML;
+				}
+
+				if (templateId === '#lp-tmpl-edit-description-ai') {
+					html = closeDesModalTemplate.innerHTML;
+				}
+
+				if (templateId === '#lp-tmpl-edit-image-ai') {
+					html = closeImageModalTemplate.innerHTML;
+				}
+
+				if (lp_is_generating_course_data) {
 					SweetAlert.fire({
-						html: closeWarningModalTemplate.innerHTML,
+						html,
 						showCloseButton: true,
 						showConfirmButton: true,
 					});
 
-					lp_is_generating_course_title_data = false;
+					lp_is_generating_course_data = false;
 				}
 			}
 		} );
@@ -304,11 +326,11 @@ export class GenerateWithOpenai {
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
 				lpUtils.lpShowHideEl( btnPrev, 1 );
-				lp_is_generating_course_title_data = false;
+				lp_is_generating_course_data = false;
 			},
 		};
 
-		lp_is_generating_course_title_data = true;
+		lp_is_generating_course_data = true;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
