@@ -167,6 +167,13 @@ class AdminEditCourseCurriculumWithAITemplate {
 				</div>',
 				esc_html__( 'Course description refer', 'learnpress' )
 			),
+			'goal'                  => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<textarea type="text" name="goal"></textarea>
+				</div>',
+				esc_html__( 'Goal', 'learnpress' )
+			),
 			'sections-number'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>

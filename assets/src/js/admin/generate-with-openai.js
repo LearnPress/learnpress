@@ -100,7 +100,6 @@ export class GenerateWithOpenai {
 	showPopup( args ) {
 		const { e, target } = args;
 		const templateId = target.dataset.template || '';
-		console.log(templateId);
 		const modalTemplate = document.querySelector( templateId );
 
 		if ( ! modalTemplate ) {
