@@ -42,6 +42,7 @@ use LearnPress\TemplateHooks\Admin\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\Admin\AdminGenerateCourseCloseWarningTemplate;
 use LearnPress\TemplateHooks\Admin\AdminCreateCourseAISuccessTemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditWithAICloseWarningTemplate;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
@@ -347,6 +348,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditCourseCurriculumWithAITemplate::instance();
 			AdminGenerateCourseCloseWarningTemplate::instance();
 			AdminCreateCourseAISuccessTemplate::instance();
+			AdminEditWithAICloseWarningTemplate::instance();
 
 			// WP GDPR
 			ErasePersonalData::instance();

@@ -8,6 +8,7 @@ import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 
 let lp_structure_course;
 let popupSweetAlert = null;
+let lp_is_generating_course_title_data = false;
 
 export class GenerateWithOpenai {
 	constructor() {
@@ -99,7 +100,6 @@ export class GenerateWithOpenai {
 	showPopup( args ) {
 		const { e, target } = args;
 		const templateId = target.dataset.template || '';
-
 		const modalTemplate = document.querySelector( templateId );
 
 		if ( ! modalTemplate ) {
@@ -112,6 +112,7 @@ export class GenerateWithOpenai {
 			width: '60%',
 			showCloseButton: true,
 			showConfirmButton: false,
+			allowOutsideClick: false,
 			didOpen: () => {
 				popupSweetAlert = SweetAlert.getPopup();
 				// Click to show tomSelect style
@@ -140,6 +141,19 @@ export class GenerateWithOpenai {
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
+				const closeWarningModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-edit-title-ai'
+				);
+
+				if (lp_is_generating_course_title_data ) {
+					SweetAlert.fire({
+						html: closeWarningModalTemplate.innerHTML,
+						showCloseButton: true,
+						showConfirmButton: true,
+					});
+
+					lp_is_generating_course_title_data = false;
+				}
 			}
 		} );
 	}
@@ -290,9 +304,11 @@ export class GenerateWithOpenai {
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
 				lpUtils.lpShowHideEl( btnPrev, 1 );
+				lp_is_generating_course_title_data = false;
 			},
 		};
 
+		lp_is_generating_course_title_data = true;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
