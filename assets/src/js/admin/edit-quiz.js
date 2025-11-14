@@ -21,7 +21,6 @@ class EditQuiz {
 		this.idUrlHandle = 'edit-quiz-questions';
 		this.elEditQuizWrap = null;
 		this.elEditListQuestions = null;
-		this.elPopupSelectItems = null;
 		this.quizID = null;
 	}
 

@@ -24,6 +24,7 @@ export class LpPopupSelectItemToAdd {
 		elHeaderCountItemSelected: '.header-count-items-selected',
 		elSelectItem: '.lp-select-item',
 		elListItems: '.list-items',
+		elPopupItemsToSelect: '.lp-popup-items-to-select',
 		elSearchTitleItem: '.lp-search-title-item',
 		elBtnBackListItems: '.lp-btn-back-to-select-items',
 		elListItemsWrap: '.list-items-wrap',
@@ -45,7 +46,9 @@ export class LpPopupSelectItemToAdd {
 
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: LpPopupSelectItemToAdd.selectors.elBtnShowPopupItemsToSelect,
+				selector:
+					LpPopupSelectItemToAdd.selectors
+						.elBtnShowPopupItemsToSelect,
 				callBack: this.showPopupItemsToSelect.name,
 				class: this,
 			},
@@ -55,7 +58,8 @@ export class LpPopupSelectItemToAdd {
 				class: this,
 			},
 			{
-				selector: LpPopupSelectItemToAdd.selectors.elBtnCountItemsSelected,
+				selector:
+					LpPopupSelectItemToAdd.selectors.elBtnCountItemsSelected,
 				callBack: this.showItemsSelected.name,
 				class: this,
 			},
@@ -111,9 +115,12 @@ export class LpPopupSelectItemToAdd {
 			willOpen: () => {
 				elPopup = SweetAlert.getPopup();
 
-				const elLPTarget = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.LPTarget }` );
+				const elLPTarget = elPopup.querySelector(
+					`${ LpPopupSelectItemToAdd.selectors.LPTarget }`
+				);
 				if ( elLPTarget ) {
-					const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+					const dataSend =
+						window.lpAJAXG.getDataSetCurrent( elLPTarget );
 					dataSend.args.paged = 1;
 					dataSend.args.item_selecting = itemsSelectedData || [];
 					window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
@@ -121,7 +128,9 @@ export class LpPopupSelectItemToAdd {
 					window.lpAJAXG.fetchAJAX( dataSend, {
 						success: ( response ) => {
 							const { data } = response;
-							const elSkeleton = elPopup.querySelector( '.lp-skeleton-animation' );
+							const elSkeleton = elPopup.querySelector(
+								'.lp-skeleton-animation'
+							);
 							elSkeleton.remove();
 							elLPTarget.innerHTML = data.content || '';
 
@@ -131,7 +140,8 @@ export class LpPopupSelectItemToAdd {
 				}
 			},
 		} ).then( ( result ) => {
-			if ( result.isDismissed ) {}
+			if ( result.isDismissed ) {
+			}
 		} );
 	};
 
@@ -149,8 +159,12 @@ export class LpPopupSelectItemToAdd {
 			return;
 		}
 
-		const elSelectItemsToAdd = elTabs.closest( `${ LpPopupSelectItemToAdd.selectors.elPopupItemsToSelect }` );
-		const elInputSearch = elSelectItemsToAdd.querySelector( `${ LpPopupSelectItemToAdd.selectors.elSearchTitleItem }` );
+		const elSelectItemsToAdd = elTabs.closest(
+			`${ LpPopupSelectItemToAdd.selectors.elPopupItemsToSelect }`
+		);
+		const elInputSearch = elSelectItemsToAdd.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elSearchTitleItem }`
+		);
 
 		const itemType = elTabType.dataset.type;
 		const elTabLis = elTabs.querySelectorAll( '.tab' );
@@ -163,15 +177,39 @@ export class LpPopupSelectItemToAdd {
 		// Reset search input
 		elInputSearch.value = '';
 
-		if ( typeof callBack === 'function' ) {
-			callBack( itemType );
-		}
+		const elLPTarget = elSelectItemsToAdd.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.LPTarget }`
+		);
+
+		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		dataSend.args.item_type = itemType;
+		dataSend.args.paged = 1;
+		dataSend.args.item_selecting = itemsSelectedData || [];
+		window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+
+		window.lpAJAXG.showHideLoading( elLPTarget, 1 );
+
+		window.lpAJAXG.fetchAJAX( dataSend, {
+			success: ( response ) => {
+				const { data } = response;
+				elLPTarget.innerHTML = data.content || '';
+			},
+			error: ( error ) => {
+				lpToastify.show( error, 'error' );
+			},
+			completed: () => {
+				window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+				this.watchItemsSelectedDataChange();
+			},
+		} );
 	};
 
 	// Choice items to add list items selected before adding to section
 	selectItemsFromList = ( args ) => {
-		const { e, target, callBack } = args;
-		const elItemAttend = target.closest( `${ LpPopupSelectItemToAdd.selectors.elSelectItem }` );
+		const { e, target } = args;
+		const elItemAttend = target.closest(
+			`${ LpPopupSelectItemToAdd.selectors.elSelectItem }`
+		);
 		if ( ! elItemAttend ) {
 			return;
 		}
@@ -182,7 +220,9 @@ export class LpPopupSelectItemToAdd {
 			return;
 		}
 
-		const elUl = elItemAttend.closest( `${ LpPopupSelectItemToAdd.selectors.elListItems }` );
+		const elUl = elItemAttend.closest(
+			`${ LpPopupSelectItemToAdd.selectors.elListItems }`
+		);
 		if ( ! elUl ) {
 			return;
 		}
@@ -191,19 +231,19 @@ export class LpPopupSelectItemToAdd {
 		//console.log( 'itemSelected', itemSelected );
 
 		if ( elInput.checked ) {
-			const exists = itemsSelectedData.some( ( item ) => item.id === itemSelected.id );
+			const exists = itemsSelectedData.some(
+				( item ) => item.id === itemSelected.id
+			);
 			if ( ! exists ) {
 				itemsSelectedData.push( itemSelected );
 			}
 		} else {
-			const index = itemsSelectedData.findIndex( ( item ) => item.id === itemSelected.id );
+			const index = itemsSelectedData.findIndex(
+				( item ) => item.id === itemSelected.id
+			);
 			if ( index !== -1 ) {
 				itemsSelectedData.splice( index, 1 );
 			}
-		}
-
-		if ( typeof callBack === 'function' ) {
-			callBack( itemsSelectedData );
 		}
 
 		this.watchItemsSelectedDataChange();
@@ -212,12 +252,16 @@ export class LpPopupSelectItemToAdd {
 	// Search title item
 	searchTitleItemToSelect = ( args ) => {
 		const { e, target } = args;
-		const elInputSearch = target.closest( LpPopupSelectItemToAdd.selectors.elSearchTitleItem );
+		const elInputSearch = target.closest(
+			LpPopupSelectItemToAdd.selectors.elSearchTitleItem
+		);
 		if ( ! elInputSearch ) {
 			return;
 		}
 
-		const elLPTarget = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.LPTarget }` );
+		const elLPTarget = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.LPTarget }`
+		);
 
 		clearTimeout( timeSearchTitleItem );
 
@@ -249,17 +293,29 @@ export class LpPopupSelectItemToAdd {
 	// Show list of items, to choose items to add to section
 	showItemsSelected = ( args ) => {
 		const { e, target } = args;
-		const elBtnCountItemsSelected = target.closest( `${ LpPopupSelectItemToAdd.selectors.elBtnCountItemsSelected }` );
+		const elBtnCountItemsSelected = target.closest(
+			`${ LpPopupSelectItemToAdd.selectors.elBtnCountItemsSelected }`
+		);
 		if ( ! elBtnCountItemsSelected ) {
 			return;
 		}
 
-		const elBtnBack = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elBtnBackListItems }` );
+		const elBtnBack = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elBtnBackListItems }`
+		);
 		const elTabs = elPopup.querySelector( '.tabs' );
-		const elListItemsWrap = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elListItemsWrap }` );
-		const elHeaderItemsSelected = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elHeaderCountItemSelected }` );
-		const elListItemsSelected = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elListItemsSelected }` );
-		const elItemClone = elListItemsSelected.querySelector( `${ LpPopupSelectItemToAdd.selectors.elItemSelectedClone }` );
+		const elListItemsWrap = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elListItemsWrap }`
+		);
+		const elHeaderItemsSelected = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elHeaderCountItemSelected }`
+		);
+		const elListItemsSelected = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elListItemsSelected }`
+		);
+		const elItemClone = elListItemsSelected.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elItemSelectedClone }`
+		);
 		elHeaderItemsSelected.innerHTML = elBtnCountItemsSelected.innerHTML;
 
 		lpUtils.lpShowHideEl( elListItemsWrap, 0 );
@@ -269,16 +325,21 @@ export class LpPopupSelectItemToAdd {
 		lpUtils.lpShowHideEl( elHeaderItemsSelected, 1 );
 		lpUtils.lpShowHideEl( elListItemsSelected, 1 );
 
-		elListItemsSelected.querySelectorAll( `${ LpPopupSelectItemToAdd.selectors.elItemSelected }:not(.clone)` ).forEach( ( elItem ) => {
-			elItem.remove();
-		} );
+		elListItemsSelected
+			.querySelectorAll(
+				`${ LpPopupSelectItemToAdd.selectors.elItemSelected }:not(.clone)`
+			)
+			.forEach( ( elItem ) => {
+				elItem.remove();
+			} );
 		itemsSelectedData.forEach( ( item ) => {
 			const elItemSelected = elItemClone.cloneNode( true );
 			elItemSelected.classList.remove( 'clone' );
 			Object.entries( item ).forEach( ( [ key, value ] ) => {
 				elItemSelected.dataset[ key ] = value;
 			} );
-			const elTitleDisplay = elItemSelected.querySelector( '.title-display' );
+			const elTitleDisplay =
+				elItemSelected.querySelector( '.title-display' );
 			elTitleDisplay.innerHTML = item.title;
 
 			lpUtils.lpShowHideEl( elItemSelected, 1 );
@@ -290,16 +351,26 @@ export class LpPopupSelectItemToAdd {
 	// Back to list of items
 	backToSelectItems = ( args ) => {
 		const { e, target } = args;
-		const elBtnBack = target.closest( `${ LpPopupSelectItemToAdd.selectors.elBtnBackListItems }` );
+		const elBtnBack = target.closest(
+			`${ LpPopupSelectItemToAdd.selectors.elBtnBackListItems }`
+		);
 		if ( ! elBtnBack ) {
 			return;
 		}
 
-		const elBtnCountItemsSelected = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elBtnCountItemsSelected }` );
+		const elBtnCountItemsSelected = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elBtnCountItemsSelected }`
+		);
 		const elTabs = elPopup.querySelector( '.tabs' );
-		const elListItemsWrap = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elListItemsWrap }` );
-		const elHeaderCountItemSelected = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elHeaderCountItemSelected }` );
-		const elListItemsSelected = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elListItemsSelected }` );
+		const elListItemsWrap = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elListItemsWrap }`
+		);
+		const elHeaderCountItemSelected = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elHeaderCountItemSelected }`
+		);
+		const elListItemsSelected = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elListItemsSelected }`
+		);
 		lpUtils.lpShowHideEl( elBtnCountItemsSelected, 1 );
 		lpUtils.lpShowHideEl( elListItemsWrap, 1 );
 		lpUtils.lpShowHideEl( elTabs, 1 );
@@ -311,13 +382,17 @@ export class LpPopupSelectItemToAdd {
 	// Remove item selected from list items selected
 	removeItemSelected = ( args ) => {
 		const { e, target } = args;
-		const elRemoveItemSelected = target.closest( `${ LpPopupSelectItemToAdd.selectors.elItemSelected }` );
+		const elRemoveItemSelected = target.closest(
+			`${ LpPopupSelectItemToAdd.selectors.elItemSelected }`
+		);
 		if ( ! elRemoveItemSelected ) {
 			return;
 		}
 
 		const itemRemove = elRemoveItemSelected.dataset;
-		const index = itemsSelectedData.findIndex( ( item ) => item.id === itemRemove.id );
+		const index = itemsSelectedData.findIndex(
+			( item ) => item.id === itemRemove.id
+		);
 		if ( index !== -1 ) {
 			itemsSelectedData.splice( index, 1 );
 		}
@@ -330,11 +405,19 @@ export class LpPopupSelectItemToAdd {
 	// Watch items selected when data change
 	watchItemsSelectedDataChange = () => {
 		// Update count items selected, disable/enable buttons
-		const elBtnAddItemsSelected = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected }` );
-		const elBtnCountItemsSelected = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elBtnCountItemsSelected }` );
+		const elBtnAddItemsSelected = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected }`
+		);
+		const elBtnCountItemsSelected = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elBtnCountItemsSelected }`
+		);
 		const elSpanCount = elBtnCountItemsSelected.querySelector( 'span' );
-		const elHeaderCount = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elHeaderCountItemSelected }` );
-		const elTarget = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.LPTarget }` );
+		const elHeaderCount = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elHeaderCountItemSelected }`
+		);
+		const elTarget = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.LPTarget }`
+		);
 
 		if ( itemsSelectedData.length !== 0 ) {
 			elBtnCountItemsSelected.disabled = false;
@@ -351,11 +434,17 @@ export class LpPopupSelectItemToAdd {
 		}
 
 		// Update list input checked, when items removed, or change tab type
-		const elListItems = elPopup.querySelector( `${ LpPopupSelectItemToAdd.selectors.elListItems }` );
-		const elInputs = elListItems.querySelectorAll( 'input[type="checkbox"]' );
+		const elListItems = elPopup.querySelector(
+			`${ LpPopupSelectItemToAdd.selectors.elListItems }`
+		);
+		const elInputs = elListItems.querySelectorAll(
+			'input[type="checkbox"]'
+		);
 		elInputs.forEach( ( elInputItem ) => {
 			const itemSelected = elInputItem.dataset;
-			const exists = itemsSelectedData.some( ( item ) => item.id === itemSelected.id );
+			const exists = itemsSelectedData.some(
+				( item ) => item.id === itemSelected.id
+			);
 			elInputItem.checked = exists;
 		} );
 
@@ -381,4 +470,3 @@ export class LpPopupSelectItemToAdd {
 		}
 	};
 }
-
