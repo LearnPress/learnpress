@@ -260,6 +260,7 @@ export class EditQuestion {
 				target: elTextarea,
 			} );
 		} );
+
 		editor.on( 'blur', ( e ) => {
 			//console.log( 'Editor blurred:', e.target.id );
 		} );

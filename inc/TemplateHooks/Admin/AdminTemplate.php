@@ -7,7 +7,7 @@ use LearnPress\Helpers\Template;
  * Template Show list items to select in popup.
  *
  * @since 4.2.9
- * @version 1.0.0
+ * @version 1.0.1
  */
 class AdminTemplate {
 	/**
@@ -116,7 +116,7 @@ class AdminTemplate {
 		];
 
 		$section = [
-			'wrap'     => '<div class="lp-popup-items-to-select clone lp-hidden">',
+			'wrap'     => '<div class="lp-popup-items-to-select">',
 			'header'   => Template::combine_components( $section_header ),
 			'main'     => Template::combine_components( $section_main ),
 			'footer'   => Template::combine_components( $section_footer ),

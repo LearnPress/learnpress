@@ -9,10 +9,12 @@ import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import 'toastify-js/src/toastify.css';
-import * as lpPopupSelectItemToAdd from 'lpAssetsJsPath/lpPopupSelectItemToAdd.js';
 import { EditQuestion } from './edit-question.js';
+import { LpPopupSelectItemToAdd } from 'lpAssetsJsPath/lpPopupSelectItemToAdd.js';
 
 let editQuestion;
+
+const lpPopupSelectItemToAdd = new LpPopupSelectItemToAdd();
 
 class EditQuiz {
 	constructor() {
@@ -53,10 +55,6 @@ class EditQuiz {
 			const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 			this.quizID = dataSend.args.quiz_id;
 
-			const elPopupItemsToSelectClone = this.elEditQuizWrap.querySelector( EditQuiz.selectors.elPopupItemsToSelectClone );
-			this.elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
-			this.elPopupSelectItems.classList.remove( 'clone', 'lp-hidden' );
-
 			this.sortAbleQuestion();
 			editQuestion = new EditQuestion();
 			editQuestion.init();
@@ -66,6 +64,7 @@ class EditQuiz {
 			} );
 
 			this.events();
+			lpPopupSelectItemToAdd.init();
 		} );
 	}
 
@@ -100,6 +99,12 @@ class EditQuiz {
 				selector: EditQuiz.selectors.elBtnCancelUpdateQuestionTitle,
 				class: this,
 				callBack: this.cancelChangeTitleQuestion.name,
+			},
+			{
+				selector: LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected,
+				class: lpPopupSelectItemToAdd,
+				callBack: lpPopupSelectItemToAdd.addItemsSelectedToSection.name,
+				callBackHandle: this.addQuestionsSelectedToQuiz.bind( this ),
 			},
 		] );
 
@@ -147,98 +152,6 @@ class EditQuiz {
 			const target = e.target;
 
 			lpUtils.toggleCollapse( e, target, EditQuiz.selectors.elQuestionToggle, [], () => this.checkAllQuestionsCollapsed() );
-
-			const callBackPopupSelectItems = {
-				willOpen: ( itemsSelectedData ) => {
-					const elLPTarget = this.elPopupSelectItems.querySelector( `${ EditQuiz.selectors.LPTarget }` );
-
-					const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
-					dataSend.args.paged = 1;
-					dataSend.args.item_selecting = itemsSelectedData || [];
-					window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
-
-					window.lpAJAXG.showHideLoading( elLPTarget, 1 );
-
-					window.lpAJAXG.fetchAJAX( dataSend, {
-						success: ( response ) => {
-							const { data } = response;
-							elLPTarget.innerHTML = data.content || '';
-						},
-						error: ( error ) => {
-							lpToastify.show( error, 'error' );
-						},
-						completed: () => {
-							window.lpAJAXG.showHideLoading( elLPTarget, 0 );
-							lpPopupSelectItemToAdd.watchItemsSelectedDataChange( this.elPopupSelectItems );
-						},
-					} );
-				},
-			};
-
-			lpPopupSelectItemToAdd.showPopupItemsToSelect( e, target, this.elPopupSelectItems, callBackPopupSelectItems );
-			lpPopupSelectItemToAdd.selectItemsFromList( e, target, this.elPopupSelectItems );
-			lpPopupSelectItemToAdd.addItemsSelectedToSection( e, target, this.elPopupSelectItems, ( itemsSelected ) => {
-				const questionIds = [];
-				itemsSelected.forEach( ( item ) => {
-					const elQuestionItemClone = this.elEditQuizWrap.querySelector( `${ EditQuiz.selectors.elQuestionItem }.clone` );
-					if ( ! elQuestionItemClone ) {
-						return;
-					}
-
-					questionIds.push( item.id );
-					const elQuestionItemNew = elQuestionItemClone.cloneNode( true );
-					const elQuestionItemTitleInput = elQuestionItemNew.querySelector( `${ EditQuiz.selectors.elQuestionTitleInput }` );
-					elQuestionItemNew.classList.remove( 'clone' );
-					elQuestionItemNew.dataset.questionId = item.id;
-					elQuestionItemTitleInput.value = item.titleSelected;
-
-					lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
-					lpUtils.lpShowHideEl( elQuestionItemNew, 1 );
-					elQuestionItemClone.insertAdjacentElement( 'beforebegin', elQuestionItemNew );
-					lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
-				} );
-
-				const callBack = {
-					success: ( response ) => {
-						const { message, status, data } = response;
-
-						if ( status === 'success' ) {
-							lpToastify.show( message, status );
-
-							const { html_edit_question } = data;
-							if ( html_edit_question ) {
-								Object.entries( html_edit_question ).forEach( ( [ question_id, item_html ] ) => {
-									const elQuestionItemNew = this.elEditQuizWrap.querySelector( `${ EditQuiz.selectors.elQuestionItem }[data-question-id="${ question_id }"]` );
-									elQuestionItemNew.outerHTML = item_html;
-								} );
-							}
-							this.updateCountItems();
-							editQuestion.initTinyMCE();
-						} else {
-							throw `Error: ${ message }`;
-						}
-					},
-					error: ( error ) => {
-						lpToastify.show( error, 'error' );
-					},
-					completed: () => {
-						// completed handler intentionally empty
-					},
-				};
-
-				const dataSend = { action: 'add_questions_to_quiz', quiz_id: this.quizID, question_ids: questionIds, args: { id_url: this.idUrlHandle } };
-				window.lpAJAXG.fetchAJAX( dataSend, callBack );
-			} );
-
-			lpPopupSelectItemToAdd.showItemsSelected( e, target, this.elPopupSelectItems );
-			lpPopupSelectItemToAdd.backToSelectItems( e, target, this.elPopupSelectItems );
-			lpPopupSelectItemToAdd.removeItemSelected( e, target, this.elPopupSelectItems );
-		} );
-
-		// Keyup
-		document.addEventListener( 'keyup', ( e ) => {
-			const target = e.target;
-			lpPopupSelectItemToAdd.searchTitleItemToSelect( e, target, this.elPopupSelectItems );
 		} );
 	}
 
@@ -372,6 +285,62 @@ class EditQuiz {
 			question_title: questionTitle,
 			question_type: questionType,
 		};
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	// Add questions selected from popup to quiz
+	addQuestionsSelectedToQuiz( itemsSelected ) {
+		const questionIds = [];
+		itemsSelected.forEach( ( item ) => {
+			const elQuestionItemClone = this.elEditQuizWrap.querySelector( `${ EditQuiz.selectors.elQuestionItem }.clone` );
+			if ( ! elQuestionItemClone ) {
+				return;
+			}
+
+			questionIds.push( item.id );
+			const elQuestionItemNew = elQuestionItemClone.cloneNode( true );
+			const elQuestionItemTitleInput = elQuestionItemNew.querySelector( `${ EditQuiz.selectors.elQuestionTitleInput }` );
+			elQuestionItemNew.classList.remove( 'clone' );
+			elQuestionItemNew.dataset.questionId = item.id;
+			elQuestionItemTitleInput.value = item.titleSelected;
+
+			lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
+			lpUtils.lpShowHideEl( elQuestionItemNew, 1 );
+			elQuestionItemClone.insertAdjacentElement( 'beforebegin', elQuestionItemNew );
+			lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
+		} );
+
+		const callBack = {
+			success: ( response ) => {
+				const { message, status, data } = response;
+
+				if ( status === 'success' ) {
+					lpToastify.show( message, status );
+
+					const { html_edit_question } = data;
+					if ( html_edit_question ) {
+						Object.entries( html_edit_question ).forEach( ( [ question_id, item_html ] ) => {
+							const elQuestionItemNew = this.elEditQuizWrap.querySelector(
+								`${ EditQuiz.selectors.elQuestionItem }[data-question-id="${ question_id }"]`
+							);
+							elQuestionItemNew.outerHTML = item_html;
+						} );
+					}
+					this.updateCountItems();
+					editQuestion.initTinyMCE();
+				} else {
+					throw `Error: ${ message }`;
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error, 'error' );
+			},
+			completed: () => {
+				// completed handler intentionally empty
+			},
+		};
+
+		const dataSend = { action: 'add_questions_to_quiz', quiz_id: this.quizID, question_ids: questionIds, args: { id_url: this.idUrlHandle } };
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 

@@ -3,6 +3,7 @@
 namespace LearnPress\TemplateHooks\Admin;
 
 use Exception;
+use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Question\QuestionPostModel;
@@ -58,10 +59,13 @@ class AdminEditQizTemplate {
 		wp_enqueue_style( 'lp-edit-quiz' );
 		wp_enqueue_script( 'lp-edit-quiz' );
 
-		$args      = [
+		$args = [
 			'id_url'  => 'edit-quiz',
 			'quiz_id' => $quizPostModel->ID,
 		];
+		/**
+		 * @uses self::render_edit_quiz
+		 */
 		$call_back = array(
 			'class'  => self::class,
 			'method' => 'render_edit_quiz',
@@ -72,8 +76,6 @@ class AdminEditQizTemplate {
 
 	/**
 	 * Allow callback for AJAX.
-	 * @use self::render_edit_quiz
-	 * @use self::render_list_items_not_assign
 	 *
 	 * @param array $callbacks
 	 *
@@ -329,7 +331,9 @@ class AdminEditQizTemplate {
 				__( 'Add Question', 'learnpress' )
 			),
 			'btn-select-items' => sprintf(
-				'<button type="button" class="button lp-btn-show-popup-items-to-select">%s</button>',
+				'<button type="button"
+					class="button lp-btn-show-popup-items-to-select"
+					data-template="#lp-tmpl-select-question-bank">%s</button>',
 				__( 'Question Bank', 'learnpress' )
 			),
 			'wrap_end'         => '</div>',
@@ -353,15 +357,12 @@ class AdminEditQizTemplate {
 		/**
 		 * @uses self::render_list_items_not_assign
 		 */
-		ob_start();
-		lp_skeleton_animation_html( 10 );
-		$html_loading = ob_get_clean();
-		$html_items   = TemplateAJAX::load_content_via_ajax(
+		$html_items = TemplateAJAX::load_content_via_ajax(
 			[
-				'id_url'                  => 'list-questions-not-assign',
-				'html_no_load_ajax_first' => $html_loading,
-				'quiz_id'                 => $quizPostModel->ID,
-				'paged'                   => 1,
+				'id_url'             => 'list-questions-not-assign',
+				'enableScrollToView' => false,
+				'quiz_id'            => $quizPostModel->ID,
+				'paged'              => 1,
 			],
 			[
 				'class'  => self::class,
@@ -369,7 +370,13 @@ class AdminEditQizTemplate {
 			]
 		);
 
-		return AdminTemplate::html_popup_items_to_select_clone( $tabs, $html_items );
+		$section = [
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-select-question-bank">',
+			'popup'                    => AdminTemplate::html_popup_items_to_select_clone( $tabs, $html_items ),
+			'wrap-script-template-end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	/**
@@ -473,44 +480,16 @@ class AdminEditQizTemplate {
 			}
 		}
 
-		$page_numbers = paginate_links(
-			apply_filters(
-				'learn_press_pagination_args',
-				array(
-					'base'      => add_query_arg( 'paged', '%#%', \LP_Helper::getUrlCurrent() ),
-					'format'    => '',
-					'add_args'  => '',
-					'current'   => max( 1, $paged ),
-					'total'     => $total_pages,
-					'prev_text' => '<i class="lp-icon-arrow-left"></i>',
-					'next_text' => '<i class="lp-icon-arrow-right"></i>',
-					'type'      => 'array',
-					'end_size'  => 3,
-					'mid_size'  => 3,
-				)
-			)
-		);
-
-		$html_li_number = '';
-		if ( ! empty( $page_numbers ) ) {
-			foreach ( $page_numbers as $page_number ) {
-				$html_li_number .= sprintf(
-					'<li>%s</li>',
-					$page_number
-				);
-			}
-		}
-		$section_pagination = [
-			'wrap'     => '<ul class="pagination">',
-			'numbers'  => $html_li_number,
-			'wrap_end' => '</ul>',
-		];
-
 		$section = [
 			'ul'         => '<ul class="list-items">',
 			'items'      => $html_lis,
 			'ul_end'     => '</ul>',
-			'pagination' => Template::combine_components( $section_pagination ),
+			'pagination' => Template::instance()->html_pagination(
+				[
+					'total_pages' => $total_pages,
+					'paged'       => $paged,
+				]
+			),
 		];
 
 		$content->content = Template::combine_components( $section );
