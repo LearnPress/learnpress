@@ -9,6 +9,7 @@ import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 let lp_structure_course;
 let popupSweetAlert = null;
 let lp_is_generating_course_data = false;
+const lp_course_ai_setting = JSON.parse( localStorage.getItem( 'lp_course_ai_setting' ) ) || {};
 
 export class GenerateWithOpenai {
 	constructor() {
@@ -138,6 +139,21 @@ export class GenerateWithOpenai {
 				if ( elPostContent ) {
 					elPostContent.value = post_content;
 				}
+
+				const targetAudience = document.querySelector( 'select[name="target_audience"]' );
+				if ( targetAudience && lp_course_ai_setting?.target_audience ) {
+					targetAudience.tomselect.setValue( lp_course_ai_setting.target_audience );
+				}
+
+				const tone = document.querySelector( 'select[name="tone"]' );
+				if ( tone && lp_course_ai_setting?.tone ) {
+					tone.tomselect.setValue( lp_course_ai_setting.tone );
+				}
+
+				const language = document.querySelector( 'select[name="language"]' );
+				if ( language && lp_course_ai_setting?.language ) {
+					language.tomselect.setValue( lp_course_ai_setting.language );
+				}
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
@@ -154,24 +170,32 @@ export class GenerateWithOpenai {
 					'#lp-tmpl-close-warning-edit-image-ai'
 				);
 
-				if (templateId === '#lp-tmpl-edit-title-ai') {
+				const closeCurriculumModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-edit-curriculum-ai'
+				);
+
+				if ( templateId === '#lp-tmpl-edit-title-ai' ) {
 					html = closeTitleModalTemplate.innerHTML;
 				}
 
-				if (templateId === '#lp-tmpl-edit-description-ai') {
+				if ( templateId === '#lp-tmpl-edit-description-ai' ) {
 					html = closeDesModalTemplate.innerHTML;
 				}
 
-				if (templateId === '#lp-tmpl-edit-image-ai') {
+				if ( templateId === '#lp-tmpl-edit-image-ai' ) {
 					html = closeImageModalTemplate.innerHTML;
 				}
 
-				if (lp_is_generating_course_data) {
-					SweetAlert.fire({
+				if ( templateId === '#lp-tmpl-edit-course-curriculum-ai' ) {
+					html = closeCurriculumModalTemplate.innerHTML;
+				}
+
+				if ( lp_is_generating_course_data ) {
+					SweetAlert.fire( {
 						html,
 						showCloseButton: true,
 						showConfirmButton: true,
-					});
+					} );
 
 					lp_is_generating_course_data = false;
 				}
@@ -255,6 +279,12 @@ export class GenerateWithOpenai {
 					);
 					elPromptTextarea.value = data;
 
+					lp_course_ai_setting.target_audience = ( dataSend?.target_audience || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
+					lp_course_ai_setting.tone = ( dataSend?.tone || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
+					lp_course_ai_setting.language = ( dataSend?.language || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
+
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+
 					const elBtnNext = form.querySelector(
 						'.lp-btn-step[data-action=next]'
 					);
@@ -300,8 +330,9 @@ export class GenerateWithOpenai {
 		const callBack = {
 			success: ( response ) => {
 				const { message, status, data } = response;
-
-				lpToastify.show( message, status );
+				if ( lp_is_generating_course_data ) {
+					lpToastify.show( message, status );
+				}
 
 				if ( status === 'success' ) {
 					// Save structure data

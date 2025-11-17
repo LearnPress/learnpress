@@ -7,6 +7,7 @@ import SweetAlert from 'sweetalert2';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 let lp_structure_course;
 let lp_is_generating_course_data = false;
+const lp_course_ai_setting = JSON.parse( localStorage.getItem( 'lp_course_ai_setting' ) ) || {};
 
 export class CreateCourseViaAI {
 	constructor() {
@@ -82,6 +83,21 @@ export class CreateCourseViaAI {
 			didOpen: () => {
 				const popup = SweetAlert.getPopup();
 				popup.click();
+
+				const targetAudience = document.querySelector( 'select[name="target_audience"]' );
+				if ( targetAudience && lp_course_ai_setting?.target_audience ) {
+					targetAudience.tomselect.setValue( lp_course_ai_setting.target_audience );
+				}
+
+				const tone = document.querySelector( 'select[name="tone"]' );
+				if ( tone && lp_course_ai_setting?.tone ) {
+					tone.tomselect.setValue( lp_course_ai_setting.tone );
+				}
+
+				const language = document.querySelector( 'select[name="language"]' );
+				if ( language && lp_course_ai_setting?.language ) {
+					language.tomselect.setValue( lp_course_ai_setting.language );
+				}
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
@@ -89,12 +105,12 @@ export class CreateCourseViaAI {
 					'#lp-tmpl-close-warning-course-ai'
 				);
 
-				if (lp_is_generating_course_data ) {
-					SweetAlert.fire({
+				if ( lp_is_generating_course_data ) {
+					SweetAlert.fire( {
 						html: closeWarningModalTemplate.innerHTML,
 						showCloseButton: true,
 						showConfirmButton: true,
-					});
+					} );
 
 					lp_is_generating_course_data = false;
 				}
@@ -161,6 +177,12 @@ export class CreateCourseViaAI {
 				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
+					lp_course_ai_setting.target_audience = ( dataSend?.target_audience || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
+					lp_course_ai_setting.tone = ( dataSend?.tone || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
+					lp_course_ai_setting.language = ( dataSend?.language || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
+
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+
 					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
 					elBtnNext.click();
 
@@ -205,7 +227,9 @@ export class CreateCourseViaAI {
 			success: ( response ) => {
 				const { message, status, data } = response;
 
-				lpToastify.show( message, status );
+				if ( lp_is_generating_course_data ) {
+					lpToastify.show( message, status );
+				}
 
 				if ( status === 'success' ) {
 					// Save structure data
@@ -260,12 +284,12 @@ export class CreateCourseViaAI {
 				if ( status === 'success' ) {
 					target.text = data.button_label;
 
-					const createCourseAiSuccessModal = document.querySelector('#lp-tmpl-create-course-ai-success');
-					SweetAlert.fire({
+					const createCourseAiSuccessModal = document.querySelector( '#lp-tmpl-create-course-ai-success' );
+					SweetAlert.fire( {
 						html: createCourseAiSuccessModal.innerHTML,
 						showCloseButton: false,
 						showConfirmButton: false,
-					});
+					} );
 
 					setTimeout(
 						() => {
