@@ -1,32 +1,38 @@
 import * as editCourse from './course-builder/edit-course.js';
 import * as courseTab from './course-builder/tab-course.js';
+import * as lessonTab from './course-builder/tab-lesson.js';
+import * as editLesson from './course-builder/edit-lesson.js';
 
 document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
 
-	// Click update or draft course
+	//Course Tab
+	courseTab.courseDuplicate( e, target );
+	courseTab.courseTrash( e, target );
+	courseTab.courseDraft( e, target );
+	courseTab.courseDelete( e, target );
+	courseTab.activeCourseExpanded( e, target );
+
+	//Course Edit
 	editCourse.updateCourse( e, target );
-	//Click trash course
 	editCourse.trashCourse( e, target );
-	// Click set featured image
 	editCourse.openMediaUploader( e, target );
-	// Click remove featured image
 	editCourse.removeFeaturedImage( e, target );
-	//Click add new category
 	editCourse.toggleAddCategoryForm( e, target );
-	//Click add new term
 	editCourse.toggleAddTagForm( e, target );
-	//Click save new category
 	editCourse.addNewCategory( e, target );
-	//Click save new term
 	editCourse.addNewTag( e, target );
 
-	//Click duplicate course
-	courseTab.courseDuplicate( e, target );
-	//Click delete course
-	courseTab.courseDelete( e, target );
-	//Click course action explanded
-	courseTab.activeCourseExpanded( e, target );
+	//Lesson Tab
+	lessonTab.lessonDuplicate( e, target );
+	lessonTab.lessonDelete( e, target );
+	lessonTab.lessonTrash( e, target );
+	lessonTab.lessonPublish( e, target );
+	lessonTab.activeLessonExpanded( e, target );
+
+	//Lesson Edit
+	editLesson.updateLesson( e, target );
+	editLesson.trashLesson( e, target );
 } );
 
 document.addEventListener( 'keydown', ( e ) => {
