@@ -140,20 +140,36 @@ export class GenerateWithOpenai {
 					elPostContent.value = post_content;
 				}
 
-				const targetAudience = document.querySelector( 'select[name="target_audience"]' );
+				const targetAudience = popupSweetAlert.querySelector( 'select[name="target_audience"]' );
 				if ( targetAudience && lp_course_ai_setting?.target_audience ) {
 					targetAudience.tomselect.setValue( lp_course_ai_setting.target_audience );
 				}
 
-				const tone = document.querySelector( 'select[name="tone"]' );
+				const tone = popupSweetAlert.querySelector( 'select[name="tone"]' );
 				if ( tone && lp_course_ai_setting?.tone ) {
 					tone.tomselect.setValue( lp_course_ai_setting.tone );
 				}
 
-				const language = document.querySelector( 'select[name="language"]' );
+				const language = popupSweetAlert.querySelector( 'select[name="language"]' );
 				if ( language && lp_course_ai_setting?.language ) {
 					language.tomselect.setValue( lp_course_ai_setting.language );
 				}
+
+				targetAudience.addEventListener( 'change', ( event ) => {
+					lp_course_ai_setting.target_audience = targetAudience.tomselect.getValue();
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
+
+				tone.addEventListener( 'change', ( event ) => {
+					lp_course_ai_setting.tone = tone.tomselect.getValue();
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
+
+				language.addEventListener( 'change', ( event ) => {
+					const value = language.tomselect.getValue();
+					lp_course_ai_setting.language = value ? [ value ] : [];
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
@@ -278,13 +294,6 @@ export class GenerateWithOpenai {
 						'textarea[name=lp-openai-prompt-generated-field]'
 					);
 					elPromptTextarea.value = data;
-
-					lp_course_ai_setting.target_audience = ( dataSend?.target_audience || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
-					lp_course_ai_setting.tone = ( dataSend?.tone || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
-					lp_course_ai_setting.language = ( dataSend?.language || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
-
-					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
-
 					const elBtnNext = form.querySelector(
 						'.lp-btn-step[data-action=next]'
 					);
