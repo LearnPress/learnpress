@@ -29,12 +29,14 @@ class PostDB extends DataBase {
 	}
 
 	/**
-	 *  Get questions
+	 * Get posts by filter
+	 *
+	 * @param PostFilter|\LP_Post_Type_Filter $filter
 	 *
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @since 4.2.9.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_posts( $filter, int &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
@@ -83,12 +85,12 @@ class PostDB extends DataBase {
 		}
 
 		// Title
-		if ( isset( $filter->post_title ) ) {
+		if ( $filter->post_title ) {
 			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_title LIKE %s", '%' . $filter->post_title . '%' );
 		}
 
 		// Name(slug)
-		if ( isset( $filter->post_name ) ) {
+		if ( $filter->post_name ) {
 			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_name = %s", $filter->post_name );
 		}
 

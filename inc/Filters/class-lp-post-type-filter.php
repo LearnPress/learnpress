@@ -78,11 +78,11 @@ class LP_Post_Type_Filter extends LP_Filter {
 	/**
 	 * @var string
 	 */
-	public $post_title = '';
+	public $post_title;
 	/**
 	 * @var string
 	 */
-	public $post_name = '';
+	public $post_name;
 	/**
 	 * @var string[]
 	 */
