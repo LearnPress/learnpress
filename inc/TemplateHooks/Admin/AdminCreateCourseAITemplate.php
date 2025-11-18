@@ -151,18 +151,19 @@ class AdminCreateCourseAITemplate {
 			),
 			'description' => sprintf(
 				'<p class="step-description">%s</p>',
-				esc_html__( 'Define the course goal and the authoring role/persona.', 'learnpress' )
+				esc_html__( 'Defines who is creating the course so AI can tailor tone, expertise, and perspective.', 'learnpress' )
 			),
 			'role'        => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="role_persona" placeholder="">
 				</div>',
-				esc_html__( 'Role / Persona (critical)', 'learnpress' )
+				esc_html__( 'Role / Persona', 'learnpress' )
 			),
 			'audience'    => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Target Audience', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -173,15 +174,18 @@ class AdminCreateCourseAITemplate {
 						'default_value' => 'Students',
 						'multiple'      => true,
 					]
-				)
+				),
+				esc_html__( 'Identifies who will take the course so the content matches their background and skill level.', 'learnpress' )
 			),
 			'objective'   => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea name="course_objective" placeholder="%s"></textarea>
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Course objective', 'learnpress' ),
-				esc_html__( 'Enter description about course you want AI generate', 'learnpress' )
+				esc_html__( 'Enter description about course you want AI generate', 'learnpress' ),
+				esc_html__( 'Specifies what learners should achieve after completing the course, guiding AI to generate outcome-aligned content.', 'learnpress' ),
 			),
 			'step_close'  => '</div>',
 		];
@@ -201,6 +205,7 @@ class AdminCreateCourseAITemplate {
 			'language'      => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Language', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -208,11 +213,13 @@ class AdminCreateCourseAITemplate {
 						'name'    => 'language',
 						'options' => $options['language'] ?? [],
 					]
-				)
+				),
+				esc_html__( 'Sets the output language for all generated course content.', 'learnpress' )
 			),
 			'tone'          => sprintf(
 				'<div class="form-group">
 					<label for="swal-tone">%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Tone', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -222,7 +229,8 @@ class AdminCreateCourseAITemplate {
 						'multiple'      => true,
 						'default_value' => [ 'Analytical' ],
 					]
-				)
+				),
+				esc_html__( 'Controls the writing style (e.g., friendly, professional, academic) so the content matches your brand and audience.', 'learnpress' )
 			),
 			'reading_level' => sprintf(
 				'<div class="form-group">
@@ -240,15 +248,19 @@ class AdminCreateCourseAITemplate {
 				'<div class="form-group">
 					<label for="seo-emphasis">%s</label>
 					<input type="text" name="seo_emphasis" value="Basic (title/meta/heading)">
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'SEO emphasis', 'learnpress' )
+				esc_html__( 'SEO emphasis', 'learnpress' ),
+				esc_html__( 'Determines how strongly AI should optimize content for search engines.', 'learnpress' ),
 			),
 			'keywords'      => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="target_keywords" value="html5, semantic tags, accessibility, seo on-page">
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Target keywords (comma-separated)', 'learnpress' )
+				esc_html__( 'Target keywords (comma-separated)', 'learnpress' ),
+				esc_html__( 'Lists the keywords AI should integrate to improve SEO performance across titles and descriptions.', 'learnpress' )
 			),
 			'grid-end'      => '</div>',
 		];
@@ -277,22 +289,28 @@ class AdminCreateCourseAITemplate {
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="section_number" value="2" min="0">
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Sections number', 'learnpress' )
+				esc_html__( 'Sections number', 'learnpress' ),
+				esc_html__( 'Defines how many main sections/modules the course will include.', 'learnpress' )
 			),
 			'sections-title-length' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="section_title_length" value="60" min="0">
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Each section title length', 'learnpress' )
+				esc_html__( 'Each section title length', 'learnpress' ),
+				esc_html__( 'Specifies the word limit for section titles to maintain consistency and readability.', 'learnpress' )
 			),
 			'sections-des-length'   => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="section_description_length" value="200" min="0">
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Each section description length', 'learnpress' )
+				esc_html__( 'Each section description length', 'learnpress' ),
+				esc_html__( 'Sets the word limit for section introductions to control depth and clarity.', 'learnpress' )
 			),
 			'lesson-number'         => sprintf(
 				'<div class="form-group">
@@ -365,7 +383,7 @@ class AdminCreateCourseAITemplate {
 					<textarea name="lp-openai-prompt-generated-field" rows="20"></textarea>
 					<i>%s</i>
 				</div>',
-				__( 'You can edit prompt before submit OpenAI.', 'learnpress' )
+				__( 'Shows the auto-generated AI prompt, allowing further adjustments before submission.', 'learnpress' )
 			),
 			'step-end' => '</div>',
 		];

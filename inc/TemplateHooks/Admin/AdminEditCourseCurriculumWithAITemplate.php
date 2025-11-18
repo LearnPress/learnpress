@@ -150,22 +150,26 @@ class AdminEditCourseCurriculumWithAITemplate {
 			),
 			'description'           => sprintf(
 				'<p class="step-description">%s</p>',
-				esc_html__( 'Config your curriculum you want.', 'learnpress' )
+				esc_html__( 'Provide the main goal for the curriculum so the system can generate aligned sections and lessons.', 'learnpress' )
 			),
 			'form-grid'             => '<div class="form-grid">',
 			'post-title'            => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="post-title" readonly />
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Course title refer', 'learnpress' )
+				esc_html__( 'Course title refer', 'learnpress' ),
+				esc_html__( 'The course description is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' ),
 			),
 			'post-content'          => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea type="text" name="post-content" readonly></textarea>
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Course description refer', 'learnpress' )
+				esc_html__( 'Course description refer', 'learnpress' ),
+				esc_html__( 'The course description is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' )
 			),
 			'goal'                  => sprintf(
 				'<div class="form-group">
@@ -247,6 +251,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 			'audience'      => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Target Audience', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -257,11 +262,13 @@ class AdminEditCourseCurriculumWithAITemplate {
 						'default_value' => 'Students',
 						'multiple'      => true,
 					]
-				)
+				),
+				esc_html__( 'Identifies who will take the course so the content matches their background and skill level.', 'learnpress' )
 			),
 			'tone'          => sprintf(
 				'<div class="form-group">
 					<label for="swal-tone">%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Tone', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -271,11 +278,13 @@ class AdminEditCourseCurriculumWithAITemplate {
 						'multiple'      => true,
 						'default_value' => [ 'Analytical' ],
 					]
-				)
+				),
+				esc_html__( 'Controls the writing style (e.g., friendly, professional, academic) so the content matches your brand and audience.', 'learnpress' )
 			),
 			'language'      => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Language', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -283,7 +292,8 @@ class AdminEditCourseCurriculumWithAITemplate {
 						'name'    => 'language',
 						'options' => $options['language'] ?? [],
 					]
-				)
+				),
+				esc_html__( 'Sets the output language for all generated course content.', 'learnpress' )
 			),
 			'form-grid-end' => '</div>',
 			'step_close'    => '</div>',
