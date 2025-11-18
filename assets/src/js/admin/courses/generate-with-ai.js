@@ -84,20 +84,34 @@ export class CreateCourseViaAI {
 				const popup = SweetAlert.getPopup();
 				popup.click();
 
-				const targetAudience = document.querySelector( 'select[name="target_audience"]' );
+				const targetAudience = popup.querySelector( 'select[name="target_audience"]' );
 				if ( targetAudience && lp_course_ai_setting?.target_audience ) {
 					targetAudience.tomselect.setValue( lp_course_ai_setting.target_audience );
 				}
-
-				const tone = document.querySelector( 'select[name="tone"]' );
+				const tone = popup.querySelector( 'select[name="tone"]' );
 				if ( tone && lp_course_ai_setting?.tone ) {
 					tone.tomselect.setValue( lp_course_ai_setting.tone );
 				}
-
-				const language = document.querySelector( 'select[name="language"]' );
+				const language = popup.querySelector( 'select[name="language"]' );
 				if ( language && lp_course_ai_setting?.language ) {
 					language.tomselect.setValue( lp_course_ai_setting.language );
 				}
+
+				targetAudience.addEventListener( 'change', ( event ) => {
+					lp_course_ai_setting.target_audience = targetAudience.tomselect.getValue();
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
+
+				tone.addEventListener( 'change', ( event ) => {
+					lp_course_ai_setting.tone = tone.tomselect.getValue();
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
+
+				language.addEventListener( 'change', ( event ) => {
+					const value = language.tomselect.getValue();
+					lp_course_ai_setting.language = value ? [ value ] : [];
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
@@ -177,12 +191,6 @@ export class CreateCourseViaAI {
 				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
-					lp_course_ai_setting.target_audience = ( dataSend?.target_audience || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
-					lp_course_ai_setting.tone = ( dataSend?.tone || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
-					lp_course_ai_setting.language = ( dataSend?.language || '' ).split( ',' ).map( ( s ) => s.trim() ).filter( Boolean );
-
-					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
-
 					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
 					elBtnNext.click();
 
@@ -274,23 +282,25 @@ export class CreateCourseViaAI {
 		const elBtnPrev = form.querySelector( '.lp-btn-step[data-action=prev]' );
 		lpUtils.lpShowHideEl( elBtnPrev, 0 );
 
+		const creatingCourseAiModal = document.querySelector( '#lp-tmpl-creating-course-ai' );
+		SweetAlert.fire( {
+			html: creatingCourseAiModal.innerHTML,
+			showCloseButton: false,
+			showConfirmButton: false,
+		} );
+
 		// Ajax to generate prompt
 		const callBack = {
 			success: ( response ) => {
 				const { message, status, data } = response;
-
 				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
 					target.text = data.button_label;
-
+					const htmlContainer = SweetAlert.getHtmlContainer();
 					const createCourseAiSuccessModal = document.querySelector( '#lp-tmpl-create-course-ai-success' );
-					SweetAlert.fire( {
-						html: createCourseAiSuccessModal.innerHTML,
-						showCloseButton: false,
-						showConfirmButton: false,
-					} );
 
+					htmlContainer.innerHTML = createCourseAiSuccessModal.innerHTML;
 					setTimeout(
 						() => {
 							window.location.href = data.edit_course_url;

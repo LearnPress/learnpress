@@ -11,7 +11,7 @@ use LearnPress\Helpers\Template;
  * @since 4.3.0
  * @version 1.0.0
  */
-class AdminCreateCourseAISuccessTemplate {
+class AdminCreatingCourseAITemplate {
 	use Singleton;
 
 	/**
@@ -37,13 +37,13 @@ class AdminCreateCourseAISuccessTemplate {
 
 	public function html_create_course_via_ai_success(): string {
 		$components = [
-			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-create-course-ai-success">',
-			'wrap'                     => '<div class="lp-create-course-ai-success-wrap">',
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-creating-course-ai">',
+			'wrap'                     => '<div class="lp-creating-course-ai">',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
-				esc_html__( 'Create course successfully', 'learnpress' )
+				esc_html__( 'Creating course', 'learnpress' )
 			),
-			'desc' 					   => '<p class="desc">'.esc_html__( 'Create course successfully!', 'learnpress' ).'</p>',
+			'desc' 					   => '<p class="desc">'.esc_html__( 'Creating course. This may take a few moments...', 'learnpress' ).'</p>',
 			'wrap-end'                 => '</div>',
 			'wrap-script-template-end' => '</script>',
 		];
