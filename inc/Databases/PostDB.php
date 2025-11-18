@@ -10,7 +10,7 @@ use LP_Helper;
  * Class PostDB
  *
  * @since 4.2.9.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 class PostDB extends DataBase {
 
@@ -36,7 +36,7 @@ class PostDB extends DataBase {
 	 * @since 4.2.9.3
 	 * @version 1.0.0
 	 */
-	public function get_posts( PostFilter $filter, int &$total_rows = 0 ) {
+	public function get_posts( $filter, int &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {

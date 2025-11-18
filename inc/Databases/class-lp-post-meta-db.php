@@ -28,9 +28,9 @@ class LP_Post_Meta_DB extends LP_Database {
 	 * @return array|object|null|int|string
 	 * @throws Exception
 	 * @since 4.2.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_post_metas( LP_Post_Meta_Filter $filter, &$total_rows = 0 ) {
+	public function get_post_metas( $filter, &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
 		$col_meta_id    = LP_Post_Meta_Filter::COL_META_ID;
 		$col_post_id    = LP_Post_Meta_Filter::COL_POST_ID;
