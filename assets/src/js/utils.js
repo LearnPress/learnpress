@@ -5,7 +5,7 @@
  * @param data
  * @param functions
  * @since 4.2.5.1
- * @version 1.0.4
+ * @version 1.0.5
  */
 export const lpClassName = {
 	hidden: 'lp-hidden',
