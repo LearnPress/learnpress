@@ -18,6 +18,7 @@ $tone            = trim( $params['tone'] ?? 'Informative and encouraging' );
 $reading_level   = trim( $params['reading_level'] ?? 'High school' );
 $target_keywords = trim( $params['target_keywords'] ?? '' );
 
+$goal                 = $params['goal'] ?? '';
 $sections             = $params['section_number'] ?? 3;
 $section_title_length = $params['section_title_length'] ?? 60;
 $section_description_length = $params['section_description_length'] ?? 100;
@@ -86,6 +87,7 @@ return <<<XML
         Your main task is to generate a complete, well-structured, and engaging online course based on all the provided context.
 
         <structure_requirements>
+            - The goal of course is {$goal}
             - The course MUST be divided into exactly **$sections** section(s).
             - Each "section_title" approximately {$section_title_length} words.
             - Each "section_description" approximately {$section_description_length} words.

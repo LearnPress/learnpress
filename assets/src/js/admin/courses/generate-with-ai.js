@@ -7,7 +7,7 @@ import SweetAlert from 'sweetalert2';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 let lp_structure_course;
 let lp_is_generating_course_data = false;
-let lp_is_creating_course = false;
+const lp_course_ai_setting = JSON.parse( localStorage.getItem( 'lp_course_ai_setting' ) ) || {};
 
 export class CreateCourseViaAI {
 	constructor() {
@@ -79,22 +79,54 @@ export class CreateCourseViaAI {
 			width: '60%',
 			showCloseButton: true,
 			showConfirmButton: false,
+			allowOutsideClick: false,
 			didOpen: () => {
 				const popup = SweetAlert.getPopup();
 				popup.click();
+
+				const targetAudience = popup.querySelector( 'select[name="target_audience"]' );
+				if ( targetAudience && lp_course_ai_setting?.target_audience ) {
+					targetAudience.tomselect.setValue( lp_course_ai_setting.target_audience );
+				}
+				const tone = popup.querySelector( 'select[name="tone"]' );
+				if ( tone && lp_course_ai_setting?.tone ) {
+					tone.tomselect.setValue( lp_course_ai_setting.tone );
+				}
+				const language = popup.querySelector( 'select[name="language"]' );
+				if ( language && lp_course_ai_setting?.language ) {
+					language.tomselect.setValue( lp_course_ai_setting.language );
+				}
+
+				targetAudience.addEventListener( 'change', ( event ) => {
+					lp_course_ai_setting.target_audience = targetAudience.tomselect.getValue();
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
+
+				tone.addEventListener( 'change', ( event ) => {
+					lp_course_ai_setting.tone = tone.tomselect.getValue();
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
+
+				language.addEventListener( 'change', ( event ) => {
+					const value = language.tomselect.getValue();
+					lp_course_ai_setting.language = value ? [ value ] : [];
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
-				if (lp_is_generating_course_data || lp_is_creating_course) {
-					SweetAlert.fire({
-						title: 'Generating course data is closed',
-						text: 'The process of generating course data has been canceled.',
+				const closeWarningModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-course-ai'
+				);
+
+				if ( lp_is_generating_course_data ) {
+					SweetAlert.fire( {
+						html: closeWarningModalTemplate.innerHTML,
 						showCloseButton: true,
 						showConfirmButton: true,
-					});
+					} );
 
 					lp_is_generating_course_data = false;
-					lp_is_creating_course = false;
 				}
 			}
 		} );
@@ -203,7 +235,9 @@ export class CreateCourseViaAI {
 			success: ( response ) => {
 				const { message, status, data } = response;
 
-				lpToastify.show( message, status );
+				if ( lp_is_generating_course_data ) {
+					lpToastify.show( message, status );
+				}
 
 				if ( status === 'success' ) {
 					// Save structure data
@@ -248,20 +282,30 @@ export class CreateCourseViaAI {
 		const elBtnPrev = form.querySelector( '.lp-btn-step[data-action=prev]' );
 		lpUtils.lpShowHideEl( elBtnPrev, 0 );
 
+		const creatingCourseAiModal = document.querySelector( '#lp-tmpl-creating-course-ai' );
+		SweetAlert.fire( {
+			html: creatingCourseAiModal.innerHTML,
+			showCloseButton: false,
+			showConfirmButton: false,
+		} );
+
 		// Ajax to generate prompt
 		const callBack = {
 			success: ( response ) => {
 				const { message, status, data } = response;
-
 				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
 					target.text = data.button_label;
+					const htmlContainer = SweetAlert.getHtmlContainer();
+					const createCourseAiSuccessModal = document.querySelector( '#lp-tmpl-create-course-ai-success' );
+
+					htmlContainer.innerHTML = createCourseAiSuccessModal.innerHTML;
 					setTimeout(
 						() => {
 							window.location.href = data.edit_course_url;
 						},
-						1000
+						3000
 					);
 				} else {
 					lpUtils.lpShowHideEl( elBtnPrev, 1 );
@@ -273,11 +317,9 @@ export class CreateCourseViaAI {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
-				lp_is_creating_course = false;
 			},
 		};
 
-		lp_is_creating_course = true;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 }

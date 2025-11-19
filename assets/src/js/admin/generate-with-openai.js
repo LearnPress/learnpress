@@ -8,6 +8,8 @@ import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 
 let lp_structure_course;
 let popupSweetAlert = null;
+let lp_is_generating_course_data = false;
+const lp_course_ai_setting = JSON.parse( localStorage.getItem( 'lp_course_ai_setting' ) ) || {};
 
 export class GenerateWithOpenai {
 	constructor() {
@@ -99,7 +101,6 @@ export class GenerateWithOpenai {
 	showPopup( args ) {
 		const { e, target } = args;
 		const templateId = target.dataset.template || '';
-
 		const modalTemplate = document.querySelector( templateId );
 
 		if ( ! modalTemplate ) {
@@ -112,6 +113,7 @@ export class GenerateWithOpenai {
 			width: '60%',
 			showCloseButton: true,
 			showConfirmButton: false,
+			allowOutsideClick: false,
 			didOpen: () => {
 				popupSweetAlert = SweetAlert.getPopup();
 				// Click to show tomSelect style
@@ -137,9 +139,82 @@ export class GenerateWithOpenai {
 				if ( elPostContent ) {
 					elPostContent.value = post_content;
 				}
+
+				const targetAudience = popupSweetAlert.querySelector( 'select[name="target_audience"]' );
+				if ( targetAudience && lp_course_ai_setting?.target_audience ) {
+					targetAudience.tomselect.setValue( lp_course_ai_setting.target_audience );
+				}
+
+				const tone = popupSweetAlert.querySelector( 'select[name="tone"]' );
+				if ( tone && lp_course_ai_setting?.tone ) {
+					tone.tomselect.setValue( lp_course_ai_setting.tone );
+				}
+
+				const language = popupSweetAlert.querySelector( 'select[name="language"]' );
+				if ( language && lp_course_ai_setting?.language ) {
+					language.tomselect.setValue( lp_course_ai_setting.language );
+				}
+
+				targetAudience.addEventListener( 'change', ( event ) => {
+					lp_course_ai_setting.target_audience = targetAudience.tomselect.getValue();
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
+
+				tone.addEventListener( 'change', ( event ) => {
+					lp_course_ai_setting.tone = tone.tomselect.getValue();
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
+
+				language.addEventListener( 'change', ( event ) => {
+					const value = language.tomselect.getValue();
+					lp_course_ai_setting.language = value ? [ value ] : [];
+					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+				} );
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
+				let html = '';
+				const closeTitleModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-edit-title-ai'
+				);
+
+				const closeDesModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-edit-description-ai'
+				);
+
+				const closeImageModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-edit-image-ai'
+				);
+
+				const closeCurriculumModalTemplate = document.querySelector(
+					'#lp-tmpl-close-warning-edit-curriculum-ai'
+				);
+
+				if ( templateId === '#lp-tmpl-edit-title-ai' ) {
+					html = closeTitleModalTemplate.innerHTML;
+				}
+
+				if ( templateId === '#lp-tmpl-edit-description-ai' ) {
+					html = closeDesModalTemplate.innerHTML;
+				}
+
+				if ( templateId === '#lp-tmpl-edit-image-ai' ) {
+					html = closeImageModalTemplate.innerHTML;
+				}
+
+				if ( templateId === '#lp-tmpl-edit-course-curriculum-ai' ) {
+					html = closeCurriculumModalTemplate.innerHTML;
+				}
+
+				if ( lp_is_generating_course_data ) {
+					SweetAlert.fire( {
+						html,
+						showCloseButton: true,
+						showConfirmButton: true,
+					} );
+
+					lp_is_generating_course_data = false;
+				}
 			}
 		} );
 	}
@@ -219,7 +294,6 @@ export class GenerateWithOpenai {
 						'textarea[name=lp-openai-prompt-generated-field]'
 					);
 					elPromptTextarea.value = data;
-
 					const elBtnNext = form.querySelector(
 						'.lp-btn-step[data-action=next]'
 					);
@@ -265,8 +339,9 @@ export class GenerateWithOpenai {
 		const callBack = {
 			success: ( response ) => {
 				const { message, status, data } = response;
-
-				lpToastify.show( message, status );
+				if ( lp_is_generating_course_data ) {
+					lpToastify.show( message, status );
+				}
 
 				if ( status === 'success' ) {
 					// Save structure data
@@ -290,9 +365,11 @@ export class GenerateWithOpenai {
 			completed: () => {
 				lpUtils.lpSetLoadingEl( target, false );
 				lpUtils.lpShowHideEl( btnPrev, 1 );
+				lp_is_generating_course_data = false;
 			},
 		};
 
+		lp_is_generating_course_data = true;
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 

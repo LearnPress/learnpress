@@ -144,7 +144,7 @@ class AdminEditWithAITemplate {
 			'step'           => '<div class="step-content active" data-step="1">',
 			'title'          => sprintf(
 				'<div class="step-title">%s</div>',
-				esc_html__( 'Step 1 — Config title', 'learnpress' ),
+				esc_html__( 'Step 1 — Configure Course Title', 'learnpress' ),
 			),
 			'description'    => sprintf(
 				'<p class="step-description">%s</p>',
@@ -154,22 +154,28 @@ class AdminEditWithAITemplate {
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea type="text" name="topic">Create title about PHP</textarea>
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Describe what your course is about', 'learnpress' )
+				esc_html__( 'Describe what your course is about', 'learnpress' ),
+				esc_html__( 'Provide a short explanation of the subject or skills your course covers. This helps AI understand the overall direction of your title.', 'learnpress' )
 			),
 			'describe-goals' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea type="text" name="goals">I want create title course advanced PHP 8 function</textarea>
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Describe the main goals of your course', 'learnpress' )
+				esc_html__( 'Describe the main goals of your course', 'learnpress' ),
+				esc_html__( 'Summarize what learners will achieve. AI uses this to make the title more accurate and meaningful.', 'learnpress' )
 			),
 			'length'         => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="length" value="60" />
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Title Length (characters)', 'learnpress' )
+				esc_html__( 'Title Length (characters)', 'learnpress' ),
+				esc_html__( 'Set the maximum number of characters for the generated course title. Ideal for SEO and platform display constraints.', 'learnpress' )
 			),
 			'step_close'     => '</div>',
 		];
@@ -194,6 +200,7 @@ class AdminEditWithAITemplate {
 			'audience'      => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Target Audience', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -204,11 +211,13 @@ class AdminEditWithAITemplate {
 						'default_value' => 'Students',
 						'multiple'      => true,
 					]
-				)
+				),
+				esc_html__( 'Identifies who will take the course so the content matches their background and skill level.', 'learnpress' ),
 			),
 			'tone'          => sprintf(
 				'<div class="form-group">
 					<label for="swal-tone">%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Tone', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -218,11 +227,13 @@ class AdminEditWithAITemplate {
 						'multiple'      => true,
 						'default_value' => [ 'Analytical' ],
 					]
-				)
+				),
+				esc_html__( 'Controls the writing style (e.g., friendly, professional, academic) so the content matches your brand and audience.', 'learnpress' )
 			),
 			'language'      => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Language', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -230,14 +241,17 @@ class AdminEditWithAITemplate {
 						'name'    => 'language',
 						'options' => $options['language'] ?? [],
 					]
-				)
+				),
+				esc_html__( 'Sets the output language for all generated course content.', 'learnpress' )
 			),
 			'outputs'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Outputs', 'learnpress' ),
-				'<input name="outputs" value="2" />'
+				'<input name="outputs" value="2" />',
+				esc_html__( 'Select how many title options the system will generate for you.', 'learnpress' )
 			),
 			'form-grid-end' => '</div>',
 			'step_close'    => '</div>',
@@ -437,22 +451,28 @@ class AdminEditWithAITemplate {
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea type="text" name="post-title" readonly></textarea>
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Title refer', 'learnpress' )
+				esc_html__( 'Title refer', 'learnpress' ),
+				esc_html__( 'This is the course title generated in the previous step or manually entered. The system will use it as reference to generate the course description.', 'learnpress' )
 			),
 			'describe-topic' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea type="text" name="topic">Create description about course learning Php</textarea>
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Describe what makes this course stand out?', 'learnpress' )
+				esc_html__( 'Describe what makes this course stand out?', 'learnpress' ),
+				esc_html__( 'Provide the main strengths or unique selling points to help the system build a compelling course description.', 'learnpress' )
 			),
 			'length'         => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="length" value="1000" />
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Description Length (characters)', 'learnpress' )
+				esc_html__( 'Description Length (characters)', 'learnpress' ),
+				esc_html__( 'Set the maximum number of characters for the generated description.', 'learnpress' )
 			),
 			'step_close'     => '</div>',
 		];
@@ -477,6 +497,7 @@ class AdminEditWithAITemplate {
 			'audience'      => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Target Audience', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -487,11 +508,13 @@ class AdminEditWithAITemplate {
 						'default_value' => 'Students',
 						'multiple'      => true,
 					]
-				)
+				),
+				esc_html__( 'Identifies who will take the course so the content matches their background and skill level.', 'learnpress' ),
 			),
 			'tone'          => sprintf(
 				'<div class="form-group">
 					<label for="swal-tone">%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Tone', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -501,11 +524,13 @@ class AdminEditWithAITemplate {
 						'multiple'      => true,
 						'default_value' => [ 'Analytical' ],
 					]
-				)
+				),
+				esc_html__( 'Controls the writing style (e.g., friendly, professional, academic) so the content matches your brand and audience.', 'learnpress' )
 			),
 			'language'      => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Language', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -513,7 +538,8 @@ class AdminEditWithAITemplate {
 						'name'    => 'language',
 						'options' => $options['language'] ?? [],
 					]
-				)
+				),
+				esc_html__( 'Sets the output language for all generated course content.', 'learnpress' )
 			),
 			'outputs'       => sprintf(
 				'<div class="form-group">
@@ -676,13 +702,16 @@ class AdminEditWithAITemplate {
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea type="text" name="post-title" readonly>Create description about course learning Php</textarea>
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Course Title current', 'learnpress' )
+				esc_html__( 'Course Title Refer', 'learnpress' ),
+				esc_html__( 'The current course title that will be used as reference during image generation.', 'learnpress' )
 			),
 			'style'             => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Style', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -691,20 +720,24 @@ class AdminEditWithAITemplate {
 						'options'       => $options['image-style'] ?? [],
 						'default_value' => 'Realistic',
 					]
-				)
+				),
+				esc_html__( 'Select the visual style such as modern, minimalist, illustration, 3D, etc.', 'learnpress' )
 			),
 			'write-requirement' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="topic" placeholder="%s" />
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Images or icons should be include', 'learnpress' ),
-				esc_html__( 'e.g., books, laptop, graduation cap', 'learnpress' )
+				esc_html__( 'e.g., books, laptop, graduation cap', 'learnpress' ),
+				esc_html__( 'List the specific elements or icons that should appear in the generated image.', 'learnpress' )
 			),
 			'size'              => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Size', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -712,12 +745,14 @@ class AdminEditWithAITemplate {
 						'name'    => 'size',
 						'options' => $size_opts,
 					]
-				)
+				),
+				esc_html__( 'Set the output size such as 1:1, 16:9, 4:5.', 'learnpress' )
 			),
 			'quality'           => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Quality', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -725,14 +760,17 @@ class AdminEditWithAITemplate {
 						'name'    => 'quality',
 						'options' => $quality_opts,
 					]
-				)
+				),
+				esc_html__( 'Select the desired image quality such as standard, high, or premium.', 'learnpress' )
 			),
 			'outputs'           => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input name="outputs" value="2" type="number" />
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Outputs (model dall-e-3 only 1 supported)', 'learnpress' )
+				esc_html__( 'Outputs', 'learnpress' ),
+				esc_html__( 'Number of images you want the system to generate (model dall-e-3 only 1 supported).', 'learnpress' )
 			),
 			'form-grid-end'     => '</div>',
 			'step_close'        => '</div>',
