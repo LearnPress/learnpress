@@ -148,7 +148,7 @@ class AdminEditWithAITemplate {
 			),
 			'description'    => sprintf(
 				'<p class="step-description">%s</p>',
-				esc_html__( 'Config your title you want.', 'learnpress' )
+				esc_html__( 'Provide the basic information to generate your course title.', 'learnpress' )
 			),
 			'describe-topic' => sprintf(
 				'<div class="form-group">
@@ -228,7 +228,7 @@ class AdminEditWithAITemplate {
 						'default_value' => [ 'Analytical' ],
 					]
 				),
-				esc_html__( 'Controls the writing style (e.g., friendly, professional, academic) so the content matches your brand and audience.', 'learnpress' )
+				esc_html__( 'Controls the writing style (e.g., friendly, formal, story-telling) so the content matches your brand and audience.', 'learnpress' )
 			),
 			'language'      => sprintf(
 				'<div class="form-group">
@@ -443,11 +443,11 @@ class AdminEditWithAITemplate {
 			'step'           => '<div class="step-content active" data-step="1">',
 			'title'          => sprintf(
 				'<div class="step-title">%s</div>',
-				esc_html__( 'Step 1 — Config Description', 'learnpress' ),
+				esc_html__( 'Step 1 — Configure Course Description', 'learnpress' ),
 			),
 			'description'    => sprintf(
 				'<p class="step-description">%s</p>',
-				esc_html__( 'Config your description you want.', 'learnpress' )
+				esc_html__( 'Provide the information needed to generate your course description.', 'learnpress' )
 			),
 			'refer-title'    => sprintf(
 				'<div class="form-group">
@@ -527,7 +527,7 @@ class AdminEditWithAITemplate {
 						'default_value' => [ 'Analytical' ],
 					]
 				),
-				esc_html__( 'Controls the writing style (e.g., friendly, professional, academic) so the content matches your brand and audience.', 'learnpress' )
+				esc_html__( 'Controls the writing style (e.g., friendly, formal, story-telling) so the content matches your brand and audience.', 'learnpress' )
 			),
 			'language'      => sprintf(
 				'<div class="form-group">
