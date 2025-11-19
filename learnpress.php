@@ -53,6 +53,7 @@ use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
+use LearnPress\TemplateHooks\Quiz\QuizTemplate;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -326,6 +327,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ProfileGeneralInfoTemplate::instance();
 			FilterCourseTemplate::instance();
 			ProfileQuizzesTemplate::instance();
+			QuizTemplate::instance();
 
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
