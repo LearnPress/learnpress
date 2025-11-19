@@ -750,7 +750,7 @@ class AdminEditWithAITemplate {
 						'options' => $size_opts,
 					]
 				),
-				esc_html__( 'Set the output size such as 1:1, 16:9, 4:5.', 'learnpress' )
+				esc_html__( 'Set the output.', 'learnpress' )
 			),
 			'quality'           => sprintf(
 				'<div class="form-group">
