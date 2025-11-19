@@ -160,7 +160,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Course title refer', 'learnpress' ),
-				esc_html__( 'The course description is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' ),
+				esc_html__( 'The course title is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' ),
 			),
 			'post-content'          => sprintf(
 				'<div class="form-group">
@@ -175,8 +175,10 @@ class AdminEditCourseCurriculumWithAITemplate {
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea type="text" name="goal"></textarea>
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Goal', 'learnpress' )
+				esc_html__( 'Goal', 'learnpress' ),
+				esc_html__( 'Defines the main objective of your curriculum. This helps the AI generate course sections and lessons that align with the intended learning outcomes.', 'learnpress' )
 			),
 			'sections-number'       => sprintf(
 				'<div class="form-group">
@@ -279,7 +281,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 						'default_value' => [ 'Analytical' ],
 					]
 				),
-				esc_html__( 'Controls the writing style (e.g., friendly, professional, academic) so the content matches your brand and audience.', 'learnpress' )
+				esc_html__( 'Controls the writing style (e.g., friendly, formal, story-telling) so the content matches your brand and audience.', 'learnpress' )
 			),
 			'language'      => sprintf(
 				'<div class="form-group">

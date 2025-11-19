@@ -231,11 +231,13 @@ class AdminCreateCourseAITemplate {
 						'default_value' => [ 'Analytical' ],
 					]
 				),
-				esc_html__( 'Controls the writing style (e.g., friendly, professional, academic) so the content matches your brand and audience.', 'learnpress' )
+				esc_html__( 'Controls the writing style (e.g., friendly, formal, story-telling) so the content matches your brand and audience.', 'learnpress' )
 			),
 			'reading_level' => sprintf(
 				'<div class="form-group">
-					<label for="swal-levels">%s</label>%s
+					<label for="swal-levels">%s</label>
+					%s
+					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Reading level', 'learnpress' ),
 				AdminTemplate::html_tom_select(
@@ -243,7 +245,8 @@ class AdminCreateCourseAITemplate {
 						'name'    => 'reading_level',
 						'options' => $options['reading_level'] ?? [],
 					]
-				)
+				),
+				esc_html__( 'Determines the complexity of language (e.g., foundational, intermediate, advanced) so the AI can generate content appropriate for the learners’ comprehension level.', 'learnpress' )
 			),
 			'seo_emphasis'  => sprintf(
 				'<div class="form-group">
