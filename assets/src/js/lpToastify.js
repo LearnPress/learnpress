@@ -10,7 +10,7 @@
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 
-export const argsToastify = {
+const argsToastify = {
 	text: '',
 	gravity: lpData.toast.gravity, // `top` or `bottom`
 	position: lpData.toast.position, // `left`, `center` or `right`
@@ -19,9 +19,14 @@ export const argsToastify = {
 	stopOnFocus: lpData.toast.stopOnFocus == 1,
 	duration: lpData.toast.duration,
 };
-export const show = ( message, status = 'success' ) => {
+export const show = ( message, status = 'success', argsCustom ) => {
+	let args = argsToastify;
+	if ( argsCustom ) {
+		args = { ...args, ...argsCustom };
+	}
+
 	const toastify = new Toastify( {
-		...argsToastify,
+		...args,
 		text: message,
 		className: `${ lpData.toast.classPrefix } ${ status }`,
 	} );

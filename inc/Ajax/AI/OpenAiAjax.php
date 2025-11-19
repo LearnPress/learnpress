@@ -203,7 +203,7 @@ class OpenAiAjax extends AbstractAjax {
 			$response->data->edit_course_url = $course_edit_url;
 			$response->data->button_label    = __( 'Redirecting...', 'learnpress' );
 			$response->status                = 'success';
-			$response->message               = __( 'Create Course Successfully!', 'learnpress' );
+			$response->message               = __( 'Create Course Successfully! Redirecting to course detail...', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

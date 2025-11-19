@@ -282,30 +282,37 @@ export class CreateCourseViaAI {
 		const elBtnPrev = form.querySelector( '.lp-btn-step[data-action=prev]' );
 		lpUtils.lpShowHideEl( elBtnPrev, 0 );
 
+		const windowWidth = window.outerWidth;
+		let alertWidth;
+		if ( windowWidth < 768 ) {
+			alertWidth = '90%';
+		} else {
+			alertWidth = '30%';
+		}
+
 		const creatingCourseAiModal = document.querySelector( '#lp-tmpl-creating-course-ai' );
 		SweetAlert.fire( {
 			html: creatingCourseAiModal.innerHTML,
 			showCloseButton: false,
 			showConfirmButton: false,
+			allowOutsideClick: false,
+			width: alertWidth,
 		} );
 
 		// Ajax to generate prompt
 		const callBack = {
 			success: ( response ) => {
 				const { message, status, data } = response;
+
+				SweetAlert.close();
 				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
-					target.text = data.button_label;
-					const htmlContainer = SweetAlert.getHtmlContainer();
-					const createCourseAiSuccessModal = document.querySelector( '#lp-tmpl-create-course-ai-success' );
-
-					htmlContainer.innerHTML = createCourseAiSuccessModal.innerHTML;
 					setTimeout(
 						() => {
 							window.location.href = data.edit_course_url;
 						},
-						3000
+						2000
 					);
 				} else {
 					lpUtils.lpShowHideEl( elBtnPrev, 1 );

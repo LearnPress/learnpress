@@ -349,10 +349,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditWithAITemplate::instance();
 			AdminEditCourseCurriculumWithAITemplate::instance();
 			AdminGenerateCourseCloseWarningTemplate::instance();
-			AdminCreateCourseAISuccessTemplate::instance();
+			//AdminCreateCourseAISuccessTemplate::instance();
 			AdminEditWithAICloseWarningTemplate::instance();
 			AdminEditCurriculumWithAICloseWarningTemplate::instance();
-			AdminCreatingCourseAITemplate::instance();
+			//AdminCreatingCourseAITemplate::instance();
 
 			// WP GDPR
 			ErasePersonalData::instance();

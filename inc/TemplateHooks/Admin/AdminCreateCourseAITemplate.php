@@ -35,6 +35,7 @@ class AdminCreateCourseAITemplate {
 
 		$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
 		echo $this->html_create_course_via_ai();
+		echo $this->html_creating_course();
 	}
 
 	public function html_create_course_via_ai(): string {
@@ -513,5 +514,49 @@ EOD;
 		];
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML for Popup Creating course template
+	 *
+	 * @return string
+	 */
+	public function html_creating_course(): string {
+		$components = [
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-creating-course-ai">',
+			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'head'                     => sprintf(
+				'<h2>%s</h2>',
+				esc_html__( 'Creating your LearnPress course...', 'learnpress' )
+			),
+			'desc'                     => sprintf(
+				'<p class="desc">%s</p>',
+				esc_html__( 'Please wait while we prepare sections, lessons...', 'learnpress' )
+			),
+			'loader'                   => sprintf(
+				'<div class="lp-ai-loader">
+					<div class="spinner-border" role="status">
+						<span class="visually-hidden">%s</span>
+					</div>
+				</div>',
+				esc_html__( 'Loading...', 'learnpress' ),
+			),
+			'struct'                   => sprintf(
+				'<ul>
+					<li>%s</li>
+					<li>%s</li>
+					<li>%s</li>
+					<li>%s</li>
+				</ul>',
+				esc_html__( 'Creating sections...', 'learnpress' ),
+				esc_html__( 'Creating lessons...', 'learnpress' ),
+				esc_html__( 'Creating quizzes...', 'learnpress' ),
+				esc_html__( 'Finalizing course...', 'learnpress' ),
+			),
+			'wrap-end'                 => '</div>',
+			'wrap-script-template-end' => '</script>',
+		];
+
+		return Template::combine_components( $components );
 	}
 }
