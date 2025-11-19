@@ -832,6 +832,61 @@ $white: #FFFFFF;
 		margin-bottom: 10px;
 		color: $text-dark;
 	}
+
+	.course-sections {
+		margin-top: 30px;
+	}
+
+	.section-title {
+		font-weight: bold;
+		font-size: 1.2em;
+		margin-bottom: 10px;
+		color: $text-dark;
+	}
+
+	.lesson-title, 
+	.quiz-title {
+		font-weight: 600;
+		font-size: 1em;
+		margin-bottom: 8px;
+		color: $text-dark;
+	}
+
+	.course-section-item {
+		border: 1px solid var(--lp-border-color, #E2E0DB);
+		border-radius: 12px;
+		padding: 20px;
+		margin: 20px 0;
+		background-color: #fff;
+	}
+
+	.course-section-items {
+		margin: 20px 0;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	.course-lesson-item,
+	.course-quiz-item,
+	.quiz-question-item {
+		padding: 12px 0;
+		border-top: 1px solid var(--lp-border-color, #E2E0DB);
+
+		&:last-child {
+			padding-bottom: 0;
+		}
+	}
+
+	.course-questions,
+	.course-question-options {
+		margin: 20px 0 0 20px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
 }
 
 .lp-ai-images-warp {
