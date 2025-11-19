@@ -28,7 +28,7 @@ export class GenerateWithOpenai {
 				`<button type="button"
 					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-title-ai">
-					<i class="lp-ico-ai"></i><span>Generate Title with AI</span>
+					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
 				</button>`
 			);
 		} );
@@ -38,7 +38,7 @@ export class GenerateWithOpenai {
 				`<button type="button"
 					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-description-ai">
-					<i class="lp-ico-ai"></i><span>Generate Description with AI</span>
+					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
 				</button>`
 			);
 		} );
@@ -50,7 +50,7 @@ export class GenerateWithOpenai {
 					style="margin: 12px 12px 0 12px;"
 					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-image-ai">
-					<i class="lp-ico-ai"></i><span>Generate Image with AI</span>
+					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
 				</button>`
 			);
 		} );

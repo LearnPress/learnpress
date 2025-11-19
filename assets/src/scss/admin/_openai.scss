@@ -10,9 +10,9 @@ $input-bg: #F7FAFC;
 $white: #FFFFFF;
 
 .lp-btn-generate-course-with-ai, .lp-btn-generate-with-ai, #lp-course-edit-curriculum .lp-btn-generate-with-ai{
-	background: #6B46E9;
-	border: #6B46E9;
-	color: #fff;
+	background: #f6f7f7;
+	border: 1px solid #2271b1;
+	color: #2271b1;
 	text-decoration: none;
 	text-shadow: none;
 	display: inline-flex;
@@ -34,7 +34,9 @@ $white: #FFFFFF;
 	}
 
 	&:hover{
-		opacity: 0.9;
+		//opacity: 0.8;
+		background: #6B46E9;
+		color: #fff;
 	}
 }
 
@@ -45,16 +47,6 @@ $white: #FFFFFF;
 .lp-btn-generate-course-with-ai {
 	position: absolute;
 	margin: 10px 0 0 10px !important;
-
-}
-
-.lp-ico-ai{
-	display: inline-block;
-	width: 13px;
-	height: 13px;
-	background-image: url('../../images/icons/ico-ai.svg');
-	background-size: contain;
-	background-repeat: no-repeat;
 }
 
 .create-course-modal {

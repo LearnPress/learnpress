@@ -33,7 +33,7 @@ export class EditCurriculumAi {
 					`<button type="button"
 					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-course-curriculum-ai">
-					<i class="lp-ico-ai"></i><span>Generate Curriculum with AI</span>
+					<i class="lp-ico-ai"></i><span>Generate with AI</span>
 				</button>`
 				);
 			}
