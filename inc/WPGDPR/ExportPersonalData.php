@@ -65,7 +65,7 @@ class ExportPersonalData {
 			$data              = $this->map_student_statistics( $student_statistic, $data );
 
 			$social_fields = learn_press_get_user_extra_profile_fields();
-			$socials       = learn_press_get_user_extra_profile_info();
+			$socials       = learn_press_get_user_extra_profile_info( $user_id );
 			foreach ( $socials as $key => $value ) {
 				if ( ! empty( $value ) && isset( $social_fields[ $key ] ) ) {
 					$data[] = array(
