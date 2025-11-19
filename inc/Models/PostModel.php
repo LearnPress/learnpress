@@ -13,18 +13,11 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress;
+use LearnPress\Databases\PostDB;
 use LearnPress\Filters\FilterBase;
-use LP_Course_Cache;
-use LP_Course_DB;
-use LP_Course_Filter;
-use LP_Datetime;
-use LP_Post_DB;
 use LP_Post_Meta_DB;
 use LP_Post_Meta_Filter;
 use LP_Post_Type_Filter;
-use LP_User;
-use LP_User_Filter;
-use LP_User_Guest;
 
 use stdClass;
 use Throwable;
@@ -156,10 +149,10 @@ class PostModel {
 	 * @param LP_Post_Type_Filter|FilterBase $filter
 	 *
 	 * @return PostModel|false|static
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function get_item_model_from_db( $filter ) {
-		$lp_post_db = LP_Post_DB::getInstance();
+		$lp_post_db = PostDB::getInstance();
 		$post_model = false;
 
 		try {

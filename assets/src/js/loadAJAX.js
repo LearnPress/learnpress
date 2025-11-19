@@ -177,8 +177,11 @@ const lpAJAX = ( () => {
 			// End
 
 			// Scroll to archive element
-			const elLPTargetY = elLPTarget.getBoundingClientRect().top + window.scrollY - 100;
-			window.scrollTo( { top: elLPTargetY } );
+			if ( ! dataSend.args.hasOwnProperty( 'enableScrollToView' ) ||
+				dataSend.args.enableScrollToView ) {
+				const elLPTargetY = elLPTarget.getBoundingClientRect().top + window.scrollY - 100;
+				window.scrollTo( { top: elLPTargetY } );
+			}
 
 			const callBack = {
 				success: ( response ) => {

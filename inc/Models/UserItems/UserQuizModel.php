@@ -4,7 +4,7 @@
  * Class UserQuizModel
  *
  * @package LearnPress/Classes
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.5
  */
 
@@ -41,6 +41,8 @@ class UserQuizModel extends UserItemModel {
 	 * @var string
 	 */
 	public $ref_type = LP_COURSE_CPT;
+
+	public const STATUS_STARTED = 'started';
 
 	public function __construct( $data = null ) {
 		parent::__construct( $data );
@@ -152,7 +154,7 @@ class UserQuizModel extends UserItemModel {
 			throw new Exception( $can_start->get_error_message() );
 		}
 
-		$this->status     = LP_ITEM_STARTED;
+		$this->status     = self::STATUS_STARTED;
 		$this->graduation = LP_COURSE_GRADUATION_IN_PROGRESS;
 		$this->save();
 
@@ -197,7 +199,7 @@ class UserQuizModel extends UserItemModel {
 		// Remove user_item_meta.
 		learn_press_delete_user_item_meta( $this->get_user_item_id(), '_lp_question_checked' );
 
-		$this->status     = LP_ITEM_STARTED;
+		$this->status     = self::STATUS_STARTED;
 		$this->start_time = gmdate( LP_Datetime::$format, time() );
 		$this->end_time   = null;
 		$this->graduation = LP_COURSE_GRADUATION_IN_PROGRESS;
