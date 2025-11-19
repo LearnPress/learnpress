@@ -22,7 +22,10 @@ export class CreateCourseViaAI {
 		lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
 			el.insertAdjacentHTML(
 				'afterend',
-				`<button type="button" class="lp-btn-generate-course-with-ai"><i class="lp-ico-ai"></i><span>Generate with AI</span></button>`
+				`<button type="button" class="lp-btn-generate-course-with-ai">
+					<i class="lp-ico-ai"></i>
+					<span>${ lpData.i18n.generate_with_ai }</span>
+				</button>`
 			);
 		} );
 
