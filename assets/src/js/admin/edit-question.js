@@ -91,7 +91,9 @@ export class EditQuestion {
 		elQuestionEditMains.forEach( ( elQuestionEditMain ) => {
 			this.sortAbleQuestionAnswer( elQuestionEditMain );
 		} );
+		// End sortable
 
+		// Event click
 		lpUtils.eventHandlers( 'click', [
 			{
 				selector: EditQuestion.selectors.elBtnQuestionCreateType,
@@ -133,26 +135,26 @@ export class EditQuestion {
 				callBack: this.fibDeleteBlank.name,
 				class: this,
 			},
-			/*{
-				selector: EditQuestion.selectors.elTriggerToggle,
-				callBack: this.toggleSection.name,
+			{
+				selector: EditQuestion.selectors.elFibOptionMatchCaseInput,
+				callBack: this.fibShowHideMatchCaseOption.name,
 				class: this,
-			},*/
-			// {
-			// 	selector: EditQuestion.selectors.elFibOptionTitleInput,
-			// 	callBack: this.fibAutoUpdateOptionBlank.name,
-			// 	class: this,
-			// },
-			// {
-			// 	selector: EditQuestion.selectors.elFibOptionMatchCaseInput,
-			// 	callBack: this.fibAutoUpdateOptionBlank.name,
-			// 	class: this,
-			// },
-			// {
-			// 	selector: EditQuestion.selectors.elFibOptionComparisonInput,
-			// 	callBack: this.fibAutoUpdateOptionBlank.name,
-			// 	class: this,
-			// },
+			},
+			{
+				selector: EditQuestion.selectors.elFibOptionComparisonInput,
+				callBack: ( args ) => {
+					const { e, target } = args;
+					const elQuestionEditMain = target.closest(
+						`${ EditQuestion.selectors.elQuestionEditMain }`
+					);
+
+					const elBtnFibSaveContent = elQuestionEditMain.querySelector(
+						`${ EditQuestion.selectors.elBtnFibSaveContent }`
+					);
+
+					elBtnFibSaveContent.click();
+				},
+			},
 		] );
 
 		// Toggle collapse
@@ -168,6 +170,16 @@ export class EditQuestion {
 				callBack: this.checkCanAddAnswer.name,
 				class: this,
 			},
+			{
+				selector: EditQuestion.selectors.elFibOptionTitleInput,
+				callBack: this.fibOptionTitleInputChange.name,
+				class: this,
+			},
+			{
+				selector: EditQuestion.selectors.elAutoSaveQuestion,
+				callBack: this.autoUpdateQuestion.name,
+				class: this,
+			},
 		] );
 
 		// Event keydown
@@ -177,6 +189,15 @@ export class EditQuestion {
 				callBack: this.addQuestionAnswer.name,
 				class: this,
 				checkIsEventEnter: true,
+			},
+		] );
+
+		// Event change
+		lpUtils.eventHandlers( 'change', [
+			{
+				selector: EditQuestion.selectors.elAutoSaveAnswer,
+				callBack: this.autoUpdateAnswer.name,
+				class: this,
 			},
 		] );
 	}
@@ -214,17 +235,32 @@ export class EditQuestion {
 		editor.settings.force_p_newlines = false;
 		editor.settings.forced_root_block = '';
 		editor.settings.force_br_newlines = true;
+
+		// Config use absolute url
+		editor.settings.relative_urls = false;
+		editor.settings.remove_script_host = false;
+		editor.settings.convert_urls = true;
+		editor.settings.document_base_url = lpData.site_url;
+		// End config use absolute url
+
 		// Events focus in TinyMCE editor
 		editor.on( 'change', ( e ) => {
 			// Auto save if it has class lp-auto-save
 			elTextarea.value = editor.getContent();
-			this.autoUpdateQuestion( e, elTextarea );
+			this.autoUpdateQuestion( {
+				e,
+				target: elTextarea,
+			} );
 		} );
 		editor.on( 'keyup', ( e ) => {
 			// Auto save if it has class lp-auto-save
 			elTextarea.value = editor.getContent();
-			this.autoUpdateQuestion( e, elTextarea );
+			this.autoUpdateQuestion( {
+				e,
+				target: elTextarea,
+			} );
 		} );
+
 		editor.on( 'blur', ( e ) => {
 			//console.log( 'Editor blurred:', e.target.id );
 		} );
@@ -328,7 +364,8 @@ export class EditQuestion {
 		editor.on( 'Redo', function( e ) {} );
 	}
 
-	autoUpdateQuestion( e, target, key, value ) {
+	autoUpdateQuestion( args ) {
+		let { e, target, key, value } = args;
 		const elAutoSave = target.closest(
 			`${ EditQuestion.selectors.elAutoSaveQuestion }`
 		);
@@ -588,7 +625,8 @@ export class EditQuestion {
 	}
 
 	// Auto update question answer
-	autoUpdateAnswer( e, target ) {
+	autoUpdateAnswer( args ) {
+		const { e, target } = args;
 		const elAutoSaveAnswer = target.closest(
 			`${ EditQuestion.selectors.elAutoSaveAnswer }`
 		);
@@ -736,7 +774,10 @@ export class EditQuestion {
 							elQuestionAnswerItem.querySelector(
 								`${ EditQuestion.selectors.elAutoSaveAnswer }`
 							);
-						this.autoUpdateAnswer( null, elAutoSaveAnswer );
+						this.autoUpdateAnswer( {
+							e: null,
+							target: elAutoSaveAnswer,
+						} );
 					}, 1000 );
 				},
 				onMove: ( evt ) => {
@@ -1236,7 +1277,8 @@ export class EditQuestion {
 	}
 
 	// Change title of blank option
-	fibOptionTitleInputChange( e, target ) {
+	fibOptionTitleInputChange( args ) {
+		const { e, target } = args;
 		const elFibOptionTitleInput = target.closest(
 			`${ EditQuestion.selectors.elFibOptionTitleInput }`
 		);
@@ -1382,7 +1424,8 @@ export class EditQuestion {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 	// Show/hide match case option
-	fibShowHideMatchCaseOption( e, target ) {
+	fibShowHideMatchCaseOption( args ) {
+		const { e, target } = args;
 		const elFibOptionMatchCaseInput = target.closest(
 			`${ EditQuestion.selectors.elFibOptionMatchCaseInput }`
 		);
@@ -1406,44 +1449,18 @@ export class EditQuestion {
 		} else {
 			lpUtils.lpShowHideEl( elFibOptionMatchCaseWrap, 0 );
 		}
+
+		const elQuestionEditMain = elFibOptionMatchCaseInput.closest(
+			`${ EditQuestion.selectors.elQuestionEditMain }`
+		);
+
+		const elBtnFibSaveContent = elQuestionEditMain.querySelector(
+			`${ EditQuestion.selectors.elBtnFibSaveContent }`
+		);
+
+		elBtnFibSaveContent.click();
 	}
 	/***** End Fill in the blank question type *****/
-
-	/**
-	 * Toggle section
-	 *
-	 * @param e
-	 * @param target
-	 * @param el_trigger  is class name or id name, to find of element to trigger toggle
-	 * @param els_exclude
-	 */
-	toggleSection( e, target, el_trigger = '', els_exclude = [] ) {
-		if ( ! el_trigger ) {
-			el_trigger = EditQuestion.selectors.elTriggerToggle;
-		}
-
-		if ( els_exclude && els_exclude.length > 0 ) {
-			for ( const elExclude of els_exclude ) {
-				if ( target.closest( elExclude ) ) {
-					return;
-				}
-			}
-		}
-
-		const elTinymceHeader = target.closest( el_trigger );
-		if ( ! elTinymceHeader ) {
-			return;
-		}
-
-		const elSectionToggle = elTinymceHeader.closest(
-			`${ EditQuestion.selectors.elSectionToggle }`
-		);
-		if ( ! elSectionToggle ) {
-			return;
-		}
-
-		elSectionToggle.classList.toggle( `${ EditQuestion.selectors.elCollapse }` );
-	}
 
 	// Generate a random string of specified length, for set unique id
 	randomString( length = 10 ) {

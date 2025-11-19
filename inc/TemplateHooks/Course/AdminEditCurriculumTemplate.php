@@ -9,6 +9,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Database;
 use LP_Post_DB;
@@ -481,7 +482,10 @@ class AdminEditCurriculumTemplate {
 			'wrap'             => '<div class="section-actions">',
 			'buttons'          => $html_buttons,
 			'btn-select-items' => sprintf(
-				'<button type="button" class="button lp-btn-show-popup-items-to-select">%s</button>',
+				'<button type="button"
+					data-template="#lp-tmpl-select-course-items-bank"
+					class="button lp-btn-show-popup-items-to-select">
+					%s</button>',
 				__( 'Content Bank', 'learnpress' )
 			),
 			'add-item-type'    => $this->html_add_item_type(),
@@ -527,42 +531,16 @@ class AdminEditCurriculumTemplate {
 	 * @return string
 	 */
 	public function html_popup_items_to_select_clone( CourseModel $course_model ): string {
-		$html_tabs         = '';
-		$course_item_types = CourseModel::item_types_support();
-		foreach ( $course_item_types as $type ) {
-			$item_label = CourseModel::item_types_label( $type );
-			$tab_active = $type === LP_LESSON_CPT ? ' active' : '';
-			$html_tabs .= sprintf(
-				'<li data-type="%s" class="tab %s"><a href="#">%s</a></li>',
-				$type,
-				$tab_active,
-				$item_label
-			);
-		}
-
-		$section_header = [
-			'wrap'     => '<div class="header">',
-			'count'    => '<div class="header-count-items-selected lp-hidden"></div>',
-			'tabs'     => sprintf(
-				'<ul class="tabs">%s</ul>',
-				$html_tabs
-			),
-			'wrap_end' => '</div>',
-		];
-
 		/**
 		 * @uses self::render_list_items_not_assign
 		 */
-		ob_start();
-		lp_skeleton_animation_html( 10 );
-		$html_loading = ob_get_clean();
-		$html_items   = TemplateAJAX::load_content_via_ajax(
+		$html_items = TemplateAJAX::load_content_via_ajax(
 			[
-				'id_url'                  => 'list-items-not-assign',
-				'html_no_load_ajax_first' => $html_loading,
-				'course_id'               => $course_model->ID,
-				'item_type'               => LP_LESSON_CPT,
-				'paged'                   => 1,
+				'id_url'             => 'list-items-not-assign',
+				'enableScrollToView' => false,
+				'course_id'          => $course_model->ID,
+				'item_type'          => LP_LESSON_CPT,
+				'paged'              => 1,
 			],
 			[
 				'class'  => self::class,
@@ -570,53 +548,17 @@ class AdminEditCurriculumTemplate {
 			]
 		);
 
-		$section_main = [
-			'wrap'                => '<div class="main">',
-			'wrap_items'          => '<div class="list-items-wrap">',
-			'search'              => sprintf(
-				'<input class="%1$s" name="%1$s" type="text" placeholder="%2$s">',
-				'lp-search-title-item',
-				__( 'Type here to search for an item', 'learnpress' )
-			),
-			'list-items'          => $html_items,
-			'wrap_items_end'      => '</div>',
-			'list-items-selected' => '
-				<ul class="list-items-selected lp-hidden">
-					<li class="li-item-selected clone lp-hidden" data-id="" data-type="">
-						<i class="dashicons dashicons-remove"></i>
-						<div>
-							<span class="item-title">item_title</span>
-							(#<span class="item-id">item_id</span> - <span class="item-type">item_type</span>)
-						</div>
-					</li>
-				</ul>',
-			'wrap_end'            => '</div>',
-		];
-
-		$section_footer = [
-			'wrap'                 => '<div class="footer">',
-			'btn-add'              => sprintf(
-				'<button type="button" disabled="disabled" class="button lp-btn-add-items-selected">%s</button>',
-				__( 'Add', 'learnpress' )
-			),
-			'count-items-selected' => sprintf(
-				'<button type="button" disabled="disabled" class="button lp-btn-count-items-selected">%s %s</button>',
-				sprintf( __( 'Selected items', 'learnpress' ), 0 ),
-				'<span class="count"></span>'
-			),
-			'btn-back'             => sprintf(
-				'<button type="button" class="button lp-btn-back-to-select-items lp-hidden">%s</button>',
-				__( 'Back', 'learnpress' )
-			),
-			'wrap_end'             => '</div>',
-		];
+		$tabs              = [];
+		$course_item_types = CourseModel::item_types_support();
+		foreach ( $course_item_types as $type ) {
+			$item_label    = CourseModel::item_types_label( $type );
+			$tabs[ $type ] = $item_label;
+		}
 
 		$section = [
-			'wrap'     => '<div class="lp-popup-items-to-select clone lp-hidden">',
-			'header'   => Template::combine_components( $section_header ),
-			'main'     => Template::combine_components( $section_main ),
-			'footer'   => Template::combine_components( $section_footer ),
-			'wrap_end' => '</div>',
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-select-course-items-bank">',
+			'popup'                    => AdminTemplate::html_popup_items_to_select_clone( $tabs, $html_items ),
+			'wrap-script-template-end' => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -717,63 +659,43 @@ class AdminEditCurriculumTemplate {
 					$checked = ' checked="checked"';
 				}
 
+				$title_display = sprintf(
+					'<span class="title">%s<strong>(#%d)</strong></span>',
+					$post->post_title,
+					$post->ID,
+				);
+
 				$html_lis .= sprintf(
 					'<li class="lp-select-item">%s%s</li>',
 					sprintf(
-						'<input name="lp-select-item" value="%d" data-type="%s" data-title="%s" %s data-edit-link="%s" type="checkbox" />',
+						'<input name="lp-select-item"
+							data-id="%d"
+							data-type="%s"
+							data-title="%s" %s data-edit-link="%s"
+							data-title-selected="%s"
+							type="checkbox" />',
 						esc_attr( $post->ID ?? 0 ),
 						esc_attr( $post->post_type ?? '' ),
-						esc_attr( $post->post_title ?? '' ),
+						esc_attr( $title_display ), // For JS display on list selected.
 						esc_attr( $checked ),
-						$itemModel->get_edit_link()
+						get_permalink( $post->ID ),
+						esc_attr( get_the_title( $post->ID ) )
 					),
-					sprintf(
-						'<span class="title">%s<strong>(#%d)</strong></span>',
-						$post->post_title,
-						$post->ID
-					)
+					$title_display
 				);
 			}
 		}
-
-		$page_numbers = paginate_links(
-			apply_filters(
-				'learn_press_pagination_args',
-				array(
-					'base'      => add_query_arg( 'paged', '%#%', \LP_Helper::getUrlCurrent() ),
-					'format'    => '',
-					'add_args'  => '',
-					'current'   => max( 1, $paged ),
-					'total'     => $total_pages,
-					'prev_text' => '<i class="lp-icon-arrow-left"></i>',
-					'next_text' => '<i class="lp-icon-arrow-right"></i>',
-					'type'      => 'array',
-					'end_size'  => 3,
-					'mid_size'  => 3,
-				)
-			)
-		);
-
-		$html_li_number = '';
-		if ( ! empty( $page_numbers ) ) {
-			foreach ( $page_numbers as $page_number ) {
-				$html_li_number .= sprintf(
-					'<li>%s</li>',
-					$page_number
-				);
-			}
-		}
-		$section_pagination = [
-			'wrap'     => '<ul class="pagination">',
-			'numbers'  => $html_li_number,
-			'wrap_end' => '</ul>',
-		];
 
 		$section = [
 			'ul'         => '<ul class="list-items">',
 			'items'      => $html_lis,
 			'ul_end'     => '</ul>',
-			'pagination' => Template::combine_components( $section_pagination ),
+			'pagination' => Template::instance()->html_pagination(
+				[
+					'total_pages' => $total_pages,
+					'paged'       => $paged,
+				]
+			),
 		];
 
 		$content->content = Template::combine_components( $section );
