@@ -31,9 +31,9 @@ export class EditCurriculumAi {
 				elCountSections.insertAdjacentHTML(
 					'afterend',
 					`<button type="button"
-					class="lp-btn-generate-with-ai button-secondary"
+					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-course-curriculum-ai">
-					Generate Curriculum with AI
+					<i class="lp-ico-ai"></i><span>Generate Curriculum with AI</span>
 				</button>`
 				);
 			}

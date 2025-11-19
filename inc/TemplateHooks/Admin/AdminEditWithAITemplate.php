@@ -272,9 +272,11 @@ class AdminEditWithAITemplate {
 			'prompt'     => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<i>%s</i>
 				</div>',
 				esc_html__( 'Generated Prompt', 'learnpress' ),
 				'<textarea name="lp-openai-prompt-generated-field"></textarea>',
+				__( 'Shows the auto-generated AI prompt, allowing further adjustments before submission.', 'learnpress' )
 			),
 			'step_close' => '</div>',
 		];
@@ -312,13 +314,13 @@ class AdminEditWithAITemplate {
 		$target = $args['target-apply'] ?? '';
 
 		$section = [
-			'wrap'         => '<div class="lp-ai-generated-result-item">',
+			'wrap'         => '<div class="lp-ai-generated-result-item form-group">',
 			'label'        => sprintf(
 				'<label>%s</label>',
 				sprintf( __( 'Result %d', 'learnpress' ), $index + 1 )
 			),
 			'textarea'     => sprintf(
-				'<textarea class="lp-ai-string-result">%s</textarea>',
+				'<textarea class="lp-ai-string-result" cols="3">%s</textarea>',
 				esc_attr( $value )
 			),
 			'copy_button'  => sprintf(
@@ -567,9 +569,11 @@ class AdminEditWithAITemplate {
 			'prompt'     => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<i>%s</i>
 				</div>',
 				esc_html__( 'Generated Prompt', 'learnpress' ),
 				'<textarea name="lp-openai-prompt-generated-field"></textarea>',
+				__( 'Shows the auto-generated AI prompt, allowing further adjustments before submission.', 'learnpress' )
 			),
 			'step_close' => '</div>',
 		];
@@ -791,9 +795,11 @@ class AdminEditWithAITemplate {
 			'prompt'     => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<i>%s</i>
 				</div>',
 				esc_html__( 'Generated Prompt', 'learnpress' ),
 				'<textarea name="lp-openai-prompt-generated-field"></textarea>',
+				__( 'Shows the auto-generated AI prompt, allowing further adjustments before submission.', 'learnpress' )
 			),
 			'step_close' => '</div>',
 		];

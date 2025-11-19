@@ -314,9 +314,11 @@ class AdminEditCourseCurriculumWithAITemplate {
 			'prompt'     => sprintf(
 				'<div class="form-group">
 					<label>%s</label>%s
+					<i>%s</i>
 				</div>',
 				esc_html__( 'Generated Prompt', 'learnpress' ),
 				'<textarea name="lp-openai-prompt-generated-field"></textarea>',
+				__( 'Shows the auto-generated AI prompt, allowing further adjustments before submission.', 'learnpress' )
 			),
 			'step_close' => '</div>',
 		];

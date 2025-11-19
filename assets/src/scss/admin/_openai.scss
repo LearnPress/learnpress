@@ -7,9 +7,54 @@ $border-color: #E5E7EB;
 $input-bg: #F7FAFC;
 $white: #FFFFFF;
 
+.lp-btn-generate-course-with-ai, .lp-btn-generate-with-ai, #lp-course-edit-curriculum .lp-btn-generate-with-ai{
+	background: #6B46E9;
+	border: #6B46E9;
+	color: #fff;
+	text-decoration: none;
+	text-shadow: none;
+	display: inline-block;
+	font-size: 13px;
+	line-height: 2.15384615;
+	min-height: 30px;
+	padding: 0 10px;
+	cursor: pointer;
+	-webkit-appearance: none;
+	border-radius: 3px;
+	white-space: nowrap;
+	box-sizing: border-box;
+
+	&:active{
+		box-shadow: none;
+		color: #fff;
+	}
+
+	&:hover{
+		opacity: 0.9;
+	}
+
+	i {
+		margin-right: 2px;
+	}
+}
+
+#lp-course-edit-curriculum .lp-btn-generate-with-ai:hover {
+	background: #6B46E9;
+}
+
 .lp-btn-generate-course-with-ai {
 	position: absolute;
 	margin: 10px 0 0 10px !important;
+
+}
+
+.lp-ico-ai{
+	display: inline-block;
+	width: 13px;
+	height: 13px;
+	background-image: url('../../images/icons/ico-ai.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
 }
 
 .create-course-modal {
@@ -762,6 +807,14 @@ $white: #FFFFFF;
 		.lp-ai-generated-results {
 			display: grid;
 			gap: 10px;
+
+			.lp-ai-string-result {
+				margin-bottom: 4px;
+			}
+
+			button {
+				margin-right: 4px;
+			}
 		}
 	}
 

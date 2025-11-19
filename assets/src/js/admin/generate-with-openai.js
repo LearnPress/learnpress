@@ -26,9 +26,9 @@ export class GenerateWithOpenai {
 			el.insertAdjacentHTML(
 				'afterend',
 				`<button type="button"
-					class="lp-btn-generate-with-ai button-secondary"
+					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-title-ai">
-					Generate Title with AI
+					<i class="lp-ico-ai"></i><span>Generate Title with AI</span>
 				</button>`
 			);
 		} );
@@ -36,9 +36,9 @@ export class GenerateWithOpenai {
 			el.insertAdjacentHTML(
 				'beforeend',
 				`<button type="button"
-					class="lp-btn-generate-with-ai button-secondary"
+					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-description-ai">
-					Generate Description with AI
+					<i class="lp-ico-ai"></i><span>Generate Description with AI</span>
 				</button>`
 			);
 		} );
@@ -48,9 +48,9 @@ export class GenerateWithOpenai {
 				'afterend',
 				`<button type="button"
 					style="margin: 12px 12px 0 12px;"
-					class="lp-btn-generate-with-ai button-secondary"
+					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-image-ai">
-					Generate Image with AI
+					<i class="lp-ico-ai"></i><span>Generate Image with AI</span>
 				</button>`
 			);
 		} );
@@ -100,7 +100,9 @@ export class GenerateWithOpenai {
 
 	showPopup( args ) {
 		const { e, target } = args;
-		const templateId = target.dataset.template || '';
+		const templateId = target.dataset.template || target.closest( '.lp-btn-generate-with-ai' ).dataset.template ||
+			target.closest( '.lp-generate-data-ai-wrap' ).dataset.template || '';
+
 		const modalTemplate = document.querySelector( templateId );
 
 		if ( ! modalTemplate ) {
@@ -141,35 +143,41 @@ export class GenerateWithOpenai {
 				}
 
 				const targetAudience = popupSweetAlert.querySelector( 'select[name="target_audience"]' );
-				if ( targetAudience && lp_course_ai_setting?.target_audience ) {
-					targetAudience.tomselect.setValue( lp_course_ai_setting.target_audience );
+				if ( targetAudience ) {
+					if ( lp_course_ai_setting?.target_audience ) {
+						targetAudience.tomselect.setValue( lp_course_ai_setting.target_audience );
+					}
+
+					targetAudience.addEventListener( 'change', ( event ) => {
+						lp_course_ai_setting.target_audience = targetAudience.tomselect.getValue();
+						localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+					} );
 				}
 
 				const tone = popupSweetAlert.querySelector( 'select[name="tone"]' );
-				if ( tone && lp_course_ai_setting?.tone ) {
-					tone.tomselect.setValue( lp_course_ai_setting.tone );
+				if ( tone ) {
+					if ( lp_course_ai_setting?.tone ) {
+						tone.tomselect.setValue( lp_course_ai_setting.tone );
+					}
+
+					tone.addEventListener( 'change', ( event ) => {
+						lp_course_ai_setting.tone = tone.tomselect.getValue();
+						localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+					} );
 				}
 
 				const language = popupSweetAlert.querySelector( 'select[name="language"]' );
-				if ( language && lp_course_ai_setting?.language ) {
-					language.tomselect.setValue( lp_course_ai_setting.language );
+				if ( language ) {
+					if ( lp_course_ai_setting?.language ) {
+						language.tomselect.setValue( lp_course_ai_setting.language );
+					}
+
+					language.addEventListener( 'change', ( event ) => {
+						const value = language.tomselect.getValue();
+						lp_course_ai_setting.language = value ? [ value ] : [];
+						localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
+					} );
 				}
-
-				targetAudience.addEventListener( 'change', ( event ) => {
-					lp_course_ai_setting.target_audience = targetAudience.tomselect.getValue();
-					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
-				} );
-
-				tone.addEventListener( 'change', ( event ) => {
-					lp_course_ai_setting.tone = tone.tomselect.getValue();
-					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
-				} );
-
-				language.addEventListener( 'change', ( event ) => {
-					const value = language.tomselect.getValue();
-					lp_course_ai_setting.language = value ? [ value ] : [];
-					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
-				} );
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
