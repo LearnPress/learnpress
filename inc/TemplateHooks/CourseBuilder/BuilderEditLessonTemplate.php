@@ -54,12 +54,12 @@ class BuilderEditLessonTemplate {
 			}
 		}
 
-		$html_header     = $this->header_overview( $lesson_model );
+		$html_header     = $this->header_section( $lesson_model );
 		$html_assigned   = $this->assigned_course( $lesson_model );
 		$html_edit_title = $this->edit_title( $lesson_model );
 		$html_edit_desc  = $this->edit_desc( $lesson_model );
 		$section         = [
-			'wrapper'                    => sprintf( '<div class="cb-section__lesson-overview" data-lesson-id="%s">', $lesson_id ),
+			'wrapper'                    => sprintf( '<div class="cb-section__lesson-edit" data-lesson-id="%s">', $lesson_id ),
 			'header'                     => $html_header,
 			'wrapper_title_assigned'     => sprintf( '<div class="cb-section__lesson-title-assigned">' ),
 			'edit_title'                 => $html_edit_title,
@@ -72,10 +72,10 @@ class BuilderEditLessonTemplate {
 		echo Template::combine_components( $section );
 	}
 
-	public function header_overview( $lesson_model ) {
+	public function header_section( $lesson_model ) {
 		$status     = ! empty( $lesson_model ) ? $lesson_model->post_status : '';
-		$btn_update = sprintf( '<div class="cb-button cb-btn-update__lesson">%s</div>', __( 'Update', 'learnpress' ) );
-		$btn_trash  = sprintf( '<div class="cb-button cb-btn-trash__lesson">%s</div>', __( 'Trash', 'learnpress' ) );
+		$btn_update = sprintf( '<div class="cb-button cb-btn-update__lesson" data-title-update="%s" data-title-publish="%s">%s</div>', __( 'Update', 'learnpress' ), __( 'Publish', 'learnpress' ), $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
+		$btn_trash  = ! empty( $lesson_model ) ? sprintf( '<div class="cb-button cb-btn-trash__lesson">%s</div>', __( 'Trash', 'learnpress' ) ) : '';
 		$header     = [
 			'wrapper'          => '<div class="cb-section__header">',
 			'wrapper_left'     => '<div class="cb-section__header-left">',
@@ -171,10 +171,6 @@ class BuilderEditLessonTemplate {
 	}
 
 	public function section_settings() {
-		// wp_enqueue_script( 'lp-cb-edit-curriculum' );
-		// wp_enqueue_style( 'lp-cb-edit-curriculum' );
-		// wp_enqueue_script( 'lp-cb-learnpress' );
-
 		$lesson_id = CourseBuilder::get_post_id();
 
 		if ( $lesson_id === 'post-new' ) {
@@ -198,10 +194,14 @@ class BuilderEditLessonTemplate {
 		$metabox->output( $lesson_model );
 		$settings = ob_get_clean();
 
-		$output = [
-			'wrapper'     => '<div id="lesson-settings">',
-			'settings'    => $settings,
-			'wrapper_end' => '</div>',
+		$html_header = $this->header_section( $lesson_model );
+		$output      = [
+			'wrapper'          => sprintf( '<div class="cb-section__lesson-edit" data-lesson-id="%s">', $lesson_id ),
+			'header'           => $html_header,
+			'form_setting'     => '<form name="lp-form-setting-lesson" class="lp-form-setting-lesson" method="post" enctype="multipart/form-data">',
+			'settings'         => $settings,
+			'form_setting_end' => '</form>',
+			'wrapper_end'      => '</div>',
 		];
 
 		echo Template::combine_components( $output );

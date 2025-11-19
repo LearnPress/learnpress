@@ -12,14 +12,15 @@ use Exception;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\LessonPostModel;
-use LearnPress\Models\UserModel;
+use LearnPress\Models\QuizPostModel;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderEditCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuizTemplate;
 use LP_Course_CURD;
-use LP_Course_Post_Type;
 use LP_Helper;
 use LP_Lesson_CURD;
+use LP_Quiz_CURD;
 use LP_REST_Response;
 use stdClass;
 
@@ -70,6 +71,25 @@ class CourseBuilderAjax extends AbstractAjax {
 		return $params;
 	}
 
+	public static function check_valid_quiz() {
+		$params = wp_unslash( $_REQUEST['data'] ?? '' );
+		if ( empty( $params ) ) {
+			throw new Exception( 'Error: params invalid!' );
+		}
+
+		$params     = LP_Helper::json_decode( $params, true );
+		$quiz_id    = ! empty( $params['quiz_id'] ) ? (int) $params['quiz_id'] : 0;
+		$quiz_model = QuizPostModel::find( $quiz_id, true );
+		if ( empty( $quiz_model ) ) {
+			$params['insert'] = true;
+		} else {
+			$params['insert']     = false;
+			$params['quiz_model'] = $quiz_model;
+		}
+
+		return $params;
+	}
+
 	/**
 	 * Save Course.
 	 *
@@ -104,7 +124,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $course_id ) ) {
 					throw new Exception( $course_id->get_error_message() );
 				}
-			} else {
+			} elseif ( ! empty( $title ) ) {
 				$course_model = $data['course_model'];
 				// Support for co-instructor.
 				$co_instructor_ids = $course_model->get_meta_value_by_key( '_lp_co_teacher', [] );
@@ -155,7 +175,7 @@ class CourseBuilderAjax extends AbstractAjax {
 
 	public function update_setting( $id, $settings ) {
 		switch ( $settings['type'] ) {
-			case 'LP_Meta_Box_Text_Field':
+			case 'text':
 				$value = sanitize_text_field( wp_unslash( $settings['value'] !== false ? $settings['value'] : $settings['default'] ) );
 
 				if ( isset( $settings['extra']['type_input'] ) && $settings['extra']['type_input'] === 'number' && $value !== '' ) {
@@ -188,10 +208,10 @@ class CourseBuilderAjax extends AbstractAjax {
 
 				update_post_meta( $id, $settings['id'], $value );
 				break;
-			case 'LP_Meta_Box_Textarea_Field':
+			case 'textarea':
 				update_post_meta( $id, $settings['id'], wp_kses_post( wp_unslash( $settings['value'] !== false ? $settings['value'] : $settings['default'] ) ) );
 				break;
-			case 'LP_Meta_Box_Duration_Field':
+			case 'duration':
 				if ( $settings['value'] !== false && $settings['value'] !== '' ) {
 					$value = sanitize_text_field( wp_unslash( $settings['value'] ) );
 
@@ -206,7 +226,7 @@ class CourseBuilderAjax extends AbstractAjax {
 
 				update_post_meta( $id, $settings['id'], $value );
 				break;
-			case 'LP_Meta_Box_Extra_Field':
+			case 'extra':
 				$value = wp_unslash( $settings['value'] !== false && $settings['value'] !== '' ? $settings['value'] : $settings['default'] );
 				$value = array_filter(
 					$value,
@@ -218,18 +238,18 @@ class CourseBuilderAjax extends AbstractAjax {
 				update_post_meta( $id, $settings['id'], array_map( 'sanitize_text_field', array_values( $value ) ) );
 				break;
 
-			case 'LP_Meta_Box_File_Field':
+			case 'file':
 				$value = wp_unslash( $settings['value'] !== false && $settings['value'] !== '' ? wp_unslash( array_map( 'absint', $settings['value'] ) ) : $settings['default'] );
 
 				update_post_meta( $id, $settings['id'], $value );
 				break;
-			case 'LP_Meta_Box_Autocomplete_Field':
+			case 'autocomplete':
 				$value = wp_unslash( $settings['value'] !== false && $settings['value'] !== '' ? wp_unslash( array_map( 'absint', $settings['value'] ) ) : $settings['default'] );
 				$value = apply_filters( 'learn-press/admin/metabox/autocomplete/' . $settings['id'] . '/save', $value, wp_unslash( $settings['value'] ), $id );
 
 				update_post_meta( $id, $settings['id'], $value );
 				break;
-			case 'LP_Meta_Box_Select_Field':
+			case 'select':
 				$value = wp_unslash( $settings['value'] !== false && $settings['value'] !== '' ? wp_unslash( $settings['value'] ) : $settings['default'] );
 
 				if ( ! empty( $settings['extra']['custom_save'] ) ) {
@@ -258,7 +278,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 				break;
 			default:
-				update_post_meta( $id, $settings['id'], wp_unslash( $settings['value'] !== false ? $settings['value'] : $settings['default'] ) ); // Cannot sanitize because "Nham bao the"
+				update_post_meta( $id, $settings['id'], wp_unslash( $settings['value'] !== false ? $settings['value'] : $settings['default'] ) );
 		}
 	}
 
@@ -428,7 +448,7 @@ class CourseBuilderAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Duplicate for course.
+	 * Duplicate for lesson.
 	 *
 	 */
 	public function duplicate_lesson() {
@@ -477,10 +497,9 @@ class CourseBuilderAjax extends AbstractAjax {
 			$lesson_id    = $data['lesson_id'] ?? 0;
 			$title        = $data['lesson_title'] ?? '';
 			$description  = $data['lesson_description'] ?? '';
-			$settings     = $data['lesson_settings'] ?? [];
+			$settings     = $data['lesson_settings'] ?? false;
 			$is_elementor = $data['is_elementor'] ?? false;
 			$insert       = $data['insert'];
-			$is_publish   = $data['isPublic'] ?? false;
 
 			if ( $insert ) {
 				$lesson_id = wp_insert_post(
@@ -496,7 +515,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $lesson_id ) ) {
 					throw new Exception( $lesson_id->get_error_message() );
 				}
-			} else {
+			} elseif ( ! empty( $title ) ) {
 				$lesson_model = $data['lesson_model'];
 
 				if ( ! $lesson_model ) {
@@ -518,14 +537,11 @@ class CourseBuilderAjax extends AbstractAjax {
 					'post_type'    => LP_LESSON_CPT,
 					'post_title'   => sanitize_text_field( $title ?? '' ),
 					'post_content' => $description ?? '',
+					'post_status'  => 'publish',
 				);
 
 				if ( defined( 'ELEMENTOR_VERSION' ) ) {
 					\Elementor\Plugin::$instance->documents->get( $lesson_id )->set_is_built_with_elementor( ! empty( $is_elementor ) );
-				}
-
-				if ( $is_publish ) {
-					$update_arg['post_status'] = 'publish';
 				}
 
 				$update = wp_update_post( $update_arg );
@@ -535,14 +551,34 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 			}
 
-			if ( ! empty( $settings ) ) {
-				foreach ( $settings as $item_setting ) {
-					$this->update_setting( $lesson_id, $item_setting );
-				}
+			if ( $settings ) {
+				$duration_value   = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '';
+				$setting_duration = [
+					'id'      => '_lp_duration',
+					'type'    => 'duration',
+					'value'   => $duration_value,
+					'default' => '0 minute',
+					'extra'   => [
+						'default_time' => 'minute',
+					],
+				];
+
+				$setting_preview = [
+					'id'      => '_lp_preview',
+					'type'    => 'checkbox',
+					'value'   => $data['_lp_preview'] ?? '',
+					'default' => '',
+				];
+
+				$this->update_setting( $lesson_id, $setting_duration );
+				$this->update_setting( $lesson_id, $setting_preview );
 			}
+
+			do_action( 'learn-press/course-builder/update-lesson', $data );
 
 			$response->status              = 'success';
 			$response->data->lesson_id_new = $data['insert'] ? $lesson_id : '';
+			$response->data->status        = 'publish';
 			$response->message             = $insert ? esc_html__( 'Insert lesson successfully', 'learnpress' ) : esc_html__( 'Update lesson successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
@@ -600,8 +636,236 @@ class CourseBuilderAjax extends AbstractAjax {
 				$message = __( 'Lesson has been moved to publish', 'learnpress' );
 			}
 
-			$response->status  = 'success';
-			$response->message = $message;
+			$response->data->status = $status;
+			$response->status       = 'success';
+			$response->message      = $message;
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	public function duplicate_quiz() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data       = self::check_valid_quiz();
+			$quiz_id    = $data['quiz_id'] ?? 0;
+			$quiz_model = $data['quiz_model'];
+
+			if ( absint( $quiz_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+				throw new Exception( __( 'You are not allowed to duplicate this quiz', 'learnpress' ) );
+			}
+
+			if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
+				require_once LP_PLUGIN_PATH . 'inc/admin/lp-admin-functions.php';
+			}
+
+			$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => 'publish' ) );
+			$curd           = new LP_Quiz_CURD();
+			$new_item_id    = $curd->duplicate( $quiz_id, $duplicate_args );
+
+			if ( is_wp_error( $new_item_id ) ) {
+				throw new Exception( $new_item_id->get_error_message() );
+			}
+			$quiz_model_new       = QuizPostModel::find( $new_item_id, true );
+			$html                 = BuilderTabQuizTemplate::render_quiz( $quiz_model_new );
+			$response->status     = 'success';
+			$response->data->html = $html;
+			$response->message    = __( 'Quiz duplicated successfully', 'learnpress' );
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	public function update_quiz() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data         = self::check_valid_quiz();
+			$quiz_id      = $data['quiz_id'] ?? 0;
+			$title        = $data['quiz_title'] ?? '';
+			$description  = $data['quiz_description'] ?? '';
+			$settings     = $data['quiz_settings'] ?? false;
+			$is_elementor = $data['is_elementor'] ?? false;
+			$insert       = $data['insert'];
+
+			if ( $insert ) {
+				$quiz_id = wp_insert_post(
+					array(
+						'post_type'    => LP_QUIZ_CPT,
+						'post_title'   => sanitize_text_field( $title ?? '' ),
+						'post_content' => $description ?? '',
+						'post_status'  => 'publish',
+					),
+					true
+				);
+
+				if ( is_wp_error( $quiz_id ) ) {
+					throw new Exception( $quiz_id->get_error_message() );
+				}
+			} elseif ( ! empty( $title ) ) {
+				$quiz_model = $data['quiz_model'];
+
+				if ( ! $quiz_model ) {
+					throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+				}
+
+				$course_id = $this->get_course_by_item_id( $quiz_id );
+
+				// Support for co-instructor.
+				$co_instructor_ids = get_post_meta( $course_id, '_lp_co_teacher', false );
+				$co_instructor_ids = ! empty( $co_instructor_ids ) ? $co_instructor_ids : array();
+
+				if ( absint( $quiz_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) && ! in_array( get_current_user_id(), $co_instructor_ids ) ) {
+					throw new Exception( __( 'You are not allowed to update this quiz', 'learnpress' ) );
+				}
+
+				$update_arg = array(
+					'ID'           => $quiz_id,
+					'post_type'    => LP_QUIZ_CPT,
+					'post_title'   => sanitize_text_field( $title ?? '' ),
+					'post_content' => $description ?? '',
+					'post_status'  => 'publish',
+				);
+
+				if ( defined( 'ELEMENTOR_VERSION' ) ) {
+					\Elementor\Plugin::$instance->documents->get( $quiz_id )->set_is_built_with_elementor( ! empty( $is_elementor ) );
+				}
+
+				$update = wp_update_post( $update_arg );
+
+				if ( is_wp_error( $update ) ) {
+					throw new Exception( $update->get_error_message() );
+				}
+			}
+
+			if ( $settings ) {
+				$duration_value   = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '';
+				$setting_duration = [
+					'id'      => '_lp_duration',
+					'type'    => 'duration',
+					'value'   => $duration_value,
+					'default' => '0 minute',
+					'extra'   => [
+						'default_time' => 'minute',
+					],
+				];
+
+				$setting_instant_check = [
+					'id'      => '_lp_instant_check',
+					'type'    => 'checkbox',
+					'value'   => $data['_lp_instant_check'] ?? '',
+					'default' => '',
+				];
+
+				$setting_negative_marking = [
+					'id'      => '_lp_negative_marking',
+					'type'    => 'checkbox',
+					'value'   => $data['_lp_negative_marking'] ?? '',
+					'default' => '',
+				];
+
+				$setting_minus_skip_questions = [
+					'id'      => '_lp_minus_skip_questions',
+					'type'    => 'checkbox',
+					'value'   => $data['_lp_minus_skip_questions'] ?? '',
+					'default' => '',
+				];
+
+				$setting_review = [
+					'id'      => '_lp_review',
+					'type'    => 'checkbox',
+					'value'   => $data['_lp_review'] ?? '',
+					'default' => '',
+				];
+
+				$setting_show_correct_review = [
+					'id'      => '_lp_show_correct_review',
+					'type'    => 'checkbox',
+					'value'   => $data['_lp_show_correct_review'] ?? '',
+					'default' => '',
+				];
+
+				$this->update_setting( $quiz_id, $setting_duration );
+				$this->update_setting( $quiz_id, $setting_instant_check );
+				$this->update_setting( $quiz_id, $setting_negative_marking );
+				$this->update_setting( $quiz_id, $setting_minus_skip_questions );
+				$this->update_setting( $quiz_id, $setting_review );
+				$this->update_setting( $quiz_id, $setting_show_correct_review );
+			}
+
+			do_action( 'learn-press/course-builder/update-quiz', $data );
+
+			$response->status            = 'success';
+			$response->data->quiz_id_new = $data['insert'] ? $quiz_id : '';
+			$response->message           = $insert ? esc_html__( 'Insert quiz successfully', 'learnpress' ) : esc_html__( 'Update quiz successfully', 'learnpress' );
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	public function move_trash_quiz() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data       = self::check_valid_quiz();
+			$quiz_id    = $data['quiz_id'] ?? 0;
+			$status     = $data['status'] ?? 'trash';
+			$quiz_model = $data['quiz_model'] ?? [];
+
+			if ( ! $quiz_model ) {
+				throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+			}
+
+			if ( absint( $quiz_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+				throw new Exception( __( 'You are not allowed to delete this quiz', 'learnpress' ) );
+			}
+
+			if ( $status === 'trash' ) {
+				$move_trash = wp_trash_post( $quiz_id );
+
+				if ( is_wp_error( $move_trash ) ) {
+					throw new Exception( esc_html__( 'Cannot move this quiz to trash', 'learnpress' ) );
+				}
+				$message = esc_html__( 'Delete this quiz successfully', 'learnpress' );
+			} elseif ( $status === 'delete' ) {
+				$delete = wp_delete_post( $quiz_id );
+
+				if ( is_wp_error( $delete ) ) {
+					throw new Exception( esc_html__( 'Cannot delete this quiz.', 'learnpress' ) );
+				}
+				$message = esc_html__( 'This quiz has been moved to trash.', 'learnpress' );
+
+			} elseif ( $status === 'publish' ) {
+				$update = wp_update_post(
+					array(
+						'ID'          => $quiz_id,
+						'post_type'   => LP_QUIZ_CPT,
+						'post_status' => 'publish',
+					)
+				);
+				if ( ! $update ) {
+					throw new Exception( __( 'Quiz cannot be moved to publish', 'learnpress' ) );
+				}
+
+				$message = __( 'Quiz has been moved to publish', 'learnpress' );
+			}
+
+			$response->data->status = $status;
+			$response->status       = 'success';
+			$response->message      = $message;
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';

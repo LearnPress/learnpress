@@ -3,7 +3,7 @@ import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 
 const className = {
-	elDataLesson: '.cb-section__lesson-overview',
+	elDataLesson: '.cb-section__lesson-edit',
 	elBtnUpdateLesson: '.cb-btn-update__lesson',
 	elBtnPublishLesson: '.cb-btn-publish__lesson',
 	elBtnTrashLesson: '.cb-btn-trash__lesson',
@@ -64,6 +64,64 @@ const getLessonDataForUpdate = () => {
 		}
 	}
 
+	const elFormSetting = document.querySelector( '.lp-form-setting-lesson' );
+
+	if ( elFormSetting ) {
+		data.lesson_settings = true;
+		const formElements = elFormSetting.querySelectorAll( 'input, select, textarea' );
+
+		formElements.forEach( ( element ) => {
+			const name = element.name || element.id;
+
+			if ( ! name ) {
+				return;
+			}
+
+			if ( name === 'learnpress_meta_box_nonce' || name === '_wp_http_referer' ) {
+				return;
+			}
+
+			if ( element.type === 'checkbox' ) {
+				const fieldName = name.replace( '[]', '' );
+				if ( ! data.hasOwnProperty( fieldName ) ) {
+					data[ fieldName ] = element.checked ? 'yes' : 'no';
+				}
+			} else if ( element.type === 'radio' ) {
+				if ( element.checked ) {
+					const fieldName = name.replace( '[]', '' );
+					data[ fieldName ] = element.value;
+				}
+			} else if ( element.type === 'file' ) {
+				const fieldName = name.replace( '[]', '' );
+				if ( element.files && element.files.length > 0 ) {
+					data[ fieldName ] = element.files;
+				}
+			} else {
+				const fieldName = name.replace( '[]', '' );
+
+				if ( name.endsWith( '[]' ) ) {
+					if ( ! data.hasOwnProperty( fieldName ) ) {
+						data[ fieldName ] = [];
+					}
+
+					if ( Array.isArray( data[ fieldName ] ) ) {
+						data[ fieldName ].push( element.value );
+					}
+				} else {
+					if ( ! data.hasOwnProperty( fieldName ) ) {
+						data[ fieldName ] = element.value;
+					}
+				}
+			}
+		} );
+
+		Object.keys( data ).forEach( ( key ) => {
+			if ( Array.isArray( data[ key ] ) ) {
+				data[ key ] = data[ key ].join( ',' );
+			}
+		} );
+	}
+
 	return data;
 };
 
@@ -82,13 +140,11 @@ const updateLesson = ( e, target ) => {
 	const lessonData = getLessonDataForUpdate();
 
 	const dataSend = {
+		...lessonData,
 		action: 'update_lesson',
 		args: {
 			id_url: 'update-lesson',
 		},
-		lesson_title: lessonData.lesson_title || '',
-		lesson_description: lessonData.lesson_description || '',
-		lesson_id: lessonData.lesson_id || 0,
 		lesson_status: status,
 	};
 

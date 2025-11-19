@@ -82,7 +82,7 @@ class BuilderEditCourseTemplate {
 		$status     = ! empty( $course_model ) ? $course_model->get_status() : '';
 		$btn_update = sprintf( '<div class="cb-button cb-btn-update" data-title-update="%s" data-title-publish="%s">%s</div>', __( 'Update', 'learnpress' ), __( 'Publish', 'learnpress' ), $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
 		$btn_draft  = sprintf( '<div class="cb-button cb-btn-darft">%s</div>', __( 'Save Draft', 'learnpress' ) );
-		$btn_trash  = sprintf( '<div class="cb-button cb-btn-trash">%s</div>', __( 'Trash', 'learnpress' ) );
+		$btn_trash  = ! empty( $course_model ) ? sprintf( '<div class="cb-button cb-btn-trash">%s</div>', __( 'Trash', 'learnpress' ) ) : '';
 		$header     = [
 			'wrapper'          => '<div class="cb-section__header">',
 			'wrapper_left'     => '<div class="cb-section__header-left">',

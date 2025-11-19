@@ -1,4 +1,9 @@
 .lp-course-builder-content__section {
+	padding: 20 40;
+	background: #fff;
+	border-radius: 16px;
+	min-height: calc( 100% - 100px );
+
 	.cb-section__header-left {
 		display: flex;
 		align-items: center;
@@ -181,6 +186,45 @@
 			opacity: 0.8;
 			@include loading();
 		}
+	}
+
+	.lesson-materials {
+		flex-wrap: nowrap;
+		gap: 20px;
+	}
+
+	.field-material__label {
+		width: unset;
+		max-width: unset;
+		min-width: unset;
+	}
+
+	#lp-material-container {
+		font-size: 13px;
+		color: #6b7280;
+		line-height: 1.5;
+		margin: 0;
+		display: block;
+	}
+
+	.lp-material-btn-wrap {
+		display: flex;
+		gap: 12px;
+	}
+
+	#btn-lp--add-material,
+	#btn-lp--save-material {
+		padding: 8px 25px;
+		border-radius: 5px;
+		background: #fff;
+		font-size: 16px;
+		font-weight: 500;
+		cursor: pointer;
+		border: 1px solid #d1d5db;
+	}
+
+	table.lp-material--table thead.hidden {
+		display: none;
 	}
 
 	@media ( max-width: 768px ) {
