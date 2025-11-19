@@ -1,3 +1,5 @@
+@import "../ajaxload";
+@import "../loading-circle-animation";
 
 $primary-purple: #6B46E9;
 $text-dark: #1A202C;
@@ -13,9 +15,11 @@ $white: #FFFFFF;
 	color: #fff;
 	text-decoration: none;
 	text-shadow: none;
-	display: inline-block;
-	font-size: 13px;
-	line-height: 2.15384615;
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	//font-size: 13px;
+	//line-height: 2.15384615;
 	min-height: 30px;
 	padding: 0 10px;
 	cursor: pointer;
@@ -31,10 +35,6 @@ $white: #FFFFFF;
 
 	&:hover{
 		opacity: 0.9;
-	}
-
-	i {
-		margin-right: 2px;
 	}
 }
 
@@ -844,7 +844,7 @@ $white: #FFFFFF;
 		color: $text-dark;
 	}
 
-	.lesson-title, 
+	.lesson-title,
 	.quiz-title,
 	.question-title {
 		font-weight: 600;
@@ -925,6 +925,18 @@ $white: #FFFFFF;
 		&:hover .lp-btn-ai-apply-image {
 			opacity: 1;
 		}
+	}
+}
+
+.lp-creating-course-ai-wrap {
+	.loading-wrap {
+		margin-top: 20px;
+	}
+
+	.lp-loading-circle {
+		width: 40px;
+		height: 40px;
+		border-width: 5px;
 	}
 }
 
