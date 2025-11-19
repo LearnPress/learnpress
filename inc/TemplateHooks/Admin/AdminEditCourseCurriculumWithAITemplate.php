@@ -335,7 +335,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 				'<div class="step-title">%s</div>',
 				esc_html__( 'Step 4 — Result', 'learnpress' ),
 			),
-			'results'    => '<div class="lp-ai-generated-results"></div>',
+			'results'    => '<div class="lp-ai-generated-results lp-ai-course-data-preview-wrap"></div>',
 			'step_close' => '</div>',
 		];
 

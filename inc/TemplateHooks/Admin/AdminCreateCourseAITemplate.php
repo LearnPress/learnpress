@@ -398,10 +398,6 @@ class AdminCreateCourseAITemplate {
 	 * @return string
 	 */
 	public function html_step_5(): string {
-		$html_dummy = <<<EOD
-
-EOD;
-
 		$components = [
 			'step'        => '<div class="step-content" data-step="5">',
 			'title'       => sprintf(
@@ -412,7 +408,7 @@ EOD;
 				'<p class="step-description">%s</p>',
 				esc_html__( 'Data preview before create course.', 'learnpress' )
 			),
-			'preview'     => '<div class="lp-ai-course-data-preview-wrap">' . $html_dummy . '</div>',
+			'preview'     => '<div class="lp-ai-generated-results lp-ai-course-data-preview-wrap"></div>',
 			'step-end'    => '</div>',
 		];
 

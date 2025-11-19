@@ -247,8 +247,8 @@ export class CreateCourseViaAI {
 					lp_structure_course = data.lp_structure_course;
 
 					// Set preview HTML
-					const elPreviewWrap = form.querySelector( '.lp-ai-course-data-preview-wrap' );
-					elPreviewWrap.innerHTML = data.lp_html_preview;
+					const elResults = form.querySelector( '.lp-ai-generated-results' );
+					elResults.innerHTML = data.lp_html_preview;
 
 					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
 					elBtnNext.click();
