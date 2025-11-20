@@ -5,7 +5,7 @@
  * @param data
  * @param functions
  * @since 4.2.5.1
- * @version 1.0.4
+ * @version 1.0.5
  */
 export const lpClassName = {
 	hidden: 'lp-hidden',
@@ -233,7 +233,8 @@ export const getDataOfForm = ( form ) => {
 		const key = pair[ 0 ];
 		const value = formData.getAll( key );
 		if ( ! dataSend.hasOwnProperty( key ) ) {
-			dataSend[ key ] = value;
+			// Convert value array to string.
+			dataSend[ key ] = value.join( ',' );
 		}
 	}
 
@@ -269,4 +270,54 @@ export const mergeDataWithDatForm = ( elForm, dataHandle ) => {
 	dataHandle = { ...dataHandle, ...dataForm };
 
 	return dataHandle;
+};
+
+/**
+ * Event trigger
+ * For each list of event handlers, listen event on document.
+ *
+ * eventName: 'click', 'change', ...
+ * eventHandlers = [ { selector: '.lp-button', callBack: function(){}, class: object } ]
+ *
+ * @param eventName
+ * @param eventHandlers
+ */
+export const eventHandlers = ( eventName, eventHandlers ) => {
+	document.addEventListener( eventName, ( e ) => {
+		const target = e.target;
+		let args = {
+			e,
+			target,
+		};
+
+		eventHandlers.forEach( ( eventHandler ) => {
+			args = { ...args, ...eventHandler };
+
+			//console.log( args );
+
+			// Check condition before call back
+			if ( eventHandler.conditionBeforeCallBack ) {
+				if ( eventHandler.conditionBeforeCallBack( args ) !== true ) {
+					return;
+				}
+			}
+
+			// Special check for keydown event with checkIsEventEnter = true
+			if ( eventName === 'keydown' && eventHandler.checkIsEventEnter ) {
+				if ( e.key !== 'Enter' ) {
+					return;
+				}
+			}
+
+			if ( target.closest( eventHandler.selector ) ) {
+				if ( eventHandler.class ) {
+					// Call method of class, function callBack will understand exactly {this} is class object.
+					eventHandler.class[ eventHandler.callBack ]( args );
+				} else {
+					// For send args is objected, {this} is eventHandler object, not class object.
+					eventHandler.callBack( args );
+				}
+			}
+		} );
+	} );
 };

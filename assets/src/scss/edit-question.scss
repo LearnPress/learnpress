@@ -131,6 +131,15 @@ $border-color: #C3C4C7;
 		display: none;
 		cursor: pointer;
 	}
+
+	.lp-icon-drag {
+		cursor: grab;
+		line-height: 1;
+
+		&:active {
+			cursor: grabbing;
+		}
+	}
 }
 
 .lp-question-answer-item-add-new {

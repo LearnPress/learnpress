@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.9.4
+Stable tag: 4.3.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -35,6 +35,11 @@ Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.env
 
 - [Create a WordPress Udemy with Eduma](https://eduma.thimpress.com/demo-udemy/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 - [Create a WordPress Coursera with Eduma](https://eduma.thimpress.com/demo-coursera/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
+
+### Exciting News: LearnPress Officially Integrates with Gutenberg! ###
+Get ready to revolutionize your online course creation experience! We are thrilled to announce the official LearnPress [Gutenberg integration](https://learnpresslms.com/blog/learnpress-gutenberg-integration/). This powerful combination brings the flexibility and intuitive nature of WordPress’s block editor to your favorite WordPress LMS plugin, [LearnPress](https://learnpresslms.com/). Now, crafting beautiful and engaging course layouts is easier and more dynamic than ever before.
+
+Important Note: To harness the full potential of this integration, please ensure you are using a theme that supports Gutenberg and its full-site editing features.
 
 ###Build Your LearnPress Site Your Way: Elementor or Gutenberg###
 LearnPress now gives you the flexibility to build courses with two different page builders, depending on your style and workflow.
@@ -260,6 +265,15 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.3.0 (2025-11-20) =
+~ Fixed: security.
+~ Fixed: error 404 link when add media to editor of Question config.
+~ Fixed: export social use on the "Export Personal Data" tool.
+~ Fixed: display time spend when doing quiz with time not limit.
+~ Beta: apply openAI for generate data course.
+~ Update library sweetalert2 to 11.26.3.
+~ Update library chartjs to 4.5.1.
 
 = 4.2.9.4 (2025-10-08) =
 ~ Fixed: security.

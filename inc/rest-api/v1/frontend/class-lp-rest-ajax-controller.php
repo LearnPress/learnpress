@@ -36,12 +36,22 @@ class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.2.5.7
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_content( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 
 		try {
+			/**
+			 * Check verify nonce.
+			 *
+			 * Certificate, custom lpct-hmmbiz.com-certificate, lpct-assignment-file-jyoti-nagda,
+			 * lpct-hivetutoring-schedule-enroll-users-to-courses using.
+			 */
+			if ( ! wp_verify_nonce( $request->get_header( 'X-WP-Nonce' ), 'wp_rest' ) ) {
+				throw new Exception( 'Error: invalid nonce!' );
+			}
+
 			$params = $request->get_params();
 
 			if ( empty( $params['callback'] ) ||

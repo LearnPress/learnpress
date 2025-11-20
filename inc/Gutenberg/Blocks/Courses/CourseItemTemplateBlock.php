@@ -41,8 +41,11 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 		$html = '';
 
 		try {
-			$layout             = $attributes['layout'] ?? 'list';
-			$columns             = $attributes['columns'] ?? 3;
+			$layout         = sanitize_text_field( $attributes['layout'] ?? 'list' );
+			$allowed_layout = [ 'list', 'grid' ];
+			$layout         = in_array( $layout, $allowed_layout, true ) ? $layout : 'list';
+			$columns        = absint( $attributes['columns'] ?? 3 );
+			$columns        = min( max( $columns, 0 ), 20 );
 
 			$wrapper_attributes = 'learn-press-courses lp-list-courses-no-css wp-block-learn-press-courses';
 
