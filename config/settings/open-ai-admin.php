@@ -46,8 +46,11 @@ return apply_filters(
 					'type'    => 'textarea',
 					'desc'    => sprintf(
 						/* translators: 1. profile url */
-						__( 'Get your Open AI secret key from <a href="%s" target="_blank">here</a>.
-							Read more guide from <a href="%s" target="_blank">here</a>.', 'learnpress' ),
+						__(
+							'Get your Open AI secret key from <a href="%1$s" target="_blank">here</a>.
+                            Read more guide from <a href="%2$s" target="_blank">here</a>.',
+							'learnpress'
+						),
 						'https://platform.openai.com/account/api-keys',
 						'https://platform.openai.com/docs/quickstart'
 					),
