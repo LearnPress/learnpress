@@ -10,6 +10,11 @@ let lp_structure_course;
 let popupSweetAlert = null;
 let lp_is_generating_course_data = false;
 const lp_course_ai_setting = JSON.parse( localStorage.getItem( 'lp_course_ai_setting' ) ) || {};
+let isLayoutGutenberg = false;
+
+let selectGutenberg;
+let dispatchGutenberg;
+let editorGutenberg;
 
 export class GenerateWithOpenai {
 	constructor() {
@@ -52,6 +57,56 @@ export class GenerateWithOpenai {
 				'afterend',
 				`<button type="button"
 					style="margin: 12px 12px 0 12px;"
+					class="lp-btn-generate-with-ai"
+					data-template="#lp-tmpl-edit-image-ai">
+					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
+				</button>`
+			);
+		} );
+
+		// For layout Gutenberg - button for title
+		lpUtils.lpOnElementReady( '.editor-document-bar', ( el ) => {
+			isLayoutGutenberg = true;
+
+			const { select, dispatch } = wp.data;
+			selectGutenberg = select;
+			dispatchGutenberg = dispatch;
+			editorGutenberg = select( 'core/editor' );
+
+			el.insertAdjacentHTML(
+				'afterend',
+				`<button type="button"
+					style="margin-left: 5px"
+					class="lp-btn-generate-with-ai"
+					data-template="#lp-tmpl-edit-title-ai">
+					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
+				</button>`
+			);
+		} );
+
+		// For layout Gutenberg - button for description
+		lpUtils.lpOnElementReady( '.editor-document-bar', ( el ) => {
+			isLayoutGutenberg = true;
+
+			el.insertAdjacentHTML(
+				'afterend',
+				`<button type="button"
+					style="margin-left: 5px"
+					class="lp-btn-generate-with-ai"
+					data-template="#lp-tmpl-edit-description-ai">
+					<i class="lp-ico-ai"></i><span>Generate description with AI</span>
+				</button>`
+			);
+		} );
+
+		// For layout Gutenberg - button for image
+		lpUtils.lpOnElementReady( '.editor-document-bar', ( el ) => {
+			isLayoutGutenberg = true;
+
+			el.insertAdjacentHTML(
+				'afterend',
+				`<button type="button"
+					style="margin-left: 5px"
 					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-image-ai">
 					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
@@ -126,12 +181,27 @@ export class GenerateWithOpenai {
 				popupSweetAlert.click();
 
 				// Set post title and post content to hidden fields of form to AI prompt reference
-				const post_title = document.querySelector(
-					'input[name=post_title]'
-				).value;
-				const post_content = window.tinymce
-					.get( 'content' )
-					.getContent( { format: 'text' } );
+				const elPostTitleInput = document.querySelector( 'input[name=post_title]' );
+				let post_title = '';
+				if ( elPostTitleInput ) {
+					post_title = elPostTitleInput.value;
+				} else if ( isLayoutGutenberg ) {
+					const elGutenbergTitle = document.querySelector( '.editor-post-card-panel__title-name' );
+					if ( elGutenbergTitle ) {
+						post_title = elGutenbergTitle.textContent;
+					}
+				}
+
+				let post_content = '';
+				if ( ! isLayoutGutenberg ) {
+					post_content = window.tinymce
+						.get( 'content' )
+						.getContent( { format: 'text' } );
+				} else {
+					const content = editorGutenberg.getEditedPostContent();
+					post_content = content
+						.replace( /(<([^>]+)>)/gi, '' ); // Remove HTML tags
+				}
 
 				const form = popupSweetAlert.querySelector( 'form' );
 				const elPostTitle = form.querySelector( '[name=post-title]' );
@@ -393,13 +463,19 @@ export class GenerateWithOpenai {
 		const dataTarget = target.dataset.target;
 
 		if ( dataTarget ) {
-			if ( dataTarget === 'set-wp-editor-content' ) {
-				this.setWPEditorContent( dataApply );
-			} else {
-				const elTarget = document.querySelector( dataTarget );
-				if ( elTarget ) {
-					elTarget.value = dataApply;
+			if ( ! isLayoutGutenberg ) {
+				if ( dataTarget === 'set-wp-editor-content' ) {
+					this.setWPEditorContent( dataApply );
+				} else if ( dataTarget === 'set-wp-title' ) {
+					const elTitleInput = document.querySelector( 'input[name=post_title]' );
+					if ( elTitleInput ) {
+						elTitleInput.value = dataApply;
+					}
 				}
+			} else if ( dataTarget === 'set-wp-editor-content' ) {
+				dispatchGutenberg( 'core/editor' ).editPost( { content: dataApply } );
+			} else if ( dataTarget === 'set-wp-title' ) {
+				dispatchGutenberg( 'core/editor' ).editPost( { title: dataApply } );
 			}
 		}
 

@@ -98,7 +98,7 @@ class AdminEditWithAITemplate {
 					[
 						'action'         => 'openai_generate_data',
 						'lp-prompt-type' => 'course-title', // define type prompt to generate title.
-						'target-apply'   => 'input[name="post_title"]', // Click apply to apply title to this field.
+						'target-apply'   => 'set-wp-title', // Click apply to apply title to this field.
 						'id_url'         => 'submit_to_openai',
 					]
 				),
