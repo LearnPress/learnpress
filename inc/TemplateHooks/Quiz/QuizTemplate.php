@@ -144,8 +144,9 @@ class QuizTemplate {
 				'wrapper_end'     => '</div>',
 			);
 
-			echo Template::combine_components( $section );
+			return Template::combine_components( $section );
 		} catch ( Throwable $e ) {
+			return '';
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}

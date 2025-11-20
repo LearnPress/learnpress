@@ -1207,6 +1207,7 @@ function learn_press_rest_prepare_user_questions( array $question_ids = array(),
 			)
 		);
 	}
+	// set_transient( 'test_args', $args, $expiration = 36000 );
 
 	$checkedQuestions = $args['checked_questions'];
 	$hintedQuestions  = $args['hinted_questions'];

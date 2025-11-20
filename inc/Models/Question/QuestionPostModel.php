@@ -253,6 +253,119 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Prepare question data for rendering
+	 *
+	 * @param int   $question_id Question ID
+	 * @param array $args        Arguments array with keys:
+	 *                           - instant_check: bool
+	 *                           - quiz_status: string
+	 *                           - checked_questions: array
+	 *                           - answered: array
+	 *                           - show_correct_review: bool
+	 *                           - status: string
+	 *
+	 * @return array Question data array
+	 * @since 4.2.9
+	 */
+	public static function prepare_render_data( int $question_id, array $args = [] ): array {
+		// Parse arguments with defaults
+		$args = wp_parse_args(
+			$args,
+			[
+				'instant_check'       => true,
+				'quiz_status'         => '',
+				'checked_questions'   => [],
+				'answered'            => [],
+				'show_correct_review' => true,
+				'status'              => '',
+			]
+		);
+
+		// Get question object
+		$question = learn_press_get_question( $question_id );
+		if ( ! $question ) {
+			return [];
+		}
+
+		// Extract args
+		$instantCheck     = $args['instant_check'];
+		$quizStatus       = $args['quiz_status'];
+		$checkedQuestions = $args['checked_questions'];
+		$answered         = $args['answered'];
+		$status           = $args['status'];
+
+		// Initialize variables
+		$checked        = false;
+		$theHint        = $question->get_hint();
+		$theExplanation = '';
+		$hasExplanation = false;
+
+		// Check if we should show explanation
+		if ( $instantCheck || $status == 'completed' ) {
+			$theExplanation = $question->get_explanation();
+			$checked        = in_array( $question_id, $checkedQuestions );
+			$hasExplanation = ! ! $theExplanation;
+		}
+
+		// Get mark/point
+		$mark = $question->get_mark() ? $question->get_mark() : 1;
+
+		// Build question data array
+		$questionData = [
+			'object'  => $question,
+			'id'      => absint( $question_id ),
+			'title'   => $question->get_title(),
+			'type'    => $question->get_type(),
+			'point'   => $mark,
+			'checked' => $checked,
+		];
+
+		// Add content if available
+		$content = $question->get_content();
+		if ( $content ) {
+			$questionData['content'] = $content;
+		}
+
+		// Add hint if available
+		if ( $theHint ) {
+			$questionData['hint'] = $theHint;
+		}
+
+		// Add explanation based on status
+		if ( $status == 'completed' || ( $checked && $theExplanation ) ) {
+			$questionData['explanation'] = $theExplanation;
+		}
+
+		// Add has_explanation flag
+		if ( $hasExplanation ) {
+			$questionData['has_explanation'] = $hasExplanation;
+
+			if ( $checked ) {
+				$questionData['explanation'] = $theExplanation;
+			}
+		}
+		$questionData['answered'] = $answered[ $question_id ]['answered'] ?? array();
+
+		// Determine if we should include correct answers
+		$with_true_or_false = ( $checked || ( $quizStatus == 'completed' && $args['show_correct_review'] ) );
+
+		$questionData['show_correct_review'] = $with_true_or_false;
+		
+		$questionData['disabled'] = $checked || $quizStatus === 'completed';
+
+		// Get answer options
+		$questionData['options'] = learn_press_get_question_options_for_js(
+			$question,
+			[
+				'include_is_true' => $with_true_or_false,
+				'answer'          => $answered[ $question_id ]['answered'] ?? '',
+			]
+		);
+
+		return apply_filters( 'learn-press/question/prepare-render-data', $questionData, $question_id, $args );
+	}
+
+	/**
 	 * Generate random value
 	 *
 	 * @param int $length

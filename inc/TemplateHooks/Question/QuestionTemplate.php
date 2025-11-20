@@ -3,7 +3,7 @@
  * Class QuestionTemplate
  *
  * @since 4.2.9.4
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 namespace LearnPress\TemplateHooks\Question;
@@ -33,46 +33,52 @@ class QuestionTemplate {
 	 * Render complete question HTML.
 	 * Master method that orchestrates all component methods based on question type.
 	 *
-	 * @param QuestionPostModel $question       Question post model.
-	 * @param int               $question_index Question index (optional).
-	 * @param string            $status         Quiz status (started, completed, etc.).
-	 * @param mixed             $answered       User's answered value(s).
-	 * @param bool              $show_hint      Whether to show hint.
+	 * @param int   $question_id Question ID.
+	 * @param array $args        Arguments for prepare_render_data (instant_check, quiz_status, checked_questions, answered, show_correct_review, status).
+	 * @param int   $question_index Question index (optional).
+	 * @param bool  $show_hint   Whether to show hint.
 	 *
 	 * @return string
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 2.0.0
 	 */
-	public function render_question_html( QuestionPostModel $question, $question_index = 0, $status = 'started', $answered = null, $show_hint = false ) {
+	public function render_question_html( int $question_id, array $args = [], $question_index = 0, $show_hint = false ) {
 		try {
-			$question_id   = $question->get_id();
-			$question_type = $question->get_type();
+			// Prepare question data using QuestionPostModel::prepare_render_data.
+			$questionData = QuestionPostModel::prepare_render_data( $question_id, $args );
 
-			// Get answer options from question.
-			$answer_models = $question->get_answer_option();
-			$options       = $this->convert_answers_to_options( $answer_models, $question_type );
+			if ( empty( $questionData ) ) {
+				return '';
+			}
+
+			$question      = $questionData['object'];
+			$question_type = $questionData['type'];
+			$status        = $args['status'] ?? 'started';
 
 			// Build question wrapper classes.
 			$wrapper_classes = array( 'question', 'question-' . $question_type );
+			if ( $questionData['disabled'] ) {
+				$wrapper_classes[] = 'question-answered';
+			}
 
 			// Render answer options based on question type.
 			$answer_html = '';
 			switch ( $question_type ) {
 				case 'multi_choice':
-					$answer_html = $this->multi_choice_question_html( $question, $options, $answered );
+					$answer_html = $this->multi_choice_question_html( $questionData );
 					break;
 				case 'single_choice':
-					$answer_html = $this->single_choice_question_html( $question, $options, $answered );
+					$answer_html = $this->single_choice_question_html( $questionData );
 					break;
 				case 'true_or_false':
-					$answer_html = $this->true_or_false_question_html( $question, $options, $answered );
+					$answer_html = $this->true_or_false_question_html( $questionData );
 					break;
 				case 'fill_in_blanks':
-					$answer_html = $this->fib_question_html( $question, $options, $answered );
+					$answer_html = $this->fib_question_html( $questionData );
 					break;
 				default:
 					// Allow custom question types via filter.
-					$answer_html = apply_filters( 'learnpress/question/render-answers', '', $question, $options, $answered );
+					$answer_html = apply_filters( 'learnpress/question/render-answers', '', $questionData );
 					break;
 			}
 
@@ -100,98 +106,52 @@ class QuestionTemplate {
 	}
 
 	/**
-	 * Convert QuestionAnswerModel array or legacy LP_Question answer options to options format.
-	 * Handles both:
-	 * - QuestionAnswerModel instances from QuestionPostModel->get_answer_option()
-	 * - Array format from LP_Question->get_answer_options()
-	 *
-	 * @param array  $answer_models Array of QuestionAnswerModel instances or arrays.
-	 * @param string $question_type Question type.
-	 *
-	 * @return array
-	 * @since 4.2.9.4
-	 * @version 1.0.1
-	 */
-	protected function convert_answers_to_options( $answer_models, $question_type = 'single_choice' ) {
-		$options = array();
-
-		if ( empty( $answer_models ) || ! is_array( $answer_models ) ) {
-			return $options;
-		}
-
-		foreach ( $answer_models as $answer ) {
-			// Check if it's a QuestionAnswerModel object or legacy array format.
-			$is_model = is_object( $answer ) && isset( $answer->question_answer_id );
-
-			if ( $is_model ) {
-				// Handle QuestionAnswerModel format.
-				$option = (object) array(
-					'uid'   => $answer->question_answer_id,
-					'value' => $answer->value,
-					'title' => $answer->title,
-				);
-
-				if ( $question_type === 'fill_in_blanks' ) {
-					$metadata    = $answer->get_all_metadata();
-					$option->ids = isset( $metadata->ids ) ? $metadata->ids : array();
-				} else {
-					$option->isTrue = $answer->is_true === 'yes' ? 'yes' : '';
-				}
-			} else {
-				// Handle legacy LP_Question array format.
-				$option = (object) array(
-					'uid'   => isset( $answer['question_answer_id'] ) ? $answer['question_answer_id'] : ( isset( $answer['uid'] ) ? $answer['uid'] : uniqid() ),
-					'value' => isset( $answer['value'] ) ? $answer['value'] : '',
-					'title' => isset( $answer['title'] ) ? $answer['title'] : '',
-				);
-
-				if ( $question_type === 'fill_in_blanks' ) {
-					// For fill-in-blanks, LP_Question_Fill_In_Blanks already provides 'ids'.
-					$option->ids = isset( $answer['ids'] ) ? $answer['ids'] : array();
-				} else {
-					$option->isTrue = isset( $answer['is_true'] ) && $answer['is_true'] === 'yes' ? 'yes' : '';
-				}
-			}
-
-			$options[] = $option;
-		}
-
-		return $options;
-	}
-
-	/**
 	 * Render multiple choice question HTML.
 	 *
-	 * @param QuestionPostModel $question Question post model.
-	 * @param array             $options  Question options/answers.
-	 * @param string            $answered User's answered value(s).
+	 * @param array $questionData Question data from QuestionPostModel::prepare_render_data().
 	 *
 	 * @return string
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 2.0.0
 	 */
-	public function multi_choice_question_html( QuestionPostModel $question, $options, $answered = '' ) {
+	public function multi_choice_question_html( array $questionData ) {
 		try {
-			$question_id  = $question->get_id();
-			$options_html = '';
+			$question_id         = $questionData['id'];
+			$options             = $questionData['options'] ?? [];
+			$disabled            = $questionData['disabled'] ?? false;
+			$answered            = $questionData['answered'] ?? [];
+			$show_correct_review = $questionData['show_correct_review'] ?? false;
+			$options_html        = '';
+			$disabled_attr       = $disabled ? 'disabled' : '';
 
 			foreach ( $options as $option ) {
-				$option_uid   = $option->uid ?? uniqid();
-				$option_value = $option->value ?? '';
-				$option_title = $option->title ?? $option_value;
-				$is_checked   = is_array( $answered ) && in_array( $option_value, $answered, true );
-				$input_id     = 'learn-press-answer-option-' . $option_uid;
+				$option_uid     = is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() );
+				$option_value   = is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' );
+				$option_title   = is_array( $option ) ? ( $option['title'] ?? $option_value ) : ( $option->title ?? $option_value );
+				$option_is_true = is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' );
+				$input_id       = 'learn-press-answer-option-' . $option_uid;
+
+				// Check if this option was answered incorrectly
+				$is_answered_wrong = false;
+				if ( $show_correct_review && is_array( $answered ) && in_array( $option_value, $answered, true ) ) {
+					if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
+						$is_answered_wrong = true;
+					}
+				}
+
+				$li_class = 'answer-option' . ( $is_answered_wrong ? ' answered-wrong' : '' );
 
 				$options_html .= sprintf(
-					'<li class="answer-option">
-						<input type="checkbox" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %4$s />
-						<label for="%2$s" class="option-title">%5$s</label>
+					'<li class="%6$s">
+						<input type="checkbox" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %5$s />
+						<label for="%2$s" class="option-title">%4$s</label>
 					</li>',
 					esc_attr( $question_id ),
 					esc_attr( $input_id ),
 					esc_attr( $option_value ),
-					checked( $is_checked, true, false ),
-					wp_kses_post( $option_title )
+					wp_kses_post( $option_title ),
+					$disabled_attr,
+					esc_attr( $li_class )
 				);
 			}
 
@@ -213,36 +173,50 @@ class QuestionTemplate {
 	/**
 	 * Render single choice question HTML.
 	 *
-	 * @param QuestionPostModel $question Question post model.
-	 * @param array             $options  Question options/answers.
-	 * @param string            $answered User's answered value.
+	 * @param array $questionData Question data from QuestionPostModel::prepare_render_data().
 	 *
 	 * @return string
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 2.0.0
 	 */
-	public function single_choice_question_html( QuestionPostModel $question, $options, $answered = '' ) {
+	public function single_choice_question_html( array $questionData ) {
 		try {
-			$question_id  = $question->get_id();
-			$options_html = '';
+			$question_id         = $questionData['id'];
+			$options             = $questionData['options'] ?? [];
+			$disabled            = $questionData['disabled'] ?? false;
+			$answered            = $questionData['answered'] ?? '';
+			$show_correct_review = $questionData['show_correct_review'] ?? false;
+			$options_html        = '';
+			$disabled_attr       = $disabled ? 'disabled' : '';
 
 			foreach ( $options as $option ) {
-				$option_uid   = $option->uid ?? uniqid();
-				$option_value = $option->value ?? '';
-				$option_title = $option->title ?? $option_value;
-				$is_checked   = $answered === $option_value;
-				$input_id     = 'learn-press-answer-option-' . $option_uid;
+				$option_uid     = is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() );
+				$option_value   = is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' );
+				$option_title   = is_array( $option ) ? ( $option['title'] ?? $option_value ) : ( $option->title ?? $option_value );
+				$option_is_true = is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' );
+				$input_id       = 'learn-press-answer-option-' . $option_uid;
+
+				// Check if this option was answered incorrectly
+				$is_answered_wrong = false;
+				if ( $show_correct_review && $answered === $option_value ) {
+					if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
+						$is_answered_wrong = true;
+					}
+				}
+
+				$li_class = 'answer-option' . ( $is_answered_wrong ? ' answered-wrong' : '' );
 
 				$options_html .= sprintf(
-					'<li class="answer-option">
-						<input type="radio" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %4$s />
-						<label for="%2$s" class="option-title">%5$s</label>
+					'<li class="%6$s">
+						<input type="radio" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %5$s />
+						<label for="%2$s" class="option-title">%4$s</label>
 					</li>',
 					esc_attr( $question_id ),
 					esc_attr( $input_id ),
 					esc_attr( $option_value ),
-					checked( $is_checked, true, false ),
-					wp_kses_post( $option_title )
+					wp_kses_post( $option_title ),
+					$disabled_attr,
+					esc_attr( $li_class )
 				);
 			}
 
@@ -264,36 +238,53 @@ class QuestionTemplate {
 	/**
 	 * Render true or false question HTML.
 	 *
-	 * @param QuestionPostModel $question Question post model.
-	 * @param array             $options  Question options/answers.
-	 * @param string            $answered User's answered value.
+	 * @param array $questionData Question data from QuestionPostModel::prepare_render_data().
 	 *
 	 * @return string
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 2.0.0
 	 */
-	public function true_or_false_question_html( QuestionPostModel $question, $options, $answered = '' ) {
+	public function true_or_false_question_html( array $questionData ) {
 		try {
-			$question_id  = $question->get_id();
-			$options_html = '';
+			$question_id         = $questionData['id'];
+			$options             = $questionData['options'] ?? [];
+			$disabled            = $questionData['disabled'] ?? false;
+			$answered            = $questionData['answered'] ?? '';
+			$show_correct_review = $questionData['show_correct_review'] ?? false;
+			$options_html        = '';
+			$disabled_attr       = $disabled ? 'disabled' : '';
 
 			foreach ( $options as $option ) {
-				$option_uid   = $option->uid ?? uniqid();
-				$option_value = $option->value ?? '';
-				$option_title = $option->title ?? $option_value;
-				$is_checked   = $answered === $option_value;
-				$input_id     = 'learn-press-answer-option-' . $option_uid;
+				$option_uid     = is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() );
+				$option_value   = is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' );
+				$option_title   = is_array( $option ) ? ( $option['title'] ?? $option_value ) : ( $option->title ?? $option_value );
+				$option_is_true = is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' );
+				$input_id       = 'learn-press-answer-option-' . $option_uid;
+
+				// Check if this option was answered incorrectly
+				$is_answered_wrong = false;
+				if ( $show_correct_review && in_array( $option_value, $answered ) ) {
+					if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
+						$is_answered_wrong = true;
+					}
+				}
+
+				$li_class = 'answer-option' . ( $is_answered_wrong ? ' answered-wrong' : '' );
+				if ( $option_is_true ) {
+					$li_class .= ' answered-correct';
+				}
 
 				$options_html .= sprintf(
-					'<li class="answer-option">
-						<input type="radio" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %4$s />
-						<label for="%2$s" class="option-title">%5$s</label>
+					'<li class="%6$s">
+						<input type="radio" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %5$s />
+						<label for="%2$s" class="option-title">%4$s</label>
 					</li>',
 					esc_attr( $question_id ),
 					esc_attr( $input_id ),
 					esc_attr( $option_value ),
-					checked( $is_checked, true, false ),
-					wp_kses_post( $option_title )
+					wp_kses_post( $option_title ),
+					$disabled_attr,
+					esc_attr( $li_class )
 				);
 			}
 
@@ -315,36 +306,62 @@ class QuestionTemplate {
 	/**
 	 * Render fill in the blanks question HTML.
 	 *
-	 * @param QuestionPostModel $question Question post model.
-	 * @param array             $options  Question options/blanks.
-	 * @param array             $answered User's answered values.
+	 * @param array $questionData Question data from QuestionPostModel::prepare_render_data().
 	 *
 	 * @return string
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 2.0.0
 	 */
-	public function fib_question_html( QuestionPostModel $question, $options, $answered = array() ) {
+	public function fib_question_html( array $questionData ) {
 		try {
-			$question_id  = $question->get_id();
+			$question_id  = $questionData['id'];
+			$options      = $questionData['options'] ?? [];
+			$disabled     = $questionData['disabled'] ?? false;
 			$content_html = '';
 
 			foreach ( $options as $option ) {
-				$option_uid   = $option->uid ?? uniqid();
-				$option_title = $option->title ?? '';
-				$option_ids   = $option->ids ?? array();
+				$option_uid     = is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() );
+				$option_title   = is_array( $option ) ? ( $option['title'] ?? '' ) : ( $option->title ?? '' );
+				$option_ids     = is_array( $option ) ? ( $option['ids'] ?? [] ) : ( $option->ids ?? [] );
+				$option_answers = is_array( $option ) ? ( $option['answers'] ?? [] ) : ( $option->answers ?? [] );
 
 				// Process fill-in-blank placeholders.
 				$processed_title = $option_title;
 				foreach ( $option_ids as $blank_id ) {
-					$placeholder  = '{{FIB_' . $blank_id . '}}';
-					$answer_value = isset( $answered[ $blank_id ] ) ? esc_attr( $answered[ $blank_id ] ) : '';
-					$input_html   = sprintf(
-						'<div class="lp-fib-input" style="display: inline-block; width: auto;">
-							<input type="text" data-id="%s" value="%s" />
-						</div>',
-						esc_attr( $blank_id ),
-						$answer_value
-					);
+					$placeholder = '{{FIB_' . $blank_id . '}}';
+
+					// Check if question is checked/completed
+					if ( $disabled && isset( $option_answers[ $blank_id ] ) ) {
+						$answer_data = $option_answers[ $blank_id ];
+						$is_correct  = $answer_data['is_correct'] ?? false;
+						$user_answer = $answer_data['answer'] ?? '';
+
+						if ( $is_correct ) {
+							// Show correct answer
+							$input_html = sprintf(
+								'<span class="lp-fib-answered correct"><span class="lp-fib-answered__fill">%s</span></span>',
+								esc_html( $user_answer )
+							);
+						} else {
+							// Show incorrect answer with user's answer and correct answer
+							$correct_answer = $answer_data['correct'] ?? '';
+							$input_html     = sprintf(
+								'<span class="lp-fib-answered fail"><span class="lp-fib-answered__answer">%s</span> → <span class="lp-fib-answered__fill">%s</span></span>',
+								esc_html( $user_answer ),
+								esc_html( $correct_answer )
+							);
+						}
+					} else {
+						// Show input field
+						$disabled_attr = $disabled ? 'disabled' : '';
+						$input_html    = sprintf(
+							'<div class="lp-fib-input" style="display: inline-block; width: auto;">
+								<input type="text" data-id="%s" value="" %s />
+							</div>',
+							esc_attr( $blank_id ),
+							$disabled_attr
+						);
+					}
 
 					$processed_title = str_replace( $placeholder, $input_html, $processed_title );
 				}
@@ -378,13 +395,17 @@ class QuestionTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 2.0.0
 	 */
 	public function title_html( QuestionPostModel $question, $question_index = 0 ) {
 		try {
+			$question_id    = $question->get_id();
 			$question_title = $question->get_the_title();
 			$index_html     = '';
+			$hint_button    = '';
+			$edit_link      = '';
 
+			// Question index
 			if ( $question_index > 0 ) {
 				$index_html = sprintf(
 					'<span class="question-index">%s.</span>',
@@ -392,10 +413,29 @@ class QuestionTemplate {
 				);
 			}
 
+			// Hint button
+			$hint_button = sprintf(
+				'<button type="button" class="btn-show-hint" data-question-id="%s"><span>%s</span></button>',
+				esc_attr( $question_id ),
+				esc_html__( 'Hint', 'learnpress' )
+			);
+
+			// Edit link (only if user can edit)
+			if ( current_user_can( 'edit_post', $question_id ) ) {
+				$edit_url  = get_edit_post_link( $question_id );
+				$edit_link = sprintf(
+					'<span class="edit-link"><a href="%s">%s</a></span>',
+					esc_url( $edit_url ),
+					esc_html__( 'Edit', 'learnpress' )
+				);
+			}
+
 			$section = array(
 				'wrapper'     => '<h4 class="question-title">',
 				'index'       => $index_html,
 				'title'       => sprintf( '<span>%s</span>', wp_kses_post( $question_title ) ),
+				'hint_button' => $hint_button,
+				'edit_link'   => $edit_link,
 				'wrapper_end' => '</h4>',
 			);
 
@@ -532,11 +572,6 @@ class QuestionTemplate {
 					'<button type="button" class="lp-button lp-button-check" data-question-id="%s">%s</button>',
 					esc_attr( $question_id ),
 					esc_html__( 'Check', 'learnpress' )
-				),
-				'hint_button'  => sprintf(
-					'<button type="button" class="lp-button lp-button-hint" data-question-id="%s">%s</button>',
-					esc_attr( $question_id ),
-					esc_html__( 'Hint', 'learnpress' )
 				),
 				'wrapper_end'  => '</div>',
 			);

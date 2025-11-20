@@ -65,16 +65,11 @@ if ( $userModel ) {
 		$status            = $userQuizModel->get_status();
 		$quiz_results      = $userQuizModel->get_result();
 		$checked_questions = $userQuizModel->get_checked_questions();
-
-		$start_time_obj       = new LP_Datetime( $userQuizModel->get_start_time() );
-		$start_time_timestamp = $start_time_obj->getTimestamp();
-
-		$user_js = array(
+		$user_js           = array(
 			'status'            => $status,
 			'attempts'          => $userQuizModel->get_history(),
 			'checked_questions' => $checked_questions,
 			'start_time'        => $userQuizModel->get_start_time(),
-			'time_spend'        => time() - $start_time_timestamp,
 			'retaken'           => $userQuizModel->get_retaken_count(),
 			'total_time'        => $userQuizModel->get_time_remaining(),
 			'results'           => $quiz_results,
@@ -149,14 +144,14 @@ if ( $total_question ) {
 	<div id="learn-press-quiz-app"></div>
 
 	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-			if (typeof LP !== 'undefined') {
+		document.addEventListener( 'DOMContentLoaded', () => {
+			if ( typeof LP !== 'undefined' ) {
 				LP.quiz.init(
 					'#learn-press-quiz-app',
 					<?php echo json_encode( $js ); ?>
 				)
 			}
-		});
+		} );
 	</script>
 	<?php
 } else {
