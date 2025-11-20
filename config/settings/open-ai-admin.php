@@ -37,7 +37,7 @@ return apply_filters(
 					'id'      => 'enable_open_ai',
 					'default' => 'no',
 					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Enable this option to use OpenAI services.', 'learnpress' ),
+					'desc'    => esc_html__( 'Enable this option and enter your OpenAI Secret key below to activate the feature.', 'learnpress' ),
 				],
 				[
 					'title'   => __( 'Secret key', 'learnpress' ),

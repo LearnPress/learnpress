@@ -63,9 +63,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'courses_url'              => learn_press_get_page_link( 'courses' ),
 				'urlParams'                => lp_archive_skeleton_get_args(),
 				'i18n'                     => [
-					'select_page' => esc_html__( 'Select page', 'learnpress' ),
-					'yes'         => esc_html__( 'Yes' ),
-					'cancel'      => esc_html__( 'Cancel' ),
+					'select_page'      => esc_html__( 'Select page', 'learnpress' ),
+					'yes'              => esc_html__( 'Yes' ),
+					'cancel'           => esc_html__( 'Cancel' ),
 					'generate_with_ai' => esc_html__( 'Generate with AI', 'learnpress' ),
 				],
 				'current_screen'           => $screen ? $screen->id : '',
@@ -83,7 +83,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'config'     => Config::instance()->get( 'open-ai-modal', 'settings' ),
 					'modelImage' => LP_Settings::get_option( 'open_ai_image_model_type', 'dall-e-3' ),
 				],
-				'enable_open_ai' => LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes',
+				'enable_open_ai'           => LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes'
+					&& ! empty( LP_Settings::get_option( 'open_ai_secret_key', '' ) ),
 			]
 		);
 	}
