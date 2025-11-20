@@ -34,7 +34,7 @@ foreach ( $order_statuses as $key => $status ) :
 				<span>
 					<?php
 					if ( $count ) {
-						printf( translate_nooped_plural( _n_noop( '%d order', '%d orders' ), $count, 'learnpress' ), $count );
+						printf( translate_nooped_plural( _n_noop( '%d order', '%d orders', 'learnpress' ), $count, 'learnpress' ), $count );
 					} else {
 						printf( __( '%d order', 'learnpress' ), 0 );
 					}
