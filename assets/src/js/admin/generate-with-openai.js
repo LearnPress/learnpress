@@ -22,6 +22,10 @@ export class GenerateWithOpenai {
 	};
 
 	init() {
+		if ( ! lpData?.enable_open_ai ) {
+			return;
+		}
+
 		lpUtils.lpOnElementReady( '#titlewrap', ( el ) => {
 			el.insertAdjacentHTML(
 				'afterend',

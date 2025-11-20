@@ -83,6 +83,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'config'     => Config::instance()->get( 'open-ai-modal', 'settings' ),
 					'modelImage' => LP_Settings::get_option( 'open_ai_image_model_type', 'dall-e-3' ),
 				],
+				'enable_open_ai' => LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes',
 			]
 		);
 	}

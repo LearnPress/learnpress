@@ -19,6 +19,10 @@ export class CreateCourseViaAI {
 	};
 
 	init() {
+		if ( ! lpData?.enable_open_ai ) {
+			return;
+		}
+
 		lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
 			el.insertAdjacentHTML(
 				'afterend',
