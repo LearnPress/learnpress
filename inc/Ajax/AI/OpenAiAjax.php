@@ -478,8 +478,9 @@ class OpenAiAjax extends AbstractAjax {
 			}
 
 			$args = [
-				'src'     => wp_get_attachment_url( $attachment_id ),
-				'post-id' => $post_id,
+				'src'           => wp_get_attachment_url( $attachment_id ),
+				'post-id'       => $post_id,
+				'attachment-id' => $attachment_id,
 			];
 
 			$response->data->html_image = AdminEditWithAITemplate::instance()->html_feature_image_created( $args );
