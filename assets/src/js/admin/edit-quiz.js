@@ -15,6 +15,7 @@ import { LpPopupSelectItemToAdd } from 'lpAssetsJsPath/lpPopupSelectItemToAdd.js
 let editQuestion;
 
 const lpPopupSelectItemToAdd = new LpPopupSelectItemToAdd();
+lpPopupSelectItemToAdd.init();
 
 class EditQuiz {
 	constructor() {
@@ -63,7 +64,6 @@ class EditQuiz {
 			} );
 
 			this.events();
-			lpPopupSelectItemToAdd.init();
 		} );
 	}
 

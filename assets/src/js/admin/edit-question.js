@@ -75,7 +75,7 @@ export class EditQuestion {
 
 	init() {
 		this.events();
-		this.initTinyMCE();
+		this.initTinyMCE().then();
 	}
 
 	events() {
@@ -202,7 +202,8 @@ export class EditQuestion {
 		] );
 	}
 
-	initTinyMCE() {
+	// Run async to re-init all TinyMCE editors, because it slow if have many editors
+	async initTinyMCE() {
 		const elTextareas = document.querySelectorAll( '.lp-editor-tinymce' );
 
 		elTextareas.forEach( ( elTextarea ) => {
