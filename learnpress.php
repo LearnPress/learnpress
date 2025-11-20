@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.9.5-beta.1
+ * Version: 4.3.0
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -18,6 +18,8 @@ use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
+use LearnPress\Ajax\LPAIAjax;
+use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
@@ -28,12 +30,21 @@ use LearnPress\Ajax\SendEmailAjax;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
+use LearnPress\Shortcodes\CourseButtonShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
+use LearnPress\TemplateHooks\Admin\AdminCreateCourseAITemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditCourseCurriculumWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
+use LearnPress\TemplateHooks\Admin\AdminGenerateCourseCloseWarningTemplate;
+use LearnPress\TemplateHooks\Admin\AdminCreateCourseAISuccessTemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditWithAICloseWarningTemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditCurriculumWithAICloseWarningTemplate;
+use LearnPress\TemplateHooks\Admin\AdminCreatingCourseAITemplate;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
@@ -43,6 +54,7 @@ use LearnPress\TemplateHooks\Course\SingleCourseClassicTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileCoursesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileGeneralInfoTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
@@ -326,12 +338,21 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ProfileGeneralInfoTemplate::instance();
 			FilterCourseTemplate::instance();
 			ProfileQuizzesTemplate::instance();
+			ProfileCoursesTemplate::instance();
 
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
+			AdminCreateCourseAITemplate::instance();
+			AdminEditWithAITemplate::instance();
+			AdminEditCourseCurriculumWithAITemplate::instance();
+			AdminGenerateCourseCloseWarningTemplate::instance();
+			//AdminCreateCourseAISuccessTemplate::instance();
+			AdminEditWithAICloseWarningTemplate::instance();
+			AdminEditCurriculumWithAICloseWarningTemplate::instance();
+			//AdminCreatingCourseAITemplate::instance();
 
 			// WP GDPR
 			ErasePersonalData::instance();
@@ -450,6 +471,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			SingleInstructorShortcode::instance();
 			ListInstructorsShortcode::instance();
 			CourseMaterialShortcode::instance();
+			CourseButtonShortcode::instance();
 			FilterCourseShortcode::instance();
 			//ListCourseRecentShortcode::instance();
 			include_once 'inc/class-lp-shortcodes.php';
@@ -682,6 +704,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
 					SendEmailAjax::catch_lp_ajax();
+					OpenAiAjax::catch_lp_ajax();
+
+					do_action( 'learn-press/register-ajax-handlers' );
 				},
 				11
 			);

@@ -134,8 +134,8 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			)
 		);
 
-		Template::instance()->get_frontend_template(
-			'profile/tabs/courses.php',
+		do_action(
+			'learn-press/profile/layout/courses',
 			compact(
 				'user',
 				'courses_created_tab',

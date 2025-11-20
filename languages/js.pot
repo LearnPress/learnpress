@@ -1,0 +1,610 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"X-Generator: babel-plugin-makepot\n"
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:118
+msgid "Reset Course Progress"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:120
+msgid "This action will reset course progress of all users who have enrolled."
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:121
+msgid "Search results only show if courses have user data."
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:124
+msgid "Search course by name"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:154
+msgid "ID"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:155
+#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:17
+msgid "Name"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:156
+msgid "Students"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:185
+msgid "Reset now"
+msgstr ""
+
+#: assets/src/apps/js/admin/react/question/index.js:288
+msgid "Words fill"
+msgstr ""
+
+#: assets/src/apps/js/admin/react/question/index.js:306
+msgid "Tip"
+msgstr ""
+
+#: assets/src/apps/js/admin/react/question/index.js:313
+msgid "Remove"
+msgstr ""
+
+#: assets/src/apps/js/admin/react/question/index.js:319
+msgid "Add Blank"
+msgstr ""
+
+#: assets/src/apps/js/blocks/archive-course-legacy/edit.js:11
+msgid "Archive Course (Legacy)"
+msgstr ""
+
+#: assets/src/apps/js/blocks/archive-course-legacy/edit.js:15
+msgid ""
+"The block will display the full content of the course archive page. "
+"Elements on it cannot be modified!"
+msgstr ""
+
+#: assets/src/apps/js/blocks/breadcrumb/edit.js:10
+#: assets/src/apps/js/blocks/course-elements/course-button-read-more/edit.js:54
+#: assets/src/apps/js/blocks/course-elements/course-button/edit.js:56
+#: assets/src/apps/js/blocks/course-elements/course-capacity/edit.js:15
+#: assets/src/apps/js/blocks/course-elements/course-categories/edit.js:13
+#: assets/src/apps/js/blocks/course-elements/course-delivery/edit.js:15
+#: assets/src/apps/js/blocks/course-elements/course-duration/edit.js:17
+#: assets/src/apps/js/blocks/course-elements/course-image/edit.js:83
+#: assets/src/apps/js/blocks/course-elements/course-instructor/edit.js:13
+#: assets/src/apps/js/blocks/course-elements/course-lesson/edit.js:17
+#: assets/src/apps/js/blocks/course-elements/course-level/edit.js:17
+#: assets/src/apps/js/blocks/course-elements/course-offline-lesson/edit.js:16
+#: assets/src/apps/js/blocks/course-elements/course-quiz/edit.js:17
+#: assets/src/apps/js/blocks/course-elements/course-student/edit.js:17
+#: assets/src/apps/js/blocks/course-elements/course-title/edit.js:26
+#: assets/src/apps/js/blocks/course-filter/edit.js:10
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:217
+#: assets/src/apps/js/blocks/instructor-elements/instructor-background/edit.js:25
+#: assets/src/apps/js/blocks/instructor-elements/instructor-course/edit.js:16
+#: assets/src/apps/js/blocks/instructor-elements/instructor-social/edit.js:10
+#: assets/src/apps/js/blocks/instructor-elements/instructor-student/edit.js:16
+msgid "Settings"
+msgstr ""
+
+#: assets/src/apps/js/blocks/breadcrumb/edit.js:12
+msgid "Show Home"
+msgstr ""
+
+#: assets/src/apps/js/blocks/breadcrumb/edit.js:22
+msgid "Home Label"
+msgstr ""
+
+#: assets/src/apps/js/blocks/breadcrumb/edit.js:50
+msgid "Navigation"
+msgstr ""
+
+#: assets/src/apps/js/blocks/breadcrumb/edit.js:56
+msgid "Path"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-address/edit.js:9
+msgid "Address"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-button-read-more/edit.js:56
+#: assets/src/apps/js/blocks/course-elements/course-button/edit.js:58
+#: assets/src/apps/js/blocks/course-elements/course-image/edit.js:99
+msgid "Width"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-button-read-more/edit.js:87
+msgid "Read more"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-button/edit.js:88
+msgid "Buy Now"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-capacity/edit.js:17
+#: assets/src/apps/js/blocks/course-elements/course-delivery/edit.js:17
+#: assets/src/apps/js/blocks/course-elements/course-duration/edit.js:19
+#: assets/src/apps/js/blocks/course-elements/course-lesson/edit.js:19
+#: assets/src/apps/js/blocks/course-elements/course-level/edit.js:19
+#: assets/src/apps/js/blocks/course-elements/course-offline-lesson/edit.js:18
+#: assets/src/apps/js/blocks/course-elements/course-quiz/edit.js:19
+#: assets/src/apps/js/blocks/course-elements/course-student/edit.js:19
+msgid "Show Label"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-capacity/edit.js:26
+#: assets/src/apps/js/blocks/course-elements/course-delivery/edit.js:26
+#: assets/src/apps/js/blocks/course-elements/course-duration/edit.js:28
+#: assets/src/apps/js/blocks/course-elements/course-lesson/edit.js:28
+#: assets/src/apps/js/blocks/course-elements/course-level/edit.js:28
+#: assets/src/apps/js/blocks/course-elements/course-offline-lesson/edit.js:27
+#: assets/src/apps/js/blocks/course-elements/course-quiz/edit.js:28
+#: assets/src/apps/js/blocks/course-elements/course-student/edit.js:28
+msgid "Show Icon"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-capacity/edit.js:45
+msgid "Capacity:"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-categories/edit.js:15
+#: assets/src/apps/js/blocks/course-elements/course-instructor/edit.js:15
+msgid "Show text 'by'"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-categories/edit.js:24
+msgid "Make the category a link"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-categories/edit.js:34
+#: assets/src/apps/js/blocks/course-elements/course-image/edit.js:148
+#: assets/src/apps/js/blocks/course-elements/course-instructor/edit.js:34
+#: assets/src/apps/js/blocks/course-elements/course-title/edit.js:45
+msgid "Open is new tab"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-curriculum/edit.js:10
+msgid "Curriculum"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-delivery/edit.js:43
+msgid "Delivery type:"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-faqs/edit.js:10
+msgid "FAQs"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-feature-review/edit.js:9
+msgid "Featured Review"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-featured/edit.js:9
+msgid "Featured"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-features/edit.js:10
+msgid "Features"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-image/edit.js:116
+msgid "Height"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-image/edit.js:120
+msgid "Auto"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-image/edit.js:121
+msgid "px"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-image/edit.js:138
+msgid "Make the image a link"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-image/edit.js:85
+#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:19
+msgid "Size"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-instructor-info/edit.js:23
+msgid "Instructor Name"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-instructor/edit.js:24
+msgid "Make the instructor a link"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-item-curriculum/edit.js:13
+msgid ""
+"Displays the course curriculum, including lessons, quizzes, and other "
+"learning items, organized by sections or topics!"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-item-curriculum/edit.js:9
+msgid "Course item curriculum (Legacy) - Don't remove"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:11
+msgid "Course Material"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:18
+msgid "Type"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:20
+msgid "Download"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:37
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:40
+msgid "Load more"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-offline-lesson/edit.js:44
+msgid "Lesson:"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-requirements/edit.js:10
+msgid "Requirements"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-share/edit.js:10
+msgid "Share"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-target-audiences/edit.js:10
+msgid "Target audiences"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-title/edit.js:21
+msgid "Course Title"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-title/edit.js:28
+msgid "Tag"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-title/edit.js:35
+msgid "Make the title a link"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter-elements/button-reset-filter/edit.js:8
+msgid "Reset"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter-elements/button-submit-filter/edit.js:8
+msgid "Apply"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter-elements/course-author-filter/edit.js:9
+msgid "Author"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter-elements/course-categories-filter/edit.js:9
+msgid "Category"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter-elements/course-level-filter/edit.js:9
+msgid "Level"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter-elements/course-price-filter/edit.js:9
+msgid "Price"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter-elements/course-search-filter/edit.js:9
+msgid "Search"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter-elements/course-tag-filter/edit.js:9
+msgid "Tags"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:12
+msgid "Show title"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:22
+msgid "Level of category to display on Frontend"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:34
+msgid "Load widget via REST"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:44
+msgid "Hide field has count is zero"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:54
+msgid "Enable Keyword Search Suggestion"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:66
+msgid "Course Filter"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:165
+msgid "Courses Fetching…"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:174
+msgid "Course One"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:178
+msgid "Course two"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:188
+msgid "Load More"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:219
+msgid "Layout"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:234
+msgid "Columns"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/course-results/edit.js:9
+msgid "Showing %d-%d of %d results"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:110
+msgid "Pagination"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:126
+msgid "Pagination Type"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:39
+msgid "Number"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:41
+msgid "Infinite Scroll"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:47
+msgid "Query Settings"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:49
+msgid "Posts per page"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:60
+msgid "Related Course"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:82
+msgid "Enable AJAX"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:97
+msgid "Order by"
+msgstr ""
+
+#: assets/src/apps/js/blocks/instructor-elements/instructor-background/edit.js:27
+msgid "Background Position"
+msgstr ""
+
+#: assets/src/apps/js/blocks/instructor-elements/instructor-background/edit.js:38
+msgid "Background Size"
+msgstr ""
+
+#: assets/src/apps/js/blocks/instructor-elements/instructor-background/edit.js:49
+msgid "Background Repeat"
+msgstr ""
+
+#: assets/src/apps/js/blocks/instructor-elements/instructor-course/edit.js:18
+#: assets/src/apps/js/blocks/instructor-elements/instructor-student/edit.js:18
+msgid "Display Modes"
+msgstr ""
+
+#: assets/src/apps/js/blocks/instructor-elements/instructor-name/edit.js:11
+msgid "Instructor's name"
+msgstr ""
+
+#: assets/src/apps/js/blocks/instructor-elements/instructor-social/edit.js:12
+msgid "Open links in new tab"
+msgstr ""
+
+#: assets/src/apps/js/blocks/instructor-elements/instructor-social/edit.js:21
+msgid "Add nofollow attribute"
+msgstr ""
+
+#: assets/src/apps/js/blocks/single-course-legacy/edit.js:11
+msgid "Single Course (Legacy)"
+msgstr ""
+
+#: assets/src/apps/js/blocks/single-course-legacy/edit.js:15
+msgid "Display full content of Single Course, can not edit."
+msgstr ""
+
+#: assets/src/apps/js/frontend/modal/index.js:41
+msgid "OK"
+msgstr ""
+
+#: assets/src/apps/js/frontend/modal/index.js:44
+msgid "Cancel"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:147
+msgid "The render function should be overwritten from the base."
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:207
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:81
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:204
+msgid "Correct"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:207
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:82
+msgid "Incorrect"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:208
+msgid "%d/%d point"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:98
+msgid "LP Error: can not set answers"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:79
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:196
+msgid "Points"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:80
+msgid "point"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/index.js:34
+msgid "Question <code>%s</code> invalid!"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:15
+msgid "Last Attempt"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:21
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:200
+msgid "Questions"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:22
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:192
+msgid "Time spent"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:23
+msgid "Marks"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:24
+msgid "Passing grade"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:25
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:300
+msgid "Result"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/button-check.js:54
+msgid "Check answers"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/button-check.js:57
+msgid "You need to answer the question before checking the answer key."
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/button-hint.js:22
+#: assets/src/apps/js/frontend/quiz/components/questions/question.js:177
+msgid "Hint"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:106
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:55
+msgid "Are you sure to submit the quiz?"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:160
+msgid "Prev"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:17
+msgid "Are you sure you want to retake the quiz?"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:204
+msgid "Next"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:268
+msgid "Retake"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:268
+msgid "Start"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:289
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:116
+msgid "Finish Quiz"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:309
+msgid "Review"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/meta/index.js:20
+msgid "Duration:"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/meta/index.js:25
+msgid "Passing grade:"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/meta/index.js:30
+msgid "Questions:"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/questions/question.js:163
+msgid "Explanation"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/questions/question.js:87
+msgid "Edit"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:165
+msgid "Passed"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:167
+msgid "Failed"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:174
+msgid "Your Result"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:208
+msgid "Wrong"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:212
+msgid "Skipped"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:217
+msgid "Minus points"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:107
+msgid "Earned Point: %s"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:116
+msgid "Submitting…"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:93
+msgid "Question <span>%d to %d of %d</span>"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:98
+msgid "Question <span>%d of %d</span>"
+msgstr ""
+
+#: assets/src/js/admin/edit-quiz.js:506
+msgid "Are you sure ggggg?"
+msgstr ""

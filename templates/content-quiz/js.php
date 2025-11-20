@@ -5,7 +5,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.1
+ * @version 4.0.2
  */
 
 use LearnPress\Models\CourseModel;
@@ -65,11 +65,16 @@ if ( $userModel ) {
 		$status            = $userQuizModel->get_status();
 		$quiz_results      = $userQuizModel->get_result();
 		$checked_questions = $userQuizModel->get_checked_questions();
-		$user_js           = array(
+
+		$start_time_obj       = new LP_Datetime( $userQuizModel->get_start_time() );
+		$start_time_timestamp = $start_time_obj->getTimestamp();
+
+		$user_js = array(
 			'status'            => $status,
 			'attempts'          => $userQuizModel->get_history(),
 			'checked_questions' => $checked_questions,
 			'start_time'        => $userQuizModel->get_start_time(),
+			'time_spend'        => time() - $start_time_timestamp,
 			'retaken'           => $userQuizModel->get_retaken_count(),
 			'total_time'        => $userQuizModel->get_time_remaining(),
 			'results'           => $quiz_results,
@@ -103,8 +108,8 @@ $duration = $quiz->get_duration();
 $js = array(
 	'course_id'              => $courseModel->get_id(),
 	'nonce'                  => wp_create_nonce( sprintf( 'user-quiz-%d', get_current_user_id() ) ),
-	'id'                     => $quiz->get_id(),
-	'title'                  => $quiz->get_title(),
+	'id'                     => $quizPostModel->get_id(),
+	'title'                  => $quizPostModel->get_the_title(),
 	'content'                => '',
 	'questions'              => $questions,
 	'question_ids'           => $question_ids,
@@ -115,11 +120,11 @@ $js = array(
 	'attempts'               => array(),
 	'answered'               => $answered ? (object) $answered : new stdClass(),
 	'checked_questions'      => array(),
-	'passing_grade'          => $quiz->get_passing_grade(),
-	'negative_marking'       => $quiz->get_negative_marking(),
+	'passing_grade'          => $quizPostModel->get_passing_grade(),
+	'negative_marking'       => $quizPostModel->has_negative_marking(),
 	'show_correct_review'    => $show_correct_review,
-	'instant_check'          => $quiz->get_instant_check(),
-	'retake_count'           => absint( $quiz->get_retake_count() ),
+	'instant_check'          => $quizPostModel->has_instant_check(),
+	'retake_count'           => absint( $quizPostModel->get_retake_count() ),
 	'retaken'                => 0,
 	'questions_per_page'     => $quiz->get_pagination(),
 	'page_numbers'           => get_post_meta( $quiz->get_id(), '_lp_pagination_numbers', true ) === 'yes',
@@ -130,8 +135,8 @@ $js = array(
 	'edit_permalink'         => $editable ? get_edit_post_link( $quiz->get_id() ) : '',
 	'results'                => array(),
 	'required_password'      => post_password_required( $quiz->get_id() ),
-	'allow_retake'           => $quiz->get_retake_count() == - 1,
-	'quiz_description'       => $quiz->get_content(),
+	'allow_retake'           => $quizPostModel->get_retake_count() == - 1,
+	'quiz_description'       => $quizPostModel->get_the_content(),
 );
 
 $js = array_merge( $js, $user_js );
@@ -144,14 +149,14 @@ if ( $total_question ) {
 	<div id="learn-press-quiz-app"></div>
 
 	<script>
-		document.addEventListener( 'DOMContentLoaded', () => {
-			if ( typeof LP !== 'undefined' ) {
+		document.addEventListener('DOMContentLoaded', () => {
+			if (typeof LP !== 'undefined') {
 				LP.quiz.init(
 					'#learn-press-quiz-app',
 					<?php echo json_encode( $js ); ?>
 				)
 			}
-		} );
+		});
 	</script>
 	<?php
 } else {

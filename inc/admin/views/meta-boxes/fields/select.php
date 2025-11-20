@@ -41,6 +41,11 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$field['multil_meta'] = $field['multil_meta'] ?? false;
 		$meta                 = $this->meta_value( $post_id );
 
+		// Fix case select multiple but meta is array with single empty value.
+		if ( is_array($meta) && count($meta) === 1 && empty( $meta[0] ) ) {
+			$meta = [];
+		}
+
 		$default = ( ! $meta && isset( $field['default'] ) ) ? $field['default'] : $meta;
 
 		$field = wp_parse_args(
@@ -170,6 +175,11 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 
 			foreach ( $new_val as $level_id ) {
 				add_post_meta( $post_id, $this->id, $level_id, false );
+			}
+
+			// Fix case select multiple but meta is array with single empty value.
+			if ( empty( $data ) ) {
+				delete_post_meta( $post_id, $this->id );
 			}
 
 			return $data;

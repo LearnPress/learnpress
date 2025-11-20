@@ -239,7 +239,6 @@ document.addEventListener( 'click', ( e ) => {
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	searchUserOnListPost();
-
 	// Sure that the TomSelect is loaded if listen can't find elements.
 	initElsTomSelect();
 } );

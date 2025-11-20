@@ -179,7 +179,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'courses_url'       => learn_press_get_page_link( 'courses' ),
 				'urlParams'         => lp_archive_skeleton_get_args(),
 				'lp_version'        => LearnPress::instance()->version,
-				'lp_rest_load_ajax' => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
+				'lp_rest_load_ajax' => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ), // @deprecated 4.3.0
 				'ajaxUrl'           => admin_url( 'admin-ajax.php' ),
 				'lpAjaxUrl'         => LP_Settings::url_handle_lp_ajax(),
 				'coverImageRatio'   => $aspectRatio,

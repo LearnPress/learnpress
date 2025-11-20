@@ -6,6 +6,7 @@ use Exception;
 use LP_Background_Single_Course;
 use LP_Cache;
 use LP_Database;
+use LP_Helper;
 use LP_Section_DB;
 use LP_Section_Filter;
 use LP_Section_Items_DB;
@@ -193,7 +194,7 @@ class CourseSectionModel {
 	/**
 	 * Create item and add to section.
 	 *
-	 * @param array $data
+	 * @param array $data [ 'item_type' => '', 'item_title' => '', 'item_content' => '' ]
 	 *
 	 * @return CourseSectionItemModel
 	 * @throws Exception
@@ -201,10 +202,11 @@ class CourseSectionModel {
 	 * @version 1.0.1
 	 */
 	public function create_item_and_add( array $data ): CourseSectionItemModel {
-		$item_type   = trim( $data['item_type'] ?? '' );
-		$item_title  = $data['item_title'] ?? '';
-		$courseModel = $this->get_course_model();
-		$section_id  = $this->get_section_id();
+		$item_type    = trim( $data['item_type'] ?? '' );
+		$item_title   = $data['item_title'] ?? '';
+		$item_content = $data['item_content'] ?? '';
+		$courseModel  = $this->get_course_model();
+		$section_id   = $this->get_section_id();
 
 		if ( ! $courseModel instanceof CourseModel ) {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
@@ -221,11 +223,12 @@ class CourseSectionModel {
 		}
 
 		// Create item
-		$itemModelNew              = new PostModel();
-		$itemModelNew->post_type   = $item_type;
-		$itemModelNew->post_title  = $item_title;
-		$itemModelNew->post_status = 'publish';
-		$itemModelNew->post_author = get_current_user_id();
+		$itemModelNew               = new PostModel();
+		$itemModelNew->post_type    = $item_type;
+		$itemModelNew->post_title   = $item_title;
+		$itemModelNew->post_content = $item_content;
+		$itemModelNew->post_status  = 'publish';
+		$itemModelNew->post_author  = get_current_user_id();
 		$itemModelNew->save();
 		$item_id = $itemModelNew->get_id();
 
@@ -260,7 +263,7 @@ class CourseSectionModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function add_items( array $data ) {
 		$courseModel = $this->get_course_model();
@@ -272,8 +275,12 @@ class CourseSectionModel {
 
 		$items = $data['items'] ?? [];
 		foreach ( $items as $item ) {
-			$item_id   = intval( $item['item_id'] ?? 0 );
-			$item_type = $item['item_type'] ?? '';
+			if ( ! key_exists( 'id', $item ) || ! key_exists( 'type', $item ) ) {
+				throw new Exception( __( 'Keys data invalid!', 'learnpress' ) );
+			}
+
+			$item_id   = intval( $item['id'] ?? 0 );
+			$item_type = $item['type'] ?? '';
 			if ( ! $item_id ) {
 				continue;
 			}
