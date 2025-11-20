@@ -65,7 +65,7 @@
 		"classnames": "^2.3.2",
 		"@paypal/paypal-js": "^7.0.3",
 		"refx": "^3.1.1",
-		"sortablejs": "^1.15.0",
+		"sortablejs": "^1.15.6",
 		"tom-select": "2.4.3",
 		"chart.js": "4.5.1",
 		"cropperjs": "1.6.2",

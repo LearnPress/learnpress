@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.9.4
+Stable tag: 4.3.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -265,6 +265,15 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.3.0 (2025-11-20) =
+~ Fixed: security.
+~ Fixed: error 404 link when add media to editor of Question config.
+~ Fixed: export social use on the "Export Personal Data" tool.
+~ Fixed: display time spend when doing quiz with time not limit.
+~ Beta: apply openAI for generate data course.
+~ Update library sweetalert2 to 11.26.3.
+~ Update library chartjs to 4.5.1.
 
 = 4.2.9.4 (2025-10-08) =
 ~ Fixed: security.

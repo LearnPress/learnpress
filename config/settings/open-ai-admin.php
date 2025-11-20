@@ -44,6 +44,13 @@ return apply_filters(
 					'id'      => 'open_ai_secret_key',
 					'default' => '',
 					'type'    => 'textarea',
+					'desc'    => sprintf(
+						/* translators: 1. profile url */
+						__( 'Get your Open AI secret key from <a href="%s" target="_blank">here</a>.
+							Read more guide from <a href="%s" target="_blank">here</a>.', 'learnpress' ),
+						'https://platform.openai.com/account/api-keys',
+						'https://platform.openai.com/docs/quickstart'
+					),
 				],
 				[
 					'title'   => __( 'Text Model Type', 'learnpress' ),
@@ -127,7 +134,7 @@ return apply_filters(
 				[
 					'title'             => __( 'Max Token', 'learnpress' ),
 					'id'                => 'open_ai_max_token',
-					'default'           => 2000,
+					'default'           => 4000,
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'min'  => 1,
