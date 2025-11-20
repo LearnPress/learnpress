@@ -25,10 +25,10 @@ $layout_loop_items = Functions::instance()->get_pages_loop_item( 'lp_course' );
 $CoursesLoopItem->add_control(
 	'template_id',
 	array(
-		'label'         => esc_html__( 'Choose a template', 'thim-elementor-kit' ),
+		'label'         => esc_html__( 'Choose a template', 'learnpress' ),
 		'type'          => Controls_Manager::SELECT2,
 		'default'       => '0',
-		'options'       => [ '0' => esc_html__( 'None', 'thim-elementor-kit' ) ] + $layout_loop_items,
+		'options'       => [ '0' => esc_html__( 'None', 'learnpress' ) ] + $layout_loop_items,
 		'prevent_empty' => false,
 	)
 );
