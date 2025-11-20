@@ -549,11 +549,15 @@ export class GenerateWithOpenai {
 				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
-					// Set image
-					const elImagePreview = document.querySelector(
-						'#postimagediv .inside'
-					);
-					elImagePreview.outerHTML = data.html_image;
+					if ( ! isLayoutGutenberg ) {
+						// Set image
+						const elImagePreview = document.querySelector(
+							'#postimagediv .inside'
+						);
+						elImagePreview.outerHTML = data.html_image;
+					} else {
+						dispatchGutenberg( 'core/editor' ).editPost( { featured_media: data.attachment_id } );
+					}
 
 					if ( popupSweetAlert ) {
 						SweetAlert.close();
