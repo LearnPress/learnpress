@@ -98,6 +98,133 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Get question instance with caching.
+	 * Similar to LP_Question::get_question().
+	 *
+	 * @param mixed $the_question Question ID, WP_Post object, or QuestionPostModel instance.
+	 * @param array $args {
+	 *     Optional. Arguments for question retrieval.
+	 *
+	 *     @type bool   $force Force refresh cache.
+	 *     @type string $type  Question type override.
+	 * }
+	 *
+	 * @return QuestionPostModel|false Question instance or false on failure.
+	 * @since 4.2.9
+	 */
+	public static function get_question( $the_question = false, $args = array() ) {
+		// Get WP_Post object
+		$post_object = self::get_question_post_object( $the_question );
+		if ( ! $post_object ) {
+			return false;
+		}
+
+		// Handle force parameter
+		$force = ! empty( $args['force'] );
+		if ( isset( $args['force'] ) ) {
+			unset( $args['force'] );
+		}
+
+		// Create cache key
+		$key_args = wp_parse_args(
+			$args,
+			array(
+				'id'   => $post_object->ID,
+				'type' => $post_object->post_type,
+			)
+		);
+
+		$cache_key = md5( serialize( $key_args ) );
+
+		// Clear cache if force is true
+		if ( $force ) {
+			wp_cache_delete( $cache_key, 'lp_questions' );
+		}
+
+		// Try to get from cache
+		$cached_question = wp_cache_get( $cache_key, 'lp_questions' );
+		if ( $cached_question instanceof QuestionPostModel ) {
+			return $cached_question;
+		}
+
+		// Get appropriate question class
+		$class_name = self::get_question_class_name( $post_object, $args );
+
+		// Instantiate question object
+		if ( is_string( $class_name ) && class_exists( $class_name ) ) {
+			$question = new $class_name();
+			$question = $question::find( $post_object->ID );
+		} else {
+			$question = self::find( $post_object->ID );
+		}
+
+		// Cache the question instance
+		if ( $question instanceof QuestionPostModel ) {
+			wp_cache_set( $cache_key, $question, 'lp_questions' );
+		}
+
+		return $question;
+	}
+
+	/**
+	 * Get WP_Post object from various input types.
+	 *
+	 * @param mixed $the_question Question ID, WP_Post, or QuestionPostModel.
+	 *
+	 * @return \WP_Post|false WP_Post object or false on failure.
+	 */
+	private static function get_question_post_object( $the_question ) {
+		if ( false === $the_question ) {
+			// Get current post if in question context
+			$the_question = get_post_type() === LP_QUESTION_CPT ? $GLOBALS['post'] : false;
+		} elseif ( is_numeric( $the_question ) ) {
+			// Get post by ID
+			$the_question = get_post( $the_question );
+		} elseif ( $the_question instanceof QuestionPostModel ) {
+			// Get post from model
+			$the_question = get_post( $the_question->get_id() );
+		} elseif ( $the_question instanceof \LP_Course_Item ) {
+			// Get post from LP_Course_Item
+			$the_question = get_post( $the_question->get_id() );
+		} elseif ( ! ( $the_question instanceof \WP_Post ) ) {
+			// Invalid type
+			$the_question = false;
+		}
+
+		return apply_filters( 'learn-press/question-post-model/post-object', $the_question );
+	}
+
+	/**
+	 * Get the appropriate question class name based on question type.
+	 *
+	 * @param \WP_Post $post_object WP_Post object.
+	 * @param array    $args        Optional arguments.
+	 *
+	 * @return string Class name for the question type.
+	 */
+	private static function get_question_class_name( $post_object, $args = array() ) {
+		$question_id = absint( $post_object->ID );
+
+		// Get question type from args or post meta
+		if ( ! empty( $args['type'] ) ) {
+			$question_type = $args['type'];
+		} else {
+			$question_type = get_post_meta( $question_id, self::META_KEY_TYPE, true );
+		}
+
+		// Get class name from type
+		$class_name = self::get_question_obj_by_type( $question_type );
+
+		// Filter class name for extensibility
+		return apply_filters(
+			'learn-press/question-post-model/class-name',
+			$class_name,
+			$question_type,
+			$question_id
+		);
+	}
+
+	/**
 	 * Get all types of question
 	 *
 	 * @return array
@@ -253,6 +380,151 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Get answer options of the question with optional filtering and mapping.
+	 * Returns stdClass objects (converted from QuestionAnswerModel) with mapping and exclusion applied.
+	 *
+	 * @param array $args {
+	 *     Optional. Arguments for filtering and mapping answer options.
+	 *
+	 *     @type string|array $exclude Keys to exclude from each option object.
+	 *     @type array        $map     Key mapping array (old_key => new_key).
+	 *     @type mixed        $answer  Answer data (currently unused).
+	 * }
+	 *
+	 * @return array Array of stdClass objects with modifications applied.
+	 * @since 4.2.9
+	 */
+	public function get_answer_options( $args = array() ) {
+		// Parse arguments with defaults
+		$args = wp_parse_args(
+			$args,
+			array(
+				'exclude' => '',
+				'map'     => '',
+				'answer'  => '',
+			)
+		);
+
+		// Parse exclude parameter
+		$exclude = $this->parse_exclude_param( $args['exclude'] );
+		$map     = $args['map'];
+
+		// Get raw answer options
+		$options = $this->get_answer_option();
+
+		// Return empty array if no options
+		if ( empty( $options ) || ! is_array( $options ) ) {
+			return array();
+		}
+
+		// Convert to stdClass objects and apply shortcodes
+		$processed_options = $this->convert_to_stdclass_objects( $options );
+
+		// Apply mapping and exclusion if needed
+		if ( ! empty( $exclude ) || ! empty( $map ) ) {
+			$processed_options = $this->apply_mapping_and_exclusion_to_objects( $processed_options, $map, $exclude );
+		}
+
+		return apply_filters( 'learn-press/question/answer-options', $processed_options, $this->get_id() );
+	}
+
+	/**
+	 * Parse exclude parameter into array.
+	 *
+	 * @param string|array $exclude Exclude parameter.
+	 *
+	 * @return array Array of keys to exclude.
+	 */
+	private function parse_exclude_param( $exclude ) {
+		if ( empty( $exclude ) ) {
+			return array();
+		}
+
+		if ( is_string( $exclude ) ) {
+			return array_map( 'trim', explode( ',', $exclude ) );
+		}
+
+		return is_array( $exclude ) ? $exclude : array();
+	}
+
+	/**
+	 * Convert QuestionAnswerModel objects to stdClass and apply shortcodes.
+	 * Using stdClass avoids PHP 8.2+ dynamic property deprecation warnings.
+	 *
+	 * @param array $options Array of QuestionAnswerModel objects.
+	 *
+	 * @return array Array of stdClass objects with shortcodes applied.
+	 */
+	private function convert_to_stdclass_objects( $options ) {
+		$processed = array();
+
+		foreach ( $options as $option ) {
+			if ( ! $option instanceof QuestionAnswerModel ) {
+				continue;
+			}
+
+			// Convert to stdClass to allow dynamic properties
+			$std_option = new \stdClass();
+			foreach ( get_object_vars( $option ) as $key => $value ) {
+				$std_option->$key = $value;
+			}
+
+			// Apply shortcode to title
+			if ( ! empty( $std_option->title ) ) {
+				$std_option->title = do_shortcode( $std_option->title );
+			}
+
+			$processed[] = $std_option;
+		}
+
+		return $processed;
+	}
+
+	/**
+	 * Apply key mapping and exclusion to stdClass objects.
+	 * Mapping: Creates new property with mapped name and copies value.
+	 * Exclusion: Unsets specified properties from objects.
+	 *
+	 * @param array $options Array of stdClass objects.
+	 * @param array $map     Key mapping array (old_key => new_key).
+	 * @param array $exclude Array of keys to exclude.
+	 *
+	 * @return array Objects with mapping and exclusion applied.
+	 */
+	private function apply_mapping_and_exclusion_to_objects( $options, $map, $exclude ) {
+		foreach ( $options as $option ) {
+			if ( ! $option instanceof \stdClass ) {
+				continue;
+			}
+
+			// Apply key mapping - create new property with mapped name
+			if ( ! empty( $map ) && is_array( $map ) ) {
+				foreach ( $map as $old_key => $new_key ) {
+					if ( property_exists( $option, $old_key ) || isset( $option->$old_key ) ) {
+						// Copy value to new property name
+						$option->$new_key = $option->$old_key;
+						// Add old key to exclusion list
+						if ( ! in_array( $old_key, $exclude, true ) ) {
+							$exclude[] = $old_key;
+						}
+					}
+				}
+			}
+
+			// Remove excluded properties
+			if ( ! empty( $exclude ) ) {
+				foreach ( $exclude as $key ) {
+					if ( property_exists( $option, $key ) || isset( $option->$key ) ) {
+						unset( $option->$key );
+					}
+				}
+			}
+		}
+
+		return $options;
+	}
+
+	/**
 	 * Prepare question data for rendering
 	 *
 	 * @param int   $question_id Question ID
@@ -353,14 +625,20 @@ class QuestionPostModel extends PostModel {
 		
 		$questionData['disabled'] = $checked || $quizStatus === 'completed';
 
-		// Get answer options
-		$questionData['options'] = learn_press_get_question_options_for_js(
-			$question,
-			[
-				'include_is_true' => $with_true_or_false,
-				'answer'          => $answered[ $question_id ]['answered'] ?? '',
-			]
+		$exclude_option_key = array( 'question_id', 'order' );
+
+		if ( ! $with_true_or_false ) {
+			$exclude_option_key[] = 'is_true';
+		}
+		
+		$option_args = array(
+			'exclude' => $exclude_option_key,
+			'map'     => array( 'question_answer_id' => 'uid' ),
+			'answer'  => $answered[ $question_id ]['answered'] ?? '',
 		);
+
+		// Get answer options
+		$questionData['options'] = $this->get_answer_options( $option_args );
 
 		return apply_filters( 'learn-press/question/prepare-render-data', $questionData, $question_id, $args );
 	}

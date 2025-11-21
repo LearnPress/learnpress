@@ -25,7 +25,7 @@ class QuestionAnswerModel {
 
 	/********** Fields not on table **********/
 	public $meta_data;
-	public $is_get_all_metadata = true;
+	public $is_get_all_metadata = false;
 
 	/** Constant */
 	const META_KEY_BLANKS = '_blanks';

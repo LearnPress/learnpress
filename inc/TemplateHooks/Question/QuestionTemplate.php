@@ -94,7 +94,7 @@ class QuestionTemplate {
 				'answers'     => $answer_html,
 				'explanation' => $this->explanation_html( $question ),
 				'hint'        => $this->hint_html( $question, $show_hint ),
-				'buttons'     => $this->buttons_html( $question, $status ),
+				'buttons'     => $this->check_answer_button_html( $question, $status ),
 				'wrapper_end' => '</div>',
 			);
 
@@ -132,14 +132,15 @@ class QuestionTemplate {
 				$input_id       = 'learn-press-answer-option-' . $option_uid;
 
 				// Check if this option was answered incorrectly
-				$is_answered_wrong = false;
+				$li_class = 'answer-option';
 				if ( $show_correct_review && is_array( $answered ) && in_array( $option_value, $answered, true ) ) {
 					if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
 						$is_answered_wrong = true;
+						$li_class .= ' answered-wrong';
+					} else {
+						$li_class .= ' answered-correct';
 					}
 				}
-
-				$li_class = 'answer-option' . ( $is_answered_wrong ? ' answered-wrong' : '' );
 
 				$options_html .= sprintf(
 					'<li class="%6$s">
@@ -197,14 +198,14 @@ class QuestionTemplate {
 				$input_id       = 'learn-press-answer-option-' . $option_uid;
 
 				// Check if this option was answered incorrectly
-				$is_answered_wrong = false;
+				$li_class = 'answer-option';
 				if ( $show_correct_review && $answered === $option_value ) {
 					if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
-						$is_answered_wrong = true;
+						$li_class .= ' answered-wrong';
+					} else {
+						$li_class .= ' answered-correct';
 					}
 				}
-
-				$li_class = 'answer-option' . ( $is_answered_wrong ? ' answered-wrong' : '' );
 
 				$options_html .= sprintf(
 					'<li class="%6$s">
@@ -262,14 +263,15 @@ class QuestionTemplate {
 				$input_id       = 'learn-press-answer-option-' . $option_uid;
 
 				// Check if this option was answered incorrectly
-				$is_answered_wrong = false;
-				if ( $show_correct_review && in_array( $option_value, $answered ) ) {
+				$li_class = 'answer-option';
+				if ( $show_correct_review && $answered === $option_value ) {
 					if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
-						$is_answered_wrong = true;
+						$li_class .= ' answered-wrong';
+					} else {
+						$li_class .= ' answered-correct';
 					}
 				}
 
-				$li_class = 'answer-option' . ( $is_answered_wrong ? ' answered-wrong' : '' );
 				if ( $option_is_true ) {
 					$li_class .= ' answered-correct';
 				}
@@ -552,12 +554,11 @@ class QuestionTemplate {
 	 *
 	 * @param QuestionPostModel $question Question post model.
 	 * @param string            $status   Quiz status (started, completed, etc.).
-	 *
 	 * @return string
 	 * @since 4.2.9.4
 	 * @version 1.0.0
 	 */
-	public function buttons_html( QuestionPostModel $question, $status = 'started' ) {
+	public function check_answer_button_html( QuestionPostModel $question, $status = 'started' ) {
 		try {
 			// Only show buttons when quiz is started.
 			if ( 'started' !== $status ) {
@@ -566,14 +567,13 @@ class QuestionTemplate {
 
 			$question_id = $question->get_id();
 
+
 			$section = array(
-				'wrapper'      => '<div class="question-buttons">',
-				'check_button' => sprintf(
-					'<button type="button" class="lp-button lp-button-check" data-question-id="%s">%s</button>',
-					esc_attr( $question_id ),
-					esc_html__( 'Check', 'learnpress' )
-				),
-				'wrapper_end'  => '</div>',
+				'wrapper'     => sprintf( '<button class="lp-button instant-check" data-question-id="%s" >', $question_id ),
+				'check_icon'  => '<span class="instant-check__icon"></span>',
+				'check_text'  => __( 'Check answers', 'learnpress' ),
+				'check_info'  => sprintf( '<div class="instant-check__info">%s</div>', __( 'You need to answer the question before checking the answer key.', 'learnpress' ) ),
+				'wrapper_end' => '</button>',
 			);
 
 			return Template::combine_components( $section );
@@ -581,5 +581,242 @@ class QuestionTemplate {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 			return '';
 		}
+	}
+
+	/**
+	 * Render question response HTML (correct/incorrect label with points).
+	 * Based on JavaScript getCorrectLabel() function.
+	 *
+	 * @param array $questionData Question data from QuestionPostModel::prepare_render_data().
+	 *
+	 * @return string
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function question_response_html( array $questionData ) {
+		try {
+			// Only show response if show_correct_review is enabled
+			$show_correct_review = $questionData['show_correct_review'] ?? false;
+			if ( ! $show_correct_review ) {
+				return '';
+			}
+			if ( $questionData['question_type'] === 'fill_in_blanks' ) {
+				return $this->fib_correct_label( $questionData );
+			}
+
+			$question_id = $questionData['id'] ?? 0;
+			$answered    = $questionData['answered'] ?? null;
+			$point       = $questionData['point'] ?? 0;
+			$is_correct  = $this->is_correct( $questionData );
+
+			// Don't show if not answered
+			if ( empty( $answered ) && $answered !== '0' && $answered !== 0 ) {
+				return '';
+			}
+
+			// Determine correct/incorrect class and label
+			$response_class = $is_correct ? 'correct' : 'incorrect';
+			$label_text     = $is_correct ? __( 'Correct', 'learnpress' ) : __( 'Incorrect', 'learnpress' );
+			$earned_point   = $is_correct ? $point : 0;
+
+			$section = array(
+				'wrapper'     => sprintf( '<div class="question-response %s">', esc_attr( $response_class ) ),
+				'label'       => sprintf( '<span class="label">%s</span>', esc_html( $label_text ) ),
+				'point'       => sprintf(
+					'<span class="point">%s</span>',
+					sprintf(
+						esc_html__( '%d/%d point', 'learnpress' ),
+						$earned_point,
+						$point
+					)
+				),
+				'wrapper_end' => '</div>',
+			);
+
+			return Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			return '';
+		}
+	}
+
+	/**
+	 * Render fill-in-blanks question correct label HTML (points with color legend).
+	 * Based on JavaScript getCorrectLabel() function in fill-in-blanks component.
+	 *
+	 * @param array $questionData Question data from QuestionPostModel::prepare_render_data().
+	 *
+	 * @return string
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function fib_correct_label( array $questionData ) {
+		try {
+			// Only show response if show_correct_review is enabled
+			$show_correct_review = $questionData['show_correct_review'] ?? false;
+			if ( ! $show_correct_review ) {
+				return '';
+			}
+
+			$point      = $questionData['point'] ?? 0;
+			$answered   = $questionData['answered'] ?? null;
+
+			// Don't show if not answered
+			if ( empty( $answered ) ) {
+				return '';
+			}
+			$is_correct = $this->is_correct( $questionData );
+
+			$mark = $is_correct ? $point : 0;
+
+			$section = array(
+				'wrapper'         => sprintf( '<div class="question-response %s">', $is_correct ? 'correct' : 'incorrect' ),
+				'label'           => sprintf( '<span class="label">%s</span>', esc_html__( 'Points', 'learnpress' ) ),
+				'point'           => sprintf(
+					'<span class="point">%s/%s %s</span>',
+					esc_html( $mark ),
+					esc_html( $point ),
+					esc_html__( 'point', 'learnpress' )
+				),
+				'correct_note'    => sprintf(
+					'<span class="lp-fib-note"><span style="background: #00adff;"></span>%s</span>',
+					esc_html__( 'Correct', 'learnpress' )
+				),
+				'incorrect_note'  => sprintf(
+					'<span class="lp-fib-note"><span style="background: #d85554;"></span>%s</span>',
+					esc_html__( 'Incorrect', 'learnpress' )
+				),
+				'wrapper_end'     => '</div>',
+			);
+
+			return Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			return '';
+		}
+	}
+
+	/**
+	 * Check if radio-based question (single choice, true/false) is answered correctly.
+	 *
+	 * @param array $questionData Question data from QuestionPostModel::prepare_render_data().
+	 *
+	 * @return bool
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function check_radio_question( array $questionData ) {
+		$answered = $questionData['answered'] ?? null;
+		$options  = $questionData['options'] ?? [];
+
+		// No answer provided
+		if ( empty( $answered ) && $answered !== '0' && $answered !== 0 ) {
+			return false;
+		}
+
+		// Check if answered value matches any option where is_true === 'yes'
+		foreach ( $options as $option ) {
+			$option_is_true = is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' );
+			$option_value   = is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' );
+
+			if ( $option_is_true === 'yes' ) {
+				if ( $answered == $option_value ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if multiple choice question is answered correctly.
+	 *
+	 * @param array $questionData Question data from QuestionPostModel::prepare_render_data().
+	 *
+	 * @return bool
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function check_multi_choice_question( array $questionData ) {
+		$answered = $questionData['answered'] ?? null;
+		$options  = $questionData['options'] ?? [];
+
+		// No answer provided or answered is not an array
+		if ( is_bool( $answered ) || empty( $answered ) ) {
+			return false;
+		}
+
+		// Ensure answered is an array
+		if ( ! is_array( $answered ) ) {
+			return false;
+		}
+
+		// Check all options
+		foreach ( $options as $option ) {
+			$option_is_true = is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' );
+			$option_value   = is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' );
+
+			if ( $option_is_true === 'yes' ) {
+				// Correct option must be in answered array
+				if ( ! in_array( $option_value, $answered, true ) ) {
+					return false;
+				}
+			} else {
+				// Incorrect option must NOT be in answered array
+				if ( in_array( $option_value, $answered, true ) ) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if FIB question is answered correctly.
+	 *
+	 * @param array $questionData Question data from QuestionPostModel::prepare_render_data().
+	 *
+	 * @return bool
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function check_fib_question( $questionData ) {
+		if ( empty( $questionData['answered'] ) || empty( $questionData['options'] ) ) {
+			return false;
+		}
+		if ( empty( $questionData['options']['answers'] ) ) {
+			return false;
+		}
+		$answers         = $questionData['options']['answers'];
+		$corrected_count = 0;
+		$blank_count     = count( $questionData['options']['ids'] ?? [] );
+		foreach ( $answered as $blank => $answer ) {
+			if ( $answer['is_correct'] ) {
+				$corrected_count++;
+			}
+		}
+		return $blank_count === $corrected_count;
+	}
+
+
+	public function is_correct( $questionData ) {
+		$is_correct = false;
+		switch ( $questionData['question_type'] ) {
+			case 'multi_choice':
+				$is_correct = $this->check_multi_choice_question( $questionData );
+				break;
+			case 'single_choice':
+			case 'true_or_false':
+				$is_correct = $this->check_radio_question( $questionData );
+				break;
+			case 'fill_in_blanks':
+				$is_correct = $this->check_fib_question( $questionData );
+				break;
+			default:
+				break;
+		}
+		return $is_correct;
 	}
 }
