@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.3.0\n"
+"Project-Id-Version: LearnPress 4.3.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-11-20T06:45:16+03:00\n"
+"POT-Creation-Date: 2025-11-21T12:34:34+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -1130,7 +1130,7 @@ msgid "Radius"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:353
-#: inc/admin/class-lp-admin-assets.php:605
+#: inc/admin/class-lp-admin-assets.php:607
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
 #: inc/admin/views/meta-boxes/order/details.php:209
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:156
@@ -2673,7 +2673,6 @@ msgid "Instruction"
 msgstr ""
 
 #: config/settings/gateway/paypal.php:13
-#: config/settings/open-ai-admin.php:40
 #: inc/admin/meta-box/fields/payment-order.php:10
 #: inc/emails/class-lp-email.php:873
 msgid "Enable/Disable"
@@ -2832,6 +2831,10 @@ msgstr ""
 msgid "Enable Open AI"
 msgstr ""
 
+#: config/settings/open-ai-admin.php:40
+msgid "Enable this option and enter your OpenAI Secret key below to activate the feature."
+msgstr ""
+
 #: config/settings/open-ai-admin.php:43
 msgid "Secret key"
 msgstr ""
@@ -2840,172 +2843,172 @@ msgstr ""
 #: config/settings/open-ai-admin.php:49
 #, php-format
 msgid ""
-"Get your Open AI secret key from <a href=\"%s\" target=\"_blank\">here</a>.\n"
-"\t\t\t\t\t\t\tRead more guide from <a href=\"%s\" target=\"_blank\">here</a>."
+"Get your Open AI secret key from <a href=\"%1$s\" target=\"_blank\">here</a>.\n"
+"                            Read more guide from <a href=\"%2$s\" target=\"_blank\">here</a>."
 msgstr ""
 
-#: config/settings/open-ai-admin.php:56
+#: config/settings/open-ai-admin.php:59
 msgid "Text Model Type"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:61
+#: config/settings/open-ai-admin.php:64
 msgid "ChatGPT 5"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:62
+#: config/settings/open-ai-admin.php:65
 msgid "ChatGPT 4.1"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:63
+#: config/settings/open-ai-admin.php:66
 msgid "ChatGPT 4o-Latest"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:64
+#: config/settings/open-ai-admin.php:67
 msgid "GPT 4o"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:65
+#: config/settings/open-ai-admin.php:68
 msgid "GPT 4o Mini"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:66
+#: config/settings/open-ai-admin.php:69
 msgid "GPT 4"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:67
+#: config/settings/open-ai-admin.php:70
 msgid "GPT 3.5 Turbo"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:68
+#: config/settings/open-ai-admin.php:71
 msgid "GPT 3.5 Turbo Instruct"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:72
+#: config/settings/open-ai-admin.php:75
 msgid "Image Model Type"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:77
+#: config/settings/open-ai-admin.php:80
 msgid "GPT image 1"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:78
+#: config/settings/open-ai-admin.php:81
 msgid "DALL E 3"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:79
+#: config/settings/open-ai-admin.php:82
 msgid "DALL E 2 "
 msgstr ""
 
-#: config/settings/open-ai-admin.php:83
+#: config/settings/open-ai-admin.php:86
 msgid "Frequency Penalty Level"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:88
+#: config/settings/open-ai-admin.php:91
 msgid "Very High Repetition (-2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:89
+#: config/settings/open-ai-admin.php:92
 msgid "High Repetition (-1.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:90
+#: config/settings/open-ai-admin.php:93
 msgid "Moderate Repetition (-1.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:91
-msgid "Low Repetition (-0.5)"
-msgstr ""
-
-#: config/settings/open-ai-admin.php:92
-#: config/settings/open-ai-admin.php:109
-msgid "No Penalty (0.0)"
-msgstr ""
-
-#: config/settings/open-ai-admin.php:93
-#: config/settings/open-ai-admin.php:110
-msgid "Low Penalty (0.5)"
-msgstr ""
-
 #: config/settings/open-ai-admin.php:94
-#: config/settings/open-ai-admin.php:111
-msgid "Moderate Penalty (1.0)"
+msgid "Low Repetition (-0.5)"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:95
 #: config/settings/open-ai-admin.php:112
-msgid "High Penalty (1.5)"
+msgid "No Penalty (0.0)"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:96
 #: config/settings/open-ai-admin.php:113
+msgid "Low Penalty (0.5)"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:97
+#: config/settings/open-ai-admin.php:114
+msgid "Moderate Penalty (1.0)"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:98
+#: config/settings/open-ai-admin.php:115
+msgid "High Penalty (1.5)"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:99
+#: config/settings/open-ai-admin.php:116
 msgid "Very High Penalty (2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:100
+#: config/settings/open-ai-admin.php:103
 msgid "Presence Penalty Level"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:105
+#: config/settings/open-ai-admin.php:108
 msgid "Very High Repetition Allowed (-2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:106
+#: config/settings/open-ai-admin.php:109
 msgid "High Repetition Allowed (-1.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:107
+#: config/settings/open-ai-admin.php:110
 msgid "Moderate Repetition Allowed (-1.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:108
+#: config/settings/open-ai-admin.php:111
 msgid "Low Repetition Allowed (-0.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:117
+#: config/settings/open-ai-admin.php:120
 msgid "Creativity Level"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:122
+#: config/settings/open-ai-admin.php:125
 msgid "Very Low Creativity (0.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:123
+#: config/settings/open-ai-admin.php:126
 msgid "Low Creativity (0.2)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:124
+#: config/settings/open-ai-admin.php:127
 msgid "Low Creativity (0.3)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:125
+#: config/settings/open-ai-admin.php:128
 msgid "Moderate Creativity (0.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:126
+#: config/settings/open-ai-admin.php:129
 msgid "High Creativity (0.7)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:127
+#: config/settings/open-ai-admin.php:130
 msgid "High Creativity (0.8)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:128
+#: config/settings/open-ai-admin.php:131
 msgid "Very High Creativity (1.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:129
+#: config/settings/open-ai-admin.php:132
 msgid "Extreme Creativity (1.1)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:130
+#: config/settings/open-ai-admin.php:133
 msgid "Extreme Creativity (1.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:131
+#: config/settings/open-ai-admin.php:134
 msgid "Maximum Creativity (2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:135
+#: config/settings/open-ai-admin.php:138
 msgid "Max Token"
 msgstr ""
 
@@ -3753,11 +3756,11 @@ msgstr ""
 msgid "Generate with AI"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:103
+#: inc/admin/class-lp-admin-assets.php:105
 msgid "Oops! Error."
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:104
+#: inc/admin/class-lp-admin-assets.php:106
 #: inc/admin/views/meta-boxes/order/details.php:147
 #: inc/emails/guest/class-lp-email-cancelled-order-guest.php:25
 #: inc/emails/guest/class-lp-email-completed-order-guest.php:29
@@ -3767,11 +3770,11 @@ msgstr ""
 msgid "Guest"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:110
+#: inc/admin/class-lp-admin-assets.php:112
 msgid "Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:598
+#: inc/admin/class-lp-admin-assets.php:600
 #: inc/class-lp-query-list-table.php:32
 #: inc/TemplateHooks/Table/TableListTemplate.php:138
 msgid "item"
@@ -3779,18 +3782,18 @@ msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/admin/class-lp-admin-assets.php:599
+#: inc/admin/class-lp-admin-assets.php:601
 msgid "Create a new"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:600
+#: inc/admin/class-lp-admin-assets.php:602
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:172
 #: inc/TemplateHooks/Admin/AdminTemplate.php:113
 msgid "Back"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:601
+#: inc/admin/class-lp-admin-assets.php:603
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:173
@@ -3798,37 +3801,37 @@ msgstr ""
 msgid "Selected items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:602
+#: inc/admin/class-lp-admin-assets.php:604
 msgid "Do you want to remove the \"{{ITEM_NAME}}\" item from the course?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:603
+#: inc/admin/class-lp-admin-assets.php:605
 msgid "Do you want to move the \"{{ITEM_NAME}}\" item to the trash?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:606
+#: inc/admin/class-lp-admin-assets.php:608
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:157
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:258
 msgid "Items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:608
+#: inc/admin/class-lp-admin-assets.php:610
 msgid "The course sale price must be less than the regular price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:609
+#: inc/admin/class-lp-admin-assets.php:611
 msgid "The course price must be greater than the sale price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:610
+#: inc/admin/class-lp-admin-assets.php:612
 msgid "The sale start date must be before the sale end date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:611
+#: inc/admin/class-lp-admin-assets.php:613
 msgid "The sale end date must be after the sale start date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:612
+#: inc/admin/class-lp-admin-assets.php:614
 msgid "Invalid date"
 msgstr ""
 
@@ -6398,7 +6401,7 @@ msgstr ""
 msgid "No image data provided."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:487
+#: inc/Ajax/AI/OpenAiAjax.php:489
 msgid "Apply image successfully!"
 msgstr ""
 
@@ -7029,7 +7032,7 @@ msgstr ""
 #: inc/course/abstract-course.php:793
 #: inc/course/abstract-course.php:813
 #: inc/lesson/class-lp-lesson.php:104
-#: inc/quiz/class-lp-quiz.php:648
+#: inc/quiz/class-lp-quiz.php:651
 #, php-format
 msgid "The function %s doesn't exist"
 msgstr ""
@@ -7608,7 +7611,7 @@ msgid "This quiz has no questions"
 msgstr ""
 
 #: inc/custom-post-types/quiz.php:308
-#: inc/quiz/class-lp-quiz.php:518
+#: inc/quiz/class-lp-quiz.php:521
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:493
 msgid "Unlimited"
 msgstr ""
@@ -9532,35 +9535,35 @@ msgstr ""
 msgid "The order number <strong>%s</strong> can not be cancelled."
 msgstr ""
 
-#: inc/quiz/class-lp-quiz.php:586
+#: inc/quiz/class-lp-quiz.php:589
 msgid "Finish quiz"
 msgstr ""
 
-#: inc/quiz/class-lp-quiz.php:587
+#: inc/quiz/class-lp-quiz.php:590
 msgid "Are you sure you want to finish this quiz?"
 msgstr ""
 
-#: inc/quiz/class-lp-quiz.php:590
+#: inc/quiz/class-lp-quiz.php:593
 msgid "Retake quiz"
 msgstr ""
 
-#: inc/quiz/class-lp-quiz.php:591
+#: inc/quiz/class-lp-quiz.php:594
 msgid "Are you sure you want to retake this quiz?"
 msgstr ""
 
-#: inc/quiz/class-lp-quiz.php:594
+#: inc/quiz/class-lp-quiz.php:597
 msgid "Time's up!"
 msgstr ""
 
-#: inc/quiz/class-lp-quiz.php:595
+#: inc/quiz/class-lp-quiz.php:598
 msgid "The time is up! Your quiz will automatically come to an end"
 msgstr ""
 
-#: inc/quiz/class-lp-quiz.php:597
+#: inc/quiz/class-lp-quiz.php:600
 msgid "Congrats! You have finished this quiz"
 msgstr ""
 
-#: inc/quiz/class-lp-quiz.php:598
+#: inc/quiz/class-lp-quiz.php:601
 msgid "Congrats! You have re-taken this quiz. Please wait a moment and the page will reload"
 msgstr ""
 
@@ -10776,8 +10779,8 @@ msgstr ""
 msgid "Note: when applying an image, the process can be very slow (about 1 minute or more), depends on the image size. Please wait until it finishes."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditWithAITemplate.php:864
-#: inc/TemplateHooks/Admin/AdminEditWithAITemplate.php:885
+#: inc/TemplateHooks/Admin/AdminEditWithAITemplate.php:868
+#: inc/TemplateHooks/Admin/AdminEditWithAITemplate.php:889
 msgid "Generate Course Curriculum"
 msgstr ""
 
