@@ -64,55 +64,52 @@ export class GenerateWithOpenai {
 			);
 		} );
 
-		// For layout Gutenberg - button for title
-		lpUtils.lpOnElementReady( '.editor-document-bar', ( el ) => {
+		// Check is layout Gutenberg
+		if ( wp.data ) {
 			isLayoutGutenberg = true;
+			selectGutenberg = wp.data.select;
+			dispatchGutenberg = wp.data.dispatch;
+			editorGutenberg = selectGutenberg( 'core/editor' );
 
-			const { select, dispatch } = wp.data;
-			selectGutenberg = select;
-			dispatchGutenberg = dispatch;
-			editorGutenberg = select( 'core/editor' );
-
-			el.insertAdjacentHTML(
-				'afterend',
-				`<button type="button"
+			// For layout Gutenberg - button for title
+			lpUtils.lpOnElementReady( '.editor-document-bar', ( el ) => {
+				el.insertAdjacentHTML(
+					'afterend',
+					`<button type="button"
 					style="margin-left: 5px"
 					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-title-ai">
 					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
 				</button>`
-			);
-		} );
+				);
+			} );
 
-		// For layout Gutenberg - button for description
-		lpUtils.lpOnElementReady( '.editor-document-bar', ( el ) => {
-			isLayoutGutenberg = true;
-
-			el.insertAdjacentHTML(
-				'afterend',
-				`<button type="button"
-					style="margin-left: 5px"
+			// For layout Gutenberg - button for description
+			lpUtils.lpOnElementReady( '.editor-post-featured-image', ( el ) => {
+				el.insertAdjacentHTML(
+					'beforebegin',
+					`<button type="button"
+					style="padding: 5px 10px; justify-content: center;"
 					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-description-ai">
 					<i class="lp-ico-ai"></i><span>Generate description with AI</span>
 				</button>`
-			);
-		} );
+				);
+			} );
 
-		// For layout Gutenberg - button for image
-		lpUtils.lpOnElementReady( '.editor-document-bar', ( el ) => {
-			isLayoutGutenberg = true;
-
-			el.insertAdjacentHTML(
-				'afterend',
-				`<button type="button"
-					style="margin-left: 5px"
+			// For layout Gutenberg - button for image
+			lpUtils.lpOnElementReady( '.editor-post-featured-image', ( el ) => {
+				el.insertAdjacentHTML(
+					'afterend',
+					`<button type="button"
+					style="padding: 5px 10px; justify-content: center;"
 					class="lp-btn-generate-with-ai"
 					data-template="#lp-tmpl-edit-image-ai">
 					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
 				</button>`
-			);
-		} );
+				);
+			} );
+		}
 
 		this.events();
 	}
