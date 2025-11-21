@@ -108,6 +108,7 @@
 	}
 
 	.cb-search-btn {
+		cursor: pointer;
 		border: none;
 		background: none;
 	}
@@ -188,10 +189,14 @@
 	.wap-course-title {
 		margin-top: 0px;
 		margin-bottom: 12px;
-	}
 
-	.wap-course-title a {
-		text-decoration: none;
+		a {
+			text-decoration: none;
+			max-width: 234px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 	}
 
 	.course-permalink {
@@ -443,6 +448,7 @@
 			font-size: 14px;
 			padding: 5px 20px;
 			border-radius: 20px;
+			font-weight: 500;
 			background-color: #f5f5f5;
 			text-transform: capitalize;
 		}

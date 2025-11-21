@@ -224,6 +224,12 @@ const trashLesson = ( e, target ) => {
 		success: ( response ) => {
 			const { status, message, data } = response;
 			showToast( message, status );
+
+			if ( data?.button_title ) {
+				const elBtnUpdateLesson = document.querySelector( className.elBtnUpdateLesson );
+				elBtnUpdateLesson.textContent = data?.button_title;
+			}
+
 			if ( data?.status ) {
 				const elStatus = document.querySelector( '.lesson-status' );
 				if ( elStatus ) {

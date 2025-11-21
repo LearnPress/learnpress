@@ -216,6 +216,11 @@ const trashCourse = ( e, target ) => {
 			const { status, message, data } = response;
 			showToast( message, status );
 
+			if ( data?.button_title ) {
+				const elBtnUpdateCourse = document.querySelector( className.elBtnUpdateCourse );
+				elBtnUpdateCourse.textContent = data?.button_title;
+			}
+
 			if ( data?.status ) {
 				const elStatus = document.querySelector( '.course-status' );
 				if ( elStatus ) {

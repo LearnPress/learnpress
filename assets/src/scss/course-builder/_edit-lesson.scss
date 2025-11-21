@@ -1,25 +1,4 @@
 .lp-course-builder-content__section {
-	padding: 20 40;
-	background: #fff;
-	border-radius: 16px;
-	min-height: calc( 100% - 100px );
-
-	.cb-section__header-left {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		margin-bottom: 20px;
-		margin-top: 28px;
-	}
-
-	.lp-cb-section__title {
-		font-size: 28px;
-		font-weight: 600;
-		margin-top: 0;
-		margin-bottom: 0;
-		color: #1e1e1e;
-	}
-
 	.lesson-status {
 		padding: 5px 12px;
 		font-size: 12px;
@@ -105,64 +84,6 @@
 		margin-bottom: 8px;
 	}
 
-	/* WordPress Editor Wrapper */
-	#wp-lesson_description_editor-wrap {
-		border: 1px solid #ddd;
-		border-radius: 6px;
-		overflow: hidden;
-		background-color: #fff;
-	}
-
-	.wp-editor-tools {
-		background-color: #f5f5f5;
-		margin: 16px 16px 0;
-		border-radius: 8px 8px 0 0;
-	}
-
-	#mceu_25 {
-		background-color: #f5f5f5;
-		margin: 0 16px 0;
-		padding: 0;
-		border-radius: 0 0 8px 8px;
-	}
-
-	.wp-media-buttons {
-		padding: 8px 8px 0;
-	}
-
-	.mce-tinymce {
-		border: none !important;
-		visibility: visible !important;
-	}
-
-	.mce-toolbar-grp {
-		background: none;
-		border-bottom: none;
-	}
-
-	.wp-editor-container {
-		border: none;
-	}
-
-	.mce-top-part::before {
-		box-shadow: none;
-	}
-
-	div.mce-statusbar {
-		border-top: none;
-	}
-
-	.cb-section__header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.cb-section__header-action {
-		display: flex;
-		gap: 20px;
-	}
-
 	.cb-button {
 		padding: 8px 25px;
 		border-radius: 5px;
@@ -179,12 +100,6 @@
 		&.cb-btn-trash__lesson {
 			background: rgb( 220 38 38 );
 			color: #fff;
-		}
-
-		&.loading {
-			pointer-events: none;
-			opacity: 0.8;
-			@include loading();
 		}
 	}
 

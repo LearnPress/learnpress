@@ -102,7 +102,7 @@ class CourseBuilder {
 			),
 		];
 
-		return $tab_arr;
+		return apply_filters( 'learn-press/course-builder/tabs', $tab_arr );
 	}
 
 	/**
