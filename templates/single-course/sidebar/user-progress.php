@@ -24,7 +24,7 @@ $passing_condition = $course->get_passing_condition();
 			<h4 class="items-progress__heading">
 				<?php esc_html_e( 'Lessons completed:', 'learnpress' ); ?>
 			</h4>
-			<span class="number"><?php esc_attr( printf( '%1$d/%2$d', $course_results['items']['lesson']['completed'], $course_results['items']['lesson']['total'] ) ); ?></span>
+			<span class="number"><?php echo esc_html( sprintf( '%1$d/%2$d', $course_results['items']['lesson']['completed'], $course_results['items']['lesson']['total'] ) ); ?></span>
 		</div>
 	<?php endif; ?>
 
@@ -60,7 +60,7 @@ $passing_condition = $course->get_passing_condition();
 				</div>
 			</div>
 			<div class="lp-passing-conditional"
-				data-content="<?php esc_attr( printf( esc_html__( 'Passing condition: %s%%', 'learnpress' ), $passing_condition ) ); ?>"
+				data-content="<?php echo esc_attr( sprintf( esc_html__( 'Passing condition: %s%%', 'learnpress' ), $passing_condition ) ); ?>"
 				style="left: <?php echo esc_attr( $passing_condition ); ?>%;">
 			</div>
 		</div>
