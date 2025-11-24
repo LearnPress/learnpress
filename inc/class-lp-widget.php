@@ -259,7 +259,7 @@ class LP_Widget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		if ( empty( $this->settings ) ) {
-			echo '<p>' . esc_html_e( 'There are no options for this widget.', 'learnpress' ) . '</p>';
+			echo '<p>' . esc_html__( 'There are no options for this widget.', 'learnpress' ) . '</p>';
 
 			return;
 		}
