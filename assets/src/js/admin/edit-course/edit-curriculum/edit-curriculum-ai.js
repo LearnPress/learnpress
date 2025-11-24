@@ -22,6 +22,10 @@ export class EditCurriculumAi {
 	};
 
 	init() {
+		if ( ! lpData?.enable_open_ai ) {
+			return;
+		}
+
 		lpUtils.lpOnElementReady(
 			EditCourseCurriculum.selectors.idElEditCurriculum,
 			( el ) => {

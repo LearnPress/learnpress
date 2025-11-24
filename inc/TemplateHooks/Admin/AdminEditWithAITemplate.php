@@ -98,7 +98,7 @@ class AdminEditWithAITemplate {
 					[
 						'action'         => 'openai_generate_data',
 						'lp-prompt-type' => 'course-title', // define type prompt to generate title.
-						'target-apply'   => 'input[name="post_title"]', // Click apply to apply title to this field.
+						'target-apply'   => 'set-wp-title', // Click apply to apply title to this field.
 						'id_url'         => 'submit_to_openai',
 					]
 				),
@@ -828,8 +828,9 @@ class AdminEditWithAITemplate {
 	}
 
 	public function html_feature_image_created( $args ): string {
-		$src     = $args['src'] ?? '';
-		$post_id = $args['post-id'] ?? '';
+		$src           = $args['src'] ?? '';
+		$post_id       = $args['post-id'] ?? '';
+		$attachment_id = $args['attachment-id'] ?? '';
 
 		$section = [
 			'wrap'     => '<div class="inside">',
@@ -847,7 +848,10 @@ class AdminEditWithAITemplate {
 				'<p class="hide-if-no-js"><a href="#" id="remove-post-thumbnail">%s</a></p>',
 				__( 'Remove featured image' )
 			),
-			'input'    => '<input type="hidden" id="_thumbnail_id" name="_thumbnail_id" value="37">',
+			'input'    => sprintf(
+				'<input type="hidden" id="_thumbnail_id" name="_thumbnail_id" value="%d" />',
+				$attachment_id
+			),
 			'wrap_end' => '</div>',
 		];
 

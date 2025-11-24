@@ -478,13 +478,15 @@ class OpenAiAjax extends AbstractAjax {
 			}
 
 			$args = [
-				'src'     => wp_get_attachment_url( $attachment_id ),
-				'post-id' => $post_id,
+				'src'           => wp_get_attachment_url( $attachment_id ),
+				'post-id'       => $post_id,
+				'attachment-id' => $attachment_id,
 			];
 
-			$response->data->html_image = AdminEditWithAITemplate::instance()->html_feature_image_created( $args );
-			$response->status           = 'success';
-			$response->message          = __( 'Apply image successfully!', 'learnpress' );
+			$response->data->html_image    = AdminEditWithAITemplate::instance()->html_feature_image_created( $args );
+			$response->data->attachment_id = $attachment_id;
+			$response->status              = 'success';
+			$response->message             = __( 'Apply image successfully!', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
