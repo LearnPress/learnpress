@@ -11,51 +11,268 @@
 // @import 'course-builder/edit-question';
 
 //Style global for course builder
-.lp-course-builder-content__section {
-	padding: 20 40;
+#lp-course-builder-content {
 	background: #fff;
-	border-radius: 16px;
-	min-height: calc( 100% - 100px );
+	padding: 24px;
+	border-radius: 8px;
 
-	.cb-section__header-left {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		margin-bottom: 20px;
-		margin-top: 28px;
-	}
+	.lp-course-builder-content__section {
+		padding: 20 40;
+		background: #fff;
+		border-radius: 16px;
+		min-height: calc( 100% - 100px );
 
-	.lp-cb-section__title {
-		font-size: 28px;
-		font-weight: 600;
-		margin-top: 0;
-		margin-bottom: 0;
-		color: #1e1e1e;
-	}
+		.cb-section__header-left {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 20px;
+			margin-top: 28px;
+		}
 
-	.cb-section__header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
+		.lp-cb-section__title {
+			font-size: 28px;
+			font-weight: 600;
+			margin-top: 0;
+			margin-bottom: 0;
+			color: #1e1e1e;
+		}
 
-	.cb-section__header-action {
-		display: flex;
-		gap: 20px;
-	}
+		.cb-section__header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
 
-	.cb-button {
-		padding: 8px 25px;
-		border-radius: 5px;
-		background: #ccc;
-		font-size: 16px;
-		font-weight: 500;
-		cursor: pointer;
+		.cb-section__header-action {
+			display: flex;
+			gap: 20px;
+		}
 
-		&.loading {
-			pointer-events: none;
-			opacity: 0.8;
-			@include loading();
+		.cb-button {
+			padding: 8px 25px;
+			border-radius: 5px;
+			background: #ccc;
+			font-size: 16px;
+			font-weight: 500;
+			cursor: pointer;
+
+			&.loading {
+				pointer-events: none;
+				opacity: 0.8;
+				@include loading();
+			}
+		}
+
+		.lp-meta-box {
+			background: transparent;
+		}
+
+		.lp-meta-box__inner {
+			display: flex;
+			flex-direction: column;
+			gap: 24px;
+		}
+
+		.form-field,
+		.lp-meta-box__duration {
+			display: flex;
+			align-items: center;
+			gap: 11px;
+			margin: 0;
+			padding: 0;
+		}
+
+		.form-field._lp_hint_field,
+		.form-field._lp_explanation_field {
+			flex-wrap: wrap;
+		}
+
+		.form-field label,
+		.form-field label span,
+		.lp-meta-box__duration label {
+			font-size: 14px;
+			font-weight: 500;
+			color: #1a1a1a;
+			margin: 0;
+		}
+
+		.form-field input[type='number'],
+		.form-field input[type='text'],
+		.form-field input[type='datetime-local'],
+		.lp-meta-box__duration input[type='number'] {
+			width: 100%;
+			max-width: 200px;
+			height: 33px;
+			padding: 8px 12px;
+			border: 1px solid #d1d5db;
+			border-radius: 6px;
+			font-size: 14px;
+			color: #1a1a1a;
+			background: #fff;
+			transition: all 0.2s;
+		}
+
+		.form-field textarea {
+			order: 3;
+			width: 100%;
+			padding: 8px 12px;
+			border: 1px solid #d1d5db;
+			border-radius: 6px;
+			font-size: 14px;
+			color: #1a1a1a;
+			background: #fff;
+			transition: all 0.2s;
+		}
+
+		.form-field input[type='number']:focus,
+		.form-field input[type='text']:focus,
+		.form-field input[type='datetime-local']:focus,
+		.lp-meta-box__duration input[type='number']:focus {
+			outline: none;
+			border-color: #3b82f6;
+			box-shadow: 0 0 0 3px rgba( 59, 130, 246, 0.1 );
+		}
+
+		select {
+			padding: 4px 12px;
+			height: 33px;
+			border: 1px solid #d1d5db;
+			border-radius: 6px;
+			font-size: 14px;
+			color: #1a1a1a;
+			background: #fff;
+			cursor: pointer;
+			transition: all 0.2s;
+		}
+
+		select:focus {
+			outline: none;
+			border-color: #3b82f6;
+			box-shadow: 0 0 0 3px rgba( 59, 130, 246, 0.1 );
+		}
+
+		.lp-meta-box__duration > :not( label ):not( .description ) {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.form-field input[type='checkbox'] {
+			appearance: none;
+			-webkit-appearance: none;
+			width: 44px;
+			height: 24px;
+			background: #e5e7eb;
+			border-radius: 12px;
+			position: relative;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			margin: 0;
+			flex-shrink: 0;
+		}
+
+		.form-field input[type='checkbox']:before {
+			content: '';
+			position: absolute;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: #fff;
+			top: 2px;
+			left: 2px;
+			transition: all 0.3s ease;
+			box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.1 );
+		}
+
+		.form-field input[type='checkbox']:checked {
+			background: #3b82f6;
+		}
+
+		.form-field input[type='checkbox']:checked:before {
+			left: 22px;
+		}
+
+		.form-field input[type='checkbox']:focus {
+			outline: none;
+			box-shadow: 0 0 0 3px rgba( 59, 130, 246, 0.1 );
+		}
+
+		.form-field:has( input[type='checkbox'] ) {
+			flex-direction: row;
+			align-items: center;
+			gap: 11px;
+		}
+
+		.form-field:has( input[type='checkbox'] ) label {
+			order: 2;
+			font-weight: 500;
+			flex: 0 0 auto;
+		}
+
+		.form-field:has( input[type='checkbox'] ) input[type='checkbox'] {
+			order: 1;
+			margin-top: 2px;
+		}
+
+		.form-field:has( input[type='checkbox'] ) .description {
+			order: 3;
+		}
+
+		.description {
+			font-size: 13px;
+			color: #6b7280;
+			line-height: 1.5;
+			margin: 0;
+			display: block;
+		}
+
+		.lp-meta-box__duration .description {
+			margin-top: 4px;
+		}
+
+		p.form-field,
+		p.lp-meta-box__duration {
+			padding: 0;
+			margin: 0;
+		}
+
+		p.form-field .description,
+		p.lp-meta-box__duration .description {
+			margin-top: 6px;
+		}
+
+		#_lp_passing_grade,
+		#_lp_retake_count,
+		#_lp_pagination {
+			max-width: 100px;
+		}
+
+		@media ( max-width: 768px ) {
+			.lp-meta-box__inner {
+				gap: 20px;
+			}
+
+			.form-field input[type='number'],
+			.form-field input[type='text'],
+			.form-field input[type='datetime-local'],
+			.lp-meta-box__duration input[type='number'] {
+				max-width: 100%;
+			}
+
+			.form-field:has( input[type='checkbox'] ) {
+				flex-direction: column;
+				gap: 8px;
+			}
+
+			.form-field:has( input[type='checkbox'] ) label {
+				min-width: auto;
+			}
+
+			.form-field:has( input[type='checkbox'] ) .description {
+				margin-left: 0;
+				margin-top: 0;
+			}
 		}
 	}
 }

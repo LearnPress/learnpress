@@ -12,14 +12,17 @@ use Exception;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderEditCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuestionTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuizTemplate;
 use LP_Course_CURD;
 use LP_Helper;
 use LP_Lesson_CURD;
+use LP_Question_CURD;
 use LP_Quiz_CURD;
 use LP_REST_Response;
 use stdClass;
@@ -90,6 +93,25 @@ class CourseBuilderAjax extends AbstractAjax {
 		return $params;
 	}
 
+	public static function check_valid_question() {
+		$params = wp_unslash( $_REQUEST['data'] ?? '' );
+		if ( empty( $params ) ) {
+			throw new Exception( 'Error: params invalid!' );
+		}
+
+		$params         = LP_Helper::json_decode( $params, true );
+		$question_id    = ! empty( $params['question_id'] ) ? (int) $params['question_id'] : 0;
+		$question_model = QuestionPostModel::find( $question_id, true );
+		if ( empty( $question_model ) ) {
+			$params['insert'] = true;
+		} else {
+			$params['insert']         = false;
+			$params['question_model'] = $question_model;
+		}
+
+		return $params;
+	}
+
 	/**
 	 * Save Course.
 	 *
@@ -124,7 +146,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $course_id ) ) {
 					throw new Exception( $course_id->get_error_message() );
 				}
-			} elseif ( ! empty( $title ) ) {
+			} elseif ( ! empty( $data['course_title'] ) ) {
 				$course_model = $data['course_model'];
 				// Support for co-instructor.
 				$co_instructor_ids = $course_model->get_meta_value_by_key( '_lp_co_teacher', [] );
@@ -386,9 +408,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				$message = __( 'Course moved to trash', 'learnpress' );
 			}
 
-			$response->status       = 'success';
-			$response->data->status = $status;
-			$response->message      = $message;
+			$response->status             = 'success';
+			$response->data->button_title = __( 'Publish', 'learnpress' );
+			$response->data->status       = $status;
+			$response->message            = $message;
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -577,8 +600,9 @@ class CourseBuilderAjax extends AbstractAjax {
 			do_action( 'learn-press/course-builder/update-lesson', $data );
 
 			$response->status              = 'success';
-			$response->data->lesson_id_new = $data['insert'] ? $lesson_id : '';
 			$response->data->status        = 'publish';
+			$response->data->button_title  = __( 'Update', 'learnpress' );
+			$response->data->lesson_id_new = $data['insert'] ? $lesson_id : '';
 			$response->message             = $insert ? esc_html__( 'Insert lesson successfully', 'learnpress' ) : esc_html__( 'Update lesson successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
@@ -636,9 +660,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				$message = __( 'Lesson has been moved to publish', 'learnpress' );
 			}
 
-			$response->data->status = $status;
-			$response->status       = 'success';
-			$response->message      = $message;
+			$response->data->status       = $status;
+			$response->data->button_title = __( 'Publish', 'learnpress' );
+			$response->status             = 'success';
+			$response->message            = $message;
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -759,6 +784,21 @@ class CourseBuilderAjax extends AbstractAjax {
 					],
 				];
 
+				$setting_passing_grade = [
+					'id'      => '_lp_passing_grade',
+					'type'    => 'text',
+					'value'   => $data['_lp_passing_grade'],
+					'default' => '80',
+					'extra'   => [
+						'type_input'        => 'number',
+						'custom_attributes' => [
+							'min'  => '0',
+							'max'  => '100',
+							'step' => '1',
+						],
+					],
+				];
+
 				$setting_instant_check = [
 					'id'      => '_lp_instant_check',
 					'type'    => 'checkbox',
@@ -780,6 +820,35 @@ class CourseBuilderAjax extends AbstractAjax {
 					'default' => '',
 				];
 
+				$setting_retake_count = [
+					'id'      => '_lp_retake_count',
+					'type'    => 'text',
+					'value'   => $data['_lp_retake_count'],
+					'default' => '',
+					'extra'   => [
+						'type_input'        => 'number',
+						'custom_attributes' => [
+							'min'  => '-1',
+							'step' => '1',
+						],
+					],
+				];
+
+				$setting_pagination = [
+					'id'      => '_lp_pagination',
+					'type'    => 'text',
+					'value'   => $data['_lp_pagination'],
+					'default' => '1',
+					'extra'   => [
+						'type_input'        => 'number',
+						'custom_attributes' => [
+							'min'  => '0',
+							'max'  => '100',
+							'step' => '1',
+						],
+					],
+				];
+
 				$setting_review = [
 					'id'      => '_lp_review',
 					'type'    => 'checkbox',
@@ -795,18 +864,23 @@ class CourseBuilderAjax extends AbstractAjax {
 				];
 
 				$this->update_setting( $quiz_id, $setting_duration );
+				$this->update_setting( $quiz_id, $setting_passing_grade );
 				$this->update_setting( $quiz_id, $setting_instant_check );
 				$this->update_setting( $quiz_id, $setting_negative_marking );
 				$this->update_setting( $quiz_id, $setting_minus_skip_questions );
+				$this->update_setting( $quiz_id, $setting_retake_count );
+				$this->update_setting( $quiz_id, $setting_pagination );
 				$this->update_setting( $quiz_id, $setting_review );
 				$this->update_setting( $quiz_id, $setting_show_correct_review );
 			}
 
 			do_action( 'learn-press/course-builder/update-quiz', $data );
 
-			$response->status            = 'success';
-			$response->data->quiz_id_new = $data['insert'] ? $quiz_id : '';
-			$response->message           = $insert ? esc_html__( 'Insert quiz successfully', 'learnpress' ) : esc_html__( 'Update quiz successfully', 'learnpress' );
+			$response->status             = 'success';
+			$response->data->status       = 'publish';
+			$response->data->button_title = __( 'Update', 'learnpress' );
+			$response->data->quiz_id_new  = $data['insert'] ? $quiz_id : '';
+			$response->message            = $insert ? esc_html__( 'Insert quiz successfully', 'learnpress' ) : esc_html__( 'Update quiz successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -863,9 +937,192 @@ class CourseBuilderAjax extends AbstractAjax {
 				$message = __( 'Quiz has been moved to publish', 'learnpress' );
 			}
 
-			$response->data->status = $status;
-			$response->status       = 'success';
-			$response->message      = $message;
+			$response->data->status       = $status;
+			$response->data->button_title = __( 'Publish', 'learnpress' );
+			$response->status             = 'success';
+			$response->message            = $message;
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	public function duplicate_question() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data           = self::check_valid_question();
+			$question_id    = $data['question_id'] ?? 0;
+			$question_model = $data['question_model'];
+
+			if ( absint( $question_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+				throw new Exception( __( 'You are not allowed to duplicate this question', 'learnpress' ) );
+			}
+
+			if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
+				require_once LP_PLUGIN_PATH . 'inc/admin/lp-admin-functions.php';
+			}
+
+			$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => 'publish' ) );
+			$curd           = new LP_Question_CURD();
+			$new_item_id    = $curd->duplicate( $question_id, $duplicate_args );
+
+			if ( is_wp_error( $new_item_id ) ) {
+				throw new Exception( $new_item_id->get_error_message() );
+			}
+			$question_model_new = QuestionPostModel::find( $new_item_id, true );
+			$html               = BuilderTabQuestionTemplate::render_question( $question_model_new );
+
+			$response->status     = 'success';
+			$response->data->html = $html;
+			$response->message    = __( 'Question duplicated successfully', 'learnpress' );
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	public function builder_update_question() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data         = self::check_valid_question();
+			$question_id  = $data['question_id'] ?? 0;
+			$title        = $data['question_title'] ?? '';
+			$description  = $data['question_description'] ?? '';
+			$settings     = $data['question_settings'] ?? false;
+			$is_elementor = $data['is_elementor'] ?? false;
+			$insert       = $data['insert'];
+
+			if ( $insert ) {
+				$question_id = wp_insert_post(
+					array(
+						'post_type'    => LP_QUESTION_CPT,
+						'post_title'   => sanitize_text_field( $title ?? '' ),
+						'post_content' => $description ?? '',
+						'post_status'  => 'publish',
+					),
+					true
+				);
+
+				if ( is_wp_error( $question_id ) ) {
+					throw new Exception( $question_id->get_error_message() );
+				}
+			} elseif ( ! empty( $title ) ) {
+				$question_model = $data['question_model'];
+
+				if ( ! $question_model ) {
+					throw new Exception( __( 'Question not found', 'learnpress' ) );
+				}
+
+				$course_id = $this->get_course_by_item_id( $question_id );
+
+				// Support for co-instructor.
+				$co_instructor_ids = get_post_meta( $course_id, '_lp_co_teacher', false );
+				$co_instructor_ids = ! empty( $co_instructor_ids ) ? $co_instructor_ids : array();
+
+				if ( absint( $question_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) && ! in_array( get_current_user_id(), $co_instructor_ids ) ) {
+					throw new Exception( __( 'You are not allowed to update this question', 'learnpress' ) );
+				}
+
+				$update_arg = array(
+					'ID'           => $question_id,
+					'post_type'    => LP_QUESTION_CPT,
+					'post_title'   => sanitize_text_field( $title ?? '' ),
+					'post_content' => $description ?? '',
+					'post_status'  => 'publish',
+				);
+
+				if ( defined( 'ELEMENTOR_VERSION' ) ) {
+					\Elementor\Plugin::$instance->documents->get( $question_id )->set_is_built_with_elementor( ! empty( $is_elementor ) );
+				}
+
+				$update = wp_update_post( $update_arg );
+
+				if ( is_wp_error( $update ) ) {
+					throw new Exception( $update->get_error_message() );
+				}
+			}
+
+			if ( $settings ) {
+				update_post_meta( $question_id, '_lp_explanation', wp_kses_post( $data['_lp_explanation'] ) );
+				update_post_meta( $question_id, '_lp_hint', wp_kses_post( $data['_lp_hint'] ) );
+				update_post_meta( $question_id, '_lp_mark', floatval( $data['_lp_mark'] ) );
+			}
+
+			do_action( 'learn-press/course-builder/update-question', $data );
+
+			$response->status                = 'success';
+			$response->data->status          = 'publish';
+			$response->data->button_title    = __( 'Update', 'learnpress' );
+			$response->data->question_id_new = $data['insert'] ? $question_id : '';
+			$response->message               = $insert ? esc_html__( 'Insert question successfully', 'learnpress' ) : esc_html__( 'Update question successfully', 'learnpress' );
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	public function move_trash_question() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data           = self::check_valid_question();
+			$question_id    = $data['question_id'] ?? 0;
+			$status         = $data['status'] ?? 'trash';
+			$question_model = $data['question_model'] ?? [];
+
+			if ( ! $question_model ) {
+				throw new Exception( __( 'Question not found', 'learnpress' ) );
+			}
+
+			if ( absint( $question_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+				throw new Exception( __( 'You are not allowed to delete this question', 'learnpress' ) );
+			}
+
+			if ( $status === 'trash' ) {
+				$move_trash = wp_trash_post( $question_id );
+
+				if ( is_wp_error( $move_trash ) ) {
+					throw new Exception( esc_html__( 'Cannot move this question to trash', 'learnpress' ) );
+				}
+				$message = esc_html__( 'Delete this question successfully', 'learnpress' );
+			} elseif ( $status === 'delete' ) {
+				$delete = wp_delete_post( $question_id );
+
+				if ( is_wp_error( $delete ) ) {
+					throw new Exception( esc_html__( 'Cannot delete this question.', 'learnpress' ) );
+				}
+				$message = esc_html__( 'This question has been moved to trash.', 'learnpress' );
+
+			} elseif ( $status === 'publish' ) {
+				$update = wp_update_post(
+					array(
+						'ID'          => $question_id,
+						'post_type'   => LP_QUESTION_CPT,
+						'post_status' => 'publish',
+					)
+				);
+				if ( ! $update ) {
+					throw new Exception( __( 'Question cannot be moved to publish', 'learnpress' ) );
+				}
+
+				$message = __( 'Question has been moved to publish', 'learnpress' );
+			}
+
+			$response->data->status       = $status;
+			$response->data->button_title = __( 'Publish', 'learnpress' );
+			$response->status             = 'success';
+			$response->message            = $message;
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
