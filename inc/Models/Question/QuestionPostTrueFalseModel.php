@@ -1,7 +1,7 @@
 <?php
 
 namespace LearnPress\Models\Question;
-
+use Throwable;
 /**
  * Class QuestionPostTrueFalseModel
  * To replace class LP_Question old
@@ -33,5 +33,38 @@ class QuestionPostTrueFalseModel extends QuestionPostModel {
 				'order'   => 2,
 			],
 		];
+	}
+
+	/**
+	 * Check user answer.
+	 *
+	 * @param mixed $user_answer User's answer to check
+	 *
+	 * @return array Array with 'correct' (bool) and 'mark' (float) keys
+	 * @since 4.2.9
+	 */
+	public function check( $user_answer = null ): array {
+		$return = parent::check();
+
+		try {
+			$answers = $this->get_answer_option();
+
+			if ( $answers ) {
+				foreach ( $answers as $option ) {
+					// Convert QuestionAnswerModel to array for easier access
+					$data = is_object( $option ) ? get_object_vars( $option ) : $option;
+
+					if ( ( $data['is_true'] == 'yes' || $data['is_true'] === 'yes' ) && $data['value'] == $user_answer ) {
+						$return['correct'] = true;
+						$return['mark']    = floatval( $this->get_mark() );
+						break;
+					}
+				}
+			}
+		} catch ( \Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $return;
 	}
 }

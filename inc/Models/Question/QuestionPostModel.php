@@ -18,6 +18,7 @@ use LearnPress\Filters\QuestionAnswersFilter;
 use LearnPress\Models\PostModel;
 use LP_Cache;
 use LP_Question_Filter;
+use Throwable;
 
 class QuestionPostModel extends PostModel {
 	/**
@@ -554,7 +555,7 @@ class QuestionPostModel extends PostModel {
 		);
 
 		// Get question object
-		$question = learn_press_get_question( $question_id );
+		$question = self::get_question( $question_id );
 		if ( ! $question ) {
 			return [];
 		}
@@ -586,14 +587,14 @@ class QuestionPostModel extends PostModel {
 		$questionData = [
 			'object'  => $question,
 			'id'      => absint( $question_id ),
-			'title'   => $question->get_title(),
+			'title'   => $question->get_the_title(),
 			'type'    => $question->get_type(),
 			'point'   => $mark,
 			'checked' => $checked,
 		];
 
 		// Add content if available
-		$content = $question->get_content();
+		$content = $question->get_the_content();
 		if ( $content ) {
 			$questionData['content'] = $content;
 		}
@@ -638,9 +639,50 @@ class QuestionPostModel extends PostModel {
 		);
 
 		// Get answer options
-		$questionData['options'] = $this->get_answer_options( $option_args );
+		$questionData['options'] = $question->get_answer_options( $option_args );
 
 		return apply_filters( 'learn-press/question/prepare-render-data', $questionData, $question_id, $args );
+	}
+
+	/**
+	 * Check user answer, override by question type class.
+	 *
+	 * @param mixed $user_answer User's answer to check
+	 *
+	 * @return array Array with 'correct' (bool) and 'mark' (float) keys
+	 * @since 4.2.9
+	 */
+	public function check( $user_answer = null ): array {
+		return [
+			'correct' => false,
+			'mark'    => 0,
+		];
+	}
+
+	/**
+	 * Find value in answer's option and compare with value answered by user.
+	 *
+	 * @param array|object $answer   Answer option data
+	 * @param mixed        $answered User's answered value
+	 *
+	 * @return bool True if the option is selected
+	 * @since 4.2.9
+	 */
+	public function is_selected_option( $answer, $answered = false ): bool {
+		// Convert object to array for easier access
+		if ( is_object( $answer ) ) {
+			$answer = get_object_vars( $answer );
+		}
+
+		$answer_value = $answer['value'] ?? '';
+
+		if ( is_array( $answered ) ) {
+			$is_selected = in_array( $answer_value, $answered );
+		} else {
+			$is_selected = $answer_value === $answered;
+		}
+
+		return apply_filters( 'learn-press/question/is-selected-option', $is_selected, $answer, $answered, $this->get_id() );
 	}
 
 	/**

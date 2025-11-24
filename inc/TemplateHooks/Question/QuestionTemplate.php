@@ -710,7 +710,7 @@ class QuestionTemplate {
 		$options  = $questionData['options'] ?? [];
 
 		// No answer provided
-		if ( empty( $answered ) && $answered !== '0' && $answered !== 0 ) {
+		if ( empty( $answered ) ) {
 			return false;
 		}
 
@@ -786,17 +786,33 @@ class QuestionTemplate {
 		if ( empty( $questionData['answered'] ) || empty( $questionData['options'] ) ) {
 			return false;
 		}
-		if ( empty( $questionData['options']['answers'] ) ) {
+
+		// Get first option (FIB questions typically have one option with all blanks)
+		$options = $questionData['options'];
+		$first_option = is_array( $options ) && !empty( $options ) ? $options[0] : null;
+
+		if ( ! $first_option ) {
 			return false;
 		}
-		$answers         = $questionData['options']['answers'];
+
+		// Extract answers and ids from the option (which is a stdClass or array)
+		$answers = is_object( $first_option ) ? ( $first_option->answers ?? [] ) : ( $first_option['answers'] ?? [] );
+		$ids = is_object( $first_option ) ? ( $first_option->ids ?? [] ) : ( $first_option['ids'] ?? [] );
+
+		if ( empty( $answers ) || empty( $ids ) ) {
+			return false;
+		}
+
 		$corrected_count = 0;
-		$blank_count     = count( $questionData['options']['ids'] ?? [] );
-		foreach ( $answered as $blank => $answer ) {
-			if ( $answer['is_correct'] ) {
+		$blank_count     = count( $ids );
+		$answered        = $questionData['answered'] ?? [];
+
+		foreach ( $answers as $blank => $answer ) {
+			if ( isset( $answer['is_correct'] ) && $answer['is_correct'] ) {
 				$corrected_count++;
 			}
 		}
+
 		return $blank_count === $corrected_count;
 	}
 
