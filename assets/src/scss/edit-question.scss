@@ -4,7 +4,7 @@
 * @version 1.0.0
 */
 @import "toggleCollapse";
-@import "popupAlert";
+@import "popupSweetAlert";
 
 $border-color: #C3C4C7;
 
@@ -130,6 +130,15 @@ $border-color: #C3C4C7;
 	.lp-btn-delete-question-answer {
 		display: none;
 		cursor: pointer;
+	}
+
+	.lp-icon-drag {
+		cursor: grab;
+		line-height: 1;
+
+		&:active {
+			cursor: grabbing;
+		}
 	}
 }
 

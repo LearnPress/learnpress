@@ -23,6 +23,14 @@ abstract class LP_Abstract_Post_Type {
 	protected $_post_type = '';
 
 	/**
+	 * Screen list post type
+	 * Ex: edit-{post_type}
+	 *
+	 * @var string
+	 */
+	protected $_screen_list = '';
+
+	/**
 	 * Metaboxes registered
 	 *
 	 * @var array
@@ -76,7 +84,10 @@ abstract class LP_Abstract_Post_Type {
 		if ( ! empty( $post_type ) ) {
 			$this->_post_type = $post_type;
 		}
-		add_action( 'init', array( $this, '_do_register' ) );
+
+		$this->_do_register();
+
+		add_filter( 'wp_list_table_class_name', [ $this, 'wp_list_table_class_name' ], 10, 2 );
 		add_action( 'save_post', array( $this, '_do_save_post' ), - 1, 3 );
 		add_action( 'wp_after_insert_post', [ $this, 'wp_after_insert_post' ], - 1, 3 );
 		add_action( 'before_delete_post', array( $this, '_before_delete_post' ) );
@@ -84,6 +95,8 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'wp_trash_post', array( $this, '_before_trash_post' ) );
 		add_action( 'trashed_post', array( $this, '_trashed_post' ) );
 
+		//add_filter( 'manage_posts_columns', array( $this, '_manage_columns_head_title' ), 11, 2 );
+		//add_action( 'manage_posts_custom_column', array( $this, '_manage_column_value' ), 11, 2 );
 		add_filter( 'manage_edit-' . $this->_post_type . '_sortable_columns', array( $this, 'sortable_columns' ) );
 		add_filter( 'manage_' . $this->_post_type . '_posts_columns', array( $this, 'columns_head' ) );
 		add_filter( 'manage_' . $this->_post_type . '_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
@@ -117,26 +130,15 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'admin_footer', array( $this, 'admin_footer_scripts' ) );
 
 		//add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
+		add_action( 'admin_print_scripts', array( $this, 'remove_auto_save_script' ) );
 
-		$args = wp_parse_args(
-			$args,
-			array(
-				'auto_save'    => 'no',
-				'default_meta' => false,
-			)
+		add_action(
+			'admin_enqueue_scripts',
+			function () {
+				wp_deregister_script( 'heartbeat' );
+			},
+			1
 		);
-
-		if ( $args['auto_save'] == 'no' ) {
-			add_action( 'admin_print_scripts', array( $this, 'remove_auto_save_script' ) );
-		}
-
-		/*
-		if ( $args['default_meta'] ) {
-			$this->_default_metas = $args['default_meta'];
-		}*/
-
-		// Comment by tungnx
-		// add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
 	}
 
 	/**
@@ -172,6 +174,34 @@ abstract class LP_Abstract_Post_Type {
 	 */
 	public function args_register_post_type(): array {
 		return array();
+	}
+
+	/**
+	 * Check screen list post type
+	 *
+	 * @param WP_Screen|null $screen
+	 *
+	 * @return bool
+	 */
+	public function check_class_name_handle_table( $screen ): bool {
+		if ( $screen instanceof WP_Screen
+			&& $screen->id === $this->_screen_list ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Declare class name of table
+	 *
+	 * @param $class_name
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
+	public function wp_list_table_class_name( $class_name, $args ) {
+		return $class_name;
 	}
 
 	/**
@@ -436,6 +466,47 @@ abstract class LP_Abstract_Post_Type {
 		);
 	}
 
+	/**
+	 * Get column author
+	 *
+	 * @param $post
+	 *
+	 * @return void
+	 * @since 4.2.9.5
+	 * @version 1.0.0
+	 */
+	public static function column_author( $post ) {
+		if ( ! $post instanceof WP_Post ) {
+			return;
+		}
+
+		$user_id   = $post->post_author;
+		$userModel = UserModel::find( $user_id, true );
+		if ( ! $userModel ) {
+			return;
+		}
+
+		$args = array(
+			'post_type' => $post->post_type,
+			'author'    => $user_id,
+		);
+
+		$author_link  = esc_url_raw( add_query_arg( $args, 'edit.php' ) );
+		$userTemplate = new UserTemplate();
+		echo sprintf(
+			'<span class="post-author">%s<a href="%s">%s</a></span>',
+			$userTemplate->html_avatar(
+				$userModel,
+				[
+					'width'  => 32,
+					'height' => 32,
+				]
+			),
+			$author_link,
+			$userModel->get_display_name()
+		);
+	}
+
 	public function get_post_type() {
 		$post_type = get_post_type();
 		if ( ! $post_type ) {
@@ -535,8 +606,11 @@ abstract class LP_Abstract_Post_Type {
 
 	public function remove_auto_save_script() {
 		global $post;
+		if ( ! $post ) {
+			return;
+		}
 
-		if ( $post && in_array( get_post_type( $post->ID ), array( $this->_post_type ) ) ) {
+		if ( $this->check_post( $post->ID ) ) {
 			wp_dequeue_script( 'autosave' );
 		}
 	}
@@ -589,7 +663,13 @@ abstract class LP_Abstract_Post_Type {
 		}
 	}
 
+	/**
+	 * @deprecated v4.2.9.4
+	 */
 	protected function _get_quizzes_by_question( $question_id ) {
+		_deprecated_function( __METHOD__, '4.2.9.4' );
+		return [];
+
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -603,7 +683,13 @@ abstract class LP_Abstract_Post_Type {
 		return $wpdb->get_col( $query );
 	}
 
+	/**
+	 * @deprecated v4.2.9.4
+	 */
 	protected function _get_courses_by_item( $item_id ) {
+		_deprecated_function( __METHOD__, '4.2.9.4' );
+		return [];
+
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -960,14 +1046,14 @@ abstract class LP_Abstract_Post_Type {
 	 * @return string
 	 */
 	protected function get_order_sort(): string {
-		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
+		return strtolower( LP_Request::get_param( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
 	}
 
 	/**
 	 * @return mixed
 	 */
 	protected function get_order_by(): string {
-		return LP_Request::get( 'orderby' );
+		return LP_Request::get_param( 'orderby' );
 	}
 
 	/**

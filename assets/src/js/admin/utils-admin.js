@@ -19,6 +19,7 @@ const AdminUtilsFunctions = {
 				remove_button: {
 					title: 'Remove this item',
 				},
+				dropdown_input: {},
 			},
 			onInitialize() {
 			},

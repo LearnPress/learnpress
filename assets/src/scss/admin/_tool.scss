@@ -305,11 +305,10 @@
 	display: none;
 	padding: 0;
 	border: none;
-	margin: 15px 20px 15px 0;
+	margin: 0 !important;
 
 	.lp-admin-notice {
 		position: relative;
-		padding: 1px 10px;
 	}
 
 	.lp-mes-beta-version {

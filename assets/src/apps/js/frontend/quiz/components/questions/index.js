@@ -28,7 +28,9 @@ class Questions extends Component {
 		}
 
 		if ( Object.values( changedProps ).length ) {
-			state.self.needToTop = true;
+			if ( props.questionsPerPage === 1 ) {
+				state.self.needToTop = true;
+			}
 			return changedProps;
 		}
 

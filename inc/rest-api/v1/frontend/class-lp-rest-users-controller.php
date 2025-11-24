@@ -62,7 +62,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'args'                => $this->get_item_endpoint_args(),
 				),
 			),
-			'hint-answer'  => array(
+			/*'hint-answer'  => array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'hint_answer' ),
@@ -70,7 +70,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => '__return_true',
 					'args'                => $this->get_item_endpoint_args(),
 				),
-			),
+			),*/
 			'check-answer' => array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
@@ -376,7 +376,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return mixed|WP_REST_Response
 	 */
-	public function hint_answer( $request ) {
+	/*public function hint_answer( $request ) {
 		$question_id = $request['question_id'];
 		$question    = learn_press_get_question( $question_id );
 
@@ -385,7 +385,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		return rest_ensure_response( $response );
-	}
+	}*/
 
 	public function check_answer( $request ) {
 		$response = array(

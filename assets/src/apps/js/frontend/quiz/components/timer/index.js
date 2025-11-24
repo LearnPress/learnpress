@@ -9,10 +9,11 @@ import { select, dispatch } from '@wordpress/data';
 const Timer = () => {
 	const { getData } = select( 'learnpress/quiz' );
 	const { submitQuiz } = dispatch( 'learnpress/quiz' );
-	const totalTime = getData( 'totalTime' );
+	let totalTime = getData( 'totalTime' );
 	const durationTime = getData( 'duration' );
+	const timeSpendG = getData( 'timeSpend' );
 	const [ seconds, setSeconds ] = useState( totalTime );
-	let [ timeSpend, setTimeSpend ] = useState( 0 );
+	let [ timeSpend, setTimeSpend ] = useState( timeSpendG );
 
 	useEffect( () => {
 		const myInterval = setInterval( () => {
@@ -43,6 +44,10 @@ const Timer = () => {
 	const formatTime = ( separator = ':' ) => {
 		const t = [];
 		let m;
+
+		if ( timeSpendG ) {
+			totalTime = timeSpendG;
+		}
 
 		if ( totalTime < 3600 ) {
 			t.push( ( seconds - ( seconds % 60 ) ) / 60 );

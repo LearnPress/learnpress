@@ -11,7 +11,7 @@
 	@include search_courses();
 }
 
-@media ( max-width: 767px ) {
+@media (max-width: 767px) {
 	.wp-block-learnpress-course-search {
 		width: 100%;
 
@@ -26,7 +26,7 @@
 	display: inline-flex;
 	align-items: center;
 
-	@media ( min-width: 769px ) {
+	@media (min-width: 769px) {
 		display: none;
 	}
 }
@@ -36,34 +36,26 @@ ul.wp-block-learn-press-courses {
 	margin: 0;
 	max-width: 100%;
 	padding: 0;
+
 	&[data-layout='grid'] {
 		--columns: 3;
 		--gap: 1.25em;
 		--min-width: 200px;
-		grid-gap: var( --gap );
+		grid-gap: var(--gap);
 		display: grid;
 		grid-template-columns: repeat(
-			auto-fill,
-			minmax(
-				max(
-					var( --min-width ),
-					calc(
-						100% / var( --columns ) - var( --gap ) * ( var( --columns ) - 1 ) / var( --columns )
-					)
-				),
-				1fr
-			)
+			auto-fill, minmax(max(var(--min-width), calc(100% / var(--columns) - var(--gap) * (var(--columns) - 1) / var(--columns))), 1fr)
 		);
 		margin-bottom: 2.25em;
 	}
 
-	@media ( max-width: 768px ) {
+	@media (max-width: 768px) {
 		.wp-block-learn-press-courses[data-layout='grid'] {
-			--columns: min( var( --columns ), 2 );
+			--columns: min(var(--columns), 2);
 		}
 	}
 
-	@media ( max-width: 480px ) {
+	@media (max-width: 480px) {
 		.wp-block-learn-press-courses[data-layout='grid'] {
 			--columns: 1;
 		}
@@ -97,10 +89,11 @@ ul.wp-block-learn-press-courses {
 	background: transparent;
 	text-decoration: none;
 	text-align: center;
+
 	&:hover {
-		background: #ffb606;
+		background: $color-primary;
 		color: $color-white;
-		border-color: #ffb606;
+		border-color: $color-primary;
 	}
 }
 
@@ -115,10 +108,11 @@ ul.wp-block-learn-press-courses {
 		background: transparent;
 		text-decoration: none;
 		text-align: center;
+
 		&:hover {
-			background: #ffb606;
+			background: $color-primary;
 			color: $color-white;
-			border-color: #ffb606;
+			border-color: $color-primary;
 		}
 	}
 }
@@ -126,9 +120,9 @@ ul.wp-block-learn-press-courses {
 .courses-order-by-wrapper .courses-order-by {
 	@include input();
 	padding-right: 30px;
-	background-image: url( data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE4cHgiIGhlaWdodD0iMTBweCIgdmlld0JveD0iMCAwIDE4IDEwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPGcgaWQ9IlBhZ2UtMSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICAgICAgICA8ZyBpZD0iVmVjdG9yLSgxKSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMS4wMDAwMDAsIDEuMDAwMDAwKSIgc3Ryb2tlPSIjMzMzMzMzIiBzdHJva2Utd2lkdGg9IjIiPgogICAgICAgICAgICA8cG9seWxpbmUgaWQ9IlBhdGgiIHBvaW50cz0iMCAwIDggOCAxNiAwIj48L3BvbHlsaW5lPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+ );
+	background-image: url(data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE4cHgiIGhlaWdodD0iMTBweCIgdmlld0JveD0iMCAwIDE4IDEwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPGcgaWQ9IlBhZ2UtMSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICAgICAgICA8ZyBpZD0iVmVjdG9yLSgxKSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMS4wMDAwMDAsIDEuMDAwMDAwKSIgc3Ryb2tlPSIjMzMzMzMzIiBzdHJva2Utd2lkdGg9IjIiPgogICAgICAgICAgICA8cG9seWxpbmUgaWQ9IlBhdGgiIHBvaW50cz0iMCAwIDggOCAxNiAwIj48L3BvbHlsaW5lPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
 	background-size: 0.8em;
-	background-position: calc( 100% - 0.5em ) center;
+	background-position: calc(100% - 0.5em) center;
 	background-repeat: no-repeat;
 	-moz-appearance: none;
 	-webkit-appearance: none;
@@ -136,11 +130,11 @@ ul.wp-block-learn-press-courses {
 	line-height: 1.1;
 
 	.woocommerce-js & {
-		background-position-x: calc( 100% - 10px );
+		background-position-x: calc(100% - 10px);
 	}
 
 	&:focus {
-		border-color: #ffb606;
+		border-color: $color-primary;
 		outline: 0;
 	}
 }

@@ -14,6 +14,7 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Filters\PostFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LP_Admin_Editor_Course;
@@ -1169,7 +1170,7 @@ class CourseModel {
 	/**
 	 * Get item model assigned to this course
 	 *
-	 * @return mixed|false|null|WP_Post
+	 * @return mixed|false|null|WP_Post|PostModel
 	 * @since v4.2.7.6
 	 * @version 1.0.1
 	 */
@@ -1193,7 +1194,7 @@ class CourseModel {
 
 			// If not defined class, get post default
 			if ( ! $item ) {
-				$filter            = new LP_Post_Type_Filter();
+				$filter            = new PostFilter();
 				$filter->ID        = $item_id;
 				$filter->post_type = $item_type;
 				$item              = PostModel::get_item_model_from_db( $filter );

@@ -12,6 +12,7 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress\Databases\QuizQuestionsDB;
+use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Question\QuestionSortingChoiceModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
@@ -226,16 +227,18 @@ class QuizPostModel extends PostModel {
 	/**
 	 * Create question and add to quiz.
 	 *
-	 * @param array $data
+	 * @param array $data [ question_title, question_type, question_content ]
 	 *
 	 * @return QuizQuestionModel
 	 * @throws Exception
 	 * @since 4.2.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function create_question_and_add( array $data ): QuizQuestionModel {
-		$question_title = $data['question_title'] ?? '';
-		$question_type  = $data['question_type'] ?? '';
+		$question_title   = $data['question_title'] ?? '';
+		$question_type    = $data['question_type'] ?? '';
+		$question_content = $data['question_content'] ?? '';
+		$question_options = $data['question_options'] ?? [];
 
 		if ( empty( $question_title ) ) {
 			throw new Exception( __( 'Question title is required', 'learnpress' ) );
@@ -246,10 +249,11 @@ class QuizPostModel extends PostModel {
 		}
 
 		// Create question
-		$questionPostModelNew              = new QuestionPostModel();
-		$questionPostModelNew->post_title  = $question_title;
-		$questionPostModelNew->post_status = 'publish';
-		$questionPostModelNew->post_author = get_current_user_id();
+		$questionPostModelNew               = new QuestionPostModel();
+		$questionPostModelNew->post_title   = $question_title;
+		$questionPostModelNew->post_content = $question_content;
+		$questionPostModelNew->post_status  = 'publish';
+		$questionPostModelNew->post_author  = get_current_user_id();
 		$questionPostModelNew->save();
 		$questionPostModelNew->save_meta_value_by_key(
 			QuestionPostModel::META_KEY_TYPE,
@@ -259,8 +263,25 @@ class QuizPostModel extends PostModel {
 		// Get question object by type
 		$questionClassName = $questionPostModelNew::get_question_obj_by_type( $question_type );
 		if ( class_exists( $questionClassName ) ) {
+			/**
+			 * @var QuestionPostModel $questionPostTyeModel
+			 */
 			$questionPostTyeModel = new $questionClassName( $questionPostModelNew );
-			if ( method_exists( $questionPostTyeModel, 'create_default_answers' ) ) {
+			if ( ! empty( $question_options ) ) {
+				foreach ( $question_options as $index => $answer ) {
+					$answer = array(
+						'question_id' => $questionPostTyeModel->get_id(),
+						'title'       => $answer['title'],
+						'value'       => $questionPostTyeModel->random_value(),
+						'is_true'     => $answer['is_true'] ?? '',
+						'order'       => $index + 1,
+					);
+
+					$questionAnswerModel = new QuestionAnswerModel( $answer );
+					$questionAnswerModel->save();
+					$answers[ $index ]['question_answer_id'] = $questionAnswerModel->question_answer_id;
+				}
+			} elseif ( method_exists( $questionPostTyeModel, 'create_default_answers' ) ) {
 				$questionPostTyeModel->create_default_answers();
 			}
 		} else {

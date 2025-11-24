@@ -25,18 +25,18 @@
 .wp-block-learnpress-course-button {
 	cursor: pointer;
 	padding: 12px 24px;
-	background-color: #ffb606;
+	background-color: $color-primary;
 	border-width: 0;
 	border-radius: $border-radius-global;
-	border-color: #ffb606;
+	border-color: $color-primary;
 	color: $color-white;
 	font-size: $font-size-base;
 	text-align: center;
 	text-decoration: none;
 	@include transition( all 0.25s );
 	&:hover {
-		background-color: #442e66;
-		border-color: #442e66;
+		background-color: $color-secondary;
+		border-color: $color-secondary;
 	}
 	&.loading {
 		pointer-events: none;
@@ -119,8 +119,7 @@
 		text-transform: capitalize;
 		@include border-radius( $border-radius-global );
 		margin-top: 20px;
-		padding: 12px 24px;
-		@include transition( all 0.25s );
+ 		@include transition( all 0.25s );
 	}
 
 	.course-material-table {
@@ -288,7 +287,7 @@
 				width: 100%;
 				height: 100%;
 				margin-left: -100%;
-				background: #ffb606;
+				background: $color-primary;
 
 				@include border-radius( 5px );
 			}
@@ -301,7 +300,7 @@
 			width: 100%;
 			height: 100%;
 			border-radius: 3px;
-			background: #ffb606;
+			background: $color-primary;
 
 			@include transition( 0.5s );
 		}
@@ -350,7 +349,7 @@
 			&:hover {
 				a,
 				&::before {
-					color: #ffb606;
+					color: $color-primary;
 				}
 
 				.course-item-nav__name {
@@ -437,5 +436,17 @@
 		align-items: baseline;
 		flex: 1;
 		flex-direction: row;
+	}
+}
+.wp-block-learnpress-list-courses .learn-press-courses .course{
+	width: unset;
+	padding: 0;
+}
+.wp-block-learnpress-course-featured{
+	.course-featured{
+		margin-bottom: 0;
+		background-color: inherit;
+		color: inherit;
+		padding: 0;
 	}
 }

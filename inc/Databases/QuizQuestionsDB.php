@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class QuizQuestionsDB
  *
  * @since 4.2.9
- * @version 1.0.0
+ * @version 1.0.1
  */
-class QuizQuestionsDB extends LP_Database {
+class QuizQuestionsDB extends DataBase {
 	private static $_instance;
 
 	protected function __construct() {

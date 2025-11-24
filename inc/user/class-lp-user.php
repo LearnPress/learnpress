@@ -1,5 +1,8 @@
 <?php
 
+use LearnPress\Filters\FilterBase;
+use LearnPress\Filters\UserItemsFilter;
+
 /**
  * Class LP_User
  *
@@ -708,11 +711,11 @@ class LP_User extends LP_Abstract_User {
 	/**
 	 * Get quiz's user learning or completed
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 *
 	 * @return LP_Query_List_Table
 	 */
-	public function get_user_quizzes( LP_User_Items_Filter $filter ): LP_Query_List_Table {
+	public function get_user_quizzes( $filter ): LP_Query_List_Table {
 		$quizzes = [
 			'total' => 0,
 			'items' => [],

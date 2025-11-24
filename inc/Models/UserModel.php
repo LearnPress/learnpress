@@ -9,6 +9,7 @@ namespace LearnPress\Models;
  */
 
 use Exception;
+use LearnPress\Filters\FilterBase;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserItems\UserQuizModel;
@@ -16,6 +17,7 @@ use LP_Cache;
 use LP_Course_DB;
 use LP_Course_Filter;
 use LP_Database;
+use LP_Debug;
 use LP_Profile;
 use LP_User;
 use LP_User_DB;
@@ -614,6 +616,46 @@ class UserModel {
 	}
 
 	/**
+	 * Get statistic info of student user
+	 *
+	 * @return array
+	 * @since 4.1.6
+	 * @version 1.0.0
+	 */
+	public function get_student_statistic(): array {
+		$statistic = array(
+			'enrolled_courses'   => 0,
+			'in_progress_course' => 0,
+			'finished_courses'   => 0,
+			'passed_courses'     => 0,
+			'failed_courses'     => 0,
+		);
+
+		try {
+			$user_id          = $this->get_id();
+			$lp_user_items_db = LP_User_Items_DB::getInstance();
+
+			// Count status
+			$filter                 = new LP_User_Items_Filter();
+			$filter->user_id        = $user_id;
+			$count_status           = $lp_user_items_db->count_status_by_items( $filter );
+			$total_courses_enrolled = intval( $count_status->{LP_COURSE_PURCHASED} ?? 0 )
+				+ intval( $count_status->{LP_COURSE_ENROLLED} ?? 0 )
+				+ intval( $count_status->{LP_COURSE_FINISHED} ?? 0 );
+
+			$statistic['enrolled_courses']   = $total_courses_enrolled;
+			$statistic['in_progress_course'] = $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
+			$statistic['finished_courses']   = $count_status->{LP_COURSE_FINISHED} ?? 0;
+			$statistic['passed_courses']     = $count_status->{LP_COURSE_GRADUATION_PASSED} ?? 0;
+			$statistic['failed_courses']     = $count_status->{LP_COURSE_GRADUATION_FAILED} ?? 0;
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+
+		return apply_filters( 'lp/profile/student/statistic', $statistic, $this );
+	}
+
+	/**
 	 * Check user is instructor or not.
 	 *
 	 * @return bool
@@ -621,13 +663,14 @@ class UserModel {
 	 * @version 1.0.0
 	 */
 	public function is_instructor(): bool {
-		return user_can( $this->get_id(), LP_TEACHER_ROLE ) || user_can( $this->get_id(), 'administrator' );
+		return user_can( $this->get_id(), self::ROLE_INSTRUCTOR )
+			|| user_can( $this->get_id(), self::ROLE_ADMINISTRATOR );
 	}
 
 	/**
 	 * Get quizzes attend of user.
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemModel $filter
 	 * @param int $total_rows
 	 *
 	 * @return array|int|string|null
@@ -635,7 +678,7 @@ class UserModel {
 	 * @since 4.2.8.2
 	 * @version 1.0.0
 	 */
-	public function get_quizzes_attend( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+	public function get_quizzes_attend( $filter, int &$total_rows = 0 ) {
 		$lp_db_user_items  = LP_User_Items_DB::getInstance();
 		$filter->order_by  = 'user_item_id';
 		$filter->order     = 'DESC';

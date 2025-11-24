@@ -14,9 +14,9 @@ defined( 'ABSPATH' ) || exit();
  * @instead of LP_Question_Answers_Filter
  * @since  4.2.9
  * @author tungnx
- * @version 1.0.0
+ * @version 1.0.1
  */
-class QuestionAnswersFilter extends LP_Filter {
+class QuestionAnswersFilter extends FilterBase {
 	const COL_QUESTION_ANSWER_ID = 'question_answer_id';
 	const COL_QUESTION_ID        = 'question_id';
 	const COL_TITLE              = 'title';

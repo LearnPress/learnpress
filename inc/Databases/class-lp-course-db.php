@@ -333,7 +333,7 @@ class LP_Course_DB extends LP_Database {
 	 * @throws Exception
 	 * @author tungnx
 	 * @since 4.1.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_total_user_enrolled_or_purchased( int $course_id ): int {
 		$filter              = new LP_User_Items_Filter();
@@ -466,10 +466,10 @@ class LP_Course_DB extends LP_Database {
 	 * @return array|object|null|int|string
 	 * @throws Exception
 	 * @author tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.1.5
 	 */
-	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+	public function get_courses( $filter, int &$total_rows = 0 ) {
 		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 
@@ -553,9 +553,9 @@ class LP_Course_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.ID IN (' . $list_ids_format . ')', $filter->post_ids );
 		}
 
-		// Title
+		// Title, do not distinguish diacritics
 		if ( $filter->post_title ) {
-			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' . $filter->post_title . '%' );
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title COLLATE utf8mb4_unicode_ci LIKE %s', '%' . $filter->post_title . '%' );
 		}
 
 		// Slug

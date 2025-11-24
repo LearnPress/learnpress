@@ -5,16 +5,17 @@
  * @param data
  * @param functions
  * @since 4.2.5.1
- * @version 1.0.3
+ * @version 1.0.5
  */
-const lpClassName = {
+export const lpClassName = {
 	hidden: 'lp-hidden',
 	loading: 'loading',
 	elCollapse: 'lp-collapse',
 	elSectionToggle: '.lp-section-toggle',
 	elTriggerToggle: '.lp-trigger-toggle',
 };
-const lpFetchAPI = ( url, data = {}, functions = {} ) => {
+
+export const lpFetchAPI = ( url, data = {}, functions = {} ) => {
 	if ( 'function' === typeof functions.before ) {
 		functions.before();
 	}
@@ -25,7 +26,8 @@ const lpFetchAPI = ( url, data = {}, functions = {} ) => {
 			if ( 'function' === typeof functions.success ) {
 				functions.success( response );
 			}
-		} ).catch( ( err ) => {
+		} )
+		.catch( ( err ) => {
 			if ( 'function' === typeof functions.error ) {
 				functions.error( err );
 			}
@@ -42,7 +44,7 @@ const lpFetchAPI = ( url, data = {}, functions = {} ) => {
  *
  * @since 4.2.5.1
  */
-const lpGetCurrentURLNoParam = () => {
+export const lpGetCurrentURLNoParam = () => {
 	let currentUrl = window.location.href;
 	const hasParams = currentUrl.includes( '?' );
 	if ( hasParams ) {
@@ -52,7 +54,7 @@ const lpGetCurrentURLNoParam = () => {
 	return currentUrl;
 };
 
-const lpAddQueryArgs = ( endpoint, args ) => {
+export const lpAddQueryArgs = ( endpoint, args ) => {
 	const url = new URL( endpoint );
 
 	Object.keys( args ).forEach( ( arg ) => {
@@ -69,7 +71,7 @@ const lpAddQueryArgs = ( endpoint, args ) => {
  * @param callback
  * @since 4.2.5.8
  */
-const listenElementViewed = ( el, callback ) => {
+export const listenElementViewed = ( el, callback ) => {
 	const observerSeeItem = new IntersectionObserver( function( entries ) {
 		for ( const entry of entries ) {
 			if ( entry.isIntersecting ) {
@@ -87,7 +89,7 @@ const listenElementViewed = ( el, callback ) => {
  * @param callback
  * @since 4.2.5.8
  */
-const listenElementCreated = ( callback ) => {
+export const listenElementCreated = ( callback ) => {
 	const observerCreateItem = new MutationObserver( function( mutations ) {
 		mutations.forEach( function( mutation ) {
 			if ( mutation.addedNodes ) {
@@ -111,7 +113,7 @@ const listenElementCreated = ( callback ) => {
  * @param callback
  * @since 4.2.7.1
  */
-const lpOnElementReady = ( selector, callback ) => {
+export const lpOnElementReady = ( selector, callback ) => {
 	const element = document.querySelector( selector );
 	if ( element ) {
 		callback( element );
@@ -133,12 +135,14 @@ const lpOnElementReady = ( selector, callback ) => {
 };
 
 // Parse JSON from string with content include LP_AJAX_START.
-const lpAjaxParseJsonOld = ( data ) => {
+export const lpAjaxParseJsonOld = ( data ) => {
 	if ( typeof data !== 'string' ) {
 		return data;
 	}
 
-	const m = String.raw( { raw: data } ).match( /<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/s );
+	const m = String.raw( { raw: data } ).match(
+		/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/s
+	);
 
 	try {
 		if ( m ) {
@@ -154,7 +158,7 @@ const lpAjaxParseJsonOld = ( data ) => {
 };
 
 // status 0: hide, 1: show
-const lpShowHideEl = ( el, status = 0 ) => {
+export const lpShowHideEl = ( el, status = 0 ) => {
 	if ( ! el ) {
 		return;
 	}
@@ -167,7 +171,7 @@ const lpShowHideEl = ( el, status = 0 ) => {
 };
 
 // status 0: hide, 1: show
-const lpSetLoadingEl = ( el, status ) => {
+export const lpSetLoadingEl = ( el, status ) => {
 	if ( ! el ) {
 		return;
 	}
@@ -180,7 +184,13 @@ const lpSetLoadingEl = ( el, status ) => {
 };
 
 // Toggle collapse section
-const toggleCollapse = ( e, target, elTriggerClassName = '', elsExclude = [], callback ) => {
+export const toggleCollapse = (
+	e,
+	target,
+	elTriggerClassName = '',
+	elsExclude = [],
+	callback
+) => {
 	if ( ! elTriggerClassName ) {
 		elTriggerClassName = lpClassName.elTriggerToggle;
 	}
@@ -201,7 +211,9 @@ const toggleCollapse = ( e, target, elTriggerClassName = '', elsExclude = [], ca
 
 	//console.log( 'elTrigger', elTrigger );
 
-	const elSectionToggle = elTrigger.closest( `${ lpClassName.elSectionToggle }` );
+	const elSectionToggle = elTrigger.closest(
+		`${ lpClassName.elSectionToggle }`
+	);
 	if ( ! elSectionToggle ) {
 		return;
 	}
@@ -213,8 +225,99 @@ const toggleCollapse = ( e, target, elTriggerClassName = '', elsExclude = [], ca
 	}
 };
 
-export {
-	lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam,
-	listenElementViewed, listenElementCreated, lpOnElementReady, lpAjaxParseJsonOld,
-	lpShowHideEl, lpSetLoadingEl, lpClassName, toggleCollapse,
+// Get data of form
+export const getDataOfForm = ( form ) => {
+	const dataSend = {};
+	const formData = new FormData( form );
+	for ( const pair of formData.entries() ) {
+		const key = pair[ 0 ];
+		const value = formData.getAll( key );
+		if ( ! dataSend.hasOwnProperty( key ) ) {
+			// Convert value array to string.
+			dataSend[ key ] = value.join( ',' );
+		}
+	}
+
+	return dataSend;
+};
+
+// Get field keys of form
+export const getFieldKeysOfForm = ( form ) => {
+	const keys = [];
+	const elements = form.elements;
+	for ( let i = 0; i < elements.length; i++ ) {
+		const name = elements[ i ].name;
+		if ( name && ! keys.includes( name ) ) {
+			keys.push( name );
+		}
+	}
+	return keys;
+};
+
+// Merge data handle with data form.
+export const mergeDataWithDatForm = ( elForm, dataHandle ) => {
+	const dataForm = getDataOfForm( elForm );
+	const keys = getFieldKeysOfForm( elForm );
+	keys.forEach( ( key ) => {
+		if ( ! dataForm.hasOwnProperty( key ) ) {
+			delete dataHandle[ key ];
+		} else if ( dataForm[ key ][ 0 ] === '' ) {
+			delete dataForm[ key ];
+			delete dataHandle[ key ];
+		}
+	} );
+
+	dataHandle = { ...dataHandle, ...dataForm };
+
+	return dataHandle;
+};
+
+/**
+ * Event trigger
+ * For each list of event handlers, listen event on document.
+ *
+ * eventName: 'click', 'change', ...
+ * eventHandlers = [ { selector: '.lp-button', callBack: function(){}, class: object } ]
+ *
+ * @param eventName
+ * @param eventHandlers
+ */
+export const eventHandlers = ( eventName, eventHandlers ) => {
+	document.addEventListener( eventName, ( e ) => {
+		const target = e.target;
+		let args = {
+			e,
+			target,
+		};
+
+		eventHandlers.forEach( ( eventHandler ) => {
+			args = { ...args, ...eventHandler };
+
+			//console.log( args );
+
+			// Check condition before call back
+			if ( eventHandler.conditionBeforeCallBack ) {
+				if ( eventHandler.conditionBeforeCallBack( args ) !== true ) {
+					return;
+				}
+			}
+
+			// Special check for keydown event with checkIsEventEnter = true
+			if ( eventName === 'keydown' && eventHandler.checkIsEventEnter ) {
+				if ( e.key !== 'Enter' ) {
+					return;
+				}
+			}
+
+			if ( target.closest( eventHandler.selector ) ) {
+				if ( eventHandler.class ) {
+					// Call method of class, function callBack will understand exactly {this} is class object.
+					eventHandler.class[ eventHandler.callBack ]( args );
+				} else {
+					// For send args is objected, {this} is eventHandler object, not class object.
+					eventHandler.callBack( args );
+				}
+			}
+		} );
+	} );
 };

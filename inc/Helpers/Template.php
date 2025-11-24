@@ -340,14 +340,16 @@ class Template {
 	/**
 	 * Generate HTML for pagination.
 	 *
-	 * @param array $data
+	 * @param array $data [ 'total_pages' => int, 'paged' => int, 'base' => string ]
 	 *
 	 * @return string HTML for pagination.
 	 * @since 4.2.8.7.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_pagination( array $data = [] ): string {
-		if ( empty( $data['total_pages'] ) || $data['total_pages'] <= 1 ) {
+		$total_pages = $data['total_pages'] ?? 0;
+		$paged       = $data['paged'] ?? 1;
+		if ( $total_pages <= 1 ) {
 			return '';
 		}
 
@@ -362,8 +364,8 @@ class Template {
 					'base'      => $data['base'] ?? '',
 					'format'    => '',
 					'add_args'  => '',
-					'current'   => max( 1, $data['paged'] ?? 1 ),
-					'total'     => $data[ 'total_pages' ?? 1 ],
+					'current'   => max( 1, $paged ),
+					'total'     => $total_pages,
 					'prev_text' => '<i class="lp-icon-arrow-left"></i>',
 					'next_text' => '<i class="lp-icon-arrow-right"></i>',
 					'type'      => 'list',

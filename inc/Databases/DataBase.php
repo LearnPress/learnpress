@@ -515,10 +515,12 @@ class DataBase {
 	/**
 	 * Get query string single row
 	 *
+	 * @param FilterBase $filter
+	 *
 	 * @since 4.2.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_query_single_row( FilterBase &$filter ) {
+	public function get_query_single_row( &$filter ) {
 		$filter->limit               = 1;
 		$filter->return_string_query = true;
 		$filter->run_query_count     = false;
@@ -527,13 +529,16 @@ class DataBase {
 	/**
 	 * Get result query
 	 *
+	 * @param FilterBase $filter
+	 * @param int $total_rows
+	 *
 	 * @return array|object|null|int|string
 	 * @throws Exception
 	 * @author tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.1.6
 	 */
-	public function execute( FilterBase $filter, int &$total_rows = 0 ) {
+	public function execute( $filter, int &$total_rows = 0 ) {
 		$result = null;
 
 		// Where
@@ -675,11 +680,13 @@ class DataBase {
 	/**
 	 * Query update
 	 *
+	 * @param FilterBase $filter
+	 *
 	 * @throws Exception
 	 * @since 4.1.7
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function update_execute( FilterBase $filter ) {
+	public function update_execute( $filter ) {
 
 		$COLLECTION = $filter->collection;
 
@@ -709,11 +716,15 @@ class DataBase {
 	/**
 	 * Query delete
 	 *
+	 * @param FilterBase $filter
+	 * @param string $table
+	 *
+	 * @return bool|int|\mysqli_result|string|null
 	 * @throws Exception
 	 * @since 4.1.7
 	 * @version 1.0.1
 	 */
-	public function delete_execute( FilterBase $filter, string $table = '' ) {
+	public function delete_execute( $filter, string $table = '' ) {
 		$COLLECTION = $filter->collection;
 
 		// Where
@@ -769,7 +780,7 @@ class DataBase {
 	 *
 	 * @return int
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.9
 	 */
 	public function insert_data( array $args ): int {
@@ -783,9 +794,9 @@ class DataBase {
 			throw new Exception( __( 'Data must be an array!', 'learnpress' ) . ' | ' . __FUNCTION__ );
 		}
 
-		if ( ! $filter instanceof FilterBase ) {
+		/*if ( ! $filter instanceof FilterBase ) {
 			throw new Exception( __( 'Invalid filter!', 'learnpress' ) . ' | ' . __FUNCTION__ );
-		}
+		}*/
 
 		if ( empty( $filter->all_fields ) ) {
 			throw new Exception( __( 'Filter must have property all_fields!', 'learnpress' ) . ' | ' . __FUNCTION__ );
@@ -824,7 +835,7 @@ class DataBase {
 	 *
 	 * @throws Exception
 	 * @since 4.2.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function update_data( array $args ): bool {
 		$data       = $args['data'] ?? [];
@@ -833,9 +844,9 @@ class DataBase {
 		$where_key  = $args['where_key'] ?? '';
 		$where_key  = sanitize_key( $where_key );
 
-		if ( ! $filter instanceof FilterBase ) {
+		/*if ( ! $filter instanceof FilterBase ) {
 			throw new Exception( __( 'Invalid filter!', 'learnpress' ) . ' | ' . __FUNCTION__ );
-		}
+		}*/
 
 		if ( empty( $filter->all_fields ) ) {
 			throw new Exception( __( 'Filter must have property all_fields!', 'learnpress' ) . ' | ' . __FUNCTION__ );

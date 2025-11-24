@@ -1,8 +1,6 @@
 <?php
 namespace LearnPress\Filters;
 
-use LP_Filter;
-
 defined( 'ABSPATH' ) || exit();
 
 /**
@@ -12,7 +10,7 @@ defined( 'ABSPATH' ) || exit();
  * @since  4.2.9
  * @version 1.0.0
  */
-class QuizQuestionsFilter extends LP_Filter {
+class QuizQuestionsFilter extends FilterBase {
 	const COL_QUIZ_QUESTION_ID = 'quiz_question_id';
 	const COL_QUIZ_ID          = 'quiz_id';
 	const COL_QUESTION_ID      = 'question_id';

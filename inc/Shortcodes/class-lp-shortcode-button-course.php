@@ -7,6 +7,7 @@
  * @package  Learnpress/Shortcodes
  * @version  3.0.2
  * @extends  LP_Abstract_Shortcode
+ * @depreacted 4.3.0
  */
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;

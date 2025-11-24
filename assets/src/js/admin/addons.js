@@ -141,6 +141,11 @@ const loadElData = setInterval( () => {
 		elAddonsPage.innerHTML = dataHtml;
 		elLPAddons = elAddonsPage.querySelector( '#lp-addons' );
 		const elNavTabWrapper = document.querySelector( '.lp-nav-tab-wrapper' );
+		if ( ! elNavTabWrapper ) {
+			clearInterval( loadElData );
+			return;
+		}
+
 		const elNavTabWrapperClone = elNavTabWrapper.cloneNode( true );
 		elAddonsPage.insertBefore( elNavTabWrapperClone, elAddonsPage.children[ 0 ] );
 		elNavTabWrapperClone.style.display = 'flex';

@@ -19,7 +19,7 @@ if ( ! $data['check'] ) {
 }
 ?>
 
-<div class="lp-admin-notice">
+<div class="notice notice-warning">
 	<p>
 		<?php
 		echo sprintf(

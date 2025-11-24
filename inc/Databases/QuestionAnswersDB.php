@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @instead of LP_Question_Answers_DB
  * @since 4.2.9
- * @version 1.0.0
+ * @version 1.0.1
  */
-class QuestionAnswersDB extends LP_Database {
+class QuestionAnswersDB extends DataBase {
 	private static $_instance;
 
 	protected function __construct() {
