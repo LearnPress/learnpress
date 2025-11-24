@@ -174,7 +174,7 @@ class QuestionPostModel extends PostModel {
 	 *
 	 * @return \WP_Post|false WP_Post object or false on failure.
 	 */
-	private static function get_question_post_object( $the_question ) {
+	protected static function get_question_post_object( $the_question ) {
 		if ( false === $the_question ) {
 			// Get current post if in question context
 			$the_question = get_post_type() === LP_QUESTION_CPT ? $GLOBALS['post'] : false;
@@ -203,7 +203,7 @@ class QuestionPostModel extends PostModel {
 	 *
 	 * @return string Class name for the question type.
 	 */
-	private static function get_question_class_name( $post_object, $args = array() ) {
+	protected static function get_question_class_name( $post_object, $args = array() ) {
 		$question_id = absint( $post_object->ID );
 
 		// Get question type from args or post meta
@@ -436,7 +436,7 @@ class QuestionPostModel extends PostModel {
 	 *
 	 * @return array Array of keys to exclude.
 	 */
-	private function parse_exclude_param( $exclude ) {
+	protected function parse_exclude_param( $exclude ) {
 		if ( empty( $exclude ) ) {
 			return array();
 		}
@@ -456,7 +456,7 @@ class QuestionPostModel extends PostModel {
 	 *
 	 * @return array Array of stdClass objects with shortcodes applied.
 	 */
-	private function convert_to_stdclass_objects( $options ) {
+	protected function convert_to_stdclass_objects( $options ) {
 		$processed = array();
 
 		foreach ( $options as $option ) {
@@ -492,7 +492,7 @@ class QuestionPostModel extends PostModel {
 	 *
 	 * @return array Objects with mapping and exclusion applied.
 	 */
-	private function apply_mapping_and_exclusion_to_objects( $options, $map, $exclude ) {
+	protected function apply_mapping_and_exclusion_to_objects( $options, $map, $exclude ) {
 		foreach ( $options as $option ) {
 			if ( ! $option instanceof \stdClass ) {
 				continue;
@@ -501,7 +501,7 @@ class QuestionPostModel extends PostModel {
 			// Apply key mapping - create new property with mapped name
 			if ( ! empty( $map ) && is_array( $map ) ) {
 				foreach ( $map as $old_key => $new_key ) {
-					if ( property_exists( $option, $old_key ) || isset( $option->$old_key ) ) {
+					if ( isset( $option->$old_key ) ) {
 						// Copy value to new property name
 						$option->$new_key = $option->$old_key;
 						// Add old key to exclusion list
@@ -515,7 +515,7 @@ class QuestionPostModel extends PostModel {
 			// Remove excluded properties
 			if ( ! empty( $exclude ) ) {
 				foreach ( $exclude as $key ) {
-					if ( property_exists( $option, $key ) || isset( $option->$key ) ) {
+					if ( isset( $option->$key ) ) {
 						unset( $option->$key );
 					}
 				}
@@ -574,7 +574,7 @@ class QuestionPostModel extends PostModel {
 		$hasExplanation = false;
 
 		// Check if we should show explanation
-		if ( $instantCheck || $status == 'completed' ) {
+		if ( $instantCheck || $status === 'completed' ) {
 			$theExplanation = $question->get_explanation();
 			$checked        = in_array( $question_id, $checkedQuestions );
 			$hasExplanation = ! ! $theExplanation;
@@ -605,7 +605,7 @@ class QuestionPostModel extends PostModel {
 		}
 
 		// Add explanation based on status
-		if ( $status == 'completed' || ( $checked && $theExplanation ) ) {
+		if ( $status === 'completed' || ( $checked && $theExplanation ) ) {
 			$questionData['explanation'] = $theExplanation;
 		}
 
@@ -620,7 +620,7 @@ class QuestionPostModel extends PostModel {
 		$questionData['answered'] = $answered[ $question_id ]['answered'] ?? array();
 
 		// Determine if we should include correct answers
-		$with_true_or_false = ( $checked || ( $quizStatus == 'completed' && $args['show_correct_review'] ) );
+		$with_true_or_false = ( $checked || ( $quizStatus === 'completed' && $args['show_correct_review'] ) );
 
 		$questionData['show_correct_review'] = $with_true_or_false;
 		

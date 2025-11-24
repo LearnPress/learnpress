@@ -122,38 +122,9 @@ class QuestionTemplate {
 			$answered            = $questionData['answered'] ?? [];
 			$show_correct_review = $questionData['show_correct_review'] ?? false;
 			$options_html        = '';
-			$disabled_attr       = $disabled ? 'disabled' : '';
 
 			foreach ( $options as $option ) {
-				$option_uid     = is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() );
-				$option_value   = is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' );
-				$option_title   = is_array( $option ) ? ( $option['title'] ?? $option_value ) : ( $option->title ?? $option_value );
-				$option_is_true = is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' );
-				$input_id       = 'learn-press-answer-option-' . $option_uid;
-
-				// Check if this option was answered incorrectly
-				$li_class = 'answer-option';
-				if ( $show_correct_review && is_array( $answered ) && in_array( $option_value, $answered, true ) ) {
-					if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
-						$is_answered_wrong = true;
-						$li_class .= ' answered-wrong';
-					} else {
-						$li_class .= ' answered-correct';
-					}
-				}
-
-				$options_html .= sprintf(
-					'<li class="%6$s">
-						<input type="checkbox" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %5$s />
-						<label for="%2$s" class="option-title">%4$s</label>
-					</li>',
-					esc_attr( $question_id ),
-					esc_attr( $input_id ),
-					esc_attr( $option_value ),
-					wp_kses_post( $option_title ),
-					$disabled_attr,
-					esc_attr( $li_class )
-				);
+				$options_html .= $this->build_option_html( $question_id, $option, 'checkbox', $disabled, $show_correct_review, $answered );
 			}
 
 			$section = array(
@@ -188,37 +159,9 @@ class QuestionTemplate {
 			$answered            = $questionData['answered'] ?? '';
 			$show_correct_review = $questionData['show_correct_review'] ?? false;
 			$options_html        = '';
-			$disabled_attr       = $disabled ? 'disabled' : '';
 
 			foreach ( $options as $option ) {
-				$option_uid     = is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() );
-				$option_value   = is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' );
-				$option_title   = is_array( $option ) ? ( $option['title'] ?? $option_value ) : ( $option->title ?? $option_value );
-				$option_is_true = is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' );
-				$input_id       = 'learn-press-answer-option-' . $option_uid;
-
-				// Check if this option was answered incorrectly
-				$li_class = 'answer-option';
-				if ( $show_correct_review && $answered === $option_value ) {
-					if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
-						$li_class .= ' answered-wrong';
-					} else {
-						$li_class .= ' answered-correct';
-					}
-				}
-
-				$options_html .= sprintf(
-					'<li class="%6$s">
-						<input type="radio" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %5$s />
-						<label for="%2$s" class="option-title">%4$s</label>
-					</li>',
-					esc_attr( $question_id ),
-					esc_attr( $input_id ),
-					esc_attr( $option_value ),
-					wp_kses_post( $option_title ),
-					$disabled_attr,
-					esc_attr( $li_class )
-				);
+				$options_html .= $this->build_option_html( $question_id, $option, 'radio', $disabled, $show_correct_review, $answered );
 			}
 
 			$section = array(
@@ -253,41 +196,9 @@ class QuestionTemplate {
 			$answered            = $questionData['answered'] ?? '';
 			$show_correct_review = $questionData['show_correct_review'] ?? false;
 			$options_html        = '';
-			$disabled_attr       = $disabled ? 'disabled' : '';
 
 			foreach ( $options as $option ) {
-				$option_uid     = is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() );
-				$option_value   = is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' );
-				$option_title   = is_array( $option ) ? ( $option['title'] ?? $option_value ) : ( $option->title ?? $option_value );
-				$option_is_true = is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' );
-				$input_id       = 'learn-press-answer-option-' . $option_uid;
-
-				// Check if this option was answered incorrectly
-				$li_class = 'answer-option';
-				if ( $show_correct_review && $answered === $option_value ) {
-					if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
-						$li_class .= ' answered-wrong';
-					} else {
-						$li_class .= ' answered-correct';
-					}
-				}
-
-				if ( $option_is_true ) {
-					$li_class .= ' answered-correct';
-				}
-
-				$options_html .= sprintf(
-					'<li class="%6$s">
-						<input type="radio" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %5$s />
-						<label for="%2$s" class="option-title">%4$s</label>
-					</li>',
-					esc_attr( $question_id ),
-					esc_attr( $input_id ),
-					esc_attr( $option_value ),
-					wp_kses_post( $option_title ),
-					$disabled_attr,
-					esc_attr( $li_class )
-				);
+				$options_html .= $this->build_option_html( $question_id, $option, 'radio', $disabled, $show_correct_review, $answered );
 			}
 
 			$section = array(
@@ -816,7 +727,6 @@ class QuestionTemplate {
 		return $blank_count === $corrected_count;
 	}
 
-
 	public function is_correct( $questionData ) {
 		$is_correct = false;
 		switch ( $questionData['question_type'] ) {
@@ -834,5 +744,107 @@ class QuestionTemplate {
 				break;
 		}
 		return $is_correct;
+	}
+
+	/**
+	 * Extract option data from array or object format.
+	 *
+	 * @param mixed $option Option data (array or object).
+	 *
+	 * @return array Normalized option data.
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	private function extract_option_data( $option ) {
+		return array(
+			'uid'     => is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() ),
+			'value'   => is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' ),
+			'title'   => is_array( $option ) ? ( $option['title'] ?? ( $option['value'] ?? '' ) ) : ( $option->title ?? ( $option->value ?? '' ) ),
+			'is_true' => is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' ),
+			'ids'     => is_array( $option ) ? ( $option['ids'] ?? [] ) : ( $option->ids ?? [] ),
+			'answers' => is_array( $option ) ? ( $option['answers'] ?? [] ) : ( $option->answers ?? [] ),
+		);
+	}
+
+	/**
+	 * Determine CSS class for answer option based on correctness.
+	 *
+	 * @param bool   $show_correct_review Whether to show correct/incorrect styling.
+	 * @param string $option_value        Option value.
+	 * @param string $option_is_true      Whether option is correct ('yes' or '').
+	 * @param mixed  $answered            User's answer (string or array).
+	 * @param bool   $is_multi_choice     Whether this is a multi-choice question.
+	 *
+	 * @return string CSS class.
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	private function determine_option_class( $show_correct_review, $option_value, $option_is_true, $answered, $is_multi_choice = false ) {
+		$li_class = 'answer-option';
+
+		if ( ! $show_correct_review ) {
+			return $li_class;
+		}
+
+		// Check if this option was answered.
+		$was_answered = false;
+		if ( $is_multi_choice ) {
+			$was_answered = is_array( $answered ) && in_array( $option_value, $answered, true );
+		} else {
+			$was_answered = $answered === $option_value;
+		}
+
+		if ( $was_answered ) {
+			if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
+				$li_class .= ' answered-wrong';
+			} else {
+				$li_class .= ' answered-correct';
+			}
+		}
+
+		return $li_class;
+	}
+
+	/**
+	 * Build HTML for a single answer option.
+	 *
+	 * @param int    $question_id        Question ID.
+	 * @param mixed  $option             Option data (array or object).
+	 * @param string $input_type         Input type ('checkbox' or 'radio').
+	 * @param bool   $disabled           Whether input is disabled.
+	 * @param bool   $show_correct_review Whether to show correct/incorrect styling.
+	 * @param mixed  $answered           User's answer (string or array).
+	 *
+	 * @return string HTML for single option.
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	private function build_option_html( $question_id, $option, $input_type, $disabled, $show_correct_review, $answered ) {
+		$option_data    = $this->extract_option_data( $option );
+		$input_id       = 'learn-press-answer-option-' . $option_data['uid'];
+		$disabled_attr  = $disabled ? 'disabled' : '';
+		$is_multi_choice = $input_type === 'checkbox';
+
+		$li_class = $this->determine_option_class(
+			$show_correct_review,
+			$option_data['value'],
+			$option_data['is_true'],
+			$answered,
+			$is_multi_choice
+		);
+
+		return sprintf(
+			'<li class="%6$s">
+				<input type="%7$s" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %5$s />
+				<label for="%2$s" class="option-title">%4$s</label>
+			</li>',
+			esc_attr( $question_id ),
+			esc_attr( $input_id ),
+			esc_attr( $option_data['value'] ),
+			wp_kses_post( $option_data['title'] ),
+			$disabled_attr,
+			esc_attr( $li_class ),
+			esc_attr( $input_type )
+		);
 	}
 }

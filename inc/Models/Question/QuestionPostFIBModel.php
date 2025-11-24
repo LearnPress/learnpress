@@ -57,33 +57,8 @@ class QuestionPostFIBModel extends QuestionPostModel {
 	 * @since 4.2.9
 	 */
 	public function fib_get_ids( string $content ): array {
-		$output = [];
-
-		if ( ! empty( $content ) ) {
-			preg_match_all(
-				'/' . get_shortcode_regex( [ 'fib' ] ) . '/',
-				$content,
-				$all_shortcode,
-				PREG_SET_ORDER
-			);
-
-			if ( ! empty( $all_shortcode ) ) {
-				foreach ( $all_shortcode as $shortcode ) {
-					$atts = shortcode_parse_atts( $shortcode[0] );
-
-					if ( empty( $atts['id'] ) ) {
-						$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
-						$ids = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
-					} else {
-						$ids = $atts['id'];
-					}
-
-					$output[] = $ids;
-				}
-			}
-		}
-
-		return $output;
+		$shortcodes = $this->parse_fib_shortcodes( $content );
+		return array_column( $shortcodes, 'id' );
 	}
 
 	/**
@@ -98,31 +73,13 @@ class QuestionPostFIBModel extends QuestionPostModel {
 	 * @since 4.2.9
 	 */
 	public function match_shortcode_api( string $content, int $answer_id, bool $show_answer = false, $answered = '' ): string {
-		if ( ! empty( $content ) ) {
-			preg_match_all(
-				'/' . get_shortcode_regex( [ 'fib' ] ) . '/',
-				$content,
-				$all_shortcode,
-				PREG_SET_ORDER
-			);
-
-			if ( ! empty( $all_shortcode ) ) {
-				foreach ( $all_shortcode as $shortcode ) {
-					$atts = shortcode_parse_atts( $shortcode[0] );
-
-					if ( empty( $atts['id'] ) ) {
-						$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
-						$ids = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
-					} else {
-						$ids = $atts['id'];
-					}
-
-					$new_str = ' {{FIB_' . esc_attr( $ids ) . '}} ';
-					$content = str_replace( $shortcode[0], $new_str, $content );
-				}
-			}
+		$shortcodes = $this->parse_fib_shortcodes( $content );
+		
+		foreach ( $shortcodes as $shortcode ) {
+			$new_str = ' {{FIB_' . esc_attr( $shortcode['id'] ) . '}} ';
+			$content = str_replace( $shortcode['raw'], $new_str, $content );
 		}
-
+		
 		return $content;
 	}
 
@@ -137,47 +94,30 @@ class QuestionPostFIBModel extends QuestionPostModel {
 	 * @since 4.2.9
 	 */
 	public function get_answer_data( string $content, int $answer_id, $answered = '' ): array {
-		$output = [];
+		$output     = [];
+		$shortcodes = $this->parse_fib_shortcodes( $content );
+		$blanks     = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
 
-		if ( ! empty( $content ) ) {
-			preg_match_all(
-				'/' . get_shortcode_regex( [ 'fib' ] ) . '/',
-				$content,
-				$all_shortcode,
-				PREG_SET_ORDER
-			);
+		foreach ( $shortcodes as $shortcode ) {
+			$id   = $shortcode['id'];
+			$fill = $shortcode['fill'];
 
-			if ( ! empty( $all_shortcode ) ) {
-				foreach ( $all_shortcode as $shortcode ) {
-					$atts = shortcode_parse_atts( $shortcode[0] );
-
-					if ( empty( $atts['id'] ) ) {
-						$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
-						$ids = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
-					} else {
-						$ids = $atts['id'];
-					}
-
-					$fill = $atts['fill'] ?? '';
-
-					if ( is_array( $answered ) ) {
-						$answer = $answered[ $ids ] ?? '';
-					} else {
-						$answer = '';
-					}
-
-					$is_correct = false;
-					$blanks     = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
-
-					if ( ! empty( $blanks ) ) {
-						$is_correct = $this->check_answer( $blanks[ $ids ] ?? [], $answer );
-					}
-
-					$output[ $ids ]['is_correct'] = $is_correct;
-					$output[ $ids ]['answer']     = $answer;
-					$output[ $ids ]['correct']    = $fill;
-				}
+			// Get user's answer
+			if ( is_array( $answered ) ) {
+				$answer = $answered[ $id ] ?? '';
+			} else {
+				$answer = '';
 			}
+
+			// Check if answer is correct
+			$is_correct = false;
+			if ( ! empty( $blanks ) ) {
+				$is_correct = $this->check_answer( $blanks[ $id ] ?? [], $answer );
+			}
+
+			$output[ $id ]['is_correct'] = $is_correct;
+			$output[ $id ]['answer']     = $answer;
+			$output[ $id ]['correct']    = $fill;
 		}
 
 		return $output;
@@ -335,7 +275,7 @@ class QuestionPostFIBModel extends QuestionPostModel {
 					$words     = array_map( 'floatval', $fill );
 					$user_fill = floatval( $user_fill );
 
-					if ( count( $words ) == 2 ) {
+					if ( count( $words ) === 2 ) {
 						$blank_correct = $words[0] <= $user_fill && $user_fill <= $words[1];
 					}
 				}
@@ -355,14 +295,61 @@ class QuestionPostFIBModel extends QuestionPostModel {
 
 			default:
 				if ( $match_case ) {
-					$blank_correct = strcmp( $user_fill, $fill ) == 0;
+					$blank_correct = strcmp( $user_fill, $fill ) === 0;
 				} else {
-					$blank_correct = strcasecmp( mb_strtolower( $user_fill, 'UTF-8' ), mb_strtolower( $fill, 'UTF-8' ) ) == 0;
+					$blank_correct = strcasecmp( mb_strtolower( $user_fill, 'UTF-8' ), mb_strtolower( $fill, 'UTF-8' ) ) === 0;
 				}
 		}
 
 		$data = compact( 'blank', 'user_fill' );
 
 		return apply_filters( 'learn-press/question/fill-in-blank/check_answer', $blank_correct, $data );
+	}
+
+	/**
+	 * Parse FIB shortcodes from content.
+	 *
+	 * @param string $content Content with [fib] shortcodes.
+	 *
+	 * @return array Array of parsed shortcodes with keys: id, fill, raw.
+	 * @since 4.2.9
+	 */
+	private function parse_fib_shortcodes( string $content ): array {
+		$parsed = [];
+
+		if ( empty( $content ) ) {
+			return $parsed;
+		}
+
+		preg_match_all(
+			'/' . get_shortcode_regex( [ 'fib' ] ) . '/',
+			$content,
+			$all_shortcode,
+			PREG_SET_ORDER
+		);
+
+		if ( empty( $all_shortcode ) ) {
+			return $parsed;
+		}
+
+		foreach ( $all_shortcode as $shortcode ) {
+			$atts = shortcode_parse_atts( $shortcode[0] );
+
+			// Extract ID using consistent logic
+			if ( empty( $atts['id'] ) ) {
+				$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
+				$id  = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
+			} else {
+				$id = $atts['id'];
+			}
+
+			$parsed[] = [
+				'id'   => $id,
+				'fill' => $atts['fill'] ?? '',
+				'raw'  => $shortcode[0],
+			];
+		}
+
+		return $parsed;
 	}
 }
