@@ -28,7 +28,7 @@
          */
         bindEvents() {
             document.addEventListener('click', (e) => {
-                if (e.target.closest('#button-submit-quiz') || e.target.closest('.lp-button-submit-quiz')) {
+                if (e.target.closest('#button-submit-quiz') || e.target.closest('.lp-button.submit-quiz')) {
                     this.handleSubmitClick(e);
                 }
             });
