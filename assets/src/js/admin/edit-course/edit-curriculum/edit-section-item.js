@@ -539,8 +539,8 @@ export class EditSectionItem {
 			icon: 'warning',
 			showCloseButton: true,
 			showCancelButton: true,
-			cancelButtonText: lpDataAdmin.i18n.cancel,
-			confirmButtonText: lpDataAdmin.i18n.yes,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
