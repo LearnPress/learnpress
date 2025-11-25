@@ -576,9 +576,9 @@ class QuestionPostModel extends PostModel {
 		// Check if we should show explanation
 		if ( $instantCheck || $status === 'completed' ) {
 			$theExplanation = $question->get_explanation();
-			$checked        = in_array( $question_id, $checkedQuestions );
 			$hasExplanation = ! ! $theExplanation;
 		}
+		$checked = in_array( $question_id, $checkedQuestions );
 
 		// Get mark/point
 		$mark = $question->get_mark() ? $question->get_mark() : 1;
