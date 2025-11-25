@@ -42,18 +42,14 @@ class QuestionTemplate {
 	 * @since 4.2.9.4
 	 * @version 2.0.0
 	 */
-	public function render_question_html( int $question_id, array $args = [], $question_index = 0, $show_hint = false ) {
+	public function render_question_html( array $questionData = [], $question_index = 0, $status = 'started' ) {
 		try {
-			// Prepare question data using QuestionPostModel::prepare_render_data.
-			$questionData = QuestionPostModel::prepare_render_data( $question_id, $args );
-
 			if ( empty( $questionData ) ) {
 				return '';
 			}
 
 			$question      = $questionData['object'];
 			$question_type = $questionData['type'];
-			$status        = $args['status'] ?? 'started';
 
 			// Build question wrapper classes.
 			$wrapper_classes = array( 'question', 'question-' . $question_type );
@@ -87,13 +83,13 @@ class QuestionTemplate {
 				'wrapper'     => sprintf(
 					'<div class="%s" data-id="%s">',
 					esc_attr( implode( ' ', $wrapper_classes ) ),
-					esc_attr( $question_id )
+					esc_attr( $question->get_id() )
 				),
 				'title'       => $this->title_html( $question, $question_index ),
 				'content'     => $this->content_html( $question ),
 				'answers'     => $answer_html,
 				'explanation' => $this->explanation_html( $question ),
-				'hint'        => $this->hint_html( $question, $show_hint ),
+				'hint'        => $this->hint_html( $question ),
 				'buttons'     => $this->check_answer_button_html( $question, $status ),
 				'wrapper_end' => '</div>',
 			);
@@ -234,7 +230,7 @@ class QuestionTemplate {
 
 			foreach ( $options as $option ) {
 				$option_uid     = is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() );
-				$option_title   = is_array( $option ) ? ( $option['title'] ?? '' ) : ( $option->title ?? '' );
+				$option_title   = is_array( $option ) ? ( $option['title_api'] ?? '' ) : ( $option->title_api ?? '' );
 				$option_ids     = is_array( $option ) ? ( $option['ids'] ?? [] ) : ( $option->ids ?? [] );
 				$option_answers = is_array( $option ) ? ( $option['answers'] ?? [] ) : ( $option->answers ?? [] );
 
@@ -427,19 +423,18 @@ class QuestionTemplate {
 	 * Render question hint HTML.
 	 *
 	 * @param QuestionPostModel $question  Question post model.
-	 * @param bool              $show_hint Whether to show the hint.
 	 *
 	 * @return string
 	 * @since 4.2.9.4
 	 * @version 1.0.0
 	 */
-	public function hint_html( QuestionPostModel $question, $show_hint = false ) {
+	public function hint_html( QuestionPostModel $question ) {
 		try {
 			$hint        = $question->get_hint();
 			$explanation = $question->get_explanation();
 
 			// Only show hint if there's no explanation and hint is available.
-			if ( empty( $hint ) || ! empty( $explanation ) || ! $show_hint ) {
+			if ( empty( $hint ) || ! empty( $explanation ) ) {
 				return '';
 			}
 
@@ -789,16 +784,16 @@ class QuestionTemplate {
 		// Check if this option was answered.
 		$was_answered = false;
 		if ( $is_multi_choice ) {
-			$was_answered = is_array( $answered ) && in_array( $option_value, $answered, true );
+			$was_answered = ( is_array( $answered ) && in_array( $option_value, $answered, true ) ) || $option_is_true === 'yes';
 		} else {
-			$was_answered = $answered === $option_value;
+			$was_answered = $answered === $option_value || $option_is_true === 'yes';
 		}
 
 		if ( $was_answered ) {
 			if ( ! $option_is_true || $option_is_true === 'no' || $option_is_true === '' ) {
 				$li_class .= ' answered-wrong';
 			} else {
-				$li_class .= ' answered-correct';
+				$li_class .= ' answer-correct';
 			}
 		}
 
@@ -820,10 +815,18 @@ class QuestionTemplate {
 	 * @version 1.0.0
 	 */
 	private function build_option_html( $question_id, $option, $input_type, $disabled, $show_correct_review, $answered ) {
-		$option_data    = $this->extract_option_data( $option );
-		$input_id       = 'learn-press-answer-option-' . $option_data['uid'];
-		$disabled_attr  = $disabled ? 'disabled' : '';
+		$option_data     = $this->extract_option_data( $option );
+		$input_id        = 'learn-press-answer-option-' . $option_data['uid'];
+		$disabled_attr   = $disabled ? 'disabled' : '';
 		$is_multi_choice = $input_type === 'checkbox';
+		
+		if ( empty( $answered ) ) {
+			$checked         = '';
+		} else if ( is_array( $answered ) ) {
+			$checked = in_array( $option_data['value'], $answered ) ? 'checked' : '';
+		} else if ( is_string( $answered ) ) {
+			$checked = $option_data['value'] === $answered ? 'checked' : '';
+		}
 
 		$li_class = $this->determine_option_class(
 			$show_correct_review,
@@ -835,7 +838,7 @@ class QuestionTemplate {
 
 		return sprintf(
 			'<li class="%6$s">
-				<input type="%7$s" class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %5$s />
+				<input type="%7$s" %8$s class="option-check" name="learn-press-question-%1$s" id="%2$s" value="%3$s" %5$s />
 				<label for="%2$s" class="option-title">%4$s</label>
 			</li>',
 			esc_attr( $question_id ),
@@ -844,7 +847,8 @@ class QuestionTemplate {
 			wp_kses_post( $option_data['title'] ),
 			$disabled_attr,
 			esc_attr( $li_class ),
-			esc_attr( $input_type )
+			esc_attr( $input_type ),
+			$checked
 		);
 	}
 }

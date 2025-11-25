@@ -14,6 +14,8 @@ use LearnPress\Models\UserModel;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserQuizModel;
+use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\TemplateHooks\Question\QuestionTemplate;
 use LP_Global;
 use LP_Quiz;
 use Throwable;
@@ -65,6 +67,76 @@ class QuizTemplate {
 			);
 			if ( ! $userQuizModel instanceof UserQuizModel ) {
 				echo $this->start_quiz_screen( $quizPostModel, $quiz_item );
+			} else {
+				$show_check          = $quizPostModel->has_instant_check();
+				$show_correct_review = $quizPostModel->has_show_correct_review();
+				$question_ids        = $quizPostModel->get_question_ids();
+				$status              = $userQuizModel->get_status();
+				$quiz_results        = $userQuizModel->get_result();
+				$checked_questions   = $userQuizModel->get_checked_questions();
+				$user_data           = array(
+					'status'            => $status,
+					'attempts'          => $userQuizModel->get_history(),
+					'checked_questions' => $checked_questions,
+					'start_time'        => $userQuizModel->get_start_time(),
+					'retaken'           => $userQuizModel->get_retaken_count(),
+					'total_time'        => $userQuizModel->get_time_remaining(),
+					'results'           => $quiz_results,
+				);
+
+				$answered = $this->get_array_value( $quiz_results, 'questions', array() );
+
+				$questions = array();
+				if ( ! empty( $question_ids ) ) {
+					foreach ( $question_ids as $question_id ) {
+						$questions[] = QuestionPostModel::prepare_render_data(
+							$question_id,
+							array(
+								'instant_check'       => $show_check,
+								'quiz_status'         => $status,
+								'checked_questions'   => $checked_questions,
+								'answered'            => $answered,
+								'show_correct_review' => $show_correct_review,
+								'status'              => $status,
+							)
+						);
+					}	
+				}
+				$quiz_data = array(
+					'course_id'              => $courseModel->get_id(),
+					'nonce'                  => wp_create_nonce( sprintf( 'user-quiz-%d', get_current_user_id() ) ),
+					'id'                     => $quizPostModel->get_id(),
+					'title'                  => $quizPostModel->get_the_title(),
+					'content'                => '',
+					'questions'              => $questions,
+					'question_ids'           => $question_ids,
+					'number_questions_to_do' => $quizPostModel->count_questions(),
+					'current_question'       => absint( reset( $question_ids ) ),
+					'question_nav'           => '',
+					'status'                 => '',
+					'attempts'               => array(),
+					'answered'               => $answered,
+					'checked_questions'      => array(),
+					'passing_grade'          => $quizPostModel->get_passing_grade(),
+					'negative_marking'       => $quizPostModel->has_negative_marking(),
+					'show_correct_review'    => $show_correct_review,
+					'instant_check'          => $quizPostModel->has_instant_check(),
+					'retake_count'           => absint( $quizPostModel->get_retake_count() ),
+					'retaken'                => 0,
+					'questions_per_page'     => $quiz_item->get_pagination(),
+					'page_numbers'           => false,
+					'review_questions'       => $quiz_item->get_review_questions(),
+					'support_options'        => learn_press_get_question_support_answer_options(),
+					'duration'               => $quiz_item->get_duration() ? $quiz_item->get_duration()->get() : false,
+					'results'                => array(),
+					'required_password'      => post_password_required( $quiz_item->get_id() ),
+					'allow_retake'           => $quizPostModel->get_retake_count() == - 1,
+					'quiz_description'       => $quizPostModel->get_the_content(),
+					'num_pages'              => ceil( $quizPostModel->count_questions() / $quiz_item->get_pagination() ),
+				);
+
+				$quiz_data = array_merge( $quiz_data, $user_data );
+				echo $this->doing_quiz_html( $quiz_data );
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -147,6 +219,175 @@ class QuizTemplate {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 			return '';
 		}
+	}	
+
+	/**
+	 * Render complete quiz interface (during quiz)
+	 *
+	 * Mirrors the structure from quiz/index.js render method:
+	 * - Result component (if completed and not reviewing)
+	 * - Meta component (if not started)
+	 * - Status component (if started)
+	 * - Questions component (if started, completed, or reviewing)
+	 * - Buttons component (always)
+	 * - Attempts component (if completed, viewed, or not started and not reviewing)
+	 *
+	 * @param array $quiz_data Quiz data following the $js variable structure
+	 *
+	 * @return string
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function doing_quiz_html( $quiz_data = array() ) {
+		try {
+			// Extract key data points.
+			$status       = $this->get_array_value( $quiz_data, 'status', '' );
+			$is_reviewing = false; // TODO: Add reviewing mode support when implemented.
+			// Determine display states based on JavaScript logic.
+			$not_started = in_array( $status, array( '', 'viewed' ), true ) || ! $status;
+			// Build sections following the JavaScript component structure.
+			$sections = array(
+				'wrapper' => '<div class="quiz-content-wrapper">',
+			);
+			// Result component: Show if completed and not reviewing.
+			if ( ! $is_reviewing && 'completed' === $status ) {
+				$sections['result'] = $this->result_html( $quiz_data );
+			}
+			// Meta component: Show if not started and not reviewing.
+			if ( ! $is_reviewing && $not_started ) {
+				$sections['meta'] = $this->meta_html( $quiz_data );
+			}
+			// Status component: Show if started.
+			if ( 'started' === $status ) {
+				$sections['status'] = $this->status_html( $quiz_data );
+			}
+			// Questions component: Show if started, completed, or reviewing.
+			if ( in_array( $status, array( 'completed', 'started' ), true ) || $is_reviewing ) {
+				$sections['questions'] = $this->questions_html( $quiz_data );
+			}
+			// Buttons component: Always show.
+			$sections['buttons'] = $this->buttons_html( $quiz_data );
+			// Attempts component: Show if completed/viewed and not reviewing.
+			if ( in_array( $status, array( '', 'completed', 'viewed' ), true ) && ! $is_reviewing ) {
+				$sections['attempts'] = $this->attempts_html( $quiz_data );
+			}
+			$sections['wrapper_end'] = '</div>';
+			return Template::combine_components( $sections );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			return '';
+		}
+	}
+	/**
+	 * Render quiz meta information (intro screen when quiz is not started)
+	 *
+	 * @param array $quiz_data Quiz data
+	 *
+	 * @return string
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function meta_html( $quiz_data = array() ) {
+		try {
+			// Get quiz meta data.
+			$quiz_description = $this->get_array_value( $quiz_data, 'quiz_description', '' );
+			$duration         = $this->get_array_value( $quiz_data, 'duration', 0 );
+			$duration_text    = $duration ? learn_press_seconds_to_time( $duration ) : '-:-:-';
+			$questions_count  = $this->get_array_value( $quiz_data, 'number_questions_to_do', 0, 'int' );
+			$passing_grade    = $this->get_array_value( $quiz_data, 'passing_grade', 0 );
+			// Build quiz info items.
+			$quiz_info_items = '';
+			if ( 0 < $questions_count ) {
+				$quiz_info_items .= sprintf(
+					'<li class="quiz-intro-item quiz-intro-item--questions-count"><span class="info-label">%s</span><span class="info-value">%s</span></li>',
+					esc_html__( 'Questions:', 'learnpress' ),
+					esc_html( $questions_count )
+				);
+			}
+			if ( $duration ) {
+				$quiz_info_items .= sprintf(
+					'<li class="quiz-intro-item quiz-intro-item--duration"><span class="info-label">%s</span><span class="info-value">%s</span></li>',
+					esc_html__( 'Duration:', 'learnpress' ),
+					esc_html( $duration_text )
+				);
+			}
+			if ( $passing_grade ) {
+				$quiz_info_items .= sprintf(
+					'<li class="quiz-intro-item quiz-intro-item--passing-grade"><span class="info-label">%s</span><span class="info-value">%s</span></li>',
+					esc_html__( 'Passing Grade:', 'learnpress' ),
+					esc_html( $passing_grade . '%' )
+				);
+			}
+			// Build sections.
+			$sections = array(
+				'wrapper'      => '<div class="quiz-meta-info">',
+				'description'  => ! empty( $quiz_description ) ? sprintf(
+					'<div class="quiz-description">%s</div>',
+					wp_kses_post( wpautop( $quiz_description ) )
+				) : '',
+				'meta_wrapper' => '<div class="quiz-intro-wrapper"><ul class="quiz-intro">',
+				'meta_items'   => $quiz_info_items,
+				'meta_end'     => '</ul></div>',
+				'wrapper_end'  => '</div>',
+			);
+			return Template::combine_components( $sections );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			return '';
+		}
+	}
+	/**
+	 * Render quiz questions list
+	 *
+	 * @param array $quiz_data Quiz data with questions array
+	 *
+	 * @return string
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function questions_html( $quiz_data = array() ) {
+		try {
+			// Get questions data.
+			$questions           = $this->get_array_value( $quiz_data, 'questions', array() );
+			$current_question    = $this->get_array_value( $quiz_data, 'current_question', 0, 'int' );
+			$questions_per_page  = $this->get_array_value( $quiz_data, 'questions_per_page', 1, 'int' );
+			$current_page        = $this->get_array_value( $quiz_data, 'current_page', 1, 'int' );
+			$status              = $this->get_array_value( $quiz_data, 'status', '' );
+			$is_reviewing        = false; // TODO: Add reviewing mode support.
+			// Determine if questions should be shown.
+			$is_show = true;
+			if ( 'completed' === $status && ! $is_reviewing ) {
+				$is_show = false;
+			}
+			// Render each question.
+			$questions_html = '';
+			if ( ! empty( $questions ) ) {
+				$questionTemplate = QuestionTemplate::instance();
+				foreach ( $questions as $index => $question ) {
+					// Determine if this question is in the visible range.
+					$question_index = $index + 1;
+					$is_visible     = $current_page === (int) ceil( $question_index / $questions_per_page );
+					if ( $is_visible ) {
+						$show_index       = $questions_per_page > 1 ? $question_index : false;
+						$questions_html .= $questionTemplate->render_question_html( $question, $show_index );
+					}
+				}
+			}
+			set_transient( 'question_test', $questions, $expiration = 36000 );
+			// Build sections.
+			$sections = array(
+				'wrapper'      => sprintf(
+					'<div class="quiz-questions" style="display: %s;">',
+					$is_show ? 'block' : 'none'
+				),
+				'questions'    => $questions_html,
+				'wrapper_end'  => '</div>',
+			);
+			return Template::combine_components( $sections );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			return '';
+		}
 	}
 
 	/**
@@ -222,13 +463,13 @@ class QuizTemplate {
 					! $submitting ? esc_html__( 'Finish Quiz', 'learnpress' ) : esc_html__( 'Submitting…', 'learnpress' )
 				),
 				'submit_wrapper_end'  => '</div>',
-				'timer'               => $this->timer_html(
-					array(
-						'duration'   => $duration,
-						'total_time' => $total_time,
-						'time_spend' => $time_spend,
-					)
-				),
+				// 'timer'               => $this->timer_html(
+				// 	array(
+				// 		'duration'   => $duration,
+				// 		'total_time' => $total_time,
+				// 		'time_spend' => $time_spend,
+				// 	)
+				// ),
 				'actions_wrapper_end' => '</div>',
 				'inner_wrapper_end'   => '</div>',
 				'wrapper_end'         => '</div>',
@@ -260,7 +501,7 @@ class QuizTemplate {
 			$display_time = $time_spend ? $time_spend : $total_time;
 
 			// Format time.
-			$formatted_time = $this->format_timer_time( $display_time, $total_time );
+			$formatted_time = learn_press_seconds_to_time( $display_time );
 
 			// Build sections.
 			$sections = array(
@@ -276,45 +517,6 @@ class QuizTemplate {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 			return '';
 		}
-	}
-
-	/**
-	 * Format timer time to display format
-	 *
-	 * @param int $seconds Seconds to format
-	 * @param int $total_time Total time for calculation
-	 *
-	 * @return string Formatted time string
-	 * @since 4.2.9.4
-	 * @version 1.0.0
-	 */
-	private function format_timer_time( $seconds, $total_time ) {
-		$time_parts = array();
-		$separator  = ':';
-
-		if ( 3600 > $total_time ) {
-			// Less than 1 hour: show MM:SS.
-			$minutes    = floor( $seconds / 60 );
-			$secs       = $seconds % 60;
-			$time_parts = array( $minutes, $secs );
-		} else {
-			// 1 hour or more: show HH:MM:SS.
-			$hours      = floor( $seconds / 3600 );
-			$remainder  = $seconds % 3600;
-			$minutes    = floor( $remainder / 60 );
-			$secs       = $remainder % 60;
-			$time_parts = array( $hours, $minutes, $secs );
-		}
-
-		// Pad with zeros.
-		$formatted_parts = array_map(
-			function ( $part ) {
-				return 10 > $part ? '0' . $part : $part;
-			},
-			$time_parts
-		);
-
-		return implode( $separator, $formatted_parts );
 	}
 
 	/**
