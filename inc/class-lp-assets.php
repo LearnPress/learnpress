@@ -197,7 +197,10 @@ class LP_Assets extends LP_Abstract_Assets {
 					'stopOnFocus' => 1,
 					'classPrefix' => 'lp-toast',
 				],
-				'i18n'              => [],
+				'i18n'              => [
+					'yes'    => esc_html__( 'Yes' ),
+					'cancel' => esc_html__( 'Cancel' ),
+				],
 			]
 		);
 	}

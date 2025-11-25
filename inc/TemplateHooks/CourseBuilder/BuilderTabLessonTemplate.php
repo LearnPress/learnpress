@@ -268,7 +268,7 @@ class BuilderTabLessonTemplate {
 					'action_expanded_duplicate'   => sprintf( '<span class="lesson-action-expanded__duplicate">%s</span>', __( 'Duplicate', 'learnpress' ) ),
 					'action_expanded_publish'     => sprintf( '<span class="lesson-action-expanded__publish">%s</span>', __( 'Publish', 'learnpress' ) ),
 					'action_expanded_trash'       => sprintf( '<span class="lesson-action-expanded__trash">%s</span>', __( 'Trash', 'learnpress' ) ),
-					'action_expanded_delete'      => sprintf( '<span class="lesson-action-expanded__delete">%s</span>', __( 'Delete', 'learnpress' ) ),
+					'action_expanded_delete'      => sprintf( '<span class="lesson-action-expanded__delete" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to delete this lesson? This action cannot be undone.', 'learnpress' ), __( 'Delete', 'learnpress' ) ),
 					'action_expanded_wrapper_end' => '</div>',
 					'wrapper_end'                 => '</div>',
 				],

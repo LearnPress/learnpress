@@ -8,15 +8,11 @@
 
 namespace LearnPress\TemplateHooks\CourseBuilder;
 
-use LearnPress;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
 use LP_Global;
-use LP_Page_Controller;
-use LP_Request;
-use LP_Settings;
 
 class CourseBuilderTemplate {
 	use Singleton;

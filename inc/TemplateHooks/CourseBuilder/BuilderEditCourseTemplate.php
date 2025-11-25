@@ -264,7 +264,7 @@ class BuilderEditCourseTemplate {
 
 		$featured_image_html = '<div class="cb-featured-image-container">';
 
-		$featured_image_html .= '<div class="cb-featured-image-preview">';
+		$featured_image_html .= sprintf( '<div class="cb-featured-image-preview" data-content-placholder="%s">', __( 'No image selected', 'learnpress' ) );
 		if ( $thumbnail_url ) {
 			$featured_image_html .= sprintf(
 				'<img src="%s" alt="%s" class="cb-featured-image-preview__img">',
