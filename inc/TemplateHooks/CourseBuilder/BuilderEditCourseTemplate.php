@@ -333,11 +333,11 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
-		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin-assets.php';
-		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
+//		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin-assets.php';
+//		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
 
-		\LP_Admin_Assets::instance();
-		AdminEditCurriculumTemplate::instance();
+//		\LP_Admin_Assets::instance();
+//		AdminEditCurriculumTemplate::instance();
 
 		do_action( 'learn-press/admin/edit-curriculum/layout', $course_model );
 	}

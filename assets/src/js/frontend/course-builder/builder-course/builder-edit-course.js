@@ -1,5 +1,6 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import { EditCourseCurriculum } from 'lpAssetsJsPath/admin/edit-course/edit-curriculum';
 
 export class BuilderEditCourse {
 	constructor() {
@@ -34,6 +35,8 @@ export class BuilderEditCourse {
 	};
 
 	init() {
+		const editCourseCurriculum = new EditCourseCurriculum();
+		editCourseCurriculum.init();
 		this.events();
 	}
 

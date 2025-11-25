@@ -38,6 +38,8 @@ class CourseBuilderTemplate {
 
 	public function layout() {
 		wp_enqueue_style( 'lp-course-builder' );
+		// Load edit curriculum style
+		wp_enqueue_style( 'lp-edit-curriculum' );
 
 		$profile = LP_Global::profile();
 

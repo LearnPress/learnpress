@@ -83,6 +83,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					array(),
 					0
 				),
+				'lp-edit-curriculum' => new LP_Asset_Key(
+					$this->url( 'css/edit-curriculum' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
+					1
+				),
 				'lp-course-builder'  => new LP_Asset_Key(
 					self::url( 'css/course-builder' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),
