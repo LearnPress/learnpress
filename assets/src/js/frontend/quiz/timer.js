@@ -12,7 +12,7 @@
 	 * Initialize the quiz timer
 	 */
 	function initQuizTimer() {
-		const quizContainer = document.querySelector( '.content-item-quiz' );
+		const quizContainer = document.querySelector( '#content-item-quiz' );
 		if ( ! quizContainer ) {
 			return;
 		}

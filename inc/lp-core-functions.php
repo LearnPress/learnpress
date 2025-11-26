@@ -539,7 +539,7 @@ function learn_press_seconds_to_time( $seconds, $separator = ':' ) {
 		'%02d%s%02d%s%02d',
 		floor( $seconds / 3600 ),
 		$separator,
-		( $seconds / 60 ) % 60,
+		floor( $seconds / 60 ) % 60,
 		$separator,
 		$seconds % 60
 	);

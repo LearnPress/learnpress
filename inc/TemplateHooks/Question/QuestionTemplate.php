@@ -449,7 +449,7 @@ class QuestionTemplate {
 			}
 
 			$section = array(
-				'wrapper'     => '<div class="question-hint-content">',
+				'wrapper'     => '<div class="question-hint-content lp-hidden">',
 				'title'       => sprintf(
 					'<strong class="hint-title">%s:</strong>',
 					esc_html__( 'Hint', 'learnpress' )

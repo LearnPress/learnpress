@@ -1,11 +1,202 @@
 /**
- * Quiz Submit functionality
- * Handles quiz submission when user clicks submit button
+ * Quiz Start and Submit functionality
+ * Handles quiz start and submission when user clicks respective buttons
  * Pure Vanilla JavaScript implementation (no jQuery)
  */
 
 (function () {
     'use strict';
+
+    /**
+     * Quiz Start Handler Class
+     */
+    class QuizStartHandler {
+        constructor() {
+            this.starting = false;
+            this.init();
+        }
+
+        /**
+         * Initialize the handler
+         */
+        init() {
+            this.bindEvents();
+        }
+
+        /**
+         * Bind click events to start quiz button
+         */
+        bindEvents() {
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.lp-button.start') || e.target.closest('#button-start-quiz')) {
+                    this.handleStartClick(e);
+                }
+            });
+        }
+
+        /**
+         * Handle start button click
+         * @param {Event} e - Click event
+         */
+        handleStartClick(e) {
+            e.preventDefault();
+
+            const button = e.target.closest('.lp-button.start') || e.target.closest('#button-start-quiz');
+
+            // Check if already starting
+            if (this.starting) {
+                return;
+            }
+
+            // Apply filter hook before starting quiz
+            if (window.LP && window.LP.Hook) {
+                const itemId = window.lpQuizSettings?.id || 0;
+                const courseId = window.lpGlobalSettings?.post_id || 0;
+                const doStart = window.LP.Hook.applyFilters('before-start-quiz', true, itemId, courseId);
+
+                if (doStart !== true) {
+                    return;
+                }
+            }
+
+            // Set starting state
+            this.starting = true;
+            button.classList.add('loading');
+            button.disabled = true;
+
+            // Start quiz
+            this.startQuiz()
+                .then((response) => {
+                    this.handleStartSuccess(response, button);
+                })
+                .catch((error) => {
+                    this.handleStartError(error, button);
+                })
+                .finally(() => {
+                    this.starting = false;
+                    button.classList.remove('loading');
+                    button.disabled = false;
+                });
+        }
+
+        /**
+         * Start quiz via API
+         * @returns {Promise} API request promise
+         */
+        startQuiz() {
+            const itemId = window.lpQuizSettings?.id || 0;
+            const courseId = window.lpGlobalSettings?.post_id || 0;
+
+            const url = (window.lpData?.lp_rest_url || '') + 'lp/v1/users/start-quiz';
+
+            const body = new FormData();
+            body.append('item_id', itemId);
+            body.append('course_id', courseId);
+
+            const headers = {};
+
+            // Add nonce if available
+            if (window.lpData?.nonce) {
+                headers['X-WP-Nonce'] = window.lpData.nonce;
+            }
+
+            return fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: body
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                });
+        }
+
+        /**
+         * Handle successful quiz start
+         * @param {Object} response - API response
+         * @param {Element} button - Start button element
+         */
+        handleStartSuccess(response, button) {
+            if (response.status !== 'error') {
+                console.log('Quiz started successfully:', response);
+
+                // Apply filter hook after start response
+                let filteredResponse = response;
+                if (window.LP && window.LP.Hook) {
+                    const itemId = window.lpQuizSettings?.id || 0;
+                    const courseId = window.lpGlobalSettings?.post_id || 0;
+                    filteredResponse = window.LP.Hook.applyFilters('request-start-quiz-response', response, itemId, courseId);
+                }
+
+                const { results } = filteredResponse;
+
+                if (results) {
+                    const { duration, status, question_ids, questions } = results;
+
+                    // Handle non-enrolled quiz (offline mode)
+                    if (window.lpQuizSettings?.checkNorequizenroll === 1) {
+                        const keyQuizOff = 'quiz_off_' + window.lpQuizSettings.id;
+                        window.localStorage.removeItem(keyQuizOff);
+
+                        const quizDataOff = {
+                            endTime: (Date.now() + (duration * 1000)),
+                            status,
+                            question_ids,
+                            questions
+                        };
+
+                        window.localStorage.setItem(keyQuizOff, JSON.stringify(quizDataOff));
+
+                        // Set retake count
+                        const keyQuizOffRetaken = 'quiz_off_retaken_' + window.lpQuizSettings.id;
+                        let quizOffRetaken = window.localStorage.getItem(keyQuizOffRetaken);
+
+                        if (quizOffRetaken === null) {
+                            quizOffRetaken = 0;
+                        } else {
+                            quizOffRetaken = parseInt(quizOffRetaken) + 1;
+                        }
+
+                        window.localStorage.setItem(keyQuizOffRetaken, quizOffRetaken);
+                    }
+                }
+
+                // Trigger custom event
+                if (window.LP && window.LP.Hook) {
+                    const itemId = window.lpQuizSettings?.id || 0;
+                    const courseId = window.lpGlobalSettings?.post_id || 0;
+                    window.LP.Hook.doAction('quiz-started', results, itemId, courseId);
+                }
+
+                // Clear general localStorage
+                window.localStorage.removeItem('LP');
+
+                // Reload page to show quiz
+                window.location.reload();
+            } else {
+                // Handle error response
+                const elButtons = document.querySelector('.quiz-buttons');
+                if (elButtons) {
+                    const message = `<div class="learn-press-message error">${response.message}</div>`;
+                    elButtons.insertAdjacentHTML('afterend', message);
+                }
+                button.classList.remove('loading');
+            }
+        }
+
+        /**
+         * Handle quiz start error
+         * @param {Object} error - Error object
+         * @param {Element} button - Start button element
+         */
+        handleStartError(error, button) {
+            console.error('Quiz start error:', error);
+            alert('Failed to start quiz. Please try again.');
+            button.classList.remove('loading');
+        }
+    }
 
     /**
      * Quiz Submit Handler Class
@@ -41,7 +232,7 @@
         handleSubmitClick(e) {
             e.preventDefault();
 
-            const button = e.target.closest('#button-submit-quiz') || e.target.closest('.lp-button-submit-quiz');
+            const button = e.target.closest('#button-submit-quiz') || e.target.closest('.lp-button.submit-quiz');
 
             // Check if already submitting
             if (this.submitting) {
@@ -305,9 +496,11 @@
     // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
+            new QuizStartHandler();
             new QuizSubmitHandler();
         });
     } else {
+        new QuizStartHandler();
         new QuizSubmitHandler();
     }
 

@@ -409,6 +409,86 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
+				'lp-quiz-new'              => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/quiz/quiz' . self::$_min_assets . '.js' ),
+					array_merge(
+						$wp_js,
+						array(
+							'wp-i18n',
+							'lp-global',
+							'lp-utils',
+							'lp-data-controls',
+							'lp-modal',
+							'lp-config',
+							'lp-single-curriculum',
+						)
+					),
+					array( LP_PAGE_QUIZ ),
+					0,
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
+				'lp-question-check'              => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/quiz/instant-check-handler' . self::$_min_assets . '.js' ),
+					array_merge(
+						$wp_js,
+						array(
+							'wp-i18n',
+							'lp-global',
+							'lp-utils',
+							'lp-data-controls',
+							'lp-modal',
+							'lp-config',
+							'lp-single-curriculum',
+						)
+					),
+					array( LP_PAGE_QUIZ ),
+					0,
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
+				'lp-question'              => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/quiz/question' . self::$_min_assets . '.js' ),
+					array_merge(
+						$wp_js,
+						array(
+							'wp-i18n',
+							'lp-global',
+							'lp-utils',
+							'lp-data-controls',
+							'lp-modal',
+							'lp-config',
+							'lp-single-curriculum',
+						)
+					),
+					array( LP_PAGE_QUIZ ),
+					0,
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
+				'lp-quiz-timer'              => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/quiz/timer' . self::$_min_assets . '.js' ),
+					array_merge(
+						$wp_js,
+						array(
+							'wp-i18n',
+							'lp-global',
+							'lp-utils',
+							'lp-data-controls',
+							'lp-modal',
+							'lp-config',
+							'lp-single-curriculum',
+						)
+					),
+					array( LP_PAGE_QUIZ ),
+					0,
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
 			)
 		);
 

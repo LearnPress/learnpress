@@ -207,6 +207,15 @@ class QuizPostModel extends PostModel {
 	}
 
 	/**
+	 * Check option review quiz has enabled.
+	 *
+	 * @return bool
+	 */
+	public function enable_review(): bool {
+		return $this->get_meta_value_by_key( self::META_KEY_REVIEW, 'no' ) === 'yes';
+	}
+
+	/**
 	 * Check option negative marking has enabled.
 	 *
 	 * @return bool
