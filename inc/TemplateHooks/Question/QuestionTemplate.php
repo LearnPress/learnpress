@@ -42,7 +42,7 @@ class QuestionTemplate {
 	 * @since 4.2.9.4
 	 * @version 2.0.0
 	 */
-	public function render_question_html( array $questionData = [], $question_index = 0, $status = 'started' ) {
+	public function render_question_html( array $questionData = [], $question_index = 0, $status = 'started', $instant_check = true ) {
 		try {
 			if ( empty( $questionData ) ) {
 				return '';
@@ -50,6 +50,7 @@ class QuestionTemplate {
 
 			$question      = $questionData['object'];
 			$question_type = $questionData['type'];
+			$is_checked    = $questionData['checked'] ?? false;
 
 			// Build question wrapper classes.
 			$wrapper_classes = array( 'question', 'question-' . $question_type );
@@ -78,6 +79,16 @@ class QuestionTemplate {
 					break;
 			}
 
+			// Determine whether to show check button or response based on check status
+			$buttons_or_response = '';
+			if ( $is_checked ) {
+				// Show question response if already checked
+				$buttons_or_response = $this->question_response_html( $questionData );
+			} else {
+				// Show check button if not checked yet
+				$buttons_or_response = $this->check_answer_button_html( $question, $status, $instant_check );
+			}
+
 			// Build complete question HTML using Template::combine_components.
 			$section = array(
 				'wrapper'     => sprintf(
@@ -90,7 +101,7 @@ class QuestionTemplate {
 				'answers'     => $answer_html,
 				'explanation' => $this->explanation_html( $question ),
 				'hint'        => $this->hint_html( $question ),
-				'buttons'     => $this->check_answer_button_html( $question, $status ),
+				'buttons_or_response' => $buttons_or_response,
 				'wrapper_end' => '</div>',
 			);
 
@@ -227,7 +238,6 @@ class QuestionTemplate {
 			$options      = $questionData['options'] ?? [];
 			$disabled     = $questionData['disabled'] ?? false;
 			$content_html = '';
-
 			foreach ( $options as $option ) {
 				$option_uid     = is_array( $option ) ? ( $option['uid'] ?? uniqid() ) : ( $option->uid ?? uniqid() );
 				$option_title   = is_array( $option ) ? ( $option['title_api'] ?? '' ) : ( $option->title_api ?? '' );
@@ -255,7 +265,7 @@ class QuestionTemplate {
 							// Show incorrect answer with user's answer and correct answer
 							$correct_answer = $answer_data['correct'] ?? '';
 							$input_html     = sprintf(
-								'<span class="lp-fib-answered fail"><span class="lp-fib-answered__answer">%s</span> → <span class="lp-fib-answered__fill">%s</span></span>',
+								'<span class="lp-fib-answered fail"><span class="lp-fib-answered__answer">%1$s</span> → <span class="lp-fib-answered__fill">%2$s</span></span>',
 								esc_html( $user_answer ),
 								esc_html( $correct_answer )
 							);
@@ -464,10 +474,10 @@ class QuestionTemplate {
 	 * @since 4.2.9.4
 	 * @version 1.0.0
 	 */
-	public function check_answer_button_html( QuestionPostModel $question, $status = 'started' ) {
+	public function check_answer_button_html( QuestionPostModel $question, $status = 'started', $instant_check = true ) {
 		try {
 			// Only show buttons when quiz is started.
-			if ( 'started' !== $status ) {
+			if ( 'started' !== $status || ! $instant_check ) {
 				return '';
 			}
 
@@ -506,7 +516,7 @@ class QuestionTemplate {
 			if ( ! $show_correct_review ) {
 				return '';
 			}
-			if ( $questionData['question_type'] === 'fill_in_blanks' ) {
+			if ( $questionData['type'] === 'fill_in_blanks' ) {
 				return $this->fib_correct_label( $questionData );
 			}
 
@@ -624,7 +634,6 @@ class QuestionTemplate {
 		foreach ( $options as $option ) {
 			$option_is_true = is_array( $option ) ? ( $option['is_true'] ?? '' ) : ( $option->is_true ?? '' );
 			$option_value   = is_array( $option ) ? ( $option['value'] ?? '' ) : ( $option->value ?? '' );
-
 			if ( $option_is_true === 'yes' ) {
 				if ( $answered == $option_value ) {
 					return true;
@@ -724,7 +733,7 @@ class QuestionTemplate {
 
 	public function is_correct( $questionData ) {
 		$is_correct = false;
-		switch ( $questionData['question_type'] ) {
+		switch ( $questionData['type'] ) {
 			case 'multi_choice':
 				$is_correct = $this->check_multi_choice_question( $questionData );
 				break;

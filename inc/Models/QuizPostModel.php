@@ -87,6 +87,15 @@ class QuizPostModel extends PostModel {
 	}
 
 	/**
+	 * Get questions perpage
+	 *
+	 * @return string
+	 */
+	public function get_question_perpage(): int {
+		return $this->get_meta_value_by_key( self::META_KEY_PAGINATION, 1 );
+	}
+
+	/**
 	 * Get max mark of assignment
 	 *
 	 * @return float

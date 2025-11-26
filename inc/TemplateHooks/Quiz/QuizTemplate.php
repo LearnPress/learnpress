@@ -68,6 +68,16 @@ class QuizTemplate {
 			if ( ! $userQuizModel instanceof UserQuizModel ) {
 				echo $this->start_quiz_screen( $quizPostModel, $quiz_item );
 			} else {
+				wp_enqueue_script('instant_check_question', LP_PLUGIN_URL . 'assets/js/dist/frontend/quiz/instant-check-handler.js', array(
+							'wp-i18n',
+							'lp-global',
+							'lp-utils',
+							'lp-data-controls',
+							'lp-question-types',
+							'lp-modal',
+							'lp-config',
+							'lp-single-curriculum',
+						), uniqid() );
 				$show_check          = $quizPostModel->has_instant_check();
 				$show_correct_review = $quizPostModel->has_show_correct_review();
 				$question_ids        = $quizPostModel->get_question_ids();
@@ -123,7 +133,7 @@ class QuizTemplate {
 					'instant_check'          => $quizPostModel->has_instant_check(),
 					'retake_count'           => absint( $quizPostModel->get_retake_count() ),
 					'retaken'                => 0,
-					'questions_per_page'     => $quiz_item->get_pagination(),
+					'questions_per_page'     => $quizPostModel->get_question_perpage(),
 					'page_numbers'           => false,
 					'review_questions'       => $quiz_item->get_review_questions(),
 					'support_options'        => learn_press_get_question_support_answer_options(),
@@ -132,7 +142,7 @@ class QuizTemplate {
 					'required_password'      => post_password_required( $quiz_item->get_id() ),
 					'allow_retake'           => $quizPostModel->get_retake_count() == - 1,
 					'quiz_description'       => $quizPostModel->get_the_content(),
-					'num_pages'              => ceil( $quizPostModel->count_questions() / $quiz_item->get_pagination() ),
+					'num_pages'              => ceil( (int) $quizPostModel->count_questions() / $quizPostModel->get_question_perpage() ),
 				);
 
 				$quiz_data = array_merge( $quiz_data, $user_data );
@@ -353,6 +363,7 @@ class QuizTemplate {
 			$questions_per_page  = $this->get_array_value( $quiz_data, 'questions_per_page', 1, 'int' );
 			$current_page        = $this->get_array_value( $quiz_data, 'current_page', 1, 'int' );
 			$status              = $this->get_array_value( $quiz_data, 'status', '' );
+			$instant_check       = $this->get_array_value( $quiz_data, 'instant_check', false );
 			$is_reviewing        = false; // TODO: Add reviewing mode support.
 			// Determine if questions should be shown.
 			$is_show = true;
@@ -369,11 +380,11 @@ class QuizTemplate {
 					$is_visible     = $current_page === (int) ceil( $question_index / $questions_per_page );
 					if ( $is_visible ) {
 						$show_index       = $questions_per_page > 1 ? $question_index : false;
-						$questions_html .= $questionTemplate->render_question_html( $question, $show_index );
+						$questions_html .= $questionTemplate->render_question_html( $question, $show_index, $status, $instant_check );
 					}
 				}
 			}
-			set_transient( 'question_test', $questions, $expiration = 36000 );
+
 			// Build sections.
 			$sections = array(
 				'wrapper'      => sprintf(

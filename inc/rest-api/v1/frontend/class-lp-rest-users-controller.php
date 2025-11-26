@@ -401,6 +401,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$course      = learn_press_get_course( $course_id );
 			$checked     = [];
 
+			// Decode JSON if answered is a JSON string (for FIB and multi-choice questions)
+			if ( is_string( $answered ) && ! empty( $answered ) ) {
+				$decoded = json_decode( $answered, true );
+				if ( json_last_error() === JSON_ERROR_NONE ) {
+					$answered = $decoded;
+				}
+			}
+
 			if ( $course->is_no_required_enroll() ) {
 				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
 				$checked            = $no_required_enroll->guest_check_question( $question_id, $answered );
