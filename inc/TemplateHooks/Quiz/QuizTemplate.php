@@ -21,6 +21,8 @@ use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Global;
 use LP_Quiz;
 use Throwable;
+use stdClass;
+use Exception;
 
 /**
  * QuizTemplate class.
@@ -38,6 +40,23 @@ class QuizTemplate {
 		// Hook for rendering start quiz  screen.
 		// add_action( 'learn-press/quiz-start-screen', array( $this, 'start_quiz_screen' ) );
 		add_action( 'learn-press/content-item-summary/lp_quiz', array( $this, 'quiz_content_item_summary' ) );
+		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
+	}
+
+	/**
+	 * Allow callback for content quiz
+	 *
+	 * @param array $callbacks.
+	 *
+	 * @return array
+	 */
+	public function allow_callback( $callbacks ) {
+		/**
+		 * @uses self::render_courses()
+		 */
+		$callbacks[] = get_class( $this ) . ':render_quiz_content_callback';
+
+		return $callbacks;
 	}
 
 	public function quiz_content_item_summary() {
@@ -185,9 +204,9 @@ class QuizTemplate {
 			// Build sections array for Template::combine_components.
 			$section = array(
 				'wrapper'         => '<div class="lp-quiz-start-screen">',
-				'header_wrapper'  => '<div class="quiz-start-header">',
-				'title'           => sprintf( '<h2 class="quiz-title">%s</h2>', esc_html( $quiz_title ) ),
-				'header_end'      => '</div>',
+				// 'header_wrapper'  => '<div class="quiz-start-header">',
+				// 'title'           => sprintf( '<h2 class="quiz-title">%s</h2>', esc_html( $quiz_title ) ),
+				// 'header_end'      => '</div>',
 				'content_wrapper' => '<div class="quiz-start-content">',
 				'description'     => ! empty( $quiz_content ) ? sprintf(
 					'<div class="quiz-description">%s</div>',
@@ -236,6 +255,7 @@ class QuizTemplate {
 			$quizComponents = QuizTemplateComponents::instance();
 			// Extract key data points.
 			$status       = $quizComponents->get_array_value( $quiz_data, 'status', '' );
+			$num_pages    = $quizComponents->get_array_value( $quiz_data, 'num_pages', 1, 'int' );
 			$is_reviewing = false; // TODO: Add reviewing mode support when implemented.
 			// Determine display states based on JavaScript logic.
 			$not_started = in_array( $status, array( '', 'viewed' ), true ) || ! $status;
@@ -259,6 +279,9 @@ class QuizTemplate {
 			if ( in_array( $status, array( 'completed', 'started' ), true ) || $is_reviewing ) {
 				$sections['questions'] = $quizComponents->questions_html( $quiz_data );
 			}
+			if ( ( 'started' === $status || $is_reviewing ) && $num_pages > 1 ) {
+				$sections['pagination'] = $quizComponents->pagination_html( $quiz_data );
+			}
 			// Buttons component: Always show.
 			$sections['buttons'] = $quizComponents->buttons_html( $quiz_data );
 			// Attempts component: Show if completed/viewed and not reviewing.
@@ -271,5 +294,112 @@ class QuizTemplate {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 			return '';
 		}
+	}
+
+	/**
+	 * Example: Prepare AJAX arguments for quiz content rendering via AJAX
+	 *
+	 * This demonstrates step 1 of the /render-quiz-ajax workflow:
+	 * Building the $args array and $callback for TemplateAJAX::load_content_via_ajax()
+	 *
+	 * @param int    $quiz_id Current quiz identifier
+	 * @param string $mode    Mode: 'quiz' for questions, 'result' for results, 'review' to toggle
+	 * @param int    $user_id Optional user ID for context
+	 *
+	 * @return string HTML with AJAX loading wrapper
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function load_quiz_content_ajax( $quiz_id = 0, $mode = 'quiz', $user_id = 0 ) {
+		try {
+			// Step 1: Build $args array with required keys
+			$args = array(
+				'quiz_id' => $quiz_id,
+				'mode'    => $mode, // 'quiz', 'result', or 'review'
+				'user_id' => $user_id ? $user_id : get_current_user_id(),
+				'nonce'   => wp_create_nonce( 'lp_quiz_ajax_' . $quiz_id ),
+			);
+
+			// Step 1: Define $callback function that will receive the AJAX response
+			$callback = array(
+				'class'  => self::class,
+				'method' => 'render_quiz_content_callback',
+			);
+
+			// Step 2: Invoke AJAX loader (returns HTML with data attributes for JS)
+			return TemplateAJAX::load_content_via_ajax( $args, $callback );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			return '';
+		}
+	}
+
+	/**
+	 * Example: Server-side callback for AJAX quiz content rendering
+	 *
+	 * This demonstrates step 3 of the /render-quiz-ajax workflow:
+	 * Server-side callback logic that detects mode and renders appropriate components
+	 *
+	 * @param array $data AJAX request data containing 'quiz_id', 'mode', etc.
+	 *
+	 * @return \stdClass Object with 'content' property containing rendered HTML
+	 * @throws \Exception If quiz not found or user lacks permission
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public static function render_quiz_content_callback( $data ) {
+		$quiz_id = isset( $data['quiz_id'] ) ? absint( $data['quiz_id'] ) : 0;
+		$mode    = isset( $data['mode'] ) ? sanitize_text_field( $data['mode'] ) : 'quiz';
+		$user_id = isset( $data['user_id'] ) ? absint( $data['user_id'] ) : get_current_user_id();
+
+		if ( ! $quiz_id ) {
+			throw new Exception( __( 'Quiz ID is required', 'learnpress' ) );
+		}
+
+		// Verify nonce
+		$nonce = isset( $data['nonce'] ) ? $data['nonce'] : '';
+		if ( ! wp_verify_nonce( $nonce, 'lp_quiz_ajax_' . $quiz_id ) ) {
+			throw new Exception( __( 'Security check failed', 'learnpress' ) );
+		}
+
+		// Load quiz data (simplified - you'd need full quiz data here)
+		$quizPostModel = QuizPostModel::find( $quiz_id, true );
+		if ( ! $quizPostModel instanceof QuizPostModel ) {
+			throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+		}
+
+		$quizComponents = QuizTemplateComponents::instance();
+		$html           = '';
+
+		// Step 3: Detect mode and render appropriate components
+		switch ( $mode ) {
+			case 'not_started':
+				$html .= $quizComponents->meta_html( $quiz_data );
+				break;
+			case 'quiz':
+			case 'review':
+				// Quiz mode: render status, questions, and buttons
+				$html .= $quizComponents->status_html( $quiz_data ); // Pass quiz_data
+				$html .= $quizComponents->questions_html( $quiz_data ); // Pass quiz_data
+				$html .= $quizComponents->questions_html( $quiz_data );
+				$html .= $quizComponents->buttons_html( $quiz_data ); // Pass quiz_data
+				break;
+
+			case 'result':
+				// Result mode: render result, buttons, and attempts
+				$html .= $quizComponents->result_html( $quiz_data ); // Pass quiz_data
+				$html .= $quizComponents->buttons_html( $quiz_data ); // Pass quiz_data
+				$html .= $quizComponents->attempts_html( $quiz_data ); // Pass quiz_data
+				break;
+
+			default:
+				throw new Exception( __( 'Invalid mode', 'learnpress' ) );
+		}
+
+		// Return response object
+		$response          = new stdClass();
+		$response->content = $html;
+
+		return $response;
 	}
 }

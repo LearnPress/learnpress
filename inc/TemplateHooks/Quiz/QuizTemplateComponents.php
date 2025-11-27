@@ -613,7 +613,6 @@ class QuizTemplateComponents {
 				'wrapper'          => sprintf( '<div class="%s">', esc_attr( implode( ' ', $class_names ) ) ),
 				'button_left'      => '<div class="button-left">',
 				'start_button'     => $start_button,
-				'pagination'       => $pagination,
 				'button_left_end'  => '</div>',
 				'button_right'     => '<div class="button-right">',
 				'submit_button'    => $submit_button,
