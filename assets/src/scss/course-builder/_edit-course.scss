@@ -356,6 +356,44 @@
 		}
 	}
 
+	#general_course_data .form-field,
+	#offline_course_data .form-field,
+	#price_course_data .form-field,
+	#extra_course_data .form-field {
+		margin-bottom: 20px;
+	}
+
+	#general_course_data {
+		._lp_duration_field,
+		._lp_course_repurchase_option_field,
+		._lp_external_link_buy_course_field {
+			flex-wrap: wrap;
+
+			.description {
+				width: 100%;
+				margin-left: 165px;
+			}
+		}
+	}
+
+	#extra_course_data .form-field {
+		align-items: start;
+	}
+
+	#assessment_course_data {
+		.form-field._lp_course_result_field {
+			align-items: start;
+			border: unset;
+			margin-bottom: 20px;
+		}
+
+		.lp-radios-field-meta-box {
+			list-style-type: none;
+			margin-top: 0;
+			padding-left: 0;
+		}
+	}
+
 	@media ( max-width: 768px ) {
 		#lp-course-builder-content {
 			padding: 16px;
@@ -370,4 +408,451 @@
 			max-width: 300px;
 		}
 	}
+}
+
+.lp-meta-box-course-panels::before {
+	content: attr( data-tab-title );
+
+	display: block;
+	font-size: 24px;
+	font-weight: 700;
+	color: #1e1e1e;
+	margin-bottom: 25px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #eee;
+	line-height: 1.2;
+}
+
+.lp-meta-box__course-tab {
+	display: flex;
+	min-height: 600px;
+}
+
+ul.lp-meta-box__course-tab__tabs {
+	width: 260px;
+	background: #fff;
+	border-right: 1px solid #f0f0f0;
+	margin: 0;
+	padding: 0 20px 0 0;
+	list-style: none;
+	flex-shrink: 0;
+}
+
+ul.lp-meta-box__course-tab__tabs li {
+	margin-bottom: 4px;
+}
+
+ul.lp-meta-box__course-tab__tabs li a {
+	display: flex;
+	align-items: center;
+	padding: 10px 15px;
+	text-decoration: none;
+	color: #444;
+	font-weight: 500;
+	font-size: 14px;
+	border-radius: 6px;
+	transition: all 0.2s ease;
+}
+
+ul.lp-meta-box__course-tab__tabs li a i {
+	display: none;
+}
+
+ul.lp-meta-box__course-tab__tabs li a:hover {
+	background-color: #f5f5f5;
+	color: #000;
+}
+
+ul.lp-meta-box__course-tab__tabs li.active a,
+ul.lp-meta-box__course-tab__tabs li a:focus {
+	background-color: #f2f2f2;
+	color: #000;
+	font-weight: 600;
+}
+
+.lp-meta-box__course-tab__content {
+	flex-grow: 1;
+	padding: 30px 40px;
+}
+
+/* --- 7. Responsive cơ bản --- */
+@media ( max-width: 768px ) {
+	.lp-meta-box__course-tab {
+		flex-direction: column;
+	}
+	ul.lp-meta-box__course-tab__tabs {
+		width: 100%;
+		border-right: none;
+		border-bottom: 1px solid #eee;
+		display: flex;
+		overflow-x: auto;
+	}
+	ul.lp-meta-box__course-tab__tabs li {
+		flex-shrink: 0;
+	}
+}
+
+/* --- TỔNG QUAN CONTAINER --- */
+#lp-course-builder-content {
+	#lp-course-edit-curriculum {
+		background-color: #fff;
+		border-radius: 12px;
+		padding: 28px 0 0;
+		color: #1f2937;
+		max-width: 100%;
+		box-sizing: border-box;
+
+		/* --- HEADER SECTION --- */
+		#lp-course-edit-curriculum .heading {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 25px;
+			padding-bottom: 15px;
+			border-bottom: 1px solid #f5f5f5;
+		}
+
+		#lp-course-edit-curriculum .heading h4 {
+			font-size: 18px;
+			font-weight: 700;
+			margin: 0;
+			color: #1e1e1e;
+		}
+
+		.section-items-counts,
+		.count-sections,
+		.total-items {
+			background: #f5f5f5;
+			color: #1e1e1e;
+			font-size: 12px;
+			font-weight: 600;
+			padding: 6px 18px;
+			border-radius: 12px;
+			margin-left: 10px;
+		}
+
+		/* Toggle All Icon */
+		.course-toggle-all-sections {
+			cursor: pointer;
+			color: #9ca3af;
+			margin-left: auto;
+			padding: 5px;
+		}
+
+		.curriculum-sections {
+			border: none;
+		}
+
+		/* --- SECTION (KHỐI BÀI HỌC) --- */
+		.curriculum-sections .section {
+			background: #fff;
+			border: 1px solid #e5e7eb;
+			border-radius: 8px;
+			margin-bottom: 16px;
+			transition: all 0.2s ease;
+		}
+
+		.curriculum-sections .section:hover {
+			border-color: #d1d5db;
+			box-shadow: 0 4px 6px -1px rgba( 0, 0, 0, 0.05 );
+		}
+
+		/* SECTION HEAD */
+		.section-head {
+			display: flex;
+			align-items: center;
+			padding: 10px 20px;
+			background-color: #fff;
+			border-bottom: 1px solid transparent; /* Chỉ hiện border khi mở */
+			border-radius: 8px;
+		}
+
+		.section:not( .lp-collapse ) .section-head {
+			border-bottom-color: #f3f4f6;
+			border-radius: 8px 8px 0 0;
+		}
+
+		/* Drag Handle Icon */
+		.section-head .drag {
+			cursor: grab;
+			color: #9ca3af;
+			margin-right: 12px;
+			font-size: 16px;
+		}
+
+		/* Input tiêu đề Section */
+		input.lp-section-title-input {
+			flex-grow: 1;
+			border: 1px solid transparent;
+			background: transparent;
+			font-size: 15px;
+			font-weight: 600;
+			color: #1e1e1e;
+			padding: 6px 10px;
+			border-radius: 6px;
+			transition: all 0.2s;
+			width: auto;
+		}
+
+		input.lp-section-title-input:hover,
+		input.lp-section-title-input:focus {
+			background: #fff;
+			border-color: #e5e7eb;
+			outline: none;
+			box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.05 );
+		}
+
+		.section-head .button {
+			font-size: 12px;
+			padding: 6px 12px;
+			border-radius: 6px;
+			margin-left: 8px;
+			cursor: pointer;
+			font-weight: 500;
+		}
+
+		.lp-btn-delete-section {
+			color: #ef4444;
+			background: rgba( 254, 226, 226, 0.5 );
+			border: none;
+			transition: background 0.2s;
+		}
+
+		.lp-btn-delete-section:hover {
+			background: #fee2e2;
+		}
+
+		.lp-icon-angle-down,
+		.lp-icon-angle-up {
+			margin-left: 15px;
+			color: #777777;
+			cursor: pointer;
+		}
+
+		.lp-icon-angle-down:hover,
+		.lp-icon-angle-up:hover {
+			color: #1e1e1e !important;
+		}
+
+		.section-collapse {
+			padding: 20px;
+			background-color: #f9fafb;
+			border-radius: 0 0 8px 8px;
+			border-top: unset;
+		}
+
+		.section-description textarea {
+			width: 100%;
+			border: 1px dashed #d1d5db;
+			background: #fff;
+			padding: 10px;
+			border-radius: 6px;
+			font-size: 13px;
+			color: #6b7280;
+			resize: vertical;
+			min-height: 60px;
+			margin-bottom: 15px;
+		}
+		.section-description textarea:focus {
+			border-style: solid;
+			border-color: #9ca3af;
+			outline: none;
+			color: #374151;
+		}
+
+		ul.section-list-items {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.lp-add-item-type,
+		.section-item {
+			display: flex;
+			align-items: center;
+			background: #fff;
+			border: 1px solid #e5e7eb;
+			margin-bottom: 8px;
+			padding: 10px 15px;
+			border-radius: 6px;
+			position: relative;
+			transition: transform 0.1s;
+		}
+
+		.section-item:hover {
+			border-color: #9ca3af;
+		}
+
+		.item-ico-type {
+			width: 24px;
+			height: 24px;
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: center;
+			margin-right: 12px;
+			opacity: 0.8;
+			color: #1e1e1e;
+		}
+
+		.section-item.lp_lesson .item-ico-type::before {
+			content: '\f119';
+			font-family: dashicons;
+			font-size: 20px;
+		}
+		.section-item.lp_quiz .item-ico-type::before {
+			content: '\f469';
+			font-family: dashicons;
+			font-size: 20px;
+		}
+
+		input.lp-item-title-input {
+			border: none;
+			background: transparent;
+			font-size: 14px;
+			color: #374151;
+			flex-grow: 1;
+			padding: 5px;
+		}
+		input.lp-item-title-input:focus {
+			outline: none;
+			text-decoration: underline;
+		}
+
+		ul.item-actions {
+			display: flex;
+			gap: 8px;
+			opacity: 0.3;
+			transition: opacity 0.2s;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.section-item:hover ul.item-actions {
+			opacity: 1;
+		}
+
+		ul.item-actions li a {
+			color: #6b7280;
+			font-size: 16px;
+			cursor: pointer;
+			text-decoration: none;
+		}
+
+		ul.item-actions li a:hover {
+			color: #1e1e1e;
+		}
+
+		ul.item-actions li a.lp-icon-trash-o:hover {
+			color: #ef4444;
+		}
+
+		/* --- SECTION ACTIONS (NEW LESSON BUTTONS) --- */
+		.section-actions {
+			margin-top: 15px;
+			display: flex;
+			gap: 10px;
+			flex-wrap: wrap;
+		}
+
+		button,
+		.section-actions .button,
+		.lp-add-item-type button {
+			background: #fff;
+			border: 1px solid #d1d5db;
+			color: #4b5563;
+			padding: 8px 16px;
+			border-radius: 6px;
+			font-size: 13px;
+			font-weight: 500;
+			cursor: pointer;
+			align-items: center;
+			transition: all 0.2s;
+		}
+
+		.section-actions .button,
+		.lp-add-item-type button {
+			display: inline-flex;
+		}
+
+		.section-actions .button:hover,
+		.lp-add-item-type button:hover {
+			background: #f3f4f6;
+			border-color: #9ca3af;
+			color: #1e1e1e;
+		}
+
+		/* Content Bank Button (Khác biệt xíu) */
+		.lp-btn-show-popup-items-to-select {
+			margin-left: auto; /* Đẩy sang phải */
+			border-style: dashed !important;
+		}
+
+		/* --- ADD NEW SECTION (BOTTOM) --- */
+		.add-new-section {
+			margin-top: 30px;
+			background: #f9fafb;
+			border: 1px dashed #d1d5db;
+			border-radius: 8px;
+			padding: 20px;
+			display: flex;
+			align-items: center;
+			gap: 15px;
+		}
+
+		.add-new-section:focus-within {
+			border-color: #1e1e1e;
+			background: #fff;
+		}
+
+		.add-new-section .lp-icon-plus {
+			color: #9ca3af;
+		}
+
+		input.lp-section-title-new-input {
+			flex-grow: 1;
+			padding: 12px;
+			border: 1px solid #e5e7eb;
+			border-radius: 6px;
+			font-size: 14px;
+			outline: none;
+			transition: border 0.2s;
+		}
+
+		input.lp-section-title-new-input:focus {
+			border-color: #3b82f6;
+			box-shadow: 0 0 0 2px rgba( 59, 130, 246, 0.1 );
+		}
+
+		button.lp-btn-add-section {
+			background-color: #1e1e1e; /* Màu đen giống nút Publish trong hình */
+			color: #fff;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 6px;
+			font-weight: 600;
+			font-size: 14px;
+			cursor: pointer;
+			transition: background 0.2s;
+			min-width: fit-content;
+		}
+
+		button.lp-btn-add-section:hover {
+			background-color: #333;
+		}
+
+		/* --- UTILITIES --- */
+		.lp-hidden {
+			display: none !important;
+		}
+
+		.lp-loading-change {
+			/* Style loading spinner nếu cần */
+		}
+	}
+}
+
+.lp-option-disabled {
+	pointer-events: none;
+	opacity: 0.5;
 }

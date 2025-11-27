@@ -1,15 +1,15 @@
 @import 'mixin';
 @import 'variables';
-@import "frontend/global";
+@import 'frontend/global';
 
 @import 'course-builder/tab-courses';
-// @import 'course-builder/tab-quizzes';
-// @import 'course-builder/tab-questions';
+@import 'course-builder/tab-quizzes';
+@import 'course-builder/tab-questions';
 @import 'course-builder/edit-course';
 @import 'course-builder/tab-lessons';
 @import 'course-builder/edit-lesson';
-// @import 'course-builder/edit-quiz';
-// @import 'course-builder/edit-question';
+@import 'course-builder/edit-quiz';
+@import 'course-builder/edit-question';
 
 //Style global for course builder
 #lp-course-builder-content {
@@ -92,11 +92,23 @@
 
 	.form-field label,
 	.form-field label span,
-	.lp-meta-box__duration label {
+	.lp-meta-box__duration label,
+	.lesson-materials .field-material__label {
 		font-size: 14px;
-		font-weight: 500;
 		color: #1a1a1a;
 		margin: 0;
+		width: 150px;
+		min-width: 150px;
+		max-width: 150px;
+		padding: 0;
+		color: #23282d;
+		font-weight: 600;
+		flex: 0 0 auto;
+	}
+
+	.lesson-materials {
+		flex-wrap: nowrap;
+		gap: 10px;
 	}
 
 	.form-field input[type='number'],
@@ -112,7 +124,6 @@
 		font-size: 14px;
 		color: #1a1a1a;
 		background: #fff;
-		transition: all 0.2s;
 	}
 
 	.form-field textarea {
@@ -124,7 +135,6 @@
 		font-size: 14px;
 		color: #1a1a1a;
 		background: #fff;
-		transition: all 0.2s;
 	}
 
 	.form-field input[type='number']:focus,
@@ -138,14 +148,13 @@
 
 	select {
 		padding: 4px 12px;
-		height: 33px;
+		height: 34px;
 		border: 1px solid #d1d5db;
 		border-radius: 6px;
 		font-size: 14px;
 		color: #1a1a1a;
 		background: #fff;
 		cursor: pointer;
-		transition: all 0.2s;
 	}
 
 	select:focus {
@@ -204,12 +213,6 @@
 		flex-direction: row;
 		align-items: center;
 		gap: 11px;
-	}
-
-	.form-field:has( input[type='checkbox'] ) label {
-		order: 2;
-		font-weight: 500;
-		flex: 0 0 auto;
 	}
 
 	.form-field:has( input[type='checkbox'] ) input[type='checkbox'] {
@@ -308,6 +311,19 @@
 	input.button {
 		color: #1e1e1e;
 		border-color: #1e1e1e;
+		display: inline-block;
+		text-decoration: none;
+		font-size: 13px;
+		line-height: 2.15384615;
+		min-height: 30px;
+		margin: 0;
+		padding: 0 10px;
+		cursor: pointer;
+		border-width: 1px;
+		border-style: solid;
+		border-radius: 3px;
+		white-space: nowrap;
+		box-sizing: border-box;
 	}
 
 	.mce-tinymce {
@@ -378,4 +394,287 @@
 	.wp-editor-container {
 		border: none;
 	}
+}
+
+.lp-popup-items-to-select .header {
+	padding: 0 20px;
+	flex-shrink: 0;
+}
+
+.lp-popup-items-to-select .header ul.tabs {
+	display: flex;
+	margin-top: 10;
+	padding: 0;
+	list-style: none;
+	gap: 20px;
+	border-bottom: unset;
+}
+
+.lp-popup-items-to-select ul.tabs li {
+	margin: 0;
+}
+
+.lp-popup-items-to-select .header ul.tabs li.tab a {
+	display: block;
+	text-decoration: none;
+	color: #6b7280;
+	font-weight: 600;
+	font-size: 14px;
+	transition: all 0.2s;
+	border-radius: 6px;
+	border: 1px solid #f5f5f5;
+}
+
+.lp-popup-items-to-select .header ul.tabs li.tab.active a,
+.lp-popup-items-to-select .header ul.tabs li.tab a:hover {
+	background: #f5f5f5;
+	color: #1e1e1e;
+}
+
+/* Search Input */
+input.lp-search-title-item {
+	width: 100%;
+	padding: 12px 16px;
+	border: 1px solid #d1d5db;
+	border-radius: 8px;
+	font-size: 14px;
+	color: #374151;
+	background: #fff;
+	margin-bottom: 15px;
+	outline: none;
+	box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.05 );
+	transition: border-color 0.2s;
+}
+
+input.lp-search-title-item:focus {
+	border-color: #3b82f6;
+	box-shadow: 0 0 0 2px rgba( 59, 130, 246, 0.1 );
+}
+
+/* List Items Wrapper */
+.lp-target ul.list-items {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	overflow: hidden;
+	gap: 0;
+	max-height: 500px;
+}
+
+/* Individual Item */
+.lp-select-item {
+	display: flex;
+	align-items: center;
+	padding: 12px 16px;
+	border-bottom: 1px solid #f5f5f5;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.lp-select-item:last-child {
+	border-bottom: none;
+}
+
+.lp-select-item:hover {
+	background-color: #f5f5f5;
+}
+
+/* Custom Checkbox Style */
+.lp-select-item input[type='checkbox'] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 18px;
+	height: 18px;
+	border: 2px solid #d1d5db;
+	border-radius: 4px;
+	margin-right: 12px;
+	cursor: pointer;
+	position: relative;
+	outline: none;
+	flex-shrink: 0;
+}
+
+.lp-select-item input[type='checkbox']:checked {
+	background-color: #1e1e1e;
+	border-color: #1e1e1e;
+}
+
+.lp-select-item input[type='checkbox']:checked::after {
+	content: '';
+	position: absolute;
+	left: 5px;
+	top: 1px;
+	width: 4px;
+	height: 9px;
+	border: solid white;
+	border-width: 0 2px 2px 0;
+	transform: rotate( 45deg );
+}
+
+/* Item Title */
+.lp-select-item .title {
+	font-size: 14px;
+	color: #374151;
+	font-weight: 500;
+}
+
+.lp-select-item .title strong {
+	color: #9ca3af;
+	font-weight: 400;
+	margin-left: 5px;
+	font-size: 12px;
+}
+
+/* --- PAGINATION --- */
+.list-items-wrap .learn-press-pagination {
+	margin-top: 20px;
+	display: flex;
+	justify-content: center;
+}
+
+.list-items-wrap .learn-press-pagination ul.page-numbers {
+	display: flex;
+	gap: 5px;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	border: none;
+}
+
+.list-items-wrap .page-numbers li span.page-numbers.current,
+.list-items-wrap .page-numbers li a.page-numbers {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 32px;
+	border-radius: 6px;
+	font-size: 13px;
+	text-decoration: none;
+	font-weight: 500;
+	border: 1px solid transparent;
+}
+
+.list-items-wrap .page-numbers li span.page-numbers.current {
+	background-color: #1e1e1e;
+	color: #fff;
+}
+
+/* Inactive Pages */
+.list-items-wrap .page-numbers li a.page-numbers {
+	background-color: #fff;
+	color: #6b7280;
+	border-color: #e5e7eb;
+	transition: all 0.2s;
+}
+
+.list-items-wrap .page-numbers li a.page-numbers:hover {
+	border-color: #9ca3af;
+	color: #1e1e1e;
+}
+
+/* Next/Prev Icons */
+.list-items-wrap .page-numbers i {
+	font-size: 14px;
+}
+
+/* --- FOOTER & BUTTONS --- */
+.lp-popup-items-to-select .footer {
+	background: #fff;
+	align-items: center;
+	justify-content: space-between;
+	flex-shrink: 0;
+}
+
+/* Button Styles */
+.lp-popup-items-to-select .button {
+	padding: 10px 20px;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	border: 1px solid transparent;
+	transition: all 0.2s;
+}
+
+.lp-popup-items-to-select .lp-btn-add-items-selected.lp-btn-edit-primary.active,
+.lp-popup-items-to-select .lp-btn-add-items-selected.lp-btn-edit-primary:not( .active ) {
+	background-color: #333;
+	color: #fff;
+	order: 2;
+}
+
+.lp-btn-add-items-selected:hover:not( :disabled ) {
+	background-color: #333;
+}
+
+.lp-btn-add-items-selected:disabled {
+	background-color: #f5f5f5;
+	color: #9ca3af;
+	cursor: not-allowed;
+}
+
+.lp-popup-items-to-select .lp-btn-add-items-selected.lp-btn-edit-primary.active:hover {
+	background-color: #1e1e1e;
+}
+
+/* Button Count (Info) */
+.lp-btn-count-items-selected {
+	background: transparent;
+	color: #6b7280;
+	border: 1px dashed #d1d5db;
+	font-size: 13px;
+	order: 1;
+}
+
+/* Button Back (Secondary) */
+.lp-btn-back-to-select-items {
+	background: #fff;
+	border: 1px solid #d1d5db;
+	color: #374151;
+	order: 0;
+}
+
+.lp-btn-back-to-select-items:hover {
+	background-color: #f5f5f5;
+}
+
+/* Selected Items List */
+.lp-popup-items-to-select ul.list-items-selected {
+	padding-left: 0;
+	background: #fff;
+	margin-bottom: 20px;
+	gap: 0;
+}
+
+.lp-popup-items-to-select ul.list-items-selected li {
+	display: flex;
+	align-items: center;
+	padding: 12px 16px;
+	border-bottom: 1px solid #f5f5f5;
+	color: #1e1e1e;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.lp-hidden {
+	display: none !important;
+}
+
+.lp-popup-items-to-select .header .tabs .tab.active::after {
+	display: none !important;
+}
+
+.lp-popup-items-to-select .header .tabs .tab:not( :last-child )::before {
+	display: none;
+}
+
+.lp-popup-items-to-select .list-items-selected li:hover {
+	background: #f5f5f5;
+}
+
+.lp-popup-items-to-select .list-items-selected li {
+	padding: 5px;
 }

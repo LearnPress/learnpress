@@ -8,7 +8,13 @@ export class BuilderEditCourse {
 	}
 
 	static selectors = {
-		elDataCourse: '.cb-section__course-overview',
+		// --- Tab Settings Selectors (New) ---
+		elTabLinks: '.lp-meta-box__course-tab__tabs li a',
+		elTabItems: '.lp-meta-box__course-tab__tabs li',
+		elTabPanels: '.lp-meta-box-course-panels',
+
+		// --- Course Selectors ---
+		elDataCourse: '.cb-section__course-edit',
 		elBtnUpdateCourse: '.cb-btn-update',
 		elBtnDraftCourse: '.cb-btn-darft',
 		elBtnTrashCourse: '.cb-btn-trash',
@@ -32,11 +38,15 @@ export class BuilderEditCourse {
 		elTitleInput: '#title',
 		elDescEditor: '#course_description_editor',
 		elStatus: '.course-status',
+		elFormSetting: '.lp-form-setting-course',
 	};
 
 	init() {
 		const editCourseCurriculum = new EditCourseCurriculum();
 		editCourseCurriculum.init();
+
+		this.initTabs();
+		this.initTabTitles();
 		this.events();
 	}
 
@@ -47,6 +57,11 @@ export class BuilderEditCourse {
 		BuilderEditCourse._loadedEvents = true;
 
 		lpUtils.eventHandlers( 'click', [
+			{
+				selector: BuilderEditCourse.selectors.elTabLinks,
+				class: this,
+				callBack: this.handleTabClick.name,
+			},
 			{
 				selector: BuilderEditCourse.selectors.elBtnUpdateCourse,
 				class: this,
@@ -104,6 +119,14 @@ export class BuilderEditCourse {
 			},
 		] );
 
+		lpUtils.eventHandlers( 'change', [
+			{
+				selector: '.lp-meta-box input, .forminp input',
+				class: this,
+				callBack: this.showHideOptionsDependency.name,
+			},
+		] );
+
 		lpUtils.eventHandlers( 'keydown', [
 			{
 				selector: BuilderEditCourse.selectors.elInputCategory,
@@ -118,6 +141,70 @@ export class BuilderEditCourse {
 				checkIsEventEnter: true,
 			},
 		] );
+	}
+
+	showHideOptionsDependency( args ) {
+		const { target } = args;
+
+		if ( target.tagName === 'INPUT' ) {
+			if ( target.closest( '.forminp ' ) ) {
+				const nameInput = target.name;
+				const classDependency = nameInput.replace( 'learn_press_', '' );
+
+				const elClassDependency = document.querySelectorAll( `.show_if_${ classDependency }` );
+				if ( elClassDependency ) {
+					elClassDependency.forEach( ( el ) => {
+						el.classList.toggle( 'lp-option-disabled' );
+					} );
+				}
+			} else if ( target.closest( '.lp-meta-box' ) ) {
+				const elLPMetaBox = target.closest( '.lp-meta-box' );
+				const nameInput = target.name;
+
+				const elClassDependency = elLPMetaBox.querySelectorAll(
+					`[data-dependency="${ nameInput }"]`
+				);
+				if ( elClassDependency ) {
+					elClassDependency.forEach( ( el ) => {
+						el.classList.toggle( 'lp-option-disabled' );
+					} );
+				}
+			}
+		}
+	}
+
+	initTabs() {
+		const tabLinks = document.querySelectorAll( BuilderEditCourse.selectors.elTabLinks );
+		if ( tabLinks.length > 0 ) {
+			// Activate the first tab by default
+			this.activateTab( tabLinks[ 0 ] );
+		}
+	}
+
+	handleTabClick( args ) {
+		const { e, target } = args;
+		e.preventDefault();
+
+		const linkElement = target.closest( 'a' );
+		if ( linkElement ) {
+			this.activateTab( linkElement );
+		}
+	}
+
+	activateTab( linkElement ) {
+		const tabItems = document.querySelectorAll( BuilderEditCourse.selectors.elTabItems );
+		const panels = document.querySelectorAll( BuilderEditCourse.selectors.elTabPanels );
+
+		const targetId = linkElement.getAttribute( 'href' ).substring( 1 );
+		const targetPanel = document.getElementById( targetId );
+
+		if ( ! targetPanel ) return;
+
+		tabItems.forEach( ( li ) => li.classList.remove( 'active' ) );
+		panels.forEach( ( panel ) => ( panel.style.display = 'none' ) );
+
+		linkElement.parentElement.classList.add( 'active' );
+		targetPanel.style.display = 'block';
 	}
 
 	getCourseDataForUpdate() {
@@ -155,6 +242,67 @@ export class BuilderEditCourse {
 		const thumbnailInput = document.querySelector( BuilderEditCourse.selectors.elThumbnailInput );
 		data.course_thumbnail_id = thumbnailInput ? thumbnailInput.value : '0';
 
+		const elFormSetting = document.querySelector( BuilderEditCourse.selectors.elFormSetting );
+
+		if ( elFormSetting ) {
+			data.course_settings = true;
+			const formElements = elFormSetting.querySelectorAll( 'input, select, textarea' );
+
+			formElements.forEach( ( element ) => {
+				const name = element.name || element.id;
+
+				if ( ! name ) {
+					return;
+				}
+
+				if ( name === 'learnpress_meta_box_nonce' || name === '_wp_http_referer' ) {
+					return;
+				}
+
+				if ( element.type === 'checkbox' ) {
+					const fieldName = name.replace( '[]', '' );
+					if ( ! data.hasOwnProperty( fieldName ) ) {
+						data[ fieldName ] = element.checked ? 'yes' : 'no';
+					}
+				} else if ( element.type === 'radio' ) {
+					if ( element.checked ) {
+						const fieldName = name.replace( '[]', '' );
+						data[ fieldName ] = element.value;
+					}
+				} else if ( element.type === 'file' ) {
+					const fieldName = name.replace( '[]', '' );
+					if ( element.files && element.files.length > 0 ) {
+						data[ fieldName ] = element.files;
+					}
+				} else {
+					const fieldName = name.replace( '[]', '' );
+
+					if ( name.endsWith( '[]' ) ) {
+						if ( ! data.hasOwnProperty( fieldName ) ) {
+							data[ fieldName ] = [];
+						}
+
+						if ( Array.isArray( data[ fieldName ] ) ) {
+							data[ fieldName ].push( element.value );
+						}
+					} else {
+						if ( ! data.hasOwnProperty( fieldName ) ) {
+							data[ fieldName ] = element.value;
+						}
+					}
+				}
+			} );
+
+			Object.keys( data ).forEach( ( key ) => {
+				if ( Array.isArray( data[ key ] ) ) {
+					data[ key ] = data[ key ].join( ',' );
+				}
+			} );
+		}
+
+		console.log( elFormSetting );
+
+		console.log( data );
 		return data;
 	}
 
@@ -176,12 +324,12 @@ export class BuilderEditCourse {
 		const courseData = this.getCourseDataForUpdate();
 
 		const dataSend = {
-			action: 'save_courses',
-			args: { id_url: 'save-courses' },
-			course_title: courseData.course_title,
-			course_description: courseData.course_description,
-			course_id: courseData.course_id,
+			...courseData,
 			course_status: status,
+			action: 'save_courses',
+			args: {
+				id_url: 'save-courses',
+			},
 		};
 
 		if ( typeof lpCourseBuilder !== 'undefined' && lpCourseBuilder.nonce ) {
@@ -286,7 +434,6 @@ export class BuilderEditCourse {
 		);
 		const form = document.querySelector( BuilderEditCourse.selectors.elFormCategoryAddNew );
 
-		// Determine if we are opening or closing based on which button was clicked
 		const isOpening = target.closest( BuilderEditCourse.selectors.elBtnAddCategoryNew );
 
 		if ( form ) {
@@ -335,7 +482,6 @@ export class BuilderEditCourse {
 					wrapper.insertAdjacentHTML( 'beforeend', data.html );
 					elInput.value = '';
 
-					// Reuse toggle logic to close
 					const elBtnCancel = document.querySelector(
 						BuilderEditCourse.selectors.elBtnCancelCategoryNew
 					);
@@ -495,5 +641,23 @@ export class BuilderEditCourse {
 		previewContainer.appendChild( placeholder );
 		thumbnailInput.value = '0';
 		if ( elRemoveButton ) elRemoveButton.style.display = 'none';
+	}
+
+	initTabTitles() {
+		const tabLinks = document.querySelectorAll( BuilderEditCourse.selectors.elTabLinks );
+
+		tabLinks.forEach( ( link ) => {
+			const textSpan = link.querySelector( 'span' );
+			const title = textSpan ? textSpan.textContent.trim() : link.textContent.trim();
+
+			const href = link.getAttribute( 'href' );
+			if ( ! href ) return;
+			const targetId = href.substring( 1 );
+
+			const panel = document.getElementById( targetId );
+			if ( panel ) {
+				panel.setAttribute( 'data-tab-title', title );
+			}
+		} );
 	}
 }

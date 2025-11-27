@@ -23,7 +23,7 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 }
 // End Handle general parameter in the Frontend and Backend
 
-const lpAJAX = ( () => {
+const lpAJAX = () => {
 	const classLPTarget = '.lp-target';
 	const urlCurrent = lpGetCurrentURLNoParam();
 
@@ -117,7 +117,10 @@ const lpAJAX = ( () => {
 							console.log( error );
 						},
 						completed: () => {
-							wp.hooks.doAction( 'lp-ajax-completed', element, dataSend );
+							if ( typeof wp !== 'undefined' && wp.hooks ) {
+								wp.hooks.doAction( 'lp-ajax-completed', element, dataSend );
+							}
+
 							window.lpAJAXG.getElements();
 							//console.log( 'completed' );
 							if ( elLoadingFirst ) {
@@ -177,8 +180,10 @@ const lpAJAX = ( () => {
 			// End
 
 			// Scroll to archive element
-			if ( ! dataSend.args.hasOwnProperty( 'enableScrollToView' ) ||
-				dataSend.args.enableScrollToView ) {
+			if (
+				! dataSend.args.hasOwnProperty( 'enableScrollToView' ) ||
+				dataSend.args.enableScrollToView
+			) {
 				const elLPTargetY = elLPTarget.getBoundingClientRect().top + window.scrollY - 100;
 				window.scrollTo( { top: elLPTargetY } );
 			}
@@ -204,22 +209,24 @@ const lpAJAX = ( () => {
 			return JSON.parse( elLPTarget.dataset.send );
 		},
 		setDataSetCurrent: ( elLPTarget, dataSend ) => {
-			return elLPTarget.dataset.send = JSON.stringify( dataSend );
+			return ( elLPTarget.dataset.send = JSON.stringify( dataSend ) );
 		},
 		showHideLoading: ( elLPTarget, status ) => {
-			const elLoading = elLPTarget.closest( `div:not(${ classLPTarget })` ).querySelector( '.lp-loading-change' );
+			const elLoading = elLPTarget
+				.closest( `div:not(${ classLPTarget })` )
+				.querySelector( '.lp-loading-change' );
 			if ( elLoading ) {
 				lpShowHideEl( elLoading, status );
 			}
 		},
 	};
-} );
+};
 
 window.lpAJAXG = lpAJAX();
 window.lpAJAXG.getElements();
 
 // Events
-document.addEventListener( 'click', function( e ) {
+document.addEventListener( 'click', function ( e ) {
 	const target = e.target;
 
 	window.lpAJAXG.clickNumberPage( e, target );

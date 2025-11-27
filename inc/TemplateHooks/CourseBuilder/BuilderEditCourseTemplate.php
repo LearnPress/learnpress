@@ -56,14 +56,14 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
-		$html_header        = $this->header_overview( $course_model );
+		$html_header        = $this->header_section( $course_model );
 		$html_edit_title    = $this->edit_title( $course_model );
 		$html_edit_desc     = $this->edit_desc( $course_model );
 		$html_edit_cat      = $this->edit_categories( $course_model );
 		$html_edit_features = $this->edit_featured_image( $course_model );
 		$html_edit_tags     = $this->edit_tags( $course_model );
 		$section            = [
-			'wrapper'                => sprintf( '<div class="cb-section__course-overview" data-course-id="%s">', $cousre_id ),
+			'wrapper'                => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $cousre_id ),
 			'header'                 => $html_header,
 			'edit_title'             => $html_edit_title,
 			'edit_desc'              => $html_edit_desc,
@@ -78,7 +78,7 @@ class BuilderEditCourseTemplate {
 		echo Template::combine_components( $section );
 	}
 
-	public function header_overview( $course_model ) {
+	public function header_section( $course_model ) {
 		$status     = ! empty( $course_model ) ? $course_model->get_status() : '';
 		$btn_update = sprintf( '<div class="cb-button cb-btn-update" data-title-update="%s" data-title-publish="%s">%s</div>', __( 'Update', 'learnpress' ), __( 'Publish', 'learnpress' ), $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
 		$btn_draft  = sprintf( '<div class="cb-button cb-btn-darft">%s</div>', __( 'Save Draft', 'learnpress' ) );
@@ -333,12 +333,6 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
-//		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin-assets.php';
-//		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
-
-//		\LP_Admin_Assets::instance();
-//		AdminEditCurriculumTemplate::instance();
-
 		do_action( 'learn-press/admin/edit-curriculum/layout', $course_model );
 	}
 
@@ -348,15 +342,15 @@ class BuilderEditCourseTemplate {
 		wp_enqueue_style( 'lp-cb-edit-curriculum' );
 		wp_enqueue_script( 'lp-cb-learnpress' );
 
-		$cousre_id = CourseBuilder::get_post_id();
+		$course_id = CourseBuilder::get_post_id();
 
-		if ( $cousre_id === 'post-new' ) {
+		if ( $course_id === 'post-new' ) {
 			echo __( 'Please save Course before setting course', 'learnpress' );
 			return;
 		}
 
-		if ( absint( $cousre_id ) ) {
-			$course_model = CourseModel::find( $cousre_id, true );
+		if ( absint( $course_id ) ) {
+			$course_model = CourseModel::find( $course_id, true );
 			if ( empty( $course_model ) ) {
 				return;
 			}
@@ -371,10 +365,15 @@ class BuilderEditCourseTemplate {
 		$metabox->output( $course_model );
 		$settings = ob_get_clean();
 
+		$html_header = $this->header_section( $course_model );
+
 		$output = [
-			'wrapper'     => '<div id="course-settings">',
-			'settings'    => $settings,
-			'wrapper_end' => '</div>',
+			'wrapper'          => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
+			'header'           => $html_header,
+			'form_setting'     => '<form name="lp-form-setting-course" class="lp-form-setting-course" method="post" enctype="multipart/form-data">',
+			'settings'         => $settings,
+			'form_setting_end' => '</form>',
+			'wrapper_end'      => '</div>',
 		];
 
 		echo Template::combine_components( $output );

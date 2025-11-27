@@ -89,6 +89,18 @@ class LP_Assets extends LP_Abstract_Assets {
 					[],
 					1
 				),
+				'lp-edit-quiz'       => new LP_Asset_Key(
+					$this->url( 'css/edit-quiz' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
+					1
+				),
+				'lp-edit-question'   => new LP_Asset_Key(
+					$this->url( 'css/edit-question' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
+					1
+				),
 				'lp-course-builder'  => new LP_Asset_Key(
 					self::url( 'css/course-builder' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),
@@ -426,7 +438,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-course-builder'    => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/course-builder' . self::$_min_assets . '.js' ),
-					array(),
+					array( 'wp-tinymce', 'editor' ),
 					array(),
 					0,
 					0,
