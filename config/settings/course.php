@@ -134,7 +134,7 @@ return apply_filters(
 					'id'          => 'course_finish_redirect',
 					'default'     => '',
 					'type'        => 'url',
-					'placeholder' => 'https://learnpress.com/',
+					'placeholder' => 'https://learnpresslms.com/',
 					'desc'        => $des_option_redirect_finish_course,
 				),
 				array(
