@@ -38,7 +38,7 @@ class QuizTemplateComponents {
 	 * @since 4.2.9.4
 	 * @version 1.0.0
 	 */
-	public function meta_html( $quiz_data = array() ) {
+	public function introduction_html( $quiz_data = array() ) {
 		try {
 			// Get quiz meta data.
 			$quiz_description = $this->get_array_value( $quiz_data, 'quiz_description', '' );

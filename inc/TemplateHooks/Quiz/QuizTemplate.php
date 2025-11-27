@@ -269,7 +269,7 @@ class QuizTemplate {
 			}
 			// Meta component: Show if not started and not reviewing.
 			if ( ! $is_reviewing && $not_started ) {
-				$sections['meta'] = $quizComponents->meta_html( $quiz_data );
+				$sections['meta'] = $quizComponents->introduction_html( $quiz_data );
 			}
 			// Status component: Show if started.
 			if ( 'started' === $status ) {
@@ -374,7 +374,7 @@ class QuizTemplate {
 		// Step 3: Detect mode and render appropriate components
 		switch ( $mode ) {
 			case 'not_started':
-				$html .= $quizComponents->meta_html( $quiz_data );
+				$html .= $quizComponents->introduction_html( $quiz_data );
 				break;
 			case 'quiz':
 			case 'review':
