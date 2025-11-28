@@ -71,15 +71,15 @@ class QuizTemplateComponents {
 			}
 			// Build sections.
 			$sections = array(
-				'wrapper'      => '<div class="quiz-meta-info">',
+				'wrapper'      => '<div class="lp-quiz-start-screen"><div class="quiz-start-content">',
 				'description'  => ! empty( $quiz_description ) ? sprintf(
 					'<div class="quiz-description">%s</div>',
 					wp_kses_post( wpautop( $quiz_description ) )
 				) : '',
-				'meta_wrapper' => '<div class="quiz-intro-wrapper"><ul class="quiz-intro">',
+				'meta_wrapper' => '<div class="quiz-meta-info"><ul class="quiz-intro">',
 				'meta_items'   => $quiz_info_items,
 				'meta_end'     => '</ul></div>',
-				'wrapper_end'  => '</div>',
+				'wrapper_end'  => '</div></div>',
 			);
 			return Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
@@ -533,8 +533,8 @@ class QuizTemplateComponents {
 			// Extract button-related data.
 			$status            = $this->get_array_value( $quiz_data, 'status', '' );
 			$is_reviewing      = $this->get_array_value( $quiz_data, 'is_reviewing', false, 'bool' );
-			$enable_review       = $this->get_array_value( $quiz_data, 'enable_review', false, 'bool' );
-			$can_retake_count  = $this->get_array_value( $quiz_data, 'can_retake_count', null );
+			$enable_review     = $this->get_array_value( $quiz_data, 'enable_review', false, 'bool' );
+			$can_retake_count  = $this->get_array_value( $quiz_data, 'can_retake_count', 0, 'int' );
 			$required_password = $this->get_array_value( $quiz_data, 'required_password', false, 'bool' );
 			$allow_retake      = $this->get_array_value( $quiz_data, 'allow_retake', false, 'bool' );
 			$num_pages         = $this->get_array_value( $quiz_data, 'num_pages', 1, 'int' );
@@ -565,20 +565,14 @@ class QuizTemplateComponents {
 			if ( ( ( 'completed' === $status && $allow_retake ) || in_array( $status, array( '', 'viewed' ), true ) ) && ! $is_reviewing && ! $required_password ) {
 				$button_text = 'completed' === $status ? __( 'Retake', 'learnpress' ) : __( 'Start', 'learnpress' );
 
-				if ( 'completed' === $status && $can_retake_count ) {
-					$button_text .= sprintf( ' (%d)', $can_retake_count > 0 ? $can_retake_count : 0 );
+				if ( 'completed' === $status ) {
+					$button_text .= sprintf( ' (%d)', $can_retake_count !== 0 ? ( $can_retake_count === -1 ? '' : $can_retake_count ): 0 );
 				}
 
 				$start_button = sprintf(
 					'<button class="lp-button start">%s</button>',
 					esc_html( $button_text )
 				);
-			}
-
-			// Pagination.
-			$pagination = '';
-			if ( ( 'started' === $status || $is_reviewing ) && 1 < $num_pages ) {
-				$pagination = $this->pagination_html( $quiz_data );
 			}
 
 			// Submit button.
