@@ -9,6 +9,7 @@ namespace LearnPress\Models;
  */
 
 use Exception;
+use LearnPress\Filters\FilterBase;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserItems\UserQuizModel;
@@ -16,6 +17,7 @@ use LP_Cache;
 use LP_Course_DB;
 use LP_Course_Filter;
 use LP_Database;
+use LP_Debug;
 use LP_Profile;
 use LP_User;
 use LP_User_DB;
@@ -542,7 +544,7 @@ class UserModel {
 	 *
 	 * @return array
 	 * @since 4.1.6
-	 * @version 1.0.5
+	 * @version 1.0.6
 	 */
 	public function get_instructor_statistic( array $params = [] ): array {
 		$statistic = array(
@@ -558,57 +560,99 @@ class UserModel {
 			$key_cache_first = "instructor/{$this->get_id()}/statistic";
 			$statistic_cache = LP_Cache::cache_load_first( 'get', $key_cache_first );
 			if ( $statistic_cache !== false ) {
-				$statistic = $statistic_cache;
-			} else {
-				$user_id          = $this->get_id();
-				$lp_user_items_db = LP_User_Items_DB::getInstance();
-				$lp_course_db     = LP_Course_DB::getInstance();
-
-				// Count total user completed course of author
-				$filter_course                      = new LP_Course_Filter();
-				$filter_course->only_fields         = array( 'ID' );
-				$filter_course->post_author         = $user_id;
-				$filter_course->post_status         = [ 'publish', 'private' ];
-				$filter_course->return_string_query = true;
-				$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
-
-				$filter_count_users            = new LP_User_Items_Filter();
-				$filter_count_users->item_type = LP_COURSE_CPT;
-				$filter_count_users->where[]   = "AND item_id IN ({$query_courses_str})";
-				$count_student_has_status      = $lp_user_items_db->count_status_by_items( $filter_count_users );
-				// Count total user in progress course of author
-
-				// Get total users attend course of author
-				$filter_count_users                   = $lp_user_items_db->count_user_attend_courses_of_author( $user_id );
-				$count_users_attend_courses_of_author = $lp_user_items_db->get_user_courses( $filter_count_users );
-
-				// Get total courses publish of author
-				$filter_count_courses            = $lp_course_db->count_courses_of_author( $user_id, [ 'publish' ] );
-				$total_courses_publish_of_author = $lp_course_db->get_courses( $filter_count_courses );
-
-				// Get total courses of author
-				$filter_count_courses    = $lp_course_db->count_courses_of_author( $user_id );
-				$total_courses_of_author = $lp_course_db->get_courses( $filter_count_courses );
-
-				// Get total courses pending of author
-				$filter_count_courses            = $lp_course_db->count_courses_of_author( $user_id, [ 'pending' ] );
-				$total_courses_pending_of_author = $lp_course_db->get_courses( $filter_count_courses );
-
-				$statistic['total_course']        = $total_courses_of_author;
-				$statistic['published_course']    = $total_courses_publish_of_author;
-				$statistic['pending_course']      = $total_courses_pending_of_author;
-				$statistic['total_student']       = $count_users_attend_courses_of_author;
-				$statistic['student_completed']   = $count_student_has_status->{LP_COURSE_FINISHED} ?? 0;
-				$statistic['student_in_progress'] = $count_student_has_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
-
-				// Set cache first.
-				LP_Cache::cache_load_first( 'set', $key_cache_first, $statistic );
+				return $statistic_cache;
 			}
+
+			$user_id          = $this->get_id();
+			$lp_user_items_db = LP_User_Items_DB::getInstance();
+			$lp_course_db     = LP_Course_DB::getInstance();
+
+			// Count total user completed course of author
+			$filter_course                      = new LP_Course_Filter();
+			$filter_course->only_fields         = array( 'ID' );
+			$filter_course->post_author         = $user_id;
+			$filter_course->post_status         = [ 'publish', 'private' ];
+			$filter_course->return_string_query = true;
+			$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
+
+			$filter_count_users            = new LP_User_Items_Filter();
+			$filter_count_users->item_type = LP_COURSE_CPT;
+			$filter_count_users->where[]   = "AND item_id IN ({$query_courses_str})";
+			$count_student_has_status      = $lp_user_items_db->count_status_by_items( $filter_count_users );
+			// Count total user in progress course of author
+
+			// Get total users attend course of author
+			$filter_count_users                   = $lp_user_items_db->count_user_attend_courses_of_author( $user_id );
+			$count_users_attend_courses_of_author = $lp_user_items_db->get_user_courses( $filter_count_users );
+
+			// Get total courses publish of author
+			$filter_count_courses            = $lp_course_db->count_courses_of_author( $user_id, [ 'publish' ] );
+			$total_courses_publish_of_author = $lp_course_db->get_courses( $filter_count_courses );
+
+			// Get total courses of author
+			$filter_count_courses    = $lp_course_db->count_courses_of_author( $user_id );
+			$total_courses_of_author = $lp_course_db->get_courses( $filter_count_courses );
+
+			// Get total courses pending of author
+			$filter_count_courses            = $lp_course_db->count_courses_of_author( $user_id, [ 'pending' ] );
+			$total_courses_pending_of_author = $lp_course_db->get_courses( $filter_count_courses );
+
+			$statistic['total_course']        = $total_courses_of_author;
+			$statistic['published_course']    = $total_courses_publish_of_author;
+			$statistic['pending_course']      = $total_courses_pending_of_author;
+			$statistic['total_student']       = $count_users_attend_courses_of_author;
+			$statistic['student_completed']   = $count_student_has_status->{LP_COURSE_FINISHED} ?? 0;
+			$statistic['student_in_progress'] = $count_student_has_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
+
+			$statistic = apply_filters( 'lp/profile/instructor/statistic', $statistic, $this );
+
+			// Set cache first.
+			LP_Cache::cache_load_first( 'set', $key_cache_first, $statistic );
 		} catch ( Throwable $e ) {
 			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 		}
 
-		return apply_filters( 'lp/profile/instructor/statistic', $statistic, $this );
+		return $statistic;
+	}
+
+	/**
+	 * Get statistic info of student user
+	 *
+	 * @return array
+	 * @since 4.1.6
+	 * @version 1.0.0
+	 */
+	public function get_student_statistic(): array {
+		$statistic = array(
+			'enrolled_courses'   => 0,
+			'in_progress_course' => 0,
+			'finished_courses'   => 0,
+			'passed_courses'     => 0,
+			'failed_courses'     => 0,
+		);
+
+		try {
+			$user_id          = $this->get_id();
+			$lp_user_items_db = LP_User_Items_DB::getInstance();
+
+			// Count status
+			$filter                 = new LP_User_Items_Filter();
+			$filter->user_id        = $user_id;
+			$count_status           = $lp_user_items_db->count_status_by_items( $filter );
+			$total_courses_enrolled = intval( $count_status->{LP_COURSE_PURCHASED} ?? 0 )
+				+ intval( $count_status->{LP_COURSE_ENROLLED} ?? 0 )
+				+ intval( $count_status->{LP_COURSE_FINISHED} ?? 0 );
+
+			$statistic['enrolled_courses']   = $total_courses_enrolled;
+			$statistic['in_progress_course'] = $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
+			$statistic['finished_courses']   = $count_status->{LP_COURSE_FINISHED} ?? 0;
+			$statistic['passed_courses']     = $count_status->{LP_COURSE_GRADUATION_PASSED} ?? 0;
+			$statistic['failed_courses']     = $count_status->{LP_COURSE_GRADUATION_FAILED} ?? 0;
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+
+		return apply_filters( 'lp/profile/student/statistic', $statistic, $this );
 	}
 
 	/**
@@ -619,13 +663,14 @@ class UserModel {
 	 * @version 1.0.0
 	 */
 	public function is_instructor(): bool {
-		return user_can( $this->get_id(), LP_TEACHER_ROLE ) || user_can( $this->get_id(), 'administrator' );
+		return user_can( $this->get_id(), self::ROLE_INSTRUCTOR )
+			|| user_can( $this->get_id(), self::ROLE_ADMINISTRATOR );
 	}
 
 	/**
 	 * Get quizzes attend of user.
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemModel $filter
 	 * @param int $total_rows
 	 *
 	 * @return array|int|string|null
@@ -633,7 +678,7 @@ class UserModel {
 	 * @since 4.2.8.2
 	 * @version 1.0.0
 	 */
-	public function get_quizzes_attend( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+	public function get_quizzes_attend( $filter, int &$total_rows = 0 ) {
 		$lp_db_user_items  = LP_User_Items_DB::getInstance();
 		$filter->order_by  = 'user_item_id';
 		$filter->order     = 'DESC';

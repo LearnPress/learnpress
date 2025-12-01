@@ -186,6 +186,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $this->_user;
 		}
 
+		/**
+		 * Get current user viewing profile.
+		 *
+		 * @return bool|LP_User
+		 * @since 3.0.0
+		 * @version 1.0.2
+		 */
 		public function get_user_current() {
 			return $this->user_current;
 		}
@@ -859,8 +866,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @return false|WP_User
 		 * @since 3.0.0
+		 * @deprecated 4.2.9.1
 		 */
 		public static function get_queried_user( $return = '' ) {
+			_deprecated_function( __METHOD__, '4.2.9.1', 'LP_Profile::instance()->get_user_current()' );
 			global $wp_query;
 
 			if ( isset( $wp_query->query['user'] ) ) {

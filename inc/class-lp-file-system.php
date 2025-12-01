@@ -330,6 +330,9 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 			return $output;
 		}
 
+		/**
+		 * Code custom for user Unigrant is using.
+		 */
 		public function download_url( $url, $timeout = 300, $signature_verification = false ) {
 			return download_url( $url, $timeout, $signature_verification );
 		}
@@ -346,6 +349,7 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 		 * @return string
 		 * @since 4.2.3
 		 * @version 1.0.1
+		 * @depreacted 4.2.7.8.5
 		 */
 		public function get_file_size_from_url( $url ) {
 			$tmp_file = $this->download_url( $url );

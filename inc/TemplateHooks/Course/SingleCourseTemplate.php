@@ -97,7 +97,7 @@ class SingleCourseTemplate {
 		}
 
 		$short_description = $course->get_short_description();
-		if ( empty( $short_description ) || $number_words === 0 ) {
+		if ( empty( $short_description ) ) {
 			return '';
 		}
 
@@ -266,12 +266,13 @@ class SingleCourseTemplate {
 	 * Get display image course.
 	 *
 	 * @param LP_Course|CourseModel $course
+	 * @param array $data ['size'] Size of image to get, Ex: [500, 300] or string 'thumbnail', 'medium', 'large', 'full' etc.
 	 *
 	 * @return string
 	 * @since 4.2.3.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
-	public function html_image( $course ): string {
+	public function html_image( $course, array $data = [] ): string {
 		$content = '';
 
 		try {
@@ -284,14 +285,45 @@ class SingleCourseTemplate {
 				return '';
 			}
 
-			$size_img_setting = LP_Settings::get_option( 'course_thumbnail_dimensions', [] );
-			$size_img_send    = [
-				$size_img_setting['width'] ?? 500,
-				$size_img_setting['height'] ?? 300,
-			];
-			$content          = sprintf(
+			if ( ! empty( $data['size'] ) ) {
+				$size_img_send = $data['size'];
+
+				// If custom size, data size is type int[], like [500, 300], not [ width => 500, height => 300 ]
+				// Convert if data is [ width => 500, height => 300 ]
+				if ( is_array( $size_img_send ) && array_key_exists( 'width', $size_img_send ) ) {
+					$size_img_send = [
+						$size_img_send['width'] ?? 500,
+						$size_img_send['height'] ?? 300,
+					];
+				}
+			} else {
+				$size_img_setting = LP_Settings::get_option( 'course_thumbnail_dimensions', [] );
+				$size_img_send    = [
+					$size_img_setting['width'] ?? 500,
+					$size_img_setting['height'] ?? 300,
+				];
+			}
+
+			// Check cache before get image url
+			$cache     = new \LP_Course_Cache();
+			$key_cache = 'image_url/' . $courseModel->get_id();
+			if ( is_array( $size_img_send ) && count( $size_img_send ) === 2 ) {
+				$key_cache .= '/' . implode( 'x', $size_img_send );
+			} elseif ( is_string( $size_img_send ) ) {
+				$key_cache .= '/' . $size_img_send;
+			}
+
+			// Set cache for image url
+			$course_img_url = $cache->get_cache( $key_cache );
+			if ( false === $course_img_url ) {
+				$course_img_url = $courseModel->get_image_url( $size_img_send );
+				$cache->set_cache( $key_cache, $course_img_url );
+				$cache->save_cache_keys( sprintf( 'image_urls/%s', $courseModel->get_id() ), $key_cache );
+			}
+
+			$content = sprintf(
 				'<img src="%s" alt="%s">',
-				esc_url_raw( $courseModel->get_image_url( $size_img_send ) ),
+				esc_url_raw( $course_img_url ),
 				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
 			);
 
@@ -635,12 +667,13 @@ class SingleCourseTemplate {
 	 *
 	 * @param CourseModel $course
 	 * @param UserModel|false $userModel
+	 * @param array $data
 	 *
 	 * @return string
 	 * @since 4.2.7
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function html_feature_review( CourseModel $course, $userModel = false ): string {
+	public function html_feature_review( CourseModel $course, $userModel = false, array $data = [] ): string {
 		$feature_review = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURED_REVIEW, '' );
 		if ( empty( $feature_review ) ) {
 			return '';
@@ -659,7 +692,10 @@ class SingleCourseTemplate {
 		}
 
 		$section = [
-			'wrapper'     => '<div class="course-featured-review">',
+			'wrapper'     => sprintf(
+				'<div class="course-featured-review %s">',
+				esc_attr( $data['lp_display_on'] ?? '' )
+			),
 			'title'       => sprintf(
 				'<div class="featured-review__title">%s</div>',
 				esc_html__( 'Featured Review', 'learnpress' )
@@ -686,7 +722,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7
-	 * @version 1.0.1
+	 * @version 1.0.3
 	 */
 	public function html_btn_external( CourseModel $courseModel, $userModel ): string {
 		$external_link = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
@@ -703,12 +739,12 @@ class SingleCourseTemplate {
 		}
 
 		$content = sprintf(
-			'<a href="%s" class="lp-button course-btn-extra">%s</a>',
+			'<a href="%s" class="lp-button course-btn-extra" target="_blank">%s</a>',
 			esc_url_raw( $external_link ),
 			__( 'Contact To Request', 'learnpress' )
 		);
 
-		return apply_filters( 'learn-press/course/html-address', $content, $courseModel, $userModel );
+		return apply_filters( 'learn-press/course/html-button-external', $content, $courseModel, $userModel );
 	}
 
 	/**
@@ -719,7 +755,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function html_btn_purchase_course( CourseModel $courseModel, $userModel ): string {
 		$html_btn     = '';
@@ -735,7 +771,7 @@ class SingleCourseTemplate {
 			}
 		} else {
 			$html_btn = sprintf(
-				'<button class="lp-button button button-purchase-course">%s</button>',
+				'<button class="lp-button button-purchase-course">%s</button>',
 				__( 'Buy Now', 'learnpress' )
 			);
 		}
@@ -881,23 +917,35 @@ class SingleCourseTemplate {
 	 * Sidebar
 	 *
 	 * @param CourseModel $courseModel
+	 * @param array $data
 	 *
 	 * @return void
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.7
 	 */
-	public function html_sidebar( CourseModel $courseModel ): string {
+	public function html_sidebar( CourseModel $courseModel, array $data = [] ): string {
 		$html = '';
 
 		try {
 			if ( is_active_sidebar( 'course-sidebar' ) ) {
-				$html_wrapper = [
-					'<div class="lp-single-course-sidebar">' => '</div>',
-				];
-
 				ob_start();
 				dynamic_sidebar( 'course-sidebar' );
-				$html = Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+				$sidebar_content = ob_get_clean();
+
+				$section = apply_filters(
+					'learn-press/course/html-sidebar',
+					[
+						'wrapper'     => sprintf(
+							'<div class="lp-single-course-sidebar %s">',
+							esc_attr( $data['lp_display_on'] ?? '' )
+						),
+						'content'     => $sidebar_content,
+						'wrapper_end' => '</div>',
+					],
+					$courseModel
+				);
+
+				$html = Template::combine_components( $section );
 			}
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
@@ -910,14 +958,18 @@ class SingleCourseTemplate {
 	 * HTML meta faqs
 	 *
 	 * @param CourseModel $courseModel
+	 * @param array $data
 	 *
 	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.1
 	 */
-	public function html_faqs( CourseModel $courseModel ): string {
+	public function html_faqs( CourseModel $courseModel, array $data = [] ): string {
 		$html = '';
 
 		try {
-			$faqs = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
+			$show_heading = $data['show_heading'] ?? true;
+			$faqs         = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
 			if ( empty( $faqs ) ) {
 				return '';
 			}
@@ -955,7 +1007,10 @@ class SingleCourseTemplate {
 				'learn-press/course/html-faqs',
 				[
 					'wrapper'     => '<div class="course-faqs course-tab-panel-faqs">',
-					'title'       => sprintf( '<h3 class="course-faqs__title">%s</h3>', __( 'FAQs', 'learnpress' ) ),
+					'title'       => $show_heading ? sprintf(
+						'<h3 class="course-faqs__title">%s</h3>',
+						__( 'FAQs', 'learnpress' )
+					) : '',
 					'content'     => $html,
 					'wrapper_end' => '</div>',
 				],
@@ -1152,16 +1207,18 @@ class SingleCourseTemplate {
 	 *
 	 * @param CourseModel $courseModel
 	 * @param UserModel|false $userModel
+	 * @param array $data
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
-	public function html_material( CourseModel $courseModel, $userModel = false ): string {
+	public function html_material( CourseModel $courseModel, $userModel = false, array $data = [] ): string {
 		$html = '';
 
 		try {
-			$can_show = false;
+			$show_heading = $data['show_heading'] ?? true;
+			$can_show     = false;
 
 			if ( $userModel instanceof UserModel ) {
 				if ( $courseModel->check_user_is_author( $userModel )
@@ -1193,7 +1250,10 @@ class SingleCourseTemplate {
 
 			$section = [
 				'wrapper'     => '<div class="course-material">',
-				'title'       => sprintf( '<h3 class="course-material__title">%s</h3>', __( 'Course Material', 'learnpress' ) ),
+				'title'       => $show_heading ? sprintf(
+					'<h3 class="course-material__title">%s</h3>',
+					__( 'Course Material', 'learnpress' )
+				) : '',
 				'content'     => $html_content,
 				'wrapper_end' => '</div>',
 			];
@@ -1271,7 +1331,7 @@ class SingleCourseTemplate {
 	 * @param CourseModel $courseModel
 	 *
 	 * @return string
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public function html_featured( CourseModel $courseModel ): string {

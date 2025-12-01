@@ -5,7 +5,7 @@
  * To replace class LP_User_Item
  *
  * @package LearnPress/Classes
- * @version 1.0.0
+ * @version 1.0.7
  * @since 4.2.6.9
  */
 
@@ -13,17 +13,11 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress;
-use LP_Course_Cache;
-use LP_Course_DB;
-use LP_Course_Filter;
-use LP_Datetime;
-use LP_Post_DB;
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\FilterBase;
 use LP_Post_Meta_DB;
 use LP_Post_Meta_Filter;
 use LP_Post_Type_Filter;
-use LP_User;
-use LP_User_Filter;
-use LP_User_Guest;
 
 use stdClass;
 use Throwable;
@@ -152,13 +146,13 @@ class PostModel {
 	 * If not exists, return false.
 	 * If exists, return PostModel.
 	 *
-	 * @param LP_Course_Filter $filter
+	 * @param LP_Post_Type_Filter|FilterBase $filter
 	 *
 	 * @return PostModel|false|static
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public static function get_item_model_from_db( LP_Post_Type_Filter $filter ) {
-		$lp_post_db = LP_Post_DB::getInstance();
+	public static function get_item_model_from_db( $filter ) {
+		$lp_post_db = PostDB::getInstance();
 		$post_model = false;
 
 		try {
@@ -209,13 +203,37 @@ class PostModel {
 	}
 
 	/**
+	 * Check capabilities to create new post.
+	 *
+	 * @return bool
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function check_capabilities_create(): bool {
+		return true;
+	}
+
+
+
+	/**
+	 * Check capabilities to update post.
+	 *
+	 * @return bool
+	 * @since 4.2.9.4
+	 * @version 1.0.0
+	 */
+	public function check_capabilities_update(): bool {
+		return true;
+	}
+
+	/**
 	 * Check capabilities of item's course.
 	 * Check user current can edit it.
 	 *
 	 * @return void
 	 * @throws Exception
 	 * @version 1.0.0
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 */
 	public function check_capabilities_create_item_course() {
 		$course_item_types = CourseModel::item_types_support();
@@ -238,7 +256,7 @@ class PostModel {
 	 * @return void
 	 * @throws Exception
 	 * @version 1.0.0
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 */
 	public function check_capabilities_update_item_course() {
 		$course_item_types = CourseModel::item_types_support();
@@ -271,10 +289,19 @@ class PostModel {
 
 		// Check if exists course id.
 		if ( empty( $this->ID ) ) { // Insert data.
+			if ( ! $this->check_capabilities_create() ) {
+				throw new Exception( __( 'You do not have permission to create item.', 'learnpress' ) );
+			}
+
 			$this->check_capabilities_create_item_course();
+
 			unset( $data['ID'] );
 			$post_id = wp_insert_post( $data, true );
 		} else { // Update data.
+			if ( ! $this->check_capabilities_update() ) {
+				throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+			}
+
 			$this->check_capabilities_update_item_course();
 			$post_id = wp_update_post( $data, true );
 		}
@@ -320,7 +347,7 @@ class PostModel {
 	 *
 	 * @return string
 	 * @since 4.2.6.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function get_image_url( $size = 'post-thumbnail' ): string {
 		$image_url = '';
@@ -329,22 +356,41 @@ class PostModel {
 			if ( is_string( $size ) ) {
 				$image_url = get_the_post_thumbnail_url( $this, $size );
 			} elseif ( is_array( $size ) && count( $size ) === 2 ) {
-				// Custom crop size for image.
+				// Check file crop is existing.
 				$attachment_id = get_post_thumbnail_id( $this );
 				$file_path     = get_attached_file( $attachment_id );
-				$resized_file  = wp_get_image_editor( $file_path );
+				$file_url      = wp_get_attachment_url( $attachment_id );
+				$upload_dir    = wp_upload_dir();
+				$base_dir      = $upload_dir['basedir'];
 
-				if ( ! is_wp_error( $resized_file ) ) {
-					$resized_file->resize( $size[0], $size[1], true );
-					$resized_image = $resized_file->save();
+				// Get file path with size.
+				$file_path_arr    = explode( '.', $file_path );
+				$file_path_length = count( $file_path_arr );
+				$extension        = end( $file_path_arr );
+				unset( $file_path_arr[ $file_path_length - 1 ] );
+				$file_path_join      = implode( '.', $file_path_arr );
+				$file_path_with_size = $file_path_join . '-' . $size[0] . 'x' . $size[1] . '.' . $extension;
+				if ( file_exists( $file_path_with_size ) ) {
+					$file_url_arr    = explode( '.', $file_url );
+					$file_url_length = count( $file_url_arr );
+					$url_extension   = end( $file_url_arr );
+					unset( $file_url_arr[ $file_url_length - 1 ] );
+					$file_url_join = implode( '.', $file_url_arr );
+					$image_url     = $file_url_join . '-' . $size[0] . 'x' . $size[1] . '.' . $url_extension;
+				} else {
+					// Custom crop size for image.
+					$resized_file = wp_get_image_editor( $file_path );
 
-					if ( ! is_wp_error( $resized_image ) ) {
-						// Build the URL for the resized image
-						$upload_dir = wp_upload_dir();
-						$base_dir   = $upload_dir['basedir'];
-						$imag_dir   = $resized_image['path'];
-						$imag_dir   = str_replace( $base_dir, '', $imag_dir );
-						$image_url  = $upload_dir['baseurl'] . $imag_dir;
+					if ( ! is_wp_error( $resized_file ) ) {
+						$resized_file->resize( $size[0], $size[1], true );
+						$resized_image = $resized_file->save( $file_path_with_size );
+
+						if ( ! is_wp_error( $resized_image ) ) {
+							// Build the URL for the resized image
+							$imag_dir  = $resized_image['path'];
+							$imag_dir  = str_replace( $base_dir, '', $imag_dir );
+							$image_url = $upload_dir['baseurl'] . $imag_dir;
+						}
 					}
 				}
 			}
@@ -402,7 +448,6 @@ class PostModel {
 	 * @since 4.2.3
 	 */
 	public function get_categories(): array {
-		// Todo: set cache.
 		$wpPost     = new WP_Post( $this );
 		$categories = get_the_terms( $wpPost, LP_COURSE_CATEGORY_TAX );
 		if ( ! $categories || $categories instanceof WP_Error ) {
@@ -420,7 +465,6 @@ class PostModel {
 	 * @since 4.2.7.2
 	 */
 	public function get_tags(): array {
-		// Todo: set cache.
 		$wpPost = new WP_Post( $this );
 		$tags   = get_the_terms( $wpPost, LP_COURSE_TAXONOMY_TAG );
 		if ( ! $tags || $tags instanceof WP_Error ) {

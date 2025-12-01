@@ -11,7 +11,7 @@ import {
 	listenElementCreated,
 	lpOnElementReady,
 	lpGetCurrentURLNoParam,
-	lpShowHideEl
+	lpShowHideEl,
 } from './utils.js';
 
 // Handle general parameter in the Frontend and Backend
@@ -62,6 +62,8 @@ const lpAJAX = ( () => {
 			// Set param id_url for identify.
 			if ( params.hasOwnProperty( 'args' ) && params.args.hasOwnProperty( 'id_url' ) ) {
 				urlAjax = lpAddQueryArgs( urlAjax, { id_url: params.args.id_url } );
+			} else if ( params.hasOwnProperty( 'id_url' ) ) {
+				urlAjax = lpAddQueryArgs( urlAjax, { id_url: params.id_url } );
 			}
 			// Set param lang here if exits, for detect translate
 			if ( lpSettings.urlParams.hasOwnProperty( 'lang' ) ) {
@@ -175,8 +177,11 @@ const lpAJAX = ( () => {
 			// End
 
 			// Scroll to archive element
-			const elLPTargetY = elLPTarget.getBoundingClientRect().top + window.scrollY - 100;
-			window.scrollTo( { top: elLPTargetY } );
+			if ( ! dataSend.args.hasOwnProperty( 'enableScrollToView' ) ||
+				dataSend.args.enableScrollToView ) {
+				const elLPTargetY = elLPTarget.getBoundingClientRect().top + window.scrollY - 100;
+				window.scrollTo( { top: elLPTargetY } );
+			}
 
 			const callBack = {
 				success: ( response ) => {

@@ -6,8 +6,8 @@
 	"category": "",
 	"description": "Course Item Template",
 	"textdomain": "learnpress",
-	"keywords": ["course item", "learnpress"],
-	"usesContext": ["lpCourseQuery"],
+	"keywords": [ "course item", "learnpress" ],
+	"usesContext": [ "lpCourseQuery" ],
 	"supports": {
 		"align": true
 	},
@@ -15,7 +15,11 @@
 		"layout": {
 			"type": "string",
 			"default": "list"
+		},
+		"columns": {
+			"type": "number",
+			"default": 3
 		}
 	},
-	"ancestor": ["learnpress/list-courses"]
+	"ancestor": [ "learnpress/list-courses" ]
 }

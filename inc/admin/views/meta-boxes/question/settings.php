@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * @deprecated since 4.2.9
+ */
 class LP_Meta_Box_Question extends LP_Meta_Box {
 
 	private static $_instance = null;

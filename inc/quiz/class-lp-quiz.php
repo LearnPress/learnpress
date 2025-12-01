@@ -265,7 +265,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function get_passing_grade() {
 			$type  = $this->get_passing_grade_type();
-			$value = $this->get_data( 'passing_grade', 0 );
+			$value = $this->get_data( 'passing_grade', 80 );
 
 			switch ( $type ) {
 				case 'point':

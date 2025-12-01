@@ -16,10 +16,14 @@ module.exports = {
 		'./assets/js/dist/admin/admin-notices': './assets/src/js/admin/admin-notices.js',
 		'./assets/js/dist/admin/admin-order': './assets/src/js/admin/admin-order.js',
 		'./assets/js/dist/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
-		'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
-		'./assets/dist/js/admin/edit-curriculum': './assets/src/js/admin/edit-curriculum.js',
-		'./assets/js/dist/admin/editor/quiz': './assets/src/apps/js/admin/editor/quiz.js',
-		'./assets/js/dist/admin/editor/question': './assets/src/apps/js/admin/editor/question.js',
+		//'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
+		'./assets/dist/js/admin/admin-courses': './assets/src/js/admin/admin-courses.js',
+		'./assets/dist/js/admin/edit-course': './assets/src/js/admin/edit-course.js',
+		//'./assets/dist/js/admin/edit-curriculum': './assets/src/js/admin/edit-curriculum.js',
+		'./assets/dist/js/admin/edit-quiz': './assets/src/js/admin/edit-quiz.js',
+		'./assets/dist/js/admin/edit-question': './assets/src/js/admin/edit-question.js',
+		//'./assets/js/dist/admin/editor/quiz': './assets/src/apps/js/admin/editor/quiz.js',
+		//'./assets/js/dist/admin/editor/question': './assets/src/apps/js/admin/editor/question.js',
 		'./assets/js/dist/admin/pages/tools': './assets/src/apps/js/admin/pages/tools.js',
 		'./assets/js/dist/admin/pages/setup': './assets/src/apps/js/admin/pages/setup.js',
 		//'./assets/js/dist/admin/pages/statistic': './assets/src/apps/js/admin/pages/statistic.js',
@@ -137,6 +141,7 @@ module.exports = {
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
 		'./assets/js/dist/blocks/course-item-template': './assets/src/apps/js/blocks/courses/course-item-template/index.js',
+		'./assets/js/dist/blocks/course-results': './assets/src/apps/js/blocks/courses/course-results/index.js',
 		'./assets/js/dist/blocks/item-close': './assets/src/apps/js/blocks/single-course-item/item-close/index.js',
 		'./assets/js/dist/blocks/item-comment': './assets/src/apps/js/blocks/single-course-item/item-comment/index.js',
 		'./assets/js/dist/blocks/item-content': './assets/src/apps/js/blocks/single-course-item/item-content/index.js',
@@ -186,6 +191,10 @@ module.exports = {
 	resolve: {
 		// Add `.ts` and `.tsx` as a resolvable extension.
 		extensions: [ '.ts', '.tsx', '.js', '.css', '.scss' ],
+		// Set alias for LP assets src path
+		alias: {
+			lpAssetsJsPath: path.resolve( __dirname, 'assets/src/js' ),
+		},
 	},
 	module: {
 		rules: [
@@ -194,6 +203,9 @@ module.exports = {
 				exclude: /node_modules/,
 				use: {
 					loader: 'babel-loader',
+					options: {
+						// presets: [ '@babel/preset-env' ],
+					},
 				},
 			},
 			{

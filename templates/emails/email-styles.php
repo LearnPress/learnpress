@@ -1,7 +1,7 @@
 <?php
 ob_start();
 ?>
-	<style type="text/css">
+	<style>
 		#wrapper {
 			color: #777;
 		}

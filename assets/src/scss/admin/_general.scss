@@ -522,3 +522,28 @@
 .lp-hidden {
 	display: none !important;
 }
+
+@mixin loading(){
+	&:before{
+		display: inline-block;
+		font-family: 'lp-icon';
+		content: "\f110";
+		animation: lp-rotating 1s linear infinite;
+		margin-right: 5px;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		vertical-align: middle;
+		margin-top: -2px;
+	}
+}
+
+.lp-button {
+	&.loading {
+		pointer-events: none;
+		opacity: 0.8;
+		@include loading();
+	}
+}

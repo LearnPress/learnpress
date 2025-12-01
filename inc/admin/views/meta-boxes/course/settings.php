@@ -498,7 +498,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		return apply_filters(
 			'lp/course/meta-box/fields/author',
 			array(
-				'post_author' => new LP_Meta_Box_Select_Field(
+				// Not use key 'post_author' on single edit course, it special key of WP, Gutenberg save will not submit this key.
+				'_post_author' => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Author', 'learnpress' ),
 					'',
 					$author_id,

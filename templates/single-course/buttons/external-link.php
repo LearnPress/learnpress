@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -17,7 +17,7 @@ if ( ! $course ) {
 }
 ?>
 
-<form name="course-external-link" class="course-external-link form-button lp-form" method="post">
+<form name="course-external-link" class="course-external-link form-button lp-form" method="post" target="_blank">
 
 	<input type="hidden" name="lp-ajax" value="external-link">
 	<input type="hidden" name="id" value="<?php echo esc_attr( $course->get_id() ); ?>">

@@ -28,7 +28,6 @@ const profileQuizTab = () => {
 				return;
 			}
 
-			elLoadingChange.style.display = 'block';
 			liActive.classList.remove( 'active' );
 			const liTarget = target.closest( 'li' );
 			liTarget.classList.add( 'active' );

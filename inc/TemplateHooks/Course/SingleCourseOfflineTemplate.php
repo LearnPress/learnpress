@@ -130,9 +130,6 @@ class SingleCourseOfflineTemplate {
 		}
 		// End instructor
 
-		// Info main.
-		$html_info_main = $this->render_html_info_main( $course, $user );
-
 		// Info one
 		$html_address     = $this->html_address( $course );
 		$section_info_one = apply_filters(
@@ -155,8 +152,8 @@ class SingleCourseOfflineTemplate {
 				'breadcrumb'             => $html_breadcrumb,
 				'title'                  => $this->singleCourseTemplate->html_title( $course, 'h1' ),
 				'info_one'               => Template::combine_components( $section_info_one ),
-				'image'                  => $this->singleCourseTemplate->html_image( $course ),
-				'info_main_mobile'       => wp_is_mobile() ? $html_info_main : '',
+				'image'                  => $this->singleCourseTemplate->html_image( $course, [ 'size' => 'full' ] ),
+				'info_main_mobile'       => $this->render_html_info_main( $course, $user, [ 'lp_display_on' => 'lp-is-mobile' ] ),
 				'description'            => $this->singleCourseTemplate->html_description( $course ),
 				'features'               => $this->singleCourseTemplate->html_features( $course ),
 				'target'                 => $this->singleCourseTemplate->html_target( $course ),
@@ -164,7 +161,7 @@ class SingleCourseOfflineTemplate {
 				'material'               => $this->singleCourseTemplate->html_material( $course ),
 				'faqs'                   => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'             => $html_instructor,
-				'featured_review_mobile' => wp_is_mobile() ? $this->singleCourseTemplate->html_feature_review( $course, $user ) : '',
+				'featured_review_mobile' => $this->singleCourseTemplate->html_feature_review( $course, $user, [ 'lp_display_on' => 'lp-is-mobile' ] ),
 				'wrapper_end'            => '</div>',
 			],
 			$course,
@@ -177,8 +174,8 @@ class SingleCourseOfflineTemplate {
 			[
 				'wrapper'           => '<div class="lp-single-offline-course__right">',
 				'wrapper_inner'     => '<div class="lp-single-offline-course__right__sticky">',
-				'info_main'         => wp_is_mobile() ? '' : $html_info_main,
-				'featured_review'   => wp_is_mobile() ? '' : $this->singleCourseTemplate->html_feature_review( $course, $user ),
+				'info_main'         => $this->render_html_info_main( $course, $user, [ 'lp_display_on' => 'lp-is-pc' ] ),
+				'featured_review'   => $this->singleCourseTemplate->html_feature_review( $course, $user, [ 'lp_display_on' => 'lp-is-pc' ] ),
 				'sidebar'           => $this->singleCourseTemplate->html_sidebar( $course ),
 				'wrapper_inner_end' => '</div>',
 				'wrapper_end'       => '</div>',
@@ -219,12 +216,13 @@ class SingleCourseOfflineTemplate {
 	 *
 	 * @param CourseModel $courseModel
 	 * @param UserModel|false $userModel
+	 * @param array $data
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function render_html_info_main( CourseModel $courseModel, $userModel ): string {
+	public function render_html_info_main( CourseModel $courseModel, $userModel, array $data = [] ): string {
 		// Info two
 		$data_info_meta = [
 			'price'        => [
@@ -292,7 +290,10 @@ class SingleCourseOfflineTemplate {
 		$section = apply_filters(
 			'learn-press/single-course/offline/section-right/info-meta',
 			[
-				'wrapper'     => '<div class="info-metas">',
+				'wrapper'     => sprintf(
+					'<div class="info-metas %s">',
+					$data['lp_display_on'] ?? ''
+				),
 				'meta'        => $html_info_meta,
 				'buttons'     => $html_buttons,
 				'wrapper_end' => '</div>',

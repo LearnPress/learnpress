@@ -4,6 +4,7 @@
  * Class LP_REST_Courses_Controller
  */
 
+use LearnPress\Background\LPBackgroundAjax;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -157,7 +158,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 				$courseItem              = new stdClass();
 				$courseItem->ID          = $course->ID;
-				$courseItem->description = $singleCourseTemplate->html_short_description( $courseModel, 15 );
+				$courseItem->description = $singleCourseTemplate->html_short_description( $courseModel );
 				$courseItem->price       = $singleCourseTemplate->html_price( $courseModel );
 				$courseItem->title       = $courseModel->get_title();
 				$courseItem->student     = $singleCourseTemplate->html_count_student( $courseModel );
@@ -387,6 +388,22 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$userCourse->save();
 
 				do_action( 'learnpress/user/course-enrolled', $userCourse->ref_id, $course_id, $user->get_id() );
+
+				/**
+				 * Send mail user enrolled course
+				 * @uses SendEmailAjax::send_mail_user_enrolled_course()
+				 */
+				$data_send = [
+					$userCourse->ref_id,
+					$course_id,
+					$user->get_id(),
+				];
+				LPBackgroundAjax::handle(
+					[
+						'params'       => $data_send,
+						'lp-load-ajax' => 'send_mail_user_enrolled_course',
+					]
+				);
 			} else { // Case enroll course free
 				$cart     = LearnPress::instance()->cart;
 				$checkout = LP_Checkout::instance();
@@ -522,7 +539,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			// @deprecated hook since v4.2.7.3
 			//do_action( 'learnpress/rest-api/courses/purchase/before-add-to-cart' );
 
-			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
+			$cart_id = $cart->add_to_cart( $course_id, 1, $params );
 			if ( empty( $cart_id ) ) {
 				throw new Exception( __( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 			}

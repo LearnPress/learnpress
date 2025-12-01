@@ -255,7 +255,7 @@ class ListCoursesTemplate {
 			$section_bottom_end = apply_filters(
 				'learn-press/layout/list-courses/item/section/bottom/end',
 				[
-					'short_des'     => $singleCourseTemplate->html_short_description( $course, 15 ),
+					'short_des'     => $singleCourseTemplate->html_short_description( $course ),
 					'wrapper'       => '<div class="course-info">',
 					//'clearfix'          => '<div class="clearfix"></div>',
 					//'course_footer'     => '<div class="course-footer">',

@@ -8,6 +8,7 @@
  * @author tungnx
  */
 
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\Singleton;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -112,11 +113,11 @@ class LP_Polylang {
 	/**
 	 * Profile filter query get user course by current language
 	 *
-	 * @param LP_User_Items_Filter $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 *
 	 * @return LP_User_Items_Filter
 	 */
-	public function filter_query_user_courses( LP_User_Items_Filter $filter ): LP_User_Items_Filter {
+	public function filter_query_user_courses( $filter ): LP_User_Items_Filter {
 		$pll_current_lang = pll_current_language(); // For query load page
 		if ( ! $pll_current_lang ) { // For query call API
 			$pll_current_lang = LP_Request::get_param( 'pll-current-lang' );

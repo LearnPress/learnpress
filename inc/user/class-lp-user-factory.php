@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Background\LPBackgroundAjax;
 use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
@@ -126,7 +127,7 @@ class LP_User_Factory {
 	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.2
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	protected static function _update_user_item_order_completed( LP_Order $order, string $old_status, string $new_status ) {
 		$lp_order_db = LP_Order_DB::getInstance();
@@ -198,17 +199,13 @@ class LP_User_Factory {
 			}
 
 			/**
-			 * @uses LP_Email_Hooks::users_enrolled_courses
+			 * @uses SendEmailAjax::send_mail_users_enrolled_courses
 			 */
-			$email_bg  = LPBackgroundTrigger::instance();
 			$data_send = [
-				'params' => [
-					'user_course_ids' => $userCourseIds,
-				],
-				'class'  => LP_Email_Hooks::class,
-				'method' => 'users_enrolled_courses',
+				'user_course_ids' => $userCourseIds,
+				'lp-load-ajax'    => 'send_mail_users_enrolled_courses',
 			];
-			$email_bg->data( $data_send )->dispatch();
+			LPBackgroundAjax::handle( $data_send );
 		}
 	}
 
@@ -253,7 +250,7 @@ class LP_User_Factory {
 				'item_id'    => $course_id,
 				'ref_id'     => $order->get_id(),
 				'start_time' => gmdate( LP_Datetime::$format, time() ),
-				'graduation' => LP_COURSE_GRADUATION_IN_PROGRESS,
+				'graduation' => UserItemModel::GRADUATION_IN_PROGRESS,
 			];
 
 			if ( $user_id && $userCourse ) {
@@ -300,7 +297,7 @@ class LP_User_Factory {
 				if ( $auto_enroll ) {
 					$user_item_data['status'] = UserItemModel::STATUS_ENROLLED;
 				} else {
-					$user_item_data['status']     = LP_COURSE_PURCHASED;
+					$user_item_data['status']     = UserItemModel::STATUS_PURCHASED;
 					$user_item_data['graduation'] = '';
 				}
 			} elseif ( $user_id && ( $is_in_stock || $is_no_required_enroll ) ) { // Enroll course free or No enroll requirement.

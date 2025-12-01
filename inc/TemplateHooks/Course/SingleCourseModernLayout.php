@@ -174,9 +174,9 @@ class SingleCourseModernLayout {
 				'material'               => $this->singleCourseTemplate->html_material( $course, $user ),
 				'faqs'                   => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'             => $this->html_instructor_info( $course, $user ),
-				'featured_review_mobile' => wp_is_mobile() ? $this->singleCourseTemplate->html_feature_review( $course, $user ) : '',
+				'featured_review_mobile' => $this->singleCourseTemplate->html_feature_review( $course, $user, [ 'lp_display_on' => 'lp-is-mobile' ] ),
 				'comment'                => $this->singleCourseTemplate->html_comment( $course, $user ),
-				'sidebar_mobile'         => wp_is_mobile() ? $this->singleCourseTemplate->html_sidebar( $course ) : '',
+				'sidebar_mobile'         => $this->singleCourseTemplate->html_sidebar( $course, [ 'lp_display_on' => 'lp-is-mobile' ] ),
 				'wrapper_end'            => '</div>',
 			],
 			$course,
@@ -255,7 +255,7 @@ class SingleCourseModernLayout {
 		);
 
 		$html_price = '';
-		if ( ! $userCourseModel
+		if ( ! $userCourseModel || $user_id === 0
 			|| $userCourseModel->get_status() === UserItemModel::STATUS_CANCEL ) {
 			$html_price = $this->singleCourseTemplate->html_price( $course );
 		}
@@ -272,8 +272,8 @@ class SingleCourseModernLayout {
 				'metas'             => Template::combine_components( $section_info_meta ),
 				'buttons'           => $this->html_buttons( $course, $user ),
 				'share'             => $this->html_share( $course ),
-				'featured_review'   => wp_is_mobile() ? '' : $this->singleCourseTemplate->html_feature_review( $course, $user ),
-				'sidebar'           => wp_is_mobile() ? '' : $this->singleCourseTemplate->html_sidebar( $course ),
+				'featured_review'   => $this->singleCourseTemplate->html_feature_review( $course, $user, [ 'lp_display_on' => 'lp-is-pc' ] ),
+				'sidebar'           => $this->singleCourseTemplate->html_sidebar( $course, [ 'lp_display_on' => 'lp-is-pc' ] ),
 				'wrapper_inner_end' => '</div>',
 				'wrapper_end'       => '</div>',
 			],
@@ -478,13 +478,15 @@ class SingleCourseModernLayout {
 	 *
 	 * @return string
 	 * @since 4.2.8.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_info_learning( CourseModel $course, $user = false ): string {
 		$html_info_learning = '';
 		$user_id            = 0;
 		if ( $user instanceof UserModel ) {
 			$user_id = $user->get_id();
+		} else {
+			return $html_info_learning;
 		}
 
 		$userCourseModel = UserCourseModel::find( $user_id, $course->get_id(), true );

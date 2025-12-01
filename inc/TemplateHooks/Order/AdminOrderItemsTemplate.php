@@ -92,6 +92,7 @@ class AdminOrderItemsTemplate {
 		$filter           = new LPOrderItemsFilter();
 		$filter->page     = $data['paged'] ?? 1;
 		$filter->order_id = $data['order_id'] ?? 0;
+		$filter->limit = 2;
 		$total_row        = 0;
 		$items            = $lpOrderItemsDB->get_items( $filter, $total_row );
 

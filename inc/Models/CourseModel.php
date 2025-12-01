@@ -14,6 +14,7 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Filters\PostFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LP_Admin_Editor_Course;
@@ -161,12 +162,17 @@ class CourseModel {
 	 *
 	 * @return string
 	 * @since 4.2.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_image_url( $size = 'post-thumbnail' ): string {
-		if ( isset( $this->image_url ) ) {
+		/**
+		 * Comment code isset( $this->image_url )
+		 * To apply for many size on a course
+		 * To apply cache need handle cache before, where set size for image.
+		 */
+		/*if ( isset( $this->image_url ) ) {
 			return $this->image_url;
-		}
+		}*/
 
 		$post      = new CoursePostModel( $this );
 		$image_url = $post->get_image_url( $size );
@@ -358,7 +364,7 @@ class CourseModel {
 	 * @return bool
 	 */
 	public function is_free(): bool {
-		return apply_filters( 'learnPress/course/is-free', $this->get_price() == 0, $this );
+		return $this->get_price() == 0;
 	}
 
 	/**
@@ -747,17 +753,18 @@ class CourseModel {
 	 *
 	 * @param string $key
 	 * @param mixed|false $default_value
+	 * @param bool $single
 	 *
 	 * @return false|mixed
 	 * @since 4.2.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function get_meta_value_by_key( string $key, $default_value = false ) {
+	public function get_meta_value_by_key( string $key, $default_value = false, bool $single = true ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
 			$value = maybe_unserialize( $this->meta_data->{$key} );
 		} else {
 			$coursePost = new CoursePostModel( $this );
-			$value      = $coursePost->get_meta_value_by_key( $key, $default_value );
+			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
 		$this->meta_data->{$key} = $value;
@@ -945,7 +952,7 @@ class CourseModel {
 	 *
 	 * @return bool|WP_Error
 	 * @since 4.2.7.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function can_enroll( $user ) {
 		$can_enroll = true;
@@ -994,14 +1001,18 @@ class CourseModel {
 				if ( ! $user ) {
 					$error_code = 'course_is_no_required_enroll_not_login';
 					throw new Exception(
-						__( 'Enrollment in the course is not mandatory. You can access course for learning now.', 'learnpress' )
+						__(
+							'Enrollment in the course is not mandatory. You can access course for learning now.',
+							'learnpress'
+						)
 					);
 				} else {
 
 				}
 			} else {
 				if ( ! empty( $this->get_external_link() )
-					&& ( ! $userCourseModel || $userCourseModel->get_status() === UserItemModel::STATUS_CANCEL )
+					&& ( ! $user || ! $userCourseModel
+						|| $userCourseModel->get_status() === UserItemModel::STATUS_CANCEL )
 					&& ! $this->is_offline() ) {
 					$error_code = 'course_is_external';
 					throw new Exception( __( 'The course is external', 'learnpress' ) );
@@ -1139,16 +1150,17 @@ class CourseModel {
 	/**
 	 * Check user is author or co-in of course.
 	 *
-	 * @param UserModel $userModel
+	 * @param UserModel|false $userModel
 	 *
 	 * @return bool
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function check_user_is_author( UserModel $userModel ): bool {
+	public function check_user_is_author( $userModel ): bool {
 		$is_author = false;
 
-		if ( $userModel->get_id() === $this->post_author ) {
+		if ( $userModel instanceof UserModel
+			&& $userModel->get_id() === $this->post_author ) {
 			$is_author = true;
 		}
 
@@ -1158,7 +1170,7 @@ class CourseModel {
 	/**
 	 * Get item model assigned to this course
 	 *
-	 * @return mixed|false|null|WP_Post
+	 * @return mixed|false|null|WP_Post|PostModel
 	 * @since v4.2.7.6
 	 * @version 1.0.1
 	 */
@@ -1182,7 +1194,7 @@ class CourseModel {
 
 			// If not defined class, get post default
 			if ( ! $item ) {
-				$filter            = new LP_Post_Type_Filter();
+				$filter            = new PostFilter();
 				$filter->ID        = $item_id;
 				$filter->post_type = $item_type;
 				$item              = PostModel::get_item_model_from_db( $filter );
@@ -1353,6 +1365,10 @@ class CourseModel {
 		$key_cache       = "courseModel/find/id/{$this->ID}";
 		$lp_course_cache = new LP_Course_Cache();
 		$lp_course_cache->clear( $key_cache );
+
+		// Clear cache image urls, store with many sizes
+		$img_urls_key_cache = "image_urls/{$this->ID}";
+		$lp_course_cache->clear_cache_on_group( $img_urls_key_cache );
 	}
 
 	/**

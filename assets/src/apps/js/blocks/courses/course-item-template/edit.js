@@ -11,6 +11,12 @@ import {
 import classnames from 'classnames';
 import { useSelect } from '@wordpress/data';
 import { memo, useMemo, useState, useEffect } from '@wordpress/element';
+import {
+	PanelBody,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+	RangeControl,
+} from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import API from '../../../../../js/api.js';
 const TEMPLATE_DEFAULT = [
@@ -207,9 +213,52 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 
 	return (
 		<>
+			<InspectorControls>
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
+					<ToggleGroupControl
+						label={ __( 'Layout', 'learnpress' ) }
+						value={ attributes.layout || 'gird' }
+						onChange={ ( value ) => {
+							setAttributes( {
+								layout: value || 'gird',
+							} );
+						} }
+						isBlock={ true }
+					>
+						<ToggleGroupControlOption value="list" label="Stack" />
+						<ToggleGroupControlOption value="grid" label="Grid" />
+					</ToggleGroupControl>
+
+					{ attributes.layout === 'grid' && (
+						<RangeControl
+							label={ __( 'Columns', 'learnpress' ) }
+							value={ attributes.columns || 3 }
+							onChange={ ( value ) => {
+								setAttributes( {
+									columns: value,
+								} );
+							} }
+							min={ 2 }
+							max={ 6 }
+							step={ 1 }
+							marks={ [
+								{ value: 2, label: '2' },
+								{ value: 3, label: '3' },
+								{ value: 4, label: '4' },
+								{ value: 5, label: '5' },
+								{ value: 6, label: '6' },
+							] }
+							withInputField={ true }
+						/>
+					) }
+				</PanelBody>
+			</InspectorControls>
 			<ul
 				className="learn-press-courses wp-block-learn-press-courses"
 				data-layout={ attributes.layout ? attributes.layout : 'list' }
+				style={ {
+					'--columns': attributes.columns || 3,
+				} }
 			>
 				{ blockContexts &&
 					blockContexts.map( ( blockContext ) => (

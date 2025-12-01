@@ -333,7 +333,7 @@ class LP_Course_DB extends LP_Database {
 	 * @throws Exception
 	 * @author tungnx
 	 * @since 4.1.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_total_user_enrolled_or_purchased( int $course_id ): int {
 		$filter              = new LP_User_Items_Filter();
@@ -424,7 +424,7 @@ class LP_Course_DB extends LP_Database {
 	/**
 	 * list id item are unassigned to any courses.
 	 *
-	 * @param LP_Post_Type_Filter $filter
+	 * @param LP_Post_Type_Filter|mixed $filter
 	 *
 	 * @return array|int|string|null
 	 * @throws Exception
@@ -432,9 +432,13 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 * @since 4.1.6
 	 */
-	public function get_item_ids_unassigned( LP_Post_Type_Filter $filter = null ) {
+	public function get_item_ids_unassigned( $filter = null ) {
 		if ( is_null( $filter ) ) {
 			$filter = new LP_Post_Type_Filter();
+		}
+
+		if ( ! $filter instanceof LP_Post_Type_Filter ) {
+			throw new Exception( 'Filter must be instance of LP_Post_Type_Filter' );
 		}
 
 		$filter_section_items                      = new LP_Section_Items_Filter();
@@ -462,10 +466,10 @@ class LP_Course_DB extends LP_Database {
 	 * @return array|object|null|int|string
 	 * @throws Exception
 	 * @author tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.1.5
 	 */
-	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+	public function get_courses( $filter, int &$total_rows = 0 ) {
 		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 
@@ -549,9 +553,9 @@ class LP_Course_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.ID IN (' . $list_ids_format . ')', $filter->post_ids );
 		}
 
-		// Title
+		// Title, do not distinguish diacritics
 		if ( $filter->post_title ) {
-			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' . $filter->post_title . '%' );
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title COLLATE utf8mb4_unicode_ci LIKE %s', '%' . $filter->post_title . '%' );
 		}
 
 		// Slug
@@ -822,7 +826,7 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return array
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.6.5
 	 */
 	public function recursion_sub_categories( array $term_ids ): array {
@@ -834,6 +838,7 @@ class LP_Course_DB extends LP_Database {
 		$filter_sub_category->field_count      = 'tx.term_id';
 		$filter_sub_category->only_fields      = [ 'term_id' ];
 		$filter_sub_category->where[]          = "AND tx.parent IN ($term_ids_format)";
+		$filter_sub_category->limit            = -1;
 		$query_sub_category                    = $this->execute( $filter_sub_category, $total_found );
 		$term_sub_ids                          = [];
 

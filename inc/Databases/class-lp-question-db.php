@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_Lesson_DB
  *
  * @since 3.2.8
- * @version 1.0.2
+ * @version 1.0.3
  */
 class LP_Question_DB extends LP_Post_DB {
 	private static $_instance;
@@ -44,12 +44,14 @@ class LP_Question_DB extends LP_Post_DB {
 	/**
 	 * Get all questions are unassigned to any quiz.
 	 *
+	 * @param LP_Question_Filter|null $filter
+	 *
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @since 4.1.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_questions_not_assign_quiz( LP_Question_Filter $filter = null ) {
+	public function get_questions_not_assign_quiz( $filter = null ) {
 		$lp_qq_filter                      = new LP_Quiz_Questions_Filter();
 		$lp_qq_filter->return_string_query = true;
 		$lp_qq_filter->only_fields         = array( 'question_id' );
@@ -75,7 +77,7 @@ class LP_Question_DB extends LP_Post_DB {
 	 * @since 3.0.0
 	 * @version 1.0.1
 	 */
-	function get_total_question_unassigned( LP_Question_Filter $filter = null ): int {
+	function get_total_question_unassigned( $filter = null ): int {
 		if ( is_null( $filter ) ) {
 			$filter = new LP_Question_Filter();
 		}
@@ -90,16 +92,16 @@ class LP_Question_DB extends LP_Post_DB {
 	/**
 	 * Get list Question ids of Quiz
 	 *
-	 * @param LP_Question_Filter $filter
+	 * @param LP_Question_Filter|null $filter
 	 *
 	 * Clear cache when save quiz same id
 	 *
 	 * @return array
 	 * @throws Exception
 	 * @see   LP_Quiz_Post_Type::save
-	 *
+	 * @version 1.0.1
 	 */
-	public function get_list_question_ids_of_quiz( LP_Question_Filter $filter = null ): array {
+	public function get_list_question_ids_of_quiz( $filter = null ): array {
 		$key_cache = "$filter->ID/question_ids";
 
 		// Get cache

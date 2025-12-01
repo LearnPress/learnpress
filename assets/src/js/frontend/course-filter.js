@@ -165,11 +165,7 @@ window.lpCourseFilter = {
 			const key = pair[ 0 ];
 			const value = formData.getAll( key );
 			if ( ! filterCourses.hasOwnProperty( key ) ) {
-				let value_convert = value;
-				if ( 'object' === typeof value ) {
-					value_convert = value.join( ',' );
-				}
-				filterCourses[ key ] = value_convert;
+				filterCourses[ key ] = value.join( ',' );
 			}
 		}
 
@@ -239,7 +235,6 @@ window.lpCourseFilter = {
 		lpFetchAPI( url, paramsFetch, callBack );
 	},
 	submit: ( form ) => {
-		let urlFetch = API.frontend.apiAJAX;
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
 		const elOptionWidget = form.closest( 'div[data-widget]' );
@@ -280,10 +275,8 @@ window.lpCourseFilter = {
 		// Send lang to API if exist for multiple lang.
 		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
 			filterCourses.lang = lpData.urlParams.lang;
-			urlFetch = lpAddQueryArgs( urlFetch, { lang: lpData.urlParams.lang } );
 		} else if ( lpData.urlParams.hasOwnProperty( 'pll-current-lang' ) ) {
 			filterCourses[ 'pll-current-lang' ] = lpData.urlParams[ 'pll-current-lang' ];
-			urlFetch = lpAddQueryArgs( urlFetch, { lang: lpData.urlParams[ 'pll-current-lang' ] } );
 		}
 
 		if ( 'undefined' !== typeof lpSettingCourses && // Old version.

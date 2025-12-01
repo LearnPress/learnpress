@@ -157,6 +157,7 @@ class LP_Setup_Wizard {
 		wp_localize_script( 'lp-setup', 'lpGlobalSettings', learn_press_global_script_params() );
 		$lp_admin_assets = LP_Admin_Assets::instance();
 		wp_localize_script( 'lp-setup', 'lpDataAdmin', $lp_admin_assets->localize_data_global(), [ 'id' => 'lpDataAdmin' ] );
+		wp_localize_script( 'lp-setup', 'lpData', $lp_admin_assets->localize_data_global(), [ 'id' => 'lpDataAdmin' ] );
 		wp_enqueue_script( 'lp-setup' );
 		learn_press_admin_view( 'setup/header' );
 		learn_press_admin_view( 'setup/content', array( 'steps' => $this->get_steps() ) );

@@ -28,6 +28,7 @@ class ArchiveCourseBlockLegacy extends AbstractBlockType {
 	 * @return false|string
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
+		wp_enqueue_style( 'learnpress' );
 		$page_template = 'archive-course.php';
 
 		ob_start();

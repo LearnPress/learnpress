@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Background\LPBackgroundAjax;
 use LearnPress\Models\UserItems\UserCourseModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -8,6 +9,15 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 
 	/**
 	 * Class LP_Email_Hooks
+	 *
+	 * @uses SendEmailAjax::send_mail_order_status_pending_to_processing
+	 * @uses SendEmailAjax::send_mail_order_status_pending_to_completed
+	 * @uses SendEmailAjax::send_mail_order_status_update_to_completed
+	 * @uses SendEmailAjax::send_mail_order_status_update_to_cancelled
+	 * @uses SendEmailAjax::send_mail_user_course_finished
+	 * @uses SendEmailAjax::send_mail_become_a_teacher_request
+	 * @uses SendEmailAjax::send_mail_become_a_teacher_accept
+	 * @uses SendEmailAjax::send_mail_become_a_teacher_deny
 	 */
 	class LP_Email_Hooks {
 		protected static $instance;
@@ -16,7 +26,7 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 		protected function __construct() {
 			// Define class handle send email with hook corresponding
 			$this->actions = apply_filters(
-				'learn-press/email-actions',
+				'learn-press/email-actions-hooks',
 				[
 					// preview course
 					'learn_press_course_submit_rejected',
@@ -24,84 +34,27 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 					'learn_press_course_submit_for_reviewer',
 
 					// New order
-					'learn-press/order/status-pending-to-processing' => [
-						LP_Email_New_Order_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-new-order-admin.php',
-						LP_Email_New_Order_User::class  => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-new-order-user.php',
-						LP_Email_New_Order_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-new-order-instructor.php',
-						LP_Email_New_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-new-order-guest.php',
-						LP_Email_Processing_Order_User::class => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-processing-order-user.php',
-						LP_Email_Processing_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-processing-order-guest.php',
-					],
-					'learn-press/order/status-pending-to-completed' => [
-						LP_Email_New_Order_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-new-order-admin.php',
-						LP_Email_New_Order_User::class  => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-new-order-user.php',
-						LP_Email_New_Order_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-new-order-instructor.php',
-						LP_Email_New_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-new-order-guest.php',
-					],
-
+					'learn-press/order/status-pending-to-processing' => 'send_mail_order_status_pending_to_processing',
+					'learn-press/order/status-pending-to-completed' => 'send_mail_order_status_pending_to_completed',
 					// Completed order
-					'learn-press/order/status-completed' => [
-						LP_Email_Completed_Order_User::class  => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-completed-order-user.php',
-						LP_Email_Completed_Order_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-completed-order-admin.php',
-						LP_Email_Completed_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-completed-order-guest.php',
-					],
-
-					// User enrolled course when order completed before
-					'learnpress/user/course-enrolled'    => [
-						LP_Email_Enrolled_Course_User::class       => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-enrolled-course-user.php',
-						LP_Email_Enrolled_Course_Admin::class      => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-enrolled-course-admin.php',
-						LP_Email_Enrolled_Course_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-enrolled-course-instructor.php',
-					],
-
+					'learn-press/order/status-completed' => 'send_mail_order_status_update_to_completed',
 					// Cancelled order
-					'learn-press/order/status-cancelled' => [
-						LP_Email_Cancelled_Order_User::class       => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-cancelled-order-user.php',
-						LP_Email_Cancelled_Order_Admin::class      => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-cancelled-order-admin.php',
-						LP_Email_Cancelled_Order_Guest::class      => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-cancelled-order-guest.php',
-						LP_Email_Cancelled_Order_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-cancelled-order-instructor.php',
-					],
-
+					'learn-press/order/status-cancelled' => 'send_mail_order_status_update_to_cancelled',
 					// Finished course
-					'learn-press/user-course-finished'   => [
-						LP_Email_Finished_Course_Admin::class      => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-finished-course-admin.php',
-						LP_Email_Finished_Course_User::class       => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-finished-course-user.php',
-						LP_Email_Finished_Course_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-finished-course-instructor.php',
-					],
-
+					'learn-press/user-course-finished'   => 'send_mail_user_course_finished',
 					// User become a teacher
-					'learn-press/become-a-teacher-sent'  => [
-						LP_Email_Become_An_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-become-an-instructor.php',
-					],
-					'learn-press/user-become-a-teacher-accept' => [
-						LP_Email_Instructor_Accepted::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-instructor-accepted.php',
-					],
-					'learn-press/user-become-a-teacher-deny' => [
-						LP_Email_Instructor_Denied::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-instructor-denied.php',
-					],
+					'learn-press/become-a-teacher-sent'  => 'send_mail_become_a_teacher_request',
+					'learn-press/user-become-a-teacher-accept' => 'send_mail_become_a_teacher_accept',
+					'learn-press/user-become-a-teacher-deny' => 'send_mail_become_a_teacher_deny',
 				]
 			);
 
 			foreach ( $this->actions as $tag_hook => $action ) {
-				// Stop call many times background email when enroll course,
-				if ( $tag_hook === 'learnpress/user/course-enrolled' ) {
-					continue;
-				}
-
-				add_action( $tag_hook, array( $this, 'handle_send_email_on_background' ), 10, 10 );
+				add_action( $tag_hook, array( $this, 'handle_send_email_on_background' ), 11, 10 );
 			}
 
-			/*** Override message change password */
+			// Override message change password
 			add_filter( 'retrieve_password_notification_email', array( $this, 'retrieve_password_message' ), 11, 4 );
-			add_filter(
-				'lp/background/allow_callback',
-				function ( $callbacks ) {
-					$callbacks[] = LP_Email_Hooks::class . ':users_enrolled_courses';
-					return $callbacks;
-				}
-			);
-		}
-
-		protected function include() {
 		}
 
 		/**
@@ -119,13 +72,21 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 			$current_filter = current_filter();
 
 			try {
-				if ( isset( $this->actions[ $current_filter ] ) && is_array( $this->actions[ $current_filter ] ) ) {
-					foreach ( $this->actions[ $current_filter ] as $class_email => $path_file ) {
+				if ( isset( $this->actions[ $current_filter ] ) ) {
+					if ( is_string( $this->actions[ $current_filter ] ) ) { // For new declaration, only string callback
 						$data_send = [
-							'params'     => $args,
-							'class_name' => $class_email,
+							'params'       => $args,
+							'lp-load-ajax' => $this->actions[ $current_filter ],
 						];
-						$email_bg->data( $data_send )->dispatch();
+						LPBackgroundAjax::handle( $data_send );
+					} elseif ( is_array( $this->actions[ $current_filter ] ) ) { // For old declaration, has array
+						foreach ( $this->actions[ $current_filter ] as $class_email => $path_file ) {
+							$data_send = [
+								'params'     => $args,
+								'class_name' => $class_email,
+							];
+							$email_bg->data( $data_send )->dispatch();
+						}
 					}
 				}
 			} catch ( Throwable $e ) {
@@ -169,47 +130,6 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 			}
 
 			return $data_mail;
-		}
-
-		/**
-		 * Send mail when users enrolled courses
-		 *
-		 * @throws Exception
-		 *
-		 * @since 4.2.8.7
-		 * @version 1.0.0
-		 */
-		public static function users_enrolled_courses( $data ) {
-			$user_course_ids = LP_Helper::sanitize_params_submitted( $data['user_course_ids'] ?? [] );
-
-			foreach ( $user_course_ids as $user_course_id ) {
-				$user_id         = $user_course_id['user_id'] ?? 0;
-				$course_id       = $user_course_id['course_id'] ?? 0;
-				$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
-				if ( ! $userCourseModel ) {
-					continue;
-				}
-
-				$data_send = [
-					$userCourseModel->ref_id,
-					$userCourseModel->item_id,
-					$userCourseModel->user_id,
-				];
-
-				// Send email to user enrolled course
-				$email_enrolled = new LP_Email_Enrolled_Course_User();
-				$email_enrolled->handle( $data_send );
-
-				// Send email to admin when user enrolled course
-				$email_enrolled_to_admin = new LP_Email_Enrolled_Course_Admin();
-				$email_enrolled_to_admin->handle( $data_send );
-
-				// Send email to instructor when user enrolled course's instructor
-				$email_enrolled_to_instructor = new LP_Email_Enrolled_Course_Instructor();
-				$email_enrolled_to_instructor->handle( $data_send );
-
-				do_action( 'lp/email/users-enrolled-courses/send-mail', $userCourseModel, $data_send );
-			}
 		}
 
 		/**

@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_Quiz_Questions_DB
  *
  * @since 4.1.7
- * @version 1.0.0
+ * @version 1.0.1
  */
 class LP_Question_Answers_DB extends LP_Database {
 	private static $_instance;
@@ -44,6 +44,21 @@ class LP_Question_Answers_DB extends LP_Database {
 			$filter->collection_alias = 'qa';
 		}
 
+		// By question answer id
+		if ( ! empty( $filter->question_answer_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( "AND {$filter->collection_alias}.question_answer_id = %d", $filter->question_answer_id );
+		}
+
+		// By question id
+		if ( ! empty( $filter->question_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( "AND {$filter->collection_alias}.question_id = %d", $filter->question_id );
+		}
+
+		// By title
+		if ( ! empty( $filter->title ) ) {
+			$filter->where[] = $this->wpdb->prepare( "AND {$filter->collection_alias}.title LIKE %s", '%' . $this->wpdb->esc_like( $filter->title ) . '%' );
+		}
+
 		// Question ids
 		if ( ! empty( $filter->question_ids ) ) {
 			$question_ids_format = LP_Helper::db_format_array( $filter->question_ids, '%d' );
@@ -59,4 +74,3 @@ class LP_Question_Answers_DB extends LP_Database {
 		return $this->execute( $filter, $total_rows );
 	}
 }
-

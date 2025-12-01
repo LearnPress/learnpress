@@ -235,10 +235,8 @@ class LP_Helper {
 				throw new Exception( __( 'Missing post title', 'learnpress' ) );
 			}
 
-			$single_instructor_template = file_get_contents( Template::instance( false )->get_frontend_template_type_block( 'patterns/single-instructor-pattern.html' ) );
-
 			if ( preg_match( '#^learn_press_single_instructor_page_id.*#', $key_option ) ) {
-				$args['post_content'] = $single_instructor_template;
+				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_single_instructor]<!-- /wp:shortcode -->';
 			} elseif ( preg_match( '#^learn_press_instructors_page_id.*#', $key_option ) ) {
 				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_instructors]<!-- /wp:shortcode -->';
 			} elseif ( preg_match( '#^learn_press_profile_page_id.*#', $key_option ) ) {
@@ -307,18 +305,19 @@ class LP_Helper {
 	 *
 	 * @param array|string $value
 	 * @param string $type_content
-	 *
+	 * @param bool $unslash Set it is false when you don’t want to remove slashes (unslash) from $value
+	 * for example, in cases involving LaTeX math syntax.
 	 * @return array|string
 	 * @since  3.2.7.1
 	 * @author tungnx
 	 */
-	public static function sanitize_params_submitted( $value, string $type_content = 'text' ) {
-		$value = wp_unslash( $value );
+	public static function sanitize_params_submitted( $value, string $type_content = 'text', $unslash = true ) {
+		$value = $unslash ? wp_unslash( $value ) : $value;
 
 		if ( is_string( $value ) ) {
 			switch ( $type_content ) {
 				case 'html':
-					$value = wp_kses_post( $value );
+					$value = Template::sanitize_html_content( $value );
 					break;
 				case 'textarea':
 					$value = sanitize_textarea_field( $value );
@@ -342,7 +341,7 @@ class LP_Helper {
 		} elseif ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
 				unset( $value[ $k ] );
-				$value[ sanitize_text_field( $k ) ] = self::sanitize_params_submitted( $v, $type_content );
+				$value[ sanitize_text_field( $k ) ] = self::sanitize_params_submitted( $v, $type_content, $unslash );
 			}
 		}
 

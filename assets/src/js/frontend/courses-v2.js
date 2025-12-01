@@ -238,7 +238,7 @@ window.lpCoursesList = ( () => {
 					console.log( error );
 				},
 				completed: () => {
-					console.log( 'completed' );
+					//console.log( 'completed' );
 					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 				},
 			};

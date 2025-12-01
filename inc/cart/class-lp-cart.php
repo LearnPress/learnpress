@@ -155,7 +155,7 @@ class LP_Cart {
 	 * Re-calculate cart totals and update data to session
 	 *
 	 * @since 3.0.0
-	 * @version 4.0.1
+	 * @version 4.0.2
 	 */
 	public function calculate_totals() {
 		$data           = new stdClass();
@@ -195,7 +195,7 @@ class LP_Cart {
 			}
 		}
 
-		return apply_filters( 'lp/cart/calculate_total', $data );
+		return apply_filters( 'lp/cart/calculate_total', $data, $items );
 
 		//$this->update_session();
 	}
@@ -265,7 +265,7 @@ class LP_Cart {
 	public function get_subtotal() {
 		$subtotal = learn_press_format_price( $this->subtotal, true );
 
-		return apply_filters( 'learn-press/cart-subtotal', $subtotal );
+		return apply_filters( 'learn-press/cart-subtotal', $subtotal, $this );
 	}
 
 	/**
@@ -276,7 +276,7 @@ class LP_Cart {
 	public function get_total() {
 		$total = learn_press_format_price( $this->total, true );
 
-		return apply_filters( 'learn-press/cart-total', $total );
+		return apply_filters( 'learn-press/cart-total', $total, $this );
 	}
 
 	/**

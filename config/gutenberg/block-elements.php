@@ -19,6 +19,7 @@ use LearnPress\Gutenberg\Blocks\Breadcrumb\BreadcrumbBlockType;
 use LearnPress\Gutenberg\Blocks\Courses\ListCoursesBlockType;
 use LearnPress\Gutenberg\Blocks\Courses\CourseItemTemplateBlock;
 use LearnPress\Gutenberg\Blocks\Courses\CourseOrderByBlockType;
+use LearnPress\Gutenberg\Blocks\Courses\CourseResultsBlockType;
 use LearnPress\Gutenberg\Blocks\Courses\CourseSearchBlockType;
 use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
@@ -126,6 +127,7 @@ return apply_filters(
 		// new SingleInstructorBlockType(),
 		new ListCoursesBlockType(),
 		new CourseItemTemplateBlock(),
+		new CourseResultsBlockType(),
 		new ItemCloseBlockType(),
 		new ItemCommentBlockType(),
 		new ItemContentBlockType(),

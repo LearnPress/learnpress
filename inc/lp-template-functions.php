@@ -8,7 +8,12 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -50,99 +55,88 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 	 * @throws Exception
 	 */
 	function learn_press_get_course_tabs() {
-		$course = learn_press_get_course();
-		$user   = learn_press_get_current_user();
-
-		$defaults = array();
-
-		/**
-		 * Show tab overview if
-		 * 1. Course is preview
-		 * OR
-		 * 2. Course's content not empty
-		 */
-		if ( isset( $_GET['preview'] ) || $course ) {
-			$defaults['overview'] = array(
-				'title'    => esc_html__( 'Overview', 'learnpress' ),
-				'priority' => 10,
-				'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/overview.php' ),
-			);
+		$courseModel = CourseModel::find( get_the_ID(), true );
+		if ( ! $courseModel ) {
+			return [];
 		}
 
-		$defaults['curriculum'] = array(
+		$userModel = UserModel::find( get_current_user_id(), true );
+
+		$defaults               = [];
+		$defaults['overview']   = [
+			'title'    => esc_html__( 'Overview', 'learnpress' ),
+			'priority' => 10,
+			'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/overview.php' ),
+		];
+		$defaults['curriculum'] = [
 			'title'    => esc_html__( 'Curriculum', 'learnpress' ),
 			'priority' => 30,
-			'callback' => LearnPress::instance()->template( 'course' )->func( 'course_curriculum' ),
-		);
-
-		$defaults['instructor'] = array(
+			'callback' => function () use ( $courseModel, $userModel ) {
+				$singleCourseTemplate = SingleCourseTemplate::instance();
+				echo $singleCourseTemplate->html_curriculum( $courseModel, $userModel );
+			},
+		];
+		$defaults['instructor'] = [
 			'title'    => esc_html__( 'Instructor', 'learnpress' ),
 			'priority' => 40,
 			'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/instructor.php' ),
-		);
+		];
 
-		if ( $course->get_faqs() ) {
-			$defaults['faqs'] = array(
+		$faq = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
+		if ( ! empty( $faq ) ) {
+			$defaults['faqs'] = [
 				'title'    => esc_html__( 'FAQs', 'learnpress' ),
 				'priority' => 50,
-				'callback' => LearnPress::instance()->template( 'course' )->func( 'faqs' ),
-			);
+				'callback' => function () use ( $courseModel ) {
+					$singleCourseTemplate = SingleCourseTemplate::instance();
+					echo $singleCourseTemplate->html_faqs( $courseModel, [ 'show_heading' => false ] );
+				},
+			];
 		}
 
-		$can_show_tab_material = false;
-		if ( $course->is_no_required_enroll()
-			|| $user->has_enrolled_or_finished( $course->get_id() )
-			|| $user->has_purchased_course( $course->get_id() )
-			|| $user->is_instructor() || $user->is_admin() ) {
-			$can_show_tab_material = true;
-		}
-
-		$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
-		$count_files   = LP_Material_Files_DB::getInstance()->get_total( $course->get_id() );
-		if ( $can_show_tab_material && (int) $file_per_page != 0 && $count_files > 0 ) {
-			$defaults['materials'] = array(
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$html_material        = $singleCourseTemplate->html_material( $courseModel, $userModel, [ 'show_heading' => false ] );
+		if ( ! empty( $html_material ) ) {
+			$defaults['materials'] = [
 				'title'    => esc_html__( 'Materials', 'learnpress' ),
 				'priority' => 45,
-				'callback' => function () {
-					do_action( 'learn-press/course-material/layout', [] );
+				'callback' => function () use ( $html_material ) {
+					echo $html_material;
 				},
-			);
+			];
 		}
 
-		$tabs = apply_filters( 'learn-press/course-tabs', $defaults );
+		// @since 4.2.8.7.1 update new parameter $courseModel
+		$tabs = apply_filters( 'learn-press/course-tabs', $defaults, $courseModel );
 
-		if ( $tabs ) {
-			uasort( $tabs, 'learn_press_sort_list_by_priority_callback' );
-			$request_tab = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
-			$has_active  = false;
+		if ( ! empty( $tabs ) ) {
+			$has_tab_active = false;
+
+			// sort tabs by priority, from low to high
+			uasort(
+				$tabs,
+				function ( $a, $b ) {
+					$priority1 = $a['priority'] ?? 1;
+					$priority2 = $b['priority'] ?? 2;
+
+					return ( $priority1 < $priority2 ) ? - 1 : 1;
+				}
+			);
 
 			foreach ( $tabs as $k => $v ) {
-				$v['id'] = ! empty( $v['id'] ) ? $v['id'] : 'tab-' . $k;
-
-				if ( $request_tab === $v['id'] ) {
-					$v['active'] = true;
-					$has_active  = $k;
-				} elseif ( isset( $v['active'] ) && $v['active'] ) {
-					$has_active = true;
+				$v['id'] = $v['id'] ?? 'tab-' . $k;
+				if ( ! empty( $v['active'] ) ) {
+					$has_tab_active = true;
 				}
+
 				$tabs[ $k ] = $v;
 			}
 
-			if ( ! $has_active ) {
-				if ( $course && $user->has_course_status(
-					$course->get_id(),
-					array(
-						'enrolled',
-						'finished',
-					)
-				) && ! empty( $tabs['curriculum'] )
-				) {
-					$tabs['curriculum']['active'] = true;
-				} elseif ( ! empty( $tabs['overview'] ) ) {
-					$tabs['overview']['active'] = true;
-				} else {
-					$keys                         = array_keys( $tabs );
-					$first_key                    = reset( $keys );
+			// Check if there is no tab active, set first tab active
+			if ( ! $has_tab_active ) {
+				// set first tab active
+				$first_key = array_key_first( $tabs );
+				if ( $first_key ) {
 					$tabs[ $first_key ]['active'] = true;
 				}
 			}

@@ -213,13 +213,19 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Admin editor
 		 *
 		 * @since 3.3.0
-		 *
+		 * @version 1.0.1
 		 * @return void
 		 */
 		public function admin_editor() {
-			$quiz = LP_Quiz::get_quiz();
+			global $post;
 
-			echo learn_press_admin_view_content( 'quiz/editor' );
+			$quiz_id       = $post->ID;
+			$quizPostModel = QuizPostModel::find( $quiz_id, true );
+			if ( ! $quizPostModel instanceof QuizPostModel ) {
+				return;
+			}
+
+			do_action( 'learn-press/admin/edit-quiz/layout', $quizPostModel );
 		}
 
 		/**
@@ -475,7 +481,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @since 4.2.7.6
 		 * @version 1.0.0
 		 */
-		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+		public function save_post( int $post_id = 0, ?WP_Post $post = null, bool $is_update = false ) {
 			// Clear cache get quiz by id
 			$lpCache = new LP_Cache();
 			$lpCache->clear( "quizPostModel/find/{$post_id}" );

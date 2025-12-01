@@ -1,0 +1,71 @@
+/**
+* Style for the popup alert, confirm
+* @link https://sweetalert2.github.io/
+* @since 4.2.9
+* @version 1.0.0
+*/
+
+.swal2-container {
+	z-index: 99999;
+}
+
+.swal2-popup {
+	.content-title {
+		margin: 0 0 20px 0;
+		padding: 0;
+		text-align: center;
+		font-size: 1.5em;
+	}
+
+	.swal2-actions {
+		width: 100%;
+		padding: 0 30px;
+
+		button {
+			flex: 1;
+
+			&.swal2-confirm {
+				background-color: #E02200;
+			}
+
+			&.swal2-cancel {
+				background-color: transparent;
+				border: 1px solid #ccc;
+				color: inherit;
+			}
+		}
+	}
+	.swal2-warning {
+		color: #E02200;
+		border-color: transparent;
+		background-color: #DF00001A;
+	}
+	.swal2-icon {
+		width: 50px;
+		height: 50px;
+
+		.swal2-icon-content {
+			font-size: 0;
+
+			&::before {
+				content: "\f071";
+				font-family: "lp-icon";
+				font-size: 24px;
+				display: inline-block;
+			}
+		}
+	}
+
+	.swal2-title {
+		font-size: 1.5em;
+	}
+
+	.swal2-html-container {
+		font-size: 1em;
+	}
+
+	.lp-tom-select.ts-wrapper .ts-dropdown {
+		max-height: 200px;
+		overflow: hidden;
+	}
+}

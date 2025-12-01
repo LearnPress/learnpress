@@ -100,3 +100,32 @@
 		}
 	}
 }
+
+.scroll-wrapper {
+	overflow: hidden;
+	opacity: 0;
+
+	.scroll-element {
+		background: transparent;
+
+		&.scroll-y {
+
+			&.scroll-scrolly_visible {
+				transition: opacity 0.25s;
+			}
+		}
+	}
+
+	&:hover {
+
+		.scroll-element {
+
+			&.scroll-y {
+
+				&.scroll-scrolly_visible {
+					opacity: 0.7;
+				}
+			}
+		}
+	}
+}

@@ -74,10 +74,26 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$text_align      = $attributes['textAlign'] ?? 'center';
-			$align_items     = $attributes['alignItems'] ?? 'top';
-			$justify_content = $attributes['justifyContent'] ?? 'center';
-			$width           = $attributes['width'] ?? '100';
+			$map_align_items = [
+				'top'    => 'flex-start',
+				'center' => 'center',
+				'bottom' => 'flex-end',
+			];
+
+			$text_align     = sanitize_text_field( $attributes['textAlign'] ?? 'center' );
+			$allowed_aligns = [ 'left', 'center', 'right', 'justify' ];
+			$text_align     = in_array( $text_align, $allowed_aligns, true ) ? $text_align : 'center';
+
+			$align_items   = sanitize_text_field( $attributes['alignItems'] ?? 'top' );
+			$allowed_items = [ 'top', 'center', 'bottom' ];
+			$align_items   = in_array( $align_items, $allowed_items, true ) ? $map_align_items[ $align_items ] : 'flex-start';
+
+			$justify_content = sanitize_text_field( $attributes['justifyContent'] ?? 'center' );
+			$allowed_justify = [ 'flex-start', 'center', 'flex-end', 'space-between', 'space-around' ];
+			$justify_content = in_array( $justify_content, $allowed_justify, true ) ? $justify_content : 'center';
+
+			$width = absint( $attributes['width'] ?? 100 );
+			$width = min( max( $width, 0 ), 100 );
 
 			$html_button = SingleCourseModernLayout::instance()->html_buttons( $courseModel, $userModel );
 			if ( empty( $html_button ) ) {
@@ -85,30 +101,36 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			}
 
 			$extra_attributes = [
-				'style' => 'width: 100%; text-align: ' . $text_align . ';',
+				'style' => 'width: 100%; text-align: ' . esc_attr( $text_align ) . ';',
 			];
 			$wrapper          = get_block_wrapper_attributes( $extra_attributes );
 
+			$style = sprintf(
+				'display: flex; align-items: %s; justify-content: %s;',
+				esc_attr( $align_items ),
+				esc_attr( $justify_content )
+			);
+
 			$html_button = sprintf(
-				'<div class="course-buttons__wrapper" %s>%s</div>',
-				'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"',
+				'<div class="course-buttons__wrapper" style="%s">%s</div>',
+				esc_attr( $style ),
 				$html_button
 			);
 
 			$html_button = str_replace(
 				'class="course-buttons"',
-				'class="course-buttons" ' . 'style=" width: ' . $width . '%;"',
+				'class="course-buttons" ' . 'style="width: ' . $width . '%; display: flex; flex-direction: column; gap: 10px;"',
 				$html_button
 			);
 
-			// Set align to course-buttons.
 			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
 				$html_button = str_replace(
 					'class="course-buttons',
-					'class="course-buttons ' . 'align' . $attributes['align'] . ' ',
+					'class="course-buttons ' . 'align' . sanitize_html_class( $attributes['align'] ) . ' ',
 					$html_button
 				);
 			}
+
 			preg_match( '#class="(.*)"#i', $wrapper, $class_wrapper_find );
 			if ( isset( $class_wrapper_find['1'] ) ) {
 				// Find class button lp to replace.

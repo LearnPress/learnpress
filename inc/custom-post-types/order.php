@@ -130,9 +130,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param bool $is_update
 		 *
 		 * @editor tungnx
-		 * @version 1.0.5
+		 * @version 1.0.6
 		 */
-		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+		public function save_post( int $post_id, ?WP_Post $post = null, bool $is_update = false ) {
 			try {
 				$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
 				if ( isset( $backtrace[6]['class'] ) && $backtrace[6]['class'] === LP_Order_CURD::class ) {
@@ -207,7 +207,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @param string $where
 		 *
-		 * @return mixed
+		 * @return string
+		 * @throws Exception
 		 */
 		public function posts_where_paged( $where ) {
 			// Code temporary, when release about 1 week, will remove it.
@@ -279,22 +280,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			return $where;
 		}
-
-		/*public function posts_fields( $fields ) {
-			global $wp_query;
-
-			if ( ! $this->_is_search() ) {
-				return $fields;
-			}
-
-			if ( empty( $wp_query->get( 'author' ) ) ) {
-				return $fields;
-			}
-
-			//$fields .= ', uu.ID, uu.display_name as user_display_name';
-
-			return $fields;
-		}*/
 
 		public function posts_orderby( $orderby ) {
 			global $wpdb;
@@ -522,10 +507,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$t_time    = get_the_time( 'Y/m/d g:i:s a' );
 					$m_time    = $post->post_date;
 					$time      = get_post_time( 'G', true, $post );
-					$time_diff = time() - $time;
+					$time_diff = current_time( 'U' ) - $time;
 
 					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-						$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
+						$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time, current_time( 'U' ) ) );
 					} else {
 						$h_time = mysql2date( 'Y/m/d', $m_time );
 					}
@@ -554,10 +539,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					}
 					break;
 			}
-		}
-
-		private function _is_search() {
-			return is_search();
 		}
 
 		/**
@@ -599,15 +580,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				),
 				'exclude_from_search' => true,
 			);
-		}
-
-		/**
-		 * Remove some unwanted metaboxes
-		 */
-		public static function register_metabox() {
-			// Remove Publish metabox
-			remove_meta_box( 'submitdiv', LP_ORDER_CPT, 'side' );
-			remove_meta_box( 'commentstatusdiv', LP_ORDER_CPT, 'normal' );
 		}
 
 		/**

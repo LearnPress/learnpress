@@ -81,13 +81,13 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
 				),
 			),
-			'by-item'                           => array(
+			/*'by-item'                           => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_materials_by_item' ),
 					'permission_callback' => '__return_true',
 				),
-			),
+			),*/
 		);
 
 		parent::register_routes();
@@ -142,7 +142,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-			$mime_types       = get_allowed_mime_types();
 			$file_methods     = array( 'upload', 'external' );
 			$error_messages   = '';
 			$success_messages = '';
@@ -195,20 +194,20 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 					$file_path = str_replace( wp_upload_dir()['baseurl'], '', $file_handle_upload['url'] );
 				} elseif ( $method == 'external' ) {
-					$file_path          = sanitize_url( $material['link'] );
-					$file_external_info = $this->check_external_file( $file_path );
-					$mime_type          = $file_external_info['type'] ?? '';
-					$file_ext           = array_search( $mime_type, $mime_types );
-					if ( $file_ext === false ) {
+					$file_path   = sanitize_url( $material['link'] );
+					$file_info   = pathinfo( $file_path );
+					$file_extend = $file_info['extension'] ?? '';
+					if ( ! $file_extend ) {
 						$file_type = __( 'Unknown', 'learnpress' );
 					} else {
-						$file_type = $file_ext;
+						$file_type = $file_extend;
 					}
-					if ( $file_external_info['error'] ) {
+					$check_allow_file = $this->check_wp_allowed_file_type( $file_extend );
+					if ( ! $check_allow_file ) {
 						$error_messages .= sprintf(
 							esc_html__( 'An error occurred while checking %1$s. %2$s', 'learnpress' ),
 							$label,
-							$file_external_info['error_message']
+							__( 'Oops! That file type isn’t allowed.', 'learnpress' )
 						);
 						continue;
 					}
@@ -276,8 +275,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$params   = $request->get_params();
-			$item_id  = $params['item_id'] ?? 0;
+			$params  = $request->get_params();
+			$item_id = $params['item_id'] ?? 0;
 			if ( ! $item_id ) {
 				throw new Exception( esc_html__( 'Invalid item id!', 'learnpress' ) );
 			}
@@ -311,6 +310,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @return array
 	 * @version 1.0.1
 	 * @since 4.2.2
+	 * @depreacted 4.2.7.8.5
 	 */
 	public function check_external_file( $file_url ): array {
 		$lp_file   = LP_WP_Filesystem::instance();
@@ -460,15 +460,17 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @param  WP_REST_Request $request
 	 * @return WP_REST_Response  $response
 	 * @since 4.2.7.4
+	 * @deprecated 4.2.8.7.5
 	 * @version 1.0.0
 	 */
+	/*
 	public function get_materials_by_item( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 
 		try {
 			$params    = $request->get_params();
 			$course_id = (int) $params['course_id'] ?? 0;
-			$item_id = (int) $params['item_id'] ?? 0;
+			$item_id   = (int) $params['item_id'] ?? 0;
 
 			$course = CourseModel::find( $course_id, true );
 			if ( ! $course ) {
@@ -510,7 +512,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return rest_ensure_response( $response );
-	}
+	}*/
 
 	/**
 	 * Check user permission
@@ -531,5 +533,20 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return apply_filters( 'learnpress/rest-material/can-edit-material', $permission );
+	}
+
+	/**
+	 * [check_wp_allowed_file_type description]
+	 * @param  string $file_ext file extend(png, jpg.....)
+	 * @return boolean
+	 */
+	public function check_wp_allowed_file_type( string $file_ext = '' ): bool {
+		$allowed = get_allowed_mime_types();
+		foreach ( $allowed as $ext => $mime ) {
+			if ( strpos( $ext, $file_ext ) !== false ) {
+				return true; // Found the string in a key
+			}
+		}
+		return false;
 	}
 }

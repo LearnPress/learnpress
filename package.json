@@ -6,12 +6,12 @@
 	"scripts": {
 		"start": "cross-env NODE_OPTIONS=--openssl-legacy-provider wp-scripts start",
 		"build": "cross-env NODE_OPTIONS=--openssl-legacy-provider wp-scripts build",
-		"format-js": "cross-env  wp-scripts format ./assets/src",
+		"format-js": "cross-env  wp-scripts format ./assets/src/js/admin/edit-quiz.js",
 		"dev-build": "cross-env  npm run build && gulp styles && npm run start",
 		"makepot:js": "wp-babel-makepot \"./assets/src/**/*.{js,jsx,ts,tsx}\" --ignore \"**/node_modules/**,**/test/**,**/*.d.ts\" --base \"./\" --dir \"./languages/strings\" --output \"./languages/learnpress-js.pot\"",
 		"makepot:cli": "wp i18n make-pot . languages/learnpress.pot --skip-audit --merge=languages/learnpress-js.pot --exclude=\"test,releases,build,dist,node_modules,vendor,wordpress\"",
 		"makepot": "npm rum makepot:js && npm run makepot:cli && gulp updatePot",
-		"build-makepot-zip": "npm run build && npm run makepot && gulp styles && gulp release",
+		"build-makepot-zip": "composer update --no-dev && npm run build && npm run makepot && gulp styles && gulp release",
 		"release": "node build-release.js"
 	},
 	"repository": {
@@ -28,6 +28,7 @@
 		"cross-env": "^7.0.3",
 		"@automattic/wp-babel-makepot": "1.2.0",
 		"@wordpress/babel-preset-default": "^7.28.0",
+		"babel-loader": "10.0.0",
 		"@wordpress/eslint-plugin": "^17.1.0",
 		"@wordpress/scripts": "30.12.0",
 		"@wordpress/block-editor": "14.14.0",
@@ -59,18 +60,18 @@
 		"webpack": "5.94.0",
 		"node-notifier": "10.0.1"
 	},
+	"_comment": "sweetalert2 11.22.2 source origin but denied domain .ru, .su, .by, and .рф.",
 	"dependencies": {
 		"classnames": "^2.3.2",
 		"@paypal/paypal-js": "^7.0.3",
 		"refx": "^3.1.1",
-		"sortablejs": "^1.15.0",
+		"sortablejs": "^1.15.6",
 		"tom-select": "2.4.3",
-		"chart.js": "4.4.9",
+		"chart.js": "4.5.1",
 		"cropperjs": "1.6.2",
 		"style-loader": "3.3.4",
 		"file-loader": "6.2.0",
-		"mini-css-extract-plugin": "2.9.2",
 		"toastify-js": "1.12.0",
-		"sweetalert2": "11.22.0"
+		"sweetalert2": "11.26.3"
 	}
 }

@@ -7,7 +7,7 @@
 	font-variant: normal;
 	text-transform: none;
 	line-height: 1;
-
+	font-display: swap;
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -783,4 +783,13 @@
 
 .lp-icon-box:before {
 	content: "\e906";
+}
+
+.lp-ico-ai{
+	display: inline-block;
+	width: 13px;
+	height: 13px;
+	background-image: url('../../images/icons/ico-ai.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
 }

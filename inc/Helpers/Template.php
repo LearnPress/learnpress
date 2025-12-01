@@ -336,4 +336,133 @@ class Template {
 			return Template::combine_components( $section );
 		}
 	}
+
+	/**
+	 * Generate HTML for pagination.
+	 *
+	 * @param array $data [ 'total_pages' => int, 'paged' => int, 'base' => string ]
+	 *
+	 * @return string HTML for pagination.
+	 * @since 4.2.8.7.4
+	 * @version 1.0.1
+	 */
+	public function html_pagination( array $data = [] ): string {
+		$total_pages = $data['total_pages'] ?? 0;
+		$paged       = $data['paged'] ?? 1;
+		if ( $total_pages <= 1 ) {
+			return '';
+		}
+
+		$html_wrapper = $data['wrapper'] ?? [
+			'<nav class="learn-press-pagination navigation pagination">' => '</nav>',
+		];
+
+		$pagination = paginate_links(
+			apply_filters(
+				'learn_press_pagination_args',
+				array(
+					'base'      => $data['base'] ?? '',
+					'format'    => '',
+					'add_args'  => '',
+					'current'   => max( 1, $paged ),
+					'total'     => $total_pages,
+					'prev_text' => '<i class="lp-icon-arrow-left"></i>',
+					'next_text' => '<i class="lp-icon-arrow-right"></i>',
+					'type'      => 'list',
+					'end_size'  => 3,
+					'mid_size'  => 3,
+				)
+			)
+		);
+
+		return Template::instance()->nest_elements( $html_wrapper, $pagination );
+	}
+
+	/**
+	 * Convert data to JSON string
+	 *
+	 * @param array|object|mixed $data
+	 *
+	 * @return string
+	 * @since 4.2.9
+	 * @version 1.0.0
+	 */
+	public static function convert_data_to_json( $data ): string {
+		return esc_attr(
+			htmlentities2(
+				wp_json_encode(
+					$data,
+					JSON_HEX_QUOT |
+					JSON_HEX_TAG |
+					JSON_HEX_AMP |
+					JSON_HEX_APOS |
+					JSON_UNESCAPED_UNICODE |
+					JSON_UNESCAPED_SLASHES
+				)
+			)
+		);
+	}
+
+	/**
+	 * Sanitize HTML content by allowing specific tags and attributes.
+	 *
+	 * @param string $content
+	 *
+	 * @return string
+	 * @since 4.2.9
+	 * @version 1.0.0
+	 */
+	public static function sanitize_html_content( string $content = '' ): string {
+		$allowed_tags = wp_kses_allowed_html( 'post' );
+
+		$extra_tag = array(
+			'iframe' => [
+				'src'             => true,
+				'width'           => true,
+				'height'          => true,
+				'frameborder'     => true,
+				'allowfullscreen' => true,
+				'allow'           => true,
+			],
+			'audio'  => array(
+				'autoplay'         => true,
+				'controls'         => true,
+				'loop'             => true,
+				'muted'            => true,
+				'preload'          => true,
+				'src'              => true,
+				'aria-controls'    => true,
+				'aria-current'     => true,
+				'aria-describedby' => true,
+				'aria-details'     => true,
+				'aria-expanded'    => true,
+				'aria-hidden'      => true,
+				'aria-label'       => true,
+				'aria-labelledby'  => true,
+				'aria-live'        => true,
+				'class'            => true,
+				'data-*'           => true,
+				'dir'              => true,
+				'hidden'           => true,
+				'id'               => true,
+				'lang'             => true,
+				'style'            => true,
+				'title'            => true,
+				'role'             => true,
+				'xml:lang'         => true,
+				'controlslist'     => true,
+				'crossorigin'      => true,
+				'poster'           => true,
+			),
+			'source' => array(
+				'src'   => true,
+				'type'  => true,
+				'media' => true,
+			),
+		);
+
+		$allowed_tags = array_merge( $allowed_tags, $extra_tag );
+
+		return wp_kses( $content, $allowed_tags );
+	}
 }

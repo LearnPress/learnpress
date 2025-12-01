@@ -1,9 +1,9 @@
 === LearnPress - WordPress LMS Plugin ===
 Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
-Tags: e-learning, education, course, lms, learning management system
+Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.8.7
+Stable tag: 4.3.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -35,6 +35,24 @@ Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.env
 
 - [Create a WordPress Udemy with Eduma](https://eduma.thimpress.com/demo-udemy/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 - [Create a WordPress Coursera with Eduma](https://eduma.thimpress.com/demo-coursera/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
+
+### Exciting News: LearnPress Officially Integrates with Gutenberg! ###
+Get ready to revolutionize your online course creation experience! We are thrilled to announce the official LearnPress [Gutenberg integration](https://learnpresslms.com/blog/learnpress-gutenberg-integration/). This powerful combination brings the flexibility and intuitive nature of WordPress’s block editor to your favorite WordPress LMS plugin, [LearnPress](https://learnpresslms.com/). Now, crafting beautiful and engaging course layouts is easier and more dynamic than ever before.
+
+Important Note: To harness the full potential of this integration, please ensure you are using a theme that supports Gutenberg and its full-site editing features.
+
+###Build Your LearnPress Site Your Way: Elementor or Gutenberg###
+LearnPress now gives you the flexibility to build courses with two different page builders, depending on your style and workflow.
+
+**Elementor**
+Design with a powerful drag-and-drop interface, live previews, and advanced customization options.
+Take it further with [Thim Elementor Kit](https://wordpress.org/plugins/thim-elementor-kit/) - our ready-made widgets and layouts optimized for LearnPress, so you can build professional course pages quickly and beautifully.
+👉 Try the Elementor demo: [EduPress | Free LearnPress Theme](https://thimpress.com/product/education-wordpress-starter-theme-for-learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
+
+**Gutenberg**
+Enjoy the speed and simplicity of WordPress’s native block editor, lightweight and fully integrated.
+Add [Thim Blocks](https://wordpress.org/plugins/thim-blocks/) - our Page Builder, Gutenberg Blocks for the Block Editor - you can unlock extended blocks tailored for LearnPress to create clean, modern, and highly functional course layouts without extra plugins.
+👉 Try the Gutenberg demo: [Theme Online Learning | Free Gutenberg WordPress Theme](https://wordpress.org/themes/online-learning/)
 
 ###LearnPress Mobile App###
 
@@ -83,12 +101,14 @@ Add-ons are used to provide extra features for LearnPress and you can also write
 Education should be free, and we want you to bring it to as many people as you can. Therefore, we create LearnPress as a tool for you to create online course and share it. We'll continue to develop it as long as we can and make it better and better.
 
 **LearnPress is actively developed**
-We are developing and improving LearnPress day by day and bringing you more new features cos we want LearnPress to become the **best WordPress LMS plugin**.
+We are developing and improving LearnPress day by day and bringing you more new features because we want LearnPress to become the **best WordPress LMS plugin**.
 
 <a href="https://docs.thimpress.com/learnpress/" target="_blank">LearnPress WordPress LMS Plugin Documentation</a>
 
 ###Free Add-ons for LearnPress WordPress LMS Plugin###
 
+- [Student List Add-on for LearnPress](https://thimpress.com/product/student-list-add-on-for-learnpress/) - Clearly display all learners who have enrolled or are currently studying a specific course.
+- [Coming Soon Add-on for LearnPress](https://thimpress.com/product/coming-soon-add-on-learnpress/) - Mark courses as "Coming Soon" to tease upcoming content and build interest before the course is published or available for enrollment.
 - [LearnPress Wishlist](https://wordpress.org/plugins/learnpress-wishlist/) - Add courses to a wishlist for students.
 - [LearnPress Course Review](https://wordpress.org/plugins/learnpress-course-review/) - Review courses for enrolled students.
 - [LearnPress Import/Export](https://wordpress.org/plugins/learnpress-import-export/) - Export or import courses out-of-box.
@@ -96,10 +116,15 @@ We are developing and improving LearnPress day by day and bringing you more new 
 - [LearnPress bbPress Integration](https://wordpress.org/plugins/learnpress-bbpress/) -  Interact with students and instructors in a course and discuss with each other about the course.
 - [LearnPress BuddyPress Integration](https://wordpress.org/plugins/learnpress-buddypress/) - Add BuddyPress support for LearnPress WordPress LMS Plugin, turn your WordPress BuddyPress website into *BuddyPress LMS* (*BuddyPress Learning Management System*)".
 - [LearnPress Offline Payment](https://wordpress.org/plugins/learnpress-offline-payment/) - Help you to manually create order for offline payment instead of paying via any payment gateways to sell course.
-- [LearnPress Fill In Blank](https://wordpress.org/plugins/learnpress-fill-in-blank/) - Fill in Blank question type for LearnPress WordPress LMS Plugin.
 
 ###Premium add-ons for LearnPress WordPress LMS Plugin###
 
+- [Upsell Add-on for LearnPress](https://thimpress.com/product/upsell-add-on-for-learnpress/) - Boost course sales by offering related or higher-tier courses as package.
+- [Razorpay Add-on for LearnPress](https://thimpress.com/product/razorpay-add-on-for-learnpress/) - Accept payments for courses through Razorpay, a popular and secure payment gateway in India.
+- [Paystack Addon For LearnPress](https://thimpress.com/product/paystack-add-on-for-learnpress/) - Integrate Paystack payment gateway to easily accept payments from students, especially in African regions.
+- [QPay Add-on for LearnPress](https://thimpress.com/product/qpay-add-on-for-learnpress/) - Enable payments through QPay, most accepted payment solution in Mongolia, allowing students to purchase courses via this secure payment solution.
+- [PayU Add-on for LearnPress](https://thimpress.com/product/payu-add-on-for-learnpress/) - Accept course payments with PayU, a reliable global payment gateway supporting multiple currencies.
+- [H5P Add-on for LearnPress](https://thimpress.com/product/h5p/) - Add interactive H5P content such as quizzes, interactive videos, and presentations to your LearnPress courses.
 - [WPML Add-on for LearnPress](https://thimpress.com/product/wpml-add-on-for-learnpress/) - With the help from WPML, WPML add-on for LearnPress is the perfect solution for LearnPress users to translate anything flashily. Now, LearnPress users can focus on creating amazing contents without the worries about language restrictions.
 - [Live Course Add-on for LearnPress](https://thimpress.com/product/live-course-add-on-for-learnpress/) - Create courses and live video meetings using Zoom or Google Meet Use shortcode to show the meeting content.
 - [Assignments add-on for LearnPress](https://thimpress.com/product/assignments-add-on-for-learnpress/) - Allow instructors to give assignments, homework for students and they can grade the students' work later on. The Assignments add-on is a great supplement to LearnPress and will make your courses more interactive.
@@ -123,46 +148,64 @@ We are developing and improving LearnPress day by day and bringing you more new 
 
 ###LearnPress has been translated into the following languages###
 
-1. English
-2. French
-3. Indonesian
-4. Italian
-5. German
-6. Polish
-7. Russian
-8. Dutch (Netherlands)
-9. Spanish (Costa Rica)
-10. Spanish
-11. Spanish (Mexico)
+1. Korean
+2. Slovenian
+3. Romanian
+4. Spanish (Costa Rica)
+5. Spanish (Chile)
+6. Spanish (Spain)
+7. Spanish (Mexico)
+8. Slovak
+9. Spanish (Colombia)
+10. Russian
+11. Spanish (Ecuador)
 12. Spanish (Venezuela)
-13. Indonesian
-14. Chinese
+13. Persian
+14. Swedish
+15. Dutch
+16. French (France)
+17. Dutch (Belgium)
+18. German
+19. Italian
+20. Czech
+21. Serbian
+22. Vietnamese
+23. Ukrainian
+24. Japanese
+25. Polish
+26. Spanish (Uruguay)
+27. Kurdish (Sorani)
+28. Chinese (China)
+29. Turkish
+30. Greek
+
+####Help Make LearnPress Speak Every Language!
+LearnPress is used by educators and learners all over the world. By contributing to translations, you help make the platform more accessible and inclusive for your language community.
+Whether you can translate a few words or entire sections, every contribution counts!
+👉 [Contribute to LearnPress translation here](https://translate.wordpress.org/projects/wp-plugins/learnpress/) and help us reach 100% for your language.
 
 ##WordPress LMS Plugin - LearnPress ROADMAP##
 
 - Payment Method support (first priority)
-	- Google Checkout
-	- Amazon Payments
-	- Dwolla
+	- PayU Global (DONE)
+	- Paystack (DONE)
+	- SePay (DONE)
+	- QPay (DONE)
+	- Klarna
+	- Iyzico
 	- Braintree
-	- Samurai by FeeFighters
-	- WePay
-- Events
-- Share Grade
-- BadgeOS
-- Create quiz from random questions in question bank (DONE)
-- Attach restriction to lesson
-- Presentation support (maybe support SlideShare)
-- Student ranks
-- REST API for mobile app (DONE)
-- No distraction mode (when doing quiz)
-- Report/feedback about a question/quiz/lesson
-- Commission for payment method (DONE)
-- Instructor's note
-- Private message from Admin to teacher
-- Group payment
+- Assign Questions & Lessons to multiple Quizzes and Courses
+- Additional Question Types: short answer, matching, drag and drop...
+- Quiz Navigator
+- Negative Marking & Minus for Skip
+- Quiz Navigation UI Improvements
+- Tax Management
+- Auto Refund
+- Early Bird Pricing
+- Course Builder from Dashboard Instructors
+- Toast Message Notifications
 
-Any suggestions for this WordPress LMS Plugin? Send us via email: support@thimpress.com
+Any suggestions for LearnPress LMS Plugin? Send us via email: support@thimpress.com or create post at [Feature Requests](https://learnpress.canny.io/feature-requests)
 
 == Installation ==
 
@@ -178,31 +221,32 @@ Any suggestions for this WordPress LMS Plugin? Send us via email: support@thimpr
 == Frequently Asked Questions ==
 
 = What is LearnPress? =
-LearnPress is a plugin for LMS website to spread out courses and sell courses online.
+LearnPress is the powerful WordPress LMS plugin designed as a complete learning management solution for Educators, Learners, and Organizations. Built specifically for WordPress, it ensures seamless integration, allowing you to easily create online courses and manage your WordPress education platform.
 
 = Where can I find LearnPress documentation and user guides? =
-If you want to use LearnPress to build a Learning Management System website, please refer to our user guides in <a href="https://docs.thimpress.com/learnpress/" target="_blank">LearnPress official site.</a>
-And if you want to extend or use LearnPress, see our <a href="https://github.com/LearnPress/LearnPress/wiki" target="_blank">Wiki.</a>
+If you want to use LearnPress to build a Learning Management System website, please refer to our user guides in [LearnPress Documentation](https://learnpresslms.com/docs/).
+User Guides: https://learnpresslms.com/docs/learnpress/
+For Developers: https://learnpresslms.com/docs/learnpress-developer-documentation/
+And if you want to extend or use LearnPress, see our [Wiki](https://github.com/LearnPress/LearnPress/wiki).
 
 = Where can I get support or talk to other users? =
-If you get troubles when using LearnPress you can ask for help on the <a href="https://wordpress.org/support/plugin/learnpress/">LearnPress Support Forum</a> or <a href="https://www.facebook.com/groups/learnpress/" target="_blank">join the private Facebook group</a>. You could share your feedback about LearnPress. And let us know which feature you want us to build next.
-
+If you get troubles when using LearnPress you can ask for help on the [LearnPress Support Forum](https://help.thimpress.com/) or [join the private Facebook group](https://www.facebook.com/groups/learnpress/). You could share your feedback about LearnPress. And let us know which feature you want us to build next.
 For help with premium add-ons, use our <a href="https://thimpress.com/forums/forum/learnpress-premium-add-ons/">helpdesk</a>.
 
 = Where can I ask for new features, suggest new ideas or new themes for LearnPress? =
-You can send us your thoughts through via email: support@thimpress.com
+You can send us your thoughts via email: support@thimpress.com or create post at [Feature Requests](https://learnpress.canny.io/feature-requests).
 
 = Where can I report bugs or contribute to the project? =
-You can also report bugs on LearnPress Support Forum or LearnPress <a href="https://github.com/LearnPress/LearnPress/" target="_blank">Github Repository</a>.
+You can also report bugs on LearnPress Support Forum or LearnPress <a href="https://github.com/LearnPress/learnpress/issues" target="_blank">Github Repository</a>.
 
 = Where can I find the REST API documentation? =
-You can find the REST API documentation <a href="https://docs.thimpress.com/learnpress/developer-guide/">here</a>.
+You can find the REST API documentation <a href="https://docs.thimpress.com/learnpress-developer-documentation/api-reference/">here</a>.
 
 = LearnPress is great, can I contribute to it? =
 Yes, you can and we appreciate it. Join in our <a href="https://github.com/LearnPress/LearnPress/" target="_blank">Github Repository</a>.
 
 **LearnPress Translation project**
-https://www.transifex.com/projects/p/learnpress/
+https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Screenshots ==
 
@@ -221,6 +265,78 @@ https://www.transifex.com/projects/p/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.3.0 (2025-11-20) =
+~ Fixed: security.
+~ Fixed: error 404 link when add media to editor of Question config.
+~ Fixed: export social use on the "Export Personal Data" tool.
+~ Fixed: display time spend when doing quiz with time not limit.
+~ Beta: apply openAI for generate data course.
+~ Update library sweetalert2 to 11.26.3.
+~ Update library chartjs to 4.5.1.
+
+= 4.2.9.4 (2025-10-08) =
+~ Fixed: security.
+~ Fixed: error save config answer option (Question) with LaTeX.
+~ Added: feature export LP user data for GDPR when use tool "Export Personal Data".
+
+= 4.2.9.3 (2025-09-23) =
+~ Fixed: show price's course with case buy with Guest.
+~ Fixed: error don't show popup allow repurchase with theme Gutenberg.
+~ Added: feature eraser LP user data when use tool "Erase Personal Data".
+
+= 4.2.9.2 (2025-09-15) =
+~ Fixed: error some hooks emails.
+~ Require PHP 7.4+.
+
+= 4.2.9.1 (2025-09-10) =
+~ Fixed: various deprecated functions for compatibility with PHP 8.4.
+~ Fixed: Addon Sorting Choice case.
+~ Fixed: empty title message when adding an answer to a single-choice question.
+~ Tweak: Gutenberg 'Course Listing' block.
+~ Tweak: can_enroll handling for external links and unauthenticated users.
+~ Tweak: LP_Email_Hooks class updated to use new hook declaration method.
+~ Replace the old Emogrifier class with the CssToInlineStyles library from Composer.
+~ Added: SendEmailAjax class.
+~ Added: LPBackgroundAjax class for background processing.
+
+= 4.2.9 (2025-08-27) =
+~ Refactor UI/UX for edit quiz.
+~ Refactor UI/UX for edit question.
+~ Allow assign a question to many quizzes.
+~ Update: set image course offline is full size.
+~ Fixed: enqueue style for Archive, Single course block legacy.
+~ Fixed: conflict with Thrive Architect Editor.
+
+= 4.2.8.7.5 (2025-07-29) =
+~ Fixed: error crop image course by size not check if image exists.
+~ Fixed: translate fields author on Course Filter Widget.
+~ Fixed: error case show info learning with user Guest.
+~ Fixed: error save post_author when enable edit course with Gutenberg.
+~ Load Material files of course via AJAX.
+~ Tweak learn_press_get_course_tabs: change how to set default tab.
+
+= 4.2.8.7.4 (2025-07-14) =
+~ Use package sweetalert2-neutral instead of sweetalert2.
+~ Fixed: max index post_name column of table learnpress_courses, error with old MYSQL version.
+~ Fix conflict with light box of elementor in single lesson
+~ Gutenberg: tweak list courses block.
+~ Gutenberg: tweak filter course block.
+~ Gutenberg: add course results block.
+~ Gutenberg: add option size for course image block.
+~ Handle cache for course image url.
+
+= 4.2.8.7.3 (2025-06-30) =
+~ Tweak: tab material.
+~ Edit curriculum: fix error remove section not unassign item from that section.
+
+= 4.2.8.7.1 (2025-06-25) =
+~ Fixed: get courses assign to co-instructor on the single instructor page.
+~ Fixed: unset value of some key auto increment when insert data to tables lp_section_items, lp_sections.
+~ Fixed: error sort by on list courses has a mask.
+~ Fixed: permission for instructor when edit curriculum's course.
+~ Update: show 'featured' label on Single Course, List Courses page.
+~ Tweak: image course block Gutenberg.
 
 = 4.2.8.7 (2025-06-17) =
 ~ Fixed: error 404 with link profile tab, link lesson with Polylang v3.7 and higher.
@@ -319,66 +435,5 @@ https://www.transifex.com/projects/p/learnpress/
 = 4.2.7.5.1 (2025-01-22) =
 ~ Fixed: security.
 ~ Fixed: minor bugs.
-
-= 4.2.7.5 (2024-12-17) =
-~ Added: option Price prefix, Price suffix for course.
-~ Fixed: shortcode [learn_press_button_course].
-~ Fixed: error status item's course, case option course set "no require enroll" (user enrolled).
-~ Fixed: error lose tab on Profile when install SiteOrigin plugin.
-~ Updated: library TomSelect, ChartJS to the latest.
-
-= 4.2.7.4 (2024-12-03) =
-~ Fixed: image cover profile with theme Twenty Five.
-~ Fixed: error some sites not show notes(Waring) on the Admin Dashboard.
-~ Fixed: security.
-~ Tweak order show material on the item lesson.
-~ Tweak load text domain compatible with WP 6.7 and later.
-~ Tweak: format_human_time_diff method.
-~ Tweak: UserItemModel, UserCourseModel, UserModel, CourseModel  classes.
-~ Deprecated: get_info_extra_for_fast_query method.
-~ Deprecated: _learn_press_usort_terms_by_ID, learn_press_course_item_format_exclude, learn_press_get_course_curriculum, learn_press_is_enrolled_course, learn_press_get_user_course_statuslearn_press_is_free_course, learn_press_course_enroll_required, learn_press_search_post_excerpt, learn_press_course_add_support_item_type, learn_press_course_add_support_item_type, learn_press_get_user_question_answer, need_to_updating, learn_press_get_course_sections, lean_press_get_course_sections, learn_press_get_course_item_url, learn_press_edit_item_link, learn_press_get_course_results_tooltip.
-~ Set cache get instructors API for App.
-~ Added: get_i18n_string_plural method on the class LP_Helper.
-
-= 4.2.7.3 (2024-11-12) =
-~ Fixed: error course private admin/author can't see on the frontend.
-~ Fixed: only show label "Final" of Quiz when choose "Evaluate via results of the final quiz".
-~ Fixed: send mail enroll for user Guest not exists user.
-~ Tweak: enroll/purchase course buttons.
-~ Tweak: condition can enroll/purchase course.
-~ Tweak: API enroll/purchase course.
-~ Tweak: when order completed.
-~ Tweak: set upload Avatar to PNG, instead of JPG.
-~ Deprecated: hooks learn-press/user/can-enroll-course, learn-press/user/can-purchase-course. Replace to learn-press/user/can-enroll/course, learn-press/user/can-purchase/course.
-
-= 4.2.7.2 (2024-10-21) =
-~ Fixed: security.
-~ Fixed: set size for Gravatar user.
-~ Fixed: slug item's course use urldecode when edited.
-~ Fixed: display name courses has special character Mobile.
-~ Fixed: error save Enable/Disable all emails.
-~ Added: get_all_items method for LP_Order class, for fix case "Paid Memberships" assign more than 50 courses.
-~ Added: cover image feature on the Profile page.
-~ Tweak: handle tomSelect.
-~ Tweak: class LP_Datetime.
-~ Tweak: style page Archive Courses.
-~ Tweak: style page Profile.
-~ Tweak: layout Offline course.
-~ Update: lp icon fonts.
-
-= 4.2.7.1 (2024-09-11) =
-~ Fixed: security.
-~ Use TomSelect instead of Select2 on settings.
-~ Fixed: minor bugs.
-
-= 4.2.7 (2024-08-27) =
-~ Added: feature course offline.
-~ Added: duration info for App API list courses.
-~ Tweak: API get instructor info.
-~ Fixed: error empty email content reset password.
-~ Fixed: error empty image header.
-~ Fixed: error create new section not send section_order.
-~ Fixed: case search LP orders by user.
-~ Fixed: error sort by total on list orders.
 
 <a href="https://raw.githubusercontent.com/LearnPress/learnpress/develop/changelog.txt" target="_blank">See changelog for all versions.</a>

@@ -64,7 +64,7 @@ class CourseDescriptionBlockType extends AbstractCourseBlockType {
 			}
 
 			if ( $is_list_course ) {
-				$description = SingleCourseTemplate::instance()->html_short_description( $courseModel, 15 );
+				$description = SingleCourseTemplate::instance()->html_short_description( $courseModel );
 			} else {
 				$description = SingleCourseTemplate::instance()->html_description( $courseModel );
 			}
