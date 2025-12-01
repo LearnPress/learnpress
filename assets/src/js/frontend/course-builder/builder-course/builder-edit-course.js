@@ -1,6 +1,7 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import { EditCourseCurriculum } from 'lpAssetsJsPath/admin/edit-course/edit-curriculum';
+import { MetaboxExtraInfo } from './extra-info.js';
 
 export class BuilderEditCourse {
 	constructor() {
@@ -8,12 +9,10 @@ export class BuilderEditCourse {
 	}
 
 	static selectors = {
-		// --- Tab Settings Selectors (New) ---
 		elTabLinks: '.lp-meta-box__course-tab__tabs li a',
 		elTabItems: '.lp-meta-box__course-tab__tabs li',
 		elTabPanels: '.lp-meta-box-course-panels',
 
-		// --- Course Selectors ---
 		elDataCourse: '.cb-section__course-edit',
 		elBtnUpdateCourse: '.cb-btn-update',
 		elBtnDraftCourse: '.cb-btn-darft',
@@ -39,14 +38,26 @@ export class BuilderEditCourse {
 		elDescEditor: '#course_description_editor',
 		elStatus: '.course-status',
 		elFormSetting: '.lp-form-setting-course',
+
+		elPriceCourseData: '#price_course_data',
+		elSaleDatesFields: '.lp_sale_dates_fields',
+		elSalePriceScheduleBtn: '.lp_sale_price_schedule',
+		elCancelSaleScheduleBtn: '.lp_cancel_sale_schedule',
+		elRegularPriceInput: '#_lp_regular_price',
+		elSalePriceInput: '#_lp_sale_price',
+		elFormField: '.form-field',
+		elTipFloating: '.learn-press-tip-floating',
 	};
 
 	init() {
 		const editCourseCurriculum = new EditCourseCurriculum();
+		const metaboxExtraInfo = new MetaboxExtraInfo();
 		editCourseCurriculum.init();
+		metaboxExtraInfo.init();
 
 		this.initTabs();
 		this.initTabTitles();
+		this.initSalePriceLayout();
 		this.events();
 	}
 
@@ -117,6 +128,16 @@ export class BuilderEditCourse {
 				class: this,
 				callBack: this.removeFeaturedImage.name,
 			},
+			{
+				selector: BuilderEditCourse.selectors.elSalePriceScheduleBtn,
+				class: this,
+				callBack: this.handleScheduleClick.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elCancelSaleScheduleBtn,
+				class: this,
+				callBack: this.handleCancelSchedule.name,
+			},
 		] );
 
 		lpUtils.eventHandlers( 'change', [
@@ -124,6 +145,14 @@ export class BuilderEditCourse {
 				selector: '.lp-meta-box input, .forminp input',
 				class: this,
 				callBack: this.showHideOptionsDependency.name,
+			},
+		] );
+
+		lpUtils.eventHandlers( 'input', [
+			{
+				selector: BuilderEditCourse.selectors.elPriceCourseData,
+				class: this,
+				callBack: this.validateSalePrice.name,
 			},
 		] );
 
@@ -141,6 +170,123 @@ export class BuilderEditCourse {
 				checkIsEventEnter: true,
 			},
 		] );
+	}
+
+	initSalePriceLayout() {
+		const wrap = document.querySelector( BuilderEditCourse.selectors.elPriceCourseData );
+		if ( ! wrap ) return;
+
+		const saleDatesFields = wrap.querySelectorAll( BuilderEditCourse.selectors.elSaleDatesFields );
+		const scheduleBtn = wrap.querySelector( BuilderEditCourse.selectors.elSalePriceScheduleBtn );
+		const cancelBtn = wrap.querySelector( BuilderEditCourse.selectors.elCancelSaleScheduleBtn );
+
+		let saleScheduleSet = false;
+		const allInputs = wrap.querySelectorAll(
+			`${ BuilderEditCourse.selectors.elSaleDatesFields } input`
+		);
+
+		allInputs.forEach( ( input ) => {
+			if ( input.value && input.value.trim() !== '' ) {
+				saleScheduleSet = true;
+			}
+		} );
+
+		if ( saleScheduleSet ) {
+			if ( scheduleBtn ) scheduleBtn.style.display = 'none';
+			if ( cancelBtn ) cancelBtn.style.display = 'inline-block';
+			saleDatesFields.forEach( ( field ) => ( field.style.display = 'block' ) );
+		} else {
+			if ( scheduleBtn ) scheduleBtn.style.display = 'inline-block';
+			if ( cancelBtn ) cancelBtn.style.display = 'none';
+			saleDatesFields.forEach( ( field ) => ( field.style.display = 'none' ) );
+		}
+	}
+
+	handleScheduleClick( args ) {
+		const { e, target } = args;
+		e.preventDefault();
+
+		const btn = target.closest( BuilderEditCourse.selectors.elSalePriceScheduleBtn );
+		const wrap = btn.closest( BuilderEditCourse.selectors.elPriceCourseData );
+
+		if ( ! wrap ) return;
+
+		const cancelBtn = wrap.querySelector( BuilderEditCourse.selectors.elCancelSaleScheduleBtn );
+		const saleDatesFields = wrap.querySelectorAll( BuilderEditCourse.selectors.elSaleDatesFields );
+
+		btn.style.display = 'none';
+
+		if ( cancelBtn ) cancelBtn.style.display = 'inline-block';
+
+		saleDatesFields.forEach( ( field ) => ( field.style.display = 'block' ) );
+	}
+
+	handleCancelSchedule( args ) {
+		const { e, target } = args;
+		e.preventDefault();
+
+		const btn = target.closest( BuilderEditCourse.selectors.elCancelSaleScheduleBtn );
+		const wrap = btn.closest( BuilderEditCourse.selectors.elPriceCourseData );
+
+		if ( ! wrap ) return;
+
+		const scheduleBtn = wrap.querySelector( BuilderEditCourse.selectors.elSalePriceScheduleBtn );
+		const saleDatesFields = wrap.querySelectorAll( BuilderEditCourse.selectors.elSaleDatesFields );
+		const allInputs = wrap.querySelectorAll(
+			`${ BuilderEditCourse.selectors.elSaleDatesFields } input`
+		);
+
+		btn.style.display = 'none';
+
+		if ( scheduleBtn ) scheduleBtn.style.display = 'inline-block';
+
+		saleDatesFields.forEach( ( field ) => ( field.style.display = 'none' ) );
+		allInputs.forEach( ( input ) => ( input.value = '' ) );
+	}
+
+	validateSalePrice( args ) {
+		const { target } = args;
+		const wrapper = target.closest( BuilderEditCourse.selectors.elPriceCourseData );
+		if ( ! wrapper ) return;
+
+		const regularPriceInput = wrapper.querySelector(
+			BuilderEditCourse.selectors.elRegularPriceInput
+		);
+		const salePriceInput = wrapper.querySelector( BuilderEditCourse.selectors.elSalePriceInput );
+
+		const existingTips = wrapper.querySelectorAll( BuilderEditCourse.selectors.elTipFloating );
+		existingTips.forEach( ( tip ) => tip.remove() );
+
+		if ( ! regularPriceInput || ! salePriceInput ) return;
+
+		const regularVal = parseFloat( regularPriceInput.value ) || 0;
+		const saleVal = parseFloat( salePriceInput.value ) || 0;
+
+		if ( salePriceInput.value !== '' && saleVal > regularVal ) {
+			const targetId = target.getAttribute( 'id' );
+			const formField = target.closest( BuilderEditCourse.selectors.elFormField );
+
+			const i18n =
+				typeof lpAdminCourseEditorSettings !== 'undefined' && lpAdminCourseEditorSettings.i18n
+					? lpAdminCourseEditorSettings.i18n
+					: {
+							notice_price: 'Regular price must be greater than sale price.',
+							notice_sale_price: 'Sale price must be less than regular price.',
+					  };
+
+			const tip = document.createElement( 'div' );
+			tip.className = 'learn-press-tip-floating';
+
+			if ( targetId === '_lp_price' ) {
+				tip.innerHTML = i18n.notice_price;
+			} else if ( targetId === '_lp_sale_price' ) {
+				tip.innerHTML = i18n.notice_sale_price;
+			}
+
+			if ( formField && tip.innerHTML ) {
+				formField.appendChild( tip );
+			}
+		}
 	}
 
 	showHideOptionsDependency( args ) {
@@ -300,14 +446,54 @@ export class BuilderEditCourse {
 			} );
 		}
 
-		console.log( elFormSetting );
-
-		console.log( data );
 		return data;
+	}
+
+	validatePricingBeforeUpdate() {
+		const regularPriceInput = document.querySelector(
+			BuilderEditCourse.selectors.elRegularPriceInput
+		);
+		const salePriceInput = document.querySelector( BuilderEditCourse.selectors.elSalePriceInput );
+
+		if ( ! regularPriceInput || ! salePriceInput ) {
+			return true;
+		}
+
+		const regularVal = parseFloat( regularPriceInput.value ) || 0;
+		const saleVal = parseFloat( salePriceInput.value ) || 0;
+
+		console.log( regularVal );
+		console.log( saleVal );
+
+		if ( salePriceInput.value !== '' && saleVal > regularVal ) {
+			const i18n =
+				typeof lpAdminCourseEditorSettings !== 'undefined' && lpAdminCourseEditorSettings.i18n
+					? lpAdminCourseEditorSettings.i18n
+					: {
+							notice_sale_price: 'Sale price must be less than regular price.',
+					  };
+
+			lpToastify.show( i18n.notice_sale_price, 'error' );
+
+			const priceTabLink = document.querySelector( '.price_tab a' );
+			if ( priceTabLink ) {
+				priceTabLink.click();
+			}
+			salePriceInput.focus();
+
+			return false;
+		}
+
+		return true;
 	}
 
 	updateCourse( args ) {
 		const { e, target } = args;
+
+		if ( ! this.validatePricingBeforeUpdate() ) {
+			return;
+		}
+
 		const elBtnUpdateCourse = target.closest( BuilderEditCourse.selectors.elBtnUpdateCourse );
 		const elBtnDraftCourse = target.closest( BuilderEditCourse.selectors.elBtnDraftCourse );
 

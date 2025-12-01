@@ -45,7 +45,6 @@
 		box-shadow: 0 0 0 1px #2271b1;
 	}
 
-	/* Course Description Section */
 	.cb-course-edit-desc {
 		margin-bottom: 24px;
 	}
@@ -58,7 +57,6 @@
 		margin-bottom: 8px;
 	}
 
-	/* Course Categories Section */
 	.cb-course-edit-categories__wrapper {
 		margin-bottom: 24px;
 	}
@@ -104,7 +102,6 @@
 		user-select: none;
 	}
 
-	/* Course Tags Section */
 	.cb-course-edit-tags__wrapper {
 		margin-bottom: 24px;
 	}
@@ -130,7 +127,6 @@
 		user-select: none;
 	}
 
-	/* Featured Image Section */
 	.cb-course-edit-featured-image {
 		margin-bottom: 24px;
 	}
@@ -360,7 +356,7 @@
 	#offline_course_data .form-field,
 	#price_course_data .form-field,
 	#extra_course_data .form-field {
-		margin-bottom: 20px;
+		margin-bottom: 40px;
 	}
 
 	#general_course_data {
@@ -376,8 +372,12 @@
 		}
 	}
 
-	#extra_course_data .form-field {
-		align-items: start;
+	#price_course_data {
+		.learn-press-tip-floating {
+			font-size: 13px;
+			color: #ef4444;
+			line-height: 1.5;
+		}
 	}
 
 	#assessment_course_data {
@@ -391,6 +391,275 @@
 			list-style-type: none;
 			margin-top: 0;
 			padding-left: 0;
+		}
+	}
+
+	.lp_course_faq_meta_box__add,
+	.lp_course_extra_meta_box__add {
+		display: block;
+		width: 100%;
+		text-align: center;
+		background: #ffffff;
+		border: 1px dashed #d1d5db;
+		color: #4b5563;
+		font-weight: 500;
+		padding: 2px;
+		border-radius: 8px;
+		margin-top: 16px;
+		transition: all 0.2s;
+
+		&:hover {
+			border-color: #2271b1;
+			color: #2271b1;
+			background: #f0f9ff;
+		}
+	}
+
+	#extra_course_data {
+		.form-field {
+			align-items: start;
+		}
+
+		.lp_course_faq_meta_box__fields,
+		.lp_course_extra_meta_box__fields {
+			margin-bottom: 20px;
+
+			.sortable-ghost {
+				opacity: 0.4;
+				background: #f0f0f0;
+			}
+
+			.sortable-chosen {
+				cursor: grabbing !important;
+			}
+
+			.is-dragging {
+				opacity: 0.5;
+				background: #e8e8e8;
+			}
+
+			.lp_course_extra_meta_box__field .sort,
+			.lp_course_faq_meta_box__field .sort {
+				cursor: grab;
+			}
+
+			.lp_course_extra_meta_box__field .sort:active,
+			.lp_course_faq_meta_box__field .sort:active {
+				cursor: grabbing;
+			}
+		}
+
+		input[type='text'] {
+			padding: 10 40;
+			margin-bottom: 0;
+		}
+
+		.lp_course_extra_meta_box__field {
+			position: relative;
+			margin-bottom: 10px;
+
+			&:hover {
+				background: #ffffff;
+				border-color: #d1d5db;
+				box-shadow:
+					0 4px 6px -1px rgba( 0, 0, 0, 0.05 ),
+					0 2px 4px -1px rgba( 0, 0, 0, 0.03 );
+
+				.sort,
+				.delete {
+					opacity: 1;
+				}
+			}
+
+			.sort {
+				display: flex;
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 40px;
+				color: #666;
+				text-decoration: none;
+				cursor: grab;
+				opacity: 0.4;
+				transition: opacity 0.2s;
+				align-items: center;
+				justify-content: center;
+
+				&::after {
+					font-family: 'lp-icon';
+					content: '\e922';
+				}
+			}
+
+			a.delete {
+				position: absolute;
+				top: 3px;
+				right: 5px;
+				width: 28px;
+				height: 28px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 6px;
+				color: #9ca3af;
+				opacity: 0;
+				transition: all 0.2s;
+				text-decoration: none;
+
+				&::after {
+					font-family: Dashicons;
+					content: '\f182';
+					font-size: 18px;
+				}
+
+				&:hover {
+					background-color: #fee2e2;
+					color: #ef4444;
+				}
+			}
+		}
+
+		.lp_course_faq_meta_box__content {
+			width: 100%;
+
+			.lp_course_faq_meta_box__fields {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+			}
+
+			.lp_course_faq_meta_box__field {
+				position: relative;
+				display: flex !important;
+				flex-direction: column;
+				border: 1px solid #e5e7eb;
+				border-radius: 12px;
+				padding: 10px 40px 16px 36px;
+				transition: all 0.2s cubic-bezier( 0.4, 0, 0.2, 1 );
+				margin-bottom: 0 !important;
+
+				&:hover {
+					background: #ffffff;
+					border-color: #d1d5db;
+					box-shadow:
+						0 4px 6px -1px rgba( 0, 0, 0, 0.05 ),
+						0 2px 4px -1px rgba( 0, 0, 0, 0.03 );
+
+					.sort,
+					.delete {
+						opacity: 1;
+					}
+				}
+
+				label {
+					width: 100% !important;
+					min-width: 100% !important;
+					max-width: 100% !important;
+					display: block !important;
+					margin-bottom: 8px;
+
+					span {
+						display: none;
+					}
+				}
+
+				input[name*='_lp_faqs_question'] {
+					width: 100%;
+					max-width: 100%;
+					background: transparent;
+					border: none;
+					border-bottom: 1px dashed transparent;
+					font-size: 15px;
+					font-weight: 500;
+					color: #111827;
+					padding: 6px 0;
+					border-radius: 0;
+					outline: none;
+					transition: border-color 0.2s;
+
+					&::placeholder {
+						color: #9ca3af;
+					}
+
+					&[value=''],
+					&:focus {
+						border-bottom-color: #2271b1;
+						box-shadow: none;
+					}
+				}
+
+				textarea[name*='_lp_faqs_answer'] {
+					width: 100% !important;
+					min-height: 80px;
+					background: #f9f9f9;
+					border: 1px solid transparent;
+					border-radius: 6px;
+					padding: 10px;
+					font-size: 14px;
+					line-height: 1.5;
+					color: #4b5563;
+					resize: vertical;
+					transition: all 0.2s;
+
+					&:focus {
+						background: #ffffff;
+						border-color: #d1d5db;
+						outline: none;
+						box-shadow: 0 0 0 2px rgba( 229, 231, 235, 0.5 );
+					}
+				}
+
+				.sort {
+					position: absolute;
+					left: 8px;
+					top: 15px;
+					width: 24px;
+					height: 24px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					cursor: grab;
+					opacity: 0.4;
+					transition: opacity 0.2s;
+
+					&::after {
+						font-family: 'lp-icon';
+						content: '\e922';
+					}
+
+					&:active {
+						cursor: grabbing;
+					}
+				}
+
+				a.delete {
+					position: absolute;
+					top: 15px;
+					right: 8px;
+					width: 28px;
+					height: 28px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					border-radius: 6px;
+					color: #9ca3af;
+					opacity: 0;
+					transition: all 0.2s;
+					text-decoration: none;
+
+					&::after {
+						font-family: Dashicons;
+						content: '\f182';
+						font-size: 18px;
+					}
+
+					&:hover {
+						background-color: #fee2e2;
+						color: #ef4444;
+					}
+				}
+			}
 		}
 	}
 
@@ -475,7 +744,6 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 	padding: 30px 40px;
 }
 
-/* --- 7. Responsive cơ bản --- */
 @media ( max-width: 768px ) {
 	.lp-meta-box__course-tab {
 		flex-direction: column;
@@ -492,7 +760,6 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 	}
 }
 
-/* --- TỔNG QUAN CONTAINER --- */
 #lp-course-builder-content {
 	#lp-course-edit-curriculum {
 		background-color: #fff;
@@ -502,7 +769,6 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 		max-width: 100%;
 		box-sizing: border-box;
 
-		/* --- HEADER SECTION --- */
 		#lp-course-edit-curriculum .heading {
 			display: flex;
 			align-items: center;
@@ -531,7 +797,6 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 			margin-left: 10px;
 		}
 
-		/* Toggle All Icon */
 		.course-toggle-all-sections {
 			cursor: pointer;
 			color: #9ca3af;
@@ -543,7 +808,6 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 			border: none;
 		}
 
-		/* --- SECTION (KHỐI BÀI HỌC) --- */
 		.curriculum-sections .section {
 			background: #fff;
 			border: 1px solid #e5e7eb;
@@ -557,13 +821,12 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 			box-shadow: 0 4px 6px -1px rgba( 0, 0, 0, 0.05 );
 		}
 
-		/* SECTION HEAD */
 		.section-head {
 			display: flex;
 			align-items: center;
 			padding: 10px 20px;
 			background-color: #fff;
-			border-bottom: 1px solid transparent; /* Chỉ hiện border khi mở */
+			border-bottom: 1px solid transparent;
 			border-radius: 8px;
 		}
 
@@ -572,7 +835,6 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 			border-radius: 8px 8px 0 0;
 		}
 
-		/* Drag Handle Icon */
 		.section-head .drag {
 			cursor: grab;
 			color: #9ca3af;
@@ -580,7 +842,6 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 			font-size: 16px;
 		}
 
-		/* Input tiêu đề Section */
 		input.lp-section-title-input {
 			flex-grow: 1;
 			border: 1px solid transparent;
@@ -747,7 +1008,6 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 			color: #ef4444;
 		}
 
-		/* --- SECTION ACTIONS (NEW LESSON BUTTONS) --- */
 		.section-actions {
 			margin-top: 15px;
 			display: flex;
@@ -782,16 +1042,14 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 			color: #1e1e1e;
 		}
 
-		/* Content Bank Button (Khác biệt xíu) */
 		.lp-btn-show-popup-items-to-select {
-			margin-left: auto; /* Đẩy sang phải */
+			margin-left: auto;
 			border-style: dashed !important;
 		}
 
-		/* --- ADD NEW SECTION (BOTTOM) --- */
 		.add-new-section {
 			margin-top: 30px;
-			background: #f9fafb;
+			background: #fff;
 			border: 1px dashed #d1d5db;
 			border-radius: 8px;
 			padding: 20px;
@@ -825,7 +1083,7 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 		}
 
 		button.lp-btn-add-section {
-			background-color: #1e1e1e; /* Màu đen giống nút Publish trong hình */
+			background-color: #1e1e1e;
 			color: #fff;
 			border: none;
 			padding: 12px 24px;
@@ -841,13 +1099,11 @@ ul.lp-meta-box__course-tab__tabs li a:focus {
 			background-color: #333;
 		}
 
-		/* --- UTILITIES --- */
 		.lp-hidden {
 			display: none !important;
 		}
 
 		.lp-loading-change {
-			/* Style loading spinner nếu cần */
 		}
 	}
 }

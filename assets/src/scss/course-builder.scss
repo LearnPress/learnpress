@@ -290,7 +290,6 @@
 	}
 }
 
-/* WordPress Editor Wrapper */
 .wp-editor-wrap {
 	border: 1px solid #ddd;
 	border-radius: 12px;
@@ -329,10 +328,6 @@
 	.mce-tinymce {
 		border: none !important;
 		visibility: visible !important;
-	}
-
-	.wp-editor-container {
-		border: none;
 	}
 
 	.mce-top-part::before {
@@ -431,7 +426,6 @@
 	color: #1e1e1e;
 }
 
-/* Search Input */
 input.lp-search-title-item {
 	width: 100%;
 	padding: 12px 16px;
@@ -451,7 +445,6 @@ input.lp-search-title-item:focus {
 	box-shadow: 0 0 0 2px rgba( 59, 130, 246, 0.1 );
 }
 
-/* List Items Wrapper */
 .lp-target ul.list-items {
 	list-style: none;
 	margin: 0;
@@ -464,7 +457,6 @@ input.lp-search-title-item:focus {
 	max-height: 500px;
 }
 
-/* Individual Item */
 .lp-select-item {
 	display: flex;
 	align-items: center;
@@ -482,7 +474,6 @@ input.lp-search-title-item:focus {
 	background-color: #f5f5f5;
 }
 
-/* Custom Checkbox Style */
 .lp-select-item input[type='checkbox'] {
 	appearance: none;
 	-webkit-appearance: none;
@@ -514,7 +505,6 @@ input.lp-search-title-item:focus {
 	transform: rotate( 45deg );
 }
 
-/* Item Title */
 .lp-select-item .title {
 	font-size: 14px;
 	color: #374151;
@@ -528,7 +518,6 @@ input.lp-search-title-item:focus {
 	font-size: 12px;
 }
 
-/* --- PAGINATION --- */
 .list-items-wrap .learn-press-pagination {
 	margin-top: 20px;
 	display: flex;
@@ -562,7 +551,6 @@ input.lp-search-title-item:focus {
 	color: #fff;
 }
 
-/* Inactive Pages */
 .list-items-wrap .page-numbers li a.page-numbers {
 	background-color: #fff;
 	color: #6b7280;
@@ -575,12 +563,10 @@ input.lp-search-title-item:focus {
 	color: #1e1e1e;
 }
 
-/* Next/Prev Icons */
 .list-items-wrap .page-numbers i {
 	font-size: 14px;
 }
 
-/* --- FOOTER & BUTTONS --- */
 .lp-popup-items-to-select .footer {
 	background: #fff;
 	align-items: center;
@@ -588,7 +574,6 @@ input.lp-search-title-item:focus {
 	flex-shrink: 0;
 }
 
-/* Button Styles */
 .lp-popup-items-to-select .button {
 	padding: 10px 20px;
 	border-radius: 6px;
@@ -620,7 +605,6 @@ input.lp-search-title-item:focus {
 	background-color: #1e1e1e;
 }
 
-/* Button Count (Info) */
 .lp-btn-count-items-selected {
 	background: transparent;
 	color: #6b7280;
@@ -629,7 +613,6 @@ input.lp-search-title-item:focus {
 	order: 1;
 }
 
-/* Button Back (Secondary) */
 .lp-btn-back-to-select-items {
 	background: #fff;
 	border: 1px solid #d1d5db;
@@ -641,7 +624,6 @@ input.lp-search-title-item:focus {
 	background-color: #f5f5f5;
 }
 
-/* Selected Items List */
 .lp-popup-items-to-select ul.list-items-selected {
 	padding-left: 0;
 	background: #fff;
