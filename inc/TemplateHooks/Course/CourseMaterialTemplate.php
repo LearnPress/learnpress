@@ -142,11 +142,7 @@ class CourseMaterialTemplate {
 			// $total_pages    = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
 			$material_files = $material_db->get_material_by_item_id( $args['item_id'], $per_page, $offset, false );
 			if ( empty( $material_files ) ) {
-				if ( $args['paged'] === 1 ) {
-					$content->content = esc_html__( 'Empty material!', 'learnpress' );
-				} else {
-					$content->content = '';
-				}
+				$content->content = '';
 			} else {
 				$material_html = '';
 				foreach ( $material_files as $m ) {

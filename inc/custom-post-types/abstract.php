@@ -132,9 +132,19 @@ abstract class LP_Abstract_Post_Type {
 		//add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 		add_action( 'admin_print_scripts', array( $this, 'remove_auto_save_script' ) );
 
+		// Remove wp-auth-check and heartbeat script on post type of LearnPress
 		add_action(
 			'admin_enqueue_scripts',
-			function () {
+			function ( $page ) {
+				if ( $page !== 'post.php' && $page !== 'post-new.php' ) {
+					return;
+				}
+
+				if ( get_post_type() !== $this->_post_type ) {
+					return;
+				}
+
+				wp_deregister_script( 'wp-auth-check' );
 				wp_deregister_script( 'heartbeat' );
 			},
 			1
