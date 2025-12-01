@@ -108,11 +108,13 @@ class QuizTemplate {
 			
 			// Step 1: Build $args array with required keys
 			$args = array(
+				'id_url'    => 'quiz-template',
 				'quiz_id'   => $quiz_id,
 				'user_id'   => $user_id,
 				'course_id' => $course_id,
 				'nonce'     => wp_create_nonce( 'lp_quiz_ajax_' . $quiz_id ),
 				'is_review' => false,
+				'paged'     => 1,
 			);
 
 			// Step 1: Define $callback function that will receive the AJAX response
@@ -120,11 +122,11 @@ class QuizTemplate {
 				'class'  => self::class,
 				'method' => 'render_quiz_content_callback',
 			);
-			// return '';
+			
+			$args['html_no_load_ajax_first'] = self::render_quiz_content_callback( $args )->content;
 
 			$content = TemplateAJAX::load_content_via_ajax( $args, $callback );
 			return $content;
-			// $args['html_no_load_ajax_first'] TODO
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 			return '';
@@ -146,9 +148,10 @@ class QuizTemplate {
 	 */
 	public static function render_quiz_content_callback( $data ) {
 
-		$quiz_id   = isset( $data['quiz_id'] ) ? absint( $data['quiz_id'] ) : 0;
-		$course_id = isset( $data['course_id'] ) ? absint( $data['course_id'] ) : 0;
-		$user_id   = isset( $data['user_id'] ) ? absint( $data['user_id'] ) : get_current_user_id();
+		$quiz_id      = ! empty( $data['quiz_id'] ) ? absint( $data['quiz_id'] ) : 0;
+		$course_id    = ! empty( $data['course_id'] ) ? absint( $data['course_id'] ) : 0;
+		$user_id      = ! empty( $data['user_id'] ) ? absint( $data['user_id'] ) : get_current_user_id();
+		$current_page = ! empty( $data['paged'] ) ? absint( $data['paged'] ) : 1;
 
 		$courseModel = CourseModel::find( $course_id );
 		if ( ! $courseModel ) {
@@ -242,6 +245,7 @@ class QuizTemplate {
 			'can_retake_count'       => $can_retake_count,
 			'quiz_description'       => $quizPostModel->get_the_content(),
 			'num_pages'              => $questions_per_page !== 0 ? ceil( (int) $quizPostModel->count_questions() / $quizPostModel->get_question_perpage() ) : 1,
+			'current_page'           => $current_page,
 		);
 
 		$quiz_data = array_merge( $quiz_data, $user_data );
@@ -274,18 +278,25 @@ class QuizTemplate {
 		}
 		switch ( $mode ) {
 			case 'quiz':
-			case 'review':
-				// Quiz mode: render status, questions, and buttons
-				$html .= $quizComponents->status_html( $quiz_data ); // Pass quiz_data
-				$html .= $quizComponents->questions_html( $quiz_data ); // Pass quiz_data
+				// Quiz mode: render status, questions, and buttons, paginations
+				$html .= $quizComponents->status_html( $quiz_data );
+				$html .= $quizComponents->questions_html( $quiz_data );
 				$html .= $quizComponents->pagination_html( $quiz_data );
-				$html .= $quizComponents->buttons_html( $quiz_data ); // Pass quiz_data
+				$html .= $quizComponents->buttons_html( $quiz_data );
+				break;
+			case 'review':
+				$quiz_data['is_review'] = true;
+				// Quiz mode: render questions, and buttons, paginations
+				$html .= $quizComponents->questions_html( $quiz_data );
+				$html .= $quizComponents->pagination_html( $quiz_data );
+				$html .= $quizComponents->buttons_html( $quiz_data );
 				break;
 			case 'result':
+				$quiz_data['is_review'] = false;
 				// Result mode: render result, buttons, and attempts
-				$html .= $quizComponents->result_html( $quiz_data ); // Pass quiz_data
-				$html .= $quizComponents->buttons_html( $quiz_data ); // Pass quiz_data
-				$html .= $quizComponents->attempts_html( $quiz_data ); // Pass quiz_data
+				$html .= $quizComponents->result_html( $quiz_data );
+				$html .= $quizComponents->buttons_html( $quiz_data );
+				$html .= $quizComponents->attempts_html( $quiz_data );
 				break;
 			default:
 				$html .= $quizComponents->introduction_html( $quiz_data );

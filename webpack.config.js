@@ -158,10 +158,7 @@ module.exports = {
 		// Site editor check
 		'./assets/js/dist/gutenberg/editor-check': './assets/src/apps/js/admin/gutenberg/editor-check.js',
 		// Quiz
-		'./assets/js/dist/frontend/quiz/instant-check-handler': './assets/src/js/frontend/quiz/instant-check-handler.js',
-		'./assets/js/dist/frontend/quiz/question': './assets/src/js/frontend/quiz/question.js',
 		'./assets/js/dist/frontend/quiz/quiz': './assets/src/js/frontend/quiz/quiz.js',
-		'./assets/js/dist/frontend/quiz/timer': './assets/src/js/frontend/quiz/timer.js'
 	},
 	output: {
 		path: path.resolve( __dirname ),

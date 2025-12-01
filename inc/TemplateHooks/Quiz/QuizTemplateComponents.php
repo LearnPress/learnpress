@@ -106,7 +106,7 @@ class QuizTemplateComponents {
 			$current_page        = $this->get_array_value( $quiz_data, 'current_page', 1, 'int' );
 			$status              = $this->get_array_value( $quiz_data, 'status', '' );
 			$instant_check       = $this->get_array_value( $quiz_data, 'instant_check', false );
-			$is_reviewing        = false; // TODO: Add reviewing mode support.
+			$is_reviewing        = $this->get_array_value( $quiz_data, 'is_review', false, 'bool' );
 			// Determine if questions should be shown.
 			$is_show = true;
 			if ( 'completed' === $status && ! $is_reviewing ) {
@@ -532,7 +532,7 @@ class QuizTemplateComponents {
 		try {
 			// Extract button-related data.
 			$status            = $this->get_array_value( $quiz_data, 'status', '' );
-			$is_reviewing      = $this->get_array_value( $quiz_data, 'is_reviewing', false, 'bool' );
+			$is_reviewing      = $this->get_array_value( $quiz_data, 'is_review', false, 'bool' );
 			$enable_review     = $this->get_array_value( $quiz_data, 'enable_review', false, 'bool' );
 			$can_retake_count  = $this->get_array_value( $quiz_data, 'can_retake_count', 0, 'int' );
 			$required_password = $this->get_array_value( $quiz_data, 'required_password', false, 'bool' );
@@ -570,7 +570,8 @@ class QuizTemplateComponents {
 				}
 
 				$start_button = sprintf(
-					'<button class="lp-button start">%s</button>',
+					'<button class="lp-button start %1$s">%2$s</button>',
+					'completed' === $status ? esc_attr( 'retake' ) : '',
 					esc_html( $button_text )
 				);
 			}
@@ -588,7 +589,7 @@ class QuizTemplateComponents {
 			$review_button = '';
 			if ( 'completed' === $status && $enable_review && ! $is_reviewing ) {
 				$review_button = sprintf(
-					'<button class="lp-button review-quiz">%s</button>',
+					'<button class="lp-button review-quiz" data-template="review">%s</button>',
 					esc_html__( 'Review', 'learnpress' )
 				);
 			}
@@ -597,7 +598,7 @@ class QuizTemplateComponents {
 			$back_button = '';
 			if ( $is_reviewing && $enable_review ) {
 				$back_button = sprintf(
-					'<button class="lp-button back-quiz">%s</button>',
+					'<button class="lp-button back-quiz" data-template="result">%s</button>',
 					esc_html__( 'Result', 'learnpress' )
 				);
 			}
@@ -651,7 +652,7 @@ class QuizTemplateComponents {
 			// Previous button.
 			if ( $prev_next && 1 < $current_page ) {
 				$pagination_html .= sprintf(
-					'<button class="page-numbers prev" data-type="question-navx">%s</button>',
+					'<button class="page-numbers prev" data-type="question-nav">%s</button>',
 					esc_html__( 'Prev', 'learnpress' )
 				);
 			}
@@ -662,7 +663,7 @@ class QuizTemplateComponents {
 				if ( $number === $current_page ) {
 					$dots            = true;
 					$pagination_html .= sprintf(
-						'<span class="page-numbers current">%d</span>',
+						'<span class="page-numbers current disabled">%d</span>',
 						$number
 					);
 				} elseif ( $number <= $end_size || ( $number >= $current_page - $mid_size && $number <= $current_page + $mid_size ) || $number > $num_pages - $end_size ) {
@@ -680,7 +681,7 @@ class QuizTemplateComponents {
 			// Next button.
 			if ( $prev_next && $current_page < $num_pages ) {
 				$pagination_html .= sprintf(
-					'<button class="page-numbers next" data-type="question-navx">%s</button>',
+					'<button class="page-numbers next" data-type="question-nav">%s</button>',
 					esc_html__( 'Next', 'learnpress' )
 				);
 			}
