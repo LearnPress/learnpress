@@ -6,19 +6,19 @@
  * Initialize the quiz timer
  */
 function initQuizTimer() {
-	const quizContainer = document.querySelector( '#content-item-quiz' );
-	if ( ! quizContainer ) {
+	const quizContainer = document.querySelector('#content-item-quiz');
+	if (!quizContainer) {
 		return;
 	}
 	const timerElement = quizContainer.querySelector('.countdown');
-	
+
 	if (!timerElement) {
 		return;
 	}
 
 	const timeDisplay = timerElement.querySelector('span');
 	const hiddenInput = timerElement.querySelector('input[name="lp-quiz-time-spend"]');
-	
+
 	if (!timeDisplay || !hiddenInput) {
 		return;
 	}
@@ -27,10 +27,10 @@ function initQuizTimer() {
 	let timeRemaining = parseInt(hiddenInput.value, 10) || 0;
 	const duration = parseInt(timerElement.dataset.duration, 10) || 0;
 	const totalTime = parseInt(timerElement.dataset.totalTime, 10) || 0;
-	
+
 	// Determine if counting up or down
 	const isCountdown = duration > 0;
-	
+
 	/**
 	 * Format seconds to HH:MM:SS or MM:SS
 	 * @param {number} seconds - Seconds to format
@@ -40,14 +40,14 @@ function initQuizTimer() {
 	function formatTime(seconds, total) {
 		let hours, minutes, secs;
 		const separator = ':';
-		
+
 		if (total >= 3600) {
 			// Show HH:MM:SS for durations >= 1 hour
 			hours = Math.floor(seconds / 3600);
 			const remainder = seconds % 3600;
 			minutes = Math.floor(remainder / 60);
 			secs = remainder % 60;
-			
+
 			return [hours, minutes, secs]
 				.map(val => val < 10 ? '0' + val : val)
 				.join(separator);
@@ -55,13 +55,13 @@ function initQuizTimer() {
 			// Show MM:SS for durations < 1 hour
 			minutes = Math.floor(seconds / 60);
 			secs = seconds % 60;
-			
+
 			return [minutes, secs]
 				.map(val => val < 10 ? '0' + val : val)
 				.join(separator);
 		}
 	}
-	
+
 	/**
 	 * Update the timer display
 	 */
@@ -70,7 +70,7 @@ function initQuizTimer() {
 		timeDisplay.textContent = formatTime(displayTime, totalTime);
 		hiddenInput.value = timeRemaining;
 	}
-	
+
 	/**
 	 * Check if quiz time has expired
 	 * @return {boolean} True if time expired
@@ -81,57 +81,100 @@ function initQuizTimer() {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Handle timer expiration
 	 */
 	function handleExpiration() {
 		timeDisplay.textContent = '00:00';
 		timerElement.classList.add('expired');
-		
+
 		// Trigger auto-submit if available
 		const submitButton = document.getElementById('button-submit-quiz');
 		if (submitButton && !submitButton.disabled) {
 			submitButton.click();
 		}
-		
+
 		// Dispatch custom event for other components
 		const expiredEvent = new CustomEvent('lpQuizTimerExpired', {
 			detail: { timeSpent: timeRemaining }
 		});
 		document.dispatchEvent(expiredEvent);
 	}
-	
+
 	/**
 	 * Timer tick - runs every second
 	 */
 	function tick() {
 		timeRemaining++;
 		updateDisplay();
-		
+
 		if (isTimeExpired()) {
 			clearInterval(timerInterval);
 			handleExpiration();
 		}
 	}
-	
+
 	// Initial display update
 	updateDisplay();
-	
+
 	// Start the countdown/countup
 	const timerInterval = setInterval(tick, 1000);
-	
+
 	// Clean up on page unload
-	window.addEventListener('beforeunload', function() {
+	window.addEventListener('beforeunload', function () {
 		clearInterval(timerInterval);
 	});
-	
+
 	// Pause timer when quiz is being submitted
-	document.addEventListener('lpQuizSubmitting', function() {
+	document.addEventListener('lpQuizSubmitting', function () {
 		clearInterval(timerInterval);
 	});
-	
+
 	// Store timer reference for external access if needed
 	timerElement.lpTimerInterval = timerInterval;
 }
+
+/**
+ * Reload timer when template is loaded via AJAX
+ * This ensures timer works after pagination or navigation
+ */
+document.addEventListener('lp-template-loaded', function (event) {
+	// Use requestAnimationFrame to ensure DOM has been updated
+	requestAnimationFrame(() => {
+		// Clear any existing timer interval to prevent multiple timers
+		const existingTimer = document.querySelector('.countdown');
+		if (existingTimer && existingTimer.lpTimerInterval) {
+			clearInterval(existingTimer.lpTimerInterval);
+		}
+
+		// Reinitialize the timer with new content
+		initQuizTimer();
+	});
+});
+
+/**
+ * Reload timer after lpAJAX.clickNumberPage fires
+ * Hook into the lp-ajax-pagination-completed action
+ * Note: Uses requestAnimationFrame because the hook fires BEFORE innerHTML is updated
+ */
+if (typeof wp !== 'undefined' && wp.hooks) {
+	wp.hooks.addAction('lp-ajax-pagination-completed', 'learnpress/quiz/timer', function (element, dataSend, response) {
+		// Wait for the next animation frame to ensure DOM has been updated
+		requestAnimationFrame(() => {
+			// Check if this is a quiz-related AJAX call
+			const countdown = document.querySelector('.countdown');
+			if (countdown) {
+				// Clear any existing timer interval
+				if (countdown.lpTimerInterval) {
+					clearInterval(countdown.lpTimerInterval);
+				}
+
+				// Reinitialize the timer
+				initQuizTimer();
+			}
+		});
+	});
+}
+
 export default initQuizTimer;

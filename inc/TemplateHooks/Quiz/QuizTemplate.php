@@ -246,6 +246,7 @@ class QuizTemplate {
 			'quiz_description'       => $quizPostModel->get_the_content(),
 			'num_pages'              => $questions_per_page !== 0 ? ceil( (int) $quizPostModel->count_questions() / $quizPostModel->get_question_perpage() ) : 1,
 			'current_page'           => $current_page,
+			'instant_check'          => $show_check,
 		);
 
 		$quiz_data = array_merge( $quiz_data, $user_data );
@@ -281,14 +282,14 @@ class QuizTemplate {
 				// Quiz mode: render status, questions, and buttons, paginations
 				$html .= $quizComponents->status_html( $quiz_data );
 				$html .= $quizComponents->questions_html( $quiz_data );
-				$html .= $quizComponents->pagination_html( $quiz_data );
+				// $html .= $quizComponents->pagination_html( $quiz_data );
 				$html .= $quizComponents->buttons_html( $quiz_data );
 				break;
 			case 'review':
 				$quiz_data['is_review'] = true;
 				// Quiz mode: render questions, and buttons, paginations
 				$html .= $quizComponents->questions_html( $quiz_data );
-				$html .= $quizComponents->pagination_html( $quiz_data );
+				// $html .= $quizComponents->pagination_html( $quiz_data );
 				$html .= $quizComponents->buttons_html( $quiz_data );
 				break;
 			case 'result':

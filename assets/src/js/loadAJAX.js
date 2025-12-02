@@ -188,6 +188,8 @@ const lpAJAX = ( () => {
 					//console.log( 'response', response );
 					const { status, message, data } = response;
 					elLPTarget.innerHTML = data.content || '';
+					// Fire the hook AFTER DOM is updated
+					wp.hooks.doAction( 'lp-ajax-pagination-completed', elLPTarget, dataSend, response );
 				},
 				error: ( error ) => {
 					console.log( error );

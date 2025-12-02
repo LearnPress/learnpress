@@ -12,6 +12,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Question\QuestionTemplate;
 use Throwable;
+use LP_Settings;
 
 /**
  * QuizTemplateComponent class.
@@ -542,22 +543,22 @@ class QuizTemplateComponents {
 			$question_nav      = $this->get_array_value( $quiz_data, 'question_nav', '' );
 
 			// Build class names.
-			$class_names = array( 'quiz-buttons' );
+			$wrapper_class_names = array( 'quiz-buttons' );
 
 			if ( 'started' === $status || $is_reviewing ) {
-				$class_names[] = 'align-center';
+				$wrapper_class_names[] = 'align-center';
 			}
 
 			if ( 'questionNav' === $question_nav ) {
-				$class_names[] = 'infinity';
+				$wrapper_class_names[] = 'infinity';
 			}
 
 			if ( 1 === $current_page ) {
-				$class_names[] = 'is-first';
+				$wrapper_class_names[] = 'is-first';
 			}
 
 			if ( $current_page === $num_pages ) {
-				$class_names[] = 'is-last';
+				$wrapper_class_names[] = 'is-last';
 			}
 
 			// Start button/Retake button.
@@ -603,10 +604,20 @@ class QuizTemplateComponents {
 				);
 			}
 
+			$pagination_html        = '';
+			$button_left_classnames = [ 'button-left' ];
+			if ( ( 'completed' === $status && $enable_review && $is_reviewing ) || $status === 'started' ) {
+				$pagination_html = $this->pagination_html( $quiz_data );
+				if ( LP_Settings::get_option( 'navigation_position', 'yes' ) === 'yes' ) {
+					$button_left_classnames[] = 'fixed';
+				}
+			}
+
 			// Build complete sections.
 			$sections = array(
-				'wrapper'          => sprintf( '<div class="%s">', esc_attr( implode( ' ', $class_names ) ) ),
-				'button_left'      => '<div class="button-left">',
+				'wrapper'          => sprintf( '<div class="%s">', esc_attr( implode( ' ', $wrapper_class_names ) ) ),
+				'button_left'      => sprintf( '<div class="%s">', esc_attr( implode( ' ', $button_left_classnames ) ) ),
+				'pagination'       => $pagination_html,
 				'start_button'     => $start_button,
 				'button_left_end'  => '</div>',
 				'button_right'     => '<div class="button-right">',

@@ -81,7 +81,9 @@ class QuestionTemplate {
 
 			// Determine whether to show check button or response based on check status
 			$buttons_or_response = '';
-			if ( $is_checked ) {
+			// $is_reviewing        = $this->get_array_value( $quiz_data, 'is_review', false, 'bool' );
+			if ( $is_checked  ) {
+				// TODO check review (show response)
 				// Show question response if already checked
 				$buttons_or_response = $this->question_response_html( $questionData );
 			} else {
