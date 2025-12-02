@@ -1,13 +1,14 @@
 @import "../ajaxload";
 @import "../loading-circle-animation";
 
-$primary-purple: #6B46E9;
+$primary-purple: #7E6CE2;
 $text-dark: #1A202C;
 $text-medium: #4A5568;
 $text-light: #A0AEC0;
 $border-color: #E5E7EB;
 $input-bg: #F7FAFC;
 $white: #FFFFFF;
+$title-color: #111111;
 
 .lp-btn-generate-course-with-ai, .lp-btn-generate-with-ai, #lp-course-edit-curriculum .lp-btn-generate-with-ai{
 	background: #f6f7f7;
@@ -54,7 +55,7 @@ $white: #FFFFFF;
 	display: flex !important;
 	flex-direction: column;
 	overflow: hidden;
-	border-radius: 12px;
+	border-radius: 10px;
 	background-color: $white;
 	height: 90vh;
 	z-index: 10000000 !important;
@@ -446,6 +447,10 @@ $white: #FFFFFF;
 	width: 100%;
 	max-height: 90%;
 
+	.content-title {
+		color: $title-color;
+	}
+
 	.step-header {
 		display: flex;
 		justify-content: space-between;
@@ -465,13 +470,13 @@ $white: #FFFFFF;
 				.step-number {
 					background-color: $primary-purple;
 					color: #fff;
-					border-color: $text-dark;
+					border-color: $primary-purple;
 				}
+			}
 
-				.step-text {
-					color: $text-dark;
-					font-weight: 600;
-				}
+			.step-text {
+				color: $title-color;
+				font-weight: 600;
 			}
 
 			.step-number {
@@ -490,11 +495,9 @@ $white: #FFFFFF;
 	}
 
 	.lp-form-generate-data-ai {
-		border: 1px solid;
-		background-color: $input-bg;
-		border-radius: 12px;
+		border: 1px solid $border-color;
+		border-radius: 10px;
 		padding: 20px;
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 		text-align: left;
 
 		.lp-form-fields {
@@ -507,6 +510,7 @@ $white: #FFFFFF;
 			font-size: 1.1em;
 			font-weight: 700;
 			margin-bottom: 10px;
+			color: $title-color;
 		}
 
 		.step-content {
@@ -547,8 +551,13 @@ $white: #FFFFFF;
 			label {
 				display: block;
 				font-size: 14px;
-				font-weight: 500;
+				font-weight: 600;
 				margin-bottom: 8px;
+				color: $title-color;
+			}
+
+			.lp-tom-select.ts-wrapper {
+				width: 100%;
 			}
 
 			input,
@@ -556,10 +565,10 @@ $white: #FFFFFF;
 			textarea {
 				width: 100%;
 				padding: 8px 16px;
-				border-radius: 12px;
+				border-radius: 10px;
 				border: 1px solid $border-color;
-				background-color: $input-bg;
-				font-size: 15px;
+				font-size: 14px;
+				line-height: 1.5;
 				box-sizing: border-box;
 				transition: border-color 0.2s, box-shadow 0.2s;
 				margin: 0;
@@ -567,14 +576,13 @@ $white: #FFFFFF;
 				&:focus {
 					outline: none;
 					border-color: $text-dark;
-					box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 				}
 				.item {
-					background-color: $input-bg;
 					border: 1px solid $border-color;
 					color: $text-medium;
-					border-radius: 20px;
+					border-radius: 6px;
 					padding: 4px 10px;
+					background-color: transparent;
 				}
 
 				.ts-input::placeholder {
@@ -616,7 +624,8 @@ $white: #FFFFFF;
 			}
 		}
 
-		.btn {
+		.btn,
+		.lp-button {
 			padding: 10px 20px;
 			font-size: 15px;
 			font-weight: 600;
@@ -639,11 +648,12 @@ $white: #FFFFFF;
 
 			&-secondary {
 				background-color: #fff;
-				color: $text-dark;
-				border-color: $border-color;
+				color: $primary-purple;
+				border-color: $primary-purple;
 
 				&:hover {
-					background-color: #F9FAFB;
+					background-color: $primary-purple;
+					color: #fff;
 				}
 			}
 
@@ -847,7 +857,7 @@ $white: #FFFFFF;
 
 	.course-section-item {
 		border: 1px solid var(--lp-border-color, #E2E0DB);
-		border-radius: 12px;
+		border-radius: 10px;
 		padding: 20px;
 		margin: 20px 0;
 		background-color: #fff;
