@@ -152,14 +152,13 @@ class AdminEditCourseCurriculumWithAITemplate {
 				'<p class="step-description">%s</p>',
 				esc_html__( 'Provide the main goal for the curriculum so the system can generate aligned sections and lessons.', 'learnpress' )
 			),
-			'form-grid'             => '<div class="form-grid">',
 			'post-title'            => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="post-title" readonly />
 					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Course title refer', 'learnpress' ),
+				esc_html__( 'Title refer', 'learnpress' ),
 				esc_html__( 'The course title is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' ),
 			),
 			'post-content'          => sprintf(
@@ -168,18 +167,18 @@ class AdminEditCourseCurriculumWithAITemplate {
 					<textarea type="text" name="post-content" readonly></textarea>
 					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Course description refer', 'learnpress' ),
+				esc_html__( 'Description refer', 'learnpress' ),
 				esc_html__( 'The course description is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' )
 			),
 			'goal'                  => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="goal"></textarea>
-					<p class="field-description">%s</p>
+					<textarea type="text" name="goal" placeholder="%s"></textarea>
 				</div>',
 				esc_html__( 'Goal', 'learnpress' ),
 				esc_html__( 'Defines the main objective of your curriculum. This helps the AI generate course sections and lessons that align with the intended learning outcomes.', 'learnpress' )
 			),
+			'form-grid'             => '<div class="form-grid">',
 			'sections-number'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
@@ -187,7 +186,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 				</div>',
 				esc_html__( 'Sections number', 'learnpress' )
 			),
-			'sections-title-length' => sprintf(
+			/*'sections-title-length' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="section_title_length" value="60" min="0">
@@ -200,7 +199,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 					<input type="number" name="section_description_length" value="50" min="0">
 				</div>',
 				esc_html__( 'Each section description length', 'learnpress' )
-			),
+			),*/
 			'lesson-number'         => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
@@ -208,13 +207,13 @@ class AdminEditCourseCurriculumWithAITemplate {
 				</div>',
 				esc_html__( 'Lessons per Section', 'learnpress' )
 			),
-			'lesson-title-length'   => sprintf(
+			/*'lesson-title-length'   => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="lessons_title_length" value="60" min="0">
 				</div>',
 				esc_html__( 'Each lesson title length', 'learnpress' )
-			),
+			),*/
 			'quizzes'               => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
@@ -222,13 +221,13 @@ class AdminEditCourseCurriculumWithAITemplate {
 				</div>',
 				esc_html__( 'Quizzes per Section', 'learnpress' )
 			),
-			'quiz-title-length'     => sprintf(
+			/*'quiz-title-length'     => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="quiz_title_length" value="60" min="0">
 				</div>',
 				esc_html__( 'Each quiz title length', 'learnpress' )
-			),
+			),*/
 			'form-grid-end'         => '</div>',
 			'step_close'            => '</div>',
 		];

@@ -14,7 +14,7 @@ $language = $params['language'] ?? 'English';
 $quality  = $params['quality'] ?? 'auto';
 $size     = $params['size'] ?? '256x256';
 $style    = $params['style'] ?? 'Impressionism';
-
+$goal     = $params['goal'] ?? '';
 
 /**
  *A text description of the desired image(s).
@@ -27,7 +27,10 @@ return <<<PROMPT
 Create a feature image for an online course. With the following details:
 The main subject of the image must be: "$topic".
 The image should be inspired by the course title: "$title".
-Ensure the final image is $quality quality and fits a $size aspect ratio, suitable for a website feature product.
+
+# INPUT
+- Goal: Create course image for **$goal**
+
 The desired artistic style is: $style.
 
 Must return exactly $outputs results image(s).

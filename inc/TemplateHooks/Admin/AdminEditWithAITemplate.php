@@ -153,8 +153,7 @@ class AdminEditWithAITemplate {
 			'describe-topic' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="topic">Create title about PHP</textarea>
-					<p class="field-description">%s</p>
+					<textarea type="text" name="topic" placeholder="%s"></textarea>
 				</div>',
 				esc_html__( 'Describe what your course is about', 'learnpress' ),
 				esc_html__( 'Provide a short explanation of the subject or skills your course covers. This helps AI understand the overall direction of your title.', 'learnpress' )
@@ -162,8 +161,7 @@ class AdminEditWithAITemplate {
 			'describe-goals' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="goals">I want create title course advanced PHP 8 function</textarea>
-					<p class="field-description">%s</p>
+					<textarea type="text" name="goals" placeholder="%s"></textarea>
 				</div>',
 				esc_html__( 'Describe the main goals of your course', 'learnpress' ),
 				esc_html__( 'Summarize what learners will achieve. AI uses this to make the title more accurate and meaningful.', 'learnpress' )
@@ -452,17 +450,16 @@ class AdminEditWithAITemplate {
 			'refer-title'    => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="post-title" readonly></textarea>
+					<input type="text" name="post-title" readonly />
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Title refer', 'learnpress' ),
-				esc_html__( 'This is the course title generated in the previous step or manually entered. The system will use it as reference to generate the course description.', 'learnpress' )
+				esc_html__( '', 'learnpress' )
 			),
 			'describe-topic' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="topic">Create description about course learning Php</textarea>
-					<p class="field-description">%s</p>
+					<textarea type="text" name="topic" placeholder="%s"></textarea>
 				</div>',
 				esc_html__( 'Describe what makes this course stand out?', 'learnpress' ),
 				esc_html__( 'Provide the main strengths or unique selling points to help the system build a compelling course description.', 'learnpress' )
@@ -701,16 +698,24 @@ class AdminEditWithAITemplate {
 				'<p class="step-description">%s</p>',
 				esc_html__( 'Config your image you want, data will refer course title, course description to generate image.', 'learnpress' )
 			),
-			'form-grid'         => '<div class="form-grid">',
 			'from-title'        => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="post-title" readonly>Create description about course learning Php</textarea>
+					<input type="text" name="post-title" readonly />
 					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Course Title Refer', 'learnpress' ),
+				esc_html__( 'Title Refer', 'learnpress' ),
 				esc_html__( 'The current course title that will be used as reference during image generation.', 'learnpress' )
 			),
+			'goal' 			=> sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<textarea type="text" name="goal" placeholder="%s"></textarea>
+				</div>',
+				esc_html__( 'Goal', 'learnpress' ),
+				esc_html__( 'A brief description of the image you want to generate.', 'learnpress' )
+			),
+			'form-grid'         => '<div class="form-grid">',
 			'style'             => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
@@ -727,7 +732,7 @@ class AdminEditWithAITemplate {
 				),
 				esc_html__( 'Select the visual style such as modern, minimalist, illustration, 3D, etc.', 'learnpress' )
 			),
-			'write-requirement' => sprintf(
+			/*'write-requirement' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="topic" placeholder="%s" />
@@ -736,7 +741,7 @@ class AdminEditWithAITemplate {
 				esc_html__( 'Images or icons should be include', 'learnpress' ),
 				esc_html__( 'e.g., books, laptop, graduation cap', 'learnpress' ),
 				esc_html__( 'List the specific elements or icons that should appear in the generated image.', 'learnpress' )
-			),
+			),*/
 			'size'              => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
