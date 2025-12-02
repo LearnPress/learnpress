@@ -1,4 +1,3 @@
-/* Main Layout */
 #lp-course-builder {
 	display: flex;
 	min-height: 100vh;
@@ -8,7 +7,6 @@
 		width: 100%;
 	}
 
-	/* Sidebar Styles */
 	#lp-course-builder-sidebar {
 		width: 300px;
 		background-color: #fff;
@@ -464,7 +462,6 @@
 		}
 	}
 
-	/* Responsive Design */
 	@media ( max-width: 1024px ) {
 		.cb-list-course {
 			grid-template-columns: repeat( auto-fill, minmax( 280px, 1fr ) );
