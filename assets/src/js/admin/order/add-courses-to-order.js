@@ -1,4 +1,5 @@
 import { AdminUtilsFunctions, Api, Utils } from '../utils-admin.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 const addCoursesToOrder = () => {
 	let elModalSearchCourses;
@@ -15,7 +16,7 @@ const addCoursesToOrder = () => {
 		paged: 1,
 	};
 	const courseIdsNewSelected = [];
-	const courseIdsAdded = [];
+	let courseIdsAdded = [];
 
 	const getAllElements = () => {
 		elOrderDetails = document.querySelector( '#learn-press-order' );
@@ -77,6 +78,7 @@ const addCoursesToOrder = () => {
 	 * Get list course ids added.
 	 */
 	const getCoursesAdded = () => {
+		courseIdsAdded = [];
 		const orderItems = document.querySelectorAll( '#learn-press-order .list-order-items tbody .order-item-row' );
 		orderItems.forEach( ( orderItem ) => {
 			const orderItemId = parseInt( orderItem.getAttribute( 'data-id' ) );
@@ -119,11 +121,11 @@ const addCoursesToOrder = () => {
 
 				const { item_html, order_data } = data;
 				const elNoItem = elListOrderItems.querySelector( '.no-order-items' );
-				elNoItem.style.display = 'none';
+				lpUtils.lpShowHideEl( elNoItem, 0 );
 				elNoItem.insertAdjacentHTML( 'beforebegin', item_html );
 				elOrderDetails.querySelector( '.order-subtotal' ).innerHTML = order_data.subtotal_html;
 				elOrderDetails.querySelector( '.order-total' ).innerHTML = order_data.total_html;
-				courseIdsAdded.push( ...courseIdsNewSelected );
+				//courseIdsAdded.push( ...courseIdsNewSelected );
 				courseIdsNewSelected.splice( 0, courseIdsNewSelected.length );
 			},
 			error( err ) {
@@ -190,11 +192,11 @@ const addCoursesToOrder = () => {
 				if ( item_html.length ) {
 					elNoItem.insertAdjacentHTML( 'beforebegin', item_html );
 				} else {
-					elNoItem.style.display = 'block';
+					lpUtils.lpShowHideEl( elNoItem, 1 );
 				}
 
 				courseIdsNewSelected.splice( courseIdsNewSelected.indexOf( courseId ), 1 );
-				courseIdsAdded.splice( courseIdsNewSelected.indexOf( courseId ), 1 );
+				//courseIdsAdded.splice( courseIdsNewSelected.indexOf( courseId ), 1 );
 				elOrderDetails.querySelector( '.order-subtotal' ).innerHTML = order_data.subtotal_html;
 				elOrderDetails.querySelector( '.order-total' ).innerHTML = order_data.total_html;
 			},
@@ -348,6 +350,7 @@ const addCoursesToOrder = () => {
 	};
 
 	const showPopupSearchCourses = () => {
+		getCoursesAdded();
 		modalContainer.style.display = 'block';
 		elOrderModalBtnAdd.style.display = 'none';
 		elSearchCoursesResult.innerHTML = '';
@@ -404,13 +407,11 @@ const addCoursesToOrder = () => {
 		searchCourse( e, target );
 	} );
 
-	// DOMContentLoaded.
-	document.addEventListener( 'DOMContentLoaded', () => {
+	lpUtils.lpOnElementReady( '.lp-order-detail-items', ( el ) => {
 		getAllElements();
 		if ( ! elOrderDetails ) {
 			return;
 		}
-		getCoursesAdded();
 		modalContainer.innerHTML = modalSearchItemsTemplate.innerHTML;
 		elModalSearchCourses = modalContainer.querySelector( idModalSearchItems );
 		elSearchCoursesResult = elModalSearchCourses.querySelector( '.search-results' );

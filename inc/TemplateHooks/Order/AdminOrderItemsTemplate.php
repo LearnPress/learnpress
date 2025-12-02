@@ -102,19 +102,7 @@ class AdminOrderItemsTemplate {
 		} else {
 			foreach ( $items as $i => $itemObj ) {
 				// Get meta data
-				$itemObjMeta = get_metadata( 'learnpress_order_item', $itemObj->order_item_id, '', true );
-				if ( is_array( $itemObjMeta ) ) {
-					foreach ( $itemObjMeta as $key => $value ) {
-						if ( is_array( $value ) && count( $value ) === 1 ) {
-							$itemObjMeta[ $key ] = maybe_unserialize( $value[0] );
-						} else {
-							$itemObjMeta[ $key ] = maybe_unserialize( $value );
-						}
-					}
-				} else {
-					$itemObjMeta = [];
-				}
-
+				$itemObjMeta   = self::get_all_metadata_order_item( $itemObj->order_item_id );
 				$itemObj->meta = $itemObjMeta;
 				$item_type     = $itemObj->item_type ?? '';
 				if ( $item_type === LP_COURSE_CPT ) {
@@ -215,55 +203,23 @@ class AdminOrderItemsTemplate {
 		$items            = $lpOrderDB->get_items( $filter, $total_row );
 
 		$html_items = '';
-		if ( empty( $items ) ) {
-			$html_items = sprintf( '<tr><td colspan="4">%s</td></tr>', __( 'No items found', 'learnpress' ) );
-		} else {
-			$order_currency = $lp_order->get_currency();
+		if ( ! empty( $items ) ) {
 			foreach ( $items as $itemObj ) {
-				$item_post        = get_post( $itemObj->item_id );
-				$cost             = learn_press_get_order_item_meta( $itemObj->order_item_id, '_subtotal' );
-				$item_cost        = learn_press_format_price( $cost, learn_press_get_currency_symbol( $order_currency ) );
-				$item_quantity    = (int) learn_press_get_order_item_meta( $itemObj->order_item_id, '_quantity' );
-				$price_total      = learn_press_get_order_item_meta( $itemObj->order_item_id, '_total' );
-				$item_price_total = learn_press_format_price( $price_total, learn_press_get_currency_symbol( $order_currency ) );
-				if ( ! $item_post || empty( get_post_type_object( $itemObj->item_type ) ) ) {
-					$item_name = sprintf(
-						'(#%d - %s) %s: %s',
-						$itemObj->item_id,
-						$itemObj->item_type,
-						$itemObj->order_item_name,
-						__( "doesn't exist", 'learnpress' )
-					);
+				$itemObjMeta   = self::get_all_metadata_order_item( $itemObj->order_item_id );
+				$itemObj->meta = $itemObjMeta;
+				$item_type     = $itemObj->item_type ?? '';
+
+				if ( $item_type === LP_COURSE_CPT ) {
+					$html_items .= self::order_item_detail_html( $lp_order, $itemObj );
 				} else {
-					$item_name = sprintf(
-						'<a href="%1$s">%2$s</a>',
-						get_edit_post_link( $itemObj->item_id ),
-						$itemObj->order_item_name
-					);
+					$item_old       = (array) $itemObj;
+					$item_old['id'] = $itemObj->order_item_id;
+					$item_old       = array_merge( $item_old, $itemObjMeta );
+
+					ob_start();
+					do_action( 'learn-press/order-item-not-course', $item_old );
+					$html_items .= ob_get_clean();
 				}
-
-				$section_item = [
-					'wrap'          => '<tr>',
-					'item_name'     => sprintf(
-						'<td class="column-name">%s</td>',
-						$item_name
-					),
-					'item_cost'     => sprintf(
-						'<td class="column-price align-right">%s</td>',
-						$item_cost
-					),
-					'item_quantity' => sprintf(
-						'<td class="column-quantity align-right">%s</td>',
-						$item_quantity
-					),
-					'item_total'    => sprintf(
-						'<td class="column-total align-right">%s</td>',
-						$item_price_total
-					),
-					'wrap-end'      => '</tr>',
-				];
-
-				$html_items .= Template::combine_components( $section_item );
 			}
 		}
 
@@ -274,17 +230,25 @@ class AdminOrderItemsTemplate {
 				'total_pages' => $total_pages,
 			]
 		);
+
 		if ( ! empty( $html_pagination ) ) {
 			$html_pagination = '<tr><td class="lp-order-items-wrapper" style="padding: 0 0 0 30px;" colspan="4">' . $html_pagination . '</td></tr>';
 		}
+
 		$section          = array(
-			'wrap-start'       => '<div class="order-items">',
+			'wrap-start'       => '<div class="order-items lp-order-detail-items">',
 			'table-start'      => '<table class="list-order-items">',
 			'table-header'     => self::table_header(),
 			'table-body-start' => '<tbody>',
 			'items'            => $html_items,
 			'pagination'       => $html_pagination,
-			'no_item_row'      => self::no_item_row( $items ),
+			'no_item_row'      => sprintf(
+				'<tr class="no-order-items %s">
+					<td colspan="4">%s</td>
+				</tr>',
+				! empty( $items ) ? 'lp-hidden' : '',
+				__( 'There are no order items', 'learnpress' )
+			),
 			'table-body-end'   => '</tbody>',
 			'table-footer'     => self::table_footer( $lp_order ),
 			'table-end'        => '</table>',
@@ -320,25 +284,6 @@ class AdminOrderItemsTemplate {
 	}
 
 	/**
-	 * no item row html
-	 *
-	 * @param array $items all order items
-	 *
-	 * @return string
-	 */
-	public static function no_item_row( $items ): string {
-		$content = sprintf(
-			'<tr class="no-order-items %1$s">
-				<td colspan="4">%2$s</td>
-			</tr>',
-			esc_attr( $items ? 'hide-if-js' : '' ),
-			esc_html__( 'There are no order items', 'learnpress' )
-		);
-
-		return $content;
-	}
-
-	/**
 	 * order item html
 	 *
 	 * @param LP_Order $order
@@ -347,12 +292,12 @@ class AdminOrderItemsTemplate {
 	 * @return string html
 	 */
 	public static function order_item_detail_html( $order, $item ): string {
-		$content         = '';
-		$total           = learn_press_get_order_item_meta( $item->order_item_id, '_total' );
-		$total           = ! empty( $total ) ? $total : 0;
-		$quantity        = learn_press_get_order_item_meta( $item->order_item_id, '_quantity' );
-		$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() ?? learn_press_get_currency() );
-		$item_title      = $item->order_item_name . '(' . get_post_type_object( $item->item_type )->labels->singular_name . ')';
+		$coursePostModel = CoursePostModel::find( $item->item_id, true );
+		$total           = $item->meta['_total'] ?? 0;
+		$quantity        = $item->meta['_quantity'] ?? 0;
+		$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
+		$item_title      = $item->order_item_name;
+		$item_link       = $coursePostModel ? $coursePostModel->get_edit_link() : '';
 		ob_start();
 		?>
 		<tr class="order-item-row" data-item_id="<?php echo esc_attr( $item->order_item_id ); ?>"
@@ -364,26 +309,31 @@ class AdminOrderItemsTemplate {
 						<span class="dashicons dashicons-no-alt"></span>
 					</a>
 				<?php endif; ?>
-				<a href="<?php echo get_the_permalink( $item->order_item_id ); ?>">
-					<?php echo esc_html( $item_title ); ?>
-				</a>
+				<?php
+				if ( ! empty( $item_link ) ) {
+					printf(
+						'<a href="%s" >
+						%s
+						</a>',
+						esc_url( $item_link ),
+						esc_html( $item_title )
+					);
+				} else {
+					echo esc_html( $item_title );
+				}
+				?>
 			</td>
-
 			<td class="column-price align-right">
 				<?php echo learn_press_format_price( $total, $currency_symbol ); ?>
 			</td>
-
 			<td class="column-quantity align-right">
 				<small class="times">×</small>
 				<?php echo esc_html( $quantity ); ?>
 			</td>
-
 			<td class="column-total align-right"><?php echo learn_press_format_price( $total, $currency_symbol ); ?></td>
 		</tr>
 		<?php
-		$content = ob_get_clean();
-
-		return $content;
+		return ob_get_clean();
 	}
 
 	/**
@@ -444,6 +394,27 @@ class AdminOrderItemsTemplate {
 		<?php
 		return ob_get_clean();
 	}
-}
 
-?>
+	/**
+	 * Get all meta data of order item
+	 *
+	 * @param int $order_item_id
+	 *
+	 * @return array
+	 */
+	public static function get_all_metadata_order_item( $order_item_id ): array {
+		$meta_data = get_metadata( 'learnpress_order_item', $order_item_id, '', true );
+		$result    = [];
+		if ( is_array( $meta_data ) ) {
+			foreach ( $meta_data as $key => $value ) {
+				if ( is_array( $value ) && count( $value ) === 1 ) {
+					$result[ $key ] = maybe_unserialize( $value[0] );
+				} else {
+					$result[ $key ] = maybe_unserialize( $value );
+				}
+			}
+		}
+
+		return $result;
+	}
+}
