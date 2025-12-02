@@ -2,7 +2,7 @@
 
 namespace LearnPress\Filters\Order;
 
-use LP_Filter;
+use LearnPress\Filters\FilterBase;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -10,10 +10,10 @@ defined( 'ABSPATH' ) || exit();
  * Class LPOrderItemsDB
  *
  * @author tungnx
- * @since 4.2.8.8
+ * @since 4.3.2
  * @version 1.0.0
  */
-class LPOrderItemsFilter extends LP_Filter {
+class LPOrderItemsFilter extends FilterBase {
 	const COL_ORDER_ITEM_ID = 'order_item_id';
 	const COL_ORDER_ID      = 'order_id';
 	const COL_ITEM_ID       = 'item_id';

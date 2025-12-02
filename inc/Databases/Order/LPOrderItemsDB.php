@@ -3,8 +3,8 @@
 namespace LearnPress\Databases\Order;
 
 use Exception;
+use LearnPress\Databases\DataBase;
 use LearnPress\Filters\Order\LPOrderItemsFilter;
-use LP_Database;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -12,10 +12,10 @@ defined( 'ABSPATH' ) || exit();
  * Class LPOrderItemsDB
  *
  * @author tungnx
- * @since 4.2.8.8
+ * @since 4.3.2
  * @version 1.0.0
  */
-class LPOrderItemsDB extends LP_Database {
+class LPOrderItemsDB extends DataBase {
 	private static $_instance;
 
 	protected function __construct() {
@@ -34,7 +34,7 @@ class LPOrderItemsDB extends LP_Database {
 	 * Get order items by filter
 	 *
 	 * @throws Exception
-	 * @since 4.2.8.8
+	 * @since 4.3.2
 	 * @version 1.0.0
 	 */
 	public function get_items( LPOrderItemsFilter $filter, int &$total_rows = 0 ) {

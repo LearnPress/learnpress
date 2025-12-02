@@ -7,9 +7,8 @@ use LearnPress\Filters\Order\LPOrderItemsFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
-use LP_Order_DB;
-use LP_Filter;
 use stdClass;
 use LP_Order;
 use Throwable;
@@ -17,7 +16,7 @@ use Throwable;
 /**
  * class AdminOrderItemsTemplate
  *
- * @since 4.2.8.8
+ * @since 4.3.2
  * @version 1.0.0
  */
 class AdminOrderItemsTemplate {
@@ -25,14 +24,13 @@ class AdminOrderItemsTemplate {
 
 	public function init() {
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
-		add_action( 'learn-press/admin/order-items/layout', array( $this, 'view_order_items_layout' ) );
-		add_action( 'learn-press/admin/order-details/items/layout', array( $this, 'order_detail_view_items_layout' ) );
+		add_action( 'learn-press/admin/order-items/layout', array( $this, 'order_items_layout' ) );
+		add_action( 'learn-press/admin/order-details/items/layout', array( $this, 'order_detail_items_layout' ) );
 	}
+
 	/**
 	 * Allow callback for AJAX.
 	 *
-	 * @use self::render_order_items
-	 * @use self::render_order_detail_items
 	 *
 	 * @param array $callbacks
 	 *
@@ -49,15 +47,17 @@ class AdminOrderItemsTemplate {
 	 * HTML layout for order items on screen list orders.
 	 *
 	 * @throws Exception
-	 * @since 4.2.8.8
+	 * @since 4.3.2
 	 * @version 1.0.0
 	 */
-	public function view_order_items_layout( LP_Order $lp_order ) {
+	public function order_items_layout( LP_Order $lp_order ) {
 		try {
 			$args                            = array(
-				'id_url'   => 'admin-view-order-items',
-				'order_id' => $lp_order->get_id(),
-				'paged'    => 1,
+				'id_url'                => 'admin-view-order-items',
+				'order_id'              => $lp_order->get_id(),
+				'paged'                 => 1,
+				'enableScrollToView'    => false,
+				'enableUpdateParamsUrl' => false,
 			);
 			$content_obj                     = self::render_order_items( $args );
 			$args['html_no_load_ajax_first'] = $content_obj->content;
@@ -78,7 +78,7 @@ class AdminOrderItemsTemplate {
 	 *
 	 * @return stdClass
 	 * @throws Exception
-	 * @since 4.2.8.8
+	 * @since 4.3.2
 	 * @version 1.0.0
 	 */
 	public static function render_order_items( array $data ): stdClass {
@@ -92,102 +92,95 @@ class AdminOrderItemsTemplate {
 		$filter           = new LPOrderItemsFilter();
 		$filter->page     = $data['paged'] ?? 1;
 		$filter->order_id = $data['order_id'] ?? 0;
-		$filter->limit = 2;
+		$filter->limit    = 2;
 		$total_row        = 0;
 		$items            = $lpOrderItemsDB->get_items( $filter, $total_row );
 
 		$html_items = '';
 		if ( empty( $items ) ) {
-			$html_items = sprintf( '<li>%s</li>', __( 'No items found', 'learnpress' ) );
+			$html_items = sprintf( '<li>%s</li>', __( '(No item)', 'learnpress' ) );
 		} else {
-			foreach ( $items as $itemObj ) {
-				$item_post = get_post( $itemObj->item_id );
-				if ( ! $item_post || empty( get_post_type_object( $itemObj->item_type ) ) ) {
-					$html_items .= sprintf(
-						'<li>(#%d - %s) %s: %s</li>',
-						$itemObj->item_id,
-						$itemObj->item_type,
-						$itemObj->order_item_name,
-						__( "doesn't exist", 'learnpress' )
-					);
+			foreach ( $items as $i => $itemObj ) {
+				// Get meta data
+				$itemObjMeta = get_metadata( 'learnpress_order_item', $itemObj->order_item_id, '', true );
+				if ( is_array( $itemObjMeta ) ) {
+					foreach ( $itemObjMeta as $key => $value ) {
+						if ( is_array( $value ) && count( $value ) === 1 ) {
+							$itemObjMeta[ $key ] = maybe_unserialize( $value[0] );
+						} else {
+							$itemObjMeta[ $key ] = maybe_unserialize( $value );
+						}
+					}
 				} else {
-					$html_items .= sprintf(
-						'<li><a href="%1$s" >%2$s</a></li>',
-						get_edit_post_link( $itemObj->item_id ),
-						$itemObj->order_item_name
-					);
+					$itemObjMeta = [];
+				}
+
+				$itemObj->meta = $itemObjMeta;
+				$item_type     = $itemObj->item_type ?? '';
+				if ( $item_type === LP_COURSE_CPT ) {
+					$coursePostModel = CoursePostModel::find( $itemObj->item_id, true );
+					if ( $total_row > 1 ) {
+						$index       = ( ( $filter->page - 1 ) * $filter->limit ) + $i + 1;
+						$html_items .= sprintf(
+							'<li>%d. <a href="%s" >%s</a></li>',
+							$index,
+							$coursePostModel->get_edit_link(),
+							$itemObj->order_item_name
+						);
+					} else {
+						$html_items .= sprintf(
+							'<li><a href="%s" >%s</a></li>',
+							$coursePostModel->get_edit_link(),
+							$itemObj->order_item_name
+						);
+					}
+				} else {
+					if ( has_filter( 'learn-press/order-item-not-course-id' ) ) {
+						$item_old       = (array) $itemObj;
+						$item_old['id'] = $itemObj->order_item_id;
+						$item_old       = array_merge( $item_old, $itemObjMeta );
+						$html_items     = apply_filters( 'learn-press/order-item-not-course-id', esc_html__( 'The course does not exist', 'learnpress' ), $item_old );
+					} else {
+						$html_items = apply_filters( 'learn-press/order-items/item', '', $itemObj, $order_id );
+					}
 				}
 			}
 		}
 
 		$total_pages     = $lpOrderItemsDB::get_total_pages( $filter->limit, $total_row );
-		$html_pagination = self::pagination_html( $data, $total_pages );
+		$html_pagination = Template::instance()->html_pagination(
+			[
+				'paged'       => $data['paged'] ?? 1,
+				'total_pages' => $total_pages,
+			]
+		);
 
 		$section          = array(
-			'wrap-start' => '<div class="lp-order-items-wrapper">',
-			'ul'         => '<ul class="order-list-items">',
-			'items'      => $html_items,
-			'ul-end'     => '</ul>',
-			'pagination' => $html_pagination,
-			'wrap-end'   => '<div>',
+			'wrap-start'  => '<div class="lp-order-items-wrapper">',
+			'total_items' => $total_row > 1 ? sprintf(
+				'<p class="total-items">%s: %d</p>',
+				__( 'Total items', 'learnpress' ),
+				$total_row
+			) : '',
+			'items'       => '<ul class="order-list-items">' . $html_items . '</ul>',
+			'pagination'  => $html_pagination,
+			'wrap-end'    => '<div>',
 		);
 		$content->content = Template::combine_components( $section );
 
 		return $content;
 	}
-	/**
-	 * [pagination_html description]
-	 *
-	 * @param  array   $args TemplateAJAX params
-	 * @param  integer $total_pages
-	 * @return string
-	 */
-	public static function pagination_html( $args, $total_pages ): string {
-		$html_li_number = '';
-		if ( $total_pages > 2 ) {
-			$page_numbers       = paginate_links(
-				apply_filters(
-					'learn_press_pagination_args',
-					array(
-						'base'      => add_query_arg( 'paged', '%#%', \LP_Helper::getUrlCurrent() ),
-						'format'    => '',
-						'add_args'  => '',
-						'current'   => max( 1, $args['paged'] ),
-						'total'     => $total_pages,
-						'prev_text' => '<i class="lp-icon-arrow-left"></i>',
-						'next_text' => '<i class="lp-icon-arrow-right"></i>',
-						'type'      => 'array',
-						'end_size'  => 2,
-						'mid_size'  => 2,
-					)
-				)
-			);
-			$html_li_number     = ! empty( $page_numbers ) ? implode(
-				'',
-				array_map(
-					function ( $link ) {
-						return '<li>' . $link . '</li>';
-					},
-					$page_numbers
-				)
-			) : '';
-			$section_pagination = array(
-				'wrap'     => '<ul class="pagination">',
-				'numbers'  => $html_li_number,
-				'wrap_end' => '</ul>',
-			);
-			return Template::combine_components( $section_pagination );
-		} else {
-			return '';
-		}
-	}
 
-	public function order_detail_view_items_layout( LP_Order $lp_order ) {
-		$args      = array(
+	public function order_detail_items_layout( LP_Order $lp_order ) {
+		$args = array(
 			'id_url'   => 'admin-view-order-detail-items',
 			'order_id' => $lp_order->get_id(),
 			'paged'    => 1,
 		);
+
+		/**
+		 * @use self::render_order_detail_items
+		 */
 		$call_back = array(
 			'class'  => self::class,
 			'method' => 'render_order_detail_items',
@@ -217,6 +210,7 @@ class AdminOrderItemsTemplate {
 		$filter           = new LPOrderItemsFilter();
 		$filter->order_id = $lp_order->get_id();
 		$filter->page     = $paged;
+		$filter->limit    = - 1;
 		$total_row        = 0;
 		$items            = $lpOrderDB->get_items( $filter, $total_row );
 
@@ -274,7 +268,12 @@ class AdminOrderItemsTemplate {
 		}
 
 		$total_pages     = $lpOrderDB::get_total_pages( $filter->limit, $total_row );
-		$html_pagination = self::pagination_html( $data, $total_pages );
+		$html_pagination = Template::instance()->html_pagination(
+			[
+				'paged'       => $paged,
+				'total_pages' => $total_pages,
+			]
+		);
 		if ( ! empty( $html_pagination ) ) {
 			$html_pagination = '<tr><td class="lp-order-items-wrapper" style="padding: 0 0 0 30px;" colspan="4">' . $html_pagination . '</td></tr>';
 		}
@@ -295,6 +294,7 @@ class AdminOrderItemsTemplate {
 
 		return $content;
 	}
+
 	/**
 	 * Table header
 	 *
@@ -302,18 +302,28 @@ class AdminOrderItemsTemplate {
 	 */
 	public static function table_header(): string {
 		$content = sprintf(
-			'<thead> <tr> <th class="column-name">%1$s</th> <th class="column-price">%2$s</th> <th class="column-quantity">%3$s</th> <th class="column-total align-right">%4$s</th> </tr> </thead>',
-			esc_html( 'Item', 'learnpress' ),
-			esc_html( 'Cost', 'learnpress' ),
-			esc_html( 'Quantity', 'learnpress' ),
-			esc_html( 'Total', 'learnpress' )
+			'<thead>
+				<tr>
+					<th class="column-name">%1$s</th>
+					<th class="column-price">%2$s</th>
+					<th class="column-quantity">%3$s</th>
+					<th class="column-total align-right">%4$s</th>
+				</tr>
+			</thead>',
+			esc_html__( 'Item', 'learnpress' ),
+			esc_html__( 'Cost', 'learnpress' ),
+			esc_html__( 'Quantity', 'learnpress' ),
+			esc_html__( 'Total', 'learnpress' )
 		);
+
 		return $content;
 	}
+
 	/**
 	 * no item row html
 	 *
-	 * @param  array $items all order items
+	 * @param array $items all order items
+	 *
 	 * @return string
 	 */
 	public static function no_item_row( $items ): string {
@@ -322,15 +332,18 @@ class AdminOrderItemsTemplate {
 				<td colspan="4">%2$s</td>
 			</tr>',
 			esc_attr( $items ? 'hide-if-js' : '' ),
-			esc_html( 'There are no order items', 'learnpress' )
+			esc_html__( 'There are no order items', 'learnpress' )
 		);
+
 		return $content;
 	}
+
 	/**
 	 * order item html
 	 *
-	 * @param  LP_Order $order
-	 * @param  object   $item lp order item
+	 * @param LP_Order $order
+	 * @param object $item lp order item
+	 *
 	 * @return string html
 	 */
 	public static function order_item_detail_html( $order, $item ): string {
@@ -342,7 +355,9 @@ class AdminOrderItemsTemplate {
 		$item_title      = $item->order_item_name . '(' . get_post_type_object( $item->item_type )->labels->singular_name . ')';
 		ob_start();
 		?>
-		<tr class="order-item-row" data-item_id="<?php echo esc_attr( $item->order_item_id ); ?>" data-id="<?php echo esc_attr( $item->item_id ); ?>" data-remove_nonce="<?php echo wp_create_nonce( 'remove_order_item' ); ?>">
+		<tr class="order-item-row" data-item_id="<?php echo esc_attr( $item->order_item_id ); ?>"
+			data-id="<?php echo esc_attr( $item->item_id ); ?>"
+			data-remove_nonce="<?php echo wp_create_nonce( 'remove_order_item' ); ?>">
 			<td class="column-name">
 				<?php if ( $order->is_manual() && $order->get_status() === LP_ORDER_PENDING ) : ?>
 					<a class="remove-order-item" href="#">
@@ -367,12 +382,15 @@ class AdminOrderItemsTemplate {
 		</tr>
 		<?php
 		$content = ob_get_clean();
+
 		return $content;
 	}
+
 	/**
 	 * Order Details Footer
 	 *
-	 * @param  LP_Order $order
+	 * @param LP_Order $order
+	 *
 	 * @return string table footer
 	 */
 	public static function table_footer( $order ) {
@@ -427,4 +445,5 @@ class AdminOrderItemsTemplate {
 		return ob_get_clean();
 	}
 }
+
 ?>
