@@ -460,10 +460,12 @@ class AdminEditWithAITemplate {
 				'<div class="form-group">
 					<label>%s</label>
 					<input class="title-refer" type="text" name="post-title" readonly />
+					<p class="lp-ai-warning-refer lp-hidden"><i class="lp-icon-warning"></i>%s</p>
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Title refer', 'learnpress' ),
-				esc_html__( '', 'learnpress' )
+				esc_html__( 'The title refer to generate a relevant course description. Please enter title first', 'learnpress' ),
+				esc_html__( 'The course title is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' )
 			),
 			'describe-topic' => sprintf(
 				'<div class="form-group">
@@ -715,9 +717,11 @@ class AdminEditWithAITemplate {
 				'<div class="form-group">
 					<label>%s</label>
 					<input class="title-refer" type="text" name="post-title" readonly />
+					<p class="lp-ai-warning-refer lp-hidden"><i class="lp-icon-warning"></i>%s</p>
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Title Refer', 'learnpress' ),
+				esc_html__( 'The title refer to generate a relevant course image. Please enter title first', 'learnpress' ),
 				esc_html__( 'The current course title that will be used as reference during image generation.', 'learnpress' )
 			),
 			'goal'          => sprintf(

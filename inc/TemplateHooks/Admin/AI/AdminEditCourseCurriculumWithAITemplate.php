@@ -161,18 +161,22 @@ class AdminEditCourseCurriculumWithAITemplate {
 				'<div class="form-group">
 					<label>%s</label>
 					<input class="title-refer" type="text" name="post-title" readonly />
+					<p class="lp-ai-warning-refer lp-hidden"><i class="lp-icon-warning"></i>%s</p>
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Title refer', 'learnpress' ),
+				esc_html__( 'You can edit the course title to better suit the curriculum generation.', 'learnpress' ),
 				esc_html__( 'The course title is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' ),
 			),
 			'post-content'    => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea class="description-refer" type="text" name="post-content" readonly></textarea>
+					<p class="lp-ai-warning-refer lp-hidden"><i class="lp-icon-warning"></i>%s</p>
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Description refer', 'learnpress' ),
+				esc_html__( 'You can edit the course description to better suit the curriculum generation.', 'learnpress' ),
 				esc_html__( 'The course description is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' )
 			),
 			'goal'            => sprintf(

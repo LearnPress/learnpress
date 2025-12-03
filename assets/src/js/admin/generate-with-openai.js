@@ -225,6 +225,14 @@ export class GenerateWithOpenai {
 				const elPostTitle = form.querySelector( '[name=post-title]' );
 				if ( elPostTitle ) {
 					elPostTitle.value = post_title;
+
+					if ( ! post_title ) {
+						const elGroup = elPostTitle.closest( '.form-group' );
+						const elReferWarning = elGroup.querySelector( '.lp-ai-warning-refer' );
+						if ( elReferWarning ) {
+							lpUtils.lpShowHideEl( elReferWarning, 1 );
+						}
+					}
 				}
 
 				const elPostContent = form.querySelector(
@@ -232,6 +240,14 @@ export class GenerateWithOpenai {
 				);
 				if ( elPostContent ) {
 					elPostContent.value = post_content;
+
+					if ( post_content.length < 2 ) {
+						const elGroup = elPostContent.closest( '.form-group' );
+						const elReferWarning = elGroup.querySelector( '.lp-ai-warning-refer' );
+						if ( elReferWarning ) {
+							lpUtils.lpShowHideEl( elReferWarning, 1 );
+						}
+					}
 				}
 
 				const targetAudience = popupSweetAlert.querySelector( 'select[name="target_audience"]' );

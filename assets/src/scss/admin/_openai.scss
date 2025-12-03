@@ -858,6 +858,16 @@ $title-color: #111111;
 			color: #f27474;;
 		}
 	}
+
+	.lp-ai-warning-refer {
+		border: 1px solid #FCD34D;
+		background-color: #FFFBEB;
+		padding: 10px;
+		border-radius: 5px;
+		display: flex;
+		gap: 5px;
+		align-items: center;
+	}
 }
 
 .lp-ai-course-data-preview-wrap {
