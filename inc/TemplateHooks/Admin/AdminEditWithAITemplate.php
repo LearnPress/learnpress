@@ -53,6 +53,10 @@ class AdminEditWithAITemplate {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-title-ai">',
 			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'btn-close'                =>
+				'<button type="button" class="lp-btn-close-ai-popup">
+					<i class="lp-icon-remove"></i>
+				</button>',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'Generate Course Title', 'learnpress' )
@@ -350,6 +354,10 @@ class AdminEditWithAITemplate {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-description-ai">',
 			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'btn-close'                =>
+				'<button type="button" class="lp-btn-close-ai-popup">
+					<i class="lp-icon-remove"></i>
+				</button>',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'Generate Course Description', 'learnpress' )
@@ -599,6 +607,10 @@ class AdminEditWithAITemplate {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-image-ai">',
 			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'btn-close'                =>
+				'<button type="button" class="lp-btn-close-ai-popup">
+					<i class="lp-icon-remove"></i>
+				</button>',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'Generate Course Image', 'learnpress' )

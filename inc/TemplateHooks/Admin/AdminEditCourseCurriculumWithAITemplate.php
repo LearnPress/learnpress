@@ -45,6 +45,10 @@ class AdminEditCourseCurriculumWithAITemplate {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-course-curriculum-ai">',
 			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'btn-close'                =>
+				'<button type="button" class="lp-btn-close-ai-popup">
+					<i class="lp-icon-remove"></i>
+				</button>',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'Generate Course Sections Curriculum', 'learnpress' )

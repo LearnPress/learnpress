@@ -65,7 +65,7 @@ export class GenerateWithOpenai {
 		} );
 
 		// Check is layout Gutenberg
-		if ( wp.data ) {
+		if ( wp.data && wp.data.select( 'core/editor' ) ) {
 			isLayoutGutenberg = true;
 			selectGutenberg = wp.data.select;
 			dispatchGutenberg = wp.data.dispatch;
@@ -151,6 +151,31 @@ export class GenerateWithOpenai {
 				class: this,
 				callBack: this.applyImageData.name,
 			},
+			{
+				selector: '.lp-btn-close-ai-popup',
+				//class: this,
+				callBack: ( args ) => {
+					const { e, target } = args;
+					//e.preventDefault();
+
+					console.log(target);
+
+					const message = lpData.i18n.confirm_close_ai;
+
+					console.log( message );
+
+					/*if ( ! lp_is_generating_course_data ) {
+						SweetAlert.close();
+					} else if ( confirm( message ) ) {
+						SweetAlert.close();
+					}*/
+
+					// Testing custom confirm box
+					if ( confirm( message ) ) {
+						SweetAlert.close();
+					}
+				},
+			},
 		] );
 	}
 
@@ -169,9 +194,10 @@ export class GenerateWithOpenai {
 		SweetAlert.fire( {
 			html: modalTemplate.innerHTML,
 			width: '60%',
-			showCloseButton: true,
+			showCloseButton: false,
 			showConfirmButton: false,
 			allowOutsideClick: false,
+			allowEscapeKey: false,
 			didOpen: () => {
 				popupSweetAlert = SweetAlert.getPopup();
 				// Click to show tomSelect style

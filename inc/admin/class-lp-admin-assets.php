@@ -67,6 +67,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'yes'              => esc_html__( 'Yes' ),
 					'cancel'           => esc_html__( 'Cancel' ),
 					'generate_with_ai' => esc_html__( 'Generate with AI', 'learnpress' ),
+					'confirm_close_ai' => esc_html__( 'Are you sure you want to close? Generate data will stop.', 'learnpress' ),
 				],
 				'current_screen'           => $screen ? $screen->id : '',
 				'show_search_author_field' => empty( $html_search_author_field ) ? 0 : $html_search_author_field,

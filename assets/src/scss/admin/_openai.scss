@@ -606,7 +606,7 @@ $title-color: #111111;
 				margin-top: 8px
 			}
 
-			.title-refer, 
+			.title-refer,
 			.description-refer {
 				padding: 0;
 				border: none;
@@ -842,6 +842,21 @@ $title-color: #111111;
 		max-height: 400px;
 		overflow-y: auto;
 		margin-bottom: 20px;
+	}
+
+	.lp-btn-close-ai-popup {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		background: none;
+		border: none;
+		font-size: 20px;
+		cursor: pointer;
+		color: #ccc;
+
+		&:hover {
+			color: #f27474;;
+		}
 	}
 }
 
