@@ -48,9 +48,9 @@ class QuestionTemplate {
 				return '';
 			}
 
-			$question      = $questionData['object'];
-			$question_type = $questionData['type'];
-			$is_checked    = $questionData['checked'] ?? false;
+			$question            = $questionData['object'];
+			$question_type       = $questionData['type'];
+			$show_correct_review = $questionData['show_correct_review'] ?? false;
 
 			// Build question wrapper classes.
 			$wrapper_classes = array( 'question', 'question-' . $question_type );
@@ -82,8 +82,7 @@ class QuestionTemplate {
 			// Determine whether to show check button or response based on check status
 			$buttons_or_response = '';
 			// $is_reviewing        = $this->get_array_value( $quiz_data, 'is_review', false, 'bool' );
-			if ( $is_checked  ) {
-				// TODO check review (show response)
+			if ( $show_correct_review ) {
 				// Show question response if already checked
 				$buttons_or_response = $this->question_response_html( $questionData );
 			} else {
@@ -514,10 +513,6 @@ class QuestionTemplate {
 	public function question_response_html( array $questionData ) {
 		try {
 			// Only show response if show_correct_review is enabled
-			$show_correct_review = $questionData['show_correct_review'] ?? false;
-			if ( ! $show_correct_review ) {
-				return '';
-			}
 			if ( $questionData['type'] === 'fill_in_blanks' ) {
 				return $this->fib_correct_label( $questionData );
 			}
@@ -747,6 +742,7 @@ class QuestionTemplate {
 				$is_correct = $this->check_fib_question( $questionData );
 				break;
 			default:
+				$is_correct = apply_filters( 'learnpress/question-template/question-is-correct', false, $questionData );
 				break;
 		}
 		return $is_correct;

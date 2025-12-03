@@ -531,7 +531,6 @@ class QuestionPostModel extends PostModel {
 	 * @param int   $question_id Question ID
 	 * @param array $args        Arguments array with keys:
 	 *                           - instant_check: bool
-	 *                           - quiz_status: string
 	 *                           - checked_questions: array
 	 *                           - answered: array
 	 *                           - show_correct_review: bool
@@ -546,7 +545,6 @@ class QuestionPostModel extends PostModel {
 			$args,
 			[
 				'instant_check'       => true,
-				'quiz_status'         => '',
 				'checked_questions'   => [],
 				'answered'            => [],
 				'show_correct_review' => true,
@@ -562,7 +560,6 @@ class QuestionPostModel extends PostModel {
 
 		// Extract args
 		$instantCheck     = $args['instant_check'];
-		$quizStatus       = $args['quiz_status'];
 		$checkedQuestions = $args['checked_questions'];
 		$answered         = $args['answered'];
 		$status           = $args['status'];
@@ -620,11 +617,11 @@ class QuestionPostModel extends PostModel {
 		$questionData['answered'] = $answered[ $question_id ]['answered'] ?? array();
 
 		// Determine if we should include correct answers
-		$with_true_or_false = ( $checked || ( $quizStatus === 'completed' && $args['show_correct_review'] ) );
+		$with_true_or_false = ( $checked || ( $status === 'completed' && $args['show_correct_review'] ) );
 
 		$questionData['show_correct_review'] = $with_true_or_false;
 		
-		$questionData['disabled'] = $checked || $quizStatus === 'completed';
+		$questionData['disabled'] = $checked || $status === 'completed';
 
 		$exclude_option_key = array( 'question_id', 'order' );
 
