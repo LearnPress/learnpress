@@ -156,24 +156,19 @@ export class GenerateWithOpenai {
 				//class: this,
 				callBack: ( args ) => {
 					const { e, target } = args;
-					//e.preventDefault();
-
-					console.log(target);
 
 					const message = lpData.i18n.confirm_close_ai;
 
-					console.log( message );
-
-					/*if ( ! lp_is_generating_course_data ) {
+					if ( ! lp_is_generating_course_data ) {
 						SweetAlert.close();
 					} else if ( confirm( message ) ) {
 						SweetAlert.close();
-					}*/
+					}
 
 					// Testing custom confirm box
-					if ( confirm( message ) ) {
+					/*if ( confirm( message ) ) {
 						SweetAlert.close();
-					}
+					}*/
 				},
 			},
 		] );
@@ -278,46 +273,7 @@ export class GenerateWithOpenai {
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
-				let html = '';
-				const closeTitleModalTemplate = document.querySelector(
-					'#lp-tmpl-close-warning-edit-title-ai'
-				);
-
-				const closeDesModalTemplate = document.querySelector(
-					'#lp-tmpl-close-warning-edit-description-ai'
-				);
-
-				const closeImageModalTemplate = document.querySelector(
-					'#lp-tmpl-close-warning-edit-image-ai'
-				);
-
-				const closeCurriculumModalTemplate = document.querySelector(
-					'#lp-tmpl-close-warning-edit-curriculum-ai'
-				);
-
-				if ( templateId === '#lp-tmpl-edit-title-ai' ) {
-					html = closeTitleModalTemplate.innerHTML;
-				}
-
-				if ( templateId === '#lp-tmpl-edit-description-ai' ) {
-					html = closeDesModalTemplate.innerHTML;
-				}
-
-				if ( templateId === '#lp-tmpl-edit-image-ai' ) {
-					html = closeImageModalTemplate.innerHTML;
-				}
-
-				if ( templateId === '#lp-tmpl-edit-course-curriculum-ai' ) {
-					html = closeCurriculumModalTemplate.innerHTML;
-				}
-
 				if ( lp_is_generating_course_data ) {
-					SweetAlert.fire( {
-						html,
-						showCloseButton: true,
-						showConfirmButton: true,
-					} );
-
 					lp_is_generating_course_data = false;
 				}
 			}
