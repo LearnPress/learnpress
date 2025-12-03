@@ -702,16 +702,16 @@ class AdminEditWithAITemplate {
 		$quality_opts = $options[ "image-quality-$model_type" ] ?? $options['image-quality'] ?? [];
 
 		$components = [
-			'step'              => '<div class="step-content active" data-step="1">',
-			'title'             => sprintf(
+			'step'          => '<div class="step-content active" data-step="1">',
+			'title'         => sprintf(
 				'<div class="step-title">%s</div>',
 				esc_html__( 'Step 1 — Config Image', 'learnpress' ),
 			),
-			'description'       => sprintf(
+			'description'   => sprintf(
 				'<p class="step-description">%s</p>',
 				esc_html__( 'Config your image you want, data will refer course title, course description to generate image.', 'learnpress' )
 			),
-			'from-title'        => sprintf(
+			'from-title'    => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input class="title-refer" type="text" name="post-title" readonly />
@@ -720,7 +720,7 @@ class AdminEditWithAITemplate {
 				esc_html__( 'Title Refer', 'learnpress' ),
 				esc_html__( 'The current course title that will be used as reference during image generation.', 'learnpress' )
 			),
-			'goal' 			=> sprintf(
+			'goal'          => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<textarea type="text" name="goal" placeholder="%s"></textarea>
@@ -728,8 +728,8 @@ class AdminEditWithAITemplate {
 				esc_html__( 'Goal', 'learnpress' ),
 				esc_html__( 'A brief description of the image you want to generate.', 'learnpress' )
 			),
-			'form-grid'         => '<div class="form-grid">',
-			'style'             => sprintf(
+			'form-grid'     => '<div class="form-grid">',
+			'style'         => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					%s
@@ -755,7 +755,7 @@ class AdminEditWithAITemplate {
 				esc_html__( 'e.g., books, laptop, graduation cap', 'learnpress' ),
 				esc_html__( 'List the specific elements or icons that should appear in the generated image.', 'learnpress' )
 			),*/
-			'size'              => sprintf(
+			'size'          => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					%s
@@ -770,7 +770,7 @@ class AdminEditWithAITemplate {
 				),
 				esc_html__( 'Set the output.', 'learnpress' )
 			),
-			'quality'           => sprintf(
+			'quality'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					%s
@@ -785,7 +785,7 @@ class AdminEditWithAITemplate {
 				),
 				esc_html__( 'Select the desired image quality such as standard, high, or premium.', 'learnpress' )
 			),
-			'outputs'           => sprintf(
+			'outputs'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input name="outputs" value="2" type="number" />
@@ -794,8 +794,8 @@ class AdminEditWithAITemplate {
 				esc_html__( 'Outputs', 'learnpress' ),
 				esc_html__( 'Number of images you want the system to generate (model dall-e-3 only 1 supported).', 'learnpress' )
 			),
-			'form-grid-end'     => '</div>',
-			'step_close'        => '</div>',
+			'form-grid-end' => '</div>',
+			'step_close'    => '</div>',
 		];
 
 		return Template::combine_components( $components );
