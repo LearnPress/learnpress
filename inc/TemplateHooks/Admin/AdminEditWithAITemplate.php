@@ -450,7 +450,7 @@ class AdminEditWithAITemplate {
 			'refer-title'    => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="text" name="post-title" readonly />
+					<input class="title-refer" type="text" name="post-title" readonly />
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Title refer', 'learnpress' ),
@@ -701,7 +701,7 @@ class AdminEditWithAITemplate {
 			'from-title'        => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="text" name="post-title" readonly />
+					<input class="title-refer" type="text" name="post-title" readonly />
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Title Refer', 'learnpress' ),

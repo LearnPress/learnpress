@@ -600,6 +600,19 @@ $title-color: #111111;
 				min-height: 86px;
 				resize: vertical;
 			}
+
+			.field-description {
+				color: #898989;
+			}
+
+			.title-refer, 
+			.description-refer {
+				padding: 0;
+				border: none;
+				font-size: 16px;
+				min-height: unset;
+    			box-shadow: none;
+			}
 		}
 
 		#prompt-preview {

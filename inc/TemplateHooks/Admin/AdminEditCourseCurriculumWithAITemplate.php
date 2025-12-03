@@ -155,7 +155,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 			'post-title'            => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="text" name="post-title" readonly />
+					<input class="title-refer" type="text" name="post-title" readonly />
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Title refer', 'learnpress' ),
@@ -164,7 +164,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 			'post-content'          => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="post-content" readonly></textarea>
+					<textarea class="description-refer" type="text" name="post-content" readonly></textarea>
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Description refer', 'learnpress' ),
