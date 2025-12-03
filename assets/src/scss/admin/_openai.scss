@@ -456,7 +456,7 @@ $title-color: #111111;
 		justify-content: space-between;
 		margin-bottom: 30px;
 		padding: 0 20px;
-
+		gap: 10px;
 
 		.step-item {
 			display: flex;
@@ -465,6 +465,7 @@ $title-color: #111111;
 			color: $text-dark;
 			position: relative;
 			flex-grow: 1;
+			justify-content: center;
 
 			&.active {
 				.step-number {
@@ -504,6 +505,7 @@ $title-color: #111111;
 			min-height: 400px;
 			max-height: 600px;
 			overflow: auto;
+			padding: 0 2px;
 		}
 
 		.step-title {
@@ -572,6 +574,7 @@ $title-color: #111111;
 				box-sizing: border-box;
 				transition: border-color 0.2s, box-shadow 0.2s;
 				margin: 0;
+				background-color: transparent;
 
 				&:focus {
 					outline: none;
