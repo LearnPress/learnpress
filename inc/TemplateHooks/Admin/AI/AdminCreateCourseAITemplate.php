@@ -1,10 +1,11 @@
 <?php
 
-namespace LearnPress\TemplateHooks\Admin;
+namespace LearnPress\TemplateHooks\Admin\AI;
 
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Admin\AdminTemplate;
 
 /**
  * Class AdminCreateCourseAITemplate
@@ -42,6 +43,10 @@ class AdminCreateCourseAITemplate {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-create-course-ai">',
 			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'btn-close'                =>
+				'<button type="button" class="lp-btn-close-ai-popup">
+					<i class="lp-icon-remove"></i>
+				</button>',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'AI Course Builder for LearnPress', 'learnpress' )

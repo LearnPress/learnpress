@@ -1,10 +1,11 @@
 <?php
 
-namespace LearnPress\TemplateHooks\Admin;
+namespace LearnPress\TemplateHooks\Admin\AI;
 
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LP_Settings;
 
 /**
