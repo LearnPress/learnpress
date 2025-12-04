@@ -210,7 +210,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @return string
 		 * @throws Exception
 		 */
-		public function posts_where_paged( $where ) {
+		/*public function posts_where_paged( $where ) {
 			// Code temporary, when release about 1 week, will remove it.
 			$lp_filter_post              = new LP_Post_Type_Filter();
 			$lp_filter_post->post_type   = LP_ORDER_CPT;
@@ -279,7 +279,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			return $where;
-		}
+		}*/
 
 		public function posts_orderby( $orderby ) {
 			global $wpdb;
@@ -304,7 +304,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			return $orderby;
 		}
 
-		public function posts_join_paged( $join ) {
+		/*public function posts_join_paged( $join ) {
 			global $wpdb, $wp_query;
 			$lp_db = LP_Database::getInstance();
 
@@ -324,7 +324,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			return $join;
-		}
+		}*/
 
 		/**
 		 * Make our custom columns can be sortable
@@ -378,7 +378,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * re-order the orders by newest
 		 *
-		 * @param $wp_query
+		 * @param WP_Query $wp_query
 		 *
 		 * @editor tungnx
 		 * @reason comment this function - because default sort by id
@@ -386,9 +386,59 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function pre_get_posts( $wp_query ) {
-			if ( is_admin() && isset( $wp_query->query['post_type'] ) && LP_ORDER_CPT == $wp_query->query['post_type'] ) {
+			if ( ! is_admin() ) {
+				return $wp_query;
+			}
+
+			$post_type = $wp_query->get( 'post_type' );
+
+			if ( empty( $post_type ) || $post_type != LP_ORDER_CPT ) {
+				return $wp_query;
+			}
+
+			if ( is_admin() ) {
 				$wp_query->set( 'orderby', 'date' );
 				$wp_query->set( 'order', 'desc' );
+			}
+
+			$post_status = $wp_query->get( 'post_status' );
+			if ( empty( $post_status) || $post_status == 'all' ) {
+				$wp_query->set(
+					'post_status',
+					array(
+						LP_ORDER_COMPLETED_DB,
+						LP_ORDER_PROCESSING_DB,
+						LP_ORDER_PENDING_DB,
+						LP_ORDER_FAILED_DB,
+						LP_ORDER_CANCELLED_DB,
+					)
+				);
+			}
+
+			// Search by author id
+			/*if ( ! empty( $wp_query->get( 'author' ) ) ) {
+				$user_id = absint( $wp_query->get( 'author' ) );
+				//$where   .= $wpdb->prepare( ' AND uu.ID like %s ', $user_id );
+				$where .= " AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id ) ";
+			}*/
+
+			$post_author = $wp_query->get( 'author' );
+			if ( ! empty( $post_author ) ) {
+				$user_id = absint( $post_author );
+				$meta_query = array(
+//					'relation' => 'OR',
+					array(
+						'key'     => '_user_id',
+						'value'   => '%"' . $user_id . '"%',
+						'compare' => 'LIKE',
+					),
+//					array(
+//						'key'     => '_user_id',
+//						'value'   => $user_id,
+//						'compare' => '=',
+//					),
+				);
+				$wp_query->set( 'meta_query', $meta_query );
 			}
 
 			return $wp_query;
