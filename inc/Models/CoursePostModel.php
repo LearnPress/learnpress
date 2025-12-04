@@ -145,9 +145,9 @@ class CoursePostModel extends PostModel {
 	 *
 	 * @throws Exception
 	 * @since  4.3.0
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public static function update_section( CourseSectionModel $courseSectionModel, array $data ) {
+	public function update_section( CourseSectionModel $courseSectionModel, array $data ) {
 		foreach ( $data as $key => $value ) {
 			if ( $key !== 'section_id' && property_exists( $courseSectionModel, $key ) ) {
 				$courseSectionModel->{$key} = $value;

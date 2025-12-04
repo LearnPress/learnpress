@@ -3,6 +3,8 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Databases\CourseSectionDB;
+use LearnPress\Filters\CourseSectionFilter;
 use LP_Background_Single_Course;
 use LP_Cache;
 use LP_Database;
@@ -101,6 +103,21 @@ class CourseSectionModel {
 	 */
 	public function get_course_model() {
 		return CourseModel::find( $this->section_course_id, true );
+	}
+
+	/**
+	 * Get course post model
+	 *
+	 * @since 4.3.2
+	 * @version 1.0.0
+	 * @return false|CoursePostModel
+	 */
+	public function get_course_post_model() {
+		$courseModel = $this->get_course_model();
+		if ( $courseModel instanceof CourseModel ) {
+			return new CoursePostModel( $courseModel );
+		}
+		return false;
 	}
 
 	/**
@@ -316,21 +333,34 @@ class CourseSectionModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function save(): CourseSectionModel {
-		$lp_section_db = LP_Section_DB::getInstance();
-
-		$data = [];
-		foreach ( get_object_vars( $this ) as $property => $value ) {
-			$data[ $property ] = $value;
+		// Check permission
+		$coursePostModel = $this->get_course_post_model();
+		if ( $coursePostModel ) {
+			if ( ! $coursePostModel->check_capabilities_update() ) {
+				throw new Exception( __( 'You do not have permission to edit this section', 'learnpress' ) );
+			}
 		}
 
+		$courseSectionDB = CourseSectionDB::getInstance();
+
+		$data = get_object_vars( $this );
+
+		$args = [
+			'data'  => $data,
+			'filter'=> new CourseSectionFilter(),
+			'table_name' => $courseSectionDB->tb_lp_sections,
+			'key_auto_increment' => 'section_id',
+		];
+
 		if ( $data['section_id'] === 0 ) { // Insert data.
-			$section_id       = $lp_section_db->insert_data( $data );
+			$section_id       = $courseSectionDB->insert_data( $args );
 			$this->section_id = $section_id;
 		} else { // Update data.
-			$lp_section_db->update_data( $data );
+			$args[ 'where_key' ] = 'section_id';
+			$courseSectionDB->update_data( $args );
 		}
 
 		// Clear cache
@@ -344,9 +374,17 @@ class CourseSectionModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function delete() {
+		// Check permission
+		$coursePostModel = $this->get_course_post_model();
+		if ( $coursePostModel ) {
+			if( ! $coursePostModel->check_capabilities_update() ) {
+				throw new Exception( __( 'You do not have permission to delete section', 'learnpress' ) );
+			}
+		}
+
 		// Unassign items of section
 		$lp_section_items_db = LP_Section_Items_DB::getInstance();
 		$filter              = new LP_Section_Items_Filter();

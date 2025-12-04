@@ -89,6 +89,28 @@ class CourseSectionItemModel {
 	}
 
 	/**
+	 * Get course model
+	 *
+	 * @return CourseModel|false
+	 */
+	public function get_course_model(): ?CourseModel {
+		return CourseModel::find( $this->section_course_id, true );
+	}
+
+	/**
+	 * Get course post model
+	 *
+	 * @return false|CoursePostModel
+	 */
+	public function get_course_post_model(): ?CoursePostModel {
+		$courseModel = $this->get_course_model();
+		if ( $courseModel ) {
+			return new CoursePostModel( $courseModel );
+		}
+		return false;
+	}
+
+	/**
 	 * Get section item id
 	 *
 	 * @return int
@@ -161,15 +183,18 @@ class CourseSectionItemModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function save(): CourseSectionItemModel {
+		// Check permission
+		$coursePostModel = $this->get_course_post_model();
+		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
+			throw new Exception( esc_html__( 'You do not have permission to save section item.', 'learnpress' ) );
+		}
+
 		$lp_section_items_db = LP_Section_items_DB::getInstance();
 
-		$data = [];
-		foreach ( get_object_vars( $this ) as $property => $value ) {
-			$data[ $property ] = $value;
-		}
+		$data = get_object_vars( $this );
 
 		if ( $data['section_item_id'] === 0 ) { // Insert data.
 			$section_item_id       = $lp_section_items_db->insert_data( $data );

@@ -498,7 +498,7 @@ class LP_Section_DB extends LP_Database {
 	 * @since 4.2.8.6
 	 * @version 1.0.0
 	 */
-	public function update_sections_position( array $section_ids, $section_course_id ) {
+	/*public function update_sections_position( array $section_ids, $section_course_id ) {
 		$filter             = new LP_Section_Filter();
 		$filter->collection = $this->tb_lp_sections;
 		$SET_SQL            = 'section_order = CASE';
@@ -518,5 +518,5 @@ class LP_Section_DB extends LP_Database {
 		$filter->where[] = $this->wpdb->prepare( 'AND section_course_id = %d', $section_course_id );
 
 		$this->update_execute( $filter );
-	}
+	}*/
 }
