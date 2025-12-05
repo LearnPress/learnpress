@@ -116,7 +116,7 @@ class TemplateLoader {
         targetElement.innerHTML = html;
 
         // Trigger custom event for other scripts to hook into
-        const event = new CustomEvent('lp-template-loaded', {
+        const event = new CustomEvent('lp-quiz-template-loaded', {
             detail: { target: targetElement, html },
         });
         document.dispatchEvent(event);

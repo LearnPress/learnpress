@@ -23,7 +23,7 @@ class QuestionActionHandler {
      * Restore saved answers when new content is loaded via AJAX
      */
     bindTemplateLoadedEvent() {
-        document.addEventListener('lp-template-loaded', () => {
+        document.addEventListener('lp-quiz-template-loaded', () => {
             // Restore saved answers for newly loaded questions
             this.restoreAllSavedAnswers();
         });

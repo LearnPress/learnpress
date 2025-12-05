@@ -54,6 +54,14 @@ class QuizSubmitHandler {
         button.textContent = __('Submitting…', 'learnpress');
         button.classList.add('loading');
 
+        // Dispatch custom event to notify other components (e.g., timer)
+        const submittingEvent = new CustomEvent('lp-quiz-submitting', {
+            detail: {
+                timestamp: Date.now()
+            }
+        });
+        document.dispatchEvent(submittingEvent);
+
         // Get all answers
         const answered = this.collectAnswers();
 
