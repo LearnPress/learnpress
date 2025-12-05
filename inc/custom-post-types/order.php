@@ -460,7 +460,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		public function posts_pre_query( $posts, $wp_query ) {
 			try {
 				if ( ! is_admin() ) {
-					return $wp_query;
+					return $posts;
 				}
 
 				$post_type = $wp_query->get( 'post_type' );
