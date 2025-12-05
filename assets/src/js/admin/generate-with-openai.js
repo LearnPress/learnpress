@@ -212,9 +212,15 @@ export class GenerateWithOpenai {
 
 				let post_content = '';
 				if ( ! isLayoutGutenberg ) {
-					post_content = window.tinymce
-						.get( 'content' )
-						.getContent( { format: 'text' } );
+					if ( ! window.tinymce || ! window.tinymce.get( 'content' ) ) {
+						post_content = document
+							.querySelector( '#content' )
+							.value;
+					} else {
+						post_content = window.tinymce
+							.get( 'content' )
+							.getContent( { format: 'text' } );
+					}
 				} else {
 					const content = editorGutenberg.getEditedPostContent();
 					post_content = content
