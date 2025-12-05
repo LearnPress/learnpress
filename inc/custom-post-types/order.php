@@ -7,6 +7,10 @@
  * @version 1.0.2
  */
 
+use LearnPress\Databases\DataBase;
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\PostFilter;
+
 if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 	final class LP_Order_Post_Type extends LP_Abstract_Post_Type {
 		/**
@@ -26,12 +30,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function __construct() {
 			add_action( 'admin_init', array( $this, 'register_post_statues' ) );
-			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
-			add_action( 'admin_init', array( $this, 'remove_box' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			//add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+			add_action( 'posts_pre_query', array( $this, 'posts_pre_query' ), 999, 2 );
+			//add_action( 'admin_init', array( $this, 'remove_box' ) );
+			//add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_filter( 'wp_untrash_post_status', array( $this, 'restore_status_order' ), 11, 3 );
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
-			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
+			//add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
 			// LP Order title
 
 			// Override title of LP Order on Admin
@@ -281,28 +286,28 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			return $where;
 		}*/
 
-		public function posts_orderby( $orderby ) {
-			global $wpdb;
-
-			$order = $this->get_order_sort();
-
-			switch ( $this->get_order_by() ) {
-				case 'title':
-					$orderby = "{$wpdb->posts}.ID {$order}";
-					break;
-				/*case 'student':
-					$orderby = "uu.user_login {$order}";
-					break;*/
-				case 'date':
-					$orderby = "{$wpdb->posts}.post_date {$order}";
-					break;
-				case 'order_total':
-					$orderby = "CAST(pm2.meta_value AS UNSIGNED) {$order}";
-					break;
-			}
-
-			return $orderby;
-		}
+//		public function posts_orderby( $orderby ) {
+//			global $wpdb;
+//
+//			$order = $this->get_order_sort();
+//
+//			switch ( $this->get_order_by() ) {
+//				case 'title':
+//					$orderby = "{$wpdb->posts}.ID {$order}";
+//					break;
+//				/*case 'student':
+//					$orderby = "uu.user_login {$order}";
+//					break;*/
+//				case 'date':
+//					$orderby = "{$wpdb->posts}.post_date {$order}";
+//					break;
+//				case 'order_total':
+//					$orderby = "CAST(pm2.meta_value AS UNSIGNED) {$order}";
+//					break;
+//			}
+//
+//			return $orderby;
+//		}
 
 		/*public function posts_join_paged( $join ) {
 			global $wpdb, $wp_query;
@@ -402,7 +407,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			$post_status = $wp_query->get( 'post_status' );
-			if ( empty( $post_status) || $post_status == 'all' ) {
+			if ( empty( $post_status ) || $post_status == 'all' ) {
 				$wp_query->set(
 					'post_status',
 					array(
@@ -424,7 +429,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			$post_author = $wp_query->get( 'author' );
 			if ( ! empty( $post_author ) ) {
-				$user_id = absint( $post_author );
+				$user_id    = absint( $post_author );
 				$meta_query = array(
 //					'relation' => 'OR',
 					array(
@@ -442,6 +447,91 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			return $wp_query;
+		}
+
+		/**
+		 * Query lp orders in admin via Post DB
+		 *
+		 * @param array $posts
+		 * @param WP_Query $wp_query
+		 *
+		 * @return array|WP_Query
+		 */
+		public function posts_pre_query( $posts, $wp_query ) {
+			try {
+				if ( ! is_admin() ) {
+					return $wp_query;
+				}
+
+				$post_type = $wp_query->get( 'post_type' );
+
+				if ( empty( $post_type ) || $post_type != LP_ORDER_CPT ) {
+					return $posts;
+				}
+
+				// Convert params from WP_Query to PostFilter
+				$posts_per_page = apply_filters( 'edit_posts_per_page', 20, $post_type );
+				$paged          = max( 1, get_query_var( 'paged' ) );
+				$user_of_order         = $wp_query->get( 'author' );
+				$status         = $wp_query->get( 'post_status' );
+
+				$order_by = $wp_query->get( 'orderby', 'date' );
+				if ( empty( $order_by ) ) {
+					$order_by = 'ID';
+				} else {
+					switch ( $order_by ) {
+						case 'date':
+							$order_by = 'post_date';
+							break;
+						case 'title':
+							$order_by = 'ID';
+							break;
+					}
+				}
+
+				$order = $wp_query->get( 'order', 'DESC' );
+				if ( empty( $order ) ) {
+					$order = 'DESC';
+				}
+				// End convert params
+
+				$post_filter              = new PostFilter();
+				$post_db                  = PostDB::getInstance();
+				$post_filter->post_type   = LP_ORDER_CPT;
+
+				if ( $order_by === 'order_total') {
+					$post_filter->join[] = "INNER JOIN {$post_db->tb_postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
+					$post_filter->where[]    = "AND CAST(pm2.meta_value AS UNSIGNED)";
+					$post_filter->order_by   = 'pm2.meta_value';
+				} else {
+					$post_filter->order_by    = $order_by;
+				}
+
+				$post_filter->order       = $order;
+				$post_filter->limit       = $posts_per_page;
+				$post_filter->page        = $paged;
+
+				if ( ! empty( $user_of_order ) ) {
+					$user_id                  = absint( $user_of_order );
+					$post_filter->join[] 	 = "INNER JOIN {$post_db->tb_postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
+					$post_filter->where[] = "AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id )";
+				}
+
+				if ( ! empty( $status ) ) {
+					$post_filter->post_status = (array) $status;
+				}
+
+				$total_rows = 0;
+				$lp_orders  = $post_db->get_posts( $post_filter, $total_rows );
+
+				$wp_query->post_count  = $total_rows;
+				$wp_query->found_posts = $total_rows;
+				$posts                 = $lp_orders;
+			} catch ( Throwable $e ) {
+				LP_Debug::error_log( $e );
+			}
+
+			return $posts;
 		}
 
 		/**
@@ -499,12 +589,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function order_title( $title, $post_id ) {
-			$order = learn_press_get_order( $post_id );
-			if ( $order ) {
-				$title = $order->get_order_number();
-			}
-
-			return $title;
+			return learn_press_transaction_order_number( $post_id );
 		}
 
 		/**
@@ -618,7 +703,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				'show_in_menu'        => 'learn_press',
 				'map_meta_cap'        => true,
 				'capability_type'     => LP_ORDER_CPT,
-				'hierarchical'        => true,
+				'hierarchical'        => false,
 				'rewrite'             => array(
 					'slug'         => LP_ORDER_CPT,
 					'hierarchical' => true,

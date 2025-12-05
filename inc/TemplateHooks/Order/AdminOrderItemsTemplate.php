@@ -106,7 +106,7 @@ class AdminOrderItemsTemplate {
 				$itemObj->meta = $itemObjMeta;
 				$item_type     = $itemObj->item_type ?? '';
 				if ( $item_type === LP_COURSE_CPT ) {
-					$coursePostModel = CoursePostModel::find( $itemObj->item_id, true );
+					$coursePostModel = CoursePostModel::find_by_id( $itemObj->item_id, true );
 					if ( $total_row > 1 ) {
 						$index       = ( ( $filter->page - 1 ) * $filter->limit ) + $i + 1;
 						$html_items .= sprintf(

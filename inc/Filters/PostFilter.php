@@ -83,7 +83,7 @@ class PostFilter extends FilterBase {
 	/**
 	 * @var string[]
 	 */
-	public $post_status = [];
+	public array $post_status = [];
 	/**
 	 * @var int
 	 */
