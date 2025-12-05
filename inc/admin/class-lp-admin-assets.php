@@ -368,13 +368,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-dashboard'        => new LP_Asset_Key(
+				/*'lp-dashboard'        => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/dashboard' . self::$_min_assets . '.js' ),
 					[],
 					array( 'dashboard' ),
 					0,
 					1
-				),
+				),*/
 				'lp-widgets-admin'    => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/widgets' . self::$_min_assets . '.js' ),
 					array(
