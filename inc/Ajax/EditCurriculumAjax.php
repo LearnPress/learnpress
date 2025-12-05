@@ -5,20 +5,20 @@
  * This class handles the AJAX request to edit the curriculum of a course.
  *
  * @since 4.2.8.6
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\Ajax;
 
 use Exception;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\PostModel;
 use LP_Helper;
 use LP_REST_Response;
-use LP_Section_DB;
 use LP_Section_Items_DB;
 use LP_Section_Items_Filter;
 use Throwable;
@@ -47,7 +47,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section.js: function addSection call this method to update the section description.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function course_add_section() {
 		$response = new LP_REST_Response();
@@ -66,14 +66,12 @@ class EditCurriculumAjax extends AbstractAjax {
 				throw new Exception( __( 'Section title is required', 'learnpress' ) );
 			}
 
-			// Get max section order
-			$max_order = LP_Section_DB::getInstance()->get_last_number_order( $course_id );
-
-			$sectionNew                    = new CourseSectionModel();
-			$sectionNew->section_name      = $section_name;
-			$sectionNew->section_course_id = $course_id;
-			$sectionNew->section_order     = $max_order + 1;
-			$sectionNew->save();
+			// Add section to course.
+			$coursePostModel = new CoursePostModel( $courseModel );
+			$sectionNew = $coursePostModel->add_section( [
+				'section_name'        => $section_name,
+				'section_description' => $data['section_description'] ?? '',
+			] );
 
 			$response->data->section = $sectionNew;
 			$response->status        = 'success';
@@ -92,7 +90,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section.js: function updateSectionDescription call this method to update the section description.
 	 *
 	 * @since  4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function course_update_section() {
 		$response = new LP_REST_Response();
@@ -107,18 +105,14 @@ class EditCurriculumAjax extends AbstractAjax {
 				throw new Exception( __( 'Course not found', 'learnpress' ) );
 			}
 
-			$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
+			$courseSectionModel = CourseSectionModel::find( $section_id, $course_id, true );
 			if ( ! $courseSectionModel ) {
 				throw new Exception( __( 'Section not found', 'learnpress' ) );
 			}
 
-			foreach ( $data as $key => $value ) {
-				if ( $key !== 'section_id' && property_exists( $courseSectionModel, $key ) ) {
-					$courseSectionModel->{$key} = $value;
-				}
-			}
-
-			$courseSectionModel->save();
+			// Update section of course
+			$coursePostModel = new CoursePostModel( $courseModel );
+			$coursePostModel->update_section( $courseSectionModel, $data );
 
 			$response->status  = 'success';
 			$response->message = __( 'Section updated successfully', 'learnpress' );
@@ -173,7 +167,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section.js: function sortAbleSection call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function course_update_section_position() {
 		$response = new LP_REST_Response();
@@ -191,7 +185,9 @@ class EditCurriculumAjax extends AbstractAjax {
 				throw new Exception( __( 'Course not found', 'learnpress' ) );
 			}
 
-			LP_Section_DB::getInstance()->update_sections_position( $new_position, $course_id );
+			// Update all sections position
+			$coursePostMoel = new CoursePostModel( $courseModel );
+			$coursePostMoel->update_sections_position( [ 'new_position' => $new_position ] );
 
 			$courseModel->sections_items = null;
 			$courseModel->save();
@@ -216,7 +212,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function addItemToSection call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function create_item_add_to_section() {
 		$response = new LP_REST_Response();
@@ -243,7 +239,10 @@ class EditCurriculumAjax extends AbstractAjax {
 			/**
 			 * @var $itemModel PostModel
 			 */
-			$itemModel                 = $courseModel->get_item_model( $courseSectionItemModel->item_id, $courseSectionItemModel->item_type );
+			$itemModel                 = $courseModel->get_item_model(
+				$courseSectionItemModel->item_id,
+				$courseSectionItemModel->item_type
+			);
 			$response->data->item_link = $itemModel ? $itemModel->get_edit_link() : '';
 
 			$response->status  = 'success';
@@ -428,7 +427,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function sortAbleItem call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function update_items_position() {
 		$response = new LP_REST_Response();
@@ -446,6 +445,11 @@ class EditCurriculumAjax extends AbstractAjax {
 
 			if ( ! is_array( $items_position ) || empty( $items_position ) ) {
 				throw new Exception( __( 'Invalid item position', 'learnpress' ) );
+			}
+
+			$coursePostModel = new CoursePostModel( $courseModel );
+			if ( ! $coursePostModel->check_capabilities_update() ) {
+				throw new Exception( __( 'You do not have permission to update item position.', 'learnpress' ) );
 			}
 
 			// Update position of item in section
@@ -536,7 +540,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function updatePreviewItem call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function update_item_preview() {
 		$response = new LP_REST_Response();
@@ -564,6 +568,9 @@ class EditCurriculumAjax extends AbstractAjax {
 			if ( ! $itemModel ) {
 				throw new Exception( __( 'Item not found', 'learnpress' ) );
 			}
+
+			// Check permission
+			$itemModel->check_capabilities_update_item_course();
 
 			$itemModel->set_preview( $enable_preview == 1 );
 

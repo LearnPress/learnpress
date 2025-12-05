@@ -776,7 +776,7 @@ class DataBase {
 	/**
 	 * Insert data
 	 *
-	 * @param array $args
+	 * @param array $args [ 'data' => [], 'filter' => FilterBase, 'table_name' => '', 'key_auto_increment' => '' ]
 	 *
 	 * @return int
 	 * @throws Exception
