@@ -6,10 +6,20 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.3
+ * @version  4.0.4
  */
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
+
 defined( 'ABSPATH' ) || exit();
+
+$user_id   = get_current_user_id();
+$lp_profile = learn_press_get_profile( $user_id );
+$userModel = UserModel::find( $user_id, true );
 ?>
 <div class="lp-content-area">
 	<?php
@@ -31,11 +41,24 @@ defined( 'ABSPATH' ) || exit();
 	}
 
 	echo wp_sprintf(
-		'<p>%s</p>',
+		'<p>%s</p><p>%s</p>',
 		esc_html(
 			apply_filters(
 				'learn-press/order/received-order-message',
 				__( 'Thank you. Your order has been received.', 'learnpress' )
+			)
+		),
+		sprintf(
+			__( 'Go to %1$s to continue browsing or go to %2$s', 'learnpress' ),
+			sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( learn_press_get_page_link( 'courses' ) ),
+				esc_html__( 'Courses', 'learnpress' )
+			),
+			sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( $lp_profile->get_tab_link( 'orders' ) ),
+				esc_html__( 'My Orders', 'learnpress' )
 			)
 		)
 	);
@@ -82,7 +105,33 @@ defined( 'ABSPATH' ) || exit();
 							$item
 						);
 					} else {
-						$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
+						$course_id = $item['course_id'];
+						$courseModel = CourseModel::find( $course_id, true );
+						$button_course = '';
+						$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+						if ( $userCourseModel && $userModel ) {
+							// For enrolled or purchased course.
+							$userCourseTemplate = UserCourseTemplate::instance();
+							$singleCourseTemplate = SingleCourseTemplate::instance();
+
+							// Load js button course.
+							wp_enqueue_script( 'lp-single-course' );
+
+							if ( $userCourseModel->has_enrolled() ) {
+								$button_course = $userCourseTemplate->html_btn_continue( $userCourseModel );
+							} elseif ( $userCourseModel->has_purchased() ) {
+								$button_course = $singleCourseTemplate->html_btn_enroll_course( $courseModel, $userModel );
+							}
+						}
+
+						$link = sprintf(
+							'<a href="%s">%s (#%s)</a> %s',
+							get_the_permalink( $item['course_id'] ),
+							get_the_title( $item['course_id'] ),
+							$item['course_id'],
+							$button_course
+						);
+
 						if ( $count > 1 ) {
 							$link = sprintf( '<li>%s</li>', $link );
 						}
@@ -93,7 +142,7 @@ defined( 'ABSPATH' ) || exit();
 				if ( $count > 1 ) {
 					echo sprintf( '<ol>%s</ol>', join( '', $links ) );
 				} elseif ( 1 == $count ) {
-					echo wp_kses_post( implode( '', $links ) );
+					echo implode( '', $links );
 				} else {
 					echo esc_html__( '(No item)', 'learnpress' );
 				}
@@ -133,6 +182,5 @@ defined( 'ABSPATH' ) || exit();
 		<?php do_action( 'learn-press/order/received/items-table', $order_received ); ?>
 	</table>
 
-	<?php //do_action( 'learn-press/order/received/' . $order_received->get_data( 'payment_method' ), $order_received->get_id() ); ?>
 	<?php do_action( 'learn-press/order/received', $order_received ); ?>
 </div>
