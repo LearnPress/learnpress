@@ -472,8 +472,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				// Convert params from WP_Query to PostFilter
 				$posts_per_page = apply_filters( 'edit_posts_per_page', 20, $post_type );
 				$paged          = max( 1, get_query_var( 'paged' ) );
-				$user_of_order         = $wp_query->get( 'author' );
+				$user_of_order  = $wp_query->get( 'author' );
 				$status         = $wp_query->get( 'post_status' );
+				$key            = $wp_query->get( 's' );
+				$month            = $wp_query->get( 'm' );
 
 				$order_by = $wp_query->get( 'orderby', 'date' );
 				if ( empty( $order_by ) ) {
@@ -495,25 +497,61 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 				// End convert params
 
-				$post_filter              = new PostFilter();
-				$post_db                  = PostDB::getInstance();
-				$post_filter->post_type   = LP_ORDER_CPT;
+				$post_filter            = new PostFilter();
+				$post_db                = PostDB::getInstance();
+				$post_filter->post_type = LP_ORDER_CPT;
 
-				if ( $order_by === 'order_total') {
-					$post_filter->join[] = "INNER JOIN {$post_db->tb_postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
-					$post_filter->where[]    = "AND CAST(pm2.meta_value AS UNSIGNED)";
-					$post_filter->order_by   = 'pm2.meta_value';
+				if ( $order_by === 'order_total' ) {
+					$post_filter->join[]   = "INNER JOIN {$post_db->tb_postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
+					$post_filter->where[]  = "AND CAST(pm2.meta_value AS UNSIGNED)";
+					$post_filter->order_by = 'pm2.meta_value';
 				} else {
-					$post_filter->order_by    = $order_by;
+					$post_filter->order_by = $order_by;
 				}
 
-				$post_filter->order       = $order;
-				$post_filter->limit       = $posts_per_page;
-				$post_filter->page        = $paged;
+				if ( ! empty( $key ) ) {
+					$pattern          = '/^#\d+$/';
+					$is_order_id_sure = false;
+					if ( preg_match( $pattern, $key ) ) {
+						$is_order_id_sure = true;
+						$key              = str_replace( '#', '', $key );
+					}
+
+					$pattern2 = '#^0+.*\d+$#';
+					if ( preg_match( $pattern2, $key ) ) {
+						$key = (int) $key;
+					}
+
+					$key = trim( $key );
+
+					if ( $is_order_id_sure ) {
+						$post_filter->where[] = $post_db->wpdb->prepare( "AND p.ID = %d", $key );
+					} else {
+						$post_filter->join[]  = "INNER JOIN {$post_db->tb_lp_order_items} lpori ON p.ID = lpori.order_id";
+						$post_filter->where[] = $post_db->wpdb->prepare(
+							'AND (p.ID = %d OR lpori.order_item_name like %s)',
+							$key,
+							'%' . $key . '%'
+						);
+					}
+				}
+
+				if ( ! empty( $month ) ) {
+					$year = substr( $month, 0, 4 );
+					$post_filter->where[] = "AND YEAR(p.post_date) = $year";
+					if ( strlen( $month ) > 5 ) {
+						$mon = substr( $month, 4, 2 );
+						$post_filter->where[] = "AND MONTH(p.post_date) = $mon";
+					}
+				}
+
+				$post_filter->order = $order;
+				$post_filter->limit = $posts_per_page;
+				$post_filter->page  = $paged;
 
 				if ( ! empty( $user_of_order ) ) {
-					$user_id                  = absint( $user_of_order );
-					$post_filter->join[] 	 = "INNER JOIN {$post_db->tb_postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
+					$user_id              = absint( $user_of_order );
+					$post_filter->join[]  = "INNER JOIN {$post_db->tb_postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
 					$post_filter->where[] = "AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id )";
 				}
 
@@ -589,6 +627,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function order_title( $title, $post_id ) {
+			if ( get_post_type( $post_id ) != LP_ORDER_CPT ) {
+				return $title;
+			}
+
 			return learn_press_transaction_order_number( $post_id );
 		}
 

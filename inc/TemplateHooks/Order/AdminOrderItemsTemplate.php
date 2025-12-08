@@ -58,6 +58,7 @@ class AdminOrderItemsTemplate {
 				'paged'                 => 1,
 				'enableScrollToView'    => false,
 				'enableUpdateParamsUrl' => false,
+				'html_loading_after_content_loaded' => '<i></i>'
 			);
 			$content_obj                     = self::render_order_items( $args );
 			$args['html_no_load_ajax_first'] = $content_obj->content;
@@ -92,7 +93,7 @@ class AdminOrderItemsTemplate {
 		$filter           = new LPOrderItemsFilter();
 		$filter->page     = $data['paged'] ?? 1;
 		$filter->order_id = $data['order_id'] ?? 0;
-		$filter->limit    = 2;
+		$filter->limit    = 5;
 		$total_row        = 0;
 		$items            = $lpOrderItemsDB->get_items( $filter, $total_row );
 
