@@ -197,6 +197,11 @@ class QuizStartHandler {
             // Clear general localStorage
             window.localStorage.removeItem('LP');
 
+            // Clear saved current page for fresh start
+            const quizId = window.lpQuizSettings?.id || 0;
+            const pageStorageKey = `lp_quiz_current_page_${quizId}`;
+            window.localStorage.removeItem(pageStorageKey);
+
             // Reload page to show quiz
             window.location.reload();
         } else {

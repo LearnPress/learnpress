@@ -3,6 +3,7 @@ import QuizSubmitHandler from './submit-quiz.js';
 import QuestionActionHandler from './question-actions.js';
 import initQuizTimer from './timer.js';
 import TemplateLoader from './template-loader.js';
+import './circle-progress-bar.js';
 (function () {
     'use strict';
 

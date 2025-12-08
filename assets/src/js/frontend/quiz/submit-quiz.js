@@ -341,6 +341,10 @@ class QuizSubmitHandler {
             const courseId = window.lpGlobalSettings?.post_id || 0;
             const storageKey = `lp_quiz_answers_${courseId}_${quizId}`;
             localStorage.removeItem(storageKey);
+
+            // Also clear saved current page
+            const pageStorageKey = `lp_quiz_current_page_${quizId}`;
+            localStorage.removeItem(pageStorageKey);
         } catch (e) {
             console.error('Error clearing stored answers:', e);
         }

@@ -486,24 +486,26 @@ class QuizTemplateComponents {
 				$statistics .= $this->build_statistic_item( 'questions-minus', __( 'Minus points', 'learnpress' ), $minus_point );
 			}
 
+			$circle_html = sprintf(
+				'<circle class="circle-progress-bar__circle" stroke-width="%d" style="stroke-dasharray: %s %s; stroke-dashoffset: %s;" fill="transparent" r="%s" cx="%s" cy="%s"></circle>',
+				$border,
+				$circumference,
+				$circumference,
+				$circumference, // Start at 0% (full offset) for animation
+				$r,
+				$radius,
+				$radius
+			);
+
 			// Build complete sections.
 			$sections = array(
 				'wrapper'                => sprintf( '<div class="%s">', esc_attr( implode( ' ', $class_names ) ) ),
 				'heading'                => sprintf( '<h3 class="result-heading">%s</h3>', esc_html__( 'Your Result', 'learnpress' ) ),
 				'grade_wrapper'          => '<div id="quizResultGrade" class="result-grade">',
-				'svg_start'              => sprintf( '<svg class="circle-progress-bar" width="%d" height="%d">', $width, $width ),
-				'circle'                 => sprintf(
-					'<circle class="circle-progress-bar__circle" stroke="" stroke-width="%d" style="stroke-dasharray: %s %s; stroke-dashoffset: %s;" fill="transparent" r="%s" cx="%s" cy="%s"></circle>',
-					$border,
-					$circumference,
-					$circumference,
-					$offset,
-					$r,
-					$radius,
-					$radius
-				),
+				'svg_start'              => sprintf( '<svg class="circle-progress-bar" width="%d" height="%d" data-result="%s" data-circumference="%s" data-offset="%s">', $width, $width, $result_percent, $circumference, $offset ),
+				'circle'                 => $circle_html,
 				'svg_end'                => '</svg>',
-				'result_achieved'        => sprintf( '<span class="result-achieved">%s%%</span>', esc_html( $percent_result ) ),
+				'result_achieved'        => sprintf( '<span class="result-achieved" data-target="%s">0%%</span>', esc_attr( $result_percent ) ),
 				'result_require'         => sprintf( '<span class="result-require">%s%%</span>', esc_html( $passing_grade_val ? $passing_grade_val : '-' ) ),
 				'grade_wrapper_end'      => '</div>',
 				'message'                => sprintf( '<p class="result-message">%s</p>', esc_html( $graduation_text ) ),
@@ -663,7 +665,7 @@ class QuizTemplateComponents {
 			// Previous button.
 			if ( $prev_next && 1 < $current_page ) {
 				$pagination_html .= sprintf(
-					'<button class="page-numbers prev" data-type="question-nav">%s</button>',
+					'<button class="quiz-page-numbers prev" data-type="question-nav" data-paged="prev" >%s</button>',
 					esc_html__( 'Prev', 'learnpress' )
 				);
 			}
@@ -674,25 +676,25 @@ class QuizTemplateComponents {
 				if ( $number === $current_page ) {
 					$dots            = true;
 					$pagination_html .= sprintf(
-						'<span class="page-numbers current disabled">%d</span>',
-						$number
+						'<span class="quiz-page-numbers current disabled" data-paged="%d">%d</span>',
+						$number, $number
 					);
 				} elseif ( $number <= $end_size || ( $number >= $current_page - $mid_size && $number <= $current_page + $mid_size ) || $number > $num_pages - $end_size ) {
 					$dots            = true;
 					$pagination_html .= sprintf(
-						'<button class="page-numbers">%d</button>',
-						$number
+						'<button class="quiz-page-numbers" data-paged="%d">%d</button>',
+						$number, $number
 					);
 				} elseif ( $dots ) {
 					$dots            = false;
-					$pagination_html .= '<span class="page-numbers dots">&hellip;</span>';
+					$pagination_html .= '<span class="quiz-page-numbers dots" data-paged="dots">&hellip;</span>';
 				}
 			}
 
 			// Next button.
 			if ( $prev_next && $current_page < $num_pages ) {
 				$pagination_html .= sprintf(
-					'<button class="page-numbers next" data-type="question-nav">%s</button>',
+					'<button class="quiz-page-numbers next" data-type="question-nav" data-paged="next">%s</button>',
 					esc_html__( 'Next', 'learnpress' )
 				);
 			}

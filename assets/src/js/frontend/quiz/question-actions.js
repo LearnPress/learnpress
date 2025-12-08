@@ -27,15 +27,6 @@ class QuestionActionHandler {
             // Restore saved answers for newly loaded questions
             this.restoreAllSavedAnswers();
         });
-        if (typeof wp !== 'undefined' && wp.hooks) {
-            wp.hooks.addAction('lp-ajax-pagination-completed', 'learnpress/quiz/restore-question-answers', (element, dataSend, response) => {
-                // Wait for the next animation frame to ensure DOM has been updated
-                requestAnimationFrame(() => {
-                    // Restore saved answers for newly loaded questions
-                    this.restoreAllSavedAnswers();
-                });
-            });
-        }
     }
 
     /**

@@ -1204,7 +1204,7 @@ body {
 			gap: 4px;
 			margin-top: 6px;
 
-			.page-numbers {
+			.page-numbers, .quiz-page-numbers {
  				padding:  10px 15px;
  				margin: 0;
  				color: $text-color-base;
@@ -1225,7 +1225,7 @@ body {
 
 			@media (max-width: 575px) {
 				margin-top: 10px;
-				.page-numbers {
+				.page-numbers, .quiz-page-numbers {
 					padding: 5px 10px;
  				}
 			}

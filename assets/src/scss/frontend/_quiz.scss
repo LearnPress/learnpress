@@ -1200,3 +1200,37 @@ button[data-counter] {
 	//	}
 	//}
 }
+/* Pulse‑Dots Loader – centered on screen */
+.lp-quiz-loader {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+  gap: 0.5rem;
+}
+
+.lp-quiz-loader .dot {
+  $size: 0.8rem;
+  width: $size;
+  height: $size;
+  background: var(--lp-primary-color, #ff6b6b);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: pulse 1.4s infinite ease-in-out;
+}
+.lp-quiz-loader .dot:nth-child(2) { animation-delay: 0.2s; }
+.lp-quiz-loader .dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes pulse {
+  0%, 80% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}

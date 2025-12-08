@@ -16,6 +16,8 @@ class QuizTimer {
 		this.isCountdown = false;
 		this.timerStorageKey = '';
 		this.timerInterval = null;
+		this.startTimestamp = null; // Timestamp when timer started (milliseconds)
+		this.pausedAt = null; // Track when timer was paused
 
 		this.init();
 	}
@@ -76,48 +78,59 @@ class QuizTimer {
 	restoreFromLocalStorage() {
 		try {
 			const savedData = localStorage.getItem(this.timerStorageKey);
-			if (savedData !== null) {
-				// Parse the saved data (could be old format or new format)
-				let savedTimeInt, lastSaveTimestamp;
+			if (!savedData) {
+				return;
+			}
 
-				try {
-					const parsed = JSON.parse(savedData);
-					savedTimeInt = parseInt(parsed.time, 10);
-					lastSaveTimestamp = parsed.timestamp || 0;
-				} catch {
-					// Old format - just a number
-					savedTimeInt = parseInt(savedData, 10);
-					lastSaveTimestamp = 0;
-				}
+			let savedTimeInt, lastSaveTimestamp, savedStartTimestamp;
 
-				if (isNaN(savedTimeInt)) {
+			// Parse saved data (supports both old and new formats)
+			try {
+				const parsed = JSON.parse(savedData);
+				savedTimeInt = parseInt(parsed.time, 10);
+				lastSaveTimestamp = parsed.timestamp || 0;
+				savedStartTimestamp = parsed.startTimestamp || null;
+			} catch {
+				// Old format - just a number
+				savedTimeInt = parseInt(savedData, 10);
+				lastSaveTimestamp = 0;
+				savedStartTimestamp = null;
+			}
+
+			// Validate saved data
+			if (isNaN(savedTimeInt) || savedTimeInt < 0) {
+				this.clearFromLocalStorage();
+				return;
+			}
+
+			// If we have a saved startTimestamp, calculate the ACTUAL elapsed time
+			// This is more reliable than using the saved time value
+			if (savedStartTimestamp) {
+				const actualElapsedMs = Date.now() - savedStartTimestamp;
+				const actualElapsedSeconds = Math.floor(actualElapsedMs / 1000);
+
+				// Sanity check: if calculated time is reasonable, use it
+				if (actualElapsedSeconds >= 0 && actualElapsedSeconds < 86400) { // Less than 24 hours
+					this.timeRemaining = actualElapsedSeconds;
+					this.startTimestamp = savedStartTimestamp;
 					return;
 				}
+			}
 
-				// Check if this might be a new quiz attempt
-				// Only clear if:
-				// 1. Server provided time is 0
-				// 2. Saved time is significant (> 5 seconds)
-				// 3. Last save was more than 2 seconds ago (not a recent page navigation)
-				const timeSinceLastSave = Date.now() - lastSaveTimestamp;
-				const isLikelyNewAttempt = this.timeRemaining === 0 &&
-					savedTimeInt > 5 &&
-					(lastSaveTimestamp === 0 || timeSinceLastSave > 2000);
+			// Fallback: use saved time if no startTimestamp available (backward compatibility)
+			// But only if the save was recent (within 1 hour to prevent stale data)
+			const timeSinceLastSave = Date.now() - lastSaveTimestamp;
+			const ONE_HOUR = 3600000; // 1 hour in milliseconds
 
-				if (isLikelyNewAttempt) {
-					// This looks like a new quiz attempt, clear the old timer
-					this.clearFromLocalStorage();
-					return;
-				}
-
-				// Use saved time if it's valid
-				// Priority: Use saved time if it exists, as server might not provide the current time correctly
-				if (savedTimeInt >= 0) {
-					this.timeRemaining = savedTimeInt;
-				}
+			if (savedTimeInt >= 0 && (lastSaveTimestamp === 0 || timeSinceLastSave < ONE_HOUR)) {
+				this.timeRemaining = savedTimeInt;
+			} else {
+				// Data is stale or invalid, clear it
+				this.clearFromLocalStorage();
 			}
 		} catch (e) {
 			console.error('Error restoring timer from localStorage:', e);
+			this.clearFromLocalStorage();
 		}
 	}
 
@@ -191,7 +204,8 @@ class QuizTimer {
 		try {
 			const data = {
 				time: this.timeRemaining,
-				timestamp: Date.now()
+				timestamp: Date.now(),
+				startTimestamp: this.startTimestamp
 			};
 			localStorage.setItem(this.timerStorageKey, JSON.stringify(data));
 		} catch (e) {
@@ -243,9 +257,18 @@ class QuizTimer {
 
 	/**
 	 * Timer tick - runs every second
+	 * Calculates elapsed time based on timestamps to avoid drift
 	 */
 	tick() {
-		this.timeRemaining++;
+		if (!this.startTimestamp) {
+			// Fallback: if no timestamp, initialize it now
+			this.startTimestamp = Date.now() - (this.timeRemaining * 1000);
+		}
+
+		// Calculate actual elapsed time in seconds
+		const elapsedMs = Date.now() - this.startTimestamp;
+		this.timeRemaining = Math.floor(elapsedMs / 1000);
+
 		this.updateDisplay();
 
 		if (this.isTimeExpired()) {
@@ -261,6 +284,13 @@ class QuizTimer {
 		if (this.timerInterval) {
 			this.stop();
 		}
+
+		// Initialize start timestamp if not already set (e.g., from localStorage)
+		if (!this.startTimestamp) {
+			// Subtract already elapsed time to get the actual start point
+			this.startTimestamp = Date.now() - (this.timeRemaining * 1000);
+		}
+
 		this.timerInterval = setInterval(() => this.tick(), 1000);
 	}
 
@@ -311,29 +341,5 @@ document.addEventListener('lp-quiz-template-loaded', function (event) {
 		initQuizTimer();
 	});
 });
-
-/**
- * Reload timer after lpAJAX.clickNumberPage fires
- * Hook into the lp-ajax-pagination-completed action
- * Note: Uses requestAnimationFrame because the hook fires BEFORE innerHTML is updated
- */
-if (typeof wp !== 'undefined' && wp.hooks) {
-	wp.hooks.addAction('lp-ajax-pagination-completed', 'learnpress/quiz/timer', function (element, dataSend, response) {
-		// Wait for the next animation frame to ensure DOM has been updated
-		requestAnimationFrame(() => {
-			// Check if this is a quiz-related AJAX call
-			const countdown = document.querySelector('.countdown');
-			if (countdown) {
-				// Clear any existing timer interval
-				if (countdown.lpTimerInterval) {
-					clearInterval(countdown.lpTimerInterval);
-				}
-
-				// Reinitialize the timer
-				initQuizTimer();
-			}
-		});
-	});
-}
 
 export default initQuizTimer;
