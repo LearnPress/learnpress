@@ -219,9 +219,81 @@ class UserCourseModel extends UserItemModel {
 	}
 
 	/**
+	 * Find next item when have just completed lesson.
+	 * Logic: find item next not completed, circle to find next item, if not found return current item.
+	 *
+	 * @param int $item_id_current
+	 *
+	 * @since 4.3.2
+	 * @version 1.0.0
+	 * @return mixed|null
+	 */
+	public function get_item_next_when_complete_lesson( int $item_id_current ) {
+		$itemModel         = null;
+		$item_before_found = 0;
+		$item_after_found  = 0;
+
+		try {
+			$courseModel      = $this->get_course_model();
+			$course_items     = $courseModel->get_only_items();
+			$course_item_keys = array_keys( $course_items );
+
+			$index_of_current = array_search( $item_id_current, $course_item_keys, true );
+
+			foreach ( $course_item_keys as $index => $item_id ) {
+				$course_item = $course_items[ $item_id ];
+				$item_type   = $course_item->item_type;
+
+				$userItemModel  = UserItemModel::find_user_item(
+					$this->user_id,
+					$item_id,
+					$item_type,
+					$courseModel->get_id(),
+					LP_COURSE_CPT,
+					true
+				);
+				$status_compare = apply_filters(
+					'learn-press/user-course-model/get-item-next-when-complete-lesson/status-compare',
+					[
+						UserItemModel::STATUS_COMPLETED,
+					]
+				);
+
+				// Found item before current item not completed
+				if ( $index < $index_of_current ) {
+					if ( ! $item_before_found &&
+						( ! $userItemModel || ! in_array( $userItemModel->get_status(), $status_compare ) ) ) {
+						$item_before_found = $course_item;
+					}
+				} elseif ( $index > $index_of_current ) {
+					// Found item after current item not completed
+					if ( ! $item_after_found &&
+						( ! $userItemModel || ! in_array( $userItemModel->get_status(), $status_compare ) ) ) {
+						$item_after_found = $course_item;
+						break;
+					}
+				}
+			}
+
+			if ( $item_after_found ) {
+				$itemModel = $courseModel->get_item_model( $item_after_found->item_id, $item_after_found->item_type );
+			} elseif ( $item_before_found ) {
+				$itemModel = $courseModel->get_item_model( $item_before_found->item_id, $item_before_found->item_type );
+			} else {
+				$itemModel = $courseModel->get_item_model( $item_id_current, LP_LESSON_CPT );
+			}
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $itemModel;
+	}
+
+	/**
 	 * Count students.
 	 *
 	 * @param LP_User_Items_Filter|UserItemsFilter $filter
+	 *
 	 * @return int
 	 * @since 4.2.5.4
 	 * @version 1.0.0
@@ -238,6 +310,7 @@ class UserCourseModel extends UserItemModel {
 		$count            = $lp_courses_cache->get_cache( $key_cache );
 		if ( false !== $count ) {
 			LP_Cache::cache_load_first( 'set', $key_cache, $count );
+
 			return $count;
 		}
 
