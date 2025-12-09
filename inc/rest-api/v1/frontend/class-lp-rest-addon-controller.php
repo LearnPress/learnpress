@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 
 /**
  * REST API LP Widget.
@@ -48,7 +49,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	public function permission_callback() {
-		return current_user_can( ADMIN_ROLE );
+		return current_user_can( UserModel::ROLE_ADMINISTRATOR );
 	}
 
 	/**
@@ -164,6 +165,9 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 					if ( $addon['is_org'] ) {
 						$link_download = "{$this->lp_addons->link_org}{$addon['slug']}.{$addon['version']}.zip";
 					} else {
+						// Allow active key for site if site active on DB "updates" is empty.
+						$this->lp_addons->active_site( $addon['slug'], $purchase_code );
+						// Download addon from ThimPress server.
 						$path_file = $this->lp_addons->download_from_thimpress( $addon, $purchase_code );
 					}
 
