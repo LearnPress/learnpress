@@ -70,16 +70,16 @@ $unassign_user->id = 'user_ids';
 <div id="learn-press-unassigned-course" class="card">
 	<h2><?php _e( 'Unassign Course', 'learnpress' ); ?></h2>
 	<div class="description">
-		<div><?php _e( 'Remove user from a course', 'learnpress' ); ?></div>
-		<i style="color: #a20707">
-			<?php
-			_e(
-				'Noted: when remove user from course, the progress of user with course assign will eraser, so be careful before do this.',
-				'learnpress'
-			);
-			?>
-		</i>
+		<?php _e( 'Remove user from a course', 'learnpress' ); ?>
 	</div>
+	<i style="color: #a20707">
+		<?php
+		_e(
+			'Noted: when remove user from course, the progress of user with course assign will eraser, so be careful before do this.',
+			'learnpress'
+		);
+		?>
+	</i>
 	<div class="content">
 		<form id="lp-unassign-user-course-form">
 			<ul>

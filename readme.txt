@@ -266,6 +266,17 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.3.2 (2025-12-xx) =
+~ Fixed: security.
+~ Fixed: break style TomSelect for case choose courses on product of Woo.
+~ Tweak: edit course with openAI.
+~ Tweak: query list orders.
+~ Tweak: display list items of order by pagination.
+~ Tweak: material.
+~ Tweak: adjust lesson completion logic, redirect to the next incomplete item,
+if all items after the current one are already completed,
+search previous lessons to redirect to, if all items completed will not redirect.
+
 = 4.3.1 (2025-11-21) =
 ~ Fixed: condition check enable AI.
 ~ Fixed: apply image created by AI for feature image course.
