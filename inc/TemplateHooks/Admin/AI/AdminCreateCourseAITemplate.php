@@ -157,14 +157,16 @@ class AdminCreateCourseAITemplate {
 			),
 			'description' => sprintf(
 				'<p class="step-description">%s</p>',
-				esc_html__( 'Defines who is creating the course so AI can tailor tone, expertise, and perspective.', 'learnpress' )
+				''
 			),
 			'role'        => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="role_persona" placeholder="">
+					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Role / Persona', 'learnpress' )
+				esc_html__( 'Role / Persona', 'learnpress' ),
+				esc_html__( 'Defines who is creating the course so AI can tailor tone, expertise, and perspective.', 'learnpress' )
 			),
 			'audience'    => sprintf(
 				'<div class="form-group">
