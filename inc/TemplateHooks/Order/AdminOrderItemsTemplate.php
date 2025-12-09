@@ -108,20 +108,24 @@ class AdminOrderItemsTemplate {
 				$item_type     = $itemObj->item_type ?? '';
 				if ( $item_type === LP_COURSE_CPT ) {
 					$coursePostModel = CoursePostModel::find_by_id( $itemObj->item_id, true );
-					if ( $total_row > 1 ) {
-						$index       = ( ( $filter->page - 1 ) * $filter->limit ) + $i + 1;
-						$html_items .= sprintf(
-							'<li>%d. <a href="%s" >%s</a></li>',
-							$index,
-							$coursePostModel->get_edit_link(),
-							$itemObj->order_item_name
-						);
+					if ( ! $coursePostModel ) {
+						$html_items .= sprintf( '<li>%s</li>', __( 'The course does not exist.', 'learnpress' ) );
 					} else {
-						$html_items .= sprintf(
-							'<li><a href="%s" >%s</a></li>',
-							$coursePostModel->get_edit_link(),
-							$itemObj->order_item_name
-						);
+						if ( $total_row > 1 ) {
+							$index       = ( ( $filter->page - 1 ) * $filter->limit ) + $i + 1;
+							$html_items .= sprintf(
+								'<li>%d. <a href="%s" >%s</a></li>',
+								$index,
+								$coursePostModel->get_edit_link(),
+								$itemObj->order_item_name
+							);
+						} else {
+							$html_items .= sprintf(
+								'<li><a href="%s" >%s</a></li>',
+								$coursePostModel->get_edit_link(),
+								$itemObj->order_item_name
+							);
+						}
 					}
 				} else {
 					if ( has_filter( 'learn-press/order-item-not-course-id' ) ) {
