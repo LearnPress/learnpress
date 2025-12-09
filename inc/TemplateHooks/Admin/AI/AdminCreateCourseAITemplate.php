@@ -1,10 +1,11 @@
 <?php
 
-namespace LearnPress\TemplateHooks\Admin;
+namespace LearnPress\TemplateHooks\Admin\AI;
 
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Admin\AdminTemplate;
 
 /**
  * Class AdminCreateCourseAITemplate
@@ -42,6 +43,10 @@ class AdminCreateCourseAITemplate {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-create-course-ai">',
 			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'btn-close'                =>
+				'<button type="button" class="lp-btn-close-ai-popup">
+					<i class="lp-icon-remove"></i>
+				</button>',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'AI Course Builder for LearnPress', 'learnpress' )
@@ -251,7 +256,7 @@ class AdminCreateCourseAITemplate {
 			'seo_emphasis'  => sprintf(
 				'<div class="form-group">
 					<label for="seo-emphasis">%s</label>
-					<input type="text" name="seo_emphasis" value="Basic (title/meta/heading)">
+					<input type="text" name="seo_emphasis" value="">
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'SEO emphasis', 'learnpress' ),
@@ -260,7 +265,7 @@ class AdminCreateCourseAITemplate {
 			'keywords'      => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<input type="text" name="target_keywords" value="html5, semantic tags, accessibility, seo on-page">
+					<input type="text" name="target_keywords" value="">
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Target keywords (comma-separated)', 'learnpress' ),
@@ -288,8 +293,8 @@ class AdminCreateCourseAITemplate {
 
 	public function html_step_3(): string {
 		$grid_components = [
-			'grid'                  => '<div class="form-grid">',
-			'sections-number'       => sprintf(
+			'grid'            => '<div class="form-grid">',
+			'sections-number' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="section_number" value="2" min="0">
@@ -298,7 +303,7 @@ class AdminCreateCourseAITemplate {
 				esc_html__( 'Sections number', 'learnpress' ),
 				esc_html__( 'Defines how many main sections/modules the course will include.', 'learnpress' )
 			),
-			'sections-title-length' => sprintf(
+			/*'sections-title-length' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="section_title_length" value="60" min="0">
@@ -315,15 +320,15 @@ class AdminCreateCourseAITemplate {
 				</div>',
 				esc_html__( 'Each section description length', 'learnpress' ),
 				esc_html__( 'Sets the word limit for section introductions to control depth and clarity.', 'learnpress' )
-			),
-			'lesson-number'         => sprintf(
+			),*/
+			'lesson-number'   => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="lessons_per_section" value="2" min="0">
 				</div>',
 				esc_html__( 'Lessons per Section', 'learnpress' )
 			),
-			'lesson-title-length'   => sprintf(
+			/*'lesson-title-length'   => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="lessons_title_length" value="60" min="0">
@@ -336,21 +341,21 @@ class AdminCreateCourseAITemplate {
 					<input type="number" name="lessons_description_length" value="1000" min="0">
 				</div>',
 				esc_html__( 'Each lesson description length', 'learnpress' )
-			),
-			'quizzes'               => sprintf(
+			),*/
+			'quizzes'         => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="number" name="quizzes_per_section" value="2" min="0">
 				</div>',
 				esc_html__( 'Quizzes per Section', 'learnpress' )
 			),
-			'questions'             => sprintf(
+			'questions'       => sprintf(
 				'<div class="form-group">
 					<label for="questions-per-quiz">%s</label>
 				<input type="number" name="questions_per_quiz" value="2" min="0"></div>',
 				esc_html__( 'Questions per Quiz', 'learnpress' )
 			),
-			'grid-end'              => '</div>',
+			'grid-end'        => '</div>',
 		];
 
 		$components = [
@@ -444,7 +449,11 @@ class AdminCreateCourseAITemplate {
 
 				$arr_lesson_components = [
 					'wrap'     => '<li class="course-lesson-item">',
-					'title'    => sprintf( '<div class="lesson-title">%s</div>', esc_html( $lesson_title ) ),
+					'title'    => sprintf(
+						'<div class="lesson-title">%s: %s</div>',
+						__( 'Lesson', 'learnpress' ),
+						esc_html( $lesson_title )
+					),
 					'des'      => sprintf( '<div class="lesson-description">%s</div>', esc_html( $lesson_des ) ),
 					'wrap-end' => '</li>',
 				];
@@ -472,7 +481,11 @@ class AdminCreateCourseAITemplate {
 
 					$arr_question_components = [
 						'wrap'     => '<li class="quiz-question-item">',
-						'title'    => sprintf( '<div class="question-title">%s</div>', esc_html( $question_title ) ),
+						'title'    => sprintf(
+							'<div class="question-title">%s: %s</div>',
+							__( 'Question', 'learnpress' ),
+							esc_html( $question_title )
+						),
 						'desc'     => sprintf( '<div class="question-desc">%s</div>', esc_html( $question_des ) ),
 						'options'  => sprintf( '<ul class="course-question-options">%s</ul>', $html_options ),
 						'wrap-end' => '</li>',
@@ -482,23 +495,32 @@ class AdminCreateCourseAITemplate {
 				}
 
 				$arr_quiz_components = [
-					'wrap'      => '<div class="course-quiz-item">',
-					'title'     => sprintf( '<div class="quiz-title">%s</div>', esc_html( $quiz_title ) ),
+					'wrap'      => '<li class="course-quiz-item">',
+					'title'     => sprintf(
+						'<div class="quiz-title">%s: %s</div>',
+						__( 'Quiz', 'learnpress' ),
+						esc_html( $quiz_title )
+					),
 					'des'       => sprintf( '<div class="quiz-description">%s</div>', esc_html( $quiz_des ) ),
 					'questions' => sprintf( '<ul class="course-questions">%s</ul>', $html_questions ),
-					'wrap-end'  => '</div>',
+					'wrap-end'  => '</li>',
 				];
 
 				$html_quizzes .= Template::combine_components( $arr_quiz_components );
 			}
 
 			$arr_section_components = [
-				'wrap'     => '<li class="course-section-item">',
-				'title'    => sprintf( '<div class="section-title">%s</div>', esc_html( $section_title ) ),
-				'des'      => sprintf( '<div class="section-description">%s</div>', esc_html( $section_des ) ),
-				'lessons'  => sprintf( '<ul class="course-section-items">%s</ul>', $html_lessons ),
-				'quizzes'  => sprintf( '<ul class="course-section-items">%s</ul>', $html_quizzes ),
-				'wrap-end' => '</li>',
+				'wrap'         => '<li class="course-section-item">',
+				'title'        => sprintf(
+					'<div class="section-title">%s: %s</div>',
+					__( 'Curriculum', 'learnpress' ),
+					esc_html( $section_title )
+				),
+				'des'          => sprintf( '<div class="section-description">%s</div>', esc_html( $section_des ) ),
+				'ul-items'     => '<ul class="course-section-items">',
+				'items'        => $html_lessons . $html_quizzes,
+				'ul-items-end' => '</ul>',
+				'wrap-end'     => '</li>',
 			];
 
 			$html_section .= Template::combine_components( $arr_section_components );

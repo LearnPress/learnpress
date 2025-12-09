@@ -1,6 +1,6 @@
 <?php
 
-namespace LearnPress\TemplateHooks\Admin;
+namespace learnpress\inc\TemplateHooks\Admin\AI;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
@@ -9,9 +9,9 @@ use LearnPress\Helpers\Template;
  * Class AdminCreateCourseAITemplate
  *
  * @since 4.3.0
- * @version 1.0.0
+ * @version 1.0.1
  */
-class AdminGenerateCourseCloseWarningTemplate {
+class AdminAICloseWarningTemplate {
 	use Singleton;
 
 	/**
@@ -32,18 +32,21 @@ class AdminGenerateCourseCloseWarningTemplate {
 			return;
 		}
 
-		echo $this->html_close_generate_course_via_ai();
+		echo $this->template();
 	}
 
-	public function html_close_generate_course_via_ai(): string {
+	public function template(): string {
 		$components = [
-			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-close-warning-course-ai">',
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-close-warning-ai">',
 			'wrap'                     => '<div class="lp-close-warning-data-ai-wrap">',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
-				esc_html__( 'Generating course data is closed', 'learnpress' )
+				esc_html__( 'Generating data is stopped', 'learnpress' )
 			),
-			'desc' 					   => '<p class="desc">'.esc_html__( 'The process of generating course data has been canceled.', 'learnpress' ).'</p>',
+			'desc'                     => sprintf(
+				'<p class="desc">%s</p>',
+				esc_html__( 'The process of generating data has been canceled.', 'learnpress' )
+			),
 			'wrap-end'                 => '</div>',
 			'wrap-script-template-end' => '</script>',
 		];

@@ -16,7 +16,7 @@ $course_objective = trim( $params['course_objective'] ?? '' );
 $language = $params['language'] ?? 'English';
 $audience = $params['audience'] ?? 'Students';
 $tone     = $params['tone'] ?? 'analytical';
-$length   = $params['length'] ?? 200;
+$length   = $params['length'] ?? 1000;
 $outputs  = $params['outputs'] ?? 1;
 
 return <<<XML

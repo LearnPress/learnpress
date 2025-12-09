@@ -68,6 +68,26 @@ export class CreateCourseViaAI {
 				class: this,
 				callBack: this.createCourse.name,
 			},
+			{
+				selector: '.lp-btn-close-ai-popup',
+				//class: this,
+				callBack: ( args ) => {
+					const { e, target } = args;
+
+					const message = lpData.i18n.confirm_close_ai;
+
+					if ( ! lp_is_generating_course_data ) {
+						SweetAlert.close();
+					} else if ( confirm( message ) ) {
+						SweetAlert.close();
+					}
+
+					// Testing custom confirm box
+					/*if ( confirm( message ) ) {
+						SweetAlert.close();
+					}*/
+				},
+			},
 		] );
 	}
 
@@ -84,9 +104,10 @@ export class CreateCourseViaAI {
 		SweetAlert.fire( {
 			html: modalTemplate.innerHTML,
 			width: '60%',
-			showCloseButton: true,
+			showCloseButton: false,
 			showConfirmButton: false,
 			allowOutsideClick: false,
+			allowEscapeKey: false,
 			didOpen: () => {
 				const popup = SweetAlert.getPopup();
 				popup.click();
@@ -122,17 +143,7 @@ export class CreateCourseViaAI {
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {
-				const closeWarningModalTemplate = document.querySelector(
-					'#lp-tmpl-close-warning-course-ai'
-				);
-
 				if ( lp_is_generating_course_data ) {
-					SweetAlert.fire( {
-						html: closeWarningModalTemplate.innerHTML,
-						showCloseButton: true,
-						showConfirmButton: true,
-					} );
-
 					lp_is_generating_course_data = false;
 				}
 			}

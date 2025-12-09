@@ -20,10 +20,14 @@ $seo_emphasis    = $params['seo_emphasis'] ?? '';
 $target_keywords = $params['target_keywords'] ?? '';
 
 // Course Structure
-$sections            = $params['section_number'] ?? 1;
-$lessons_per_section = $params['lessons_per_section'] ?? 1;
-$quizzes_per_section = $params['quizzes_per_section'] ?? 0;
-$questions_per_quiz  = $params['questions_per_quiz'] ?? 0;
+$sections             = $params['section_number'] ?? 1;
+$section_title_length = $params['section_title_length'] ?? 60;
+$section_desc_length  = $params['section_desc_length'] ?? 160;
+$lessons_per_section  = $params['lessons_per_section'] ?? 1;
+$lesson_title_length  = $params['lesson_title_length'] ?? 60;
+$quizzes_per_section  = $params['quizzes_per_section'] ?? 0;
+$quiz_title_length    = $params['quiz_title_length'] ?? 60;
+$questions_per_quiz   = $params['questions_per_quiz'] ?? 0;
 
 $quiz_structure_requirements = '';
 $quiz_json_example           = '';
@@ -72,7 +76,6 @@ return <<<XML
         <content_parameters>
             <language>$language</language>
             <tone>$tone</tone>
-            <lesson_length_words>Approximately $lesson_length words per lesson</lesson_length_words>
             <reading_level>$reading_level</reading_level>
         </content_parameters>
         <seo_parameters>
@@ -87,8 +90,11 @@ return <<<XML
         <structure_requirements>
             - The course MUST have a compelling "course_title" and a concise "course_description".
             - The course MUST be divided into exactly **$sections** section(s).
+            - "section_title" values MUST be concise, relevant, and no longer than **$section_title_length** characters.
+            - "section_description" values MUST be concise, relevant, and no longer than **$section_desc_length** characters.
             - Each section MUST contain a relevant "section_title" and exactly **$lessons_per_section** lesson(s).
             - Each lesson MUST have a "lesson_title" and detailed "lesson_description".
+            - "lesson_title" values MUST be concise, relevant, and no longer than **$lesson_title_length** characters.
         </structure_requirements>
         $quiz_structure_requirements
     </task_instructions>
