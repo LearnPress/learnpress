@@ -469,6 +469,28 @@ class CourseModel {
 	}
 
 	/**
+	 * Get only items of course
+	 *
+	 * @return array
+	 * @since 4.3.2
+	 * @version 1.0.0
+	 */
+	public function get_only_items(): array {
+		static $items;
+		if ( isset( $items ) ) {
+			return $items;
+		}
+
+		foreach ( $this->get_section_items() as $section ) {
+			foreach ( $section->items as $item ) {
+				$items[ $item->item_id ] = $item;
+			}
+		}
+
+		return $items ?? [];
+	}
+
+	/**
 	 * Get section id of item
 	 *
 	 * @param int $item_id

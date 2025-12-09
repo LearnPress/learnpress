@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.3.1
+ * Version: 4.3.2-beta.1
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -18,7 +18,6 @@ use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
-use LearnPress\Ajax\LPAIAjax;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
@@ -34,17 +33,12 @@ use LearnPress\Shortcodes\CourseButtonShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
-use LearnPress\TemplateHooks\Admin\AdminCreateCourseAITemplate;
-use LearnPress\TemplateHooks\Admin\AdminEditCourseCurriculumWithAITemplate;
+use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
+use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
+use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
-use LearnPress\TemplateHooks\Admin\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
-use LearnPress\TemplateHooks\Admin\AdminGenerateCourseCloseWarningTemplate;
-use LearnPress\TemplateHooks\Admin\AdminCreateCourseAISuccessTemplate;
-use LearnPress\TemplateHooks\Admin\AdminEditWithAICloseWarningTemplate;
-use LearnPress\TemplateHooks\Admin\AdminEditCurriculumWithAICloseWarningTemplate;
-use LearnPress\TemplateHooks\Admin\AdminCreatingCourseAITemplate;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
@@ -62,6 +56,7 @@ use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+use LearnPress\TemplateHooks\Order\AdminOrderItemsTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
@@ -349,15 +344,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
+			AdminOrderItemsTemplate::instance();
 			AdminCreateCourseAITemplate::instance();
 			AdminEditWithAITemplate::instance();
 			AdminEditCourseCurriculumWithAITemplate::instance();
-			AdminGenerateCourseCloseWarningTemplate::instance();
-			//AdminCreateCourseAISuccessTemplate::instance();
-			AdminEditWithAICloseWarningTemplate::instance();
-			AdminEditCurriculumWithAICloseWarningTemplate::instance();
-			//AdminCreatingCourseAITemplate::instance();
-
 			// WP GDPR
 			ErasePersonalData::instance();
 			ExportPersonalData::instance();

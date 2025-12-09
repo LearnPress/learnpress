@@ -10,11 +10,14 @@
 }
 
 .swal2-popup {
+	max-width: 850px;
+
 	.content-title {
 		margin: 0 0 20px 0;
 		padding: 0;
 		text-align: center;
 		font-size: 1.5em;
+		font-weight: bold;
 	}
 
 	.swal2-actions {

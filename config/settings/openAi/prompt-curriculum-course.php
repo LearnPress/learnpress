@@ -18,15 +18,16 @@ $tone            = trim( $params['tone'] ?? 'Informative and encouraging' );
 $reading_level   = trim( $params['reading_level'] ?? 'High school' );
 $target_keywords = trim( $params['target_keywords'] ?? '' );
 
-$goal                 = $params['goal'] ?? '';
-$sections             = $params['section_number'] ?? 3;
-$section_title_length = $params['section_title_length'] ?? 60;
-$section_description_length = $params['section_description_length'] ?? 100;
-$lessons_per_section  = $params['lessons_per_section'] ?? 5;
-$lesson_length        = $params['lesson_length'] ?? 300;
-$quizzes_per_section  = $params['quizzes_per_section'] ?? 1;
-$quiz_title_length    = $params['quiz_title_length'] ?? 60;
-$questions_per_quiz   = $params['questions_per_quiz'] ?? 2;
+$goal                       = $params['goal'] ?? '';
+$sections                   = $params['section_number'] ?? 3;
+$section_title_length       = $params['section_title_length'] ?? 60;
+$section_description_length = $params['section_description_length'] ?? 160;
+$lessons_per_section        = $params['lessons_per_section'] ?? 5;
+$lesson_title_length        = $params['lesson_title_length'] ?? 60;
+$lesson_desc_length         = $params['lesson_desc_length'] ?? 1000;
+$quizzes_per_section        = $params['quizzes_per_section'] ?? 1;
+$quiz_title_length          = $params['quiz_title_length'] ?? 60;
+$questions_per_quiz         = $params['questions_per_quiz'] ?? 2;
 
 $quiz_structure_requirements = '';
 $quiz_json_example           = '';
@@ -35,7 +36,7 @@ if ( $quizzes_per_section > 0 ) {
         <quiz_requirements>
             - Each section MUST contain exactly **{$quizzes_per_section}** quiz object(s) within a "quizzes" array.
             - Each quiz MUST have a relevant "quiz_title" and "quiz_description".
-            - Each "quiz_title" approximately {$quiz_title_length} words.
+            - Each "quiz_title" approximately {$quiz_title_length} characters.
             - Each quiz MUST contain exactly **{$questions_per_quiz}** question object(s) in a "questions" array.
             - Each question must be multiple-choice, testing concepts from the lessons in THAT SAME section.
             - Each question object MUST contain: "question_title", "question_description", "options" (an array of 4 strings), and "correct_answer" (a string matching one of the options).
@@ -78,7 +79,6 @@ return <<<XML
         <content_parameters>
             <language>$language</language>
             <tone>$tone</tone>
-            <lesson_length_words>Approximately $lesson_length words per lesson</lesson_length_words>
             <reading_level>$reading_level</reading_level>
         </content_parameters>
     </course_context>
@@ -89,10 +89,12 @@ return <<<XML
         <structure_requirements>
             - The goal of course is {$goal}
             - The course MUST be divided into exactly **$sections** section(s).
-            - Each "section_title" approximately {$section_title_length} words.
-            - Each "section_description" approximately {$section_description_length} words.
+            - Each "section_title" approximately {$section_title_length} characters.
+            - Each "section_description" approximately {$section_description_length} characters.
             - Each section MUST contain a relevant "section_title" and exactly **$lessons_per_section** lesson(s).
             - Each lesson MUST have a "lesson_title" and detailed "lesson_description".
+            - "lesson_title" values MUST be concise, relevant, and no longer than **$lesson_title_length** characters.
+            - "lesson_description" values MUST be concise, relevant, and no longer than **$lesson_desc_length** characters.
         </structure_requirements>
         $quiz_structure_requirements
     </task_instructions>

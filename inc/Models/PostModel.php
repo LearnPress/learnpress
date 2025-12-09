@@ -15,6 +15,8 @@ use Exception;
 use LearnPress;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\FilterBase;
+use LearnPress\Filters\PostFilter;
+use LP_Cache;
 use LP_Post_Meta_DB;
 use LP_Post_Meta_Filter;
 use LP_Post_Type_Filter;
@@ -142,6 +144,49 @@ class PostModel {
 	}
 
 	/**
+	 * Get post course by ID
+	 *
+	 * @param int $post_id
+	 * @param bool $check_cache
+	 *
+	 * @since 4.3.2
+	 * @version 1.0.0
+	 * @return false|PostModel
+	 */
+	public static function find_by_id( int $post_id, bool $check_cache = false ) {
+		$filter     = new PostFilter();
+		$filter->ID = $post_id;
+		$filter->post_type = ( new static() )->post_type;
+
+		$type = ( new static() )->post_type;
+		$key_cache   = "postModel/find/{$post_id}/". $type ;
+		$lp_cache = new LP_Cache();
+
+		// Check first load cache
+		$postModel = LP_Cache::cache_load_first( 'get', $key_cache );
+		if ( false !== $postModel ) {
+			return $postModel;
+		}
+
+		// Check cache
+		if ( $check_cache ) {
+			$quizPostModel = $lp_cache->get_cache( $key_cache );
+			if ( $quizPostModel instanceof QuizPostModel ) {
+				return $quizPostModel;
+			}
+		}
+
+		$postModel = self::get_item_model_from_db( $filter );
+		// Set cache
+		if ( $postModel instanceof PostModel ) {
+			$lp_cache->set_cache( $key_cache, $postModel );
+		}
+		LP_Cache::cache_load_first( 'set', $key_cache, $postModel );
+
+		return $postModel;
+	}
+
+	/**
 	 * Get post from database.
 	 * If not exists, return false.
 	 * If exists, return PostModel.
@@ -212,8 +257,6 @@ class PostModel {
 	public function check_capabilities_create(): bool {
 		return true;
 	}
-
-
 
 	/**
 	 * Check capabilities to update post.

@@ -433,4 +433,22 @@
 			font-size: 1rem;
 		}
 	}
+	.lp-order-items-wrapper{
+		.learn-press-pagination {
+			text-align: left;
+			li {
+				border: 1px solid #2271b1;
+				background: #f6f7f7;
+
+				.page-numbers {
+					padding: 0 6px;
+				}
+
+				.current {
+					background: #2271b1;
+					color: #fff !important;
+				}
+			}
+		}
+	}
 }
