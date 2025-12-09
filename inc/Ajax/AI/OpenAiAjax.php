@@ -354,6 +354,7 @@ class OpenAiAjax extends AbstractAjax {
 			$args     = [
 				'prompt' => $prompt,
 				'n'      => intval( $params['outputs'] ?? 1 ),
+				'size'   => $params['size'] ?? '',
 			];
 
 			$result                    = OpenAiService::instance()->send_request_create_image( $args );
