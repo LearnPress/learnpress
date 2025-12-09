@@ -4,7 +4,9 @@
 	text-align: center;
 
 	.page-numbers {
-		display: inline-block;
+		display: inline-flex;
+		gap: 5px;
+		flex-wrap: wrap;
 		margin: 0;
 		padding: 0;
 		border: 0;
