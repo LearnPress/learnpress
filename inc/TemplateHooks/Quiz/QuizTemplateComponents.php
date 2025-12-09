@@ -569,7 +569,7 @@ class QuizTemplateComponents {
 				$button_text = 'completed' === $status ? __( 'Retake', 'learnpress' ) : __( 'Start', 'learnpress' );
 
 				if ( 'completed' === $status ) {
-					$button_text .= sprintf( ' (%d)', $can_retake_count !== 0 ? ( $can_retake_count === -1 ? '' : $can_retake_count ): 0 );
+					$button_text .= $can_retake_count !== 0 ? sprintf( ' (%d)', $can_retake_count ) : '';
 				}
 
 				$start_button = sprintf(

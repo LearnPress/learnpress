@@ -26,6 +26,34 @@ class QuizSubmitHandler {
                 this.handleSubmitClick(e);
             }
         });
+
+        // Listen for timer auto-submit event (skip confirmation)
+        document.addEventListener('lp-quiz-timer-auto-submit', (e) => {
+            this.handleAutoSubmit(e.detail);
+        });
+    }
+
+    /**
+     * Handle auto-submit from timer expiration (no confirmation needed)
+     * @param {Object} detail - Event detail with timeSpent
+     */
+    async handleAutoSubmit(detail) {
+        // Check if already submitting
+        if (this.submitting) {
+            return;
+        }
+
+        const button = document.getElementById('button-submit-quiz') || document.querySelector('.lp-button.submit-quiz');
+        if (!button) {
+            console.error('Submit button not found for auto-submit');
+            return;
+        }
+
+        // Perform submission without confirmation
+        await this.performSubmission(button, {
+            autoSubmit: true,
+            timeSpent: detail?.timeSpent
+        });
     }
 
     /**
@@ -48,6 +76,19 @@ class QuizSubmitHandler {
             return;
         }
 
+        // Perform submission
+        await this.performSubmission(button);
+    }
+
+    /**
+     * Perform quiz submission with common logic
+     * @param {Element} button - Submit button element
+     * @param {Object} options - Submission options
+     * @param {boolean} options.autoSubmit - Whether this is auto-submit (for event detail)
+     * @param {number} options.timeSpent - Optional time spent value to use
+     * @returns {Promise<void>}
+     */
+    async performSubmission(button, options = {}) {
         // Set submitting state
         this.submitting = true;
         button.disabled = true;
@@ -57,7 +98,8 @@ class QuizSubmitHandler {
         // Dispatch custom event to notify other components (e.g., timer)
         const submittingEvent = new CustomEvent('lp-quiz-submitting', {
             detail: {
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                autoSubmit: options.autoSubmit || false
             }
         });
         document.dispatchEvent(submittingEvent);
@@ -65,8 +107,8 @@ class QuizSubmitHandler {
         // Get all answers
         const answered = this.collectAnswers();
 
-        // Get time spent
-        const timeSpend = this.getTimeSpend();
+        // Get time spent (use options.timeSpent if provided, otherwise call getTimeSpend())
+        const timeSpend = options.timeSpent !== undefined ? options.timeSpent : this.getTimeSpend();
 
         // Submit quiz
         this.submitQuiz(answered, timeSpend)

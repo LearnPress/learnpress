@@ -4,6 +4,8 @@
  * @since 4.2.9.4
  * @version 2.0.0
  */
+import { __ } from '@wordpress/i18n';
+import SweetAlert from 'sweetalert2';
 class QuizTimer {
 	constructor() {
 		this.quizContainer = null;
@@ -191,10 +193,13 @@ class QuizTimer {
 	updateDisplay() {
 		const displayTime = this.isCountdown ? (this.duration - this.timeRemaining) : this.timeRemaining;
 		this.timeDisplay.textContent = this.formatTime(displayTime, this.totalTime);
-		this.hiddenInput.value = this.timeRemaining;
 
-		// Save to localStorage to persist across page navigation
-		this.saveToLocalStorage();
+		if (!this.isTimeExpired()) {
+			this.hiddenInput.value = this.timeRemaining;
+
+			// Save to localStorage to persist across page navigation
+			this.saveToLocalStorage();
+		}
 	}
 
 	/**
@@ -238,21 +243,43 @@ class QuizTimer {
 	/**
 	 * Handle timer expiration
 	 */
-	handleExpiration() {
+	async handleExpiration() {
 		this.timeDisplay.textContent = '00:00';
 		this.timerElement.classList.add('expired');
-
-		// Trigger auto-submit if available
-		const submitButton = document.getElementById('button-submit-quiz');
-		if (submitButton && !submitButton.disabled) {
-			submitButton.click();
-		}
 
 		// Dispatch custom event for other components
 		const expiredEvent = new CustomEvent('lp-quiz-timer-expired', {
 			detail: { timeSpent: this.timeRemaining }
 		});
 		document.dispatchEvent(expiredEvent);
+
+		// Show SweetAlert notification (no confirmation needed - time expired)
+		await SweetAlert.fire({
+			title: __('Time Expired!', 'learnpress'),
+			text: __('Your quiz time has expired. The quiz will be submitted automatically.', 'learnpress'),
+			icon: 'warning',
+			confirmButtonText: __('OK', 'learnpress'),
+			confirmButtonColor: '#3085d6',
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			timer: 3000,
+			timerProgressBar: true
+		});
+
+		// Trigger auto-submit by dispatching a custom event to bypass confirmation
+		const submitEvent = new CustomEvent('lp-quiz-timer-auto-submit', {
+			detail: {
+				timeSpent: this.timeRemaining,
+				skipConfirmation: true
+			}
+		});
+		document.dispatchEvent(submitEvent);
+
+		// Fallback: click submit button if event handler not available
+		const submitButton = document.getElementById('button-submit-quiz');
+		if (submitButton && !submitButton.disabled) {
+			submitButton.click();
+		}
 	}
 
 	/**
