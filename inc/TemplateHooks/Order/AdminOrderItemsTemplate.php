@@ -3,7 +3,7 @@ namespace LearnPress\TemplateHooks\Order;
 
 use Exception;
 use LearnPress\Databases\Order\LPOrderItemsDB;
-use LearnPress\Filters\Order\LPOrderItemsFilter;
+use LearnPress\Filters\Order\OrderItemsFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -90,7 +90,7 @@ class AdminOrderItemsTemplate {
 		}
 
 		$lpOrderItemsDB   = LPOrderItemsDB::getInstance();
-		$filter           = new LPOrderItemsFilter();
+		$filter           = new OrderItemsFilter();
 		$filter->page     = $data['paged'] ?? 1;
 		$filter->order_id = $data['order_id'] ?? 0;
 		$filter->limit    = 5;
@@ -196,7 +196,7 @@ class AdminOrderItemsTemplate {
 		}
 
 		$lpOrderDB        = LPOrderItemsDB::getInstance();
-		$filter           = new LPOrderItemsFilter();
+		$filter           = new OrderItemsFilter();
 		$filter->order_id = $lp_order->get_id();
 		$filter->page     = $paged;
 		$filter->limit    = - 1;

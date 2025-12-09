@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit();
  * @since 4.3.2
  * @version 1.0.0
  */
-class LPOrderItemsFilter extends FilterBase {
+class OrderItemsFilter extends FilterBase {
 	const COL_ORDER_ITEM_ID = 'order_item_id';
 	const COL_ORDER_ID      = 'order_id';
 	const COL_ITEM_ID       = 'item_id';
