@@ -1344,7 +1344,7 @@ function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 		$key                  = sanitize_key( $key );
 		$user_socials[ $key ] = '';
 		if ( is_array( $extra_profile_info ) && isset( $extra_profile_info[ $key ] ) ) {
-			$user_socials[ $key ] = $extra_profile_info[ $key ];
+			$user_socials[ $key ] = esc_url_raw( $extra_profile_info[ $key ] );
 		}
 	}
 
