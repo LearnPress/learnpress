@@ -6,7 +6,6 @@ use LearnPress\Databases\Order\LPOrderItemsDB;
 use LearnPress\Filters\Order\OrderItemsFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use stdClass;
@@ -53,12 +52,12 @@ class AdminOrderItemsTemplate {
 	public function order_items_layout( LP_Order $lp_order ) {
 		try {
 			$args                            = array(
-				'id_url'                => 'admin-view-order-items',
-				'order_id'              => $lp_order->get_id(),
-				'paged'                 => 1,
-				'enableScrollToView'    => false,
-				'enableUpdateParamsUrl' => false,
-				'html_loading_after_content_loaded' => '<i></i>'
+				'id_url'                            => 'admin-view-order-items',
+				'order_id'                          => $lp_order->get_id(),
+				'paged'                             => 1,
+				'enableScrollToView'                => false,
+				'enableUpdateParamsUrl'             => false,
+				'html_loading_after_content_loaded' => '<i></i>',
 			);
 			$content_obj                     = self::render_order_items( $args );
 			$args['html_no_load_ajax_first'] = $content_obj->content;
@@ -317,9 +316,7 @@ class AdminOrderItemsTemplate {
 				<?php
 				if ( ! empty( $item_link ) ) {
 					printf(
-						'<a href="%s" >
-						%s
-						</a>',
+						'<a href="%s" >%s</a>',
 						esc_url( $item_link ),
 						esc_html( $item_title )
 					);

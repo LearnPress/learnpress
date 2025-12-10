@@ -6,7 +6,9 @@ use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
+use LP_Debug;
 use LP_Settings;
+use Throwable;
 
 /**
  * Class AdminEditCourseCurriculumWithAITemplate
@@ -33,37 +35,42 @@ class AdminEditCourseCurriculumWithAITemplate {
 	 * Layout popup to generate course curriculum with AI
 	 */
 	public function layout_popup() {
-		$screen  = get_current_screen();
-		$screens = [
-			LP_COURSE_CPT,
-		];
-		if ( ! $screen || in_array( $screen, $screens ) ) {
-			return;
-		}
+		try {
+			if ( ! function_exists( 'get_current_screen' ) ) {
+				return;
+			}
 
-		$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
+			$screen  = get_current_screen();
+			$screens = [
+				LP_COURSE_CPT,
+			];
+			if ( ! $screen || in_array( $screen, $screens ) ) {
+				return;
+			}
 
-		$components = [
-			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-course-curriculum-ai">',
-			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
-			'btn-close'                =>
-				'<button type="button" class="lp-btn-close-ai-popup">
+			$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
+
+			$components = [
+				'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-course-curriculum-ai">',
+				'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+				'btn-close'                =>
+					'<button type="button" class="lp-btn-close-ai-popup">
 					<i class="lp-icon-remove"></i>
 				</button>',
-			'h2'                       => sprintf(
-				'<div class="content-title">%s</div>',
-				esc_html__( 'Generate Course Sections Curriculum', 'learnpress' )
-			),
-			'header'                   => $this->html_step_header(),
-			'form'                     => '<form class="lp-form-generate-data-ai">',
-			'wrap-fields'              => '<div class="lp-form-fields">',
-			'step_1'                   => $this->html_step_1(),
-			'step_2'                   => $this->html_step_2(),
-			'step_3'                   => $this->html_step_3(),
-			'step_4'                   => $this->html_step_4(),
-			'wrap-fields-end'          => '</div>',
-			'buttons'                  => sprintf(
-				'<div class="button-actions" data-step="1" data-step-max="4">
+				'h2'                       => sprintf(
+					'<div class="content-title">%s</div>',
+					esc_html__( 'Generate Course Sections Curriculum', 'learnpress' )
+				),
+				'header'                   => $this->html_step_header(),
+				'form'                     => '<form class="lp-form-generate-data-ai">',
+				'wrap-fields'              => '<div class="lp-form-fields">',
+				'step_1'                   => $this->html_step_1(),
+				'step_2'                   => $this->html_step_2(),
+				'step_3'                   => $this->html_step_3(),
+				'step_4'                   => $this->html_step_4(),
+				'wrap-fields-end'          => '</div>',
+				'buttons'                  => sprintf(
+					'<div class="button-actions" data-step="1" data-step-max="4">
 					<button class="btn btn-secondary lp-btn-step lp-hidden"
 					data-step-show="2,3,4"
 					data-action="prev" type="button">&larr; %s
@@ -85,38 +92,41 @@ class AdminEditCourseCurriculumWithAITemplate {
 						data-send="%s" type="button">%s
 					</button>
 				</div>',
-				esc_html__( 'Previous', 'learnpress' ),
-				esc_html__( 'Next', 'learnpress' ),
-				Template::convert_data_to_json(
-					[
-						'action'         => 'openai_generate_prompt',
-						'lp-prompt-type' => 'course-curriculum', // define type prompt to generate title.
-						'id_url'         => 'generate_prompt_openai',
-					]
+					esc_html__( 'Previous', 'learnpress' ),
+					esc_html__( 'Next', 'learnpress' ),
+					Template::convert_data_to_json(
+						[
+							'action'         => 'openai_generate_prompt',
+							'lp-prompt-type' => 'course-curriculum', // define type prompt to generate title.
+							'id_url'         => 'generate_prompt_openai',
+						]
+					),
+					esc_html__( 'Generate Prompt', 'learnpress' ),
+					Template::convert_data_to_json(
+						[
+							'action'         => 'openai_generate_data',
+							'lp-prompt-type' => 'course-curriculum', // define type prompt to generate title.
+							'id_url'         => 'submit_to_openai',
+						]
+					),
+					esc_html__( 'Generate Sections Course', 'learnpress' ),
+					Template::convert_data_to_json(
+						[
+							'action' => 'openai_create_course_sections',
+							'id_url' => 'openai_create_course_sections',
+						]
+					),
+					esc_html__( 'Apply Sections Data To Curriculum', 'learnpress' ),
 				),
-				esc_html__( 'Generate Prompt', 'learnpress' ),
-				Template::convert_data_to_json(
-					[
-						'action'         => 'openai_generate_data',
-						'lp-prompt-type' => 'course-curriculum', // define type prompt to generate title.
-						'id_url'         => 'submit_to_openai',
-					]
-				),
-				esc_html__( 'Generate Sections Course', 'learnpress' ),
-				Template::convert_data_to_json(
-					[
-						'action' => 'openai_create_course_sections',
-						'id_url' => 'openai_create_course_sections',
-					]
-				),
-				esc_html__( 'Apply Sections Data To Curriculum', 'learnpress' ),
-			),
-			'form-end'                 => '</form>',
-			'wrap-end'                 => '</div>',
-			'wrap-script-template-end' => '</script>',
-		];
+				'form-end'                 => '</form>',
+				'wrap-end'                 => '</div>',
+				'wrap-script-template-end' => '</script>',
+			];
 
-		echo Template::combine_components( $components );
+			echo Template::combine_components( $components );
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
 	}
 
 	public function html_step_header(): string {

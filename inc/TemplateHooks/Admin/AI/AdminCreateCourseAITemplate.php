@@ -6,6 +6,8 @@ use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
+use LP_Debug;
+use Throwable;
 
 /**
  * Class AdminCreateCourseAITemplate
@@ -29,14 +31,22 @@ class AdminCreateCourseAITemplate {
 	}
 
 	public function layout_popup() {
-		$screen = get_current_screen();
-		if ( ! $screen || $screen->id != 'edit-' . LP_COURSE_CPT ) {
-			return;
-		}
+		try {
+			if ( ! function_exists( 'get_current_screen' ) ) {
+				return;
+			}
 
-		$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
-		echo $this->html_create_course_via_ai();
-		echo $this->html_creating_course();
+			$screen = get_current_screen();
+			if ( ! $screen || $screen->id != 'edit-' . LP_COURSE_CPT ) {
+				return;
+			}
+
+			$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
+			echo $this->html_create_course_via_ai();
+			echo $this->html_creating_course();
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
 	}
 
 	public function html_create_course_via_ai(): string {

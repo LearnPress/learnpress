@@ -6,7 +6,9 @@ use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
+use LP_Debug;
 use LP_Settings;
+use Throwable;
 
 /**
  * Class AdminEditWithAITemplate
@@ -30,19 +32,27 @@ class AdminEditWithAITemplate {
 	}
 
 	public function layout_popup() {
-		$screen  = get_current_screen();
-		$screens = [
-			LP_COURSE_CPT,
-		];
-		if ( ! $screen || in_array( $screen, $screens ) ) {
-			return;
-		}
+		try {
+			if ( ! function_exists( 'get_current_screen' ) ) {
+				return;
+			}
 
-		$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
-		echo $this->html_edit_title_via_ai();
-		echo $this->html_edit_description_via_ai();
-		echo $this->html_edit_image_via_ai();
-		echo $this->html_edit_curriculum_via_ai();
+			$screen  = get_current_screen();
+			$screens = [
+				LP_COURSE_CPT,
+			];
+			if ( ! $screen || in_array( $screen, $screens ) ) {
+				return;
+			}
+
+			$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
+			echo $this->html_edit_title_via_ai();
+			echo $this->html_edit_description_via_ai();
+			echo $this->html_edit_image_via_ai();
+			echo $this->html_edit_curriculum_via_ai();
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
 	}
 
 	/**
