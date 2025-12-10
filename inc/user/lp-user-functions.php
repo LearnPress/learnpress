@@ -864,7 +864,7 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 	$return = LP_Forms_Handler::update_user_data( $update_data, $update_meta );
 
 	// Update for social.
-	$socials    = LP_Request::get_array( 'user_profile_social' );
+	$socials    = LP_Request::get_param( 'user_profile_social' );
 	$extra_data = get_user_meta( $user_id, '_lp_extra_info', true );
 
 	if ( ! empty( $extra_data ) ) {
@@ -1315,7 +1315,8 @@ function learn_press_update_extra_user_profile_fields( $user_id ) {
 	}
 
 	if ( isset( $_POST['_lp_extra_info'] ) ) {
-		update_user_meta( $user_id, '_lp_extra_info', LP_Helper::sanitize_params_submitted( $_POST['_lp_extra_info'] ) );
+		$extra_info = LP_Request::get_param( '_lp_extra_info', [], '', 'post' );
+		update_user_meta( $user_id, '_lp_extra_info', $extra_info );
 	}
 }
 add_action( 'personal_options_update', 'learn_press_update_extra_user_profile_fields' );
