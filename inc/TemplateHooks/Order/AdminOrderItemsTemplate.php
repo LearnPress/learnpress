@@ -105,26 +105,23 @@ class AdminOrderItemsTemplate {
 				$itemObjMeta   = self::get_all_metadata_order_item( $itemObj->order_item_id );
 				$itemObj->meta = $itemObjMeta;
 				$item_type     = $itemObj->item_type ?? '';
+				$index         = ( $filter->page - 1 ) * $filter->limit + $i + 1;
 				if ( $item_type === LP_COURSE_CPT ) {
 					$coursePostModel = CoursePostModel::find_by_id( $itemObj->item_id, true );
 					if ( ! $coursePostModel ) {
-						$html_items .= sprintf( '<li>%s</li>', __( 'The course does not exist.', 'learnpress' ) );
+						$html_items .= sprintf(
+							'<li>%s%s (%s)</li>',
+							$total_row > 1 ? "$index. " : '',
+							esc_html( $itemObj->order_item_name ),
+							__( 'The course does not exist now.', 'learnpress' )
+						);
 					} else {
-						if ( $total_row > 1 ) {
-							$index       = ( ( $filter->page - 1 ) * $filter->limit ) + $i + 1;
-							$html_items .= sprintf(
-								'<li>%d. <a href="%s" >%s</a></li>',
-								$index,
-								$coursePostModel->get_edit_link(),
-								$itemObj->order_item_name
-							);
-						} else {
-							$html_items .= sprintf(
-								'<li><a href="%s" >%s</a></li>',
-								$coursePostModel->get_edit_link(),
-								$itemObj->order_item_name
-							);
-						}
+						$html_items .= sprintf(
+							'<li>%s<a href="%s" >%s</a></li>',
+							$total_row > 1 ? "$index. " : '',
+							esc_url_raw( $coursePostModel->get_edit_link() ),
+							esc_html( $itemObj->order_item_name )
+						);
 					}
 				} else {
 					if ( has_filter( 'learn-press/order-item-not-course-id' ) ) {
@@ -133,7 +130,7 @@ class AdminOrderItemsTemplate {
 						$item_old       = array_merge( $item_old, $itemObjMeta );
 						$html_items     = apply_filters( 'learn-press/order-item-not-course-id', esc_html__( 'The course does not exist', 'learnpress' ), $item_old );
 					} else {
-						$html_items = apply_filters( 'learn-press/order-items/item', '', $itemObj, $order_id );
+						$html_items = apply_filters( 'learn-press/order-items/item', '', $itemObj, $order_id, $data );
 					}
 				}
 			}
@@ -216,13 +213,19 @@ class AdminOrderItemsTemplate {
 				if ( $item_type === LP_COURSE_CPT ) {
 					$html_items .= self::order_item_detail_html( $lp_order, $itemObj );
 				} else {
-					$item_old       = (array) $itemObj;
-					$item_old['id'] = $itemObj->order_item_id;
-					$item_old       = array_merge( $item_old, $itemObjMeta );
+					if ( has_filter( 'learn-press/order-item-not-course-id' ) ) {
+						$item_old       = (array) $itemObj;
+						$item_old['id'] = $itemObj->order_item_id;
+						$item_old       = array_merge( $item_old, $itemObjMeta );
 
-					ob_start();
-					do_action( 'learn-press/order-item-not-course', $item_old );
-					$html_items .= ob_get_clean();
+						ob_start();
+						do_action( 'learn-press/order-item-not-course', $item_old, $lp_order );
+						$html_items .= ob_get_clean();
+					} else {
+						ob_start();
+						do_action( 'learn-press/order-detail/item', $itemObj, $order_id, $data );
+						$html_items .= ob_get_clean();
+					}
 				}
 			}
 		}

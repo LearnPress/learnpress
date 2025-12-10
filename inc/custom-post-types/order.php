@@ -475,7 +475,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$user_of_order  = $wp_query->get( 'author' );
 				$status         = $wp_query->get( 'post_status' );
 				$key            = $wp_query->get( 's' );
-				$month            = $wp_query->get( 'm' );
+				$month          = $wp_query->get( 'm' );
 
 				$order_by = $wp_query->get( 'orderby', 'date' );
 				if ( empty( $order_by ) ) {
@@ -503,7 +503,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				if ( $order_by === 'order_total' ) {
 					$post_filter->join[]   = "INNER JOIN {$post_db->tb_postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
-					$post_filter->where[]  = "AND CAST(pm2.meta_value AS UNSIGNED)";
+					$post_filter->where[]  = 'AND CAST(pm2.meta_value AS UNSIGNED)';
 					$post_filter->order_by = 'pm2.meta_value';
 				} else {
 					$post_filter->order_by = $order_by;
@@ -525,7 +525,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$key = trim( $key );
 
 					if ( $is_order_id_sure ) {
-						$post_filter->where[] = $post_db->wpdb->prepare( "AND p.ID = %d", $key );
+						$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.ID = %d', $key );
 					} else {
 						$post_filter->join[]  = "INNER JOIN {$post_db->tb_lp_order_items} lpori ON p.ID = lpori.order_id";
 						$post_filter->where[] = $post_db->wpdb->prepare(
@@ -537,10 +537,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				if ( ! empty( $month ) ) {
-					$year = substr( $month, 0, 4 );
+					$year                 = substr( $month, 0, 4 );
 					$post_filter->where[] = "AND YEAR(p.post_date) = $year";
 					if ( strlen( $month ) > 5 ) {
-						$mon = substr( $month, 4, 2 );
+						$mon                  = substr( $month, 4, 2 );
 						$post_filter->where[] = "AND MONTH(p.post_date) = $mon";
 					}
 				}
@@ -557,6 +557,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				if ( ! empty( $status ) ) {
 					$post_filter->post_status = (array) $status;
+				} else {
+					$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', LP_ORDER_TRASH );
 				}
 
 				$total_rows = 0;
