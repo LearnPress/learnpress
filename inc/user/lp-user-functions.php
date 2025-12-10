@@ -1319,6 +1319,7 @@ function learn_press_update_extra_user_profile_fields( $user_id ) {
 		update_user_meta( $user_id, '_lp_extra_info', $extra_info );
 	}
 }
+
 add_action( 'personal_options_update', 'learn_press_update_extra_user_profile_fields' );
 add_action( 'edit_user_profile_update', 'learn_press_update_extra_user_profile_fields' );
 
@@ -1328,7 +1329,7 @@ add_action( 'edit_user_profile_update', 'learn_press_update_extra_user_profile_f
  * @param int $user_id
  *
  * @return array
- * @since 4.0.0
+ * @since 4.0.1
  */
 function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 	if ( ! $user_id ) {
@@ -1336,24 +1337,33 @@ function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 	}
 
 	$extra_profile_info = get_the_author_meta( '_lp_extra_info', $user_id );
-	$extra_fields       = learn_press_get_user_extra_profile_fields();
+	$social_fields      = learn_press_social_profiles();
 
-	$extra_profile_info = wp_parse_args(
-		$extra_profile_info,
-		array_fill_keys( array_keys( $extra_fields ), '' )
-	);
+	$user_socials = [];
+	foreach ( $social_fields as $key => $label ) {
+		$key                  = sanitize_key( $key );
+		$user_socials[ $key ] = '';
+		if ( is_array( $extra_profile_info ) && isset( $extra_profile_info[ $key ] ) ) {
+			$user_socials[ $key ] = $extra_profile_info[ $key ];
+		}
+	}
 
-	return apply_filters( 'learn-press/user-extra-profile-info', $extra_profile_info, $user_id );
+	return apply_filters( 'learn-press/user-extra-profile-info', $user_socials, $user_id );
 }
 
+/**
+ * @return array
+ * @since 3.x.x
+ * @version 4.0.1
+ */
 function learn_press_social_profiles() {
 	return apply_filters(
 		'learn-press/social-profiles',
 		array(
-			'facebook',
-			'twitter',
-			'youtube',
-			'linkedin',
+			'facebook' => __( 'Facebook Profile', 'learnpress' ),
+			'twitter'  => __( 'Twitter Profile', 'learnpress' ),
+			'youtube'  => __( 'YouTube Profile', 'learnpress' ),
+			'linkedin' => __( 'LinkedIn Profile', 'learnpress' ),
 		)
 	);
 }
@@ -1521,8 +1531,13 @@ function lp_get_user_custom_fields() {
  *
  * @return bool
  * @since 4.0.0
+ * @deprecated 4.3.2
  */
 function learn_press_is_social_profile( $key ) {
+	_deprecated_function( __FUNCTION__, '4.3.2' );
+
+	return true;
+
 	$is_socials = learn_press_social_profiles();
 
 	return in_array( $key, $is_socials );
@@ -1558,10 +1573,16 @@ function learn_press_social_profile_name( $key ) {
  *
  * @return array
  * @since 4.0.0
+ * @deprecated 4.3.2
  */
 function learn_press_get_user_extra_profile_fields() {
+	_deprecated_function( __FUNCTION__, '4.3.2' );
+
 	$socials = learn_press_social_profiles();
-	$fields  = array();
+
+	return $socials;
+
+	$fields = array();
 
 	foreach ( $socials as $social ) {
 		$fields[ $social ] = learn_press_social_profile_name( $social );

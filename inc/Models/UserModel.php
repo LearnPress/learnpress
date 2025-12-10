@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnPress\Models;
 
 /**
@@ -425,7 +426,7 @@ class UserModel {
 	 * @move from LP_Abstract_User
 	 * @return array
 	 * @since 4.2.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_profile_social(): array {
 		$socials    = array();
@@ -451,7 +452,10 @@ class UserModel {
 						$i = '<i class="lp-user-ico lp-icon-youtube-play"></i>';
 						break;
 					default:
-						$i = sprintf( '<i class="lp-user-ico lp-icon-%s"></i>', $k );
+						$i = sprintf(
+							'<i class="lp-user-ico lp-icon-%s"></i>',
+							esc_attr( $k )
+						);
 				}
 
 				$icon          = apply_filters(
@@ -461,7 +465,11 @@ class UserModel {
 					$this->get_id(),
 					$this
 				);
-				$socials[ $k ] = sprintf( '<a href="%s">%s</a>', esc_url_raw( $v ), $icon );
+				$socials[ $k ] = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url_raw( $v ),
+					$icon
+				);
 			}
 		}
 

@@ -76,9 +76,9 @@ $user = $profile->get_user();
 		$socials = learn_press_get_user_extra_profile_info( $user->get_id() );
 		if ( $socials ) {
 			foreach ( $socials as $k => $v ) {
-				if ( ! learn_press_is_social_profile( $k ) ) {
+				/*if ( ! learn_press_is_social_profile( $k ) ) {
 					continue;
-				}
+				}*/
 				?>
 
 				<li class="form-field form-field__profile-social form-field__50 form-field__<?php echo esc_attr( $k ); ?>">
