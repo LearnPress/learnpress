@@ -370,8 +370,8 @@ class EditCurriculumAjax extends AbstractAjax {
 				throw new Exception( __( 'Course not found', 'learnpress' ) );
 			}
 
-			$courseModel->update_items_position( $data );
-			$courseModel->save();
+			$coursePostModel = new CoursePostModel( $courseModel );
+			$coursePostModel->update_items_position( $data );
 
 			$response->status  = 'success';
 			$response->message = __( 'Item position updated successfully', 'learnpress' );

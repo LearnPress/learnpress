@@ -3,6 +3,8 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Databases\Course\CourseSectionItemsDB;
+use LearnPress\Filters\Course\CourseSectionItemsFilter;
 use LearnPress\Models\CourseSectionModel;
 use LP_Background_Single_Course;
 use LP_Cache;
@@ -126,7 +128,7 @@ class CourseSectionItemModel {
 	 * @return false|CourseSectionItemModel
 	 */
 	public static function find( int $section_id, $item_id, $check_cache = true ) {
-		$filter             = new LP_Section_Items_Filter();
+		$filter             = new CourseSectionItemsFilter();
 		$filter->section_id = $section_id;
 		$filter->item_id    = $item_id;
 		$key_cache          = "courseSectionItem/find/{$section_id}/{$item_id}";
@@ -155,13 +157,13 @@ class CourseSectionItemModel {
 	 * If not exists, return false.
 	 * If exists, return CourseSectionItemModel.
 	 *
-	 * @param LP_Section_Items_Filter $filter
+	 * @param CourseSectionItemsFilter|LP_Section_Items_Filter $filter
 	 *
 	 * @return CourseSectionItemModel|false|static
 	 * @version 1.0.0
 	 */
-	public static function get_item_model_from_db( LP_Section_Items_Filter $filter ) {
-		$lp_section_db = LP_Section_Items_DB::getInstance();
+	public static function get_item_model_from_db( $filter ) {
+		$lp_section_db = CourseSectionItemsDB::getInstance();
 		$sectionModel  = false;
 
 		try {

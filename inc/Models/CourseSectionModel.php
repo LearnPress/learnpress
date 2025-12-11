@@ -4,6 +4,7 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress\Databases\CourseSectionDB;
+use LearnPress\Filters\Course\CourseSectionItemsFilter;
 use LearnPress\Filters\CourseSectionFilter;
 use LP_Background_Single_Course;
 use LP_Cache;
@@ -305,7 +306,7 @@ class CourseSectionModel {
 
 			// Check if item already exists in course.
 			$lp_db                  = LP_Database::getInstance();
-			$filter                 = new LP_Section_Items_Filter();
+			$filter                 = new CourseSectionItemsFilter();
 			$filter->item_id        = $item_id;
 			$filter->item_type      = $item_type;
 			$filter->join[]         = 'LEFT JOIN ' . $lp_db->tb_lp_sections . ' AS cs ON si.section_id = cs.section_id';

@@ -88,9 +88,6 @@ class LessonPostModel extends PostModel {
 	 * @since 4.2.8.6
 	 */
 	public function set_preview( bool $enable = true ) {
-		// Check permission
-		$this->check_capabilities_update_item_course();
-
 		$this->save_meta_value_by_key( LessonPostModel::META_KEY_PREVIEW, $enable ? 'yes' : 'no' );
 	}
 }

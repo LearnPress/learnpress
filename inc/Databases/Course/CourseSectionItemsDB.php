@@ -38,12 +38,14 @@ class CourseSectionItemsDB extends DataBase {
 	/**
 	 * Get section items
 	 *
+	 * @param CourseSectionItemsFilter $filter
+	 *
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @version 1.0.2
 	 * @since 4.1.6
 	 */
-	public function get_section_items( CourseSectionItemsFilter $filter ) {
+	public function get_section_items( $filter ) {
 		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 

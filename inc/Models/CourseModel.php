@@ -1318,63 +1318,6 @@ class CourseModel {
 	}
 
 	/**
-	 * Update items position in curriculum, can change section of item.
-	 *
-	 * @param array $data [ items_position, item_id_change, section_id_new_of_item, section_id_old_of_item ]
-	 *
-	 * @return void
-	 * @throws Exception
-	 * @since 4.3.2
-	 * @version 1.0.0
-	 */
-	public function update_items_position( array $data ) {
-		// Check permission
-		$this->check_permission();
-
-		$items_position         = $data['items_position'] ?? [];
-		$item_id_change         = $data['item_id_change'] ?? 0;
-		$section_id_new_of_item = $data['section_id_new_of_item'] ?? 0;
-		$section_id_old_of_item = $data['section_id_old_of_item'] ?? 0;
-
-		if ( ! is_array( $items_position ) ) {
-			throw new Exception( __( 'Invalid item position', 'learnpress' ) );
-		}
-
-		// Find item of section id old
-		$filter                  = new LP_Section_items_Filter();
-		$filter->section_id      = $section_id_old_of_item;
-		$filter->item_id         = $item_id_change;
-		$filter->run_query_count = false;
-
-		$courseSectionItemModel = CourseSectionItemModel::get_item_model_from_db( $filter );
-		if ( ! $courseSectionItemModel ) {
-			throw new Exception( __( 'Item not found in section', 'learnpress' ) );
-		}
-
-		// Update section id of item
-		$courseSectionItemModel->section_id        = $section_id_new_of_item;
-		$courseSectionItemModel->section_course_id = $this->get_id();
-		$courseSectionItemModel->save();
-
-		// For each section to find item then update section id of item and position of item in the new section
-		$sections_items = $this->get_section_items();
-		foreach ( $sections_items as $section_items ) {
-			$section_id = $section_items->section_id ?? 0;
-
-			if ( $section_id != $section_id_new_of_item ) {
-				continue;
-			}
-
-			// Update position of item in section
-			CourseSectionItemsDB::getInstance()->update_items_position( $items_position, $section_id_new_of_item );
-			break;
-		}
-
-		// Clear cache
-		$this->sections_items = null;
-	}
-
-	/**
 	 * Save course data to table learnpress_courses.
 	 *
 	 * @throws Exception
