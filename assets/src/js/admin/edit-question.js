@@ -228,6 +228,10 @@ export class EditQuestion {
 
 	eventEditorTinymce( id ) {
 		const editor = window.tinymce.get( id );
+		if ( ! editor ) {
+			return;
+		}
+
 		const elTextarea = document.getElementById( id );
 		const elQuestionEditMain = elTextarea.closest(
 			`${ EditQuestion.selectors.elQuestionEditMain }`
