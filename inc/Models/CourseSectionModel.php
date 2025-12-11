@@ -108,15 +108,16 @@ class CourseSectionModel {
 	/**
 	 * Get course post model
 	 *
-	 * @since 4.3.2
-	 * @version 1.0.0
 	 * @return false|CoursePostModel
+	 * @version 1.0.0
+	 * @since 4.3.2
 	 */
 	public function get_course_post_model() {
 		$courseModel = $this->get_course_model();
 		if ( $courseModel instanceof CourseModel ) {
 			return new CoursePostModel( $courseModel );
 		}
+
 		return false;
 	}
 
@@ -321,7 +322,7 @@ class CourseSectionModel {
 			$courseSectionItemModel                    = new CourseSectionItemModel();
 			$courseSectionItemModel->item_id           = $item_id;
 			$courseSectionItemModel->item_type         = $item_type;
-			$courseSectionItemModel->item_order        = ++$max_order;
+			$courseSectionItemModel->item_order        = ++ $max_order;
 			$courseSectionItemModel->section_id        = $section_id;
 			$courseSectionItemModel->section_course_id = $this->section_course_id;
 			$courseSectionItemModel->save();
@@ -333,15 +334,13 @@ class CourseSectionModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function save(): CourseSectionModel {
 		// Check permission
 		$coursePostModel = $this->get_course_post_model();
-		if ( $coursePostModel ) {
-			if ( ! $coursePostModel->check_capabilities_update() ) {
-				throw new Exception( __( 'You do not have permission to edit this section', 'learnpress' ) );
-			}
+		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
+			throw new Exception( __( 'You do not have permission to edit this section', 'learnpress' ) );
 		}
 
 		$courseSectionDB = CourseSectionDB::getInstance();
@@ -349,9 +348,9 @@ class CourseSectionModel {
 		$data = get_object_vars( $this );
 
 		$args = [
-			'data'  => $data,
-			'filter'=> new CourseSectionFilter(),
-			'table_name' => $courseSectionDB->tb_lp_sections,
+			'data'               => $data,
+			'filter'             => new CourseSectionFilter(),
+			'table_name'         => $courseSectionDB->tb_lp_sections,
 			'key_auto_increment' => 'section_id',
 		];
 
@@ -359,7 +358,7 @@ class CourseSectionModel {
 			$section_id       = $courseSectionDB->insert_data( $args );
 			$this->section_id = $section_id;
 		} else { // Update data.
-			$args[ 'where_key' ] = 'section_id';
+			$args['where_key'] = 'section_id';
 			$courseSectionDB->update_data( $args );
 		}
 
@@ -379,10 +378,8 @@ class CourseSectionModel {
 	public function delete() {
 		// Check permission
 		$coursePostModel = $this->get_course_post_model();
-		if ( $coursePostModel ) {
-			if( ! $coursePostModel->check_capabilities_update() ) {
-				throw new Exception( __( 'You do not have permission to delete section', 'learnpress' ) );
-			}
+		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
+			throw new Exception( __( 'You do not have permission to delete section', 'learnpress' ) );
 		}
 
 		// Unassign items of section

@@ -14,21 +14,18 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Databases\Course\CourseSectionItemsDB;
 use LearnPress\Filters\PostFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
-use LP_Admin_Editor_Course;
 use LP_Course_Cache;
 use LP_Course_DB;
 use LP_Course_Item;
 use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
-use LP_Database;
 use LP_Datetime;
 use LP_Helper;
-use LP_Lesson;
-use LP_Post_Type_Filter;
-use LP_Section_CURD;
+use LP_Section_Items_Filter;
 use LP_Settings;
 use stdClass;
 use Throwable;
@@ -191,6 +188,7 @@ class CourseModel {
 	 */
 	public function get_author_model() {
 		$post = new CoursePostModel( $this );
+
 		return $post->get_author_model();
 	}
 
@@ -1320,24 +1318,80 @@ class CourseModel {
 	}
 
 	/**
+	 * Update items position in curriculum, can change section of item.
+	 *
+	 * @param array $data [ items_position, item_id_change, section_id_new_of_item, section_id_old_of_item ]
+	 *
+	 * @return void
+	 * @throws Exception
+	 * @since 4.3.2
+	 * @version 1.0.0
+	 */
+	public function update_items_position( array $data ) {
+		// Check permission
+		$this->check_permission();
+
+		$items_position         = $data['items_position'] ?? [];
+		$item_id_change         = $data['item_id_change'] ?? 0;
+		$section_id_new_of_item = $data['section_id_new_of_item'] ?? 0;
+		$section_id_old_of_item = $data['section_id_old_of_item'] ?? 0;
+
+		if ( ! is_array( $items_position ) ) {
+			throw new Exception( __( 'Invalid item position', 'learnpress' ) );
+		}
+
+		// Find item of section id old
+		$filter                  = new LP_Section_items_Filter();
+		$filter->section_id      = $section_id_old_of_item;
+		$filter->item_id         = $item_id_change;
+		$filter->run_query_count = false;
+
+		$courseSectionItemModel = CourseSectionItemModel::get_item_model_from_db( $filter );
+		if ( ! $courseSectionItemModel ) {
+			throw new Exception( __( 'Item not found in section', 'learnpress' ) );
+		}
+
+		// Update section id of item
+		$courseSectionItemModel->section_id        = $section_id_new_of_item;
+		$courseSectionItemModel->section_course_id = $this->get_id();
+		$courseSectionItemModel->save();
+
+		// For each section to find item then update section id of item and position of item in the new section
+		$sections_items = $this->get_section_items();
+		foreach ( $sections_items as $section_items ) {
+			$section_id = $section_items->section_id ?? 0;
+
+			if ( $section_id != $section_id_new_of_item ) {
+				continue;
+			}
+
+			// Update position of item in section
+			CourseSectionItemsDB::getInstance()->update_items_position( $items_position, $section_id_new_of_item );
+			break;
+		}
+
+		// Clear cache
+		$this->sections_items = null;
+	}
+
+	/**
 	 * Save course data to table learnpress_courses.
 	 *
 	 * @throws Exception
 	 * @since 4.2.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function save(): CourseModel {
-		$lp_course_json_db = LP_Course_JSON_DB::getInstance();
+		// Check permission
+		$this->check_permission();
 
-		$data = [];
+		$lp_course_json_db = LP_Course_JSON_DB::getInstance();
 
 		$courseObjToJSON = clone $this;
 		unset( $courseObjToJSON->post_content );
 		unset( $courseObjToJSON->json );
 		$this->json = json_encode( $courseObjToJSON, JSON_UNESCAPED_UNICODE );
-		foreach ( get_object_vars( $this ) as $property => $value ) {
-			$data[ $property ] = $value;
-		}
+		$data       = get_object_vars( $this );
 
 		if ( ! isset( $data['ID'] ) ) {
 			throw new Exception( 'Course ID is invalid!' );
@@ -1379,9 +1433,9 @@ class CourseModel {
 	/**
 	 * Clean caches
 	 *
-	 * @since 4.2.7.4
-	 * @version 1.0.0
 	 * @return void
+	 * @version 1.0.0
+	 * @since 4.2.7.4
 	 */
 	public function clean_caches() {
 		$key_cache       = "courseModel/find/id/{$this->ID}";
@@ -1391,6 +1445,18 @@ class CourseModel {
 		// Clear cache image urls, store with many sizes
 		$img_urls_key_cache = "image_urls/{$this->ID}";
 		$lp_course_cache->clear_cache_on_group( $img_urls_key_cache );
+	}
+
+	/**
+	 * Check permission to update/create course
+	 *
+	 * @throws Exception
+	 */
+	public function check_permission() {
+		$coursePostModel = new CoursePostModel( $this );
+		if ( ! $coursePostModel->check_capabilities_update() ) {
+			throw new Exception( 'You do not have permission to update this course!' );
+		}
 	}
 
 	/**

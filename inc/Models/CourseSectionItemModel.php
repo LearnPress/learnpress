@@ -215,6 +215,11 @@ class CourseSectionItemModel {
 	 * @throws Exception
 	 */
 	public function delete() {
+		$coursePostModel = $this->get_course_post_model();
+		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
+			throw new Exception( esc_html__( 'You do not have permission to delete section item.', 'learnpress' ) );
+		}
+
 		$lp_section_items_db = LP_Section_Items_DB::getInstance();
 		$filter              = new LP_Section_Items_Filter();
 		$filter->where[]     = $lp_section_items_db->wpdb->prepare( 'AND section_item_id = %d', $this->section_item_id );
