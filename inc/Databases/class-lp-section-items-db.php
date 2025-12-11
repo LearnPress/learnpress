@@ -230,8 +230,10 @@ class LP_Section_Items_DB extends LP_Database {
 	 * @throws Exception
 	 * @since 4.2.8.6
 	 * @version 1.0.0
+	 * @deprecated 4.3.2
 	 */
 	public function update_items_position( array $item_ids, $section_id ) {
+		_deprecated_function( __METHOD__, '4.3.2', 'CourseSectionItemsDB::update_items_position' );
 		$filter             = new LP_Section_Items_Filter();
 		$filter->collection = $this->tb_lp_section_items;
 		$SET_SQL            = 'item_order = CASE';

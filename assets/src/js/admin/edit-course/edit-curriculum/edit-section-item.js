@@ -605,15 +605,11 @@ export class EditSectionItem {
 						course_id: this.courseId,
 						args: { id_url: idUrlHandle },
 					};
-					if ( sectionIdChoose === sectionIdEnd ) {
-						dataSend.action = 'update_items_position';
-						dataSend.section_id = sectionIdEnd;
-					} else {
-						dataSend.action = 'update_item_section_and_position';
-						dataSend.item_id_change = itemIdChoose;
-						dataSend.section_id_new_of_item = sectionIdEnd;
-						dataSend.section_id_old_of_item = sectionIdChoose;
-					}
+
+					dataSend.action = 'update_item_section_and_position';
+					dataSend.item_id_change = itemIdChoose;
+					dataSend.section_id_new_of_item = sectionIdEnd;
+					dataSend.section_id_old_of_item = sectionIdChoose;
 
 					// Send list items position
 					const section = this.elCurriculumSections.querySelector(

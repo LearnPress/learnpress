@@ -383,56 +383,6 @@ class EditCurriculumAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Update items position in section
-	 *
-	 * $data['course_id']      => ID of course
-	 * $data['section_id']     => ID of section
-	 * $data['items_position'] => list of item id by order in section
-	 *
-	 * JS file edit-section-item.js: function sortAbleItem call this method.
-	 *
-	 * @since 4.2.8.6
-	 * @version 1.0.1
-	 */
-	public static function update_items_position() {
-		$response = new LP_REST_Response();
-
-		try {
-			$data           = self::check_valid();
-			$course_id      = $data['course_id'] ?? 0;
-			$section_id     = $data['section_id'] ?? 0;
-			$items_position = $data['items_position'] ?? [];
-
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
-
-			if ( ! is_array( $items_position ) || empty( $items_position ) ) {
-				throw new Exception( __( 'Invalid item position', 'learnpress' ) );
-			}
-
-			$coursePostModel = new CoursePostModel( $courseModel );
-			if ( ! $coursePostModel->check_capabilities_update() ) {
-				throw new Exception( __( 'You do not have permission to update item position.', 'learnpress' ) );
-			}
-
-			// Update position of item in section
-			LP_Section_Items_DB::getInstance()->update_items_position( $items_position, $section_id );
-
-			$courseModel->sections_items = null;
-			$courseModel->save();
-
-			$response->status  = 'success';
-			$response->message = __( 'Item position updated successfully', 'learnpress' );
-		} catch ( Throwable $e ) {
-			$response->message = $e->getMessage();
-		}
-
-		wp_send_json( $response );
-	}
-
-	/**
 	 * Update data of item in section
 	 *
 	 * $data['course_id']      => ID of course
