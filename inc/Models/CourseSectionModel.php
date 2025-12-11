@@ -338,10 +338,7 @@ class CourseSectionModel {
 	 */
 	public function save(): CourseSectionModel {
 		// Check permission
-		$coursePostModel = $this->get_course_post_model();
-		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
-			throw new Exception( __( 'You do not have permission to edit this section', 'learnpress' ) );
-		}
+		$this->check_permission();
 
 		$courseSectionDB = CourseSectionDB::getInstance();
 
@@ -377,10 +374,7 @@ class CourseSectionModel {
 	 */
 	public function delete() {
 		// Check permission
-		$coursePostModel = $this->get_course_post_model();
-		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
-			throw new Exception( __( 'You do not have permission to delete section', 'learnpress' ) );
-		}
+		$this->check_permission();
 
 		// Unassign items of section
 		$lp_section_items_db = LP_Section_Items_DB::getInstance();
@@ -398,6 +392,20 @@ class CourseSectionModel {
 
 		// Clear cache
 		$this->clean_caches();
+	}
+
+	/**
+	 * Check permission to handle
+	 *
+	 * @throws Exception
+	 * @since 4.3.2
+	 * @version 1.0.0
+	 */
+	public function check_permission() {
+		$coursePostModel = $this->get_course_post_model();
+		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
+			throw new Exception( __( 'You do not have permission to delete section', 'learnpress' ) );
+		}
 	}
 
 	/**
