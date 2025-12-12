@@ -107,6 +107,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					array(),
 					1
 				),
+				'lp-tom-select'      => new LP_Asset_Key(
+					self::url( 'src/css/vendor/tom-select.min.css' ),
+					[],
+					[],
+					0
+				),
 			)
 		);
 

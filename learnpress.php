@@ -46,6 +46,7 @@ use LearnPress\TemplateHooks\Admin\AdminCreateCourseAISuccessTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditWithAICloseWarningTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditCurriculumWithAICloseWarningTemplate;
 use LearnPress\TemplateHooks\Admin\AdminCreatingCourseAITemplate;
+use LearnPress\TemplateHooks\Course\AdminEditSettingTemplate;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
@@ -361,6 +362,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
+			AdminEditSettingTemplate::instance();
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();

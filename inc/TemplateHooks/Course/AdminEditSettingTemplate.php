@@ -1,118 +1,146 @@
 <?php
 
+namespace LearnPress\TemplateHooks\Course;
+
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Singleton;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
-use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
-use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Database;
+use LP_Meta_Box_Checkbox_Field;
+use LP_Meta_Box_Course;
+use LP_Meta_Box_Date_Field;
+use LP_Meta_Box_Duration_Field;
+use LP_Meta_Box_Extra_Faq_Field;
+use LP_Meta_Box_Extra_Field;
+use LP_Meta_Box_Field;
+use LP_Meta_Box_Material_Fields;
+use LP_Meta_Box_Radio_Field;
+use LP_Meta_Box_Select_Field;
+use LP_Meta_Box_Text_Field;
+use LP_Meta_Box_Textarea_Field;
+use WP_Post;
+use WP_User;
 
-class LP_Meta_Box_Course extends LP_Meta_Box {
+/**
+ * Template hooks Admin Edit Course Settings.
+ *
+ * @since 4.3.0
+ * @version 1.0.0
+ */
+class AdminEditSettingTemplate {
+	use Singleton;
+
+	public function init() {
+		add_action( 'learn-press/admin/course/edit-setting/layout', [ $this, 'render_settings' ] );
+		// add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
+	}
+
+
 	/**
-	 * Instance
+	 * Render edit course settings html.
 	 *
-	 * @var null|LP_Meta_Box_Course
-	 */
-	private static $instance = null;
-
-	public $post_type = LP_COURSE_CPT;
-
-	/**
-	 * @param WP_Post $post
+	 * @param int $post_id
 	 *
-	 * @return void
+	 * @return string
 	 */
-	public function add_meta_boxes( $post ) {
-		$course                   = CourseModel::find( $post->ID, true );
-		$is_enable_offline_course = false;
-		if ( $course instanceof CourseModel ) {
-			$is_enable_offline_course = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_COURSE, 'no' ) === 'yes';
+	public static function render_settings( int $post_id = 0 ) {
+		if ( ! $post_id ) {
+			global $post;
+			$post_id = $post->ID;
 		}
 
-		add_meta_box(
-			'course-settings',
-			esc_html__( 'Course Settings', 'learnpress' ),
-			array( $this, 'output' ),
-			$this->post_type,
-			'normal',
-			'high'
-		);
+		wp_enqueue_style( 'lp-edit-curriculum' );
+		wp_enqueue_script( 'lp-edit-course' );
 
-		if ( ! $is_enable_offline_course ) {
-			add_meta_box(
-				'course-editor',
-				esc_html__( 'Curriculum', 'learnpress' ),
-				array( $this, 'admin_editor' ),
-				$this->post_type,
-				'normal',
-				'high'
+		echo self::instance()->html_course_settings( $post_id );
+	}
+
+	/**
+	 * HTML for course settings metabox.
+	 *
+	 * @param int $post_id
+	 *
+	 * @return string
+	 */
+	public function html_course_settings( int $post_id ): string {
+		$tabs_data = LP_Meta_Box_Course::instance()->metabox( $post_id );
+		$nav_items = '';
+		$panels    = '';
+
+		foreach ( $tabs_data as $key => $tab ) {
+			if ( $key === 'author' && ! is_super_admin() ) {
+				continue;
+			}
+
+			$class_tab = isset( $tab['class'] ) ? implode( ' ', (array) $tab['class'] ) : '';
+			$icon      = isset( $tab['icon'] ) ? sprintf( '<i class="%s"></i>', esc_attr( $tab['icon'] ) ) : '';
+
+			$nav_items .= sprintf(
+				'<li class="%s_options %s_tab %s"><a href="#%s">%s<span>%s</span></a></li>',
+				esc_attr( $key ),
+				esc_attr( $key ),
+				esc_attr( $class_tab ),
+				esc_attr( $tab['target'] ),
+				$icon,
+				esc_html( $tab['label'] )
 			);
+
+			if ( isset( $tab['content'] ) ) {
+				ob_start();
+				do_action( 'learnpress/course-settings/before-' . $key );
+
+				foreach ( $tab['content'] as $meta_key => $object ) {
+					if ( is_a( $object, LP_Meta_Box_Field::class ) ) {
+						$object->id = $meta_key;
+						$output     = $object->output( $post_id );
+						if ( ! empty( $output ) ) {
+							echo wp_kses_post( $output );
+						}
+					}
+				}
+
+				do_action( 'learnpress/course-settings/after-' . $key );
+				$panel_html = ob_get_clean();
+
+				$panels .= sprintf(
+					'<div id="%s" class="lp-meta-box-course-panels">%s</div>',
+					esc_attr( $tab['target'] ),
+					$panel_html
+				);
+			}
 		}
+
+		$wrapper = [
+			'wrap'        => '<div class="lp-meta-box lp-meta-box--course"><div class="lp-meta-box__inner"><div class="lp-meta-box__course-tab">',
+			'ul_tabs'     => '<ul class="lp-meta-box__course-tab__tabs">' . $nav_items . '</ul>',
+			'content_div' => '<div class="lp-meta-box__course-tab__content">',
+			'panels'      => $panels,
+			'hook_extra'  => $this->capture_hook_content( 'lp_course_data_setting_tab_content', $post_id ),
+			'content_end' => '</div>',
+			'inner_end'   => '</div></div></div>',
+		];
+
+		return Template::combine_components( $wrapper );
 	}
 
-	public function metabox( $post_id ) {
-		$tabs = apply_filters(
-			'lp_course_data_settings_tabs',
-			array(
-				'general'    => array(
-					'label'    => esc_html__( 'General', 'learnpress' ),
-					'target'   => 'general_course_data',
-					'icon'     => 'dashicons-admin-tools',
-					'priority' => 10,
-					'content'  => $this->general( $post_id ),
-				),
-				'offline'    => array(
-					'label'    => esc_html__( 'Offline Course', 'learnpress' ),
-					'target'   => 'offline_course_data',
-					'icon'     => 'dashicons-welcome-view-site',
-					'priority' => 10,
-					'content'  => $this->tab_offline( $post_id ),
-				),
-				'price'      => array(
-					'label'    => esc_html__( 'Pricing', 'learnpress' ),
-					'target'   => 'price_course_data',
-					'icon'     => 'dashicons-cart',
-					'priority' => 20,
-					'content'  => $this->lp_price( $post_id ),
-				),
-				'extra'      => array(
-					'label'    => esc_html__( 'Extra Information', 'learnpress' ),
-					'target'   => 'extra_course_data',
-					'icon'     => 'dashicons-excerpt-view',
-					'priority' => 30,
-					'content'  => $this->extra( $post_id ),
-				),
-				'assessment' => array(
-					'label'    => esc_html__( 'Assessment', 'learnpress' ),
-					'target'   => 'assessment_course_data',
-					'icon'     => 'dashicons-awards',
-					'priority' => 40,
-					'content'  => $this->assessment( $post_id ),
-				),
-				'author'     => array(
-					'label'    => esc_html__( 'Author', 'learnpress' ),
-					'target'   => 'author_course_data',
-					'icon'     => 'dashicons-businessman',
-					'priority' => 50,
-					'content'  => $this->author( $post_id ),
-				),
-				'material'   => array(
-					'label'    => esc_html__( 'Downloadable Materials', 'learnpress' ),
-					'target'   => 'downloadable_material_data',
-					'icon'     => 'dashicons-download',
-					'priority' => 60,
-					'content'  => $this->lp_material( $post_id ),
-				),
-			)
-		);
-
-		$tabs = apply_filters( 'learnpress/course/metabox/tabs', $tabs, $post_id );
-
-		uasort( $tabs, array( __CLASS__, 'data_tabs_sort' ) );
-
-		return $tabs;
+	/**
+	 * Helper to capture do_action output
+	 *
+	 * @param string $hook
+	 * @param int $post_id
+	 *
+	 * @return string
+	 */
+	private function capture_hook_content( string $hook, int $post_id ): string {
+		ob_start();
+		$post = get_post( $post_id );
+		do_action( $hook, $post );
+		return ob_get_clean();
 	}
 
-	public function general( $post_id ) {
+	public function tab_general( $post_id ) {
 		$course                  = CourseModel::find( $post_id, true );
 		$repurchase_option_desc  = sprintf(
 			'1. %s',
@@ -193,7 +221,6 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'name'       => '_lp_allow_course_repurchase',
 							'is_disable' => ! $is_enable_allow_course_repurchase,
 						],
-						//'show'    => array( '_lp_allow_course_repurchase', '=', 'yes' ), // use 'show' or 'hide'
 					)
 				),
 				'_lp_level'                    => new LP_Meta_Box_Select_Field(
@@ -270,15 +297,6 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	/**
-	 * Tab setting offline course
-	 *
-	 * @param $post_id
-	 *
-	 * @return array
-	 * @since 4.2.7
-	 * @version 1.0.0
-	 */
 	public function tab_offline( $post_id ): array {
 		$course = CourseModel::find( $post_id, true );
 
@@ -342,17 +360,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	/**
-	 * Setting course price
-	 *
-	 * @param $post_id
-	 *
-	 * @return array
-	 * @since 4.1.5
-	 * @version 1.0.0
-	 * @author tungnx
-	 */
-	public function lp_price( $post_id ): array {
+	public function tab_price( $post_id ): array {
 		$key_exists    = LP_Database::getInstance()->check_key_postmeta_exists( $post_id, '_lp_regular_price' );
 		$price         = get_post_meta( $post_id, '_lp_price', true );
 		$regular_price = $key_exists ? get_post_meta( $post_id, '_lp_regular_price', true ) : $price;
@@ -446,7 +454,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	public function author( $thepostid ) {
+	public function tab_author( $thepostid ) {
 		$post = get_post( $thepostid );
 
 		$author_id = $post ? $post->post_author : get_current_user_id();
@@ -507,16 +515,14 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'options'           => $options,
 						'style'             => 'min-width:200px;',
 						'tom_select'        => true,
-						'custom_attributes' => [
-							'data-struct' => htmlentities2( json_encode( $data_struct ) ),
-						],
+						'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ],
 					)
 				),
 			)
 		);
 	}
 
-	public function lp_material( $thepostid ) {
+	public function tab_material( $thepostid ) {
 		return apply_filters(
 			'lp/course/meta-box/fields/material',
 			array(
@@ -525,7 +531,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	public function assessment( $thepostid ) {
+	public function tab_assessment( $thepostid ) {
 		$post = get_post( $thepostid );
 
 		$course_result_desc = '';
@@ -596,7 +602,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	public function extra( $thepostid ) {
+	public function tab_extra( $thepostid ) {
 		return apply_filters(
 			'lp/course/meta-box/fields/extra',
 			array(
@@ -624,97 +630,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	public function output( $post ) {
-		parent::output( $post );
-
-		$course_id   = $post->ID;
-		$courseModel = CourseModel::find( $course_id, true );
-		if ( ! $courseModel instanceof CourseModel ) {
-			return;
-		}
-
-		do_action( 'learn-press/admin/course/edit-setting/layout', $courseModel->ID );
-	}
-
-	/**
-	 * Template Editor Curriculum.
-	 *
-	 * @return void
-	 */
-	public function admin_editor() {
-		global $post;
-
-		$course_id   = $post->ID;
-		$courseModel = CourseModel::find( $course_id, true );
-		if ( ! $courseModel instanceof CourseModel ) {
-			return;
-		}
-
-		do_action( 'learn-press/admin/edit-curriculum/layout', $courseModel );
-	}
-
-	/*public function save( $post_id ) {
-		if ( ! empty( $this->metabox( $post_id ) ) ) {
-			foreach ( $this->metabox( $post_id ) as $key => $tab_content ) {
-				if ( isset( $tab_content['content'] ) ) {
-					foreach ( $tab_content['content'] as $meta_key => $object ) {
-						if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
-							$object->id = $meta_key;
-							$object->save( $post_id );
-						}
-					}
-				}
-			}
-		}
-
-		$course = learn_press_get_course( $post_id );
-
-		// Check price is valid.
-		$price_regular = LP_Request::get( '_lp_regular_price', 0, 'float' );
-		$price_sale    = LP_Request::get( '_lp_sale_price', 0, 'float' );
-		if ( $price_regular <= 0 ) {
-			$price_sale = 0;
-			update_post_meta( $post_id, '_lp_regular_price', '' );
-		}
-
-		if ( $price_sale >= $price_regular || $price_sale < 0 ) {
-			update_post_meta( $post_id, '_lp_sale_price', '' );
-		}
-		// End check price.
-
-		$evaluation = LP_Request::get_param( '_lp_course_result', '', 'text', 'post' );
-		//$passing_condition = isset( $_POST['_lp_passing_condition'] ) ? absint( wp_unslash( $_POST['_lp_passing_condition'] ) ) : 0;
-
-		// Update Final Quiz. - Nhamdv
-		if ( $evaluation == 'evaluate_final_quiz' ) {
-			$items = $course->get_item_ids();
-
-			if ( $items ) {
-				foreach ( $items as $item ) {
-					if ( learn_press_get_post_type( $item ) === LP_QUIZ_CPT ) {
-						$final_quiz = $item;
-					}
-				}
-			}
-
-			if ( isset( $final_quiz ) ) {
-				update_post_meta( $post_id, '_lp_final_quiz', $final_quiz );
-			} else {
-				delete_post_meta( $post_id, '_lp_final_quiz' );
-			}
-		} else {
-			delete_post_meta( $post_id, '_lp_final_quiz' );
-		}
-
-		$author = isset( $_POST['_lp_course_author'] ) ? wp_unslash( $_POST['_lp_course_author'] ) : '';
-		if ( ! empty( $author ) ) {
-			global $wpdb;
-
-			$wpdb->update( $wpdb->posts, array( 'post_author' => $author ), array( 'ID' => $post_id ) );
-		}
-	}*/
-
-	private static function data_tabs_sort( $a, $b ) {
+	public function data_tabs_sort( $a, $b ) {
 		if ( ! isset( $a['priority'], $b['priority'] ) ) {
 			return - 1;
 		}
@@ -725,31 +641,4 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 		return $a['priority'] < $b['priority'] ? - 1 : 1;
 	}
-
-	public static function save_eduma_child_metabox_v3( $post_id ) {
-		$general = apply_filters( 'learn_press_course_settings_meta_box_args', array( 'fields' => array() ) );
-
-		if ( ! empty( $general['fields'] ) ) {
-			foreach ( $general['fields'] as $field ) {
-				$value = isset( $_POST[ $field['id'] ] ) ? wp_unslash( $_POST[ $field['id'] ] ) : '';
-
-				update_post_meta( $post_id, $field['id'], $value );
-			}
-		}
-	}
-
-	/**
-	 * Get instance
-	 *
-	 * @return LP_Meta_Box_Course
-	 */
-	public static function instance(): LP_Meta_Box_Course {
-		if ( ! self::$instance ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
 }
-
-LP_Meta_Box_Course::instance();

@@ -19,6 +19,7 @@ use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuestionTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuizTemplate;
+use LP_Course_Cache;
 use LP_Course_CURD;
 use LP_Helper;
 use LP_Lesson_CURD;
@@ -26,6 +27,7 @@ use LP_Question_CURD;
 use LP_Quiz_CURD;
 use LP_REST_Response;
 use stdClass;
+use Throwable;
 
 class CourseBuilderAjax extends AbstractAjax {
 	/**
@@ -44,9 +46,10 @@ class CourseBuilderAjax extends AbstractAjax {
 
 		$params       = LP_Helper::json_decode( $params, true );
 		$course_id    = ! empty( $params['course_id'] ) ? (int) $params['course_id'] : 0;
-		$course_model = CoursePostModel::find( $course_id, true );
+		$course_model = CourseModel::find( $course_id, true );
 		if ( empty( $course_model ) ) {
-			$params['insert'] = true;
+			$params['insert']       = true;
+			$params['course_model'] = '';
 		} else {
 			$params['insert']       = false;
 			$params['course_model'] = $course_model;
@@ -65,7 +68,8 @@ class CourseBuilderAjax extends AbstractAjax {
 		$lesson_id    = ! empty( $params['lesson_id'] ) ? (int) $params['lesson_id'] : 0;
 		$lesson_model = LessonPostModel::find( $lesson_id, true );
 		if ( empty( $lesson_model ) ) {
-			$params['insert'] = true;
+			$params['insert']       = true;
+			$params['lesson_model'] = '';
 		} else {
 			$params['insert']       = false;
 			$params['lesson_model'] = $lesson_model;
@@ -123,16 +127,16 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data         = self::check_valid_course();
-			$course_id    = $data['course_id'] ?? 0;
-			$settings     = $data['course_settings'] ?? false;
-			$is_elementor = $data['is_elementor'] ?? false;
-			$insert       = $data['insert'];
+			$data      = self::check_valid_course();
+			$course_id = $data['course_id'] ?? 0;
+			$settings  = $data['course_settings'] ?? false;
+			$insert    = $data['insert'];
 
 			if ( $insert ) {
 				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
 				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
-				$course_id  = wp_insert_post(
+
+				$course_id = wp_insert_post(
 					array(
 						'post_type'    => LP_COURSE_CPT,
 						'post_title'   => sanitize_text_field( $data['course_title'] ?? '' ),
@@ -149,34 +153,36 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $course_id ) ) {
 					throw new Exception( $course_id->get_error_message() );
 				}
-			} elseif ( ! empty( $data['course_title'] ) ) {
-				$course_model = $data['course_model'];
-				// Support for co-instructor.
-				$co_instructor_ids = $course_model->get_meta_value_by_key( '_lp_co_teacher', [] );
-				if ( absint( $course_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' )
-				&& ! in_array( get_current_user_id(), $co_instructor_ids ) ) {
+
+				// Load the newly created course as CourseModel
+				$courseModel = CourseModel::find( $course_id, true );
+				if ( ! $courseModel ) {
+					throw new Exception( __( 'Failed to load course model', 'learnpress' ) );
+				}
+			} else {
+				$courseModel = $data['course_model'];
+
+				$co_instructor_ids = $courseModel->get_meta_value_by_key( '_lp_co_teacher', [] );
+				if ( absint( $courseModel->post_author ) !== get_current_user_id() &&
+					! current_user_can( 'manage_options' ) &&
+					! in_array( get_current_user_id(), $co_instructor_ids ) ) {
 					throw new Exception( __( 'You are not allowed to update this course', 'learnpress' ) );
 				}
 
-				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
-				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
+				$courseModel->post_status = ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish';
 
-				$update = wp_update_post(
-					array(
-						'ID'           => $course_id,
-						'post_type'    => LP_COURSE_CPT,
-						'post_title'   => sanitize_text_field( $data['course_title'] ?? '' ),
-						'post_content' => wp_unslash( $data['course_description'] ?? '' ),
-						'post_status'  => ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish',
-						'tax_input'    => array(
-							'course_category' => $categories,
-							'course_tag'      => $tags,
-						),
-					)
-				);
-				if ( is_wp_error( $update ) ) {
-					throw new Exception( $update->get_error_message() );
+				if ( ! empty( $data['course_title'] ) ) {
+					$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
+					$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
+
+					$courseModel->post_title   = sanitize_text_field( $data['course_title'] );
+					$courseModel->post_content = wp_unslash( $data['course_description'] ?? '' );
+
+					wp_set_post_terms( $courseModel->ID, $categories, 'course_category' );
+					wp_set_post_terms( $courseModel->ID, $tags, 'course_tag' );
 				}
+
+				$course_id = $courseModel->ID;
 			}
 
 			if ( ! empty( $data['course_thumbnail_id'] ) ) {
@@ -186,20 +192,15 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			if ( $settings ) {
-				$update = wp_update_post(
-					array(
-						'ID'          => $course_id,
-						'post_type'   => LP_COURSE_CPT,
-						'post_status' => ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish',
-					)
-				);
+				$this->save_course_settings_to_model( $courseModel, $data );
+			}
 
-				$this->save_course_general( $course_id, $data );
-				$this->save_offline_course( $course_id, $data );
-				$this->save_price_course( $course_id, $data );
-				$this->save_extra_course( $course_id, $data );
-				$this->save_assessment_course( $course_id, $data );
-
+			if ( ! empty( $courseModel->meta_data ) ) {
+				$coursePostModel = new CoursePostModel( $courseModel );
+				foreach ( $courseModel->meta_data as $meta_key => $meta_value ) {
+					$coursePostModel->save_meta_value_by_key( $meta_key, $meta_value );
+				}
+				$coursePostModel->save();
 			}
 
 			$response->status              = 'success';
@@ -207,6 +208,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->status        = $data['course_status'];
 			$response->data->button_title  = $data['course_status'] === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 			$response->data->course_id_new = $insert ? $course_id : '';
+
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -215,332 +217,270 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 	}
 
-	public function save_course_general( $course_id, $data ) {
-		$duration_value   = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '';
-		$setting_duration = [
-			'id'      => '_lp_duration',
-			'type'    => 'duration',
-			'value'   => $duration_value,
-			'default' => '0 minute',
-			'extra'   => [
-				'default_time' => 'minute',
-			],
-		];
+	/**
+	 * Save all course settings to CourseModel
+	 *
+	 * @param CourseModel $courseModel
+	 * @param array $data
+	 */
+	protected function save_course_settings_to_model( CourseModel &$courseModel, array $data ) {
+		// General settings
+		$this->save_general_settings_to_model( $courseModel, $data );
 
-		$setting_block_expire_duration = [
-			'id'      => '_lp_block_expire_duration',
-			'type'    => 'checkbox',
-			'value'   => $data['_lp_block_expire_duration'] ?? '',
-			'default' => '',
-		];
+		// Offline course settings
+		$this->save_offline_settings_to_model( $courseModel, $data );
 
-		$setting_block_finished = [
-			'id'      => '_lp_block_finished',
-			'type'    => 'checkbox',
-			'value'   => $data['_lp_block_finished'] ?? '',
-			'default' => '',
-		];
+		// Price settings
+		$this->save_price_settings_to_model( $courseModel, $data );
 
-		$setting_allow_course_repurchase = [
-			'id'      => '_lp_allow_course_repurchase',
-			'type'    => 'checkbox',
-			'value'   => $data['_lp_allow_course_repurchase'] ?? '',
-			'default' => '',
-		];
+		// Extra info settings
+		$this->save_extra_settings_to_model( $courseModel, $data );
 
-		$setting_course_repurchase_option = [
-			'id'      => '_lp_course_repurchase_option',
-			'type'    => 'select',
-			'value'   => $data['_lp_course_repurchase_option'] ?? '',
-			'default' => '',
-		];
+		// Assessment settings
+		$this->save_assessment_settings_to_model( $courseModel, $data );
 
-		$setting_level = [
-			'id'      => '_lp_level',
-			'type'    => 'select',
-			'value'   => $data['_lp_level'] ?? '',
-			'default' => '',
-		];
-
-		$setting_students = [
-			'id'      => '_lp_students',
-			'type'    => 'text',
-			'value'   => $data['_lp_students'],
-			'default' => '',
-			'extra'   => [
-				'type_input'        => 'number',
-				'custom_attributes' => [
-					'min'  => '0',
-					'step' => '1',
-				],
-			],
-		];
-
-		$setting_max_students = [
-			'id'      => '_lp_max_students',
-			'type'    => 'text',
-			'value'   => $data['_lp_max_students'],
-			'default' => '',
-			'extra'   => [
-				'type_input'        => 'number',
-				'custom_attributes' => [
-					'min'  => '0',
-					'step' => '1',
-				],
-			],
-		];
-
-		$setting_retake_count = [
-			'id'      => '_lp_retake_count',
-			'type'    => 'text',
-			'value'   => $data['_lp_retake_count'],
-			'default' => '',
-			'extra'   => [
-				'type_input'        => 'number',
-				'custom_attributes' => [
-					'min'  => '0',
-					'step' => '1',
-				],
-			],
-		];
-
-		$setting_has_finish = [
-			'id'      => '_lp_has_finish',
-			'type'    => 'checkbox',
-			'value'   => $data['_lp_has_finish'] ?? '',
-			'default' => '',
-		];
-
-		$setting_featured = [
-			'id'      => '_lp_featured',
-			'type'    => 'checkbox',
-			'value'   => $data['_lp_featured'] ?? '',
-			'default' => '',
-		];
-
-		$setting_featured_review = [
-			'id'      => '_lp_featured_review',
-			'type'    => 'text',
-			'value'   => $data['_lp_featured_review'] ?? '',
-			'default' => '',
-		];
-
-		$setting_external_link_buy_course = [
-			'id'      => '_lp_external_link_buy_course',
-			'type'    => 'text',
-			'value'   => $data['_lp_external_link_buy_course'] ?? '',
-			'default' => '',
-		];
-
-		$this->update_setting( $course_id, $setting_duration );
-		$this->update_setting( $course_id, $setting_block_expire_duration );
-		$this->update_setting( $course_id, $setting_block_finished );
-		$this->update_setting( $course_id, $setting_allow_course_repurchase );
-		$this->update_setting( $course_id, $setting_course_repurchase_option );
-		$this->update_setting( $course_id, $setting_level );
-		$this->update_setting( $course_id, $setting_students );
-		$this->update_setting( $course_id, $setting_max_students );
-		$this->update_setting( $course_id, $setting_retake_count );
-		$this->update_setting( $course_id, $setting_has_finish );
-		$this->update_setting( $course_id, $setting_featured );
-		$this->update_setting( $course_id, $setting_featured_review );
-		$this->update_setting( $course_id, $setting_external_link_buy_course );
+		// Author settings
+		$this->save_author_settings_to_model( $courseModel, $data );
 	}
 
-	public function save_offline_course( $course_id, $data ) {
-		$setting_offline_course = [
-			'id'      => '_lp_offline_course',
-			'type'    => 'checkbox',
-			'value'   => $data['_lp_offline_course'] ?? '',
-			'default' => '',
+	/**
+	 * Save general settings to CourseModel
+	 *
+	 * @param CourseModel $courseModel
+	 * @param array $data
+	 */
+	protected function save_general_settings_to_model( CourseModel &$courseModel, array $data ) {
+		if ( isset( $data['_lp_duration'] ) ) {
+			$duration_value = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '0 minute';
+			$explode        = explode( ' ', $duration_value );
+			$number         = (float) $explode[0] < 0 ? 0 : absint( $explode[0] );
+			$unit           = $explode[1] ?? 'minute';
+
+			$courseModel->meta_data->{CoursePostModel::META_KEY_DURATION} = $number . ' ' . $unit;
+		}
+
+		$checkbox_fields = [
+			'_lp_block_expire_duration'   => CoursePostModel::META_KEY_BLOCK_EXPIRE_DURATION,
+			'_lp_block_finished'          => CoursePostModel::META_KEY_BLOCK_FINISH,
+			'_lp_allow_course_repurchase' => CoursePostModel::META_KEY_ALLOW_COURSE_REPURCHASE,
+			'_lp_has_finish'              => CoursePostModel::META_KEY_HAS_FINISH,
+			'_lp_featured'                => CoursePostModel::META_KEY_FEATURED,
 		];
 
-		$setting_offline_lesson_count = [
-			'id'      => '_lp_offline_lesson_count',
-			'type'    => 'text',
-			'value'   => $data['_lp_offline_lesson_count'],
-			'default' => '',
-			'extra'   => [
-				'type_input'        => 'number',
-				'custom_attributes' => [
-					'min'  => '0',
-					'step' => '1',
-				],
-			],
-		];
-
-		$setting_deliver_type = [
-			'id'      => '_lp_deliver_type',
-			'type'    => 'select',
-			'value'   => $data['_lp_deliver_type'] ?? '',
-			'default' => '',
-		];
-
-		$setting_address = [
-			'id'      => '_lp_address',
-			'type'    => 'text',
-			'value'   => $data['_lp_address'] ?? '',
-			'default' => '',
-		];
-
-		$this->update_setting( $course_id, $setting_offline_course );
-		$this->update_setting( $course_id, $setting_offline_lesson_count );
-		$this->update_setting( $course_id, $setting_deliver_type );
-		$this->update_setting( $course_id, $setting_address );
-	}
-
-	public function save_price_course( $course_id, $data ) {
-		$setting_regular_price = [
-			'id'      => '_lp_regular_price',
-			'type'    => 'text',
-			'value'   => $data['_lp_regular_price'] ?? '',
-			'default' => '',
-			'extra'   => [
-				'type_input'        => 'number',
-				'custom_attributes' => [
-					'min'  => '0',
-					'step' => '0.01',
-				],
-			],
-		];
-
-		$setting_sale_price = [
-			'id'      => '_lp_sale_price',
-			'type'    => 'text',
-			'value'   => $data['_lp_sale_price'] ?? '',
-			'default' => '',
-			'extra'   => [
-				'type_input'        => 'number',
-				'custom_attributes' => [
-					'min'  => '0',
-					'step' => '0.01',
-				],
-			],
-		];
-
-		$setting_sale_start = [
-			'id'      => '_lp_sale_start',
-			'type'    => 'date',
-			'value'   => $data['_lp_sale_start'] ?? '',
-			'default' => '',
-		];
-
-		$setting_sale_end = [
-			'id'      => '_lp_sale_end',
-			'type'    => 'date',
-			'value'   => $data['_lp_sale_end'] ?? '',
-			'default' => '',
-		];
-
-		$setting_no_required_enroll = [
-			'id'      => '_lp_no_required_enroll',
-			'type'    => 'checkbox',
-			'value'   => $data['_lp_no_required_enroll'] ?? '',
-			'default' => '',
-		];
-
-		$setting_price_prefix = [
-			'id'      => '_lp_price_prefix',
-			'type'    => 'text',
-			'value'   => $data['_lp_price_prefix'] ?? '',
-			'default' => '',
-		];
-
-		$setting_price_suffix = [
-			'id'      => '_lp_price_suffix',
-			'type'    => 'text',
-			'value'   => $data['_lp_price_suffix'] ?? '',
-			'default' => '',
-		];
-
-		$this->update_setting( $course_id, $setting_regular_price );
-		$this->update_setting( $course_id, $setting_sale_price );
-		$this->update_setting( $course_id, $setting_sale_start );
-		$this->update_setting( $course_id, $setting_sale_end );
-		$this->update_setting( $course_id, $setting_price_prefix );
-		$this->update_setting( $course_id, $setting_price_suffix );
-		$this->update_setting( $course_id, $setting_no_required_enroll );
-	}
-
-	public function save_extra_course( $course_id, $data ) {
-		$requirements         = ! empty( $data['_lp_requirements'] ) ? explode( ',', $data['_lp_requirements'] ) : [];
-		$setting_requirements = [
-			'id'      => '_lp_requirements',
-			'type'    => 'extra',
-			'value'   => $requirements ?? [],
-			'default' => [],
-			'extra'   => [],
-		];
-
-		$target_audiences         = ! empty( $data['_lp_target_audiences'] ) ? explode( ',', $data['_lp_target_audiences'] ) : [];
-		$setting_target_audiences = [
-			'id'      => '_lp_target_audiences',
-			'type'    => 'extra',
-			'value'   => $target_audiences ?? [],
-			'default' => [],
-			'extra'   => [],
-		];
-
-		$key_features         = ! empty( $data['_lp_key_features'] ) ? explode( ',', $data['_lp_key_features'] ) : [];
-		$setting_key_features = [
-			'id'      => '_lp_key_features',
-			'type'    => 'extra',
-			'value'   => $key_features ?? [],
-			'default' => [],
-			'extra'   => [],
-		];
-
-		$questions = ! empty( $data['_lp_faqs_question'] ) ? explode( ',', $data['_lp_faqs_question'] ) : [];
-		$answers   = ! empty( $data['_lp_faqs_answer'] ) ? explode( ',', $data['_lp_faqs_answer'] ) : [];
-		$faqs      = [];
-		if ( ! empty( $questions ) ) {
-			foreach ( $questions as $index => $question ) {
-				$clean_question = trim( $question );
-				if ( ! empty( $clean_question ) ) {
-					$answer_content = $answers[ $index ] ?? '';
-					$faqs[]         = [ $clean_question, $answer_content ];
-				}
+		foreach ( $checkbox_fields as $key => $meta_key ) {
+			if ( isset( $data[ $key ] ) ) {
+				$courseModel->meta_data->{$meta_key} = $data[ $key ] === 'yes' ? 'yes' : '';
 			}
 		}
-		$setting_faqs = [
-			'id'      => '_lp_faqs',
-			'type'    => 'extra_faq',
-			'value'   => $faqs ?? [],
-			'default' => [],
-			'extra'   => [],
+
+		$simple_fields = [
+			'_lp_course_repurchase_option' => CoursePostModel::META_KEY_COURSE_REPURCHASE_OPTION,
+			'_lp_level'                    => CoursePostModel::META_KEY_LEVEL,
+			'_lp_featured_review'          => CoursePostModel::META_KEY_FEATURED_REVIEW,
+			'_lp_external_link_buy_course' => CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE,
 		];
 
-		$this->update_setting( $course_id, $setting_requirements );
-		$this->update_setting( $course_id, $setting_target_audiences );
-		$this->update_setting( $course_id, $setting_key_features );
-		$this->update_setting( $course_id, $setting_faqs );
+		foreach ( $simple_fields as $key => $meta_key ) {
+			if ( isset( $data[ $key ] ) ) {
+				$courseModel->meta_data->{$meta_key} = sanitize_text_field( $data[ $key ] );
+			}
+		}
+
+		$numeric_fields = [
+			'_lp_students'     => CoursePostModel::META_KEY_STUDENTS,
+			'_lp_max_students' => CoursePostModel::META_KEY_MAX_STUDENTS,
+			'_lp_retake_count' => CoursePostModel::META_KEY_RETAKE_COUNT,
+		];
+
+		foreach ( $numeric_fields as $key => $meta_key ) {
+			if ( isset( $data[ $key ] ) ) {
+				$value                               = absint( $data[ $key ] );
+				$courseModel->meta_data->{$meta_key} = $value;
+			}
+		}
 	}
 
-	public function save_assessment_course( $course_id, $data ) {
-		$setting_course_result = [
-			'id'      => '_lp_course_result',
-			'type'    => 'radio',
-			'value'   => $data['_lp_course_result'] ?? [],
-			'default' => 'evaluate_lesson',
-			'extra'   => [],
-		];
+	/**
+	 * Save offline course settings to CourseModel
+	 *
+	 * @param CourseModel $courseModel
+	 * @param array $data
+	 */
+	protected function save_offline_settings_to_model( CourseModel &$courseModel, array $data ) {
+		if ( isset( $data['_lp_offline_course'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_OFFLINE_COURSE} = $data['_lp_offline_course'] === 'yes' ? 'yes' : '';
+		}
 
-		$setting_passing_condition = [
-			'id'      => '_lp_passing_condition',
-			'type'    => 'text',
-			'value'   => $data['_lp_passing_condition'] ?? '',
-			'default' => '',
-			'extra'   => [
-				'type_input'        => 'number',
-				'custom_attributes' => [
-					'min'  => '0',
-					'step' => '0.01',
-				],
-			],
-		];
+		if ( isset( $data['_lp_offline_lesson_count'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT} = absint( $data['_lp_offline_lesson_count'] );
+		}
 
-		$this->update_setting( $course_id, $setting_course_result );
-		$this->update_setting( $course_id, $setting_passing_condition );
+		if ( isset( $data['_lp_deliver_type'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_DELIVER} = sanitize_text_field( $data['_lp_deliver_type'] );
+		}
+
+		if ( isset( $data['_lp_address'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_ADDRESS} = sanitize_text_field( $data['_lp_address'] );
+		}
+	}
+
+	/**
+	 * Save price settings to CourseModel
+	 *
+	 * @param CourseModel $courseModel
+	 * @param array $data
+	 */
+	protected function save_price_settings_to_model( CourseModel &$courseModel, array $data ) {
+		// Regular price
+		if ( isset( $data['_lp_regular_price'] ) ) {
+			$regular_price = floatval( $data['_lp_regular_price'] );
+			if ( $regular_price < 0 ) {
+				$regular_price = '';
+			}
+			$courseModel->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE} = $regular_price;
+		}
+
+		// Sale price
+		if ( isset( $data['_lp_sale_price'] ) ) {
+			$sale_price    = $data['_lp_sale_price'] !== '' ? floatval( $data['_lp_sale_price'] ) : '';
+			$regular_price = $courseModel->get_regular_price();
+
+			if ( $sale_price !== '' && $sale_price > $regular_price ) {
+				$sale_price = '';
+			}
+			$courseModel->meta_data->{CoursePostModel::META_KEY_SALE_PRICE} = $sale_price;
+		}
+
+		// Sale dates
+		if ( isset( $data['_lp_sale_start'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_SALE_START} = sanitize_text_field( $data['_lp_sale_start'] );
+		}
+
+		if ( isset( $data['_lp_sale_end'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_SALE_END} = sanitize_text_field( $data['_lp_sale_end'] );
+		}
+
+		// Price prefix/suffix
+		if ( isset( $data['_lp_price_prefix'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_PRICE_PREFIX} = sanitize_text_field( $data['_lp_price_prefix'] );
+		}
+
+		if ( isset( $data['_lp_price_suffix'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_PRICE_SUFFIX} = sanitize_text_field( $data['_lp_price_suffix'] );
+		}
+
+		// No required enroll
+		if ( isset( $data['_lp_no_required_enroll'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_NO_REQUIRED_ENROLL} = $data['_lp_no_required_enroll'] === 'yes' ? 'yes' : '';
+		}
+
+		// Calculate and set the actual price
+		$courseModel->price_to_sort = $courseModel->get_price();
+
+		// Set is_sale flag
+		$has_sale             = $courseModel->has_sale_price();
+		$courseModel->is_sale = $has_sale ? 1 : 0;
+	}
+
+	/**
+	 * Save extra info settings to CourseModel
+	 *
+	 * @param CourseModel $courseModel
+	 * @param array $data
+	 */
+	protected function save_extra_settings_to_model( CourseModel &$courseModel, array $data ) {
+		// Requirements
+		if ( isset( $data['_lp_requirements'] ) ) {
+			$requirements = ! empty( $data['_lp_requirements'] ) ? explode( ',', $data['_lp_requirements'] ) : [];
+			$requirements = array_filter(
+				$requirements,
+				function ( $item ) {
+					return ! is_null( $item ) && $item !== '';
+				}
+			);
+			$courseModel->meta_data->{CoursePostModel::META_KEY_REQUIREMENTS} = array_map( 'sanitize_text_field', array_values( $requirements ) );
+		}
+
+		if ( isset( $data['_lp_target_audiences'] ) ) {
+			$target_audiences = ! empty( $data['_lp_target_audiences'] ) ? explode( ',', $data['_lp_target_audiences'] ) : [];
+			$target_audiences = array_filter(
+				$target_audiences,
+				function ( $item ) {
+					return ! is_null( $item ) && $item !== '';
+				}
+			);
+			$courseModel->meta_data->{CoursePostModel::META_KEY_TARGET} = array_map( 'sanitize_text_field', array_values( $target_audiences ) );
+		}
+
+		if ( isset( $data['_lp_key_features'] ) ) {
+			$key_features = ! empty( $data['_lp_key_features'] ) ? explode( ',', $data['_lp_key_features'] ) : [];
+			$key_features = array_filter(
+				$key_features,
+				function ( $item ) {
+					return ! is_null( $item ) && $item !== '';
+				}
+			);
+			$courseModel->meta_data->{CoursePostModel::META_KEY_FEATURES} = array_map( 'sanitize_text_field', array_values( $key_features ) );
+		}
+
+		// FAQs
+		if ( isset( $data['_lp_faqs_question'] ) ) {
+			$questions = ! empty( $data['_lp_faqs_question'] ) ? explode( ',', $data['_lp_faqs_question'] ) : [];
+			$answers   = ! empty( $data['_lp_faqs_answer'] ) ? explode( ',', $data['_lp_faqs_answer'] ) : [];
+			$faqs      = [];
+
+			if ( ! empty( $questions ) ) {
+				foreach ( $questions as $index => $question ) {
+					$clean_question = trim( $question );
+					if ( ! empty( $clean_question ) ) {
+						$answer_content = $answers[ $index ] ?? '';
+						$faqs[]         = [ sanitize_text_field( $clean_question ), wp_kses_post( $answer_content ) ];
+					}
+				}
+			}
+			$courseModel->meta_data->{CoursePostModel::META_KEY_FAQS} = $faqs;
+		}
+	}
+
+	/**
+	 * Save assessment settings to CourseModel
+	 *
+	 * @param CourseModel $courseModel
+	 * @param array $data
+	 */
+	protected function save_assessment_settings_to_model( CourseModel &$courseModel, array $data ) {
+		// Course result evaluation type
+		if ( isset( $data['_lp_course_result'] ) ) {
+			$courseModel->meta_data->{CoursePostModel::META_KEY_EVALUATION_TYPE} = sanitize_text_field( $data['_lp_course_result'] );
+		}
+
+		// Passing condition
+		if ( isset( $data['_lp_passing_condition'] ) ) {
+			$passing_condition = floatval( $data['_lp_passing_condition'] );
+			if ( $passing_condition < 0 ) {
+				$passing_condition = 0;
+			}
+			$courseModel->meta_data->{CoursePostModel::META_KEY_PASSING_CONDITION} = $passing_condition;
+		}
+	}
+
+	/**
+	 * Save author settings to CourseModel
+	 *
+	 * @param CourseModel $courseModel
+	 * @param array $data
+	 */
+	protected function save_author_settings_to_model( CourseModel &$courseModel, array $data ) {
+		if ( ! isset( $data['_post_author'] ) ) {
+			return;
+		}
+
+		$new_author_id = absint( $data['_post_author'] );
+		if ( $new_author_id <= 0 || $new_author_id === (int) $courseModel->post_author ) {
+			return;
+		}
+		$courseModel->meta_data->_post_author = $new_author_id;
+		$courseModel->post_author             = $new_author_id;
 	}
 
 	public function update_setting( $id, $settings ) {
@@ -774,17 +714,42 @@ class CourseBuilderAjax extends AbstractAjax {
 
 		try {
 			$data = self::check_valid_course();
-			$name = sanitize_text_field( $data['name'] ?? '' );
-			$term = wp_insert_term( $name, 'course_category', array() );
+
+			// 1. Lấy dữ liệu an toàn
+			$name   = sanitize_text_field( $data['name'] ?? '' );
+			$parent = isset( $data['parent'] ) ? (int) $data['parent'] : 0; // Lấy ID cha
+
+			if ( $parent < 0 ) {
+				$parent = 0; // Fix trường hợp value="-1" của select mặc định WP
+			}
+
+			// 2. Insert Term với Parent
+			$term = wp_insert_term( $name, 'course_category', array( 'parent' => $parent ) );
 
 			if ( is_wp_error( $term ) ) {
 				throw new Exception( $term->get_error_message() );
 			}
 
-			$html                 = BuilderEditCourseTemplate::instance()->input_checkbox_category_item( $term['term_id'], $name, false );
-			$response->status     = 'success';
-			$response->data->html = $html;
-			$response->message    = __( 'Insert category successfully!', 'learnpress' );
+			$term_id = $term['term_id'];
+
+			// 3. Tạo HTML chuẩn theo cấu trúc WordPress Admin Checklist
+			// ID checkbox phải là: in-course_category-{ID} để JS WP nhận diện được
+			$html = sprintf(
+				'<li id="in-course_category-%1$s" class="popular-category">
+                    <label class="selectit">
+                        <input value="%1$s" type="checkbox" name="tax_input[course_category][]" id="in-course_category-%1$s" checked="checked"> 
+                        %2$s
+                    </label>
+                </li>',
+				esc_attr( $term_id ),
+				esc_html( $name )
+			);
+
+			$response->status        = 'success';
+			$response->data->html    = $html;
+			$response->data->term_id = $term_id;
+			$response->data->parent  = $parent;
+			$response->message       = __( 'Insert category successfully!', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -886,7 +851,9 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $lesson_id ) ) {
 					throw new Exception( $lesson_id->get_error_message() );
 				}
-			} elseif ( ! empty( $title ) ) {
+
+				$lesson_model = LessonPostModel::find( $lesson_id, true );
+			} else {
 				$lesson_model = $data['lesson_model'];
 
 				if ( ! $lesson_model ) {
@@ -904,15 +871,18 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				$update_arg = array(
-					'ID'           => $lesson_id,
-					'post_type'    => LP_LESSON_CPT,
-					'post_title'   => sanitize_text_field( $title ?? '' ),
-					'post_content' => $description ?? '',
-					'post_status'  => 'publish',
+					'ID'          => $lesson_id,
+					'post_type'   => LP_LESSON_CPT,
+					'post_status' => 'publish',
 				);
 
 				if ( defined( 'ELEMENTOR_VERSION' ) ) {
 					\Elementor\Plugin::$instance->documents->get( $lesson_id )->set_is_built_with_elementor( ! empty( $is_elementor ) );
+				}
+
+				if ( ! empty( $title ) ) {
+					$update_arg['post_title']   = sanitize_text_field( $title ?? '' );
+					$update_arg['post_content'] = $description ?? '';
 				}
 
 				$update = wp_update_post( $update_arg );
@@ -923,26 +893,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			if ( $settings ) {
-				$duration_value   = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '';
-				$setting_duration = [
-					'id'      => '_lp_duration',
-					'type'    => 'duration',
-					'value'   => $duration_value,
-					'default' => '0 minute',
-					'extra'   => [
-						'default_time' => 'minute',
-					],
-				];
-
-				$setting_preview = [
-					'id'      => '_lp_preview',
-					'type'    => 'checkbox',
-					'value'   => $data['_lp_preview'] ?? '',
-					'default' => '',
-				];
-
-				$this->update_setting( $lesson_id, $setting_duration );
-				$this->update_setting( $lesson_id, $setting_preview );
+				$this->save_lesson_settings_to_model( $lesson_model, $data );
 			}
 
 			do_action( 'learn-press/course-builder/update-lesson', $data );
@@ -1020,6 +971,25 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 	}
 
+	/**
+	 * Save Lesson Settings
+	 */
+	protected function save_lesson_settings_to_model( LessonPostModel $lessonModel, array $data ) {
+		if ( isset( $data['_lp_duration'] ) ) {
+			$duration = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '0 minute';
+			$explode  = explode( ' ', $duration );
+			$number   = (float) $explode[0] < 0 ? 0 : absint( $explode[0] );
+			$unit     = $explode[1] ?? 'minute';
+
+			$lessonModel->save_meta_value_by_key( '_lp_duration', $number . ' ' . $unit );
+		}
+
+		if ( isset( $data['_lp_preview'] ) ) {
+			$enable = $data['_lp_preview'] === 'yes' ? 'yes' : '';
+			$lessonModel->set_preview( $enable );
+		}
+	}
+
 	public function duplicate_quiz() {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
@@ -1084,7 +1054,9 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $quiz_id ) ) {
 					throw new Exception( $quiz_id->get_error_message() );
 				}
-			} elseif ( ! empty( $title ) ) {
+
+				$quiz_model = QuizPostModel::find( $quiz_id, true );
+			} else {
 				$quiz_model = $data['quiz_model'];
 
 				if ( ! $quiz_model ) {
@@ -1102,12 +1074,15 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				$update_arg = array(
-					'ID'           => $quiz_id,
-					'post_type'    => LP_QUIZ_CPT,
-					'post_title'   => sanitize_text_field( $title ?? '' ),
-					'post_content' => $description ?? '',
-					'post_status'  => 'publish',
+					'ID'          => $quiz_id,
+					'post_type'   => LP_QUIZ_CPT,
+					'post_status' => 'publish',
 				);
+
+				if ( ! empty( $title ) ) {
+					$update_arg['post_title']   = sanitize_text_field( $title ?? '' );
+					$update_arg['post_content'] = $description ?? '';
+				}
 
 				if ( defined( 'ELEMENTOR_VERSION' ) ) {
 					\Elementor\Plugin::$instance->documents->get( $quiz_id )->set_is_built_with_elementor( ! empty( $is_elementor ) );
@@ -1121,105 +1096,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			if ( $settings ) {
-				$duration_value   = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '';
-				$setting_duration = [
-					'id'      => '_lp_duration',
-					'type'    => 'duration',
-					'value'   => $duration_value,
-					'default' => '0 minute',
-					'extra'   => [
-						'default_time' => 'minute',
-					],
-				];
-
-				$setting_passing_grade = [
-					'id'      => '_lp_passing_grade',
-					'type'    => 'text',
-					'value'   => $data['_lp_passing_grade'],
-					'default' => '80',
-					'extra'   => [
-						'type_input'        => 'number',
-						'custom_attributes' => [
-							'min'  => '0',
-							'max'  => '100',
-							'step' => '1',
-						],
-					],
-				];
-
-				$setting_instant_check = [
-					'id'      => '_lp_instant_check',
-					'type'    => 'checkbox',
-					'value'   => $data['_lp_instant_check'] ?? '',
-					'default' => '',
-				];
-
-				$setting_negative_marking = [
-					'id'      => '_lp_negative_marking',
-					'type'    => 'checkbox',
-					'value'   => $data['_lp_negative_marking'] ?? '',
-					'default' => '',
-				];
-
-				$setting_minus_skip_questions = [
-					'id'      => '_lp_minus_skip_questions',
-					'type'    => 'checkbox',
-					'value'   => $data['_lp_minus_skip_questions'] ?? '',
-					'default' => '',
-				];
-
-				$setting_retake_count = [
-					'id'      => '_lp_retake_count',
-					'type'    => 'text',
-					'value'   => $data['_lp_retake_count'],
-					'default' => '',
-					'extra'   => [
-						'type_input'        => 'number',
-						'custom_attributes' => [
-							'min'  => '-1',
-							'step' => '1',
-						],
-					],
-				];
-
-				$setting_pagination = [
-					'id'      => '_lp_pagination',
-					'type'    => 'text',
-					'value'   => $data['_lp_pagination'],
-					'default' => '1',
-					'extra'   => [
-						'type_input'        => 'number',
-						'custom_attributes' => [
-							'min'  => '0',
-							'max'  => '100',
-							'step' => '1',
-						],
-					],
-				];
-
-				$setting_review = [
-					'id'      => '_lp_review',
-					'type'    => 'checkbox',
-					'value'   => $data['_lp_review'] ?? '',
-					'default' => '',
-				];
-
-				$setting_show_correct_review = [
-					'id'      => '_lp_show_correct_review',
-					'type'    => 'checkbox',
-					'value'   => $data['_lp_show_correct_review'] ?? '',
-					'default' => '',
-				];
-
-				$this->update_setting( $quiz_id, $setting_duration );
-				$this->update_setting( $quiz_id, $setting_passing_grade );
-				$this->update_setting( $quiz_id, $setting_instant_check );
-				$this->update_setting( $quiz_id, $setting_negative_marking );
-				$this->update_setting( $quiz_id, $setting_minus_skip_questions );
-				$this->update_setting( $quiz_id, $setting_retake_count );
-				$this->update_setting( $quiz_id, $setting_pagination );
-				$this->update_setting( $quiz_id, $setting_review );
-				$this->update_setting( $quiz_id, $setting_show_correct_review );
+				$this->save_quiz_settings_to_model( $quiz_model, $data );
 			}
 
 			do_action( 'learn-press/course-builder/update-quiz', $data );
@@ -1234,6 +1111,46 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
+		}
+	}
+
+	/**
+	 * Save Quiz Settings
+	 */
+	protected function save_quiz_settings_to_model( QuizPostModel $quizModel, array $data ) {
+		if ( isset( $data['_lp_duration'] ) ) {
+			$duration = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '0 minute';
+			$explode  = explode( ' ', $duration );
+			$number   = (float) $explode[0] < 0 ? 0 : absint( $explode[0] );
+			$unit     = $explode[1] ?? 'minute';
+			$quizModel->save_meta_value_by_key( '_lp_duration', $number . ' ' . $unit );
+		}
+
+		$checkbox_keys = [
+			'_lp_instant_check',
+			'_lp_negative_marking',
+			'_lp_minus_skip_questions',
+			'_lp_review',
+			'_lp_show_correct_review',
+		];
+
+		foreach ( $checkbox_keys as $key ) {
+			if ( isset( $data[ $key ] ) ) {
+				$value = ( isset( $data[ $key ] ) && $data[ $key ] === 'yes' ) ? 'yes' : 'no';
+				$quizModel->save_meta_value_by_key( $key, $value );
+			}
+		}
+
+		$numeric_keys = [
+			'_lp_passing_grade',
+			'_lp_retake_count',
+			'_lp_pagination',
+		];
+
+		foreach ( $numeric_keys as $key ) {
+			if ( isset( $data[ $key ] ) ) {
+				$quizModel->save_meta_value_by_key( $key, intval( $data[ $key ] ) );
+			}
 		}
 	}
 
@@ -1344,7 +1261,6 @@ class CourseBuilderAjax extends AbstractAjax {
 			$question_id  = $data['question_id'] ?? 0;
 			$title        = $data['question_title'] ?? '';
 			$description  = $data['question_description'] ?? '';
-			$settings     = $data['question_settings'] ?? false;
 			$is_elementor = $data['is_elementor'] ?? false;
 			$insert       = $data['insert'];
 
@@ -1362,7 +1278,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $question_id ) ) {
 					throw new Exception( $question_id->get_error_message() );
 				}
-			} elseif ( ! empty( $title ) ) {
+			} else {
 				$question_model = $data['question_model'];
 
 				if ( ! $question_model ) {
@@ -1380,15 +1296,18 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				$update_arg = array(
-					'ID'           => $question_id,
-					'post_type'    => LP_QUESTION_CPT,
-					'post_title'   => sanitize_text_field( $title ?? '' ),
-					'post_content' => $description ?? '',
-					'post_status'  => 'publish',
+					'ID'          => $question_id,
+					'post_type'   => LP_QUESTION_CPT,
+					'post_status' => 'publish',
 				);
 
 				if ( defined( 'ELEMENTOR_VERSION' ) ) {
 					\Elementor\Plugin::$instance->documents->get( $question_id )->set_is_built_with_elementor( ! empty( $is_elementor ) );
+				}
+
+				if ( ! empty( $title ) ) {
+					$update_arg['post_title']   = sanitize_text_field( $title ?? '' );
+					$update_arg['post_content'] = $description ?? '';
 				}
 
 				$update = wp_update_post( $update_arg );
@@ -1396,12 +1315,6 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $update ) ) {
 					throw new Exception( $update->get_error_message() );
 				}
-			}
-
-			if ( $settings ) {
-				update_post_meta( $question_id, '_lp_explanation', wp_kses_post( $data['_lp_explanation'] ) );
-				update_post_meta( $question_id, '_lp_hint', wp_kses_post( $data['_lp_hint'] ) );
-				update_post_meta( $question_id, '_lp_mark', floatval( $data['_lp_mark'] ) );
 			}
 
 			do_action( 'learn-press/course-builder/update-question', $data );

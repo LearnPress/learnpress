@@ -142,44 +142,50 @@ class BuilderEditCourseTemplate {
 	}
 
 	public function edit_categories( $course_model ) {
-		$course_cat  = ! empty( $course_model ) ? $course_model->get_categories() : [];
-		$categories  = ListCourseCategories::get_all_categories_id_name(
-			[
-				'hide_empty' => false,
-			]
-		);
-		$btn_add_cat = sprintf( '<button class="cb-course-edit-category__btn-add-new">%s</button>', __( 'Add New Category', 'learnpress' ) );
-		$btn_cancel  = sprintf( '<button class="cb-course-edit-category__btn-cancel"  style="display:none;">%s</button>', __( 'Cancel', 'learnpress' ) );
-
-		$selected_cat_ids = array_map(
-			function ( $term ) {
-				return (int) $term->term_id;
-			},
-			$course_cat
-		);
-
-		$html_checkbox = '';
-
-		if ( ! empty( $categories ) ) {
-			foreach ( $categories as $category_id => $category_name ) {
-				$is_checked     = in_array( (int) $category_id, $selected_cat_ids, true );
-				$html_checkbox .= $this->input_checkbox_category_item( $category_id, $category_name, $is_checked );
-			}
+		if ( ! function_exists( 'post_categories_meta_box' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/meta-boxes.php';
+		}
+		if ( ! function_exists( 'wp_popular_terms_checklist' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/template.php';
 		}
 
+		$post_id = ! empty( $course_model ) ? $course_model->get_id() : get_the_ID();
+		$post    = get_post( $post_id );
+
+		$force_checked_ontop_false = function ( $args ) {
+			if ( isset( $args['taxonomy'] ) && 'course_category' === $args['taxonomy'] ) {
+				$args['checked_ontop'] = false;
+			}
+			return $args;
+		};
+
+		ob_start();
+
+		add_filter( 'wp_terms_checklist_args', $force_checked_ontop_false );
+
+		if ( function_exists( 'post_categories_meta_box' ) ) {
+			\post_categories_meta_box(
+				$post,
+				array(
+					'id'       => 'course_categorydiv',
+					'title'    => __( 'Course Categories', 'learnpress' ),
+					'callback' => 'post_categories_meta_box',
+					'args'     => array(
+						'taxonomy'      => 'course_category',
+						'checked_ontop' => false,
+					),
+				)
+			);
+		}
+
+		remove_filter( 'wp_terms_checklist_args', $force_checked_ontop_false );
+		$html_meta_box = ob_get_clean();
+
 		$edit = [
-			'wrapper'                       => '<div class="cb-course-edit-categories__wrapper">',
-			'label'                         => sprintf( '<label for="title" class="cb-course-edit-categories__label">%s</label>', __( 'Course Categories', 'learnpress' ) ),
-			'wrapper_checkbox'              => '<div class="cb-course-edit-categories__checkbox-wrapper">',
-			'checkbox'                      => $html_checkbox,
-			'wrapper_checkbox_end'          => '</div>',
-			'btn_add_new'                   => $btn_add_cat,
-			'btn_cancel'                    => $btn_cancel,
-			'form_add_category_wrapper'     => '<div class="cb-course-edit-terms__form-add-category" style="display:none;">',
-			'input'                         => '<input type="text" class="cb-course-edit-category__input" placeholder="' . esc_attr__( 'Enter Category Name', 'learnpress' ) . '"/>',
-			'button'                        => '<button type="button" class="cb-course-edit-category__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button>',
-			'form_add_category_wrapper_end' => '</div>',
-			'wrapper_end'                   => '</div>',
+			'wrapper'     => '<div class="cb-course-edit-categories__wrapper">',
+			'label'       => sprintf( '<label class="cb-course-edit-categories__label">%s</label>', __( 'Course Categories', 'learnpress' ) ),
+			'content'     => $html_meta_box,
+			'wrapper_end' => '</div>',
 		];
 
 		return Template::combine_components( $edit );
@@ -340,6 +346,7 @@ class BuilderEditCourseTemplate {
 
 	public function section_settings() {
 		wp_enqueue_script( 'lp-cb-edit-curriculum' );
+		wp_enqueue_script( 'lp-tom-select' );
 		wp_enqueue_style( 'lp-cb-edit-curriculum' );
 		wp_enqueue_script( 'lp-cb-learnpress' );
 

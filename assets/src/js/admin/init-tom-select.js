@@ -10,7 +10,14 @@ import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
  * @param     customOptions
  * @param {*} callBack
  */
-const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOptions = {}, callBack ) => {
+const handleResponse = (
+	response,
+	tomSelectEl,
+	dataStruct,
+	fetchAPI,
+	customOptions = {},
+	callBack
+) => {
 	if ( ! response || ! tomSelectEl || ! dataStruct || ! fetchAPI || ! callBack ) {
 		return;
 	}
@@ -45,10 +52,12 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 		items: defaultIds,
 		render: {
 			item( data, escape ) {
-				return `` +
+				return (
+					`` +
 					`<li data-id="${ data.value }">
 						<div class="item">${ data.text }</div>
-					</li>`;
+					</li>`
+				);
 			},
 		},
 		onChange: ( data ) => {
@@ -86,7 +95,10 @@ const initTomSelectWithOption = ( tomSelectEl, settingTomSelect = {} ) => {
 		return null;
 	}
 
-	tomSelectEl.tomSelectInstance = AdminUtilsFunctions.buildTomSelect( tomSelectEl, settingTomSelect );
+	tomSelectEl.tomSelectInstance = AdminUtilsFunctions.buildTomSelect(
+		tomSelectEl,
+		settingTomSelect
+	);
 };
 
 // Init Tom-select
@@ -126,7 +138,9 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 	const formParent = getParentElByTagName( 'form', tomSelectEl );
 
 	if ( formParent ) {
-		const elInput = formParent.querySelector( 'input[name="' + tomSelectEl.getAttribute( 'name' ) + '"]' );
+		const elInput = formParent.querySelector(
+			'input[name="' + tomSelectEl.getAttribute( 'name' ) + '"]'
+		);
 		if ( elInput ) {
 			elInput.remove();
 		}
@@ -152,7 +166,7 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 		const params = {
 			headers: {
 				'Content-Type': 'application/json',
-				'X-WP-Nonce': lpDataAdmin.nonce,
+				'X-WP-Nonce': lpData.nonce,
 			},
 			method: 'POST',
 			body: JSON.stringify( dataSend ),
@@ -162,7 +176,14 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 
 	const callBackApi = {
 		success: ( response ) => {
-			handleResponse( response, tomSelectEl, dataStruct, fetchFunction, settingTomSelect, callBackApi );
+			handleResponse(
+				response,
+				tomSelectEl,
+				dataStruct,
+				fetchFunction,
+				settingTomSelect,
+				callBackApi
+			);
 		},
 	};
 
@@ -184,7 +205,7 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 
 // Init Tom-select user in admin
 const searchUserOnListPost = () => {
-	if ( lpDataAdmin.show_search_author_field === '0' ) {
+	if ( lpData.show_search_author_field === '0' ) {
 		return;
 	}
 
@@ -195,7 +216,7 @@ const searchUserOnListPost = () => {
 
 	let elSearchPost = elPostFilter.querySelector( '.search-box' );
 	if ( ! elSearchPost ) {
-		elPostFilter.insertAdjacentHTML( 'afterbegin', lpDataAdmin.show_search_author_field );
+		elPostFilter.insertAdjacentHTML( 'afterbegin', lpData.show_search_author_field );
 		elSearchPost = elPostFilter.querySelector( '.search-box' );
 	}
 
@@ -210,10 +231,11 @@ const searchUserOnListPost = () => {
 
 	const createSelectUserHtml = () => {
 		let defaultId = '';
-		const authorIdFilter = lpDataAdmin.urlParams.author;
+		const authorIdFilter = lpData.urlParams.author;
 		if ( authorIdFilter ) {
 			defaultId = JSON.stringify( authorIdFilter );
 		}
+
 		const dataStruct = {
 			urlApi: Api.admin.apiSearchUsers,
 			dataType: 'users',
@@ -233,7 +255,8 @@ const searchUserOnListPost = () => {
 
 		const dataStructJson = JSON.stringify( dataStruct );
 
-		const htmlSelectUser = `` +
+		const htmlSelectUser =
+			`` +
 			`<select data-struct='${ dataStructJson }' style='display:none;' data-saved='${ defaultId }'
 					id="author" name="author" class="select lp-tom-select">` +
 			`</select>`;
@@ -266,8 +289,4 @@ const initElsTomSelect = () => {
 	}
 };
 
-export {
-	initTomSelect,
-	searchUserOnListPost,
-	initElsTomSelect,
-};
+export { initTomSelect, searchUserOnListPost, initElsTomSelect };
