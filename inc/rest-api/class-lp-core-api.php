@@ -27,7 +27,6 @@ class LP_Core_API extends LP_Abstract_API {
 			'class-lp-rest-courses-controller.php',
 			'class-lp-rest-lazy-load-controller.php',
 			'class-lp-rest-profile-controller.php',
-			'class-lp-rest-orders-controller.php',
 			'class-lp-rest-widgets-controller.php',
 			'class-lp-rest-addon-controller.php',
 			'class-lp-rest-material-controller.php',
