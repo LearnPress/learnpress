@@ -491,7 +491,7 @@ class AdminEditWithAITemplate {
 					<input type="text" name="length" value="1000" />
 					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Description Length (characters)', 'learnpress' ),
+				esc_html__( 'Description Length (words)', 'learnpress' ),
 				esc_html__( 'Set the maximum number of characters for the generated description.', 'learnpress' )
 			),
 			'step_close'     => '</div>',

@@ -45,7 +45,7 @@ return apply_filters(
 					'default' => '',
 					'type'    => 'textarea',
 					'desc'    => sprintf(
-						/* translators: 1. profile url */
+					/* translators: 1. profile url */
 						__(
 							'Get your Open AI secret key from <a href="%1$s" target="_blank">here</a>.
                             Read more guide from <a href="%2$s" target="_blank">here</a>.',
@@ -61,7 +61,10 @@ return apply_filters(
 					'default' => 'chatgpt-4o-latest',
 					'type'    => 'select',
 					'options' => array(
+						'gpt-5.2'                => esc_html__( 'ChatGPT 5.2', 'learnpress' ),
 						'gpt-5'                  => esc_html__( 'ChatGPT 5', 'learnpress' ),
+						'gpt-5-mini'             => esc_html__( 'ChatGPT 5 mini', 'learnpress' ),
+						'gpt-5-nano'             => esc_html__( 'ChatGPT 5 nano', 'learnpress' ),
 						'gpt-4.1'                => esc_html__( 'ChatGPT 4.1', 'learnpress' ),
 						'chatgpt-4o-latest'      => esc_html__( 'ChatGPT 4o-Latest', 'learnpress' ),
 						'gpt-4o'                 => esc_html__( 'GPT 4o', 'learnpress' ),
@@ -139,8 +142,9 @@ return apply_filters(
 					'id'                => 'open_ai_max_token',
 					'default'           => 4000,
 					'type'              => 'number',
+					'desc'              => esc_html__( 'Set 0 for no limit.', 'learnpress' ),
 					'custom_attributes' => array(
-						'min'  => 1,
+						'min'  => 0,
 						'step' => 1,
 					),
 				],

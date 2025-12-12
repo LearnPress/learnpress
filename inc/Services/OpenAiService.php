@@ -55,7 +55,7 @@ class OpenAiService {
 		$this->frequency_penalty = LP_Settings::get_option( 'open_ai_frequency_penalty_level', 0.0 );
 		$this->presence_penalty  = LP_Settings::get_option( 'open_ai_presence_penalty_level', 0.0 );
 		$this->creativity_level  = LP_Settings::get_option( 'open_ai_creativity_level', 1.0 );
-		$this->max_token         = LP_Settings::get_option( 'open_ai_max_token', 200 );
+		$this->max_token         = LP_Settings::get_option( 'open_ai_max_token', 0 );
 	}
 
 	/**
@@ -160,14 +160,15 @@ class OpenAiService {
 	 * @throws Exception
 	 */
 	public function handle_params_for_send_chat_completion( $params ): array {
-		return [
-			'model'             => $this->text_model_type,
-			'frequency_penalty' => $this->frequency_penalty,
-			'presence_penalty'  => $this->presence_penalty,
-			'temperature'       => $this->creativity_level,
-			'response_format'   => [ 'type' => 'json_object' ],
-			'n'                 => $args['outputs'] ?? 1,
-			'messages'          => [
+		$params = [
+			'model'                 => $this->text_model_type,
+			'frequency_penalty'     => $this->frequency_penalty,
+			'presence_penalty'      => $this->presence_penalty,
+			'temperature'           => $this->creativity_level,
+			'max_completion_tokens' => $this->max_token,
+			'response_format'       => [ 'type' => 'json_object' ],
+			'n'                     => $args['outputs'] ?? 1,
+			'messages'              => [
 				[
 					'role'    => 'system',
 					'content' => 'You are an AI assistant specialized in education and course design.',
@@ -178,6 +179,12 @@ class OpenAiService {
 				],
 			],
 		];
+
+		if ( $this->max_token === 0 ) {
+			unset( $params['max_completion_tokens'] );
+		}
+
+		return $params;
 	}
 
 	/**
@@ -188,13 +195,19 @@ class OpenAiService {
 	 * @throws Exception
 	 */
 	public function handle_params_for_send_completion_legacy( $params ): array {
-		return [
+		$params = [
 			'model'       => $this->text_model_type,
 			'temperature' => $this->creativity_level,
 			'max_tokens'  => $this->max_token,
 			'n'           => $args['outputs'] ?? 1,
 			'prompt'      => $params['prompt'] ?? '',
 		];
+
+		if ( $this->max_token === 0 ) {
+			unset( $params['max_tokens'] );
+		}
+
+		return $params;
 	}
 
 	/**
@@ -205,12 +218,18 @@ class OpenAiService {
 	 * @throws Exception
 	 */
 	public function handle_params_for_send_responses( $params ): array {
-		return [
+		$params = [
 			'model'             => $this->text_model_type,
 			//'temperature'       => $this->creativity_level,
 			'max_output_tokens' => $this->max_token,
 			'input'             => $params['prompt'] ?? '',
 		];
+
+		if ( $this->max_token === 0 ) {
+			unset( $params['max_output_tokens'] );
+		}
+
+		return $params;
 	}
 
 	/**

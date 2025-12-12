@@ -89,6 +89,7 @@ return <<<XML
 
         <structure_requirements>
             - The course MUST have a compelling "course_title" and a concise "course_description".
+            - The "course_description" must be between 200 and 1000 words, content have html like list, heading h3, paragraph to make content easy to read and eye-catching, and include one image with tag <image> on the content.
             - The course MUST be divided into exactly **$sections** section(s).
             - "section_title" values MUST be concise, relevant, and no longer than **$section_title_length** characters.
             - "section_description" values MUST be concise, relevant, and no longer than **$section_desc_length** characters.
