@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.3.1
+Stable tag: 4.3.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -266,11 +266,12 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
-= 4.3.2 (2025-12-xx) =
+= 4.3.2 (2025-12-12) =
 ~ Fixed: security.
 ~ Fixed: break style TomSelect for case choose courses on product of Woo.
-~ Tweak: edit course with openAI.
+~ Tweak: edit course with openAI, added more models: gpt-5.2, gpt-5-mini, gpt-5-nano.
 ~ Tweak: query list orders.
+~ Tweak: question tinymce editor sometime error save.
 ~ Tweak: display list items of order by pagination.
 ~ Tweak: material.
 ~ Tweak: adjust lesson completion logic, redirect to the next incomplete item,
