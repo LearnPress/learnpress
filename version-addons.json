@@ -381,8 +381,8 @@
   "learnpress-upsell": {
     "name": "Upsell Add-on for LearnPress",
     "basename": "learnpress-upsell/learnpress-upsell.php",
-    "version": "4.0.7",
-    "require_lp": "4.2.9",
+    "version": "4.0.8",
+    "require_lp": "4.3.0",
     "description": "Increase revenue by offering premium packages, bonus coupons, and exclusive features to elevate the learning experience for your students.",
     "image": "https://thimpress.com/wp-content/uploads/2023/03/Upsell-addon.jpg",
     "link": "https://thimpress.com/product/upsell-add-on-for-learnpress/",
@@ -441,8 +441,8 @@
   "learnpress-woo-payment": {
     "name": "WooCommerce Add-On for LearnPress",
     "basename": "learnpress-woo-payment/learnpress-woo-payment.php",
-    "version": "4.2.0",
-    "require_lp": "4.2.8",
+    "version": "4.2.1",
+    "require_lp": "4.3.0",
     "description": "Easy to connect WooCommerce to your LMS website, easy to sell your courses online with no obstacle.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-woocommerce.png",
     "link": "https://thimpress.com/product/woocommerce-add-on-for-learnpress",
