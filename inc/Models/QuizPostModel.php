@@ -357,6 +357,7 @@ class QuizPostModel extends PostModel {
 	public function update_question_position( array $data ) {
 		$this->check_capabilities_update_item_course();
 
+		$question_ids = $data['question_ids'] ?? [];
 		if ( empty( $question_ids ) ) {
 			throw new Exception( __( 'Question IDs are required', 'learnpress' ) );
 		}
