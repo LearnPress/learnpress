@@ -51,7 +51,6 @@ class LP_Core_API extends LP_Abstract_API {
 			'LP_REST_Courses_Controller',
 			'LP_REST_Lazy_Load_Controller',
 			'LP_REST_Profile_Controller',
-			'LP_REST_Orders_Controller',
 			'LP_REST_Widgets_Controller',
 			'LP_REST_Addon_Controller',
 			'LP_Rest_Material_Controller',

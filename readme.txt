@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.3.2
+Stable tag: 4.3.2.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -265,6 +265,9 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.3.2.1 (2025-12-13) =
+~ Fixed: error Class "LP_REST_Orders_Controller" not found, deleted file but missing delete declare REST route.
 
 = 4.3.2 (2025-12-12) =
 ~ Fixed: security.
