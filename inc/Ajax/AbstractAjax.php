@@ -21,7 +21,7 @@ abstract class AbstractAjax {
 			$nonce  = $_REQUEST['nonce'] ?? '';
 			$class  = new static();
 
-			// For case cache html, so cache nonce is not required.
+			// For case cache HTML, so cache nonce is not required.
 			$class_no_nonce = [
 				LoadContentViaAjax::class,
 			];
@@ -33,7 +33,7 @@ abstract class AbstractAjax {
 			}
 
 			// Check refer: must same domain (case get nonce via curl)
-			$referer = wp_get_referer();
+			$referer = wp_get_raw_referer();
 			if ( empty( $referer ) || strpos( $referer, home_url() ) !== 0 ) {
 				wp_die( 'Invalid domain request!', 400 );
 			}
