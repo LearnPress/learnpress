@@ -411,13 +411,6 @@ export class GenerateWithOpenai {
 		const btnPrev = form.querySelector( '.lp-btn-step[data-action=prev]' );
 		lpUtils.lpShowHideEl( btnPrev, 0 );
 
-		setTimeout( () => {
-			lpToastify.show(
-				'Generating course data. This may take a few moments...',
-				'info'
-			);
-		}, 1000 );
-
 		// Ajax to generate prompt
 		const callBack = {
 			success: ( response ) => {
