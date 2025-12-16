@@ -243,7 +243,7 @@ $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instanc
 									class="text"><?php _e( 'Save', 'learnpress' ); ?></span>
 							</button>
 							<button class="btn-addon-action"
-									data-action="cancel"><?php _e( 'Cancel', 'learnpress' ); ?></button>
+									data-action="cancel"><i class="lp-icon-close"></i></button>
 						</div>
 						<input type="hidden" name="purchase-code"
 								value="<?php echo $purchase_code ?? ''; ?>">
