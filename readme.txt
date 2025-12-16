@@ -266,6 +266,10 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.3.2.2 (2025-12-16) =
+~ Fixed: error with addons Assignment, Course Review.
+~ Fixed: error cache when start Quiz.
+
 = 4.3.2.1 (2025-12-13) =
 ~ Fixed: error Class "LP_REST_Orders_Controller" not found, deleted file but missing delete declare REST route.
 
