@@ -1138,7 +1138,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 							$i = '<i class="lp-user-ico lp-icon-youtube-play"></i>';
 							break;
 						default:
-							$i = sprintf( '<i class="lp-user-ico lp-icon-%s"></i>', $k );
+							$i = sprintf( '<i class="lp-user-ico lp-icon-%s"></i>', esc_attr( $k ) );
 					}
 
 					$icon          = apply_filters(

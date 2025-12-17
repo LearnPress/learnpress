@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.3.1
+Stable tag: 4.3.2.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -265,6 +265,25 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.3.2.2 (2025-12-16) =
+~ Fixed: error with addons Assignment, Course Review.
+~ Fixed: error cache when start Quiz.
+
+= 4.3.2.1 (2025-12-13) =
+~ Fixed: error Class "LP_REST_Orders_Controller" not found, deleted file but missing delete declare REST route.
+
+= 4.3.2 (2025-12-12) =
+~ Fixed: security.
+~ Fixed: break style TomSelect for case choose courses on product of Woo.
+~ Tweak: edit course with openAI, added more models: gpt-5.2, gpt-5-mini, gpt-5-nano.
+~ Tweak: query list orders.
+~ Tweak: question tinymce editor sometime error save.
+~ Tweak: display list items of order by pagination.
+~ Tweak: material.
+~ Tweak: adjust lesson completion logic, redirect to the next incomplete item,
+if all items after the current one are already completed,
+search previous lessons to redirect to, if all items completed will not redirect.
 
 = 4.3.1 (2025-11-21) =
 ~ Fixed: condition check enable AI.

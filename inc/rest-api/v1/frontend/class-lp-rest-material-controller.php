@@ -403,14 +403,28 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	public function delete_material( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 		try {
-			$id = $request['file_id'];
-			if ( ! $id ) {
+			$file_id = $request['file_id'];
+			if ( ! $file_id ) {
 				throw new Exception( esc_html__( 'Invalid file identifier', 'learnpress' ) );
 			}
 			// DB Init
 			$material_db = LP_Material_Files_DB::getInstance();
+			$file        = $material_db->get_material( $file_id );
+			if ( ! $file ) {
+				throw new Exception( esc_html__( 'File not found', 'learnpress' ) );
+			}
+
+			// Get file author
+			$item_id         = $file->item_id ?? 0;
+			$author          = get_post_field( 'post_author', $item_id );
+			$current_user_id = get_current_user_id();
+			// check permission
+			if ( ! ( ( $author == $current_user_id && current_user_can( LP_TEACHER_ROLE ) ) || current_user_can( ADMIN_ROLE ) ) ) {
+				throw new Exception( esc_html__( 'You do not have permission to delete this file.', 'learnpress' ) );
+			}
+
 			// Delete record
-			$delete = $material_db->delete_material( $id );
+			$delete = $material_db->delete_material( $file_id );
 			if ( $delete ) {
 				$message = esc_html__( 'File is deleted.', 'learnpress' );
 				$deleted = true;

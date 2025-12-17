@@ -149,18 +149,18 @@ class PostModel {
 	 * @param int $post_id
 	 * @param bool $check_cache
 	 *
-	 * @since 4.3.2
-	 * @version 1.0.0
 	 * @return false|PostModel
+	 * @version 1.0.0
+	 * @since 4.3.2
 	 */
 	public static function find_by_id( int $post_id, bool $check_cache = false ) {
-		$filter     = new PostFilter();
-		$filter->ID = $post_id;
+		$filter            = new PostFilter();
+		$filter->ID        = $post_id;
 		$filter->post_type = ( new static() )->post_type;
 
-		$type = ( new static() )->post_type;
-		$key_cache   = "postModel/find/{$post_id}/". $type ;
-		$lp_cache = new LP_Cache();
+		$type      = ( new static() )->post_type;
+		$key_cache = "postModel/find/{$post_id}/" . $type;
+		$lp_cache  = new LP_Cache();
 
 		// Check first load cache
 		$postModel = LP_Cache::cache_load_first( 'get', $key_cache );
@@ -477,8 +477,17 @@ class PostModel {
 	 * @param mixed $value
 	 *
 	 * @return void
+	 * @throws Exception
+	 * @since 4.2.6.9
+	 * @version 1.0.2
 	 */
 	public function save_meta_value_by_key( string $key, $value ) {
+		// Check permission
+		if ( ! $this->check_capabilities_update() ) {
+			throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+		}
+		$this->check_capabilities_create_item_course();
+
 		$this->meta_data->{$key} = $value;
 		update_post_meta( $this->ID, $key, $value );
 	}

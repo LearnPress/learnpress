@@ -3,6 +3,8 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Databases\Course\CourseSectionItemsDB;
+use LearnPress\Filters\Course\CourseSectionItemsFilter;
 use LearnPress\Models\CourseSectionModel;
 use LP_Background_Single_Course;
 use LP_Cache;
@@ -107,6 +109,7 @@ class CourseSectionItemModel {
 		if ( $courseModel ) {
 			return new CoursePostModel( $courseModel );
 		}
+
 		return false;
 	}
 
@@ -125,7 +128,7 @@ class CourseSectionItemModel {
 	 * @return false|CourseSectionItemModel
 	 */
 	public static function find( int $section_id, $item_id, $check_cache = true ) {
-		$filter             = new LP_Section_Items_Filter();
+		$filter             = new CourseSectionItemsFilter();
 		$filter->section_id = $section_id;
 		$filter->item_id    = $item_id;
 		$key_cache          = "courseSectionItem/find/{$section_id}/{$item_id}";
@@ -154,13 +157,13 @@ class CourseSectionItemModel {
 	 * If not exists, return false.
 	 * If exists, return CourseSectionItemModel.
 	 *
-	 * @param LP_Section_Items_Filter $filter
+	 * @param CourseSectionItemsFilter|LP_Section_Items_Filter $filter
 	 *
 	 * @return CourseSectionItemModel|false|static
 	 * @version 1.0.0
 	 */
-	public static function get_item_model_from_db( LP_Section_Items_Filter $filter ) {
-		$lp_section_db = LP_Section_Items_DB::getInstance();
+	public static function get_item_model_from_db( $filter ) {
+		$lp_section_db = CourseSectionItemsDB::getInstance();
 		$sectionModel  = false;
 
 		try {
@@ -187,10 +190,7 @@ class CourseSectionItemModel {
 	 */
 	public function save(): CourseSectionItemModel {
 		// Check permission
-		$coursePostModel = $this->get_course_post_model();
-		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
-			throw new Exception( esc_html__( 'You do not have permission to save section item.', 'learnpress' ) );
-		}
+		$this->check_permission();
 
 		$lp_section_items_db = LP_Section_items_DB::getInstance();
 
@@ -213,8 +213,13 @@ class CourseSectionItemModel {
 	 * Delete row
 	 *
 	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.1
 	 */
 	public function delete() {
+		// Check permission
+		$this->check_permission();
+
 		$lp_section_items_db = LP_Section_Items_DB::getInstance();
 		$filter              = new LP_Section_Items_Filter();
 		$filter->where[]     = $lp_section_items_db->wpdb->prepare( 'AND section_item_id = %d', $this->section_item_id );
@@ -223,6 +228,18 @@ class CourseSectionItemModel {
 
 		// Clear cache
 		$this->clean_caches();
+	}
+
+	/**
+	 * Check permission to handle
+	 *
+	 * @throws Exception
+	 */
+	public function check_permission() {
+		$coursePostModel = $this->get_course_post_model();
+		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
+			throw new Exception( esc_html__( 'You do not have permission to delete section item.', 'learnpress' ) );
+		}
 	}
 
 	/**

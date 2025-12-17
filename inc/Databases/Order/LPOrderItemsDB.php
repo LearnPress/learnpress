@@ -4,7 +4,7 @@ namespace LearnPress\Databases\Order;
 
 use Exception;
 use LearnPress\Databases\DataBase;
-use LearnPress\Filters\Order\LPOrderItemsFilter;
+use LearnPress\Filters\Order\OrderItemsFilter;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -37,7 +37,7 @@ class LPOrderItemsDB extends DataBase {
 	 * @since 4.3.2
 	 * @version 1.0.0
 	 */
-	public function get_items( LPOrderItemsFilter $filter, int &$total_rows = 0 ) {
+	public function get_items( OrderItemsFilter $filter, int &$total_rows = 0 ) {
 		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 

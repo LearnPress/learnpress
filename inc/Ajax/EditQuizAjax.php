@@ -23,7 +23,7 @@ use Throwable;
  * This class handles the AJAX request to edit the quiz.
  *
  * @since 4.2.9
- * @version 1.0.0
+ * @version 1.0.1
  */
 class EditQuizAjax extends AbstractAjax {
 	/**
@@ -89,7 +89,7 @@ class EditQuizAjax extends AbstractAjax {
 	 * Add questions exists (from Question Bank) to quiz.
 	 *
 	 * @since 4.2.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function add_questions_to_quiz() {
 		$response = new LP_REST_Response();
@@ -99,38 +99,15 @@ class EditQuizAjax extends AbstractAjax {
 			/**
 			 * @var QuizPostModel $quizPostModel
 			 */
-			$quizPostModel = $data['quizPostModel'];
-			$quiz_id       = $quizPostModel->get_id();
-			$question_ids  = $data['question_ids'] ?? [];
-			if ( empty( $question_ids ) ) {
-				throw new Exception( __( 'Question IDs are required', 'learnpress' ) );
-			}
+			$quizPostModel   = $data['quizPostModel'];
+			$questions_added = $quizPostModel->add_questions_to_quiz( $data );
 
-			$response->data->html_edit_question = [];
-			foreach ( $question_ids as $question_id ) {
-				$questionPostModel = QuestionPostModel::find( $question_id, true );
-				if ( ! $questionPostModel ) {
-					throw new Exception( __( 'Question not found', 'learnpress' ) );
-				}
-
-				// Check if question already exists in quiz
-				$quizQuestionModel = QuizQuestionModel::find( $quiz_id, $question_id );
-				if ( $quizQuestionModel ) {
-					continue; // Skip if question already exists in quiz
-				}
-
-				$quizQuestionsDB = QuizQuestionsDB::getInstance();
-				$max_order       = $quizQuestionsDB->get_last_number_order( $quiz_id );
-
-				// Add question to quiz
-				$quizQuestionModel                 = new QuizQuestionModel();
-				$quizQuestionModel->quiz_id        = $quiz_id;
-				$quizQuestionModel->question_id    = $question_id;
-				$quizQuestionModel->question_order = $max_order + 1;
-				$quizQuestionModel->save();
-
-				$questionPostModel                                  = $quizQuestionModel->get_question_post_model();
-				$response->data->html_edit_question[ $question_id ] = AdminEditQizTemplate::instance()->html_edit_question( $questionPostModel );
+			/**
+			 * @var QuizQuestionModel $quizQuestionModel
+			 */
+			foreach ( $questions_added as $quizQuestionModel ) {
+				$questionPostModel = $quizQuestionModel->get_question_post_model();
+				$response->data->html_edit_question[ $quizQuestionModel->question_id ] = AdminEditQizTemplate::instance()->html_edit_question( $questionPostModel );
 			}
 
 			$response->status  = 'success';
@@ -157,22 +134,12 @@ class EditQuizAjax extends AbstractAjax {
 			$data        = self::check_valid();
 			$question_id = $data['question_id'] ?? 0;
 
-			$questionPostModel = QuestionPostModel::find( $question_id, true );
-			if ( ! $questionPostModel ) {
-				throw new Exception( __( 'Question not found', 'learnpress' ) );
-			}
-
 			/**
 			 * @var QuizPostModel $quizPostModel
 			 */
-			$quizPostModel     = $data['quizPostModel'];
-			$quizQuestionModel = QuizQuestionModel::find( $quizPostModel->get_id(), $questionPostModel->get_id() );
-			if ( ! $quizQuestionModel ) {
-				throw new Exception( __( 'Question not found in quiz', 'learnpress' ) );
-			}
+			$quizPostModel = $data['quizPostModel'];
+			$quizPostModel->remove_question_from_quiz( $question_id );
 
-			// Delete question from quiz
-			$quizQuestionModel->delete();
 			$response->status  = 'success';
 			$response->message = __( 'Question removed successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
@@ -194,21 +161,19 @@ class EditQuizAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function sortAbleItem call this method.
 	 *
 	 * @since 4.2.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function update_questions_position() {
 		$response = new LP_REST_Response();
 
 		try {
-			$data          = self::check_valid();
+			$data = self::check_valid();
+			/**
+			 * @var QuizPostModel $quizPostModel
+			 */
 			$quizPostModel = $data['quizPostModel'];
-			$question_ids  = $data['question_ids'] ?? [];
 
-			if ( empty( $question_ids ) ) {
-				throw new Exception( __( 'Question IDs are required', 'learnpress' ) );
-			}
-
-			QuizQuestionsDB::getInstance()->update_question_position( $question_ids, $quizPostModel->get_id() );
+			$quizPostModel->update_question_position( $data );
 
 			$response->status  = 'success';
 			$response->message = __( 'Question position updated successfully', 'learnpress' );
@@ -217,15 +182,5 @@ class EditQuizAjax extends AbstractAjax {
 		}
 
 		wp_send_json( $response );
-	}
-
-	/**
-	 * Add questions created to quiz.
-	 *
-	 * @throws Exception
-	 * @since 4.2.8.6
-	 * @version 1.0.0
-	 */
-	public function add_items( array $data ) {
 	}
 }

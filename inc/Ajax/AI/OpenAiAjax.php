@@ -103,12 +103,6 @@ class OpenAiAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
-			// Check permission
-			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
-				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
-				throw new Exception( __( 'You do not have permission to perform this action.', 'learnpress' ) );
-			}
-
 			$data_str              = LP_Request::get_param( 'data' );
 			$data                  = LP_Helper::json_decode( $data_str, true );
 			$data_structure_course = $data['lp_structure_course'] ?? [];
@@ -290,6 +284,13 @@ class OpenAiAjax extends AbstractAjax {
 						$results = $lp_structure_data[0];
 						if ( isset( $results['results'] ) ) {
 							$results = $results['results'];
+						} else {
+							throw new Exception(
+								__(
+									'Error: No data was generated. The requested data may be large, increase the Max Tokens in settings and try again.',
+									'learnpress'
+								)
+							);
 						}
 
 						foreach ( $results as $index => $data_item ) {
@@ -354,6 +355,7 @@ class OpenAiAjax extends AbstractAjax {
 			$args     = [
 				'prompt' => $prompt,
 				'n'      => intval( $params['outputs'] ?? 1 ),
+				'size'   => $params['size'] ?? '',
 			];
 
 			$result                    = OpenAiService::instance()->send_request_create_image( $args );

@@ -6,6 +6,7 @@ use Exception;
 use LearnPress\Databases\QuizQuestionsDB;
 use LearnPress\Filters\QuizQuestionsFilter;
 use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\Models\QuizPostModel;
 use LP_Cache;
 use stdClass;
 use Throwable;
@@ -16,7 +17,7 @@ use Throwable;
  * Handle all method about quiz question.
  *
  * @package LearnPress/Classes
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.2.9
  */
 class QuizQuestionModel {
@@ -58,12 +59,12 @@ class QuizQuestionModel {
 	}
 
 	/**
-	 * Map array, object data to CourseSectionModel.
+	 * Map array, object data to QuizQuestionModel.
 	 * Use for data get from database.
 	 *
 	 * @param array|object|mixed $data
 	 *
-	 * @return CourseSectionModel
+	 * @return QuizQuestionModel
 	 */
 	public function map_to_object( $data ): QuizQuestionModel {
 		foreach ( $data as $key => $value ) {
@@ -166,9 +167,16 @@ class QuizQuestionModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function save(): QuizQuestionModel {
+		$quizPostModel = $this->get_quiz_post_model();
+		if ( ! $quizPostModel ) {
+			throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+		}
+
+		$quizPostModel->check_capabilities_update_item_course();
+
 		$db = QuizQuestionsDB::getInstance();
 
 		$data = [];
@@ -193,8 +201,18 @@ class QuizQuestionModel {
 	 * Delete row
 	 *
 	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.1
 	 */
 	public function delete() {
+		// Check permission
+		$quizPostModel = $this->get_quiz_post_model();
+		if ( ! $quizPostModel ) {
+			throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+		}
+
+		$quizPostModel->check_capabilities_update_item_course();
+
 		$db                 = QuizQuestionsDB::getInstance();
 		$filter             = new QuizQuestionsFilter();
 		$filter->where[]    = $db->wpdb->prepare( 'AND quiz_question_id = %d', $this->quiz_question_id );

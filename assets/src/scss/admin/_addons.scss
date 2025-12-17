@@ -49,6 +49,15 @@
 				}
 			}
 
+			&[data-action="cancel"] {
+				position: absolute;
+				right: 0;
+				background: transparent;
+				color: rgba(255, 0, 0, 0.89);
+				top: 0;
+				padding: 7px 10px;
+			}
+
 			span.dashicons {
 				align-items: center;
 				display: none;
@@ -77,6 +86,10 @@
 		flex-direction: column;
 		justify-content: space-between;
 		position: relative;
+
+		input {
+			margin: 0 !important;
+		}
 
 		&.hide, &.search-not-found {
 			display: none;

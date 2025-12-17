@@ -12,13 +12,14 @@ defined( 'ABSPATH' ) || exit;
  * $data_send: must have key 'lp-load-ajax' to call method handle
  *
  * @since 4.2.9.1
- * @version 1.0.0
+ * @version 1.0.1
  */
 class LPBackgroundAjax {
 	/**
 	 * Method async handle
 	 */
 	public static function handle( array $data_send = [], array $args = [] ) {
+		$url       = LP_Settings::url_handle_lp_ajax();
 		$data_send = array_merge(
 			[ 'nonce' => wp_create_nonce( 'wp_rest' ) ],
 			$data_send
@@ -30,9 +31,12 @@ class LPBackgroundAjax {
 				'body'      => $data_send,
 				'cookies'   => $_COOKIE,
 				'sslverify' => is_ssl(),
+				'headers'   => [
+					'Referer' => $url,
+				],
 			],
 			$args
 		);
-		wp_remote_post( LP_Settings::url_handle_lp_ajax(), $args );
+		wp_remote_post( $url, $args );
 	}
 }

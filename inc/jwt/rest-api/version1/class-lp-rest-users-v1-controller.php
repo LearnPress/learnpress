@@ -138,6 +138,14 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			return $user;
 		}
 
+		if ( ! is_user_logged_in() ) {
+			return new WP_Error(
+				'rest_forbidden',
+				__( 'Authentication required to access user information.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
 		$types = get_post_types( array( 'show_in_rest' => true ), 'names' );
 
 		if ( get_current_user_id() === $user->ID ) {

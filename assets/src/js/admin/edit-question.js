@@ -148,9 +148,10 @@ export class EditQuestion {
 						`${ EditQuestion.selectors.elQuestionEditMain }`
 					);
 
-					const elBtnFibSaveContent = elQuestionEditMain.querySelector(
-						`${ EditQuestion.selectors.elBtnFibSaveContent }`
-					);
+					const elBtnFibSaveContent =
+						elQuestionEditMain.querySelector(
+							`${ EditQuestion.selectors.elBtnFibSaveContent }`
+						);
 
 					elBtnFibSaveContent.click();
 				},
@@ -160,7 +161,11 @@ export class EditQuestion {
 		// Toggle collapse
 		document.addEventListener( 'click', ( e ) => {
 			const target = e.target;
-			lpUtils.toggleCollapse( e, target, EditQuestion.selectors.elTriggerToggle );
+			lpUtils.toggleCollapse(
+				e,
+				target,
+				EditQuestion.selectors.elTriggerToggle
+			);
 		} );
 
 		// Event keyup
@@ -200,6 +205,9 @@ export class EditQuestion {
 				class: this,
 			},
 		] );
+
+		// TinyMCE events
+		this.eventEditorTinymce();
 	}
 
 	// Run async to re-init all TinyMCE editors, because it slow if have many editors
@@ -216,59 +224,61 @@ export class EditQuestion {
 	reInitTinymce( id ) {
 		window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 		window.tinymce.execCommand( 'mceAddEditor', true, id );
-		this.eventEditorTinymce( id );
-
-		// Active tab visual
-		const wrapEditor = document.querySelector( `#wp-${ id }-wrap` );
-		if ( wrapEditor ) {
-			wrapEditor.classList.add( 'tmce-active' );
-			wrapEditor.classList.remove( 'html-active' );
-		}
 	}
 
-	eventEditorTinymce( id ) {
-		const editor = window.tinymce.get( id );
-		const elTextarea = document.getElementById( id );
-		const elQuestionEditMain = elTextarea.closest(
-			`${ EditQuestion.selectors.elQuestionEditMain }`
-		);
-		const questionId = elQuestionEditMain.dataset.questionId;
-		editor.settings.force_p_newlines = false;
-		editor.settings.forced_root_block = '';
-		editor.settings.force_br_newlines = true;
+	// Events for TinyMCE editor
+	eventEditorTinymce() {
+		window.tinymce.on( 'AddEditor', ( eEditor ) => {
+			const id = eEditor.editor.id;
+			const editor = window.tinymce.get( id );
+			if ( ! editor ) {
+				return;
+			}
 
-		// Config use absolute url
-		editor.settings.relative_urls = false;
-		editor.settings.remove_script_host = false;
-		editor.settings.convert_urls = true;
-		editor.settings.document_base_url = lpData.site_url;
-		// End config use absolute url
+			if ( id === 'content' ) {
+				return;
+			}
 
-		// Events focus in TinyMCE editor
-		editor.on( 'change', ( e ) => {
-			// Auto save if it has class lp-auto-save
-			elTextarea.value = editor.getContent();
-			this.autoUpdateQuestion( {
-				e,
-				target: elTextarea,
+			// Active tab visual
+			const wrapEditor = document.querySelector( `#wp-${ id }-wrap` );
+			if ( wrapEditor ) {
+				wrapEditor.classList.add( 'tmce-active' );
+				wrapEditor.classList.remove( 'html-active' );
+			}
+
+			const elTextarea = document.getElementById( id );
+			const elQuestionEditMain = elTextarea.closest(
+				`${ EditQuestion.selectors.elQuestionEditMain }`
+			);
+			const questionId = elQuestionEditMain.dataset.questionId;
+			editor.settings.force_p_newlines = false;
+			editor.settings.forced_root_block = '';
+			editor.settings.force_br_newlines = true;
+
+			// Config use absolute url
+			editor.settings.relative_urls = false;
+			editor.settings.remove_script_host = false;
+			editor.settings.convert_urls = true;
+			editor.settings.document_base_url = lpData.site_url;
+			// End config use absolute url
+
+			// Events focus in TinyMCE editor
+			editor.on( 'change keyup', ( e ) => {
+				// Auto save if it has class lp-auto-save
+				elTextarea.value = editor.getContent();
+				this.autoUpdateQuestion( {
+					e,
+					target: elTextarea,
+				} );
 			} );
-		} );
-		editor.on( 'keyup', ( e ) => {
-			// Auto save if it has class lp-auto-save
-			elTextarea.value = editor.getContent();
-			this.autoUpdateQuestion( {
-				e,
-				target: elTextarea,
-			} );
-		} );
 
-		editor.on( 'blur', ( e ) => {
-			//console.log( 'Editor blurred:', e.target.id );
-		} );
-		editor.on( 'focusin', ( e ) => {} );
-		editor.on( 'init', () => {
-			// Add style
-			editor.dom.addStyle( `
+			editor.on( 'blur', ( e ) => {
+				//console.log( 'Editor blurred:', e.target.id );
+			} );
+			editor.on( 'focusin', ( e ) => {} );
+			editor.on( 'init', () => {
+				// Add style
+				editor.dom.addStyle( `
 				body {
 					line-height: 2.2 !important;
 				}
@@ -277,92 +287,96 @@ export class EditQuestion {
 					padding: 5px;
 				}
 			` );
-		} );
-		editor.on( 'setcontent', ( e ) => {
-			const uniquid = this.randomString();
-			const elementg = editor.dom.select(
-				`.${ EditQuestion.selectors.elQuestionFibInput }[data-id="${ uniquid }"]`
-			);
-			if ( elementg[ 0 ] ) {
-				elementg[ 0 ].focus();
-			}
-
-			editor.dom.bind( elementg[ 0 ], 'input', function( e ) {
-				//console.log( 'Input changed:', e.target.value );
 			} );
-		} );
-		editor.on( 'selectionchange', ( e ) => {
-			fibSelection = editor.selection;
+			editor.on( 'setcontent', ( e ) => {
+				const uniquid = this.randomString();
+				const elementg = editor.dom.select(
+					`.${ EditQuestion.selectors.elQuestionFibInput }[data-id="${ uniquid }"]`
+				);
+				if ( elementg[ 0 ] ) {
+					elementg[ 0 ].focus();
+				}
 
-			// Check selection is blank, check empty blank content
-			if (
-				fibSelection
-					.getNode()
-					.classList.contains( `${ EditQuestion.selectors.elQuestionFibInput }` )
-			) {
-				const blankId = fibSelection.getNode().dataset.id;
-				const textBlank = fibSelection.getNode().textContent.trim();
-				if ( textBlank.length === 0 ) {
-					const editorId = editor.id;
-					const questionId = editorId.replace(
-						`${ EditQuestion.selectors.elQuestionFibInput }-`,
-						''
-					);
-					const elQuestionEditMain = document.querySelector(
-						`${ EditQuestion.selectors.elQuestionEditMain }[data-question-id="${ questionId }"]`
-					);
-					const elQuestionBlankOptions =
-						elQuestionEditMain.querySelector(
-							`${ EditQuestion.selectors.elFibBlankOptions }`
+				editor.dom.bind( elementg[ 0 ], 'input', ( e ) => {
+					//console.log( 'Input changed:', e.target.value );
+				} );
+			} );
+			editor.on( 'selectionchange', ( e ) => {
+				fibSelection = editor.selection;
+
+				// Check selection is blank, check empty blank content
+				if (
+					fibSelection
+						.getNode()
+						.classList.contains(
+							`${ EditQuestion.selectors.elQuestionFibInput }`
+						)
+				) {
+					const blankId = fibSelection.getNode().dataset.id;
+					const textBlank = fibSelection.getNode().textContent.trim();
+					if ( textBlank.length === 0 ) {
+						const editorId = editor.id;
+						const questionId = editorId.replace(
+							`${ EditQuestion.selectors.elQuestionFibInput }-`,
+							''
 						);
-					const elFibBlankOptionItem =
-						elQuestionBlankOptions.querySelector(
-							`${ EditQuestion.selectors.elFibBlankOptionItem }[data-id="${ blankId }"]`
+						const elQuestionEditMain = document.querySelector(
+							`${ EditQuestion.selectors.elQuestionEditMain }[data-question-id="${ questionId }"]`
 						);
-					if ( elFibBlankOptionItem ) {
-						lpUtils.lpShowHideEl( elFibBlankOptionItem, 0 );
-					}
-				} else {
-					const elTextarea = document.getElementById( id );
-					const elAnswersConfig = elTextarea.closest(
-						`${ EditQuestion.selectors.elAnswersConfig }`
-					);
-					const elFibBlankOptionItem = elAnswersConfig.querySelector(
-						`${ EditQuestion.selectors.elFibBlankOptionItem }[data-id="${ blankId }"]`
-					);
-					if ( elFibBlankOptionItem ) {
-						const elFibOptionTitleInput =
-							elFibBlankOptionItem.querySelector(
-								`${ EditQuestion.selectors.elFibOptionTitleInput }`
+						const elQuestionBlankOptions =
+							elQuestionEditMain.querySelector(
+								`${ EditQuestion.selectors.elFibBlankOptions }`
 							);
-						if ( elFibOptionTitleInput ) {
-							elFibOptionTitleInput.value = textBlank;
+						const elFibBlankOptionItem =
+							elQuestionBlankOptions.querySelector(
+								`${ EditQuestion.selectors.elFibBlankOptionItem }[data-id="${ blankId }"]`
+							);
+						if ( elFibBlankOptionItem ) {
+							lpUtils.lpShowHideEl( elFibBlankOptionItem, 0 );
+						}
+					} else {
+						const elTextarea = document.getElementById( id );
+						const elAnswersConfig = elTextarea.closest(
+							`${ EditQuestion.selectors.elAnswersConfig }`
+						);
+						const elFibBlankOptionItem =
+							elAnswersConfig.querySelector(
+								`${ EditQuestion.selectors.elFibBlankOptionItem }[data-id="${ blankId }"]`
+							);
+						if ( elFibBlankOptionItem ) {
+							const elFibOptionTitleInput =
+								elFibBlankOptionItem.querySelector(
+									`${ EditQuestion.selectors.elFibOptionTitleInput }`
+								);
+							if ( elFibOptionTitleInput ) {
+								elFibOptionTitleInput.value = textBlank;
+							}
 						}
 					}
 				}
-			}
-		} );
-		editor.on( 'Undo', function( e ) {
-			const contentUndo = editor.getContent();
-			const selection = editor.selection;
-			const nodeUndo = selection.getNode();
+			} );
+			editor.on( 'Undo', ( e ) => {
+				const contentUndo = editor.getContent();
+				const selection = editor.selection;
+				const nodeUndo = selection.getNode();
 
-			if (
-				nodeUndo.classList.contains(
-					`${ EditQuestion.selectors.elQuestionFibInput }`
-				)
-			) {
-				const blankId = nodeUndo.dataset.id;
-				const elFibBlankOptionItem = document.querySelector(
-					`${ EditQuestion.selectors.elFibBlankOptionItem }[data-id="${ blankId }"]`
-				);
+				if (
+					nodeUndo.classList.contains(
+						`${ EditQuestion.selectors.elQuestionFibInput }`
+					)
+				) {
+					const blankId = nodeUndo.dataset.id;
+					const elFibBlankOptionItem = document.querySelector(
+						`${ EditQuestion.selectors.elFibBlankOptionItem }[data-id="${ blankId }"]`
+					);
 
-				if ( elFibBlankOptionItem ) {
-					lpUtils.lpShowHideEl( elFibBlankOptionItem, 1 );
+					if ( elFibBlankOptionItem ) {
+						lpUtils.lpShowHideEl( elFibBlankOptionItem, 1 );
+					}
 				}
-			}
+			} );
+			editor.on( 'Redo', ( e ) => {} );
 		} );
-		editor.on( 'Redo', function( e ) {} );
 	}
 
 	autoUpdateQuestion( args ) {

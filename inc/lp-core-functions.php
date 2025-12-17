@@ -2296,23 +2296,21 @@ function lp_item_course_class( $class = array() ) {
 
 //require_once dirname( __FILE__ ) . '/lp-custom-hooks.php';
 
-add_action(
+// Notify update message for LearnPress plugin
+/*add_action(
 	'in_plugin_update_message-learnpress/learnpress.php',
 	function ( $plugin_data ) {
 		if ( version_compare( $plugin_data['new_version'], LEARNPRESS_VERSION, '<=' ) ) {
 			return;
 		}
-		?>
-		<hr/>
-		<h3>
-			<?php echo esc_html__( 'Heads up! Please backup before upgrading!', 'learnpress' ); ?>
-		</h3>
-		<div>
-			<?php echo esc_html__( 'The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment', 'learnpress' ); ?>
-		</div>
-		<?php
+
+		echo sprintf(
+			'<hr/><h3>%s</h3><div>%s</div>',
+			esc_html__( 'Heads up! Please backup before upgrading!', 'learnpress' ),
+			esc_html__( 'The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment', 'learnpress' )
+		);
 	}
-);
+);*/
 
 /**
  * If Elementor Pro set Theme builder type "Archive", will not show content on page "Archive course"

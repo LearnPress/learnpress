@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItemMeta\UserQuizMetaModel;
 use LearnPress\Models\UserItems\UserQuizModel;
 
@@ -136,7 +137,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @editor tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @sicne 4.0.0
 	 * @return WP_REST_Response
 	 */
@@ -171,10 +172,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			do_action( 'learn-press/user/before/start-quiz', $item_id, $course_id, $user_id );
 
+			$courseModel = CourseModel::find( $course_id, true );
+			$link        = LP_Helper::get_link_no_cache( $courseModel->get_item_link( $item_id, LP_QUIZ_CPT ) );
+
 			// For no required enroll course
 			if ( $user->is_guest() && $course->is_no_required_enroll() ) {
-				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
-				$response           = $no_required_enroll->guest_start_quiz( $quiz );
+				$no_required_enroll       = new LP_Course_No_Required_Enroll( $course );
+				$response                 = $no_required_enroll->guest_start_quiz( $quiz );
+				$response['redirect_url'] = $link;
 
 				return rest_ensure_response( $response );
 			}
@@ -237,16 +242,17 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				)
 			);
 
-			$results['question_ids'] = $question_ids;
-			$results['questions']    = $questions;
-			$results['total_time']   = $time_remaining;
-			$results['duration']     = $duration ? $duration->get() : false;
-			$results['status']       = $status; // Must be started
-			$results['retaken']      = $retaken_count;
-			$results['attempts']     = $attempts;
-			$results['user_item_id'] = $user_item_id;
-			$response['status']      = 'success';
-			$response['results']     = $results;
+			$results['question_ids']  = $question_ids;
+			$results['questions']     = $questions;
+			$results['total_time']    = $time_remaining;
+			$results['duration']      = $duration ? $duration->get() : false;
+			$results['status']        = $status; // Must be started
+			$results['retaken']       = $retaken_count;
+			$results['attempts']      = $attempts;
+			$results['user_item_id']  = $user_item_id;
+			$response['status']       = 'success';
+			$response['results']      = $results;
+			$response['redirect_url'] = $link;
 		} catch ( Throwable $e ) {
 			$response['message'] = $e->getMessage();
 		}

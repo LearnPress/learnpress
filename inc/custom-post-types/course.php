@@ -438,7 +438,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					)
 				)->dispatch();
 			} catch ( Throwable $e ) {
-				error_log( __METHOD__ . ' ' . $e->getMessage() );
+				LP_Debug::error_log( $e );
 			}
 		}
 
