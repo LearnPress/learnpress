@@ -442,10 +442,10 @@ class QuestionTemplate {
 	public function hint_html( QuestionPostModel $question ) {
 		try {
 			$hint        = $question->get_hint();
-			$explanation = $question->get_explanation();
+			// $explanation = $question->get_explanation();
 
 			// Only show hint if there's no explanation and hint is available.
-			if ( empty( $hint ) || ! empty( $explanation ) ) {
+			if ( empty( $hint ) ) {
 				return '';
 			}
 
