@@ -138,7 +138,7 @@ $js = array_merge( $js, $user_js );
 
 // To show data debug.
 LP_Helper::print_inline_script_tag( 'lp_quiz_js_data', [ 'data' => $js ] );
-return;
+
 if ( $total_question ) {
 	?>
 	<div id="learn-press-quiz-app"></div>
