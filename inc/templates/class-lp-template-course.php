@@ -648,7 +648,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
 
 		if ( file_exists( $item_template_name ) ) {
-			learn_press_get_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
+			Template::instance()->get_frontend_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
 		} else {
 			echo esc_html( sprintf( 'File %s not exists', $item_template_name ) );
 		}

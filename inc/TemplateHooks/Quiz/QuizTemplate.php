@@ -39,7 +39,7 @@ class QuizTemplate {
 	public function init() {
 		// Hook for rendering start quiz  screen.
 		// add_action( 'learn-press/quiz-start-screen', array( $this, 'start_quiz_screen' ) );
-		add_action( 'learn-press/content-item-summary/lp_quiz', array( $this, 'quiz_content_item_summary' ) );
+		//add_action( 'learn-press/content-item-summary/lp_quiz', array( $this, 'quiz_content_item_summary' ) );
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 	}
 
@@ -105,7 +105,7 @@ class QuizTemplate {
 	 */
 	public function load_quiz_content_ajax( $user_id = 0, $course_id = 0, $quiz_id = 0 ) {
 		try {
-			
+
 			// Step 1: Build $args array with required keys
 			$args = array(
 				'id_url'    => 'quiz-template',
@@ -122,7 +122,7 @@ class QuizTemplate {
 				'class'  => self::class,
 				'method' => 'render_quiz_content_callback',
 			);
-			
+
 			$args['html_no_load_ajax_first'] = self::render_quiz_content_callback( $args )->content;
 
 			$content = TemplateAJAX::load_content_via_ajax( $args, $callback );
@@ -220,7 +220,7 @@ class QuizTemplate {
 						'status'              => $status,
 					)
 				);
-			}	
+			}
 		}
 		$quiz_data = array(
 			'quiz_id'                => $quiz_id,

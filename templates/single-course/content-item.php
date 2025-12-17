@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -37,7 +37,6 @@ $can_view_content_item   = $user->can_view_item( $course_item->get_id(), $can_vi
 					'learn-press/course-item-content',
 					$user,
 					$course,
-					$course_item,
 					$course_item,
 					$can_view_content_course,
 					$can_view_content_item
