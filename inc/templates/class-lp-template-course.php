@@ -6,6 +6,7 @@ use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\Quiz\CourseQuizTemplate;
 use LearnPress\TemplateHooks\Quiz\QuizTemplate;
 use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 
@@ -643,7 +644,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 				return;
 			}
 
-			QuizTemplate::instance()->layout( $courseModel, $quizPostModel );
+			//QuizTemplate::instance()->layout( $courseModel, $quizPostModel );
+
+			CourseQuizTemplate::instance()->layout( $courseModel, $quizPostModel );
 
 			return;
 		}
