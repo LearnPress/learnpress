@@ -2,9 +2,11 @@
 
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\Quiz\QuizTemplate;
 use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 
 /**
@@ -204,6 +206,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$course               = CourseModel::find( get_the_ID(), true );
 		$user                 = UserModel::find( get_current_user_id(), true );
 		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
+
 		return;
 
 		$can_show = true;
@@ -614,6 +617,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'loop/course/loop-end.php' );
 	}
 
+	/**
+	 * Display content of course item (lesson, quiz, etc)
+	 *
+	 * @return void
+	 * @since 3.x.x
+	 * @version 4.0.1
+	 */
 	public function course_item_content() {
 		$course = learn_press_get_course();
 		if ( ! $course ) {
@@ -621,6 +631,22 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		$item = LP_Global::course_item();
+		if ( ! $item ) {
+			return;
+		}
+
+		// Load quiz layout new
+		if ( $item->get_item_type() === LP_QUIZ_CPT ) {
+			$courseModel   = CourseModel::find( $course->get_id(), true );
+			$quizPostModel = QuizPostModel::find( $item->get_id(), true );
+			if ( ! $courseModel || ! $quizPostModel ) {
+				return;
+			}
+
+			QuizTemplate::instance()->layout( $courseModel, $quizPostModel );
+
+			return;
+		}
 
 		/**
 		 * Fix only for WPBakery load style inline

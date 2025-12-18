@@ -37,9 +37,6 @@ class QuizTemplate {
 	 * @version 1.0.0
 	 */
 	public function init() {
-		// Hook for rendering start quiz  screen.
-		// add_action( 'learn-press/quiz-start-screen', array( $this, 'start_quiz_screen' ) );
-		//add_action( 'learn-press/content-item-summary/lp_quiz', array( $this, 'quiz_content_item_summary' ) );
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 	}
 
@@ -59,15 +56,18 @@ class QuizTemplate {
 		return $callbacks;
 	}
 
-	public function quiz_content_item_summary() {
+	/**
+	 * Layout for quiz content
+	 *
+	 * @param CourseModel    $courseModel   Course model.
+	 * @param QuizPostModel  $quizPostModel Quiz post model.
+	 * @param array          $data          Additional data.
+	 *
+	 * @return void
+	 * @since 4.3.3
+	 */
+	public function layout( CourseModel $courseModel, QuizPostModel $quizPostModel, array $data = [] ) {
 		try {
-			global $lpCourseModel;
-			$courseModel = $lpCourseModel;
-			if ( ! $courseModel instanceof CourseModel ) {
-				return;
-			}
-			// return;
-
 			$course_id = $courseModel->get_id();
 			$user_id   = get_current_user_id();
 			$quiz_item = LP_Global::course_item_quiz();
@@ -75,13 +75,8 @@ class QuizTemplate {
 				return;
 			}
 
-			$quiz_id       = $quiz_item->get_id();
-			$quizPostModel = QuizPostModel::find( $quiz_id, true );
-			if ( ! $quizPostModel instanceof QuizPostModel ) {
-				return;
-			}
-
-			$content   = $this->load_quiz_content_ajax( $user_id, $course_id, $quiz_id );
+			$quiz_id = $quizPostModel->get_id();
+			$content = $this->load_quiz_content_ajax( $user_id, $course_id, $quiz_id );
 			echo $content;
 		} catch ( Throwable $e ) {
 			echo $e->getMessage();
@@ -188,18 +183,18 @@ class QuizTemplate {
 				true
 			);
 			if ( $userQuizModel ) {
-				$status              = $userQuizModel->get_status();
-				$quiz_results        = $userQuizModel->get_result();
-				$checked_questions   = $userQuizModel->get_checked_questions();
-				$retaken             = $userQuizModel->get_retaken_count();
-				$can_retake_count    = $userQuizModel->get_remaining_retake();
-				$total_time          = $userQuizModel->get_time_remaining();
+				$status            = $userQuizModel->get_status();
+				$quiz_results      = $userQuizModel->get_result();
+				$checked_questions = $userQuizModel->get_checked_questions();
+				$retaken           = $userQuizModel->get_retaken_count();
+				$can_retake_count  = $userQuizModel->get_remaining_retake();
+				$total_time        = $userQuizModel->get_time_remaining();
 
-				$user_data           = array(
-					'status'            => $status,
-					'attempts'          => $userQuizModel->get_history(),
-					'start_time'        => $userQuizModel->get_start_time(),
-					'results'           => $quiz_results,
+				$user_data = array(
+					'status'     => $status,
+					'attempts'   => $userQuizModel->get_history(),
+					'start_time' => $userQuizModel->get_start_time(),
+					'results'    => $quiz_results,
 				);
 
 				$answered = QuizTemplateComponents::instance()->get_array_value( $quiz_results, 'questions', array() );
@@ -241,7 +236,7 @@ class QuizTemplate {
 			'total_time'             => $total_time,
 			'results'                => array(),
 			'required_password'      => post_password_required( $quiz_id ),
-			'allow_retake'           => $can_retake_count > 0 || $retake_count === -1 ,
+			'allow_retake'           => $can_retake_count > 0 || $retake_count === -1,
 			'can_retake_count'       => $can_retake_count,
 			'quiz_description'       => $quizPostModel->get_the_content(),
 			'num_pages'              => $questions_per_page !== 0 ? ceil( (int) $quizPostModel->count_questions() / $quizPostModel->get_question_perpage() ) : 1,
@@ -272,7 +267,7 @@ class QuizTemplate {
 		// Step 3: Detect mode and render appropriate components
 		if ( $status === LP_ITEM_STARTED ) {
 			$mode = 'quiz';
-		} else if ( $status === LP_ITEM_COMPLETED ) {
+		} elseif ( $status === LP_ITEM_COMPLETED ) {
 			$mode = ! empty( $data['is_review'] ) ? 'review' : 'result';
 		} else {
 			$mode = 'intro';
