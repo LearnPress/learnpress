@@ -128,7 +128,7 @@ $js = array(
 	'retaken'                => 0,
 	'questions_per_page'     => $quiz->get_pagination(),
 	'page_numbers'           => get_post_meta( $quiz->get_id(), '_lp_pagination_numbers', true ) === 'yes',
-	'review_questions'       => $quiz->get_review_questions(),
+	'review_questions'       => 'yes' === $quizPostModel->get_meta_value_by_key( QuizPostModel::META_KEY_REVIEW, 'yes' ),
 	'support_options'        => learn_press_get_question_support_answer_options(),
 	'duration'               => $duration ? $duration->get() : false,
 	'crypto'                 => $crypto_js_aes,
