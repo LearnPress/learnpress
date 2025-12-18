@@ -6,10 +6,8 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.1
+ * @version  3.0.0
  */
-
-use LearnPress\TemplateHooks\Quiz\QuizTemplate;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -29,12 +27,7 @@ $quiz = LP_Global::course_item_quiz();
 	/**
 	 * @see learn_press_content_item_summary_question()
 	 */
-	if ( has_action( 'learn-press/content-item-summary/lp_quiz' ) ) {
-		_deprecated_hook( 'learn-press/content-item-summary/lp_quiz', '4.3.2.3' );
-		do_action( 'learn-press/content-item-summary/' . $quiz->get_item_type() );
-	}
-
-	QuizTemplate::instance()->quiz_content_item_summary();
+	do_action( 'learn-press/content-item-summary/' . $quiz->get_item_type() );
 	?>
 
 </div>

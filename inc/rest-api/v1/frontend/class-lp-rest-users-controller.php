@@ -283,22 +283,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$course_id  = $request['course_id'] ?? 0;
 			$answered   = $request['answered'] ?? [];
 			$time_spend = $request['time_spend'] ?? 0;
-			
-			// Decode JSON strings in answered array (for multi-choice and FIB questions)
-			if ( is_array( $answered ) ) {
-				foreach ( $answered as $question_id => $answer ) {
-					if ( is_string( $answer ) && ! empty( $answer ) ) {
-						$decoded = json_decode( $answer, true );
-						if ( json_last_error() === JSON_ERROR_NONE ) {
-							$answered[ $question_id ] = $decoded;
-						}
-					}
-				}
-			}
-			
 			$user       = learn_press_get_user( $user_id );
 			$course     = learn_press_get_course( $course_id );
-			set_transient( 'answered_test', $answered, $expiration = 36000 );
 
 			if ( ! $course ) {
 				throw new Exception( 'The course is invalid!' );
@@ -420,14 +406,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$quiz_id     = $request['item_id'] ?? 0;
 			$course      = learn_press_get_course( $course_id );
 			$checked     = [];
-
-			// Decode JSON if answered is a JSON string (for FIB and multi-choice questions)
-			if ( is_string( $answered ) && ! empty( $answered ) ) {
-				$decoded = json_decode( $answered, true );
-				if ( json_last_error() === JSON_ERROR_NONE ) {
-					$answered = $decoded;
-				}
-			}
 
 			if ( $course->is_no_required_enroll() ) {
 				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
