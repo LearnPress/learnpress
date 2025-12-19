@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.3.2.1
+Stable tag: 4.3.2.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -37,9 +37,14 @@ Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.env
 - [Create a WordPress Coursera with Eduma](https://eduma.thimpress.com/demo-coursera/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 
 ### SMART COURSE CREATION WITH LEARNPRESS AI ###
+
 **LearnPress enhances course creation with built-in AI assistance designed to support instructors at every stage of the process.**
+
+
 Instead of starting from a blank page, you can use LearnPress AI to generate a structured course outline, lesson ideas, quizzes, and supporting content in seconds - all based on your topic and teaching goals.
+
 LearnPress AI also includes an AI Image Generator to help you create course thumbnails and visual assets that match your content. Every AI-generated result is fully editable, giving you complete control over what you publish.
+
 By handling the repetitive and time-consuming parts of course planning, LearnPress AI helps you work more efficiently - so you can focus on teaching, refining your content, and supporting your learners.
 
 ### Exciting News: LearnPress Officially Integrates with Gutenberg! ###
