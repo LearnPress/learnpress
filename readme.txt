@@ -36,7 +36,7 @@ Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.env
 - [Create a WordPress Udemy with Eduma](https://eduma.thimpress.com/demo-udemy/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 - [Create a WordPress Coursera with Eduma](https://eduma.thimpress.com/demo-coursera/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 
-### SMART COURSE CREATION WITH LEARNPRESS AI ###
+### Smart Course Creation With LearnPress AI ###
 
 **LearnPress enhances course creation with built-in AI assistance designed to support instructors at every stage of the process.**
 
