@@ -391,7 +391,7 @@ class LP_Statistics_DB extends LP_Database {
 		$oi_table                 = $this->tb_lp_order_items;
 		$oim_table                = $this->tb_lp_order_itemmeta;
 		// net sales summary
-		$filter->only_fields[]   = "SUM(oim.meta_value) as x_data";
+		$filter->only_fields[]   = "SUM(CAST(oim.meta_value AS DECIMAL(10,2))) as x_data";
 		$time_field              = "p.post_date";
 		$filter->join            = [
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
@@ -430,7 +430,7 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->collection       = $this->tb_posts;
 		$filter->collection_alias = "p";
 		$filter->only_fields[]    = "r_term.term_taxonomy_id as term_id";
-		$filter->only_fields[]    = "COUNT(r_term.term_taxonomy_id) as term_count";
+		$filter->only_fields[]    = "SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as term_count";
 		$filter->only_fields[]    = "terms.name as term_name";
 		$filter->limit            = $limit > 0 ? $limit : 10;
 		$time_field               = "p.post_date";
@@ -442,11 +442,14 @@ class LP_Statistics_DB extends LP_Database {
 
 		$filter->join = [
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
-			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
 			"INNER JOIN $tb_term_relationships AS r_term ON oi.item_id = r_term.object_id",
 			"INNER JOIN $tb_term_taxonomy AS tax_term ON tax_term.term_taxonomy_id = r_term.term_taxonomy_id",
 			"INNER JOIN $tb_terms AS terms ON terms.term_id = r_term.term_taxonomy_id",
+			"INNER JOIN $oim_table AS oim_qty ON oi.order_item_id = oim_qty.learnpress_order_item_id AND oim_qty.meta_key = '_quantity'",
 		];
+		if ( $exclude_free_course ) {
+			$filter->join[] = "INNER JOIN $oim_table AS oim_total ON oi.order_item_id = oim_total.learnpress_order_item_id AND oim_total.meta_key = '_total' AND CAST(oim_total.meta_value AS DECIMAL(10,2)) > 0";
+		}
 
 		$filter->where = array(
 			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
@@ -454,11 +457,7 @@ class LP_Statistics_DB extends LP_Database {
 			$this->wpdb->prepare( "AND oi.item_type=%s", LP_COURSE_CPT ),
 			$this->wpdb->prepare( "AND tax_term.taxonomy=%s", LP_COURSE_CATEGORY_TAX ),
 		);
-		$filter        = $this->filter_time( $filter, $type, $time_field, $value );
-		if ( $exclude_free_course ) {
-			$filter->where[] = $this->wpdb->prepare( "AND oim.meta_key=%s", '_total' );
-			$filter->where[] = "AND oim.meta_value > 0";
-		}
+		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter->group_by        = "term_id";
 		$filter->order_by        = "term_count";
 		$filter->order           = "DESC";
@@ -485,7 +484,7 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->collection       = $tb_posts;
 		$filter->collection_alias = "p";
 		$filter->only_fields[]    = "oi.item_id as course_id";
-		$filter->only_fields[]    = "SUM(oim.meta_value) as course_count";
+		$filter->only_fields[]    = "SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as course_count";
 		$filter->only_fields[]    = "p2.post_title as course_name";
 		$filter->limit            = $limit > 0 ? $limit : 10;
 		$time_field               = "p.post_date";
@@ -494,20 +493,21 @@ class LP_Statistics_DB extends LP_Database {
 
 		$filter->join  = [
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
-			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
 			"INNER JOIN $tb_posts AS p2 ON p2.ID = oi.item_id",
+			"INNER JOIN $oim_table AS oim_qty ON oi.order_item_id = oim_qty.learnpress_order_item_id AND oim_qty.meta_key = '_quantity'",
 		];
+
+		if ( $exclude_free_course ) {
+			$filter->join[] = "INNER JOIN $oim_table AS oim_total ON oi.order_item_id = oim_total.learnpress_order_item_id AND oim_total.meta_key = '_total' AND CAST(oim_total.meta_value AS DECIMAL(10,2)) > 0";
+		}
+
 		$filter->where = array(
 			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
 			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
 			$this->wpdb->prepare( "AND oi.item_type=%s", LP_COURSE_CPT ),
-			$this->wpdb->prepare( "AND oim.meta_key=%s", '_quantity' ),
 		);
-		$filter        = $this->filter_time( $filter, $type, $time_field, $value );
-		if ( $exclude_free_course ) {
-			$filter->where[] = $this->wpdb->prepare( "AND oim.meta_key=%s", '_total' );
-			$filter->where[] = "AND oim.meta_value > 0";
-		}
+
+		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter->group_by        = "course_id";
 		$filter->order_by        = "course_count";
 		$filter->order           = "DESC";
