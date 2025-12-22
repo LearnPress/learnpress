@@ -214,17 +214,15 @@ class LP_User_Factory {
 	 *
 	 * @author  tungnx
 	 * @since   4.1.3
-	 * @version 1.0.9
+	 * @version 1.1.0
 	 */
 	protected static function handle_item_order_completed( LP_Order $order, $user, $item ) {
 		$lp_user_items_db   = LP_User_Items_DB::getInstance();
 		$userCourseResponse = null;
 
 		try {
-			// False for create new user_item, True for update user_item
-			$is_update_user_item = false;
-			$course_id           = intval( $item['course_id'] ?? $item['item_id'] ?? 0 );
-			$courseModel         = CourseModel::find( $course_id, true );
+			$course_id   = intval( $item['course_id'] ?? $item['item_id'] ?? 0 );
+			$courseModel = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
 				return null;
 			}
@@ -278,7 +276,6 @@ class LP_User_Factory {
 				 * where user_item_id = $latest_user_item_id
 				 */
 				if ( $allow_repurchase_type === 'keep' ) {
-					$is_update_user_item        = true;
 					$keep_progress_items_course = true;
 					// Set data for update user item
 					$user_item_data['user_item_id'] = $latest_user_item_id;
@@ -314,13 +311,38 @@ class LP_User_Factory {
 				'learn-press/order/user-course-data',
 				$user_item_data,
 				$order,
-				$item,
-				$courseModel
+				$item
 			);
 
-			// Delete items old
-			if ( ! $keep_progress_items_course ) {
-				// Check if user is guest.
+			$another_case = apply_filters(
+				'learn-press/order/completed/update-user-item/another-case/bool',
+				false,
+				$user_item_data,
+				$order,
+				$item,
+				$courseModel,
+				$user_id
+			);
+
+			if ( $another_case ) { // Handle another case to handle user_item
+				do_action(
+					'learn-press/order/completed/update-user-item/another-case',
+					$user_item_data,
+					$order,
+					$item,
+					$courseModel,
+					$userCourse
+				);
+			} elseif ( $keep_progress_items_course ) { // Update user_item to keep course progress
+				$userCourse->ref_id     = $order->get_id();
+				$userCourse->status     = $user_item_data['status'];
+				$userCourse->graduation = $user_item_data['graduation'];
+				$userCourse->start_time = $user_item_data['start_time'];
+				$userCourse->end_time   = null;
+				$userCourse->save();
+				$userCourseResponse = $userCourse;
+			} else { // Create new user_item
+				// Delete items old
 				if ( ! $user_id ) {
 					$userGuestCourse = self::get_user_course_guest( $course_id, $order->get_user_email() );
 					if ( $userGuestCourse ) {
@@ -329,17 +351,7 @@ class LP_User_Factory {
 				} else {
 					$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 				}
-			}
 
-			if ( $is_update_user_item ) {
-				$userCourse->ref_id     = $order->get_id();
-				$userCourse->status     = $user_item_data['status'];
-				$userCourse->graduation = $user_item_data['graduation'];
-				$userCourse->start_time = $user_item_data['start_time'];
-				$userCourse->end_time   = null;
-				$userCourse->save();
-				$userCourseResponse = $userCourse;
-			} else {
 				$userCourseNew = new UserCourseModel( $user_item_data );
 				$userCourseNew->save();
 				$userCourseResponse = $userCourseNew;

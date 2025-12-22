@@ -485,7 +485,7 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->collection       = $tb_posts;
 		$filter->collection_alias = "p";
 		$filter->only_fields[]    = "oi.item_id as course_id";
-		$filter->only_fields[]    = "COUNT(oi.item_id) as course_count";
+		$filter->only_fields[]    = "SUM(oim.meta_value) as course_count";
 		$filter->only_fields[]    = "p2.post_title as course_name";
 		$filter->limit            = $limit > 0 ? $limit : 10;
 		$time_field               = "p.post_date";
@@ -501,6 +501,7 @@ class LP_Statistics_DB extends LP_Database {
 			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
 			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
 			$this->wpdb->prepare( "AND oi.item_type=%s", LP_COURSE_CPT ),
+			$this->wpdb->prepare( "AND oim.meta_key=%s", '_quantity' ),
 		);
 		$filter        = $this->filter_time( $filter, $type, $time_field, $value );
 		if ( $exclude_free_course ) {
