@@ -3,9 +3,10 @@
  * Profile tabs
  *
  * @since 4.2.6.4
- * @version 1.0.0
+ * @version 1.0.1
  */
 
+use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
@@ -46,6 +47,16 @@ $default_settings = array(
 		'hidden'   => true,
 		'callback' => [ ProfileOrderTemplate::class, 'content' ],
 		'priority' => 30,
+	),
+	'course-builder' => array(
+		'title'    => esc_html__( 'Course Builder', 'learnpress' ),
+		'slug'     => $settings->get( 'profile_endpoints.course-builder', 'course-builder' ),
+		'callback' => false,
+		'link'     => CourseBuilder::get_link_course_builder(),
+		'target'   => '_blank',
+		'priority' => 35,
+		'icon'     => '<i class="lp-icon-cog"></i>',
+		'role'     => [ ADMIN_ROLE, LP_TEACHER_ROLE ],
 	),
 	'settings'      => array(
 		'title'    => esc_html__( 'Settings', 'learnpress' ),

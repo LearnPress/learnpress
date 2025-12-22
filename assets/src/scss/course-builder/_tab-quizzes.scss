@@ -58,6 +58,7 @@
 		border-radius: 8px;
 		padding: 5px 15px;
 		gap: 5px;
+		background-color: #fff;
 		border: 1px solid #1e1e1e;
 
 		svg {
@@ -108,11 +109,13 @@
 	}
 
 	.wap-quiz-title {
-		font-size: 20px;
 		margin-top: 0;
 		margin-bottom: 0;
 
-		a {
+		button {
+			background-color: #fff;
+			border: none;
+			font-size: 20px;
 			text-decoration: none;
 			max-width: 234px;
 			white-space: nowrap;

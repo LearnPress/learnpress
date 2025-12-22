@@ -3,7 +3,7 @@
  * Template hooks Course Builder.
  *
  * @since 4.3.0
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\TemplateHooks\CourseBuilder;
@@ -12,7 +12,10 @@ use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LP_Assets;
 use LP_Global;
+use LP_Helper;
+use LP_Settings;
 
 class CourseBuilderTemplate {
 	use Singleton;
@@ -21,6 +24,33 @@ class CourseBuilderTemplate {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
 		add_action( 'learn-press/course-builder/layout', [ $this, 'layout' ] );
 		add_action( 'admin_bar_menu', array( $this, 'add_admin_bar_menu' ), 80 );
+		// Hide admin bar for instructor (not admin)
+		add_filter( 'show_admin_bar', [ $this, 'hide_admin_bar_for_instructor' ] );
+	}
+
+	/**
+	 * Hide admin bar for instructor users (not administrators).
+	 *
+	 * @param bool $show_admin_bar
+	 * @return bool
+	 * @since 4.3.0
+	 */
+	public function hide_admin_bar_for_instructor( bool $show_admin_bar ): bool {
+		if ( ! is_user_logged_in() ) {
+			return $show_admin_bar;
+		}
+
+		$user = UserModel::find( get_current_user_id(), true );
+		if ( ! $user ) {
+			return $show_admin_bar;
+		}
+
+		// Hide admin bar if user is instructor but not admin
+		if ( $user->is_instructor() && ! current_user_can( ADMIN_ROLE ) ) {
+			return false;
+		}
+
+		return $show_admin_bar;
 	}
 
 	/**
@@ -40,6 +70,9 @@ class CourseBuilderTemplate {
 		wp_enqueue_style( 'lp-course-builder' );
 		// Load edit curriculum style
 		wp_enqueue_style( 'lp-edit-curriculum' );
+
+		// Enqueue scripts for Course Builder
+		$this->enqueue_scripts();
 
 		$profile = LP_Global::profile();
 
@@ -68,6 +101,27 @@ class CourseBuilderTemplate {
 		];
 
 		echo Template::combine_components( $layout );
+	}
+
+	/**
+	 * Enqueue scripts and localize data for Course Builder.
+	 *
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	protected function enqueue_scripts() {
+		wp_enqueue_script( 'lp-load-ajax' );
+		wp_enqueue_script( 'lp-course-builder' );
+		wp_enqueue_editor();
+		wp_enqueue_media();
+
+		// Print lpData inline script if not already printed
+		// This ensures lpAjaxUrl is available for AJAX calls
+		$lp_assets = LP_Assets::instance();
+		if ( $lp_assets ) {
+			$localize_data = $lp_assets->localize_data_global();
+			LP_Helper::print_inline_script_tag( 'lpData', $localize_data, [ 'id' => 'lpData-course-builder' ] );
+		}
 	}
 
 	public function sidebar() {
@@ -260,16 +314,33 @@ class CourseBuilderTemplate {
 
 	public function html_btn_add_new() {
 		$tab_current = CourseBuilder::get_current_tab();
-		$tab_data    = CourseBuilder::get_data( $tab_current );
-		$title       = $tab_data['title'];
+		$map_title = [
+			'courses'   => __( 'Course', 'learnpress' ),
+			'lessons'   => __( 'Lesson', 'learnpress' ),
+			'quizzes'   => __( 'Quiz', 'learnpress' ),
+			'questions' => __( 'Question', 'learnpress' ),
+		];
 
-		$link_tab     = CourseBuilder::get_tab_link( $tab_current );
-		$link_add_new = trailingslashit( $link_tab . 'post-new' );
+		$map_type = [
+			'lessons'   => 'lesson',
+			'quizzes'   => 'quiz',
+			'questions' => 'question',
+		];
+
+		$title       = isset( $map_title[ $tab_current ] ) ? $map_title[ $tab_current ] : '';
+		$type = isset( $map_type[ $tab_current ] ) ? $map_type[ $tab_current ] : '';
+		$add_new = 'data-add-new-' . esc_attr( $type );
+
+		$btn_add_new = sprintf( '<button %s class="lp-button cb-btn-add-new">', $add_new );
+
+		if('courses' === $tab_current ) {
+			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_course_builder( null, 'add-new-course' ) ) );
+		}
 
 		$btn = [
-			'wrapper'     => sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url_raw( $link_add_new ) ),
+			'wrapper'     => $btn_add_new,
 			'content'     => sprintf( '%s %s', __( 'Add New', 'learnpress' ), $title ),
-			'wrapper_end' => '</a>',
+			'wrapper_end' => '</button>',
 		];
 
 		return Template::combine_components( $btn );

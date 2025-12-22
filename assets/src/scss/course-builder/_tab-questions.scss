@@ -50,6 +50,7 @@
 	}
 
 	.btn-edit-question {
+		background-color: #fff;
 		display: flex;
 		align-items: center;
 		text-decoration: none;
@@ -108,11 +109,13 @@
 	}
 
 	.wap-question-title {
-		font-size: 20px;
 		margin-top: 0;
 		margin-bottom: 0;
 
-		a {
+		button {
+			font-size: 20px;
+			background: #fff;
+			border: none;
 			text-decoration: none;
 			max-width: 234px;
 			white-space: nowrap;

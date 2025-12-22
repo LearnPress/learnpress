@@ -130,9 +130,9 @@ export class BuilderEditQuiz {
 
 		const dataSend = {
 			...quizData,
-			action: 'update_quiz',
+			action: 'builder_update_quiz',
 			args: {
-				id_url: 'update-quiz',
+				id_url: 'builder-update-quiz',
 			},
 			quiz_status: 'publish',
 		};

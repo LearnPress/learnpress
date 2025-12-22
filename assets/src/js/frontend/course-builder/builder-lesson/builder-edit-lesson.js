@@ -131,9 +131,9 @@ export class BuilderEditLesson {
 
 		const dataSend = {
 			...lessonData,
-			action: 'update_lesson',
+			action: 'builder_update_lesson',
 			args: {
-				id_url: 'update-lesson',
+				id_url: 'builder-update-lesson',
 			},
 			lesson_status: 'publish',
 		};

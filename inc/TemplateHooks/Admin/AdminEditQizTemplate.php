@@ -373,7 +373,7 @@ class AdminEditQizTemplate {
 		$section = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-select-question-bank">',
 			'popup'                    => AdminTemplate::html_popup_items_to_select_clone( $tabs, $html_items ),
-			'wrap-script-template-end' => '</div>',
+			'wrap-script-template-end' => '</script>',
 		];
 
 		return Template::combine_components( $section );

@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.3
+ * @version  4.0.4
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -42,7 +42,8 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 			}
 
 			$slug        = $profile->get_slug( $profile_tab, $tab_key );
-			$link        = $profile->get_tab_link( $tab_key, true );
+			$link        = $profile_tab->get( 'link' ) ? $profile_tab->get( 'link' ) : $profile->get_tab_link( $tab_key, true );
+			$target      = $profile_tab->get( 'target' ) ? $profile_tab->get( 'target' ) : '_self';
 			$tab_classes = array( esc_attr( $tab_key ) );
 
 			$sections = $profile_tab->sections();
@@ -57,7 +58,7 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 			?>
 
 			<li class="<?php echo implode( ' ', $tab_classes ); ?>">
-				<a href="<?php echo esc_url_raw( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
+				<a href="<?php echo esc_url_raw( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>" target="<?php echo esc_attr( $target ); ?>">
 					<?php
 					if ( ! empty( $profile_tab->get( 'icon' ) ) ) {
 						echo wp_kses_post( str_replace(array('fas fa-','fa fa-'),'lp-icon-', $profile_tab->get( 'icon' ) ));

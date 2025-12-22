@@ -267,6 +267,16 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				unset( $tabs['courses'] );
 			}
 
+			// Filter tabs by role - only show tabs with role restriction to users with matching roles
+			$user_role = $user_of_profile instanceof LP_User ? $user_of_profile->get_data( 'role' ) : '';
+			foreach ( $tabs as $tab_key => $tab_data ) {
+				if ( ! empty( $tab_data['role'] ) && is_array( $tab_data['role'] ) ) {
+					if ( ! in_array( $user_role, $tab_data['role'] ) ) {
+						unset( $tabs[ $tab_key ] );
+					}
+				}
+			}
+
 			$tabs        = apply_filters( 'learn-press/get-profile-tabs', $tabs, $user_of_profile, $this->user_current );
 			$this->_tabs = new LP_Profile_Tabs( $tabs, $this );
 
