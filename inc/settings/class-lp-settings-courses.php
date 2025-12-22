@@ -19,6 +19,19 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	}
 
 	public function save() {
+		// Check role publish course of user teacher
+		if ( ! empty( $_POST ) && isset( $_GET['tab'] ) && $_GET['tab'] === 'courses' ) {
+			$teacher                  = get_role( LP_TEACHER_ROLE );
+			$course_cap               = LP_COURSE_CPT . 's';
+			$review_course_instructor = $_POST['learn_press_required_review'] ?? false;
+			if ( $review_course_instructor ) {
+				$teacher->remove_cap( 'publish_' . $course_cap );
+			} else {
+				$teacher->add_cap( 'publish_' . $course_cap );
+			}
+		}
+		// End check role publish course of user teacher
+
 		$course_permalink = LP_Helper::sanitize_params_submitted( $_POST['learn_press_course_base'] ?? '' );
 
 		if ( ! $course_permalink ) {
