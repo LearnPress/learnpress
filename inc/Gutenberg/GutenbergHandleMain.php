@@ -141,9 +141,15 @@ class GutenbergHandleMain {
 	 * @param mixed $template_type wp_template or wp_template_part.
 	 *
 	 * @return array
+	 * @since 4.2.2.3
+	 * @version 1.0.6
 	 */
 	public function set_blocks_template( array $query_result, array $query, $template_type ): array {
 		if ( $template_type === 'wp_template_part' ) { // Template not Template part
+			return $query_result;
+		}
+
+		if ( ! is_admin() && post_password_required() ) {
 			return $query_result;
 		}
 
