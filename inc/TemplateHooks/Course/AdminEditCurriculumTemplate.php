@@ -3,6 +3,9 @@
 namespace LearnPress\TemplateHooks\Course;
 
 use Exception;
+use LearnPress\Databases\DataBase;
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\PostFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -573,7 +576,7 @@ class AdminEditCurriculumTemplate {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public static function render_list_items_not_assign( $data ): stdClass {
 		$user                   = wp_get_current_user();
@@ -594,15 +597,15 @@ class AdminEditCurriculumTemplate {
 		$coursePostModel = new CoursePostModel( $courseModel );
 		$coursePostModel->check_capabilities_create();
 
-		$lp_db               = LP_Database::getInstance();
-		$filter              = new LP_Post_Type_Filter();
+		$lp_posts_db         = PostDB::getInstance();
+		$filter              = new PostFilter();
 		$filter->only_fields = [
-			'DISTINCT(p.ID)',
+			'DISTINCT(p.ID) AS ID',
 			'p.post_title',
 			'p.post_type',
 		];
 		$filter->post_type   = $item_type;
-		$filter->post_status = 'publish';
+		$filter->post_status = [ 'publish' ];
 		$filter->order_by    = 'p.ID';
 		$filter->page        = $paged;
 		if ( ! user_can( $user, UserModel::ROLE_ADMINISTRATOR ) ) {
@@ -614,12 +617,11 @@ class AdminEditCurriculumTemplate {
 		}
 
 		// Old logic: Get all items not assigned to any course.
-		$filter->where[] = "AND p.ID NOT IN ( SELECT item_id FROM {$lp_db->tb_lp_section_items} )";
+		$filter->where[] = "AND p.ID NOT IN ( SELECT item_id FROM {$lp_posts_db->tb_lp_section_items} )";
 
 		// New logic: Get all items not assigned to the course.
 		// Code here
 
-		$lp_posts_db = LP_Post_DB::getInstance();
 		$total_rows  = 0;
 		$filter      = apply_filters(
 			'learn-press/filter-list-items-not-assign-course',
