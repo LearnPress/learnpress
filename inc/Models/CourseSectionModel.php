@@ -280,13 +280,17 @@ class CourseSectionModel {
 	/**
 	 * Add items created to section.
 	 *
+	 * @param array $data
+	 *
+	 * @return array
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function add_items( array $data ) {
-		$courseModel = $this->get_course_model();
-		$section_id  = $this->get_section_id();
+	public function add_items( array $data ): array {
+		$courseSectionItems = [];
+		$courseModel        = $this->get_course_model();
+		$section_id         = $this->get_section_id();
 
 		if ( ! $courseModel instanceof CourseModel ) {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
@@ -327,7 +331,11 @@ class CourseSectionModel {
 			$courseSectionItemModel->section_id        = $section_id;
 			$courseSectionItemModel->section_course_id = $this->section_course_id;
 			$courseSectionItemModel->save();
+
+			$courseSectionItems[] = $courseSectionItemModel;
 		}
+
+		return $courseSectionItems;
 	}
 
 	/**

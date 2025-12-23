@@ -684,7 +684,7 @@ export class EditSectionItem {
 			elItemNew.dataset.itemType = item.type;
 			elItemNew
 				.querySelector( '.edit-link' )
-				.setAttribute( 'href', item.edit_link || '' );
+				.setAttribute( 'href', item.editLink || '' );
 			elInputTitleNew.value = item.titleSelected || '';
 			lpUtils.lpSetLoadingEl( elItemNew, 1 );
 			lpUtils.lpShowHideEl( elItemNew, 1 );

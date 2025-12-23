@@ -17,6 +17,7 @@ use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\PostModel;
+use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LP_Helper;
 use LP_REST_Response;
 use LP_Section_Items_DB;
@@ -286,7 +287,15 @@ class EditCurriculumAjax extends AbstractAjax {
 				throw new Exception( __( 'Section not found', 'learnpress' ) );
 			}
 
-			$courseSectionModel->add_items( $data );
+			$courseSectionItems = $courseSectionModel->add_items( $data );
+			if ( empty( $courseSectionItems ) ) {
+				throw new Exception( __( 'No items were added to the section', 'learnpress' ) );
+			}
+
+			/*$response->data->html = '';
+			foreach ( $courseSectionItems as $courseSectionItem ) {
+				$response->data->html .= AdminEditCurriculumTemplate::instance()->html_section_item( $courseModel, $courseSectionItem );
+			}*/
 
 			$response->status  = 'success';
 			$response->message = __( 'Items added to section successfully', 'learnpress' );

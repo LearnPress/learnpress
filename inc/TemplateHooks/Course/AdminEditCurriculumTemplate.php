@@ -572,7 +572,7 @@ class AdminEditCurriculumTemplate {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function render_list_items_not_assign( $data ): stdClass {
 		$user                   = wp_get_current_user();
@@ -678,7 +678,7 @@ class AdminEditCurriculumTemplate {
 						esc_attr( $post->post_type ?? '' ),
 						esc_attr( $title_display ), // For JS display on list selected.
 						esc_attr( $checked ),
-						get_permalink( $post->ID ),
+						get_edit_post_link( $post->ID ),
 						esc_attr( get_the_title( $post->ID ) )
 					),
 					$title_display
