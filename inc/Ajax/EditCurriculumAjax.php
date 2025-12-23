@@ -22,6 +22,7 @@ use LP_Helper;
 use LP_REST_Response;
 use LP_Section_Items_DB;
 use LP_Section_Items_Filter;
+use stdClass;
 use Throwable;
 
 class EditCurriculumAjax extends AbstractAjax {
@@ -292,10 +293,22 @@ class EditCurriculumAjax extends AbstractAjax {
 				throw new Exception( __( 'No items were added to the section', 'learnpress' ) );
 			}
 
-			/*$response->data->html = '';
+			$response->data->html = '';
+			/**
+			 * @var $courseSectionItem CourseSectionItemModel
+			 */
 			foreach ( $courseSectionItems as $courseSectionItem ) {
-				$response->data->html .= AdminEditCurriculumTemplate::instance()->html_section_item( $courseModel, $courseSectionItem );
-			}*/
+				$courseSectionItemAlias        = (object) get_object_vars( $courseSectionItem );
+				$itemModel                     = $courseModel->get_item_model(
+					$courseSectionItem->item_id,
+					$courseSectionItem->item_type
+				);
+				$courseSectionItemAlias->title = $itemModel ? $itemModel->get_the_title() : '';
+				$response->data->html         .= AdminEditCurriculumTemplate::instance()->html_section_item(
+					$courseModel,
+					$courseSectionItemAlias
+				);
+			}
 
 			$response->status  = 'success';
 			$response->message = __( 'Items added to section successfully', 'learnpress' );

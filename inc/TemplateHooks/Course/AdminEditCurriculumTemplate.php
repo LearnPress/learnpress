@@ -406,7 +406,8 @@ class AdminEditCurriculumTemplate {
 			'preview'  => sprintf(
 				'<li title="%s" class="lp-btn-set-preview-item"><a class="%s"></a></li>',
 				__( 'Enable/Disable Preview', 'learnpress' ),
-				$itemModel && $itemModel->post_type === LP_LESSON_CPT && $itemModel->has_preview() ? 'lp-icon-eye' : 'lp-icon-eye-slash'
+				$itemModel && $itemModel->post_type === LP_LESSON_CPT
+				&& $itemModel->has_preview() ? 'lp-icon-eye' : 'lp-icon-eye-slash'
 			),
 			'edit'     => sprintf(
 				'<li title="%s"><a href="%s" target="_blank" class="lp-icon-edit-square edit-link"></a></li>',
