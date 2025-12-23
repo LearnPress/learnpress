@@ -311,7 +311,8 @@ class LP_User_Factory {
 				'learn-press/order/user-course-data',
 				$user_item_data,
 				$order,
-				$item
+				$item,
+				$courseModel
 			);
 
 			$another_case = apply_filters(

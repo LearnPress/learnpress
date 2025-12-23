@@ -277,6 +277,15 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.3.2.3 (2025-12-25) =
+~ Fixed security.
+~ Fix statistics count: top  courses sold, top categories sold.
+~ Fixed: function of "required_review" option.
+~ Fixed: show password for template Gutenberg if set.
+~ Edit curriculum: fix error edit link item when add from content bank.
+~ Edit curriculum: fix add item lesson is set Preview via content bank.
+~ Fixed: curriculum edit error with WordPress playground.
+
 = 4.3.2.2 (2025-12-16) =
 ~ Fixed: error with addons Assignment, Course Review.
 ~ Fixed: error cache when start Quiz.
