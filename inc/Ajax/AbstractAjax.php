@@ -3,7 +3,7 @@
  * class AjaxBase
  *
  * @since 4.2.7.6
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 namespace LearnPress\Ajax;
@@ -29,13 +29,13 @@ abstract class AbstractAjax {
 			if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 				if ( ! in_array( get_class( $class ), $class_no_nonce ) ) {
 					wp_die( 'Invalid request!', 400 );
+				} else {
+					// Check refer: must same domain
+					$referer = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? wp_get_raw_referer();
+					if ( empty( $referer ) || strpos( $referer, home_url() ) !== 0 ) {
+						wp_die( 'Invalid domain request!', 400 );
+					}
 				}
-			}
-
-			// Check refer: must same domain (case get nonce via curl)
-			$referer = wp_get_raw_referer();
-			if ( empty( $referer ) || strpos( $referer, home_url() ) !== 0 ) {
-				wp_die( 'Invalid domain request!', 400 );
 			}
 
 			if ( is_callable( [ $class, $action ] ) ) {
