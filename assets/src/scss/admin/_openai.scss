@@ -10,7 +10,7 @@ $input-bg: #F7FAFC;
 $white: #FFFFFF;
 $title-color: #111111;
 
-.lp-btn-generate-course-with-ai, .lp-btn-generate-with-ai, #lp-course-edit-curriculum .lp-btn-generate-with-ai{
+.lp-btn-ai-style{
 	background: #f6f7f7;
 	border: 1px solid #2271b1;
 	color: #2271b1;
@@ -45,7 +45,7 @@ $title-color: #111111;
 	background: #6B46E9;
 }
 
-.lp-btn-generate-course-with-ai {
+.lp-btn-generate-course-with-ai, .lp-btn-warning-enable-ai {
 	position: absolute;
 	margin: 10px 0 0 10px !important;
 }
@@ -982,6 +982,73 @@ $title-color: #111111;
 		width: 40px;
 		height: 40px;
 		border-width: 5px;
+	}
+}
+
+.lp-must-enable-ai-wrap {
+	text-align: left;
+	line-height: 1.6em;
+
+	h2 {
+		margin-bottom: 0;
+		i {
+			margin-right: 10px;
+			color: #DC2626;
+			//background: #FEE2E2;
+			//padding: 5px;
+			//border-radius: 50%;
+		}
+	}
+
+	.desc {
+		color:#6B7280;
+	}
+
+	.p2 {
+		color: #6B7280;
+	}
+
+	a {
+		color: #2563EB;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	.help-link {
+		padding: 16px;
+		border: 1px solid #E5E7EB;
+		border-radius: 8px;
+		font-size: 13px;
+
+		a{
+			text-decoration: none;
+			margin-top: 10px;
+		}
+
+		i {
+			color: #2A73AB;
+		}
+	}
+
+	.button-actions {
+		margin-top: 20px;
+		text-align: right;
+
+		.lp-btn-close-ai-popup {
+			border: none;
+			color: #4B5563;
+			background: none;
+		}
+
+		.button-primary {
+			background-color: $primary-purple;
+			color: #fff;
+			border: none;
+
+			&:hover {
+				opacity: 0.9;
+			}
+		}
 	}
 }
 

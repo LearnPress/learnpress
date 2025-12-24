@@ -44,6 +44,7 @@ class AdminCreateCourseAITemplate {
 			$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
 			echo $this->html_create_course_via_ai();
 			echo $this->html_creating_course();
+			echo $this->html_warning_enable_ai();
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
@@ -580,6 +581,67 @@ class AdminCreateCourseAITemplate {
 				esc_html__( 'Creating sections...', 'learnpress' ),
 				esc_html__( 'Creating lessons...', 'learnpress' ),
 				esc_html__( 'Creating quizzes...', 'learnpress' ),
+			),
+			'wrap-end'                 => '</div>',
+			'wrap-script-template-end' => '</script>',
+		];
+
+		return Template::combine_components( $components );
+	}
+
+	/**
+	 * HTML for Popup warning enable AI
+	 *
+	 * @return string
+	 */
+	public function html_warning_enable_ai(): string {
+		$components = [
+			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-must-enable-ai">',
+			'wrap'                     => '<div class="lp-must-enable-ai-wrap">',
+			'head'                     => sprintf(
+				'<h2><i class="lp-icon-warning"></i><strong>%s</strong></h2>',
+				esc_html__( 'OpenAI API is not connected', 'learnpress' )
+			),
+			'desc'                     => sprintf(
+				'<div class="desc">%s</div>',
+				esc_html__( 'Connect the OpenAI API to unlock LearnPress AI features.', 'learnpress' ),
+			),
+			'paragraph'                => sprintf(
+				'<p>%s</p>
+				<p class="p2">%s</p>',
+				sprintf(
+					'%s <a href="%s" target="_blank">%s</a>',
+					__( 'Please enter your <strong>OpenAI Secret Key</strong> and enable the option <strong>Enable OpenAI</strong> option', 'learnpress' ),
+					esc_url( admin_url( 'admin.php?page=learn-press-settings&tab=open-ai' ) ),
+					esc_html__( 'here.', 'learnpress' ),
+				),
+				esc_html__(
+					'LearnPress AI helps you create courses, lessons, quizzes, and
+					learning content faster with intelligent AI assistance.',
+					'learnpress'
+				),
+			),
+			'help-link'                => sprintf(
+				'<div class="help-link">%s<br/>%s</div>',
+				sprintf(
+					'%s %s',
+					'<i class="lp-icon-book"></i>',
+					esc_html__( 'Need help using LearnPress AI?', 'learnpress' ),
+				),
+				sprintf(
+					'<a href="%s" target="_blank">%s</a>',
+					esc_url( 'https://learnpresslms.com/docs/learnpress/guide-to-using-ai-to-create-courses-in-learpress/' ),
+					esc_html__( 'View LearnPress AI documentation.', 'learnpress' ),
+				),
+			),
+			'buttons'                  => sprintf(
+				'<div class="button-actions">
+					<button class="button lp-btn-close-ai-popup" type="button">%s</button>
+					<a class="button button-primary" href="%s" target="_blank">%s</a>
+				</div>',
+				esc_html__( 'Close', 'learnpress' ),
+				esc_url( admin_url( 'admin.php?page=learn-press-settings&tab=open-ai' ) ),
+				esc_html__( 'Go to Settings', 'learnpress' ),
 			),
 			'wrap-end'                 => '</div>',
 			'wrap-script-template-end' => '</script>',

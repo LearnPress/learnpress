@@ -20,18 +20,26 @@ export class CreateCourseViaAI {
 
 	init() {
 		if ( ! lpData?.enable_open_ai ) {
-			return;
-		}
-
-		lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
-			el.insertAdjacentHTML(
-				'afterend',
-				`<button type="button" class="lp-btn-generate-course-with-ai">
+			lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
+				el.insertAdjacentHTML(
+					'afterend',
+					`<button type="button" class="lp-btn-warning-enable-ai lp-btn-ai-style">
 					<i class="lp-ico-ai"></i>
 					<span>${ lpData.i18n.generate_with_ai }</span>
 				</button>`
-			);
-		} );
+				);
+			} );
+		} else {
+			lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
+				el.insertAdjacentHTML(
+					'afterend',
+					`<button type="button" class="lp-btn-generate-course-with-ai lp-btn-ai-style">
+					<i class="lp-ico-ai"></i>
+					<span>${ lpData.i18n.generate_with_ai }</span>
+				</button>`
+				);
+			} );
+		}
 
 		this.events();
 	}
@@ -43,6 +51,11 @@ export class CreateCourseViaAI {
 		CreateCourseViaAI._loadedEvents = true;
 
 		lpUtils.eventHandlers( 'click', [
+			{
+				selector: '.lp-btn-warning-enable-ai',
+				class: this,
+				callBack: this.showPopupEnableAI.name,
+			},
 			{
 				selector: '.lp-btn-generate-course-with-ai',
 				class: this,
@@ -89,6 +102,23 @@ export class CreateCourseViaAI {
 				},
 			},
 		] );
+	}
+
+	// Show popup warning enable AI before using.
+	showPopupEnableAI() {
+		const modalTemplate = document.querySelector( '#lp-tmpl-must-enable-ai' );
+
+		if ( ! modalTemplate ) {
+			console.error( 'Enable OpenAI Modal Template not found!' );
+			return;
+		}
+
+		SweetAlert.fire( {
+			html: modalTemplate.innerHTML,
+			width: '420px',
+			showCloseButton: false,
+			showConfirmButton: false,
+		} );
 	}
 
 	showPopupCreateFullCourse() {
