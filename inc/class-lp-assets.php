@@ -349,8 +349,8 @@ class LP_Assets extends LP_Abstract_Assets {
 						'lp-global',
 						'wp-hooks',
 					), // when Eduma v5.3.6 release a long time, will be remove lp-global.
-					array( LP_PAGE_COURSES ),
-					0,
+					array(),
+					1,
 					0,
 					'',
 					[ 'strategy' => 'defer' ]
