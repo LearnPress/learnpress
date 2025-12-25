@@ -1,10 +1,10 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
-import 'lpAssetsJsPath/admin/edit-question';
+import { EditQuestion } from 'lpAssetsJsPath/admin/edit-question.js';
 
 export class BuilderEditQuestion {
 	constructor() {
-		this.init();
+		this.editQuestion = null;
 	}
 
 	static selectors = {
@@ -15,10 +15,98 @@ export class BuilderEditQuestion {
 		idTitle: 'title',
 		idDescEditor: 'question_description_editor',
 		elFormSetting: '.lp-form-setting-question',
+		// Question edit selectors
+		elEditQuestionWrap: '.lp-edit-question-wrap',
+		elQuestionEditMain: '.lp-question-edit-main',
 	};
 
 	init() {
+		this.initQuestionAnswersSettings();
 		this.events();
+	}
+
+	/**
+	 * Initialize Question Answers Settings
+	 * This will init EditQuestion class for the question answer management
+	 */
+	initQuestionAnswersSettings() {
+		lpUtils.lpOnElementReady(
+			BuilderEditQuestion.selectors.elQuestionEditMain,
+			( elQuestionEditMain ) => {
+				// Initialize EditQuestion for question answer editing
+				if ( ! this.editQuestion ) {
+					this.editQuestion = new EditQuestion();
+					this.editQuestion.init();
+				}
+
+				// Init sortable for question answers
+				if ( this.editQuestion ) {
+					this.editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
+				}
+			}
+		);
+	}
+
+	/**
+	 * Re-initialize when question type changes
+	 */
+	reinitQuestionHandlers( elQuestionEditMain ) {
+		if ( this.editQuestion && elQuestionEditMain ) {
+			this.editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
+			this.editQuestion.initTinyMCE();
+		}
+	}
+
+	/**
+	 * Re-initialize for popup context
+	 * This is called when popup is opened multiple times to ensure
+	 * TinyMCE and other handlers are properly re-initialized
+	 * 
+	 * @param {HTMLElement} container - The popup container element
+	 */
+	reinit( container ) {
+		const elQuestionEditMain = container 
+			? container.querySelector( BuilderEditQuestion.selectors.elQuestionEditMain )
+			: document.querySelector( BuilderEditQuestion.selectors.elQuestionEditMain );
+
+		if ( ! elQuestionEditMain ) {
+			return;
+		}
+
+		// Re-create EditQuestion instance to ensure fresh initialization
+		// This is necessary because TinyMCE instances were destroyed when popup closed
+		if ( this.editQuestion ) {
+			// Destroy existing TinyMCE instances in the container first
+			if ( typeof tinymce !== 'undefined' && container ) {
+				const textareas = container.querySelectorAll( 'textarea.lp-meta-box__editor' );
+				textareas.forEach( ( textarea ) => {
+					const editorId = textarea.id;
+					if ( editorId ) {
+						const editor = tinymce.get( editorId );
+						if ( editor ) {
+							editor.remove();
+						}
+						if ( typeof wp !== 'undefined' && wp.editor && wp.editor.remove ) {
+							wp.editor.remove( editorId );
+						}
+					}
+				} );
+			}
+		}
+
+		// Create fresh EditQuestion instance
+		this.editQuestion = new EditQuestion();
+		this.editQuestion.init();
+
+		// Re-init sortable and TinyMCE
+		this.editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
+		
+		// Use setTimeout to ensure DOM is ready for TinyMCE
+		setTimeout( () => {
+			if ( this.editQuestion ) {
+				this.editQuestion.initTinyMCE();
+			}
+		}, 100 );
 	}
 
 	events() {

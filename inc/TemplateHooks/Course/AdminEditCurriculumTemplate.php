@@ -20,7 +20,7 @@ use stdClass;
  * Template hooks Admin Edit Course Curriculum.
  *
  * @since 4.2.8.6
- * @version 1.0.0
+ * @version 1.0.1
  */
 class AdminEditCurriculumTemplate {
 	use Singleton;
@@ -31,6 +31,14 @@ class AdminEditCurriculumTemplate {
 	 * @var CourseModel
 	 */
 	public $courseModel;
+
+	/**
+	 * Context data from AJAX request.
+	 * Contains flags like is_course_builder.
+	 *
+	 * @var array
+	 */
+	public $context_data = [];
 
 	public function init() {
 		add_action( 'learn-press/admin/edit-curriculum/layout', [ $this, 'edit_course_curriculum_layout' ] );
@@ -87,7 +95,8 @@ class AdminEditCurriculumTemplate {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
 
-		self::instance()->courseModel = $courseModel;
+		self::instance()->courseModel  = $courseModel;
+		self::instance()->context_data = $data; // Store context data for filters
 
 		$coursePostModel = new CoursePostModel( $courseModel );
 		if ( ! $coursePostModel->check_capabilities_create() ) {
@@ -401,6 +410,18 @@ class AdminEditCurriculumTemplate {
 		 */
 		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
 
+		$edit_button = apply_filters(
+			'learn-press/admin/curriculum/section-item/edit-button',
+			sprintf(
+				'<li title="%s"><a href="%s" target="_blank" class="lp-icon-edit-square edit-link"></a></li>',
+				__( 'Edit item detail', 'learnpress' ),
+				$itemModel ? $itemModel->get_edit_link() : ''
+			),
+			$item,
+			$itemModel,
+			$courseModel
+		);
+
 		$section_action = [
 			'wrap'     => '<ul class="item-actions">',
 			'preview'  => sprintf(
@@ -408,11 +429,7 @@ class AdminEditCurriculumTemplate {
 				__( 'Enable/Disable Preview', 'learnpress' ),
 				$itemModel && $itemModel->post_type === LP_LESSON_CPT && $itemModel->has_preview() ? 'lp-icon-eye' : 'lp-icon-eye-slash'
 			),
-			'edit'     => sprintf(
-				'<li title="%s"><a href="%s" target="_blank" class="lp-icon-edit-square edit-link"></a></li>',
-				__( 'Edit item detail', 'learnpress' ),
-				$itemModel ? $itemModel->get_edit_link() : ''
-			),
+			'edit'     => $edit_button,
 			'delete'   => sprintf(
 				'<li class="action lp-btn-delete-item"
 					data-title="%s" data-content="%s">%s</li>',
@@ -422,6 +439,15 @@ class AdminEditCurriculumTemplate {
 			),
 			'wrap_end' => '</ul>',
 		];
+
+		$section_action = apply_filters(
+			'learn-press/admin/curriculum/section-item/actions',
+			$section_action,
+			$item,
+			$itemModel,
+			$courseModel,
+			$this->context_data
+		);
 
 		$section = [
 			'li'           => sprintf(

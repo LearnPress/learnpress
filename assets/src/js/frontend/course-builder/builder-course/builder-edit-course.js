@@ -18,7 +18,9 @@ export class BuilderEditCourse {
 		elBtnDraftCourse: '.cb-btn-darft',
 		elBtnTrashCourse: '.cb-btn-trash',
 		elTitleInput: '#title',
+		elTitleCharCount: '.cb-course-edit-title__char-count',
 		elDescEditor: '#course_description_editor',
+		elDescWordCount: '.cb-course-edit-desc__word-count',
 		elStatus: '.course-status',
 		elFormSetting: '.lp-form-setting-course',
 
@@ -50,19 +52,10 @@ export class BuilderEditCourse {
 		elCancelSaleScheduleBtn: '.lp_cancel_sale_schedule',
 		elRegularPriceInput: '#_lp_regular_price',
 		elSalePriceInput: '#_lp_sale_price',
+		elPriceInput: '#_lp_price',
 		elFormField: '.form-field',
 		elTipFloating: '.learn-press-tip-floating',
-
 		elCategoryDiv: '#taxonomy-course_category',
-		elCategoryTabs: '#course_category-tabs li a',
-		elCategoryPanels: '#taxonomy-course_category .tabs-panel',
-
-		elBtnToggleAddCategory: '#course_category-add-toggle',
-		elFormCategoryWrapper: '#course_category-add',
-		elInputNewCategory: '#newcourse_category',
-		elSelectParentCategory: '#newcourse_category_parent',
-		elBtnSubmitCategory: '#course_category-add-submit',
-		elCategoryChecklist: '#course_categorychecklist',
 	};
 
 	init() {
@@ -76,6 +69,8 @@ export class BuilderEditCourse {
 		this.initCategoryTabs();
 		this.initCategoryTree();
 		this.initSalePriceLayout();
+		this.initTitleCharCount();
+		this.initDescWordCount();
 		this.events();
 	}
 
@@ -156,11 +151,6 @@ export class BuilderEditCourse {
 				class: this,
 				callBack: this.handleCancelSchedule.name,
 			},
-			{
-				selector: BuilderEditCourse.selectors.elCategoryTabs,
-				class: this,
-				callBack: this.handleCategoryTabClick.name,
-			},
 		] );
 
 		lpUtils.eventHandlers( 'change', [
@@ -181,6 +171,11 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elPriceCourseData,
 				class: this,
 				callBack: this.validateSalePrice.name,
+				},
+				{
+				selector: BuilderEditCourse.selectors.elTitleInput,
+				class: this,
+				callBack: this.handleTitleInput.name,
 			},
 		] );
 
@@ -296,62 +291,8 @@ export class BuilderEditCourse {
 		}
 	}
 
-	addNewCategory( args ) {
-		const { e } = args;
-		if ( e ) e.preventDefault();
-
-		const elInput = document.querySelector( BuilderEditCourse.selectors.elInputNewCategory );
-		const elParent = document.querySelector( BuilderEditCourse.selectors.elSelectParentCategory );
-		const btnSave = document.querySelector( BuilderEditCourse.selectors.elBtnSubmitCategory );
-
-		if ( ! elInput ) return;
-		const categoryName = elInput.value?.trim();
-
-		if ( ! categoryName ) {
-			lpToastify.show( 'Please enter category name', 'error' );
-			return;
-		}
-
-		lpUtils.lpSetLoadingEl( btnSave, 1 );
-
-		const dataSend = {
-			action: 'add_course_category',
-			args: { id_url: 'add-course-category' },
-			name: categoryName,
-			parent: elParent ? elParent.value : -1,
-		};
-
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message, status );
-
-				if ( data?.html ) {
-					const checklist = document.querySelector(
-						BuilderEditCourse.selectors.elCategoryChecklist
-					);
-
-					if ( checklist ) {
-						checklist.insertAdjacentHTML( 'afterbegin', data.html );
-					}
-
-					elInput.value = '';
-					if ( elParent ) elParent.value = '-1';
-				}
-			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( btnSave, 0 );
-			},
-		};
-
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
-	}
-
 	initCategoryTree() {
-		const wrapper = document.querySelector( '#taxonomy-course_category' );
+		const wrapper = document.querySelector( BuilderEditCourse.selectors.elCategoryDiv );
 		if ( ! wrapper ) return;
 
 		const childLists = wrapper.querySelectorAll( 'ul.children' );
@@ -430,9 +371,7 @@ export class BuilderEditCourse {
 		const elParent = document.querySelector( BuilderEditCourse.selectors.elSelectParentCategory );
 		const btnSave = document.querySelector( BuilderEditCourse.selectors.elBtnSubmitCategory );
 
-		if ( ! elInput ) return;
-
-		const categoryName = elInput.value?.trim();
+		const categoryName = elInput?.value?.trim();
 		if ( ! categoryName ) {
 			lpToastify.show( 'Please enter category name', 'error' );
 			return;
@@ -481,7 +420,7 @@ export class BuilderEditCourse {
 					}
 
 					elInput.value = '';
-					if ( elParent ) elParent.value = '-1';
+					if ( elParent ) elParent.value = '0';
 				}
 			},
 			error: ( error ) => {
@@ -580,9 +519,9 @@ export class BuilderEditCourse {
 					  };
 			const tip = document.createElement( 'div' );
 			tip.className = 'learn-press-tip-floating';
-			if ( targetId === '_lp_price' ) {
+			if ( targetId === BuilderEditCourse.selectors.elPriceInput ) {
 				tip.innerHTML = i18n.notice_price;
-			} else if ( targetId === '_lp_sale_price' ) {
+			} else if ( targetId === BuilderEditCourse.selectors.elSalePriceInput ) {
 				tip.innerHTML = i18n.notice_sale_price;
 			}
 			if ( formField && tip.innerHTML ) {
@@ -678,24 +617,29 @@ export class BuilderEditCourse {
 				const name = element.name || element.id;
 				if ( ! name ) return;
 				if ( name === 'learnpress_meta_box_nonce' || name === '_wp_http_referer' ) return;
+
+				const isArray = name.endsWith( '[]' );
+				const fieldName = name.replace( '[]', '' );
+
 				if ( element.type === 'checkbox' ) {
-					const fieldName = name.replace( '[]', '' );
-					if ( ! data.hasOwnProperty( fieldName ) ) {
+					if ( isArray ) {
+						if ( ! data[ fieldName ] ) data[ fieldName ] = [];
+						if ( element.checked ) {
+							data[ fieldName ].push( element.value );
+						}
+					} else {
 						data[ fieldName ] = element.checked ? 'yes' : 'no';
 					}
 				} else if ( element.type === 'radio' ) {
 					if ( element.checked ) {
-						const fieldName = name.replace( '[]', '' );
 						data[ fieldName ] = element.value;
 					}
 				} else if ( element.type === 'file' ) {
-					const fieldName = name.replace( '[]', '' );
 					if ( element.files && element.files.length > 0 ) {
 						data[ fieldName ] = element.files;
 					}
 				} else {
-					const fieldName = name.replace( '[]', '' );
-					if ( name.endsWith( '[]' ) ) {
+					if ( isArray ) {
 						if ( ! data.hasOwnProperty( fieldName ) ) {
 							data[ fieldName ] = [];
 						}
@@ -864,9 +808,15 @@ export class BuilderEditCourse {
 		const { e } = args;
 		const elInput = document.querySelector( BuilderEditCourse.selectors.elInputAddTag );
 		const btnSave = document.querySelector( BuilderEditCourse.selectors.elBtnSaveTag );
-		if ( ! elInput ) return;
+		const tagName = elInput?.value?.trim() ?? '';
+
+		if ( ! tagName ) {
+			lpToastify.show( 'Please enter tag name', 'error' );
+			return;
+		}
+
 		lpUtils.lpSetLoadingEl( btnSave, 1 );
-		const tagName = elInput.value?.trim() ?? '';
+
 		const dataSend = {
 			action: 'add_course_tag',
 			args: { id_url: 'add-course-tag' },
@@ -971,5 +921,99 @@ export class BuilderEditCourse {
 				panel.setAttribute( 'data-tab-title', title );
 			}
 		} );
+	}
+
+	initTitleCharCount() {
+		const titleInput = document.querySelector( BuilderEditCourse.selectors.elTitleInput );
+		if ( titleInput ) {
+			this.updateTitleCharCount( titleInput.value );
+		}
+	}
+
+	updateTitleCharCount( text ) {
+		const charCountEl = document.querySelector( BuilderEditCourse.selectors.elTitleCharCount );
+		if ( ! charCountEl ) return;
+
+		const charCount = text.length;
+		const charText = charCount === 1 ? 'character' : 'characters';
+		charCountEl.textContent = `${ charCount } ${ charText }`;
+	}
+
+	handleTitleInput( args ) {
+		const { target } = args;
+		this.updateTitleCharCount( target.value );
+	}
+
+	initDescWordCount() {
+		// Wait for TinyMCE to be ready
+		if ( typeof tinymce !== 'undefined' ) {
+			tinymce.on( 'AddEditor', ( e ) => {
+				if ( e.editor.id === 'course_description_editor' ) {
+					e.editor.on( 'init', () => {
+						this.updateDescWordCount( e.editor );
+
+						// Listen for content changes
+						e.editor.on( 'keyup change input NodeChange', () => {
+							this.updateDescWordCount( e.editor );
+						} );
+					} );
+				}
+			} );
+
+			// If editor already exists
+			const existingEditor = tinymce.get( 'course_description_editor' );
+			if ( existingEditor ) {
+				this.updateDescWordCount( existingEditor );
+				existingEditor.on( 'keyup change input NodeChange', () => {
+					this.updateDescWordCount( existingEditor );
+				} );
+			}
+		}
+
+		// Also handle text mode (quicktags)
+		const textarea = document.querySelector( BuilderEditCourse.selectors.elDescEditor );
+		if ( textarea ) {
+			textarea.addEventListener( 'input', () => {
+				this.updateDescWordCountFromText( textarea.value );
+			} );
+		}
+	}
+
+	updateDescWordCount( editor ) {
+		const wordCountEl = document.querySelector( BuilderEditCourse.selectors.elDescWordCount );
+		if ( ! wordCountEl ) return;
+
+		// Use TinyMCE's built-in word count plugin
+		const wordcount = editor.plugins.wordcount;
+		let count = 0;
+
+		if ( wordcount && typeof wordcount.body !== 'undefined' ) {
+			count = wordcount.body.getWordCount();
+		} else if ( wordcount && typeof wordcount.getCount !== 'undefined' ) {
+			count = wordcount.getCount();
+		} else {
+			// Fallback: manual count
+			const content = editor.getContent( { format: 'text' } );
+			count = this.countWords( content );
+		}
+
+		const wordText = count === 1 ? 'word' : 'words';
+		wordCountEl.textContent = `${ count } ${ wordText }`;
+	}
+
+	updateDescWordCountFromText( text ) {
+		const wordCountEl = document.querySelector( BuilderEditCourse.selectors.elDescWordCount );
+		if ( ! wordCountEl ) return;
+
+		const count = this.countWords( text );
+		const wordText = count === 1 ? 'word' : 'words';
+		wordCountEl.textContent = `${ count } ${ wordText }`;
+	}
+
+	countWords( text ) {
+		const trimmedText = text.replace( /<[^>]*>/g, '' ).trim();
+		if ( trimmedText.length === 0 ) return 0;
+		const words = trimmedText.split( /\s+/ ).filter( ( word ) => word.length > 0 );
+		return words.length;
 	}
 }

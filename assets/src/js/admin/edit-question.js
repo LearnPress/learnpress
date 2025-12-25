@@ -232,7 +232,7 @@ export class EditQuestion {
 		const elQuestionEditMain = elTextarea.closest(
 			`${ EditQuestion.selectors.elQuestionEditMain }`
 		);
-		const questionId = elQuestionEditMain.dataset.questionId;
+
 		editor.settings.force_p_newlines = false;
 		editor.settings.forced_root_block = '';
 		editor.settings.force_br_newlines = true;
@@ -241,7 +241,7 @@ export class EditQuestion {
 		editor.settings.relative_urls = false;
 		editor.settings.remove_script_host = false;
 		editor.settings.convert_urls = true;
-		editor.settings.document_base_url = lpData.site_url;
+		editor.settings.document_base_url = window.lpData?.site_url || window.lpGlobalSettings?.site_url || window.location.origin;
 		// End config use absolute url
 
 		// Events focus in TinyMCE editor
@@ -594,11 +594,17 @@ export class EditQuestion {
 	}
 
 	// Check to enable or disable add new question button
-	checkCanAddAnswer( args ) {
-		const { e, target } = args;
-		const elTrigger = target.closest(
-			EditQuestion.selectors.elQuestionAnswerTitleNewInput
-		);
+	checkCanAddAnswer( args, elTriggerOverride = null ) {
+		// Support both args object and direct element parameter
+		let elTrigger = elTriggerOverride;
+		
+		if ( ! elTrigger && args ) {
+			const { target } = args;
+			elTrigger = target?.closest(
+				EditQuestion.selectors.elQuestionAnswerTitleNewInput
+			);
+		}
+		
 		if ( ! elTrigger ) {
 			return;
 		}

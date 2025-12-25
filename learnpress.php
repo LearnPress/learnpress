@@ -68,6 +68,7 @@ use LearnPress\TemplateHooks\CourseBuilder\BuilderEditCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderEditLessonTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderEditQuestionTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderEditQuizTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
@@ -358,6 +359,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			BuilderEditQuizTemplate::instance();
 			BuilderTabQuestionTemplate::instance();
 			BuilderEditQuestionTemplate::instance();
+			BuilderPopupTemplate::instance();
 			ProfileCoursesTemplate::instance();
 
 			// Admin template hooks.

@@ -591,9 +591,36 @@
 		.lp-question-item {
 			background: #fff;
 			border: 1px solid #e5e7eb;
-			border-radius: 8px;
+			border-radius: 100px;
 			margin-bottom: 12px;
 			transition: all 0.2s ease;
+
+			.lp-btn-update-question-title,
+			.lp-btn-cancel-update-question-title {
+				display: none;
+			}
+
+			&.editing {
+				.lp-btn-update-question-title,
+				.lp-btn-cancel-update-question-title {
+					display: inline-block;
+				}
+
+				.lp-btn-edit-question-title,
+				.lp-btn-remove-question {
+					display: none;
+				}
+			}
+
+			.lp-btn-cancel-update-question-title {
+				border: none;
+				background: transparent;
+				cursor: pointer;
+
+				&:hover {
+					background: #f0f0f1;
+				}
+			}
 		}
 
 		.lp-question-item:hover {

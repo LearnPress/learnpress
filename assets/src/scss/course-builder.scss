@@ -390,6 +390,23 @@
 	}
 }
 
+#lp-builder-popup-container {
+	.wp-editor-container {
+        border: none !important;
+		background: #fff;
+    }
+
+	.mce-top-part {
+        margin: 0 !important;
+    }
+
+    .quicktags-toolbar {
+        border-radius: 0 0 8 8;
+        margin: 0 !important;
+        padding: 8px !important;
+    }
+}
+
 .lp-popup-items-to-select .header {
 	padding: 0 20px;
 	flex-shrink: 0;

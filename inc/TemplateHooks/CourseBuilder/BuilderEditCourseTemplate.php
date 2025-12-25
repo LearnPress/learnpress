@@ -15,6 +15,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\ListCourseCategories;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
+use LearnPress\TemplateHooks\TemplateAJAX;
 
 class BuilderEditCourseTemplate {
 	use Singleton;
@@ -24,6 +25,9 @@ class BuilderEditCourseTemplate {
 		add_action( 'learn-press/course-builder/courses/overview/layout', [ $this, 'section_overview' ] );
 		add_action( 'learn-press/course-builder/courses/curriculum/layout', [ $this, 'section_curriculum' ] );
 		add_action( 'learn-press/course-builder/courses/settings/layout', [ $this, 'section_settings' ] );
+
+		// Register filter for adding edit popup button in Course Builder curriculum
+		add_filter( 'learn-press/admin/curriculum/section-item/actions', [ $this, 'add_edit_popup_button' ], 10, 5 );
 	}
 
 	/**
@@ -40,7 +44,6 @@ class BuilderEditCourseTemplate {
 
 		return $callbacks;
 	}
-
 
 	public function section_overview() {
 		wp_enqueue_script( 'lp-course-builder' );
@@ -101,19 +104,24 @@ class BuilderEditCourseTemplate {
 	}
 
 	public function edit_title( $course_model ) {
-		$title = ! empty( $course_model ) ? $course_model->get_title() : '';
-		$edit  = [
-			'wrapper'     => '<div class="cb-course-edit-title">',
-			'label'       => sprintf( '<label for="title" class="cb-course-edit-title__label">%s</label>', __( 'Course Title', 'learnpress' ) ),
-			'input'       => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', $title ),
-			'wrapper_end' => '</div>',
-		];
+		$title          = ! empty( $course_model ) ? $course_model->get_title() : '';
+			$char_count = mb_strlen( wp_strip_all_tags( $title ) );
+			$edit       = [
+				'wrapper'        => '<div class="cb-course-edit-title">',
+				'label_wrap'     => '<div class="cb-course-edit-title__label-wrap">',
+				'label'          => sprintf( '<label for="title" class="cb-course-edit-title__label">%s</label>', __( 'Course Title', 'learnpress' ) ),
+				'char_count'     => sprintf( '<span class="cb-course-edit-title__char-count">%s</span>', sprintf( __( '%d characters', 'learnpress' ), $char_count ) ),
+				'label_wrap_end' => '</div>',
+				'input'          => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', esc_attr( $title ) ),
+				'wrapper_end'    => '</div>',
+			];
 
-		return Template::combine_components( $edit );
+			return Template::combine_components( $edit );
 	}
 
 	public function edit_desc( $course_model ) {
 		$desc            = ! empty( $course_model ) ? $course_model->get_description() : '';
+		$word_count      = str_word_count( wp_strip_all_tags( $desc ) );
 		$editor_id       = 'course_description_editor';
 		$editor_settings = array(
 			'textarea_name' => 'course_description',
@@ -124,18 +132,21 @@ class BuilderEditCourseTemplate {
 				'toolbar1' => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,spellchecker,wp_adv',
 				'toolbar2' => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
 			),
-			'quicktags'     => false,
+			'quicktags'     => true,
 		);
 
 		$edit = [
-			'wrapper'     => '<div class="cb-course-edit-desc">',
-			'label'       => sprintf( '<label for="course_description" class="cb-course-edit-desc__label">%s</label>', __( 'Course Description', 'learnpress' ) ),
-			'edit'        => AdminTemplate::editor_tinymce(
+			'wrapper'        => '<div class="cb-course-edit-desc">',
+			'label_wrap'     => '<div class="cb-course-edit-desc__label-wrap">',
+			'label'          => sprintf( '<label for="course_description" class="cb-course-edit-desc__label">%s</label>', __( 'Course Description', 'learnpress' ) ),
+			'word_count'     => sprintf( '<span class="cb-course-edit-desc__word-count">%s</span>', sprintf( __( '%d words', 'learnpress' ), $word_count ) ),
+			'label_wrap_end' => '</div>',
+			'edit'           => AdminTemplate::editor_tinymce(
 				$desc,
 				$editor_id,
 				$editor_settings
 			),
-			'wrapper_end' => '</div>',
+			'wrapper_end'    => '</div>',
 		];
 
 		return Template::combine_components( $edit );
@@ -193,7 +204,7 @@ class BuilderEditCourseTemplate {
 
 	public function edit_tags( $course_model ) {
 		$course_terms = ! empty( $course_model ) ? $course_model->get_tags() : [];
-		$btn_add_cat  = sprintf( '<button class="cb-course-edit-tag__btn-add-new">%s</button>', __( 'Add New Tag', 'learnpress' ) );
+		$btn_add_cat  = sprintf( '<button class="cb-course-edit-tag__btn-add-new">%s</button>', __( '+ Add A New Course Tag', 'learnpress' ) );
 		$btn_cancel   = sprintf( '<button class="cb-course-edit-tag__btn-cancel"  style="display:none;">%s</button>', __( 'Cancel', 'learnpress' ) );
 		$tags         = get_terms(
 			[
@@ -340,9 +351,94 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
-		do_action( 'learn-press/admin/edit-curriculum/layout', $course_model );
+		// Load curriculum with is_course_builder flag
+		$this->load_curriculum_for_course_builder( $course_model );
 	}
 
+	/**
+	 * Load curriculum for Course Builder with special flag.
+	 * This method loads curriculum via AJAX with is_course_builder flag.
+	 *
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 *
+	 * @param CourseModel $courseModel
+	 */
+	protected function load_curriculum_for_course_builder( CourseModel $courseModel ) {
+		wp_enqueue_style( 'lp-edit-curriculum' );
+		wp_enqueue_script( 'lp-edit-course' );
+
+		$args = [
+			'id_url'            => 'edit-course-curriculum',
+			'course_id'         => $courseModel->ID,
+			'is_course_builder' => true, // Flag to identify Course Builder context
+		];
+
+		$call_back = [
+			'class'  => AdminEditCurriculumTemplate::class,
+			'method' => 'render_edit_course_curriculum',
+		];
+
+		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
+	}
+
+	/**
+	 * Add edit popup button for lesson and quiz items in Course Builder curriculum.
+	 * Replace the default edit button with popup button for lesson and quiz items.
+	 *
+	 * @since 4.3.0
+	 * @version 1.0.2
+	 *
+	 * @param array $section_action Array of action buttons.
+	 * @param object|null $item Item data.
+	 * @param PostModel|null $itemModel Item model.
+	 * @param CourseModel $courseModel.
+	 * @param array $context_data Context data passed from AJAX.
+	 *
+	 * @return array
+	 */
+	public function add_edit_popup_button( array $section_action, $item, $itemModel, $courseModel, $context_data = [] ): array {
+		// Check if we are in Course Builder context via the flag passed in AJAX args
+		$is_course_builder = ! empty( $context_data['is_course_builder'] );
+
+		if ( ! $is_course_builder ) {
+			return $section_action;
+		}
+
+		$item_id   = $item->item_id ?? 0;
+		$item_type = $item->item_type ?? '';
+
+		// Only replace edit button for lesson and quiz items
+		if ( ! in_array( $item_type, [ LP_LESSON_CPT, LP_QUIZ_CPT ], true ) ) {
+			return $section_action;
+		}
+
+		// Build popup data attribute based on item type
+		$popup_data_attr = '';
+		if ( $item_type === LP_LESSON_CPT ) {
+			$popup_data_attr = sprintf( 'data-popup-lesson="%s"', $item_id );
+		} elseif ( $item_type === LP_QUIZ_CPT ) {
+			$popup_data_attr = sprintf( 'data-popup-quiz="%s"', $item_id );
+		}
+
+		// Replace edit button with popup button
+		$section_action['edit'] = sprintf(
+			'<li title="%s" class="lp-btn-edit-item-popup"
+				data-item-id="%s"
+				data-item-type="%s"
+				data-course-id="%s"
+				%s>
+				<a class="lp-icon-expand edit-popup-link"></a>
+			</li>',
+			__( 'Edit in popup', 'learnpress' ),
+			$item_id,
+			$item_type,
+			$courseModel->get_id(),
+			$popup_data_attr
+		);
+
+		return $section_action;
+	}
 
 	public function section_settings() {
 		wp_enqueue_script( 'lp-cb-edit-curriculum' );

@@ -42,6 +42,7 @@ class BuilderEditLessonTemplate {
 	public function section_overview() {
 		wp_enqueue_script( 'lp-course-builder' );
 		$lesson_id = CourseBuilder::get_post_id();
+		$lesson_model = ''; 
 
 		if ( $lesson_id === 'post-new' ) {
 			$lesson_model = '';
@@ -79,7 +80,6 @@ class BuilderEditLessonTemplate {
 		$header     = [
 			'wrapper'          => '<div class="cb-section__header">',
 			'wrapper_left'     => '<div class="cb-section__header-left">',
-			'section_title'    => sprintf( '<h3 class="lp-cb-section__title">%s</h3>', __( 'Edit Lesson', 'learnpress' ) ),
 			'lesson_status'    => ! empty( $status ) ? sprintf( '<span class="lesson-status %1$s">%1$s</span>', $status ) : '',
 			'wrapper_left_end' => '</div>',
 			'action_wrapper'   => '<div class="cb-section__header-action">',

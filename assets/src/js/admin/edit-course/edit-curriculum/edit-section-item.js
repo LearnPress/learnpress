@@ -109,7 +109,10 @@ export class EditSectionItem {
 					const elSection = target.closest(
 						EditSection.selectors.elSection
 					);
-					this.sectionIdSelected = elSection.dataset.sectionId;
+					// Only set sectionIdSelected if we're in curriculum context (not quiz popup)
+					if ( elSection ) {
+						this.sectionIdSelected = elSection.dataset.sectionId;
+					}
 				},
 			},
 			{
@@ -669,9 +672,20 @@ export class EditSectionItem {
 
 	/* Add items selected to section */
 	addItemsSelectedToSection( itemsSelectedData ) {
+		// Skip if not in curriculum context (e.g., quiz popup)
+		if ( ! this.sectionIdSelected ) {
+			return;
+		}
+
 		const elSection = document.querySelector(
 			`.section[data-section-id="${ this.sectionIdSelected }"]`
 		);
+		
+		// Skip if section element not found
+		if ( ! elSection ) {
+			return;
+		}
+
 		const elItemClone = elSection.querySelector(
 			`${ EditSectionItem.selectors.elItemClone }`
 		);
