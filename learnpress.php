@@ -30,6 +30,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
 use LearnPress\Shortcodes\CourseButtonShortcode;
+use LearnPress\Shortcodes\Courses\ListCoursesShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
@@ -463,6 +464,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			CourseMaterialShortcode::instance();
 			CourseButtonShortcode::instance();
 			FilterCourseShortcode::instance();
+			ListCoursesShortcode::instance();
 			//ListCourseRecentShortcode::instance();
 			include_once 'inc/class-lp-shortcodes.php';
 
