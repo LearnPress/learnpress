@@ -285,6 +285,7 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 ~ Edit curriculum: fix error edit link item when add from content bank.
 ~ Edit curriculum: fix add item lesson is set Preview via content bank.
 ~ Fixed: curriculum edit error with WordPress playground.
+~ Added: shortcode [learn_press_courses].
 
 = 4.3.2.2 (2025-12-16) =
 ~ Fixed: error with addons Assignment, Course Review.
