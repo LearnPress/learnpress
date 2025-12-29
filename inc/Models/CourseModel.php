@@ -7,7 +7,7 @@
  * Another fields for query list courses faster
  *
  * @package LearnPress/Classes
- * @version 1.0.3
+ * @version 1.0.4
  * @since 4.2.6.9
  */
 
@@ -1320,13 +1320,18 @@ class CourseModel {
 	/**
 	 * Save course data to table learnpress_courses.
 	 *
+	 * @param bool $force_save
+	 *
+	 * @return CourseModel
 	 * @throws Exception
 	 * @since 4.2.6.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
-	public function save(): CourseModel {
+	public function save( bool $force_save = false ): CourseModel {
 		// Check permission
-		$this->check_permission();
+		if ( ! $force_save ) {
+			$this->check_permission();
+		}
 
 		$lp_course_json_db = LP_Course_JSON_DB::getInstance();
 
