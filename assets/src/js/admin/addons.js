@@ -270,6 +270,8 @@ document.addEventListener( 'click', ( e ) => {
 					elNavInstalled.textContent = parseInt( elNavInstalled.textContent ) + 1;
 					const elNavNoInstalled = document.querySelector( '.nav-tab[data-tab=not_installed] span' );
 					elNavNoInstalled.textContent = parseInt( elNavNoInstalled.textContent ) - 1;
+					elItemPurchase.querySelector( '.purchase-install' ).style.display = 'none';
+					elItemPurchase.querySelector( '.purchase-update' ).querySelector( '.enter-purchase-code' ).value = purchaseCode;
 				} else if ( action === 'update' ) {
 					const elAddonVersionCurrent = elAddonItem.querySelector( '.addon-version-current' );
 					elAddonVersionCurrent.innerHTML = addon.version;
