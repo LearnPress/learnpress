@@ -5,7 +5,7 @@
  * To replace class LP_User_Item
  *
  * @package LearnPress/Classes
- * @version 1.0.7
+ * @version 1.0.8
  * @since 4.2.6.9
  */
 
@@ -322,9 +322,9 @@ class PostModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
-	public function save() {
+	public function save( bool $force_save = false ) {
 		$data = [];
 		foreach ( get_object_vars( $this ) as $property => $value ) {
 			$data[ $property ] = $value;
@@ -332,20 +332,27 @@ class PostModel {
 
 		// Check if exists course id.
 		if ( empty( $this->ID ) ) { // Insert data.
-			if ( ! $this->check_capabilities_create() ) {
-				throw new Exception( __( 'You do not have permission to create item.', 'learnpress' ) );
-			}
+			// Check permission
+			if ( ! $force_save ) {
+				if ( ! $this->check_capabilities_create() ) {
+					throw new Exception( __( 'You do not have permission to create item.', 'learnpress' ) );
+				}
 
-			$this->check_capabilities_create_item_course();
+				$this->check_capabilities_create_item_course();
+			}
 
 			unset( $data['ID'] );
 			$post_id = wp_insert_post( $data, true );
 		} else { // Update data.
-			if ( ! $this->check_capabilities_update() ) {
-				throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+			// Check permission
+			if ( ! $force_save ) {
+				if ( ! $this->check_capabilities_update() ) {
+					throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+				}
+
+				$this->check_capabilities_update_item_course();
 			}
 
-			$this->check_capabilities_update_item_course();
 			$post_id = wp_update_post( $data, true );
 		}
 
@@ -475,18 +482,21 @@ class PostModel {
 	 *
 	 * @param string $key
 	 * @param mixed $value
+	 * @param bool $fore_update
 	 *
 	 * @return void
 	 * @throws Exception
 	 * @since 4.2.6.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
-	public function save_meta_value_by_key( string $key, $value ) {
+	public function save_meta_value_by_key( string $key, $value, bool $fore_update = false ) {
 		// Check permission
-		if ( ! $this->check_capabilities_update() ) {
-			throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+		if ( ! $fore_update ) {
+			if ( ! $this->check_capabilities_update() ) {
+				throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+			}
+			$this->check_capabilities_create_item_course();
 		}
-		$this->check_capabilities_create_item_course();
 
 		$this->meta_data->{$key} = $value;
 		update_post_meta( $this->ID, $key, $value );
