@@ -180,7 +180,7 @@
   "learnpress-course-review": {
     "name": "LearnPress – Course Review",
     "basename": "learnpress-course-review/learnpress-course-review.php",
-    "version": "4.0.7",
+    "version": "4.1.9",
     "require_lp": "4.2.2",
     "description": "LearnPress Course Review bring review feature to your course. Now, student can rate and give review for the course they take on a LearnPress site.",
     "image": "https://ps.w.org/learnpress-course-review/assets/icon-128x128.png",
@@ -351,7 +351,7 @@
   "learnpress-sorting-choice": {
     "name": "Sorting Choice Add-On for LearnPress",
     "basename": "learnpress-sorting-choice/learnpress-sorting-choice.php",
-    "version": "4.0.2",
+    "version": "4.0.3",
     "require_lp": "4.2.9",
     "description": "Makes the question interesting and challenging. Students receive full credit if ALL the choices are correct.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-sorting-choice.png",
