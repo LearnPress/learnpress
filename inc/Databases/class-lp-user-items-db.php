@@ -680,6 +680,7 @@ class LP_User_Items_DB extends LP_Database {
 			$filter                      = new LP_User_Items_Filter();
 			$filter->user_id             = $user_id;
 			$filter->item_id             = $course_id;
+			$filter->item_type           = LP_COURSE_CPT;
 			$filter->only_fields         = [ 'user_item_id' ];
 			$filter->run_query_count     = false;
 			$filter->return_string_query = true;

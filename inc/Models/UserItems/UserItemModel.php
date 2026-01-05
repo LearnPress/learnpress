@@ -413,15 +413,12 @@ class UserItemModel {
 	 * @return UserItemModel
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function save(): UserItemModel {
 		$lp_user_item_db  = LP_User_Items_DB::getInstance();
 		$user_item_id_new = 0;
-		$data             = [];
-		foreach ( get_object_vars( $this ) as $property => $value ) {
-			$data[ $property ] = $value;
-		}
+		$data             = get_object_vars( $this );
 
 		if ( ! isset( $data['start_time'] ) ) {
 			$data['start_time'] = gmdate( 'Y-m-d H:i:s', time() );

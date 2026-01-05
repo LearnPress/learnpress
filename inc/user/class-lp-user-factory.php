@@ -214,7 +214,7 @@ class LP_User_Factory {
 	 *
 	 * @author  tungnx
 	 * @since   4.1.3
-	 * @version 1.1.0
+	 * @version 1.1.1
 	 */
 	protected static function handle_item_order_completed( LP_Order $order, $user, $item ) {
 		$lp_user_items_db   = LP_User_Items_DB::getInstance();
@@ -312,7 +312,8 @@ class LP_User_Factory {
 				$user_item_data,
 				$order,
 				$item,
-				$courseModel
+				$courseModel,
+				$user_id
 			);
 
 			$another_case = apply_filters(
@@ -326,13 +327,14 @@ class LP_User_Factory {
 			);
 
 			if ( $another_case ) { // Handle another case to handle user_item
-				do_action(
+				$userCourseResponse = apply_filters(
 					'learn-press/order/completed/update-user-item/another-case',
+					null,
 					$user_item_data,
 					$order,
 					$item,
 					$courseModel,
-					$userCourse
+					$user_id
 				);
 			} elseif ( $keep_progress_items_course ) { // Update user_item to keep course progress
 				$userCourse->ref_id     = $order->get_id();
