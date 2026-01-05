@@ -576,7 +576,7 @@ class AdminEditCurriculumTemplate {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public static function render_list_items_not_assign( $data ): stdClass {
 		$user                   = wp_get_current_user();
@@ -595,7 +595,9 @@ class AdminEditCurriculumTemplate {
 
 		// Check permission
 		$coursePostModel = new CoursePostModel( $courseModel );
-		$coursePostModel->check_capabilities_create();
+		if ( ! $coursePostModel->check_capabilities_create() ) {
+			throw new Exception( __( 'You do not have permission view list', 'learnpress' ) );
+		}
 
 		$lp_posts_db         = PostDB::getInstance();
 		$filter              = new PostFilter();
