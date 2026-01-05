@@ -98,7 +98,7 @@ if ( ! $check_lp_need_upgrade_db ) {
 				<div class="learn-press-message">
 					<p>You have upgraded the database from plugin LearnPress successfully.</p>
 					<p>You can use the LearnPress functions and LearnPress add-ons now.</p>
-					<p>Read more document <a href="https://docs.thimpress.com/learnpress/">LearnPress</a></p>
+					<p>Read more document <a href="<?php echo LearnPress::$doc_link; ?>">LearnPress</a></p>
 				</div>
 			</div>
 		</div>
@@ -107,5 +107,5 @@ if ( ! $check_lp_need_upgrade_db ) {
 		<?php lp_skeleton_animation_html( 7 ); ?>
 	</div>
 	<input type="hidden" name="message-when-upgrading"
-		   value="<?php esc_html_e( 'Please don\'t close this tab until the completed upgrade', 'learnpress' ); ?>"/>
+			value="<?php esc_html_e( 'Please don\'t close this tab until the completed upgrade', 'learnpress' ); ?>"/>
 </div>
