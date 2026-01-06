@@ -163,7 +163,11 @@ class LP_User_Factory {
 					// Check user course was canceled? If yes, only update status to Enrolled
 					if ( $user_id && $userCourse && $userCourse->ref_id == $order->get_id() ) {
 						if ( $userCourse->get_status() === UserItemModel::STATUS_CANCEL ) {
-							$userCourse->status = UserItemModel::STATUS_ENROLLED;
+							if ( ! empty( $userCourse->get_end_time() ) ) {
+								$userCourse->status = UserItemModel::STATUS_FINISHED;
+							} else {
+								$userCourse->status = UserItemModel::STATUS_ENROLLED;
+							}
 							$userCourse->save();
 						}
 
