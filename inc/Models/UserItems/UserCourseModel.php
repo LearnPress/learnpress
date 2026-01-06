@@ -76,7 +76,7 @@ class UserCourseModel extends UserItemModel {
 	 * @param int $course_id
 	 * @param bool $check_cache
 	 *
-	 * @return false|UserItemModel|static
+	 * @return false|static
 	 * @since 4.2.7
 	 * @version 1.0.2
 	 */

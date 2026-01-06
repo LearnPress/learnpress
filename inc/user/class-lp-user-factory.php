@@ -1,7 +1,6 @@
 <?php
 
 use LearnPress\Background\LPBackgroundAjax;
-use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -118,7 +117,13 @@ class LP_User_Factory {
 
 	/**
 	 * Enroll course if Order completed
-	 * Only Order completed, will be added user_item and deleted user_items old
+	 * 1. Check if order change is the latest order of user for course
+	 * 2. Check if user_course was canceled, only update status to Enrolled
+	 * 3. Handle repurchase course if allow repurchase
+	 * 4. Create new user_course if first purchase course
+	 * 5. Enroll course free or no enroll requirement
+	 * 6. Enroll course for guest if auto enroll enable
+	 * 7. Send email background when user enroll course
 	 *
 	 * @param LP_Order $order
 	 * @param string $old_status
@@ -127,7 +132,7 @@ class LP_User_Factory {
 	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.2
-	 * @version 1.0.5
+	 * @version 1.0.6
 	 */
 	protected static function _update_user_item_order_completed( LP_Order $order, string $old_status, string $new_status ) {
 		$lp_order_db = LP_Order_DB::getInstance();
@@ -153,6 +158,16 @@ class LP_User_Factory {
 						if ( $userCourseGuest && $userCourseGuest->ref_id > $order->get_id() ) {
 							continue;
 						}
+					}
+
+					// Check user course was canceled? If yes, only update status to Enrolled
+					if ( $user_id && $userCourse && $userCourse->ref_id == $order->get_id() ) {
+						if ( $userCourse->get_status() === UserItemModel::STATUS_CANCEL ) {
+							$userCourse->status = UserItemModel::STATUS_ENROLLED;
+							$userCourse->save();
+						}
+
+						continue;
 					}
 
 					if ( $order->is_manual() ) {
@@ -352,7 +367,8 @@ class LP_User_Factory {
 						$userGuestCourse->delete();
 					}
 				} else {
-					$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+					//$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+					$userCourse->delete();
 				}
 
 				$userCourseNew = new UserCourseModel( $user_item_data );
