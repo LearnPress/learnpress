@@ -277,6 +277,10 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.3.2.4 (2026-01-07) =
+~ Deprecated: methods learn_press_add_course_buttons, learn_press_remove_course_buttons,
+button_retry, course_purchase_button, course_enroll_button, course_continue_button, course_finish_button, course_external_button.
+
 = 4.3.2.3 (2025-12-25) =
 ~ Fixed security.
 ~ Fix statistics count: top  courses sold, top categories sold.
