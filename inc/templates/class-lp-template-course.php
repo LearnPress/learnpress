@@ -183,7 +183,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @version 4.0.2
 	 */
 	public function course_purchase_button( $course = null ) {
-		_deprecated_function( __METHOD__, '4.3.2', 'Use SingleCourseTemplate::html_btn_purchase_course instead' );
+		_deprecated_function( __METHOD__, '4.3.2', 'SingleCourseTemplate::html_btn_purchase_course' );
 
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 		$course               = CourseModel::find( get_the_ID(), true );
@@ -200,6 +200,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @version 4.0.3
 	 */
 	public function course_enroll_button( $course = null ) {
+		_deprecated_function( __METHOD__, '4.3.2.4', 'SingleCourseTemplate::html_btn_enroll_course' );
+
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 		$course               = CourseModel::find( get_the_ID(), true );
 		$user                 = UserModel::find( get_current_user_id(), true );

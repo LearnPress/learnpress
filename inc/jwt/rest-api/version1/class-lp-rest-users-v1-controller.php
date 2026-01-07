@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Models\UserModel;
+
 /**
  * REST API for the user.
  *
@@ -150,6 +153,12 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 		if ( get_current_user_id() === $user->ID ) {
 			return true;
+		} elseif ( current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+			return new WP_Error(
+				'rest_user_cannot_view',
+				__( 'Sorry, you are not allowed to list users.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
 		}
 
 		if ( 'edit' === $request['context'] && ! current_user_can( 'list_users' ) ) {
