@@ -5,7 +5,6 @@ use Elementor\Controls_Manager;
 use Elementor\Repeater;
 use Elementor\Widget_Base;
 use Throwable;
-use function PHPUnit\Framework\callback;
 
 class LPElementorWidgetBase extends Widget_Base {
 	/**

@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.9
-Stable tag: 4.3.2.3
+Stable tag: 4.3.2.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -280,6 +280,7 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 = 4.3.2.4 (2026-01-07) =
 ~ Deprecated: methods learn_press_add_course_buttons, learn_press_remove_course_buttons,
 button_retry, course_purchase_button, course_enroll_button, course_continue_button, course_finish_button, course_external_button.
+~ Tweak class LP_User_Factory.
 
 = 4.3.2.3 (2025-12-25) =
 ~ Fixed security.
