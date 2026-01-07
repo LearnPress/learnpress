@@ -17,7 +17,7 @@ use Throwable;
  * Shortcode display list courses.
  *
  * @since 4.3.2.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 class ListCoursesShortcode extends AbstractShortcode {
 	use singleton;
@@ -33,19 +33,15 @@ class ListCoursesShortcode extends AbstractShortcode {
 	 */
 	public function render( $attrs ): string {
 		$content = '';
+		wp_enqueue_style( 'learnpress' );
+		wp_enqueue_script( 'lp-courses-v2' );
 
 		try {
 			if ( empty( $attrs ) ) {
 				$attrs = [];
 			}
 
-			//$attrs['order_by'] = 'popular';
 			$attrs['c_status'] = $attrs['c_status'] ?? 'publish';
-			$attrs['limit'] = -1;
-			$attrs['order_by']  = 'popular';
-			//$attrs['sort_by']  = 'popular';
-			$attrs['on_feature']  = 1;
-			$attrs['c_type']  = 'online';
 			$filter            = new CourseJsonFilter();
 			Courses::handle_params_for_query_list_courses( $filter, $attrs );
 			$filter->only_fields = [ CourseJsonFilter::COL_ID ];
