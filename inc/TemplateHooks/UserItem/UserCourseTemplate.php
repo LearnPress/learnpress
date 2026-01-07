@@ -95,7 +95,7 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 				),
 				'btn'      => sprintf(
 					'<button class="lp-button btn-finish-course">%s</button>',
-					esc_html__( 'Finish', 'learnpress' )
+					esc_html__( 'Finish Course', 'learnpress' )
 				),
 				'input'    => sprintf(
 					'<input type="hidden" name="course-id" value="%d"/>',

@@ -22,37 +22,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @see LP_Template_Course::button_retry()
  * @see LP_Template_Course::course_continue_button()
- * @see LP_Template_Course::course_external_button()
  */
 if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
 	function learn_press_add_course_buttons() {
-		add_action( 'learn-press/course-buttons', function () {
-			$singleCourseTemplate = SingleCourseTemplate::instance();
-			$course               = CourseModel::find( get_the_ID(), true );
-			$user                 = UserModel::find( get_current_user_id(), true );
-			echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
-		}, 5 );
-		add_action( 'learn-press/course-buttons', function () {
-			$singleCourseTemplate = SingleCourseTemplate::instance();
-			$course               = CourseModel::find( get_the_ID(), true );
-			$user                 = UserModel::find( get_current_user_id(), true );
-			echo $singleCourseTemplate->html_btn_purchase_course( $course, $user );
-		}, 10 );
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_external_button' ), 15 );
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'button_retry' ), 20 );
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_continue_button' ), 25 );
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 30 );
+		_deprecated_function( __FUNCTION__, '4.3.2.4' );
 	}
 }
 
 if ( ! function_exists( 'learn_press_remove_course_buttons' ) ) {
 	function learn_press_remove_course_buttons() {
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_enroll_button' ), 5 );
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_purchase_button' ), 10 );
-		//remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_external_button' ), 15 );
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'button_retry' ), 20 );
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_continue_button' ), 25 );
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 30 );
+		_deprecated_function( __FUNCTION__, '4.3.2.4' );
 	}
 }
 
