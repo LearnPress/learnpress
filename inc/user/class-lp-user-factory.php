@@ -370,7 +370,7 @@ class LP_User_Factory {
 					if ( $userGuestCourse ) {
 						$userGuestCourse->delete();
 					}
-				} else {
+				} elseif ( $userCourse ) {
 					//$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 					$userCourse->delete();
 				}

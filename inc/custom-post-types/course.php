@@ -446,6 +446,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Save price course
 		 *
 		 * @return void
+		 * @throws Exception
 		 */
 		protected function save_price( CourseModel &$courseObj ) {
 			$coursePost = new CoursePostModel( $courseObj );
