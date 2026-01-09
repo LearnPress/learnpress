@@ -462,6 +462,146 @@
 		}
 	}
 
+	#lp-material-container {
+		font-size: 13px;
+		color: #6b7280;
+		line-height: 1.5;
+		margin: 0;
+		display: block;
+	}
+
+	.field-material__label {
+		width: 150px;
+		max-width: 150px;
+		min-width: 150px;
+		margin-right: 11px;
+	}
+
+	.lp-material--field-wrap {
+		display: flex;
+		align-items: center;
+		gap: 11px;
+		margin-top: 11px;
+	}
+
+	.lp-material--field-external-link,
+	.lp-material--field-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		width: 100%;
+		max-width: 200px;
+		height: 33px;
+		padding: 8px 12px;
+		border: 1px solid #d1d5db;
+		border-radius: 6px;
+		font-size: 14px;
+		color: #1a1a1a;
+		background: #fff;
+	}
+
+	.lp-material--field-method {
+		width: 100%;
+		max-width: 200px;
+		height: 33px;
+		padding: 8px 12px;
+		border: 1px solid #d1d5db;
+		border-radius: 6px;
+		font-size: 14px;
+		color: #1a1a1a;
+		background: #fff;
+	}
+
+	.lp-material-save-field,
+	.lp-material--delete {
+		padding: 8px 20px;
+		border-radius: 6px;
+		background: #fff;
+		font-size: 14px;
+		font-weight: 500;
+		cursor: pointer;
+		border: 1px solid #d1d5db;
+		transition: all 0.2s;
+	}
+
+	.lp-material--upload-wrap label {
+		cursor: pointer;
+		width: 100%;
+		max-width: 200px;
+		padding: 8px 16px;
+		border: 1px solid #d1d5db;
+		border-radius: 6px;
+		font-size: 14px;
+		font-weight: 500;
+		color: #1a1a1a;
+		background: #fff;
+		transition: all 0.2s;
+		margin-left: 56px;
+	}
+
+	.lp-material--field-upload {
+		display: none;
+	}
+
+	.lp-material--upload-wrap label:hover {
+		background-color: #f5f5f5;
+		border-color: #9ca3af;
+	}
+
+	.lp-material--upload-wrap label:active {
+		background-color: #d0d0d0;
+		transform: scale( 0.98 );
+	}
+
+	.lp-material--upload-wrap label::before {
+		content: '📁 ';
+		margin-right: 5px;
+	}
+
+	.lp-material--table {
+		width: 100%;
+		border-collapse: collapse;
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+		overflow: hidden;
+		margin-top: 20px;
+
+		th,
+		td {
+			padding: 12px 15px;
+			border-bottom: 1px solid #e5e7eb;
+			text-align: left;
+		}
+
+		th {
+			background-color: #f9fafb;
+			font-weight: 600;
+			font-size: 13px;
+			color: #374151;
+		}
+
+		td {
+			font-size: 14px;
+			color: #1e1e1e;
+		}
+
+		tr:last-child td {
+			border-bottom: none;
+		}
+
+		tr:hover td {
+			background-color: #f9fafb;
+		}
+
+		thead.hidden {
+			display: none;
+		}
+	}
+
+	.ts-control {
+		padding: 8px 8px 8px 8px !important;
+	}
+
 	@media ( max-width: 1024px ) {
 		.cb-list-course {
 			grid-template-columns: repeat( auto-fill, minmax( 280px, 1fr ) );

@@ -78,16 +78,16 @@ class BuilderPopupTemplate {
 		}
 
 		return [
-			'overlay'      => '<div class="lp-builder-popup-overlay"></div>',
-			'wrapper'      => sprintf( '<div class="lp-builder-popup lp-builder-popup--%s" data-%s-id="%d">', $type, $type, $post_id ),
-			'header'       => '<div class="lp-builder-popup__header">',
-			'header_left'  => '<div class="lp-builder-popup__header-left">',
-			'title'        => sprintf( '<h3 class="lp-builder-popup__title">%s</h3>', esc_html( $title ) ),
-			'status'       => $status_html,
+			'overlay'         => '<div class="lp-builder-popup-overlay"></div>',
+			'wrapper'         => sprintf( '<div class="lp-builder-popup lp-builder-popup--%s" data-%s-id="%d">', $type, $type, $post_id ),
+			'header'          => '<div class="lp-builder-popup__header">',
+			'header_left'     => '<div class="lp-builder-popup__header-left">',
+			'title'           => sprintf( '<h3 class="lp-builder-popup__title">%s</h3>', esc_html( $title ) ),
+			'status'          => $status_html,
 			'header_left_end' => '</div>',
-			'close_btn'    => '<button type="button" class="lp-builder-popup__close" aria-label="' . esc_attr__( 'Close', 'learnpress' ) . '">&times;</button>',
-			'header_end'   => '</div>',
-			'body'         => '<div class="lp-builder-popup__body">',
+			'close_btn'       => '<button type="button" class="lp-builder-popup__close" aria-label="' . esc_attr__( 'Close', 'learnpress' ) . '">&times;</button>',
+			'header_end'      => '</div>',
+			'body'            => '<div class="lp-builder-popup__body">',
 		];
 	}
 
@@ -109,17 +109,17 @@ class BuilderPopupTemplate {
 		}
 
 		return [
-			'body_end'    => '</div>',
-			'footer'      => '<div class="lp-builder-popup__footer">',
-			'footer_left' => '<div class="lp-builder-popup__footer-left">',
-			'btn_cancel'  => sprintf(
+			'body_end'         => '</div>',
+			'footer'           => '<div class="lp-builder-popup__footer">',
+			'footer_left'      => '<div class="lp-builder-popup__footer-left">',
+			'btn_cancel'       => sprintf(
 				'<button type="button" class="cb-button lp-builder-popup__btn lp-builder-popup__btn--cancel">%s</button>',
 				__( 'Cancel', 'learnpress' )
 			),
-			'footer_left_end' => '</div>',
-			'footer_right' => '<div class="lp-builder-popup__footer-right">',
-			'btn_trash'   => $btn_trash,
-			'btn_save'    => sprintf(
+			'footer_left_end'  => '</div>',
+			'footer_right'     => '<div class="lp-builder-popup__footer-right">',
+			'btn_trash'        => $btn_trash,
+			'btn_save'         => sprintf(
 				'<button type="button" class="cb-button cb-btn-update__%s lp-builder-popup__btn lp-builder-popup__btn--save" data-title-update="%s" data-title-publish="%s">%s</button>',
 				$type,
 				__( 'Update', 'learnpress' ),
@@ -127,8 +127,8 @@ class BuilderPopupTemplate {
 				$btn_save_text
 			),
 			'footer_right_end' => '</div>',
-			'footer_end'  => '</div>',
-			'wrapper_end' => '</div>',
+			'footer_end'       => '</div>',
+			'wrapper_end'      => '</div>',
 		];
 	}
 
@@ -294,6 +294,10 @@ class BuilderPopupTemplate {
 			'questions' => __( 'Questions', 'learnpress' ),
 			'answers'   => __( 'Answers', 'learnpress' ),
 		];
+
+		apply_filters( "learn-press/course-builder/popup/{$type}", $type, 10, 1 );
+		apply_filters( "learn-press/course-builder/popup/{$type}/tabs", $tabs, 10, 1 );
+		apply_filters( "learn-press/course-builder/popup/{$type}/tab-labels", $tab_labels, 10, 1 );
 
 		$tabs_html = '<ul class="lp-builder-popup__tabs">';
 		foreach ( $tabs as $index => $tab ) {

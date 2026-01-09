@@ -41,7 +41,7 @@ class CourseBuilder {
 				'slug'     => 'courses',
 				'sections' => array(
 					'overview'   => array(
-						'title' => esc_html__( 'Course Overview', 'learnpress' ),
+						'title' => esc_html__( 'Overview', 'learnpress' ),
 						'slug'  => 'overview',
 					),
 					'curriculum' => array(
@@ -49,7 +49,7 @@ class CourseBuilder {
 						'slug'  => 'curriculum',
 					),
 					'settings'   => array(
-						'title' => esc_html__( 'Course Settings', 'learnpress' ),
+						'title' => esc_html__( 'Settings', 'learnpress' ),
 						'slug'  => 'settings',
 					),
 				),
@@ -59,7 +59,7 @@ class CourseBuilder {
 				'slug'     => 'lessons',
 				'sections' => array(
 					'overview' => array(
-						'title' => esc_html__( 'Lesson Overview', 'learnpress' ),
+						'title' => esc_html__( 'Overview', 'learnpress' ),
 						'slug'  => 'overview',
 					),
 					'settings' => array(
@@ -73,7 +73,7 @@ class CourseBuilder {
 				'slug'     => 'quizzes',
 				'sections' => array(
 					'overview' => array(
-						'title' => esc_html__( 'Quizz Overview', 'learnpress' ),
+						'title' => esc_html__( 'Overview', 'learnpress' ),
 						'slug'  => 'overview',
 					),
 					'question' => array(
@@ -81,7 +81,7 @@ class CourseBuilder {
 						'slug'  => 'question',
 					),
 					'settings' => array(
-						'title' => esc_html__( 'Quizz Settings', 'learnpress' ),
+						'title' => esc_html__( 'Settings', 'learnpress' ),
 						'slug'  => 'settings',
 					),
 				),
@@ -91,11 +91,11 @@ class CourseBuilder {
 				'slug'     => 'questions',
 				'sections' => array(
 					'overview' => array(
-						'title' => esc_html__( 'Question Overview', 'learnpress' ),
+						'title' => esc_html__( 'Overview', 'learnpress' ),
 						'slug'  => 'overview',
 					),
 					'settings' => array(
-						'title' => esc_html__( 'Question Settings', 'learnpress' ),
+						'title' => esc_html__( 'Settings', 'learnpress' ),
 						'slug'  => 'settings',
 					),
 				),

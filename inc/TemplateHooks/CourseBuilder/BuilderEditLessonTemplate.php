@@ -133,7 +133,7 @@ class BuilderEditLessonTemplate {
 		$title = ! empty( $lesson_model ) ? $lesson_model->get_the_title() : '';
 		$edit  = [
 			'wrapper'     => '<div class="cb-lesson-edit-title">',
-			'label'       => sprintf( '<label for="title" class="cb-lesson-edit-title__label">%s</label>', __( 'Lesson Title', 'learnpress' ) ),
+			'label'       => sprintf( '<label for="title" class="cb-lesson-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
 			'input'       => sprintf( '<input type="text" name="lesson_title" size="30" value="%s" id="title" class="cb-lesson-edit-title__input">', $title ),
 			'wrapper_end' => '</div>',
 		];
@@ -162,7 +162,7 @@ class BuilderEditLessonTemplate {
 
 		$edit = [
 			'wrapper'     => '<div class="cb-lesson-edit-desc">',
-			'label'       => sprintf( '<label for="lesson_description" class="cb-lesson-edit-desc__label">%s</label>', __( 'Lesson Description', 'learnpress' ) ),
+			'label'       => sprintf( '<label for="lesson_description" class="cb-lesson-edit-desc__label">%s</label>', __( 'Description', 'learnpress' ) ),
 			'edit'        => $editor_html,
 			'wrapper_end' => '</div>',
 		];

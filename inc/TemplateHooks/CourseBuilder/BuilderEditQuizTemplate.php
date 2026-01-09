@@ -138,7 +138,7 @@ class BuilderEditQuizTemplate {
 		$title = ! empty( $quiz_model ) ? $quiz_model->get_the_title() : '';
 		$edit  = [
 			'wrapper'     => '<div class="cb-quiz-edit-title">',
-			'label'       => sprintf( '<label for="title" class="cb-quiz-edit-title__label">%s</label>', __( 'Quiz Title', 'learnpress' ) ),
+			'label'       => sprintf( '<label for="title" class="cb-quiz-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
 			'input'       => sprintf( '<input type="text" name="quiz_title" size="30" value="%s" id="title" class="cb-quiz-edit-title__input">', $title ),
 			'wrapper_end' => '</div>',
 		];
@@ -163,7 +163,7 @@ class BuilderEditQuizTemplate {
 
 		$edit = [
 			'wrapper'     => '<div class="cb-quiz-edit-desc">',
-			'label'       => sprintf( '<label for="quiz_description" class="cb-quiz-edit-desc__label">%s</label>', __( 'Quiz Description', 'learnpress' ) ),
+			'label'       => sprintf( '<label for="quiz_description" class="cb-quiz-edit-desc__label">%s</label>', __( 'Description', 'learnpress' ) ),
 			'edit'        => AdminTemplate::editor_tinymce(
 				$desc,
 				$editor_id,

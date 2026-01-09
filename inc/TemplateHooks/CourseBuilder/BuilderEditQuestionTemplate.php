@@ -111,8 +111,7 @@ class BuilderEditQuestionTemplate {
 				if ( $quiz_id && $quiz_title ) {
 					$quiz_link    = BuilderTabQuizTemplate::instance()->get_link_edit( $quiz_id );
 					$quiz_htmls[] = sprintf(
-						'<a href="%s" target="_blank">%s</a>',
-						esc_url( $quiz_link ),
+						'<span>%s</span>',
 						esc_html( $quiz_title )
 					);
 				}
@@ -137,7 +136,7 @@ class BuilderEditQuestionTemplate {
 		$title = ! empty( $question_model ) ? $question_model->get_the_title() : '';
 		$edit  = [
 			'wrapper'     => '<div class="cb-question-edit-title">',
-			'label'       => sprintf( '<label for="title" class="cb-question-edit-title__label">%s</label>', __( 'Question Title', 'learnpress' ) ),
+			'label'       => sprintf( '<label for="title" class="cb-question-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
 			'input'       => sprintf( '<input type="text" name="question_title" size="30" value="%s" id="title" class="cb-question-edit-title__input">', $title ),
 			'wrapper_end' => '</div>',
 		];
@@ -162,7 +161,7 @@ class BuilderEditQuestionTemplate {
 
 		$edit = [
 			'wrapper'     => '<div class="cb-question-edit-desc">',
-			'label'       => sprintf( '<label for="question_description" class="cb-question-edit-desc__label">%s</label>', __( 'Question Description', 'learnpress' ) ),
+			'label'       => sprintf( '<label for="question_description" class="cb-question-edit-desc__label">%s</label>', __( 'Description', 'learnpress' ) ),
 			'edit'        => AdminTemplate::editor_tinymce(
 				$desc,
 				$editor_id,

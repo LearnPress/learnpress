@@ -1,6 +1,7 @@
 /**
  * Builder Material Handler
  * Handles material upload and management for lesson popup in course builder.
+ * Pure JavaScript implementation with optimizations
  *
  * @since 4.3.0
  * @version 1.0.0
@@ -9,9 +10,9 @@
 export class BuilderMaterial {
 	constructor( container = null ) {
 		this.container = container;
-		this.$ = window.jQuery;
 		this.initialized = false;
 		this.eventsBound = false;
+		this.sortable = null;
 
 		// Store references for cleanup
 		this.boundHandlers = {
@@ -20,7 +21,14 @@ export class BuilderMaterial {
 			handleClick: null,
 			handleSaveAll: null,
 			handleDelete: null,
+			handleDragStart: null,
+			handleDragOver: null,
+			handleDrop: null,
+			handleDragEnd: null,
 		};
+
+		// Cache DOM elements
+		this.elements = {};
 
 		if ( this.container ) {
 			this.init();
@@ -31,42 +39,61 @@ export class BuilderMaterial {
 	 * Reinitialize with new container (called from BuilderPopup)
 	 */
 	reinit( container ) {
-		// Destroy previous instance if exists
 		if ( this.initialized ) {
 			this.destroy();
 		}
 
 		this.container = container;
-		
+
 		if ( this.container ) {
 			this.init();
 		}
 	}
 
-	init() {
-		if ( ! this.container ) {
-			return;
-		}
+	/**
+	 * Cache all DOM elements for better performance
+	 */
+	cacheElements() {
+		const el = this.elements;
 
-		// Get elements within the container
-		this.postIdEl = this.container.querySelector( '#current-material-post-id' );
-		this.maxFileSizeEl = this.container.querySelector( '#material-max-file-size' );
-		this.uploadFieldEl = this.container.querySelector( '.lp-material--field-upload' );
-		this.canUploadEl = this.container.querySelector( '#available-to-upload' );
-		this.addBtn = this.container.querySelector( '#btn-lp--add-material' );
-		this.groupTemplate = this.container.querySelector( '#lp-material--add-material-template' );
-		this.groupContainer = this.container.querySelector( '#lp-material--group-container' );
-		this.materialTab = this.container.querySelector( '#lp-material-container' );
-		this.saveBtn = this.container.querySelector( '#btn-lp--save-material' );
+		el.postId = this.container.querySelector( '#current-material-post-id' );
+		el.maxFileSize = this.container.querySelector( '#material-max-file-size' );
+		el.uploadField = this.container.querySelector( '.lp-material--field-upload' );
+		el.canUpload = this.container.querySelector( '#available-to-upload' );
+		el.addBtn = this.container.querySelector( '#btn-lp--add-material' );
+		el.groupTemplate = this.container.querySelector( '#lp-material--add-material-template' );
+		el.groupContainer = this.container.querySelector( '#lp-material--group-container' );
+		el.materialTab = this.container.querySelector( '#lp-material-container' ) || this.container;
+		el.saveBtn = this.container.querySelector( '#btn-lp--save-material' );
+		el.uploadTemplate = this.container.querySelector( '#lp-material--upload-field-template' );
+		el.externalTemplate = this.container.querySelector( '#lp-material--external-field-template' );
+		el.deleteText = this.container.querySelector( '#delete-material-row-text' );
+		el.deleteMessage = this.container.querySelector( '#delete-material-message' );
+		el.materialTable = this.container.querySelector( '.lp-material--table' );
+		el.tbody = el.materialTable?.querySelector( 'tbody' );
+		el.thead = el.materialTable?.querySelector( 'thead' );
+	}
+
+	init() {
+		if ( ! this.container ) return;
+
+		// Cache all elements
+		this.cacheElements();
+
+		const { postId, materialTab } = this.elements;
 
 		// Validate required elements
-		if ( ! this.postIdEl || ! this.materialTab ) {
-			return;
-		}
+		if ( ! postId || ! materialTab ) return;
 
-		this.postID = this.postIdEl.value;
-		this.maxFileSize = this.maxFileSizeEl ? this.maxFileSizeEl.value : 10;
-		this.acceptFile = this.uploadFieldEl ? this.uploadFieldEl.getAttribute( 'accept' ).split( ',' ) : [];
+		// Store config values
+		this.postID = postId.value;
+		this.maxFileSize = this.elements.maxFileSize?.value || 10;
+		this.acceptFile = this.elements.uploadField
+			? this.elements.uploadField
+					.getAttribute( 'accept' )
+					?.split( ',' )
+					.map( ( s ) => s.trim() ) || []
+			: [];
 
 		// Load existing materials
 		this.loadMaterials();
@@ -74,36 +101,35 @@ export class BuilderMaterial {
 		// Bind events
 		this.bindEvents();
 
-		// Initialize sortable
+		// Initialize native drag & drop sortable
 		this.initSortable();
 
 		this.initialized = true;
 	}
 
 	/**
-	 * Load materials from API
+	 * Load materials from API with better error handling
 	 */
 	async loadMaterials() {
-		if ( ! this.materialTab || ! this.postID ) {
-			return;
-		}
+		const { materialTab, tbody } = this.elements;
 
-		const elementMaterial = this.container.querySelector( '.lp-material--table tbody' );
-		if ( ! elementMaterial ) {
-			return;
-		}
+		if ( ! materialTab || ! this.postID || ! tbody ) return;
 
 		try {
-			// Use lpGlobalSettings for frontend context (lpDataAdmin is only available in admin)
-			const restUrl = window.lpGlobalSettings?.rest || window.lpData?.lp_rest_url || '/wp-json/';
+			const restUrl = this.getRestUrl();
 			const url = `${ restUrl }lp/v1/material/item-materials/${ this.postID }`;
+
 			const response = await fetch( url, {
 				method: 'GET',
 				headers: {
-					'X-WP-Nonce': lpData.nonce,
+					'X-WP-Nonce': this.getNonce(),
 					'Content-Type': 'application/json',
 				},
 			} );
+
+			if ( ! response.ok ) {
+				throw new Error( `HTTP error! status: ${ response.status }` );
+			}
 
 			const result = await response.json();
 			const { data, status } = result;
@@ -113,15 +139,18 @@ export class BuilderMaterial {
 				return;
 			}
 
-			if ( data && data.items && data.items.length > 0 ) {
-				const skeleton = this.materialTab.querySelector( '.lp-skeleton-animation' );
-				if ( skeleton ) {
-					skeleton.remove();
-				}
+			if ( data?.items?.length > 0 ) {
+				// Remove skeleton loader
+				const skeleton = materialTab.querySelector( '.lp-skeleton-animation' );
+				skeleton?.remove();
 
+				// Use DocumentFragment for better performance
+				const fragment = document.createDocumentFragment();
 				data.items.forEach( ( item ) => {
-					this.insertRow( elementMaterial, item );
+					const row = this.createRow( item );
+					fragment.appendChild( row );
 				} );
+				tbody.appendChild( fragment );
 
 				// Reinit sortable after loading data
 				this.initSortable();
@@ -132,24 +161,38 @@ export class BuilderMaterial {
 	}
 
 	/**
-	 * Insert a row into the material table
+	 * Create a table row element (more efficient than insertAdjacentHTML)
 	 */
-	insertRow( parent, data ) {
-		if ( ! parent ) {
-			return;
-		}
+	createRow( data ) {
+		const tr = document.createElement( 'tr' );
+		tr.dataset.id = data.file_id;
+		tr.dataset.sort = data.orders;
+		tr.draggable = true;
 
-		const deleteTextEl = this.container.querySelector( '#delete-material-row-text' );
-		const deleteBtnText = deleteTextEl ? deleteTextEl.value : 'Delete';
+		const deleteBtnText = this.elements.deleteText?.value || 'Delete';
 
-		parent.insertAdjacentHTML(
-			'beforeend',
-			`<tr data-id="${ data.file_id }" data-sort="${ data.orders }">
-				<td class="sort"><span class="dashicons dashicons-menu"></span> ${ data.file_name }</td>
-				<td>${ this.capitalizeFirstChar( data.method ) }</td>
-				<td><a href="javascript:void(0)" class="delete-material-row" data-id="${ data.file_id }">${ deleteBtnText }</a></td>
-			</tr>`
-		);
+		tr.innerHTML = `
+			<td class="sort">
+				<span class="dashicons dashicons-menu"></span> ${ this.escapeHtml( data.file_name ) }
+			</td>
+			<td>${ this.capitalizeFirstChar( data.method ) }</td>
+			<td>
+				<a href="javascript:void(0)" class="delete-material-row" data-id="${ data.file_id }">
+					${ deleteBtnText }
+				</a>
+			</td>
+		`;
+
+		return tr;
+	}
+
+	/**
+	 * Escape HTML to prevent XSS
+	 */
+	escapeHtml( text ) {
+		const div = document.createElement( 'div' );
+		div.textContent = text;
+		return div.innerHTML;
 	}
 
 	capitalizeFirstChar( str ) {
@@ -157,35 +200,31 @@ export class BuilderMaterial {
 	}
 
 	/**
-	 * Bind all events
+	 * Bind all events with delegation for better performance
 	 */
 	bindEvents() {
-		if ( this.eventsBound ) {
-			return;
-		}
+		if ( this.eventsBound ) return;
+
+		const { addBtn, materialTab, saveBtn } = this.elements;
 
 		// Create bound handlers for later removal
-		this.boundHandlers.handleAddMaterial = ( e ) => this.handleAddMaterial( e );
+		this.boundHandlers.handleAddMaterial = () => this.handleAddMaterial();
 		this.boundHandlers.handleChange = ( e ) => this.handleChange( e );
 		this.boundHandlers.handleClick = ( e ) => this.handleClick( e );
-		this.boundHandlers.handleSaveAll = ( e ) => this.handleSaveAll( e );
+		this.boundHandlers.handleSaveAll = () => this.handleSaveAll();
 		this.boundHandlers.handleDelete = ( e ) => this.handleDelete( e );
 
 		// Add material button
-		if ( this.addBtn ) {
-			this.addBtn.addEventListener( 'click', this.boundHandlers.handleAddMaterial );
-		}
+		addBtn?.addEventListener( 'click', this.boundHandlers.handleAddMaterial );
 
-		// Change events (method switch, file validation)
-		if ( this.materialTab ) {
-			this.materialTab.addEventListener( 'change', this.boundHandlers.handleChange );
-			this.materialTab.addEventListener( 'click', this.boundHandlers.handleClick );
+		// Use event delegation on materialTab
+		if ( materialTab ) {
+			materialTab.addEventListener( 'change', this.boundHandlers.handleChange );
+			materialTab.addEventListener( 'click', this.boundHandlers.handleClick );
 		}
 
 		// Save all button
-		if ( this.saveBtn ) {
-			this.saveBtn.addEventListener( 'click', this.boundHandlers.handleSaveAll );
-		}
+		saveBtn?.addEventListener( 'click', this.boundHandlers.handleSaveAll );
 
 		// Delete material (use event delegation on container)
 		this.container.addEventListener( 'click', this.boundHandlers.handleDelete );
@@ -196,23 +235,21 @@ export class BuilderMaterial {
 	/**
 	 * Handle add material button click
 	 */
-	handleAddMaterial( e ) {
-		if ( ! this.addBtn || ! this.groupContainer || ! this.groupTemplate ) {
-			return;
-		}
+	handleAddMaterial() {
+		const { addBtn, groupContainer, groupTemplate } = this.elements;
 
-		const canUploadData = ~~this.addBtn.getAttribute( 'can-upload' );
-		const groups = this.groupContainer.querySelectorAll( '.lp-material--group' ).length;
+		if ( ! addBtn || ! groupContainer || ! groupTemplate ) return;
 
-		if ( groups >= canUploadData ) {
-			return false;
-		}
+		const canUploadData = parseInt( addBtn.getAttribute( 'can-upload' ) ) || 0;
+		const groups = groupContainer.querySelectorAll( '.lp-material--group' ).length;
 
-		this.groupContainer.insertAdjacentHTML( 'afterbegin', this.groupTemplate.innerHTML );
+		if ( groups >= canUploadData ) return;
+
+		groupContainer.insertAdjacentHTML( 'afterbegin', groupTemplate.innerHTML );
 	}
 
 	/**
-	 * Handle change events
+	 * Handle change events with delegation
 	 */
 	handleChange( event ) {
 		const target = event.target;
@@ -233,32 +270,21 @@ export class BuilderMaterial {
 	 */
 	handleMethodSwitch( target ) {
 		const method = target.value;
-		const uploadTemplate = this.container.querySelector( '#lp-material--upload-field-template' );
-		const externalTemplate = this.container.querySelector( '#lp-material--external-field-template' );
+		const { uploadTemplate, externalTemplate } = this.elements;
 
-		if ( ! uploadTemplate || ! externalTemplate ) {
-			return;
-		}
+		if ( ! uploadTemplate || ! externalTemplate ) return;
 
 		const group = target.closest( '.lp-material--group' );
-		if ( ! group ) {
-			return;
-		}
+		if ( ! group ) return;
 
 		switch ( method ) {
 			case 'upload':
 				target.parentNode.insertAdjacentHTML( 'afterend', uploadTemplate.innerHTML );
-				const externalWrap = group.querySelector( '.lp-material--external-wrap' );
-				if ( externalWrap ) {
-					externalWrap.remove();
-				}
+				group.querySelector( '.lp-material--external-wrap' )?.remove();
 				break;
 			case 'external':
 				target.parentNode.insertAdjacentHTML( 'afterend', externalTemplate.innerHTML );
-				const uploadWrap = group.querySelector( '.lp-material--upload-wrap' );
-				if ( uploadWrap ) {
-					uploadWrap.remove();
-				}
+				group.querySelector( '.lp-material--upload-wrap' )?.remove();
 				break;
 		}
 	}
@@ -267,9 +293,7 @@ export class BuilderMaterial {
 	 * Validate uploaded file
 	 */
 	validateFile( target ) {
-		if ( ! target.value || ! target.files || target.files.length === 0 ) {
-			return;
-		}
+		if ( ! target.value || ! target.files?.length ) return;
 
 		const file = target.files[ 0 ];
 
@@ -280,346 +304,391 @@ export class BuilderMaterial {
 		}
 
 		if ( file.size > this.maxFileSize * 1024 * 1024 ) {
-			alert( `This file size is greater than ${ this.maxFileSize }MB! Please choose another file!` );
+			alert(
+				`This file size is greater than ${ this.maxFileSize }MB! Please choose another file!`
+			);
 			target.value = '';
 		}
 	}
 
 	/**
-	 * Handle click events
+	 * Handle click events with delegation
 	 */
 	handleClick( event ) {
 		const target = event.target;
 
 		// Delete group
 		if ( target.classList.contains( 'lp-material--delete' ) && target.nodeName === 'BUTTON' ) {
-			target.closest( '.lp-material--group' ).remove();
+			target.closest( '.lp-material--group' )?.remove();
+			return;
 		}
 
 		// Save single material
 		if ( target.classList.contains( 'lp-material-save-field' ) ) {
-			let material = target.closest( '.lp-material--group' );
-			material = this.singleNode( material );
-			this.saveMaterial( material, true, target );
+			const material = target.closest( '.lp-material--group' );
+			if ( material ) {
+				this.saveMaterial( [ material ], true, target );
+			}
 		}
-
-		return false;
 	}
 
 	/**
 	 * Handle save all button
 	 */
-	handleSaveAll( event ) {
-		if ( ! this.groupContainer ) {
-			return;
-		}
+	handleSaveAll() {
+		const { groupContainer, saveBtn } = this.elements;
 
-		const materials = this.groupContainer.querySelectorAll( '.lp-material--group' );
+		if ( ! groupContainer ) return;
+
+		const materials = Array.from( groupContainer.querySelectorAll( '.lp-material--group' ) );
 		if ( materials.length > 0 ) {
-			this.saveMaterial( materials, false, this.saveBtn );
+			this.saveMaterial( materials, false, saveBtn );
 		}
 	}
 
 	/**
-	 * Save material(s)
+	 * Save material(s) with improved validation
 	 */
-	saveMaterial( materials, isSingle = false, targetBtn ) {
-		if ( materials.length === 0 ) {
-			return;
-		}
+	async saveMaterial( materials, isSingle = false, targetBtn ) {
+		if ( ! materials.length ) return;
 
-		let materialData = [];
-		let formData = new FormData();
-		let sendRequest = true;
+		const materialData = [];
+		const formData = new FormData();
+		let isValid = true;
 
-		materials.forEach( ( ele ) => {
-			const label = ele.querySelector( '.lp-material--field-title' ).value;
-			const method = ele.querySelector( '.lp-material--field-method' ).value;
+		for ( const ele of materials ) {
+			const label = ele.querySelector( '.lp-material--field-title' )?.value;
+			const method = ele.querySelector( '.lp-material--field-method' )?.value;
 			const externalField = ele.querySelector( '.lp-material--field-external-link' );
 			const uploadField = ele.querySelector( '.lp-material--field-upload' );
+
+			if ( ! label ) {
+				isValid = false;
+				break;
+			}
 
 			let file = '';
 			let link = '';
 
-			if ( ! label ) {
-				sendRequest = false;
-				return;
-			}
-
 			switch ( method ) {
 				case 'upload':
-					if ( uploadField && uploadField.value && uploadField.files.length > 0 ) {
+					if ( uploadField?.value && uploadField.files?.length > 0 ) {
 						file = uploadField.files[ 0 ].name;
 						formData.append( 'file[]', uploadField.files[ 0 ] );
 					} else {
-						sendRequest = false;
+						isValid = false;
 					}
 					break;
 				case 'external':
-					link = externalField ? externalField.value : '';
+					link = externalField?.value || '';
 					if ( ! link ) {
-						sendRequest = false;
+						isValid = false;
 					}
 					break;
 			}
 
-			materialData.push( { label, method, file, link } );
-		} );
+			if ( ! isValid ) break;
 
-		if ( ! sendRequest ) {
+			materialData.push( { label, method, file, link } );
+		}
+
+		if ( ! isValid ) {
 			alert( 'Enter file title, choose file or enter file link!' );
 			return;
 		}
 
-		materialData = JSON.stringify( materialData );
-		const restUrl = window.lpGlobalSettings?.rest || window.lpData?.lp_rest_url || '/wp-json/';
-		const url = `${ restUrl }lp/v1/material/item-materials/${ this.postID }`;
-		formData.append( 'data', materialData );
-		targetBtn.classList.add( 'loading' );
+		formData.append( 'data', JSON.stringify( materialData ) );
+		targetBtn?.classList.add( 'loading' );
 
-		fetch( url, {
-			method: 'POST',
-			headers: {
-				'X-WP-Nonce': window.lpGlobalSettings?.nonce || window.lpData?.nonce || '',
-			},
-			body: formData,
-		} )
-			.then( ( response ) => {
-				// Check if response is ok
-				if ( ! response.ok ) {
-					throw new Error( `HTTP error! status: ${ response.status }` );
-				}
-				return response.text();
-			} )
-			.then( ( resString ) => {
-				// Try to parse JSON, if fails, it might be HTML error page
-				let res;
-				try {
-					res = JSON.parse( resString );
-				} catch ( e ) {
-					console.error( 'Response is not valid JSON:', resString.substring( 0, 200 ) );
-					throw new Error( 'Server returned invalid response. Check console for details.' );
-				}
+		try {
+			const restUrl = this.getRestUrl();
+			const url = `${ restUrl }lp/v1/material/item-materials/${ this.postID }`;
 
-				if ( ! isSingle ) {
-					this.groupContainer.innerHTML = '';
-				} else {
-					materials[ 0 ].remove();
-				}
-
-				const { message, data, status } = res;
-				alert( message );
-
-				if ( status === 'success' && data.length > 0 ) {
-					const materialTable = this.container.querySelector( '.lp-material--table' );
-					const thead = materialTable ? materialTable.querySelector( 'thead' ) : null;
-					const tbody = materialTable ? materialTable.querySelector( 'tbody' ) : null;
-
-					if ( thead ) {
-						thead.classList.remove( 'hidden' );
-					}
-
-					if ( tbody ) {
-						data.forEach( ( row ) => {
-							this.insertRow( tbody, row );
-						} );
-					}
-
-					if ( this.canUploadEl && this.addBtn ) {
-						this.canUploadEl.innerText = parseInt( this.canUploadEl.innerText ) - data.length;
-						this.addBtn.setAttribute( 'can-upload', this.canUploadEl.innerText );
-					}
-
-					// Reinit sortable after adding new rows
-					this.initSortable();
-				}
-			} )
-			.catch( ( err ) => {
-				console.error( 'Save material error:', err );
-				alert( 'Error saving material: ' + err.message );
-			} )
-			.finally( () => {
-				targetBtn.classList.remove( 'loading' );
+			const response = await fetch( url, {
+				method: 'POST',
+				headers: {
+					'X-WP-Nonce': this.getNonce(),
+				},
+				body: formData,
 			} );
+
+			if ( ! response.ok ) {
+				throw new Error( `HTTP error! status: ${ response.status }` );
+			}
+
+			const text = await response.text();
+			let res;
+
+			try {
+				res = JSON.parse( text );
+			} catch ( e ) {
+				console.error( 'Response is not valid JSON:', text.substring( 0, 200 ) );
+				throw new Error( 'Server returned invalid response. Check console for details.' );
+			}
+
+			// Clear or remove materials
+			if ( ! isSingle ) {
+				materials.forEach( ( ele ) => {
+					ele.querySelector( '.lp-material--field-title' ).value = '';
+					const uploadField = ele.querySelector( '.lp-material--field-upload' );
+					if ( uploadField ) uploadField.value = '';
+					const externalField = ele.querySelector( '.lp-material--field-external-link' );
+					if ( externalField ) externalField.value = '';
+				} );
+			} else {
+				materials[ 0 ].remove();
+			}
+
+			const { message, data, status } = res;
+			alert( message );
+
+			if ( status === 'success' && data?.length > 0 ) {
+				const { thead, tbody } = this.elements;
+
+				thead?.classList.remove( 'hidden' );
+
+				if ( tbody ) {
+					const fragment = document.createDocumentFragment();
+					data.forEach( ( row ) => {
+						fragment.appendChild( this.createRow( row ) );
+					} );
+					tbody.appendChild( fragment );
+				}
+
+				this.updateCanUploadCount( -data.length );
+				this.initSortable();
+			}
+		} catch ( err ) {
+			console.error( 'Save material error:', err );
+			alert( 'Error saving material: ' + err.message );
+		} finally {
+			targetBtn?.classList.remove( 'loading' );
+		}
 	}
 
 	/**
 	 * Handle delete material
 	 */
-	handleDelete( e ) {
+	async handleDelete( e ) {
 		const target = e.target;
 
 		if ( ! target.classList.contains( 'delete-material-row' ) || target.nodeName !== 'A' ) {
 			return;
 		}
 
-		const rowID = target.getAttribute( 'data-id' );
-		const messageEl = this.container.querySelector( '#delete-material-message' );
-		const message = messageEl ? messageEl.value : 'Are you sure you want to delete this material?';
+		e.preventDefault();
 
-		if ( ! confirm( message ) ) {
-			return;
-		}
+		const rowID = target.dataset.id;
+		const message =
+			this.elements.deleteMessage?.value || 'Are you sure you want to delete this material?';
 
-		const restUrl = window.lpGlobalSettings?.rest || window.lpData?.lp_rest_url || '/wp-json/';
-		const url = `${ restUrl }lp/v1/material/${ rowID }`;
+		if ( ! confirm( message ) ) return;
 
-		fetch( url, {
-			method: 'DELETE',
-			headers: {
-				'X-WP-Nonce': window.lpGlobalSettings?.nonce || window.lpData?.nonce || '',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify( {
-				item_id: this.postID,
-			} ),
-		} )
-			.then( ( response ) => response.json() )
-			.then( ( res ) => {
-				if ( res.status !== 200 || ! res.delete ) {
-					alert( res.message );
-				} else {
-					target.closest( 'tr' ).remove();
+		try {
+			const restUrl = this.getRestUrl();
+			const url = `${ restUrl }lp/v1/material/${ rowID }`;
 
-					if ( this.canUploadEl && this.addBtn ) {
-						this.canUploadEl.innerText = ~~this.canUploadEl.innerText + 1;
-						this.addBtn.setAttribute( 'can-upload', ~~this.canUploadEl.innerText );
-					}
-				}
-			} )
-			.catch( ( err ) => {
-				console.error( 'Delete material error:', err );
-				alert( 'Error deleting material: ' + err.message );
+			const response = await fetch( url, {
+				method: 'DELETE',
+				headers: {
+					'X-WP-Nonce': this.getNonce(),
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify( {
+					item_id: this.postID,
+				} ),
 			} );
+
+			const res = await response.json();
+
+			if ( res.status !== 200 || ! res.delete ) {
+				alert( res.message );
+			} else {
+				target.closest( 'tr' )?.remove();
+				this.updateCanUploadCount( 1 );
+			}
+		} catch ( err ) {
+			console.error( 'Delete material error:', err );
+			alert( 'Error deleting material: ' + err.message );
+		}
 	}
 
 	/**
-	 * Initialize sortable
+	 * Update can upload count
+	 */
+	updateCanUploadCount( delta ) {
+		const { canUpload, addBtn } = this.elements;
+
+		if ( canUpload && addBtn ) {
+			const newCount = parseInt( canUpload.textContent ) + delta;
+			canUpload.textContent = newCount;
+			addBtn.setAttribute( 'can-upload', newCount );
+		}
+	}
+
+	/**
+	 * Initialize native drag & drop sortable (no jQuery)
 	 */
 	initSortable() {
-		const $ = this.$;
-		if ( ! $ || ! $.fn.sortable ) {
-			return;
-		}
+		const { tbody } = this.elements;
 
-		const tbody = this.container.querySelector( '.lp-material--table tbody' );
-		if ( ! tbody ) {
-			return;
-		}
+		if ( ! tbody ) return;
 
-		// Destroy existing sortable if exists
-		if ( $( tbody ).sortable( 'instance' ) ) {
-			$( tbody ).sortable( 'destroy' );
-		}
+		// Remove existing listeners
+		this.destroySortable();
 
-		$( tbody ).sortable( {
-			items: 'tr',
-			cursor: 'move',
-			axis: 'y',
-			handle: 'td.sort',
-			scrollSensitivity: 40,
-			forcePlaceholderSize: true,
-			helper: 'clone',
-			opacity: 0.65,
-			update: ( event, ui ) => {
-				$( tbody ).sortable( 'option', 'disabled', true );
-				this.updateSort();
-				$( tbody ).sortable( 'option', 'disabled', false );
-			},
+		const rows = tbody.querySelectorAll( 'tr' );
+
+		// Create bound handlers
+		this.boundHandlers.handleDragStart = ( e ) => this.handleDragStart( e );
+		this.boundHandlers.handleDragOver = ( e ) => this.handleDragOver( e );
+		this.boundHandlers.handleDrop = ( e ) => this.handleDrop( e );
+		this.boundHandlers.handleDragEnd = () => this.handleDragEnd();
+
+		rows.forEach( ( row ) => {
+			row.draggable = true;
+			row.addEventListener( 'dragstart', this.boundHandlers.handleDragStart );
+			row.addEventListener( 'dragover', this.boundHandlers.handleDragOver );
+			row.addEventListener( 'drop', this.boundHandlers.handleDrop );
+			row.addEventListener( 'dragend', this.boundHandlers.handleDragEnd );
 		} );
+
+		this.sortable = { tbody, rows };
+	}
+
+	handleDragStart( e ) {
+		this.draggedElement = e.currentTarget;
+		e.currentTarget.style.opacity = '0.4';
+		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.setData( 'text/html', e.currentTarget.innerHTML );
+	}
+
+	handleDragOver( e ) {
+		if ( e.preventDefault ) {
+			e.preventDefault();
+		}
+		e.dataTransfer.dropEffect = 'move';
+
+		const target = e.currentTarget;
+		if ( this.draggedElement !== target ) {
+			const rect = target.getBoundingClientRect();
+			const next = ( e.clientY - rect.top ) / ( rect.bottom - rect.top ) > 0.5;
+			target.parentNode.insertBefore( this.draggedElement, next ? target.nextSibling : target );
+		}
+
+		return false;
+	}
+
+	handleDrop( e ) {
+		if ( e.stopPropagation ) {
+			e.stopPropagation();
+		}
+		return false;
+	}
+
+	handleDragEnd() {
+		this.draggedElement.style.opacity = '1';
+		this.draggedElement = null;
+
+		// Update sort order after drag ends
+		this.updateSort();
 	}
 
 	/**
 	 * Update sort order
 	 */
-	updateSort() {
-		const items = this.container.querySelectorAll( '.lp-material--table tbody tr' );
-		const data = [];
+	async updateSort() {
+		const { tbody } = this.elements;
+		if ( ! tbody ) return;
 
-		items.forEach( ( item, index ) => {
-			item.setAttribute( 'data-sort', index + 1 );
-			data.push( {
-				file_id: ~~item.getAttribute( 'data-id' ),
+		const items = tbody.querySelectorAll( 'tr' );
+		const data = Array.from( items ).map( ( item, index ) => {
+			item.dataset.sort = index + 1;
+			return {
+				file_id: parseInt( item.dataset.id ),
 				orders: index + 1,
-			} );
+			};
 		} );
 
-		const restUrl = window.lpGlobalSettings?.rest || window.lpData?.lp_rest_url || '/wp-json/';
-		const url = `${ restUrl }lp/v1/material/item-materials/${ this.postID }`;
+		try {
+			const restUrl = this.getRestUrl();
+			const url = `${ restUrl }lp/v1/material/item-materials/${ this.postID }`;
 
-		fetch( url, {
-			method: 'PUT',
-			headers: {
-				'X-WP-Nonce': window.lpGlobalSettings?.nonce || window.lpData?.nonce || '',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify( {
-				sort_arr: JSON.stringify( data ),
-			} ),
-		} )
-			.then( ( response ) => response.json() )
-			.then( ( res ) => {
-				if ( res.status !== 200 ) {
-					alert( 'Sort table fail.' );
-				}
-			} )
-			.catch( ( err ) => {
-				console.error( 'Update sort error:', err );
+			const response = await fetch( url, {
+				method: 'PUT',
+				headers: {
+					'X-WP-Nonce': this.getNonce(),
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify( {
+					sort_arr: JSON.stringify( data ),
+				} ),
 			} );
+
+			const res = await response.json();
+
+			if ( res.status !== 200 ) {
+				alert( 'Sort table fail.' );
+			}
+		} catch ( err ) {
+			console.error( 'Update sort error:', err );
+		}
 	}
 
 	/**
-	 * Helper to create a single-node NodeList
+	 * Helper methods for REST URL and nonce
 	 */
-	singleNode( node ) {
-		const nodeList = document.createDocumentFragment().childNodes;
-		const layer = {
-			0: { value: node, enumerable: true },
-			length: { value: 1 },
-			item: {
-				value( i ) {
-					return this[ +i || 0 ];
-				},
-				enumerable: true,
-			},
-		};
-		return Object.create( nodeList, layer );
+	getRestUrl() {
+		return window.lpGlobalSettings?.rest || window.lpData?.lp_rest_url || '/wp-json/';
+	}
+
+	getNonce() {
+		return window.lpGlobalSettings?.nonce || window.lpData?.nonce || '';
+	}
+
+	/**
+	 * Destroy sortable
+	 */
+	destroySortable() {
+		if ( ! this.sortable ) return;
+
+		const { rows } = this.sortable;
+		rows?.forEach( ( row ) => {
+			row.removeEventListener( 'dragstart', this.boundHandlers.handleDragStart );
+			row.removeEventListener( 'dragover', this.boundHandlers.handleDragOver );
+			row.removeEventListener( 'drop', this.boundHandlers.handleDrop );
+			row.removeEventListener( 'dragend', this.boundHandlers.handleDragEnd );
+		} );
+
+		this.sortable = null;
 	}
 
 	/**
 	 * Destroy instance and cleanup
 	 */
 	destroy() {
+		const { addBtn, materialTab, saveBtn } = this.elements;
+
 		// Remove event listeners
-		if ( this.addBtn && this.boundHandlers.handleAddMaterial ) {
-			this.addBtn.removeEventListener( 'click', this.boundHandlers.handleAddMaterial );
+		if ( addBtn ) {
+			addBtn.removeEventListener( 'click', this.boundHandlers.handleAddMaterial );
 		}
 
-		if ( this.materialTab ) {
-			if ( this.boundHandlers.handleChange ) {
-				this.materialTab.removeEventListener( 'change', this.boundHandlers.handleChange );
-			}
-			if ( this.boundHandlers.handleClick ) {
-				this.materialTab.removeEventListener( 'click', this.boundHandlers.handleClick );
-			}
+		if ( materialTab ) {
+			materialTab.removeEventListener( 'change', this.boundHandlers.handleChange );
+			materialTab.removeEventListener( 'click', this.boundHandlers.handleClick );
 		}
 
-		if ( this.saveBtn && this.boundHandlers.handleSaveAll ) {
-			this.saveBtn.removeEventListener( 'click', this.boundHandlers.handleSaveAll );
+		if ( saveBtn ) {
+			saveBtn.removeEventListener( 'click', this.boundHandlers.handleSaveAll );
 		}
 
-		if ( this.container && this.boundHandlers.handleDelete ) {
+		if ( this.container ) {
 			this.container.removeEventListener( 'click', this.boundHandlers.handleDelete );
 		}
 
-		// Remove sortable if exists
-		const $ = this.$;
-		if ( $ && $.fn.sortable ) {
-			const tbody = this.container.querySelector( '.lp-material--table tbody' );
-			if ( tbody && $( tbody ).sortable( 'instance' ) ) {
-				$( tbody ).sortable( 'destroy' );
-			}
-		}
+		// Destroy sortable
+		this.destroySortable();
 
 		// Reset bound handlers
 		this.boundHandlers = {
@@ -628,7 +697,14 @@ export class BuilderMaterial {
 			handleClick: null,
 			handleSaveAll: null,
 			handleDelete: null,
+			handleDragStart: null,
+			handleDragOver: null,
+			handleDrop: null,
+			handleDragEnd: null,
 		};
+
+		// Clear cached elements
+		this.elements = {};
 
 		this.initialized = false;
 		this.eventsBound = false;

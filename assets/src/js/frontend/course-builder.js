@@ -1,4 +1,4 @@
-/**=
+/**
  * Course builder JS handler.
  *
  * @since 4.3.0
@@ -17,32 +17,61 @@ import { BuilderMaterial } from './course-builder/builder-lesson/builder-materia
 import { initElsTomSelect } from 'lpAssetsJsPath/admin/init-tom-select.js';
 import { Utils } from 'lpAssetsJsPath/admin/utils-admin.js';
 
-new BuilderTabCourse();
-new BuilderEditCourse();
-new BuilderTabLesson();
-new BuilderEditLesson();
-new BuilderTabQuiz();
-new BuilderEditQuiz();
-new BuilderTabQuestion();
-new BuilderEditQuestion();
-new BuilderPopup();
+// Initialize all builder components
+const initBuilderComponents = () => {
+	try {
+		new BuilderTabCourse();
+		new BuilderEditCourse();
+		new BuilderTabLesson();
+		// new BuilderEditLesson();
+		new BuilderTabQuiz();
+		// new BuilderEditQuiz();
+		new BuilderTabQuestion();
+		// new BuilderEditQuestion();
+		new BuilderPopup();
+	} catch ( e ) {
+		console.error( 'Error initializing builder components:', e );
+	}
+};
+
+// Initialize components
+initBuilderComponents();
 
 // Events
 document.addEventListener( 'click', ( e ) => {
-	initElsTomSelect();
+	try {
+		initElsTomSelect();
+	} catch ( e ) {
+		console.warn( 'Error initializing TomSelect:', e );
+	}
 } );
 
 document.addEventListener( 'DOMContentLoaded', () => {
-	// Sure that the TomSelect is loaded if listen can't find elements.
-	initElsTomSelect();
+	// Sure that the TomSelect is loaded if listener can't find elements.
+	try {
+		initElsTomSelect();
+	} catch ( e ) {
+		console.warn( 'Error initializing TomSelect on DOMContentLoaded:', e );
+	}
 
 	// Initialize BuilderMaterial for Course Builder Settings tab Material
-	initBuilderMaterialForCourseSettings();
+	try {
+		initBuilderMaterialForCourseSettings();
+	} catch ( e ) {
+		console.error( 'Error initializing BuilderMaterial:', e );
+	}
 } );
 
-Utils.lpOnElementReady( 'select.lp-tom-select', ( e ) => {
-	initElsTomSelect();
-} );
+// Use lpOnElementReady safely
+if ( Utils?.lpOnElementReady ) {
+	Utils.lpOnElementReady( 'select.lp-tom-select', () => {
+		try {
+			initElsTomSelect();
+		} catch ( e ) {
+			console.warn( 'Error initializing TomSelect:', e );
+		}
+	} );
+}
 
 window.lpFindTomSelect = initElsTomSelect;
 
@@ -50,6 +79,8 @@ window.lpFindTomSelect = initElsTomSelect;
  * Initialize BuilderMaterial for Course Builder Settings tab Material
  */
 function initBuilderMaterialForCourseSettings() {
+	const initializedContainers = new WeakSet();
+
 	// Listen for tab clicks in Course Settings using event delegation
 	document.addEventListener( 'click', ( e ) => {
 		const target = e.target.closest( 'ul.lp-meta-box__course-tab__tabs a' );
@@ -64,12 +95,16 @@ function initBuilderMaterialForCourseSettings() {
 		if ( targetPanel && targetPanel.includes( 'material' ) ) {
 			// Wait for DOM to update
 			setTimeout( () => {
-				const materialContainer = document.querySelector( targetPanel + ' #lp-material-container' );
-				if ( materialContainer && ! materialContainer.dataset.builderMaterialInit ) {
-					// Mark as initialized to prevent multiple instances
-					materialContainer.dataset.builderMaterialInit = 'true';
-					// Initialize BuilderMaterial
-					new BuilderMaterial( materialContainer );
+				try {
+					const materialContainer = document.querySelector( targetPanel + ' #lp-material-container' );
+					if ( materialContainer && ! initializedContainers.has( materialContainer ) ) {
+						// Mark as initialized to prevent multiple instances
+						initializedContainers.add( materialContainer );
+						// Initialize BuilderMaterial
+						new BuilderMaterial( materialContainer );
+					}
+				} catch ( e ) {
+					console.error( 'Error initializing BuilderMaterial:', e );
 				}
 			}, 100 );
 		}

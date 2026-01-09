@@ -1,3 +1,10 @@
+/**
+ * Builder Edit Quiz Handler
+ *
+ * @since 4.3.0
+ * @version 1.0.0
+ */
+
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import { LpPopupSelectItemToAdd } from 'lpAssetsJsPath/lpPopupSelectItemToAdd.js';
@@ -13,18 +20,12 @@ export class BuilderEditQuiz {
 		this.lpPopupSelectItemToAdd = null;
 		this.sortableInstance = null;
 		this.sortableAnswerInstances = [];
-		this.editQuestion = null; // Instance of EditQuestion for answer management
+		this.editQuestion = null;
+		this.initPromise = null;
+		this.isInitialized = false;
 	}
 
 	static selectors = {
-		elDataQuiz: '.cb-section__quiz-edit',
-		elBtnUpdateQuiz: '.cb-btn-update__quiz',
-		elBtnTrashQuiz: '.cb-btn-trash__quiz',
-		elQuizStatus: '.quiz-status',
-		idTitle: 'title',
-		idDescEditor: 'quiz_description_editor',
-		elFormSetting: '.lp-form-setting-quiz',
-		// Quiz questions tab selectors
 		elEditQuizWrap: '.lp-edit-quiz-wrap',
 		elQuestionEditMain: '.lp-question-edit-main',
 		elEditListQuestions: '.lp-edit-list-questions',
@@ -45,87 +46,103 @@ export class BuilderEditQuiz {
 	};
 
 	init( container = null ) {
-		console.log( '[BuilderEditQuiz] init() called, container:', container );
 		this.initQuizQuestionsTab( container );
 		this.events();
 	}
 
 	/**
-	 * Reinitialize for a new quiz context (e.g., when popup loads different quiz)
+	 * Reinitialize for new quiz context
 	 */
 	reinit( container = null ) {
-		console.log( '[BuilderEditQuiz] reinit() called, container:', container );
+		this.cleanup();
+		this.events();
 		
-		// Reset state
+		// Use async init with proper error handling
+		this.initQuizQuestionsTabAsync( container ).catch( ( error ) => {
+			// Silently handle error - element might not exist yet
+			console.debug( 'BuilderEditQuiz: Quiz questions tab not found', error.message );
+		} );
+	}
+
+	/**
+	 * Cleanup all instances and state
+	 */
+	cleanup() {
+		// Cancel pending promise if exists
+		if ( this.initPromise && typeof this.initPromise === 'object' ) {
+			this.initPromise.cancelled = true;
+		}
+		this.initPromise = null;
+
 		this.elEditQuizWrap = null;
 		this.elEditListQuestions = null;
 		this.quizID = null;
+		this.isInitialized = false;
 
-		// Destroy old sortable instances
-		if ( this.sortableInstance ) {
-			this.sortableInstance.destroy();
+		// Destroy sortable instances
+		if ( this.sortableInstance?.destroy ) {
+			try {
+				this.sortableInstance.destroy();
+			} catch ( e ) {
+				console.warn( 'Error destroying sortable instance:', e );
+			}
 			this.sortableInstance = null;
 		}
 
 		// Destroy answer sortable instances
 		this.sortableAnswerInstances.forEach( ( instance ) => {
-			if ( instance && typeof instance.destroy === 'function' ) {
-				instance.destroy();
+			if ( instance?.destroy ) {
+				try {
+					instance.destroy();
+				} catch ( e ) {
+					console.warn( 'Error destroying answer sortable:', e );
+				}
 			}
 		} );
 		this.sortableAnswerInstances = [];
-
-		 // Register events first (they use document delegation)
-		this.events();
-
-		// Use async init to wait for element when content is loaded via AJAX
-		this.initQuizQuestionsTabAsync( container ).then( ( el ) => {
-			console.log( '[BuilderEditQuiz] initQuizQuestionsTabAsync resolved, element found:', el );
-		} ).catch( ( err ) => {
-			console.log( '[BuilderEditQuiz] initQuizQuestionsTabAsync rejected:', err.message );
-		} );
 	}
 
 	/**
 	 * Initialize Quiz Questions Tab
 	 */
 	initQuizQuestionsTab( container = null ) {
-		console.log( '[BuilderEditQuiz] initQuizQuestionsTab() called' );
 		const searchContainer = container || document;
 		const elEditQuizWrap = searchContainer.querySelector( BuilderEditQuiz.selectors.elEditQuizWrap );
 
-		console.log( '[BuilderEditQuiz] Looking for .lp-edit-quiz-wrap, found:', elEditQuizWrap );
-
-		if ( ! elEditQuizWrap ) {
-			return;
+		if ( elEditQuizWrap ) {
+			this._initQuizQuestionsTabElement( elEditQuizWrap );
 		}
-
-		this._initQuizQuestionsTabElement( elEditQuizWrap );
 	}
 
 	/**
-	 * Initialize Quiz Questions Tab with waiting for element
-	 * Used when content is loaded via AJAX
+	 * Initialize Quiz Questions Tab asynchronously
 	 */
 	initQuizQuestionsTabAsync( container = null, maxAttempts = 50, interval = 200 ) {
-		console.log( '[BuilderEditQuiz] initQuizQuestionsTabAsync() called, maxAttempts:', maxAttempts, 'interval:', interval );
-		
-		return new Promise( ( resolve, reject ) => {
+		// Cancel previous promise if exists
+		if ( this.initPromise && typeof this.initPromise === 'object' ) {
+			this.initPromise.cancelled = true;
+		}
+
+		// Create new promise
+		this.initPromise = new Promise( ( resolve, reject ) => {
 			let attempts = 0;
 			const searchContainer = container || document;
 
 			const checkElement = () => {
+				// Check if cancelled
+				if ( this.initPromise && this.initPromise.cancelled ) {
+					reject( new Error( 'Init cancelled' ) );
+					return;
+				}
+
 				attempts++;
 				const elEditQuizWrap = searchContainer.querySelector( BuilderEditQuiz.selectors.elEditQuizWrap );
-
-				console.log( `[BuilderEditQuiz] Attempt ${ attempts }/${ maxAttempts }, element found:`, !!elEditQuizWrap );
 
 				if ( elEditQuizWrap ) {
 					this._initQuizQuestionsTabElement( elEditQuizWrap );
 					resolve( elEditQuizWrap );
 				} else if ( attempts >= maxAttempts ) {
-					// Element not found after max attempts, reject silently
-					reject( new Error( 'Quiz questions tab element not found after ' + maxAttempts + ' attempts' ) );
+					reject( new Error( `Quiz questions tab not found after ${ maxAttempts } attempts` ) );
 				} else {
 					setTimeout( checkElement, interval );
 				}
@@ -133,102 +150,48 @@ export class BuilderEditQuiz {
 
 			checkElement();
 		} );
+
+		// Add cancelled flag to promise object
+		this.initPromise.cancelled = false;
+
+		return this.initPromise;
 	}
 
 	/**
-	 * Internal method to initialize quiz questions tab element
+	 * Initialize quiz questions tab element
 	 */
 	_initQuizQuestionsTabElement( elEditQuizWrap ) {
-		console.log( '[BuilderEditQuiz] _initQuizQuestionsTabElement() called' );
-		
-		this.elEditQuizWrap = elEditQuizWrap;
-		this.elEditListQuestions = elEditQuizWrap.querySelector(
-			BuilderEditQuiz.selectors.elEditListQuestions
-		);
-
-		console.log( '[BuilderEditQuiz] elEditListQuestions found:', !!this.elEditListQuestions );
-
-		// Get quiz ID
-		this._getQuizID( elEditQuizWrap );
-
-		// Initialize popup select items
-		this.lpPopupSelectItemToAdd = new LpPopupSelectItemToAdd();
-		this.lpPopupSelectItemToAdd.init();
-
-		// Init sortable for questions list
-		this.sortAbleQuestion();
-
-		// Init sortable for question answers (non-blocking)
-		this._initAnswerSortables( elEditQuizWrap );
-
-		// Initialize TinyMCE for question editors (non-blocking, chunked)
-		this._initTinyMCEAsync( elEditQuizWrap );
-
-		// Initialize EditQuestion for answer management (add/delete/update answers)
-		this._initEditQuestion( elEditQuizWrap );
-	}
-
-	/**
-	 * Initialize EditQuestion instance for answer management in quiz popup
-	 * This enables add/delete/auto-save answer functionality
-	 */
-	_initEditQuestion( elEditQuizWrap ) {
-		console.log( 'BuilderEditQuiz: _initEditQuestion called' );
-		// Create EditQuestion instance if not exists
-		if ( ! this.editQuestion ) {
-			this.editQuestion = new EditQuestion();
-		}
-
-		// Initialize sortable for each question's answers
-		const elQuestionEditMains = elEditQuizWrap.querySelectorAll(
-			BuilderEditQuiz.selectors.elQuestionEditMain
-		);
-
-		elQuestionEditMains.forEach( ( elQuestionEditMain ) => {
-			if ( this.editQuestion ) {
-				this.editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
-			}
-		} );
-
-		// Always register EditQuestion events for quiz popup
-		// Events use document delegation, so they only need to be registered once
-		// but we need to ensure they ARE registered in the frontend context
-		console.log( 'BuilderEditQuiz: _initEditQuestion called, EditQuestion._loadedEvents =', EditQuestion._loadedEvents );
-
-		if ( ! EditQuestion._loadedEvents ) {
-			console.log( 'BuilderEditQuiz: Registering EditQuestion events...' );
-			this.editQuestion.events();
-			console.log( 'BuilderEditQuiz: EditQuestion events registered, _loadedEvents =', EditQuestion._loadedEvents );
-		} else {
-			console.log( 'BuilderEditQuiz: EditQuestion events already registered' );
-		}
-
-		// Initialize TinyMCE for question answer editors
-		this._initEditQuestionTinyMCE( elEditQuizWrap );
-	}
-
-	/**
-	 * Initialize TinyMCE for question answer editors using EditQuestion's method
-	 */
-	_initEditQuestionTinyMCE( elEditQuizWrap ) {
-		if ( ! this.editQuestion || typeof window.tinymce === 'undefined' ) {
+		if ( ! elEditQuizWrap ) {
 			return;
 		}
 
-		const elTextareas = elEditQuizWrap.querySelectorAll(
-			'.lp-question-edit-main .lp-editor-tinymce'
-		);
+		// Prevent double initialization
+		if ( this.isInitialized && this.elEditQuizWrap === elEditQuizWrap ) {
+			return;
+		}
 
-		elTextareas.forEach( ( elTextarea ) => {
-			const id = elTextarea.id;
-			if ( id ) {
-				try {
-					this.editQuestion.reInitTinymce( id );
-				} catch ( e ) {
-					console.warn( 'TinyMCE init error for', id, e );
-				}
-			}
-		} );
+		this.elEditQuizWrap = elEditQuizWrap;
+		this.elEditListQuestions = elEditQuizWrap.querySelector( BuilderEditQuiz.selectors.elEditListQuestions );
+
+		this._getQuizID( elEditQuizWrap );
+
+		// Initialize popup select items
+		if ( ! this.lpPopupSelectItemToAdd ) {
+			this.lpPopupSelectItemToAdd = new LpPopupSelectItemToAdd();
+			this.lpPopupSelectItemToAdd.init();
+		}
+
+		// Init sortables
+		this.sortAbleQuestion();
+		this._initAnswerSortables( elEditQuizWrap );
+
+		// Init EditQuestion
+		this._initEditQuestion( elEditQuizWrap );
+
+		// Init TinyMCE asynchronously
+		this._initTinyMCEAsync( elEditQuizWrap );
+
+		this.isInitialized = true;
 	}
 
 	/**
@@ -238,98 +201,161 @@ export class BuilderEditQuiz {
 		// Try from lp-target
 		const elLPTarget = elEditQuizWrap.closest( BuilderEditQuiz.selectors.LPTarget );
 		if ( elLPTarget && window.lpAJAXG ) {
-			const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
-			this.quizID = dataSend?.args?.quiz_id || 0;
+			try {
+				const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+				this.quizID = dataSend?.args?.quiz_id || 0;
+			} catch ( e ) {
+				console.warn( 'Error getting quiz ID from lpAJAXG:', e );
+			}
 		}
 
-		// Try from popup data attribute
+		// Try from popup
 		if ( ! this.quizID ) {
 			const popup = elEditQuizWrap.closest( '.lp-builder-popup' );
-			if ( popup ) {
-				this.quizID = popup.dataset.quizId || 0;
-			}
+			this.quizID = popup?.dataset.quizId || 0;
 		}
 
-		// Try from wrapper data
+		// Try from wrapper
 		if ( ! this.quizID ) {
 			const wrapper = elEditQuizWrap.closest( '[data-quiz-id]' );
-			if ( wrapper ) {
-				this.quizID = wrapper.dataset.quizId || 0;
-			}
+			this.quizID = wrapper?.dataset.quizId || 0;
 		}
 	}
 
 	/**
-	 * Initialize answer sortables without blocking
+	 * Initialize EditQuestion for answer management
 	 */
-	_initAnswerSortables( elEditQuizWrap ) {
-		const elQuestionEditMains = elEditQuizWrap.querySelectorAll(
-			BuilderEditQuiz.selectors.elQuestionEditMain
-		);
+	_initEditQuestion( elEditQuizWrap ) {
+		if ( ! elEditQuizWrap ) {
+			return;
+		}
 
+		// Create EditQuestion instance if not exists
+		if ( ! this.editQuestion ) {
+			this.editQuestion = new EditQuestion();
+		}
+
+		// Initialize sortable for answers
+		const elQuestionEditMains = elEditQuizWrap.querySelectorAll( BuilderEditQuiz.selectors.elQuestionEditMain );
 		elQuestionEditMains.forEach( ( elQuestionEditMain ) => {
-			this._sortAbleQuestionAnswer( elQuestionEditMain );
+			if ( elQuestionEditMain && this.editQuestion?.sortAbleQuestionAnswer ) {
+				try {
+					this.editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
+				} catch ( e ) {
+					console.warn( 'Error initializing answer sortable:', e );
+				}
+			}
+		} );
+
+		// Register events if not loaded
+		if ( ! EditQuestion._loadedEvents && this.editQuestion?.events ) {
+			try {
+				this.editQuestion.events();
+			} catch ( e ) {
+				console.warn( 'Error registering EditQuestion events:', e );
+			}
+		}
+
+		// Init TinyMCE for question editors
+		this._initEditQuestionTinyMCE( elEditQuizWrap );
+	}
+
+	/**
+	 * Initialize TinyMCE for question editors
+	 */
+	_initEditQuestionTinyMCE( elEditQuizWrap ) {
+		if ( ! this.editQuestion || ! elEditQuizWrap || typeof window.tinymce === 'undefined' ) {
+			return;
+		}
+
+		const elTextareas = elEditQuizWrap.querySelectorAll( '.lp-question-edit-main .lp-editor-tinymce' );
+		elTextareas.forEach( ( elTextarea ) => {
+			if ( elTextarea?.id && this.editQuestion?.reInitTinymce ) {
+				try {
+					this.editQuestion.reInitTinymce( elTextarea.id );
+				} catch ( e ) {
+					console.warn( 'TinyMCE init error:', e );
+				}
+			}
 		} );
 	}
 
 	/**
-	 * Sortable for question answers (popup-specific, simpler version)
+	 * Initialize answer sortables
+	 */
+	_initAnswerSortables( elEditQuizWrap ) {
+		if ( ! elEditQuizWrap ) {
+			return;
+		}
+
+		const elQuestionEditMains = elEditQuizWrap.querySelectorAll( BuilderEditQuiz.selectors.elQuestionEditMain );
+		elQuestionEditMains.forEach( ( elQuestionEditMain ) => {
+			if ( elQuestionEditMain ) {
+				this._sortAbleQuestionAnswer( elQuestionEditMain );
+			}
+		} );
+	}
+
+	/**
+	 * Make question answers sortable
 	 */
 	_sortAbleQuestionAnswer( elQuestionEditMain ) {
-		const elAnswersConfig = elQuestionEditMain.querySelector(
-			BuilderEditQuiz.selectors.elAnswersConfig
-		);
+		if ( ! elQuestionEditMain ) {
+			return;
+		}
 
+		const elAnswersConfig = elQuestionEditMain.querySelector( BuilderEditQuiz.selectors.elAnswersConfig );
 		if ( ! elAnswersConfig ) {
 			return;
 		}
 
-		const instance = new Sortable( elAnswersConfig, {
-			handle: '.drag',
-			animation: 150,
-			onEnd: ( evt ) => {
-				// Trigger change event for auto-save
-				const elAutoSaveAnswer = evt.item.querySelector( '.lp-auto-save-question-answer' );
-				if ( elAutoSaveAnswer ) {
-					elAutoSaveAnswer.dispatchEvent( new Event( 'change', { bubbles: true } ) );
-				}
-			},
-		} );
-
-		this.sortableAnswerInstances.push( instance );
+		try {
+			const instance = new Sortable( elAnswersConfig, {
+				handle: '.drag',
+				animation: 150,
+				onEnd: ( evt ) => {
+					if ( ! evt?.item ) {
+						return;
+					}
+					const elAutoSaveAnswer = evt.item.querySelector( '.lp-auto-save-question-answer' );
+					if ( elAutoSaveAnswer ) {
+						elAutoSaveAnswer.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+					}
+				},
+			} );
+			this.sortableAnswerInstances.push( instance );
+		} catch ( e ) {
+			console.warn( 'Error creating answer sortable:', e );
+		}
 	}
 
 	/**
-	 * Initialize TinyMCE asynchronously to avoid blocking
+	 * Initialize TinyMCE asynchronously
 	 */
 	_initTinyMCEAsync( elEditQuizWrap ) {
-		const elTextareas = elEditQuizWrap.querySelectorAll(
-			'.lp-question-edit-main .lp-editor-tinymce'
-		);
+		if ( ! elEditQuizWrap ) {
+			return;
+		}
 
+		const elTextareas = elEditQuizWrap.querySelectorAll( '.lp-question-edit-main .lp-editor-tinymce' );
 		if ( elTextareas.length === 0 ) {
 			return;
 		}
 
-		// Process editors in chunks to avoid blocking
 		const textareaArray = Array.from( elTextareas );
+		const chunkSize = 2;
 		let index = 0;
-		const chunkSize = 2; // Process 2 editors at a time
 
 		const processChunk = () => {
 			const chunk = textareaArray.slice( index, index + chunkSize );
-
 			chunk.forEach( ( elTextarea ) => {
-				const id = elTextarea.id;
-				if ( id ) {
-					this._reInitTinymce( id );
+				if ( elTextarea?.id ) {
+					this._reInitTinymce( elTextarea.id );
 				}
 			} );
 
 			index += chunkSize;
-
 			if ( index < textareaArray.length ) {
-				// Use requestIdleCallback if available, otherwise setTimeout
 				if ( window.requestIdleCallback ) {
 					window.requestIdleCallback( processChunk, { timeout: 100 } );
 				} else {
@@ -338,7 +364,6 @@ export class BuilderEditQuiz {
 			}
 		};
 
-		// Start processing after a short delay to let UI render first
 		if ( window.requestIdleCallback ) {
 			window.requestIdleCallback( processChunk, { timeout: 100 } );
 		} else {
@@ -347,21 +372,15 @@ export class BuilderEditQuiz {
 	}
 
 	/**
-	 * Reinitialize a single TinyMCE editor
+	 * Reinitialize single TinyMCE editor
 	 */
 	_reInitTinymce( id ) {
-		if ( ! window.tinymce ) {
+		if ( ! window.tinymce || ! id ) {
 			return;
 		}
 
 		const elTextarea = document.getElementById( id );
-		if ( ! elTextarea ) {
-			return;
-		}
-
-		// Verify it's inside question edit context
-		const elQuestionEditMain = elTextarea.closest( '.lp-question-edit-main' );
-		if ( ! elQuestionEditMain ) {
+		if ( ! elTextarea?.closest( '.lp-question-edit-main' ) ) {
 			return;
 		}
 
@@ -369,47 +388,47 @@ export class BuilderEditQuiz {
 			window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 			window.tinymce.execCommand( 'mceAddEditor', true, id );
 
-			// Active tab visual
 			const wrapEditor = document.querySelector( `#wp-${ id }-wrap` );
 			if ( wrapEditor ) {
 				wrapEditor.classList.add( 'tmce-active' );
 				wrapEditor.classList.remove( 'html-active' );
 			}
 		} catch ( e ) {
-			console.warn( 'TinyMCE init error for', id, e );
+			console.warn( 'TinyMCE init error:', e );
 		}
 	}
 
 	/**
-	 * Re-initialize when new questions are added
+	 * Reinitialize handlers for new question
 	 */
 	reinitQuestionHandlers( elQuestionEditMain ) {
-		if ( elQuestionEditMain ) {
-			this._sortAbleQuestionAnswer( elQuestionEditMain );
+		if ( ! elQuestionEditMain ) {
+			return;
+		}
 
-			// Init TinyMCE for new question using EditQuestion's method
-			if ( this.editQuestion ) {
-				const elTextareas = elQuestionEditMain.querySelectorAll( '.lp-editor-tinymce' );
-				elTextareas.forEach( ( elTextarea ) => {
-					if ( elTextarea.id ) {
-						try {
-							this.editQuestion.reInitTinymce( elTextarea.id );
-						} catch ( e ) {
-							console.warn( 'TinyMCE init error for', elTextarea.id, e );
-						}
+		// Init answer sortable
+		this._sortAbleQuestionAnswer( elQuestionEditMain );
+
+		// Init TinyMCE
+		if ( this.editQuestion?.reInitTinymce ) {
+			const elTextareas = elQuestionEditMain.querySelectorAll( '.lp-editor-tinymce' );
+			elTextareas.forEach( ( elTextarea ) => {
+				if ( elTextarea?.id ) {
+					try {
+						this.editQuestion.reInitTinymce( elTextarea.id );
+					} catch ( e ) {
+						console.warn( 'TinyMCE init error:', e );
 					}
-				} );
+				}
+			} );
+		}
 
-				// Init sortable for answers
+		// Init answer sortable via EditQuestion
+		if ( this.editQuestion?.sortAbleQuestionAnswer ) {
+			try {
 				this.editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
-			} else {
-				// Fallback to internal method
-				const elTextareas = elQuestionEditMain.querySelectorAll( '.lp-editor-tinymce' );
-				elTextareas.forEach( ( elTextarea ) => {
-					if ( elTextarea.id ) {
-						this._reInitTinymce( elTextarea.id );
-					}
-				} );
+			} catch ( e ) {
+				console.warn( 'Error initializing answer sortable:', e );
 			}
 		}
 	}
@@ -420,17 +439,8 @@ export class BuilderEditQuiz {
 		}
 		BuilderEditQuiz._loadedEvents = true;
 
+		// Click events
 		lpUtils.eventHandlers( 'click', [
-			{
-				selector: BuilderEditQuiz.selectors.elBtnUpdateQuiz,
-				class: this,
-				callBack: this.updateQuiz.name,
-			},
-			{
-				selector: BuilderEditQuiz.selectors.elBtnTrashQuiz,
-				class: this,
-				callBack: this.trashQuiz.name,
-			},
 			{
 				selector: BuilderEditQuiz.selectors.elQuestionToggleAll,
 				class: this,
@@ -456,9 +466,19 @@ export class BuilderEditQuiz {
 				class: this,
 				callBack: this.cancelChangeTitleQuestion.name,
 			},
+			{
+				selector: LpPopupSelectItemToAdd.selectors.elBtnShowPopupItemsToSelect,
+				class: this,
+				callBack: this.handleShowPopupQuestionBank.name,
+			},
+			{
+				selector: LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected,
+				class: this,
+				callBack: this.handleAddItemsSelected.name,
+			},
 		] );
 
-		// Keydown
+		// Keydown events
 		lpUtils.eventHandlers( 'keydown', [
 			{
 				selector: BuilderEditQuiz.selectors.elQuestionTitleInput,
@@ -474,7 +494,7 @@ export class BuilderEditQuiz {
 			},
 		] );
 
-		// Keyup
+		// Keyup events
 		lpUtils.eventHandlers( 'keyup', [
 			{
 				selector: BuilderEditQuiz.selectors.elQuestionTitleInput,
@@ -488,7 +508,7 @@ export class BuilderEditQuiz {
 			},
 		] );
 
-		// Change
+		// Change events
 		lpUtils.eventHandlers( 'change', [
 			{
 				selector: BuilderEditQuiz.selectors.elQuestionTypeNew,
@@ -504,7 +524,279 @@ export class BuilderEditQuiz {
 		} );
 	}
 
-	// Toggle all questions
+	/**
+	 * Handle show popup question bank - track quiz context
+	 */
+	handleShowPopupQuestionBank( args ) {
+		const { target } = args;
+		// Only handle if button is inside Quiz popup context
+		const elQuizWrap = target.closest( BuilderEditQuiz.selectors.elEditQuizWrap );
+		const elBuilderPopup = target.closest( '.lp-builder-popup' );
+		
+		if ( elQuizWrap || elBuilderPopup ) {
+			// Store reference that we're in quiz context
+			BuilderEditQuiz._isQuizPopupContext = true;
+			
+			// Store quiz wrap reference for later use
+			if ( elQuizWrap ) {
+				this.elEditQuizWrap = elQuizWrap;
+				this._getQuizID( elQuizWrap );
+				this.elEditListQuestions = elQuizWrap.querySelector( BuilderEditQuiz.selectors.elEditListQuestions );
+			}
+		} else {
+			BuilderEditQuiz._isQuizPopupContext = false;
+		}
+	}
+
+	/**
+	 * Handle add items selected from Question Bank popup
+	 */
+	handleAddItemsSelected( args ) {
+		const { target } = args;
+		
+		// Only handle if we're in quiz context
+		if ( ! BuilderEditQuiz._isQuizPopupContext ) {
+			return;
+		}
+
+		// Get items selected from popup
+		const elPopup = SweetAlert.getPopup();
+		if ( ! elPopup ) {
+			return;
+		}
+
+		// Get selected items from checkboxes
+		const itemsSelected = [];
+		const elListItems = elPopup.querySelector( '.list-items' );
+		if ( elListItems ) {
+			const elCheckedInputs = elListItems.querySelectorAll( 'input[type="checkbox"]:checked' );
+			elCheckedInputs.forEach( ( elInput ) => {
+				itemsSelected.push( { ...elInput.dataset } );
+			} );
+		}
+
+		// Also check from list-items-selected (if user is viewing selected items)
+		const elListItemsSelected = elPopup.querySelector( '.list-items-selected' );
+		if ( elListItemsSelected ) {
+			const elSelectedItems = elListItemsSelected.querySelectorAll( '.li-item-selected:not(.clone)' );
+			elSelectedItems.forEach( ( elItem ) => {
+				const itemData = { ...elItem.dataset };
+				// Avoid duplicates
+				if ( ! itemsSelected.some( ( item ) => item.id === itemData.id ) ) {
+					itemsSelected.push( itemData );
+				}
+			} );
+		}
+
+		// If still no items, try to get from LpPopupSelectItemToAdd internal state
+		if ( itemsSelected.length === 0 ) {
+			// Get from data attribute on lp-target
+			const elLPTarget = elPopup.querySelector( '.lp-target' );
+			if ( elLPTarget && window.lpAJAXG ) {
+				try {
+					const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+					if ( dataSend?.args?.item_selecting && Array.isArray( dataSend.args.item_selecting ) ) {
+						itemsSelected.push( ...dataSend.args.item_selecting );
+					}
+				} catch ( e ) {
+					console.warn( 'Error getting item_selecting:', e );
+				}
+			}
+		}
+
+		if ( itemsSelected.length === 0 ) {
+			console.warn( 'BuilderEditQuiz: No items selected' );
+			return;
+		}
+
+		// Close popup and add questions
+		SweetAlert.close();
+		
+		// Reset context flag
+		BuilderEditQuiz._isQuizPopupContext = false;
+
+		// Add questions to quiz
+		this.addQuestionsSelectedToQuiz( itemsSelected );
+	}
+
+	/**
+	 * Add questions selected from Question Bank popup to quiz
+	 */
+	addQuestionsSelectedToQuiz( itemsSelected ) {
+		if ( ! itemsSelected || itemsSelected.length === 0 ) {
+			console.warn( 'BuilderEditQuiz: No items to add' );
+			return;
+		}
+
+		// Ensure elEditQuizWrap is available - try to find it
+		if ( ! this.elEditQuizWrap ) {
+			// Try to find from builder popup first
+			const builderPopup = document.querySelector( '.lp-builder-popup' );
+			if ( builderPopup ) {
+				this.elEditQuizWrap = builderPopup.querySelector( BuilderEditQuiz.selectors.elEditQuizWrap );
+			}
+			
+			// Fallback to document
+			if ( ! this.elEditQuizWrap ) {
+				this.elEditQuizWrap = document.querySelector( BuilderEditQuiz.selectors.elEditQuizWrap );
+			}
+		}
+
+		if ( ! this.elEditQuizWrap ) {
+			console.error( 'BuilderEditQuiz: elEditQuizWrap not found' );
+			return;
+		}
+
+		// Ensure quizID is available
+		if ( ! this.quizID ) {
+			this._getQuizID( this.elEditQuizWrap );
+		}
+
+		if ( ! this.quizID ) {
+			console.error( 'BuilderEditQuiz: quizID not found' );
+			return;
+		}
+
+		// Ensure elEditListQuestions is available
+		if ( ! this.elEditListQuestions ) {
+			this.elEditListQuestions = this.elEditQuizWrap.querySelector( BuilderEditQuiz.selectors.elEditListQuestions );
+		}
+
+		if ( ! this.elEditListQuestions ) {
+			console.error( 'BuilderEditQuiz: elEditListQuestions not found' );
+			return;
+		}
+
+		const questionIds = [];
+		const placeholderItems = [];
+
+		// Create placeholder items
+		itemsSelected.forEach( ( item ) => {
+			const elQuestionItemClone = this.elEditQuizWrap.querySelector(
+				`${ BuilderEditQuiz.selectors.elQuestionItem }.clone`
+			);
+
+			if ( ! elQuestionItemClone ) {
+				console.error( 'BuilderEditQuiz: Question clone element not found' );
+				return;
+			}
+
+			questionIds.push( item.id );
+			const elQuestionItemNew = elQuestionItemClone.cloneNode( true );
+			const elQuestionItemTitleInput = elQuestionItemNew.querySelector(
+				BuilderEditQuiz.selectors.elQuestionTitleInput
+			);
+
+			elQuestionItemNew.classList.remove( 'clone' );
+			elQuestionItemNew.dataset.questionId = item.id;
+
+			// Use title from dataset
+			const questionTitle = item.title || '';
+			if ( elQuestionItemTitleInput ) {
+				elQuestionItemTitleInput.value = questionTitle;
+			}
+
+			lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
+			lpUtils.lpShowHideEl( elQuestionItemNew, 1 );
+			elQuestionItemClone.insertAdjacentElement( 'beforebegin', elQuestionItemNew );
+
+			placeholderItems.push( elQuestionItemNew );
+		} );
+
+		if ( questionIds.length === 0 ) {
+			console.warn( 'BuilderEditQuiz: No questions to add' );
+			return;
+		}
+
+		const callBack = {
+			success: ( response ) => {
+				const { message, status, data } = response;
+
+				if ( status !== 'success' ) {
+					throw new Error( message || 'Failed to add questions' );
+				}
+
+				lpToastify.show( message, status );
+
+				const { html_edit_question } = data;
+
+				if ( ! html_edit_question || typeof html_edit_question !== 'object' ) {
+					throw new Error( 'Invalid response: missing html_edit_question' );
+				}
+
+				// Replace placeholder items with actual HTML
+				Object.entries( html_edit_question ).forEach( ( [ question_id, item_html ] ) => {
+					if ( ! item_html ) {
+						console.warn( `Empty HTML for question ${ question_id }` );
+						return;
+					}
+
+					const elQuestionItemPlaceholder = this.elEditQuizWrap.querySelector(
+						`${ BuilderEditQuiz.selectors.elQuestionItem }[data-question-id="${ question_id }"]`
+					);
+
+					if ( ! elQuestionItemPlaceholder ) {
+						console.warn( `Placeholder not found for question ${ question_id }` );
+						return;
+					}
+
+					// Replace with actual HTML
+					elQuestionItemPlaceholder.outerHTML = item_html;
+
+					// Get the newly created element after outerHTML replacement
+					const elQuestionItemCreated = this.elEditQuizWrap.querySelector(
+						`${ BuilderEditQuiz.selectors.elQuestionItem }[data-question-id="${ question_id }"]`
+					);
+
+					// Initialize handlers for new question
+					if ( elQuestionItemCreated ) {
+						const elQuestionEditMain = elQuestionItemCreated.querySelector(
+							BuilderEditQuiz.selectors.elQuestionEditMain
+						);
+						this.reinitQuestionHandlers( elQuestionEditMain );
+					}
+				} );
+
+				this.updateCountItems();
+			},
+			error: ( error ) => {
+				console.error( 'Error adding questions:', error );
+
+				// Remove placeholder items on error
+				placeholderItems.forEach( ( elPlaceholder ) => {
+					if ( elPlaceholder && elPlaceholder.parentNode ) {
+						elPlaceholder.remove();
+					}
+				} );
+
+				lpToastify.show( error?.message || error || 'Failed to add questions', 'error' );
+			},
+			completed: () => {
+					// Remove loading state from all items (if still exist)
+				questionIds.forEach( ( question_id ) => {
+					const elQuestionItem = this.elEditQuizWrap.querySelector(
+						`${ BuilderEditQuiz.selectors.elQuestionItem }[data-question-id="${ question_id }"]`
+					);
+					if ( elQuestionItem ) {
+						lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+					}
+				} );
+			},
+		};
+
+		const dataSend = {
+			action: 'add_questions_to_quiz',
+			quiz_id: this.quizID,
+			question_ids: questionIds,
+			args: { id_url: 'edit-quiz-questions' },
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	/**
+	 * Toggle all questions
+	 */
 	toggleQuestionAll( args ) {
 		const { target } = args;
 		const elQuestionToggleAll = target.closest( BuilderEditQuiz.selectors.elQuestionToggleAll );
@@ -512,57 +804,47 @@ export class BuilderEditQuiz {
 			return;
 		}
 
-		const elQuestionItems = this.elEditQuizWrap.querySelectorAll(
-			`${ BuilderEditQuiz.selectors.elQuestionItem }:not(.clone)`
-		);
-
+		const elQuestionItems = this.elEditQuizWrap.querySelectorAll( `${ BuilderEditQuiz.selectors.elQuestionItem }:not(.clone)` );
 		elQuestionToggleAll.classList.toggle( BuilderEditQuiz.selectors.elCollapse );
 
+		const shouldCollapse = elQuestionToggleAll.classList.contains( BuilderEditQuiz.selectors.elCollapse );
 		elQuestionItems.forEach( ( el ) => {
-			const shouldCollapse = elQuestionToggleAll.classList.contains( BuilderEditQuiz.selectors.elCollapse );
-			el.classList.toggle( BuilderEditQuiz.selectors.elCollapse, shouldCollapse );
+			if ( el ) {
+				el.classList.toggle( BuilderEditQuiz.selectors.elCollapse, shouldCollapse );
+			}
 		} );
 	}
 
+	/**
+	 * Check if all questions are collapsed
+	 */
 	checkAllQuestionsCollapsed() {
 		if ( ! this.elEditQuizWrap ) {
 			return;
 		}
 
-		const elQuestionItems = this.elEditQuizWrap.querySelectorAll(
-			`${ BuilderEditQuiz.selectors.elQuestionItem }:not(.clone)`
-		);
-		const elQuestionToggleAll = this.elEditQuizWrap.querySelector(
-			BuilderEditQuiz.selectors.elQuestionToggleAll
-		);
+		const elQuestionItems = this.elEditQuizWrap.querySelectorAll( `${ BuilderEditQuiz.selectors.elQuestionItem }:not(.clone)` );
+		const elQuestionToggleAll = this.elEditQuizWrap.querySelector( BuilderEditQuiz.selectors.elQuestionToggleAll );
 
 		if ( ! elQuestionToggleAll ) {
 			return;
 		}
 
-		let isAllExpand = true;
-		elQuestionItems.forEach( ( el ) => {
-			if ( el.classList.contains( BuilderEditQuiz.selectors.elCollapse ) ) {
-				isAllExpand = false;
-			}
-		} );
+		const isAllExpand = Array.from( elQuestionItems ).every( ( el ) => el && ! el.classList.contains( BuilderEditQuiz.selectors.elCollapse ) );
 
-		if ( isAllExpand ) {
-			elQuestionToggleAll.classList.remove( BuilderEditQuiz.selectors.elCollapse );
-		} else {
-			elQuestionToggleAll.classList.add( BuilderEditQuiz.selectors.elCollapse );
-		}
+		elQuestionToggleAll.classList.toggle( BuilderEditQuiz.selectors.elCollapse, ! isAllExpand );
 	}
 
+	/**
+	 * Update question count
+	 */
 	updateCountItems() {
 		if ( ! this.elEditQuizWrap ) {
 			return;
 		}
 
 		const elCountItemsAll = this.elEditQuizWrap.querySelector( '.total-items' );
-		const elItemsAll = this.elEditQuizWrap.querySelectorAll(
-			`${ BuilderEditQuiz.selectors.elQuestionItem }:not(.clone)`
-		);
+		const elItemsAll = this.elEditQuizWrap.querySelectorAll( `${ BuilderEditQuiz.selectors.elQuestionItem }:not(.clone)` );
 		const itemsAllCount = elItemsAll.length;
 
 		if ( elCountItemsAll ) {
@@ -574,7 +856,9 @@ export class BuilderEditQuiz {
 		}
 	}
 
-	// Add question to quiz
+	/**
+	 * Add question to quiz
+	 */
 	addQuestion( args ) {
 		const { e, target, callBackNest } = args;
 		e.preventDefault();
@@ -584,31 +868,32 @@ export class BuilderEditQuiz {
 			return;
 		}
 
-		const elQuestionTitleNewInput = elAddNewQuestion.querySelector(
-			BuilderEditQuiz.selectors.elQuestionTitleNewInput
-		);
-		const questionTitle = elQuestionTitleNewInput.value.trim();
+		const elQuestionTitleNewInput = elAddNewQuestion.querySelector( BuilderEditQuiz.selectors.elQuestionTitleNewInput );
+		const questionTitle = elQuestionTitleNewInput?.value?.trim();
 		if ( ! questionTitle ) {
-			lpToastify.show( elQuestionTitleNewInput.dataset.messEmptyTitle, 'error' );
+			lpToastify.show( elQuestionTitleNewInput?.dataset?.messEmptyTitle || 'Title is required', 'error' );
 			return;
 		}
 
 		const elQuestionType = elAddNewQuestion.querySelector( BuilderEditQuiz.selectors.elQuestionTypeNew );
-		const questionType = elQuestionType.value;
+		const questionType = elQuestionType?.value;
 		if ( ! questionType ) {
-			lpToastify.show( elQuestionType.dataset.messEmptyType, 'error' );
+			lpToastify.show( elQuestionType?.dataset?.messEmptyType || 'Type is required', 'error' );
 			return;
 		}
 
-		const elQuestionClone = this.elEditListQuestions.querySelector(
-			`${ BuilderEditQuiz.selectors.elQuestionItem }.clone`
-		);
-		const newQuestionItem = elQuestionClone.cloneNode( true );
-		const elQuestionTitleInput = newQuestionItem.querySelector(
-			BuilderEditQuiz.selectors.elQuestionTitleInput
-		);
+		const elQuestionClone = this.elEditListQuestions.querySelector( `${ BuilderEditQuiz.selectors.elQuestionItem }.clone` );
+		if ( ! elQuestionClone ) {
+			lpToastify.show( 'Question template not found', 'error' );
+			return;
+		}
 
-		elQuestionTitleInput.value = questionTitle;
+		const newQuestionItem = elQuestionClone.cloneNode( true );
+		const elQuestionTitleInput = newQuestionItem.querySelector( BuilderEditQuiz.selectors.elQuestionTitleInput );
+
+		if ( elQuestionTitleInput ) {
+			elQuestionTitleInput.value = questionTitle;
+		}
 		elQuestionTitleNewInput.value = '';
 		newQuestionItem.classList.remove( 'clone' );
 		lpUtils.lpShowHideEl( newQuestionItem, 1 );
@@ -618,29 +903,31 @@ export class BuilderEditQuiz {
 		const callBack = {
 			success: ( response ) => {
 				const { message, status, data } = response;
-				const { question, html_edit_question } = data;
 
 				if ( status === 'error' ) {
-					throw `Error: ${ message }`;
-				} else if ( status === 'success' ) {
+					throw new Error( message );
+				}
+
+				if ( status === 'success' && data?.question ) {
+					const { question, html_edit_question } = data;
 					newQuestionItem.dataset.questionId = question.ID;
-					newQuestionItem.dataset.questionType = question.meta_data._lp_type;
+					newQuestionItem.dataset.questionType = question.meta_data?._lp_type || '';
 					newQuestionItem.outerHTML = html_edit_question;
 
 					const elQuestionItemCreated = this.elEditListQuestions.querySelector(
 						`${ BuilderEditQuiz.selectors.elQuestionItem }[data-question-id="${ question.ID }"]`
 					);
-					elQuestionItemCreated.classList.remove( BuilderEditQuiz.selectors.elCollapse );
-					this.updateCountItems();
 
-					// Reinit handlers for new question
-					const elQuestionEditMain = elQuestionItemCreated.querySelector(
-						BuilderEditQuiz.selectors.elQuestionEditMain
-					);
-					this.reinitQuestionHandlers( elQuestionEditMain );
+					if ( elQuestionItemCreated ) {
+						elQuestionItemCreated.classList.remove( BuilderEditQuiz.selectors.elCollapse );
+						this.updateCountItems();
 
-					if ( callBackNest && typeof callBackNest.success === 'function' ) {
-						callBackNest.success( { response, elQuestionItemCreated } );
+						const elQuestionEditMain = elQuestionItemCreated.querySelector( BuilderEditQuiz.selectors.elQuestionEditMain );
+						this.reinitQuestionHandlers( elQuestionEditMain );
+
+						if ( callBackNest?.success ) {
+							callBackNest.success( { response, elQuestionItemCreated } );
+						}
 					}
 				}
 
@@ -648,9 +935,9 @@ export class BuilderEditQuiz {
 			},
 			error: ( error ) => {
 				newQuestionItem.remove();
-				lpToastify.show( error, 'error' );
+				lpToastify.show( error?.message || error || 'Failed to add question', 'error' );
 
-				if ( callBackNest && typeof callBackNest.error === 'function' ) {
+				if ( callBackNest?.error ) {
 					callBackNest.error( { error, newQuestionItem } );
 				}
 			},
@@ -658,56 +945,52 @@ export class BuilderEditQuiz {
 				lpUtils.lpSetLoadingEl( newQuestionItem, 0 );
 				this.checkCanAddQuestion( { e, target: elQuestionTitleNewInput } );
 
-				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
+				if ( callBackNest?.completed ) {
 					callBackNest.completed( { newQuestionItem } );
 				}
 			},
 		};
 
-		let dataSend = JSON.parse( elQuestionTitleNewInput.dataset.send );
-		dataSend = {
-			...dataSend,
-			question_title: questionTitle,
-			question_type: questionType,
-		};
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		try {
+			let dataSend = JSON.parse( elQuestionTitleNewInput.dataset.send || '{}' );
+			dataSend = { ...dataSend, question_title: questionTitle, question_type: questionType };
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		} catch ( e ) {
+			console.error( 'Error adding question:', e );
+			newQuestionItem.remove();
+			lpToastify.show( 'Failed to add question', 'error' );
+		}
 	}
 
+	/**
+	 * Check if can add question
+	 */
 	checkCanAddQuestion( args ) {
 		const { target } = args;
-		const elTrigger = target.closest( BuilderEditQuiz.selectors.elQuestionTitleNewInput ) ||
-			target.closest( BuilderEditQuiz.selectors.elQuestionTypeNew );
+		const elTrigger = target?.closest( BuilderEditQuiz.selectors.elQuestionTitleNewInput ) ||
+			target?.closest( BuilderEditQuiz.selectors.elQuestionTypeNew );
 		if ( ! elTrigger ) {
 			return;
 		}
 
 		const elAddNewQuestion = elTrigger.closest( `.${ BuilderEditQuiz.selectors.elAddNewQuestion }` );
-		if ( ! elAddNewQuestion ) {
-			return;
-		}
-
-		const elBtnAddQuestion = elAddNewQuestion.querySelector( BuilderEditQuiz.selectors.elBtnAddQuestion );
+		const elBtnAddQuestion = elAddNewQuestion?.querySelector( BuilderEditQuiz.selectors.elBtnAddQuestion );
 		if ( ! elBtnAddQuestion ) {
 			return;
 		}
 
-		const elQuestionTitleInput = elAddNewQuestion.querySelector(
-			BuilderEditQuiz.selectors.elQuestionTitleNewInput
-		);
-		const elQuestionTypeNew = elAddNewQuestion.querySelector(
-			BuilderEditQuiz.selectors.elQuestionTypeNew
-		);
+		const elQuestionTitleInput = elAddNewQuestion.querySelector( BuilderEditQuiz.selectors.elQuestionTitleNewInput );
+		const elQuestionTypeNew = elAddNewQuestion.querySelector( BuilderEditQuiz.selectors.elQuestionTypeNew );
 
-		const questionTitle = elQuestionTitleInput.value.trim();
-		const questionType = elQuestionTypeNew.value;
+		const questionTitle = elQuestionTitleInput?.value?.trim();
+		const questionType = elQuestionTypeNew?.value;
 
-		if ( questionTitle && questionType ) {
-			elBtnAddQuestion.classList.add( 'active' );
-		} else {
-			elBtnAddQuestion.classList.remove( 'active' );
-		}
+		elBtnAddQuestion.classList.toggle( 'active', !! ( questionTitle && questionType ) );
 	}
 
+	/**
+	 * Remove question from quiz
+	 */
 	removeQuestion( args ) {
 		const { target } = args;
 		const elBtnRemoveQuestion = target.closest( BuilderEditQuiz.selectors.elBtnRemoveQuestion );
@@ -721,11 +1004,15 @@ export class BuilderEditQuiz {
 		}
 
 		const questionId = elQuestionItem.dataset.questionId;
+		if ( ! questionId ) {
+			return;
+		}
+
 		const i18n = window.lpDataAdmin?.i18n || window.lpData?.i18n || { cancel: 'Cancel', yes: 'Yes' };
 
 		SweetAlert.fire( {
-			title: elBtnRemoveQuestion.dataset.title,
-			text: elBtnRemoveQuestion.dataset.content,
+			title: elBtnRemoveQuestion.dataset.title || 'Are you sure?',
+			text: elBtnRemoveQuestion.dataset.content || 'Do you want to remove this question?',
 			icon: 'warning',
 			showCloseButton: true,
 			showCancelButton: true,
@@ -739,7 +1026,6 @@ export class BuilderEditQuiz {
 				const callBack = {
 					success: ( response ) => {
 						const { message, status } = response;
-
 						lpToastify.show( message, status );
 
 						if ( status === 'success' ) {
@@ -748,7 +1034,7 @@ export class BuilderEditQuiz {
 						}
 					},
 					error: ( error ) => {
-						lpToastify.show( error, 'error' );
+						lpToastify.show( error?.message || error || 'Failed to remove question', 'error' );
 					},
 					completed: () => {
 						lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
@@ -766,15 +1052,13 @@ export class BuilderEditQuiz {
 		} );
 	}
 
+	/**
+	 * Update question title
+	 */
 	updateQuestionTitle( args ) {
 		const { e, target } = args;
-		let canHandle = false;
-
-		if ( target.closest( BuilderEditQuiz.selectors.elBtnUpdateQuestionTitle ) ) {
-			canHandle = true;
-		} else if ( target.closest( BuilderEditQuiz.selectors.elQuestionTitleInput ) && e.key === 'Enter' ) {
-			canHandle = true;
-		}
+		const canHandle = target.closest( BuilderEditQuiz.selectors.elBtnUpdateQuestionTitle ) ||
+			( target.closest( BuilderEditQuiz.selectors.elQuestionTitleInput ) && e.key === 'Enter' );
 
 		if ( ! canHandle ) {
 			return;
@@ -783,13 +1067,7 @@ export class BuilderEditQuiz {
 		e.preventDefault();
 
 		const elQuestionItem = target.closest( BuilderEditQuiz.selectors.elQuestionItem );
-		if ( ! elQuestionItem ) {
-			return;
-		}
-
-		const elQuestionTitleInput = elQuestionItem.querySelector(
-			BuilderEditQuiz.selectors.elQuestionTitleInput
-		);
+		const elQuestionTitleInput = elQuestionItem?.querySelector( BuilderEditQuiz.selectors.elQuestionTitleInput );
 		if ( ! elQuestionTitleInput ) {
 			return;
 		}
@@ -797,10 +1075,9 @@ export class BuilderEditQuiz {
 		const questionId = elQuestionItem.dataset.questionId;
 		const questionTitleValue = elQuestionTitleInput.value.trim();
 		const titleOld = elQuestionTitleInput.dataset.old;
-		const message = elQuestionTitleInput.dataset.messEmptyTitle;
 
-		if ( questionTitleValue.length === 0 ) {
-			lpToastify.show( message, 'error' );
+		if ( ! questionTitleValue ) {
+			lpToastify.show( elQuestionTitleInput.dataset.messEmptyTitle || 'Title is required', 'error' );
 			return;
 		}
 
@@ -824,7 +1101,7 @@ export class BuilderEditQuiz {
 				lpToastify.show( message, status );
 			},
 			error: ( error ) => {
-				lpToastify.show( error, 'error' );
+				lpToastify.show( error?.message || error || 'Failed to update title', 'error' );
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
@@ -842,6 +1119,9 @@ export class BuilderEditQuiz {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
+	/**
+	 * Handle title change
+	 */
 	changeTitleQuestion( args ) {
 		const { target } = args;
 		const elQuestionTitleInput = target.closest( BuilderEditQuiz.selectors.elQuestionTitleInput );
@@ -850,297 +1130,119 @@ export class BuilderEditQuiz {
 		}
 
 		const elQuestionItem = elQuestionTitleInput.closest( BuilderEditQuiz.selectors.elQuestionItem );
-		const titleValue = elQuestionTitleInput.value.trim();
-		const titleValueOld = elQuestionTitleInput.dataset.old || '';
-
-		if ( titleValue === titleValueOld ) {
-			elQuestionItem.classList.remove( 'editing' );
-		} else {
-			elQuestionItem.classList.add( 'editing' );
-		}
-	}
-
-	cancelChangeTitleQuestion( args ) {
-		const { target } = args;
-		const elBtnCancelUpdateQuestionTitle = target.closest(
-			BuilderEditQuiz.selectors.elBtnCancelUpdateQuestionTitle
-		);
-		if ( ! elBtnCancelUpdateQuestionTitle ) {
+		if ( ! elQuestionItem ) {
 			return;
 		}
 
-		const elQuestionItem = elBtnCancelUpdateQuestionTitle.closest(
-			BuilderEditQuiz.selectors.elQuestionItem
-		);
-		const elQuestionTitleInput = elQuestionItem.querySelector(
-			BuilderEditQuiz.selectors.elQuestionTitleInput
-		);
-		elQuestionTitleInput.value = elQuestionTitleInput.dataset.old || '';
+		const titleValue = elQuestionTitleInput.value.trim();
+		const titleValueOld = elQuestionTitleInput.dataset.old || '';
+
+		elQuestionItem.classList.toggle( 'editing', titleValue !== titleValueOld );
+	}
+
+	/**
+	 * Cancel title change
+	 */
+	cancelChangeTitleQuestion( args ) {
+		const { target } = args;
+		const elBtnCancel = target.closest( BuilderEditQuiz.selectors.elBtnCancelUpdateQuestionTitle );
+		if ( ! elBtnCancel ) {
+			return;
+		}
+
+		const elQuestionItem = elBtnCancel.closest( BuilderEditQuiz.selectors.elQuestionItem );
+		if ( ! elQuestionItem ) {
+			return;
+		}
+
+		const elQuestionTitleInput = elQuestionItem.querySelector( BuilderEditQuiz.selectors.elQuestionTitleInput );
+		if ( elQuestionTitleInput ) {
+			elQuestionTitleInput.value = elQuestionTitleInput.dataset.old || '';
+		}
 		elQuestionItem.classList.remove( 'editing' );
 	}
 
+	/**
+	 * Make questions sortable
+	 */
 	sortAbleQuestion() {
 		if ( ! this.elEditListQuestions ) {
 			return;
 		}
 
+		// Destroy existing instance first
+		if ( this.sortableInstance?.destroy ) {
+			try {
+				this.sortableInstance.destroy();
+			} catch ( e ) {
+				console.warn( 'Error destroying sortable:', e );
+			}
+			this.sortableInstance = null;
+		}
+
 		let isUpdateSectionPosition = 0;
 		let timeout;
 
-		this.sortableInstance = new Sortable( this.elEditListQuestions, {
-			handle: '.drag',
-			animation: 150,
-			onEnd: ( evt ) => {
-				const elQuestionItem = evt.item;
-				if ( ! isUpdateSectionPosition ) {
-					return;
-				}
+		try {
+			this.sortableInstance = new Sortable( this.elEditListQuestions, {
+				handle: '.drag',
+				animation: 150,
+				onEnd: ( evt ) => {
+					const elQuestionItem = evt.item;
+					if ( ! isUpdateSectionPosition ) {
+						return;
+					}
 
-				clearTimeout( timeout );
-				timeout = setTimeout( () => {
-					lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+					clearTimeout( timeout );
+					timeout = setTimeout( () => {
+						lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
 
-					const questionIds = [];
-					const elQuestionItems = this.elEditListQuestions.querySelectorAll(
-						`${ BuilderEditQuiz.selectors.elQuestionItem }:not(.clone)`
-					);
-					elQuestionItems.forEach( ( elItem ) => {
-						const questionId = elItem.dataset.questionId;
-						if ( questionId ) {
-							questionIds.push( questionId );
-						}
-					} );
-
-					const callBack = {
-						success: ( response ) => {
-							const { message, status } = response;
-
-							if ( status === 'success' ) {
-								lpToastify.show( message, status );
-							} else {
-								throw `Error: ${ message }`;
+						const questionIds = [];
+						const elQuestionItems = this.elEditListQuestions.querySelectorAll( `${ BuilderEditQuiz.selectors.elQuestionItem }:not(.clone)` );
+						elQuestionItems.forEach( ( elItem ) => {
+							const questionId = elItem?.dataset?.questionId;
+							if ( questionId ) {
+								questionIds.push( questionId );
 							}
-						},
-						error: ( error ) => {
-							lpToastify.show( error, 'error' );
-						},
-						completed: () => {
-							lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
-							isUpdateSectionPosition = 0;
-						},
-					};
+						} );
 
-					const dataSend = {
-						quiz_id: this.quizID,
-						action: 'update_questions_position',
-						question_ids: questionIds,
-						args: { id_url: 'edit-quiz-questions' },
-					};
-					window.lpAJAXG.fetchAJAX( dataSend, callBack );
-				}, 1000 );
-			},
-			onMove: () => {
-				clearTimeout( timeout );
-			},
-			onUpdate: () => {
-				isUpdateSectionPosition = 1;
-			},
-		} );
-	}
+						const callBack = {
+							success: ( response ) => {
+								const { message, status } = response;
 
-	getQuizDataForUpdate() {
-		const data = {};
-		const wrapperEl = document.querySelector( BuilderEditQuiz.selectors.elDataQuiz );
-		data.quiz_id = wrapperEl ? parseInt( wrapperEl.dataset.quizId ) || 0 : 0;
+								if ( status === 'success' ) {
+									lpToastify.show( message, status );
+								} else {
+									throw new Error( message );
+								}
+							},
+							error: ( error ) => {
+								lpToastify.show( error?.message || error || 'Failed to update order', 'error' );
+							},
+							completed: () => {
+								lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+								isUpdateSectionPosition = 0;
+							},
+						};
 
-		const titleInput = document.getElementById( BuilderEditQuiz.selectors.idTitle );
-		data.quiz_title = titleInput ? titleInput.value : '';
-
-		const descEditor = document.getElementById( BuilderEditQuiz.selectors.idDescEditor );
-		data.quiz_description = descEditor ? descEditor.value : '';
-
-		if ( typeof tinymce !== 'undefined' ) {
-			const editor = tinymce.get( BuilderEditQuiz.selectors.idDescEditor );
-			if ( editor ) {
-				data.quiz_description = editor.getContent();
-			}
-		}
-
-		const elFormSetting = document.querySelector( BuilderEditQuiz.selectors.elFormSetting );
-
-		if ( elFormSetting ) {
-			data.quiz_settings = true;
-			const formElements = elFormSetting.querySelectorAll( 'input, select, textarea' );
-
-			formElements.forEach( ( element ) => {
-				const name = element.name || element.id;
-
-				if ( ! name || name === 'learnpress_meta_box_nonce' || name === '_wp_http_referer' ) {
-					return;
-				}
-
-				if ( element.type === 'checkbox' ) {
-					const fieldName = name.replace( '[]', '' );
-					if ( ! data.hasOwnProperty( fieldName ) ) {
-						data[ fieldName ] = element.checked ? 'yes' : 'no';
-					}
-				} else if ( element.type === 'radio' ) {
-					if ( element.checked ) {
-						const fieldName = name.replace( '[]', '' );
-						data[ fieldName ] = element.value;
-					}
-				} else if ( element.type === 'file' ) {
-					const fieldName = name.replace( '[]', '' );
-					if ( element.files && element.files.length > 0 ) {
-						data[ fieldName ] = element.files;
-					}
-				} else {
-					const fieldName = name.replace( '[]', '' );
-
-					if ( name.endsWith( '[]' ) ) {
-						if ( ! data.hasOwnProperty( fieldName ) ) {
-							data[ fieldName ] = [];
-						}
-
-						if ( Array.isArray( data[ fieldName ] ) ) {
-							data[ fieldName ].push( element.value );
-						}
-					} else {
-						if ( ! data.hasOwnProperty( fieldName ) ) {
-							data[ fieldName ] = element.value;
-						}
-					}
-				}
+						const dataSend = {
+							quiz_id: this.quizID,
+							action: 'update_questions_position',
+							question_ids: questionIds,
+							args: { id_url: 'edit-quiz-questions' },
+						};
+						window.lpAJAXG.fetchAJAX( dataSend, callBack );
+					}, 1000 );
+				},
+				onMove: () => {
+					clearTimeout( timeout );
+				},
+				onUpdate: () => {
+					isUpdateSectionPosition = 1;
+				},
 			} );
-
-			Object.keys( data ).forEach( ( key ) => {
-				if ( Array.isArray( data[ key ] ) ) {
-					data[ key ] = data[ key ].join( ',' );
-				}
-			} );
+		} catch ( e ) {
+			console.error( 'Error creating sortable:', e );
 		}
-
-		return data;
-	}
-
-	updateQuiz( args ) {
-		const { target } = args;
-		const elBtnUpdateQuiz = target.closest( BuilderEditQuiz.selectors.elBtnUpdateQuiz );
-
-		if ( ! elBtnUpdateQuiz ) {
-			return;
-		}
-
-		lpUtils.lpSetLoadingEl( elBtnUpdateQuiz, 1 );
-
-		const quizData = this.getQuizDataForUpdate();
-
-		const dataSend = {
-			...quizData,
-			action: 'builder_update_quiz',
-			args: {
-				id_url: 'builder-update-quiz',
-			},
-			quiz_status: 'publish',
-		};
-
-		if ( typeof lpQuizBuilder !== 'undefined' && lpQuizBuilder.nonce ) {
-			dataSend.nonce = lpQuizBuilder.nonce;
-		}
-
-		if ( quizData.quiz_categories && quizData.quiz_categories.length > 0 ) {
-			dataSend.quiz_categories = quizData.quiz_categories.join( ',' );
-		}
-
-		if ( quizData.quiz_tags && quizData.quiz_tags.length > 0 ) {
-			dataSend.quiz_tags = quizData.quiz_tags.join( ',' );
-		}
-
-		if ( quizData.quiz_thumbnail_id ) {
-			dataSend.quiz_thumbnail_id = quizData.quiz_thumbnail_id;
-		}
-
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message, status );
-
-				if ( data?.button_title ) {
-					elBtnUpdateQuiz.textContent = data.button_title;
-				}
-
-				if ( data?.quiz_id_new ) {
-					const currentUrl = window.location.href;
-					window.location.href = currentUrl.replace( /post-new\/?/, `${ data.quiz_id_new }/` );
-				}
-
-				if ( data?.status ) {
-					const elStatus = document.querySelector( BuilderEditQuiz.selectors.elQuizStatus );
-					if ( elStatus ) {
-						elStatus.className = 'quiz-status ' + data.status;
-						elStatus.textContent = data.status;
-					}
-				}
-			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtnUpdateQuiz, 0 );
-			},
-		};
-
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
-	}
-
-	trashQuiz( args ) {
-		const { target } = args;
-		const elBtnTrashQuiz = target.closest( BuilderEditQuiz.selectors.elBtnTrashQuiz );
-		if ( ! elBtnTrashQuiz ) {
-			return;
-		}
-
-		lpUtils.lpSetLoadingEl( elBtnTrashQuiz, 1 );
-
-		const quizData = this.getQuizDataForUpdate();
-		const dataSend = {
-			action: 'move_trash_quiz',
-			args: {
-				id_url: 'move-trash-quiz',
-			},
-			quiz_id: quizData.quiz_id || 0,
-		};
-
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message, status );
-
-				if ( data?.button_title ) {
-					const elBtnUpdateQuiz = document.querySelector(
-						BuilderEditQuiz.selectors.elBtnUpdateQuiz
-					);
-					if ( elBtnUpdateQuiz ) {
-						elBtnUpdateQuiz.textContent = data.button_title;
-					}
-				}
-
-				if ( data?.status ) {
-					const elStatus = document.querySelector( BuilderEditQuiz.selectors.elQuizStatus );
-					if ( elStatus ) {
-						elStatus.className = 'quiz-status ' + data.status;
-						elStatus.textContent = data.status;
-					}
-				}
-			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtnTrashQuiz, 0 );
-			},
-		};
-
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 }

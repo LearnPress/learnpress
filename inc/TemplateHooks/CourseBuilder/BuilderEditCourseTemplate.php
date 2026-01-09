@@ -109,7 +109,7 @@ class BuilderEditCourseTemplate {
 			$edit       = [
 				'wrapper'        => '<div class="cb-course-edit-title">',
 				'label_wrap'     => '<div class="cb-course-edit-title__label-wrap">',
-				'label'          => sprintf( '<label for="title" class="cb-course-edit-title__label">%s</label>', __( 'Course Title', 'learnpress' ) ),
+				'label'          => sprintf( '<label for="title" class="cb-course-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
 				'char_count'     => sprintf( '<span class="cb-course-edit-title__char-count">%s</span>', sprintf( __( '%d characters', 'learnpress' ), $char_count ) ),
 				'label_wrap_end' => '</div>',
 				'input'          => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', esc_attr( $title ) ),
@@ -138,7 +138,7 @@ class BuilderEditCourseTemplate {
 		$edit = [
 			'wrapper'        => '<div class="cb-course-edit-desc">',
 			'label_wrap'     => '<div class="cb-course-edit-desc__label-wrap">',
-			'label'          => sprintf( '<label for="course_description" class="cb-course-edit-desc__label">%s</label>', __( 'Course Description', 'learnpress' ) ),
+			'label'          => sprintf( '<label for="course_description" class="cb-course-edit-desc__label">%s</label>', __( 'Description', 'learnpress' ) ),
 			'word_count'     => sprintf( '<span class="cb-course-edit-desc__word-count">%s</span>', sprintf( __( '%d words', 'learnpress' ), $word_count ) ),
 			'label_wrap_end' => '</div>',
 			'edit'           => AdminTemplate::editor_tinymce(

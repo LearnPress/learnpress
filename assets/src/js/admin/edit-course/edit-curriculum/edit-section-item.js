@@ -101,23 +101,12 @@ export class EditSectionItem {
 				callBack: this.deleteItem.name,
 			},
 			{
-				selector:
-					LpPopupSelectItemToAdd.selectors
-						.elBtnShowPopupItemsToSelect,
-				callBack: ( args ) => {
-					const { e, target } = args;
-					const elSection = target.closest(
-						EditSection.selectors.elSection
-					);
-					// Only set sectionIdSelected if we're in curriculum context (not quiz popup)
-					if ( elSection ) {
-						this.sectionIdSelected = elSection.dataset.sectionId;
-					}
-				},
+				selector: LpPopupSelectItemToAdd.selectors.elBtnShowPopupItemsToSelect,
+				class: this,
+				callBack: this.handleShowPopupItemsToSelect.name,
 			},
 			{
-				selector:
-					LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected,
+				selector: LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected,
 				class: lpPopupSelectItemToAdd,
 				callBack: lpPopupSelectItemToAdd.addItemsSelectedToSection.name,
 				callBackHandle: this.addItemsSelectedToSection.bind( this ),
@@ -179,6 +168,29 @@ export class EditSectionItem {
 		] );
 	}
 
+	/* Handle show popup items to select - set sectionIdSelected */
+	handleShowPopupItemsToSelect( args ) {
+		const { e, target } = args;
+
+		const elQuizWrap = target.closest( '.lp-edit-quiz-wrap' );
+		if ( elQuizWrap ) {
+			this.sectionIdSelected = null;
+			return;
+		}
+
+		const elSection = target.closest( EditSection.selectors.elSection );
+
+		const elEditCurriculum =
+			target.closest( '#lp-course-edit-curriculum' ) ||
+			target.closest( '.lp-edit-curriculum-wrap' );
+
+		if ( elSection && elEditCurriculum ) {
+			this.sectionIdSelected = elSection.dataset.sectionId;
+		} else {
+			this.sectionIdSelected = null;
+		}
+	}
+
 	/* Add item type */
 	addItemType( args ) {
 		const { e, target } = args;
@@ -189,9 +201,7 @@ export class EditSectionItem {
 		const itemPlaceholder = elBtnSelectItemType.dataset.placeholder;
 		const itemBtnAddText = elBtnSelectItemType.dataset.buttonAddText;
 
-		const elSection = elBtnSelectItemType.closest(
-			`${ EditSection.selectors.elSection }`
-		);
+		const elSection = elBtnSelectItemType.closest( `${ EditSection.selectors.elSection }` );
 		const elSectionActions = elSection.querySelector(
 			`${ EditSectionItem.selectors.elSectionActions }`
 		);
@@ -214,19 +224,14 @@ export class EditSectionItem {
 		elAddItemTypeInput.setAttribute( 'placeholder', itemPlaceholder );
 		elAddItemTypeInput.dataset.itemType = itemType;
 		elBtnAddItem.textContent = itemBtnAddText;
-		elSectionActions.insertAdjacentElement(
-			'beforebegin',
-			elNewItemByType
-		);
+		elSectionActions.insertAdjacentElement( 'beforebegin', elNewItemByType );
 		elAddItemTypeInput.focus();
 	}
 
 	/* Cancel add item type */
 	cancelAddItemType( args ) {
 		const { e, target } = args;
-		const elAddItemType = target.closest(
-			`${ EditSectionItem.selectors.elAddItemType }`
-		);
+		const elAddItemType = target.closest( `${ EditSectionItem.selectors.elAddItemType }` );
 		if ( elAddItemType ) {
 			elAddItemType.remove();
 		}
@@ -237,12 +242,8 @@ export class EditSectionItem {
 		const { e, target, callBackNest } = args;
 		e.preventDefault();
 
-		const elAddItemType = target.closest(
-			`${ EditSectionItem.selectors.elAddItemType }`
-		);
-		const elSection = elAddItemType.closest(
-			`${ EditSection.selectors.elSection }`
-		);
+		const elAddItemType = target.closest( `${ EditSectionItem.selectors.elAddItemType }` );
+		const elSection = elAddItemType.closest( `${ EditSection.selectors.elSection }` );
 		const sectionId = elSection.dataset.sectionId;
 		const elAddItemTypeTitleInput = elAddItemType.querySelector(
 			`${ EditSectionItem.selectors.elAddItemTypeTitleInput }`
@@ -257,9 +258,7 @@ export class EditSectionItem {
 		}
 
 		// Clone new section item
-		const elItemClone = elSection.querySelector(
-			`${ EditSectionItem.selectors.elItemClone }`
-		);
+		const elItemClone = elSection.querySelector( `${ EditSectionItem.selectors.elItemClone }` );
 		const elItemNew = elItemClone.cloneNode( true );
 		const elItemTitleInput = elItemNew.querySelector(
 			`${ EditSectionItem.selectors.elItemTitleInput }`
@@ -287,15 +286,10 @@ export class EditSectionItem {
 				} else if ( status === 'success' ) {
 					const { section_item, item_link } = data || {};
 					elItemNew.dataset.itemId = section_item.item_id || 0;
-					elItemNew
-						.querySelector( '.edit-link' )
-						.setAttribute( 'href', item_link || '' );
+					elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item_link || '' );
 
 					// Call callback nest if exists
-					if (
-						callBackNest &&
-						typeof callBackNest.success === 'function'
-					) {
+					if ( callBackNest && typeof callBackNest.success === 'function' ) {
 						args.elItemNew = elItemNew;
 						callBackNest.success( args );
 					}
@@ -310,10 +304,7 @@ export class EditSectionItem {
 				this.updateCountItems( elSection );
 
 				// Call callback nest if exists
-				if (
-					callBackNest &&
-					typeof callBackNest.completed === 'function'
-				) {
+				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
 					args.elItemNew = elItemNew;
 					callBackNest.completed( args );
 				}
@@ -334,9 +325,7 @@ export class EditSectionItem {
 	/* Typing in title input */
 	changeTitle( args ) {
 		const { target } = args;
-		const elItemTitleInput = target.closest(
-			`${ EditSectionItem.selectors.elItemTitleInput }`
-		);
+		const elItemTitleInput = target.closest( `${ EditSectionItem.selectors.elItemTitleInput }` );
 		if ( ! elItemTitleInput ) {
 			return;
 		}
@@ -362,9 +351,7 @@ export class EditSectionItem {
 	focusTitleInput( args ) {
 		const { target, focusIn = true } = args;
 
-		const elItemTitleInput = target.closest(
-			`${ EditSectionItem.selectors.elItemTitleInput }`
-		);
+		const elItemTitleInput = target.closest( `${ EditSectionItem.selectors.elItemTitleInput }` );
 		if ( ! elItemTitleInput ) {
 			return;
 		}
@@ -420,16 +407,12 @@ export class EditSectionItem {
 
 		e.preventDefault();
 
-		const elSectionItem = target.closest(
-			`${ EditSectionItem.selectors.elSectionItem }`
-		);
+		const elSectionItem = target.closest( `${ EditSectionItem.selectors.elSectionItem }` );
 		if ( ! elSectionItem ) {
 			return;
 		}
 
-		const elSection = elSectionItem.closest(
-			`${ EditSection.selectors.elSection }`
-		);
+		const elSection = elSectionItem.closest( `${ EditSection.selectors.elSection }` );
 		if ( ! elSection ) {
 			return;
 		}
@@ -516,24 +499,18 @@ export class EditSectionItem {
 	/* Delete item from section */
 	deleteItem( args ) {
 		const { e, target } = args;
-		const elBtnDeleteItem = target.closest(
-			`${ EditSectionItem.selectors.elBtnDeleteItem }`
-		);
+		const elBtnDeleteItem = target.closest( `${ EditSectionItem.selectors.elBtnDeleteItem }` );
 		if ( ! elBtnDeleteItem ) {
 			return;
 		}
 
-		const elSectionItem = elBtnDeleteItem.closest(
-			`${ EditSectionItem.selectors.elSectionItem }`
-		);
+		const elSectionItem = elBtnDeleteItem.closest( `${ EditSectionItem.selectors.elSectionItem }` );
 		if ( ! elSectionItem ) {
 			return;
 		}
 
 		const itemId = elSectionItem.dataset.itemId;
-		const elSection = elSectionItem.closest(
-			`${ EditSection.selectors.elSection }`
-		);
+		const elSection = elSectionItem.closest( `${ EditSection.selectors.elSection }` );
 		const sectionId = elSection.dataset.sectionId;
 
 		SweetAlert.fire( {
@@ -600,9 +577,8 @@ export class EditSectionItem {
 					const dataSectionsItems = [];
 
 					const elItemDragged = evt.item;
-					sectionIdEnd = elItemDragged.closest(
-						`${ EditSection.selectors.elSection }`
-					).dataset.sectionId;
+					sectionIdEnd = elItemDragged.closest( `${ EditSection.selectors.elSection }` ).dataset
+						.sectionId;
 
 					const dataSend = {
 						course_id: this.courseId,
@@ -622,9 +598,7 @@ export class EditSectionItem {
 					const section = this.elCurriculumSections.querySelector(
 						`.section[data-section-id="${ sectionIdEnd }"]`
 					);
-					const items = section.querySelectorAll(
-						`${ EditSectionItem.selectors.elSectionItem }`
-					);
+					const items = section.querySelectorAll( `${ EditSectionItem.selectors.elSectionItem }` );
 					items.forEach( ( elItem ) => {
 						const itemId = parseInt( elItem.dataset.itemId || 0 );
 						if ( itemId === 0 ) {
@@ -660,9 +634,7 @@ export class EditSectionItem {
 				onChoose: ( evt ) => {
 					const elChooseItem = evt.item;
 					itemIdChoose = elChooseItem.dataset.itemId;
-					elSectionChoose = elChooseItem.closest(
-						`${ EditSection.selectors.elSection }`
-					);
+					elSectionChoose = elChooseItem.closest( `${ EditSection.selectors.elSection }` );
 					sectionIdChoose = elSectionChoose.dataset.sectionId;
 				},
 				onUpdate: ( /*evt*/ ) => {},
@@ -680,15 +652,13 @@ export class EditSectionItem {
 		const elSection = document.querySelector(
 			`.section[data-section-id="${ this.sectionIdSelected }"]`
 		);
-		
+
 		// Skip if section element not found
 		if ( ! elSection ) {
 			return;
 		}
 
-		const elItemClone = elSection.querySelector(
-			`${ EditSectionItem.selectors.elItemClone }`
-		);
+		const elItemClone = elSection.querySelector( `${ EditSectionItem.selectors.elItemClone }` );
 
 		itemsSelectedData.forEach( ( item ) => {
 			const elItemNew = elItemClone.cloneNode( true );
@@ -700,9 +670,7 @@ export class EditSectionItem {
 			elItemNew.classList.add( item.type );
 			elItemNew.classList.remove( 'clone' );
 			elItemNew.dataset.itemType = item.type;
-			elItemNew
-				.querySelector( '.edit-link' )
-				.setAttribute( 'href', item.edit_link || '' );
+			elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.edit_link || '' );
 			elInputTitleNew.value = item.titleSelected || '';
 			lpUtils.lpSetLoadingEl( elItemNew, 1 );
 			lpUtils.lpShowHideEl( elItemNew, 1 );
@@ -814,8 +782,7 @@ export class EditSectionItem {
 	/* Update count items when item add/delete or section delete */
 	updateCountItems( elSection ) {
 		const elEditCurriculum = this.elEditCurriculum;
-		const elCountItemsAll =
-			elEditCurriculum.querySelector( '.total-items' );
+		const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
 		const elItemsAll = elEditCurriculum.querySelectorAll(
 			`${ EditSectionItem.selectors.elSectionItem }:not(.clone)`
 		);
@@ -825,9 +792,7 @@ export class EditSectionItem {
 		elCountItemsAll.querySelector( '.count' ).textContent = itemsAllCount;
 
 		// Count items in section
-		const elSectionItemsCount = elSection.querySelector(
-			'.section-items-counts'
-		);
+		const elSectionItemsCount = elSection.querySelector( '.section-items-counts' );
 
 		const elItems = elSection.querySelectorAll(
 			`${ EditSectionItem.selectors.elSectionItem }:not(.clone)`
