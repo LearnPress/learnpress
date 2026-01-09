@@ -285,8 +285,12 @@ export class EditSectionItem {
 					elItemNew.remove();
 				} else if ( status === 'success' ) {
 					const { section_item, item_link } = data || {};
-					elItemNew.dataset.itemId = section_item.item_id || 0;
+					const itemId = section_item.item_id || 0;
+					elItemNew.dataset.itemId = itemId;
 					elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item_link || '' );
+
+					// Add popup attributes for Course Builder context
+					this.addPopupAttributesToItem( elItemNew, itemId, typeValue );
 
 					// Call callback nest if exists
 					if ( callBackNest && typeof callBackNest.success === 'function' ) {
@@ -672,6 +676,10 @@ export class EditSectionItem {
 			elItemNew.dataset.itemType = item.type;
 			elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.edit_link || '' );
 			elInputTitleNew.value = item.titleSelected || '';
+
+			// Add popup attributes for Course Builder context
+			this.addPopupAttributesToItem( elItemNew, item.id, item.type );
+
 			lpUtils.lpSetLoadingEl( elItemNew, 1 );
 			lpUtils.lpShowHideEl( elItemNew, 1 );
 			elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
@@ -801,5 +809,59 @@ export class EditSectionItem {
 
 		elSectionItemsCount.dataset.count = itemsCount;
 		elSectionItemsCount.querySelector( '.count' ).textContent = itemsCount;
+	}
+
+	/**
+	 * Add popup attributes to item element for Course Builder context.
+	 * Only applies when in Course Builder (not admin edit course page).
+	 *
+	 * @param {HTMLElement} elItem - The item element
+	 * @param {number} itemId - The item ID
+	 * @param {string} itemType - The item type (lp_lesson, lp_quiz)
+	 */
+	addPopupAttributesToItem( elItem, itemId, itemType ) {
+		// Check if we're in Course Builder context
+		const isCourseBuilder = document.querySelector( '#lp-course-builder' ) !== null;
+
+		if ( ! isCourseBuilder || ! itemId ) {
+			return;
+		}
+
+		// Only add popup attributes for lesson and quiz
+		if ( ! [ 'lp_lesson', 'lp_quiz' ].includes( itemType ) ) {
+			return;
+		}
+
+		// Find the edit link element - it's an <a> with class 'edit-link' inside .item-actions
+		const editLink = elItem.querySelector( '.item-actions .edit-link' );
+		if ( ! editLink ) {
+			return;
+		}
+
+		// Get the parent <li> element of the edit link
+		const editBtn = editLink.closest( 'li' );
+		if ( ! editBtn ) {
+			return;
+		}
+
+		// Add popup data attributes based on item type
+		if ( itemType === 'lp_lesson' ) {
+			editBtn.setAttribute( 'data-popup-lesson', itemId );
+		} else if ( itemType === 'lp_quiz' ) {
+			editBtn.setAttribute( 'data-popup-quiz', itemId );
+		}
+
+		// Add popup class to the <li> element
+		editBtn.classList.add( 'lp-btn-edit-item-popup' );
+
+		// Update edit link: remove target="_blank" and update classes for popup behavior
+		editLink.removeAttribute( 'target' );
+		editLink.removeAttribute( 'href' );
+		editLink.classList.add( 'edit-popup-link' );
+
+		// Store additional data for popup on the <li> element
+		editBtn.setAttribute( 'data-item-id', itemId );
+		editBtn.setAttribute( 'data-item-type', itemType );
+		editBtn.setAttribute( 'data-course-id', this.courseId );
 	}
 }

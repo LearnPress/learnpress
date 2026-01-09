@@ -78,16 +78,19 @@ class BuilderPopupTemplate {
 		}
 
 		return [
-			'overlay'         => '<div class="lp-builder-popup-overlay"></div>',
-			'wrapper'         => sprintf( '<div class="lp-builder-popup lp-builder-popup--%s" data-%s-id="%d">', $type, $type, $post_id ),
-			'header'          => '<div class="lp-builder-popup__header">',
-			'header_left'     => '<div class="lp-builder-popup__header-left">',
-			'title'           => sprintf( '<h3 class="lp-builder-popup__title">%s</h3>', esc_html( $title ) ),
-			'status'          => $status_html,
-			'header_left_end' => '</div>',
-			'close_btn'       => '<button type="button" class="lp-builder-popup__close" aria-label="' . esc_attr__( 'Close', 'learnpress' ) . '">&times;</button>',
-			'header_end'      => '</div>',
-			'body'            => '<div class="lp-builder-popup__body">',
+			'overlay'            => '<div class="lp-builder-popup-overlay"></div>',
+			'wrapper'            => sprintf( '<div class="lp-builder-popup lp-builder-popup--%s" data-%s-id="%d">', $type, $type, $post_id ),
+			'header'             => '<div class="lp-builder-popup__header">',
+			'header_left'        => '<div class="lp-builder-popup__header-left">',
+			'title'              => sprintf( '<h3 class="lp-builder-popup__title">%s</h3>', esc_html( $title ) ),
+			'status'             => $status_html,
+			'header_left_end'    => '</div>',
+			'header_actions'     => '<div class="lp-builder-popup__header-actions">',
+			'resize_btn'         => '<button type="button" class="lp-builder-popup__resize" aria-label="' . esc_attr__( 'Toggle fullscreen', 'learnpress' ) . '" title="' . esc_attr__( 'Toggle fullscreen', 'learnpress' ) . '"><i class="lp-icon-expand"></i></button>',
+			'close_btn'          => '<button type="button" class="lp-builder-popup__close" aria-label="' . esc_attr__( 'Close', 'learnpress' ) . '">&times;</button>',
+			'header_actions_end' => '</div>',
+			'header_end'         => '</div>',
+			'body'               => '<div class="lp-builder-popup__body">',
 		];
 	}
 

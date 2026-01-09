@@ -421,14 +421,14 @@ class BuilderEditCourseTemplate {
 			$popup_data_attr = sprintf( 'data-popup-quiz="%s"', $item_id );
 		}
 
-		// Replace edit button with popup button
+		// Replace edit button with popup button - use lp-icon-edit-square instead of lp-icon-expand
 		$section_action['edit'] = sprintf(
 			'<li title="%s" class="lp-btn-edit-item-popup"
 				data-item-id="%s"
 				data-item-type="%s"
 				data-course-id="%s"
 				%s>
-				<a class="lp-icon-expand edit-popup-link"></a>
+				<a class="lp-icon-edit-square edit-popup-link"></a>
 			</li>',
 			__( 'Edit in popup', 'learnpress' ),
 			$item_id,

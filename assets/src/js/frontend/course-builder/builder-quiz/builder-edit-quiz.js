@@ -384,6 +384,25 @@ export class BuilderEditQuiz {
 			return;
 		}
 
+		// Use EditQuestion.reInitTinymce to properly register events
+		if ( this.editQuestion?.reInitTinymce ) {
+			try {
+				this.editQuestion.reInitTinymce( id );
+			} catch ( e ) {
+				console.warn( 'TinyMCE reinit via EditQuestion error:', e );
+				// Fallback to manual reinit without events
+				this._manualReInitTinymce( id );
+			}
+		} else {
+			// Fallback if editQuestion not available
+			this._manualReInitTinymce( id );
+		}
+	}
+
+	/**
+	 * Manual TinyMCE reinit (fallback without events)
+	 */
+	_manualReInitTinymce( id ) {
 		try {
 			window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 			window.tinymce.execCommand( 'mceAddEditor', true, id );
@@ -394,7 +413,7 @@ export class BuilderEditQuiz {
 				wrapEditor.classList.remove( 'html-active' );
 			}
 		} catch ( e ) {
-			console.warn( 'TinyMCE init error:', e );
+			console.warn( 'Manual TinyMCE init error:', e );
 		}
 	}
 

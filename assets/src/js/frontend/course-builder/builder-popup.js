@@ -32,6 +32,7 @@ export class BuilderPopup {
 		popupOverlay: '.lp-builder-popup-overlay',
 		popup: '.lp-builder-popup',
 		closeBtn: '.lp-builder-popup__close',
+		resizeBtn: '.lp-builder-popup__resize',
 		cancelBtn: '.lp-builder-popup__btn--cancel',
 		saveBtn: '.lp-builder-popup__btn--save',
 		trashBtn: '.lp-builder-popup__btn--trash',
@@ -113,6 +114,14 @@ export class BuilderPopup {
 			}
 		} );
 
+		 // Resize/fullscreen toggle event
+		document.addEventListener( 'click', ( e ) => {
+			const resizeBtn = e.target.closest( BuilderPopup.selectors.resizeBtn );
+			if ( resizeBtn && this.isPopupOpen() ) {
+				this.toggleFullscreen();
+			}
+		} );
+
 		// Tab switching
 		document.addEventListener( 'click', ( e ) => {
 			const tab = e.target.closest( BuilderPopup.selectors.tab );
@@ -140,6 +149,39 @@ export class BuilderPopup {
 				this.closePopup();
 			}
 		} );
+	}
+
+	/**
+	 * Toggle fullscreen mode for popup
+	 */
+	toggleFullscreen() {
+		const popup = this.popupContainer.querySelector( BuilderPopup.selectors.popup );
+		if ( ! popup ) {
+			return;
+		}
+
+		popup.classList.toggle( 'lp-builder-popup--fullscreen' );
+
+		// Update resize button icon
+		const resizeBtn = popup.querySelector( BuilderPopup.selectors.resizeBtn );
+		if ( resizeBtn ) {
+			const icon = resizeBtn.querySelector( 'i' );
+			if ( icon ) {
+				const isFullscreen = popup.classList.contains( 'lp-builder-popup--fullscreen' );
+				icon.classList.toggle( 'lp-icon-expand', ! isFullscreen );
+				icon.classList.toggle( 'lp-icon-compress', isFullscreen );
+			}
+		}
+
+		document.dispatchEvent(
+			new CustomEvent( 'lp-builder-popup-fullscreen-toggled', {
+				detail: {
+					isFullscreen: popup.classList.contains( 'lp-builder-popup--fullscreen' ),
+					type: this.currentType,
+					id: this.currentId,
+				},
+			} )
+		);
 	}
 
 	/**
