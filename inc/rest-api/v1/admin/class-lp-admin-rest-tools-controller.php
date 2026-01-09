@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Filters\Course\CourseJsonFilter;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
@@ -362,7 +363,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.2.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function search_courses( WP_REST_Request $request ): LP_REST_Response {
 		ini_set( 'max_execution_time', HOUR_IN_SECONDS );
@@ -375,7 +376,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['id_not_in'] ?? '' );
 			$current_ids         = (array) LP_Helper::sanitize_params_submitted( $params['current_ids'] ?? [] );
 			$total_rows          = 0;
-			$filter              = new LP_Course_Filter();
+			$filter              = new CourseJsonFilter();
 			$filter->limit       = 20;
 			$filter->only_fields = [ 'ID', 'post_title' ];
 			$filter->post_status = [ 'publish' ];
@@ -383,7 +384,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$filter->page        = LP_Helper::sanitize_params_submitted( $params['paged'] ?? 1, 'int' );
 
 			if ( ! empty( $ids_str ) ) {
-				$filter->post_ids = explode( ',', $ids_str );
+				$filter->ids = explode( ',', $ids_str );
 			}
 
 			if ( ! empty( $not_ids_str ) ) {
@@ -394,7 +395,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			// Get all courses.
-			$courses = Courses::get_courses( $filter, $total_rows );
+			$courses = Courses::get_list_courses( $filter, $total_rows );
 
 			// Get selected courses.
 			$courses_current = [];
