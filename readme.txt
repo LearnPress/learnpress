@@ -47,6 +47,8 @@ LearnPress AI also includes an AI Image Generator to help you create course thum
 
 By handling the repetitive and time-consuming parts of course planning, LearnPress AI helps you work more efficiently - so you can focus on teaching, refining your content, and supporting your learners.
 
+[👉 Learn more about LearnPress AI](https://learnpresslms.com/learnpress-ai/)
+
 ### Exciting News: LearnPress Officially Integrates with Gutenberg! ###
 Get ready to revolutionize your online course creation experience! We are thrilled to announce the official LearnPress [Gutenberg integration](https://learnpresslms.com/blog/learnpress-gutenberg-integration/). This powerful combination brings the flexibility and intuitive nature of WordPress’s block editor to your favorite WordPress LMS plugin, [LearnPress](https://learnpresslms.com/). Now, crafting beautiful and engaging course layouts is easier and more dynamic than ever before.
 
