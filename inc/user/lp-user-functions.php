@@ -1354,18 +1354,40 @@ function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 /**
  * @return array
  * @since 3.x.x
- * @version 4.0.1
+ * @version 4.0.2
  */
 function learn_press_social_profiles() {
 	return apply_filters(
 		'learn-press/social-profiles',
 		array(
-			'facebook' => __( 'Facebook Profile', 'learnpress' ),
-			'twitter'  => __( 'Twitter Profile', 'learnpress' ),
-			'youtube'  => __( 'YouTube Profile', 'learnpress' ),
-			'linkedin' => __( 'LinkedIn Profile', 'learnpress' ),
+			'facebook' => learn_press_social_profile_name( 'facebook' ),
+			'twitter'  => learn_press_social_profile_name( 'twitter' ),
+			'youtube'  => learn_press_social_profile_name( 'youtube' ),
+			'linkedin' => learn_press_social_profile_name( 'linkedin' ),
 		)
 	);
+}
+
+function learn_press_social_profile_name( $key ) {
+	$name = '';
+	switch ( $key ) {
+		case 'facebook':
+			$name = esc_html__( 'Facebook Profile', 'learnpress' );
+			break;
+		case 'twitter':
+			$name = esc_html__( 'X Profile', 'learnpress' );
+			break;
+		case 'youtube':
+			$name = esc_html__( 'Youtube Channel', 'learnpress' );
+			break;
+		case 'linkedin':
+			$name = esc_html__( 'Linkedin Profile', 'learnpress' );
+			break;
+		default:
+			$name = ucfirst( $key );
+	}
+
+	return apply_filters( 'learn-press/social-profile-name', $name, $key );
 }
 
 function lp_add_default_fields( $fields ) {
@@ -1543,31 +1565,6 @@ function learn_press_is_social_profile( $key ) {
 	return in_array( $key, $is_socials );
 }
 
-function learn_press_social_profile_name( $key ) {
-	$name = '';
-	switch ( $key ) {
-		case 'facebook':
-			$name = esc_html__( 'Facebook Profile', 'learnpress' );
-			break;
-		case 'twitter':
-			$name = esc_html__( 'Twitter Profile', 'learnpress' );
-			break;
-		case 'googleplus':
-			$name = esc_html__( 'Google Profile', 'learnpress' );
-			break;
-		case 'youtube':
-			$name = esc_html__( 'Youtube Channel', 'learnpress' );
-			break;
-		case 'linkedin':
-			$name = esc_html__( 'Linkedin Profile', 'learnpress' );
-			break;
-		default:
-			$name = ucfirst( $key );
-	}
-
-	return apply_filters( 'learn-press/social-profile-name', $name, $key );
-}
-
 /**
  * Get extra profile fields will be registered in backend profile.
  *
@@ -1577,6 +1574,7 @@ function learn_press_social_profile_name( $key ) {
  */
 function learn_press_get_user_extra_profile_fields() {
 	_deprecated_function( __FUNCTION__, '4.3.2' );
+	return [];
 
 	$socials = learn_press_social_profiles();
 
