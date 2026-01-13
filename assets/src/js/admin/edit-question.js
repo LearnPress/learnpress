@@ -591,9 +591,7 @@ export class EditQuestion {
 				elQuestionAnswerNew.remove();
 				lpToastify.show( error, 'error' );
 			},
-			completed: () => {
-				this.checkCanAddAnswer( null, elQuestionAnswerTitleNewInput );
-			},
+			completed: () => {},
 		};
 
 		const dataSend = {
