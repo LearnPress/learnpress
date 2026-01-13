@@ -70,72 +70,30 @@ add_action(
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 		$course               = CourseModel::find( get_the_ID(), true );
 		$user                 = UserModel::find( get_current_user_id(), true );
-		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
-	},
-	5
-);
-add_action(
-	'learn-press/course-buttons',
-	function () {
-		$singleCourseTemplate = SingleCourseTemplate::instance();
-		$course               = CourseModel::find( get_the_ID(), true );
-		$user                 = UserModel::find( get_current_user_id(), true );
-		echo $singleCourseTemplate->html_btn_purchase_course( $course, $user );
-	},
-	10
-);
-add_action(
-	'learn-press/course-buttons',
-	function () {
-		$singleCourseTemplate = SingleCourseTemplate::instance();
-		$course               = CourseModel::find( get_the_ID(), true );
-		$user                 = UserModel::find( get_current_user_id(), true );
+		$userCourseModel      = UserCourseModel::find( get_current_user_id(), get_the_ID(), true );
+		$userCourseTemplate   = UserCourseTemplate::instance();
 
+		// Button enroll
+		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
+		// Button purchase
+		echo $singleCourseTemplate->html_btn_purchase_course( $course, $user );
+		// Button external
 		echo '<div style="display:flex;flex-direction:column">';
 		echo $singleCourseTemplate->html_btn_external( $course, $user );
 		echo '</div>';
-	},
-	15
-);
-add_action(
-	'learn-press/course-buttons',
-	function () {
-		$userCourseModel    = UserCourseModel::find( get_current_user_id(), get_the_ID(), true );
-		$userCourseTemplate = UserCourseTemplate::instance();
-
 		if ( $userCourseModel instanceof UserCourseModel ) {
+			// Button retake
 			echo $userCourseTemplate->html_btn_retake( $userCourseModel );
-		}
-	},
-	20
-);
-add_action(
-	'learn-press/course-buttons',
-	function () {
-		$userCourseModel    = UserCourseModel::find( get_current_user_id(), get_the_ID(), true );
-		$userCourseTemplate = UserCourseTemplate::instance();
-
-		if ( $userCourseModel instanceof UserCourseModel ) {
+			// Button continue
 			echo '<div style="margin-bottom: 10px">';
 			echo $userCourseTemplate->html_btn_continue( $userCourseModel );
 			echo '</div>';
-		}
-	},
-	25
-);
-add_action(
-	'learn-press/course-buttons',
-	function () {
-		$userCourseModel    = UserCourseModel::find( get_current_user_id(), get_the_ID(), true );
-		$userCourseTemplate = UserCourseTemplate::instance();
-
-		if ( $userCourseModel instanceof UserCourseModel ) {
+			// Button finish
 			echo $userCourseTemplate->html_btn_finish( $userCourseModel );
 		}
 	},
-	30
+	5
 );
-
 
 /** BEGIN: Archive course */
 add_action( 'learn-press/before-courses-loop', LearnPress::instance()->template( 'course' )->func( 'courses_top_bar' ), 10 );
