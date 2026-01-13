@@ -577,9 +577,7 @@ export class EditQuestion {
 				elQuestionAnswerNew.remove();
 				lpToastify.show( error, 'error' );
 			},
-			completed: () => {
-				this.checkCanAddAnswer( null, elQuestionAnswerTitleNewInput );
-			},
+			completed: () => {},
 		};
 
 		const dataSend = {
@@ -594,17 +592,11 @@ export class EditQuestion {
 	}
 
 	// Check to enable or disable add new question button
-	checkCanAddAnswer( args, elTriggerOverride = null ) {
-		// Support both args object and direct element parameter
-		let elTrigger = elTriggerOverride;
-		
-		if ( ! elTrigger && args ) {
-			const { target } = args;
-			elTrigger = target?.closest(
-				EditQuestion.selectors.elQuestionAnswerTitleNewInput
-			);
-		}
-		
+	checkCanAddAnswer( args ) {
+		const { e, target } = args;
+		const elTrigger = target.closest(
+			EditQuestion.selectors.elQuestionAnswerTitleNewInput
+		);
 		if ( ! elTrigger ) {
 			return;
 		}
