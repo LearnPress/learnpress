@@ -47,14 +47,14 @@ class BuilderEditCourseTemplate {
 
 	public function section_overview() {
 		wp_enqueue_script( 'lp-course-builder' );
-		$cousre_id = CourseBuilder::get_post_id();
+		$course_id = CourseBuilder::get_post_id();
 
-		if ( $cousre_id === 'post-new' ) {
+		if ( $course_id === 'post-new' ) {
 			$course_model = '';
 		}
 
-		if ( absint( $cousre_id ) ) {
-			$course_model = CourseModel::find( $cousre_id, true );
+		if ( absint( $course_id ) ) {
+			$course_model = CourseModel::find( $course_id, true );
 			if ( empty( $course_model ) ) {
 				return;
 			}
@@ -67,7 +67,7 @@ class BuilderEditCourseTemplate {
 		$html_edit_features = $this->edit_featured_image( $course_model );
 		$html_edit_tags     = $this->edit_tags( $course_model );
 		$section            = [
-			'wrapper'                => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $cousre_id ),
+			'wrapper'                => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
 			'header'                 => $html_header,
 			'edit_title'             => $html_edit_title,
 			'edit_desc'              => $html_edit_desc,
@@ -327,15 +327,15 @@ class BuilderEditCourseTemplate {
 		wp_enqueue_style( 'lp-cb-edit-curriculum' );
 		wp_enqueue_script( 'lp-cb-admin-learnpress' );
 
-		$cousre_id = CourseBuilder::get_post_id();
+		$course_id = CourseBuilder::get_post_id();
 
-		if ( $cousre_id === 'post-new' ) {
+		if ( $course_id === 'post-new' ) {
 			echo __( 'Please save Course before add Section' );
 			return;
 		}
 
-		if ( absint( $cousre_id ) ) {
-			$course_model = CourseModel::find( $cousre_id, true );
+		if ( absint( $course_id ) ) {
+			$course_model = CourseModel::find( $course_id, true );
 			if ( empty( $course_model ) ) {
 				return;
 			}

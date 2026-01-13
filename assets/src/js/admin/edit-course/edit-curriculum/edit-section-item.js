@@ -660,6 +660,9 @@ export class EditSectionItem {
 
 		const elItemClone = elSection.querySelector( `${ EditSectionItem.selectors.elItemClone }` );
 
+		// Check if we're in Course Builder context
+		const isCourseBuilder = document.querySelector( '#lp-course-builder' ) !== null;
+
 		itemsSelectedData.forEach( ( item ) => {
 			const elItemNew = elItemClone.cloneNode( true );
 			const elInputTitleNew = elItemNew.querySelector(
@@ -675,9 +678,6 @@ export class EditSectionItem {
 				.setAttribute( 'href', item.editLink || '' );
 			elInputTitleNew.value = item.titleSelected || '';
 
-			// Add popup attributes for Course Builder context
-			this.addPopupAttributesToItem( elItemNew, item.id, item.type );
-
 			lpUtils.lpSetLoadingEl( elItemNew, 1 );
 			lpUtils.lpShowHideEl( elItemNew, 1 );
 			elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
@@ -690,6 +690,7 @@ export class EditSectionItem {
 			action: 'add_items_to_section',
 			section_id: this.sectionIdSelected,
 			items: itemsSelectedData,
+			is_course_builder: isCourseBuilder ? 1 : 0,
 			args: { id_url: idUrlHandle },
 		};
 		window.lpAJAXG.fetchAJAX( dataSend, {
@@ -707,7 +708,8 @@ export class EditSectionItem {
 					}
 				} );
 
-				if ( status === 'success' ) {
+				if ( status === 'success' && html ) {
+					// Server returns HTML with popup attributes already included when is_course_builder=1
 					elItemClone.insertAdjacentHTML( 'beforebegin', html );
 				}
 			},

@@ -386,8 +386,9 @@ html:has( #wpadminbar ) {
 
 	.lp-cb-header__title {
 		margin: 0;
-		font-size: 24px;
+		font-size: 40px;
 		font-weight: 600;
+		margin-bottom: 10px;
 		color: $cb-text;
 	}
 
@@ -643,7 +644,7 @@ html:has( #wpadminbar ) {
 		font-size: 40px;
 		font-weight: 600;
 		color: $cb-text;
-		margin: 0 0 24px 0;
+		margin: 20px 0 24px 0;
 	}
 }
 

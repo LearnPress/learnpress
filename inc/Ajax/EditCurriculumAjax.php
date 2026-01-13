@@ -268,7 +268,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function addItemsSelectedToSection call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function add_items_to_section() {
 		$response = new LP_REST_Response();
@@ -292,6 +292,12 @@ class EditCurriculumAjax extends AbstractAjax {
 			if ( empty( $courseSectionItems ) ) {
 				throw new Exception( __( 'No items were added to the section', 'learnpress' ) );
 			}
+
+			// Set context_data for Course Builder context
+			$is_course_builder                                    = ! empty( $data['is_course_builder'] );
+			AdminEditCurriculumTemplate::instance()->context_data = [
+				'is_course_builder' => $is_course_builder,
+			];
 
 			$response->data->html = '';
 			/**
