@@ -516,7 +516,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$order->set_data( 'order_total', get_post_meta( $post->ID, '_order_total', true ) );
 			$order->set_data( 'payment_method', get_post_meta( $post->ID, '_payment_method', true ) );
 			$order->set_data( 'payment_method_title', get_post_meta( $post->ID, '_payment_method_title', true ) );
-			$order->get_items();
+			//$order->get_items();
 			$order->read_meta();
 		}
 

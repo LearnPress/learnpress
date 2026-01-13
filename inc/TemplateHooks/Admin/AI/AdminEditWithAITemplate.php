@@ -1,11 +1,14 @@
 <?php
 
-namespace LearnPress\TemplateHooks\Admin;
+namespace LearnPress\TemplateHooks\Admin\AI;
 
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Admin\AdminTemplate;
+use LP_Debug;
 use LP_Settings;
+use Throwable;
 
 /**
  * Class AdminEditWithAITemplate
@@ -29,19 +32,27 @@ class AdminEditWithAITemplate {
 	}
 
 	public function layout_popup() {
-		$screen  = get_current_screen();
-		$screens = [
-			LP_COURSE_CPT,
-		];
-		if ( ! $screen || in_array( $screen, $screens ) ) {
-			return;
-		}
+		try {
+			if ( ! function_exists( 'get_current_screen' ) ) {
+				return;
+			}
 
-		$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
-		echo $this->html_edit_title_via_ai();
-		echo $this->html_edit_description_via_ai();
-		echo $this->html_edit_image_via_ai();
-		echo $this->html_edit_curriculum_via_ai();
+			$screen  = get_current_screen();
+			$screens = [
+				LP_COURSE_CPT,
+			];
+			if ( ! $screen || in_array( $screen, $screens ) ) {
+				return;
+			}
+
+			$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
+			echo $this->html_edit_title_via_ai();
+			echo $this->html_edit_description_via_ai();
+			echo $this->html_edit_image_via_ai();
+			echo $this->html_edit_curriculum_via_ai();
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
 	}
 
 	/**
@@ -53,6 +64,10 @@ class AdminEditWithAITemplate {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-title-ai">',
 			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'btn-close'                =>
+				'<button type="button" class="lp-btn-close-ai-popup">
+					<i class="lp-icon-remove"></i>
+				</button>',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'Generate Course Title', 'learnpress' )
@@ -153,8 +168,7 @@ class AdminEditWithAITemplate {
 			'describe-topic' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="topic">Create title about PHP</textarea>
-					<p class="field-description">%s</p>
+					<textarea type="text" name="topic" placeholder="%s"></textarea>
 				</div>',
 				esc_html__( 'Describe what your course is about', 'learnpress' ),
 				esc_html__( 'Provide a short explanation of the subject or skills your course covers. This helps AI understand the overall direction of your title.', 'learnpress' )
@@ -162,8 +176,7 @@ class AdminEditWithAITemplate {
 			'describe-goals' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="goals">I want create title course advanced PHP 8 function</textarea>
-					<p class="field-description">%s</p>
+					<textarea type="text" name="goals" placeholder="%s"></textarea>
 				</div>',
 				esc_html__( 'Describe the main goals of your course', 'learnpress' ),
 				esc_html__( 'Summarize what learners will achieve. AI uses this to make the title more accurate and meaningful.', 'learnpress' )
@@ -352,6 +365,10 @@ class AdminEditWithAITemplate {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-description-ai">',
 			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'btn-close'                =>
+				'<button type="button" class="lp-btn-close-ai-popup">
+					<i class="lp-icon-remove"></i>
+				</button>',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'Generate Course Description', 'learnpress' )
@@ -452,17 +469,18 @@ class AdminEditWithAITemplate {
 			'refer-title'    => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="post-title" readonly></textarea>
+					<input class="title-refer" type="text" name="post-title" readonly />
+					<p class="lp-ai-warning-refer lp-hidden"><i class="lp-icon-warning"></i>%s</p>
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Title refer', 'learnpress' ),
-				esc_html__( 'This is the course title generated in the previous step or manually entered. The system will use it as reference to generate the course description.', 'learnpress' )
+				esc_html__( 'The title refer to generate a relevant course description. Please enter title first', 'learnpress' ),
+				esc_html__( 'The course title is automatically imported from the previous step. It will guide the AI to build a structured curriculum.', 'learnpress' )
 			),
 			'describe-topic' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="topic">Create description about course learning Php</textarea>
-					<p class="field-description">%s</p>
+					<textarea type="text" name="topic" placeholder="%s"></textarea>
 				</div>',
 				esc_html__( 'Describe what makes this course stand out?', 'learnpress' ),
 				esc_html__( 'Provide the main strengths or unique selling points to help the system build a compelling course description.', 'learnpress' )
@@ -473,7 +491,7 @@ class AdminEditWithAITemplate {
 					<input type="text" name="length" value="1000" />
 					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Description Length (characters)', 'learnpress' ),
+				esc_html__( 'Description Length (words)', 'learnpress' ),
 				esc_html__( 'Set the maximum number of characters for the generated description.', 'learnpress' )
 			),
 			'step_close'     => '</div>',
@@ -602,6 +620,10 @@ class AdminEditWithAITemplate {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-edit-image-ai">',
 			'wrap'                     => '<div class="lp-generate-data-ai-wrap">',
+			'btn-close'                =>
+				'<button type="button" class="lp-btn-close-ai-popup">
+					<i class="lp-icon-remove"></i>
+				</button>',
 			'h2'                       => sprintf(
 				'<div class="content-title">%s</div>',
 				esc_html__( 'Generate Course Image', 'learnpress' )
@@ -692,26 +714,36 @@ class AdminEditWithAITemplate {
 		$quality_opts = $options[ "image-quality-$model_type" ] ?? $options['image-quality'] ?? [];
 
 		$components = [
-			'step'              => '<div class="step-content active" data-step="1">',
-			'title'             => sprintf(
+			'step'          => '<div class="step-content active" data-step="1">',
+			'title'         => sprintf(
 				'<div class="step-title">%s</div>',
 				esc_html__( 'Step 1 — Config Image', 'learnpress' ),
 			),
-			'description'       => sprintf(
+			'description'   => sprintf(
 				'<p class="step-description">%s</p>',
 				esc_html__( 'Config your image you want, data will refer course title, course description to generate image.', 'learnpress' )
 			),
-			'form-grid'         => '<div class="form-grid">',
-			'from-title'        => sprintf(
+			'from-title'    => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
-					<textarea type="text" name="post-title" readonly>Create description about course learning Php</textarea>
+					<input class="title-refer" type="text" name="post-title" readonly />
+					<p class="lp-ai-warning-refer lp-hidden"><i class="lp-icon-warning"></i>%s</p>
 					<p class="field-description">%s</p>
 				</div>',
-				esc_html__( 'Course Title Refer', 'learnpress' ),
+				esc_html__( 'Title Refer', 'learnpress' ),
+				esc_html__( 'The title refer to generate a relevant course image. Please enter title first', 'learnpress' ),
 				esc_html__( 'The current course title that will be used as reference during image generation.', 'learnpress' )
 			),
-			'style'             => sprintf(
+			'goal'          => sprintf(
+				'<div class="form-group">
+					<label>%s</label>
+					<textarea type="text" name="goal" placeholder="%s"></textarea>
+				</div>',
+				esc_html__( 'Goal', 'learnpress' ),
+				esc_html__( 'A brief description of the image you want to generate.', 'learnpress' )
+			),
+			'form-grid'     => '<div class="form-grid">',
+			'style'         => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					%s
@@ -727,7 +759,7 @@ class AdminEditWithAITemplate {
 				),
 				esc_html__( 'Select the visual style such as modern, minimalist, illustration, 3D, etc.', 'learnpress' )
 			),
-			'write-requirement' => sprintf(
+			/*'write-requirement' => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input type="text" name="topic" placeholder="%s" />
@@ -736,8 +768,8 @@ class AdminEditWithAITemplate {
 				esc_html__( 'Images or icons should be include', 'learnpress' ),
 				esc_html__( 'e.g., books, laptop, graduation cap', 'learnpress' ),
 				esc_html__( 'List the specific elements or icons that should appear in the generated image.', 'learnpress' )
-			),
-			'size'              => sprintf(
+			),*/
+			'size'          => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					%s
@@ -752,7 +784,7 @@ class AdminEditWithAITemplate {
 				),
 				esc_html__( 'Set the output.', 'learnpress' )
 			),
-			'quality'           => sprintf(
+			'quality'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					%s
@@ -767,7 +799,7 @@ class AdminEditWithAITemplate {
 				),
 				esc_html__( 'Select the desired image quality such as standard, high, or premium.', 'learnpress' )
 			),
-			'outputs'           => sprintf(
+			'outputs'       => sprintf(
 				'<div class="form-group">
 					<label>%s</label>
 					<input name="outputs" value="2" type="number" />
@@ -776,8 +808,8 @@ class AdminEditWithAITemplate {
 				esc_html__( 'Outputs', 'learnpress' ),
 				esc_html__( 'Number of images you want the system to generate (model dall-e-3 only 1 supported).', 'learnpress' )
 			),
-			'form-grid-end'     => '</div>',
-			'step_close'        => '</div>',
+			'form-grid-end' => '</div>',
+			'step_close'    => '</div>',
 		];
 
 		return Template::combine_components( $components );

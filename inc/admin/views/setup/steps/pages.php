@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Admin/Views
- * @version 3.0.0
+ * @version 3.0.1
  */
 
 defined( 'ABSPATH' ) or exit;
@@ -13,7 +13,7 @@ $settings = LP_Settings::instance();
 ?>
 <h2><?php _e( 'Static Pages', 'learnpress' ); ?></h2>
 
-<p><?php _e( 'The pages will display the content of LP\'s necessary pages, such as Courses, Checkout, and Profile', 'learnpress' ); ?></p>
+<p><?php _e( 'The pages will display the content of LP\'s necessary pages, such as Courses, Checkout, and Profile.', 'learnpress' ); ?></p>
 <p><?php printf( __( 'If you are not sure, click <a href="%s" id="create-pages">here</a> to create pages automatically.', 'learnpress' ), wp_nonce_url( admin_url( 'index.php?page=lp-setup&step=pages&auto-create' ) ), 'setup-create-pages' ); ?></p>
 
 <table class="form-field">
@@ -35,7 +35,7 @@ $settings = LP_Settings::instance();
 	</tr>
 	<tr>
 		<th>
-			<?php _e( 'Page: single instructor', 'learnpress' ); ?>
+			<?php _e( 'Page: Single instructor', 'learnpress' ); ?>
 		</th>
 		<td>
 			<?php learn_press_pages_dropdown( 'settings[pages][single_instructor_page_id]', $settings->get( 'single_instructor_page_id' ) ); ?>

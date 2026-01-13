@@ -382,15 +382,15 @@ class LP_Assets extends LP_Abstract_Assets {
 						'lp-global',
 						'wp-hooks',
 					), // when Eduma v5.3.6 release a long time, will be remove lp-global.
-					array( LP_PAGE_COURSES ),
-					0,
+					array(),
+					1,
 					0,
 					'',
 					[ 'strategy' => 'defer' ]
 				),
 				'lp-courses-v2'        => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses-v2' . self::$_min_assets . '.js' ),
-					[ 'utils' ], // dependency utils of wp, because js is using wpCookies
+					[ 'utils', 'wp-hooks' ], // dependency utils of wp, because js is using wpCookies
 					[ LP_PAGE_COURSES ],
 					0,
 					0,

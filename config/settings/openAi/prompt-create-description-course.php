@@ -16,7 +16,7 @@ $course_objective = trim( $params['course_objective'] ?? '' );
 $language = $params['language'] ?? 'English';
 $audience = $params['audience'] ?? 'Students';
 $tone     = $params['tone'] ?? 'analytical';
-$length   = $params['length'] ?? 200;
+$length   = $params['length'] ?? 1000;
 $outputs  = $params['outputs'] ?? 1;
 
 return <<<XML
@@ -40,7 +40,7 @@ return <<<XML
 		Goal: Course about Subject "$title", content have html like list, heading h3, paragraph to make content easy to read and eye-catching.
 
         <structure_requirements>
-        	- The description must not exceed {$length} characters.
+			- The description must be between 200 and {$length} words, and include one image on the content.
         	- Generate EXACTLY **{$outputs}** course description(s) in a JSON array.
             - Each item MUST contain a relevant "item".
         </structure_requirements>

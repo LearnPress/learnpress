@@ -23,6 +23,13 @@ use Throwable;
 use WP_Error;
 
 class LessonAjax extends AbstractAjax {
+	/**
+	 * User complete lesson ajax handler.
+	 *
+	 * @since 4.2.7.6
+	 * @version 1.0.1
+	 * @return void
+	 */
 	public function user_complete_lesson() {
 		$link_continue = '';
 		$message_data  = [
@@ -58,7 +65,7 @@ class LessonAjax extends AbstractAjax {
 
 			$userLessonModel->set_complete();
 			$userCourseModel = $userLessonModel->get_user_course_model();
-			$item_model_next = $userCourseModel->get_item_continue();
+			$item_model_next = $userCourseModel->get_item_next_when_complete_lesson( $lesson_id );
 			if ( $item_model_next ) {
 				$link_continue = $courseModel->get_item_link( $item_model_next->ID, $item_model_next->post_type );
 			} else {

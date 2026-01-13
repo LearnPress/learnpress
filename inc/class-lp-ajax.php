@@ -197,7 +197,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * Complete lesson
 		 * @deprecated 4.2.7.6
 		 */
-		public static function complete_lesson() {
+		/*public static function complete_lesson() {
 			$response = array(
 				'result'   => 'error',
 				'redirect' => '',
@@ -271,7 +271,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				wp_redirect( $response['redirect'] );
 				exit();
 			}
-		}
+		}*/
 	}
 }
 

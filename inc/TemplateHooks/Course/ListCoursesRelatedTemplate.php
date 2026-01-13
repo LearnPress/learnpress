@@ -12,20 +12,11 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
-use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
-use LP_Course;
 use LP_Course_Filter;
 use LP_Database;
-use LP_Request;
-use LP_Settings;
-use LP_Settings_Courses;
-use LP_User_Items_DB;
-use LP_User_Items_Filter;
 use stdClass;
 use Throwable;
-use WP_Term;
-use function Symfony\Component\String\s;
 
 class ListCoursesRelatedTemplate {
 	use Singleton;

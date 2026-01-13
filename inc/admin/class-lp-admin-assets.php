@@ -67,6 +67,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'yes'              => esc_html__( 'Yes' ),
 					'cancel'           => esc_html__( 'Cancel' ),
 					'generate_with_ai' => esc_html__( 'Generate with AI', 'learnpress' ),
+					'confirm_close_ai' => esc_html__( 'Are you sure you want to close? Generate data will stop.', 'learnpress' ),
 				],
 				'current_screen'           => $screen ? $screen->id : '',
 				'show_search_author_field' => empty( $html_search_author_field ) ? 0 : $html_search_author_field,
@@ -368,13 +369,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-dashboard'        => new LP_Asset_Key(
+				/*'lp-dashboard'        => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/dashboard' . self::$_min_assets . '.js' ),
 					[],
 					array( 'dashboard' ),
 					0,
 					1
-				),
+				),*/
 				'lp-widgets-admin'    => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/widgets' . self::$_min_assets . '.js' ),
 					array(

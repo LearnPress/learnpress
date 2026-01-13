@@ -864,7 +864,7 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 	$return = LP_Forms_Handler::update_user_data( $update_data, $update_meta );
 
 	// Update for social.
-	$socials    = LP_Request::get_array( 'user_profile_social' );
+	$socials    = LP_Request::get_param( 'user_profile_social' );
 	$extra_data = get_user_meta( $user_id, '_lp_extra_info', true );
 
 	if ( ! empty( $extra_data ) ) {
@@ -1315,9 +1315,11 @@ function learn_press_update_extra_user_profile_fields( $user_id ) {
 	}
 
 	if ( isset( $_POST['_lp_extra_info'] ) ) {
-		update_user_meta( $user_id, '_lp_extra_info', LP_Helper::sanitize_params_submitted( $_POST['_lp_extra_info'] ) );
+		$extra_info = LP_Request::get_param( '_lp_extra_info', [], '', 'post' );
+		update_user_meta( $user_id, '_lp_extra_info', $extra_info );
 	}
 }
+
 add_action( 'personal_options_update', 'learn_press_update_extra_user_profile_fields' );
 add_action( 'edit_user_profile_update', 'learn_press_update_extra_user_profile_fields' );
 
@@ -1327,7 +1329,7 @@ add_action( 'edit_user_profile_update', 'learn_press_update_extra_user_profile_f
  * @param int $user_id
  *
  * @return array
- * @since 4.0.0
+ * @since 4.0.1
  */
 function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 	if ( ! $user_id ) {
@@ -1335,26 +1337,57 @@ function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 	}
 
 	$extra_profile_info = get_the_author_meta( '_lp_extra_info', $user_id );
-	$extra_fields       = learn_press_get_user_extra_profile_fields();
+	$social_fields      = learn_press_social_profiles();
 
-	$extra_profile_info = wp_parse_args(
-		$extra_profile_info,
-		array_fill_keys( array_keys( $extra_fields ), '' )
-	);
+	$user_socials = [];
+	foreach ( $social_fields as $key => $label ) {
+		$key                  = sanitize_key( $key );
+		$user_socials[ $key ] = '';
+		if ( is_array( $extra_profile_info ) && isset( $extra_profile_info[ $key ] ) ) {
+			$user_socials[ $key ] = esc_url_raw( $extra_profile_info[ $key ] );
+		}
+	}
 
-	return apply_filters( 'learn-press/user-extra-profile-info', $extra_profile_info, $user_id );
+	return apply_filters( 'learn-press/user-extra-profile-info', $user_socials, $user_id );
 }
 
+/**
+ * @return array
+ * @since 3.x.x
+ * @version 4.0.2
+ */
 function learn_press_social_profiles() {
 	return apply_filters(
 		'learn-press/social-profiles',
 		array(
-			'facebook',
-			'twitter',
-			'youtube',
-			'linkedin',
+			'facebook' => learn_press_social_profile_name( 'facebook' ),
+			'twitter'  => learn_press_social_profile_name( 'twitter' ),
+			'youtube'  => learn_press_social_profile_name( 'youtube' ),
+			'linkedin' => learn_press_social_profile_name( 'linkedin' ),
 		)
 	);
+}
+
+function learn_press_social_profile_name( $key ) {
+	$name = '';
+	switch ( $key ) {
+		case 'facebook':
+			$name = esc_html__( 'Facebook Profile', 'learnpress' );
+			break;
+		case 'twitter':
+			$name = esc_html__( 'X Profile', 'learnpress' );
+			break;
+		case 'youtube':
+			$name = esc_html__( 'Youtube Channel', 'learnpress' );
+			break;
+		case 'linkedin':
+			$name = esc_html__( 'Linkedin Profile', 'learnpress' );
+			break;
+		default:
+			$name = ucfirst( $key );
+	}
+
+	return apply_filters( 'learn-press/social-profile-name', $name, $key );
 }
 
 function lp_add_default_fields( $fields ) {
@@ -1520,36 +1553,16 @@ function lp_get_user_custom_fields() {
  *
  * @return bool
  * @since 4.0.0
+ * @deprecated 4.3.2
  */
 function learn_press_is_social_profile( $key ) {
+	_deprecated_function( __FUNCTION__, '4.3.2' );
+
+	return true;
+
 	$is_socials = learn_press_social_profiles();
 
 	return in_array( $key, $is_socials );
-}
-
-function learn_press_social_profile_name( $key ) {
-	$name = '';
-	switch ( $key ) {
-		case 'facebook':
-			$name = esc_html__( 'Facebook Profile', 'learnpress' );
-			break;
-		case 'twitter':
-			$name = esc_html__( 'Twitter Profile', 'learnpress' );
-			break;
-		case 'googleplus':
-			$name = esc_html__( 'Google Profile', 'learnpress' );
-			break;
-		case 'youtube':
-			$name = esc_html__( 'Youtube Channel', 'learnpress' );
-			break;
-		case 'linkedin':
-			$name = esc_html__( 'Linkedin Profile', 'learnpress' );
-			break;
-		default:
-			$name = ucfirst( $key );
-	}
-
-	return apply_filters( 'learn-press/social-profile-name', $name, $key );
 }
 
 /**
@@ -1557,10 +1570,17 @@ function learn_press_social_profile_name( $key ) {
  *
  * @return array
  * @since 4.0.0
+ * @deprecated 4.3.2
  */
 function learn_press_get_user_extra_profile_fields() {
+	_deprecated_function( __FUNCTION__, '4.3.2' );
+	return [];
+
 	$socials = learn_press_social_profiles();
-	$fields  = array();
+
+	return $socials;
+
+	$fields = array();
 
 	foreach ( $socials as $social ) {
 		$fields[ $social ] = learn_press_social_profile_name( $social );

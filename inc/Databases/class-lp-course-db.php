@@ -555,7 +555,8 @@ class LP_Course_DB extends LP_Database {
 
 		// Title, do not distinguish diacritics
 		if ( $filter->post_title ) {
-			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title COLLATE utf8mb4_unicode_ci LIKE %s', '%' . $filter->post_title . '%' );
+			//$filter->where[] = $this->wpdb->prepare( 'AND p.post_title COLLATE utf8mb4_unicode_ci LIKE %s', '%' . $filter->post_title . '%' );
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' .$filter->post_title . '%' );
 		}
 
 		// Slug

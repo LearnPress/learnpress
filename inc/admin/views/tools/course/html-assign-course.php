@@ -68,11 +68,11 @@ $assign_user->id  = 'user_ids';
 <div id="learn-press-assign-course" class="card">
 	<h2><?php _e( 'Assign Course', 'learnpress' ); ?></h2>
 	<div class="description">
-		<div><?php _e( 'User can enroll in a specific course by manually assign to them.', 'learnpress' ); ?></div>
-		<i style="color: #a20707">
-			<?php _e( 'Noted: when assign user to course, the progress old of user with course assign will eraser, so be careful before do this.', 'learnpress' ); ?>
-		</i>
+		<?php _e( 'User can enroll in a specific course by manually assign to them.', 'learnpress' ); ?>
 	</div>
+	<i style="color: #a20707">
+		<?php _e( 'Noted: when assign user to course, the progress old of user with course assign will eraser, so be careful before do this.', 'learnpress' ); ?>
+	</i>
 	<div class="content">
 		<form id="lp-assign-user-course-form" name="" method="post">
 			<fieldset class="lp-assign-course__options">

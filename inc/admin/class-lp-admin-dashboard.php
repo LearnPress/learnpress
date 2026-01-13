@@ -1,4 +1,9 @@
 <?php
+
+use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\TemplateAJAX;
+
 if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 	/**
 	 * Class LP_Admin_Dashboard
@@ -6,174 +11,172 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 	 * Displays widgets in admin.
 	 */
 	class LP_Admin_Dashboard {
-
 		/**
 		 * LP_Admin_Dashboard constructor.
 		 */
 		public function __construct() {
+			// Ignore heartbeat requests.
+			if ( isset( $_POST['action'] ) && 'heartbeat' === $_POST['action'] ) {
+				return;
+			}
+
 			add_action( 'wp_dashboard_setup', array( $this, 'register' ) );
 		}
 
 		public function register() {
-			if ( current_user_can( 'manage_options' ) || current_user_can( 'publish_lp_orders' ) ) {
+			$screens = [
+				'learn_press_dashboard_order_statuses' => [
+					'label'    => esc_html__( 'LearnPress order status', 'learnpress' ),
+					'callback' => [ $this, 'order_statuses' ],
+				],
+				'learn_press_dashboard_plugin_status'  => [
+					'label'    => esc_html__( 'LearnPress status', 'learnpress' ),
+					'callback' => [ $this, 'plugin_status' ],
+				],
+			];
+
+			foreach ( $screens as $id => $screen ) {
 				wp_add_dashboard_widget(
-					'learn_press_dashboard_order_statuses',
-					esc_html__( 'LearnPress order status', 'learnpress' ),
-					array(
-						$this,
-						'order_statuses',
-					)
+					$id,
+					$screen['label'],
+					$screen['callback']
 				);
 			}
-
-			/*wp_add_dashboard_widget(
-				'learn_press_dashboard_plugin_status',
-				esc_html__( 'LearnPress status', 'learnpress' ),
-				array(
-					$this,
-					'plugin_status',
-				)
-			);*/
 		}
 
 		/**
 		 * Order status widget
 		 */
 		public function order_statuses() {
-			?>
-			<ul class="lp-order-statuses lp_append_data">
-				<?php lp_skeleton_animation_html( 4, 100, 'height: 30px;border-radius:4px;' ); ?>
-			</ul>
-			<?php
-			// $eduma_data = $this->_get_theme_info( 14058034 );
-			if ( ! empty( $eduma_data ) ) {
-				$eduma_data['url'] = learn_press_get_item_referral( 14058034 );
-				?>
-				<div class="featured-theme">
-					<?php if ( isset( $eduma_data['name'] ) && isset( $eduma_data['price_cents'] ) ) : ?>
-						<p>
-							<a href="<?php echo esc_url_raw( $eduma_data['url'] ); ?>">
-								<?php echo esc_html( $eduma_data['name'] ); ?>
-							</a> - <?php printf( '%s%s', '$', $eduma_data['price_cents'] / 100 ); ?>
-						</p>
-					<?php endif; ?>
+			$args = [
+				'id_url' => 'order-statistic-dashboard',
+			];
 
-					<?php if ( isset( $eduma_data['rating']['count'] ) && isset( $eduma_data['rating']['rating'] ) ) : ?>
-						<div>
-							<?php
-							wp_star_rating(
-								array(
-									'rating' => $eduma_data['rating']['rating'],
-									'type'   => 'rating',
-									'number' => $eduma_data['rating']['count'],
-								)
-							);
-							?>
-							<span class="count-rating">(<?php echo esc_html( $eduma_data['rating']['count'] ); ?>)</span>
-							<span>
-								- <?php echo sprintf( '%d %s', esc_html( $eduma_data['number_of_sales'] ), esc_html__( ' sales', 'learnpress' ) ); ?>
-							</span>
-						</div>
-					<?php endif; ?>
+			/**
+			 * @uses order_statistic
+			 */
+			$callback = [
+				'class'  => self::class,
+				'method' => 'order_statistic',
+			];
 
-					<?php if ( isset( $eduma_data['author_username'] ) ) : ?>
-						<p>
-							<?php esc_html_e( 'Created by: ', 'learnpress' ); ?>
-							<a href="https://thimpress.com/" class="author"><?php echo esc_html( $eduma_data['author_username'] ); ?></a>
-						</p>
-					<?php endif; ?>
-				</div>
-				<?php
-			}
+			echo TemplateAJAX::load_content_via_ajax( $args, $callback );
 		}
 
 		/**
-		 * Get total value of LP orders has completed.
+		 * Get order statistic content
 		 *
-		 * @return int|string
-		 * @deprecated 4.2.0
+		 * @return stdClass
 		 */
-		private function _get_order_total_raised() {
-			_deprecated_function( __METHOD__, '4.2.0' );
-			/*$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
-			$total  = 0;
-
-			if ( $orders ) {
-				foreach ( $orders as $order ) {
-					$order = learn_press_get_order( $order->ID );
-					$total = $total + floatval( $order->order_total );
-				}
+		public static function order_statistic(): stdClass {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'learnpress' ) );
 			}
 
-			return learn_press_format_price( $total, true );*/
-		}
+			$order_statuses = LP_Order::get_order_statuses();
+			$lp_order_icons = LP_Order::get_icons_status();
 
-		/**
-		 * @param String $item_id - The ID of an Envato Marketplace item
-		 *
-		 * @returns mixed
-		 */
-		private function _get_theme_info( $item_id ) {
-			$alls = LP_Plugins_Helper::get_related_themes();
-
-			if ( empty( $alls ) ) {
-				return false;
-			}
-
-			foreach ( $alls as $k => $types ) {
-				if ( isset( $types[ $item_id ] ) ) {
-					return $types[ $item_id ];
-				}
-			}
-
-			return false;
-		}
-
-		/**
-		 * Get data from wordpress.org
-		 *
-		 * @since 2.0
-		 */
-		private function _get_data() {
-			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-
-			$api = get_transient( 'lp_plugin_status' );
-
-			if ( false === $api || is_wp_error( $api ) ) {
-				$api = plugins_api(
-					'plugin_information',
-					array(
-						'slug'   => 'learnpress',
-						'fields' => array(
-							'active_installs'   => true,
-							'short_description' => true,
-							'description'       => true,
-							'ratings'           => true,
-							'downloaded'        => true,
-						),
-					)
-				);
-
-				if ( ! is_wp_error( $api ) ) {
-					set_transient( 'lp_plugin_status', $api, 12 * HOUR_IN_SECONDS );
-				}
-			}
-
-			return $api;
+			ob_start();
+			$data = compact( 'order_statuses', 'lp_order_icons' );
+			Template::instance()->get_admin_template( 'dashboard/html-orders', $data );
+			$content          = new stdClass();
+			$content->content = sprintf(
+				'<ul class="lp-order-statuses lp_append_data">%s</ul>',
+				ob_get_clean()
+			);
+			return $content;
 		}
 
 		/**
 		 * Plugin status widget
 		 */
 		public function plugin_status() {
-			/*$plugin_data = $this->_get_data();
+			$args = [
+				'id_url' => 'plugin-status-dashboard',
+			];
 
-			if ( ! $plugin_data || is_wp_error( $plugin_data ) ) {
-				learn_press_admin_view( 'dashboard/plugin-status/html-no-data' );
-			} else {
-				learn_press_admin_view( 'dashboard/plugin-status/html-results', array( 'plugin_data' => $plugin_data ) );
-			}*/
+			/**
+			 * @uses plugin_status_content
+			 */
+			$callback = [
+				'class'  => self::class,
+				'method' => 'plugin_status_content',
+			];
+
+			echo TemplateAJAX::load_content_via_ajax( $args, $callback );
+		}
+
+		public static function plugin_status_content() {
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'learnpress' ) );
+			}
+
+			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+			$api = plugins_api(
+				'plugin_information',
+				array(
+					'slug'   => 'learnpress',
+					'fields' => array(
+						'active_installs'   => true,
+						'short_description' => true,
+						'description'       => true,
+						'ratings'           => true,
+						'downloaded'        => true,
+					),
+				)
+			);
+
+			$section = [
+				'wrap'            => '<div class="lp-plugin-status-wrap">',
+				'banner'          => sprintf(
+					'<image class="lp-plugin-banner" src="%s" style="%s" />',
+					$api->banners ? ( $api->banners['low'] ?? '' ) : '',
+					'max-width:100%;height:auto;'
+				),
+				'active_installs' => sprintf(
+					'<div class="lp-plugin-active-installs">%s: <strong>%s</strong></div>',
+					esc_html__( 'Active Installations', 'learnpress' ),
+					number_format_i18n( $api->active_installs )
+				),
+				'downloaded'      => sprintf(
+					'<div class="lp-plugin-downloaded">%s: <strong>%s</strong></div>',
+					esc_html__( 'Total Downloads', 'learnpress' ),
+					number_format_i18n( $api->downloaded )
+				),
+				'ratings'         => sprintf(
+					'<div class="lp-plugin-ratings">%s <strong>%s</strong></div>',
+					esc_html__( 'Ratings 5 stars is:', 'learnpress' ),
+					$api->ratings[5] ?? '0'
+				),
+				'requires'        => sprintf(
+					'<div class="lp-plugin-requires">%s %s</div>',
+					esc_html__( 'Required WordPress version:', 'learnpress' ),
+					$api->requires ?? esc_html__( 'N/A', 'learnpress' )
+				),
+				'requires_php'    => sprintf(
+					'<div class="lp-plugin-requires_php">%s %s</div>',
+					esc_html__( 'Required PHP version:', 'learnpress' ),
+					$api->requires_php ?? esc_html__( 'N/A', 'learnpress' )
+				),
+				'tested'          => sprintf(
+					'<div class="lp-plugin-tested">%s %s</div>',
+					esc_html__( 'Tested with WordPress version:', 'learnpress' ),
+					$api->tested ?? esc_html__( 'N/A', 'learnpress' )
+				),
+				'last_updated'    => sprintf(
+					'<div class="lp-plugin-last_updated">%s %s</div>',
+					esc_html__( 'Latest updated:', 'learnpress' ),
+					$api->last_updated ?? esc_html__( 'N/A', 'learnpress' )
+				),
+				'wrap-end'        => '</div>',
+			];
+
+			$content          = new stdClass();
+			$content->content = Template::combine_components( $section );
+			return $content;
 		}
 	}
 }

@@ -162,4 +162,11 @@ class LP_Order_DB extends LP_Database {
 			"
 		);
 	}
+	public function get_items( LP_Filter $filter, int $order_id = 0 , int &$total_rows = 0 ) {
+		$filter->collection       = $this->tb_lp_order_items;
+		$filter->collection_alias = 'oi';
+		$filter->where[]          = $this->wpdb->prepare( 'AND oi.order_id=%d', $order_id );
+		$filter->field_count      = 'oi.order_item_id';
+		return $this->execute( $filter, $total_rows );
+	}
 }

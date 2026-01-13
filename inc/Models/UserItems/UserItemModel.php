@@ -5,7 +5,7 @@
  * To replace class LP_User_Item
  *
  * @package LearnPress/Classes
- * @version 1.0.2
+ * @version 1.0.3
  * @since 4.2.5
  */
 
@@ -413,15 +413,12 @@ class UserItemModel {
 	 * @return UserItemModel
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function save(): UserItemModel {
 		$lp_user_item_db  = LP_User_Items_DB::getInstance();
 		$user_item_id_new = 0;
-		$data             = [];
-		foreach ( get_object_vars( $this ) as $property => $value ) {
-			$data[ $property ] = $value;
-		}
+		$data             = get_object_vars( $this );
 
 		if ( ! isset( $data['start_time'] ) ) {
 			$data['start_time'] = gmdate( 'Y-m-d H:i:s', time() );
@@ -547,16 +544,23 @@ class UserItemModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.7.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function delete() {
-		//Delete meta data of user item.
+		// Delete meta data of user item.
 		$lp_user_item_meta_db = LP_User_Item_Meta_DB::getInstance();
 		$filter               = new LP_User_Item_Meta_Filter();
 		$filter->where[]      = $lp_user_item_meta_db->wpdb->prepare( 'AND learnpress_user_item_id = %d', $this->get_user_item_id() );
 		$filter->collection   = $lp_user_item_meta_db->tb_lp_user_itemmeta;
 		$lp_user_item_meta_db->delete_execute( $filter );
 		$this->meta_data = null;
+
+		// Delete user item relationships.
+		$lp_user_item_db    = LP_User_Items_DB::getInstance();
+		$filter             = new LP_User_Items_Filter();
+		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND parent_id = %d', $this->get_user_item_id() );
+		$filter->collection = $lp_user_item_db->tb_lp_user_items;
+		$lp_user_item_db->delete_execute( $filter );
 
 		// Delete user item.
 		$lp_user_item_db    = LP_User_Items_DB::getInstance();

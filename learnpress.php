@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.3.1
+ * Version: 4.3.3-beta.1
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -19,7 +19,6 @@ use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
-use LearnPress\Ajax\LPAIAjax;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
@@ -32,20 +31,16 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
 use LearnPress\Shortcodes\CourseButtonShortcode;
+use LearnPress\Shortcodes\Courses\ListCoursesShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
-use LearnPress\TemplateHooks\Admin\AdminCreateCourseAITemplate;
-use LearnPress\TemplateHooks\Admin\AdminEditCourseCurriculumWithAITemplate;
+use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
+use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
+use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
-use LearnPress\TemplateHooks\Admin\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
-use LearnPress\TemplateHooks\Admin\AdminGenerateCourseCloseWarningTemplate;
-use LearnPress\TemplateHooks\Admin\AdminCreateCourseAISuccessTemplate;
-use LearnPress\TemplateHooks\Admin\AdminEditWithAICloseWarningTemplate;
-use LearnPress\TemplateHooks\Admin\AdminEditCurriculumWithAICloseWarningTemplate;
-use LearnPress\TemplateHooks\Admin\AdminCreatingCourseAITemplate;
 use LearnPress\TemplateHooks\Course\AdminEditSettingTemplate;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
@@ -74,6 +69,7 @@ use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuestionTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuizTemplate;
+use LearnPress\TemplateHooks\Order\AdminOrderItemsTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
@@ -155,6 +151,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public $thim_core_version_require = '2.0.0';
 
 		public static $time_limit_default_of_sever = 0;
+
+		public static $doc_link = 'https://learnpresslms.com/docs/';
 
 		/**
 		 * LearnPress constructor.
@@ -368,15 +366,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
+			AdminOrderItemsTemplate::instance();
 			AdminCreateCourseAITemplate::instance();
 			AdminEditWithAITemplate::instance();
 			AdminEditCourseCurriculumWithAITemplate::instance();
-			AdminGenerateCourseCloseWarningTemplate::instance();
-			//AdminCreateCourseAISuccessTemplate::instance();
-			AdminEditWithAICloseWarningTemplate::instance();
-			AdminEditCurriculumWithAICloseWarningTemplate::instance();
-			//AdminCreatingCourseAITemplate::instance();
-
 			// WP GDPR
 			ErasePersonalData::instance();
 			ExportPersonalData::instance();
@@ -496,6 +489,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			CourseMaterialShortcode::instance();
 			CourseButtonShortcode::instance();
 			FilterCourseShortcode::instance();
+			ListCoursesShortcode::instance();
 			//ListCourseRecentShortcode::instance();
 			include_once 'inc/class-lp-shortcodes.php';
 
@@ -831,7 +825,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function plugin_links( array $links ): array {
 			$links[] = sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=learn-press-settings' ), __( 'Settings', 'learnpress' ) );
-			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', 'https://docs.thimpress.com/learnpress/', __( 'Documentation', 'learnpress' ) );
+			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', LearnPress::$doc_link, __( 'Documentation', 'learnpress' ) );
 			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', get_admin_url() . '/admin.php?page=learn-press-addons', __( 'Add-ons', 'learnpress' ) );
 
 			return $links;

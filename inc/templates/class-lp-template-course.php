@@ -68,6 +68,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @throws Exception
 	 */
 	public function button_retry( $course = null ) {
+		_deprecated_function( __METHOD__, '4.3.2.4', 'UserCourseTemplate::html_btn_retake' );
+		return;
+
 		$user = learn_press_get_current_user();
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
@@ -183,7 +186,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @version 4.0.2
 	 */
 	public function course_purchase_button( $course = null ) {
-		_deprecated_function( __METHOD__, '4.3.2', 'Use SingleCourseTemplate::html_btn_purchase_course instead' );
+		_deprecated_function( __METHOD__, '4.3.2', 'SingleCourseTemplate::html_btn_purchase_course' );
+		return;
 
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 		$course               = CourseModel::find( get_the_ID(), true );
@@ -200,6 +204,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @version 4.0.3
 	 */
 	public function course_enroll_button( $course = null ) {
+		_deprecated_function( __METHOD__, '4.3.2.4', 'SingleCourseTemplate::html_btn_enroll_course' );
+		return;
+
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 		$course               = CourseModel::find( get_the_ID(), true );
 		$user                 = UserModel::find( get_current_user_id(), true );
@@ -338,6 +345,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @since  4.0.0
 	 */
 	public static function course_continue_button( $args = [] ) {
+		_deprecated_function( __METHOD__, '4.3.2.4', 'UserCourseTemplate::html_btn_continue' );
+		return;
+
 		$course_id_param = $args['course-id'] ?? 0;
 		$course_id       = ! empty( $course_id_param ) ? $course_id_param : get_the_ID();
 		$courseModel     = CourseModel::find( $course_id, true );
@@ -380,6 +390,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_finish_button( $course = null ) {
+		_deprecated_function( __METHOD__, '4.3.2.4', 'UserCourseTemplate::html_btn_finish' );
+		return;
+
 		$user = learn_press_get_current_user();
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
@@ -417,6 +430,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @modify 4.1.3
 	 */
 	public function course_external_button( $course = null ) {
+		_deprecated_function( __METHOD__, '4.3.2.4', 'SingleCourseTemplate::html_btn_external' );
+		return;
+
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
 		}
@@ -436,7 +452,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		if ( $user && ! $user->has_enrolled_or_finished( $course->get_id() ) ) {
 			// Remove all another buttons
-			learn_press_remove_course_buttons();
+			// learn_press_remove_course_buttons();
 			learn_press_get_template( 'single-course/buttons/external-link.php' );
 
 			// Add back other buttons for other courses

@@ -6,15 +6,19 @@ if ( ! isset( $params ) ) {
 	return;
 }
 
+$model_type = LP_Settings::get_option( 'open_ai_image_model_type', 'gpt-image-1' );
+
 // Course Intent
-$topic    = $params['topic'] ?? '';
-$title    = wp_trim_words( $params['post-title'] ?? '', 800 );
-$outputs  = $params['outputs'] ?? 1;
+$title    = wp_trim_words( $params['post-title'] ?? '', 100 );
 $language = $params['language'] ?? 'English';
 $quality  = $params['quality'] ?? 'auto';
-$size     = $params['size'] ?? '256x256';
-$style    = $params['style'] ?? 'Impressionism';
+//$size     = $params['size'] ?? '256x256';
+//$outputs  = $params['outputs'] ?? 1;
+$style = $params['style'] ?? 'Impressionism';
+$goal  = wp_trim_words( $params['goal'] ?? '', 850 );
 
+$main_subject = ! empty( $goal ) ? "The main subject of the image must be: $goal." : '';
+$title        = ! empty( $title ) ? "The image should be inspired by the course title: $title." : '';
 
 /**
  *A text description of the desired image(s).
@@ -25,10 +29,8 @@ $style    = $params['style'] ?? 'Impressionism';
 
 return <<<PROMPT
 Create a feature image for an online course. With the following details:
-The main subject of the image must be: "$topic".
-The image should be inspired by the course title: "$title".
-Ensure the final image is $quality quality and fits a $size aspect ratio, suitable for a website feature product.
-The desired artistic style is: $style.
+$main_subject
+$title
 
-Must return exactly $outputs results image(s).
+The desired artistic style is: $style.
 PROMPT;

@@ -1,7 +1,6 @@
 <?php
 
 use LearnPress\Background\LPBackgroundAjax;
-use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -118,7 +117,13 @@ class LP_User_Factory {
 
 	/**
 	 * Enroll course if Order completed
-	 * Only Order completed, will be added user_item and deleted user_items old
+	 * 1. Check if order change is the latest order of user for course
+	 * 2. Check if user_course was canceled, only update status to Enrolled
+	 * 3. Handle repurchase course if allow repurchase
+	 * 4. Create new user_course if first purchase course
+	 * 5. Enroll course free or no enroll requirement
+	 * 6. Enroll course for guest if auto enroll enable
+	 * 7. Send email background when user enroll course
 	 *
 	 * @param LP_Order $order
 	 * @param string $old_status
@@ -127,7 +132,7 @@ class LP_User_Factory {
 	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.2
-	 * @version 1.0.5
+	 * @version 1.0.6
 	 */
 	protected static function _update_user_item_order_completed( LP_Order $order, string $old_status, string $new_status ) {
 		$lp_order_db = LP_Order_DB::getInstance();
@@ -153,6 +158,20 @@ class LP_User_Factory {
 						if ( $userCourseGuest && $userCourseGuest->ref_id > $order->get_id() ) {
 							continue;
 						}
+					}
+
+					// Check user course was canceled? If yes, only update status to Enrolled
+					if ( $user_id && $userCourse && $userCourse->ref_id == $order->get_id() ) {
+						if ( $userCourse->get_status() === UserItemModel::STATUS_CANCEL ) {
+							if ( ! empty( $userCourse->get_end_time() ) ) {
+								$userCourse->status = UserItemModel::STATUS_FINISHED;
+							} else {
+								$userCourse->status = UserItemModel::STATUS_ENROLLED;
+							}
+							$userCourse->save();
+						}
+
+						continue;
 					}
 
 					if ( $order->is_manual() ) {
@@ -214,17 +233,15 @@ class LP_User_Factory {
 	 *
 	 * @author  tungnx
 	 * @since   4.1.3
-	 * @version 1.0.9
+	 * @version 1.1.1
 	 */
 	protected static function handle_item_order_completed( LP_Order $order, $user, $item ) {
 		$lp_user_items_db   = LP_User_Items_DB::getInstance();
 		$userCourseResponse = null;
 
 		try {
-			// False for create new user_item, True for update user_item
-			$is_update_user_item = false;
-			$course_id           = intval( $item['course_id'] ?? $item['item_id'] ?? 0 );
-			$courseModel         = CourseModel::find( $course_id, true );
+			$course_id   = intval( $item['course_id'] ?? $item['item_id'] ?? 0 );
+			$courseModel = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
 				return null;
 			}
@@ -278,7 +295,6 @@ class LP_User_Factory {
 				 * where user_item_id = $latest_user_item_id
 				 */
 				if ( $allow_repurchase_type === 'keep' ) {
-					$is_update_user_item        = true;
 					$keep_progress_items_course = true;
 					// Set data for update user item
 					$user_item_data['user_item_id'] = $latest_user_item_id;
@@ -315,23 +331,31 @@ class LP_User_Factory {
 				$user_item_data,
 				$order,
 				$item,
-				$courseModel
+				$courseModel,
+				$user_id
 			);
 
-			// Delete items old
-			if ( ! $keep_progress_items_course ) {
-				// Check if user is guest.
-				if ( ! $user_id ) {
-					$userGuestCourse = self::get_user_course_guest( $course_id, $order->get_user_email() );
-					if ( $userGuestCourse ) {
-						$userGuestCourse->delete();
-					}
-				} else {
-					$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
-				}
-			}
+			$another_case = apply_filters(
+				'learn-press/order/completed/update-user-item/another-case/bool',
+				false,
+				$user_item_data,
+				$order,
+				$item,
+				$courseModel,
+				$user_id
+			);
 
-			if ( $is_update_user_item ) {
+			if ( $another_case ) { // Handle another case to handle user_item
+				$userCourseResponse = apply_filters(
+					'learn-press/order/completed/update-user-item/another-case',
+					null,
+					$user_item_data,
+					$order,
+					$item,
+					$courseModel,
+					$user_id
+				);
+			} elseif ( $keep_progress_items_course ) { // Update user_item to keep course progress
 				$userCourse->ref_id     = $order->get_id();
 				$userCourse->status     = $user_item_data['status'];
 				$userCourse->graduation = $user_item_data['graduation'];
@@ -339,7 +363,18 @@ class LP_User_Factory {
 				$userCourse->end_time   = null;
 				$userCourse->save();
 				$userCourseResponse = $userCourse;
-			} else {
+			} else { // Create new user_item
+				// Delete items old
+				if ( ! $user_id ) {
+					$userGuestCourse = self::get_user_course_guest( $course_id, $order->get_user_email() );
+					if ( $userGuestCourse ) {
+						$userGuestCourse->delete();
+					}
+				} elseif ( $userCourse ) {
+					//$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+					$userCourse->delete();
+				}
+
 				$userCourseNew = new UserCourseModel( $user_item_data );
 				$userCourseNew->save();
 				$userCourseResponse = $userCourseNew;

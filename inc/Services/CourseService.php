@@ -47,6 +47,8 @@ class CourseService {
 	 *
 	 * @param CoursePostModel $coursePostModel
 	 * @param array $data
+	 *
+	 * @throws Exception
 	 */
 	public function create_meta_data( CoursePostModel $coursePostModel, array $data ) {
 		foreach ( $data as $key => $value ) {

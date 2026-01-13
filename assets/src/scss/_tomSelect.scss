@@ -84,6 +84,11 @@
 			}
 		}
 	}
+
+	// Fix for case choose courses on product of Woo.
+	.dropdown-input-wrap {
+		display: flex;
+	}
 }
 
 /*.search-box {

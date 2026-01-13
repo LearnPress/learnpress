@@ -9,17 +9,15 @@ use LearnPress\Helpers\Config;
  * @author  ThimPress
  * @package LearnPress/Admin/Settings
  * @since 4.1.7.3.2
- * @version 1.0.0
+ * @version 1.0.1
  */
-class LP_Settings_OpenAi extends LP_Abstract_Settings_Page
-{
+class LP_Settings_OpenAi extends LP_Abstract_Settings_Page {
 	/**
 	 * Construct
 	 */
-	public function __construct()
-	{
-		$this->id = 'open-ai';
-		$this->text = esc_html__('OpenAI', 'learnpress');
+	public function __construct() {
+		$this->id   = 'open-ai';
+		$this->text = esc_html__( 'LearnPress AI', 'learnpress' );
 
 		parent::__construct();
 	}
@@ -32,12 +30,9 @@ class LP_Settings_OpenAi extends LP_Abstract_Settings_Page
 	 *
 	 * @return mixed
 	 */
-	public function get_settings($section = '', $tab = '')
-	{
-		return Config::instance()->get('open-ai-admin', 'settings');
+	public function get_settings( $section = '', $tab = '' ) {
+		return Config::instance()->get( 'open-ai-admin', 'settings' );
 	}
-
-
 }
 
 return new LP_Settings_OpenAi();

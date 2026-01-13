@@ -20,8 +20,6 @@ defined( 'ABSPATH' ) || exit();
 	do_action( 'learn-press/before-course-buttons' );
 
 	/**
-	 * @see LP_Template_Course::course_purchase_button - 10
-	 * @see LP_Template_Course::course_enroll_button - 5
 	 * @see learn_press_course_retake_button - 10
 	 */
 	do_action( 'learn-press/course-buttons' );

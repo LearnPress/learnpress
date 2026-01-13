@@ -12,7 +12,9 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Databases\Course\CourseSectionItemsDB;
 use LearnPress\Databases\CourseSectionDB;
+use LearnPress\Filters\Course\CourseSectionItemsFilter;
 use LP_Course_Filter;
 
 use LP_Helper;
@@ -110,6 +112,15 @@ class CoursePostModel extends PostModel {
 	}
 
 	/**
+	 * Get course model
+	 *
+	 * @return CourseModel|null
+	 */
+	public function get_course_model(): ?CourseModel {
+		return CourseModel::find( $this->get_id(), true );
+	}
+
+	/**
 	 * Add section to course
 	 *
 	 * @param array $data [ 'section_name' => '', 'section_description' => '' ]
@@ -145,9 +156,9 @@ class CoursePostModel extends PostModel {
 	 *
 	 * @throws Exception
 	 * @since  4.3.0
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public static function update_section( CourseSectionModel $courseSectionModel, array $data ) {
+	public function update_section( CourseSectionModel $courseSectionModel, array $data ) {
 		foreach ( $data as $key => $value ) {
 			if ( $key !== 'section_id' && property_exists( $courseSectionModel, $key ) ) {
 				$courseSectionModel->{$key} = $value;
@@ -166,13 +177,18 @@ class CoursePostModel extends PostModel {
 	 * @since 4.3.0
 	 */
 	public function update_sections_position( array $data ) {
+		// Check permission
+		if ( ! $this->check_capabilities_update() ) {
+			throw new Exception( __( 'You do not have permission to update course sections', 'learnpress' ) );
+		}
+
 		$new_position = $data['new_position'] ?? [];
 		if ( ! is_array( $new_position ) ) {
 			throw new Exception( __( 'Invalid section position', 'learnpress' ) );
 		}
 
 		$course_id   = $this->get_id();
-		$courseModel = CourseModel::find( $course_id, true );
+		$courseModel = $this->get_course_model();
 		if ( ! $courseModel ) {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
@@ -181,6 +197,67 @@ class CoursePostModel extends PostModel {
 
 		$courseModel->sections_items = null;
 		$courseModel->save();
+	}
+
+	/**
+	 * Update items position in curriculum, can change section of item.
+	 *
+	 * @param array $data [ items_position, item_id_change, section_id_new_of_item, section_id_old_of_item ]
+	 *
+	 * @return void
+	 * @throws Exception
+	 * @since 4.3.2
+	 * @version 1.0.0
+	 */
+	public function update_items_position( array $data ) {
+		// Check permission
+		if ( ! $this->check_capabilities_update() ) {
+			throw new Exception( __( 'You do not have permission to update course items position', 'learnpress' ) );
+		}
+
+		$courseModel = $this->get_course_model();
+
+		$items_position         = $data['items_position'] ?? [];
+		$item_id_change         = $data['item_id_change'] ?? 0;
+		$section_id_new_of_item = $data['section_id_new_of_item'] ?? 0;
+		$section_id_old_of_item = $data['section_id_old_of_item'] ?? 0;
+
+		if ( ! is_array( $items_position ) ) {
+			throw new Exception( __( 'Invalid item position', 'learnpress' ) );
+		}
+
+		// Find item of section id old
+		$filter                  = new CourseSectionItemsFilter();
+		$filter->section_id      = $section_id_old_of_item;
+		$filter->item_id         = $item_id_change;
+		$filter->run_query_count = false;
+
+		$courseSectionItemModel = CourseSectionItemModel::get_item_model_from_db( $filter );
+		if ( ! $courseSectionItemModel ) {
+			throw new Exception( __( 'Item not found in section', 'learnpress' ) );
+		}
+
+		// Update section id of item
+		$courseSectionItemModel->section_id        = $section_id_new_of_item;
+		$courseSectionItemModel->section_course_id = $this->get_id();
+		$courseSectionItemModel->save();
+
+		// For each section to find item then update section id of item and position of item in the new section
+		$sections_items = $courseModel->get_section_items();
+		foreach ( $sections_items as $section_items ) {
+			$section_id = $section_items->section_id ?? 0;
+
+			if ( $section_id != $section_id_new_of_item ) {
+				continue;
+			}
+
+			// Update position of item in section
+			CourseSectionItemsDB::getInstance()->update_items_position( $items_position, $section_id_new_of_item );
+			break;
+		}
+
+		// Clear cache
+		$courseModel->sections_items = null;
 	}
 
 	public function check_capabilities_create(): bool {

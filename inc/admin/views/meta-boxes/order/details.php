@@ -4,7 +4,7 @@
  *
  * @author  ThimPress (Nhamdv)
  * @package LearnPress/Admin/Views
- * @version 4.0.3
+ * @version 4.0.4
  */
 
 if ( isset( $order_items ) ) {
@@ -201,82 +201,7 @@ $user_ids     = $order->get_user_id();
 			<?php endif; ?>
 		</div>
 	</div>
-
-	<div class="order-items">
-		<table class="list-order-items">
-			<thead>
-			<tr>
-				<th class="column-name"><?php esc_html_e( 'Item', 'learnpress' ); ?></th>
-				<th class="column-price"><?php esc_html_e( 'Cost', 'learnpress' ); ?></th>
-				<th class="column-quantity"><?php esc_html_e( 'Quantity', 'learnpress' ); ?></th>
-				<th class="column-total align-right"><?php esc_html_e( 'Total', 'learnpress' ); ?></th>
-			</tr>
-			</thead>
-
-			<tbody>
-			<?php $items = $order->get_items(); ?>
-
-			<?php if ( $items ) : ?>
-				<?php foreach ( $items as $item ) : ?>
-					<?php include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' ); ?>
-				<?php endforeach; ?>
-			<?php endif; ?>
-
-			<tr class="no-order-items<?php echo esc_attr( $items ? ' hide-if-js' : '' ); ?>">
-				<td colspan="4"><?php esc_html_e( 'There are no order items', 'learnpress' ); ?></td>
-			</tr>
-			</tbody>
-
-			<tfoot>
-			<tr>
-				<td colspan="2"></td>
-				<td colspan="2"></td>
-			</tr>
-			<tr class="row-subtotal">
-				<td width="300" colspan="3" class="align-right">
-					<?php esc_html_e( 'Subtotal:', 'learnpress' ); ?>
-				</td>
-				<td width="100" class="align-right">
-						<span class="order-subtotal">
-							<?php echo learn_press_format_price( $order->get_data( 'order_subtotal' ), $currency_symbol ); ?>
-						</span>
-				</td>
-			</tr>
-			<?php do_action( 'learn-press/admin/order/detail/before-total', $order ); ?>
-			<tr class="row-total">
-				<td class="align-right" colspan="3">
-					<?php esc_html_e( 'Total:', 'learnpress' ); ?>
-				</td>
-				<td class="align-right total">
-						<span class="order-total">
-							<?php echo learn_press_format_price( $order->get_data( 'order_total' ), $currency_symbol ); ?>
-						</span>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2"></td>
-				<td colspan="2" style="border-bottom: 1px dashed #DDD;"></td>
-			</tr>
-			<?php if ( $order->is_manual() ) { ?>
-				<tr>
-					<td class="align-right" colspan="4" style="border-top: 1px solid #DDD;">
-						<?php if ( 'pending' === $order->get_status() ) { ?>
-							<button class="button" type="button" id="learn-press-add-order-item">
-								<?php esc_html_e( 'Add item(s)', 'learnpress' ); ?>
-							</button>
-							<?php
-						} else {
-							echo '<p class="description">';
-							esc_html_e( 'In order to change the order item, please change the order status to \'Pending\'.', 'learnpress' );
-							echo '</p>';
-						}
-						?>
-					</td>
-				</tr>
-			<?php } ?>
-			</tfoot>
-		</table>
-	</div>
+	<?php do_action( 'learn-press/admin/order-details/items/layout', $order ); ?>
 </div>
 
 <?php

@@ -19,37 +19,18 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	}
 
 	public function save() {
-		$course_permalink = LP_Helper::sanitize_params_submitted( $_POST['learn_press_course_base'] ?? '' );
-
-		if ( ! $course_permalink ) {
-			return;
-		}
-
-		if ( $course_permalink == 'custom' ) {
-			$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
-
-			if ( '%course_category%' == $course_permalink ) {
-				$course_permalink = _x( 'courses', 'slug', 'learnpress' ) . '/' . $course_permalink;
+		// Check role publish course of user teacher
+		if ( ! empty( $_POST ) && isset( $_GET['tab'] ) && $_GET['tab'] === 'courses' ) {
+			$teacher                  = get_role( LP_TEACHER_ROLE );
+			$course_cap               = LP_COURSE_CPT . 's';
+			$review_course_instructor = $_POST['learn_press_required_review'] ?? false;
+			if ( $review_course_instructor ) {
+				$teacher->remove_cap( 'publish_' . $course_cap );
+			} else {
+				$teacher->add_cap( 'publish_' . $course_cap );
 			}
-
-			$course_permalink = '/' . $course_permalink;
-			update_option( 'learn_press_course_base_type', 'custom' );
-
-		} else {
-			delete_option( 'learn_press_course_base_type' );
 		}
-
-		$course_base = untrailingslashit( $course_permalink );
-
-		update_option( 'learn_press_course_base', $course_base );
-		$courses_page_id   = learn_press_get_page_id( 'courses' );
-		$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
-
-		if ( $courses_page_id && trim( $course_base, '/' ) === $courses_permalink ) {
-			update_option( 'learn_press_use_verbose_page_rules', 'yes' );
-		} else {
-			delete_option( 'learn_press_use_verbose_page_rules' );
-		}
+		// End check role publish course of user teacher
 	}
 
 	/**

@@ -3,6 +3,8 @@
 namespace LearnPress\TemplateHooks\Admin;
 
 use Exception;
+use LearnPress\Databases\DataBase;
+use LearnPress\Filters\PostFilter;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
@@ -128,7 +130,7 @@ class AdminEditQizTemplate {
 
 		foreach ( $question_ids as $question_id ) {
 			$questionPostModel = QuestionPostModel::find( $question_id, true );
-			$html_questions   .= $this->html_edit_question( $questionPostModel );
+			$html_questions    .= $this->html_edit_question( $questionPostModel );
 		}
 
 		$section_questions = [
@@ -380,7 +382,12 @@ class AdminEditQizTemplate {
 	}
 
 	/**
+	 * Render list items not assign to any quiz.
+	 *
 	 * @throws Exception
+	 *
+	 * @since 4.2.8.7
+	 * @version 1.0.1
 	 */
 	public static function render_list_items_not_assign( $data ): stdClass {
 		$content                = new stdClass();
@@ -395,15 +402,15 @@ class AdminEditQizTemplate {
 			throw new Exception( __( 'Quiz not found', 'learnpress' ) );
 		}
 
-		$lp_db               = LP_Database::getInstance();
-		$filter              = new LP_Post_Type_Filter();
+		$lp_posts_db         = LP_Post_DB::getInstance();
+		$filter              = new PostFilter();
 		$filter->only_fields = [
-			'DISTINCT(p.ID)',
+			'DISTINCT(p.ID) AS ID',
 			'p.post_title',
 			'p.post_type',
 		];
 		$filter->post_type   = LP_QUESTION_CPT;
-		$filter->post_status = 'publish';
+		$filter->post_status = [ 'publish' ];
 		$filter->order_by    = 'p.ID';
 		$filter->page        = $paged;
 
@@ -413,12 +420,12 @@ class AdminEditQizTemplate {
 
 		// Old logic: Get all questions not assigned to any quiz.
 		// New logic: Get all questions not assigned to the quiz.
-		$filter->where[] = $lp_db->wpdb->prepare(
-			"AND p.ID NOT IN ( SELECT question_id FROM {$lp_db->tb_lp_quiz_questions} WHERE quiz_id = %d )",
+		$filter->where[] = $lp_posts_db->wpdb->prepare(
+			"AND p.ID NOT IN ( SELECT question_id FROM {$lp_posts_db->tb_lp_quiz_questions} WHERE quiz_id = %d )",
 			$quizPostModel->ID
 		);
 
-		$lp_posts_db = LP_Post_DB::getInstance();
+
 		$total_rows  = 0;
 		$posts       = $lp_posts_db->get_posts( $filter, $total_rows );
 		$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );

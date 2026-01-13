@@ -19,31 +19,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * @see LP_Template_Course::button_retry()
- * @see LP_Template_Course::course_continue_button()
- * @see LP_Template_Course::course_external_button()
- * @see LP_Template_Course::course_enroll_button
- */
 if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
 	function learn_press_add_course_buttons() {
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_enroll_button' ), 5 );
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_purchase_button' ), 10 );
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_external_button' ), 15 );
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'button_retry' ), 20 );
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_continue_button' ), 25 );
-		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 30 );
+		_deprecated_function( __FUNCTION__, '4.3.2.4' );
 	}
 }
 
 if ( ! function_exists( 'learn_press_remove_course_buttons' ) ) {
 	function learn_press_remove_course_buttons() {
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_enroll_button' ), 5 );
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_purchase_button' ), 10 );
-		//remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_external_button' ), 15 );
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'button_retry' ), 20 );
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_continue_button' ), 25 );
-		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 30 );
+		_deprecated_function( __FUNCTION__, '4.3.2.4' );
 	}
 }
 
@@ -219,9 +203,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 			$post_type_object = get_post_type_object( $lp_course_item->get_item_type() );
 
 			if ( $post_type_object && current_user_can(
-				'edit_post',
-				$lp_course_item->get_id()
-			) && $post_type_object->show_in_admin_bar && get_edit_post_link( $lp_course_item->get_id() ) ) {
+					'edit_post',
+					$lp_course_item->get_id()
+				) && $post_type_object->show_in_admin_bar && get_edit_post_link( $lp_course_item->get_id() ) ) {
 				$type = get_post_type( $lp_course_item->get_id() );
 
 				if ( apply_filters( 'learn-press/edit-admin-bar-button', true, $lp_course_item ) ) {
@@ -244,9 +228,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 			$edit_post_link   = get_edit_post_link( $lp_quiz_question->get_id() );
 
 			if ( $post_type_object && current_user_can(
-				'edit_post',
-				$lp_quiz_question->get_id()
-			) && $post_type_object->show_in_admin_bar && $edit_post_link ) {
+					'edit_post',
+					$lp_quiz_question->get_id()
+				) && $post_type_object->show_in_admin_bar && $edit_post_link ) {
 				$type = get_post_type( $lp_quiz_question->get_id() );
 				$wp_admin_bar->add_menu(
 					array(
@@ -886,9 +870,9 @@ function learn_press_get_template( $template_name = '', $args = array(), $templa
  * Get template content
  *
  * @param        $template_name
- * @param array         $args
- * @param string        $template_path
- * @param string        $default_path
+ * @param array $args
+ * @param string $template_path
+ * @param string $default_path
  *
  * @return string
  * @uses learn_press_get_template();
@@ -1052,6 +1036,7 @@ if ( ! function_exists( 'learn_press_is_404' ) ) {
 	 */
 	function learn_press_is_404() {
 		_deprecated_function( __FUNCTION__, '4.2.8', 'LP_Page_Controller::set_page_404' );
+
 		return;
 		global $wp_query;
 		$wp_query->set_404();
@@ -1067,6 +1052,7 @@ if ( ! function_exists( 'learn_press_404_page' ) ) {
 	 */
 	function learn_press_404_page() {
 		_deprecated_function( __FUNCTION__, '4.2.8', 'LP_Page_Controller::set_page_404' );
+
 		return;
 		learn_press_is_404();
 	}
@@ -1200,6 +1186,7 @@ function learn_press_comments_template_query_args( $comment_args ) {
 
 	return $comment_args;
 }
+
 add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );
 
 function learn_press_comment_form_logged_in( $html_login ) {
@@ -1209,6 +1196,7 @@ function learn_press_comment_form_logged_in( $html_login ) {
 
 	return $html_login;
 }
+
 add_filter( 'comment_form_logged_in', 'learn_press_comment_form_logged_in' );
 
 function learn_press_comment_form_defaults( $defaults ) {
@@ -1218,6 +1206,7 @@ function learn_press_comment_form_defaults( $defaults ) {
 
 	return $defaults;
 }
+
 add_filter( 'comment_form_defaults', 'learn_press_comment_form_defaults' );
 
 function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
@@ -1246,6 +1235,7 @@ function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
 
 	return $count;
 }
+
 add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
 
 /**
@@ -1558,7 +1548,7 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 	if ( $meta && isset( $meta[ $format ] ) ) {
 		$content = stripslashes( $meta[ $format ] );
 	} else {
-		$template      = ! empty( $field[ "template_{$format}" ] ) ? $field[ "template_{$format}" ] : null;
+		$template      = ! empty( $field["template_{$format}"] ) ? $field["template_{$format}"] : null;
 		$template_file = $field['template_base'] . $template;
 		$content       = LP_WP_Filesystem::instance()->file_get_contents( $template_file );
 	}
@@ -1569,7 +1559,7 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 function lp_skeleton_animation_html( $count_li = 3, $width = 'random', $styleli = '', $styleul = '' ) {
 	?>
 	<ul class="lp-skeleton-animation" style="<?php echo esc_attr( $styleul ); ?>">
-		<?php for ( $i = 0; $i < absint( $count_li ); $i++ ) : ?>
+		<?php for ( $i = 0; $i < absint( $count_li ); $i ++ ) : ?>
 			<li style="width: <?php echo esc_attr( $width === 'random' ? wp_rand( 90, 100 ) . '%' : $width ); ?>; <?php echo ! empty( $styleli ) ? $styleli : ''; ?>"></li>
 		<?php endfor; ?>
 	</ul>

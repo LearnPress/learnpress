@@ -31,7 +31,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function chart_filter_date_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "HOUR($time_field) as x_data_label";
-		$filter->group_by      = 'x_data_label';
+		$filter->group_by      = "x_data_label";
 		return $filter;
 	}
 	/**
@@ -42,7 +42,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function chart_filter_previous_days_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "CAST($time_field AS DATE) as x_data_label";
-		$filter->group_by      = 'x_data_label';
+		$filter->group_by      = "x_data_label";
 		return $filter;
 	}
 	/**
@@ -53,7 +53,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function chart_filter_month_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "DAY($time_field) as x_data_label";
-		$filter->group_by      = 'x_data_label';
+		$filter->group_by      = "x_data_label";
 		return $filter;
 	}
 	/**
@@ -64,7 +64,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function chart_filter_previous_months_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "DATE_FORMAT( $time_field , '%m-%Y') as x_data_label";
-		$filter->group_by      = 'x_data_label';
+		$filter->group_by      = "x_data_label";
 		return $filter;
 	}
 	/**
@@ -75,7 +75,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function chart_filter_year_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "MONTH($time_field) as x_data_label";
-		$filter->group_by      = 'x_data_label';
+		$filter->group_by      = "x_data_label";
 		return $filter;
 	}
 	/**
@@ -113,11 +113,11 @@ class LP_Statistics_DB extends LP_Database {
 		} elseif ( $y < 5 ) {
 			// from 2-5years return data of year quarters
 			$filter->only_fields[] = $this->wpdb->prepare( "CONCAT( %s, QUARTER($time_field) ,%s, Year($time_field)) as x_data_label", [ 'q', '-' ] );
-			$filter->group_by      = 'x_data_label';
+			$filter->group_by      = "x_data_label";
 		} else {
 			// more than 5 years, return data of years
 			$filter->only_fields[] = "YEAR($time_field) as x_data_label";
-			$filter->group_by      = 'x_data_label';
+			$filter->group_by      = "x_data_label";
 		}
 		return $filter;
 	}
@@ -146,7 +146,7 @@ class LP_Statistics_DB extends LP_Database {
 			throw new Exception( 'Day must be greater than 2 days.', 'learnpress' );
 		}
 		if ( $is_until ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $time_field <= CURDATE()" );
+			$filter->where[] = "AND $time_field <= CURDATE()";
 		} else {
 			$filter->where[] = $this->wpdb->prepare( "AND $time_field >= DATE_ADD(CURDATE(), INTERVAL -%d DAY)", $value );
 		}
@@ -178,7 +178,7 @@ class LP_Statistics_DB extends LP_Database {
 			throw new Exception( 'Values must be greater than 2 months.', 'learnpress' );
 		}
 		if ( $is_until ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $time_field <= CURDATE()" );
+			$filter->where[] = "AND $time_field <= CURDATE()";
 		} else {
 			$filter->where[] = $this->wpdb->prepare( "AND EXTRACT(YEAR_MONTH FROM $time_field) >= EXTRACT(YEAR_MONTH FROM DATE_ADD(CURDATE(), INTERVAL -%d MONTH))", $value );
 		}
@@ -318,18 +318,18 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = 'p';
-		$time_field               = 'p.post_date';
+		$filter->collection_alias = "p";
+		$time_field               = "p.post_date";
 
 		// count completed orders
-		$filter->only_fields[] = 'count( p.ID) as x_data';
+		$filter->only_fields[] = "count( p.ID) as x_data";
 		$filter                = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
-		$filter->where[]       = $this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB );
-		$filter->where[]       = $this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type );
+		$filter->where[]       = $this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB );
+		$filter->where[]       = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
 		$filter->limit         = -1;
 		$filter->order_by      = $time_field;
-		$filter->order         = 'asc';
+		$filter->order         = "asc";
 
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
@@ -344,11 +344,11 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function filter_order_count_statics( LP_Order_Filter $filter ) {
 		// $filter->query_count = true;
-		$filter->only_fields[]   = 'count( p.ID) as count_order';
-		$filter->only_fields[]   = 'REPLACE(p.post_status,"lp-","") as order_status';
-		$filter->group_by        = 'p.post_status';
-		$filter->where[]         = $this->wpdb->prepare( 'AND p.post_status LIKE CONCAT(%s,"%")', 'lp-' );
-		$filter->where[]         = $this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type );
+		$filter->only_fields[]   = "count( p.ID) as count_order";
+		$filter->only_fields[]   = "REPLACE(p.post_status,'lp-','') as order_status";
+		$filter->group_by        = "p.post_status";
+		$filter->where[]         = $this->wpdb->prepare( "AND p.post_status LIKE CONCAT(%s,'%')", 'lp-' );
+		$filter->where[]         = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
 		$filter->run_query_count = false;
 
 		return $filter;
@@ -365,8 +365,8 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = 'p';
-		$time_field               = 'p.post_date';
+		$filter->collection_alias = "p";
+		$time_field               = "p.post_date";
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                   = $this->filter_order_count_statics( $filter );
 		$filter->limit            = -1;
@@ -387,26 +387,26 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = 'p';
+		$filter->collection_alias = "p";
 		$oi_table                 = $this->tb_lp_order_items;
 		$oim_table                = $this->tb_lp_order_itemmeta;
 		// net sales summary
-		$filter->only_fields[]   = 'SUM(oim.meta_value) as x_data';
-		$time_field              = 'p.post_date';
+		$filter->only_fields[]   = "SUM(CAST(oim.meta_value AS DECIMAL(10,2))) as x_data";
+		$time_field              = "p.post_date";
 		$filter->join            = [
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
 		];
 		$filter->limit           = -1;
 		$filter->where           = [
-			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
-			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
-			$this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' ),
+			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
+			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( "AND oim.meta_key=%s", '_total' ),
 		];
 		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                  = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
 		$filter->order_by        = $time_field;
-		$filter->order           = 'asc';
+		$filter->order           = "asc";
 		$filter->run_query_count = false;
 		
 		$result                  = $this->execute( $filter );
@@ -428,12 +428,12 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = 'p';
-		$filter->only_fields[]    = 'r_term.term_taxonomy_id as term_id';
-		$filter->only_fields[]    = 'COUNT(r_term.term_taxonomy_id) as term_count';
-		$filter->only_fields[]    = 'terms.name as term_name';
+		$filter->collection_alias = "p";
+		$filter->only_fields[]    = "r_term.term_taxonomy_id as term_id";
+		$filter->only_fields[]    = "SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as term_count";
+		$filter->only_fields[]    = "terms.name as term_name";
 		$filter->limit            = $limit > 0 ? $limit : 10;
-		$time_field               = 'p.post_date';
+		$time_field               = "p.post_date";
 		$tb_term_relationships    = $this->tb_term_relationships;
 		$tb_term_taxonomy         = $this->tb_term_taxonomy;
 		$tb_terms                 = $this->tb_terms;
@@ -442,26 +442,25 @@ class LP_Statistics_DB extends LP_Database {
 
 		$filter->join = [
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
-			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
 			"INNER JOIN $tb_term_relationships AS r_term ON oi.item_id = r_term.object_id",
 			"INNER JOIN $tb_term_taxonomy AS tax_term ON tax_term.term_taxonomy_id = r_term.term_taxonomy_id",
 			"INNER JOIN $tb_terms AS terms ON terms.term_id = r_term.term_taxonomy_id",
+			"INNER JOIN $oim_table AS oim_qty ON oi.order_item_id = oim_qty.learnpress_order_item_id AND oim_qty.meta_key = '_quantity'",
 		];
+		if ( $exclude_free_course ) {
+			$filter->join[] = "INNER JOIN $oim_table AS oim_total ON oi.order_item_id = oim_total.learnpress_order_item_id AND oim_total.meta_key = '_total' AND CAST(oim_total.meta_value AS DECIMAL(10,2)) > 0";
+		}
 
 		$filter->where = array(
-			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
-			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
-			$this->wpdb->prepare( 'AND oi.item_type=%s', LP_COURSE_CPT ),
-			$this->wpdb->prepare( 'AND tax_term.taxonomy=%s', LP_COURSE_CATEGORY_TAX ),
+			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
+			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( "AND oi.item_type=%s", LP_COURSE_CPT ),
+			$this->wpdb->prepare( "AND tax_term.taxonomy=%s", LP_COURSE_CATEGORY_TAX ),
 		);
-		$filter        = $this->filter_time( $filter, $type, $time_field, $value );
-		if ( $exclude_free_course ) {
-			$filter->where[] = $this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' );
-			$filter->where[] = $this->wpdb->prepare( 'AND oim.meta_value > 0' );
-		}
-		$filter->group_by        = 'term_id';
-		$filter->order_by        = 'term_count';
-		$filter->order           = 'DESC';
+		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter->group_by        = "term_id";
+		$filter->order_by        = "term_count";
+		$filter->order           = "DESC";
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
 
@@ -483,33 +482,35 @@ class LP_Statistics_DB extends LP_Database {
 		$filter                   = new LP_Order_Filter();
 		$tb_posts                 = $this->tb_posts;
 		$filter->collection       = $tb_posts;
-		$filter->collection_alias = 'p';
-		$filter->only_fields[]    = 'oi.item_id as course_id';
-		$filter->only_fields[]    = 'COUNT(oi.item_id) as course_count';
-		$filter->only_fields[]    = 'p2.post_title as course_name';
+		$filter->collection_alias = "p";
+		$filter->only_fields[]    = "oi.item_id as course_id";
+		$filter->only_fields[]    = "SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as course_count";
+		$filter->only_fields[]    = "p2.post_title as course_name";
 		$filter->limit            = $limit > 0 ? $limit : 10;
-		$time_field               = 'p.post_date';
+		$time_field               = "p.post_date";
 		$oi_table                 = $this->tb_lp_order_items;
 		$oim_table                = $this->tb_lp_order_itemmeta;
 
 		$filter->join  = [
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
-			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
 			"INNER JOIN $tb_posts AS p2 ON p2.ID = oi.item_id",
+			"INNER JOIN $oim_table AS oim_qty ON oi.order_item_id = oim_qty.learnpress_order_item_id AND oim_qty.meta_key = '_quantity'",
 		];
-		$filter->where = array(
-			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
-			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
-			$this->wpdb->prepare( 'AND oi.item_type=%s', LP_COURSE_CPT ),
-		);
-		$filter        = $this->filter_time( $filter, $type, $time_field, $value );
+
 		if ( $exclude_free_course ) {
-			$filter->where[] = $this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' );
-			$filter->where[] = $this->wpdb->prepare( 'AND oim.meta_value > 0' );
+			$filter->join[] = "INNER JOIN $oim_table AS oim_total ON oi.order_item_id = oim_total.learnpress_order_item_id AND oim_total.meta_key = '_total' AND CAST(oim_total.meta_value AS DECIMAL(10,2)) > 0";
 		}
-		$filter->group_by        = 'course_id';
-		$filter->order_by        = 'course_count';
-		$filter->order           = 'DESC';
+
+		$filter->where = array(
+			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
+			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( "AND oi.item_type=%s", LP_COURSE_CPT ),
+		);
+
+		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter->group_by        = "course_id";
+		$filter->order_by        = "course_count";
+		$filter->order           = "DESC";
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
 
@@ -527,11 +528,11 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Course_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = 'p';
-		$filter->only_fields[]    = 'p.ID';
-		$time_field               = 'p.post_date';
+		$filter->collection_alias = "p";
+		$filter->only_fields[]    = "p.ID";
+		$time_field               = "p.post_date";
 
-		$filter->where[]     = $this->wpdb->prepare( 'AND p.post_type=%s', LP_COURSE_CPT );
+		$filter->where[]     = $this->wpdb->prepare( "AND p.post_type=%s", LP_COURSE_CPT );
 		$filter              = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter->query_count = true;
 		$result              = $this->execute( $filter );
@@ -549,12 +550,12 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Course_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = 'p';
-		$filter->only_fields[]    = 'p.ID';
-		$time_field               = 'p.post_date';
+		$filter->collection_alias = "p";
+		$filter->only_fields[]    = "p.ID";
+		$time_field               = "p.post_date";
 
-		$filter->where[]     = $this->wpdb->prepare( 'AND p.post_type = %s', LP_ORDER_CPT );
-		$filter->where[]     = $this->wpdb->prepare( 'AND p.post_status != %s', 'auto-draft' );
+		$filter->where[]     = $this->wpdb->prepare( "AND p.post_type = %s", LP_ORDER_CPT );
+		$filter->where[]     = $this->wpdb->prepare( "AND p.post_status != %s", 'auto-draft' );
 		$filter              = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter->query_count = true;
 		$result              = $this->execute( $filter );
@@ -572,14 +573,14 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->wpdb->users;
-		$filter->collection_alias = 'u';
-		$filter->only_fields[]    = 'u.ID';
+		$filter->collection_alias = "u";
+		$filter->only_fields[]    = "u.ID";
 		$usermeta_table           = $this->wpdb->usermeta;
 		$filter->join[]           = "INNER JOIN $usermeta_table AS um ON um.user_id = u.ID";
-		$time_field               = 'u.user_registered';
-		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', $this->wpdb->prefix . 'capabilities' );
-		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_value LIKE CONCAT('%',%s,'%')", ADMIN_ROLE );
-		$filter->where[]          = $this->wpdb->prepare( "OR um.meta_value LIKE CONCAT('%',%s,'%')", LP_TEACHER_ROLE );
+		$time_field               = "u.user_registered";
+		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_key=%s", $this->wpdb->prefix . 'capabilities' );
+		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_value LIKE %s", '%' . ADMIN_ROLE . '%' );
+		$filter->where[]          = $this->wpdb->prepare( "OR um.meta_value LIKE %s", '%' . LP_TEACHER_ROLE . '%' );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value, true );
 		$filter->query_count      = true;
 		$result                   = $this->execute( $filter );
@@ -597,13 +598,13 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->wpdb->users;
-		$filter->collection_alias = 'u';
-		$filter->only_fields[]    = 'u.ID';
+		$filter->collection_alias = "u";
+		$filter->only_fields[]    = "u.ID";
 		$usermeta_table           = $this->wpdb->usermeta;
 		$filter->join[]           = "INNER JOIN $usermeta_table AS um ON um.user_id = u.ID";
-		$time_field               = 'u.user_registered';
-		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', $this->wpdb->prefix . 'capabilities' );
-		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_value LIKE CONCAT("%",%s,"%")', 'subscriber' );
+		$time_field               = "u.user_registered";
+		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_key=%s", $this->wpdb->prefix . 'capabilities' );
+		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_value LIKE %s", '%subscriber%' );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value, true );
 		$filter->query_count      = true;
 		$result                   = $this->execute( $filter );
@@ -624,14 +625,14 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Course_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = 'p';
-		$time_field               = 'p.post_date';
+		$filter->collection_alias = "p";
+		$time_field               = "p.post_date";
 		// count published course
-		$filter->only_fields[] = 'count( p.ID) as x_data';
+		$filter->only_fields[] = "count( p.ID) as x_data";
 		$filter                = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
-		$filter->where[]       = $this->wpdb->prepare( 'AND p.post_status=%s', 'publish' );
-		$filter->where[]       = $this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type );
+		$filter->where[]       = $this->wpdb->prepare( "AND p.post_status=%s", 'publish' );
+		$filter->where[]       = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
 		$filter->limit         = -1;
 		$filter->order_by      = $time_field;
 		$filter->order         = 'asc';
@@ -655,12 +656,12 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Course_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = 'p';
-		$filter->only_fields[]    = 'COUNT(p.ID) as course_count';
-		$filter->only_fields[]    = 'p.post_status as course_status';
-		$time_field               = 'p.post_date';
+		$filter->collection_alias = "p";
+		$filter->only_fields[]    = "COUNT(p.ID) as course_count";
+		$filter->only_fields[]    = "p.post_status as course_status";
+		$time_field               = "p.post_date";
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter->where[]          = $this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type );
+		$filter->where[]          = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
 		$filter->where[]          = $this->wpdb->prepare( 'AND p.post_status IN (%s, %s, %s)', 'publish', 'pending', 'future' );
 		$filter->limit            = -1;
 		$filter->group_by         = 'p.post_status';
@@ -682,10 +683,10 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = 'p';
-		$filter->only_fields[]    = 'COUNT(p.ID) as item_count';
-		$filter->only_fields[]    = 'p.post_type as item_type';
-		$time_field               = 'p.post_date';
+		$filter->collection_alias = "p";
+		$filter->only_fields[]    = "COUNT(p.ID) as item_count";
+		$filter->only_fields[]    = "p.post_type as item_type";
+		$time_field               = "p.post_date";
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
 		if ( class_exists( 'LP_Assignment' ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_type IN (%s, %s, %s)', LP_LESSON_CPT, LP_QUIZ_CPT, LP_ASSIGNMENT_CPT );
@@ -714,15 +715,15 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->tb_users;
-		$filter->collection_alias = 'u';
-		$time_field               = 'u.user_registered';
+		$filter->collection_alias = "u";
+		$time_field               = "u.user_registered";
 		// count user_registered
-		$filter->only_fields[] = 'count( u.ID) as x_data';
+		$filter->only_fields[] = "count( u.ID) as x_data";
 		$filter                = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
 		$filter->limit         = -1;
 		$filter->order_by      = $time_field;
-		$filter->order         = 'asc';
+		$filter->order         = "asc";
 
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
@@ -741,14 +742,14 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->tb_lp_user_items;
-		$filter->collection_alias = 'ui';
-		$filter->only_fields[]    = 'ui.graduation as graduation_status';
-		$filter->only_fields[]    = 'COUNT(distinct(ui.user_id)) as user_count';
-		$time_field               = 'ui.start_time';
+		$filter->collection_alias = "ui";
+		$filter->only_fields[]    = "ui.graduation as graduation_status";
+		$filter->only_fields[]    = "COUNT(distinct(ui.user_id)) as user_count";
+		$time_field               = "ui.start_time";
 		$filter->limit            = -1;
-		$filter->where[]          = $this->wpdb->prepare( 'AND ui.item_type=%s', LP_COURSE_CPT );
+		$filter->where[]          = $this->wpdb->prepare( "AND ui.item_type=%s", LP_COURSE_CPT );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter->group_by         = 'graduation_status';
+		$filter->group_by         = "graduation_status";
 		$filter->run_query_count  = false;
 		$result                   = $this->execute( $filter );
 		return $result;
@@ -766,14 +767,14 @@ class LP_Statistics_DB extends LP_Database {
 		$filter          = new LP_Filter();
 		$table_useritems = $this->tb_lp_user_items;
 		$table_user      = $this->tb_users;
-		$time_filter     = $this->filter_time( $filter, $type, 'ui.start_time', $value );
+		$time_filter     = $this->filter_time( $filter, $type, "ui.start_time", $value );
 		// get time_filter condition SQL
 		$time_condition = $time_filter->where[0];
 		// reset where
 		$filter->where            = array();
 		$filter->collection       = $table_user;
-		$filter->collection_alias = 'u';
-		$filter->only_fields[]    = 'u.ID';
+		$filter->collection_alias = "u";
+		$filter->only_fields[]    = "u.ID";
 		$filter->where[]          = $this->wpdb->prepare( "AND NOT EXISTS (SELECT * FROM $table_useritems as ui WHERE ui.user_id = u.ID $time_condition)" );
 		$filter->limit            = -1;
 		$filter->query_count      = true;
@@ -796,21 +797,21 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->tb_lp_user_items;
-		$filter->collection_alias = 'ui';
-		$filter->only_fields[]    = 'ui.item_id as course_id';
-		$filter->only_fields[]    = 'COUNT(ui.user_item_id) as enrolled_user';
-		$filter->only_fields[]    = 'p.post_author as instructor_id';
-		$filter->only_fields[]    = 'p.post_title as course_name';
-		$filter->only_fields[]    = 'u.display_name as instructor_name';
+		$filter->collection_alias = "ui";
+		$filter->only_fields[]    = "ui.item_id as course_id";
+		$filter->only_fields[]    = "COUNT(ui.user_item_id) as enrolled_user";
+		$filter->only_fields[]    = "p.post_author as instructor_id";
+		$filter->only_fields[]    = "p.post_title as course_name";
+		$filter->only_fields[]    = "u.display_name as instructor_name";
 		$filter->limit            = ! $limit ? 10 : $limit;
-		$time_field               = 'ui.start_time';
+		$time_field               = "ui.start_time";
 		$filter->join[]           = "INNER JOIN $this->tb_posts AS p ON p.ID = ui.item_id";
 		$filter->join[]           = "INNER JOIN $this->tb_users AS u ON u.ID = p.post_author";
-		$filter->where[]          = $this->wpdb->prepare( 'AND ui.item_type=%s', LP_COURSE_CPT );
+		$filter->where[]          = $this->wpdb->prepare( "AND ui.item_type=%s", LP_COURSE_CPT );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter->group_by         = 'course_id';
-		$filter->order_by         = 'enrolled_user';
-		$filter->order            = 'DESC';
+		$filter->group_by         = "course_id";
+		$filter->order_by         = "enrolled_user";
+		$filter->order            = "DESC";
 		$filter->run_query_count  = false;
 		$result                   = $this->execute( $filter );
 		return $result;

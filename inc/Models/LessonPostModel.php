@@ -10,6 +10,7 @@
 
 namespace LearnPress\Models;
 
+use Exception;
 use LP_Cache;
 use LP_Post_Type_Filter;
 
@@ -78,11 +79,13 @@ class LessonPostModel extends PostModel {
 
 	/**
 	 * Set lesson is preview or not
+	 *
 	 * @param bool $enable
 	 *
 	 * @return void
+	 * @throws Exception
+	 * @version 1.0.1
 	 * @since 4.2.8.6
-	 * @version 1.0.0
 	 */
 	public function set_preview( bool $enable = true ) {
 		$this->save_meta_value_by_key( LessonPostModel::META_KEY_PREVIEW, $enable ? 'yes' : 'no' );

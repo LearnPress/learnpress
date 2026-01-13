@@ -27,7 +27,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$this->includes();
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
-			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
 			add_action( 'all_admin_notices', array( $this, 'admin_notices' ), - 1 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
@@ -657,14 +656,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
-		 * Update option data user rated.
-		 */
-		public function rated() {
-			update_option( 'learn_press_message_user_rated', 'yes' );
-			die();
-		}
-
-		/**
 		 * Admin footer add review.
 		 *
 		 * @param $footer_text
@@ -691,28 +682,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 						) . '">',
 						'</a>'
 					);
-
-					ob_start();
-					?>
-
-					<script>
-						jQuery(function ($) {
-							var $ratingLink = $('a.lp-rating-link').click(function (e) {
-								$.ajax({
-									url: '<?php echo admin_url( 'admin-ajax.php' ); ?>',
-									data: {
-										action: 'learn_press_rated'
-									},
-									success: function () {
-										$ratingLink.parent().html($ratingLink.data('rated'))
-									}
-								})
-							})
-						})
-					</script>
-
-					<?php
-					echo ob_get_clean();
 				}
 			}
 
@@ -857,7 +826,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$query = apply_filters( 'learnpress/get-post-type-lp-on-backend', $query );
 
 			//add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
-			remove_filter( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );
+			//remove_filter( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );
 		}
 
 		/**

@@ -3,6 +3,9 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Databases\CourseSectionDB;
+use LearnPress\Filters\Course\CourseSectionItemsFilter;
+use LearnPress\Filters\CourseSectionFilter;
 use LP_Background_Single_Course;
 use LP_Cache;
 use LP_Database;
@@ -101,6 +104,22 @@ class CourseSectionModel {
 	 */
 	public function get_course_model() {
 		return CourseModel::find( $this->section_course_id, true );
+	}
+
+	/**
+	 * Get course post model
+	 *
+	 * @return false|CoursePostModel
+	 * @version 1.0.0
+	 * @since 4.3.2
+	 */
+	public function get_course_post_model() {
+		$courseModel = $this->get_course_model();
+		if ( $courseModel instanceof CourseModel ) {
+			return new CoursePostModel( $courseModel );
+		}
+
+		return false;
 	}
 
 	/**
@@ -261,13 +280,17 @@ class CourseSectionModel {
 	/**
 	 * Add items created to section.
 	 *
+	 * @param array $data
+	 *
+	 * @return array
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function add_items( array $data ) {
-		$courseModel = $this->get_course_model();
-		$section_id  = $this->get_section_id();
+	public function add_items( array $data ): array {
+		$courseSectionItems = [];
+		$courseModel        = $this->get_course_model();
+		$section_id         = $this->get_section_id();
 
 		if ( ! $courseModel instanceof CourseModel ) {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
@@ -287,7 +310,7 @@ class CourseSectionModel {
 
 			// Check if item already exists in course.
 			$lp_db                  = LP_Database::getInstance();
-			$filter                 = new LP_Section_Items_Filter();
+			$filter                 = new CourseSectionItemsFilter();
 			$filter->item_id        = $item_id;
 			$filter->item_type      = $item_type;
 			$filter->join[]         = 'LEFT JOIN ' . $lp_db->tb_lp_sections . ' AS cs ON si.section_id = cs.section_id';
@@ -304,11 +327,15 @@ class CourseSectionModel {
 			$courseSectionItemModel                    = new CourseSectionItemModel();
 			$courseSectionItemModel->item_id           = $item_id;
 			$courseSectionItemModel->item_type         = $item_type;
-			$courseSectionItemModel->item_order        = ++$max_order;
+			$courseSectionItemModel->item_order        = ++ $max_order;
 			$courseSectionItemModel->section_id        = $section_id;
 			$courseSectionItemModel->section_course_id = $this->section_course_id;
 			$courseSectionItemModel->save();
+
+			$courseSectionItems[] = $courseSectionItemModel;
 		}
+
+		return $courseSectionItems;
 	}
 
 	/**
@@ -316,21 +343,29 @@ class CourseSectionModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.2
 	 */
 	public function save(): CourseSectionModel {
-		$lp_section_db = LP_Section_DB::getInstance();
+		// Check permission
+		$this->check_permission();
 
-		$data = [];
-		foreach ( get_object_vars( $this ) as $property => $value ) {
-			$data[ $property ] = $value;
-		}
+		$courseSectionDB = CourseSectionDB::getInstance();
+
+		$data = get_object_vars( $this );
+
+		$args = [
+			'data'               => $data,
+			'filter'             => new CourseSectionFilter(),
+			'table_name'         => $courseSectionDB->tb_lp_sections,
+			'key_auto_increment' => 'section_id',
+		];
 
 		if ( $data['section_id'] === 0 ) { // Insert data.
-			$section_id       = $lp_section_db->insert_data( $data );
+			$section_id       = $courseSectionDB->insert_data( $args );
 			$this->section_id = $section_id;
 		} else { // Update data.
-			$lp_section_db->update_data( $data );
+			$args['where_key'] = 'section_id';
+			$courseSectionDB->update_data( $args );
 		}
 
 		// Clear cache
@@ -344,9 +379,12 @@ class CourseSectionModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function delete() {
+		// Check permission
+		$this->check_permission();
+
 		// Unassign items of section
 		$lp_section_items_db = LP_Section_Items_DB::getInstance();
 		$filter              = new LP_Section_Items_Filter();
@@ -363,6 +401,20 @@ class CourseSectionModel {
 
 		// Clear cache
 		$this->clean_caches();
+	}
+
+	/**
+	 * Check permission to handle
+	 *
+	 * @throws Exception
+	 * @since 4.3.2
+	 * @version 1.0.0
+	 */
+	public function check_permission() {
+		$coursePostModel = $this->get_course_post_model();
+		if ( ! $coursePostModel || ! $coursePostModel->check_capabilities_update() ) {
+			throw new Exception( __( 'You do not have permission to delete section', 'learnpress' ) );
+		}
 	}
 
 	/**

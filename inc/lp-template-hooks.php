@@ -19,7 +19,12 @@
 
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -57,9 +62,38 @@ add_action(
 
 /**
  * Course buttons
+ * old hook: learn-press/course-buttons
  */
-learn_press_add_course_buttons();
+add_action(
+	'learn-press/course-buttons',
+	function () {
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$course               = CourseModel::find( get_the_ID(), true );
+		$user                 = UserModel::find( get_current_user_id(), true );
+		$userCourseModel      = UserCourseModel::find( get_current_user_id(), get_the_ID(), true );
+		$userCourseTemplate   = UserCourseTemplate::instance();
 
+		// Button enroll
+		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
+		// Button purchase
+		echo $singleCourseTemplate->html_btn_purchase_course( $course, $user );
+		// Button external
+		echo '<div style="display:flex;flex-direction:column">';
+		echo $singleCourseTemplate->html_btn_external( $course, $user );
+		echo '</div>';
+		if ( $userCourseModel instanceof UserCourseModel ) {
+			// Button retake
+			echo $userCourseTemplate->html_btn_retake( $userCourseModel );
+			// Button continue
+			echo '<div style="margin-bottom: 10px">';
+			echo $userCourseTemplate->html_btn_continue( $userCourseModel );
+			echo '</div>';
+			// Button finish
+			echo $userCourseTemplate->html_btn_finish( $userCourseModel );
+		}
+	},
+	5
+);
 
 /** BEGIN: Archive course */
 add_action( 'learn-press/before-courses-loop', LearnPress::instance()->template( 'course' )->func( 'courses_top_bar' ), 10 );
@@ -151,9 +185,9 @@ add_action(
 	35
 );
 //add_action(
-//	'learn-press/course-content-summary',
-//	LearnPress::instance()->template( 'course' )->func( 'course_extra_boxes_position_control' ),
-//	39
+//  'learn-press/course-content-summary',
+//  LearnPress::instance()->template( 'course' )->func( 'course_extra_boxes_position_control' ),
+//  39
 //);
 //add_action( 'learn-press/course-content-summary', LearnPress::instance()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
 // add_action( 'learn-press/course-content-summary', LearnPress::instance()->template( 'course' )->callback( 'single-course/progress' ), 40 );
@@ -313,7 +347,7 @@ add_action( 'learn-press/popup-footer', LearnPress::instance()->template( 'cours
 /**
  * @see LP_Template_Course::course_finish_button()
  */
-add_action( 'learn-press/quiz-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 10 );
+//add_action( 'learn-press/quiz-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 10 );
 /** END: Popup quiz */
 
 /** BEGIN: Popup lesson */
@@ -322,7 +356,6 @@ add_action( 'learn-press/quiz-buttons', LearnPress::instance()->template( 'cours
  * @see LP_Template_Course::item_lesson_title()
  * @see LP_Template_Course::item_lesson_content()
  * @see LP_Template_Course::item_lesson_complete_button()
- * @see LP_Template_Course::course_finish_button()
  */
 add_action(
 	'learn-press/before-content-item-summary/lp_lesson',
@@ -346,7 +379,14 @@ add_action(
 );
 add_action(
 	'learn-press/after-content-item-summary/lp_lesson',
-	LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ),
+	function () {
+		$userCourseModel    = UserCourseModel::find( get_current_user_id(), get_the_ID(), true );
+		$userCourseTemplate = UserCourseTemplate::instance();
+
+		if ( $userCourseModel instanceof UserCourseModel ) {
+			echo $userCourseTemplate->html_btn_finish( $userCourseModel );
+		}
+	},
 	15
 );
 /** END: Popup lesson */
@@ -466,9 +506,9 @@ add_filter( 'excerpt_length', 'learn_press_custom_excerpt_length', 999 );
 /**
  * Filter to hide the section if there is no item.
  *
- * @param bool              $visible
+ * @param bool $visible
  * @param LP_Course_Section $section
- * @param LP_Course         $course
+ * @param LP_Course $course
  *
  * @return bool
  * @since 4.0.0

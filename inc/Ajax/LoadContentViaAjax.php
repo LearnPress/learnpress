@@ -46,7 +46,10 @@ class LoadContentViaAjax extends AbstractAjax {
 			// Security: check callback is registered.
 			$allow_callbacks = apply_filters(
 				'lp/rest/ajax/allow_callback',
-				[]
+				[
+					'LP_Admin_Dashboard:order_statistic',
+					'LP_Admin_Dashboard:plugin_status_content',
+				]
 			);
 			$callBackStr     = $class . ':' . $method;
 			if ( ! in_array( $callBackStr, $allow_callbacks ) ) {

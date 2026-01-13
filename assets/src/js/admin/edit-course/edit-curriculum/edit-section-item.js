@@ -588,15 +588,11 @@ export class EditSectionItem {
 						course_id: this.courseId,
 						args: { id_url: idUrlHandle },
 					};
-					if ( sectionIdChoose === sectionIdEnd ) {
-						dataSend.action = 'update_items_position';
-						dataSend.section_id = sectionIdEnd;
-					} else {
-						dataSend.action = 'update_item_section_and_position';
-						dataSend.item_id_change = itemIdChoose;
-						dataSend.section_id_new_of_item = sectionIdEnd;
-						dataSend.section_id_old_of_item = sectionIdChoose;
-					}
+
+					dataSend.action = 'update_item_section_and_position';
+					dataSend.item_id_change = itemIdChoose;
+					dataSend.section_id_new_of_item = sectionIdEnd;
+					dataSend.section_id_old_of_item = sectionIdChoose;
 
 					// Send list items position
 					const section = this.elCurriculumSections.querySelector(
@@ -674,7 +670,9 @@ export class EditSectionItem {
 			elItemNew.classList.add( item.type );
 			elItemNew.classList.remove( 'clone' );
 			elItemNew.dataset.itemType = item.type;
-			elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.edit_link || '' );
+			elItemNew
+				.querySelector( '.edit-link' )
+				.setAttribute( 'href', item.editLink || '' );
 			elInputTitleNew.value = item.titleSelected || '';
 
 			// Add popup attributes for Course Builder context
@@ -696,30 +694,27 @@ export class EditSectionItem {
 		};
 		window.lpAJAXG.fetchAJAX( dataSend, {
 			success: ( response ) => {
-				const { message, status } = response;
+				const { message, status, data } = response;
+				const { html } = data || '';
 				lpToastify.show( message, status );
 
-				if ( status === 'error' ) {
-					itemsSelectedData.forEach( ( item ) => {
-						const elItemAdded = elSection.querySelector(
-							`${ EditSectionItem.selectors.elSectionItem }[data-item-id="${ item.id }"]`
-						);
-						if ( elItemAdded ) {
-							elItemAdded.remove();
-						}
-					} );
+				itemsSelectedData.forEach( ( item ) => {
+					const elItemAdded = elSection.querySelector(
+						`${ EditSectionItem.selectors.elSectionItem }[data-item-id="${ item.id }"]`
+					);
+					if ( elItemAdded ) {
+						elItemAdded.remove();
+					}
+				} );
+
+				if ( status === 'success' ) {
+					elItemClone.insertAdjacentHTML( 'beforebegin', html );
 				}
 			},
 			error: ( error ) => {
 				lpToastify.show( error, 'error' );
 			},
 			completed: () => {
-				itemsSelectedData.forEach( ( item ) => {
-					const elItemAdded = elSection.querySelector(
-						`${ EditSectionItem.selectors.elSectionItem }[data-item-id="${ item.id }"]`
-					);
-					lpUtils.lpSetLoadingEl( elItemAdded, 0 );
-				} );
 				this.updateCountItems( elSection );
 			},
 		} );

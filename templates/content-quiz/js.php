@@ -35,9 +35,9 @@ if ( ! $quizPostModel instanceof QuizPostModel ) {
 
 $total_question      = $quizPostModel->count_questions();
 $questions           = array();
-$show_check          = $quiz->get_instant_check();
-$show_correct_review = $quiz->get_show_correct_review();
-$question_ids        = $quiz->get_question_ids();
+$show_check          = $quizPostModel->has_instant_check();
+$show_correct_review = $quizPostModel->has_show_correct_review();
+$question_ids        = $quizPostModel->get_question_ids();
 $user_js             = array();
 
 $answered          = array();
@@ -87,7 +87,7 @@ if ( $userModel ) {
 if ( ! $userQuizModel ) {
 	// Display quiz content.
 	echo '<div class="quiz-content">';
-	learn_press_echo_vuejs_write_on_php( $quiz->get_content() );
+	echo $quizPostModel->get_the_content();
 	echo '</div>';
 }
 
@@ -128,11 +128,11 @@ $js = array(
 	'retaken'                => 0,
 	'questions_per_page'     => $quiz->get_pagination(),
 	'page_numbers'           => get_post_meta( $quiz->get_id(), '_lp_pagination_numbers', true ) === 'yes',
-	'review_questions'       => $quiz->get_review_questions(),
+	'review_questions'       => $quizPostModel->get_meta_value_by_key( QuizPostModel::META_KEY_REVIEW, 'yes' ) === 'yes',
 	'support_options'        => learn_press_get_question_support_answer_options(),
 	'duration'               => $duration ? $duration->get() : false,
 	'crypto'                 => $crypto_js_aes,
-	'edit_permalink'         => $editable ? get_edit_post_link( $quiz->get_id() ) : '',
+	'edit_permalink'         => $editable ? $quizPostModel->get_edit_link() : '',
 	'results'                => array(),
 	'required_password'      => post_password_required( $quiz->get_id() ),
 	'allow_retake'           => $quizPostModel->get_retake_count() == - 1,

@@ -3,6 +3,9 @@
 namespace LearnPress\TemplateHooks\Course;
 
 use Exception;
+use LearnPress\Databases\DataBase;
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\PostFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -427,7 +430,8 @@ class AdminEditCurriculumTemplate {
 			'preview'  => sprintf(
 				'<li title="%s" class="lp-btn-set-preview-item"><a class="%s"></a></li>',
 				__( 'Enable/Disable Preview', 'learnpress' ),
-				$itemModel && $itemModel->post_type === LP_LESSON_CPT && $itemModel->has_preview() ? 'lp-icon-eye' : 'lp-icon-eye-slash'
+				$itemModel && $itemModel->post_type === LP_LESSON_CPT
+				&& $itemModel->has_preview() ? 'lp-icon-eye' : 'lp-icon-eye-slash'
 			),
 			'edit'     => $edit_button,
 			'delete'   => sprintf(
@@ -598,7 +602,7 @@ class AdminEditCurriculumTemplate {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.4
 	 */
 	public static function render_list_items_not_assign( $data ): stdClass {
 		$user                   = wp_get_current_user();
@@ -617,17 +621,19 @@ class AdminEditCurriculumTemplate {
 
 		// Check permission
 		$coursePostModel = new CoursePostModel( $courseModel );
-		$coursePostModel->check_capabilities_create();
+		if ( ! $coursePostModel->check_capabilities_create() ) {
+			throw new Exception( __( 'You do not have permission view list', 'learnpress' ) );
+		}
 
-		$lp_db               = LP_Database::getInstance();
-		$filter              = new LP_Post_Type_Filter();
+		$lp_posts_db         = PostDB::getInstance();
+		$filter              = new PostFilter();
 		$filter->only_fields = [
-			'DISTINCT(p.ID)',
+			'DISTINCT(p.ID) AS ID',
 			'p.post_title',
 			'p.post_type',
 		];
 		$filter->post_type   = $item_type;
-		$filter->post_status = 'publish';
+		$filter->post_status = [ 'publish' ];
 		$filter->order_by    = 'p.ID';
 		$filter->page        = $paged;
 		if ( ! user_can( $user, UserModel::ROLE_ADMINISTRATOR ) ) {
@@ -639,12 +645,11 @@ class AdminEditCurriculumTemplate {
 		}
 
 		// Old logic: Get all items not assigned to any course.
-		$filter->where[] = "AND p.ID NOT IN ( SELECT item_id FROM {$lp_db->tb_lp_section_items} )";
+		$filter->where[] = "AND p.ID NOT IN ( SELECT item_id FROM {$lp_posts_db->tb_lp_section_items} )";
 
 		// New logic: Get all items not assigned to the course.
 		// Code here
 
-		$lp_posts_db = LP_Post_DB::getInstance();
 		$total_rows  = 0;
 		$filter      = apply_filters(
 			'learn-press/filter-list-items-not-assign-course',
@@ -704,7 +709,7 @@ class AdminEditCurriculumTemplate {
 						esc_attr( $post->post_type ?? '' ),
 						esc_attr( $title_display ), // For JS display on list selected.
 						esc_attr( $checked ),
-						get_permalink( $post->ID ),
+						get_edit_post_link( $post->ID ),
 						esc_attr( get_the_title( $post->ID ) )
 					),
 					$title_display
