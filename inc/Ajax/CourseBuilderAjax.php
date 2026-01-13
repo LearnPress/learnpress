@@ -218,6 +218,56 @@ class CourseBuilderAjax extends AbstractAjax {
 	}
 
 	/**
+	 * Save Course Settings only (from Settings tab).
+	 *
+	 * @since 4.3
+	 * @version 1.0.0
+	 */
+	public function save_course_settings() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data        = self::check_valid_course();
+			$course_id   = $data['course_id'] ?? 0;
+			$insert      = $data['insert'];
+			$courseModel = $data['course_model'];
+
+			if ( $insert || empty( $courseModel ) ) {
+				throw new Exception( __( 'Course not found. Please save the course first.', 'learnpress' ) );
+			}
+
+			$co_instructor_ids = $courseModel->get_meta_value_by_key( '_lp_co_teacher', [] );
+			if ( absint( $courseModel->post_author ) !== get_current_user_id() &&
+				! current_user_can( 'manage_options' ) &&
+				! in_array( get_current_user_id(), $co_instructor_ids ) ) {
+				throw new Exception( __( 'You are not allowed to update this course', 'learnpress' ) );
+			}
+
+			// Save course settings
+			$this->save_course_settings_to_model( $courseModel, $data );
+
+			// Save meta data
+			if ( ! empty( $courseModel->meta_data ) ) {
+				$coursePostModel = new CoursePostModel( $courseModel );
+				foreach ( $courseModel->meta_data as $meta_key => $meta_value ) {
+					$coursePostModel->save_meta_value_by_key( $meta_key, $meta_value );
+				}
+				$coursePostModel->save();
+			}
+
+			$response->status  = 'success';
+			$response->message = __( 'Settings saved successfully!', 'learnpress' );
+
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
+	}
+
+	/**
 	 * Save all course settings to CourseModel
 	 *
 	 * @param CourseModel $courseModel

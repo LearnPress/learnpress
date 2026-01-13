@@ -1,0 +1,867 @@
+// Course Builder Layout - ClassPress Style
+// Top Header + Persistent sidebar + Horizontal tabs
+
+// Variables
+$cb-top-header-height: 60px;
+$cb-sidebar-width: 260px;
+$cb-sidebar-bg: #ffffff;
+$cb-sidebar-text: #000000;
+$cb-sidebar-text-active: #1f74ff;
+$cb-sidebar-background-hover: #eeeeee;
+$cb-primary: #1f74ff;
+$cb-primary-bland: #e2edff;
+$cb-primary-hover: #0047ba;
+$cb-border: #f5f5f5;
+$cb-bg: #ffffff;
+$cb-card-bg: #ffffff;
+$cb-text: #1e1e1e;
+$cb-text-muted: #6b7280;
+$cb-radius: 8px;
+
+// WordPress Admin Bar heights
+$wp-adminbar-height: 32px;
+$wp-adminbar-height-mobile: 46px;
+
+// Main wrapper - Use #lp-course-builder to match template
+#lp-course-builder {
+	// Override old layout styles
+	display: block !important;
+	min-height: 100vh;
+	background: $cb-bg;
+	margin: 0;
+	padding: 0;
+
+	.lp-course-builder_layout {
+		display: block !important;
+		width: 100%;
+	}
+
+	// New ClassPress-style wrapper
+	.learn-press-course-builder {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		background: $cb-bg;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+
+		* {
+			box-sizing: border-box;
+		}
+	}
+
+	// Body container (sidebar + main content)
+	.lp-cb-body {
+		display: flex;
+		flex: 1;
+		min-height: calc( 100vh - #{$cb-top-header-height} );
+	}
+}
+
+// ===========================================
+// TOP HEADER - Logo left, User profile right
+// ===========================================
+.lp-cb-top-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: $cb-top-header-height;
+	background: $cb-card-bg;
+	border-bottom: 1px solid $cb-border;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 24px;
+	z-index: 1001;
+	box-shadow: 0 1px 3px rgba( 0, 0, 0, 0.05 );
+
+	// Logo section (left)
+	.lp-cb-top-header__logo {
+		display: flex;
+		align-items: center;
+
+		a {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			text-decoration: none;
+			color: $cb-text;
+
+			&:hover {
+				color: $cb-primary;
+			}
+		}
+
+		.dashicons {
+			font-size: 28px;
+			width: 28px;
+			height: 28px;
+			color: $cb-primary;
+		}
+	}
+
+	.lp-cb-top-header__title {
+		font-size: 18px;
+		font-weight: 600;
+		color: $cb-text;
+	}
+
+	// User section (right)
+	.lp-cb-top-header__user {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
+	.lp-cb-top-header__user-info {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		img {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			object-fit: cover;
+		}
+	}
+
+	.lp-cb-top-header__user-name {
+		font-size: 14px;
+		font-weight: 500;
+		color: $cb-text;
+	}
+
+	.lp-cb-top-header__user-link {
+		font-size: 13px;
+		color: $cb-primary;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	.lp-cb-top-header__logout {
+		font-size: 13px;
+		color: $cb-text-muted;
+		text-decoration: none;
+		padding: 6px 12px;
+		border: 1px solid $cb-border;
+		border-radius: 4px;
+		transition: all 0.2s;
+
+		&:hover {
+			background: #f9fafb;
+			color: #ef4444;
+			border-color: #ef4444;
+		}
+	}
+}
+
+// ===========================================
+// SIDEBAR - Persistent Navigation (below top header)
+// ===========================================
+#lp-course-builder-sidebar.lp-cb-sidebar {
+	position: fixed !important;
+	left: 0 !important;
+	top: $cb-top-header-height !important;
+	bottom: 0 !important;
+	width: $cb-sidebar-width !important;
+	background: $cb-sidebar-bg !important;
+	color: $cb-sidebar-text !important;
+	display: flex !important;
+	flex-direction: column !important;
+	z-index: 1000 !important;
+	overflow-y: auto !important;
+	padding: 0 !important;
+	border-radius: 0 !important;
+	border-right: 1px solid $cb-border;
+
+	// Hide sidebar header (we have top header now)
+	.lp-cb-sidebar__header {
+		display: none;
+	}
+
+	// Navigation
+	ul.lp-cb-sidebar__nav {
+		flex: 1;
+		padding: 16px;
+		margin: 0;
+		list-style: none;
+		display: block !important;
+		overflow-x: visible !important;
+
+		li.lp-cb-sidebar__item {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+			display: block !important;
+
+			a {
+				display: flex !important;
+				align-items: center;
+				padding: 12px 20px;
+				color: $cb-sidebar-text !important;
+				text-decoration: none;
+				transition: all 0.2s ease;
+				gap: 12px;
+				background: transparent !important;
+				border: none !important;
+				border-radius: 6px !important;
+				margin-top: 6px;
+
+				&:hover {
+					background: $cb-sidebar-background-hover !important;
+					color: $cb-sidebar-text !important;
+				}
+
+				.dashicons {
+					font-size: 20px;
+					width: 20px;
+					height: 20px;
+					line-height: 20px;
+					color: inherit;
+				}
+
+				.lp-cb-sidebar__item-title {
+					font-size: 15px;
+					font-weight: 500;
+				}
+			}
+
+			&.is-active a {
+				background: $cb-primary-bland !important;
+				color: $cb-sidebar-text-active !important;
+
+				.dashicons {
+					color: $cb-sidebar-text-active !important;
+				}
+			}
+		}
+	}
+
+	// Footer - Back to Dashboard
+	.lp-cb-sidebar__footer {
+		padding: 16px 0;
+		border-top: 1px solid $cb-border;
+		margin-top: auto;
+		background: #fdfdfd;
+
+		a.lp-cb-sidebar__item {
+			display: flex;
+			align-items: center;
+			padding: 12px 20px;
+			color: $cb-sidebar-text;
+			text-decoration: none;
+			gap: 12px;
+			font-size: 14px;
+			transition: all 0.2s;
+
+			&:hover {
+				color: $cb-sidebar-text-active;
+			}
+
+			.dashicons {
+				font-size: 18px;
+				width: 18px;
+				height: 18px;
+			}
+		}
+	}
+}
+
+// ===========================================
+// MAIN CONTENT AREA (offset for top header + sidebar)
+// ===========================================
+#lp-course-builder-content.lp-cb-main {
+	flex: 1;
+	margin-left: $cb-sidebar-width !important;
+	margin-top: $cb-top-header-height !important;
+	min-height: calc( 100vh - #{$cb-top-header-height} );
+	padding: 0 24px !important;
+	background: $cb-bg !important;
+	border-radius: 0 !important;
+	width: calc( 100% - #{$cb-sidebar-width} ) !important;
+}
+
+// ===========================================
+// ADMIN BAR ADJUSTMENTS
+// Using html:has(#wpadminbar) works for both:
+// - Frontend pages (body class="sticky-menu")
+// - Admin pages (body class="admin-bar")
+// ===========================================
+html:has( #wpadminbar ) {
+	#lp-course-builder {
+		.lp-cb-body {
+			min-height: calc( 100vh - #{$cb-top-header-height} - #{$wp-adminbar-height} );
+		}
+	}
+
+	.lp-cb-top-header {
+		top: $wp-adminbar-height;
+	}
+
+	#lp-course-builder-sidebar.lp-cb-sidebar {
+		top: calc( #{$cb-top-header-height} + #{$wp-adminbar-height} ) !important;
+	}
+
+	#lp-course-builder-content.lp-cb-main {
+		margin-top: calc( #{$cb-top-header-height} ) !important;
+		min-height: calc( 100vh - #{$cb-top-header-height} );
+	}
+}
+
+@media screen and ( max-width: 782px ) {
+	html:has( #wpadminbar ) {
+		#lp-course-builder {
+			.lp-cb-body {
+				min-height: calc( 100vh - #{$cb-top-header-height} - #{$wp-adminbar-height-mobile} );
+			}
+		}
+
+		.lp-cb-top-header {
+			top: $wp-adminbar-height-mobile;
+		}
+
+		#lp-course-builder-sidebar.lp-cb-sidebar {
+			top: calc( #{$cb-top-header-height} + #{$wp-adminbar-height-mobile} ) !important;
+		}
+
+		#lp-course-builder-content.lp-cb-main {
+			margin-top: calc( #{$cb-top-header-height} + #{$wp-adminbar-height-mobile} ) !important;
+			min-height: calc( 100vh - #{$cb-top-header-height} - #{$wp-adminbar-height-mobile} );
+		}
+	}
+}
+
+// ===========================================
+// BREADCRUMB
+// ===========================================
+.lp-cb-breadcrumb {
+	padding: 16px 12px;
+	border-bottom: 1px solid $cb-border;
+	font-size: 14px;
+	background: $cb-card-bg;
+	border-radius: $cb-radius $cb-radius 0 0;
+
+	.lp-cb-breadcrumb__item {
+		color: $cb-text-muted;
+		text-decoration: none;
+		transition: color 0.2s;
+
+		&:hover {
+			color: $cb-primary;
+		}
+
+		&.is-current {
+			color: $cb-text;
+			font-weight: 500;
+		}
+	}
+
+	.lp-cb-breadcrumb__separator {
+		margin: 0 10px;
+		color: $cb-text-muted;
+	}
+}
+
+// ===========================================
+// HEADER (Title + Actions) - For detail view
+// ===========================================
+.lp-cb-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px 12px 0;
+	background: $cb-card-bg;
+
+	.lp-cb-header__left {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.lp-cb-header__title {
+		margin: 0;
+		font-size: 24px;
+		font-weight: 600;
+		color: $cb-text;
+	}
+
+	.lp-cb-header__actions {
+		display: flex;
+		gap: 12px;
+
+		.lp-button {
+			padding: 10px 20px;
+			border-radius: 6px;
+			font-weight: 500;
+			cursor: pointer;
+			text-decoration: none;
+			display: inline-flex;
+			align-items: center;
+			border: 1px solid $cb-border;
+			background: #fff;
+			color: $cb-text;
+			transition: all 0.2s;
+
+			&:hover {
+				background: #f9fafb;
+			}
+		}
+
+		.lp-button-primary,
+		.lp-cb-save-btn {
+			background: $cb-primary !important;
+			border-color: $cb-primary !important;
+			color: #fff !important;
+
+			&:hover {
+				background: $cb-primary-hover !important;
+				border-color: $cb-primary-hover !important;
+			}
+		}
+	}
+}
+
+// ===========================================
+// COURSE STATUS BADGE - Reusable component
+// ===========================================
+.course-status {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-weight: 500;
+	text-transform: capitalize;
+
+	&.publish {
+		background: #dcfce7;
+		color: #166534;
+	}
+
+	&.draft {
+		background: #fef3c7;
+		color: #92400e;
+	}
+
+	&.pending {
+		background: #dbeafe;
+		color: #1e40af;
+	}
+
+	&.private {
+		background: #f3e8ff;
+		color: #6b21a8;
+	}
+
+	&.trash {
+		background: #fee2e2;
+		color: #991b1b;
+	}
+}
+
+// ===========================================
+// HORIZONTAL TABS
+// ===========================================
+.lp-cb-tabs {
+	display: flex;
+	border-bottom: 1px solid $cb-border;
+	padding: 0 12px;
+	background: $cb-card-bg;
+	gap: 10;
+	margin: 0;
+	list-style: none;
+
+	.lp-cb-tabs__item {
+		padding: 16px 24px;
+		color: $cb-text-muted;
+		text-decoration: none;
+		font-weight: 500;
+		font-size: 14px;
+		border-bottom: 2px solid transparent;
+		margin-bottom: -1px;
+		transition: all 0.2s ease;
+		background: transparent;
+
+		&:hover {
+			color: $cb-text;
+		}
+
+		&.is-active {
+			color: $cb-primary;
+			border-bottom-color: $cb-primary;
+		}
+	}
+}
+
+// ===========================================
+// TAB CONTENT - Show action buttons in Overview
+// ===========================================
+.lp-cb-tab-content {
+	padding: 0;
+	background: $cb-card-bg;
+	border-radius: 0 0 $cb-radius $cb-radius;
+
+	// Allow existing course builder content styles to work
+	.cb-section__course-edit,
+	.lp-course-builder-content__section {
+		padding: 12px;
+		background: $cb-card-bg;
+		border-radius: 0;
+		min-height: auto;
+
+		// SHOW the header with action buttons in Overview tab
+		.cb-section__header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 0 20px 0;
+			margin-bottom: 20px;
+			border-bottom: 1px solid $cb-border;
+
+			.cb-section__header-left {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+
+				.lp-cb-section__title {
+					margin: 0;
+					font-size: 18px;
+					font-weight: 600;
+					color: $cb-text;
+				}
+
+				.course-status {
+					display: inline-block;
+					padding: 4px 10px;
+					border-radius: 4px;
+					font-size: 12px;
+					font-weight: 500;
+					text-transform: capitalize;
+
+					&.publish {
+						background: #dcfce7;
+						color: #166534;
+					}
+
+					&.draft {
+						background: #fef3c7;
+						color: #92400e;
+					}
+
+					&.pending {
+						background: #dbeafe;
+						color: #1e40af;
+					}
+				}
+			}
+
+			.cb-section__header-action {
+				display: flex;
+				gap: 10px;
+			}
+		}
+	}
+
+	// Settings tab inner tabs - vertical layout on left
+	.lp-meta-box__course-tab {
+		display: flex;
+		gap: 24px;
+
+		.lp-meta-box__course-tab__tabs {
+			flex: 0 0 200px;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			border-right: 1px solid $cb-border;
+
+			li {
+				margin: 0;
+
+				a {
+					display: block;
+					padding: 12px 16px;
+					color: $cb-text-muted;
+					text-decoration: none;
+					border-left: 2px solid transparent;
+					transition: all 0.2s;
+
+					&:hover {
+						color: $cb-text;
+						background: #f9fafb;
+					}
+				}
+
+				&.active a,
+				a.active {
+					color: $cb-primary;
+					background: rgba( $cb-primary, 0.05 );
+					border-left-color: $cb-primary;
+					font-weight: 500;
+				}
+			}
+		}
+
+		.lp-meta-box__course-tab__content {
+			flex: 1;
+			min-width: 0;
+		}
+	}
+}
+
+// ===========================================
+// FOOTER - Trash/Delete actions
+// ===========================================
+.lp-cb-footer {
+	padding: 20px 0;
+	border-top: 1px solid $cb-border;
+	background: $cb-card-bg;
+	border-radius: 0 0 $cb-radius $cb-radius;
+	margin-top: auto;
+
+	.lp-cb-footer__actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 12px;
+	}
+}
+
+// ===========================================
+// LIST VIEW (Courses list, Lessons list, etc.)
+// ===========================================
+#lp-course-builder .lp-course-builder-content__tab {
+	padding: 0 24px;
+	background: $cb-card-bg;
+	border-radius: $cb-radius;
+	max-width: 100%;
+
+	.lp-cb-tab__title {
+		font-size: 40px;
+		font-weight: 600;
+		color: $cb-text;
+		margin: 0 0 24px 0;
+	}
+}
+
+// ===========================================
+// BUTTONS
+// ===========================================
+.lp-cb-save-btn,
+#lp-course-builder .lp-button-primary {
+	background: $cb-primary !important;
+	border-color: $cb-primary !important;
+	color: #fff !important;
+	padding: 10px 20px;
+	border-radius: 6px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s;
+
+	&:hover {
+		background: $cb-primary-hover !important;
+		border-color: $cb-primary-hover !important;
+	}
+
+	&.has-changes {
+		position: relative;
+		animation: pulse-save 2s infinite;
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: -4px;
+			right: -4px;
+			width: 10px;
+			height: 10px;
+			background: #ef4444;
+			border-radius: 50%;
+			border: 2px solid #fff;
+		}
+	}
+}
+
+// Old button styles compatibility
+#lp-course-builder {
+	.cb-btn-update,
+	.cb-btn-preview,
+	.cb-btn-darft {
+		padding: 10px 20px;
+		font-size: 14px;
+		border-radius: 6px;
+		font-weight: 500;
+		cursor: pointer;
+		border: none;
+		transition: all 0.2s;
+
+		&.has-changes {
+			position: relative;
+
+			&::after {
+				content: '';
+				position: absolute;
+				top: -4px;
+				right: -4px;
+				width: 10px;
+				height: 10px;
+				background: #ef4444;
+				border-radius: 50%;
+				border: 2px solid #fff;
+			}
+		}
+
+		&.loading {
+			opacity: 0.7;
+			pointer-events: none;
+		}
+	}
+
+	.cb-btn-update {
+		background: $cb-primary;
+		color: #fff;
+
+		&:hover {
+			background: $cb-primary-hover;
+		}
+	}
+
+	.cb-btn-preview {
+		border: 1px solid #e5e7eb;
+		color: $cb-text;
+
+		&:hover {
+			border-color: $cb-primary;
+			color: $cb-primary;
+		}
+	}
+
+	.cb-btn-darft {
+		background: #e5e7eb;
+		color: $cb-text;
+
+		&:hover {
+			background: #d1d5db;
+		}
+	}
+
+	.cb-btn-trash {
+		cursor: pointer;
+		font-size: 16px;
+		background: transparent;
+		color: #ef4444;
+		padding: 10px 20px;
+		border-radius: 6px;
+
+		&:hover {
+			background: #fef2f2;
+		}
+	}
+}
+
+@keyframes pulse-save {
+	0%,
+	100% {
+		box-shadow: 0 0 0 0 rgba( $cb-primary, 0.4 );
+	}
+	50% {
+		box-shadow: 0 0 0 8px rgba( $cb-primary, 0 );
+	}
+}
+
+// ===========================================
+// RESPONSIVE
+// ===========================================
+@media screen and ( max-width: 1024px ) {
+	#lp-course-builder-sidebar.lp-cb-sidebar {
+		width: 220px !important;
+	}
+
+	#lp-course-builder-content.lp-cb-main {
+		margin-left: 220px !important;
+		width: calc( 100% - 220px ) !important;
+	}
+
+	.lp-cb-tab-content .lp-meta-box__course-tab {
+		flex-direction: column;
+
+		.lp-meta-box__course-tab__tabs {
+			flex: none;
+			border-right: none;
+			border-bottom: 1px solid $cb-border;
+			display: flex;
+			overflow-x: auto;
+
+			li a {
+				border-left: none;
+				border-bottom: 3px solid transparent;
+				white-space: nowrap;
+			}
+
+			li.active a,
+			li a.active {
+				border-left: none;
+				border-bottom-color: $cb-primary;
+			}
+		}
+	}
+}
+
+@media screen and ( max-width: 768px ) {
+	.lp-cb-top-header {
+		padding: 0 16px;
+
+		.lp-cb-top-header__user-name,
+		.lp-cb-top-header__user-link {
+			display: none;
+		}
+	}
+
+	#lp-course-builder-sidebar.lp-cb-sidebar {
+		transform: translateX( -100% );
+		transition: transform 0.3s ease;
+
+		&.is-open {
+			transform: translateX( 0 );
+		}
+	}
+
+	#lp-course-builder-content.lp-cb-main {
+		margin-left: 0 !important;
+		width: 100% !important;
+	}
+
+	.lp-cb-header {
+		flex-direction: column;
+		gap: 16px;
+		align-items: flex-start;
+
+		.lp-cb-header__actions {
+			width: 100%;
+			justify-content: flex-end;
+		}
+	}
+
+	.lp-cb-tabs {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+
+		.lp-cb-tabs__item {
+			white-space: nowrap;
+			padding: 12px 16px;
+		}
+	}
+
+	.lp-cb-tab-content .cb-section__course-edit .cb-section__header {
+		flex-direction: column;
+		gap: 16px;
+		align-items: flex-start;
+
+		.cb-section__header-action {
+			width: 100%;
+			flex-wrap: wrap;
+		}
+	}
+}

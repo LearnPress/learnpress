@@ -15,8 +15,10 @@ export class BuilderEditCourse {
 
 		elDataCourse: '.cb-section__course-edit',
 		elBtnUpdateCourse: '.cb-btn-update',
+		elBtnHeaderSave: '.lp-cb-save-btn',
 		elBtnDraftCourse: '.cb-btn-darft',
 		elBtnTrashCourse: '.cb-btn-trash',
+		elBtnSaveSettings: '.cb-btn-save-settings',
 		elTitleInput: '#title',
 		elTitleCharCount: '.cb-course-edit-title__char-count',
 		elDescEditor: '#course_description_editor',
@@ -107,6 +109,11 @@ export class BuilderEditCourse {
 				callBack: this.updateCourse.name,
 			},
 			{
+				selector: BuilderEditCourse.selectors.elBtnHeaderSave,
+				class: this,
+				callBack: this.updateCourse.name,
+			},
+			{
 				selector: BuilderEditCourse.selectors.elBtnDraftCourse,
 				class: this,
 				callBack: this.updateCourse.name,
@@ -115,6 +122,11 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elBtnTrashCourse,
 				class: this,
 				callBack: this.trashCourse.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elBtnSaveSettings,
+				class: this,
+				callBack: this.saveSettings.name,
 			},
 			{
 				selector: BuilderEditCourse.selectors.elBtnAddTagNew,
@@ -171,8 +183,8 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elPriceCourseData,
 				class: this,
 				callBack: this.validateSalePrice.name,
-				},
-				{
+			},
+			{
 				selector: BuilderEditCourse.selectors.elTitleInput,
 				class: this,
 				callBack: this.handleTitleInput.name,
@@ -688,9 +700,10 @@ export class BuilderEditCourse {
 		const { e, target } = args;
 		if ( ! this.validatePricingBeforeUpdate() ) return;
 		const elBtnUpdateCourse = target.closest( BuilderEditCourse.selectors.elBtnUpdateCourse );
+		const elBtnHeaderSave = target.closest( BuilderEditCourse.selectors.elBtnHeaderSave );
 		const elBtnDraftCourse = target.closest( BuilderEditCourse.selectors.elBtnDraftCourse );
 		let status = 'publish';
-		let elBtn = elBtnUpdateCourse;
+		let elBtn = elBtnUpdateCourse || elBtnHeaderSave;
 		if ( elBtnDraftCourse ) {
 			status = 'draft';
 			elBtn = elBtnDraftCourse;
@@ -719,6 +732,11 @@ export class BuilderEditCourse {
 			success: ( response ) => {
 				const { status, message, data } = response;
 				lpToastify.show( message, status );
+				if ( status === 'success' ) {
+					this.updateHeaderTitle( courseData.course_title );
+					// Dispatch event to reset form state (remove unsaved changes warning)
+					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
+				}
 				if ( data?.button_title ) {
 					const updateBtn = document.querySelector( BuilderEditCourse.selectors.elBtnUpdateCourse );
 					if ( updateBtn ) updateBtn.textContent = data.button_title;
@@ -780,6 +798,40 @@ export class BuilderEditCourse {
 				lpUtils.lpSetLoadingEl( elBtnTrashCourse, 0 );
 			},
 		};
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	saveSettings( args ) {
+		const { target } = args;
+		if ( ! this.validatePricingBeforeUpdate() ) return;
+
+		const elBtnSaveSettings = target.closest( BuilderEditCourse.selectors.elBtnSaveSettings );
+		lpUtils.lpSetLoadingEl( elBtnSaveSettings, 1 );
+
+		const courseData = this.getCourseDataForUpdate();
+		const dataSend = {
+			...courseData,
+			action: 'save_course_settings',
+			args: { id_url: 'save-course-settings' },
+		};
+
+		if ( typeof lpCourseBuilder !== 'undefined' && lpCourseBuilder.nonce ) {
+			dataSend.nonce = lpCourseBuilder.nonce;
+		}
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message } = response;
+				lpToastify.show( message, status );
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( elBtnSaveSettings, 0 );
+			},
+		};
+
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
@@ -1008,6 +1060,13 @@ export class BuilderEditCourse {
 		const count = this.countWords( text );
 		const wordText = count === 1 ? 'word' : 'words';
 		wordCountEl.textContent = `${ count } ${ wordText }`;
+	}
+
+	updateHeaderTitle( title ) {
+		const headerTitle = document.querySelector( '.lp-cb-header__title' );
+		if ( headerTitle && title ) {
+			headerTitle.textContent = title;
+		}
 	}
 
 	countWords( text ) {

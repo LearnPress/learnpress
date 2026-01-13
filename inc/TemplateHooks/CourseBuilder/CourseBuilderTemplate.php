@@ -70,6 +70,8 @@ class CourseBuilderTemplate {
 		wp_enqueue_style( 'lp-course-builder' );
 		// Load edit curriculum style
 		wp_enqueue_style( 'lp-edit-curriculum' );
+		// Load dashicons for sidebar icons
+		wp_enqueue_style( 'dashicons' );
 
 		// Enqueue scripts for Course Builder
 		$this->enqueue_scripts();
@@ -96,11 +98,63 @@ class CourseBuilderTemplate {
 		}
 
 		$layout = [
-			'sidebar' => $this->sidebar(),
-			'content' => $this->content(),
+			'wrapper'     => '<div class="learn-press-course-builder">',
+			'header'      => $this->top_header(),
+			'body'        => '<div class="lp-cb-body">',
+			'sidebar'     => $this->sidebar(),
+			'content'     => $this->content(),
+			'body_end'    => '</div>',
+			'wrapper_end' => '</div>',
 		];
 
 		echo Template::combine_components( $layout );
+	}
+
+	/**
+	 * Top header with logo and user profile
+	 *
+	 * @since 4.3.0
+	 * @return string
+	 */
+	protected function top_header() {
+		$user         = wp_get_current_user();
+		$avatar       = get_avatar( $user->ID, 32 );
+		$display_name = $user->display_name;
+		$profile_url  = get_author_posts_url( $user->ID );
+		$logout_url   = wp_logout_url( home_url() );
+
+		$header = [
+			'wrapper'     => '<header class="lp-cb-top-header">',
+			'logo'        => sprintf(
+				'<div class="lp-cb-top-header__logo">
+					<a href="%s">
+						<span class="dashicons dashicons-welcome-learn-more"></span>
+						<span class="lp-cb-top-header__title">%s</span>
+					</a>
+				</div>',
+				esc_url( CourseBuilder::get_link_course_builder() ),
+				__( 'Course Builder', 'learnpress' )
+			),
+			'user'        => sprintf(
+				'<div class="lp-cb-top-header__user">
+					<div class="lp-cb-top-header__user-info">
+						%s
+						<span class="lp-cb-top-header__user-name">%s</span>
+					</div>
+					<a href="%s" class="lp-cb-top-header__user-link" target="_blank">%s</a>
+					<a href="%s" class="lp-cb-top-header__logout">%s</a>
+				</div>',
+				$avatar,
+				esc_html( $display_name ),
+				esc_url( $profile_url ),
+				__( 'View Profile', 'learnpress' ),
+				esc_url( $logout_url ),
+				__( 'Logout', 'learnpress' )
+			),
+			'wrapper_end' => '</header>',
+		];
+
+		return Template::combine_components( $header );
 	}
 
 	/**
@@ -125,71 +179,287 @@ class CourseBuilderTemplate {
 	}
 
 	public function sidebar() {
-		$title           = '';
-		$tab_current     = CourseBuilder::get_current_tab();
-		$section_current = CourseBuilder::get_current_section();
-		$tabs            = CourseBuilder::get_tabs_arr();
-		$nav_content     = '';
-		$back_btn        = '';
-		if ( ! empty( $section_current ) ) {
-			$section_data = $tabs[ $tab_current ]['sections'] ?? [];
-			$link_tab     = CourseBuilder::get_tab_link( $tab_current );
-			$tab_data     = CourseBuilder::get_data( $tab_current );
-			$title_tab    = $tab_data['title'];
+		$tab_current = CourseBuilder::get_current_tab();
+		$tabs        = CourseBuilder::get_tabs_arr();
+		$nav_content = '';
 
-			$back_btn = sprintf( '<div class="cb-btn-back"><a href="%s">%s</a></div>', $link_tab, __( 'Back to', 'learnpress' ) . ' ' . $title_tab );
-			foreach ( $section_data as $section ) {
-				$slug         = $section['slug'];
-				$id           = CourseBuilder::get_post_id();
-				$nav_item     = $this->html_nav_item( $tab_current, $id, $slug );
-				$nav_content .= $nav_item;
-			}
-		} else {
-			$title = __( 'LearnPress Course Builder', 'learnpress' );
-			foreach ( $tabs as $tab ) {
-				$slug         = $tab['slug'];
-				$nav_item     = $this->html_nav_item( $slug );
-				$nav_content .= $nav_item;
-			}
+		// Always show main navigation tabs (ClassPress-style persistent sidebar)
+		foreach ( $tabs as $tab ) {
+			$slug         = $tab['slug'];
+			$nav_item     = $this->html_nav_item_main( $slug, $tab );
+			$nav_content .= $nav_item;
 		}
 
 		$nav = [
-			'back_btn'    => $back_btn,
-			'wrapper'     => '<ul>',
+			'wrapper'     => '<ul class="lp-cb-sidebar__nav">',
 			'content'     => $nav_content,
 			'wrapper_end' => '</ul>',
 		];
 
 		$sidebar = [
-			'wrapper'     => '<aside id="lp-course-builder-sidebar">',
-			'title'       => sprintf( '<h1>%s</h1>', $title ),
+			'wrapper'     => '<aside id="lp-course-builder-sidebar" class="lp-cb-sidebar">',
+			'header'      => $this->sidebar_header(),
 			'nav'         => Template::combine_components( $nav ),
+			'footer'      => $this->sidebar_footer(),
 			'wrapper_end' => '</aside>',
 		];
 
 		return Template::combine_components( $sidebar );
 	}
 
+	/**
+	 * Sidebar header with logo/title
+	 *
+	 * @since 4.3.0
+	 * @return string
+	 */
+	protected function sidebar_header() {
+		$header = [
+			'wrapper'     => '<div class="lp-cb-sidebar__header">',
+			'logo'        => '<div class="lp-cb-sidebar__logo">
+				<span class="dashicons dashicons-welcome-learn-more"></span>
+				<span class="lp-cb-sidebar__title">' . __( 'Course Builder', 'learnpress' ) . '</span>
+			</div>',
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $header );
+	}
+
+	/**
+	 * Sidebar footer with "Back to Dashboard" link
+	 *
+	 * @since 4.3.0
+	 * @return string
+	 */
+	protected function sidebar_footer() {
+		$dashboard_url = admin_url();
+
+		$footer = [
+			'wrapper'     => '<div class="lp-cb-sidebar__footer">',
+			'back'        => sprintf(
+				'<a href="%s" class="lp-cb-sidebar__item">
+					<span class="dashicons dashicons-arrow-left-alt"></span>
+					<span>%s</span>
+				</a>',
+				esc_url( $dashboard_url ),
+				__( 'Back to Dashboard', 'learnpress' )
+			),
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $footer );
+	}
+
+	/**
+	 * Render main navigation item (persistent sidebar)
+	 *
+	 * @since 4.3.0
+	 * @param string $slug
+	 * @param array $tab_data
+	 * @return string
+	 */
+	protected function html_nav_item_main( $slug, $tab_data ) {
+		$tab_current = CourseBuilder::get_current_tab();
+		$is_active   = $slug === $tab_current;
+		$classes     = [ 'lp-cb-sidebar__item', $slug ];
+
+		if ( $is_active ) {
+			$classes[] = 'is-active';
+		}
+
+		$icons = [
+			'courses'   => 'dashicons-welcome-learn-more',
+			'lessons'   => 'dashicons-media-document',
+			'quizzes'   => 'dashicons-forms',
+			'questions' => 'dashicons-editor-help',
+		];
+
+		$icon  = isset( $icons[ $slug ] ) ? $icons[ $slug ] : 'dashicons-admin-page';
+		$title = $tab_data['title'];
+		$link  = CourseBuilder::get_tab_link( $slug );
+
+		$item = [
+			'wrapper'     => sprintf( '<li class="%s">', implode( ' ', $classes ) ),
+			'content'     => sprintf(
+				'<a href="%s">
+					<span class="dashicons %s"></span>
+					<span class="lp-cb-sidebar__item-title">%s</span>
+				</a>',
+				esc_url( $link ),
+				esc_attr( $icon ),
+				esc_html( $title )
+			),
+			'wrapper_end' => '</li>',
+		];
+
+		return Template::combine_components( $item );
+	}
+
 	public function content() {
 		$tab_current     = CourseBuilder::get_current_tab();
 		$section_current = CourseBuilder::get_current_section();
+		$post_id         = CourseBuilder::get_post_id();
 
 		ob_start();
-		if ( ! empty( $section_current ) ) {
+
+		// If viewing entity detail (has post_id), show breadcrumb + horizontal tabs
+		if ( ! empty( $post_id ) && ! empty( $section_current ) ) {
+			echo $this->render_detail_view( $tab_current, $post_id, $section_current );
+		} elseif ( ! empty( $section_current ) ) {
+			// Legacy section view (fallback)
 			echo $this->html_section( $tab_current, $section_current );
 		} else {
+			// List view
 			echo $this->html_tab( $tab_current );
 		}
 
 		$content = ob_get_clean();
 
 		$output = [
-			'wrapper'     => '<div id="lp-course-builder-content">',
+			'wrapper'     => '<div id="lp-course-builder-content" class="lp-cb-main">',
 			'content'     => $content,
 			'wrapper_end' => '</div>',
 		];
 
 		return Template::combine_components( $output );
+	}
+
+	/**
+	 * Render detail view with breadcrumb and horizontal tabs
+	 *
+	 * @since 4.3.0
+	 * @param string $tab_current
+	 * @param int $post_id
+	 * @param string $section_current
+	 * @return string
+	 */
+	protected function render_detail_view( $tab_current, $post_id, $section_current ) {
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return Template::print_message( __( 'Item not found.', 'learnpress' ), 'error', false );
+		}
+
+		$tab_data = CourseBuilder::get_data( $tab_current );
+		$sections = $tab_data['sections'] ?? [];
+
+		// Get course status for button labels and status badge
+		$status       = $post->post_status;
+		$is_published = $status === 'publish';
+
+		// Status badge HTML
+		$status_badge = ! empty( $status ) ? sprintf( '<span class="course-status %1$s">%1$s</span>', esc_attr( $status ) ) : '';
+
+		ob_start();
+		?>
+		<div class="lp-cb-content">
+			<?php echo $this->render_breadcrumb( $tab_current, $post ); ?>
+			
+			<div class="lp-cb-header">
+				<div class="lp-cb-header__left">
+					<h1 class="lp-cb-header__title"><?php echo esc_html( $post->post_title ); ?></h1>
+					<?php echo $status_badge; ?>
+				</div>
+				<div class="lp-cb-header__actions">
+					<div class="cb-button cb-btn-darft">
+						<?php esc_html_e( 'Save Draft', 'learnpress' ); ?>
+					</div>
+					<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="cb-button cb-btn-preview" target="_blank">
+						<?php esc_html_e( 'Preview', 'learnpress' ); ?>
+					</a>
+					<div class="cb-button cb-btn-update cb-btn-primary" 
+						data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>" 
+						data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>">
+						<?php echo $is_published ? esc_html__( 'Update', 'learnpress' ) : esc_html__( 'Publish', 'learnpress' ); ?>
+					</div>
+				</div>
+			</div>
+			
+			<?php echo $this->render_horizontal_tabs( $tab_current, $post_id, $sections, $section_current ); ?>
+			
+			<div class="lp-cb-tab-content">
+				<?php
+				// Trigger existing action for section content
+				do_action( "learn-press/course-builder/{$tab_current}/{$section_current}/layout" );
+				?>
+			</div>
+
+			<?php if ( $post_id && $post_id !== 'post-new' ) : ?>
+			<div class="lp-cb-footer">
+				<div class="lp-cb-footer__actions">
+					<div class="cb-btn-trash cb-btn-danger">
+						<?php esc_html_e( 'Move to Trash', 'learnpress' ); ?>
+					</div>
+				</div>
+			</div>
+			<?php endif; ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render breadcrumb navigation
+	 *
+	 * @since 4.3.0
+	 * @param string $tab
+	 * @param WP_Post $post
+	 * @return string
+	 */
+	protected function render_breadcrumb( $tab, $post ) {
+		$tab_data  = CourseBuilder::get_data( $tab );
+		$tab_title = $tab_data['title'] ?? ucfirst( $tab );
+		$tab_link  = CourseBuilder::get_tab_link( $tab );
+
+		ob_start();
+		?>
+		<div class="lp-cb-breadcrumb">
+			<a href="<?php echo esc_url( $tab_link ); ?>" class="lp-cb-breadcrumb__item">
+				<?php echo esc_html( $tab_title ); ?>
+			</a>
+			<span class="lp-cb-breadcrumb__separator">›</span>
+			<span class="lp-cb-breadcrumb__item is-current">
+				<?php echo esc_html( $post->post_title ); ?>
+			</span>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render horizontal tab navigation
+	 *
+	 * @since 4.3.0
+	 * @param string $tab
+	 * @param int $post_id
+	 * @param array $sections
+	 * @param string $current_section
+	 * @return string
+	 */
+	protected function render_horizontal_tabs( $tab, $post_id, $sections, $current_section ) {
+		if ( empty( $sections ) ) {
+			return '';
+		}
+
+		ob_start();
+		?>
+		<div class="lp-cb-tabs">
+			<?php
+			foreach ( $sections as $key => $section ) :
+				$is_active = $key === $current_section || $section['slug'] === $current_section;
+				$link      = CourseBuilder::get_tab_link( $tab, $post_id, $section['slug'] );
+				$classes   = [ 'lp-cb-tabs__item' ];
+				if ( $is_active ) {
+					$classes[] = 'is-active';
+				}
+				?>
+				<a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+					<?php echo esc_html( $section['title'] ); ?>
+				</a>
+			<?php endforeach; ?>
+		</div>
+		<?php
+		return ob_get_clean();
 	}
 
 	public function html_nav_item( $tab = '', $post_id = '', $section = '' ) {
@@ -314,7 +584,7 @@ class CourseBuilderTemplate {
 
 	public function html_btn_add_new() {
 		$tab_current = CourseBuilder::get_current_tab();
-		$map_title = [
+		$map_title   = [
 			'courses'   => __( 'Course', 'learnpress' ),
 			'lessons'   => __( 'Lesson', 'learnpress' ),
 			'quizzes'   => __( 'Quiz', 'learnpress' ),
@@ -327,13 +597,13 @@ class CourseBuilderTemplate {
 			'questions' => 'question',
 		];
 
-		$title       = isset( $map_title[ $tab_current ] ) ? $map_title[ $tab_current ] : '';
-		$type = isset( $map_type[ $tab_current ] ) ? $map_type[ $tab_current ] : '';
+		$title   = isset( $map_title[ $tab_current ] ) ? $map_title[ $tab_current ] : '';
+		$type    = isset( $map_type[ $tab_current ] ) ? $map_type[ $tab_current ] : '';
 		$add_new = 'data-add-new-' . esc_attr( $type );
 
 		$btn_add_new = sprintf( '<button %s class="lp-button cb-btn-add-new">', $add_new );
 
-		if('courses' === $tab_current ) {
+		if ( 'courses' === $tab_current ) {
 			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_course_builder( null, 'add-new-course' ) ) );
 		}
 

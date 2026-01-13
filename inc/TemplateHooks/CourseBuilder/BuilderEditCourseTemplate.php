@@ -83,40 +83,30 @@ class BuilderEditCourseTemplate {
 	}
 
 	public function header_section( $course_model ) {
-		$status     = ! empty( $course_model ) ? $course_model->get_status() : '';
-		$btn_update = sprintf( '<div class="cb-button cb-btn-update" data-title-update="%s" data-title-publish="%s">%s</div>', __( 'Update', 'learnpress' ), __( 'Publish', 'learnpress' ), $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
-		$btn_draft  = sprintf( '<div class="cb-button cb-btn-darft">%s</div>', __( 'Save Draft', 'learnpress' ) );
-		$btn_trash  = ! empty( $course_model ) ? sprintf( '<div class="cb-button cb-btn-trash">%s</div>', __( 'Trash', 'learnpress' ) ) : '';
-		$header     = [
+		$header = [
 			'wrapper'          => '<div class="cb-section__header">',
 			'wrapper_left'     => '<div class="cb-section__header-left">',
 			'section_title'    => sprintf( '<h3 class="lp-cb-section__title">%s</h3>', __( 'Edit Course', 'learnpress' ) ),
-			'course_status'    => ! empty( $status ) ? sprintf( '<span class="course-status %1$s">%1$s</span>', $status ) : '',
 			'wrapper_left_end' => '</div>',
-			'action_wrapper'   => '<div class="cb-section__header-action">',
-			'btn_update'       => $btn_update,
-			'btn_draft'        => $btn_draft,
-			'btn_trash'        => $btn_trash,
-			'action_end'       => '</div>',
 			'wrapper_end'      => '</div>',
 		];
 		return Template::combine_components( $header );
 	}
 
 	public function edit_title( $course_model ) {
-		$title          = ! empty( $course_model ) ? $course_model->get_title() : '';
-			$char_count = mb_strlen( wp_strip_all_tags( $title ) );
-			$edit       = [
-				'wrapper'        => '<div class="cb-course-edit-title">',
-				'label_wrap'     => '<div class="cb-course-edit-title__label-wrap">',
-				'label'          => sprintf( '<label for="title" class="cb-course-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
-				'char_count'     => sprintf( '<span class="cb-course-edit-title__char-count">%s</span>', sprintf( __( '%d characters', 'learnpress' ), $char_count ) ),
-				'label_wrap_end' => '</div>',
-				'input'          => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', esc_attr( $title ) ),
-				'wrapper_end'    => '</div>',
-			];
+		$title      = ! empty( $course_model ) ? $course_model->get_title() : '';
+		$char_count = mb_strlen( wp_strip_all_tags( $title ) );
+		$edit       = [
+			'wrapper'        => '<div class="cb-course-edit-title">',
+			'label_wrap'     => '<div class="cb-course-edit-title__label-wrap">',
+			'label'          => sprintf( '<label for="title" class="cb-course-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
+			'char_count'     => sprintf( '<span class="cb-course-edit-title__char-count">%s</span>', sprintf( __( '%d characters', 'learnpress' ), $char_count ) ),
+			'label_wrap_end' => '</div>',
+			'input'          => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', esc_attr( $title ) ),
+			'wrapper_end'    => '</div>',
+		];
 
-			return Template::combine_components( $edit );
+		return Template::combine_components( $edit );
 	}
 
 	public function edit_desc( $course_model ) {

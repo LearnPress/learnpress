@@ -127,18 +127,18 @@ body.lp-popup-open {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: rgba( 0, 0, 0, 0.6 );
+	backdrop-filter: blur( 3px );
 	z-index: 1;
 }
 
 .lp-builder-popup {
 	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate( -50%, -50% );
-	width: 90%;
+	inset: 5vh 5% 5vh 5%;
+	width: auto;
 	max-width: 900px;
-	max-height: 90vh;
+	max-height: none;
+	height: auto;
+	margin: auto;
 	background-color: #fff;
 	border-radius: 12px;
 	box-shadow: 0 10px 40px rgba( 0, 0, 0, 0.2 );
@@ -146,18 +146,14 @@ body.lp-popup-open {
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
-	transition: all 0.3s ease;
+	transition: inset 0.3s cubic-bezier( 0.4, 0, 0.2, 1 ),
+				border-radius 0.3s cubic-bezier( 0.4, 0, 0.2, 1 ),
+				max-width 0.3s cubic-bezier( 0.4, 0, 0.2, 1 );
 
-	// Fullscreen mode
 	&--fullscreen {
-		width: 100%;
+		inset: 0;
 		max-width: 100%;
-		height: 100%;
-		max-height: 100%;
 		border-radius: 0;
-		top: 0;
-		left: 0;
-		transform: none;
 	}
 
 	&--loading {
