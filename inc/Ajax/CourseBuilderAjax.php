@@ -120,7 +120,7 @@ class CourseBuilderAjax extends AbstractAjax {
 	 * Save Course.
 	 *
 	 * @since 4.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function save_courses() {
 		$response       = new LP_REST_Response();
@@ -133,6 +133,11 @@ class CourseBuilderAjax extends AbstractAjax {
 			$insert    = $data['insert'];
 
 			if ( $insert ) {
+				// Check user capability before insert
+				if ( ! current_user_can( 'edit_lp_courses' ) ) {
+					throw new Exception( __( 'You are not allowed to create courses', 'learnpress' ) );
+				}
+
 				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
 				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
 
@@ -185,12 +190,6 @@ class CourseBuilderAjax extends AbstractAjax {
 				$course_id = $courseModel->ID;
 			}
 
-			if ( ! empty( $data['course_thumbnail_id'] ) ) {
-				set_post_thumbnail( $course_id, absint( $data['course_thumbnail_id'] ) );
-			} else {
-				delete_post_thumbnail( $course_id );
-			}
-
 			if ( $settings ) {
 				$this->save_course_settings_to_model( $courseModel, $data );
 			}
@@ -203,11 +202,28 @@ class CourseBuilderAjax extends AbstractAjax {
 				$coursePostModel->save();
 			}
 
+			// Handle course thumbnail - AFTER coursePostModel->save() to avoid being overwritten
+			if ( isset( $data['course_thumbnail_id'] ) ) {
+				$thumbnail_id = absint( $data['course_thumbnail_id'] );
+				
+				if ( $thumbnail_id > 0 ) {
+					$result = set_post_thumbnail( $course_id, $thumbnail_id );
+				} else {
+					$result = delete_post_thumbnail( $course_id );
+				}
+				$current_thumbnail = get_post_thumbnail_id( $course_id );
+			}
+
 			$response->status              = 'success';
 			$response->message             = $insert ? __( 'Insert course successfully!', 'learnpress' ) : __( 'Update course successfully!', 'learnpress' );
 			$response->data->status        = $data['course_status'];
 			$response->data->button_title  = $data['course_status'] === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 			$response->data->course_id_new = $insert ? $course_id : '';
+			
+			// Return full redirect URL for new courses
+			if ( $insert && $course_id ) {
+				$response->data->redirect_url = \LearnPress\CourseBuilder\CourseBuilder::get_tab_link( 'courses', $course_id, 'overview' );
+			}
 
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
@@ -1048,7 +1064,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 
 		if ( isset( $data['_lp_preview'] ) ) {
-			$enable = $data['_lp_preview'] === 'yes' ? 'yes' : '';
+			$enable = $data['_lp_preview'] === 'yes';
 			$lessonModel->set_preview( $enable );
 		}
 	}

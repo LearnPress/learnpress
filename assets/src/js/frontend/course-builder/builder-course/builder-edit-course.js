@@ -741,9 +741,16 @@ export class BuilderEditCourse {
 					const updateBtn = document.querySelector( BuilderEditCourse.selectors.elBtnUpdateCourse );
 					if ( updateBtn ) updateBtn.textContent = data.button_title;
 				}
-				if ( data?.course_id_new ) {
+				// Use redirect_url from backend if available (for new courses)
+				if ( data?.redirect_url ) {
+					window.location.href = data.redirect_url;
+				} else if ( data?.course_id_new ) {
+					// Fallback: build redirect URL manually
 					const currentUrl = window.location.href;
-					window.location.href = currentUrl.replace( /post-new\/?/, `${ data.course_id_new }/` );
+					const newUrl = currentUrl.replace( /\/post-new\/?(\?.*)?$/, `/${ data.course_id_new }/overview/` );
+					if ( newUrl !== currentUrl ) {
+						window.location.href = newUrl;
+					}
 				}
 				if ( data?.status ) {
 					const elStatus = document.querySelector( BuilderEditCourse.selectors.elStatus );

@@ -21,6 +21,11 @@ use WP_User;
  */
 class CourseBuilder {
 	/**
+	 * Constant for new post identifier
+	 */
+	const POST_NEW = 'post-new';
+
+	/**
 	 *  Constructor
 	 *
 	 */
@@ -192,12 +197,22 @@ class CourseBuilder {
 	public static function get_link_course_builder( $sub = '' ) {
 		$page = LP_Settings::get_option( 'course_builder', 'course-builder' );
 		$link = sprintf( '%s/%s/', home_url(), $page );
-		$tab  = self::get_current_tab();
 
 		if ( $sub ) {
-			$link .= $tab . '/' . $sub;
+			$link .= $sub . '/';
 		}
+
 		return $link;
+	}
+
+	/**
+	 * Get link for add new course
+	 *
+	 * @return string
+	 * @since 4.3.0
+	 */
+	public static function get_link_add_new_course() {
+		return self::get_tab_link( 'courses', self::POST_NEW, 'overview' );
 	}
 
 	public static function get_tab_link( $tab = false, $post_id = null, $section = false ) {

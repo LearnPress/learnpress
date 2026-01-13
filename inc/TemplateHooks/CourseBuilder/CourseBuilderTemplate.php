@@ -330,43 +330,54 @@ class CourseBuilderTemplate {
 	 *
 	 * @since 4.3.0
 	 * @param string $tab_current
-	 * @param int $post_id
+	 * @param int|string $post_id
 	 * @param string $section_current
 	 * @return string
 	 */
 	protected function render_detail_view( $tab_current, $post_id, $section_current ) {
-		$post = get_post( $post_id );
-		if ( ! $post ) {
-			return Template::print_message( __( 'Item not found.', 'learnpress' ), 'error', false );
+		$is_new_post = ( $post_id === CourseBuilder::POST_NEW );
+		$post        = null;
+
+		if ( ! $is_new_post ) {
+			$post = get_post( $post_id );
+			if ( ! $post ) {
+				return Template::print_message( __( 'Item not found.', 'learnpress' ), 'error', false );
+			}
 		}
 
 		$tab_data = CourseBuilder::get_data( $tab_current );
 		$sections = $tab_data['sections'] ?? [];
 
-		// Get course status for button labels and status badge
-		$status       = $post->post_status;
+		// Get status for button labels and status badge
+		$status       = $is_new_post ? 'auto-draft' : $post->post_status;
 		$is_published = $status === 'publish';
+		$post_title   = $is_new_post ? __( 'Add New Course', 'learnpress' ) : $post->post_title;
 
-		// Status badge HTML
-		$status_badge = ! empty( $status ) ? sprintf( '<span class="course-status %1$s">%1$s</span>', esc_attr( $status ) ) : '';
+		// Status badge HTML (hide for new post)
+		$status_badge = '';
+		if ( ! $is_new_post && ! empty( $status ) ) {
+			$status_badge = sprintf( '<span class="course-status %1$s">%1$s</span>', esc_attr( $status ) );
+		}
 
 		ob_start();
 		?>
-		<div class="lp-cb-content">
-			<?php echo $this->render_breadcrumb( $tab_current, $post ); ?>
+		<div class="lp-cb-content" data-post-id="<?php echo esc_attr( $post_id ); ?>" data-is-new="<?php echo $is_new_post ? '1' : '0'; ?>">
+			<?php echo $this->render_breadcrumb( $tab_current, $post, $is_new_post ); ?>
 			
 			<div class="lp-cb-header">
 				<div class="lp-cb-header__left">
-					<h1 class="lp-cb-header__title"><?php echo esc_html( $post->post_title ); ?></h1>
+					<h1 class="lp-cb-header__title"><?php echo esc_html( $post_title ); ?></h1>
 					<?php echo $status_badge; ?>
 				</div>
 				<div class="lp-cb-header__actions">
 					<div class="cb-button cb-btn-darft">
 						<?php esc_html_e( 'Save Draft', 'learnpress' ); ?>
 					</div>
+					<?php if ( ! $is_new_post ) : ?>
 					<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="cb-button cb-btn-preview" target="_blank">
 						<?php esc_html_e( 'Preview', 'learnpress' ); ?>
 					</a>
+					<?php endif; ?>
 					<div class="cb-button cb-btn-update cb-btn-primary" 
 						data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>" 
 						data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>">
@@ -380,11 +391,11 @@ class CourseBuilderTemplate {
 			<div class="lp-cb-tab-content">
 				<?php
 				// Trigger existing action for section content
-				do_action( "learn-press/course-builder/{$tab_current}/{$section_current}/layout" );
+				do_action( "learn-press/course-builder/{$tab_current}/{$section_current}/layout", $post_id, $is_new_post );
 				?>
 			</div>
 
-			<?php if ( $post_id && $post_id !== 'post-new' ) : ?>
+			<?php if ( ! $is_new_post ) : ?>
 			<div class="lp-cb-footer">
 				<div class="lp-cb-footer__actions">
 					<div class="cb-btn-trash cb-btn-danger">
@@ -398,35 +409,7 @@ class CourseBuilderTemplate {
 		return ob_get_clean();
 	}
 
-	/**
-	 * Render breadcrumb navigation
-	 *
-	 * @since 4.3.0
-	 * @param string $tab
-	 * @param WP_Post $post
-	 * @return string
-	 */
-	protected function render_breadcrumb( $tab, $post ) {
-		$tab_data  = CourseBuilder::get_data( $tab );
-		$tab_title = $tab_data['title'] ?? ucfirst( $tab );
-		$tab_link  = CourseBuilder::get_tab_link( $tab );
-
-		ob_start();
-		?>
-		<div class="lp-cb-breadcrumb">
-			<a href="<?php echo esc_url( $tab_link ); ?>" class="lp-cb-breadcrumb__item">
-				<?php echo esc_html( $tab_title ); ?>
-			</a>
-			<span class="lp-cb-breadcrumb__separator">›</span>
-			<span class="lp-cb-breadcrumb__item is-current">
-				<?php echo esc_html( $post->post_title ); ?>
-			</span>
-		</div>
-		<?php
-		return ob_get_clean();
-	}
-
-	/**
+		/**
 	 * Render horizontal tab navigation
 	 *
 	 * @since 4.3.0
@@ -457,6 +440,36 @@ class CourseBuilderTemplate {
 					<?php echo esc_html( $section['title'] ); ?>
 				</a>
 			<?php endforeach; ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render breadcrumb navigation
+	 *
+	 * @since 4.3.0
+	 * @param string $tab
+	 * @param WP_Post|null $post
+	 * @param bool $is_new_post
+	 * @return string
+	 */
+	protected function render_breadcrumb( $tab, $post, $is_new_post = false ) {
+		$tab_data   = CourseBuilder::get_data( $tab );
+		$tab_title  = $tab_data['title'] ?? ucfirst( $tab );
+		$tab_link   = CourseBuilder::get_tab_link( $tab );
+		$post_title = $is_new_post ? __( 'Add New', 'learnpress' ) : $post->post_title;
+
+		ob_start();
+		?>
+		<div class="lp-cb-breadcrumb">
+			<a href="<?php echo esc_url( $tab_link ); ?>" class="lp-cb-breadcrumb__item">
+				<?php echo esc_html( $tab_title ); ?>
+			</a>
+			<span class="lp-cb-breadcrumb__separator">›</span>
+			<span class="lp-cb-breadcrumb__item is-current">
+				<?php echo esc_html( $post_title ); ?>
+			</span>
 		</div>
 		<?php
 		return ob_get_clean();
@@ -604,7 +617,7 @@ class CourseBuilderTemplate {
 		$btn_add_new = sprintf( '<button %s class="lp-button cb-btn-add-new">', $add_new );
 
 		if ( 'courses' === $tab_current ) {
-			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_course_builder( null, 'add-new-course' ) ) );
+			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_add_new_course( CourseBuilder::POST_NEW ) ) );
 		}
 
 		$btn = [

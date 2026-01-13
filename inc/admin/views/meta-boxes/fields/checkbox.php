@@ -40,9 +40,12 @@ class LP_Meta_Box_Checkbox_Field extends LP_Meta_Box_Field {
 		$name          = ! empty( $field['name'] ) ? esc_attr( $field['name'] ) : esc_attr( $field['id'] );
 		$name          = 'name="' . $name . '"';
 
-		$value_db = $this->meta_value( $thepostid );
+		// Check if meta key exists in database
+		$meta_exists = metadata_exists( 'post', $thepostid, $this->id );
+		$value_db    = $this->meta_value( $thepostid );
 
-		if ( ! $value_db && $field['default'] !== '' ) {
+		// Only use default if meta key doesn't exist in database
+		if ( ! $meta_exists && $field['default'] !== '' ) {
 			$value_db = $field['default'];
 		}
 
