@@ -104,8 +104,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp-course-builder'  => new LP_Asset_Key(
 					self::url( 'css/course-builder' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),
-					array(),
-					1
+					array( LP_PAGE_COURSE_BUILDER ),
+					0
 				),
 				'lp-tom-select'      => new LP_Asset_Key(
 					self::url( 'src/css/vendor/tom-select.min.css' ),

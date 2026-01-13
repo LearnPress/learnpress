@@ -462,6 +462,7 @@ class LP_Page_Controller {
 
 		if ( ! empty( $wp_query->get( 'is_course_builder' ) ) ) {
 			$template = LP_TEMPLATE_PATH . 'pages/course-builder.php';
+
 			return $template;
 		}
 
@@ -899,6 +900,11 @@ class LP_Page_Controller {
 		 */
 		global $wp_query;
 
+		// Course Builder page detection
+		if ( self::is_page_course_builder() ) {
+			return LP_PAGE_COURSE_BUILDER;
+		}
+
 		if ( ! is_object( $wp_query ) || ! $wp_query->get_queried_object() ) {
 			return '';
 		}
@@ -921,8 +927,6 @@ class LP_Page_Controller {
 			return LP_PAGE_INSTRUCTORS;
 		} elseif ( self::is_page_instructor() ) {
 			return LP_PAGE_INSTRUCTOR;
-		} elseif ( self::is_page_course_builder() ) {
-			return LP_PAGE_COURSE_BUILDER;
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
 		}
