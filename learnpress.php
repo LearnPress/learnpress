@@ -19,6 +19,7 @@ use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\AI\OpenAiAjax;
+use LearnPress\Ajax\ExportOrderCSVAjax;
 use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
@@ -58,6 +59,7 @@ use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 use LearnPress\TemplateHooks\Order\AdminOrderItemsTemplate;
+use LearnPress\TemplateHooks\Order\AdminOrderListTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
@@ -344,6 +346,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
 			AdminOrderItemsTemplate::instance();
+			AdminOrderListTemplate::instance();
 			AdminCreateCourseAITemplate::instance();
 			AdminEditWithAITemplate::instance();
 			AdminEditCourseCurriculumWithAITemplate::instance();
@@ -699,6 +702,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					EditQuestionAjax::catch_lp_ajax();
 					SendEmailAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
+					ExportOrderCSVAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},
