@@ -2,27 +2,29 @@
 /**
  * Template hooks Course Builder.
  *
- * @since 4.3.0
- * @version 1.0.1
+ * @since 4.3.x
+ * @version 1.0.0
  */
 
 namespace LearnPress\TemplateHooks\CourseBuilder;
 
+use Exception;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
 use LP_Assets;
-use LP_Global;
 use LP_Helper;
-use LP_Settings;
+use LP_Profile;
+use Throwable;
 
 class CourseBuilderTemplate {
 	use Singleton;
 
 	public function init() {
-		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
+		//add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
 		add_action( 'learn-press/course-builder/layout', [ $this, 'layout' ] );
+		// Show link to Course Builder in admin bar
 		add_action( 'admin_bar_menu', array( $this, 'add_admin_bar_menu' ), 80 );
 		// Hide admin bar for instructor (not admin)
 		add_filter( 'show_admin_bar', [ $this, 'hide_admin_bar_for_instructor' ] );
@@ -32,6 +34,7 @@ class CourseBuilderTemplate {
 	 * Hide admin bar for instructor users (not administrators).
 	 *
 	 * @param bool $show_admin_bar
+	 *
 	 * @return bool
 	 * @since 4.3.0
 	 */
@@ -56,67 +59,96 @@ class CourseBuilderTemplate {
 	/**
 	 * Allow callback for AJAX.
 	 * @use self::render_html_comments
+	 *
 	 * @param array $callbacks
 	 *
 	 * @return array
 	 */
-	public function allow_callback( array $callbacks ): array {
+	/*public function allow_callback( array $callbacks ): array {
 		$callbacks[] = get_class( $this ) . ':sidebar';
 
 		return $callbacks;
-	}
+	}*/
 
+	/**
+	 * Layout for Course Builder.
+	 *
+	 * @since 4.3.x
+	 */
 	public function layout() {
-		wp_enqueue_style( 'lp-course-builder' );
-		// Load edit curriculum style
-		wp_enqueue_style( 'lp-edit-curriculum' );
-		// Load dashicons for sidebar icons
-		wp_enqueue_style( 'dashicons' );
+		try {
+			// Enqueue assets(js,css) for Course Builder
+			$this->enqueue_assets();
 
-		// Enqueue scripts for Course Builder
-		$this->enqueue_scripts();
+			$profile = LP_Profile::instance();
 
-		$profile = LP_Global::profile();
+			if ( ! is_user_logged_in() ) {
+				throw new Exception(
+					sprintf(
+						'<a href="%s">%s</a>',
+						$profile->get_login_url(),
+						__( 'Authentication required', 'learnpress' )
+					)
+				);
+			} else {
+				$userModel = UserModel::find( get_current_user_id(), true );
+				if ( ! $userModel->is_instructor() ) {
+					throw new Exception( __( "Sorry, you don't have permission to access Course Builder", 'learnpress' ) );
+				}
+			}
 
-		if ( ! is_user_logged_in() ) {
+			$layout = [
+				'wrapper'     => '<div class="learn-press-course-builder">',
+				'header'      => $this->html_header(),
+				'body'        => '<div class="lp-cb-body">',
+				'sidebar'     => $this->html_sidebar(),
+				'content'     => $this->html_content(),
+				'body_end'    => '</div>',
+				'wrapper_end' => '</div>',
+			];
+
+			echo Template::combine_components( $layout );
+		} catch ( Throwable $e ) {
 			echo Template::print_message(
-				sprintf( '<a href="%s">%s</a>', $profile->get_login_url(), __( 'Authentication required', 'learnpress' ) ),
-				'warning',
+				wp_kses_post( $e->getMessage() ),
+				'error',
 				false
 			);
-			return;
-		} else {
-			$user = UserModel::find( get_current_user_id(), true );
-			if ( ! $user->is_instructor() ) {
-				echo Template::print_message(
-					sprintf( __( "Sorry, you don't have permission to perform this action", 'learnpress' ) ),
-					'warning',
-					false
-				);
-				return;
-			}
 		}
-
-		$layout = [
-			'wrapper'     => '<div class="learn-press-course-builder">',
-			'header'      => $this->top_header(),
-			'body'        => '<div class="lp-cb-body">',
-			'sidebar'     => $this->sidebar(),
-			'content'     => $this->content(),
-			'body_end'    => '</div>',
-			'wrapper_end' => '</div>',
-		];
-
-		echo Template::combine_components( $layout );
 	}
 
 	/**
-	 * Top header with logo and user profile
+	 * Enqueue scripts, styles and localize data for Course Builder.
 	 *
-	 * @since 4.3.0
-	 * @return string
+	 * @since 4.3.x
+	 * @version 1.0.0
 	 */
-	protected function top_header() {
+	protected function enqueue_assets() {
+		wp_enqueue_style( 'lp-course-builder' );
+		// Load dashicons for sidebar icons
+		wp_enqueue_style( 'dashicons' );
+		wp_enqueue_script( 'lp-load-ajax' );
+		wp_enqueue_script( 'lp-course-builder' );
+		wp_enqueue_editor();
+		wp_enqueue_media();
+
+		// Print lpData inline script if not already printed
+		// This ensures lpAjaxUrl is available for AJAX calls
+		/*$lp_assets = LP_Assets::instance();
+		if ( $lp_assets ) {
+			$localize_data = $lp_assets->localize_data_global();
+			LP_Helper::print_inline_script_tag( 'lpData', $localize_data, [ 'id' => 'lpData-course-builder' ] );
+		}*/
+	}
+
+	/**
+	 * Header with logo and user profile
+	 *
+	 * @return string
+	 * @since 4.3.x
+	 * @version 1.0.0
+	 */
+	protected function html_header(): string {
 		$user         = wp_get_current_user();
 		$avatar       = get_avatar( $user->ID, 32 );
 		$display_name = $user->display_name;
@@ -158,27 +190,11 @@ class CourseBuilderTemplate {
 	}
 
 	/**
-	 * Enqueue scripts and localize data for Course Builder.
+	 * HTML Sidebar
 	 *
-	 * @since 4.3.0
-	 * @version 1.0.0
+	 * @return string
 	 */
-	protected function enqueue_scripts() {
-		wp_enqueue_script( 'lp-load-ajax' );
-		wp_enqueue_script( 'lp-course-builder' );
-		wp_enqueue_editor();
-		wp_enqueue_media();
-
-		// Print lpData inline script if not already printed
-		// This ensures lpAjaxUrl is available for AJAX calls
-		$lp_assets = LP_Assets::instance();
-		if ( $lp_assets ) {
-			$localize_data = $lp_assets->localize_data_global();
-			LP_Helper::print_inline_script_tag( 'lpData', $localize_data, [ 'id' => 'lpData-course-builder' ] );
-		}
-	}
-
-	public function sidebar() {
+	public function html_sidebar(): string {
 		$tab_current = CourseBuilder::get_current_tab();
 		$tabs        = CourseBuilder::get_tabs_arr();
 		$nav_content = '';
@@ -198,7 +214,7 @@ class CourseBuilderTemplate {
 
 		$sidebar = [
 			'wrapper'     => '<aside id="lp-course-builder-sidebar" class="lp-cb-sidebar">',
-			'header'      => $this->sidebar_header(),
+			//'header'      => $this->sidebar_header(),
 			'nav'         => Template::combine_components( $nav ),
 			'footer'      => $this->sidebar_footer(),
 			'wrapper_end' => '</aside>',
@@ -208,12 +224,48 @@ class CourseBuilderTemplate {
 	}
 
 	/**
+	 * HTML main content area
+	 *
+	 * @return string
+	 * @since 4.3.x
+	 * @version 1.0.0
+	 */
+	public function html_content(): string {
+		$tab_current     = CourseBuilder::get_current_tab();
+		$section_current = CourseBuilder::get_current_section();
+		$post_id         = CourseBuilder::get_post_id();
+
+		ob_start();
+
+		// If viewing entity detail (has post_id), show breadcrumb + horizontal tabs
+		if ( ! empty( $post_id ) && ! empty( $section_current ) ) {
+			echo $this->render_detail_view( $tab_current, $post_id, $section_current );
+		} elseif ( ! empty( $section_current ) ) {
+			// Legacy section view (fallback)
+			echo $this->html_section( $tab_current, $section_current );
+		} else {
+			// List view
+			echo $this->html_tab( $tab_current );
+		}
+
+		$content = ob_get_clean();
+
+		$output = [
+			'wrapper'     => '<div id="lp-course-builder-content" class="lp-cb-main">',
+			'content'     => $content,
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $output );
+	}
+
+	/**
 	 * Sidebar header with logo/title
 	 *
-	 * @since 4.3.0
 	 * @return string
+	 * @since 4.3.0
 	 */
-	protected function sidebar_header() {
+	/*protected function sidebar_header() {
 		$header = [
 			'wrapper'     => '<div class="lp-cb-sidebar__header">',
 			'logo'        => '<div class="lp-cb-sidebar__logo">
@@ -224,13 +276,13 @@ class CourseBuilderTemplate {
 		];
 
 		return Template::combine_components( $header );
-	}
+	}*/
 
 	/**
 	 * Sidebar footer with "Back to Dashboard" link
 	 *
-	 * @since 4.3.0
 	 * @return string
+	 * @since 4.3.0
 	 */
 	protected function sidebar_footer() {
 		$dashboard_url = admin_url();
@@ -254,10 +306,11 @@ class CourseBuilderTemplate {
 	/**
 	 * Render main navigation item (persistent sidebar)
 	 *
-	 * @since 4.3.0
 	 * @param string $slug
 	 * @param array $tab_data
+	 *
 	 * @return string
+	 * @since 4.3.0
 	 */
 	protected function html_nav_item_main( $slug, $tab_data ) {
 		$tab_current = CourseBuilder::get_current_tab();
@@ -296,43 +349,15 @@ class CourseBuilderTemplate {
 		return Template::combine_components( $item );
 	}
 
-	public function content() {
-		$tab_current     = CourseBuilder::get_current_tab();
-		$section_current = CourseBuilder::get_current_section();
-		$post_id         = CourseBuilder::get_post_id();
-
-		ob_start();
-
-		// If viewing entity detail (has post_id), show breadcrumb + horizontal tabs
-		if ( ! empty( $post_id ) && ! empty( $section_current ) ) {
-			echo $this->render_detail_view( $tab_current, $post_id, $section_current );
-		} elseif ( ! empty( $section_current ) ) {
-			// Legacy section view (fallback)
-			echo $this->html_section( $tab_current, $section_current );
-		} else {
-			// List view
-			echo $this->html_tab( $tab_current );
-		}
-
-		$content = ob_get_clean();
-
-		$output = [
-			'wrapper'     => '<div id="lp-course-builder-content" class="lp-cb-main">',
-			'content'     => $content,
-			'wrapper_end' => '</div>',
-		];
-
-		return Template::combine_components( $output );
-	}
-
 	/**
 	 * Render detail view with breadcrumb and horizontal tabs
 	 *
-	 * @since 4.3.0
 	 * @param string $tab_current
 	 * @param int|string $post_id
 	 * @param string $section_current
+	 *
 	 * @return string
+	 * @since 4.3.0
 	 */
 	protected function render_detail_view( $tab_current, $post_id, $section_current ) {
 		$is_new_post = ( $post_id === CourseBuilder::POST_NEW );
@@ -361,9 +386,10 @@ class CourseBuilderTemplate {
 
 		ob_start();
 		?>
-		<div class="lp-cb-content" data-post-id="<?php echo esc_attr( $post_id ); ?>" data-is-new="<?php echo $is_new_post ? '1' : '0'; ?>">
+		<div class="lp-cb-content" data-post-id="<?php echo esc_attr( $post_id ); ?>"
+			data-is-new="<?php echo $is_new_post ? '1' : '0'; ?>">
 			<?php echo $this->render_breadcrumb( $tab_current, $post, $is_new_post ); ?>
-			
+
 			<div class="lp-cb-header">
 				<div class="lp-cb-header__left">
 					<h1 class="lp-cb-header__title"><?php echo esc_html( $post_title ); ?></h1>
@@ -374,20 +400,21 @@ class CourseBuilderTemplate {
 						<?php esc_html_e( 'Save Draft', 'learnpress' ); ?>
 					</div>
 					<?php if ( ! $is_new_post ) : ?>
-					<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="cb-button cb-btn-preview" target="_blank">
-						<?php esc_html_e( 'Preview', 'learnpress' ); ?>
-					</a>
+						<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="cb-button cb-btn-preview"
+							target="_blank">
+							<?php esc_html_e( 'Preview', 'learnpress' ); ?>
+						</a>
 					<?php endif; ?>
-					<div class="cb-button cb-btn-update cb-btn-primary" 
-						data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>" 
+					<div class="cb-button cb-btn-update cb-btn-primary"
+						data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>"
 						data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>">
 						<?php echo $is_published ? esc_html__( 'Update', 'learnpress' ) : esc_html__( 'Publish', 'learnpress' ); ?>
 					</div>
 				</div>
 			</div>
-			
+
 			<?php echo $this->render_horizontal_tabs( $tab_current, $post_id, $sections, $section_current ); ?>
-			
+
 			<div class="lp-cb-tab-content">
 				<?php
 				// Trigger existing action for section content
@@ -396,28 +423,29 @@ class CourseBuilderTemplate {
 			</div>
 
 			<?php if ( ! $is_new_post ) : ?>
-			<div class="lp-cb-footer">
-				<div class="lp-cb-footer__actions">
-					<div class="cb-btn-trash cb-btn-danger">
-						<?php esc_html_e( 'Move to Trash', 'learnpress' ); ?>
+				<div class="lp-cb-footer">
+					<div class="lp-cb-footer__actions">
+						<div class="cb-btn-trash cb-btn-danger">
+							<?php esc_html_e( 'Move to Trash', 'learnpress' ); ?>
+						</div>
 					</div>
 				</div>
-			</div>
 			<?php endif; ?>
 		</div>
 		<?php
 		return ob_get_clean();
 	}
 
-		/**
+	/**
 	 * Render horizontal tab navigation
 	 *
-	 * @since 4.3.0
 	 * @param string $tab
 	 * @param int $post_id
 	 * @param array $sections
 	 * @param string $current_section
+	 *
 	 * @return string
+	 * @since 4.3.0
 	 */
 	protected function render_horizontal_tabs( $tab, $post_id, $sections, $current_section ) {
 		if ( empty( $sections ) ) {
@@ -448,11 +476,12 @@ class CourseBuilderTemplate {
 	/**
 	 * Render breadcrumb navigation
 	 *
-	 * @since 4.3.0
 	 * @param string $tab
 	 * @param WP_Post|null $post
 	 * @param bool $is_new_post
+	 *
 	 * @return string
+	 * @since 4.3.0
 	 */
 	protected function render_breadcrumb( $tab, $post, $is_new_post = false ) {
 		$tab_data   = CourseBuilder::get_data( $tab );
@@ -630,7 +659,7 @@ class CourseBuilderTemplate {
 	}
 
 	/**
-	 * Menu for Course Builder.
+	 * Show link to Course Builder in admin bar
 	 */
 	public function add_admin_bar_menu( $wp_admin_bar ) {
 		$href = CourseBuilder::get_link_course_builder();
