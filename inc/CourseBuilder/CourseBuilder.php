@@ -3,6 +3,7 @@
 namespace LearnPress\CourseBuilder;
 
 use Exception;
+use LearnPress\Helpers\Config;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LP_Course_Post_Type;
@@ -40,74 +41,7 @@ class CourseBuilder {
 	 * @version 1.0.0
 	 */
 	public static function get_tabs_arr(): array {
-		$tab_arr = [
-			'courses'   => array(
-				'title'    => esc_html__( 'Courses', 'learnpress' ),
-				'slug'     => 'courses',
-				'sections' => array(
-					'overview'   => array(
-						'title' => esc_html__( 'Overview', 'learnpress' ),
-						'slug'  => 'overview',
-					),
-					'curriculum' => array(
-						'title' => esc_html__( 'Curriculum', 'learnpress' ),
-						'slug'  => 'curriculum',
-					),
-					'settings'   => array(
-						'title' => esc_html__( 'Settings', 'learnpress' ),
-						'slug'  => 'settings',
-					),
-				),
-			),
-			'lessons'   => array(
-				'title'    => esc_html__( 'Lessons', 'learnpress' ),
-				'slug'     => 'lessons',
-				'sections' => array(
-					'overview' => array(
-						'title' => esc_html__( 'Overview', 'learnpress' ),
-						'slug'  => 'overview',
-					),
-					'settings' => array(
-						'title' => esc_html__( 'Settings', 'learnpress' ),
-						'slug'  => 'settings',
-					),
-				),
-			),
-			'quizzes'   => array(
-				'title'    => esc_html__( 'Quizzes', 'learnpress' ),
-				'slug'     => 'quizzes',
-				'sections' => array(
-					'overview' => array(
-						'title' => esc_html__( 'Overview', 'learnpress' ),
-						'slug'  => 'overview',
-					),
-					'question' => array(
-						'title' => esc_html__( 'Question', 'learnpress' ),
-						'slug'  => 'question',
-					),
-					'settings' => array(
-						'title' => esc_html__( 'Settings', 'learnpress' ),
-						'slug'  => 'settings',
-					),
-				),
-			),
-			'questions' => array(
-				'title'    => esc_html__( 'Questions', 'learnpress' ),
-				'slug'     => 'questions',
-				'sections' => array(
-					'overview' => array(
-						'title' => esc_html__( 'Overview', 'learnpress' ),
-						'slug'  => 'overview',
-					),
-					'settings' => array(
-						'title' => esc_html__( 'Settings', 'learnpress' ),
-						'slug'  => 'settings',
-					),
-				),
-			),
-		];
-
-		return apply_filters( 'learn-press/course-builder/tabs', $tab_arr );
+		return Config::instance()->get( 'menus', 'course-builder' );
 	}
 
 	/**
@@ -215,7 +149,19 @@ class CourseBuilder {
 		return self::get_tab_link( 'courses', self::POST_NEW, 'overview' );
 	}
 
-	public static function get_tab_link( $tab = false, $post_id = null, $section = false ) {
+	/**
+	 * Get tab link
+	 *
+	 * @param string|false $tab
+	 * @param int|string|null $post_id
+	 * @param string|false $section
+	 *
+	 * @return string
+	 *
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public static function get_tab_link( $tab = false, $post_id = null, $section = false ): string {
 		$link = '';
 		if ( ! $tab ) {
 			return $link;
