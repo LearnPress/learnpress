@@ -19,6 +19,9 @@ export class BuilderEditCourse {
 		elBtnDraftCourse: '.cb-btn-darft',
 		elBtnTrashCourse: '.cb-btn-trash',
 		elBtnSaveSettings: '.cb-btn-save-settings',
+		elDropdownToggle: '.cb-btn-dropdown-toggle',
+		elDropdownMenu: '.cb-dropdown-menu',
+		elHeaderActionsDropdown: '.cb-header-actions-dropdown',
 		elTitleInput: '#title',
 		elTitleCharCount: '.cb-course-edit-title__char-count',
 		elDescEditor: '#course_description_editor',
@@ -43,10 +46,12 @@ export class BuilderEditCourse {
 		elInputAddTag: '.cb-course-edit-tags__input',
 
 		elBtnRemoveFeatured: '.cb-remove-featured-image',
-		elBtnSetFeatured: '.cb-set-featured-image',
-		elFeaturedImagePreview: '.cb-featured-image-preview',
+		elBtnSetFeatured: '.cb-featured-image-dropzone:not(.has-image)',
+		elBtnChangeFeatured: '.cb-change-featured-image',
+		elFeaturedImageDropzone: '.cb-featured-image-dropzone',
+		elFeaturedImageLink: '.cb-featured-image-link',
 		elThumbnailInput: '#course_thumbnail_id',
-		elFeatureImagePlaceholder: '.cb-featured-image-placeholder',
+		elFeaturedImageContainer: '.cb-featured-image-container',
 
 		elPriceCourseData: '#price_course_data',
 		elSaleDatesFields: '.lp_sale_dates_fields',
@@ -73,6 +78,7 @@ export class BuilderEditCourse {
 		this.initSalePriceLayout();
 		this.initTitleCharCount();
 		this.initDescWordCount();
+		this.initHeaderActionsDropdown();
 		this.events();
 	}
 
@@ -145,6 +151,16 @@ export class BuilderEditCourse {
 			},
 			{
 				selector: BuilderEditCourse.selectors.elBtnSetFeatured,
+				class: this,
+				callBack: this.openMediaUploader.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elFeaturedImageLink,
+				class: this,
+				callBack: this.openMediaUploader.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elBtnChangeFeatured,
 				class: this,
 				callBack: this.openMediaUploader.name,
 			},
@@ -747,7 +763,10 @@ export class BuilderEditCourse {
 				} else if ( data?.course_id_new ) {
 					// Fallback: build redirect URL manually
 					const currentUrl = window.location.href;
-					const newUrl = currentUrl.replace( /\/post-new\/?(\?.*)?$/, `/${ data.course_id_new }/overview/` );
+					const newUrl = currentUrl.replace(
+						/\/post-new\/?(\?.*)?$/,
+						`/${ data.course_id_new }/overview/`
+					);
 					if ( newUrl !== currentUrl ) {
 						window.location.href = newUrl;
 					}
@@ -923,48 +942,73 @@ export class BuilderEditCourse {
 	}
 
 	setFeaturedImage( attachment ) {
-		const previewContainer = document.querySelector(
-			BuilderEditCourse.selectors.elFeaturedImagePreview
-		);
+		const dropzone = document.querySelector( BuilderEditCourse.selectors.elFeaturedImageDropzone );
 		const thumbnailInput = document.querySelector( BuilderEditCourse.selectors.elThumbnailInput );
-		const placeholder = previewContainer.querySelector(
-			BuilderEditCourse.selectors.elFeatureImagePlaceholder
-		);
-		if ( ! previewContainer || ! thumbnailInput ) return;
+		const actionsContainer = document.querySelector( '.cb-featured-image-actions' );
+
+		if ( ! dropzone || ! thumbnailInput ) return;
+
 		thumbnailInput.value = attachment.id;
 		const imgUrl =
 			attachment.sizes?.medium?.url || attachment.sizes?.thumbnail?.url || attachment.url;
-		if ( placeholder ) placeholder.remove();
-		const oldImg = previewContainer.querySelector( 'img' );
-		if ( oldImg ) oldImg.remove();
+
+		// Clear dropzone content
+		dropzone.innerHTML = '';
+
+		// Add image
 		const img = document.createElement( 'img' );
 		img.src = imgUrl;
-		previewContainer.appendChild( img );
-		const elRemoveButton = document.querySelector(
-			BuilderEditCourse.selectors.elBtnRemoveFeatured
-		);
-		if ( elRemoveButton ) elRemoveButton.style.display = 'inline-block';
+		img.className = 'cb-featured-image-preview__img';
+		img.alt = attachment.alt || '';
+		dropzone.appendChild( img );
+		dropzone.classList.add( 'has-image' );
+
+		// Show/create action buttons
+		if ( actionsContainer ) {
+			actionsContainer.innerHTML = `
+				<button type="button" class="cb-change-featured-image">${
+					window.lpCourseBuilder?.i18n?.change_image || 'Change Image'
+				}</button>
+				<button type="button" class="cb-remove-featured-image">${
+					window.lpCourseBuilder?.i18n?.remove_image || 'Remove Image'
+				}</button>
+			`;
+		}
 	}
 
 	removeFeaturedImage( args ) {
-		const previewContainer = document.querySelector(
-			BuilderEditCourse.selectors.elFeaturedImagePreview
-		);
+		const { e } = args;
+		if ( e ) e.preventDefault();
+
+		const dropzone = document.querySelector( BuilderEditCourse.selectors.elFeaturedImageDropzone );
 		const thumbnailInput = document.querySelector( BuilderEditCourse.selectors.elThumbnailInput );
-		const elRemoveButton = document.querySelector(
-			BuilderEditCourse.selectors.elBtnRemoveFeatured
-		);
-		const img = previewContainer.querySelector( 'img' );
-		if ( img ) img.remove();
-		const placeholder = document.createElement( 'div' );
-		placeholder.className = BuilderEditCourse.selectors.elFeatureImagePlaceholder.replace(
-			'.',
-			''
-		);
-		placeholder.textContent = previewContainer.dataset.contentPlacholder || 'No image selected';
-		previewContainer.appendChild( placeholder );
-		thumbnailInput.value = '0';
-		if ( elRemoveButton ) elRemoveButton.style.display = 'none';
+		const actionsContainer = document.querySelector( '.cb-featured-image-actions' );
+
+		if ( ! dropzone ) return;
+
+		// Clear dropzone and show upload content
+		dropzone.innerHTML = `
+			<div class="cb-featured-image-upload-content">
+				<span class="cb-featured-image-icon">🖼️</span>
+				<p class="cb-featured-image-text"><a href="#" class="cb-featured-image-link">${
+					window.lpCourseBuilder?.i18n?.click_to_upload || 'Click to upload'
+				}</a></p>
+				<p class="cb-featured-image-hint">${
+					window.lpCourseBuilder?.i18n?.image_hint || 'JPG, JPEG, PNG less than 1MB'
+				}</p>
+			</div>
+		`;
+		dropzone.classList.remove( 'has-image' );
+
+		// Clear thumbnail ID
+		if ( thumbnailInput ) {
+			thumbnailInput.value = '';
+		}
+
+		// Hide action buttons
+		if ( actionsContainer ) {
+			actionsContainer.innerHTML = '';
+		}
 	}
 
 	initTabTitles() {
@@ -1081,5 +1125,70 @@ export class BuilderEditCourse {
 		if ( trimmedText.length === 0 ) return 0;
 		const words = trimmedText.split( /\s+/ ).filter( ( word ) => word.length > 0 );
 		return words.length;
+	}
+
+	/**
+	 * Initialize Header Actions Dropdown
+	 * Handles toggle open/close for dropdown menu in header actions
+	 */
+	initHeaderActionsDropdown() {
+		const dropdownWrapper = document.querySelector(
+			BuilderEditCourse.selectors.elHeaderActionsDropdown
+		);
+		if ( ! dropdownWrapper ) return;
+
+		const toggleBtn = dropdownWrapper.querySelector( BuilderEditCourse.selectors.elDropdownToggle );
+		const dropdownMenu = dropdownWrapper.querySelector(
+			BuilderEditCourse.selectors.elDropdownMenu
+		);
+
+		if ( ! toggleBtn || ! dropdownMenu ) return;
+
+		// Toggle dropdown on button click
+		toggleBtn.addEventListener( 'click', ( e ) => {
+			e.stopPropagation();
+			const isOpen = dropdownMenu.classList.contains( 'is-open' );
+
+			if ( isOpen ) {
+				this.closeHeaderDropdown( toggleBtn, dropdownMenu );
+			} else {
+				this.openHeaderDropdown( toggleBtn, dropdownMenu );
+			}
+		} );
+
+		// Close dropdown when clicking outside
+		document.addEventListener( 'click', ( e ) => {
+			if ( ! dropdownWrapper.contains( e.target ) ) {
+				this.closeHeaderDropdown( toggleBtn, dropdownMenu );
+			}
+		} );
+
+		// Close dropdown on Escape key
+		document.addEventListener( 'keydown', ( e ) => {
+			if ( e.key === 'Escape' ) {
+				this.closeHeaderDropdown( toggleBtn, dropdownMenu );
+			}
+		} );
+
+		// Close dropdown after clicking an item (except when it triggers an action that keeps page)
+		const dropdownItems = dropdownMenu.querySelectorAll( '.cb-dropdown-item' );
+		dropdownItems.forEach( ( item ) => {
+			item.addEventListener( 'click', () => {
+				// Small delay to allow action to process before closing
+				setTimeout( () => {
+					this.closeHeaderDropdown( toggleBtn, dropdownMenu );
+				}, 100 );
+			} );
+		} );
+	}
+
+	openHeaderDropdown( toggleBtn, dropdownMenu ) {
+		dropdownMenu.classList.add( 'is-open' );
+		toggleBtn.setAttribute( 'aria-expanded', 'true' );
+	}
+
+	closeHeaderDropdown( toggleBtn, dropdownMenu ) {
+		dropdownMenu.classList.remove( 'is-open' );
+		toggleBtn.setAttribute( 'aria-expanded', 'false' );
 	}
 }

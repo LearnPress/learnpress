@@ -247,9 +247,20 @@ export class EditQuestion {
 			}
 
 			const elTextarea = document.getElementById( id );
+
+			if ( ! elTextarea ) {
+				return;
+			}
+
 			const elQuestionEditMain = elTextarea.closest(
 				`${ EditQuestion.selectors.elQuestionEditMain }`
 			);
+
+			// Skip if not in question edit context
+			if ( ! elQuestionEditMain ) {
+				return;
+			}
+
 			const questionId = elQuestionEditMain.dataset.questionId;
 			editor.settings.force_p_newlines = false;
 			editor.settings.forced_root_block = '';

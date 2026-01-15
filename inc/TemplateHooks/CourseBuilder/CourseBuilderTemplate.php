@@ -396,19 +396,32 @@ class CourseBuilderTemplate {
 					<?php echo $status_badge; ?>
 				</div>
 				<div class="lp-cb-header__actions">
-					<div class="cb-button cb-btn-darft">
-						<?php esc_html_e( 'Save Draft', 'learnpress' ); ?>
-					</div>
 					<?php if ( ! $is_new_post ) : ?>
-						<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="cb-button cb-btn-preview"
-							target="_blank">
+						<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="cb-button cb-btn-preview cb-btn-secondary" target="_blank">
 							<?php esc_html_e( 'Preview', 'learnpress' ); ?>
 						</a>
 					<?php endif; ?>
-					<div class="cb-button cb-btn-update cb-btn-primary"
-						data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>"
-						data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>">
-						<?php echo $is_published ? esc_html__( 'Update', 'learnpress' ) : esc_html__( 'Publish', 'learnpress' ); ?>
+					<div class="cb-header-actions-dropdown">
+						<div class="cb-btn-update cb-btn-primary" 
+							data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>" 
+							data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>">
+							<?php echo $is_published ? esc_html__( 'Update', 'learnpress' ) : esc_html__( 'Publish', 'learnpress' ); ?>
+						</div>
+						<button type="button" class="cb-btn-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+							<span class="dashicons dashicons-arrow-down-alt2"></span>
+						</button>
+						<div class="cb-dropdown-menu">
+							<div class="cb-dropdown-item cb-btn-darft">
+								<span class="dashicons dashicons-media-default"></span>
+								<?php esc_html_e( 'Save Draft', 'learnpress' ); ?>
+							</div>
+							<?php if ( ! $is_new_post ) : ?>
+							<div class="cb-dropdown-item cb-btn-trash cb-btn-danger">
+								<span class="dashicons dashicons-trash"></span>
+								<?php esc_html_e( 'Move to Trash', 'learnpress' ); ?>
+							</div>
+							<?php endif; ?>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -421,16 +434,6 @@ class CourseBuilderTemplate {
 				do_action( "learn-press/course-builder/{$tab_current}/{$section_current}/layout", $post_id, $is_new_post );
 				?>
 			</div>
-
-			<?php if ( ! $is_new_post ) : ?>
-				<div class="lp-cb-footer">
-					<div class="lp-cb-footer__actions">
-						<div class="cb-btn-trash cb-btn-danger">
-							<?php esc_html_e( 'Move to Trash', 'learnpress' ); ?>
-						</div>
-					</div>
-				</div>
-			<?php endif; ?>
 		</div>
 		<?php
 		return ob_get_clean();

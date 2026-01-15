@@ -60,22 +60,33 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
-		$html_header        = $this->header_section( $course_model );
-		$html_edit_title    = $this->edit_title( $course_model );
-		$html_edit_desc     = $this->edit_desc( $course_model );
-		$html_edit_cat      = $this->edit_categories( $course_model );
-		$html_edit_features = $this->edit_featured_image( $course_model );
-		$html_edit_tags     = $this->edit_tags( $course_model );
-		$section            = [
+		$html_header         = $this->header_section( $course_model );
+		$html_edit_title     = $this->edit_title( $course_model );
+		$html_edit_permalink = $this->edit_permalink( $course_model );
+		$html_edit_features  = $this->edit_featured_image( $course_model );
+		$html_edit_desc      = $this->edit_desc( $course_model );
+		$html_edit_cat       = $this->edit_categories( $course_model );
+		$html_edit_tags      = $this->edit_tags( $course_model );
+
+		$section = [
 			'wrapper'                => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
 			'header'                 => $html_header,
+			'content_wrapper'        => '<div class="cb-course-edit-content">',
+			// Left column
+			'left_column'            => '<div class="cb-course-edit-column cb-course-edit-column--left">',
 			'edit_title'             => $html_edit_title,
+			'edit_permalink'         => $html_edit_permalink,
+			'edit_features'          => $html_edit_features,
+			'left_column_end'        => '</div>',
+			// Right column
+			'right_column'           => '<div class="cb-course-edit-column cb-course-edit-column--right">',
 			'edit_desc'              => $html_edit_desc,
 			'edit_term_category'     => '<div class="cb-course-edit-terms-categories-wrapper">',
 			'edit_cat'               => $html_edit_cat,
 			'edit_term'              => $html_edit_tags,
 			'edit_term_category_end' => '</div>',
-			'edit_features'          => $html_edit_features,
+			'right_column_end'       => '</div>',
+			'content_wrapper_end'    => '</div>',
 			'wrapper_end'            => '</div>',
 		];
 
@@ -99,11 +110,30 @@ class BuilderEditCourseTemplate {
 		$edit       = [
 			'wrapper'        => '<div class="cb-course-edit-title">',
 			'label_wrap'     => '<div class="cb-course-edit-title__label-wrap">',
-			'label'          => sprintf( '<label for="title" class="cb-course-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
+			'label'          => sprintf( '<label for="title" class="cb-course-edit-title__label">%s <span class="required">*</span></label>', __( 'Course Title', 'learnpress' ) ),
 			'char_count'     => sprintf( '<span class="cb-course-edit-title__char-count">%s</span>', sprintf( __( '%d characters', 'learnpress' ), $char_count ) ),
 			'label_wrap_end' => '</div>',
-			'input'          => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input">', esc_attr( $title ) ),
+			'input'          => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input" placeholder="%s">', esc_attr( $title ), esc_attr__( 'example', 'learnpress' ) ),
 			'wrapper_end'    => '</div>',
+		];
+
+		return Template::combine_components( $edit );
+	}
+
+	public function edit_permalink( $course_model ) {
+		$post_id   = ! empty( $course_model ) ? $course_model->get_id() : '';
+		$post_name = '';
+
+		if ( $post_id ) {
+			$post      = get_post( $post_id );
+			$post_name = $post ? $post->post_name : '';
+		}
+
+		$edit = [
+			'wrapper'     => '<div class="cb-course-edit-permalink">',
+			'label'       => sprintf( '<label for="course_permalink" class="cb-course-edit-permalink__label">%s</label>', __( 'Permalink', 'learnpress' ) ),
+			'input'       => sprintf( '<input type="text" name="course_permalink" id="course_permalink" value="%s" class="cb-course-edit-permalink__input" placeholder="%s">', esc_attr( $post_name ), esc_attr__( 'example', 'learnpress' ) ),
+			'wrapper_end' => '</div>',
 		];
 
 		return Template::combine_components( $edit );
@@ -129,7 +159,6 @@ class BuilderEditCourseTemplate {
 			'wrapper'        => '<div class="cb-course-edit-desc">',
 			'label_wrap'     => '<div class="cb-course-edit-desc__label-wrap">',
 			'label'          => sprintf( '<label for="course_description" class="cb-course-edit-desc__label">%s</label>', __( 'Description', 'learnpress' ) ),
-			'word_count'     => sprintf( '<span class="cb-course-edit-desc__word-count">%s</span>', sprintf( __( '%d words', 'learnpress' ), $word_count ) ),
 			'label_wrap_end' => '</div>',
 			'edit'           => AdminTemplate::editor_tinymce(
 				$desc,
@@ -169,7 +198,7 @@ class BuilderEditCourseTemplate {
 				$post,
 				array(
 					'id'       => 'course_categorydiv',
-					'title'    => __( 'Course Categories', 'learnpress' ),
+					'title'    => __( 'Categories', 'learnpress' ),
 					'callback' => 'post_categories_meta_box',
 					'args'     => array(
 						'taxonomy'      => 'course_category',
@@ -184,7 +213,7 @@ class BuilderEditCourseTemplate {
 
 		$edit = [
 			'wrapper'     => '<div class="cb-course-edit-categories__wrapper">',
-			'label'       => sprintf( '<label class="cb-course-edit-categories__label">%s</label>', __( 'Course Categories', 'learnpress' ) ),
+			'label'       => sprintf( '<label class="cb-course-edit-categories__label">%s</label>', __( 'Categories', 'learnpress' ) ),
 			'content'     => $html_meta_box,
 			'wrapper_end' => '</div>',
 		];
@@ -224,7 +253,7 @@ class BuilderEditCourseTemplate {
 
 		$edit = [
 			'wrapper'                  => '<div class="cb-course-edit-tags__wrapper">',
-			'label'                    => sprintf( '<label for="title" class="cb-course-edit-tags__label">%s</label>', __( 'Course Tags', 'learnpress' ) ),
+			'label'                    => sprintf( '<label for="title" class="cb-course-edit-tags__label">%s</label>', __( 'Tags', 'learnpress' ) ),
 			'wrapper_checkbox'         => '<div class="cb-course-edit-tags__checkbox-wrapper">',
 			'checkbox'                 => $html_checkbox,
 			'wrapper_checkbox_end'     => '</div>',
@@ -270,21 +299,37 @@ class BuilderEditCourseTemplate {
 			$thumbnail_alt = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
 		}
 
+		$has_image = ! empty( $thumbnail_url );
+
 		$featured_image_html = '<div class="cb-featured-image-container">';
 
-		$featured_image_html .= sprintf( '<div class="cb-featured-image-preview" data-content-placholder="%s">', __( 'No image selected', 'learnpress' ) );
-		if ( $thumbnail_url ) {
+		// Upload area
+		$featured_image_html .= sprintf(
+			'<div class="cb-featured-image-dropzone %s" data-post-id="%s">',
+			$has_image ? 'has-image' : '',
+			esc_attr( $post_id )
+		);
+
+		if ( $has_image ) {
 			$featured_image_html .= sprintf(
 				'<img src="%s" alt="%s" class="cb-featured-image-preview__img">',
 				esc_url( $thumbnail_url ),
 				esc_attr( $thumbnail_alt )
 			);
 		} else {
+			$featured_image_html .= '<div class="cb-featured-image-upload-content">';
+			$featured_image_html .= '<span class="cb-featured-image-icon">🖼️</span>';
 			$featured_image_html .= sprintf(
-				'<div class="cb-featured-image-placeholder">%s</div>',
-				__( 'No image selected', 'learnpress' )
+				'<p class="cb-featured-image-text"><a href="#" class="cb-featured-image-link">%s</a></p>',
+				__( 'Click to upload', 'learnpress' )
 			);
+			$featured_image_html .= sprintf(
+				'<p class="cb-featured-image-hint">%s</p>',
+				__( 'JPG, JPEG, PNG less than 1MB', 'learnpress' )
+			);
+			$featured_image_html .= '</div>';
 		}
+
 		$featured_image_html .= '</div>';
 
 		$featured_image_html .= sprintf(
@@ -292,27 +337,32 @@ class BuilderEditCourseTemplate {
 			esc_attr( $thumbnail_id )
 		);
 
+		// Action buttons wrapper
 		$featured_image_html .= '<div class="cb-featured-image-actions">';
-		$featured_image_html .= sprintf(
-			'<button type="button" class="button button-primary cb-set-featured-image" data-post-id="%s">%s</button>',
-			esc_attr( $post_id ),
-			$thumbnail_id ? __( 'Change Image', 'learnpress' ) : __( 'Set Featured Image', 'learnpress' )
-		);
 
-		$featured_image_html .= sprintf(
-			'<button type="button" class="button cb-remove-featured-image" %s>%s</button>',
-			$thumbnail_id ? '' : 'style="display:none;"',
-			__( 'Remove Image', 'learnpress' ),
-		);
+		// Change Image button (only show when has image)
+		if ( $has_image ) {
+			$featured_image_html .= sprintf(
+				'<button type="button" class="cb-change-featured-image">%s</button>',
+				__( 'Change Image', 'learnpress' )
+			);
+		}
 
-		$featured_image_html .= '</div>';
+		// Remove button (only show when has image)
+		if ( $has_image ) {
+			$featured_image_html .= sprintf(
+				'<button type="button" class="cb-remove-featured-image">%s</button>',
+				__( 'Remove Image', 'learnpress' )
+			);
+		}
 
-		$featured_image_html .= '</div>';
+		$featured_image_html .= '</div>'; // End actions wrapper
+		$featured_image_html .= '</div>'; // End container
 
 		$edit = [
 			'wrapper'     => '<div class="cb-course-edit-featured-image">',
 			'label'       => sprintf(
-				'<h3 class="cb-course-edit-featured-image__title">%s</h3>',
+				'<label class="cb-course-edit-featured-image__title">%s</label>',
 				__( 'Featured Image', 'learnpress' )
 			),
 			'edit'        => $featured_image_html,

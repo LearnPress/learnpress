@@ -372,11 +372,15 @@ html:has( #wpadminbar ) {
 // HEADER (Title + Actions) - For detail view
 // ===========================================
 .lp-cb-header {
+	position: sticky;
+	top: $cb-top-header-height;
+	z-index: 99;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 20px 12px 0;
+	padding: 20px 12px;
 	background: $cb-card-bg;
+	border-bottom: 1px solid $cb-border;
 
 	.lp-cb-header__left {
 		display: flex;
@@ -424,6 +428,21 @@ html:has( #wpadminbar ) {
 				background: $cb-primary-hover !important;
 				border-color: $cb-primary-hover !important;
 			}
+		}
+	}
+}
+
+// Admin bar adjustment for sticky header
+html:has( #wpadminbar ) {
+	.lp-cb-header {
+		top: calc( #{$cb-top-header-height} + #{$wp-adminbar-height} );
+	}
+}
+
+@media screen and ( max-width: 782px ) {
+	html:has( #wpadminbar ) {
+		.lp-cb-header {
+			top: calc( #{$cb-top-header-height} + #{$wp-adminbar-height-mobile} );
 		}
 	}
 }
@@ -727,15 +746,40 @@ html:has( #wpadminbar ) {
 		&:hover {
 			background: $cb-primary-hover;
 		}
+
+		&.cb-btn-primary {
+			background: $cb-primary;
+			color: #fff;
+
+			&:hover {
+				background: $cb-primary-hover;
+			}
+		}
 	}
 
 	.cb-btn-preview {
+		border: 1px solid #e5e7eb;
+		color: $cb-text;
+		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		background: #fff;
+
+		&:hover {
+			border-color: $cb-primary;
+			color: $cb-primary;
+		}
+	}
+
+	&.cb-btn-secondary {
+		background: #fff;
 		border: 1px solid #e5e7eb;
 		color: $cb-text;
 
 		&:hover {
 			border-color: $cb-primary;
 			color: $cb-primary;
+			background: #f8fafc;
 		}
 	}
 
@@ -758,6 +802,287 @@ html:has( #wpadminbar ) {
 
 		&:hover {
 			background: #fef2f2;
+		}
+	}
+
+	// ===========================================
+	// HEADER ACTIONS DROPDOWN
+	// ===========================================
+	.cb-header-actions-dropdown {
+		position: relative;
+		display: inline-flex;
+
+		.cb-btn-dropdown-toggle {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 36px;
+			padding: 0;
+			background: $cb-primary;
+			border: 1px solid $cb-primary;
+			border-left-color: #98bfe4;
+			border-radius: 0 6px 6px 0;
+			cursor: pointer;
+			transition: all 0.2s;
+
+			.dashicons {
+				font-size: 16px;
+				width: 16px;
+				height: 16px;
+				color: #ffffff;
+				transition: transform 0.2s;
+			}
+
+			&:hover {
+				border-color: $cb-primary;
+				background: #f8fafc;
+
+				.dashicons {
+					color: $cb-primary;
+				}
+			}
+
+			&[aria-expanded='true'] {
+				border-color: $cb-primary;
+				background: #f8fafc;
+
+				.dashicons {
+					transform: rotate( 180deg );
+					color: $cb-primary;
+				}
+			}
+		}
+
+		.cb-dropdown-menu {
+			position: absolute;
+			top: calc( 100% + 4px );
+			right: 0;
+			min-width: 180px;
+			background: #fff;
+			border: 1px solid #e5e7eb;
+			border-radius: 8px;
+			box-shadow: 0 4px 12px rgba( 0, 0, 0, 0.1 );
+			z-index: 1000;
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY( -8px );
+			transition: all 0.2s ease;
+
+			&.is-open {
+				opacity: 1;
+				visibility: visible;
+				transform: translateY( 0 );
+			}
+		}
+
+		.cb-dropdown-item {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 12px 16px;
+			font-size: 14px;
+			color: $cb-text;
+			cursor: pointer;
+			transition: all 0.15s;
+			border: none;
+			background: transparent;
+			width: 100%;
+			text-align: left;
+
+			.dashicons {
+				font-size: 16px;
+				width: 16px;
+				height: 16px;
+				color: $cb-text-muted;
+			}
+
+			&:first-child {
+				border-radius: 7px 7px 0 0;
+			}
+
+			&:last-child {
+				border-radius: 0 0 7px 7px;
+			}
+
+			&:only-child {
+				border-radius: 7px;
+			}
+
+			&:hover {
+				background: #f8fafc;
+
+				.dashicons {
+					color: $cb-primary;
+				}
+			}
+
+			&.cb-btn-danger {
+				color: #ef4444;
+
+				.dashicons {
+					color: #ef4444;
+				}
+
+				&:hover {
+					background: #fef2f2;
+				}
+			}
+
+			// Loading state
+			&.loading {
+				opacity: 0.7;
+				pointer-events: none;
+			}
+		}
+	}
+}
+
+// ===========================================
+// HEADER ACTIONS DROPDOWN - Button Group Style
+// ===========================================
+.cb-header-actions-dropdown {
+	position: relative;
+	display: inline-flex;
+
+	// Button group container
+	.cb-btn-update {
+		padding: 10px 16px;
+		font-size: 14px;
+		font-weight: 500;
+		border: none;
+		cursor: pointer;
+		transition: all 0.2s;
+		border-radius: 6px 0 0 6px !important;
+		background: $cb-primary;
+		color: #fff;
+
+		&:hover {
+			background: $cb-primary-hover;
+		}
+
+		&.cb-btn-primary {
+			background: $cb-primary;
+			color: #fff;
+
+			&:hover {
+				background: $cb-primary-hover;
+			}
+		}
+	}
+
+	.cb-btn-dropdown-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: auto;
+		padding: 10px 0;
+		background: #d0e3ff;
+		border: none;
+		border-radius: 0 6px 6px 0;
+		cursor: pointer;
+		transition: all 0.2s;
+
+		.dashicons {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+			color: $cb-primary;
+			transition: transform 0.2s;
+		}
+
+		&:hover {
+			background: #b8d4ff;
+		}
+
+		&[aria-expanded='true'] {
+			background: #b8d4ff;
+
+			.dashicons {
+				transform: rotate( 180deg );
+			}
+		}
+	}
+
+	.cb-dropdown-menu {
+		position: absolute;
+		top: calc( 100% + 4px );
+		right: 0;
+		min-width: 180px;
+		background: #fff;
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba( 0, 0, 0, 0.1 );
+		z-index: 1000;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY( -8px );
+		transition: all 0.2s ease;
+
+		&.is-open {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY( 0 );
+		}
+	}
+
+	.cb-dropdown-item {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 12px 16px;
+		font-size: 14px;
+		color: $cb-text;
+		cursor: pointer;
+		transition: all 0.15s;
+		border: none;
+		background: transparent;
+		width: 100%;
+		text-align: left;
+
+		.dashicons {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+			color: $cb-text-muted;
+		}
+
+		&:first-child {
+			border-radius: 7px 7px 0 0;
+		}
+
+		&:last-child {
+			border-radius: 0 0 7px 7px;
+		}
+
+		&:only-child {
+			border-radius: 7px;
+		}
+
+		&:hover {
+			background: #f8fafc;
+
+			.dashicons {
+				color: $cb-primary;
+			}
+		}
+
+		&.cb-btn-danger {
+			color: #ef4444;
+
+			.dashicons {
+				color: #ef4444;
+			}
+
+			&:hover {
+				background: #fef2f2;
+			}
+		}
+
+		// Loading state
+		&.loading {
+			opacity: 0.7;
+			pointer-events: none;
 		}
 	}
 }
