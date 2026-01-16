@@ -21,6 +21,13 @@
 			.course-title,.course-meta-secondary,.course-meta-primary {
 				padding-right: 300px;
 			}
+			.course-meta-primary {
+    			justify-content: space-between;
+				padding-right: 330px;
+				.meta-item {
+					flex: unset;
+				}
+			}
 			&::before, &::after {
 				content: "";
 				width: 50%;
