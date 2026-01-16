@@ -483,7 +483,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Only use for add/remove items to learn (learn_press_user_items) table.
 		 * Where call this function, must be careful, must set_time_limit( 0 );.
 		 *
-		 * @return array|object|stdClass[]|null
+		 * @return array|null
 		 * @version 1.0.1
 		 * @since 4.2.7.2
 		 */
