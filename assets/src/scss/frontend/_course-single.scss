@@ -18,12 +18,15 @@
 		}
 		@media (min-width: 769px) {
 			overflow-x: hidden ;
-			.course-title,.course-meta-secondary,.course-meta-primary {
+			.course-title,.course-meta-secondary {
 				padding-right: 300px;
 			}
 			.course-meta-primary {
-    			justify-content: space-between;
+    			
 				padding-right: 330px;
+				.course-meta__pull-left {
+					justify-content: space-between;
+				}
 				.meta-item {
 					flex: unset;
 				}
