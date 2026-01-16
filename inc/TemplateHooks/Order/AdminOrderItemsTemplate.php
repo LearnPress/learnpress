@@ -79,13 +79,23 @@ class AdminOrderItemsTemplate {
 	 * @return stdClass
 	 * @throws Exception
 	 * @since 4.3.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function render_order_items( array $data ): stdClass {
 		$content  = new stdClass();
 		$order_id = $data['order_id'] ?? 0;
 		if ( ! $order_id ) {
 			throw new Exception( __( 'Order ID is required', 'learnpress' ) );
+		}
+
+		// Check permission to view order.
+		$can_view = apply_filters(
+			'learn-press/order-detail/can-view',
+			current_user_can( 'edit_' . LP_ORDER_CPT, $order_id ),
+			$order_id
+		);
+		if ( ! $can_view ) {
+			throw new Exception( __( 'You do not have permission to view this order.', 'learnpress' ) );
 		}
 
 		$lpOrderItemsDB   = LPOrderItemsDB::getInstance();
@@ -181,6 +191,8 @@ class AdminOrderItemsTemplate {
 	 * Render html content for order detail items.
 	 *
 	 * @throws Exception
+	 * @since 4.3.2
+	 * @version 1.0.1
 	 */
 	public static function render_order_detail_items( array $data ): stdClass {
 		$content  = new stdClass();
@@ -193,6 +205,16 @@ class AdminOrderItemsTemplate {
 		$lp_order = learn_press_get_order( $order_id );
 		if ( ! $lp_order ) {
 			throw new Exception( __( 'Order not found', 'learnpress' ) );
+		}
+
+		// Check permission to view order.
+		$can_view = apply_filters(
+			'learn-press/order-detail/can-view',
+			current_user_can( 'edit_' . LP_ORDER_CPT, $order_id ),
+			$order_id
+		);
+		if ( ! $can_view ) {
+			throw new Exception( __( 'You do not have permission to view this order.', 'learnpress' ) );
 		}
 
 		$lpOrderDB        = LPOrderItemsDB::getInstance();
