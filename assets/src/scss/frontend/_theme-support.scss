@@ -106,9 +106,13 @@ body {
 	padding-right: 15px;
 }
 
-//body.astra {
-//	--lp-bg-color-lesson: var(--ast-global-color-4);
-//}
+body.astra .course-summary-content .course-detail-info{
+	--lp-color-white: #333;
+    --lp-secondary-color: transparent;
+	.course-title{
+		border-bottom-color: var(--ast-global-color-7);
+	}
+}
 .ast-container {
 	--lp-cotainer-padding: 0
 }
