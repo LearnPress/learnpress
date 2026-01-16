@@ -470,7 +470,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				// Convert params from WP_Query to PostFilter
-				$posts_per_page = apply_filters( 'edit_posts_per_page', 20, $post_type );
+				$posts_per_page = get_user_option( "edit_{$post_type}_per_page", get_current_user_id() );
 				$paged          = max( 1, get_query_var( 'paged' ) );
 				$user_of_order  = $wp_query->get( 'author' );
 				$status         = $wp_query->get( 'post_status' );
