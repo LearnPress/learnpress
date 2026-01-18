@@ -27,6 +27,16 @@ class AdminOrderListTemplate
 		) {
 			return;
 		}
+		
+		$order_data =  array(
+			'post_status' => sanitize_text_field($_GET['post_status'] ?? 'all'),
+			'author_id' => sanitize_text_field($_GET['author'] ?? ''),
+			'key_search' => sanitize_text_field($_GET['s'] ?? ''),
+			'month' => sanitize_text_field($_GET['m'] ?? 0),
+			'paged' => sanitize_text_field($_GET['paged'] ?? 1),
+			'orderby' => sanitize_text_field($_GET['orderby'] ?? 'title'),
+			'order' => sanitize_text_field($_GET['order'] ?? 'asc'),
+		)
 		?>
 		<div class="alignleft actions">
 			<button type="button" class="button export"><?php esc_html_e('Export', 'learnpres'); ?></button>
