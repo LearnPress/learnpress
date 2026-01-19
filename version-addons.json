@@ -152,8 +152,8 @@
   "learnpress-commission": {
     "name": "Commission add-on for LearnPress",
     "basename": "learnpress-commission/learnpress-commission.php",
-    "version": "4.0.4",
-    "require_lp": "4.2.8",
+    "version": "4.0.5",
+    "require_lp": "4.3.2.5",
     "description": "Manage percent of commission for each course. Support withdrawal transaction via PayPal.",
     "image": "https://updates.thimpress.com/images/learnpress-commission.png",
     "link": "https://thimpress.com/product/commission-add-on-for-learnpress/",
