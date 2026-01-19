@@ -339,17 +339,17 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $items; // apply_filters( 'learn_press_order_get_items', $items, $this );
 	}
 
-	public function getTotalItem() {
-	}
+	/*public function getTotalItem() {
+	}*/
 
-	public function get_item_meta( &$item ) {
+	/*public function get_item_meta( &$item ) {
 		$metas = get_metadata( 'learnpress_order_item', $item['id'] );
 		if ( $metas ) {
 			foreach ( $metas as $k => $v ) {
 				$item[ preg_replace( '!^_!', '', $k ) ] = LP_Helper::maybe_unserialize( $v[0] );
 			}
 		}
-	}
+	}*/
 
 	public function delete( &$object ) {
 		// TODO: Implement delete() method.
@@ -361,7 +361,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return LP_Order
 	 * @deprecated 4.2.3.5
 	 */
-	public function cln( $order ) {
+	/*public function cln( $order ) {
 		_deprecated_function( __METHOD__, '4.2.3.5' );
 
 		$cloned = clone $order;
@@ -390,7 +390,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$this->cln_items( $order->get_id(), $cloned->get_id() );
 
 		return $cloned;
-	}
+	}*/
 
 	/**
 	 * Clone items from an order to another
@@ -401,7 +401,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return mixed
 	 * @deprecated 4.2.3.5
 	 */
-	public function cln_items( $from, $to ) {
+	/*public function cln_items( $from, $to ) {
 		_deprecated_function( __METHOD__, '4.2.3.5' );
 		$order = learn_press_get_order( $from );
 		global $wpdb;
@@ -461,7 +461,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$this->read_items( $order );
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * Load order data
