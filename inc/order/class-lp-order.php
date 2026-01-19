@@ -606,12 +606,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return int
 		 * @throws Exception
 		 * @since 1.0.0
-		 * @version 4.2.4
+		 * @version 4.2.5
 		 */
 		public function add_item( $item ): int {
 			global $wpdb;
-			$lp_user_items_db = LP_User_Items_DB::getInstance();
-			$order_item_id    = 0;
+			$order_item_id = 0;
 
 			try {
 				if ( is_numeric( $item ) ) {
@@ -621,7 +620,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					);
 				}
 
-				$item_type = get_post_type( $item['item_id'] );
+				$item_type = $item['item_type'] ?? get_post_type( $item['item_id'] );
 				if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
 					return false;
 				}
