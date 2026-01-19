@@ -93,6 +93,11 @@ export class BuilderFormState {
 	 */
 	handleFormChange( e ) {
 		const target = e.target;
+
+		// Ignore curriculum changes
+		if ( target.closest( '#lp-course-edit-curriculum' ) ) {
+			return;
+		}
 		
 		// Check if target is within course builder forms
 		if ( target.closest( '.cb-section__course-edit' ) || 
@@ -137,7 +142,11 @@ export class BuilderFormState {
 			return;
 		}
 
-		// Don't warn if clicking current active tab
+		if ( tabLink.hasAttribute( 'data-tab-section' ) || 
+			 tabLink.getAttribute( 'href' ) === '#' ) {
+			return;
+		}
+
 		if ( tabLink.classList.contains( 'is-active' ) || 
 			 tabLink.closest( '.is-active' ) ) {
 			return;

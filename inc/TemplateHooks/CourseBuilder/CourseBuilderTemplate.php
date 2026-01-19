@@ -430,9 +430,16 @@ class CourseBuilderTemplate {
 
 			<div class="lp-cb-tab-content">
 				<?php
-				// Trigger existing action for section content
-				do_action( "learn-press/course-builder/{$tab_current}/{$section_current}/layout", $post_id, $is_new_post );
-				?>
+				// Render ALL section contents for client-side tab switching
+				foreach ( $sections as $key => $section ) :
+					$section_slug = $section['slug'];
+					$is_active_panel = ( $key === $section_current || $section_slug === $section_current );
+					$hidden_class = $is_active_panel ? '' : 'lp-hidden';
+					?>
+					<div class="lp-cb-tab-panel <?php echo esc_attr( $hidden_class ); ?>" data-section="<?php echo esc_attr( $section_slug ); ?>">
+						<?php do_action( "learn-press/course-builder/{$tab_current}/{$section_slug}/layout", $post_id, $is_new_post ); ?>
+					</div>
+				<?php endforeach; ?>
 			</div>
 		</div>
 		<?php
@@ -461,13 +468,12 @@ class CourseBuilderTemplate {
 			<?php
 			foreach ( $sections as $key => $section ) :
 				$is_active = $key === $current_section || $section['slug'] === $current_section;
-				$link      = CourseBuilder::get_tab_link( $tab, $post_id, $section['slug'] );
 				$classes   = [ 'lp-cb-tabs__item' ];
 				if ( $is_active ) {
 					$classes[] = 'is-active';
 				}
 				?>
-				<a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+				<a href="#" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" data-tab-section="<?php echo esc_attr( $section['slug'] ); ?>">
 					<?php echo esc_html( $section['title'] ); ?>
 				</a>
 			<?php endforeach; ?>

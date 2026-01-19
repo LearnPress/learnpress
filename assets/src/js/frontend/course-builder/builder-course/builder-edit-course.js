@@ -2,6 +2,7 @@ import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import { EditCourseCurriculum } from 'lpAssetsJsPath/admin/edit-course/edit-curriculum';
 import { MetaboxExtraInfo } from './extra-info.js';
+import { getFormState } from '../builder-form-state.js';
 
 export class BuilderEditCourse {
 	constructor() {
@@ -63,6 +64,9 @@ export class BuilderEditCourse {
 		elFormField: '.form-field',
 		elTipFloating: '.learn-press-tip-floating',
 		elCategoryDiv: '#taxonomy-course_category',
+
+		elCBHorizontalTabs: '.lp-cb-tabs__item',
+		elCBTabPanels: '.lp-cb-tab-panel',
 	};
 
 	init() {
@@ -98,6 +102,11 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elCategoryTabs,
 				class: this,
 				callBack: this.handleCategoryTabClick.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elCBHorizontalTabs,
+				class: this,
+				callBack: this.handleCBHorizontalTabClick.name,
 			},
 			{
 				selector: BuilderEditCourse.selectors.elBtnToggleAddCategory,
@@ -613,12 +622,56 @@ export class BuilderEditCourse {
 		targetPanel.style.display = 'block';
 	}
 
+	/**
+	 * Handle horizontal tab click for client-side tab switching.
+	 * Uses lpShowHideEl with lp-hidden class.
+	 *
+	 * @param {Object} args - Event args containing e and target
+	 */
+	handleCBHorizontalTabClick( args ) {
+		const { e, target } = args;
+		e.preventDefault();
+
+		const tab = target.closest( BuilderEditCourse.selectors.elCBHorizontalTabs );
+		if ( ! tab ) return;
+
+		const sectionSlug = tab.dataset.tabSection;
+		if ( ! sectionSlug ) return;
+
+		// Update active tab
+		const allTabs = document.querySelectorAll( BuilderEditCourse.selectors.elCBHorizontalTabs );
+		allTabs.forEach( ( t ) => t.classList.remove( 'is-active' ) );
+		tab.classList.add( 'is-active' );
+
+		// Show/hide panels using lpShowHideEl
+		const allPanels = document.querySelectorAll( BuilderEditCourse.selectors.elCBTabPanels );
+		allPanels.forEach( ( panel ) => {
+			const isTarget = panel.dataset.section === sectionSlug;
+			lpUtils.lpShowHideEl( panel, isTarget ? 1 : 0 );
+		} );
+	}
+
+	/**
+	 * Collect course data from all tabs for update.
+	 * Since all tabs are now rendered in DOM (client-side tab switching),
+	 * this method collects data from Overview tab (title, desc, categories, tags, thumbnail)
+	 * and Settings tab (form fields) when present.
+	 *
+	 * @return {Object} Course data object
+	 */
 	getCourseDataForUpdate() {
 		const data = {};
+
+		// Get course ID from wrapper (could be in any tab panel)
 		const wrapperEl = document.querySelector( BuilderEditCourse.selectors.elDataCourse );
 		data.course_id = wrapperEl ? parseInt( wrapperEl.dataset.courseId ) || 0 : 0;
+
+		// --- Overview Tab Data ---
+		// Title
 		const titleInput = document.querySelector( BuilderEditCourse.selectors.elTitleInput );
 		data.course_title = titleInput ? titleInput.value : '';
+
+		// Description (TinyMCE or textarea)
 		const descEditor = document.querySelector( BuilderEditCourse.selectors.elDescEditor );
 		data.course_description = descEditor ? descEditor.value : '';
 		if ( typeof tinymce !== 'undefined' ) {
@@ -627,16 +680,24 @@ export class BuilderEditCourse {
 				data.course_description = editor.getContent();
 			}
 		}
+
+		// Categories
 		data.course_categories = [];
 		document
 			.querySelectorAll( '#taxonomy-course_category input[name*="course_category"]:checked' )
 			.forEach( ( checkbox ) => data.course_categories.push( checkbox.value ) );
+
+		// Tags
 		data.course_tags = [];
 		document
 			.querySelectorAll( 'input[name="course_tags[]"]:checked' )
 			.forEach( ( checkbox ) => data.course_tags.push( checkbox.value ) );
+
+		// Thumbnail
 		const thumbnailInput = document.querySelector( BuilderEditCourse.selectors.elThumbnailInput );
 		data.course_thumbnail_id = thumbnailInput ? thumbnailInput.value : '0';
+
+		// --- Settings Tab Data ---
 		const elFormSetting = document.querySelector( BuilderEditCourse.selectors.elFormSetting );
 		if ( elFormSetting ) {
 			data.course_settings = true;
@@ -644,6 +705,7 @@ export class BuilderEditCourse {
 			formElements.forEach( ( element ) => {
 				const name = element.name || element.id;
 				if ( ! name ) return;
+				// Skip WP nonce and referer fields
 				if ( name === 'learnpress_meta_box_nonce' || name === '_wp_http_referer' ) return;
 
 				const isArray = name.endsWith( '[]' );
@@ -675,18 +737,24 @@ export class BuilderEditCourse {
 							data[ fieldName ].push( element.value );
 						}
 					} else {
+						// Only set if not already set (first value wins)
 						if ( ! data.hasOwnProperty( fieldName ) ) {
 							data[ fieldName ] = element.value;
 						}
 					}
 				}
 			} );
-			Object.keys( data ).forEach( ( key ) => {
-				if ( Array.isArray( data[ key ] ) ) {
-					data[ key ] = data[ key ].join( ',' );
-				}
-			} );
 		}
+
+		// Convert settings arrays to comma-separated strings for API
+		// Exclude course_categories and course_tags - they're handled separately
+		const excludeFromConversion = [ 'course_categories', 'course_tags' ];
+		Object.keys( data ).forEach( ( key ) => {
+			if ( Array.isArray( data[ key ] ) && ! excludeFromConversion.includes( key ) ) {
+				data[ key ] = data[ key ].join( ',' );
+			}
+		} );
+
 		return data;
 	}
 
@@ -735,11 +803,17 @@ export class BuilderEditCourse {
 		if ( typeof lpCourseBuilder !== 'undefined' && lpCourseBuilder.nonce ) {
 			dataSend.nonce = lpCourseBuilder.nonce;
 		}
-		if ( courseData.course_categories.length > 0 ) {
-			dataSend.course_categories = courseData.course_categories.join( ',' );
+		// Handle course_categories - may be array or already a string
+		if ( courseData.course_categories ) {
+			dataSend.course_categories = Array.isArray( courseData.course_categories )
+				? courseData.course_categories.join( ',' )
+				: courseData.course_categories;
 		}
-		if ( courseData.course_tags.length > 0 ) {
-			dataSend.course_tags = courseData.course_tags.join( ',' );
+		// Handle course_tags - may be array or already a string
+		if ( courseData.course_tags ) {
+			dataSend.course_tags = Array.isArray( courseData.course_tags )
+				? courseData.course_tags.join( ',' )
+				: courseData.course_tags;
 		}
 		if ( courseData.course_thumbnail_id ) {
 			dataSend.course_thumbnail_id = courseData.course_thumbnail_id;
@@ -949,6 +1023,9 @@ export class BuilderEditCourse {
 		if ( ! dropzone || ! thumbnailInput ) return;
 
 		thumbnailInput.value = attachment.id;
+
+		// Mark form as having unsaved changes
+		getFormState().markAsChanged();
 		const imgUrl =
 			attachment.sizes?.medium?.url || attachment.sizes?.thumbnail?.url || attachment.url;
 
@@ -1003,6 +1080,9 @@ export class BuilderEditCourse {
 		// Clear thumbnail ID
 		if ( thumbnailInput ) {
 			thumbnailInput.value = '';
+
+			// Mark form as having unsaved changes
+			getFormState().markAsChanged();
 		}
 
 		// Hide action buttons

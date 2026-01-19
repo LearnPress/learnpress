@@ -30,8 +30,8 @@
 
 	.cb-course-edit-column {
 		&--left {
-			flex: 0 0 320px;
-			max-width: 320px;
+			flex: 0 0 400px;
+			max-width: 400px;
 		}
 
 		&--right {
@@ -298,16 +298,17 @@
 		&:hover {
 			border-color: $cb-primary;
 			background: rgba( $cb-primary, 0.03 );
+
+			a {
+				color: $cb-primary;
+			}
 		}
 
 		&.has-image {
+			cursor: default;
 			border-style: solid;
 			border-color: #e5e7eb;
 			padding: 0;
-
-			&:hover {
-				border-color: $cb-primary;
-			}
 		}
 
 		&.dragover {
@@ -335,7 +336,7 @@
 	}
 
 	.cb-featured-image-link {
-		color: $cb-primary;
+		color: #1a1a1a;
 		text-decoration: none;
 		font-weight: 500;
 
