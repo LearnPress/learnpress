@@ -3,6 +3,7 @@
 namespace LearnPress\TemplateHooks\Order;
 
 use LearnPress\Helpers\Singleton;
+use LearnPress\Helpers\Template;
 
 /**
  * class AdminOrderListTemplate
@@ -21,26 +22,43 @@ class AdminOrderListTemplate
 
 	public function add_export_order_button($which)
 	{
-		global $pagenow;
-
-		if ($pagenow !== 'edit.php' || !isset($_GET['post_type']) || $_GET['post_type'] !== LP_ORDER_CPT
-		) {
+		if ($which !== 'top') {
 			return;
 		}
-		
-		$order_data =  array(
-			'post_status' => sanitize_text_field($_GET['post_status'] ?? 'all'),
-			'author_id' => sanitize_text_field($_GET['author'] ?? ''),
-			'key_search' => sanitize_text_field($_GET['s'] ?? ''),
-			'month' => sanitize_text_field($_GET['m'] ?? 0),
-			'paged' => sanitize_text_field($_GET['paged'] ?? 1),
-			'orderby' => sanitize_text_field($_GET['orderby'] ?? 'title'),
-			'order' => sanitize_text_field($_GET['order'] ?? 'asc'),
-		)
-		?>
-		<div class="alignleft actions">
-			<button type="button" class="button export"><?php esc_html_e('Export', 'learnpres'); ?></button>
-		</div>
-		<?php
+
+		$screen = get_current_screen();
+		if (!$screen || $screen->base !== 'edit' || $screen->post_type !== LP_ORDER_CPT) {
+			return;
+		}
+
+		$order = strtolower($_GET['order'] ?? '');
+		$order = in_array($order, ['asc', 'desc'], true) ? $order : '';
+		$export_id = get_current_user_id() . '_' . wp_generate_uuid4();
+
+		$order_data = [
+			'action'      => 'export_order_csv',
+			'export_id'   => $export_id,
+			'post_type'   => LP_ORDER_CPT,
+			'post_status' => sanitize_key($_GET['post_status'] ?? ''),
+			'author'      => (int) ($_GET['author'] ?? 0),
+			's'           => sanitize_text_field($_GET['s'] ?? ''),
+			'm'           => (int) ($_GET['m'] ?? 0),
+			'paged'       => 1,
+			'orderby'     => sanitize_key($_GET['orderby'] ?? ''),
+			'order'       => $order,
+		];
+
+		$components = [
+			'wrap-start'       => '<div class="alignleft actions">',
+			'btn-export-start' => '<button
+		type="button"
+		class="button lp-button export"
+		data-send="' . esc_attr( Template::convert_data_to_json( $order_data ) ) . '">',
+			'btn-text'         => esc_html__( 'Export', 'learnpress' ),
+			'btn-export-end'   => '</button>',
+			'wrap-end'         => '</div>',
+		];
+
+		echo Template::combine_components( $components );
 	}
 }
