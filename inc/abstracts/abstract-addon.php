@@ -367,12 +367,10 @@ class LP_Addon {
 	}
 
 	/**
-	 * @return mixed
 	 * @deprecated 4.2.0
-	 * using on the addons: co-instructor(4.0.1), wishlist(4.0.4), announcements(4.0.3), course-review, coming-soon ...
 	 */
 	public static function instance() {
-		$name = self::_get_called_class();
+		/*$name = self::_get_called_class();
 		if ( false === $name ) {
 			return false;
 		}
@@ -381,14 +379,14 @@ class LP_Addon {
 			self::$instances[ $name ] = new $name();
 		}
 
-		return self::$instances[ $name ];
+		return self::$instances[ $name ];*/
 	}
 
 	/**
 	 * @return bool|string
 	 * @deprecated 4.2.0
 	 */
-	protected static function _get_called_class() {
+	/*protected static function _get_called_class() {
 		if ( function_exists( 'get_called_class' ) ) {
 			return get_called_class();
 		}
@@ -404,5 +402,5 @@ class LP_Addon {
 		}
 
 		return $backtrace[2]['args'][0];
-	}
+	}*/
 }
