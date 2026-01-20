@@ -79,7 +79,7 @@ class AdminOrderItemsTemplate {
 	 * @return stdClass
 	 * @throws Exception
 	 * @since 4.3.2
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function render_order_items( array $data ): stdClass {
 		$content  = new stdClass();
@@ -115,7 +115,14 @@ class AdminOrderItemsTemplate {
 				$itemObjMeta   = self::get_all_metadata_order_item( $itemObj->order_item_id );
 				$itemObj->meta = $itemObjMeta;
 				$item_type     = $itemObj->item_type ?? '';
-				$index         = ( $filter->page - 1 ) * $filter->limit + $i + 1;
+				// For old data, the data not migrated yet to new column.
+				if ( ( empty( $item_type ) || empty( $itemObj->item_id ) )
+					&& ! empty( $itemObj->meta['_course_id'] ) ) {
+					$itemObj->item_id = $itemObj->meta['_course_id'];
+					$item_type        = LP_COURSE_CPT;
+				}
+
+				$index = ( $filter->page - 1 ) * $filter->limit + $i + 1;
 				if ( $item_type === LP_COURSE_CPT ) {
 					$coursePostModel = CoursePostModel::find_by_id( $itemObj->item_id, true );
 					if ( ! $coursePostModel ) {
@@ -192,7 +199,7 @@ class AdminOrderItemsTemplate {
 	 *
 	 * @throws Exception
 	 * @since 4.3.2
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function render_order_detail_items( array $data ): stdClass {
 		$content  = new stdClass();
@@ -231,6 +238,12 @@ class AdminOrderItemsTemplate {
 				$itemObjMeta   = self::get_all_metadata_order_item( $itemObj->order_item_id );
 				$itemObj->meta = $itemObjMeta;
 				$item_type     = $itemObj->item_type ?? '';
+				// For old data, the data not migrated yet to new column.
+				if ( ( empty( $item_type ) || empty( $itemObj->item_id ) )
+					&& ! empty( $itemObj->meta['_course_id'] ) ) {
+					$itemObj->item_id = $itemObj->meta['_course_id'];
+					$item_type        = LP_COURSE_CPT;
+				}
 
 				if ( $item_type === LP_COURSE_CPT ) {
 					$html_items .= self::order_item_detail_html( $lp_order, $itemObj );
