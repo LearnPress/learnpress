@@ -38,7 +38,7 @@ class LP_Template_General extends LP_Abstract_Template {
 	}
 
 	public function breadcrumb( $args = array() ) {
-		echo Template::html_breadcrumb( args );
+		echo Template::html_breadcrumb();
 	}
 
 	/**
