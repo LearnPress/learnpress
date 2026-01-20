@@ -431,14 +431,10 @@ add_action(
 	20
 );
 
-/**
- * @see LP_Template_Profile::order_details()
- * @see LP_Template_Profile::order_recover()
- * @see LP_Template_Profile::order_message()
- */
-add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_details' ), 5 );
-add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_recover' ), 10 );
-add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_message' ), 15 );
+// Comment from v4.3.2.6, hook not using from v4.2.6.4
+//add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_details' ), 5 );
+//add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_recover' ), 10 );
+//add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_message' ), 15 );
 
 /**
  * @see LP_Template_Profile::dashboard_logged_in()

@@ -7,7 +7,11 @@
  * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  4.0.1
+ * @deprecated 4.3.2.6
  */
+
+_deprecated_file( __FILE__, '4.3.2.6' );
+return;
 
 defined( 'ABSPATH' ) || exit();
 

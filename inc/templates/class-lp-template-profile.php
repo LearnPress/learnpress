@@ -234,7 +234,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		echo ProfileTemplate::instance()->html_upload_cover_image( $userModel );
 	}
 
+	/**
+	 * @deprecated v4.3.2.6
+	 */
 	public function order_details() {
+		_deprecated_function( __METHOD__, '4.3.2.6' );
+		return;
+
 		$profile = LP_Profile::instance();
 		$order   = $profile->get_view_order();
 		if ( false === $order ) {
