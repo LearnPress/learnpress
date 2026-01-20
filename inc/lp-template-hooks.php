@@ -41,16 +41,16 @@ defined( 'ABSPATH' ) || exit();
 add_action( 'learn-press/template-header', LearnPress::instance()->template( 'general' )->func( 'template_header' ) );
 add_action( 'learn-press/template-footer', LearnPress::instance()->template( 'general' )->func( 'template_footer' ) );
 
-/**
- * Course breadcrumb
- *
- * @see LP_Template_General::breadcrumb()
- */
 add_action(
 	'learn-press/before-main-content',
 	LearnPress::instance()->template( 'general' )->text( '<div class="lp-archive-courses">', 'lp-archive-courses-open' ),
 	- 100
 );
+/**
+ * Course breadcrumb
+ *
+ * @see LP_Template_General::breadcrumb()
+ */
 add_action( 'learn-press/before-main-content', LearnPress::instance()->template( 'general' )->func( 'breadcrumb' ) );
 
 add_action(

@@ -54,10 +54,6 @@ class SingleCourseOfflineTemplate {
 
 		$user = UserModel::find( get_current_user_id(), true );
 
-		ob_start();
-		learn_press_breadcrumb();
-		$html_breadcrumb = ob_get_clean();
-
 		// Author
 		$singleInstructorTemplate = SingleInstructorTemplate::instance();
 		$author                   = $course->get_author_model();
@@ -149,7 +145,7 @@ class SingleCourseOfflineTemplate {
 			'learn-press/single-course/offline/section-left',
 			[
 				'wrapper'                => '<div class="lp-single-offline-course__left">',
-				'breadcrumb'             => $html_breadcrumb,
+				'breadcrumb'             => Template::html_breadcrumb(),
 				'title'                  => $this->singleCourseTemplate->html_title( $course, 'h1' ),
 				'info_one'               => Template::combine_components( $section_info_one ),
 				'image'                  => $this->singleCourseTemplate->html_image( $course, [ 'size' => 'full' ] ),

@@ -87,10 +87,6 @@ class SingleCourseModernLayout {
 	 * @return string
 	 */
 	public function header_sections( $course, $user ): string {
-		ob_start();
-		learn_press_breadcrumb();
-		$html_breadcrumb = ob_get_clean();
-
 		$html_categories = $this->singleCourseTemplate->html_categories( $course );
 		if ( ! empty( $html_categories ) ) {
 			$html_categories = sprintf(
@@ -136,7 +132,7 @@ class SingleCourseModernLayout {
 			[
 				'wrapper_header'              => '<div class="lp-single-course__header">',
 				'wrapper_container'           => '<div class="lp-single-course__header__inner">',
-				'breadcrumb'                  => $html_breadcrumb,
+				'breadcrumb'                  => Template::html_breadcrumb(),
 				'title'                       => $this->singleCourseTemplate->html_title( $course, 'h1' ),
 				'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
 				'instructor'                  => $html_instructor,
