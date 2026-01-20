@@ -70,27 +70,76 @@ class BuilderPopupTemplate {
 
 	/**
 	 * Get popup wrapper HTML structure.
+	 * Two-row header:
+	 * - Row 1: "Edit Lesson/Quiz/Question" + resize + close buttons
+	 * - Row 2: Dynamic Title + Status badge + Dropdown Action buttons
 	 */
 	private function get_popup_wrapper( string $type, int $post_id, string $title, string $status = '' ): array {
+		// Status badge HTML
 		$status_html = '';
 		if ( ! empty( $status ) ) {
-			$status_html = sprintf( '<span class="%s-status %s">%s</span>', $type, esc_attr( $status ), esc_html( $status ) );
+			$status_html = sprintf( '<span class="popup-status %s">%s</span>', esc_attr( $status ), esc_html( $status ) );
 		}
 
+		// Determine button text based on status
+		$is_published  = $status === 'publish';
+		$btn_save_text = $is_published ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
+
+		// Trash dropdown item - only show if item exists (post_id > 0)
+		$trash_item = '';
+		if ( $post_id > 0 ) {
+			$trash_item = sprintf(
+				'<div class="cb-dropdown-item cb-btn-trash__%s cb-btn-danger">
+					<span class="dashicons dashicons-trash"></span>
+					%s
+				</div>',
+				$type,
+				__( 'Move to Trash', 'learnpress' )
+			);
+		}
+
+		// Build dropdown HTML
+		$dropdown_html = sprintf(
+			'<div class="cb-header-actions-dropdown">
+				<div class="cb-btn-update cb-btn-update__%s cb-btn-primary" data-title-update="%s" data-title-publish="%s">%s</div>
+				<button type="button" class="cb-btn-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+					<span class="dashicons dashicons-arrow-down-alt2"></span>
+				</button>
+				<div class="cb-dropdown-menu">
+					%s
+				</div>
+			</div>',
+			$type,
+			esc_attr__( 'Update', 'learnpress' ),
+			esc_attr__( 'Publish', 'learnpress' ),
+			$btn_save_text,
+			$trash_item
+		);
+
 		return [
-			'overlay'            => '<div class="lp-builder-popup-overlay"></div>',
-			'wrapper'            => sprintf( '<div class="lp-builder-popup lp-builder-popup--%s" data-%s-id="%d">', $type, $type, $post_id ),
-			'header'             => '<div class="lp-builder-popup__header">',
-			'header_left'        => '<div class="lp-builder-popup__header-left">',
-			'title'              => sprintf( '<h3 class="lp-builder-popup__title">%s</h3>', esc_html( $title ) ),
-			'status'             => $status_html,
-			'header_left_end'    => '</div>',
-			'header_actions'     => '<div class="lp-builder-popup__header-actions">',
-			'resize_btn'         => '<button type="button" class="lp-builder-popup__resize" aria-label="' . esc_attr__( 'Toggle fullscreen', 'learnpress' ) . '" title="' . esc_attr__( 'Toggle fullscreen', 'learnpress' ) . '"><i class="lp-icon-expand"></i></button>',
-			'close_btn'          => '<button type="button" class="lp-builder-popup__close" aria-label="' . esc_attr__( 'Close', 'learnpress' ) . '">&times;</button>',
-			'header_actions_end' => '</div>',
-			'header_end'         => '</div>',
-			'body'               => '<div class="lp-builder-popup__body">',
+			'overlay'               => '<div class="lp-builder-popup-overlay"></div>',
+			'wrapper'               => sprintf( '<div class="lp-builder-popup lp-builder-popup--%s" data-%s-id="%d">', $type, $type, $post_id ),
+			// Row 1: Original header with "Edit Lesson/Quiz/Question" + resize + close
+			'header'                => '<div class="lp-builder-popup__header">',
+			'header_left'           => '<div class="lp-builder-popup__header-left">',
+			'header_title'          => sprintf( '<span class="lp-builder-popup__header-title">%s</span>', esc_html( $title ) ),
+			'header_left_end'       => '</div>',
+			'header_actions'        => '<div class="lp-builder-popup__header-actions">',
+			'resize_btn'            => '<button type="button" class="lp-builder-popup__resize" aria-label="' . esc_attr__( 'Toggle fullscreen', 'learnpress' ) . '" title="' . esc_attr__( 'Toggle fullscreen', 'learnpress' ) . '"><i class="lp-icon-expand"></i></button>',
+			'close_btn'             => '<button type="button" class="lp-builder-popup__close" aria-label="' . esc_attr__( 'Close', 'learnpress' ) . '">&times;</button>',
+			'header_actions_end'    => '</div>',
+			'header_end'            => '</div>',
+			// Row 2: New subheader with dynamic title + status + dropdown actions
+			'subheader'             => '<div class="lp-builder-popup__subheader">',
+			'subheader_left'        => '<div class="lp-builder-popup__subheader-left">',
+			'title'                 => '<h3 class="lp-builder-popup__title"></h3>',
+			'status'                => $status_html,
+			'subheader_left_end'    => '</div>',
+			'subheader_actions'     => '<div class="lp-builder-popup__subheader-actions">',
+			'dropdown'              => $dropdown_html,
+			'subheader_actions_end' => '</div>',
+			'subheader_end'         => '</div>',
+			'body'                  => '<div class="lp-builder-popup__body">',
 		];
 	}
 

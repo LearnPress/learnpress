@@ -34,11 +34,17 @@ export class BuilderPopup {
 		closeBtn: '.lp-builder-popup__close',
 		resizeBtn: '.lp-builder-popup__resize',
 		cancelBtn: '.lp-builder-popup__btn--cancel',
-		saveBtn: '.lp-builder-popup__btn--save',
-		trashBtn: '.lp-builder-popup__btn--trash',
+		// Type-specific dropdown action buttons (avoid conflict with Edit Course's .cb-btn-update)
+		saveBtn: '.cb-btn-update__lesson, .cb-btn-update__quiz, .cb-btn-update__question',
+		draftBtn: '.cb-btn-darft__lesson, .cb-btn-darft__quiz, .cb-btn-darft__question',
+		trashBtn: '.cb-btn-trash__lesson, .cb-btn-trash__quiz, .cb-btn-trash__question',
+		dropdownToggle: '.lp-builder-popup .cb-btn-dropdown-toggle',
+		dropdownMenu: '.lp-builder-popup .cb-dropdown-menu',
 		tabs: '.lp-builder-popup__tabs',
 		tab: '.lp-builder-popup__tab',
 		tabPane: '.lp-builder-popup__tab-pane',
+		// Header elements
+		headerTitle: '.lp-builder-popup__title',
 		// Trigger buttons
 		triggerLesson: '[data-popup-lesson]',
 		triggerQuiz: '[data-popup-quiz]',
@@ -141,11 +147,48 @@ export class BuilderPopup {
 			if ( trashBtn && this.isPopupOpen() ) {
 				this.handleTrash( trashBtn );
 			}
+
+			const draftBtn = e.target.closest( BuilderPopup.selectors.draftBtn );
+			if ( draftBtn && this.isPopupOpen() ) {
+				this.handleSaveDraft( draftBtn );
+			}
+		} );
+
+		// Dropdown toggle event
+		document.addEventListener( 'click', ( e ) => {
+			const toggle = e.target.closest( BuilderPopup.selectors.dropdownToggle );
+			if ( toggle && this.isPopupOpen() ) {
+				e.stopPropagation();
+				const dropdown = toggle.closest( '.cb-header-actions-dropdown' );
+				const menu = dropdown?.querySelector( BuilderPopup.selectors.dropdownMenu );
+				if ( menu ) {
+					const isOpen = menu.classList.contains( 'is-open' );
+					// Close all other dropdowns first
+					document.querySelectorAll( `${ BuilderPopup.selectors.dropdownMenu }.is-open` ).forEach( ( m ) => m.classList.remove( 'is-open' ) );
+					// Toggle this dropdown
+					if ( ! isOpen ) {
+						menu.classList.add( 'is-open' );
+						toggle.setAttribute( 'aria-expanded', 'true' );
+					} else {
+						toggle.setAttribute( 'aria-expanded', 'false' );
+					}
+				}
+			} else if ( ! e.target.closest( '.cb-header-actions-dropdown' ) ) {
+				// Close dropdown when clicking outside
+				document.querySelectorAll( `${ BuilderPopup.selectors.dropdownMenu }.is-open` ).forEach( ( m ) => m.classList.remove( 'is-open' ) );
+				document.querySelectorAll( BuilderPopup.selectors.dropdownToggle ).forEach( ( t ) => t.setAttribute( 'aria-expanded', 'false' ) );
+			}
 		} );
 
 		// Close on Escape key
 		document.addEventListener( 'keydown', ( e ) => {
 			if ( e.key === 'Escape' && this.isPopupOpen() ) {
+				// Close dropdown first if open
+				const openDropdown = document.querySelector( `${ BuilderPopup.selectors.dropdownMenu }.is-open` );
+				if ( openDropdown ) {
+					openDropdown.classList.remove( 'is-open' );
+					return;
+				}
 				this.closePopup();
 			}
 		} );
@@ -322,6 +365,9 @@ export class BuilderPopup {
 		this.resetAjaxElements();
 		this.loadActiveTabAssets();
 
+		// Initialize header title sync
+		this.initHeaderTitleSync();
+
 		// Initialize type-specific handlers
 		this.initTypeSpecificHandlers();
 
@@ -330,6 +376,64 @@ export class BuilderPopup {
 				detail: { type: this.currentType, id: this.currentId, isNew: this.isNewItem },
 			} )
 		);
+	}
+
+	/**
+	 * Initialize header title sync with title input
+	 * Syncs the header title with the title input field value
+	 */
+	initHeaderTitleSync() {
+		if ( ! this.popupContainer ) {
+			return;
+		}
+
+		const headerTitle = this.popupContainer.querySelector( BuilderPopup.selectors.headerTitle );
+		if ( ! headerTitle ) {
+			return;
+		}
+
+		// Find the title input field (different selectors for different item types)
+		const titleInputSelectors = [
+			`#${ this.currentType }_title`,
+			`input[name="${ this.currentType }_title"]`,
+			'.lp-meta-box input[name="post_title"]',
+			'input[name="title"]',
+		];
+
+		let titleInput = null;
+		for ( const selector of titleInputSelectors ) {
+			titleInput = this.popupContainer.querySelector( selector );
+			if ( titleInput ) {
+				break;
+			}
+		}
+
+		if ( ! titleInput ) {
+			return;
+		}
+
+		// Set initial title from input value
+		if ( titleInput.value ) {
+			headerTitle.textContent = titleInput.value;
+		}
+
+		// Update header title on input change
+		titleInput.addEventListener( 'input', ( e ) => {
+			const value = e.target.value.trim();
+			headerTitle.textContent = value || this.getDefaultTitle();
+		} );
+	}
+
+	/**
+	 * Get default title based on current popup type
+	 */
+	getDefaultTitle() {
+		const titleMap = {
+			lesson: 'New Lesson',
+			quiz: 'New Quiz',
+			question: 'New Question',
+		};
+		return titleMap[ this.currentType ] || 'Untitled';
 	}
 
 	/**
@@ -1080,6 +1184,85 @@ export class BuilderPopup {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( saveBtn, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	/**
+	 * Handle save as draft action
+	 */
+	handleSaveDraft( draftBtn ) {
+		if ( ! this.currentType ) {
+			return;
+		}
+
+		// Close dropdown menu
+		document.querySelectorAll( `${ BuilderPopup.selectors.dropdownMenu }.is-open` ).forEach( ( m ) => m.classList.remove( 'is-open' ) );
+
+		this.syncAllTinyMCE();
+
+		const formData = this.getFormData();
+		const validation = this.validateFormData( formData );
+
+		if ( ! validation.valid ) {
+			lpToastify.show( validation.errors.join( '. ' ), 'error' );
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( draftBtn, 1 );
+
+		const actionMap = {
+			lesson: 'builder_update_lesson',
+			quiz: 'builder_update_quiz',
+			question: 'builder_update_question',
+		};
+
+		const wasNewItem = this.isNewItem;
+
+		const dataSend = {
+			...formData,
+			action: actionMap[ this.currentType ] || `builder_update_${ this.currentType }`,
+			args: { id_url: `builder-update-${ this.currentType }` },
+			[ `${ this.currentType }_status` ]: 'draft',
+			return_html: wasNewItem ? 'yes' : 'no',
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+
+				lpToastify.show( message || 'Saved as draft', status );
+
+				if ( status === 'success' ) {
+					// Update status badge in popup
+					const statusBadge = this.popupContainer?.querySelector( '.popup-status' );
+					if ( statusBadge ) {
+						statusBadge.className = 'popup-status draft';
+						statusBadge.textContent = 'draft';
+					}
+
+					// Update button text to Publish
+					const updateBtn = this.popupContainer?.querySelector( BuilderPopup.selectors.saveBtn );
+					if ( updateBtn ) {
+						updateBtn.textContent = updateBtn.dataset.titlePublish || 'Publish';
+					}
+
+					// Handle new item
+					if ( wasNewItem && data?.[ `${ this.currentType }_id` ] ) {
+						this.currentId = data[ `${ this.currentType }_id` ];
+						this.isNewItem = false;
+					}
+
+					this.savedData = { formData, data };
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || 'Save failed', 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( draftBtn, 0 );
 			},
 		};
 

@@ -391,9 +391,8 @@ html:has( #wpadminbar ) {
 
 	.lp-cb-header__title {
 		margin: 0;
-		font-size: 40px;
+		font-size: 26px;
 		font-weight: 600;
-		margin-bottom: 10px;
 		color: $cb-text;
 	}
 
@@ -976,10 +975,10 @@ html:has( #wpadminbar ) {
 		align-items: center;
 		justify-content: center;
 		width: 36px;
-		height: auto;
-		padding: 10px 0;
-		background: #d0e3ff;
-		border: none;
+		padding: 0;
+		background: $cb-primary;
+		border: 1px solid $cb-primary;
+		border-left-color: #98bfe4;
 		border-radius: 0 6px 6px 0;
 		cursor: pointer;
 		transition: all 0.2s;
@@ -988,22 +987,30 @@ html:has( #wpadminbar ) {
 			font-size: 16px;
 			width: 16px;
 			height: 16px;
-			color: $cb-primary;
+			color: #ffffff;
 			transition: transform 0.2s;
 		}
 
 		&:hover {
-			background: #b8d4ff;
+			border-color: $cb-primary;
+			background: #f8fafc;
+
+			.dashicons {
+				color: $cb-primary;
+			}
 		}
 
 		&[aria-expanded='true'] {
-			background: #b8d4ff;
+			border-color: $cb-primary;
+			background: #f8fafc;
 
 			.dashicons {
 				transform: rotate( 180deg );
+				color: $cb-primary;
 			}
 		}
 	}
+
 
 	.cb-dropdown-menu {
 		position: absolute;

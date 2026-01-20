@@ -7,6 +7,16 @@
  * @version 1.0.0
  */
 
+// Variables - Match Edit Course color scheme
+$popup-primary: #1f74ff;
+$popup-primary-hover: #0047ba;
+$popup-primary-bland: #e2edff;
+$popup-text: #1e1e1e;
+$popup-text-muted: #6b7280;
+$popup-border: #e5e7eb;
+$popup-bg: #ffffff;
+$popup-radius: 8px;
+
 #lp-builder-popup-container {
 	display: none;
 	position: fixed;
@@ -184,13 +194,14 @@ body.lp-popup-open {
 		}
 	}
 
+	// Row 1: Original header with "Edit Lesson/Quiz/Question" + resize + close
 	&__header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		padding: 16px 24px;
-		border-bottom: 1px solid #e5e7eb;
-		background-color: #fff;
+		border-bottom: 1px solid $popup-border;
+		background-color: $popup-bg;
 		flex-shrink: 0;
 	}
 
@@ -200,17 +211,83 @@ body.lp-popup-open {
 		gap: 12px;
 	}
 
+	&__header-title {
+		font-size: 16px;
+		font-weight: 600;
+		color: $popup-text;
+	}
+
 	&__header-actions {
 		display: flex;
 		align-items: center;
 		gap: 8px;
 	}
 
+	// Row 2: Subheader with dynamic title + status + dropdown actions
+	&__subheader {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 12px 24px;
+		border-bottom: 1px solid $popup-border;
+		background-color: $popup-bg;
+		flex-shrink: 0;
+	}
+
+	&__subheader-left {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	&__subheader-actions {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	// Dynamic title in subheader
 	&__title {
 		margin: 0;
 		font-size: 18px;
 		font-weight: 600;
-		color: #1e1e1e;
+		color: $popup-text;
+		min-height: 24px;
+	}
+
+	// Status badge in popup (matching course-status from Edit Course)
+	.popup-status {
+		display: inline-block;
+		padding: 4px 10px;
+		border-radius: 4px;
+		font-size: 12px;
+		font-weight: 500;
+		text-transform: capitalize;
+
+		&.publish {
+			background: #dcfce7;
+			color: #166534;
+		}
+
+		&.draft {
+			background: #fef3c7;
+			color: #92400e;
+		}
+
+		&.pending {
+			background: #dbeafe;
+			color: #1e40af;
+		}
+
+		&.private {
+			background: #f3e8ff;
+			color: #6b21a8;
+		}
+
+		&.trash {
+			background: #fee2e2;
+			color: #991b1b;
+		}
 	}
 
 	&__resize {
@@ -262,12 +339,15 @@ body.lp-popup-open {
 	}
 
 	&__tabs {
+		position: sticky;
+		top: 0;
+		z-index: 9;
 		display: flex;
 		list-style: none;
 		margin: 0;
 		padding: 0 24px;
-		border-bottom: 1px solid #e5e7eb;
-		background-color: #fff;
+		border-bottom: 1px solid $popup-border;
+		background-color: $popup-bg;
 		gap: 8px;
 	}
 
@@ -276,18 +356,18 @@ body.lp-popup-open {
 		cursor: pointer;
 		font-size: 14px;
 		font-weight: 600;
-		color: #6b7280;
+		color: $popup-text-muted;
 		border-bottom: 2px solid transparent;
 		transition: all 0.2s;
 		margin-bottom: -1px;
 
 		&:hover {
-			color: #1e1e1e;
+			color: $popup-text;
 		}
 
 		&.active {
-			color: #1e1e1e;
-			border-bottom-color: #1e1e1e;
+			color: $popup-primary;
+			border-bottom-color: $popup-primary;
 		}
 	}
 
@@ -312,15 +392,9 @@ body.lp-popup-open {
 		border-radius: 0 6px 6px 0;
 	}
 
+	// Footer hidden - action buttons moved to header
 	&__footer {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 12px;
-		padding: 16px 24px;
-		border-top: 1px solid #e5e7eb;
-		background-color: #fff;
-		flex-shrink: 0;
+		display: none;
 	}
 
 	&__footer-left {
