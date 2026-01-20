@@ -570,9 +570,13 @@ class ExportPersonalData {
 			switch ( $prop ) {
 				case 'items':
 					$item_names = array();
-					if ( ! empty( $order->get_items() ) ) {
-						foreach ( $order->get_items() as $item ) {
-							$item_names[] = $item['name'] . ' x ' . $item['quantity'];
+					$items      = $order->get_all_items();
+					if ( ! empty( $items ) ) {
+						foreach ( $items as $item ) {
+							$order_item_id   = $item['order_item_id'] ?? 0;
+							$order_item_name = $item['order_item_name'] ?? '';
+							$quantity        = learn_press_get_order_item_meta( $order_item_id, '_quantity' );
+							$item_names[]    = $order_item_name . ' x ' . $quantity;
 						}
 					}
 					$value = implode( ', ', $item_names );

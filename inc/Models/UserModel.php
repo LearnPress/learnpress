@@ -10,7 +10,9 @@ namespace LearnPress\Models;
  */
 
 use Exception;
+use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\FilterBase;
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserItems\UserQuizModel;
@@ -678,16 +680,16 @@ class UserModel {
 	/**
 	 * Get quizzes attend of user.
 	 *
-	 * @param LP_User_Items_Filter|UserItemModel $filter
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter
 	 * @param int $total_rows
 	 *
 	 * @return array|int|string|null
 	 * @throws Exception
 	 * @since 4.2.8.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_quizzes_attend( $filter, int &$total_rows = 0 ) {
-		$lp_db_user_items  = LP_User_Items_DB::getInstance();
+		$lp_db_user_items  = UserItemsDB::getInstance();
 		$filter->order_by  = 'user_item_id';
 		$filter->order     = 'DESC';
 		$filter->user_id   = $this->get_id();

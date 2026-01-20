@@ -531,13 +531,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @editor tungnx
 		 */
 		public function get_item_ids() {
-			$items = $this->get_items();
+			$items = $this->get_all_items();
 
 			if ( $items ) {
 				$course_ids = array();
 				foreach ( $items as $item ) {
-					if ( isset( $item['course_id'] ) ) {
-						$course_ids[] = (int) $item['course_id'];
+					if ( $item['item_type'] === LP_COURSE_CPT ) {
+						$course_ids[] = (int) $item['item_id'];
 					}
 				}
 

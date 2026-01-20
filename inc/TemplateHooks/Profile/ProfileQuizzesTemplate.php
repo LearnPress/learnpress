@@ -8,6 +8,7 @@
 
 namespace LearnPress\TemplateHooks\Profile;
 
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -111,7 +112,7 @@ class ProfileQuizzesTemplate {
 				get_option( 'posts_per_page', 10 )
 			);
 
-			$filter          = new LP_User_Items_Filter();
+			$filter          = new UserItemsFilter();
 			$filter->user_id = $userModel->get_id();
 			$filter->limit   = $limit;
 			$filter->page    = $args['paged'];
