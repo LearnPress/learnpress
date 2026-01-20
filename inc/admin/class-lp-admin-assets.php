@@ -302,6 +302,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),*/
+				'lp-admin-order'      => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/admin-order' . self::$_min_assets . '.js' ),
+					array( 'html2pdf' ),
+					array( LP_ORDER_CPT ),
+					0,
+					0,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
 				'lp-admin-order-list' => new LP_Asset_Key(
 					$this->url('js/dist/admin/admin-order-list' . self::$_min_assets . '.js'),
 					array(),

@@ -3,8 +3,11 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Order\AdminOrderItemsTemplate;
 use LP_Helper;
+use LP_Order;
 use LP_Request;
 use LP_REST_Response;
 use Throwable;
@@ -12,6 +15,9 @@ use WP_Query;
 
 class ExportOrderCSVAjax extends AbstractAjax
 {
+	/**
+	 * @return void
+	 */
 	public function export_order_csv()
 	{
 		$response = new LP_REST_Response();
@@ -33,7 +39,7 @@ class ExportOrderCSVAjax extends AbstractAjax
 
 			$args = [
 				'post_type' => $params['post_type'] ?? LP_ORDER_CPT,
-				'post_status' => $params['post_status'] ?? '',
+				'post_status' => $params['post_status'] ?? 'any',
 				's' => $params['s'] ?? '',
 				'm' => $params['m'] ?? 0,
 				'order' => $params['order'] ?? '',
@@ -46,13 +52,9 @@ class ExportOrderCSVAjax extends AbstractAjax
 				$args['author'] = $params['author'];
 			}
 
-
-
 			$query = new WP_Query($args);
-
 			if ($query->have_posts()) {
 				$file = $this->get_export_csv_path($export_id);
-				var_dump($file);die;
 				$handle = fopen($file, $paged === 1 ? 'w' : 'a');
 
 				if ($paged === 1) {
@@ -75,36 +77,21 @@ class ExportOrderCSVAjax extends AbstractAjax
 					if (!$order) {
 						continue;
 					}
-					$user = $order->get_user();
-					$student = $user ? $user->display_name : __('Guest', 'learnpress');
 
-					$items = $order->get_items();
-					$courses = [];
-
-					if (!empty($items)) {
-						foreach ($items as $item) {
-							if (!empty($item['course_id'])) {
-								$courses[] = get_the_title($item['course_id']);
-							}
-						}
-					}
+					$currency_symbol = learn_press_get_currency_symbol($order->get_currency() ?? learn_press_get_currency());
 
 					fputcsv($handle, [
-						$order->get_order_key(),
-						$student,
-						implode(' | ', $courses),
+						$order->get_order_number(),
+						$this->get_order_users($order),
+						$this->get_order_items($order),
 						get_post_field('post_date', $order_id),
-						$order->get_total(),
-						$order->get_status(),
+						html_entity_decode(learn_press_format_price($order->get_data('order_total'), $currency_symbol), ENT_QUOTES, 'UTF-8'),
+						LP_Order::get_status_label($order->get_status())
 					]);
 				}
 
 				fclose($handle);
 				wp_reset_postdata();
-
-				if ($paged === 1) {
-//					$this->update_migrate_option();
-				}
 			}
 
 			$data = [];
@@ -132,6 +119,10 @@ class ExportOrderCSVAjax extends AbstractAjax
 		wp_send_json($response);
 	}
 
+	/**
+	 * @param $export_id
+	 * @return string
+	 */
 	private function get_export_csv_path($export_id)
 	{
 		$upload = wp_upload_dir();
@@ -142,5 +133,73 @@ class ExportOrderCSVAjax extends AbstractAjax
 		}
 
 		return $dir . "/orders-{$export_id}.csv";
+	}
+
+	/**
+	 * @param $order
+	 * @return string|null
+	 */
+	public function get_order_users($order)
+	{
+		$user_ids = $order->get_users();
+
+		if ($user_ids) {
+			$outputs = array();
+			foreach ($user_ids as $user_id) {
+				if (get_user_by('id', $user_id)) {
+					$user = learn_press_get_user($user_id);
+					$outputs[] = sprintf(
+						'%s (userID#%s)',
+						$user->get_data('user_login'),
+						$user_id,
+					);
+				} else {
+					if (sizeof($user_ids) == 1) {
+						$outputs[] = $order->get_customer_name();
+					}
+				}
+			}
+
+			return join(', ', $outputs);
+		} else {
+			return __('(Guest)', 'learnpress');
+		}
+	}
+
+	/**
+	 * @param $order
+	 * @return string
+	 */
+	private function get_order_items($order): string
+	{
+		$order_item_str = '';
+		$items = $order->get_all_items();
+
+		if (count($items) === 0) {
+			return __('(No item)', 'learnpress');
+		} else {
+			foreach ($items as $i => $itemObj) {
+				$item_type = $itemObj['item_type'] ?? '';
+
+				if ($item_type === LP_COURSE_CPT) {
+					$coursePostModel = CoursePostModel::find_by_id($itemObj['item_id'], true);
+					$order_item_str .= sprintf(
+						'%s (courseID#%s)',
+						esc_html($itemObj['order_item_name']),
+						$coursePostModel ? $coursePostModel->get_id() : __('The course does not exist now.', 'learnpress')
+					);
+
+					if ($i < count($items)) {
+						$order_item_str .= '|';
+					}
+				} else {
+					if (has_filter('learn-press/order-item-not-course-id')) {
+						return __('The course does not exist', 'learnpress');
+					}
+				}
+			}
+		}
+
+		return $order_item_str;
 	}
 }

@@ -39,7 +39,7 @@ class AdminOrderListTemplate
 			'action'      => 'export_order_csv',
 			'export_id'   => $export_id,
 			'post_type'   => LP_ORDER_CPT,
-			'post_status' => sanitize_key($_GET['post_status'] ?? ''),
+			'post_status' => sanitize_key($_GET['post_status'] ?? 'any'),
 			'author'      => (int) ($_GET['author'] ?? 0),
 			's'           => sanitize_text_field($_GET['s'] ?? ''),
 			'm'           => (int) ($_GET['m'] ?? 0),
