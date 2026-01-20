@@ -1,6 +1,4 @@
 // Course edit styles - Mixin for shared styles between old and new layout
-// Old wrapper: .lp-course-builder-content__section
-// New wrapper: .lp-cb-tab-content > .cb-section__course-edit
 
 @mixin course-edit-styles {
 	.course-status {
@@ -22,7 +20,6 @@
 		}
 	}
 
-	// Two-column layout
 	.cb-course-edit-content {
 		display: flex;
 		gap: 40px;
@@ -90,12 +87,25 @@
 		}
 	}
 
-	// Permalink field
 	.cb-course-edit-permalink {
 		margin-bottom: 20px;
 	}
 
-	.cb-course-edit-permalink__label {
+	.cb-permalink-display {
+		display: flex;
+		align-items: flex-start;
+		gap: 8px;
+		padding: 10px 14px;
+		background: #f8fafc;
+		border: 1px solid #e2e8f0;
+		border-radius: 6px;
+
+		&.lp-hidden {
+			display: none;
+		}
+	}
+
+	.cb-permalink-label {
 		display: block;
 		font-size: 14px;
 		font-weight: 600;
@@ -103,22 +113,142 @@
 		margin-bottom: 8px;
 	}
 
-	.cb-course-edit-permalink__input {
-		width: 100%;
-		padding: 10px 12px;
+	.cb-permalink-url {
+		font-size: 13px;
+		color: $cb-primary;
+		text-decoration: none;
+		word-break: break-all;
+		flex: 1;
+		min-width: 0;
+		padding-top: 2px;
+		
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	.cb-permalink-edit-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		background: #fff;
+		border: 1px solid #e2e8f0;
+		border-radius: 4px;
+		cursor: pointer;
+		flex-shrink: 0;
+		transition: all 0.15s ease;
+
+		.dashicons {
+			font-size: 14px;
+			width: 14px;
+			height: 14px;
+			color: #64748b;
+		}
+
+		&:hover {
+			background: $cb-primary;
+			border-color: $cb-primary;
+
+			.dashicons {
+				color: #fff;
+			}
+		}
+	}
+
+	.cb-permalink-editor {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: 12px;
+		background: #fff;
+		border: 1px solid #e2e8f0;
+		border-radius: 6px;
+
+		&.lp-hidden {
+			display: none;
+		}
+	}
+
+	.cb-permalink-prefix {
+		font-size: 12px;
+		color: #94a3b8;
+		word-break: break-all;
+		line-height: 1.4;
+
+		strong {
+			color: #64748b;
+			font-weight: 600;
+		}
+	}
+
+	.cb-permalink-input-row {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+
+	.cb-permalink-slug-input {
+		flex: 1;
+		min-width: 0;
+		padding: 8px 12px;
 		font-size: 14px;
-		border: 1px solid #ddd;
+		font-weight: 500;
+		color: #1a1a1a;
+		border: 1px solid #e2e8f0;
 		border-radius: 6px;
 		outline: none;
-		transition: border-color 0.2s;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
 		&:focus {
-			border-color: #2271b1;
-			box-shadow: 0 0 0 1px #2271b1;
+			border-color: $cb-primary;
+			box-shadow: 0 0 0 3px rgba( $cb-primary, 0.1 );
 		}
 
 		&::placeholder {
-			color: #9ca3af;
+			color: #94a3b8;
+		}
+	}
+
+	.cb-permalink-actions {
+		display: flex;
+		gap: 6px;
+		flex-shrink: 0;
+	}
+
+	.cb-permalink-ok-btn {
+		padding: 8px 16px;
+		font-size: 13px;
+		font-weight: 600;
+		color: #fff;
+		background: $cb-primary;
+		border: none;
+		border-radius: 6px;
+		cursor: pointer;
+		transition: background 0.15s ease;
+
+		&:hover {
+			background: darken( $cb-primary, 8% );
+		}
+	}
+
+	.cb-permalink-cancel-btn {
+		padding: 8px 14px;
+		font-size: 13px;
+		font-weight: 500;
+		color: #64748b;
+		background: #f8fafc;
+		border: 1px solid #e2e8f0;
+		border-radius: 6px;
+		cursor: pointer;
+		transition: all 0.15s ease;
+
+		&:hover {
+			background: #f1f5f9;
+			color: #475569;
 		}
 	}
 
@@ -262,7 +392,6 @@
 		}
 	}
 
-	// Featured Image - Dropzone style
 	.cb-course-edit-featured-image {
 		margin-bottom: 24px;
 	}
@@ -399,7 +528,6 @@
 		}
 	}
 
-	// Legacy featured image styles (keep for compatibility)
 	.cb-featured-image-preview {
 		background: #f5f5f5;
 		border: 2px dashed #ddd;
@@ -579,30 +707,19 @@
 	}
 }
 
-// =============================================
-// Apply mixin to wrappers
-// =============================================
-
-// Old wrapper (legacy layout)
 .lp-course-builder-content__section {
 	@include course-edit-styles;
 }
 
-// New layout wrapper
 .lp-cb-tab-content {
 	.cb-section__course-edit {
 		@include course-edit-styles;
 	}
 
-	// Hide old header when inside new layout (already has header from render_detail_view)
 	.cb-section__header {
 		display: none !important;
 	}
 }
-
-// =============================================
-// Settings panel styles
-// =============================================
 
 .lp-meta-box-course-panels::before {
 	content: attr( data-tab-title );
@@ -616,7 +733,6 @@
 	line-height: 1.2;
 }
 
-// Settings tab layout - ClassPress style
 .lp-meta-box__course-tab {
 	display: flex;
 	min-height: 600px;
@@ -707,10 +823,6 @@ ul.lp-meta-box__course-tab__tabs {
 		}
 	}
 }
-
-// =============================================
-// Curriculum section styles - Apply to both layouts
-// =============================================
 
 @mixin curriculum-styles {
 	#lp-course-edit-curriculum {
@@ -1067,7 +1179,6 @@ ul.lp-meta-box__course-tab__tabs {
 	}
 }
 
-// Apply curriculum styles to both layouts
 #lp-course-builder-content {
 	@include curriculum-styles;
 }
@@ -1076,18 +1187,10 @@ ul.lp-meta-box__course-tab__tabs {
 	@include curriculum-styles;
 }
 
-// =============================================
-// Utility classes
-// =============================================
-
 .lp-option-disabled {
 	pointer-events: none;
 	opacity: 0.5;
 }
-
-// =============================================
-// Category taxonomy styles
-// =============================================
 
 #taxonomy-course_category.categorydiv {
 	border: none !important;

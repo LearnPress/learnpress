@@ -67,6 +67,16 @@ export class BuilderEditCourse {
 
 		elCBHorizontalTabs: '.lp-cb-tabs__item',
 		elCBTabPanels: '.lp-cb-tab-panel',
+
+		// Permalink component
+		elPermalinkDisplay: '.cb-permalink-display',
+		elPermalinkEditor: '.cb-permalink-editor',
+		elPermalinkEditBtn: '.cb-permalink-edit-btn',
+		elPermalinkOkBtn: '.cb-permalink-ok-btn',
+		elPermalinkCancelBtn: '.cb-permalink-cancel-btn',
+		elPermalinkSlugInput: '.cb-permalink-slug-input',
+		elPermalinkUrl: '.cb-permalink-url',
+		elPermalinkBaseUrl: '#cb-permalink-base-url',
 	};
 
 	init() {
@@ -187,6 +197,22 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elCancelSaleScheduleBtn,
 				class: this,
 				callBack: this.handleCancelSchedule.name,
+			},
+			// Permalink component events
+			{
+				selector: BuilderEditCourse.selectors.elPermalinkEditBtn,
+				class: this,
+				callBack: this.handlePermalinkEdit.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elPermalinkOkBtn,
+				class: this,
+				callBack: this.handlePermalinkOk.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elPermalinkCancelBtn,
+				class: this,
+				callBack: this.handlePermalinkCancel.name,
 			},
 		] );
 
@@ -697,6 +723,12 @@ export class BuilderEditCourse {
 		const thumbnailInput = document.querySelector( BuilderEditCourse.selectors.elThumbnailInput );
 		data.course_thumbnail_id = thumbnailInput ? thumbnailInput.value : '0';
 
+		// Permalink/Slug
+		const permalinkInput = document.querySelector( BuilderEditCourse.selectors.elPermalinkSlugInput );
+		if ( permalinkInput && permalinkInput.value ) {
+			data.course_permalink = permalinkInput.value;
+		}
+
 		// --- Settings Tab Data ---
 		const elFormSetting = document.querySelector( BuilderEditCourse.selectors.elFormSetting );
 		if ( elFormSetting ) {
@@ -758,6 +790,28 @@ export class BuilderEditCourse {
 		return data;
 	}
 
+	/**
+	 * Validate title is not empty before update.
+	 *
+	 * @return {boolean} True if valid, false if invalid
+	 */
+	validateTitleBeforeUpdate() {
+		const titleInput = document.querySelector( BuilderEditCourse.selectors.elTitleInput );
+		if ( ! titleInput ) return true;
+
+		const title = titleInput.value.trim();
+		if ( ! title ) {
+			const i18n =
+				typeof lpAdminCourseEditorSettings !== 'undefined' && lpAdminCourseEditorSettings.i18n
+					? lpAdminCourseEditorSettings.i18n
+					: { notice_title_required: 'Course title is required.' };
+			lpToastify.show( i18n.notice_title_required || 'Course title is required.', 'error' );
+			titleInput.focus();
+			return false;
+		}
+		return true;
+	}
+
 	validatePricingBeforeUpdate() {
 		const regularPriceInput = document.querySelector(
 			BuilderEditCourse.selectors.elRegularPriceInput
@@ -782,6 +836,8 @@ export class BuilderEditCourse {
 
 	updateCourse( args ) {
 		const { e, target } = args;
+		// Validate title is not empty
+		if ( ! this.validateTitleBeforeUpdate() ) return;
 		if ( ! this.validatePricingBeforeUpdate() ) return;
 		const elBtnUpdateCourse = target.closest( BuilderEditCourse.selectors.elBtnUpdateCourse );
 		const elBtnHeaderSave = target.closest( BuilderEditCourse.selectors.elBtnHeaderSave );
@@ -850,6 +906,18 @@ export class BuilderEditCourse {
 					if ( elStatus ) {
 						elStatus.className = 'course-status ' + data.status;
 						elStatus.textContent = data.status;
+					}
+				}
+				// Update permalink display with actual saved slug (handles duplicate slug resolution)
+				if ( data?.course_slug ) {
+					const slugInput = document.querySelector( BuilderEditCourse.selectors.elPermalinkSlugInput );
+					const urlLink = document.querySelector( BuilderEditCourse.selectors.elPermalinkUrl );
+					if ( slugInput ) {
+						slugInput.value = data.course_slug;
+					}
+					if ( urlLink && data?.course_permalink ) {
+						urlLink.href = data.course_permalink;
+						urlLink.textContent = data.course_permalink;
 					}
 				}
 			},
@@ -1089,6 +1157,152 @@ export class BuilderEditCourse {
 		if ( actionsContainer ) {
 			actionsContainer.innerHTML = '';
 		}
+	}
+
+	/**
+	 * Slugify a string - convert to URL-safe slug.
+	 * Handles Vietnamese diacritics, special characters, spaces.
+	 *
+	 * @param {string} str - Input string
+	 * @return {string} URL-safe slug
+	 */
+	slugify( str ) {
+		// Vietnamese diacritics mapping
+		const vietnameseMap = {
+			à: 'a', á: 'a', ạ: 'a', ả: 'a', ã: 'a',
+			â: 'a', ầ: 'a', ấ: 'a', ậ: 'a', ẩ: 'a', ẫ: 'a',
+			ă: 'a', ằ: 'a', ắ: 'a', ặ: 'a', ẳ: 'a', ẵ: 'a',
+			è: 'e', é: 'e', ẹ: 'e', ẻ: 'e', ẽ: 'e',
+			ê: 'e', ề: 'e', ế: 'e', ệ: 'e', ể: 'e', ễ: 'e',
+			ì: 'i', í: 'i', ị: 'i', ỉ: 'i', ĩ: 'i',
+			ò: 'o', ó: 'o', ọ: 'o', ỏ: 'o', õ: 'o',
+			ô: 'o', ồ: 'o', ố: 'o', ộ: 'o', ổ: 'o', ỗ: 'o',
+			ơ: 'o', ờ: 'o', ớ: 'o', ợ: 'o', ở: 'o', ỡ: 'o',
+			ù: 'u', ú: 'u', ụ: 'u', ủ: 'u', ũ: 'u',
+			ư: 'u', ừ: 'u', ứ: 'u', ự: 'u', ử: 'u', ữ: 'u',
+			ỳ: 'y', ý: 'y', ỵ: 'y', ỷ: 'y', ỹ: 'y',
+			đ: 'd',
+			À: 'A', Á: 'A', Ạ: 'A', Ả: 'A', Ã: 'A',
+			Â: 'A', Ầ: 'A', Ấ: 'A', Ậ: 'A', Ẩ: 'A', Ẫ: 'A',
+			Ă: 'A', Ằ: 'A', Ắ: 'A', Ặ: 'A', Ẳ: 'A', Ẵ: 'A',
+			È: 'E', É: 'E', Ẹ: 'E', Ẻ: 'E', Ẽ: 'E',
+			Ê: 'E', Ề: 'E', Ế: 'E', Ệ: 'E', Ể: 'E', Ễ: 'E',
+			Ì: 'I', Í: 'I', Ị: 'I', Ỉ: 'I', Ĩ: 'I',
+			Ò: 'O', Ó: 'O', Ọ: 'O', Ỏ: 'O', Õ: 'O',
+			Ô: 'O', Ồ: 'O', Ố: 'O', Ộ: 'O', Ổ: 'O', Ỗ: 'O',
+			Ơ: 'O', Ờ: 'O', Ớ: 'O', Ợ: 'O', Ở: 'O', Ỡ: 'O',
+			Ù: 'U', Ú: 'U', Ụ: 'U', Ủ: 'U', Ũ: 'U',
+			Ư: 'U', Ừ: 'U', Ứ: 'U', Ự: 'U', Ử: 'U', Ữ: 'U',
+			Ỳ: 'Y', Ý: 'Y', Ỵ: 'Y', Ỷ: 'Y', Ỹ: 'Y',
+			Đ: 'D',
+		};
+
+		// Replace Vietnamese characters
+		let result = str.split( '' ).map( ( c ) => vietnameseMap[ c ] || c ).join( '' );
+
+		// Lowercase, replace spaces with dashes, remove special characters
+		result = result
+			.toLowerCase()
+			.replace( /\s+/g, '-' ) // Replace spaces with -
+			.replace( /[^\w-]+/g, '' ) // Remove non-word chars except -
+			.replace( /--+/g, '-' ) // Replace multiple - with single -
+			.replace( /^-+/, '' ) // Trim - from start
+			.replace( /-+$/, '' ); // Trim - from end
+
+		return result;
+	}
+
+	/**
+	 * Handle permalink Edit button click.
+	 * Shows editor mode, hides display mode.
+	 */
+	handlePermalinkEdit( args ) {
+		const { e } = args;
+		if ( e ) e.preventDefault();
+
+		const display = document.querySelector( BuilderEditCourse.selectors.elPermalinkDisplay );
+		const editor = document.querySelector( BuilderEditCourse.selectors.elPermalinkEditor );
+		const input = document.querySelector( BuilderEditCourse.selectors.elPermalinkSlugInput );
+
+		if ( ! display || ! editor || ! input ) return;
+
+		// Store original value for cancel
+		input.dataset.originalValue = input.value;
+
+		// Toggle visibility
+		display.classList.add( 'lp-hidden' );
+		editor.classList.remove( 'lp-hidden' );
+
+		// Focus input and select text
+		input.focus();
+		input.select();
+	}
+
+	/**
+	 * Handle permalink OK button click.
+	 * Validates and sanitizes slug, updates display.
+	 */
+	handlePermalinkOk( args ) {
+		const { e } = args;
+		if ( e ) e.preventDefault();
+
+		const display = document.querySelector( BuilderEditCourse.selectors.elPermalinkDisplay );
+		const editor = document.querySelector( BuilderEditCourse.selectors.elPermalinkEditor );
+		const input = document.querySelector( BuilderEditCourse.selectors.elPermalinkSlugInput );
+		const urlLink = document.querySelector( BuilderEditCourse.selectors.elPermalinkUrl );
+		const baseUrlInput = document.querySelector( BuilderEditCourse.selectors.elPermalinkBaseUrl );
+
+		if ( ! display || ! editor || ! input || ! urlLink ) return;
+
+		// Sanitize the slug
+		let newSlug = this.slugify( input.value.trim() );
+
+		// If empty after sanitizing, restore original
+		if ( ! newSlug ) {
+			newSlug = input.dataset.originalValue || 'course';
+		}
+
+		// Update input value with sanitized slug
+		input.value = newSlug;
+
+		// Get base URL
+		const baseUrl = baseUrlInput ? baseUrlInput.value : '';
+		const newUrl = baseUrl + newSlug;
+
+		// Update the display link
+		urlLink.href = newUrl;
+		urlLink.textContent = newUrl;
+
+		// Toggle visibility back to display mode
+		editor.classList.add( 'lp-hidden' );
+		display.classList.remove( 'lp-hidden' );
+
+		// Mark form as changed if slug differs from original
+		if ( newSlug !== input.dataset.originalValue ) {
+			getFormState().markAsChanged();
+		}
+	}
+
+	/**
+	 * Handle permalink Cancel button click.
+	 * Restores original value and returns to display mode.
+	 */
+	handlePermalinkCancel( args ) {
+		const { e } = args;
+		if ( e ) e.preventDefault();
+
+		const display = document.querySelector( BuilderEditCourse.selectors.elPermalinkDisplay );
+		const editor = document.querySelector( BuilderEditCourse.selectors.elPermalinkEditor );
+		const input = document.querySelector( BuilderEditCourse.selectors.elPermalinkSlugInput );
+
+		if ( ! display || ! editor || ! input ) return;
+
+		// Restore original value
+		input.value = input.dataset.originalValue || '';
+
+		// Toggle visibility back to display mode
+		editor.classList.add( 'lp-hidden' );
+		display.classList.remove( 'lp-hidden' );
 	}
 
 	initTabTitles() {

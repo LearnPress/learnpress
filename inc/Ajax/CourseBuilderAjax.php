@@ -187,6 +187,18 @@ class CourseBuilderAjax extends AbstractAjax {
 					wp_set_post_terms( $courseModel->ID, $tags, 'course_tag' );
 				}
 
+				// Update permalink/slug if provided
+				if ( ! empty( $data['course_permalink'] ) ) {
+					$new_slug = sanitize_title( $data['course_permalink'] );
+					if ( $new_slug && $new_slug !== $courseModel->post_name ) {
+						wp_update_post( array(
+							'ID'        => $courseModel->ID,
+							'post_name' => $new_slug,
+						) );
+						$courseModel->post_name = $new_slug;
+					}
+				}
+
 				$course_id = $courseModel->ID;
 			}
 
@@ -219,6 +231,13 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->status        = $data['course_status'];
 			$response->data->button_title  = $data['course_status'] === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 			$response->data->course_id_new = $insert ? $course_id : '';
+
+			// Return the actual saved permalink data (important if WordPress auto-generated a unique slug)
+			$saved_post = get_post( $course_id );
+			if ( $saved_post ) {
+				$response->data->course_slug      = $saved_post->post_name;
+				$response->data->course_permalink = get_permalink( $course_id );
+			}
 			
 			// Return full redirect URL for new courses
 			if ( $insert && $course_id ) {
@@ -753,10 +772,21 @@ class CourseBuilderAjax extends AbstractAjax {
 
 				$message = __( 'Course has been moved to draft', 'learnpress' );
 			} else {
+				// Store original slug before trashing (wp_trash_post adds __trashed suffix)
+				$original_slug = $course_model->post_name;
+
 				$delete = wp_trash_post( $course_id );
 
 				if ( ! $delete ) {
-					throw new Exception( __( 'Course has been moved to trash', 'learnpress' ) );
+					throw new Exception( __( 'Course cannot be moved to trash', 'learnpress' ) );
+				}
+
+				// Restore original slug after trashing
+				if ( $original_slug ) {
+					wp_update_post( array(
+						'ID'        => $course_id,
+						'post_name' => $original_slug,
+					) );
 				}
 
 				$message = __( 'Course moved to trash', 'learnpress' );

@@ -124,15 +124,69 @@ class BuilderEditCourseTemplate {
 		$post_id   = ! empty( $course_model ) ? $course_model->get_id() : '';
 		$post_name = '';
 
+		// Hide permalink for new courses
+		if ( empty( $post_id ) || $post_id === 'post-new' ) {
+			return '';
+		}
+
 		if ( $post_id ) {
 			$post      = get_post( $post_id );
 			$post_name = $post ? $post->post_name : '';
 		}
 
+		// Get base URL for courses
+		$courses_page_id = learn_press_get_page_id( 'courses' );
+		$base_url        = '';
+		if ( $courses_page_id ) {
+			$base_url = trailingslashit( get_permalink( $courses_page_id ) );
+		} else {
+			$base_url = trailingslashit( home_url() ) . 'courses/';
+		}
+
+		$full_url = $base_url . $post_name;
+
+		$state_a = sprintf(
+			'<span class="cb-permalink-label">%s</span>
+			<div class="cb-permalink-display">
+				<a href="%s" target="_blank" class="cb-permalink-url">%s</a>
+				<button type="button" class="cb-permalink-edit-btn" title="%s">
+					<span class="dashicons dashicons-edit"></span>
+				</button>
+			</div>',
+			__( 'Permalink', 'learnpress' ),
+			esc_url( $full_url ),
+			esc_html( $full_url ),
+			__( 'Edit', 'learnpress' )
+		);
+
+		$state_b = sprintf(
+			'<div class="cb-permalink-editor lp-hidden">
+				<span class="cb-permalink-prefix">%s</span>
+				<div class="cb-permalink-input-row">
+					<input type="text" name="course_permalink" id="course_permalink" value="%s" class="cb-permalink-slug-input" placeholder="%s">
+					<div class="cb-permalink-actions">
+						<button type="button" class="cb-permalink-ok-btn">%s</button>
+						<button type="button" class="cb-permalink-cancel-btn">%s</button>
+					</div>
+				</div>
+			</div>',
+			esc_html( $base_url ),
+			esc_attr( $post_name ),
+			esc_attr__( 'your-slug', 'learnpress' ),
+			__( 'OK', 'learnpress' ),
+			__( 'Cancel', 'learnpress' )
+		);
+
+		$hidden_base = sprintf(
+			'<input type="hidden" id="cb-permalink-base-url" value="%s">',
+			esc_attr( $base_url )
+		);
+
 		$edit = [
 			'wrapper'     => '<div class="cb-course-edit-permalink">',
-			'label'       => sprintf( '<label for="course_permalink" class="cb-course-edit-permalink__label">%s</label>', __( 'Permalink', 'learnpress' ) ),
-			'input'       => sprintf( '<input type="text" name="course_permalink" id="course_permalink" value="%s" class="cb-course-edit-permalink__input" placeholder="%s">', esc_attr( $post_name ), esc_attr__( 'example', 'learnpress' ) ),
+			'state_a'     => $state_a,
+			'state_b'     => $state_b,
+			'hidden_base' => $hidden_base,
 			'wrapper_end' => '</div>',
 		];
 
