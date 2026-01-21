@@ -248,7 +248,7 @@ class AdminOrderItemsTemplate {
 				if ( $item_type === LP_COURSE_CPT ) {
 					$html_items .= self::order_item_detail_html( $lp_order, $itemObj );
 				} else {
-					if ( has_filter( 'learn-press/order-item-not-course-id' ) ) {
+					if ( has_filter( 'learn-press/order-item-not-course' ) ) {
 						$item_old       = (array) $itemObj;
 						$item_old['id'] = $itemObj->order_item_id;
 						$item_old       = array_merge( $item_old, $itemObjMeta );

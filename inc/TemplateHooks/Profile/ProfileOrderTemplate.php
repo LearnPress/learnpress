@@ -3,12 +3,13 @@
  * Class ProfileOrdersTemplate.
  *
  * @since 4.2.6.4
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 namespace LearnPress\TemplateHooks\Profile;
 
 use LearnPress\Models\UserModel;
+use LP_Order;
 use LP_Profile;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\TemplateAJAX;
@@ -80,7 +81,6 @@ class ProfileOrderTemplate {
 	 * Allow callback for AJAX.
 	 *
 	 * @use self::render_order_details
-	 * @use self::render_order_detail_items
 	 *
 	 * @param array $callbacks
 	 *
@@ -98,8 +98,10 @@ class ProfileOrderTemplate {
 	 * @param array $args
 	 *
 	 * @return stdClass
+	 * @since 4.3.2
+	 * @version 1.0.1
 	 */
-	public static function render_order_details( array $args ) {
+	public static function render_order_details( array $args ): stdClass {
 		$content = new stdClass();
 
 		$order_id = $args['order_id'] ?? 0;
@@ -130,15 +132,23 @@ class ProfileOrderTemplate {
 		$items         = $lp_order_db->get_items( $filter, $order_id, $total_row );
 		$html_items    = '';
 		$order         = learn_press_get_order( $order_id );
+
 		if ( empty( $items ) ) {
-			$html_items = sprintf( '<tr class="order-item"><td colspan="4">%s</td></tr>', __( 'No items found', 'learnpress' ) );
+			$html_items = sprintf(
+				'<tr class="order-item"><td colspan="4">%s</td></tr>',
+				__( 'No items found', 'learnpress' )
+			);
 		} else {
 			foreach ( $items as $item ) {
-				if ( ! get_post( $item->item_id ) || empty( get_post_type_object( $item->item_type ) ) ) {
-					$html_items .= sprintf( '<tr class="order-item"><td>%s</td></tr>', __( 'The item doesn\'t exist', 'learnpress' ) );
-				} else {
-					$html_items .= self::order_item_row_html( $order, $item );
+				$item_course_id_meta = learn_press_get_order_item_meta( $item->order_item_id, '_course_id' );
+				// For old data, the data not migrated yet to new column.
+				if ( ( empty( $item->item_type ) || empty( $item->item_id ) )
+					&& ! empty( $item_course_id_meta ) ) {
+					$item->item_id   = $item_course_id_meta;
+					$item->item_type = LP_COURSE_CPT;
 				}
+
+				$html_items .= self::order_item_row_html( $order, $item );
 			}
 		}
 		$total_pages     = $lp_order_db::get_total_pages( $limit, $total_row );
@@ -149,20 +159,29 @@ class ProfileOrderTemplate {
 			]
 		);
 		if ( ! empty( $html_pagination ) ) {
-			$html_pagination = '<tr class="order-item"><td class="lp-order-items-wrapper" style="margin:0;text-align:left;" colspan="2">' . $html_pagination . '</td></tr>';
+			$html_pagination = sprintf(
+				'<tr class="order-item">
+					<td class="lp-order-items-wrapper" style="margin:0;text-align:left;" colspan="2">%s</td>
+				</tr>',
+				$html_pagination
+			);
 		}
+
 		$section          = array(
-			'tab-content-header' => '<h3>' . esc_html( 'Order Details', 'learnpress' ) . '</h3>',
-			'table-start'        => '<table class="lp-list-table order-table-details">',
-			'table-header'       => self::table_header(),
-			'table-body-start'   => '<tbody>',
-			'items'              => $html_items,
-			'pagination'         => $html_pagination,
-			'do_action_items'    => self::action_table_items( $order ),
-			'table-body-end'     => '</tbody>',
-			'table-footer'       => self::table_footer( $order ),
-			'table-end'          => '</table>',
-			'footer'             => self::order_detail_content_footer( $order ),
+			'header'          => sprintf(
+				'<h3>%s</h3>',
+				esc_html__( 'Order Details', 'learnpress' )
+			),
+			'table'           => '<table class="lp-list-table order-table-details">',
+			'table-header'    => self::table_header(),
+			'table-body'      => '<tbody>',
+			'items'           => $html_items,
+			'pagination'      => $html_pagination,
+			'do_action_items' => self::action_table_items( $order ),
+			'table-body-end'  => '</tbody>',
+			'table-footer'    => self::table_footer( $order ),
+			'table-end'       => '</table>',
+			'footer'          => self::order_detail_content_footer( $order ),
 		);
 		$content->content = Template::combine_components( $section );
 
@@ -170,33 +189,53 @@ class ProfileOrderTemplate {
 	}
 
 	public static function table_header() {
-		$content = sprintf(
-			'<thead> <tr> <th class="course-name">%1$s</th> <th class="course-total">%2$s</th> </tr> </thead>',
-			esc_html( 'Item', 'learnpress' ),
-			esc_html( 'Total', 'learnpress' )
+		$section = array(
+			'wrap'     => '<thead>',
+			'row'      => sprintf(
+				'<tr>
+					<th>%s</th>
+					<th>%s</th>
+				</tr>',
+				__( 'Item', 'learnpress' ),
+				__( 'Total', 'learnpress' )
+			),
+			'wrap-end' => '</thead>',
 		);
 
-		return $content;
+		return Template::combine_components( $section );
 	}
 
-	public static function table_footer( $order ) {
+	/**
+	 * HTML for table footer in order detail page.
+	 *
+	 * @param LP_Order $order
+	 *
+	 * @return string
+	 * @since 4.3.2
+	 * @version 1.0.1
+	 */
+	public static function table_footer( $order ): string {
 		ob_start();
-		?>
-		<tfoot>
-		<tr>
-			<th scope="row"><?php esc_html_e( 'Subtotal', 'learnpress' ); ?></th>
-			<td><?php echo esc_html( $order->get_formatted_order_subtotal() ); ?></td>
-		</tr>
+		do_action( 'learn-press/order/items-table-foot', $order );
+		$html_after_subtotal_row = ob_get_clean();
 
-		<?php do_action( 'learn-press/order/items-table-foot', $order ); ?>
+		$section = array(
+			'wrap'         => '<tfoot>',
+			'subtotal_row' => sprintf(
+				'<tr><th scope="row">%s</th><td>%s</td></tr>',
+				esc_html__( 'Subtotal', 'learnpress' ),
+				esc_html( $order->get_formatted_order_subtotal() )
+			),
+			'action'       => $html_after_subtotal_row,
+			'total_row'    => sprintf(
+				'<tr><th scope="row">%s</th><td>%s</td></tr>',
+				esc_html__( 'Total', 'learnpress' ),
+				esc_html( $order->get_formatted_order_total() )
+			),
+			'wrap-end'     => '</tfoot>',
+		);
 
-		<tr>
-			<th scope="row"><?php esc_html_e( 'Total', 'learnpress' ); ?></th>
-			<td><?php echo esc_html( $order->get_formatted_order_total() ); ?></td>
-		</tr>
-		</tfoot>
-		<?php
-		return ob_get_clean();
+		return Template::combine_components( $section );
 	}
 
 	public static function action_table_items( $order ) {
@@ -206,53 +245,82 @@ class ProfileOrderTemplate {
 		return ob_get_clean();
 	}
 
+	/**
+	 * HTMl for each order item row in order detail page.
+	 *
+	 * @param LP_Order $order
+	 * @param object $item
+	 *
+	 * @return string
+	 * @since 4.3.2
+	 * @version 1.0.1
+	 */
 	public static function order_item_row_html( $order, $item ): string {
-		$content         = '';
 		$total           = learn_press_get_order_item_meta( $item->order_item_id, '_total' );
 		$total           = ! empty( $total ) ? $total : 0;
 		$quantity        = learn_press_get_order_item_meta( $item->order_item_id, '_quantity' );
 		$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() ?? learn_press_get_currency() );
-		$item_title      = $item->order_item_name . '(' . get_post_type_object( $item->item_type )->labels->singular_name . ')';
-		ob_start();
-		?>
-		<tr class="order-item">
-			<td class="course-name">
-				<?php
-				echo sprintf(
-					'<a href="%s">%s</a>',
-					esc_url_raw( get_permalink( $item->order_item_id ) ),
-					esc_html( $item_title )
-				);
-				?>
-			</td>
+		$item_label      = esc_html( $item->order_item_name );
+		if ( $item->item_type === LP_COURSE_CPT ) {
+			$item_label = sprintf(
+				'<a href="%s">%s</a>',
+				esc_url_raw( get_permalink( $item->item_id ) ),
+				esc_html( $item->order_item_name )
+			);
+		}
+		$item_label = apply_filters(
+			'learn-press/profile/order/item-label',
+			$item_label,
+			(array) $item,
+			$order
+		);
 
-			<td class="course-total">
-				<span class="course-price"><?php echo learn_press_format_price( $total, $currency_symbol ); ?></span>
-			</td>
-		</tr>
-		<?php
-		$content = ob_get_clean();
+		$section = apply_filters(
+			'learn-press/profile/order/item-row-html',
+			array(
+				'wrap'       => '<tr class="order-item">',
+				'name-cell'  => sprintf(
+					'<td>%s</td>',
+					$item_label
+				),
+				'total-cell' => sprintf(
+					'<td><span class="course-price">%s</span></td>',
+					learn_press_format_price( $total, $currency_symbol )
+				),
+				'wrap-end'   => '</tr>',
+			)
+		);
 
-		return $content;
+		return Template::combine_components( $section );
 	}
 
-	public static function order_detail_content_footer( $order ) {
-		ob_start();
-		?>
-		<p>
-			<strong><?php echo esc_html__( 'Order key:', 'learnpress' ); ?></strong>
-			<?php echo esc_html( $order->get_order_key() ); ?>
-		</p>
+	/**
+	 * HTML content footer, below table list items for order detail page.
+	 *
+	 * @param LP_Order $order
+	 *
+	 * @return string
+	 * @since 4.3.2
+	 * @version 1.0.1
+	 */
+	public static function order_detail_content_footer( $order ): string {
+		$section = array(
+			'order_key'    => sprintf(
+				'<p><strong>%s</strong> %s</p>',
+				esc_html__( 'Order key:', 'learnpress' ),
+				esc_html( $order->get_order_key() )
+			),
+			'order_status' => sprintf(
+				'<p>
+					<strong>%s</strong>
+					<span class="lp-label label-%s">%s</span>
+				</p>',
+				esc_html__( 'Order status:', 'learnpress' ),
+				esc_attr( $order->get_status() ),
+				wp_kses_post( $order->get_order_status_html() )
+			),
+		);
 
-		<p>
-			<strong><?php esc_html_e( 'Order status:', 'learnpress' ); ?></strong>
-			<span class="lp-label label-<?php echo esc_attr( $order->get_status() ); ?>">
-				<?php echo wp_kses_post( $order->get_order_status_html() ); ?>
-			</span>
-		</p>
-		<?php
-		do_action( 'learn-press/order/after-table-details', $order );
-
-		return ob_get_clean();
+		return Template::combine_components( $section );
 	}
 }
