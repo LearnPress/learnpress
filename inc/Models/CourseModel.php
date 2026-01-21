@@ -7,7 +7,7 @@
  * Another fields for query list courses faster
  *
  * @package LearnPress/Classes
- * @version 1.0.4
+ * @version 1.0.5
  * @since 4.2.6.9
  */
 
@@ -523,6 +523,55 @@ class CourseModel {
 	 */
 	public function get_evaluation_type(): string {
 		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_EVALUATION_TYPE, 'evaluate_lesson' );
+	}
+
+	/**
+	 * Get course Evaluation type.
+	 *
+	 * @param string $type
+	 *
+	 * @return array
+	 * @since 4.3.2.6
+	 * @version 1.0.0
+	 */
+	public static function get_evaluation_types( string $type = '' ): array {
+		if ( has_filter( 'learnpress/course-evaluation/methods' ) ) {
+			$methods = apply_filters( 'learnpress/course-evaluation/methods', [], 0 );
+		}
+
+		$types = apply_filters(
+			'learn-press/course/evaluation-types',
+			array(
+				'evaluate_lesson'     => [
+					'label' => __( 'Evaluate via completed lessons', 'learnpress' ),
+					'tip'   => __( 'Course will be completed when all lessons are completed.', 'learnpress' ),
+				],
+				'evaluate_final_quiz' => [
+					'label' => __( 'Evaluate via final quiz', 'learnpress' ),
+					'tip'   => __( 'Course will be completed when the final quiz is passed.', 'learnpress' ),
+				],
+				'evaluate_quiz'       => [
+					'label' => __( 'Evaluate via quizzes', 'learnpress' ),
+					'tip'   => __( 'Course will be completed when all quizzes are passed.', 'learnpress' ),
+				],
+				'evaluate_questions'  => [
+					'label' => __( 'Evaluate via questions', 'learnpress' ),
+					'tip'   => __( 'Course will be completed when all questions are answered correctly.', 'learnpress' ),
+				],
+				'evaluate_mark'       => [
+					'label' => __( 'Evaluate via marks', 'learnpress' ),
+					'tip'   => __( 'Course will be completed when the passing mark is achieved.', 'learnpress' ),
+				],
+			),
+		);
+
+		if ( empty( $type ) ) {
+			return $types;
+		} elseif ( empty( $types[ $type ] ) && ! empty( $methods[ $type ] ) ) {
+			return $methods[ $type ];
+		}
+
+		return $types[ $type ] ?? [];
 	}
 
 	/**

@@ -495,7 +495,7 @@ class SingleCourseModernLayout {
 
 			if ( $userCourseModel->has_finished() ) {
 				$html_end_date   = sprintf(
-					'<div>%s: %s</div>',
+					'<div class="end-date">%s: %s</div>',
 					__( 'End date', 'learnpress' ),
 					$userCourseTemplate->html_end_date_time( $userCourseModel, false )
 				);
@@ -508,7 +508,7 @@ class SingleCourseModernLayout {
 				'graduation'            => $html_graduation,
 				'progress'              => $userCourseTemplate->html_progress( $userCourseModel ),
 				'start_date'            => sprintf(
-					'<div>%s: %s</div>',
+					'<div class="start-date">%s: %s</div>',
 					__( 'Start date', 'learnpress' ),
 					$userCourseTemplate->html_start_date_time( $userCourseModel, false )
 				),
