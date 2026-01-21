@@ -36,7 +36,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'all_admin_notices', array( $this, 'admin_notices' ), - 1 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
-			add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
+			//add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
 			//add_filter( 'manage_pages_columns', array( $this, 'page_columns_head' ) );
 			//add_filter( 'manage_pages_custom_column', array( $this, 'page_columns_content' ), 10, 2 );
 			add_filter( 'views_edit-page', array( $this, 'views_pages' ), 10 );
@@ -89,7 +89,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @since 3.2.6
 		 */
 		public function load_modal() {
-			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, LP_ORDER_CPT ) ) ) {
+			// Now only add item(s) when create new Order is using.
+			if ( in_array( get_post_type(), array( LP_ORDER_CPT ) ) ) {
 				LP_Modal_Search_Items::instance();
 			}
 
@@ -469,7 +470,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		public function user_row_actions( $actions, $user ) {
 			$pending_request = self::get_pending_requests();
-			if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' && $pending_request ) {
+			if ( LP_Request::get_param( 'lp-action' ) == 'pending-request' && $pending_request ) {
 				$actions = array();
 				$nonce   = 'nonce=' . wp_create_nonce( 'lp-action-permit-role-teacher' );
 				if ( in_array( $user->ID, $pending_request ) ) {
@@ -572,7 +573,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$pending_request = self::get_pending_requests();
 
 			if ( $pending_request ) {
-				if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' ) {
+				if ( LP_Request::get_param( 'lp-action' ) == 'pending-request' ) {
 					$class = ' class="current"';
 					foreach ( $views as $k => $view ) {
 						$views[ $k ] = preg_replace( '!class="current"!', '', $view );

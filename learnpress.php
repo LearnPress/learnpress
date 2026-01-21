@@ -525,7 +525,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Meta box helper
 			include_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 
-			include_once 'inc/admin/class-lp-admin.php';
+			// include_once 'inc/admin/class-lp-admin.php';
 			// include_once 'inc/admin/settings/abstract-settings-page.php';
 		}
 
@@ -603,6 +603,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 				if ( is_admin() ) {
 					$this->check_addons_version_valid();
+
+					include_once 'inc/admin/class-lp-admin.php';
 				}
 
 				// let third parties know that we're ready .
