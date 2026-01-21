@@ -40,19 +40,26 @@ class ExportOrderCSVAjax extends AbstractAjax
 			$args = [
 				'post_type' => $params['post_type'] ?? LP_ORDER_CPT,
 				'post_status' => $params['post_status'] ?? 'any',
-				's' => $params['s'] ?? '',
 				'm' => $params['m'] ?? 0,
 				'order' => $params['order'] ?? '',
 				'orderby' => $params['orderby'] ?? '',
 				'posts_per_page' => $posts_per_page,
 				'paged' => $paged,
+				'lp_search' => $params['s'] ?? '',
+				'lp_export_order' => true,
 			];
 
 			if (!empty($params['author'])) {
-				$args['author'] = $params['author'];
+//				$args['author'] = $params['author'];
+				$args['author'][] = [
+					'key'     => '_user_id',
+					'value'   => '"' . (string) $params['author'] . '"',
+					'compare' => 'LIKE',
+				];
 			}
 
 			$query = new WP_Query($args);
+			echo $query->request;die;
 			if ($query->have_posts()) {
 				$file = $this->get_export_csv_path($export_id);
 				$handle = fopen($file, $paged === 1 ? 'w' : 'a');
@@ -92,11 +99,14 @@ class ExportOrderCSVAjax extends AbstractAjax
 
 				fclose($handle);
 				wp_reset_postdata();
+			}else{
+				if(intval($paged) === 1){
+					throw new Exception(__('There are no orders.', 'learnpress'));
+				}
 			}
 
 			$data = [];
 			$data['max_page'] = $query->max_num_pages;
-			$data['post_count'] = $query->post_count;
 
 			if ($query->post_count === $posts_per_page) {
 				$data['next_page'] = $paged + 1;
@@ -104,7 +114,7 @@ class ExportOrderCSVAjax extends AbstractAjax
 			}
 
 			if ($paged >= $query->max_num_pages) {
-				$data['download_url'] = $this->get_export_csv_path($export_id);
+				$data['download_url'] = $this->get_download_url($export_id);
 				$data['done'] = true;
 				$response->message = esc_html__('All orders exported!', 'learnpress');
 			}
@@ -123,16 +133,29 @@ class ExportOrderCSVAjax extends AbstractAjax
 	 * @param $export_id
 	 * @return string
 	 */
-	private function get_export_csv_path($export_id)
+	public function get_export_csv_path($export_id)
 	{
 		$upload = wp_upload_dir();
-		$dir = $upload['basedir'] . '/lp-export';
+		$dir = $upload['basedir'] . '/lp-order-export';
 
 		if (!file_exists($dir)) {
 			wp_mkdir_p($dir);
 		}
 
 		return $dir . "/orders-{$export_id}.csv";
+	}
+
+	public function get_download_url($export_id)
+	{
+		$upload = wp_upload_dir();
+		$dir = $upload['basedir'] . '/lp-order-export';
+		$url = $upload['baseurl'] . '/lp-order-export';
+
+		if (!file_exists($dir . "/orders-{$export_id}.csv")) {
+			return '';
+		}
+
+		return "{$url}/orders-{$export_id}.csv";
 	}
 
 	/**
