@@ -1,9 +1,9 @@
-=== LearnPress - WordPress LMS Plugin ===
+=== LearnPress - WordPress LMS Plugin for Create and Sell Online Courses ===
 Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.9
-Stable tag: 4.3.2.5
+Stable tag: 4.3.2.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -278,6 +278,16 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.3.2.56 (2026-01-22) =
+~ Tweak: profile social labels.
+~ Tweak: breadcrumb, remove single title course.
+~ Tweak: show label for pages assign to pages of LearnPress.
+~ Fixed: query list orders backend with Pagination config by Admin.
+~ Fixed: styling of the meta area on the single classic course page.
+~ Fixed: styling single classic course page with Astra theme.
+~ Fixed: error link item on order details profile page.
+~ Clean code.
 
 = 4.3.2.5 (2026-01-09) =
 ~ Fixed: error enroll course.
