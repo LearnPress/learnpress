@@ -367,9 +367,10 @@ class LP_Addon {
 	}
 
 	/**
-	 * @deprecated 4.2.0
+	 * @deprecated 4.2.0, wishlist v4.0.8 still use
 	 */
 	public static function instance() {
+		return new static();
 		/*$name = self::_get_called_class();
 		if ( false === $name ) {
 			return false;

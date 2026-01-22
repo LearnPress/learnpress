@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-01-22T11:07:15+03:00\n"
+"POT-Creation-Date: 2026-01-22T13:54:10+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -160,7 +160,7 @@ msgstr ""
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseButtonReadMoreBlockType.php:108
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseButtonReadMoreBlockType.php:109
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:172
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:268
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:266
 msgid "Read more"
 msgstr ""
 
@@ -320,7 +320,7 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:37
 #: assets/src/apps/js/blocks/courses/list-courses/edit.js:40
 #: config/elementor/course/list-courses-by-page.php:172
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:352
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:350
 msgid "Load more"
 msgstr ""
 
@@ -1272,12 +1272,12 @@ msgid "Newest"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:141
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:540
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:538
 msgid "Title a-z"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:142
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:541
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:539
 msgid "Title z-a"
 msgstr ""
 
@@ -1291,7 +1291,7 @@ msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:145
 #: config/elementor/course/list-courses.php:74
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:544
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:542
 msgid "Popular"
 msgstr ""
 
@@ -7393,7 +7393,7 @@ msgstr ""
 #: inc/custom-post-types/order.php:626
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseStudentBlockType.php:79
 #: inc/Models/WPTables/CoursesTable.php:49
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:779
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:777
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:202
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:495
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:521
@@ -8087,7 +8087,7 @@ msgstr ""
 
 #: inc/Gutenberg/Blocks/Courses/CourseItemTemplateBlock.php:61
 #: inc/Shortcodes/Courses/ListCoursesShortcode.php:63
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:110
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:108
 msgid "No courses found"
 msgstr ""
 
@@ -8101,7 +8101,7 @@ msgid "Capacity"
 msgstr ""
 
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseCategoriesBlockType.php:68
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:282
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:280
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:94
 msgid "in"
 msgstr ""
@@ -8112,7 +8112,7 @@ msgid "Delivery type"
 msgstr ""
 
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseInstructorBlockType.php:61
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:299
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:297
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:126
 msgid "by"
 msgstr ""
@@ -9709,7 +9709,7 @@ msgid "successfully"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:291
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:471
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:469
 msgid "Showing only one result"
 msgstr ""
 
@@ -9719,7 +9719,7 @@ msgid "Showing last course of %s results"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:309
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:478
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:476
 #, php-format
 msgid "Showing %1$s of %2$s results"
 msgstr ""
@@ -10886,40 +10886,40 @@ msgstr ""
 msgid "You might be interested in"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:539
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:537
 msgid "Newly published"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:542
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:540
 msgid "Price high to low"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:543
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:541
 msgid "Price low to high"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:564
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:562
 #: templates/courses-top-bar.php:23
 msgid "Search courses..."
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:591
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:589
 #: templates/courses-top-bar.php:33
 #, php-format
 msgid "Switch to %s"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:659
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:657
 msgid "Course Found"
 msgid_plural "Courses Found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:664
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:662
 msgid "View All"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:738
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:736
 msgid "Free Course"
 msgid_plural "Free Courses"
 msgstr[0] ""

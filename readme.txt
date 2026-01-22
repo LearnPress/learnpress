@@ -279,7 +279,10 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
-= 4.3.2.56 (2026-01-22) =
+= 4.3.2.7 (2026-01-22) =
+~ Fixed: minor bugs.
+
+= 4.3.2.6 (2026-01-22) =
 ~ Tweak: profile social labels.
 ~ Tweak: breadcrumb, remove single title course.
 ~ Tweak: show label for pages assign to pages of LearnPress.
