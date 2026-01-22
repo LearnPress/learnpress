@@ -10,6 +10,7 @@ namespace LearnPress\TemplateHooks\UserItem;
 
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LP_Helper;
 use WP_Error;
@@ -224,7 +225,14 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 		$evaluation_type   = $courseModel::get_evaluation_types( $courseModel->get_evaluation_type() );
 		$calculate         = $userCourseModel->calculate_course_results();
 		$passing_condition = $courseModel->get_passing_condition();
-		$total_items       = $courseModel->count_items();
+		if ( array_key_first( $evaluation_type ) === 'evaluate_final_quiz' ) {
+			$final_quiz = $courseModel->get_final_quiz();
+			if ( $final_quiz ) {
+				$quizModel         = QuizPostModel::find( $final_quiz, true );
+				$passing_condition = $quizModel->get_passing_grade();
+			}
+		}
+		$total_items = $courseModel->count_items();
 
 		$progress_items_completed_percent = round(
 			$total_items > 0 ? $calculate['completed_items'] * 100 / $total_items : 0,

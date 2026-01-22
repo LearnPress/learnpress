@@ -7,6 +7,7 @@
  * @version  4.0.3
  */
 
+use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 
@@ -24,6 +25,13 @@ if ( $userCourseModel && $user->get_id() > 0 ) {
 	$calculate       = $userCourseModel->calculate_course_results();
 	$total_items     = $courseModel->count_items();
 	$evaluation_type = $courseModel::get_evaluation_types( $courseModel->get_evaluation_type() );
+	if ( array_key_first( $evaluation_type ) === 'evaluate_final_quiz' ) {
+		$final_quiz = $courseModel->get_final_quiz();
+		if ( $final_quiz ) {
+			$quizModel         = QuizPostModel::find( $final_quiz, true );
+			$passing_condition = $quizModel->get_passing_grade();
+		}
+	}
 
 	$progress_items_completed_percent = round(
 		$total_items > 0 ? $calculate['completed_items'] * 100 / $total_items : 0,
