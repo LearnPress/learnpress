@@ -3,6 +3,8 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\PostFilter;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserModel;
 use LP_Helper;
@@ -10,10 +12,8 @@ use LP_Order;
 use LP_Request;
 use LP_REST_Response;
 use Throwable;
-use WP_Query;
 
 class ExportOrderCSVAjax extends AbstractAjax {
-
 	/**
 	 * @return void
 	 */
@@ -41,50 +41,84 @@ class ExportOrderCSVAjax extends AbstractAjax {
 			$paged          = max( 1, absint( $params['paged'] ?? 1 ) );
 			$posts_per_page = $params['posts_per_page'] ?? 20;
 
-			$args = [
-				'post_type'       => LP_ORDER_CPT,
-				'post_status'     => $params['post_status'] ?? 'any',
-				'posts_per_page'  => $posts_per_page,
-				'paged'           => $paged,
-				'orderby'         => $params['orderby'] ?? 'ID',
-				'order'           => $params['order'] ?? 'desc',
-				'lp_search'       => $params['s'] ?? '',
-				'lp_m'            => $params['m'] ?? 0,
-				'lp_export_order' => true,
-			];
+			$post_filter = new PostFilter();
+			$post_db     = PostDB::getInstance();
 
-			if ( empty( $args['meta_query'] ) ) {
-				$args['meta_query'] = [];
+			$post_filter->post_type = LP_ORDER_CPT;
+			$user_of_order          = $params['author'];
+			if ( ! empty( $user_of_order ) ) {
+				$user_id              = absint( $user_of_order );
+				$post_filter->join[]  = "INNER JOIN {$post_db->tb_postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
+				$post_filter->where[] = "AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id )";
+			}
+
+			if ( empty( $params['post_status'] ) || $params['post_status'] === 'all' ) {
+				$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', LP_ORDER_TRASH );
+			} else {
+				$post_filter->post_status = (array) $params['post_status'];
 			}
 
 			if ( isset( $params['orderby'] ) ) {
 				if ( $params['orderby'] === 'order_total' ) {
-					$args['meta_key']     = '_order_total';
-					$args['orderby']      = 'meta_value_num';
-					$args['meta_query'][] = [
-						'key'     => '_order_total',
-						'value'   => 0,
-						'compare' => '>',
-						'type'    => 'NUMERIC',
-					];
+					$post_filter->join[]   = "INNER JOIN {$post_db->tb_postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
+					$post_filter->where[]  = 'AND CAST(pm2.meta_value AS UNSIGNED)';
+					$post_filter->order_by = 'pm2.meta_value';
+				} elseif ( $params['orderby'] === 'date' ) {
+					$post_filter->order_by = 'post_date';
 				} else {
-					$args['orderby'] = $params['orderby'];
+					$post_filter->order_by = $params['orderby'];
 				}
 			} else {
-				$args['orderby'] = 'ID';
+				$post_filter->order_by = 'ID';
 			}
 
-			if ( ! empty( $params['author'] ) ) {
-				$args['meta_query'][] = [
-					'key'     => '_user_id',
-					'value'   => '"' . (string) $params['author'] . '"',
-					'compare' => 'LIKE',
-				];
+			$post_filter->order = $params['order'] ?? 'desc';
+
+			$key = $params['s'] ?? '';
+			if ( ! empty( $key ) ) {
+				$pattern          = '/^#\d+$/';
+				$is_order_id_sure = false;
+				if ( preg_match( $pattern, $key ) ) {
+					$is_order_id_sure = true;
+					$key              = str_replace( '#', '', $key );
+				}
+
+				$pattern2 = '#^0+.*\d+$#';
+				if ( preg_match( $pattern2, $key ) ) {
+					$key = (int) $key;
+				}
+
+				$key = trim( $key );
+
+				if ( $is_order_id_sure ) {
+					$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.ID = %d', $key );
+				} else {
+					$post_filter->join[]  = "INNER JOIN {$post_db->tb_lp_order_items} lpori ON p.ID = lpori.order_id";
+					$post_filter->where[] = $post_db->wpdb->prepare(
+						'AND (p.ID = %d OR lpori.order_item_name like %s)',
+						$key,
+						'%' . $key . '%'
+					);
+				}
 			}
 
-			$query = new WP_Query( $args );
+			$month = $params['m'] ?? 0;
+			if ( ! empty( $month ) ) {
+				$year                 = substr( $month, 0, 4 );
+				$post_filter->where[] = "AND YEAR(p.post_date) = $year";
+				if ( strlen( $month ) > 5 ) {
+					$mon                  = substr( $month, 4, 2 );
+					$post_filter->where[] = "AND MONTH(p.post_date) = $mon";
+				}
+			}
 
-			if ( $query->have_posts() ) {
+			$post_filter->limit = $posts_per_page;
+			$post_filter->page  = $paged;
+
+			$total_rows = 0;
+			$lp_orders  = $post_db->get_posts( $post_filter, $total_rows );
+
+			if ( count( $lp_orders ) > 0 ) {
 				$file   = $this->get_export_csv_path( $export_id );
 				$handle = fopen( $file, $paged === 1 ? 'w' : 'a' );
 
@@ -103,17 +137,13 @@ class ExportOrderCSVAjax extends AbstractAjax {
 					);
 				}
 
-				while ( $query->have_posts() ) {
-					$query->the_post();
-
-					$order_id = get_the_ID();
+				foreach ( $lp_orders as $order ) {
+					$order_id = $order->ID;
 					$order    = learn_press_get_order( $order_id );
 					if ( ! $order ) {
 						continue;
 					}
-
 					$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() ?? learn_press_get_currency() );
-
 					fputcsv(
 						$handle,
 						[
@@ -128,7 +158,6 @@ class ExportOrderCSVAjax extends AbstractAjax {
 				}
 
 				fclose( $handle );
-				wp_reset_postdata();
 			} else {
 				if ( intval( $paged ) === 1 ) {
 					throw new Exception( __( 'There are no orders.', 'learnpress' ) );
@@ -136,9 +165,10 @@ class ExportOrderCSVAjax extends AbstractAjax {
 			}
 
 			$data             = [];
-			$data['max_page'] = $query->max_num_pages;
+			$max_page         = ceil( $total_rows / $posts_per_page );
+			$data['max_page'] = $max_page;
 
-			if ( $paged < $query->max_num_pages ) {
+			if ( $paged < $max_page ) {
 				$data['next_page'] = $paged + 1;
 				$response->message = esc_html__( 'Orders exported!', 'learnpress' );
 			} else {

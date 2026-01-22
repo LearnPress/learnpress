@@ -38,10 +38,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 			//add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
 			// LP Order title
-
-			add_filter( 'posts_join', [ $this, 'filter_export_orders_join' ], 10, 2 );
-			add_filter( 'posts_where', [ $this, 'filter_export_orders_where' ], 10, 2 );
-			add_action ('init', [$this, 'download_order_csv_file']);
+			add_action( 'init', [ $this, 'download_order_csv_file' ] );
 
 			// Override title of LP Order on Admin
 			if ( is_admin() ) {
@@ -65,121 +62,26 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			parent::__construct();
 		}
 
-		public function download_order_csv_file()
-		{
-			if (isset($_GET['lp_download_order']) && isset($_GET['export_id'])) {
-				$export_id = sanitize_key($_GET['export_id']);
+		public function download_order_csv_file() {
+			if ( isset( $_GET['lp_download_order'] ) && isset( $_GET['export_id'] ) ) {
+				$export_id = sanitize_key( $_GET['export_id'] );
 
 				$upload = wp_upload_dir();
-				$file = $upload['basedir'] . "/lp-order-export/orders-{$export_id}.csv";
+				$file   = $upload['basedir'] . "/lp-order-export/orders-{$export_id}.csv";
 
-				if (!file_exists($file)) {
-					wp_die(__('File not found', 'learnpress'));
+				if ( ! file_exists( $file ) ) {
+					wp_die( __( 'File not found', 'learnpress' ) );
 				}
 
-				header('Content-Type: text/csv; charset=UTF-8');
-				header('Content-Disposition: attachment; filename="orders.csv"');
-				header('Content-Length: ' . filesize($file));
+				header( 'Content-Type: text/csv; charset=UTF-8' );
+				header( 'Content-Disposition: attachment; filename="orders.csv"' );
+				header( 'Content-Length: ' . filesize( $file ) );
 
-				readfile($file);
+				readfile( $file );
 
-				unlink($file);
+				unlink( $file );
 				exit;
 			}
-		}
-		public function filter_export_orders_join($join, $query)
-		{
-			try {
-				global $wpdb;
-				if (
-					! $query->get( 'lp_export_order' )
-				) {
-					return $join;
-				}
-
-				$post_type = $query->get( 'post_type' );
-
-				if ( empty( $post_type ) || $post_type != LP_ORDER_CPT ) {
-					return $join;
-				}
-				$key            = $query->get( 'lp_search' );
-				$post_db                = PostDB::getInstance();
-
-
-				if ( ! empty( $key ) ) {
-					$pattern          = '/^#\d+$/';
-					if ( preg_match( $pattern, $key ) ) {
-						return $join;
-					}
-
-					if ( ! str_contains( $join, $post_db->tb_lp_order_items ) ) {
-						$join .= " INNER JOIN {$post_db->tb_lp_order_items} lpori
-							ON {$wpdb->posts}.ID = lpori.order_id";
-					}
-				}
-
-			} catch ( Throwable $e ) {
-				LP_Debug::error_log( $e );
-			}
-
-			return $join;
-		}
-
-		public function filter_export_orders_where($where, $query)
-		{
-			global $wpdb;
-			try {
-				if (
-					! $query->get( 'lp_export_order' )
-				) {
-					return $where;
-				}
-				$post_type = $query->get( 'post_type' );
-
-				if ( empty( $post_type ) || $post_type != LP_ORDER_CPT ) {
-					return $where;
-				}
-
-				$key            = $query->get( 'lp_search' );
-				$month          = $query->get( 'lp_m' );
-
-				$post_db                = PostDB::getInstance();
-
-				if ( ! empty( $key ) ) {
-
-					if ( preg_match( '/^#(\d+)$/', $key, $m ) ) {
-						$where .= $wpdb->prepare(
-							" AND {$wpdb->posts}.ID = %d",
-							(int) $m[1]
-						);
-					}elseif ( is_numeric( $key ) ) {
-						$where .= $wpdb->prepare(
-							" AND ( {$wpdb->posts}.ID = %d OR lpori.order_item_name LIKE %s )",
-							(int) $key,
-							'%' . $wpdb->esc_like( $key ) . '%'
-						);
-					} else {
-						$where .= $wpdb->prepare(
-							" AND lpori.order_item_name LIKE %s",
-							'%' . $wpdb->esc_like( $key ) . '%'
-						);
-					}
-				}
-
-				if ( ! empty( $month ) ) {
-					$year = (int) substr( $month, 0, 4 );
-					$where .= " AND YEAR({$wpdb->posts}.post_date) = {$year}";
-
-					if ( strlen( $month ) > 5 ) {
-						$mon = (int) substr( $month, 4, 2 );
-						$where .= " AND MONTH({$wpdb->posts}.post_date) = {$mon}";
-					}
-				}
-			} catch ( Throwable $e ) {
-				LP_Debug::error_log( $e );
-			}
-
-			return $where;
 		}
 
 		/**
@@ -407,28 +309,28 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			return $where;
 		}*/
 
-//		public function posts_orderby( $orderby ) {
-//			global $wpdb;
-//
-//			$order = $this->get_order_sort();
-//
-//			switch ( $this->get_order_by() ) {
-//				case 'title':
-//					$orderby = "{$wpdb->posts}.ID {$order}";
-//					break;
-//				/*case 'student':
-//					$orderby = "uu.user_login {$order}";
-//					break;*/
-//				case 'date':
-//					$orderby = "{$wpdb->posts}.post_date {$order}";
-//					break;
-//				case 'order_total':
-//					$orderby = "CAST(pm2.meta_value AS UNSIGNED) {$order}";
-//					break;
-//			}
-//
-//			return $orderby;
-//		}
+		//      public function posts_orderby( $orderby ) {
+		//          global $wpdb;
+		//
+		//          $order = $this->get_order_sort();
+		//
+		//          switch ( $this->get_order_by() ) {
+		//              case 'title':
+		//                  $orderby = "{$wpdb->posts}.ID {$order}";
+		//                  break;
+		//              /*case 'student':
+		//                  $orderby = "uu.user_login {$order}";
+		//                  break;*/
+		//              case 'date':
+		//                  $orderby = "{$wpdb->posts}.post_date {$order}";
+		//                  break;
+		//              case 'order_total':
+		//                  $orderby = "CAST(pm2.meta_value AS UNSIGNED) {$order}";
+		//                  break;
+		//          }
+		//
+		//          return $orderby;
+		//      }
 
 		/*public function posts_join_paged( $join ) {
 			global $wpdb, $wp_query;
@@ -552,17 +454,17 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( ! empty( $post_author ) ) {
 				$user_id    = absint( $post_author );
 				$meta_query = array(
-//					'relation' => 'OR',
-					array(
-						'key'     => '_user_id',
-						'value'   => '%"' . $user_id . '"%',
-						'compare' => 'LIKE',
-					),
-//					array(
-//						'key'     => '_user_id',
-//						'value'   => $user_id,
-//						'compare' => '=',
-//					),
+					//                  'relation' => 'OR',
+											array(
+												'key'     => '_user_id',
+												'value'   => '%"' . $user_id . '"%',
+												'compare' => 'LIKE',
+											),
+				//                  array(
+				//                      'key'     => '_user_id',
+				//                      'value'   => $user_id,
+				//                      'compare' => '=',
+				//                  ),
 				);
 				$wp_query->set( 'meta_query', $meta_query );
 			}
