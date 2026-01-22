@@ -284,10 +284,13 @@ class SingleCourseModernLayout {
 	 * HTML share social.
 	 *
 	 * @param CourseModel $courseModel
+	 * @param array $data
 	 *
 	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.1
 	 */
-	public function html_share( CourseModel $courseModel ): string {
+	public function html_share( CourseModel $courseModel, array $data = [] ): string {
 		$list_socials = apply_filters(
 			'learn-press/single-course/social-share',
 			[
@@ -383,7 +386,9 @@ class SingleCourseModernLayout {
 				'wrapper_content_inner_end' => '</div>',
 				'wrapper_content_end'       => '</div>',
 				'wrapper_end'               => '</div>',
-			]
+			],
+			$courseModel,
+			$data
 		);
 
 		return Template::combine_components( $section );

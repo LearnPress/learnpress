@@ -1,5 +1,7 @@
 .social-share-toggle {
 	position: relative;
+	display: flex;
+	gap: 5px;
 
 	.share-toggle-icon {
 		cursor: pointer;
