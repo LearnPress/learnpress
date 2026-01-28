@@ -873,6 +873,18 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			'slug'     => 'nicename__in',
 		);
 
+		$roles = $request->get_param( 'roles' );
+		if ( ! empty( $roles ) && $roles == [ UserModel::ROLE_ADMINISTRATOR ] ) {
+			return new WP_Error(
+				'rest_forbidden',
+				__( 'You are not allowed.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		// Always only get instructors and administrators.
+		$request['roles'] = [ UserModel::ROLE_INSTRUCTOR, UserModel::ROLE_ADMINISTRATOR ];
+
 		$prepared_args = array();
 
 		/*
@@ -935,13 +947,20 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		}
 
 		if ( $users === false ) {
+			// Query max 10 instructors only.
+			$prepared_args['number'] = 10;
+
 			$query        = new WP_User_Query( $prepared_args );
 			$users_result = $query->get_results();
 			$total_users  = $query->get_total();
 
 			foreach ( $users_result as $user ) {
-				$data    = $this->prepare_item_for_response( $user, $request );
-				$users[] = $this->prepare_response_for_collection( $data );
+				$data = $this->prepare_item_for_response( $user, $request );
+
+				$user = $this->prepare_response_for_collection( $data );
+				unset( $user['custom_register'] );
+				unset( $user['is_super_admin'] );
+				$users[] = $user;
 			}
 
 			// Set cache with cache get instructors.
