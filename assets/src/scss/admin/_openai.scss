@@ -36,13 +36,9 @@ $title-color: #111111;
 
 	&:hover{
 		//opacity: 0.8;
-		background: #6B46E9;
-		color: #fff;
+		background: #6B46E9 !important;
+		color: #fff !important;
 	}
-}
-
-#lp-course-edit-curriculum .lp-btn-generate-with-ai:hover {
-	background: #6B46E9;
 }
 
 .lp-btn-generate-course-with-ai, .lp-btn-warning-enable-ai {

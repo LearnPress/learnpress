@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_Course_Template
  *
@@ -36,30 +38,7 @@ class LP_Template_General extends LP_Abstract_Template {
 	}
 
 	public function breadcrumb( $args = array() ) {
-		$args = wp_parse_args(
-			$args,
-			apply_filters(
-				'learn_press_breadcrumb_defaults',
-				array(
-					'delimiter'   => '<li class="breadcrumb-delimiter"><i class="lp-icon-angle-right"></i></li>',
-					'wrap_before' => '<ul class="learn-press-breadcrumb">',
-					'wrap_after'  => '</ul>',
-					'before'      => '',
-					'after'       => '',
-					'home'        => _x( 'Home', 'breadcrumb', 'learnpress' ),
-				)
-			)
-		);
-
-		$breadcrumbs = new LP_Breadcrumb();
-
-		if ( $args['home'] ) {
-			$breadcrumbs->add_crumb( $args['home'], apply_filters( 'learn_press_breadcrumb_home_url', home_url() ) );
-		}
-
-		$args['breadcrumb'] = $breadcrumbs->generate();
-
-		learn_press_get_template( 'global/breadcrumb.php', $args );
+		echo Template::html_breadcrumb();
 	}
 
 	/**

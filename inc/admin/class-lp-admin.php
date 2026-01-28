@@ -2,11 +2,12 @@
 /**
  * @author  ThimPress
  * @package LearnPress/Admin/Classes
- * @version 1.0.1
+ * @version 1.0.2
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+
+use LearnPress\Models\CourseModel;
+
+defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Admin' ) ) {
 	/**
@@ -15,24 +16,29 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 	class LP_Admin {
 		protected static $instance;
 
-		/**
-		 * @var array
-		 */
-		protected $_static_pages = false;
+		protected $pages = [];
 
 		/**
 		 *  Constructor
 		 */
 		protected function __construct() {
+			$this->pages = [
+				'courses'           => __( 'Courses', 'learnpress' ),
+				'instructors'       => __( 'Instructors', 'learnpress' ),
+				'single_instructor' => __( 'Single Instructors', 'learnpress' ),
+				'profile'           => __( 'Profile', 'learnpress' ),
+				'checkout'          => __( 'Checkout', 'learnpress' ),
+				'become_a_teacher'  => __( 'Become an Instructor', 'learnpress' ),
+			];
 			$this->includes();
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
-			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
+			//add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
 			add_action( 'all_admin_notices', array( $this, 'admin_notices' ), - 1 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
-			add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
-			add_filter( 'manage_pages_columns', array( $this, 'page_columns_head' ) );
-			add_filter( 'manage_pages_custom_column', array( $this, 'page_columns_content' ), 10, 2 );
+			//add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
+			//add_filter( 'manage_pages_columns', array( $this, 'page_columns_head' ) );
+			//add_filter( 'manage_pages_custom_column', array( $this, 'page_columns_content' ), 10, 2 );
 			add_filter( 'views_edit-page', array( $this, 'views_pages' ), 10 );
 			add_filter( 'views_users', array( $this, 'views_users' ), 10, 1 );
 			add_filter( 'user_row_actions', array( $this, 'user_row_actions' ), 10, 2 );
@@ -73,13 +79,18 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			);*/
 
 			add_filter( 'users_list_table_query_args', [ $this, 'exclude_temp_users' ] );
+
+			// Show label 'LearnPress Page' for page of LearnPress.
+			//add_filter('post_states_html');
+			add_filter( 'display_post_states', [ $this, 'show_label_page_type' ], 10, 2 );
 		}
 
 		/**
 		 * @since 3.2.6
 		 */
 		public function load_modal() {
-			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, LP_ORDER_CPT ) ) ) {
+			// Now only add item(s) when create new Order is using.
+			if ( in_array( get_post_type(), array( LP_ORDER_CPT ) ) ) {
 				LP_Modal_Search_Items::instance();
 			}
 
@@ -129,7 +140,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				if ( $search ) {
 					foreach ( $search as $k => $v ) {
 						if ( in_array( $k, $active_plugins ) ) {
-							++$count_activated;
+							++ $count_activated;
 						}
 					}
 				}
@@ -187,7 +198,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 *
 		 * @return bool
 		 */
-		protected function _is_wc_page( $id ) {
+		/*protected function _is_wc_page( $id ) {
 			if ( class_exists( 'WooCommerce' ) ) {
 				if ( ! class_exists( 'WC_Admin_Post_Types' ) ) {
 					include_once dirname( WC_PLUGIN_FILE ) . '/includes/admin/class-wc-admin-post-types.php';
@@ -214,9 +225,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
-		public function wc_add_display_post_states( $post_states, $post ) {
+		/*public function wc_add_display_post_states( $post_states, $post ) {
 			if ( wc_get_page_id( 'shop' ) === $post->ID ) {
 				$post_states['wc_page_for_shop'] = __( 'Shop Page', 'learnpress' );
 			}
@@ -238,7 +249,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return $post_states;
-		}
+		}*/
 
 		/**
 		 * Check if a page is set for Paid Membership Pro.
@@ -247,7 +258,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 *
 		 * @return bool|mixed
 		 */
-		protected function _is_pmpro_page( $id ) {
+		/*protected function _is_pmpro_page( $id ) {
 			global $pmpro_pages;
 			if ( $pmpro_pages ) {
 				$pages = array(
@@ -268,7 +279,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Check if a page is set for Paid Membership Pro.
@@ -277,7 +288,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 *
 		 * @return bool|mixed
 		 */
-		protected function _is_bp_page( $id ) {
+		/*protected function _is_bp_page( $id ) {
 			if ( function_exists( 'buddypress' ) ) {
 				$bp_pages = get_option( 'bp-pages' );
 				if ( ! $bp_pages ) {
@@ -299,56 +310,54 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
-		 * @param string $plugin
+		 * Get pages is publish set by LearnPress.
 		 *
-		 * @return array|bool
+		 * @return array
 		 */
-		protected function _get_static_pages( $plugin = '' ) {
-			if ( false === $this->_static_pages ) {
-				$this->_static_pages = array(
-					'learnpress'          => array(),
-					'WooCommerce'         => array(),
-					'Paid Membership Pro' => array(),
-					'BuddyPress'          => array(),
-				);
+		protected function _get_static_pages(): array {
+			$static_pages = [];
+			foreach ( $this->pages as $name => $title ) {
+				$page_id = learn_press_get_page_id( $name );
 
-				$all_pages = array(
-					'courses'           => __( 'Courses', 'learnpress' ),
-					'instructors'       => __( 'Instructors', 'learnpress' ),
-					'single_instructor' => __( 'Single Instructors', 'learnpress' ),
-					'profile'           => __( 'Profile', 'learnpress' ),
-					'checkout'          => __( 'Checkout', 'learnpress' ),
-					'become_a_teacher'  => __( 'Become an Instructor', 'learnpress' ),
-				);
-
-				foreach ( $all_pages as $name => $title ) {
-					$page_id = learn_press_get_page_id( $name );
-
-					if ( $page_id && 'publish' === get_post_status( $page_id ) ) {
-						$this->_static_pages['learnpress'][ $page_id ] = $title;
-
-						$for_page = $this->_is_wc_page( $page_id );
-						if ( $for_page ) {
-							$this->_static_pages['WooCommerce'][ $page_id ] = $for_page;
-						}
-
-						$for_page = $this->_is_pmpro_page( $page_id );
-						if ( $for_page ) {
-							$this->_static_pages['Paid Membership Pro'][ $page_id ] = $for_page;
-						}
-
-						$for_page = $this->_is_bp_page( $page_id );
-						if ( $for_page ) {
-							$this->_static_pages['BuddyPress'][ $page_id ] = $for_page;
-						}
-					}
+				if ( $page_id && 'publish' === get_post_status( $page_id ) ) {
+					$static_pages[ $page_id ] = $title;
 				}
 			}
 
-			return $plugin ? ( ! empty( $this->_static_pages[ $plugin ] ) ? $this->_static_pages[ $plugin ] : false ) : $this->_static_pages;
+			return $static_pages;
+		}
+
+		/**
+		 * Show label LearnPress Page for pages set by LearnPress.
+		 *
+		 * @param array $post_states
+		 * @param WP_Post $post
+		 *
+		 * @return array
+		 * @since 4.3.2.6
+		 * @version 1.0.0
+		 */
+		public function show_label_page_type( $post_states, $post ) {
+			$post_type = get_post_type( $post );
+			if ( $post_type !== 'page' ) {
+				return $post_states;
+			}
+
+			$page_id_compare = $post->ID;
+			foreach ( $this->_get_static_pages() as $page_id => $title ) {
+				if ( $page_id == $page_id_compare ) {
+					$post_states['lp_page'] = sprintf(
+						'<span class="is-lp-page">%s</span>',
+						'LearnPress ' . $title . ' Page'
+					);
+					break;
+				}
+			}
+
+			return $post_states;
 		}
 
 		/**
@@ -358,7 +367,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 *
 		 * @return array
 		 */
-		public function page_columns_head( $columns ) {
+		/*public function page_columns_head( $columns ) {
 
 			$_columns = $columns;
 			$columns  = array();
@@ -371,7 +380,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return $columns;
-		}
+		}*/
 
 		/**
 		 * Display the page is assigned to LP Page.
@@ -379,7 +388,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @param string $column_name
 		 * @param int $post
 		 */
-		public function page_columns_content( $column_name, $post ) {
+		/*public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
 			switch ( $column_name ) {
 				case 'lp-page':
@@ -401,7 +410,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 						}
 					}
 			}
-		}
+		}*/
 
 		/**
 		 * @param $actions
@@ -409,13 +418,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @return mixed
 		 */
 		public function views_pages( $actions ) {
-			$this->_get_static_pages();
-
-			$pages = $this->_get_static_pages( 'learnpress' );
+			$pages = $this->_get_static_pages();
 
 			if ( $pages ) {
 				$text = sprintf( __( 'LearnPress Pages (%d)', 'learnpress' ), sizeof( $pages ) );
-				if ( 'yes' !== LP_Request::get( 'lp-page' ) ) {
+				if ( 'yes' !== LP_Request::get_param( 'lp-page' ) ) {
 					$actions['lp-page'] = sprintf(
 						'<a href="%s">%s</a>',
 						admin_url( 'edit.php?post_type=page&lp-page=yes' ),
@@ -442,7 +449,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			if ( 'page' == LP_Request::get_param( 'post_type' ) && 'yes' == LP_Request::get_param( 'lp-page' ) ) {
-				$ids = $this->_get_static_pages( 'learnpress' );
+				$ids = $this->_get_static_pages();
 
 				if ( ! empty( $ids ) ) {
 					$ids = array_keys( $ids );
@@ -463,7 +470,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		public function user_row_actions( $actions, $user ) {
 			$pending_request = self::get_pending_requests();
-			if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' && $pending_request ) {
+			if ( LP_Request::get_param( 'lp-action' ) == 'pending-request' && $pending_request ) {
 				$actions = array();
 				$nonce   = 'nonce=' . wp_create_nonce( 'lp-action-permit-role-teacher' );
 				if ( in_array( $user->ID, $pending_request ) ) {
@@ -484,7 +491,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function exclude_temp_users( $args ) {
-			if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' ) {
+			if ( LP_Request::get_param( 'lp-action' ) == 'pending-request' ) {
 				$args['include'] = self::get_pending_requests();
 			}
 
@@ -566,7 +573,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$pending_request = self::get_pending_requests();
 
 			if ( $pending_request ) {
-				if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' ) {
+				if ( LP_Request::get_param( 'lp-action' ) == 'pending-request' ) {
 					$class = ' class="current"';
 					foreach ( $views as $k => $view ) {
 						$views[ $k ] = preg_replace( '!class="current"!', '', $view );
@@ -688,9 +695,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			return $footer_text;
 		}
 
-		function delete_user_form() {
+		/*function delete_user_form() {
 			// What should be displayed here?
-		}
+		}*/
 
 		/**
 		 * Delete records related user being deleted in other tables
@@ -845,7 +852,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		public function lp_course_set_link_item_backend( $post_link = '', $post_id = 0, $new_title = '', $new_slug = '', $post = null ) {
 			try {
-				if ( in_array( $post->post_type, learn_press_get_course_item_types() ) ) {
+				if ( in_array( $post->post_type, CourseModel::item_types_support() ) ) {
 					$course_id_of_item = LP_Course_DB::getInstance()->get_course_by_item_id( $post->ID );
 					if ( $course_id_of_item ) {
 						$course = learn_press_get_course( $course_id_of_item );

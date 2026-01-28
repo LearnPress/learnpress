@@ -41,16 +41,16 @@ defined( 'ABSPATH' ) || exit();
 add_action( 'learn-press/template-header', LearnPress::instance()->template( 'general' )->func( 'template_header' ) );
 add_action( 'learn-press/template-footer', LearnPress::instance()->template( 'general' )->func( 'template_footer' ) );
 
-/**
- * Course breadcrumb
- *
- * @see LP_Template_General::breadcrumb()
- */
 add_action(
 	'learn-press/before-main-content',
 	LearnPress::instance()->template( 'general' )->text( '<div class="lp-archive-courses">', 'lp-archive-courses-open' ),
 	- 100
 );
+/**
+ * Course breadcrumb
+ *
+ * @see LP_Template_General::breadcrumb()
+ */
 add_action( 'learn-press/before-main-content', LearnPress::instance()->template( 'general' )->func( 'breadcrumb' ) );
 
 add_action(
@@ -431,14 +431,10 @@ add_action(
 	20
 );
 
-/**
- * @see LP_Template_Profile::order_details()
- * @see LP_Template_Profile::order_recover()
- * @see LP_Template_Profile::order_message()
- */
-add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_details' ), 5 );
-add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_recover' ), 10 );
-add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_message' ), 15 );
+// Comment from v4.3.2.6, hook not using from v4.2.6.4
+//add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_details' ), 5 );
+//add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_recover' ), 10 );
+//add_action( 'learn-press/profile/order-details', LearnPress::instance()->template( 'profile' )->func( 'order_message' ), 15 );
 
 /**
  * @see LP_Template_Profile::dashboard_logged_in()

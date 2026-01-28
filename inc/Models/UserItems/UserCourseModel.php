@@ -378,10 +378,14 @@ class UserCourseModel extends UserItemModel {
 	 * Calculate course result
 	 *
 	 * @move from class-lp-user-item-course.php
+	 *
+	 * @param bool $force_cache
+	 *
+	 * @return array [ 'count_items' => int, 'completed_items' => int, 'items' => array, 'evaluate_type' => string, 'pass' => int, 'result' => float ]
 	 * @since 4.1.4
 	 * @version 1.0.3
 	 */
-	public function calculate_course_results( bool $force_cache = false ) {
+	public function calculate_course_results( bool $force_cache = false ): array {
 		$items   = array();
 		$results = array(
 			'count_items'     => 0,

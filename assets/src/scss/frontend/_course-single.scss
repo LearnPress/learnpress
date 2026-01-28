@@ -18,9 +18,10 @@
 		}
 		@media (min-width: 769px) {
 			overflow-x: hidden ;
-			.course-title,.course-meta-secondary {
-				padding-right: 300px;
+			.course-title,.course-meta-secondary,.course-meta-primary {
+				padding-right: 320px;
 			}
+			 
 			&::before, &::after {
 				content: "";
 				width: 50%;
@@ -123,12 +124,12 @@
 		.meta-item-categories {
 			align-items: center;
 
-			&::before {
-				margin-right: $spacing-base-2x;
-				font-size: 2.25em;
-				line-height: 1;
-				content: "\f097";
-			}
+			// &::before {
+			// 	margin-right: $spacing-base-2x;
+			// 	font-size: 2.25em;
+			// 	line-height: 1;
+			// 	content: "\f097";
+			// }
 
 			.meta-item__value {
 				div {
@@ -870,13 +871,13 @@
 
 	&.course-meta-primary {
 		.course-meta__pull-left {
-			gap: 16px;
-			@media (max-width: 767px) {
-				grid-template-columns:  repeat(2, 1fr);
-			}
-			@media (max-width: 480px) {
-				grid-template-columns: 1fr;
-			}
+			// gap: 16px;
+			// @media (max-width: 767px) {
+			// 	grid-template-columns:  repeat(2, 1fr);
+			// }
+			// @media (max-width: 480px) {
+			// 	grid-template-columns: 1fr;
+			// }
 
 			.meta-item {
 				margin-right: 0 !important;
@@ -914,12 +915,12 @@
 		flex: 0 0 50%;
 	}
 
-	&.course-meta-primary {
+	// &.course-meta-primary {
 
-		.meta-item {
-			flex: 1;
-		}
-	}
+	// 	.meta-item {
+	// 		flex: 1;
+	// 	}
+	// }
 
 	&.two-columns {
 

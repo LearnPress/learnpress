@@ -2,12 +2,14 @@
 
 namespace LearnPress\Helpers;
 
+use LP_Breadcrumb;
+
 /**
  * Class Template
  *
  * @package LearnPress\Helpers
  * @since 1.0.0
- * @version 1.0.1
+ * @version 1.0.2
  */
 class Template {
 	/**
@@ -464,5 +466,71 @@ class Template {
 		$allowed_tags = array_merge( $allowed_tags, $extra_tag );
 
 		return wp_kses( $content, $allowed_tags );
+	}
+
+	/**
+	 * Generate breadcrumb HTML.
+	 *
+	 * @param array $args
+	 *
+	 * @return string
+	 * @since 4.3.2.6
+	 * @version 1.0.0
+	 */
+	public static function html_breadcrumb( array $args = [] ): string {
+		$args = wp_parse_args(
+			$args,
+			apply_filters(
+				'learn_press_breadcrumb_defaults',
+				array(
+					'delimiter'   => '<li class="breadcrumb-delimiter"><i class="lp-icon-angle-right"></i></li>',
+					'wrap_before' => '<ul class="learn-press-breadcrumb">',
+					'wrap_after'  => '</ul>',
+					'after'       => '',
+					'home'        => _x( 'Home', 'breadcrumb', 'learnpress' ),
+				)
+			)
+		);
+
+		$breadcrumbs = new LP_Breadcrumb();
+		if ( $args['home'] ) {
+			$breadcrumbs->add_crumb( $args['home'], apply_filters( 'learn_press_breadcrumb_home_url', home_url() ) );
+		}
+
+		$args['breadcrumb'] = $breadcrumbs->generate();
+
+		$html_content = '';
+		foreach ( $args['breadcrumb'] as $key => $crumb ) {
+			$html_content .= '<li>';
+			if ( ! empty( $crumb[1] ) ) {
+				$html_content .= sprintf(
+					'<a href="%s"><span>%s</span></a>',
+					esc_url_raw( $crumb[1] ),
+					esc_html( $crumb[0] )
+				);
+			} else {
+				$html_content .= sprintf(
+					'<span>%s</span>',
+					esc_html( $crumb[0] )
+				);
+			}
+
+			$html_content .= '</li>';
+			if ( sizeof( $args['breadcrumb'] ) !== $key + 1 ) {
+				$html_content .= $args['delimiter'];
+			}
+		}
+
+		$section = apply_filters(
+			'learn_press/breadcrumb/html-section',
+			[
+				'wrap'     => $args['wrap_before'],
+				'content'  => $html_content,
+				'wrap-end' => $args['wrap_after'],
+			],
+			$args
+		);
+
+		return Template::combine_components( $section );
 	}
 }

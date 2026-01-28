@@ -2,7 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.0.9
+ * @version 1.1.0
  */
 
 import {
@@ -209,7 +209,7 @@ const lpAJAX = ( () => {
 			return elLPTarget.dataset.send = JSON.stringify( dataSend );
 		},
 		showHideLoading: ( elLPTarget, status ) => {
-			const elLoading = elLPTarget.closest( `div:not(${ classLPTarget })` ).querySelector( '.lp-loading-change' );
+			const elLoading = elLPTarget.nextElementSibling?.querySelector( '.lp-loading-change' );
 			if ( elLoading ) {
 				lpShowHideEl( elLoading, status );
 			}

@@ -2,6 +2,7 @@
 namespace LearnPress\Gutenberg\Blocks\Breadcrumb;
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Utils\StyleAttributes;
+use LearnPress\Helpers\Template;
 use LP_Debug;
 use LP_Template_General;
 use Throwable;
@@ -56,11 +57,11 @@ class BreadcrumbBlockType extends AbstractBlockType {
 				}
 			}
 
-			ob_start();
+			/*ob_start();
 			$template = new LP_Template_General();
 			$template->breadcrumb( $args );
-			$html_breadcrumb = ob_get_clean();
-			$html            = $this->get_output( $html_breadcrumb );
+			$html_breadcrumb = ob_get_clean();*/
+			$html = $this->get_output( Template::html_breadcrumb( $args ) );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

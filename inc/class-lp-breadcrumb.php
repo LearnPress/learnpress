@@ -89,7 +89,6 @@ class LP_Breadcrumb {
 			}
 
 			$this->search_trail();
-			$this->paged_trail();
 
 			return $this->get_breadcrumb();
 		}
@@ -137,7 +136,7 @@ class LP_Breadcrumb {
 	/**
 	 * Single post trail
 	 *
-	 * @param int    $post_id
+	 * @param int $post_id
 	 * @param string $permalink
 	 */
 	private function add_crumbs_single( $post_id = 0, $permalink = '' ) {
@@ -174,7 +173,7 @@ class LP_Breadcrumb {
 			}
 		}
 
-		$this->add_crumb( get_the_title( $post ), $permalink );
+		//$this->add_crumb( get_the_title( $post ), $permalink );
 	}
 
 	/**
@@ -325,9 +324,9 @@ class LP_Breadcrumb {
 	 * Get default queried object by WP.
 	 * Fixed issue when viewing course category the text in breadcrumb is blank.
 	 *
+	 * @return object
 	 * @since 3.0.0
 	 *
-	 * @return object
 	 */
 	private function get_queried_object() {
 		static $default_queried_object;
@@ -387,7 +386,6 @@ class LP_Breadcrumb {
 	 * Endpoints
 	 */
 	private function endpoint_trail() {
-
 	}
 
 	/**
@@ -396,15 +394,22 @@ class LP_Breadcrumb {
 	private function search_trail() {
 		if ( is_search() ) {
 			$this->add_crumb( sprintf( __( 'Search results for &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() ), esc_url_raw( remove_query_arg( 'paged' ) ) );
+		} elseif ( ! empty( $_GET['c_search'] ) ) {
+			$this->add_crumb(
+				sprintf(
+					__( 'Search results for &ldquo;%s&rdquo;', 'learnpress' ),
+					esc_html( $_GET['c_search'] )
+				)
+			);
 		}
 	}
 
 	/**
 	 * Add a breadcrumb for pagination
 	 */
-	private function paged_trail() {
+	/*private function paged_trail() {
 		if ( get_query_var( 'paged' ) ) {
 			$this->add_crumb( sprintf( __( 'Page %d', 'learnpress' ), get_query_var( 'paged' ) ) );
 		}
-	}
+	}*/
 }

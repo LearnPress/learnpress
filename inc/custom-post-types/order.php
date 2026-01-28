@@ -10,6 +10,8 @@
 use LearnPress\Databases\DataBase;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\PostFilter;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 
 if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 	final class LP_Order_Post_Type extends LP_Abstract_Post_Type {
@@ -493,7 +495,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				// Convert params from WP_Query to PostFilter
-				$posts_per_page = apply_filters( 'edit_posts_per_page', 20, $post_type );
+				$posts_per_page = get_user_option( "edit_{$post_type}_per_page", get_current_user_id() );
+				if ( empty( $posts_per_page ) ) {
+					$posts_per_page = 20;
+				}
+
 				$paged          = max( 1, get_query_var( 'paged' ) );
 				$user_of_order  = $wp_query->get( 'author' );
 				$status         = $wp_query->get( 'post_status' );
@@ -810,39 +816,46 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @author tungnx
 		 * @since 4.1.4
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function before_delete( int $order_id ) {
 			$lp_order_db      = LP_Order_DB::getInstance();
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 			try {
+				ini_set( 'max_execution_time', 0 );
 				$order = learn_press_get_order( $order_id );
-
 				if ( ! $order ) {
 					return;
 				}
 
-				$order_item_ids = $lp_order_db->get_order_item_ids( $order_id );
-
-				if ( empty( $order_item_ids ) ) {
+				$items = $order->get_all_items();
+				if ( empty( $items ) ) {
 					return;
 				}
 
-				$user_ids = $order->get_users();
-
+				$order_item_ids = [];
+				$user_ids       = $order->get_users();
 				foreach ( $user_ids as $user_id ) {
-					delete_user_meta( $user_id, 'orders' );
-					$item_ids = $order->get_item_ids();
-					if ( ! empty( $item_ids ) ) {
-						foreach ( $order->get_item_ids() as $course_id ) {
-							// Check this order is the latest by user and course_id
-							$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
-							if ( $last_order_id && $last_order_id != $order->get_id() ) {
-								continue;
-							}
+					//delete_user_meta( $user_id, 'orders' );
+					foreach ( $items as $itemArr ) {
+						$order_item_ids[] = $itemArr['order_item_id'] ?? 0;
+						$item_type        = $itemArr['item_type'] ?? '';
+						$userItemModel    = UserItemModel::find_user_item(
+							$user_id,
+							$itemArr['item_id'] ?? 0,
+							$item_type ?? '',
+							$order_id,
+							LP_ORDER_CPT
+						);
 
-							$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+						if ( $userItemModel ) {
+							if ( $item_type === LP_COURSE_CPT ) {
+								$userCourseModel = new UserCourseModel( $userItemModel );
+								$userCourseModel->delete();
+							} else {
+								$userItemModel->delete();
+							}
 						}
 					}
 
@@ -855,6 +868,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$lp_order_db->delete_order_item( $filter_delete );
 				$lp_order_db->delete_order_itemmeta( $filter_delete );
 				// End
+
+				ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() . '>' . __FILE__ );
 			}

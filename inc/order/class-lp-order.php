@@ -4,13 +4,13 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 4.0.0
+ * @version 4.0.1
  */
 
-/**
- * Prevent loading this file directly
- */
-
+use LearnPress\Databases\Order\LPOrderItemsDB;
+use LearnPress\Filters\Order\OrderItemsFilter;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -483,7 +483,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Only use for add/remove items to learn (learn_press_user_items) table.
 		 * Where call this function, must be careful, must set_time_limit( 0 );.
 		 *
-		 * @return array|object|stdClass[]|null
+		 * @return array|null
 		 * @version 1.0.1
 		 * @since 4.2.7.2
 		 */
@@ -531,13 +531,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @editor tungnx
 		 */
 		public function get_item_ids() {
-			$items = $this->get_items();
+			$items = $this->get_all_items();
 
 			if ( $items ) {
 				$course_ids = array();
 				foreach ( $items as $item ) {
-					if ( isset( $item['course_id'] ) ) {
-						$course_ids[] = (int) $item['course_id'];
+					if ( $item['item_type'] === LP_COURSE_CPT ) {
+						$course_ids[] = (int) $item['item_id'];
 					}
 				}
 
@@ -606,12 +606,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return int
 		 * @throws Exception
 		 * @since 1.0.0
-		 * @version 4.2.4
+		 * @version 4.2.5
 		 */
 		public function add_item( $item ): int {
 			global $wpdb;
-			$lp_user_items_db = LP_User_Items_DB::getInstance();
-			$order_item_id    = 0;
+			$order_item_id = 0;
 
 			try {
 				if ( is_numeric( $item ) ) {
@@ -621,7 +620,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					);
 				}
 
-				$item_type = get_post_type( $item['item_id'] );
+				$item_type = $item['item_type'] ?? get_post_type( $item['item_id'] );
 				if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
 					return false;
 				}
@@ -730,14 +729,16 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Remove an item from database and it's data.
 		 *
-		 * @param int $item_id
+		 * @param $order_item_id
 		 *
 		 * @return bool
+		 * @throws Exception
 		 */
-		public function remove_item( $item_id ) {
+		public function remove_item( $order_item_id ): bool {
 			global $wpdb;
 
-			$item_id = absint( $item_id );
+			$item_id       = absint( $order_item_id );
+			$order_item_id = absint( $order_item_id );
 
 			if ( ! $item_id ) {
 				return false;
@@ -750,15 +751,48 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			 */
 			do_action( 'learn-press/before-delete-order-item', $item_id, $this->get_id() );
 
-			$course_id = learn_press_get_order_item_meta( $item_id, '_course_id' );
-			if ( ! empty( $course_id ) ) {
-				$user_ids = $this->get_user_id();
+			$filter                      = new OrderItemsFilter();
+			$filter->order_item_id       = $order_item_id;
+			$filter->return_string_query = true;
+			$filter->run_query_count     = false;
+			$order_items_db              = LPOrderItemsDB::getInstance();
+			$order_items_db->get_query_single_row( $filter );
+			$query_single_row = $order_items_db->get_items( $filter );
+			$itemObj          = $order_items_db->wpdb->get_row( $query_single_row );
+
+			if ( $itemObj && $itemObj->item_type === LP_COURSE_CPT ) {
+				$course_id = $itemObj->item_id;
+				$user_ids  = $this->get_user_id();
 				if ( is_array( $user_ids ) ) {
 					foreach ( $user_ids as $user_id ) {
-						LP_User_Items_DB::getInstance()->delete_user_items_old( (int) $user_id, (int) $course_id );
+						// Delete course item on learnpress_user_items if exists
+						$userCourseItem = UserItemModel::find_user_item(
+							$user_id,
+							$course_id,
+							LP_COURSE_CPT,
+							$this->get_id(),
+							LP_ORDER_CPT,
+							true
+						);
+						if ( $userCourseItem instanceof UserItemModel ) {
+							$userCourseModel = new UserCourseModel( $userCourseItem );
+							$userCourseModel->delete();
+						}
 					}
 				} else {
-					LP_User_Items_DB::getInstance()->delete_user_items_old( (int) $user_ids, (int) $course_id );
+					// Delete course item on learnpress_user_items if exists
+					$userCourseItem = UserItemModel::find_user_item(
+						$user_ids,
+						$course_id,
+						LP_COURSE_CPT,
+						$this->get_id(),
+						LP_ORDER_CPT,
+						true
+					);
+					if ( $userCourseItem instanceof UserItemModel ) {
+						$userCourseModel = new UserCourseModel( $userCourseItem );
+						$userCourseModel->delete();
+					}
 				}
 			}
 

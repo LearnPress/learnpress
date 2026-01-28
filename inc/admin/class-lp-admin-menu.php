@@ -170,7 +170,7 @@ class LP_Admin_Menu {
 			$this->menu_items = $menu_items;
 		}
 
-		$addons = LP_Admin::instance()->get_addons();
+		//$addons = LP_Admin::instance()->get_addons();
 	}
 
 	/**
