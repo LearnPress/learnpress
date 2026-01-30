@@ -1,0 +1,194 @@
+// Dashboard Tab Styles for Course Builder
+// @since 4.3.0
+
+.lp-course-builder-dashboard {
+	.lp-cb-dashboard__stats {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 20px;
+		margin-bottom: 32px;
+
+		@media (max-width: 1024px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@media (max-width: 640px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.lp-cb-dashboard__stat-card {
+		background: #fff;
+		border-radius: 12px;
+		padding: 20px;
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid #e5e7eb;
+		transition: all 0.2s ease;
+
+		&:hover {
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			transform: translateY(-2px);
+		}
+
+		.stat-card__icon {
+			width: 48px;
+			height: 48px;
+			border-radius: 12px;
+			background: var(--card-color, #3b82f6);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+
+			.dashicons {
+				font-size: 24px;
+				width: 24px;
+				height: 24px;
+				color: #fff;
+			}
+		}
+
+		.stat-card__content {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		.stat-card__value {
+			font-size: 28px;
+			font-weight: 700;
+			color: #1e1e1e;
+			line-height: 1.2;
+		}
+
+		.stat-card__label {
+			font-size: 13px;
+			color: #6b7280;
+			font-weight: 500;
+		}
+	}
+
+	.lp-cb-dashboard__top-courses-wrapper {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 24px;
+
+		@media (max-width: 900px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.lp-cb-dashboard__top-courses {
+		background: #fff;
+		border-radius: 12px;
+		padding: 24px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid #e5e7eb;
+
+		.top-courses__title {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-size: 16px;
+			font-weight: 600;
+			color: #1e1e1e;
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid #e5e7eb;
+
+			.dashicons {
+				font-size: 20px;
+				width: 20px;
+				height: 20px;
+				color: #6b7280;
+			}
+		}
+	}
+
+	.lp-cb-dashboard__table {
+		width: 100%;
+		border-collapse: collapse;
+
+		thead {
+			tr {
+				border-bottom: 1px solid #e5e7eb;
+			}
+
+			th {
+				text-align: left;
+				padding: 10px 12px;
+				font-size: 12px;
+				font-weight: 600;
+				color: #6b7280;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+
+				&.rank {
+					width: 40px;
+					text-align: center;
+				}
+
+				&.count {
+					width: 80px;
+					text-align: right;
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				border-bottom: 1px solid #f3f4f6;
+				transition: background 0.15s ease;
+
+				&:last-child {
+					border-bottom: none;
+				}
+
+				&:hover {
+					background: #f9fafb;
+				}
+			}
+
+			td {
+				padding: 12px;
+				font-size: 14px;
+				color: #374151;
+
+				&.rank {
+					text-align: center;
+					font-weight: 600;
+					color: #9ca3af;
+				}
+
+				&.course-name {
+					a {
+						color: #1e1e1e;
+						text-decoration: none;
+						font-weight: 500;
+						transition: color 0.15s ease;
+
+						&:hover {
+							color: #3b82f6;
+						}
+					}
+				}
+
+				&.count {
+					text-align: right;
+					font-weight: 600;
+					color: #1e1e1e;
+				}
+
+				&.no-data {
+					text-align: center;
+					color: #9ca3af;
+					font-style: italic;
+					padding: 24px 12px;
+				}
+			}
+		}
+	}
+}

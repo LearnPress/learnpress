@@ -18,6 +18,8 @@ export class BuilderEditCourse {
 		elBtnUpdateCourse: '.cb-btn-update',
 		elBtnHeaderSave: '.lp-cb-save-btn',
 		elBtnDraftCourse: '.cb-btn-darft',
+		elBtnPublishCourse: '.cb-btn-publish',
+		elBtnMainAction: '.cb-btn-main-action',
 		elBtnTrashCourse: '.cb-btn-trash',
 		elBtnSaveSettings: '.cb-btn-save-settings',
 		elDropdownToggle: '.cb-btn-dropdown-toggle',
@@ -77,6 +79,10 @@ export class BuilderEditCourse {
 		elPermalinkSlugInput: '.cb-permalink-slug-input',
 		elPermalinkUrl: '.cb-permalink-url',
 		elPermalinkBaseUrl: '#cb-permalink-base-url',
+
+		// Preview and Admin link elements
+		elBtnPreview: '.cb-button.cb-btn-preview',
+		elAdminLink: '.lp-cb-admin-link',
 	};
 
 	init() {
@@ -129,7 +135,7 @@ export class BuilderEditCourse {
 				callBack: this.addNewCategory.name,
 			},
 			{
-				selector: BuilderEditCourse.selectors.elBtnUpdateCourse,
+				selector: BuilderEditCourse.selectors.elBtnMainAction,
 				class: this,
 				callBack: this.updateCourse.name,
 			},
@@ -140,6 +146,11 @@ export class BuilderEditCourse {
 			},
 			{
 				selector: BuilderEditCourse.selectors.elBtnDraftCourse,
+				class: this,
+				callBack: this.updateCourse.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elBtnPublishCourse,
 				class: this,
 				callBack: this.updateCourse.name,
 			},
@@ -839,15 +850,35 @@ export class BuilderEditCourse {
 		// Validate title is not empty
 		if ( ! this.validateTitleBeforeUpdate() ) return;
 		if ( ! this.validatePricingBeforeUpdate() ) return;
-		const elBtnUpdateCourse = target.closest( BuilderEditCourse.selectors.elBtnUpdateCourse );
+
+		// Find which button was clicked and determine status from data attribute
+		const elBtnMainAction = target.closest( BuilderEditCourse.selectors.elBtnMainAction );
 		const elBtnHeaderSave = target.closest( BuilderEditCourse.selectors.elBtnHeaderSave );
 		const elBtnDraftCourse = target.closest( BuilderEditCourse.selectors.elBtnDraftCourse );
+		const elBtnPublishCourse = target.closest( BuilderEditCourse.selectors.elBtnPublishCourse );
+
 		let status = 'publish';
-		let elBtn = elBtnUpdateCourse || elBtnHeaderSave;
-		if ( elBtnDraftCourse ) {
-			status = 'draft';
+		let elBtn = null;
+
+		// Determine status from the clicked button's data-status attribute or class
+		if ( elBtnMainAction ) {
+			status = elBtnMainAction.dataset.status || 'publish';
+			elBtn = elBtnMainAction;
+		} else if ( elBtnPublishCourse ) {
+			status = elBtnPublishCourse.dataset.status || 'publish';
+			elBtn = elBtnPublishCourse;
+		} else if ( elBtnDraftCourse ) {
+			status = elBtnDraftCourse.dataset.status || 'draft';
 			elBtn = elBtnDraftCourse;
+		} else if ( elBtnHeaderSave ) {
+			// Header save button uses current main action status
+			const mainBtn = document.querySelector( BuilderEditCourse.selectors.elBtnMainAction );
+			status = mainBtn?.dataset.status || 'publish';
+			elBtn = elBtnHeaderSave;
 		}
+
+		if ( ! elBtn ) return;
+
 		lpUtils.lpSetLoadingEl( elBtn, 1 );
 		const courseData = this.getCourseDataForUpdate();
 		const dataSend = {
@@ -883,9 +914,17 @@ export class BuilderEditCourse {
 					// Dispatch event to reset form state (remove unsaved changes warning)
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
-				if ( data?.button_title ) {
-					const updateBtn = document.querySelector( BuilderEditCourse.selectors.elBtnUpdateCourse );
-					if ( updateBtn ) updateBtn.textContent = data.button_title;
+				// Update action buttons based on new status
+				if ( data?.status ) {
+					this.updateActionButtons( data.status );
+					// Update status badge
+					const elStatus = document.querySelector( BuilderEditCourse.selectors.elStatus );
+					if ( elStatus ) {
+						elStatus.className = 'course-status ' + data.status;
+						elStatus.textContent = data.status;
+					}
+					// Toggle preview/admin link visibility for trash status
+					this.toggleTrashElements( data.status );
 				}
 				// Use redirect_url from backend if available (for new courses)
 				if ( data?.redirect_url ) {
@@ -894,18 +933,11 @@ export class BuilderEditCourse {
 					// Fallback: build redirect URL manually
 					const currentUrl = window.location.href;
 					const newUrl = currentUrl.replace(
-						/\/post-new\/?(\?.*)?$/,
+						/\/post-new\/?(\\?.*)?$/,
 						`/${ data.course_id_new }/overview/`
 					);
 					if ( newUrl !== currentUrl ) {
 						window.location.href = newUrl;
-					}
-				}
-				if ( data?.status ) {
-					const elStatus = document.querySelector( BuilderEditCourse.selectors.elStatus );
-					if ( elStatus ) {
-						elStatus.className = 'course-status ' + data.status;
-						elStatus.textContent = data.status;
 					}
 				}
 				// Update permalink display with actual saved slug (handles duplicate slug resolution)
@@ -929,6 +961,90 @@ export class BuilderEditCourse {
 			},
 		};
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	/**
+	 * Update action buttons after status change.
+	 * Swaps main button and dropdown item based on new status.
+	 *
+	 * @param {string} newStatus - The new course status
+	 */
+	updateActionButtons( newStatus ) {
+		const dropdown = document.querySelector( BuilderEditCourse.selectors.elHeaderActionsDropdown );
+		if ( ! dropdown ) return;
+
+		const mainBtn = dropdown.querySelector( '.cb-btn-main-action' );
+		const dropdownMenu = dropdown.querySelector( BuilderEditCourse.selectors.elDropdownMenu );
+		if ( ! mainBtn || ! dropdownMenu ) return;
+
+		// Status configuration for button labels and classes
+		const statusConfig = {
+			publish: {
+				mainLabel: mainBtn.dataset.titleUpdate || 'Update',
+				mainClass: 'cb-btn-update',
+				mainStatus: 'publish',
+				dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				dropdownClass: 'cb-btn-darft',
+				dropdownStatus: 'draft',
+				dropdownIcon: 'dashicons-media-default',
+			},
+			draft: {
+				mainLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				mainClass: 'cb-btn-darft',
+				mainStatus: 'draft',
+				dropdownLabel: mainBtn.dataset.titlePublish || 'Publish',
+				dropdownClass: 'cb-btn-publish',
+				dropdownStatus: 'publish',
+				dropdownIcon: 'dashicons-visibility',
+			},
+			pending: {
+				mainLabel: 'Submit for Review',
+				mainClass: 'cb-btn-pending',
+				mainStatus: 'pending',
+				dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				dropdownClass: 'cb-btn-darft',
+				dropdownStatus: 'draft',
+				dropdownIcon: 'dashicons-media-default',
+			},
+		};
+
+		const config = statusConfig[ newStatus ] || statusConfig.draft;
+
+		// Update main button
+		mainBtn.className = `${ config.mainClass } cb-btn-primary cb-btn-main-action`;
+		mainBtn.dataset.status = config.mainStatus;
+		mainBtn.textContent = config.mainLabel;
+
+		// Update dropdown item (first item, excluding trash)
+		const dropdownItems = dropdownMenu.querySelectorAll( '.cb-dropdown-item:not(.cb-btn-trash)' );
+		if ( dropdownItems.length > 0 ) {
+			const firstItem = dropdownItems[ 0 ];
+			firstItem.className = `cb-dropdown-item ${ config.dropdownClass }`;
+			firstItem.dataset.status = config.dropdownStatus;
+			firstItem.innerHTML = `<span class="dashicons ${ config.dropdownIcon }"></span>${ config.dropdownLabel }`;
+		}
+
+		// Update dropdown data-current-status
+		dropdown.dataset.currentStatus = newStatus;
+	}
+
+	/**
+	 * Toggle visibility of preview button and admin link based on status.
+	 * Hide when status is 'trash', show otherwise.
+	 *
+	 * @param {string} status - Current course status
+	 */
+	toggleTrashElements( status ) {
+		const elBtnPreview = document.querySelector( BuilderEditCourse.selectors.elBtnPreview );
+		const elAdminLink = document.querySelector( BuilderEditCourse.selectors.elAdminLink );
+		const isTrash = status === 'trash';
+
+		if ( elBtnPreview ) {
+			elBtnPreview.style.display = isTrash ? 'none' : '';
+		}
+		if ( elAdminLink ) {
+			elAdminLink.style.display = isTrash ? 'none' : '';
+		}
 	}
 
 	trashCourse( args ) {
@@ -957,6 +1073,8 @@ export class BuilderEditCourse {
 						elStatus.className = 'course-status ' + data.status;
 						elStatus.textContent = data.status;
 					}
+					// Toggle preview/admin link visibility for trash status
+					this.toggleTrashElements( data.status );
 				}
 			},
 			error: ( error ) => {

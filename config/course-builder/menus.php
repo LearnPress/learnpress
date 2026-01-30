@@ -5,6 +5,12 @@ use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
 $builderTabCourseTemplate = BuilderTabCourseTemplate::instance();
 
 $menu_arr = [
+	'dashboard' => array(
+		'title'    => esc_html__( 'Dashboard', 'learnpress' ),
+		'slug'     => 'dashboard',
+		'icon'     => '<i class="dashicons dashicons-dashboard"></i>',
+		'sub_menu' => [],
+	),
 	'courses'   => array(
 		'title'    => esc_html__( 'Courses', 'learnpress' ),
 		'slug'     => 'courses',

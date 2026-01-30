@@ -816,4 +816,88 @@ class LP_Statistics_DB extends LP_Database {
 		$result                   = $this->execute( $filter );
 		return $result;
 	}
+
+	/**
+	 * Get top sold courses by a specific instructor.
+	 *
+	 * @param int $instructor_id The instructor user ID.
+	 * @param int $limit Number of courses to return, default 5.
+	 *
+	 * @return array Top sold courses for the instructor.
+	 * @since 4.3.0
+	 */
+	public function get_top_sold_courses_by_instructor( int $instructor_id, int $limit = 5 ): array {
+		if ( ! $instructor_id ) {
+			return [];
+		}
+
+		$tb_posts  = $this->tb_posts;
+		$oi_table  = $this->tb_lp_order_items;
+		$oim_table = $this->tb_lp_order_itemmeta;
+
+		$filter                   = new \LP_Order_Filter();
+		$filter->collection       = $tb_posts;
+		$filter->collection_alias = 'p';
+		$filter->only_fields[]    = 'oi.item_id as course_id';
+		$filter->only_fields[]    = 'SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as course_count';
+		$filter->only_fields[]    = 'p2.post_title as course_name';
+		$filter->limit            = $limit > 0 ? $limit : 5;
+
+		$filter->join = [
+			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
+			"INNER JOIN $tb_posts AS p2 ON p2.ID = oi.item_id",
+			"INNER JOIN $oim_table AS oim_qty ON oi.order_item_id = oim_qty.learnpress_order_item_id AND oim_qty.meta_key = '_quantity'",
+		];
+
+		$filter->where = array(
+			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
+			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( 'AND oi.item_type=%s', LP_COURSE_CPT ),
+			$this->wpdb->prepare( 'AND p2.post_author=%d', $instructor_id ),
+		);
+
+		$filter->group_by        = 'course_id';
+		$filter->order_by        = 'course_count';
+		$filter->order           = 'DESC';
+		$filter->run_query_count = false;
+		$result                  = $this->execute( $filter );
+
+		return is_array( $result ) ? $result : [];
+	}
+
+	/**
+	 * Get top enrolled courses by a specific instructor.
+	 *
+	 * @param int $instructor_id The instructor user ID.
+	 * @param int $limit Number of courses to return, default 5.
+	 *
+	 * @return array Top enrolled courses for the instructor.
+	 * @since 4.3.0
+	 */
+	public function get_top_enrolled_courses_by_instructor( int $instructor_id, int $limit = 5 ): array {
+		if ( ! $instructor_id ) {
+			return [];
+		}
+
+		$filter                   = new \LP_Filter();
+		$filter->collection       = $this->tb_lp_user_items;
+		$filter->collection_alias = 'ui';
+		$filter->only_fields[]    = 'ui.item_id as course_id';
+		$filter->only_fields[]    = 'COUNT(ui.user_item_id) as enrollment_count';
+		$filter->only_fields[]    = 'p.post_title as course_name';
+		$filter->limit            = $limit > 0 ? $limit : 5;
+
+		$filter->join[] = "INNER JOIN {$this->tb_posts} AS p ON p.ID = ui.item_id";
+
+		$filter->where[] = $this->wpdb->prepare( 'AND ui.item_type=%s', LP_COURSE_CPT );
+		$filter->where[] = $this->wpdb->prepare( 'AND p.post_author=%d', $instructor_id );
+
+		$filter->group_by        = 'course_id';
+		$filter->order_by        = 'enrollment_count';
+		$filter->order           = 'DESC';
+		$filter->run_query_count = false;
+		$result                  = $this->execute( $filter );
+
+		return is_array( $result ) ? $result : [];
+	}
 }

@@ -152,7 +152,8 @@ class CourseBuilderTemplate {
 		$user         = wp_get_current_user();
 		$avatar       = get_avatar( $user->ID, 32 );
 		$display_name = $user->display_name;
-		$profile_url  = get_author_posts_url( $user->ID );
+		$profile      = LP_Profile::instance();
+		$profile_url  = $profile->get_current_url();
 		$logout_url   = wp_logout_url( home_url() );
 
 		$header = [
@@ -384,36 +385,89 @@ class CourseBuilderTemplate {
 			$status_badge = sprintf( '<span class="course-status %1$s">%1$s</span>', esc_attr( $status ) );
 		}
 
+		// Configure buttons based on current status
+		// Main button reflects current status action, dropdown shows alternative
+		$status_config = array(
+			'publish'    => array(
+				'main_label'       => __( 'Update', 'learnpress' ),
+				'main_class'       => 'cb-btn-update',
+				'main_status'      => 'publish',
+				'dropdown_label'   => __( 'Save Draft', 'learnpress' ),
+				'dropdown_class'   => 'cb-btn-darft',
+				'dropdown_status'  => 'draft',
+				'dropdown_icon'    => 'dashicons-media-default',
+			),
+			'draft'      => array(
+				'main_label'       => __( 'Save Draft', 'learnpress' ),
+				'main_class'       => 'cb-btn-darft',
+				'main_status'      => 'draft',
+				'dropdown_label'   => __( 'Publish', 'learnpress' ),
+				'dropdown_class'   => 'cb-btn-publish',
+				'dropdown_status'  => 'publish',
+				'dropdown_icon'    => 'dashicons-visibility',
+			),
+			'pending'    => array(
+				'main_label'       => __( 'Submit for Review', 'learnpress' ),
+				'main_class'       => 'cb-btn-pending',
+				'main_status'      => 'pending',
+				'dropdown_label'   => __( 'Save Draft', 'learnpress' ),
+				'dropdown_class'   => 'cb-btn-darft',
+				'dropdown_status'  => 'draft',
+				'dropdown_icon'    => 'dashicons-media-default',
+			),
+			'auto-draft' => array(
+				'main_label'       => __( 'Publish', 'learnpress' ),
+				'main_class'       => 'cb-btn-publish',
+				'main_status'      => 'publish',
+				'dropdown_label'   => __( 'Save Draft', 'learnpress' ),
+				'dropdown_class'   => 'cb-btn-darft',
+				'dropdown_status'  => 'draft',
+				'dropdown_icon'    => 'dashicons-media-default',
+			),
+		);
+
+		// Fallback to draft config if status not in map
+		$btn_config = isset( $status_config[ $status ] ) ? $status_config[ $status ] : $status_config['draft'];
+
 		ob_start();
 		?>
 		<div class="lp-cb-content" data-post-id="<?php echo esc_attr( $post_id ); ?>"
-			data-is-new="<?php echo $is_new_post ? '1' : '0'; ?>">
-			<?php echo $this->render_breadcrumb( $tab_current, $post, $is_new_post ); ?>
+			data-is-new="<?php echo $is_new_post ? '1' : '0'; ?>"
+			data-status="<?php echo esc_attr( $status ); ?>">
 
 			<div class="lp-cb-header">
 				<div class="lp-cb-header__left">
 					<h1 class="lp-cb-header__title"><?php echo esc_html( $post_title ); ?></h1>
 					<?php echo $status_badge; ?>
+					<?php if ( ! $is_new_post ) : ?>
+						<?php $hide_style = ( 'trash' === $status ) ? 'style="display:none"' : ''; ?>
+						<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) ); ?>" class="lp-cb-admin-link" target="_blank" title="<?php esc_attr_e( 'Edit in WP Admin', 'learnpress' ); ?>" <?php echo $hide_style; ?>>
+							<span class="dashicons dashicons-wordpress"></span>
+						</a>
+					<?php endif; ?>
 				</div>
 				<div class="lp-cb-header__actions">
 					<?php if ( ! $is_new_post ) : ?>
-						<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="cb-button cb-btn-preview cb-btn-secondary" target="_blank">
+						<?php $hide_style = ( 'trash' === $status ) ? 'style="display:none"' : ''; ?>
+						<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="cb-button cb-btn-preview cb-btn-secondary" target="_blank" <?php echo $hide_style; ?>>
 							<?php esc_html_e( 'Preview', 'learnpress' ); ?>
 						</a>
 					<?php endif; ?>
-					<div class="cb-header-actions-dropdown">
-						<div class="cb-btn-update cb-btn-primary" 
+					<div class="cb-header-actions-dropdown" data-current-status="<?php echo esc_attr( $status ); ?>">
+						<div class="<?php echo esc_attr( $btn_config['main_class'] ); ?> cb-btn-primary cb-btn-main-action" 
+							data-status="<?php echo esc_attr( $btn_config['main_status'] ); ?>"
 							data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>" 
-							data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>">
-							<?php echo $is_published ? esc_html__( 'Update', 'learnpress' ) : esc_html__( 'Publish', 'learnpress' ); ?>
+							data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>"
+							data-title-draft="<?php esc_attr_e( 'Save Draft', 'learnpress' ); ?>">
+							<?php echo esc_html( $btn_config['main_label'] ); ?>
 						</div>
 						<button type="button" class="cb-btn-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
 							<span class="dashicons dashicons-arrow-down-alt2"></span>
 						</button>
 						<div class="cb-dropdown-menu">
-							<div class="cb-dropdown-item cb-btn-darft">
-								<span class="dashicons dashicons-media-default"></span>
-								<?php esc_html_e( 'Save Draft', 'learnpress' ); ?>
+							<div class="cb-dropdown-item <?php echo esc_attr( $btn_config['dropdown_class'] ); ?>" data-status="<?php echo esc_attr( $btn_config['dropdown_status'] ); ?>">
+								<span class="dashicons <?php echo esc_attr( $btn_config['dropdown_icon'] ); ?>"></span>
+								<?php echo esc_html( $btn_config['dropdown_label'] ); ?>
 							</div>
 							<?php if ( ! $is_new_post ) : ?>
 							<div class="cb-dropdown-item cb-btn-trash cb-btn-danger">
@@ -671,13 +725,38 @@ class CourseBuilderTemplate {
 	 * Show link to Course Builder in admin bar
 	 */
 	public function add_admin_bar_menu( $wp_admin_bar ) {
-		$href = CourseBuilder::get_link_course_builder();
-
+		$href  = CourseBuilder::get_link_course_builder();
 		$title = esc_html__( 'Course Builder', 'learnpress' );
 
+		// Check if on frontend single course page
 		if ( is_singular( LP_COURSE_CPT ) && get_the_ID() ) {
 			$title = esc_html__( 'Edit with Course Builder', 'learnpress' );
-			$href  = CourseBuilder::get_link_course_builder( get_the_ID() );
+			$href  = CourseBuilder::get_tab_link( 'courses', get_the_ID(), 'overview' );
+		}
+
+		// Check if on admin edit course page (post.php or post-new.php)
+		if ( is_admin() ) {
+			global $post, $pagenow;
+			if ( in_array( $pagenow, array( 'post.php', 'post-new.php' ), true ) ) {
+				$post_type = '';
+				if ( isset( $_GET['post_type'] ) ) {
+					$post_type = sanitize_text_field( wp_unslash( $_GET['post_type'] ) );
+				} elseif ( isset( $_GET['post'] ) ) {
+					$post_id   = absint( $_GET['post'] );
+					$post_type = get_post_type( $post_id );
+				} elseif ( $post && isset( $post->post_type ) ) {
+					$post_type = $post->post_type;
+				}
+
+				if ( LP_COURSE_CPT === $post_type ) {
+					$title = esc_html__( 'Edit with Course Builder', 'learnpress' );
+					if ( isset( $_GET['post'] ) ) {
+						$href = CourseBuilder::get_tab_link( 'courses', absint( $_GET['post'] ), 'overview' );
+					} else {
+						$href = CourseBuilder::get_link_add_new_course();
+					}
+				}
+			}
 		}
 
 		$wp_admin_bar->add_node(

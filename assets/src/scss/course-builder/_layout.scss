@@ -391,10 +391,32 @@ html:has( #wpadminbar ) {
 
 	.lp-cb-header__title {
 		margin: 0;
-		font-size: 40px;
+		font-size: 24px;
 		font-weight: 600;
-		margin-bottom: 10px;
 		color: $cb-text;
+	}
+
+	.lp-cb-admin-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 4px;
+		color: $cb-text-muted;
+		text-decoration: none;
+		transition: all 0.2s;
+
+		.dashicons {
+			font-size: 18px;
+			width: 18px;
+			height: 18px;
+		}
+
+		&:hover {
+			background: #f1f5f9;
+			color: $cb-primary;
+		}
 	}
 
 	.lp-cb-header__actions {
@@ -935,6 +957,32 @@ html:has( #wpadminbar ) {
 				pointer-events: none;
 			}
 		}
+
+		// Dropdown toggle color matches main button based on status
+		&[data-current-status='trash'],
+		&[data-current-status='draft'],
+		&[data-current-status='pending'] {
+			.cb-btn-dropdown-toggle {
+				background: #d1d5db !important;
+				border-color: #d1d5db !important;
+
+				.dashicons {
+					color: #374151 !important;
+				}
+
+				&:hover {
+					background: #b8bcc4 !important;
+				}
+
+				&[aria-expanded='true'] {
+					background: #b8bcc4 !important;
+
+					.dashicons {
+						color: #374151 !important;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -945,8 +993,10 @@ html:has( #wpadminbar ) {
 	position: relative;
 	display: inline-flex;
 
-	// Button group container
-	.cb-btn-update {
+	// Button group container - main action button
+	.cb-btn-update,
+	.cb-btn-darft.cb-btn-main-action,
+	.cb-btn-publish.cb-btn-main-action {
 		padding: 10px 16px;
 		font-size: 14px;
 		font-weight: 500;
@@ -956,6 +1006,7 @@ html:has( #wpadminbar ) {
 		border-radius: 6px 0 0 6px !important;
 		background: $cb-primary;
 		color: #fff;
+		white-space: nowrap;
 
 		&:hover {
 			background: $cb-primary-hover;
@@ -1001,6 +1052,26 @@ html:has( #wpadminbar ) {
 
 			.dashicons {
 				transform: rotate( 180deg );
+			}
+		}
+	}
+
+	&[data-current-status='trash'],
+	&[data-current-status='draft'],
+	&[data-current-status='pending'] {
+		.cb-btn-dropdown-toggle {
+			background: #d1d5db;
+
+			.dashicons {
+				color: #374151;
+			}
+
+			&:hover {
+				background: #b8bcc4;
+			}
+
+			&[aria-expanded='true'] {
+				background: #b8bcc4;
 			}
 		}
 	}
