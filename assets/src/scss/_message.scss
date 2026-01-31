@@ -37,7 +37,8 @@ $msg-info: #007AFF1A;
 		text-decoration: underline;
 	}
 }
-// Message when upload image cover
+
+// Message Toastify
 .lp-toast{
 	&.toastify{
 		background: $msg-success;
@@ -67,6 +68,20 @@ $msg-info: #007AFF1A;
 			padding: 12px 20px; // Fixed by on Backend of WP has style div.error
 			border: none; // Fixed by on Backend of WP has style div.error
 			margin: 0 auto; // Fixed by on Backend of WP has style div.error
+		}
+		&.warning{
+			background-color: $msg-waring;
+			color: #fb9422;
+			padding: 12px 20px;
+			border: none;
+			margin: 0 auto;
+		}
+		&.info{
+			background-color: $msg-info;
+			color: #277afc;
+			padding: 12px 20px;
+			border: none;
+			margin: 0 auto;
 		}
 	}
 }
