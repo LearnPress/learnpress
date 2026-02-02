@@ -45,7 +45,7 @@ class QuestionBase extends Component {
 		}
 
 		return null;
-	}
+	};
 
 	setInputRef = ( el, k ) => {
 		if ( ! this.inputs ) {
@@ -53,7 +53,7 @@ class QuestionBase extends Component {
 		}
 
 		this.inputs[ k ] = el;
-	}
+	};
 
 	/**
 	 * Only show correct answer
@@ -63,9 +63,13 @@ class QuestionBase extends Component {
 	 * @author Nhamdv
 	 */
 	maybeShowCorrectAnswer = () => {
-		const { status, isCheckedAnswer, showCorrectReview, isReviewing } = this.props;
+		const { status, isCheckedAnswer, showCorrectReview, isReviewing } =
+			this.props;
 
-		return ( status === 'completed' && showCorrectReview ) || ( isCheckedAnswer && ! isReviewing );
+		return (
+			( status === 'completed' && showCorrectReview ) ||
+			( isCheckedAnswer && ! isReviewing )
+		);
 	};
 
 	/**
@@ -74,13 +78,9 @@ class QuestionBase extends Component {
 	 * @param option Doc.
 	 */
 	maybeDisabledOption = ( option ) => {
-		const {
-			answered,
-			status,
-			isCheckedAnswer,
-		} = this.props;
+		const { answered, status, isCheckedAnswer } = this.props;
 
-		return isCheckedAnswer || ( status !== 'started' );
+		return isCheckedAnswer || status !== 'started';
 	};
 
 	/**
@@ -88,11 +88,7 @@ class QuestionBase extends Component {
 	 * store answered
 	 */
 	setAnswerChecked = () => ( event ) => {
-		const {
-			updateUserQuestionAnswers,
-			question,
-			status,
-		} = this.props;
+		const { updateUserQuestionAnswers, question, status } = this.props;
 
 		if ( status !== 'started' ) {
 			return __( 'LP Error: can not set answers', 'learnpress' );
@@ -112,7 +108,10 @@ class QuestionBase extends Component {
 			}
 		} );
 
-		updateUserQuestionAnswers( question.id, isSingle ? answered[ 0 ] : answered );
+		updateUserQuestionAnswers(
+			question.id,
+			isSingle ? answered[ 0 ] : answered
+		);
 	};
 
 	maybeCheckedAnswer = ( value ) => {
@@ -131,9 +130,9 @@ class QuestionBase extends Component {
 		let type = 'radio';
 
 		switch ( questionType ) {
-		case 'multi_choice':
-			type = 'checkbox';
-			break;
+			case 'multi_choice':
+				type = 'checkbox';
+				break;
 		}
 
 		return type;
@@ -144,7 +143,14 @@ class QuestionBase extends Component {
 	};
 
 	getWarningMessage = () => {
-		return <>{ __( 'The render function should be overwritten from the base.', 'learnpress' ) }</>;
+		return (
+			<>
+				{ __(
+					'The render function should be overwritten from the base.',
+					'learnpress'
+				) }
+			</>
+		);
 	};
 
 	getOptionClass = ( option ) => {
@@ -157,7 +163,13 @@ class QuestionBase extends Component {
 
 	parseOptions = ( options ) => {
 		if ( options ) {
-			options = ! isArray( options ) ? JSON.parse( CryptoJS.AES.decrypt( options.data, options.key, { format: CryptoJSAesJson } ).toString( CryptoJS.enc.Utf8 ) ) : options;
+			options = ! isArray( options )
+				? JSON.parse(
+						CryptoJS.AES.decrypt( options.data, options.key, {
+							format: CryptoJSAesJson,
+						} ).toString( CryptoJS.enc.Utf8 )
+				  )
+				: options;
 			options = ! isArray( options ) ? JSON.parse( options ) : options;
 		}
 
@@ -169,7 +181,12 @@ class QuestionBase extends Component {
 	};
 
 	isCorrect = () => {
-		const { answered } = this.props;
+		const { answered, question } = this.props;
+		console.log( question );
+
+		if ( typeof question.correct !== 'undefined' ) {
+			return question.correct;
+		}
 
 		if ( ! answered ) {
 			return false;
@@ -199,14 +216,32 @@ class QuestionBase extends Component {
 	getCorrectLabel = () => {
 		const { status, answered, question } = this.props;
 
-		const checker = LP.config.isQuestionCorrect[ question.type ] || this.isCorrect;
+		const checker =
+			LP.config.isQuestionCorrect[ question.type ] || this.isCorrect;
 		const isCorrect = checker.call( this );
 
-		return this.maybeShowCorrectAnswer() && (
-			<div className={ `question-response` + ( isCorrect ? ' correct' : ' incorrect' ) }>
-				<span className="label">{ isCorrect ? __( 'Correct', 'learnpress' ) : __( 'Incorrect', 'learnpress' ) }</span>
-				<span className="point">{ sprintf( __( '%d/%d point', 'learnpress' ), isCorrect ? question.point : 0, question.point ) }</span>
-			</div>
+		return (
+			this.maybeShowCorrectAnswer() && (
+				<div
+					className={
+						`question-response` +
+						( isCorrect ? ' correct' : ' incorrect' )
+					}
+				>
+					<span className="label">
+						{ isCorrect
+							? __( 'Correct', 'learnpress' )
+							: __( 'Incorrect', 'learnpress' ) }
+					</span>
+					<span className="point">
+						{ sprintf(
+							__( '%d/%d point', 'learnpress' ),
+							isCorrect ? question.point : 0,
+							question.point
+						) }
+					</span>
+				</div>
+			)
 		);
 	};
 
@@ -215,34 +250,61 @@ class QuestionBase extends Component {
 
 		return (
 			<div className="question-answers">
-
 				{ this.isDefaultType() && (
-					<ul id={ `answer-options-${ question.id }` } className="answer-options">
-
+					<ul
+						id={ `answer-options-${ question.id }` }
+						className="answer-options"
+					>
 						{ this.getOptions().map( ( option ) => {
 							const ID = `learn-press-answer-option-${ option.uid }`;
 
 							return (
-								<li className={ this.getOptionClass( option ).join( ' ' ) }
+								<li
+									className={ this.getOptionClass(
+										option
+									).join( ' ' ) }
 									key={ `answer-option-${ option.uid }` }
 								>
-									<input type={ this.getOptionType( question.type, option ) }
+									<input
+										type={ this.getOptionType(
+											question.type,
+											option
+										) }
 										className="option-check"
-										name={ status === 'started' ? `learn-press-question-${ question.id }` : '' }
+										name={
+											status === 'started'
+												? `learn-press-question-${ question.id }`
+												: ''
+										}
 										id={ ID }
 										ref={ ( el ) => {
-											this.setInputRef( el, option.value );
+											this.setInputRef(
+												el,
+												option.value
+											);
 										} }
 										onChange={ this.setAnswerChecked() }
-										disabled={ this.maybeDisabledOption( option ) }
-										checked={ this.maybeCheckedAnswer( option.value ) }
-										value={ status === 'started' ? option.value : '' }
+										disabled={ this.maybeDisabledOption(
+											option
+										) }
+										checked={ this.maybeCheckedAnswer(
+											option.value
+										) }
+										value={
+											status === 'started'
+												? option.value
+												: ''
+										}
 									/>
 
-									<label htmlFor={ ID }
+									<label
+										htmlFor={ ID }
 										className="option-title"
-										dangerouslySetInnerHTML={ { __html: option.title || option.value } }>
-									</label>
+										dangerouslySetInnerHTML={ {
+											__html:
+												option.title || option.value,
+										} }
+									></label>
 								</li>
 							);
 						} ) }

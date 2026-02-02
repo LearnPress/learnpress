@@ -2,26 +2,29 @@
 import QuestionBase from '../../question-base';
 
 class QuestionSingleChoice extends QuestionBase {
-    getOptionClass = ( option ) => {
-    	const { answered } = this.props;
-    	const optionClass = [ ...this.state.optionClass ];
+	getOptionClass = ( option ) => {
+		const { answered, question } = this.props;
+		const optionClass = [ ...this.state.optionClass ];
 
-    	if ( this.maybeShowCorrectAnswer() ) {
-    		if ( option.isTrue === 'yes' ) {
-    			optionClass.push( 'answer-correct' );
-    		}
+		if ( this.maybeShowCorrectAnswer() ) {
+			if ( option.isTrue === 'yes' ) {
+				optionClass.push( 'answer-correct' );
+			}
 
-    		if ( answered ) {
-    			if ( option.isTrue === 'yes' ) {
-    				( answered === option.value ) && optionClass.push( 'answered-correct' );
-    			} else {
-    				( answered === option.value ) && optionClass.push( 'answered-wrong' );
-    			}
-    		}
-    	}
+			if ( answered ) {
+				const isSelected = answered === option.value;
+				if ( isSelected ) {
+					if ( option.isTrue === 'yes' || question.correct ) {
+						optionClass.push( 'answered-correct' );
+					} else {
+						optionClass.push( 'answered-wrong' );
+					}
+				}
+			}
+		}
 
-    	return optionClass;
-    };
+		return optionClass;
+	};
 }
 
 export default QuestionSingleChoice;
