@@ -182,7 +182,6 @@ class QuestionBase extends Component {
 
 	isCorrect = () => {
 		const { answered, question } = this.props;
-		console.log( question );
 
 		if ( typeof question.correct !== 'undefined' ) {
 			return question.correct;

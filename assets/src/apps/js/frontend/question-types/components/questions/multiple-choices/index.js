@@ -7,7 +7,6 @@ const { isBoolean } = lodash;
 class QuestionMultipleChoices extends QuestionBase {
 	isCorrect = () => {
 		const { answered, question } = this.props;
-		console.log( question );
 
 		if ( typeof question.correct !== 'undefined' ) {
 			return question.correct;
