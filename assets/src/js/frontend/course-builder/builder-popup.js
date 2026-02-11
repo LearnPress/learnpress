@@ -35,6 +35,7 @@ export class BuilderPopup {
 		resizeBtn: '.lp-builder-popup__resize',
 		cancelBtn: '.lp-builder-popup__btn--cancel',
 		saveBtn: '.lp-builder-popup__btn--save',
+		draftBtn: '.lp-builder-popup__btn--draft',
 		trashBtn: '.lp-builder-popup__btn--trash',
 		tabs: '.lp-builder-popup__tabs',
 		tab: '.lp-builder-popup__tab',
@@ -130,11 +131,16 @@ export class BuilderPopup {
 			}
 		} );
 
-		// Save and trash button events
+		// Save, draft, and trash button events
 		document.addEventListener( 'click', ( e ) => {
 			const saveBtn = e.target.closest( BuilderPopup.selectors.saveBtn );
 			if ( saveBtn && this.isPopupOpen() ) {
 				this.handleSave( saveBtn );
+			}
+
+			const draftBtn = e.target.closest( BuilderPopup.selectors.draftBtn );
+			if ( draftBtn && this.isPopupOpen() ) {
+				this.handleDraft( draftBtn );
 			}
 
 			const trashBtn = e.target.closest( BuilderPopup.selectors.trashBtn );
@@ -1080,6 +1086,63 @@ export class BuilderPopup {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( saveBtn, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	/**
+	 * Handle save as draft action
+	 */
+	handleDraft( draftBtn ) {
+		if ( ! this.currentType ) {
+			return;
+		}
+
+		this.syncAllTinyMCE();
+
+		const formData = this.getFormData();
+		const validation = this.validateFormData( formData );
+
+		if ( ! validation.valid ) {
+			lpToastify.show( validation.errors.join( '. ' ), 'error' );
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( draftBtn, 1 );
+
+		const actionMap = {
+			lesson: 'builder_update_lesson',
+			quiz: 'builder_update_quiz',
+			question: 'builder_update_question',
+		};
+
+		const wasNewItem = this.isNewItem;
+
+		const dataSend = {
+			...formData,
+			action: actionMap[ this.currentType ] || `builder_update_${ this.currentType }`,
+			args: { id_url: `builder-update-${ this.currentType }` },
+			[ `${ this.currentType }_status` ]: 'draft',
+			return_html: wasNewItem ? 'yes' : 'no',
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+
+				lpToastify.show( message, status );
+
+				if ( status === 'success' ) {
+					this.handleSaveSuccess( draftBtn, data, formData, wasNewItem );
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || 'Save draft failed', 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( draftBtn, 0 );
 			},
 		};
 

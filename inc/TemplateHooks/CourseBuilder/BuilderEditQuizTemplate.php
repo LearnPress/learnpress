@@ -59,13 +59,11 @@ class BuilderEditQuizTemplate {
 			}
 		}
 
-		$html_header     = $this->header_section( $quiz_model );
 		$html_assigned   = $this->assigned_course( $quiz_model );
 		$html_edit_title = $this->edit_title( $quiz_model );
 		$html_edit_desc  = $this->edit_desc( $quiz_model );
 		$section         = [
 			'wrapper'                    => sprintf( '<div class="cb-section__quiz-edit" data-quiz-id="%s">', $quiz_id ),
-			'header'                     => $html_header,
 			'wrapper_title_assigned'     => sprintf( '<div class="cb-section__quiz-title-assigned">' ),
 			'edit_title'                 => $html_edit_title,
 			'assigned_course'            => $html_assigned,
@@ -75,24 +73,6 @@ class BuilderEditQuizTemplate {
 		];
 
 		echo Template::combine_components( $section );
-	}
-
-	public function header_section( $quiz_model ) {
-		$status     = ! empty( $quiz_model ) ? $quiz_model->post_status : '';
-		$btn_update = sprintf( '<div class="cb-button cb-btn-update__quiz" data-title-update="%s" data-title-publish="%s">%s</div>', __( 'Update', 'learnpress' ), __( 'Publish', 'learnpress' ), $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
-		$btn_trash  = ! empty( $quiz_model ) ? sprintf( '<div class="cb-button cb-btn-trash__quiz">%s</div>', __( 'Trash', 'learnpress' ) ) : '';
-		$header     = [
-			'wrapper'          => '<div class="cb-section__header">',
-			'wrapper_left'     => '<div class="cb-section__header-left">',
-			'quiz_status'      => ! empty( $status ) ? sprintf( '<span class="quiz-status %1$s">%1$s</span>', $status ) : '',
-			'wrapper_left_end' => '</div>',
-			'action_wrapper'   => '<div class="cb-section__header-action">',
-			'btn_update'       => $btn_update,
-			'btn_trash'        => $btn_trash,
-			'action_end'       => '</div>',
-			'wrapper_end'      => '</div>',
-		];
-		return Template::combine_components( $header );
 	}
 
 	public function assigned_course( $quiz_model ) {
@@ -158,7 +138,7 @@ class BuilderEditQuizTemplate {
 				'toolbar1' => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,spellchecker,wp_adv',
 				'toolbar2' => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
 			),
-			'quicktags'     => false,
+			'quicktags'     => true,
 		);
 
 		$edit = [
@@ -206,6 +186,11 @@ class BuilderEditQuizTemplate {
 	}
 
 	public function section_settings() {
+		wp_enqueue_script( 'lp-cb-edit-curriculum' );
+		wp_enqueue_script( 'lp-tom-select' );
+		wp_enqueue_style( 'lp-cb-edit-curriculum' );
+		wp_enqueue_script( 'lp-cb-learnpress' );
+
 		$quiz_id = CourseBuilder::get_post_id();
 
 		if ( $quiz_id === 'post-new' ) {
@@ -228,11 +213,9 @@ class BuilderEditQuizTemplate {
 		ob_start();
 		$metabox->output( $quiz_model );
 		$settings    = ob_get_clean();
-		$html_header = $this->header_section( $quiz_model );
 
 		$output = [
 			'wrapper'          => sprintf( '<div class="cb-section__quiz-edit" data-quiz-id="%s">', $quiz_id ),
-			'header'           => $html_header,
 			'form_setting'     => '<form name="lp-form-setting-quiz" class="lp-form-setting-quiz" method="post" enctype="multipart/form-data">',
 			'settings'         => $settings,
 			'form_setting_end' => '</form>',

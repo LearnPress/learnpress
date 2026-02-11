@@ -55,13 +55,11 @@ class BuilderEditLessonTemplate {
 			}
 		}
 
-		$html_header     = $this->header_section( $lesson_model );
 		$html_assigned   = $this->assigned_course( $lesson_model );
 		$html_edit_title = $this->edit_title( $lesson_model );
 		$html_edit_desc  = $this->edit_desc( $lesson_model );
 		$section         = [
 			'wrapper'                    => sprintf( '<div class="cb-section__lesson-edit" data-lesson-id="%s">', $lesson_id ),
-			'header'                     => $html_header,
 			'wrapper_title_assigned'     => sprintf( '<div class="cb-section__lesson-title-assigned">' ),
 			'edit_title'                 => $html_edit_title,
 			'assigned_course'            => $html_assigned,
@@ -71,24 +69,6 @@ class BuilderEditLessonTemplate {
 		];
 
 		echo Template::combine_components( $section );
-	}
-
-	public function header_section( $lesson_model ) {
-		$status     = ! empty( $lesson_model ) ? $lesson_model->post_status : '';
-		$btn_update = sprintf( '<div class="cb-button cb-btn-update__lesson" data-title-update="%s" data-title-publish="%s">%s</div>', __( 'Update', 'learnpress' ), __( 'Publish', 'learnpress' ), $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
-		$btn_trash  = ! empty( $lesson_model ) ? sprintf( '<div class="cb-button cb-btn-trash__lesson">%s</div>', __( 'Trash', 'learnpress' ) ) : '';
-		$header     = [
-			'wrapper'          => '<div class="cb-section__header">',
-			'wrapper_left'     => '<div class="cb-section__header-left">',
-			'lesson_status'    => ! empty( $status ) ? sprintf( '<span class="lesson-status %1$s">%1$s</span>', $status ) : '',
-			'wrapper_left_end' => '</div>',
-			'action_wrapper'   => '<div class="cb-section__header-action">',
-			'btn_update'       => $btn_update,
-			'btn_trash'        => $btn_trash,
-			'action_end'       => '</div>',
-			'wrapper_end'      => '</div>',
-		];
-		return Template::combine_components( $header );
 	}
 
 	public function assigned_course( $lesson_model ) {
@@ -153,7 +133,7 @@ class BuilderEditLessonTemplate {
 				'toolbar1' => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,spellchecker,wp_adv',
 				'toolbar2' => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
 			),
-			'quicktags'     => false,
+			'quicktags'     => true,
 		);
 
 		ob_start();
@@ -194,10 +174,8 @@ class BuilderEditLessonTemplate {
 		$metabox->output( $lesson_model );
 		$settings = ob_get_clean();
 
-		$html_header = $this->header_section( $lesson_model );
 		$output      = [
 			'wrapper'          => sprintf( '<div class="cb-section__lesson-edit" data-lesson-id="%s">', $lesson_id ),
-			'header'           => $html_header,
 			'form_setting'     => '<form name="lp-form-setting-lesson" class="lp-form-setting-lesson" method="post" enctype="multipart/form-data">',
 			'settings'         => $settings,
 			'form_setting_end' => '</form>',

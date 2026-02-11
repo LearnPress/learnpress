@@ -61,6 +61,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			// Set link item course when edit on Backend | tungnx
 			add_filter( 'get_sample_permalink_html', array( $this, 'lp_course_set_link_item_backend' ), 10, 5 );
 
+			// Add "Edit with Course Builder" button below title area for courses
+			add_action( 'edit_form_after_title', array( $this, 'add_course_builder_button' ) );
+
 			/*add_action(
 				'admin_init',
 				function () {
@@ -889,6 +892,34 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return $post_link;
+		}
+
+		/**
+		 * Add "Edit with Course Builder" button below title area for courses
+		 *
+		 * @param WP_Post $post
+		 *
+		 * @since 4.3.0
+		 */
+		public function add_course_builder_button( $post ) {
+			if ( ! $post || LP_COURSE_CPT !== $post->post_type ) {
+				return;
+			}
+
+			// Only show for existing courses (not new)
+			if ( 'auto-draft' === $post->post_status ) {
+				return;
+			}
+
+			$course_builder_url = \LearnPress\CourseBuilder\CourseBuilder::get_tab_link( 'courses', $post->ID, 'overview' );
+			?>
+			<div class="lp-edit-with-course-builder" style="margin: 10px 0 20px 0;">
+				<a href="<?php echo esc_url( $course_builder_url ); ?>" class="button button-primary button-large" style="background: #00a2e8; border-color: #00a2e8; display: inline-flex; align-items: center; gap: 6px; padding: 4px 16px; font-size: 13px; border-radius: 3px;">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					<?php esc_html_e( 'Edit with Course Builder', 'learnpress' ); ?>
+				</a>
+			</div>
+			<?php
 		}
 
 		/**

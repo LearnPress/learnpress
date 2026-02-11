@@ -150,6 +150,16 @@ class CourseBuilder {
 	}
 
 	/**
+	 * Get link for add new quiz
+	 *
+	 * @return string
+	 * @since 4.3.0
+	 */
+	public static function get_link_add_new_quiz() {
+		return self::get_tab_link( 'quizzes', self::POST_NEW, 'overview' );
+	}
+
+	/**
 	 * Get tab link
 	 *
 	 * @param string|false $tab

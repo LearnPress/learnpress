@@ -31,7 +31,7 @@ class LP_Meta_Box_Extra_Field extends LP_Meta_Box_Field {
 			</label>
 			<div class="lp_course_extra_meta_box__content">
 				<div class="lp_course_extra_meta_box__fields">
-					<?php if ( ! empty( $fields[0][0] ) ) : ?>
+					<?php if ( is_array( $fields ) && ! empty( $fields[0][0] ) ) : ?>
 						<?php foreach ( $fields as $field ) : ?>
 							<div class="lp_course_extra_meta_box__field">
 								<span class="sort"></span>

@@ -58,13 +58,11 @@ class BuilderEditQuestionTemplate {
 			}
 		}
 
-		$html_header     = $this->header_section( $question_model );
 		$html_assigned   = $this->assigned_quiz( $question_model );
 		$html_edit_title = $this->edit_title( $question_model );
 		$html_edit_desc  = $this->edit_desc( $question_model );
 		$section         = [
 			'wrapper'                    => sprintf( '<div class="cb-section__question-edit" data-question-id="%s">', $question_id ),
-			'header'                     => $html_header,
 			'wrapper_title_assigned'     => sprintf( '<div class="cb-section__question-title-assigned">' ),
 			'edit_title'                 => $html_edit_title,
 			'assigned_quiz'              => $html_assigned,
@@ -74,24 +72,6 @@ class BuilderEditQuestionTemplate {
 		];
 
 		echo Template::combine_components( $section );
-	}
-
-	public function header_section( $question_model ) {
-		$status     = ! empty( $question_model ) ? $question_model->post_status : '';
-		$btn_update = sprintf( '<div class="cb-button cb-btn-update__question" data-title-update="%s" data-title-publish="%s">%s</div>', __( 'Update', 'learnpress' ), __( 'Publish', 'learnpress' ), $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
-		$btn_trash  = ! empty( $question_model ) ? sprintf( '<div class="cb-button cb-btn-trash__question">%s</div>', __( 'Trash', 'learnpress' ) ) : '';
-		$header     = [
-			'wrapper'          => '<div class="cb-section__header">',
-			'wrapper_left'     => '<div class="cb-section__header-left">',
-			'question_status'  => ! empty( $status ) ? sprintf( '<span class="question-status %1$s">%1$s</span>', $status ) : '',
-			'wrapper_left_end' => '</div>',
-			'action_wrapper'   => '<div class="cb-section__header-action">',
-			'btn_update'       => $btn_update,
-			'btn_trash'        => $btn_trash,
-			'action_end'       => '</div>',
-			'wrapper_end'      => '</div>',
-		];
-		return Template::combine_components( $header );
 	}
 
 	public function assigned_quiz( $question_model ) {
@@ -156,7 +136,7 @@ class BuilderEditQuestionTemplate {
 				'toolbar1' => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,spellchecker,wp_adv',
 				'toolbar2' => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
 			),
-			'quicktags'     => false,
+			'quicktags'     => true,
 		);
 
 		$edit = [

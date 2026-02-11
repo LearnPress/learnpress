@@ -6,6 +6,11 @@ import { getFormState } from '../builder-form-state.js';
 
 export class BuilderEditCourse {
 	constructor() {
+		// Only initialize on course edit pages, not quiz/question/lesson edit pages
+		const isCourseEditPage = document.querySelector( '.cb-section__course-edit' );
+		if ( ! isCourseEditPage ) {
+			return;
+		}
 		this.init();
 	}
 
@@ -846,6 +851,11 @@ export class BuilderEditCourse {
 	}
 
 	updateCourse( args ) {
+		// Context check: only handle if on course edit page
+		if ( ! document.querySelector( BuilderEditCourse.selectors.elDataCourse ) ) {
+			return;
+		}
+
 		const { e, target } = args;
 		// Validate title is not empty
 		if ( ! this.validateTitleBeforeUpdate() ) return;
@@ -1006,6 +1016,15 @@ export class BuilderEditCourse {
 				dropdownStatus: 'draft',
 				dropdownIcon: 'dashicons-media-default',
 			},
+			trash: {
+				mainLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				mainClass: 'cb-btn-darft',
+				mainStatus: 'draft',
+				dropdownLabel: mainBtn.dataset.titlePublish || 'Publish',
+				dropdownClass: 'cb-btn-publish',
+				dropdownStatus: 'publish',
+				dropdownIcon: 'dashicons-visibility',
+			},
 		};
 
 		const config = statusConfig[ newStatus ] || statusConfig.draft;
@@ -1048,6 +1067,11 @@ export class BuilderEditCourse {
 	}
 
 	trashCourse( args ) {
+		// Context check: only handle if on course edit page
+		if ( ! document.querySelector( BuilderEditCourse.selectors.elDataCourse ) ) {
+			return;
+		}
+
 		const { target } = args;
 		const elBtnTrashCourse = target.closest( BuilderEditCourse.selectors.elBtnTrashCourse );
 		lpUtils.lpSetLoadingEl( elBtnTrashCourse, 1 );
@@ -1075,6 +1099,8 @@ export class BuilderEditCourse {
 					}
 					// Toggle preview/admin link visibility for trash status
 					this.toggleTrashElements( data.status );
+					// Update action buttons to show "Save Draft" for trash status
+					this.updateActionButtons( data.status );
 				}
 			},
 			error: ( error ) => {

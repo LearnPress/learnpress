@@ -1,0 +1,53 @@
+.swal2-popup {
+    padding: 20px;
+    border-radius: 16px;
+}
+
+button.swal2-close {
+    height: 32px;
+    width: 32px;
+}
+
+button.swal2-cancel.swal2-styled {
+    border-radius: 10px;
+    padding: 12px 24px;
+    background: #fff;
+    color: #AAAAAA;
+    border: 1px solid #E1E1E1;
+    font-weight: 500;
+}
+
+button.swal2-confirm.swal2-styled {
+    background: #7067ED;
+    border-radius: 12px;
+    padding: 12px 24px;
+}
+
+.swal2-icon.swal2-icon-show {
+    border:none;
+    margin-bottom: 5px;
+}
+
+#swal2-title {
+    padding: 0;
+    font-size: 22px;
+    color: #111111;
+}
+
+#swal2-html-container {
+    padding-top: 8px;
+    font-size: 15px;
+    color: #4F4F4F;
+}
+
+div:where(.swal2-container).swal2-backdrop-show,
+div:where(.swal2-container).swal2-noanimation {
+    background: none !important;
+    backdrop-filter: blur(3px);
+}
+
+div:where(.swal2-container).swal2-center>.swal2-popup {
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+

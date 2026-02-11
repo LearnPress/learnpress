@@ -1,9 +1,10 @@
+@import 'shared-tab-styles';
+
 .lp-course-builder-content__section {
 	.question-status {
 		padding: 5px 12px;
 		font-size: 12px;
 		font-weight: 500;
-		background: #ccc;
 		border-radius: 5px;
 		text-transform: capitalize;
 
@@ -91,6 +92,17 @@
 		font-weight: 500;
 		cursor: pointer;
 
+		&.cb-button--secondary {
+			background: #fff;
+			color: #374151;
+			border: 1px solid #d1d5db;
+
+			&:hover {
+				background: #f3f4f6;
+				border-color: #9ca3af;
+			}
+		}
+
 		&.cb-btn-update__question {
 			background: #1e1e1e;
 			color: #fff;
@@ -99,6 +111,58 @@
 		&.cb-btn-trash__question {
 			background: rgb( 220 38 38 );
 			color: #fff;
+		}
+	}
+
+	.cb-section__question-edit {
+		@include vertical-tab-navigation;
+		@include shared-form-fields;
+
+		.lp-meta-box-course-panels::before {
+			content: attr( data-tab-title );
+			display: block;
+			font-size: 24px;
+			font-weight: 700;
+			color: #1e1e1e;
+			margin-bottom: 25px;
+			padding-bottom: 15px;
+			border-bottom: 1px solid #e5e7eb;
+			line-height: 1.2;
+		}
+
+		@media ( max-width: 768px ) {
+			.lp-meta-box__course-tab {
+				flex-direction: column;
+
+				ul.lp-meta-box__course-tab__tabs {
+					width: 100%;
+					border-right: none;
+					border-bottom: 1px solid #e5e7eb;
+					display: flex;
+					overflow-x: auto;
+					padding: 0;
+
+					li {
+						flex: 0 0 auto;
+						margin-bottom: 0;
+						padding: 0;
+
+						a {
+							border-left: none;
+							border-bottom: 3px solid transparent;
+							margin-left: 0;
+							margin-bottom: -1px;
+							white-space: nowrap;
+						}
+
+						&.active a,
+						a:focus {
+							border-left-color: transparent;
+							border-bottom-color: #3b82f6;
+						}
+					}
+				}
+			}
 		}
 	}
 

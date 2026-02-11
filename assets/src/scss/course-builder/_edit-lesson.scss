@@ -3,7 +3,6 @@
 		padding: 5px 12px;
 		font-size: 12px;
 		font-weight: 500;
-		background: #ccc;
 		border-radius: 5px;
 		text-transform: capitalize;
 
@@ -90,6 +89,17 @@
 		font-size: 16px;
 		font-weight: 500;
 		cursor: pointer;
+
+		&.cb-button--secondary {
+			background: #fff;
+			color: #374151;
+			border: 1px solid #d1d5db;
+
+			&:hover {
+				background: #f3f4f6;
+				border-color: #9ca3af;
+			}
+		}
 
 		&.cb-btn-update__lesson {
 			background: #1e1e1e;

@@ -31,7 +31,7 @@ class LP_Meta_Box_Extra_Faq_Field extends LP_Meta_Box_Field {
 			<div class="lp_course_faq_meta_box__content">
 				<input type="hidden" name="<?php echo esc_attr( $this->id ) ?>" value="">
 				<div class="lp_course_faq_meta_box__fields">
-					<?php if ( ! empty( $faqs[0][0] ) ) : ?>
+					<?php if ( is_array( $faqs ) && ! empty( $faqs[0][0] ) ) : ?>
 						<?php foreach ( $faqs as $key => $faq ) : ?>
 							<div class="lp_course_faq_meta_box__field">
 								<label>

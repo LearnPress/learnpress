@@ -98,11 +98,28 @@ export class BuilderFormState {
 		if ( target.closest( '#lp-course-edit-curriculum' ) ) {
 			return;
 		}
+
+		// Ignore question settings form - it auto-saves via AJAX
+		if ( target.closest( '.lp-form-setting-question' ) ) {
+			return;
+		}
+
+		// Ignore lesson settings form - it auto-saves via AJAX
+		if ( target.closest( '.lp-form-setting-lesson' ) ) {
+			return;
+		}
+
+		// Ignore quiz questions list - question changes are tracked separately
+		if ( target.closest( '.lp-quiz-questions-list' ) || target.closest( '.lp-edit-quiz-wrap' ) ) {
+			return;
+		}
 		
 		// Check if target is within course builder forms
 		if ( target.closest( '.cb-section__course-edit' ) || 
 			 target.closest( '.lp-cb-tab-content' ) ||
-			 target.closest( '.lp-form-setting-course' ) ) {
+			 target.closest( '.lp-form-setting-course' ) ||
+			 target.closest( '.lp-form-setting-quiz' ) ||
+			 target.closest( '.cb-section__quiz-edit' ) ) {
 			this.markAsChanged();
 		}
 	}
@@ -121,7 +138,7 @@ export class BuilderFormState {
 	 * Update save button visual state
 	 */
 	updateSaveButtonState() {
-		const saveButtons = document.querySelectorAll( '.cb-btn-update, .lp-cb-save-btn' );
+		const saveButtons = document.querySelectorAll( '.cb-btn-update, .lp-cb-save-btn, .cb-btn-main-action' );
 		
 		saveButtons.forEach( btn => {
 			if ( this.hasUnsavedChanges ) {

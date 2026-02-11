@@ -3,6 +3,9 @@
 // Layout - ClassPress style (must be first)
 @import 'course-builder/layout';
 
+@import 'course-builder/shared-tab-styles';
+@import 'course-builder/sweet-alert';
+
 @import 'course-builder/tab-courses';
 @import 'course-builder/tab-dashboard';
 @import 'course-builder/tab-quizzes';
@@ -83,7 +86,7 @@
 		.lp-meta-box__duration {
 			display: flex;
 			align-items: center;
-			gap: 11px;
+			gap: 0 11px;
 			margin: 0;
 			padding: 0;
 		}
@@ -145,7 +148,7 @@
 		.form-field input[type='datetime-local']:focus,
 		.lp-meta-box__duration input[type='number']:focus {
 			outline: none;
-			border-color: #3b82f6;
+			border-color: #7067ED;
 			box-shadow: 0 0 0 3px rgba( 59, 130, 246, 0.1 );
 		}
 
@@ -162,7 +165,7 @@
 
 		select:focus {
 			outline: none;
-			border-color: #3b82f6;
+			border-color: #7067ED;
 			box-shadow: 0 0 0 3px rgba( 59, 130, 246, 0.1 );
 		}
 
@@ -172,7 +175,8 @@
 			gap: 8px;
 		}
 
-		.form-field input[type='checkbox'] {
+		.form-field input[type='checkbox'],
+		.form-field input[type='radio'] {
 			appearance: none;
 			-webkit-appearance: none;
 			width: 44px;
@@ -186,7 +190,8 @@
 			flex-shrink: 0;
 		}
 
-		.form-field input[type='checkbox']:before {
+		.form-field input[type='checkbox']:before,
+		.form-field input[type='radio']:before {
 			content: '';
 			position: absolute;
 			width: 20px;
@@ -199,31 +204,37 @@
 			box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.1 );
 		}
 
-		.form-field input[type='checkbox']:checked {
-			background: #3b82f6;
+		.form-field input[type='checkbox']:checked,
+		.form-field input[type='radio']:checked {
+			background: #7067ED;
 		}
 
-		.form-field input[type='checkbox']:checked:before {
+		.form-field input[type='checkbox']:checked:before,
+		.form-field input[type='radio']:checked:before {
 			left: 22px;
 		}
 
-		.form-field input[type='checkbox']:focus {
+		.form-field input[type='checkbox']:focus,
+		.form-field input[type='radio']:focus {
 			outline: none;
 			box-shadow: 0 0 0 3px rgba( 59, 130, 246, 0.1 );
 		}
 
-		.form-field:has( input[type='checkbox'] ) {
+		.form-field:has( input[type='checkbox'] ),
+		.form-field:has( input[type='radio'] ) {
 			flex-direction: row;
 			align-items: center;
 			gap: 11px;
 		}
 
-		.form-field:has( input[type='checkbox'] ) input[type='checkbox'] {
+		.form-field:has( input[type='checkbox'] ) input[type='checkbox'],
+		.form-field:has( input[type='radio'] ) input[type='radio'] {
 			order: 1;
 			margin-top: 2px;
 		}
 
-		.form-field:has( input[type='checkbox'] ) .description {
+		.form-field:has( input[type='checkbox'] ) .description,
+		.form-field:has( input[type='radio'] ) .description {
 			order: 3;
 		}
 
@@ -313,7 +324,7 @@
 	button.insert-media,
 	input.button {
 		color: #1e1e1e;
-		border-color: #1e1e1e;
+		border-color: #d1d5db;
 		display: inline-block;
 		text-decoration: none;
 		font-size: 13px;
@@ -324,9 +335,10 @@
 		cursor: pointer;
 		border-width: 1px;
 		border-style: solid;
-		border-radius: 3px;
+		border-radius: 4px;
 		white-space: nowrap;
 		box-sizing: border-box;
+		background: #fff;
 	}
 
 	.mce-tinymce {
@@ -347,6 +359,8 @@
 			margin: 8px 8px 0 0;
 			border-bottom-color: #dcdcde;
 			border-radius: 4px;
+			line-height: 1.4;
+			box-sizing: content-box !important;
 
 			&[aria-pressed='true'] {
 				background: #fff;

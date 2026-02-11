@@ -3,22 +3,139 @@ import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 
 export class BuilderEditLesson {
 	constructor() {
+		// Events use document-level event delegation, so always register them
+		// The page context check happens in individual handlers via target.closest()
 		this.init();
 	}
 
 	static selectors = {
+		// Context selector - indicates we're on lesson edit page
 		elDataLesson: '.cb-section__lesson-edit',
-		elBtnUpdateLesson: '.cb-btn-update__lesson',
-		elBtnPublishLesson: '.cb-btn-publish__lesson',
-		elBtnTrashLesson: '.cb-btn-trash__lesson',
+		// Shared header action buttons (generic selectors)
+		elBtnMainAction: '.cb-btn-main-action',
+		elBtnUpdate: '.cb-btn-update, .cb-btn-publish',
+		elBtnDraft: '.cb-btn-darft, .cb-dropdown-item[data-status="draft"]',
+		elBtnTrash: '.cb-btn-trash',
+		// Status badge
 		elLessonStatus: '.lesson-status',
+		// Form fields
 		idTitle: 'title',
 		idDescEditor: 'lesson_description_editor',
 		elFormSetting: '.lp-form-setting-lesson',
+		// Tab handling selectors
+		elCBHorizontalTabs: '.lp-cb-tabs__item',
+		elCBTabPanels: '.lp-cb-tab-panel',
+		// Dropdown selectors
+		elDropdownToggle: '.cb-btn-dropdown-toggle',
+		elDropdownMenu: '.cb-dropdown-menu',
+		elHeaderActionsDropdown: '.cb-header-actions-dropdown',
 	};
 
 	init() {
+		this.initTabs();
+		this.initHeaderActionsDropdown();
 		this.events();
+	}
+
+	/**
+	 * Initialize header actions dropdown (toggle behavior)
+	 */
+	initHeaderActionsDropdown() {
+		// Close dropdown when clicking outside
+		document.addEventListener( 'click', ( e ) => {
+			const dropdown = document.querySelector( BuilderEditLesson.selectors.elHeaderActionsDropdown );
+			if ( dropdown && ! dropdown.contains( e.target ) ) {
+				const menu = dropdown.querySelector( BuilderEditLesson.selectors.elDropdownMenu );
+				const toggle = dropdown.querySelector( BuilderEditLesson.selectors.elDropdownToggle );
+				if ( menu ) {
+					menu.classList.remove( 'is-open' );
+				}
+				if ( toggle ) {
+					toggle.setAttribute( 'aria-expanded', 'false' );
+				}
+			}
+		} );
+	}
+
+	/**
+	 * Handle dropdown toggle click
+	 */
+	handleDropdownToggle( args ) {
+		const { target } = args;
+		const toggleBtn = target.closest( BuilderEditLesson.selectors.elDropdownToggle );
+		
+		if ( ! toggleBtn ) {
+			return;
+		}
+
+		const dropdown = toggleBtn.closest( BuilderEditLesson.selectors.elHeaderActionsDropdown );
+		if ( ! dropdown ) {
+			return;
+		}
+
+		const menu = dropdown.querySelector( BuilderEditLesson.selectors.elDropdownMenu );
+		if ( menu ) {
+			menu.classList.toggle( 'is-open' );
+			const isOpen = menu.classList.contains( 'is-open' );
+			toggleBtn.setAttribute( 'aria-expanded', isOpen ? 'true' : 'false' );
+		}
+	}
+
+	/**
+	 * Initialize horizontal tabs for client-side tab switching
+	 */
+	initTabs() {
+		const tabs = document.querySelectorAll( BuilderEditLesson.selectors.elCBHorizontalTabs );
+		if ( tabs.length === 0 ) {
+			return;
+		}
+
+		// Activate first tab by default if none is active
+		const activeTab = document.querySelector( `${ BuilderEditLesson.selectors.elCBHorizontalTabs }.is-active` );
+		if ( ! activeTab && tabs.length > 0 ) {
+			tabs[0].classList.add( 'is-active' );
+			const section = tabs[0].getAttribute( 'data-tab-section' );
+			if ( section ) {
+				const panel = document.querySelector( `${ BuilderEditLesson.selectors.elCBTabPanels }[data-section="${ section }"]` );
+				if ( panel ) {
+					panel.classList.remove( 'lp-hidden' );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Handle horizontal tab click for client-side tab switching
+	 */
+	handleTabClick( args ) {
+		const { e, target } = args;
+		const tabLink = target.closest( BuilderEditLesson.selectors.elCBHorizontalTabs );
+		
+		if ( ! tabLink ) {
+			return;
+		}
+
+		e.preventDefault();
+
+		const section = tabLink.getAttribute( 'data-tab-section' );
+		if ( ! section ) {
+			return;
+		}
+
+		// Update active tab
+		const allTabs = document.querySelectorAll( BuilderEditLesson.selectors.elCBHorizontalTabs );
+		allTabs.forEach( tab => tab.classList.remove( 'is-active' ) );
+		tabLink.classList.add( 'is-active' );
+
+		// Show/hide panels
+		const allPanels = document.querySelectorAll( BuilderEditLesson.selectors.elCBTabPanels );
+		allPanels.forEach( panel => {
+			if ( panel.getAttribute( 'data-section' ) === section ) {
+				panel.classList.remove( 'lp-hidden' );
+			} else {
+				panel.classList.add( 'lp-hidden' );
+			}
+		} );
 	}
 
 	events() {
@@ -29,16 +146,78 @@ export class BuilderEditLesson {
 
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: BuilderEditLesson.selectors.elBtnUpdateLesson,
+				selector: BuilderEditLesson.selectors.elBtnMainAction,
 				class: this,
 				callBack: this.updateLesson.name,
 			},
 			{
-				selector: BuilderEditLesson.selectors.elBtnTrashLesson,
+				selector: BuilderEditLesson.selectors.elBtnDraft,
+				class: this,
+				callBack: this.saveDraftLesson.name,
+			},
+			{
+				selector: BuilderEditLesson.selectors.elBtnTrash,
 				class: this,
 				callBack: this.trashLesson.name,
 			},
+			{
+				selector: BuilderEditLesson.selectors.elCBHorizontalTabs,
+				class: this,
+				callBack: this.handleTabClick.name,
+			},
+			{
+				selector: BuilderEditLesson.selectors.elDropdownToggle,
+				class: this,
+				callBack: this.handleDropdownToggle.name,
+			},
 		] );
+	}
+
+	/**
+	 * Validate title is not empty before update
+	 * @return {boolean} True if valid, false if invalid
+	 */
+	validateTitleBeforeUpdate() {
+		const titleInput = document.getElementById( BuilderEditLesson.selectors.idTitle );
+		if ( ! titleInput ) {
+			return true;
+		}
+
+		const title = titleInput.value.trim();
+		if ( ! title ) {
+			lpToastify.show( 'Lesson title is required.', 'error' );
+			titleInput.focus();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Update action button text after status change
+	 * @param {string} newStatus - The new lesson status
+	 */
+	updateActionButtons( newStatus ) {
+		const elBtnUpdate = document.querySelector( BuilderEditLesson.selectors.elBtnMainAction );
+		if ( ! elBtnUpdate ) {
+			return;
+		}
+
+		const titleUpdate = elBtnUpdate.getAttribute( 'data-title-update' ) || 'Update';
+		const titlePublish = elBtnUpdate.getAttribute( 'data-title-publish' ) || 'Publish';
+
+		if ( newStatus === 'publish' ) {
+			elBtnUpdate.textContent = titleUpdate;
+		} else {
+			elBtnUpdate.textContent = titlePublish;
+		}
+	}
+
+	/**
+	 * Check if we're in lesson edit context
+	 * @return {boolean}
+	 */
+	isLessonContext() {
+		return !! document.querySelector( BuilderEditLesson.selectors.elDataLesson );
 	}
 
 	getLessonDataForUpdate() {
@@ -118,10 +297,20 @@ export class BuilderEditLesson {
 	}
 
 	updateLesson( args ) {
+		// Context check: only handle if on lesson edit page
+		if ( ! this.isLessonContext() ) {
+			return;
+		}
+
 		const { target } = args;
-		const elBtnUpdateLesson = target.closest( BuilderEditLesson.selectors.elBtnUpdateLesson );
+		const elBtnUpdateLesson = target.closest( BuilderEditLesson.selectors.elBtnMainAction );
 
 		if ( ! elBtnUpdateLesson ) {
+			return;
+		}
+
+		// Validate title before update
+		if ( ! this.validateTitleBeforeUpdate() ) {
 			return;
 		}
 
@@ -147,21 +336,25 @@ export class BuilderEditLesson {
 				const { status, message, data } = response;
 				lpToastify.show( message, status );
 
-				if ( data?.button_title ) {
-					elBtnUpdateLesson.textContent = data.button_title;
-				}
+				if ( status === 'success' ) {
+					// Update action button text
+					this.updateActionButtons( 'publish' );
 
-				if ( data?.lesson_id_new ) {
-					const currentUrl = window.location.href;
-					window.location.href = currentUrl.replace( /post-new\/?/, `${ data.lesson_id_new }/` );
-				}
-
-				if ( data?.status ) {
-					const elStatus = document.querySelector( BuilderEditLesson.selectors.elLessonStatus );
-					if ( elStatus ) {
-						elStatus.className = 'lesson-status ' + data.status;
-						elStatus.textContent = data.status;
+					if ( data?.lesson_id_new ) {
+						const currentUrl = window.location.href;
+						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.lesson_id_new }/` );
 					}
+
+					if ( data?.status ) {
+						const elStatus = document.querySelector( BuilderEditLesson.selectors.elLessonStatus );
+						if ( elStatus ) {
+							elStatus.className = 'lesson-status ' + data.status;
+							elStatus.textContent = data.status;
+						}
+					}
+
+					// Reset form state to prevent "leave site" warning
+					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
 			},
 			error: ( error ) => {
@@ -175,11 +368,92 @@ export class BuilderEditLesson {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
-	trashLesson( args ) {
+	saveDraftLesson( args ) {
+		// Context check: only handle if on lesson edit page
+		if ( ! this.isLessonContext() ) {
+			return;
+		}
+
 		const { target } = args;
-		const elBtnTrashLesson = target.closest( BuilderEditLesson.selectors.elBtnTrashLesson );
+		const elBtnDraftLesson = target.closest( BuilderEditLesson.selectors.elBtnDraft );
+
+		if ( ! elBtnDraftLesson ) {
+			return;
+		}
+
+		// Validate title before saving draft
+		if ( ! this.validateTitleBeforeUpdate() ) {
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( elBtnDraftLesson, 1 );
+
+		const lessonData = this.getLessonDataForUpdate();
+
+		const dataSend = {
+			...lessonData,
+			action: 'builder_update_lesson',
+			args: {
+				id_url: 'builder-update-lesson',
+			},
+			lesson_status: 'draft',
+		};
+
+		if ( typeof lpLessonBuilder !== 'undefined' && lpLessonBuilder.nonce ) {
+			dataSend.nonce = lpLessonBuilder.nonce;
+		}
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+				lpToastify.show( message, status );
+
+				if ( status === 'success' ) {
+					// Update action button text
+					this.updateActionButtons( 'draft' );
+
+					if ( data?.lesson_id_new ) {
+						const currentUrl = window.location.href;
+						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.lesson_id_new }/` );
+					}
+
+					if ( data?.status ) {
+						const elStatus = document.querySelector( BuilderEditLesson.selectors.elLessonStatus );
+						if ( elStatus ) {
+							elStatus.className = 'lesson-status ' + data.status;
+							elStatus.textContent = data.status;
+						}
+					}
+
+					// Reset form state to prevent "leave site" warning
+					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( elBtnDraftLesson, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	trashLesson( args ) {
+		// Context check: only handle if on lesson edit page
+		if ( ! this.isLessonContext() ) {
+			return;
+		}
+
+		const { target } = args;
+		const elBtnTrashLesson = target.closest( BuilderEditLesson.selectors.elBtnTrash );
 
 		if ( ! elBtnTrashLesson ) {
+			return;
+		}
+
+		if ( ! confirm( 'Are you sure you want to trash this lesson?' ) ) {
 			return;
 		}
 
@@ -199,20 +473,17 @@ export class BuilderEditLesson {
 				const { status, message, data } = response;
 				lpToastify.show( message, status );
 
-				if ( data?.button_title ) {
-					const elBtnUpdateLesson = document.querySelector(
-						BuilderEditLesson.selectors.elBtnUpdateLesson
-					);
-					if ( elBtnUpdateLesson ) {
-						elBtnUpdateLesson.textContent = data.button_title;
+				if ( status === 'success' ) {
+					if ( data?.redirect_url ) {
+						window.location.href = data.redirect_url;
 					}
-				}
 
-				if ( data?.status ) {
-					const elStatus = document.querySelector( BuilderEditLesson.selectors.elLessonStatus );
-					if ( elStatus ) {
-						elStatus.className = 'lesson-status ' + data.status;
-						elStatus.textContent = data.status;
+					if ( data?.status ) {
+						const elStatus = document.querySelector( BuilderEditLesson.selectors.elLessonStatus );
+						if ( elStatus ) {
+							elStatus.className = 'lesson-status ' + data.status;
+							elStatus.textContent = data.status;
+						}
 					}
 				}
 			},

@@ -111,6 +111,13 @@ class BuilderPopupTemplate {
 			);
 		}
 
+		// Save Draft button
+		$btn_draft = sprintf(
+			'<button type="button" class="cb-button cb-button--secondary cb-btn-draft__%s lp-builder-popup__btn lp-builder-popup__btn--draft">%s</button>',
+			$type,
+			__( 'Save Draft', 'learnpress' )
+		);
+
 		return [
 			'body_end'         => '</div>',
 			'footer'           => '<div class="lp-builder-popup__footer">',
@@ -122,6 +129,7 @@ class BuilderPopupTemplate {
 			'footer_left_end'  => '</div>',
 			'footer_right'     => '<div class="lp-builder-popup__footer-right">',
 			'btn_trash'        => $btn_trash,
+			'btn_draft'        => $btn_draft,
 			'btn_save'         => sprintf(
 				'<button type="button" class="cb-button cb-btn-update__%s lp-builder-popup__btn lp-builder-popup__btn--save" data-title-update="%s" data-title-publish="%s">%s</button>',
 				$type,

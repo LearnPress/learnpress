@@ -6,16 +6,16 @@ $cb-top-header-height: 60px;
 $cb-sidebar-width: 260px;
 $cb-sidebar-bg: #ffffff;
 $cb-sidebar-text: #000000;
-$cb-sidebar-text-active: #1f74ff;
-$cb-sidebar-background-hover: #eeeeee;
-$cb-primary: #1f74ff;
-$cb-primary-bland: #e2edff;
-$cb-primary-hover: #0047ba;
+$cb-sidebar-text-active: #7067ED;
+$cb-sidebar-background-hover: #EEF1FF;
+$cb-primary: #7067ED;
+$cb-primary-bland: #EEF1FF;
+$cb-primary-hover: #5a51c1;
 $cb-border: #f5f5f5;
 $cb-bg: #ffffff;
 $cb-card-bg: #ffffff;
 $cb-text: #1e1e1e;
-$cb-text-muted: #6b7280;
+$cb-text-muted: #898989;
 $cb-radius: 8px;
 
 // WordPress Admin Bar heights
@@ -112,51 +112,81 @@ $wp-adminbar-height-mobile: 46px;
 	.lp-cb-top-header__user {
 		display: flex;
 		align-items: center;
-		gap: 16px;
+		gap: 12px;
 	}
 
-	.lp-cb-top-header__user-info {
-		display: flex;
-		align-items: center;
-		gap: 10px;
+	// Avatar wrapper with online dot
+	.lp-cb-top-header__user-avatar {
+		position: relative;
+		flex-shrink: 0;
 
 		img {
-			width: 32px;
-			height: 32px;
+			width: 40px;
+			height: 40px;
 			border-radius: 50%;
 			object-fit: cover;
+			display: block;
 		}
+	}
+
+	.lp-cb-top-header__online-dot {
+		position: absolute;
+		bottom: 1px;
+		right: 1px;
+		width: 10px;
+		height: 10px;
+		background: #22c55e;
+		border-radius: 50%;
+		border: 2px solid #fff;
+	}
+
+	// User info stacked vertically
+	.lp-cb-top-header__user-info {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
 	}
 
 	.lp-cb-top-header__user-name {
 		font-size: 14px;
-		font-weight: 500;
+		font-weight: 600;
 		color: $cb-text;
+		line-height: 1.3;
 	}
 
 	.lp-cb-top-header__user-link {
 		font-size: 13px;
-		color: $cb-primary;
+		color: $cb-text-muted;
 		text-decoration: none;
+		line-height: 1.3;
 
 		&:hover {
-			text-decoration: underline;
+			color: $cb-primary;
 		}
 	}
 
+	// Logout icon button
 	.lp-cb-top-header__logout {
-		font-size: 13px;
-		color: $cb-text-muted;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 6px;
+		color: #cfcfcf;
 		text-decoration: none;
-		padding: 6px 12px;
-		border: 1px solid $cb-border;
-		border-radius: 4px;
 		transition: all 0.2s;
+		margin-left: 4px;
+
+		svg {
+			width: 22px;
+			height: 22px;
+			flex-shrink: 0;
+		}
 
 		&:hover {
-			background: #f9fafb;
+			background: #fef2f2;
 			color: #ef4444;
-			border-color: #ef4444;
 		}
 	}
 }
@@ -210,7 +240,7 @@ $wp-adminbar-height-mobile: 46px;
 				gap: 12px;
 				background: transparent !important;
 				border: none !important;
-				border-radius: 6px !important;
+				border-radius: 12px !important;
 				margin-top: 6px;
 
 				&:hover {
@@ -243,34 +273,128 @@ $wp-adminbar-height-mobile: 46px;
 		}
 	}
 
+	// Toggle button
+	.lp-cb-sidebar__toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 6px;
+		background: #fff;
+		cursor: pointer;
+		transition: all 0.2s;
+		margin-left: auto;
+		margin-bottom: 16px;
+		margin-right: 16px;
+		border: none;
+
+		svg {
+			min-width: 24px;
+			height: 24px;
+		}
+
+		.lp-toggle-expand {
+			display: none;
+		}
+
+		&:hover {
+			background: $cb-sidebar-background-hover;
+			border-color: #d1d5db;
+			color: $cb-primary;
+		}
+	}
+
 	// Footer - Back to Dashboard
 	.lp-cb-sidebar__footer {
-		padding: 16px 0;
+		padding: 16px;
 		border-top: 1px solid $cb-border;
 		margin-top: auto;
 		background: #fdfdfd;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
 
 		a.lp-cb-sidebar__item {
 			display: flex;
 			align-items: center;
-			padding: 12px 20px;
+			padding: 12px 16px;
 			color: $cb-sidebar-text;
 			text-decoration: none;
 			gap: 12px;
 			font-size: 14px;
 			transition: all 0.2s;
+			border-radius: 6px;
 
 			&:hover {
+				background: $cb-sidebar-background-hover;
 				color: $cb-sidebar-text-active;
 			}
 
 			.dashicons {
-				font-size: 18px;
-				width: 18px;
-				height: 18px;
+				font-size: 20px;
+				width: 20px;
+				height: 20px;
+				flex-shrink: 0;
 			}
 		}
 	}
+
+	// Collapsed state
+	&.is-collapsed {
+		width: 72px !important;
+
+		ul.lp-cb-sidebar__nav {
+			padding: 16px 8px;
+
+			li.lp-cb-sidebar__item {
+				a {
+					justify-content: center;
+					padding: 12px;
+
+					.lp-cb-sidebar__item-title {
+						display: none;
+					}
+
+					.dashicons {
+						margin: 0;
+					}
+				}
+			}
+		}
+
+		.lp-cb-sidebar__footer {
+			padding: 16px 8px;
+
+			.lp-cb-sidebar__toggle {
+				margin: 0 auto;
+
+				.lp-toggle-collapse {
+					display: none;
+				}
+
+				.lp-toggle-expand {
+					display: block;
+				}
+			}
+
+			a.lp-cb-sidebar__item {
+				justify-content: center;
+				padding: 12px;
+
+				.lp-cb-sidebar__item-title {
+					display: none;
+				}
+			}
+		}
+	}
+}
+
+// Collapsed sidebar - adjust main content
+#lp-course-builder-sidebar.lp-cb-sidebar.is-collapsed + #lp-course-builder-content.lp-cb-main,
+#lp-course-builder.has-collapsed-sidebar #lp-course-builder-content.lp-cb-main {
+	margin-left: 72px !important;
+	width: calc( 100% - 72px ) !important;
 }
 
 // ===========================================
@@ -380,8 +504,7 @@ html:has( #wpadminbar ) {
 	justify-content: space-between;
 	padding: 20px 12px;
 	background: $cb-card-bg;
-	border-bottom: 1px solid $cb-border;
-	gap: 60px;
+	gap: 30px;
 
 	.lp-cb-header__left {
 		display: flex;
@@ -400,9 +523,11 @@ html:has( #wpadminbar ) {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 28px;
-		height: 28px;
-		border-radius: 4px;
+		font-size: 14px;
+		padding: 5px 12px;
+		gap: 10px;
+		font-weight: 500;
+		border-radius: 6px;
 		color: $cb-text-muted;
 		text-decoration: none;
 		transition: all 0.2s;
@@ -471,24 +596,29 @@ html:has( #wpadminbar ) {
 }
 
 // ===========================================
-// COURSE STATUS BADGE - Reusable component
+// STATUS BADGE - Reusable component for all post types
+// Supports: course-status, quiz-status, question-status, lesson-status
 // ===========================================
-.course-status {
+.course-status,
+.quiz-status,
+.quizze-status,
+.question-status,
+.lesson-status {
 	display: inline-block;
 	padding: 4px 10px;
-	border-radius: 4px;
+	border-radius: 20px;
 	font-size: 12px;
 	font-weight: 500;
 	text-transform: capitalize;
 
 	&.publish {
-		background: #dcfce7;
-		color: #166534;
+		background: #E7F6E9;
+		color: #28A746;
 	}
 
 	&.draft {
-		background: #fef3c7;
-		color: #92400e;
+		background: #F7F7F7;
+		color: #AAAAAA;
 	}
 
 	&.pending {
@@ -515,12 +645,12 @@ html:has( #wpadminbar ) {
 	border-bottom: 1px solid $cb-border;
 	padding: 0 12px;
 	background: $cb-card-bg;
-	gap: 10;
+	gap: 10px;
 	margin: 0;
 	list-style: none;
 
 	.lp-cb-tabs__item {
-		padding: 16px 24px;
+		padding: 12px 24px;
 		color: $cb-text-muted;
 		text-decoration: none;
 		font-weight: 500;
@@ -529,14 +659,17 @@ html:has( #wpadminbar ) {
 		margin-bottom: -1px;
 		transition: all 0.2s ease;
 		background: transparent;
+		border-radius: 10px 10px 0 0;
 
 		&:hover {
-			color: $cb-text;
+			color: $cb-primary;
+			background: $cb-sidebar-background-hover;
 		}
 
 		&.is-active {
 			color: $cb-primary;
 			border-bottom-color: $cb-primary;
+			background: $cb-sidebar-background-hover;
 		}
 	}
 }
@@ -587,13 +720,13 @@ html:has( #wpadminbar ) {
 					text-transform: capitalize;
 
 					&.publish {
-						background: #dcfce7;
-						color: #166534;
+						background: #E7F6E9;
+						color: #28A746;
 					}
 
 					&.draft {
-						background: #fef3c7;
-						color: #92400e;
+						background: #F7F7F7;
+						color: #AAAAAA;
 					}
 
 					&.pending {
@@ -634,8 +767,8 @@ html:has( #wpadminbar ) {
 					transition: all 0.2s;
 
 					&:hover {
-						color: $cb-text;
-						background: #f9fafb;
+						color: $cb-primary;
+						background: $cb-sidebar-background-hover;
 					}
 				}
 
@@ -677,7 +810,7 @@ html:has( #wpadminbar ) {
 // LIST VIEW (Courses list, Lessons list, etc.)
 // ===========================================
 #lp-course-builder .lp-course-builder-content__tab {
-	padding: 0 24px;
+	padding: 0 24px 24px;
 	background: $cb-card-bg;
 	border-radius: $cb-radius;
 	max-width: 100%;
@@ -734,7 +867,7 @@ html:has( #wpadminbar ) {
 	.cb-btn-darft {
 		padding: 10px 20px;
 		font-size: 14px;
-		border-radius: 6px;
+		border-radius: 12px;
 		font-weight: 500;
 		cursor: pointer;
 		border: none;
@@ -843,8 +976,8 @@ html:has( #wpadminbar ) {
 			padding: 0;
 			background: $cb-primary;
 			border: 1px solid $cb-primary;
-			border-left-color: #98bfe4;
-			border-radius: 0 6px 6px 0;
+			border-left-color: $cb-sidebar-background-hover;
+			border-radius: 0 12px 12px 0;
 			cursor: pointer;
 			transition: all 0.2s;
 
@@ -1003,7 +1136,7 @@ html:has( #wpadminbar ) {
 		border: none;
 		cursor: pointer;
 		transition: all 0.2s;
-		border-radius: 6px 0 0 6px !important;
+		border-radius: 12px 0 0 12px !important;
 		background: $cb-primary;
 		color: #fff;
 		white-space: nowrap;
@@ -1031,7 +1164,7 @@ html:has( #wpadminbar ) {
 		padding: 10px 0;
 		background: #d0e3ff;
 		border: none;
-		border-radius: 0 6px 6px 0;
+		border-radius: 0 12px 12px 0;
 		cursor: pointer;
 		transition: all 0.2s;
 
@@ -1083,7 +1216,7 @@ html:has( #wpadminbar ) {
 		min-width: 180px;
 		background: #fff;
 		border: 1px solid #e5e7eb;
-		border-radius: 8px;
+		border-radius: 12px;
 		box-shadow: 0 4px 12px rgba( 0, 0, 0, 0.1 );
 		z-index: 1000;
 		opacity: 0;
@@ -1211,8 +1344,7 @@ html:has( #wpadminbar ) {
 	.lp-cb-top-header {
 		padding: 0 16px;
 
-		.lp-cb-top-header__user-name,
-		.lp-cb-top-header__user-link {
+		.lp-cb-top-header__user-info {
 			display: none;
 		}
 	}

@@ -1,4 +1,6 @@
-.lp-course-builder-content__section {
+@import 'shared-tab-styles';
+
+.cb-section__quiz-edit {
 	.cb-section__quiz-title-assigned {
 		display: flex;
 		gap: 40px;
@@ -458,11 +460,11 @@
 		color: #1e1e1e;
 	}
 
-	.quiz-status {
+	.quiz-status,
+	.quizzes-status {
 		padding: 5px 12px;
 		font-size: 12px;
 		font-weight: 500;
-		background: #ccc;
 		border-radius: 5px;
 		text-transform: capitalize;
 
@@ -479,30 +481,31 @@
 
 	.cb-quiz-edit-title {
 		margin-bottom: 24px;
+
+		.cb-quiz-edit-title__label {
+			display: block;
+			font-size: 14px;
+			font-weight: 600;
+			color: #1a1a1a;
+			margin-bottom: 8px;
+		}
+
+		.cb-quiz-edit-title__input {
+			width: 100%;
+			padding: 10px 12px;
+			font-size: 14px;
+			border: 1px solid #ddd;
+			border-radius: 6px;
+			outline: none;
+			transition: border-color 0.2s;
+
+			&:focus {
+				border-color: #2271b1;
+				box-shadow: 0 0 0 1px #2271b1;
+			}
+		}
 	}
 
-	.cb-quiz-edit-title__label {
-		display: block;
-		font-size: 14px;
-		font-weight: 600;
-		color: #1a1a1a;
-		margin-bottom: 8px;
-	}
-
-	.cb-quiz-edit-title__input {
-		width: 100%;
-		padding: 10px 12px;
-		font-size: 14px;
-		border: 1px solid #ddd;
-		border-radius: 6px;
-		outline: none;
-		transition: border-color 0.2s;
-	}
-
-	.cb-quiz-edit-title__input:focus {
-		border-color: #2271b1;
-		box-shadow: 0 0 0 1px #2271b1;
-	}
 
 	.cb-quiz-edit-desc {
 		margin-bottom: 24px;
@@ -523,6 +526,17 @@
 		font-size: 16px;
 		font-weight: 500;
 		cursor: pointer;
+
+		&.cb-button--secondary {
+			background: #fff;
+			color: #374151;
+			border: 1px solid #d1d5db;
+
+			&:hover {
+				background: #f3f4f6;
+				border-color: #9ca3af;
+			}
+		}
 
 		&.cb-btn-update__quiz {
 			background: #1e1e1e;
@@ -551,168 +565,63 @@
 		color: #1f2937;
 		margin-top: 20px;
 
+		@include quiz-questions-list-styles;
+
 		.lp-edit-list-questions {
 			border: none;
 		}
+	}
+}
 
-		.heading {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			margin-bottom: 25px;
-			padding-bottom: 15px;
-			border-bottom: 1px solid #f3f4f6;
-		}
+.cb-section__quiz-edit {
+	@include course-edit-styles;
+	@include vertical-tab-navigation;
+	@include shared-form-fields;
 
-		.heading h4 {
-			font-size: 18px;
-			font-weight: 700;
-			margin: 0;
-			color: #1e1e1e;
-		}
+	.lp-meta-box-course-panels::before {
+		content: attr( data-tab-title );
+		display: block;
+		font-size: 24px;
+		font-weight: 700;
+		color: #1e1e1e;
+		margin-bottom: 25px;
+		padding-bottom: 15px;
+		border-bottom: 1px solid #e5e7eb;
+		line-height: 1.2;
+	}
 
-		.total-items {
-			background: #f3f4f6;
-			color: #6b7280;
-			font-size: 12px;
-			font-weight: 600;
-			padding: 4px 10px;
-			border-radius: 20px;
-			margin-left: 10px;
-		}
+	@media ( max-width: 768px ) {
+		.lp-meta-box__course-tab {
+			flex-direction: column;
 
-		.lp-question-toggle-all {
-			cursor: pointer;
-			color: #9ca3af;
-			margin-left: auto;
-			padding: 5px;
-		}
+			ul.lp-meta-box__course-tab__tabs {
+				width: 100%;
+				border-right: none;
+				border-bottom: 1px solid #e5e7eb;
+				display: flex;
+				overflow-x: auto;
+				padding: 0;
 
-		.lp-question-item {
-			background: #fff;
-			border: 1px solid #e5e7eb;
-			border-radius: 100px;
-			margin-bottom: 12px;
-			transition: all 0.2s ease;
+				li {
+					flex: 0 0 auto;
+					margin-bottom: 0;
+					padding: 0;
 
-			.lp-btn-update-question-title,
-			.lp-btn-cancel-update-question-title {
-				display: none;
-			}
+					a {
+						border-left: none;
+						border-bottom: 3px solid transparent;
+						margin-left: 0;
+						margin-bottom: -1px;
+						white-space: nowrap;
+					}
 
-			&.editing {
-				.lp-btn-update-question-title,
-				.lp-btn-cancel-update-question-title {
-					display: inline-block;
-				}
-
-				.lp-btn-edit-question-title,
-				.lp-btn-remove-question {
-					display: none;
+					&.active a,
+					a:focus {
+						border-left-color: transparent;
+						border-bottom-color: #3b82f6;
+					}
 				}
 			}
-
-			.lp-btn-cancel-update-question-title {
-				border: none;
-				background: transparent;
-				cursor: pointer;
-
-				&:hover {
-					background: #f0f0f1;
-				}
-			}
-		}
-
-		.lp-question-item:hover {
-			border-color: #d1d5db;
-			box-shadow: 0 2px 4px -1px rgba( 0, 0, 0, 0.05 );
-		}
-
-		.lp-question-head {
-			display: flex;
-			align-items: center;
-			padding: 12px 16px;
-			border-radius: 8px;
-			background-color: #fff;
-		}
-
-		.lp-question-item:not( .lp-collapse ) .lp-question-head {
-			border-bottom: 1px solid #f3f4f6;
-			border-radius: 8px 8px 0 0;
-			background-color: #f9fafb;
-		}
-
-		.lp-question-head .drag {
-			color: #9ca3af;
-			cursor: grab;
-			margin-right: 10px;
-			font-size: 16px;
-		}
-
-		input.lp-question-title-input {
-			flex-grow: 1;
-			border: 1px solid transparent;
-			background: transparent;
-			font-size: 15px;
-			font-weight: 600;
-			color: #1f2937;
-			padding: 6px 10px;
-			border-radius: 6px;
-			transition: all 0.2s;
-			margin-right: 10px;
-		}
-
-		input.lp-question-title-input:hover,
-		input.lp-question-title-input:focus {
-			background: #fff;
-			border-color: #e5e7eb;
-			outline: none;
-			box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.05 );
-		}
-
-		.lp-question-head .lp-btn-edit-question-title,
-		.lp-question-head .lp-btn-remove-question,
-		.lp-question-head .lp-question-toggle {
-			color: #9ca3af;
-			cursor: pointer;
-			padding: 6px;
-			font-size: 16px;
-			text-decoration: none;
-			display: flex;
-			align-items: center;
-			transition: color 0.2s;
-		}
-
-		.lp-question-head .lp-btn-edit-question-title:hover {
-			color: #3b82f6;
-		}
-		.lp-question-head .lp-btn-remove-question:hover {
-			color: #ef4444;
-		}
-		.lp-question-head .lp-question-toggle:hover {
-			color: #1e1e1e;
-		}
-
-		.lp-question-head .button {
-			font-size: 12px;
-			padding: 4px 10px;
-			margin-right: 5px;
-			display: none;
-		}
-
-		.lp-question-edit-main {
-			padding: 20px;
-			background: #fff;
-			border-radius: 0 0 8px 8px;
-		}
-
-		.mce-menubar {
-			border: none;
-			background: #f5f5f5;
-		}
-
-		.lp-icon-spinner {
-			font-size: 12px;
 		}
 	}
 }

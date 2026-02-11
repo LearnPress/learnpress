@@ -937,13 +937,18 @@ class CourseBuilderAjax extends AbstractAjax {
 			$return_html  = ( $data['return_html'] ?? 'no' ) === 'yes';
 			$insert       = $data['insert'];
 
+			// Determine target status (draft or publish)
+			$target_status = ! empty( $data['lesson_status'] ) && in_array( $data['lesson_status'], [ 'draft', 'publish' ], true )
+				? sanitize_text_field( $data['lesson_status'] )
+				: 'publish';
+
 			if ( $insert ) {
 				$lesson_id = wp_insert_post(
 					array(
 						'post_type'    => LP_LESSON_CPT,
 						'post_title'   => sanitize_text_field( $title ?? '' ),
 						'post_content' => wp_kses_post( $description ?? '' ),
-						'post_status'  => 'publish',
+						'post_status'  => $target_status,
 					),
 					true
 				);
@@ -973,7 +978,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$update_arg = array(
 					'ID'          => $lesson_id,
 					'post_type'   => LP_LESSON_CPT,
-					'post_status' => 'publish',
+					'post_status' => $target_status,
 				);
 
 				if ( defined( 'ELEMENTOR_VERSION' ) ) {
@@ -1002,10 +1007,12 @@ class CourseBuilderAjax extends AbstractAjax {
 			do_action( 'learn-press/course-builder/update-lesson', $data );
 
 			$response->status              = 'success';
-			$response->data->status        = 'publish';
-			$response->data->button_title  = __( 'Update', 'learnpress' );
+			$response->data->status        = $target_status;
+			$response->data->button_title  = $target_status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 			$response->data->lesson_id_new = $insert ? $lesson_id : '';
-			$response->message             = $insert ? esc_html__( 'Insert lesson successfully', 'learnpress' ) : esc_html__( 'Update lesson successfully', 'learnpress' );
+			$response->message             = $target_status === 'draft'
+				? esc_html__( 'Lesson saved as draft', 'learnpress' )
+				: ( $insert ? esc_html__( 'Insert lesson successfully', 'learnpress' ) : esc_html__( 'Update lesson successfully', 'learnpress' ) );
 
 			if ( $insert && $return_html ) {
 				$lesson_model_new               = LessonPostModel::find( $lesson_id, true );
@@ -1169,13 +1176,18 @@ class CourseBuilderAjax extends AbstractAjax {
 			$return_html  = ( $data['return_html'] ?? 'no' ) === 'yes';
 			$insert       = $data['insert'];
 
+			// Determine target status (draft or publish)
+			$target_status = ! empty( $data['quiz_status'] ) && in_array( $data['quiz_status'], [ 'draft', 'publish' ], true )
+				? sanitize_text_field( $data['quiz_status'] )
+				: 'publish';
+
 			if ( $insert ) {
 				$quiz_id = wp_insert_post(
 					array(
 						'post_type'    => LP_QUIZ_CPT,
 						'post_title'   => sanitize_text_field( $title ?? '' ),
 						'post_content' => wp_kses_post( $description ?? '' ),
-						'post_status'  => 'publish',
+						'post_status'  => $target_status,
 					),
 					true
 				);
@@ -1205,7 +1217,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$update_arg = array(
 					'ID'          => $quiz_id,
 					'post_type'   => LP_QUIZ_CPT,
-					'post_status' => 'publish',
+					'post_status' => $target_status,
 				);
 
 				if ( isset( $data['quiz_title'] ) ) {
@@ -1234,10 +1246,12 @@ class CourseBuilderAjax extends AbstractAjax {
 			do_action( 'learn-press/course-builder/update-quiz', $data );
 
 			$response->status             = 'success';
-			$response->data->status       = 'publish';
-			$response->data->button_title = __( 'Update', 'learnpress' );
+			$response->data->status       = $target_status;
+			$response->data->button_title = $target_status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 			$response->data->quiz_id_new  = $insert ? $quiz_id : '';
-			$response->message            = $insert ? esc_html__( 'Insert quiz successfully', 'learnpress' ) : esc_html__( 'Update quiz successfully', 'learnpress' );
+			$response->message            = $target_status === 'draft'
+				? esc_html__( 'Quiz saved as draft', 'learnpress' )
+				: ( $insert ? esc_html__( 'Insert quiz successfully', 'learnpress' ) : esc_html__( 'Update quiz successfully', 'learnpress' ) );
 
 			if ( $insert && $return_html ) {
 				$quiz_model_new                 = QuizPostModel::find( $quiz_id, true );
@@ -1400,13 +1414,18 @@ class CourseBuilderAjax extends AbstractAjax {
 			$return_html  = ( $data['return_html'] ?? 'no' ) === 'yes';
 			$insert       = $data['insert'];
 
+			// Determine target status (draft or publish)
+			$target_status = ! empty( $data['question_status'] ) && in_array( $data['question_status'], [ 'draft', 'publish' ], true )
+				? sanitize_text_field( $data['question_status'] )
+				: 'publish';
+
 			if ( $insert ) {
 				$question_id = wp_insert_post(
 					array(
 						'post_type'    => LP_QUESTION_CPT,
 						'post_title'   => sanitize_text_field( $title ?? '' ),
 						'post_content' => $description ?? '',
-						'post_status'  => 'publish',
+						'post_status'  => $target_status,
 					),
 					true
 				);
@@ -1434,7 +1453,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$update_arg = array(
 					'ID'          => $question_id,
 					'post_type'   => LP_QUESTION_CPT,
-					'post_status' => 'publish',
+					'post_status' => $target_status,
 				);
 
 				if ( defined( 'ELEMENTOR_VERSION' ) ) {
@@ -1459,10 +1478,12 @@ class CourseBuilderAjax extends AbstractAjax {
 			do_action( 'learn-press/course-builder/update-question', $data );
 
 			$response->status                = 'success';
-			$response->data->status          = 'publish';
-			$response->data->button_title    = __( 'Update', 'learnpress' );
+			$response->data->status          = $target_status;
+			$response->data->button_title    = $target_status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 			$response->data->question_id_new = $insert ? $question_id : '';
-			$response->message               = $insert ? esc_html__( 'Insert question successfully', 'learnpress' ) : esc_html__( 'Update question successfully', 'learnpress' );
+			$response->message               = $target_status === 'draft'
+				? esc_html__( 'Question saved as draft', 'learnpress' )
+				: ( $insert ? esc_html__( 'Insert question successfully', 'learnpress' ) : esc_html__( 'Update question successfully', 'learnpress' ) );
 
 			if ( $insert && $return_html ) {
 				$question_model_new             = QuestionPostModel::find( $question_id, true );

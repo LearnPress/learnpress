@@ -233,9 +233,9 @@ class BuilderTabQuestionTemplate {
 					'wrapper'           => '<div class="question-content">',
 					'wrapper_left'      => '<div class="question-content__left">',
 					'title'             => sprintf(
-						'<h3 class="wap-question-title"><button data-popup-question="%s">%s</button></h3>',
-						$question_model->get_id(),
-						$question['title']
+						'<h3 class="wap-question-title"><a href="%s">%s</a></h3>',
+						esc_url( $edit_link ),
+						esc_html( $question['title'] )
 					),
 					'question_status'   => ! empty( $status ) ? sprintf( '<span class="question-status %1$s">%1$s</span>', $status ) : '',
 					'wrapper_left_end'  => '</div>',
@@ -255,8 +255,8 @@ class BuilderTabQuestionTemplate {
 				[
 					'wrapper'                     => '<div class="question-action">',
 					'edit'                        => sprintf(
-						'<div class="question-action-editor"><button class="btn-edit-question question-edit-permalink" data-popup-question="%s">%s %s</button></div>',
-						$question['id'],
+						'<div class="question-action-editor"><a class="btn-edit-question question-edit-permalink" href="%s">%s %s</a></div>',
+						esc_url( $edit_link ),
 						'<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>',
 						__( 'Edit', 'learnpress' )
 					),
