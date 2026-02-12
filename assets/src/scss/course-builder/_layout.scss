@@ -281,13 +281,14 @@ $wp-adminbar-height-mobile: 46px;
 		width: 36px;
 		height: 36px;
 		border-radius: 6px;
-		background: #fff;
+		background: transparent;
 		cursor: pointer;
 		transition: all 0.2s;
 		margin-left: auto;
 		margin-bottom: 16px;
 		margin-right: 16px;
 		border: none;
+		color: #aaaaaa;
 
 		svg {
 			min-width: 24px;
@@ -810,7 +811,6 @@ html:has( #wpadminbar ) {
 // LIST VIEW (Courses list, Lessons list, etc.)
 // ===========================================
 #lp-course-builder .lp-course-builder-content__tab {
-	padding: 0 24px 24px;
 	background: $cb-card-bg;
 	border-radius: $cb-radius;
 	max-width: 100%;

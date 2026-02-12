@@ -82,43 +82,60 @@ class BuilderTabCourseTemplate {
 			$per_page_html .= sprintf( '<option value="%d" %s>%d</option>', $option, $selected, $option );
 		}
 
-		// Add New Course button
+		// Row 1: Page header — title + add new button
 		$btn_add_new = sprintf(
 			'<a href="%s" class="cb-btn-add-new">+ %s</a>',
 			esc_url( CourseBuilder::get_link_add_new_course( CourseBuilder::POST_NEW ) ),
 			__( 'Add New Course', 'learnpress' )
 		);
 
+		$header = [
+			'wrapper' => '<div class="cb-tab-header">',
+			'title'   => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', __( 'Courses', 'learnpress' ) ),
+			'add_new' => $btn_add_new,
+			'wrapper_end' => '</div>',
+		];
+
+		// Row 2: Filter toolbar
 		$filter = [
-			'wrapper'        => sprintf( '<form class="cb-tab-filter-bar" method="get" action="%s">', esc_url( $link_tab ) ),
-			'left_wrapper'   => '<div class="cb-filter-left">',
-			'search'         => sprintf(
-				'<div class="cb-filter-search">
-					<i class="lp-icon-search"></i>
-					<input type="search" name="c_search" placeholder="%s" value="%s">
+			'wrapper'      => sprintf( '<form class="cb-tab-filter-bar" method="get" action="%s">', esc_url( $link_tab ) ),
+			'fields'       => '<div class="cb-filter-fields">',
+			'search'       => sprintf(
+				'<div class="cb-filter-group">
+					<label>%s</label>
+					<div class="cb-filter-search">
+						<input type="search" name="c_search" placeholder="%s" value="%s">
+					</div>
 				</div>',
+				esc_html__( 'Search', 'learnpress' ),
 				esc_attr__( 'Search by title', 'learnpress' ),
 				esc_attr( $current_search )
 			),
-			'status'         => sprintf(
-				'<select name="c_status" class="cb-filter-select">%s</select>',
+			'status'       => sprintf(
+				'<div class="cb-filter-group">
+					<label>%s</label>
+					<select name="c_status" class="cb-filter-select">%s</select>
+				</div>',
+				esc_html__( 'Status', 'learnpress' ),
 				$status_options
 			),
-			'per_page_label' => sprintf( '<span class="cb-filter-label">%s</span>', __( 'Items per page', 'learnpress' ) ),
-			'per_page'       => sprintf(
-				'<select name="per_page" class="cb-filter-select">%s</select>',
+			'per_page'     => sprintf(
+				'<div class="cb-filter-group">
+					<label>%s</label>
+					<select name="per_page" class="cb-filter-select">%s</select>
+				</div>',
+				esc_html__( 'Items per page', 'learnpress' ),
 				$per_page_html
 			),
-			'filter_btn'     => sprintf( '<button type="submit" class="cb-filter-btn">%s</button>', __( 'Filter', 'learnpress' ) ),
-			'reset_btn'      => sprintf( '<a href="%s" class="cb-filter-reset">%s</a>', esc_url( $link_tab ), __( 'Reset', 'learnpress' ) ),
-			'left_end'       => '</div>',
-			'right_wrapper'  => '<div class="cb-filter-right">',
-			'add_new'        => $btn_add_new,
-			'right_end'      => '</div>',
-			'wrapper_end'    => '</form>',
+			'actions'      => '<div class="cb-filter-actions">',
+			'filter_btn'   => sprintf( '<button type="submit" class="cb-filter-btn">%s</button>', __( 'Filter', 'learnpress' ) ),
+			'reset_btn'    => sprintf( '<a href="%s" class="cb-filter-reset">%s</a>', esc_url( $link_tab ), __( 'Reset', 'learnpress' ) ),
+			'actions_end'  => '</div>',
+			'fields_end'   => '</div>',
+			'wrapper_end'  => '</form>',
 		];
 
-		return Template::combine_components( $filter );
+		return Template::combine_components( $header ) . Template::combine_components( $filter );
 	}
 
 	public function tab_list_courses(): string {
@@ -227,54 +244,73 @@ class BuilderTabCourseTemplate {
 		try {
 			$edit_link = BuilderTabCourseTemplate::instance()->get_link_edit( $course->get_id() );
 
-			$html_img = apply_filters(
-				'learn-press/course-builder/list-courses/item/section-top',
-				[
-					'wrapper'     => '<div class="course-thumbnail">',
-					'link'        => sprintf( '<a href="%s">', $edit_link ),
-					'img'         => $singleCourseTemplate->html_image( $course ),
-					'link_end'    => '</a>',
-					'wrapper_end' => '</div>',
-				],
-				$course,
-				$settings
-			);
+			// Offline badge overlay
+		$offline_badge = '';
+		if ( $course->is_offline() ) {
+			$offline_badge = '<span class="cb-item-status-badge offline">Offline</span>';
+		}
 
-			$meta_data = apply_filters(
-				'learn-press/course-builder/list-courses/item/meta-data',
-				[
-					'duration' => $singleCourseTemplate->html_duration( $course ),
-					'level'    => $singleCourseTemplate->html_level( $course ),
-					'lesson'   => $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
-					'quiz'     => $singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ),
-					'student'  => $singleCourseTemplate->html_count_student( $course ),
-				],
-				$course,
-				$settings
-			);
+		$html_img = apply_filters(
+			'learn-press/course-builder/list-courses/item/section-top',
+			[
+				'wrapper'     => '<div class="course-thumbnail">',
+				'link'        => sprintf( '<a href="%s">', $edit_link ),
+				'img'         => $singleCourseTemplate->html_image( $course ),
+				'badge'       => $offline_badge,
+				'link_end'    => '</a>',
+				'wrapper_end' => '</div>',
+			],
+			$course,
+			$settings
+		);
 
-			if ( $course->is_offline() ) {
-				$singleCourseOfflineTemplate = SingleCourseOfflineTemplate::instance();
-				unset( $meta_data['quiz'] );
-				unset( $meta_data['student'] );
-				if ( ! empty( $meta_data['lesson'] ) ) {
-					$meta_data['lesson'] = $singleCourseOfflineTemplate->html_lesson_info( $course, true );
-				}
+		// Icon mapping for meta items (using WordPress Dashicons)
+		$meta_icons = [
+			'duration' => '<span class="dashicons dashicons-clock"></span>',
+			'level'    => '<span class="dashicons dashicons-chart-bar"></span>',
+			'lesson'   => '<span class="dashicons dashicons-book"></span>',
+			'quiz'     => '<span class="dashicons dashicons-edit"></span>',
+			'student'  => '<span class="dashicons dashicons-groups"></span>',
+			'address'  => '<span class="dashicons dashicons-location"></span>',
+		];
 
-				$html_address = $singleCourseOfflineTemplate->html_address( $course );
-				if ( ! empty( $html_address ) ) {
-					$meta_data['address'] = $singleCourseOfflineTemplate->html_address( $course );
-				}
+		$meta_data = apply_filters(
+			'learn-press/course-builder/list-courses/item/meta-data',
+			[
+				'duration' => $singleCourseTemplate->html_duration( $course ),
+				'level'    => $singleCourseTemplate->html_level( $course ),
+				'lesson'   => $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
+				'quiz'     => $singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ),
+				'student'  => $singleCourseTemplate->html_count_student( $course ),
+			],
+			$course,
+			$settings
+		);
+
+		if ( $course->is_offline() ) {
+			$singleCourseOfflineTemplate = SingleCourseOfflineTemplate::instance();
+			unset( $meta_data['quiz'] );
+			unset( $meta_data['student'] );
+			if ( ! empty( $meta_data['lesson'] ) ) {
+				$meta_data['lesson'] = $singleCourseOfflineTemplate->html_lesson_info( $course, true );
 			}
 
-			$html_meta_data = '';
-			if ( ! empty( $meta_data ) ) {
-				foreach ( $meta_data as $k => $v ) {
-					$html_meta_data .= sprintf( '<div class="meta-item meta-item-%s">%s</div>', $k, $v );
-				}
-
-				$html_meta_data = sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data );
+			$html_address = $singleCourseOfflineTemplate->html_address( $course );
+			if ( ! empty( $html_address ) ) {
+				$meta_data['address'] = $singleCourseOfflineTemplate->html_address( $course );
 			}
+		}
+
+		$html_meta_data = '';
+		if ( ! empty( $meta_data ) ) {
+			foreach ( $meta_data as $k => $v ) {
+				$icon = $meta_icons[ $k ] ?? '';
+				$html_meta_data .= sprintf( '<div class="meta-item meta-item-%s">%s%s</div>', $k, $icon, $v );
+			}
+
+			$html_meta_data = sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data );
+		}
+
 
 			$html_status = sprintf( '<div class="course-status %1$s"><span>%1$s</span></div>', $course->get_status() );
 

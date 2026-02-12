@@ -2,13 +2,6 @@
 	// Include shared filter bar mixin
 	@include course-list-filter-bar;
 
-	// Tab title
-	.lp-cb-tab__title {
-		font-size: 28px;
-		font-weight: 600;
-		margin-bottom: 20px;
-		color: #1e1e1e;
-	}
 
 	// Legacy action bar (keep for backwards compatibility)
 	.cb-tab-course__action {
@@ -66,7 +59,7 @@
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: 20px;
-		padding: 0;
+		padding: 0 0 20px;
 		margin: 0;
 	}
 
@@ -90,12 +83,30 @@
 	}
 
 	.course-thumbnail {
-		width: 280px;
-		min-width: 280px;
+		width: 260px;
+		min-width: 260px;
 		border-radius: 8px;
 		aspect-ratio: 16/10;
 		overflow: hidden;
 		background-color: #f5f5f5;
+		position: relative;
+
+		// Badge overlay (e.g., "Offline" status)
+		.cb-item-status-badge {
+			position: absolute;
+			bottom: 8px;
+			left: 8px;
+			padding: 4px 10px;
+			border-radius: 4px;
+			font-size: 11px;
+			font-weight: 600;
+			text-transform: uppercase;
+
+			&.offline {
+				background: #3b82f6;
+				color: #fff;
+			}
+		}
 	}
 
 	.course-img {
@@ -117,7 +128,7 @@
 
 	.wap-course-title {
 		margin-top: 0;
-		margin-bottom: 12px;
+		margin-bottom: 8px;
 	}
 
 	.course-permalink {
@@ -156,7 +167,7 @@
 	.course-instructor__wrapper {
 		display: flex;
 		gap: 5px;
-		margin-bottom: 15px;
+		margin-bottom: 12px;
 		font-size: 13px;
 		color: #666;
 	}
@@ -169,19 +180,19 @@
 	}
 
 	.course-by-label {
-		color: #999;
+		color: #6b7280;
 		font-size: 13px;
 	}
 
 	.course-categories-label {
-		color: #999;
+		color: #6b7280;
 		font-size: 13px;
 	}
 
 	.course-category-name {
 		color: #1e1e1e;
-		font-size: 16px;
-		font-weight: 400;
+		font-size: 13px;
+		font-weight: 500;
 	}
 
 	.course-instructor a,
@@ -195,26 +206,44 @@
 		text-decoration: underline;
 	}
 
+	// Meta items with icons
 	.course-wrap-meta {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 15px;
-		margin-bottom: 15px;
-		padding-bottom: 15px;
+		gap: 16px;
+		margin-bottom: 12px;
 	}
 
 	.instructor-display-name {
-		font-size: 16px;
-		font-weight: 400;
+		font-size: 13px;
+		font-weight: 500;
 	}
 
 	.meta-item {
-		font-size: 14px;
-		color: #666;
+		font-size: 13px;
+		color: #6b7280;
 		display: flex;
 		align-items: center;
-		gap: 5px;
+		gap: 6px;
+
+		// Dashicons styling
+		.dashicons {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+			color: #6b7280;
+		}
+
+		// Hide wrapper divs, show only text
+		> div {
+			display: contents;
+
+			span {
+				color: #6b7280;
+			}
+		}
 	}
+
 
 	.course-bottom {
 		margin-top: auto;
@@ -253,20 +282,30 @@
 		position: relative;
 		display: flex;
 		align-items: flex-start;
-		gap: 20px;
+		gap: 8px;
 	}
 
 	.course-action-editor {
-		padding: 15px 0 15px 20px;
+		padding: 0;
 	}
 
 	.course-action-expanded {
 		cursor: pointer;
-		padding: 15px 20px 15px 0;
+		padding: 8px;
+		border: 1px solid #e5e7eb;
+		border-radius: 6px;
+		background: #fff;
+		transition: all 0.2s;
+
+		&:hover {
+			background: #f5f5f5;
+			border-color: #d1d5db;
+		}
 
 		svg {
-			width: 24px;
-			height: 24px;
+			width: 20px;
+			height: 20px;
+			color: #6b7280;
 		}
 	}
 
@@ -330,16 +369,16 @@
 		text-decoration: underline;
 	}
 
-	// Edit button
+	// Edit button - Purple primary button
 	.btn-edit-course {
-		display: flex;
+		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		text-decoration: none;
 		font-size: 14px;
 		font-weight: 500;
 		border-radius: 6px;
-		padding: 8px 24px;
+		padding: 8px 20px;
 		gap: 6px;
 		border: none;
 		background: #7067ED;
@@ -348,9 +387,10 @@
 		white-space: nowrap;
 
 		&:hover {
-			background: #7c3aed;
+			background: #5b52d1;
 		}
 	}
+
 
 	// Course status badges
 	.course-status {
@@ -408,13 +448,13 @@
 		min-width: 36px;
 		height: 36px;
 		padding: 0 12px;
-		border: 1px solid #e5e7eb;
 		border-radius: 6px;
 		text-decoration: none;
 		color: #333;
 		font-size: 14px;
 		transition: all 0.2s;
 		background: #fff;
+		font-weight: 600;
 	}
 
 	.page-numbers a:hover {
@@ -423,15 +463,19 @@
 	}
 
 	.page-numbers .current {
-		background-color: #1e1e1e;
+		background-color: #7067ED;
 		color: #fff;
-		border-color: #1e1e1e;
-		font-weight: 600;
 	}
 
 	.page-numbers .next,
 	.page-numbers .prev {
-		font-weight: 600;
+		background-color: #f5f5f5;
+		border-color: #d1d5db;
+
+		&:hover {
+			background-color: #7067ED;
+			color: #fff;
+		}
 	}
 
 	// Materials section
