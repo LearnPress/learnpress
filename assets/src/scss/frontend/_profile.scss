@@ -107,7 +107,7 @@
 		margin: 0;
 		font-size: $font-size-h4;
 		font-weight: 500;
-		text-transform: capitalize;
+		//text-transform: capitalize;
 		color: inherit;
 		flex: 1;
 	}
@@ -583,6 +583,9 @@
 	}
 	ul.learn-press-courses{
 		margin: 0 calc(-1 * $spacing-base-4x);
+	}
+	h3 {
+		margin-top: 0;
 	}
 }
 
