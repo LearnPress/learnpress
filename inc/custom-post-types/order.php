@@ -9,6 +9,7 @@
 
 use LearnPress\Databases\DataBase;
 use LearnPress\Databases\PostDB;
+use LearnPress\Filters\OrderPostFilter;
 use LearnPress\Filters\PostFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -39,8 +40,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_filter( 'wp_untrash_post_status', array( $this, 'restore_status_order' ), 11, 3 );
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 			//add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
-			// LP Order title
-			add_action( 'init', [ $this, 'download_order_csv_file' ] );
+			// Download order CSV file
+			$this->download_order_csv_file();
 
 			// Override title of LP Order on Admin
 			if ( is_admin() ) {
@@ -62,28 +63,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			parent::__construct();
-		}
-
-		public function download_order_csv_file() {
-			if ( isset( $_GET['lp_download_order'] ) && isset( $_GET['export_id'] ) ) {
-				$export_id = sanitize_key( $_GET['export_id'] );
-
-				$upload = wp_upload_dir();
-				$file   = $upload['basedir'] . "/lp-order-export/orders-{$export_id}.csv";
-
-				if ( ! file_exists( $file ) ) {
-					wp_die( __( 'File not found', 'learnpress' ) );
-				}
-
-				header( 'Content-Type: text/csv; charset=UTF-8' );
-				header( 'Content-Disposition: attachment; filename="orders.csv"' );
-				header( 'Content-Length: ' . filesize( $file ) );
-
-				readfile( $file );
-
-				unlink( $file );
-				exit;
-			}
 		}
 
 		/**
@@ -457,16 +436,16 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$user_id    = absint( $post_author );
 				$meta_query = array(
 					//                  'relation' => 'OR',
-											array(
-												'key'     => '_user_id',
-												'value'   => '%"' . $user_id . '"%',
-												'compare' => 'LIKE',
-											),
-				//                  array(
-				//                      'key'     => '_user_id',
-				//                      'value'   => $user_id,
-				//                      'compare' => '=',
-				//                  ),
+					array(
+						'key'     => '_user_id',
+						'value'   => '%"' . $user_id . '"%',
+						'compare' => 'LIKE',
+					),
+					//                  array(
+					//                      'key'     => '_user_id',
+					//                      'value'   => $user_id,
+					//                      'compare' => '=',
+					//                  ),
 				);
 				$wp_query->set( 'meta_query', $meta_query );
 			}
@@ -500,98 +479,27 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$posts_per_page = 20;
 				}
 
-				$paged          = max( 1, get_query_var( 'paged' ) );
-				$user_of_order  = $wp_query->get( 'author' );
-				$status         = $wp_query->get( 'post_status' );
-				$key            = $wp_query->get( 's' );
-				$month          = $wp_query->get( 'm' );
+				$paged         = max( 1, get_query_var( 'paged' ) );
+				$user_of_order = $wp_query->get( 'author' );
+				$status        = $wp_query->get( 'post_status' );
+				$key           = $wp_query->get( 's' );
+				$month         = $wp_query->get( 'm' );
 
-				$order_by = $wp_query->get( 'orderby', 'date' );
-				if ( empty( $order_by ) ) {
-					$order_by = 'ID';
-				} else {
-					switch ( $order_by ) {
-						case 'date':
-							$order_by = 'post_date';
-							break;
-						case 'title':
-							$order_by = 'ID';
-							break;
-					}
-				}
+				$filter = new OrderPostFilter();
+				$param  = [
+					'paged'          => $paged,
+					'posts_per_page' => $posts_per_page,
+					'author'         => $user_of_order,
+					'post_status'    => $status,
+					's'              => $key,
+					'm'              => $month,
+				];
+				LP_Order::handle_params_query_list_orders( $filter, $param );
 
-				$order = $wp_query->get( 'order', 'DESC' );
-				if ( empty( $order ) ) {
-					$order = 'DESC';
-				}
-				// End convert params
-
-				$post_filter            = new PostFilter();
-				$post_db                = PostDB::getInstance();
-				$post_filter->post_type = LP_ORDER_CPT;
-
-				if ( $order_by === 'order_total' ) {
-					$post_filter->join[]   = "INNER JOIN {$post_db->tb_postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
-					$post_filter->where[]  = 'AND CAST(pm2.meta_value AS UNSIGNED)';
-					$post_filter->order_by = 'pm2.meta_value';
-				} else {
-					$post_filter->order_by = $order_by;
-				}
-
-				if ( ! empty( $key ) ) {
-					$pattern          = '/^#\d+$/';
-					$is_order_id_sure = false;
-					if ( preg_match( $pattern, $key ) ) {
-						$is_order_id_sure = true;
-						$key              = str_replace( '#', '', $key );
-					}
-
-					$pattern2 = '#^0+.*\d+$#';
-					if ( preg_match( $pattern2, $key ) ) {
-						$key = (int) $key;
-					}
-
-					$key = trim( $key );
-
-					if ( $is_order_id_sure ) {
-						$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.ID = %d', $key );
-					} else {
-						$post_filter->join[]  = "INNER JOIN {$post_db->tb_lp_order_items} lpori ON p.ID = lpori.order_id";
-						$post_filter->where[] = $post_db->wpdb->prepare(
-							'AND (p.ID = %d OR lpori.order_item_name like %s)',
-							$key,
-							'%' . $key . '%'
-						);
-					}
-				}
-
-				if ( ! empty( $month ) ) {
-					$year                 = substr( $month, 0, 4 );
-					$post_filter->where[] = "AND YEAR(p.post_date) = $year";
-					if ( strlen( $month ) > 5 ) {
-						$mon                  = substr( $month, 4, 2 );
-						$post_filter->where[] = "AND MONTH(p.post_date) = $mon";
-					}
-				}
-
-				$post_filter->order = $order;
-				$post_filter->limit = $posts_per_page;
-				$post_filter->page  = $paged;
-
-				if ( ! empty( $user_of_order ) ) {
-					$user_id              = absint( $user_of_order );
-					$post_filter->join[]  = "INNER JOIN {$post_db->tb_postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
-					$post_filter->where[] = "AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id )";
-				}
-
-				if ( ! empty( $status ) ) {
-					$post_filter->post_status = (array) $status;
-				} else {
-					$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', LP_ORDER_TRASH );
-				}
-
+				// Get lp orders
+				$post_db    = PostDB::getInstance();
 				$total_rows = 0;
-				$lp_orders  = $post_db->get_posts( $post_filter, $total_rows );
+				$lp_orders  = $post_db->get_posts( $filter, $total_rows );
 
 				$wp_query->post_count  = $total_rows;
 				$wp_query->found_posts = $total_rows;
@@ -914,6 +822,38 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					'priority' => 'high',
 				),
 			);
+		}
+
+		/**
+		 * Download order CSV file and delete it after download
+		 *
+		 * @return void
+		 */
+		public function download_order_csv_file() {
+			if ( ! isset( $_GET['lp_download_order'] ) || ! isset( $_GET['export_id'] ) ) {
+				return;
+			}
+
+			$export_id = sanitize_key( $_GET['export_id'] );
+
+			$upload = wp_upload_dir();
+			$file   = $upload['basedir'] . "/lp-order-export/orders-{$export_id}.csv";
+
+			if ( ! file_exists( $file ) ) {
+				wp_die( __( 'File not found', 'learnpress' ) );
+			} elseif ( ! realpath( $file ) ) {
+				wp_die( __( 'Invalid file path', 'learnpress' ) );
+			}
+
+			$filename = basename( $file );
+
+			header( 'Content-Type: text/csv; charset=UTF-8' );
+			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+			header( 'Content-Length: ' . filesize( $file ) );
+
+			readfile( $file );
+			unlink( $file );
+			exit;
 		}
 	}
 

@@ -1,7 +1,7 @@
-import * as lpUtils from './../../utils.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify';
 
-const exportOrders = () => {
+export const ExportOrdersToCSV = () => {
 	const handleExport = ( args ) => {
 		const { e, target } = args;
 		e.preventDefault();
@@ -11,7 +11,6 @@ const exportOrders = () => {
 		const callBack = {
 			success: ( response ) => {
 				const { message, status, data } = response;
-				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
 					const maxPage = data?.max_page;
@@ -23,6 +22,8 @@ const exportOrders = () => {
 						dataSend = { ...dataSend, paged: nextPage };
 						window.lpAJAXG.fetchAJAX( dataSend, callBack );
 					} else if ( !! done ) {
+						lpToastify.show( message, 'success' );
+
 						const link = document.createElement( 'a' );
 						link.href = downloadUrl;
 						link.target = '_self';
@@ -30,6 +31,8 @@ const exportOrders = () => {
 						link.click();
 						document.body.removeChild( link );
 					}
+				} else {
+					throw message;
 				}
 			},
 			error: ( error ) => {
@@ -45,11 +48,9 @@ const exportOrders = () => {
 
 	lpUtils.eventHandlers( 'click', [
 		{
-			selector: 'button.export',
+			selector: '.lp-btn-export-order-to-csv',
 			class: this,
 			callBack: handleExport,
 		},
 	] );
 };
-
-export default exportOrders;

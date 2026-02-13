@@ -311,14 +311,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-admin-order-list' => new LP_Asset_Key(
-					$this->url('js/dist/admin/admin-order-list' . self::$_min_assets . '.js'),
+				'lp-admin-orders'     => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/admin-orders' . self::$_min_assets . '.js' ),
 					array(),
-					array('edit-' . LP_ORDER_CPT),
+					array( 'edit-' . LP_ORDER_CPT ),
 					0,
 					0,
 					'',
-					['strategy' => 'defer']
+					[ 'strategy' => 'async' ]
 				),
 
 				/*'learn-press-sync-data'             => new LP_Asset_Key(

@@ -7,10 +7,8 @@
  * @version 4.0.1
  */
 
-use LearnPress\Databases\Order\LPOrderItemsDB;
-use LearnPress\Filters\Order\OrderItemsFilter;
-use LearnPress\Models\UserItems\UserCourseModel;
-use LearnPress\Models\UserItems\UserItemModel;
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\PostFilter;
 use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -1394,6 +1392,104 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			];
 
 			return apply_filters( 'lp/order/statuses', $order_statuses );
+		}
+
+		/**
+		 * Query list orders.
+		 *
+		 * @param PostFilter $post_filter
+		 * @param array $param [ 'author' => int, 'post_status' => string|array, 's' => string, 'm' => string, 'posts_per_page' => int, 'paged' => int, 'orderby' => string, 'order' => string ]
+		 *
+		 * @return void
+		 * @throws Exception
+		 * @since 4.3.2.8
+		 * @version 1.0.0
+		 */
+		public static function handle_params_query_list_orders( PostFilter &$post_filter, array $param = [] ) {
+			$post_db       = PostDB::getInstance();
+			$user_of_order = absint( $param['author'] ?? 0 );
+			$status        = $param['post_status'] ?? '';
+			$key           = $param['s'] ?? '';
+			$month         = $param['m'] ?? '';
+			$limit         = $param['posts_per_page'] ?? 20;
+			$paged         = $param['paged'] ?? 1;
+
+			$order_by = $param['orderby'] ?? 'date';
+			if ( empty( $order_by ) ) {
+				$order_by = 'ID';
+			} else {
+				switch ( $order_by ) {
+					case 'date':
+						$order_by = 'post_date';
+						break;
+					case 'title':
+						$order_by = 'ID';
+						break;
+				}
+			}
+
+			$order = $param['order'] ?? 'DESC';
+			// End convert params
+
+			if ( $order_by === 'order_total' ) {
+				$post_filter->join[]   = "INNER JOIN {$post_db->tb_postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
+				$post_filter->where[]  = 'AND CAST(pm2.meta_value AS UNSIGNED)';
+				$post_filter->order_by = 'pm2.meta_value';
+			} else {
+				$post_filter->order_by = $order_by;
+			}
+
+			if ( ! empty( $key ) ) {
+				$pattern          = '/^#\d+$/';
+				$is_order_id_sure = false;
+				if ( preg_match( $pattern, $key ) ) {
+					$is_order_id_sure = true;
+					$key              = str_replace( '#', '', $key );
+				}
+
+				$pattern2 = '#^0+.*\d+$#';
+				if ( preg_match( $pattern2, $key ) ) {
+					$key = (int) $key;
+				}
+
+				$key = trim( $key );
+
+				if ( $is_order_id_sure ) {
+					$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.ID = %d', $key );
+				} else {
+					$post_filter->join[]  = "INNER JOIN {$post_db->tb_lp_order_items} lpori ON p.ID = lpori.order_id";
+					$post_filter->where[] = $post_db->wpdb->prepare(
+						'AND (p.ID = %d OR lpori.order_item_name like %s)',
+						$key,
+						'%' . $key . '%'
+					);
+				}
+			}
+
+			if ( ! empty( $month ) ) {
+				$year                 = substr( $month, 0, 4 );
+				$post_filter->where[] = "AND YEAR(p.post_date) = $year";
+				if ( strlen( $month ) > 5 ) {
+					$mon                  = substr( $month, 4, 2 );
+					$post_filter->where[] = "AND MONTH(p.post_date) = $mon";
+				}
+			}
+
+			$post_filter->order = $order;
+			$post_filter->limit = $limit;
+			$post_filter->page  = $paged;
+
+			if ( ! empty( $user_of_order ) ) {
+				$user_id              = absint( $user_of_order );
+				$post_filter->join[]  = "INNER JOIN {$post_db->tb_postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
+				$post_filter->where[] = "AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id )";
+			}
+
+			if ( ! empty( $status ) && $status !== 'all' ) {
+				$post_filter->post_status = (array) $status;
+			} else {
+				$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', LP_ORDER_TRASH );
+			}
 		}
 	}
 }

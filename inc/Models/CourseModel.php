@@ -1007,10 +1007,10 @@ class CourseModel {
 	 * Get Duration of course
 	 * Timestamp in second
 	 *
-	 * @return int
+	 * @return string
 	 */
 	public function get_duration(): string {
-		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '0' );
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '10 week' );
 	}
 
 	/**
