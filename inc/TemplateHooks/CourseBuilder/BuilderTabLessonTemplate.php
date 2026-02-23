@@ -151,7 +151,17 @@ class BuilderTabLessonTemplate {
 				$html_list_lesson .= self::render_lesson( $lesson_model );
 			}
 
+			$header = '<div class="cb-list-table-header">';
+			$header .= sprintf( '<span>%s</span>', __( 'Lesson Title', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Assigned', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Status', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Preview', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Actions', 'learnpress' ) );
+			$header .= '</div>';
+
 			$sections = [
+				'header'      => $header,
 				'wrapper'     => '<ul class="cb-list-lesson">',
 				'list_lesson' => $html_list_lesson,
 				'wrapper_end' => '</ul>',

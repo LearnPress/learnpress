@@ -1,17 +1,25 @@
 @import 'frontend/global';
 
-// Layout - ClassPress style (must be first)
+// Design tokens (must be first)
+@import 'course-builder/variables';
+
+// Layout - ClassPress style
 @import 'course-builder/layout';
 
+// Shared mixins and styles
 @import 'course-builder/shared-tab-styles';
+@import 'course-builder/tab-list-shared';
 @import 'course-builder/sweet-alert';
 
+// Tab views
 @import 'course-builder/tab-courses';
 @import 'course-builder/tab-dashboard';
 @import 'course-builder/tab-quizzes';
 @import 'course-builder/tab-questions';
-@import 'course-builder/edit-course';
 @import 'course-builder/tab-lessons';
+
+// Edit views
+@import 'course-builder/edit-course';
 @import 'course-builder/edit-lesson';
 @import 'course-builder/edit-quiz';
 @import 'course-builder/edit-question';

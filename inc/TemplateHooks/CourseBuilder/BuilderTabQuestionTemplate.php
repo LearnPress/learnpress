@@ -152,7 +152,17 @@ class BuilderTabQuestionTemplate {
 				$html_list_question .= self::render_question( $question_model );
 			}
 
+			$header = '<div class="cb-list-table-header">';
+			$header .= sprintf( '<span>%s</span>', __( 'Question Title', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Assigned', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Status', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Preview', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Actions', 'learnpress' ) );
+			$header .= '</div>';
+
 			$sections = [
+				'header'        => $header,
 				'wrapper'       => '<ul class="cb-list-question">',
 				'list_question' => $html_list_question,
 				'wrapper_end'   => '</ul>',

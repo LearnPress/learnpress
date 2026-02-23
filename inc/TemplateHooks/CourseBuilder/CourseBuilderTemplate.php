@@ -742,19 +742,22 @@ class CourseBuilderTemplate {
 		$add_new = 'data-add-new-' . esc_attr( $type );
 
 		$btn_add_new = sprintf( '<button %s class="lp-button cb-btn-add-new">', $add_new );
+		$btn_close   = '</button>';
 
 		if ( 'courses' === $tab_current ) {
 			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_add_new_course( CourseBuilder::POST_NEW ) ) );
+			$btn_close   = '</a>';
 		}
 
 		if ( 'quizzes' === $tab_current ) {
 			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_add_new_quiz() ) );
+			$btn_close   = '</a>';
 		}
 
 		$btn = [
 			'wrapper'     => $btn_add_new,
 			'content'     => sprintf( '%s %s', __( 'Add New', 'learnpress' ), $title ),
-			'wrapper_end' => '</button>',
+			'wrapper_end' => $btn_close,
 		];
 
 		return Template::combine_components( $btn );

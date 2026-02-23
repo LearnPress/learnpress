@@ -1,195 +1,42 @@
+// Questions tab — uses shared tab-list mixin
+@include tab-list-styles('question');
+
+// Grid column definition for questions:
+// Title(2fr) | Assigned(1.5fr) | Create Date(1fr) | Status(100px) | Preview/Type(80px) | Actions(80px)
+$question-grid: 2fr 1.5fr 1fr 100px 80px 80px;
+
 #lp-course-builder {
-	.cb-list-question {
-		list-style: none;
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 20px;
-		padding: 0;
-	}
+	@include course-list-filter-bar;
 
-	.cb-tab-question__action {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.cb-input-search-question {
-		flex: 1;
-		border: none;
-		background: transparent;
-		outline: none;
-		font-size: 15px;
-		color: #333;
-		font-family: inherit;
-	}
-
-	.cb-input-search-question::placeholder {
-		color: #999;
-	}
-
-	.cb-tab-question__action,
+	// Table container — wraps header + list
 	.courses-builder__question-tab {
-		width: calc( 100% - 140px );
-	}
+		background: $cb-bg;
+		border: 1px solid $cb-border;
+		border-radius: $cb-radius-md;
+		overflow: hidden;
 
-	.question-action {
-		position: relative;
-		display: flex;
-		align-items: center;
-		gap: 20px;
-	}
-
-	.question-action-expanded {
-		cursor: pointer;
-		padding: 15px 20px 15px 0;
-
-		svg {
-			width: 24px;
-			height: 24px;
+		// Grid scoped to THIS tab wrapper — prevents cascade conflicts
+		.cb-list-table-header,
+		.question-item {
+			grid-template-columns: $question-grid;
 		}
 	}
 
-	.btn-edit-question {
-		background-color: #fff;
-		display: flex;
-		align-items: center;
-		text-decoration: none;
-		font-size: 16px;
-		font-weight: 500;
-		border-radius: 8px;
-		padding: 5px 15px;
-		gap: 5px;
-		border: 1px solid #1e1e1e;
-
-		svg {
-			width: 1rem;
-			height: 1rem;
-		}
-	}
-
-	.question-item {
-		display: flex;
-		flex-direction: row;
-		padding: 5px 20px;
-		background: #fff;
-		border-radius: 16px;
-		gap: 20px;
-		font-size: 16px;
-	}
-
-	.highlight-new-question {
-		box-shadow: #c8b4fb 0px 0px 20px 1px;
-	}
-
-	.question-content {
-		flex: 1;
-		display: flex;
-		flex-direction: row;
-		gap: 20px;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.question-content__left {
-		display: flex;
-		gap: 15px;
-	}
-
-	.question-content__right {
-		display: flex;
-		align-items: center;
-		gap: 25px;
-	}
-
-	.question__preview {
-		svg {
-			height: 20px;
-			width: 20px;
-		}
-	}
-
-	.wap-question-title {
-		margin-top: 0;
-		margin-bottom: 0;
-
-		button {
-			font-size: 20px;
-			background: #fff;
-			border: none;
-			text-decoration: none;
-			max-width: 234px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
+	// Remove border from inner list — container has it
+	.cb-list-question {
+		border: none;
+		border-radius: 0;
 	}
 
 	.question-status {
-		padding: 5px 12px;
-		font-size: 12px;
-		font-weight: 500;
-		border-radius: 5px;
-		text-transform: capitalize;
-
-		&.publish {
-			color: #fff;
-			background: #1e1e1e;
-		}
-
-		&.trash {
-			color: #fff;
-			background-color: #dc2626;
-		}
+		@include post-status-badge;
 	}
 
 	.question-assigned-quizzes {
-		max-width: 300px;
-		margin-right: 30px;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-
-		a {
-			text-decoration: none;
-		}
+		@include assigned-items-display;
 	}
 
 	.question-action-expanded__items {
-		display: flex;
-		position: absolute;
-		min-width: 160px;
-		top: 0;
-		right: 0;
-		transform: translate( 100%, 10px );
-		padding: 10px;
-		flex-direction: column;
-		background-color: #fff;
-		border-radius: 12px;
-		box-shadow: rgba( 0, 0, 0, 0.1 ) 0px 4px 12px;
-		font-size: 16px;
-		font-weight: 500;
-
-		&.active {
-			display: flex !important;
-		}
-
-		.question-action-expanded__duplicate,
-		.question-action-expanded__publish,
-		.question-action-expanded__trash,
-		.question-action-expanded__delete {
-			padding: 10px;
-			cursor: pointer;
-			text-decoration: none;
-			border-radius: 6px;
-
-			&:hover {
-				background-color: #f5f5f5;
-			}
-		}
-	}
-
-	.question-action-expanded:hover + .question-action-expanded__items,
-	.question-action-expanded__items:hover {
-		display: flex !important;
+		@include tab-action-items('question');
 	}
 }

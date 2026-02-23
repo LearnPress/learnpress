@@ -564,13 +564,6 @@
 // Course List Filter Bar Styles
 // Used in Courses, Lessons, Quizzes, Questions tabs
 @mixin course-list-filter-bar {
-	$filter-border: #e5e7eb;
-	$filter-bg: #fff;
-	$filter-text: #1e1e1e;
-	$filter-muted: #6b7280;
-	$filter-primary: #7067ED;
-	$filter-primary-hover: #7c3aed;
-	$filter-primary-bland: #EEF1FF;
 
 	// Row 1: Page header — title + add new button
 	.cb-tab-header {
@@ -582,7 +575,7 @@
 		.lp-cb-tab__title {
 			font-size: 28px;
 			font-weight: 600;
-			color: $filter-text;
+			color: $cb-text;
 			margin: 0;
 		}
 	}
@@ -615,8 +608,8 @@
 	.cb-filter-search {
 		display: flex;
 		align-items: center;
-		background: $filter-bg;
-		border: 1px solid $filter-border;
+		background: $cb-bg;
+		border: 1px solid $cb-border;
 		border-radius: 6px;
 		padding: 10px 14px;
 		gap: 8px;
@@ -628,10 +621,10 @@
 			background: transparent;
 			outline: none;
 			font-size: 14px;
-			color: $filter-text;
+			color: $cb-text;
 
 			&::placeholder {
-				color: $filter-muted;
+				color: $cb-text-muted;
 			}
 		}
 	}
@@ -639,18 +632,18 @@
 	// Dropdown selects
 	.cb-filter-select {
 		padding: 10px 14px;
-		border: 1px solid $filter-border;
+		border: 1px solid $cb-border;
 		border-radius: 6px;
 		font-size: 14px;
-		color: $filter-text;
-		background: $filter-bg;
+		color: $cb-text;
+		background: $cb-bg;
 		cursor: pointer;
 		min-width: 120px;
 
 		&:focus {
 			outline: none;
-			border-color: $filter-primary;
-			box-shadow: 0 0 0 3px rgba( $filter-primary, 0.1 );
+			border-color: $cb-primary;
+			box-shadow: 0 0 0 3px rgba( $cb-primary, 0.1 );
 		}
 	}
 
@@ -671,19 +664,19 @@
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.2s;
-		color: $filter-primary;
+		color: $cb-primary;
 		background: transparent;
 
 		&:hover {
-			background: $filter-primary-bland;
-			color: $filter-primary;
+			background: $cb-primary-bland;
+			color: $cb-primary;
 		}
 	}
 
 	.cb-filter-reset {
 		background: transparent;
 		border: none;
-		color: $filter-primary;
+		color: $cb-primary;
 		text-decoration: none;
 		font-size: 14px;
 		font-weight: 500;
@@ -692,8 +685,8 @@
 		border-radius: 12px;
 
 		&:hover {
-			background: $filter-primary-bland;
-			color: $filter-primary;
+			background: $cb-primary-bland;
+			color: $cb-primary;
 		}
 	}
 
@@ -702,7 +695,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
-		background: $filter-primary;
+		background: $cb-primary;
 		color: #fff;
 		padding: 10px 20px;
 		border-radius: 6px;
@@ -714,7 +707,7 @@
 		transition: background-color 0.2s;
 
 		&:hover {
-			background: $filter-primary-hover;
+			background: $cb-primary-wp-hover;
 		}
 
 		.dashicons {
@@ -754,11 +747,6 @@
 // Course Card Layout Styles
 // Used in Courses, Lessons, Quizzes, Questions list views
 @mixin course-card-layout {
-	$card-border: #e5e7eb;
-	$card-bg: #fff;
-	$card-text: #1e1e1e;
-	$card-muted: #6b7280;
-	$card-link: #3b82f6;
 
 	.cb-list-items {
 		list-style: none;
@@ -770,8 +758,8 @@
 	}
 
 	.cb-item-card {
-		background: $card-bg;
-		border: 1px solid $card-border;
+		background: $cb-bg;
+		border: 1px solid $cb-border;
 		border-radius: 12px;
 		overflow: hidden;
 		transition: all 0.3s;
@@ -834,12 +822,12 @@
 		font-weight: 600;
 
 		a {
-			color: $card-text;
+			color: $cb-text;
 			text-decoration: none;
 			transition: color 0.2s;
 
 			&:hover {
-				color: $card-link;
+				color: $cb-link;
 			}
 		}
 	}
@@ -851,7 +839,7 @@
 		gap: 8px;
 		margin-bottom: 12px;
 		font-size: 13px;
-		color: $card-muted;
+		color: $cb-text-muted;
 
 		.cb-item-author {
 			display: flex;
@@ -859,7 +847,7 @@
 			gap: 4px;
 
 			a {
-				color: $card-text;
+				color: $cb-text;
 				text-decoration: none;
 				font-weight: 500;
 
@@ -875,7 +863,7 @@
 			gap: 6px;
 
 			a {
-				color: $card-link;
+				color: $cb-link;
 				text-decoration: none;
 
 				&:hover {
@@ -901,7 +889,7 @@
 			align-items: center;
 			gap: 6px;
 			font-size: 13px;
-			color: $card-muted;
+			color: $cb-text-muted;
 
 			.dashicons {
 				font-size: 14px;
@@ -915,7 +903,7 @@
 	.cb-item-price {
 		font-size: 18px;
 		font-weight: 700;
-		color: $card-link;
+		color: $cb-link;
 		margin-bottom: 8px;
 
 		&.free {
@@ -969,10 +957,10 @@
 		align-items: center;
 		gap: 6px;
 		padding: 8px 16px;
-		border: 1px solid $card-border;
+		border: 1px solid $cb-border;
 		border-radius: 6px;
-		background: $card-bg;
-		color: $card-text;
+		background: $cb-bg;
+		color: $cb-text;
 		font-size: 14px;
 		font-weight: 500;
 		text-decoration: none;
@@ -992,13 +980,13 @@
 		height: 36px;
 		border: none;
 		background: transparent;
-		color: $card-muted;
+		color: $cb-text-muted;
 		cursor: pointer;
 		border-radius: 6px;
 
 		&:hover {
 			background: #f5f5f5;
-			color: $card-text;
+			color: $cb-text;
 		}
 	}
 

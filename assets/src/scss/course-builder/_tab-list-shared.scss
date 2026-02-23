@@ -1,0 +1,335 @@
+// ============================================
+// Tab List Shared Styles
+// Single flat grid for header + body alignment
+// ============================================
+
+// Grid column definitions — shared between header and body
+// Lessons:   Title | Assigned | Create Date | Status | Preview | Actions
+// Quizzes:   Title | Assigned | Duration | Create Date | Status | Actions
+// Questions: Title | Assigned | Create Date | Status | Preview | Actions
+
+@mixin tab-list-styles($type) {
+	#lp-course-builder {
+		// Table container (on the ul)
+		.cb-list-#{$type} {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			background: $cb-bg;
+		}
+
+		.cb-tab-#{$type}__action {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.cb-input-search-#{$type} {
+			flex: 1;
+			border: none;
+			background: transparent;
+			outline: none;
+			font-size: 15px;
+			color: #333;
+			font-family: inherit;
+
+			&::placeholder {
+				color: #999;
+			}
+		}
+
+		// ===========================================
+		// Table header — grid defined per tab
+		// ===========================================
+		.cb-list-table-header {
+			display: grid;
+			align-items: center;
+			gap: 0 $cb-spacing-lg;
+			padding: 0 $cb-spacing-2xl;
+			background: $cb-bg-subtle; // #F9FAFB per workflow
+			border-bottom: 1px solid $cb-border; // #E5E7EB separator
+			min-height: 48px;
+			font-size: $cb-font-sm;
+			font-weight: 600;
+			color: $cb-text-secondary;
+
+			span {
+				white-space: nowrap;
+			}
+		}
+
+		// ===========================================
+		// Body row — grid defined per tab
+		// ===========================================
+		.#{$type}-item {
+			display: grid;
+			align-items: center;
+			gap: 0 $cb-spacing-lg;
+			padding: 0 $cb-spacing-2xl;
+			background: $cb-bg;
+			border-bottom: 1px solid $cb-border-light;
+			min-height: 64px;
+			font-size: $cb-font-md;
+			transition: background-color 0.15s ease;
+
+			&:hover {
+				background-color: $cb-bg-subtle;
+			}
+		}
+
+		li:last-child .#{$type}-item {
+			border-bottom: none;
+		}
+
+		.highlight-new-#{$type} {
+			box-shadow: $cb-shadow-highlight;
+		}
+
+		// ===========================================
+		// Flatten ALL intermediate wrappers
+		// so their children sit directly on the item grid
+		// ===========================================
+		.#{$type}-content {
+			display: contents;
+		}
+
+		.#{$type}-content__left {
+			display: contents;
+		}
+
+		.#{$type}-content__right {
+			display: contents;
+		}
+
+		// ===========================================
+		// Column cells — title
+		// ===========================================
+		.wap-#{$type}-title {
+			order: 1;
+			margin: 0;
+			min-width: 0;
+			overflow: hidden;
+
+			button,
+			a {
+				font-size: $cb-font-md;
+				font-weight: 500;
+				background: transparent;
+				border: none;
+				text-decoration: none;
+				color: $cb-text;
+				max-width: 100%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: block;
+				padding: 0;
+				cursor: pointer;
+
+				&:hover {
+					color: $cb-primary;
+				}
+			}
+		}
+
+		// ===========================================
+		// Column cells — date, duration, preview
+		// ===========================================
+		.#{$type}__date {
+			order: 3;
+			font-size: $cb-font-sm;
+			color: $cb-text-muted;
+			white-space: nowrap;
+		}
+
+		.#{$type}__duration {
+			order: 3;
+			font-size: $cb-font-sm;
+			color: $cb-text-muted;
+			white-space: nowrap;
+		}
+
+		.#{$type}__preview {
+			order: 5;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			svg {
+				height: 20px;
+				width: 20px;
+				color: $cb-text-muted;
+			}
+		}
+
+		// ===========================================
+		// Action column — stays as a single grid cell
+		// ===========================================
+		.#{$type}-action {
+			order: 6;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: $cb-spacing-sm;
+			position: relative;
+		}
+
+		.#{$type}-action-editor {
+			display: flex;
+		}
+
+		.btn-edit-#{$type} {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			text-decoration: none;
+			font-size: 0; // hide text, icon only
+			border-radius: $cb-radius;
+			background-color: transparent;
+			border: none;
+			color: $cb-text-muted;
+			cursor: pointer;
+			transition: all 0.2s;
+
+			svg {
+				width: 16px;
+				height: 16px;
+			}
+
+			&:hover {
+				background-color: $cb-bg-hover;
+				color: $cb-text;
+			}
+		}
+
+		// Three-dot expanded menu trigger
+		.#{$type}-action-expanded {
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			border-radius: $cb-radius;
+			transition: all 0.2s;
+			padding: 0;
+
+			svg {
+				width: 18px;
+				height: 18px;
+				color: $cb-text-muted;
+			}
+
+			&:hover {
+				background-color: $cb-bg-hover;
+
+				svg {
+					color: $cb-text;
+				}
+			}
+		}
+
+		// Dropdown menu
+		.#{$type}-action-expanded__items {
+			display: none;
+			position: absolute;
+			min-width: 160px;
+			top: 100%;
+			right: 0;
+			margin-top: 4px;
+			padding: $cb-spacing-sm;
+			flex-direction: column;
+			background-color: $cb-bg;
+			border-radius: $cb-radius-md;
+			box-shadow: $cb-shadow-dropdown;
+			font-size: $cb-font-md;
+			font-weight: 500;
+			z-index: 10;
+
+			&.active {
+				display: flex !important;
+			}
+		}
+	}
+}
+
+// Mixin for action-dropdown items (duplicate/publish/trash/delete)
+@mixin tab-action-items($type) {
+	.#{$type}-action-expanded__duplicate,
+	.#{$type}-action-expanded__publish,
+	.#{$type}-action-expanded__trash,
+	.#{$type}-action-expanded__delete {
+		padding: $cb-spacing-sm $cb-spacing-md;
+		cursor: pointer;
+		text-decoration: none;
+		border-radius: $cb-radius;
+		font-size: $cb-font-md;
+
+		&:hover {
+			background-color: $cb-bg-hover;
+		}
+	}
+}
+
+// Status badges — green pill style
+@mixin post-status-badge {
+	order: 4;
+	display: inline-flex;
+	align-self: center;
+	padding: 4px 12px;
+	font-size: $cb-font-sm;
+	font-weight: 500;
+	border-radius: $cb-radius-pill;
+	text-transform: capitalize;
+	white-space: nowrap;
+	width: fit-content;
+
+	&.publish {
+		color: $cb-success;
+		background: $cb-success-bg;
+	}
+
+	&.draft {
+		color: $cb-warning;
+		background: $cb-warning-bg;
+	}
+
+	&.pending {
+		color: $cb-info;
+		background: $cb-info-bg;
+	}
+
+	&.private {
+		color: #6b21a8;
+		background: #f3e8ff;
+	}
+
+	&.trash {
+		color: $cb-danger-text;
+		background: $cb-danger-bg;
+	}
+}
+
+// Assigned items display
+@mixin assigned-items-display {
+	order: 2;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	min-width: 0;
+
+	.label {
+		display: none; // hidden — header shows column label
+	}
+
+	a {
+		text-decoration: none;
+		color: $cb-link;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}

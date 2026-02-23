@@ -1,0 +1,89 @@
+// ============================================
+// Course Builder — Design Tokens
+// Single source of truth for all shared values
+// ============================================
+
+// --- Primary Palette ---
+$cb-primary:            #7067ED !default;
+$cb-primary-hover:      #5b52d1 !default;
+$cb-primary-bland:      #EEF1FF !default;
+$cb-primary-wp-hover:   #7c3aed !default;
+
+// --- Text ---
+$cb-text:               #1e1e1e !default;
+$cb-text-muted:         #6b7280 !default;
+$cb-text-label:         #1a1a1a !default;
+$cb-text-secondary:     #374151 !default;
+$cb-text-placeholder:   #9ca3af !default;
+$cb-text-subtle:        #898989 !default;
+
+// --- Links ---
+$cb-link:               #2E91FA !default;
+
+// --- Borders ---
+$cb-border:             #e5e7eb !default;
+$cb-border-light:       #f5f5f5 !default;
+$cb-border-input:       #d1d5db !default;
+
+// --- Backgrounds ---
+$cb-bg:                 #ffffff !default;
+$cb-bg-hover:           #f5f5f5 !default;
+$cb-bg-subtle:          #f9fafb !default;
+$cb-bg-card:            #ffffff !default;
+
+// --- Semantic: Status ---
+$cb-success:            #28A746 !default;
+$cb-success-bg:         #E7F6E9 !default;
+$cb-danger:             #dc2626 !default;
+$cb-danger-bg:          #fee2e2 !default;
+$cb-danger-text:        #991b1b !default;
+$cb-danger-dark:        rgb(185, 28, 28) !default;
+$cb-warning:            #AAAAAA !default;
+$cb-warning-bg:         #F7F7F7 !default;
+$cb-info:               #1e40af !default;
+$cb-info-bg:            #dbeafe !default;
+$cb-badge-blue:         #3b82f6 !default;
+$cb-featured:           #ffd700 !default;
+$cb-price-red:          #E31A1B !default;
+
+// --- Shadows ---
+$cb-shadow-sm:          0 1px 3px rgba(0, 0, 0, 0.05) !default;
+$cb-shadow-md:          0 2px 8px rgba(0, 0, 0, 0.06) !default;
+$cb-shadow-lg:          0 4px 12px rgba(0, 0, 0, 0.1) !default;
+$cb-shadow-dropdown:    0 4px 12px rgba(0, 0, 0, 0.1) !default;
+$cb-shadow-highlight:   #c8b4fb 0px 0px 20px 1px !default;
+$cb-focus-ring:         0 0 0 3px rgba(59, 130, 246, 0.1) !default;
+
+// --- Spacing ---
+$cb-spacing-xs:         4px !default;
+$cb-spacing-sm:         8px !default;
+$cb-spacing-md:         12px !default;
+$cb-spacing-lg:         16px !default;
+$cb-spacing-xl:         20px !default;
+$cb-spacing-2xl:        24px !default;
+$cb-spacing-3xl:        30px !default;
+
+// --- Border Radius ---
+$cb-radius-sm:          4px !default;
+$cb-radius:             6px !default;
+$cb-radius-md:          8px !default;
+$cb-radius-lg:          12px !default;
+$cb-radius-xl:          16px !default;
+$cb-radius-pill:        20px !default;
+
+// --- Typography ---
+$cb-font-xs:            11px !default;
+$cb-font-sm:            12px !default;
+$cb-font-base:          13px !default;
+$cb-font-md:            14px !default;
+$cb-font-lg:            16px !default;
+$cb-font-xl:            18px !default;
+$cb-font-2xl:           20px !default;
+$cb-font-3xl:           24px !default;
+$cb-font-4xl:           28px !default;
+
+// --- Layout ---
+$cb-top-header-height:  60px !default;
+$cb-sidebar-width:      260px !default;
+$wp-adminbar-height:    32px !default;
+$wp-adminbar-height-mobile: 46px !default;

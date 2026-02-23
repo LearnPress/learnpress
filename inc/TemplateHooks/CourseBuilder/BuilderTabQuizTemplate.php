@@ -152,7 +152,17 @@ class BuilderTabQuizTemplate {
 				$html_list_quiz .= self::render_quiz( $quiz_model );
 			}
 
+			$header = '<div class="cb-list-table-header">';
+			$header .= sprintf( '<span>%s</span>', __( 'Quiz Title', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Assigned', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Duration', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Status', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Actions', 'learnpress' ) );
+			$header .= '</div>';
+
 			$sections = [
+				'header'      => $header,
 				'wrapper'     => '<ul class="cb-list-quiz">',
 				'list_quiz'   => $html_list_quiz,
 				'wrapper_end' => '</ul>',

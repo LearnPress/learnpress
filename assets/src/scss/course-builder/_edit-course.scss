@@ -2417,6 +2417,13 @@ ul.lp-meta-box__course-tab__tabs {
 			opacity: 1;
 		}
 
+		// Hide preview button for non-lesson items (quiz, assignment, etc.)
+		.section-item:not(.lp_lesson) {
+			.lp-btn-set-preview-item {
+				display: none;
+			}
+		}
+
 		.section-actions {
 			margin-top: 15px;
 			display: flex;
