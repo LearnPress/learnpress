@@ -1,4 +1,4 @@
-import { ExportOrdersToCSV } from "./orders/export_orders";
+import { ExportOrdersToCSV } from "./orders/export-orders";
 
 ExportOrdersToCSV();
 

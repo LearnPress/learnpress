@@ -5,12 +5,15 @@ namespace LearnPress\Ajax;
 use Exception;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserModel;
+use LP_Datetime;
 use LP_Helper;
 use LP_Order;
 use LP_Request;
 use LP_REST_Response;
+use LP_WP_Filesystem;
 use Throwable;
 
 /**
@@ -23,7 +26,7 @@ use Throwable;
  */
 class ExportOrderCSVAjax extends AbstractAjax {
 	/**
-	 * Export orders to CSV file
+	 * Export orders to CSV file, action call from js file: export-order.js
 	 *
 	 * @return void
 	 */
@@ -53,7 +56,7 @@ class ExportOrderCSVAjax extends AbstractAjax {
 			$lp_orders  = $post_db->get_posts( $filter, $total_rows );
 
 			if ( count( $lp_orders ) > 0 ) {
-				$file   = $this->get_export_csv_path( $export_id );
+				$file   = self::get_export_csv_path( $export_id );
 				$handle = fopen( $file, $paged === 1 ? 'w' : 'a' );
 
 				if ( $paged === 1 ) {
@@ -61,13 +64,16 @@ class ExportOrderCSVAjax extends AbstractAjax {
 					fputcsv(
 						$handle,
 						[
-							'Order',
-							'Student',
-							'Purchased',
-							'Date',
-							'Total',
-							'Status',
-						]
+							__( 'Order', 'learnpress' ),
+							__( 'Student', 'learnpress' ),
+							__( 'Purchased', 'learnpress' ),
+							__( 'Date', 'learnpress' ),
+							__( 'Total', 'learnpress' ),
+							__( 'Status', 'learnpress' ),
+						],
+						',',
+						'"',
+						'\\',
 					);
 				}
 
@@ -77,17 +83,19 @@ class ExportOrderCSVAjax extends AbstractAjax {
 					if ( ! $order ) {
 						continue;
 					}
-					$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() ?? learn_press_get_currency() );
 					fputcsv(
 						$handle,
 						[
 							$order->get_order_number(),
 							$this->get_order_users( $order ),
 							$this->get_order_items( $order ),
-							get_post_field( 'post_date', $order_id ),
-							html_entity_decode( learn_press_format_price( $order->get_data( 'order_total' ), $currency_symbol ), ENT_QUOTES, 'UTF-8' ),
+							$order->get_order_date( 'edit' )->format( LP_Datetime::I18N_FORMAT_HAS_TIME ),
+							$order->get_formatted_order_total(),
 							LP_Order::get_status_label( $order->get_status() ),
-						]
+						],
+						',',
+						'"',
+						'\\',
 					);
 				}
 
@@ -126,11 +134,13 @@ class ExportOrderCSVAjax extends AbstractAjax {
 	}
 
 	/**
-	 * @param $export_id
+	 * Get export CSV file path
+	 *
+	 * @param string $export_id
 	 *
 	 * @return string
 	 */
-	public function get_export_csv_path( $export_id ) {
+	public static function get_export_csv_path( string $export_id = '' ): string {
 		$upload = wp_upload_dir();
 		$dir    = $upload['basedir'] . '/lp-order-export';
 
@@ -142,33 +152,42 @@ class ExportOrderCSVAjax extends AbstractAjax {
 	}
 
 	/**
-	 * @param $order
+	 * @param LP_Order $order
 	 *
 	 * @return string|null
 	 */
 	public function get_order_users( $order ) {
-		$user_ids = $order->get_users();
+		$user_ids       = $order->get_users();
+		$checkout_email = $order->get_checkout_email();
 
-		if ( $user_ids ) {
+		if ( $order->is_manual() && empty( $user_ids ) ) {
+			return __( '(No customer)', 'learnpress' );
+		} else {
 			$outputs = array();
 			foreach ( $user_ids as $user_id ) {
-				if ( get_user_by( 'id', $user_id ) ) {
-					$user      = learn_press_get_user( $user_id );
+				$userModel = UserModel::find( $user_id, true );
+				if ( $userModel ) {
 					$outputs[] = sprintf(
 						'%s (#%d)',
-						$user->get_data( 'user_login' ),
+						$userModel->get_display_name(),
 						$user_id,
 					);
+				} elseif ( $user_id > 0 ) {
+					$outputs[] = sprintf(
+						__( 'User #%d (Deleted)', 'learnpress' ),
+						$user_id,
+					);
+				} elseif ( ! empty( $checkout_email ) ) {
+					$outputs[] = sprintf(
+						'%s',
+						$order->get_checkout_email(),
+					);
 				} else {
-					if ( sizeof( $user_ids ) == 1 ) {
-						$outputs[] = $order->get_customer_name();
-					}
+					$outputs[] = __( '(Guest)', 'learnpress' );
 				}
 			}
 
 			return join( ', ', $outputs );
-		} else {
-			return __( '(Guest)', 'learnpress' );
 		}
 	}
 
@@ -197,22 +216,11 @@ class ExportOrderCSVAjax extends AbstractAjax {
 					$item_type = LP_COURSE_CPT;
 				}
 
-				if ( $item_type === LP_COURSE_CPT ) {
-					$coursePostModel = CoursePostModel::find_by_id( $item_id, true );
-					$order_item_str .= sprintf(
-						'%s (#%d)',
-						esc_html( $item_name ),
-						$coursePostModel ? $coursePostModel->get_id() : __( 'The course does not exist now.', 'learnpress' )
-					);
-
-				} else {
-					$order_item_str .= sprintf(
-						'%s (#%d)',
-						esc_html( $item_name ),
-						$item_id
-					);
-
-				}
+				$order_item_str .= sprintf(
+					'%s (#%d)',
+					esc_html( $item_name ),
+					$item_id
+				);
 
 				if ( $i < $total_items && $total_items > 1 ) {
 					$order_item_str .= '|';

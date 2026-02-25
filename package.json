@@ -58,7 +58,6 @@
 		"sass": "1.78.0",
 		"stylelint": "^15.11.0",
 		"stylelint-order": "^6.0.3",
-		"webpack": "5.94.0",
 		"node-notifier": "10.0.1"
 	},
 	"_comment": "sweetalert2 11.22.2 source origin but denied domain .ru, .su, .by, and .рф.",

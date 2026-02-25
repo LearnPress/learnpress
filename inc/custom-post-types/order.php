@@ -7,6 +7,7 @@
  * @version 1.0.2
  */
 
+use LearnPress\Ajax\ExportOrderCSVAjax;
 use LearnPress\Databases\DataBase;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
@@ -830,15 +831,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @return void
 		 */
 		public function download_order_csv_file() {
-			if ( ! isset( $_GET['lp_download_order'] ) || ! isset( $_GET['export_id'] ) ) {
+			$export_id = LP_Request::get_param( 'export_id', '', 'key' );
+			if ( ! isset( $_GET['lp_download_order'] ) || empty( $export_id ) ) {
 				return;
 			}
 
-			$export_id = sanitize_key( $_GET['export_id'] );
-
-			$upload = wp_upload_dir();
-			$file   = $upload['basedir'] . "/lp-order-export/orders-{$export_id}.csv";
-
+			$file = ExportOrderCSVAjax::get_export_csv_path( $export_id );
 			if ( ! file_exists( $file ) ) {
 				wp_die( __( 'File not found', 'learnpress' ) );
 			} elseif ( ! realpath( $file ) ) {
