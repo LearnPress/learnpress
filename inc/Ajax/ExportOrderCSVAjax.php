@@ -5,15 +5,12 @@ namespace LearnPress\Ajax;
 use Exception;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
-use LearnPress\Models\CourseModel;
-use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserModel;
 use LP_Datetime;
 use LP_Helper;
 use LP_Order;
 use LP_Request;
 use LP_REST_Response;
-use LP_WP_Filesystem;
 use Throwable;
 
 /**

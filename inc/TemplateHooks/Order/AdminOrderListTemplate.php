@@ -9,7 +9,7 @@ use LP_Helper;
 /**
  * class AdminOrderListTemplate
  *
- * @since 4.3.2
+ * @since 4.3.2.8
  * @version 1.0.0
  */
 class AdminOrderListTemplate {
