@@ -145,7 +145,7 @@ class ExportOrderCSVAjax extends AbstractAjax {
 			wp_mkdir_p( $dir );
 		}
 
-		return $dir . "/orders-{$export_id}.csv";
+		return $dir . "/lp-orders-{$export_id}.csv";
 	}
 
 	/**

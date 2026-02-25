@@ -32,7 +32,7 @@ class AdminOrderListTemplate {
 
 		$order_data = [
 			'action'    => 'export_order_csv',
-			'export_id' => time(),
+			'export_id' => time() . '-' . uniqid(),
 		];
 
 		$data_get   = LP_Helper::sanitize_params_submitted( $_GET );
