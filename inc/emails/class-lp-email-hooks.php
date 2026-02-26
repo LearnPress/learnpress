@@ -15,9 +15,6 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 	 * @uses SendEmailAjax::send_mail_order_status_update_to_completed
 	 * @uses SendEmailAjax::send_mail_order_status_update_to_cancelled
 	 * @uses SendEmailAjax::send_mail_user_course_finished
-	 * @uses SendEmailAjax::send_mail_become_a_teacher_request
-	 * @uses SendEmailAjax::send_mail_become_a_teacher_accept
-	 * @uses SendEmailAjax::send_mail_become_a_teacher_deny
 	 */
 	class LP_Email_Hooks {
 		protected static $instance;
@@ -42,10 +39,6 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 					'learn-press/order/status-cancelled' => 'send_mail_order_status_update_to_cancelled',
 					// Finished course
 					'learn-press/user-course-finished'   => 'send_mail_user_course_finished',
-					// User become a teacher
-					'learn-press/become-a-teacher-sent'  => 'send_mail_become_a_teacher_request',
-					'learn-press/user-become-a-teacher-accept' => 'send_mail_become_a_teacher_accept',
-					'learn-press/user-become-a-teacher-deny' => 'send_mail_become_a_teacher_deny',
 				]
 			);
 

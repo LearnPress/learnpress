@@ -5,6 +5,7 @@
  * @version 1.0.2
  */
 
+use LearnPress\Background\LPBackgroundAjax;
 use LearnPress\Models\CourseModel;
 
 defined( 'ABSPATH' ) || exit;
@@ -549,10 +550,30 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					$be_teacher = new WP_User( $user_id );
 					$be_teacher->set_role( LP_TEACHER_ROLE );
 
+					/**
+					 * Send email to user when admin accept user become a teacher
+					 * @use SendEmailAjax::send_mail_become_a_teacher_accept
+					 */
+					$data_send = [
+						'params'       => [ $user_data->user_email ],
+						'lp-load-ajax' => 'send_mail_become_a_teacher_accept',
+					];
+					LPBackgroundAjax::handle( $data_send );
+
 					do_action( 'learn-press/user-become-a-teacher-accept', $user_data->user_email );
 					wp_redirect( admin_url( 'users.php?lp-action=accepted-request&user_id=' . $user_id ) );
 					exit();
 				case 'deny-request':
+					/**
+					 * Send email to user when admin accept user become a teacher
+					 * @use SendEmailAjax::send_mail_become_a_teacher_deny
+					 */
+					$data_send = [
+						'params'       => [ $user_data->user_email ],
+						'lp-load-ajax' => 'send_mail_become_a_teacher_deny',
+					];
+					LPBackgroundAjax::handle( $data_send );
+
 					do_action( 'learn-press/user-become-a-teacher-deny', $user_data->user_email );
 					wp_redirect( admin_url( 'users.php?lp-action=denied-request&user_id=' . $user_id ) );
 					exit();

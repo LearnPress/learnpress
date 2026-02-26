@@ -10,6 +10,8 @@ namespace LearnPress\Ajax;
 
 use Exception;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
+use LP_Debug;
 use LP_Email;
 use LP_Email_Become_An_Instructor;
 use LP_Email_Cancelled_Order_Admin;
@@ -321,12 +323,17 @@ class SendEmailAjax extends AbstractAjax {
 	 * Send mail when admin accept user become a teacher
 	 *
 	 * @since 4.2.9.1
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function send_mail_become_a_teacher_accept() {
 		$response = new LP_REST_Response();
 
 		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+				return;
+			}
+
 			$data_send = LP_Helper::sanitize_params_submitted( $_POST['params'] ?? [] );
 
 			$email = new LP_Email_Instructor_Accepted();
@@ -334,6 +341,7 @@ class SendEmailAjax extends AbstractAjax {
 		} catch ( Throwable $e ) {
 			$response->status  = 'error';
 			$response->message = $e->getMessage();
+			LP_Debug::error_log( $e );
 		}
 
 		wp_send_json( $response );
@@ -349,6 +357,11 @@ class SendEmailAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+				return;
+			}
+
 			$data_send = LP_Helper::sanitize_params_submitted( $_POST['params'] ?? [] );
 
 			$email = new LP_Email_Instructor_Denied();
@@ -356,6 +369,7 @@ class SendEmailAjax extends AbstractAjax {
 		} catch ( Throwable $e ) {
 			$response->status  = 'error';
 			$response->message = $e->getMessage();
+			LP_Debug::error_log( $e );
 		}
 
 		wp_send_json( $response );
