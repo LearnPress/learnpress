@@ -70,44 +70,61 @@ export class BuilderTabCourse {
 
 		if ( ! elCourseItem ) return;
 
-		lpUtils.lpSetLoadingEl( elCourseDuplicate, 1 );
-
 		const courseId = elCourseItem.dataset.courseId || '';
 
-		const dataSend = {
-			action: 'duplicate_course',
-			args: { id_url: 'duplicate-course' },
-			course_id: courseId,
-		};
+		if ( ! courseId ) {
+			return;
+		}
 
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message, status );
+		SweetAlert.fire( {
+			title: elCourseDuplicate.dataset.title,
+			text: elCourseDuplicate.dataset.content,
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} ).then( ( result ) => {
+			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elCourseDuplicate, 1 );
 
-				if ( data?.html ) {
-					const elCourse = elCourseDuplicate.closest( '.course' );
-					elCourse.insertAdjacentHTML( 'afterend', data.html );
+				const dataSend = {
+					action: 'duplicate_course',
+					args: { id_url: 'duplicate-course' },
+					course_id: courseId,
+				};
 
-					const newCourse = elCourse.nextElementSibling;
-					if ( newCourse ) {
-						newCourse.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
-						newCourse.classList.add( 'highlight-new-course' );
-						setTimeout( () => {
-							newCourse.classList.remove( 'highlight-new-course' );
-						}, 1500 );
-					}
-				}
-			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elCourseDuplicate, 0 );
-			},
-		};
+				const callBack = {
+					success: ( response ) => {
+						const { status, message, data } = response;
+						lpToastify.show( message, status );
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+						if ( data?.html ) {
+							const elCourse = elCourseDuplicate.closest( '.course' );
+							elCourse.insertAdjacentHTML( 'afterend', data.html );
+
+							const newCourse = elCourse.nextElementSibling;
+							if ( newCourse ) {
+								newCourse.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+								newCourse.classList.add( 'highlight-new-course' );
+								setTimeout( () => {
+									newCourse.classList.remove( 'highlight-new-course' );
+								}, 1500 );
+							}
+						}
+					},
+					error: ( error ) => {
+						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elCourseDuplicate, 0 );
+					},
+				};
+
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}
+		} );
 	}
 
 	trashCourse( args ) {

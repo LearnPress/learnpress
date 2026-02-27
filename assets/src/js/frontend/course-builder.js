@@ -15,6 +15,7 @@ import { BuilderTabQuestion } from './course-builder/builder-question/builder-ta
 import { BuilderEditQuestion } from './course-builder/builder-question/builder-edit-question.js';
 import { BuilderPopup } from './course-builder/builder-popup.js';
 import { BuilderMaterial } from './course-builder/builder-lesson/builder-material.js';
+import { BuilderDashboard } from './course-builder/builder-dashboard.js';
 import { BuilderFormState, getFormState } from './course-builder/builder-form-state.js';
 import { initElsTomSelect } from 'lpAssetsJsPath/admin/init-tom-select.js';
 import { Utils } from 'lpAssetsJsPath/admin/utils-admin.js';
@@ -31,6 +32,7 @@ const initBuilderComponents = () => {
 		new BuilderTabQuestion();
 		new BuilderEditQuestion();
 		new BuilderPopup();
+		new BuilderDashboard();
 		
 		// Initialize form state management for ClassPress-style UX
 		getFormState();

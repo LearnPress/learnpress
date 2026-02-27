@@ -257,21 +257,49 @@
 
 // Mixin for action-dropdown items (duplicate/publish/trash/delete)
 @mixin tab-action-items($type) {
-	.#{$type}-action-expanded__duplicate,
-	.#{$type}-action-expanded__publish,
-	.#{$type}-action-expanded__trash,
-	.#{$type}-action-expanded__delete {
-		padding: $cb-spacing-sm $cb-spacing-md;
-		cursor: pointer;
-		text-decoration: none;
-		border-radius: $cb-radius;
-		font-size: $cb-font-md;
+	display: none;
+	position: absolute;
+	min-width: 160px;
+	top: 0;
+	right: 0;
+	transform: translate(15px, -15px);
+	padding: 10px;
+	flex-direction: column;
+	background-color: $cb-bg;
+	border-radius: $cb-radius-lg;
+	box-shadow: $cb-shadow-dropdown;
+	font-size: $cb-font-lg;
+	font-weight: 500;
+	z-index: 100;
 
-		&:hover {
-			background-color: $cb-bg-hover;
+	&.active {
+		display: flex !important;
+	}
+
+		.#{$type}-action-expanded__duplicate,
+		.#{$type}-action-expanded__publish,
+		.#{$type}-action-expanded__trash,
+		.#{$type}-action-expanded__delete  {
+			padding: 10px;
+			cursor: pointer;
+			text-decoration: none;
+			border-radius: $cb-radius;
+			color: $cb-text;
+
+			&:hover {
+				background-color: $cb-bg-hover;
+			}
+		}
+
+		.#{$type}-action-expanded__trash,
+		.#{$type}-action-expanded__delete {
+			color: #ef4444;
+
+			&:hover {
+				background-color: #fef2f2;
+			}
 		}
 	}
-}
 
 // Status badges — green pill style
 @mixin post-status-badge {

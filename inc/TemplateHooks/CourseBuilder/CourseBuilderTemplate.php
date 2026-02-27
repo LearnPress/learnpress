@@ -28,6 +28,8 @@ class CourseBuilderTemplate {
 		add_action( 'admin_bar_menu', array( $this, 'add_admin_bar_menu' ), 80 );
 		// Hide admin bar for instructor (not admin)
 		add_filter( 'show_admin_bar', [ $this, 'hide_admin_bar_for_instructor' ] );
+		// Dequeue theme styles on Course Builder page (must run during wp_head, not after)
+		add_action( 'wp_enqueue_scripts', [ $this, 'dequeue_theme_styles' ], 9999 );
 	}
 
 	/**
@@ -124,6 +126,7 @@ class CourseBuilderTemplate {
 	 * @version 1.0.0
 	 */
 	protected function enqueue_assets() {
+
 		wp_enqueue_style( 'lp-course-builder' );
 		// Load dashicons for sidebar icons
 		wp_enqueue_style( 'dashicons' );
@@ -139,6 +142,59 @@ class CourseBuilderTemplate {
 			$localize_data = $lp_assets->localize_data_global();
 			LP_Helper::print_inline_script_tag( 'lpData', $localize_data, [ 'id' => 'lpData-course-builder' ] );
 		}*/
+	}
+
+	/**
+	 * Auto-detect and dequeue all theme/child-theme stylesheets.
+	 * Prevents theme CSS from interfering with Course Builder styles.
+	 *
+	 * Hooked to `wp_enqueue_scripts` at priority 9999 so it runs DURING wp_head(),
+	 * after themes have enqueued their styles but before they are printed.
+	 *
+	 * Only removes styles whose source URL is within the theme or child-theme directory.
+	 * WP core styles, plugin styles, and other assets remain untouched.
+	 *
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public function dequeue_theme_styles() {
+		global $wp_query, $wp_styles;
+
+		// Only run on Course Builder page
+		if ( empty( $wp_query ) || ! $wp_query->get( 'is_course_builder' ) ) {
+			return;
+		}
+
+		if ( ! $wp_styles instanceof \WP_Styles ) {
+			return;
+		}
+
+		$theme_uri = get_template_directory_uri();
+		$child_uri = get_stylesheet_directory_uri();
+
+		// Whitelist: styles that should NEVER be dequeued even if from theme dir
+		$whitelist = apply_filters( 'learn-press/course-builder/theme-styles-whitelist', [] );
+
+		foreach ( $wp_styles->registered as $handle => $style ) {
+			// Skip whitelisted handles
+			if ( in_array( $handle, $whitelist, true ) ) {
+				continue;
+			}
+
+			$src = $style->src ?? '';
+			if ( empty( $src ) ) {
+				continue;
+			}
+
+			// Check if style source is from theme or child-theme directory
+			if (
+				false !== strpos( $src, $theme_uri ) ||
+				( $child_uri !== $theme_uri && false !== strpos( $src, $child_uri ) )
+			) {
+				wp_dequeue_style( $handle );
+				wp_deregister_style( $handle );
+			}
+		}
 	}
 
 	/**
@@ -659,12 +715,25 @@ class CourseBuilderTemplate {
 		do_action( "learn-press/course-builder/{$tab}/layout" );
 		$content = ob_get_clean();
 
-		$tab = [
+		$tab_slug = $tab; // preserve slug before overwriting
+
+		$sections = [
 			'wrapper'     => '<div class="lp-course-builder-content__tab">',
-			'title'       => sprintf( '<h3 class="lp-cb-tab__title">%s</h3>', $title ),
 			'content'     => $content,
 			'wrapper_end' => '</div>',
 		];
+
+		// Only add generic title for non-courses tabs
+		// The courses tab renders its own title inside BuilderTabCourseTemplate
+		if ( 'courses' !== $tab_slug ) {
+			$sections = array_merge(
+				[ 'wrapper' => $sections['wrapper'] ],
+				[ 'title'   => sprintf( '<h3 class="lp-cb-tab__title">%s</h3>', $title ) ],
+				[ 'content' => $sections['content'], 'wrapper_end' => $sections['wrapper_end'] ]
+			);
+		}
+
+		$tab = $sections;
 
 		return Template::combine_components( $tab );
 	}

@@ -80,7 +80,7 @@ class BuilderTabQuizTemplate {
 				return '';
 			}
 
-			if ( $userModel->is_instructor() ) {
+			if ( ! user_can( $user_id, 'administrator' ) ) {
 				$query_args['author'] = $user_id;
 			}
 
@@ -155,6 +155,7 @@ class BuilderTabQuizTemplate {
 			$header = '<div class="cb-list-table-header">';
 			$header .= sprintf( '<span>%s</span>', __( 'Quiz Title', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Assigned', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Questions', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Duration', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Status', 'learnpress' ) );
@@ -248,6 +249,7 @@ class BuilderTabQuizTemplate {
 					'wrapper_left_end'  => '</div>',
 					'wrapper_right'     => '<div class="quiz-content__right">',
 					'courses'           => $html_courses,
+					'total_questions'   => sprintf( '<span class="quiz__total-questions">%d</span>', $quiz_model->count_questions() ),
 					'duration'          => sprintf( '<span class="quiz__duration">%s</span>', $quiz['duration'] ),
 					'date'              => sprintf( '<span class="quiz__date">%s</span>', date_i18n( 'm/d/Y', strtotime( $quiz['date_modified'] ?? '' ) ) ),
 					'wrapper_right_end' => '</div>',
@@ -269,7 +271,7 @@ class BuilderTabQuizTemplate {
 					),
 					'action_expanded_button'      => '<div class="quiz-action-expanded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></div>',
 					'action_expanded_wrapper'     => '<div style="display:none;" class="quiz-action-expanded__items">',
-					'action_expanded_duplicate'   => sprintf( '<span class="quiz-action-expanded__duplicate">%s</span>', __( 'Duplicate', 'learnpress' ) ),
+					'action_expanded_duplicate'   => sprintf( '<span class="quiz-action-expanded__duplicate" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to duplicate this quiz?', 'learnpress' ), __( 'Duplicate', 'learnpress' ) ),
 					'action_expanded_publish'     => sprintf( '<span class="quiz-action-expanded__publish">%s</span>', __( 'Publish', 'learnpress' ) ),
 					'action_expanded_trash'       => sprintf( '<span class="quiz-action-expanded__trash">%s</span>', __( 'Trash', 'learnpress' ) ),
 					'action_expanded_delete'      => sprintf( '<span class="quiz-action-expanded__delete">%s</span>', __( 'Delete', 'learnpress' ) ),

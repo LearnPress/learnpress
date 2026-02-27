@@ -408,27 +408,7 @@ body.lp-popup-open {
 	.question-status,
 	.quiz-status,
 	.quizzes-status {
-		padding: 5px 12px;
-		font-size: 12px;
-		font-weight: 500;
-		background: #f3f4f6;
-		border-radius: 5px;
-		text-transform: capitalize;
-
-		&.publish {
-			color: #fff;
-			background: #1e1e1e;
-		}
-
-		&.draft {
-			color: #1a1a1a;
-			background: #fbbf24;
-		}
-
-		&.trash {
-			color: #fff;
-			background-color: #dc2626;
-		}
+		@include post-status-badge;
 	}
 
 	.cb-section__header {

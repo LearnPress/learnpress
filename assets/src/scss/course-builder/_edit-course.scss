@@ -1500,7 +1500,7 @@ li.children-visible > label > .lp-cat-toggle {
 
 			&:focus {
 				outline: none;
-				box-shadow: 0 0 0 3px rgba(34, 113, 177, 0.1);
+				box-shadow: none;
 			}
 
 			&:disabled {
@@ -1698,12 +1698,41 @@ li.children-visible > label > .lp-cat-toggle {
 	#general_course_data {
 		._lp_duration_field,
 		._lp_course_repurchase_option_field,
-		._lp_external_link_buy_course_field {
+		._lp_external_link_buy_course_field,
+		._lp_level_field {
 			flex-wrap: wrap;
 
 			.description {
 				width: 100%;
 				margin-left: 165px;
+				margin-top: 6px;
+			}
+		}
+
+		.form-field:has(input[type="number"]),
+		.form-field:has(input[type="text"]) {
+			flex-wrap: wrap;
+
+			.description {
+				width: 100%;
+				margin-left: 165px;
+				margin-top: 6px;
+			}
+		}
+
+		._lp_featured_review_field {
+			align-items: flex-start;
+			flex-wrap: wrap;
+
+			textarea {
+				width: calc(100% - 165px);
+			}
+
+			.description {
+				width: 100%;
+				margin-left: 165px;
+				order: 3;
+				margin-top: 6px;
 			}
 		}
 	}

@@ -1,0 +1,24 @@
+// ============================================
+// Course Builder — Lightweight Defensive Reset
+// Only sets base inherited properties (font, color)
+// and box-sizing. Theme styles are primarily handled
+// by PHP dequeue in CourseBuilderTemplate::dequeue_theme_styles()
+// ============================================
+
+#lp-course-builder {
+	// Base typography — override any theme <body> inheritance
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+		Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+	font-size: 14px;
+	line-height: 1.5;
+	color: $cb-text;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	// Enforce box-sizing for all children
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+}

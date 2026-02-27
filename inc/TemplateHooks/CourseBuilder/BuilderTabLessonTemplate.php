@@ -275,7 +275,7 @@ class BuilderTabLessonTemplate {
 					),
 					'action_expanded_button'      => '<div class="lesson-action-expanded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></div>',
 					'action_expanded_wrapper'     => '<div style="display:none;" class="lesson-action-expanded__items">',
-					'action_expanded_duplicate'   => sprintf( '<span class="lesson-action-expanded__duplicate">%s</span>', __( 'Duplicate', 'learnpress' ) ),
+					'action_expanded_duplicate'   => sprintf( '<span class="lesson-action-expanded__duplicate" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to duplicate this lesson?', 'learnpress' ), __( 'Duplicate', 'learnpress' ) ),
 					'action_expanded_publish'     => sprintf( '<span class="lesson-action-expanded__publish">%s</span>', __( 'Publish', 'learnpress' ) ),
 					'action_expanded_trash'       => sprintf( '<span class="lesson-action-expanded__trash">%s</span>', __( 'Trash', 'learnpress' ) ),
 					'action_expanded_delete'      => sprintf( '<span class="lesson-action-expanded__delete" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to delete this lesson? This action cannot be undone.', 'learnpress' ), __( 'Delete', 'learnpress' ) ),

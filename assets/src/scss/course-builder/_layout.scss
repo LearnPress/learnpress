@@ -49,7 +49,7 @@ $cb-card-bg: $cb-bg-card !default;
 // ===========================================
 // TOP HEADER - Logo left, User profile right
 // ===========================================
-.lp-cb-top-header {
+#lp-course-builder .lp-cb-top-header {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -393,7 +393,7 @@ $cb-card-bg: $cb-bg-card !default;
 	margin-left: $cb-sidebar-width !important;
 	margin-top: $cb-top-header-height !important;
 	min-height: calc( 100vh - #{$cb-top-header-height} );
-	padding: 0 24px !important;
+	padding: 0 24px 24px !important;
 	background: $cb-bg !important;
 	border-radius: 0 !important;
 	width: calc( 100% - #{$cb-sidebar-width} ) !important;
@@ -483,7 +483,7 @@ html:has( #wpadminbar ) {
 // ===========================================
 // HEADER (Title + Actions) - For detail view
 // ===========================================
-.lp-cb-header {
+#lp-course-builder .lp-cb-header {
 	position: sticky;
 	top: $cb-top-header-height;
 	z-index: 99;
@@ -628,7 +628,7 @@ html:has( #wpadminbar ) {
 // ===========================================
 // HORIZONTAL TABS
 // ===========================================
-.lp-cb-tabs {
+#lp-course-builder .lp-cb-tabs {
 	display: flex;
 	border-bottom: 1px solid $cb-border-light;
 	padding: 0 12px;
@@ -665,7 +665,7 @@ html:has( #wpadminbar ) {
 // ===========================================
 // TAB CONTENT - Show action buttons in Overview
 // ===========================================
-.lp-cb-tab-content {
+#lp-course-builder .lp-cb-tab-content {
 	padding: 0;
 	background: $cb-card-bg;
 	border-radius: 0 0 $cb-radius-md $cb-radius-md;
@@ -780,7 +780,7 @@ html:has( #wpadminbar ) {
 // ===========================================
 // FOOTER - Trash/Delete actions
 // ===========================================
-.lp-cb-footer {
+#lp-course-builder .lp-cb-footer {
 	padding: 20px 0;
 	border-top: 1px solid $cb-border-light;
 	background: $cb-card-bg;

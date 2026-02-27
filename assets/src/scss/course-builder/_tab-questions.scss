@@ -3,7 +3,7 @@
 
 // Grid column definition for questions:
 // Title(2fr) | Assigned(1.5fr) | Create Date(1fr) | Status(100px) | Preview/Type(80px) | Actions(80px)
-$question-grid: 2fr 1.5fr 1fr 100px 80px 80px;
+$question-grid: 2fr 1.5fr 1fr 100px 100px 80px;
 
 #lp-course-builder {
 	@include course-list-filter-bar;
