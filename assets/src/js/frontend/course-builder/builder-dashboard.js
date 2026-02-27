@@ -61,7 +61,7 @@ export class BuilderDashboard {
 		return gradient;
 	}
 
-	getChartConfig( labels, data, color, prefix = '' ) {
+	getChartConfig( labels, data, color, prefix = '', isInteger = false ) {
 		return {
 			type: 'line',
 			data: {
@@ -122,6 +122,7 @@ export class BuilderDashboard {
 							drawBorder: false,
 						},
 						ticks: {
+							stepSize: isInteger ? 1 : undefined,
 							color: '#9ca3af',
 							font: { size: 11 },
 							callback: ( value ) => prefix + value.toLocaleString(),
@@ -156,7 +157,7 @@ export class BuilderDashboard {
 		}
 
 		const { labels = [], data = [] } = this.chartData.students || {};
-		const config = this.getChartConfig( labels, data, '#f59e0b' );
+		const config = this.getChartConfig( labels, data, '#f59e0b', '', true );
 		this.charts.students = new window.Chart( canvas, config );
 	}
 
