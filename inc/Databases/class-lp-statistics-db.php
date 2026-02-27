@@ -827,10 +827,6 @@ class LP_Statistics_DB extends LP_Database {
 	 * @since 4.3.0
 	 */
 	public function get_top_sold_courses_by_instructor( int $instructor_id, int $limit = 5 ): array {
-		if ( ! $instructor_id ) {
-			return [];
-		}
-
 		$tb_posts  = $this->tb_posts;
 		$oi_table  = $this->tb_lp_order_items;
 		$oim_table = $this->tb_lp_order_itemmeta;
@@ -841,20 +837,27 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->only_fields[]    = 'oi.item_id as course_id';
 		$filter->only_fields[]    = 'SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as course_count';
 		$filter->only_fields[]    = 'p2.post_title as course_name';
+		$filter->only_fields[]    = 'u.display_name as instructor_name';
+		$filter->only_fields[]    = 'SUM(CAST(oim_total.meta_value AS DECIMAL(10,2))) as total_revenue';
 		$filter->limit            = $limit > 0 ? $limit : 5;
 
 		$filter->join = [
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $tb_posts AS p2 ON p2.ID = oi.item_id",
+			"INNER JOIN {$this->tb_users} AS u ON u.ID = p2.post_author",
 			"INNER JOIN $oim_table AS oim_qty ON oi.order_item_id = oim_qty.learnpress_order_item_id AND oim_qty.meta_key = '_quantity'",
+			"INNER JOIN $oim_table AS oim_total ON oi.order_item_id = oim_total.learnpress_order_item_id AND oim_total.meta_key = '_total'",
 		];
 
 		$filter->where = array(
 			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
 			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
 			$this->wpdb->prepare( 'AND oi.item_type=%s', LP_COURSE_CPT ),
-			$this->wpdb->prepare( 'AND p2.post_author=%d', $instructor_id ),
 		);
+
+		if ( $instructor_id > 0 ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND p2.post_author=%d', $instructor_id );
+		}
 
 		$filter->group_by        = 'course_id';
 		$filter->order_by        = 'course_count';
@@ -875,22 +878,23 @@ class LP_Statistics_DB extends LP_Database {
 	 * @since 4.3.0
 	 */
 	public function get_top_enrolled_courses_by_instructor( int $instructor_id, int $limit = 5 ): array {
-		if ( ! $instructor_id ) {
-			return [];
-		}
-
 		$filter                   = new \LP_Filter();
 		$filter->collection       = $this->tb_lp_user_items;
 		$filter->collection_alias = 'ui';
 		$filter->only_fields[]    = 'ui.item_id as course_id';
 		$filter->only_fields[]    = 'COUNT(ui.user_item_id) as enrollment_count';
 		$filter->only_fields[]    = 'p.post_title as course_name';
+		$filter->only_fields[]    = 'u.display_name as instructor_name';
 		$filter->limit            = $limit > 0 ? $limit : 5;
 
 		$filter->join[] = "INNER JOIN {$this->tb_posts} AS p ON p.ID = ui.item_id";
+		$filter->join[] = "INNER JOIN {$this->tb_users} AS u ON u.ID = p.post_author";
 
 		$filter->where[] = $this->wpdb->prepare( 'AND ui.item_type=%s', LP_COURSE_CPT );
-		$filter->where[] = $this->wpdb->prepare( 'AND p.post_author=%d', $instructor_id );
+
+		if ( $instructor_id > 0 ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author=%d', $instructor_id );
+		}
 
 		$filter->group_by        = 'course_id';
 		$filter->order_by        = 'enrollment_count';
@@ -898,6 +902,141 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
 
+		return is_array( $result ) ? $result : [];
+	}
+
+	/**
+	 * Get top instructors by course count and student count.
+	 *
+	 * @param int $limit Number of instructors to return.
+	 *
+	 * @return array Top instructors data.
+	 * @since 4.3.0
+	 */
+	public function get_top_instructors( int $limit = 4 ): array {
+		$tb_posts      = $this->tb_posts;
+		$tb_users      = $this->tb_users;
+		$tb_user_items = $this->tb_lp_user_items;
+		$tb_usermeta   = $this->wpdb->usermeta;
+
+		$sql = $this->wpdb->prepare(
+			"SELECT u.ID as instructor_id,
+				u.display_name as instructor_name,
+				COUNT(DISTINCT p.ID) as course_count,
+				(SELECT COUNT(DISTINCT ui.user_id)
+				 FROM {$tb_user_items} AS ui
+				 WHERE ui.item_id IN (SELECT p2.ID FROM {$tb_posts} AS p2 WHERE p2.post_author = u.ID AND p2.post_type = %s AND p2.post_status = 'publish')
+				 AND ui.item_type = %s
+				) as student_count
+			FROM {$tb_users} AS u
+			INNER JOIN {$tb_usermeta} AS um ON um.user_id = u.ID
+			INNER JOIN {$tb_posts} AS p ON p.post_author = u.ID AND p.post_type = %s AND p.post_status = 'publish'
+			WHERE um.meta_key = %s
+			AND (um.meta_value LIKE %s OR um.meta_value LIKE %s)
+			GROUP BY u.ID
+			ORDER BY course_count DESC
+			LIMIT %d",
+			LP_COURSE_CPT,
+			LP_COURSE_CPT,
+			LP_COURSE_CPT,
+			$this->wpdb->prefix . 'capabilities',
+			'%administrator%',
+			'%' . LP_TEACHER_ROLE . '%',
+			$limit
+		);
+
+		$results = $this->wpdb->get_results( $sql );
+
+		return is_array( $results ) ? $results : [];
+	}
+
+	/**
+	 * Get net sales chart data scoped by instructor.
+	 *
+	 * @param string $type   Time filter type.
+	 * @param string $value  Time filter value.
+	 * @param int    $instructor_id Instructor ID (0 for all).
+	 *
+	 * @return array Net sales data.
+	 * @since 4.3.0
+	 */
+	public function get_net_sales_data_scoped( string $type, string $value, int $instructor_id = 0 ): array {
+		if ( ! $type || ! $value ) {
+			return [];
+		}
+
+		$filter                   = new \LP_Order_Filter();
+		$filter->collection       = $this->tb_posts;
+		$filter->collection_alias = 'p';
+		$oi_table                 = $this->tb_lp_order_items;
+		$oim_table                = $this->tb_lp_order_itemmeta;
+
+		$filter->only_fields[] = "SUM(CAST(oim.meta_value AS DECIMAL(10,2))) as x_data";
+		$time_field            = "p.post_date";
+
+		$filter->join = [
+			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
+			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
+		];
+
+		$filter->where = [
+			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
+			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( "AND oim.meta_key=%s", '_total' ),
+		];
+
+		if ( $instructor_id > 0 ) {
+			$filter->join[] = "INNER JOIN {$this->tb_posts} AS p2 ON p2.ID = oi.item_id";
+			$filter->where[] = $this->wpdb->prepare( "AND p2.post_author=%d", $instructor_id );
+		}
+
+		$filter->limit           = -1;
+		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter                  = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
+		$filter->order_by        = $time_field;
+		$filter->order           = "asc";
+		$filter->run_query_count = false;
+
+		$result = $this->execute( $filter );
+		return is_array( $result ) ? $result : [];
+	}
+
+	/**
+	 * Get enrollment chart data scoped by instructor.
+	 *
+	 * @param string $type   Time filter type.
+	 * @param string $value  Time filter value.
+	 * @param int    $instructor_id Instructor ID (0 for all).
+	 *
+	 * @return array Enrollment chart data.
+	 * @since 4.3.0
+	 */
+	public function get_enrollment_chart_data( string $type, string $value, int $instructor_id = 0 ): array {
+		if ( ! $type || ! $value ) {
+			return [];
+		}
+
+		$filter                   = new \LP_Filter();
+		$filter->collection       = $this->tb_lp_user_items;
+		$filter->collection_alias = 'ui';
+		$time_field               = 'ui.start_time';
+
+		$filter->only_fields[] = 'COUNT(ui.user_item_id) as x_data';
+		$filter->where[]       = $this->wpdb->prepare( 'AND ui.item_type=%s', LP_COURSE_CPT );
+
+		if ( $instructor_id > 0 ) {
+			$filter->join[]  = "INNER JOIN {$this->tb_posts} AS p ON p.ID = ui.item_id";
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author=%d', $instructor_id );
+		}
+
+		$filter->limit           = -1;
+		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter                  = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
+		$filter->order_by        = $time_field;
+		$filter->order           = 'asc';
+		$filter->run_query_count = false;
+
+		$result = $this->execute( $filter );
 		return is_array( $result ) ? $result : [];
 	}
 }

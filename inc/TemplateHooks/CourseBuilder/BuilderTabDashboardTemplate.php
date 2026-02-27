@@ -236,23 +236,23 @@ class BuilderTabDashboardTemplate {
 		$instructor_id = $is_admin ? 0 : $user_id;
 		$nonce         = wp_create_nonce( 'lp_cb_dashboard_nonce' );
 
-		// Get initial data for "this_month" for both charts
+		// Get initial data - use 'year' for sales and 'previous_days' for students so data appears immediately
 		try {
-			$lp_statistic_db  = LP_Statistics_DB::getInstance();
-			$current_date     = current_time( 'Y-m-d' );
+			$lp_statistic_db = LP_Statistics_DB::getInstance();
+			$current_date    = current_time( 'Y-m-d' );
 
-			$sales_data     = $lp_statistic_db->get_net_sales_data_scoped( 'month', $current_date, $instructor_id );
-			$students_data  = $lp_statistic_db->get_enrollment_chart_data( 'previous_days', '6', $instructor_id );
+			$sales_data    = $lp_statistic_db->get_net_sales_data_scoped( 'year', $current_date, $instructor_id );
+			$students_data = $lp_statistic_db->get_enrollment_chart_data( 'previous_days', 6, $instructor_id );
 
 			// Process chart data using the REST controller's logic
 			require_once LP_PLUGIN_PATH . 'inc/rest-api/v1/admin/class-lp-admin-rest-statistics-controller.php';
-			$stats_ctrl      = new \LP_REST_Admin_Statistics_Controller();
+			$stats_ctrl = new \LP_REST_Admin_Statistics_Controller();
 
-			$sales_chart     = $stats_ctrl->process_chart_data(
-				[ 'filter_type' => 'month', 'time' => $current_date ],
+			$sales_chart    = $stats_ctrl->process_chart_data(
+				[ 'filter_type' => 'year', 'time' => $current_date ],
 				$sales_data
 			);
-			$students_chart  = $stats_ctrl->process_chart_data(
+			$students_chart = $stats_ctrl->process_chart_data(
 				[ 'filter_type' => 'previous_days', 'time' => 6 ],
 				$students_data
 			);
@@ -262,15 +262,10 @@ class BuilderTabDashboardTemplate {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
-		$sales_labels   = wp_json_encode( $sales_chart['labels'] ?? [] );
-		$sales_values   = wp_json_encode( $sales_chart['data'] ?? [] );
-		$student_labels = wp_json_encode( $students_chart['labels'] ?? [] );
-		$student_values = wp_json_encode( $students_chart['data'] ?? [] );
-
 		$filter_options = '
 			<option value="this_month">' . esc_html__( 'This month', 'learnpress' ) . '</option>
 			<option value="this_week">' . esc_html__( 'This week', 'learnpress' ) . '</option>
-			<option value="this_year">' . esc_html__( 'This year', 'learnpress' ) . '</option>';
+			<option value="this_year" selected>' . esc_html__( 'This year', 'learnpress' ) . '</option>';
 
 		$html = sprintf(
 			'<div class="lp-cb-dashboard__chart-card">

@@ -131,6 +131,7 @@ class CourseBuilderTemplate {
 		// Load dashicons for sidebar icons
 		wp_enqueue_style( 'dashicons' );
 		wp_enqueue_script( 'lp-load-ajax' );
+		wp_enqueue_script( 'chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js', [], '4.4.7', true );
 		wp_enqueue_script( 'lp-course-builder' );
 		wp_enqueue_editor();
 		wp_enqueue_media();
