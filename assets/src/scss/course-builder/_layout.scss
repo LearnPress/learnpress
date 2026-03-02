@@ -631,7 +631,6 @@ html:has( #wpadminbar ) {
 #lp-course-builder .lp-cb-tabs {
 	display: flex;
 	border-bottom: 1px solid $cb-border-light;
-	padding: 0 12px;
 	background: $cb-card-bg;
 	gap: 10px;
 	margin: 0;
@@ -669,11 +668,11 @@ html:has( #wpadminbar ) {
 	padding: 0;
 	background: $cb-card-bg;
 	border-radius: 0 0 $cb-radius-md $cb-radius-md;
+	margin-top: $cb-spacing-3xl;
 
 	// Allow existing course builder content styles to work
 	.cb-section__course-edit,
 	.lp-course-builder-content__section {
-		padding: 12px;
 		background: $cb-card-bg;
 		border-radius: 0;
 		min-height: auto;

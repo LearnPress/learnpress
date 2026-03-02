@@ -84,7 +84,7 @@ class BuilderTabCourseTemplate {
 
 		// Row 1: Page header — title + add new button
 		$btn_add_new = sprintf(
-			'<a href="%s" class="cb-btn-add-new">+ %s</a>',
+			'<a href="%s" class="cb-btn-add-new">%s</a>',
 			esc_url( CourseBuilder::get_link_add_new_course( CourseBuilder::POST_NEW ) ),
 			__( 'Add New Course', 'learnpress' )
 		);

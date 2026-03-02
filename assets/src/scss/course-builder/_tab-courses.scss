@@ -14,17 +14,18 @@
 		position: relative;
 		display: flex;
 		align-items: center;
-		background: $cb-bg-hover;
-		border-radius: $cb-radius;
-		padding: $cb-spacing-md $cb-spacing-lg;
+		border-radius: $cb-radius-lg;
+		padding: $cb-spacing-md $cb-spacing-sm;
 		gap: $cb-spacing-sm;
 		margin-bottom: 0;
 		border: 1px solid $cb-border;
+		width: 40%;
+		max-width: 500px;
 	}
 
 	.lp-icon-search {
 		font-size: $cb-font-lg;
-		color: $cb-text-muted;
+		color: $cb-primary;
 		flex-shrink: 0;
 	}
 

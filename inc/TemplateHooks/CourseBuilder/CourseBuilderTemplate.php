@@ -736,7 +736,7 @@ class CourseBuilderTemplate {
 		if ( 'courses' !== $tab_slug ) {
 			$sections = array_merge(
 				[ 'wrapper' => $sections['wrapper'] ],
-				[ 'title'   => sprintf( '<h3 class="lp-cb-tab__title">%s</h3>', $title ) ],
+				[ 'title'   => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', $title ) ],
 				[ 'content' => $sections['content'], 'wrapper_end' => $sections['wrapper_end'] ]
 			);
 		}
