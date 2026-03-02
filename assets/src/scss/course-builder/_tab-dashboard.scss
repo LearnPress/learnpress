@@ -146,7 +146,7 @@
 	.lp-cb-dashboard__top-instructors {
 		background: $cb-bg;
 		border-radius: $cb-radius-lg;
-		padding: 20px;
+		padding: $cb-spacing-lg;
 		box-shadow: $cb-shadow-sm;
 		border: 1px solid $cb-border;
 
@@ -155,45 +155,34 @@
 		}
 
 		.top-instructors__header {
-			margin-bottom: 16px;
+			margin-bottom: $cb-spacing-xl;
 		}
 
 		.top-instructors__title {
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			gap: $cb-spacing-md;
 			font-size: $cb-font-lg;
 			font-weight: 600;
 			color: $cb-text;
 			margin: 0;
-
-			svg {
-				color: $cb-primary;
-			}
 		}
 
 		.top-instructors__list {
 			display: flex;
 			flex-direction: column;
-			gap: 14px;
+			gap: 20px;
 		}
 
 		.instructor-item {
 			display: flex;
 			align-items: center;
-			gap: 12px;
-			padding: 8px;
-			border-radius: $cb-radius-md;
-			transition: background 0.15s ease;
-
-			&:hover {
-				background: $cb-bg-subtle;
-			}
+			gap: 16px;
 		}
 
 		.instructor-item__avatar {
-			width: 40px;
-			height: 40px;
+			width: 48px;
+			height: 48px;
 			border-radius: 50%;
 			overflow: hidden;
 			flex-shrink: 0;
@@ -209,22 +198,24 @@
 		.instructor-item__info {
 			display: flex;
 			flex-direction: column;
-			gap: 2px;
+			gap: 4px;
 			min-width: 0;
 		}
 
 		.instructor-item__name {
-			font-size: $cb-font-md;
+			font-size: 15px;
 			font-weight: 600;
 			color: $cb-text;
+			line-height: 1.2;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
 
 		.instructor-item__meta {
-			font-size: $cb-font-xs;
+			font-size: 13px;
 			color: $cb-text-muted;
+			line-height: 1.2;
 		}
 
 		.no-data {
@@ -253,7 +244,7 @@
 	.lp-cb-dashboard__top-courses {
 		background: $cb-bg;
 		border-radius: $cb-radius-lg;
-		padding: 20px;
+		padding: 20px 24px;
 		box-shadow: $cb-shadow-sm;
 		border: 1px solid $cb-border;
 
@@ -275,9 +266,13 @@
 			font-size: $cb-font-sm;
 			color: $cb-text-muted;
 
-			strong {
+			.enrolled-students-total {
 				color: $cb-primary;
 				font-weight: 600;
+			}
+			.revenue-total {
+				color: $cb-price-red;
+				font-weight: 700;
 			}
 		}
 
@@ -289,13 +284,22 @@
 		.course-item {
 			display: flex;
 			align-items: center;
-			gap: 12px;
-			padding: 6px 0;
+			gap: 16px;
+			padding: 16px 0;
+			border-bottom: 1px solid $cb-border;
+
+			&:last-child {
+				border-bottom: none;
+				padding-bottom: 0;
+			}
+			&:first-child {
+				padding-top: 0;
+			}
 		}
 
 		.course-item__thumb {
-			width: 52px;
-			height: 52px;
+			width: 80px;
+			height: 56px;
 			border-radius: $cb-radius-md;
 			overflow: hidden;
 			flex-shrink: 0;
@@ -326,12 +330,12 @@
 			min-width: 0;
 			display: flex;
 			flex-direction: column;
-			gap: 2px;
+			gap: 4px;
 		}
 
 		.course-item__title {
-			font-size: $cb-font-md;
-			font-weight: 600;
+			font-size: 15px;
+			font-weight: 700;
 			color: $cb-text;
 			text-decoration: none;
 			white-space: nowrap;
@@ -345,12 +349,38 @@
 		}
 
 		.course-item__meta {
-			font-size: $cb-font-xs;
+			font-size: $cb-font-sm;
 			color: $cb-text-muted;
+
+			.author {
+				color: #7067ED;
+			}
+			
+			.category {
+				color: $cb-text;
+			}
 		}
 
-		.course-item__students {
-			color: $cb-link;
+		.course-item__price {
+			font-size: $cb-font-sm;
+			font-weight: 600;
+			color: $cb-text;
+			margin-top: 2px;
+		}
+
+		.course-item__badge-wrapper {
+			flex-shrink: 0;
+			display: flex;
+			align-items: center;
+		}
+
+		.course-item__badge {
+			background: #e0f2fe;
+			color: #0284c7;
+			padding: 4px 10px;
+			border-radius: 6px;
+			font-size: 13px;
+			font-weight: 600;
 		}
 
 		.course-item__stats {
@@ -358,21 +388,21 @@
 			flex-shrink: 0;
 			display: flex;
 			flex-direction: column;
-			gap: 2px;
+			gap: 4px;
 		}
 
 		.course-item__revenue {
 			font-size: $cb-font-sm;
 			color: $cb-text-muted;
 
-			strong {
-				color: $cb-text;
-				font-weight: 600;
+			.revenue-amount {
+				color: #ef4444;
+				font-weight: 700;
 			}
 		}
 
 		.course-item__sold {
-			font-size: $cb-font-xs;
+			font-size: $cb-font-sm;
 			color: $cb-text-muted;
 		}
 
@@ -451,6 +481,21 @@
 			font-size: $cb-font-md;
 			font-weight: 500;
 			color: $cb-text;
+		}
+	}
+
+	.lp-cb-dashboard__recent-courses {
+		background: $cb-bg;
+		border-radius: $cb-radius-lg;
+		padding: 20px;
+		box-shadow: $cb-shadow-sm;
+		border: 1px solid $cb-border;
+
+		.recent-courses__title {
+			font-size: $cb-font-lg;
+			font-weight: 600;
+			color: $cb-text;
+			margin: 0 0 16px 0;
 		}
 	}
 }

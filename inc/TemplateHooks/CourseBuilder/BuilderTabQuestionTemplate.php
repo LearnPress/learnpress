@@ -121,8 +121,8 @@ class BuilderTabQuestionTemplate {
 				[
 					'wrapper'     => '<div class="courses-builder__question-tab learn-press-questions">',
 					'questions'   => $html_questions,
-					'pagination'  => $this->questions_pagination( $query_args['paged'] ?? 1, $query_args['posts_per_page'], $total_questions ),
 					'wrapper_end' => '</div>',
+					'pagination'  => $this->questions_pagination( $query_args['paged'] ?? 1, $query_args['posts_per_page'], $total_questions ),
 				],
 				$questions,
 				$userModel
@@ -154,7 +154,7 @@ class BuilderTabQuestionTemplate {
 
 			$header = '<div class="cb-list-table-header">';
 			$header .= sprintf( '<span>%s</span>', __( 'Question Title', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Assigned', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Quiz', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Status', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Preview', 'learnpress' ) );
@@ -252,7 +252,7 @@ class BuilderTabQuestionTemplate {
 					'wrapper_right'     => '<div class="question-content__right">',
 					'quizzes'           => $html_quizzes,
 					'type'              => sprintf( '<span class="question__preview">%s</span>', $question['type'] ),
-					'date'              => sprintf( '<span class="question__date">%s</span>', date_i18n( 'm/d/Y', strtotime( $question['date_modified'] ) ) ),
+					'date'              => sprintf( '<span class="question__date">%s</span>', ! empty( $question['date_modified'] ) ? date_i18n( 'm/d/Y', strtotime( $question['date_modified'] ) ) : '--' ),
 					'wrapper_right_end' => '</div>',
 					'wrapper_end'       => '</div>',
 				],

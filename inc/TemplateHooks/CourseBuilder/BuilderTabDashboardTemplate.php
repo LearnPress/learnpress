@@ -76,6 +76,7 @@ class BuilderTabDashboardTemplate {
 		$charts_html         = $this->render_charts_section( $is_admin, $user->get_id() );
 		$top_instructors_html = $is_admin ? $this->render_top_instructors_section() : '';
 		$top_courses_html    = $this->render_top_courses_section( $is_admin ? 0 : $user->get_id() );
+		$recent_courses_html = $this->render_recent_courses_section( $user );
 		$quick_actions_html  = $this->render_quick_actions();
 
 		return Template::combine_components( [
@@ -83,6 +84,7 @@ class BuilderTabDashboardTemplate {
 			'charts_row'      => '<div class="lp-cb-dashboard__charts-row">' . $charts_html . $top_instructors_html . '</div>',
 			'top_courses'     => $top_courses_html,
 			'quick_actions'   => $quick_actions_html,
+			'recent_courses'  => $recent_courses_html,
 		] );
 	}
 
@@ -174,20 +176,20 @@ class BuilderTabDashboardTemplate {
 			[
 				'key'   => 'published_course',
 				'label' => __( 'Published Courses', 'learnpress' ),
-				'color' => '#7067ED',
-				'svg'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+				'color' => '#2E91FA',
+				'svg'   => '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_5770_727)"><path d="M24 4.5C24.3978 4.5 24.7794 4.65804 25.0607 4.93934C25.342 5.22064 25.5 5.60218 25.5 6V7.5H28.5C29.2956 7.5 30.0587 7.81607 30.6213 8.37868C31.1839 8.94129 31.5 9.70435 31.5 10.5V28.5C31.5 29.2956 31.1839 30.0587 30.6213 30.6213C30.0587 31.1839 29.2956 31.5 28.5 31.5H7.5C6.70435 31.5 5.94129 31.1839 5.37868 30.6213C4.81607 30.0587 4.5 29.2956 4.5 28.5V10.5C4.5 9.70435 4.81607 8.94129 5.37868 8.37868C5.94129 7.81607 6.70435 7.5 7.5 7.5H10.5V6C10.5 5.60218 10.658 5.22064 10.9393 4.93934C11.2206 4.65804 11.6022 4.5 12 4.5C12.3978 4.5 12.7794 4.65804 13.0607 4.93934C13.342 5.22064 13.5 5.60218 13.5 6V7.5H22.5V6C22.5 5.60218 22.658 5.22064 22.9393 4.93934C23.2206 4.65804 23.6022 4.5 24 4.5ZM28.5 10.5H7.5V28.5H28.5V10.5ZM22.236 14.0685C22.5189 13.7953 22.8978 13.6441 23.2911 13.6475C23.6844 13.6509 24.0606 13.8087 24.3387 14.0868C24.6168 14.3649 24.7746 14.7411 24.778 15.1344C24.7814 15.5277 24.6302 15.9066 24.357 16.1895L16.944 23.604C16.8033 23.7448 16.6362 23.8565 16.4523 23.9328C16.2684 24.009 16.0713 24.0482 15.8723 24.0482C15.6732 24.0482 15.4761 24.009 15.2922 23.9328C15.1083 23.8565 14.9412 23.7448 14.8005 23.604L11.6295 20.43C11.3563 20.1471 11.2051 19.7682 11.2085 19.3749C11.2119 18.9816 11.3697 18.6054 11.6478 18.3273C11.9259 18.0492 12.3021 17.8914 12.6954 17.888C13.0887 17.8846 13.4676 18.0358 13.7505 18.309L15.873 20.43L22.236 14.0685Z" fill="#2E91FA"/></g><defs><clipPath id="clip0_5770_727"><rect width="36" height="36" fill="white"/></clipPath></defs></svg>',
 			],
 			[
 				'key'   => 'pending_course',
 				'label' => __( 'Pending Courses', 'learnpress' ),
-				'color' => '#22c55e',
-				'svg'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>',
+				'color' => '#F8A100',
+				'svg'   => '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_5770_8096)"><path d="M27 3C27.7956 3 28.5587 3.31607 29.1213 3.87868C29.6839 4.44129 30 5.20435 30 6V25.485C30 25.737 29.943 25.968 29.8305 26.193L29.013 27.828C28.9087 28.0364 28.8544 28.2662 28.8544 28.4993C28.8544 28.7323 28.9087 28.9621 29.013 29.1705L29.8275 30.8025C29.9476 31.0311 30.0066 31.2868 29.9989 31.5448C29.9911 31.8029 29.9169 32.0546 29.7834 32.2756C29.6499 32.4966 29.4617 32.6794 29.2368 32.8063C29.012 32.9332 28.7582 32.9999 28.5 33H10.5C9.30653 33 8.16193 32.5259 7.31802 31.682C6.47411 30.8381 6 29.6935 6 28.5V7.5C6 6.30653 6.47411 5.16193 7.31802 4.31802C8.16193 3.47411 9.30653 3 10.5 3H27ZM26.112 27H10.5C10.1177 27.0004 9.74995 27.1468 9.47195 27.4093C9.19394 27.6717 9.02665 28.0304 9.00424 28.4121C8.98184 28.7938 9.10601 29.1696 9.3514 29.4627C9.59678 29.7559 9.94486 29.9443 10.3245 29.9895L10.5 30H26.112C25.8079 29.1399 25.7724 28.2078 26.01 27.327L26.112 27ZM27 6H10.5C10.1326 6.00005 9.77799 6.13493 9.50344 6.37907C9.22889 6.62321 9.05349 6.95962 9.0105 7.3245L9 7.5V24.255C9.375 24.123 9.774 24.039 10.1865 24.0105L10.5 24H27V6ZM21 10.5C21.3823 10.5004 21.75 10.6468 22.0281 10.9093C22.3061 11.1717 22.4734 11.5304 22.4958 11.9121C22.5182 12.2938 22.394 12.6696 22.1486 12.9627C21.9032 13.2559 21.5551 13.4443 21.1755 13.4895L21 13.5H15C14.6177 13.4996 14.25 13.3532 13.9719 13.0907C13.6939 12.8283 13.5266 12.4696 13.5042 12.0879C13.4818 11.7062 13.606 11.3304 13.8514 11.0373C14.0968 10.7441 14.4449 10.5557 14.8245 10.5105L15 10.5H21Z" fill="#F8A100"/></g><defs><clipPath id="clip0_5770_8096"><rect width="36" height="36" fill="white"/></clipPath></defs></svg>',
 			],
 			[
 				'key'   => 'total_student',
 				'label' => __( 'Total Students', 'learnpress' ),
-				'color' => '#3b82f6',
-				'svg'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+				'color' => '#28A746',
+				'svg'   => '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M34.275 9.13516C34.1163 8.54109 33.7339 8.15936 33.1623 7.96557C32.0779 7.59814 30.9902 7.23949 29.9039 6.87791C26.1353 5.62346 22.3664 4.3703 18.5985 3.11389C18.1514 2.96464 17.7069 2.95489 17.2598 3.09796C16.7555 3.25956 16.2525 3.42474 15.7498 3.59187C12.1838 4.77902 8.61745 5.96487 5.05275 7.1556C4.1719 7.44987 3.293 7.75064 2.41963 8.06571C1.92214 8.24553 1.62559 8.61881 1.54105 9.14199C1.50561 9.35952 1.49813 9.58387 1.49781 9.80531C1.49553 13.7742 1.49618 17.7431 1.49618 21.7119C1.49618 21.7877 1.49618 21.8638 1.49976 21.9392C1.5352 22.5772 1.96603 23.1296 2.58838 23.3367C3.19383 23.538 3.87276 23.3452 4.28083 22.861C4.58062 22.5053 4.67069 22.0859 4.67004 21.6362C4.66842 20.6074 4.66451 19.5789 4.66419 18.5501C4.66321 16.3247 4.66386 14.0993 4.66419 11.874C4.66419 11.818 4.67037 11.7618 4.67492 11.6867C6.1209 12.1686 7.54313 12.643 8.98228 13.1226C7.73173 15.4022 7.35064 17.7957 7.91024 20.3229C8.47016 22.851 9.802 24.8809 11.9136 26.4235C11.8557 26.4504 11.8316 26.4622 11.8069 26.4729C9.31492 27.5693 7.25667 29.2071 5.65104 31.4091C5.39027 31.7671 5.10803 32.1147 4.99585 32.5569C4.8401 33.1711 4.97406 33.7106 5.45887 34.1303C5.91767 34.5277 6.44703 34.6587 7.03004 34.4392C7.43616 34.2861 7.71644 33.9769 7.95641 33.629C8.55567 32.7608 9.23168 31.9573 10.0455 31.2849C13.0123 28.8319 16.3877 27.8805 20.1921 28.5952C23.0492 29.132 25.3842 30.5601 27.2178 32.8102C27.5387 33.2043 27.8128 33.6381 28.1484 34.0182C28.852 34.8151 30.1523 34.6682 30.6635 33.7437C31.0059 33.1243 30.9096 32.5215 30.5275 31.9531C28.9548 29.612 26.8988 27.8317 24.3411 26.6361C24.1971 26.5688 24.0527 26.5021 23.8849 26.4244C25.9906 24.8812 27.3169 22.8565 27.8814 20.3339C28.4482 17.8016 28.0602 15.4078 26.8263 13.133C26.8728 13.1157 26.8972 13.1057 26.9222 13.0975C28.0905 12.706 29.2594 12.3155 30.4274 11.9227C31.3495 11.6129 32.272 11.3027 33.1922 10.9866C33.6595 10.8263 34.0149 10.5307 34.1989 10.0632C34.2542 9.92269 34.2873 9.79328 34.4961 9.85993C34.4161 9.59948 34.3374 9.3696 34.275 9.13516ZM22.8815 23.1377C21.6748 24.3613 20.2035 25.0311 18.4857 25.1579C16.4368 25.3095 14.6381 24.7011 13.1079 23.3445C12.2283 22.5651 11.6652 21.5572 11.249 20.4682C10.9589 19.7086 10.8071 18.9204 10.8119 18.0747C10.8074 16.8362 11.1973 15.6806 11.8199 14.5923C11.9051 14.444 11.9692 14.2281 12.097 14.1757C12.216 14.127 12.4081 14.2525 12.5665 14.3058C14.0824 14.815 15.5976 15.3249 17.1132 15.8347C17.6383 16.0113 18.1634 16.0142 18.6899 15.838C20.3085 15.2956 21.9278 14.7558 23.5451 14.2089C23.6856 14.1614 23.7581 14.1774 23.8449 14.3081C24.5108 15.3096 24.889 16.4102 24.941 17.6078C25.0337 19.7359 24.3912 21.6062 22.8815 23.1377ZM26.9453 9.74613C24.0289 10.7154 21.1116 11.6831 18.1959 12.6547C18.0018 12.7194 17.8214 12.7184 17.6269 12.6537C14.5155 11.6177 11.4031 10.5854 8.29067 9.55201C8.2406 9.53543 8.19215 9.51494 8.11248 9.48438C8.19312 9.45511 8.2445 9.43495 8.29652 9.41739C11.4278 8.37494 14.5591 7.33086 17.6929 6.29523C17.8207 6.25296 17.9872 6.25296 18.115 6.29556C21.2589 7.33574 24.4 8.38437 27.5413 9.4317C27.58 9.44471 27.6177 9.45999 27.6935 9.4886C27.421 9.58257 27.1839 9.66711 26.9453 9.74613Z" fill="#28A746"/></svg>',
 			],
 		];
 
@@ -196,8 +198,8 @@ class BuilderTabDashboardTemplate {
 			$cards[] = [
 				'key'   => 'total_instructor',
 				'label' => __( 'Total Instructors', 'learnpress' ),
-				'color' => '#06b6d4',
-				'svg'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+				'color' => '#06AED4',
+				'svg'   => '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_5770_8016)"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 6C15.9091 6 15.3239 6.1164 14.7779 6.34254C14.232 6.56869 13.7359 6.90016 13.318 7.31802C12.9002 7.73588 12.5687 8.23196 12.3425 8.77792C12.1164 9.32389 12 9.90905 12 10.5C12 11.0909 12.1164 11.6761 12.3425 12.2221C12.5687 12.768 12.9002 13.2641 13.318 13.682C13.7359 14.0998 14.232 14.4313 14.7779 14.6575C15.3239 14.8836 15.9091 15 16.5 15C17.6935 15 18.8381 14.5259 19.682 13.682C20.5259 12.8381 21 11.6935 21 10.5C21 9.30653 20.5259 8.16193 19.682 7.31802C18.8381 6.47411 17.6935 6 16.5 6ZM9 10.5C9 8.51088 9.79018 6.60322 11.1967 5.1967C12.6032 3.79018 14.5109 3 16.5 3C18.4891 3 20.3968 3.79018 21.8033 5.1967C23.2098 6.60322 24 8.51088 24 10.5C24 12.4891 23.2098 14.3968 21.8033 15.8033C20.3968 17.2098 18.4891 18 16.5 18C14.5109 18 12.6032 17.2098 11.1967 15.8033C9.79018 14.3968 9 12.4891 9 10.5ZM6.6195 26.4015C6.135 27.0165 6 27.4815 6 27.75C6 27.933 6.0555 28.1265 6.3825 28.389C6.756 28.689 7.4055 28.9995 8.3985 29.262C10.3755 29.787 13.2165 30 16.5 30C16.833 30 17.1615 29.997 17.487 29.9925C17.8848 29.9871 18.2685 30.14 18.5536 30.4175C18.8387 30.695 19.0019 31.0744 19.0073 31.4723C19.0126 31.8701 18.8597 32.2537 18.5822 32.5388C18.3047 32.8239 17.9253 32.9871 17.5275 32.9925C17.1885 32.997 16.845 33 16.5 33C13.1565 33 9.9975 32.79 7.6305 32.163C6.453 31.851 5.3445 31.404 4.5045 30.729C3.615 30.015 3 29.0175 3 27.75C3 26.5695 3.537 25.4655 4.266 24.5415C5.007 23.604 6.0315 22.7415 7.233 22.0065C9.6375 20.5425 12.9075 19.5 16.5 19.5C17.1705 19.5 17.8305 19.536 18.474 19.605C18.8696 19.647 19.2324 19.8444 19.4825 20.1538C19.7326 20.4633 19.8495 20.8594 19.8075 21.255C19.7655 21.6506 19.5681 22.0134 19.2587 22.2635C18.9492 22.5136 18.5531 22.6305 18.1575 22.5885C17.6175 22.53 17.0625 22.5 16.5 22.5C13.4655 22.5 10.7355 23.385 8.796 24.5685C7.8255 25.1595 7.092 25.8015 6.6195 26.4015ZM32.562 24.102C32.8352 23.8191 32.9864 23.4402 32.983 23.0469C32.9796 22.6536 32.8218 22.2774 32.5437 21.9993C32.2656 21.7212 31.8894 21.5634 31.4961 21.56C31.1028 21.5566 30.7239 21.7078 30.441 21.981L25.668 26.754L23.547 24.633C23.2641 24.3598 22.8852 24.2086 22.4919 24.212C22.0986 24.2154 21.7224 24.3732 21.4443 24.6513C21.1662 24.9294 21.0084 25.3056 21.005 25.6989C21.0016 26.0922 21.1528 26.4711 21.426 26.754L24.501 29.829C24.6542 29.9823 24.8362 30.1039 25.0364 30.1869C25.2366 30.2698 25.4513 30.3125 25.668 30.3125C25.8847 30.3125 26.0994 30.2698 26.2996 30.1869C26.4998 30.1039 26.6818 29.9823 26.835 29.829L32.562 24.102Z" fill="#06AED4"/></g><defs><clipPath id="clip0_5770_8016"><rect width="36" height="36" fill="white"/></clipPath></defs></svg>',
 			];
 		}
 
@@ -335,7 +337,7 @@ class BuilderTabDashboardTemplate {
 						<div class="instructor-item__avatar">%s</div>
 						<div class="instructor-item__info">
 							<span class="instructor-item__name">%s</span>
-							<span class="instructor-item__meta">%s &bull; %s</span>
+							<span class="instructor-item__meta">%s &middot; %s</span>
 						</div>
 					</div>',
 					$avatar,
@@ -358,7 +360,6 @@ class BuilderTabDashboardTemplate {
 			'<div class="lp-cb-dashboard__top-instructors">
 				<div class="top-instructors__header">
 					<h3 class="top-instructors__title">
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
 						%s
 					</h3>
 				</div>
@@ -415,12 +416,23 @@ class BuilderTabDashboardTemplate {
 					$thumbnail = '<div class="course-item__thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>';
 				}
 
+				$categories = wp_get_post_terms( $course->course_id, 'course_category', array( 'fields' => 'names' ) );
+				$category_text = '';
+				if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) {
+					$category_text = sprintf( ' %s <span class="category">%s</span>', esc_html__( 'in', 'learnpress' ), esc_html( implode( ', ', $categories ) ) );
+				}
+
 				$items_html .= sprintf(
 					'<div class="course-item">
 						<div class="course-item__thumb">%s</div>
 						<div class="course-item__info">
 							<a href="%s" class="course-item__title">%s</a>
-							<span class="course-item__meta">%s %s &bull; <span class="course-item__students">%s</span></span>
+							<span class="course-item__meta">%s <span class="author">%s</span>%s</span>
+						</div>
+						<div class="course-item__badge-wrapper">
+							<span class="course-item__badge">
+								%s
+							</span>
 						</div>
 					</div>',
 					$thumbnail,
@@ -428,6 +440,7 @@ class BuilderTabDashboardTemplate {
 					esc_html( $course->course_name ),
 					esc_html__( 'by', 'learnpress' ),
 					esc_html( $course->instructor_name ?? '' ),
+					$category_text,
 					sprintf(
 						/* translators: %s: number of students */
 						esc_html( _n( '%s student', '%s students', $course->enrollment_count, 'learnpress' ) ),
@@ -441,7 +454,7 @@ class BuilderTabDashboardTemplate {
 			'<div class="lp-cb-dashboard__top-courses lp-cb-dashboard__top-enrolled">
 				<div class="top-courses__header">
 					<h3 class="top-courses__title">%s</h3>
-					<span class="top-courses__total">%s <strong>%s</strong> %s</span>
+					<span class="top-courses__total">%s <strong class="enrolled-students-total">%s</strong> %s</span>
 				</div>
 				<div class="top-courses__list">%s</div>
 			</div>',
@@ -482,29 +495,42 @@ class BuilderTabDashboardTemplate {
 				}
 
 				$currency_symbol = function_exists( 'learn_press_get_currency_symbol' ) ? learn_press_get_currency_symbol() : '$';
+				
+				$lp_course = function_exists( 'learn_press_get_course' ) ? learn_press_get_course( $course->course_id ) : false;
+				$price_html = '';
+				if ( $lp_course ) {
+					$price = $lp_course->get_price();
+					if ( $price > 0 ) {
+						$price_html = learn_press_format_price( $price, true );
+					} else {
+						$price_html = esc_html__( 'Free', 'learnpress' );
+					}
+				}
 
 				$items_html .= sprintf(
 					'<div class="course-item">
 						<div class="course-item__thumb">%s</div>
 						<div class="course-item__info">
 							<a href="%s" class="course-item__title">%s</a>
-							<span class="course-item__meta">%s %s &bull; %s</span>
+							<span class="course-item__meta">%s <span class="author">%s</span> &bull; %s</span>
+							<span class="course-item__price">%s</span>
 						</div>
 						<div class="course-item__stats">
-							<span class="course-item__revenue">%s: <strong>%s%s</strong></span>
-							<span class="course-item__sold">%s %s</span>
+							<div class="course-item__revenue">%s: <strong class="revenue-amount">%s%s</strong></div>
+							<div class="course-item__sold">%s %s</div>
 						</div>
 					</div>',
 					$thumbnail,
 					esc_url( get_permalink( $course->course_id ) ),
 					esc_html( $course->course_name ),
-					esc_html__( 'by', 'learnpress' ),
+					esc_html__( 'Instructor:', 'learnpress' ),
 					esc_html( $course->instructor_name ?? '' ),
 					sprintf(
 						/* translators: %s: number of students */
 						esc_html( _n( '%s student', '%s students', $course->course_count, 'learnpress' ) ),
 						number_format_i18n( $course->course_count )
 					),
+					$price_html,
 					esc_html__( 'Revenue', 'learnpress' ),
 					esc_html( $currency_symbol ),
 					esc_html( number_format_i18n( $course->total_revenue ?? 0, 2 ) ),
@@ -520,7 +546,7 @@ class BuilderTabDashboardTemplate {
 			'<div class="lp-cb-dashboard__top-courses lp-cb-dashboard__top-selling">
 				<div class="top-courses__header">
 					<h3 class="top-courses__title">%s</h3>
-					<span class="top-courses__total">%s <strong>%s%s</strong> %s</span>
+					<span class="top-courses__total">%s <strong class="revenue-total">%s%s</strong> %s</span>
 				</div>
 				<div class="top-courses__list">%s</div>
 			</div>',
@@ -605,5 +631,69 @@ class BuilderTabDashboardTemplate {
 			esc_html__( 'Quick Action', 'learnpress' ),
 			$buttons_html
 		);
+	}
+
+	/**
+	 * Render recent courses section using course items from Courses tab.
+	 *
+	 * @param UserModel $user
+	 * @return string
+	 */
+	private function render_recent_courses_section( UserModel $user ): string {
+		$content = '';
+
+		try {
+			$filter              = new LP_Course_Filter();
+			$filter->limit       = 3;
+			$filter->order_by    = 'post_date';
+			$filter->order       = 'DESC';
+			$filter->post_status = [ 'publish', 'pending', 'draft', 'private' ];
+
+			if ( ! user_can( $user->get_id(), 'administrator' ) ) {
+				$filter->post_author = $user->get_id();
+			}
+
+			$total_courses = 0;
+			$courses       = \LearnPress\Models\Courses::get_courses( $filter, $total_courses );
+
+			$list_html = '';
+			if ( ! empty( $courses ) ) {
+				$html_list_course = '';
+				foreach ( $courses as $course_obj ) {
+					$course = \LearnPress\Models\CourseModel::find( $course_obj->ID, true );
+					if ( $course ) {
+						// Reuse course item from Courses tab
+						$html_list_course .= BuilderTabCourseTemplate::render_course( $course );
+					}
+				}
+
+				if ( ! empty( $html_list_course ) ) {
+					$list_html = Template::combine_components( [
+						'wrapper'     => '<div class="courses-builder__course-tab learn-press-courses"><ul class="cb-list-course">',
+						'list_course' => $html_list_course,
+						'wrapper_end' => '</ul></div>',
+					] );
+				}
+			}
+
+			if ( empty( $list_html ) ) {
+				$list_html = '<div class="no-data">' . esc_html__( 'No recent courses found', 'learnpress' ) . '</div>';
+			}
+
+			$content = sprintf(
+				'<div class="lp-cb-dashboard__recent-courses" style="margin-top: 30px;">
+					<div class="recent-courses__header" style="margin-bottom: 20px;">
+						<h3 class="recent-courses__title" style="font-size: 18px; font-weight: 600;">%s</h3>
+					</div>
+					<div class="recent-courses__list">%s</div>
+				</div>',
+				esc_html__( 'Recent Courses', 'learnpress' ),
+				$list_html
+			);
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
 	}
 }

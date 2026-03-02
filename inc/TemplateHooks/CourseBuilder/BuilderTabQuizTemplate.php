@@ -121,8 +121,8 @@ class BuilderTabQuizTemplate {
 				[
 					'wrapper'     => '<div class="courses-builder__quiz-tab learn-press-quizzes">',
 					'quizzes'     => $html_quizzes,
-					'pagination'  => $this->quizzes_pagination( $query_args['paged'] ?? 1, $query_args['posts_per_page'], $total_quizzes ),
 					'wrapper_end' => '</div>',
+					'pagination'  => $this->quizzes_pagination( $query_args['paged'] ?? 1, $query_args['posts_per_page'], $total_quizzes ),
 				],
 				$quizzes,
 				$userModel
@@ -154,7 +154,7 @@ class BuilderTabQuizTemplate {
 
 			$header = '<div class="cb-list-table-header">';
 			$header .= sprintf( '<span>%s</span>', __( 'Quiz Title', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Assigned', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Courses', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Questions', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Duration', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );

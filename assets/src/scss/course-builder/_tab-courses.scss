@@ -79,6 +79,7 @@
 		gap: $cb-spacing-xl;
 		padding: $cb-spacing-lg;
 		height: 100%;
+		position: relative;
 	}
 
 	.course-thumbnail {
@@ -89,12 +90,13 @@
 		overflow: hidden;
 		background-color: $cb-bg-hover;
 		position: relative;
+		margin: -2px;
 
 		// Badge overlay (e.g., "Offline" status)
 		.cb-item-status-badge {
 			position: absolute;
 			bottom: $cb-spacing-sm;
-			left: $cb-spacing-sm;
+			right: $cb-spacing-sm;
 			padding: $cb-spacing-xs 10px;
 			border-radius: $cb-radius-sm;
 			font-size: $cb-font-xs;
@@ -128,13 +130,14 @@
 	.wap-course-title {
 		margin-top: 0;
 		margin-bottom: $cb-spacing-sm;
+		padding-right: 120px; /* Space for action buttons */
 	}
 
 	.course-permalink {
 		text-decoration: none;
 		color: $cb-text;
-		font-size: $cb-font-xl;
-		font-weight: 600;
+		font-size: 18px;
+		font-weight: 700;
 		display: block;
 		transition: color 0.2s;
 
@@ -171,6 +174,10 @@
 		color: #666;
 	}
 
+	.course-instructor-category {
+		margin-bottom: $cb-spacing-md;
+	}
+
 	.course-instructor-category > div {
 		display: flex;
 		gap: 5px;
@@ -205,12 +212,12 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: $cb-spacing-lg;
-		margin-bottom: $cb-spacing-md;
+		margin-bottom: $cb-spacing-lg;
 	}
 
 	.instructor-display-name {
 		font-size: $cb-font-base;
-		font-weight: 500;
+		color: $cb-text;
 	}
 
 	.meta-item {
@@ -220,11 +227,16 @@
 		align-items: center;
 		gap: $cb-spacing-sm;
 
+		i {
+			font-size: 16px;
+			color: $cb-primary;
+		}
+
 		.dashicons {
 			font-size: $cb-font-lg;
 			width: 16px;
 			height: 16px;
-			color: $cb-text-muted;
+			color: $cb-primary;
 		}
 
 		> div {
@@ -238,18 +250,22 @@
 
 	.course-bottom {
 		margin-top: auto;
-		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
 	}
 
 	.course-item-price-wrap {
-		margin-bottom: $cb-spacing-sm;
+		margin-bottom: 0;
 	}
 
 	.course-last-updated {
 		font-size: $cb-font-sm;
 		color: #999;
-		text-align: right;
-		margin-top: 10px;
+		position: absolute;
+		bottom: $cb-spacing-lg;
+		right: $cb-spacing-lg;
 	}
 
 	.course-item-price .free {
@@ -272,7 +288,6 @@
 	.course-action {
 		position: relative;
 		display: flex;
-		align-items: flex-start;
 		gap: $cb-spacing-sm;
 	}
 
@@ -282,11 +297,16 @@
 
 	.course-action-expanded {
 		cursor: pointer;
-		padding: $cb-spacing-sm;
+		padding: 7px;
 		border: 1px solid $cb-border;
-		border-radius: $cb-radius;
+		border-radius: $cb-radius-md;
 		background: $cb-bg;
 		transition: all 0.2s;
+		height: 36px;
+		width: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
 		&:hover {
 			background: $cb-bg-hover;
@@ -366,10 +386,11 @@
 		align-items: center;
 		justify-content: center;
 		text-decoration: none;
-		font-size: $cb-font-md;
-		font-weight: 500;
-		border-radius: $cb-radius;
-		padding: $cb-spacing-sm $cb-spacing-xl;
+		font-size: 14px;
+		font-weight: 600;
+		border-radius: $cb-radius-md;
+		padding: 0 20px;
+		height: 36px;
 		gap: $cb-spacing-sm;
 		border: none;
 		background: $cb-primary;
@@ -385,19 +406,20 @@
 	// Course status badges
 	.course-status {
 		display: inline-flex;
+		margin-bottom: auto; /* Push it up right below price if in column */
 
 		span {
-			font-size: $cb-font-sm;
-			padding: $cb-spacing-xs $cb-spacing-md;
-			border-radius: $cb-radius-pill;
-			font-weight: 500;
+			font-size: 13px;
+			padding: 4px 12px;
+			border-radius: $cb-radius-sm;
+			font-weight: 600;
 			text-transform: capitalize;
 			line-height: normal;
 		}
 
 		&:not(.publish):not(.trash) span {
 			background-color: $cb-warning-bg;
-			color: $cb-warning;
+			color: $cb-text-muted;
 		}
 
 		&.publish span {
@@ -439,7 +461,7 @@
 			padding: 0 $cb-spacing-md;
 			border-radius: $cb-radius;
 			text-decoration: none;
-			color: #333;
+			color: $cb-text-subtle;
 			font-size: $cb-font-md;
 			transition: all 0.2s;
 			background: $cb-bg;
@@ -449,6 +471,7 @@
 		a:hover {
 			background-color: $cb-bg-hover;
 			border-color: $cb-border-input;
+			color: $cb-text;
 		}
 
 		.current {

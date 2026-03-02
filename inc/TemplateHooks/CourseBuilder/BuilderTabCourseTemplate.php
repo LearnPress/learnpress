@@ -264,14 +264,14 @@ class BuilderTabCourseTemplate {
 			$settings
 		);
 
-		// Icon mapping for meta items (using WordPress Dashicons)
+		// Icon mapping for meta items (using LearnPress frontend icons)
 		$meta_icons = [
-			'duration' => '<span class="dashicons dashicons-clock"></span>',
-			'level'    => '<span class="dashicons dashicons-chart-bar"></span>',
-			'lesson'   => '<span class="dashicons dashicons-book"></span>',
-			'quiz'     => '<span class="dashicons dashicons-edit"></span>',
-			'student'  => '<span class="dashicons dashicons-groups"></span>',
-			'address'  => '<span class="dashicons dashicons-location"></span>',
+			'lesson'   => '<i class="lp-icon-file-o"></i>',
+			'student'  => '<i class="lp-icon-user-graduate"></i>',
+			'duration' => '<i class="lp-icon-clock-o"></i>',
+			'level'    => '<i class="lp-icon-signal"></i>',
+			'quiz'     => '<i class="lp-icon-puzzle-piece"></i>',
+			'address'  => '<i class="lp-icon-map-marker"></i>',
 		];
 
 		$meta_data = apply_filters(
@@ -380,7 +380,8 @@ class BuilderTabCourseTemplate {
 				[
 					'wrapper'     => '<div class="course-content">',
 					'title'       => sprintf(
-						'<h3 class="wap-course-title">%s</h3>',
+						'<h3 class="wap-course-title"><a href="%s">%s</a></h3>',
+						$edit_link,
 						$singleCourseTemplate->html_title( $course )
 					),
 					'instructor'  => $html_instructor_category,

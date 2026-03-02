@@ -2,8 +2,8 @@
 @include tab-list-styles('quiz');
 
 // Grid column definition for quizzes:
-// Title(2fr) | Assigned(1.5fr) | Duration(1fr) | Create Date(1fr) | Status(100px) | Actions(80px)
-$quiz-grid: 2fr 1.5fr 1fr 1fr 100px 80px;
+// Title(2fr) | Assigned(1.5fr) | Questions(70px) | Duration(1fr) | Create Date(1fr) | Status(100px) | Actions(80px)
+$quiz-grid: 2fr 1.5fr 80px 1fr 1fr 100px 80px;
 
 #lp-course-builder {
 	@include course-list-filter-bar;

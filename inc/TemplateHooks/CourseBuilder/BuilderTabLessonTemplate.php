@@ -120,8 +120,8 @@ class BuilderTabLessonTemplate {
 				[
 					'wrapper'     => '<div class="courses-builder__lesson-tab learn-press-lessons">',
 					'lessons'     => $html_lessons,
-					'pagination'  => $this->lessons_pagination( $query_args['paged'] ?? 1, $query_args['posts_per_page'], $total_lessons ),
 					'wrapper_end' => '</div>',
+					'pagination'  => $this->lessons_pagination( $query_args['paged'] ?? 1, $query_args['posts_per_page'], $total_lessons ),
 				],
 				$lessons,
 				$userModel
@@ -153,7 +153,7 @@ class BuilderTabLessonTemplate {
 
 			$header = '<div class="cb-list-table-header">';
 			$header .= sprintf( '<span>%s</span>', __( 'Lesson Title', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Assigned', 'learnpress' ) );
+			$header .= sprintf( '<span>%s</span>', __( 'Courses', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Status', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Preview', 'learnpress' ) );
