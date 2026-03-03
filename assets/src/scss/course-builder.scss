@@ -348,7 +348,6 @@
 		justify-content: space-between;
 		background-color: $cb-bg-hover;
 		padding: 8px 12px;
-		border-bottom: 1px solid $cb-border-light;
 
 		&:after {
 			content: none;
@@ -463,14 +462,12 @@
 		background-color: $cb-bg-hover;
 		margin: 0;
 		padding: 0;
-		border-bottom: 1px solid $cb-border-light;
 	}
 
 	.mce-toolbar-grp {
 		background: none;
 		border-bottom: none;
 		padding: 0px 8px 8px;
-		border: 1px solid $cb-border-light;
 	}
 
 	// Toolbar button styling
@@ -562,45 +559,54 @@
 
 .lp-popup-items-to-select .header ul.tabs {
 	display: flex;
-	margin-top: 10;
-	padding: 0;
+	border-bottom: 1px solid #f5f5f5;
+	background: #ffffff;
+	gap: 10px;
+	margin: 0;
 	list-style: none;
-	gap: 20px;
-	border-bottom: unset;
+	padding: 16px 0 0;
 }
 
 .lp-popup-items-to-select ul.tabs li {
 	margin: 0;
+	display: inline-block;
+    position: relative;
+    margin: 0;
+    padding: 0px 24px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border-radius: $cb-radius-lg $cb-radius-lg 0 0;
+	border-bottom: 2px solid transparent;
+	cursor: pointer;
+
+	&.active {
+		border-bottom-color: $cb-primary;
+		background-color: $cb-primary-bland;
+		color: $cb-primary;
+	}
+
+	&:hover {
+		background-color: $cb-primary-bland;
+		color: $cb-primary;
+	}
 }
 
 .lp-popup-items-to-select .header ul.tabs li.tab a {
-	display: block;
-	text-decoration: none;
-	color: #6b7280;
-	font-weight: 600;
-	font-size: 14px;
-	transition: all 0.2s;
-	border-radius: 6px;
-	border: 1px solid #f5f5f5;
+	padding: 0;
 }
 
 .lp-popup-items-to-select .header ul.tabs li.tab.active a,
 .lp-popup-items-to-select .header ul.tabs li.tab a:hover {
-	background: #f5f5f5;
-	color: #1e1e1e;
+	color: $cb-primary;
 }
 
 input.lp-search-title-item {
-	width: 100%;
 	padding: 12px 16px;
-	border: 1px solid #d1d5db;
+	border-color: $cb-border;
 	border-radius: 8px;
-	font-size: 14px;
-	color: #374151;
-	background: #fff;
-	margin-bottom: 15px;
 	outline: none;
-	box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.05 );
 	transition: border-color 0.2s;
 }
 
@@ -610,13 +616,7 @@ input.lp-search-title-item:focus {
 }
 
 .lp-target ul.list-items {
-	list-style: none;
-	margin: 0;
 	padding: 0;
-	background: #fff;
-	border: 1px solid #e5e7eb;
-	border-radius: 8px;
-	overflow: hidden;
 	gap: 0;
 	max-height: 500px;
 }
@@ -624,8 +624,7 @@ input.lp-search-title-item:focus {
 .lp-select-item {
 	display: flex;
 	align-items: center;
-	padding: 12px 16px;
-	border-bottom: 1px solid #f5f5f5;
+	padding: 12px 0;
 	cursor: pointer;
 	transition: background 0.2s;
 }
@@ -653,8 +652,8 @@ input.lp-search-title-item:focus {
 }
 
 .lp-select-item input[type='checkbox']:checked {
-	background-color: #1e1e1e;
-	border-color: #1e1e1e;
+	background-color: $cb-success;
+	border-color: $cb-success;
 }
 
 .lp-select-item input[type='checkbox']:checked::after {
@@ -731,11 +730,14 @@ input.lp-search-title-item:focus {
 	font-size: 14px;
 }
 
+.lp-popup-items-to-select .main {
+	border-bottom-color: $cb-border-light !important;
+}
+
 .lp-popup-items-to-select .footer {
-	background: #fff;
+
 	align-items: center;
 	justify-content: space-between;
-	flex-shrink: 0;
 }
 
 .lp-popup-items-to-select .button {
@@ -750,8 +752,8 @@ input.lp-search-title-item:focus {
 
 .lp-popup-items-to-select .lp-btn-add-items-selected.lp-btn-edit-primary.active,
 .lp-popup-items-to-select .lp-btn-add-items-selected.lp-btn-edit-primary:not( .active ) {
-	background-color: #333;
-	color: #fff;
+	background-color: $cb-primary-bland;
+	color: $cb-primary;
 	order: 2;
 }
 
@@ -766,13 +768,14 @@ input.lp-search-title-item:focus {
 }
 
 .lp-popup-items-to-select .lp-btn-add-items-selected.lp-btn-edit-primary.active:hover {
-	background-color: #1e1e1e;
+	background-color: $cb-primary;
+	color: $cb-primary-bland;
 }
 
 .lp-btn-count-items-selected {
 	background: transparent;
-	color: #6b7280;
-	border: 1px dashed #d1d5db;
+	color: $cb-text-muted;
+	border: 1px dashed $cb-border;
 	font-size: 13px;
 	order: 1;
 }
@@ -823,4 +826,8 @@ input.lp-search-title-item:focus {
 
 .lp-popup-items-to-select .list-items-selected li {
 	padding: 5px;
+}
+
+.lp-popup-items-to-select .header .header-count-items-selected {
+	border-bottom-color: $cb-border-light;
 }

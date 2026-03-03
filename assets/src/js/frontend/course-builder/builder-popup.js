@@ -955,7 +955,7 @@ export class BuilderPopup {
 						'formatselect,bold,italic,underline,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,spellchecker,wp_adv',
 					toolbar2:
 						'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
-					wordpress_adv_hidden: false,
+					wordpress_adv_hidden: true,
 				},
 				quicktags: { buttons: 'strong,em,link,block,del,ins,img,ul,ol,li,code,more,close' },
 				mediaButtons: true,

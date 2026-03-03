@@ -238,22 +238,16 @@ class BuilderTabQuizTemplate {
 			$html_content = apply_filters(
 				'learn-press/course-builder/list-quizzes/item/section/bottom',
 				[
-					'wrapper'           => '<div class="quiz-content">',
-					'wrapper_left'      => '<div class="quiz-content__left">',
-					'title'             => sprintf(
+					'title'           => sprintf(
 						'<h3 class="wap-quiz-title"><a href="%s">%s</a></h3>',
 						esc_url( $edit_link ),
 						esc_html( $quiz['title'] )
 					),
-					'quiz_status'       => ! empty( $status ) ? sprintf( '<span class="quiz-status %1$s">%1$s</span>', $status ) : '',
-					'wrapper_left_end'  => '</div>',
-					'wrapper_right'     => '<div class="quiz-content__right">',
-					'courses'           => $html_courses,
-					'total_questions'   => sprintf( '<span class="quiz__total-questions">%d</span>', $quiz_model->count_questions() ),
-					'duration'          => sprintf( '<span class="quiz__duration">%s</span>', $quiz['duration'] ),
-					'date'              => sprintf( '<span class="quiz__date">%s</span>', date_i18n( 'm/d/Y', strtotime( $quiz['date_modified'] ?? '' ) ) ),
-					'wrapper_right_end' => '</div>',
-					'wrapper_end'       => '</div>',
+					'courses'         => $html_courses,
+					'total_questions' => sprintf( '<span class="quiz__total-questions">%d</span>', $quiz_model->count_questions() ),
+					'duration'        => sprintf( '<span class="quiz__duration">%s</span>', $quiz['duration'] ),
+					'date'            => sprintf( '<span class="quiz__date">%s</span>', date_i18n( 'm/d/Y', strtotime( $quiz['date_modified'] ?? '' ) ) ),
+					'quiz_status'     => ! empty( $status ) ? sprintf( '<span class="quiz-status %1$s">%1$s</span>', $status ) : '<span></span>',
 				],
 				$quiz,
 				$settings

@@ -16,6 +16,7 @@ export class BuilderTabLesson {
 		elLessonDelete: '.lesson-action-expanded__delete',
 		elLessonActionExpanded: '.lesson-action-expanded',
 		elLessonStatus: '.lesson-status',
+		elLessonPreview: '.lesson__preview.lp-btn-set-preview-item',
 	};
 
 	init() {
@@ -53,6 +54,11 @@ export class BuilderTabLesson {
 				selector: BuilderTabLesson.selectors.elLessonActionExpanded,
 				class: this,
 				callBack: this.toggleExpandedAction.name,
+			},
+			{
+				selector: BuilderTabLesson.selectors.elLessonPreview,
+				class: this,
+				callBack: this.toggleLessonPreview.name,
 			},
 		] );
 
@@ -298,6 +304,69 @@ export class BuilderTabLesson {
 				expandedBtn.classList.remove( 'active' );
 			}
 		} );
+	}
+
+	/* Toggle preview for a lesson in the lesson list */
+	toggleLessonPreview( args ) {
+		const { target } = args;
+		const elPreviewBtn = target.closest( BuilderTabLesson.selectors.elLessonPreview );
+		if ( ! elPreviewBtn ) {
+			return;
+		}
+
+		const elLessonItem = elPreviewBtn.closest( BuilderTabLesson.selectors.elLessonItem );
+		if ( ! elLessonItem ) {
+			return;
+		}
+
+		const icon = elPreviewBtn.querySelector( 'a' );
+		if ( ! icon ) {
+			return;
+		}
+
+		const lessonId = elLessonItem.dataset.lessonId || elPreviewBtn.dataset.id || '';
+		if ( ! lessonId ) {
+			return;
+		}
+
+		// Optimistic toggle
+		icon.classList.toggle( 'lp-icon-eye' );
+		icon.classList.toggle( 'lp-icon-eye-slash' );
+
+		const enablePreview = icon.classList.contains( 'lp-icon-eye' );
+
+		lpUtils.lpSetLoadingEl( elPreviewBtn, 1 );
+
+		const dataSend = {
+			action: 'builder_update_lesson',
+			args: { id_url: 'builder-update-lesson' },
+			lesson_id: lessonId,
+			lesson_settings: true,
+			_lp_preview: enablePreview ? 'yes' : '',
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message } = response;
+				lpToastify.show( message, status );
+
+				if ( status === 'error' ) {
+					// Revert on error
+					icon.classList.toggle( 'lp-icon-eye' );
+					icon.classList.toggle( 'lp-icon-eye-slash' );
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+				icon.classList.toggle( 'lp-icon-eye' );
+				icon.classList.toggle( 'lp-icon-eye-slash' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( elPreviewBtn, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
 	updateStatusUI( elLesson, status ) {

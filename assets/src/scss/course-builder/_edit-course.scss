@@ -1806,7 +1806,7 @@ ul.lp-meta-box__course-tab__tabs {
 	#lp-course-edit-curriculum {
 		background-color: #fff;
 		border-radius: 12px;
-		padding: 28px 0 0;
+		padding: 0;
 		color: #1f2937;
 		max-width: 100%;
 		box-sizing: border-box;
@@ -1823,7 +1823,7 @@ ul.lp-meta-box__course-tab__tabs {
 				font-size: 18px;
 				font-weight: 700;
 				margin: 0;
-				color: #1e1e1e;
+				color: $cb-text;
 			}
 		}
 
@@ -1831,7 +1831,7 @@ ul.lp-meta-box__course-tab__tabs {
 		.count-sections,
 		.total-items {
 			background: transparent;
-			color: #1e1e1e;
+			color: $cb-text;
 			font-size: 12px;
 			font-weight: 600;
 			padding: 0;

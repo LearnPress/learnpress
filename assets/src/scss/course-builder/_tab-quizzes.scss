@@ -20,6 +20,10 @@ $quiz-grid: 2fr 1.5fr 80px 1fr 1fr 100px 80px;
 		.quiz-item {
 			grid-template-columns: $quiz-grid;
 		}
+
+		.lesson-assigned-courses .label {
+			display: none;
+		}
 	}
 
 	// Remove border from inner list — container has it

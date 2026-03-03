@@ -44,7 +44,7 @@
 
 	.lp-builder-popup__tab-content,
 	.lp-horizontal-tab-content {
-		padding: 24px;
+		padding: 24px 24px 0;
 	}
 
 	.lp-builder-popup__tab-pane,
@@ -266,10 +266,9 @@
 
 		.total-items {
 			font-size: 13px;
-			color: #6b7280;
-			background: #e5e7eb;
 			padding: 4px 12px;
 			border-radius: 12px;
+			font-weight: 600;
 		}
 
 		.lp-question-toggle-all {

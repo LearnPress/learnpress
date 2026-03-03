@@ -243,21 +243,20 @@ class BuilderTabLessonTemplate {
 			$html_content = apply_filters(
 				'learn-press/course-builder/list-lessons/item/section/bottom',
 				[
-					'wrapper'           => '<div class="lesson-content">',
-					'wrapper_left'      => '<div class="lesson-content__left">',
-					'title'             => sprintf(
+					'title'         => sprintf(
 						'<h3 class="wap-lesson-title"><button data-popup-lesson="%s">%s</button></h3>',
 						$lesson_model->get_id(),
 						$lesson['title']
 					),
-					'lesson_status'     => ! empty( $status ) ? sprintf( '<span class="lesson-status %1$s">%1$s</span>', $status ) : '',
-					'wrapper_left_end'  => '</div>',
-					'wrapper_right'     => '<div class="lesson-content__right">',
-					'courses'           => $html_courses,
-					'preview'           => sprintf( '<span class="lesson__preview">%s</span>', $svg_preview ),
-					'date'              => sprintf( '<span class="lesson__date">%s</span>', date_i18n( 'm/d/Y', strtotime( $lesson['date_modified'] ) ) ),
-					'wrapper_right_end' => '</div>',
-					'wrapper_end'       => '</div>',
+					'courses'       => $html_courses,
+					'date'          => sprintf( '<span class="lesson__date">%s</span>', date_i18n( 'm/d/Y', strtotime( $lesson['date_modified'] ) ) ),
+					'lesson_status' => ! empty( $status ) ? sprintf( '<span class="lesson-status %1$s">%1$s</span>', $status ) : '<span></span>',
+					'preview'       => sprintf(
+					'<span class="lesson__preview lp-btn-set-preview-item" data-id="%s" title="%s"><a class="%s"></a></span>',
+					$lesson['id'],
+					__( 'Toggle preview', 'learnpress' ),
+					$lesson['preview'] === 'yes' ? 'lp-icon-eye' : 'lp-icon-eye-slash'
+				),
 				],
 				$lesson,
 				$settings

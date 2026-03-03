@@ -20,6 +20,10 @@ $question-grid: 2fr 1.5fr 1fr 100px 100px 80px;
 		.question-item {
 			grid-template-columns: $question-grid;
 		}
+
+		.question-assigned-quizzes .label {
+			display: none;
+		}
 	}
 
 	// Remove border from inner list — container has it

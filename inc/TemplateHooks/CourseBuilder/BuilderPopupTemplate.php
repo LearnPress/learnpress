@@ -107,7 +107,7 @@ class BuilderPopupTemplate {
 			$btn_trash = sprintf(
 				'<button type="button" class="cb-button cb-btn-trash__%s lp-builder-popup__btn lp-builder-popup__btn--trash">%s</button>',
 				$type,
-				__( 'Trash', 'learnpress' )
+				__( 'Move to trash', 'learnpress' )
 			);
 		}
 
@@ -122,13 +122,13 @@ class BuilderPopupTemplate {
 			'body_end'         => '</div>',
 			'footer'           => '<div class="lp-builder-popup__footer">',
 			'footer_left'      => '<div class="lp-builder-popup__footer-left">',
+			'btn_trash'        => $btn_trash,
+			'footer_left_end'  => '</div>',
+			'footer_right'     => '<div class="lp-builder-popup__footer-right">',
 			'btn_cancel'       => sprintf(
 				'<button type="button" class="cb-button lp-builder-popup__btn lp-builder-popup__btn--cancel">%s</button>',
 				__( 'Cancel', 'learnpress' )
 			),
-			'footer_left_end'  => '</div>',
-			'footer_right'     => '<div class="lp-builder-popup__footer-right">',
-			'btn_trash'        => $btn_trash,
 			'btn_draft'        => $btn_draft,
 			'btn_save'         => sprintf(
 				'<button type="button" class="cb-button cb-btn-update__%s lp-builder-popup__btn lp-builder-popup__btn--save" data-title-update="%s" data-title-publish="%s">%s</button>',

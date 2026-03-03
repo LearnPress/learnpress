@@ -20,6 +20,38 @@ $lesson-grid: 2fr 1.5fr 1fr 100px 80px 80px;
 		.lesson-item {
 			grid-template-columns: $lesson-grid;
 		}
+
+		.lesson-assigned-courses .label {
+			display: none;
+		}
+
+		.lesson__preview.lp-btn-set-preview-item {
+			cursor: pointer;
+			display: flex;
+			margin-left: $cb-spacing-md;
+			justify-content: flex-start;
+
+			a {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 32px;
+				height: 32px;
+				text-decoration: none;
+				font-size: 16px;
+				border-radius: $cb-radius;
+				background-color: transparent;
+				border: none;
+				color: $cb-text-muted;
+				cursor: pointer;
+				transition: all 0.2s;
+
+				&:hover {
+					background-color: $cb-primary-bland;
+					color: $cb-primary;
+				}
+			}
+		}
 	}
 
 	// Remove border from inner list — container has it

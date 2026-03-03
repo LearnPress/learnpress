@@ -240,21 +240,15 @@ class BuilderTabQuestionTemplate {
 			$html_content = apply_filters(
 				'learn-press/course-builder/list-questions/item/section/bottom',
 				[
-					'wrapper'           => '<div class="question-content">',
-					'wrapper_left'      => '<div class="question-content__left">',
-					'title'             => sprintf(
+					'title'           => sprintf(
 						'<h3 class="wap-question-title"><a href="%s">%s</a></h3>',
 						esc_url( $edit_link ),
 						esc_html( $question['title'] )
 					),
-					'question_status'   => ! empty( $status ) ? sprintf( '<span class="question-status %1$s">%1$s</span>', $status ) : '',
-					'wrapper_left_end'  => '</div>',
-					'wrapper_right'     => '<div class="question-content__right">',
-					'quizzes'           => $html_quizzes,
-					'type'              => sprintf( '<span class="question__preview">%s</span>', $question['type'] ),
-					'date'              => sprintf( '<span class="question__date">%s</span>', ! empty( $question['date_modified'] ) ? date_i18n( 'm/d/Y', strtotime( $question['date_modified'] ) ) : '--' ),
-					'wrapper_right_end' => '</div>',
-					'wrapper_end'       => '</div>',
+					'quizzes'         => $html_quizzes,
+					'date'            => sprintf( '<span class="question__date">%s</span>', ! empty( $question['date_modified'] ) ? date_i18n( 'm/d/Y', strtotime( $question['date_modified'] ) ) : '--' ),
+					'question_status' => ! empty( $status ) ? sprintf( '<span class="question-status %1$s">%1$s</span>', $status ) : '<span></span>',
+					'type'            => sprintf( '<span class="question__preview">%s</span>', $question['type'] ),
 				],
 				$question,
 				$settings

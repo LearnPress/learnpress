@@ -86,27 +86,12 @@
 			box-shadow: $cb-shadow-highlight;
 		}
 
-		// ===========================================
-		// Flatten ALL intermediate wrappers
-		// so their children sit directly on the item grid
-		// ===========================================
-		.#{$type}-content {
-			display: contents;
-		}
 
-		.#{$type}-content__left {
-			display: contents;
-		}
-
-		.#{$type}-content__right {
-			display: contents;
-		}
 
 		// ===========================================
 		// Column cells — title
 		// ===========================================
 		.wap-#{$type}-title {
-			order: 1;
 			margin: 0;
 			min-width: 0;
 			overflow: hidden;
@@ -136,22 +121,16 @@
 		// ===========================================
 		// Column cells — date, duration, preview
 		// ===========================================
-		.#{$type}__date {
-			order: 3;
+		.#{$type}__date,
+		.#{$type}__duration,
+		.#{$type}__total-questions {
 			font-size: $cb-font-sm;
 			color: $cb-text-muted;
 			white-space: nowrap;
-		}
-
-		.#{$type}__duration {
-			order: 3;
-			font-size: $cb-font-sm;
-			color: $cb-text-muted;
-			white-space: nowrap;
+			margin-left: $cb-spacing-sm;
 		}
 
 		.#{$type}__preview {
-			order: 5;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -167,7 +146,6 @@
 		// Action column — stays as a single grid cell
 		// ===========================================
 		.#{$type}-action {
-			order: 6;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -200,8 +178,8 @@
 			}
 
 			&:hover {
-				background-color: $cb-bg-hover;
-				color: $cb-text;
+				background-color: $cb-primary-bland;
+				color: $cb-primary;
 			}
 		}
 
@@ -224,10 +202,10 @@
 			}
 
 			&:hover {
-				background-color: $cb-bg-hover;
+				background-color: $cb-primary-bland;
 
 				svg {
-					color: $cb-text;
+					color: $cb-primary;
 				}
 			}
 		}
@@ -304,7 +282,6 @@
 
 // Status badges — green pill style
 @mixin post-status-badge {
-	order: 4;
 	display: inline-flex;
 	align-self: center;
 	padding: 4px 12px;
@@ -343,14 +320,13 @@
 
 // Assigned items display
 @mixin assigned-items-display {
-	order: 2;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	min-width: 0;
 
 	.label {
-		display: none; // hidden — header shows column label
+		margin-right: 5px;
 	}
 
 	a {
