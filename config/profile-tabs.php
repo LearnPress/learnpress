@@ -9,6 +9,7 @@
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileStudentEnrolledTemplate;
 
 $settings         = LP_Settings::instance();
 $default_settings = array(
@@ -46,6 +47,13 @@ $default_settings = array(
 		'hidden'   => true,
 		'callback' => [ ProfileOrderTemplate::class, 'content' ],
 		'priority' => 30,
+	),
+	'enrolled-students' => array(
+		'title'    => __( 'Enrolled Students', 'learnpress' ),
+		'slug'     => 'enrolled-students',
+		'callback' => [ ProfileStudentEnrolledTemplate::class, 'tab_content' ],
+		'priority' => 35,
+		'icon'     => '<i class="lp-icon-user-secret"></i>',
 	),
 	'settings'      => array(
 		'title'    => esc_html__( 'Settings', 'learnpress' ),

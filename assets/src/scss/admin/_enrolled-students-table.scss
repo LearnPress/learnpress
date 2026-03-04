@@ -1,0 +1,429 @@
+/**
+ * LP Table — Reusable Table Standard
+ *
+ * A shared table CSS system used by the "Enrolled Students" listing (and future tables).
+ * Provides card wrapper, header/body styling, avatars, progress bars, badges, toolbar, and pagination.
+ *
+ * @since 4.3.3
+ */
+
+// ──────────────────────────────────────────
+// Table wrapper (card)
+// ──────────────────────────────────────────
+.lp-enrolled-students-table-wrap {
+	margin-top: 15px;
+	// border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+// ──────────────────────────────────────────
+// Toolbar (filter / search)
+// ──────────────────────────────────────────
+.lp-enrolled-students-table-toolbar {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 16px 18px 14px;
+	margin-top: 16px;
+	border: 1px solid #d6dce5;
+	border-radius: 8px;
+	background: #f1f3f6;
+
+	&__row {
+		display: grid;
+		gap: 14px;
+	}
+
+	&__row--course {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	&__row--filters {
+		grid-template-columns: minmax(0, 1fr) minmax(145px, 150px) minmax(145px, 150px) auto;
+		align-items: end;
+	}
+
+	&__field {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		min-width: 0;
+	}
+
+	&__label {
+		color: #3f4a5c;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+
+	&__input {
+		width: 100%;
+		height: 38px;
+		padding: 0 12px;
+		border: 1px solid #c6cfdb;
+		border-radius: 7px;
+		color: #2f3a4a;
+		background: #fff;
+		font-size: 14px;
+		line-height: 1.4;
+		box-shadow: none;
+
+		&:focus {
+			border-color: #2f75ff;
+			outline: none;
+			box-shadow: 0 0 0 1px #2f75ff;
+		}
+	}
+
+	&__actions {
+		display: flex;
+		align-items: flex-end;
+		gap: 8px;
+	}
+
+	&__actions .button {
+		min-width: 95px;
+		height: 36px;
+		padding: 0 18px;
+		border-radius: 7px;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 34px;
+		border-color: #b9c3d2;
+		color: #46546c;
+		background: #fff;
+	}
+
+	&__actions .button:hover,
+	&__actions .button:focus {
+		border-color: #99a7bc;
+		color: #2f3a4a;
+		background: #f4f7fb;
+	}
+
+	@media (max-width: 1024px) {
+		&__row--filters {
+			grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr) minmax(150px, 1fr);
+		}
+
+		&__actions {
+			grid-column: 1 / -1;
+		}
+	}
+
+	@media (max-width: 782px) {
+		&__row--filters {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		&__field--student {
+			grid-column: 1 / -1;
+		}
+
+		&__actions {
+			grid-column: 1 / -1;
+		}
+	}
+
+	@media (max-width: 640px) {
+		&__row--filters {
+			grid-template-columns: 1fr;
+		}
+
+		&__actions .button {
+			width: 100%;
+		}
+	}
+}
+
+// ──────────────────────────────────────────
+// Table base
+// ──────────────────────────────────────────
+.lp-enrolled-students-table {
+	width: 100%;
+	border: 0;
+	border-spacing: 0;
+	border-collapse: collapse;
+	font-size: 13px;
+
+	th,
+	td {
+		border: 0 !important;
+	}
+
+	thead {
+		th {
+			padding: 10px 16px;
+			border-bottom: 2px solid #e2e8f0 !important;
+			color: #64748b;
+			background: #f8fafc;
+			font-size: 12px;
+			font-weight: 600;
+			text-align: left;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+
+			&:first-child {
+				border-radius: 0;
+			}
+			&:last-child {
+				border-radius: 0;
+			}
+		}
+	}
+
+	tbody {
+		tr {
+			border-bottom: 1px solid #f1f5f9;
+			transition: background 0.15s;
+
+			&:hover {
+				background: #f8fafc;
+			}
+
+			&:last-child {
+				border-bottom: none;
+			}
+		}
+
+		td {
+			padding: 12px 16px;
+			vertical-align: middle;
+			border: 0 !important;
+		}
+	}
+
+	tfoot {
+		tr,
+		td {
+			border: 0 !important;
+		}
+	}
+}
+
+// ──────────────────────────────────────────
+// Student cell (avatar + name + email)
+// ──────────────────────────────────────────
+.lp-cell-student {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.lp-avatar {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	color: #fff;
+	background: #64748b;
+	font-size: 13px;
+	font-weight: 600;
+	overflow: hidden;
+}
+
+.lp-avatar--image {
+	background: transparent;
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+}
+
+.lp-meta {
+	display: flex;
+	flex-direction: column;
+
+	.lp-name {
+		color: #1e293b;
+		font-weight: 500;
+		line-height: 1.4;
+	}
+
+	.lp-email {
+		color: #94a3b8;
+		font-size: 12px;
+		line-height: 1.3;
+	}
+}
+
+// ──────────────────────────────────────────
+// Course cell
+// ──────────────────────────────────────────
+.lp-cell-course {
+	a {
+		color: #3b82f6;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}
+
+// ──────────────────────────────────────────
+// Progress bar cell
+// ──────────────────────────────────────────
+.lp-cell-progress {
+	min-width: 120px;
+}
+
+.lp-progress-bar {
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+	max-width: 120px;
+	height: 6px;
+	border-radius: 3px;
+	background: #e2e8f0;
+
+	span {
+		display: block;
+		height: 100%;
+		border-radius: 3px;
+		background: linear-gradient(90deg, #3b82f6, #60a5fa);
+		transition: width 0.3s ease;
+	}
+}
+
+.lp-progress-text {
+	display: inline-block;
+	margin-top: 3px;
+	color: #64748b;
+	font-size: 11px;
+}
+
+// ──────────────────────────────────────────
+// Status badges
+// ──────────────────────────────────────────
+.lp-badge {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 12px;
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 1.5;
+	white-space: nowrap;
+
+	&--enrolled   { color: #475569; background: #f1f5f9; }
+	&--in-progress,
+	&--learning   { color: #1e40af; background: #dbeafe; }
+	&--finished   { color: #166534; background: #dcfce7; }
+	&--passed     { color: #14532d; background: #bbf7d0; }
+	&--failed     { color: #991b1b; background: #fee2e2; }
+}
+
+// ──────────────────────────────────────────
+// Footer / Pagination
+// ──────────────────────────────────────────
+.lp-enrolled-students-table-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 12px 20px;
+	border-top: 1px solid #e2e8f0;
+
+	&__count {
+		color: #64748b;
+		font-size: 13px;
+	}
+}
+#profile-content-enrolled-students .lp-enrolled-students-table-footer {
+	border-top: none;
+}
+.lp-enrolled-students-table-footer {
+	.learn-press-pagination {
+		margin: 0;
+		text-align: right;
+
+		ul.page-numbers {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			flex-wrap: wrap;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+
+			> li {
+				margin: 0;
+			}
+		}
+
+		a.page-numbers,
+		span.page-numbers {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 32px;
+			height: 32px;
+			padding: 0 8px;
+			border: 1px solid #e2e8f0;
+			border-radius: 4px;
+			color: #475569;
+			background: #fff;
+			font-size: 13px;
+			text-decoration: none;
+			cursor: pointer;
+			transition: all 0.15s;
+
+			&:hover:not(.current) {
+				border-color: #3b82f6;
+				color: #3b82f6;
+				background: #eff6ff;
+			}
+		}
+
+		span.page-numbers.current {
+			border-color: #3b82f6;
+			color: #fff;
+			background: #3b82f6;
+			cursor: default;
+		}
+
+		span.page-numbers.dots {
+			min-width: auto;
+			border: 0;
+			background: transparent;
+			cursor: default;
+		}
+
+		span.page-numbers.current,
+		span.page-numbers.dots {
+			pointer-events: none;
+		}
+	}
+}
+
+// ──────────────────────────────────────────
+// Empty state
+// ──────────────────────────────────────────
+.lp-enrolled-empty {
+	padding: 40px 20px;
+	color: #94a3b8;
+	text-align: center;
+
+	p {
+		margin: 0;
+		font-size: 14px;
+	}
+}
+
+// ──────────────────────────────────────────
+// Error state
+// ──────────────────────────────────────────
+.lp-enrolled-error {
+	padding: 15px 20px;
+	color: #dc2626;
+	font-size: 13px;
+}

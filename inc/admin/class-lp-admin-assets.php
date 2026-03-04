@@ -242,7 +242,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),*/
 				'lp-admin-courses'    => new LP_Asset_Key(
 					$this->url( 'dist/js/admin/admin-courses' . self::$_min_assets . '.js' ),
-					[ 'lp-load-ajax' ],
+					[ 'lp-load-ajax', 'wp-i18n' ],
 					[ 'edit-' . LP_COURSE_CPT ],
 					0,
 					0,
@@ -416,6 +416,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					0,
 					1
+				),
+				'lp-list-students-enrolled' => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/list-students-enrolled' . self::$_min_assets . '.js' ),
+					array( 'lp-load-ajax' ),
+					array( 'learnpress_page_lp-enrolled-students' ),
+					0,
+					0,
+					'',
+					[ 'strategy' => 'async' ]
 				),
 				'lp-admin-tools'      => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-tools' . self::$_min_assets . '.js' ),

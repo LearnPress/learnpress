@@ -34,7 +34,7 @@ class TableListTemplate {
 			),
 			'header'      => $this->html_header( $data['header'] ?? [] ),
 			'body'        => $this->html_body( $data['body'] ?? [] ),
-			'footer'      => $this->html_footer( $data['footer'] ?? [] ),
+			'footer'      => $this->html_footer( $data['footer'] ?? '' ),
 			'wrapper_end' => '</table>',
 		];
 
@@ -79,16 +79,22 @@ class TableListTemplate {
 	 */
 	public function html_body( array $data = [] ): string {
 		$html_tr = '';
-		foreach ( $data as $item_tr ) {
-			$html_tr .= '<tr>';
-			foreach ( $item_tr as $item_td ) {
-				$html_td  = sprintf(
-					'<td>%s</td>',
-					wp_kses_post( $item_td )
-				);
-				$html_tr .= $html_td;
+
+		// Allow callers to pass fully prepared rows HTML.
+		if ( isset( $data['rows_html'] ) && is_string( $data['rows_html'] ) ) {
+			$html_tr = $data['rows_html'];
+		} else {
+			foreach ( $data as $item_tr ) {
+				$html_tr .= '<tr>';
+				foreach ( $item_tr as $item_td ) {
+					$html_td  = sprintf(
+						'<td>%s</td>',
+						wp_kses_post( $item_td )
+					);
+					$html_tr .= $html_td;
+				}
+				$html_tr .= '</tr>';
 			}
-			$html_tr .= '</tr>';
 		}
 
 		$section = [
@@ -108,6 +114,10 @@ class TableListTemplate {
 	 * @return string
 	 */
 	public function html_footer( string $footer_html = '' ): string {
+		if ( '' === trim( $footer_html ) ) {
+			return '';
+		}
+
 		$html_td = sprintf(
 			'<td colspan="10">%s</td>',
 			wp_kses_post( $footer_html )

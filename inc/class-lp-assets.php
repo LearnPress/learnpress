@@ -375,12 +375,21 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-profile'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/profile' . self::$_min_assets . '.js' ),
-					[],
+					[ 'lp-load-ajax', 'wp-i18n' ],
 					array( LP_PAGE_PROFILE ),
 					0,
 					0,
 					'',
 					[ 'strategy' => 'defer' ]
+				),
+				'lp-list-students-enrolled' => new LP_Asset_Key(
+					self::url( 'js/dist/admin/list-students-enrolled' . self::$_min_assets . '.js' ),
+					[ 'lp-load-ajax' ],
+					[ LP_PAGE_PROFILE ],
+					0,
+					0,
+					'',
+					[ 'strategy' => 'async' ]
 				),
 				'lp-widgets'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/widgets' . self::$_min_assets . '.js' ),
