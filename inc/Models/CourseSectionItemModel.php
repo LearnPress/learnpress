@@ -4,10 +4,13 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress\Databases\Course\CourseSectionItemsDB;
+use LearnPress\Databases\CourseSectionDB;
 use LearnPress\Filters\Course\CourseSectionItemsFilter;
+use LearnPress\Filters\CourseSectionFilter;
 use LearnPress\Models\CourseSectionModel;
 use LP_Background_Single_Course;
 use LP_Cache;
+use LP_Debug;
 use LP_Section_DB;
 use LP_Section_Filter;
 use LP_Section_Items_DB;
@@ -179,6 +182,48 @@ class CourseSectionItemModel {
 		}
 
 		return $sectionModel;
+	}
+
+	/**
+	 * Get course ids from item id.
+	 *
+	 * @param int $item_id
+	 * @param string $item_type
+	 *
+	 * @return array [ stdClass(section_course_id) ]
+	 * @version 1.0.0
+	 * @since 4.3.2.9
+	 */
+	public static function get_courses_from_item_id( int $item_id, string $item_type ): array {
+		$lp_section_db = CourseSectionItemsDB::getInstance();
+		$course_ids    = [];
+
+		try {
+			$filter                      = new CourseSectionItemsFilter();
+			$filter->item_id             = $item_id;
+			$filter->item_type           = $item_type;
+			$filter->run_query_count     = false;
+			$filter->only_fields         = [ CourseSectionItemsFilter::COL_SECTION_ID ];
+			$filter->return_string_query = true;
+
+			$query_get_list_section = $lp_section_db->get_section_items( $filter );
+
+			// Find course ids from section ids
+			$courseSectionDB                = CourseSectionDB::getInstance();
+			$filterSection                  = new CourseSectionFilter();
+			$filterSection->run_query_count = false;
+			$filterSection->where[]         = sprintf( 'AND section_id IN (%s)', $query_get_list_section );
+			$filterSection->only_fields     = [ CourseSectionFilter::COL_SECTION_COURSE_ID ];
+			$course_ids                     = $courseSectionDB->get_sections( $filterSection );
+
+			if ( ! is_array( $course_ids ) ) {
+				$course_ids = [];
+			}
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+
+		return $course_ids;
 	}
 
 	/**

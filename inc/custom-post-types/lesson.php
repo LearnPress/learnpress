@@ -10,6 +10,10 @@
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\CourseSectionItemModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
@@ -51,14 +55,27 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @param bool $is_update
 		 *
 		 * @return void
+		 * @throws Exception
+		 * @version 1.0.1
 		 * @since 4.2.7.6
-		 * @version 1.0.0
 		 */
 		public function save_post( int $post_id, ?WP_Post $post = null, bool $is_update = false ) {
 			// Clear cache
 			$lpCache = new LP_Cache();
 			$lpCache->clear( "lessonPostModel/find/{$post_id}" );
 			$lpCache->clear( "lessonModel/find/{$post_id}" );
+
+			// Find courses have this lesson
+			$obj_course_ids = CourseSectionItemModel::get_courses_from_item_id( $post_id, LP_LESSON_CPT );
+			if ( ! empty( $obj_course_ids ) ) {
+				foreach ( $obj_course_ids as $obj_course_id ) {
+					$course_id       = $obj_course_id->section_course_id;
+					$coursePostModel = CoursePostModel::find( $course_id, true );
+					if ( $coursePostModel ) {
+						$coursePostModel->save();
+					}
+				}
+			}
 		}
 
 		/**

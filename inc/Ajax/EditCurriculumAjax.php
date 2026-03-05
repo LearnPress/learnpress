@@ -508,6 +508,10 @@ class EditCurriculumAjax extends AbstractAjax {
 
 			$itemModel->set_preview( $enable_preview == 1 );
 
+			// Save course to update preview data of item in the curriculum.
+			$coursePostModel = new CoursePostModel( $courseModel );
+			$coursePostModel->save();
+
 			$response->status  = 'success';
 			$response->message = __( 'Item updated successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
