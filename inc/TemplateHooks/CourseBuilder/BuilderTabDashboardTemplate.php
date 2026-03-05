@@ -682,8 +682,8 @@ class BuilderTabDashboardTemplate {
 
 			$content = sprintf(
 				'<div class="lp-cb-dashboard__recent-courses" style="margin-top: 30px;">
-					<div class="recent-courses__header" style="margin-bottom: 20px;">
-						<h3 class="recent-courses__title" style="font-size: 18px; font-weight: 600;">%s</h3>
+					<div class="recent-courses__header">
+						<h3 class="recent-courses__title">%s</h3>
 					</div>
 					<div class="recent-courses__list">%s</div>
 				</div>',

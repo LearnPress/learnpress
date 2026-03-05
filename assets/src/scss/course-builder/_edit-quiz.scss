@@ -1,6 +1,7 @@
 @import 'shared-tab-styles';
 
 .cb-section__quiz-edit,
+.cb-section__question-edit,
 .lp-cb-tab-panel[data-section="question"] {
 	.cb-section__quiz-title-assigned {
 		display: flex;
@@ -36,9 +37,72 @@
 		color: $cb-text-label;
 	}
 
+	.lp-question-type-label {
+		background-color: $cb-primary-bland;
+		color: $cb-primary;
+		font-size: 12px;
+		font-weight: 600;
+		padding: 4px 10px;
+		border-radius: $cb-radius;
+		margin-right: 10px;
+		white-space: nowrap;
+	}
+
 	.lp-answers-config {
 		padding: 0 $cb-spacing-lg $cb-spacing-lg $cb-spacing-lg;
 		margin-top: 15px;
+	}
+
+	.lp-question-type-new-wrap {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		select.lp-question-type-new {
+			flex: 1;
+			height: 38px;
+			padding: 0 12px;
+			border: 1px solid $cb-border;
+			border-radius: $cb-radius;
+			background-color: #fff;
+			font-size: $cb-font-md;
+			color: $cb-text;
+			cursor: pointer;
+			outline: none;
+			appearance: none;
+			background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+			background-repeat: no-repeat;
+			background-position: right 10px center;
+			background-size: 14px;
+
+			&:focus {
+				border-color: $cb-primary;
+			}
+		}
+
+		button.lp-btn-question-create-type {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			background-color: $cb-primary-bland;
+			color: $cb-primary;
+			border: none;
+			padding: 9px 18px;
+			border-radius: $cb-radius;
+			font-size: $cb-font-md;
+			font-weight: 600;
+			cursor: pointer;
+			white-space: nowrap;
+
+			&:hover {
+				background-color: $cb-primary;
+				color: $cb-primary-bland;
+			}
+
+			.lp-icon-spinner {
+				font-size: 14px;
+			}
+		}
 	}
 
 	.lp-question-data-edit {
@@ -80,7 +144,7 @@
 	}
 
 	.lp-question-answer-item .drag {
-		color: $cb-text-placeholder;
+		color: $cb-primary;
 		cursor: move;
 		margin-right: 12px;
 		font-size: 16px;

@@ -1,6 +1,6 @@
 @import 'shared-tab-styles';
 
-.lp-course-builder-content__section {
+.cb-section__question-edit {
 	.question-status {
 		padding: 5px 12px;
 		font-size: 12px;
@@ -21,7 +21,8 @@
 
 	.cb-section__question-title-assigned {
 		display: flex;
-		gap: 40px;
+		flex-direction: column-reverse;
+		gap: 16px;
 	}
 
 	.cb-question-edit-title {
@@ -29,25 +30,7 @@
 		margin-bottom: 24px;
 	}
 
-	.question-assigned-quizzes {
-		display: flex;
-		flex-direction: column;
-		align-items: end;
-		margin-right: 0 !important;
 
-		.label {
-			font-size: 16px;
-			font-weight: 600;
-			color: #1a1a1a;
-			margin-bottom: 8px;
-		}
-
-		a,
-		span {
-			font-size: 16px;
-			font-weight: 400;
-		}
-	}
 
 	.cb-question-edit-title__label {
 		display: block;
@@ -68,8 +51,8 @@
 	}
 
 	.cb-question-edit-title__input:focus {
-		border-color: #2271b1;
-		box-shadow: 0 0 0 1px #2271b1;
+		border-color: $cb-primary;
+		box-shadow: 0 0 0 1px $cb-primary;
 	}
 
 	.cb-question-edit-desc {

@@ -493,10 +493,6 @@ body.lp-popup-open {
 		.wp-editor-tools {
 			display: flex;
 			flex-wrap: wrap;
-			justify-content: space-between;
-			align-items: center;
-			padding: 10px 12px;
-			border-bottom: 1px solid $cb-border !important;
 
 			.wp-media-buttons {
 				margin: 0;
@@ -527,36 +523,11 @@ body.lp-popup-open {
 				}
 			}
 
-			.wp-editor-tabs {
-				float: none;
-				display: flex;
-				background: $cb-bg-subtle;
-				border-radius: 20px;
-				padding: 2px;
-				margin: 0;
-
-				.wp-switch-editor {
-					background: transparent;
-					border: none;
-					padding: 4px 16px;
-					margin: 0;
-					font-size: 13px;
-					font-weight: 500;
-					color: $cb-text-muted;
-					border-radius: 16px;
-					cursor: pointer;
-					transition: all 0.2s;
-
-					&:hover {
-						color: $cb-text;
-					}
-
-					&.html-active,
-					&.tmce-active {
-						background: $cb-bg;
-						color: $cb-primary;
-						box-shadow: $cb-shadow-sm;
-					}
+			.wp-editor-tabs:not(:has(.wp-switch-editor[aria-pressed="true"])) {
+				.wp-switch-editor:first-child {
+					background: $cb-primary-bland;
+					color: $cb-primary;
+					font-weight: 600;
 				}
 			}
 

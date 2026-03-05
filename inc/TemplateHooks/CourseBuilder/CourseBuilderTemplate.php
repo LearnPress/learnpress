@@ -161,7 +161,6 @@ class CourseBuilderTemplate {
 	public function dequeue_theme_styles() {
 		global $wp_query, $wp_styles;
 
-		// Only run on Course Builder page
 		if ( empty( $wp_query ) || ! $wp_query->get( 'is_course_builder' ) ) {
 			return;
 		}
@@ -173,11 +172,9 @@ class CourseBuilderTemplate {
 		$theme_uri = get_template_directory_uri();
 		$child_uri = get_stylesheet_directory_uri();
 
-		// Whitelist: styles that should NEVER be dequeued even if from theme dir
 		$whitelist = apply_filters( 'learn-press/course-builder/theme-styles-whitelist', [] );
 
 		foreach ( $wp_styles->registered as $handle => $style ) {
-			// Skip whitelisted handles
 			if ( in_array( $handle, $whitelist, true ) ) {
 				continue;
 			}
@@ -285,13 +282,13 @@ class CourseBuilderTemplate {
 		];
 
 		$toggle = sprintf(
-				'<button type="button" class="lp-cb-sidebar__toggle" aria-label="%s" title="%s">
+			'<button type="button" class="lp-cb-sidebar__toggle" aria-label="%s" title="%s">
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 						<path fill-rule="evenodd" clip-rule="evenodd" d="M5 3C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V5C21 4.46957 20.7893 3.96086 20.4142 3.58579C20.0391 3.21071 19.5304 3 19 3H5ZM10 5H19V19H10V5ZM8 5H5V19H8V5Z" fill="currentColor"/>
 					</svg>
 				</button>',
-				esc_attr__( 'Toggle Sidebar', 'learnpress' ),
-				esc_attr__( 'Toggle Sidebar', 'learnpress' )
+			esc_attr__( 'Toggle Sidebar', 'learnpress' ),
+			esc_attr__( 'Toggle Sidebar', 'learnpress' )
 		);
 
 		$sidebar = [
@@ -411,7 +408,7 @@ class CourseBuilderTemplate {
 			'questions' => 'dashicons-editor-help',
 		];
 
-		$icon  = isset( $tab_data[ 'icon' ] ) ? $tab_data['icon'] : '';
+		$icon  = isset( $tab_data['icon'] ) ? $tab_data['icon'] : '';
 		$title = $tab_data['title'];
 		$link  = CourseBuilder::get_tab_link( $slug );
 
@@ -467,7 +464,7 @@ class CourseBuilderTemplate {
 			'lessons'   => __( 'Add New Lesson', 'learnpress' ),
 			'questions' => __( 'Add New Question', 'learnpress' ),
 		);
-		$post_title = $is_new_post 
+		$post_title      = $is_new_post
 			? ( $new_post_titles[ $tab_current ] ?? __( 'Add New', 'learnpress' ) )
 			: $post->post_title;
 
@@ -476,47 +473,47 @@ class CourseBuilderTemplate {
 		if ( ! $is_new_post && ! empty( $status ) ) {
 			// Use type-specific status class based on current tab
 			$type_singular = rtrim( $tab_current, 's' ); // courses -> course, quizzes -> quiz, etc.
-			$status_badge = sprintf( '<span class="%1$s-status %2$s">%2$s</span>', esc_attr( $type_singular ), esc_attr( $status ) );
+			$status_badge  = sprintf( '<span class="%1$s-status %2$s">%2$s</span>', esc_attr( $type_singular ), esc_attr( $status ) );
 		}
 
 		// Configure buttons based on current status
 		// Main button reflects current status action, dropdown shows alternative
 		$status_config = array(
 			'publish'    => array(
-				'main_label'       => __( 'Update', 'learnpress' ),
-				'main_class'       => 'cb-btn-update',
-				'main_status'      => 'publish',
-				'dropdown_label'   => __( 'Save Draft', 'learnpress' ),
-				'dropdown_class'   => 'cb-btn-darft',
-				'dropdown_status'  => 'draft',
-				'dropdown_icon'    => 'dashicons-media-default',
+				'main_label'      => __( 'Update', 'learnpress' ),
+				'main_class'      => 'cb-btn-update',
+				'main_status'     => 'publish',
+				'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
+				'dropdown_class'  => 'cb-btn-darft',
+				'dropdown_status' => 'draft',
+				'dropdown_icon'   => 'dashicons-media-default',
 			),
 			'draft'      => array(
-				'main_label'       => __( 'Save Draft', 'learnpress' ),
-				'main_class'       => 'cb-btn-darft',
-				'main_status'      => 'draft',
-				'dropdown_label'   => __( 'Publish', 'learnpress' ),
-				'dropdown_class'   => 'cb-btn-publish',
-				'dropdown_status'  => 'publish',
-				'dropdown_icon'    => 'dashicons-visibility',
+				'main_label'      => __( 'Save Draft', 'learnpress' ),
+				'main_class'      => 'cb-btn-darft',
+				'main_status'     => 'draft',
+				'dropdown_label'  => __( 'Publish', 'learnpress' ),
+				'dropdown_class'  => 'cb-btn-publish',
+				'dropdown_status' => 'publish',
+				'dropdown_icon'   => 'dashicons-visibility',
 			),
 			'pending'    => array(
-				'main_label'       => __( 'Submit for Review', 'learnpress' ),
-				'main_class'       => 'cb-btn-pending',
-				'main_status'      => 'pending',
-				'dropdown_label'   => __( 'Save Draft', 'learnpress' ),
-				'dropdown_class'   => 'cb-btn-darft',
-				'dropdown_status'  => 'draft',
-				'dropdown_icon'    => 'dashicons-media-default',
+				'main_label'      => __( 'Submit for Review', 'learnpress' ),
+				'main_class'      => 'cb-btn-pending',
+				'main_status'     => 'pending',
+				'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
+				'dropdown_class'  => 'cb-btn-darft',
+				'dropdown_status' => 'draft',
+				'dropdown_icon'   => 'dashicons-media-default',
 			),
 			'auto-draft' => array(
-				'main_label'       => __( 'Publish', 'learnpress' ),
-				'main_class'       => 'cb-btn-publish',
-				'main_status'      => 'publish',
-				'dropdown_label'   => __( 'Save Draft', 'learnpress' ),
-				'dropdown_class'   => 'cb-btn-darft',
-				'dropdown_status'  => 'draft',
-				'dropdown_icon'    => 'dashicons-media-default',
+				'main_label'      => __( 'Publish', 'learnpress' ),
+				'main_class'      => 'cb-btn-publish',
+				'main_status'     => 'publish',
+				'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
+				'dropdown_class'  => 'cb-btn-darft',
+				'dropdown_status' => 'draft',
+				'dropdown_icon'   => 'dashicons-media-default',
 			),
 		);
 
@@ -585,9 +582,9 @@ class CourseBuilderTemplate {
 				<?php
 				// Render ALL section contents for client-side tab switching
 				foreach ( $sections as $key => $section ) :
-					$section_slug = $section['slug'];
+					$section_slug    = $section['slug'];
 					$is_active_panel = ( $key === $section_current || $section_slug === $section_current );
-					$hidden_class = $is_active_panel ? '' : 'lp-hidden';
+					$hidden_class    = $is_active_panel ? '' : 'lp-hidden';
 					?>
 					<div class="lp-cb-tab-panel <?php echo esc_attr( $hidden_class ); ?>" data-section="<?php echo esc_attr( $section_slug ); ?>">
 						<?php do_action( "learn-press/course-builder/{$tab_current}/{$section_slug}/layout", $post_id, $is_new_post ); ?>
@@ -736,8 +733,11 @@ class CourseBuilderTemplate {
 		if ( 'courses' !== $tab_slug ) {
 			$sections = array_merge(
 				[ 'wrapper' => $sections['wrapper'] ],
-				[ 'title'   => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', $title ) ],
-				[ 'content' => $sections['content'], 'wrapper_end' => $sections['wrapper_end'] ]
+				[ 'title' => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', $title ) ],
+				[
+					'content'     => $sections['content'],
+					'wrapper_end' => $sections['wrapper_end'],
+				]
 			);
 		}
 

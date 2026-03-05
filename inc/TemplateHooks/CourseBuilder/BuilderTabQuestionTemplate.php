@@ -219,7 +219,8 @@ class BuilderTabQuestionTemplate {
 					if ( $quiz_id && $quiz_title ) {
 						$quiz_link    = BuilderTabQuizTemplate::instance()->get_link_edit( $quiz_id );
 						$quiz_htmls[] = sprintf(
-							'<span>%s</span>',
+							'<a href="%s">%s</a>',
+							esc_url( $quiz_link ),
 							esc_html( $quiz_title )
 						);
 					}

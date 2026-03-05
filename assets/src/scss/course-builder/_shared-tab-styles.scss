@@ -251,24 +251,15 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: $cb-spacing-md $cb-spacing-xl;
-		background-color: $cb-bg-hover;
-		margin-bottom: $cb-spacing-2xl;
-		border-radius: $cb-radius-lg;
+		margin-bottom: $cb-spacing-sm;
 
 		h4 {
-			margin: 0;
-			font-size: 15px;
-			font-weight: 600;
-			color: #1e1e1e;
-			width: 80%;
+			color: $cb-text-subtle;
 		}
 
 		.total-items {
 			font-size: 13px;
-			padding: 4px 12px;
-			border-radius: 12px;
-			font-weight: 600;
+			color: $cb-text-subtle;
 		}
 
 		.lp-question-toggle-all {
@@ -632,14 +623,18 @@
 
 	// Dropdown selects
 	.cb-filter-select {
-		padding: 10px 14px;
+		padding: 10px 32px 10px 14px;
 		border: 1px solid $cb-border;
 		border-radius: 6px;
 		font-size: 14px;
 		color: $cb-text;
 		background: $cb-bg;
 		cursor: pointer;
-		min-width: 120px;
+		appearance: none;
+		background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+		background-repeat: no-repeat;
+		background-position: right 10px center;
+		background-size: 14px;
 
 		&:focus {
 			outline: none;
@@ -651,26 +646,24 @@
 	// Filter action buttons container
 	.cb-filter-actions {
 		display: flex;
-		align-items: center;
 		gap: 4px;
 		padding-bottom: 1px; // align baseline with inputs
 	}
 
 	// Filter button — light purple tint
 	.cb-filter-btn {
-		padding: 10px 20px;
+		padding:8px 20px;
 		border: none;
 		border-radius: 12px;
 		font-size: 14px;
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.2s;
-		color: $cb-primary;
-		background: transparent;
+		background-color: $cb-primary;
+		color: $cb-primary-bland;
 
 		&:hover {
-			background: $cb-primary-bland;
-			color: $cb-primary;
+			background: $cb-primary-hover;
 		}
 	}
 
@@ -682,7 +675,7 @@
 		font-size: 14px;
 		font-weight: 500;
 		cursor: pointer;
-		padding: 10px 20px;
+		padding: 8px 20px;
 		border-radius: 12px;
 
 		&:hover {
@@ -708,7 +701,7 @@
 		transition: background-color 0.2s;
 
 		&:hover {
-			background: $cb-primary-wp-hover;
+			background: $cb-primary-hover;
 		}
 
 		.dashicons {

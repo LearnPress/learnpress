@@ -6,8 +6,6 @@
 $lesson-grid: 2fr 1.5fr 1fr 100px 80px 80px;
 
 #lp-course-builder {
-	@include course-list-filter-bar;
-
 	// Table container — wraps header + list
 	.courses-builder__lesson-tab {
 		background: $cb-bg;

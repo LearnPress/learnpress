@@ -217,7 +217,7 @@
 
 		.form-field input[type='checkbox']:checked,
 		.form-field input[type='radio']:checked {
-			background: #7067ED;
+			background: $cb-success;
 		}
 
 		.form-field input[type='checkbox']:checked:before,
