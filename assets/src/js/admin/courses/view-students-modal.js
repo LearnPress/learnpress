@@ -5,6 +5,7 @@ import * as lpUtils from 'lpAssetsJsPath/utils.js';
 export class ViewStudentsModal {
 	constructor() {
 		this.isRequesting = false;
+		this.activeCourseId = 0;
 		this.init();
 	}
 
@@ -13,11 +14,15 @@ export class ViewStudentsModal {
 		form: '#lp-modal-enrolled-form',
 		toolbarTemplate: '#lp-tmpl-enrolled-students-toolbar-modal',
 		toolbar: '.lp-enrolled-students-table-toolbar--modal',
+		courseTrigger: '.lp-btn-view-students',
 		searchInput: '#lp-modal-enrolled-search-input',
 		startDateInput: '#lp-modal-enrolled-filter-start-date',
 		endDateInput: '#lp-modal-enrolled-filter-end-date',
 		searchBtn: '.lp-enrolled-btn-search-modal',
 		clearBtn: '.lp-enrolled-btn-clear-modal',
+		paginationLink: '.page-numbers',
+		modalSearchFields:
+			'#lp-modal-enrolled-search-input, #lp-modal-enrolled-filter-start-date, #lp-modal-enrolled-filter-end-date',
 	};
 
 	setButtonLoadingState( btn, isLoading ) {
@@ -36,23 +41,177 @@ export class ViewStudentsModal {
 
 		ViewStudentsModal._loadedEvents = true;
 
-		document.addEventListener( 'click', ( e ) => {
-			const btn = e.target.closest( '.lp-btn-view-students' );
-			if (
-				! btn ||
-				this.isRequesting ||
-				btn.classList.contains( 'loading' ) ||
-				btn.disabled
-			) {
-				return;
-			}
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: ViewStudentsModal.selectors.courseTrigger,
+				class: this,
+				callBack: this.handleOpenModal.name,
+			},
+			{
+				selector: ViewStudentsModal.selectors.searchBtn,
+				class: this,
+				callBack: this.handleModalSearch.name,
+			},
+			{
+				selector: ViewStudentsModal.selectors.clearBtn,
+				class: this,
+				callBack: this.handleModalClear.name,
+			},
+			{
+				selector: `${ ViewStudentsModal.selectors.wrap } ${ ViewStudentsModal.selectors.paginationLink }`,
+				class: this,
+				callBack: this.handleModalPagination.name,
+			},
+		] );
 
-			const courseId = btn.dataset.courseId;
-			const courseTitle = btn.dataset.courseTitle;
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: ViewStudentsModal.selectors.modalSearchFields,
+				class: this,
+				callBack: this.handleModalSearchOnEnter.name,
+				checkIsEventEnter: true,
+			},
+		] );
+	}
 
-			this.setButtonLoadingState( btn, true );
-			this.openModal( courseId, courseTitle, btn );
-		} );
+	handleOpenModal( args ) {
+		const btn = args?.target?.closest(
+			ViewStudentsModal.selectors.courseTrigger
+		);
+		if (
+			! btn ||
+			this.isRequesting ||
+			btn.classList.contains( 'loading' ) ||
+			btn.disabled
+		) {
+			return;
+		}
+
+		const courseId = parseInt( btn.dataset.courseId, 10 ) || 0;
+		if ( ! courseId ) {
+			return;
+		}
+
+		const courseTitle = btn.dataset.courseTitle || '';
+		this.activeCourseId = courseId;
+
+		this.setButtonLoadingState( btn, true );
+		this.openModal( courseId, courseTitle, btn );
+	}
+
+	handleModalSearch( args ) {
+		const btn = args?.target?.closest(
+			ViewStudentsModal.selectors.searchBtn
+		);
+		if ( ! btn || ! this.activeCourseId ) {
+			return;
+		}
+
+		if ( args?.e ) {
+			args.e.preventDefault();
+		}
+
+		if (
+			this.isRequesting ||
+			btn.classList.contains( 'loading' ) ||
+			btn.disabled
+		) {
+			return;
+		}
+
+		this.setButtonLoadingState( btn, true );
+		this.loadEnrolledStudents(
+			this.activeCourseId,
+			1,
+			this.getModalFilterValues(),
+			btn
+		);
+	}
+
+	handleModalSearchOnEnter( args ) {
+		if ( args?.e ) {
+			args.e.preventDefault();
+		}
+
+		const form = this.getModalForm();
+		if ( ! form ) {
+			return;
+		}
+
+		const btn = form.querySelector( ViewStudentsModal.selectors.searchBtn );
+		if ( ! btn ) {
+			return;
+		}
+
+		this.handleModalSearch( { ...args, target: btn } );
+	}
+
+	handleModalClear( args ) {
+		const btn = args?.target?.closest(
+			ViewStudentsModal.selectors.clearBtn
+		);
+		const form = this.getModalForm();
+		if ( ! btn || ! form || ! this.activeCourseId ) {
+			return;
+		}
+
+		if ( args?.e ) {
+			args.e.preventDefault();
+		}
+
+		if (
+			this.isRequesting ||
+			btn.classList.contains( 'loading' ) ||
+			btn.disabled
+		) {
+			return;
+		}
+
+		form.reset();
+		this.setButtonLoadingState( btn, true );
+		this.loadEnrolledStudents(
+			this.activeCourseId,
+			1,
+			this.getModalFilterValues(),
+			btn
+		);
+	}
+
+	handleModalPagination( args ) {
+		const link = args?.target?.closest(
+			ViewStudentsModal.selectors.paginationLink
+		);
+		if ( ! link || ! link.closest( ViewStudentsModal.selectors.wrap ) ) {
+			return;
+		}
+
+		if ( args?.e ) {
+			args.e.preventDefault();
+		}
+
+		if (
+			this.isRequesting ||
+			link.classList.contains( 'loading' ) ||
+			link.disabled
+		) {
+			return;
+		}
+
+		const page = parseInt(
+			link.dataset.paged || link.textContent.trim(),
+			10
+		);
+		if ( Number.isNaN( page ) || ! this.activeCourseId ) {
+			return;
+		}
+
+		this.setButtonLoadingState( link, true );
+		this.loadEnrolledStudents(
+			this.activeCourseId,
+			page,
+			this.getModalFilterValues(),
+			link
+		);
 	}
 
 	getModalPopup() {
@@ -106,7 +265,10 @@ export class ViewStudentsModal {
 			this.setButtonLoadingState( elLoading, true );
 		}
 
-		wrap.innerHTML = '<div class="lp-loading">Loading...</div>';
+		wrap.innerHTML = `<div class="lp-loading">${ __(
+			'Loading...',
+			'learnpress'
+		) }</div>`;
 
 		const dataSend = {
 			callback: {
@@ -152,132 +314,6 @@ export class ViewStudentsModal {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
-	bindModalToolbarEvents( courseId ) {
-		const form = this.getModalForm();
-		if ( ! form ) {
-			return;
-		}
-
-		const toolbar = form.matches( ViewStudentsModal.selectors.toolbar )
-			? form
-			: form.querySelector( ViewStudentsModal.selectors.toolbar );
-		if ( ! toolbar ) {
-			return;
-		}
-
-		const wrap = document.querySelector( ViewStudentsModal.selectors.wrap );
-		if ( ! wrap ) {
-			return;
-		}
-
-		const handleSearch = ( e ) => {
-			e.preventDefault();
-			const searchBtn = toolbar.querySelector(
-				ViewStudentsModal.selectors.searchBtn
-			);
-
-			if (
-				! searchBtn ||
-				this.isRequesting ||
-				searchBtn.classList.contains( 'loading' ) ||
-				searchBtn.disabled
-			) {
-				return;
-			}
-
-			this.setButtonLoadingState( searchBtn, true );
-			this.loadEnrolledStudents(
-				courseId,
-				1,
-				this.getModalFilterValues(),
-				searchBtn
-			);
-		};
-
-		toolbar.addEventListener( 'click', ( e ) => {
-			const searchBtn = e.target.closest(
-				ViewStudentsModal.selectors.searchBtn
-			);
-			if ( searchBtn ) {
-				handleSearch( e );
-				return;
-			}
-
-			const clearBtn = e.target.closest(
-				ViewStudentsModal.selectors.clearBtn
-			);
-			if ( ! clearBtn ) {
-				return;
-			}
-
-			e.preventDefault();
-			if (
-				this.isRequesting ||
-				clearBtn.classList.contains( 'loading' ) ||
-				clearBtn.disabled
-			) {
-				return;
-			}
-
-			form.reset();
-			this.setButtonLoadingState( clearBtn, true );
-			this.loadEnrolledStudents(
-				courseId,
-				1,
-				this.getModalFilterValues(),
-				clearBtn
-			);
-		} );
-
-		toolbar.addEventListener( 'keydown', ( e ) => {
-			if ( e.key !== 'Enter' ) {
-				return;
-			}
-
-			if (
-				! e.target.closest(
-					`${ ViewStudentsModal.selectors.searchInput }, ${ ViewStudentsModal.selectors.startDateInput }, ${ ViewStudentsModal.selectors.endDateInput }`
-				)
-			) {
-				return;
-			}
-
-			handleSearch( e );
-		} );
-
-		wrap.addEventListener( 'click', ( e ) => {
-			const link = e.target.closest( '.page-numbers' );
-			if ( ! link ) {
-				return;
-			}
-
-			e.preventDefault();
-			if (
-				this.isRequesting ||
-				link.classList.contains( 'loading' ) ||
-				link.disabled
-			) {
-				return;
-			}
-
-			const page = parseInt(
-				link.dataset.paged || link.textContent.trim(),
-				10
-			);
-			if ( Number.isNaN( page ) ) {
-				return;
-			}
-
-			this.setButtonLoadingState( link, true );
-			this.loadEnrolledStudents(
-				courseId,
-				page,
-				this.getModalFilterValues(),
-				link
-			);
-		} );
-	}
-
 	openModal( courseId, courseTitle, elTrigger = null ) {
 		const modalToolbarHtml = this.getModalToolbarHtml();
 
@@ -288,6 +324,8 @@ export class ViewStudentsModal {
 			return;
 		}
 
+		this.activeCourseId = parseInt( courseId, 10 ) || 0;
+
 		SweetAlert.fire( {
 			title: `${ courseTitle } - ${ __(
 				'Enrolled Students',
@@ -295,20 +333,23 @@ export class ViewStudentsModal {
 			) }`,
 			html:
 				modalToolbarHtml +
-				'<div id="lp-modal-enrolled-wrap"><div class="lp-loading">Loading...</div></div>',
+				`<div id="lp-modal-enrolled-wrap"><div class="lp-loading">${ __(
+					'Loading...',
+					'learnpress'
+				) }</div></div>`,
 			width: '80%',
 			showConfirmButton: false,
 			showCloseButton: true,
 			didOpen: () => {
-				this.bindModalToolbarEvents( courseId );
 				this.loadEnrolledStudents(
-					courseId,
+					this.activeCourseId,
 					1,
 					this.getModalFilterValues(),
 					elTrigger
 				);
 			},
 			didClose: () => {
+				this.activeCourseId = 0;
 				if ( elTrigger ) {
 					this.setButtonLoadingState( elTrigger, false );
 				}

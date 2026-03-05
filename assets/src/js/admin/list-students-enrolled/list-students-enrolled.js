@@ -41,8 +41,9 @@ export class ListStudentsEnrolled {
 		const elLPTarget = this.elContainer.querySelector(
 			ListStudentsEnrolled.selectors.elLPTarget
 		);
-		if ( elLPTarget ) {
-			const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		const ajaxHandle = this.getAjaxHandle();
+		if ( elLPTarget && ajaxHandle ) {
+			const dataSend = ajaxHandle.getDataSetCurrent( elLPTarget );
 			if ( dataSend && dataSend.args ) {
 				this.instructorId = dataSend.args.instructor_id;
 			}
@@ -108,6 +109,21 @@ export class ListStudentsEnrolled {
 
 		lpUtils.lpSetLoadingEl( btn, isLoading ? 1 : 0 );
 		btn.disabled = !! isLoading;
+	}
+
+	getAjaxHandle() {
+		const ajaxHandle = window.lpAJAXG;
+		if (
+			! ajaxHandle ||
+			typeof ajaxHandle.getDataSetCurrent !== 'function' ||
+			typeof ajaxHandle.setDataSetCurrent !== 'function' ||
+			typeof ajaxHandle.showHideLoading !== 'function' ||
+			typeof ajaxHandle.fetchAJAX !== 'function'
+		) {
+			return null;
+		}
+
+		return ajaxHandle;
 	}
 
 	getToolbarForm() {
@@ -181,15 +197,20 @@ export class ListStudentsEnrolled {
 			return;
 		}
 
+		const ajaxHandle = this.getAjaxHandle();
+		if ( ! ajaxHandle ) {
+			return;
+		}
+
 		this.setButtonLoadingState( btn, true );
 
-		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		const dataSend = ajaxHandle.getDataSetCurrent( elLPTarget );
 		dataSend.args = this.getFilterArgsFromForm(
 			elForm,
 			dataSend.args || {}
 		);
 		dataSend.args.paged = 1;
-		window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+		ajaxHandle.setDataSetCurrent( elLPTarget, dataSend );
 
 		this.reloadContent( elLPTarget, dataSend, btn );
 	}
@@ -225,18 +246,23 @@ export class ListStudentsEnrolled {
 			return;
 		}
 
+		const ajaxHandle = this.getAjaxHandle();
+		if ( ! ajaxHandle ) {
+			return;
+		}
+
 		this.setButtonLoadingState( btn, true );
 
 		elForm.reset();
 		this.syncCourseIdFromName( elForm );
 
-		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		const dataSend = ajaxHandle.getDataSetCurrent( elLPTarget );
 		dataSend.args = lpUtils.mergeDataWithDatForm(
 			elForm,
 			dataSend.args || {}
 		);
 		dataSend.args.paged = 1;
-		window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+		ajaxHandle.setDataSetCurrent( elLPTarget, dataSend );
 
 		this.reloadContent( elLPTarget, dataSend, btn );
 	}
@@ -245,8 +271,15 @@ export class ListStudentsEnrolled {
 	 * Shared reload helper: loading indicator + AJAX fetch.
 	 */
 	reloadContent( elLPTarget, dataSend, btn = null ) {
+		const ajaxHandle = this.getAjaxHandle();
+		if ( ! ajaxHandle ) {
+			this.isRequesting = false;
+			this.setButtonLoadingState( btn, false );
+			return;
+		}
+
 		this.isRequesting = true;
-		window.lpAJAXG.showHideLoading( elLPTarget, 1 );
+		ajaxHandle.showHideLoading( elLPTarget, 1 );
 
 		const callBack = {
 			success: ( response ) => {
@@ -258,23 +291,18 @@ export class ListStudentsEnrolled {
 			error: ( error ) => console.error( error ),
 			completed: () => {
 				this.isRequesting = false;
-				window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+				ajaxHandle.showHideLoading( elLPTarget, 0 );
 				this.setButtonLoadingState( btn, false );
 			},
 		};
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		ajaxHandle.fetchAJAX( dataSend, callBack );
 	}
 }
 
 // Auto-initialize when DOM is available (for standalone page load).
 const listStudentsEnrolled = new ListStudentsEnrolled();
 
-document.addEventListener( 'DOMContentLoaded', () => {
-	listStudentsEnrolled.init();
-} );
-
-// Also listen for AJAX content loaded (for profile tabs loaded dynamically).
-document.addEventListener( 'lp_load_ajax_element_done', () => {
+lpUtils.lpOnElementReady( ListStudentsEnrolled.selectors.elContainer, () => {
 	listStudentsEnrolled.init();
 } );
