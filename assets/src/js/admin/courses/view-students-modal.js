@@ -123,15 +123,17 @@ export class ViewStudentsModal {
 		};
 
 		const callBack = {
-				success: ( response ) => {
-					if ( response.status === 'success' ) {
-						wrap.innerHTML = response.data.content;
+			success: ( response ) => {
+				if ( response.status === 'success' ) {
+					wrap.innerHTML = response.data.content;
 
-						wrap.querySelectorAll( '.page-numbers' ).forEach( ( link ) => {
+					wrap.querySelectorAll( '.page-numbers' ).forEach(
+						( link ) => {
 							link.classList.add( 'lp-button' );
-						} );
-					}
-				},
+						}
+					);
+				}
+			},
 			error: ( err ) => {
 				wrap.innerHTML = `<p>${ __(
 					'Error loading students.',
@@ -201,7 +203,9 @@ export class ViewStudentsModal {
 				return;
 			}
 
-			const clearBtn = e.target.closest( ViewStudentsModal.selectors.clearBtn );
+			const clearBtn = e.target.closest(
+				ViewStudentsModal.selectors.clearBtn
+			);
 			if ( ! clearBtn ) {
 				return;
 			}
@@ -285,7 +289,10 @@ export class ViewStudentsModal {
 		}
 
 		SweetAlert.fire( {
-			title: `${ courseTitle } - ${ __( 'Enrolled Students', 'learnpress' ) }`,
+			title: `${ courseTitle } - ${ __(
+				'Enrolled Students',
+				'learnpress'
+			) }`,
 			html:
 				modalToolbarHtml +
 				'<div id="lp-modal-enrolled-wrap"><div class="lp-loading">Loading...</div></div>',
