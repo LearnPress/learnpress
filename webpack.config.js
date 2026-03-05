@@ -1,10 +1,10 @@
-const path = require('path');
-const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const path = require( 'path' );
+const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
+const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
+const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
 //const MergeIntoSingleFilePlugin = require( 'webpack-merge-and-include-globally' );
-const LearnPressDependencyExtractionWebpackPlugin = require('./packages/dependecy-extraction-webpack-plugin');
+const LearnPressDependencyExtractionWebpackPlugin = require( './packages/dependecy-extraction-webpack-plugin' );
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -42,35 +42,35 @@ module.exports = {
 		'./assets/js/dist/js/data-controls': {
 			import: './assets/src/apps/js/data-controls.js',
 			library: {
-				name: ['LP', 'dataControls'],
+				name: [ 'LP', 'dataControls' ],
 				type: 'window',
 			},
 		},
 		'./assets/js/dist/frontend/modal': {
 			import: './assets/src/apps/js/frontend/modal.js',
 			library: {
-				name: ['LP', 'modal'],
+				name: [ 'LP', 'modal' ],
 				type: 'window',
 			},
 		},
 		'./assets/js/dist/frontend/quiz': {
 			import: './assets/src/apps/js/frontend/quiz.js',
 			library: {
-				name: ['LP', 'quiz'],
+				name: [ 'LP', 'quiz' ],
 				type: 'window',
 			},
 		},
 		'./assets/js/dist/frontend/lp-configs': {
 			import: './assets/src/apps/js/frontend/lp-configs.js',
 			library: {
-				name: ['LP', 'config'],
+				name: [ 'LP', 'config' ],
 				type: 'window',
 			},
 		},
 		'./assets/js/dist/frontend/question-types': {
 			import: './assets/src/apps/js/frontend/question-types.js',
 			library: {
-				name: ['LP', 'questionTypes'],
+				name: [ 'LP', 'questionTypes' ],
 				type: 'window',
 			},
 		},
@@ -161,15 +161,15 @@ module.exports = {
 		'./assets/js/dist/gutenberg/editor-check': './assets/src/apps/js/admin/gutenberg/editor-check.js',
 	},
 	output: {
-		path: path.resolve(__dirname),
-		filename: '[name]' + (isProduction ? '.min.js' : '.js'),
+		path: path.resolve( __dirname ),
+		filename: '[name]' + ( isProduction ? '.min.js' : '.js' ),
 	},
 	plugins: [
 		process.env.WP_BUNDLE_ANALYZER && new BundleAnalyzerPlugin(),
 
 		// WP_NO_EXTERNALS global variable controls whether scripts' assets get
 		// generated, and the default externals set.
-		!process.env.WP_NO_EXTERNALS && new DependencyExtractionWebpackPlugin(),
+		! process.env.WP_NO_EXTERNALS && new DependencyExtractionWebpackPlugin(),
 		/*new MergeIntoSingleFilePlugin( {
 			files: {
 				'assets/js/vendor/plugins.all.js': [
@@ -185,17 +185,17 @@ module.exports = {
 				],
 			},
 		} ),*/
-		new LearnPressDependencyExtractionWebpackPlugin({
+		new LearnPressDependencyExtractionWebpackPlugin( {
 			namespace: '@learnpress',
 			library: 'LP',
-		}),
-	].filter(Boolean),
+		} ),
+	].filter( Boolean ),
 	resolve: {
 		// Add `.ts` and `.tsx` as a resolvable extension.
-		extensions: ['.ts', '.tsx', '.js', '.css', '.scss'],
+		extensions: [ '.ts', '.tsx', '.js', '.css', '.scss' ],
 		// Set alias for LP assets src path
 		alias: {
-			lpAssetsJsPath: path.resolve(__dirname, 'assets/src/js'),
+			lpAssetsJsPath: path.resolve( __dirname, 'assets/src/js' ),
 		},
 	},
 	module: {
@@ -212,7 +212,7 @@ module.exports = {
 			},
 			{
 				test: /\.css$/i,
-				use: ['style-loader', 'css-loader'],
+				use: [ 'style-loader', 'css-loader' ],
 			},
 		],
 	},
