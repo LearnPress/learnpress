@@ -10,6 +10,7 @@ export class ViewStudentsModal {
 
 	static selectors = {
 		wrap: '#lp-modal-enrolled-wrap',
+		form: '#lp-modal-enrolled-form',
 		toolbarTemplate: '#lp-tmpl-enrolled-students-toolbar-modal',
 		toolbar: '.lp-enrolled-students-table-toolbar--modal',
 		searchInput: '#lp-modal-enrolled-search-input',
@@ -66,9 +67,18 @@ export class ViewStudentsModal {
 		return template ? template.innerHTML : '';
 	}
 
-	getModalFilterValues() {
+	getModalForm() {
 		const popup = this.getModalPopup();
 		if ( ! popup ) {
+			return null;
+		}
+
+		return popup.querySelector( ViewStudentsModal.selectors.form );
+	}
+
+	getModalFilterValues() {
+		const form = this.getModalForm();
+		if ( ! form ) {
 			return {
 				search: '',
 				start_date: '',
@@ -76,20 +86,12 @@ export class ViewStudentsModal {
 			};
 		}
 
-		const searchInput = popup.querySelector(
-			ViewStudentsModal.selectors.searchInput
-		);
-		const startDateInput = popup.querySelector(
-			ViewStudentsModal.selectors.startDateInput
-		);
-		const endDateInput = popup.querySelector(
-			ViewStudentsModal.selectors.endDateInput
-		);
+		const filters = lpUtils.mergeDataWithDatForm( form, {} );
 
 		return {
-			search: searchInput?.value.trim() || '',
-			start_date: startDateInput?.value || '',
-			end_date: endDateInput?.value || '',
+			search: filters.search || '',
+			start_date: filters.start_date || '',
+			end_date: filters.end_date || '',
 		};
 	}
 
@@ -121,43 +123,15 @@ export class ViewStudentsModal {
 		};
 
 		const callBack = {
-			success: ( response ) => {
-				if ( response.status === 'success' ) {
-					wrap.innerHTML = response.data.content;
+				success: ( response ) => {
+					if ( response.status === 'success' ) {
+						wrap.innerHTML = response.data.content;
 
-					wrap.querySelectorAll( '.page-numbers' ).forEach( ( link ) => {
-						link.classList.add( 'lp-button' );
-
-						link.addEventListener( 'click', ( ev ) => {
-							ev.preventDefault();
-							if (
-								this.isRequesting ||
-								link.classList.contains( 'loading' ) ||
-								link.disabled
-							) {
-								return;
-							}
-
-							const page = parseInt(
-								link.dataset.paged || link.textContent.trim(),
-								10
-							);
-
-							if ( Number.isNaN( page ) ) {
-								return;
-							}
-
-							this.setButtonLoadingState( link, true );
-							this.loadEnrolledStudents(
-								courseId,
-								page,
-								this.getModalFilterValues(),
-								link
-							);
+						wrap.querySelectorAll( '.page-numbers' ).forEach( ( link ) => {
+							link.classList.add( 'lp-button' );
 						} );
-					} );
-				}
-			},
+					}
+				},
 			error: ( err ) => {
 				wrap.innerHTML = `<p>${ __(
 					'Error loading students.',
@@ -177,30 +151,34 @@ export class ViewStudentsModal {
 	}
 
 	bindModalToolbarEvents( courseId ) {
-		const popup = this.getModalPopup();
-		if ( ! popup ) {
+		const form = this.getModalForm();
+		if ( ! form ) {
 			return;
 		}
 
-		const toolbar = popup.querySelector( ViewStudentsModal.selectors.toolbar );
+		const toolbar = form.matches( ViewStudentsModal.selectors.toolbar )
+			? form
+			: form.querySelector( ViewStudentsModal.selectors.toolbar );
 		if ( ! toolbar ) {
 			return;
 		}
 
-		const searchBtn = toolbar.querySelector( ViewStudentsModal.selectors.searchBtn );
-		const clearBtn = toolbar.querySelector( ViewStudentsModal.selectors.clearBtn );
-		const inputs = toolbar.querySelectorAll(
-			`${ ViewStudentsModal.selectors.searchInput }, ${ ViewStudentsModal.selectors.startDateInput }, ${ ViewStudentsModal.selectors.endDateInput }`
-		);
+		const wrap = document.querySelector( ViewStudentsModal.selectors.wrap );
+		if ( ! wrap ) {
+			return;
+		}
 
-		const triggerSearch = ( e ) => {
+		const handleSearch = ( e ) => {
 			e.preventDefault();
+			const searchBtn = toolbar.querySelector(
+				ViewStudentsModal.selectors.searchBtn
+			);
 
 			if (
-				searchBtn &&
-				( this.isRequesting ||
-					searchBtn.classList.contains( 'loading' ) ||
-					searchBtn.disabled )
+				! searchBtn ||
+				this.isRequesting ||
+				searchBtn.classList.contains( 'loading' ) ||
+				searchBtn.disabled
 			) {
 				return;
 			}
@@ -214,57 +192,85 @@ export class ViewStudentsModal {
 			);
 		};
 
-		if ( searchBtn ) {
-			searchBtn.addEventListener( 'click', triggerSearch );
-		}
+		toolbar.addEventListener( 'click', ( e ) => {
+			const searchBtn = e.target.closest(
+				ViewStudentsModal.selectors.searchBtn
+			);
+			if ( searchBtn ) {
+				handleSearch( e );
+				return;
+			}
 
-		if ( clearBtn ) {
-			clearBtn.addEventListener( 'click', ( e ) => {
-				e.preventDefault();
-				if (
-					this.isRequesting ||
-					clearBtn.classList.contains( 'loading' ) ||
-					clearBtn.disabled
-				) {
-					return;
-				}
+			const clearBtn = e.target.closest( ViewStudentsModal.selectors.clearBtn );
+			if ( ! clearBtn ) {
+				return;
+			}
 
-				const searchInput = toolbar.querySelector(
-					ViewStudentsModal.selectors.searchInput
-				);
-				const startDateInput = toolbar.querySelector(
-					ViewStudentsModal.selectors.startDateInput
-				);
-				const endDateInput = toolbar.querySelector(
-					ViewStudentsModal.selectors.endDateInput
-				);
+			e.preventDefault();
+			if (
+				this.isRequesting ||
+				clearBtn.classList.contains( 'loading' ) ||
+				clearBtn.disabled
+			) {
+				return;
+			}
 
-				if ( searchInput ) {
-					searchInput.value = '';
-				}
-				if ( startDateInput ) {
-					startDateInput.value = '';
-				}
-				if ( endDateInput ) {
-					endDateInput.value = '';
-				}
+			form.reset();
+			this.setButtonLoadingState( clearBtn, true );
+			this.loadEnrolledStudents(
+				courseId,
+				1,
+				this.getModalFilterValues(),
+				clearBtn
+			);
+		} );
 
-				this.setButtonLoadingState( clearBtn, true );
-				this.loadEnrolledStudents(
-					courseId,
-					1,
-					this.getModalFilterValues(),
-					clearBtn
-				);
-			} );
-		}
+		toolbar.addEventListener( 'keydown', ( e ) => {
+			if ( e.key !== 'Enter' ) {
+				return;
+			}
 
-		inputs.forEach( ( input ) => {
-			input.addEventListener( 'keydown', ( e ) => {
-				if ( e.key === 'Enter' ) {
-					triggerSearch( e );
-				}
-			} );
+			if (
+				! e.target.closest(
+					`${ ViewStudentsModal.selectors.searchInput }, ${ ViewStudentsModal.selectors.startDateInput }, ${ ViewStudentsModal.selectors.endDateInput }`
+				)
+			) {
+				return;
+			}
+
+			handleSearch( e );
+		} );
+
+		wrap.addEventListener( 'click', ( e ) => {
+			const link = e.target.closest( '.page-numbers' );
+			if ( ! link ) {
+				return;
+			}
+
+			e.preventDefault();
+			if (
+				this.isRequesting ||
+				link.classList.contains( 'loading' ) ||
+				link.disabled
+			) {
+				return;
+			}
+
+			const page = parseInt(
+				link.dataset.paged || link.textContent.trim(),
+				10
+			);
+			if ( Number.isNaN( page ) ) {
+				return;
+			}
+
+			this.setButtonLoadingState( link, true );
+			this.loadEnrolledStudents(
+				courseId,
+				page,
+				this.getModalFilterValues(),
+				link
+			);
 		} );
 	}
 

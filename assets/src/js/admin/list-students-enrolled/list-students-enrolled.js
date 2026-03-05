@@ -18,8 +18,11 @@ export class ListStudentsEnrolled {
 
     static selectors = {
         elContainer: '#lp-enrolled-students',
+        elForm: '#lp-enrolled-students-form',
         elLPTarget: '.lp-target',
         elCourseNameInput: '.lp-enrolled-filter-course-name',
+        elCourseIdInput: '#lp-enrolled-filter-course-id',
+        elCourseList: '#lp-enrolled-course-list',
         elSearchInput: '.lp-enrolled-search-input',
         elStartDateInput: '.lp-enrolled-filter-start-date',
         elEndDateInput: '.lp-enrolled-filter-end-date',
@@ -31,16 +34,16 @@ export class ListStudentsEnrolled {
         this.elContainer = document.querySelector(
             ListStudentsEnrolled.selectors.elContainer
         );
-        if (!this.elContainer) {
+        if ( ! this.elContainer ) {
             return;
         }
 
         const elLPTarget = this.elContainer.querySelector(
             ListStudentsEnrolled.selectors.elLPTarget
         );
-        if (elLPTarget) {
-            const dataSend = window.lpAJAXG.getDataSetCurrent(elLPTarget);
-            if (dataSend && dataSend.args) {
+        if ( elLPTarget ) {
+            const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+            if ( dataSend && dataSend.args ) {
                 this.instructorId = dataSend.args.instructor_id;
             }
         }
@@ -49,14 +52,14 @@ export class ListStudentsEnrolled {
     }
 
     events() {
-        if (ListStudentsEnrolled._loadedEvents) {
+        if ( ListStudentsEnrolled._loadedEvents ) {
             return;
         }
 
         ListStudentsEnrolled._loadedEvents = this;
 
         // Search/Clear button click.
-        lpUtils.eventHandlers('click', [
+        lpUtils.eventHandlers( 'click', [
             {
                 selector: ListStudentsEnrolled.selectors.elBtnSearch,
                 class: this,
@@ -67,10 +70,10 @@ export class ListStudentsEnrolled {
                 class: this,
                 callBack: this.clearFilters.name,
             },
-        ]);
+        ] );
 
         // Search on Enter key.
-        lpUtils.eventHandlers('keydown', [
+        lpUtils.eventHandlers( 'keydown', [
             {
                 selector: ListStudentsEnrolled.selectors.elSearchInput,
                 class: this,
@@ -95,169 +98,177 @@ export class ListStudentsEnrolled {
                 callBack: this.searchStudents.name,
                 checkIsEventEnter: true,
             },
-        ]);
+        ] );
     }
 
-    setButtonLoadingState(btn, isLoading) {
-        if (!btn) {
+    setButtonLoadingState( btn, isLoading ) {
+        if ( ! btn ) {
             return;
         }
 
-        lpUtils.lpSetLoadingEl(btn, isLoading ? 1 : 0);
-        btn.disabled = !!isLoading;
+        lpUtils.lpSetLoadingEl( btn, isLoading ? 1 : 0 );
+        btn.disabled = !! isLoading;
+    }
+
+    getToolbarForm() {
+        return this.elContainer?.querySelector(
+            ListStudentsEnrolled.selectors.elForm
+        );
+    }
+
+    syncCourseIdFromName( elForm ) {
+        const courseIdInput = elForm?.querySelector(
+            ListStudentsEnrolled.selectors.elCourseIdInput
+        );
+        if ( ! courseIdInput ) {
+            return;
+        }
+
+        courseIdInput.value = '0';
+
+        const courseNameInput = elForm.querySelector(
+            ListStudentsEnrolled.selectors.elCourseNameInput
+        );
+        const datalist = elForm.querySelector(
+            ListStudentsEnrolled.selectors.elCourseList
+        );
+        const courseName = courseNameInput?.value.trim() || '';
+        if ( ! courseName || ! datalist ) {
+            return;
+        }
+
+        const selectedOption = Array.from( datalist.options || [] ).find(
+            ( option ) => option.value.trim() === courseName
+        );
+        if ( selectedOption ) {
+            courseIdInput.value = selectedOption.dataset.courseId || '0';
+        }
+    }
+
+    getFilterArgsFromForm( elForm, dataArgs = {} ) {
+        this.syncCourseIdFromName( elForm );
+        return lpUtils.mergeDataWithDatForm( elForm, dataArgs );
     }
 
     /**
      * Search students: update args.search, re-fetch.
      */
-    searchStudents(args) {
+    searchStudents( args ) {
         const { e } = args;
-        if (e) {
+        if ( e ) {
             e.preventDefault();
         }
         const btn = args?.target?.closest(
             ListStudentsEnrolled.selectors.elBtnSearch
         );
-        if (btn) {
-            if (this.isRequesting || btn.classList.contains('loading') || btn.disabled) {
+        if ( btn ) {
+            if (
+                this.isRequesting ||
+                btn.classList.contains( 'loading' ) ||
+                btn.disabled
+            ) {
                 return;
             }
-        } else if (this.isRequesting) {
+        } else if ( this.isRequesting ) {
             return;
         }
 
-        const elInput = this.elContainer.querySelector(
-            ListStudentsEnrolled.selectors.elSearchInput
-        );
-        const elCourseNameInput = this.elContainer.querySelector(
-            ListStudentsEnrolled.selectors.elCourseNameInput
-        );
-        const elStartDateInput = this.elContainer.querySelector(
-            ListStudentsEnrolled.selectors.elStartDateInput
-        );
-        const elEndDateInput = this.elContainer.querySelector(
-            ListStudentsEnrolled.selectors.elEndDateInput
-        );
+        const elForm = this.getToolbarForm();
         const elLPTarget = this.elContainer.querySelector(
             ListStudentsEnrolled.selectors.elLPTarget
         );
-        if (!elLPTarget || !elInput) {
+        if ( ! elLPTarget || ! elForm ) {
             return;
         }
 
-        this.setButtonLoadingState(btn, true);
+        this.setButtonLoadingState( btn, true );
 
-        const dataSend = window.lpAJAXG.getDataSetCurrent(elLPTarget);
-        dataSend.args.course_id = 0;
-        dataSend.args.course_name = elCourseNameInput?.value.trim() || '';
-        dataSend.args.search = elInput.value.trim();
-        dataSend.args.start_date = elStartDateInput?.value || '';
-        dataSend.args.end_date = elEndDateInput?.value || '';
+        const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+        dataSend.args = this.getFilterArgsFromForm( elForm, dataSend.args || {} );
         dataSend.args.paged = 1;
-        window.lpAJAXG.setDataSetCurrent(elLPTarget, dataSend);
+        window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
 
-        this.reloadContent(elLPTarget, dataSend, btn);
+        this.reloadContent( elLPTarget, dataSend, btn );
     }
-
 
     /**
      * Clear all filters and reload default data.
      */
-    clearFilters(args) {
+    clearFilters( args ) {
         const { e } = args;
-        if (e) {
+        if ( e ) {
             e.preventDefault();
         }
         const btn = args?.target?.closest(
             ListStudentsEnrolled.selectors.elBtnClear
         );
-        if (btn) {
-            if (this.isRequesting || btn.classList.contains('loading') || btn.disabled) {
+        if ( btn ) {
+            if (
+                this.isRequesting ||
+                btn.classList.contains( 'loading' ) ||
+                btn.disabled
+            ) {
                 return;
             }
-        } else if (this.isRequesting) {
+        } else if ( this.isRequesting ) {
             return;
         }
 
-        const elCourseNameInput = this.elContainer.querySelector(
-            ListStudentsEnrolled.selectors.elCourseNameInput
-        );
-        const elSearchInput = this.elContainer.querySelector(
-            ListStudentsEnrolled.selectors.elSearchInput
-        );
-        const elStartDateInput = this.elContainer.querySelector(
-            ListStudentsEnrolled.selectors.elStartDateInput
-        );
-        const elEndDateInput = this.elContainer.querySelector(
-            ListStudentsEnrolled.selectors.elEndDateInput
-        );
+        const elForm = this.getToolbarForm();
         const elLPTarget = this.elContainer.querySelector(
             ListStudentsEnrolled.selectors.elLPTarget
         );
-        if (!elLPTarget) {
+        if ( ! elLPTarget || ! elForm ) {
             return;
         }
 
-        this.setButtonLoadingState(btn, true);
+        this.setButtonLoadingState( btn, true );
 
-        if (elCourseNameInput) {
-            elCourseNameInput.value = '';
-        }
-        if (elSearchInput) {
-            elSearchInput.value = '';
-        }
-        if (elStartDateInput) {
-            elStartDateInput.value = '';
-        }
-        if (elEndDateInput) {
-            elEndDateInput.value = '';
-        }
+        elForm.reset();
+        this.syncCourseIdFromName( elForm );
 
-        const dataSend = window.lpAJAXG.getDataSetCurrent(elLPTarget);
-        dataSend.args.course_id = 0;
-        dataSend.args.course_name = '';
-        dataSend.args.search = '';
-        dataSend.args.start_date = '';
-        dataSend.args.end_date = '';
+        const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+        dataSend.args = lpUtils.mergeDataWithDatForm( elForm, dataSend.args || {} );
         dataSend.args.paged = 1;
-        window.lpAJAXG.setDataSetCurrent(elLPTarget, dataSend);
+        window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
 
-        this.reloadContent(elLPTarget, dataSend, btn);
+        this.reloadContent( elLPTarget, dataSend, btn );
     }
+
     /**
-     * Shared reload helper — loading indicator + AJAX fetch.
+     * Shared reload helper: loading indicator + AJAX fetch.
      */
-    reloadContent(elLPTarget, dataSend, btn = null) {
+    reloadContent( elLPTarget, dataSend, btn = null ) {
         this.isRequesting = true;
-        window.lpAJAXG.showHideLoading(elLPTarget, 1);
+        window.lpAJAXG.showHideLoading( elLPTarget, 1 );
 
         const callBack = {
-            success: (response) => {
+            success: ( response ) => {
                 const { status, data } = response;
-                if ('success' === status) {
+                if ( 'success' === status ) {
                     elLPTarget.innerHTML = data.content;
                 }
             },
-            error: (error) => console.error(error),
+            error: ( error ) => console.error( error ),
             completed: () => {
                 this.isRequesting = false;
-                window.lpAJAXG.showHideLoading(elLPTarget, 0);
-                this.setButtonLoadingState(btn, false);
+                window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+                this.setButtonLoadingState( btn, false );
             },
         };
 
-        window.lpAJAXG.fetchAJAX(dataSend, callBack);
+        window.lpAJAXG.fetchAJAX( dataSend, callBack );
     }
 }
 
 // Auto-initialize when DOM is available (for standalone page load).
 const listStudentsEnrolled = new ListStudentsEnrolled();
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener( 'DOMContentLoaded', () => {
     listStudentsEnrolled.init();
-});
+} );
 
 // Also listen for AJAX content loaded (for profile tabs loaded dynamically).
-document.addEventListener('lp_load_ajax_element_done', () => {
+document.addEventListener( 'lp_load_ajax_element_done', () => {
     listStudentsEnrolled.init();
-});
+} );
