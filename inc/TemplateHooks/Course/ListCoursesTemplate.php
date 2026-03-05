@@ -267,7 +267,7 @@ class ListCoursesTemplate {
 						__( 'Read more', 'learnpress' )
 					),
 					'btn_view_list' => $show_view_students ? sprintf(
-						'<div class="course-view-students"><button type="button" class="button button-small lp-btn-view-students" data-course-id="%d" data-course-title="%s">%s</button></div>',
+						'<div class="course-view-students"><button type="button" class="button button-small lp-button lp-btn-view-students" data-course-id="%d" data-course-title="%s">%s</button></div>',
 						$course->get_id(),
 						esc_attr( $course->get_title() ),
 						esc_html__( 'View List', 'learnpress' )

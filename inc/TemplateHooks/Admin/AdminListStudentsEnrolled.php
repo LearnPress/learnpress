@@ -37,6 +37,9 @@ class AdminListStudentsEnrolled {
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 		// 3. Register WP admin submenu page.
 		add_action( 'admin_menu', array( $this, 'register_admin_submenu' ), 30 );
+		// 4. Render modal toolbar template from PHP (used by JS modal).
+		add_action( 'admin_footer', array( $this, 'print_modal_toolbar_template' ) );
+		add_action( 'wp_footer', array( $this, 'print_modal_toolbar_template' ) );
 	}
 
 	/**
@@ -325,8 +328,8 @@ class AdminListStudentsEnrolled {
 			'end-input'           => '<input id="lp-enrolled-filter-end-date" class="lp-enrolled-filter-end-date lp-enrolled-students-table-toolbar__input" type="date" value="' . esc_attr( $search_end ) . '" placeholder="mm/dd/yyyy">',
 			'end-field-close'     => '</div>',
 			'actions-open'        => '<div class="lp-enrolled-students-table-toolbar__actions">',
-			'search-btn'          => '<button type="button" class="button lp-enrolled-btn-search">' . esc_html__( 'Search', 'learnpress' ) . '</button>',
-			'clear-btn'           => '<button type="button" class="button lp-enrolled-btn-clear">' . esc_html__( 'Clear Filter', 'learnpress' ) . '</button>',
+			'search-btn'          => '<button type="button" class="button lp-button lp-enrolled-btn-search">' . esc_html__( 'Search', 'learnpress' ) . '</button>',
+			'clear-btn'           => '<button type="button" class="button lp-button lp-enrolled-btn-clear">' . esc_html__( 'Clear Filter', 'learnpress' ) . '</button>',
 			'actions-close'       => '</div>',
 			'filter-row-close'    => '</div>',
 			'wrap-end'            => '</div>',
@@ -340,6 +343,64 @@ class AdminListStudentsEnrolled {
 		);
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Render toolbar used inside View Students modal.
+	 *
+	 * @return string
+	 */
+	public function html_toolbar_modal(): string {
+		$section = array(
+			'wrap'                => '<div class="lp-enrolled-students-table-toolbar lp-enrolled-students-table-toolbar--modal">',
+			'filter-row-open'     => '<div class="lp-enrolled-students-table-toolbar__row lp-enrolled-students-table-toolbar__row--filters">',
+			'student-field-open'  => '<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--student">',
+			'student-label'       => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-search-input">' . esc_html__( 'Student', 'learnpress' ) . '</label>',
+			'student-input'       => '<input id="lp-modal-enrolled-search-input" class="lp-enrolled-search-input lp-enrolled-students-table-toolbar__input" type="text" placeholder="' . esc_attr__( 'Enter student name or email', 'learnpress' ) . '">',
+			'student-field-close' => '</div>',
+			'start-field-open'    => '<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--date">',
+			'start-label'         => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-filter-start-date">' . esc_html__( 'Enrolled after', 'learnpress' ) . '</label>',
+			'start-input'         => '<input id="lp-modal-enrolled-filter-start-date" class="lp-enrolled-filter-start-date lp-enrolled-students-table-toolbar__input" type="date" placeholder="mm/dd/yyyy">',
+			'start-field-close'   => '</div>',
+			'end-field-open'      => '<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--date">',
+			'end-label'           => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-filter-end-date">' . esc_html__( 'Enrolled before', 'learnpress' ) . '</label>',
+			'end-input'           => '<input id="lp-modal-enrolled-filter-end-date" class="lp-enrolled-filter-end-date lp-enrolled-students-table-toolbar__input" type="date" placeholder="mm/dd/yyyy">',
+			'end-field-close'     => '</div>',
+			'actions-open'        => '<div class="lp-enrolled-students-table-toolbar__actions">',
+			'search-btn'          => '<button type="button" class="button lp-button lp-enrolled-btn-search-modal">' . esc_html__( 'Search', 'learnpress' ) . '</button>',
+			'clear-btn'           => '<button type="button" class="button lp-button lp-enrolled-btn-clear-modal">' . esc_html__( 'Clear Filter', 'learnpress' ) . '</button>',
+			'actions-close'       => '</div>',
+			'filter-row-close'    => '</div>',
+			'wrap-end'            => '</div>',
+		);
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Print HTML template for modal toolbar.
+	 *
+	 * @return void
+	 */
+	public function print_modal_toolbar_template() {
+		$should_print = false;
+
+		if ( is_admin() ) {
+			$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+			if ( $screen && isset( $screen->id ) && $screen->id === 'edit-' . LP_COURSE_CPT ) {
+				$should_print = true;
+			}
+		} elseif ( class_exists( '\LP_Page_Controller' ) && defined( 'LP_PAGE_PROFILE' ) ) {
+			$should_print = \LP_Page_Controller::page_current() === LP_PAGE_PROFILE;
+		}
+
+		if ( ! $should_print ) {
+			return;
+		}
+
+		echo '<script type="text/html" id="lp-tmpl-enrolled-students-toolbar-modal">';
+		echo $this->html_toolbar_modal();
+		echo '</script>';
 	}
 
 	/**

@@ -13,6 +13,7 @@ export class ListStudentsEnrolled {
     constructor() {
         this.instructorId = null;
         this.elContainer = null;
+        this.isRequesting = false;
     }
 
     static selectors = {
@@ -97,6 +98,15 @@ export class ListStudentsEnrolled {
         ]);
     }
 
+    setButtonLoadingState(btn, isLoading) {
+        if (!btn) {
+            return;
+        }
+
+        lpUtils.lpSetLoadingEl(btn, isLoading ? 1 : 0);
+        btn.disabled = !!isLoading;
+    }
+
     /**
      * Search students: update args.search, re-fetch.
      */
@@ -105,6 +115,17 @@ export class ListStudentsEnrolled {
         if (e) {
             e.preventDefault();
         }
+        const btn = args?.target?.closest(
+            ListStudentsEnrolled.selectors.elBtnSearch
+        );
+        if (btn) {
+            if (this.isRequesting || btn.classList.contains('loading') || btn.disabled) {
+                return;
+            }
+        } else if (this.isRequesting) {
+            return;
+        }
+
         const elInput = this.elContainer.querySelector(
             ListStudentsEnrolled.selectors.elSearchInput
         );
@@ -124,6 +145,8 @@ export class ListStudentsEnrolled {
             return;
         }
 
+        this.setButtonLoadingState(btn, true);
+
         const dataSend = window.lpAJAXG.getDataSetCurrent(elLPTarget);
         dataSend.args.course_id = 0;
         dataSend.args.course_name = elCourseNameInput?.value.trim() || '';
@@ -133,7 +156,7 @@ export class ListStudentsEnrolled {
         dataSend.args.paged = 1;
         window.lpAJAXG.setDataSetCurrent(elLPTarget, dataSend);
 
-        this.reloadContent(elLPTarget, dataSend);
+        this.reloadContent(elLPTarget, dataSend, btn);
     }
 
 
@@ -144,6 +167,16 @@ export class ListStudentsEnrolled {
         const { e } = args;
         if (e) {
             e.preventDefault();
+        }
+        const btn = args?.target?.closest(
+            ListStudentsEnrolled.selectors.elBtnClear
+        );
+        if (btn) {
+            if (this.isRequesting || btn.classList.contains('loading') || btn.disabled) {
+                return;
+            }
+        } else if (this.isRequesting) {
+            return;
         }
 
         const elCourseNameInput = this.elContainer.querySelector(
@@ -164,6 +197,8 @@ export class ListStudentsEnrolled {
         if (!elLPTarget) {
             return;
         }
+
+        this.setButtonLoadingState(btn, true);
 
         if (elCourseNameInput) {
             elCourseNameInput.value = '';
@@ -187,12 +222,13 @@ export class ListStudentsEnrolled {
         dataSend.args.paged = 1;
         window.lpAJAXG.setDataSetCurrent(elLPTarget, dataSend);
 
-        this.reloadContent(elLPTarget, dataSend);
+        this.reloadContent(elLPTarget, dataSend, btn);
     }
     /**
      * Shared reload helper — loading indicator + AJAX fetch.
      */
-    reloadContent(elLPTarget, dataSend) {
+    reloadContent(elLPTarget, dataSend, btn = null) {
+        this.isRequesting = true;
         window.lpAJAXG.showHideLoading(elLPTarget, 1);
 
         const callBack = {
@@ -204,7 +240,9 @@ export class ListStudentsEnrolled {
             },
             error: (error) => console.error(error),
             completed: () => {
+                this.isRequesting = false;
                 window.lpAJAXG.showHideLoading(elLPTarget, 0);
+                this.setButtonLoadingState(btn, false);
             },
         };
 

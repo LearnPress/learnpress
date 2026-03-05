@@ -1,13 +1,16 @@
 import SweetAlert from 'sweetalert2';
 import { __ } from '@wordpress/i18n';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 export class ViewStudentsModal {
 	constructor() {
+		this.isRequesting = false;
 		this.init();
 	}
 
 	static selectors = {
 		wrap: '#lp-modal-enrolled-wrap',
+		toolbarTemplate: '#lp-tmpl-enrolled-students-toolbar-modal',
 		toolbar: '.lp-enrolled-students-table-toolbar--modal',
 		searchInput: '#lp-modal-enrolled-search-input',
 		startDateInput: '#lp-modal-enrolled-filter-start-date',
@@ -15,6 +18,15 @@ export class ViewStudentsModal {
 		searchBtn: '.lp-enrolled-btn-search-modal',
 		clearBtn: '.lp-enrolled-btn-clear-modal',
 	};
+
+	setButtonLoadingState( btn, isLoading ) {
+		if ( ! btn ) {
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( btn, isLoading ? 1 : 0 );
+		btn.disabled = !! isLoading;
+	}
 
 	init() {
 		if ( ViewStudentsModal._loadedEvents ) {
@@ -25,19 +37,33 @@ export class ViewStudentsModal {
 
 		document.addEventListener( 'click', ( e ) => {
 			const btn = e.target.closest( '.lp-btn-view-students' );
-			if ( ! btn ) {
+			if (
+				! btn ||
+				this.isRequesting ||
+				btn.classList.contains( 'loading' ) ||
+				btn.disabled
+			) {
 				return;
 			}
 
 			const courseId = btn.dataset.courseId;
 			const courseTitle = btn.dataset.courseTitle;
 
-			this.openModal( courseId, courseTitle );
+			this.setButtonLoadingState( btn, true );
+			this.openModal( courseId, courseTitle, btn );
 		} );
 	}
 
 	getModalPopup() {
 		return SweetAlert.getPopup ? SweetAlert.getPopup() : null;
+	}
+
+	getModalToolbarHtml() {
+		const template = document.querySelector(
+			ViewStudentsModal.selectors.toolbarTemplate
+		);
+
+		return template ? template.innerHTML : '';
 	}
 
 	getModalFilterValues() {
@@ -67,68 +93,15 @@ export class ViewStudentsModal {
 		};
 	}
 
-	buildModalToolbarHtml() {
-		return `
-			<div class="lp-enrolled-students-table-toolbar lp-enrolled-students-table-toolbar--modal">
-				<div class="lp-enrolled-students-table-toolbar__row lp-enrolled-students-table-toolbar__row--filters">
-					<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--student">
-						<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-search-input">${ __(
-							'Student',
-							'learnpress'
-						) }</label>
-						<input
-							id="lp-modal-enrolled-search-input"
-							class="lp-enrolled-search-input lp-enrolled-students-table-toolbar__input"
-							type="text"
-							placeholder="${ __(
-								'Enter student name or email',
-								'learnpress'
-							) }"
-						>
-					</div>
-					<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--date">
-						<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-filter-start-date">${ __(
-							'Enrolled after',
-							'learnpress'
-						) }</label>
-						<input
-							id="lp-modal-enrolled-filter-start-date"
-							class="lp-enrolled-filter-start-date lp-enrolled-students-table-toolbar__input"
-							type="date"
-							placeholder="mm/dd/yyyy"
-						>
-					</div>
-					<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--date">
-						<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-filter-end-date">${ __(
-							'Enrolled before',
-							'learnpress'
-						) }</label>
-						<input
-							id="lp-modal-enrolled-filter-end-date"
-							class="lp-enrolled-filter-end-date lp-enrolled-students-table-toolbar__input"
-							type="date"
-							placeholder="mm/dd/yyyy"
-						>
-					</div>
-					<div class="lp-enrolled-students-table-toolbar__actions">
-						<button type="button" class="button lp-enrolled-btn-search-modal">${ __(
-							'Search',
-							'learnpress'
-						) }</button>
-						<button type="button" class="button lp-enrolled-btn-clear-modal">${ __(
-							'Clear Filter',
-							'learnpress'
-						) }</button>
-					</div>
-				</div>
-			</div>
-		`;
-	}
-
-	loadEnrolledStudents( courseId, paged, filters = {} ) {
+	loadEnrolledStudents( courseId, paged, filters = {}, elLoading = null ) {
 		const wrap = document.querySelector( ViewStudentsModal.selectors.wrap );
-		if ( ! wrap ) {
+		if ( ! wrap || this.isRequesting ) {
 			return;
+		}
+
+		this.isRequesting = true;
+		if ( elLoading ) {
+			this.setButtonLoadingState( elLoading, true );
 		}
 
 		wrap.innerHTML = '<div class="lp-loading">Loading...</div>';
@@ -153,8 +126,18 @@ export class ViewStudentsModal {
 					wrap.innerHTML = response.data.content;
 
 					wrap.querySelectorAll( '.page-numbers' ).forEach( ( link ) => {
+						link.classList.add( 'lp-button' );
+
 						link.addEventListener( 'click', ( ev ) => {
 							ev.preventDefault();
+							if (
+								this.isRequesting ||
+								link.classList.contains( 'loading' ) ||
+								link.disabled
+							) {
+								return;
+							}
+
 							const page = parseInt(
 								link.dataset.paged || link.textContent.trim(),
 								10
@@ -164,18 +147,29 @@ export class ViewStudentsModal {
 								return;
 							}
 
+							this.setButtonLoadingState( link, true );
 							this.loadEnrolledStudents(
 								courseId,
 								page,
-								this.getModalFilterValues()
+								this.getModalFilterValues(),
+								link
 							);
 						} );
 					} );
 				}
 			},
 			error: ( err ) => {
-				wrap.innerHTML = `<p>${ __( 'Error loading students.', 'learnpress' ) }</p>`;
+				wrap.innerHTML = `<p>${ __(
+					'Error loading students.',
+					'learnpress'
+				) }</p>`;
 				console.error( err );
+			},
+			completed: () => {
+				this.isRequesting = false;
+				if ( elLoading ) {
+					this.setButtonLoadingState( elLoading, false );
+				}
 			},
 		};
 
@@ -193,16 +187,32 @@ export class ViewStudentsModal {
 			return;
 		}
 
-		const triggerSearch = ( e ) => {
-			e.preventDefault();
-			this.loadEnrolledStudents( courseId, 1, this.getModalFilterValues() );
-		};
-
 		const searchBtn = toolbar.querySelector( ViewStudentsModal.selectors.searchBtn );
 		const clearBtn = toolbar.querySelector( ViewStudentsModal.selectors.clearBtn );
 		const inputs = toolbar.querySelectorAll(
 			`${ ViewStudentsModal.selectors.searchInput }, ${ ViewStudentsModal.selectors.startDateInput }, ${ ViewStudentsModal.selectors.endDateInput }`
 		);
+
+		const triggerSearch = ( e ) => {
+			e.preventDefault();
+
+			if (
+				searchBtn &&
+				( this.isRequesting ||
+					searchBtn.classList.contains( 'loading' ) ||
+					searchBtn.disabled )
+			) {
+				return;
+			}
+
+			this.setButtonLoadingState( searchBtn, true );
+			this.loadEnrolledStudents(
+				courseId,
+				1,
+				this.getModalFilterValues(),
+				searchBtn
+			);
+		};
 
 		if ( searchBtn ) {
 			searchBtn.addEventListener( 'click', triggerSearch );
@@ -211,6 +221,13 @@ export class ViewStudentsModal {
 		if ( clearBtn ) {
 			clearBtn.addEventListener( 'click', ( e ) => {
 				e.preventDefault();
+				if (
+					this.isRequesting ||
+					clearBtn.classList.contains( 'loading' ) ||
+					clearBtn.disabled
+				) {
+					return;
+				}
 
 				const searchInput = toolbar.querySelector(
 					ViewStudentsModal.selectors.searchInput
@@ -232,7 +249,13 @@ export class ViewStudentsModal {
 					endDateInput.value = '';
 				}
 
-				this.loadEnrolledStudents( courseId, 1, this.getModalFilterValues() );
+				this.setButtonLoadingState( clearBtn, true );
+				this.loadEnrolledStudents(
+					courseId,
+					1,
+					this.getModalFilterValues(),
+					clearBtn
+				);
 			} );
 		}
 
@@ -245,18 +268,37 @@ export class ViewStudentsModal {
 		} );
 	}
 
-	openModal( courseId, courseTitle ) {
+	openModal( courseId, courseTitle, elTrigger = null ) {
+		const modalToolbarHtml = this.getModalToolbarHtml();
+
+		if ( ! modalToolbarHtml ) {
+			if ( elTrigger ) {
+				this.setButtonLoadingState( elTrigger, false );
+			}
+			return;
+		}
+
 		SweetAlert.fire( {
 			title: `${ courseTitle } - ${ __( 'Enrolled Students', 'learnpress' ) }`,
 			html:
-				this.buildModalToolbarHtml() +
+				modalToolbarHtml +
 				'<div id="lp-modal-enrolled-wrap"><div class="lp-loading">Loading...</div></div>',
 			width: '80%',
 			showConfirmButton: false,
 			showCloseButton: true,
 			didOpen: () => {
 				this.bindModalToolbarEvents( courseId );
-				this.loadEnrolledStudents( courseId, 1, this.getModalFilterValues() );
+				this.loadEnrolledStudents(
+					courseId,
+					1,
+					this.getModalFilterValues(),
+					elTrigger
+				);
+			},
+			didClose: () => {
+				if ( elTrigger ) {
+					this.setButtonLoadingState( elTrigger, false );
+				}
 			},
 		} );
 	}

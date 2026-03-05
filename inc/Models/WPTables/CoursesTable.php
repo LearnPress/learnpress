@@ -165,7 +165,7 @@ class CoursesTable extends WP_Posts_List_Table {
 		);
 
 		printf(
-			'<br><button type="button" class="button button-small lp-btn-view-students" data-course-id="%d" data-course-title="%s">%s</button>',
+			'<br><button type="button" class="button button-small lp-button lp-btn-view-students" data-course-id="%d" data-course-title="%s">%s</button>',
 			$post->ID,
 			esc_attr( $post->post_title ),
 			esc_html__( 'View List', 'learnpress' )
