@@ -31,6 +31,7 @@ class AdminListStudentsEnrolled {
 	const PER_PAGE = 10;
 
 	public function init() {
+
 		// 1. Register render hook for both admin + frontend profile.
 		add_action( 'learn-press/admin/enrolled-students/layout', array( $this, 'enrolled_students_layout' ) );
 		// 2. Whitelist AJAX callback.
@@ -41,7 +42,6 @@ class AdminListStudentsEnrolled {
 		add_action( 'admin_footer', array( $this, 'print_modal_toolbar_template' ) );
 		add_action( 'wp_footer', array( $this, 'print_modal_toolbar_template' ) );
 	}
-
 	/**
 	 * Register submenu under LearnPress.
 	 */
@@ -260,6 +260,7 @@ class AdminListStudentsEnrolled {
 	 * @return string
 	 */
 	public function html_toolbar( int $instructor_id ): string {
+
 		$post_db                 = PostDB::getInstance();
 		$filter                  = new PostFilter();
 		$filter->only_fields     = array( 'p.ID', 'p.post_title' );
@@ -351,6 +352,7 @@ class AdminListStudentsEnrolled {
 	 * @return string
 	 */
 	public function html_toolbar_modal(): string {
+
 		$section = array(
 			'wrap'                => '<div class="lp-enrolled-students-table-toolbar lp-enrolled-students-table-toolbar--modal">',
 			'filter-row-open'     => '<div class="lp-enrolled-students-table-toolbar__row lp-enrolled-students-table-toolbar__row--filters">',
@@ -383,6 +385,7 @@ class AdminListStudentsEnrolled {
 	 * @return void
 	 */
 	public function print_modal_toolbar_template() {
+
 		$should_print = false;
 
 		if ( is_admin() ) {
@@ -391,18 +394,17 @@ class AdminListStudentsEnrolled {
 				$should_print = true;
 			}
 		} elseif ( class_exists( '\LP_Page_Controller' ) && defined( 'LP_PAGE_PROFILE' ) ) {
-			$should_print = \LP_Page_Controller::page_current() === LP_PAGE_PROFILE;
+					$should_print = \LP_Page_Controller::page_current() === LP_PAGE_PROFILE;
 		}
 
 		if ( ! $should_print ) {
-			return;
+				return;
 		}
 
 		echo '<script type="text/html" id="lp-tmpl-enrolled-students-toolbar-modal">';
 		echo $this->html_toolbar_modal();
 		echo '</script>';
 	}
-
 	/**
 	 * HTML builder: table wrapper.
 	 *
