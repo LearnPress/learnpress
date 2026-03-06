@@ -3,7 +3,7 @@
  * class AjaxBase
  *
  * @since 4.2.7.6
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\Ajax;
@@ -70,8 +70,10 @@ class LoadContentViaAjax extends AbstractAjax {
 			$response->message = $data->message ?? '';
 			unset( $data->message );
 
-			$response->status = 'success';
-			$response->data   = $data;
+			$response->status = $data->status ?? 'success';
+			unset( $data->status );
+
+			$response->data = $data;
 		} catch ( Throwable $e ) {
 			$response->status  = 'error';
 			$response->message = $e->getMessage();

@@ -4,13 +4,11 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 4.0.0
+ * @version 4.0.1
  */
 
-/**
- * Prevent loading this file directly
- */
-
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\PostFilter;
 use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -483,7 +481,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Only use for add/remove items to learn (learn_press_user_items) table.
 		 * Where call this function, must be careful, must set_time_limit( 0 );.
 		 *
-		 * @return array|object|stdClass[]|null
+		 * @return array|null
 		 * @version 1.0.1
 		 * @since 4.2.7.2
 		 */
@@ -531,13 +529,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @editor tungnx
 		 */
 		public function get_item_ids() {
-			$items = $this->get_items();
+			$items = $this->get_all_items();
 
 			if ( $items ) {
 				$course_ids = array();
 				foreach ( $items as $item ) {
-					if ( isset( $item['course_id'] ) ) {
-						$course_ids[] = (int) $item['course_id'];
+					if ( $item['item_type'] === LP_COURSE_CPT ) {
+						$course_ids[] = (int) $item['item_id'];
 					}
 				}
 
@@ -606,12 +604,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return int
 		 * @throws Exception
 		 * @since 1.0.0
-		 * @version 4.2.4
+		 * @version 4.2.5
 		 */
 		public function add_item( $item ): int {
 			global $wpdb;
-			$lp_user_items_db = LP_User_Items_DB::getInstance();
-			$order_item_id    = 0;
+			$order_item_id = 0;
 
 			try {
 				if ( is_numeric( $item ) ) {
@@ -621,7 +618,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					);
 				}
 
-				$item_type = get_post_type( $item['item_id'] );
+				$item_type = $item['item_type'] ?? get_post_type( $item['item_id'] );
 				if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
 					return false;
 				}
@@ -730,14 +727,16 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Remove an item from database and it's data.
 		 *
-		 * @param int $item_id
+		 * @param $order_item_id
 		 *
 		 * @return bool
+		 * @throws Exception
 		 */
-		public function remove_item( $item_id ) {
+		public function remove_item( $order_item_id ): bool {
 			global $wpdb;
 
-			$item_id = absint( $item_id );
+			$item_id       = absint( $order_item_id );
+			$order_item_id = absint( $order_item_id );
 
 			if ( ! $item_id ) {
 				return false;
@@ -750,15 +749,48 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			 */
 			do_action( 'learn-press/before-delete-order-item', $item_id, $this->get_id() );
 
-			$course_id = learn_press_get_order_item_meta( $item_id, '_course_id' );
-			if ( ! empty( $course_id ) ) {
-				$user_ids = $this->get_user_id();
+			$filter                      = new OrderItemsFilter();
+			$filter->order_item_id       = $order_item_id;
+			$filter->return_string_query = true;
+			$filter->run_query_count     = false;
+			$order_items_db              = LPOrderItemsDB::getInstance();
+			$order_items_db->get_query_single_row( $filter );
+			$query_single_row = $order_items_db->get_items( $filter );
+			$itemObj          = $order_items_db->wpdb->get_row( $query_single_row );
+
+			if ( $itemObj && $itemObj->item_type === LP_COURSE_CPT ) {
+				$course_id = $itemObj->item_id;
+				$user_ids  = $this->get_user_id();
 				if ( is_array( $user_ids ) ) {
 					foreach ( $user_ids as $user_id ) {
-						LP_User_Items_DB::getInstance()->delete_user_items_old( (int) $user_id, (int) $course_id );
+						// Delete course item on learnpress_user_items if exists
+						$userCourseItem = UserItemModel::find_user_item(
+							$user_id,
+							$course_id,
+							LP_COURSE_CPT,
+							$this->get_id(),
+							LP_ORDER_CPT,
+							true
+						);
+						if ( $userCourseItem instanceof UserItemModel ) {
+							$userCourseModel = new UserCourseModel( $userCourseItem );
+							$userCourseModel->delete();
+						}
 					}
 				} else {
-					LP_User_Items_DB::getInstance()->delete_user_items_old( (int) $user_ids, (int) $course_id );
+					// Delete course item on learnpress_user_items if exists
+					$userCourseItem = UserItemModel::find_user_item(
+						$user_ids,
+						$course_id,
+						LP_COURSE_CPT,
+						$this->get_id(),
+						LP_ORDER_CPT,
+						true
+					);
+					if ( $userCourseItem instanceof UserItemModel ) {
+						$userCourseModel = new UserCourseModel( $userCourseItem );
+						$userCourseModel->delete();
+					}
 				}
 			}
 
@@ -1360,6 +1392,104 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			];
 
 			return apply_filters( 'lp/order/statuses', $order_statuses );
+		}
+
+		/**
+		 * Query list orders.
+		 *
+		 * @param PostFilter $post_filter
+		 * @param array $param [ 'author' => int, 'post_status' => string|array, 's' => string, 'm' => string, 'posts_per_page' => int, 'paged' => int, 'orderby' => string, 'order' => string ]
+		 *
+		 * @return void
+		 * @throws Exception
+		 * @since 4.3.2.8
+		 * @version 1.0.0
+		 */
+		public static function handle_params_query_list_orders( PostFilter &$post_filter, array $param = [] ) {
+			$post_db       = PostDB::getInstance();
+			$user_of_order = absint( $param['author'] ?? 0 );
+			$status        = $param['post_status'] ?? '';
+			$key           = $param['s'] ?? '';
+			$month         = $param['m'] ?? '';
+			$limit         = $param['posts_per_page'] ?? 20;
+			$paged         = $param['paged'] ?? 1;
+
+			$order_by = $param['orderby'] ?? 'date';
+			if ( empty( $order_by ) ) {
+				$order_by = 'ID';
+			} else {
+				switch ( $order_by ) {
+					case 'date':
+						$order_by = 'post_date';
+						break;
+					case 'title':
+						$order_by = 'ID';
+						break;
+				}
+			}
+
+			$order = $param['order'] ?? 'DESC';
+			// End convert params
+
+			if ( $order_by === 'order_total' ) {
+				$post_filter->join[]   = "INNER JOIN {$post_db->tb_postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
+				$post_filter->where[]  = 'AND CAST(pm2.meta_value AS UNSIGNED)';
+				$post_filter->order_by = 'pm2.meta_value';
+			} else {
+				$post_filter->order_by = $order_by;
+			}
+
+			if ( ! empty( $key ) ) {
+				$pattern          = '/^#\d+$/';
+				$is_order_id_sure = false;
+				if ( preg_match( $pattern, $key ) ) {
+					$is_order_id_sure = true;
+					$key              = str_replace( '#', '', $key );
+				}
+
+				$pattern2 = '#^0+.*\d+$#';
+				if ( preg_match( $pattern2, $key ) ) {
+					$key = (int) $key;
+				}
+
+				$key = trim( $key );
+
+				if ( $is_order_id_sure ) {
+					$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.ID = %d', $key );
+				} else {
+					$post_filter->join[]  = "INNER JOIN {$post_db->tb_lp_order_items} lpori ON p.ID = lpori.order_id";
+					$post_filter->where[] = $post_db->wpdb->prepare(
+						'AND (p.ID = %d OR lpori.order_item_name like %s)',
+						$key,
+						'%' . $key . '%'
+					);
+				}
+			}
+
+			if ( ! empty( $month ) ) {
+				$year                 = substr( $month, 0, 4 );
+				$post_filter->where[] = "AND YEAR(p.post_date) = $year";
+				if ( strlen( $month ) > 5 ) {
+					$mon                  = substr( $month, 4, 2 );
+					$post_filter->where[] = "AND MONTH(p.post_date) = $mon";
+				}
+			}
+
+			$post_filter->order = $order;
+			$post_filter->limit = $limit;
+			$post_filter->page  = $paged;
+
+			if ( ! empty( $user_of_order ) ) {
+				$user_id              = absint( $user_of_order );
+				$post_filter->join[]  = "INNER JOIN {$post_db->tb_postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
+				$post_filter->where[] = "AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id )";
+			}
+
+			if ( ! empty( $status ) && $status !== 'all' ) {
+				$post_filter->post_status = (array) $status;
+			} else {
+				$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', LP_ORDER_TRASH );
+			}
 		}
 	}
 }

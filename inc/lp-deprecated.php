@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Helpers\Template;
+
 if ( ! function_exists( 'learn_press_course_content_lesson' ) ) {
 	/**
 	 * Display course description
@@ -208,7 +211,7 @@ if ( ! function_exists( 'learn_press_single_quiz_sidebar_buttons' ) ) {
 // Show filters for students list
 // Wait addon student list v4.0.3 update will remove it
 // @deprecated 4.2.7.4
-function learn_press_get_students_list_filter() {
+/*function learn_press_get_students_list_filter() {
 	$filter = array(
 		'all'         => esc_html__( 'All', 'learnpress' ),
 		'in-progress' => esc_html__( 'In Progress', 'learnpress' ),
@@ -216,7 +219,7 @@ function learn_press_get_students_list_filter() {
 	);
 
 	return apply_filters( 'learn_press_get_students_list_filter', $filter );
-}
+}*/
 
 
 function learn_press_output_question_nonce( $question ) {
@@ -838,8 +841,12 @@ if ( ! function_exists( 'learn_press_breadcrumb' ) ) {
 	 * Still using
 	 *
 	 * @param array $args
+	 * @deprecated still using addons collection, upsell, themes
 	 */
 	function learn_press_breadcrumb( $args = array() ) {
+		echo Template::html_breadcrumb( $args );
+		return;
+
 		$args = wp_parse_args(
 			$args,
 			apply_filters(

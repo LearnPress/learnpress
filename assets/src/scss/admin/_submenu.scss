@@ -1,7 +1,7 @@
 .lp-admin-tabs {
 	position: relative;
 	margin-top: 20px;
-
+	display: flex;
 	.lp-admin-tab-navs {
 		display: none;
 		float: left;
@@ -126,4 +126,9 @@
 			opacity: 1;
 		}
 	}
+}
+
+// Logo menu LearnPress
+#adminmenu .wp-menu-image img {
+	width: 17px;
 }

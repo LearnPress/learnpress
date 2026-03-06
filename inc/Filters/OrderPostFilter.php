@@ -2,8 +2,6 @@
 
 namespace LearnPress\Filters;
 
-use LearnPress\Databases\PostDB;
-
 defined( 'ABSPATH' ) || exit();
 
 /**

@@ -206,6 +206,7 @@ body {
 		}
 
 		.course-thumbnail{
+			position: relative;
 			border-radius:$border-radius-global $border-radius-global 0 0;
 			overflow: hidden;
 

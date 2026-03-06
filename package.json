@@ -58,7 +58,6 @@
 		"sass": "1.78.0",
 		"stylelint": "^15.11.0",
 		"stylelint-order": "^6.0.3",
-		"webpack": "5.94.0",
 		"node-notifier": "10.0.1"
 	},
 	"_comment": "sweetalert2 11.22.2 source origin but denied domain .ru, .su, .by, and .рф.",
@@ -73,6 +72,6 @@
 		"style-loader": "3.3.4",
 		"file-loader": "6.2.0",
 		"toastify-js": "1.12.0",
-		"sweetalert2": "11.26.3"
+		"sweetalert2": "11.26.17"
 	}
 }

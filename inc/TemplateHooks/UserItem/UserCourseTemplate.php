@@ -10,6 +10,7 @@ namespace LearnPress\TemplateHooks\UserItem;
 
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LP_Helper;
 use WP_Error;
@@ -208,6 +209,8 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 	 * @param UserCourseModel $userCourseModel
 	 *
 	 * @return mixed|null
+	 * @since 4.2.7.5
+	 * @version 1.0.1
 	 */
 	public function html_progress( UserCourseModel $userCourseModel ) {
 		$html = '';
@@ -219,36 +222,133 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 		}
 
 		$courseModel       = $userCourseModel->get_course_model();
+		$evaluation_type   = $courseModel::get_evaluation_types( $courseModel->get_evaluation_type() );
 		$calculate         = $userCourseModel->calculate_course_results();
 		$passing_condition = $courseModel->get_passing_condition();
+		if ( array_key_first( $evaluation_type ) === 'evaluate_final_quiz' ) {
+			$final_quiz = $courseModel->get_final_quiz();
+			if ( $final_quiz ) {
+				$quizModel         = QuizPostModel::find( $final_quiz, true );
+				$passing_condition = $quizModel->get_passing_grade();
+			}
+		}
+		$total_items = $courseModel->count_items();
+
+		$progress_items_completed_percent = round(
+			$total_items > 0 ? $calculate['completed_items'] * 100 / $total_items : 0,
+			2
+		);
 
 		$section = [
-			'wrapper'         => '<div class="course-progress">',
-			'number-progress' => sprintf(
+			'wrapper'          => '<div class="course-progress">',
+			'progress'         => sprintf(
 				'<div class="course-progress__label">%s %s</div>',
-				esc_html__( 'Course passing progress:', 'learnpress' ),
+				esc_html__( 'Course progress:', 'learnpress' ),
+				sprintf(
+					'<span class="course-progress__number">
+						<span class="number">%s<span class="percentage">%s</span></span>
+					</span>',
+					$progress_items_completed_percent,
+					'%'
+				)
+			),
+			'line-progress'    => $this->html_items_completed_progress_bar( $userCourseModel ),
+			'passing-progress' => sprintf(
+				'<div class="course-progress__label">%s %s
+					<span class="lp-icon-question-circle" title="%s"></span>
+				</div>',
+				esc_html__( 'Passing grade progress:', 'learnpress' ),
 				sprintf(
 					'<span class="course-progress__number">
 						<span class="number">%s<span class="percentage">%s</span></span>
 					</span>',
 					$calculate['result'],
 					'%'
+				),
+				sprintf(
+					'%s. %s',
+					isset( $evaluation_type['label'] ) ? esc_attr( $evaluation_type['label'] ) : '',
+					esc_attr( sprintf( __( 'Passing condition: %s%%', 'learnpress' ), $passing_condition ) )
 				)
 			),
-			'line-progress'   => sprintf(
-				'<div class="course-progress__line">
-							<div class="course-progress__line__active" style="width: %s%%"></div>
-							<div class="course-progress__line__point" style="left: %s%%"></div>
-					</div>',
-				$calculate['result'],
-				$passing_condition
-			),
-			'wrapper_end'     => '</div>',
+			'wrapper_end'      => '</div>',
 		];
 
 		$html = Template::combine_components( $section );
 
 		return apply_filters( 'learn-press/user/course/html-progress', $html, $userCourseModel );
+	}
+
+	/**
+	 * HTML course items completed progress bar.
+	 *
+	 * @param UserCourseModel $userCourseModel
+	 *
+	 * @return string
+	 *
+	 * @since 4.3.2.6
+	 * @version 1.0.0
+	 */
+	public function html_passing_grade_progress_bar( UserCourseModel $userCourseModel ): string {
+		$courseModel       = $userCourseModel->get_course_model();
+		$calculate         = $userCourseModel->calculate_course_results();
+		$passing_condition = $courseModel->get_passing_condition();
+
+		$section = [
+			'wrapper'               => '<div class="course-passing-grade-progress-bar">',
+			'line-passing-progress' => sprintf(
+				'<div class="course-progress__line">
+					<div class="course-progress__line__active" style="width: %s%%"></div>
+					<div class="course-progress__line__point" style="left: %s%%"></div>
+				</div>',
+				$calculate['result'],
+				$passing_condition
+			),
+			'wrapper_end'           => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML course items completed progress bar.
+	 *
+	 * @param UserCourseModel $userCourseModel
+	 *
+	 * @return string
+	 *
+	 * @since 4.3.2.6
+	 * @version 1.0.0
+	 */
+	public function html_items_completed_progress_bar( UserCourseModel $userCourseModel ): string {
+		$courseModel = $userCourseModel->get_course_model();
+		$calculate   = $userCourseModel->calculate_course_results();
+		$total_items = $courseModel->count_items();
+
+		$progress_items_completed_percent = round(
+			$total_items > 0 ? $calculate['completed_items'] * 100 / $total_items : 0,
+			2
+		);
+
+		$section = [
+			'wrapper'       => sprintf(
+				'<div class="course-items-completed-progress-bar" title="%s">',
+				sprintf(
+					esc_html__( '%1$d of %2$d items completed', 'learnpress' ),
+					$calculate['completed_items'],
+					$total_items
+				)
+			),
+			'line-progress' => sprintf(
+				'<div class="course-progress__line">
+					<div class="course-progress__line__active" style="width: %s%%"></div>
+				</div>',
+				$progress_items_completed_percent,
+			),
+			'wrapper_end'   => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	/**

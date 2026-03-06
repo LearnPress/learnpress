@@ -87,10 +87,6 @@ class SingleCourseModernLayout {
 	 * @return string
 	 */
 	public function header_sections( $course, $user ): string {
-		ob_start();
-		learn_press_breadcrumb();
-		$html_breadcrumb = ob_get_clean();
-
 		$html_categories = $this->singleCourseTemplate->html_categories( $course );
 		if ( ! empty( $html_categories ) ) {
 			$html_categories = sprintf(
@@ -136,7 +132,7 @@ class SingleCourseModernLayout {
 			[
 				'wrapper_header'              => '<div class="lp-single-course__header">',
 				'wrapper_container'           => '<div class="lp-single-course__header__inner">',
-				'breadcrumb'                  => $html_breadcrumb,
+				'breadcrumb'                  => Template::html_breadcrumb(),
 				'title'                       => $this->singleCourseTemplate->html_title( $course, 'h1' ),
 				'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
 				'instructor'                  => $html_instructor,
@@ -288,10 +284,13 @@ class SingleCourseModernLayout {
 	 * HTML share social.
 	 *
 	 * @param CourseModel $courseModel
+	 * @param array $data
 	 *
 	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.1
 	 */
-	public function html_share( CourseModel $courseModel ): string {
+	public function html_share( CourseModel $courseModel, array $data = [] ): string {
 		$list_socials = apply_filters(
 			'learn-press/single-course/social-share',
 			[
@@ -387,7 +386,9 @@ class SingleCourseModernLayout {
 				'wrapper_content_inner_end' => '</div>',
 				'wrapper_content_end'       => '</div>',
 				'wrapper_end'               => '</div>',
-			]
+			],
+			$courseModel,
+			$data
 		);
 
 		return Template::combine_components( $section );
@@ -499,7 +500,7 @@ class SingleCourseModernLayout {
 
 			if ( $userCourseModel->has_finished() ) {
 				$html_end_date   = sprintf(
-					'<div>%s: %s</div>',
+					'<div class="end-date">%s: %s</div>',
 					__( 'End date', 'learnpress' ),
 					$userCourseTemplate->html_end_date_time( $userCourseModel, false )
 				);
@@ -512,7 +513,7 @@ class SingleCourseModernLayout {
 				'graduation'            => $html_graduation,
 				'progress'              => $userCourseTemplate->html_progress( $userCourseModel ),
 				'start_date'            => sprintf(
-					'<div>%s: %s</div>',
+					'<div class="start-date">%s: %s</div>',
 					__( 'Start date', 'learnpress' ),
 					$userCourseTemplate->html_start_date_time( $userCourseModel, false )
 				),

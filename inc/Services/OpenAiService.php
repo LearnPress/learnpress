@@ -50,7 +50,7 @@ class OpenAiService {
 
 	public function get_settings() {
 		$this->secret_key        = LP_Settings::get_option( 'open_ai_secret_key', '' );
-		$this->text_model_type   = LP_Settings::get_option( 'open_ai_text_model_type', 'chatgpt-4o-latest' );
+		$this->text_model_type   = LP_Settings::get_option( 'open_ai_text_model_type', 'gpt-4.1' );
 		$this->image_model_type  = LP_Settings::get_option( 'open_ai_image_model_type', 'dall-e-3' );
 		$this->frequency_penalty = LP_Settings::get_option( 'open_ai_frequency_penalty_level', 0.0 );
 		$this->presence_penalty  = LP_Settings::get_option( 'open_ai_presence_penalty_level', 0.0 );

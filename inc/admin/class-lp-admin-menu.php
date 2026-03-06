@@ -107,7 +107,7 @@ class LP_Admin_Menu {
 			$this->get_capability(),
 			'learn_press',
 			'',
-			'dashicons-welcome-learn-more',
+			LP_PLUGIN_URL . '/assets/images/logo-menu.png',
 			'3.14'
 		);
 
@@ -170,7 +170,7 @@ class LP_Admin_Menu {
 			$this->menu_items = $menu_items;
 		}
 
-		$addons = LP_Admin::instance()->get_addons();
+		//$addons = LP_Admin::instance()->get_addons();
 	}
 
 	/**

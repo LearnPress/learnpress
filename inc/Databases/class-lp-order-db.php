@@ -32,7 +32,7 @@ class LP_Order_DB extends LP_Database {
 	 * @return null|string
 	 * @since 4.1.4
 	 * @author tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_last_lp_order_id_of_user_course( $user_id, int $course_id ) {
 		$key_cache = "lp/order/id/last/$user_id/$course_id";
@@ -51,12 +51,10 @@ class LP_Order_DB extends LP_Database {
 			"SELECT p.ID FROM {$this->tb_posts} as p
 			INNER join {$this->tb_postmeta} pm on p.ID = pm.post_id
 			INNER join {$this->tb_lp_order_items} as oi on p.ID = oi.order_id
-			INNER join {$this->tb_lp_order_itemmeta} as oim on oim.learnpress_order_item_id = oi.order_item_id
 			WHERE post_type = %s
 			AND pm.meta_key = %s
 			AND (pm.meta_value = %s OR pm.meta_value LIKE '%s')
-			AND oim.meta_key = %s
-			AND oim.meta_value = %d
+			AND oi.item_id = %d
 			ORDER BY p.ID DESC
 			LIMIT 1
 			",
@@ -64,7 +62,6 @@ class LP_Order_DB extends LP_Database {
 			'_user_id',
 			$user_id,
 			$user_id_str,
-			'_course_id',
 			$course_id
 		);
 

@@ -58,7 +58,7 @@ return apply_filters(
 				[
 					'title'   => __( 'Text Model Type', 'learnpress' ),
 					'id'      => 'open_ai_text_model_type',
-					'default' => 'chatgpt-4o-latest',
+					'default' => 'gpt-4.1',
 					'type'    => 'select',
 					'options' => array(
 						'gpt-5.2'                => esc_html__( 'ChatGPT 5.2', 'learnpress' ),
@@ -66,7 +66,7 @@ return apply_filters(
 						'gpt-5-mini'             => esc_html__( 'ChatGPT 5 mini', 'learnpress' ),
 						'gpt-5-nano'             => esc_html__( 'ChatGPT 5 nano', 'learnpress' ),
 						'gpt-4.1'                => esc_html__( 'ChatGPT 4.1', 'learnpress' ),
-						'chatgpt-4o-latest'      => esc_html__( 'ChatGPT 4o-Latest', 'learnpress' ),
+						//'chatgpt-4o-latest'      => esc_html__( 'ChatGPT 4o-Latest', 'learnpress' ),
 						'gpt-4o'                 => esc_html__( 'GPT 4o', 'learnpress' ),
 						'gpt-4o-mini'            => esc_html__( 'GPT 4o Mini', 'learnpress' ),
 						'gpt-4'                  => esc_html__( 'GPT 4', 'learnpress' ),

@@ -43,10 +43,6 @@ class SingleCourseClassicTemplate {
 	public function section( CourseModel $course ) {
 		$user = UserModel::find( get_current_user_id(), true );
 
-		ob_start();
-		learn_press_breadcrumb();
-		$html_breadcrumb = ob_get_clean();
-
 		$content = [
 			'wrapper'        => '<div class="course-content course-summary-content">',
 			'section_header' => $this->header_sections( $course, $user ),
@@ -58,7 +54,7 @@ class SingleCourseClassicTemplate {
 			'learn-press/single-course/classic/sections',
 			[
 				'wrapper'            => '<div class="lp-single-course lp-archive-courses">',
-				'breadcrumb'         => $html_breadcrumb,
+				'breadcrumb'         => Template::html_breadcrumb(),
 				'course_summary'     => '<div id="learn-press-course" class="course-summary">',
 				'content'            => Template::combine_components( $content ),
 				'course_summary_end' => '</div>',

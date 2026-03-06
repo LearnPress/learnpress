@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit();
  * Move from LP_Course_JSON_DB to here
  *
  * @since 4.3.2.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 class CourseJsonDB extends DataBase {
 	private static $_instance;
@@ -40,7 +40,7 @@ class CourseJsonDB extends DataBase {
 	 *
 	 * @return array|int|string|null
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.6.9
 	 */
 	public function get_courses( CourseJsonFilter $filter, int &$total_rows = 0 ) {
@@ -80,10 +80,10 @@ class CourseJsonDB extends DataBase {
 		}
 
 		// Course ids
-		if ( ! empty( $filter->post_ids ) ) {
-			$post_ids        = array_map( 'absint', $filter->post_ids );
-			$post_ids_format = join( ',', $post_ids );
-			$filter->where[] = "AND $ca.ID IN ($post_ids_format)";
+		if ( ! empty( $filter->ids ) ) {
+			$ids        = array_map( 'absint', $filter->ids );
+			$ids_format = join( ',', $ids );
+			$filter->where[] = "AND $ca.ID IN ($ids_format)";
 		}
 
 		// Title

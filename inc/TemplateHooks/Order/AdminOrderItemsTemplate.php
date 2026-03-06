@@ -79,13 +79,23 @@ class AdminOrderItemsTemplate {
 	 * @return stdClass
 	 * @throws Exception
 	 * @since 4.3.2
-	 * @version 1.0.0
+	 * @version 1.0.2
 	 */
 	public static function render_order_items( array $data ): stdClass {
 		$content  = new stdClass();
 		$order_id = $data['order_id'] ?? 0;
 		if ( ! $order_id ) {
 			throw new Exception( __( 'Order ID is required', 'learnpress' ) );
+		}
+
+		// Check permission to view order.
+		$can_view = apply_filters(
+			'learn-press/order-detail/can-view',
+			current_user_can( 'edit_' . LP_ORDER_CPT, $order_id ),
+			$order_id
+		);
+		if ( ! $can_view ) {
+			throw new Exception( __( 'You do not have permission to view this order.', 'learnpress' ) );
 		}
 
 		$lpOrderItemsDB   = LPOrderItemsDB::getInstance();
@@ -105,7 +115,14 @@ class AdminOrderItemsTemplate {
 				$itemObjMeta   = self::get_all_metadata_order_item( $itemObj->order_item_id );
 				$itemObj->meta = $itemObjMeta;
 				$item_type     = $itemObj->item_type ?? '';
-				$index         = ( $filter->page - 1 ) * $filter->limit + $i + 1;
+				// For old data, the data not migrated yet to new column.
+				if ( ( empty( $item_type ) || empty( $itemObj->item_id ) )
+					&& ! empty( $itemObj->meta['_course_id'] ) ) {
+					$itemObj->item_id = $itemObj->meta['_course_id'];
+					$item_type        = LP_COURSE_CPT;
+				}
+
+				$index = ( $filter->page - 1 ) * $filter->limit + $i + 1;
 				if ( $item_type === LP_COURSE_CPT ) {
 					$coursePostModel = CoursePostModel::find_by_id( $itemObj->item_id, true );
 					if ( ! $coursePostModel ) {
@@ -181,6 +198,8 @@ class AdminOrderItemsTemplate {
 	 * Render html content for order detail items.
 	 *
 	 * @throws Exception
+	 * @since 4.3.2
+	 * @version 1.0.2
 	 */
 	public static function render_order_detail_items( array $data ): stdClass {
 		$content  = new stdClass();
@@ -193,6 +212,16 @@ class AdminOrderItemsTemplate {
 		$lp_order = learn_press_get_order( $order_id );
 		if ( ! $lp_order ) {
 			throw new Exception( __( 'Order not found', 'learnpress' ) );
+		}
+
+		// Check permission to view order.
+		$can_view = apply_filters(
+			'learn-press/order-detail/can-view',
+			current_user_can( 'edit_' . LP_ORDER_CPT, $order_id ),
+			$order_id
+		);
+		if ( ! $can_view ) {
+			throw new Exception( __( 'You do not have permission to view this order.', 'learnpress' ) );
 		}
 
 		$lpOrderDB        = LPOrderItemsDB::getInstance();
@@ -209,11 +238,17 @@ class AdminOrderItemsTemplate {
 				$itemObjMeta   = self::get_all_metadata_order_item( $itemObj->order_item_id );
 				$itemObj->meta = $itemObjMeta;
 				$item_type     = $itemObj->item_type ?? '';
+				// For old data, the data not migrated yet to new column.
+				if ( ( empty( $item_type ) || empty( $itemObj->item_id ) )
+					&& ! empty( $itemObj->meta['_course_id'] ) ) {
+					$itemObj->item_id = $itemObj->meta['_course_id'];
+					$item_type        = LP_COURSE_CPT;
+				}
 
 				if ( $item_type === LP_COURSE_CPT ) {
 					$html_items .= self::order_item_detail_html( $lp_order, $itemObj );
 				} else {
-					if ( has_filter( 'learn-press/order-item-not-course-id' ) ) {
+					if ( has_filter( 'learn-press/order-item-not-course' ) ) {
 						$item_old       = (array) $itemObj;
 						$item_old['id'] = $itemObj->order_item_id;
 						$item_old       = array_merge( $item_old, $itemObjMeta );

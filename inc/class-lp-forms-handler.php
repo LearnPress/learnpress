@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Background\LPBackgroundAjax;
+
 /**
  * Class LP_Forms_Handler
  *
@@ -54,6 +56,17 @@ class LP_Forms_Handler {
 			$user                = get_user_by( 'email', $args['bat_email'] );
 
 			update_user_meta( $user->ID, '_requested_become_teacher', 'yes' );
+
+			/**
+			 * Send email to admin when user request to become a teacher
+			 * @use SendEmailAjax::send_mail_become_a_teacher_request
+			 */
+			$data_send = [
+				'params'       => [ $args ],
+				'lp-load-ajax' => 'send_mail_become_a_teacher_request',
+			];
+			LPBackgroundAjax::handle( $data_send );
+
 			do_action( 'learn-press/become-a-teacher-sent', $args );
 		}
 
@@ -490,4 +503,3 @@ class LP_Forms_Handler {
 		self::process_register();
 	}
 }
-

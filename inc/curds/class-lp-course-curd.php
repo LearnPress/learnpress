@@ -335,7 +335,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @deprecated 4.1.6.9
 		 * Use in addon co-instructor 4.0.2
 		 */
-		public function read_course_sections( $course_id ) {
+		/*public function read_course_sections( $course_id ) {
 			_deprecated_function( __FUNCTION__, '4.1.6.9 call from ' . debug_backtrace()[0]['function'] );
 			return false;
 			global $wpdb;
@@ -373,7 +373,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			return $first_course_sections;
-		}
+		}*/
 
 		/**
 		 * Remove lesson, quiz from course's curriculum.

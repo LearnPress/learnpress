@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.3.3-beta.1
+ * Version: 4.3.2.9-beta.1
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -20,6 +20,7 @@ use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\AI\OpenAiAjax;
+use LearnPress\Ajax\ExportOrderCSVAjax;
 use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
@@ -72,6 +73,7 @@ use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuestionTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuizTemplate;
 use LearnPress\TemplateHooks\Order\AdminOrderItemsTemplate;
+use LearnPress\TemplateHooks\Order\AdminOrderListTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
@@ -371,6 +373,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
 			AdminOrderItemsTemplate::instance();
+			AdminOrderListTemplate::instance();
 			AdminCreateCourseAITemplate::instance();
 			AdminEditWithAITemplate::instance();
 			AdminEditCourseCurriculumWithAITemplate::instance();
@@ -552,7 +555,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Meta box helper
 			include_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 
-			include_once 'inc/admin/class-lp-admin.php';
+			// include_once 'inc/admin/class-lp-admin.php';
 			// include_once 'inc/admin/settings/abstract-settings-page.php';
 		}
 
@@ -630,18 +633,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 				if ( is_admin() ) {
 					$this->check_addons_version_valid();
+
+					include_once 'inc/admin/class-lp-admin.php';
 				}
 
 				// let third parties know that we're ready .
 				do_action( 'learn-press/ready' );
 
 				// For addon sorting choice old <= v4.0.1
-				if ( class_exists( 'LP_Addon_Sorting_Choice_Preload' ) ) {
+				/*if ( class_exists( 'LP_Addon_Sorting_Choice_Preload' ) ) {
 					if ( version_compare( LP_ADDON_SORTING_CHOICE_VER, '4.0.1', '<=' ) ) {
 						$lp_addon_sorting_choice = new LP_Addon_Sorting_Choice();
 						$lp_addon_sorting_choice->init();
 					}
-				}
+				}*/
 
 				/**
 				 * Init gateways, to load all payment gateways, catch callback.
@@ -654,18 +659,18 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				 * @since 4.2.7.4
 				 * When 2 addons update to new version, will remove this code.
 				 */
-				if ( class_exists( 'LP_Addon_Announcements_Preload' ) ) {
+				/*if ( class_exists( 'LP_Addon_Announcements_Preload' ) ) {
 					if ( version_compare( LP_ADDON_ANNOUNCEMENTS_VER, '4.0.6', '<=' ) ) {
 						$addon_announcement = LP_Addon_Announcements_Preload::$addon;
 						$addon_announcement->emails_setting();
 					}
-				}
-				if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
+				}*/
+				/*if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
 					if ( version_compare( LP_ADDON_ASSIGNMENT_VER, '4.1.1', '<=' ) ) {
 						$addon_assignment = LP_Addon_Assignment_Preload::$addon;
 						$addon_assignment->emails_setting();
 					}
-				}
+				}*/
 			} catch ( Throwable $e ) {
 				LP_Debug::error_log( $e );
 			}
@@ -727,6 +732,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					SendEmailAjax::catch_lp_ajax();
 					CourseBuilderAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
+					ExportOrderCSVAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},
