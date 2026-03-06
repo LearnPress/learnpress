@@ -118,7 +118,6 @@ export class ViewStudentsModal {
 		this.loadEnrolledStudents(
 			this.activeCourseId,
 			1,
-			this.getModalFilterValues(),
 			btn
 		);
 	}
@@ -167,7 +166,6 @@ export class ViewStudentsModal {
 		this.loadEnrolledStudents(
 			this.activeCourseId,
 			1,
-			this.getModalFilterValues(),
 			btn
 		);
 	}
@@ -216,26 +214,16 @@ export class ViewStudentsModal {
 		return popup.querySelector( ViewStudentsModal.selectors.form );
 	}
 
-	getModalFilterValues() {
+	getModalFilterArgs( dataArgs = {} ) {
 		const form = this.getModalForm();
 		if ( ! form ) {
-			return {
-				search: '',
-				start_date: '',
-				end_date: '',
-			};
+			return dataArgs;
 		}
 
-		const filters = lpUtils.mergeDataWithDatForm( form, {} );
-
-		return {
-			search: filters.search || '',
-			start_date: filters.start_date || '',
-			end_date: filters.end_date || '',
-		};
+		return lpUtils.mergeDataWithDatForm( form, dataArgs );
 	}
 
-	loadEnrolledStudents( courseId, paged, filters = {}, elLoading = null ) {
+	loadEnrolledStudents( courseId, paged, elLoading = null ) {
 		const wrap = document.querySelector( ViewStudentsModal.selectors.wrap );
 		const elTarget = wrap?.querySelector( '.lp-target' );
 		const ajaxHandle = this.getAjaxHandle();
@@ -249,12 +237,9 @@ export class ViewStudentsModal {
 		}
 
 		const dataSend = ajaxHandle.getDataSetCurrent( elTarget );
-		dataSend.args = dataSend.args || {};
+		dataSend.args = this.getModalFilterArgs( dataSend.args || {} );
 		dataSend.args.course_id = parseInt( courseId, 10 ) || 0;
 		dataSend.args.paged = paged;
-		dataSend.args.search = filters.search || '';
-		dataSend.args.start_date = filters.start_date || '';
-		dataSend.args.end_date = filters.end_date || '';
 		ajaxHandle.setDataSetCurrent( elTarget, dataSend );
 		ajaxHandle.showHideLoading( elTarget, 1 );
 
@@ -309,7 +294,6 @@ export class ViewStudentsModal {
 				this.loadEnrolledStudents(
 					this.activeCourseId,
 					1,
-					this.getModalFilterValues(),
 					elTrigger
 				);
 			},
