@@ -12,6 +12,7 @@ use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Debug;
 use LP_Helper;
 use stdClass;
 use Throwable;
@@ -228,7 +229,7 @@ class AdminListStudentsEnrolled {
 						$results_map[ $user_item_id ] = (float) ( $course_result['result'] ?? 0 );
 					}
 				} catch ( Throwable $e ) {
-					error_log( __METHOD__ . ' ' . $e->getMessage() );
+					LP_Debug::error_log( $e );
 				}
 			}
 
@@ -246,7 +247,7 @@ class AdminListStudentsEnrolled {
 			$content->content = $html;
 		} catch ( Throwable $e ) {
 			$content->content = '<p class="lp-enrolled-error">' . esc_html( $e->getMessage() ) . '</p>';
-			error_log( __METHOD__ . ' ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $content;
@@ -387,13 +388,8 @@ class AdminListStudentsEnrolled {
 	 */
 	public function html_modal_students_target(): string {
 		$args = array(
-			'instructor_id'           => 0,
 			'course_id'               => 0,
-			'course_name'             => '',
 			'paged'                   => 1,
-			'search'                  => '',
-			'start_date'              => '',
-			'end_date'                => '',
 			'enableScrollToView'      => false,
 			'enableUpdateParamsUrl'   => false,
 			'html_no_load_ajax_first' => esc_html__( 'Loading', 'learnpress' ),
