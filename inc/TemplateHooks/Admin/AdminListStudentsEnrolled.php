@@ -381,6 +381,39 @@ class AdminListStudentsEnrolled {
 	}
 
 	/**
+	 * Render lp-target layout used in View Students modal.
+	 *
+	 * @return string
+	 */
+	public function html_modal_students_target(): string {
+		$args = array(
+			'instructor_id'           => 0,
+			'course_id'               => 0,
+			'course_name'             => '',
+			'paged'                   => 1,
+			'search'                  => '',
+			'start_date'              => '',
+			'end_date'                => '',
+			'enableScrollToView'      => false,
+			'enableUpdateParamsUrl'   => false,
+			'html_no_load_ajax_first' => esc_html__( 'Loading', 'learnpress' ),
+		);
+
+		$call_back = array(
+			'class'  => self::class,
+			'method' => 'render_enrolled_students',
+		);
+
+		$section = array(
+			'wrap'     => '<div id="lp-modal-enrolled-wrap">',
+			'target'   => TemplateAJAX::load_content_via_ajax( $args, $call_back ),
+			'wrap-end' => '</div>',
+		);
+
+		return Template::combine_components( $section );
+	}
+
+	/**
 	 * Print HTML template for modal toolbar.
 	 *
 	 * @return void
@@ -404,6 +437,10 @@ class AdminListStudentsEnrolled {
 
 		echo '<script type="text/html" id="lp-tmpl-enrolled-students-toolbar-modal">';
 		echo $this->html_toolbar_modal();
+		echo '</script>';
+
+		echo '<script type="text/html" id="lp-tmpl-enrolled-students-target-modal">';
+		echo $this->html_modal_students_target();
 		echo '</script>';
 	}
 	/**

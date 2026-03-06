@@ -13,6 +13,7 @@ export class ViewStudentsModal {
 		wrap: '#lp-modal-enrolled-wrap',
 		form: '#lp-modal-enrolled-form',
 		toolbarTemplate: '#lp-tmpl-enrolled-students-toolbar-modal',
+		targetTemplate: '#lp-tmpl-enrolled-students-target-modal',
 		toolbar: '.lp-enrolled-students-table-toolbar--modal',
 		courseTrigger: '.lp-btn-view-students',
 		searchInput: '#lp-modal-enrolled-search-input',
@@ -20,7 +21,6 @@ export class ViewStudentsModal {
 		endDateInput: '#lp-modal-enrolled-filter-end-date',
 		searchBtn: '.lp-enrolled-btn-search-modal',
 		clearBtn: '.lp-enrolled-btn-clear-modal',
-		paginationLink: '.page-numbers',
 		modalSearchFields:
 			'#lp-modal-enrolled-search-input, #lp-modal-enrolled-filter-start-date, #lp-modal-enrolled-filter-end-date',
 	};
@@ -56,11 +56,6 @@ export class ViewStudentsModal {
 				selector: ViewStudentsModal.selectors.clearBtn,
 				class: this,
 				callBack: this.handleModalClear.name,
-			},
-			{
-				selector: `${ ViewStudentsModal.selectors.wrap } ${ ViewStudentsModal.selectors.paginationLink }`,
-				class: this,
-				callBack: this.handleModalPagination.name,
 			},
 		] );
 
@@ -177,43 +172,6 @@ export class ViewStudentsModal {
 		);
 	}
 
-	handleModalPagination( args ) {
-		const link = args?.target?.closest(
-			ViewStudentsModal.selectors.paginationLink
-		);
-		if ( ! link || ! link.closest( ViewStudentsModal.selectors.wrap ) ) {
-			return;
-		}
-
-		if ( args?.e ) {
-			args.e.preventDefault();
-		}
-
-		if (
-			this.isRequesting ||
-			link.classList.contains( 'loading' ) ||
-			link.disabled
-		) {
-			return;
-		}
-
-		const page = parseInt(
-			link.dataset.paged || link.textContent.trim(),
-			10
-		);
-		if ( Number.isNaN( page ) || ! this.activeCourseId ) {
-			return;
-		}
-
-		this.setButtonLoadingState( link, true );
-		this.loadEnrolledStudents(
-			this.activeCourseId,
-			page,
-			this.getModalFilterValues(),
-			link
-		);
-	}
-
 	getModalPopup() {
 		return SweetAlert.getPopup ? SweetAlert.getPopup() : null;
 	}
@@ -224,6 +182,29 @@ export class ViewStudentsModal {
 		);
 
 		return template ? template.innerHTML : '';
+	}
+
+	getModalTargetHtml() {
+		const template = document.querySelector(
+			ViewStudentsModal.selectors.targetTemplate
+		);
+
+		return template ? template.innerHTML : '';
+	}
+
+	getAjaxHandle() {
+		const ajaxHandle = window.lpAJAXG;
+		if (
+			! ajaxHandle ||
+			typeof ajaxHandle.getDataSetCurrent !== 'function' ||
+			typeof ajaxHandle.setDataSetCurrent !== 'function' ||
+			typeof ajaxHandle.showHideLoading !== 'function' ||
+			typeof ajaxHandle.fetchAJAX !== 'function'
+		) {
+			return null;
+		}
+
+		return ajaxHandle;
 	}
 
 	getModalForm() {
@@ -256,7 +237,9 @@ export class ViewStudentsModal {
 
 	loadEnrolledStudents( courseId, paged, filters = {}, elLoading = null ) {
 		const wrap = document.querySelector( ViewStudentsModal.selectors.wrap );
-		if ( ! wrap || this.isRequesting ) {
+		const elTarget = wrap?.querySelector( '.lp-target' );
+		const ajaxHandle = this.getAjaxHandle();
+		if ( ! wrap || ! elTarget || ! ajaxHandle || this.isRequesting ) {
 			return;
 		}
 
@@ -265,39 +248,24 @@ export class ViewStudentsModal {
 			this.setButtonLoadingState( elLoading, true );
 		}
 
-		wrap.innerHTML = `<div class="lp-loading">${ __(
-			'Loading...',
-			'learnpress'
-		) }</div>`;
-
-		const dataSend = {
-			callback: {
-				class: 'LearnPress\\TemplateHooks\\Admin\\AdminListStudentsEnrolled',
-				method: 'render_enrolled_students',
-			},
-			args: {
-				course_id: parseInt( courseId, 10 ) || 0,
-				paged: paged,
-				search: filters.search || '',
-				start_date: filters.start_date || '',
-				end_date: filters.end_date || '',
-			},
-		};
+		const dataSend = ajaxHandle.getDataSetCurrent( elTarget );
+		dataSend.args = dataSend.args || {};
+		dataSend.args.course_id = parseInt( courseId, 10 ) || 0;
+		dataSend.args.paged = paged;
+		dataSend.args.search = filters.search || '';
+		dataSend.args.start_date = filters.start_date || '';
+		dataSend.args.end_date = filters.end_date || '';
+		ajaxHandle.setDataSetCurrent( elTarget, dataSend );
+		ajaxHandle.showHideLoading( elTarget, 1 );
 
 		const callBack = {
 			success: ( response ) => {
 				if ( response.status === 'success' ) {
-					wrap.innerHTML = response.data.content;
-
-					wrap.querySelectorAll( '.page-numbers' ).forEach(
-						( link ) => {
-							link.classList.add( 'lp-button' );
-						}
-					);
+					elTarget.innerHTML = response.data.content;
 				}
 			},
 			error: ( err ) => {
-				wrap.innerHTML = `<p>${ __(
+				elTarget.innerHTML = `<p>${ __(
 					'Error loading students.',
 					'learnpress'
 				) }</p>`;
@@ -305,19 +273,21 @@ export class ViewStudentsModal {
 			},
 			completed: () => {
 				this.isRequesting = false;
+				ajaxHandle.showHideLoading( elTarget, 0 );
 				if ( elLoading ) {
 					this.setButtonLoadingState( elLoading, false );
 				}
 			},
 		};
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		ajaxHandle.fetchAJAX( dataSend, callBack );
 	}
 
 	openModal( courseId, courseTitle, elTrigger = null ) {
 		const modalToolbarHtml = this.getModalToolbarHtml();
+		const modalTargetHtml = this.getModalTargetHtml();
 
-		if ( ! modalToolbarHtml ) {
+		if ( ! modalToolbarHtml || ! modalTargetHtml ) {
 			if ( elTrigger ) {
 				this.setButtonLoadingState( elTrigger, false );
 			}
@@ -331,12 +301,7 @@ export class ViewStudentsModal {
 				'Enrolled Students',
 				'learnpress'
 			) }`,
-			html:
-				modalToolbarHtml +
-				`<div id="lp-modal-enrolled-wrap"><div class="lp-loading">${ __(
-					'Loading...',
-					'learnpress'
-				) }</div></div>`,
+			html: modalToolbarHtml + modalTargetHtml,
 			width: '80%',
 			showConfirmButton: false,
 			showCloseButton: true,
