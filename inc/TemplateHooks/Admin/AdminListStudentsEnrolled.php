@@ -29,7 +29,7 @@ use Throwable;
 class AdminListStudentsEnrolled {
 	use Singleton;
 
-	const PER_PAGE = 10;
+	const PER_PAGE = 1;
 
 	public function init() {
 
@@ -61,9 +61,16 @@ class AdminListStudentsEnrolled {
 	 * Admin page output callback.
 	 */
 	public function admin_page_output() {
-		$current_user  = wp_get_current_user();
-		$is_admin      = in_array( 'administrator', $current_user->roles, true );
-		$instructor_id = $is_admin ? 0 : $current_user->ID;
+		$current_user_id = get_current_user_id();
+		if ( ! self::can_view_enrolled_students( $current_user_id ) ) {
+			echo '<div class="wrap" id="lp-enrolled-students">';
+			echo '<h1 class="wp-heading-inline">' . esc_html__( 'Enrolled Students', 'learnpress' ) . '</h1>';
+			echo '<p>' . esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) . '</p>';
+			echo '</div>';
+			return;
+		}
+
+		$instructor_id = self::resolve_instructor_id_for_request( array() );
 
 		echo '<div class="wrap" id="lp-enrolled-students">';
 		echo '<h1 class="wp-heading-inline">' . esc_html__( 'Enrolled Students', 'learnpress' ) . '</h1>';
@@ -92,6 +99,17 @@ class AdminListStudentsEnrolled {
 	public function enrolled_students_layout( $instructor_id = 0 ) {
 		// Enqueue styles — lp-enrolled-students-table CSS is loaded via admin.css/frontend.css import.
 		// Build toolbar HTML (outside AJAX so it persists across reloads).
+		if ( ! self::can_view_enrolled_students() ) {
+			echo '<p class="lp-enrolled-error">' . esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) . '</p>';
+			return;
+		}
+
+		$instructor_id = self::resolve_instructor_id_for_request(
+			array(
+				'instructor_id' => $instructor_id,
+			)
+		);
+
 		echo $this->html_toolbar( (int) $instructor_id );
 		$data_get = LP_Helper::sanitize_params_submitted( $_GET );
 
@@ -127,10 +145,12 @@ class AdminListStudentsEnrolled {
 		$content->content = '';
 
 		try {
-			// Permission check.
-			$current_user  = wp_get_current_user();
-			$is_admin      = in_array( 'administrator', $current_user->roles, true );
-			$instructor_id = $is_admin ? ( intval( $data['instructor_id'] ?? 0 ) ) : $current_user->ID;
+			if ( ! self::can_view_enrolled_students() ) {
+				$content->content = '<p class="lp-enrolled-error">' . esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) . '</p>';
+				return $content;
+			}
+
+			$instructor_id = self::resolve_instructor_id_for_request( $data );
 
 			$course_id   = abs( LP_Helper::sanitize_params_submitted( $data['course_id'] ?? 0, 'int' ) );
 			$paged       = max( 1, abs( LP_Helper::sanitize_params_submitted( $data['paged'] ?? 1, 'int' ) ) );
@@ -251,6 +271,52 @@ class AdminListStudentsEnrolled {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Check whether user can view enrolled students content.
+	 *
+	 * @param int $user_id
+	 *
+	 * @return bool
+	 */
+	private static function can_view_enrolled_students( int $user_id = 0 ): bool {
+		if ( $user_id < 1 ) {
+			$user_id = get_current_user_id();
+		}
+
+		if ( $user_id < 1 ) {
+			return false;
+		}
+
+		$user_model = UserModel::find( $user_id, true );
+		if ( ! $user_model instanceof UserModel ) {
+			return false;
+		}
+
+		return $user_model->is_instructor();
+	}
+
+	/**
+	 * Resolve instructor_id from request by permission.
+	 * Admin can keep requested instructor_id; instructor is forced to self.
+	 *
+	 * @param array $data
+	 *
+	 * @return int
+	 */
+	private static function resolve_instructor_id_for_request( array $data ): int {
+		$current_user_id = get_current_user_id();
+		if ( ! self::can_view_enrolled_students( $current_user_id ) ) {
+			return 0;
+		}
+
+		$is_admin = user_can( $current_user_id, UserModel::ROLE_ADMINISTRATOR );
+		if ( $is_admin ) {
+			return max( 0, abs( LP_Helper::sanitize_params_submitted( $data['instructor_id'] ?? 0, 'int' ) ) );
+		}
+
+		return $current_user_id;
 	}
 
 	/**
