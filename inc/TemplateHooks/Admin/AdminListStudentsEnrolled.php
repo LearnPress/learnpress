@@ -2,6 +2,7 @@
 
 namespace LearnPress\TemplateHooks\Admin;
 
+use Exception;
 use LearnPress\Databases\PostDB;
 use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\PostFilter;
@@ -39,10 +40,11 @@ class AdminListStudentsEnrolled {
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 		// 3. Register WP admin submenu page.
 		add_action( 'admin_menu', array( $this, 'register_admin_submenu' ), 30 );
-		// 4. Render modal toolbar template from PHP (used by JS modal).
+		// 4. Render a modal toolbar template from PHP (used by JS modal).
 		add_action( 'admin_footer', array( $this, 'print_modal_toolbar_template' ) );
 		add_action( 'wp_footer', array( $this, 'print_modal_toolbar_template' ) );
 	}
+
 	/**
 	 * Register submenu under LearnPress.
 	 */
@@ -61,15 +63,6 @@ class AdminListStudentsEnrolled {
 	 * Admin page output callback.
 	 */
 	public function admin_page_output() {
-		$current_user_id = get_current_user_id();
-		if ( ! self::can_view_enrolled_students( $current_user_id ) ) {
-			echo '<div class="wrap" id="lp-enrolled-students">';
-			echo '<h1 class="wp-heading-inline">' . esc_html__( 'Enrolled Students', 'learnpress' ) . '</h1>';
-			echo '<p>' . esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) . '</p>';
-			echo '</div>';
-			return;
-		}
-
 		$instructor_id = self::resolve_instructor_id_for_request( array() );
 
 		echo '<div class="wrap" id="lp-enrolled-students">';
@@ -99,11 +92,6 @@ class AdminListStudentsEnrolled {
 	public function enrolled_students_layout( $instructor_id = 0 ) {
 		// Enqueue styles — lp-enrolled-students-table CSS is loaded via admin.css/frontend.css import.
 		// Build toolbar HTML (outside AJAX so it persists across reloads).
-		if ( ! self::can_view_enrolled_students() ) {
-			echo '<p class="lp-enrolled-error">' . esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) . '</p>';
-			return;
-		}
-
 		$instructor_id = self::resolve_instructor_id_for_request(
 			array(
 				'instructor_id' => $instructor_id,
@@ -145,9 +133,10 @@ class AdminListStudentsEnrolled {
 		$content->content = '';
 
 		try {
-			if ( ! self::can_view_enrolled_students() ) {
-				$content->content = '<p class="lp-enrolled-error">' . esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) . '</p>';
-				return $content;
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
+				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+				throw new Exception( esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) );
 			}
 
 			$instructor_id = self::resolve_instructor_id_for_request( $data );
@@ -335,7 +324,7 @@ class AdminListStudentsEnrolled {
 		$filter->post_status     = array( 'publish' );
 		$filter->order_by        = 'p.post_title';
 		$filter->order           = 'ASC';
-		$filter->limit           = -1;
+		$filter->limit           = - 1;
 		$filter->run_query_count = false;
 
 		if ( $instructor_id > 0 ) {
@@ -490,11 +479,11 @@ class AdminListStudentsEnrolled {
 				$should_print = true;
 			}
 		} elseif ( class_exists( '\LP_Page_Controller' ) && defined( 'LP_PAGE_PROFILE' ) ) {
-					$should_print = \LP_Page_Controller::page_current() === LP_PAGE_PROFILE;
+			$should_print = \LP_Page_Controller::page_current() === LP_PAGE_PROFILE;
 		}
 
 		if ( ! $should_print ) {
-				return;
+			return;
 		}
 
 		echo '<script type="text/html" id="lp-tmpl-enrolled-students-toolbar-modal">';
@@ -505,6 +494,7 @@ class AdminListStudentsEnrolled {
 		echo $this->html_modal_students_target();
 		echo '</script>';
 	}
+
 	/**
 	 * HTML builder: table wrapper.
 	 *
