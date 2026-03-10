@@ -746,9 +746,13 @@
 		font-weight: 700;
 		color: #1e1e1e;
 		margin-bottom: 25px;
-		padding-bottom: 15px;
-		border-bottom: 1px solid #e5e7eb;
 		line-height: 1.2;
+	}
+
+	._lp_show_correct_review_field {
+		.description {
+			margin-top: -12px !important;
+		}
 	}
 
 	@media ( max-width: 768px ) {

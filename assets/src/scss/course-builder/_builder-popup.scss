@@ -30,6 +30,10 @@
 		line-height: 1.5;
 		margin: 0;
 		display: block;
+
+		hr {
+			display: none;
+		}
 	}
 
 	.field-material__label {
@@ -421,19 +425,6 @@ body.lp-popup-open {
 
 
 
-	.form-field._lp_hint_field,
-	.form-field._lp_explanation_field,
-	._lp_duration_field,
-	._lp_course_repurchase_option_field {
-		flex-wrap: wrap;
-
-		.description {
-			width: 100%;
-			margin-left: 161px;
-			margin-top: 6px;
-		}
-	}
-
 	.lp-meta-box__duration {
 		> :not( label ):not( .description ) {
 			display: inline-flex;
@@ -712,8 +703,6 @@ body.lp-popup-open {
 		font-weight: 700;
 		color: #1e1e1e;
 		margin-bottom: 20px;
-		padding-bottom: 15px;
-		border-bottom: 1px solid #e5e7eb;
 		line-height: 1.2;
 	}
 

@@ -96,7 +96,6 @@
 		.form-field,
 		.lp-meta-box__duration {
 			display: flex;
-			align-items: center;
 			gap: 0 11px;
 			margin: 0;
 			padding: 0;
@@ -112,7 +111,7 @@
 		.lp-meta-box__duration label,
 		.lesson-materials .field-material__label {
 			font-size: 14px;
-			color: #1a1a1a;
+			color: $cb-text;
 			margin: 0;
 			width: 150px;
 			min-width: 150px;
@@ -145,7 +144,7 @@
 
 		.form-field textarea {
 			order: 3;
-			width: 100%;
+			width: calc(100% - 165px);
 			padding: 8px 12px;
 			border: 1px solid #d1d5db;
 			border-radius: 6px;
@@ -235,7 +234,6 @@
 		.form-field:has( input[type='radio'] ) {
 			flex-direction: row;
 			align-items: center;
-			gap: 11px;
 		}
 
 		.form-field:has( input[type='checkbox'] ) input[type='checkbox'],

@@ -4,8 +4,7 @@
 	.learn-press-tip {
 		display: inline-flex;
 		align-items: center;
-		margin-left: 8px;
-		margin: 0 5px;
+		margin-top: 2px;
 		color: $cb-text-muted;
 		font-style: normal;
 		font-weight: normal;
@@ -28,7 +27,7 @@
 			margin-bottom: 8px;
 			padding: 8px 12px;
 			background-color: #333;
-			color: #fff;
+			color: #fff !important;
 			font-size: 12px;
 			line-height: 1.5;
 			text-align: center;
@@ -50,6 +49,13 @@
 				border-style: solid;
 				border-color: #333 transparent transparent transparent;
 			}
+		}
+
+		p {
+			color: #fff !important;
+			margin-left: 0 !important;
+			width: 100% !important;
+			font-weight: 500 !important;
 		}
 
 		&:hover {
@@ -555,6 +561,10 @@
 		line-height: 1.5;
 		margin: 0;
 		display: block;
+
+		hr {
+			display: none;
+		}
 	}
 
 	.field-material__label {

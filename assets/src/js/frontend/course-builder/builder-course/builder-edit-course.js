@@ -46,6 +46,14 @@ export class BuilderEditCourse {
 		elBtnSubmitCategory: '#course_category-add-submit',
 		elCategoryChecklist: '#course_categorychecklist',
 
+		// New custom category add form selectors
+		elBtnAddCategoryNew: '.cb-course-edit-category__btn-add-new',
+		elFormCategoryAddNew: '.cb-course-edit-terms__form-add-category',
+		elInputAddCategory: '.cb-course-edit-category__input',
+		elSelectAddCategoryParent: '.cb-course-edit-category__select-parent',
+		elBtnSaveCategory: '.cb-course-edit-category__btn-save',
+		elBtnCancelCategoryNew: '.cb-course-edit-category__btn-cancel',
+
 		elWrapperCheckBoxTag: '.cb-course-edit-tags__checkbox-wrapper',
 		elFormTagAddNew: '.cb-course-edit-terms__form-add-tag',
 		elBtnAddTagNew: '.cb-course-edit-tag__btn-add-new',
@@ -138,6 +146,22 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elBtnSubmitCategory,
 				class: this,
 				callBack: this.addNewCategory.name,
+			},
+			// Custom category add form handlers
+			{
+				selector: BuilderEditCourse.selectors.elBtnAddCategoryNew,
+				class: this,
+				callBack: this.toggleCustomAddCategoryForm.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elBtnCancelCategoryNew,
+				class: this,
+				callBack: this.toggleCustomAddCategoryForm.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elBtnSaveCategory,
+				class: this,
+				callBack: this.addNewCategoryCustom.name,
 			},
 			{
 				selector: BuilderEditCourse.selectors.elBtnMainAction,
@@ -263,6 +287,12 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elInputNewCategory,
 				class: this,
 				callBack: this.addNewCategory.name,
+				checkIsEventEnter: true,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elInputAddCategory,
+				class: this,
+				callBack: this.addNewCategoryCustom.name,
 				checkIsEventEnter: true,
 			},
 			{
@@ -513,6 +543,121 @@ export class BuilderEditCourse {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
+	/**
+	 * Toggle custom category add form (between header and WP meta box).
+	 * Shows/hides the form and toggles the Add New button.
+	 */
+	toggleCustomAddCategoryForm( args ) {
+		const { target } = args;
+		const elBtnAdd = document.querySelector( BuilderEditCourse.selectors.elBtnAddCategoryNew );
+		const form = document.querySelector( BuilderEditCourse.selectors.elFormCategoryAddNew );
+		const isOpening = target.closest( BuilderEditCourse.selectors.elBtnAddCategoryNew );
+
+		if ( form ) {
+			if ( isOpening ) {
+				form.style.display = 'flex';
+				if ( elBtnAdd ) elBtnAdd.style.display = 'none';
+				const input = form.querySelector( BuilderEditCourse.selectors.elInputAddCategory );
+				if ( input ) setTimeout( () => input.focus(), 100 );
+			} else {
+				form.style.display = 'none';
+				if ( elBtnAdd ) elBtnAdd.style.display = 'inline-flex';
+			}
+		}
+	}
+
+	/**
+	 * Add new category via custom form (outside WP meta box).
+	 * Uses the same AJAX endpoint but reads from custom form fields.
+	 */
+	addNewCategoryCustom( args ) {
+		const { e } = args;
+		if ( e ) e.preventDefault();
+
+		const elInput = document.querySelector( BuilderEditCourse.selectors.elInputAddCategory );
+		const elParent = document.querySelector(
+			BuilderEditCourse.selectors.elSelectAddCategoryParent
+		);
+		const btnSave = document.querySelector( BuilderEditCourse.selectors.elBtnSaveCategory );
+
+		const categoryName = elInput?.value?.trim();
+		if ( ! categoryName ) {
+			lpToastify.show( 'Please enter category name', 'error' );
+			return;
+		}
+
+		const parentId = elParent ? parseInt( elParent.value ) : 0;
+
+		lpUtils.lpSetLoadingEl( btnSave, 1 );
+
+		const dataSend = {
+			action: 'add_course_category',
+			args: { id_url: 'add-course-category' },
+			name: categoryName,
+			parent: parentId,
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+				lpToastify.show( message, status );
+
+				if ( data?.html ) {
+					const checklist = document.querySelector(
+						BuilderEditCourse.selectors.elCategoryChecklist
+					);
+
+					if ( checklist ) {
+						if ( data.parent && data.parent > 0 ) {
+							const parentInput = checklist.querySelector( `input[value="${ data.parent }"]` );
+							if ( parentInput ) {
+								const parentLi = parentInput.closest( 'li' );
+								parentLi.classList.add( 'children-visible' );
+								let ulChildren = parentLi.querySelector( ':scope > ul.children' );
+								if ( ! ulChildren ) {
+									ulChildren = document.createElement( 'ul' );
+									ulChildren.className = 'children';
+									parentLi.appendChild( ulChildren );
+									this.addToggleBtnToLi( parentLi );
+								}
+								ulChildren.insertAdjacentHTML( 'beforeend', data.html );
+							} else {
+								checklist.insertAdjacentHTML( 'afterbegin', data.html );
+							}
+						} else {
+							checklist.insertAdjacentHTML( 'afterbegin', data.html );
+						}
+					}
+
+					// Also update the parent select dropdown with the new category
+					if ( data.term_id && elParent ) {
+						const newOption = document.createElement( 'option' );
+						newOption.value = data.term_id;
+						newOption.textContent = categoryName;
+						elParent.appendChild( newOption );
+					}
+
+					elInput.value = '';
+					if ( elParent ) elParent.value = '0';
+
+					// Close the form after successful add
+					const elBtnCancel = document.querySelector(
+						BuilderEditCourse.selectors.elBtnCancelCategoryNew
+					);
+					if ( elBtnCancel ) elBtnCancel.click();
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( btnSave, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
 	initSalePriceLayout() {
 		const wrap = document.querySelector( BuilderEditCourse.selectors.elPriceCourseData );
 		if ( ! wrap ) return;
@@ -740,7 +885,9 @@ export class BuilderEditCourse {
 		data.course_thumbnail_id = thumbnailInput ? thumbnailInput.value : '0';
 
 		// Permalink/Slug
-		const permalinkInput = document.querySelector( BuilderEditCourse.selectors.elPermalinkSlugInput );
+		const permalinkInput = document.querySelector(
+			BuilderEditCourse.selectors.elPermalinkSlugInput
+		);
 		if ( permalinkInput && permalinkInput.value ) {
 			data.course_permalink = permalinkInput.value;
 		}
@@ -952,7 +1099,9 @@ export class BuilderEditCourse {
 				}
 				// Update permalink display with actual saved slug (handles duplicate slug resolution)
 				if ( data?.course_slug ) {
-					const slugInput = document.querySelector( BuilderEditCourse.selectors.elPermalinkSlugInput );
+					const slugInput = document.querySelector(
+						BuilderEditCourse.selectors.elPermalinkSlugInput
+					);
 					const urlLink = document.querySelector( BuilderEditCourse.selectors.elPermalinkUrl );
 					if ( slugInput ) {
 						slugInput.value = data.course_slug;
@@ -1150,20 +1299,17 @@ export class BuilderEditCourse {
 	toggleAddTagForm( args ) {
 		const { target } = args;
 		const elBtnAdd = document.querySelector( BuilderEditCourse.selectors.elBtnAddTagNew );
-		const elBtnCancel = document.querySelector( BuilderEditCourse.selectors.elBtnCancelTagNew );
 		const form = document.querySelector( BuilderEditCourse.selectors.elFormTagAddNew );
 		const isOpening = target.closest( BuilderEditCourse.selectors.elBtnAddTagNew );
 		if ( form ) {
 			if ( isOpening ) {
 				form.style.display = 'flex';
 				if ( elBtnAdd ) elBtnAdd.style.display = 'none';
-				if ( elBtnCancel ) elBtnCancel.style.display = 'inline-block';
 				const input = form.querySelector( BuilderEditCourse.selectors.elInputAddTag );
 				if ( input ) setTimeout( () => input.focus(), 100 );
 			} else {
 				form.style.display = 'none';
-				if ( elBtnCancel ) elBtnCancel.style.display = 'none';
-				if ( elBtnAdd ) elBtnAdd.style.display = 'inline-block';
+				if ( elBtnAdd ) elBtnAdd.style.display = 'inline-flex';
 			}
 		}
 	}
@@ -1311,36 +1457,147 @@ export class BuilderEditCourse {
 	slugify( str ) {
 		// Vietnamese diacritics mapping
 		const vietnameseMap = {
-			à: 'a', á: 'a', ạ: 'a', ả: 'a', ã: 'a',
-			â: 'a', ầ: 'a', ấ: 'a', ậ: 'a', ẩ: 'a', ẫ: 'a',
-			ă: 'a', ằ: 'a', ắ: 'a', ặ: 'a', ẳ: 'a', ẵ: 'a',
-			è: 'e', é: 'e', ẹ: 'e', ẻ: 'e', ẽ: 'e',
-			ê: 'e', ề: 'e', ế: 'e', ệ: 'e', ể: 'e', ễ: 'e',
-			ì: 'i', í: 'i', ị: 'i', ỉ: 'i', ĩ: 'i',
-			ò: 'o', ó: 'o', ọ: 'o', ỏ: 'o', õ: 'o',
-			ô: 'o', ồ: 'o', ố: 'o', ộ: 'o', ổ: 'o', ỗ: 'o',
-			ơ: 'o', ờ: 'o', ớ: 'o', ợ: 'o', ở: 'o', ỡ: 'o',
-			ù: 'u', ú: 'u', ụ: 'u', ủ: 'u', ũ: 'u',
-			ư: 'u', ừ: 'u', ứ: 'u', ự: 'u', ử: 'u', ữ: 'u',
-			ỳ: 'y', ý: 'y', ỵ: 'y', ỷ: 'y', ỹ: 'y',
+			à: 'a',
+			á: 'a',
+			ạ: 'a',
+			ả: 'a',
+			ã: 'a',
+			â: 'a',
+			ầ: 'a',
+			ấ: 'a',
+			ậ: 'a',
+			ẩ: 'a',
+			ẫ: 'a',
+			ă: 'a',
+			ằ: 'a',
+			ắ: 'a',
+			ặ: 'a',
+			ẳ: 'a',
+			ẵ: 'a',
+			è: 'e',
+			é: 'e',
+			ẹ: 'e',
+			ẻ: 'e',
+			ẽ: 'e',
+			ê: 'e',
+			ề: 'e',
+			ế: 'e',
+			ệ: 'e',
+			ể: 'e',
+			ễ: 'e',
+			ì: 'i',
+			í: 'i',
+			ị: 'i',
+			ỉ: 'i',
+			ĩ: 'i',
+			ò: 'o',
+			ó: 'o',
+			ọ: 'o',
+			ỏ: 'o',
+			õ: 'o',
+			ô: 'o',
+			ồ: 'o',
+			ố: 'o',
+			ộ: 'o',
+			ổ: 'o',
+			ỗ: 'o',
+			ơ: 'o',
+			ờ: 'o',
+			ớ: 'o',
+			ợ: 'o',
+			ở: 'o',
+			ỡ: 'o',
+			ù: 'u',
+			ú: 'u',
+			ụ: 'u',
+			ủ: 'u',
+			ũ: 'u',
+			ư: 'u',
+			ừ: 'u',
+			ứ: 'u',
+			ự: 'u',
+			ử: 'u',
+			ữ: 'u',
+			ỳ: 'y',
+			ý: 'y',
+			ỵ: 'y',
+			ỷ: 'y',
+			ỹ: 'y',
 			đ: 'd',
-			À: 'A', Á: 'A', Ạ: 'A', Ả: 'A', Ã: 'A',
-			Â: 'A', Ầ: 'A', Ấ: 'A', Ậ: 'A', Ẩ: 'A', Ẫ: 'A',
-			Ă: 'A', Ằ: 'A', Ắ: 'A', Ặ: 'A', Ẳ: 'A', Ẵ: 'A',
-			È: 'E', É: 'E', Ẹ: 'E', Ẻ: 'E', Ẽ: 'E',
-			Ê: 'E', Ề: 'E', Ế: 'E', Ệ: 'E', Ể: 'E', Ễ: 'E',
-			Ì: 'I', Í: 'I', Ị: 'I', Ỉ: 'I', Ĩ: 'I',
-			Ò: 'O', Ó: 'O', Ọ: 'O', Ỏ: 'O', Õ: 'O',
-			Ô: 'O', Ồ: 'O', Ố: 'O', Ộ: 'O', Ổ: 'O', Ỗ: 'O',
-			Ơ: 'O', Ờ: 'O', Ớ: 'O', Ợ: 'O', Ở: 'O', Ỡ: 'O',
-			Ù: 'U', Ú: 'U', Ụ: 'U', Ủ: 'U', Ũ: 'U',
-			Ư: 'U', Ừ: 'U', Ứ: 'U', Ự: 'U', Ử: 'U', Ữ: 'U',
-			Ỳ: 'Y', Ý: 'Y', Ỵ: 'Y', Ỷ: 'Y', Ỹ: 'Y',
+			À: 'A',
+			Á: 'A',
+			Ạ: 'A',
+			Ả: 'A',
+			Ã: 'A',
+			Â: 'A',
+			Ầ: 'A',
+			Ấ: 'A',
+			Ậ: 'A',
+			Ẩ: 'A',
+			Ẫ: 'A',
+			Ă: 'A',
+			Ằ: 'A',
+			Ắ: 'A',
+			Ặ: 'A',
+			Ẳ: 'A',
+			Ẵ: 'A',
+			È: 'E',
+			É: 'E',
+			Ẹ: 'E',
+			Ẻ: 'E',
+			Ẽ: 'E',
+			Ê: 'E',
+			Ề: 'E',
+			Ế: 'E',
+			Ệ: 'E',
+			Ể: 'E',
+			Ễ: 'E',
+			Ì: 'I',
+			Í: 'I',
+			Ị: 'I',
+			Ỉ: 'I',
+			Ĩ: 'I',
+			Ò: 'O',
+			Ó: 'O',
+			Ọ: 'O',
+			Ỏ: 'O',
+			Õ: 'O',
+			Ô: 'O',
+			Ồ: 'O',
+			Ố: 'O',
+			Ộ: 'O',
+			Ổ: 'O',
+			Ỗ: 'O',
+			Ơ: 'O',
+			Ờ: 'O',
+			Ớ: 'O',
+			Ợ: 'O',
+			Ở: 'O',
+			Ỡ: 'O',
+			Ù: 'U',
+			Ú: 'U',
+			Ụ: 'U',
+			Ủ: 'U',
+			Ũ: 'U',
+			Ư: 'U',
+			Ừ: 'U',
+			Ứ: 'U',
+			Ự: 'U',
+			Ử: 'U',
+			Ữ: 'U',
+			Ỳ: 'Y',
+			Ý: 'Y',
+			Ỵ: 'Y',
+			Ỷ: 'Y',
+			Ỹ: 'Y',
 			Đ: 'D',
 		};
 
 		// Replace Vietnamese characters
-		let result = str.split( '' ).map( ( c ) => vietnameseMap[ c ] || c ).join( '' );
+		let result = str
+			.split( '' )
+			.map( ( c ) => vietnameseMap[ c ] || c )
+			.join( '' );
 
 		// Lowercase, replace spaces with dashes, remove special characters
 		result = result

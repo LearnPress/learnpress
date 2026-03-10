@@ -949,6 +949,7 @@ export class BuilderPopup {
 			wp.editor.initialize( editorId, {
 				tinymce: {
 					wpautop: true,
+					content_style: "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.6; color: #1e1e1e; }",
 					plugins:
 						'charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wplink wptextpattern',
 					toolbar1:
@@ -965,6 +966,7 @@ export class BuilderPopup {
 				selector: '#' + editorId,
 				height: 300,
 				menubar: false,
+				content_style: "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.6; color: #1e1e1e; }",
 				plugins: [
 					'advlist autolink lists link image charmap print preview anchor',
 					'searchreplace visualblocks code fullscreen',

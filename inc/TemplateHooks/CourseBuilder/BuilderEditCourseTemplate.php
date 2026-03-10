@@ -190,8 +190,9 @@ class BuilderEditCourseTemplate {
 			'teeny'         => false,
 			'media_buttons' => true,
 			'tinymce'       => array(
-				'toolbar1' => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,spellchecker,wp_adv',
-				'toolbar2' => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
+				'content_style' => "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.6; color: #1e1e1e; }",
+				'toolbar1'      => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,spellchecker,wp_adv',
+				'toolbar2'      => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
 			),
 			'quicktags'     => true,
 		);
@@ -252,11 +253,46 @@ class BuilderEditCourseTemplate {
 		remove_filter( 'wp_terms_checklist_args', $force_checked_ontop_false );
 		$html_meta_box = ob_get_clean();
 
+		// Build add new category form (between header and content)
+		$parent_terms   = get_terms(
+			[
+				'taxonomy'   => 'course_category',
+				'hide_empty' => false,
+			]
+		);
+		$parent_options = sprintf( '<option value="0">— %s —</option>', __( 'Parent Category', 'learnpress' ) );
+		if ( ! empty( $parent_terms ) && ! is_wp_error( $parent_terms ) ) {
+			foreach ( $parent_terms as $term ) {
+				$parent_options .= sprintf(
+					'<option value="%d">%s</option>',
+					$term->term_id,
+					esc_html( $term->name )
+				);
+			}
+		}
+
+		$form_add_category = sprintf(
+			'<div class="cb-course-edit-terms__form-add-category" style="display:none;">
+				<input type="text" class="cb-course-edit-category__input" placeholder="%s" id="cb-newcourse_category" />
+				<select class="cb-course-edit-category__select-parent" id="cb-newcourse_category_parent">%s</select>
+				<button type="button" class="cb-course-edit-category__btn-cancel">%s</button>
+				<button type="button" class="cb-course-edit-category__btn-save" id="cb-course_category-add-submit">%s</button>
+			</div>',
+			esc_attr__( 'Enter Category Name', 'learnpress' ),
+			$parent_options,
+			esc_html__( 'Cancel', 'learnpress' ),
+			esc_html__( 'Add', 'learnpress' ),
+		);
+
 		$edit = [
-			'wrapper'     => '<div class="cb-course-edit-categories__wrapper">',
-			'label'       => sprintf( '<label class="cb-course-edit-categories__label">%s</label>', __( 'Categories', 'learnpress' ) ),
-			'content'     => $html_meta_box,
-			'wrapper_end' => '</div>',
+			'wrapper'           => '<div class="cb-course-edit-categories__wrapper">',
+			'header'            => '<div class="cb-terms-header">',
+			'label'             => sprintf( '<label class="cb-terms-header__label">%s</label>', __( 'Categories', 'learnpress' ) ),
+			'btn_add_new'       => sprintf( '<button class="cb-course-edit-category__btn-add-new cb-terms-header__btn-add-new">%s</button>', __( 'Add New', 'learnpress' ) ),
+			'header_end'        => '</div>',
+			'form_add_category' => $form_add_category,
+			'content'           => $html_meta_box,
+			'wrapper_end'       => '</div>',
 		];
 
 		return Template::combine_components( $edit );
@@ -264,13 +300,10 @@ class BuilderEditCourseTemplate {
 
 	public function edit_tags( $course_model ) {
 		$course_terms = ! empty( $course_model ) ? $course_model->get_tags() : [];
-		$btn_add_cat  = sprintf( '<button class="cb-course-edit-tag__btn-add-new">%s</button>', __( '+ Add A New Course Tag', 'learnpress' ) );
-		$btn_cancel   = sprintf( '<button class="cb-course-edit-tag__btn-cancel"  style="display:none;">%s</button>', __( 'Cancel', 'learnpress' ) );
 		$tags         = get_terms(
 			[
 				'taxonomy'   => LP_COURSE_TAXONOMY_TAG,
 				'hide_empty' => false,
-				'count'      => false,
 			]
 		);
 
@@ -281,29 +314,32 @@ class BuilderEditCourseTemplate {
 			$course_terms
 		);
 
-		$html_checkbox = '';
+		$html_chips = '';
 
 		if ( ! empty( $tags ) ) {
 			foreach ( $tags as $tag ) {
-				$tag_id         = $tag->term_id;
-				$tag_name       = $tag->name;
-				$is_checked     = in_array( (int) $tag_id, $selected_tag_ids, true );
-				$html_checkbox .= $this->input_checkbox_tag_item( $tag_id, $tag_name, $is_checked );
+				$tag_id      = $tag->term_id;
+				$tag_name    = $tag->name;
+				$tag_count   = $tag->count;
+				$is_checked  = in_array( (int) $tag_id, $selected_tag_ids, true );
+				$html_chips .= $this->input_checkbox_tag_item( $tag_id, $tag_name, $is_checked, $tag_count );
 			}
 		}
 
 		$edit = [
 			'wrapper'                  => '<div class="cb-course-edit-tags__wrapper">',
-			'label'                    => sprintf( '<label for="title" class="cb-course-edit-tags__label">%s</label>', __( 'Tags', 'learnpress' ) ),
-			'wrapper_checkbox'         => '<div class="cb-course-edit-tags__checkbox-wrapper">',
-			'checkbox'                 => $html_checkbox,
-			'wrapper_checkbox_end'     => '</div>',
-			'btn_add_new'              => $btn_add_cat,
-			'btn_cancel'               => $btn_cancel,
+			'header'                   => '<div class="cb-terms-header">',
+			'label'                    => sprintf( '<label class="cb-terms-header__label">%s</label>', __( 'Tags', 'learnpress' ) ),
+			'btn_add_new'              => sprintf( '<button class="cb-course-edit-tag__btn-add-new cb-terms-header__btn-add-new">%s</button>', __( 'Add New', 'learnpress' ) ),
+			'header_end'               => '</div>',
 			'form_add_tag_wrapper'     => '<div class="cb-course-edit-terms__form-add-tag" style="display:none;">',
 			'input'                    => '<input type="text" class="cb-course-edit-tags__input" placeholder="' . esc_attr__( 'Enter Tag Name', 'learnpress' ) . '"/>',
+			'btn_cancel'               => sprintf( '<button type="button" class="cb-course-edit-tag__btn-cancel">%s</button>', __( 'Cancel', 'learnpress' ) ),
 			'button'                   => '<button type="button" class="cb-course-edit-tags__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button>',
 			'form_add_tag_wrapper_end' => '</div>',
+			'wrapper_checkbox'         => '<div class="cb-course-edit-tags__checkbox-wrapper">',
+			'checkbox'                 => $html_chips,
+			'wrapper_checkbox_end'     => '</div>',
 			'wrapper_end'              => '</div>',
 		];
 
@@ -319,10 +355,27 @@ class BuilderEditCourseTemplate {
 		return $html;
 	}
 
-	public function input_checkbox_tag_item( $term_id, $term_name, $is_checked ) {
-		$html  = '<div class="cb-course-edit-terms__checkbox">';
-		$html .= sprintf( '<input type="checkbox" name="course_tags[]" value="%s" id="course_tag_%s" %s>', $term_id, $term_id, checked( $is_checked, true, false ) );
-		$html .= sprintf( '<label for="course_tag_%s">%s</label>', $term_id, $term_name );
+	public function input_checkbox_tag_item( $term_id, $term_name, $is_checked, $count = 0 ) {
+		if ( 0 === $count ) {
+			$tag_obj = get_term( $term_id, LP_COURSE_TAXONOMY_TAG );
+			if ( $tag_obj && ! is_wp_error( $tag_obj ) ) {
+				$count = $tag_obj->count;
+			}
+		}
+
+		$html  = '<div class="cb-tag-chip">';
+		$html .= sprintf(
+			'<input type="checkbox" name="course_tags[]" value="%s" id="course_tag_%s" %s>',
+			$term_id,
+			$term_id,
+			checked( $is_checked, true, false )
+		);
+		$html .= sprintf(
+			'<label for="course_tag_%s"><span class="cb-tag-chip__name">%s</span><span class="cb-tag-chip__count">(%d)</span><span class="cb-tag-chip__remove">&times;</span></label>',
+			$term_id,
+			esc_html( $term_name ),
+			$count
+		);
 		$html .= '</div>';
 
 		return $html;
@@ -389,8 +442,8 @@ class BuilderEditCourseTemplate {
 			);
 
 			$featured_image_html .= sprintf(
-			'<button type="button" class="cb-change-featured-image">%s</button>',
-			__( 'Replace', 'learnpress' )
+				'<button type="button" class="cb-change-featured-image">%s</button>',
+				__( 'Replace', 'learnpress' )
 			);
 		}
 
@@ -546,7 +599,6 @@ class BuilderEditCourseTemplate {
 		ob_start();
 		$metabox->output( $course_model );
 		$settings = ob_get_clean();
-
 
 		$output = [
 			'wrapper'          => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
