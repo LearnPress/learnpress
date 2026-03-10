@@ -10,8 +10,6 @@
 @import 'shared-tab-styles';
 
 #lp-builder-popup-container {
-	@include horizontal-tab-navigation;
-	@include shared-form-fields;
 	display: none;
 	position: fixed;
 	top: 0;
@@ -19,6 +17,9 @@
 	width: 100%;
 	height: 100%;
 	z-index: 99999;
+
+	@include horizontal-tab-navigation;
+	@include shared-form-fields;
 
 	&.active {
 		display: block;
