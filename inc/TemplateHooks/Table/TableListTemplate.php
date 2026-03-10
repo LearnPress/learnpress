@@ -28,14 +28,16 @@ class TableListTemplate {
 	public function html_table( array $data = [] ): string {
 		$class_tb = $data['class_table'] ?? '';
 		$section  = [
-			'wrapper'     => sprintf(
+			'wrap'      => '<div class="lp-table-wrap">',
+			'table'     => sprintf(
 				'<table class="lp-list-table %s">',
 				esc_attr( $class_tb )
 			),
-			'header'      => $this->html_header( $data['header'] ?? [] ),
-			'body'        => $this->html_body( $data['body'] ?? [] ),
-			'footer'      => $this->html_footer( $data['footer'] ?? '' ),
-			'wrapper_end' => '</table>',
+			'header'    => $this->html_header( $data['header'] ?? [] ),
+			'body'      => $this->html_body( $data['body'] ?? [] ),
+			'footer'    => $this->html_footer( $data['footer'] ?? '' ),
+			'table-end' => '</table>',
+			'wrap-end'  => '</div>',
 		];
 
 		return Template::combine_components( $section );

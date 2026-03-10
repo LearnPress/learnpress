@@ -15,6 +15,7 @@ use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Debug;
 use LP_Helper;
+use LP_Page_Controller;
 use stdClass;
 use Throwable;
 
@@ -98,17 +99,19 @@ class AdminListStudentsEnrolled {
 			)
 		);
 
-		echo $this->html_toolbar( (int) $instructor_id );
+		echo $this->html_toolbar();
 		$data_get = LP_Helper::sanitize_params_submitted( $_GET );
 
 		$args = array(
-			'instructor_id' => (int) $instructor_id,
-			'course_id'     => abs( LP_Helper::sanitize_params_submitted( $data_get['course_id'] ?? 0, 'int' ) ),
-			'course_name'   => LP_Helper::sanitize_params_submitted( $data_get['course_name'] ?? '' ),
-			'paged'         => 1,
-			'search'        => LP_Helper::sanitize_params_submitted( $data_get['search'] ?? '' ),
-			'start_date'    => self::sanitize_date_filter( $data_get['start_date'] ?? '' ),
-			'end_date'      => self::sanitize_date_filter( $data_get['end_date'] ?? '' ),
+			'id_url'                => 'lp-enrolled-students',
+			'instructor_id'         => (int) $instructor_id,
+			'course_id'             => abs( LP_Helper::sanitize_params_submitted( $data_get['course_id'] ?? 0, 'int' ) ),
+			'course_name'           => LP_Helper::sanitize_params_submitted( $data_get['course_name'] ?? '' ),
+			'paged'                 => 1,
+			'search'                => LP_Helper::sanitize_params_submitted( $data_get['search'] ?? '' ),
+			'start_date'            => self::sanitize_date_filter( $data_get['start_date'] ?? '' ),
+			'end_date'              => self::sanitize_date_filter( $data_get['end_date'] ?? '' ),
+			'enableUpdateParamsUrl' => false,
 		);
 
 		$call_back = array(
@@ -231,15 +234,9 @@ class AdminListStudentsEnrolled {
 				}
 
 				$results_map[ $user_item_id ] = 0;
-				try {
-					$user_course_model = new UserCourseModel( $item );
-					$course_result     = $user_course_model->calculate_course_results( true );
-					if ( is_array( $course_result ) ) {
-						$results_map[ $user_item_id ] = (float) ( $course_result['result'] ?? 0 );
-					}
-				} catch ( Throwable $e ) {
-					LP_Debug::error_log( $e );
-				}
+				$user_course_model            = new UserCourseModel( $item );
+				$course_result                = $user_course_model->calculate_course_results( true );
+				$results_map[ $user_item_id ] = (float) ( $course_result['result'] ?? 0 );
 			}
 
 			// Build HTML.
@@ -311,11 +308,20 @@ class AdminListStudentsEnrolled {
 	/**
 	 * HTML builder: toolbar (course filter, search).
 	 *
-	 * @param int $instructor_id
-	 *
 	 * @return string
 	 */
-	public function html_toolbar( int $instructor_id ): string {
+	public function html_toolbar(): string {
+		$page_current = '';
+		if ( function_exists( 'get_current_screen' ) ) {
+			$wp_screen = get_current_screen();
+			if ( $wp_screen ) {
+				// Page on the Admin screen.
+				if ( $wp_screen->id === 'learnpress_page_lp-enrolled-students' ) {
+					$page_current = 'learnpress_page_lp-enrolled-students';
+				}
+			}
+		}
+
 		$courses = array();
 
 		$data_get        = LP_Helper::sanitize_params_submitted( $_GET );
@@ -326,7 +332,10 @@ class AdminListStudentsEnrolled {
 		$search_end      = self::sanitize_date_filter( $data_get['end_date'] ?? '' );
 
 		$section = array(
-			'wrap'                => '<form class="lp-enrolled-students-table-toolbar lp-enrolled-students-form" id="lp-enrolled-students-form" onsubmit="return false;">',
+			'wrap'                => sprintf(
+				'<form class="lp-enrolled-students-table-toolbar lp-enrolled-students-form %s" id="lp-enrolled-students-form" onsubmit="return false;">',
+				$page_current
+			),
 			'filter-row-open'     => '<div class="lp-enrolled-students-table-toolbar__row lp-enrolled-students-table-toolbar__row--filters">',
 			'course-field-open'   => '<div class="lp-enrolled-students-table-toolbar__field">',
 			'course-label'        => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-filter-course-name">' . esc_html__( 'Course Filter', 'learnpress' ) . '</label>',
@@ -344,6 +353,7 @@ class AdminListStudentsEnrolled {
 			'end-label'           => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-filter-end-date">' . esc_html__( 'Enrolled before', 'learnpress' ) . '</label>',
 			'end-input'           => '<input id="lp-enrolled-filter-end-date" class="lp-enrolled-filter-end-date lp-enrolled-students-table-toolbar__input" type="date" name="end_date" value="' . esc_attr( $search_end ) . '" placeholder="mm/dd/yyyy">',
 			'end-field-close'     => '</div>',
+			'filter-row-close'    => '</div>',
 			'actions-open'        => '<div class="lp-enrolled-students-table-toolbar__actions">',
 			'search-btn'          => sprintf(
 				'<button type="button" class="lp-button lp-enrolled-btn-search">%s</button>',
@@ -354,7 +364,6 @@ class AdminListStudentsEnrolled {
 				esc_html__( 'Clear Filter', 'learnpress' )
 			),
 			'actions-close'       => '</div>',
-			'filter-row-close'    => '</div>',
 			'wrap-end'            => '</form>',
 		);
 		$section = apply_filters(
@@ -362,7 +371,6 @@ class AdminListStudentsEnrolled {
 			$section,
 			$courses,
 			$selected_course,
-			$instructor_id
 		);
 
 		return Template::combine_components( $section );
@@ -390,11 +398,17 @@ class AdminListStudentsEnrolled {
 			'end-label'           => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-filter-end-date">' . esc_html__( 'Enrolled before', 'learnpress' ) . '</label>',
 			'end-input'           => '<input id="lp-modal-enrolled-filter-end-date" class="lp-enrolled-filter-end-date lp-enrolled-students-table-toolbar__input" type="date" name="end_date" placeholder="mm/dd/yyyy">',
 			'end-field-close'     => '</div>',
-			'actions-open'        => '<div class="lp-enrolled-students-table-toolbar__actions">',
-			'search-btn'          => '<button type="button" class="button lp-button lp-enrolled-btn-search-modal">' . esc_html__( 'Search', 'learnpress' ) . '</button>',
-			'clear-btn'           => '<button type="button" class="button lp-button lp-enrolled-btn-clear-modal">' . esc_html__( 'Clear Filter', 'learnpress' ) . '</button>',
-			'actions-close'       => '</div>',
 			'filter-row-close'    => '</div>',
+			'actions-open'        => '<div class="lp-enrolled-students-table-toolbar__actions">',
+			'search-btn'          => sprintf(
+				'<button type="button" class="lp-button lp-enrolled-btn-search-modal">%s</button>',
+				esc_html__( 'Search', 'learnpress' )
+			),
+			'clear-btn'           => sprintf(
+				'<button type="button" class="lp-button lp-enrolled-btn-clear-modal">%s</button>',
+				esc_html__( 'Clear Filter', 'learnpress' )
+			),
+			'actions-close'       => '</div>',
 			'wrap-end'            => '</form>',
 		);
 
@@ -408,11 +422,16 @@ class AdminListStudentsEnrolled {
 	 */
 	public function html_modal_students_target(): string {
 		$args = array(
+			'id_url'                  => 'lp-modal-enrolled-students',
 			'course_id'               => 0,
 			'paged'                   => 1,
 			'enableScrollToView'      => false,
 			'enableUpdateParamsUrl'   => false,
-			'html_no_load_ajax_first' => esc_html__( 'Loading', 'learnpress' ),
+			'html_no_load_ajax_first' => sprintf(
+				'<div class="learn-press-message" style="%s">%s</div>',
+				'width: 95%;',
+				esc_html__( 'Loading', 'learnpress' )
+			),
 		);
 
 		$call_back = array(
@@ -443,8 +462,8 @@ class AdminListStudentsEnrolled {
 			if ( $screen && isset( $screen->id ) && $screen->id === 'edit-' . LP_COURSE_CPT ) {
 				$should_print = true;
 			}
-		} elseif ( class_exists( '\LP_Page_Controller' ) && defined( 'LP_PAGE_PROFILE' ) ) {
-			$should_print = \LP_Page_Controller::page_current() === LP_PAGE_PROFILE;
+		} elseif ( class_exists( 'LP_Page_Controller' ) && defined( 'LP_PAGE_PROFILE' ) ) {
+			$should_print = LP_Page_Controller::page_current() === LP_PAGE_PROFILE;
 		}
 
 		if ( ! $should_print ) {
@@ -463,9 +482,9 @@ class AdminListStudentsEnrolled {
 	/**
 	 * HTML builder: table wrapper.
 	 *
-	 * @param array $rows        DB result rows.
+	 * @param array $rows DB result rows.
 	 * @param array $results_map user_item_id => progress percentage.
-	 * @param array $meta        [ total, paged, per_page ].
+	 * @param array $meta [ total, paged, per_page ].
 	 *
 	 * @return string
 	 */
@@ -580,7 +599,7 @@ class AdminListStudentsEnrolled {
 	 * HTML builder: single student row.
 	 *
 	 * @param object $item
-	 * @param array  $results_map
+	 * @param array $results_map
 	 *
 	 * @return string
 	 */

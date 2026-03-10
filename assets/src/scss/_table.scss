@@ -1,0 +1,81 @@
+/**
+* Style for table LearnPress
+*/
+
+.lp-table-wrap {
+	border-radius: 5px;
+	width: 100%;
+	border: 1px solid var(--lp-border-color, #E2E0DB);
+	overflow: hidden;
+}
+
+table.lp-list-table {
+	border-collapse: collapse;
+	width: 100%;
+	margin: 0;
+
+	td {
+		padding: 0;
+	}
+
+	.learn-press-pagination {
+		text-align: left;
+	}
+
+	thead {
+		background-color: var(--lp-white-grey, #F7F7FB);
+		border: none;
+
+		tr {
+			border-bottom: 1px solid var(--lp-border-color, #E2E0DB);
+		}
+
+		th {
+			background: none;
+			border: none;
+			font-size: 1em;
+			padding: 10px 20px;
+			text-align: left;
+
+			td {
+				border: none;
+				padding: 0;
+			}
+		}
+	}
+
+	tbody {
+		tr {
+			border: none;
+			border-bottom: 1px solid var(--lp-white-grey, #F7F7FB);
+
+			&:nth-child(even) td {
+				background: none;
+			}
+
+			td {
+				border: none;
+				padding: 10px 20px;
+				text-align: left;
+			}
+		}
+	}
+
+	tfoot {
+		tr {
+			border: none;
+
+			td {
+				border: none;
+
+				>div {
+					padding: 10px 20px;
+				}
+			}
+		}
+
+		.pagination {
+			border: none;
+		}
+	}
+}
