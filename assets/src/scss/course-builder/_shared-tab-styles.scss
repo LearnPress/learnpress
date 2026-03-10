@@ -82,7 +82,7 @@
 					align-items: center;
 					padding: 12px 16px;
 					text-decoration: none;
-					color: #6b7280;
+					color: $cb-text-muted;
 					font-weight: 500;
 					font-size: 14px;
 					transition: all 0.2s ease;
@@ -281,7 +281,7 @@
 		.lp-question-toggle-all {
 			cursor: pointer;
 			padding: 5px;
-			color: #6b7280;
+			color: $cb-text-muted;
 
 			&:hover {
 				color: #1e1e1e;

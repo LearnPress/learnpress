@@ -836,11 +836,6 @@ class CourseBuilderTemplate {
 			$btn_close   = '</a>';
 		}
 
-		// Also do it for lessons since it's likely similar.
-		if ( 'lessons' === $tab_current ) {
-			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_tab_link( 'lessons', CourseBuilder::POST_NEW, 'overview' ) ) );
-			$btn_close   = '</a>';
-		}
 
 		$btn = [
 			'wrapper'     => $btn_add_new,

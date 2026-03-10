@@ -249,7 +249,7 @@ class BuilderTabLessonTemplate {
 						$lesson['title']
 					),
 					'courses'       => $html_courses,
-					'date'          => sprintf( '<span class="lesson__date">%s</span>', date_i18n( 'm/d/Y', strtotime( $lesson['date_modified'] ) ) ),
+					'date'          => sprintf( '<span class="lesson__date">%s</span>', ! empty( $lesson['date_modified'] ) ? date_i18n( 'm/d/Y', strtotime( $lesson['date_modified'] ) ) : '--' ),
 					'lesson_status' => ! empty( $status ) ? sprintf( '<span class="lesson-status %1$s">%1$s</span>', $status ) : '<span></span>',
 					'preview'       => sprintf(
 					'<span class="lesson__preview lp-btn-set-preview-item" data-id="%s" title="%s"><a class="%s"></a></span>',

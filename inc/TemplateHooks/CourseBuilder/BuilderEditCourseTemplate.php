@@ -130,7 +130,12 @@ class BuilderEditCourseTemplate {
 			$base_url = trailingslashit( home_url() ) . 'courses/';
 		}
 
-		$full_url = $base_url . $post_name;
+		$full_url = get_permalink( $post_id );
+
+		// Adjust base URL for editor prefix if permalink has custom structure
+		if ( ! empty( $post_name ) && false === strpos( $full_url, '?p=' ) && false === strpos( $full_url, '?lp_course=' ) ) {
+			$base_url = trailingslashit( preg_replace( '/' . preg_quote( $post_name, '/' ) . '\/?$/', '', $full_url ) );
+		}
 
 		$state_a = sprintf(
 			'<span class="cb-permalink-label">%s</span>
@@ -471,7 +476,8 @@ class BuilderEditCourseTemplate {
 		$course_id = CourseBuilder::get_post_id();
 
 		if ( $course_id === 'post-new' ) {
-			echo __( 'Please save Course before add Section' );
+			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before add Section' ) );
+			echo $message;
 			return;
 		}
 
@@ -580,7 +586,8 @@ class BuilderEditCourseTemplate {
 		$course_id = CourseBuilder::get_post_id();
 
 		if ( $course_id === 'post-new' ) {
-			echo __( 'Please save Course before setting course', 'learnpress' );
+			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before setting course' ) );
+			echo $message;
 			return;
 		}
 

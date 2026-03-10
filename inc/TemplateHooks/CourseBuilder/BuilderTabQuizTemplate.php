@@ -246,7 +246,7 @@ class BuilderTabQuizTemplate {
 					'courses'         => $html_courses,
 					'total_questions' => sprintf( '<span class="quiz__total-questions">%d</span>', $quiz_model->count_questions() ),
 					'duration'        => sprintf( '<span class="quiz__duration">%s</span>', $quiz['duration'] ),
-					'date'            => sprintf( '<span class="quiz__date">%s</span>', date_i18n( 'm/d/Y', strtotime( $quiz['date_modified'] ?? '' ) ) ),
+					'date'            => sprintf( '<span class="quiz__date">%s</span>', ! empty( $quiz['date_modified'] ) ? date_i18n( 'm/d/Y', strtotime( $quiz['date_modified'] ) ) : '--' ),
 					'quiz_status'     => ! empty( $status ) ? sprintf( '<span class="quiz-status %1$s">%1$s</span>', $status ) : '<span></span>',
 				],
 				$quiz,

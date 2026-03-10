@@ -249,7 +249,7 @@
 
 		.description {
 			font-size: 13px;
-			color: #6b7280;
+			color: $cb-text-muted;
 			line-height: 1.5;
 			margin: 0;
 			display: block;
@@ -311,6 +311,14 @@
 				margin-top: 0;
 			}
 		}
+	}
+
+	.lp-message {
+		color: $cb-primary;
+		background-color: $cb-primary-bland;
+		font-weight: 500;
+		padding: $cb-spacing-sm $cb-spacing-xl;
+		border-radius: $cb-radius-md;
 	}
 }
 
@@ -551,7 +559,7 @@
 }
 
 .lp-popup-items-to-select .header {
-	padding: 0 20px;
+	padding: 0;
 	flex-shrink: 0;
 }
 
@@ -562,7 +570,7 @@
 	gap: 10px;
 	margin: 0;
 	list-style: none;
-	padding: 16px 0 0;
+	padding: 0;
 }
 
 .lp-popup-items-to-select ul.tabs li {
@@ -713,15 +721,15 @@ input.lp-search-title-item:focus {
 }
 
 .list-items-wrap .page-numbers li a.page-numbers {
-	background-color: #fff;
-	color: #6b7280;
-	border-color: #e5e7eb;
+	background-color: $cb-bg;
+	color: $cb-text-muted;
+	border-color: $cb-border;
 	transition: all 0.2s;
 }
 
 .list-items-wrap .page-numbers li a.page-numbers:hover {
-	border-color: #9ca3af;
-	color: #1e1e1e;
+	border-color: $cb-border-input;
+	color: $cb-text;
 }
 
 .list-items-wrap .page-numbers i {
@@ -729,11 +737,12 @@ input.lp-search-title-item:focus {
 }
 
 .lp-popup-items-to-select .main {
-	border-bottom-color: $cb-border-light !important;
+	border-bottom-color: transparent !important;
+	padding: 20px 0 0 !important;
 }
 
 .lp-popup-items-to-select .footer {
-
+	padding: 16px 0 0 !important;
 	align-items: center;
 	justify-content: space-between;
 }
@@ -773,7 +782,7 @@ input.lp-search-title-item:focus {
 .lp-btn-count-items-selected {
 	background: transparent;
 	color: $cb-text-muted;
-	border: 1px dashed $cb-border;
+	padding: 0 !important;
 	font-size: 13px;
 	order: 1;
 }

@@ -1102,6 +1102,16 @@ export class BuilderPopup {
 			return;
 		}
 
+		// Check if published to show confirm unpublish modal
+		const statusEl = this.popupContainer.querySelector( `.${ this.currentType }-status` );
+		const isPublished = statusEl && statusEl.classList.contains( 'publish' );
+		if ( isPublished ) {
+			const confirmMsg = draftBtn.dataset.confirmUnpublish || 'Saving as draft will unpublish this item from the course. Are you sure?';
+			if ( ! confirm( confirmMsg ) ) {
+				return;
+			}
+		}
+
 		this.syncAllTinyMCE();
 
 		const formData = this.getFormData();
@@ -1156,7 +1166,10 @@ export class BuilderPopup {
 	 */
 	handleSaveSuccess( saveBtn, data, formData, wasNewItem ) {
 		if ( data?.button_title ) {
-			saveBtn.textContent = data.button_title;
+			const primarySaveBtn = this.popupContainer.querySelector( BuilderPopup.selectors.saveBtn );
+			if ( primarySaveBtn ) {
+				primarySaveBtn.textContent = data.button_title;
+			}
 		}
 
 		// Update status

@@ -163,7 +163,9 @@ class BuilderEditQuizTemplate {
 		$quiz_id    = CourseBuilder::get_post_id();
 		$quiz_model = '';
 		if ( $quiz_id === 'post-new' ) {
-			$quiz_model = '';
+			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Quiz before add question', 'learnpress' ) );
+			echo $message;
+			return;
 		}
 
 		if ( absint( $quiz_id ) ) {
@@ -195,7 +197,8 @@ class BuilderEditQuizTemplate {
 		$quiz_id = CourseBuilder::get_post_id();
 
 		if ( $quiz_id === 'post-new' ) {
-			echo __( 'Please save Quiz before setting quiz', 'learnpress' );
+			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Quiz before setting quiz', 'learnpress' ) );
+			echo $message;
 			return;
 		}
 

@@ -155,7 +155,8 @@ class BuilderEditLessonTemplate {
 		$lesson_id = CourseBuilder::get_post_id();
 
 		if ( $lesson_id === 'post-new' ) {
-			echo __( 'Please save Lesson before setting lesson', 'learnpress' );
+			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Lesson before setting lesson', 'learnpress' ) );
+			echo $message;
 			return;
 		}
 

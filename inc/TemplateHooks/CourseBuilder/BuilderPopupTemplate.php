@@ -113,8 +113,9 @@ class BuilderPopupTemplate {
 
 		// Save Draft button
 		$btn_draft = sprintf(
-			'<button type="button" class="cb-button cb-button--secondary cb-btn-draft__%s lp-builder-popup__btn lp-builder-popup__btn--draft">%s</button>',
+			'<button type="button" class="cb-button cb-button--secondary cb-btn-draft__%s lp-builder-popup__btn lp-builder-popup__btn--draft" data-confirm-unpublish="%s">%s</button>',
 			$type,
+			esc_attr__( 'Saving as draft will unpublish this item from the course. Are you sure?', 'learnpress' ),
 			__( 'Save Draft', 'learnpress' )
 		);
 

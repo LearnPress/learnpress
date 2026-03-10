@@ -318,13 +318,15 @@ export class BuilderEditLesson {
 
 		const lessonData = this.getLessonDataForUpdate();
 
+		const targetStatus = elBtnUpdateLesson.dataset.status || 'publish';
+
 		const dataSend = {
 			...lessonData,
 			action: 'builder_update_lesson',
 			args: {
 				id_url: 'builder-update-lesson',
 			},
-			lesson_status: 'publish',
+			lesson_status: targetStatus,
 		};
 
 		if ( typeof lpLessonBuilder !== 'undefined' && lpLessonBuilder.nonce ) {
@@ -338,7 +340,7 @@ export class BuilderEditLesson {
 
 				if ( status === 'success' ) {
 					// Update action button text
-					this.updateActionButtons( 'publish' );
+					this.updateActionButtons( targetStatus );
 
 					if ( data?.lesson_id_new ) {
 						const currentUrl = window.location.href;

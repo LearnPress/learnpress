@@ -161,7 +161,8 @@ class BuilderEditQuestionTemplate {
 		$question_id = CourseBuilder::get_post_id();
 
 		if ( $question_id === 'post-new' ) {
-			echo __( 'Please save Question before setting question', 'learnpress' );
+			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Question before setting question', 'learnpress' ) );
+			echo $message;
 			return;
 		}
 

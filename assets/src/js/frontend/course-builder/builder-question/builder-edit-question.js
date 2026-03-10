@@ -334,7 +334,7 @@ export class BuilderEditQuestion {
 
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: BuilderEditQuestion.selectors.elBtnUpdateQuestion,
+				selector: BuilderEditQuestion.selectors.elBtnMainAction,
 				class: this,
 				callBack: this.updateQuestion.name,
 			},
@@ -545,9 +545,9 @@ export class BuilderEditQuestion {
 		}
 
 		const { target } = args;
-		const elBtnUpdateQuestion = target.closest( BuilderEditQuestion.selectors.elBtnUpdateQuestion );
+		const elBtnMainAction = target.closest( BuilderEditQuestion.selectors.elBtnMainAction );
 
-		if ( ! elBtnUpdateQuestion ) {
+		if ( ! elBtnMainAction ) {
 			return;
 		}
 
@@ -556,10 +556,10 @@ export class BuilderEditQuestion {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elBtnUpdateQuestion, 1 );
+		lpUtils.lpSetLoadingEl( elBtnMainAction, 1 );
 
 		// Get status from the button's data-status attribute
-		const targetStatus = elBtnUpdateQuestion.dataset.status || 'publish';
+		const targetStatus = elBtnMainAction.dataset.status || 'publish';
 
 		const questionData = this.getQuestionDataForUpdate();
 
@@ -606,7 +606,7 @@ export class BuilderEditQuestion {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtnUpdateQuestion, 0 );
+				lpUtils.lpSetLoadingEl( elBtnMainAction, 0 );
 			},
 		};
 

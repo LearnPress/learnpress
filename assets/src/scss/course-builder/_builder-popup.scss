@@ -27,7 +27,7 @@
 
 	#lp-material-container {
 		font-size: 13px;
-		color: #6b7280;
+		color: $cb-text-muted;
 		line-height: 1.5;
 		margin: 0;
 		display: block;
@@ -395,9 +395,9 @@ body.lp-popup-open {
 			border: 1px solid $cb-border;
 
 			&:hover {
-				background-color: $cb-danger-bg;
 				color: $cb-danger;
-				border-color: $cb-danger;
+				background-color: $cb-danger-bg;
+				border-color: $cb-danger-bg;
 			}
 		}
 
@@ -753,6 +753,14 @@ body.lp-popup-open {
 				font-style: italic;
 			}
 		}
+	}
+
+	.lp-message {
+		color: $cb-primary;
+		background-color: $cb-primary-bland;
+		font-weight: 500;
+		padding: $cb-spacing-sm $cb-spacing-xl;
+		border-radius: $cb-radius-md;
 	}
 }
 
