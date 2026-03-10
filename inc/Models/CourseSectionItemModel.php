@@ -192,7 +192,7 @@ class CourseSectionItemModel {
 	 *
 	 * @return array [ stdClass(section_course_id) ]
 	 * @version 1.0.0
-	 * @since 4.3.2.9
+	 * @since 4.3.3
 	 */
 	public static function get_courses_from_item_id( int $item_id, string $item_type ): array {
 		$lp_section_db = CourseSectionItemsDB::getInstance();

@@ -16,6 +16,16 @@
 	//border-radius: 8px;
 	//background: #fff;
 	//box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+	.instructor-avatar img {
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		background: #64748b;
+		overflow: hidden;
+	}
 }
 
 // ──────────────────────────────────────────
@@ -220,7 +230,7 @@
 	gap: 10px;
 }
 
-.lp-avatar {
+/*.lp-avatar {
 	display: flex;
 	flex-shrink: 0;
 	align-items: center;
@@ -243,7 +253,7 @@
 		height: 100%;
 		object-fit: cover;
 	}
-}
+}*/
 
 .lp-meta {
 	display: flex;

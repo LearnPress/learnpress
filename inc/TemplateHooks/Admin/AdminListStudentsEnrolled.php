@@ -9,10 +9,14 @@ use LearnPress\Filters\PostFilter;
 use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
+use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 use LP_Debug;
 use LP_Helper;
 use LP_Page_Controller;
@@ -248,24 +252,9 @@ class AdminListStudentsEnrolled {
 				$rows = array();
 			}
 
-			// Build progress map via UserCourseModel::calculate_course_results().
-			$results_map = array();
-			foreach ( $rows as $item ) {
-				$user_item_id = (int) ( $item->user_item_id ?? 0 );
-				if ( $user_item_id < 1 ) {
-					continue;
-				}
-
-				$results_map[ $user_item_id ] = 0;
-				$user_course_model            = new UserCourseModel( $item );
-				$course_result                = $user_course_model->calculate_course_results( true );
-				$results_map[ $user_item_id ] = (float) ( $course_result['result'] ?? 0 );
-			}
-
 			// Build HTML.
 			$html = self::instance()->html_table(
 				$rows,
-				$results_map,
 				array(
 					'total'    => $total_rows,
 					'paged'    => $paged,
@@ -275,7 +264,7 @@ class AdminListStudentsEnrolled {
 
 			$content->content = $html;
 		} catch ( Throwable $e ) {
-			$content->content = '<p class="lp-enrolled-error">' . esc_html( $e->getMessage() ) . '</p>';
+			$content->content = Template::print_message( $e->getMessage(), 'error', false );
 			LP_Debug::error_log( $e );
 		}
 
@@ -492,12 +481,11 @@ class AdminListStudentsEnrolled {
 	 * HTML builder: table wrapper.
 	 *
 	 * @param array $rows DB result rows.
-	 * @param array $results_map user_item_id => progress percentage.
 	 * @param array $meta [ total, paged, per_page ].
 	 *
 	 * @return string
 	 */
-	private function html_table( array $rows, array $results_map, array $meta ): string {
+	private function html_table( array $rows, array $meta ): string {
 		if ( empty( $rows ) ) {
 			$section_empty = array(
 				'wrap'     => '<div class="lp-enrolled-students-table-wrap">',
@@ -508,7 +496,6 @@ class AdminListStudentsEnrolled {
 				'learn-press/admin/enrolled-students/table/empty/section',
 				$section_empty,
 				$rows,
-				$results_map,
 				$meta
 			);
 
@@ -517,8 +504,10 @@ class AdminListStudentsEnrolled {
 
 		$rows_html = array();
 
+		$results_map = array();
 		foreach ( $rows as $item ) {
-			$rows_html[] = $this->html_student_row( $item, $results_map );
+			$userCourseModel = new UserCourseModel( $item );
+			$rows_html[]     = $this->html_student_row( $userCourseModel );
 		}
 		$rows_html = apply_filters(
 			'learn-press/admin/enrolled-students/table/rows-html',
@@ -607,99 +596,89 @@ class AdminListStudentsEnrolled {
 	/**
 	 * HTML builder: single student row.
 	 *
-	 * @param object $item
-	 * @param array $results_map
+	 * @param UserCourseModel $userCourseModel
 	 *
 	 * @return string
 	 */
-	private function html_student_row( object $item, array $results_map ): string {
+	private function html_student_row( UserCourseModel $userCourseModel ): string {
 		// Avatar initials.
-		$name     = $item->display_name;
-		$initials = '';
-		$parts    = explode( ' ', trim( $name ) );
-
-		if ( count( $parts ) >= 2 ) {
-			$initials = mb_strtoupper( mb_substr( $parts[0], 0, 1 ) . mb_substr( end( $parts ), 0, 1 ) );
-		} else {
-			$initials = mb_strtoupper( mb_substr( $name, 0, 2 ) );
+		$userModel = $userCourseModel->get_user_model();
+		if ( ! $userModel instanceof UserModel ) {
+			return '';
 		}
 
-		$user_id = (int) $item->user_id;
-
-		$avatar_url = '';
-		$user_model = UserModel::find( $user_id, true );
-		if ( $user_model instanceof UserModel ) {
-			$avatar_url = $user_model->get_avatar_url();
-		}
-
-		$avatar_class   = 'lp-avatar';
-		$avatar_content = esc_html( $initials );
-		if ( ! empty( $avatar_url ) ) {
-			$avatar_class  .= ' lp-avatar--image';
-			$avatar_content = sprintf(
-				'<img src="%1$s" alt="%2$s" loading="lazy" decoding="async">',
-				esc_url( $avatar_url ),
-				esc_attr( $name )
-			);
+		$courseModel = $userCourseModel->get_course_model();
+		if ( ! $courseModel instanceof CourseModel ) {
+			return '';
 		}
 
 		// Progress.
-		$progress = isset( $results_map[ $item->user_item_id ] ) ? round( floatval( $results_map[ $item->user_item_id ] ) ) : 0;
+		$course_result = $userCourseModel->calculate_course_results();
+		$progress      = (float) ( $course_result['result'] ?? 0 );
 
 		// Status badge.
-		$status_raw   = $item->graduation && $item->graduation !== 'in-progress'
-			? $item->graduation
-			: $item->status;
+		$graduation   = $userCourseModel->get_graduation();
+		$status_raw   = $graduation !== UserItemModel::GRADUATION_IN_PROGRESS
+			? $userCourseModel->get_graduation()
+			: $userCourseModel->get_status();
 		$status_label = ucfirst( str_replace( array( '-', '_' ), ' ', $status_raw ) );
 		$badge_class  = 'lp-badge--' . sanitize_html_class( $status_raw );
 
 		// Date.
-		$date = $item->start_time
-			? wp_date( get_option( 'date_format' ), strtotime( $item->start_time ) )
-			: '—';
+		$date = UserCourseTemplate::instance()->html_start_date_time( $userCourseModel, false );
 
-		// Course link.
-		$course_url   = get_edit_post_link( $item->item_id );
-		$course_title = $item->course_title;
-
-		$course_cell = $course_url
-			? '<a href="' . esc_url( $course_url ) . '">' . esc_html( $course_title ) . '</a>'
-			: esc_html( $course_title );
+		$user_display_name = $userModel->get_display_name();
+		if ( empty( $user_display_name ) ) {
+			$user_display_name = $userModel->get_username();
+		}
 
 		$section = array(
-			'row-open'            => '<tr>',
+			'row'                 => '<tr>',
 			'student-cell-open'   => '<td class="lp-cell-student">',
-			'avatar'              => '<div class="' . $avatar_class . '">' . $avatar_content . '</div>',
+			'avatar'              => SingleInstructorTemplate::instance()->html_avatar( $userModel ),
 			'meta-open'           => '<div class="lp-meta">',
-			'name'                => '<span class="lp-name">' . esc_html( $name ) . '</span>',
-			'email'               => '<span class="lp-email">' . esc_html( $item->user_email ) . '</span>',
+			'name'                => sprintf(
+				'<span class="lp-name">%s</span>',
+				esc_html( $user_display_name )
+			),
+			'email'               => sprintf(
+				'<span class="lp-email">%s</span>',
+				esc_html( $userModel->get_email() )
+			),
 			'meta-close'          => '</div>',
 			'student-cell-close'  => '</td>',
-			'course-cell'         => '<td class="lp-cell-course">' . $course_cell . '</td>',
-			'date-cell'           => '<td class="lp-cell-date">' . esc_html( $date ) . '</td>',
+			'course-cell'         => sprintf(
+				'<td class="lp-cell-course"><a href="%s">%s</a></td>',
+				esc_url_raw( $courseModel->get_permalink() ),
+				$courseModel->get_title()
+			),
+			'date-cell'           => sprintf(
+				'<td class="lp-cell-date">%s</td>',
+				wp_kses_post( $date )
+			),
 			'progress-cell-open'  => '<td class="lp-cell-progress">',
-			'progress-bar'        => '<div class="lp-progress-bar"><span style="width: ' . $progress . '%;"></span></div>',
-			'progress-text'       => '<small class="lp-progress-text">' . $progress . '%</small>',
+			'progress-bar'        => sprintf(
+				'<div class="lp-progress-bar"><span class="" style="width: %d%%;"></span></div>',
+				$progress
+			),
+			'progress-text'       => sprintf(
+				'<span class="lp-progress-text">%d%%</span>',
+				$progress
+			),
 			'progress-cell-close' => '</td>',
 			'status-cell-open'    => '<td class="lp-cell-status">',
-			'status-badge'        => '<span class="lp-badge ' . esc_attr( $badge_class ) . '">' . esc_html( $status_label ) . '</span>',
+			'status-badge'        => sprintf(
+				'<span class="lp-badge %s">%s</span>',
+				esc_attr( $badge_class ),
+				esc_html( $status_label )
+			),
 			'status-cell-close'   => '</td>',
-			'row-close'           => '</tr>',
+			'row-end'             => '</tr>',
 		);
 		$section = apply_filters(
 			'learn-press/admin/enrolled-students/row/section',
 			$section,
-			$item,
-			$results_map,
-			array(
-				'course_cell'  => $course_cell,
-				'progress'     => $progress,
-				'status_raw'   => $status_raw,
-				'status_label' => $status_label,
-				'badge_class'  => $badge_class,
-				'date'         => $date,
-				'avatar_url'   => $avatar_url,
-			)
+			$userCourseModel
 		);
 
 		return Template::combine_components( $section );
