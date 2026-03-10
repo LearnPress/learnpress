@@ -30,7 +30,7 @@ use Throwable;
 class AdminListStudentsEnrolled {
 	use Singleton;
 
-	const PER_PAGE = 1;
+	const PER_PAGE = 10;
 
 	public function init() {
 
@@ -316,25 +316,7 @@ class AdminListStudentsEnrolled {
 	 * @return string
 	 */
 	public function html_toolbar( int $instructor_id ): string {
-
-		$post_db                 = PostDB::getInstance();
-		$filter                  = new PostFilter();
-		$filter->only_fields     = array( 'p.ID', 'p.post_title' );
-		$filter->post_type       = LP_COURSE_CPT;
-		$filter->post_status     = array( 'publish' );
-		$filter->order_by        = 'p.post_title';
-		$filter->order           = 'ASC';
-		$filter->limit           = - 1;
-		$filter->run_query_count = false;
-
-		if ( $instructor_id > 0 ) {
-			$filter->post_author = $instructor_id;
-		}
-
-		$courses = $post_db->get_posts( $filter );
-		if ( ! is_array( $courses ) ) {
-			$courses = array();
-		}
+		$courses = array();
 
 		$data_get        = LP_Helper::sanitize_params_submitted( $_GET );
 		$selected_course = abs( LP_Helper::sanitize_params_submitted( $data_get['course_id'] ?? 0, 'int' ) );
@@ -343,36 +325,13 @@ class AdminListStudentsEnrolled {
 		$search_start    = self::sanitize_date_filter( $data_get['start_date'] ?? '' );
 		$search_end      = self::sanitize_date_filter( $data_get['end_date'] ?? '' );
 
-		$options = array();
-
-		foreach ( $courses as $course ) {
-			$options[] = sprintf(
-				'<option value="%1$s" data-course-id="%2$d"></option>',
-				esc_attr( $course->post_title ),
-				(int) $course->ID
-			);
-		}
-		$options = apply_filters(
-			'learn-press/admin/enrolled-students/toolbar/options',
-			$options,
-			$courses,
-			$selected_course,
-			$instructor_id
-		);
-
 		$section = array(
 			'wrap'                => '<form class="lp-enrolled-students-table-toolbar lp-enrolled-students-form" id="lp-enrolled-students-form" onsubmit="return false;">',
-			'course-row-open'     => '<div class="lp-enrolled-students-table-toolbar__row lp-enrolled-students-table-toolbar__row--course">',
-			'course-field-open'   => '<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--full">',
+			'filter-row-open'     => '<div class="lp-enrolled-students-table-toolbar__row lp-enrolled-students-table-toolbar__row--filters">',
+			'course-field-open'   => '<div class="lp-enrolled-students-table-toolbar__field">',
 			'course-label'        => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-filter-course-name">' . esc_html__( 'Course Filter', 'learnpress' ) . '</label>',
 			'course-input'        => '<input id="lp-enrolled-filter-course-name" class="lp-enrolled-filter-course-name lp-enrolled-students-table-toolbar__input" type="text" name="course_name" list="lp-enrolled-course-list" value="' . esc_attr( $search_course ) . '" placeholder="' . esc_attr__( 'Search course...', 'learnpress' ) . '">',
-			'course-id-input'     => '<input id="lp-enrolled-filter-course-id" type="hidden" name="course_id" value="' . (int) $selected_course . '">',
-			'course-list-open'    => '<datalist id="lp-enrolled-course-list">',
-			'course-options'      => Template::combine_components( $options ),
-			'course-list-close'   => '</datalist>',
 			'course-field-close'  => '</div>',
-			'course-row-close'    => '</div>',
-			'filter-row-open'     => '<div class="lp-enrolled-students-table-toolbar__row lp-enrolled-students-table-toolbar__row--filters">',
 			'student-field-open'  => '<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--student">',
 			'student-label'       => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-search-input">' . esc_html__( 'Student', 'learnpress' ) . '</label>',
 			'student-input'       => '<input id="lp-enrolled-search-input" class="lp-enrolled-search-input lp-enrolled-students-table-toolbar__input" type="text" name="search" value="' . esc_attr( $search_student ) . '" placeholder="' . esc_attr__( 'Enter student name or email', 'learnpress' ) . '">',
@@ -386,8 +345,14 @@ class AdminListStudentsEnrolled {
 			'end-input'           => '<input id="lp-enrolled-filter-end-date" class="lp-enrolled-filter-end-date lp-enrolled-students-table-toolbar__input" type="date" name="end_date" value="' . esc_attr( $search_end ) . '" placeholder="mm/dd/yyyy">',
 			'end-field-close'     => '</div>',
 			'actions-open'        => '<div class="lp-enrolled-students-table-toolbar__actions">',
-			'search-btn'          => '<button type="button" class="button lp-button lp-enrolled-btn-search">' . esc_html__( 'Search', 'learnpress' ) . '</button>',
-			'clear-btn'           => '<button type="button" class="button lp-button lp-enrolled-btn-clear">' . esc_html__( 'Clear Filter', 'learnpress' ) . '</button>',
+			'search-btn'          => sprintf(
+				'<button type="button" class="lp-button lp-enrolled-btn-search">%s</button>',
+				esc_html__( 'Search', 'learnpress' )
+			),
+			'clear-btn'           => sprintf(
+				'<button type="button" class="lp-button lp-enrolled-btn-clear">%s</button>',
+				esc_html__( 'Clear Filter', 'learnpress' )
+			),
 			'actions-close'       => '</div>',
 			'filter-row-close'    => '</div>',
 			'wrap-end'            => '</form>',

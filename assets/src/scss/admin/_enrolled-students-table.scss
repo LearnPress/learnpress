@@ -26,7 +26,6 @@
 	flex-direction: column;
 	gap: 14px;
 	padding: 16px 18px 14px;
-	margin-top: 16px;
 	border: 1px solid #d6dce5;
 	border-radius: 8px;
 	background: #f1f3f6;
@@ -41,14 +40,14 @@
 	}
 
 	&__row--filters {
-		grid-template-columns: minmax(0, 1fr) minmax(145px, 150px) minmax(145px, 150px) auto;
+		grid-template-columns: minmax(0, 1fr) minmax(145px, 200px) minmax(145px, 150px) auto;
 		align-items: end;
 	}
 
 	&__field {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		//gap: 8px;
 		min-width: 0;
 	}
 
@@ -84,7 +83,7 @@
 		gap: 8px;
 	}
 
-	&__actions .button {
+	/*&__actions .button {
 		min-width: 95px;
 		height: 36px;
 		padding: 0 18px;
@@ -95,7 +94,7 @@
 		border-color: #b9c3d2;
 		color: #46546c;
 		background: #fff;
-	}
+	}*/
 
 	&__actions .button:hover,
 	&__actions .button:focus {
