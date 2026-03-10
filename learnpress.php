@@ -27,6 +27,7 @@ use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Gutenberg\GutenbergHandleMain;
 use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\SendEmailAjax;
+use LearnPress\MCP\Abilities;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
@@ -690,6 +691,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Initial common hooks
 		 */
 		public function hooks() {
+			add_action( 'init', array( $this, 'maybe_init_mcp_abilities' ), 20 );
+
 			/**
 			 * Handle lp ajax.
 			 * Set priority after register_post_type to register capabilities for post type of LP.
@@ -832,6 +835,64 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_deactivate() {
 			do_action( 'learn-press/deactivate', $this );
+		}
+
+		/**
+		 * Conditionally bootstrap MCP abilities.
+		 *
+		 * @return void
+		 */
+		public function maybe_init_mcp_abilities() {
+			if ( LP_Settings::get_option( 'enable_mcp_integration', 'no' ) !== 'yes' ) {
+				return;
+			}
+
+			if ( ! function_exists( 'wp_register_ability' ) ) {
+				if ( is_admin() ) {
+					add_action( 'admin_notices', array( $this, 'show_mcp_unavailable_notice' ) );
+				}
+
+				return;
+			}
+
+			Abilities::init();
+		}
+
+		/**
+		 * Show admin notice when MCP integration is enabled but WP Abilities API is unavailable.
+		 *
+		 * @return void
+		 */
+		public function show_mcp_unavailable_notice() {
+			if ( ! current_user_can( 'manage_options' ) ) {
+				return;
+			}
+
+			if ( LP_Settings::get_option( 'enable_mcp_integration', 'no' ) !== 'yes' ) {
+				return;
+			}
+
+			if ( function_exists( 'wp_register_ability' ) ) {
+				return;
+			}
+
+			$message = __( 'LearnPress MCP Integration requires WordPress 6.9 or later. Please upgrade WordPress to enable MCP abilities.', 'learnpress' );
+			if ( function_exists( 'wp_admin_notice' ) ) {
+				wp_admin_notice(
+					$message,
+					array(
+						'type' => 'warning',
+					)
+				);
+
+				return;
+			}
+
+			?>
+			<div class="notice notice-warning">
+				<p><?php echo esc_html( $message ); ?></p>
+			</div>
+			<?php
 		}
 
 		/**
