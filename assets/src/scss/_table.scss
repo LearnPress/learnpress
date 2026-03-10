@@ -45,6 +45,8 @@ table.lp-list-table {
 	}
 
 	tbody {
+		font-size: 14px;
+
 		tr {
 			border: none;
 			border-bottom: 1px solid var(--lp-white-grey, #F7F7FB);
@@ -69,13 +71,14 @@ table.lp-list-table {
 				border: none;
 
 				>div {
-					padding: 10px 20px;
+					padding: 20px;
 				}
 			}
 		}
 
 		.pagination {
 			border: none;
+			padding: 0;
 		}
 	}
 }

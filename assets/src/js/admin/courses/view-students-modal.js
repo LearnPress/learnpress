@@ -1,5 +1,4 @@
 import SweetAlert from 'sweetalert2';
-import { __ } from '@wordpress/i18n';
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 export class ViewStudentsModal {
@@ -245,15 +244,9 @@ export class ViewStudentsModal {
 
 		const callBack = {
 			success: ( response ) => {
-				if ( response.status === 'success' ) {
-					elTarget.innerHTML = response.data.content;
-				}
+				elTarget.innerHTML = response.data.content;
 			},
 			error: ( err ) => {
-				elTarget.innerHTML = `<p>${ __(
-					'Error loading students.',
-					'learnpress'
-				) }</p>`;
 				console.error( err );
 			},
 			completed: () => {
@@ -282,10 +275,7 @@ export class ViewStudentsModal {
 		this.activeCourseId = parseInt( courseId, 10 ) || 0;
 
 		SweetAlert.fire( {
-			title: `${ courseTitle } - ${ __(
-				'Enrolled Students',
-				'learnpress'
-			) }`,
+			title: `${ courseTitle }`,
 			html: modalToolbarHtml + modalTargetHtml,
 			width: '80%',
 			showConfirmButton: false,

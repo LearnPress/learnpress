@@ -50,6 +50,10 @@
 		flex-direction: column;
 		//gap: 8px;
 		min-width: 0;
+
+		input {
+			border: 1px solid var(--lp-border-color, #E2E0DB);
+		}
 	}
 
 	&__label {
@@ -58,6 +62,7 @@
 		font-weight: 600;
 		line-height: 1.3;
 		margin-bottom: 10px;
+		text-align: left;
 	}
 
 	&__input {
@@ -315,12 +320,31 @@
 	line-height: 1.5;
 	white-space: nowrap;
 
-	&--enrolled   { color: #475569; background: #f1f5f9; }
+	&--enrolled {
+		color: #475569;
+		background: #f1f5f9;
+	}
+
 	&--in-progress,
-	&--learning   { color: #1e40af; background: #dbeafe; }
-	&--finished   { color: #166534; background: #dcfce7; }
-	&--passed     { color: #14532d; background: #bbf7d0; }
-	&--failed     { color: #991b1b; background: #fee2e2; }
+	&--learning {
+		color: #1e40af;
+		background: #dbeafe;
+	}
+
+	&--finished {
+		color: #166534;
+		background: #dcfce7;
+	}
+
+	&--passed {
+		color: #14532d;
+		background: #bbf7d0;
+	}
+
+	&--failed {
+		color: #991b1b;
+		background: #fee2e2;
+	}
 }
 
 // ──────────────────────────────────────────
@@ -340,9 +364,11 @@
 		font-size: 13px;
 	}
 }
+
 #profile-content-enrolled-students .lp-enrolled-students-table-footer {
 	border-top: none;
 }
+
 .lp-enrolled-students-table-footer {
 	.learn-press-pagination {
 		margin: 0;
@@ -452,5 +478,20 @@
 
 	button {
 		width: 100%;
+	}
+}
+
+// For Backend
+.lp-students-enrolled-layout {
+	&.learnpress_page_lp-enrolled-students {
+		.lp-enrolled-students-table-toolbar {
+			background: white;
+		}
+
+		.lp-list-table {
+			tbody {
+				background: white;
+			}
+		}
 	}
 }

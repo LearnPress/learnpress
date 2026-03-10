@@ -35,7 +35,7 @@ module.exports = {
 		//'./assets/js/dist/admin/pages/dashboard': './assets/src/apps/js/admin/pages/dashboard.js',
 		'./assets/js/dist/admin/pages/widgets': './assets/src/apps/js/admin/pages/widgets.js',
 		'./assets/js/dist/admin/course-material': './assets/src/js/admin/course-material.js',
-		'./assets/js/dist/admin/list-students-enrolled': './assets/src/js/admin/list-students-enrolled/list-students-enrolled.js',
+		'./assets/js/dist/admin/list-students-enrolled': './assets/src/js/admin/list-students-enrolled.js',
 		'./assets/js/dist/loadAJAX': './assets/src/js/loadAJAX.js',
 		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
 

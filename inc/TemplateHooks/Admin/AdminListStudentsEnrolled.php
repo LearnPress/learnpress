@@ -91,35 +91,58 @@ class AdminListStudentsEnrolled {
 	 * @param int $instructor_id 0 for Admin (all), user ID for Instructor.
 	 */
 	public function enrolled_students_layout( $instructor_id = 0 ) {
-		// Enqueue styles — lp-enrolled-students-table CSS is loaded via admin.css/frontend.css import.
-		// Build toolbar HTML (outside AJAX so it persists across reloads).
-		$instructor_id = self::resolve_instructor_id_for_request(
-			array(
-				'instructor_id' => $instructor_id,
-			)
-		);
+		try {
+			$page_current = '';
+			if ( function_exists( 'get_current_screen' ) ) {
+				$wp_screen = get_current_screen();
+				if ( $wp_screen ) {
+					// Page on the Admin screen.
+					if ( $wp_screen->id === 'learnpress_page_lp-enrolled-students' ) {
+						$page_current = 'learnpress_page_lp-enrolled-students';
+					}
+				}
+			}
 
-		echo $this->html_toolbar();
-		$data_get = LP_Helper::sanitize_params_submitted( $_GET );
+			// Enqueue styles — lp-enrolled-students-table CSS is loaded via admin.css/frontend.css import.
+			// Build toolbar HTML (outside AJAX so it persists across reloads).
+			$instructor_id = self::resolve_instructor_id_for_request(
+				array(
+					'instructor_id' => $instructor_id,
+				)
+			);
 
-		$args = array(
-			'id_url'                => 'lp-enrolled-students',
-			'instructor_id'         => (int) $instructor_id,
-			'course_id'             => abs( LP_Helper::sanitize_params_submitted( $data_get['course_id'] ?? 0, 'int' ) ),
-			'course_name'           => LP_Helper::sanitize_params_submitted( $data_get['course_name'] ?? '' ),
-			'paged'                 => 1,
-			'search'                => LP_Helper::sanitize_params_submitted( $data_get['search'] ?? '' ),
-			'start_date'            => self::sanitize_date_filter( $data_get['start_date'] ?? '' ),
-			'end_date'              => self::sanitize_date_filter( $data_get['end_date'] ?? '' ),
-			'enableUpdateParamsUrl' => false,
-		);
+			$args = array(
+				'id_url'                => 'lp-enrolled-students',
+				'instructor_id'         => (int) $instructor_id,
+				'course_id'             => abs( LP_Helper::sanitize_params_submitted( $_GET['course_id'] ?? 0, 'int' ) ),
+				'course_name'           => LP_Helper::sanitize_params_submitted( $_GET['course_name'] ?? '' ),
+				'paged'                 => 1,
+				'search'                => LP_Helper::sanitize_params_submitted( $_GET['search'] ?? '' ),
+				'start_date'            => self::sanitize_date_filter( $_GET['start_date'] ?? '' ),
+				'end_date'              => self::sanitize_date_filter( $_GET['end_date'] ?? '' ),
+				'enableUpdateParamsUrl' => false,
+			);
 
-		$call_back = array(
-			'class'  => self::class,
-			'method' => 'render_enrolled_students',
-		);
+			$call_back = array(
+				'class'  => self::class,
+				'method' => 'render_enrolled_students',
+			);
 
-		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
+			$section = [
+				'wrap'     => sprintf(
+					'<div class="lp-students-enrolled-layout %s">',
+					$page_current
+				),
+				'toolbar'  => $this->html_toolbar(),
+				'table'    => TemplateAJAX::load_content_via_ajax( $args, $call_back ),
+				'wrap-end' => '</div>',
+			];
+
+			echo Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+			Template::print_message( $e->getMessage(), 'error' );
+		}
 	}
 
 	/**
@@ -311,17 +334,6 @@ class AdminListStudentsEnrolled {
 	 * @return string
 	 */
 	public function html_toolbar(): string {
-		$page_current = '';
-		if ( function_exists( 'get_current_screen' ) ) {
-			$wp_screen = get_current_screen();
-			if ( $wp_screen ) {
-				// Page on the Admin screen.
-				if ( $wp_screen->id === 'learnpress_page_lp-enrolled-students' ) {
-					$page_current = 'learnpress_page_lp-enrolled-students';
-				}
-			}
-		}
-
 		$courses = array();
 
 		$data_get        = LP_Helper::sanitize_params_submitted( $_GET );
@@ -332,10 +344,7 @@ class AdminListStudentsEnrolled {
 		$search_end      = self::sanitize_date_filter( $data_get['end_date'] ?? '' );
 
 		$section = array(
-			'wrap'                => sprintf(
-				'<form class="lp-enrolled-students-table-toolbar lp-enrolled-students-form %s" id="lp-enrolled-students-form" onsubmit="return false;">',
-				$page_current
-			),
+			'wrap'                => '<form class="lp-enrolled-students-table-toolbar lp-enrolled-students-form" id="lp-enrolled-students-form" onsubmit="return false;">',
 			'filter-row-open'     => '<div class="lp-enrolled-students-table-toolbar__row lp-enrolled-students-table-toolbar__row--filters">',
 			'course-field-open'   => '<div class="lp-enrolled-students-table-toolbar__field">',
 			'course-label'        => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-filter-course-name">' . esc_html__( 'Course Filter', 'learnpress' ) . '</label>',
