@@ -74,50 +74,67 @@ export class BuilderTabQuestion {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elQuestionDuplicate, 1 );
-
 		const questionId = elQuestionItem.dataset.questionId || '';
 
-		const dataSend = {
-			action: 'duplicate_question',
-			args: {
-				id_url: 'duplicate-question',
-			},
-			question_id: questionId,
-		};
+		SweetAlert.fire( {
+			title: elQuestionDuplicate.dataset.title || 'Duplicate Question',
+			text: elQuestionDuplicate.dataset.content || 'Are you sure you want to duplicate this question?',
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} ).then( ( result ) => {
+			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elQuestionDuplicate, 1 );
+
+				const dataSend = {
+					action: 'duplicate_question',
+					args: {
+						id_url: 'duplicate-question',
+					},
+					question_id: questionId,
+				};
 
 		const callBack = {
 			success: ( response ) => {
 				const { status, message, data } = response;
-				lpToastify.show( message, status );
+				lpToastify.show( message || 'Duplicated successfully!', status );
 
 				if ( data?.html ) {
 					const elQuestion = elQuestionDuplicate.closest( '.question' );
-					elQuestion.insertAdjacentHTML( 'afterend', data.html );
+					const elQuestionList = elQuestion.closest( '.questions-list' ) || elQuestion.parentElement;
 
-					const newQuestion = elQuestion.nextElementSibling;
-					if ( newQuestion ) {
-						newQuestion.scrollIntoView( {
-							behavior: 'smooth',
-							block: 'nearest',
-						} );
+					if ( elQuestionList ) {
+						elQuestionList.insertAdjacentHTML( 'afterbegin', data.html );
+						const newQuestion = elQuestionList.firstElementChild;
 
-						newQuestion.classList.add( 'highlight-new-question' );
-						setTimeout( () => {
-							newQuestion.classList.remove( 'highlight-new-question' );
-						}, 1500 );
+						if ( newQuestion ) {
+							newQuestion.scrollIntoView( {
+								behavior: 'smooth',
+								block: 'nearest',
+							} );
+
+							newQuestion.classList.add( 'highlight-new-question' );
+							setTimeout( () => {
+								newQuestion.classList.remove( 'highlight-new-question' );
+							}, 1500 );
+						}
 					}
 				}
 			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elQuestionDuplicate, 0 );
-			},
-		};
+					error: ( error ) => {
+						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elQuestionDuplicate, 0 );
+					},
+				};
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}
+		} );
 	}
 
 	trashQuestion( args ) {
@@ -129,17 +146,28 @@ export class BuilderTabQuestion {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elQuestionTrash, 1 );
-
 		const questionId = elQuestionItem.dataset.questionId || '';
 
-		const dataSend = {
-			action: 'move_trash_question',
-			args: {
-				id_url: 'move-trash-question',
-			},
-			question_id: questionId,
-		};
+		SweetAlert.fire( {
+			title: elQuestionTrash.dataset.title || 'Trash Question',
+			text: elQuestionTrash.dataset.content || 'Are you sure you want to move this question to trash?',
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} ).then( ( result ) => {
+			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elQuestionTrash, 1 );
+
+				const dataSend = {
+					action: 'move_trash_question',
+					args: {
+						id_url: 'move-trash-question',
+					},
+					question_id: questionId,
+				};
 
 		const callBack = {
 			success: ( response ) => {
@@ -151,15 +179,17 @@ export class BuilderTabQuestion {
 					this.updateStatusUI( elQuestion, data.status );
 				}
 			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elQuestionTrash, 0 );
-			},
-		};
+					error: ( error ) => {
+						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elQuestionTrash, 0 );
+					},
+				};
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}
+		} );
 	}
 
 	publishQuestion( args ) {

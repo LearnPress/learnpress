@@ -1,5 +1,6 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import SweetAlert from 'sweetalert2';
 import { BuilderEditQuiz } from './builder-edit-quiz.js';
 
 /**
@@ -552,6 +553,16 @@ export class BuilderStandaloneQuiz {
 							elStatus.className = 'quizze-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
+						
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.quiz-item[data-quiz-id="${quizData.quiz_id}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumQuiz = curriculumItem.closest( '.quiz' );
+								if ( elCurriculumQuiz ) {
+									elCurriculumQuiz.remove();
+								}
+							}
+						}
 					}
 
 					// Reset form state to prevent "leave site" warning
@@ -569,7 +580,7 @@ export class BuilderStandaloneQuiz {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
-	saveDraftQuiz( args ) {
+	async saveDraftQuiz( args ) {
 		// Context check: only handle if on quiz edit page
 		if ( ! this.isQuizContext() ) {
 			return;
@@ -580,6 +591,27 @@ export class BuilderStandaloneQuiz {
 
 		if ( ! elBtnDraftQuiz ) {
 			return;
+		}
+
+		// Check if published to show confirm unpublish modal
+		const statusEl = document.querySelector( BuilderStandaloneQuiz.selectors.elQuizStatus );
+		// Status might use quiz-status or quizze-status class based on element logic
+		const isPublished = statusEl && statusEl.className.includes( 'publish' );
+		if ( isPublished ) {
+			const confirmMsg = elBtnDraftQuiz.dataset.confirmUnpublish || 'Saving as draft will unpublish this item. Are you sure?';
+			const result = await SweetAlert.fire( {
+				title: confirmMsg,
+				icon: 'warning',
+				showCloseButton: true,
+				showCancelButton: true,
+				cancelButtonText: lpData.i18n.cancel,
+				confirmButtonText: lpData.i18n.yes,
+				reverseButtons: true,
+			} );
+
+			if ( ! result.isConfirmed ) {
+				return;
+			}
 		}
 
 		// Validate title before saving draft
@@ -620,6 +652,16 @@ export class BuilderStandaloneQuiz {
 							elStatus.className = 'quizze-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
+						
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.quiz-item[data-quiz-id="${quizData.quiz_id}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumQuiz = curriculumItem.closest( '.quiz' );
+								if ( elCurriculumQuiz ) {
+									elCurriculumQuiz.remove();
+								}
+							}
+						}
 					}
 
 					// Reset form state to prevent "leave site" warning
@@ -637,7 +679,7 @@ export class BuilderStandaloneQuiz {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
-	trashQuiz( args ) {
+	async trashQuiz( args ) {
 		// Context check: only handle if on quiz edit page
 		if ( ! this.isQuizContext() ) {
 			return;
@@ -650,7 +692,17 @@ export class BuilderStandaloneQuiz {
 			return;
 		}
 
-		if ( ! confirm( 'Are you sure you want to trash this quiz?' ) ) {
+		const result = await SweetAlert.fire( {
+			title: 'Are you sure you want to trash this quiz?',
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} );
+
+		if ( ! result.isConfirmed ) {
 			return;
 		}
 
@@ -679,6 +731,16 @@ export class BuilderStandaloneQuiz {
 						if ( elStatus ) {
 							elStatus.className = 'quizze-status ' + data.status;
 							elStatus.textContent = data.status;
+						}
+						
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.quiz-item[data-quiz-id="${quizId}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumQuiz = curriculumItem.closest( '.quiz' );
+								if ( elCurriculumQuiz ) {
+									elCurriculumQuiz.remove();
+								}
+							}
 						}
 						// Update action buttons to show correct state for trash status
 						this.updateActionButtons( data.status );

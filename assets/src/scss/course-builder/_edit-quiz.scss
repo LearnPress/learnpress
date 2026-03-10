@@ -568,7 +568,7 @@
 		}
 
 		input[type='checkbox']:checked {
-			background: #3b82f6;
+			background: $cb-success;
 
 			&:before {
 				left: 22px;

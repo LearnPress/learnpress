@@ -1,5 +1,6 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import SweetAlert from 'sweetalert2';
 import { EditQuestion } from 'lpAssetsJsPath/admin/edit-question.js';
 
 export class BuilderEditQuestion {
@@ -167,6 +168,16 @@ export class BuilderEditQuestion {
 						if ( elStatus ) {
 							elStatus.className = 'question-status ' + data.status;
 							elStatus.textContent = data.status;
+						}
+						
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.question-item[data-question-id="${questionData.question_id}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumQuestion = curriculumItem.closest( '.question' );
+								if ( elCurriculumQuestion ) {
+									elCurriculumQuestion.remove();
+								}
+							}
 						}
 					}
 
@@ -596,6 +607,16 @@ export class BuilderEditQuestion {
 							elStatus.className = 'question-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
+						
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.question-item[data-question-id="${questionData.question_id}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumQuestion = curriculumItem.closest( '.question' );
+								if ( elCurriculumQuestion ) {
+									elCurriculumQuestion.remove();
+								}
+							}
+						}
 					}
 
 					// Reset form state to prevent "leave site" warning
@@ -613,7 +634,7 @@ export class BuilderEditQuestion {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
-	saveDraftQuestion( args ) {
+	async saveDraftQuestion( args ) {
 		// Context check: only handle if on question edit page
 		if ( ! this.isQuestionContext() ) {
 			return;
@@ -624,6 +645,26 @@ export class BuilderEditQuestion {
 
 		if ( ! elBtnDraftQuestion ) {
 			return;
+		}
+
+		// Check if published to show confirm unpublish modal
+		const statusEl = document.querySelector( BuilderEditQuestion.selectors.elQuestionStatus );
+		const isPublished = statusEl && statusEl.classList.contains( 'publish' );
+		if ( isPublished ) {
+			const confirmMsg = elBtnDraftQuestion.dataset.confirmUnpublish || 'Saving as draft will unpublish this item. Are you sure?';
+			const result = await SweetAlert.fire( {
+				title: confirmMsg,
+				icon: 'warning',
+				showCloseButton: true,
+				showCancelButton: true,
+				cancelButtonText: lpData.i18n.cancel,
+				confirmButtonText: lpData.i18n.yes,
+				reverseButtons: true,
+			} );
+
+			if ( ! result.isConfirmed ) {
+				return;
+			}
 		}
 
 		// Validate title before saving draft
@@ -668,6 +709,16 @@ export class BuilderEditQuestion {
 							elStatus.className = 'question-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
+						
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.question-item[data-question-id="${questionData.question_id}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumQuestion = curriculumItem.closest( '.question' );
+								if ( elCurriculumQuestion ) {
+									elCurriculumQuestion.remove();
+								}
+							}
+						}
 					}
 
 					// Reset form state to prevent "leave site" warning
@@ -685,7 +736,7 @@ export class BuilderEditQuestion {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
-	trashQuestion( args ) {
+	async trashQuestion( args ) {
 		// Context check: only handle if on question edit page
 		if ( ! this.isQuestionContext() ) {
 			return;
@@ -697,7 +748,17 @@ export class BuilderEditQuestion {
 			return;
 		}
 
-		if ( ! confirm( 'Are you sure you want to trash this question?' ) ) {
+		const result = await SweetAlert.fire( {
+			title: 'Are you sure you want to trash this question?',
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} );
+
+		if ( ! result.isConfirmed ) {
 			return;
 		}
 
@@ -727,6 +788,15 @@ export class BuilderEditQuestion {
 						if ( elStatus ) {
 							elStatus.className = 'question-status ' + data.status;
 							elStatus.textContent = data.status;
+						}
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.question-item[data-question-id="${questionData.question_id}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumQuestion = curriculumItem.closest( '.question' );
+								if ( elCurriculumQuestion ) {
+									elCurriculumQuestion.remove();
+								}
+							}
 						}
 					}
 				}

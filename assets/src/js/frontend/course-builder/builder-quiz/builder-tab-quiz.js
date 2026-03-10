@@ -72,50 +72,67 @@ export class BuilderTabQuiz {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elQuizDuplicate, 1 );
-
 		const quizId = elQuizItem.dataset.quizId || '';
 
-		const dataSend = {
-			action: 'duplicate_quiz',
-			args: {
-				id_url: 'duplicate-quiz',
-			},
-			quiz_id: quizId,
-		};
+		SweetAlert.fire( {
+			title: elQuizDuplicate.dataset.title || 'Duplicate Quiz',
+			text: elQuizDuplicate.dataset.content || 'Are you sure you want to duplicate this quiz?',
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} ).then( ( result ) => {
+			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elQuizDuplicate, 1 );
+
+				const dataSend = {
+					action: 'duplicate_quiz',
+					args: {
+						id_url: 'duplicate-quiz',
+					},
+					quiz_id: quizId,
+				};
 
 		const callBack = {
 			success: ( response ) => {
 				const { status, message, data } = response;
-				lpToastify.show( message, status );
+				lpToastify.show( message || 'Duplicated successfully!', status );
 
 				if ( data?.html ) {
 					const elQuiz = elQuizDuplicate.closest( '.quiz' );
-					elQuiz.insertAdjacentHTML( 'afterend', data.html );
+					const elQuizList = elQuiz.closest( '.quizzes-list' ) || elQuiz.parentElement;
+					
+					if ( elQuizList ) {
+						elQuizList.insertAdjacentHTML( 'afterbegin', data.html );
+						const newQuiz = elQuizList.firstElementChild;
 
-					const newQuiz = elQuiz.nextElementSibling;
-					if ( newQuiz ) {
-						newQuiz.scrollIntoView( {
-							behavior: 'smooth',
-							block: 'nearest',
-						} );
+						if ( newQuiz ) {
+							newQuiz.scrollIntoView( {
+								behavior: 'smooth',
+								block: 'nearest',
+							} );
 
-						newQuiz.classList.add( 'highlight-new-quiz' );
-						setTimeout( () => {
-							newQuiz.classList.remove( 'highlight-new-quiz' );
-						}, 1500 );
+							newQuiz.classList.add( 'highlight-new-quiz' );
+							setTimeout( () => {
+								newQuiz.classList.remove( 'highlight-new-quiz' );
+							}, 1500 );
+						}
 					}
 				}
 			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elQuizDuplicate, 0 );
-			},
-		};
+					error: ( error ) => {
+						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elQuizDuplicate, 0 );
+					},
+				};
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}
+		} );
 	}
 
 	trashQuiz( args ) {
@@ -127,17 +144,28 @@ export class BuilderTabQuiz {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elQuizTrash, 1 );
-
 		const quizId = elQuizItem.dataset.quizId || '';
 
-		const dataSend = {
-			action: 'move_trash_quiz',
-			args: {
-				id_url: 'move-trash-quiz',
-			},
-			quiz_id: quizId,
-		};
+		SweetAlert.fire( {
+			title: elQuizTrash.dataset.title || 'Trash Quiz',
+			text: elQuizTrash.dataset.content || 'Are you sure you want to move this quiz to trash?',
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} ).then( ( result ) => {
+			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elQuizTrash, 1 );
+
+				const dataSend = {
+					action: 'move_trash_quiz',
+					args: {
+						id_url: 'move-trash-quiz',
+					},
+					quiz_id: quizId,
+				};
 
 		const callBack = {
 			success: ( response ) => {
@@ -149,15 +177,17 @@ export class BuilderTabQuiz {
 					this.updateStatusUI( elQuiz, data.status );
 				}
 			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elQuizTrash, 0 );
-			},
-		};
+					error: ( error ) => {
+						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elQuizTrash, 0 );
+					},
+				};
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}
+		} );
 	}
 
 	publishQuiz( args ) {

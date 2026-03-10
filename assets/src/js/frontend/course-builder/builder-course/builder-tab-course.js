@@ -77,8 +77,8 @@ export class BuilderTabCourse {
 		}
 
 		SweetAlert.fire( {
-			title: elCourseDuplicate.dataset.title,
-			text: elCourseDuplicate.dataset.content,
+			title: elCourseDuplicate.dataset.title || 'Duplicate Course',
+			text: elCourseDuplicate.dataset.content || 'Are you sure you want to duplicate this course?',
 			icon: 'warning',
 			showCloseButton: true,
 			showCancelButton: true,
@@ -98,19 +98,23 @@ export class BuilderTabCourse {
 				const callBack = {
 					success: ( response ) => {
 						const { status, message, data } = response;
-						lpToastify.show( message, status );
+						lpToastify.show( message || 'Duplicated successfully!', status );
 
 						if ( data?.html ) {
 							const elCourse = elCourseDuplicate.closest( '.course' );
-							elCourse.insertAdjacentHTML( 'afterend', data.html );
-
-							const newCourse = elCourse.nextElementSibling;
-							if ( newCourse ) {
-								newCourse.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
-								newCourse.classList.add( 'highlight-new-course' );
-								setTimeout( () => {
-									newCourse.classList.remove( 'highlight-new-course' );
-								}, 1500 );
+							const elCourseList = elCourse.closest( '.courses-list' ) || elCourse.parentElement;
+							
+							if ( elCourseList ) {
+								elCourseList.insertAdjacentHTML( 'afterbegin', data.html );
+								const newCourse = elCourseList.firstElementChild;
+								
+								if ( newCourse ) {
+									newCourse.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+									newCourse.classList.add( 'highlight-new-course' );
+									setTimeout( () => {
+										newCourse.classList.remove( 'highlight-new-course' );
+									}, 1500 );
+								}
 							}
 						}
 					},
@@ -134,35 +138,48 @@ export class BuilderTabCourse {
 
 		if ( ! elCourseItem ) return;
 
-		lpUtils.lpSetLoadingEl( elCourseTrash, 1 );
-
 		const courseId = elCourseItem.dataset.courseId || '';
 
-		const dataSend = {
-			action: 'move_trash_course',
-			args: { id_url: 'move-trash-course' },
-			course_id: courseId,
-		};
+		SweetAlert.fire( {
+			title: elCourseTrash.dataset.title || 'Trash Course',
+			text: elCourseTrash.dataset.content || 'Are you sure you want to move this course to trash?',
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} ).then( ( result ) => {
+			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elCourseTrash, 1 );
 
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message, status );
+				const dataSend = {
+					action: 'move_trash_course',
+					args: { id_url: 'move-trash-course' },
+					course_id: courseId,
+				};
 
-				if ( data?.status ) {
-					const elCourse = elCourseTrash.closest( '.course' );
-					this.updateStatusUI( elCourse, data.status );
-				}
-			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elCourseTrash, 0 );
-			},
-		};
+				const callBack = {
+					success: ( response ) => {
+						const { status, message, data } = response;
+						lpToastify.show( message, status );
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+						if ( data?.status ) {
+							const elCourse = elCourseTrash.closest( '.course' );
+							this.updateStatusUI( elCourse, data.status );
+						}
+					},
+					error: ( error ) => {
+						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elCourseTrash, 0 );
+					},
+				};
+
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}
+		} );
 	}
 
 	draftCourse( args ) {
@@ -172,6 +189,33 @@ export class BuilderTabCourse {
 
 		if ( ! elCourseItem ) return;
 
+		// Check if published to show confirm unpublish modal
+		const statusEl = elCourseItem.querySelector( BuilderTabCourse.selectors.elCourseStatus );
+		const isPublished = statusEl && statusEl.classList.contains( 'publish' );
+		if ( isPublished ) {
+			const confirmMsg = elCourseDraft.dataset.confirmUnpublish || 'Saving as draft will unpublish this item. Are you sure?';
+			
+			SweetAlert.fire( {
+				title: 'Draft Course',
+				text: confirmMsg,
+				icon: 'warning',
+				showCloseButton: true,
+				showCancelButton: true,
+				cancelButtonText: lpData.i18n.cancel,
+				confirmButtonText: lpData.i18n.yes,
+				reverseButtons: true,
+			} ).then( ( result ) => {
+				if ( result.isConfirmed ) {
+					this.draftCourseExecute( elCourseDraft, elCourseItem );
+				}
+			} );
+			return;
+		}
+
+		this.draftCourseExecute( elCourseDraft, elCourseItem );
+	}
+
+	draftCourseExecute( elCourseDraft, elCourseItem ) {
 		lpUtils.lpSetLoadingEl( elCourseDraft, 1 );
 
 		const courseId = elCourseItem.dataset.courseId || '';

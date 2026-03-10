@@ -8,6 +8,7 @@
 
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import SweetAlert from 'sweetalert2';
 import { BuilderEditQuiz } from './builder-quiz/builder-edit-quiz.js';
 import { BuilderEditQuestion } from './builder-question/builder-edit-question.js';
 import { BuilderMaterial } from './builder-lesson/builder-material.js';
@@ -1097,7 +1098,7 @@ export class BuilderPopup {
 	/**
 	 * Handle save as draft action
 	 */
-	handleDraft( draftBtn ) {
+	async handleDraft( draftBtn ) {
 		if ( ! this.currentType ) {
 			return;
 		}
@@ -1106,8 +1107,19 @@ export class BuilderPopup {
 		const statusEl = this.popupContainer.querySelector( `.${ this.currentType }-status` );
 		const isPublished = statusEl && statusEl.classList.contains( 'publish' );
 		if ( isPublished ) {
-			const confirmMsg = draftBtn.dataset.confirmUnpublish || 'Saving as draft will unpublish this item from the course. Are you sure?';
-			if ( ! confirm( confirmMsg ) ) {
+			const confirmMsg = draftBtn.dataset.confirmUnpublish || 'Saving as draft will unpublish this item from the course.';
+			const result = await SweetAlert.fire( {
+				title: 'Are you sure?',
+				text: confirmMsg,
+				icon: 'warning',
+				showCloseButton: true,
+				showCancelButton: true,
+				cancelButtonText: lpData.i18n.cancel,
+				confirmButtonText: lpData.i18n.yes,
+				reverseButtons: true,
+			} );
+
+			if ( ! result.isConfirmed ) {
 				return;
 			}
 		}
@@ -1234,12 +1246,24 @@ export class BuilderPopup {
 	/**
 	 * Handle trash action
 	 */
-	handleTrash( trashBtn ) {
+	async handleTrash( trashBtn ) {
 		if ( ! this.currentType || ! this.currentId ) {
 			return;
 		}
 
-		if ( ! confirm( `Are you sure you want to move this ${ this.currentType } to trash?` ) ) {
+		const confirmMsg = trashBtn.dataset.confirmTrash || 'Moving it to the trash will cause this item to be removed from the course.';
+		const result = await SweetAlert.fire( {
+			title: 'Are you sure?',
+			text: confirmMsg,
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} );
+
+		if ( ! result.isConfirmed ) {
 			return;
 		}
 

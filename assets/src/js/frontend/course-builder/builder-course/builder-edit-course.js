@@ -1036,6 +1036,18 @@ export class BuilderEditCourse {
 
 		if ( ! elBtn ) return;
 
+		// Check if drafting a published course
+		if ( status === 'draft' ) {
+			const statusEl = document.querySelector( BuilderEditCourse.selectors.elStatus );
+			const isPublished = statusEl && statusEl.classList.contains( 'publish' );
+			if ( isPublished ) {
+				const confirmMsg = elBtn.dataset.confirmUnpublish || 'Saving as draft will unpublish this item. Are you sure?';
+				if ( ! confirm( confirmMsg ) ) {
+					return;
+				}
+			}
+		}
+
 		lpUtils.lpSetLoadingEl( elBtn, 1 );
 		const courseData = this.getCourseDataForUpdate();
 		const dataSend = {

@@ -1004,6 +1004,12 @@ class CourseBuilderAjax extends AbstractAjax {
 				$this->save_lesson_settings_to_model( $lesson_model, $data );
 			}
 
+			// Remove lesson from curriculum if status is draft or trash
+			if ( $target_status === 'draft' || $target_status === 'trash' ) {
+				$curd = new LP_Course_CURD();
+				$curd->remove_item( $lesson_id );
+			}
+
 			do_action( 'learn-press/course-builder/update-lesson', $data );
 
 			$response->status              = 'success';
@@ -1243,6 +1249,12 @@ class CourseBuilderAjax extends AbstractAjax {
 				$this->save_quiz_settings_to_model( $quiz_model, $data );
 			}
 
+			// Remove quiz from curriculum if status is draft or trash
+			if ( $target_status === 'draft' || $target_status === 'trash' ) {
+				$curd = new LP_Course_CURD();
+				$curd->remove_item( $quiz_id );
+			}
+
 			do_action( 'learn-press/course-builder/update-quiz', $data );
 
 			$response->status             = 'success';
@@ -1473,6 +1485,12 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $update ) ) {
 					throw new Exception( $update->get_error_message() );
 				}
+			}
+
+			// Remove question from quizzes if status is draft or trash
+			if ( $target_status === 'draft' || $target_status === 'trash' ) {
+				global $wpdb;
+				$wpdb->delete( $wpdb->prefix . 'learnpress_quiz_questions', array( 'question_id' => $question_id ), array( '%d' ) );
 			}
 
 			do_action( 'learn-press/course-builder/update-question', $data );

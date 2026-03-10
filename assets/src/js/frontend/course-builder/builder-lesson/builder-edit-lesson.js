@@ -353,6 +353,15 @@ export class BuilderEditLesson {
 							elStatus.className = 'lesson-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.lesson-item[data-lesson-id="${lessonData.lesson_id}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumLesson = curriculumItem.closest( '.lesson' );
+								if ( elCurriculumLesson ) {
+									elCurriculumLesson.remove();
+								}
+							}
+						}
 					}
 
 					// Reset form state to prevent "leave site" warning
@@ -381,6 +390,16 @@ export class BuilderEditLesson {
 
 		if ( ! elBtnDraftLesson ) {
 			return;
+		}
+
+		// Check if published to show confirm unpublish modal
+		const statusEl = document.querySelector( BuilderEditLesson.selectors.elLessonStatus );
+		const isPublished = statusEl && statusEl.classList.contains( 'publish' );
+		if ( isPublished ) {
+			const confirmMsg = elBtnDraftLesson.dataset.confirmUnpublish || 'Saving as draft will unpublish this item. Are you sure?';
+			if ( ! confirm( confirmMsg ) ) {
+				return;
+			}
 		}
 
 		// Validate title before saving draft
@@ -424,6 +443,15 @@ export class BuilderEditLesson {
 						if ( elStatus ) {
 							elStatus.className = 'lesson-status ' + data.status;
 							elStatus.textContent = data.status;
+						}
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.lesson-item[data-lesson-id="${lessonData.lesson_id}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumLesson = curriculumItem.closest( '.lesson' );
+								if ( elCurriculumLesson ) {
+									elCurriculumLesson.remove();
+								}
+							}
 						}
 					}
 
@@ -485,6 +513,15 @@ export class BuilderEditLesson {
 						if ( elStatus ) {
 							elStatus.className = 'lesson-status ' + data.status;
 							elStatus.textContent = data.status;
+						}
+						if ( data.status === 'trash' || data.status === 'draft' ) {
+							const curriculumItem = document.querySelector( `.lesson-item[data-lesson-id="${lessonData.lesson_id}"]` );
+							if ( curriculumItem ) {
+								const elCurriculumLesson = curriculumItem.closest( '.lesson' );
+								if ( elCurriculumLesson ) {
+									elCurriculumLesson.remove();
+								}
+							}
 						}
 					}
 				}

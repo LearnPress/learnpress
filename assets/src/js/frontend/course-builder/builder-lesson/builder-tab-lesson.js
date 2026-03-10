@@ -78,49 +78,66 @@ export class BuilderTabLesson {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elLessonDuplicate, 1 );
-
 		const lessonId = elLessonItem.dataset.lessonId || '';
 
-		const dataSend = {
-			action: 'duplicate_lesson',
-			args: {
-				id_url: 'duplicate-lesson',
-			},
-			lesson_id: lessonId,
-		};
+		SweetAlert.fire( {
+			title: elLessonDuplicate.dataset.title || 'Duplicate Lesson',
+			text: elLessonDuplicate.dataset.content || 'Are you sure you want to duplicate this lesson?',
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} ).then( ( result ) => {
+			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elLessonDuplicate, 1 );
+
+				const dataSend = {
+					action: 'duplicate_lesson',
+					args: {
+						id_url: 'duplicate-lesson',
+					},
+					lesson_id: lessonId,
+				};
 
 		const callBack = {
 			success: ( response ) => {
 				const { status, message, data } = response;
-				lpToastify.show( message, status );
+				lpToastify.show( message || 'Duplicated successfully!', status );
 
 				if ( data?.html ) {
 					const elLesson = elLessonDuplicate.closest( '.lesson' );
-					elLesson.insertAdjacentHTML( 'afterend', data.html );
+					const elLessonList = elLesson.closest( '.lessons-list' ) || elLesson.parentElement;
 
-					const newLesson = elLesson.nextElementSibling;
-					if ( newLesson ) {
-						newLesson.scrollIntoView( {
-							behavior: 'smooth',
-							block: 'nearest',
-						} );
-						newLesson.classList.add( 'highlight-new-lesson' );
-						setTimeout( () => {
-							newLesson.classList.remove( 'highlight-new-lesson' );
-						}, 1500 );
+					if ( elLessonList ) {
+						elLessonList.insertAdjacentHTML( 'afterbegin', data.html );
+						const newLesson = elLessonList.firstElementChild;
+
+						if ( newLesson ) {
+							newLesson.scrollIntoView( {
+								behavior: 'smooth',
+								block: 'nearest',
+							} );
+							newLesson.classList.add( 'highlight-new-lesson' );
+							setTimeout( () => {
+								newLesson.classList.remove( 'highlight-new-lesson' );
+							}, 1500 );
+						}
 					}
 				}
 			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elLessonDuplicate, 0 );
-			},
-		};
+					error: ( error ) => {
+						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elLessonDuplicate, 0 );
+					},
+				};
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}
+		} );
 	}
 
 	trashLesson( args ) {
@@ -132,17 +149,28 @@ export class BuilderTabLesson {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elLessonTrash, 1 );
-
 		const lessonId = elLessonItem.dataset.lessonId || '';
 
-		const dataSend = {
-			action: 'move_trash_lesson',
-			args: {
-				id_url: 'move-trash-lesson',
-			},
-			lesson_id: lessonId,
-		};
+		SweetAlert.fire( {
+			title: elLessonTrash.dataset.title || 'Trash Lesson',
+			text: elLessonTrash.dataset.content || 'Are you sure you want to move this lesson to trash?',
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} ).then( ( result ) => {
+			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elLessonTrash, 1 );
+
+				const dataSend = {
+					action: 'move_trash_lesson',
+					args: {
+						id_url: 'move-trash-lesson',
+					},
+					lesson_id: lessonId,
+				};
 
 		const callBack = {
 			success: ( response ) => {
@@ -154,15 +182,17 @@ export class BuilderTabLesson {
 					this.updateStatusUI( elLesson, data.status );
 				}
 			},
-			error: ( error ) => {
-				lpToastify.show( error.message || error, 'error' );
-			},
-			completed: () => {
-				lpUtils.lpSetLoadingEl( elLessonTrash, 0 );
-			},
-		};
+					error: ( error ) => {
+						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elLessonTrash, 0 );
+					},
+				};
 
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}
+		} );
 	}
 
 	publishLesson( args ) {
