@@ -43,7 +43,12 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 
 				learn_press_get_template( 'content-course.php' );
 			} else {
-				echo $listCoursesTemplate::render_course( $course );
+				echo $listCoursesTemplate::render_course(
+					$course,
+					[
+						'show_view_students' => true,
+					]
+				);
 			}
 		}
 

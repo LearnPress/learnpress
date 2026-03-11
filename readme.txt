@@ -279,6 +279,11 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.3.3 (2026-03-11) =
+~ Added: a feature display list students enrolled, on the tab LearnPress, Profile Page.
+~ Fixed: security.
+~ Fixed: save lesson preview, but the curriculum not change.
+
 = 4.3.2.8 (2026-02-25) =
 ~ Added: feature export Orders to CSV file.
 ~ Tweak: logo on menu admin.

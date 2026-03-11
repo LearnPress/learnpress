@@ -193,6 +193,7 @@ class ListCoursesTemplate {
 			$course = CourseModel::find( $course->get_id(), true );
 		}
 		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$show_view_students   = ! empty( $settings['show_view_students'] );
 
 		try {
 			// New layout course item.
@@ -265,6 +266,14 @@ class ListCoursesTemplate {
 						$course->get_permalink(),
 						__( 'Read more', 'learnpress' )
 					),
+					'btn_view_list' => $show_view_students ? sprintf(
+						'<div class="lp-wrap-btn-view-course-students">
+							<button type="button" class="lp-button lp-btn-view-students" data-course-id="%d" data-course-title="%s">%s</button>
+						</div>',
+						$course->get_id(),
+						esc_attr( $course->get_title() ),
+						esc_html__( 'View List Students', 'learnpress' )
+					) : '',
 					//'course_footer_end' => '</div>',
 					'wrapper_end'   => '</div>',
 				],
