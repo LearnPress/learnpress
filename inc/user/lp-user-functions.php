@@ -1875,6 +1875,7 @@ function learn_press_user_profile_data( $user ) {
 	learn_press_admin_view( 'user/courses.php', array( 'user_id' => $user->ID ) );
 }
 add_action( 'edit_user_profile', 'learn_press_user_profile_data', 1000 );
+add_action( 'show_user_profile', 'learn_press_user_profile_data', 1000 );
 
 /*function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' ) {
 	if ( empty( $user_id ) ) {
