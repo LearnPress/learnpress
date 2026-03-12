@@ -260,8 +260,8 @@
   "learnpress-live": {
     "name": "Live Course Add-On for LearnPress",
     "basename": "learnpress-live/learnpress-live.php",
-    "version": "4.0.3",
-    "require_lp": "4.2.6",
+    "version": "4.0.5",
+    "require_lp": "4.3.2.7",
     "description": "Create courses and live video meetings using Zoom or Google Meet Use shortcode to show the meeting content.",
     "image": "https://updates.thimpress.com/images/learnpress-live.png",
     "link": "https://thimpress.com/product/live-course-add-on-for-learnpress/",
