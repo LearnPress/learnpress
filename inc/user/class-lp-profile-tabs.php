@@ -167,7 +167,7 @@ class LP_Profile_Tabs {
 	public function get_tab_link( $tab = false, $with_section = false, $user = null ) {
 		if ( ( $tab || $with_section ) && empty( $user ) ) {
 			$current_user = learn_press_get_current_user();
-			$user         = $current_user->get_username();
+			$user         = learn_press_get_user_public_slug( $current_user->get_id() );
 		}
 
 		$args = array( 'user' => $user );
@@ -248,7 +248,7 @@ class LP_Profile_Tabs {
 		}
 
 		$current_section_slug = $this->get_current_section();
-		$url                  = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, $this->get_profile()->get_user()->get_username() );
+		$url                  = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, learn_press_get_user_public_slug( $this->get_profile()->get_user()->get_id() ) );
 		if ( is_array( $args ) && $args ) {
 			if ( ! $with_permalink ) {
 				$url = esc_url_raw( add_query_arg( $args, $url ) );

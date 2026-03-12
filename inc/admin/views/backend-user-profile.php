@@ -30,6 +30,24 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 		<?php
 		do_action( 'learn-press/admin/user/layout/general-info-custom', $user, $custom_profile );
 
+		if ( current_user_can( 'edit_users' ) ) {
+			?>
+			<tr>
+				<th>
+					<label for="learn-press-user-public-slug"><?php esc_html_e( 'LP slug user name', 'learnpress' ); ?></label>
+				</th>
+				<td>
+					<input id="learn-press-user-public-slug"
+						class="regular-text"
+						type="text"
+						value="<?php echo esc_attr( learn_press_get_user_public_slug_raw( $user->ID ) ); ?>"
+						name="lp_user_slug">
+					<p class="description"><?php esc_html_e( 'Must be unique. Leave empty to fall back to the username in profile URLs.', 'learnpress' ); ?></p>
+				</td>
+			</tr>
+			<?php
+		}
+
 		foreach ( $extra_profile_fields as $key => $label ) {
 			$type = apply_filters( 'learn-press/extra-profile-field-type', 'text' );
 			?>

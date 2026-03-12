@@ -242,7 +242,7 @@ class SingleInstructorTemplate extends UserTemplate {
 			if ( get_query_var( 'is_single_instructor' ) ) {
 				$instructor_name = get_query_var( 'instructor_name' );
 				if ( $instructor_name && 'page' !== $instructor_name ) {
-					$user = get_user_by( 'slug', $instructor_name );
+					$user = learn_press_resolve_user_by_public_identifier( (string) $instructor_name );
 					if ( $user ) {
 						$instructor = UserModel::find( $user->ID, true );
 					}

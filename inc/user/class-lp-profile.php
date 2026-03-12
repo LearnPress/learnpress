@@ -330,7 +330,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				return '';
 			}
 
-			$url = $this->get_tabs()->get_tab_link( $tab, $with_section, $user->get_username() );
+			$url = $this->get_tabs()->get_tab_link( $tab, $with_section, learn_press_get_user_public_slug( $user->get_id() ) );
 
 			/**
 			 * @deprecated
@@ -498,7 +498,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 			learn_press_set_message( $message );
 
-			if ( ! empty( $_REQUEST['redirect'] ) ) {
+			if ( 'basic-information' === $action && ! is_wp_error( $return ) ) {
+				$redirect = LP_Profile::instance( $user_id )->get_current_url();
+			} elseif ( ! empty( $_REQUEST['redirect'] ) ) {
 				$redirect = esc_url_raw( $_REQUEST['redirect'] );
 			} else {
 				$redirect = LP_Helper::getUrlCurrent();
@@ -894,7 +896,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			global $wp_query;
 
 			if ( isset( $wp_query->query['user'] ) ) {
-				$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
+				$user = learn_press_resolve_user_by_public_identifier( (string) $wp_query->query['user'] );
 			} else {
 				$user = get_user_by( 'id', get_current_user_id() );
 			}
@@ -1107,7 +1109,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				if ( empty( self::$_instance ) ) {
 					$user_name = get_query_var( 'user' );
 					if ( ! empty( $user_name ) ) {
-						$user    = get_user_by( 'login', urldecode( $user_name ) );
+						$user    = learn_press_resolve_user_by_public_identifier( (string) $user_name );
 						$user_id = $user ? $user->ID : 0;
 					} else {
 						$user_id = get_current_user_id();

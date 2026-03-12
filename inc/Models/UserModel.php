@@ -78,6 +78,7 @@ class UserModel {
 	// Meta keys
 	const META_KEY_IMAGE       = '_lp_profile_picture';
 	const META_KEY_COVER_IMAGE = '_lp_profile_cover_image';
+	const META_KEY_PUBLIC_SLUG = '_lp_public_user_slug';
 
 	// Roles
 	const ROLE_INSTRUCTOR    = LP_TEACHER_ROLE;
@@ -351,7 +352,7 @@ class UserModel {
 		$single_instructor_link = '';
 
 		try {
-			$user_name                 = $this->user_nicename ?? '';
+			$user_name                 = learn_press_get_user_public_slug( $this->get_id() );
 			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
 			if ( ! $single_instructor_page_id ) {
 				return $single_instructor_link;
