@@ -16,6 +16,7 @@ import { BuilderEditQuestion } from './course-builder/builder-question/builder-e
 import { BuilderPopup } from './course-builder/builder-popup.js';
 import { BuilderMaterial } from './course-builder/builder-lesson/builder-material.js';
 import { BuilderDashboard } from './course-builder/builder-dashboard.js';
+import { BuilderSettings } from './course-builder/builder-settings.js';
 import { BuilderFormState, getFormState } from './course-builder/builder-form-state.js';
 import { initElsTomSelect } from 'lpAssetsJsPath/admin/init-tom-select.js';
 import { Utils } from 'lpAssetsJsPath/admin/utils-admin.js';
@@ -33,7 +34,8 @@ const initBuilderComponents = () => {
 		new BuilderEditQuestion();
 		new BuilderPopup();
 		new BuilderDashboard();
-		
+		new BuilderSettings();
+
 		// Initialize form state management for ClassPress-style UX
 		getFormState();
 
@@ -70,12 +72,12 @@ const initSidebarToggle = () => {
 	// Handle toggle click
 	toggleBtn.addEventListener( 'click', () => {
 		const willCollapse = ! sidebar.classList.contains( 'is-collapsed' );
-		
+
 		sidebar.classList.toggle( 'is-collapsed' );
 		if ( wrapper ) {
 			wrapper.classList.toggle( 'has-collapsed-sidebar' );
 		}
-		
+
 		// Save state
 		localStorage.setItem( storageKey, willCollapse ? 'true' : 'false' );
 	} );
@@ -131,19 +133,21 @@ function initBuilderMaterialForCourseSettings() {
 	// Listen for tab clicks in Course Settings using event delegation
 	document.addEventListener( 'click', ( e ) => {
 		const target = e.target.closest( 'ul.lp-meta-box__course-tab__tabs a' );
-		
+
 		if ( ! target ) {
 			return;
 		}
 
 		const targetPanel = target.getAttribute( 'href' );
-		
+
 		// Check if Material tab is clicked
 		if ( targetPanel && targetPanel.includes( 'material' ) ) {
 			// Wait for DOM to update
 			setTimeout( () => {
 				try {
-					const materialContainer = document.querySelector( targetPanel + ' #lp-material-container' );
+					const materialContainer = document.querySelector(
+						targetPanel + ' #lp-material-container'
+					);
 					if ( materialContainer && ! initializedContainers.has( materialContainer ) ) {
 						// Mark as initialized to prevent multiple instances
 						initializedContainers.add( materialContainer );

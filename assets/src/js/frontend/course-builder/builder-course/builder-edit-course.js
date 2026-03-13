@@ -53,6 +53,7 @@ export class BuilderEditCourse {
 		elSelectAddCategoryParent: '.cb-course-edit-category__select-parent',
 		elBtnSaveCategory: '.cb-course-edit-category__btn-save',
 		elBtnCancelCategoryNew: '.cb-course-edit-category__btn-cancel',
+		elCategorySearchInput: '.cb-course-edit-category__search-input',
 
 		elWrapperCheckBoxTag: '.cb-course-edit-tags__checkbox-wrapper',
 		elFormTagAddNew: '.cb-course-edit-terms__form-add-tag',
@@ -60,6 +61,10 @@ export class BuilderEditCourse {
 		elBtnCancelTagNew: '.cb-course-edit-tag__btn-cancel',
 		elBtnSaveTag: '.cb-course-edit-tags__btn-save',
 		elInputAddTag: '.cb-course-edit-tags__input',
+		elTagsWrapper: '.cb-course-edit-tags__wrapper',
+		elTagChip: '.cb-tag-chip',
+		elTagSearchInput: '.cb-course-edit-tags__search-input',
+		elTagEmptyState: '.cb-course-edit-tags__empty',
 
 		elBtnRemoveFeatured: '.cb-remove-featured-image',
 		elBtnSetFeatured: '.cb-featured-image-dropzone:not(.has-image)',
@@ -108,6 +113,8 @@ export class BuilderEditCourse {
 		this.initTabTitles();
 		this.initCategoryTabs();
 		this.initCategoryTree();
+		this.applyCategorySearch();
+		this.initTagManagement();
 		this.initSalePriceLayout();
 		this.initTitleCharCount();
 		this.initDescWordCount();
@@ -267,6 +274,11 @@ export class BuilderEditCourse {
 				class: this,
 				callBack: this.handleMostUsedChange.name,
 			},
+			{
+				selector: 'input[name="course_tags[]"]',
+				class: this,
+				callBack: this.handleTagSelectionChange.name,
+			},
 		] );
 
 		lpUtils.eventHandlers( 'input', [
@@ -279,6 +291,16 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elTitleInput,
 				class: this,
 				callBack: this.handleTitleInput.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elTagSearchInput,
+				class: this,
+				callBack: this.handleTagSearchInput.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elCategorySearchInput,
+				class: this,
+				callBack: this.handleCategorySearchInput.name,
 			},
 		] );
 
@@ -302,6 +324,148 @@ export class BuilderEditCourse {
 				checkIsEventEnter: true,
 			},
 		] );
+	}
+
+	initTagManagement() {
+		this.syncTagManagement();
+	}
+
+	getTagManagementElements() {
+		const wrapper = document.querySelector( BuilderEditCourse.selectors.elTagsWrapper );
+		if ( ! wrapper ) {
+			return null;
+		}
+
+		return {
+			wrapper,
+			searchInput: wrapper.querySelector( BuilderEditCourse.selectors.elTagSearchInput ),
+			list: wrapper.querySelector( BuilderEditCourse.selectors.elWrapperCheckBoxTag ),
+			emptyState: wrapper.querySelector( BuilderEditCourse.selectors.elTagEmptyState ),
+		};
+	}
+
+	getTagChipName( chip ) {
+		return (
+			chip.dataset.tagName ||
+			chip.querySelector( '.cb-tag-chip__name' )?.textContent?.trim()?.toLowerCase() ||
+			''
+		);
+	}
+
+	updateTagEmptyState( emptyState, searchTerm = '', visibleCount = 0 ) {
+		if ( ! emptyState ) {
+			return;
+		}
+
+		const emptyDefault = emptyState.dataset.emptyDefault || '';
+		const emptySearch = emptyState.dataset.emptySearch || emptyDefault;
+		emptyState.textContent = searchTerm ? emptySearch : emptyDefault;
+		emptyState.classList.toggle( 'lp-hidden', visibleCount > 0 );
+	}
+
+	syncTagManagement() {
+		const elements = this.getTagManagementElements();
+		if ( ! elements || ! elements.list ) {
+			return;
+		}
+
+		const searchTerm = elements.searchInput?.value?.trim().toLowerCase() || '';
+		const chips = Array.from(
+			elements.wrapper.querySelectorAll( BuilderEditCourse.selectors.elTagChip )
+		).sort( ( chipA, chipB ) => {
+			const chipASelected = chipA.querySelector( 'input[name="course_tags[]"]' )?.checked ? 1 : 0;
+			const chipBSelected = chipB.querySelector( 'input[name="course_tags[]"]' )?.checked ? 1 : 0;
+
+			if ( chipASelected !== chipBSelected ) {
+				return chipBSelected - chipASelected;
+			}
+
+			return this.getTagChipName( chipA ).localeCompare( this.getTagChipName( chipB ) );
+		} );
+		let visibleCount = 0;
+
+		chips.forEach( ( chip ) => {
+			const matchesSearch = ! searchTerm || this.getTagChipName( chip ).includes( searchTerm );
+			const shouldShow = matchesSearch;
+
+			chip.classList.toggle( 'lp-hidden', ! shouldShow );
+			elements.list.appendChild( chip );
+
+			if ( shouldShow ) {
+				visibleCount += 1;
+			}
+		} );
+
+		this.updateTagEmptyState( elements.emptyState, searchTerm, visibleCount );
+	}
+
+	handleTagSelectionChange() {
+		this.syncTagManagement();
+	}
+
+	handleTagSearchInput() {
+		this.syncTagManagement();
+	}
+
+	handleCategorySearchInput() {
+		this.applyCategorySearch();
+	}
+
+	getDirectChildByTagName( element, tagName ) {
+		return Array.from( element?.children || [] ).find( ( child ) => child.tagName === tagName );
+	}
+
+	getCategoryLabelText( li ) {
+		const label = this.getDirectChildByTagName( li, 'LABEL' );
+		return label?.textContent?.trim()?.toLowerCase() || '';
+	}
+
+	filterCategoryItem( li, searchTerm ) {
+		const childList = Array.from( li.children ).find(
+			( child ) => child.tagName === 'UL' && child.classList.contains( 'children' )
+		);
+		const childItems = childList
+			? Array.from( childList.children ).filter( ( child ) => child.tagName === 'LI' )
+			: [];
+		const selfMatch = ! searchTerm || this.getCategoryLabelText( li ).includes( searchTerm );
+		const childMatch = childItems.some( ( child ) => this.filterCategoryItem( child, searchTerm ) );
+		const shouldShow = ! searchTerm || selfMatch || childMatch;
+
+		li.classList.toggle( 'lp-hidden', ! shouldShow );
+
+		if ( searchTerm && childList ) {
+			li.classList.toggle( 'children-visible', selfMatch || childMatch );
+		}
+
+		return shouldShow;
+	}
+
+	applyCategorySearch() {
+		const wrapper = document.querySelector( BuilderEditCourse.selectors.elCategoryDiv );
+		const searchInput = document.querySelector( BuilderEditCourse.selectors.elCategorySearchInput );
+		if ( ! wrapper || ! searchInput ) {
+			return;
+		}
+
+		const searchTerm = searchInput.value.trim().toLowerCase();
+		const panels = wrapper.querySelectorAll( '.tabs-panel' );
+
+		panels.forEach( ( panel ) => {
+			const rootLists = Array.from( panel.children ).filter( ( child ) => child.tagName === 'UL' );
+			const items = rootLists.reduce( ( result, list ) => {
+				return result.concat(
+					Array.from( list.children ).filter( ( child ) => child.tagName === 'LI' )
+				);
+			}, [] );
+
+			if ( items.length ) {
+				items.forEach( ( item ) => this.filterCategoryItem( item, searchTerm ) );
+			}
+		} );
+
+		if ( ! searchTerm ) {
+			this.expandCheckedCategories( wrapper );
+		}
 	}
 
 	initCategoryTabs() {
@@ -334,6 +498,8 @@ export class BuilderEditCourse {
 		if ( targetId === '#course_category-pop' ) {
 			this.syncMostUsedTabs();
 		}
+
+		this.applyCategorySearch();
 	}
 
 	syncMostUsedTabs() {
@@ -530,6 +696,7 @@ export class BuilderEditCourse {
 
 					elInput.value = '';
 					if ( elParent ) elParent.value = '0';
+					this.applyCategorySearch();
 				}
 			},
 			error: ( error ) => {
@@ -639,6 +806,7 @@ export class BuilderEditCourse {
 
 					elInput.value = '';
 					if ( elParent ) elParent.value = '0';
+					this.applyCategorySearch();
 
 					// Close the form after successful add
 					const elBtnCancel = document.querySelector(
@@ -1041,7 +1209,9 @@ export class BuilderEditCourse {
 			const statusEl = document.querySelector( BuilderEditCourse.selectors.elStatus );
 			const isPublished = statusEl && statusEl.classList.contains( 'publish' );
 			if ( isPublished ) {
-				const confirmMsg = elBtn.dataset.confirmUnpublish || 'Saving as draft will unpublish this item. Are you sure?';
+				const confirmMsg =
+					elBtn.dataset.confirmUnpublish ||
+					'Saving as draft will unpublish this item. Are you sure?';
 				if ( ! confirm( confirmMsg ) ) {
 					return;
 				}
@@ -1353,6 +1523,7 @@ export class BuilderEditCourse {
 						BuilderEditCourse.selectors.elWrapperCheckBoxTag
 					);
 					wrapper.insertAdjacentHTML( 'beforeend', data.html );
+					this.syncTagManagement();
 					elInput.value = '';
 					const elBtnCancel = document.querySelector(
 						BuilderEditCourse.selectors.elBtnCancelTagNew

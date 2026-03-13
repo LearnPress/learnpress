@@ -166,50 +166,56 @@ class CourseBuilderTemplate {
 			return;
 		}
 
-		$allowed_styles = apply_filters( 'learn-press/course-builder/allowed-styles', [
-			'dashicons',
-			'admin-bar',
-			'buttons',
-			'media-views',
-			'wp-components',
-			'wp-block-library',
-			'wp-editor',
-			'wp-edit-post',
-			'wp-block-editor',
-			'wp-components',
-			'wp-editor',
-			'wp-nux',
-			'wp-notices',
-		] );
+		$allowed_styles = apply_filters(
+			'learn-press/course-builder/allowed-styles',
+			[
+				'dashicons',
+				'admin-bar',
+				'buttons',
+				'media-views',
+				'wp-components',
+				'wp-block-library',
+				'wp-editor',
+				'wp-edit-post',
+				'wp-block-editor',
+				'wp-components',
+				'wp-editor',
+				'wp-nux',
+				'wp-notices',
+			]
+		);
 
-		$allowed_scripts = apply_filters( 'learn-press/course-builder/allowed-scripts', [
-			'jquery',
-			'jquery-core',
-			'jquery-migrate',
-			'jquery-ui-core',
-			'jquery-ui-widget',
-			'wp-api-fetch',
-			'wp-i18n',
-			'wp-components',
-			'wp-element',
-			'react',
-			'react-dom',
-			'wp-polyfill',
-			'wp-hooks',
-			'lodash',
-			'moment',
-			'heartbeat',
-			'wp-data',
-			'wp-core-data',
-			'wp-url',
-			'wp-api',
-			'wp-block-editor',
-			'wp-blocks',
-			'wp-media-utils',
-			'wp-compose',
-			'regenerator-runtime',
-			'wp-a11y',
-		] );
+		$allowed_scripts = apply_filters(
+			'learn-press/course-builder/allowed-scripts',
+			[
+				'jquery',
+				'jquery-core',
+				'jquery-migrate',
+				'jquery-ui-core',
+				'jquery-ui-widget',
+				'wp-api-fetch',
+				'wp-i18n',
+				'wp-components',
+				'wp-element',
+				'react',
+				'react-dom',
+				'wp-polyfill',
+				'wp-hooks',
+				'lodash',
+				'moment',
+				'heartbeat',
+				'wp-data',
+				'wp-core-data',
+				'wp-url',
+				'wp-api',
+				'wp-block-editor',
+				'wp-blocks',
+				'wp-media-utils',
+				'wp-compose',
+				'regenerator-runtime',
+				'wp-a11y',
+			]
+		);
 
 		if ( ! empty( $wp_styles->queue ) ) {
 			foreach ( $wp_styles->queue as $handle ) {
@@ -297,9 +303,20 @@ class CourseBuilderTemplate {
 	 * @return string
 	 */
 	public function html_sidebar(): string {
-		$tab_current = CourseBuilder::get_current_tab();
 		$tabs        = CourseBuilder::get_tabs_arr();
 		$nav_content = '';
+		$is_admin    = current_user_can( ADMIN_ROLE );
+
+		$tabs = array_filter(
+			$tabs,
+			static function( array $tab ) use ( $is_admin ): bool {
+				if ( ! empty( $tab['admin_only'] ) && ! $is_admin ) {
+					return false;
+				}
+
+				return true;
+			}
+		);
 
 		// Always show main navigation tabs (ClassPress-style persistent sidebar)
 		foreach ( $tabs as $tab ) {
@@ -373,45 +390,37 @@ class CourseBuilderTemplate {
 	}
 
 	/**
-	 * Sidebar header with logo/title
-	 *
-	 * @return string
-	 * @since 4.3.0
-	 */
-	/*protected function sidebar_header() {
-		$header = [
-			'wrapper'     => '<div class="lp-cb-sidebar__header">',
-			'logo'        => '<div class="lp-cb-sidebar__logo">
-				<span class="dashicons dashicons-welcome-learn-more"></span>
-				<span class="lp-cb-sidebar__title">' . __( 'Course Builder', 'learnpress' ) . '</span>
-			</div>',
-			'wrapper_end' => '</div>',
-		];
-
-		return Template::combine_components( $header );
-	}*/
-
-	/**
 	 * Sidebar footer with "Back to Dashboard" link
 	 *
 	 * @return string
 	 * @since 4.3.0
 	 */
 	protected function sidebar_footer() {
-		$dashboard_url = admin_url();
+		$is_cb_admin_mode = \LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
+		$is_admin         = current_user_can( ADMIN_ROLE );
+		$is_instructor    = current_user_can( LP_TEACHER_ROLE );
+		$dashboard_url    = admin_url();
 
 		$footer = [
-			'wrapper'     => '<div class="lp-cb-sidebar__footer">',
-			'back'        => sprintf(
+			'wrapper' => '<div class="lp-cb-sidebar__footer">',
+		];
+
+		// Hide "Back to WordPress" for instructors when CB admin mode is on
+		// Admins always see this link
+		$hide_back_link = $is_cb_admin_mode && $is_instructor && ! $is_admin;
+
+		if ( ! $hide_back_link ) {
+			$footer['back'] = sprintf(
 				'<a href="%s" class="lp-cb-sidebar__item lp-cb-sidebar__back">
 					<span class="dashicons dashicons-wordpress"></span>
 					<span class="lp-cb-sidebar__item-title">%s</span>
 				</a>',
 				esc_url( $dashboard_url ),
 				__( 'Back to WordPress', 'learnpress' )
-			),
-			'wrapper_end' => '</div>',
-		];
+			);
+		}
+
+		$footer['wrapper_end'] = '</div>';
 
 		return Template::combine_components( $footer );
 	}
@@ -563,7 +572,15 @@ class CourseBuilderTemplate {
 				<div class="lp-cb-header__left">
 					<h1 class="lp-cb-header__title"><?php echo esc_html( $post_title ); ?></h1>
 					<?php echo $status_badge; ?>
-					<?php if ( ! $is_new_post ) : ?>
+					<?php
+					$is_cb_admin_mode = \LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
+					$is_admin         = current_user_can( ADMIN_ROLE );
+					$is_instructor    = current_user_can( LP_TEACHER_ROLE );
+					// Hide "Edit with WordPress" for instructors when CB admin mode is on
+					// Admins always see this link
+					$hide_wp_edit_link = $is_cb_admin_mode && $is_instructor && ! $is_admin;
+					?>
+					<?php if ( ! $is_new_post && ! $hide_wp_edit_link ) : ?>
 						<?php $hide_style = ( 'trash' === $status ) ? 'style="display:none"' : ''; ?>
 						<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) ); ?>" class="lp-cb-admin-link" target="_blank" title="<?php esc_attr_e( 'Edit with WordPress', 'learnpress' ); ?>" <?php echo $hide_style; ?>>
 							<span class="dashicons dashicons-wordpress"></span>
@@ -868,7 +885,6 @@ class CourseBuilderTemplate {
 			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_tab_link( 'questions', CourseBuilder::POST_NEW, 'overview' ) ) );
 			$btn_close   = '</a>';
 		}
-
 
 		$btn = [
 			'wrapper'     => $btn_add_new,

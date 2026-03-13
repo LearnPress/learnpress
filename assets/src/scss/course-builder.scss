@@ -20,6 +20,7 @@
 @import 'course-builder/tab-quizzes';
 @import 'course-builder/tab-questions';
 @import 'course-builder/tab-lessons';
+@import 'course-builder/tab-settings';
 
 // Edit views
 @import 'course-builder/edit-course';
@@ -144,7 +145,7 @@
 
 		.form-field textarea {
 			order: 3;
-			width: calc(100% - 165px);
+			width: calc( 100% - 165px );
 			padding: 8px 12px;
 			border: 1px solid #d1d5db;
 			border-radius: 6px;
@@ -158,7 +159,7 @@
 		.form-field input[type='datetime-local']:focus,
 		.lp-meta-box__duration input[type='number']:focus {
 			outline: none;
-			border-color: #7067ED;
+			border-color: #7067ed;
 			box-shadow: 0 0 0 3px rgba( 59, 130, 246, 0.1 );
 		}
 
@@ -175,7 +176,7 @@
 
 		select:focus {
 			outline: none;
-			border-color: #7067ED;
+			border-color: #7067ed;
 			box-shadow: 0 0 0 3px rgba( 59, 130, 246, 0.1 );
 		}
 
@@ -346,10 +347,10 @@
 		background: none;
 	}
 
-	.mce-toolbar .mce-btn-group .mce-btn:has(i.mce-i-underline),
-	.mce-toolbar .mce-btn-group .mce-btn:has(i.mce-i-blockquote),
-	.mce-toolbar .mce-btn-group .mce-btn:has(i.mce-i-alignright),
-	.mce-toolbar .mce-btn-group .mce-btn:has(i.mce-i-unlink) {
+	.mce-toolbar .mce-btn-group .mce-btn:has( i.mce-i-underline ),
+	.mce-toolbar .mce-btn-group .mce-btn:has( i.mce-i-blockquote ),
+	.mce-toolbar .mce-btn-group .mce-btn:has( i.mce-i-alignright ),
+	.mce-toolbar .mce-btn-group .mce-btn:has( i.mce-i-unlink ) {
 		border-right: 1px solid $cb-border-input;
 	}
 
@@ -392,14 +393,16 @@
 		white-space: nowrap;
 		box-sizing: border-box;
 		background: $cb-bg;
-		transition: border-color 0.15s ease, background 0.15s ease;
+		transition:
+			border-color 0.15s ease,
+			background 0.15s ease;
 
 		&:focus {
 			outline: none;
 			box-shadow: none;
 			background-color: $cb-primary-bland;
 			border-color: $cb-primary;
-			color:$cb-primary;
+			color: $cb-primary;
 		}
 
 		&:hover {
@@ -468,7 +471,7 @@
 		}
 	}
 
-	div.mce-toolbar-grp>div {
+	div.mce-toolbar-grp > div {
 		padding: 0;
 	}
 
@@ -590,14 +593,14 @@
 .lp-popup-items-to-select ul.tabs li {
 	margin: 0;
 	display: inline-block;
-    position: relative;
-    margin: 0;
-    padding: 0px 24px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    border-radius: $cb-radius-lg $cb-radius-lg 0 0;
+	position: relative;
+	margin: 0;
+	padding: 0px 24px;
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 14px;
+	transition: all 0.2s ease;
+	border-radius: $cb-radius-lg $cb-radius-lg 0 0;
 	border-bottom: 2px solid transparent;
 	cursor: pointer;
 

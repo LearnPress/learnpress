@@ -191,10 +191,12 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( ! empty( $data['course_permalink'] ) ) {
 					$new_slug = sanitize_title( $data['course_permalink'] );
 					if ( $new_slug && $new_slug !== $courseModel->post_name ) {
-						wp_update_post( array(
-							'ID'        => $courseModel->ID,
-							'post_name' => $new_slug,
-						) );
+						wp_update_post(
+							array(
+								'ID'        => $courseModel->ID,
+								'post_name' => $new_slug,
+							)
+						);
 						$courseModel->post_name = $new_slug;
 					}
 				}
@@ -217,7 +219,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			// Handle course thumbnail - AFTER coursePostModel->save() to avoid being overwritten
 			if ( isset( $data['course_thumbnail_id'] ) ) {
 				$thumbnail_id = absint( $data['course_thumbnail_id'] );
-				
+
 				if ( $thumbnail_id > 0 ) {
 					$result = set_post_thumbnail( $course_id, $thumbnail_id );
 				} else {
@@ -238,7 +240,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$response->data->course_slug      = $saved_post->post_name;
 				$response->data->course_permalink = get_permalink( $course_id );
 			}
-			
+
 			// Return full redirect URL for new courses
 			if ( $insert && $course_id ) {
 				$response->data->redirect_url = \LearnPress\CourseBuilder\CourseBuilder::get_tab_link( 'courses', $course_id, 'overview' );
@@ -783,10 +785,12 @@ class CourseBuilderAjax extends AbstractAjax {
 
 				// Restore original slug after trashing
 				if ( $original_slug ) {
-					wp_update_post( array(
-						'ID'        => $course_id,
-						'post_name' => $original_slug,
-					) );
+					wp_update_post(
+						array(
+							'ID'        => $course_id,
+							'post_name' => $original_slug,
+						)
+					);
 				}
 
 				$message = __( 'Course moved to trash', 'learnpress' );
@@ -1603,5 +1607,43 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Save global settings for Course Builder.
+	 *
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public function save_global_settings() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$params = wp_unslash( $_REQUEST['data'] ?? '' );
+			if ( empty( $params ) ) {
+				throw new Exception( 'Error: params invalid!' );
+			}
+
+			$data = LP_Helper::json_decode( $params, true );
+
+			if ( ! current_user_can( ADMIN_ROLE ) ) {
+				throw new Exception( __( 'Permission denied', 'learnpress' ) );
+			}
+
+			$enable_cb_admin_mode = ! empty( $data['enable_cb_admin_mode'] ) && $data['enable_cb_admin_mode'] === 'yes' ? 'yes' : 'no';
+
+			\LP_Settings::update_option( 'enable_cb_admin_mode', $enable_cb_admin_mode );
+
+			$response->status                      = 'success';
+			$response->message                     = __( 'Access policy updated.', 'learnpress' );
+			$response->data->enable_cb_admin_mode  = $enable_cb_admin_mode;
+
+			wp_send_json( $response );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+			wp_send_json( $response );
+		}
 	}
 }

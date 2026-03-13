@@ -303,6 +303,10 @@ $cb-card-bg: $cb-bg-card !default;
 		flex-direction: column;
 		gap: 8px;
 
+		&:empty {
+			display: none;
+		}
+
 		a.lp-cb-sidebar__item {
 			display: flex;
 			align-items: center;

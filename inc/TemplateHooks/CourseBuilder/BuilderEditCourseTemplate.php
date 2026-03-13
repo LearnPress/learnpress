@@ -296,6 +296,16 @@ class BuilderEditCourseTemplate {
 			'btn_add_new'       => sprintf( '<button class="cb-course-edit-category__btn-add-new cb-terms-header__btn-add-new">%s</button>', __( 'Add New', 'learnpress' ) ),
 			'header_end'        => '</div>',
 			'form_add_category' => $form_add_category,
+			'search'            => sprintf(
+				'<div class="cb-course-edit-categories__toolbar">
+					<label class="cb-course-edit-categories__search-wrap">
+						<span class="screen-reader-text">%1$s</span>
+						<input type="search" class="cb-course-edit-category__search-input" placeholder="%2$s" />
+					</label>
+				</div>',
+				esc_html__( 'Search categories', 'learnpress' ),
+				esc_attr__( 'Search categories', 'learnpress' )
+			),
 			'content'           => $html_meta_box,
 			'wrapper_end'       => '</div>',
 		];
@@ -319,17 +329,40 @@ class BuilderEditCourseTemplate {
 			$course_terms
 		);
 
-		$html_chips = '';
+		$html_selected_chips  = '';
+		$html_available_chips = '';
 
-		if ( ! empty( $tags ) ) {
+		if ( ! empty( $tags ) && ! is_wp_error( $tags ) ) {
 			foreach ( $tags as $tag ) {
 				$tag_id      = $tag->term_id;
 				$tag_name    = $tag->name;
 				$tag_count   = $tag->count;
 				$is_checked  = in_array( (int) $tag_id, $selected_tag_ids, true );
-				$html_chips .= $this->input_checkbox_tag_item( $tag_id, $tag_name, $is_checked, $tag_count );
+				$html_chip   = $this->input_checkbox_tag_item( $tag_id, $tag_name, $is_checked, $tag_count );
+
+				if ( $is_checked ) {
+					$html_selected_chips .= $html_chip;
+				} else {
+					$html_available_chips .= $html_chip;
+				}
 			}
 		}
+
+		$html_chips          = $html_selected_chips . $html_available_chips;
+		$count_all           = substr_count( $html_chips, 'class="cb-tag-chip"' );
+		$empty_default       = esc_html__( 'No tags found.', 'learnpress' );
+		$empty_search        = esc_html__( 'No matching tags.', 'learnpress' );
+
+		$toolbar = sprintf(
+			'<div class="cb-course-edit-tags__toolbar">
+				<label class="cb-course-edit-tags__search-wrap">
+					<span class="screen-reader-text">%1$s</span>
+					<input type="search" class="cb-course-edit-tags__search-input" placeholder="%2$s" />
+				</label>
+			</div>',
+			esc_html__( 'Search tags', 'learnpress' ),
+			esc_attr__( 'Search tags', 'learnpress' )
+		);
 
 		$edit = [
 			'wrapper'                  => '<div class="cb-course-edit-tags__wrapper">',
@@ -342,9 +375,16 @@ class BuilderEditCourseTemplate {
 			'btn_cancel'               => sprintf( '<button type="button" class="cb-course-edit-tag__btn-cancel">%s</button>', __( 'Cancel', 'learnpress' ) ),
 			'button'                   => '<button type="button" class="cb-course-edit-tags__btn-save">' . esc_html__( 'Add', 'learnpress' ) . '</button>',
 			'form_add_tag_wrapper_end' => '</div>',
+			'toolbar'                  => $toolbar,
 			'wrapper_checkbox'         => '<div class="cb-course-edit-tags__checkbox-wrapper">',
 			'checkbox'                 => $html_chips,
 			'wrapper_checkbox_end'     => '</div>',
+			'empty'                    => sprintf(
+				'<p class="cb-course-edit-tags__empty%1$s" data-empty-default="%2$s" data-empty-search="%3$s">%2$s</p>',
+				$count_all > 0 ? ' lp-hidden' : '',
+				esc_attr( $empty_default ),
+				esc_attr( $empty_search )
+			),
 			'wrapper_end'              => '</div>',
 		];
 
@@ -368,7 +408,18 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
-		$html  = '<div class="cb-tag-chip">';
+		$tag_name_search = wp_strip_all_tags( $term_name );
+		if ( function_exists( 'mb_strtolower' ) ) {
+			$tag_name_search = mb_strtolower( $tag_name_search );
+		} else {
+			$tag_name_search = strtolower( $tag_name_search );
+		}
+
+		$html  = sprintf(
+			'<div class="cb-tag-chip" data-tag-name="%s" data-term-id="%d">',
+			esc_attr( $tag_name_search ),
+			(int) $term_id
+		);
 		$html .= sprintf(
 			'<input type="checkbox" name="course_tags[]" value="%s" id="course_tag_%s" %s>',
 			$term_id,
