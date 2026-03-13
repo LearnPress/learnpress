@@ -21,6 +21,7 @@ $extra_profile_fields = learn_press_social_profiles();
 $extra_profile        = learn_press_get_user_extra_profile_info( $user->ID );
 
 $custom_profile = lp_get_user_custom_register_fields( $user->ID );
+$user_model     = new \LearnPress\Models\UserModel( $user );
 ?>
 
 <h3><?php esc_html_e( 'LearnPress User Profile', 'learnpress' ); ?></h3>
@@ -40,7 +41,7 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 					<input id="learn-press-user-public-slug"
 						class="regular-text"
 						type="text"
-						value="<?php echo esc_attr( \LearnPress\Models\UserModel::get_pretty_slug_by_user_id( (int) $user->ID, false ) ); ?>"
+						value="<?php echo esc_attr( $user_model->get_pretty_slug( false ) ); ?>"
 						name="lp_user_slug">
 					<p class="description"><?php esc_html_e( 'Must be unique. Leave empty to fall back to the username in profile URLs.', 'learnpress' ); ?></p>
 				</td>

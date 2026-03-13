@@ -930,7 +930,8 @@ class LP_User extends LP_Abstract_User {
 			}
 
 			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
-			$user_slug                 = UserModel::get_pretty_slug_by_user_id( $author_id );
+			$user_model                = new UserModel( $author );
+			$user_slug                 = $user_model->get_pretty_slug();
 			$single_instructor_link    = trailingslashit( trailingslashit( get_page_link( $single_instructor_page_id ) ) . $user_slug );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );

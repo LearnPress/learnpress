@@ -33,7 +33,6 @@ use stdClass;
 use Throwable;
 use WP_Error;
 use WP_User;
-
 class UserModel {
 	/**
 	 * Auto increment, Primary key
@@ -80,7 +79,6 @@ class UserModel {
 	const META_KEY_IMAGE       = '_lp_profile_picture';
 	const META_KEY_COVER_IMAGE = '_lp_profile_cover_image';
 	const META_KEY_PUBLIC_SLUG = '_lp_public_user_slug';
-
 	// Roles
 	const ROLE_INSTRUCTOR    = LP_TEACHER_ROLE;
 	const ROLE_ADMINISTRATOR = 'administrator';
@@ -110,12 +108,16 @@ class UserModel {
 	 * @return UserModel
 	 */
 	public function map_to_object( $data ): UserModel {
+
+		if ( $data instanceof WP_User ) {
+			$data = $data->data;
+		}
+
 		foreach ( $data as $key => $value ) {
 			if ( property_exists( $this, $key ) ) {
 				$this->{$key} = $value;
 			}
 		}
-
 		return $this;
 	}
 
@@ -225,22 +227,24 @@ class UserModel {
 	 * @version 1.0.0
 	 */
 	public function set_meta_value_by_key( string $key, $value ) {
+
 		$this->meta_data->{$key} = $value;
 		update_user_meta( $this->ID, $key, $value );
 	}
 
 	/**
-	 * Retrieve the pretty slug used instead of user_name.
+		* Retrieve the pretty slug used instead of user_name.
 	 *
 	 * This value is used to build links such as instructor links and user profile links.
 	 * If a pretty slug has not been generated yet, it falls back to user_name when
-	 * $fallback_to_username is true.
+		* $fallback_to_username is true.
 	 *
 	 * @param bool $fallback_to_username Whether to fallback to username if no pretty slug exists.
 	 *
 	 * @return string
 	 */
 	public function get_pretty_slug( bool $fallback_to_username = true ): string {
+
 		$slug = sanitize_title( (string) $this->get_meta_value_by_key( self::META_KEY_PUBLIC_SLUG, '' ) );
 
 		if ( '' !== $slug || ! $fallback_to_username ) {
@@ -258,43 +262,16 @@ class UserModel {
 	}
 
 	/**
-	 * Retrieve pretty slug for a user id.
-	 *
-	 * @param int  $user_id
-	 * @param bool $fallback_to_username
-	 *
+		* Build base source for pretty slug generation.
+		*
 	 * @return string
 	 */
-	public static function get_pretty_slug_by_user_id( int $user_id, bool $fallback_to_username = true ): string {
-		if ( $user_id <= 0 ) {
-			return '';
-		}
+	public function get_pretty_slug_source(): string {
 
-		$user_model = self::find( $user_id, true );
-		if ( $user_model instanceof UserModel ) {
-			return $user_model->get_pretty_slug( $fallback_to_username );
-		}
+		$user_id = $this->get_id();
+		$user    = get_userdata( $user_id );
 
-		if ( ! $fallback_to_username ) {
-			return '';
-		}
-
-		$wp_user = get_userdata( $user_id );
-
-		return $wp_user instanceof WP_User ? (string) $wp_user->user_login : '';
-	}
-
-	/**
-	 * Build base source for pretty slug generation.
-	 *
-	 * @param int $user_id
-	 *
-	 * @return string
-	 */
-	public static function get_pretty_slug_source( int $user_id ): string {
-		$user = get_userdata( $user_id );
-
-		if ( ! $user instanceof WP_User ) {
+		if ( $user_id <= 0 || ! $user instanceof WP_User ) {
 			return '';
 		}
 
@@ -310,58 +287,67 @@ class UserModel {
 	}
 
 	/**
-	 * Check if pretty slug exists for another user.
-	 *
+		* Check if pretty slug exists for another user.
+		*
 	 * @param string $slug
 	 * @param int    $exclude_user_id
 	 *
 	 * @return int
 	 */
-	public static function pretty_slug_exists( string $slug, int $exclude_user_id = 0 ): int {
-		global $wpdb;
+	public function pretty_slug_exists( string $slug, int $exclude_user_id = 0 ): int {
 
+		$slug = sanitize_title( $slug );
 		if ( '' === $slug ) {
 			return 0;
 		}
 
-		$sql = $wpdb->prepare(
-			"SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s LIMIT 1",
-			self::META_KEY_PUBLIC_SLUG,
-			$slug
-		);
+		$user_id = 0;
 
-		$found_user_id = (int) $wpdb->get_var( $sql );
+		try {
+			$lp_user_db              = LP_User_DB::instance();
+			$filter                  = new LP_User_Filter();
+			$filter->only_fields     = [ 'u.ID' ];
+			$filter->run_query_count = false;
+			$filter->limit           = 1;
+				$filter->join[]      = "INNER JOIN {$lp_user_db->wpdb->usermeta} AS um ON um.user_id = u.ID";
+				$filter->where[]     = $lp_user_db->wpdb->prepare( 'AND um.meta_key = %s', self::META_KEY_PUBLIC_SLUG );
+			$filter->where[]         = $lp_user_db->wpdb->prepare( 'AND um.meta_value = %s', $slug );
 
-		if ( $found_user_id > 0 && $found_user_id !== $exclude_user_id ) {
-			return $found_user_id;
+			if ( $exclude_user_id > 0 ) {
+				$filter->where[] = $lp_user_db->wpdb->prepare( 'AND u.ID != %d', $exclude_user_id );
+			}
+
+			$users = $lp_user_db->get_users( $filter );
+			if ( ! empty( $users ) && isset( $users[0]->ID ) ) {
+				$user_id = (int) $users[0]->ID;
+			}
+		} catch ( Throwable $e ) {
+				error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
-		return 0;
+		return $user_id;
 	}
 
 	/**
-	 * Create a unique pretty slug for user.
-	 *
-	 * @param int $user_id
-	 *
+		* Create a unique pretty slug for user.
+		*
 	 * @return string|WP_Error
 	 */
-	public static function generate_pretty_slug( int $user_id ) {
-		$user = get_userdata( $user_id );
+	public function generate_pretty_slug() {
 
-		if ( ! $user instanceof WP_User ) {
-			return new WP_Error( 'lp_user_slug_invalid_user', esc_html__( 'The user is invalid.', 'learnpress' ) );
+		$user_id = $this->get_id();
+		$user    = get_userdata( $user_id );
+
+		if ( $user_id <= 0 || ! $user instanceof WP_User ) {
+				return new WP_Error( 'lp_user_slug_invalid_user', esc_html__( 'The user is invalid.', 'learnpress' ) );
 		}
 
-		$user_model = self::find( $user_id, true );
-		if ( $user_model instanceof UserModel ) {
-			$existing_slug = $user_model->get_pretty_slug( false );
-			if ( '' !== $existing_slug ) {
-				return $existing_slug;
-			}
+		$existing_slug = $this->get_pretty_slug( false );
+		if ( '' !== $existing_slug ) {
+			return $existing_slug;
 		}
 
-		$base_source = self::get_pretty_slug_source( $user_id );
+		$base_source = $this->get_pretty_slug_source();
 		$base_slug   = sanitize_title( $base_source );
 
 		if ( '' === $base_slug ) {
@@ -380,10 +366,10 @@ class UserModel {
 				continue;
 			}
 
-			if ( ! self::pretty_slug_exists( $candidate, $user_id ) ) {
-				update_user_meta( $user_id, self::META_KEY_PUBLIC_SLUG, $candidate );
+			if ( ! $this->pretty_slug_exists( $candidate, $user_id ) ) {
+					$this->set_meta_value_by_key( self::META_KEY_PUBLIC_SLUG, $candidate );
 
-				return $candidate;
+					return $candidate;
 			}
 		}
 
@@ -391,45 +377,48 @@ class UserModel {
 	}
 
 	/**
-	 * Validate and update pretty slug manually.
-	 *
-	 * @param int    $user_id
+		* Validate and update pretty slug manually.
+		*
 	 * @param string $slug
 	 *
 	 * @return string|WP_Error
 	 */
-	public static function update_pretty_slug( int $user_id, string $slug ) {
-		$user = get_userdata( $user_id );
+	public function update_pretty_slug( string $slug ) {
 
-		if ( ! $user instanceof WP_User ) {
-			return new WP_Error( 'lp_user_slug_invalid_user', esc_html__( 'The user is invalid.', 'learnpress' ) );
+		$user_id = $this->get_id();
+		$user    = get_userdata( $user_id );
+
+		if ( $user_id <= 0 || ! $user instanceof WP_User ) {
+				return new WP_Error( 'lp_user_slug_invalid_user', esc_html__( 'The user is invalid.', 'learnpress' ) );
 		}
 
 		$slug = sanitize_title( wp_unslash( $slug ) );
 
 		if ( '' === $slug ) {
 			delete_user_meta( $user_id, self::META_KEY_PUBLIC_SLUG );
+			$this->meta_data->{self::META_KEY_PUBLIC_SLUG} = '';
 
 			return '';
 		}
 
-		if ( self::pretty_slug_exists( $slug, $user_id ) ) {
+		if ( $this->pretty_slug_exists( $slug, $user_id ) ) {
 			return new WP_Error( 'lp_user_slug_exists', esc_html__( 'This user slug already exists.', 'learnpress' ) );
 		}
 
-		update_user_meta( $user_id, self::META_KEY_PUBLIC_SLUG, $slug );
+		$this->set_meta_value_by_key( self::META_KEY_PUBLIC_SLUG, $slug );
 
 		return $slug;
 	}
 
 	/**
-	 * Resolve user by pretty slug with legacy username fallback.
+		* Resolve user by pretty slug with legacy username fallback.
 	 *
 	 * @param string $identifier
-	 *
+		*
 	 * @return WP_User|false
-	 */
-	public static function resolve_user_by_public_identifier( string $identifier ) {
+		*/
+	public function resolve_user_by_public_identifier( string $identifier ) {
+
 		$identifier_raw  = trim( urldecode( $identifier ) );
 		$identifier_slug = sanitize_title( $identifier_raw );
 
@@ -437,7 +426,7 @@ class UserModel {
 			return false;
 		}
 
-		$user_id = self::pretty_slug_exists( $identifier_slug );
+		$user_id = $this->pretty_slug_exists( $identifier_slug );
 		if ( $user_id > 0 ) {
 			return get_user_by( 'ID', $user_id );
 		}
@@ -451,11 +440,12 @@ class UserModel {
 	}
 
 	/**
-	 * Generate pretty slug for users that still miss one (old sites support).
+		* Generate pretty slug for users that still miss one (old sites support).
 	 *
 	 * @return array{processed:int,generated:int,skipped:int,failed:int}
-	 */
-	public static function generate_missing_pretty_slugs(): array {
+		*/
+	public function generate_missing_pretty_slugs(): array {
+
 		$user_ids = get_users(
 			[
 				'fields' => 'ids',
@@ -472,25 +462,30 @@ class UserModel {
 
 		foreach ( $user_ids as $user_id ) {
 			$user_id = (int) $user_id;
-			$result['processed']++;
+			++$result['processed'];
 
-			$user_model = self::find( $user_id, true );
-			if ( $user_model instanceof UserModel && '' !== $user_model->get_pretty_slug( false ) ) {
-				$result['skipped']++;
+			$wp_user = get_userdata( $user_id );
+			if ( ! $wp_user instanceof WP_User ) {
+				++$result['failed'];
 				continue;
 			}
 
-			$generated = self::generate_pretty_slug( $user_id );
+			$user_model = new UserModel( $wp_user );
+			if ( '' !== $user_model->get_pretty_slug( false ) ) {
+				++$result['skipped'];
+				continue;
+			}
+
+			$generated = $user_model->generate_pretty_slug();
 			if ( is_wp_error( $generated ) ) {
-				$result['failed']++;
+				++$result['failed'];
 			} else {
-				$result['generated']++;
+				++$result['generated'];
 			}
 		}
 
 		return $result;
 	}
-
 	/**
 	 * Get upload profile src.
 	 *
@@ -612,6 +607,7 @@ class UserModel {
 	 * @since 4.2.3
 	 */
 	public function get_url_instructor(): string {
+
 		$single_instructor_link = '';
 
 		try {
@@ -620,7 +616,6 @@ class UserModel {
 			if ( ! $single_instructor_page_id ) {
 				return $single_instructor_link;
 			}
-
 			$single_instructor_link = trailingslashit(
 				trailingslashit( get_page_link( $single_instructor_page_id ) ) . $user_name
 			);

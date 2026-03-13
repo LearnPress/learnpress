@@ -43,7 +43,8 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 					$viewing_user = $current_user;
 				} else {
 					$request_user = urldecode( (string) $wp->query_vars['user'] );
-					$wp_user      = UserModel::resolve_user_by_public_identifier( $request_user );
+					$user_model   = new UserModel();
+					$wp_user      = $user_model->resolve_user_by_public_identifier( $request_user );
 
 					if ( $wp_user ) {
 						$viewing_user = learn_press_get_user( $wp_user->ID );

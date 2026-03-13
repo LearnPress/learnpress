@@ -331,7 +331,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				return '';
 			}
 
-			$url = $this->get_tabs()->get_tab_link( $tab, $with_section, UserModel::get_pretty_slug_by_user_id( $user->get_id() ) );
+			$user_model = new UserModel( get_userdata( $user->get_id() ) );
+			$url        = $this->get_tabs()->get_tab_link( $tab, $with_section, $user_model->get_pretty_slug() );
 
 			/**
 			 * @deprecated
@@ -897,7 +898,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			global $wp_query;
 
 			if ( isset( $wp_query->query['user'] ) ) {
-				$user = UserModel::resolve_user_by_public_identifier( (string) $wp_query->query['user'] );
+				$user_model = new UserModel();
+				$user       = $user_model->resolve_user_by_public_identifier( (string) $wp_query->query['user'] );
 			} else {
 				$user = get_user_by( 'id', get_current_user_id() );
 			}
@@ -1110,7 +1112,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				if ( empty( self::$_instance ) ) {
 					$user_name = get_query_var( 'user' );
 					if ( ! empty( $user_name ) ) {
-						$user    = UserModel::resolve_user_by_public_identifier( (string) $user_name );
+						$user_model = new UserModel();
+						$user       = $user_model->resolve_user_by_public_identifier( (string) $user_name );
 						$user_id = $user ? $user->ID : 0;
 					} else {
 						$user_id = get_current_user_id();
