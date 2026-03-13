@@ -264,7 +264,7 @@ class ListCoursesTemplate {
 					'btn_read_more' => sprintf(
 						'<div class="course-readmore"><a href="%s">%s</a></div>',
 						$course->get_permalink(),
-						__( 'Read more', 'learnpress' )
+						__( 'Enroll Now', 'learnpress' )
 					),
 					'btn_view_list' => $show_view_students ? sprintf(
 						'<div class="lp-wrap-btn-view-course-students">

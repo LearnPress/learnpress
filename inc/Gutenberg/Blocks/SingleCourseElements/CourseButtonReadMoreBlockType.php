@@ -105,8 +105,8 @@ class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
 				'style=" width: ' . $width . '%;"',
 				__( 'Learn more about this course', 'learnpress' ),
 				$wrapper,
-				__( 'Read more', 'learnpress' ),
-				__( 'Read more', 'learnpress' )
+				__( 'Enroll Now', 'learnpress' ),
+				__( 'Enroll Now', 'learnpress' )
 			);
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
