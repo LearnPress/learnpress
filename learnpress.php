@@ -18,6 +18,7 @@ use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
+use LearnPress\Ajax\McpApiKeysAjax;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Ajax\ExportOrderCSVAjax;
 use LearnPress\Background\LPBackgroundTrigger;
@@ -28,6 +29,7 @@ use LearnPress\Gutenberg\GutenbergHandleMain;
 use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\SendEmailAjax;
 use LearnPress\MCP\Abilities;
+use LearnPress\MCP\Auth\ApiKeyAuthenticator;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
@@ -712,6 +714,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					SendEmailAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
+					McpApiKeysAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},
@@ -850,6 +853,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			if ( LP_Settings::get_option( 'enable_mcp_integration', 'no' ) !== 'yes' ) {
 				return;
 			}
+
+			ApiKeyAuthenticator::init();
 
 			if ( ! function_exists( 'wp_register_ability' ) ) {
 				if ( is_admin() ) {

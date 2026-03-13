@@ -104,6 +104,16 @@ return apply_filters(
 			),
 		),
 		array(
+			'title'   => esc_html__( 'Allow Legacy MCP Auth (Temporary)', 'learnpress' ),
+			'id'      => 'mcp_allow_legacy_auth',
+			'default' => 'yes',
+			'type'    => 'checkbox',
+			'desc'    => esc_html__(
+				'Allow non-API-key authentication temporarily for MCP requests during migration. Disable after clients switch to API keys.',
+				'learnpress'
+			),
+		),
+		array(
 			'type' => 'sectionend',
 			'id'   => 'lp_metabox_advanced_mcp',
 		),
