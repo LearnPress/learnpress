@@ -17,6 +17,7 @@ use LP_Assets;
 use LP_Helper;
 use LP_Profile;
 use Throwable;
+use LP_Page_Controller;
 
 class CourseBuilderTemplate {
 	use Singleton;
@@ -159,38 +160,70 @@ class CourseBuilderTemplate {
 	 * @version 1.0.0
 	 */
 	public function dequeue_theme_styles() {
-		global $wp_query, $wp_styles;
+		global $wp_styles, $wp_scripts;
 
-		if ( empty( $wp_query ) || ! $wp_query->get( 'is_course_builder' ) ) {
+		if ( ! LP_Page_Controller::is_page_course_builder() ) {
 			return;
 		}
 
-		if ( ! $wp_styles instanceof \WP_Styles ) {
-			return;
+		$allowed_styles = apply_filters( 'learn-press/course-builder/allowed-styles', [
+			'dashicons',
+			'admin-bar',
+			'buttons',
+			'media-views',
+			'wp-components',
+			'wp-block-library',
+			'wp-editor',
+			'wp-edit-post',
+			'wp-block-editor',
+			'wp-components',
+			'wp-editor',
+			'wp-nux',
+			'wp-notices',
+		] );
+
+		$allowed_scripts = apply_filters( 'learn-press/course-builder/allowed-scripts', [
+			'jquery',
+			'jquery-core',
+			'jquery-migrate',
+			'jquery-ui-core',
+			'jquery-ui-widget',
+			'wp-api-fetch',
+			'wp-i18n',
+			'wp-components',
+			'wp-element',
+			'react',
+			'react-dom',
+			'wp-polyfill',
+			'wp-hooks',
+			'lodash',
+			'moment',
+			'heartbeat',
+			'wp-data',
+			'wp-core-data',
+			'wp-url',
+			'wp-api',
+			'wp-block-editor',
+			'wp-blocks',
+			'wp-media-utils',
+			'wp-compose',
+			'regenerator-runtime',
+			'wp-a11y',
+		] );
+
+		if ( ! empty( $wp_styles->queue ) ) {
+			foreach ( $wp_styles->queue as $handle ) {
+				if ( ! in_array( $handle, $allowed_styles ) && strpos( $handle, 'lp-' ) !== 0 && strpos( $handle, 'learn-press' ) !== 0 && strpos( $handle, 'learnpress' ) !== 0 ) {
+					wp_dequeue_style( $handle );
+				}
+			}
 		}
 
-		$theme_uri = get_template_directory_uri();
-		$child_uri = get_stylesheet_directory_uri();
-
-		$whitelist = apply_filters( 'learn-press/course-builder/theme-styles-whitelist', [] );
-
-		foreach ( $wp_styles->registered as $handle => $style ) {
-			if ( in_array( $handle, $whitelist, true ) ) {
-				continue;
-			}
-
-			$src = $style->src ?? '';
-			if ( empty( $src ) ) {
-				continue;
-			}
-
-			// Check if style source is from theme or child-theme directory
-			if (
-				false !== strpos( $src, $theme_uri ) ||
-				( $child_uri !== $theme_uri && false !== strpos( $src, $child_uri ) )
-			) {
-				wp_dequeue_style( $handle );
-				wp_deregister_style( $handle );
+		if ( ! empty( $wp_scripts->queue ) ) {
+			foreach ( $wp_scripts->queue as $handle ) {
+				if ( ! in_array( $handle, $allowed_scripts ) && strpos( $handle, 'lp-' ) !== 0 && strpos( $handle, 'learn-press' ) !== 0 && strpos( $handle, 'learnpress' ) !== 0 ) {
+					wp_dequeue_script( $handle );
+				}
 			}
 		}
 	}

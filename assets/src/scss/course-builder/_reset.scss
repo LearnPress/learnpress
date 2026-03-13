@@ -5,8 +5,13 @@
 // by PHP dequeue in CourseBuilderTemplate::dequeue_theme_styles()
 // ============================================
 
+html {
+	margin-top: 0 !important;
+}
+
 #lp-builder-popup-container,
 #lp-course-builder,
+.lp-toast,
 .swal2-container {
 	// Base typography — override any theme <body> inheritance
 	font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,

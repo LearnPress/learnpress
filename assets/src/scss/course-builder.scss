@@ -322,6 +322,12 @@
 	}
 }
 
+#lp-course-builder {
+	.learn-press-message {
+		margin: 0;
+	}
+}
+
 // ============================================
 // Rich Text Editor — wp_editor() styling
 // Matches reference design: clean toolbar, Visual/Code tabs, auto-height
@@ -387,6 +393,14 @@
 		box-sizing: border-box;
 		background: $cb-bg;
 		transition: border-color 0.15s ease, background 0.15s ease;
+
+		&:focus {
+			outline: none;
+			box-shadow: none;
+			background-color: $cb-primary-bland;
+			border-color: $cb-primary;
+			color:$cb-primary;
+		}
 
 		&:hover {
 			color: $cb-primary;

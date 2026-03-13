@@ -153,7 +153,7 @@ export class BuilderTabLesson {
 
 		SweetAlert.fire( {
 			title: elLessonTrash.dataset.title || 'Trash Lesson',
-			text: elLessonTrash.dataset.content || 'Are you sure you want to move this lesson to trash?',
+			text: elLessonTrash.dataset.content || 'Are you sure? Moving it to the trash will cause this item to be removed from the course.',
 			icon: 'warning',
 			showCloseButton: true,
 			showCancelButton: true,

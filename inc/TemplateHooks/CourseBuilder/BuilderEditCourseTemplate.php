@@ -602,10 +602,24 @@ class BuilderEditCourseTemplate {
 			require_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
 		}
 
+		$filter_addon_tabs = function ( $tabs ) {
+			$allowed_tabs = [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material' ];
+			foreach ( array_keys( $tabs ) as $tab_key ) {
+				if ( ! in_array( $tab_key, $allowed_tabs, true ) ) {
+					unset( $tabs[ $tab_key ] );
+				}
+			}
+			return $tabs;
+		};
+
+		add_filter( 'learnpress/course/metabox/tabs', $filter_addon_tabs, 999 );
+
 		$metabox = new \LP_Meta_Box_Course();
 		ob_start();
 		$metabox->output( $course_model );
 		$settings = ob_get_clean();
+
+		remove_filter( 'learnpress/course/metabox/tabs', $filter_addon_tabs, 999 );
 
 		$output = [
 			'wrapper'          => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
