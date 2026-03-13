@@ -121,7 +121,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		$redirect_args = array();
 		if ( 'permalink' === $active_tab && 'yes' === LP_Request::get_param( 'lp_generate_user_slug' ) ) {
-			$result        = learn_press_generate_missing_user_public_slugs();
+			$result        = UserModel::generate_missing_pretty_slugs();
 			$redirect_args = array(
 				'lp-user-slug-generated' => $result['generated'],
 				'lp-user-slug-processed' => $result['processed'],

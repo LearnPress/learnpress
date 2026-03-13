@@ -32,6 +32,7 @@ use LP_WP_Filesystem;
 use stdClass;
 use Throwable;
 use WP_Error;
+use WP_User;
 
 class UserModel {
 	/**
@@ -229,6 +230,268 @@ class UserModel {
 	}
 
 	/**
+	 * Retrieve the pretty slug used instead of user_name.
+	 *
+	 * This value is used to build links such as instructor links and user profile links.
+	 * If a pretty slug has not been generated yet, it falls back to user_name when
+	 * $fallback_to_username is true.
+	 *
+	 * @param bool $fallback_to_username Whether to fallback to username if no pretty slug exists.
+	 *
+	 * @return string
+	 */
+	public function get_pretty_slug( bool $fallback_to_username = true ): string {
+		$slug = sanitize_title( (string) $this->get_meta_value_by_key( self::META_KEY_PUBLIC_SLUG, '' ) );
+
+		if ( '' !== $slug || ! $fallback_to_username ) {
+			return $slug;
+		}
+
+		$username = trim( (string) $this->get_username() );
+		if ( '' !== $username ) {
+			return $username;
+		}
+
+		$wp_user = get_userdata( $this->get_id() );
+
+		return $wp_user instanceof WP_User ? (string) $wp_user->user_login : '';
+	}
+
+	/**
+	 * Retrieve pretty slug for a user id.
+	 *
+	 * @param int  $user_id
+	 * @param bool $fallback_to_username
+	 *
+	 * @return string
+	 */
+	public static function get_pretty_slug_by_user_id( int $user_id, bool $fallback_to_username = true ): string {
+		if ( $user_id <= 0 ) {
+			return '';
+		}
+
+		$user_model = self::find( $user_id, true );
+		if ( $user_model instanceof UserModel ) {
+			return $user_model->get_pretty_slug( $fallback_to_username );
+		}
+
+		if ( ! $fallback_to_username ) {
+			return '';
+		}
+
+		$wp_user = get_userdata( $user_id );
+
+		return $wp_user instanceof WP_User ? (string) $wp_user->user_login : '';
+	}
+
+	/**
+	 * Build base source for pretty slug generation.
+	 *
+	 * @param int $user_id
+	 *
+	 * @return string
+	 */
+	public static function get_pretty_slug_source( int $user_id ): string {
+		$user = get_userdata( $user_id );
+
+		if ( ! $user instanceof WP_User ) {
+			return '';
+		}
+
+		$first_name = trim( (string) get_user_meta( $user_id, 'first_name', true ) );
+		$last_name  = trim( (string) get_user_meta( $user_id, 'last_name', true ) );
+		$full_name  = trim( "{$first_name} {$last_name}" );
+
+		if ( '' !== $full_name ) {
+			return $full_name;
+		}
+
+		return trim( (string) $user->user_login );
+	}
+
+	/**
+	 * Check if pretty slug exists for another user.
+	 *
+	 * @param string $slug
+	 * @param int    $exclude_user_id
+	 *
+	 * @return int
+	 */
+	public static function pretty_slug_exists( string $slug, int $exclude_user_id = 0 ): int {
+		global $wpdb;
+
+		if ( '' === $slug ) {
+			return 0;
+		}
+
+		$sql = $wpdb->prepare(
+			"SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s LIMIT 1",
+			self::META_KEY_PUBLIC_SLUG,
+			$slug
+		);
+
+		$found_user_id = (int) $wpdb->get_var( $sql );
+
+		if ( $found_user_id > 0 && $found_user_id !== $exclude_user_id ) {
+			return $found_user_id;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Create a unique pretty slug for user.
+	 *
+	 * @param int $user_id
+	 *
+	 * @return string|WP_Error
+	 */
+	public static function generate_pretty_slug( int $user_id ) {
+		$user = get_userdata( $user_id );
+
+		if ( ! $user instanceof WP_User ) {
+			return new WP_Error( 'lp_user_slug_invalid_user', esc_html__( 'The user is invalid.', 'learnpress' ) );
+		}
+
+		$user_model = self::find( $user_id, true );
+		if ( $user_model instanceof UserModel ) {
+			$existing_slug = $user_model->get_pretty_slug( false );
+			if ( '' !== $existing_slug ) {
+				return $existing_slug;
+			}
+		}
+
+		$base_source = self::get_pretty_slug_source( $user_id );
+		$base_slug   = sanitize_title( $base_source );
+
+		if ( '' === $base_slug ) {
+			$base_slug = sanitize_title( $user->user_login );
+		}
+
+		if ( '' === $base_slug ) {
+			return new WP_Error( 'lp_user_slug_empty_source', esc_html__( 'Unable to generate a public user slug.', 'learnpress' ) );
+		}
+
+		for ( $attempt = 0; $attempt < 10; $attempt++ ) {
+			$random_suffix = strtolower( wp_generate_password( 4, false, false ) );
+			$candidate     = sanitize_title( "{$base_slug}-{$random_suffix}" );
+
+			if ( '' === $candidate ) {
+				continue;
+			}
+
+			if ( ! self::pretty_slug_exists( $candidate, $user_id ) ) {
+				update_user_meta( $user_id, self::META_KEY_PUBLIC_SLUG, $candidate );
+
+				return $candidate;
+			}
+		}
+
+		return new WP_Error( 'lp_user_slug_not_unique', esc_html__( 'Unable to generate a unique public user slug.', 'learnpress' ) );
+	}
+
+	/**
+	 * Validate and update pretty slug manually.
+	 *
+	 * @param int    $user_id
+	 * @param string $slug
+	 *
+	 * @return string|WP_Error
+	 */
+	public static function update_pretty_slug( int $user_id, string $slug ) {
+		$user = get_userdata( $user_id );
+
+		if ( ! $user instanceof WP_User ) {
+			return new WP_Error( 'lp_user_slug_invalid_user', esc_html__( 'The user is invalid.', 'learnpress' ) );
+		}
+
+		$slug = sanitize_title( wp_unslash( $slug ) );
+
+		if ( '' === $slug ) {
+			delete_user_meta( $user_id, self::META_KEY_PUBLIC_SLUG );
+
+			return '';
+		}
+
+		if ( self::pretty_slug_exists( $slug, $user_id ) ) {
+			return new WP_Error( 'lp_user_slug_exists', esc_html__( 'This user slug already exists.', 'learnpress' ) );
+		}
+
+		update_user_meta( $user_id, self::META_KEY_PUBLIC_SLUG, $slug );
+
+		return $slug;
+	}
+
+	/**
+	 * Resolve user by pretty slug with legacy username fallback.
+	 *
+	 * @param string $identifier
+	 *
+	 * @return WP_User|false
+	 */
+	public static function resolve_user_by_public_identifier( string $identifier ) {
+		$identifier_raw  = trim( urldecode( $identifier ) );
+		$identifier_slug = sanitize_title( $identifier_raw );
+
+		if ( '' === $identifier_raw ) {
+			return false;
+		}
+
+		$user_id = self::pretty_slug_exists( $identifier_slug );
+		if ( $user_id > 0 ) {
+			return get_user_by( 'ID', $user_id );
+		}
+
+		$user = get_user_by( 'login', $identifier_raw );
+		if ( $user instanceof WP_User ) {
+			return $user;
+		}
+
+		return get_user_by( 'slug', $identifier_slug );
+	}
+
+	/**
+	 * Generate pretty slug for users that still miss one (old sites support).
+	 *
+	 * @return array{processed:int,generated:int,skipped:int,failed:int}
+	 */
+	public static function generate_missing_pretty_slugs(): array {
+		$user_ids = get_users(
+			[
+				'fields' => 'ids',
+				'number' => -1,
+			]
+		);
+
+		$result = [
+			'processed' => 0,
+			'generated' => 0,
+			'skipped'   => 0,
+			'failed'    => 0,
+		];
+
+		foreach ( $user_ids as $user_id ) {
+			$user_id = (int) $user_id;
+			$result['processed']++;
+
+			$user_model = self::find( $user_id, true );
+			if ( $user_model instanceof UserModel && '' !== $user_model->get_pretty_slug( false ) ) {
+				$result['skipped']++;
+				continue;
+			}
+
+			$generated = self::generate_pretty_slug( $user_id );
+			if ( is_wp_error( $generated ) ) {
+				$result['failed']++;
+			} else {
+				$result['generated']++;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Get upload profile src.
 	 *
 	 * @return string
@@ -352,7 +615,7 @@ class UserModel {
 		$single_instructor_link = '';
 
 		try {
-			$user_name                 = learn_press_get_user_public_slug( $this->get_id() );
+			$user_name                 = $this->get_pretty_slug();
 			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
 			if ( ! $single_instructor_page_id ) {
 				return $single_instructor_link;

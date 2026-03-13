@@ -7,7 +7,7 @@ foreach ( $currencies as $code => $name ) {
 
 $settings      = LP_Settings::instance();
 $user          = wp_get_current_user();
-$username      = learn_press_get_user_public_slug( (int) $user->ID );
+$username      = \LearnPress\Models\UserModel::get_pretty_slug_by_user_id( (int) $user->ID );
 $settings_slug = $settings->get( 'profile_endpoints.settings', 'settings' );
 $profile_slug  = 'profile';
 

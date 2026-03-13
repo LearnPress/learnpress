@@ -2,6 +2,7 @@
 
 use LearnPress\Filters\FilterBase;
 use LearnPress\Filters\UserItemsFilter;
+use LearnPress\Models\UserModel;
 
 /**
  * Class LP_User
@@ -929,7 +930,7 @@ class LP_User extends LP_Abstract_User {
 			}
 
 			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
-			$user_slug                 = learn_press_get_user_public_slug( $author_id );
+			$user_slug                 = UserModel::get_pretty_slug_by_user_id( $author_id );
 			$single_instructor_link    = trailingslashit( trailingslashit( get_page_link( $single_instructor_page_id ) ) . $user_slug );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );

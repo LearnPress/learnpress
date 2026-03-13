@@ -40,7 +40,7 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 					<input id="learn-press-user-public-slug"
 						class="regular-text"
 						type="text"
-						value="<?php echo esc_attr( learn_press_get_user_public_slug_raw( $user->ID ) ); ?>"
+						value="<?php echo esc_attr( \LearnPress\Models\UserModel::get_pretty_slug_by_user_id( (int) $user->ID, false ) ); ?>"
 						name="lp_user_slug">
 					<p class="description"><?php esc_html_e( 'Must be unique. Leave empty to fall back to the username in profile URLs.', 'learnpress' ); ?></p>
 				</td>

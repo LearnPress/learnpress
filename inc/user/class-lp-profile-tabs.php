@@ -1,5 +1,5 @@
 <?php
-
+use LearnPress\Models\UserModel;
 /**
  * Class LP_Profile_Tabs
  */
@@ -167,7 +167,7 @@ class LP_Profile_Tabs {
 	public function get_tab_link( $tab = false, $with_section = false, $user = null ) {
 		if ( ( $tab || $with_section ) && empty( $user ) ) {
 			$current_user = learn_press_get_current_user();
-			$user         = learn_press_get_user_public_slug( $current_user->get_id() );
+			$user         = UserModel::get_pretty_slug_by_user_id( $current_user->get_id() );
 		}
 
 		$args = array( 'user' => $user );
@@ -248,7 +248,7 @@ class LP_Profile_Tabs {
 		}
 
 		$current_section_slug = $this->get_current_section();
-		$url                  = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, learn_press_get_user_public_slug( $this->get_profile()->get_user()->get_id() ) );
+		$url                  = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, UserModel::get_pretty_slug_by_user_id( $this->get_profile()->get_user()->get_id() ) );
 		if ( is_array( $args ) && $args ) {
 			if ( ! $with_permalink ) {
 				$url = esc_url_raw( add_query_arg( $args, $url ) );

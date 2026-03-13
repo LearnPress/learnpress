@@ -10,6 +10,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -42,18 +43,13 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 					$viewing_user = $current_user;
 				} else {
 					$request_user = urldecode( (string) $wp->query_vars['user'] );
-					$wp_user      = learn_press_resolve_user_by_public_identifier( $request_user );
+					$wp_user      = UserModel::resolve_user_by_public_identifier( $request_user );
 
 					if ( $wp_user ) {
-						$public_slug = learn_press_get_user_public_slug_raw( $wp_user->ID );
-						if ( '' !== $public_slug && $request_user !== $public_slug ) {
-							$viewing_user = false;
-						} else {
-							$viewing_user = learn_press_get_user( $wp_user->ID );
+						$viewing_user = learn_press_get_user( $wp_user->ID );
 
-							if ( $viewing_user->is_guest() ) {
-								$viewing_user = false;
-							}
+						if ( $viewing_user->is_guest() ) {
+							$viewing_user = false;
 						}
 					}
 				}

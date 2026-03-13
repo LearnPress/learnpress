@@ -15,252 +15,6 @@ function learn_press_get_user_profile_tabs() {
 }
 
 /**
- * Get LearnPress public slug meta key.
- *
- * @return string
- */
-function learn_press_get_user_public_slug_meta_key() {
-	return \LearnPress\Models\UserModel::META_KEY_PUBLIC_SLUG;
-}
-
-/**
- * Get raw public slug value without fallback.
- *
- * @param int $user_id
- *
- * @return string
- */
-function learn_press_get_user_public_slug_raw( int $user_id ): string {
-	if ( $user_id <= 0 ) {
-		return '';
-	}
-
-	return (string) get_user_meta( $user_id, learn_press_get_user_public_slug_meta_key(), true );
-}
-
-/**
- * Get public slug and optionally fallback to username.
- *
- * @param int  $user_id
- * @param bool $fallback_to_username
- *
- * @return string
- */
-function learn_press_get_user_public_slug( int $user_id, bool $fallback_to_username = true ): string {
-	$slug = learn_press_get_user_public_slug_raw( $user_id );
-
-	if ( '' !== $slug || ! $fallback_to_username ) {
-		return $slug;
-	}
-
-	$user = get_userdata( $user_id );
-
-	return $user ? (string) $user->user_login : '';
-}
-
-/**
- * Build base string for public slug generation.
- *
- * @param int $user_id
- *
- * @return string
- */
-function learn_press_get_user_public_slug_source( int $user_id ): string {
-	$user = get_userdata( $user_id );
-
-	if ( ! $user ) {
-		return '';
-	}
-
-	$first_name = trim( (string) get_user_meta( $user_id, 'first_name', true ) );
-	$last_name  = trim( (string) get_user_meta( $user_id, 'last_name', true ) );
-	$full_name  = trim( "{$first_name} {$last_name}" );
-
-	if ( '' !== $full_name ) {
-		return $full_name;
-	}
-
-	return trim( (string) $user->user_login );
-}
-
-/**
- * Check if public slug exists for another user.
- *
- * @param string $slug
- * @param int    $exclude_user_id
- *
- * @return int
- */
-function learn_press_user_public_slug_exists( string $slug, int $exclude_user_id = 0 ): int {
-	global $wpdb;
-
-	if ( '' === $slug ) {
-		return 0;
-	}
-
-	$sql = $wpdb->prepare(
-		"SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s LIMIT 1",
-		learn_press_get_user_public_slug_meta_key(),
-		$slug
-	);
-
-	$found_user_id = (int) $wpdb->get_var( $sql );
-
-	if ( $found_user_id > 0 && $found_user_id !== $exclude_user_id ) {
-		return $found_user_id;
-	}
-
-	return 0;
-}
-
-/**
- * Create a unique public slug for a user.
- *
- * @param int $user_id
- *
- * @return string|WP_Error
- */
-function learn_press_generate_user_public_slug( int $user_id ) {
-	$user = get_userdata( $user_id );
-
-	if ( ! $user ) {
-		return new WP_Error( 'lp_user_slug_invalid_user', esc_html__( 'The user is invalid.', 'learnpress' ) );
-	}
-
-	$existing_slug = learn_press_get_user_public_slug_raw( $user_id );
-	if ( '' !== $existing_slug ) {
-		return $existing_slug;
-	}
-
-	$base_source = learn_press_get_user_public_slug_source( $user_id );
-	$base_slug   = sanitize_title( $base_source );
-
-	if ( '' === $base_slug ) {
-		$base_slug = sanitize_title( $user->user_login );
-	}
-
-	if ( '' === $base_slug ) {
-		return new WP_Error( 'lp_user_slug_empty_source', esc_html__( 'Unable to generate a public user slug.', 'learnpress' ) );
-	}
-
-	for ( $attempt = 0; $attempt < 10; $attempt++ ) {
-		$random_suffix = strtolower( wp_generate_password( 4, false, false ) );
-		$candidate     = sanitize_title( "{$base_slug}-{$random_suffix}" );
-
-		if ( '' === $candidate ) {
-			continue;
-		}
-
-		if ( ! learn_press_user_public_slug_exists( $candidate, $user_id ) ) {
-			update_user_meta( $user_id, learn_press_get_user_public_slug_meta_key(), $candidate );
-
-			return $candidate;
-		}
-	}
-
-	return new WP_Error( 'lp_user_slug_not_unique', esc_html__( 'Unable to generate a unique public user slug.', 'learnpress' ) );
-}
-
-/**
- * Validate and update public slug manually.
- *
- * @param int    $user_id
- * @param string $slug
- *
- * @return string|WP_Error
- */
-function learn_press_update_user_public_slug( int $user_id, string $slug ) {
-	$user = get_userdata( $user_id );
-
-	if ( ! $user ) {
-		return new WP_Error( 'lp_user_slug_invalid_user', esc_html__( 'The user is invalid.', 'learnpress' ) );
-	}
-
-	$slug = sanitize_title( wp_unslash( $slug ) );
-
-	if ( '' === $slug ) {
-		delete_user_meta( $user_id, learn_press_get_user_public_slug_meta_key() );
-
-		return '';
-	}
-
-	if ( learn_press_user_public_slug_exists( $slug, $user_id ) ) {
-		return new WP_Error( 'lp_user_slug_exists', esc_html__( 'This user slug already exists.', 'learnpress' ) );
-	}
-
-	update_user_meta( $user_id, learn_press_get_user_public_slug_meta_key(), $slug );
-
-	return $slug;
-}
-
-/**
- * Resolve user by LearnPress public slug with legacy fallback.
- *
- * @param string $identifier
- *
- * @return WP_User|false
- */
-function learn_press_resolve_user_by_public_identifier( string $identifier ) {
-	$identifier_raw  = trim( urldecode( $identifier ) );
-	$identifier_slug = sanitize_title( $identifier_raw );
-
-	if ( '' === $identifier_raw ) {
-		return false;
-	}
-
-	$user_id = learn_press_user_public_slug_exists( $identifier_slug );
-	if ( $user_id > 0 ) {
-		return get_user_by( 'ID', $user_id );
-	}
-
-	$user = get_user_by( 'login', $identifier_raw );
-	if ( $user instanceof WP_User ) {
-		return $user;
-	}
-
-	return get_user_by( 'slug', $identifier_slug );
-}
-
-/**
- * Generate missing public slugs for existing users.
- *
- * @return array
- */
-function learn_press_generate_missing_user_public_slugs(): array {
-	$user_ids = get_users(
-		[
-			'fields' => 'ids',
-			'number' => -1,
-		]
-	);
-
-	$result = [
-		'processed' => 0,
-		'generated' => 0,
-		'skipped'   => 0,
-		'failed'    => 0,
-	];
-
-	foreach ( $user_ids as $user_id ) {
-		$result['processed']++;
-
-		if ( '' !== learn_press_get_user_public_slug_raw( (int) $user_id ) ) {
-			$result['skipped']++;
-			continue;
-		}
-
-		$generated = learn_press_generate_user_public_slug( (int) $user_id );
-		if ( is_wp_error( $generated ) ) {
-			$result['failed']++;
-		} else {
-			$result['generated']++;
-		}
-	}
-
-	return $result;
-}
-
-/**
  * Ensure new users receive a public slug.
  *
  * @param int $user_id
@@ -268,11 +22,12 @@ function learn_press_generate_missing_user_public_slugs(): array {
  * @return void
  */
 function learn_press_maybe_generate_user_public_slug_on_register( int $user_id ) {
-	if ( '' !== learn_press_get_user_public_slug_raw( $user_id ) ) {
+	$user_model = UserModel::find( $user_id, true );
+	if ( $user_model instanceof UserModel && '' !== $user_model->get_pretty_slug( false ) ) {
 		return;
 	}
 
-	learn_press_generate_user_public_slug( $user_id );
+	UserModel::generate_pretty_slug( $user_id );
 }
 
 add_action( 'user_register', 'learn_press_maybe_generate_user_public_slug_on_register' );
@@ -1302,7 +1057,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 
 	global $wp_query;
 	$args = array(
-		'user' => learn_press_get_user_public_slug( $user_id ),
+		'user' => UserModel::get_pretty_slug_by_user_id( (int) $user_id ),
 	);
 
 	if ( $tab ) {
@@ -1577,7 +1332,7 @@ function learn_press_update_extra_user_profile_fields( $user_id ) {
 	}
 
 	if ( current_user_can( 'edit_users' ) && array_key_exists( 'lp_user_slug', $_POST ) ) {
-		$slug_result = learn_press_update_user_public_slug( $user_id, (string) $_POST['lp_user_slug'] );
+		$slug_result = UserModel::update_pretty_slug( $user_id, (string) $_POST['lp_user_slug'] );
 		if ( is_wp_error( $slug_result ) ) {
 			// Preserve current behavior style: stop save with a clear message on invalid slug.
 			wp_die( esc_html( $slug_result->get_error_message() ) );
