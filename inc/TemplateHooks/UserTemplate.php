@@ -98,7 +98,7 @@ class UserTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	public function html_avatar( UserModel $user, array $size_display = [] ): string {
 		$html = '';
@@ -125,7 +125,7 @@ class UserTemplate {
 
 			$avatar_url = $user->get_avatar_url();
 			$img_avatar = sprintf(
-				'<img alt="%s" class="avatar" src="%s" width="%d" height="%d" decoding="async" />',
+				'<img alt="%s" class="avatar" src="%s" width="%d" height="%d" decoding="async" loading="lazy" />',
 				esc_attr__( 'User Avatar', 'learnpress' ),
 				$avatar_url,
 				$width,
