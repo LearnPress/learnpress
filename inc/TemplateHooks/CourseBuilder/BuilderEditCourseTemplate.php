@@ -292,12 +292,20 @@ class BuilderEditCourseTemplate {
 		$edit = [
 			'wrapper'           => '<div class="cb-course-edit-categories__wrapper">',
 			'header'            => '<div class="cb-terms-header">',
+			'label_wrap'        => '<div class="cb-terms-header__label-wrap">',
 			'label'             => sprintf( '<label class="cb-terms-header__label">%s</label>', __( 'Categories', 'learnpress' ) ),
+			'btn_search'        => sprintf(
+				'<button type="button" class="cb-terms-header__btn-search" data-toggle-target="#cb-course-edit-categories-search-toolbar" aria-expanded="false" aria-label="%s">
+					<i class="lp-icon-search"></i>
+				</button>',
+				esc_attr__( 'Search categories', 'learnpress' )
+			),
+			'label_wrap_end'    => '</div>',
 			'btn_add_new'       => sprintf( '<button class="cb-course-edit-category__btn-add-new cb-terms-header__btn-add-new">%s</button>', __( 'Add New', 'learnpress' ) ),
 			'header_end'        => '</div>',
 			'form_add_category' => $form_add_category,
 			'search'            => sprintf(
-				'<div class="cb-course-edit-categories__toolbar">
+				'<div class="cb-course-edit-categories__toolbar cb-terms-search-toolbar" id="cb-course-edit-categories-search-toolbar">
 					<label class="cb-course-edit-categories__search-wrap">
 						<span class="screen-reader-text">%1$s</span>
 						<input type="search" class="cb-course-edit-category__search-input" placeholder="%2$s" />
@@ -354,7 +362,7 @@ class BuilderEditCourseTemplate {
 		$empty_search        = esc_html__( 'No matching tags.', 'learnpress' );
 
 		$toolbar = sprintf(
-			'<div class="cb-course-edit-tags__toolbar">
+			'<div class="cb-course-edit-tags__toolbar cb-terms-search-toolbar" id="cb-course-edit-tags-search-toolbar">
 				<label class="cb-course-edit-tags__search-wrap">
 					<span class="screen-reader-text">%1$s</span>
 					<input type="search" class="cb-course-edit-tags__search-input" placeholder="%2$s" />
@@ -367,7 +375,15 @@ class BuilderEditCourseTemplate {
 		$edit = [
 			'wrapper'                  => '<div class="cb-course-edit-tags__wrapper">',
 			'header'                   => '<div class="cb-terms-header">',
+			'label_wrap'               => '<div class="cb-terms-header__label-wrap">',
 			'label'                    => sprintf( '<label class="cb-terms-header__label">%s</label>', __( 'Tags', 'learnpress' ) ),
+			'btn_search'               => sprintf(
+				'<button type="button" class="cb-terms-header__btn-search" data-toggle-target="#cb-course-edit-tags-search-toolbar" aria-expanded="false" aria-label="%s">
+					<i class="lp-icon-search"></i>
+				</button>',
+				esc_attr__( 'Search tags', 'learnpress' )
+			),
+			'label_wrap_end'           => '</div>',
 			'btn_add_new'              => sprintf( '<button class="cb-course-edit-tag__btn-add-new cb-terms-header__btn-add-new">%s</button>', __( 'Add New', 'learnpress' ) ),
 			'header_end'               => '</div>',
 			'form_add_tag_wrapper'     => '<div class="cb-course-edit-terms__form-add-tag" style="display:none;">',

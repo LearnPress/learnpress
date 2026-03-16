@@ -54,6 +54,8 @@ export class BuilderEditCourse {
 		elBtnSaveCategory: '.cb-course-edit-category__btn-save',
 		elBtnCancelCategoryNew: '.cb-course-edit-category__btn-cancel',
 		elCategorySearchInput: '.cb-course-edit-category__search-input',
+		elBtnToggleTermsSearch: '.cb-terms-header__btn-search',
+		elTermsSearchToolbar: '.cb-terms-search-toolbar',
 
 		elWrapperCheckBoxTag: '.cb-course-edit-tags__checkbox-wrapper',
 		elFormTagAddNew: '.cb-course-edit-terms__form-add-tag',
@@ -159,6 +161,11 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elBtnAddCategoryNew,
 				class: this,
 				callBack: this.toggleCustomAddCategoryForm.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elBtnToggleTermsSearch,
+				class: this,
+				callBack: this.toggleTermsSearchToolbar.name,
 			},
 			{
 				selector: BuilderEditCourse.selectors.elBtnCancelCategoryNew,
@@ -409,6 +416,45 @@ export class BuilderEditCourse {
 
 	handleCategorySearchInput() {
 		this.applyCategorySearch();
+	}
+
+	toggleTermsSearchToolbar( args ) {
+		const { e, target } = args;
+		if ( e ) e.preventDefault();
+
+		const btnSearch = target?.closest( BuilderEditCourse.selectors.elBtnToggleTermsSearch );
+		if ( ! btnSearch ) {
+			return;
+		}
+
+		const toolbarTarget = btnSearch.dataset.toggleTarget || '';
+		const toolbar = toolbarTarget ? document.querySelector( toolbarTarget ) : null;
+		if ( ! toolbar ) {
+			return;
+		}
+
+		const willOpen = ! toolbar.classList.contains( 'is-open' );
+		toolbar.classList.toggle( 'is-open', willOpen );
+		btnSearch.setAttribute( 'aria-expanded', willOpen ? 'true' : 'false' );
+
+		const searchInput = toolbar.querySelector( 'input[type="search"]' );
+
+		if ( willOpen ) {
+			if ( searchInput ) {
+				setTimeout( () => searchInput.focus(), 220 );
+			}
+			return;
+		}
+
+		if ( searchInput ) {
+			searchInput.value = '';
+		}
+
+		if ( searchInput?.matches( BuilderEditCourse.selectors.elCategorySearchInput ) ) {
+			this.applyCategorySearch();
+		} else if ( searchInput?.matches( BuilderEditCourse.selectors.elTagSearchInput ) ) {
+			this.syncTagManagement();
+		}
 	}
 
 	getDirectChildByTagName( element, tagName ) {
