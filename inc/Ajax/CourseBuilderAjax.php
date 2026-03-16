@@ -9,6 +9,7 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\LessonPostModel;
@@ -814,6 +815,18 @@ class CourseBuilderAjax extends AbstractAjax {
 
 		try {
 			$data = self::check_valid_course();
+			$course_id = absint( $data['course_id'] ?? 0 );
+			if ( $course_id > 0 ) {
+				if ( ! CourseBuilderAccessPolicy::can_edit_course_by_id( $course_id ) ) {
+					throw new Exception( __( 'You are not allowed to update this course', 'learnpress' ) );
+				}
+			} elseif ( ! CourseBuilderAccessPolicy::can_create_item_type( LP_COURSE_CPT ) ) {
+				throw new Exception( __( 'You are not allowed to create courses', 'learnpress' ) );
+			}
+
+			if ( ! current_user_can( 'edit_lp_courses' ) ) {
+				throw new Exception( __( 'You are not allowed to create categories', 'learnpress' ) );
+			}
 
 			$name   = sanitize_text_field( $data['name'] ?? '' );
 			$parent = isset( $data['parent'] ) ? (int) $data['parent'] : 0;
@@ -860,6 +873,19 @@ class CourseBuilderAjax extends AbstractAjax {
 
 		try {
 			$data = self::check_valid_course();
+			$course_id = absint( $data['course_id'] ?? 0 );
+			if ( $course_id > 0 ) {
+				if ( ! CourseBuilderAccessPolicy::can_edit_course_by_id( $course_id ) ) {
+					throw new Exception( __( 'You are not allowed to update this course', 'learnpress' ) );
+				}
+			} elseif ( ! CourseBuilderAccessPolicy::can_create_item_type( LP_COURSE_CPT ) ) {
+				throw new Exception( __( 'You are not allowed to create courses', 'learnpress' ) );
+			}
+
+			if ( ! current_user_can( 'edit_lp_courses' ) ) {
+				throw new Exception( __( 'You are not allowed to create tags', 'learnpress' ) );
+			}
+
 			$name = sanitize_text_field( wp_unslash( $data['name'] ?? '' ) );
 			$term = wp_insert_term( $name, 'course_tag', array() );
 
@@ -947,6 +973,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				: 'publish';
 
 			if ( $insert ) {
+				if ( ! CourseBuilderAccessPolicy::can_create_item_type( LP_LESSON_CPT ) ) {
+					throw new Exception( __( 'You are not allowed to create lessons', 'learnpress' ) );
+				}
+
 				$lesson_id = wp_insert_post(
 					array(
 						'post_type'    => LP_LESSON_CPT,
@@ -1014,7 +1044,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$curd->remove_item( $lesson_id );
 			}
 
-			do_action( 'learn-press/course-builder/update-lesson', $data );
+			do_action( 'learn-press/course-builder/update-lesson', $data, $lesson_model );
 
 			$response->status              = 'success';
 			$response->data->status        = $target_status;
@@ -1192,6 +1222,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				: 'publish';
 
 			if ( $insert ) {
+				if ( ! CourseBuilderAccessPolicy::can_create_item_type( LP_QUIZ_CPT ) ) {
+					throw new Exception( __( 'You are not allowed to create quizzes', 'learnpress' ) );
+				}
+
 				$quiz_id = wp_insert_post(
 					array(
 						'post_type'    => LP_QUIZ_CPT,
@@ -1259,7 +1293,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$curd->remove_item( $quiz_id );
 			}
 
-			do_action( 'learn-press/course-builder/update-quiz', $data );
+			do_action( 'learn-press/course-builder/update-quiz', $data, $quiz_model );
 
 			$response->status             = 'success';
 			$response->data->status       = $target_status;
@@ -1436,6 +1470,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				: 'publish';
 
 			if ( $insert ) {
+				if ( ! CourseBuilderAccessPolicy::can_create_item_type( LP_QUESTION_CPT ) ) {
+					throw new Exception( __( 'You are not allowed to create questions', 'learnpress' ) );
+				}
+
 				$question_id = wp_insert_post(
 					array(
 						'post_type'    => LP_QUESTION_CPT,
@@ -1497,7 +1535,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$wpdb->delete( $wpdb->prefix . 'learnpress_quiz_questions', array( 'question_id' => $question_id ), array( '%d' ) );
 			}
 
-			do_action( 'learn-press/course-builder/update-question', $data );
+			do_action( 'learn-press/course-builder/update-question', $data, $question_model ?? null );
 
 			$response->status                = 'success';
 			$response->data->status          = $target_status;
@@ -1581,7 +1619,7 @@ class CourseBuilderAjax extends AbstractAjax {
 	}
 
 	protected function get_course_by_item_id( $item_id ) {
-		static $output;
+		static $cache = [];
 
 		global $wpdb;
 
@@ -1589,21 +1627,25 @@ class CourseBuilderAjax extends AbstractAjax {
 			return false;
 		}
 
-		if ( ! isset( $output ) ) {
-			$output = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT c.ID FROM {$wpdb->posts} c
-					INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
-					INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
-					WHERE si.item_id = %d ORDER BY si.section_id DESC LIMIT 1
-					",
-					$item_id
-				)
-			);
+		$item_id = absint( $item_id );
+		if ( isset( $cache[ $item_id ] ) ) {
+			return $cache[ $item_id ] ? $cache[ $item_id ] : false;
 		}
 
-		if ( $output ) {
-			return absint( $output );
+		$course_id = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT c.ID FROM {$wpdb->posts} c
+				INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
+				INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
+				WHERE si.item_id = %d ORDER BY si.section_id DESC LIMIT 1
+				",
+				$item_id
+			)
+		);
+		$cache[ $item_id ] = absint( $course_id );
+
+		if ( $cache[ $item_id ] ) {
+			return $cache[ $item_id ];
 		}
 
 		return false;

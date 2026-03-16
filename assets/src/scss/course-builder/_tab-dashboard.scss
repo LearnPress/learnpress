@@ -80,13 +80,21 @@
 	// =====================
 	.lp-cb-dashboard__charts-row {
 		display: grid;
-		grid-template-columns: 1fr 1fr 280px;
 		gap: 20px;
 		margin-bottom: 24px;
 
-		@media (max-width: 1200px) {
+		&.lp-cb-dashboard__charts-row--admin {
+			grid-template-columns: 1fr 1fr 280px;
+
+			@media (max-width: 1200px) {
+				grid-template-columns: 1fr 1fr;
+			}
+		}
+
+		&.lp-cb-dashboard__charts-row--instructor {
 			grid-template-columns: 1fr 1fr;
 		}
+
 		@media (max-width: 768px) {
 			grid-template-columns: 1fr;
 		}

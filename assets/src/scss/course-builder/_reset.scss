@@ -28,4 +28,12 @@ html {
 	*::after {
 		box-sizing: border-box;
 	}
+
+	button {
+		line-height: 1.5;
+		font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+			Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
 }

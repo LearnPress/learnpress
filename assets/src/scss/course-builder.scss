@@ -112,7 +112,6 @@
 		.lp-meta-box__duration label,
 		.lesson-materials .field-material__label {
 			font-size: 14px;
-			color: $cb-text;
 			margin: 0;
 			width: 150px;
 			min-width: 150px;
@@ -417,7 +416,6 @@
 		float: none;
 		flex-shrink: 0;
 		display: flex;
-		gap: 0;
 		background: $cb-bg;
 		border-radius: $cb-radius-lg;
 		border: 1px solid $cb-border;
@@ -594,7 +592,6 @@
 	margin: 0;
 	display: inline-block;
 	position: relative;
-	margin: 0;
 	padding: 0px 24px;
 	text-decoration: none;
 	font-weight: 500;
@@ -716,11 +713,10 @@ input.lp-search-title-item:focus {
 
 .list-items-wrap .learn-press-pagination ul.page-numbers {
 	display: flex;
-	gap: 5px;
+	gap: $cb-spacing-sm;
 	list-style: none;
 	padding: 0;
 	margin: 0;
-	border: none;
 }
 
 .list-items-wrap .page-numbers li span.page-numbers.current,
@@ -728,29 +724,38 @@ input.lp-search-title-item:focus {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 32px;
-	border-radius: 6px;
-	font-size: 13px;
+	min-width: 36px;
+	height: 36px;
+	padding: 0 $cb-spacing-md;
+	border-radius: $cb-radius;
 	text-decoration: none;
-	font-weight: 500;
-	border: 1px solid transparent;
+	color: $cb-text-subtle;
+	font-size: $cb-font-md;
+	transition: all 0.2s;
+	background: $cb-bg;
+	font-weight: 600;
 }
 
 .list-items-wrap .page-numbers li span.page-numbers.current {
-	background-color: #1e1e1e;
-	color: #fff;
-}
-
-.list-items-wrap .page-numbers li a.page-numbers {
-	background-color: $cb-bg;
-	color: $cb-text-muted;
-	border-color: $cb-border;
-	transition: all 0.2s;
+	background-color: $cb-primary;
+	color: $cb-bg;
 }
 
 .list-items-wrap .page-numbers li a.page-numbers:hover {
+	background-color: $cb-bg-hover;
 	border-color: $cb-border-input;
 	color: $cb-text;
+}
+
+.list-items-wrap .page-numbers li a.page-numbers.next,
+.list-items-wrap .page-numbers li a.page-numbers.prev {
+	background-color: $cb-bg-hover;
+	border-color: $cb-border-input;
+
+	&:hover {
+		background-color: $cb-primary;
+		color: $cb-bg;
+	}
 }
 
 .list-items-wrap .page-numbers i {
@@ -829,7 +834,7 @@ input.lp-search-title-item:focus {
 .lp-popup-items-to-select ul.list-items-selected li {
 	display: flex;
 	align-items: center;
-	padding: 12px 16px;
+	padding: 5px;
 	border-bottom: 1px solid #f5f5f5;
 	color: #1e1e1e;
 	cursor: pointer;
@@ -850,10 +855,6 @@ input.lp-search-title-item:focus {
 
 .lp-popup-items-to-select .list-items-selected li:hover {
 	background: #f5f5f5;
-}
-
-.lp-popup-items-to-select .list-items-selected li {
-	padding: 5px;
 }
 
 .lp-popup-items-to-select .header .header-count-items-selected {

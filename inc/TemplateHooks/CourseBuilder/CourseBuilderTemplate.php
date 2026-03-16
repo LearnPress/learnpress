@@ -10,6 +10,7 @@ namespace LearnPress\TemplateHooks\CourseBuilder;
 
 use Exception;
 use LearnPress\CourseBuilder\CourseBuilder;
+use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
@@ -482,6 +483,14 @@ class CourseBuilderTemplate {
 	 * @since 4.3.0
 	 */
 	protected function render_detail_view( $tab_current, $post_id, $section_current ) {
+		if ( ! CourseBuilderAccessPolicy::can_access_tab_post( $tab_current, $post_id ) ) {
+			return Template::print_message(
+				__( "Sorry, you don't have permission to access this content", 'learnpress' ),
+				'error',
+				false
+			);
+		}
+
 		$is_new_post = ( $post_id === CourseBuilder::POST_NEW );
 		$post        = null;
 

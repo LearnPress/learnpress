@@ -9,7 +9,9 @@
 
 namespace LearnPress\TemplateHooks\CourseBuilder;
 
+use Exception;
 use LearnPress\CourseBuilder\CourseBuilder;
+use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\LessonPostModel;
@@ -37,6 +39,28 @@ class BuilderPopupTemplate {
 		$callbacks[] = self::class . ':render_question_popup';
 
 		return $callbacks;
+	}
+
+	/**
+	 * Validate object-level permission before rendering popup content.
+	 *
+	 * @param string $item_type
+	 * @param int    $item_id
+	 *
+	 * @throws Exception
+	 */
+	private static function ensure_popup_access( string $item_type, int $item_id ) {
+		if ( $item_id > 0 ) {
+			if ( ! CourseBuilderAccessPolicy::can_edit_item( $item_type, $item_id ) ) {
+				throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
+			}
+
+			return;
+		}
+
+		if ( ! CourseBuilderAccessPolicy::can_create_item_type( $item_type ) ) {
+			throw new Exception( __( "Sorry, you don't have permission to create this item", 'learnpress' ) );
+		}
 	}
 
 	/**
@@ -150,6 +174,7 @@ class BuilderPopupTemplate {
 	public static function render_lesson_popup( array $args = [] ): stdClass {
 		$response  = new stdClass();
 		$lesson_id = absint( $args['lesson_id'] ?? 0 );
+		self::ensure_popup_access( LP_LESSON_CPT, $lesson_id );
 
 		// Setup context
 		self::instance()->setup_request_context( $lesson_id );
@@ -200,6 +225,7 @@ class BuilderPopupTemplate {
 	public static function render_quiz_popup( array $args = [] ): stdClass {
 		$response = new stdClass();
 		$quiz_id  = absint( $args['quiz_id'] ?? 0 );
+		self::ensure_popup_access( LP_QUIZ_CPT, $quiz_id );
 
 		// Setup context
 		self::instance()->setup_request_context( $quiz_id );
@@ -252,6 +278,7 @@ class BuilderPopupTemplate {
 	public static function render_question_popup( array $args = [] ): stdClass {
 		$response    = new stdClass();
 		$question_id = absint( $args['question_id'] ?? 0 );
+		self::ensure_popup_access( LP_QUESTION_CPT, $question_id );
 
 		// Setup context
 		self::instance()->setup_request_context( $question_id );
@@ -300,16 +327,12 @@ class BuilderPopupTemplate {
 	 * Build tabs navigation.
 	 */
 	private function build_tabs( string $type, array $tabs ): string {
-		$tab_labels = [
+		$tab_labels = apply_filters( "learn-press/course-builder/popup/{$type}/tab-labels", [
 			'overview'  => __( 'Overview', 'learnpress' ),
 			'settings'  => __( 'Settings', 'learnpress' ),
 			'questions' => __( 'Questions', 'learnpress' ),
 			'answers'   => __( 'Answers', 'learnpress' ),
-		];
-
-		apply_filters( "learn-press/course-builder/popup/{$type}", $type, 10, 1 );
-		apply_filters( "learn-press/course-builder/popup/{$type}/tabs", $tabs, 10, 1 );
-		apply_filters( "learn-press/course-builder/popup/{$type}/tab-labels", $tab_labels, 10, 1 );
+		], $type, $tabs );
 
 		$tabs_html = '<ul class="lp-builder-popup__tabs">';
 		foreach ( $tabs as $index => $tab ) {

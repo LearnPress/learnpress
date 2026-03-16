@@ -21,7 +21,6 @@ export class BuilderSettings {
 	static selectors = {
 		elForm: '#lp-cb-settings-form',
 		elCheckbox: 'input[name="enable_cb_admin_mode"]',
-		elStatus: '[data-setting-status]',
 		elBadge: '[data-setting-badge]',
 	};
 
@@ -59,7 +58,6 @@ export class BuilderSettings {
 		const value = this.getCurrentValue();
 		this.isDirty = true;
 		this.updateBadge( value );
-		this.setStatus( 'pending', 'Saving automatically...' );
 		this.queueSave();
 	}
 
@@ -79,7 +77,6 @@ export class BuilderSettings {
 
 		if ( value === this.lastSavedValue ) {
 			this.isDirty = false;
-			this.setStatus( 'saved', 'Saved' );
 			return;
 		}
 
@@ -88,7 +85,6 @@ export class BuilderSettings {
 		}
 
 		this.isSaving = true;
-		this.setStatus( 'saving', lpData?.i18n?.saving || 'Saving...' );
 
 		const dataSend = {
 			action: 'save_global_settings',
@@ -106,7 +102,7 @@ export class BuilderSettings {
 				this.lastSavedValue = value;
 				this.isDirty = false;
 				this.updateBadge( value );
-				this.setStatus( 'saved', response?.message || 'Saved' );
+				lpToastify.show( response?.message || 'Saved', 'success' );
 			},
 			error: ( error ) => {
 				this.handleSaveError( error?.message || error || 'An error occurred.' );
@@ -123,23 +119,12 @@ export class BuilderSettings {
 	}
 
 	handleSaveError( message ) {
-		this.setStatus( 'error', message );
 		lpToastify.show( message, 'error' );
 	}
 
 	getCurrentValue() {
 		const checkbox = this.form?.querySelector( BuilderSettings.selectors.elCheckbox );
 		return checkbox && checkbox.checked ? 'yes' : 'no';
-	}
-
-	setStatus( state, message ) {
-		const statusEl = this.form?.querySelector( BuilderSettings.selectors.elStatus );
-		if ( ! statusEl ) {
-			return;
-		}
-
-		statusEl.dataset.state = state;
-		statusEl.textContent = message;
 	}
 
 	updateBadge( value ) {

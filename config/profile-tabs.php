@@ -55,7 +55,7 @@ $default_settings = array(
 		'link'     => CourseBuilder::get_link_course_builder(),
 		'target'   => '_blank',
 		'priority' => 35,
-		'icon'     => '<i class="lp-icon-cog"></i>',
+		'icon'     => '<i class="fa-solid fa-layer-group"></i>',
 		'role'     => [ ADMIN_ROLE, LP_TEACHER_ROLE ],
 	),
 	'settings'      => array(
