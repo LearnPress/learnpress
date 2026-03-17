@@ -266,14 +266,15 @@
 	.heading {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
 		margin-bottom: $cb-spacing-sm;
+		gap: $cb-spacing-sm;
 
 		h4 {
 			color: $cb-text-subtle;
 		}
 
 		.total-items {
+			margin-left: auto;
 			font-size: 13px;
 			color: $cb-text-subtle;
 		}
@@ -725,6 +726,10 @@
 			width: 16px;
 			height: 16px;
 		}
+	}
+
+	button.cb-btn-add-new {
+		line-height: 1.5;
 	}
 
 	// Responsive
