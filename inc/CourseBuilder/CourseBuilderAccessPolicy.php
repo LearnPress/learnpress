@@ -76,7 +76,7 @@ class CourseBuilderAccessPolicy {
 			return false;
 		}
 
-		$capability = self::get_create_capability_by_item_type( $item_type );
+		$capability = self::resolve_create_capability_by_item_type( $item_type );
 		if ( empty( $capability ) ) {
 			return false;
 		}
@@ -229,13 +229,26 @@ class CourseBuilderAccessPolicy {
 	}
 
 	/**
-	 * Map item type to create capability.
+	 * Resolve create capability from registered post type capabilities.
+	 * Falls back to legacy mapping when post type object is unavailable.
 	 *
 	 * @param string $item_type
 	 *
 	 * @return string
 	 */
-	private static function get_create_capability_by_item_type( string $item_type ): string {
+	private static function resolve_create_capability_by_item_type( string $item_type ): string {
+		$post_type_object = get_post_type_object( $item_type );
+		if ( $post_type_object && isset( $post_type_object->cap ) ) {
+			$cap = $post_type_object->cap;
+			if ( ! empty( $cap->create_posts ) ) {
+				return $cap->create_posts;
+			}
+
+			if ( ! empty( $cap->edit_posts ) ) {
+				return $cap->edit_posts;
+			}
+		}
+
 		switch ( $item_type ) {
 			case LP_COURSE_CPT:
 				return 'edit_lp_courses';
