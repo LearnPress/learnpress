@@ -18,7 +18,7 @@
 	text-align: center;
 	// text-transform: capitalize;
  	cursor: pointer;
-	color: #333;
+	color: $text-color-base;
 	text-decoration: none;
 	&:focus {
 		outline: 0;
@@ -247,7 +247,7 @@
 
 			a {
 				text-decoration: none;
-				color: #333;
+				color: $text-color-base;
 				box-shadow: none;
 				font-size: 1.125em;
 				font-weight: 500;
