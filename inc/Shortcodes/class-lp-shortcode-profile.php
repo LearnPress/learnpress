@@ -10,6 +10,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -41,7 +42,9 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 				if ( empty( $wp->query_vars['user'] ) ) {
 					$viewing_user = $current_user;
 				} else {
-					$wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) );
+					$request_user = urldecode( (string) $wp->query_vars['user'] );
+					$user_model   = new UserModel();
+					$wp_user      = $user_model->resolve_user_by_public_identifier( $request_user );
 
 					if ( $wp_user ) {
 						$viewing_user = learn_press_get_user( $wp_user->ID );

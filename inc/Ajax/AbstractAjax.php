@@ -30,6 +30,7 @@ abstract class AbstractAjax {
 				LoadContentViaAjax::class,
 			];
 
+			// Todo: should write separation check none login and none not login
 			if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 				if ( ! in_array( get_class( $class ), $class_no_nonce ) ) {
 					wp_die( 'Invalid request!', 400 );

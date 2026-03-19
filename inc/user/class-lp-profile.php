@@ -4,6 +4,7 @@ use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\Config;
 use LearnPress\Models\Courses;
+use LearnPress\Models\UserModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
@@ -330,7 +331,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				return '';
 			}
 
-			$url = $this->get_tabs()->get_tab_link( $tab, $with_section, $user->get_username() );
+			$user_model = new UserModel( get_userdata( $user->get_id() ) );
+			$url        = $this->get_tabs()->get_tab_link( $tab, $with_section, $user_model->get_pretty_slug() );
 
 			/**
 			 * @deprecated
@@ -498,7 +500,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 			learn_press_set_message( $message );
 
-			if ( ! empty( $_REQUEST['redirect'] ) ) {
+			if ( 'basic-information' === $action && ! is_wp_error( $return ) ) {
+				$redirect = LP_Profile::instance( $user_id )->get_current_url();
+			} elseif ( ! empty( $_REQUEST['redirect'] ) ) {
 				$redirect = esc_url_raw( $_REQUEST['redirect'] );
 			} else {
 				$redirect = LP_Helper::getUrlCurrent();
@@ -894,7 +898,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			global $wp_query;
 
 			if ( isset( $wp_query->query['user'] ) ) {
-				$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
+				$user_model = new UserModel();
+				$user       = $user_model->resolve_user_by_public_identifier( (string) $wp_query->query['user'] );
 			} else {
 				$user = get_user_by( 'id', get_current_user_id() );
 			}
@@ -1107,7 +1112,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				if ( empty( self::$_instance ) ) {
 					$user_name = get_query_var( 'user' );
 					if ( ! empty( $user_name ) ) {
-						$user    = get_user_by( 'login', urldecode( $user_name ) );
+						$user_model = new UserModel();
+						$user       = $user_model->resolve_user_by_public_identifier( (string) $user_name );
 						$user_id = $user ? $user->ID : 0;
 					} else {
 						$user_id = get_current_user_id();

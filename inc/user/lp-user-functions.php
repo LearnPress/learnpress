@@ -10,10 +10,32 @@ use LearnPress\Models\UserModel;
  * @package LearnPress/Functions/User
  * @version 1.0
  */
-
 function learn_press_get_user_profile_tabs() {
 	return LP_Profile::instance()->get_tabs();
 }
+
+/**
+ * Ensure new users receive a public slug.
+ *
+ * @param int $user_id
+ *
+ * @return void
+ */
+function learn_press_maybe_generate_user_public_slug_on_register( int $user_id ) {
+	$wp_user = get_userdata( $user_id );
+	if ( ! $wp_user instanceof WP_User ) {
+		return;
+	}
+
+	$user_model = new UserModel( $wp_user );
+	if ( '' !== $user_model->get_pretty_slug( false ) ) {
+		return;
+	}
+
+	$user_model->generate_pretty_slug();
+}
+
+add_action( 'user_register', 'learn_press_maybe_generate_user_public_slug_on_register' );
 
 /**
  * Delete user data by user ID
@@ -1039,8 +1061,14 @@ function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 	}
 
 	global $wp_query;
+	$wp_user = get_userdata( $user_id );
+	if ( ! $wp_user instanceof WP_User ) {
+		return '';
+	}
+
+	$user_model = new UserModel( $wp_user );
 	$args = array(
-		'user' => $user->get_username(),
+		'user' => $user_model->get_pretty_slug(),
 	);
 
 	if ( $tab ) {
@@ -1314,8 +1342,18 @@ function learn_press_update_extra_user_profile_fields( $user_id ) {
 		return;
 	}
 
+	if ( current_user_can( 'edit_users' ) && array_key_exists( 'lp_user_slug', $_POST ) ) {
+		$wp_user     = get_userdata( $user_id );
+		$user_model  = $wp_user instanceof WP_User ? new UserModel( $wp_user ) : new UserModel();
+		$slug_result = $user_model->update_pretty_slug( (string) $_POST['lp_user_slug'] );
+		if ( is_wp_error( $slug_result ) ) {
+			// Preserve current behavior style: stop save with a clear message on invalid slug.
+			wp_die( esc_html( $slug_result->get_error_message() ) );
+		}
+	}
+
 	if ( isset( $_POST['_lp_extra_info'] ) ) {
-		$extra_info = LP_Request::get_param( '_lp_extra_info', [], '', 'post' );
+		$extra_info = LP_Request::get_param( '_lp_extra_info', array(), '', 'post' );
 		update_user_meta( $user_id, '_lp_extra_info', $extra_info );
 	}
 }
@@ -1605,6 +1643,7 @@ function learn_press_user_profile_data( $user ) {
 	learn_press_admin_view( 'user/courses.php', array( 'user_id' => $user->ID ) );
 }
 add_action( 'edit_user_profile', 'learn_press_user_profile_data', 1000 );
+add_action( 'show_user_profile', 'learn_press_user_profile_data', 1000 );
 
 /*function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' ) {
 	if ( empty( $user_id ) ) {
