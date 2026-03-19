@@ -120,6 +120,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'button_no'     => esc_html__( 'No', 'learnpress' ),
 				),
 				'lp_rest_url'                        => get_rest_url(),
+				//Todo: should create nonce for guest and user separation
 				'nonce'                              => wp_create_nonce( 'wp_rest' ),
 				'option_enable_popup_confirm_finish' => LP_Settings::get_option( 'enable_popup_confirm_finish', 'yes' ),
 				'is_course_archive'                  => LP_Page_Controller::is_page_courses(),
