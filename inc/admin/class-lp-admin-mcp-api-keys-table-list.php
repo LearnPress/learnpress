@@ -22,6 +22,13 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	 */
 	protected $users_with_keys = array();
 
+	/**
+	 * Initialize list-table with MCP keys repository dependency.
+	 *
+	 * @param ApiKeysRepository $repository Repository for querying and mutating key records.
+	 *
+	 * @return void
+	 */
 	public function __construct( ApiKeysRepository $repository ) {
 		$this->repository = $repository;
 
@@ -35,7 +42,9 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Table columns.
+	 * Define visible columns for MCP API key table.
+	 *
+	 * @return array<string, string>
 	 */
 	public function get_columns() {
 		return array(
@@ -50,7 +59,9 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Sortable columns.
+	 * Define sortable columns and default sort directions.
+	 *
+	 * @return array<string, array{0:string,1:bool}>
 	 */
 	protected function get_sortable_columns() {
 		return array(
@@ -63,7 +74,9 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Bulk actions.
+	 * Define supported bulk actions for selected keys.
+	 *
+	 * @return array<string, string>
 	 */
 	protected function get_bulk_actions() {
 		return array(
@@ -72,14 +85,24 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Render checkbox column.
+	 * Render row checkbox used by bulk actions.
+	 *
+	 * @param object $item Current key row object.
+	 *
+	 * @return string
 	 */
 	protected function column_cb( $item ) {
 		return sprintf( '<input type="checkbox" name="key_ids[]" value="%d" />', absint( $item->key_id ) );
 	}
 
 	/**
-	 * Render description with row actions.
+	 * Render description column with inline row actions.
+	 *
+	 * Row actions include edit, regenerate, and revoke links.
+	 *
+	 * @param object $item Current key row object.
+	 *
+	 * @return string
 	 */
 	protected function column_description( $item ) {
 		$description = $item->description ? $item->description : esc_html__( '(No description)', 'learnpress' );
@@ -130,7 +153,12 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Default column renderer.
+	 * Render non-custom columns by column key.
+	 *
+	 * @param object $item        Current key row object.
+	 * @param string $column_name Current column key.
+	 *
+	 * @return string
 	 */
 	protected function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
@@ -159,7 +187,11 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Search + filter controls.
+	 * Render extra controls above table: user filter dropdown.
+	 *
+	 * @param string $which Table position (`top` or `bottom`).
+	 *
+	 * @return void
 	 */
 	protected function extra_tablenav( $which ) {
 		if ( 'top' !== $which ) {
@@ -184,7 +216,9 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Prepare list data.
+	 * Query and prepare list-table items and pagination metadata.
+	 *
+	 * @return void
 	 */
 	public function prepare_items() {
 		$search   = sanitize_text_field( wp_unslash( $_REQUEST['s'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -218,7 +252,9 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Empty state.
+	 * Render empty state when no keys match current filters.
+	 *
+	 * @return void
 	 */
 	public function no_items() {
 		echo esc_html__( 'No MCP API keys found.', 'learnpress' );

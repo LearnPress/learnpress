@@ -23,6 +23,11 @@ class LP_Admin_MCP_API_Keys {
 	 */
 	protected $required_capability = 'manage_options';
 
+	/**
+	 * Get singleton instance for MCP API keys admin controller.
+	 *
+	 * @return self
+	 */
 	public static function instance(): self {
 		if ( ! self::$instance ) {
 			self::$instance = new self();
@@ -31,18 +36,27 @@ class LP_Admin_MCP_API_Keys {
 		return self::$instance;
 	}
 
+	/**
+	 * Register admin hooks and required table dependency.
+	 *
+	 * @return void
+	 */
 	protected function __construct() {
 		$this->repository = new ApiKeysRepository();
 
 		add_action( 'admin_init', array( $this, 'handle_admin_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'localize_admin_script' ) );
-		add_action( 'admin_notices', array( $this, 'maybe_show_legacy_auth_notice' ) );
 
 		require_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin-mcp-api-keys-table-list.php';
 	}
 
 	/**
-	 * Localize script data.
+	 * Localize MCP API key settings and i18n labels to admin JavaScript.
+	 *
+	 * Data is exposed under `window.lpMcpApiKeysSettings` and consumed by
+	 * `lp-admin-mcp-api-keys` runtime script.
+	 *
+	 * @return void
 	 */
 	public function localize_admin_script(): void {
 		if ( ! wp_script_is( 'lp-admin-mcp-api-keys', 'enqueued' ) ) {
@@ -75,7 +89,12 @@ class LP_Admin_MCP_API_Keys {
 	}
 
 	/**
-	 * Render API key management section.
+	 * Render MCP API key management screen inside LearnPress settings.
+	 *
+	 * Prepares list-table data, optional edit form state, and user options
+	 * before loading the section template.
+	 *
+	 * @return void
 	 */
 	public function render_page(): void {
 		if ( ! current_user_can( $this->required_capability ) ) {
@@ -102,7 +121,13 @@ class LP_Admin_MCP_API_Keys {
 	}
 
 	/**
-	 * Process revoke and bulk revoke actions.
+	 * Process row and bulk revoke actions submitted from the list table.
+	 *
+	 * Supported actions:
+	 * - `lp_mcp_key_action = revoke`
+	 * - `action/action2 = bulk-revoke`
+	 *
+	 * @return void
 	 */
 	public function handle_admin_actions(): void {
 		if ( ! $this->is_mcp_keys_settings_screen() || ! current_user_can( $this->required_capability ) ) {
@@ -142,38 +167,11 @@ class LP_Admin_MCP_API_Keys {
 	}
 
 	/**
-	 * Show migration warning when legacy auth is still enabled.
-	 */
-	public function maybe_show_legacy_auth_notice(): void {
-		if ( ! current_user_can( $this->required_capability ) ) {
-			return;
-		}
-
-		if ( ! $this->is_advanced_settings_tab() ) {
-			return;
-		}
-
-		if ( \LP_Settings::get_option( 'enable_mcp_integration', 'no' ) !== 'yes' ) {
-			return;
-		}
-
-		if ( \LP_Settings::get_option( 'mcp_allow_legacy_auth', 'yes' ) !== 'yes' ) {
-			return;
-		}
-
-		$message = __( 'Legacy MCP authentication is still enabled. Switch all MCP clients to API keys, then disable the legacy toggle.', 'learnpress' );
-
-		if ( function_exists( 'wp_admin_notice' ) ) {
-			wp_admin_notice( $message, array( 'type' => 'warning' ) );
-			return;
-		}
-
-		echo '<div class="notice notice-warning"><p>' . esc_html( $message ) . '</p></div>';
-	}
-
-
-	/**
 	 * Redirect back to MCP keys section with notice code.
+	 *
+	 * @param string $notice_code Notice key used by `notice_from_code`.
+	 *
+	 * @return void
 	 */
 	protected function redirect_with_notice( string $notice_code ): void {
 		$url = add_query_arg(
@@ -193,6 +191,8 @@ class LP_Admin_MCP_API_Keys {
 	/**
 	 * Convert notice code to display payload.
 	 *
+	 * @param string $code Notice code from query string.
+	 *
 	 * @return array<string, string>|null
 	 */
 	protected function notice_from_code( string $code ): ?array {
@@ -207,6 +207,8 @@ class LP_Admin_MCP_API_Keys {
 
 	/**
 	 * Is current request LearnPress advanced/mcp-keys settings section.
+	 *
+	 * @return bool
 	 */
 	protected function is_mcp_keys_settings_screen(): bool {
 		$page    = sanitize_key( $_REQUEST['page'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -216,13 +218,4 @@ class LP_Admin_MCP_API_Keys {
 		return 'learn-press-settings' === $page && 'advanced' === $tab && 'mcp-keys' === $section;
 	}
 
-	/**
-	 * Is current request LearnPress advanced tab.
-	 */
-	protected function is_advanced_settings_tab(): bool {
-		$page = sanitize_key( $_REQUEST['page'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$tab  = sanitize_key( $_REQUEST['tab'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
-		return 'learn-press-settings' === $page && 'advanced' === $tab;
-	}
 }

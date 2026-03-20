@@ -1,12 +1,12 @@
 <?php
+namespace LearnPress\Ajax\MCP;
 
-namespace LearnPress\Ajax;
-
-use Exception;
+use LearnPress\Ajax\AbstractAjax;
 use LearnPress\MCP\Auth\ApiKeysRepository;
 use LP_Helper;
 use LP_REST_Response;
 use Throwable;
+use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,7 +20,12 @@ class McpApiKeysAjax extends AbstractAjax {
 	protected static $required_capability = 'manage_options';
 
 	/**
-	 * Validate request payload and permission.
+	 * Validate current AJAX request for MCP API key actions.
+	 *
+	 * This helper enforces the required capability and decodes the JSON payload
+	 * sent through LearnPress `lp-load-ajax` transport (`$_REQUEST['data']`).
+	 * It throws an exception for all invalid states so action handlers can return
+	 * a normalized error response.
 	 *
 	 * @return array<string, mixed>
 	 * @throws Exception
@@ -44,7 +49,16 @@ class McpApiKeysAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Create MCP API key.
+	 * Create a new LearnPress MCP API key for a selected user.
+	 *
+	 * Expected payload fields:
+	 * - `user_id` (int): key owner user ID.
+	 * - `description` (string): optional key description.
+	 * - `permissions` (string): one of read/write/read_write.
+	 *
+	 * Success response includes plaintext credentials once in `data.key`.
+	 *
+	 * @return void
 	 */
 	public static function mcp_create_api_key() {
 		$response = new LP_REST_Response();
@@ -75,7 +89,17 @@ class McpApiKeysAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Update MCP API key metadata.
+	 * Update mutable metadata for an existing MCP API key.
+	 *
+	 * Expected payload fields:
+	 * - `key_id` (int): target key ID.
+	 * - `user_id` (int): updated owner user ID.
+	 * - `description` (string): updated description.
+	 * - `permissions` (string): updated scope value.
+	 *
+	 * This action does not return secret material.
+	 *
+	 * @return void
 	 */
 	public static function mcp_update_api_key() {
 		$response = new LP_REST_Response();
@@ -104,7 +128,15 @@ class McpApiKeysAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Regenerate MCP API key credentials.
+	 * Regenerate consumer key and secret for an existing MCP API key.
+	 *
+	 * Expected payload fields:
+	 * - `key_id` (int): target key ID.
+	 *
+	 * Success response includes newly generated plaintext credentials once in
+	 * `data.key`. Existing credentials become invalid after regeneration.
+	 *
+	 * @return void
 	 */
 	public static function mcp_regenerate_api_key() {
 		$response = new LP_REST_Response();

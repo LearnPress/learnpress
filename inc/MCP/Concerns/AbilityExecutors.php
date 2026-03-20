@@ -12,6 +12,7 @@ use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
+use LP_Material_Files_DB;
 use Throwable;
 use WP_Error;
 
@@ -233,7 +234,7 @@ trait AbilityExecutors {
 
 		$materials = array();
 		if ( class_exists( 'LP_Material_Files_DB' ) ) {
-			$materials_rs = \LP_Material_Files_DB::getInstance()->get_material_by_item_id( $lesson_id, 0, 0, false );
+			$materials_rs = LP_Material_Files_DB::getInstance()->get_material_by_item_id( $lesson_id, 0, 0, false );
 			$materials_rs = is_array( $materials_rs ) ? $materials_rs : array();
 			foreach ( $materials_rs as $material ) {
 				$materials[] = array(

@@ -39,6 +39,35 @@
 		el.classList.toggle( 'loading', !! isLoading );
 	};
 
+	const refreshKeysTable = async () => {
+		const currentList = document.querySelector( '.lp-mcp-key-list' );
+		if ( ! currentList ) {
+			return;
+		}
+
+		try {
+			const response = await fetch( window.location.href, {
+				method: 'GET',
+				credentials: 'same-origin',
+				cache: 'no-store',
+			} );
+			if ( ! response.ok ) {
+				return;
+			}
+
+			const html = await response.text();
+			const parser = new DOMParser();
+			const doc = parser.parseFromString( html, 'text/html' );
+			const newList = doc.querySelector( '.lp-mcp-key-list' );
+
+			if ( newList && currentList.parentNode ) {
+				currentList.replaceWith( newList );
+			}
+		} catch ( e ) {
+			// Keep current UI state when table refresh fails.
+		}
+	};
+
 	const renderCredentials = ( keyData ) => {
 		if (
 			! keyData ||
@@ -121,6 +150,8 @@
 						? response.data.key
 						: null
 				);
+
+				refreshKeysTable();
 			},
 			error: () => setStatus( i18n.request_failed || 'Request failed.', true ),
 			completed: () => setLoadingState( elSubmit, false ),
@@ -171,6 +202,8 @@
 							? response.data.key
 							: null
 					);
+
+					refreshKeysTable();
 				},
 				error: () => setStatus( i18n.request_failed || 'Request failed.', true ),
 				completed: () => elRegenerate.classList.remove( 'disabled' ),

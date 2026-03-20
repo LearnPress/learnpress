@@ -3,6 +3,11 @@
 namespace LearnPress\MCP\Auth;
 
 use LP_Database;
+use LP_Filter;
+use LP_Helper;
+use LP_User_DB;
+use LP_User_Filter;
+use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,6 +35,11 @@ class ApiKeysRepository {
 	 */
 	protected $users_table;
 
+	/**
+	 * Initialize DB handles for MCP API key storage.
+	 *
+	 * @return void
+	 */
 	public function __construct() {
 		global $wpdb;
 
@@ -49,7 +59,7 @@ class ApiKeysRepository {
 	 */
 	public function create_key( int $user_id, string $description = '', string $permissions = 'read' ): ?array {
 		$user_id = absint( $user_id );
-		if ( $user_id <= 0 || ! get_user_by( 'id', $user_id ) ) {
+		if ( $user_id <= 0 || ! $this->is_valid_user_id( $user_id ) ) {
 			return null;
 		}
 
@@ -91,12 +101,19 @@ class ApiKeysRepository {
 
 	/**
 	 * Update mutable metadata for an API key.
+	 *
+	 * @param int    $key_id      Key ID.
+	 * @param int    $user_id     New owner user ID.
+	 * @param string $description New key description.
+	 * @param string $permissions New key permissions.
+	 *
+	 * @return bool
 	 */
 	public function update_key_meta( int $key_id, int $user_id, string $description, string $permissions ): bool {
 		$key_id  = absint( $key_id );
 		$user_id = absint( $user_id );
 
-		if ( $key_id <= 0 || $user_id <= 0 || ! get_user_by( 'id', $user_id ) ) {
+		if ( $key_id <= 0 || $user_id <= 0 || ! $this->is_valid_user_id( $user_id ) ) {
 			return false;
 		}
 
@@ -118,6 +135,8 @@ class ApiKeysRepository {
 
 	/**
 	 * Rotate consumer key and secret for an existing key.
+	 *
+	 * @param int $key_id Key ID.
 	 *
 	 * @return array<string, mixed>|null
 	 */
@@ -167,6 +186,10 @@ class ApiKeysRepository {
 
 	/**
 	 * Revoke (delete) one key.
+	 *
+	 * @param int $key_id Key ID.
+	 *
+	 * @return bool
 	 */
 	public function revoke_key( int $key_id ): bool {
 		$key_id = absint( $key_id );
@@ -181,6 +204,10 @@ class ApiKeysRepository {
 
 	/**
 	 * Revoke multiple keys.
+	 *
+	 * @param array<int, int|string> $key_ids Key IDs to revoke.
+	 *
+	 * @return int
 	 */
 	public function revoke_keys( array $key_ids ): int {
 		$key_ids = array_values( array_filter( array_map( 'absint', $key_ids ) ) );
@@ -188,9 +215,8 @@ class ApiKeysRepository {
 			return 0;
 		}
 
-		$placeholders = implode( ',', array_fill( 0, count( $key_ids ), '%d' ) );
-		$sql          = $this->wpdb->prepare(
-			"DELETE FROM {$this->table} WHERE key_id IN ({$placeholders})",
+		$sql = $this->wpdb->prepare(
+			"DELETE FROM {$this->table} WHERE key_id IN (" . LP_Helper::db_format_array( $key_ids, '%d' ) . ')',
 			$key_ids
 		);
 
@@ -201,6 +227,10 @@ class ApiKeysRepository {
 
 	/**
 	 * Find key row by plaintext consumer key.
+	 *
+	 * @param string $consumer_key Plaintext consumer key.
+	 *
+	 * @return object|null
 	 */
 	public function find_by_consumer_key( string $consumer_key ) {
 		$consumer_key = sanitize_text_field( wp_unslash( $consumer_key ) );
@@ -208,16 +238,30 @@ class ApiKeysRepository {
 			return null;
 		}
 
-		$sql = $this->wpdb->prepare(
-			"SELECT * FROM {$this->table} WHERE consumer_key = %s LIMIT 1",
-			self::hash_consumer_key( $consumer_key )
-		);
+		$filter                   = new LP_Filter();
+		$filter->collection       = $this->table;
+		$filter->collection_alias = 'k';
+		$filter->only_fields      = array( 'k.*' );
+		$filter->where[]          = $this->wpdb->prepare( 'AND k.consumer_key = %s', self::hash_consumer_key( $consumer_key ) );
+		$filter->limit            = 1;
+		$filter->field_count      = 'k.key_id';
+		$filter->run_query_count  = false;
 
-		return $this->wpdb->get_row( $sql );
+		$total_rows = 0;
+		$rows       = LP_Database::getInstance()->execute( $filter, $total_rows );
+		if ( ! is_array( $rows ) || empty( $rows ) ) {
+			return null;
+		}
+
+		return reset( $rows );
 	}
 
 	/**
 	 * Get a key row by key ID.
+	 *
+	 * @param int $key_id Key ID.
+	 *
+	 * @return object|null
 	 */
 	public function get_key( int $key_id ) {
 		$key_id = absint( $key_id );
@@ -225,16 +269,31 @@ class ApiKeysRepository {
 			return null;
 		}
 
-		$sql = $this->wpdb->prepare(
-			"SELECT * FROM {$this->table} WHERE key_id = %d LIMIT 1",
-			$key_id
-		);
+		$filter                   = new LP_Filter();
+		$filter->collection       = $this->table;
+		$filter->collection_alias = 'k';
+		$filter->only_fields      = array( 'k.*' );
+		$filter->where[]          = $this->wpdb->prepare( 'AND k.key_id = %d', $key_id );
+		$filter->limit            = 1;
+		$filter->field_count      = 'k.key_id';
+		$filter->run_query_count  = false;
 
-		return $this->wpdb->get_row( $sql );
+		$total_rows = 0;
+		$rows       = LP_Database::getInstance()->execute( $filter, $total_rows );
+		if ( ! is_array( $rows ) || empty( $rows ) ) {
+			return null;
+		}
+
+		return reset( $rows );
 	}
 
 	/**
 	 * Check whether raw secret matches stored secret hash.
+	 *
+	 * @param string $stored_hash     Stored secret hash from database.
+	 * @param string $provided_secret Raw secret provided by request.
+	 *
+	 * @return bool
 	 */
 	public function verify_secret_hash( string $stored_hash, string $provided_secret ): bool {
 		$provided_hash = self::hash_consumer_secret( $provided_secret );
@@ -244,6 +303,10 @@ class ApiKeysRepository {
 
 	/**
 	 * Update key usage metrics.
+	 *
+	 * @param int $key_id Key ID.
+	 *
+	 * @return void
 	 */
 	public function touch_usage( int $key_id ): void {
 		$key_id = absint( $key_id );
@@ -264,6 +327,8 @@ class ApiKeysRepository {
 	/**
 	 * Query keys list for admin table.
 	 *
+	 * @param array<string, mixed> $args Query arguments.
+	 *
 	 * @return array<string, mixed>
 	 */
 	public function query_keys( array $args = array() ): array {
@@ -281,26 +346,31 @@ class ApiKeysRepository {
 
 		$page     = max( 1, absint( $args['page'] ) );
 		$per_page = max( 1, min( 100, absint( $args['per_page'] ) ) );
-		$offset   = ( $page - 1 ) * $per_page;
 
-		$where        = array( '1=1' );
-		$where_values = array();
+		$filter                   = new LP_Filter();
+		$filter->collection       = $this->table;
+		$filter->collection_alias = 'k';
+		$filter->only_fields      = array(
+			'k.*',
+			'u.display_name AS user_display_name',
+			'u.user_login',
+		);
+		$filter->join[]           = "LEFT JOIN {$this->users_table} u ON u.ID = k.user_id";
+		$filter->field_count      = 'k.key_id';
+		$filter->limit            = $per_page;
+		$filter->page             = $page;
 
 		$search = sanitize_text_field( wp_unslash( (string) $args['search'] ) );
 		if ( '' !== $search ) {
-			$where[]        = 'k.description LIKE %s';
-			$where_values[] = '%' . $this->wpdb->esc_like( $search ) . '%';
+			$filter->where[] = $this->wpdb->prepare( 'AND k.description LIKE %s', '%' . $this->wpdb->esc_like( $search ) . '%' );
 		}
 
 		$user_id = absint( $args['user_id'] );
 		if ( $user_id > 0 ) {
-			$where[]        = 'k.user_id = %d';
-			$where_values[] = $user_id;
+			$filter->where[] = $this->wpdb->prepare( 'AND k.user_id = %d', $user_id );
 		}
 
-		$where_sql = implode( ' AND ', $where );
-
-		$order_by_map = array(
+		$order_by_map     = array(
 			'description' => 'k.description',
 			'user'        => 'u.display_name',
 			'permissions' => 'k.permissions',
@@ -308,25 +378,11 @@ class ApiKeysRepository {
 			'call_count'  => 'k.call_count',
 			'created_at'  => 'k.created_at',
 		);
-		$orderby      = $order_by_map[ $args['orderby'] ] ?? $order_by_map['created_at'];
-		$order        = 'ASC' === strtoupper( (string) $args['order'] ) ? 'ASC' : 'DESC';
+		$filter->order_by = $order_by_map[ $args['orderby'] ] ?? $order_by_map['created_at'];
+		$filter->order    = 'ASC' === strtoupper( (string) $args['order'] ) ? LP_Filter::ORDER_ASC : LP_Filter::ORDER_DESC;
 
-		$count_sql = "SELECT COUNT(*) FROM {$this->table} k WHERE {$where_sql}";
-		if ( ! empty( $where_values ) ) {
-			$count_sql = $this->wpdb->prepare( $count_sql, $where_values );
-		}
-		$total_items = (int) $this->wpdb->get_var( $count_sql );
-
-		$list_sql = "SELECT k.*, u.display_name AS user_display_name, u.user_login
-			FROM {$this->table} k
-			LEFT JOIN {$this->users_table} u ON u.ID = k.user_id
-			WHERE {$where_sql}
-			ORDER BY {$orderby} {$order}
-			LIMIT %d OFFSET %d";
-
-		$list_values = array_merge( $where_values, array( $per_page, $offset ) );
-		$list_sql    = $this->wpdb->prepare( $list_sql, $list_values );
-		$items       = $this->wpdb->get_results( $list_sql );
+		$total_items = 0;
+		$items       = LP_Database::getInstance()->execute( $filter, $total_items );
 
 		return array(
 			'items'    => is_array( $items ) ? $items : array(),
@@ -342,18 +398,33 @@ class ApiKeysRepository {
 	 * @return array<int, object>
 	 */
 	public function users_with_keys(): array {
-		$sql = "SELECT DISTINCT u.ID, u.user_login, u.display_name
-			FROM {$this->table} k
-			INNER JOIN {$this->users_table} u ON u.ID = k.user_id
-			ORDER BY u.display_name ASC";
+		$filter                   = new LP_Filter();
+		$filter->collection       = $this->users_table;
+		$filter->collection_alias = 'u';
+		$filter->only_fields      = array(
+			'u.ID',
+			'u.user_login',
+			'u.display_name',
+		);
+		$filter->join[]           = "INNER JOIN {$this->table} k ON u.ID = k.user_id";
+		$filter->group_by         = 'u.ID';
+		$filter->order_by         = 'u.display_name';
+		$filter->order            = LP_Filter::ORDER_ASC;
+		$filter->limit            = -1;
+		$filter->run_query_count  = false;
 
-		$rows = $this->wpdb->get_results( $sql );
+		$total_rows = 0;
+		$rows       = LP_Database::getInstance()->execute( $filter, $total_rows );
 
 		return is_array( $rows ) ? $rows : array();
 	}
 
 	/**
 	 * Hash plaintext consumer key for storage/lookup.
+	 *
+	 * @param string $consumer_key Plaintext consumer key.
+	 *
+	 * @return string
 	 */
 	public static function hash_consumer_key( string $consumer_key ): string {
 		return hash_hmac( 'sha256', $consumer_key, 'lp-mcp-api' );
@@ -361,6 +432,10 @@ class ApiKeysRepository {
 
 	/**
 	 * Hash plaintext consumer secret for storage/verification.
+	 *
+	 * @param string $consumer_secret Plaintext consumer secret.
+	 *
+	 * @return string
 	 */
 	public static function hash_consumer_secret( string $consumer_secret ): string {
 		return hash_hmac( 'sha256', $consumer_secret, 'lp-mcp-secret' );
@@ -368,6 +443,10 @@ class ApiKeysRepository {
 
 	/**
 	 * Normalize description for DB storage.
+	 *
+	 * @param string $description Raw key description.
+	 *
+	 * @return string
 	 */
 	protected function normalize_description( string $description ): string {
 		$description = sanitize_text_field( wp_unslash( $description ) );
@@ -377,6 +456,10 @@ class ApiKeysRepository {
 
 	/**
 	 * Normalize requested permission to a supported value.
+	 *
+	 * @param string $permissions Raw requested permission.
+	 *
+	 * @return string
 	 */
 	protected function normalize_permissions( string $permissions ): string {
 		$permissions = sanitize_key( $permissions );
@@ -390,14 +473,43 @@ class ApiKeysRepository {
 
 	/**
 	 * Generate token in ck_/cs_ format.
+	 *
+	 * @param string $prefix Token prefix (`ck_` or `cs_`).
+	 *
+	 * @return string
 	 */
 	protected function generate_token( string $prefix ): string {
 		try {
 			$hex = bin2hex( random_bytes( 20 ) );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$hex = substr( hash( 'sha256', wp_generate_password( 64, true, true ) . microtime( true ) ), 0, 40 );
 		}
 
 		return $prefix . $hex;
+	}
+
+	/**
+	 * Validate user existence via LearnPress DB + Filter classes.
+	 *
+	 * @param int $user_id User ID.
+	 *
+	 * @return bool
+	 */
+	protected function is_valid_user_id( int $user_id ): bool {
+		$user_id = absint( $user_id );
+		if ( $user_id <= 0 ) {
+			return false;
+		}
+
+		$filter              = new LP_User_Filter();
+		$filter->ID          = $user_id;
+		$filter->limit       = 1;
+		$filter->only_fields = array( 'u.ID' );
+		$filter->field_count = 'u.ID';
+
+		$total_rows = 0;
+		$rows       = LP_User_DB::instance()->get_users( $filter, $total_rows );
+
+		return is_array( $rows ) && ! empty( $rows );
 	}
 }

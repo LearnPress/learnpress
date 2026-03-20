@@ -6,9 +6,10 @@ use LearnPress\MCP\Auth\AuthContext;
 use LearnPress\MCP\Concerns\AbilityExecutors;
 use LearnPress\MCP\Concerns\AbilityHelpers;
 use LearnPress\MCP\Concerns\AbilitySchemas;
-use LP_Settings;
+use WP_REST_Server;
+use WP_REST_Request;
+use WP_REST_Response;
 use WP_Error;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -22,15 +23,26 @@ defined( 'ABSPATH' ) || exit;
  * Execution logic, schemas, and mapping helpers are split into traits.
  */
 class Abilities {
+
 	use AbilitySchemas;
 	use AbilityHelpers;
 	use AbilityExecutors;
 
 	/**
 	 * Abilities API category slug for LearnPress abilities.
-	 */
+	*/
 	const CATEGORY = 'learnpress';
 
+	/**
+	 * Core MCP adapter route provided by WordPress Abilities API.
+ */
+	const MCP_ADAPTER_ROUTE = '/mcp/mcp-adapter-default-server';
+
+	/**
+		* LearnPress MCP alias route for clients.
+	*/
+	const MCP_ALIAS_NAMESPACE = 'lp/v1';
+	const MCP_ALIAS_ROUTE     = '/mcp';
 	/**
 	 * Guard flag to avoid registering hooks more than once.
 	 *
@@ -50,9 +62,49 @@ class Abilities {
 
 		add_action( 'wp_abilities_api_categories_init', array( __CLASS__, 'register_category' ) );
 		add_action( 'wp_abilities_api_init', array( __CLASS__, 'register_abilities' ) );
+		add_action( 'rest_api_init', array( __CLASS__, 'register_mcp_alias_route' ), 20 );
 		self::$initialized = true;
 	}
 
+	/**
+	 * Register LearnPress MCP alias endpoint.
+	 *
+	 * Proxy requests to the default MCP adapter server so clients can use:
+	 * /wp-json/lp/v1/mcp
+	 *
+	 * @return void
+	 */
+	public static function register_mcp_alias_route(): void {
+
+		register_rest_route(
+			self::MCP_ALIAS_NAMESPACE,
+			self::MCP_ALIAS_ROUTE,
+			array(
+				'methods'             => WP_REST_Server::ALLMETHODS,
+				'callback'            => array( __CLASS__, 'proxy_mcp_adapter_request' ),
+				'permission_callback' => '__return_true',
+			)
+		);
+	}
+
+	/**
+	 * Proxy LearnPress MCP alias request to the core MCP adapter route.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public static function proxy_mcp_adapter_request( WP_REST_Request $request ) {
+
+		$proxy_request = new WP_REST_Request( $request->get_method(), self::MCP_ADAPTER_ROUTE );
+		$proxy_request->set_headers( $request->get_headers() );
+		$proxy_request->set_query_params( $request->get_query_params() );
+		$proxy_request->set_body_params( $request->get_body_params() );
+		$proxy_request->set_file_params( $request->get_file_params() );
+		$proxy_request->set_body( $request->get_body() );
+
+		return rest_do_request( $proxy_request );
+	}
 	/**
 	 * Register the LearnPress ability category.
 	 *
@@ -156,33 +208,13 @@ class Abilities {
 	 * @return bool|WP_Error
 	 */
 	public static function permission_callback( string $ability_name, $input = null ) {
+
+		if ( ! AuthContext::is_api_key_auth() ) {
+			return self::error_missing_auth();
+		}
+
 		$current_user_id = get_current_user_id();
 		$base_capability = self::get_base_capability( $ability_name, $input );
-
-		if ( AuthContext::is_api_key_auth() ) {
-			if ( $current_user_id <= 0 ) {
-				return self::error_missing_auth();
-			}
-
-			if ( ! current_user_can( $base_capability ) ) {
-				return self::error_missing_base_capability( $base_capability );
-			}
-
-			$required_scope = self::get_required_scope( $ability_name, $input );
-			$granted_scope  = AuthContext::get_permissions();
-
-			if ( ! self::scope_allows( $granted_scope, $required_scope ) ) {
-				return self::error_insufficient_scope( $required_scope, $granted_scope );
-			}
-
-			return true;
-		}
-
-		if ( ! self::is_legacy_auth_allowed() ) {
-			return self::error_missing_auth(
-				__( 'MCP API key authentication is required because legacy authentication is disabled.', 'learnpress' )
-			);
-		}
 
 		if ( $current_user_id <= 0 ) {
 			return self::error_missing_auth();
@@ -192,9 +224,15 @@ class Abilities {
 			return self::error_missing_base_capability( $base_capability );
 		}
 
+		$required_scope = self::get_required_scope( $ability_name, $input );
+		$granted_scope  = AuthContext::get_permissions();
+
+		if ( ! self::scope_allows( $granted_scope, $required_scope ) ) {
+				return self::error_insufficient_scope( $required_scope, $granted_scope );
+		}
+
 		return true;
 	}
-
 	/**
 	 * Register a single ability with common metadata annotations.
 	 *
@@ -247,16 +285,15 @@ class Abilities {
 	}
 
 	/**
-	 * Whether temporary legacy auth mode is enabled.
-	 */
-	protected static function is_legacy_auth_allowed(): bool {
-		return 'yes' === LP_Settings::get_option( 'mcp_allow_legacy_auth', 'yes' );
-	}
-
-	/**
 	 * Resolve base capability required for ability execution.
+	 *
+	 * @param string $ability_name Ability ID.
+	 * @param mixed  $input        Ability input payload.
+	 *
+	 * @return string
 	 */
 	protected static function get_base_capability( string $ability_name, $input = null ): string {
+
 		$capability = apply_filters( 'learn-press/mcp/api-keys/base-capability', 'manage_options', $ability_name, $input );
 
 		return is_string( $capability ) && '' !== $capability ? $capability : 'manage_options';
@@ -264,8 +301,14 @@ class Abilities {
 
 	/**
 	 * Resolve required key scope for an ability.
+	 *
+	 * @param string $ability_name Ability ID.
+	 * @param mixed  $input        Ability input payload.
+	 *
+	 * @return string
 	 */
 	protected static function get_required_scope( string $ability_name, $input = null ): string {
+
 		$default_scopes = array(
 			'learnpress/get-courses'          => 'read',
 			'learnpress/get-course-details'   => 'read',
@@ -285,8 +328,14 @@ class Abilities {
 
 	/**
 	 * Check if granted key scope satisfies required scope.
+	 *
+	 * @param string $granted_scope  Scope attached to current API key.
+	 * @param string $required_scope Scope required by the ability.
+	 *
+	 * @return bool
 	 */
 	protected static function scope_allows( string $granted_scope, string $required_scope ): bool {
+
 		if ( 'read_write' === $granted_scope ) {
 			return true;
 		}
@@ -296,8 +345,13 @@ class Abilities {
 
 	/**
 	 * Error for missing/invalid authentication.
+	 *
+	 * @param string $message Optional custom error message.
+	 *
+	 * @return WP_Error
 	 */
 	protected static function error_missing_auth( string $message = '' ): WP_Error {
+
 		if ( '' === $message ) {
 			$message = __( 'Missing or invalid MCP authentication.', 'learnpress' );
 		}
@@ -311,8 +365,13 @@ class Abilities {
 
 	/**
 	 * Error for base capability failure.
+	 *
+	 * @param string $capability Required capability name.
+	 *
+	 * @return WP_Error
 	 */
 	protected static function error_missing_base_capability( string $capability ): WP_Error {
+
 		return new WP_Error(
 			'learnpress_mcp_missing_base_capability',
 			sprintf(
@@ -326,8 +385,14 @@ class Abilities {
 
 	/**
 	 * Error for scope mismatch.
+	 *
+	 * @param string $required_scope Required scope for the ability.
+	 * @param string $granted_scope  Scope granted by authenticated API key.
+	 *
+	 * @return WP_Error
 	 */
 	protected static function error_insufficient_scope( string $required_scope, string $granted_scope ): WP_Error {
+
 		return new WP_Error(
 			'learnpress_mcp_insufficient_scope',
 			sprintf(

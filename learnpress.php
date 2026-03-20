@@ -18,7 +18,7 @@ use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
-use LearnPress\Ajax\McpApiKeysAjax;
+use LearnPress\Ajax\MCP\McpApiKeysAjax;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Ajax\ExportOrderCSVAjax;
 use LearnPress\Background\LPBackgroundTrigger;
