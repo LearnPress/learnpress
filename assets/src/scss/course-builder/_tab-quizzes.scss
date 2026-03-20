@@ -11,7 +11,7 @@ $quiz-grid: 2fr 1.5fr 80px 1fr 1fr 100px 80px;
 		background: $cb-bg;
 		border: 1px solid $cb-border;
 		border-radius: $cb-radius-md;
-		overflow: hidden;
+		overflow: visible;
 
 		// Grid scoped to THIS tab wrapper — prevents cascade conflicts
 		.cb-list-table-header,

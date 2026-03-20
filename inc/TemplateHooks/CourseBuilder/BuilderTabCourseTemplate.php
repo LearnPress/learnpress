@@ -155,7 +155,10 @@ class BuilderTabCourseTemplate {
 			}
 
 			Courses::handle_params_for_query_courses( $filter, $param );
-			$filter->post_author = $user->get_id();
+			// Admin can view all courses in Course Builder.
+			if ( ! current_user_can( ADMIN_ROLE ) ) {
+				$filter->post_author = $user->get_id();
+			}
 			
 			// Handle per_page parameter
 			$per_page = isset( $param['per_page'] ) ? absint( $param['per_page'] ) : 20;

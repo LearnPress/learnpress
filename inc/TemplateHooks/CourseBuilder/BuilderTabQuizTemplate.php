@@ -80,7 +80,7 @@ class BuilderTabQuizTemplate {
 				return '';
 			}
 
-			if ( ! user_can( $user_id, 'administrator' ) ) {
+			if ( ! current_user_can( ADMIN_ROLE ) ) {
 				$query_args['author'] = $user_id;
 			}
 

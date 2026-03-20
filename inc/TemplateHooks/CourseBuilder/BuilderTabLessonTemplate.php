@@ -79,7 +79,7 @@ class BuilderTabLessonTemplate {
 				return '';
 			}
 
-			if ( $userModel->is_instructor() ) {
+			if ( ! current_user_can( ADMIN_ROLE ) ) {
 				$query_args['author'] = $user_id;
 			}
 

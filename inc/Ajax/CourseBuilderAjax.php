@@ -118,6 +118,60 @@ class CourseBuilderAjax extends AbstractAjax {
 	}
 
 	/**
+	 * Check whether a post status is public.
+	 *
+	 * @param string $status
+	 *
+	 * @return bool
+	 */
+	protected function is_public_post_status( string $status ): bool {
+		$status_object = get_post_status_object( $status );
+
+		return (bool) ( $status_object && ! empty( $status_object->public ) );
+	}
+
+	/**
+	 * Normalize target course status based on role/capability and current status.
+	 * Mirrors wp-admin behavior for instructors without publish capability.
+	 *
+	 * @param string          $requested_status
+	 * @param bool            $insert
+	 * @param CourseModel|null $course_model
+	 *
+	 * @return string
+	 */
+	protected function normalize_course_status_for_save( string $requested_status, bool $insert, ?CourseModel $course_model ): string {
+		$allowed_statuses = [ 'publish', 'draft', 'pending', 'private' ];
+		if ( ! in_array( $requested_status, $allowed_statuses, true ) ) {
+			$requested_status = 'draft';
+		}
+
+		$is_admin_user = current_user_can( ADMIN_ROLE );
+		if ( $is_admin_user ) {
+			return $requested_status;
+		}
+
+		$is_instructor_user = current_user_can( LP_TEACHER_ROLE );
+		$required_review    = \LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
+		$can_publish_course = current_user_can( 'publish_' . LP_COURSE_CPT . 's' );
+
+		$current_status  = $insert ? 'auto-draft' : (string) ( $course_model->post_status ?? 'draft' );
+		$is_public_state = $this->is_public_post_status( $current_status );
+
+		// Require moderation for instructors when review is enabled.
+		if ( $is_instructor_user && $required_review && ! $is_public_state && in_array( $requested_status, [ 'publish', 'private' ], true ) ) {
+			return 'pending';
+		}
+
+		// Keep wp-admin behavior: users without publish capability submit for review.
+		if ( ! $can_publish_course && ! $is_public_state && in_array( $requested_status, [ 'publish', 'private' ], true ) ) {
+			return 'pending';
+		}
+
+		return $requested_status;
+	}
+
+	/**
 	 * Save Course.
 	 *
 	 * @since 4.3
@@ -132,12 +186,15 @@ class CourseBuilderAjax extends AbstractAjax {
 			$course_id = $data['course_id'] ?? 0;
 			$settings  = $data['course_settings'] ?? false;
 			$insert    = $data['insert'];
+			$course_status_requested = ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish';
 
 			if ( $insert ) {
 				// Check user capability before insert
 				if ( ! current_user_can( 'edit_lp_courses' ) ) {
 					throw new Exception( __( 'You are not allowed to create courses', 'learnpress' ) );
 				}
+
+				$course_status = $this->normalize_course_status_for_save( $course_status_requested, true, null );
 
 				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
 				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
@@ -147,7 +204,7 @@ class CourseBuilderAjax extends AbstractAjax {
 						'post_type'    => LP_COURSE_CPT,
 						'post_title'   => sanitize_text_field( $data['course_title'] ?? '' ),
 						'post_content' => wp_unslash( $data['course_description'] ?? '' ),
-						'post_status'  => ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish',
+						'post_status'  => $course_status,
 						'tax_input'    => array(
 							'course_category' => $categories,
 							'course_tag'      => $tags,
@@ -167,6 +224,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 			} else {
 				$courseModel = $data['course_model'];
+				$course_status = $this->normalize_course_status_for_save( $course_status_requested, false, $courseModel );
 
 				$co_instructor_ids = $courseModel->get_meta_value_by_key( '_lp_co_teacher', [] );
 				if ( absint( $courseModel->post_author ) !== get_current_user_id() &&
@@ -175,7 +233,7 @@ class CourseBuilderAjax extends AbstractAjax {
 					throw new Exception( __( 'You are not allowed to update this course', 'learnpress' ) );
 				}
 
-				$courseModel->post_status = ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish';
+				$courseModel->post_status = $course_status;
 
 				if ( ! empty( $data['course_title'] ) ) {
 					$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
@@ -229,10 +287,18 @@ class CourseBuilderAjax extends AbstractAjax {
 				$current_thumbnail = get_post_thumbnail_id( $course_id );
 			}
 
+			// Use persisted status after save to avoid UI drift when WP normalizes status by capability.
+			$saved_course_status = get_post_status( $course_id );
+			if ( ! is_string( $saved_course_status ) || '' === $saved_course_status ) {
+				$saved_course_status = $course_status;
+			}
+
 			$response->status              = 'success';
 			$response->message             = $insert ? __( 'Insert course successfully!', 'learnpress' ) : __( 'Update course successfully!', 'learnpress' );
-			$response->data->status        = $data['course_status'];
-			$response->data->button_title  = $data['course_status'] === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
+			$response->data->status        = $saved_course_status;
+			$response->data->button_title  = 'publish' === $saved_course_status
+				? __( 'Update', 'learnpress' )
+				: ( 'pending' === $saved_course_status ? __( 'Submit for Review', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
 			$response->data->course_id_new = $insert ? $course_id : '';
 
 			// Return the actual saved permalink data (important if WordPress auto-generated a unique slug)
@@ -1674,12 +1740,26 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			$enable_cb_admin_mode = ! empty( $data['enable_cb_admin_mode'] ) && $data['enable_cb_admin_mode'] === 'yes' ? 'yes' : 'no';
+			$logo_remove          = ! empty( $data['course_builder_logo_remove'] ) && $data['course_builder_logo_remove'] === 'yes';
+			$logo_id              = absint( $data['course_builder_logo_id'] ?? 0 );
+
+			if ( $logo_remove ) {
+				$logo_id = 0;
+			}
 
 			\LP_Settings::update_option( 'enable_cb_admin_mode', $enable_cb_admin_mode );
+			\LP_Settings::update_option( 'course_builder_logo_id', $logo_id );
 
-			$response->status                      = 'success';
-			$response->message                     = __( 'Access policy updated.', 'learnpress' );
-			$response->data->enable_cb_admin_mode  = $enable_cb_admin_mode;
+			$logo_url = '';
+			if ( $logo_id ) {
+				$logo_url = wp_get_attachment_image_url( $logo_id, 'full' );
+			}
+
+			$response->status                          = 'success';
+			$response->message                         = __( 'Course Builder settings updated.', 'learnpress' );
+			$response->data->enable_cb_admin_mode      = $enable_cb_admin_mode;
+			$response->data->course_builder_logo_id    = $logo_id;
+			$response->data->course_builder_logo_url   = $logo_url;
 
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {

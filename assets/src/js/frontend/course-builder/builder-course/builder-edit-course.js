@@ -24,6 +24,8 @@ export class BuilderEditCourse {
 		elBtnHeaderSave: '.lp-cb-save-btn',
 		elBtnDraftCourse: '.cb-btn-darft',
 		elBtnPublishCourse: '.cb-btn-publish',
+		elBtnPendingCourse: '.cb-btn-pending',
+		elBtnDropdownAction: '.cb-dropdown-item[data-status]',
 		elBtnMainAction: '.cb-btn-main-action',
 		elBtnTrashCourse: '.cb-btn-trash',
 		elBtnSaveSettings: '.cb-btn-save-settings',
@@ -106,6 +108,8 @@ export class BuilderEditCourse {
 	};
 
 	init() {
+		this.isSavingCourse = false;
+
 		const editCourseCurriculum = new EditCourseCurriculum();
 		const metaboxExtraInfo = new MetaboxExtraInfo();
 		editCourseCurriculum.init();
@@ -188,12 +192,7 @@ export class BuilderEditCourse {
 				callBack: this.updateCourse.name,
 			},
 			{
-				selector: BuilderEditCourse.selectors.elBtnDraftCourse,
-				class: this,
-				callBack: this.updateCourse.name,
-			},
-			{
-				selector: BuilderEditCourse.selectors.elBtnPublishCourse,
+				selector: BuilderEditCourse.selectors.elBtnDropdownAction,
 				class: this,
 				callBack: this.updateCourse.name,
 			},
@@ -1211,13 +1210,62 @@ export class BuilderEditCourse {
 		return true;
 	}
 
+	setCourseActionLoadingState( isLoading, activeEl = null ) {
+		const elsToToggle = [];
+		const elHeaderSave = document.querySelector( BuilderEditCourse.selectors.elBtnHeaderSave );
+		const elMainAction = document.querySelector( BuilderEditCourse.selectors.elBtnMainAction );
+		const elDropdownToggle = document.querySelector( BuilderEditCourse.selectors.elDropdownToggle );
+
+		if ( elHeaderSave ) {
+			elsToToggle.push( elHeaderSave );
+		}
+
+		if ( elMainAction ) {
+			elsToToggle.push( elMainAction );
+		}
+
+		if ( elDropdownToggle ) {
+			elsToToggle.push( elDropdownToggle );
+		}
+
+		if ( activeEl ) {
+			elsToToggle.push( activeEl );
+		}
+
+		// Keep only unique elements.
+		const uniqueEls = [ ...new Set( elsToToggle.filter( Boolean ) ) ];
+
+		uniqueEls.forEach( ( el ) => {
+			lpUtils.lpSetLoadingEl( el, isLoading ? 1 : 0 );
+			el.classList.toggle( 'lp-loading', Boolean( isLoading ) );
+
+			if ( isLoading ) {
+				el.setAttribute( 'aria-disabled', 'true' );
+			} else {
+				el.removeAttribute( 'aria-disabled' );
+			}
+		} );
+
+		if ( isLoading && elDropdownToggle ) {
+			elDropdownToggle.setAttribute( 'aria-expanded', 'false' );
+		}
+	}
+
 	updateCourse( args ) {
 		// Context check: only handle if on course edit page
 		if ( ! document.querySelector( BuilderEditCourse.selectors.elDataCourse ) ) {
 			return;
 		}
 
+		// Prevent double submit while request is running.
+		if ( this.isSavingCourse ) {
+			return;
+		}
+
 		const { e, target } = args;
+		if ( e ) {
+			e.preventDefault();
+		}
 		// Validate title is not empty
 		if ( ! this.validateTitleBeforeUpdate() ) return;
 		if ( ! this.validatePricingBeforeUpdate() ) return;
@@ -1225,8 +1273,9 @@ export class BuilderEditCourse {
 		// Find which button was clicked and determine status from data attribute
 		const elBtnMainAction = target.closest( BuilderEditCourse.selectors.elBtnMainAction );
 		const elBtnHeaderSave = target.closest( BuilderEditCourse.selectors.elBtnHeaderSave );
-		const elBtnDraftCourse = target.closest( BuilderEditCourse.selectors.elBtnDraftCourse );
-		const elBtnPublishCourse = target.closest( BuilderEditCourse.selectors.elBtnPublishCourse );
+		const elBtnDropdownAction = target.closest(
+			BuilderEditCourse.selectors.elBtnDropdownAction
+		);
 
 		let status = 'publish';
 		let elBtn = null;
@@ -1235,12 +1284,9 @@ export class BuilderEditCourse {
 		if ( elBtnMainAction ) {
 			status = elBtnMainAction.dataset.status || 'publish';
 			elBtn = elBtnMainAction;
-		} else if ( elBtnPublishCourse ) {
-			status = elBtnPublishCourse.dataset.status || 'publish';
-			elBtn = elBtnPublishCourse;
-		} else if ( elBtnDraftCourse ) {
-			status = elBtnDraftCourse.dataset.status || 'draft';
-			elBtn = elBtnDraftCourse;
+		} else if ( elBtnDropdownAction ) {
+			status = elBtnDropdownAction.dataset.status || 'publish';
+			elBtn = elBtnDropdownAction;
 		} else if ( elBtnHeaderSave ) {
 			// Header save button uses current main action status
 			const mainBtn = document.querySelector( BuilderEditCourse.selectors.elBtnMainAction );
@@ -1264,7 +1310,8 @@ export class BuilderEditCourse {
 			}
 		}
 
-		lpUtils.lpSetLoadingEl( elBtn, 1 );
+		this.isSavingCourse = true;
+		this.setCourseActionLoadingState( true, elBtn );
 		const courseData = this.getCourseDataForUpdate();
 		const dataSend = {
 			...courseData,
@@ -1344,7 +1391,8 @@ export class BuilderEditCourse {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtn, 0 );
+				this.isSavingCourse = false;
+				this.setCourseActionLoadingState( false, elBtn );
 			},
 		};
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
@@ -1363,6 +1411,9 @@ export class BuilderEditCourse {
 		const mainBtn = dropdown.querySelector( '.cb-btn-main-action' );
 		const dropdownMenu = dropdown.querySelector( BuilderEditCourse.selectors.elDropdownMenu );
 		if ( ! mainBtn || ! dropdownMenu ) return;
+
+		const reviewOnlyCourseAttr = ( dropdown.dataset.reviewOnlyCourse || '' ).toLowerCase();
+		const isReviewOnlyCourse = [ 'yes', 'true', '1' ].includes( reviewOnlyCourseAttr );
 
 		// Status configuration for button labels and classes
 		const statusConfig = {
@@ -1384,15 +1435,15 @@ export class BuilderEditCourse {
 				dropdownStatus: 'publish',
 				dropdownIcon: 'dashicons-visibility',
 			},
-			pending: {
-				mainLabel: 'Submit for Review',
-				mainClass: 'cb-btn-pending',
-				mainStatus: 'pending',
-				dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
-				dropdownClass: 'cb-btn-darft',
-				dropdownStatus: 'draft',
-				dropdownIcon: 'dashicons-media-default',
-			},
+				pending: {
+					mainLabel: mainBtn.dataset.titlePublish || 'Publish',
+					mainClass: 'cb-btn-publish',
+					mainStatus: 'publish',
+					dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+					dropdownClass: 'cb-btn-darft',
+					dropdownStatus: 'draft',
+					dropdownIcon: 'dashicons-media-default',
+				},
 			trash: {
 				mainLabel: mainBtn.dataset.titleDraft || 'Save Draft',
 				mainClass: 'cb-btn-darft',
@@ -1403,8 +1454,66 @@ export class BuilderEditCourse {
 				dropdownIcon: 'dashicons-visibility',
 			},
 		};
+		const reviewStatusConfig = {
+			publish: {
+				mainLabel: mainBtn.dataset.titleUpdate || 'Update',
+				mainClass: 'cb-btn-update',
+				mainStatus: 'publish',
+				dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				dropdownClass: 'cb-btn-darft',
+				dropdownStatus: 'draft',
+				dropdownIcon: 'dashicons-media-default',
+			},
+			draft: {
+				mainLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				mainClass: 'cb-btn-darft',
+				mainStatus: 'draft',
+				dropdownLabel: mainBtn.dataset.titleSubmitReview || 'Submit for Review',
+				dropdownClass: 'cb-btn-pending',
+				dropdownStatus: 'pending',
+				dropdownIcon: 'dashicons-clock',
+			},
+			pending: {
+				mainLabel: mainBtn.dataset.titleSubmitReview || 'Submit for Review',
+				mainClass: 'cb-btn-pending',
+				mainStatus: 'pending',
+				dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				dropdownClass: 'cb-btn-darft',
+				dropdownStatus: 'draft',
+				dropdownIcon: 'dashicons-media-default',
+			},
+				'auto-draft': {
+					mainLabel: mainBtn.dataset.titleSubmitReview || 'Submit for Review',
+					mainClass: 'cb-btn-pending',
+					mainStatus: 'pending',
+					dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+					dropdownClass: 'cb-btn-darft',
+					dropdownStatus: 'draft',
+					dropdownIcon: 'dashicons-media-default',
+				},
+			trash: {
+				mainLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				mainClass: 'cb-btn-darft',
+				mainStatus: 'draft',
+				dropdownLabel: mainBtn.dataset.titleSubmitReview || 'Submit for Review',
+				dropdownClass: 'cb-btn-pending',
+				dropdownStatus: 'pending',
+				dropdownIcon: 'dashicons-clock',
+			},
+			private: {
+				mainLabel: mainBtn.dataset.titleSubmitReview || 'Submit for Review',
+				mainClass: 'cb-btn-pending',
+				mainStatus: 'pending',
+				dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				dropdownClass: 'cb-btn-darft',
+				dropdownStatus: 'draft',
+				dropdownIcon: 'dashicons-media-default',
+			},
+		};
 
-		const config = statusConfig[ newStatus ] || statusConfig.draft;
+		const config = isReviewOnlyCourse
+			? reviewStatusConfig[ newStatus ] || reviewStatusConfig.draft
+			: statusConfig[ newStatus ] || statusConfig.draft;
 
 		// Update main button
 		mainBtn.className = `${ config.mainClass } cb-btn-primary cb-btn-main-action`;

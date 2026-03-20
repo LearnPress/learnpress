@@ -11,7 +11,7 @@ $lesson-grid: 2fr 1.5fr 1fr 100px 80px 80px;
 		background: $cb-bg;
 		border: 1px solid $cb-border;
 		border-radius: $cb-radius-md;
-		overflow: hidden;
+		overflow: visible;
 
 		// Grid scoped to THIS tab wrapper — prevents cascade conflicts
 		.cb-list-table-header,
@@ -28,6 +28,15 @@ $lesson-grid: 2fr 1.5fr 1fr 100px 80px 80px;
 			display: flex;
 			margin-left: $cb-spacing-md;
 			justify-content: flex-start;
+			&.loading,
+			&.lp-loading {
+				pointer-events: none;
+				opacity: 0.7;
+
+				a {
+					pointer-events: none;
+				}
+			}
 
 			a {
 				display: flex;

@@ -480,11 +480,6 @@
 			line-height: normal;
 		}
 
-		&:not(.publish):not(.trash) span {
-			background-color: $cb-warning-bg;
-			color: $cb-text-muted;
-		}
-
 		&.publish span {
 			background: $cb-success-bg;
 			color: $cb-success;

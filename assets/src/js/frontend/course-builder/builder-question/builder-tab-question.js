@@ -310,9 +310,17 @@ export class BuilderTabQuestion {
 		}
 
 		this.closeAllExpanded( elExpandedItems );
+		const willOpen = ! elExpandedItems.classList.contains( 'active' );
 
-		elExpandedItems.classList.toggle( 'active' );
-		elQuestionActionExpanded.classList.toggle( 'active' );
+		if ( willOpen ) {
+			elExpandedItems.classList.add( 'active' );
+			elQuestionActionExpanded.classList.add( 'active' );
+			this.setExpandedDirection( elExpandedItems );
+		} else {
+			elExpandedItems.classList.remove( 'active' );
+			elExpandedItems.classList.remove( 'is-dropup' );
+			elQuestionActionExpanded.classList.remove( 'active' );
+		}
 	}
 
 	closeAllExpanded( excludeElement = null ) {
@@ -325,6 +333,7 @@ export class BuilderTabQuestion {
 			}
 
 			item.classList.remove( 'active' );
+			item.classList.remove( 'is-dropup' );
 
 			const questionItem = item.closest( BuilderTabQuestion.selectors.elQuestionItem );
 			const expandedBtn = questionItem.querySelector(
@@ -334,6 +343,23 @@ export class BuilderTabQuestion {
 				expandedBtn.classList.remove( 'active' );
 			}
 		} );
+	}
+
+	setExpandedDirection( elExpandedItems ) {
+		if ( ! elExpandedItems ) {
+			return;
+		}
+
+		elExpandedItems.classList.remove( 'is-dropup' );
+
+		const elQuestion = elExpandedItems.closest( '.question' );
+		if ( ! elQuestion ) {
+			return;
+		}
+
+		if ( elQuestion.matches( ':last-child' ) ) {
+			elExpandedItems.classList.add( 'is-dropup' );
+		}
 	}
 
 	updateStatusUI( elQuestion, status ) {

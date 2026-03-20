@@ -303,9 +303,17 @@ export class BuilderTabQuiz {
 		}
 
 		this.closeAllExpanded( elExpandedItems );
+		const willOpen = ! elExpandedItems.classList.contains( 'active' );
 
-		elExpandedItems.classList.toggle( 'active' );
-		elQuizActionExpanded.classList.toggle( 'active' );
+		if ( willOpen ) {
+			elExpandedItems.classList.add( 'active' );
+			elQuizActionExpanded.classList.add( 'active' );
+			this.setExpandedDirection( elExpandedItems );
+		} else {
+			elExpandedItems.classList.remove( 'active' );
+			elExpandedItems.classList.remove( 'is-dropup' );
+			elQuizActionExpanded.classList.remove( 'active' );
+		}
 	}
 
 	closeAllExpanded( excludeElement = null ) {
@@ -318,6 +326,7 @@ export class BuilderTabQuiz {
 			}
 
 			item.classList.remove( 'active' );
+			item.classList.remove( 'is-dropup' );
 
 			const quizItem = item.closest( BuilderTabQuiz.selectors.elQuizItem );
 			const expandedBtn = quizItem.querySelector( BuilderTabQuiz.selectors.elQuizActionExpanded );
@@ -325,6 +334,23 @@ export class BuilderTabQuiz {
 				expandedBtn.classList.remove( 'active' );
 			}
 		} );
+	}
+
+	setExpandedDirection( elExpandedItems ) {
+		if ( ! elExpandedItems ) {
+			return;
+		}
+
+		elExpandedItems.classList.remove( 'is-dropup' );
+
+		const elQuiz = elExpandedItems.closest( '.quiz' );
+		if ( ! elQuiz ) {
+			return;
+		}
+
+		if ( elQuiz.matches( ':last-child' ) ) {
+			elExpandedItems.classList.add( 'is-dropup' );
+		}
 	}
 
 	updateStatusUI( elQuiz, status ) {

@@ -239,9 +239,9 @@
 	display: none;
 	position: absolute;
 	min-width: 160px;
-	top: 0;
+	top: calc(100% + 4px);
 	right: 0;
-	transform: translate(15px, -15px);
+	transform: none;
 	padding: 10px;
 	flex-direction: column;
 	background-color: $cb-bg;
@@ -253,6 +253,11 @@
 
 	&.active {
 		display: flex !important;
+	}
+
+	&.is-dropup {
+		top: auto;
+		bottom: calc(100% + 4px);
 	}
 
 		.#{$type}-action-expanded__duplicate,

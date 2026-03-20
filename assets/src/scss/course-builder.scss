@@ -325,6 +325,12 @@
 #lp-course-builder {
 	.learn-press-message {
 		margin: 0;
+		position: relative;
+		padding: 10px 20px;
+		border-radius: $cb-radius-md;
+		background-color: $cb-info-bg;
+		color: $cb-info;
+		width: 100%;
 	}
 }
 

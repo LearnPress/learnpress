@@ -41,8 +41,8 @@ class BuilderEditLessonTemplate {
 
 	public function section_overview() {
 		wp_enqueue_script( 'lp-course-builder' );
-		$lesson_id = CourseBuilder::get_post_id();
-		$lesson_model = ''; 
+		$lesson_id    = CourseBuilder::get_post_id();
+		$lesson_model = '';
 
 		if ( $lesson_id === 'post-new' ) {
 			$lesson_model = '';
@@ -131,8 +131,8 @@ class BuilderEditLessonTemplate {
 			'media_buttons' => true,
 			'tinymce'       => array(
 				'content_style' => "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.6; color: #1e1e1e; }",
-				'toolbar1' => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,spellchecker,wp_adv',
-				'toolbar2' => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
+				'toolbar1'      => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,spellchecker,wp_adv',
+				'toolbar2'      => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
 			),
 			'quicktags'     => true,
 		);
@@ -176,7 +176,7 @@ class BuilderEditLessonTemplate {
 		$metabox->output( $lesson_model );
 		$settings = ob_get_clean();
 
-		$output      = [
+		$output = [
 			'wrapper'          => sprintf( '<div class="cb-section__lesson-edit" data-lesson-id="%s">', $lesson_id ),
 			'form_setting'     => '<form name="lp-form-setting-lesson" class="lp-form-setting-lesson" method="post" enctype="multipart/form-data">',
 			'settings'         => $settings,

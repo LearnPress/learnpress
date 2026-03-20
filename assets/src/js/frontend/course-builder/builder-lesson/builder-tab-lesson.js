@@ -310,9 +310,17 @@ export class BuilderTabLesson {
 		}
 
 		this.closeAllExpanded( elExpandedItems );
+		const willOpen = ! elExpandedItems.classList.contains( 'active' );
 
-		elExpandedItems.classList.toggle( 'active' );
-		elLessonActionExpanded.classList.toggle( 'active' );
+		if ( willOpen ) {
+			elExpandedItems.classList.add( 'active' );
+			elLessonActionExpanded.classList.add( 'active' );
+			this.setExpandedDirection( elExpandedItems );
+		} else {
+			elExpandedItems.classList.remove( 'active' );
+			elExpandedItems.classList.remove( 'is-dropup' );
+			elLessonActionExpanded.classList.remove( 'active' );
+		}
 	}
 
 	closeAllExpanded( excludeElement = null ) {
@@ -325,6 +333,7 @@ export class BuilderTabLesson {
 				return;
 			}
 			item.classList.remove( 'active' );
+			item.classList.remove( 'is-dropup' );
 
 			const lessonItem = item.closest( BuilderTabLesson.selectors.elLessonItem );
 			const expandedBtn = lessonItem.querySelector(
@@ -336,11 +345,34 @@ export class BuilderTabLesson {
 		} );
 	}
 
+	setExpandedDirection( elExpandedItems ) {
+		if ( ! elExpandedItems ) {
+			return;
+		}
+
+		elExpandedItems.classList.remove( 'is-dropup' );
+
+		const elLesson = elExpandedItems.closest( '.lesson' );
+		if ( ! elLesson ) {
+			return;
+		}
+
+		if ( elLesson.matches( ':last-child' ) ) {
+			elExpandedItems.classList.add( 'is-dropup' );
+		}
+	}
+
 	/* Toggle preview for a lesson in the lesson list */
 	toggleLessonPreview( args ) {
 		const { target } = args;
 		const elPreviewBtn = target.closest( BuilderTabLesson.selectors.elLessonPreview );
 		if ( ! elPreviewBtn ) {
+			return;
+		}
+		if (
+			elPreviewBtn.classList.contains( 'loading' ) ||
+			elPreviewBtn.classList.contains( 'lp-loading' )
+		) {
 			return;
 		}
 
@@ -366,6 +398,7 @@ export class BuilderTabLesson {
 		const enablePreview = icon.classList.contains( 'lp-icon-eye' );
 
 		lpUtils.lpSetLoadingEl( elPreviewBtn, 1 );
+		elPreviewBtn.classList.add( 'lp-loading' );
 
 		const dataSend = {
 			action: 'builder_update_lesson',
@@ -393,6 +426,7 @@ export class BuilderTabLesson {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( elPreviewBtn, 0 );
+				elPreviewBtn.classList.remove( 'lp-loading' );
 			},
 		};
 

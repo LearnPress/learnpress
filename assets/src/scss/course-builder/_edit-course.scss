@@ -1787,7 +1787,7 @@
 	#offline_course_data .form-field,
 	#price_course_data .form-field,
 	#extra_course_data .form-field {
-		margin-bottom: 11px;
+		margin-bottom: $cb-spacing-2xl;
 	}
 
 	#general_course_data {
@@ -1797,6 +1797,10 @@
 			textarea {
 				width: calc( 100% - 165px );
 			}
+		}
+
+		._lp_students_field .description {
+			margin-top: -3px;
 		}
 	}
 
@@ -2550,6 +2554,28 @@ ul.lp-meta-box__course-tab__tabs {
 				border: none;
 				outline: none;
 				box-shadow: none;
+			}
+		}
+
+		.lp-btn-update-section-title,
+		.lp-btn-update-section-description,
+		.lp-btn-update-item-title {
+			background: $cb-primary;
+			color: $cb-primary-bland;
+			border: 1px solid $cb-primary;
+
+			&:hover {
+				background: $cb-primary-hover;
+			}
+		}
+
+		.lp-btn-cancel-update-section-title,
+		.lp-btn-cancel-update-section-description,
+		.lp-btn-cancel-update-item-title {
+			&:hover {
+				border-color: $cb-primary;
+				color: $cb-primary;
+				background: $cb-primary-bland;
 			}
 		}
 

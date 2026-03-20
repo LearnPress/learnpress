@@ -249,6 +249,22 @@ class CourseBuilderTemplate {
 		$profile      = LP_Profile::instance();
 		$profile_url  = $profile->get_current_url();
 		$logout_url   = wp_logout_url( home_url() );
+		$logo_id      = absint( \LP_Settings::get_option( 'course_builder_logo_id', 0 ) );
+		$custom_logo  = '';
+
+		if ( $logo_id ) {
+			$custom_logo = wp_get_attachment_image(
+				$logo_id,
+				'full',
+				false,
+				[
+					'class'    => 'lp-cb-top-header__logo-image',
+					'alt'      => __( 'Course Builder', 'learnpress' ),
+					'loading'  => 'eager',
+					'decoding' => 'async',
+				]
+			);
+		}
 
 		$header = [
 			'wrapper'     => '<header class="lp-cb-top-header">',
@@ -294,6 +310,31 @@ class CourseBuilderTemplate {
 			),
 			'wrapper_end' => '</header>',
 		];
+
+		$default_logo_svg = '';
+		if ( preg_match( '/<svg\b[^>]*>.*?<\/svg>/is', $header['logo'], $default_logo_matches ) ) {
+			$default_logo_svg = $default_logo_matches[0];
+		}
+
+		if ( ! empty( $custom_logo ) ) {
+			$header['logo'] = preg_replace( '/<svg\b[^>]*>.*?<\/svg>/is', $custom_logo, $header['logo'], 1 );
+		}
+
+		if ( ! empty( $default_logo_svg ) ) {
+			$default_logo_template = sprintf(
+				'<template id="lp-cb-default-logo-template">%s</template>',
+				$default_logo_svg
+			);
+
+			$header['logo'] = preg_replace_callback(
+				'/<div class="lp-cb-top-header__logo">\s*/i',
+				static function( array $matches ) use ( $default_logo_template ): string {
+					return $matches[0] . $default_logo_template;
+				},
+				$header['logo'],
+				1
+			);
+		}
 
 		return Template::combine_components( $header );
 	}
@@ -505,8 +546,7 @@ class CourseBuilderTemplate {
 		$sections = $tab_data['sections'] ?? [];
 
 		// Get status for button labels and status badge
-		$status       = $is_new_post ? 'auto-draft' : $post->post_status;
-		$is_published = $status === 'publish';
+		$status = $is_new_post ? 'auto-draft' : $post->post_status;
 
 		// Dynamic title for new posts based on tab type
 		$new_post_titles = array(
@@ -526,6 +566,20 @@ class CourseBuilderTemplate {
 			$type_singular = rtrim( $tab_current, 's' ); // courses -> course, quizzes -> quiz, etc.
 			$status_badge  = sprintf( '<span class="%1$s-status %2$s">%2$s</span>', esc_attr( $type_singular ), esc_attr( $status ) );
 		}
+
+		$is_admin_user                 = current_user_can( ADMIN_ROLE );
+		$is_instructor_user            = current_user_can( LP_TEACHER_ROLE );
+		$course_post_type              = get_post_type_object( LP_COURSE_CPT );
+		$cap_publish_course            = ( $course_post_type && isset( $course_post_type->cap->publish_posts ) )
+			? $course_post_type->cap->publish_posts
+			: 'publish_lp_courses';
+		$can_publish_course            = current_user_can( $cap_publish_course );
+		$required_review               = \LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
+		$status_object                 = get_post_status_object( $status );
+		$is_public_status              = $status_object && ! empty( $status_object->public );
+		$use_review_only_workflow      = ( $is_instructor_user && $required_review ) || ! $can_publish_course;
+		$is_review_only_course_context = 'courses' === $tab_current && ! $is_admin_user && $use_review_only_workflow;
+		$is_review_only_non_public     = $is_review_only_course_context && ! $is_public_status;
 
 		// Configure buttons based on current status
 		// Main button reflects current status action, dropdown shows alternative
@@ -549,9 +603,9 @@ class CourseBuilderTemplate {
 				'dropdown_icon'   => 'dashicons-visibility',
 			),
 			'pending'    => array(
-				'main_label'      => __( 'Submit for Review', 'learnpress' ),
-				'main_class'      => 'cb-btn-pending',
-				'main_status'     => 'pending',
+				'main_label'      => __( 'Publish', 'learnpress' ),
+				'main_class'      => 'cb-btn-publish',
+				'main_status'     => 'publish',
 				'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
 				'dropdown_class'  => 'cb-btn-darft',
 				'dropdown_status' => 'draft',
@@ -568,6 +622,57 @@ class CourseBuilderTemplate {
 			),
 		);
 
+		if ( $is_review_only_non_public ) {
+			$status_config = array(
+				'publish'    => $status_config['publish'],
+				'draft'      => array(
+					'main_label'      => __( 'Save Draft', 'learnpress' ),
+					'main_class'      => 'cb-btn-darft',
+					'main_status'     => 'draft',
+					'dropdown_label'  => __( 'Submit for Review', 'learnpress' ),
+					'dropdown_class'  => 'cb-btn-pending',
+					'dropdown_status' => 'pending',
+					'dropdown_icon'   => 'dashicons-clock',
+				),
+				'pending'    => array(
+					'main_label'      => __( 'Submit for Review', 'learnpress' ),
+					'main_class'      => 'cb-btn-pending',
+					'main_status'     => 'pending',
+					'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
+					'dropdown_class'  => 'cb-btn-darft',
+					'dropdown_status' => 'draft',
+					'dropdown_icon'   => 'dashicons-media-default',
+				),
+					'auto-draft' => array(
+						'main_label'      => __( 'Submit for Review', 'learnpress' ),
+						'main_class'      => 'cb-btn-pending',
+						'main_status'     => 'pending',
+						'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
+						'dropdown_class'  => 'cb-btn-darft',
+						'dropdown_status' => 'draft',
+						'dropdown_icon'   => 'dashicons-media-default',
+					),
+				'trash'      => array(
+					'main_label'      => __( 'Save Draft', 'learnpress' ),
+					'main_class'      => 'cb-btn-darft',
+					'main_status'     => 'draft',
+					'dropdown_label'  => __( 'Submit for Review', 'learnpress' ),
+					'dropdown_class'  => 'cb-btn-pending',
+					'dropdown_status' => 'pending',
+					'dropdown_icon'   => 'dashicons-clock',
+				),
+				'private'    => array(
+					'main_label'      => __( 'Submit for Review', 'learnpress' ),
+					'main_class'      => 'cb-btn-pending',
+					'main_status'     => 'pending',
+					'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
+					'dropdown_class'  => 'cb-btn-darft',
+					'dropdown_status' => 'draft',
+					'dropdown_icon'   => 'dashicons-media-default',
+				),
+			);
+		}
+
 		// Fallback to draft config if status not in map
 		$btn_config = isset( $status_config[ $status ] ) ? $status_config[ $status ] : $status_config['draft'];
 
@@ -583,11 +688,10 @@ class CourseBuilderTemplate {
 					<?php echo $status_badge; ?>
 					<?php
 					$is_cb_admin_mode = \LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
-					$is_admin         = current_user_can( ADMIN_ROLE );
 					$is_instructor    = current_user_can( LP_TEACHER_ROLE );
 					// Hide "Edit with WordPress" for instructors when CB admin mode is on
 					// Admins always see this link
-					$hide_wp_edit_link = $is_cb_admin_mode && $is_instructor && ! $is_admin;
+					$hide_wp_edit_link = $is_cb_admin_mode && $is_instructor && ! $is_admin_user;
 					?>
 					<?php if ( ! $is_new_post && ! $hide_wp_edit_link ) : ?>
 						<?php $hide_style = ( 'trash' === $status ) ? 'style="display:none"' : ''; ?>
@@ -608,12 +712,13 @@ class CourseBuilderTemplate {
 							<?php esc_html_e( 'Preview', 'learnpress' ); ?>
 						</a>
 					<?php endif; ?>
-					<div class="cb-header-actions-dropdown" data-current-status="<?php echo esc_attr( $status ); ?>">
+					<div class="cb-header-actions-dropdown" data-current-status="<?php echo esc_attr( $status ); ?>" data-review-only-course="<?php echo esc_attr( $is_review_only_course_context ? 'yes' : 'no' ); ?>">
 						<div class="<?php echo esc_attr( $btn_config['main_class'] ); ?> cb-btn-primary cb-btn-main-action" 
 							data-status="<?php echo esc_attr( $btn_config['main_status'] ); ?>"
 							data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>" 
 							data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>"
-							data-title-draft="<?php esc_attr_e( 'Save Draft', 'learnpress' ); ?>">
+							data-title-draft="<?php esc_attr_e( 'Save Draft', 'learnpress' ); ?>"
+							data-title-submit-review="<?php esc_attr_e( 'Submit for Review', 'learnpress' ); ?>">
 							<?php echo esc_html( $btn_config['main_label'] ); ?>
 						</div>
 						<button type="button" class="cb-btn-dropdown-toggle" aria-expanded="false" aria-haspopup="true">

@@ -87,7 +87,8 @@ $cb-card-bg: $cb-bg-card !default;
 		}
 
 		// Loading state
-		&.loading {
+		&.loading,
+		&.lp-loading {
 			opacity: 0.7;
 			pointer-events: none;
 		}
@@ -160,10 +161,19 @@ $cb-card-bg: $cb-bg-card !default;
 			gap: 10px;
 			text-decoration: none;
 			color: $cb-text;
+			line-height: 0;
 
 			&:hover {
 				color: $cb-primary;
 			}
+		}
+
+		.lp-cb-top-header__logo-image {
+			display: block;
+			width: auto;
+			max-width: 240px;
+			max-height: 40px;
+			object-fit: contain;
 		}
 
 		.dashicons {
@@ -939,7 +949,8 @@ html:has( #wpadminbar ) {
 #lp-course-builder {
 	.cb-btn-update,
 	.cb-btn-preview,
-	.cb-btn-darft {
+	.cb-btn-darft,
+	.cb-btn-pending {
 		padding: 10px 20px;
 		font-size: 14px;
 		border-radius: 12px;
@@ -964,7 +975,8 @@ html:has( #wpadminbar ) {
 			}
 		}
 
-		&.loading {
+		&.loading,
+		&.lp-loading {
 			opacity: 0.7;
 			pointer-events: none;
 		}
@@ -1020,6 +1032,16 @@ html:has( #wpadminbar ) {
 
 		&:hover {
 			background: #d1d5db;
+		}
+	}
+
+	.cb-btn-pending {
+		background: #dbeafe;
+		color: #1e40af;
+
+		&:hover {
+			background: #bfdbfe;
+			color: #1e3a8a;
 		}
 	}
 
@@ -1082,14 +1104,40 @@ html:has( #wpadminbar ) {
 					color: $cb-primary;
 				}
 			}
+
+			&.loading,
+			&.lp-loading {
+				opacity: 0.7;
+				pointer-events: none;
+			}
+		}
+
+		.cb-btn-pending.cb-btn-main-action + .cb-btn-dropdown-toggle {
+			background: #dbeafe !important;
+			border-color: #bfdbfe !important;
+
+			.dashicons {
+				color: #1e40af !important;
+			}
+
+			&:hover {
+				background: #bfdbfe !important;
+			}
+
+			&[aria-expanded='true'] {
+				background: #bfdbfe !important;
+
+				.dashicons {
+					color: #1e3a8a !important;
+				}
+			}
 		}
 
 		@include cb-header-dropdown-menu-and-items(8px);
 
 		// Dropdown toggle color matches main button based on status
 		&[data-current-status='trash'],
-		&[data-current-status='draft'],
-		&[data-current-status='pending'] {
+		&[data-current-status='draft'] {
 			.cb-btn-dropdown-toggle {
 				background: #d1d5db !important;
 				border-color: #d1d5db !important;
@@ -1111,6 +1159,29 @@ html:has( #wpadminbar ) {
 				}
 			}
 		}
+
+		&[data-current-status='pending'] {
+			.cb-btn-dropdown-toggle {
+				background: #dbeafe !important;
+				border-color: #bfdbfe !important;
+
+				.dashicons {
+					color: #1e40af !important;
+				}
+
+				&:hover {
+					background: #bfdbfe !important;
+				}
+
+				&[aria-expanded='true'] {
+					background: #bfdbfe !important;
+
+					.dashicons {
+						color: #1e3a8a !important;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -1124,7 +1195,8 @@ html:has( #wpadminbar ) {
 	// Button group container - main action button
 	.cb-btn-update,
 	.cb-btn-darft.cb-btn-main-action,
-	.cb-btn-publish.cb-btn-main-action {
+	.cb-btn-publish.cb-btn-main-action,
+	.cb-btn-pending.cb-btn-main-action {
 		padding: 10px 16px;
 		font-size: 14px;
 		font-weight: 500;
@@ -1147,6 +1219,16 @@ html:has( #wpadminbar ) {
 			&:hover {
 				background: $cb-primary-hover;
 			}
+		}
+	}
+
+	.cb-btn-pending.cb-btn-main-action {
+		background: #dbeafe;
+		color: #1e40af;
+
+		&:hover {
+			background: #bfdbfe;
+			color: #1e3a8a;
 		}
 	}
 
@@ -1182,11 +1264,36 @@ html:has( #wpadminbar ) {
 				transform: rotate( 180deg );
 			}
 		}
+
+		&.loading,
+		&.lp-loading {
+			opacity: 0.7;
+			pointer-events: none;
+		}
+	}
+
+	.cb-btn-pending.cb-btn-main-action + .cb-btn-dropdown-toggle {
+		background: #dbeafe;
+
+		.dashicons {
+			color: #1e40af;
+		}
+
+		&:hover {
+			background: #bfdbfe;
+		}
+
+		&[aria-expanded='true'] {
+			background: #bfdbfe;
+
+			.dashicons {
+				color: #1e3a8a;
+			}
+		}
 	}
 
 	&[data-current-status='trash'],
-	&[data-current-status='draft'],
-	&[data-current-status='pending'] {
+	&[data-current-status='draft'] {
 		.cb-btn-dropdown-toggle {
 			background: #d1d5db;
 
@@ -1200,6 +1307,28 @@ html:has( #wpadminbar ) {
 
 			&[aria-expanded='true'] {
 				background: #b8bcc4;
+			}
+		}
+	}
+
+	&[data-current-status='pending'] {
+		.cb-btn-dropdown-toggle {
+			background: #dbeafe;
+
+			.dashicons {
+				color: #1e40af;
+			}
+
+			&:hover {
+				background: #bfdbfe;
+			}
+
+			&[aria-expanded='true'] {
+				background: #bfdbfe;
+
+				.dashicons {
+					color: #1e3a8a;
+				}
 			}
 		}
 	}

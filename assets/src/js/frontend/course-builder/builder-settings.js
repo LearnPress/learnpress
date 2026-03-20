@@ -2,7 +2,7 @@
  * Settings tab JS handler for Course Builder.
  *
  * @since 4.3.x
- * @version 1.0.0
+ * @version 1.2.0
  */
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 
@@ -13,7 +13,9 @@ export class BuilderSettings {
 		this.debounceDelay = 600;
 		this.isSaving = false;
 		this.isDirty = false;
-		this.lastSavedValue = 'no';
+		this.shouldRetryOnCompleted = false;
+		this.lastSavedState = '';
+		this.mediaUploader = null;
 
 		this.init();
 	}
@@ -22,6 +24,14 @@ export class BuilderSettings {
 		elForm: '#lp-cb-settings-form',
 		elCheckbox: 'input[name="enable_cb_admin_mode"]',
 		elBadge: '[data-setting-badge]',
+		elLogoSetting: '[data-cb-logo-setting]',
+		elDefaultLogoTemplate: '#lp-cb-default-logo-template',
+		elLogoPreviewDefault: '[data-cb-logo-preview-default]',
+		elLogoPreviewImage: '[data-cb-logo-preview-image]',
+		elLogoChooseBtn: '[data-cb-logo-choose]',
+		elLogoRemoveBtn: '[data-cb-logo-remove]',
+		elLogoIdInput: 'input[name="course_builder_logo_id"]',
+		elLogoRemoveInput: 'input[name="course_builder_logo_remove"]',
 	};
 
 	init() {
@@ -30,9 +40,22 @@ export class BuilderSettings {
 			return;
 		}
 
-		this.lastSavedValue = this.getCurrentValue();
-		this.updateBadge( this.lastSavedValue );
+		this.cacheElements();
+		this.updateBadge( this.getCurrentValue() );
+		this.hydrateDefaultLogoPreview();
+		this.setLogoVisibility( this.getLogoId() > 0 );
+		this.lastSavedState = this.getStateFingerprint();
 		this.events();
+	}
+
+	cacheElements() {
+		this.logoSetting = this.form?.querySelector( BuilderSettings.selectors.elLogoSetting );
+		this.logoPreviewDefault = this.form?.querySelector( BuilderSettings.selectors.elLogoPreviewDefault );
+		this.logoPreviewImage = this.form?.querySelector( BuilderSettings.selectors.elLogoPreviewImage );
+		this.logoChooseBtn = this.form?.querySelector( BuilderSettings.selectors.elLogoChooseBtn );
+		this.logoRemoveBtn = this.form?.querySelector( BuilderSettings.selectors.elLogoRemoveBtn );
+		this.logoIdInput = this.form?.querySelector( BuilderSettings.selectors.elLogoIdInput );
+		this.logoRemoveInput = this.form?.querySelector( BuilderSettings.selectors.elLogoRemoveInput );
 	}
 
 	events() {
@@ -46,18 +69,32 @@ export class BuilderSettings {
 		}
 
 		this.form.addEventListener( 'change', ( e ) => {
-			if ( ! e.target.matches( BuilderSettings.selectors.elCheckbox ) ) {
-				return;
+			if ( e.target.matches( BuilderSettings.selectors.elCheckbox ) ) {
+				this.handleSettingChange();
 			}
-
-			this.handleSettingChange();
 		} );
+
+		if ( this.logoChooseBtn ) {
+			this.logoChooseBtn.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				this.openLogoMediaUploader();
+			} );
+		}
+
+		if ( this.logoRemoveBtn ) {
+			this.logoRemoveBtn.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				this.removeLogo();
+			} );
+		}
 	}
 
 	handleSettingChange() {
-		const value = this.getCurrentValue();
 		this.isDirty = true;
-		this.updateBadge( value );
+		if ( this.isSaving ) {
+			this.shouldRetryOnCompleted = true;
+		}
+		this.updateBadge( this.getCurrentValue() );
 		this.queueSave();
 	}
 
@@ -69,13 +106,12 @@ export class BuilderSettings {
 	}
 
 	flushSave() {
-		const value = this.getCurrentValue();
-
 		if ( ! this.isDirty ) {
 			return;
 		}
 
-		if ( value === this.lastSavedValue ) {
+		const currentState = this.getStateFingerprint();
+		if ( currentState === this.lastSavedState ) {
 			this.isDirty = false;
 			return;
 		}
@@ -85,23 +121,20 @@ export class BuilderSettings {
 		}
 
 		this.isSaving = true;
+		this.shouldRetryOnCompleted = false;
+		lpToastify.show( 'Updating settings...', 'info', { duration: 1800 } );
 
-		const dataSend = {
-			action: 'save_global_settings',
-			args: { id_url: 'save-global-settings' },
-			enable_cb_admin_mode: value,
-		};
-
-		window.lpAJAXG.fetchAJAX( dataSend, {
+		window.lpAJAXG.fetchAJAX( this.getPayloadForSave(), {
 			success: ( response ) => {
 				if ( response?.status !== 'success' ) {
 					this.handleSaveError( response?.message || 'Could not save changes.' );
 					return;
 				}
 
-				this.lastSavedValue = value;
+				this.applySaveResponse( response );
 				this.isDirty = false;
-				this.updateBadge( value );
+				this.lastSavedState = this.getStateFingerprint();
+				this.updateBadge( this.getCurrentValue() );
 				lpToastify.show( response?.message || 'Saved', 'success' );
 			},
 			error: ( error ) => {
@@ -109,13 +142,42 @@ export class BuilderSettings {
 			},
 			completed: () => {
 				this.isSaving = false;
-
-				if ( this.getCurrentValue() !== this.lastSavedValue ) {
-					this.isDirty = true;
+				if ( this.shouldRetryOnCompleted ) {
 					this.queueSave();
 				}
 			},
 		} );
+	}
+
+	getPayloadForSave() {
+		return {
+			action: 'save_global_settings',
+			args: { id_url: 'save-global-settings' },
+			enable_cb_admin_mode: this.getCurrentValue(),
+			course_builder_logo_id: this.getLogoId(),
+			course_builder_logo_remove: this.getLogoRemoveValue(),
+		};
+	}
+
+	applySaveResponse( response ) {
+		const data = response?.data || {};
+		const savedLogoID = parseInt( data.course_builder_logo_id ?? this.getLogoId(), 10 ) || 0;
+		const savedLogoSrc = data.course_builder_logo_url || '';
+
+		if ( this.logoIdInput ) {
+			this.logoIdInput.value = savedLogoID;
+		}
+
+		if ( this.logoRemoveInput ) {
+			this.logoRemoveInput.value = 'no';
+		}
+
+		if ( savedLogoID > 0 && savedLogoSrc ) {
+			this.setLogoImageSource( savedLogoSrc );
+			this.setLogoVisibility( true );
+		} else if ( savedLogoID === 0 ) {
+			this.clearLogoUI();
+		}
 	}
 
 	handleSaveError( message ) {
@@ -136,5 +198,136 @@ export class BuilderSettings {
 		const isEnabled = value === 'yes';
 		badgeEl.dataset.state = isEnabled ? 'enabled' : 'disabled';
 		badgeEl.textContent = isEnabled ? 'Enabled' : 'Disabled';
+	}
+
+	getStateFingerprint() {
+		return JSON.stringify( {
+			enable_cb_admin_mode: this.getCurrentValue(),
+			course_builder_logo_id: this.getLogoId(),
+			course_builder_logo_remove: this.getLogoRemoveValue(),
+		} );
+	}
+
+	getLogoId() {
+		return parseInt( this.logoIdInput?.value || '0', 10 ) || 0;
+	}
+
+	getLogoRemoveValue() {
+		return this.logoRemoveInput?.value === 'yes' ? 'yes' : 'no';
+	}
+
+	openLogoMediaUploader() {
+		if ( typeof wp === 'undefined' || typeof wp.media === 'undefined' ) {
+			lpToastify.show( 'Media library is unavailable.', 'error' );
+			return;
+		}
+
+		if ( this.mediaUploader ) {
+			this.mediaUploader.open();
+			return;
+		}
+
+		this.mediaUploader = wp.media( {
+			title: 'Select logo image',
+			button: { text: 'Use this image' },
+			multiple: false,
+			library: { type: 'image' },
+		} );
+
+		this.mediaUploader.on( 'select', () => {
+			const attachment = this.mediaUploader.state().get( 'selection' ).first().toJSON();
+			const imageURL = attachment?.sizes?.full?.url || attachment?.url || '';
+			if ( ! imageURL ) {
+				return;
+			}
+
+			if ( this.logoIdInput ) {
+				this.logoIdInput.value = attachment?.id || 0;
+			}
+
+			if ( this.logoRemoveInput ) {
+				this.logoRemoveInput.value = 'no';
+			}
+
+			this.setLogoImageSource( imageURL );
+			this.setLogoVisibility( true );
+			this.handleSettingChange();
+		} );
+
+		this.mediaUploader.open();
+	}
+
+	setLogoImageSource( source ) {
+		if ( this.logoPreviewImage ) {
+			if ( source ) {
+				this.logoPreviewImage.src = source;
+			} else {
+				this.logoPreviewImage.removeAttribute( 'src' );
+			}
+		}
+	}
+
+	setLogoVisibility( visible ) {
+		if ( this.logoPreviewImage ) {
+			this.logoPreviewImage.classList.toggle( 'is-hidden', ! visible );
+		}
+
+		if ( this.logoPreviewDefault ) {
+			this.logoPreviewDefault.classList.toggle( 'is-hidden', visible );
+		}
+
+		if ( this.logoRemoveBtn ) {
+			this.logoRemoveBtn.classList.toggle( 'is-hidden', ! visible );
+		}
+	}
+
+	hydrateDefaultLogoPreview() {
+		if ( ! this.logoPreviewDefault || this.logoPreviewDefault.children.length > 0 ) {
+			return;
+		}
+
+		const defaultLogoTemplate = document.querySelector( BuilderSettings.selectors.elDefaultLogoTemplate );
+		const defaultLogoSVG =
+			defaultLogoTemplate?.content?.querySelector( 'svg' ) ||
+			defaultLogoTemplate?.querySelector( 'svg' ) ||
+			document.querySelector( '.lp-cb-top-header__logo svg' );
+
+		if ( ! defaultLogoSVG ) {
+			return;
+		}
+
+		const svgPreviewImage = document.createElement( 'img' );
+		svgPreviewImage.classList.add( 'lp-cb-logo-setting__preview-default-image' );
+		svgPreviewImage.setAttribute( 'aria-hidden', 'true' );
+		svgPreviewImage.alt = 'Course Builder default logo';
+		svgPreviewImage.src = `data:image/svg+xml;charset=UTF-8,${ encodeURIComponent(
+			defaultLogoSVG.outerHTML
+		) }`;
+
+		this.logoPreviewDefault.appendChild( svgPreviewImage );
+	}
+
+	removeLogo() {
+		if ( ! this.logoIdInput ) {
+			return;
+		}
+
+		this.clearLogoUI();
+		if ( this.logoRemoveInput ) {
+			this.logoRemoveInput.value = 'yes';
+		}
+		this.handleSettingChange();
+	}
+
+	clearLogoUI() {
+		if ( this.logoPreviewImage ) {
+			this.logoPreviewImage.src = '';
+		}
+
+		if ( this.logoIdInput ) {
+			this.logoIdInput.value = 0;
+		}
+
+		this.setLogoVisibility( false );
 	}
 }

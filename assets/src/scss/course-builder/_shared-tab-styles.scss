@@ -175,9 +175,13 @@
 			}
 		}
 
+		input[type='number'] {
+			width: 80px !important;
+		}
+
 
 		select {
-			padding: 4px 12px;
+			padding: 4px 30px 4px 15px !important;
 			height: 34px;
 			border: 1px solid #d1d5db;
 			border-radius: 6px;
@@ -639,7 +643,7 @@
 	}
 
 	// Dropdown selects
-	.cb-filter-select {
+	select {
 		padding: 10px 32px 10px 14px;
 		border: 1px solid $cb-border;
 		border-radius: 6px;
