@@ -57,6 +57,31 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$active_tab = $this->get_active_tab();
 		$section    = $this->get_active_section();
 
+		if ( 'permalink' === $active_tab && isset( $_GET['lp-user-slug-generated'] ) ) {
+			$processed = absint( $_GET['lp-user-slug-processed'] ?? 0 );
+			$generated = absint( $_GET['lp-user-slug-generated'] ?? 0 );
+			$skipped   = absint( $_GET['lp-user-slug-skipped'] ?? 0 );
+			$failed    = absint( $_GET['lp-user-slug-failed'] ?? 0 );
+			?>
+			<div class="notice notice-success">
+				<p>
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: 1: processed users, 2: generated slugs, 3: skipped users, 4: failed users */
+							__( 'User slug generation finished. Processed: %1$d, Generated: %2$d, Skipped: %3$d, Failed: %4$d.', 'learnpress' ),
+							$processed,
+							$generated,
+							$skipped,
+							$failed
+						)
+					);
+					?>
+				</p>
+			</div>
+			<?php
+		}
+
 		$this->tabs[ $active_tab ]->admin_page_settings( $section, $this->get_sections() );
 
 		$hide_save_button = ( 'advanced' === $active_tab && 'mcp-keys' === $section );
@@ -99,6 +124,18 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		$this->tabs[ $active_tab ]->save_settings( $this->get_active_section(), $this->get_sections() );
 
+		$redirect_args = array();
+		if ( 'permalink' === $active_tab && 'yes' === LP_Request::get_param( 'lp_generate_user_slug' ) ) {
+			$user_model    = new UserModel();
+			$result        = $user_model->generate_missing_pretty_slugs();
+			$redirect_args = array(
+				'lp-user-slug-generated' => $result['generated'],
+				'lp-user-slug-processed' => $result['processed'],
+				'lp-user-slug-skipped'   => $result['skipped'],
+				'lp-user-slug-failed'    => $result['failed'],
+			);
+		}
+
 		do_action( 'learn-press/update-settings/updated', $this );
 
 		// Clear cache settings
@@ -114,7 +151,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		}
 
 		// Filter redirect
-		$redirect = apply_filters( 'learn-press/update-settings/redirect', esc_url_raw( add_query_arg( 'settings-updated', 'yes' ) ), $this );
+		$redirect = apply_filters( 'learn-press/update-settings/redirect', esc_url_raw( add_query_arg( array_merge( array( 'settings-updated' => 'yes' ), $redirect_args ) ) ), $this );
 		if ( $redirect ) {
 			wp_redirect( $redirect );
 			exit();
