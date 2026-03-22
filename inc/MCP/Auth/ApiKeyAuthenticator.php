@@ -80,6 +80,54 @@ class ApiKeyAuthenticator {
 	 * @return int|false
 	 */
 	public function determine_current_user( $user_id ) {
+		return $this->authenticate_request( $user_id );
+	}
+	/**
+	 * Normalize auth errors for invalid API key attempts.
+	 *
+	 * @param WP_Error|null|bool $error Existing error from other authenticators.
+	 *
+	 * @return WP_Error|null|bool
+	 */
+	public function rest_authentication_errors( $error ) {
+		if ( ! $this->is_target_rest_request && ! $this->is_target_rest_request() ) {
+			return $error;
+		}
+
+		if ( ! empty( $error ) ) {
+			return $error;
+		}
+
+		if ( ! AuthContext::is_api_key_auth() && ! ( $this->auth_error instanceof WP_Error ) ) {
+			$resolved_user_id = $this->authenticate_request( 0 );
+			if ( is_numeric( $resolved_user_id ) && (int) $resolved_user_id > 0 ) {
+				wp_set_current_user( (int) $resolved_user_id );
+			}
+		}
+
+		if ( $this->auth_error instanceof WP_Error ) {
+			return $this->auth_error;
+		}
+
+		if ( ! AuthContext::is_api_key_auth() ) {
+			return new WP_Error(
+				'learnpress_mcp_api_key_required',
+				__( 'MCP API key authentication is required.', 'learnpress' ),
+				array( 'status' => 401 )
+			);
+		}
+
+		return $error;
+	}
+
+	/**
+	 * Attempt API-key authentication for current MCP request.
+	 *
+	 * @param int|false $user_id Previously resolved user ID.
+	 *
+	 * @return int|false
+	 */
+	protected function authenticate_request( $user_id ) {
 
 		$this->auth_error             = null;
 		$this->api_key_present        = false;
@@ -123,36 +171,6 @@ class ApiKeyAuthenticator {
 		);
 
 		return $resolved_user_id;
-	}
-	/**
-	 * Normalize auth errors for invalid API key attempts.
-	 *
-	 * @param WP_Error|null|bool $error Existing error from other authenticators.
-	 *
-	 * @return WP_Error|null|bool
-	 */
-	public function rest_authentication_errors( $error ) {
-		if ( ! $this->is_target_rest_request && ! $this->is_target_rest_request() ) {
-			return $error;
-		}
-
-		if ( ! empty( $error ) ) {
-			return $error;
-		}
-
-		if ( $this->auth_error instanceof WP_Error ) {
-			return $this->auth_error;
-		}
-
-		if ( ! AuthContext::is_api_key_auth() ) {
-			return new WP_Error(
-				'learnpress_mcp_api_key_required',
-				__( 'MCP API key authentication is required.', 'learnpress' ),
-				array( 'status' => 401 )
-			);
-		}
-
-		return $error;
 	}
 
 	/**
@@ -267,12 +285,30 @@ class ApiKeyAuthenticator {
 	 */
 	protected function get_authorization_header(): string {
 
-		if ( ! empty( $_SERVER['HTTP_AUTHORIZATION'] ) ) {
-			return (string) wp_unslash( $_SERVER['HTTP_AUTHORIZATION'] );
+		$server_header_candidates = array(
+			'HTTP_AUTHORIZATION',
+			'REDIRECT_HTTP_AUTHORIZATION',
+			'REDIRECT_REDIRECT_HTTP_AUTHORIZATION',
+		);
+		foreach ( $server_header_candidates as $server_key ) {
+			if ( ! empty( $_SERVER[ $server_key ] ) ) {
+				return (string) wp_unslash( $_SERVER[ $server_key ] );
+			}
 		}
 
 		if ( function_exists( 'getallheaders' ) ) {
 			$headers = getallheaders();
+			if ( is_array( $headers ) ) {
+				foreach ( $headers as $key => $value ) {
+					if ( 'authorization' === strtolower( (string) $key ) ) {
+						return (string) $value;
+					}
+				}
+			}
+		}
+
+		if ( function_exists( 'apache_request_headers' ) ) {
+			$headers = apache_request_headers();
 			if ( is_array( $headers ) ) {
 				foreach ( $headers as $key => $value ) {
 					if ( 'authorization' === strtolower( (string) $key ) ) {
@@ -291,11 +327,6 @@ class ApiKeyAuthenticator {
 	 * @return bool
 	 */
 	protected function is_target_rest_request(): bool {
-
-		if ( ! defined( 'REST_REQUEST' ) || ! REST_REQUEST ) {
-			return false;
-		}
-
 		$rest_route = isset( $_GET['rest_route'] ) ? sanitize_text_field( wp_unslash( $_GET['rest_route'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( '' !== $rest_route && $this->route_matches_mcp_target( $rest_route ) ) {
 			return (bool) apply_filters( 'learn-press/mcp/api-keys/is-target-rest-request', true, $rest_route, self::MCP_ROUTE );

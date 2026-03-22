@@ -133,6 +133,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					$this->create_table_learnpress_files();
 				}
 
+				// Ensure MCP API keys table exists for activation/upgrade flows.
+				// Keep this explicit guard in addition to tables-v4 config loading.
+				if ( ! LP_Settings::is_created_tb_mcp_api_keys() ) {
+					$this->create_table_mcp_api_keys();
+				}
+
 				update_option( 'learn_press_check_tables', 'yes' );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
