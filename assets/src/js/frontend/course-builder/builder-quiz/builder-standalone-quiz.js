@@ -6,7 +6,7 @@ import { BuilderEditQuiz } from './builder-edit-quiz.js';
 /**
  * Builder Standalone Quiz Handler
  * Handles standalone quiz edit page (not popup)
- * 
+ *
  * @since 4.3.0
  */
 export class BuilderStandaloneQuiz {
@@ -92,7 +92,9 @@ export class BuilderStandaloneQuiz {
 	initHeaderActionsDropdown() {
 		// Close dropdown when clicking outside
 		document.addEventListener( 'click', ( e ) => {
-			const dropdown = document.querySelector( BuilderStandaloneQuiz.selectors.elHeaderActionsDropdown );
+			const dropdown = document.querySelector(
+				BuilderStandaloneQuiz.selectors.elHeaderActionsDropdown
+			);
 			if ( dropdown && ! dropdown.contains( e.target ) ) {
 				const menu = dropdown.querySelector( BuilderStandaloneQuiz.selectors.elDropdownMenu );
 				const toggle = dropdown.querySelector( BuilderStandaloneQuiz.selectors.elDropdownToggle );
@@ -112,7 +114,7 @@ export class BuilderStandaloneQuiz {
 	handleDropdownToggle( args ) {
 		const { target } = args;
 		const toggleBtn = target.closest( BuilderStandaloneQuiz.selectors.elDropdownToggle );
-		
+
 		if ( ! toggleBtn ) {
 			return;
 		}
@@ -141,7 +143,7 @@ export class BuilderStandaloneQuiz {
 
 		const { target } = args;
 		const dropdownItem = target.closest( BuilderStandaloneQuiz.selectors.elDropdownItem );
-		
+
 		if ( ! dropdownItem ) {
 			return;
 		}
@@ -171,7 +173,12 @@ export class BuilderStandaloneQuiz {
 	 * @param {HTMLElement} btnEl - The button element that was clicked
 	 * @param {string} status - The status to save (publish/draft)
 	 */
-	saveQuizWithStatus( btnEl, status ) {
+	async saveQuizWithStatus( btnEl, status ) {
+		const canContinue = await this.confirmUnpublishIfNeeded( status, btnEl );
+		if ( ! canContinue ) {
+			return;
+		}
+
 		// Validate title before saving
 		if ( ! this.validateTitleBeforeUpdate() ) {
 			return;
@@ -237,12 +244,16 @@ export class BuilderStandaloneQuiz {
 		}
 
 		// Activate first tab by default if none is active
-		const activeTab = document.querySelector( `${ BuilderStandaloneQuiz.selectors.elCBHorizontalTabs }.is-active` );
+		const activeTab = document.querySelector(
+			`${ BuilderStandaloneQuiz.selectors.elCBHorizontalTabs }.is-active`
+		);
 		if ( ! activeTab && tabs.length > 0 ) {
-			tabs[0].classList.add( 'is-active' );
-			const section = tabs[0].getAttribute( 'data-tab-section' );
+			tabs[ 0 ].classList.add( 'is-active' );
+			const section = tabs[ 0 ].getAttribute( 'data-tab-section' );
 			if ( section ) {
-				const panel = document.querySelector( `${ BuilderStandaloneQuiz.selectors.elCBTabPanels }[data-section="${ section }"]` );
+				const panel = document.querySelector(
+					`${ BuilderStandaloneQuiz.selectors.elCBTabPanels }[data-section="${ section }"]`
+				);
 				if ( panel ) {
 					panel.classList.remove( 'lp-hidden' );
 				}
@@ -256,7 +267,7 @@ export class BuilderStandaloneQuiz {
 	handleTabClick( args ) {
 		const { e, target } = args;
 		const tabLink = target.closest( BuilderStandaloneQuiz.selectors.elCBHorizontalTabs );
-		
+
 		if ( ! tabLink ) {
 			return;
 		}
@@ -270,12 +281,12 @@ export class BuilderStandaloneQuiz {
 
 		// Update active tab
 		const allTabs = document.querySelectorAll( BuilderStandaloneQuiz.selectors.elCBHorizontalTabs );
-		allTabs.forEach( tab => tab.classList.remove( 'is-active' ) );
+		allTabs.forEach( ( tab ) => tab.classList.remove( 'is-active' ) );
 		tabLink.classList.add( 'is-active' );
 
 		// Show/hide panels
 		const allPanels = document.querySelectorAll( BuilderStandaloneQuiz.selectors.elCBTabPanels );
-		allPanels.forEach( panel => {
+		allPanels.forEach( ( panel ) => {
 			if ( panel.getAttribute( 'data-section' ) === section ) {
 				panel.classList.remove( 'lp-hidden' );
 			} else {
@@ -424,7 +435,9 @@ export class BuilderStandaloneQuiz {
 	 * @param {string} newStatus - The new quiz status
 	 */
 	updateActionButtons( newStatus ) {
-		const dropdown = document.querySelector( BuilderStandaloneQuiz.selectors.elHeaderActionsDropdown );
+		const dropdown = document.querySelector(
+			BuilderStandaloneQuiz.selectors.elHeaderActionsDropdown
+		);
 		if ( ! dropdown ) return;
 
 		const mainBtn = dropdown.querySelector( '.cb-btn-main-action' );
@@ -499,7 +512,7 @@ export class BuilderStandaloneQuiz {
 		return !! document.querySelector( BuilderStandaloneQuiz.selectors.elDataQuiz );
 	}
 
-	updateQuiz( args ) {
+	async updateQuiz( args ) {
 		// Context check: only handle if on quiz edit page
 		if ( ! this.isQuizContext() ) {
 			return;
@@ -517,10 +530,14 @@ export class BuilderStandaloneQuiz {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elBtnUpdateQuiz, 1 );
-
 		// Get status from the button's data-status attribute
 		const targetStatus = elBtnUpdateQuiz.dataset.status || 'publish';
+		const canContinue = await this.confirmUnpublishIfNeeded( targetStatus, elBtnUpdateQuiz );
+		if ( ! canContinue ) {
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( elBtnUpdateQuiz, 1 );
 
 		const quizData = this.getQuizDataForUpdate();
 
@@ -553,9 +570,11 @@ export class BuilderStandaloneQuiz {
 							elStatus.className = 'quizze-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
-						
+
 						if ( data.status === 'trash' || data.status === 'draft' ) {
-							const curriculumItem = document.querySelector( `.quiz-item[data-quiz-id="${quizData.quiz_id}"]` );
+							const curriculumItem = document.querySelector(
+								`.quiz-item[data-quiz-id="${ quizData.quiz_id }"]`
+							);
 							if ( curriculumItem ) {
 								const elCurriculumQuiz = curriculumItem.closest( '.quiz' );
 								if ( elCurriculumQuiz ) {
@@ -580,6 +599,33 @@ export class BuilderStandaloneQuiz {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
+	async confirmUnpublishIfNeeded( targetStatus, triggerEl ) {
+		if ( targetStatus !== 'draft' ) {
+			return true;
+		}
+
+		const statusEl = document.querySelector( BuilderStandaloneQuiz.selectors.elQuizStatus );
+		const isPublished = statusEl && statusEl.className.includes( 'publish' );
+		if ( ! isPublished ) {
+			return true;
+		}
+
+		const confirmMsg =
+			triggerEl?.dataset?.confirmUnpublish ||
+			'Saving as draft will unpublish this item. Are you sure?';
+		const result = await SweetAlert.fire( {
+			title: confirmMsg,
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} );
+
+		return !! result.isConfirmed;
+	}
+
 	async saveDraftQuiz( args ) {
 		// Context check: only handle if on quiz edit page
 		if ( ! this.isQuizContext() ) {
@@ -598,7 +644,9 @@ export class BuilderStandaloneQuiz {
 		// Status might use quiz-status or quizze-status class based on element logic
 		const isPublished = statusEl && statusEl.className.includes( 'publish' );
 		if ( isPublished ) {
-			const confirmMsg = elBtnDraftQuiz.dataset.confirmUnpublish || 'Saving as draft will unpublish this item. Are you sure?';
+			const confirmMsg =
+				elBtnDraftQuiz.dataset.confirmUnpublish ||
+				'Saving as draft will unpublish this item. Are you sure?';
 			const result = await SweetAlert.fire( {
 				title: confirmMsg,
 				icon: 'warning',
@@ -646,15 +694,17 @@ export class BuilderStandaloneQuiz {
 						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.quiz_id_new }/` );
 					}
 
-						if ( data?.status ) {
+					if ( data?.status ) {
 						const elStatus = document.querySelector( BuilderStandaloneQuiz.selectors.elQuizStatus );
 						if ( elStatus ) {
 							elStatus.className = 'quizze-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
-						
+
 						if ( data.status === 'trash' || data.status === 'draft' ) {
-							const curriculumItem = document.querySelector( `.quiz-item[data-quiz-id="${quizData.quiz_id}"]` );
+							const curriculumItem = document.querySelector(
+								`.quiz-item[data-quiz-id="${ quizData.quiz_id }"]`
+							);
 							if ( curriculumItem ) {
 								const elCurriculumQuiz = curriculumItem.closest( '.quiz' );
 								if ( elCurriculumQuiz ) {
@@ -732,9 +782,11 @@ export class BuilderStandaloneQuiz {
 							elStatus.className = 'quizze-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
-						
+
 						if ( data.status === 'trash' || data.status === 'draft' ) {
-							const curriculumItem = document.querySelector( `.quiz-item[data-quiz-id="${quizId}"]` );
+							const curriculumItem = document.querySelector(
+								`.quiz-item[data-quiz-id="${ quizId }"]`
+							);
 							if ( curriculumItem ) {
 								const elCurriculumQuiz = curriculumItem.closest( '.quiz' );
 								if ( elCurriculumQuiz ) {

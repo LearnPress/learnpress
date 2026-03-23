@@ -388,8 +388,8 @@
 		display: none;
 		position: absolute;
 		min-width: 160px;
-		top: 0;
-		right: 0;
+		top: 60px;
+		right: 16px;
 		transform: translate(15px, -15px);
 		padding: 10px;
 		flex-direction: column;
@@ -578,6 +578,7 @@
 			color: $cb-text;
 			font-size: $cb-font-md;
 			font-weight: 600;
+			width: 100px;
 		}
 
 		&:first-child {
@@ -603,7 +604,6 @@
 		font-size: $cb-font-md;
 		color: $cb-text-label;
 		background: $cb-bg;
-		flex: 1;
 	}
 
 	.lp-material--field-method {
@@ -685,6 +685,9 @@
 	.lp-material--upload-wrap label {
 		cursor: pointer;
 		width: 100%;
+		display: flex;
+		align-items: center;
+		gap: 6px;
 		padding: $cb-spacing-sm $cb-spacing-lg;
 		border: 1px solid $cb-border-input;
 		border-radius: $cb-radius;
@@ -693,7 +696,29 @@
 		color: $cb-text-label;
 		background: $cb-bg;
 		transition: all 0.2s;
-		margin-left: 56px;
+		margin-left: 86px;
+		overflow: hidden;
+
+		&.has-selected-file {
+			border-color: $cb-primary;
+			background-color: $cb-bg-subtle;
+			font-size: 0;
+		}
+
+		&.has-selected-file::before {
+			font-size: $cb-font-md;
+		}
+
+		&.has-selected-file::after {
+			content: attr( data-file-name );
+			flex: 1;
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			font-size: $cb-font-md;
+			font-weight: 600;
+		}
 
 		&:hover {
 			background-color: $cb-bg-hover;

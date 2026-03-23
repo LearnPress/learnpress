@@ -12,6 +12,7 @@ use Exception;
 use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
@@ -1104,10 +1105,9 @@ class CourseBuilderAjax extends AbstractAjax {
 				$this->save_lesson_settings_to_model( $lesson_model, $data );
 			}
 
-			// Remove lesson from curriculum if status is draft or trash
-			if ( $target_status === 'draft' || $target_status === 'trash' ) {
-				$curd = new LP_Course_CURD();
-				$curd->remove_item( $lesson_id );
+			// Remove lesson from curriculum if status is not public
+			if ( $target_status !== 'publish' ) {
+				$this->remove_course_item_from_curriculum( $lesson_id );
 			}
 
 			do_action( 'learn-press/course-builder/update-lesson', $data, $lesson_model );
@@ -1165,7 +1165,6 @@ class CourseBuilderAjax extends AbstractAjax {
 					throw new Exception( esc_html__( 'Cannot delete this lesson.', 'learnpress' ) );
 				}
 				$message = esc_html__( 'This lesson has been moved to trash.', 'learnpress' );
-
 			} elseif ( $status === 'publish' ) {
 				$update = wp_update_post(
 					array(
@@ -1179,6 +1178,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				$message = __( 'Lesson has been moved to publish', 'learnpress' );
+			}
+
+			if ( $status !== 'publish' ) {
+				$this->remove_course_item_from_curriculum( $lesson_id );
 			}
 
 			$response->data->status       = $status;
@@ -1353,10 +1356,9 @@ class CourseBuilderAjax extends AbstractAjax {
 				$this->save_quiz_settings_to_model( $quiz_model, $data );
 			}
 
-			// Remove quiz from curriculum if status is draft or trash
-			if ( $target_status === 'draft' || $target_status === 'trash' ) {
-				$curd = new LP_Course_CURD();
-				$curd->remove_item( $quiz_id );
+			// Remove quiz from curriculum if status is not public
+			if ( $target_status !== 'publish' ) {
+				$this->remove_course_item_from_curriculum( $quiz_id );
 			}
 
 			do_action( 'learn-press/course-builder/update-quiz', $data, $quiz_model );
@@ -1451,7 +1453,6 @@ class CourseBuilderAjax extends AbstractAjax {
 					throw new Exception( esc_html__( 'Cannot delete this quiz.', 'learnpress' ) );
 				}
 				$message = esc_html__( 'This quiz has been moved to trash.', 'learnpress' );
-
 			} elseif ( $status === 'publish' ) {
 				$update = wp_update_post(
 					array(
@@ -1465,6 +1466,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				$message = __( 'Quiz has been moved to publish', 'learnpress' );
+			}
+
+			if ( $status !== 'publish' ) {
+				$this->remove_course_item_from_curriculum( $quiz_id );
 			}
 
 			$response->data->status       = $status;
@@ -1595,10 +1600,9 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 			}
 
-			// Remove question from quizzes if status is draft or trash
-			if ( $target_status === 'draft' || $target_status === 'trash' ) {
-				global $wpdb;
-				$wpdb->delete( $wpdb->prefix . 'learnpress_quiz_questions', array( 'question_id' => $question_id ), array( '%d' ) );
+			// Remove question from quizzes if status is not public
+			if ( $target_status !== 'publish' ) {
+				$this->remove_question_from_assigned_quizzes( $question_id );
 			}
 
 			do_action( 'learn-press/course-builder/update-question', $data, $question_model ?? null );
@@ -1672,6 +1676,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				$message = __( 'Question has been moved to publish', 'learnpress' );
 			}
 
+			if ( $status !== 'publish' ) {
+				$this->remove_question_from_assigned_quizzes( $question_id );
+			}
+
 			$response->data->status       = $status;
 			$response->data->button_title = __( 'Publish', 'learnpress' );
 			$response->status             = 'success';
@@ -1682,6 +1690,72 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
 		}
+	}
+
+	/**
+	 * Remove lesson/quiz assignment from curriculum sections.
+	 *
+	 * @param int $item_id
+	 *
+	 * @return void
+	 */
+	protected function remove_course_item_from_curriculum( int $item_id ) {
+		if ( $item_id <= 0 ) {
+			return;
+		}
+
+		global $wpdb;
+
+		$section_items = $wpdb->get_results(
+			$wpdb->prepare(
+				"
+				SELECT si.section_id, s.section_course_id
+				FROM {$wpdb->learnpress_section_items} si
+				INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
+				WHERE si.item_id = %d
+				",
+				$item_id
+			)
+		);
+		if ( ! $section_items ) {
+			return;
+		}
+
+		foreach ( $section_items as $section_item ) {
+			$section_id = absint( $section_item->section_id ?? 0 );
+			$course_id  = absint( $section_item->section_course_id ?? 0 );
+			if ( ! $section_id || ! $course_id ) {
+				continue;
+			}
+
+			$course_section_item_model = CourseSectionItemModel::find( $section_id, $item_id );
+			if ( ! $course_section_item_model ) {
+				continue;
+			}
+
+			$course_section_item_model->section_course_id = $course_id;
+			$course_section_item_model->delete();
+		}
+	}
+
+	/**
+	 * Remove question assignment from all quizzes.
+	 *
+	 * @param int $question_id
+	 *
+	 * @return void
+	 */
+	protected function remove_question_from_assigned_quizzes( int $question_id ) {
+		if ( $question_id <= 0 ) {
+			return;
+		}
+
+		global $wpdb;
+		$wpdb->delete(
+			$wpdb->prefix . 'learnpress_quiz_questions',
+			array( 'question_id' => $question_id ),
+			array( '%d' )
+		);
 	}
 
 	protected function get_course_by_item_id( $item_id ) {

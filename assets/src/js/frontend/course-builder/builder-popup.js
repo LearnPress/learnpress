@@ -20,6 +20,7 @@ export class BuilderPopup {
 		this.currentId = null;
 		this.isNewItem = false;
 		this.savedData = null;
+		this.openContext = this.getDefaultOpenContext();
 		this.builderEditQuiz = null;
 		this.builderEditQuestion = null;
 		this.builderMaterial = null;
@@ -116,7 +117,7 @@ export class BuilderPopup {
 			}
 		} );
 
-		 // Resize/fullscreen toggle event
+		// Resize/fullscreen toggle event
 		document.addEventListener( 'click', ( e ) => {
 			const resizeBtn = e.target.closest( BuilderPopup.selectors.resizeBtn );
 			if ( resizeBtn && this.isPopupOpen() ) {
@@ -197,21 +198,21 @@ export class BuilderPopup {
 	addNewLesson( args ) {
 		const { target } = args;
 		if ( target.closest( BuilderPopup.selectors.addNewLesson ) ) {
-			this.loadPopup( 'lesson', 0 );
+			this.loadPopup( 'lesson', 0, this.getDefaultOpenContext() );
 		}
 	}
 
 	addNewQuiz( args ) {
 		const { target } = args;
 		if ( target.closest( BuilderPopup.selectors.addNewQuiz ) ) {
-			this.loadPopup( 'quiz', 0 );
+			this.loadPopup( 'quiz', 0, this.getDefaultOpenContext() );
 		}
 	}
 
 	addNewQuestion( args ) {
 		const { target } = args;
 		if ( target.closest( BuilderPopup.selectors.addNewQuestion ) ) {
-			this.loadPopup( 'question', 0 );
+			this.loadPopup( 'question', 0, this.getDefaultOpenContext() );
 		}
 	}
 
@@ -223,7 +224,11 @@ export class BuilderPopup {
 		const triggerEl = target.closest( BuilderPopup.selectors.triggerLesson );
 		if ( triggerEl ) {
 			const lessonId = parseInt( triggerEl.dataset.popupLesson ) || 0;
-			this.loadPopup( 'lesson', lessonId );
+			this.loadPopup(
+				'lesson',
+				lessonId,
+				this.resolveOpenContext( triggerEl, 'lesson', lessonId )
+			);
 		}
 	}
 
@@ -232,7 +237,7 @@ export class BuilderPopup {
 		const triggerEl = target.closest( BuilderPopup.selectors.triggerQuiz );
 		if ( triggerEl ) {
 			const quizId = parseInt( triggerEl.dataset.popupQuiz ) || 0;
-			this.loadPopup( 'quiz', quizId );
+			this.loadPopup( 'quiz', quizId, this.resolveOpenContext( triggerEl, 'quiz', quizId ) );
 		}
 	}
 
@@ -241,17 +246,46 @@ export class BuilderPopup {
 		const triggerEl = target.closest( BuilderPopup.selectors.triggerQuestion );
 		if ( triggerEl ) {
 			const questionId = parseInt( triggerEl.dataset.popupQuestion ) || 0;
-			this.loadPopup( 'question', questionId );
+			this.loadPopup(
+				'question',
+				questionId,
+				this.resolveOpenContext( triggerEl, 'question', questionId )
+			);
 		}
+	}
+
+	getDefaultOpenContext() {
+		return {
+			source: 'other',
+			isCurriculum: false,
+			itemType: null,
+			itemId: 0,
+		};
+	}
+
+	resolveOpenContext( triggerEl, itemType, itemId ) {
+		const isCurriculumContainer =
+			!! triggerEl?.closest( '#lp-course-edit-curriculum' ) ||
+			!! triggerEl?.closest( '.lp-edit-curriculum-wrap' );
+		const isCurriculum =
+			isCurriculumContainer && !! triggerEl?.closest( '.lp-btn-edit-item-popup' );
+
+		return {
+			source: isCurriculum ? 'curriculum' : 'other',
+			isCurriculum,
+			itemType: itemType || null,
+			itemId: parseInt( itemId ) || 0,
+		};
 	}
 
 	/**
 	 * Load popup content via AJAX
 	 */
-	loadPopup( type, id ) {
+	loadPopup( type, id, openContext = null ) {
 		this.currentType = type;
 		this.currentId = id;
 		this.isNewItem = id === 0;
+		this.openContext = openContext ? { ...openContext } : this.getDefaultOpenContext();
 
 		this.ensurePopupContainer();
 		this.showLoading();
@@ -497,6 +531,7 @@ export class BuilderPopup {
 		this.currentId = null;
 		this.isNewItem = false;
 		this.savedData = null;
+		this.openContext = this.getDefaultOpenContext();
 	}
 
 	/**
@@ -507,8 +542,13 @@ export class BuilderPopup {
 			return;
 		}
 
-		const { formData, data } = savedData;
-		const listItem = this.findListItem( type, id );
+		const { formData, data, wasNewItem } = savedData;
+		let listItem = this.findListItem( type, id );
+
+		// New items created from popup need to be inserted into the list first.
+		if ( ! listItem && wasNewItem ) {
+			listItem = this.insertNewListItem( type, id, data?.list_item_html );
+		}
 
 		if ( ! listItem ) {
 			return;
@@ -582,6 +622,115 @@ export class BuilderPopup {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Insert a newly created list item into the current tab list.
+	 */
+	insertNewListItem( type, id, listItemHtml ) {
+		if ( ! listItemHtml ) {
+			return null;
+		}
+
+		const existingListItem = this.findListItem( type, id );
+		if ( existingListItem ) {
+			return existingListItem;
+		}
+
+		const listContainer = this.findListContainer( type );
+		if ( ! listContainer ) {
+			return null;
+		}
+
+		const template = document.createElement( 'template' );
+		template.innerHTML = listItemHtml.trim();
+		const newListItem = template.content.firstElementChild;
+
+		if ( ! newListItem ) {
+			return null;
+		}
+
+		listContainer.prepend( newListItem );
+		this.highlightNewListItem( newListItem, type );
+
+		return this.findListItem( type, id ) || newListItem;
+	}
+
+	/**
+	 * Find list container for type; create one if tab currently shows empty message.
+	 */
+	findListContainer( type ) {
+		const listSelectorByType = {
+			lesson: '.cb-list-lesson',
+			quiz: '.cb-list-quiz',
+			question: '.cb-list-question',
+		};
+
+		const tabSelectorByType = {
+			lesson: '.courses-builder__lesson-tab',
+			quiz: '.courses-builder__quiz-tab',
+			question: '.courses-builder__question-tab',
+		};
+
+		const listClassByType = {
+			lesson: 'cb-list-lesson',
+			quiz: 'cb-list-quiz',
+			question: 'cb-list-question',
+		};
+
+		const listSelector = listSelectorByType[ type ];
+		if ( ! listSelector ) {
+			return null;
+		}
+
+		const existingList = document.querySelector( listSelector );
+		if ( existingList ) {
+			return existingList;
+		}
+
+		const tabContainer = document.querySelector( tabSelectorByType[ type ] );
+		const listClass = listClassByType[ type ];
+
+		if ( ! tabContainer || ! listClass ) {
+			return null;
+		}
+
+		const emptyMessage = tabContainer.querySelector( '.learn-press-message' );
+		if ( emptyMessage ) {
+			emptyMessage.remove();
+		}
+
+		const listContainer = document.createElement( 'ul' );
+		listContainer.className = listClass;
+		tabContainer.appendChild( listContainer );
+
+		return listContainer;
+	}
+
+	/**
+	 * Highlight a newly inserted list item.
+	 */
+	highlightNewListItem( listItem, type ) {
+		const highlightClassByType = {
+			lesson: 'highlight-new-lesson',
+			quiz: 'highlight-new-quiz',
+			question: 'highlight-new-question',
+		};
+
+		const highlightClass = highlightClassByType[ type ];
+		if ( ! listItem || ! highlightClass ) {
+			return;
+		}
+
+		listItem.classList.add( highlightClass );
+		listItem.scrollIntoView( {
+			behavior: 'smooth',
+			block: 'nearest',
+		} );
+
+		setTimeout( () => {
+			listItem.classList.remove( highlightClass );
+		}, 1500 );
 	}
 
 	/**
@@ -950,7 +1099,8 @@ export class BuilderPopup {
 			wp.editor.initialize( editorId, {
 				tinymce: {
 					wpautop: true,
-					content_style: "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.6; color: #1e1e1e; }",
+					content_style:
+						"body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.6; color: #1e1e1e; }",
 					plugins:
 						'charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wplink wptextpattern',
 					toolbar1:
@@ -967,7 +1117,8 @@ export class BuilderPopup {
 				selector: '#' + editorId,
 				height: 300,
 				menubar: false,
-				content_style: "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.6; color: #1e1e1e; }",
+				content_style:
+					"body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.6; color: #1e1e1e; }",
 				plugins: [
 					'advlist autolink lists link image charmap print preview anchor',
 					'searchreplace visualblocks code fullscreen',
@@ -1107,7 +1258,9 @@ export class BuilderPopup {
 		const statusEl = this.popupContainer.querySelector( `.${ this.currentType }-status` );
 		const isPublished = statusEl && statusEl.classList.contains( 'publish' );
 		if ( isPublished ) {
-			const confirmMsg = draftBtn.dataset.confirmUnpublish || 'Saving as draft will unpublish this item from the course.';
+			const confirmMsg =
+				draftBtn.dataset.confirmUnpublish ||
+				'Saving as draft will unpublish this item from the course.';
 			const result = await SweetAlert.fire( {
 				title: 'Are you sure?',
 				text: confirmMsg,
@@ -1191,6 +1344,14 @@ export class BuilderPopup {
 				statusEl.className = `${ this.currentType }-status ${ data.status }`;
 				statusEl.textContent = data.status;
 			}
+
+			if ( this.shouldRemoveFromCurriculum( data.status ) ) {
+				this.removeItemFromCurriculum( this.currentId );
+			}
+
+			if ( this.shouldRemoveQuestionFromAssignedQuiz( data.status ) ) {
+				this.removeQuestionFromAssignedQuiz( this.currentId );
+			}
 		}
 
 		// Handle new item
@@ -1232,7 +1393,7 @@ export class BuilderPopup {
 			// Reload popup to show all tabs
 			setTimeout( () => {
 				this.destroyAllTinyMCE();
-				this.loadPopup( this.currentType, this.currentId );
+				this.loadPopup( this.currentType, this.currentId, this.openContext );
 			}, 300 );
 		} else {
 			document.dispatchEvent(
@@ -1251,7 +1412,9 @@ export class BuilderPopup {
 			return;
 		}
 
-		const confirmMsg = trashBtn.dataset.confirmTrash || 'Moving it to the trash will cause this item to be removed from the course.';
+		const confirmMsg =
+			trashBtn.dataset.confirmTrash ||
+			'Moving it to the trash will cause this item to be removed from the course.';
 		const result = await SweetAlert.fire( {
 			title: 'Are you sure?',
 			text: confirmMsg,
@@ -1300,6 +1463,14 @@ export class BuilderPopup {
 							statusEl.className = `${ this.currentType }-status ${ data.status }`;
 							statusEl.textContent = data.status;
 						}
+
+						if ( this.shouldRemoveFromCurriculum( data.status ) ) {
+							this.removeItemFromCurriculum( this.currentId );
+						}
+
+						if ( this.shouldRemoveQuestionFromAssignedQuiz( data.status ) ) {
+							this.removeQuestionFromAssignedQuiz( this.currentId );
+						}
 					}
 
 					this.savedData = { formData: this.getFormData(), data, wasNewItem: false };
@@ -1320,6 +1491,114 @@ export class BuilderPopup {
 		};
 
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	shouldRemoveFromCurriculum( status ) {
+		const normalizedStatus = ( status || '' ).toString().toLowerCase();
+		const removableStatuses = [ 'draft', 'trash' ];
+		const supportedTypes = [ 'lesson', 'quiz' ];
+
+		return (
+			!! this.openContext?.isCurriculum &&
+			supportedTypes.includes( this.currentType ) &&
+			removableStatuses.includes( normalizedStatus ) &&
+			( parseInt( this.currentId ) || 0 ) > 0
+		);
+	}
+
+	shouldRemoveQuestionFromAssignedQuiz( status ) {
+		const normalizedStatus = ( status || '' ).toString().toLowerCase();
+		return (
+			this.currentType === 'question' &&
+			[ 'draft', 'trash' ].includes( normalizedStatus ) &&
+			( parseInt( this.currentId ) || 0 ) > 0
+		);
+	}
+
+	removeItemFromCurriculum( itemId ) {
+		const parsedItemId = parseInt( itemId ) || 0;
+		if ( parsedItemId <= 0 ) {
+			return;
+		}
+
+		const curriculumRoot =
+			document.querySelector( '#lp-course-edit-curriculum' ) ||
+			document.querySelector( '.lp-edit-curriculum-wrap' );
+		if ( ! curriculumRoot ) {
+			return;
+		}
+
+		const items = curriculumRoot.querySelectorAll(
+			`.section-item[data-item-id="${ parsedItemId }"]`
+		);
+		if ( ! items.length ) {
+			return;
+		}
+
+		const sectionsToUpdate = new Set();
+
+		items.forEach( ( item ) => {
+			const section = item.closest( '.section' );
+			if ( section ) {
+				sectionsToUpdate.add( section );
+			}
+
+			item.remove();
+		} );
+
+		this.syncCurriculumCounters( curriculumRoot, sectionsToUpdate );
+	}
+
+	removeQuestionFromAssignedQuiz( questionId ) {
+		const parsedQuestionId = parseInt( questionId ) || 0;
+		if ( parsedQuestionId <= 0 ) {
+			return;
+		}
+
+		const questionItems = document.querySelectorAll(
+			`.lp-question-item[data-question-id="${ parsedQuestionId }"]`
+		);
+
+		questionItems.forEach( ( item ) => item.remove() );
+	}
+
+	syncCurriculumCounters( curriculumRoot, sectionsToUpdate = new Set() ) {
+		if ( ! curriculumRoot ) {
+			return;
+		}
+
+		const allItems = curriculumRoot.querySelectorAll( '.section-item:not(.clone)' );
+		const totalItemsCount = allItems.length;
+		const totalItemsEl = curriculumRoot.querySelector( '.total-items' );
+
+		if ( totalItemsEl ) {
+			totalItemsEl.dataset.count = totalItemsCount;
+
+			const totalItemsCountEl = totalItemsEl.querySelector( '.count' );
+			if ( totalItemsCountEl ) {
+				totalItemsCountEl.textContent = totalItemsCount;
+			}
+		}
+
+		const sections =
+			sectionsToUpdate.size > 0
+				? Array.from( sectionsToUpdate )
+				: Array.from( curriculumRoot.querySelectorAll( '.section' ) );
+
+		sections.forEach( ( section ) => {
+			const sectionItemsCountEl = section.querySelector( '.section-items-counts' );
+			if ( ! sectionItemsCountEl ) {
+				return;
+			}
+
+			const sectionItemsCount = section.querySelectorAll( '.section-item:not(.clone)' ).length;
+			sectionItemsCountEl.dataset.count = sectionItemsCount;
+
+			const countEl = sectionItemsCountEl.querySelector( '.count' );
+			if ( countEl ) {
+				countEl.textContent = sectionItemsCount;
+			}
+		} );
 	}
 
 	/**
@@ -1517,7 +1796,7 @@ export class BuilderPopup {
 		if ( ! BuilderPopup._instance ) {
 			BuilderPopup._instance = new BuilderPopup();
 		}
-		BuilderPopup._instance.loadPopup( type, id );
+		BuilderPopup._instance.loadPopup( type, id, BuilderPopup._instance.getDefaultOpenContext() );
 	}
 
 	/**

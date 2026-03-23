@@ -1277,27 +1277,27 @@ export class BuilderEditCourse {
 			BuilderEditCourse.selectors.elBtnDropdownAction
 		);
 
-		let status = 'publish';
+		let targetStatus = 'publish';
 		let elBtn = null;
 
 		// Determine status from the clicked button's data-status attribute or class
 		if ( elBtnMainAction ) {
-			status = elBtnMainAction.dataset.status || 'publish';
+			targetStatus = elBtnMainAction.dataset.status || 'publish';
 			elBtn = elBtnMainAction;
 		} else if ( elBtnDropdownAction ) {
-			status = elBtnDropdownAction.dataset.status || 'publish';
+			targetStatus = elBtnDropdownAction.dataset.status || 'publish';
 			elBtn = elBtnDropdownAction;
 		} else if ( elBtnHeaderSave ) {
 			// Header save button uses current main action status
 			const mainBtn = document.querySelector( BuilderEditCourse.selectors.elBtnMainAction );
-			status = mainBtn?.dataset.status || 'publish';
+			targetStatus = mainBtn?.dataset.status || 'publish';
 			elBtn = elBtnHeaderSave;
 		}
 
 		if ( ! elBtn ) return;
 
 		// Check if drafting a published course
-		if ( status === 'draft' ) {
+		if ( targetStatus === 'draft' ) {
 			const statusEl = document.querySelector( BuilderEditCourse.selectors.elStatus );
 			const isPublished = statusEl && statusEl.classList.contains( 'publish' );
 			if ( isPublished ) {
@@ -1315,7 +1315,7 @@ export class BuilderEditCourse {
 		const courseData = this.getCourseDataForUpdate();
 		const dataSend = {
 			...courseData,
-			course_status: status,
+			course_status: targetStatus,
 			action: 'save_courses',
 			args: { id_url: 'save-courses' },
 		};
@@ -1346,17 +1346,20 @@ export class BuilderEditCourse {
 					// Dispatch event to reset form state (remove unsaved changes warning)
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
+
+				const statusForUI = this.resolveStatusForUIAfterSave( data?.status, targetStatus );
+
 				// Update action buttons based on new status
-				if ( data?.status ) {
-					this.updateActionButtons( data.status );
+				if ( statusForUI ) {
+					this.updateActionButtons( statusForUI );
 					// Update status badge
 					const elStatus = document.querySelector( BuilderEditCourse.selectors.elStatus );
 					if ( elStatus ) {
-						elStatus.className = 'course-status ' + data.status;
-						elStatus.textContent = data.status;
+						elStatus.className = 'course-status ' + statusForUI;
+						elStatus.textContent = statusForUI;
 					}
 					// Toggle preview/admin link visibility for trash status
-					this.toggleTrashElements( data.status );
+					this.toggleTrashElements( statusForUI );
 				}
 				// Use redirect_url from backend if available (for new courses)
 				if ( data?.redirect_url ) {
@@ -1396,6 +1399,34 @@ export class BuilderEditCourse {
 			},
 		};
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	/**
+	 * Resolve immediate UI status after save to avoid stale action labels
+	 * in review-only course workflow.
+	 *
+	 * @param {string|undefined} savedStatus
+	 * @param {string} requestedStatus
+	 * @return {string}
+	 */
+	resolveStatusForUIAfterSave( savedStatus, requestedStatus ) {
+		const normalizedSavedStatus = typeof savedStatus === 'string'
+			? savedStatus.trim().toLowerCase()
+			: '';
+
+		const normalizedRequestedStatus = typeof requestedStatus === 'string'
+			? requestedStatus.trim().toLowerCase()
+			: '';
+
+		const dropdown = document.querySelector( BuilderEditCourse.selectors.elHeaderActionsDropdown );
+		const reviewOnlyCourseAttr = ( dropdown?.dataset?.reviewOnlyCourse || '' ).toLowerCase();
+		const isReviewOnlyCourse = [ 'yes', 'true', '1' ].includes( reviewOnlyCourseAttr );
+
+		if ( isReviewOnlyCourse && [ 'publish', 'private' ].includes( normalizedRequestedStatus ) ) {
+			return 'pending';
+		}
+
+		return normalizedSavedStatus || normalizedRequestedStatus || 'draft';
 	}
 
 	/**
@@ -1529,8 +1560,8 @@ export class BuilderEditCourse {
 			firstItem.innerHTML = `<span class="dashicons ${ config.dropdownIcon }"></span>${ config.dropdownLabel }`;
 		}
 
-		// Update dropdown data-current-status
-		dropdown.dataset.currentStatus = newStatus;
+		// Keep dropdown color/state aligned with the main action button.
+		dropdown.dataset.currentStatus = config.mainStatus;
 	}
 
 	/**

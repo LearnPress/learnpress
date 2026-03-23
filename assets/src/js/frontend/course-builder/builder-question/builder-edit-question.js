@@ -47,7 +47,9 @@ export class BuilderEditQuestion {
 	initHeaderActionsDropdown() {
 		// Close dropdown when clicking outside
 		document.addEventListener( 'click', ( e ) => {
-			const dropdown = document.querySelector( BuilderEditQuestion.selectors.elHeaderActionsDropdown );
+			const dropdown = document.querySelector(
+				BuilderEditQuestion.selectors.elHeaderActionsDropdown
+			);
 			if ( dropdown && ! dropdown.contains( e.target ) ) {
 				const menu = dropdown.querySelector( BuilderEditQuestion.selectors.elDropdownMenu );
 				const toggle = dropdown.querySelector( BuilderEditQuestion.selectors.elDropdownToggle );
@@ -67,7 +69,7 @@ export class BuilderEditQuestion {
 	handleDropdownToggle( args ) {
 		const { target } = args;
 		const toggleBtn = target.closest( BuilderEditQuestion.selectors.elDropdownToggle );
-		
+
 		if ( ! toggleBtn ) {
 			return;
 		}
@@ -96,7 +98,7 @@ export class BuilderEditQuestion {
 
 		const { target } = args;
 		const dropdownItem = target.closest( BuilderEditQuestion.selectors.elDropdownItem );
-		
+
 		if ( ! dropdownItem ) {
 			return;
 		}
@@ -126,7 +128,12 @@ export class BuilderEditQuestion {
 	 * @param {HTMLElement} btnEl - The button element that was clicked
 	 * @param {string} status - The status to save (publish/draft)
 	 */
-	saveQuestionWithStatus( btnEl, status ) {
+	async saveQuestionWithStatus( btnEl, status ) {
+		const canContinue = await this.confirmUnpublishIfNeeded( status, btnEl );
+		if ( ! canContinue ) {
+			return;
+		}
+
 		// Validate title before saving
 		if ( ! this.validateTitleBeforeUpdate() ) {
 			return;
@@ -160,18 +167,25 @@ export class BuilderEditQuestion {
 
 					if ( data?.question_id_new ) {
 						const currentUrl = window.location.href;
-						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.question_id_new }/` );
+						window.location.href = currentUrl.replace(
+							/post-new\/?/,
+							`${ data.question_id_new }/`
+						);
 					}
 
 					if ( data?.status ) {
-						const elStatus = document.querySelector( BuilderEditQuestion.selectors.elQuestionStatus );
+						const elStatus = document.querySelector(
+							BuilderEditQuestion.selectors.elQuestionStatus
+						);
 						if ( elStatus ) {
 							elStatus.className = 'question-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
-						
+
 						if ( data.status === 'trash' || data.status === 'draft' ) {
-							const curriculumItem = document.querySelector( `.question-item[data-question-id="${questionData.question_id}"]` );
+							const curriculumItem = document.querySelector(
+								`.question-item[data-question-id="${ questionData.question_id }"]`
+							);
 							if ( curriculumItem ) {
 								const elCurriculumQuestion = curriculumItem.closest( '.question' );
 								if ( elCurriculumQuestion ) {
@@ -206,12 +220,16 @@ export class BuilderEditQuestion {
 		}
 
 		// Activate first tab by default if none is active
-		const activeTab = document.querySelector( `${ BuilderEditQuestion.selectors.elCBHorizontalTabs }.is-active` );
+		const activeTab = document.querySelector(
+			`${ BuilderEditQuestion.selectors.elCBHorizontalTabs }.is-active`
+		);
 		if ( ! activeTab && tabs.length > 0 ) {
-			tabs[0].classList.add( 'is-active' );
-			const section = tabs[0].getAttribute( 'data-tab-section' );
+			tabs[ 0 ].classList.add( 'is-active' );
+			const section = tabs[ 0 ].getAttribute( 'data-tab-section' );
 			if ( section ) {
-				const panel = document.querySelector( `${ BuilderEditQuestion.selectors.elCBTabPanels }[data-section="${ section }"]` );
+				const panel = document.querySelector(
+					`${ BuilderEditQuestion.selectors.elCBTabPanels }[data-section="${ section }"]`
+				);
 				if ( panel ) {
 					panel.classList.remove( 'lp-hidden' );
 				}
@@ -225,7 +243,7 @@ export class BuilderEditQuestion {
 	handleTabClick( args ) {
 		const { e, target } = args;
 		const tabLink = target.closest( BuilderEditQuestion.selectors.elCBHorizontalTabs );
-		
+
 		if ( ! tabLink ) {
 			return;
 		}
@@ -239,12 +257,12 @@ export class BuilderEditQuestion {
 
 		// Update active tab
 		const allTabs = document.querySelectorAll( BuilderEditQuestion.selectors.elCBHorizontalTabs );
-		allTabs.forEach( tab => tab.classList.remove( 'is-active' ) );
+		allTabs.forEach( ( tab ) => tab.classList.remove( 'is-active' ) );
 		tabLink.classList.add( 'is-active' );
 
 		// Show/hide panels
 		const allPanels = document.querySelectorAll( BuilderEditQuestion.selectors.elCBTabPanels );
-		allPanels.forEach( panel => {
+		allPanels.forEach( ( panel ) => {
 			if ( panel.getAttribute( 'data-section' ) === section ) {
 				panel.classList.remove( 'lp-hidden' );
 			} else {
@@ -289,11 +307,11 @@ export class BuilderEditQuestion {
 	 * Re-initialize for popup context
 	 * This is called when popup is opened multiple times to ensure
 	 * TinyMCE and other handlers are properly re-initialized
-	 * 
+	 *
 	 * @param {HTMLElement} container - The popup container element
 	 */
 	reinit( container ) {
-		const elQuestionEditMain = container 
+		const elQuestionEditMain = container
 			? container.querySelector( BuilderEditQuestion.selectors.elQuestionEditMain )
 			: document.querySelector( BuilderEditQuestion.selectors.elQuestionEditMain );
 
@@ -328,7 +346,7 @@ export class BuilderEditQuestion {
 
 		// Re-init sortable and TinyMCE
 		this.editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
-		
+
 		// Use setTimeout to ensure DOM is ready for TinyMCE
 		setTimeout( () => {
 			if ( this.editQuestion ) {
@@ -402,7 +420,9 @@ export class BuilderEditQuestion {
 	 * @param {string} newStatus - The new question status
 	 */
 	updateActionButtons( newStatus ) {
-		const dropdown = document.querySelector( BuilderEditQuestion.selectors.elHeaderActionsDropdown );
+		const dropdown = document.querySelector(
+			BuilderEditQuestion.selectors.elHeaderActionsDropdown
+		);
 		if ( ! dropdown ) return;
 
 		const mainBtn = dropdown.querySelector( '.cb-btn-main-action' );
@@ -549,7 +569,7 @@ export class BuilderEditQuestion {
 		return data;
 	}
 
-	updateQuestion( args ) {
+	async updateQuestion( args ) {
 		// Context check: only handle if on question edit page
 		if ( ! this.isQuestionContext() ) {
 			return;
@@ -567,10 +587,14 @@ export class BuilderEditQuestion {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elBtnMainAction, 1 );
-
 		// Get status from the button's data-status attribute
 		const targetStatus = elBtnMainAction.dataset.status || 'publish';
+		const canContinue = await this.confirmUnpublishIfNeeded( targetStatus, elBtnMainAction );
+		if ( ! canContinue ) {
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( elBtnMainAction, 1 );
 
 		const questionData = this.getQuestionDataForUpdate();
 
@@ -598,18 +622,25 @@ export class BuilderEditQuestion {
 
 					if ( data?.question_id_new ) {
 						const currentUrl = window.location.href;
-						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.question_id_new }/` );
+						window.location.href = currentUrl.replace(
+							/post-new\/?/,
+							`${ data.question_id_new }/`
+						);
 					}
 
 					if ( data?.status ) {
-						const elStatus = document.querySelector( BuilderEditQuestion.selectors.elQuestionStatus );
+						const elStatus = document.querySelector(
+							BuilderEditQuestion.selectors.elQuestionStatus
+						);
 						if ( elStatus ) {
 							elStatus.className = 'question-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
-						
+
 						if ( data.status === 'trash' || data.status === 'draft' ) {
-							const curriculumItem = document.querySelector( `.question-item[data-question-id="${questionData.question_id}"]` );
+							const curriculumItem = document.querySelector(
+								`.question-item[data-question-id="${ questionData.question_id }"]`
+							);
 							if ( curriculumItem ) {
 								const elCurriculumQuestion = curriculumItem.closest( '.question' );
 								if ( elCurriculumQuestion ) {
@@ -634,6 +665,33 @@ export class BuilderEditQuestion {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
+	async confirmUnpublishIfNeeded( targetStatus, triggerEl ) {
+		if ( targetStatus !== 'draft' ) {
+			return true;
+		}
+
+		const statusEl = document.querySelector( BuilderEditQuestion.selectors.elQuestionStatus );
+		const isPublished = statusEl && statusEl.classList.contains( 'publish' );
+		if ( ! isPublished ) {
+			return true;
+		}
+
+		const confirmMsg =
+			triggerEl?.dataset?.confirmUnpublish ||
+			'Saving as draft will unpublish this item. Are you sure?';
+		const result = await SweetAlert.fire( {
+			title: confirmMsg,
+			icon: 'warning',
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} );
+
+		return !! result.isConfirmed;
+	}
+
 	async saveDraftQuestion( args ) {
 		// Context check: only handle if on question edit page
 		if ( ! this.isQuestionContext() ) {
@@ -651,7 +709,9 @@ export class BuilderEditQuestion {
 		const statusEl = document.querySelector( BuilderEditQuestion.selectors.elQuestionStatus );
 		const isPublished = statusEl && statusEl.classList.contains( 'publish' );
 		if ( isPublished ) {
-			const confirmMsg = elBtnDraftQuestion.dataset.confirmUnpublish || 'Saving as draft will unpublish this item. Are you sure?';
+			const confirmMsg =
+				elBtnDraftQuestion.dataset.confirmUnpublish ||
+				'Saving as draft will unpublish this item. Are you sure?';
 			const result = await SweetAlert.fire( {
 				title: confirmMsg,
 				icon: 'warning',
@@ -700,18 +760,25 @@ export class BuilderEditQuestion {
 
 					if ( data?.question_id_new ) {
 						const currentUrl = window.location.href;
-						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.question_id_new }/` );
+						window.location.href = currentUrl.replace(
+							/post-new\/?/,
+							`${ data.question_id_new }/`
+						);
 					}
 
 					if ( data?.status ) {
-						const elStatus = document.querySelector( BuilderEditQuestion.selectors.elQuestionStatus );
+						const elStatus = document.querySelector(
+							BuilderEditQuestion.selectors.elQuestionStatus
+						);
 						if ( elStatus ) {
 							elStatus.className = 'question-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
-						
+
 						if ( data.status === 'trash' || data.status === 'draft' ) {
-							const curriculumItem = document.querySelector( `.question-item[data-question-id="${questionData.question_id}"]` );
+							const curriculumItem = document.querySelector(
+								`.question-item[data-question-id="${ questionData.question_id }"]`
+							);
 							if ( curriculumItem ) {
 								const elCurriculumQuestion = curriculumItem.closest( '.question' );
 								if ( elCurriculumQuestion ) {
@@ -784,13 +851,17 @@ export class BuilderEditQuestion {
 					}
 
 					if ( data?.status ) {
-						const elStatus = document.querySelector( BuilderEditQuestion.selectors.elQuestionStatus );
+						const elStatus = document.querySelector(
+							BuilderEditQuestion.selectors.elQuestionStatus
+						);
 						if ( elStatus ) {
 							elStatus.className = 'question-status ' + data.status;
 							elStatus.textContent = data.status;
 						}
 						if ( data.status === 'trash' || data.status === 'draft' ) {
-							const curriculumItem = document.querySelector( `.question-item[data-question-id="${questionData.question_id}"]` );
+							const curriculumItem = document.querySelector(
+								`.question-item[data-question-id="${ questionData.question_id }"]`
+							);
 							if ( curriculumItem ) {
 								const elCurriculumQuestion = curriculumItem.closest( '.question' );
 								if ( elCurriculumQuestion ) {

@@ -293,13 +293,17 @@ export class BuilderMaterial {
 	 * Validate uploaded file
 	 */
 	validateFile( target ) {
-		if ( ! target.value || ! target.files?.length ) return;
+		if ( ! target.value || ! target.files?.length ) {
+			this.resetUploadLabel( target );
+			return;
+		}
 
 		const file = target.files[ 0 ];
 
 		if ( this.acceptFile.length > 0 && ! this.acceptFile.includes( file.type ) ) {
 			alert( 'This file is not allowed! Please choose another file!' );
 			target.value = '';
+			this.resetUploadLabel( target );
 			return;
 		}
 
@@ -308,7 +312,43 @@ export class BuilderMaterial {
 				`This file size is greater than ${ this.maxFileSize }MB! Please choose another file!`
 			);
 			target.value = '';
+			this.resetUploadLabel( target );
+			return;
 		}
+
+		this.updateUploadLabel( target, file.name );
+	}
+
+	/**
+	 * Update upload label to show selected file name
+	 */
+	updateUploadLabel( target, fileName ) {
+		if ( ! fileName ) return;
+
+		const uploadLabel = target
+			.closest( '.lp-material--upload-wrap' )
+			?.querySelector( 'label' );
+
+		if ( ! uploadLabel ) return;
+
+		uploadLabel.classList.add( 'has-selected-file' );
+		uploadLabel.setAttribute( 'data-file-name', fileName );
+		uploadLabel.setAttribute( 'title', fileName );
+	}
+
+	/**
+	 * Reset upload label state
+	 */
+	resetUploadLabel( target ) {
+		const uploadLabel = target
+			?.closest( '.lp-material--upload-wrap' )
+			?.querySelector( 'label' );
+
+		if ( ! uploadLabel ) return;
+
+		uploadLabel.classList.remove( 'has-selected-file' );
+		uploadLabel.removeAttribute( 'data-file-name' );
+		uploadLabel.removeAttribute( 'title' );
 	}
 
 	/**
@@ -431,7 +471,10 @@ export class BuilderMaterial {
 				materials.forEach( ( ele ) => {
 					ele.querySelector( '.lp-material--field-title' ).value = '';
 					const uploadField = ele.querySelector( '.lp-material--field-upload' );
-					if ( uploadField ) uploadField.value = '';
+					if ( uploadField ) {
+						uploadField.value = '';
+						this.resetUploadLabel( uploadField );
+					}
 					const externalField = ele.querySelector( '.lp-material--field-external-link' );
 					if ( externalField ) externalField.value = '';
 				} );

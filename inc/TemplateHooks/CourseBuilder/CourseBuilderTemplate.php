@@ -452,13 +452,17 @@ class CourseBuilderTemplate {
 		$hide_back_link = $is_cb_admin_mode && $is_instructor && ! $is_admin;
 
 		if ( ! $hide_back_link ) {
+			$back_to_wp_text = __( 'Back to WordPress', 'learnpress' );
+
 			$footer['back'] = sprintf(
-				'<a href="%s" class="lp-cb-sidebar__item lp-cb-sidebar__back">
+				'<a href="%s" class="lp-cb-sidebar__item lp-cb-sidebar__back" title="%s" aria-label="%s">
 					<span class="dashicons dashicons-wordpress"></span>
 					<span class="lp-cb-sidebar__item-title">%s</span>
 				</a>',
 				esc_url( $dashboard_url ),
-				__( 'Back to WordPress', 'learnpress' )
+				esc_attr( $back_to_wp_text ),
+				esc_attr( $back_to_wp_text ),
+				esc_html( $back_to_wp_text )
 			);
 		}
 
@@ -499,11 +503,13 @@ class CourseBuilderTemplate {
 		$item = [
 			'wrapper'     => sprintf( '<li class="%s">', implode( ' ', $classes ) ),
 			'content'     => sprintf(
-				'<a href="%s">
+				'<a href="%s" title="%s" aria-label="%s">
 					%s
 					<span class="lp-cb-sidebar__item-title">%s</span>
 				</a>',
 				esc_url( $link ),
+				esc_attr( $title ),
+				esc_attr( $title ),
 				$icon,
 				esc_html( $title )
 			),
@@ -712,7 +718,7 @@ class CourseBuilderTemplate {
 							<?php esc_html_e( 'Preview', 'learnpress' ); ?>
 						</a>
 					<?php endif; ?>
-					<div class="cb-header-actions-dropdown" data-current-status="<?php echo esc_attr( $status ); ?>" data-review-only-course="<?php echo esc_attr( $is_review_only_course_context ? 'yes' : 'no' ); ?>">
+					<div class="cb-header-actions-dropdown" data-current-status="<?php echo esc_attr( $btn_config['main_status'] ); ?>" data-review-only-course="<?php echo esc_attr( $is_review_only_course_context ? 'yes' : 'no' ); ?>">
 						<div class="<?php echo esc_attr( $btn_config['main_class'] ); ?> cb-btn-primary cb-btn-main-action" 
 							data-status="<?php echo esc_attr( $btn_config['main_status'] ); ?>"
 							data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>" 
