@@ -927,6 +927,14 @@ html:has( #wpadminbar ) {
 		border-color: $cb-primary-hover !important;
 	}
 
+	&.loading,
+	&.lp-loading,
+	&[aria-disabled='true'] {
+		opacity: 0.7;
+		pointer-events: none;
+		cursor: not-allowed;
+	}
+
 	&.has-changes {
 		position: relative;
 		animation: pulse-save 2s infinite;
@@ -945,12 +953,13 @@ html:has( #wpadminbar ) {
 	}
 }
 
-// Old button styles compatibility
-#lp-course-builder {
-	.cb-btn-update,
-	.cb-btn-preview,
-	.cb-btn-darft,
-	.cb-btn-pending {
+	// Old button styles compatibility
+	#lp-course-builder {
+		.cb-btn-update,
+		.cb-btn-preview,
+		.cb-btn-darft,
+		.cb-btn-publish,
+		.cb-btn-pending {
 		padding: 10px 20px;
 		font-size: 14px;
 		border-radius: 12px;
@@ -1193,10 +1202,10 @@ html:has( #wpadminbar ) {
 	display: inline-flex;
 
 	// Button group container - main action button
-	.cb-btn-update,
-	.cb-btn-darft.cb-btn-main-action,
-	.cb-btn-publish.cb-btn-main-action,
-	.cb-btn-pending.cb-btn-main-action {
+		.cb-btn-update,
+		.cb-btn-darft.cb-btn-main-action,
+		.cb-btn-publish.cb-btn-main-action,
+		.cb-btn-pending.cb-btn-main-action {
 		padding: 10px 16px;
 		font-size: 14px;
 		font-weight: 500;
@@ -1212,15 +1221,23 @@ html:has( #wpadminbar ) {
 			background: $cb-primary-hover;
 		}
 
-		&.cb-btn-primary {
-			background: $cb-primary;
-			color: #fff;
+			&.cb-btn-primary {
+				background: $cb-primary;
+				color: #fff;
 
-			&:hover {
-				background: $cb-primary-hover;
+				&:hover {
+					background: $cb-primary-hover;
+				}
+			}
+
+			&.loading,
+			&.lp-loading,
+			&[aria-disabled='true'] {
+				opacity: 0.7;
+				pointer-events: none;
+				cursor: not-allowed;
 			}
 		}
-	}
 
 	.cb-btn-pending.cb-btn-main-action {
 		background: #dbeafe;
