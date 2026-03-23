@@ -866,3 +866,50 @@ input.lp-search-title-item:focus {
 .lp-popup-items-to-select .header .header-count-items-selected {
 	border-bottom-color: $cb-border-light;
 }
+
+.lp-toast {
+	&.toastify {
+		background: $cb-success-bg;
+		color: $cb-success;
+		border-radius: 5px;
+		box-shadow: 0 0 0;
+		display: flex;
+		align-items: center;
+		.toast-close {
+			background: transparent !important;
+			font-size: 0;
+			padding-left: 12px;
+			&:before {
+				content: '\f00d';
+				font-family: 'lp-icon';
+				font-size: 16px;
+				color: #000;
+				line-height: 17px;
+			}
+			&:hover {
+				opacity: 1;
+			}
+		}
+		&.error {
+			background-color: $cb-danger-bg;
+			color: $cb-danger;
+			padding: 12px 20px;
+			border: none;
+			margin: 0 auto;
+		}
+		&.warning {
+			background-color: #fbf7f2;
+			color: #fb9422;
+			padding: 12px 20px;
+			border: none;
+			margin: 0 auto;
+		}
+		&.info {
+			background-color: $cb-info-bg;
+			color: $cb-info;
+			padding: 12px 20px;
+			border: none;
+			margin: 0 auto;
+		}
+	}
+}
