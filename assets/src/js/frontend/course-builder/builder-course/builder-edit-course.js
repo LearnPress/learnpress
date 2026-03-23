@@ -109,7 +109,6 @@ export class BuilderEditCourse {
 
 	init() {
 		this.isSavingCourse = false;
-		this.createCourseRequestToken = '';
 
 		const editCourseCurriculum = new EditCourseCurriculum();
 		const metaboxExtraInfo = new MetaboxExtraInfo();
@@ -1211,55 +1210,6 @@ export class BuilderEditCourse {
 		return true;
 	}
 
-	setCourseActionLoadingState( isLoading, activeEl = null ) {
-		const elsToToggle = [];
-		const elHeaderSave = document.querySelector( BuilderEditCourse.selectors.elBtnHeaderSave );
-		const elMainAction = document.querySelector( BuilderEditCourse.selectors.elBtnMainAction );
-		const elDropdownToggle = document.querySelector( BuilderEditCourse.selectors.elDropdownToggle );
-
-		if ( elHeaderSave ) {
-			elsToToggle.push( elHeaderSave );
-		}
-
-		if ( elMainAction ) {
-			elsToToggle.push( elMainAction );
-		}
-
-		if ( elDropdownToggle ) {
-			elsToToggle.push( elDropdownToggle );
-		}
-
-		if ( activeEl ) {
-			elsToToggle.push( activeEl );
-		}
-
-		// Keep only unique elements.
-		const uniqueEls = [ ...new Set( elsToToggle.filter( Boolean ) ) ];
-
-		uniqueEls.forEach( ( el ) => {
-			lpUtils.lpSetLoadingEl( el, isLoading ? 1 : 0 );
-			el.classList.toggle( 'lp-loading', Boolean( isLoading ) );
-
-			if ( isLoading ) {
-				el.setAttribute( 'aria-disabled', 'true' );
-			} else {
-				el.removeAttribute( 'aria-disabled' );
-			}
-		} );
-
-		if ( isLoading && elDropdownToggle ) {
-			elDropdownToggle.setAttribute( 'aria-expanded', 'false' );
-		}
-	}
-
-	generateCreateCourseRequestToken() {
-		if ( typeof window !== 'undefined' && window.crypto?.randomUUID ) {
-			return `cb-${ window.crypto.randomUUID() }`;
-		}
-
-		return `cb-${ Date.now() }-${ Math.random().toString( 36 ).slice( 2, 10 ) }`;
-	}
-
 	updateCourse( args ) {
 		// Context check: only handle if on course edit page
 		if ( ! document.querySelector( BuilderEditCourse.selectors.elDataCourse ) ) {
@@ -1319,8 +1269,49 @@ export class BuilderEditCourse {
 			}
 		}
 
+		const setActionLoadingState = ( isLoading ) => {
+			const elsToToggle = [];
+			const elHeaderSave = document.querySelector( BuilderEditCourse.selectors.elBtnHeaderSave );
+			const elMainAction = document.querySelector( BuilderEditCourse.selectors.elBtnMainAction );
+			const elDropdownToggle = document.querySelector( BuilderEditCourse.selectors.elDropdownToggle );
+
+			if ( elHeaderSave ) {
+				elsToToggle.push( elHeaderSave );
+			}
+
+			if ( elMainAction ) {
+				elsToToggle.push( elMainAction );
+			}
+
+			if ( elDropdownToggle ) {
+				elsToToggle.push( elDropdownToggle );
+			}
+
+			if ( elBtn ) {
+				elsToToggle.push( elBtn );
+			}
+
+			// Keep only unique elements.
+			const uniqueEls = [ ...new Set( elsToToggle.filter( Boolean ) ) ];
+
+			uniqueEls.forEach( ( el ) => {
+				lpUtils.lpSetLoadingEl( el, isLoading ? 1 : 0 );
+				el.classList.toggle( 'lp-loading', Boolean( isLoading ) );
+
+				if ( isLoading ) {
+					el.setAttribute( 'aria-disabled', 'true' );
+				} else {
+					el.removeAttribute( 'aria-disabled' );
+				}
+			} );
+
+			if ( isLoading && elDropdownToggle ) {
+				elDropdownToggle.setAttribute( 'aria-expanded', 'false' );
+			}
+		};
+
 		this.isSavingCourse = true;
-		this.setCourseActionLoadingState( true, elBtn );
+		setActionLoadingState( true );
 		const courseData = this.getCourseDataForUpdate();
 		const dataSend = {
 			...courseData,
@@ -1328,13 +1319,6 @@ export class BuilderEditCourse {
 			action: 'save_courses',
 			args: { id_url: 'save-courses' },
 		};
-		const isCreateCourseRequest = ! courseData.course_id || Number( courseData.course_id ) <= 0;
-		if ( isCreateCourseRequest ) {
-			if ( ! this.createCourseRequestToken ) {
-				this.createCourseRequestToken = this.generateCreateCourseRequestToken();
-			}
-			dataSend.request_token = this.createCourseRequestToken;
-		}
 		if ( typeof lpCourseBuilder !== 'undefined' && lpCourseBuilder.nonce ) {
 			dataSend.nonce = lpCourseBuilder.nonce;
 		}
@@ -1379,10 +1363,8 @@ export class BuilderEditCourse {
 				}
 				// Use redirect_url from backend if available (for new courses)
 				if ( data?.redirect_url ) {
-					this.createCourseRequestToken = '';
 					window.location.href = data.redirect_url;
 				} else if ( data?.course_id_new ) {
-					this.createCourseRequestToken = '';
 					// Fallback: build redirect URL manually
 					const currentUrl = window.location.href;
 					const newUrl = currentUrl.replace(
@@ -1413,7 +1395,7 @@ export class BuilderEditCourse {
 			},
 			completed: () => {
 				this.isSavingCourse = false;
-				this.setCourseActionLoadingState( false, elBtn );
+				setActionLoadingState( false );
 			},
 		};
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );

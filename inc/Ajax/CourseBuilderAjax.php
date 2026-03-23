@@ -33,13 +33,6 @@ use Throwable;
 
 class CourseBuilderAjax extends AbstractAjax {
 	/**
-	 * TTL for idempotency result of create-course requests.
-	 *
-	 * @var int
-	 */
-	protected const CREATE_COURSE_IDEMPOTENCY_TTL = 600;
-
-	/**
 	 * Check permissions and validate parameters.
 	 *
 	 * @throws Exception
@@ -180,116 +173,6 @@ class CourseBuilderAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Get create-course idempotency token from request data.
-	 *
-	 * @param array $data
-	 *
-	 * @return string
-	 */
-	protected function get_create_course_request_token( array $data ): string {
-		$request_token = isset( $data['request_token'] ) ? sanitize_text_field( (string) $data['request_token'] ) : '';
-		if ( '' === $request_token ) {
-			return '';
-		}
-
-		return substr( $request_token, 0, 128 );
-	}
-
-	/**
-	 * Build idempotency keys for create-course requests.
-	 *
-	 * @param string $request_token
-	 *
-	 * @return array
-	 */
-	protected function get_create_course_idempotency_keys( string $request_token ): array {
-		$token_hash = md5( $request_token );
-		$user_id    = get_current_user_id();
-
-		return array(
-			'lock'   => "lp_cb_course_create_lock_{$user_id}_{$token_hash}",
-			'result' => "lp_cb_course_create_result_{$user_id}_{$token_hash}",
-		);
-	}
-
-	/**
-	 * Get existing created course by idempotency token.
-	 *
-	 * @param string $request_token
-	 *
-	 * @return int
-	 */
-	protected function get_existing_course_id_by_request_token( string $request_token ): int {
-		if ( '' === $request_token ) {
-			return 0;
-		}
-
-		$keys      = $this->get_create_course_idempotency_keys( $request_token );
-		$course_id = absint( get_transient( $keys['result'] ) );
-		if ( $course_id <= 0 ) {
-			return 0;
-		}
-
-		$post = get_post( $course_id );
-		if ( ! $post || LP_COURSE_CPT !== $post->post_type ) {
-			delete_transient( $keys['result'] );
-			return 0;
-		}
-
-		return $course_id;
-	}
-
-	/**
-	 * Acquire lock for create-course request.
-	 *
-	 * @param string $request_token
-	 *
-	 * @return bool
-	 */
-	protected function acquire_create_course_request_lock( string $request_token ): bool {
-		if ( '' === $request_token ) {
-			return true;
-		}
-
-		$keys = $this->get_create_course_idempotency_keys( $request_token );
-
-		return add_option( $keys['lock'], (string) time(), '', 'no' );
-	}
-
-	/**
-	 * Release lock for create-course request.
-	 *
-	 * @param string $request_token
-	 *
-	 * @return void
-	 */
-	protected function release_create_course_request_lock( string $request_token ): void {
-		if ( '' === $request_token ) {
-			return;
-		}
-
-		$keys = $this->get_create_course_idempotency_keys( $request_token );
-		delete_option( $keys['lock'] );
-	}
-
-	/**
-	 * Store newly created course id by idempotency token.
-	 *
-	 * @param string $request_token
-	 * @param int $course_id
-	 *
-	 * @return void
-	 */
-	protected function store_created_course_for_request_token( string $request_token, int $course_id ): void {
-		if ( '' === $request_token || $course_id <= 0 ) {
-			return;
-		}
-
-		$keys = $this->get_create_course_idempotency_keys( $request_token );
-		set_transient( $keys['result'], $course_id, self::CREATE_COURSE_IDEMPOTENCY_TTL );
-	}
-
-	/**
 	 * Save Course.
 	 *
 	 * @since 4.3
@@ -298,54 +181,13 @@ class CourseBuilderAjax extends AbstractAjax {
 	public function save_courses() {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
-		$course_create_request_token = '';
-		$create_course_lock_acquired = false;
 
 		try {
 			$data      = self::check_valid_course();
 			$course_id = $data['course_id'] ?? 0;
 			$settings  = $data['course_settings'] ?? false;
 			$insert    = $data['insert'];
-			$is_create_request       = $insert;
 			$course_status_requested = ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish';
-			$course_create_request_token = $is_create_request ? $this->get_create_course_request_token( $data ) : '';
-
-			if ( $is_create_request && '' !== $course_create_request_token ) {
-				$course_id_from_token = $this->get_existing_course_id_by_request_token( $course_create_request_token );
-				if ( $course_id_from_token > 0 ) {
-					$course_model_from_token = CourseModel::find( $course_id_from_token, true );
-					if ( ! $course_model_from_token ) {
-						throw new Exception( __( 'Failed to load course model', 'learnpress' ) );
-					}
-
-					$insert               = false;
-					$course_id            = $course_id_from_token;
-					$data['course_id']    = $course_id_from_token;
-					$data['course_model'] = $course_model_from_token;
-					$data['insert']       = false;
-					$response->data->idempotent_replay = true;
-				} else {
-					$create_course_lock_acquired = $this->acquire_create_course_request_lock( $course_create_request_token );
-					if ( ! $create_course_lock_acquired ) {
-						$course_id_from_token = $this->get_existing_course_id_by_request_token( $course_create_request_token );
-						if ( $course_id_from_token > 0 ) {
-							$course_model_from_token = CourseModel::find( $course_id_from_token, true );
-							if ( ! $course_model_from_token ) {
-								throw new Exception( __( 'Failed to load course model', 'learnpress' ) );
-							}
-
-							$insert               = false;
-							$course_id            = $course_id_from_token;
-							$data['course_id']    = $course_id_from_token;
-							$data['course_model'] = $course_model_from_token;
-							$data['insert']       = false;
-							$response->data->idempotent_replay = true;
-						} else {
-							throw new Exception( __( 'A previous save request is still being processed. Please wait and try again.', 'learnpress' ) );
-						}
-					}
-				}
-			}
 
 			if ( $insert ) {
 				// Check user capability before insert
@@ -381,8 +223,6 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( ! $courseModel ) {
 					throw new Exception( __( 'Failed to load course model', 'learnpress' ) );
 				}
-
-				$this->store_created_course_for_request_token( $course_create_request_token, (int) $course_id );
 			} else {
 				$courseModel = $data['course_model'];
 				$course_status = $this->normalize_course_status_for_save( $course_status_requested, false, $courseModel );
@@ -455,12 +295,12 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			$response->status              = 'success';
-			$response->message             = $is_create_request ? __( 'Insert course successfully!', 'learnpress' ) : __( 'Update course successfully!', 'learnpress' );
+			$response->message             = $insert ? __( 'Insert course successfully!', 'learnpress' ) : __( 'Update course successfully!', 'learnpress' );
 			$response->data->status        = $saved_course_status;
 			$response->data->button_title  = 'publish' === $saved_course_status
 				? __( 'Update', 'learnpress' )
 				: ( 'pending' === $saved_course_status ? __( 'Submit for Review', 'learnpress' ) : __( 'Publish', 'learnpress' ) );
-			$response->data->course_id_new = $is_create_request ? $course_id : '';
+			$response->data->course_id_new = $insert ? $course_id : '';
 
 			// Return the actual saved permalink data (important if WordPress auto-generated a unique slug)
 			$saved_post = get_post( $course_id );
@@ -470,20 +310,12 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			// Return full redirect URL for new courses
-			if ( $is_create_request && $course_id ) {
+			if ( $insert && $course_id ) {
 				$response->data->redirect_url = \LearnPress\CourseBuilder\CourseBuilder::get_tab_link( 'courses', $course_id, 'overview' );
-			}
-
-			if ( $create_course_lock_acquired ) {
-				$this->release_create_course_request_lock( $course_create_request_token );
 			}
 
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
-			if ( $create_course_lock_acquired ) {
-				$this->release_create_course_request_lock( $course_create_request_token );
-			}
-
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
