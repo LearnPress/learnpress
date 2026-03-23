@@ -97,6 +97,8 @@ class LP_Query {
 			}
 		}
 
+		add_rewrite_endpoint( 'lp-ajax-handle', EP_ROOT | EP_PAGES );
+
 		// Code temporary to fix 404 of order receiver page
 		if ( LP_Page_Controller::is_page_checkout() ) {
 			flush_rewrite_rules();
