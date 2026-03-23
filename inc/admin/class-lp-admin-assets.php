@@ -418,7 +418,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					1
 				),
 				'lp-list-students-enrolled' => new LP_Asset_Key(
-					$this->url( 'js/dist/admin/list-students-enrolled' . self::$_min_assets . '.js' ),
+					$this->url( 'dist/js/admin/list-students-enrolled' . self::$_min_assets . '.js' ),
 					array( 'lp-load-ajax' ),
 					array( 'learnpress_page_lp-enrolled-students' ),
 					0,

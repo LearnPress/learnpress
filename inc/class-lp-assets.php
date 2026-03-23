@@ -252,7 +252,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-load-ajax'         => new LP_Asset_Key(
 					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
-					[],
+					[ 'wp-hooks' ],
 					[],
 					0,
 					0,
@@ -384,7 +384,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					[ 'strategy' => 'defer' ]
 				),
 				'lp-list-students-enrolled' => new LP_Asset_Key(
-					self::url( 'js/dist/admin/list-students-enrolled' . self::$_min_assets . '.js' ),
+					self::url( 'dist/js/admin/list-students-enrolled' . self::$_min_assets . '.js' ),
 					[ 'lp-load-ajax' ],
 					[ LP_PAGE_PROFILE ],
 					0,
