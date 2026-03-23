@@ -233,7 +233,7 @@ class ApiKeysRepository {
 	 * @return object|null
 	 */
 	public function find_by_consumer_key( string $consumer_key ) {
-		$consumer_key = sanitize_text_field( wp_unslash( $consumer_key ) );
+		$consumer_key = LP_Helper::sanitize_params_submitted( $consumer_key );
 		if ( '' === $consumer_key ) {
 			return null;
 		}
@@ -360,7 +360,7 @@ class ApiKeysRepository {
 		$filter->limit            = $per_page;
 		$filter->page             = $page;
 
-		$search = sanitize_text_field( wp_unslash( (string) $args['search'] ) );
+		$search = LP_Helper::sanitize_params_submitted( (string) $args['search'] );
 		if ( '' !== $search ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND k.description LIKE %s', '%' . $this->wpdb->esc_like( $search ) . '%' );
 		}
@@ -449,7 +449,7 @@ class ApiKeysRepository {
 	 * @return string
 	 */
 	protected function normalize_description( string $description ): string {
-		$description = sanitize_text_field( wp_unslash( $description ) );
+		$description = LP_Helper::sanitize_params_submitted( $description );
 
 		return function_exists( 'mb_substr' ) ? mb_substr( $description, 0, 200 ) : substr( $description, 0, 200 );
 	}
@@ -462,7 +462,7 @@ class ApiKeysRepository {
 	 * @return string
 	 */
 	protected function normalize_permissions( string $permissions ): string {
-		$permissions = sanitize_key( $permissions );
+		$permissions = LP_Helper::sanitize_params_submitted( $permissions, 'key' );
 
 		if ( ! in_array( $permissions, self::PERMISSIONS, true ) ) {
 			$permissions = 'read';

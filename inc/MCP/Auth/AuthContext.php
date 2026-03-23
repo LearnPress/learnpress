@@ -2,6 +2,8 @@
 
 namespace LearnPress\MCP\Auth;
 
+use LP_Helper;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -61,7 +63,7 @@ class AuthContext {
 		self::$is_api_key_auth = true;
 		self::$key_id          = absint( $key_id );
 		self::$user_id         = absint( $user_id );
-		self::$permissions     = sanitize_key( $permissions );
+		self::$permissions     = LP_Helper::sanitize_params_submitted( $permissions, 'key', false );
 	}
 
 	/**

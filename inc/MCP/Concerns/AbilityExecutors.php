@@ -12,6 +12,7 @@ use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
+use LP_Helper;
 use LP_Material_Files_DB;
 use Throwable;
 use WP_Error;
@@ -52,7 +53,7 @@ trait AbilityExecutors {
 			$filter->post_author = absint( $args['instructor'] );
 		}
 		if ( isset( $args['search'] ) ) {
-			$filter->post_title = sanitize_text_field( wp_unslash( (string) $args['search'] ) );
+			$filter->post_title = LP_Helper::sanitize_params_submitted( (string) $args['search'] );
 		}
 
 		$price_min = isset( $args['price_min'] ) && is_numeric( $args['price_min'] ) ? (float) $args['price_min'] : null;

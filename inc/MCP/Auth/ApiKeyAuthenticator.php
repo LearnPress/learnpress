@@ -2,6 +2,7 @@
 
 namespace LearnPress\MCP\Auth;
 
+use LP_Helper;
 use WP_Error;
 use WP_REST_Request;
 
@@ -212,8 +213,8 @@ class ApiKeyAuthenticator {
 		$consumer_key_present    = isset( $_GET['consumer_key'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$consumer_secret_present = isset( $_GET['consumer_secret'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		$consumer_key    = $consumer_key_present ? sanitize_text_field( wp_unslash( $_GET['consumer_key'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$consumer_secret = $consumer_secret_present ? sanitize_text_field( wp_unslash( $_GET['consumer_secret'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$consumer_key    = $consumer_key_present ? LP_Helper::sanitize_params_submitted( $_GET['consumer_key'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$consumer_secret = $consumer_secret_present ? LP_Helper::sanitize_params_submitted( $_GET['consumer_secret'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		if ( $consumer_key_present || $consumer_secret_present ) {
 			return array(
@@ -227,7 +228,7 @@ class ApiKeyAuthenticator {
 		$has_php_auth_pw   = isset( $_SERVER['PHP_AUTH_PW'] );
 
 		if ( $has_php_auth_user || $has_php_auth_pw ) {
-			$basic_user = sanitize_text_field( wp_unslash( $_SERVER['PHP_AUTH_USER'] ?? '' ) );
+			$basic_user = LP_Helper::sanitize_params_submitted( $_SERVER['PHP_AUTH_USER'] ?? '' );
 			if ( ! $this->looks_like_consumer_key( $basic_user ) ) {
 				return array(
 					'present'         => false,
@@ -239,7 +240,7 @@ class ApiKeyAuthenticator {
 			return array(
 				'present'         => true,
 				'consumer_key'    => $basic_user,
-				'consumer_secret' => sanitize_text_field( wp_unslash( $_SERVER['PHP_AUTH_PW'] ?? '' ) ),
+				'consumer_secret' => LP_Helper::sanitize_params_submitted( $_SERVER['PHP_AUTH_PW'] ?? '' ),
 			);
 		}
 
@@ -262,7 +263,7 @@ class ApiKeyAuthenticator {
 		}
 
 		list( $consumer_key, $consumer_secret ) = explode( ':', $decoded, 2 );
-		$consumer_key                           = sanitize_text_field( $consumer_key );
+		$consumer_key                           = LP_Helper::sanitize_params_submitted( $consumer_key, 'text', false );
 		if ( ! $this->looks_like_consumer_key( $consumer_key ) ) {
 			return array(
 				'present'         => false,
@@ -274,7 +275,7 @@ class ApiKeyAuthenticator {
 		return array(
 			'present'         => true,
 			'consumer_key'    => $consumer_key,
-			'consumer_secret' => sanitize_text_field( $consumer_secret ),
+			'consumer_secret' => LP_Helper::sanitize_params_submitted( $consumer_secret, 'text', false ),
 		);
 	}
 
@@ -327,7 +328,7 @@ class ApiKeyAuthenticator {
 	 * @return bool
 	 */
 	protected function is_target_rest_request(): bool {
-		$rest_route = isset( $_GET['rest_route'] ) ? sanitize_text_field( wp_unslash( $_GET['rest_route'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$rest_route = isset( $_GET['rest_route'] ) ? LP_Helper::sanitize_params_submitted( $_GET['rest_route'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( '' !== $rest_route && $this->route_matches_mcp_target( $rest_route ) ) {
 			return (bool) apply_filters( 'learn-press/mcp/api-keys/is-target-rest-request', true, $rest_route, self::MCP_ROUTE );
 		}

@@ -6,6 +6,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
+use LP_Helper;
 use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
@@ -87,7 +88,7 @@ trait AbilityHelpers {
 
 		$out = array();
 		foreach ( $values as $value ) {
-			$status = sanitize_key( (string) $value );
+			$status = LP_Helper::sanitize_params_submitted( (string) $value, 'key' );
 			if ( '' !== $status ) {
 				$out[] = $status;
 			}

@@ -67,8 +67,8 @@ class McpApiKeysAjax extends AbstractAjax {
 			$payload = self::check_valid();
 
 			$user_id     = absint( $payload['user_id'] ?? 0 );
-			$description = sanitize_text_field( wp_unslash( $payload['description'] ?? '' ) );
-			$permissions = sanitize_key( $payload['permissions'] ?? 'read' );
+			$description = LP_Helper::sanitize_params_submitted( $payload['description'] ?? '' );
+			$permissions = LP_Helper::sanitize_params_submitted( $payload['permissions'] ?? 'read', 'key' );
 
 			$created = ( new ApiKeysRepository() )->create_key( $user_id, $description, $permissions );
 			if ( ! $created ) {
@@ -109,8 +109,8 @@ class McpApiKeysAjax extends AbstractAjax {
 
 			$key_id      = absint( $payload['key_id'] ?? 0 );
 			$user_id     = absint( $payload['user_id'] ?? 0 );
-			$description = sanitize_text_field( wp_unslash( $payload['description'] ?? '' ) );
-			$permissions = sanitize_key( $payload['permissions'] ?? 'read' );
+			$description = LP_Helper::sanitize_params_submitted( $payload['description'] ?? '' );
+			$permissions = LP_Helper::sanitize_params_submitted( $payload['permissions'] ?? 'read', 'key' );
 
 			$updated = ( new ApiKeysRepository() )->update_key_meta( $key_id, $user_id, $description, $permissions );
 			if ( ! $updated ) {
