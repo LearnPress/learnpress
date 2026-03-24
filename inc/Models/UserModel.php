@@ -10,7 +10,9 @@ namespace LearnPress\Models;
  */
 
 use Exception;
+use LearnPress\Databases\Course\CourseJsonDB;
 use LearnPress\Databases\UserItemsDB;
+use LearnPress\Filters\Course\CourseJsonFilter;
 use LearnPress\Filters\FilterBase;
 use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
@@ -813,7 +815,7 @@ class UserModel {
 	 *
 	 * @return array
 	 * @since 4.1.6
-	 * @version 1.0.6
+	 * @version 1.0.7
 	 */
 	public function get_instructor_statistic( array $params = [] ): array {
 		$statistic = array(
@@ -834,15 +836,15 @@ class UserModel {
 
 			$user_id          = $this->get_id();
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
-			$lp_course_db     = LP_Course_DB::getInstance();
+			$courseJsonDB     = CourseJsonDB::getInstance();
 
 			// Count total user completed course of author
-			$filter_course                      = new LP_Course_Filter();
+			$filter_course                      = new CourseJsonFilter();
 			$filter_course->only_fields         = array( 'ID' );
 			$filter_course->post_author         = $user_id;
 			$filter_course->post_status         = [ 'publish', 'private' ];
 			$filter_course->return_string_query = true;
-			$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
+			$query_courses_str                  = $courseJsonDB::getInstance()->get_courses( $filter_course );
 
 			$filter_count_users            = new LP_User_Items_Filter();
 			$filter_count_users->item_type = LP_COURSE_CPT;
@@ -855,16 +857,16 @@ class UserModel {
 			$count_users_attend_courses_of_author = $lp_user_items_db->get_user_courses( $filter_count_users );
 
 			// Get total courses publish of author
-			$filter_count_courses            = $lp_course_db->count_courses_of_author( $user_id, [ 'publish' ] );
-			$total_courses_publish_of_author = $lp_course_db->get_courses( $filter_count_courses );
+			$filter_count_courses            = $courseJsonDB->count_courses_of_author( $user_id, [ 'publish' ] );
+			$total_courses_publish_of_author = $courseJsonDB->get_courses( $filter_count_courses );
 
 			// Get total courses of author
-			$filter_count_courses    = $lp_course_db->count_courses_of_author( $user_id );
-			$total_courses_of_author = $lp_course_db->get_courses( $filter_count_courses );
+			$filter_count_courses    = $courseJsonDB->count_courses_of_author( $user_id );
+			$total_courses_of_author = $courseJsonDB->get_courses( $filter_count_courses );
 
 			// Get total courses pending of author
-			$filter_count_courses            = $lp_course_db->count_courses_of_author( $user_id, [ 'pending' ] );
-			$total_courses_pending_of_author = $lp_course_db->get_courses( $filter_count_courses );
+			$filter_count_courses            = $courseJsonDB->count_courses_of_author( $user_id, [ 'pending' ] );
+			$total_courses_pending_of_author = $courseJsonDB->get_courses( $filter_count_courses );
 
 			$statistic['total_course']        = $total_courses_of_author;
 			$statistic['published_course']    = $total_courses_publish_of_author;
@@ -878,7 +880,7 @@ class UserModel {
 			// Set cache first.
 			LP_Cache::cache_load_first( 'set', $key_cache_first, $statistic );
 		} catch ( Throwable $e ) {
-			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $statistic;

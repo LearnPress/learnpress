@@ -308,8 +308,8 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
 			}
 
-			$user = learn_press_get_user( $user_id );
-			if ( ! $user ) {
+			$userModel = UserModel::find( $user_id, true );
+			if ( ! $userModel ) {
 				throw new Exception( esc_html__( 'The user does not exist!', 'learnpress' ) );
 			}
 
@@ -318,7 +318,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( $profile->get_error_message() );
 			}
 
-			$statistic = $user->get_instructor_statistic();
+			$statistic = $userModel->get_instructor_statistic();
 
 			$data = apply_filters(
 				'learn-press/profile/instructor-statistics/info',

@@ -267,4 +267,28 @@ class CourseJsonDB extends DataBase {
 
 		return $filter;
 	}
+
+	/**
+	 * Get total courses of Author
+	 *
+	 * @param int $author_id
+	 * @param array $status
+	 *
+	 * @return CourseJsonFilter
+	 * @since 4.3.4 Clone from LP_Course_DB::count_courses_of_author
+	 * @version 1.0.0
+	 */
+	public function count_courses_of_author( int $author_id, array $status = [] ): CourseJsonFilter {
+		$filter              = new CourseJsonFilter();
+		$filter->only_fields = array( 'ID' );
+		$filter->post_author = $author_id;
+		$filter->post_status = $status;
+		if ( empty( $status ) ) {
+			$filter->post_status = [];
+		}
+		$filter->field_count = 'ID';
+		$filter->query_count = true;
+
+		return apply_filters( 'lp/user/course/query/filter/count-courses-of-author', $filter );
+	}
 }

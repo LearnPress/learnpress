@@ -44,6 +44,7 @@ class SingleInstructorTemplate extends UserTemplate {
 	 * Get html total courses of instructor.
 	 *
 	 * @param LP_User|UserModel $instructor
+	 * @param string $hidden
 	 *
 	 * @return string
 	 * @version 1.0.1
@@ -57,6 +58,9 @@ class SingleInstructorTemplate extends UserTemplate {
 				$instructor = UserModel::find( $instructor->get_id(), true );
 			}
 
+			/**
+			 * @var UserModel $instructor
+			 */
 			$instructor_statistic = $instructor->get_instructor_statistic();
 			$html                 = sprintf(
 				'%d %s',
@@ -98,6 +102,9 @@ class SingleInstructorTemplate extends UserTemplate {
 				$instructor = UserModel::find( $instructor->get_id(), true );
 			}
 
+			/**
+			 * @var UserModel $instructor
+			 */
 			$instructor_statistic = $instructor->get_instructor_statistic();
 			$html                 = sprintf(
 				'%d %s',
