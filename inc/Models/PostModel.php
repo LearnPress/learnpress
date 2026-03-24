@@ -464,7 +464,7 @@ class PostModel {
 	 */
 	public function get_meta_value_by_key( string $key, $default_value = false, bool $single = true ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
-			return $this->meta_data->{$key};
+			return maybe_unserialize( $this->meta_data->{$key} );
 		}
 
 		$value = get_post_meta( $this->ID, $key, $single );
@@ -472,6 +472,7 @@ class PostModel {
 			$value = $default_value;
 		}
 
+		$value = maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;

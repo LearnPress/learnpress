@@ -752,13 +752,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					if ( empty( $args['status'] ) ) {
 						$args['status'] = [ 'publish', 'pending', 'private' ];
 					}
+
+					if ( ! is_array( $args['status'] ) ) {
+						$args['status'] = (array) $args['status'];
+					}
+
 					Courses::handle_params_for_query_courses( $filter, $args );
 					$filter->fields      = [ 'ID' ];
 					$filter->post_author = $this->get_user_data( 'id' );
-					$filter->post_status = ! empty( $args['status'] ) ? $args['status'] : array(
-						'publish',
-						'pending',
-					);
+					$filter->post_status = $args['status'];
 					$filter->page        = $args['paged'] ?? 1;
 					$filter->limit       = $args['limit'] ?? $filter->limit;
 					$total_rows          = 0;
@@ -1114,7 +1116,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					if ( ! empty( $user_name ) ) {
 						$user_model = new UserModel();
 						$user       = $user_model->resolve_user_by_public_identifier( (string) $user_name );
-						$user_id = $user ? $user->ID : 0;
+						$user_id    = $user ? $user->ID : 0;
 					} else {
 						$user_id = get_current_user_id();
 					}

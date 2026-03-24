@@ -836,6 +836,7 @@ class CourseModel {
 			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
+		$value = maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;
