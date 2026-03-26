@@ -28,7 +28,21 @@ defined( 'LP_VERSION' )       || define( 'LP_VERSION', '4.0.0-test' );
 defined( 'LP_QUIZ_CPT' )      || define( 'LP_QUIZ_CPT', 'lp_quiz' );
 defined( 'LP_LESSON_CPT' )    || define( 'LP_LESSON_CPT', 'lp_lesson' );
 defined( 'LP_COURSE_CPT' )    || define( 'LP_COURSE_CPT', 'lp_course' );
+defined( 'LP_TEACHER_ROLE' )  || define( 'LP_TEACHER_ROLE', 'lp_teacher' );
+
+// ── WordPress stub classes ────────────────────────────────────────────────────
+if ( ! class_exists( 'WP_Error' ) ) {
+	class WP_Error {
+		public string $code;
+		public string $message;
+		public function __construct( string $code = '', string $message = '', $data = '' ) {
+			$this->code    = $code;
+			$this->message = $message;
+		}
+	}
+}
 
 // ── Legacy (non-PSR-4) LP classes required by CourseModel ────────────────────
 // These are loaded manually because they use class-lp-* naming, not PSR-4.
 require_once dirname( __DIR__ ) . '/inc/class-lp-datetime.php';
+require_once dirname( __DIR__ ) . '/inc/cache/class-lp-cache.php';
