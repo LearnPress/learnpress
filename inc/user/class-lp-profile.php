@@ -326,13 +326,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function get_tab_link( $tab = false, $with_section = false ) {
 			$user = $this->get_user();
-
 			if ( ! $user ) {
 				return '';
 			}
 
-			$user_model = new UserModel( get_userdata( $user->get_id() ) );
-			$url        = $this->get_tabs()->get_tab_link( $tab, $with_section, $user_model->get_pretty_slug() );
+			$userModel = UserModel::find( $user->get_id(), true );
+			if ( ! $userModel ) {
+				return '';
+			}
+
+			$user_pretty_slug = $userModel->get_pretty_slug();
+			$url              = $this->get_tabs()->get_tab_link( $tab, $with_section, $user_pretty_slug );
 
 			/**
 			 * @deprecated

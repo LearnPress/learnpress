@@ -120,9 +120,9 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->tabs[ $active_tab ]->save_settings( $this->get_active_section(), $this->get_sections() );
 
 		$redirect_args = array();
-		if ( 'permalink' === $active_tab && 'yes' === LP_Request::get_param( 'lp_generate_user_slug' ) ) {
-			$user_model    = new UserModel();
-			$result        = $user_model->generate_missing_pretty_slugs();
+		if ( 'permalink' === $active_tab &&
+			'yes' === LP_Request::get_param( 'lp_generate_user_slug' ) ) {
+			$result        = UserModel::generate_users_pretty_slug();
 			$redirect_args = array(
 				'lp-user-slug-generated' => $result['generated'],
 				'lp-user-slug-processed' => $result['processed'],
@@ -146,9 +146,20 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		}
 
 		// Filter redirect
-		$redirect = apply_filters( 'learn-press/update-settings/redirect', esc_url_raw( add_query_arg( array_merge( array( 'settings-updated' => 'yes' ), $redirect_args ) ) ), $this );
+		$redirect = apply_filters(
+			'learn-press/update-settings/redirect',
+			esc_url_raw(
+				add_query_arg(
+					array_merge(
+						array( 'settings-updated' => 'yes' ),
+						$redirect_args
+					)
+				)
+			),
+			$this
+		);
 		if ( $redirect ) {
-			wp_redirect( $redirect );
+			wp_safe_redirect( $redirect );
 			exit();
 		}
 	}
