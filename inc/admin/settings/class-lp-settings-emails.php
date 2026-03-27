@@ -69,6 +69,8 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					include 'email-groups/class-lp-settings-processing-order-emails.php',
 					include 'email-groups/class-lp-settings-completed-order-emails.php',
 					include 'email-groups/class-lp-settings-cancelled-order-emails.php',
+					include 'email-groups/class-lp-settings-refunded-order-emails.php',
+					include 'email-groups/class-lp-settings-refund-request-order-emails.php',
 					include 'email-groups/class-lp-settings-enrolled-course-emails.php',
 					include 'email-groups/class-lp-settings-finished-course-emails.php',
 					include 'email-groups/class-lp-settings-become-teacher-emails.php',

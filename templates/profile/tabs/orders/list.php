@@ -60,7 +60,14 @@ if ( ! $query_orders->get_items() ) {
 
 					if ( $actions ) {
 						foreach ( $actions as $action ) {
-							printf( '<a href="%s">%s</a>', esc_url_raw( $action['url'] ), $action['text'] );
+							$action_text = isset( $action['text'] ) ? (string) $action['text'] : '';
+							$action_url  = isset( $action['url'] ) ? (string) $action['url'] : '';
+
+							if ( ! empty( $action_url ) ) {
+								printf( '<a href="%s">%s</a>', esc_url_raw( $action_url ), esc_html( $action_text ) );
+							} else {
+								printf( '<span class="order-action-text">%s</span>', esc_html( $action_text ) );
+							}
 						}
 					}
 					?>

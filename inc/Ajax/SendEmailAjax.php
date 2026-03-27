@@ -35,6 +35,10 @@ use LP_Email_New_Order_Instructor;
 use LP_Email_New_Order_User;
 use LP_Email_Processing_Order_Guest;
 use LP_Email_Processing_Order_User;
+use LP_Email_Refund_Request_Order_Admin;
+use LP_Email_Refunded_Order_Admin;
+use LP_Email_Refunded_Order_Instructor;
+use LP_Email_Refunded_Order_User;
 use LP_Helper;
 use LP_REST_Response;
 use Throwable;
@@ -171,6 +175,76 @@ class SendEmailAjax extends AbstractAjax {
 					LP_Email_Cancelled_Order_Admin::class,
 					LP_Email_Cancelled_Order_Guest::class,
 					LP_Email_Cancelled_Order_Instructor::class,
+				]
+			);
+
+			foreach ( $email_classes as $email_class ) {
+				if ( class_exists( $email_class ) ) {
+					$email = new $email_class();
+					/** @var LP_Email $email */
+					$email->handle( $data_send );
+				}
+			}
+		} catch ( Throwable $e ) {
+			$response->status  = 'error';
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Send mail when order status update to refunded.
+	 *
+	 * @since 4.3.4
+	 * @version 1.0.0
+	 */
+	public function send_mail_order_status_update_to_refunded() {
+		$response = new LP_REST_Response();
+
+		try {
+			$data_send = LP_Helper::sanitize_params_submitted( $_POST['params'] ?? [] );
+
+			$email_classes = apply_filters(
+				'learn-press/order-status-update-to-refunded/send-mail',
+				[
+					LP_Email_Refunded_Order_User::class,
+					LP_Email_Refunded_Order_Admin::class,
+					LP_Email_Refunded_Order_Instructor::class,
+				]
+			);
+
+			foreach ( $email_classes as $email_class ) {
+				if ( class_exists( $email_class ) ) {
+					$email = new $email_class();
+					/** @var LP_Email $email */
+					$email->handle( $data_send );
+				}
+			}
+		} catch ( Throwable $e ) {
+			$response->status  = 'error';
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Send mail when order has a refund request from user.
+	 *
+	 * @since 4.3.4
+	 * @version 1.0.0
+	 */
+	public function send_mail_order_refund_requested() {
+		$response = new LP_REST_Response();
+
+		try {
+			$data_send = LP_Helper::sanitize_params_submitted( $_POST['params'] ?? [] );
+
+			$email_classes = apply_filters(
+				'learn-press/order-refund-requested/send-mail',
+				[
+					LP_Email_Refund_Request_Order_Admin::class,
 				]
 			);
 

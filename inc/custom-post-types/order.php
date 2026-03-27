@@ -421,6 +421,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						LP_ORDER_PENDING_DB,
 						LP_ORDER_FAILED_DB,
 						LP_ORDER_CANCELLED_DB,
+						LP_ORDER_REFUNDED_DB,
 					)
 				);
 			}
@@ -613,11 +614,21 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				case 'order_status':
 					$lp_order_icons = LP_Order::get_icons_status();
 					$icon           = $lp_order_icons[ $lp_order->get_status() ] ?? '';
+					$badge_html     = '';
+					
+					$refund_request_status = get_post_meta( $lp_order->get_id(), '_lp_refund_request_status', true );
+					if ( 'pending' === $refund_request_status ) {
+						$badge_html = sprintf(
+							'<span class="lp-order-refund-request-badge">%s</span>',
+							esc_html__( 'Refund Requested', 'learnpress' )
+						);
+					}
 					echo sprintf(
-						'<span class="lp-order-status %s">%s%s</span>',
+						'<span class="lp-order-status %1$s">%2$s%3$s</span>%4$s',
 						$lp_order->get_status(),
 						$icon,
-						LP_Order::get_status_label( $lp_order->get_status() )
+						LP_Order::get_status_label( $lp_order->get_status() ),
+						$badge_html
 					);
 					break;
 				case 'order_date':

@@ -295,7 +295,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				case 'on-hold':
 					$status = __( 'On hold', 'learnpress' );
 					break;
-				case 'refunded':
+				case LP_ORDER_REFUNDED:
 					$status = __( 'Refunded', 'learnpress' );
 					break;
 				default:
@@ -324,6 +324,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				LP_ORDER_PROCESSING => "<i class='dashicons dashicons-clock'></i>",
 				LP_ORDER_CANCELLED  => "<i class='dashicons dashicons-dismiss'></i>",
 				LP_ORDER_FAILED     => "<i class='dashicons dashicons-warning'></i>",
+				LP_ORDER_REFUNDED   => "<i class='dashicons dashicons-undo'></i>",
 			];
 
 			return apply_filters( 'lp/order/status/icons', $icons );
@@ -996,6 +997,32 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		/**
+		 * Get refund URL if order can be refunded by customer.
+		 *
+		 * @since 4.3.4
+		 * @version 1.0.0
+		 * @return bool|string
+		 */
+		public function get_refund_order_url() {
+			$url = false;
+
+			if ( $this->has_status( LP_ORDER_COMPLETED ) ) {
+				$payment_method = strtolower( (string) $this->get_data( 'payment_method', '' ) );
+				if ( in_array( $payment_method, array( 'stripe', 'paypal' ), true ) ) {
+					$user = learn_press_get_current_user();
+					$url  = learn_press_user_profile_link(
+						$user->get_id(),
+						LP_Settings::instance()->get( 'profile_endpoints.orders', 'orders' )
+					);
+					$url  = esc_url_raw( add_query_arg( 'refund-order', $this->get_id(), $url ) );
+					$url  = wp_nonce_url( $url, 'refund-order', 'lp-nonce' );
+				}
+			}
+
+			return apply_filters( 'learn-press/order-refund-url', $url, $this->get_id() );
+		}
+
+		/**
 		 * Get profile order's actions.
 		 *
 		 * @return array|mixed
@@ -1015,6 +1042,23 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					'text' => __( 'Cancel', 'learnpress' ),
 				);
 			}
+
+			$refund_request_status = get_post_meta( $this->get_id(), '_lp_refund_request_status', true );
+			if ( 'pending' === $refund_request_status ) {
+				$actions['refund-requested'] = array(
+					'url'  => '',
+					'text' => __( 'Refund Requested', 'learnpress' ),
+				);
+			} else {
+				$refund_url = $this->get_refund_order_url();
+				if ( $refund_url ) {
+					$actions['refund'] = array(
+						'url'  => $refund_url,
+						'text' => __( 'Refund', 'learnpress' ),
+					);
+				}
+			}
+
 			$actions = apply_filters( 'learn-press/profile-order-actions', $actions, $this->get_id() );
 
 			return $actions;
@@ -1389,6 +1433,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				LP_ORDER_PENDING_DB    => LP_ORDER_PENDING,
 				LP_ORDER_CANCELLED_DB  => LP_ORDER_CANCELLED,
 				LP_ORDER_FAILED_DB     => LP_ORDER_FAILED,
+				LP_ORDER_REFUNDED_DB   => LP_ORDER_REFUNDED,
 			];
 
 			return apply_filters( 'lp/order/statuses', $order_statuses );

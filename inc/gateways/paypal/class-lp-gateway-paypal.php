@@ -423,11 +423,119 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$body        = wp_remote_retrieve_body( $response );
 				$transaction = LP_Helper::json_decode( $body );
 				if ( $transaction->status === 'COMPLETED' ) {
-					$order_id = $transaction->purchase_units[0]->payments->captures[0]->custom_id;
-					$lp_order = learn_press_get_order( $order_id );
-					$lp_order->update_status( LP_ORDER_COMPLETED );
+					$order_id   = $transaction->purchase_units[0]->payments->captures[0]->custom_id;
+					$lp_order   = learn_press_get_order( $order_id );
+					$capture    = $transaction->purchase_units[0]->payments->captures[0] ?? null;
+					$capture_id = $capture->id ?? '';
+					update_post_meta( $order_id, '_paypal_capture_id', $capture_id );
+					$lp_order->payment_complete( $capture_id );
 				}
 			}
+		}
+
+		/**
+		 * Refund PayPal capture via REST API.
+		 *
+		 * @param int|LP_Order $order_id
+		 * @param float|string $amount 0 or empty means full refund.
+		 * @param string $note_to_payer
+		 *
+		 * @return array
+		 * @throws Exception
+		 * @since 4.3.4
+		 * @version 1.0.0
+		 */
+		public function refund( $order_id = 0, $amount = 0, string $note_to_payer = '' ): array {
+			if ( $order_id instanceof LP_Order ) {
+				$order = $order_id;
+			} else {
+				$order = learn_press_get_order( absint( $order_id ) );
+			}
+
+			if ( ! $order instanceof LP_Order ) {
+				throw new Exception( __( 'Invalid order to refund.', 'learnpress' ) );
+			}
+
+			$order_id   = $order->get_id();
+			$capture_id = get_post_meta( $order_id, '_paypal_capture_id', true );
+			if ( empty( $capture_id ) ) {
+				$capture_id = get_post_meta( $order_id, '_transaction_id', true );
+			}
+
+			if ( empty( $capture_id ) ) {
+				throw new Exception( __( 'Missing PayPal capture id to refund.', 'learnpress' ) );
+			}
+
+			$data_token = $this->get_access_token();
+			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
+				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
+			}
+
+			$refund_args = [];
+			$amount      = floatval( $amount );
+			if ( $amount > 0 ) {
+				$refund_args['amount'] = [
+					'currency_code' => $order->get_currency(),
+					'value'         => strval( round( $amount, 2 ) ),
+				];
+			}
+
+			$note_to_payer = trim( $note_to_payer );
+			if ( ! empty( $note_to_payer ) ) {
+				$refund_args['note_to_payer'] = $note_to_payer;
+			}
+
+			$refund_args = apply_filters( 'learn-press/paypal-rest/refund-args', $refund_args, $order, $this );
+			// PayPal expects a JSON object payload. For full refund, sending [] causes INVALID_REQUEST.
+			$refund_body = empty( $refund_args ) ? (object) array() : $refund_args;
+			$response    = wp_remote_post(
+				$this->api_url . 'v2/payments/captures/' . rawurlencode( $capture_id ) . '/refund',
+				[
+					'body'    => wp_json_encode( $refund_body ),
+					'headers' => [
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+						'Content-Type'  => 'application/json',
+					],
+					'timeout' => 60,
+				]
+			);
+
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message() );
+			}
+
+			$code   = wp_remote_retrieve_response_code( $response );
+			$body   = wp_remote_retrieve_body( $response );
+			$result = LP_Helper::json_decode( $body );
+			if ( ! is_numeric( $code ) || $code < 200 || $code >= 300 ) {
+				if ( isset( $result->details[0]->description ) ) {
+					throw new Exception( $result->details[0]->description );
+				}
+
+				if ( isset( $result->message ) ) {
+					throw new Exception( $result->message );
+				}
+
+				throw new Exception( __( 'PayPal refund failed.', 'learnpress' ) );
+			}
+
+			if ( empty( $result->id ) ) {
+				throw new Exception( __( 'Invalid PayPal refund response.', 'learnpress' ) );
+			}
+
+			update_post_meta( $order_id, '_paypal_refund_id', $result->id );
+			if ( ! empty( $result->status ) ) {
+				update_post_meta( $order_id, '_paypal_refund_status', $result->status );
+			}
+
+			do_action( 'learn-press/paypal-rest/refund/success', $order, $result, $this );
+
+			return [
+				'result'    => 'success',
+				'refund_id' => $result->id,
+				'status'    => $result->status ?? '',
+				'response'  => $result,
+			];
 		}
 
 		/**

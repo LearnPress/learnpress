@@ -642,6 +642,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						LP_ORDER_PENDING_DB,
 						LP_ORDER_PROCESSING_DB,
 						LP_ORDER_CANCELLED_DB,
+						LP_ORDER_REFUNDED,
 					],
 					//'post__in'       => array_keys( $order_ids ),
 					//'orderby'        => 'post__in',

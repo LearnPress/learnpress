@@ -97,6 +97,13 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					'type'    => 'checkbox',
 					'desc'    => esc_html__( 'Enable the register form in the checkout.', 'learnpress' ),
 				),
+				array(
+					'title'   => esc_html__( 'Auto Refund', 'learnpress' ),
+					'id'      => 'auto_refund',
+					'default' => 'no',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'Enable auto refund, skip admin review.', 'learnpress' ),
+				),
 			)
 		);
 

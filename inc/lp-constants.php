@@ -94,6 +94,7 @@ const LP_ORDER_PENDING    = 'pending';
 const LP_ORDER_PROCESSING = 'processing';
 const LP_ORDER_CANCELLED  = 'cancelled';
 const LP_ORDER_FAILED     = 'failed';
+const LP_ORDER_REFUNDED   = 'refunded';
 const LP_ORDER_TRASH      = 'trash';
 
 // Status LP Order to set DB.
@@ -102,6 +103,7 @@ const LP_ORDER_PENDING_DB    = 'lp-pending';
 const LP_ORDER_PROCESSING_DB = 'lp-processing';
 const LP_ORDER_CANCELLED_DB  = 'lp-cancelled';
 const LP_ORDER_FAILED_DB     = 'lp-failed';
+const LP_ORDER_REFUNDED_DB   = 'lp-refunded';
 const LP_ORDER_TRASH_DB      = 'lp-trash';
 
 // LP Order type create via.
