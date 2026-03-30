@@ -2,25 +2,25 @@
 
 ## Steps
 
-- [ ] Step 1: Tạo `inc/Databases/MaterialFilesDB.php` — PSR-4 class mới
+- [x] Step 1: Tạo `inc/Databases/MaterialFilesDB.php` — PSR-4 class mới
   Copy toàn bộ methods từ `LP_Material_Files_DB`, đổi:
   - Thêm `namespace LearnPress\Databases;`
   - `class MaterialFilesDB extends DataBase`
   - Xóa guard `if ( class_exists(...) ) return;` (không cần với autoload)
   - Xóa dòng `LP_Material_Files_DB::getInstance();` ở cuối (không cần tự khởi tạo)
 
-- [ ] Step 2: Cập nhật TemplateHooks
+- [x] Step 2: Cập nhật TemplateHooks
   - `inc/TemplateHooks/Course/CourseMaterialTemplate.php`: đổi `use LP_Material_Files_DB` → `use LearnPress\Databases\MaterialFilesDB`, đổi tất cả `LP_Material_Files_DB::getInstance()` → `MaterialFilesDB::getInstance()` (3 chỗ)
   - `inc/TemplateHooks/Course/SingleCourseTemplate.php`: tương tự (1 chỗ)
 
-- [ ] Step 3: Cập nhật REST controller
+- [x] Step 3: Cập nhật REST controller
   - `inc/rest-api/v1/frontend/class-lp-rest-material-controller.php`: thêm `use LearnPress\Databases\MaterialFilesDB;`, đổi 5 chỗ `LP_Material_Files_DB::getInstance()` → `MaterialFilesDB::getInstance()`
 
-- [ ] Step 4: Cập nhật `abstract-course.php` và meta-box
+- [x] Step 4: Cập nhật `abstract-course.php` và meta-box
   - `inc/course/abstract-course.php`: thêm `use LearnPress\Databases\MaterialFilesDB;`, đổi 1 chỗ
   - `inc/admin/views/meta-boxes/fields/materials.php`: thêm `use LearnPress\Databases\MaterialFilesDB;`, đổi 2 chỗ
 
-- [ ] Step 5: Kiểm tra — `composer lint`
+- [x] Step 5: Kiểm tra — `composer lint` ✅ (MaterialFilesDB.php pass sạch)
 
 ## Files to create
 | File | Purpose |

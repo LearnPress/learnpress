@@ -28,7 +28,7 @@ use LP_Course_Item;
 use LP_Datetime;
 use LP_Debug;
 use LP_Global;
-use LP_Material_Files_DB;
+use LearnPress\Databases\MaterialFilesDB;
 use LP_Settings;
 use stdClass;
 use Throwable;
@@ -1240,7 +1240,7 @@ class SingleCourseTemplate {
 			$can_show = apply_filters( 'learn-press/course-material/can-show', $can_show, $courseModel, $userModel );
 
 			$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
-			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $courseModel->get_id() );
+			$count_files   = MaterialFilesDB::getInstance()->get_total( $courseModel->get_id() );
 			if ( ! $can_show || $file_per_page == 0 || $count_files <= 0 ) {
 				return $html;
 			}

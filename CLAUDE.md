@@ -79,6 +79,7 @@ Key custom hook prefixes: `learn-press/` (core), `lp_` (legacy)
 | `inc/Databases/` | Repository layer — all raw DB queries per entity                                                          |
 | `inc/Models/` | Business logic and data models — see breakdown below                                                      |
 | `inc/Filters/` | Data transformation applied before/after DB operations, map columns of table to same properties of object |
+| `inc/Services/` | Service layer — orchestrates Model + DB operations; use `Singleton` trait; namespace `LearnPress\Services` |
 | `inc/curds/` | CRUD implementations (implements `inc/interfaces/interface-curd.php`)                                     |
 | `inc/Ajax/` | AJAX handlers — each extends `AbstractAjax`, implements `catch_lp_ajax()`                                 |
 | `inc/TemplateHooks/` | Template hook registrars for specific pages/contexts                                                      |

@@ -7,6 +7,7 @@
  * @version 4.0.0
  */
 
+use LearnPress\Databases\MaterialFilesDB;
 use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
@@ -1466,7 +1467,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @deprecated 4.2.6.4
 		 */
 		/*public function get_downloadable_material(): array {
-			$material  = LP_Material_Files_DB::getInstance();
+			$material  = MaterialFilesDB::getInstance();
 			$materials = $material->get_material_by_item_id( $this->get_id(), 1 );
 			return apply_filters( 'learn-press/course-materials', $materials, $this->get_id() );
 		}*/

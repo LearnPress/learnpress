@@ -6,6 +6,10 @@
  * @version 1.0.0
  * @since 4.2.2
  */
+
+use LearnPress\Databases\MaterialFilesDB;
+use LearnPress\Filters\MaterialFilesFilter;
+use LearnPress\Services\MaterialFileService;
 if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 	class LP_Meta_Box_Material_Fields extends LP_Meta_Box_Field {
 		/**
@@ -24,21 +28,24 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			// delete materials in post when post is deleted
 			add_action( 'delete_post', array( $this, 'clear_material_in_post' ) );
 		}
+
 		/**
+		 * @param  [int] $thepostid [course's post_id]
+		 *
+		 * @throws Exception
 		 * @author khanhbd
 		 * @version 1.0.0
 		 * @since 4.2.2
 		 * [output Downloadable Material Tab content in Course Setting Meta Box]
-		 * @param  [int] $thepostid [course's post_id]
-		 * @return [html]            [content of Download material tab]
 		 */
 		public function output( $thepostid ) {
-			$material_init       = LP_Material_Files_DB::getInstance();
-			$course_materials    = $material_init->get_material_by_item_id( $thepostid, 0, 0, 1 );
+			$filter_mat          = new MaterialFilesFilter();
+			$filter_mat->item_id = (int) $thepostid;
+			$uploaded_files            = 0;
+			$course_materials    = MaterialFileService::instance()->get_files( $filter_mat, $uploaded_files );
 			$max_file_size       = (int) LP_Settings::get_option( 'material_max_file_size', 2 );
 			$allow_upload_amount = (int) LP_Settings::get_option( 'material_upload_files', 2 );
 			// check file was uploaded
-			$uploaded_files = count( $course_materials );
 			// check file amount which can upload
 			$can_upload          = $allow_upload_amount - $uploaded_files;
 			$allow_file_type     = LP_Settings::get_option( 'material_allow_file_type', array( 'pdf', 'txt' ) );
@@ -60,7 +67,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						<?php
 						echo '+ ';
 						echo sprintf(
-							__( 'Maximum amount of files you can upload more: %d files (maximum file size is %s MB)', 'learnpress' ),
+							__( 'Maximum amount of files you can upload more: %1$d files (maximum file size is %2$s MB)', 'learnpress' ),
 							$can_upload,
 							$max_file_size
 						);
@@ -75,7 +82,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					<hr>
 					<div class="lp-material-btn-wrap">
 						<button class="button button-primary" id="btn-lp--add-material" type="button"
-								can-upload="<?php esc_attr_e( $can_upload ); ?>">
+								can-upload="<?php esc_attr( $can_upload ); ?>">
 							<?php esc_html_e( 'Add Course Materials', 'learnpress' ); ?>
 						</button>
 						<button class="button button-primary" id="btn-lp--save-material"
@@ -87,7 +94,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 							<div class="lp-material--field-wrap">
 								<label><?php esc_html_e( 'File Title', 'learnpress' ); ?></label>
 								<input type="text" class="lp-material--field-title" value=""
-									   placeholder="<?php esc_attr_e( 'Enter File Title', 'learnpress' ); ?>"/>
+										placeholder="<?php esc_attr_e( 'Enter File Title', 'learnpress' ); ?>"/>
 							</div>
 							<div class="lp-material--field-wrap">
 								<label><?php esc_html_e( 'Method', 'learnpress' ); ?></label>
@@ -98,10 +105,12 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 								</select>
 							</div>
 							<div class="lp-material--field-wrap lp-material--upload-wrap">
-								<label><?php esc_html_e( 'Choose File  ', 'learnpress' ); ?><input type="file"
-																								   class="lp-material--field-upload"
-																								   value=""
-																								   accept="<?php esc_attr_e( $accept ); ?>"/></label>
+								<label><?php esc_html_e( 'Choose File  ', 'learnpress' ); ?>
+									<input type="file"
+										class="lp-material--field-upload"
+										value=""
+										accept="<?php esc_attr( $accept ); ?>"/>
+								</label>
 							</div>
 							<div class="lp-material--field-wrap field-action-wrap">
 								<button type="button"
@@ -116,7 +125,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 							<label>
 								<?php esc_html_e( 'Choose File  ', 'learnpress' ); ?>
 								<input type="file" class="lp-material--field-upload" value=""
-									   accept="<?php esc_attr_e( $accept ); ?>"/>
+										accept="<?php esc_attr( $accept ); ?>"/>
 							</label>
 						</div>
 					</div>
@@ -124,14 +133,14 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						<div class="lp-material--field-wrap lp-material--external-wrap">
 							<label><?php esc_html_e( 'File URL', 'learnpress' ); ?></label>
 							<input type="url" class="lp-material--field-external-link" value=""
-								   placeholder="<?php esc_attr_e( 'Enter File URL', 'learnpress' ); ?>"/>
+									placeholder="<?php esc_attr_e( 'Enter File URL', 'learnpress' ); ?>"/>
 						</div>
 					</div>
 					<input type="hidden" id="current-material-post-id" value="<?php echo esc_attr( $thepostid ); ?>">
 					<input type="hidden" id="delete-material-message"
-						   value="<?php esc_attr_e( 'Do you want to delete this file?', 'learnpress' ); ?>">
+							value="<?php esc_attr_e( 'Do you want to delete this file?', 'learnpress' ); ?>">
 					<input type="hidden" id="delete-material-row-text"
-						   value="<?php esc_attr_e( 'Delete', 'learnpress' ); ?>">
+							value="<?php esc_attr_e( 'Delete', 'learnpress' ); ?>">
 					<table class="lp-material--table">
 						<?php
 						$class_hidden_thead = '';
@@ -149,7 +158,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						<tbody>
 
 						<!-- <?php if ( $course_materials ) : ?>
-					<?php foreach ( $course_materials as $row ) : ?>
+							<?php foreach ( $course_materials as $row ) : ?>
 						<tr data-id="<?php esc_attr_e( $row->file_id ); ?>" data-sort="<?php esc_attr_e( $row->orders ); ?>">
 						<td class="sort"><?php esc_attr_e( $row->file_name ); ?></td>
 						<td><?php esc_attr_e( ucfirst( $row->method ) ); ?></td>
@@ -187,7 +196,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					return;
 				}
 
-				$material_init = LP_Material_Files_DB::getInstance();
+				$material_init = MaterialFilesDB::getInstance();
 				$material_init->delete_material_by_item_id( $post_id );
 			} catch ( Throwable $e ) {
 				error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -196,8 +205,6 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 
 		/**
 		 * Get instance
-		 *
-		 * @return LP_Addon_Custom_Tab_Meta_Field
 		 */
 		public static function instance(): LP_Meta_Box_Material_Fields {
 			if ( ! self::$instance ) {

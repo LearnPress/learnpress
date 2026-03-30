@@ -12,7 +12,8 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
-use LP_Material_Files_DB;
+use LearnPress\Filters\MaterialFilesFilter;
+use LearnPress\Services\MaterialFileService;
 use stdClass;
 use LP_Global;
 use LP_WP_Filesystem;
@@ -63,9 +64,13 @@ class CourseMaterialTemplate {
 			throw new Exception( __( 'Item not found', 'learnpress' ) );
 		}
 		// $item_id     = $item->get_id();
-		$material_db = LP_Material_Files_DB::getInstance();
-		$per_page    = (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
-		$total_rows  = $material_db->get_total( $item_id );
+		$per_page                           = (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
+		$filter_total                       = new MaterialFilesFilter();
+		$filter_total->item_id              = $item_id;
+		$filter_total->include_course_items = ( get_post_type( $item_id ) === LP_COURSE_CPT );
+		$filter_total->query_count          = true;
+		$total_rows                         = 0;
+		MaterialFileService::instance()->get_files( $filter_total, $total_rows );
 		$total_pages = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
 
 		$args = array_merge(
@@ -129,18 +134,26 @@ class CourseMaterialTemplate {
 
 			$can_show = apply_filters( 'learn-press/course-material/can-show', $can_show, $courseModel, $userModel );
 
-			$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
-			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $courseModel->get_id() );
+			$file_per_page                      = LP_Settings::get_option( 'material_file_per_page', - 1 );
+			$filter_count                       = new MaterialFilesFilter();
+			$filter_count->item_id              = $courseModel->get_id();
+			$filter_count->include_course_items = true;
+			$filter_count->query_count          = true;
+			$count_files                        = 0;
+			MaterialFileService::instance()->get_files( $filter_count, $count_files );
 			if ( ! $can_show || $file_per_page == 0 || $count_files <= 0 ) {
 				throw new Exception( '' );
 			}
 
-			$material_db = LP_Material_Files_DB::getInstance();
-			$paged       = absint( $args['paged'] ?? 1 );
-			$per_page    = intval( $args['per_page'] ?? 1 );
-			$offset      = ( $per_page > 0 && $paged > 1 ) ? $per_page * ( $paged - 1 ) : 0;
-			// $total_pages    = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
-			$material_files = $material_db->get_material_by_item_id( $args['item_id'], $per_page, $offset, false );
+			$paged    = absint( $args['paged'] ?? 1 );
+			$per_page = intval( $args['per_page'] ?? 1 );
+			// $total_pages = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
+			$filter_files                       = new MaterialFilesFilter();
+			$filter_files->item_id              = (int) ( $args['item_id'] ?? 0 );
+			$filter_files->include_course_items = ( get_post_type( $filter_files->item_id ) === LP_COURSE_CPT );
+			$filter_files->limit                = $per_page;
+			$filter_files->page                 = $paged;
+			$material_files                     = MaterialFileService::instance()->get_files( $filter_files );
 			if ( empty( $material_files ) ) {
 				$content->content = '';
 			} else {

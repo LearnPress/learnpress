@@ -1,7 +1,11 @@
 <?php
 
+use LearnPress\Databases\MaterialFilesDB;
+use LearnPress\Filters\MaterialFilesFilter;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\MaterialFilesModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Services\MaterialFileService;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 use LearnPress\Models\CourseModel;
 
@@ -123,13 +127,13 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$material_data = LP_Helper::json_decode( wp_unslash( $material_data_string ), true );
 			$file          = $upload_file['file'] ?? false;
 
-			// DB Init
-			$material_db = LP_Material_Files_DB::getInstance();
 			// LP Material Settings
 			$max_file_size       = (int) LP_Settings::get_option( 'material_max_file_size', 2 );
 			$allow_upload_amount = (int) LP_Settings::get_option( 'material_upload_files', 2 );
 			// check file was uploaded
-			$count_uploaded_files = count( $material_db->get_material_by_item_id( $item_id, 0, 0, 1 ) );
+			$filter_count          = new MaterialFilesFilter();
+			$filter_count->item_id = (int) $item_id;
+			$count_uploaded_files  = count( MaterialFileService::instance()->get_files( $filter_count ) );
 			// check file amount which can upload
 			$can_upload = $allow_upload_amount - $count_uploaded_files;
 
@@ -211,15 +215,10 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 						);
 						continue;
 					}
-
-					// For a long time remove this code. @since 4.2.6.6
-					$material_db->wpdb->query(
-						"ALTER TABLE $material_db->tb_lp_files MODIFY file_type VARCHAR(100) NOT NULL DEFAULT '';"
-					);
 				}
 
-				$orders     = $count_uploaded_files + $key + 1;
-				$insert_arr = [
+				$orders         = $count_uploaded_files + $key + 1;
+				$insert_arr     = [
 					'file_name'  => sanitize_text_field( $label ),
 					'file_type'  => $file_type ?? '',
 					'item_id'    => (int) $item_id,
@@ -229,8 +228,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'orders'     => $orders,
 					'created_at' => current_time( 'Y-m-d H:i:s' ),
 				];
-				$insert     = $material_db->create_material( $insert_arr );
-				if ( ! $insert ) {
+				$inserted_model = MaterialFileService::instance()->create_file( $insert_arr );
+				if ( ! $inserted_model->get_id() ) {
 					$error_messages .= sprintf( __( 'Cannot save file %s', 'learnpress' ), $label );
 					continue;
 				}
@@ -239,7 +238,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				$response->data[]  = [
 					'file_name' => $label,
 					'method'    => ucfirst( $method ),
-					'file_id'   => $insert,
+					'file_id'   => $inserted_model->get_id(),
 					'orders'    => $orders,
 				];
 			}
@@ -281,11 +280,13 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Invalid item id!', 'learnpress' ) );
 			}
 
-			$material_db    = LP_Material_Files_DB::getInstance();
-			$page           = absint( $params['page'] ?? 1 );
-			$per_page       = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
-			$offset         = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
-			$item_materials = $material_db->get_material_by_item_id( $item_id, $per_page, $offset, true );
+			$page            = absint( $params['page'] ?? 1 );
+			$per_page        = (int) ( $params['per_page'] ?? LP_Settings::get_option( 'material_file_per_page', - 1 ) );
+			$filter          = new MaterialFilesFilter();
+			$filter->item_id = (int) $item_id;
+			$filter->limit   = $per_page;
+			$filter->page    = $page;
+			$item_materials  = MaterialFileService::instance()->get_files( $filter );
 
 			if ( $item_materials ) {
 				$response->data->items = $item_materials;
@@ -375,7 +376,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$item_id     = $request['item_id'];
 			$sort_arr    = $request->get_param( 'sort_arr' );
 			$sort_arr    = json_decode( wp_unslash( $sort_arr ), true );
-			$material_db = LP_Material_Files_DB::getInstance();
+			$material_db = MaterialFilesDB::getInstance();
 			$update_sort = $material_db->update_material_orders( $sort_arr, $item_id );
 			if ( $update_sort ) {
 				$response->status  = 200;
@@ -407,15 +408,13 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			if ( ! $file_id ) {
 				throw new Exception( esc_html__( 'Invalid file identifier', 'learnpress' ) );
 			}
-			// DB Init
-			$material_db = LP_Material_Files_DB::getInstance();
-			$file        = $material_db->get_material( $file_id );
+			$file = MaterialFilesModel::find( (int) $file_id );
 			if ( ! $file ) {
 				throw new Exception( esc_html__( 'File not found', 'learnpress' ) );
 			}
 
 			// Get file author
-			$item_id         = $file->item_id ?? 0;
+			$item_id         = $file->get_item_id();
 			$author          = get_post_field( 'post_author', $item_id );
 			$current_user_id = get_current_user_id();
 			// check permission
@@ -423,15 +422,10 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'You do not have permission to delete this file.', 'learnpress' ) );
 			}
 
-			// Delete record
-			$delete = $material_db->delete_material( $file_id );
-			if ( $delete ) {
-				$message = esc_html__( 'File is deleted.', 'learnpress' );
-				$deleted = true;
-			} else {
-				$message = esc_html__( 'There is an error when delete this file.', 'learnpress' );
-				$deleted = false;
-			}
+			// Delete record — permission already checked above
+			$file->delete( true );
+			$message           = esc_html__( 'File is deleted.', 'learnpress' );
+			$deleted           = true;
 			$response->status  = 200;
 			$response->delete  = $deleted;
 			$response->message = $message;
@@ -499,7 +493,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				$get_materials_for_item_id = $item_id;
 			}
 
-			$material_db    = LP_Material_Files_DB::getInstance();
+			$material_db    = MaterialFilesDB::getInstance();
 			$page           = absint( $params['page'] ?? 1 );
 			$per_page       = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
 			$offset         = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;

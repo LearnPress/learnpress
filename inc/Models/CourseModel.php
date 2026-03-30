@@ -841,7 +841,7 @@ class CourseModel {
 			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
-		$value = maybe_unserialize( $value );
+		$value                   = maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;
@@ -1458,7 +1458,7 @@ class CourseModel {
 	public function check_permission() {
 		$coursePostModel = new CoursePostModel( $this );
 		if ( ! $coursePostModel->check_capabilities_update() ) {
-			throw new Exception( 'You do not have permission to update this course!' );
+			throw new Exception( __( 'You do not have permission to update this course!', 'learnpress' ) );
 		}
 	}
 
