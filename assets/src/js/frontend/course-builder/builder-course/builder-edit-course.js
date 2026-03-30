@@ -444,6 +444,7 @@ export class BuilderEditCourse {
 				method: 'POST',
 				data: {
 					courseId,
+					isCourseBuilder: true,
 				},
 			} );
 		}
@@ -461,6 +462,7 @@ export class BuilderEditCourse {
 			},
 			body: JSON.stringify( {
 				courseId,
+				isCourseBuilder: true,
 			} ),
 		} );
 
