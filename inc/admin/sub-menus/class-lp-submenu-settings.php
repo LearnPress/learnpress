@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Models\UserModel;
+use LearnPress\Services\UserService;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -122,7 +123,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$redirect_args = array();
 		if ( 'permalink' === $active_tab &&
 			'yes' === LP_Request::get_param( 'lp_generate_user_slug' ) ) {
-			$result        = UserModel::generate_users_pretty_slug();
+			$result        = UserService::instance()->generate_users_pretty_slug();
 			$redirect_args = array(
 				'lp-user-slug-generated' => $result['generated'],
 				'lp-user-slug-processed' => $result['processed'],

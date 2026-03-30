@@ -53,4 +53,52 @@ class UserService {
 
 		return UserModel::find( $user_id, true );
 	}
+
+	/**
+	 * Generate pretty slug for all users who don't have it yet.
+	 *
+	 * @return array [ 'processed' => int, 'generated' => int, 'skipped' => int, 'failed' => int ]
+	 * @since 4.3.4
+	 * @version 1.0.0
+	 */
+	public function generate_users_pretty_slug(): array {
+		$user_ids = get_users(
+			[
+				'fields' => 'ids',
+				'number' => - 1,
+			]
+		);
+
+		$result = [
+			'processed' => 0,
+			'generated' => 0,
+			'skipped'   => 0,
+			'failed'    => 0,
+		];
+
+		foreach ( $user_ids as $user_id ) {
+			$user_id = (int) $user_id;
+			++ $result['processed'];
+
+			$userModel = UserModel::find( $user_id, true );
+			if ( ! $userModel instanceof UserModel ) {
+				++ $result['failed'];
+				continue;
+			}
+
+			if ( '' !== $userModel->get_pretty_slug( false ) ) {
+				++ $result['skipped'];
+				continue;
+			}
+
+			$generated = $userModel->generate_pretty_slug();
+			if ( is_wp_error( $generated ) ) {
+				++ $result['failed'];
+			} else {
+				++ $result['generated'];
+			}
+		}
+
+		return $result;
+	}
 }

@@ -14,6 +14,7 @@ use LearnPress\Databases\Course\CourseJsonDB;
 use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\Course\CourseJsonFilter;
 use LearnPress\Filters\UserItemsFilter;
+use LearnPress\Services\UserService;
 use LP_Cache;
 use LP_Debug;
 use LP_User;
@@ -244,39 +245,6 @@ class UserModel {
 	}
 
 	/**
-	 * Check if pretty slug exists of another user.
-	 *
-	 * @param string $slug
-	 *
-	 * @return int
-	 * @since 4.3.4
-	 * @version 1.0.0
-	 */
-	public function check_user_slug_pretty( string $slug ): int {
-		$user_id = 0;
-
-		try {
-			$lp_user_db                  = LP_User_DB::instance();
-			$filter                      = new LP_User_Filter();
-			$filter->only_fields         = [ 'u.ID' ];
-			$filter->run_query_count     = false;
-			$filter->limit               = 1;
-			$filter->return_string_query = true;
-			$filter->join[]              = "INNER JOIN {$lp_user_db->wpdb->usermeta} AS um ON um.user_id = u.ID";
-			$filter->where[]             = $lp_user_db->wpdb->prepare( 'AND um.meta_key = %s', self::META_KEY_USER_SLUG );
-			$filter->where[]             = $lp_user_db->wpdb->prepare( 'AND um.meta_value = %s', $slug );
-			$filter->where[]             = $lp_user_db->wpdb->prepare( 'AND u.ID != %d', $this->get_id() );
-			$query                       = $lp_user_db->get_users( $filter );
-
-			$user_id = (int) $lp_user_db->wpdb->get_var( $query );
-		} catch ( Throwable $e ) {
-			LP_Debug::error_log( $e );
-		}
-
-		return $user_id;
-	}
-
-	/**
 	 * Create a unique pretty slug for user.
 	 *
 	 * If the user already has a pretty slug, it will return the existing one without generating a new one.
@@ -306,7 +274,8 @@ class UserModel {
 			}
 
 			// Check slug exists.
-			if ( ! $this->check_user_slug_pretty( $base_slug ) ) {
+			$userModelFind = UserService::instance()->get_user_by_pretty_slug( $base_slug );
+			if ( ! $userModelFind ) {
 				$this->set_meta_value_by_key( self::META_KEY_USER_SLUG, $base_slug );
 			} else {
 				// Regenerate slug by adding random string at the end of base slug until it is unique.
@@ -340,7 +309,14 @@ class UserModel {
 				return '';
 			}
 
-			if ( $this->check_user_slug_pretty( $slug ) ) {
+			$userModelFind = UserService::instance()->get_user_by_pretty_slug( $slug );
+			// If not found any user with the slug, or found user is current user, update slug, else throw error.
+			if ( ! $userModelFind ) {
+				$this->set_meta_value_by_key( self::META_KEY_USER_SLUG, $slug );
+
+				return $slug;
+			} elseif ( $userModelFind->get_id() !== $this->get_id() ) {
+				// Found another user with the slug, throw error.
 				throw new Exception(
 					sprintf(
 					/* translators: 1: user slug */
@@ -356,52 +332,6 @@ class UserModel {
 		}
 
 		return $slug;
-	}
-
-	/**
-	 * Generate pretty slug for users that still miss one (old sites support).
-	 *
-	 * @return array [ 'processed' => int, 'generated' => int, 'skipped' => int, 'failed' => int ]
-	 */
-	public static function generate_users_pretty_slug(): array {
-		$user_ids = get_users(
-			[
-				'fields' => 'ids',
-				'number' => - 1,
-			]
-		);
-
-		$result = [
-			'processed' => 0,
-			'generated' => 0,
-			'skipped'   => 0,
-			'failed'    => 0,
-		];
-
-		foreach ( $user_ids as $user_id ) {
-			$user_id = (int) $user_id;
-			++ $result['processed'];
-
-			$userModel = UserModel::find( $user_id, true );
-			if ( ! $userModel instanceof UserModel ) {
-				++ $result['failed'];
-				continue;
-			}
-
-			if ( '' !== $userModel->get_pretty_slug( false ) ) {
-				++ $result['skipped'];
-				continue;
-			}
-
-			$generated = $userModel->generate_pretty_slug();
-			if ( is_wp_error( $generated ) ) {
-				++ $result['failed'];
-			} else {
-				++ $result['generated'];
-			}
-		}
-
-		return $result;
 	}
 
 	/**
