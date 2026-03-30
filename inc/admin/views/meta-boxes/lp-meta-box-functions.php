@@ -1,5 +1,35 @@
 <?php
 /**
+ * Resolve post ID for meta box rendering.
+ *
+ * In some admin/AJAX contexts, global $post can be null.
+ * Returning 0 allows callers to safely fall back to default values.
+ *
+ * @return int
+ */
+function lp_meta_box_get_post_id() {
+	global $thepostid, $post;
+
+	if ( ! empty( $thepostid ) ) {
+		return absint( $thepostid );
+	}
+
+	if ( is_object( $post ) && ! empty( $post->ID ) ) {
+		$thepostid = absint( $post->ID );
+
+		return $thepostid;
+	}
+
+	$resolved_post_id = absint( get_the_ID() );
+
+	if ( $resolved_post_id > 0 ) {
+		$thepostid = $resolved_post_id;
+	}
+
+	return $resolved_post_id;
+}
+
+/**
  * Output a text input box.
  *
  * @param array $field
@@ -7,7 +37,7 @@
 function lp_meta_box_text_input_field( $field ) {
 	global $thepostid, $post;
 
-	$thepostid            = empty( $thepostid ) ? $post->ID : $thepostid;
+	$thepostid            = lp_meta_box_get_post_id();
 	$field['placeholder'] = esc_attr( $field['placeholder'] ?? '' );
 	$field['class']       = esc_attr( $field['class'] ?? '' );
 	$field['style']       = esc_attr( $field['style'] ?? '' );
@@ -17,8 +47,8 @@ function lp_meta_box_text_input_field( $field ) {
 	 * If you want to set default value for input text
 	 * You must us hook default_{$meta_type}_metadata | Read more get_metadata_default() function
 	 */
-	$value_exists        = LP_Database::getInstance()->check_key_postmeta_exists( $thepostid, $field['id'] );
-	$value               = get_post_meta( $thepostid, $field['id'], true );
+	$value_exists        = $thepostid > 0 ? LP_Database::getInstance()->check_key_postmeta_exists( $thepostid, $field['id'] ) : false;
+	$value               = $thepostid > 0 ? get_post_meta( $thepostid, $field['id'], true ) : '';
 	$field['value']      = $value_exists ? $value : ( $field['default'] ?? '' );
 	$field['id']         = esc_attr( $field['id'] ?? '' );
 	$field['type_input'] = esc_attr( $field['type_input'] ?? 'text' );
@@ -71,13 +101,13 @@ function lp_meta_box_text_input_field( $field ) {
 function lp_meta_box_textarea_field( $field ) {
 	global $thepostid, $post;
 
-	$thepostid            = empty( $thepostid ) ? $post->ID : $thepostid;
+	$thepostid            = lp_meta_box_get_post_id();
 	$field['id']          = esc_attr( $field['id'] ?? '' );
 	$field['placeholder'] = esc_attr( $field['placeholder'] ?? '' );
 	$field['class']       = esc_attr( $field['class'] ?? 'short' );
 	$field['style']       = esc_attr( $field['style'] ?? '' );
-	$value_exists         = LP_Database::getInstance()->check_key_postmeta_exists( $thepostid, $field['id'] );
-	$value                = get_post_meta( $thepostid, $field['id'], true );
+	$value_exists         = $thepostid > 0 ? LP_Database::getInstance()->check_key_postmeta_exists( $thepostid, $field['id'] ) : false;
+	$value                = $thepostid > 0 ? get_post_meta( $thepostid, $field['id'], true ) : '';
 	$field['value']       = esc_textarea( $value_exists ? $value : ( $field['default'] ?? '' ) );
 	$field['desc_tip']    = esc_attr( $field['desc_tip'] ?? '' );
 	$field['name']        = esc_attr( $field['name'] ?? $field['id'] );
@@ -124,7 +154,7 @@ function lp_meta_box_textarea_field( $field ) {
 function lp_meta_box_checkbox_field( $field ) {
 	global $thepostid, $post;
 
-	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
+	$thepostid      = lp_meta_box_get_post_id();
 	$field['id']    = esc_attr( $field['id'] ?? '' );
 	$field['class'] = esc_attr( $field['class'] ?? '' );
 	$field['style'] = esc_attr( $field['style'] ?? '' );
@@ -183,7 +213,7 @@ function lp_meta_box_checkbox_field( $field ) {
 function lp_meta_box_select_field( $field = array() ) {
 	global $thepostid, $post;
 
-	$thepostid = empty( $thepostid ) ? $post->ID : $thepostid;
+	$thepostid = lp_meta_box_get_post_id();
 	$default   = ( ! get_post_meta(
 		$thepostid,
 		$field['id'],
@@ -257,7 +287,7 @@ function lp_meta_box_select_field( $field = array() ) {
 function lp_meta_box_radio_field( $field ) {
 	global $thepostid, $post;
 
-	$thepostid              = empty( $thepostid ) ? $post->ID : $thepostid;
+	$thepostid              = lp_meta_box_get_post_id();
 	$field['class']         = $field['class'] ?? 'select';
 	$field['style']         = $field['style'] ?? '';
 	$field['wrapper_class'] = $field['wrapper_class'] ?? '';
@@ -305,7 +335,7 @@ function lp_meta_box_radio_field( $field ) {
 function lp_meta_box_file_input_field( $field ) {
 	global $thepostid, $post;
 
-	$thepostid              = empty( $thepostid ) ? $post->ID : $thepostid;
+	$thepostid              = lp_meta_box_get_post_id();
 	$field['class']         = isset( $field['class'] ) ? $field['class'] : 'short';
 	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
 	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
@@ -392,7 +422,7 @@ function lp_meta_box_file_input_field( $field ) {
 function lp_meta_box_duration_field( $field ) {
 	global $thepostid, $post;
 
-	$thepostid              = empty( $thepostid ) ? $post->ID : $thepostid;
+	$thepostid              = lp_meta_box_get_post_id();
 	$field['placeholder']   = $field['placeholder'] ?? '';
 	$field['class']         = $field['class'] ?? 'short';
 	$field['style']         = $field['style'] ?? '';

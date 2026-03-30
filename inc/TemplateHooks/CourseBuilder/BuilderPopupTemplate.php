@@ -68,7 +68,7 @@ class BuilderPopupTemplate {
 	 *
 	 * @param int $id
 	 */
-	private function setup_request_context( int $id ) {
+	public function setup_request_context( int $id ) {
 		$post_val            = ( $id > 0 ) ? $id : 'post-new';
 		$_REQUEST['post']    = $post_val;
 		$_REQUEST['post_id'] = $post_val;
@@ -95,7 +95,7 @@ class BuilderPopupTemplate {
 	/**
 	 * Get popup wrapper HTML structure.
 	 */
-	private function get_popup_wrapper( string $type, int $post_id, string $title, string $status = '' ): array {
+	public function get_popup_wrapper( string $type, int $post_id, string $title, string $status = '' ): array {
 		$status_html = '';
 		if ( ! empty( $status ) ) {
 			$status_html = sprintf( '<span class="%s-status %s">%s</span>', $type, esc_attr( $status ), esc_html( $status ) );
@@ -122,7 +122,7 @@ class BuilderPopupTemplate {
 	 * Get popup footer HTML structure with Trash and Update/Publish buttons.
 	 * Same style as edit lesson/question/quiz pages.
 	 */
-	private function get_popup_footer( string $type, int $post_id, string $status = '' ): array {
+	public function get_popup_footer( string $type, int $post_id, string $status = '' ): array {
 		$btn_save_text = $status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 
 		// Trash button - only show if item exists (post_id > 0)
@@ -326,13 +326,18 @@ class BuilderPopupTemplate {
 	/**
 	 * Build tabs navigation.
 	 */
-	private function build_tabs( string $type, array $tabs ): string {
-		$tab_labels = apply_filters( "learn-press/course-builder/popup/{$type}/tab-labels", [
-			'overview'  => __( 'Overview', 'learnpress' ),
-			'settings'  => __( 'Settings', 'learnpress' ),
-			'questions' => __( 'Questions', 'learnpress' ),
-			'answers'   => __( 'Answers', 'learnpress' ),
-		], $type, $tabs );
+	public function build_tabs( string $type, array $tabs ): string {
+		$tab_labels = apply_filters(
+			"learn-press/course-builder/popup/{$type}/tab-labels",
+			[
+				'overview'  => __( 'Overview', 'learnpress' ),
+				'settings'  => __( 'Settings', 'learnpress' ),
+				'questions' => __( 'Questions', 'learnpress' ),
+				'answers'   => __( 'Answers', 'learnpress' ),
+			],
+			$type,
+			$tabs
+		);
 
 		$tabs_html = '<ul class="lp-builder-popup__tabs">';
 		foreach ( $tabs as $index => $tab ) {

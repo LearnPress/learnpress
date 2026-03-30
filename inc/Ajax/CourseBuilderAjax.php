@@ -183,10 +183,10 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data      = self::check_valid_course();
-			$course_id = $data['course_id'] ?? 0;
-			$settings  = $data['course_settings'] ?? false;
-			$insert    = $data['insert'];
+			$data                    = self::check_valid_course();
+			$course_id               = $data['course_id'] ?? 0;
+			$settings                = $data['course_settings'] ?? false;
+			$insert                  = $data['insert'];
 			$course_status_requested = ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish';
 
 			if ( $insert ) {
@@ -224,7 +224,7 @@ class CourseBuilderAjax extends AbstractAjax {
 					throw new Exception( __( 'Failed to load course model', 'learnpress' ) );
 				}
 			} else {
-				$courseModel = $data['course_model'];
+				$courseModel   = $data['course_model'];
 				$course_status = $this->normalize_course_status_for_save( $course_status_requested, false, $courseModel );
 
 				$co_instructor_ids = $courseModel->get_meta_value_by_key( '_lp_co_teacher', [] );
@@ -881,7 +881,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data = self::check_valid_course();
+			$data      = self::check_valid_course();
 			$course_id = absint( $data['course_id'] ?? 0 );
 			if ( $course_id > 0 ) {
 				if ( ! CourseBuilderAccessPolicy::can_edit_course_by_id( $course_id ) ) {
@@ -939,7 +939,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data = self::check_valid_course();
+			$data      = self::check_valid_course();
 			$course_id = absint( $data['course_id'] ?? 0 );
 			if ( $course_id > 0 ) {
 				if ( ! CourseBuilderAccessPolicy::can_edit_course_by_id( $course_id ) ) {
@@ -1772,7 +1772,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			return $cache[ $item_id ] ? $cache[ $item_id ] : false;
 		}
 
-		$course_id = $wpdb->get_var(
+		$course_id         = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT c.ID FROM {$wpdb->posts} c
 				INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
@@ -1829,11 +1829,11 @@ class CourseBuilderAjax extends AbstractAjax {
 				$logo_url = wp_get_attachment_image_url( $logo_id, 'full' );
 			}
 
-			$response->status                          = 'success';
-			$response->message                         = __( 'Course Builder settings updated.', 'learnpress' );
-			$response->data->enable_cb_admin_mode      = $enable_cb_admin_mode;
-			$response->data->course_builder_logo_id    = $logo_id;
-			$response->data->course_builder_logo_url   = $logo_url;
+			$response->status                        = 'success';
+			$response->message                       = __( 'Course Builder settings updated.', 'learnpress' );
+			$response->data->enable_cb_admin_mode    = $enable_cb_admin_mode;
+			$response->data->course_builder_logo_id  = $logo_id;
+			$response->data->course_builder_logo_url = $logo_url;
 
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {

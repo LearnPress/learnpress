@@ -9,6 +9,7 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
+import { SWAL_ICON_TRASH_DRAFT } from './swal-icons.js';
 import { BuilderEditQuiz } from './builder-quiz/builder-edit-quiz.js';
 import { BuilderEditQuestion } from './builder-question/builder-edit-question.js';
 import { BuilderMaterial } from './builder-lesson/builder-material.js';
@@ -1264,7 +1265,7 @@ export class BuilderPopup {
 			const result = await SweetAlert.fire( {
 				title: 'Are you sure?',
 				text: confirmMsg,
-				icon: 'warning',
+				iconHtml: SWAL_ICON_TRASH_DRAFT,
 				showCloseButton: true,
 				showCancelButton: true,
 				cancelButtonText: lpData.i18n.cancel,
@@ -1418,7 +1419,7 @@ export class BuilderPopup {
 		const result = await SweetAlert.fire( {
 			title: 'Are you sure?',
 			text: confirmMsg,
-			icon: 'warning',
+			iconHtml: SWAL_ICON_TRASH_DRAFT,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,

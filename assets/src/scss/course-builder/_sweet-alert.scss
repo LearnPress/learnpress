@@ -14,17 +14,19 @@ button.swal2-close {
 
 button.swal2-cancel.swal2-styled {
     border-radius: 10px;
-    padding: 12px 24px;
+    padding: 10px 24px;
     background: #fff;
     color: #AAAAAA;
     border: 1px solid #E1E1E1;
     font-weight: 500;
+    min-width: 140px;
 }
 
 button.swal2-confirm.swal2-styled {
     background: #7067ED;
     border-radius: 12px;
-    padding: 12px 24px;
+    padding: 10px 24px;
+    min-width: 140px;
 }
 
 .swal2-icon.swal2-icon-show {

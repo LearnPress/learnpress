@@ -169,10 +169,6 @@
 		background: $cb-bg;
 		transition: border 0.2s;
 
-		&:hover {
-			border-color: $cb-primary;
-		}
-
 		.lp-question-fib-option-index {
 			font-weight: 600;
 			font-size: $cb-font-md;

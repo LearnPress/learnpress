@@ -2,7 +2,7 @@
 
 .cb-section__quiz-edit,
 .cb-section__question-edit,
-.lp-cb-tab-panel[data-section="question"] {
+.lp-cb-tab-panel[data-section='question'] {
 	.cb-section__quiz-title-assigned {
 		display: flex;
 		flex-direction: column-reverse;
@@ -10,16 +10,15 @@
 	}
 
 	.lp-edit-list-questions .lp-question-item .lp-question-type-label {
-			background-color: $cb-primary-bland;
-			color: $cb-primary;
-			font-size: 12px;
-			font-weight: 600;
-			padding: 4px 10px;
-			border-radius: $cb-radius;
-			margin-right: 10px;
-			white-space: nowrap;
-		}
-	
+		background-color: $cb-primary-bland;
+		color: $cb-primary;
+		font-size: 12px;
+		font-weight: 600;
+		padding: 4px 10px;
+		border-radius: $cb-radius;
+		margin-right: 10px;
+		white-space: nowrap;
+	}
 
 	.lp-question-data-edit-header {
 		display: flex;
@@ -70,7 +69,7 @@
 			cursor: pointer;
 			outline: none;
 			appearance: none;
-			background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+			background-image: url( "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e" );
 			background-repeat: no-repeat;
 			background-position: right 10px center;
 			background-size: 14px;
@@ -379,13 +378,10 @@
 			border-bottom-color: $cb-bg-hover;
 		}
 
-		.lp-icon-angle-down {
-			display: none;
-		}
-
 		.lp-section-collapse {
 			padding: 20px;
 			background: #fff;
+			border: none;
 		}
 	}
 
@@ -526,7 +522,7 @@
 	.lp-question-fib-blank-option-item {
 		margin-bottom: $cb-spacing-md;
 
-		&.lp-section-toggle:not(.lp-collapse) {
+		&.lp-section-toggle:not( .lp-collapse ) {
 			.lp-question-fib-option-header {
 				border-radius: $cb-radius $cb-radius 0 0;
 				border-bottom: 1px solid $cb-border-light;
@@ -543,9 +539,60 @@
 		background: $cb-bg;
 		transition: border 0.2s;
 
-		&:hover {
-			border-color: $cb-primary;
+		.lp-question-fib-option-index {
+			font-weight: 600;
+			font-size: $cb-font-md;
+			color: $cb-text;
+			margin-right: 16px;
 		}
+
+		.lp-question-fib-option-title-input {
+			flex-grow: 1;
+			padding: 10px 14px;
+			border: 1px solid transparent;
+			border-radius: $cb-radius;
+			font-size: $cb-font-md;
+			color: $cb-text;
+			transition: border 0.2s;
+			margin-right: 16px;
+			background: transparent;
+		}
+
+		.lp-icon-spinner {
+			margin-right: 12px;
+			color: $cb-primary;
+		}
+
+		.lp-btn-fib-option-delete {
+			color: $cb-text-placeholder;
+			cursor: pointer;
+			transition: all 0.2s;
+			margin-right: 16px;
+			font-size: 16px;
+
+			&:hover {
+				color: $cb-danger;
+			}
+		}
+
+		.lp-trigger-toggle {
+			cursor: pointer;
+			color: $cb-text-placeholder;
+			transition: color 0.2s;
+			margin-left: auto;
+
+			&:hover {
+				color: $cb-text;
+			}
+		}
+	}
+
+	.lp-question-fib-option-header {
+		display: flex;
+		align-items: center;
+		padding: $cb-spacing-md $cb-spacing-lg;
+		background: $cb-bg;
+		transition: border 0.2s;
 
 		.lp-question-fib-option-index {
 			font-weight: 600;
@@ -617,6 +664,7 @@
 			align-items: center;
 		}
 
+		input[type='radio'],
 		input[type='checkbox'] {
 			order: 1;
 			margin-top: 2px;
@@ -651,12 +699,22 @@
 			}
 		}
 
+		input[type='radio']:checked,
 		input[type='checkbox']:checked {
 			background: $cb-success;
 
 			&:before {
 				left: 22px;
 			}
+		}
+
+		.lp-question-fib-option-match-case-wrap {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			font-size: 14px;
+			font-weight: 500;
+			margin-top: 20px;
 		}
 
 		.lp-question-fib-option-match-case-wrap > * {
@@ -688,11 +746,6 @@
 				font-weight: 400;
 			}
 		}
-	}
-
-	.lp-section-collapse {
-		border: 0;
-		padding: 0 $cb-spacing-lg;
 	}
 
 	.cb-quiz-edit-title {
@@ -753,7 +806,6 @@
 			}
 		}
 	}
-
 
 	.cb-quiz-edit-desc {
 		margin-bottom: 24px;

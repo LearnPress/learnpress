@@ -1,6 +1,7 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
+import { SWAL_ICON_DELETE, SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
 
 export class BuilderTabQuiz {
 	constructor() {
@@ -77,7 +78,7 @@ export class BuilderTabQuiz {
 		SweetAlert.fire( {
 			title: elQuizDuplicate.dataset.title || 'Duplicate Quiz',
 			text: elQuizDuplicate.dataset.content || 'Are you sure you want to duplicate this quiz?',
-			icon: 'warning',
+			iconHtml: SWAL_ICON_DUPLICATE,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -149,7 +150,7 @@ export class BuilderTabQuiz {
 		SweetAlert.fire( {
 			title: elQuizTrash.dataset.title || 'Trash Quiz',
 			text: elQuizTrash.dataset.content || 'Are you sure you want to move this quiz to trash?',
-			icon: 'warning',
+			iconHtml: SWAL_ICON_TRASH_DRAFT,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -248,9 +249,9 @@ export class BuilderTabQuiz {
 		}
 
 		SweetAlert.fire( {
-			title: elQuizDelete.dataset.title,
-			text: elQuizDelete.dataset.content,
-			icon: 'warning',
+			title: elQuizDelete.dataset.title || 'Delete Quiz',
+			text: elQuizDelete.dataset.content || 'Are you sure you want to permanently delete this quiz?',
+			iconHtml: SWAL_ICON_DELETE,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,

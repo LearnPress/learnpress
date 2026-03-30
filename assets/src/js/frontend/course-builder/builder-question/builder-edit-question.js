@@ -2,6 +2,7 @@ import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
 import { EditQuestion } from 'lpAssetsJsPath/admin/edit-question.js';
+import { SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
 
 export class BuilderEditQuestion {
 	constructor() {
@@ -681,7 +682,7 @@ export class BuilderEditQuestion {
 			'Saving as draft will unpublish this item. Are you sure?';
 		const result = await SweetAlert.fire( {
 			title: confirmMsg,
-			icon: 'warning',
+			iconHtml: SWAL_ICON_TRASH_DRAFT,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -714,7 +715,7 @@ export class BuilderEditQuestion {
 				'Saving as draft will unpublish this item. Are you sure?';
 			const result = await SweetAlert.fire( {
 				title: confirmMsg,
-				icon: 'warning',
+				iconHtml: SWAL_ICON_TRASH_DRAFT,
 				showCloseButton: true,
 				showCancelButton: true,
 				cancelButtonText: lpData.i18n.cancel,
@@ -817,7 +818,7 @@ export class BuilderEditQuestion {
 
 		const result = await SweetAlert.fire( {
 			title: 'Are you sure you want to trash this question?',
-			icon: 'warning',
+			iconHtml: SWAL_ICON_TRASH_DRAFT,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,

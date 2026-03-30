@@ -669,24 +669,16 @@ class BuilderEditCourseTemplate {
 			require_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
 		}
 
-		$filter_addon_tabs = function ( $tabs ) {
-			$allowed_tabs = [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material' ];
-			foreach ( array_keys( $tabs ) as $tab_key ) {
-				if ( ! in_array( $tab_key, $allowed_tabs, true ) ) {
-					unset( $tabs[ $tab_key ] );
-				}
-			}
-			return $tabs;
-		};
-
-		add_filter( 'learnpress/course/metabox/tabs', $filter_addon_tabs, 999 );
+		add_filter( 'learnpress/course/metabox/tabs', [ $this, 'filter_course_builder_settings_tabs' ], 999 );
+		add_filter( 'learn-press/course/meta-box/assessment/final-quiz/edit-link', [ $this, 'filter_course_builder_assessment_final_quiz_edit_link' ], 10, 2 );
 
 		$metabox = new \LP_Meta_Box_Course();
 		ob_start();
 		$metabox->output( $course_model );
 		$settings = ob_get_clean();
 
-		remove_filter( 'learnpress/course/metabox/tabs', $filter_addon_tabs, 999 );
+		remove_filter( 'learnpress/course/metabox/tabs', [ $this, 'filter_course_builder_settings_tabs' ], 999 );
+		remove_filter( 'learn-press/course/meta-box/assessment/final-quiz/edit-link', [ $this, 'filter_course_builder_assessment_final_quiz_edit_link' ], 10 );
 
 		$output = [
 			'wrapper'          => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
@@ -697,5 +689,41 @@ class BuilderEditCourseTemplate {
 		];
 
 		echo Template::combine_components( $output );
+	}
+
+	/**
+	 * Keep supported course settings tabs in Course Builder.
+	 *
+	 * @param array $tabs
+	 *
+	 * @return array
+	 */
+	public function filter_course_builder_settings_tabs( array $tabs ): array {
+		$allowed_tabs = [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material' ];
+
+		foreach ( array_keys( $tabs ) as $tab_key ) {
+			if ( ! in_array( $tab_key, $allowed_tabs, true ) ) {
+				unset( $tabs[ $tab_key ] );
+			}
+		}
+
+		return $tabs;
+	}
+
+	/**
+	 * Convert final quiz edit link to Course Builder quiz settings URL.
+	 *
+	 * @param string $url
+	 * @param int    $final_quiz_id
+	 *
+	 * @return string
+	 */
+	public function filter_course_builder_assessment_final_quiz_edit_link( string $url, int $final_quiz_id ): string {
+		$final_quiz_id = absint( $final_quiz_id );
+		if ( ! $final_quiz_id ) {
+			return $url;
+		}
+
+		return CourseBuilder::get_tab_link( 'quizzes', $final_quiz_id, 'settings' ) . '#_lp_passing_grade';
 	}
 }

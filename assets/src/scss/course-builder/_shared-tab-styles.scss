@@ -179,7 +179,6 @@
 			width: 80px !important;
 		}
 
-
 		select {
 			padding: 4px 30px 4px 15px !important;
 			height: 34px;
@@ -187,7 +186,6 @@
 			border-radius: 6px;
 			font-size: 14px;
 			color: #1a1a1a;
-			background: #fff;
 			cursor: pointer;
 
 			&:focus {
@@ -198,6 +196,7 @@
 		}
 
 		// Toggle Switch
+		input[type='radio'],
 		input[type='checkbox'] {
 			appearance: none;
 			-webkit-appearance: none;
@@ -263,6 +262,35 @@
 			margin-top: 6px;
 		}
 	}
+
+	._lp_external_link_buy_course_field {
+		display: grid;
+		grid-template-columns: 150px max-content 1fr;
+		gap: 6px 11px;
+
+		label {
+			grid-column: 1 / 2;
+			grid-row: 1;
+			font-size: 14px;
+			color: #23282d;
+			font-weight: 600;
+			margin: 0;
+			padding: 0;
+		}
+
+		input {
+			grid-column: 2 / 4;
+			grid-row: 1;
+		}
+
+		.description {
+			grid-column: 2 / 3;
+			grid-row: 2;
+			font-size: 13px;
+			line-height: 1.5;
+			margin: 0;
+		}
+	}
 }
 
 // Shared Quiz Question List Styles
@@ -292,10 +320,6 @@
 				color: #1e1e1e;
 			}
 		}
-	}
-
-	.lp-icon-angle-down {
-		display: none;
 	}
 
 	.lp-question-toggle-all.lp-collapse {
@@ -354,10 +378,6 @@
 			cursor: pointer;
 			align-items: center;
 			transition: all 0.2s;
-			display: none;
-		}
-
-		.lp-icon-angle-down {
 			display: none;
 		}
 
@@ -478,7 +498,7 @@
 			}
 		}
 
-		&:has(.lp-question-title-input:focus) {
+		&:has( .lp-question-title-input:focus ) {
 			border: 1px solid $cb-primary;
 		}
 
@@ -576,7 +596,6 @@
 // Course List Filter Bar Styles
 // Used in Courses, Lessons, Quizzes, Questions tabs
 @mixin course-list-filter-bar {
-
 	// Row 1: Page header — title + add new button
 	.cb-tab-header {
 		display: flex;
@@ -648,10 +667,9 @@
 		border-radius: 6px;
 		font-size: 14px;
 		color: $cb-text;
-		background: $cb-bg;
 		cursor: pointer;
 		appearance: none;
-		background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+		background-image: url( "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e" );
 		background-repeat: no-repeat;
 		background-position: right 10px center;
 		background-size: 14px;
@@ -672,7 +690,7 @@
 
 	// Filter button — light purple tint
 	.cb-filter-btn {
-		padding:8px 20px;
+		padding: 8px 20px;
 		border: none;
 		border-radius: 12px;
 		font-size: 14px;
@@ -765,7 +783,6 @@
 // Course Card Layout Styles
 // Used in Courses, Lessons, Quizzes, Questions list views
 @mixin course-card-layout {
-
 	.cb-list-items {
 		list-style: none;
 		display: grid;
@@ -1032,4 +1049,3 @@
 		}
 	}
 }
-

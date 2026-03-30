@@ -1,6 +1,7 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
+import { SWAL_ICON_DELETE, SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
 
 export class BuilderTabLesson {
 	constructor() {
@@ -83,7 +84,7 @@ export class BuilderTabLesson {
 		SweetAlert.fire( {
 			title: elLessonDuplicate.dataset.title || 'Duplicate Lesson',
 			text: elLessonDuplicate.dataset.content || 'Are you sure you want to duplicate this lesson?',
-			icon: 'warning',
+			iconHtml: SWAL_ICON_DUPLICATE,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -154,7 +155,7 @@ export class BuilderTabLesson {
 		SweetAlert.fire( {
 			title: elLessonTrash.dataset.title || 'Trash Lesson',
 			text: elLessonTrash.dataset.content || 'Are you sure? Moving it to the trash will cause this item to be removed from the course.',
-			icon: 'warning',
+			iconHtml: SWAL_ICON_TRASH_DRAFT,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -253,9 +254,9 @@ export class BuilderTabLesson {
 		}
 
 		SweetAlert.fire( {
-			title: elLessonDelete.dataset.title,
-			text: elLessonDelete.dataset.content,
-			icon: 'warning',
+			title: elLessonDelete.dataset.title || 'Delete Lesson',
+			text: elLessonDelete.dataset.content || 'Are you sure you want to permanently delete this lesson?',
+			iconHtml: SWAL_ICON_DELETE,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,

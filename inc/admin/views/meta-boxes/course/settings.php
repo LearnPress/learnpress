@@ -554,6 +554,12 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
 
 				$url = get_edit_post_link( $final_quiz ) . '#_lp_passing_grade';
+				$url = apply_filters(
+					'learn-press/course/meta-box/assessment/final-quiz/edit-link',
+					$url,
+					$final_quiz,
+					$thepostid
+				);
 
 				$final_quizz_passing = '
 					<div class="lp-metabox-evaluate-final_quiz">

@@ -88,6 +88,12 @@ export class BuilderEditCourse {
 		elFormField: '.form-field',
 		elTipFloating: '.learn-press-tip-floating',
 		elCategoryDiv: '#taxonomy-course_category',
+		elCourseResultRadio: 'input[type="radio"][name="_lp_course_result"]',
+		elPassingConditionField: '._lp_passing_condition_field',
+		elBtnGetFinalQuiz: '.lp-metabox-get-final-quiz',
+		elFinalQuizMessage: '.lp-metabox-evaluate-final_quiz',
+		elExtraMetaInput: '.lp_course_extra_meta_box__input',
+		elFaqMetaInput: '.lp_course_faq_meta_box__field input',
 
 		elCBHorizontalTabs: '.lp-cb-tabs__item',
 		elCBTabPanels: '.lp-cb-tab-panel',
@@ -122,6 +128,7 @@ export class BuilderEditCourse {
 		this.applyCategorySearch();
 		this.initTagManagement();
 		this.initSalePriceLayout();
+		this.initAssessmentMetaboxFeatures();
 		this.initTitleCharCount();
 		this.initDescWordCount();
 		this.initHeaderActionsDropdown();
@@ -207,6 +214,11 @@ export class BuilderEditCourse {
 				callBack: this.saveSettings.name,
 			},
 			{
+				selector: BuilderEditCourse.selectors.elBtnGetFinalQuiz,
+				class: this,
+				callBack: this.getFinalQuiz.name,
+			},
+			{
 				selector: BuilderEditCourse.selectors.elBtnAddTagNew,
 				class: this,
 				callBack: this.toggleAddTagForm.name,
@@ -285,6 +297,11 @@ export class BuilderEditCourse {
 				class: this,
 				callBack: this.handleTagSelectionChange.name,
 			},
+			{
+				selector: BuilderEditCourse.selectors.elCourseResultRadio,
+				class: this,
+				callBack: this.handleCourseResultChange.name,
+			},
 		] );
 
 		lpUtils.eventHandlers( 'input', [
@@ -329,7 +346,136 @@ export class BuilderEditCourse {
 				callBack: this.addNewTag.name,
 				checkIsEventEnter: true,
 			},
+			{
+				selector: BuilderEditCourse.selectors.elExtraMetaInput,
+				class: this,
+				callBack: this.preventEnterSubmitInMetaInput.name,
+				checkIsEventEnter: true,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elFaqMetaInput,
+				class: this,
+				callBack: this.preventEnterSubmitInMetaInput.name,
+				checkIsEventEnter: true,
+			},
 		] );
+	}
+
+	initAssessmentMetaboxFeatures() {
+		this.updatePassingConditionVisibility();
+	}
+
+	handleCourseResultChange() {
+		this.updatePassingConditionVisibility();
+	}
+
+	updatePassingConditionVisibility() {
+		const listHides = [ 'evaluate_final_quiz', 'evaluate_final_assignment' ];
+		const checkedEvaluation = document.querySelector(
+			`${ BuilderEditCourse.selectors.elCourseResultRadio }:checked`
+		);
+		const shouldHidePassing = checkedEvaluation
+			? listHides.includes( checkedEvaluation.value )
+			: false;
+
+		document
+			.querySelectorAll( BuilderEditCourse.selectors.elPassingConditionField )
+			.forEach( ( el ) => {
+				el.style.display = shouldHidePassing ? 'none' : '';
+			} );
+	}
+
+	preventEnterSubmitInMetaInput( args ) {
+		const { e, target } = args;
+		e.preventDefault();
+
+		if ( target?.blur ) {
+			target.blur();
+		}
+	}
+
+	async getFinalQuiz( args ) {
+		const { e, target } = args;
+		e.preventDefault();
+
+		const btn = target.closest( BuilderEditCourse.selectors.elBtnGetFinalQuiz );
+		if ( ! btn || btn.dataset.loadingState === 'yes' ) {
+			return;
+		}
+
+		const defaultText = btn.textContent;
+		const loadingText = btn.dataset.loading || defaultText;
+		const currentMessage =
+			btn.parentNode?.querySelector( BuilderEditCourse.selectors.elFinalQuizMessage ) ||
+			document.querySelector( BuilderEditCourse.selectors.elFinalQuizMessage );
+
+		if ( currentMessage ) {
+			currentMessage.remove();
+		}
+
+		btn.dataset.loadingState = 'yes';
+		btn.textContent = loadingText;
+
+		try {
+			const response = await this.requestFinalQuiz( btn.dataset.postid || '' );
+			const message = response?.data || response?.message || '';
+
+			btn.textContent = defaultText;
+
+			const messageNode = document.createElement( 'div' );
+			messageNode.className = 'lp-metabox-evaluate-final_quiz';
+			messageNode.innerHTML = message;
+
+			btn.parentNode.insertBefore( messageNode, btn.nextSibling );
+		} catch ( error ) {
+			btn.textContent = defaultText;
+			if ( error?.message ) {
+				lpToastify.show( error.message, 'error' );
+			}
+		} finally {
+			delete btn.dataset.loadingState;
+		}
+	}
+
+	async requestFinalQuiz( courseId = '' ) {
+		if ( typeof wp !== 'undefined' && typeof wp.apiFetch === 'function' ) {
+			return wp.apiFetch( {
+				path: 'lp/v1/admin/course/get_final_quiz',
+				method: 'POST',
+				data: {
+					courseId,
+				},
+			} );
+		}
+
+		const restBase =
+			window.lpGlobalSettings?.rest || window.lpData?.lp_rest_url || '/wp-json/';
+		const restNonce = window.lpGlobalSettings?.nonce || window.lpData?.nonce || '';
+		const normalizedRestBase = restBase.endsWith( '/' ) ? restBase : `${ restBase }/`;
+		const response = await fetch( `${ normalizedRestBase }lp/v1/admin/course/get_final_quiz`, {
+			method: 'POST',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/json',
+				...( restNonce ? { 'X-WP-Nonce': restNonce } : {} ),
+			},
+			body: JSON.stringify( {
+				courseId,
+			} ),
+		} );
+
+		let responseData = {};
+		try {
+			responseData = await response.json();
+		} catch ( error ) {
+			throw new Error( 'Cannot parse final quiz response' );
+		}
+
+		if ( ! response.ok ) {
+			throw new Error( responseData?.message || `Request failed (${ response.status })` );
+		}
+
+		return responseData;
 	}
 
 	initTagManagement() {

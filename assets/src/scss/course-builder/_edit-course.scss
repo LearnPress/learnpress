@@ -764,7 +764,7 @@
 
 	.cb-course-edit-category__select-parent {
 		width: 100%;
-		padding: 8px 12px;
+		padding: 6px 12px !important;
 		font-size: 14px;
 		border: 1px solid #ddd;
 		border-radius: 6px;
@@ -2135,6 +2135,10 @@
 				display: flex;
 				flex-direction: column;
 				gap: 12px;
+
+				&:not( :has( * ) ) {
+					display: none;
+				}
 			}
 
 			.lp_course_faq_meta_box__field {

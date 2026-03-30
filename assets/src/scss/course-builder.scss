@@ -102,6 +102,35 @@
 			padding: 0;
 		}
 
+		._lp_external_link_buy_course_field {
+			display: grid;
+			grid-template-columns: 150px max-content 1fr;
+			gap: 6px 11px;
+
+			label {
+				grid-column: 1 / 2;
+				grid-row: 1;
+				font-size: 14px;
+				color: #23282d;
+				font-weight: 600;
+				margin: 0;
+				padding: 0;
+			}
+
+			input {
+				grid-column: 2 / 4;
+				grid-row: 1;
+			}
+
+			.description {
+				grid-column: 2 / 3;
+				grid-row: 2;
+				font-size: 13px;
+				line-height: 1.5;
+				margin: 0;
+			}
+		}
+
 		.form-field._lp_hint_field,
 		.form-field._lp_explanation_field {
 			flex-wrap: wrap;
@@ -169,7 +198,6 @@
 			border-radius: 6px;
 			font-size: 14px;
 			color: #1a1a1a;
-			background: #fff;
 			cursor: pointer;
 		}
 
@@ -279,6 +307,10 @@
 		.lp_course_extra_meta_box__content {
 			flex: 1;
 
+			.lp_course_extra_meta_box__fields:not( :has( * ) ) {
+				display: none;
+			}
+
 			input[type='text'] {
 				max-width: 100%;
 				margin-bottom: 10px;
@@ -322,6 +354,7 @@
 	}
 }
 
+#lp-builder-popup-container,
 #lp-course-builder {
 	.learn-press-message {
 		margin: 0;
@@ -331,6 +364,26 @@
 		background-color: $cb-info-bg;
 		color: $cb-info;
 		width: 100%;
+	}
+
+	select {
+		padding: 10px 32px 10px 14px;
+		border: 1px solid $cb-border;
+		border-radius: 6px;
+		font-size: 14px;
+		color: $cb-text;
+		cursor: pointer;
+		appearance: none;
+		background-image: url( "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e" );
+		background-repeat: no-repeat;
+		background-position: right 10px center;
+		background-size: 14px;
+
+		&:focus {
+			outline: none;
+			border-color: $cb-primary;
+			box-shadow: 0 0 0 3px rgba( $cb-primary, 0.1 );
+		}
 	}
 }
 

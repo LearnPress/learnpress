@@ -1,6 +1,7 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
+import { SWAL_ICON_DELETE, SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
 
 export class BuilderTabQuestion {
 	constructor() {
@@ -79,7 +80,7 @@ export class BuilderTabQuestion {
 		SweetAlert.fire( {
 			title: elQuestionDuplicate.dataset.title || 'Duplicate Question',
 			text: elQuestionDuplicate.dataset.content || 'Are you sure you want to duplicate this question?',
-			icon: 'warning',
+			iconHtml: SWAL_ICON_DUPLICATE,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -151,7 +152,7 @@ export class BuilderTabQuestion {
 		SweetAlert.fire( {
 			title: elQuestionTrash.dataset.title || 'Trash Question',
 			text: elQuestionTrash.dataset.content || 'Are you sure you want to move this question to trash?',
-			icon: 'warning',
+			iconHtml: SWAL_ICON_TRASH_DRAFT,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -251,9 +252,9 @@ export class BuilderTabQuestion {
 		}
 
 		SweetAlert.fire( {
-			title: elQuestionDelete.dataset.title,
-			text: elQuestionDelete.dataset.content,
-			icon: 'warning',
+			title: elQuestionDelete.dataset.title || 'Delete Question',
+			text: elQuestionDelete.dataset.content || 'Are you sure you want to permanently delete this question?',
+			iconHtml: SWAL_ICON_DELETE,
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
