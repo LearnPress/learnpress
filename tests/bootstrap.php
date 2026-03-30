@@ -29,6 +29,18 @@ defined( 'LP_QUIZ_CPT' )      || define( 'LP_QUIZ_CPT', 'lp_quiz' );
 defined( 'LP_LESSON_CPT' )    || define( 'LP_LESSON_CPT', 'lp_lesson' );
 defined( 'LP_COURSE_CPT' )    || define( 'LP_COURSE_CPT', 'lp_course' );
 defined( 'LP_TEACHER_ROLE' )  || define( 'LP_TEACHER_ROLE', 'lp_teacher' );
+defined( 'LP_QUESTION_CPT' ) || define( 'LP_QUESTION_CPT', 'lp_question' );
+defined( 'LP_ORDER_CPT' )    || define( 'LP_ORDER_CPT', 'lp_order' );
+defined( 'ADMIN_ROLE' )      || define( 'ADMIN_ROLE', 'administrator' );
+
+// Course / item status constants
+defined( 'LP_COURSE_ENROLLED' )          || define( 'LP_COURSE_ENROLLED', 'enrolled' );
+defined( 'LP_COURSE_FINISHED' )          || define( 'LP_COURSE_FINISHED', 'finished' );
+defined( 'LP_COURSE_PURCHASED' )         || define( 'LP_COURSE_PURCHASED', 'purchased' );
+defined( 'LP_ITEM_COMPLETED' )           || define( 'LP_ITEM_COMPLETED', 'completed' );
+defined( 'LP_ITEM_STARTED' )             || define( 'LP_ITEM_STARTED', 'started' );
+defined( 'LP_COURSE_GRADUATION_PASSED' ) || define( 'LP_COURSE_GRADUATION_PASSED', 'passed' );
+defined( 'LP_COURSE_GRADUATION_FAILED' ) || define( 'LP_COURSE_GRADUATION_FAILED', 'failed' );
 
 // ── WordPress stub classes ────────────────────────────────────────────────────
 if ( ! class_exists( 'WP_Error' ) ) {
@@ -38,6 +50,9 @@ if ( ! class_exists( 'WP_Error' ) ) {
 		public function __construct( string $code = '', string $message = '', $data = '' ) {
 			$this->code    = $code;
 			$this->message = $message;
+		}
+		public function get_error_message(): string {
+			return $this->message;
 		}
 	}
 }

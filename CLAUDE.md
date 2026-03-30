@@ -48,8 +48,8 @@ composer test:filter UserModel   # Run tests matching name "UserModelTest"
 - Framework: **PHPUnit 10.5** with **Brain Monkey** (stubs WordPress functions — no WP core needed)
 - Mocking: **Mockery** for class mocks
 - Bootstrap: `tests/bootstrap.php` — defines WP/LP constants and stub classes
-- Test files: `tests/Unit/Models/CourseModelTest.php`, `UserModelTest.php`
-- Helper: `tests/Helpers/BrainMonkeyTestCase.php` — base test case
+- Helper: `tests/Helpers/BrainMonkeyTestCase.php` — base test case (extend this for new tests)
+- Test files live in `tests/Unit/` mirroring `inc/` structure
 - Coverage source: `inc/` (excludes `inc/libraries/`)
 
 ### Translations
@@ -74,189 +74,120 @@ Key custom hook prefixes: `learn-press/` (core), `lp_` (legacy)
 
 ### Key Directory Roles
 
-| Path | Purpose                                                                                                   |
-|------|-----------------------------------------------------------------------------------------------------------|
-| `inc/Databases/` | Repository layer — all raw DB queries per entity                                                          |
-| `inc/Models/` | Business logic and data models — see breakdown below                                                      |
-| `inc/Filters/` | Data transformation applied before/after DB operations, map columns of table to same properties of object |
-| `inc/curds/` | CRUD implementations (implements `inc/interfaces/interface-curd.php`)                                     |
-| `inc/Ajax/` | AJAX handlers — each extends `AbstractAjax`, implements `catch_lp_ajax()`                                 |
-| `inc/TemplateHooks/` | Template hook registrars for specific pages/contexts                                                      |
-| `inc/abstracts/` | Base classes: `LP_Addon`, `LP_Post_Data`, `LP_Object_Data`                                                |
-| `inc/Admin/` | Admin pages, menus, settings UI (188 files)                                                               |
-| `inc/Cache/` | Object caching layer (courses, quizzes, sessions)                                                         |
-| `inc/Background/` | Async/background task processors                                                                          |
-| `inc/Gutenberg/` | Gutenberg block system (80+ files)                                                                        |
-| `inc/Shortcodes/` | Shortcode implementations (17 files)                                                                      |
-| `inc/Widgets/` | Frontend widget classes (10 files)                                                                        |
-| `inc/ExternalPlugin/` | 3rd-party integrations (Elementor, Yoast SEO, Rank Math, Polylang)                                        |
-| `inc/gateways/` | Payment gateways (PayPal, offline)                                                                        |
-| `inc/WPGDPR/` | GDPR data export/erasure handlers                                                                         |
-| `inc/rest-api/` | REST API controllers — see breakdown below                                                                |
-| `templates/` | Frontend PHP templates                                                                                    |
-| `assets/src/scss/` | SCSS source (compiled to `assets/dist/css/`)                                                              |
-| `assets/src/apps/js/` | React apps (Gutenberg blocks, admin editors, frontend)                                                    |
-| `assets/dist/js/` | Compiled JS output with `.asset.php` dependency manifests                                                 |
-| `config/` | Static config (settings, fields, delivery types, Elementor widgets)                                       |
+| Path | Purpose |
+|------|---------|
+| `inc/Models/` | Business logic and data models (Course, Lesson, Quiz, Question, User, UserItems) |
+| `inc/Databases/` | Repository layer — all raw DB queries per entity |
+| `inc/Filters/` | Query filter objects — map table columns to properties, shape queries before execution |
+| `inc/curds/` | Legacy CRUD implementations (implements `inc/interfaces/interface-curd.php`) |
+| `inc/Ajax/` | AJAX handlers — each extends `AbstractAjax`, implements `catch_lp_ajax()` |
+| `inc/TemplateHooks/` | Template hook registrars for specific pages/contexts |
+| `inc/rest-api/` | REST API controllers (namespace `LearnPress\RestApi\`, base URL `/wp-json/learnpress/v1/`) |
+| `inc/abstracts/` | Base classes: `LP_Addon`, `LP_Post_Data`, `LP_Object_Data`, `abstract-rest-controller.php` |
+| `inc/Admin/` | Admin pages, menus, settings UI |
+| `inc/Cache/` | Object caching layer (courses, quizzes, sessions) |
+| `inc/Background/` | Custom async/background task processors (not WP Background Processing library) |
+| `inc/Gutenberg/` | Gutenberg block system (80+ blocks) |
+| `inc/Shortcodes/` | Shortcode implementations |
+| `inc/Widgets/` | Frontend widget classes |
+| `inc/ExternalPlugin/` | 3rd-party integrations (Elementor, Yoast SEO, Rank Math, Polylang) |
+| `inc/gateways/` | Payment gateways (PayPal, offline) |
+| `templates/` | Frontend PHP templates (overridable by themes) |
+| `assets/src/apps/js/` | React apps (Gutenberg blocks, admin editors, frontend) |
+| `assets/src/scss/` | SCSS source (compiled to `assets/dist/css/`) |
+| `config/` | Static config (settings fields, delivery types, Elementor widgets, DB table definitions) |
 
-### Models Breakdown (`inc/Models/`)
+### Data Layer Pattern
 
-| Model file | Purpose |
-|-----------|---------|
-| `PostModel.php` | Base model for WP post-backed entities |
-| `CourseModel.php` | Course business logic |
-| `CoursePostModel.php` | Course post data (post meta, author, etc.) |
-| `CourseSectionModel.php` | Section within a course |
-| `CourseSectionItemModel.php` | Item (lesson/quiz) within a section |
-| `LessonPostModel.php` | Lesson post data |
-| `QuizPostModel.php` | Quiz post data |
-| `UserModel.php` | Enrolled user data & course progress |
-| `UserItems/UserItemModel.php` | Base model for a user's enrollment item |
-| `UserItems/UserCourseModel.php` | User ↔ course enrollment |
-| `UserItems/UserLessonModel.php` | User ↔ lesson progress |
-| `UserItems/UserQuizModel.php` | User ↔ quiz attempt |
-| `UserItemMeta/UserItemMetaModel.php` | Generic metadata for user items |
-| `UserItemMeta/UserQuizMetaModel.php` | Quiz-specific metadata (answers, results) |
-| `Question/QuestionPostModel.php` | Base question post model |
-| `Question/QuestionPostSingleChoiceModel.php` | Single-choice question |
-| `Question/QuestionPostMultipleChoiceModel.php` | Multiple-choice question |
-| `Question/QuestionPostTrueFalseModel.php` | True/false question |
-| `Question/QuestionPostFIBModel.php` | Fill-in-the-blank question |
-| `Question/QuestionSortingChoiceModel.php` | Sorting/ordering question |
-| `Question/QuestionAnswerModel.php` | A single answer option |
-| `Quiz/QuizQuestionModel.php` | Quiz ↔ question relationship |
-| `WPTables/CoursesTable.php` | WP_List_Table for courses admin list |
-| `steps/class-lp-step.php` | Single step in a course flow |
-| `steps/class-lp-group-step.php` | Grouped steps |
-| `Courses.php` | Collection/query helper for courses |
-| `ListCourseCategories.php` | Course category query helper |
-| `class-lp-course-extra-info-fast-query-model.php` | Fast query optimization model |
-| `class-lp-rest-response.php` | REST API response wrapper |
+All data access follows: **Model → Database class → Filter → `$wpdb`**
 
-### REST API (`inc/rest-api/`)
+1. **Model** (`inc/Models/`) — business logic, caching via `LP_Object_Cache`
+2. **Database class** (`inc/Databases/`) — extends `DataBase` singleton, executes queries
+3. **Filter** (`inc/Filters/`) — typed data objects extending `FilterBase` that define columns, where clauses, joins, pagination
+4. **`$wpdb`** — WordPress database abstraction
+
+`DataBase` base class (`inc/Databases/DataBase.php`) provides:
+- `execute(&$filter, &$total_rows)` — SELECT queries
+- `update_execute($filter)` — UPDATE queries
+- `delete_execute($filter)` — DELETE queries
+- `insert_data(array $args)` — INSERT with validation
+- Table management: `check_table_exists()`, `add_col_table()`, `drop_col_table()`
+
+Each entity DB class exposes table name properties (e.g., `$tb_lp_courses`, `$tb_lp_user_items`).
+
+### Filter Pattern
+
+Filters in `inc/Filters/` are plain data-holder classes that extend `FilterBase`:
+- Define column constants (`const COL_ID = 'ID'`)
+- Declare typed public properties matching table columns
+- `all_fields` array lists available columns
+- Inherited properties: `$limit`, `$page`, `$order_by`, `$order`, `$where`, `$join`, `$fields`, `$group_by`
+- Used for both read and write operations
+
+### Custom Database Tables
+
+All tables prefixed with `{wp_prefix}learnpress_` (constant `LP_TABLE_PREFIX`). Defined in `config/table/tables-v4.php`.
+
+| Table | Purpose |
+|-------|---------|
+| `learnpress_courses` | Course data |
+| `learnpress_sections` | Course sections |
+| `learnpress_section_items` | Items (lessons/quizzes) within sections |
+| `learnpress_quiz_questions` | Quiz ↔ question relationships |
+| `learnpress_question_answers` | Answer options for questions |
+| `learnpress_question_answermeta` | Answer metadata |
+| `learnpress_user_items` | User enrollments and progress |
+| `learnpress_user_itemmeta` | User item metadata |
+| `learnpress_user_item_results` | Quiz/lesson results |
+| `learnpress_order_items` | Order line items |
+| `learnpress_order_itemmeta` | Order item metadata |
+| `learnpress_sessions` | Session storage |
+| `learnpress_files` | File attachments |
+
+### Key Constants (`inc/lp-constants.php`)
+
+**Post Types:** `LP_COURSE_CPT` (`lp_course`), `LP_LESSON_CPT` (`lp_lesson`), `LP_QUIZ_CPT` (`lp_quiz`), `LP_QUESTION_CPT` (`lp_question`), `LP_ORDER_CPT` (`lp_order`)
+
+**Taxonomies:** `LP_COURSE_CATEGORY_TAX` (`course_category`), `LP_COURSE_TAXONOMY_TAG` (`course_tag`)
+
+**User Roles:** `LP_TEACHER_ROLE` (`lp_teacher`), `ADMIN_ROLE` (`administrator`)
+
+**Status Constants:**
+- Course progress: `LP_COURSE_ENROLLED`, `LP_COURSE_FINISHED`, `LP_COURSE_PURCHASED`
+- Item progress: `LP_ITEM_COMPLETED`, `LP_ITEM_STARTED`
+- Graduation: `LP_GRADUATION_IN_PROGRESS`, `LP_GRADUATION_PASSED`, `LP_GRADUATION_FAILED`
+- Orders: `LP_ORDER_COMPLETED`, `LP_ORDER_PENDING`, `LP_ORDER_PROCESSING`, `LP_ORDER_CANCELLED`, `LP_ORDER_FAILED`
+
+**Page Contexts:** `LP_PAGE_CHECKOUT`, `LP_PAGE_COURSES`, `LP_PAGE_QUIZ`, `LP_PAGE_PROFILE`, `LP_PAGE_INSTRUCTORS`, etc.
+
+### REST API
 
 **Namespace:** `LearnPress\RestApi\`
 **Base URL:** `/wp-json/learnpress/v1/`
 **Routers:** `class-lp-core-api.php` (frontend), `class-lp-admin-core-api.php` (admin)
-
-**Frontend Controllers (`v1/frontend/`):**
-
-| Controller | Endpoint area |
-|-----------|---------------|
-| `class-lp-rest-courses-controller.php` | Course listing & filtering |
-| `class-lp-rest-student-controller.php` | Student data |
-| `class-lp-rest-profile-controller.php` | User profile |
-| `class-lp-rest-instructor-controller.php` | Instructor data |
-| `class-lp-rest-users-controller.php` | User management |
-| `class-lp-rest-settings-controller.php` | Frontend settings |
-| `class-lp-rest-lazy-load-controller.php` | Lazy loading content |
-| `class-lp-rest-ajax-controller.php` | AJAX proxy endpoints |
-| `class-lp-rest-addon-controller.php` | Add-on API |
-| `class-lp-rest-material-controller.php` | Course materials |
-| `class-lp-rest-widgets-controller.php` | Widget data |
-
-**Admin Controllers (`v1/admin/`):**
-
-| Controller | Endpoint area |
-|-----------|---------------|
-| `class-lp-admin-rest-course-controller.php` | Course management |
-| `class-lp-admin-rest-database-controller.php` | Database queries |
-| `class-lp-admin-rest-reset-data-controller.php` | Data reset |
-| `class-lp-admin-rest-statistics-controller.php` | Statistics |
-| `class-lp-admin-rest-tools-controller.php` | Tools & utilities |
-
 **Abstract base:** `inc/abstracts/abstract-rest-controller.php`
 
-### AJAX Handlers (`inc/Ajax/`)
+Frontend controllers in `inc/rest-api/v1/frontend/`, admin controllers in `inc/rest-api/v1/admin/`.
 
-All handlers extend `AbstractAjax` and implement the static `catch_lp_ajax()` method, called on `init` at priority `11`.
+### AJAX Handlers
 
-| Handler | Purpose |
-|---------|---------|
-| `LoadContentViaAjax.php` | Load lesson/quiz content dynamically |
-| `LessonAjax.php` | Lesson actions (start, mark complete) |
-| `EditCurriculumAjax.php` | Curriculum editor operations |
-| `EditQuizAjax.php` | Quiz editing |
-| `EditQuestionAjax.php` | Question editing |
-| `SendEmailAjax.php` | Email sending from admin |
-| `ExportOrderCSVAjax.php` | Export orders to CSV |
-| `AI/OpenAiAjax.php` | OpenAI course/content generation |
-
-### Data Layer Pattern
-
-All data access follows: **Model → Database class → Filter → WP DB**
-
-- `inc/Databases/DataBase.php` is the global DB singleton
-- Each entity has its own DB class (e.g., `LP_Course_DB`, `LP_User_Items_DB`)
-- Filters in `inc/Filters/` shape query args before execution
-- Models handle caching via `LP_Object_Cache`
+All handlers in `inc/Ajax/` extend `AbstractAjax` and implement the static `catch_lp_ajax()` method, called on `init` at priority `11`. Add-ons register handlers via `learn-press/register-ajax-handlers` hook.
 
 ### Add-on Architecture
 
 - All add-ons extend `inc/abstracts/abstract-addon.php` (`LP_Addon`)
-- Add-ons register their AJAX handlers via `learn-press/register-ajax-handlers` hook
 - `LP_Manager_Addons` manages activation/deactivation and license validation
 - `purchase-code.txt` stores site license key
 
 ### Asset Build Pipeline
 
-**JS**: Webpack (`webpack.config.js`) extends `@wordpress/scripts` config with ~123 entry points. Outputs minified bundles + `.asset.php` dependency manifests to `assets/dist/js/`.
-
-Entry point categories:
-- Admin pages (~14): admin, learnpress, admin-order, admin-tools, admin-statistic, edit-course, edit-quiz, edit-question, etc.
-- Frontend pages (~10): courses, profile, instructors, checkout, single-course, lesson, quiz, course-filter, etc.
-- Gutenberg blocks (~95): archive/single course, course elements, instructor elements, filter elements, breadcrumb
+**JS**: Webpack (`webpack.config.js`) extends `@wordpress/scripts` config with ~123 entry points. Outputs minified bundles + `.asset.php` dependency manifests to `assets/dist/js/`. Note: requires `NODE_OPTIONS=--openssl-legacy-provider` (handled by `cross-env` in npm scripts).
 
 **CSS**: Gulp compiles SCSS with PostCSS, auto-generates RTL variants (`-rtl.css` suffix).
 
-### Custom Post Types
-
-Registered in `inc/custom-post-types/`: `lp_course`, `lp_lesson`, `lp_quiz`, `lp_question`, `lp_order`
-
 ### Settings
 
-`LP_Settings` singleton (`inc/class-lp-settings.php`) — settings cached in WordPress options. Admin UI in `inc/admin/settings/`.
-
-Config files in `config/settings/`: `general.php`, `course.php`, `profile.php`, `permalink.php`, `advanced.php`, `currencies.php`, plus OpenAI prompt templates.
-
-### External Integrations (`inc/ExternalPlugin/`)
-
-- **Elementor** (44 files): Full widget library mirroring Gutenberg blocks, with a skin system for list variations
-- **Yoast SEO**: `LPYoastSeo.php`
-- **Rank Math**: `LPRankMath.php`
-- **Polylang**: `class-lp-polylang.php`
-
-### Background Processing (`inc/Background/`)
-
-Custom async pattern — does **not** use WP Background Processing library.
-
-- `LPBackgroundTrigger.php` — Background job orchestrator
-- `LPBackgroundAjax.php` — AJAX-triggered background tasks
-- `LPAsyncRequest.php` — Async HTTP request handler
-
-### GDPR (`inc/WPGDPR/`)
-
-- `ExportPersonalData.php` — Handles WP personal data export requests
-- `ErasePersonalData.php` — Handles WP personal data erasure requests
-
-### Templates (`templates/`)
-
-| Directory | Purpose |
-|-----------|---------|
-| `block/` | Gutenberg block templates |
-| `checkout/` | Checkout page |
-| `content-lesson/` | Lesson content wrappers |
-| `content-quiz/` | Quiz content wrappers |
-| `emails/` | Email templates |
-| `global/` | Shared global components |
-| `loop/` | Course archive/loop |
-| `order/` | Order display |
-| `pages/` | Page-level (courses list, profile, etc.) |
-| `profile/` | User profile tabs |
-| `shared/` | Shared component partials |
-| `shortcode/` | Shortcode output |
-| `single-course/` | Single course page |
-| `widgets/` | Widget output |
+`LP_Settings` singleton (`inc/class-lp-settings.php`) — cached in WordPress options. Config files in `config/settings/`: `general.php`, `course.php`, `profile.php`, `permalink.php`, `advanced.php`, `currencies.php`.
 
 ## Code Standards
 
