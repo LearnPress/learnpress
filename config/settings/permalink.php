@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Models\UserModel;
+
 $currencies = learn_press_currencies();
 
 foreach ( $currencies as $code => $name ) {
@@ -7,9 +10,8 @@ foreach ( $currencies as $code => $name ) {
 }
 
 $settings      = LP_Settings::instance();
-$user          = wp_get_current_user();
-$user_model    = new \LearnPress\Models\UserModel( $user );
-$username      = $user_model->get_pretty_slug();
+$userModel     = UserModel::find( get_current_user_id(), true );
+$username      = $userModel->get_pretty_slug();
 $settings_slug = $settings->get( 'profile_endpoints.settings', 'settings' );
 $profile_slug  = 'profile';
 
