@@ -6,10 +6,14 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
+
+if ( is_user_logged_in() ) {
+	return;
+}
 ?>
 
 <div class="learn-press-form-register learn-press-form">

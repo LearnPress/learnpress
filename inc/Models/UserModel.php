@@ -359,35 +359,6 @@ class UserModel {
 	}
 
 	/**
-	 * Resolve user by pretty slug with legacy username fallback.
-	 *
-	 * @param string $identifier
-	 *
-	 * @return WP_User|false
-	 */
-	public function resolve_user_by_public_identifier( string $identifier ) {
-
-		$identifier_raw  = trim( urldecode( $identifier ) );
-		$identifier_slug = sanitize_title( $identifier_raw );
-
-		if ( '' === $identifier_raw ) {
-			return false;
-		}
-
-		$user_id = $this->check_user_slug_pretty( $identifier_slug );
-		if ( $user_id > 0 ) {
-			return get_user_by( 'ID', $user_id );
-		}
-
-		$user = get_user_by( 'login', $identifier_raw );
-		if ( $user instanceof WP_User ) {
-			return $user;
-		}
-
-		return get_user_by( 'slug', $identifier_slug );
-	}
-
-	/**
 	 * Generate pretty slug for users that still miss one (old sites support).
 	 *
 	 * @return array [ 'processed' => int, 'generated' => int, 'skipped' => int, 'failed' => int ]

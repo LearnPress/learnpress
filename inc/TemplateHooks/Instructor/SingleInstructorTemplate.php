@@ -257,11 +257,14 @@ class SingleInstructorTemplate extends UserTemplate {
 						$instructor = $userModel;
 					} else {
 						// Get user by slug.
-						$wp_user = get_user_by( 'slug', $instructor_name );
+						$wp_user   = get_user_by( 'slug', $instructor_name );
+						$userModel = UserModel::find( $wp_user->ID, true );
 						// Only allow view instructor when user is administrator or view his/her profile.
 						if ( current_user_can( UserModel::ROLE_ADMINISTRATOR )
 						|| ( $userModelCurrent && $userModelCurrent->get_id() === $wp_user->ID ) ) {
 							$instructor = $userModelCurrent;
+						} elseif ( empty( $userModel->get_pretty_slug( false ) ) ) {
+							$instructor = $userModel;
 						}
 					}
 				} else {
