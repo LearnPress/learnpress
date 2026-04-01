@@ -61,6 +61,19 @@ return apply_filters(
 			),
 		),
 		array(
+			'title'   => esc_html__( 'Enable subscriptions', 'learnpress' ),
+			'id'      => '[enable_subscriptions]',
+			'default' => 'no',
+			'type'    => 'checkbox',
+			'desc'    => esc_html__( 'Enable PayPal subscription checkout flow.', 'learnpress' ),
+		),
+		array(
+			'title' => esc_html__( 'Subscription webhook ID', 'learnpress' ),
+			'id'    => '[subscription_webhook_id]',
+			'type'  => 'text',
+			'desc'  => esc_html__( 'PayPal webhook ID used to reverse-verify subscription events.', 'learnpress' ),
+		),
+		array(
 			'type' => 'sectionend',
 		),
 	)

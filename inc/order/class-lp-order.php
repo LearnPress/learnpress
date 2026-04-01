@@ -1015,6 +1015,22 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					'text' => __( 'Cancel', 'learnpress' ),
 				);
 			}
+
+			$subscription_gateway = get_post_meta( $this->get_id(), LP_Gateway_Abstract::META_SUBSCRIPTION_GATEWAY, true );
+			$subscription_status  = get_post_meta( $this->get_id(), LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, true );
+			if ( ! empty( $subscription_gateway ) && in_array( $subscription_status, array( 'active', 'trialing', 'past_due' ), true ) ) {
+				$gateway = LP_Gateways::instance()->get_gateway( sanitize_key( $subscription_gateway ) );
+				if ( $gateway instanceof LP_Gateway_Abstract ) {
+					$manage_url = $gateway->get_manage_subscription_url( $this );
+					if ( ! empty( $manage_url ) ) {
+						$actions['manage-subscription'] = array(
+							'url'  => esc_url_raw( $manage_url ),
+							'text' => __( 'Manage subscription', 'learnpress' ),
+						);
+					}
+				}
+			}
+
 			$actions = apply_filters( 'learn-press/profile-order-actions', $actions, $this->get_id() );
 
 			return $actions;

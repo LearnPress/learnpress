@@ -79,6 +79,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @var null
 		 */
 		protected $client_secret = null;
+		/**
+		 * @var string
+		 */
+		protected $subscription_webhook_id = '';
 
 		/**
 		 * LP_Gateway_Paypal constructor.
@@ -116,11 +120,31 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				// Use PayPal rest api
 				$this->client_id     = $this->settings->get( 'app_client_id' );
 				$this->client_secret = $this->settings->get( 'app_client_secret' );
+				$this->subscription_webhook_id = (string) $this->settings->get( 'subscription_webhook_id', '' );
 			} else {
 				return;
 			}
 
 			$this->check_webhook_callback();
+		}
+
+		/**
+		 * @return bool
+		 */
+		public function is_subscription_enabled(): bool {
+			return $this->settings->get( 'enable_subscriptions', 'no' ) === 'yes';
+		}
+
+		/**
+		 * @return array
+		 */
+		public function get_supported_features(): array {
+			$features = array( self::FEATURE_ONE_TIME );
+			if ( $this->is_subscription_enabled() ) {
+				$features[] = self::FEATURE_SUBSCRIPTION;
+			}
+
+			return $features;
 		}
 
 		/**
@@ -184,6 +208,34 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function process_payment( $order_id = 0 ): array {
 			$order              = new LP_Order( $order_id );
+
+			if ( $this->is_subscription_order( $order ) ) {
+				$subscription_validate = $this->validate_subscription_order( $order );
+				if ( is_wp_error( $subscription_validate ) ) {
+					throw new Exception( $subscription_validate->get_error_message() );
+				}
+
+				$subscription_data = $this->get_subscription_context( $order );
+				$subscription_res  = $this->pay_subscription( $subscription_data );
+				if ( is_wp_error( $subscription_res ) ) {
+					throw new Exception( $subscription_res->get_error_message() );
+				}
+
+				update_post_meta( $order_id, self::META_SUBSCRIPTION_GATEWAY, $this->id );
+				update_post_meta( $order_id, self::META_SUBSCRIPTION_STATUS, 'pending' );
+				if ( ! empty( $subscription_res['subscription_id'] ) ) {
+					update_post_meta( $order_id, self::META_SUBSCRIPTION_ID, sanitize_text_field( (string) $subscription_res['subscription_id'] ) );
+				}
+				if ( ! empty( $subscription_data['price_id'] ) ) {
+					update_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, sanitize_text_field( (string) $subscription_data['price_id'] ) );
+				}
+
+				return array(
+					'result'   => 'success',
+					'redirect' => esc_url_raw( (string) ( $subscription_res['redirect_url'] ?? '' ) ),
+				);
+			}
+
 			$data_token         = $this->get_access_token();
 			$paypal_payment_url = $this->create_payment_url( $order, $data_token );
 
@@ -428,6 +480,365 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$lp_order->update_status( LP_ORDER_COMPLETED );
 				}
 			}
+		}
+
+		/**
+		 * Validate subscription payload for PayPal checkout.
+		 *
+		 * This override keeps gateway-specific assumptions close to PayPal flow
+		 * while still reusing the shared contract validation from abstract gateway.
+		 *
+		 * @param array $data
+		 *
+		 * @return array|WP_Error
+		 */
+		protected function validate_subscription_payload( array $data ) {
+			$data = parent::validate_subscription_payload( $data );
+			if ( is_wp_error( $data ) ) {
+				return $data;
+			}
+
+			// PayPal subscription API expects a plan id string and positive quantity.
+			$data['price_id'] = (string) $data['price_id'];
+			$data['quantity'] = max( 1, absint( $data['quantity'] ) );
+
+			return $data;
+		}
+
+		/**
+		 * Create PayPal subscription checkout URL.
+		 *
+		 * @param array $data
+		 *
+		 * @return array|WP_Error
+		 */
+		public function pay_subscription( array $data ) {
+			if ( ! $this->supports_feature( self::FEATURE_SUBSCRIPTION ) ) {
+				return new WP_Error( 'lp_paypal_subscription_disabled', __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
+			}
+
+			$data = $this->validate_subscription_payload( $data );
+			if ( is_wp_error( $data ) ) {
+				return $data;
+			}
+
+			try {
+				$data_token = $this->get_access_token();
+				if ( empty( $data_token->access_token ) || empty( $data_token->token_type ) ) {
+					return new WP_Error( 'lp_paypal_invalid_access_token', __( 'Invalid Paypal access token', 'learnpress' ) );
+				}
+
+				$metadata = array_map(
+					function ( $value ) {
+						if ( is_scalar( $value ) || is_null( $value ) ) {
+							return (string) $value;
+						}
+						return wp_json_encode( $value );
+					},
+					(array) $data['metadata']
+				);
+				$order_id = absint( $metadata['lp_order_id'] ?? 0 );
+
+				$request_body = array(
+					'plan_id'             => (string) $data['price_id'],
+					'quantity'            => (string) max( 1, absint( $data['quantity'] ) ),
+					'custom_id'           => ! empty( $order_id ) ? (string) $order_id : '',
+					'application_context' => array(
+						'brand_name' => ! empty( get_bloginfo() ) ? get_bloginfo() : 'LearnPress',
+						'return_url' => esc_url_raw( (string) $data['success_url'] ),
+						'cancel_url' => esc_url_raw( (string) $data['cancel_url'] ),
+					),
+				);
+
+				$response = wp_remote_post(
+					$this->api_url . 'v1/billing/subscriptions',
+					array(
+						'body'    => wp_json_encode( $request_body ),
+						'headers' => array(
+							'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+							'Content-Type'  => 'application/json',
+						),
+						'timeout' => 60,
+					)
+				);
+
+				if ( is_wp_error( $response ) ) {
+					return new WP_Error( 'lp_paypal_subscription_request_failed', $response->get_error_message() );
+				}
+
+				$body = wp_remote_retrieve_body( $response );
+				$data = LP_Helper::json_decode( $body );
+
+				if ( empty( $data->id ) ) {
+					$error_message = __( 'Invalid PayPal subscription response.', 'learnpress' );
+					if ( ! empty( $data->message ) ) {
+						$error_message = $data->message;
+					}
+					return new WP_Error( 'lp_paypal_subscription_invalid_response', $error_message );
+				}
+
+				$approve_url = '';
+				if ( ! empty( $data->links ) && is_array( $data->links ) ) {
+					foreach ( $data->links as $link ) {
+						if ( ! empty( $link->rel ) && 'approve' === $link->rel ) {
+							$approve_url = $link->href;
+							break;
+						}
+					}
+				}
+
+				if ( empty( $approve_url ) ) {
+					return new WP_Error( 'lp_paypal_subscription_missing_approve_url', __( 'Invalid PayPal subscription approve URL.', 'learnpress' ) );
+				}
+
+				return array(
+					'status'             => 'success',
+					'redirect_url'       => esc_url_raw( $approve_url ),
+					'provider_reference' => (string) $data->id,
+					'subscription_id'    => (string) $data->id,
+					'message'            => __( 'Redirecting to PayPal subscription checkout.', 'learnpress' ),
+				);
+			} catch ( Throwable $e ) {
+				return new WP_Error( 'lp_paypal_subscription_checkout_error', $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Reverse verify PayPal webhook before processing.
+		 *
+		 * @param WP_REST_Request $request
+		 *
+		 * @return array|WP_Error
+		 */
+		public function verify_subscription_webhook( WP_REST_Request $request ) {
+			if ( empty( $this->subscription_webhook_id ) ) {
+				return new WP_Error(
+					'lp_paypal_webhook_id_missing',
+					__( 'PayPal subscription webhook id is missing.', 'learnpress' ),
+					array( 'status' => 500 )
+				);
+			}
+
+			$payload = json_decode( $request->get_body(), true );
+			if ( empty( $payload ) || ! is_array( $payload ) ) {
+				return new WP_Error(
+					'lp_paypal_webhook_payload_invalid',
+					__( 'Invalid PayPal webhook payload.', 'learnpress' ),
+					array( 'status' => 400 )
+				);
+			}
+
+			$required_headers = array(
+				'paypal-auth-algo',
+				'paypal-cert-url',
+				'paypal-transmission-id',
+				'paypal-transmission-sig',
+				'paypal-transmission-time',
+			);
+			$headers_map      = array();
+			foreach ( $required_headers as $required_header ) {
+				$header_value = sanitize_text_field( (string) $request->get_header( $required_header ) );
+				if ( '' === $header_value ) {
+					return new WP_Error(
+						'lp_paypal_webhook_header_missing',
+						__( 'Invalid PayPal webhook headers.', 'learnpress' ),
+						array( 'status' => 400 )
+					);
+				}
+				$headers_map[ $required_header ] = $header_value;
+			}
+
+			$cert_url = esc_url_raw( $headers_map['paypal-cert-url'] );
+			$cert_host = wp_parse_url( $cert_url, PHP_URL_HOST );
+			if (
+				empty( $cert_url ) ||
+				stripos( $cert_url, 'https://' ) !== 0 ||
+				empty( $cert_host ) ||
+				! preg_match( '/(^|\.)paypal\.com$/i', (string) $cert_host )
+			) {
+				return new WP_Error(
+					'lp_paypal_webhook_cert_url_invalid',
+					__( 'Invalid PayPal webhook certificate URL.', 'learnpress' ),
+					array( 'status' => 400 )
+				);
+			}
+
+			try {
+				$data_token = $this->get_access_token();
+				if ( empty( $data_token->access_token ) || empty( $data_token->token_type ) ) {
+					throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
+				}
+
+				$verify_payload = array(
+					'auth_algo'         => $headers_map['paypal-auth-algo'],
+					'cert_url'          => $cert_url,
+					'transmission_id'   => $headers_map['paypal-transmission-id'],
+					'transmission_sig'  => $headers_map['paypal-transmission-sig'],
+					'transmission_time' => $headers_map['paypal-transmission-time'],
+					'webhook_id'        => (string) $this->subscription_webhook_id,
+					'webhook_event'     => $payload,
+				);
+
+				$response = wp_remote_post(
+					$this->api_url . 'v1/notifications/verify-webhook-signature',
+					array(
+						'body'    => wp_json_encode( $verify_payload ),
+						'headers' => array(
+							'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+							'Content-Type'  => 'application/json',
+						),
+						'timeout' => 60,
+					)
+				);
+
+				if ( is_wp_error( $response ) ) {
+					throw new Exception( $response->get_error_message() );
+				}
+
+				$verify_result = LP_Helper::json_decode( wp_remote_retrieve_body( $response ), true );
+				$is_verified   = ! empty( $verify_result['verification_status'] ) && 'SUCCESS' === strtoupper( $verify_result['verification_status'] );
+				if ( ! $is_verified ) {
+					return new WP_Error(
+						'lp_paypal_webhook_verification_failed',
+						__( 'PayPal webhook verification failed.', 'learnpress' ),
+						array( 'status' => 400 )
+					);
+				}
+
+				return $payload;
+			} catch ( Throwable $e ) {
+				return new WP_Error(
+					'lp_paypal_webhook_verification_failed',
+					$e->getMessage(),
+					array( 'status' => 400 )
+				);
+			}
+		}
+
+		/**
+		 * Normalize PayPal webhook event to LP event.
+		 *
+		 * @param array|object $provider_event
+		 *
+		 * @return array
+		 */
+		public function normalize_subscription_event( $provider_event ): array {
+			$event = parent::normalize_subscription_event( $provider_event );
+			if ( is_object( $provider_event ) ) {
+				$provider_event = (array) $provider_event;
+			}
+
+			$event['event_id']   = (string) ( $provider_event['id'] ?? '' );
+			$paypal_event_type   = (string) ( $provider_event['event_type'] ?? '' );
+			$resource            = (array) ( $provider_event['resource'] ?? array() );
+			$event['metadata']   = array();
+
+			if ( ! empty( $resource['custom_id'] ) ) {
+				$event['metadata']['lp_order_id'] = (string) $resource['custom_id'];
+				$event['parent_order_id']         = absint( $resource['custom_id'] );
+			}
+
+			switch ( $paypal_event_type ) {
+				case 'BILLING.SUBSCRIPTION.ACTIVATED':
+					$event['event_type']      = 'subscription_activated';
+					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
+					$event['status']          = 'active';
+					break;
+				case 'BILLING.SUBSCRIPTION.UPDATED':
+					$event['event_type']      = 'subscription_updated';
+					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
+					$event['status']          = (string) ( $resource['status'] ?? '' );
+					break;
+				case 'BILLING.SUBSCRIPTION.CANCELLED':
+				case 'BILLING.SUBSCRIPTION.SUSPENDED':
+					$event['event_type']      = 'subscription_cancelled';
+					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
+					$event['status']          = 'cancelled';
+					break;
+				case 'BILLING.SUBSCRIPTION.EXPIRED':
+					$event['event_type']      = 'subscription_expired';
+					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
+					$event['status']          = 'expired';
+					break;
+				case 'PAYMENT.SALE.COMPLETED':
+				case 'BILLING.SUBSCRIPTION.PAYMENT.COMPLETED':
+					$event['event_type']      = 'renewal_payment_succeeded';
+					$event['subscription_id'] = (string) ( $resource['billing_agreement_id'] ?? ( $resource['id'] ?? '' ) );
+					$event['transaction_id']  = (string) ( $resource['id'] ?? '' );
+					if ( ! empty( $resource['id'] ) ) {
+						$event['renewal_key'] = 'paypal_sale_' . sanitize_text_field( (string) $resource['id'] );
+					}
+					if ( ! empty( $resource['amount'] ) ) {
+						$amount            = (array) $resource['amount'];
+						$event['amount']   = (float) ( $amount['total'] ?? ( $amount['value'] ?? 0 ) );
+						$event['currency'] = strtoupper( (string) ( $amount['currency'] ?? ( $amount['currency_code'] ?? '' ) ) );
+					}
+					break;
+				case 'PAYMENT.SALE.DENIED':
+				case 'BILLING.SUBSCRIPTION.PAYMENT.FAILED':
+					$event['event_type']      = 'renewal_payment_failed';
+					$event['subscription_id'] = (string) ( $resource['billing_agreement_id'] ?? '' );
+					$event['transaction_id']  = (string) ( $resource['id'] ?? '' );
+					if ( ! empty( $resource['id'] ) ) {
+						$event['renewal_key'] = 'paypal_sale_' . sanitize_text_field( (string) $resource['id'] );
+					}
+					break;
+				default:
+					$event['event_type'] = 'ignored';
+					break;
+			}
+
+			return $event;
+		}
+
+		/**
+		 * Listen and process PayPal subscription webhook.
+		 *
+		 * @param WP_REST_Request $request
+		 *
+		 * @return array|WP_Error
+		 */
+		public function listen_webhook_subscription( WP_REST_Request $request ) {
+			$verified_event = $this->verify_subscription_webhook( $request );
+			if ( is_wp_error( $verified_event ) ) {
+				return $verified_event;
+			}
+
+			$event = $this->normalize_subscription_event( $verified_event );
+			if ( empty( $event['event_type'] ) || 'ignored' === $event['event_type'] ) {
+				return array(
+					'status'      => 'ignored',
+					'event_id'    => $event['event_id'] ?? '',
+					'event_type'  => $event['event_type'] ?? 'ignored',
+					'status_code' => 200,
+				);
+			}
+
+			if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
+				return new WP_Error(
+					'lp_subscription_manager_missing',
+					__( 'Subscription manager is not available.', 'learnpress' ),
+					array( 'status' => 500 )
+				);
+			}
+
+			return LP_Subscription_Manager::instance()->process_webhook_event( $this, $event );
+		}
+
+		/**
+		 * @param LP_Order $order
+		 *
+		 * @return string
+		 */
+		public function get_manage_subscription_url( LP_Order $order ): string {
+			$subscription_id = get_post_meta( $order->get_id(), self::META_SUBSCRIPTION_ID, true );
+			if ( empty( $subscription_id ) ) {
+				return parent::get_manage_subscription_url( $order );
+			}
+
+			$manage_url = trailingslashit( $this->paypal_url ) . 'myaccount/autopay/';
+
+			return (string) apply_filters( 'learn-press/paypal/subscription/manage-url', $manage_url, $order, $subscription_id, $this );
 		}
 
 		/**

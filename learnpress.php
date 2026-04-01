@@ -511,6 +511,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			LP_Page_Controller::instance();
 
 			include_once 'inc/gateways/class-lp-gateway-abstract.php';
+			include_once 'inc/gateways/subscriptions/class-lp-subscription-event-store.php';
+			include_once 'inc/gateways/subscriptions/class-lp-subscription-manager.php';
 			include_once 'inc/gateways/class-lp-gateways.php';
 		}
 
