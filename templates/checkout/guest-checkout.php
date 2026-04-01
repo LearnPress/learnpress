@@ -13,9 +13,12 @@ defined( 'ABSPATH' ) || exit();
 
 $checkout  = LearnPress::instance()->checkout();
 $is_exists = $checkout->checkout_email_exists();
-?>
 
-<input type="radio" id="checkout-account-switch-to-guest" name="checkout-account-switch-form" value="guest" checked="checked"/>
+$show_guest = ! isset( $_GET['form'] ) || $_GET['form'] === 'guest';
+if ( ! $show_guest ) {
+	return;
+}
+?>
 
 <div id="checkout-account-guest" class="lp-checkout-block <?php echo esc_attr( $is_exists ? 'email-exists' : '' ); ?>">
 	<h4><?php esc_html_e( 'As Guest', 'learnpress' ); ?></h4>
@@ -32,7 +35,7 @@ $is_exists = $checkout->checkout_email_exists();
 			$divider = '';
 
 			if ( LearnPress::instance()->checkout()->is_enable_login() ) {
-				$signin = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-login">%s</label></a>', esc_html( _x( 'Sign in', 'checkout sign in link', 'learnpress' ) ) );
+				$signin = sprintf( '<a href="%s">%s</a>', add_query_arg( 'form', 'login' ), esc_html( _x( 'Sign in', 'checkout sign in link', 'learnpress' ) ) );
 			}
 
 			if ( LearnPress::instance()->checkout()->is_enable_login() && LearnPress::instance()->checkout()->is_enable_register() ) {
@@ -40,7 +43,7 @@ $is_exists = $checkout->checkout_email_exists();
 			}
 
 			if ( LearnPress::instance()->checkout()->is_enable_register() ) {
-				$signup = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-register">%s</label></a>', esc_html( _x( 'Sign up', 'checkout sign up link', 'learnpress' ) ) );
+				$signup = sprintf( '<a href="%s">%s</a>', add_query_arg( 'form', 'register' ), esc_html( _x( 'Sign up', 'checkout sign up link', 'learnpress' ) ) );
 			}
 			?>
 

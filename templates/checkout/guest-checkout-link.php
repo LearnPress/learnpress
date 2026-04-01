@@ -15,8 +15,6 @@ if ( ! LearnPress::instance()->checkout()->is_enable_guest_checkout() ) {
 
 esc_html_e( 'Or quick checkout as', 'learnpress' ); ?>
 
-<a href="javascript: void(0);">
-	<label for="checkout-account-switch-to-guest">
-		<?php echo esc_html_x( 'Guest', 'checkout guest link', 'learnpress' ); ?>
-	</label>
+<a href="<?php echo add_query_arg( 'form', 'guest' ); ?>">
+	<?php echo esc_html_x( 'Guest', 'checkout guest link', 'learnpress' ); ?>
 </a>.

@@ -10,9 +10,13 @@
  */
 
 defined( 'ABSPATH' ) || exit();
+
+$show_register = isset( $_GET['form'] ) && $_GET['form'] === 'register';
+if ( ! $show_register ) {
+	return;
+}
 ?>
 
-<input type="radio" id="checkout-account-switch-to-register" name="checkout-account-switch-form" value="register"/>
 <div id="checkout-account-register" class="lp-checkout-block left">
 
 	<h4><?php esc_html_e( 'Sign up', 'learnpress' ); ?></h4>
@@ -51,8 +55,8 @@ defined( 'ABSPATH' ) || exit();
 	<p class="lp-checkout-sign-in-link">
 		<?php if ( LearnPress::instance()->checkout()->is_enable_login() ) : ?>
 			<?php esc_html_e( 'Already had an account?', 'learnpress' ); ?>
-			<a href="javascript: void(0);">
-				<label for="checkout-account-switch-to-login"><?php esc_html_e( 'Sign in', 'learnpress' ); ?></label>
+			<a href="<?php echo add_query_arg( 'form', 'login' ); ?>">
+				<?php esc_html_e( 'Sign in', 'learnpress' ); ?>
 			</a>.
 		<?php endif; ?>
 
