@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit();
 $checkout  = LearnPress::instance()->checkout();
 $is_exists = $checkout->checkout_email_exists();
 
-$show_guest = ! isset( $_GET['form'] ) || $_GET['form'] === 'guest';
+$show_guest = isset( $_GET['form'] ) && ( $_GET['form'] === 'guest' );
 if ( ! $show_guest ) {
 	return;
 }
