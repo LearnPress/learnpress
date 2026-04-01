@@ -614,6 +614,8 @@ class CourseBuilderAjax extends AbstractAjax {
 			$passing_condition = floatval( $data['_lp_passing_condition'] );
 			if ( $passing_condition < 0 ) {
 				$passing_condition = 0;
+			} elseif ( $passing_condition > 100 ) {
+				$passing_condition = 100;
 			}
 			$courseModel->meta_data->{CoursePostModel::META_KEY_PASSING_CONDITION} = $passing_condition;
 		}
@@ -1259,7 +1261,11 @@ class CourseBuilderAjax extends AbstractAjax {
 
 		foreach ( $numeric_keys as $key ) {
 			if ( isset( $data[ $key ] ) ) {
-				$quizModel->save_meta_value_by_key( $key, absint( $data[ $key ] ) );
+				$value = absint( $data[ $key ] );
+				if ( '_lp_passing_grade' === $key && $value > 100 ) {
+					$value = 100;
+				}
+				$quizModel->save_meta_value_by_key( $key, $value );
 			}
 		}
 	}

@@ -166,6 +166,9 @@ export class BuilderEditQuestion {
 					// Update action button text
 					this.updateActionButtons( data?.status || status );
 
+					// Reset form state before potential redirect.
+					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
+
 					if ( data?.question_id_new ) {
 						const currentUrl = window.location.href;
 						window.location.href = currentUrl.replace(
@@ -195,9 +198,6 @@ export class BuilderEditQuestion {
 							}
 						}
 					}
-
-					// Reset form state to prevent "leave site" warning
-					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
 			},
 			error: ( error ) => {
@@ -621,6 +621,9 @@ export class BuilderEditQuestion {
 					// Update action button text with actual status from server
 					this.updateActionButtons( data?.status || targetStatus );
 
+					// Reset form state before potential redirect.
+					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
+
 					if ( data?.question_id_new ) {
 						const currentUrl = window.location.href;
 						window.location.href = currentUrl.replace(
@@ -650,9 +653,6 @@ export class BuilderEditQuestion {
 							}
 						}
 					}
-
-					// Reset form state to prevent "leave site" warning
-					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
 			},
 			error: ( error ) => {
@@ -759,6 +759,9 @@ export class BuilderEditQuestion {
 					// Update action button text
 					this.updateActionButtons( 'draft' );
 
+					// Reset form state before potential redirect.
+					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
+
 					if ( data?.question_id_new ) {
 						const currentUrl = window.location.href;
 						window.location.href = currentUrl.replace(
@@ -788,9 +791,6 @@ export class BuilderEditQuestion {
 							}
 						}
 					}
-
-					// Reset form state to prevent "leave site" warning
-					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
 			},
 			error: ( error ) => {

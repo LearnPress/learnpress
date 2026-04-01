@@ -207,6 +207,9 @@ export class BuilderStandaloneQuiz {
 					// Update action button text
 					this.updateActionButtons( data?.status || status );
 
+					// Reset form state before potential redirect.
+					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
+
 					if ( data?.quiz_id_new ) {
 						const currentUrl = window.location.href;
 						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.quiz_id_new }/` );
@@ -219,9 +222,6 @@ export class BuilderStandaloneQuiz {
 							elStatus.textContent = data.status;
 						}
 					}
-
-					// Reset form state to prevent "leave site" warning
-					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
 			},
 			error: ( error ) => {
@@ -560,6 +560,9 @@ export class BuilderStandaloneQuiz {
 					// Update action buttons with actual status from server
 					this.updateActionButtons( data?.status || targetStatus );
 
+					// Reset form state before potential redirect.
+					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
+
 					if ( data?.quiz_id_new ) {
 						const currentUrl = window.location.href;
 						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.quiz_id_new }/` );
@@ -584,9 +587,6 @@ export class BuilderStandaloneQuiz {
 							}
 						}
 					}
-
-					// Reset form state to prevent "leave site" warning
-					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
 			},
 			error: ( error ) => {
@@ -690,6 +690,9 @@ export class BuilderStandaloneQuiz {
 					// Update action button text
 					this.updateActionButtons( 'draft' );
 
+					// Reset form state before potential redirect.
+					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
+
 					if ( data?.quiz_id_new ) {
 						const currentUrl = window.location.href;
 						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.quiz_id_new }/` );
@@ -714,9 +717,6 @@ export class BuilderStandaloneQuiz {
 							}
 						}
 					}
-
-					// Reset form state to prevent "leave site" warning
-					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
 			},
 			error: ( error ) => {
