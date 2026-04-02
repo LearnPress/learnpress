@@ -222,6 +222,13 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @return bool
 	 */
 	public function is_subscription_order( LP_Order $order ): bool {
+		$order_id         = $order->get_id();
+		$saved_gateway_id = sanitize_key( (string) get_post_meta( $order_id, self::META_SUBSCRIPTION_GATEWAY, true ) );
+		$saved_price_id   = sanitize_text_field( (string) get_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, true ) );
+		if ( ! empty( $saved_price_id ) && ( empty( $saved_gateway_id ) || $saved_gateway_id === $this->get_id() ) ) {
+			return true;
+		}
+
 		$is_subscription = false;
 		if ( $this->supports_feature( self::FEATURE_SUBSCRIPTION ) ) {
 			$is_subscription = (bool) apply_filters(
@@ -271,18 +278,75 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * Validate subscription order constraints before provider checkout.
-	 * Return true on success, WP_Error on failure.
+	 * Persist subscription identifiers to order before payment execution.
 	 *
-	 * Default implementation delegates validation to filter:
-	 * `learn-press/gateway/subscription/validate-order`.
+	 * This allows payment methods to operate only on normalized parameters and
+	 * avoid re-detecting custom integration attributes inside gateway code.
+	 *
+	 * @param LP_Order $order
+	 * @param array $data
+	 *
+	 * @return void
+	 */
+	protected function persist_subscription_payment_identifiers( LP_Order $order, array $data ) {
+		$order_id = $order->get_id();
+
+		update_post_meta( $order_id, self::META_SUBSCRIPTION_GATEWAY, sanitize_key( (string) $this->get_id() ) );
+		update_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, sanitize_text_field( (string) ( $data['price_id'] ?? '' ) ) );
+		update_post_meta( $order_id, self::META_SUBSCRIPTION_QUANTITY, max( 1, absint( $data['quantity'] ?? 1 ) ) );
+		if ( isset( $data['model'] ) ) {
+			update_post_meta( $order_id, self::META_SUBSCRIPTION_MODEL, is_array( $data['model'] ) ? $data['model'] : array() );
+		}
+	}
+
+	/**
+	 * Resolve normalized subscription payment params from order context.
+	 *
+	 * Behavior:
+	 * - If order contains persisted subscription identifiers, treat it as
+	 *   subscription payment.
+	 * - If order is marked subscription by integration filter but has no
+	 *   `price_id`, return a validation error early.
+	 * - Otherwise return empty array (one-time payment flow).
 	 *
 	 * @param LP_Order $order
 	 *
-	 * @return bool|WP_Error
+	 * @return array
+	 * @throws Exception
 	 */
-	public function validate_subscription_order( LP_Order $order ) {
-		return apply_filters( 'learn-press/gateway/subscription/validate-order', true, $order, $this );
+	public function resolve_subscription_payment_data( LP_Order $order ): array {
+		if ( ! $this->supports_feature( self::FEATURE_SUBSCRIPTION ) ) {
+			return array();
+		}
+
+		$context = $this->get_subscription_context( $order );
+		$context = wp_parse_args(
+			$context,
+			array(
+				'price_id'    => '',
+				'model'       => array(),
+				'quantity'    => 1,
+				'success_url' => '',
+				'cancel_url'  => '',
+				'metadata'    => array(),
+			)
+		);
+
+		$context['price_id'] = sanitize_text_field( (string) $context['price_id'] );
+		$context['quantity'] = max( 1, absint( $context['quantity'] ) );
+		$context['model']    = is_array( $context['model'] ) ? $context['model'] : array();
+		$context['metadata'] = is_array( $context['metadata'] ) ? $context['metadata'] : array();
+
+		if ( ! empty( $context['price_id'] ) ) {
+			$this->persist_subscription_payment_identifiers( $order, $context );
+			return $context;
+		}
+
+		if ( $this->is_subscription_order( $order ) ) {
+			throw new Exception( __( 'Missing subscription price id.', 'learnpress' ) );
+		}
+
+		return array();
 	}
 
 	/**
@@ -300,9 +364,10 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @param array $data
 	 *
-	 * @return array|WP_Error Normalized payload array or validation error.
+	 * @return array Normalized payload array.
+	 * @throws Exception
 	 */
-	protected function validate_subscription_payload( array $data ) {
+	protected function validate_subscription_payload( array $data ): array {
 		// Apply safe defaults to guarantee a stable input shape.
 		$data = wp_parse_args(
 			$data,
@@ -333,12 +398,12 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 		// price_id is the minimum provider binding required for subscription checkout.
 		if ( empty( $data['price_id'] ) ) {
-			return new WP_Error( 'lp_subscription_missing_price_id', __( 'Missing subscription price id.', 'learnpress' ) );
+			throw new Exception( __( 'Missing subscription price id.', 'learnpress' ) );
 		}
 
 		// Redirect URLs are mandatory for provider-hosted checkout flows.
 		if ( empty( $data['success_url'] ) || empty( $data['cancel_url'] ) ) {
-			return new WP_Error( 'lp_subscription_missing_urls', __( 'Missing subscription return URLs.', 'learnpress' ) );
+			throw new Exception( __( 'Missing subscription return URLs.', 'learnpress' ) );
 		}
 
 		return $data;
@@ -352,13 +417,116 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @param array $data
 	 *
-	 * @return array|WP_Error
+	 * @return array
+	 * @throws Exception
 	 */
-	public function pay_subscription( array $data ) {
-		return new WP_Error(
-			'lp_subscription_not_supported',
-			sprintf( __( 'Gateway %s does not support subscription payment.', 'learnpress' ), $this->get_id() )
+	public function pay_subscription( array $data ): array {
+		throw new Exception( sprintf( __( 'Gateway %s does not support subscription payment.', 'learnpress' ), $this->get_id() ) );
+	}
+
+	/**
+	 * Normalize and validate subscription plan creation payload.
+	 *
+	 * Payload contract:
+	 * - `name` (string, required when `product_id` is empty)
+	 * - `amount` (float, required, > 0)
+	 * - `currency` (string, required)
+	 * - `interval` (day|week|month|year)
+	 * - `interval_count` (int, default 1)
+	 * - `product_id` (string, optional)
+	 * - `trial_days` (int, optional)
+	 * - `description` (string, optional)
+	 * - `metadata` (array, optional)
+	 * - `model` (array, optional)
+	 *
+	 * @param array $data
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	protected function validate_subscription_plan_payload( array $data ): array {
+		$data = wp_parse_args(
+			$data,
+			array(
+				'name'           => '',
+				'description'    => '',
+				'amount'         => 0,
+				'currency'       => learn_press_get_currency(),
+				'interval'       => 'month',
+				'interval_count' => 1,
+				'product_id'     => '',
+				'trial_days'     => 0,
+				'metadata'       => array(),
+				'model'          => array(),
+			)
 		);
+
+		$data['name']           = sanitize_text_field( wp_unslash( (string) $data['name'] ) );
+		$data['description']    = sanitize_text_field( wp_unslash( (string) $data['description'] ) );
+		$data['amount']         = (float) $data['amount'];
+		$data['currency']       = strtoupper( sanitize_text_field( wp_unslash( (string) $data['currency'] ) ) );
+		$data['interval']       = strtolower( sanitize_key( (string) $data['interval'] ) );
+		$data['interval_count'] = max( 1, absint( $data['interval_count'] ) );
+		$data['product_id']     = sanitize_text_field( wp_unslash( (string) $data['product_id'] ) );
+		$data['trial_days']     = absint( $data['trial_days'] );
+		$data['metadata']       = is_array( $data['metadata'] ) ? $data['metadata'] : array();
+		$data['model']          = is_array( $data['model'] ) ? $data['model'] : array();
+
+		// Backward-compatible mapping when integrators pass plan fields via `model`.
+		if ( ! empty( $data['model'] ) ) {
+			if ( $data['amount'] <= 0 && isset( $data['model']['amount'] ) ) {
+				$data['amount'] = (float) $data['model']['amount'];
+			}
+			if ( empty( $data['currency'] ) && ! empty( $data['model']['currency'] ) ) {
+				$data['currency'] = strtoupper( sanitize_text_field( (string) $data['model']['currency'] ) );
+			}
+			if ( empty( $data['product_id'] ) && ! empty( $data['model']['product_id'] ) ) {
+				$data['product_id'] = sanitize_text_field( (string) $data['model']['product_id'] );
+			}
+			if ( empty( $data['interval'] ) && ! empty( $data['model']['interval'] ) ) {
+				$data['interval'] = strtolower( sanitize_key( (string) $data['model']['interval'] ) );
+			}
+			if ( $data['interval_count'] <= 1 && ! empty( $data['model']['interval_count'] ) ) {
+				$data['interval_count'] = max( 1, absint( $data['model']['interval_count'] ) );
+			}
+			if ( $data['trial_days'] <= 0 && isset( $data['model']['trial_days'] ) ) {
+				$data['trial_days'] = absint( $data['model']['trial_days'] );
+			}
+		}
+
+		if ( empty( $data['product_id'] ) && empty( $data['name'] ) ) {
+			throw new Exception( __( 'Missing subscription plan name.', 'learnpress' ) );
+		}
+
+		if ( $data['amount'] <= 0 ) {
+			throw new Exception( __( 'Invalid subscription amount.', 'learnpress' ) );
+		}
+
+		if ( empty( $data['currency'] ) ) {
+			throw new Exception( __( 'Missing subscription currency.', 'learnpress' ) );
+		}
+
+		$allowed_intervals = array( 'day', 'week', 'month', 'year' );
+		if ( ! in_array( $data['interval'], $allowed_intervals, true ) ) {
+			throw new Exception( __( 'Invalid subscription interval.', 'learnpress' ) );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Generic subscription plan/price creation flow.
+	 *
+	 * Child gateways should override and return created provider identifiers,
+	 * typically a `price_id`/`plan_id` to be used later by `pay_subscription()`.
+	 *
+	 * @param array $data
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	public function create_subscription_plan( array $data ): array {
+		throw new Exception( sprintf( __( 'Gateway %s does not support subscription plan creation.', 'learnpress' ), $this->get_id() ) );
 	}
 
 	/**
@@ -369,13 +537,11 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @return array|WP_Error
+	 * @return array
+	 * @throws Exception
 	 */
-	public function listen_webhook_subscription( WP_REST_Request $request ) {
-		return new WP_Error(
-			'lp_subscription_webhook_not_supported',
-			sprintf( __( 'Gateway %s does not support subscription webhook.', 'learnpress' ), $this->get_id() )
-		);
+	public function listen_webhook_subscription( WP_REST_Request $request ): array {
+		throw new Exception( sprintf( __( 'Gateway %s does not support subscription webhook.', 'learnpress' ), $this->get_id() ) );
 	}
 
 	/**
@@ -385,13 +551,11 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @return array|WP_Error|object
+	 * @return array|object
+	 * @throws Exception
 	 */
 	public function verify_subscription_webhook( WP_REST_Request $request ) {
-		return new WP_Error(
-			'lp_subscription_webhook_verify_not_supported',
-			sprintf( __( 'Gateway %s does not support subscription webhook verification.', 'learnpress' ), $this->get_id() )
-		);
+		throw new Exception( sprintf( __( 'Gateway %s does not support subscription webhook verification.', 'learnpress' ), $this->get_id() ) );
 	}
 
 	/**

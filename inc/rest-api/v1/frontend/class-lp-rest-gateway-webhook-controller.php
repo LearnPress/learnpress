@@ -72,55 +72,35 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		 * @return WP_REST_Response
 		 */
 		public function listen_subscription_webhook( WP_REST_Request $request ): WP_REST_Response {
-			$gateway_id = sanitize_key( (string) $request->get_param( 'gateway' ) );
-			if ( empty( $gateway_id ) ) {
-				return new WP_REST_Response(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Gateway is required.', 'learnpress' ),
-					),
-					400
-				);
-			}
+			try {
+				$gateway_id = sanitize_key( (string) $request->get_param( 'gateway' ) );
+				if ( empty( $gateway_id ) ) {
+					throw new Exception( __( 'Gateway is required.', 'learnpress' ), 400 );
+				}
 
-			$guard_result = $this->guard_webhook_request( $request, $gateway_id );
-			if ( is_wp_error( $guard_result ) ) {
-				return $this->build_error_response( $guard_result );
-			}
+				$this->guard_webhook_request( $request, $gateway_id );
 
-			$gateway = LP_Gateways::instance()->get_gateway( $gateway_id );
-			if ( ! $gateway || ! $gateway instanceof LP_Gateway_Abstract ) {
-				return new WP_REST_Response(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Gateway not found.', 'learnpress' ),
-					),
-					404
-				);
-			}
+				$gateway = LP_Gateways::instance()->get_gateway( $gateway_id );
+				if ( ! $gateway || ! $gateway instanceof LP_Gateway_Abstract ) {
+					throw new Exception( __( 'Gateway not found.', 'learnpress' ), 404 );
+				}
 
-			if ( ! $gateway->is_enabled() || ! $gateway->supports_feature( LP_Gateway_Abstract::FEATURE_SUBSCRIPTION ) ) {
-				return new WP_REST_Response(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Gateway not found.', 'learnpress' ),
-					),
-					404
-				);
-			}
+				if ( ! $gateway->is_enabled() || ! $gateway->supports_feature( LP_Gateway_Abstract::FEATURE_SUBSCRIPTION ) ) {
+					throw new Exception( __( 'Gateway not found.', 'learnpress' ), 404 );
+				}
 
-			$result = $gateway->listen_webhook_subscription( $request );
-			if ( is_wp_error( $result ) ) {
-				return $this->build_error_response( $result );
-			}
+				$result = $gateway->listen_webhook_subscription( $request );
 
-			$status_code = 200;
-			if ( is_array( $result ) && isset( $result['status_code'] ) ) {
-				$status_code = absint( $result['status_code'] );
-				unset( $result['status_code'] );
-			}
+				$status_code = 200;
+				if ( is_array( $result ) && isset( $result['status_code'] ) ) {
+					$status_code = absint( $result['status_code'] );
+					unset( $result['status_code'] );
+				}
 
-			return new WP_REST_Response( $result, $status_code );
+				return new WP_REST_Response( $result, $status_code );
+			} catch ( Throwable $e ) {
+				return $this->build_error_response( $e );
+			}
 		}
 
 		/**
@@ -133,9 +113,10 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		 * @param WP_REST_Request $request
 		 * @param string $gateway_id
 		 *
-		 * @return true|WP_Error
+		 * @return void
+		 * @throws Exception
 		 */
-		protected function guard_webhook_request( WP_REST_Request $request, string $gateway_id ) {
+		protected function guard_webhook_request( WP_REST_Request $request, string $gateway_id ): void {
 			$max_payload_bytes = absint(
 				apply_filters(
 					'learn-press/rest/subscription-webhook/max-payload-bytes',
@@ -145,19 +126,10 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 			);
 			$body              = (string) $request->get_body();
 			if ( $max_payload_bytes > 0 && strlen( $body ) > $max_payload_bytes ) {
-				return new WP_Error(
-					'lp_subscription_webhook_payload_too_large',
-					__( 'Webhook payload too large.', 'learnpress' ),
-					array( 'status' => 413 )
-				);
+				throw new Exception( __( 'Webhook payload too large.', 'learnpress' ), 413 );
 			}
 
-			$rate_limit_result = $this->check_rate_limit( $gateway_id );
-			if ( is_wp_error( $rate_limit_result ) ) {
-				return $rate_limit_result;
-			}
-
-			return true;
+			$this->check_rate_limit( $gateway_id );
 		}
 
 		/**
@@ -169,9 +141,10 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		 *
 		 * @param string $gateway_id
 		 *
-		 * @return true|WP_Error
+		 * @return void
+		 * @throws Exception
 		 */
-		protected function check_rate_limit( string $gateway_id ) {
+		protected function check_rate_limit( string $gateway_id ): void {
 			$window_seconds = absint(
 				apply_filters(
 					'learn-press/rest/subscription-webhook/rate-limit-window',
@@ -188,7 +161,7 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 			);
 
 			if ( $window_seconds <= 0 || $max_requests <= 0 ) {
-				return true;
+				return;
 			}
 
 			$ip_address = $this->get_request_ip();
@@ -206,7 +179,7 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 					$window_seconds
 				);
 
-				return true;
+				return;
 			}
 
 			$started_at = absint( $rate_data['started_at'] );
@@ -220,23 +193,17 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 					$window_seconds
 				);
 
-				return true;
+				return;
 			}
 
 			$count = absint( $rate_data['count'] );
 			if ( $count >= $max_requests ) {
-				return new WP_Error(
-					'lp_subscription_webhook_rate_limited',
-					__( 'Too many webhook requests.', 'learnpress' ),
-					array( 'status' => 429 )
-				);
+				throw new Exception( __( 'Too many webhook requests.', 'learnpress' ), 429 );
 			}
 
 			$rate_data['count'] = $count + 1;
 			$ttl                = max( 1, $window_seconds - ( $now - $started_at ) );
 			set_transient( $rate_key, $rate_data, $ttl );
-
-			return true;
 		}
 
 		/**
@@ -267,18 +234,18 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		 * Internal provider error details are logged server-side, while API
 		 * response returns a generic/safe message by status class.
 		 *
-		 * @param WP_Error $error
+		 * @param Throwable $error
 		 *
 		 * @return WP_REST_Response
 		 */
-		protected function build_error_response( WP_Error $error ): WP_REST_Response {
-			$status = absint( $error->get_error_data( 'status' ) );
-			if ( $status <= 0 ) {
+		protected function build_error_response( Throwable $error ): WP_REST_Response {
+			$status = absint( $error->getCode() );
+			if ( $status < 100 || $status > 599 ) {
 				$status = 400;
 			}
 
-			$error_code      = (string) $error->get_error_code();
-			$private_message = (string) $error->get_error_message();
+			$error_code      = 'lp_subscription_webhook_error';
+			$private_message = (string) $error->getMessage();
 			$public_message  = __( 'Invalid webhook request.', 'learnpress' );
 
 			if ( 429 === $status ) {
