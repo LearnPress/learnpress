@@ -214,6 +214,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Check if order should use subscription flow.
 	 *
+	 * Child gateways can keep this generic and let integrations decide via
+	 * filter `learn-press/gateway/subscription-order`.
+	 *
 	 * @param LP_Order $order
 	 *
 	 * @return bool
@@ -234,6 +237,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 	/**
 	 * Get subscription context for provider APIs.
+	 *
+	 * Returns a gateway-agnostic payload that child gateways can pass to
+	 * `pay_subscription()` after optional gateway-specific normalization.
 	 *
 	 * @param LP_Order $order
 	 *
@@ -267,6 +273,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Validate subscription order constraints before provider checkout.
 	 * Return true on success, WP_Error on failure.
+	 *
+	 * Default implementation delegates validation to filter:
+	 * `learn-press/gateway/subscription/validate-order`.
 	 *
 	 * @param LP_Order $order
 	 *
@@ -338,6 +347,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Generic subscription checkout flow.
 	 *
+	 * Child gateways should override this method and return a payload with at
+	 * least `status` and `redirect_url` on success.
+	 *
 	 * @param array $data
 	 *
 	 * @return array|WP_Error
@@ -351,6 +363,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 	/**
 	 * Generic subscription webhook listener.
+	 *
+	 * Child gateways should override and orchestrate:
+	 * verify -> normalize -> manager dispatch.
 	 *
 	 * @param WP_REST_Request $request
 	 *
@@ -366,6 +381,8 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Verify subscription webhook payload/signature with provider.
 	 *
+	 * Child gateways should return verified provider event payload/object.
+	 *
 	 * @param WP_REST_Request $request
 	 *
 	 * @return array|WP_Error|object
@@ -379,6 +396,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 	/**
 	 * Normalize provider webhook event to LP event payload.
+	 *
+	 * Child gateways should map provider-specific event types/fields into this
+	 * canonical schema so Subscription Manager can process consistently.
 	 *
 	 * @param array|object $provider_event
 	 *
@@ -405,6 +425,8 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 	/**
 	 * Get provider manage subscription URL for order.
+	 *
+	 * Child gateways can override when provider offers customer portal pages.
 	 *
 	 * @param LP_Order $order
 	 *

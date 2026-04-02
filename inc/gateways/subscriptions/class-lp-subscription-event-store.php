@@ -25,11 +25,15 @@ if ( ! class_exists( 'LP_Subscription_Event_Store' ) ) {
 		protected $lock_prefix = 'lp_subscription_event_lock_';
 
 		/**
+		 * Lock TTL in seconds for in-flight webhook processing.
+		 *
 		 * @var int
 		 */
 		protected $lock_ttl = 300;
 
 		/**
+		 * Get singleton instance.
+		 *
 		 * @return LP_Subscription_Event_Store
 		 */
 		public static function instance(): LP_Subscription_Event_Store {
@@ -41,10 +45,14 @@ if ( ! class_exists( 'LP_Subscription_Event_Store' ) ) {
 		}
 
 		/**
+		 * Check whether a provider event has already been fully processed.
+		 *
+		 * Uses a deterministic option key derived from gateway + event id.
+		 *
 		 * @param string $gateway_id
 		 * @param string $event_id
 		 *
-		 * @return bool
+		 * @return bool True if event was marked processed before.
 		 */
 		public function is_processed( string $gateway_id, string $event_id ): bool {
 			$option_key = $this->build_event_option_key( $gateway_id, $event_id );
@@ -52,11 +60,16 @@ if ( ! class_exists( 'LP_Subscription_Event_Store' ) ) {
 		}
 
 		/**
+		 * Persist a processed marker for idempotency.
+		 *
+		 * This method intentionally uses add_option to avoid overwriting prior
+		 * state when the same event arrives more than once.
+		 *
 		 * @param string $gateway_id
 		 * @param string $event_id
-		 * @param array $payload
+		 * @param array $payload Summary payload stored for debugging/auditing.
 		 *
-		 * @return bool
+		 * @return bool True when marker is stored, false when option already exists.
 		 */
 		public function mark_processed( string $gateway_id, string $event_id, array $payload = array() ): bool {
 			$option_key = $this->build_event_option_key( $gateway_id, $event_id );
@@ -71,10 +84,14 @@ if ( ! class_exists( 'LP_Subscription_Event_Store' ) ) {
 		}
 
 		/**
+		 * Acquire a short-lived processing lock for an event.
+		 *
+		 * Prevents concurrent requests from handling the same event in parallel.
+		 *
 		 * @param string $gateway_id
 		 * @param string $event_id
 		 *
-		 * @return bool
+		 * @return bool True when lock acquired, false when lock already exists.
 		 */
 		public function acquire_lock( string $gateway_id, string $event_id ): bool {
 			$lock_key = $this->build_lock_key( $gateway_id, $event_id );
@@ -86,8 +103,12 @@ if ( ! class_exists( 'LP_Subscription_Event_Store' ) ) {
 		}
 
 		/**
+		 * Release processing lock for an event.
+		 *
 		 * @param string $gateway_id
 		 * @param string $event_id
+		 *
+		 * @return void
 		 */
 		public function release_lock( string $gateway_id, string $event_id ) {
 			$lock_key = $this->build_lock_key( $gateway_id, $event_id );
@@ -95,10 +116,12 @@ if ( ! class_exists( 'LP_Subscription_Event_Store' ) ) {
 		}
 
 		/**
+		 * Build option key for processed-event marker.
+		 *
 		 * @param string $gateway_id
 		 * @param string $event_id
 		 *
-		 * @return string
+		 * @return string Stable option key.
 		 */
 		protected function build_event_option_key( string $gateway_id, string $event_id ): string {
 			$gateway_id = sanitize_key( $gateway_id );
@@ -107,10 +130,12 @@ if ( ! class_exists( 'LP_Subscription_Event_Store' ) ) {
 		}
 
 		/**
+		 * Build transient key for in-flight processing lock.
+		 *
 		 * @param string $gateway_id
 		 * @param string $event_id
 		 *
-		 * @return string
+		 * @return string Stable lock key.
 		 */
 		protected function build_lock_key( string $gateway_id, string $event_id ): string {
 			$gateway_id = sanitize_key( $gateway_id );

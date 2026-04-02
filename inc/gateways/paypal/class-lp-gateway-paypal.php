@@ -129,6 +129,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
+		 * Check whether PayPal subscription mode is enabled in gateway settings.
+		 *
 		 * @return bool
 		 */
 		public function is_subscription_enabled(): bool {
@@ -136,6 +138,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
+		 * Declare gateway feature set for checkout routing.
+		 *
+		 * Returns one-time payments by default and conditionally adds
+		 * subscription support when enabled in admin settings.
+		 *
 		 * @return array
 		 */
 		public function get_supported_features(): array {
@@ -506,11 +513,22 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Create PayPal subscription checkout URL.
+		 * Create PayPal subscription checkout and return redirect payload.
 		 *
-		 * @param array $data
+		 * Request is sent to PayPal Billing Subscriptions API using:
+		 * - plan_id = subscription price/plan id configured in PayPal.
+		 * - custom_id = LearnPress parent order id for reconciliation.
+		 * - return/cancel URLs = checkout callbacks.
 		 *
-		 * @return array|WP_Error
+		 * @param array $data Normalized payload from get_subscription_context().
+		 *
+		 * @return array|WP_Error{
+		 *     status:string,
+		 *     redirect_url:string,
+		 *     provider_reference:string,
+		 *     subscription_id:string,
+		 *     message:string
+		 * }
 		 */
 		public function pay_subscription( array $data ) {
 			if ( ! $this->supports_feature( self::FEATURE_SUBSCRIPTION ) ) {
@@ -604,11 +622,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Reverse verify PayPal webhook before processing.
+		 * Reverse verify PayPal subscription webhook before processing.
+		 *
+		 * Verification uses PayPal /verify-webhook-signature endpoint and requires:
+		 * - configured webhook id from merchant settings,
+		 * - required PayPal transmission headers,
+		 * - raw JSON payload as webhook_event.
 		 *
 		 * @param WP_REST_Request $request
 		 *
-		 * @return array|WP_Error
+		 * @return array|WP_Error Verified webhook payload array on success.
 		 */
 		public function verify_subscription_webhook( WP_REST_Request $request ) {
 			if ( empty( $this->subscription_webhook_id ) ) {
@@ -716,7 +739,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Normalize PayPal webhook event to LP event.
+		 * Normalize PayPal webhook event into LearnPress subscription event schema.
+		 *
+		 * Maps PayPal event names into LP canonical event_type values and extracts
+		 * identifiers needed by Subscription Manager (event_id, subscription_id,
+		 * parent_order_id, renewal_key, amount/currency, status).
 		 *
 		 * @param array|object $provider_event
 		 *
@@ -792,7 +819,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Listen and process PayPal subscription webhook.
+		 * Verify, normalize, and dispatch PayPal subscription webhook event.
+		 *
+		 * Returns ignored status for unsupported event types and delegates valid
+		 * mapped events to LP_Subscription_Manager for idempotent processing.
 		 *
 		 * @param WP_REST_Request $request
 		 *
@@ -826,6 +856,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
+		 * Build manage-subscription URL shown in LearnPress order/profile context.
+		 *
 		 * @param LP_Order $order
 		 *
 		 * @return string

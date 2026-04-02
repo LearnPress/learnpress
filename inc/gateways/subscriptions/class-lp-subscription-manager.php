@@ -20,6 +20,11 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		protected $event_store;
 
 		/**
+		 * Get singleton instance of subscription manager.
+		 *
+		 * Shared instance ensures idempotency/lock state is coordinated for all
+		 * gateway webhook requests in this process.
+		 *
 		 * @return LP_Subscription_Manager
 		 */
 		public static function instance(): LP_Subscription_Manager {
@@ -30,15 +35,39 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 			return self::$_instance;
 		}
 
+		/**
+		 * Initialize manager dependencies.
+		 *
+		 * Uses the event store for duplicate detection and short-lived locks.
+		 *
+		 * @return void
+		 */
 		public function __construct() {
 			$this->event_store = LP_Subscription_Event_Store::instance();
 		}
 
 		/**
-		 * @param LP_Gateway_Abstract $gateway
-		 * @param array $event
+		 * Process a normalized subscription webhook event.
 		 *
-		 * @return array
+		 * Flow:
+		 * - Build deterministic event id.
+		 * - Short-circuit duplicates / in-flight processing.
+		 * - Resolve parent order and sync subscription meta.
+		 * - Route by event type (activate, renew, fail, cancel, expire, update).
+		 * - Mark event as processed and release lock.
+		 *
+		 * @param LP_Gateway_Abstract $gateway
+		 * @param array $event Normalized payload from gateway::normalize_subscription_event().
+		 *
+		 * @return array{
+		 *     status:string,
+		 *     event_id:string,
+		 *     event_type:string,
+		 *     status_code:int,
+		 *     order_id?:int,
+		 *     renewal_order_id?:int,
+		 *     message?:string
+		 * }
 		 */
 		public function process_webhook_event( LP_Gateway_Abstract $gateway, array $event ): array {
 			$gateway_id = $gateway->get_id();
@@ -181,10 +210,17 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
-		 * @param string $gateway_id
-		 * @param array $event
+		 * Resolve parent order id for an incoming event.
 		 *
-		 * @return int
+		 * Resolution priority:
+		 * 1) event[parent_order_id]
+		 * 2) event[metadata][lp_order_id]
+		 * 3) lookup by gateway + subscription_id in order meta.
+		 *
+		 * @param string $gateway_id
+		 * @param array $event Normalized event payload.
+		 *
+		 * @return int Parent order id or 0 when not found.
 		 */
 		public function resolve_parent_order_id( string $gateway_id, array $event ): int {
 			$parent_order_id = absint( $event['parent_order_id'] ?? 0 );
@@ -229,9 +265,16 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
+		 * Persist shared subscription meta onto a parent order.
+		 *
+		 * This keeps gateway/provider identifiers available for future lookups
+		 * and reconciliation.
+		 *
 		 * @param int $order_id
 		 * @param string $gateway_id
-		 * @param array $event
+		 * @param array $event Normalized event payload.
+		 *
+		 * @return void
 		 */
 		public function sync_subscription_meta( int $order_id, string $gateway_id, array $event ) {
 			update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_GATEWAY, $gateway_id );
@@ -258,9 +301,13 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
+		 * Update current subscription status stored on parent order.
+		 *
 		 * @param int $order_id
-		 * @param string $status
-		 * @param string $event_id
+		 * @param string $status Normalized status slug (active/past_due/cancelled/...).
+		 * @param string $event_id Optional provider event id used as last-processed marker.
+		 *
+		 * @return void
 		 */
 		public function update_subscription_status( int $order_id, string $status, string $event_id = '' ) {
 			update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, sanitize_key( $status ) );
@@ -270,8 +317,12 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
+		 * Mark parent order paid when initial subscription activation succeeds.
+		 *
 		 * @param LP_Order $parent_order
-		 * @param array $event
+		 * @param array $event Normalized event payload.
+		 *
+		 * @return void
 		 */
 		protected function mark_parent_payment_completed( LP_Order $parent_order, array $event ) {
 			$transaction_id = sanitize_text_field( (string) ( $event['transaction_id'] ?? '' ) );
@@ -281,11 +332,17 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
-		 * @param LP_Order $parent_order
-		 * @param array $event
-		 * @param string $target_status
+		 * Create or reuse a renewal child order for a renewal event.
 		 *
-		 * @return LP_Order
+		 * Idempotency strategy:
+		 * - First by renewal_key (strongest provider-derived key).
+		 * - Fallback by event_id.
+		 *
+		 * @param LP_Order $parent_order
+		 * @param array $event Normalized event payload.
+		 * @param string $target_status Target order status for renewal result.
+		 *
+		 * @return LP_Order Existing or newly-created renewal order.
 		 * @throws Exception
 		 */
 		public function create_renewal_order( LP_Order $parent_order, array $event, string $target_status = LP_ORDER_PENDING ): LP_Order {
@@ -373,6 +430,8 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
+		 * Find renewal child order by parent id + provider event id.
+		 *
 		 * @param int $parent_order_id
 		 * @param string $event_id
 		 *
@@ -403,6 +462,8 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
+		 * Find renewal child order by parent id + renewal key.
+		 *
 		 * @param int $parent_order_id
 		 * @param string $renewal_key
 		 *
@@ -433,9 +494,15 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
-		 * @param array $event
+		 * Build stable renewal dedupe key from event payload.
 		 *
-		 * @return string
+		 * Priority:
+		 * - explicit `renewal_key` provided by gateway mapping.
+		 * - fallback `subscription_id|transaction_id` composite.
+		 *
+		 * @param array $event Normalized event payload.
+		 *
+		 * @return string Non-empty dedupe key when enough data exists.
 		 */
 		protected function get_renewal_key( array $event ): string {
 			$renewal_key = sanitize_text_field( (string) ( $event['renewal_key'] ?? '' ) );
@@ -453,8 +520,15 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
+		 * Clone parent order items/meta into a renewal child order.
+		 *
+		 * Copies quantity/subtotal/total from the parent item meta so renewal
+		 * records remain auditable even when catalog prices change later.
+		 *
 		 * @param LP_Order $parent_order
 		 * @param LP_Order $renewal_order
+		 *
+		 * @return void
 		 */
 		protected function copy_parent_order_items_to_renewal( LP_Order $parent_order, LP_Order $renewal_order ) {
 			$parent_items = $parent_order->get_items();
@@ -514,8 +588,12 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
+		 * Append order note without interrupting webhook flow on failures.
+		 *
 		 * @param LP_Order $order
 		 * @param string $note
+		 *
+		 * @return void
 		 */
 		protected function add_order_note( LP_Order $order, string $note ) {
 			try {

@@ -27,6 +27,11 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		 */
 		protected $default_max_payload_bytes = 262144; // 256KB
 
+		/**
+		 * Configure REST namespace/base for gateway webhook routes.
+		 *
+		 * @return void
+		 */
 		public function __construct() {
 			$this->namespace = 'lp/v1';
 			$this->rest_base = 'gateways';
@@ -34,6 +39,13 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 			parent::__construct();
 		}
 
+		/**
+		 * Register public subscription webhook route.
+		 *
+		 * Path pattern: /lp/v1/gateways/{gateway}/subscription-webhook
+		 *
+		 * @return void
+		 */
 		public function register_routes() {
 			$this->routes = array(
 				'(?P<gateway>[a-zA-Z0-9_-]+)/subscription-webhook' => array(
@@ -49,6 +61,12 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		}
 
 		/**
+		 * Dispatch provider subscription webhook to gateway implementation.
+		 *
+		 * This is the centralized entrypoint used by Stripe/PayPal webhook calls.
+		 * It performs route-level guard checks before handing control to the
+		 * gateway-specific verifier/normalizer/processor chain.
+		 *
 		 * @param WP_REST_Request $request
 		 *
 		 * @return WP_REST_Response
@@ -106,6 +124,12 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		}
 
 		/**
+		 * Apply shared request guards for subscription webhook endpoint.
+		 *
+		 * Guards:
+		 * - Maximum payload size.
+		 * - IP-based rate limit.
+		 *
 		 * @param WP_REST_Request $request
 		 * @param string $gateway_id
 		 *
@@ -137,6 +161,12 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		}
 
 		/**
+		 * Enforce transient-backed rate limiting for webhook requests.
+		 *
+		 * Limits are configurable per gateway via filters:
+		 * - learn-press/rest/subscription-webhook/rate-limit-window
+		 * - learn-press/rest/subscription-webhook/rate-limit-max-requests
+		 *
 		 * @param string $gateway_id
 		 *
 		 * @return true|WP_Error
@@ -210,6 +240,11 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		}
 
 		/**
+		 * Resolve source IP used by route-level rate limiting.
+		 *
+		 * Default source is REMOTE_ADDR; integrators can override using
+		 * learn-press/rest/subscription-webhook/request-ip filter.
+		 *
 		 * @return string
 		 */
 		protected function get_request_ip(): string {
@@ -227,6 +262,11 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		}
 
 		/**
+		 * Build sanitized REST error response for public webhook endpoint.
+		 *
+		 * Internal provider error details are logged server-side, while API
+		 * response returns a generic/safe message by status class.
+		 *
 		 * @param WP_Error $error
 		 *
 		 * @return WP_REST_Response
