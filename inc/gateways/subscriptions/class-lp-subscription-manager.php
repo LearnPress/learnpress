@@ -15,15 +15,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		protected static $_instance = null;
 
 		/**
-		 * @var LP_Subscription_Event_Store
-		 */
-		protected $event_store;
-
-		/**
 		 * Get singleton instance of subscription manager.
-		 *
-		 * Shared instance ensures idempotency/lock state is coordinated for all
-		 * gateway webhook requests in this process.
 		 *
 		 * @return LP_Subscription_Manager
 		 */
@@ -36,25 +28,14 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		}
 
 		/**
-		 * Initialize manager dependencies.
-		 *
-		 * Uses the event store for duplicate detection and short-lived locks.
-		 *
-		 * @return void
-		 */
-		public function __construct() {
-			$this->event_store = LP_Subscription_Event_Store::instance();
-		}
-
-		/**
 		 * Process a normalized subscription webhook event.
 		 *
 		 * Flow:
 		 * - Build deterministic event id.
-		 * - Short-circuit duplicates / in-flight processing.
-		 * - Resolve parent order and sync subscription meta.
+		 * - Resolve parent order.
+		 * - Check order state for duplicates (order-state-based idempotency).
 		 * - Route by event type (activate, renew, fail, cancel, expire, update).
-		 * - Mark event as processed and release lock.
+		 * - Sync subscription meta and update order state.
 		 *
 		 * @param LP_Gateway_Abstract $gateway
 		 * @param array $event Normalized payload from gateway::normalize_subscription_event().
@@ -78,24 +59,6 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 				$event_id = md5( wp_json_encode( $event ) );
 			}
 
-			if ( $this->event_store->is_processed( $gateway_id, $event_id ) ) {
-				return array(
-					'status'      => 'duplicate',
-					'event_id'    => $event_id,
-					'event_type'  => $event_type,
-					'status_code' => 200,
-				);
-			}
-
-			if ( ! $this->event_store->acquire_lock( $gateway_id, $event_id ) ) {
-				return array(
-					'status'      => 'processing',
-					'event_id'    => $event_id,
-					'event_type'  => $event_type,
-					'status_code' => 202,
-				);
-			}
-
 			$response = array(
 				'status'      => 'ignored',
 				'event_id'    => $event_id,
@@ -106,6 +69,16 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 			try {
 				$parent_order_id = $this->resolve_parent_order_id( $gateway_id, $event );
 				$parent_order    = $parent_order_id ? learn_press_get_order( $parent_order_id ) : false;
+
+				if ( $this->is_event_already_handled( $event_type, $event_id, $parent_order, $event ) ) {
+					return array(
+						'status'      => 'duplicate',
+						'event_id'    => $event_id,
+						'event_type'  => $event_type,
+						'status_code' => 200,
+					);
+				}
+
 				if ( $parent_order ) {
 					$this->sync_subscription_meta( $parent_order->get_id(), $gateway_id, $event );
 				}
@@ -196,7 +169,6 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 						break;
 				}
 
-				$this->event_store->mark_processed( $gateway_id, $event_id, $response );
 			} catch ( Throwable $e ) {
 				$response['status']      = 'error';
 				$response['status_code'] = 400;
@@ -204,9 +176,64 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 				error_log( 'LP_Subscription_Manager: ' . $e->getMessage() );
 			}
 
-			$this->event_store->release_lock( $gateway_id, $event_id );
-
 			return $response;
+		}
+
+		/**
+		 * Check whether the webhook event outcome is already reflected in order state.
+		 *
+		 * Replaces the old LP_Subscription_Event_Store transient-based approach with
+		 * order-state checks: status, transaction_id, and event_id meta.
+		 *
+		 * @since 4.3.5
+		 *
+		 * @param string        $event_type   Normalized event type.
+		 * @param string        $event_id     Provider event ID.
+		 * @param LP_Order|false $parent_order Resolved parent order (false when not found).
+		 * @param array         $event        Full normalized event payload.
+		 *
+		 * @return bool True if the event outcome is already reflected in the database.
+		 */
+		private function is_event_already_handled( string $event_type, string $event_id, $parent_order, array $event ): bool {
+			if ( ! $parent_order instanceof LP_Order ) {
+				return false;
+			}
+
+			$order_id = $parent_order->get_id();
+
+			switch ( $event_type ) {
+				case 'subscription_activated':
+				case 'initial_payment_succeeded':
+					$sub_status = get_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, true );
+					return in_array( $sub_status, array( 'active', 'trialing' ), true )
+						&& $parent_order->is_completed();
+
+				case 'renewal_payment_succeeded':
+				case 'renewal_payment_failed':
+					$renewal_key = $this->get_renewal_key( $event );
+					if ( ! empty( $renewal_key ) && $this->find_renewal_order_by_key( $order_id, $renewal_key ) ) {
+						return true;
+					}
+					if ( ! empty( $event_id ) && $this->find_renewal_order_by_event( $order_id, $event_id ) ) {
+						return true;
+					}
+					return false;
+
+				case 'subscription_cancelled':
+					$current = get_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, true );
+					return 'cancelled' === $current;
+
+				case 'subscription_expired':
+					$current = get_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, true );
+					return 'expired' === $current;
+
+				case 'subscription_updated':
+					$last_event = get_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_LAST_EVENT_ID, true );
+					return ! empty( $event_id ) && $last_event === $event_id;
+
+				default:
+					return false;
+			}
 		}
 
 		/**
