@@ -22,6 +22,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Shared subscription order meta keys.
 	 */
+	const META_SUBSCRIPTION_GATEWAY         = '_lp_subscription_gateway';
 	const META_SUBSCRIPTION_ID              = '_lp_subscription_id';
 	const META_SUBSCRIPTION_CUSTOMER_ID     = '_lp_subscription_customer_id';
 	const META_SUBSCRIPTION_PRICE_ID        = '_lp_subscription_price_id';
@@ -206,9 +207,10 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @return bool
 	 */
 	public function is_subscription_order( LP_Order $order ): bool {
-		$order_id       = $order->get_id();
-		$saved_price_id = sanitize_text_field( (string) get_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, true ) );
-		if ( ! empty( $saved_price_id ) ) {
+		$order_id         = $order->get_id();
+		$saved_gateway_id = sanitize_key( (string) get_post_meta( $order_id, self::META_SUBSCRIPTION_GATEWAY, true ) );
+		$saved_price_id   = sanitize_text_field( (string) get_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, true ) );
+		if ( ! empty( $saved_price_id ) && ( empty( $saved_gateway_id ) || $saved_gateway_id === $this->get_id() ) ) {
 			return true;
 		}
 
@@ -270,6 +272,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	protected function persist_subscription_payment_identifiers( LP_Order $order, array $data ) {
 		$order_id = $order->get_id();
 
+		update_post_meta( $order_id, self::META_SUBSCRIPTION_GATEWAY, sanitize_key( (string) $this->get_id() ) );
 		update_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, sanitize_text_field( (string) ( $data['price_id'] ?? '' ) ) );
 		update_post_meta( $order_id, self::META_SUBSCRIPTION_QUANTITY, max( 1, absint( $data['quantity'] ?? 1 ) ) );
 	}
