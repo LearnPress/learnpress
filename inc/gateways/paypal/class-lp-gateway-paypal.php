@@ -118,8 +118,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				}
 
 				// Use PayPal rest api
-				$this->client_id     = $this->settings->get( 'app_client_id' );
-				$this->client_secret = $this->settings->get( 'app_client_secret' );
+				$this->client_id               = $this->settings->get( 'app_client_id' );
+				$this->client_secret           = $this->settings->get( 'app_client_secret' );
 				$this->subscription_webhook_id = (string) $this->settings->get( 'subscription_webhook_id', '' );
 			} else {
 				return;
@@ -210,12 +210,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @throws Exception
 		 */
 		public function process_payment( $order_id = 0 ): array {
-			$order              = new LP_Order( $order_id );
+			$order = new LP_Order( $order_id );
 
 			$subscription_data = $this->resolve_subscription_payment_data( $order );
 
 			if ( ! empty( $subscription_data ) ) {
-				$subscription_res  = $this->pay_subscription( $subscription_data );
+				$subscription_res = $this->pay_subscription( $subscription_data );
 
 				update_post_meta( $order_id, self::META_SUBSCRIPTION_STATUS, 'pending' );
 				if ( ! empty( $subscription_res['subscription_id'] ) ) {
@@ -612,7 +612,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 						),
 					),
 				);
-				$sequence = 2;
+				$sequence         = 2;
 			}
 
 			$billing_cycles[] = array(
@@ -824,7 +824,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$headers_map[ $required_header ] = $header_value;
 			}
 
-			$cert_url = esc_url_raw( $headers_map['paypal-cert-url'] );
+			$cert_url  = esc_url_raw( $headers_map['paypal-cert-url'] );
 			$cert_host = wp_parse_url( $cert_url, PHP_URL_HOST );
 			if (
 				empty( $cert_url ) ||
@@ -892,10 +892,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$provider_event = (array) $provider_event;
 			}
 
-			$event['event_id']   = (string) ( $provider_event['id'] ?? '' );
-			$paypal_event_type   = (string) ( $provider_event['event_type'] ?? '' );
-			$resource            = (array) ( $provider_event['resource'] ?? array() );
-			$event['metadata']   = array();
+			$event['event_id'] = (string) ( $provider_event['id'] ?? '' );
+			$paypal_event_type = (string) ( $provider_event['event_type'] ?? '' );
+			$resource          = (array) ( $provider_event['resource'] ?? array() );
+			$event['metadata'] = array();
 
 			if ( ! empty( $resource['custom_id'] ) ) {
 				$event['metadata']['lp_order_id'] = (string) $resource['custom_id'];
@@ -968,7 +968,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function listen_webhook_subscription( WP_REST_Request $request ): array {
 			$verified_event = $this->verify_subscription_webhook( $request );
-			$event = $this->normalize_subscription_event( $verified_event );
+			$event          = $this->normalize_subscription_event( $verified_event );
 			if ( empty( $event['event_type'] ) || 'ignored' === $event['event_type'] ) {
 				return array(
 					'status'      => 'ignored',
