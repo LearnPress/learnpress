@@ -14,6 +14,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseOfflineTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Course_Filter;
@@ -31,10 +32,11 @@ class BuilderTabCourseTemplate {
 		$html_filter = $this->html_filter_bar();
 
 		$tab = [
-			'wrapper'     => '',
-			'filter_bar'  => $html_filter,
-			'courses'     => $list_course,
-			'wrapper_end' => '</div>',
+			'wrapper'      => '',
+			'filter_bar'   => $html_filter,
+			'courses'      => $list_course,
+			'ai_templates' => $this->html_ai_templates(),
+			'wrapper_end'  => '</div>',
 		];
 
 		echo Template::combine_components( $tab );
@@ -60,7 +62,7 @@ class BuilderTabCourseTemplate {
 			''        => __( 'All Status', 'learnpress' ),
 			'publish' => __( 'Published', 'learnpress' ),
 			'draft'   => __( 'Draft', 'learnpress' ),
-			'pending' => __( 'Pending', 'learnpress' ),
+			'pending' => __( 'Pending Review', 'learnpress' ),
 			'private' => __( 'Private', 'learnpress' ),
 			'trash'   => __( 'Trash', 'learnpress' ),
 		];
@@ -89,10 +91,25 @@ class BuilderTabCourseTemplate {
 			__( 'Add New Course', 'learnpress' )
 		);
 
+		$enable_open_ai  = \LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes'
+			&& ! empty( \LP_Settings::get_option( 'open_ai_secret_key', '' ) );
+		$ai_btn_class    = $enable_open_ai ? 'lp-btn-generate-course-with-ai' : 'lp-btn-warning-enable-ai';
+		$btn_generate_ai = sprintf(
+			'<button type="button" class="cb-btn-add-new %s">
+				<i class="lp-ico-ai"></i> %s
+			</button>',
+			esc_attr( $ai_btn_class ),
+			esc_html__( 'Generate with AI', 'learnpress' )
+		);
+
 		$header = [
 			'wrapper'     => '<div class="cb-tab-header">',
 			'title'       => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', __( 'Courses', 'learnpress' ) ),
-			'add_new'     => $btn_add_new,
+			'actions'     => sprintf(
+				'<div class="cb-tab-header-actions" style="display:flex;align-items:center;gap:8px;">%s%s</div>',
+				$btn_add_new,
+				$btn_generate_ai
+			),
 			'wrapper_end' => '</div>',
 		];
 
@@ -136,6 +153,21 @@ class BuilderTabCourseTemplate {
 		];
 
 		return Template::combine_components( $header ) . Template::combine_components( $filter );
+	}
+
+	/**
+	 * Render shared AI popup templates for Course Builder list tab.
+	 *
+	 * @return string
+	 */
+	protected function html_ai_templates(): string {
+		try {
+			return AdminCreateCourseAITemplate::instance()->render_for_frontend();
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return '';
 	}
 
 	public function tab_list_courses(): string {

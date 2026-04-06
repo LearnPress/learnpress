@@ -6,6 +6,8 @@
  */
 import { BuilderTabCourse } from './course-builder/builder-course/builder-tab-course.js';
 import { BuilderEditCourse } from './course-builder/builder-course/builder-edit-course.js';
+import { CreateCourseViaAI } from '../admin/courses/generate-with-ai.js';
+import { GenerateWithOpenai } from '../admin/generate-with-openai.js';
 import { BuilderTabLesson } from './course-builder/builder-lesson/builder-tab-lesson.js';
 import { BuilderEditLesson } from './course-builder/builder-lesson/builder-edit-lesson.js';
 import { BuilderTabQuiz } from './course-builder/builder-quiz/builder-tab-quiz.js';
@@ -18,6 +20,7 @@ import { BuilderMaterial } from './course-builder/builder-lesson/builder-materia
 import { BuilderDashboard } from './course-builder/builder-dashboard.js';
 import { BuilderSettings } from './course-builder/builder-settings.js';
 import { BuilderFormState, getFormState } from './course-builder/builder-form-state.js';
+import { EditCurriculumAi } from '../admin/edit-course/edit-curriculum/edit-curriculum-ai.js';
 import { initElsTomSelect } from 'lpAssetsJsPath/admin/init-tom-select.js';
 import { Utils } from 'lpAssetsJsPath/admin/utils-admin.js';
 
@@ -26,6 +29,28 @@ const initBuilderComponents = () => {
 	try {
 		new BuilderTabCourse();
 		new BuilderEditCourse();
+
+		const hasCreateCourseAiButton = document.querySelector(
+			'.lp-btn-generate-course-with-ai, .lp-btn-warning-enable-ai'
+		);
+		if ( hasCreateCourseAiButton ) {
+			new CreateCourseViaAI( {
+				autoInsertButton: false,
+				isCourseBuilder: true,
+				redirectDelayMs: 1200,
+			} );
+		}
+
+		const hasEditCourseAiButton = document.querySelector(
+			'.cb-course-edit-ai-btn.lp-btn-generate-with-ai'
+		);
+		if ( hasEditCourseAiButton ) {
+			new GenerateWithOpenai( {
+				autoInsertButtons: false,
+				isCourseBuilder: true,
+			} );
+		}
+
 		new BuilderTabLesson();
 		new BuilderEditLesson();
 		new BuilderTabQuiz();
@@ -35,6 +60,7 @@ const initBuilderComponents = () => {
 		new BuilderPopup();
 		new BuilderDashboard();
 		new BuilderSettings();
+		new EditCurriculumAi( { isCourseBuilder: true } );
 
 		// Initialize form state management for ClassPress-style UX
 		getFormState();

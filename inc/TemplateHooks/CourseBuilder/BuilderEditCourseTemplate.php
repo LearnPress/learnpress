@@ -13,9 +13,12 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\ListCourseCategories;
+use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
+use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
+use Throwable;
 
 class BuilderEditCourseTemplate {
 	use Singleton;
@@ -85,6 +88,7 @@ class BuilderEditCourseTemplate {
 			'edit_term_category_end' => '</div>',
 			'right_column_end'       => '</div>',
 			'content_wrapper_end'    => '</div>',
+			'ai_templates'           => $this->html_overview_ai_templates(),
 			'wrapper_end'            => '</div>',
 		];
 
@@ -94,11 +98,13 @@ class BuilderEditCourseTemplate {
 	public function edit_title( $course_model ) {
 		$title      = ! empty( $course_model ) ? $course_model->get_title() : '';
 		$char_count = mb_strlen( wp_strip_all_tags( $title ) );
+		$ai_button  = $this->html_overview_ai_button( '#lp-tmpl-edit-title-ai' );
 		$edit       = [
 			'wrapper'        => '<div class="cb-course-edit-title">',
 			'label_wrap'     => '<div class="cb-course-edit-title__label-wrap">',
 			'label'          => sprintf( '<label for="title" class="cb-course-edit-title__label">%s <span class="required">*</span></label>', __( 'Course Title', 'learnpress' ) ),
 			'char_count'     => sprintf( '<span class="cb-course-edit-title__char-count">%s</span>', sprintf( __( '%d characters', 'learnpress' ), $char_count ) ),
+			'ai_button'      => $ai_button,
 			'label_wrap_end' => '</div>',
 			'input'          => sprintf( '<input type="text" name="course_title" size="30" value="%s" id="title" class="cb-course-edit-title__input" placeholder="%s">', esc_attr( $title ), esc_attr__( 'example', 'learnpress' ) ),
 			'wrapper_end'    => '</div>',
@@ -189,6 +195,7 @@ class BuilderEditCourseTemplate {
 		$desc            = ! empty( $course_model ) ? $course_model->get_description() : '';
 		$word_count      = str_word_count( wp_strip_all_tags( $desc ) );
 		$editor_id       = 'course_description_editor';
+		$ai_button       = $this->html_overview_ai_button( '#lp-tmpl-edit-description-ai' );
 		$editor_settings = array(
 			'textarea_name' => 'course_description',
 			'textarea_rows' => 10,
@@ -206,6 +213,7 @@ class BuilderEditCourseTemplate {
 			'wrapper'        => '<div class="cb-course-edit-desc">',
 			'label_wrap'     => '<div class="cb-course-edit-desc__label-wrap">',
 			'label'          => sprintf( '<label for="course_description" class="cb-course-edit-desc__label">%s</label>', __( 'Description', 'learnpress' ) ),
+			'ai_button'      => $ai_button,
 			'label_wrap_end' => '</div>',
 			'edit'           => AdminTemplate::editor_tinymce(
 				$desc,
@@ -216,6 +224,75 @@ class BuilderEditCourseTemplate {
 		];
 
 		return Template::combine_components( $edit );
+	}
+
+	/**
+	 * Check if Overview AI button and templates should be shown.
+	 *
+	 * @return bool
+	 */
+	protected function can_show_overview_ai_button(): bool {
+		return \LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes'
+			&& ! empty( \LP_Settings::get_option( 'open_ai_secret_key', '' ) );
+	}
+
+	/**
+	 * Render icon-only AI button in Course Builder overview.
+	 *
+	 * @param string $template_id
+	 *
+	 * @return string
+	 */
+	protected function html_overview_ai_button( string $template_id ): string {
+		if ( ! $this->can_show_overview_ai_button() ) {
+			return '';
+		}
+
+		$button_label = esc_html__( 'Generate with AI', 'learnpress' );
+
+		return sprintf(
+			'<button type="button" class="cb-course-edit-ai-btn cb-filter-reset lp-btn-generate-with-ai" data-template="%1$s" title="%2$s" aria-label="%2$s"><i class="lp-ico-ai" aria-hidden="true"></i><span class="screen-reader-text">%2$s</span></button>',
+			esc_attr( $template_id ),
+			esc_attr( $button_label )
+		);
+	}
+
+	/**
+	 * Render AI popup templates for Course Builder overview edit page.
+	 *
+	 * @return string
+	 */
+	protected function html_overview_ai_templates(): string {
+		if ( ! $this->can_show_overview_ai_button() ) {
+			return '';
+		}
+
+		try {
+			return AdminEditWithAITemplate::instance()->render_for_frontend( [ 'title', 'description', 'image' ] );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return '';
+	}
+
+	/**
+	 * Render AI popup template for curriculum edit in Course Builder.
+	 *
+	 * @return string
+	 */
+	protected function html_curriculum_ai_templates(): string {
+		if ( ! $this->can_show_overview_ai_button() ) {
+			return '';
+		}
+
+		try {
+			return AdminEditCourseCurriculumWithAITemplate::instance()->render_for_frontend();
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return '';
 	}
 
 	public function edit_categories( $course_model ) {
@@ -342,11 +419,11 @@ class BuilderEditCourseTemplate {
 
 		if ( ! empty( $tags ) && ! is_wp_error( $tags ) ) {
 			foreach ( $tags as $tag ) {
-				$tag_id      = $tag->term_id;
-				$tag_name    = $tag->name;
-				$tag_count   = $tag->count;
-				$is_checked  = in_array( (int) $tag_id, $selected_tag_ids, true );
-				$html_chip   = $this->input_checkbox_tag_item( $tag_id, $tag_name, $is_checked, $tag_count );
+				$tag_id     = $tag->term_id;
+				$tag_name   = $tag->name;
+				$tag_count  = $tag->count;
+				$is_checked = in_array( (int) $tag_id, $selected_tag_ids, true );
+				$html_chip  = $this->input_checkbox_tag_item( $tag_id, $tag_name, $is_checked, $tag_count );
 
 				if ( $is_checked ) {
 					$html_selected_chips .= $html_chip;
@@ -356,10 +433,10 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
-		$html_chips          = $html_selected_chips . $html_available_chips;
-		$count_all           = substr_count( $html_chips, 'class="cb-tag-chip"' );
-		$empty_default       = esc_html__( 'No tags found.', 'learnpress' );
-		$empty_search        = esc_html__( 'No matching tags.', 'learnpress' );
+		$html_chips    = $html_selected_chips . $html_available_chips;
+		$count_all     = substr_count( $html_chips, 'class="cb-tag-chip"' );
+		$empty_default = esc_html__( 'No tags found.', 'learnpress' );
+		$empty_search  = esc_html__( 'No matching tags.', 'learnpress' );
 
 		$toolbar = sprintf(
 			'<div class="cb-course-edit-tags__toolbar cb-terms-search-toolbar" id="cb-course-edit-tags-search-toolbar">
@@ -454,7 +531,8 @@ class BuilderEditCourseTemplate {
 	}
 
 	public function edit_featured_image( $course_model ) {
-		$post_id = ! empty( $course_model ) ? $course_model->get_id() : '';
+		$post_id   = ! empty( $course_model ) ? $course_model->get_id() : '';
+		$ai_button = $this->html_overview_ai_button( '#lp-tmpl-edit-image-ai' );
 
 		$thumbnail_id  = ! empty( $post_id ) ? get_post_thumbnail_id( $post_id ) : '';
 		$thumbnail_url = '';
@@ -523,13 +601,16 @@ class BuilderEditCourseTemplate {
 		$featured_image_html .= '</div>'; // End container
 
 		$edit = [
-			'wrapper'     => '<div class="cb-course-edit-featured-image">',
-			'label'       => sprintf(
+			'wrapper'        => '<div class="cb-course-edit-featured-image">',
+			'label_wrap'     => '<div class="cb-course-edit-featured-image__label-wrap">',
+			'label'          => sprintf(
 				'<label class="cb-course-edit-featured-image__title">%s</label>',
 				__( 'Featured Image', 'learnpress' )
 			),
-			'edit'        => $featured_image_html,
-			'wrapper_end' => '</div>',
+			'ai_button'      => $ai_button,
+			'label_wrap_end' => '</div>',
+			'edit'           => $featured_image_html,
+			'wrapper_end'    => '</div>',
 		];
 
 		return Template::combine_components( $edit );
@@ -557,6 +638,7 @@ class BuilderEditCourseTemplate {
 
 		// Load curriculum with is_course_builder flag
 		$this->load_curriculum_for_course_builder( $course_model );
+		echo $this->html_curriculum_ai_templates();
 	}
 
 	/**
@@ -699,7 +781,7 @@ class BuilderEditCourseTemplate {
 	 * @return array
 	 */
 	public function filter_course_builder_settings_tabs( array $tabs ): array {
-		$allowed_tabs = [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material' ];
+		$allowed_tabs = apply_filters( 'learn-press/course-builder/edit-course/settings/tabs', [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material' ] );
 
 		foreach ( array_keys( $tabs ) as $tab_key ) {
 			if ( ! in_array( $tab_key, $allowed_tabs, true ) ) {

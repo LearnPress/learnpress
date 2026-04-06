@@ -10,7 +10,14 @@ let lp_is_generating_course_data = false;
 const lp_course_ai_setting = JSON.parse( localStorage.getItem( 'lp_course_ai_setting' ) ) || {};
 
 export class CreateCourseViaAI {
-	constructor() {
+	constructor( options = {} ) {
+		this.options = {
+			autoInsertButton: true,
+			isCourseBuilder: false,
+			redirectDelayMs: 2000,
+			...options,
+		};
+
 		this.init();
 	}
 
@@ -19,26 +26,28 @@ export class CreateCourseViaAI {
 	};
 
 	init() {
-		if ( ! lpData?.enable_open_ai ) {
-			lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
-				el.insertAdjacentHTML(
-					'afterend',
-					`<button type="button" class="lp-btn-warning-enable-ai lp-btn-ai-style">
-					<i class="lp-ico-ai"></i>
-					<span>${ lpData.i18n.generate_with_ai }</span>
-				</button>`
-				);
-			} );
-		} else {
-			lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
-				el.insertAdjacentHTML(
-					'afterend',
-					`<button type="button" class="lp-btn-generate-course-with-ai lp-btn-ai-style">
-					<i class="lp-ico-ai"></i>
-					<span>${ lpData.i18n.generate_with_ai }</span>
-				</button>`
-				);
-			} );
+		if ( this.options.autoInsertButton ) {
+			if ( ! lpData?.enable_open_ai ) {
+				lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
+					el.insertAdjacentHTML(
+						'afterend',
+						`<button type="button" class="lp-btn-warning-enable-ai lp-btn-ai-style">
+						<i class="lp-ico-ai"></i>
+						<span>${ lpData.i18n.generate_with_ai }</span>
+					</button>`
+					);
+				} );
+			} else {
+				lpUtils.lpOnElementReady( '.page-title-action', ( el ) => {
+					el.insertAdjacentHTML(
+						'afterend',
+						`<button type="button" class="lp-btn-generate-course-with-ai lp-btn-ai-style">
+						<i class="lp-ico-ai"></i>
+						<span>${ lpData.i18n.generate_with_ai }</span>
+					</button>`
+					);
+				} );
+			}
 		}
 
 		this.events();
@@ -87,7 +96,7 @@ export class CreateCourseViaAI {
 				callBack: ( args ) => {
 					const { e, target } = args;
 
-					const message = lpData.i18n.confirm_close_ai;
+					const message = lpData?.i18n?.confirm_close_ai || 'Are you sure you want to close? Generate data will stop.';
 
 					if ( ! lp_is_generating_course_data ) {
 						SweetAlert.close();
@@ -321,6 +330,9 @@ export class CreateCourseViaAI {
 		// Get dataSend
 		const dataSend = JSON.parse( target.dataset.send );
 		dataSend.lp_structure_course = lp_structure_course;
+		if ( this.options.isCourseBuilder ) {
+			dataSend.is_course_builder = 1;
+		}
 
 		const form = target.closest( 'form' );
 		const elBtnPrev = form.querySelector( '.lp-btn-step[data-action=prev]' );
@@ -356,7 +368,7 @@ export class CreateCourseViaAI {
 						() => {
 							window.location.href = data.edit_course_url;
 						},
-						2000
+						this.options.redirectDelayMs
 					);
 				} else {
 					lpUtils.lpShowHideEl( elBtnPrev, 1 );

@@ -103,9 +103,16 @@ class OpenAiAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
+				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+				throw new Exception( __( 'You do not have permission to perform this action.', 'learnpress' ) );
+			}
+
 			$data_str              = LP_Request::get_param( 'data' );
 			$data                  = LP_Helper::json_decode( $data_str, true );
 			$data_structure_course = $data['lp_structure_course'] ?? [];
+			$is_course_builder     = ! empty( $data['is_course_builder'] );
 			if ( empty( $data_structure_course ) ) {
 				throw new Exception( __( 'Invalid data to create course!', 'learnpress' ) );
 			}
@@ -193,6 +200,13 @@ class OpenAiAjax extends AbstractAjax {
 			}
 
 			$course_edit_url = $coursePostModel->get_edit_link();
+			if ( $is_course_builder ) {
+				$course_edit_url = \LearnPress\CourseBuilder\CourseBuilder::get_tab_link(
+					'courses',
+					$coursePostModel->get_id(),
+					'overview'
+				);
+			}
 
 			$response->data->edit_course_url = $course_edit_url;
 			$response->data->button_label    = __( 'Redirecting...', 'learnpress' );

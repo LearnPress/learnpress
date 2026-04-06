@@ -56,6 +56,43 @@ class AdminEditWithAITemplate {
 	}
 
 	/**
+	 * Render AI templates for frontend contexts (e.g. Course Builder).
+	 *
+	 * @param array $template_types Supported: title, description, image, curriculum.
+	 *
+	 * @return string
+	 * @since 4.3.0
+	 */
+	public function render_for_frontend( array $template_types = [ 'title', 'description' ] ): string {
+		try {
+			$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
+
+			$template_map = [
+				'title'       => 'html_edit_title_via_ai',
+				'description' => 'html_edit_description_via_ai',
+				'image'       => 'html_edit_image_via_ai',
+				'curriculum'  => 'html_edit_curriculum_via_ai',
+			];
+
+			$output = '';
+			foreach ( $template_types as $template_type ) {
+				$method = $template_map[ $template_type ] ?? '';
+				if ( ! $method || ! method_exists( $this, $method ) ) {
+					continue;
+				}
+
+				$output .= $this->{$method}();
+			}
+
+			return $output;
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+
+		return '';
+	}
+
+	/**
 	 * HTML generate title with AI.
 	 *
 	 * @return string

@@ -132,7 +132,39 @@ export class BuilderEditCourse {
 		this.initTitleCharCount();
 		this.initDescWordCount();
 		this.initHeaderActionsDropdown();
+		this.bindAiFeaturedImageListener();
 		this.events();
+	}
+
+	bindAiFeaturedImageListener() {
+		if ( BuilderEditCourse._boundAiFeaturedImageListener ) {
+			return;
+		}
+
+		document.addEventListener( 'lp-course-builder/ai-featured-image-applied', ( event ) => {
+			this.handleAiFeaturedImageApplied( event );
+		} );
+
+		BuilderEditCourse._boundAiFeaturedImageListener = true;
+	}
+
+	handleAiFeaturedImageApplied( event ) {
+		const attachmentId = parseInt( event?.detail?.attachmentId || 0, 10 );
+		const imageSrc = event?.detail?.imageSrc || '';
+
+		if ( ! attachmentId || ! imageSrc ) {
+			return;
+		}
+
+		this.setFeaturedImage( {
+			id: attachmentId,
+			url: imageSrc,
+			sizes: {
+				medium: {
+					url: imageSrc,
+				},
+			},
+		} );
 	}
 
 	events() {

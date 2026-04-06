@@ -117,6 +117,7 @@ class AdminEditSettingTemplate {
 			'ul_tabs'     => '<ul class="lp-meta-box__course-tab__tabs">' . $nav_items . '</ul>',
 			'content_div' => '<div class="lp-meta-box__course-tab__content">',
 			'panels'      => $panels,
+			'hook_cb'     => $this->capture_course_builder_hook_content( $post_id ),
 			'hook_extra'  => $this->capture_hook_content( 'lp_course_data_setting_tab_content', $post_id ),
 			'content_end' => '</div>',
 			'inner_end'   => '</div></div></div>',
@@ -134,10 +135,43 @@ class AdminEditSettingTemplate {
 	 * @return string
 	 */
 	private function capture_hook_content( string $hook, int $post_id ): string {
+		if ( $this->is_course_builder_context() ) {
+			return '';
+		}
+
 		ob_start();
 		$post = get_post( $post_id );
 		do_action( $hook, $post );
 		return ob_get_clean();
+	}
+
+	/**
+	 * Render Course Builder-only hook content for course settings.
+	 * This keeps admin behavior unchanged while exposing a safe extension point for builder.
+	 *
+	 * @param int $post_id
+	 *
+	 * @return string
+	 */
+	private function capture_course_builder_hook_content( int $post_id ): string {
+		if ( ! $this->is_course_builder_context() ) {
+			return '';
+		}
+
+		return $this->capture_hook_content( 'learn-press/course-builder/edit-course/settings/tab/content', $post_id );
+	}
+
+	/**
+	 * Check current request is Course Builder page.
+	 *
+	 * @return bool
+	 */
+	private function is_course_builder_context(): bool {
+		if ( ! class_exists( '\\LP_Page_Controller' ) ) {
+			return false;
+		}
+
+		return \LP_Page_Controller::is_page_course_builder();
 	}
 
 	public function tab_general( $post_id ) {
