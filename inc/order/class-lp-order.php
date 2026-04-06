@@ -1016,10 +1016,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				);
 			}
 
-			$subscription_gateway = get_post_meta( $this->get_id(), LP_Gateway_Abstract::META_SUBSCRIPTION_GATEWAY, true );
+			$payment_method       = sanitize_key( (string) get_post_meta( $this->get_id(), '_payment_method', true ) );
 			$subscription_status  = get_post_meta( $this->get_id(), LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, true );
-			if ( ! empty( $subscription_gateway ) && in_array( $subscription_status, array( 'active', 'trialing', 'past_due' ), true ) ) {
-				$gateway = LP_Gateways::instance()->get_gateway( sanitize_key( $subscription_gateway ) );
+			if ( ! empty( $payment_method ) && in_array( $subscription_status, array( 'active', 'trialing', 'past_due' ), true ) ) {
+				$gateway = LP_Gateways::instance()->get_gateway( $payment_method );
 				if ( $gateway instanceof LP_Gateway_Abstract ) {
 					$manage_url = $gateway->get_manage_subscription_url( $this );
 					if ( ! empty( $manage_url ) ) {

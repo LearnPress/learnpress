@@ -67,7 +67,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 			);
 
 			try {
-				$parent_order_id = $this->resolve_parent_order_id( $gateway_id, $event );
+				$parent_order_id = $this->resolve_parent_order_id( $event );
 				$parent_order    = $parent_order_id ? learn_press_get_order( $parent_order_id ) : false;
 
 				if ( $this->is_event_already_handled( $event_type, $event_id, $parent_order, $event ) ) {
@@ -80,7 +80,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 				}
 
 				if ( $parent_order ) {
-					$this->sync_subscription_meta( $parent_order->get_id(), $gateway_id, $event );
+					$this->sync_subscription_meta( $parent_order->get_id(), $event );
 				}
 
 				switch ( $event_type ) {
@@ -242,14 +242,13 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		 * Resolution priority:
 		 * 1) event[parent_order_id]
 		 * 2) event[metadata][lp_order_id]
-		 * 3) lookup by gateway + subscription_id in order meta.
+		 * 3) lookup by subscription_id in order meta.
 		 *
-		 * @param string $gateway_id
 		 * @param array $event Normalized event payload.
 		 *
 		 * @return int Parent order id or 0 when not found.
 		 */
-		public function resolve_parent_order_id( string $gateway_id, array $event ): int {
+		public function resolve_parent_order_id( array $event ): int {
 			$parent_order_id = absint( $event['parent_order_id'] ?? 0 );
 			if ( $parent_order_id ) {
 				return $parent_order_id;
@@ -273,10 +272,6 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 					'fields'         => 'ids',
 					'meta_query'     => array(
 						array(
-							'key'   => LP_Gateway_Abstract::META_SUBSCRIPTION_GATEWAY,
-							'value' => $gateway_id,
-						),
-						array(
 							'key'   => LP_Gateway_Abstract::META_SUBSCRIPTION_ID,
 							'value' => $subscription_id,
 						),
@@ -298,14 +293,11 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		 * and reconciliation.
 		 *
 		 * @param int $order_id
-		 * @param string $gateway_id
 		 * @param array $event Normalized event payload.
 		 *
 		 * @return void
 		 */
-		public function sync_subscription_meta( int $order_id, string $gateway_id, array $event ) {
-			update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_GATEWAY, $gateway_id );
-
+		public function sync_subscription_meta( int $order_id, array $event ) {
 			if ( ! empty( $event['subscription_id'] ) ) {
 				update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_ID, sanitize_text_field( (string) $event['subscription_id'] ) );
 			}
