@@ -561,8 +561,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
 			}
 
-			$created_product_id = '';
-			$product_id         = (string) $data['product_id'];
+			$product_id   = (string) $data['product_id'];
+			$product_body = (object) array( 'id' => $product_id );
 			if ( empty( $product_id ) ) {
 				$product_payload = array(
 					'name' => (string) $data['name'],
@@ -597,11 +597,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					throw new Exception( $error_message );
 				}
 
-				$product_id         = (string) $product_body->id;
-				$created_product_id = $product_id;
+				$product_id = (string) $product_body->id;
 			}
 
-			$currency_code  = strtoupper( (string) $data['currency'] );
+			$currency_code  = (string) $data['currency'];
 			$billing_cycles = array();
 			$sequence       = 1;
 			if ( $trial_days > 0 ) {
@@ -684,7 +683,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				'price_id'           => (string) $plan_body->id,
 				'plan_id'            => (string) $plan_body->id,
 				'product_id'         => $product_id,
-				'created_product_id' => $created_product_id,
+				'product'            => $product_body,
+				'plan'               => $plan_body,
 				'provider_reference' => (string) $plan_body->id,
 				'message'            => __( 'PayPal subscription plan created.', 'learnpress' ),
 			);
