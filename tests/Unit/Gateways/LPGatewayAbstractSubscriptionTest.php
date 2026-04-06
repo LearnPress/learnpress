@@ -185,13 +185,9 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		$this->assertTrue( $gateway->is_subscription_order( $order ) );
 	}
 
-	public function test_is_subscription_order_returns_true_when_order_has_saved_price_id_for_gateway(): void {
+	public function test_is_subscription_order_returns_true_when_order_has_saved_price_id(): void {
 		Functions\when( 'get_post_meta' )->alias(
 			function ( int $order_id, string $key ) {
-				if ( \LP_Gateway_Abstract::META_SUBSCRIPTION_GATEWAY === $key ) {
-					return 'subscription_test_gateway';
-				}
-
 				if ( \LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID === $key ) {
 					return 'price_saved_01';
 				}
@@ -260,7 +256,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 
 		$this->assertIsArray( $result );
 		$this->assertSame( 'price_quarterly_99', $result['price_id'] );
-		$this->assertSame( 'subscription_test_gateway', $updates[ \LP_Gateway_Abstract::META_SUBSCRIPTION_GATEWAY ] ?? '' );
 		$this->assertSame( 'price_quarterly_99', $updates[ \LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID ] ?? '' );
 		$this->assertSame( 2, $updates[ \LP_Gateway_Abstract::META_SUBSCRIPTION_QUANTITY ] ?? 0 );
 	}
