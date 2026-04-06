@@ -48,9 +48,6 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 		if ( ! class_exists( '\\LP_Gateway_Abstract', false ) ) {
 			eval(
 				'class LP_Gateway_Abstract {
-					const FEATURE_ONE_TIME = "one-time";
-					const FEATURE_SUBSCRIPTION = "subscription";
-
 					public function __construct() {}
 					public function get_manage_subscription_url( $order ): string {
 						return "";
@@ -244,4 +241,3 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 		$this->assertSame( LP_ORDER_COMPLETED, $order->updated_status );
 	}
 }
-

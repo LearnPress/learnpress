@@ -85,10 +85,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 					public $id = "subscription_test_gateway";
 					public $title = "Subscription Test Gateway";
 
-					public function get_supported_features(): array {
-						return array( self::FEATURE_ONE_TIME, self::FEATURE_SUBSCRIPTION );
-					}
-
 					public function call_validate_subscription_payload( array $data ) {
 						return $this->validate_subscription_payload( $data );
 					}

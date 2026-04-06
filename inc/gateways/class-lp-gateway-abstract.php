@@ -14,12 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
-	 * Gateway feature constants.
-	 */
-	const FEATURE_ONE_TIME     = 'one-time';
-	const FEATURE_SUBSCRIPTION = 'subscription';
-
-	/**
 	 * Shared subscription order meta keys.
 	 */
 	const META_SUBSCRIPTION_ID              = '_lp_subscription_id';
@@ -185,15 +179,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 */
 	public function process_payment( $order_id ) {
 		return array();
-	}
-
-	/**
-	 * Get feature list this gateway supports.
-	 *
-	 * @return array
-	 */
-	public function get_supported_features(): array {
-		return array( self::FEATURE_ONE_TIME );
 	}
 
 	/**

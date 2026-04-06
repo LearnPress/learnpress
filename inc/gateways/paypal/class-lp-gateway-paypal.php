@@ -138,23 +138,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Declare gateway feature set for checkout routing.
-		 *
-		 * Returns one-time payments by default and conditionally adds
-		 * subscription support when enabled in admin settings.
-		 *
-		 * @return array
-		 */
-		public function get_supported_features(): array {
-			$features = array( self::FEATURE_ONE_TIME );
-			if ( $this->is_subscription_enabled() ) {
-				$features[] = self::FEATURE_SUBSCRIPTION;
-			}
-
-			return $features;
-		}
-
-		/**
 		 * Listen callback, webhook form PayPal.
 		 */
 		public function check_webhook_callback() {
