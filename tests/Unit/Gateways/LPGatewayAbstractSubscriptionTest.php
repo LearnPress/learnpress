@@ -161,13 +161,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		$this->load_gateway_dependencies();
 	}
 
-	public function test_supports_feature_default_is_one_time_only(): void {
-		$gateway = new \LP_Gateway_OneTime_Test_Double();
-
-		$this->assertTrue( $gateway->supports_feature( \LP_Gateway_Abstract::FEATURE_ONE_TIME ) );
-		$this->assertFalse( $gateway->supports_feature( \LP_Gateway_Abstract::FEATURE_SUBSCRIPTION ) );
-	}
-
 	public function test_is_subscription_order_returns_false_when_gateway_does_not_support_subscription(): void {
 		$gateway = new \LP_Gateway_OneTime_Test_Double();
 		$order   = new \LP_Order( 100, 'order_100', 9 );

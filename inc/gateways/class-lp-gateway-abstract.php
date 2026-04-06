@@ -199,23 +199,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * Check gateway support a feature.
-	 *
-	 * @param string $feature
-	 *
-	 * @return bool
-	 */
-	public function supports_feature( string $feature ): bool {
-		$features = $this->get_supported_features();
-
-		return in_array( $feature, $features, true );
-	}
-
-	/**
 	 * Check if order should use subscription flow.
 	 *
-	 * Child gateways can keep this generic and let integrations decide via
-	 * filter `learn-press/gateway/subscription-order`.
+	 * Integrations decide via filter `learn-press/gateway/subscription-order`.
 	 *
 	 * @param LP_Order $order
 	 *
@@ -229,15 +215,12 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 			return true;
 		}
 
-		$is_subscription = false;
-		if ( $this->supports_feature( self::FEATURE_SUBSCRIPTION ) ) {
-			$is_subscription = (bool) apply_filters(
-				'learn-press/gateway/subscription-order',
-				false,
-				$order,
-				$this
-			);
-		}
+		$is_subscription = (bool) apply_filters(
+			'learn-press/gateway/subscription-order',
+			false,
+			$order,
+			$this
+		);
 
 		return $is_subscription;
 	}
@@ -315,10 +298,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @throws Exception
 	 */
 	public function resolve_subscription_payment_data( LP_Order $order ): array {
-		if ( ! $this->supports_feature( self::FEATURE_SUBSCRIPTION ) ) {
-			return array();
-		}
-
 		$context = $this->get_subscription_context( $order );
 		$context = wp_parse_args(
 			$context,

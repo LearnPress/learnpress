@@ -541,7 +541,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @throws Exception
 		 */
 		public function create_subscription_plan( array $data ): array {
-			if ( ! $this->supports_feature( self::FEATURE_SUBSCRIPTION ) ) {
+			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
 
@@ -702,7 +702,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @throws Exception
 		 */
 		public function pay_subscription( array $data ): array {
-			if ( ! $this->supports_feature( self::FEATURE_SUBSCRIPTION ) ) {
+			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
 
