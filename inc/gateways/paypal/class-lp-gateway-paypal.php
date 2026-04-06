@@ -540,12 +540,21 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @return array
 		 * @throws Exception
 		 */
-		public function create_subscription_plan( array $data ): array {
+		public function create_plan( array $data ): array {
 			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
 
-			$data = $this->validate_subscription_plan_payload( $data );
+			$data = $this->validate_data_plan_payload( $data );
+
+			// PayPal-specific optional keys are normalized at gateway level.
+			$description = sanitize_text_field( wp_unslash( (string) ( $data['description'] ?? '' ) ) );
+			$trial_days  = absint( $data['trial_days'] ?? 0 );
+
+			// PayPal billing plans require a plan name.
+			if ( empty( $data['name'] ) ) {
+				throw new Exception( __( 'Missing subscription plan name.', 'learnpress' ) );
+			}
 
 			$data_token = $this->get_access_token();
 			if ( empty( $data_token->access_token ) || empty( $data_token->token_type ) ) {
@@ -559,8 +568,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					'name' => (string) $data['name'],
 					'type' => 'SERVICE',
 				);
-				if ( ! empty( $data['description'] ) ) {
-					$product_payload['description'] = (string) $data['description'];
+				if ( ! empty( $description ) ) {
+					$product_payload['description'] = (string) $description;
 				}
 
 				$product_response = wp_remote_post(
@@ -595,7 +604,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$currency_code  = strtoupper( (string) $data['currency'] );
 			$billing_cycles = array();
 			$sequence       = 1;
-			$trial_days     = absint( $data['trial_days'] );
 			if ( $trial_days > 0 ) {
 				$billing_cycles[] = array(
 					'frequency'      => array(
@@ -642,8 +650,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					'payment_failure_threshold' => 3,
 				),
 			);
-			if ( ! empty( $data['description'] ) ) {
-				$plan_payload['description'] = (string) $data['description'];
+			if ( ! empty( $description ) ) {
+				$plan_payload['description'] = (string) $description;
 			}
 
 			$plan_response = wp_remote_post(

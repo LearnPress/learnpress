@@ -404,74 +404,43 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * Normalize and validate subscription plan creation payload.
+	 * Normalize and validate shared plan-creation payload.
 	 *
-	 * Payload contract:
+	 * Common payload contract:
 	 * - `name` (string, required when `product_id` is empty)
 	 * - `amount` (float, required, > 0)
 	 * - `currency` (string, required)
 	 * - `interval` (day|week|month|year)
 	 * - `interval_count` (int, default 1)
 	 * - `product_id` (string, optional)
-	 * - `trial_days` (int, optional)
-	 * - `description` (string, optional)
 	 * - `metadata` (array, optional)
-	 * - `model` (array, optional)
 	 *
 	 * @param array $data
 	 *
 	 * @return array
 	 * @throws Exception
 	 */
-	protected function validate_subscription_plan_payload( array $data ): array {
+	protected function validate_data_plan_payload( array $data ): array {
 		$data = wp_parse_args(
 			$data,
 			array(
 				'name'           => '',
-				'description'    => '',
 				'amount'         => 0,
 				'currency'       => learn_press_get_currency(),
 				'interval'       => 'month',
 				'interval_count' => 1,
 				'product_id'     => '',
-				'trial_days'     => 0,
 				'metadata'       => array(),
-				'model'          => array(),
 			)
 		);
 
 		$data['name']           = sanitize_text_field( wp_unslash( (string) $data['name'] ) );
-		$data['description']    = sanitize_text_field( wp_unslash( (string) $data['description'] ) );
 		$data['amount']         = (float) $data['amount'];
 		$data['currency']       = strtoupper( sanitize_text_field( wp_unslash( (string) $data['currency'] ) ) );
 		$data['interval']       = strtolower( sanitize_key( (string) $data['interval'] ) );
 		$data['interval_count'] = max( 1, absint( $data['interval_count'] ) );
 		$data['product_id']     = sanitize_text_field( wp_unslash( (string) $data['product_id'] ) );
-		$data['trial_days']     = absint( $data['trial_days'] );
 		$data['metadata']       = is_array( $data['metadata'] ) ? $data['metadata'] : array();
-		$data['model']          = is_array( $data['model'] ) ? $data['model'] : array();
-
-		// Backward-compatible mapping when integrators pass plan fields via `model`.
-		if ( ! empty( $data['model'] ) ) {
-			if ( $data['amount'] <= 0 && isset( $data['model']['amount'] ) ) {
-				$data['amount'] = (float) $data['model']['amount'];
-			}
-			if ( empty( $data['currency'] ) && ! empty( $data['model']['currency'] ) ) {
-				$data['currency'] = strtoupper( sanitize_text_field( (string) $data['model']['currency'] ) );
-			}
-			if ( empty( $data['product_id'] ) && ! empty( $data['model']['product_id'] ) ) {
-				$data['product_id'] = sanitize_text_field( (string) $data['model']['product_id'] );
-			}
-			if ( empty( $data['interval'] ) && ! empty( $data['model']['interval'] ) ) {
-				$data['interval'] = strtolower( sanitize_key( (string) $data['model']['interval'] ) );
-			}
-			if ( $data['interval_count'] <= 1 && ! empty( $data['model']['interval_count'] ) ) {
-				$data['interval_count'] = max( 1, absint( $data['model']['interval_count'] ) );
-			}
-			if ( $data['trial_days'] <= 0 && isset( $data['model']['trial_days'] ) ) {
-				$data['trial_days'] = absint( $data['model']['trial_days'] );
-			}
-		}
 
 		if ( empty( $data['product_id'] ) && empty( $data['name'] ) ) {
 			throw new Exception( __( 'Missing subscription plan name.', 'learnpress' ) );
@@ -494,7 +463,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * Generic subscription plan/price creation flow.
+	 * Generic provider plan/price creation flow.
 	 *
 	 * Child gateways should override and return created provider identifiers,
 	 * typically a `price_id`/`plan_id` to be used later by `pay_subscription()`.
@@ -504,7 +473,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @return array
 	 * @throws Exception
 	 */
-	public function create_subscription_plan( array $data ): array {
+	public function create_plan( array $data ): array {
 		throw new Exception( sprintf( __( 'Gateway %s does not support subscription plan creation.', 'learnpress' ), $this->get_id() ) );
 	}
 

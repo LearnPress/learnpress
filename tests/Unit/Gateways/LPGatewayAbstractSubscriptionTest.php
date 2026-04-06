@@ -93,8 +93,8 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 						return $this->validate_subscription_payload( $data );
 					}
 
-					public function call_validate_subscription_plan_payload( array $data ) {
-						return $this->validate_subscription_plan_payload( $data );
+					public function call_validate_data_plan_payload( array $data ) {
+						return $this->validate_data_plan_payload( $data );
 					}
 				}'
 			);
@@ -110,8 +110,8 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 						return $this->validate_subscription_payload( $data );
 					}
 
-					public function call_validate_subscription_plan_payload( array $data ) {
-						return $this->validate_subscription_plan_payload( $data );
+					public function call_validate_data_plan_payload( array $data ) {
+						return $this->validate_data_plan_payload( $data );
 					}
 				}'
 			);
@@ -312,11 +312,11 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		$this->assertSame( 'https://example.com/cancel', $result['cancel_url'] );
 	}
 
-	public function test_create_subscription_plan_throws_not_supported_exception_on_base_gateway(): void {
+	public function test_create_plan_throws_not_supported_exception_on_base_gateway(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
 		$this->expectException( \Exception::class );
-		$gateway->create_subscription_plan(
+		$gateway->create_plan(
 			array(
 				'name'     => 'Monthly Plan',
 				'amount'   => 12,
@@ -326,11 +326,11 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		);
 	}
 
-	public function test_validate_subscription_plan_payload_requires_name_if_product_id_missing(): void {
+	public function test_validate_data_plan_payload_requires_name_if_product_id_missing(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
 		$this->expectException( \Exception::class );
-		$gateway->call_validate_subscription_plan_payload(
+		$gateway->call_validate_data_plan_payload(
 			array(
 				'amount'   => 10,
 				'currency' => 'USD',
@@ -339,11 +339,11 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		);
 	}
 
-	public function test_validate_subscription_plan_payload_requires_positive_amount(): void {
+	public function test_validate_data_plan_payload_requires_positive_amount(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
 		$this->expectException( \Exception::class );
-		$gateway->call_validate_subscription_plan_payload(
+		$gateway->call_validate_data_plan_payload(
 			array(
 				'name'     => 'Monthly Plan',
 				'amount'   => 0,
@@ -353,10 +353,10 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		);
 	}
 
-	public function test_validate_subscription_plan_payload_accepts_product_id_without_name(): void {
+	public function test_validate_data_plan_payload_accepts_product_id_without_name(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
-		$result = $gateway->call_validate_subscription_plan_payload(
+		$result = $gateway->call_validate_data_plan_payload(
 			array(
 				'product_id' => 'prod_external_001',
 				'amount'     => 11.5,
@@ -371,11 +371,11 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		$this->assertSame( 'year', $result['interval'] );
 	}
 
-	public function test_validate_subscription_plan_payload_rejects_invalid_interval(): void {
+	public function test_validate_data_plan_payload_rejects_invalid_interval(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
 		$this->expectException( \Exception::class );
-		$gateway->call_validate_subscription_plan_payload(
+		$gateway->call_validate_data_plan_payload(
 			array(
 				'name'     => 'Monthly Plan',
 				'amount'   => 10,
@@ -385,33 +385,30 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		);
 	}
 
-	public function test_validate_subscription_plan_payload_normalizes_defaults_and_arrays(): void {
+	public function test_validate_data_plan_payload_normalizes_defaults_and_arrays(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
-		$result = $gateway->call_validate_subscription_plan_payload(
+		$result = $gateway->call_validate_data_plan_payload(
 			array(
 				'name'           => 'Monthly Plan',
 				'amount'         => 20,
 				'currency'       => 'usd',
 				'interval'       => 'month',
 				'interval_count' => 0,
-				'trial_days'     => -3,
 				'metadata'       => 'invalid',
-				'model'          => 'invalid',
 			)
 		);
 
 		$this->assertIsArray( $result );
 		$this->assertSame( 1, $result['interval_count'] );
-		$this->assertSame( 3, $result['trial_days'] );
 		$this->assertSame( array(), $result['metadata'] );
-		$this->assertSame( array(), $result['model'] );
 	}
 
-	public function test_validate_subscription_plan_payload_reads_missing_fields_from_model(): void {
+	public function test_validate_data_plan_payload_does_not_map_plan_fields_from_model(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
-		$result = $gateway->call_validate_subscription_plan_payload(
+		$this->expectException( \Exception::class );
+		$gateway->call_validate_data_plan_payload(
 			array(
 				'name'   => 'Yearly Plan',
 				'amount' => 0,
@@ -424,13 +421,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 				),
 			)
 		);
-
-		$this->assertIsArray( $result );
-		$this->assertSame( 59.9, $result['amount'] );
-		$this->assertSame( 'EUR', $result['currency'] );
-		$this->assertSame( 'year', $result['interval'] );
-		$this->assertSame( 2, $result['interval_count'] );
-		$this->assertSame( 7, $result['trial_days'] );
 	}
 
 	public function test_get_subscription_context_builds_expected_metadata_and_defaults_quantity_to_one(): void {
