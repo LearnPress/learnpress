@@ -3,6 +3,8 @@
  * Fields settings PayPal Payment
  */
 
+$subscription_webhook_url = esc_url( rest_url( 'lp/v1/gateways/paypal/subscription-webhook' ) );
+
 return apply_filters(
 	'learn-press/gateway-payment/paypal/settings',
 	array(
@@ -65,7 +67,12 @@ return apply_filters(
 			'id'      => '[enable_subscriptions]',
 			'default' => 'no',
 			'type'    => 'checkbox',
-			'desc'    => esc_html__( 'Enable PayPal subscription checkout flow.', 'learnpress' ),
+			'desc'    => sprintf(
+				'%1$s<br /><strong>%2$s</strong> <code>%3$s</code>',
+				esc_html__( 'Enable PayPal subscription checkout flow.', 'learnpress' ),
+				esc_html__( 'Webhook URL:', 'learnpress' ),
+				esc_html( $subscription_webhook_url )
+			),
 		),
 		array(
 			'title' => esc_html__( 'Subscription webhook ID', 'learnpress' ),
