@@ -25,7 +25,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	const META_SUBSCRIPTION_GATEWAY         = '_lp_subscription_gateway';
 	const META_SUBSCRIPTION_ID              = '_lp_subscription_id';
 	const META_SUBSCRIPTION_CUSTOMER_ID     = '_lp_subscription_customer_id';
-	const META_SUBSCRIPTION_PRICE_ID        = '_lp_subscription_price_id';
+	const META_SUBSCRIPTION_PLAN_ID         = '_lp_subscription_plan_id';
 	const META_SUBSCRIPTION_QUANTITY        = '_lp_subscription_quantity';
 	const META_SUBSCRIPTION_STATUS          = '_lp_subscription_status';
 	const META_SUBSCRIPTION_PARENT_ORDER_ID = '_lp_subscription_parent_order_id';
@@ -209,7 +209,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	public function is_subscription_order( LP_Order $order ): bool {
 		$order_id         = $order->get_id();
 		$saved_gateway_id = sanitize_key( (string) get_post_meta( $order_id, self::META_SUBSCRIPTION_GATEWAY, true ) );
-		$saved_price_id   = sanitize_text_field( (string) get_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, true ) );
+		$saved_price_id   = sanitize_text_field( (string) get_post_meta( $order_id, self::META_SUBSCRIPTION_PLAN_ID, true ) );
 		if ( ! empty( $saved_price_id ) && ( empty( $saved_gateway_id ) || $saved_gateway_id === $this->get_id() ) ) {
 			return true;
 		}
@@ -238,7 +238,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		$order_id = $order->get_id();
 
 		$context = array(
-			'price_id'    => get_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, true ),
+			'price_id'    => get_post_meta( $order_id, self::META_SUBSCRIPTION_PLAN_ID, true ),
 			'quantity'    => (int) get_post_meta( $order_id, self::META_SUBSCRIPTION_QUANTITY, true ),
 			'success_url' => $this->get_return_url( $order ),
 			'cancel_url'  => learn_press_get_page_link( 'checkout' ),
@@ -273,7 +273,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		$order_id = $order->get_id();
 
 		update_post_meta( $order_id, self::META_SUBSCRIPTION_GATEWAY, sanitize_key( (string) $this->get_id() ) );
-		update_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, sanitize_text_field( (string) ( $data['price_id'] ?? '' ) ) );
+		update_post_meta( $order_id, self::META_SUBSCRIPTION_PLAN_ID, sanitize_text_field( (string) ( $data['price_id'] ?? '' ) ) );
 		update_post_meta( $order_id, self::META_SUBSCRIPTION_QUANTITY, max( 1, absint( $data['quantity'] ?? 1 ) ) );
 	}
 

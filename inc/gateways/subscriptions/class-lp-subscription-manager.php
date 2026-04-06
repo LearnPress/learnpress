@@ -315,7 +315,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 			}
 
 			if ( ! empty( $event['price_id'] ) ) {
-				update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_PRICE_ID, sanitize_text_field( (string) $event['price_id'] ) );
+				update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID, sanitize_text_field( (string) $event['price_id'] ) );
 			}
 
 			if ( ! empty( $event['event_id'] ) ) {

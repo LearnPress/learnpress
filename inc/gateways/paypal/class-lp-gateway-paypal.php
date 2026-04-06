@@ -533,7 +533,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		/**
 		 * Create PayPal billing plan resource (catalog product + billing plan).
 		 *
-		 * Returned `price_id` is the PayPal `plan_id` used by `pay_subscription()`.
+		 * Returned `plan` object contains PayPal `plan_id` (`$plan->id`) for later
+		 * subscription checkout via `pay_subscription()`.
 		 *
 		 * @param array $data
 		 *
@@ -679,14 +680,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			return array(
-				'status'             => 'success',
-				'price_id'           => (string) $plan_body->id,
-				'plan_id'            => (string) $plan_body->id,
-				'product_id'         => $product_id,
-				'product'            => $product_body,
-				'plan'               => $plan_body,
-				'provider_reference' => (string) $plan_body->id,
-				'message'            => __( 'PayPal subscription plan created.', 'learnpress' ),
+				'status'  => 'success',
+				'product' => $product_body,
+				'plan'    => $plan_body,
+				'message' => __( 'PayPal subscription plan created.', 'learnpress' ),
 			);
 		}
 

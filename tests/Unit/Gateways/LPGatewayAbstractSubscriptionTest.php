@@ -192,7 +192,7 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 					return 'subscription_test_gateway';
 				}
 
-				if ( \LP_Gateway_Abstract::META_SUBSCRIPTION_PRICE_ID === $key ) {
+				if ( \LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID === $key ) {
 					return 'price_saved_01';
 				}
 
@@ -238,7 +238,7 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		Functions\when( 'get_post_meta' )->alias(
 			function ( int $order_id, string $key ) {
 				$values = array(
-					\LP_Gateway_Abstract::META_SUBSCRIPTION_PRICE_ID => 'price_quarterly_99',
+					\LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID => 'price_quarterly_99',
 					\LP_Gateway_Abstract::META_SUBSCRIPTION_QUANTITY => 2,
 				);
 
@@ -261,7 +261,7 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		$this->assertIsArray( $result );
 		$this->assertSame( 'price_quarterly_99', $result['price_id'] );
 		$this->assertSame( 'subscription_test_gateway', $updates[ \LP_Gateway_Abstract::META_SUBSCRIPTION_GATEWAY ] ?? '' );
-		$this->assertSame( 'price_quarterly_99', $updates[ \LP_Gateway_Abstract::META_SUBSCRIPTION_PRICE_ID ] ?? '' );
+		$this->assertSame( 'price_quarterly_99', $updates[ \LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID ] ?? '' );
 		$this->assertSame( 2, $updates[ \LP_Gateway_Abstract::META_SUBSCRIPTION_QUANTITY ] ?? 0 );
 	}
 
@@ -423,7 +423,7 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		Functions\when( 'get_post_meta' )->alias(
 			function ( int $order_id, string $key ) {
 				$values = array(
-					\LP_Gateway_Abstract::META_SUBSCRIPTION_PRICE_ID => 'price_quarterly_01',
+					\LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID => 'price_quarterly_01',
 					\LP_Gateway_Abstract::META_SUBSCRIPTION_QUANTITY => 0,
 				);
 
