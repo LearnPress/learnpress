@@ -239,7 +239,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 			function ( int $order_id, string $key ) {
 				$values = array(
 					\LP_Gateway_Abstract::META_SUBSCRIPTION_PRICE_ID => 'price_quarterly_99',
-					\LP_Gateway_Abstract::META_SUBSCRIPTION_MODEL    => array( 'interval' => 'month' ),
 					\LP_Gateway_Abstract::META_SUBSCRIPTION_QUANTITY => 2,
 				);
 
@@ -289,14 +288,13 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		);
 	}
 
-	public function test_validate_subscription_payload_normalizes_quantity_and_optional_arrays(): void {
+	public function test_validate_subscription_payload_normalizes_quantity_and_metadata(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
 		$result = $gateway->call_validate_subscription_payload(
 			array(
 				'price_id'    => 'price_monthly_01',
 				'quantity'    => 0,
-				'model'       => 'not-array',
 				'metadata'    => 'not-array',
 				'success_url' => 'https://example.com/success',
 				'cancel_url'  => 'https://example.com/cancel',
@@ -306,7 +304,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		$this->assertIsArray( $result );
 		$this->assertSame( 'price_monthly_01', $result['price_id'] );
 		$this->assertSame( 1, $result['quantity'] );
-		$this->assertSame( array(), $result['model'] );
 		$this->assertSame( array(), $result['metadata'] );
 		$this->assertSame( 'https://example.com/success', $result['success_url'] );
 		$this->assertSame( 'https://example.com/cancel', $result['cancel_url'] );
@@ -404,7 +401,7 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		$this->assertSame( array(), $result['metadata'] );
 	}
 
-	public function test_validate_data_plan_payload_does_not_map_plan_fields_from_model(): void {
+	public function test_validate_data_plan_payload_rejects_missing_amount_even_with_extra_fields(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
 		$this->expectException( \Exception::class );
@@ -412,12 +409,11 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 			array(
 				'name'   => 'Yearly Plan',
 				'amount' => 0,
-				'model'  => array(
+				'extra'  => array(
 					'amount'         => 59.9,
 					'currency'       => 'eur',
 					'interval'       => 'year',
 					'interval_count' => 2,
-					'trial_days'     => 7,
 				),
 			)
 		);
@@ -428,7 +424,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 			function ( int $order_id, string $key ) {
 				$values = array(
 					\LP_Gateway_Abstract::META_SUBSCRIPTION_PRICE_ID => 'price_quarterly_01',
-					\LP_Gateway_Abstract::META_SUBSCRIPTION_MODEL    => array( 'interval' => 'month', 'interval_count' => 3 ),
 					\LP_Gateway_Abstract::META_SUBSCRIPTION_QUANTITY => 0,
 				);
 
@@ -441,7 +436,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		$context = $gateway->get_subscription_context( $order );
 
 		$this->assertSame( 'price_quarterly_01', $context['price_id'] );
-		$this->assertSame( array( 'interval' => 'month', 'interval_count' => 3 ), $context['model'] );
 		$this->assertSame( 1, $context['quantity'] );
 		$this->assertSame( 'https://example.com/order-received/222', $context['success_url'] );
 		$this->assertSame( 'https://example.com/checkout', $context['cancel_url'] );

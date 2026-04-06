@@ -26,7 +26,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	const META_SUBSCRIPTION_ID              = '_lp_subscription_id';
 	const META_SUBSCRIPTION_CUSTOMER_ID     = '_lp_subscription_customer_id';
 	const META_SUBSCRIPTION_PRICE_ID        = '_lp_subscription_price_id';
-	const META_SUBSCRIPTION_MODEL           = '_lp_subscription_model';
 	const META_SUBSCRIPTION_QUANTITY        = '_lp_subscription_quantity';
 	const META_SUBSCRIPTION_STATUS          = '_lp_subscription_status';
 	const META_SUBSCRIPTION_PARENT_ORDER_ID = '_lp_subscription_parent_order_id';
@@ -240,7 +239,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 		$context = array(
 			'price_id'    => get_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, true ),
-			'model'       => get_post_meta( $order_id, self::META_SUBSCRIPTION_MODEL, true ),
 			'quantity'    => (int) get_post_meta( $order_id, self::META_SUBSCRIPTION_QUANTITY, true ),
 			'success_url' => $this->get_return_url( $order ),
 			'cancel_url'  => learn_press_get_page_link( 'checkout' ),
@@ -277,9 +275,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		update_post_meta( $order_id, self::META_SUBSCRIPTION_GATEWAY, sanitize_key( (string) $this->get_id() ) );
 		update_post_meta( $order_id, self::META_SUBSCRIPTION_PRICE_ID, sanitize_text_field( (string) ( $data['price_id'] ?? '' ) ) );
 		update_post_meta( $order_id, self::META_SUBSCRIPTION_QUANTITY, max( 1, absint( $data['quantity'] ?? 1 ) ) );
-		if ( isset( $data['model'] ) ) {
-			update_post_meta( $order_id, self::META_SUBSCRIPTION_MODEL, is_array( $data['model'] ) ? $data['model'] : array() );
-		}
 	}
 
 	/**
@@ -303,7 +298,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 			$context,
 			array(
 				'price_id'    => '',
-				'model'       => array(),
 				'quantity'    => 1,
 				'success_url' => '',
 				'cancel_url'  => '',
@@ -313,7 +307,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 		$context['price_id'] = sanitize_text_field( (string) $context['price_id'] );
 		$context['quantity'] = max( 1, absint( $context['quantity'] ) );
-		$context['model']    = is_array( $context['model'] ) ? $context['model'] : array();
 		$context['metadata'] = is_array( $context['metadata'] ) ? $context['metadata'] : array();
 
 		if ( ! empty( $context['price_id'] ) ) {
@@ -336,7 +329,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * Payload contract:
 	 * - `price_id` (string, required): provider-side configured recurring price/plan id.
-	 * - `model` (array): optional business context passed by integrators.
 	 * - `quantity` (int): defaults to 1 when missing/invalid/zero.
 	 * - `success_url` / `cancel_url` (string, required): absolute callback URLs.
 	 * - `metadata` (array): optional identifiers (order/user/etc.) for reconciliation.
@@ -352,7 +344,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 			$data,
 			array(
 				'price_id'    => '',
-				'model'       => array(),
 				'quantity'    => 1,
 				'success_url' => '',
 				'cancel_url'  => '',
@@ -372,7 +363,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		$data['cancel_url']  = esc_url_raw( (string) $data['cancel_url'] );
 
 		// Defensive normalization for optional structured fields.
-		$data['model']       = is_array( $data['model'] ) ? $data['model'] : array();
 		$data['metadata']    = is_array( $data['metadata'] ) ? $data['metadata'] : array();
 
 		// price_id is the minimum provider binding required for subscription checkout.
