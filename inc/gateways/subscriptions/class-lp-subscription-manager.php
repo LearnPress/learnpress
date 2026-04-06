@@ -412,7 +412,6 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 				$renewal_order->save();
 			}
 
-			update_post_meta( $renewal_order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_PARENT_ORDER_ID, $parent_order->get_id() );
 			if ( ! empty( $event_id ) ) {
 				update_post_meta( $renewal_order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_EVENT_ID, $event_id );
 			}
