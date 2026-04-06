@@ -81,7 +81,7 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 				$this->guard_webhook_request( $request, $gateway_id );
 
 				$gateway = LP_Gateways::instance()->get_gateway( $gateway_id );
-				if ( ! $gateway || ! $gateway instanceof LP_Gateway_Abstract ) {
+				if ( ! $gateway instanceof LP_Gateway_Abstract ) {
 					throw new Exception( __( 'Gateway not found.', 'learnpress' ), 404 );
 				}
 
@@ -89,10 +89,13 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 					throw new Exception( __( 'Gateway not found.', 'learnpress' ), 404 );
 				}
 
+				/**
+				 * @var LP_Gateway_Paypal|LP_Gateway_Stripe $gateway
+				 */
 				$result = $gateway->listen_webhook_subscription( $request );
 
 				$status_code = 200;
-				if ( is_array( $result ) && isset( $result['status_code'] ) ) {
+				if ( isset( $result['status_code'] ) ) {
 					$status_code = absint( $result['status_code'] );
 					unset( $result['status_code'] );
 				}
