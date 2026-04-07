@@ -534,6 +534,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			// PayPal-specific optional keys are normalized at gateway level.
 			$description = sanitize_text_field( wp_unslash( (string) ( $data['description'] ?? '' ) ) );
 			$trial_days  = absint( $data['trial_days'] ?? 0 );
+			$setup_fee   = (float) ( $data['setup_fee'] ?? 0 );
 
 			// PayPal billing plans require a plan name.
 			if ( empty( $data['name'] ) ) {
@@ -629,6 +630,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				'billing_cycles'      => $billing_cycles,
 				'payment_preferences' => array(
 					'auto_bill_outstanding'     => true,
+					'setup_fee'                 => array(
+						'value'         => number_format( $setup_fee, 2, '.', '' ),
+						'currency_code' => $currency_code,
+					),
 					'setup_fee_failure_action'  => 'CONTINUE',
 					'payment_failure_threshold' => 3,
 				),

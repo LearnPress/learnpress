@@ -382,6 +382,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * - `currency` (string, required)
 	 * - `interval` (day|week|month|year)
 	 * - `interval_count` (int, default 1)
+	 * - `setup_fee` (float, optional, >= 0)
 	 * - `product_id` (string, optional)
 	 * - `metadata` (array, optional)
 	 *
@@ -399,6 +400,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 				'currency'       => learn_press_get_currency(),
 				'interval'       => 'month',
 				'interval_count' => 1,
+				'setup_fee'      => 0,
 				'product_id'     => '',
 				'metadata'       => array(),
 			)
@@ -409,6 +411,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		$data['currency']       = strtoupper( sanitize_text_field( wp_unslash( (string) $data['currency'] ) ) );
 		$data['interval']       = strtolower( sanitize_key( (string) $data['interval'] ) );
 		$data['interval_count'] = max( 1, absint( $data['interval_count'] ) );
+		$data['setup_fee']      = (float) $data['setup_fee'];
 		$data['product_id']     = sanitize_text_field( wp_unslash( (string) $data['product_id'] ) );
 		$data['metadata']       = is_array( $data['metadata'] ) ? $data['metadata'] : array();
 
@@ -418,6 +421,10 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 		if ( $data['amount'] <= 0 ) {
 			throw new Exception( __( 'Invalid subscription amount.', 'learnpress' ) );
+		}
+
+		if ( $data['setup_fee'] < 0 ) {
+			throw new Exception( __( 'Invalid subscription setup fee.', 'learnpress' ) );
 		}
 
 		if ( empty( $data['currency'] ) ) {

@@ -443,7 +443,23 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 
 		$this->assertIsArray( $result );
 		$this->assertSame( 1, $result['interval_count'] );
+		$this->assertSame( 0.0, $result['setup_fee'] );
 		$this->assertSame( array(), $result['metadata'] );
+	}
+
+	public function test_validate_data_plan_payload_rejects_negative_setup_fee(): void {
+		$gateway = new \LP_Gateway_Subscription_Test_Double();
+
+		$this->expectException( \Exception::class );
+		$gateway->call_validate_data_plan_payload(
+			array(
+				'name'      => 'Monthly Plan',
+				'amount'    => 20,
+				'currency'  => 'usd',
+				'interval'  => 'month',
+				'setup_fee' => -1,
+			)
+		);
 	}
 
 	public function test_validate_data_plan_payload_rejects_missing_amount_even_with_extra_fields(): void {
