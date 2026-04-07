@@ -86,6 +86,17 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 
 				switch ( $event_type ) {
 					case 'subscription_activated':
+						if ( ! $parent_order ) {
+							throw new Exception( __( 'Parent subscription order not found.', 'learnpress' ) );
+						}
+
+						$this->update_subscription_status( $parent_order->get_id(), 'active' );
+						$this->add_order_note( $parent_order, __( 'Subscription activated.', 'learnpress' ) );
+						do_action( 'learn-press/subscription/activated', $parent_order->get_id(), $event, $gateway_id );
+
+						$response['status']   = 'success';
+						$response['order_id'] = $parent_order->get_id();
+						break;
 					case 'initial_payment_succeeded':
 						if ( ! $parent_order ) {
 							throw new Exception( __( 'Parent subscription order not found.', 'learnpress' ) );
@@ -93,9 +104,8 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 
 						$this->update_subscription_status( $parent_order->get_id(), 'active' );
 						$this->mark_parent_payment_completed( $parent_order, $event );
-						$this->add_order_note( $parent_order, __( 'Subscription activated.', 'learnpress' ) );
-
-						do_action( 'learn-press/subscription/activated', $parent_order->get_id(), $event, $gateway_id );
+						$this->add_order_note( $parent_order, __( 'Initial subscription payment succeeded.', 'learnpress' ) );
+						do_action( 'learn-press/subscription/initial-payment-succeeded', $parent_order->get_id(), $event, $gateway_id );
 
 						$response['status']   = 'success';
 						$response['order_id'] = $parent_order->get_id();
@@ -204,6 +214,9 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 
 			switch ( $event_type ) {
 				case 'subscription_activated':
+					$sub_status = get_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, true );
+					return in_array( $sub_status, array( 'active', 'trialing' ), true );
+
 				case 'initial_payment_succeeded':
 					$sub_status = get_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, true );
 					return in_array( $sub_status, array( 'active', 'trialing' ), true )
