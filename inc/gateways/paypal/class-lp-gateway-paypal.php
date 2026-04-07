@@ -1109,7 +1109,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
 			}
 
-			$metadata = array_map(
+			$metadata              = array_map(
 				function ( $value ) {
 					if ( is_scalar( $value ) || is_null( $value ) ) {
 						return (string) $value;
@@ -1118,12 +1118,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				},
 				(array) $data['metadata']
 			);
-			$order_id = absint( $metadata['lp_order_id'] ?? 0 );
+			$order_subscription_id = absint( $metadata['lp_order_id'] ?? 0 );
 
 			$request_body = array(
 				'plan_id'             => (string) $data['price_id'],
 				'quantity'            => (string) max( 1, absint( $data['quantity'] ) ),
-				'custom_id'           => ! empty( $order_id ) ? (string) $order_id : '',
+				'custom_id'           => ! empty( $order_subscription_id ) ? (string) $order_subscription_id : '',
 				'application_context' => array(
 					'brand_name' => ! empty( get_bloginfo() ) ? get_bloginfo() : 'LearnPress',
 					'return_url' => esc_url_raw( (string) $data['success_url'] ),
@@ -1281,7 +1281,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * Maps PayPal event names into LP canonical event_type values and extracts
 		 * identifiers needed by Subscription Manager (event_id, subscription_id,
-		 * parent_order_id, renewal_key, amount/currency, status).
+		 * parent_order_id, renewal_key, amount/currency).
 		 *
 		 * @param array|object $provider_event
 		 *
@@ -1298,48 +1298,46 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$resource          = (array) ( $provider_event['resource'] ?? array() );
 			$event['metadata'] = array();
 
-			$paypal_order_ref = '';
+			$order_subscription_id = '';
 			if ( ! empty( $resource['custom_id'] ) ) {
-				$paypal_order_ref = (string) $resource['custom_id'];
+				$order_subscription_id = (string) $resource['custom_id'];
 			} elseif ( ! empty( $resource['custom'] ) ) {
 				// Some PayPal sale resources provide `custom` instead of `custom_id`.
-				$paypal_order_ref = (string) $resource['custom'];
+				$order_subscription_id = (string) $resource['custom'];
 			}
-			if ( '' !== $paypal_order_ref ) {
-				$event['metadata']['lp_order_id'] = $paypal_order_ref;
-				$event['parent_order_id']         = absint( $paypal_order_ref );
+			if ( '' !== $order_subscription_id ) {
+				$event['metadata']['lp_order_id'] = $order_subscription_id;
+				$event['parent_order_id']         = absint( $order_subscription_id );
 			}
 
 			switch ( $paypal_event_type ) {
 				case 'BILLING.SUBSCRIPTION.ACTIVATED':
 					$event['event_type']      = 'subscription_activated';
 					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
-					$event['status']          = 'active';
 					break;
 				case 'BILLING.SUBSCRIPTION.UPDATED':
-					$event['event_type']      = 'subscription_updated';
-					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
-					$event['status']          = (string) ( $resource['status'] ?? '' );
+					// This callback does not add state transition value for LP flow.
+					// Keep ignored intentionally to avoid ambiguous status handling.
+					$event['event_type'] = 'ignored';
 					break;
 				case 'BILLING.SUBSCRIPTION.CANCELLED':
-					$event['event_type']              = 'subscription_cancelled';
-							$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
-					$event['status']                  = 'cancelled';
+					$event['event_type']      = 'subscription_cancelled';
+					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
 					break;
 				case 'BILLING.SUBSCRIPTION.SUSPENDED':
-					$event['event_type']      = 'subscription_updated';
+					$event['event_type']      = 'subscription_suspended';
 					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
-					$event['status']          = 'suspended';
 					break;
 				case 'BILLING.SUBSCRIPTION.EXPIRED':
+					// EXPPIRED is usually for fixed-term plans (total_cycles > 0),
+					// not the common auto-renew membership plan (total_cycles = 0).
 					$event['event_type']      = 'subscription_expired';
 					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
-					$event['status']          = 'expired';
 					break;
 				case 'PAYMENT.SALE.COMPLETED':
-					$event['event_type']              = 'renewal_payment_succeeded';
-							$event['subscription_id'] = (string) ( $resource['billing_agreement_id'] ?? '' );
-							$event['transaction_id']  = (string) ( $resource['id'] ?? '' );
+					$event['event_type']      = 'renewal_payment_succeeded';
+					$event['subscription_id'] = (string) ( $resource['billing_agreement_id'] ?? '' );
+					$event['transaction_id']  = (string) ( $resource['id'] ?? '' );
 					if ( ! empty( $resource['id'] ) ) {
 						$event['renewal_key'] = 'paypal_sale_' . sanitize_text_field( (string) $resource['id'] );
 					}
@@ -1350,7 +1348,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					}
 					break;
 				case 'PAYMENT.SALE.DENIED':
-						$event['event_type']  = 'renewal_payment_failed';
+					$event['event_type']      = 'renewal_payment_failed';
 					$event['subscription_id'] = (string) ( $resource['billing_agreement_id'] ?? '' );
 					$event['transaction_id']  = (string) ( $resource['id'] ?? '' );
 					if ( ! empty( $resource['id'] ) ) {
@@ -1358,9 +1356,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					}
 					break;
 				case 'BILLING.SUBSCRIPTION.PAYMENT.FAILED':
-						$event['event_type']     = 'renewal_payment_failed';
-					$event['subscription_id']    = (string) ( $resource['id'] ?? ( $resource['billing_agreement_id'] ?? '' ) );
-						$event['transaction_id'] = (string) ( $resource['sale_id'] ?? ( $resource['transaction_id'] ?? '' ) );
+					$event['event_type']      = 'renewal_payment_failed';
+					$event['subscription_id'] = (string) ( $resource['id'] ?? ( $resource['billing_agreement_id'] ?? '' ) );
+					$event['transaction_id']  = (string) ( $resource['sale_id'] ?? ( $resource['transaction_id'] ?? '' ) );
 					break;
 				default:
 					$event['event_type'] = 'ignored';
@@ -1383,31 +1381,31 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function listen_webhook_subscription( WP_REST_Request $request ): array {
 
-					$required_headers = array(
-						'paypal-auth-algo',
-						'paypal-cert-url',
-						'paypal-transmission-id',
-						'paypal-transmission-sig',
-						'paypal-transmission-time',
-					);
-					$webhook_data     = $this->build_webhook_data_from_request( $request, $required_headers, true );
+			$required_headers = array(
+				'paypal-auth-algo',
+				'paypal-cert-url',
+				'paypal-transmission-id',
+				'paypal-transmission-sig',
+				'paypal-transmission-time',
+			);
+			$webhook_data     = $this->build_webhook_data_from_request( $request, $required_headers, true );
 
-					$verified_event = $this->verify_subscription_webhook( $webhook_data );
-					$event          = $this->normalize_subscription_event( $verified_event );
-					if ( empty( $event['event_type'] ) || 'ignored' === $event['event_type'] ) {
-						return array(
-							'status'      => 'ignored',
-							'event_id'    => $event['event_id'] ?? '',
-							'event_type'  => $event['event_type'] ?? 'ignored',
-							'status_code' => 200,
-						);
-					}
+			$verified_event = $this->verify_subscription_webhook( $webhook_data );
+			$event          = $this->normalize_subscription_event( $verified_event );
+			if ( empty( $event['event_type'] ) || 'ignored' === $event['event_type'] ) {
+				return array(
+					'status'      => 'ignored',
+					'event_id'    => $event['event_id'] ?? '',
+					'event_type'  => $event['event_type'] ?? 'ignored',
+					'status_code' => 200,
+				);
+			}
 
-					if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
-						throw new Exception( __( 'Subscription manager is not available.', 'learnpress' ), 500 );
-					}
+			if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
+				throw new Exception( __( 'Subscription manager is not available.', 'learnpress' ), 500 );
+			}
 
-					return LP_Subscription_Manager::instance()->process_webhook_event( $this, $event );
+			return LP_Subscription_Manager::instance()->process_webhook_event( $this, $event );
 		}
 
 		/**
