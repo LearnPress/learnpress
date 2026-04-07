@@ -332,10 +332,10 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 			}
 
 			if ( ! empty( $event['price_id'] ) ) {
-					update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID, sanitize_text_field( (string) $event['price_id'] ) );
+				update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID, sanitize_text_field( (string) $event['price_id'] ) );
 			}
 			if ( ! empty( $event['event_id'] ) ) {
-					update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_LAST_EVENT_ID, sanitize_text_field( (string) $event['event_id'] ) );
+				update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_LAST_EVENT_ID, sanitize_text_field( (string) $event['event_id'] ) );
 			}
 			if ( ! empty( $event['metadata'] ) && is_array( $event['metadata'] ) ) {
 				update_post_meta( $order_id, '_lp_subscription_metadata', $event['metadata'] );
@@ -363,7 +363,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		 */
 		protected function mark_parent_payment_completed( LP_Order $order_subscription, array $event ) {
 
-					$transaction_id = sanitize_text_field( (string) ( $event['transaction_id'] ?? '' ) );
+			$transaction_id = sanitize_text_field( (string) ( $event['transaction_id'] ?? '' ) );
 			if ( ! $order_subscription->is_completed() ) {
 				$order_subscription->payment_complete( $transaction_id );
 			}
@@ -384,7 +384,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		 */
 		public function create_renewal_order( LP_Order $order_subscription, array $event, string $target_status = LP_ORDER_PENDING ): LP_Order {
 
-					$renewal_key = $this->get_renewal_key( $event );
+			$renewal_key = $this->get_renewal_key( $event );
 			if ( ! empty( $renewal_key ) ) {
 				$existing = $this->find_renewal_order_by_key( $order_subscription->get_id(), $renewal_key );
 				if ( $existing ) {
@@ -418,7 +418,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 
 			$renewal_order_id = $order_renew->save();
 			if ( empty( $renewal_order_id ) ) {
-					throw new Exception( __( 'Cannot create renewal order.', 'learnpress' ) );
+				throw new Exception( __( 'Cannot create renewal order.', 'learnpress' ) );
 			}
 
 			$this->copy_parent_order_items_to_renewal( $order_subscription, $order_renew );
@@ -430,16 +430,16 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 			}
 
 			if ( LP_ORDER_COMPLETED !== $target_status && ! empty( $event['transaction_id'] ) ) {
-						update_post_meta( $renewal_order_id, '_transaction_id', sanitize_text_field( (string) $event['transaction_id'] ) );
+				update_post_meta( $renewal_order_id, '_transaction_id', sanitize_text_field( (string) $event['transaction_id'] ) );
 			}
 			if ( ! empty( $renewal_key ) ) {
 				update_post_meta( $renewal_order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_RENEWAL_KEY, $renewal_key );
 			}
 
 			if ( LP_ORDER_COMPLETED === $target_status ) {
-					$order_renew->payment_complete( (string) ( $event['transaction_id'] ?? '' ) );
+				$order_renew->payment_complete( (string) ( $event['transaction_id'] ?? '' ) );
 			} else {
-					$order_renew->update_status( $target_status );
+				$order_renew->update_status( $target_status );
 			}
 
 			$order_renew->add_note(

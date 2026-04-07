@@ -1381,31 +1381,31 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function listen_webhook_subscription( WP_REST_Request $request ): array {
 
-					$required_headers = array(
-						'paypal-auth-algo',
-						'paypal-cert-url',
-						'paypal-transmission-id',
-						'paypal-transmission-sig',
-						'paypal-transmission-time',
-					);
-					$webhook_data     = $this->build_webhook_data_from_request( $request, $required_headers, true );
+			$required_headers = array(
+				'paypal-auth-algo',
+				'paypal-cert-url',
+				'paypal-transmission-id',
+				'paypal-transmission-sig',
+				'paypal-transmission-time',
+			);
+			$webhook_data     = $this->build_webhook_data_from_request( $request, $required_headers, true );
 
-					$verified_event = $this->verify_subscription_webhook( $webhook_data );
-					$event          = $this->normalize_subscription_event( $verified_event );
-					if ( empty( $event['event_type'] ) || 'ignored' === $event['event_type'] ) {
-						return array(
-							'status'      => 'ignored',
-							'event_id'    => $event['event_id'] ?? '',
-							'event_type'  => $event['event_type'] ?? 'ignored',
-							'status_code' => 200,
-						);
-					}
+			$verified_event = $this->verify_subscription_webhook( $webhook_data );
+			$event          = $this->normalize_subscription_event( $verified_event );
+			if ( empty( $event['event_type'] ) || 'ignored' === $event['event_type'] ) {
+				return array(
+					'status'      => 'ignored',
+					'event_id'    => $event['event_id'] ?? '',
+					'event_type'  => $event['event_type'] ?? 'ignored',
+					'status_code' => 200,
+				);
+			}
 
-					if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
-						throw new Exception( __( 'Subscription manager is not available.', 'learnpress' ), 500 );
-					}
+			if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
+				throw new Exception( __( 'Subscription manager is not available.', 'learnpress' ), 500 );
+			}
 
-					return LP_Subscription_Manager::instance()->process_webhook_event( $this, $event );
+			return LP_Subscription_Manager::instance()->process_webhook_event( $this, $event );
 		}
 
 		/**
