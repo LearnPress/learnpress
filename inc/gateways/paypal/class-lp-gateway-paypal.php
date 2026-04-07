@@ -1298,9 +1298,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$resource          = (array) ( $provider_event['resource'] ?? array() );
 			$event['metadata'] = array();
 
+			$paypal_order_ref = '';
 			if ( ! empty( $resource['custom_id'] ) ) {
-				$event['metadata']['lp_order_id'] = (string) $resource['custom_id'];
-				$event['parent_order_id']         = absint( $resource['custom_id'] );
+				$paypal_order_ref = (string) $resource['custom_id'];
+			} elseif ( ! empty( $resource['custom'] ) ) {
+				// Some PayPal sale resources provide `custom` instead of `custom_id`.
+				$paypal_order_ref = (string) $resource['custom'];
+			}
+			if ( '' !== $paypal_order_ref ) {
+				$event['metadata']['lp_order_id'] = $paypal_order_ref;
+				$event['parent_order_id']         = absint( $paypal_order_ref );
 			}
 
 			switch ( $paypal_event_type ) {

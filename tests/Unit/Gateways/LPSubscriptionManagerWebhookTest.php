@@ -14,6 +14,8 @@ if ( ! class_exists( '\\LP_Order', false ) ) {
 			private $order_key;
 			private $user_id;
 			public $updated_status = "";
+			public $completed = false;
+			public $payment_complete_txn = "";
 
 			public function __construct( $id = 0, $order_key = "", $user_id = 0 ) {
 				$this->id        = (int) $id;
@@ -39,6 +41,15 @@ if ( ! class_exists( '\\LP_Order', false ) ) {
 
 			public function update_status( $status ) {
 				$this->updated_status = (string) $status;
+			}
+
+			public function is_completed() {
+				return (bool) $this->completed;
+			}
+
+			public function payment_complete( $transaction_id = "" ) {
+				$this->completed = true;
+				$this->payment_complete_txn = (string) $transaction_id;
 			}
 		}'
 	);
@@ -192,7 +203,33 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 			}
 		);
 		Functions\when( 'do_action' )->justReturn( null );
-		Functions\when( 'get_posts' )->justReturn( array() );
+		Functions\when( 'get_posts' )->alias(
+			function ( $args ) {
+				$args = is_array( $args ) ? $args : array();
+
+				$meta_query = is_array( $args['meta_query'] ?? null ) ? $args['meta_query'] : array();
+				if ( empty( $meta_query ) ) {
+					return array();
+				}
+
+				$meta = is_array( $meta_query[0] ?? null ) ? $meta_query[0] : array();
+				$key  = (string) ( $meta['key'] ?? '' );
+				$val  = (string) ( $meta['value'] ?? '' );
+
+				if ( \LP_Gateway_Abstract::META_SUBSCRIPTION_ID !== $key || '' === $val ) {
+					return array();
+				}
+
+				foreach ( $this->meta_store as $order_id => $order_meta ) {
+					$saved_subscription_id = (string) ( $order_meta[ \LP_Gateway_Abstract::META_SUBSCRIPTION_ID ] ?? '' );
+					if ( $saved_subscription_id === $val ) {
+						return array( (int) $order_id );
+					}
+				}
+
+				return array();
+			}
+		);
 
 		Functions\when( 'learn_press_get_order' )->alias(
 			function ( $order_id ) {
@@ -219,22 +256,75 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 		);
 	}
 
-	public function test_process_webhook_event_paypal_subscription_cancelled_from_standard_payload(): void {
+	public function test_process_webhook_event_paypal_sale_completed_resolves_parent_by_subscription_id(): void {
 		$parent_order       = new \LP_Order( 1001, 'order_1001', 11 );
 		$this->orders[1001] = $parent_order;
+		$this->meta_store[1001][ \LP_Gateway_Abstract::META_SUBSCRIPTION_ID ] = 'I-TESTPAYPALSUB001';
 
 		$gateway = new \LP_Subscription_Manager_Test_Gateway( 'paypal' );
-		$manager = new \LP_Subscription_Manager();
+		$manager = new \LP_Subscription_Manager_Test_Double();
 		$event   = $this->normalize_paypal_payload_to_event( $this->build_paypal_standard_payload() );
 
 		$response = $manager->process_webhook_event( $gateway, $event );
 
-		$this->assertSame( 'cancelled', $response['status'] );
-		$this->assertSame( 'subscription_cancelled', $response['event_type'] );
+		$this->assertSame( 'success', $response['status'] );
+		$this->assertSame( 'renewal_payment_succeeded', $response['event_type'] );
 		$this->assertSame( 1001, $response['order_id'] );
-		$this->assertSame( 'cancelled', $this->meta_store[1001][ \LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS ] ?? '' );
+		$this->assertSame( 9002, $response['renewal_order_id'] );
+		$this->assertSame( 'active', $this->meta_store[1001][ \LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS ] ?? '' );
 		$this->assertSame( 'I-TESTPAYPALSUB001', $this->meta_store[1001][ \LP_Gateway_Abstract::META_SUBSCRIPTION_ID ] ?? '' );
-		$this->assertSame( 'P-TESTPAYPALPLAN001', $this->meta_store[1001][ \LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID ] ?? '' );
+		$this->assertCount( 1, $manager->create_renewal_calls );
+		$this->assertSame( 'completed', $manager->create_renewal_calls[0]['target_status'] ?? '' );
+		$this->assertSame( 'paypal_sale_9HT12345P6789012A', $manager->create_renewal_calls[0]['event']['renewal_key'] ?? '' );
+	}
+
+	public function test_process_webhook_event_subscription_activated_only_updates_status(): void {
+		$parent_order       = new \LP_Order( 1101, 'order_1101', 21 );
+		$this->orders[1101] = $parent_order;
+
+		$gateway = new \LP_Subscription_Manager_Test_Gateway( 'paypal' );
+		$manager = new \LP_Subscription_Manager_Test_Double();
+		$event   = array(
+			'event_id'        => 'evt_sub_activated_1101',
+			'event_type'      => 'subscription_activated',
+			'parent_order_id' => 1101,
+			'subscription_id' => 'I-PAYPALSUB1101',
+			'status'          => 'active',
+			'metadata'        => array(),
+		);
+
+		$response = $manager->process_webhook_event( $gateway, $event );
+
+		$this->assertSame( 'success', $response['status'] );
+		$this->assertSame( 1101, $response['order_id'] );
+		$this->assertSame( 'active', $this->meta_store[1101][ \LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS ] ?? '' );
+		$this->assertFalse( $parent_order->is_completed() );
+		$this->assertSame( '', $parent_order->payment_complete_txn );
+	}
+
+	public function test_process_webhook_event_initial_payment_succeeded_completes_parent_order(): void {
+		$parent_order       = new \LP_Order( 1201, 'order_1201', 22 );
+		$this->orders[1201] = $parent_order;
+
+		$gateway = new \LP_Subscription_Manager_Test_Gateway( 'stripe' );
+		$manager = new \LP_Subscription_Manager_Test_Double();
+		$event   = array(
+			'event_id'        => 'evt_initial_paid_1201',
+			'event_type'      => 'initial_payment_succeeded',
+			'parent_order_id' => 1201,
+			'subscription_id' => 'sub_STRIPE1201',
+			'transaction_id'  => 'pi_STRIPE1201',
+			'status'          => 'active',
+			'metadata'        => array(),
+		);
+
+		$response = $manager->process_webhook_event( $gateway, $event );
+
+		$this->assertSame( 'success', $response['status'] );
+		$this->assertSame( 1201, $response['order_id'] );
+		$this->assertSame( 'active', $this->meta_store[1201][ \LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS ] ?? '' );
+		$this->assertTrue( $parent_order->is_completed() );
+		$this->assertSame( 'pi_STRIPE1201', $parent_order->payment_complete_txn );
 	}
 
 	public function test_process_webhook_event_stripe_renewal_payment_succeeded_from_standard_payload(): void {
@@ -260,28 +350,52 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 	}
 
 	/**
-	 * PayPal webhook sample: BILLING.SUBSCRIPTION.CANCELLED.
+	 * PayPal webhook sample based on official subscriptions webhook docs.
+	 * Source: https://developer.paypal.com/docs/subscriptions/reference/webhooks/
+	 *
+	 * Event used here:
+	 * - PAYMENT.SALE.COMPLETED
 	 *
 	 * @return array<string, mixed>
 	 */
 	private function build_paypal_standard_payload(): array {
 		return array(
-			'id'         => 'WH-TEST-PAYPAL-EVT-001',
-			'event_type' => 'BILLING.SUBSCRIPTION.CANCELLED',
+			'id'                 => 'WH-TEST-PAYPAL-EVT-001',
+			'event_version'      => '1.0',
+			'create_time'        => '2026-04-07T10:11:12Z',
+			'resource_type'      => 'sale',
+			'event_type'         => 'PAYMENT.SALE.COMPLETED',
+			'summary'            => 'Payment completed for $29.00 USD',
+			'resource_version'   => '1.0',
 			'resource'   => array(
-				'id'         => 'I-TESTPAYPALSUB001',
-				'status'     => 'CANCELLED',
-				'plan_id'    => 'P-TESTPAYPALPLAN001',
-				'custom_id'  => '1001',
-				'subscriber' => array(
-					'payer_id' => 'CUSTOMERPP001',
+				'id'                   => '9HT12345P6789012A',
+				'state'                => 'completed',
+				'amount'               => array(
+					'total'    => '29.00',
+					'currency' => 'USD',
+				),
+				'payment_mode'         => 'INSTANT_TRANSFER',
+				'update_time'          => '2026-04-07T10:11:12Z',
+				'create_time'          => '2026-04-07T10:11:10Z',
+				'billing_agreement_id' => 'I-TESTPAYPALSUB001',
+				'parent_payment'       => 'PAY-TESTPARENTPAYMENT001',
+			),
+			'links'              => array(
+				array(
+					'href'   => 'https://api-m.sandbox.paypal.com/v1/payments/sale/9HT12345P6789012A',
+					'rel'    => 'self',
+					'method' => 'GET',
 				),
 			),
 		);
 	}
 
 	/**
-	 * Stripe webhook sample: invoice.payment_succeeded for recurring cycle.
+	 * Stripe webhook sample based on official API object shape.
+	 * Source: https://docs.stripe.com/api/events/object
+	 *
+	 * Event used here:
+	 * - invoice.payment_succeeded
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -296,6 +410,7 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 					'customer'       => 'cus_1N9WQ2A1B2C3D4E5',
 					'amount_paid'    => 4900,
 					'currency'       => 'usd',
+					'charge'         => null,
 					'payment_intent' => 'pi_1N9WQ2A1B2C3D4E5',
 					'metadata'       => array(
 						'lp_order_id' => '1002',
@@ -330,15 +445,17 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 
 		return array(
 			'event_id'        => (string) ( $payload['id'] ?? '' ),
-			'event_type'      => 'subscription_cancelled',
-			'subscription_id' => (string) ( $resource['id'] ?? '' ),
-			'customer_id'     => (string) ( $resource['subscriber']['payer_id'] ?? '' ),
-			'price_id'        => (string) ( $resource['plan_id'] ?? '' ),
-			'status'          => strtolower( (string) ( $resource['status'] ?? '' ) ),
-			'parent_order_id' => (int) ( $resource['custom_id'] ?? 0 ),
-			'metadata'        => array(
-				'lp_order_id' => (string) ( $resource['custom_id'] ?? '' ),
-			),
+			'event_type'      => 'renewal_payment_succeeded',
+			'subscription_id' => (string) ( $resource['billing_agreement_id'] ?? '' ),
+			'customer_id'     => '',
+			'price_id'        => '',
+			'status'          => 'active',
+			'parent_order_id' => 0,
+			'transaction_id'  => (string) ( $resource['id'] ?? '' ),
+			'amount'          => (float) ( $resource['amount']['total'] ?? 0 ),
+			'currency'        => strtoupper( (string) ( $resource['amount']['currency'] ?? '' ) ),
+			'renewal_key'     => ! empty( $resource['id'] ) ? 'paypal_sale_' . (string) $resource['id'] : '',
+			'metadata'        => array(),
 		);
 	}
 
