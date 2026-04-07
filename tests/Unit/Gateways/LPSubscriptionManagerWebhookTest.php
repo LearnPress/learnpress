@@ -16,6 +16,7 @@ if ( ! class_exists( '\\LP_Order', false ) ) {
 			public $updated_status = "";
 			public $completed = false;
 			public $payment_complete_txn = "";
+			public $notes = array();
 
 			public function __construct( $id = 0, $order_key = "", $user_id = 0 ) {
 				$this->id        = (int) $id;
@@ -50,6 +51,10 @@ if ( ! class_exists( '\\LP_Order', false ) ) {
 			public function payment_complete( $transaction_id = "" ) {
 				$this->completed = true;
 				$this->payment_complete_txn = (string) $transaction_id;
+			}
+
+			public function add_note( $note ) {
+				$this->notes[] = (string) $note;
 			}
 		}'
 	);
@@ -289,7 +294,6 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 			'event_type'      => 'subscription_activated',
 			'parent_order_id' => 1101,
 			'subscription_id' => 'I-PAYPALSUB1101',
-			'status'          => 'active',
 			'metadata'        => array(),
 		);
 
@@ -314,7 +318,6 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 			'parent_order_id' => 1201,
 			'subscription_id' => 'sub_STRIPE1201',
 			'transaction_id'  => 'pi_STRIPE1201',
-			'status'          => 'active',
 			'metadata'        => array(),
 		);
 
@@ -325,6 +328,48 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 		$this->assertSame( 'active', $this->meta_store[1201][ \LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS ] ?? '' );
 		$this->assertTrue( $parent_order->is_completed() );
 		$this->assertSame( 'pi_STRIPE1201', $parent_order->payment_complete_txn );
+	}
+
+	public function test_process_webhook_event_subscription_suspended_updates_status(): void {
+		$order_subscription       = new \LP_Order( 1301, 'order_1301', 31 );
+		$this->orders[1301] = $order_subscription;
+
+		$gateway = new \LP_Subscription_Manager_Test_Gateway( 'paypal' );
+		$manager = new \LP_Subscription_Manager_Test_Double();
+		$event   = array(
+			'event_id'        => 'evt_sub_suspended_1301',
+			'event_type'      => 'subscription_suspended',
+			'parent_order_id' => 1301,
+			'subscription_id' => 'I-PAYPALSUB1301',
+			'metadata'        => array(),
+		);
+
+		$response = $manager->process_webhook_event( $gateway, $event );
+
+		$this->assertSame( 'suspended', $response['status'] );
+		$this->assertSame( 1301, $response['order_id'] );
+		$this->assertSame( 'suspended', $this->meta_store[1301][ \LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS ] ?? '' );
+	}
+
+	public function test_process_webhook_event_subscription_expired_updates_status(): void {
+		$order_subscription       = new \LP_Order( 1401, 'order_1401', 41 );
+		$this->orders[1401] = $order_subscription;
+
+		$gateway = new \LP_Subscription_Manager_Test_Gateway( 'paypal' );
+		$manager = new \LP_Subscription_Manager_Test_Double();
+		$event   = array(
+			'event_id'        => 'evt_sub_expired_1401',
+			'event_type'      => 'subscription_expired',
+			'parent_order_id' => 1401,
+			'subscription_id' => 'I-PAYPALSUB1401',
+			'metadata'        => array(),
+		);
+
+		$response = $manager->process_webhook_event( $gateway, $event );
+
+		$this->assertSame( 'expired', $response['status'] );
+		$this->assertSame( 1401, $response['order_id'] );
+		$this->assertSame( 'expired', $this->meta_store[1401][ \LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS ] ?? '' );
 	}
 
 	public function test_process_webhook_event_stripe_renewal_payment_succeeded_from_standard_payload(): void {
@@ -360,14 +405,14 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 	 */
 	private function build_paypal_standard_payload(): array {
 		return array(
-			'id'                 => 'WH-TEST-PAYPAL-EVT-001',
-			'event_version'      => '1.0',
-			'create_time'        => '2026-04-07T10:11:12Z',
-			'resource_type'      => 'sale',
-			'event_type'         => 'PAYMENT.SALE.COMPLETED',
-			'summary'            => 'Payment completed for $29.00 USD',
-			'resource_version'   => '1.0',
-			'resource'   => array(
+			'id'               => 'WH-TEST-PAYPAL-EVT-001',
+			'event_version'    => '1.0',
+			'create_time'      => '2026-04-07T10:11:12Z',
+			'resource_type'    => 'sale',
+			'event_type'       => 'PAYMENT.SALE.COMPLETED',
+			'summary'          => 'Payment completed for $29.00 USD',
+			'resource_version' => '1.0',
+			'resource'         => array(
 				'id'                   => '9HT12345P6789012A',
 				'state'                => 'completed',
 				'amount'               => array(
@@ -380,7 +425,7 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 				'billing_agreement_id' => 'I-TESTPAYPALSUB001',
 				'parent_payment'       => 'PAY-TESTPARENTPAYMENT001',
 			),
-			'links'              => array(
+			'links'            => array(
 				array(
 					'href'   => 'https://api-m.sandbox.paypal.com/v1/payments/sale/9HT12345P6789012A',
 					'rel'    => 'self',
@@ -449,7 +494,6 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 			'subscription_id' => (string) ( $resource['billing_agreement_id'] ?? '' ),
 			'customer_id'     => '',
 			'price_id'        => '',
-			'status'          => 'active',
 			'parent_order_id' => 0,
 			'transaction_id'  => (string) ( $resource['id'] ?? '' ),
 			'amount'          => (float) ( $resource['amount']['total'] ?? 0 ),
@@ -467,10 +511,10 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 	 * @return array<string, mixed>
 	 */
 	private function normalize_stripe_payload_to_event( array $payload ): array {
-		$invoice   = (array) ( $payload['data']['object'] ?? array() );
+		$invoice    = (array) ( $payload['data']['object'] ?? array() );
 		$first_line = (array) ( $invoice['lines']['data'][0] ?? array() );
-		$price     = (array) ( $first_line['price'] ?? array() );
-		$metadata  = (array) ( $invoice['metadata'] ?? array() );
+		$price      = (array) ( $first_line['price'] ?? array() );
+		$metadata   = (array) ( $invoice['metadata'] ?? array() );
 
 		return array(
 			'event_id'        => (string) ( $payload['id'] ?? '' ),
