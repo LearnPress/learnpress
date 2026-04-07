@@ -61,6 +61,7 @@ class BuilderTabCourseTemplate {
 		$statuses = [
 			''        => __( 'All Status', 'learnpress' ),
 			'publish' => __( 'Published', 'learnpress' ),
+			'future'  => __( 'Scheduled', 'learnpress' ),
 			'draft'   => __( 'Draft', 'learnpress' ),
 			'pending' => __( 'Pending Review', 'learnpress' ),
 			'private' => __( 'Private', 'learnpress' ),
@@ -183,7 +184,7 @@ class BuilderTabCourseTemplate {
 			// Handle status filter - if empty, show all; otherwise filter by selected status
 			$status_param = $param['c_status'] ?? '';
 			if ( empty( $status_param ) ) {
-				$param['c_status'] = 'publish,private,draft,pending,trash';
+				$param['c_status'] = 'publish,future,private,draft,pending,trash';
 			}
 
 			Courses::handle_params_for_query_courses( $filter, $param );
@@ -245,7 +246,9 @@ class BuilderTabCourseTemplate {
 		try {
 			$html_list_course = '';
 			foreach ( $courses as $course_obj ) {
-				$course            = CourseModel::find( $course_obj->ID, true );
+				// Read fresh model to avoid stale post_status in long-lived cache,
+				// especially around future -> publish transitions.
+				$course            = CourseModel::find( $course_obj->ID, false );
 				$html_list_course .= self::render_course( $course );
 			}
 
@@ -346,7 +349,13 @@ class BuilderTabCourseTemplate {
 				$html_meta_data = sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data );
 			}
 
-			$html_status = sprintf( '<div class="course-status %1$s"><span>%1$s</span></div>', $course->get_status() );
+			$course_status = $course->get_status();
+			$status_label  = 'future' === $course_status ? __( 'Scheduled', 'learnpress' ) : $course_status;
+			$html_status   = sprintf(
+				'<div class="course-status %1$s"><span>%2$s</span></div>',
+				esc_attr( $course_status ),
+				esc_html( $status_label )
+			);
 
 			// Price
 			$html_price = sprintf( '<div class="course-item-price-wrap">%s</div>', $singleCourseTemplate->html_price( $course ) );

@@ -35,9 +35,9 @@ export class EditCurriculumAi {
 			lpUtils.lpOnElementReady( EditCourseCurriculum.selectors.idElEditCurriculum, ( el ) => {
 				const elCountSections = el.querySelector( EditSection.selectors.elCountSections );
 				elCountSections.insertAdjacentHTML(
-					'afterend',
+					'beforebegin',
 					`<button type="button"
-						class="lp-btn-generate-with-ai lp-btn-ai-style"
+						class="cb-course-edit-ai-btn lp-btn-generate-with-ai"
 						data-template="#lp-tmpl-edit-course-curriculum-ai">
 						<i class="lp-ico-ai"></i>
 					</button>`

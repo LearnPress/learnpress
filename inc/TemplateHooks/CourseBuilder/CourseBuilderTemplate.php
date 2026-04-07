@@ -328,7 +328,7 @@ class CourseBuilderTemplate {
 
 			$header['logo'] = preg_replace_callback(
 				'/<div class="lp-cb-top-header__logo">\s*/i',
-				static function( array $matches ) use ( $default_logo_template ): string {
+				static function ( array $matches ) use ( $default_logo_template ): string {
 					return $matches[0] . $default_logo_template;
 				},
 				$header['logo'],
@@ -351,7 +351,7 @@ class CourseBuilderTemplate {
 
 		$tabs = array_filter(
 			$tabs,
-			static function( array $tab ) use ( $is_admin ): bool {
+			static function ( array $tab ) use ( $is_admin ): bool {
 				if ( ! empty( $tab['admin_only'] ) && ! $is_admin ) {
 					return false;
 				}
@@ -360,7 +360,16 @@ class CourseBuilderTemplate {
 			}
 		);
 
-		// Always show main navigation tabs (ClassPress-style persistent sidebar)
+		usort(
+			$tabs,
+			static function ( array $a, array $b ): int {
+				$a_priority = isset( $a['priority'] ) && is_numeric( $a['priority'] ) ? (int) $a['priority'] : PHP_INT_MAX;
+				$b_priority = isset( $b['priority'] ) && is_numeric( $b['priority'] ) ? (int) $b['priority'] : PHP_INT_MAX;
+
+				return $a_priority <=> $b_priority;
+			}
+		);
+
 		foreach ( $tabs as $tab ) {
 			$slug         = $tab['slug'];
 			$nav_item     = $this->html_nav_item_main( $slug, $tab );
@@ -385,7 +394,6 @@ class CourseBuilderTemplate {
 
 		$sidebar = [
 			'wrapper'     => '<aside id="lp-course-builder-sidebar" class="lp-cb-sidebar">',
-			//'header'      => $this->sidebar_header(),
 			'nav'         => Template::combine_components( $nav ),
 			'toggle'      => $toggle,
 			'footer'      => $this->sidebar_footer(),
@@ -570,7 +578,8 @@ class CourseBuilderTemplate {
 		if ( ! $is_new_post && ! empty( $status ) ) {
 			// Use type-specific status class based on current tab
 			$type_singular = rtrim( $tab_current, 's' ); // courses -> course, quizzes -> quiz, etc.
-			$status_badge  = sprintf( '<span class="%1$s-status %2$s">%2$s</span>', esc_attr( $type_singular ), esc_attr( $status ) );
+			$status_label  = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
+			$status_badge  = sprintf( '<span class="%1$s-status %2$s">%3$s</span>', esc_attr( $type_singular ), esc_attr( $status ), esc_html( $status_label ) );
 		}
 
 		$is_admin_user                 = current_user_can( ADMIN_ROLE );
@@ -581,106 +590,10 @@ class CourseBuilderTemplate {
 			: 'publish_lp_courses';
 		$can_publish_course            = current_user_can( $cap_publish_course );
 		$required_review               = \LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
-		$status_object                 = get_post_status_object( $status );
-		$is_public_status              = $status_object && ! empty( $status_object->public );
 		$use_review_only_workflow      = ( $is_instructor_user && $required_review ) || ! $can_publish_course;
 		$is_review_only_course_context = 'courses' === $tab_current && ! $is_admin_user && $use_review_only_workflow;
-		$is_review_only_non_public     = $is_review_only_course_context && ! $is_public_status;
-
-		// Configure buttons based on current status
-		// Main button reflects current status action, dropdown shows alternative
-		$status_config = array(
-			'publish'    => array(
-				'main_label'      => __( 'Update', 'learnpress' ),
-				'main_class'      => 'cb-btn-update',
-				'main_status'     => 'publish',
-				'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
-				'dropdown_class'  => 'cb-btn-darft',
-				'dropdown_status' => 'draft',
-				'dropdown_icon'   => 'dashicons-media-default',
-			),
-			'draft'      => array(
-				'main_label'      => __( 'Save Draft', 'learnpress' ),
-				'main_class'      => 'cb-btn-darft',
-				'main_status'     => 'draft',
-				'dropdown_label'  => __( 'Publish', 'learnpress' ),
-				'dropdown_class'  => 'cb-btn-publish',
-				'dropdown_status' => 'publish',
-				'dropdown_icon'   => 'dashicons-visibility',
-			),
-			'pending'    => array(
-				'main_label'      => __( 'Publish', 'learnpress' ),
-				'main_class'      => 'cb-btn-publish',
-				'main_status'     => 'publish',
-				'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
-				'dropdown_class'  => 'cb-btn-darft',
-				'dropdown_status' => 'draft',
-				'dropdown_icon'   => 'dashicons-media-default',
-			),
-			'auto-draft' => array(
-				'main_label'      => __( 'Publish', 'learnpress' ),
-				'main_class'      => 'cb-btn-publish',
-				'main_status'     => 'publish',
-				'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
-				'dropdown_class'  => 'cb-btn-darft',
-				'dropdown_status' => 'draft',
-				'dropdown_icon'   => 'dashicons-media-default',
-			),
-		);
-
-		if ( $is_review_only_non_public ) {
-			$status_config = array(
-				'publish'    => $status_config['publish'],
-				'draft'      => array(
-					'main_label'      => __( 'Save Draft', 'learnpress' ),
-					'main_class'      => 'cb-btn-darft',
-					'main_status'     => 'draft',
-					'dropdown_label'  => __( 'Submit for Review', 'learnpress' ),
-					'dropdown_class'  => 'cb-btn-pending',
-					'dropdown_status' => 'pending',
-					'dropdown_icon'   => 'dashicons-clock',
-				),
-				'pending'    => array(
-					'main_label'      => __( 'Submit for Review', 'learnpress' ),
-					'main_class'      => 'cb-btn-pending',
-					'main_status'     => 'pending',
-					'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
-					'dropdown_class'  => 'cb-btn-darft',
-					'dropdown_status' => 'draft',
-					'dropdown_icon'   => 'dashicons-media-default',
-				),
-					'auto-draft' => array(
-						'main_label'      => __( 'Submit for Review', 'learnpress' ),
-						'main_class'      => 'cb-btn-pending',
-						'main_status'     => 'pending',
-						'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
-						'dropdown_class'  => 'cb-btn-darft',
-						'dropdown_status' => 'draft',
-						'dropdown_icon'   => 'dashicons-media-default',
-					),
-				'trash'      => array(
-					'main_label'      => __( 'Save Draft', 'learnpress' ),
-					'main_class'      => 'cb-btn-darft',
-					'main_status'     => 'draft',
-					'dropdown_label'  => __( 'Submit for Review', 'learnpress' ),
-					'dropdown_class'  => 'cb-btn-pending',
-					'dropdown_status' => 'pending',
-					'dropdown_icon'   => 'dashicons-clock',
-				),
-				'private'    => array(
-					'main_label'      => __( 'Submit for Review', 'learnpress' ),
-					'main_class'      => 'cb-btn-pending',
-					'main_status'     => 'pending',
-					'dropdown_label'  => __( 'Save Draft', 'learnpress' ),
-					'dropdown_class'  => 'cb-btn-darft',
-					'dropdown_status' => 'draft',
-					'dropdown_icon'   => 'dashicons-media-default',
-				),
-			);
-		}
-
-		// Fallback to draft config if status not in map
-		$btn_config = isset( $status_config[ $status ] ) ? $status_config[ $status ] : $status_config['draft'];
+		$main_action_status            = in_array( $status, array( 'publish', 'draft', 'pending', 'future', 'private' ), true ) ? $status : 'publish';
+		$show_header_expanded_trash    = ! $is_new_post && in_array( $tab_current, array( 'courses', 'questions', 'quizzes' ), true );
 
 		ob_start();
 		?>
@@ -718,33 +631,33 @@ class CourseBuilderTemplate {
 							<?php esc_html_e( 'Preview', 'learnpress' ); ?>
 						</a>
 					<?php endif; ?>
-					<div class="cb-header-actions-dropdown" data-current-status="<?php echo esc_attr( $btn_config['main_status'] ); ?>" data-review-only-course="<?php echo esc_attr( $is_review_only_course_context ? 'yes' : 'no' ); ?>">
-						<div class="<?php echo esc_attr( $btn_config['main_class'] ); ?> cb-btn-primary cb-btn-main-action" 
-							data-status="<?php echo esc_attr( $btn_config['main_status'] ); ?>"
-							data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>" 
+					<div class="cb-header-actions-dropdown cb-header-actions-dropdown--single" data-current-status="<?php echo esc_attr( $main_action_status ); ?>" data-review-only-course="<?php echo esc_attr( $is_review_only_course_context ? 'yes' : 'no' ); ?>">
+						<div class="cb-btn-update cb-btn-primary cb-btn-main-action"
+							data-status="<?php echo esc_attr( $main_action_status ); ?>"
+							data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>"
 							data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>"
 							data-title-draft="<?php esc_attr_e( 'Save Draft', 'learnpress' ); ?>"
 							data-title-submit-review="<?php esc_attr_e( 'Submit for Review', 'learnpress' ); ?>">
-							<?php echo esc_html( $btn_config['main_label'] ); ?>
-						</div>
-						<button type="button" class="cb-btn-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
-							<span class="dashicons dashicons-arrow-down-alt2"></span>
-						</button>
-						<div class="cb-dropdown-menu">
-							<div class="cb-dropdown-item <?php echo esc_attr( $btn_config['dropdown_class'] ); ?>" data-status="<?php echo esc_attr( $btn_config['dropdown_status'] ); ?>">
-								<span class="dashicons <?php echo esc_attr( $btn_config['dropdown_icon'] ); ?>"></span>
-								<?php echo esc_html( $btn_config['dropdown_label'] ); ?>
-							</div>
-							<?php if ( ! $is_new_post ) : ?>
-							<div class="cb-dropdown-item cb-btn-trash cb-btn-danger">
-								<span class="dashicons dashicons-trash"></span>
-								<?php esc_html_e( 'Move to Trash', 'learnpress' ); ?>
-							</div>
-							<?php endif; ?>
+							<?php esc_html_e( 'Update', 'learnpress' ); ?>
 						</div>
 					</div>
+						<?php if ( $show_header_expanded_trash ) : ?>
+							<div class="cb-header-action-expanded">
+								<button type="button" class="course-action-expanded" aria-haspopup="true" aria-label="<?php esc_attr_e( 'More actions', 'learnpress' ); ?>">
+									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+									</svg>
+								</button>
+								<div class="cb-header-action-expanded__items">
+									<div class="cb-header-action-expanded__trash cb-btn-trash">
+										<span class="dashicons dashicons-trash"></span>
+										<?php esc_html_e( 'Move to Trash', 'learnpress' ); ?>
+									</div>
+								</div>
+							</div>
+						<?php endif; ?>
+					</div>
 				</div>
-			</div>
 
 			<?php echo $this->render_horizontal_tabs( $tab_current, $post_id, $sections, $section_current ); ?>
 

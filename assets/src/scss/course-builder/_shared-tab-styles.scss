@@ -322,6 +322,12 @@
 		}
 	}
 
+	.lp-question-toggle-all:not( .lp_collapse ) {
+		.lp-icon-angle-down {
+			display: none;
+		}
+	}
+
 	.lp-question-toggle-all.lp-collapse {
 		.lp-icon-angle-down {
 			display: block;

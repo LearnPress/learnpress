@@ -101,3 +101,10 @@ div:where( .swal2-container ).swal2-center > .swal2-popup {
 		background-color: $cb-primary-hover;
 	}
 }
+
+.swal2-container .swal2-popup .swal2-icon .swal2-icon-content::before {
+	content: '';
+	font-family: 'lp-icon';
+	font-size: 24px;
+	display: inline-block;
+}
