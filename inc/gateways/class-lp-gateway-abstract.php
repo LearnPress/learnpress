@@ -21,8 +21,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	const META_SUBSCRIPTION_PLAN_ID         = '_lp_subscription_plan_id';
 	const META_SUBSCRIPTION_QUANTITY        = '_lp_subscription_quantity';
 	const META_SUBSCRIPTION_STATUS          = '_lp_subscription_status';
-	const META_SUBSCRIPTION_PARENT_ORDER_ID = '_lp_subscription_parent_order_id';
-	const META_SUBSCRIPTION_RENEWAL_ORDER_ID = '_lp_subscription_renewal_order_id';
 	const META_SUBSCRIPTION_RENEWAL_KEY    = '_lp_subscription_renewal_key';
 	const META_SUBSCRIPTION_LAST_EVENT_ID   = '_lp_subscription_last_event_id';
 	const META_SUBSCRIPTION_EVENT_ID        = '_lp_subscription_event_id';
@@ -384,6 +382,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * - `currency` (string, required)
 	 * - `interval` (day|week|month|year)
 	 * - `interval_count` (int, default 1)
+	 * - `setup_fee` (float, optional, >= 0)
 	 * - `product_id` (string, optional)
 	 * - `metadata` (array, optional)
 	 *
@@ -401,6 +400,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 				'currency'       => learn_press_get_currency(),
 				'interval'       => 'month',
 				'interval_count' => 1,
+				'setup_fee'      => 0,
 				'product_id'     => '',
 				'metadata'       => array(),
 			)
@@ -411,6 +411,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		$data['currency']       = strtoupper( sanitize_text_field( wp_unslash( (string) $data['currency'] ) ) );
 		$data['interval']       = strtolower( sanitize_key( (string) $data['interval'] ) );
 		$data['interval_count'] = max( 1, absint( $data['interval_count'] ) );
+		$data['setup_fee']      = (float) $data['setup_fee'];
 		$data['product_id']     = sanitize_text_field( wp_unslash( (string) $data['product_id'] ) );
 		$data['metadata']       = is_array( $data['metadata'] ) ? $data['metadata'] : array();
 
@@ -420,6 +421,10 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 		if ( $data['amount'] <= 0 ) {
 			throw new Exception( __( 'Invalid subscription amount.', 'learnpress' ) );
+		}
+
+		if ( $data['setup_fee'] < 0 ) {
+			throw new Exception( __( 'Invalid subscription setup fee.', 'learnpress' ) );
 		}
 
 		if ( empty( $data['currency'] ) ) {
@@ -469,13 +474,107 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * Child gateways should return verified provider event payload/object.
 	 *
-	 * @param WP_REST_Request $request
+	 * @param array $webhook_data Generic webhook data extracted from transport layer.
 	 *
 	 * @return array|object
 	 * @throws Exception
 	 */
-	public function verify_subscription_webhook( WP_REST_Request $request ) {
+	public function verify_subscription_webhook( array $webhook_data ) {
 		throw new Exception( sprintf( __( 'Gateway %s does not support subscription webhook verification.', 'learnpress' ), $this->get_id() ) );
+	}
+
+	/**
+	 * Build normalized webhook data array from transport-specific REST request.
+	 *
+	 * Contract:
+	 * - raw_body: raw payload string (for signature verification like Stripe).
+	 * - body: decoded JSON array when $decode_body is true, otherwise null.
+	 * - headers: map of required header keys (lowercase) to raw header values.
+	 *
+	 * @param WP_REST_Request $request
+	 * @param array $required_headers
+	 * @param bool $decode_body
+	 *
+	 * @return array
+	 */
+	protected function build_webhook_data_from_request( WP_REST_Request $request, array $required_headers = array(), bool $decode_body = true ): array {
+		$raw_body = (string) $request->get_body();
+		$headers  = array();
+
+		foreach ( $required_headers as $required_header ) {
+			$required_header             = strtolower( sanitize_key( (string) $required_header ) );
+			$headers[ $required_header ] = (string) $request->get_header( $required_header );
+		}
+
+		$body = null;
+		if ( $decode_body ) {
+			$body = LP_Helper::json_decode( $raw_body, true );
+		}
+
+		return array(
+			'raw_body' => $raw_body,
+			'body'     => is_array( $body ) ? $body : null,
+			'headers'  => $headers,
+		);
+	}
+
+	/**
+	 * Validate normalized webhook payload contract before provider verification.
+	 *
+	 * This centralizes fail-fast checks so each gateway does not re-implement
+	 * required key/header validation and accidentally diverge key names.
+	 *
+	 * @param array $webhook_data
+	 * @param array $required_top_level_keys Allowed: raw_body, body, headers.
+	 * @param array $required_headers
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	protected function validate_webhook_data_contract( array $webhook_data, array $required_top_level_keys = array(), array $required_headers = array() ) {
+		$missing = array();
+
+		foreach ( $required_top_level_keys as $required_key ) {
+			$required_key = sanitize_key( (string) $required_key );
+
+			switch ( $required_key ) {
+				case 'raw_body':
+					if ( empty( $webhook_data['raw_body'] ) || ! is_string( $webhook_data['raw_body'] ) ) {
+						$missing[] = 'raw_body';
+					}
+					break;
+				case 'body':
+					if ( empty( $webhook_data['body'] ) || ! is_array( $webhook_data['body'] ) ) {
+						$missing[] = 'body';
+					}
+					break;
+				case 'headers':
+					if ( ! isset( $webhook_data['headers'] ) || ! is_array( $webhook_data['headers'] ) ) {
+						$missing[] = 'headers';
+					}
+					break;
+			}
+		}
+
+		$headers_map = is_array( $webhook_data['headers'] ?? null ) ? $webhook_data['headers'] : array();
+		foreach ( $required_headers as $required_header ) {
+			$required_header = strtolower( sanitize_key( (string) $required_header ) );
+			$header_value    = sanitize_text_field( (string) ( $headers_map[ $required_header ] ?? '' ) );
+			if ( '' === $header_value ) {
+				$missing[] = 'headers.' . $required_header;
+			}
+		}
+
+		if ( ! empty( $missing ) ) {
+			throw new Exception(
+				sprintf(
+					/* translators: %s: comma separated required webhook fields. */
+					__( 'Invalid webhook request data: missing %s.', 'learnpress' ),
+					implode( ', ', array_unique( $missing ) )
+				),
+				400
+			);
+		}
 	}
 
 	/**

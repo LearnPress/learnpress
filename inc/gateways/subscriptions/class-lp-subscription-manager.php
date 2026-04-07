@@ -69,6 +69,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 			try {
 				$parent_order_id = $this->resolve_parent_order_id( $event );
 				$parent_order    = $parent_order_id ? learn_press_get_order( $parent_order_id ) : false;
+				$this->validate_parent_subscription_binding( $parent_order, $event );
 
 				if ( $this->is_event_already_handled( $event_type, $event_id, $parent_order, $event ) ) {
 					return array(
@@ -90,7 +91,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 							throw new Exception( __( 'Parent subscription order not found.', 'learnpress' ) );
 						}
 
-						$this->update_subscription_status( $parent_order->get_id(), 'active', $event_id );
+						$this->update_subscription_status( $parent_order->get_id(), 'active' );
 						$this->mark_parent_payment_completed( $parent_order, $event );
 						$this->add_order_note( $parent_order, __( 'Subscription activated.', 'learnpress' ) );
 
@@ -104,7 +105,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 							throw new Exception( __( 'Parent subscription order not found.', 'learnpress' ) );
 						}
 
-						$this->update_subscription_status( $parent_order->get_id(), 'active', $event_id );
+						$this->update_subscription_status( $parent_order->get_id(), 'active' );
 						$renewal_order = $this->create_renewal_order( $parent_order, $event, LP_ORDER_COMPLETED );
 						$this->add_order_note( $parent_order, __( 'Subscription renewal payment succeeded.', 'learnpress' ) );
 						do_action( 'learn-press/subscription/renewal-order-created', $renewal_order->get_id(), $parent_order->get_id(), $event, $gateway_id );
@@ -119,7 +120,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 							throw new Exception( __( 'Parent subscription order not found.', 'learnpress' ) );
 						}
 
-						$this->update_subscription_status( $parent_order->get_id(), 'past_due', $event_id );
+						$this->update_subscription_status( $parent_order->get_id(), 'past_due' );
 						$renewal_failed_order = $this->create_renewal_order( $parent_order, $event, LP_ORDER_FAILED );
 						$this->add_order_note( $parent_order, __( 'Subscription renewal payment failed.', 'learnpress' ) );
 						do_action( 'learn-press/subscription/renewal-order-created', $renewal_failed_order->get_id(), $parent_order->get_id(), $event, $gateway_id );
@@ -134,7 +135,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 							throw new Exception( __( 'Parent subscription order not found.', 'learnpress' ) );
 						}
 
-						$this->update_subscription_status( $parent_order->get_id(), 'cancelled', $event_id );
+						$this->update_subscription_status( $parent_order->get_id(), 'cancelled' );
 						$this->add_order_note( $parent_order, __( 'Subscription cancelled.', 'learnpress' ) );
 						do_action( 'learn-press/subscription/cancelled', $parent_order->get_id(), $event, $gateway_id );
 
@@ -146,7 +147,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 							throw new Exception( __( 'Parent subscription order not found.', 'learnpress' ) );
 						}
 
-						$this->update_subscription_status( $parent_order->get_id(), 'expired', $event_id );
+						$this->update_subscription_status( $parent_order->get_id(), 'expired' );
 						$this->add_order_note( $parent_order, __( 'Subscription expired.', 'learnpress' ) );
 						do_action( 'learn-press/subscription/expired', $parent_order->get_id(), $event, $gateway_id );
 
@@ -157,7 +158,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 						if ( $parent_order ) {
 							$status = ! empty( $event['status'] ) ? sanitize_key( (string) $event['status'] ) : '';
 							if ( ! empty( $status ) ) {
-								$this->update_subscription_status( $parent_order->get_id(), $status, $event_id );
+								$this->update_subscription_status( $parent_order->get_id(), $status );
 							}
 							$this->add_order_note( $parent_order, __( 'Subscription updated.', 'learnpress' ) );
 							$response['order_id'] = $parent_order->get_id();
@@ -324,15 +325,10 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		 *
 		 * @param int $order_id
 		 * @param string $status Normalized status slug (active/past_due/cancelled/...).
-		 * @param string $event_id Optional provider event id used as last-processed marker.
-		 *
 		 * @return void
 		 */
-		public function update_subscription_status( int $order_id, string $status, string $event_id = '' ) {
+		public function update_subscription_status( int $order_id, string $status ) {
 			update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, sanitize_key( $status ) );
-			if ( ! empty( $event_id ) ) {
-				update_post_meta( $order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_LAST_EVENT_ID, sanitize_text_field( $event_id ) );
-			}
 		}
 
 		/**
@@ -381,15 +377,19 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 				}
 			}
 
+			$renewal_total    = isset( $event['amount'] ) && (float) $event['amount'] > 0 ? (float) $event['amount'] : (float) $parent_order->get_total();
+			$renewal_subtotal = isset( $event['amount'] ) && (float) $event['amount'] > 0 ? (float) $event['amount'] : (float) $parent_order->get_subtotal();
+			$renewal_currency = ! empty( $event['currency'] ) ? sanitize_text_field( (string) $event['currency'] ) : $parent_order->get_currency();
+
 			$renewal_order = new LP_Order();
 			$renewal_order->set_parent_id( $parent_order->get_id() );
 			$renewal_order->set_user_id( $parent_order->get_user_id() );
 			$renewal_order->set_checkout_email( $parent_order->get_checkout_email() );
 			$renewal_order->set_status( LP_ORDER_PENDING );
 			$renewal_order->set_created_via( 'subscription' );
-			$renewal_order->set_currency( $parent_order->get_currency() );
-			$renewal_order->set_total( $parent_order->get_total() );
-			$renewal_order->set_subtotal( $parent_order->get_subtotal() );
+			$renewal_order->set_currency( $renewal_currency );
+			$renewal_order->set_total( $renewal_total );
+			$renewal_order->set_subtotal( $renewal_subtotal );
 			$renewal_order->set_data( 'payment_method', $parent_order->get_data( 'payment_method', '' ) );
 			$renewal_order->set_data( 'payment_method_title', $parent_order->get_payment_method_title() );
 
@@ -400,18 +400,6 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 
 			$this->copy_parent_order_items_to_renewal( $parent_order, $renewal_order );
 
-			$renewal_amount = isset( $event['amount'] ) ? (float) $event['amount'] : 0;
-			if ( $renewal_amount > 0 ) {
-				$renewal_order->set_total( $renewal_amount );
-				$renewal_order->set_subtotal( $renewal_amount );
-				$renewal_order->save();
-			}
-
-			if ( ! empty( $event['currency'] ) ) {
-				$renewal_order->set_currency( sanitize_text_field( (string) $event['currency'] ) );
-				$renewal_order->save();
-			}
-
 			if ( ! empty( $event_id ) ) {
 				update_post_meta( $renewal_order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_EVENT_ID, $event_id );
 			}
@@ -420,7 +408,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 				update_post_meta( $renewal_order_id, LP_Gateway_Abstract::META_SUBSCRIPTION_ID, sanitize_text_field( (string) $event['subscription_id'] ) );
 			}
 
-			if ( ! empty( $event['transaction_id'] ) ) {
+			if ( LP_ORDER_COMPLETED !== $target_status && ! empty( $event['transaction_id'] ) ) {
 				update_post_meta( $renewal_order_id, '_transaction_id', sanitize_text_field( (string) $event['transaction_id'] ) );
 			}
 			if ( ! empty( $renewal_key ) ) {
@@ -433,8 +421,6 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 				$renewal_order->update_status( $target_status );
 			}
 
-			update_post_meta( $parent_order->get_id(), LP_Gateway_Abstract::META_SUBSCRIPTION_RENEWAL_ORDER_ID, $renewal_order_id );
-
 			$this->add_order_note(
 				$renewal_order,
 				sprintf(
@@ -445,6 +431,36 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 			);
 
 			return $renewal_order;
+		}
+
+		/**
+		 * Ensure webhook subscription id matches the resolved parent order binding.
+		 *
+		 * This prevents applying a callback payload to a parent order when provider
+		 * identifiers do not match (e.g. billing_agreement_id mismatch on PayPal).
+		 *
+		 * @param LP_Order|false $parent_order Resolved parent order.
+		 * @param array $event Normalized event payload.
+		 *
+		 * @return void
+		 * @throws Exception
+		 */
+		protected function validate_parent_subscription_binding( $parent_order, array $event ) {
+			if ( ! $parent_order instanceof LP_Order ) {
+				return;
+			}
+
+			$event_subscription_id = sanitize_text_field( (string) ( $event['subscription_id'] ?? '' ) );
+			if ( empty( $event_subscription_id ) ) {
+				return;
+			}
+
+			$saved_subscription_id = sanitize_text_field(
+				(string) get_post_meta( $parent_order->get_id(), LP_Gateway_Abstract::META_SUBSCRIPTION_ID, true )
+			);
+			if ( ! empty( $saved_subscription_id ) && $saved_subscription_id !== $event_subscription_id ) {
+				throw new Exception( __( 'Subscription id does not match parent order.', 'learnpress' ) );
+			}
 		}
 
 		/**
@@ -598,10 +614,6 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 				if ( ! $new_item_id ) {
 					continue;
 				}
-
-				learn_press_update_order_item_meta( $new_item_id, '_quantity', $quantity > 0 ? $quantity : 1 );
-				learn_press_update_order_item_meta( $new_item_id, '_subtotal', $subtotal );
-				learn_press_update_order_item_meta( $new_item_id, '_total', $total );
 			}
 		}
 
