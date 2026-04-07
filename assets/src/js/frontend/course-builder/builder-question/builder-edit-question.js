@@ -3,6 +3,7 @@ import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
 import { EditQuestion } from 'lpAssetsJsPath/admin/edit-question.js';
 import { SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
+import { getFormState } from '../builder-form-state.js';
 
 export class BuilderEditQuestion {
 	constructor() {
@@ -21,7 +22,17 @@ export class BuilderEditQuestion {
 		elQuestionStatus: '.question-status',
 		idTitle: 'title',
 		idDescEditor: 'question_description_editor',
+		elPublishStatusSelect: '#cb-question-publish-status',
 		elFormSetting: '.lp-form-setting-question',
+		// Permalink component
+		elPermalinkDisplay: '.cb-permalink-display',
+		elPermalinkEditor: '.cb-permalink-editor',
+		elPermalinkEditBtn: '.cb-permalink-edit-btn',
+		elPermalinkOkBtn: '.cb-permalink-ok-btn',
+		elPermalinkCancelBtn: '.cb-permalink-cancel-btn',
+		elPermalinkSlugInput: '.cb-permalink-slug-input',
+		elPermalinkUrl: '.cb-permalink-url',
+		elPermalinkBaseUrl: '#cb-permalink-base-url',
 		// Question edit selectors
 		elEditQuestionWrap: '.lp-edit-question-wrap',
 		elQuestionEditMain: '.lp-question-edit-main',
@@ -39,6 +50,7 @@ export class BuilderEditQuestion {
 		this.initQuestionAnswersSettings();
 		this.initTabs();
 		this.initHeaderActionsDropdown();
+		this.syncHeaderActionWithPublishPanel();
 		this.events();
 	}
 
@@ -68,6 +80,10 @@ export class BuilderEditQuestion {
 	 * Handle dropdown toggle click
 	 */
 	handleDropdownToggle( args ) {
+		if ( this.hasPublishDrivenSingleAction() ) {
+			return;
+		}
+
 		const { target } = args;
 		const toggleBtn = target.closest( BuilderEditQuestion.selectors.elDropdownToggle );
 
@@ -94,6 +110,10 @@ export class BuilderEditQuestion {
 	handleDropdownItemClick( args ) {
 		// Context check: only handle if on question edit page
 		if ( ! this.isQuestionContext() ) {
+			return;
+		}
+
+		if ( this.hasPublishDrivenSingleAction() ) {
 			return;
 		}
 
@@ -165,6 +185,8 @@ export class BuilderEditQuestion {
 				if ( respStatus === 'success' ) {
 					// Update action button text
 					this.updateActionButtons( data?.status || status );
+					this.syncPublishPanelStatus( data?.status || status );
+					this.updatePermalinkUIAfterSave( data );
 
 					// Reset form state before potential redirect.
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
@@ -393,7 +415,35 @@ export class BuilderEditQuestion {
 				class: this,
 				callBack: this.handleDropdownItemClick.name,
 			},
+			{
+				selector: BuilderEditQuestion.selectors.elPermalinkEditBtn,
+				class: this,
+				callBack: this.handlePermalinkEdit.name,
+			},
+			{
+				selector: BuilderEditQuestion.selectors.elPermalinkOkBtn,
+				class: this,
+				callBack: this.handlePermalinkOk.name,
+			},
+			{
+				selector: BuilderEditQuestion.selectors.elPermalinkCancelBtn,
+				class: this,
+				callBack: this.handlePermalinkCancel.name,
+			},
 		] );
+
+		lpUtils.eventHandlers( 'change', [
+			{
+				selector: BuilderEditQuestion.selectors.elPublishStatusSelect,
+				class: this,
+				callBack: this.handlePublishStatusChange.name,
+			},
+		] );
+	}
+
+	handlePublishStatusChange() {
+		this.syncHeaderActionWithPublishPanel();
+		getFormState().markAsChanged();
 	}
 
 	/**
@@ -428,7 +478,14 @@ export class BuilderEditQuestion {
 
 		const mainBtn = dropdown.querySelector( '.cb-btn-main-action' );
 		const dropdownMenu = dropdown.querySelector( BuilderEditQuestion.selectors.elDropdownMenu );
-		if ( ! mainBtn || ! dropdownMenu ) return;
+		if ( ! mainBtn ) return;
+
+		if ( this.hasPublishDrivenSingleAction() ) {
+			this.syncHeaderActionWithPublishPanel();
+			return;
+		}
+
+		if ( ! dropdownMenu ) return;
 
 		// Status configuration for button labels and classes
 		const statusConfig = {
@@ -509,6 +566,13 @@ export class BuilderEditQuestion {
 			}
 		}
 
+		const permalinkInput = document.querySelector(
+			BuilderEditQuestion.selectors.elPermalinkSlugInput
+		);
+		if ( permalinkInput && permalinkInput.value ) {
+			data.question_permalink = permalinkInput.value;
+		}
+
 		const elFormSetting = document.querySelector( BuilderEditQuestion.selectors.elFormSetting );
 
 		if ( elFormSetting ) {
@@ -570,6 +634,188 @@ export class BuilderEditQuestion {
 		return data;
 	}
 
+	getStatusFromPublishPanel( fallbackStatus = 'publish' ) {
+		const statusSelect = document.querySelector(
+			BuilderEditQuestion.selectors.elPublishStatusSelect
+		);
+		if ( ! statusSelect ) {
+			return fallbackStatus;
+		}
+
+		const selectedStatus = statusSelect.value;
+		if ( selectedStatus === 'publish' || selectedStatus === 'draft' ) {
+			return selectedStatus;
+		}
+
+		return fallbackStatus;
+	}
+
+	hasPublishDrivenSingleAction() {
+		if ( ! document.querySelector( BuilderEditQuestion.selectors.elPublishStatusSelect ) ) {
+			return false;
+		}
+
+		const wrapperEl = document.querySelector( BuilderEditQuestion.selectors.elDataQuestion );
+		const questionId = wrapperEl ? parseInt( wrapperEl.dataset.questionId ) || 0 : 0;
+
+		return questionId > 0;
+	}
+
+	syncHeaderActionWithPublishPanel() {
+		if ( ! this.hasPublishDrivenSingleAction() ) {
+			return;
+		}
+
+		const dropdown = document.querySelector(
+			BuilderEditQuestion.selectors.elHeaderActionsDropdown
+		);
+		if ( ! dropdown ) {
+			return;
+		}
+
+		const mainBtn = dropdown.querySelector( '.cb-btn-main-action' );
+		if ( ! mainBtn ) {
+			return;
+		}
+
+		const toggleBtn = dropdown.querySelector( BuilderEditQuestion.selectors.elDropdownToggle );
+		const dropdownMenu = dropdown.querySelector( BuilderEditQuestion.selectors.elDropdownMenu );
+		const status = this.getStatusFromPublishPanel( mainBtn.dataset.status || 'publish' );
+
+		mainBtn.classList.remove( 'cb-btn-darft', 'cb-btn-publish', 'cb-btn-pending' );
+		mainBtn.classList.add( 'cb-btn-update', 'cb-btn-primary', 'cb-btn-main-action' );
+		mainBtn.textContent = mainBtn.dataset.titleUpdate || 'Update';
+		mainBtn.dataset.status = status;
+		dropdown.dataset.currentStatus = status;
+		dropdown.classList.add( 'cb-header-actions-dropdown--single' );
+
+		if ( toggleBtn ) {
+			toggleBtn.style.display = 'none';
+		}
+		if ( dropdownMenu ) {
+			dropdownMenu.style.display = 'none';
+		}
+	}
+
+	syncPublishPanelStatus( status ) {
+		const statusSelect = document.querySelector(
+			BuilderEditQuestion.selectors.elPublishStatusSelect
+		);
+		if ( ! statusSelect ) {
+			return;
+		}
+
+		statusSelect.value = status === 'publish' ? 'publish' : 'draft';
+		this.syncHeaderActionWithPublishPanel();
+	}
+
+	updatePermalinkUIAfterSave( data = {} ) {
+		const slugInput = document.querySelector(
+			BuilderEditQuestion.selectors.elPermalinkSlugInput
+		);
+		const urlLink = document.querySelector( BuilderEditQuestion.selectors.elPermalinkUrl );
+
+		if ( slugInput && data?.question_slug ) {
+			slugInput.value = data.question_slug;
+			slugInput.dataset.originalValue = data.question_slug;
+		}
+
+		if ( urlLink && data?.question_permalink ) {
+			urlLink.href = data.question_permalink;
+			urlLink.textContent = data.question_permalink;
+		}
+	}
+
+	slugify( str ) {
+		return ( str || '' )
+			.toString()
+			.normalize( 'NFD' )
+			.replace( /[\u0300-\u036f]/g, '' )
+			.replace( /đ/g, 'd' )
+			.replace( /Đ/g, 'D' )
+			.toLowerCase()
+			.replace( /\s+/g, '-' )
+			.replace( /[^\w-]+/g, '' )
+			.replace( /--+/g, '-' )
+			.replace( /^-+/, '' )
+			.replace( /-+$/, '' );
+	}
+
+	handlePermalinkEdit( args ) {
+		if ( ! this.isQuestionContext() ) {
+			return;
+		}
+
+		const { e } = args;
+		if ( e ) e.preventDefault();
+
+		const display = document.querySelector( BuilderEditQuestion.selectors.elPermalinkDisplay );
+		const editor = document.querySelector( BuilderEditQuestion.selectors.elPermalinkEditor );
+		const input = document.querySelector( BuilderEditQuestion.selectors.elPermalinkSlugInput );
+
+		if ( ! display || ! editor || ! input ) return;
+
+		input.dataset.originalValue = input.value;
+		display.classList.add( 'lp-hidden' );
+		editor.classList.remove( 'lp-hidden' );
+		input.focus();
+		input.select();
+	}
+
+	handlePermalinkOk( args ) {
+		if ( ! this.isQuestionContext() ) {
+			return;
+		}
+
+		const { e } = args;
+		if ( e ) e.preventDefault();
+
+		const display = document.querySelector( BuilderEditQuestion.selectors.elPermalinkDisplay );
+		const editor = document.querySelector( BuilderEditQuestion.selectors.elPermalinkEditor );
+		const input = document.querySelector( BuilderEditQuestion.selectors.elPermalinkSlugInput );
+		const urlLink = document.querySelector( BuilderEditQuestion.selectors.elPermalinkUrl );
+		const baseUrlInput = document.querySelector( BuilderEditQuestion.selectors.elPermalinkBaseUrl );
+
+		if ( ! display || ! editor || ! input || ! urlLink ) return;
+
+		let newSlug = this.slugify( input.value.trim() );
+		if ( ! newSlug ) {
+			newSlug = input.dataset.originalValue || 'question';
+		}
+
+		input.value = newSlug;
+		const baseUrl = baseUrlInput ? baseUrlInput.value : '';
+		const newUrl = baseUrl + newSlug;
+
+		urlLink.href = newUrl;
+		urlLink.textContent = newUrl;
+		editor.classList.add( 'lp-hidden' );
+		display.classList.remove( 'lp-hidden' );
+
+		if ( newSlug !== input.dataset.originalValue ) {
+			getFormState().markAsChanged();
+		}
+	}
+
+	handlePermalinkCancel( args ) {
+		if ( ! this.isQuestionContext() ) {
+			return;
+		}
+
+		const { e } = args;
+		if ( e ) e.preventDefault();
+
+		const display = document.querySelector( BuilderEditQuestion.selectors.elPermalinkDisplay );
+		const editor = document.querySelector( BuilderEditQuestion.selectors.elPermalinkEditor );
+		const input = document.querySelector( BuilderEditQuestion.selectors.elPermalinkSlugInput );
+
+		if ( ! display || ! editor || ! input ) return;
+
+		input.value = input.dataset.originalValue || '';
+		editor.classList.add( 'lp-hidden' );
+		display.classList.remove( 'lp-hidden' );
+	}
+
 	async updateQuestion( args ) {
 		// Context check: only handle if on question edit page
 		if ( ! this.isQuestionContext() ) {
@@ -588,8 +834,10 @@ export class BuilderEditQuestion {
 			return;
 		}
 
-		// Get status from the button's data-status attribute
-		const targetStatus = elBtnMainAction.dataset.status || 'publish';
+		// Resolve status from Overview publish panel first, fallback to button data-status.
+		const targetStatus = this.getStatusFromPublishPanel(
+			elBtnMainAction.dataset.status || 'publish'
+		);
 		const canContinue = await this.confirmUnpublishIfNeeded( targetStatus, elBtnMainAction );
 		if ( ! canContinue ) {
 			return;
@@ -620,6 +868,8 @@ export class BuilderEditQuestion {
 				if ( status === 'success' ) {
 					// Update action button text with actual status from server
 					this.updateActionButtons( data?.status || targetStatus );
+					this.syncPublishPanelStatus( data?.status || targetStatus );
+					this.updatePermalinkUIAfterSave( data );
 
 					// Reset form state before potential redirect.
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
@@ -758,6 +1008,8 @@ export class BuilderEditQuestion {
 				if ( status === 'success' ) {
 					// Update action button text
 					this.updateActionButtons( 'draft' );
+					this.syncPublishPanelStatus( data?.status || 'draft' );
+					this.updatePermalinkUIAfterSave( data );
 
 					// Reset form state before potential redirect.
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );

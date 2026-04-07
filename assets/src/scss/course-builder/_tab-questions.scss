@@ -1,5 +1,5 @@
 // Questions tab — uses shared tab-list mixin
-@include tab-list-styles('question');
+@include tab-list-styles( 'question' );
 
 // Grid column definition for questions:
 // Title(2fr) | Assigned(1.5fr) | Create Date(1fr) | Status(100px) | Preview/Type(80px) | Actions(80px)
@@ -36,9 +36,13 @@ $question-grid: 2fr 1.5fr 1fr 100px 100px 80px;
 
 	.question-assigned-quizzes {
 		@include assigned-items-display;
+
+		.label {
+			color: $cb-text;
+		}
 	}
 
 	.question-action-expanded__items {
-		@include tab-action-items('question');
+		@include tab-action-items( 'question' );
 	}
 }

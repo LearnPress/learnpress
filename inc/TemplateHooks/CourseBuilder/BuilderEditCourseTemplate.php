@@ -66,6 +66,7 @@ class BuilderEditCourseTemplate {
 		$html_edit_title     = $this->edit_title( $course_model );
 		$html_edit_permalink = $this->edit_permalink( $course_model );
 		$html_edit_features  = $this->edit_featured_image( $course_model );
+		$html_edit_publish   = $this->edit_publish( $course_model );
 		$html_edit_desc      = $this->edit_desc( $course_model );
 		$html_edit_cat       = $this->edit_categories( $course_model );
 		$html_edit_tags      = $this->edit_tags( $course_model );
@@ -78,6 +79,7 @@ class BuilderEditCourseTemplate {
 			'edit_title'             => $html_edit_title,
 			'edit_permalink'         => $html_edit_permalink,
 			'edit_features'          => $html_edit_features,
+			'edit_publish'           => $html_edit_publish,
 			'left_column_end'        => '</div>',
 			// Right column
 			'right_column'           => '<div class="cb-course-edit-column cb-course-edit-column--right">',
@@ -96,7 +98,11 @@ class BuilderEditCourseTemplate {
 	}
 
 	public function edit_title( $course_model ) {
-		$title      = ! empty( $course_model ) ? $course_model->get_title() : '';
+		$title = '';
+		if ( ! empty( $course_model ) ) {
+			$post_id = absint( $course_model->get_id() );
+			$title   = $post_id ? (string) get_post_field( 'post_title', $post_id, 'raw' ) : '';
+		}
 		$char_count = mb_strlen( wp_strip_all_tags( $title ) );
 		$ai_button  = $this->html_overview_ai_button( '#lp-tmpl-edit-title-ai' );
 		$edit       = [
@@ -145,12 +151,12 @@ class BuilderEditCourseTemplate {
 
 		$state_a = sprintf(
 			'<span class="cb-permalink-label">%s</span>
-			<div class="cb-permalink-display">
-				<a href="%s" target="_blank" class="cb-permalink-url">%s</a>
-				<button type="button" class="cb-permalink-edit-btn" title="%s">
-					<span class="dashicons dashicons-edit"></span>
-				</button>
-			</div>',
+            <div class="cb-permalink-display">
+                <a href="%s" target="_blank" class="cb-permalink-url">%s</a>
+                <button type="button" class="cb-permalink-edit-btn" title="%s">
+                    <span class="dashicons dashicons-edit"></span>
+                </button>
+            </div>',
 			__( 'Permalink', 'learnpress' ),
 			esc_url( $full_url ),
 			esc_html( $full_url ),
@@ -159,15 +165,15 @@ class BuilderEditCourseTemplate {
 
 		$state_b = sprintf(
 			'<div class="cb-permalink-editor lp-hidden">
-				<span class="cb-permalink-prefix">%s</span>
-				<div class="cb-permalink-input-row">
-					<input type="text" name="course_permalink" id="course_permalink" value="%s" class="cb-permalink-slug-input" placeholder="%s">
-					<div class="cb-permalink-actions">
-						<button type="button" class="cb-permalink-ok-btn">%s</button>
-						<button type="button" class="cb-permalink-cancel-btn">%s</button>
-					</div>
-				</div>
-			</div>',
+                <span class="cb-permalink-prefix">%s</span>
+                <div class="cb-permalink-input-row">
+                    <input type="text" name="course_permalink" id="course_permalink" value="%s" class="cb-permalink-slug-input" placeholder="%s">
+                    <div class="cb-permalink-actions">
+                        <button type="button" class="cb-permalink-ok-btn">%s</button>
+                        <button type="button" class="cb-permalink-cancel-btn">%s</button>
+                    </div>
+                </div>
+            </div>',
 			esc_html( $base_url ),
 			esc_attr( $post_name ),
 			esc_attr__( 'your-slug', 'learnpress' ),
@@ -251,7 +257,7 @@ class BuilderEditCourseTemplate {
 		$button_label = esc_html__( 'Generate with AI', 'learnpress' );
 
 		return sprintf(
-			'<button type="button" class="cb-course-edit-ai-btn cb-filter-reset lp-btn-generate-with-ai" data-template="%1$s" title="%2$s" aria-label="%2$s"><i class="lp-ico-ai" aria-hidden="true"></i><span class="screen-reader-text">%2$s</span></button>',
+			'<button type="button" class="cb-course-edit-ai-btn lp-btn-generate-with-ai" data-template="%1$s" title="%2$s" aria-label="%2$s"><i class="lp-ico-ai" aria-hidden="true"></i><span class="screen-reader-text">%2$s</span></button>',
 			esc_attr( $template_id ),
 			esc_attr( $button_label )
 		);
@@ -355,11 +361,11 @@ class BuilderEditCourseTemplate {
 
 		$form_add_category = sprintf(
 			'<div class="cb-course-edit-terms__form-add-category" style="display:none;">
-				<input type="text" class="cb-course-edit-category__input" placeholder="%s" id="cb-newcourse_category" />
-				<select class="cb-course-edit-category__select-parent" id="cb-newcourse_category_parent">%s</select>
-				<button type="button" class="cb-course-edit-category__btn-cancel">%s</button>
-				<button type="button" class="cb-course-edit-category__btn-save" id="cb-course_category-add-submit">%s</button>
-			</div>',
+                <input type="text" class="cb-course-edit-category__input" placeholder="%s" id="cb-newcourse_category" />
+                <select class="cb-course-edit-category__select-parent" id="cb-newcourse_category_parent">%s</select>
+                <button type="button" class="cb-course-edit-category__btn-cancel">%s</button>
+                <button type="button" class="cb-course-edit-category__btn-save" id="cb-course_category-add-submit">%s</button>
+            </div>',
 			esc_attr__( 'Enter Category Name', 'learnpress' ),
 			$parent_options,
 			esc_html__( 'Cancel', 'learnpress' ),
@@ -373,8 +379,8 @@ class BuilderEditCourseTemplate {
 			'label'             => sprintf( '<label class="cb-terms-header__label">%s</label>', __( 'Categories', 'learnpress' ) ),
 			'btn_search'        => sprintf(
 				'<button type="button" class="cb-terms-header__btn-search" data-toggle-target="#cb-course-edit-categories-search-toolbar" aria-expanded="false" aria-label="%s">
-					<i class="lp-icon-search"></i>
-				</button>',
+                    <i class="lp-icon-search"></i>
+                </button>',
 				esc_attr__( 'Search categories', 'learnpress' )
 			),
 			'label_wrap_end'    => '</div>',
@@ -383,11 +389,11 @@ class BuilderEditCourseTemplate {
 			'form_add_category' => $form_add_category,
 			'search'            => sprintf(
 				'<div class="cb-course-edit-categories__toolbar cb-terms-search-toolbar" id="cb-course-edit-categories-search-toolbar">
-					<label class="cb-course-edit-categories__search-wrap">
-						<span class="screen-reader-text">%1$s</span>
-						<input type="search" class="cb-course-edit-category__search-input" placeholder="%2$s" />
-					</label>
-				</div>',
+                    <label class="cb-course-edit-categories__search-wrap">
+                        <span class="screen-reader-text">%1$s</span>
+                        <input type="search" class="cb-course-edit-category__search-input" placeholder="%2$s" />
+                    </label>
+                </div>',
 				esc_html__( 'Search categories', 'learnpress' ),
 				esc_attr__( 'Search categories', 'learnpress' )
 			),
@@ -440,11 +446,11 @@ class BuilderEditCourseTemplate {
 
 		$toolbar = sprintf(
 			'<div class="cb-course-edit-tags__toolbar cb-terms-search-toolbar" id="cb-course-edit-tags-search-toolbar">
-				<label class="cb-course-edit-tags__search-wrap">
-					<span class="screen-reader-text">%1$s</span>
-					<input type="search" class="cb-course-edit-tags__search-input" placeholder="%2$s" />
-				</label>
-			</div>',
+                <label class="cb-course-edit-tags__search-wrap">
+                    <span class="screen-reader-text">%1$s</span>
+                    <input type="search" class="cb-course-edit-tags__search-input" placeholder="%2$s" />
+                </label>
+            </div>',
 			esc_html__( 'Search tags', 'learnpress' ),
 			esc_attr__( 'Search tags', 'learnpress' )
 		);
@@ -456,8 +462,8 @@ class BuilderEditCourseTemplate {
 			'label'                    => sprintf( '<label class="cb-terms-header__label">%s</label>', __( 'Tags', 'learnpress' ) ),
 			'btn_search'               => sprintf(
 				'<button type="button" class="cb-terms-header__btn-search" data-toggle-target="#cb-course-edit-tags-search-toolbar" aria-expanded="false" aria-label="%s">
-					<i class="lp-icon-search"></i>
-				</button>',
+                    <i class="lp-icon-search"></i>
+                </button>',
 				esc_attr__( 'Search tags', 'learnpress' )
 			),
 			'label_wrap_end'           => '</div>',
@@ -616,6 +622,119 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
+	/**
+	 * Render publish panel (status, visibility, publish date, danger zone) for Course Builder overview.
+	 *
+	 * @param CourseModel|string $course_model
+	 *
+	 * @return string
+	 */
+	public function edit_publish( $course_model ): string {
+		$post_id = ! empty( $course_model ) ? absint( $course_model->get_id() ) : 0;
+		$post    = $post_id ? get_post( $post_id ) : null;
+
+		$current_status = 'draft';
+		if ( $post && ! empty( $post->post_status ) ) {
+			$current_status = sanitize_key( $post->post_status );
+		}
+
+		$status_for_select = in_array( $current_status, [ 'publish', 'draft', 'pending', 'future' ], true )
+			? $current_status
+			: 'publish';
+		$current_password  = $post ? (string) ( $post->post_password ?? '' ) : '';
+		$visibility        = 'private' === $current_status
+			? 'private'
+			: ( ! empty( $current_password ) ? 'password' : 'public' );
+		$published_on      = '';
+
+		if ( $post && ! empty( $post->post_date ) && '0000-00-00 00:00:00' !== $post->post_date ) {
+			$published_on = wp_date( 'Y-m-d\TH:i', strtotime( $post->post_date ), wp_timezone() );
+		}
+
+		$status_options        = [
+			'publish' => __( 'Published', 'learnpress' ),
+			'future'  => __( 'Scheduled', 'learnpress' ),
+			'draft'   => __( 'Draft', 'learnpress' ),
+			'pending' => __( 'Pending Review', 'learnpress' ),
+		];
+		$hide_publish_option   = 'future' === $status_for_select;
+		$hide_scheduled_option = 'publish' === $status_for_select;
+
+		$publish_date_label = 'future' === $status_for_select
+			? __( 'Scheduled for', 'learnpress' )
+			: __( 'Published on', 'learnpress' );
+
+		$status_options_html = '';
+		foreach ( $status_options as $value => $label ) {
+			if ( $hide_publish_option && 'publish' === $value ) {
+				continue;
+			}
+			if ( $hide_scheduled_option && 'future' === $value ) {
+				continue;
+			}
+
+			$status_options_html .= sprintf(
+				'<option value="%1$s" %2$s>%3$s</option>',
+				esc_attr( $value ),
+				selected( $status_for_select, $value, false ),
+				esc_html( $label )
+			);
+		}
+
+		$visibility_options_html = sprintf(
+			'<option value="public" %1$s>%2$s</option><option value="private" %3$s>%4$s</option><option value="password" %5$s>%6$s</option>',
+			selected( $visibility, 'public', false ),
+			esc_html__( 'Public', 'learnpress' ),
+			selected( $visibility, 'private', false ),
+			esc_html__( 'Private', 'learnpress' ),
+			selected( $visibility, 'password', false ),
+			esc_html__( 'Password protected', 'learnpress' )
+		);
+
+		$edit = [
+			'wrapper'          => '<div class="cb-course-edit-publish">',
+			'title'            => sprintf( '<h3 class="cb-course-edit-publish__title">%s</h3>', esc_html__( 'Publish', 'learnpress' ) ),
+			'status_row'       => sprintf(
+				'<div class="cb-course-edit-publish__row">
+                    <label for="cb-course-publish-status" class="cb-course-edit-publish__label">%1$s</label>
+                    <select id="cb-course-publish-status" name="cb_course_publish_status" class="cb-course-edit-publish__control" data-publish-label="%3$s" data-future-label="%4$s">%2$s</select>
+                </div>',
+				esc_html__( 'Status', 'learnpress' ),
+				$status_options_html,
+				esc_attr__( 'Published', 'learnpress' ),
+				esc_attr__( 'Scheduled', 'learnpress' )
+			),
+			'visibility_row'   => sprintf(
+				'<div class="cb-course-edit-publish__row">
+                    <label for="cb-course-publish-visibility" class="cb-course-edit-publish__label">%1$s</label>
+                    <select id="cb-course-publish-visibility" name="cb_course_publish_visibility" class="cb-course-edit-publish__control">%2$s</select>
+                </div>',
+				esc_html__( 'Visibility', 'learnpress' ),
+				$visibility_options_html
+			),
+			'password_row'     => sprintf(
+				'<div class="cb-course-edit-publish__row cb-course-edit-publish__password-row %1$s">
+                    <label for="cb-course-publish-password" class="cb-course-edit-publish__label">%2$s</label>
+                    <input type="text" id="cb-course-publish-password" name="cb_course_publish_password" class="cb-course-edit-publish__control" value="%3$s" autocomplete="new-password">
+                </div>',
+				'password' === $visibility ? '' : 'lp-hidden',
+				esc_html__( 'Password', 'learnpress' ),
+				esc_attr( $current_password )
+			),
+			'published_on_row' => sprintf(
+				'<div class="cb-course-edit-publish__row">
+                    <label for="cb-course-publish-date" id="cb-course-publish-date-label" class="cb-course-edit-publish__label">%1$s</label>
+                    <input type="datetime-local" id="cb-course-publish-date" name="cb_course_publish_date" class="cb-course-edit-publish__control" value="%2$s">
+                </div>',
+				esc_html( $publish_date_label ),
+				esc_attr( $published_on )
+			),
+			'wrapper_end'      => '</div>',
+		];
+
+		return Template::combine_components( $edit );
+	}
+
 	public function section_curriculum() {
 		wp_enqueue_script( 'lp-cb-edit-curriculum' );
 		wp_enqueue_style( 'lp-cb-edit-curriculum' );
@@ -710,12 +829,12 @@ class BuilderEditCourseTemplate {
 		// Replace edit button with popup button - use lp-icon-edit-square instead of lp-icon-expand
 		$section_action['edit'] = sprintf(
 			'<li title="%s" class="lp-btn-edit-item-popup"
-				data-item-id="%s"
-				data-item-type="%s"
-				data-course-id="%s"
-				%s>
-				<a class="lp-icon-edit-square edit-popup-link"></a>
-			</li>',
+                data-item-id="%s"
+                data-item-type="%s"
+                data-course-id="%s"
+                %s>
+                <a class="lp-icon-edit-square edit-popup-link"></a>
+            </li>',
 			__( 'Edit in popup', 'learnpress' ),
 			$item_id,
 			$item_type,
@@ -754,7 +873,7 @@ class BuilderEditCourseTemplate {
 		add_filter( 'learnpress/course/metabox/tabs', [ $this, 'filter_course_builder_settings_tabs' ], 999 );
 		add_filter( 'learn-press/course/meta-box/assessment/final-quiz/edit-link', [ $this, 'filter_course_builder_assessment_final_quiz_edit_link' ], 10, 2 );
 
-		$metabox = new \LP_Meta_Box_Course();
+		$metabox = \LP_Meta_Box_Course::instance();
 		ob_start();
 		$metabox->output( $course_model );
 		$settings = ob_get_clean();
@@ -781,7 +900,7 @@ class BuilderEditCourseTemplate {
 	 * @return array
 	 */
 	public function filter_course_builder_settings_tabs( array $tabs ): array {
-		$allowed_tabs = apply_filters( 'learn-press/course-builder/edit-course/settings/tabs', [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material' ] );
+		$allowed_tabs = [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material' ];
 
 		foreach ( array_keys( $tabs ) as $tab_key ) {
 			if ( ! in_array( $tab_key, $allowed_tabs, true ) ) {
@@ -789,7 +908,7 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
-		return $tabs;
+		return apply_filters( 'learn-press/course-builder/edit-course/settings/tabs', $tabs );
 	}
 
 	/**

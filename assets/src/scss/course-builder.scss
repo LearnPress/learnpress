@@ -866,6 +866,13 @@ input.lp-search-title-item:focus {
 	cursor: pointer;
 	border: 1px solid transparent;
 	transition: all 0.2s;
+	background: transparent;
+	color: $cb-text;
+
+	&:hover {
+		background: transparent;
+		color: $cb-primary;
+	}
 }
 
 .lp-popup-items-to-select .lp-btn-add-items-selected.lp-btn-edit-primary.active,

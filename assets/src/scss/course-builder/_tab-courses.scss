@@ -14,8 +14,8 @@
 		position: relative;
 
 		&:before {
-			font-family: "lp-icon";
-			content: "\f059";
+			font-family: 'lp-icon';
+			content: '\f059';
 		}
 
 		> * {
@@ -23,7 +23,7 @@
 			position: absolute;
 			bottom: 100%;
 			left: 50%;
-			transform: translateX(-50%);
+			transform: translateX( -50% );
 			margin-bottom: 8px;
 			padding: 8px 12px;
 			background-color: #333;
@@ -36,15 +36,15 @@
 			width: max-content;
 			max-width: 250px;
 			z-index: 999;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			box-shadow: 0 4px 6px rgba( 0, 0, 0, 0.1 );
 			pointer-events: none;
 
 			&::after {
-				content: "";
+				content: '';
 				position: absolute;
 				top: 100%;
 				left: 50%;
-				transform: translateX(-50%);
+				transform: translateX( -50% );
 				border-width: 5px;
 				border-style: solid;
 				border-color: #333 transparent transparent transparent;
@@ -390,7 +390,7 @@
 		min-width: 160px;
 		top: 60px;
 		right: 16px;
-		transform: translate(15px, -15px);
+		transform: translate( 15px, -15px );
 		padding: 10px;
 		flex-direction: column;
 		background-color: $cb-bg;
@@ -483,6 +483,11 @@
 		&.publish span {
 			background: $cb-success-bg;
 			color: $cb-success;
+		}
+
+		&.future span {
+			background: $cb-featured;
+			color: #333;
 		}
 
 		&.trash span {
@@ -630,11 +635,10 @@
 		max-width: 420px;
 		margin-bottom: $cb-spacing-xl;
 
-		&:not(:has(*)) {
+		&:not( :has( * ) ) {
 			display: none;
 		}
 	}
-
 
 	#btn-lp--add-material,
 	#btn-lp--save-material,
@@ -671,7 +675,7 @@
 		}
 	}
 
-	.lp-material--delete  {
+	.lp-material--delete {
 		color: $cb-text-muted;
 		border: 1px solid $cb-border;
 
@@ -727,7 +731,7 @@
 
 		&:active {
 			background-color: #d0d0d0;
-			transform: scale(0.98);
+			transform: scale( 0.98 );
 		}
 
 		&::before {
@@ -785,7 +789,7 @@
 	}
 
 	// Responsive
-	@media (max-width: 1024px) {
+	@media ( max-width: 1024px ) {
 		.cb-list-course {
 			gap: 15px;
 		}
@@ -796,7 +800,7 @@
 		}
 	}
 
-	@media (max-width: 768px) {
+	@media ( max-width: 768px ) {
 		.cb-tab-course__action {
 			flex-direction: column;
 			gap: $cb-spacing-lg;

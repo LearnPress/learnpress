@@ -10,7 +10,7 @@ $cb-sidebar-background-hover: $cb-primary-bland !default;
 $cb-card-bg: $cb-bg-card !default;
 
 // Shared dropdown menu/item styles used by two header action contexts.
-@mixin cb-header-dropdown-menu-and-items($menu-border-radius) {
+@mixin cb-header-dropdown-menu-and-items( $menu-border-radius ) {
 	.cb-dropdown-menu {
 		position: absolute;
 		top: calc( 100% + 4px );
@@ -699,13 +699,13 @@ html:has( #wpadminbar ) {
 	text-transform: capitalize;
 
 	&.publish {
-		background: #E7F6E9;
-		color: #28A746;
+		background: #e7f6e9;
+		color: #28a746;
 	}
 
 	&.draft {
-		background: #F7F7F7;
-		color: #AAAAAA;
+		background: #f7f7f7;
+		color: #aaaaaa;
 	}
 
 	&.pending {
@@ -721,6 +721,11 @@ html:has( #wpadminbar ) {
 	&.trash {
 		background: #fee2e2;
 		color: #991b1b;
+	}
+
+	&.future {
+		background: #ffd700;
+		color: #333;
 	}
 }
 
@@ -806,13 +811,13 @@ html:has( #wpadminbar ) {
 					text-transform: capitalize;
 
 					&.publish {
-						background: #E7F6E9;
-						color: #28A746;
+						background: #e7f6e9;
+						color: #28a746;
 					}
 
 					&.draft {
-						background: #F7F7F7;
-						color: #AAAAAA;
+						background: #f7f7f7;
+						color: #aaaaaa;
 					}
 
 					&.pending {
@@ -953,13 +958,13 @@ html:has( #wpadminbar ) {
 	}
 }
 
-	// Old button styles compatibility
-	#lp-course-builder {
-		.cb-btn-update,
-		.cb-btn-preview,
-		.cb-btn-darft,
-		.cb-btn-publish,
-		.cb-btn-pending {
+// Old button styles compatibility
+#lp-course-builder {
+	.cb-btn-update,
+	.cb-btn-preview,
+	.cb-btn-darft,
+	.cb-btn-publish,
+	.cb-btn-pending {
 		padding: 10px 20px;
 		font-size: 14px;
 		border-radius: 12px;
@@ -1067,6 +1072,89 @@ html:has( #wpadminbar ) {
 		}
 	}
 
+	.cb-header-action-expanded {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+
+		.course-action-expanded {
+			cursor: pointer;
+			padding: 7px;
+			border: 1px solid $cb-border-light;
+			border-radius: 12px;
+			background: #fff;
+			transition: all 0.2s;
+			height: 40px;
+			width: 40px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+
+			&:hover {
+				background: #f8fafc;
+				border-color: #d1d5db;
+			}
+
+			svg {
+				width: 18px;
+				height: 18px;
+				color: $cb-text-subtle;
+			}
+		}
+
+		.cb-header-action-expanded__items {
+			position: absolute;
+			top: calc( 100% + 6px );
+			right: 0;
+			min-width: 180px;
+			padding: 8px;
+			border: 1px solid $cb-border-light;
+			border-radius: 12px;
+			background: #fff;
+			box-shadow: 0 4px 12px rgba( 0, 0, 0, 0.1 );
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+			z-index: 1000;
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY( -8px );
+			pointer-events: none;
+			transition: all 0.2s ease;
+		}
+
+		&:hover .cb-header-action-expanded__items,
+		&:focus-within .cb-header-action-expanded__items {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY( 0 );
+			pointer-events: auto;
+		}
+
+		.cb-header-action-expanded__trash {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			padding: 10px 12px;
+			border-radius: 8px;
+			color: #ef4444;
+			font-size: 14px;
+			font-weight: 500;
+			cursor: pointer;
+
+			.dashicons {
+				font-size: 16px;
+				width: 16px;
+				height: 16px;
+				color: #ef4444;
+			}
+
+			&:hover {
+				background: #fef2f2;
+			}
+		}
+	}
+
 	// ===========================================
 	// HEADER ACTIONS DROPDOWN
 	// ===========================================
@@ -1142,7 +1230,7 @@ html:has( #wpadminbar ) {
 			}
 		}
 
-		@include cb-header-dropdown-menu-and-items(8px);
+		@include cb-header-dropdown-menu-and-items( 8px );
 
 		// Dropdown toggle color matches main button based on status
 		&[data-current-status='trash'],
@@ -1202,10 +1290,10 @@ html:has( #wpadminbar ) {
 	display: inline-flex;
 
 	// Button group container - main action button
-		.cb-btn-update,
-		.cb-btn-darft.cb-btn-main-action,
-		.cb-btn-publish.cb-btn-main-action,
-		.cb-btn-pending.cb-btn-main-action {
+	.cb-btn-update,
+	.cb-btn-darft.cb-btn-main-action,
+	.cb-btn-publish.cb-btn-main-action,
+	.cb-btn-pending.cb-btn-main-action {
 		padding: 10px 16px;
 		font-size: 14px;
 		font-weight: 500;
@@ -1221,23 +1309,23 @@ html:has( #wpadminbar ) {
 			background: $cb-primary-hover;
 		}
 
-			&.cb-btn-primary {
-				background: $cb-primary;
-				color: #fff;
+		&.cb-btn-primary {
+			background: $cb-primary;
+			color: #fff;
 
-				&:hover {
-					background: $cb-primary-hover;
-				}
-			}
-
-			&.loading,
-			&.lp-loading,
-			&[aria-disabled='true'] {
-				opacity: 0.7;
-				pointer-events: none;
-				cursor: not-allowed;
+			&:hover {
+				background: $cb-primary-hover;
 			}
 		}
+
+		&.loading,
+		&.lp-loading,
+		&[aria-disabled='true'] {
+			opacity: 0.7;
+			pointer-events: none;
+			cursor: not-allowed;
+		}
+	}
 
 	.cb-btn-pending.cb-btn-main-action {
 		background: #dbeafe;
@@ -1350,7 +1438,13 @@ html:has( #wpadminbar ) {
 		}
 	}
 
-	@include cb-header-dropdown-menu-and-items(12px);
+	&.cb-header-actions-dropdown--single {
+		.cb-btn-main-action {
+			border-radius: 12px !important;
+		}
+	}
+
+	@include cb-header-dropdown-menu-and-items( 12px );
 }
 
 @keyframes pulse-save {

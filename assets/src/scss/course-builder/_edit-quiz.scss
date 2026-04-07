@@ -3,10 +3,126 @@
 .cb-section__quiz-edit,
 .cb-section__question-edit,
 .lp-cb-tab-panel[data-section='question'] {
-	.cb-section__quiz-title-assigned {
+	.cb-item-edit-content {
 		display: flex;
-		flex-direction: column-reverse;
-		gap: 16px;
+		gap: 40px;
+		align-items: flex-start;
+	}
+
+	.cb-item-edit-column {
+		&--left {
+			flex: 0 0 400px;
+			max-width: 400px;
+		}
+
+		&--right {
+			flex: 1;
+			min-width: 0;
+		}
+	}
+
+	.cb-item-edit-assigned {
+		margin-bottom: 20px;
+		font-size: 14px;
+		line-height: 1.6;
+
+		.label {
+			font-weight: 600;
+			color: $cb-text-label;
+		}
+
+		a {
+			color: $cb-primary;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.cb-item-edit-permalink {
+		margin-bottom: 20px;
+	}
+
+	.cb-item-edit-permalink__label {
+		display: block;
+		font-size: 14px;
+		font-weight: 600;
+		color: $cb-text-label;
+		margin-bottom: 8px;
+	}
+
+	.cb-item-edit-permalink__url,
+	.cb-item-edit-permalink__placeholder {
+		display: block;
+		font-size: 13px;
+		line-height: 1.5;
+		word-break: break-all;
+	}
+
+	.cb-item-edit-permalink__url {
+		color: $cb-primary;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	.cb-item-edit-permalink__placeholder {
+		color: $cb-text-secondary;
+	}
+
+	.cb-item-edit-publish__title {
+		margin: 0 0 12px;
+		font-size: 14px;
+		font-weight: 600;
+		color: $cb-text-label;
+	}
+
+	.cb-item-edit-publish__row {
+		display: grid;
+		grid-template-columns: 100px 1fr;
+		gap: 12px;
+		align-items: center;
+		margin-bottom: 12px;
+	}
+
+	.cb-item-edit-publish__label {
+		font-size: 13px;
+		font-weight: 600;
+		color: $cb-text-secondary;
+	}
+
+	.cb-item-edit-publish__control {
+		width: 100%;
+		height: 34px;
+		padding: 6px 32px 6px 14px !important;
+		border: 1px solid $cb-border;
+		border-radius: 6px;
+		background: #fff;
+		font-size: 14px;
+		color: $cb-text-label;
+	}
+
+	@media ( max-width: 1024px ) {
+		.cb-item-edit-content {
+			flex-direction: column;
+			gap: 24px;
+		}
+
+		.cb-item-edit-column {
+			&--left {
+				flex-basis: auto;
+				max-width: 100%;
+				width: 100%;
+			}
+
+			&--right {
+				width: 100%;
+			}
+		}
 	}
 
 	.lp-edit-list-questions .lp-question-item .lp-question-type-label {

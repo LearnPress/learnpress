@@ -77,6 +77,13 @@ export class BuilderEditCourse {
 		elFeaturedImageLink: '.cb-featured-image-link',
 		elThumbnailInput: '#course_thumbnail_id',
 		elFeaturedImageContainer: '.cb-featured-image-container',
+		elPublishPanel: '.cb-course-edit-publish',
+		elPublishStatusSelect: '#cb-course-publish-status',
+		elPublishVisibilitySelect: '#cb-course-publish-visibility',
+		elPublishPasswordRow: '.cb-course-edit-publish__password-row',
+		elPublishPasswordInput: '#cb-course-publish-password',
+		elPublishDateLabel: '#cb-course-publish-date-label',
+		elPublishDateInput: '#cb-course-publish-date',
 
 		elPriceCourseData: '#price_course_data',
 		elSaleDatesFields: '.lp_sale_dates_fields',
@@ -131,6 +138,9 @@ export class BuilderEditCourse {
 		this.initAssessmentMetaboxFeatures();
 		this.initTitleCharCount();
 		this.initDescWordCount();
+		this.syncPublishStatusOptions();
+		this.syncPublishDateLabel();
+		this.syncPublishVisibilityControls( false );
 		this.initHeaderActionsDropdown();
 		this.bindAiFeaturedImageListener();
 		this.events();
@@ -334,6 +344,16 @@ export class BuilderEditCourse {
 				class: this,
 				callBack: this.handleCourseResultChange.name,
 			},
+			{
+				selector: BuilderEditCourse.selectors.elPublishVisibilitySelect,
+				class: this,
+				callBack: this.handlePublishVisibilityChange.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elPublishStatusSelect,
+				class: this,
+				callBack: this.handlePublishStatusChange.name,
+			},
 		] );
 
 		lpUtils.eventHandlers( 'input', [
@@ -481,8 +501,7 @@ export class BuilderEditCourse {
 			} );
 		}
 
-		const restBase =
-			window.lpGlobalSettings?.rest || window.lpData?.lp_rest_url || '/wp-json/';
+		const restBase = window.lpGlobalSettings?.rest || window.lpData?.lp_rest_url || '/wp-json/';
 		const restNonce = window.lpGlobalSettings?.nonce || window.lpData?.nonce || '';
 		const normalizedRestBase = restBase.endsWith( '/' ) ? restBase : `${ restBase }/`;
 		const response = await fetch( `${ normalizedRestBase }lp/v1/admin/course/get_final_quiz`, {
@@ -1412,9 +1431,7 @@ export class BuilderEditCourse {
 		// Find which button was clicked and determine status from data attribute
 		const elBtnMainAction = target.closest( BuilderEditCourse.selectors.elBtnMainAction );
 		const elBtnHeaderSave = target.closest( BuilderEditCourse.selectors.elBtnHeaderSave );
-		const elBtnDropdownAction = target.closest(
-			BuilderEditCourse.selectors.elBtnDropdownAction
-		);
+		const elBtnDropdownAction = target.closest( BuilderEditCourse.selectors.elBtnDropdownAction );
 
 		let targetStatus = 'publish';
 		let elBtn = null;
@@ -1435,6 +1452,26 @@ export class BuilderEditCourse {
 
 		if ( ! elBtn ) return;
 
+		// Course publish status is controlled by the Publish panel when available.
+		if ( elBtnMainAction || elBtnHeaderSave ) {
+			targetStatus = this.getStatusFromPublishPanel( targetStatus );
+		}
+
+		const publishVisibilityEl = document.querySelector(
+			BuilderEditCourse.selectors.elPublishVisibilitySelect
+		);
+		const publishPasswordEl = document.querySelector(
+			BuilderEditCourse.selectors.elPublishPasswordInput
+		);
+		const publishVisibility = publishVisibilityEl?.value || '';
+		const publishPassword = publishPasswordEl?.value?.trim?.() || '';
+
+		if ( publishVisibility === 'password' && ! publishPassword ) {
+			lpToastify.show( 'Password is required when visibility is password protected.', 'error' );
+			publishPasswordEl?.focus?.();
+			return;
+		}
+
 		// Check if drafting a published course
 		if ( targetStatus === 'draft' ) {
 			const statusEl = document.querySelector( BuilderEditCourse.selectors.elStatus );
@@ -1453,7 +1490,9 @@ export class BuilderEditCourse {
 			const elsToToggle = [];
 			const elHeaderSave = document.querySelector( BuilderEditCourse.selectors.elBtnHeaderSave );
 			const elMainAction = document.querySelector( BuilderEditCourse.selectors.elBtnMainAction );
-			const elDropdownToggle = document.querySelector( BuilderEditCourse.selectors.elDropdownToggle );
+			const elDropdownToggle = document.querySelector(
+				BuilderEditCourse.selectors.elDropdownToggle
+			);
 
 			if ( elHeaderSave ) {
 				elsToToggle.push( elHeaderSave );
@@ -1517,6 +1556,18 @@ export class BuilderEditCourse {
 		if ( courseData.course_thumbnail_id ) {
 			dataSend.course_thumbnail_id = courseData.course_thumbnail_id;
 		}
+		if ( publishVisibility ) {
+			dataSend.course_visibility = publishVisibility;
+			dataSend.course_password = publishVisibility === 'password' ? publishPassword : '';
+		}
+
+		const publishDateInput = document.querySelector(
+			BuilderEditCourse.selectors.elPublishDateInput
+		);
+		if ( publishDateInput && publishDateInput.value ) {
+			dataSend.course_post_date = publishDateInput.value;
+		}
+
 		const callBack = {
 			success: ( response ) => {
 				const { status, message, data } = response;
@@ -1531,12 +1582,13 @@ export class BuilderEditCourse {
 
 				// Update action buttons based on new status
 				if ( statusForUI ) {
+					this.syncPublishPanelStatus( statusForUI, data?.visibility || '' );
 					this.updateActionButtons( statusForUI );
 					// Update status badge
 					const elStatus = document.querySelector( BuilderEditCourse.selectors.elStatus );
 					if ( elStatus ) {
 						elStatus.className = 'course-status ' + statusForUI;
-						elStatus.textContent = statusForUI;
+						elStatus.textContent = this.formatStatusLabel( statusForUI );
 					}
 					// Toggle preview/admin link visibility for trash status
 					this.toggleTrashElements( statusForUI );
@@ -1590,23 +1642,213 @@ export class BuilderEditCourse {
 	 * @return {string}
 	 */
 	resolveStatusForUIAfterSave( savedStatus, requestedStatus ) {
-		const normalizedSavedStatus = typeof savedStatus === 'string'
-			? savedStatus.trim().toLowerCase()
-			: '';
+		const normalizedSavedStatus =
+			typeof savedStatus === 'string' ? savedStatus.trim().toLowerCase() : '';
 
-		const normalizedRequestedStatus = typeof requestedStatus === 'string'
-			? requestedStatus.trim().toLowerCase()
-			: '';
+		const normalizedRequestedStatus =
+			typeof requestedStatus === 'string' ? requestedStatus.trim().toLowerCase() : '';
 
 		const dropdown = document.querySelector( BuilderEditCourse.selectors.elHeaderActionsDropdown );
 		const reviewOnlyCourseAttr = ( dropdown?.dataset?.reviewOnlyCourse || '' ).toLowerCase();
 		const isReviewOnlyCourse = [ 'yes', 'true', '1' ].includes( reviewOnlyCourseAttr );
 
-		if ( isReviewOnlyCourse && [ 'publish', 'private' ].includes( normalizedRequestedStatus ) ) {
+		if (
+			isReviewOnlyCourse &&
+			[ 'publish', 'private', 'future' ].includes( normalizedRequestedStatus )
+		) {
 			return 'pending';
 		}
 
 		return normalizedSavedStatus || normalizedRequestedStatus || 'draft';
+	}
+
+	/**
+	 * Resolve target status from Publish panel controls.
+	 *
+	 * @param {string} fallbackStatus
+	 * @return {string}
+	 */
+	getStatusFromPublishPanel( fallbackStatus = 'publish' ) {
+		const statusSelect = document.querySelector(
+			BuilderEditCourse.selectors.elPublishStatusSelect
+		);
+		const visibilitySelect = document.querySelector(
+			BuilderEditCourse.selectors.elPublishVisibilitySelect
+		);
+
+		let status = statusSelect?.value || fallbackStatus || 'publish';
+		const visibility = visibilitySelect?.value || 'public';
+
+		if ( visibility === 'private' && status !== 'draft' && status !== 'pending' ) {
+			status = 'private';
+		}
+
+		if ( [ 'public', 'password' ].includes( visibility ) && status === 'private' ) {
+			status = 'publish';
+		}
+
+		const allowedStatuses = [ 'publish', 'future', 'draft', 'pending', 'private' ];
+		if ( ! allowedStatuses.includes( status ) ) {
+			return 'publish';
+		}
+
+		return status;
+	}
+
+	/**
+	 * Sync Publish panel controls after save/trash.
+	 *
+	 * @param {string} status
+	 */
+	syncPublishPanelStatus( status, visibility = '' ) {
+		const statusSelect = document.querySelector(
+			BuilderEditCourse.selectors.elPublishStatusSelect
+		);
+		const visibilitySelect = document.querySelector(
+			BuilderEditCourse.selectors.elPublishVisibilitySelect
+		);
+
+		if ( ! statusSelect && ! visibilitySelect ) {
+			return;
+		}
+
+		const normalized = ( status || '' ).toString().toLowerCase();
+
+		if ( statusSelect ) {
+			if ( normalized === 'private' ) {
+				statusSelect.value = 'publish';
+			} else if ( [ 'publish', 'future', 'draft', 'pending' ].includes( normalized ) ) {
+				statusSelect.value = normalized;
+			}
+		}
+
+		this.syncPublishStatusOptions( normalized );
+
+		if ( visibilitySelect ) {
+			let visibilityToSet = visibility || visibilitySelect.value || 'public';
+			if ( normalized === 'private' ) {
+				visibilityToSet = 'private';
+			} else if ( visibilityToSet === 'private' ) {
+				visibilityToSet = 'public';
+			}
+			visibilitySelect.value = visibilityToSet;
+		}
+
+		this.syncPublishVisibilityControls();
+		this.syncPublishDateLabel();
+	}
+
+	handlePublishVisibilityChange() {
+		this.syncPublishVisibilityControls( true );
+	}
+
+	handlePublishStatusChange() {
+		this.syncPublishStatusOptions();
+		this.syncPublishDateLabel();
+	}
+
+	syncPublishVisibilityControls( focusPassword = false ) {
+		const visibilitySelect = document.querySelector(
+			BuilderEditCourse.selectors.elPublishVisibilitySelect
+		);
+		const passwordRow = document.querySelector( BuilderEditCourse.selectors.elPublishPasswordRow );
+		const passwordInput = document.querySelector(
+			BuilderEditCourse.selectors.elPublishPasswordInput
+		);
+
+		if ( ! visibilitySelect || ! passwordRow ) {
+			return;
+		}
+
+		const isPassword = visibilitySelect.value === 'password';
+		passwordRow.classList.toggle( 'lp-hidden', ! isPassword );
+
+		if ( focusPassword && isPassword && passwordInput ) {
+			passwordInput.focus();
+		}
+	}
+
+	syncPublishDateLabel() {
+		const statusSelect = document.querySelector(
+			BuilderEditCourse.selectors.elPublishStatusSelect
+		);
+		const dateLabel = document.querySelector( BuilderEditCourse.selectors.elPublishDateLabel );
+
+		if ( ! statusSelect || ! dateLabel ) {
+			return;
+		}
+
+		dateLabel.textContent = statusSelect.value === 'future' ? 'Scheduled for' : 'Published on';
+	}
+
+	syncPublishStatusOptions( preferredStatus = '' ) {
+		const statusSelect = document.querySelector(
+			BuilderEditCourse.selectors.elPublishStatusSelect
+		);
+		if ( ! statusSelect ) {
+			return;
+		}
+
+		const publishLabel = statusSelect.dataset.publishLabel || 'Published';
+		const futureLabel = statusSelect.dataset.futureLabel || 'Scheduled';
+		const selectedStatus = ( preferredStatus || statusSelect.value || '' ).toLowerCase();
+		const publishOption = statusSelect.querySelector( 'option[value="publish"]' );
+		const futureOption = statusSelect.querySelector( 'option[value="future"]' );
+
+		if ( selectedStatus === 'future' ) {
+			if ( publishOption ) {
+				publishOption.remove();
+			}
+
+			if ( ! futureOption ) {
+				const option = document.createElement( 'option' );
+				option.value = 'future';
+				option.textContent = futureLabel;
+				statusSelect.insertBefore( option, statusSelect.firstChild );
+			}
+			statusSelect.value = 'future';
+			return;
+		}
+
+		if ( selectedStatus === 'publish' ) {
+			if ( futureOption ) {
+				futureOption.remove();
+			}
+
+			if ( ! publishOption ) {
+				const option = document.createElement( 'option' );
+				option.value = 'publish';
+				option.textContent = publishLabel;
+				statusSelect.insertBefore( option, statusSelect.firstChild );
+			}
+			statusSelect.value = 'publish';
+			return;
+		}
+
+		if ( ! publishOption ) {
+			const option = document.createElement( 'option' );
+			option.value = 'publish';
+			option.textContent = publishLabel;
+			statusSelect.insertBefore( option, statusSelect.firstChild );
+		}
+
+		if ( ! futureOption ) {
+			const option = document.createElement( 'option' );
+			option.value = 'future';
+			option.textContent = futureLabel;
+			if ( statusSelect.querySelector( 'option[value="publish"]' ) ) {
+				statusSelect
+					.querySelector( 'option[value="publish"]' )
+					.insertAdjacentElement( 'afterend', option );
+			} else {
+				statusSelect.insertBefore( option, statusSelect.firstChild );
+			}
+		}
+	}
+
+	formatStatusLabel( status ) {
+		const normalized = ( status || '' ).toString().toLowerCase();
+		return normalized === 'future' ? 'scheduled' : normalized;
 	}
 
 	/**
@@ -1621,7 +1863,18 @@ export class BuilderEditCourse {
 
 		const mainBtn = dropdown.querySelector( '.cb-btn-main-action' );
 		const dropdownMenu = dropdown.querySelector( BuilderEditCourse.selectors.elDropdownMenu );
-		if ( ! mainBtn || ! dropdownMenu ) return;
+		if ( ! mainBtn ) return;
+
+		const hasSingleCourseAction =
+			dropdown.classList.contains( 'cb-header-actions-dropdown--single' ) || ! dropdownMenu;
+
+		if ( hasSingleCourseAction ) {
+			mainBtn.className = 'cb-btn-update cb-btn-primary cb-btn-main-action';
+			mainBtn.dataset.status = this.getStatusFromPublishPanel( 'publish' );
+			mainBtn.textContent = mainBtn.dataset.titleUpdate || 'Update';
+			dropdown.dataset.currentStatus = newStatus;
+			return;
+		}
 
 		const reviewOnlyCourseAttr = ( dropdown.dataset.reviewOnlyCourse || '' ).toLowerCase();
 		const isReviewOnlyCourse = [ 'yes', 'true', '1' ].includes( reviewOnlyCourseAttr );
@@ -1646,15 +1899,15 @@ export class BuilderEditCourse {
 				dropdownStatus: 'publish',
 				dropdownIcon: 'dashicons-visibility',
 			},
-				pending: {
-					mainLabel: mainBtn.dataset.titlePublish || 'Publish',
-					mainClass: 'cb-btn-publish',
-					mainStatus: 'publish',
-					dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
-					dropdownClass: 'cb-btn-darft',
-					dropdownStatus: 'draft',
-					dropdownIcon: 'dashicons-media-default',
-				},
+			pending: {
+				mainLabel: mainBtn.dataset.titlePublish || 'Publish',
+				mainClass: 'cb-btn-publish',
+				mainStatus: 'publish',
+				dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				dropdownClass: 'cb-btn-darft',
+				dropdownStatus: 'draft',
+				dropdownIcon: 'dashicons-media-default',
+			},
 			trash: {
 				mainLabel: mainBtn.dataset.titleDraft || 'Save Draft',
 				mainClass: 'cb-btn-darft',
@@ -1693,15 +1946,15 @@ export class BuilderEditCourse {
 				dropdownStatus: 'draft',
 				dropdownIcon: 'dashicons-media-default',
 			},
-				'auto-draft': {
-					mainLabel: mainBtn.dataset.titleSubmitReview || 'Submit for Review',
-					mainClass: 'cb-btn-pending',
-					mainStatus: 'pending',
-					dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
-					dropdownClass: 'cb-btn-darft',
-					dropdownStatus: 'draft',
-					dropdownIcon: 'dashicons-media-default',
-				},
+			'auto-draft': {
+				mainLabel: mainBtn.dataset.titleSubmitReview || 'Submit for Review',
+				mainClass: 'cb-btn-pending',
+				mainStatus: 'pending',
+				dropdownLabel: mainBtn.dataset.titleDraft || 'Save Draft',
+				dropdownClass: 'cb-btn-darft',
+				dropdownStatus: 'draft',
+				dropdownIcon: 'dashicons-media-default',
+			},
 			trash: {
 				mainLabel: mainBtn.dataset.titleDraft || 'Save Draft',
 				mainClass: 'cb-btn-darft',
@@ -1792,8 +2045,9 @@ export class BuilderEditCourse {
 					const elStatus = document.querySelector( BuilderEditCourse.selectors.elStatus );
 					if ( elStatus ) {
 						elStatus.className = 'course-status ' + data.status;
-						elStatus.textContent = data.status;
+						elStatus.textContent = this.formatStatusLabel( data.status );
 					}
+					this.syncPublishPanelStatus( data.status );
 					// Toggle preview/admin link visibility for trash status
 					this.toggleTrashElements( data.status );
 					// Update action buttons to show "Save Draft" for trash status

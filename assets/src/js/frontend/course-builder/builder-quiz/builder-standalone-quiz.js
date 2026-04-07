@@ -3,6 +3,7 @@ import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
 import { BuilderEditQuiz } from './builder-edit-quiz.js';
 import { SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
+import { getFormState } from '../builder-form-state.js';
 
 /**
  * Builder Standalone Quiz Handler
@@ -32,7 +33,18 @@ export class BuilderStandaloneQuiz {
 		// Form fields
 		idTitle: 'title',
 		idDescEditor: 'quiz_description_editor',
+		elPublishStatusSelect: '#cb-quiz-publish-status',
 		elFormSetting: '.lp-form-setting-quiz',
+		// Permalink component
+		elPermalinkDisplay: '.cb-permalink-display',
+		elPermalinkEditor: '.cb-permalink-editor',
+		elPermalinkEditBtn: '.cb-permalink-edit-btn',
+		elPermalinkOkBtn: '.cb-permalink-ok-btn',
+		elPermalinkCancelBtn: '.cb-permalink-cancel-btn',
+		elPermalinkSlugInput: '.cb-permalink-slug-input',
+		elPermalinkUrl: '.cb-permalink-url',
+		elPermalinkBaseUrl: '#cb-permalink-base-url',
+		elPermalinkRoot: '.cb-item-edit-permalink, .cb-course-edit-permalink',
 		// Tab handling selectors
 		elCBHorizontalTabs: '.lp-cb-tabs__item',
 		elCBTabPanels: '.lp-cb-tab-panel',
@@ -47,6 +59,7 @@ export class BuilderStandaloneQuiz {
 		this.initTabs();
 		this.initHeaderActionsDropdown();
 		this.initQuestionTabHandler();
+		this.syncHeaderActionWithPublishPanel();
 		this.events();
 	}
 
@@ -113,6 +126,10 @@ export class BuilderStandaloneQuiz {
 	 * Handle dropdown toggle click
 	 */
 	handleDropdownToggle( args ) {
+		if ( this.hasPublishDrivenSingleAction() ) {
+			return;
+		}
+
 		const { target } = args;
 		const toggleBtn = target.closest( BuilderStandaloneQuiz.selectors.elDropdownToggle );
 
@@ -139,6 +156,10 @@ export class BuilderStandaloneQuiz {
 	handleDropdownItemClick( args ) {
 		// Context check: only handle if on quiz edit page
 		if ( ! this.isQuizContext() ) {
+			return;
+		}
+
+		if ( this.hasPublishDrivenSingleAction() ) {
 			return;
 		}
 
@@ -206,6 +227,7 @@ export class BuilderStandaloneQuiz {
 				if ( respStatus === 'success' ) {
 					// Update action button text
 					this.updateActionButtons( data?.status || status );
+					this.syncPublishPanelStatus( data?.status || status );
 
 					// Reset form state before potential redirect.
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
@@ -222,6 +244,8 @@ export class BuilderStandaloneQuiz {
 							elStatus.textContent = data.status;
 						}
 					}
+
+					this.updatePermalinkUIAfterSave( data );
 				}
 			},
 			error: ( error ) => {
@@ -328,7 +352,35 @@ export class BuilderStandaloneQuiz {
 				class: this,
 				callBack: this.handleDropdownItemClick.name,
 			},
+			{
+				selector: BuilderStandaloneQuiz.selectors.elPermalinkEditBtn,
+				class: this,
+				callBack: this.handlePermalinkEdit.name,
+			},
+			{
+				selector: BuilderStandaloneQuiz.selectors.elPermalinkOkBtn,
+				class: this,
+				callBack: this.handlePermalinkOk.name,
+			},
+			{
+				selector: BuilderStandaloneQuiz.selectors.elPermalinkCancelBtn,
+				class: this,
+				callBack: this.handlePermalinkCancel.name,
+			},
 		] );
+
+		lpUtils.eventHandlers( 'change', [
+			{
+				selector: BuilderStandaloneQuiz.selectors.elPublishStatusSelect,
+				class: this,
+				callBack: this.handlePublishStatusChange.name,
+			},
+		] );
+	}
+
+	handlePublishStatusChange() {
+		this.syncHeaderActionWithPublishPanel();
+		getFormState().markAsChanged();
 	}
 
 	/**
@@ -367,6 +419,13 @@ export class BuilderStandaloneQuiz {
 			if ( editor ) {
 				data.quiz_description = editor.getContent();
 			}
+		}
+
+		const permalinkInput = document.querySelector(
+			BuilderStandaloneQuiz.selectors.elPermalinkSlugInput
+		);
+		if ( permalinkInput && permalinkInput.value ) {
+			data.quiz_permalink = permalinkInput.value;
 		}
 
 		const elFormSetting = document.querySelector( BuilderStandaloneQuiz.selectors.elFormSetting );
@@ -430,6 +489,211 @@ export class BuilderStandaloneQuiz {
 		return data;
 	}
 
+	getStatusFromPublishPanel( fallbackStatus = 'publish' ) {
+		const statusSelect = document.querySelector(
+			BuilderStandaloneQuiz.selectors.elPublishStatusSelect
+		);
+		if ( ! statusSelect ) {
+			return fallbackStatus;
+		}
+
+		const selectedStatus = statusSelect.value;
+		if ( selectedStatus === 'publish' || selectedStatus === 'draft' ) {
+			return selectedStatus;
+		}
+
+		return fallbackStatus;
+	}
+
+	hasPublishDrivenSingleAction() {
+		if ( ! document.querySelector( BuilderStandaloneQuiz.selectors.elPublishStatusSelect ) ) {
+			return false;
+		}
+
+		const wrapperEl = document.querySelector( BuilderStandaloneQuiz.selectors.elDataQuiz );
+		const quizId = wrapperEl ? parseInt( wrapperEl.dataset.quizId ) || 0 : 0;
+
+		return quizId > 0;
+	}
+
+	syncHeaderActionWithPublishPanel() {
+		if ( ! this.hasPublishDrivenSingleAction() ) {
+			return;
+		}
+
+		const dropdown = document.querySelector(
+			BuilderStandaloneQuiz.selectors.elHeaderActionsDropdown
+		);
+		if ( ! dropdown ) {
+			return;
+		}
+
+		const mainBtn = dropdown.querySelector( '.cb-btn-main-action' );
+		if ( ! mainBtn ) {
+			return;
+		}
+
+		const toggleBtn = dropdown.querySelector( BuilderStandaloneQuiz.selectors.elDropdownToggle );
+		const dropdownMenu = dropdown.querySelector( BuilderStandaloneQuiz.selectors.elDropdownMenu );
+		const status = this.getStatusFromPublishPanel( mainBtn.dataset.status || 'publish' );
+
+		mainBtn.classList.remove( 'cb-btn-darft', 'cb-btn-publish', 'cb-btn-pending' );
+		mainBtn.classList.add( 'cb-btn-update', 'cb-btn-primary', 'cb-btn-main-action' );
+		mainBtn.textContent = mainBtn.dataset.titleUpdate || 'Update';
+		mainBtn.dataset.status = status;
+		dropdown.dataset.currentStatus = status;
+		dropdown.classList.add( 'cb-header-actions-dropdown--single' );
+
+		if ( toggleBtn ) {
+			toggleBtn.style.display = 'none';
+		}
+		if ( dropdownMenu ) {
+			dropdownMenu.style.display = 'none';
+		}
+	}
+
+	syncPublishPanelStatus( status ) {
+		const statusSelect = document.querySelector(
+			BuilderStandaloneQuiz.selectors.elPublishStatusSelect
+		);
+		if ( ! statusSelect ) {
+			return;
+		}
+
+		statusSelect.value = status === 'publish' ? 'publish' : 'draft';
+		this.syncHeaderActionWithPublishPanel();
+	}
+
+	updatePermalinkUIAfterSave( data = {} ) {
+		const permalinkRoot = this.getPermalinkRoot();
+		const { slugInput, urlLink } = this.getPermalinkElements( permalinkRoot );
+
+		if ( slugInput && data?.quiz_slug ) {
+			slugInput.value = data.quiz_slug;
+			slugInput.dataset.originalValue = data.quiz_slug;
+		}
+
+		if ( urlLink && data?.quiz_permalink ) {
+			urlLink.href = data.quiz_permalink;
+			urlLink.textContent = data.quiz_permalink;
+		}
+	}
+
+	slugify( str ) {
+		return ( str || '' )
+			.toString()
+			.normalize( 'NFD' )
+			.replace( /[\u0300-\u036f]/g, '' )
+			.replace( /đ/g, 'd' )
+			.replace( /Đ/g, 'D' )
+			.toLowerCase()
+			.replace( /\s+/g, '-' )
+			.replace( /[^\w-]+/g, '' )
+			.replace( /--+/g, '-' )
+			.replace( /^-+/, '' )
+			.replace( /-+$/, '' );
+	}
+
+	getPermalinkRoot( target = null ) {
+		if ( target?.closest ) {
+			const fromTarget = target.closest( BuilderStandaloneQuiz.selectors.elPermalinkRoot );
+			if ( fromTarget ) {
+				return fromTarget;
+			}
+		}
+
+		return document.querySelector(
+			`.cb-section__quiz-edit ${ BuilderStandaloneQuiz.selectors.elPermalinkRoot }`
+		);
+	}
+
+	getPermalinkElements( permalinkRoot ) {
+		if ( ! permalinkRoot ) {
+			return {};
+		}
+
+		return {
+			display: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkDisplay ),
+			editor: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkEditor ),
+			input: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkSlugInput ),
+			slugInput: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkSlugInput ),
+			urlLink: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkUrl ),
+			baseUrlInput: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkBaseUrl ),
+		};
+	}
+
+	handlePermalinkEdit( args ) {
+		if ( ! this.isQuizContext() ) {
+			return;
+		}
+
+		const { e, target } = args;
+		if ( e ) e.preventDefault();
+
+		const permalinkRoot = this.getPermalinkRoot( target );
+		const { display, editor, input } = this.getPermalinkElements( permalinkRoot );
+
+		if ( ! display || ! editor || ! input ) return;
+
+		input.dataset.originalValue = input.value;
+		display.classList.add( 'lp-hidden' );
+		editor.classList.remove( 'lp-hidden' );
+		input.focus();
+		input.select();
+	}
+
+	handlePermalinkOk( args ) {
+		if ( ! this.isQuizContext() ) {
+			return;
+		}
+
+		const { e, target } = args;
+		if ( e ) e.preventDefault();
+
+		const permalinkRoot = this.getPermalinkRoot( target );
+		const { display, editor, input, urlLink, baseUrlInput } = this.getPermalinkElements(
+			permalinkRoot
+		);
+
+		if ( ! display || ! editor || ! input || ! urlLink ) return;
+
+		let newSlug = this.slugify( input.value.trim() );
+		if ( ! newSlug ) {
+			newSlug = input.dataset.originalValue || 'quiz';
+		}
+
+		input.value = newSlug;
+		const baseUrl = baseUrlInput ? baseUrlInput.value : '';
+		const newUrl = baseUrl + newSlug;
+
+		urlLink.href = newUrl;
+		urlLink.textContent = newUrl;
+		editor.classList.add( 'lp-hidden' );
+		display.classList.remove( 'lp-hidden' );
+
+		if ( newSlug !== input.dataset.originalValue ) {
+			getFormState().markAsChanged();
+		}
+	}
+
+	handlePermalinkCancel( args ) {
+		if ( ! this.isQuizContext() ) {
+			return;
+		}
+
+		const { e, target } = args;
+		if ( e ) e.preventDefault();
+
+		const permalinkRoot = this.getPermalinkRoot( target );
+		const { display, editor, input } = this.getPermalinkElements( permalinkRoot );
+
+		if ( ! display || ! editor || ! input ) return;
+
+		input.value = input.dataset.originalValue || '';
+		editor.classList.add( 'lp-hidden' );
+		display.classList.remove( 'lp-hidden' );
+	}
+
 	/**
 	 * Update action buttons after status change, matching course edit logic.
 	 * Updates both main button and dropdown items based on new status.
@@ -443,7 +707,14 @@ export class BuilderStandaloneQuiz {
 
 		const mainBtn = dropdown.querySelector( '.cb-btn-main-action' );
 		const dropdownMenu = dropdown.querySelector( BuilderStandaloneQuiz.selectors.elDropdownMenu );
-		if ( ! mainBtn || ! dropdownMenu ) return;
+		if ( ! mainBtn ) return;
+
+		if ( this.hasPublishDrivenSingleAction() ) {
+			this.syncHeaderActionWithPublishPanel();
+			return;
+		}
+
+		if ( ! dropdownMenu ) return;
 
 		// Status configuration for button labels and classes
 		const statusConfig = {
@@ -531,8 +802,10 @@ export class BuilderStandaloneQuiz {
 			return;
 		}
 
-		// Get status from the button's data-status attribute
-		const targetStatus = elBtnUpdateQuiz.dataset.status || 'publish';
+		// Resolve status from Overview publish panel first, fallback to button data-status.
+		const targetStatus = this.getStatusFromPublishPanel(
+			elBtnUpdateQuiz.dataset.status || 'publish'
+		);
 		const canContinue = await this.confirmUnpublishIfNeeded( targetStatus, elBtnUpdateQuiz );
 		if ( ! canContinue ) {
 			return;
@@ -559,6 +832,7 @@ export class BuilderStandaloneQuiz {
 				if ( status === 'success' ) {
 					// Update action buttons with actual status from server
 					this.updateActionButtons( data?.status || targetStatus );
+					this.syncPublishPanelStatus( data?.status || targetStatus );
 
 					// Reset form state before potential redirect.
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
@@ -587,6 +861,8 @@ export class BuilderStandaloneQuiz {
 							}
 						}
 					}
+
+					this.updatePermalinkUIAfterSave( data );
 				}
 			},
 			error: ( error ) => {
@@ -689,6 +965,7 @@ export class BuilderStandaloneQuiz {
 				if ( status === 'success' ) {
 					// Update action button text
 					this.updateActionButtons( 'draft' );
+					this.syncPublishPanelStatus( data?.status || 'draft' );
 
 					// Reset form state before potential redirect.
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
@@ -717,6 +994,8 @@ export class BuilderStandaloneQuiz {
 							}
 						}
 					}
+
+					this.updatePermalinkUIAfterSave( data );
 				}
 			},
 			error: ( error ) => {

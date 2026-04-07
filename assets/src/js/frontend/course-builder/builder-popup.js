@@ -43,6 +43,8 @@ export class BuilderPopup {
 		tabs: '.lp-builder-popup__tabs',
 		tab: '.lp-builder-popup__tab',
 		tabPane: '.lp-builder-popup__tab-pane',
+		permalinkSlugInput: '.cb-permalink-slug-input',
+		permalinkUrl: '.cb-permalink-url',
 		// Trigger buttons
 		triggerLesson: '[data-popup-lesson]',
 		triggerQuiz: '[data-popup-quiz]',
@@ -259,6 +261,7 @@ export class BuilderPopup {
 		return {
 			source: 'other',
 			isCurriculum: false,
+			courseId: 0,
 			itemType: null,
 			itemId: 0,
 		};
@@ -270,10 +273,12 @@ export class BuilderPopup {
 			!! triggerEl?.closest( '.lp-edit-curriculum-wrap' );
 		const isCurriculum =
 			isCurriculumContainer && !! triggerEl?.closest( '.lp-btn-edit-item-popup' );
+		const courseId = parseInt( triggerEl?.dataset?.courseId ) || 0;
 
 		return {
 			source: isCurriculum ? 'curriculum' : 'other',
 			isCurriculum,
+			courseId,
 			itemType: itemType || null,
 			itemId: parseInt( itemId ) || 0,
 		};
@@ -1190,6 +1195,41 @@ export class BuilderPopup {
 		editorsToRemove.forEach( ( id ) => this.destroyTinyMCE( id ) );
 	}
 
+	getStatusFromPublishPanel( fallbackStatus = 'publish' ) {
+		if ( ! this.currentType || ! this.popupContainer ) {
+			return fallbackStatus;
+		}
+
+		const statusSelect = this.popupContainer.querySelector(
+			`#cb-${ this.currentType }-publish-status`
+		);
+		if ( ! statusSelect ) {
+			return fallbackStatus;
+		}
+
+		const selectedStatus = statusSelect.value;
+		if ( selectedStatus === 'publish' || selectedStatus === 'draft' ) {
+			return selectedStatus;
+		}
+
+		return fallbackStatus;
+	}
+
+	syncPublishPanelStatus( status ) {
+		if ( ! this.currentType || ! this.popupContainer ) {
+			return;
+		}
+
+		const statusSelect = this.popupContainer.querySelector(
+			`#cb-${ this.currentType }-publish-status`
+		);
+		if ( ! statusSelect ) {
+			return;
+		}
+
+		statusSelect.value = status === 'publish' ? 'publish' : 'draft';
+	}
+
 	/**
 	 * Handle save action
 	 */
@@ -1198,6 +1238,13 @@ export class BuilderPopup {
 			return;
 		}
 
+		const publishLabel = ( saveBtn?.dataset?.titlePublish || '' ).toString().trim().toLowerCase();
+		const currentLabel = ( saveBtn?.textContent || '' ).toString().trim().toLowerCase();
+		const forcePublish = !! publishLabel && currentLabel === publishLabel;
+		const targetStatus = forcePublish ? 'publish' : this.getStatusFromPublishPanel( 'publish' );
+		if ( forcePublish ) {
+			this.syncPublishPanelStatus( 'publish' );
+		}
 		this.syncAllTinyMCE();
 
 		const formData = this.getFormData();
@@ -1222,7 +1269,7 @@ export class BuilderPopup {
 			...formData,
 			action: actionMap[ this.currentType ] || `builder_update_${ this.currentType }`,
 			args: { id_url: `builder-update-${ this.currentType }` },
-			[ `${ this.currentType }_status` ]: 'publish',
+			[ `${ this.currentType }_status` ]: targetStatus,
 			return_html: wasNewItem ? 'yes' : 'no',
 		};
 
@@ -1340,6 +1387,8 @@ export class BuilderPopup {
 
 		// Update status
 		if ( data?.status ) {
+			this.syncPublishPanelStatus( data.status );
+
 			const statusEl = this.popupContainer.querySelector( `.${ this.currentType }-status` );
 			if ( statusEl ) {
 				statusEl.className = `${ this.currentType }-status ${ data.status }`;
@@ -1354,6 +1403,8 @@ export class BuilderPopup {
 				this.removeQuestionFromAssignedQuiz( this.currentId );
 			}
 		}
+
+		this.updatePermalinkUIAfterSave( data );
 
 		// Handle new item
 		const newIdKey = `${ this.currentType }_id_new`;
@@ -1444,6 +1495,9 @@ export class BuilderPopup {
 			args: { id_url: `move-trash-${ this.currentType }` },
 			[ `${ this.currentType }_id` ]: this.currentId,
 		};
+		if ( [ 'lesson', 'quiz' ].includes( this.currentType ) && ( parseInt( this.openContext?.courseId ) || 0 ) > 0 ) {
+			dataSend.course_id = parseInt( this.openContext.courseId ) || 0;
+		}
 
 		const callBack = {
 			success: ( response ) => {
@@ -1638,6 +1692,9 @@ export class BuilderPopup {
 
 		const idKey = `${ this.currentType }_id`;
 		data[ idKey ] = this.currentId || 0;
+		if ( [ 'lesson', 'quiz' ].includes( this.currentType ) && ( parseInt( this.openContext?.courseId ) || 0 ) > 0 ) {
+			data.course_id = parseInt( this.openContext.courseId ) || 0;
+		}
 
 		// Get title
 		const titleInput = popup.querySelector(
@@ -1669,7 +1726,43 @@ export class BuilderPopup {
 			this.collectFormData( formSettings, data );
 		}
 
+		// Capture permalink slug in overview tab (quiz/question popup).
+		const permalinkInput = popup.querySelector(
+			`input[name="${ this.currentType }_permalink"], #${ this.currentType }_permalink, ${ BuilderPopup.selectors.permalinkSlugInput }`
+		);
+		if ( permalinkInput && permalinkInput.value ) {
+			data[ `${ this.currentType }_permalink` ] = permalinkInput.value;
+		}
+
 		return data;
+	}
+
+	updatePermalinkUIAfterSave( data = {} ) {
+		if ( ! this.currentType || ! this.popupContainer ) {
+			return;
+		}
+
+		const popup = this.popupContainer.querySelector( BuilderPopup.selectors.popup );
+		if ( ! popup ) {
+			return;
+		}
+
+		const slugInput = popup.querySelector(
+			`input[name="${ this.currentType }_permalink"], #${ this.currentType }_permalink, ${ BuilderPopup.selectors.permalinkSlugInput }`
+		);
+		const urlLink = popup.querySelector( BuilderPopup.selectors.permalinkUrl );
+
+		const responseSlug = data?.[ `${ this.currentType }_slug` ];
+		if ( slugInput && responseSlug ) {
+			slugInput.value = responseSlug;
+			slugInput.dataset.originalValue = responseSlug;
+		}
+
+		const responsePermalink = data?.[ `${ this.currentType }_permalink` ];
+		if ( urlLink && responsePermalink ) {
+			urlLink.href = responsePermalink;
+			urlLink.textContent = responsePermalink;
+		}
 	}
 
 	/**
