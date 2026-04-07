@@ -46,3 +46,4 @@ script.sh
 
 .phpunit.result.cache
 
+.worktrees/
