@@ -781,19 +781,14 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * - required PayPal transmission headers,
 		 * - raw JSON payload as webhook_event.
 		 *
-		 * @param WP_REST_Request $request
+		 * @param array $webhook_data Webhook payload + headers extracted by listener.
 		 *
 		 * @return array Verified webhook payload array on success.
 		 * @throws Exception
 		 */
-		public function verify_subscription_webhook( WP_REST_Request $request ): array {
+		public function verify_subscription_webhook( array $webhook_data ): array {
 			if ( empty( $this->subscription_webhook_id ) ) {
 				throw new Exception( __( 'PayPal subscription webhook id is missing.', 'learnpress' ), 500 );
-			}
-
-			$payload = json_decode( $request->get_body(), true );
-			if ( empty( $payload ) || ! is_array( $payload ) ) {
-				throw new Exception( __( 'Invalid PayPal webhook payload.', 'learnpress' ), 400 );
 			}
 
 			$required_headers = array(
@@ -803,9 +798,19 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				'paypal-transmission-sig',
 				'paypal-transmission-time',
 			);
-			$headers_map      = array();
+			$this->validate_webhook_data_contract( $webhook_data, array( 'body', 'headers' ), $required_headers );
+
+			$payload = $webhook_data['body'] ?? null;
+			if ( is_string( $payload ) ) {
+				$payload = json_decode( $payload, true );
+			}
+			if ( empty( $payload ) || ! is_array( $payload ) ) {
+				throw new Exception( __( 'Invalid PayPal webhook payload.', 'learnpress' ), 400 );
+			}
+
+			$headers_map      = is_array( $webhook_data['headers'] ?? null ) ? $webhook_data['headers'] : array();
 			foreach ( $required_headers as $required_header ) {
-				$header_value = sanitize_text_field( (string) $request->get_header( $required_header ) );
+				$header_value = sanitize_text_field( (string) ( $headers_map[ $required_header ] ?? '' ) );
 				if ( '' === $header_value ) {
 					throw new Exception( __( 'Invalid PayPal webhook headers.', 'learnpress' ), 400 );
 				}
@@ -902,10 +907,14 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$event['status']          = (string) ( $resource['status'] ?? '' );
 					break;
 				case 'BILLING.SUBSCRIPTION.CANCELLED':
-				case 'BILLING.SUBSCRIPTION.SUSPENDED':
 					$event['event_type']      = 'subscription_cancelled';
 					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
 					$event['status']          = 'cancelled';
+					break;
+				case 'BILLING.SUBSCRIPTION.SUSPENDED':
+					$event['event_type']      = 'subscription_updated';
+					$event['subscription_id'] = (string) ( $resource['id'] ?? '' );
+					$event['status']          = 'suspended';
 					break;
 				case 'BILLING.SUBSCRIPTION.EXPIRED':
 					$event['event_type']      = 'subscription_expired';
@@ -913,9 +922,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$event['status']          = 'expired';
 					break;
 				case 'PAYMENT.SALE.COMPLETED':
-				case 'BILLING.SUBSCRIPTION.PAYMENT.COMPLETED':
 					$event['event_type']      = 'renewal_payment_succeeded';
-					$event['subscription_id'] = (string) ( $resource['billing_agreement_id'] ?? ( $resource['id'] ?? '' ) );
+					$event['subscription_id'] = (string) ( $resource['billing_agreement_id'] ?? '' );
 					$event['transaction_id']  = (string) ( $resource['id'] ?? '' );
 					if ( ! empty( $resource['id'] ) ) {
 						$event['renewal_key'] = 'paypal_sale_' . sanitize_text_field( (string) $resource['id'] );
@@ -927,13 +935,17 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					}
 					break;
 				case 'PAYMENT.SALE.DENIED':
-				case 'BILLING.SUBSCRIPTION.PAYMENT.FAILED':
 					$event['event_type']      = 'renewal_payment_failed';
 					$event['subscription_id'] = (string) ( $resource['billing_agreement_id'] ?? '' );
 					$event['transaction_id']  = (string) ( $resource['id'] ?? '' );
 					if ( ! empty( $resource['id'] ) ) {
 						$event['renewal_key'] = 'paypal_sale_' . sanitize_text_field( (string) $resource['id'] );
 					}
+					break;
+				case 'BILLING.SUBSCRIPTION.PAYMENT.FAILED':
+					$event['event_type']      = 'renewal_payment_failed';
+					$event['subscription_id'] = (string) ( $resource['id'] ?? ( $resource['billing_agreement_id'] ?? '' ) );
+					$event['transaction_id']  = (string) ( $resource['sale_id'] ?? ( $resource['transaction_id'] ?? '' ) );
 					break;
 				default:
 					$event['event_type'] = 'ignored';
@@ -955,7 +967,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @throws Exception
 		 */
 		public function listen_webhook_subscription( WP_REST_Request $request ): array {
-			$verified_event = $this->verify_subscription_webhook( $request );
+			$required_headers = array(
+				'paypal-auth-algo',
+				'paypal-cert-url',
+				'paypal-transmission-id',
+				'paypal-transmission-sig',
+				'paypal-transmission-time',
+			);
+			$webhook_data     = $this->build_webhook_data_from_request( $request, $required_headers, true );
+
+			$verified_event = $this->verify_subscription_webhook( $webhook_data );
 			$event          = $this->normalize_subscription_event( $verified_event );
 			if ( empty( $event['event_type'] ) || 'ignored' === $event['event_type'] ) {
 				return array(

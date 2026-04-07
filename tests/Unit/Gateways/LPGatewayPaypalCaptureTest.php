@@ -8,6 +8,17 @@ use Brain\Monkey\Functions;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
 
 class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
+	private string $paypal_token_option = '';
+
+	private function set_paypal_token_option( string $value ): void {
+		$this->paypal_token_option = $value;
+
+		if ( class_exists( '\\LP_Settings', false ) && property_exists( '\\LP_Settings', 'options' ) ) {
+			\LP_Settings::$options = array(
+				'paypal_token' => $value,
+			);
+		}
+	}
 
 	private function load_gateway_dependencies(): void {
 		if ( ! trait_exists( '\\LearnPress\\Helpers\\Singleton', false ) ) {
@@ -49,7 +60,7 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 			eval(
 				'class LP_Gateway_Abstract {
 					public function __construct() {}
-					public function get_manage_subscription_url( $order ): string {
+					public function get_manage_subscription_url( LP_Order $order ): string {
 						return "";
 					}
 				}'
@@ -110,6 +121,7 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
+		$self = $this;
 
 		Functions\when( 'absint' )->alias(
 			function ( $value ): int {
@@ -130,15 +142,24 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 				return '';
 			}
 		);
+		Functions\when( 'get_option' )->alias(
+			function ( $option, $default = false ) use ( $self ) {
+				if ( 'learn_press_paypal_token' === $option ) {
+					if ( '' !== $self->paypal_token_option ) {
+						return $self->paypal_token_option;
+					}
+				}
+
+				return $default;
+			}
+		);
 		Functions\when( 'learn_press_get_order' )->justReturn( false );
 
 		$this->load_gateway_dependencies();
 	}
 
 	public function test_capture_payment_returns_false_when_token_is_missing(): void {
-		\LP_Settings::$options = array(
-			'paypal_token' => '',
-		);
+		$this->set_paypal_token_option( '' );
 
 		Functions\expect( 'wp_remote_post' )->never();
 
@@ -149,13 +170,13 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_capture_payment_returns_false_when_remote_request_fails(): void {
-		\LP_Settings::$options = array(
-			'paypal_token' => wp_json_encode(
+		$this->set_paypal_token_option(
+			wp_json_encode(
 				array(
 					'access_token' => 'token_123',
 					'token_type'   => 'Bearer',
 				)
-			),
+			)
 		);
 
 		Functions\expect( 'wp_remote_post' )
@@ -169,13 +190,13 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_capture_payment_returns_false_when_http_code_is_not_201(): void {
-		\LP_Settings::$options = array(
-			'paypal_token' => wp_json_encode(
+		$this->set_paypal_token_option(
+			wp_json_encode(
 				array(
 					'access_token' => 'token_123',
 					'token_type'   => 'Bearer',
 				)
-			),
+			)
 		);
 
 		Functions\expect( 'wp_remote_post' )
@@ -196,13 +217,13 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_capture_payment_returns_true_and_updates_order_status_when_completed(): void {
-		\LP_Settings::$options = array(
-			'paypal_token' => wp_json_encode(
+		$this->set_paypal_token_option(
+			wp_json_encode(
 				array(
 					'access_token' => 'token_123',
 					'token_type'   => 'Bearer',
 				)
-			),
+			)
 		);
 
 		Functions\expect( 'wp_remote_post' )
