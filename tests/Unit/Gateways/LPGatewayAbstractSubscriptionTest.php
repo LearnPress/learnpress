@@ -17,7 +17,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 					private $order_key;
 					private $user_id;
 					public $updated_status = "";
-
 					public function __construct( $id = 0, $order_key = "", $user_id = 0 ) {
 						$this->id = (int) $id;
 						$this->order_key = (string) $order_key;
@@ -46,7 +45,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 				}'
 			);
 		}
-
 		if ( ! class_exists( '\\WP_REST_Request', false ) ) {
 			eval(
 				'class WP_REST_Request {
@@ -84,7 +82,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 				}'
 			);
 		}
-
 		if ( ! class_exists( '\\LP_Settings', false ) ) {
 			eval(
 				'class LP_Settings {
@@ -94,7 +91,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 						if ( null === self::$instance ) {
 							self::$instance = new self();
 						}
-
 						return self::$instance;
 					}
 					public function get_group( $id ) {
@@ -116,7 +112,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 				}'
 			);
 		}
-
 		if ( ! class_exists( '\\LP_Abstract_Settings', false ) ) {
 			require_once dirname( __DIR__, 3 ) . '/inc/abstract-settings.php';
 		}
@@ -134,7 +129,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 					public function call_validate_subscription_payload( array $data ) {
 						return $this->validate_subscription_payload( $data );
 					}
-
 					public function call_validate_data_plan_payload( array $data ) {
 						return $this->validate_data_plan_payload( $data );
 					}
@@ -149,7 +143,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 				}'
 			);
 		}
-
 		if ( ! class_exists( '\\LP_Gateway_OneTime_Test_Double', false ) ) {
 			eval(
 				'class LP_Gateway_OneTime_Test_Double extends LP_Gateway_Abstract {
@@ -236,12 +229,13 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_is_subscription_order_returns_true_when_order_has_saved_price_id(): void {
+
 		Functions\when( 'get_post_meta' )->alias(
 			function ( int $order_id, string $key ) {
+
 				if ( \LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID === $key ) {
 					return 'price_saved_01';
 				}
-
 				return '';
 			}
 		);
@@ -309,7 +303,6 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 		$this->assertSame( 'price_quarterly_99', $updates[ \LP_Gateway_Abstract::META_SUBSCRIPTION_PLAN_ID ] ?? '' );
 		$this->assertSame( 2, $updates[ \LP_Gateway_Abstract::META_SUBSCRIPTION_QUANTITY ] ?? 0 );
 	}
-
 	public function test_validate_subscription_payload_requires_price_id(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
@@ -355,8 +348,8 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_create_plan_throws_not_supported_exception_on_base_gateway(): void {
-		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
+		$gateway = new \LP_Gateway_Subscription_Test_Double();
 		$this->expectException( \Exception::class );
 		$gateway->create_plan(
 			array(
@@ -428,9 +421,9 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_validate_data_plan_payload_normalizes_defaults_and_arrays(): void {
-		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
-		$result = $gateway->call_validate_data_plan_payload(
+		$gateway = new \LP_Gateway_Subscription_Test_Double();
+		$result  = $gateway->call_validate_data_plan_payload(
 			array(
 				'name'           => 'Monthly Plan',
 				'amount'         => 20,
@@ -448,20 +441,52 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_validate_data_plan_payload_rejects_negative_setup_fee(): void {
+
+			$gateway = new \LP_Gateway_Subscription_Test_Double();
+
+		$this->expectException( \Exception::class );
+			$gateway->call_validate_data_plan_payload(
+				array(
+					'name'      => 'Monthly Plan',
+					'amount'    => 20,
+					'currency'  => 'usd',
+					'interval'  => 'month',
+					'setup_fee' => -1,
+				)
+			);
+	}
+
+	public function test_get_plan_throws_not_supported_exception_on_base_gateway(): void {
+
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
 		$this->expectException( \Exception::class );
-		$gateway->call_validate_data_plan_payload(
-			array(
-				'name'      => 'Monthly Plan',
-				'amount'    => 20,
-				'currency'  => 'usd',
-				'interval'  => 'month',
-				'setup_fee' => -1,
-			)
-		);
+			$gateway->get_plan( 'plan_test_01' );
 	}
 
+	public function test_list_plans_throws_not_supported_exception_on_base_gateway(): void {
+
+			$gateway = new \LP_Gateway_Subscription_Test_Double();
+
+		$this->expectException( \Exception::class );
+			$gateway->list_plans();
+	}
+
+	public function test_update_plan_throws_not_supported_exception_on_base_gateway(): void {
+
+		$gateway = new \LP_Gateway_Subscription_Test_Double();
+
+		$this->expectException( \Exception::class );
+			$gateway->update_plan( 'plan_test_01', array( 'amount' => 100 ) );
+	}
+
+	public function test_delete_plan_throws_not_supported_exception_on_base_gateway(): void {
+
+		$gateway = new \LP_Gateway_Subscription_Test_Double();
+
+		$this->expectException( \Exception::class );
+			$gateway->delete_plan( 'plan_test_01' );
+	}
 	public function test_validate_data_plan_payload_rejects_missing_amount_even_with_extra_fields(): void {
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
@@ -481,6 +506,7 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_get_subscription_context_builds_expected_metadata_and_defaults_quantity_to_one(): void {
+
 		Functions\when( 'get_post_meta' )->alias(
 			function ( int $order_id, string $key ) {
 				$values = array(
@@ -508,27 +534,29 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_build_webhook_data_from_request_extracts_required_headers_and_decoded_body(): void {
+
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 		$request = new \WP_REST_Request( 'POST' );
 		$request->set_body( wp_json_encode( array( 'id' => 'evt_001' ) ) );
 		$request->set_header( 'stripe-signature', 'sig_test_123' );
 
-		$result = $gateway->call_build_webhook_data_from_request(
-			$request,
-			array( 'stripe-signature' ),
-			true
-		);
+			$result = $gateway->call_build_webhook_data_from_request(
+				$request,
+				array( 'stripe-signature' ),
+				true
+			);
 
 		$this->assertSame( 'sig_test_123', $result['headers']['stripe-signature'] );
-		$this->assertSame( 'evt_001', $result['body']['id'] ?? '' );
-		$this->assertNotEmpty( $result['raw_body'] );
+			$this->assertSame( 'evt_001', $result['body']['id'] ?? '' );
+			$this->assertNotEmpty( $result['raw_body'] );
 	}
 
 	public function test_validate_webhook_data_contract_throws_when_required_header_is_missing(): void {
-		$gateway = new \LP_Gateway_Subscription_Test_Double();
+
+			$gateway = new \LP_Gateway_Subscription_Test_Double();
 
 		$this->expectException( \Exception::class );
-		$this->expectExceptionCode( 400 );
+			$this->expectExceptionCode( 400 );
 
 		$gateway->call_validate_webhook_data_contract(
 			array(
@@ -542,6 +570,7 @@ class LPGatewayAbstractSubscriptionTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_validate_webhook_data_contract_passes_for_complete_payload(): void {
+
 		$gateway = new \LP_Gateway_Subscription_Test_Double();
 
 		$gateway->call_validate_webhook_data_contract(
