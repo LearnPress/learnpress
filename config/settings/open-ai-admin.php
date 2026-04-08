@@ -17,6 +17,13 @@ return apply_filters(
 					'desc'    => esc_html__( 'Enable this option and enter your OpenAI Secret key below to activate the feature.', 'learnpress' ),
 				],
 				[
+					'title'   => esc_html__( 'Enable AI Assistant', 'learnpress' ),
+					'id'      => 'lp_ai_assistant_enabled',
+					'default' => 'no',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'Enable the AI Assistant for learners on lesson pages. Requires Open AI to be enabled with a valid secret key.', 'learnpress' ),
+				],
+				[
 					'title'   => __( 'Secret key', 'learnpress' ),
 					'id'      => 'open_ai_secret_key',
 					'default' => '',

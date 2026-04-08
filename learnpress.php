@@ -18,6 +18,7 @@ use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
+use LearnPress\Ajax\AI\AIAssistantAjax;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Ajax\ExportOrderCSVAjax;
 use LearnPress\Background\LPBackgroundTrigger;
@@ -708,6 +709,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					EditQuestionAjax::catch_lp_ajax();
 					SendEmailAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
+					AIAssistantAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
