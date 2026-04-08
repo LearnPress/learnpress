@@ -90,12 +90,14 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 							throw new Exception( __( 'Parent subscription order not found.', 'learnpress' ) );
 						}
 
-							$this->update_subscription_status( $order_subscription->get_id(), 'active' );
-							$order_subscription->add_note( __( 'Subscription activated.', 'learnpress' ) );
-							do_action( 'learn-press/subscription/activated', $order_subscription->get_id(), $event, $gateway_id );
+						$this->update_subscription_status( $order_subscription->get_id(), 'active' );
+						// Team convention: activated means the subscription order becomes completed.
+						$this->mark_parent_payment_completed( $order_subscription, $event );
+						$order_subscription->add_note( __( 'Subscription activated.', 'learnpress' ) );
+						do_action( 'learn-press/subscription/activated', $order_subscription->get_id(), $event, $gateway_id );
 
-							$response['status']   = 'success';
-							$response['order_id'] = $order_subscription->get_id();
+						$response['status']   = 'success';
+						$response['order_id'] = $order_subscription->get_id();
 						break;
 					case 'initial_payment_succeeded':
 						if ( ! $order_subscription ) {
@@ -116,6 +118,21 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 						}
 
 						$this->update_subscription_status( $order_subscription->get_id(), 'active' );
+						/*
+						 * PayPal may report the first successful charge as PAYMENT.SALE.COMPLETED.
+						 * If the parent subscription order is still not completed, treat this as
+						 * the initial payment instead of creating a renewal order.
+						 */
+						if ( 'paypal' === $gateway_id && ! $order_subscription->is_completed() ) {
+							$this->mark_parent_payment_completed( $order_subscription, $event );
+							$order_subscription->add_note( __( 'Initial subscription payment succeeded.', 'learnpress' ) );
+							do_action( 'learn-press/subscription/initial-payment-succeeded', $order_subscription->get_id(), $event, $gateway_id );
+
+							$response['status']   = 'success';
+							$response['order_id'] = $order_subscription->get_id();
+							break;
+						}
+
 						$order_renew = $this->create_renewal_order( $order_subscription, $event, LP_ORDER_COMPLETED );
 						$order_subscription->add_note( __( 'Subscription renewal payment succeeded.', 'learnpress' ) );
 						do_action( 'learn-press/subscription/renewal-order-created', $order_renew->get_id(), $order_subscription->get_id(), $event, $gateway_id );
@@ -227,11 +244,37 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 
 				case 'initial_payment_succeeded':
 					$sub_status = get_post_meta( $order_subscription_id, LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, true );
-					return in_array( $sub_status, array( 'active', 'trialing' ), true )
-						&& $order_subscription->is_completed();
+					if ( ! in_array( $sub_status, array( 'active', 'trialing' ), true ) || ! $order_subscription->is_completed() ) {
+						return false;
+					}
+
+					$event_transaction_id = sanitize_text_field( (string) ( $event['transaction_id'] ?? '' ) );
+					if ( '' === $event_transaction_id ) {
+						return true;
+					}
+
+					$saved_transaction_id = sanitize_text_field(
+						(string) get_post_meta( $order_subscription_id, '_transaction_id', true )
+					);
+					if ( '' === $saved_transaction_id ) {
+						// Need one more pass to backfill transaction id into parent order.
+						return false;
+					}
+
+					return $saved_transaction_id === $event_transaction_id;
 
 				case 'renewal_payment_succeeded':
 				case 'renewal_payment_failed':
+					$event_transaction_id = sanitize_text_field( (string) ( $event['transaction_id'] ?? '' ) );
+					if ( ! empty( $event_transaction_id ) ) {
+						$parent_transaction_id = sanitize_text_field(
+							(string) get_post_meta( $order_subscription_id, '_transaction_id', true )
+						);
+						if ( '' !== $parent_transaction_id && $parent_transaction_id === $event_transaction_id ) {
+							return true;
+						}
+					}
+
 					$renewal_key = $this->get_renewal_key( $event );
 					if ( ! empty( $renewal_key ) && $this->find_renewal_order_by_key( $order_subscription_id, $renewal_key ) ) {
 						return true;
@@ -362,10 +405,21 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		 * @return void
 		 */
 		protected function mark_parent_payment_completed( LP_Order $order_subscription, array $event ) {
-
 			$transaction_id = sanitize_text_field( (string) ( $event['transaction_id'] ?? '' ) );
 			if ( ! $order_subscription->is_completed() ) {
 				$order_subscription->payment_complete( $transaction_id );
+				return;
+			}
+
+			// Parent order is already completed (e.g. completed at ACTIVATED). Backfill
+			// transaction id when later webhook provides it.
+			if ( '' !== $transaction_id ) {
+				$saved_transaction_id = sanitize_text_field(
+					(string) get_post_meta( $order_subscription->get_id(), '_transaction_id', true )
+				);
+				if ( '' === $saved_transaction_id ) {
+					update_post_meta( $order_subscription->get_id(), '_transaction_id', $transaction_id );
+				}
 			}
 		}
 		/**

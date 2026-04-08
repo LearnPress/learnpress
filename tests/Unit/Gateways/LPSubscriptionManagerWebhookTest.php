@@ -261,7 +261,7 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 		);
 	}
 
-	public function test_process_webhook_event_paypal_sale_completed_resolves_parent_by_subscription_id(): void {
+	public function test_process_webhook_event_paypal_sale_completed_infers_initial_payment_when_parent_not_completed(): void {
 		$parent_order       = new \LP_Order( 1001, 'order_1001', 11 );
 		$this->orders[1001] = $parent_order;
 		$this->meta_store[1001][ \LP_Gateway_Abstract::META_SUBSCRIPTION_ID ] = 'I-TESTPAYPALSUB001';
@@ -275,15 +275,38 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 		$this->assertSame( 'success', $response['status'] );
 		$this->assertSame( 'renewal_payment_succeeded', $response['event_type'] );
 		$this->assertSame( 1001, $response['order_id'] );
-		$this->assertSame( 9002, $response['renewal_order_id'] );
+		$this->assertArrayNotHasKey( 'renewal_order_id', $response );
 		$this->assertSame( 'active', $this->meta_store[1001][ \LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS ] ?? '' );
 		$this->assertSame( 'I-TESTPAYPALSUB001', $this->meta_store[1001][ \LP_Gateway_Abstract::META_SUBSCRIPTION_ID ] ?? '' );
+		$this->assertTrue( $parent_order->is_completed() );
+		$this->assertSame( '9HT12345P6789012A', $parent_order->payment_complete_txn );
+		$this->assertCount( 0, $manager->create_renewal_calls );
+	}
+
+	public function test_process_webhook_event_paypal_sale_completed_creates_renewal_when_parent_already_completed(): void {
+		$parent_order            = new \LP_Order( 1003, 'order_1003', 13 );
+		$parent_order->completed = true;
+		$this->orders[1003]      = $parent_order;
+		$this->meta_store[1003][ \LP_Gateway_Abstract::META_SUBSCRIPTION_ID ] = 'I-TESTPAYPALSUB003';
+
+		$gateway = new \LP_Subscription_Manager_Test_Gateway( 'paypal' );
+		$manager = new \LP_Subscription_Manager_Test_Double();
+		$event   = $this->normalize_paypal_payload_to_event( $this->build_paypal_standard_payload() );
+		$event['metadata']['lp_order_id'] = '1003';
+		$event['parent_order_id']         = 1003;
+		$event['subscription_id']         = 'I-TESTPAYPALSUB003';
+
+		$response = $manager->process_webhook_event( $gateway, $event );
+
+		$this->assertSame( 'success', $response['status'] );
+		$this->assertSame( 1003, $response['order_id'] );
+		$this->assertSame( 9002, $response['renewal_order_id'] );
 		$this->assertCount( 1, $manager->create_renewal_calls );
 		$this->assertSame( 'completed', $manager->create_renewal_calls[0]['target_status'] ?? '' );
 		$this->assertSame( 'paypal_sale_9HT12345P6789012A', $manager->create_renewal_calls[0]['event']['renewal_key'] ?? '' );
 	}
 
-	public function test_process_webhook_event_subscription_activated_only_updates_status(): void {
+	public function test_process_webhook_event_subscription_activated_marks_parent_completed(): void {
 		$parent_order       = new \LP_Order( 1101, 'order_1101', 21 );
 		$this->orders[1101] = $parent_order;
 
@@ -302,7 +325,7 @@ class LPSubscriptionManagerWebhookTest extends BrainMonkeyTestCase {
 		$this->assertSame( 'success', $response['status'] );
 		$this->assertSame( 1101, $response['order_id'] );
 		$this->assertSame( 'active', $this->meta_store[1101][ \LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS ] ?? '' );
-		$this->assertFalse( $parent_order->is_completed() );
+		$this->assertTrue( $parent_order->is_completed() );
 		$this->assertSame( '', $parent_order->payment_complete_txn );
 	}
 
