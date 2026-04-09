@@ -1,5 +1,5 @@
 /**
- * LP AI Assistant â€” frontend chat widget.
+ * LP AI Assistant - frontend chat widget.
  *
  * LearnPress runtime implementation:
  * - ES6 class module.
