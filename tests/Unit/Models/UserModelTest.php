@@ -281,7 +281,8 @@ class UserModelTest extends BrainMonkeyTestCase {
 		$result = $user->generate_pretty_slug();
 
 		$this->assertIsString( $result );
-		$this->assertSame( 'john-doe', $user->meta_data->{UserModel::META_KEY_USER_SLUG} );
+		$this->assertSame( $result, $user->meta_data->{UserModel::META_KEY_USER_SLUG} );
+		$this->assertMatchesRegularExpression( '/^john-doe[a-z0-9]{3}$/', $result );
 	}
 
 	public function test_generate_pretty_slug_returns_wp_error_when_slug_generation_fails(): void {

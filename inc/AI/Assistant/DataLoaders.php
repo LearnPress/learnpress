@@ -4,7 +4,7 @@ namespace LearnPress\AI\Assistant;
 
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\LessonPostModel;
-use LearnPress\Models\UserItems\UserItemModel;
+use LearnPress\Models\UserItems\UserQuizModel;
 
 /**
  * Data loaders for AI Assistant tool calls.
@@ -13,7 +13,7 @@ use LearnPress\Models\UserItems\UserItemModel;
  * Each method corresponds to an OpenAI function-calling tool definition.
  *
  * @package LearnPress\AI\Assistant
- * @since 4.3.0
+ * @since 4.3.5
  */
 class DataLoaders {
 
@@ -120,7 +120,7 @@ class DataLoaders {
 					continue;
 				}
 
-				$user_quiz = UserItemModel::find_user_item(
+				$user_quiz = UserQuizModel::find_user_item(
 					$user_id,
 					$item_id,
 					'lp_quiz',
@@ -133,16 +133,27 @@ class DataLoaders {
 					continue;
 				}
 
-				$attempts = $user_quiz->get_attempts( 3 );
+				$attempts = $user_quiz->get_attempts( 5 );
 
 				if ( empty( $attempts ) ) {
 					continue;
 				}
 
+				$normalized_attempts = array();
+				foreach ( $attempts as $attempt ) {
+					$normalized_attempts[] = array(
+						'result'     => $attempt['result'] ?? array(),
+						'graduation' => $attempt['graduation'] ?? '',
+						'start_time' => $attempt['start_time'] ?? '',
+						'end_time'   => $attempt['end_time'] ?? '',
+						'time_spent' => $attempt['time_spent'] ?? '',
+					);
+				}
+
 				$results[] = array(
 					'quiz_id'    => $item_id,
 					'quiz_title' => get_the_title( $item_id ),
-					'attempts'   => $attempts,
+					'attempts'   => $normalized_attempts,
 				);
 			}
 		}

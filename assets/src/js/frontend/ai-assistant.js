@@ -1,0 +1,525 @@
+/**
+ * LP AI Assistant â€” frontend chat widget.
+ *
+ * LearnPress runtime implementation:
+ * - ES6 class module.
+ * - Delegated events via lpUtils.eventHandlers.
+ * - Boot via lpUtils.lpOnElementReady.
+ * - AJAX transport via window.lpAJAXG.fetchAJAX.
+ *
+ * @since   4.3.5
+ * @version 1.0.0
+ */
+import * as lpUtils from '../utils.js';
+import SweetAlert from 'sweetalert2';
+
+export class AIAssistantWidget {
+	constructor() {
+		this.config = null;
+		this.root = null;
+		this.elements = {};
+		this.storageKey = '';
+		this.history = [];
+		this.activeQuizState = null;
+		this.isRequesting = false;
+	}
+
+	static selectors = {
+		root: '#lp-ai-assistant',
+		toggleBtn: '.lp-ai-assistant__toggle',
+		panel: '.lp-ai-assistant__panel',
+		closeBtn: '.lp-ai-assistant__close-btn',
+		clearBtn: '.lp-ai-assistant__clear-btn',
+		msgList: '.lp-ai-assistant__messages',
+		inputEl: '.lp-ai-assistant__input',
+		sendBtn: '.lp-ai-assistant__send-btn',
+		quickBtn: '.lp-ai-assistant__quick-btn',
+		quickActions: '.lp-ai-assistant__quick-actions',
+		inputArea: '.lp-ai-assistant__input-area',
+		smartReviewBtn: '.lp-ai-assistant__smart-review-btn',
+		quizCard: '.lp-ai-assistant__quiz-card',
+		quizOptionBtn: '.lp-ai-assistant__quiz-option',
+	};
+
+	init() {
+		if ( ! this.validateConfig() ) {
+			return;
+		}
+
+		this.root = document.querySelector( AIAssistantWidget.selectors.root );
+		if ( ! this.root ) {
+			return;
+		}
+
+		this.cacheElements();
+		if ( ! this.validateDOM() ) {
+			return;
+		}
+
+		// Move root to #popup-course (the LP app shell) if it exists, otherwise fallback to body.
+		// This ensures correct viewport sizing since LP course shell overrides native HTML/body dimensions.
+		const courseShell = document.querySelector( '#popup-course #popup-content' ) || document.body;
+		if ( this.root.parentNode !== courseShell ) {
+			courseShell.appendChild( this.root );
+		}
+
+		this.storageKey = `lp_ai_chat_${ this.config.lessonId }`;
+		this.applyInitialState();
+		this.loadHistory();
+		this.renderHistoryToDOM();
+		this.events();
+	}
+
+	validateConfig() {
+		if ( typeof window.lpAIAssistant !== 'object' || ! window.lpAIAssistant ) {
+			return false;
+		}
+
+		this.config = window.lpAIAssistant;
+		if ( ! this.config.enabled ) {
+			return false;
+		}
+
+		const requiredString = [ 'nonce', 'ajaxUrl' ];
+		for ( const key of requiredString ) {
+			if ( typeof this.config[ key ] !== 'string' || ! this.config[ key ] ) {
+				return false;
+			}
+		}
+
+		if ( ! Number.isInteger( this.config.lessonId ) || this.config.lessonId <= 0 ) {
+			return false;
+		}
+
+		if ( ! Number.isInteger( this.config.courseId ) || this.config.courseId <= 0 ) {
+			return false;
+		}
+
+		this.config.i18n = {
+			you: this.config?.i18n?.you || 'You',
+			assistant: this.config?.i18n?.assistant || 'AI Assistant',
+			thinking: this.config?.i18n?.thinking || 'Thinking...',
+			sendError: this.config?.i18n?.sendError || 'An error occurred. Please try again.',
+			clearConfirm: this.config?.i18n?.clearConfirm || 'Clear chat history?',
+			explainPrompt: this.config?.i18n?.explainPrompt || '/explain',
+			quizPrompt: this.config?.i18n?.quizPrompt || '/mini-quiz',
+			summarizePrompt: this.config?.i18n?.summarizePrompt || '',
+			smartReviewPrompt: this.config?.i18n?.smartReviewPrompt || '',
+		};
+
+		return true;
+	}
+
+	cacheElements() {
+		this.elements.toggleBtn = this.root.querySelector( AIAssistantWidget.selectors.toggleBtn );
+		this.elements.panel = this.root.querySelector( AIAssistantWidget.selectors.panel );
+		this.elements.closeBtn = this.root.querySelector( AIAssistantWidget.selectors.closeBtn );
+		this.elements.clearBtn = this.root.querySelector( AIAssistantWidget.selectors.clearBtn );
+		this.elements.msgList = this.root.querySelector( AIAssistantWidget.selectors.msgList );
+		this.elements.inputEl = this.root.querySelector( AIAssistantWidget.selectors.inputEl );
+		this.elements.sendBtn = this.root.querySelector( AIAssistantWidget.selectors.sendBtn );
+		this.elements.inputArea = this.root.querySelector( AIAssistantWidget.selectors.inputArea );
+		this.elements.quickActions = this.root.querySelector( AIAssistantWidget.selectors.quickActions );
+		this.elements.smartReviewBtn = this.root.querySelector( AIAssistantWidget.selectors.smartReviewBtn );
+	}
+
+	validateDOM() {
+		return !! (
+			this.elements.toggleBtn &&
+			this.elements.panel &&
+			this.elements.msgList &&
+			this.elements.inputEl &&
+			this.elements.sendBtn
+		);
+	}
+
+	applyInitialState() {
+		if ( this.elements.smartReviewBtn ) {
+			this.elements.smartReviewBtn.hidden = ! this.config.hasQuizAttempt;
+		}
+
+		this.setQuizInputMode( false );
+	}
+
+	events() {
+		if ( AIAssistantWidget._loadedEvents ) {
+			return;
+		}
+		AIAssistantWidget._loadedEvents = this;
+
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.toggleBtn }`,
+				class: this,
+				callBack: this.handleToggleClick.name,
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.closeBtn }`,
+				class: this,
+				callBack: this.handleCloseClick.name,
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.clearBtn }`,
+				class: this,
+				callBack: this.handleClearClick.name,
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.sendBtn }`,
+				class: this,
+				callBack: this.handleSendClick.name,
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quickBtn }`,
+				class: this,
+				callBack: this.handleQuickActionClick.name,
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quizOptionBtn }`,
+				class: this,
+				callBack: this.handleQuizOptionClick.name,
+			},
+		] );
+
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.inputEl }`,
+				class: this,
+				callBack: this.handleInputKeydown.name,
+			},
+			{
+				selector: 'body',
+				class: this,
+				callBack: this.handleEscapeKeydown.name,
+			},
+		] );
+	}
+
+	handleToggleClick( args ) {
+		args.e.preventDefault();
+		if ( this.elements.panel.hidden ) {
+			this.openPanel();
+		} else {
+			this.closePanel();
+		}
+	}
+
+	handleCloseClick( args ) {
+		args.e.preventDefault();
+		this.closePanel();
+	}
+
+	handleClearClick( args ) {
+		console.log( 'handleClearClick' );
+		args.e.preventDefault();
+		SweetAlert.fire( {
+			title: this.config.i18n.clearConfirm,
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--lp-primary-color, #ffb606)',
+		} ).then( ( result ) => {
+			if ( result.isConfirmed ) {
+				this.clearHistory();
+			}
+		} );
+	}
+
+	handleSendClick( args ) {
+		args.e.preventDefault();
+		this.sendMessage( this.elements.inputEl.value );
+	}
+
+	handleQuickActionClick( args ) {
+		args.e.preventDefault();
+
+		if ( this.activeQuizState?.is_active ) {
+			return;
+		}
+
+		const btn = args.target.closest( AIAssistantWidget.selectors.quickBtn );
+		if ( ! btn ) {
+			return;
+		}
+
+		const action = btn.dataset.lpAiAction;
+		const prompts = {
+			explain: this.config.i18n.explainPrompt,
+			'mini-quiz': this.config.i18n.quizPrompt,
+			summarize: this.config.i18n.summarizePrompt,
+			'smart-review': this.config.i18n.smartReviewPrompt,
+		};
+
+		const prompt = prompts[ action ];
+		if ( ! prompt ) {
+			return;
+		}
+
+		this.openPanel();
+		this.sendMessage( prompt );
+	}
+
+	handleQuizOptionClick( args ) {
+		args.e.preventDefault();
+		if ( this.isRequesting || ! this.activeQuizState?.is_active ) {
+			return;
+		}
+
+		const btn = args.target.closest( AIAssistantWidget.selectors.quizOptionBtn );
+		if ( ! btn ) {
+			return;
+		}
+
+		const answerText = ( btn.dataset.option || btn.textContent || '' ).trim();
+		if ( ! answerText ) {
+			return;
+		}
+
+		this.sendMessage( answerText );
+	}
+
+	handleInputKeydown( args ) {
+		if ( this.activeQuizState?.is_active ) {
+			return;
+		}
+
+		if ( args.e.key === 'Enter' && ! args.e.shiftKey ) {
+			args.e.preventDefault();
+			this.sendMessage( this.elements.inputEl.value );
+		}
+	}
+
+	handleEscapeKeydown( args ) {
+		if ( args.e.key !== 'Escape' ) {
+			return;
+		}
+
+		if ( this.elements.panel && ! this.elements.panel.hidden ) {
+			this.closePanel();
+		}
+	}
+
+	getAjaxHandle() {
+		const ajaxHandle = window.lpAJAXG;
+		if ( ! ajaxHandle || typeof ajaxHandle.fetchAJAX !== 'function' ) {
+			return null;
+		}
+
+		return ajaxHandle;
+	}
+
+	openPanel() {
+		this.elements.panel.hidden = false;
+		this.root.setAttribute( 'aria-hidden', 'false' );
+		this.elements.toggleBtn.setAttribute( 'aria-expanded', 'true' );
+		this.elements.inputEl.focus();
+
+		if ( this.elements.msgList ) {
+			this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
+		}
+	}
+
+	closePanel() {
+		this.elements.panel.hidden = true;
+		this.root.setAttribute( 'aria-hidden', 'true' );
+		this.elements.toggleBtn.setAttribute( 'aria-expanded', 'false' );
+		this.elements.toggleBtn.focus();
+	}
+
+	setLoadingState( isLoading ) {
+		this.isRequesting = isLoading;
+		this.elements.sendBtn.disabled = isLoading;
+		this.elements.inputEl.disabled = isLoading;
+	}
+
+	setQuizInputMode( isQuizActive ) {
+		if ( this.elements.inputArea ) {
+			this.elements.inputArea.classList.toggle( 'lp-ai-assistant__input-area--hidden', isQuizActive );
+		}
+
+		if ( this.elements.quickActions ) {
+			this.elements.quickActions.classList.toggle( 'lp-ai-assistant__quick-actions--disabled', isQuizActive );
+		}
+	}
+
+	loadHistory() {
+		try {
+			const raw = localStorage.getItem( this.storageKey );
+			this.history = raw ? JSON.parse( raw ) : [];
+			if ( ! Array.isArray( this.history ) ) {
+				this.history = [];
+			}
+		} catch ( _e ) {
+			this.history = [];
+		}
+	}
+
+	saveHistory() {
+		try {
+			localStorage.setItem( this.storageKey, JSON.stringify( this.history ) );
+		} catch ( _e ) {
+			// Ignore storage errors.
+		}
+	}
+
+	clearHistory() {
+		this.history = [];
+		this.activeQuizState = null;
+		this.elements.msgList.innerHTML = '';
+		localStorage.removeItem( this.storageKey );
+		this.setQuizInputMode( false );
+	}
+
+	escHtml( text ) {
+		const div = document.createElement( 'div' );
+		div.appendChild( document.createTextNode( String( text ) ) );
+		return div.innerHTML;
+	}
+
+	appendMessage( role, text ) {
+		const el = document.createElement( 'div' );
+		el.className = `lp-ai-assistant__msg lp-ai-assistant__msg--${ role }`;
+
+		const label = role === 'user' ? this.config.i18n.you : this.config.i18n.assistant;
+		el.innerHTML =
+			`<span class="lp-ai-assistant__msg-label">${ this.escHtml( label ) }</span>` +
+			`<p class="lp-ai-assistant__msg-text">${ this.escHtml( text ) }</p>`;
+
+		this.elements.msgList.appendChild( el );
+		this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
+		return el;
+	}
+
+	renderHistoryToDOM() {
+		this.elements.msgList.innerHTML = '';
+		this.history.forEach( ( message ) => {
+			if ( ! message || ! [ 'user', 'assistant' ].includes( message.role ) ) {
+				return;
+			}
+
+			this.appendMessage( message.role, message.content || '' );
+		} );
+
+		this.renderQuizState();
+	}
+
+	renderQuizState() {
+		const oldQuizCard = this.elements.msgList.querySelector( AIAssistantWidget.selectors.quizCard );
+		if ( oldQuizCard ) {
+			oldQuizCard.remove();
+		}
+
+		if ( ! this.activeQuizState || ! this.activeQuizState.questions ) {
+			this.setQuizInputMode( false );
+			return;
+		}
+
+		const quiz = this.activeQuizState;
+		if ( ! quiz.is_active ) {
+			this.setQuizInputMode( false );
+			return;
+		}
+
+		const currentIndex = Number.parseInt( quiz.current_index || 0, 10 );
+		const question = quiz.questions?.[ currentIndex ];
+		if ( ! question ) {
+			this.setQuizInputMode( false );
+			return;
+		}
+
+		const card = document.createElement( 'div' );
+		card.className = 'lp-ai-assistant__quiz-card';
+
+		let feedbackHtml = '';
+		if ( quiz.feedback && typeof quiz.feedback === 'object' ) {
+			const feedbackClass = quiz.feedback.is_correct ? 'is-correct' : 'is-wrong';
+			feedbackHtml = `<div class="lp-ai-assistant__quiz-feedback ${ feedbackClass }">${ this.escHtml( quiz.feedback.explanation || '' ) }</div>`;
+		}
+
+		const options = Array.isArray( question.options ) ? question.options : [];
+		const optionsHtml = options.map( ( option, index ) => {
+			const letter = String.fromCharCode( 65 + index );
+			return `<button class="lp-ai-assistant__quiz-option" data-index="${ index }" data-option="${ this.escHtml( option ) }">${ letter }. ${ this.escHtml( option ) }</button>`;
+		} ).join( '' );
+
+		card.innerHTML =
+			`<div class="lp-ai-assistant__quiz-head">Question ${ currentIndex + 1 }/${ quiz.total || options.length }</div>` +
+			feedbackHtml +
+			`<div class="lp-ai-assistant__quiz-question">${ this.escHtml( question.question || '' ) }</div>` +
+			`<div class="lp-ai-assistant__quiz-options">${ optionsHtml }</div>`;
+
+		this.elements.msgList.appendChild( card );
+		this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
+		this.setQuizInputMode( true );
+	}
+
+	sendMessage( message ) {
+		const text = ( message || '' ).trim();
+		if ( this.isRequesting || ! text ) {
+			return;
+		}
+
+		const ajaxHandle = this.getAjaxHandle();
+		if ( ! ajaxHandle ) {
+			this.appendMessage( 'assistant', this.config.i18n.sendError );
+			return;
+		}
+
+		this.appendMessage( 'user', text );
+
+		const contextHistory = this.history.slice();
+		this.history.push( { role: 'user', content: text } );
+		this.saveHistory();
+		this.elements.inputEl.value = '';
+
+		const pendingEl = this.appendMessage( 'assistant', this.config.i18n.thinking );
+		const pendingTextEl = pendingEl.querySelector( '.lp-ai-assistant__msg-text' );
+		this.setLoadingState( true );
+
+		const dataSend = {
+			action: 'openai_assistant_chat',
+			message: text,
+			lesson_id: this.config.lessonId,
+			course_id: this.config.courseId,
+			history: contextHistory,
+			active_quiz_questions: this.activeQuizState || [],
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				if ( response?.status === 'success' && response?.data?.message ) {
+					pendingTextEl.textContent = response.data.message;
+
+					if ( response?.data?.type === 'quiz' ) {
+						this.activeQuizState = response?.data?.quiz || null;
+						this.renderQuizState();
+					} else {
+						this.activeQuizState = null;
+						this.renderQuizState();
+					}
+
+					this.history.push( { role: 'assistant', content: response.data.message } );
+					this.saveHistory();
+				} else {
+					this.activeQuizState = null;
+					this.renderQuizState();
+					pendingTextEl.textContent = response?.message || this.config.i18n.sendError;
+				}
+			},
+			error: () => {
+				this.activeQuizState = null;
+				this.renderQuizState();
+				pendingTextEl.textContent = this.config.i18n.sendError;
+			},
+			completed: () => {
+				this.setLoadingState( false );
+				this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
+			},
+		};
+
+		ajaxHandle.fetchAJAX( dataSend, callBack );
+	}
+}
+
+const aiAssistantWidget = new AIAssistantWidget();
+lpUtils.lpOnElementReady( AIAssistantWidget.selectors.root, () => {
+	aiAssistantWidget.init();
+} );

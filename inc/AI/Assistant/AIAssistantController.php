@@ -13,7 +13,7 @@ use LearnPress\Services\OpenAiService;
  * required by the frontend: { type, message, quiz }.
  *
  * @package LearnPress\AI\Assistant
- * @since 4.3.0
+ * @since 4.3.5
  */
 class AIAssistantController {
 
@@ -90,7 +90,8 @@ class AIAssistantController {
 			}
 		}
 
-		$agent = new Agent();
+		$agent                = new Agent();
+		$sanitized_quiz_state = $this->sanitize_active_quiz_state( $quiz_data );
 
 		return $agent->run(
 			sanitize_textarea_field( $message ),
@@ -98,7 +99,52 @@ class AIAssistantController {
 			$course_id,
 			$user_id,
 			$sanitized_history,
-			is_array( $quiz_data ) ? $quiz_data : array()
+			$sanitized_quiz_state
+		);
+	}
+
+	/**
+	 * Sanitize active mini-quiz state from frontend.
+	 *
+	 * @param mixed $quiz_data
+	 *
+	 * @return array
+	 */
+	private function sanitize_active_quiz_state( $quiz_data ): array {
+		if ( ! is_array( $quiz_data ) ) {
+			return array();
+		}
+
+		$questions = array();
+		if ( ! empty( $quiz_data['questions'] ) && is_array( $quiz_data['questions'] ) ) {
+			foreach ( $quiz_data['questions'] as $question ) {
+				if ( ! is_array( $question ) ) {
+					continue;
+				}
+
+				$options = array();
+				if ( ! empty( $question['options'] ) && is_array( $question['options'] ) ) {
+					foreach ( $question['options'] as $option ) {
+						$options[] = sanitize_text_field( (string) $option );
+					}
+				}
+
+				$questions[] = array(
+					'question'      => sanitize_text_field( (string) ( $question['question'] ?? '' ) ),
+					'options'       => $options,
+					'correct_index' => absint( $question['correct_index'] ?? 0 ),
+					'explanation'   => sanitize_textarea_field( (string) ( $question['explanation'] ?? '' ) ),
+				);
+			}
+		}
+
+		return array(
+			'is_active'     => ! empty( $quiz_data['is_active'] ),
+			'completed'     => ! empty( $quiz_data['completed'] ),
+			'current_index' => absint( $quiz_data['current_index'] ?? 0 ),
+			'score'         => absint( $quiz_data['score'] ?? 0 ),
+			'total'         => absint( $quiz_data['total'] ?? count( $questions ) ),
+			'questions'     => $questions,
 		);
 	}
 }

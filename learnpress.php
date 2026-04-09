@@ -61,6 +61,7 @@ use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+use LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate;
 use LearnPress\TemplateHooks\Order\AdminOrderItemsTemplate;
 use LearnPress\TemplateHooks\Order\AdminOrderListTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
@@ -349,6 +350,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
+			CourseAIAssistantTemplate::instance();
 			AdminOrderItemsTemplate::instance();
 			AdminOrderListTemplate::instance();
 			AdminCreateCourseAITemplate::instance();

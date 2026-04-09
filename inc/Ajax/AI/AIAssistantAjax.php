@@ -22,7 +22,7 @@ use Throwable;
  * Transport: lp-load-ajax (same AbstractAjax mechanic as all other LP AJAX classes).
  *
  * @package LearnPress\Ajax\AI
- * @since 4.3.0
+ * @since 4.3.5
  */
 class AIAssistantAjax extends AbstractAjax {
 
@@ -60,8 +60,11 @@ class AIAssistantAjax extends AbstractAjax {
 				throw new Exception( __( 'Invalid request data.', 'learnpress' ) );
 			}
 
+			$data = $this->normalize_request_data( $data );
+
 			$controller = new AIAssistantController();
 			$result     = $controller->handle_chat( $data );
+			$result     = $this->normalize_response_data( $result );
 
 			$response->status  = 'success';
 			$response->message = '';
@@ -69,8 +72,47 @@ class AIAssistantAjax extends AbstractAjax {
 		} catch ( Throwable $e ) {
 			$response->status  = 'error';
 			$response->message = $e->getMessage();
+			$response->data    = $this->normalize_response_data( array() );
 		}
 
 		wp_send_json( $response );
+	}
+
+	/**
+	 * Normalize request payload to a stable shape before controller validation.
+	 *
+	 * @param array $data
+	 *
+	 * @return array
+	 */
+	private function normalize_request_data( array $data ): array {
+		return array(
+			'message'               => isset( $data['message'] ) ? (string) $data['message'] : '',
+			'lesson_id'             => absint( $data['lesson_id'] ?? 0 ),
+			'course_id'             => absint( $data['course_id'] ?? 0 ),
+			'history'               => is_array( $data['history'] ?? null ) ? $data['history'] : array(),
+			'active_quiz_questions' => is_array( $data['active_quiz_questions'] ?? null ) ? $data['active_quiz_questions'] : array(),
+		);
+	}
+
+	/**
+	 * Normalize controller result to required frontend contract.
+	 *
+	 * @param array $result
+	 *
+	 * @return array{type:string,message:string,quiz:array|null}
+	 */
+	private function normalize_response_data( array $result ): array {
+		$type = $result['type'] ?? 'text';
+
+		if ( ! in_array( $type, array( 'text', 'quiz' ), true ) ) {
+			$type = 'text';
+		}
+
+		return array(
+			'type'    => $type,
+			'message' => isset( $result['message'] ) ? (string) $result['message'] : '',
+			'quiz'    => is_array( $result['quiz'] ?? null ) ? $result['quiz'] : null,
+		);
 	}
 }
