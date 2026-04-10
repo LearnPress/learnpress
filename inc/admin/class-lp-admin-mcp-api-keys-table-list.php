@@ -111,7 +111,6 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 			array(
 				'page'    => 'learn-press-settings',
 				'tab'     => 'mcp',
-				'section' => 'mcp-keys',
 			),
 			admin_url( 'admin.php' )
 		);

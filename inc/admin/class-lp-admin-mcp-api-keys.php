@@ -73,7 +73,6 @@ class LP_Admin_MCP_API_Keys {
 						array(
 							'page'    => 'learn-press-settings',
 							'tab'     => 'mcp',
-							'section' => 'mcp-keys',
 						),
 						admin_url( 'admin.php' )
 					),
@@ -188,7 +187,6 @@ class LP_Admin_MCP_API_Keys {
 			array(
 				'page'          => 'learn-press-settings',
 				'tab'           => 'mcp',
-				'section'       => 'mcp-keys',
 				'lp_mcp_notice' => $notice_code,
 			),
 			admin_url( 'admin.php' )
@@ -217,18 +215,16 @@ class LP_Admin_MCP_API_Keys {
 	}
 
 	/**
-	 * Is current request LearnPress MCP API keys settings section.
+	 * Is current request LearnPress MCP settings screen.
 	 *
 	 * @return bool
 	 */
 	protected function is_mcp_keys_settings_screen(): bool {
 		$page    = sanitize_key( $_REQUEST['page'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$tab     = sanitize_key( $_REQUEST['tab'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$section = sanitize_key( $_REQUEST['section'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		return 'learn-press-settings' === $page
-			&& in_array( $tab, array( 'mcp', 'advanced' ), true )
-			&& 'mcp-keys' === $section;
+			&& 'mcp' === $tab;
 	}
 
 }

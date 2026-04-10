@@ -85,16 +85,12 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		}
 
 		$this->tabs[ $active_tab ]->admin_page_settings( $section, $this->get_sections() );
-
-		$hide_save_button = ( 'mcp' === $active_tab && 'mcp-keys' === $section );
 		?>
 
-		<?php if ( ! $hide_save_button ) : ?>
-			<input type="hidden" name="lp-settings-nonce" value="<?php echo wp_create_nonce( 'lp-settings' ); ?>">
-			<p class="lp-admin-settings-buttons">
-				<button class="button button-primary"><?php esc_html_e( 'Save settings', 'learnpress' ); ?></button>
-			</p>
-		<?php endif; ?>
+		<input type="hidden" name="lp-settings-nonce" value="<?php echo wp_create_nonce( 'lp-settings' ); ?>">
+		<p class="lp-admin-settings-buttons">
+			<button class="button button-primary"><?php esc_html_e( 'Save settings', 'learnpress' ); ?></button>
+		</p>
 
 		<?php
 	}
