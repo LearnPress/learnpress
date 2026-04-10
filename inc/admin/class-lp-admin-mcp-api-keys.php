@@ -68,6 +68,16 @@ class LP_Admin_MCP_API_Keys {
 			'lpMcpApiKeysSettings',
 			array(
 				'is_mcp_keys_section' => $this->is_mcp_keys_settings_screen(),
+				'urls' => array(
+					'keys_page' => add_query_arg(
+						array(
+							'page'    => 'learn-press-settings',
+							'tab'     => 'mcp',
+							'section' => 'mcp-keys',
+						),
+						admin_url( 'admin.php' )
+					),
+				),
 				'actions' => array(
 					'create'     => 'mcp_create_api_key',
 					'update'     => 'mcp_update_api_key',
@@ -177,7 +187,7 @@ class LP_Admin_MCP_API_Keys {
 		$url = add_query_arg(
 			array(
 				'page'          => 'learn-press-settings',
-				'tab'           => 'advanced',
+				'tab'           => 'mcp',
 				'section'       => 'mcp-keys',
 				'lp_mcp_notice' => $notice_code,
 			),
@@ -199,6 +209,7 @@ class LP_Admin_MCP_API_Keys {
 		$map = array(
 			'revoked'      => array( 'type' => 'success', 'message' => __( 'API key revoked.', 'learnpress' ) ),
 			'bulk_revoked' => array( 'type' => 'success', 'message' => __( 'Selected API keys revoked.', 'learnpress' ) ),
+			'updated'      => array( 'type' => 'success', 'message' => __( 'API key updated.', 'learnpress' ) ),
 			'no_selection' => array( 'type' => 'warning', 'message' => __( 'No API keys selected.', 'learnpress' ) ),
 		);
 
@@ -206,7 +217,7 @@ class LP_Admin_MCP_API_Keys {
 	}
 
 	/**
-	 * Is current request LearnPress advanced/mcp-keys settings section.
+	 * Is current request LearnPress MCP API keys settings section.
 	 *
 	 * @return bool
 	 */
@@ -215,7 +226,9 @@ class LP_Admin_MCP_API_Keys {
 		$tab     = sanitize_key( $_REQUEST['tab'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$section = sanitize_key( $_REQUEST['section'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		return 'learn-press-settings' === $page && 'advanced' === $tab && 'mcp-keys' === $section;
+		return 'learn-press-settings' === $page
+			&& in_array( $tab, array( 'mcp', 'advanced' ), true )
+			&& 'mcp-keys' === $section;
 	}
 
 }

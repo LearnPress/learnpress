@@ -20,6 +20,7 @@
 	const lpDataAdmin = window.lpDataAdmin || {};
 	const i18n = cfg.i18n || lpDataAdmin.i18n || {};
 	const actions = cfg.actions || {};
+	const settingsUrls = cfg.urls || {};
 
 	const setStatus = ( message = '', isError = false ) => {
 		if ( ! elStatus ) {
@@ -66,6 +67,27 @@
 		} catch ( e ) {
 			// Keep current UI state when table refresh fails.
 		}
+	};
+
+	const buildKeysPageUrl = () => {
+		const fallback = window.location.href;
+		const keysPage = settingsUrls.keys_page || fallback;
+
+		try {
+			return new URL( keysPage, window.location.origin );
+		} catch ( e ) {
+			return new URL( fallback, window.location.origin );
+		}
+	};
+
+	const redirectToKeysList = ( notice = '' ) => {
+		const nextUrl = buildKeysPageUrl();
+		nextUrl.searchParams.delete( 'edit_key' );
+		if ( notice ) {
+			nextUrl.searchParams.set( 'lp_mcp_notice', notice );
+		}
+
+		window.location.assign( nextUrl.toString() );
 	};
 
 	const renderCredentials = ( keyData ) => {
@@ -145,6 +167,11 @@
 				}
 
 				setStatus( message, false );
+				if ( 'update' === mode ) {
+					redirectToKeysList( 'updated' );
+					return;
+				}
+
 				renderCredentials(
 					response && response.data && response.data.key
 						? response.data.key

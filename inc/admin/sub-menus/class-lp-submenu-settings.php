@@ -33,6 +33,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 				'payments'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-payments.php',
 				'emails'    => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-emails.php',
 				'permalink' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-permalink.php',
+				'mcp'       => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-mcp.php',
 				'advanced'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
 				'open-ai'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-open-ai.php',
 			)
@@ -85,7 +86,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		$this->tabs[ $active_tab ]->admin_page_settings( $section, $this->get_sections() );
 
-		$hide_save_button = ( 'advanced' === $active_tab && 'mcp-keys' === $section );
+		$hide_save_button = ( 'mcp' === $active_tab && 'mcp-keys' === $section );
 		?>
 
 		<?php if ( ! $hide_save_button ) : ?>

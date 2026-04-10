@@ -70,7 +70,7 @@ $permissions    = $editing_key ? (string) $editing_key->permissions : 'read';
 				<?php echo $editing_key ? esc_html__( 'Update Key', 'learnpress' ) : esc_html__( 'Generate API Key', 'learnpress' ); ?>
 			</button>
 			<?php if ( $editing_key ) : ?>
-				<a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => 'learn-press-settings', 'tab' => 'advanced', 'section' => 'mcp-keys' ), admin_url( 'admin.php' ) ) ); ?>">
+				<a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => 'learn-press-settings', 'tab' => 'mcp', 'section' => 'mcp-keys' ), admin_url( 'admin.php' ) ) ); ?>">
 					<?php esc_html_e( 'Cancel', 'learnpress' ); ?>
 				</a>
 			<?php endif; ?>
@@ -95,7 +95,7 @@ $permissions    = $editing_key ? (string) $editing_key->permissions : 'read';
 	<div class="lp-mcp-key-list" style="background:#fff; padding: 16px; border: 1px solid #dcdcde;">
 		<h2 style="margin-top:0;"><?php esc_html_e( 'API Keys', 'learnpress' ); ?></h2>
 		<input type="hidden" name="page" value="learn-press-settings" />
-		<input type="hidden" name="tab" value="advanced" />
+		<input type="hidden" name="tab" value="mcp" />
 		<input type="hidden" name="section" value="mcp-keys" />
 		<?php wp_nonce_field( 'lp_mcp_bulk_revoke_action', 'lp_mcp_bulk_revoke_nonce' ); ?>
 		<?php $table->search_box( __( 'Search keys', 'learnpress' ), 'lp-mcp-keys-search' ); ?>

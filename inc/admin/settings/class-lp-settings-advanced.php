@@ -21,10 +21,6 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	}
 
 	public function get_settings( $section = '', $tab = '' ) {
-		if ( 'mcp-keys' === $section ) {
-			return array();
-		}
-
 		return Config::instance()->get( 'advanced', 'settings' );
 	}
 
@@ -35,26 +31,8 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	 */
 	public function get_sections() {
 		return array(
-			'general'  => esc_html__( 'General', 'learnpress' ),
-			'mcp-keys' => esc_html__( 'MCP API Keys', 'learnpress' ),
+			'general' => esc_html__( 'General', 'learnpress' ),
 		);
-	}
-
-	/**
-	 * Render section content.
-	 *
-	 * @param string $section
-	 * @param string $tab
-	 *
-	 * @return void
-	 */
-	public function admin_page_settings( $section = null, $tab = '' ) {
-		if ( 'mcp-keys' === $section && class_exists( 'LP_Admin_MCP_API_Keys' ) ) {
-			LP_Admin_MCP_API_Keys::instance()->render_page();
-			return;
-		}
-
-		parent::admin_page_settings( $section, $tab );
 	}
 }
 
