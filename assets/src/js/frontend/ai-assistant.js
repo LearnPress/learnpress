@@ -56,13 +56,6 @@ export class AIAssistantWidget {
 			return;
 		}
 
-		// Move root to #popup-course (the LP app shell) if it exists, otherwise fallback to body.
-		// This ensures correct viewport sizing since LP course shell overrides native HTML/body dimensions.
-		const courseShell = document.querySelector( '#popup-course #popup-content' ) || document.body;
-		if ( this.root.parentNode !== courseShell ) {
-			courseShell.appendChild( this.root );
-		}
-
 		this.storageKey = `lp_ai_chat_${ this.config.lessonId }`;
 		this.applyInitialState();
 		this.loadHistory();
