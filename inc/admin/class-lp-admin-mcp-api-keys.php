@@ -59,7 +59,7 @@ class LP_Admin_MCP_API_Keys {
 	 * @return void
 	 */
 	public function localize_admin_script(): void {
-		if ( ! wp_script_is( 'lp-admin-mcp-api-keys', 'enqueued' ) ) {
+		if ( ! $this->is_mcp_adapter_active() || ! wp_script_is( 'lp-admin-mcp-api-keys', 'enqueued' ) ) {
 			return;
 		}
 
@@ -68,24 +68,13 @@ class LP_Admin_MCP_API_Keys {
 			'lpMcpApiKeysSettings',
 			array(
 				'is_mcp_keys_section' => $this->is_mcp_keys_settings_screen(),
-				'urls' => array(
-					'keys_page' => add_query_arg(
-						array(
-							'page'    => 'learn-press-settings',
-							'tab'     => 'mcp',
-						),
-						admin_url( 'admin.php' )
-					),
-				),
 				'actions' => array(
 					'create'     => 'mcp_create_api_key',
-					'update'     => 'mcp_update_api_key',
 					'regenerate' => 'mcp_regenerate_api_key',
 				),
 				'i18n'     => array(
 					'processing'      => __( 'Processing...', 'learnpress' ),
 					'created'         => __( 'API key created.', 'learnpress' ),
-					'updated'         => __( 'API key updated.', 'learnpress' ),
 					'regenerated'     => __( 'API key regenerated.', 'learnpress' ),
 					'request_failed'  => __( 'Request failed. Please try again.', 'learnpress' ),
 					'confirm_revoke'  => __( 'Revoke this API key?', 'learnpress' ),
@@ -100,8 +89,7 @@ class LP_Admin_MCP_API_Keys {
 	/**
 	 * Render MCP API key management screen inside LearnPress settings.
 	 *
-	 * Prepares list-table data, optional edit form state, and user options
-	 * before loading the section template.
+	 * Prepares list-table data and user options before loading the section template.
 	 *
 	 * @return void
 	 */
@@ -109,12 +97,13 @@ class LP_Admin_MCP_API_Keys {
 		if ( ! current_user_can( $this->required_capability ) ) {
 			wp_die( esc_html__( 'Sorry, you are not allowed to manage MCP API keys.', 'learnpress' ) );
 		}
+		if ( ! $this->is_mcp_adapter_active() ) {
+			return;
+		}
 
 		$table = new LP_Admin_MCP_API_Keys_Table_List( $this->repository );
 		$table->prepare_items();
 
-		$edit_key_id  = absint( $_GET['edit_key'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$editing_key  = $edit_key_id > 0 ? $this->repository->get_key( $edit_key_id ) : null;
 		$users        = get_users(
 			array(
 				'fields'  => array( 'ID', 'user_login', 'display_name' ),
@@ -139,7 +128,7 @@ class LP_Admin_MCP_API_Keys {
 	 * @return void
 	 */
 	public function handle_admin_actions(): void {
-		if ( ! $this->is_mcp_keys_settings_screen() || ! current_user_can( $this->required_capability ) ) {
+		if ( ! $this->is_mcp_keys_settings_screen() || ! current_user_can( $this->required_capability ) || ! $this->is_mcp_adapter_active() ) {
 			return;
 		}
 
@@ -207,11 +196,23 @@ class LP_Admin_MCP_API_Keys {
 		$map = array(
 			'revoked'      => array( 'type' => 'success', 'message' => __( 'API key revoked.', 'learnpress' ) ),
 			'bulk_revoked' => array( 'type' => 'success', 'message' => __( 'Selected API keys revoked.', 'learnpress' ) ),
-			'updated'      => array( 'type' => 'success', 'message' => __( 'API key updated.', 'learnpress' ) ),
 			'no_selection' => array( 'type' => 'warning', 'message' => __( 'No API keys selected.', 'learnpress' ) ),
 		);
 
 		return $map[ $code ] ?? null;
+	}
+
+	/**
+	 * Check whether MCP Adapter plugin is active.
+	 *
+	 * @return bool
+	 */
+	protected function is_mcp_adapter_active(): bool {
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		return function_exists( 'is_plugin_active' ) && is_plugin_active( 'mcp-adapter/mcp-adapter.php' );
 	}
 
 	/**

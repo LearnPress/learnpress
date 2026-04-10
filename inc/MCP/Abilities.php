@@ -228,7 +228,7 @@ class Abilities {
 		$granted_scope  = AuthContext::get_permissions();
 
 		if ( ! self::scope_allows( $granted_scope, $required_scope ) ) {
-				return self::error_insufficient_scope( $required_scope, $granted_scope );
+			return self::error_insufficient_scope( $required_scope, $granted_scope );
 		}
 
 		return true;

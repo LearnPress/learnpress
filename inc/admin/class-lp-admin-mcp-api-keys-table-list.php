@@ -98,7 +98,7 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	/**
 	 * Render description column with inline row actions.
 	 *
-	 * Row actions include edit, regenerate, and revoke links.
+	 * Row actions include regenerate and revoke links.
 	 *
 	 * @param object $item Current key row object.
 	 *
@@ -115,13 +115,6 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 			admin_url( 'admin.php' )
 		);
 
-		$edit_url = add_query_arg(
-			array(
-				'edit_key' => absint( $item->key_id ),
-			),
-			$base_url
-		);
-
 		$revoke_url = wp_nonce_url(
 			add_query_arg(
 				array(
@@ -134,7 +127,6 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 		);
 
 		$actions = array(
-			'edit'       => sprintf( '<a href="%s">%s</a>', esc_url( $edit_url ), esc_html__( 'Edit', 'learnpress' ) ),
 			'regenerate' => sprintf(
 				'<a href="#" class="lp-mcp-regenerate-key" data-key-id="%1$d">%2$s</a>',
 				absint( $item->key_id ),

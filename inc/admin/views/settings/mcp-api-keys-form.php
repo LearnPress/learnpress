@@ -4,16 +4,14 @@
  *
  * @var LP_Admin_MCP_API_Keys_Table_List $table
  * @var array<int, WP_User>              $users
- * @var object|null                       $editing_key
  * @var array<string,string>|null         $message
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$editing_key_id = $editing_key ? absint( $editing_key->key_id ) : 0;
-$default_user   = $editing_key ? absint( $editing_key->user_id ) : get_current_user_id();
-$description    = $editing_key ? (string) $editing_key->description : '';
-$permissions    = $editing_key ? (string) $editing_key->permissions : 'read';
+$default_user = get_current_user_id();
+$description  = '';
+$permissions  = 'read';
 ?>
 
 <div class="lp-mcp-api-keys-section">
@@ -24,9 +22,7 @@ $permissions    = $editing_key ? (string) $editing_key->permissions : 'read';
 	<?php endif; ?>
 
 	<div class="lp-mcp-key-editor" style="margin: 12px 0 20px; padding: 16px; border: 1px solid #dcdcde; background: #fff;">
-		<h2 style="margin-top: 0;">
-			<?php echo $editing_key ? esc_html__( 'Edit MCP API Key', 'learnpress' ) : esc_html__( 'Create MCP API Key', 'learnpress' ); ?>
-		</h2>
+		<h2 style="margin-top: 0;"><?php esc_html_e( 'Create MCP API Key', 'learnpress' ); ?></h2>
 		<p>
 			<?php esc_html_e( 'Generated credentials are shown once. Store them securely before leaving this page.', 'learnpress' ); ?>
 		</p>
@@ -64,16 +60,8 @@ $permissions    = $editing_key ? (string) $editing_key->permissions : 'read';
 			</tbody>
 		</table>
 
-		<input type="hidden" id="lp-mcp-key-id" value="<?php echo esc_attr( $editing_key_id ); ?>" />
 		<p>
-			<button type="button" class="button button-primary" id="lp-mcp-key-submit" data-mode="<?php echo esc_attr( $editing_key ? 'update' : 'create' ); ?>">
-				<?php echo $editing_key ? esc_html__( 'Update Key', 'learnpress' ) : esc_html__( 'Generate API Key', 'learnpress' ); ?>
-			</button>
-			<?php if ( $editing_key ) : ?>
-				<a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => 'learn-press-settings', 'tab' => 'mcp' ), admin_url( 'admin.php' ) ) ); ?>">
-					<?php esc_html_e( 'Cancel', 'learnpress' ); ?>
-				</a>
-			<?php endif; ?>
+			<button type="button" class="button button-primary" id="lp-mcp-key-submit"><?php esc_html_e( 'Generate API Key', 'learnpress' ); ?></button>
 			<span id="lp-mcp-key-status" style="margin-left: 10px;"></span>
 		</p>
 

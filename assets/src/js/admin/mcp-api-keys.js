@@ -20,7 +20,6 @@
 	const lpDataAdmin = window.lpDataAdmin || {};
 	const i18n = cfg.i18n || lpDataAdmin.i18n || {};
 	const actions = cfg.actions || {};
-	const settingsUrls = cfg.urls || {};
 
 	const setStatus = ( message = '', isError = false ) => {
 		if ( ! elStatus ) {
@@ -69,27 +68,6 @@
 		}
 	};
 
-	const buildKeysPageUrl = () => {
-		const fallback = window.location.href;
-		const keysPage = settingsUrls.keys_page || fallback;
-
-		try {
-			return new URL( keysPage, window.location.origin );
-		} catch ( e ) {
-			return new URL( fallback, window.location.origin );
-		}
-	};
-
-	const redirectToKeysList = ( notice = '' ) => {
-		const nextUrl = buildKeysPageUrl();
-		nextUrl.searchParams.delete( 'edit_key' );
-		if ( notice ) {
-			nextUrl.searchParams.set( 'lp_mcp_notice', notice );
-		}
-
-		window.location.assign( nextUrl.toString() );
-	};
-
 	const renderCredentials = ( keyData ) => {
 		if (
 			! keyData ||
@@ -132,11 +110,9 @@
 			return;
 		}
 
-		const mode = elSubmit.dataset.mode || 'create';
 		const elUser = document.getElementById( 'lp-mcp-key-user' );
 		const elDescription = document.getElementById( 'lp-mcp-key-description' );
 		const elPermissions = document.getElementById( 'lp-mcp-key-permissions' );
-		const elKeyId = document.getElementById( 'lp-mcp-key-id' );
 
 		const dataSend = {
 			action: actions.create || 'mcp_create_api_key',
@@ -144,11 +120,6 @@
 			description: elDescription ? elDescription.value : '',
 			permissions: elPermissions ? elPermissions.value : 'read',
 		};
-
-		if ( 'update' === mode ) {
-			dataSend.action = actions.update || 'mcp_update_api_key';
-			dataSend.key_id = elKeyId ? elKeyId.value : '';
-		}
 
 		setLoadingState( elSubmit, true );
 		setStatus( i18n.processing || 'Processing...', false );
@@ -167,11 +138,6 @@
 				}
 
 				setStatus( message, false );
-				if ( 'update' === mode ) {
-					redirectToKeysList( 'updated' );
-					return;
-				}
-
 				renderCredentials(
 					response && response.data && response.data.key
 						? response.data.key
