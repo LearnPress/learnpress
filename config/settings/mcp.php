@@ -16,9 +16,13 @@ return apply_filters(
 			'id'      => 'enable_mcp_integration',
 			'default' => 'no',
 			'type'    => 'checkbox',
-			'desc'    => esc_html__(
-				'Enable Model Context Protocol integration for AI-powered LMS operations. Review all AI actions before executing.',
-				'learnpress'
+			'desc'    => sprintf(
+				/* translators: %s: MCP documentation URL. */
+				__(
+					'Enable Model Context Protocol integration for AI-powered LMS operations. Review all AI actions before executing. <a href="%s" target="_blank" rel="noopener noreferrer">Learn more</a>.',
+					'learnpress'
+				),
+				esc_url( 'https://learnpresslms.com/docs/learnpress-developer-documentation/model-context-protocol-mcp-integration/' )
 			),
 		),
 		array(

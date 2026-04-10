@@ -151,59 +151,6 @@
 		} );
 	};
 
-	const onRegenerate = ( e, elRegenerate ) => {
-		e.preventDefault();
-
-		if ( ! elRegenerate || elRegenerate.classList.contains( 'disabled' ) ) {
-			return;
-		}
-
-		if ( ! window.confirm( i18n.confirm_regen || 'Regenerate this API key?' ) ) {
-			return;
-		}
-
-		const keyId = elRegenerate.dataset.keyId || '';
-		if ( ! keyId ) {
-			setStatus( i18n.request_failed || 'Request failed.', true );
-			return;
-		}
-
-		elRegenerate.classList.add( 'disabled' );
-		setStatus( i18n.processing || 'Processing...', false );
-
-		runRequest(
-			{
-				action: actions.regenerate || 'mcp_regenerate_api_key',
-				key_id: keyId,
-			},
-			{
-				success: ( response ) => {
-					const status = response && response.status ? response.status : '';
-					const message =
-						response && response.message
-							? response.message
-							: i18n.request_failed || 'Request failed.';
-
-					if ( status !== 'success' ) {
-						setStatus( message, true );
-						return;
-					}
-
-					setStatus( message, false );
-					renderCredentials(
-						response && response.data && response.data.key
-							? response.data.key
-							: null
-					);
-
-					refreshKeysTable();
-				},
-				error: () => setStatus( i18n.request_failed || 'Request failed.', true ),
-				completed: () => elRegenerate.classList.remove( 'disabled' ),
-			}
-		);
-	};
-
 	const onCopy = async ( elCopy ) => {
 		const targetId =
 			elCopy && elCopy.dataset && elCopy.dataset.target
@@ -236,12 +183,6 @@
 	document.addEventListener( 'click', ( e ) => {
 		const target = e.target;
 		if ( ! target ) {
-			return;
-		}
-
-		const elRegenerate = target.closest( '.lp-mcp-regenerate-key' );
-		if ( elRegenerate ) {
-			onRegenerate( e, elRegenerate );
 			return;
 		}
 

@@ -98,7 +98,7 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	/**
 	 * Render description column with inline row actions.
 	 *
-	 * Row actions include regenerate and revoke links.
+	 * Row actions include revoke link.
 	 *
 	 * @param object $item Current key row object.
 	 *
@@ -127,12 +127,7 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 		);
 
 		$actions = array(
-			'regenerate' => sprintf(
-				'<a href="#" class="lp-mcp-regenerate-key" data-key-id="%1$d">%2$s</a>',
-				absint( $item->key_id ),
-				esc_html__( 'Regenerate', 'learnpress' )
-			),
-			'revoke'     => sprintf(
+			'revoke' => sprintf(
 				'<a href="%s" onclick="return confirm(\'%s\');">%s</a>',
 				esc_url( $revoke_url ),
 				esc_js( __( 'Revoke this API key?', 'learnpress' ) ),

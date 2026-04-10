@@ -69,16 +69,13 @@ class LP_Admin_MCP_API_Keys {
 			array(
 				'is_mcp_keys_section' => $this->is_mcp_keys_settings_screen(),
 				'actions' => array(
-					'create'     => 'mcp_create_api_key',
-					'regenerate' => 'mcp_regenerate_api_key',
+					'create' => 'mcp_create_api_key',
 				),
 				'i18n'     => array(
 					'processing'      => __( 'Processing...', 'learnpress' ),
 					'created'         => __( 'API key created.', 'learnpress' ),
-					'regenerated'     => __( 'API key regenerated.', 'learnpress' ),
 					'request_failed'  => __( 'Request failed. Please try again.', 'learnpress' ),
 					'confirm_revoke'  => __( 'Revoke this API key?', 'learnpress' ),
-					'confirm_regen'   => __( 'Regenerate this API key? Existing credentials will stop working.', 'learnpress' ),
 					'copy_success'    => __( 'Copied.', 'learnpress' ),
 					'copy_fallback'   => __( 'Copy this value manually.', 'learnpress' ),
 				),
