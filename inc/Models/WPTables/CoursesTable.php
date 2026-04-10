@@ -159,13 +159,18 @@ class CoursesTable extends WP_Posts_List_Table {
 			return;
 		}
 
+		// Count students
 		printf(
-			'<span class="lp-label-counter">%d</span>',
+			'<div class="lp-label-counter">%d</div>',
 			$courseModel->count_students()
 		);
 
+		// Button view list students
 		printf(
-			'<br><br><button type="button" class="button button-small lp-button lp-btn-view-students" data-course-id="%d" data-course-title="%s">%s</button>',
+			'<a type="button"
+				class="lp-button lp-btn-view-students"
+				data-course-id="%d"
+				data-course-title="%s">%s</a>',
 			$post->ID,
 			esc_attr( $post->post_title ),
 			esc_html__( 'View List', 'learnpress' )

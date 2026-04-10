@@ -165,7 +165,7 @@ class AdminListStudentsEnrolled {
 		try {
 			// Check permission
 			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
-				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+			     && ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
 				throw new Exception( esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) );
 			}
 
@@ -256,9 +256,10 @@ class AdminListStudentsEnrolled {
 			$html = self::instance()->html_table(
 				$rows,
 				array(
-					'total'    => $total_rows,
-					'paged'    => $paged,
-					'per_page' => $per_page,
+					'total'              => $total_rows,
+					'paged'              => $paged,
+					'per_page'           => $per_page,
+					'students-of-course' => $course_id,
 				)
 			);
 
@@ -333,7 +334,7 @@ class AdminListStudentsEnrolled {
 		$search_end      = self::sanitize_date_filter( $data_get['end_date'] ?? '' );
 
 		$section = array(
-			'wrap'                => '<form class="lp-enrolled-students-table-toolbar lp-enrolled-students-form" id="lp-enrolled-students-form" onsubmit="return false;">',
+			'wrap'                => '<form class="lp-enrolled-students-table-toolbar lp-enrolled-students-form" onsubmit="return false;">',
 			'filter-row-open'     => '<div class="lp-enrolled-students-table-toolbar__row lp-enrolled-students-table-toolbar__row--filters">',
 			'course-field-open'   => '<div class="lp-enrolled-students-table-toolbar__field">',
 			'course-label'        => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-filter-course-name">' . esc_html__( 'Course Filter', 'learnpress' ) . '</label>',
@@ -344,11 +345,11 @@ class AdminListStudentsEnrolled {
 			'student-input'       => '<input id="lp-enrolled-search-input" class="lp-enrolled-search-input lp-enrolled-students-table-toolbar__input" type="text" name="search" value="' . esc_attr( $search_student ) . '" placeholder="' . esc_attr__( 'Enter student name or email', 'learnpress' ) . '">',
 			'student-field-close' => '</div>',
 			'start-field-open'    => '<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--date">',
-			'start-label'         => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-filter-start-date">' . esc_html__( 'Enrolled after', 'learnpress' ) . '</label>',
+			'start-label'         => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-filter-start-date">' . esc_html__( 'Start Date', 'learnpress' ) . '</label>',
 			'start-input'         => '<input id="lp-enrolled-filter-start-date" class="lp-enrolled-filter-start-date lp-enrolled-students-table-toolbar__input" type="date" name="start_date" value="' . esc_attr( $search_start ) . '" placeholder="mm/dd/yyyy">',
 			'start-field-close'   => '</div>',
 			'end-field-open'      => '<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--date">',
-			'end-label'           => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-filter-end-date">' . esc_html__( 'Enrolled before', 'learnpress' ) . '</label>',
+			'end-label'           => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-enrolled-filter-end-date">' . esc_html__( 'End date', 'learnpress' ) . '</label>',
 			'end-input'           => '<input id="lp-enrolled-filter-end-date" class="lp-enrolled-filter-end-date lp-enrolled-students-table-toolbar__input" type="date" name="end_date" value="' . esc_attr( $search_end ) . '" placeholder="mm/dd/yyyy">',
 			'end-field-close'     => '</div>',
 			'filter-row-close'    => '</div>',
@@ -389,11 +390,11 @@ class AdminListStudentsEnrolled {
 			'student-input'       => '<input id="lp-modal-enrolled-search-input" class="lp-enrolled-search-input lp-enrolled-students-table-toolbar__input" type="text" name="search" placeholder="' . esc_attr__( 'Enter student name or email', 'learnpress' ) . '">',
 			'student-field-close' => '</div>',
 			'start-field-open'    => '<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--date">',
-			'start-label'         => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-filter-start-date">' . esc_html__( 'Enrolled after', 'learnpress' ) . '</label>',
+			'start-label'         => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-filter-start-date">' . esc_html__( 'Start Date', 'learnpress' ) . '</label>',
 			'start-input'         => '<input id="lp-modal-enrolled-filter-start-date" class="lp-enrolled-filter-start-date lp-enrolled-students-table-toolbar__input" type="date" name="start_date" placeholder="mm/dd/yyyy">',
 			'start-field-close'   => '</div>',
 			'end-field-open'      => '<div class="lp-enrolled-students-table-toolbar__field lp-enrolled-students-table-toolbar__field--date">',
-			'end-label'           => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-filter-end-date">' . esc_html__( 'Enrolled before', 'learnpress' ) . '</label>',
+			'end-label'           => '<label class="lp-enrolled-students-table-toolbar__label" for="lp-modal-enrolled-filter-end-date">' . esc_html__( 'End Date', 'learnpress' ) . '</label>',
 			'end-input'           => '<input id="lp-modal-enrolled-filter-end-date" class="lp-enrolled-filter-end-date lp-enrolled-students-table-toolbar__input" type="date" name="end_date" placeholder="mm/dd/yyyy">',
 			'end-field-close'     => '</div>',
 			'filter-row-close'    => '</div>',
@@ -507,7 +508,7 @@ class AdminListStudentsEnrolled {
 		$results_map = array();
 		foreach ( $rows as $item ) {
 			$userCourseModel = new UserCourseModel( $item );
-			$rows_html[]     = $this->html_student_row( $userCourseModel );
+			$rows_html[]     = $this->html_student_row( $userCourseModel, $meta );
 		}
 		$rows_html = apply_filters(
 			'learn-press/admin/enrolled-students/table/rows-html',
@@ -520,23 +521,23 @@ class AdminListStudentsEnrolled {
 		$table_args           = array(
 			'class_table' => 'lp-enrolled-students-table',
 			'header'      => array(
-				array(
+				'student'  => array(
 					'class' => 'lp-col-student',
 					'title' => esc_html__( 'Student', 'learnpress' ),
 				),
-				array(
+				'course'   => array(
 					'class' => 'lp-col-course',
 					'title' => esc_html__( 'Course', 'learnpress' ),
 				),
-				array(
+				'date'     => array(
 					'class' => 'lp-col-date',
 					'title' => esc_html__( 'Enrolled Date', 'learnpress' ),
 				),
-				array(
+				'progress' => array(
 					'class' => 'lp-col-progress',
 					'title' => esc_html__( 'Progress', 'learnpress' ),
 				),
-				array(
+				'status'   => array(
 					'class' => 'lp-col-status',
 					'title' => esc_html__( 'Status', 'learnpress' ),
 				),
@@ -577,6 +578,10 @@ class AdminListStudentsEnrolled {
 			$meta
 		);
 
+		if ( ! empty( $meta['students-of-course'] ) ) {
+			unset( $table_args['header']['course'] ); // Remove Course column if filtering by course, as it's redundant.
+		}
+
 		$section = array(
 			'wrap'     => '<div class="lp-enrolled-students-table-wrap">',
 			'table'    => TableListTemplate::instance()->html_table( $table_args ),
@@ -600,7 +605,7 @@ class AdminListStudentsEnrolled {
 	 *
 	 * @return string
 	 */
-	private function html_student_row( UserCourseModel $userCourseModel ): string {
+	private function html_student_row( UserCourseModel $userCourseModel, array $data = [] ): string {
 		// Avatar initials.
 		$userModel = $userCourseModel->get_user_model();
 		if ( ! $userModel instanceof UserModel ) {
@@ -675,6 +680,11 @@ class AdminListStudentsEnrolled {
 			'status-cell-close'   => '</td>',
 			'row-end'             => '</tr>',
 		);
+
+		if ( ! empty( $data['students-of-course'] ) ) {
+			unset( $section['course-cell'] ); // Remove Course cell if filtering by course, as it's redundant.
+		}
+
 		$section = apply_filters(
 			'learn-press/admin/enrolled-students/row/section',
 			$section,

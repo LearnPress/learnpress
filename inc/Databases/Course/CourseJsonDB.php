@@ -68,6 +68,11 @@ class CourseJsonDB extends DataBase {
 			$filter->where[]    = $this->wpdb->prepare( "AND $ca.post_status IN (" . $post_status_format . ')', $filter->post_status );
 		}
 
+		// Exclude status auto-draft, because Admin of WP not show auto-draft in list post, so all front-end and back-end of LP also not show auto-draft
+		if ( ! in_array( 'auto-draft', $filter->post_status, true ) ) {
+			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_status != %s", 'auto-draft' );
+		}
+
 		// Term ids
 		if ( ! empty( $filter->term_ids ) ) {
 			// Sanitize term ids
@@ -261,5 +266,29 @@ class CourseJsonDB extends DataBase {
 		$filter->where[] = $this->wpdb->prepare( 'AND pmf.meta_value = %s', 'yes' );
 
 		return $filter;
+	}
+
+	/**
+	 * Get total courses of Author
+	 *
+	 * @param int $author_id
+	 * @param array $status
+	 *
+	 * @return CourseJsonFilter
+	 * @since 4.3.4 Clone from LP_Course_DB::count_courses_of_author
+	 * @version 1.0.0
+	 */
+	public function count_courses_of_author( int $author_id, array $status = [] ): CourseJsonFilter {
+		$filter              = new CourseJsonFilter();
+		$filter->only_fields = array( 'ID' );
+		$filter->post_author = $author_id;
+		$filter->post_status = $status;
+		if ( empty( $status ) ) {
+			$filter->post_status = [];
+		}
+		$filter->field_count = 'ID';
+		$filter->query_count = true;
+
+		return apply_filters( 'lp/user/course/query/filter/count-courses-of-author', $filter );
 	}
 }

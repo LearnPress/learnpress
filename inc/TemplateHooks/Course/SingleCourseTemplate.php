@@ -48,6 +48,7 @@ class SingleCourseTemplate {
 	/**
 	 * Allow callback for AJAX.
 	 * @use self::render_html_comments
+	 *
 	 * @param array $callbacks
 	 *
 	 * @return array
@@ -1758,7 +1759,7 @@ class SingleCourseTemplate {
 					if ( $userCourseModel->get_time_remaining() === 0 ) {
 						$user_item_status_ico_flag = 'locked';
 					} elseif ( $userCourseModel->get_status() === UserItemModel::STATUS_FINISHED
-						&& $courseModel->enable_block_when_finished() ) {
+								&& $courseModel->enable_block_when_finished() ) {
 						$user_item_status_ico_flag = 'locked';
 					}
 				}
@@ -1895,5 +1896,44 @@ class SingleCourseTemplate {
 			],
 			$data_content
 		);
+	}
+
+	/**
+	 * Get text button read more of course on list courses.
+	 *
+	 * @param CourseModel $courseModel
+	 *
+	 * @return string
+	 * @since 4.3.4
+	 * @version 1.0.0
+	 */
+	public static function text_button_course( CourseModel $courseModel ): string {
+		$btn_text  = __( 'Enroll Now', 'learnpress' );
+		$userModel = UserModel::find( get_current_user_id(), true );
+
+		$userCourseModel = null;
+		if ( $userModel instanceof UserModel ) {
+			$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+		}
+
+		if ( $userCourseModel instanceof UserCourseModel ) {
+			if ( $userCourseModel->has_enrolled() ) {
+				$btn_text = __( 'Continue Learning', 'learnpress' );
+			} elseif ( $userCourseModel->has_purchased() ) {
+				$btn_text = __( 'Start Learning', 'learnpress' );
+			} else {
+				$btn_text = __( 'View Detail', 'learnpress' );
+			}
+		} else {
+			if ( $courseModel->has_no_enroll_requirement() ) {
+				$btn_text = __( 'Start Learning', 'learnpress' );
+			} elseif ( ! $courseModel->is_free() ) {
+				$btn_text = __( 'Buy Now', 'learnpress' );
+			} elseif ( ! empty( $courseModel->get_external_link() ) ) {
+				$btn_text = __( 'View Detail', 'learnpress' );
+			}
+		}
+
+		return $btn_text;
 	}
 }

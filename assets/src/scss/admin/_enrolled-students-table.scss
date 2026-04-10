@@ -22,6 +22,7 @@
 		justify-content: center;
 		width: 36px;
 		height: 36px;
+		min-width: 36px;
 		border-radius: 50%;
 		background: #64748b;
 		overflow: hidden;
@@ -409,8 +410,10 @@
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			min-width: 32px;
-			height: 32px;
+			min-width: 40px;
+			height: 40px;
+			width: 40px;
+			line-height: 40px;
 			padding: 0 8px;
 			border: 1px solid #e2e8f0;
 			border-radius: 4px;
@@ -423,7 +426,7 @@
 
 			&:hover:not(.current) {
 				border-color: #3b82f6;
-				color: #3b82f6;
+				color: #3b82f6 !important;
 				background: #eff6ff;
 			}
 		}
@@ -510,4 +513,13 @@
 			}
 		}
 	}
+}
+
+.lp-btn-view-students {
+	margin-top: 10px;
+	white-space: nowrap;
+	display: block;
+	padding: 0;
+	border: none;
+	background: none;
 }

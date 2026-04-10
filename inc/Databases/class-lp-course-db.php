@@ -491,6 +491,11 @@ class LP_Course_DB extends LP_Database {
 			$filter->where[]    = $this->wpdb->prepare( 'AND p.post_status IN (' . $post_status_format . ')', $filter->post_status );
 		}
 
+		// Exclude status auto-draft, because Admin of WP not show auto-draft in list post, so all front-end and back-end of LP also not show auto-draft
+		if ( ! in_array( 'auto-draft', $filter->post_status, true ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_status != %s', 'auto-draft' );
+		}
+
 		// Term ids
 		if ( ! empty( $filter->term_ids ) ) {
 			// Sanitize term ids

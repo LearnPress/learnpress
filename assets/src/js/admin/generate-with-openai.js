@@ -77,7 +77,7 @@ export class GenerateWithOpenai {
 					'afterend',
 					`<button type="button"
 					style="margin-left: 5px"
-					class="lp-btn-generate-with-ai"
+					class="lp-btn-generate-with-ai lp-btn-ai-style"
 					data-template="#lp-tmpl-edit-title-ai">
 					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
 				</button>`
@@ -90,10 +90,10 @@ export class GenerateWithOpenai {
 					'beforebegin',
 					`<button type="button"
 					style="padding: 5px 10px; justify-content: center;"
-					class="lp-btn-generate-with-ai"
+					class="lp-btn-generate-with-ai lp-btn-ai-style"
 					data-template="#lp-tmpl-edit-description-ai">
 					<i class="lp-ico-ai"></i><span>Generate description with AI</span>
-				</button>`
+				</button>`,
 				);
 			} );
 
@@ -103,7 +103,7 @@ export class GenerateWithOpenai {
 					'afterend',
 					`<button type="button"
 					style="padding: 5px 10px; justify-content: center;"
-					class="lp-btn-generate-with-ai"
+					class="lp-btn-generate-with-ai lp-btn-ai-style"
 					data-template="#lp-tmpl-edit-image-ai">
 					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
 				</button>`

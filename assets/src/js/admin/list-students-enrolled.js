@@ -18,7 +18,7 @@ export class ListStudentsEnrolled {
 
 	static selectors = {
 		elContainer: '#lp-enrolled-students',
-		elForm: '#lp-enrolled-students-form',
+		elForm: '.lp-enrolled-students-form',
 		elLPTarget: '.lp-target',
 		elCourseNameInput: '.lp-enrolled-filter-course-name',
 		elCourseIdInput: '#lp-enrolled-filter-course-id',
@@ -78,28 +78,92 @@ export class ListStudentsEnrolled {
 			{
 				selector: ListStudentsEnrolled.selectors.elSearchInput,
 				class: this,
-				callBack: this.searchStudents.name,
+				callBack: this.triggerBtnSearch.name,
 				checkIsEventEnter: true,
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elCourseNameInput,
 				class: this,
-				callBack: this.searchStudents.name,
+				callBack: this.triggerBtnSearch.name,
 				checkIsEventEnter: true,
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elStartDateInput,
 				class: this,
-				callBack: this.searchStudents.name,
+				callBack: this.triggerBtnSearch.name,
 				checkIsEventEnter: true,
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elEndDateInput,
 				class: this,
-				callBack: this.searchStudents.name,
+				callBack: this.triggerBtnSearch.name,
 				checkIsEventEnter: true,
 			},
 		] );
+
+		lpUtils.eventHandlers( 'change', [
+			{
+				selector: ListStudentsEnrolled.selectors.elStartDateInput,
+				class: this,
+				callBack: this.checkDatesRange.name,
+			},
+			{
+				selector: ListStudentsEnrolled.selectors.elEndDateInput,
+				class: this,
+				callBack: this.checkDatesRange.name,
+			},
+		] );
+	}
+
+	// Click button search.
+	triggerBtnSearch() {
+		const buttonSearch = this.elContainer.querySelector(
+			ListStudentsEnrolled.selectors.elBtnSearch
+		);
+		if ( buttonSearch ) {
+			buttonSearch.click();
+		}
+	}
+
+	// Ensure start date is not after end date and vice versa. If invalid, adjust the other date to match.
+	checkDatesRange( args ) {
+		const { e } = args;
+		const elInput = e?.target;
+		if ( ! elInput ) {
+			return;
+		}
+
+		const elForm = elInput.closest( ListStudentsEnrolled.selectors.elForm );
+		if ( ! elForm ) {
+			return;
+		}
+
+		const startDateInput = elForm.querySelector(
+			ListStudentsEnrolled.selectors.elStartDateInput,
+		);
+		const endDateInput = elForm.querySelector(
+			ListStudentsEnrolled.selectors.elEndDateInput,
+		);
+
+		if ( elInput === startDateInput ) {
+			if ( startDateInput.value ) {
+				endDateInput.min = startDateInput.value;
+				if ( endDateInput.value && endDateInput.value < startDateInput.value ) {
+					endDateInput.value = startDateInput.value;
+				}
+			} else {
+				endDateInput.min = '';
+			}
+		} else if ( elInput === endDateInput ) {
+			if ( endDateInput.value ) {
+				startDateInput.max = endDateInput.value;
+				if ( startDateInput.value && startDateInput.value > endDateInput.value ) {
+					startDateInput.value = endDateInput.value;
+				}
+			} else {
+				startDateInput.max = '';
+			}
+		}
 	}
 
 	setButtonLoadingState( btn, isLoading ) {
@@ -124,12 +188,6 @@ export class ListStudentsEnrolled {
 		}
 
 		return ajaxHandle;
-	}
-
-	getToolbarForm() {
-		return this.elContainer?.querySelector(
-			ListStudentsEnrolled.selectors.elForm
-		);
 	}
 
 	syncCourseIdFromName( elForm ) {
@@ -168,6 +226,7 @@ export class ListStudentsEnrolled {
 
 	/**
 	 * Search students: update args.search, re-fetch.
+	 * @param args
 	 */
 	searchStudents( args ) {
 		const { e } = args;
@@ -189,7 +248,7 @@ export class ListStudentsEnrolled {
 			return;
 		}
 
-		const elForm = this.getToolbarForm();
+		const elForm = btn.closest( ListStudentsEnrolled.selectors.elForm );
 		const elLPTarget = this.elContainer.querySelector(
 			ListStudentsEnrolled.selectors.elLPTarget
 		);
@@ -217,6 +276,7 @@ export class ListStudentsEnrolled {
 
 	/**
 	 * Clear all filters and reload default data.
+	 * @param args
 	 */
 	clearFilters( args ) {
 		const { e } = args;
@@ -238,7 +298,7 @@ export class ListStudentsEnrolled {
 			return;
 		}
 
-		const elForm = this.getToolbarForm();
+		const elForm = btn.closest( ListStudentsEnrolled.selectors.elForm );
 		const elLPTarget = this.elContainer.querySelector(
 			ListStudentsEnrolled.selectors.elLPTarget
 		);
@@ -269,6 +329,9 @@ export class ListStudentsEnrolled {
 
 	/**
 	 * Shared reload helper: loading indicator + AJAX fetch.
+	 * @param elLPTarget
+	 * @param dataSend
+	 * @param btn
 	 */
 	reloadContent( elLPTarget, dataSend, btn = null ) {
 		const ajaxHandle = this.getAjaxHandle();
