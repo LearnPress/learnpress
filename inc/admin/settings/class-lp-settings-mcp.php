@@ -50,13 +50,13 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	protected function render_missing_adapter_notice(): void {
 		$learn_more = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
-			esc_url( 'https://github.com/Automattic/wordpress-mcp' ),
-			esc_html__( 'learn more', 'learnpress' )
+			esc_url( 'https://github.com/WordPress/mcp-adapter' ),
+			esc_html__( 'Learn more', 'learnpress' )
 		);
 
 		$message = sprintf(
 			'%1$s %2$s',
-			esc_html__( 'This feature requires the MCP Adapter plugin. Please install and activate it to access the settings.', 'learnpress' ),
+			esc_html__( 'This feature requires the MCP Adapter plugin. Please install and activate it to access the settings. ', 'learnpress' ),
 			$learn_more
 		);
 		?>
