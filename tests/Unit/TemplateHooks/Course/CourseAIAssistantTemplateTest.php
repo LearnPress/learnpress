@@ -154,8 +154,12 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		if ( ! class_exists( 'LP_Settings', false ) ) {
 			eval(
 				'class LP_Settings {
+					public static array $options = array();
 					public static function url_handle_lp_ajax(): string {
 						return "https://example.test/lp-ajax";
+					}
+					public static function get_option( string $id, $default = "" ) {
+						return self::$options[ $id ] ?? $default;
 					}
 				}'
 			);
@@ -166,8 +170,29 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 				'namespace LearnPress\\AI\\Assistant;
 				class AIAssistantController {
 					public static bool $enabled = true;
+					public static array $enabled_actions = array(
+						"summarize" => true,
+						"explain" => true,
+						"mini_quiz" => true,
+						"smart_review" => true,
+					);
 					public static function is_enabled(): bool {
 						return self::$enabled;
+					}
+					public static function get_enabled_actions(): array {
+						return self::$enabled_actions;
+					}
+				}'
+			);
+		}
+
+		if ( ! class_exists( '\\LearnPress\\AI\\Assistant\\DataLoaders', false ) ) {
+			eval(
+				'namespace LearnPress\\AI\\Assistant;
+				class DataLoaders {
+					public static bool $has_quiz_attempt = false;
+					public function has_quiz_attempt( int $user_id, int $course_id ): bool {
+						return self::$has_quiz_attempt;
 					}
 				}'
 			);
@@ -242,11 +267,11 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 	public function test_render_widget_is_skipped_when_not_curriculum_page(): void {
 		$this->load_template_with_stubs();
 
-		\LP_Page_Controller::$page = 'other-page';
-		\LP_Global::$is_quiz = false;
-		CourseAIAssistantTemplateState::$logged_in = true;
+		\LP_Page_Controller::$page                               = 'other-page';
+		\LP_Global::$is_quiz                                     = false;
+		CourseAIAssistantTemplateState::$logged_in               = true;
 		\LearnPress\AI\Assistant\AIAssistantController::$enabled = true;
-		\LP_Global::$item = new CourseAIAssistantItemStub( 10, 20 );
+		\LP_Global::$item                                        = new CourseAIAssistantItemStub( 10, 20 );
 
 		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
 
@@ -260,27 +285,87 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
+	public function test_free_chat_off_hides_input_area(): void {
+		$this->load_template_with_stubs();
+
+		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
+
+		// free_chat_enabled = false â†’ input area must be absent, quick-only modifier must appear.
+		$html = $template->html_panel( false, \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions() );
+
+		$this->assertStringNotContainsString( 'lp-ai-assistant__input', $html );
+		$this->assertStringNotContainsString( 'lp-ai-assistant__send-btn', $html );
+		$this->assertStringContainsString( 'lp-ai-assistant__quick-actions', $html );
+		$this->assertStringContainsString( 'lp-ai-assistant-panel--quick-only', $html );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_free_chat_on_shows_input_area(): void {
+		$this->load_template_with_stubs();
+
+		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
+
+		// free_chat_enabled = true â†’ textarea + send button must be present, modifier must be absent.
+		$html = $template->html_panel( true, \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions() );
+
+		$this->assertStringContainsString( 'lp-ai-assistant__input-area', $html );
+		$this->assertStringContainsString( 'lp-ai-assistant__send-btn', $html );
+		$this->assertStringNotContainsString( 'lp-ai-assistant-panel--quick-only', $html );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_disabled_quick_actions_are_not_rendered(): void {
+		$this->load_template_with_stubs();
+		\LearnPress\AI\Assistant\AIAssistantController::$enabled_actions = array(
+			'summarize'    => false,
+			'explain'      => true,
+			'mini_quiz'    => false,
+			'smart_review' => true,
+		);
+
+		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
+		$html     = $template->html_quick_actions( \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions() );
+
+		$this->assertStringNotContainsString( 'Summarize Lesson', $html );
+		$this->assertStringContainsString( 'Explain Concept', $html );
+		$this->assertStringNotContainsString( 'Mini Quiz', $html );
+		$this->assertStringContainsString( 'Smart Review', $html );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
 	public function test_render_widget_outputs_markup_and_has_quiz_attempt_flag(): void {
 		$this->load_template_with_stubs();
 
-		\LP_Page_Controller::$page = LP_PAGE_SINGLE_COURSE_CURRICULUM;
-		\LP_Global::$is_quiz = false;
-		CourseAIAssistantTemplateState::$logged_in = true;
-		CourseAIAssistantTemplateState::$user_id = 77;
+		\LP_Page_Controller::$page                               = LP_PAGE_SINGLE_COURSE_CURRICULUM;
+		\LP_Global::$is_quiz                                     = false;
+		CourseAIAssistantTemplateState::$logged_in               = true;
+		CourseAIAssistantTemplateState::$user_id                 = 77;
 		\LearnPress\AI\Assistant\AIAssistantController::$enabled = true;
-		\LP_Global::$item = new CourseAIAssistantItemStub( 15, 30 );
+		\LP_Global::$item                                        = new CourseAIAssistantItemStub( 15, 30 );
+		\LearnPress\AI\Assistant\DataLoaders::$has_quiz_attempt  = true;
 
-		$section = (object) array(
+		$section                                    = (object) array(
 			'items' => array(
 				(object) array( 'id' => 900 ),
 			),
 		);
-		\LearnPress\Models\CourseModel::$items = array(
+		\LearnPress\Models\CourseModel::$items      = array(
 			30 => new \LearnPress\Models\CourseModel( array( $section ) ),
 		);
 		CourseAIAssistantTemplateState::$post_types = array( 900 => LP_QUIZ_CPT );
 		\LearnPress\Models\UserItems\UserQuizModel::$items = array(
-			900 => new UserQuizAttemptsStub( array( array( 'result' => array( 'mark' => '100' ) ) ) ),
+			900 => new UserQuizAttemptsStub(
+				array(
+					array(
+						'result'     => array( 'mark' => '100' ),
+						'graduation' => 'passed',
+						'end_time'   => '2026-01-01 00:10:00',
+					),
+				)
+			),
 		);
 
 		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
@@ -309,10 +394,10 @@ class CourseAIAssistantItemStub {
 }
 
 class CourseAIAssistantTemplateState {
-	public static bool $logged_in = true;
-	public static int $user_id = 1;
-	public static array $scripts = array();
-	public static array $styles = array();
+	public static bool $logged_in     = true;
+	public static int $user_id        = 1;
+	public static array $scripts      = array();
+	public static array $styles       = array();
 	public static string $inline_data = '';
-	public static array $post_types = array();
+	public static array $post_types   = array();
 }

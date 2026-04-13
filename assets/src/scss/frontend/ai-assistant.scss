@@ -68,6 +68,21 @@
 		}
 	}
 
+	// ---- Quick-only mode (free chat disabled) ----
+	// Applied via PHP when lp_ai_assistant_free_chat = no.
+	// Message list expands to fill the space where input area would be.
+	// Quick actions pin to the bottom of the panel.
+	.lp-ai-assistant-panel--quick-only {
+		.lp-ai-assistant__messages {
+			flex: 1;
+		}
+
+		.lp-ai-assistant__quick-actions {
+			border-top: 1px solid var(--lp-ai-border, #e0e0e0);
+			padding-top: 0.75em;
+		}
+	}
+
 	// ---- Header ----
 	&__header {
 		display: flex;
@@ -177,9 +192,10 @@
 	// ---- Quick actions ----
 	&__quick-actions {
 		display: flex;
-		gap: 0.5em;
-		padding: 0.5em 1em;
 		flex-wrap: wrap;
+		gap: 0.4em;
+		align-items: center;
+		padding: 0.5em 1em;
 		border-top: 1px solid #eee;
 		flex-shrink: 0;
 
@@ -189,21 +205,18 @@
 		}
 	}
 
-	&__quick-btn {
-		flex: 1 1 auto;
-		padding: 0.35em 0.6em;
-		background: #f8f9fa;
-		border: 1px solid #dee2e6;
-		border-radius: 2em;
-		font-size: 0.78em;
-		cursor: pointer;
-		transition: background 0.12s;
-
-		&:hover,
-		&:focus-visible {
-			background: #e9ecef;
-			outline: none;
-		}
+	#lp-ai-assistant &__quick-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		width: auto;
+		max-width: 100%;
+		margin: 0;
+		padding: 0.3em 0.65em;
+		font-size: 0.74em;
+		line-height: 1.25;
+		white-space: nowrap;
 	}
 
 	// ---- Input area ----

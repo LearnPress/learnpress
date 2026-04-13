@@ -114,8 +114,8 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 		$this->load_controller_with_stubs();
 
 		\LearnPress\Services\OpenAiService::$enabled = true;
-		\LP_Settings::$options = array(
-			'open_ai_secret_key' => 'sk-123',
+		\LP_Settings::$options                       = array(
+			'open_ai_secret_key'      => 'sk-123',
 			'lp_ai_assistant_enabled' => 'yes',
 		);
 
@@ -123,6 +123,27 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 		\LP_Settings::$options['open_ai_secret_key'] = '';
 		$this->assertFalse( \LearnPress\AI\Assistant\AIAssistantController::is_enabled() );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_get_enabled_actions_reads_action_settings_and_defaults_to_yes(): void {
+		$this->load_controller_with_stubs();
+
+		\LP_Settings::$options = array(
+			'lp_ai_assistant_summarize_enabled' => 'no',
+			'lp_ai_assistant_explain_enabled'   => 'yes',
+			'lp_ai_assistant_mini_quiz_enabled' => 'no',
+		);
+
+		$actions = \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions();
+
+		$this->assertFalse( $actions['summarize'] );
+		$this->assertTrue( $actions['explain'] );
+		$this->assertFalse( $actions['mini_quiz'] );
+		$this->assertTrue( $actions['smart_review'] );
+		$this->assertFalse( \LearnPress\AI\Assistant\AIAssistantController::is_action_enabled( 'summarize' ) );
+		$this->assertTrue( \LearnPress\AI\Assistant\AIAssistantController::is_action_enabled( 'smart_review' ) );
 	}
 
 	#[RunInSeparateProcess]
@@ -137,7 +158,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 		$this->expectExceptionMessage( 'Message is required.' );
 		$controller->handle_chat(
 			array(
-				'message' => '   ',
+				'message'   => '   ',
 				'lesson_id' => 10,
 				'course_id' => 20,
 			)
@@ -151,26 +172,32 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 		AIAssistantControllerState::$user_id = 55;
 
 		$controller = new \LearnPress\AI\Assistant\AIAssistantController();
-		$result = $controller->handle_chat(
+		$result     = $controller->handle_chat(
 			array(
-				'message' => "  hello  ",
-				'lesson_id' => '10',
-				'course_id' => '20',
-				'history' => array(
-					array( 'role' => 'user', 'content' => "  ask me  " ),
-					array( 'role' => 'system', 'content' => 'ignore' ),
+				'message'               => '  hello  ',
+				'lesson_id'             => '10',
+				'course_id'             => '20',
+				'history'               => array(
+					array(
+						'role'    => 'user',
+						'content' => '  ask me  ',
+					),
+					array(
+						'role'    => 'system',
+						'content' => 'ignore',
+					),
 				),
 				'active_quiz_questions' => array(
-					'is_active' => '1',
-					'completed' => '',
+					'is_active'     => '1',
+					'completed'     => '',
 					'current_index' => '2',
-					'score' => '1',
-					'questions' => array(
+					'score'         => '1',
+					'questions'     => array(
 						array(
-							'question' => ' Q1 ',
-							'options' => array( ' A ', ' B ' ),
+							'question'      => ' Q1 ',
+							'options'       => array( ' A ', ' B ' ),
 							'correct_index' => '1',
-							'explanation' => "  explain  ",
+							'explanation'   => '  explain  ',
 						),
 					),
 				),

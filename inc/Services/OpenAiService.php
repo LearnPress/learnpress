@@ -88,7 +88,7 @@ class OpenAiService {
 					'Authorization' => 'Bearer ' . $this->secret_key,
 					'Content-Type'  => 'application/json',
 				],
-				'body'    => json_encode( $args ),
+				'body'    => $this->encode_request_payload( $args ),
 				'timeout' => 3600,
 			]
 		);
@@ -130,7 +130,7 @@ class OpenAiService {
 					'Authorization' => 'Bearer ' . $this->secret_key,
 					'Content-Type'  => 'application/json',
 				],
-				'body'    => json_encode( $args ),
+				'body'    => $this->encode_request_payload( $args ),
 				'timeout' => 3600,
 			]
 		);
@@ -181,7 +181,7 @@ class OpenAiService {
 					'Authorization' => 'Bearer ' . $this->secret_key,
 					'Content-Type'  => 'application/json',
 				],
-				'body'    => json_encode( $args ),
+				'body'    => $this->encode_request_payload( $args ),
 				'timeout' => 3600,
 			]
 		);
@@ -269,7 +269,7 @@ class OpenAiService {
 			'model'       => $this->text_model_type,
 			'temperature' => $this->creativity_level,
 			'max_tokens'  => $this->max_token,
-			'n'           => $args['outputs'] ?? 1,
+			'n'           => $params['outputs'] ?? 1,
 			'prompt'      => $params['prompt'] ?? '',
 		];
 
@@ -337,5 +337,28 @@ class OpenAiService {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Encode request payload into a valid JSON object string.
+	 *
+	 * @param array $payload
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
+	private function encode_request_payload( array $payload ): string {
+		$json = wp_json_encode( $payload );
+
+		if ( ! is_string( $json ) || '' === $json ) {
+			throw new Exception( __( 'Unable to encode OpenAI request payload as JSON.', 'learnpress' ) );
+		}
+
+		$first_char = substr( ltrim( $json ), 0, 1 );
+		if ( $first_char !== '{' ) {
+			throw new Exception( __( 'OpenAI request payload must be a JSON object.', 'learnpress' ) );
+		}
+
+		return $json;
 	}
 }

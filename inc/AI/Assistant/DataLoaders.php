@@ -104,58 +104,38 @@ class DataLoaders {
 			);
 		}
 
-		$sections_items = $course->get_section_items();
-		$results        = array();
+		$results  = array();
+		$quiz_ids = $this->get_course_quiz_item_ids( $course );
 
-		foreach ( $sections_items as $section ) {
-			if ( empty( $section->items ) ) {
+		foreach ( $quiz_ids as $item_id ) {
+			$user_quiz = $this->find_user_quiz_item( $user_id, (int) $item_id, $course_id );
+
+			if ( ! $user_quiz || ! method_exists( $user_quiz, 'get_attempts' ) ) {
 				continue;
 			}
 
-			foreach ( $section->items as $item ) {
-				$item_id   = $item->id ?? $item->item_id ?? 0;
-				$post_type = get_post_type( $item_id );
+			$attempts = $user_quiz->get_attempts( 5 );
 
-				if ( $post_type !== LP_QUIZ_CPT ) {
-					continue;
-				}
+			if ( empty( $attempts ) ) {
+				continue;
+			}
 
-				$user_quiz = UserQuizModel::find_user_item(
-					$user_id,
-					$item_id,
-					'lp_quiz',
-					$course_id,
-					'lp_course',
-					true
-				);
-
-				if ( ! $user_quiz || ! method_exists( $user_quiz, 'get_attempts' ) ) {
-					continue;
-				}
-
-				$attempts = $user_quiz->get_attempts( 5 );
-
-				if ( empty( $attempts ) ) {
-					continue;
-				}
-
-				$normalized_attempts = array();
-				foreach ( $attempts as $attempt ) {
-					$normalized_attempts[] = array(
-						'result'     => $attempt['result'] ?? array(),
-						'graduation' => $attempt['graduation'] ?? '',
-						'start_time' => $attempt['start_time'] ?? '',
-						'end_time'   => $attempt['end_time'] ?? '',
-						'time_spent' => $attempt['time_spent'] ?? '',
-					);
-				}
-
-				$results[] = array(
-					'quiz_id'    => $item_id,
-					'quiz_title' => get_the_title( $item_id ),
-					'attempts'   => $normalized_attempts,
+			$normalized_attempts = array();
+			foreach ( $attempts as $attempt ) {
+				$normalized_attempts[] = array(
+					'result'     => $attempt['result'] ?? array(),
+					'graduation' => $attempt['graduation'] ?? '',
+					'start_time' => $attempt['start_time'] ?? '',
+					'end_time'   => $attempt['end_time'] ?? '',
+					'time_spent' => $attempt['time_spent'] ?? '',
 				);
 			}
+
+			$results[] = array(
+				'quiz_id'    => $item_id,
+				'quiz_title' => get_the_title( $item_id ),
+				'attempts'   => $normalized_attempts,
+			);
 		}
 
 		if ( empty( $results ) ) {
@@ -165,5 +145,99 @@ class DataLoaders {
 		}
 
 		return array( 'quizzes' => $results );
+	}
+
+	/**
+	 * Check whether a learner has at least one quiz attempt in a course.
+	 *
+	 * @param int $user_id
+	 * @param int $course_id
+	 *
+	 * @return bool
+	 */
+	public function has_quiz_attempt( int $user_id, int $course_id ): bool {
+		if ( $user_id <= 0 || $course_id <= 0 ) {
+			return false;
+		}
+
+		$course = CourseModel::find( $course_id, true );
+		if ( ! $course ) {
+			return false;
+		}
+
+		$quiz_ids = $this->get_course_quiz_item_ids( $course );
+		if ( empty( $quiz_ids ) ) {
+			return false;
+		}
+
+		foreach ( $quiz_ids as $item_id ) {
+			$user_quiz = $this->find_user_quiz_item( $user_id, (int) $item_id, $course_id );
+			if ( ! $user_quiz || ! method_exists( $user_quiz, 'get_attempts' ) ) {
+				continue;
+			}
+
+			$attempts = $user_quiz->get_attempts( 1 );
+			if ( ! empty( $attempts ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Collect quiz item IDs from a course outline.
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return array<int>
+	 */
+	private function get_course_quiz_item_ids( CourseModel $course ): array {
+		$sections_items = $course->get_section_items();
+		$quiz_ids       = array();
+
+		foreach ( $sections_items as $section ) {
+			if ( empty( $section->items ) ) {
+				continue;
+			}
+
+			foreach ( $section->items as $item ) {
+				$item_id = (int) ( $item->id ?? $item->item_id ?? 0 );
+				if ( $item_id <= 0 ) {
+					continue;
+				}
+
+				if ( get_post_type( $item_id ) !== LP_QUIZ_CPT ) {
+					continue;
+				}
+
+				$quiz_ids[] = $item_id;
+			}
+		}
+
+		return array_values( array_unique( $quiz_ids ) );
+	}
+
+	/**
+	 * Resolve learner quiz model for a quiz item.
+	 *
+	 * @param int $user_id
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 *
+	 * @return mixed
+	 */
+	private function find_user_quiz_item( int $user_id, int $quiz_id, int $course_id ) {
+		$quiz_item_type   = defined( 'LP_QUIZ_CPT' ) ? LP_QUIZ_CPT : 'lp_quiz';
+		$course_item_type = defined( 'LP_COURSE_CPT' ) ? LP_COURSE_CPT : 'lp_course';
+
+		return UserQuizModel::find_user_item(
+			$user_id,
+			$quiz_id,
+			$quiz_item_type,
+			$course_id,
+			$course_item_type,
+			true
+		);
 	}
 }

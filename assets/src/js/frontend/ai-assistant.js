@@ -22,6 +22,7 @@ export class AIAssistantWidget {
 		this.history = [];
 		this.activeQuizState = null;
 		this.isRequesting = false;
+		this.quizHookBound = false;
 	}
 
 	static selectors = {
@@ -60,6 +61,7 @@ export class AIAssistantWidget {
 		this.applyInitialState();
 		this.loadHistory();
 		this.renderHistoryToDOM();
+		this.bindQuizCompletedHook();
 		this.events();
 	}
 
@@ -96,8 +98,8 @@ export class AIAssistantWidget {
 			clearConfirm: this.config?.i18n?.clearConfirm || 'Clear chat history?',
 			explainPrompt: this.config?.i18n?.explainPrompt || '/explain',
 			quizPrompt: this.config?.i18n?.quizPrompt || '/mini-quiz',
-			summarizePrompt: this.config?.i18n?.summarizePrompt || '',
-			smartReviewPrompt: this.config?.i18n?.smartReviewPrompt || '',
+			summarizePrompt: this.config?.i18n?.summarizePrompt || '/summarize',
+			smartReviewPrompt: this.config?.i18n?.smartReviewPrompt || '/smart-review',
 		};
 
 		return true;
@@ -117,12 +119,11 @@ export class AIAssistantWidget {
 	}
 
 	validateDOM() {
+		// inputEl and sendBtn are optional — absent when free chat is disabled.
 		return !! (
 			this.elements.toggleBtn &&
 			this.elements.panel &&
-			this.elements.msgList &&
-			this.elements.inputEl &&
-			this.elements.sendBtn
+			this.elements.msgList
 		);
 	}
 
@@ -132,6 +133,28 @@ export class AIAssistantWidget {
 		}
 
 		this.setQuizInputMode( false );
+	}
+
+	bindQuizCompletedHook() {
+		if ( this.quizHookBound || ! this.elements.smartReviewBtn ) {
+			return;
+		}
+
+		const hooks = window?.wp?.hooks;
+		if ( ! hooks || typeof hooks.addAction !== 'function' ) {
+			return;
+		}
+
+		hooks.addAction( 'lp-js-quiz-answer', 'learnpress/ai-assistant-smart-review', ( answered, status ) => {
+			if ( String( status || '' ).toLowerCase() !== 'completed' ) {
+				return;
+			}
+
+			this.config.hasQuizAttempt = true;
+			this.elements.smartReviewBtn.hidden = false;
+		} );
+
+		this.quizHookBound = true;
 	}
 
 	events() {
@@ -202,7 +225,6 @@ export class AIAssistantWidget {
 	}
 
 	handleClearClick( args ) {
-		console.log( 'handleClearClick' );
 		args.e.preventDefault();
 		SweetAlert.fire( {
 			title: this.config.i18n.clearConfirm,
@@ -218,7 +240,7 @@ export class AIAssistantWidget {
 
 	handleSendClick( args ) {
 		args.e.preventDefault();
-		this.sendMessage( this.elements.inputEl.value );
+		this.sendMessage( this.elements.inputEl?.value ?? '' );
 	}
 
 	handleQuickActionClick( args ) {
@@ -303,7 +325,7 @@ export class AIAssistantWidget {
 		this.elements.panel.hidden = false;
 		this.root.setAttribute( 'aria-hidden', 'false' );
 		this.elements.toggleBtn.setAttribute( 'aria-expanded', 'true' );
-		this.elements.inputEl.focus();
+		this.elements.inputEl?.focus();
 
 		if ( this.elements.msgList ) {
 			this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
@@ -319,8 +341,8 @@ export class AIAssistantWidget {
 
 	setLoadingState( isLoading ) {
 		this.isRequesting = isLoading;
-		this.elements.sendBtn.disabled = isLoading;
-		this.elements.inputEl.disabled = isLoading;
+		if ( this.elements.sendBtn ) this.elements.sendBtn.disabled = isLoading;
+		if ( this.elements.inputEl ) this.elements.inputEl.disabled = isLoading;
 	}
 
 	setQuizInputMode( isQuizActive ) {
@@ -461,7 +483,7 @@ export class AIAssistantWidget {
 		const contextHistory = this.history.slice();
 		this.history.push( { role: 'user', content: text } );
 		this.saveHistory();
-		this.elements.inputEl.value = '';
+		if ( this.elements.inputEl ) this.elements.inputEl.value = '';
 
 		const pendingEl = this.appendMessage( 'assistant', this.config.i18n.thinking );
 		const pendingTextEl = pendingEl.querySelector( '.lp-ai-assistant__msg-text' );
@@ -478,8 +500,8 @@ export class AIAssistantWidget {
 
 		const callBack = {
 			success: ( response ) => {
-				if ( response?.status === 'success' && response?.data?.message ) {
-					pendingTextEl.textContent = response.data.message;
+				if ( response?.status === 'success' && response?.data ) {
+					pendingTextEl.textContent = response.data.message || '';
 
 					if ( response?.data?.type === 'quiz' ) {
 						this.activeQuizState = response?.data?.quiz || null;

@@ -16,6 +16,12 @@ use LearnPress\Services\OpenAiService;
  * @since 4.3.5
  */
 class AIAssistantController {
+	private const ACTION_SETTINGS = array(
+		'summarize'    => 'lp_ai_assistant_summarize_enabled',
+		'explain'      => 'lp_ai_assistant_explain_enabled',
+		'mini_quiz'    => 'lp_ai_assistant_mini_quiz_enabled',
+		'smart_review' => 'lp_ai_assistant_smart_review_enabled',
+	);
 
 	/**
 	 * Check if the AI Assistant feature is fully enabled.
@@ -39,6 +45,34 @@ class AIAssistantController {
 		}
 
 		return LP_Settings::get_option( 'lp_ai_assistant_enabled', 'no' ) === 'yes';
+	}
+
+	/**
+	 * Resolve per-action enabled flags from admin settings.
+	 *
+	 * @return array<string, bool>
+	 */
+	public static function get_enabled_actions(): array {
+		$enabled_actions = array();
+
+		foreach ( self::ACTION_SETTINGS as $action => $setting_key ) {
+			$enabled_actions[ $action ] = LP_Settings::get_option( $setting_key, 'yes' ) === 'yes';
+		}
+
+		return $enabled_actions;
+	}
+
+	/**
+	 * Check whether a specific assistant action is enabled.
+	 *
+	 * @param string $action Action slug.
+	 *
+	 * @return bool
+	 */
+	public static function is_action_enabled( string $action ): bool {
+		$enabled_actions = self::get_enabled_actions();
+
+		return $enabled_actions[ $action ] ?? true;
 	}
 
 	/**
