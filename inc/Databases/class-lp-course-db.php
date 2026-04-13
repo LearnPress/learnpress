@@ -333,11 +333,11 @@ class LP_Course_DB extends LP_Database {
 	 * @throws Exception
 	 * @author tungnx
 	 * @since 4.1.4
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_total_user_enrolled_or_purchased( int $course_id ): int {
 		$filter              = new LP_User_Items_Filter();
-		$filter->only_fields = [ 'DISTINCT(user_id)' ];
+		$filter->only_fields = [ 'DISTINCT(user_id) AS user_id' ];
 		$filter->item_id     = $course_id;
 		$filter->item_type   = LP_COURSE_CPT;
 		$filter->field_count = 'ui.user_id';
