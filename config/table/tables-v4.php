@@ -190,6 +190,24 @@ return array(
 			KEY id_status (ID, post_status)
 		) $collate;
 	",
+	$lp_db->tb_lp_mcp_api_keys        => "
+		CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_mcp_api_keys} (
+			key_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL,
+			description varchar(200) NULL DEFAULT NULL,
+			permissions varchar(10) NOT NULL DEFAULT 'read',
+			consumer_key char(64) NOT NULL,
+			consumer_secret char(64) NOT NULL,
+			truncated_key char(7) NOT NULL,
+			last_access datetime NULL DEFAULT NULL,
+			call_count bigint(20) unsigned NOT NULL DEFAULT 0,
+			created_at datetime NOT NULL,
+			updated_at datetime NULL DEFAULT NULL,
+			PRIMARY KEY (key_id),
+			UNIQUE KEY consumer_key (consumer_key),
+			KEY user_id (user_id)
+		) $collate;
+	",
 	$lp_db->tb_thim_cache             => "
 		CREATE TABLE IF NOT EXISTS {$lp_db->tb_thim_cache} (
 			key_cache VARCHAR (100) NOT NULL UNIQUE,
