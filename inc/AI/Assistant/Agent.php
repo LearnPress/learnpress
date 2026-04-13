@@ -78,7 +78,7 @@ class Agent {
 				return $this->handle_explain( $data_loaders, $user_message, $lesson_id, $user_id, $history );
 
 			case self::INTENT_SMART_REVIEW:
-				return $this->handle_smart_review( $data_loaders, $user_message, $user_id, $course_id, $history );
+				return $this->handle_smart_review( $data_loaders, $user_message, $user_id, $course_id, $lesson_id, $history );
 
 			case self::INTENT_MINI_QUIZ:
 				return $this->start_interactive_quiz( $data_loaders, $user_message, $lesson_id, $user_id, $history );
@@ -166,6 +166,7 @@ class Agent {
 	 * Build a summary response grounded in the current lesson content.
 	 */
 	private function handle_summarize( DataLoaders $loaders, string $message, int $lesson_id, int $user_id, array $history ): array {
+
 		$lesson = $loaders->get_lesson_content( $lesson_id, $user_id );
 		if ( ! empty( $lesson['error'] ) ) {
 			return $this->build_response( $lesson['error'] );
@@ -173,7 +174,6 @@ class Agent {
 
 		$instruction = __( 'Summarize this lesson clearly with key points, practical takeaways, and 3 quick review bullets.', 'learnpress' );
 		$content     = $this->ask_openai_text( $history, $message, $instruction, array( 'lesson' => $lesson ), $user_id );
-
 		return $this->build_response( $content );
 	}
 
@@ -181,6 +181,7 @@ class Agent {
 	 * Build a concept explanation response grounded in the current lesson.
 	 */
 	private function handle_explain( DataLoaders $loaders, string $message, int $lesson_id, int $user_id, array $history ): array {
+
 		$lesson = $loaders->get_lesson_content( $lesson_id, $user_id );
 		if ( ! empty( $lesson['error'] ) ) {
 			return $this->build_response( $lesson['error'] );
@@ -188,33 +189,29 @@ class Agent {
 
 		$instruction = __( 'Explain the learner request using lesson context only. Give a short explanation, one concrete example, and one self-check question.', 'learnpress' );
 		$content     = $this->ask_openai_text( $history, $message, $instruction, array( 'lesson' => $lesson ), $user_id );
-
 		return $this->build_response( $content );
 	}
 
 	/**
-	 * Build a personalized review plan using quiz attempts and course outline.
+	 * Build a personalized review for the current completed quiz item.
 	 */
-	private function handle_smart_review( DataLoaders $loaders, string $message, int $user_id, int $course_id, array $history ): array {
-		$results = $loaders->get_quiz_results( $user_id, $course_id );
-		$outline = $loaders->get_course_outline( $course_id );
+	private function handle_smart_review( DataLoaders $loaders, string $message, int $user_id, int $course_id, int $quiz_id, array $history ): array {
+		$quiz_review = $loaders->get_quiz_review_result( $user_id, $course_id, $quiz_id );
 
-		if ( ! empty( $results['error'] ) ) {
-			return $this->build_response( $results['error'] );
+		if ( ! empty( $quiz_review['error'] ) ) {
+			return $this->build_response( $quiz_review['error'] );
 		}
 
-		$instruction = __( 'Create a smart review plan grounded in quiz attempts. Focus on weak concepts and recommend specific course sections to revisit.', 'learnpress' );
+		$instruction = __( 'Create a smart review for this completed quiz attempt. Summarize performance, identify weak concepts, and provide a concise next-step study plan.', 'learnpress' );
 		$content     = $this->ask_openai_text(
 			$history,
 			$message,
 			$instruction,
 			array(
-				'quiz_results'   => $results,
-				'course_outline' => $outline,
+				'quiz_review' => $quiz_review,
 			),
 			$user_id
 		);
-
 		return $this->build_response( $content );
 	}
 
@@ -222,11 +219,11 @@ class Agent {
 	 * Handle open-ended chat requests with lesson-grounded context.
 	 */
 	private function handle_general( DataLoaders $loaders, string $message, int $lesson_id, int $user_id, array $history ): array {
+
 		$lesson = $loaders->get_lesson_content( $lesson_id, $user_id );
 
 		$instruction = __( 'Answer naturally and keep guidance grounded in the provided lesson context. If context is missing, say so clearly.', 'learnpress' );
 		$content     = $this->ask_openai_text( $history, $message, $instruction, array( 'lesson' => $lesson ), $user_id );
-
 		return $this->build_response( $content );
 	}
 
@@ -242,6 +239,7 @@ class Agent {
 	 * @return string
 	 */
 	private function ask_openai_text( array $history, string $user_message, string $instruction, array $context, int $user_id ): string {
+
 		$service    = OpenAiService::instance();
 		$messages   = array();
 		$messages[] = array(
@@ -252,7 +250,6 @@ class Agent {
 			'role'    => 'system',
 			'content' => $this->build_response_language_instruction( $user_message, $history, $user_id ),
 		);
-
 		$messages[] = array(
 			'role'    => 'system',
 			'content' => sprintf(
@@ -299,11 +296,10 @@ class Agent {
 			return $this->build_response( $lesson['error'] );
 		}
 
-		$service            = OpenAiService::instance();
-		$question_count     = $this->extract_requested_quiz_count( $user_message );
-		$has_explicit_count = null !== $question_count;
-		$language_guidance  = $this->build_response_language_instruction( $user_message, $history, $user_id );
-
+		$service             = OpenAiService::instance();
+		$question_count      = $this->extract_requested_quiz_count( $user_message );
+		$has_explicit_count  = null !== $question_count;
+		$language_guidance   = $this->build_response_language_instruction( $user_message, $history, $user_id );
 		$system_instructions = $has_explicit_count
 			? sprintf(
 				/* translators: %d: requested number of quiz questions. */
@@ -326,7 +322,6 @@ class Agent {
 				'content' => wp_json_encode( $lesson ),
 			),
 		);
-
 		foreach ( $history as $item ) {
 			if ( ! empty( $item['role'] ) && isset( $item['content'] ) ) {
 				$messages[] = array(
@@ -340,10 +335,9 @@ class Agent {
 			'role'    => 'user',
 			'content' => $user_message,
 		);
-
-		$response = $service->send_chat_request( array( 'messages' => $messages ) );
-		$content  = (string) ( $response['content'] ?? '' );
-		$decoded  = $this->decode_json_content( $content );
+		$response   = $service->send_chat_request( array( 'messages' => $messages ) );
+		$content    = (string) ( $response['content'] ?? '' );
+		$decoded    = $this->decode_json_content( $content );
 
 		$questions = $this->sanitize_quiz_questions( $decoded['questions'] ?? array(), $question_count );
 		if ( empty( $questions ) ) {
@@ -432,9 +426,7 @@ class Agent {
 		$state['is_active'] = true;
 		$state['completed'] = false;
 
-		$message = $is_correct
-			? __( 'Correct. Great job! Moving to the next question.', 'learnpress' )
-			: __( 'Not quite. Let us move to the next question.', 'learnpress' );
+		$message = $is_correct ? __( 'Correct. Great job! Moving to the next question.', 'learnpress' ) : __( 'Not quite. Let us move to the next question.', 'learnpress' );
 
 		return array(
 			'type'    => 'quiz',
@@ -454,6 +446,7 @@ class Agent {
 	 * @return int|null
 	 */
 	private function parse_answer_index( string $message, array $options ): ?int {
+
 		$input = strtolower( trim( $message ) );
 		if ( $input === '' ) {
 			return null;
@@ -492,6 +485,7 @@ class Agent {
 	 * @return string
 	 */
 	private function build_response_language_instruction( string $user_message, array $history, int $user_id ): string {
+
 		$sample      = $this->resolve_language_sample( $user_message, $history );
 		$locale_hint = $this->resolve_locale_hint( $user_id );
 
@@ -520,6 +514,7 @@ class Agent {
 	 * @return string
 	 */
 	private function resolve_language_sample( string $user_message, array $history ): string {
+
 		$current = $this->trim_text_for_prompt( $user_message );
 		if ( $this->has_letters( $current ) && ! $this->is_language_neutral_command( $current ) ) {
 			return $current;
@@ -550,25 +545,17 @@ class Agent {
 	 * @return string
 	 */
 	private function resolve_locale_hint( int $user_id ): string {
-		if ( $user_id > 0 && function_exists( 'get_user_locale' ) ) {
-			$locale = (string) get_user_locale( $user_id );
-			if ( $locale !== '' ) {
-				return $locale;
-			}
+		$locale = (string) get_user_locale( $user_id );
+		if ( $locale !== '' ) {
+			return $locale;
 		}
 
-		if ( function_exists( 'determine_locale' ) ) {
-			$locale = (string) determine_locale();
-			if ( $locale !== '' ) {
-				return $locale;
-			}
+		$locale = (string) determine_locale();
+		if ( $locale !== '' ) {
+			return $locale;
 		}
 
-		if ( function_exists( 'get_locale' ) ) {
-			return (string) get_locale();
-		}
-
-		return '';
+		return (string) get_locale();
 	}
 
 	/**
@@ -579,13 +566,14 @@ class Agent {
 	 * @return bool
 	 */
 	private function is_language_neutral_command( string $text ): bool {
+
 		$normalized = trim( $text );
 		if ( $normalized === '' ) {
 			return true;
 		}
 
 		if ( str_starts_with( $normalized, '/' ) ) {
-			return true;
+				return true;
 		}
 
 		return preg_match( '/^[\d\W_]+$/u', $normalized ) === 1;
@@ -599,6 +587,7 @@ class Agent {
 	 * @return bool
 	 */
 	private function has_letters( string $text ): bool {
+
 		return preg_match( '/\p{L}/u', $text ) === 1;
 	}
 
@@ -610,18 +599,14 @@ class Agent {
 	 * @return string
 	 */
 	private function trim_text_for_prompt( string $text ): string {
+
 		$clean = trim( preg_replace( '/\s+/', ' ', $text ) ?? '' );
 		if ( $clean === '' ) {
 			return '';
 		}
 
-		if ( function_exists( 'mb_substr' ) ) {
-			return mb_substr( $clean, 0, 220, 'UTF-8' );
-		}
-
-		return substr( $clean, 0, 220 );
+		return mb_substr( $clean, 0, 220, 'UTF-8' );
 	}
-
 	/**
 	 * Extract the requested number of quiz questions from the learner message.
 	 *
@@ -640,11 +625,7 @@ class Agent {
 			return null;
 		}
 
-		if ( function_exists( 'mb_strtolower' ) ) {
-			$normalized = mb_strtolower( $normalized, 'UTF-8' );
-		} else {
-			$normalized = strtolower( $normalized );
-		}
+		$normalized = mb_strtolower( $normalized, 'UTF-8' );
 
 		$normalized = preg_replace( '/[^\p{L}\p{N}\s]+/u', ' ', $normalized );
 		$normalized = is_string( $normalized ) ? trim( preg_replace( '/\s+/', ' ', $normalized ) ?? '' ) : '';

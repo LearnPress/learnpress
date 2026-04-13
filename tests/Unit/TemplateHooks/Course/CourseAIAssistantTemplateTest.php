@@ -34,6 +34,12 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		if ( ! defined( 'LP_PAGE_SINGLE_COURSE_CURRICULUM' ) ) {
 			define( 'LP_PAGE_SINGLE_COURSE_CURRICULUM', 'single-course-curriculum' );
 		}
+		if ( ! defined( 'LP_PAGE_QUIZ' ) ) {
+			define( 'LP_PAGE_QUIZ', 'lp-page-quiz' );
+		}
+		if ( ! defined( 'LP_ITEM_COMPLETED' ) ) {
+			define( 'LP_ITEM_COMPLETED', 'completed' );
+		}
 
 		if ( ! function_exists( 'add_action' ) ) {
 			function add_action( $hook, $callback ) {
@@ -238,8 +244,15 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 				'namespace LearnPress\\Models\\UserItems;
 				class UserQuizModel {
 					public static array $items = array();
+					public function __construct( private string $status = "completed", private array $result = array() ) {}
 					public static function find_user_item( int $user_id, int $item_id, string $item_type, int $ref_id, string $ref_type, bool $cache = true ) {
 						return self::$items[ $item_id ] ?? false;
+					}
+					public function get_status(): string {
+						return $this->status;
+					}
+					public function get_result(): array {
+						return $this->result;
 					}
 				}'
 			);
@@ -336,7 +349,66 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function test_render_widget_outputs_markup_and_has_quiz_attempt_flag(): void {
+	public function test_render_widget_on_quiz_page_is_hidden_until_quiz_completed(): void {
+		$this->load_template_with_stubs();
+
+		\LP_Page_Controller::$page                               = LP_PAGE_QUIZ;
+		\LP_Global::$is_quiz                                     = true;
+		CourseAIAssistantTemplateState::$logged_in               = true;
+		CourseAIAssistantTemplateState::$user_id                 = 77;
+		\LearnPress\AI\Assistant\AIAssistantController::$enabled = true;
+		\LP_Global::$item                                        = new CourseAIAssistantItemStub( 900, 30 );
+		\LearnPress\Models\UserItems\UserQuizModel::$items       = array(
+			900 => new \LearnPress\Models\UserItems\UserQuizModel( 'in-progress', array() ),
+		);
+
+		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
+
+		ob_start();
+		$template->render_widget();
+		$output = ob_get_clean();
+
+		$this->assertSame( '', $output );
+		$this->assertSame( array(), CourseAIAssistantTemplateState::$scripts );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_render_widget_on_completed_quiz_page_shows_only_smart_review(): void {
+		$this->load_template_with_stubs();
+
+		\LP_Page_Controller::$page                               = LP_PAGE_QUIZ;
+		\LP_Global::$is_quiz                                     = true;
+		CourseAIAssistantTemplateState::$logged_in               = true;
+		CourseAIAssistantTemplateState::$user_id                 = 77;
+		\LearnPress\AI\Assistant\AIAssistantController::$enabled = true;
+		\LP_Global::$item                                        = new CourseAIAssistantItemStub( 900, 30 );
+		\LearnPress\Models\UserItems\UserQuizModel::$items       = array(
+			900 => new \LearnPress\Models\UserItems\UserQuizModel(
+				LP_ITEM_COMPLETED,
+				array( 'mark' => 80, 'result' => 0.8 )
+			),
+		);
+
+		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
+
+		ob_start();
+		$template->render_widget();
+		$output = ob_get_clean();
+
+		$this->assertStringContainsString( 'id="lp-ai-assistant"', $output );
+		$this->assertStringContainsString( 'Smart Review', $output );
+		$this->assertStringNotContainsString( 'Explain Concept', $output );
+		$this->assertStringNotContainsString( 'Summarize Lesson', $output );
+		$this->assertStringNotContainsString( 'Mini Quiz', $output );
+		$this->assertStringNotContainsString( 'lp-ai-assistant__input', $output );
+		$this->assertStringContainsString( '"context":"quiz"', (string) CourseAIAssistantTemplateState::$inline_data );
+		$this->assertStringContainsString( '"quizCompleted":true', (string) CourseAIAssistantTemplateState::$inline_data );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_render_widget_outputs_markup_and_lesson_context_inline_data(): void {
 		$this->load_template_with_stubs();
 
 		\LP_Page_Controller::$page                               = LP_PAGE_SINGLE_COURSE_CURRICULUM;
@@ -377,7 +449,8 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringContainsString( 'id="lp-ai-assistant"', $output );
 		$this->assertContains( 'lp-ai-assistant', CourseAIAssistantTemplateState::$scripts );
 		$this->assertContains( 'lp-ai-assistant', CourseAIAssistantTemplateState::$styles );
-		$this->assertStringContainsString( '"hasQuizAttempt":true', (string) CourseAIAssistantTemplateState::$inline_data );
+		$this->assertStringContainsString( '"lessonId":15', (string) CourseAIAssistantTemplateState::$inline_data );
+		$this->assertStringContainsString( '"context":"lesson"', (string) CourseAIAssistantTemplateState::$inline_data );
 	}
 }
 

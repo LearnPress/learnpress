@@ -57,7 +57,7 @@ export class AIAssistantWidget {
 			return;
 		}
 
-		this.storageKey = `lp_ai_chat_${ this.config.lessonId }`;
+		this.storageKey = `lp_ai_chat_${ this.config.context }_${ this.config.itemId }`;
 		this.applyInitialState();
 		this.loadHistory();
 		this.renderHistoryToDOM();
@@ -82,13 +82,26 @@ export class AIAssistantWidget {
 			}
 		}
 
-		if ( ! Number.isInteger( this.config.lessonId ) || this.config.lessonId <= 0 ) {
+		const itemId = Number.isInteger( this.config.itemId ) ? this.config.itemId : this.config.lessonId;
+		if ( ! Number.isInteger( itemId ) || itemId <= 0 ) {
 			return false;
 		}
 
 		if ( ! Number.isInteger( this.config.courseId ) || this.config.courseId <= 0 ) {
 			return false;
 		}
+
+		this.config.itemId = itemId;
+		this.config.lessonId = itemId; // Backward compatibility for existing AJAX contract.
+		this.config.context = this.config.context === 'quiz' ? 'quiz' : 'lesson';
+		this.config.quizCompleted = !! this.config.quizCompleted;
+		this.config.enabledActions = {
+			summarize: true,
+			explain: true,
+			mini_quiz: true,
+			smart_review: true,
+			...( this.config.enabledActions || {} ),
+		};
 
 		this.config.i18n = {
 			you: this.config?.i18n?.you || 'You',
@@ -129,13 +142,20 @@ export class AIAssistantWidget {
 
 	applyInitialState() {
 		if ( this.elements.smartReviewBtn ) {
-			this.elements.smartReviewBtn.hidden = ! this.config.hasQuizAttempt;
+			const showSmartReview = this.config.context === 'quiz'
+				? this.config.quizCompleted
+				: !! this.config.enabledActions?.smart_review;
+			this.elements.smartReviewBtn.hidden = ! showSmartReview;
 		}
 
 		this.setQuizInputMode( false );
 	}
 
 	bindQuizCompletedHook() {
+		if ( this.config.context === 'quiz' ) {
+			return;
+		}
+
 		if ( this.quizHookBound || ! this.elements.smartReviewBtn ) {
 			return;
 		}
@@ -150,7 +170,7 @@ export class AIAssistantWidget {
 				return;
 			}
 
-			this.config.hasQuizAttempt = true;
+			this.config.quizCompleted = true;
 			this.elements.smartReviewBtn.hidden = false;
 		} );
 
@@ -298,7 +318,7 @@ export class AIAssistantWidget {
 
 		if ( args.e.key === 'Enter' && ! args.e.shiftKey ) {
 			args.e.preventDefault();
-			this.sendMessage( this.elements.inputEl.value );
+			this.sendMessage( this.elements.inputEl?.value ?? '' );
 		}
 	}
 
@@ -492,7 +512,7 @@ export class AIAssistantWidget {
 		const dataSend = {
 			action: 'openai_assistant_chat',
 			message: text,
-			lesson_id: this.config.lessonId,
+			lesson_id: this.config.itemId,
 			course_id: this.config.courseId,
 			history: contextHistory,
 			active_quiz_questions: this.activeQuizState || [],

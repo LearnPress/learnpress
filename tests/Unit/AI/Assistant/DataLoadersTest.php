@@ -58,20 +58,15 @@ class DataLoadersTest extends BrainMonkeyTestCase {
 				'namespace LearnPress\\Models\\UserItems;
 				class UserQuizModel {
 					public static array $map = array();
+					public function __construct( private string $status = "completed", private array $result = array() ) {}
 					public static function find_user_item( int $user_id, int $item_id, string $item_type, int $ref_id, string $ref_type, bool $cache = true ) {
 						return self::$map[ $item_id ] ?? false;
 					}
-				}'
-			);
-		}
-
-		if ( ! class_exists( '\\LearnPress\\Tests\\Unit\\AI\\Assistant\\QuizAttemptsStub', false ) ) {
-			eval(
-				'namespace LearnPress\\Tests\\Unit\\AI\\Assistant;
-				class QuizAttemptsStub {
-					public function __construct( private array $attempts ) {}
-					public function get_attempts( int $limit = 3 ): array {
-						return $this->attempts;
+					public function get_status(): string {
+						return $this->status;
+					}
+					public function get_result(): array {
+						return $this->result;
 					}
 				}'
 			);
@@ -98,133 +93,47 @@ class DataLoadersTest extends BrainMonkeyTestCase {
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function test_get_course_outline_returns_sections_with_item_types(): void {
+	public function test_get_quiz_review_result_returns_completed_quiz_result_for_current_item(): void {
 		$this->load_data_loaders_with_stubs();
+		if ( ! defined( 'LP_ITEM_COMPLETED' ) ) {
+			define( 'LP_ITEM_COMPLETED', 'completed' );
+		}
 
 		$section                               = (object) array(
-			'section_id'   => 10,
-			'section_name' => 'Section 1',
+			'section_id'   => 13,
+			'section_name' => 'Section 4',
 			'items'        => array(
 				(object) array(
-					'id'      => 100,
-					'item_id' => 100,
-				),
-				(object) array(
-					'id'      => 101,
-					'item_id' => 101,
+					'id'        => 401,
+					'item_id'   => 401,
+					'item_type' => LP_QUIZ_CPT,
+					'title'     => 'Quiz Gamma',
 				),
 			),
 		);
 		\LearnPress\Models\CourseModel::$items = array(
-			5 => new \LearnPress\Models\CourseModel( 'Course A', array( $section ) ),
-		);
-		DataLoadersWPState::$post_types        = array(
-			100 => 'lp_lesson',
-			101 => LP_QUIZ_CPT,
-		);
-		DataLoadersWPState::$titles            = array(
-			100 => 'Lesson 1',
-			101 => 'Quiz 1',
-		);
-
-		$loader = new \LearnPress\AI\Assistant\DataLoaders();
-		$result = $loader->get_course_outline( 5 );
-
-		$this->assertSame( 'Course A', $result['title'] );
-		$this->assertSame( 'lesson', $result['sections'][0]['items'][0]['type'] );
-		$this->assertSame( 'quiz', $result['sections'][0]['items'][1]['type'] );
-	}
-
-	#[RunInSeparateProcess]
-	#[PreserveGlobalState( false )]
-	public function test_get_quiz_results_returns_normalized_attempts_for_quizzes_only(): void {
-		$this->load_data_loaders_with_stubs();
-
-		$section                               = (object) array(
-			'section_id'   => 11,
-			'section_name' => 'Section 2',
-			'items'        => array(
-				(object) array(
-					'id'      => 201,
-					'item_id' => 201,
-				),
-				(object) array(
-					'id'      => 202,
-					'item_id' => 202,
-				),
-			),
-		);
-		\LearnPress\Models\CourseModel::$items = array(
-			7 => new \LearnPress\Models\CourseModel( 'Course B', array( $section ) ),
-		);
-		DataLoadersWPState::$post_types        = array(
-			201 => LP_QUIZ_CPT,
-			202 => 'lp_lesson',
-		);
-		DataLoadersWPState::$titles            = array(
-			201 => 'Quiz Alpha',
-			202 => 'Lesson Alpha',
+			9 => new \LearnPress\Models\CourseModel( 'Course D', array( $section ) ),
 		);
 
 		\LearnPress\Models\UserItems\UserQuizModel::$map = array(
-			201 => new QuizAttemptsStub(
+			401 => new \LearnPress\Models\UserItems\UserQuizModel(
+				LP_ITEM_COMPLETED,
 				array(
-					array(
-						'result'     => array( 'mark' => '80' ),
-						'graduation' => 'passed',
-						'start_time' => '2026-01-01 00:00:00',
-						'end_time'   => '2026-01-01 00:10:00',
-						'time_spent' => '600',
-					),
+					'mark'   => 80,
+					'result' => 0.8,
 				)
 			),
 		);
 
 		$loader = new \LearnPress\AI\Assistant\DataLoaders();
-		$result = $loader->get_quiz_results( 3, 7 );
+		$result = $loader->get_quiz_review_result( 3, 9, 401 );
 
-		$this->assertArrayHasKey( 'quizzes', $result );
-		$this->assertSame( 1, count( $result['quizzes'] ) );
-		$this->assertSame( 'Quiz Alpha', $result['quizzes'][0]['quiz_title'] );
-		$this->assertSame( 'passed', $result['quizzes'][0]['attempts'][0]['graduation'] );
+		$this->assertArrayHasKey( 'quiz', $result );
+		$this->assertSame( 401, $result['quiz']['quiz_id'] );
+		$this->assertSame( 'Quiz Gamma', $result['quiz']['quiz_title'] );
+		$this->assertSame( 80, $result['quiz']['result']['mark'] );
 	}
 
-	#[RunInSeparateProcess]
-	#[PreserveGlobalState( false )]
-	public function test_has_quiz_attempt_returns_true_when_any_attempt_exists(): void {
-		$this->load_data_loaders_with_stubs();
-
-		$section                               = (object) array(
-			'section_id'   => 12,
-			'section_name' => 'Section 3',
-			'items'        => array(
-				(object) array(
-					'id'      => 301,
-					'item_id' => 301,
-				),
-			),
-		);
-		\LearnPress\Models\CourseModel::$items = array(
-			8 => new \LearnPress\Models\CourseModel( 'Course C', array( $section ) ),
-		);
-		DataLoadersWPState::$post_types        = array(
-			301 => LP_QUIZ_CPT,
-		);
-
-		\LearnPress\Models\UserItems\UserQuizModel::$map = array(
-			301 => new QuizAttemptsStub(
-				array(
-					array(
-						'result' => array( 'mark' => '60' ),
-					),
-				)
-			),
-		);
-
-		$loader = new \LearnPress\AI\Assistant\DataLoaders();
-
-		$this->assertTrue( $loader->has_quiz_attempt( 3, 8 ) );
-	}
 }
 
 class DataLoadersWPState {

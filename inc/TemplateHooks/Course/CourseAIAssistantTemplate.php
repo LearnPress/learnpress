@@ -1,19 +1,20 @@
 <?php
 /**
- * Template hook: AI Assistant floating chat panel on lesson curriculum pages.
+ * Template hook: AI Assistant floating chat panel on curriculum pages.
  *
- * Renders on wp_footer when the current page is a curriculum lesson (not a quiz,
- * not a disabled feature, logged-in users only).
+ * Two rendering contexts:
+ * - Lesson pages: Show quick actions (Summarize, Explain, Mini Quiz) + optional free chat.
+ * - Quiz pages:  Show ONLY after user completed the quiz → Smart Review button only.
  *
  * @since   4.3.5
- * @version 1.0.0
+ * @version 1.1.0
  * @package LearnPress\TemplateHooks\Course
  */
 
 namespace LearnPress\TemplateHooks\Course;
 
-use LearnPress\AI\Assistant\DataLoaders;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserItems\UserQuizModel;
 use LP_Global;
 use LP_Page_Controller;
 use LP_Settings;
@@ -41,15 +42,16 @@ class CourseAIAssistantTemplate {
 	/**
 	 * Gate checks — all must pass before rendering.
 	 *
+	 * Allows both lesson pages AND quiz item pages (quiz pages only when
+	 * the user has completed the quiz — checked later in render_widget).
+	 *
 	 * @return bool
 	 */
 	protected function should_render(): bool {
-		if ( LP_Page_Controller::page_current() !== LP_PAGE_SINGLE_COURSE_CURRICULUM ) {
+		
+		$current_page = LP_Page_Controller::page_current();
+		if ( ! in_array( $current_page, array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_QUIZ ), true ) ) {
 			return false;
-		}
-
-		if ( LP_Global::course_item_quiz() ) {
-			return false; // Exclude quiz items.
 		}
 
 		if ( ! AIAssistantController::is_enabled() ) {
@@ -64,6 +66,15 @@ class CourseAIAssistantTemplate {
 	}
 
 	/**
+	 * Detect the rendering context.
+	 *
+	 * @return string 'quiz' | 'lesson'
+	 */
+	protected function detect_context(): string {
+		return LP_Global::course_item_quiz() ? 'quiz' : 'lesson';
+	}
+
+	/**
 	 * Render the widget on wp_footer.
 	 *
 	 * Enqueues assets, injects localized data, then prints HTML.
@@ -74,15 +85,43 @@ class CourseAIAssistantTemplate {
 				return;
 			}
 
+			$context   = $this->detect_context();
 			$item      = LP_Global::course_item();
-			$lesson_id = $item ? absint( $item->get_id() ) : 0;
+			$item_id   = $item ? absint( $item->get_id() ) : 0;
 			$course_id = $item ? absint( $item->get_course_id() ) : 0;
+			$user_id   = get_current_user_id();
 
-			$has_quiz_attempt = $this->has_quiz_attempt( get_current_user_id(), $course_id );
-			$enabled_actions  = AIAssistantController::get_enabled_actions();
+			$enabled_actions   = AIAssistantController::get_enabled_actions();
 			$free_chat_enabled = LP_Settings::get_option( 'lp_ai_assistant_free_chat', 'no' ) === 'yes';
-			if ( ! $free_chat_enabled && ! in_array( true, $enabled_actions, true ) ) {
-				return;
+
+			if ( $context === 'quiz' ) {
+				// Quiz page: show ONLY Smart Review, ONLY after quiz is completed.
+				if ( ! ( $enabled_actions['smart_review'] ?? true ) ) {
+					return; // Smart Review disabled by admin.
+				}
+
+				$quiz_result = $this->get_completed_quiz_result( $user_id, $item_id, $course_id );
+				if ( $quiz_result === false ) {
+					return; // Quiz not completed yet — hide the entire widget.
+				}
+
+				// Override: only Smart Review button, no free chat on quiz page.
+				$enabled_actions = array(
+					'summarize'    => false,
+					'explain'      => false,
+					'mini_quiz'    => false,
+					'smart_review' => true,
+				);
+				$free_chat_enabled = false;
+			} else {
+				// Lesson page: never show Smart Review (it belongs to quiz pages only).
+				$enabled_actions['smart_review'] = false;
+
+				if ( ! $free_chat_enabled && ! in_array( true, $enabled_actions, true ) ) {
+					return;
+				}
+
+				$quiz_result = null; // Not relevant on lesson pages.
 			}
 
 			// Enqueue assets (registered in LP_Assets::_get_scripts / _get_styles).
@@ -94,9 +133,12 @@ class CourseAIAssistantTemplate {
 				array(
 					'ajaxUrl'         => LP_Settings::url_handle_lp_ajax(),
 					'nonce'           => wp_create_nonce( 'wp_rest' ),
-					'lessonId'        => $lesson_id,
+					'lessonId'        => $item_id,
+					'itemId'          => $item_id,
 					'courseId'        => $course_id,
-					'hasQuizAttempt'  => $has_quiz_attempt,
+					'context'         => $context,
+					'quizCompleted'   => $context === 'quiz',
+					'quizResult'      => $quiz_result,
 					'enabled'         => true,
 					'freeChatEnabled' => $free_chat_enabled,
 					'enabledActions'  => $enabled_actions,
@@ -105,7 +147,7 @@ class CourseAIAssistantTemplate {
 						'assistant'         => __( 'AI Assistant', 'learnpress' ),
 						'thinking'          => __( 'Thinking…', 'learnpress' ),
 						'sendError'         => __( 'An error occurred. Please try again.', 'learnpress' ),
-						'clearConfirm'      => __( 'Clear the chat history for this lesson?', 'learnpress' ),
+						'clearConfirm'      => __( 'Clear chat history?', 'learnpress' ),
 						'quizPrompt'        => __( '/mini-quiz', 'learnpress' ),
 						'explainPrompt'     => __( '/explain', 'learnpress' ),
 						'summarizePrompt'   => __( '/summarize', 'learnpress' ),
@@ -127,17 +169,46 @@ class CourseAIAssistantTemplate {
 	}
 
 	/**
-	 * Resolve whether current user has any quiz attempts in the current course.
+	 * Get quiz result if user has completed the specific quiz.
+	 *
+	 * Returns the result array from UserQuizModel::get_result() when the quiz
+	 * status is LP_ITEM_COMPLETED, or false if not completed yet.
 	 *
 	 * @param int $user_id
+	 * @param int $quiz_id
 	 * @param int $course_id
 	 *
-	 * @return bool
+	 * @return array|false Result array on completion, false otherwise.
 	 */
-	private function has_quiz_attempt( int $user_id, int $course_id ): bool {
-		$loader = new DataLoaders();
+	private function get_completed_quiz_result( int $user_id, int $quiz_id, int $course_id ) {
+		if ( $user_id <= 0 || $quiz_id <= 0 || $course_id <= 0 ) {
+			return false;
+		}
 
-		return $loader->has_quiz_attempt( $user_id, $course_id );
+		$user_quiz = UserQuizModel::find_user_item(
+			$user_id,
+			$quiz_id,
+			LP_QUIZ_CPT,
+			$course_id,
+			LP_COURSE_CPT,
+			true
+		);
+
+		if ( ! $user_quiz instanceof UserQuizModel ) {
+			return false;
+		}
+
+		if ( ! method_exists( $user_quiz, 'get_status' ) || $user_quiz->get_status() !== LP_ITEM_COMPLETED ) {
+			return false;
+		}
+
+		if ( ! method_exists( $user_quiz, 'get_result' ) ) {
+			return false;
+		}
+
+		$result = $user_quiz->get_result();
+
+		return is_array( $result ) ? $result : false;
 	}
 
 	/**

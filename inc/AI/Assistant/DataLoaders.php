@@ -41,160 +41,82 @@ class DataLoaders {
 	}
 
 	/**
-	 * Get the full course outline (sections, lessons, quizzes).
+	 * Get the completed result of a specific quiz item for smart review.
 	 *
+	 * @param int $user_id
 	 * @param int $course_id
+	 * @param int $quiz_id
 	 *
-	 * @return array{title: string, sections: array}|array{error: string}
+	 * @return array{quiz: array}|array{error: string}
 	 */
-	public function get_course_outline( int $course_id ): array {
-		$course = CourseModel::find( $course_id, true );
+	public function get_quiz_review_result( int $user_id, int $course_id, int $quiz_id ): array {
+		if ( $user_id <= 0 || $course_id <= 0 || $quiz_id <= 0 ) {
+			return array(
+				'error' => __( 'Quiz review is unavailable for this request.', 'learnpress' ),
+			);
+		}
 
+		$course = CourseModel::find( $course_id, true );
 		if ( ! $course ) {
 			return array(
 				'error' => __( 'Course not found.', 'learnpress' ),
 			);
 		}
 
-		$sections_items = $course->get_section_items();
-		$outline        = array();
+		$quiz_items    = $this->get_course_quiz_items( $course );
+		$quiz_item_map = array_column( $quiz_items, null, 'id' );
+		if ( ! isset( $quiz_item_map[ $quiz_id ] ) ) {
+			return array(
+				'error' => __( 'Smart Review is only available for quizzes in this course.', 'learnpress' ),
+			);
+		}
 
-		foreach ( $sections_items as $section ) {
-			$items = array();
+		$user_quiz = UserQuizModel::find_user_item(
+			$user_id,
+			$quiz_id,
+			LP_QUIZ_CPT,
+			$course_id,
+			LP_COURSE_CPT,
+			true
+		);
+		if ( ! $user_quiz instanceof UserQuizModel ) {
+			return array(
+				'error' => __( 'Please complete this quiz to use Smart Review.', 'learnpress' ),
+			);
+		}
 
-			if ( ! empty( $section->items ) ) {
-				foreach ( $section->items as $item ) {
-					$post_type = get_post_type( $item->id ?? $item->item_id ?? 0 );
+		if ( $user_quiz->get_status() !== LP_ITEM_COMPLETED ) {
+			return array(
+				'error' => __( 'Please complete this quiz to use Smart Review.', 'learnpress' ),
+			);
+		}
 
-					$items[] = array(
-						'id'    => $item->id ?? $item->item_id ?? 0,
-						'title' => get_the_title( $item->id ?? $item->item_id ?? 0 ),
-						'type'  => $post_type === LP_QUIZ_CPT ? 'quiz' : 'lesson',
-					);
-				}
-			}
-
-			$outline[] = array(
-				'section_id'    => $section->section_id ?? $section->id ?? 0,
-				'section_title' => $section->section_name ?? $section->title ?? '',
-				'items'         => $items,
+		$result = $user_quiz->get_result();
+		if ( ! is_array( $result ) || empty( $result ) ) {
+			return array(
+				'error' => __( 'Quiz result is unavailable for Smart Review.', 'learnpress' ),
 			);
 		}
 
 		return array(
-			'title'    => $course->get_the_title(),
-			'sections' => $outline,
+			'quiz' => array(
+				'quiz_id'    => $quiz_id,
+				'quiz_title' => (string) ( $quiz_item_map[ $quiz_id ]['title'] ?? get_the_title( $quiz_id ) ),
+				'result'     => $result,
+			),
 		);
 	}
 
 	/**
-	 * Get quiz attempt results for a user across all quizzes in a course.
-	 *
-	 * @param int $user_id
-	 * @param int $course_id
-	 *
-	 * @return array{quizzes: array}|array{error: string}
-	 */
-	public function get_quiz_results( int $user_id, int $course_id ): array {
-		$course = CourseModel::find( $course_id, true );
-
-		if ( ! $course ) {
-			return array(
-				'error' => __( 'Course not found.', 'learnpress' ),
-			);
-		}
-
-		$results  = array();
-		$quiz_ids = $this->get_course_quiz_item_ids( $course );
-
-		foreach ( $quiz_ids as $item_id ) {
-			$user_quiz = $this->find_user_quiz_item( $user_id, (int) $item_id, $course_id );
-
-			if ( ! $user_quiz || ! method_exists( $user_quiz, 'get_attempts' ) ) {
-				continue;
-			}
-
-			$attempts = $user_quiz->get_attempts( 5 );
-
-			if ( empty( $attempts ) ) {
-				continue;
-			}
-
-			$normalized_attempts = array();
-			foreach ( $attempts as $attempt ) {
-				$normalized_attempts[] = array(
-					'result'     => $attempt['result'] ?? array(),
-					'graduation' => $attempt['graduation'] ?? '',
-					'start_time' => $attempt['start_time'] ?? '',
-					'end_time'   => $attempt['end_time'] ?? '',
-					'time_spent' => $attempt['time_spent'] ?? '',
-				);
-			}
-
-			$results[] = array(
-				'quiz_id'    => $item_id,
-				'quiz_title' => get_the_title( $item_id ),
-				'attempts'   => $normalized_attempts,
-			);
-		}
-
-		if ( empty( $results ) ) {
-			return array(
-				'error' => __( 'No quiz attempts found for this user in this course.', 'learnpress' ),
-			);
-		}
-
-		return array( 'quizzes' => $results );
-	}
-
-	/**
-	 * Check whether a learner has at least one quiz attempt in a course.
-	 *
-	 * @param int $user_id
-	 * @param int $course_id
-	 *
-	 * @return bool
-	 */
-	public function has_quiz_attempt( int $user_id, int $course_id ): bool {
-		if ( $user_id <= 0 || $course_id <= 0 ) {
-			return false;
-		}
-
-		$course = CourseModel::find( $course_id, true );
-		if ( ! $course ) {
-			return false;
-		}
-
-		$quiz_ids = $this->get_course_quiz_item_ids( $course );
-		if ( empty( $quiz_ids ) ) {
-			return false;
-		}
-
-		foreach ( $quiz_ids as $item_id ) {
-			$user_quiz = $this->find_user_quiz_item( $user_id, (int) $item_id, $course_id );
-			if ( ! $user_quiz || ! method_exists( $user_quiz, 'get_attempts' ) ) {
-				continue;
-			}
-
-			$attempts = $user_quiz->get_attempts( 1 );
-			if ( ! empty( $attempts ) ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Collect quiz item IDs from a course outline.
+	 * Collect quiz items from course outline.
 	 *
 	 * @param CourseModel $course
 	 *
-	 * @return array<int>
+	 * @return array<int, array{id: int, title: string}>
 	 */
-	private function get_course_quiz_item_ids( CourseModel $course ): array {
+	private function get_course_quiz_items( CourseModel $course ): array {
 		$sections_items = $course->get_section_items();
-		$quiz_ids       = array();
+		$quiz_items     = array();
 
 		foreach ( $sections_items as $section ) {
 			if ( empty( $section->items ) ) {
@@ -207,37 +129,21 @@ class DataLoaders {
 					continue;
 				}
 
-				if ( get_post_type( $item_id ) !== LP_QUIZ_CPT ) {
+				$item_type = (string) ( $item->item_type ?? $item->type ?? '' );
+				if ( '' === $item_type ) {
+					$item_type = (string) get_post_type( $item_id );
+				}
+				if ( $item_type !== LP_QUIZ_CPT ) {
 					continue;
 				}
 
-				$quiz_ids[] = $item_id;
+				$quiz_items[ $item_id ] = array(
+					'id'    => $item_id,
+					'title' => (string) ( $item->title ?? get_the_title( $item_id ) ),
+				);
 			}
 		}
 
-		return array_values( array_unique( $quiz_ids ) );
-	}
-
-	/**
-	 * Resolve learner quiz model for a quiz item.
-	 *
-	 * @param int $user_id
-	 * @param int $quiz_id
-	 * @param int $course_id
-	 *
-	 * @return mixed
-	 */
-	private function find_user_quiz_item( int $user_id, int $quiz_id, int $course_id ) {
-		$quiz_item_type   = defined( 'LP_QUIZ_CPT' ) ? LP_QUIZ_CPT : 'lp_quiz';
-		$course_item_type = defined( 'LP_COURSE_CPT' ) ? LP_COURSE_CPT : 'lp_course';
-
-		return UserQuizModel::find_user_item(
-			$user_id,
-			$quiz_id,
-			$quiz_item_type,
-			$course_id,
-			$course_item_type,
-			true
-		);
+		return array_values( $quiz_items );
 	}
 }

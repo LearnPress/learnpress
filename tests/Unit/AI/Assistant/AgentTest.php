@@ -32,6 +32,24 @@ class AgentTest extends BrainMonkeyTestCase {
 			);
 		}
 
+		if ( ! function_exists( '\\LearnPress\\AI\\Assistant\\get_user_locale' ) ) {
+			eval(
+				'namespace LearnPress\\AI\\Assistant;
+				function get_user_locale( $user_id = 0 ) {
+					return "vi";
+				}
+				function determine_locale() {
+					return "vi";
+				}
+				function get_locale() {
+					return "vi";
+				}
+				function mb_strtolower( $text, $encoding = "UTF-8" ) {
+					return strtolower( (string) $text );
+				}'
+			);
+		}
+
 		if ( ! class_exists( 'LP_Helper', false ) ) {
 			eval(
 				'class LP_Helper {
@@ -71,6 +89,7 @@ class AgentTest extends BrainMonkeyTestCase {
 					public static array $lesson = array( "title" => "Lesson", "content" => "Content" );
 					public static array $outline = array( "title" => "Course", "sections" => array() );
 					public static array $quizResults = array( "quizzes" => array() );
+					public static array $quizReview = array( "quiz" => array( "quiz_id" => 0, "quiz_title" => "", "result" => array() ) );
 					public function get_lesson_content( int $lesson_id, int $user_id ): array {
 						return self::$lesson;
 					}
@@ -79,6 +98,9 @@ class AgentTest extends BrainMonkeyTestCase {
 					}
 					public function get_quiz_results( int $user_id, int $course_id ): array {
 						return self::$quizResults;
+					}
+					public function get_quiz_review_result( int $user_id, int $course_id, int $quiz_id ): array {
+						return self::$quizReview;
 					}
 				}'
 			);
