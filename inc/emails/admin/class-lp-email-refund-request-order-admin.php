@@ -21,6 +21,94 @@ if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
 			$this->recipient       = LP_Settings::instance()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 
 			parent::__construct();
+
+			$this->support_variables = array_merge(
+				$this->support_variables,
+				array(
+					'{{refund_request_status}}',
+					'{{refund_requested_by}}',
+					'{{refund_requested_email}}',
+					'{{refund_requested_at}}',
+					'{{refund_reason}}',
+					'{{admin_order_edit_url}}',
+				)
+			);
+		}
+
+		/**
+		 * Trigger email.
+		 *
+		 * @param array $params
+		 */
+		public function handle( array $params ) {
+			try {
+				$order = $this->check_and_get_order( $params );
+				if ( ! $order ) {
+					return;
+				}
+
+				$event_data = $params[2] ?? array();
+				if ( ! is_array( $event_data ) ) {
+					$event_data = array();
+				}
+
+				$this->set_data_content( $order, $event_data );
+				$this->send_email();
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Set variables for content email.
+		 *
+		 * @param LP_Order $order
+		 * @param array    $event_data
+		 */
+		public function set_data_content( LP_Order $order, array $event_data = array() ) {
+			parent::set_data_content( $order );
+
+			if ( function_exists( 'learn_press_get_order_refund_event_data' ) ) {
+				$event_data = wp_parse_args( $event_data, learn_press_get_order_refund_event_data( $order ) );
+			}
+
+			$requested_by = absint( $event_data['requested_by'] ?? get_post_meta( $order->get_id(), '_lp_refund_requested_by', true ) );
+			$requested_at = (string) ( $event_data['requested_at'] ?? get_post_meta( $order->get_id(), '_lp_refund_requested_at', true ) );
+			$reason       = (string) ( $event_data['reason'] ?? get_post_meta( $order->get_id(), '_lp_refund_reason', true ) );
+			$request_status = sanitize_key( (string) ( $event_data['request_status'] ?? get_post_meta( $order->get_id(), '_lp_refund_request_status', true ) ) );
+			$admin_order_edit_url = (string) ( $event_data['admin_order_edit_url'] ?? '' );
+
+			if ( empty( $admin_order_edit_url ) && function_exists( 'learn_press_get_admin_order_edit_url' ) ) {
+				$admin_order_edit_url = learn_press_get_admin_order_edit_url( $order->get_id() );
+			}
+
+			$requested_email = (string) ( $event_data['requester_email'] ?? '' );
+			if ( empty( $requested_email ) && ! empty( $requested_by ) ) {
+				$requested_user = get_user_by( 'id', $requested_by );
+				if ( $requested_user instanceof WP_User ) {
+					$requested_email = $requested_user->user_email;
+				}
+			}
+
+			$requested_at_display = '';
+			if ( ! empty( $requested_at ) ) {
+				$requested_at_timestamp = strtotime( $requested_at );
+				if ( false !== $requested_at_timestamp ) {
+					$requested_at_display = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $requested_at_timestamp );
+				}
+			}
+
+			$this->variables = array_merge(
+				$this->variables,
+				array(
+					'{{refund_request_status}}' => $request_status,
+					'{{refund_requested_by}}'   => (string) $requested_by,
+					'{{refund_requested_email}}' => $requested_email,
+					'{{refund_requested_at}}'   => $requested_at_display,
+					'{{refund_reason}}'         => $reason,
+					'{{admin_order_edit_url}}'  => $admin_order_edit_url,
+				)
+			);
 		}
 	}
 
