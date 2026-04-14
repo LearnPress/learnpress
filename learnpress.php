@@ -27,6 +27,7 @@ use LearnPress\ExternalPlugin\RankMath\LPRankMath;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Gutenberg\GutenbergHandleMain;
 use LearnPress\Ajax\EditCurriculumAjax;
+use LearnPress\Ajax\RefundOrderAjax;
 use LearnPress\Ajax\SendEmailAjax;
 use LearnPress\MCP\Abilities;
 use LearnPress\MCP\Auth\ApiKeyAuthenticator;
@@ -712,6 +713,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
 					SendEmailAjax::catch_lp_ajax();
+					RefundOrderAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
 					McpApiKeysAjax::catch_lp_ajax();
@@ -720,6 +722,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				},
 				11
 			);
+
+			add_action( 'admin_init', array( RefundOrderAjax::class, 'admin_refund_order_process' ) );
 
 			// Add links setting|document|addon on plugins page.
 			add_filter( 'plugin_action_links_' . LP_PLUGIN_BASENAME, array( $this, 'plugin_links' ) );

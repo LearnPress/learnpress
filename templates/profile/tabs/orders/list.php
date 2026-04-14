@@ -60,13 +60,31 @@ if ( ! $query_orders->get_items() ) {
 
 					if ( $actions ) {
 						foreach ( $actions as $action ) {
-							$action_text = isset( $action['text'] ) ? (string) $action['text'] : '';
-							$action_url  = isset( $action['url'] ) ? (string) $action['url'] : '';
+							$action_text       = isset( $action['text'] ) ? (string) $action['text'] : '';
+							$action_url        = isset( $action['url'] ) ? (string) $action['url'] : '';
+							$action_class      = isset( $action['class'] ) ? (string) $action['class'] : '';
+							$action_data_attrs = '';
+
+							if ( ! empty( $action['data'] ) && is_array( $action['data'] ) ) {
+								foreach ( $action['data'] as $data_key => $data_value ) {
+									$action_data_attrs .= sprintf(
+										' data-%1$s="%2$s"',
+										esc_attr( str_replace( '_', '-', (string) $data_key ) ),
+										esc_attr( (string) $data_value )
+									);
+								}
+							}
+
+							$action_attrs = '';
+							if ( ! empty( $action_class ) ) {
+								$action_attrs .= sprintf( ' class="%s"', esc_attr( $action_class ) );
+							}
+							$action_attrs .= $action_data_attrs;
 
 							if ( ! empty( $action_url ) ) {
-								printf( '<a href="%s">%s</a>', esc_url_raw( $action_url ), esc_html( $action_text ) );
+								printf( '<a href="%s"%s>%s</a>', esc_url_raw( $action_url ), $action_attrs, esc_html( $action_text ) );
 							} else {
-								printf( '<span class="order-action-text">%s</span>', esc_html( $action_text ) );
+								printf( '<span class="order-action-text"%s>%s</span>', $action_attrs, esc_html( $action_text ) );
 							}
 						}
 					}
