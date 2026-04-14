@@ -7,6 +7,7 @@ use LearnPress\Models\Courses;
 use LearnPress\Models\UserModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
+use LearnPress\Services\UserService;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 
 defined( 'ABSPATH' ) || exit;
@@ -905,8 +906,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			global $wp_query;
 
 			if ( isset( $wp_query->query['user'] ) ) {
-				$user_model = new UserModel();
-				$user       = $user_model->resolve_user_by_public_identifier( (string) $wp_query->query['user'] );
+				$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
 			} else {
 				$user = get_user_by( 'id', get_current_user_id() );
 			}
@@ -1109,19 +1109,35 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @param $user_id
 		 *
 		 * @return LP_Profile mixed
-		 * @since 3.0.0
+		 * @throws Exception
 		 * @version 1.0.4
+		 * @since 3.0.0
 		 */
 		public static function instance( $user_id = 0 ) {
-			$is_page_profile = LP_Page_Controller::page_is( 'profile' );
+			$is_page_profile  = LP_Page_Controller::page_is( 'profile' );
+			$userModelCurrent = UserModel::find( get_current_user_id(), true );
 
 			if ( $is_page_profile && empty( $user_id ) ) {
 				if ( empty( self::$_instance ) ) {
-					$user_name = get_query_var( 'user' );
-					if ( ! empty( $user_name ) ) {
-						$user_model = new UserModel();
-						$user       = $user_model->resolve_user_by_public_identifier( (string) $user_name );
-						$user_id    = $user ? $user->ID : 0;
+					$user_slug = (string) get_query_var( 'user' );
+					if ( ! empty( $user_slug ) ) {
+						$userModel = UserService::instance()->get_user_by_pretty_slug( $user_slug );
+						if ( $userModel ) {
+							$user_id = $userModel->get_id();
+						} else {
+							// Get user by slug.
+							$wp_user = get_user_by( 'slug', $user_slug );
+							// Only allow view instructor when user is administrator or view his/her profile.
+							if ( $wp_user ) {
+								$userModel = UserModel::find( $wp_user->ID, true );
+								if ( current_user_can( UserModel::ROLE_ADMINISTRATOR )
+									|| ( $userModelCurrent && $userModelCurrent->get_id() === $wp_user->ID ) ) {
+									$user_id = $userModelCurrent->get_id();
+								} elseif ( empty( $userModel->get_pretty_slug( false ) ) ) {
+									$user_id = $userModel->get_id();
+								}
+							}
+						}
 					} else {
 						$user_id = get_current_user_id();
 					}

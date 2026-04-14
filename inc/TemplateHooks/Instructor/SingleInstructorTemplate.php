@@ -12,6 +12,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserModel;
+use LearnPress\Services\UserService;
 use LearnPress\TemplateHooks\Profile\ProfileTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\UserTemplate;
@@ -240,22 +241,36 @@ class SingleInstructorTemplate extends UserTemplate {
 	 *
 	 * @return false|UserModel
 	 * @since 4.2.3.4
-	 * @version 1.0.1
+	 * @version 1.0.3
 	 */
 	public function detect_instructor_by_page() {
 		$instructor = false;
 
 		try {
+			$userModelCurrent = UserModel::find( get_current_user_id(), true );
 			if ( get_query_var( 'is_single_instructor' ) ) {
 				$instructor_name = get_query_var( 'instructor_name' );
 				if ( $instructor_name && 'page' !== $instructor_name ) {
-					$user_model = new UserModel();
-					$user       = $user_model->resolve_user_by_public_identifier( (string) $instructor_name );
-					if ( $user ) {
-						$instructor = UserModel::find( $user->ID, true );
+					// Try to get user by pretty slug first, if not found, get by slug.
+					$userModel = UserService::instance()->get_user_by_pretty_slug( $instructor_name );
+					if ( $userModel instanceof UserModel ) {
+						$instructor = $userModel;
+					} else {
+						// Get user by slug.
+						$wp_user = get_user_by( 'slug', $instructor_name );
+						// Only allow view instructor when user is administrator or view his/her profile.
+						if ( $wp_user ) {
+							$userModelBySlug = UserModel::find( $wp_user->ID, true );
+							if ( current_user_can( UserModel::ROLE_ADMINISTRATOR )
+								|| ( $userModelCurrent && $userModelCurrent->get_id() === $wp_user->ID ) ) {
+								$instructor = $userModelBySlug;
+							} elseif ( empty( $userModelBySlug->get_pretty_slug( false ) ) ) {
+								$instructor = $userModelBySlug;
+							}
+						}
 					}
 				} else {
-					$instructor = UserModel::find( get_current_user_id(), true );
+					$instructor = $userModelCurrent;
 				}
 			}
 		} catch ( Throwable $e ) {

@@ -44,3 +44,5 @@ script.sh
 /yarn-error.log
 /yarn.lock
 
+.phpunit.result.cache
+

@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.9
-Stable tag: 4.3.2.8
+Stable tag: 4.3.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -278,6 +278,21 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.3.5 (2026-04-10) =
+~ Added: MCP (Model Context Protocol) support for get information courses, curriculum, lessons, users enroll... with AI.
+~ Fixed: minor bugs.
+
+= 4.3.4 (2026-03-30) =
+~ Fixed: security.
+~ Fixed: style button AI display on Gutenberg edit course screen.
+~ Fixed: error display content of lesson, question with Elementor.
+~ Tweak: count statistics on Profile Page, exclude courses with status auto-draft.
+~ Added: a feature to generate pretty user slugs instead of usernames (login name), improving user privacy and security.
+	1. Go to LearnPress > Settings > Permalinks > Users Pretty Slug and click "Generate User Slugs" to generate slugs for all users.
+	2. Edit each user, find "LearnPress User Slug" enter pretty slug new for that user.
+~ Tweak: improved the "Read more" button text.
+~ Tweak: style student list.
 
 = 4.3.3 (2026-03-11) =
 ~ Added: a feature display list students enrolled, on the tab LearnPress, Profile Page.
