@@ -98,7 +98,7 @@ export class AIAssistantWidget {
 		this.config.enabledActions = {
 			summarize: true,
 			explain: true,
-			mini_quiz: true,
+			quick_quiz: true,
 			smart_review: true,
 			...( this.config.enabledActions || {} ),
 		};
@@ -109,10 +109,10 @@ export class AIAssistantWidget {
 			thinking: this.config?.i18n?.thinking || 'Thinking...',
 			sendError: this.config?.i18n?.sendError || 'An error occurred. Please try again.',
 			clearConfirm: this.config?.i18n?.clearConfirm || 'Clear chat history?',
-			explainPrompt: this.config?.i18n?.explainPrompt || '/explain',
-			quizPrompt: this.config?.i18n?.quizPrompt || '/mini-quiz',
-			summarizePrompt: this.config?.i18n?.summarizePrompt || '/summarize',
-			smartReviewPrompt: this.config?.i18n?.smartReviewPrompt || '/smart-review',
+			explainPrompt: this.config?.i18n?.explainPrompt || 'Explain a concept from this lesson.',
+			quizPrompt: this.config?.i18n?.quizPrompt || 'Create a quick quiz from this lesson.',
+			summarizePrompt: this.config?.i18n?.summarizePrompt || 'Summarize this lesson with key points.',
+			smartReviewPrompt: this.config?.i18n?.smartReviewPrompt || 'Give me a smart review of my quiz results.',
 		};
 
 		return true;
@@ -278,7 +278,7 @@ export class AIAssistantWidget {
 		const action = btn.dataset.lpAiAction;
 		const prompts = {
 			explain: this.config.i18n.explainPrompt,
-			'mini-quiz': this.config.i18n.quizPrompt,
+			'quick-quiz': this.config.i18n.quizPrompt,
 			summarize: this.config.i18n.summarizePrompt,
 			'smart-review': this.config.i18n.smartReviewPrompt,
 		};
@@ -482,8 +482,16 @@ export class AIAssistantWidget {
 			`<div class="lp-ai-assistant__quiz-options">${ optionsHtml }</div>`;
 
 		this.elements.msgList.appendChild( card );
-		this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
 		this.setQuizInputMode( true );
+	}
+
+	scrollToMessageStart( messageEl ) {
+		const msgList = this.elements.msgList;
+		if ( ! msgList || ! messageEl || ! msgList.contains( messageEl ) ) {
+			return;
+		}
+
+		msgList.scrollTop = Math.max( 0, messageEl.offsetTop - 8 );
 	}
 
 	sendMessage( message ) {
@@ -546,7 +554,7 @@ export class AIAssistantWidget {
 			},
 			completed: () => {
 				this.setLoadingState( false );
-				this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
+				this.scrollToMessageStart( pendingEl );
 			},
 		};
 

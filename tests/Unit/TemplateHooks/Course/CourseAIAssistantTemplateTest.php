@@ -40,6 +40,15 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		if ( ! defined( 'LP_ITEM_COMPLETED' ) ) {
 			define( 'LP_ITEM_COMPLETED', 'completed' );
 		}
+		if ( ! defined( 'ABSPATH' ) ) {
+			define( 'ABSPATH', __DIR__ . '/' );
+		}
+		if ( ! defined( 'LP_QUIZ_CPT' ) ) {
+			define( 'LP_QUIZ_CPT', 'lp_quiz' );
+		}
+		if ( ! defined( 'LP_COURSE_CPT' ) ) {
+			define( 'LP_COURSE_CPT', 'lp_course' );
+		}
 
 		if ( ! function_exists( 'add_action' ) ) {
 			function add_action( $hook, $callback ) {
@@ -179,7 +188,7 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 					public static array $enabled_actions = array(
 						"summarize" => true,
 						"explain" => true,
-						"mini_quiz" => true,
+						"quick_quiz" => true,
 						"smart_review" => true,
 					);
 					public static function is_enabled(): bool {
@@ -334,7 +343,7 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		\LearnPress\AI\Assistant\AIAssistantController::$enabled_actions = array(
 			'summarize'    => false,
 			'explain'      => true,
-			'mini_quiz'    => false,
+			'quick_quiz'    => false,
 			'smart_review' => true,
 		);
 
@@ -343,7 +352,7 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 
 		$this->assertStringNotContainsString( 'Summarize Lesson', $html );
 		$this->assertStringContainsString( 'Explain Concept', $html );
-		$this->assertStringNotContainsString( 'Mini Quiz', $html );
+		$this->assertStringNotContainsString( 'Quick Quiz', $html );
 		$this->assertStringContainsString( 'Smart Review', $html );
 	}
 
@@ -400,7 +409,7 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringContainsString( 'Smart Review', $output );
 		$this->assertStringNotContainsString( 'Explain Concept', $output );
 		$this->assertStringNotContainsString( 'Summarize Lesson', $output );
-		$this->assertStringNotContainsString( 'Mini Quiz', $output );
+		$this->assertStringNotContainsString( 'Quick Quiz', $output );
 		$this->assertStringNotContainsString( 'lp-ai-assistant__input', $output );
 		$this->assertStringContainsString( '"context":"quiz"', (string) CourseAIAssistantTemplateState::$inline_data );
 		$this->assertStringContainsString( '"quizCompleted":true', (string) CourseAIAssistantTemplateState::$inline_data );

@@ -150,7 +150,12 @@ class OpenAiService {
 			throw new Exception( __( 'Empty response from OpenAI API.', 'learnpress' ) );
 		}
 
-		return $data['choices'][0]['message'];
+		$message = $data['choices'][0]['message'];
+		if ( isset( $data['usage'] ) && is_array( $data['usage'] ) ) {
+			$message['usage'] = $data['usage'];
+		}
+
+		return $message;
 	}
 
 	/**

@@ -5,13 +5,14 @@ namespace LearnPress\AI\Assistant;
 use LearnPress\Services\OpenAiService;
 
 /**
- * AI Assistant Agent - handles the OpenAI function-calling loop.
+ * AI Assistant Agent - orchestrates the learner-facing conversation loop.
  *
- * Orchestrates multi-turn conversation with tool calls:
- * 1. Sends messages + tool definitions to OpenAI.
- * 2. If model returns tool_calls, executes them via DataLoaders.
- * 3. Appends tool results and re-sends until model returns final content.
- * 4. Normalizes output into the assistant response contract.
+ * Thin orchestrator that delegates every domain concern to extracted classes:
+ * - IntentClassifier  — detects learner intent via OpenAI
+ * - TokenQuotaGuard   — enforces daily token quota
+ * - LanguageResolver  — builds language-guidance system prompt
+ * - QuickQuizEngine    — generates and drives interactive quick quizzes
+ * - ResponseNormalizer — decodes JSON output and normalizes text
  *
  * @package LearnPress\AI\Assistant
  * @since 4.3.5
@@ -19,20 +20,19 @@ use LearnPress\Services\OpenAiService;
 class Agent {
 
 	private const MAX_TOOL_ITERATIONS = 4;
-	private const INTENT_SUMMARIZE    = 'summarize';
-	private const INTENT_EXPLAIN      = 'explain';
-	private const INTENT_MINI_QUIZ    = 'mini_quiz';
-	private const INTENT_SMART_REVIEW = 'smart_review';
-	private const INTENT_GENERAL      = 'general';
 
-	/**
-	 * System prompt for the assistant model.
-	 */
-	private function get_system_prompt(): string {
-		return __(
-			'You are a helpful AI learning assistant for an online course. You help learners understand lesson content, explain concepts, generate practice quizzes, and review their quiz performance. Always ground your answers in the actual course data provided by tools. Respond in the same language the learner uses.',
-			'learnpress'
-		);
+	private IntentClassifier $classifier;
+	private TokenQuotaGuard $quota_guard;
+	private LanguageResolver $language_resolver;
+	private QuickQuizEngine $quiz_engine;
+	private ResponseNormalizer $normalizer;
+
+	public function __construct() {
+		$this->normalizer        = new ResponseNormalizer();
+		$this->quota_guard       = new TokenQuotaGuard();
+		$this->language_resolver = new LanguageResolver();
+		$this->classifier        = new IntentClassifier( $this->quota_guard, $this->normalizer );
+		$this->quiz_engine       = new QuickQuizEngine( $this->quota_guard, $this->language_resolver, $this->normalizer );
 	}
 
 	/**
@@ -55,110 +55,60 @@ class Agent {
 		array $history = array(),
 		array $active_quiz = array()
 	): array {
+
+		$this->quota_guard->reset();
 		$data_loaders = new DataLoaders();
 
+		// Resume active quiz session.
 		if ( ! empty( $active_quiz['is_active'] ) && empty( $active_quiz['completed'] ) ) {
-			if ( ! AIAssistantController::is_action_enabled( self::INTENT_MINI_QUIZ ) ) {
-				return $this->get_disabled_action_response( self::INTENT_MINI_QUIZ );
+			if ( ! AIAssistantController::is_action_enabled( IntentClassifier::INTENT_QUICK_QUIZ ) ) {
+				return $this->get_disabled_action_response( IntentClassifier::INTENT_QUICK_QUIZ );
 			}
 
-			return $this->continue_interactive_quiz( $user_message, $active_quiz );
+			return $this->quiz_engine->continue_session( $user_message, $active_quiz );
 		}
 
-		$intent = $this->detect_intent( $user_message );
+		// Classify intent (may consume quota tokens).
+		$intent = $this->classifier->classify( $user_message, $history, $lesson_id, $course_id, $user_id );
+		if ( $this->quota_guard->is_blocked() ) {
+			return $this->normalizer->build_response( $this->quota_guard->get_block_message() );
+		}
+
+		// Gate non-general intents behind admin toggles.
 		if ( $this->requires_action_gate( $intent ) && ! AIAssistantController::is_action_enabled( $intent ) ) {
 			return $this->get_disabled_action_response( $intent );
 		}
 
 		switch ( $intent ) {
-			case self::INTENT_SUMMARIZE:
+			case IntentClassifier::INTENT_SUMMARIZE:
 				return $this->handle_summarize( $data_loaders, $user_message, $lesson_id, $user_id, $history );
 
-			case self::INTENT_EXPLAIN:
+			case IntentClassifier::INTENT_EXPLAIN:
 				return $this->handle_explain( $data_loaders, $user_message, $lesson_id, $user_id, $history );
 
-			case self::INTENT_SMART_REVIEW:
+			case IntentClassifier::INTENT_SMART_REVIEW:
 				return $this->handle_smart_review( $data_loaders, $user_message, $user_id, $course_id, $lesson_id, $history );
 
-			case self::INTENT_MINI_QUIZ:
-				return $this->start_interactive_quiz( $data_loaders, $user_message, $lesson_id, $user_id, $history );
+			case IntentClassifier::INTENT_QUICK_QUIZ:
+				return $this->quiz_engine->start( $data_loaders, $user_message, $lesson_id, $user_id, $history );
 
-			case self::INTENT_GENERAL:
+			case IntentClassifier::INTENT_GENERAL:
 			default:
 				return $this->handle_general( $data_loaders, $user_message, $lesson_id, $user_id, $history );
 		}
 	}
 
-	/**
-	 * Detect the learner intent from slash commands and natural language cues.
-	 *
-	 * @param string $message Learner input.
-	 *
-	 * @return string One of the INTENT_* constants.
-	 */
-	private function detect_intent( string $message ): string {
-		$normalized = strtolower( trim( $message ) );
-
-		if ( str_starts_with( $normalized, '/summarize' ) || str_contains( $normalized, 'summarize' ) || str_contains( $normalized, 'summarise' ) ) {
-			return self::INTENT_SUMMARIZE;
-		}
-
-		if ( str_starts_with( $normalized, '/explain' ) || preg_match( '/\b(explain|clarify|what is|how does)\b/', $normalized ) ) {
-			return self::INTENT_EXPLAIN;
-		}
-
-		if ( str_starts_with( $normalized, '/mini-quiz' ) || str_contains( $normalized, 'mini quiz' ) || str_contains( $normalized, 'quiz me' ) ) {
-			return self::INTENT_MINI_QUIZ;
-		}
-
-		if ( str_starts_with( $normalized, '/smart-review' ) || str_contains( $normalized, 'smart review' ) || str_contains( $normalized, 'review my quiz' ) ) {
-			return self::INTENT_SMART_REVIEW;
-		}
-
-		return self::INTENT_GENERAL;
-	}
+	// ----------------------------------------------------------------
+	// Intent-specific handlers (thin wrappers around ask_openai_text)
+	// ----------------------------------------------------------------
 
 	/**
-	 * Determine whether the detected intent maps to a gated assistant action.
-	 *
-	 * @param string $intent Detected intent.
-	 *
-	 * @return bool
+	 * System prompt for the assistant model.
 	 */
-	private function requires_action_gate( string $intent ): bool {
-		return in_array(
-			$intent,
-			array(
-				self::INTENT_SUMMARIZE,
-				self::INTENT_EXPLAIN,
-				self::INTENT_MINI_QUIZ,
-				self::INTENT_SMART_REVIEW,
-			),
-			true
-		);
-	}
-
-	/**
-	 * Build a user-facing response for a disabled assistant action.
-	 *
-	 * @param string $intent Disabled action intent.
-	 *
-	 * @return array{type: string, message: string, quiz: array|null}
-	 */
-	private function get_disabled_action_response( string $intent ): array {
-		$action_labels = array(
-			self::INTENT_SUMMARIZE    => __( 'Summarize Lesson', 'learnpress' ),
-			self::INTENT_EXPLAIN      => __( 'Explain Concept', 'learnpress' ),
-			self::INTENT_MINI_QUIZ    => __( 'Mini Quiz', 'learnpress' ),
-			self::INTENT_SMART_REVIEW => __( 'Smart Review', 'learnpress' ),
-		);
-
-		return $this->build_response(
-			sprintf(
-				/* translators: %s: assistant action label. */
-				__( 'The %s action is currently disabled by the site administrator.', 'learnpress' ),
-				$action_labels[ $intent ] ?? __( 'requested', 'learnpress' )
-			)
+	private function get_system_prompt(): string {
+		return __(
+			'You are a helpful AI learning assistant for an online course. You help learners understand lesson content, explain concepts, generate practice quizzes, and review their quiz performance. Always ground your answers in the actual course data provided by tools. Respond in the same language the learner uses.',
+			'learnpress'
 		);
 	}
 
@@ -169,12 +119,12 @@ class Agent {
 
 		$lesson = $loaders->get_lesson_content( $lesson_id, $user_id );
 		if ( ! empty( $lesson['error'] ) ) {
-			return $this->build_response( $lesson['error'] );
+			return $this->normalizer->build_response( $lesson['error'] );
 		}
 
 		$instruction = __( 'Summarize this lesson clearly with key points, practical takeaways, and 3 quick review bullets.', 'learnpress' );
 		$content     = $this->ask_openai_text( $history, $message, $instruction, array( 'lesson' => $lesson ), $user_id );
-		return $this->build_response( $content );
+		return $this->normalizer->build_response( $content );
 	}
 
 	/**
@@ -184,22 +134,22 @@ class Agent {
 
 		$lesson = $loaders->get_lesson_content( $lesson_id, $user_id );
 		if ( ! empty( $lesson['error'] ) ) {
-			return $this->build_response( $lesson['error'] );
+			return $this->normalizer->build_response( $lesson['error'] );
 		}
 
 		$instruction = __( 'Explain the learner request using lesson context only. Give a short explanation, one concrete example, and one self-check question.', 'learnpress' );
 		$content     = $this->ask_openai_text( $history, $message, $instruction, array( 'lesson' => $lesson ), $user_id );
-		return $this->build_response( $content );
+		return $this->normalizer->build_response( $content );
 	}
 
 	/**
 	 * Build a personalized review for the current completed quiz item.
 	 */
 	private function handle_smart_review( DataLoaders $loaders, string $message, int $user_id, int $course_id, int $quiz_id, array $history ): array {
-		$quiz_review = $loaders->get_quiz_review_result( $user_id, $course_id, $quiz_id );
 
+		$quiz_review = $loaders->get_quiz_review_result( $user_id, $course_id, $quiz_id );
 		if ( ! empty( $quiz_review['error'] ) ) {
-			return $this->build_response( $quiz_review['error'] );
+			return $this->normalizer->build_response( $quiz_review['error'] );
 		}
 
 		$instruction = __( 'Create a smart review for this completed quiz attempt. Summarize performance, identify weak concepts, and provide a concise next-step study plan.', 'learnpress' );
@@ -207,12 +157,10 @@ class Agent {
 			$history,
 			$message,
 			$instruction,
-			array(
-				'quiz_review' => $quiz_review,
-			),
+			array( 'quiz_review' => $quiz_review ),
 			$user_id
 		);
-		return $this->build_response( $content );
+		return $this->normalizer->build_response( $content );
 	}
 
 	/**
@@ -220,12 +168,15 @@ class Agent {
 	 */
 	private function handle_general( DataLoaders $loaders, string $message, int $lesson_id, int $user_id, array $history ): array {
 
-		$lesson = $loaders->get_lesson_content( $lesson_id, $user_id );
-
+		$lesson      = $loaders->get_lesson_content( $lesson_id, $user_id );
 		$instruction = __( 'Answer naturally and keep guidance grounded in the provided lesson context. If context is missing, say so clearly.', 'learnpress' );
 		$content     = $this->ask_openai_text( $history, $message, $instruction, array( 'lesson' => $lesson ), $user_id );
-		return $this->build_response( $content );
+		return $this->normalizer->build_response( $content );
 	}
+
+	// ----------------------------------------------------------------
+	// Core agentic loop
+	// ----------------------------------------------------------------
 
 	/**
 	 * Send a text-generation request to OpenAI and normalize the first content response.
@@ -248,7 +199,11 @@ class Agent {
 		);
 		$messages[] = array(
 			'role'    => 'system',
-			'content' => $this->build_response_language_instruction( $user_message, $history, $user_id ),
+			'content' => $this->language_resolver->build_instruction( $user_message, $history, $user_id ),
+		);
+		$messages[] = array(
+			'role'    => 'system',
+			'content' => __( 'Output contract: return ONLY valid JSON with exactly one key "message" (string). Put the full reply text inside "message". Do not include keys like language, locale, intent, type, or key_points.', 'learnpress' ),
 		);
 		$messages[] = array(
 			'role'    => 'system',
@@ -274,582 +229,64 @@ class Agent {
 		);
 
 		for ( $i = 0; $i < self::MAX_TOOL_ITERATIONS; $i++ ) {
-			$response_message = $service->send_chat_request( array( 'messages' => $messages ) );
+			$response_message = $this->quota_guard->send_chat_with_guard( $service, $messages, $user_id );
+			if ( $this->quota_guard->is_blocked() ) {
+				return $this->quota_guard->get_block_message();
+			}
+
 			if ( ! empty( $response_message['content'] ) ) {
-				return $this->normalize_text_content( (string) $response_message['content'] );
+				return $this->normalizer->normalize( (string) $response_message['content'] );
 			}
 		}
 
 		return __( 'I was unable to complete the request. Please try again.', 'learnpress' );
 	}
 
+	// ----------------------------------------------------------------
+	// Action gate helpers
+	// ----------------------------------------------------------------
+
 	/**
-	 * Start a new interactive mini-quiz from lesson content.
+	 * Determine whether the detected intent maps to a gated assistant action.
 	 *
-	 * Honors an explicit question-count request in the learner prompt.
+	 * @param string $intent Detected intent.
+	 *
+	 * @return bool
+	 */
+	private function requires_action_gate( string $intent ): bool {
+		return in_array(
+			$intent,
+			array(
+				IntentClassifier::INTENT_SUMMARIZE,
+				IntentClassifier::INTENT_EXPLAIN,
+				IntentClassifier::INTENT_QUICK_QUIZ,
+				IntentClassifier::INTENT_SMART_REVIEW,
+			),
+			true
+		);
+	}
+
+	/**
+	 * Build a user-facing response for a disabled assistant action.
+	 *
+	 * @param string $intent Disabled action intent.
 	 *
 	 * @return array{type: string, message: string, quiz: array|null}
 	 */
-	private function start_interactive_quiz( DataLoaders $loaders, string $user_message, int $lesson_id, int $user_id, array $history ): array {
-		$lesson = $loaders->get_lesson_content( $lesson_id, $user_id );
-		if ( ! empty( $lesson['error'] ) ) {
-			return $this->build_response( $lesson['error'] );
-		}
+	private function get_disabled_action_response( string $intent ): array {
+		$action_labels = array(
+			IntentClassifier::INTENT_SUMMARIZE    => __( 'Summarize Lesson', 'learnpress' ),
+			IntentClassifier::INTENT_EXPLAIN      => __( 'Explain Concept', 'learnpress' ),
+			IntentClassifier::INTENT_QUICK_QUIZ   => __( 'Quick Quiz', 'learnpress' ),
+			IntentClassifier::INTENT_SMART_REVIEW => __( 'Smart Review', 'learnpress' ),
+		);
 
-		$service             = OpenAiService::instance();
-		$question_count      = $this->extract_requested_quiz_count( $user_message );
-		$has_explicit_count  = null !== $question_count;
-		$language_guidance   = $this->build_response_language_instruction( $user_message, $history, $user_id );
-		$system_instructions = $has_explicit_count
-			? sprintf(
-				/* translators: %d: requested number of quiz questions. */
-				__( 'Create a mini quiz from lesson content. Return ONLY valid JSON with keys: intro (string), questions (array of exactly %d items). Each question must contain: question (string), options (array of 4 strings), correct_index (0-3 integer), explanation (string).', 'learnpress' ),
-				$question_count
+		return $this->normalizer->build_response(
+			sprintf(
+				/* translators: %s: assistant action label. */
+				__( 'The %s action is currently disabled by the site administrator.', 'learnpress' ),
+				$action_labels[ $intent ] ?? __( 'requested', 'learnpress' )
 			)
-			: __( 'Create a mini quiz from lesson content with 3-5 questions. Return ONLY valid JSON with keys: intro (string), questions (array of objects). Each question must contain: question (string), options (array of 4 strings), correct_index (0-3 integer), explanation (string).', 'learnpress' );
-
-		$messages = array(
-			array(
-				'role'    => 'system',
-				'content' => $system_instructions,
-			),
-			array(
-				'role'    => 'system',
-				'content' => $language_guidance,
-			),
-			array(
-				'role'    => 'system',
-				'content' => wp_json_encode( $lesson ),
-			),
-		);
-		foreach ( $history as $item ) {
-			if ( ! empty( $item['role'] ) && isset( $item['content'] ) ) {
-				$messages[] = array(
-					'role'    => $item['role'],
-					'content' => $item['content'],
-				);
-			}
-		}
-
-		$messages[] = array(
-			'role'    => 'user',
-			'content' => $user_message,
-		);
-		$response   = $service->send_chat_request( array( 'messages' => $messages ) );
-		$content    = (string) ( $response['content'] ?? '' );
-		$decoded    = $this->decode_json_content( $content );
-
-		$questions = $this->sanitize_quiz_questions( $decoded['questions'] ?? array(), $question_count );
-		if ( empty( $questions ) ) {
-			return $this->build_response( __( 'I could not generate a quiz right now. Please try again.', 'learnpress' ) );
-		}
-
-		$quiz_state = array(
-			'is_active'     => true,
-			'completed'     => false,
-			'current_index' => 0,
-			'score'         => 0,
-			'total'         => count( $questions ),
-			'questions'     => $questions,
-		);
-
-		return array(
-			'type'    => 'quiz',
-			'message' => $decoded['intro'] ?? __( 'Mini quiz started. Answer each question to continue.', 'learnpress' ),
-			'quiz'    => $quiz_state,
-		);
-	}
-
-	/**
-	 * Process an answer for an active quiz session and advance quiz state.
-	 *
-	 * @param string $user_message Learner answer input.
-	 * @param array  $state        Current quiz state.
-	 *
-	 * @return array{type: string, message: string, quiz: array|null}
-	 */
-	private function continue_interactive_quiz( string $user_message, array $state ): array {
-		$questions = $state['questions'] ?? array();
-		$current   = absint( $state['current_index'] ?? 0 );
-		$score     = absint( $state['score'] ?? 0 );
-
-		if ( empty( $questions ) || ! isset( $questions[ $current ] ) ) {
-			return $this->build_response( __( 'Quiz state is invalid. Please start a new mini quiz.', 'learnpress' ) );
-		}
-
-		$question = $questions[ $current ];
-		$answer_i = $this->parse_answer_index( $user_message, $question['options'] ?? array() );
-
-		if ( $answer_i === null ) {
-			return array(
-				'type'    => 'quiz',
-				'message' => __( 'Please answer with option number (1-4), letter (A-D), or full option text.', 'learnpress' ),
-				'quiz'    => $state,
-			);
-		}
-
-		$correct_index = absint( $question['correct_index'] ?? 0 );
-		$is_correct    = $answer_i === $correct_index;
-		if ( $is_correct ) {
-			++$score;
-		}
-
-		$next_index = $current + 1;
-		$total      = count( $questions );
-
-		$state['score']         = $score;
-		$state['current_index'] = $next_index;
-		$state['total']         = $total;
-		$state['feedback']      = array(
-			'is_correct'     => $is_correct,
-			'correct_index'  => $correct_index,
-			'correct_answer' => $question['options'][ $correct_index ] ?? '',
-			'explanation'    => $question['explanation'] ?? '',
-		);
-
-		if ( $next_index >= $total ) {
-			$state['is_active'] = false;
-			$state['completed'] = true;
-
-			return array(
-				'type'    => 'quiz',
-				'message' => sprintf(
-					/* translators: 1: score, 2: total questions. */
-					__( 'Quiz complete. You scored %1$d/%2$d.', 'learnpress' ),
-					$score,
-					$total
-				),
-				'quiz'    => $state,
-			);
-		}
-
-		$state['is_active'] = true;
-		$state['completed'] = false;
-
-		$message = $is_correct ? __( 'Correct. Great job! Moving to the next question.', 'learnpress' ) : __( 'Not quite. Let us move to the next question.', 'learnpress' );
-
-		return array(
-			'type'    => 'quiz',
-			'message' => $message,
-			'quiz'    => $state,
-		);
-	}
-
-	/**
-	 * Parse learner answer into option index.
-	 *
-	 * Supports: numeric (1-4), letter (A-D), and exact option text.
-	 *
-	 * @param string $message Learner answer.
-	 * @param array  $options Current question options.
-	 *
-	 * @return int|null
-	 */
-	private function parse_answer_index( string $message, array $options ): ?int {
-
-		$input = strtolower( trim( $message ) );
-		if ( $input === '' ) {
-			return null;
-		}
-
-		if ( preg_match( '/^[1-4]$/', $input ) ) {
-			return max( 0, (int) $input - 1 );
-		}
-
-		$letters = array(
-			'a' => 0,
-			'b' => 1,
-			'c' => 2,
-			'd' => 3,
-		);
-		if ( isset( $letters[ $input ] ) ) {
-			return $letters[ $input ];
-		}
-
-		foreach ( $options as $index => $option ) {
-			if ( strtolower( trim( (string) $option ) ) === $input ) {
-				return (int) $index;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Build strict language guidance so model replies in learner language.
-	 *
-	 * @param string $user_message Current learner input.
-	 * @param array  $history      Conversation history.
-	 * @param int    $user_id      Current user ID.
-	 *
-	 * @return string
-	 */
-	private function build_response_language_instruction( string $user_message, array $history, int $user_id ): string {
-
-		$sample      = $this->resolve_language_sample( $user_message, $history );
-		$locale_hint = $this->resolve_locale_hint( $user_id );
-
-		if ( $sample !== '' ) {
-			return sprintf(
-				/* translators: 1: learner message sample, 2: locale hint. */
-				__( 'Language policy: reply strictly in the same language as the learner. Do not default to English. Learner sample: "%1$s". Locale fallback: %2$s.', 'learnpress' ),
-				$sample,
-				$locale_hint !== '' ? $locale_hint : 'n/a'
-			);
-		}
-
-		return sprintf(
-			/* translators: %s: locale hint. */
-			__( 'Language policy: reply strictly in the learner language and do not default to English. If the latest learner message is language-neutral, use locale fallback: %s.', 'learnpress' ),
-			$locale_hint !== '' ? $locale_hint : 'n/a'
-		);
-	}
-
-	/**
-	 * Pick best text sample to infer learner language.
-	 *
-	 * @param string $user_message Current learner input.
-	 * @param array  $history      Conversation history.
-	 *
-	 * @return string
-	 */
-	private function resolve_language_sample( string $user_message, array $history ): string {
-
-		$current = $this->trim_text_for_prompt( $user_message );
-		if ( $this->has_letters( $current ) && ! $this->is_language_neutral_command( $current ) ) {
-			return $current;
-		}
-
-		for ( $index = count( $history ) - 1; $index >= 0; $index-- ) {
-			$item = $history[ $index ] ?? array();
-			if ( ( $item['role'] ?? '' ) !== 'user' || ! isset( $item['content'] ) ) {
-				continue;
-			}
-
-			$content = $this->trim_text_for_prompt( (string) $item['content'] );
-			if ( ! $this->has_letters( $content ) || $this->is_language_neutral_command( $content ) ) {
-				continue;
-			}
-
-			return $content;
-		}
-
-		return '';
-	}
-
-	/**
-	 * Resolve locale hint from WordPress.
-	 *
-	 * @param int $user_id Current user ID.
-	 *
-	 * @return string
-	 */
-	private function resolve_locale_hint( int $user_id ): string {
-		$locale = (string) get_user_locale( $user_id );
-		if ( $locale !== '' ) {
-			return $locale;
-		}
-
-		$locale = (string) determine_locale();
-		if ( $locale !== '' ) {
-			return $locale;
-		}
-
-		return (string) get_locale();
-	}
-
-	/**
-	 * Determine if input is a language-neutral command (e.g. /mini-quiz).
-	 *
-	 * @param string $text Input text.
-	 *
-	 * @return bool
-	 */
-	private function is_language_neutral_command( string $text ): bool {
-
-		$normalized = trim( $text );
-		if ( $normalized === '' ) {
-			return true;
-		}
-
-		if ( str_starts_with( $normalized, '/' ) ) {
-				return true;
-		}
-
-		return preg_match( '/^[\d\W_]+$/u', $normalized ) === 1;
-	}
-
-	/**
-	 * Check whether input contains at least one letter.
-	 *
-	 * @param string $text Input text.
-	 *
-	 * @return bool
-	 */
-	private function has_letters( string $text ): bool {
-
-		return preg_match( '/\p{L}/u', $text ) === 1;
-	}
-
-	/**
-	 * Trim and cap text length for safe system prompt injection.
-	 *
-	 * @param string $text Input text.
-	 *
-	 * @return string
-	 */
-	private function trim_text_for_prompt( string $text ): string {
-
-		$clean = trim( preg_replace( '/\s+/', ' ', $text ) ?? '' );
-		if ( $clean === '' ) {
-			return '';
-		}
-
-		return mb_substr( $clean, 0, 220, 'UTF-8' );
-	}
-	/**
-	 * Extract the requested number of quiz questions from the learner message.
-	 *
-	 * Language-agnostic heuristic:
-	 * - Prefer explicit numeric forms (e.g. "/mini-quiz 5", "quiz 5", "5 quiz").
-	 * - If only one standalone number is present, use it as requested count.
-	 * - Return null when count cannot be inferred reliably.
-	 *
-	 * @param string $message Learner input.
-	 *
-	 * @return int|null
-	 */
-	private function extract_requested_quiz_count( string $message ): ?int {
-		$normalized = trim( $message );
-		if ( '' === $normalized ) {
-			return null;
-		}
-
-		$normalized = mb_strtolower( $normalized, 'UTF-8' );
-
-		$normalized = preg_replace( '/[^\p{L}\p{N}\s]+/u', ' ', $normalized );
-		$normalized = is_string( $normalized ) ? trim( preg_replace( '/\s+/', ' ', $normalized ) ?? '' ) : '';
-		if ( '' === $normalized ) {
-			return null;
-		}
-
-		// Explicit command-like request: "/mini-quiz 5".
-		if ( preg_match( '/\/mini-?quiz\s+(\d{1,2})(?=\s|$)/u', $normalized, $matches ) ) {
-			$count = (int) ( $matches[1] ?? 0 );
-
-			return ( $count >= 1 && $count <= 20 ) ? $count : null;
-		}
-
-		// Number close to "quiz" token works for most mixed-language requests.
-		if ( preg_match( '/(?:quiz[^\p{N}]{0,20}(\d{1,2})|(\d{1,2})[^\p{N}]{0,20}quiz)/u', $normalized, $matches ) ) {
-			$count = (int) ( $matches[1] ?: $matches[2] ?: 0 );
-			if ( $count >= 1 && $count <= 20 ) {
-				return $count;
-			}
-		}
-
-		// Fallback: if there is exactly one standalone number, treat it as count.
-		if ( preg_match_all( '/(?<!\p{N})(\d{1,2})(?!\p{N})/u', $normalized, $matches ) && count( $matches[1] ) === 1 ) {
-			$count = (int) $matches[1][0];
-			if ( $count >= 1 && $count <= 20 ) {
-				return $count;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Sanitize and normalize generated quiz questions from model output.
-	 *
-	 * If $question_count is null, returns questions as-is (trusting OpenAI's output).
-	 * If $question_count is set, caps to exactly that many questions.
-	 *
-	 * @param array    $questions       Raw question payload.
-	 * @param int|null $question_count  Maximum number of questions to keep, or null to trust model.
-	 *
-	 * @return array
-	 */
-	private function sanitize_quiz_questions( array $questions, ?int $question_count = null ): array {
-		if ( empty( $questions ) || ! is_array( $questions ) ) {
-			return array();
-		}
-
-		// If no explicit count, trust OpenAI's output (typically 3-5 questions).
-		if ( $question_count === null ) {
-			return array_filter(
-				array_map( static fn( $q ) => is_array( $q ) ? $q : null, $questions ),
-				static fn( $q ) => null !== $q
-			);
-		}
-
-		$sanitized = array();
-		foreach ( $questions as $question ) {
-			if ( ! is_array( $question ) ) {
-				continue;
-			}
-
-			$options = $question['options'] ?? array();
-			if ( ! is_array( $options ) || count( $options ) < 2 ) {
-				continue;
-			}
-
-			$clean_options = array_values(
-				array_map(
-					static fn( $option ) => sanitize_text_field( (string) $option ),
-					$options
-				)
-			);
-
-			$correct_index = absint( $question['correct_index'] ?? 0 );
-			if ( $correct_index >= count( $clean_options ) ) {
-				$correct_index = 0;
-			}
-
-			$sanitized[] = array(
-				'question'      => sanitize_text_field( (string) ( $question['question'] ?? '' ) ),
-				'options'       => $clean_options,
-				'correct_index' => $correct_index,
-				'explanation'   => sanitize_textarea_field( (string) ( $question['explanation'] ?? '' ) ),
-			);
-
-			if ( count( $sanitized ) >= max( 1, $question_count ) ) {
-				break;
-			}
-		}
-
-		return $sanitized;
-	}
-
-	/**
-	 * Decode JSON content safely without throwing exceptions.
-	 *
-	 * Accepts either pure JSON or content containing a JSON object substring.
-	 * Returns empty array when content is plain text or invalid JSON.
-	 *
-	 * @param string $content Raw model content.
-	 *
-	 * @return array
-	 */
-	private function decode_json_content( string $content ): array {
-		$content = trim( $content );
-		if ( '' === $content ) {
-			return array();
-		}
-
-		$decoded = json_decode( $content, true );
-		if ( is_array( $decoded ) && JSON_ERROR_NONE === json_last_error() ) {
-			return $decoded;
-		}
-
-		$first_brace = strpos( $content, '{' );
-		$last_brace  = strrpos( $content, '}' );
-		if ( false === $first_brace || false === $last_brace || $last_brace <= $first_brace ) {
-			return array();
-		}
-
-		$json_slice = substr( $content, $first_brace, $last_brace - $first_brace + 1 );
-		if ( ! is_string( $json_slice ) || '' === $json_slice ) {
-			return array();
-		}
-
-		$decoded = json_decode( $json_slice, true );
-
-		return ( is_array( $decoded ) && JSON_ERROR_NONE === json_last_error() ) ? $decoded : array();
-	}
-
-	/**
-	 * Convert model JSON output into readable assistant text.
-	 *
-	 * OpenAI chat requests in this flow use json_object response format,
-	 * so content can be a JSON string like {"message":"..."}.
-	 * This method extracts the best text candidate for frontend rendering.
-	 *
-	 * @param string $content Raw model content.
-	 *
-	 * @return string
-	 */
-	private function normalize_text_content( string $content ): string {
-		$content = trim( $content );
-		if ( '' === $content ) {
-			return '';
-		}
-
-		$decoded = $this->decode_json_content( $content );
-		if ( empty( $decoded ) ) {
-			return $content;
-		}
-
-		$extracted = $this->extract_text_from_array( $decoded );
-
-		return '' !== $extracted ? $extracted : $content;
-	}
-
-	/**
-	 * Extract first meaningful text value from a decoded JSON object.
-	 *
-	 * @param array $data
-	 *
-	 * @return string
-	 */
-	private function extract_text_from_array( array $data ): string {
-		$preferred_keys = array(
-			'message',
-			'answer',
-			'content',
-			'summary',
-			'explanation',
-			'text',
-			'response',
-			'result',
-		);
-
-		foreach ( $preferred_keys as $key ) {
-			if ( empty( $data[ $key ] ) ) {
-				continue;
-			}
-
-			$value = $data[ $key ];
-			if ( is_string( $value ) && '' !== trim( $value ) ) {
-				return trim( $value );
-			}
-
-			if ( is_array( $value ) ) {
-				$nested = $this->extract_text_from_array( $value );
-				if ( '' !== $nested ) {
-					return $nested;
-				}
-			}
-		}
-
-		foreach ( $data as $value ) {
-			if ( is_string( $value ) && '' !== trim( $value ) ) {
-				return trim( $value );
-			}
-
-			if ( is_array( $value ) ) {
-				$nested = $this->extract_text_from_array( $value );
-				if ( '' !== $nested ) {
-					return $nested;
-				}
-			}
-		}
-
-		return '';
-	}
-
-	/**
-	 * Build normalized response from assistant content.
-	 *
-	 * @param string $content The raw assistant text content.
-	 *
-	 * @return array{type: string, message: string, quiz: array|null}
-	 */
-	private function build_response( string $content ): array {
-		return array(
-			'type'    => 'text',
-			'message' => $this->normalize_text_content( $content ),
-			'quiz'    => null,
 		);
 	}
 }

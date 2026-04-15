@@ -44,8 +44,47 @@ class AgentTest extends BrainMonkeyTestCase {
 				function get_locale() {
 					return "vi";
 				}
+				function get_post_type( $post_id = 0 ) {
+					return $post_id === 999 ? "lp_quiz" : "lp_lesson";
+				}
+				function current_time( $type = "mysql", $gmt = 0 ) {
+					return $type === "Y-m-d" ? "2026-04-15" : "2026-04-15 00:00:00";
+				}
+				function get_user_meta( $user_id, $key = "", $single = false ) {
+					$value = $GLOBALS["lp_ai_test_user_meta"][ $user_id ][ $key ] ?? null;
+					if ( $single ) {
+						return $value;
+					}
+					return $value === null ? array() : array( $value );
+				}
+				function update_user_meta( $user_id, $key, $value ) {
+					if ( ! isset( $GLOBALS["lp_ai_test_user_meta"] ) || ! is_array( $GLOBALS["lp_ai_test_user_meta"] ) ) {
+						$GLOBALS["lp_ai_test_user_meta"] = array();
+					}
+					if ( ! isset( $GLOBALS["lp_ai_test_user_meta"][ $user_id ] ) || ! is_array( $GLOBALS["lp_ai_test_user_meta"][ $user_id ] ) ) {
+						$GLOBALS["lp_ai_test_user_meta"][ $user_id ] = array();
+					}
+					$GLOBALS["lp_ai_test_user_meta"][ $user_id ][ $key ] = $value;
+					return true;
+				}
 				function mb_strtolower( $text, $encoding = "UTF-8" ) {
 					return strtolower( (string) $text );
+				}
+				function mb_substr( $string, $start, $length = null, $encoding = "UTF-8" ) {
+					return $length === null
+						? substr( (string) $string, (int) $start )
+						: substr( (string) $string, (int) $start, (int) $length );
+				}'
+			);
+		}
+
+		if ( ! class_exists( 'LP_Settings', false ) ) {
+			eval(
+				'class LP_Settings {
+					public static array $options = array();
+					public static function get_option( string $key, $default = "" ) {
+						return self::$options[ $key ] ?? $default;
+					}
 				}'
 			);
 		}
@@ -123,81 +162,105 @@ class AgentTest extends BrainMonkeyTestCase {
 		}
 	}
 
-	#[RunInSeparateProcess]
-	#[PreserveGlobalState( false )]
-	public function test_run_returns_quiz_contract_when_starting_mini_quiz(): void {
-		$this->load_agent_with_stubs();
+	private function queue_intent_and_responses( string $intent, array $responses ): void {
 
-		\LearnPress\Services\OpenAiService::$queue = array(
-			array(
-				'content' => json_encode(
-					array(
-						'intro'     => 'Mini quiz ready',
-						'questions' => array(
-							array(
-								'question'      => 'Q1',
-								'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
-								'correct_index' => 1,
-								'explanation'   => 'Because B1',
-							),
-						),
-					)
-				),
-			),
+		$GLOBALS['lp_ai_test_user_meta'] = array();
+		\LP_Settings::$options           = array(
+			'ai_assistant_max_usage_tokens_per_day' => 0,
 		);
 
+		\LearnPress\Services\OpenAiService::$queue = array_merge(
+			array(
+				array(
+					'content' => json_encode(
+						array(
+							'intent' => $intent,
+						)
+					),
+				),
+			),
+			$responses
+		);
+	}
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_returns_quiz_contract_when_starting_quick_quiz(): void {
+		$this->load_agent_with_stubs();
+
+		$this->queue_intent_and_responses(
+			'quick_quiz',
+			array(
+				array(
+					'content' => json_encode(
+						array(
+							'intro'     => 'Quick quiz ready',
+							'questions' => array(
+								array(
+									'question'      => 'Q1',
+									'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
+									'correct_index' => 1,
+									'explanation'   => 'Because B1',
+								),
+							),
+						)
+					),
+				),
+			)
+		);
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( '/mini-quiz', 10, 20, 30 );
+		$result = $agent->run( '/quick-quiz', 10, 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
-		$this->assertSame( 'Mini quiz ready', $result['message'] );
+		$this->assertSame( 'Quick quiz ready', $result['message'] );
 		$this->assertTrue( $result['quiz']['is_active'] );
 		$this->assertSame( 1, count( $result['quiz']['questions'] ) );
 	}
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function test_run_trims_mini_quiz_to_requested_question_count_from_natural_language(): void {
+	public function test_run_trims_quick_quiz_to_requested_question_count_from_natural_language(): void {
 		$this->load_agent_with_stubs();
 
-		\LearnPress\Services\OpenAiService::$queue = array(
+		$this->queue_intent_and_responses(
+			'quick_quiz',
 			array(
-				'content' => json_encode(
-					array(
-						'intro'     => 'Mini quiz ready',
-						'questions' => array(
-							array(
-								'question'      => 'Q1',
-								'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
-								'correct_index' => 0,
-								'explanation'   => 'Because A1',
+				array(
+					'content' => json_encode(
+						array(
+							'intro'     => 'Quick quiz ready',
+							'questions' => array(
+								array(
+									'question'      => 'Q1',
+									'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
+									'correct_index' => 0,
+									'explanation'   => 'Because A1',
+								),
+								array(
+									'question'      => 'Q2',
+									'options'       => array( 'A2', 'B2', 'C2', 'D2' ),
+									'correct_index' => 1,
+									'explanation'   => 'Because B2',
+								),
+								array(
+									'question'      => 'Q3',
+									'options'       => array( 'A3', 'B3', 'C3', 'D3' ),
+									'correct_index' => 2,
+									'explanation'   => 'Because C3',
+								),
+								array(
+									'question'      => 'Q4',
+									'options'       => array( 'A4', 'B4', 'C4', 'D4' ),
+									'correct_index' => 3,
+									'explanation'   => 'Because D4',
+								),
 							),
-							array(
-								'question'      => 'Q2',
-								'options'       => array( 'A2', 'B2', 'C2', 'D2' ),
-								'correct_index' => 1,
-								'explanation'   => 'Because B2',
-							),
-							array(
-								'question'      => 'Q3',
-								'options'       => array( 'A3', 'B3', 'C3', 'D3' ),
-								'correct_index' => 2,
-								'explanation'   => 'Because C3',
-							),
-							array(
-								'question'      => 'Q4',
-								'options'       => array( 'A4', 'B4', 'C4', 'D4' ),
-								'correct_index' => 3,
-								'explanation'   => 'Because D4',
-							),
-						),
-					)
+						)
+					),
 				),
-			),
+			)
 		);
-
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'Create a mini quiz for me with 3 questions.', 10, 20, 30 );
+		$result = $agent->run( 'Create a quick quiz for me with 3 questions.', 10, 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertSame( 3, count( $result['quiz']['questions'] ) );
@@ -208,127 +271,132 @@ class AgentTest extends BrainMonkeyTestCase {
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
 	public function test_run_returns_disabled_message_when_detected_action_is_disabled(): void {
+
 		$this->load_agent_with_stubs();
 		\LearnPress\AI\Assistant\AIAssistantController::$enabled_actions = array(
-			'mini_quiz' => false,
+			'quick_quiz' => false,
 		);
+		$this->queue_intent_and_responses( 'quick_quiz', array() );
 
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'Create a mini quiz for me with 3 questions.', 10, 20, 30 );
-
+		$result = $agent->run( 'Create a quick quiz for me with 3 questions.', 10, 20, 30 );
 		$this->assertSame( 'text', $result['type'] );
-		$this->assertStringContainsString( 'Mini Quiz', $result['message'] );
+		$this->assertStringContainsString( 'Quick Quiz', $result['message'] );
 		$this->assertStringContainsString( 'disabled', strtolower( $result['message'] ) );
 	}
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function test_run_parses_spelled_out_quiz_count_from_natural_language(): void {
+	public function test_run_does_not_trim_quiz_count_when_spelled_out_number_is_used(): void {
 		$this->load_agent_with_stubs();
 
-		\LearnPress\Services\OpenAiService::$queue = array(
+		$this->queue_intent_and_responses(
+			'quick_quiz',
 			array(
-				'content' => json_encode(
-					array(
-						'intro'     => 'Mini quiz ready',
-						'questions' => array(
-							array(
-								'question'      => 'Q1',
-								'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
-								'correct_index' => 0,
-								'explanation'   => 'Because A1',
+				array(
+					'content' => json_encode(
+						array(
+							'intro'     => 'Quick quiz ready',
+							'questions' => array(
+								array(
+									'question'      => 'Q1',
+									'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
+									'correct_index' => 0,
+									'explanation'   => 'Because A1',
+								),
+								array(
+									'question'      => 'Q2',
+									'options'       => array( 'A2', 'B2', 'C2', 'D2' ),
+									'correct_index' => 1,
+									'explanation'   => 'Because B2',
+								),
+								array(
+									'question'      => 'Q3',
+									'options'       => array( 'A3', 'B3', 'C3', 'D3' ),
+									'correct_index' => 2,
+									'explanation'   => 'Because C3',
+								),
 							),
-							array(
-								'question'      => 'Q2',
-								'options'       => array( 'A2', 'B2', 'C2', 'D2' ),
-								'correct_index' => 1,
-								'explanation'   => 'Because B2',
-							),
-							array(
-								'question'      => 'Q3',
-								'options'       => array( 'A3', 'B3', 'C3', 'D3' ),
-								'correct_index' => 2,
-								'explanation'   => 'Because C3',
-							),
-						),
-					)
+						)
+					),
 				),
-			),
+			)
 		);
-
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'Create a mini quiz for me with two, please.', 10, 20, 30 );
+		$result = $agent->run( 'Create a quick quiz for me with two, please.', 10, 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
-		$this->assertSame( 2, count( $result['quiz']['questions'] ) );
-		$this->assertSame( 2, $result['quiz']['total'] );
+		$this->assertSame( 3, count( $result['quiz']['questions'] ) );
+		$this->assertSame( 3, $result['quiz']['total'] );
 	}
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function test_run_parses_vietnamese_spelled_out_quiz_count_with_diacritics(): void {
+	public function test_run_does_not_trim_quiz_count_for_vietnamese_spelled_out_number(): void {
 		$this->load_agent_with_stubs();
 
-		\LearnPress\Services\OpenAiService::$queue = array(
+		$this->queue_intent_and_responses(
+			'quick_quiz',
 			array(
-				'content' => json_encode(
-					array(
-						'intro'     => 'Mini quiz ready',
-						'questions' => array(
-							array(
-								'question'      => 'Q1',
-								'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
-								'correct_index' => 0,
-								'explanation'   => 'Because A1',
+				array(
+					'content' => json_encode(
+						array(
+							'intro'     => 'Quick quiz ready',
+							'questions' => array(
+								array(
+									'question'      => 'Q1',
+									'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
+									'correct_index' => 0,
+									'explanation'   => 'Because A1',
+								),
+								array(
+									'question'      => 'Q2',
+									'options'       => array( 'A2', 'B2', 'C2', 'D2' ),
+									'correct_index' => 1,
+									'explanation'   => 'Because B2',
+								),
+								array(
+									'question'      => 'Q3',
+									'options'       => array( 'A3', 'B3', 'C3', 'D3' ),
+									'correct_index' => 2,
+									'explanation'   => 'Because C3',
+								),
+								array(
+									'question'      => 'Q4',
+									'options'       => array( 'A4', 'B4', 'C4', 'D4' ),
+									'correct_index' => 3,
+									'explanation'   => 'Because D4',
+								),
+								array(
+									'question'      => 'Q5',
+									'options'       => array( 'A5', 'B5', 'C5', 'D5' ),
+									'correct_index' => 0,
+									'explanation'   => 'Because A5',
+								),
+								array(
+									'question'      => 'Q6',
+									'options'       => array( 'A6', 'B6', 'C6', 'D6' ),
+									'correct_index' => 1,
+									'explanation'   => 'Because B6',
+								),
+								array(
+									'question'      => 'Q7',
+									'options'       => array( 'A7', 'B7', 'C7', 'D7' ),
+									'correct_index' => 2,
+									'explanation'   => 'Because C7',
+								),
 							),
-							array(
-								'question'      => 'Q2',
-								'options'       => array( 'A2', 'B2', 'C2', 'D2' ),
-								'correct_index' => 1,
-								'explanation'   => 'Because B2',
-							),
-							array(
-								'question'      => 'Q3',
-								'options'       => array( 'A3', 'B3', 'C3', 'D3' ),
-								'correct_index' => 2,
-								'explanation'   => 'Because C3',
-							),
-							array(
-								'question'      => 'Q4',
-								'options'       => array( 'A4', 'B4', 'C4', 'D4' ),
-								'correct_index' => 3,
-								'explanation'   => 'Because D4',
-							),
-							array(
-								'question'      => 'Q5',
-								'options'       => array( 'A5', 'B5', 'C5', 'D5' ),
-								'correct_index' => 0,
-								'explanation'   => 'Because A5',
-							),
-							array(
-								'question'      => 'Q6',
-								'options'       => array( 'A6', 'B6', 'C6', 'D6' ),
-								'correct_index' => 1,
-								'explanation'   => 'Because B6',
-							),
-							array(
-								'question'      => 'Q7',
-								'options'       => array( 'A7', 'B7', 'C7', 'D7' ),
-								'correct_index' => 2,
-								'explanation'   => 'Because C7',
-							),
-						),
-					)
+						)
+					),
 				),
-			),
+			)
 		);
-
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'tạo mini quiz gồm sáu câu hỏi', 10, 20, 30 );
+		$result = $agent->run( 'tạo quick quiz gồm sáu câu hỏi', 10, 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
-		$this->assertSame( 6, count( $result['quiz']['questions'] ) );
-		$this->assertSame( 6, $result['quiz']['total'] );
+		$this->assertSame( 7, count( $result['quiz']['questions'] ) );
+		$this->assertSame( 7, $result['quiz']['total'] );
 	}
 
 	#[RunInSeparateProcess]
@@ -336,52 +404,54 @@ class AgentTest extends BrainMonkeyTestCase {
 	public function test_run_handles_unknown_language_with_numeric_count(): void {
 		$this->load_agent_with_stubs();
 
-		\LearnPress\Services\OpenAiService::$queue = array(
+		$this->queue_intent_and_responses(
+			'quick_quiz',
 			array(
-				'content' => json_encode(
-					array(
-						'intro'     => 'Quiz',
-						'questions' => array(
-							array(
-								'question'      => 'Q1',
-								'options'       => array( 'A', 'B', 'C', 'D' ),
-								'correct_index' => 0,
-								'explanation'   => 'Exp',
+				array(
+					'content' => json_encode(
+						array(
+							'intro'     => 'Quiz',
+							'questions' => array(
+								array(
+									'question'      => 'Q1',
+									'options'       => array( 'A', 'B', 'C', 'D' ),
+									'correct_index' => 0,
+									'explanation'   => 'Exp',
+								),
+								array(
+									'question'      => 'Q2',
+									'options'       => array( 'A', 'B', 'C', 'D' ),
+									'correct_index' => 1,
+									'explanation'   => 'Exp',
+								),
+								array(
+									'question'      => 'Q3',
+									'options'       => array( 'A', 'B', 'C', 'D' ),
+									'correct_index' => 2,
+									'explanation'   => 'Exp',
+								),
+								array(
+									'question'      => 'Q4',
+									'options'       => array( 'A', 'B', 'C', 'D' ),
+									'correct_index' => 3,
+									'explanation'   => 'Exp',
+								),
+								array(
+									'question'      => 'Q5',
+									'options'       => array( 'A', 'B', 'C', 'D' ),
+									'correct_index' => 0,
+									'explanation'   => 'Exp',
+								),
 							),
-							array(
-								'question'      => 'Q2',
-								'options'       => array( 'A', 'B', 'C', 'D' ),
-								'correct_index' => 1,
-								'explanation'   => 'Exp',
-							),
-							array(
-								'question'      => 'Q3',
-								'options'       => array( 'A', 'B', 'C', 'D' ),
-								'correct_index' => 2,
-								'explanation'   => 'Exp',
-							),
-							array(
-								'question'      => 'Q4',
-								'options'       => array( 'A', 'B', 'C', 'D' ),
-								'correct_index' => 3,
-								'explanation'   => 'Exp',
-							),
-							array(
-								'question'      => 'Q5',
-								'options'       => array( 'A', 'B', 'C', 'D' ),
-								'correct_index' => 0,
-								'explanation'   => 'Exp',
-							),
-						),
-					)
+						)
+					),
 				),
-			),
+			)
 		);
-
-		// Numeric count parsing is language-agnostic: "mini quiz with 5 questions"
+		// Numeric count parsing is language-agnostic: "quick quiz with 5 questions"
 		// Parser should find "5" regardless of surrounding context
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'mini quiz with 5 questions', 10, 20, 30 );
+		$result = $agent->run( 'quick quiz with 5 questions', 10, 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertSame( 5, count( $result['quiz']['questions'] ) );
@@ -391,43 +461,46 @@ class AgentTest extends BrainMonkeyTestCase {
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
 	public function test_run_uses_openai_default_when_count_cannot_be_parsed(): void {
+
 		$this->load_agent_with_stubs();
 
-		\LearnPress\Services\OpenAiService::$queue = array(
+		$this->queue_intent_and_responses(
+			'quick_quiz',
 			array(
-				'content' => json_encode(
-					array(
-						'intro'     => 'Quiz',
-						'questions' => array(
-							array(
-								'question'      => 'Q1',
-								'options'       => array( 'A', 'B', 'C', 'D' ),
-								'correct_index' => 0,
-								'explanation'   => 'Exp',
+				array(
+					'content' => json_encode(
+						array(
+							'intro'     => 'Quiz',
+							'questions' => array(
+								array(
+									'question'      => 'Q1',
+									'options'       => array( 'A', 'B', 'C', 'D' ),
+									'correct_index' => 0,
+									'explanation'   => 'Exp',
+								),
+								array(
+									'question'      => 'Q2',
+									'options'       => array( 'A', 'B', 'C', 'D' ),
+									'correct_index' => 1,
+									'explanation'   => 'Exp',
+								),
+								array(
+									'question'      => 'Q3',
+									'options'       => array( 'A', 'B', 'C', 'D' ),
+									'correct_index' => 2,
+									'explanation'   => 'Exp',
+								),
 							),
-							array(
-								'question'      => 'Q2',
-								'options'       => array( 'A', 'B', 'C', 'D' ),
-								'correct_index' => 1,
-								'explanation'   => 'Exp',
-							),
-							array(
-								'question'      => 'Q3',
-								'options'       => array( 'A', 'B', 'C', 'D' ),
-								'correct_index' => 2,
-								'explanation'   => 'Exp',
-							),
-						),
-					)
+						)
+					),
 				),
-			),
+			)
 		);
-
-		// "mini quiz" request without explicit count parser detecting a number
+		// "quick quiz" request without explicit count parser detecting a number
 		// Parser returns null, system prompt allows 3-5 flexibility
 		// When no explicit count, we trust OpenAI's judgment (typically 3)
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'create a mini quiz', 10, 20, 30 );
+		$result = $agent->run( 'create a quick quiz', 10, 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		// When count is null, no capping applied—if OpenAI returns 3, we keep all 3
@@ -439,16 +512,87 @@ class AgentTest extends BrainMonkeyTestCase {
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
+	public function test_run_prioritizes_openai_intent_detection_for_natural_language_message(): void {
+
+		$this->load_agent_with_stubs();
+
+		$this->queue_intent_and_responses(
+			'quick_quiz',
+			array(
+				array(
+					'content' => json_encode(
+						array(
+							'intro'     => 'Quick quiz ready',
+							'questions' => array(
+								array(
+									'question'      => 'Q1',
+									'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
+									'correct_index' => 1,
+									'explanation'   => 'Because B1',
+								),
+							),
+						)
+					),
+				),
+			)
+		);
+
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( 'Tao cho minh ba cau hoi luyen tap', 10, 20, 30 );
+
+		$this->assertSame( 'quiz', $result['type'] );
+		$this->assertTrue( $result['quiz']['is_active'] );
+		$this->assertSame( 1, count( $result['quiz']['questions'] ) );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_blocks_when_daily_token_limit_is_reached(): void {
+
+		$this->load_agent_with_stubs();
+		\LP_Settings::$options['ai_assistant_max_usage_tokens_per_day'] = 5;
+		$GLOBALS['lp_ai_test_user_meta']                                = array();
+
+		\LearnPress\Services\OpenAiService::$queue = array(
+			array(
+				'content' => json_encode(
+					array(
+						'intent' => 'summarize',
+					)
+				),
+				'usage'   => array(
+					'total_tokens' => 5,
+				),
+			),
+			array(
+				'content' => json_encode(
+					array(
+						'message' => 'This response should not be used.',
+					)
+				),
+			),
+		);
+
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( 'Summarize this lesson for me.', 10, 20, 30 );
+
+		$this->assertSame( 'text', $result['type'] );
+		$this->assertStringContainsString( 'Daily AI usage limit reached', $result['message'] );
+	}
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
 	public function test_run_stops_after_max_iterations_and_returns_fallback_text(): void {
 		$this->load_agent_with_stubs();
 
-		\LearnPress\Services\OpenAiService::$queue = array(
-			array( 'content' => '' ),
-			array( 'content' => '' ),
-			array( 'content' => '' ),
-			array( 'content' => '' ),
+		$this->queue_intent_and_responses(
+			'summarize',
+			array(
+				array( 'content' => '' ),
+				array( 'content' => '' ),
+				array( 'content' => '' ),
+				array( 'content' => '' ),
+			)
 		);
-
 		$agent  = new \LearnPress\AI\Assistant\Agent();
 		$result = $agent->run( '/summarize', 10, 20, 30 );
 
@@ -461,16 +605,18 @@ class AgentTest extends BrainMonkeyTestCase {
 	public function test_run_extracts_message_from_json_content_for_text_intent(): void {
 		$this->load_agent_with_stubs();
 
-		\LearnPress\Services\OpenAiService::$queue = array(
+		$this->queue_intent_and_responses(
+			'summarize',
 			array(
-				'content' => json_encode(
-					array(
-						'message' => 'Key points: one, two, three.',
-					)
+				array(
+					'content' => json_encode(
+						array(
+							'message' => 'Key points: one, two, three.',
+						)
+					),
 				),
-			),
+			)
 		);
-
 		$agent  = new \LearnPress\AI\Assistant\Agent();
 		$result = $agent->run( '/summarize', 10, 20, 30 );
 
@@ -481,15 +627,77 @@ class AgentTest extends BrainMonkeyTestCase {
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function test_run_keeps_plain_text_content_for_text_intent(): void {
+	public function test_run_detects_intent_from_plain_text_classifier_output(): void {
 		$this->load_agent_with_stubs();
+
+		$GLOBALS['lp_ai_test_user_meta'] = array();
+		\LP_Settings::$options           = array(
+			'ai_assistant_max_usage_tokens_per_day' => 0,
+		);
 
 		\LearnPress\Services\OpenAiService::$queue = array(
 			array(
-				'content' => 'This is a plain text summary.',
+				'content' => 'intent=summarize',
+			),
+			array(
+				'content' => json_encode(
+					array(
+						'message' => 'Tom tat bai hoc.',
+					)
+				),
 			),
 		);
 
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( 'tong hop noi dung', 10, 20, 30 );
+
+		$this->assertSame( 'text', $result['type'] );
+		$this->assertSame( 'Tom tat bai hoc.', $result['message'] );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_prefers_key_points_content_instead_of_metadata_fields(): void {
+		$this->load_agent_with_stubs();
+
+		$this->queue_intent_and_responses(
+			'summarize',
+			array(
+				array(
+					'content' => json_encode(
+						array(
+							'language'   => 'vi',
+							'title'      => 'key points',
+							'key_points' => array(
+								'Noi dung bai hoc tap trung vao cac khai niem cot loi va vi du thuc te.',
+							),
+						)
+					),
+				),
+			)
+		);
+
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( 'tong hop noi dung bai hoc', 10, 20, 30 );
+
+		$this->assertSame( 'text', $result['type'] );
+		$this->assertSame( 'Noi dung bai hoc tap trung vao cac khai niem cot loi va vi du thuc te.', $result['message'] );
+		$this->assertNotSame( 'key points', strtolower( $result['message'] ) );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_keeps_plain_text_content_for_text_intent(): void {
+		$this->load_agent_with_stubs();
+
+		$this->queue_intent_and_responses(
+			'summarize',
+			array(
+				array(
+					'content' => 'This is a plain text summary.',
+				),
+			)
+		);
 		$agent  = new \LearnPress\AI\Assistant\Agent();
 		$result = $agent->run( '/summarize', 10, 20, 30 );
 

@@ -17,10 +17,10 @@ use LearnPress\Services\OpenAiService;
  */
 class AIAssistantController {
 	private const ACTION_SETTINGS = array(
-		'summarize'    => 'lp_ai_assistant_summarize_enabled',
-		'explain'      => 'lp_ai_assistant_explain_enabled',
-		'mini_quiz'    => 'lp_ai_assistant_mini_quiz_enabled',
-		'smart_review' => 'lp_ai_assistant_smart_review_enabled',
+		'summarize'    => 'ai_assistant_summarize_enabled',
+		'explain'      => 'ai_assistant_explain_enabled',
+		'quick_quiz'   => 'ai_assistant_quick_quiz_enabled',
+		'smart_review' => 'ai_assistant_smart_review_enabled',
 	);
 
 	/**
@@ -29,7 +29,7 @@ class AIAssistantController {
 	 * All three gates must pass:
 	 * - enable_open_ai = yes
 	 * - secret key exists
-	 * - lp_ai_assistant_enabled = yes
+	 * - ai_assistant_enabled = yes
 	 *
 	 * @return bool
 	 */
@@ -44,7 +44,7 @@ class AIAssistantController {
 			return false;
 		}
 
-		return LP_Settings::get_option( 'lp_ai_assistant_enabled', 'no' ) === 'yes';
+		return LP_Settings::get_option( 'ai_assistant_enabled', 'no' ) === 'yes';
 	}
 
 	/**
@@ -138,7 +138,7 @@ class AIAssistantController {
 	}
 
 	/**
-	 * Sanitize active mini-quiz state from frontend.
+	 * Sanitize active quick-quiz state from frontend.
 	 *
 	 * @param mixed $quiz_data
 	 *

@@ -98,6 +98,12 @@ class DataLoadersTest extends BrainMonkeyTestCase {
 		if ( ! defined( 'LP_ITEM_COMPLETED' ) ) {
 			define( 'LP_ITEM_COMPLETED', 'completed' );
 		}
+		if ( ! defined( 'LP_QUIZ_CPT' ) ) {
+			define( 'LP_QUIZ_CPT', 'lp_quiz' );
+		}
+		if ( ! defined( 'LP_COURSE_CPT' ) ) {
+			define( 'LP_COURSE_CPT', 'lp_course' );
+		}
 
 		$section                               = (object) array(
 			'section_id'   => 13,

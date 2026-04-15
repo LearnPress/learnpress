@@ -47,35 +47,41 @@ class OpenAiServiceTest extends BrainMonkeyTestCase {
 
 	private function make_service(): OpenAiService {
 		\LP_Settings::$options = array(
-			'open_ai_secret_key' => 'sk-test',
-			'open_ai_text_model_type' => 'gpt-4o',
-			'open_ai_image_model_type' => 'dall-e-3',
+			'open_ai_secret_key'              => 'sk-test',
+			'open_ai_text_model_type'         => 'gpt-4o',
+			'open_ai_image_model_type'        => 'dall-e-3',
 			'open_ai_frequency_penalty_level' => 0.2,
-			'open_ai_presence_penalty_level' => 0.1,
-			'open_ai_creativity_level' => 0.7,
-			'open_ai_max_token' => 250,
+			'open_ai_presence_penalty_level'  => 0.1,
+			'open_ai_creativity_level'        => 0.7,
+			'open_ai_max_token'               => 250,
 		);
 
-		$service = OpenAiService::instance();
-		$service->secret_key = 'sk-test';
+		$service                     = OpenAiService::instance();
+		$service->secret_key         = 'sk-test';
 		$service->urlChartCompletion = 'https://example.test/v1/chat/completions';
 
 		return $service;
 	}
 
 	public function test_handle_params_for_send_chat_completion_includes_tools_and_tool_choice(): void {
-		$service = $this->make_service();
+		$service  = $this->make_service();
 		$messages = array(
-			array( 'role' => 'user', 'content' => 'hello' ),
+			array(
+				'role'    => 'user',
+				'content' => 'hello',
+			),
 		);
-		$tools = array(
-			array( 'type' => 'function', 'function' => array( 'name' => 'get_lesson_content' ) ),
+		$tools    = array(
+			array(
+				'type'     => 'function',
+				'function' => array( 'name' => 'get_lesson_content' ),
+			),
 		);
 
 		$params = $service->handle_params_for_send_chat_completion(
 			array(
-				'messages' => $messages,
-				'tools' => $tools,
+				'messages'    => $messages,
+				'tools'       => $tools,
 				'tool_choice' => 'auto',
 			)
 		);
@@ -95,7 +101,10 @@ class OpenAiServiceTest extends BrainMonkeyTestCase {
 		$params = $service->handle_params_for_send_chat_completion(
 			array(
 				'messages' => array(
-					array( 'role' => 'user', 'content' => 'summarize lesson' ),
+					array(
+						'role'    => 'user',
+						'content' => 'summarize lesson',
+					),
 				),
 			)
 		);
@@ -105,12 +114,12 @@ class OpenAiServiceTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_send_chat_request_returns_raw_tool_calls_message(): void {
-		$service = $this->make_service();
+		$service  = $this->make_service();
 		$captured = array();
 
 		Functions\when( 'wp_remote_post' )->alias(
-			static function( $url, $args ) use ( &$captured ) {
-				$captured['url'] = $url;
+			static function ( $url, $args ) use ( &$captured ) {
+				$captured['url']  = $url;
 				$captured['args'] = $args;
 				return array( 'ok' => true );
 			}
@@ -119,16 +128,19 @@ class OpenAiServiceTest extends BrainMonkeyTestCase {
 		Functions\when( 'wp_remote_retrieve_body' )->justReturn(
 			json_encode(
 				array(
+					'usage'   => array(
+						'total_tokens' => 42,
+					),
 					'choices' => array(
 						array(
 							'message' => array(
-								'role' => 'assistant',
-								'content' => null,
+								'role'       => 'assistant',
+								'content'    => null,
 								'tool_calls' => array(
 									array(
-										'id' => 'call_1',
+										'id'       => 'call_1',
 										'function' => array(
-											'name' => 'get_lesson_content',
+											'name'      => 'get_lesson_content',
 											'arguments' => '{"lesson_id":10}',
 										),
 									),
@@ -143,10 +155,16 @@ class OpenAiServiceTest extends BrainMonkeyTestCase {
 		$message = $service->send_chat_request(
 			array(
 				'messages' => array(
-					array( 'role' => 'user', 'content' => 'help me' ),
+					array(
+						'role'    => 'user',
+						'content' => 'help me',
+					),
 				),
-				'tools' => array(
-					array( 'type' => 'function', 'function' => array( 'name' => 'get_lesson_content' ) ),
+				'tools'    => array(
+					array(
+						'type'     => 'function',
+						'function' => array( 'name' => 'get_lesson_content' ),
+					),
 				),
 			)
 		);
@@ -154,5 +172,6 @@ class OpenAiServiceTest extends BrainMonkeyTestCase {
 		$this->assertSame( 'https://example.test/v1/chat/completions', $captured['url'] );
 		$this->assertArrayHasKey( 'tool_calls', $message );
 		$this->assertSame( 'get_lesson_content', $message['tool_calls'][0]['function']['name'] );
+		$this->assertSame( 42, $message['usage']['total_tokens'] );
 	}
 }

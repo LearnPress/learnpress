@@ -3,7 +3,7 @@
  * Template hook: AI Assistant floating chat panel on curriculum pages.
  *
  * Two rendering contexts:
- * - Lesson pages: Show quick actions (Summarize, Explain, Mini Quiz) + optional free chat.
+ * - Lesson pages: Show quick actions (Summarize, Explain, Quick Quiz) + optional free chat.
  * - Quiz pages:  Show ONLY after user completed the quiz → Smart Review button only.
  *
  * @since   4.3.5
@@ -48,7 +48,7 @@ class CourseAIAssistantTemplate {
 	 * @return bool
 	 */
 	protected function should_render(): bool {
-		
+
 		$current_page = LP_Page_Controller::page_current();
 		if ( ! in_array( $current_page, array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_QUIZ ), true ) ) {
 			return false;
@@ -92,7 +92,7 @@ class CourseAIAssistantTemplate {
 			$user_id   = get_current_user_id();
 
 			$enabled_actions   = AIAssistantController::get_enabled_actions();
-			$free_chat_enabled = LP_Settings::get_option( 'lp_ai_assistant_free_chat', 'no' ) === 'yes';
+			$free_chat_enabled = LP_Settings::get_option( 'ai_assistant_free_chat', 'no' ) === 'yes';
 
 			if ( $context === 'quiz' ) {
 				// Quiz page: show ONLY Smart Review, ONLY after quiz is completed.
@@ -106,10 +106,10 @@ class CourseAIAssistantTemplate {
 				}
 
 				// Override: only Smart Review button, no free chat on quiz page.
-				$enabled_actions = array(
+				$enabled_actions   = array(
 					'summarize'    => false,
 					'explain'      => false,
-					'mini_quiz'    => false,
+					'quick_quiz'    => false,
 					'smart_review' => true,
 				);
 				$free_chat_enabled = false;
@@ -145,13 +145,13 @@ class CourseAIAssistantTemplate {
 					'i18n'            => array(
 						'you'               => __( 'You', 'learnpress' ),
 						'assistant'         => __( 'AI Assistant', 'learnpress' ),
-						'thinking'          => __( 'Thinking…', 'learnpress' ),
+						'thinking'          => __( 'Thinking...', 'learnpress' ),
 						'sendError'         => __( 'An error occurred. Please try again.', 'learnpress' ),
 						'clearConfirm'      => __( 'Clear chat history?', 'learnpress' ),
-						'quizPrompt'        => __( '/mini-quiz', 'learnpress' ),
-						'explainPrompt'     => __( '/explain', 'learnpress' ),
-						'summarizePrompt'   => __( '/summarize', 'learnpress' ),
-						'smartReviewPrompt' => __( '/smart-review', 'learnpress' ),
+						'quizPrompt'        => __( 'Create a quick quiz from this lesson.', 'learnpress' ),
+						'explainPrompt'     => __( 'Explain a concept from this lesson.', 'learnpress' ),
+						'summarizePrompt'   => __( 'Summarize this lesson with key points.', 'learnpress' ),
+						'smartReviewPrompt' => __( 'Give me a smart review of my quiz results.', 'learnpress' ),
 					),
 				)
 			);
@@ -313,10 +313,10 @@ class CourseAIAssistantTemplate {
 			);
 		}
 
-		if ( $enabled_actions['mini_quiz'] ?? true ) {
+		if ( $enabled_actions['quick_quiz'] ?? true ) {
 			$buttons[] = sprintf(
-				'<button type="button" class="lp-ai-assistant__quick-btn" data-lp-ai-action="mini-quiz">%s</button>',
-				esc_html__( 'Mini Quiz', 'learnpress' )
+				'<button type="button" class="lp-ai-assistant__quick-btn" data-lp-ai-action="quick-quiz">%s</button>',
+				esc_html__( 'Quick Quiz', 'learnpress' )
 			);
 		}
 
