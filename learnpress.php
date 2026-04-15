@@ -687,7 +687,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				$addon_valid            = $addon->check_require_version_addon();
 
 				if ( $addons_valid ) {
-					$addon_valid = $addon->check_require_version_lp();
+					//$addon_valid = $addon->check_require_version_lp();
 				}
 
 				if ( ! $addon_valid ) {
