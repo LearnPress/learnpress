@@ -383,7 +383,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							continue;
 						}
 
-						if ( isset( $_POST[ $meta_key ] ) ) {
+						if ( isset( $_POST[ $meta_key ] ) && ! empty( $wp_screen ) && LP_COURSE_CPT === $wp_screen->id ) {
 							$value_saved = $option->save( $courseModel->ID );
 							if ( ! empty( $value_saved ) ) {
 								$courseModel->meta_data->{$meta_key} = $value_saved;
@@ -421,6 +421,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$filter_update->where[]    = $lp_db->wpdb->prepare( 'AND ID = %d', $courseModel->ID );
 					$lp_db->update_execute( $filter_update );
 					clean_post_cache( $post->ID );
+				} elseif ( isset( $_POST['post_author'] ) && isset( $_POST['screen'] ) && $_POST['screen'] === 'edit-' . LP_COURSE_CPT ) {
+					// For case quick edit change author.
+					$courseModel->post_author = LP_Request::get_param( 'post_author', 0, 'int' );
 				}
 
 				$this->save_price( $courseModel );
