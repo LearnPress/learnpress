@@ -88,7 +88,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 				class Agent {
 					public static array $captured = array();
 					public static array $result = array( "type" => "text", "message" => "ok", "quiz" => null );
-					public function run( string $message, int $lesson_id, int $course_id, int $user_id, array $history = array(), array $active_quiz_questions = array() ): array {
+					public function run( string $message, int $lesson_id, int $course_id, int $user_id, array $history = array(), array $active_quiz_questions = array(), ?string $action_hint = null ): array {
 						self::$captured = array(
 							"message" => $message,
 							"lesson_id" => $lesson_id,
@@ -96,6 +96,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 							"user_id" => $user_id,
 							"history" => $history,
 							"active_quiz_questions" => $active_quiz_questions,
+							"action_hint" => $action_hint,
 						);
 						return self::$result;
 					}
@@ -201,6 +202,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 						),
 					),
 				),
+				'action_hint'          => 'quick-quiz',
 			)
 		);
 
@@ -212,6 +214,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 		$this->assertTrue( \LearnPress\AI\Assistant\Agent::$captured['active_quiz_questions']['is_active'] );
 		$this->assertSame( 2, \LearnPress\AI\Assistant\Agent::$captured['active_quiz_questions']['current_index'] );
 		$this->assertSame( 'Q1', \LearnPress\AI\Assistant\Agent::$captured['active_quiz_questions']['questions'][0]['question'] );
+		$this->assertSame( 'quick_quiz', \LearnPress\AI\Assistant\Agent::$captured['action_hint'] );
 	}
 }
 

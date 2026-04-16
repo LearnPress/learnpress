@@ -53,7 +53,8 @@ class Agent {
 		int $course_id,
 		int $user_id,
 		array $history = array(),
-		array $active_quiz = array()
+		array $active_quiz = array(),
+		?string $action_hint = null
 	): array {
 
 		$this->quota_guard->reset();
@@ -68,8 +69,8 @@ class Agent {
 			return $this->quiz_engine->continue_session( $user_message, $active_quiz );
 		}
 
-		// Classify intent (may consume quota tokens).
-		$intent = $this->classifier->classify( $user_message, $history, $lesson_id, $course_id, $user_id );
+		// Use validated quick-action hint when present, otherwise classify intent via OpenAI.
+		$intent = $this->resolve_intent( $user_message, $history, $lesson_id, $course_id, $user_id, $action_hint );
 		if ( $this->quota_guard->is_blocked() ) {
 			return $this->normalizer->build_response( $this->quota_guard->get_block_message() );
 		}
@@ -96,6 +97,68 @@ class Agent {
 			default:
 				return $this->handle_general( $data_loaders, $user_message, $lesson_id, $user_id, $history );
 		}
+	}
+
+	/**
+	 * Resolve final intent, prioritizing an explicit validated action hint.
+	 *
+	 * @param string      $user_message Learner input.
+	 * @param array       $history      Conversation history.
+	 * @param int         $lesson_id    Current lesson ID.
+	 * @param int         $course_id    Current course ID.
+	 * @param int         $user_id      Current user ID.
+	 * @param string|null $action_hint  Optional quick-action hint from frontend.
+	 *
+	 * @return string
+	 */
+	private function resolve_intent(
+		string $user_message,
+		array $history,
+		int $lesson_id,
+		int $course_id,
+		int $user_id,
+		?string $action_hint
+	): string {
+
+		$hint_intent = $this->normalize_action_hint( $action_hint );
+		if ( '' !== $hint_intent ) {
+			return $hint_intent;
+		}
+
+		return $this->classifier->classify( $user_message, $history, $lesson_id, $course_id, $user_id );
+	}
+
+	/**
+	 * Normalize optional action hint to a supported intent.
+	 *
+	 * @param string|null $action_hint Raw action hint.
+	 *
+	 * @return string
+	 */
+	private function normalize_action_hint( ?string $action_hint ): string {
+		if ( ! is_string( $action_hint ) ) {
+			return '';
+		}
+
+		$normalized = strtolower( trim( $action_hint ) );
+		if ( '' === $normalized ) {
+			return '';
+		}
+
+		$normalized = str_replace( '-', '_', $normalized );
+
+		$aliases = array(
+			'quick_quiz'   => IntentClassifier::INTENT_QUICK_QUIZ,
+			'explain'      => IntentClassifier::INTENT_EXPLAIN,
+			'summarize'    => IntentClassifier::INTENT_SUMMARIZE,
+			'smart_review' => IntentClassifier::INTENT_SMART_REVIEW,
+		);
+
+		if ( isset( $aliases[ $normalized ] ) ) {
+			$normalized = $aliases[ $normalized ];
+		}
+
+		return $this->classifier->is_supported_intent( $normalized ) ? $normalized : '';
 	}
 
 	// ----------------------------------------------------------------

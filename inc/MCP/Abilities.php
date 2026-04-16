@@ -51,12 +51,14 @@ class Abilities {
 	protected static $initialized = false;
 
 	/**
-	 * Initialize ability registration hooks when Abilities API exists.
+	 * Initialize ability registration hooks when the WordPress Abilities API runtime is available.
 	 *
 	 * @return void
 	 */
 	public static function init(): void {
-		if ( self::$initialized || ! function_exists( 'wp_register_ability' ) ) {
+		if ( self::$initialized
+			|| ! function_exists( 'wp_register_ability' )
+			|| ! function_exists( 'wp_register_ability_category' ) ) {
 			return;
 		}
 

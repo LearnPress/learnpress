@@ -84,11 +84,12 @@ class AIAssistantController {
 	 * @throws Exception On validation failure or API error.
 	 */
 	public function handle_chat( array $data ): array {
-		$message   = trim( $data['message'] ?? '' );
-		$lesson_id = absint( $data['lesson_id'] ?? 0 );
-		$course_id = absint( $data['course_id'] ?? 0 );
-		$history   = $data['history'] ?? array();
-		$quiz_data = $data['active_quiz_questions'] ?? array();
+		$message     = trim( $data['message'] ?? '' );
+		$lesson_id   = absint( $data['lesson_id'] ?? 0 );
+		$course_id   = absint( $data['course_id'] ?? 0 );
+		$history     = $data['history'] ?? array();
+		$quiz_data   = $data['active_quiz_questions'] ?? array();
+		$action_hint = $this->sanitize_action_hint( $data['action_hint'] ?? '' );
 
 		if ( $message === '' ) {
 			throw new Exception( __( 'Message is required.', 'learnpress' ) );
@@ -133,8 +134,38 @@ class AIAssistantController {
 			$course_id,
 			$user_id,
 			$sanitized_history,
-			$sanitized_quiz_state
+			$sanitized_quiz_state,
+			$action_hint
 		);
+	}
+
+	/**
+	 * Sanitize optional quick-action hint from frontend.
+	 *
+	 * @param mixed $action_hint Raw action hint.
+	 *
+	 * @return string|null
+	 */
+	private function sanitize_action_hint( $action_hint ): ?string {
+		if ( ! is_scalar( $action_hint ) ) {
+			return null;
+		}
+
+		$normalized = strtolower( trim( (string) $action_hint ) );
+		if ( '' === $normalized ) {
+			return null;
+		}
+
+		$normalized = str_replace( '-', '_', $normalized );
+
+		$aliases = array(
+			'quick_quiz'   => 'quick_quiz',
+			'summarize'    => 'summarize',
+			'explain'      => 'explain',
+			'smart_review' => 'smart_review',
+		);
+
+		return $aliases[ $normalized ] ?? null;
 	}
 
 	/**

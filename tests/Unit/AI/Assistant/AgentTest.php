@@ -547,6 +547,43 @@ class AgentTest extends BrainMonkeyTestCase {
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
+	public function test_run_uses_action_hint_to_skip_intent_classification_call(): void {
+		$this->load_agent_with_stubs();
+
+		$GLOBALS['lp_ai_test_user_meta'] = array();
+		\LP_Settings::$options           = array(
+			'ai_assistant_max_usage_tokens_per_day' => 0,
+		);
+
+		\LearnPress\Services\OpenAiService::$queue = array(
+			array(
+				'content' => json_encode(
+					array(
+						'intro'     => 'Quick quiz ready',
+						'questions' => array(
+							array(
+								'question'      => 'Q1',
+								'options'       => array( 'A1', 'B1', 'C1', 'D1' ),
+								'correct_index' => 1,
+								'explanation'   => 'Because B1',
+							),
+						),
+					)
+				),
+			),
+		);
+
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( 'Bat dau nhanh giup toi', 10, 20, 30, array(), array(), 'quick_quiz' );
+
+		$this->assertSame( 'quiz', $result['type'] );
+		$this->assertSame( 'Quick quiz ready', $result['message'] );
+		$this->assertSame( 1, count( $result['quiz']['questions'] ) );
+		$this->assertSame( array(), \LearnPress\Services\OpenAiService::$queue );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
 	public function test_run_blocks_when_daily_token_limit_is_reached(): void {
 
 		$this->load_agent_with_stubs();

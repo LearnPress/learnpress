@@ -59,7 +59,7 @@ class LP_Admin_MCP_API_Keys {
 	 * @return void
 	 */
 	public function localize_admin_script(): void {
-		if ( ! $this->is_mcp_adapter_active() || ! wp_script_is( 'lp-admin-mcp-api-keys', 'enqueued' ) ) {
+		if ( ! LP_Settings_Mcp::is_mcp_available() || ! wp_script_is( 'lp-admin-mcp-api-keys', 'enqueued' ) ) {
 			return;
 		}
 
@@ -94,7 +94,7 @@ class LP_Admin_MCP_API_Keys {
 		if ( ! current_user_can( $this->required_capability ) ) {
 			wp_die( esc_html__( 'Sorry, you are not allowed to manage MCP API keys.', 'learnpress' ) );
 		}
-		if ( ! $this->is_mcp_adapter_active() ) {
+		if ( ! LP_Settings_Mcp::is_mcp_available() ) {
 			return;
 		}
 
@@ -125,7 +125,7 @@ class LP_Admin_MCP_API_Keys {
 	 * @return void
 	 */
 	public function handle_admin_actions(): void {
-		if ( ! $this->is_mcp_keys_settings_screen() || ! current_user_can( $this->required_capability ) || ! $this->is_mcp_adapter_active() ) {
+		if ( ! $this->is_mcp_keys_settings_screen() || ! current_user_can( $this->required_capability ) || ! LP_Settings_Mcp::is_mcp_available() ) {
 			return;
 		}
 
@@ -200,19 +200,6 @@ class LP_Admin_MCP_API_Keys {
 	}
 
 	/**
-	 * Check whether MCP Adapter plugin is active.
-	 *
-	 * @return bool
-	 */
-	protected function is_mcp_adapter_active(): bool {
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		return function_exists( 'is_plugin_active' ) && is_plugin_active( 'mcp-adapter/mcp-adapter.php' );
-	}
-
-	/**
 	 * Is current request LearnPress MCP settings screen.
 	 *
 	 * @return bool
@@ -224,5 +211,4 @@ class LP_Admin_MCP_API_Keys {
 		return 'learn-press-settings' === $page
 			&& 'mcp' === $tab;
 	}
-
 }

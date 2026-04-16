@@ -289,7 +289,7 @@ export class AIAssistantWidget {
 		}
 
 		this.openPanel();
-		this.sendMessage( prompt );
+		this.sendMessage( prompt, action );
 	}
 
 	handleQuizOptionClick( args ) {
@@ -494,7 +494,7 @@ export class AIAssistantWidget {
 		msgList.scrollTop = Math.max( 0, messageEl.offsetTop - 8 );
 	}
 
-	sendMessage( message ) {
+	sendMessage( message, actionHint = '' ) {
 		const text = ( message || '' ).trim();
 		if ( this.isRequesting || ! text ) {
 			return;
@@ -524,6 +524,7 @@ export class AIAssistantWidget {
 			course_id: this.config.courseId,
 			history: contextHistory,
 			active_quiz_questions: this.activeQuizState || [],
+			action_hint: typeof actionHint === 'string' ? actionHint : '',
 		};
 
 		const callBack = {
