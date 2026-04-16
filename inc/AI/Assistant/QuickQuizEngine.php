@@ -15,6 +15,9 @@ use LearnPress\Services\OpenAiService;
  */
 class QuickQuizEngine {
 
+	private const QUIZ_PROMPT_HISTORY_LIMIT = 3;
+	private const HISTORY_CONTENT_MAX_CHARS = 400;
+
 	private TokenQuotaGuard $quota_guard;
 	private LanguageResolver $language_resolver;
 	private ResponseNormalizer $normalizer;
@@ -48,9 +51,10 @@ class QuickQuizEngine {
 		}
 
 		$service            = OpenAiService::instance();
+		$history_slice      = $this->slice_recent_history( $history, self::QUIZ_PROMPT_HISTORY_LIMIT );
 		$question_count     = $this->extract_requested_quiz_count( $user_message );
 		$has_explicit_count = null !== $question_count;
-		$language_guidance  = $this->language_resolver->build_instruction( $user_message, $history, $user_id );
+		$language_guidance  = $this->language_resolver->build_instruction( $user_message, $history_slice, $user_id );
 
 		$system_instructions = $has_explicit_count
 			? sprintf(
@@ -75,7 +79,7 @@ class QuickQuizEngine {
 			),
 		);
 
-		foreach ( $history as $item ) {
+		foreach ( $history_slice as $item ) {
 			if ( ! empty( $item['role'] ) && isset( $item['content'] ) ) {
 				$messages[] = array(
 					'role'    => $item['role'],
@@ -160,10 +164,12 @@ class QuickQuizEngine {
 		$state['current_index'] = $next_index;
 		$state['total']         = $total;
 		$state['feedback']      = array(
-			'is_correct'     => $is_correct,
-			'correct_index'  => $correct_index,
-			'correct_answer' => $question['options'][ $correct_index ] ?? '',
-			'explanation'    => $question['explanation'] ?? '',
+			'is_correct'      => $is_correct,
+			'selected_index'  => $answer_i,
+			'selected_answer' => $question['options'][ $answer_i ] ?? '',
+			'correct_index'   => $correct_index,
+			'correct_answer'  => $question['options'][ $correct_index ] ?? '',
+			'explanation'     => $question['explanation'] ?? '',
 		);
 
 		if ( $next_index >= $total ) {
@@ -199,6 +205,46 @@ class QuickQuizEngine {
 	// ----------------------------------------------------------------
 	// Private helpers
 	// ----------------------------------------------------------------
+
+	/**
+	 * Keep only recent and valid chat history rows for quiz-generation prompts.
+	 *
+	 * @param array $history Chat history.
+	 * @param int   $limit   Number of rows to keep from the end.
+	 *
+	 * @return array<int, array{role: string, content: string}>
+	 */
+	private function slice_recent_history( array $history, int $limit ): array {
+
+		$sanitized = array();
+
+		foreach ( $history as $item ) {
+			if ( ! is_array( $item ) ) {
+				continue;
+			}
+
+			$role = (string) ( $item['role'] ?? '' );
+			if ( ! in_array( $role, array( 'user', 'assistant' ), true ) ) {
+				continue;
+			}
+
+			$content = trim( (string) ( $item['content'] ?? '' ) );
+			if ( '' === $content ) {
+				continue;
+			}
+
+			$sanitized[] = array(
+				'role'    => $role,
+				'content' => mb_substr( $content, 0, self::HISTORY_CONTENT_MAX_CHARS, 'UTF-8' ),
+			);
+		}
+
+		if ( empty( $sanitized ) ) {
+			return array();
+		}
+
+		return array_slice( $sanitized, -1 * max( 1, $limit ) );
+	}
 
 	/**
 	 * Parse learner answer into option index.

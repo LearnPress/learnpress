@@ -19,7 +19,9 @@ use LearnPress\Services\OpenAiService;
  */
 class Agent {
 
-	private const MAX_TOOL_ITERATIONS = 4;
+	private const MAX_TOOL_ITERATIONS       = 4;
+	private const CHAT_HISTORY_LIMIT        = 3;
+	private const HISTORY_CONTENT_MAX_CHARS = 400;
 
 	private IntentClassifier $classifier;
 	private TokenQuotaGuard $quota_guard;
@@ -254,21 +256,22 @@ class Agent {
 	 */
 	private function ask_openai_text( array $history, string $user_message, string $instruction, array $context, int $user_id ): string {
 
-		$service    = OpenAiService::instance();
-		$messages   = array();
-		$messages[] = array(
+		$service       = OpenAiService::instance();
+		$history_slice = $this->slice_recent_history( $history, self::CHAT_HISTORY_LIMIT );
+		$messages      = array();
+		$messages[]    = array(
 			'role'    => 'system',
 			'content' => $this->get_system_prompt() . "\n" . $instruction,
 		);
-		$messages[] = array(
+		$messages[]    = array(
 			'role'    => 'system',
-			'content' => $this->language_resolver->build_instruction( $user_message, $history, $user_id ),
+			'content' => $this->language_resolver->build_instruction( $user_message, $history_slice, $user_id ),
 		);
-		$messages[] = array(
+		$messages[]    = array(
 			'role'    => 'system',
 			'content' => __( 'Output contract: return ONLY valid JSON with exactly one key "message" (string). Put the full reply text inside "message". Do not include keys like language, locale, intent, type, or key_points.', 'learnpress' ),
 		);
-		$messages[] = array(
+		$messages[]    = array(
 			'role'    => 'system',
 			'content' => sprintf(
 				/* translators: %s: JSON encoded learning context. */
@@ -277,7 +280,7 @@ class Agent {
 			),
 		);
 
-		foreach ( $history as $item ) {
+		foreach ( $history_slice as $item ) {
 			if ( ! empty( $item['role'] ) && isset( $item['content'] ) ) {
 				$messages[] = array(
 					'role'    => $item['role'],
@@ -303,6 +306,46 @@ class Agent {
 		}
 
 		return __( 'I was unable to complete the request. Please try again.', 'learnpress' );
+	}
+
+	/**
+	 * Keep only recent and valid chat history rows for text-generation requests.
+	 *
+	 * @param array $history Chat history.
+	 * @param int   $limit   Number of rows to keep from the end.
+	 *
+	 * @return array<int, array{role: string, content: string}>
+	 */
+	private function slice_recent_history( array $history, int $limit ): array {
+
+		$sanitized = array();
+
+		foreach ( $history as $item ) {
+			if ( ! is_array( $item ) ) {
+				continue;
+			}
+
+			$role = (string) ( $item['role'] ?? '' );
+			if ( ! in_array( $role, array( 'user', 'assistant' ), true ) ) {
+				continue;
+			}
+
+			$content = trim( (string) ( $item['content'] ?? '' ) );
+			if ( '' === $content ) {
+				continue;
+			}
+
+			$sanitized[] = array(
+				'role'    => $role,
+				'content' => mb_substr( $content, 0, self::HISTORY_CONTENT_MAX_CHARS, 'UTF-8' ),
+			);
+		}
+
+		if ( empty( $sanitized ) ) {
+			return array();
+		}
+
+		return array_slice( $sanitized, -1 * max( 1, $limit ) );
 	}
 
 	// ----------------------------------------------------------------

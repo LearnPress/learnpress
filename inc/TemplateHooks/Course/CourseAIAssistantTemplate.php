@@ -109,7 +109,7 @@ class CourseAIAssistantTemplate {
 				$enabled_actions   = array(
 					'summarize'    => false,
 					'explain'      => false,
-					'quick_quiz'    => false,
+					'quick_quiz'   => false,
 					'smart_review' => true,
 				);
 				$free_chat_enabled = false;
@@ -152,6 +152,8 @@ class CourseAIAssistantTemplate {
 						'explainPrompt'     => __( 'Explain a concept from this lesson.', 'learnpress' ),
 						'summarizePrompt'   => __( 'Summarize this lesson with key points.', 'learnpress' ),
 						'smartReviewPrompt' => __( 'Give me a smart review of my quiz results.', 'learnpress' ),
+						'quizCorrectTitle'  => __( 'Correct', 'learnpress' ),
+						'quizWrongTitle'    => __( 'Incorrect', 'learnpress' ),
 					),
 				)
 			);

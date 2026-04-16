@@ -15,11 +15,13 @@ use LearnPress\Services\OpenAiService;
  */
 class IntentClassifier {
 
-	public const INTENT_SUMMARIZE    = 'summarize';
-	public const INTENT_EXPLAIN      = 'explain';
-	public const INTENT_QUICK_QUIZ   = 'quick_quiz';
-	public const INTENT_SMART_REVIEW = 'smart_review';
-	public const INTENT_GENERAL      = 'general';
+	public const INTENT_SUMMARIZE           = 'summarize';
+	public const INTENT_EXPLAIN             = 'explain';
+	public const INTENT_QUICK_QUIZ          = 'quick_quiz';
+	public const INTENT_SMART_REVIEW        = 'smart_review';
+	public const INTENT_GENERAL             = 'general';
+	private const HISTORY_LIMIT             = 3;
+	private const HISTORY_CONTENT_MAX_CHARS = 300;
 
 	private TokenQuotaGuard $quota_guard;
 	private ResponseNormalizer $normalizer;
@@ -93,7 +95,7 @@ class IntentClassifier {
 
 		$service            = OpenAiService::instance();
 		$item_type          = (string) get_post_type( $item_id );
-		$conversation_slice = $this->slice_recent_history( $history, 6 );
+		$conversation_slice = $this->slice_recent_history( $history, self::HISTORY_LIMIT );
 		$context_payload    = array(
 			'item_id'   => $item_id,
 			'course_id' => $course_id,
@@ -228,7 +230,7 @@ class IntentClassifier {
 			}
 
 			$role    = (string) ( $item['role'] ?? '' );
-			$content = (string) ( $item['content'] ?? '' );
+			$content = trim( (string) ( $item['content'] ?? '' ) );
 
 			if ( ! in_array( $role, array( 'user', 'assistant' ), true ) || $content === '' ) {
 				continue;
@@ -236,7 +238,7 @@ class IntentClassifier {
 
 			$sanitized[] = array(
 				'role'    => $role,
-				'content' => $content,
+				'content' => mb_substr( $content, 0, self::HISTORY_CONTENT_MAX_CHARS, 'UTF-8' ),
 			);
 		}
 

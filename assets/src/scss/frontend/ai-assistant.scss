@@ -241,6 +241,11 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.65em;
+
+		&--review {
+			border-color: #d8dde3;
+			background: #fff;
+		}
 	}
 
 	&__quiz-head {
@@ -279,6 +284,33 @@
 		&:focus-visible {
 			border-color: var(--lp-primary-color, #ffb606);
 			background: #fff8e8;
+			outline: none;
+		}
+
+		&.is-selected-wrong {
+			border-color: #ef4444;
+			background: #fdecec;
+			color: #b42318;
+			font-weight: 600;
+		}
+
+		&.is-correct-answer,
+		&.is-selected-correct {
+			border-color: #22c55e;
+			background: #e8f8ef;
+			color: #166534;
+			font-weight: 600;
+		}
+
+		&:disabled {
+			cursor: default;
+		}
+	}
+
+	&__quiz-card--review &__quiz-option {
+		&:hover,
+		&:focus-visible {
+			background: inherit;
 			outline: none;
 		}
 	}

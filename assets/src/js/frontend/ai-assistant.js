@@ -23,6 +23,7 @@ export class AIAssistantWidget {
 		this.activeQuizState = null;
 		this.isRequesting = false;
 		this.quizHookBound = false;
+		this.lastQuizReviewSignature = '';
 	}
 
 	static selectors = {
@@ -113,6 +114,8 @@ export class AIAssistantWidget {
 			quizPrompt: this.config?.i18n?.quizPrompt || 'Create a quick quiz from this lesson.',
 			summarizePrompt: this.config?.i18n?.summarizePrompt || 'Summarize this lesson with key points.',
 			smartReviewPrompt: this.config?.i18n?.smartReviewPrompt || 'Give me a smart review of my quiz results.',
+			quizCorrectTitle: this.config?.i18n?.quizCorrectTitle || 'Correct!',
+			quizWrongTitle: this.config?.i18n?.quizWrongTitle || 'Not correct!',
 		};
 
 		return true;
@@ -382,8 +385,16 @@ export class AIAssistantWidget {
 			if ( ! Array.isArray( this.history ) ) {
 				this.history = [];
 			}
+
+			const lastReview = [ ...this.history ]
+				.reverse()
+				.find( ( item ) => item?.type === 'quiz_review' && item?.review );
+			this.lastQuizReviewSignature = lastReview?.review
+				? this.getQuizReviewKey( lastReview.review )
+				: '';
 		} catch ( _e ) {
 			this.history = [];
+			this.lastQuizReviewSignature = '';
 		}
 	}
 
@@ -398,6 +409,7 @@ export class AIAssistantWidget {
 	clearHistory() {
 		this.history = [];
 		this.activeQuizState = null;
+		this.lastQuizReviewSignature = '';
 		this.elements.msgList.innerHTML = '';
 		localStorage.removeItem( this.storageKey );
 		this.setQuizInputMode( false );
@@ -426,6 +438,11 @@ export class AIAssistantWidget {
 	renderHistoryToDOM() {
 		this.elements.msgList.innerHTML = '';
 		this.history.forEach( ( message ) => {
+			if ( message?.type === 'quiz_review' && message?.review ) {
+				this.appendQuizReviewCard( message.review );
+				return;
+			}
+
 			if ( ! message || ! [ 'user', 'assistant' ].includes( message.role ) ) {
 				return;
 			}
@@ -436,10 +453,105 @@ export class AIAssistantWidget {
 		this.renderQuizState();
 	}
 
+	getQuizReviewFromState( quiz ) {
+		if ( ! quiz || ! quiz.feedback || typeof quiz.feedback !== 'object' ) {
+			return null;
+		}
+
+		const currentIndex = Number.parseInt( quiz.current_index || 0, 10 );
+		const questionIndex = Math.max( 0, currentIndex - 1 );
+		const question = quiz.questions?.[ questionIndex ];
+		if ( ! question || ! Array.isArray( question.options ) ) {
+			return null;
+		}
+
+		const selectedIndex = Number.parseInt( quiz.feedback.selected_index ?? -1, 10 );
+		const correctIndex = Number.parseInt( quiz.feedback.correct_index ?? -1, 10 );
+
+		return {
+			question_index: questionIndex,
+			total: Number.parseInt( quiz.total || question.options.length || 0, 10 ),
+			question: question.question || '',
+			options: question.options,
+			selected_index: selectedIndex,
+			correct_index: correctIndex,
+			is_correct: !! quiz.feedback.is_correct,
+			explanation: quiz.feedback.explanation || '',
+		};
+	}
+
+	getQuizReviewKey( review ) {
+		return [
+			review.question_index,
+			review.total,
+			review.selected_index,
+			review.correct_index,
+			review.is_correct ? 1 : 0,
+		].join( '|' );
+	}
+
+	pushQuizReviewToHistory( review ) {
+		const reviewKey = this.getQuizReviewKey( review );
+		if ( reviewKey === this.lastQuizReviewSignature ) {
+			return false;
+		}
+		this.lastQuizReviewSignature = reviewKey;
+
+		this.history.push( {
+			type: 'quiz_review',
+			review,
+		} );
+		this.saveHistory();
+
+		return true;
+	}
+
+	renderQuizReviewOptions( review ) {
+		const options = Array.isArray( review.options ) ? review.options : [];
+
+		return options.map( ( option, index ) => {
+			const letter = String.fromCharCode( 65 + index );
+			const classes = [ 'lp-ai-assistant__quiz-option' ];
+			if ( index === review.correct_index ) {
+				classes.push( 'is-correct-answer' );
+			}
+
+			if ( index === review.selected_index ) {
+				classes.push( review.is_correct ? 'is-selected-correct' : 'is-selected-wrong' );
+			}
+
+			return `<button class="${ classes.join( ' ' ) }" disabled>${ letter }. ${ this.escHtml( option ) }</button>`;
+		} ).join( '' );
+	}
+
+	appendQuizReviewCard( review ) {
+		const card = document.createElement( 'div' );
+		card.className = 'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--review';
+		card.setAttribute( 'data-review-key', this.getQuizReviewKey( review ) );
+
+		const feedbackClass = review.is_correct ? 'is-correct' : 'is-wrong';
+		const feedbackTitle = review.is_correct
+			? this.config.i18n.quizCorrectTitle
+			: this.config.i18n.quizWrongTitle;
+		const feedbackHtml =
+			`<div class="lp-ai-assistant__quiz-feedback ${ feedbackClass }">` +
+				`<strong>${ this.escHtml( feedbackTitle ) }</strong>` +
+				( review.explanation ? `<div>${ this.escHtml( review.explanation ) }</div>` : '' ) +
+			'</div>';
+
+		card.innerHTML =
+			`<div class="lp-ai-assistant__quiz-head">Question ${ review.question_index + 1 }/${ review.total || review.options.length }</div>` +
+			`<div class="lp-ai-assistant__quiz-question">${ this.escHtml( review.question || '' ) }</div>` +
+			`<div class="lp-ai-assistant__quiz-options">${ this.renderQuizReviewOptions( review ) }</div>` +
+			feedbackHtml;
+
+		this.elements.msgList.appendChild( card );
+	}
+
 	renderQuizState() {
-		const oldQuizCard = this.elements.msgList.querySelector( AIAssistantWidget.selectors.quizCard );
-		if ( oldQuizCard ) {
-			oldQuizCard.remove();
+		const oldActiveQuizCard = this.elements.msgList.querySelector( '.lp-ai-assistant__quiz-card--active' );
+		if ( oldActiveQuizCard ) {
+			oldActiveQuizCard.remove();
 		}
 
 		if ( ! this.activeQuizState || ! this.activeQuizState.questions ) {
@@ -448,6 +560,13 @@ export class AIAssistantWidget {
 		}
 
 		const quiz = this.activeQuizState;
+		const review = this.getQuizReviewFromState( quiz );
+		if ( review ) {
+			if ( this.pushQuizReviewToHistory( review ) ) {
+				this.appendQuizReviewCard( review );
+			}
+		}
+
 		if ( ! quiz.is_active ) {
 			this.setQuizInputMode( false );
 			return;
@@ -461,13 +580,7 @@ export class AIAssistantWidget {
 		}
 
 		const card = document.createElement( 'div' );
-		card.className = 'lp-ai-assistant__quiz-card';
-
-		let feedbackHtml = '';
-		if ( quiz.feedback && typeof quiz.feedback === 'object' ) {
-			const feedbackClass = quiz.feedback.is_correct ? 'is-correct' : 'is-wrong';
-			feedbackHtml = `<div class="lp-ai-assistant__quiz-feedback ${ feedbackClass }">${ this.escHtml( quiz.feedback.explanation || '' ) }</div>`;
-		}
+		card.className = 'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--active';
 
 		const options = Array.isArray( question.options ) ? question.options : [];
 		const optionsHtml = options.map( ( option, index ) => {
@@ -477,7 +590,6 @@ export class AIAssistantWidget {
 
 		card.innerHTML =
 			`<div class="lp-ai-assistant__quiz-head">Question ${ currentIndex + 1 }/${ quiz.total || options.length }</div>` +
-			feedbackHtml +
 			`<div class="lp-ai-assistant__quiz-question">${ this.escHtml( question.question || '' ) }</div>` +
 			`<div class="lp-ai-assistant__quiz-options">${ optionsHtml }</div>`;
 
@@ -535,6 +647,12 @@ export class AIAssistantWidget {
 					if ( response?.data?.type === 'quiz' ) {
 						this.activeQuizState = response?.data?.quiz || null;
 						this.renderQuizState();
+
+						const isQuizCompleted = !! this.activeQuizState?.completed || this.activeQuizState?.is_active === false;
+						if ( isQuizCompleted && this.elements.msgList?.contains( pendingEl ) ) {
+							// Keep completion feedback after the last review card.
+							this.elements.msgList.appendChild( pendingEl );
+						}
 					} else {
 						this.activeQuizState = null;
 						this.renderQuizState();
