@@ -250,8 +250,6 @@ class RefundOrderAjax extends AbstractAjax {
 
 		$request_user_id = $user->get_id();
 		$request_time    = current_time( 'mysql' );
-		update_post_meta( $order_id, '_lp_refund_requested_by', $request_user_id );
-		update_post_meta( $order_id, '_lp_refund_requested_at', $request_time );
 		$refund_request_count = absint( get_post_meta( $order_id, '_lp_refund_request_count', true ) );
 		update_post_meta( $order_id, '_lp_refund_request_count', $refund_request_count + 1 );
 
@@ -305,11 +303,13 @@ class RefundOrderAjax extends AbstractAjax {
 				)
 			);
 
-			$history_entry['status']     = 'auto-approved';
+			$history_entry['status']       = 'auto-approved';
 			$result_data['request_status'] = 'auto-approved';
-			$result_data['order_status'] = LP_ORDER_REFUNDED;
-			$message = sprintf( __( 'Order #%s has been refunded.', 'learnpress' ), $order->get_order_number() );
+			$result_data['order_status']   = LP_ORDER_REFUNDED;
+			$message                       = sprintf( __( 'Order #%s has been refunded.', 'learnpress' ), $order->get_order_number() );
 		} else {
+			update_post_meta( $order_id, '_lp_refund_requested_by', $request_user_id );
+			update_post_meta( $order_id, '_lp_refund_requested_at', $request_time );
 			update_post_meta( $order_id, '_lp_refund_request_status', 'pending' );
 			delete_post_meta( $order_id, '_lp_refund_reviewed_by' );
 			delete_post_meta( $order_id, '_lp_refund_reviewed_at' );
@@ -345,8 +345,8 @@ class RefundOrderAjax extends AbstractAjax {
 			do_action( 'learn-press/order/refund-requested', $order_id, $request_user_id, $request_event_data );
 
 			$result_data['request_status'] = 'pending';
-			$result_data['order_status'] = $order->get_status();
-			$message = __( 'Your refund request has been sent to the admin.', 'learnpress' );
+			$result_data['order_status']   = $order->get_status();
+			$message                       = __( 'Your refund request has been sent to the admin.', 'learnpress' );
 		}
 
 		$history[] = $history_entry;
@@ -365,7 +365,7 @@ class RefundOrderAjax extends AbstractAjax {
 	 * @version 1.0.0
 	 *
 	 * @param LP_Order $order
-	 * @param array     $context
+	 * @param array    $context
 	 *
 	 * @return array
 	 * @throws Exception
@@ -486,7 +486,7 @@ class RefundOrderAjax extends AbstractAjax {
 			}
 		}
 
-		$order_note = sprintf(
+		$order_note  = sprintf(
 			__( 'Refund completed via %1$s by %2$s.', 'learnpress' ),
 			$payment_method,
 			$actor_name
@@ -514,14 +514,14 @@ class RefundOrderAjax extends AbstractAjax {
 		$event_data = learn_press_get_order_refund_event_data(
 			$order,
 			array(
-				'request_status' => $request_status,
-				'requested_by'   => $requested_by ?: absint( get_post_meta( $order_id, '_lp_refund_requested_by', true ) ),
-				'requested_at'   => ! empty( $requested_at ) ? $requested_at : (string) get_post_meta( $order_id, '_lp_refund_requested_at', true ),
-				'reviewed_by'    => $reviewed_by ?: absint( get_post_meta( $order_id, '_lp_refund_reviewed_by', true ) ),
-				'order_status'   => LP_ORDER_REFUNDED,
-				'reason'         => ! empty( $refund_note ) ? $refund_note : (string) get_post_meta( $order_id, '_lp_refund_reason', true ),
-				'actor_id'       => $actor_id,
-				'actor_type'     => $actor_type,
+				'request_status'     => $request_status,
+				'requested_by'       => $requested_by ?: absint( get_post_meta( $order_id, '_lp_refund_requested_by', true ) ),
+				'requested_at'       => ! empty( $requested_at ) ? $requested_at : (string) get_post_meta( $order_id, '_lp_refund_requested_at', true ),
+				'reviewed_by'        => $reviewed_by ?: absint( get_post_meta( $order_id, '_lp_refund_reviewed_by', true ) ),
+				'order_status'       => LP_ORDER_REFUNDED,
+				'reason'             => ! empty( $refund_note ) ? $refund_note : (string) get_post_meta( $order_id, '_lp_refund_reason', true ),
+				'actor_id'           => $actor_id,
+				'actor_type'         => $actor_type,
 				'refund_amount'      => $refund_amount,
 				'refund_percent'     => floatval( $refund_calculation['refund_percent'] ?? 100 ),
 				'completion_percent' => floatval( $refund_calculation['completion_percent'] ?? 0 ),
@@ -545,7 +545,7 @@ class RefundOrderAjax extends AbstractAjax {
 	 * @version 1.0.0
 	 *
 	 * @param LP_Order $order
-	 * @param array     $context
+	 * @param array    $context
 	 *
 	 * @return array{
 	 *     max_completion: float,
@@ -614,7 +614,7 @@ class RefundOrderAjax extends AbstractAjax {
 	 * @version 1.0.0
 	 *
 	 * @param LP_Order $order
-	 * @param array     $context
+	 * @param array    $context
 	 *
 	 * @return int
 	 */

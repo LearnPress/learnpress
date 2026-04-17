@@ -524,6 +524,11 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 			return $result;
 		}
 
+		if ( $order->has_status( LP_ORDER_REFUNDED ) ) {
+			$result['code'] = 'already_refunded';
+			return $result;
+		}
+
 		if ( ! $order->has_status( LP_ORDER_COMPLETED ) ) {
 			$result['code'] = 'invalid_status';
 			return $result;
@@ -539,11 +544,6 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 		$refund_request_status = get_post_meta( $order->get_id(), '_lp_refund_request_status', true );
 		if ( 'pending' === $refund_request_status ) {
 			$result['code'] = 'pending_request';
-			return $result;
-		}
-
-		if ( $order->has_status( LP_ORDER_REFUNDED ) ) {
-			$result['code'] = 'already_refunded';
 			return $result;
 		}
 
