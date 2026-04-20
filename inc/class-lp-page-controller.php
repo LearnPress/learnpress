@@ -1151,13 +1151,14 @@ class LP_Page_Controller {
 		$page_profile_id = learn_press_get_page_id( 'profile' );
 		if ( $page_profile_id && get_post_status( $page_profile_id ) != 'trash' ) {
 			$user_id = $current_user->ID;
+			$profile = LP_Profile::instance( $user_id );
 
 			$wp_admin_bar->add_menu(
 				array(
 					'id'     => 'course_profile',
 					'parent' => 'user-actions',
 					'title'  => get_the_title( $page_profile_id ),
-					'href'   => learn_press_user_profile_link( $user_id, false ),
+					'href'   => $profile->get_tab_link(),
 				)
 			);
 		}
