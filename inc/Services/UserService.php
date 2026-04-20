@@ -7,6 +7,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Models\UserModel;
 use LearnPress\Databases\UserDB;
 use LearnPress\Filters\UserFilter;
+use WP_User;
 
 
 /**
@@ -97,5 +98,24 @@ class UserService {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Detected user by slug link.
+	 *
+	 * @param string $slug_link
+	 *
+	 * @return false|UserModel
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function get_user_by_slug_link( string $slug_link ) {
+		// Get from column `user_nicename` in table `wp_users`.
+		$wp_user = get_user_by( 'slug', $slug_link );
+		if ( ! $wp_user instanceof WP_User ) {
+			return false;
+		}
+
+		return new UserModel( $wp_user->data );
 	}
 }

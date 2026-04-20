@@ -822,4 +822,16 @@ class UserModel {
 
 		return $lp_db_user_items->get_user_items( $filter, $total_rows );
 	}
+
+	/**
+	 * Get roles of user.
+	 *
+	 * @return array
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function get_roles(): array {
+		$user = new WP_User( $this );
+		return is_array( $user->roles ) ? $user->roles : [];
+	}
 }

@@ -263,11 +263,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$user_of_profile = $this->get_user();
 			$tabs            = self::get_tabs_arr();
 
+			$userModelProfile      = UserModel::find( $user_of_profile->get_id(), true );
+			$userModelProfileRoles = $userModelProfile->get_roles();
+
 			/*
 			 * Check if user not Admin/Instructor, will be hide tab Courses.
 			 */
-			if ( $user_of_profile instanceof LP_User
-				&& ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] ) ) {
+			if ( ! array_intersect( $userModelProfileRoles, [ UserModel::ROLE_ADMINISTRATOR, UserModel::ROLE_INSTRUCTOR ] ) ) {
 				unset( $tabs['courses'] );
 			}
 
@@ -1109,33 +1111,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @return LP_Profile mixed
 		 * @throws Exception
-		 * @version 1.0.4
+		 * @version 1.0.5
 		 * @since 3.0.0
 		 */
 		public static function instance( $user_id = 0 ) {
-			$is_page_profile  = LP_Page_Controller::page_is( 'profile' );
-			$userModelCurrent = UserModel::find( get_current_user_id(), true );
+			$is_page_profile = LP_Page_Controller::page_is( 'profile' );
 
 			if ( $is_page_profile && empty( $user_id ) ) {
 				if ( empty( self::$_instance ) ) {
 					$user_slug = (string) get_query_var( 'user' );
 					if ( ! empty( $user_slug ) ) {
-						$userModel = UserService::instance()->get_user_by_pretty_slug( $user_slug );
+						$userModel = UserService::instance()->get_user_by_slug_link( $user_slug );
 						if ( $userModel ) {
 							$user_id = $userModel->get_id();
-						} else {
-							// Get user by slug.
-							$wp_user = get_user_by( 'login', $user_slug );
-							// Only allow view instructor when user is administrator or view his/her profile.
-							if ( $wp_user ) {
-								$userModelBySlug = UserModel::find( $wp_user->ID, true );
-								if ( current_user_can( UserModel::ROLE_ADMINISTRATOR )
-									|| ( $userModelCurrent && $userModelCurrent->get_id() === $wp_user->ID ) ) {
-									$user_id = $userModelBySlug->get_id();
-								} elseif ( empty( $userModelBySlug->get_slug_link() ) ) {
-									$user_id = $userModelBySlug->get_id();
-								}
-							}
 						}
 					} else {
 						$user_id = get_current_user_id();
