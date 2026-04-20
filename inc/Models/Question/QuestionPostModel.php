@@ -162,6 +162,17 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * @param $question_type
+	 * @return $this
+	 */
+	public function set_type($question_type)
+	{
+		$this->question_type = $question_type;
+
+		return $this;
+	}
+
+	/**
 	 * Check type question is valid
 	 *
 	 * @param string $type

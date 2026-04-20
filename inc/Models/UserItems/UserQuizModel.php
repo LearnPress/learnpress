@@ -475,7 +475,7 @@ class UserQuizModel extends UserItemModel {
 	 * @since 4.2.5
 	 * @version 1.0.0
 	 */
-	private function calculate_quiz_result( array $answered ): array {
+	public function calculate_quiz_result( array $answered ): array {
 		$result = array(
 			'questions'         => array(),
 			'mark'              => 0,
