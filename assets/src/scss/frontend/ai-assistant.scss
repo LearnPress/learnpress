@@ -1,204 +1,240 @@
 /**
- * LP AI Assistant - floating chat widget styles.
+ * LP AI Assistant - frontend sidebar styles.
  *
  * @since   4.3.0
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 @import "../variables";
 
+$lp-ai-gradient: linear-gradient(135deg, #b042ff 0%, #6b46ff 50%, #19a7ff 100%);
+$lp-ai-sidebar-width: 410px;
+$lp-ai-panel-shadow: -18px 0 40px rgba(68, 46, 102, 0.14);
+$lp-ai-scrollbar-thumb: rgba(68, 46, 102, 0.18);
+$lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
+
 .lp-ai-assistant {
 	position: fixed;
-	bottom: unquote("max(3.5em, env(safe-area-inset-bottom, 3.5em))");
-	right: unquote("max(2em, env(safe-area-inset-right, 2em))");
+	top: 0;
+	right: 0;
+	bottom: 0;
 	z-index: 999999;
+	pointer-events: none;
 	font-family: inherit;
 
-	// ---- Toggle button ----
+	&[aria-hidden="false"] .lp-ai-assistant__toggle {
+		opacity: 0;
+		pointer-events: none;
+		transform: translateX(12px) scale(0.96);
+	}
+
 	&__toggle {
-		display: flex;
+		position: fixed;
+		right: 1.5rem;
+		bottom: 5.5rem;
+		display: inline-flex;
 		align-items: center;
-		gap: 0.5em;
-		padding: 0.75em 1.25em;
-		background: $color-primary;
-		color: #fff;
-		border: none;
-		border-radius: 2.5em;
+		justify-content: center;
+		padding: 0.5rem 1.25rem;
+		border: 0;
+		gap: 4px;
+		border-radius: $border-radius-global;
+		background: $lp-ai-gradient;
+		color: $color-white;
 		cursor: pointer;
-		font-size: 0.9em;
-		font-weight: 600;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, .2);
-		margin: 0;
-		line-height: normal;
-		box-sizing: border-box;
-		transition: transform 0.15s ease, box-shadow 0.15s ease;
+		pointer-events: auto;
+		font-size: 1rem;
+		font-weight: 500;
+		transition:
+			transform 0.18s ease,
+			box-shadow 0.18s ease,
+			opacity 0.18s ease;
 
 		&:hover,
 		&:focus-visible {
 			transform: translateY(-2px);
-			box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
-			outline: 2px solid rgba(255, 182, 6, .6);
-			outline-offset: 2px;
-			background: $color-primary;
+			outline: none;
 		}
 	}
 
-	&__toggle-icon {
-		font-size: 1.2em;
-		line-height: 1;
+	&__toggle-icon,
+	&__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		line-height: 0;
 	}
-
-	// ---- Chat panel ----
 	&__panel {
-		position: absolute;
-		bottom: calc(100% + 0.75em);
+		position: fixed;
+		top: 0;
 		right: 0;
-		width: 360px;
-		max-height: 540px;
+		bottom: 0;
+		width: min(#{$lp-ai-sidebar-width}, calc(100vw - 1rem));
 		display: flex;
 		flex-direction: column;
-		background: #fff;
-		border-radius: 1em;
-		box-shadow: 0 8px 32px rgba(0, 0, 0, .18);
-		overflow: hidden;
-		animation: lp-ai-panel-in 0.2s ease;
+		background: $color-white;
+		border-left: 1px solid $border-color;
+		box-shadow: $lp-ai-panel-shadow;
+		pointer-events: auto;
+		animation: lp-ai-panel-in 0.22s ease;
 
 		&[hidden] {
 			display: none;
 		}
 	}
 
-	// ---- Quick-only mode (free chat disabled) ----
-	// Applied via PHP when lp_ai_assistant_free_chat = no.
-	// Message list expands to fill the space where input area would be.
-	// Quick actions pin to the bottom of the panel.
-	.lp-ai-assistant-panel--quick-only {
-		.lp-ai-assistant__messages {
-			flex: 1;
-		}
-
-		.lp-ai-assistant__quick-actions {
-			border-top: 1px solid var(--lp-ai-border, #e0e0e0);
-			padding-top: 0.75em;
-		}
-	}
-
-	// ---- Header ----
 	&__header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0.875em 1em;
-		background: var(--lp-primary-color, #ffb606);
-		color: #fff;
+		gap: $spacing-base-3x;
+		padding: $spacing-base-7x $spacing-base-5x;
+		background: $lp-ai-gradient;
+		color: $color-white;
 		flex-shrink: 0;
 	}
 
 	&__title {
+		flex: 1;
+		min-width: 0;
 		margin: 0;
-		font-size: 0.95em;
-		font-weight: 700;
-		line-height: 1.2;
+		font-size: 1.25rem;
+		font-weight: 600;
+		line-height: 1.25;
+		color: inherit;
 	}
 
 	&__header-actions {
 		display: flex;
 		align-items: center;
-		gap: 0.5em;
+		gap: $spacing-base-2x;
 	}
 
 	&__clear-btn,
 	&__close-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		border: 0;
 		background: transparent;
-		border: 1px solid rgba(255, 255, 255, .6);
-		color: #fff;
-		border-radius: 0.25em;
-		padding: 0.2em 0.5em;
+		color: $color-white;
 		cursor: pointer;
-		font-size: 0.8em;
-		transition: background 0.12s;
-
+		transition:
+			opacity 0.12s ease,
+			transform 0.12s ease;
+		svg {
+			width: 24px;
+			height: 24px;
+		}
 		&:hover,
 		&:focus-visible {
-			background: rgba(255, 255, 255, .2);
+			color: $color-primary;
+			transform: translateY(-1px);
 			outline: none;
 		}
 	}
 
-	&__close-btn {
-		font-size: 1.2em;
-		padding: 0.1em 0.4em;
-		line-height: 1;
+	&__panel-body {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		min-height: 0;
+		background: $bg-grey;
 	}
 
-	// ---- Messages ----
-	&__messages {
+	&__messages-wrap {
 		flex: 1;
-		overflow-y: auto;
-		padding: 1em;
+		min-height: 0;
+		padding: $spacing-base-4x $spacing-base-3x $spacing-base-2x;
+		background: $bg-grey;
+	}
+
+	&__messages {
 		display: flex;
 		flex-direction: column;
-		gap: 0.75em;
-		min-height: 160px;
-		max-height: 260px;
+		gap: $spacing-base-4x;
+		height: 100%;
+		padding-right: $spacing-base-2x;
+		overflow-y: auto;
+		scrollbar-width: thin;
+		scrollbar-color: $lp-ai-scrollbar-thumb transparent;
+
+		&::-webkit-scrollbar {
+			width: 6px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			border-radius: 999px;
+			background: $lp-ai-scrollbar-thumb;
+			box-shadow: inset 0 0 0 1px $lp-ai-scrollbar-track;
+		}
 	}
 
 	&__msg {
 		display: flex;
 		flex-direction: column;
-		gap: 0.2em;
-		max-width: 92%;
+		gap: $spacing-base;
+		max-width: 100%;
 
 		&--user {
-			align-self: flex-end;
 			align-items: flex-end;
-
-			.lp-ai-assistant__msg-text {
-				background: var(--lp-primary-color, #ffb606);
-				color: #fff;
-				border-radius: 1em 1em 0.25em 1em;
-			}
 		}
 
 		&--assistant {
-			align-self: flex-start;
 			align-items: flex-start;
-
-			.lp-ai-assistant__msg-text {
-				background: #f1f3f5;
-				color: #333;
-				border-radius: 1em 1em 1em 0.25em;
-			}
 		}
 	}
 
 	&__msg-label {
-		font-size: 0.7em;
-		font-weight: 600;
-		color: #888;
-		text-transform: uppercase;
-		letter-spacing: 0.03em;
+		font-size: 1rem;
+		font-weight: 500;
+		line-height: 1.2;
+		color: $input-color-placeholder;
 	}
 
 	&__msg-text {
+		max-width: 100%;
 		margin: 0;
-		padding: 0.6em 0.85em;
-		font-size: 0.88em;
-		line-height: 1.5;
+		padding: $spacing-base-3x;
+		font-size: 1rem;
+		line-height: 1.55;
 		word-break: break-word;
 		white-space: pre-wrap;
 	}
 
-	// ---- Quick actions ----
-	&__quick-actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4em;
-		align-items: center;
-		padding: 0.5em 1em;
-		border-top: 1px solid #eee;
-		flex-shrink: 0;
+	&__msg--user .lp-ai-assistant__msg-text {
+		max-width: calc(#{$lp-ai-sidebar-width} - 5rem);
+		background: #6b46ff;
+		color: $color-white;
+		border-radius: 16px 16px 4px 16px;
+	}
 
+	&__msg--assistant .lp-ai-assistant__msg-text {
+		max-width: calc(#{$lp-ai-sidebar-width} - 5rem);
+		background: $color-white;
+		color: $text-color-base;
+		border-radius: 16px 16px 16px 4px;
+	}
+
+	&__panel-footer {
+		padding: $spacing-base-5x;
+		background: $color-white;
+		border-top: 1px solid $border-color;
+		flex-shrink: 0;
+	}
+
+	&__quick-actions {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: $spacing-base-2x;
+		margin-bottom: $spacing-base-4x;
 		&--disabled {
 			opacity: 0.5;
 			pointer-events: none;
@@ -209,81 +245,175 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		flex: 0 0 auto;
-		width: auto;
-		max-width: 100%;
+		width: 100%;
+		min-height: 37px;
 		margin: 0;
-		padding: 0.3em 0.65em;
-		font-size: 0.74em;
+		padding: $spacing-base-2x $spacing-base-3x;
+		border: 1px solid $text-color-base;
+		border-radius: 6px;
+		background: $color-white;
+		box-shadow: none;
+		color: $text-color-base;
+		font-size: 0.875rem;
+		font-weight: 500;
 		line-height: 1.25;
+		text-transform: none;
 		white-space: nowrap;
+		transition:
+			border-color 0.12s ease,
+			background-color 0.12s ease,
+			color 0.12s ease,
+			transform 0.12s ease;
+
+		&:hover,
+		&:focus-visible {
+			color: $color-primary;
+			border-color: $color-primary;
+		}
 	}
 
-	// ---- Input area ----
+	#lp-ai-assistant [data-lp-ai-action="explain"],
+	#lp-ai-assistant .lp-ai-assistant__smart-review-btn {
+		border-color: $color-primary;
+		color: $color-primary;
+	}
+
 	&__input-area {
-		display: flex;
-		gap: 0.5em;
-		padding: 0.75em 1em;
-		border-top: 1px solid #eee;
-		align-items: flex-end;
-		flex-shrink: 0;
+		background: $color-white;
 
 		&--hidden {
 			display: none;
 		}
 	}
 
+	&__composer {
+		display: flex;
+		align-items: flex-end;
+		gap: $spacing-base-2x;
+		width: 100%;
+		padding: $spacing-base-2x $spacing-base-3x;
+		border: 1px solid $border-color;
+		border-radius: 6px;
+		background: $color-white;
+	}
+
+	&__input {
+		flex: 1;
+		min-height: 24px;
+		max-height: 120px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: $text-color-base;
+		font-size: 1rem;
+		font-family: inherit;
+		line-height: 1.5;
+		resize: none;
+
+		&::placeholder {
+			color: $input-color-placeholder;
+		}
+
+		&:focus {
+			outline: none;
+			box-shadow: none;
+		}
+
+		&:disabled {
+			opacity: 0.6;
+		}
+	}
+
+	&__send-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: $text-color-base;
+		cursor: pointer;
+		flex-shrink: 0;
+		transition:
+			color 0.12s ease,
+			transform 0.12s ease,
+			opacity 0.12s ease;
+
+		&:hover,
+		&:focus-visible {
+			svg path {
+				stroke: $color-primary;
+			}
+			color: $color-primary;
+			transform: translateX(1px);
+			outline: none;
+		}
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+	}
+
 	&__quiz-card {
-		border: 1px solid #e6e8ea;
-		background: #fdfdfd;
-		border-radius: 0.75em;
-		padding: 0.75em;
 		display: flex;
 		flex-direction: column;
-		gap: 0.65em;
+		gap: $spacing-base-3x;
+		padding: $spacing-base-4x;
+		border: 1px solid $border-color;
+		border-radius: 14px;
+		background: $color-white;
+		box-shadow: 0 12px 30px rgba(68, 46, 102, 0.06);
 
 		&--review {
-			border-color: #d8dde3;
-			background: #fff;
+			border-color: $border-color;
+			background: rgba(255, 255, 255, 0.96);
 		}
 	}
 
 	&__quiz-head {
-		font-size: 0.75em;
+		font-size: 0.6875rem;
 		font-weight: 700;
-		color: #7a7f85;
+		line-height: 1.2;
+		color: $text-color-meta;
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
 	}
 
 	&__quiz-question {
-		font-size: 0.9em;
+		font-size: 0.8125rem;
 		font-weight: 600;
-		line-height: 1.4;
-		color: #2f3337;
+		line-height: 1.45;
+		color: $text-color-base;
 	}
 
 	&__quiz-options {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: 0.5em;
+		gap: $spacing-base-2x;
 	}
 
 	&__quiz-option {
-		padding: 0.5em 0.65em;
+		padding: $spacing-base-2x $spacing-base-3x;
 		text-align: left;
-		border: 1px solid #dde1e5;
-		border-radius: 0.5em;
-		background: #fff;
+		border: 1px solid $border-color;
+		border-radius: 8px;
+		background: $color-white;
+		color: $text-color-base;
 		cursor: pointer;
-		font-size: 0.84em;
-		line-height: 1.35;
-		transition: border-color 0.12s, background 0.12s;
+		font-size: 0.75rem;
+		line-height: 1.4;
+		transition:
+			border-color 0.12s ease,
+			background-color 0.12s ease,
+			color 0.12s ease;
 
 		&:hover,
 		&:focus-visible {
-			border-color: var(--lp-primary-color, #ffb606);
-			background: #fff8e8;
+			border-color: $color-primary;
+			background: rgba(255, 182, 6, 0.08);
 			outline: none;
 		}
 
@@ -316,10 +446,10 @@
 	}
 
 	&__quiz-feedback {
-		font-size: 0.8em;
-		line-height: 1.4;
-		padding: 0.45em 0.6em;
-		border-radius: 0.4em;
+		padding: $spacing-base-2x $spacing-base-3x;
+		border-radius: 8px;
+		font-size: 0.75rem;
+		line-height: 1.45;
 
 		&.is-correct {
 			background: #e9f7ef;
@@ -332,138 +462,45 @@
 		}
 	}
 
-	&__input {
-		flex: 1;
-		padding: 0.5em 0.75em;
-		border: 1px solid #dee2e6;
-		border-radius: 0.5em;
-		font-size: 0.875em;
-		font-family: inherit;
-		resize: none;
-		line-height: 1.4;
-
-		&:focus {
-			outline: none;
-			border-color: var(--lp-primary-color, #ffb606);
-			box-shadow: 0 0 0 2px rgba(255, 182, 6, .2);
-		}
-
-		&:disabled {
-			opacity: 0.6;
-		}
+	&__icon--send {
+		transform: rotate(-8deg);
 	}
 
-	&__send-btn {
-		padding: 0.5em 1em;
-		background: var(--lp-primary-color, #ffb606);
-		color: #fff;
-		border: none;
-		border-radius: 0.5em;
-		cursor: pointer;
-		font-size: 0.875em;
-		font-weight: 600;
-		transition: opacity 0.12s;
-		align-self: flex-end;
-		white-space: nowrap;
-
-		&:disabled {
-			opacity: 0.6;
-			cursor: not-allowed;
-		}
-
-		&:not(:disabled):hover {
-			opacity: 0.88;
+	.lp-ai-assistant-panel--quick-only {
+		.lp-ai-assistant__quick-actions {
+			padding-bottom: $spacing-base-4x;
 		}
 	}
 }
 
-// ---- Animations ----
 @keyframes lp-ai-panel-in {
 	from {
 		opacity: 0;
-		transform: translateY(8px) scale(0.97);
+		transform: translateX(18px);
 	}
+
 	to {
 		opacity: 1;
-		transform: translateY(0) scale(1);
+		transform: translateX(0);
 	}
 }
+
 @keyframes lp-ai-panel-in-mobile {
 	from {
 		opacity: 0;
-		transform: translateY(20px);
+		transform: translateY(16px);
 	}
+
 	to {
 		opacity: 1;
 		transform: translateY(0);
 	}
 }
-
-// ---- Responsive Tablet ----
-@media (max-width: 820px) {
-	.lp-ai-assistant {
-		bottom: unquote("max(3.5em, env(safe-area-inset-bottom, 3.5em))");
-		right: unquote("max(2em, env(safe-area-inset-right, 2em))");
-
-		&__toggle {
-			width: 60px;
-			height: 60px;
-			min-width: 60px;
-			min-height: 60px;
-			padding: 0;
-			border-radius: 50%;
-			justify-content: center;
-			align-items: center;
-			flex-shrink: 0;
-		}
-		&__toggle-icon {
-			font-size: 28px;
-			margin: 0;
-			display: block;
-		}
-
-		&__toggle-label {
-			display: none;
-		}
-
-		&__panel {
-			width: 340px;
-			max-height: 480px;
-			right: -0.5em;
-		}
+@media (max-width: 767px) {
+	.lp-ai-assistant__panel {
+		width: 100%;
 	}
-}
-
-// ---- Responsive Mobile ----
-@media (max-width: 480px) {
-	.lp-ai-assistant {
-		bottom: unquote("max(3.5em, env(safe-area-inset-bottom, 3.5em))");
-		right: unquote("max(2em, env(safe-area-inset-right, 2em))");
-
-		&__panel {
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			width: 100vw;
-			height: 100vh;
-			height: 100dvh;
-			max-height: none;
-			border-radius: 0;
-			margin: 0;
-			animation: lp-ai-panel-in-mobile 0.2s ease;
-		}
-
-		&__messages {
-			max-height: none;
-			min-height: 0;
-			flex: 1;
-		}
-	}
-	body.admin-bar .lp-ai-assistant__panel {
-		top: 46px;
-		height: calc(100vh - 46px);
-		height: calc(100dvh - 46px);
+	.lp-ai-assistant__quick-actions {
+		grid-template-columns: repeat(2, 1fr);
 	}
 }
