@@ -79,6 +79,7 @@ export class BuilderTabQuiz {
 			title: elQuizDuplicate.dataset.title || 'Duplicate Quiz',
 			text: elQuizDuplicate.dataset.content || 'Are you sure you want to duplicate this quiz?',
 			iconHtml: SWAL_ICON_DUPLICATE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -96,33 +97,33 @@ export class BuilderTabQuiz {
 					quiz_id: quizId,
 				};
 
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message || 'Duplicated successfully!', status );
+				const callBack = {
+					success: ( response ) => {
+						const { status, message, data } = response;
+						lpToastify.show( message || 'Duplicated successfully!', status );
 
-				if ( data?.html ) {
-					const elQuiz = elQuizDuplicate.closest( '.quiz' );
-					const elQuizList = elQuiz.closest( '.quizzes-list' ) || elQuiz.parentElement;
-					
-					if ( elQuizList ) {
-						elQuizList.insertAdjacentHTML( 'afterbegin', data.html );
-						const newQuiz = elQuizList.firstElementChild;
+						if ( data?.html ) {
+							const elQuiz = elQuizDuplicate.closest( '.quiz' );
+							const elQuizList = elQuiz.closest( '.quizzes-list' ) || elQuiz.parentElement;
 
-						if ( newQuiz ) {
-							newQuiz.scrollIntoView( {
-								behavior: 'smooth',
-								block: 'nearest',
-							} );
+							if ( elQuizList ) {
+								elQuizList.insertAdjacentHTML( 'afterbegin', data.html );
+								const newQuiz = elQuizList.firstElementChild;
 
-							newQuiz.classList.add( 'highlight-new-quiz' );
-							setTimeout( () => {
-								newQuiz.classList.remove( 'highlight-new-quiz' );
-							}, 1500 );
+								if ( newQuiz ) {
+									newQuiz.scrollIntoView( {
+										behavior: 'smooth',
+										block: 'nearest',
+									} );
+
+									newQuiz.classList.add( 'highlight-new-quiz' );
+									setTimeout( () => {
+										newQuiz.classList.remove( 'highlight-new-quiz' );
+									}, 1500 );
+								}
+							}
 						}
-					}
-				}
-			},
+					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
 					},
@@ -151,6 +152,7 @@ export class BuilderTabQuiz {
 			title: elQuizTrash.dataset.title || 'Trash Quiz',
 			text: elQuizTrash.dataset.content || 'Are you sure you want to move this quiz to trash?',
 			iconHtml: SWAL_ICON_TRASH_DRAFT,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -168,16 +170,16 @@ export class BuilderTabQuiz {
 					quiz_id: quizId,
 				};
 
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message, status );
+				const callBack = {
+					success: ( response ) => {
+						const { status, message, data } = response;
+						lpToastify.show( message, status );
 
-				if ( data?.status ) {
-					const elQuiz = elQuizTrash.closest( '.quiz' );
-					this.updateStatusUI( elQuiz, data.status );
-				}
-			},
+						if ( data?.status ) {
+							const elQuiz = elQuizTrash.closest( '.quiz' );
+							this.updateStatusUI( elQuiz, data.status );
+						}
+					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
 					},
@@ -250,8 +252,10 @@ export class BuilderTabQuiz {
 
 		SweetAlert.fire( {
 			title: elQuizDelete.dataset.title || 'Delete Quiz',
-			text: elQuizDelete.dataset.content || 'Are you sure you want to permanently delete this quiz?',
+			text:
+				elQuizDelete.dataset.content || 'Are you sure you want to permanently delete this quiz?',
 			iconHtml: SWAL_ICON_DELETE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,

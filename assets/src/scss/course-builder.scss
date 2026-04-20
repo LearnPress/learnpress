@@ -411,6 +411,15 @@
 		position: relative;
 		margin: 0 !important;
 	}
+
+	.cb-btn-add-new.lp-btn-generate-course-with-ai {
+		background: transparent;
+		color: $cb-primary;
+
+		&:hover {
+			background: $cb-primary-bland;
+		}
+	}
 }
 
 // ============================================

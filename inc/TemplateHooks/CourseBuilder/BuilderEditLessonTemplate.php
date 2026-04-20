@@ -57,13 +57,15 @@ class BuilderEditLessonTemplate {
 
 		$html_assigned   = $this->assigned_course( $lesson_model );
 		$html_edit_title = $this->edit_title( $lesson_model );
+		$html_permalink  = $this->edit_permalink( $lesson_model );
 		$html_edit_desc  = $this->edit_desc( $lesson_model );
 		$section         = [
 			'wrapper'                    => sprintf( '<div class="cb-section__lesson-edit" data-lesson-id="%s">', $lesson_id ),
-			'wrapper_title_assigned'     => sprintf( '<div class="cb-section__lesson-title-assigned">' ),
 			'edit_title'                 => $html_edit_title,
+			'wrapper_title_assigned'     => sprintf( '<div class="cb-section__lesson-title-assigned">' ),
 			'assigned_course'            => $html_assigned,
 			'wrapper_title_assigned_end' => sprintf( '</div>' ),
+			'edit_permalink'             => $html_permalink,
 			'edit_desc'                  => $html_edit_desc,
 			'wrapper_end'                => '</div>',
 		];
@@ -101,12 +103,112 @@ class BuilderEditLessonTemplate {
 		}
 
 		$html_courses = sprintf(
-			'<div class="lesson-assigned-courses"><span class="label">%s</span> %s</div>',
+			'<div class="cb-item-edit-assigned lesson-assigned-courses"><span class="label">%s</span> %s</div>',
 			__( 'Assigned', 'learnpress' ),
 			$assigned
 		);
 
 		return $html_courses;
+	}
+
+	public function edit_permalink( $lesson_model ): string {
+		$post_id           = ! empty( $lesson_model ) ? absint( $lesson_model->get_id() ) : 0;
+		$post              = $post_id ? get_post( $post_id ) : null;
+		$post_name         = $post && ! empty( $post->post_name ) ? (string) $post->post_name : '';
+		$full_url          = '';
+		$base_url          = '';
+		$display_classes   = 'cb-permalink-display';
+		$placeholder_class = 'cb-item-edit-permalink__placeholder';
+		$notice_no_link    = __(
+			'Permalink is only available if the item is already assigned to a course.',
+			'learnpress'
+		);
+		$placeholder_text  = __( 'Permalink will be available after saving.', 'learnpress' );
+		$show_unavailable  = true;
+
+		if ( $post_id ) {
+			$current_status = $post && ! empty( $post->post_status ) ? sanitize_key( $post->post_status ) : '';
+			if ( 'draft' !== $current_status ) {
+				$course_id_of_item = \LP_Course_DB::getInstance()->get_course_by_item_id( $post_id );
+				if ( $course_id_of_item ) {
+					$course = learn_press_get_course( $course_id_of_item );
+					if ( $course ) {
+						$full_url         = urldecode( $course->get_item_link( $post_id ) );
+						$base_url         = $full_url;
+						$show_unavailable = false;
+
+						if ( ! empty( $post_name ) ) {
+							$base_url = trailingslashit( preg_replace( '/' . preg_quote( $post_name, '/' ) . '\/?$/', '', $full_url ) );
+						}
+					}
+				}
+			}
+		}
+
+		if ( $show_unavailable && $post_id ) {
+			$placeholder_text = $notice_no_link;
+		}
+
+		if ( $show_unavailable ) {
+			$display_classes .= ' lp-hidden';
+		} else {
+			$placeholder_class .= ' lp-hidden';
+		}
+
+		$state_a = sprintf(
+			'<span class="cb-item-edit-permalink__label">%s</span>
+			<div class="%s">
+				<a href="%s" target="_blank" class="cb-permalink-url">%s</a>
+				<button type="button" class="cb-permalink-edit-btn" title="%s">
+					<span class="dashicons dashicons-edit"></span>
+				</button>
+			</div>',
+			__( 'Permalink', 'learnpress' ),
+			esc_attr( $display_classes ),
+			esc_url( $full_url ),
+			esc_html( $full_url ),
+			__( 'Edit', 'learnpress' )
+		);
+
+		$state_b = sprintf(
+			'<div class="cb-permalink-editor lp-hidden">
+				<span class="cb-permalink-prefix">%s</span>
+				<div class="cb-permalink-input-row">
+					<input type="text" name="lesson_permalink" id="lesson_permalink" value="%s" class="cb-permalink-slug-input" placeholder="%s">
+					<div class="cb-permalink-actions">
+						<button type="button" class="cb-permalink-ok-btn">%s</button>
+						<button type="button" class="cb-permalink-cancel-btn">%s</button>
+					</div>
+				</div>
+			</div>',
+			esc_html( $base_url ),
+			esc_attr( $post_name ),
+			esc_attr__( 'your-slug', 'learnpress' ),
+			__( 'OK', 'learnpress' ),
+			__( 'Cancel', 'learnpress' )
+		);
+
+		$hidden_base = sprintf(
+			'<input type="hidden" id="cb-permalink-base-url" value="%s">',
+			esc_attr( $base_url )
+		);
+
+		$placeholder = sprintf(
+			'<span class="%s">%s</span>',
+			esc_attr( $placeholder_class ),
+			esc_html( $placeholder_text )
+		);
+
+		$view = [
+			'wrapper'     => '<div class="cb-item-edit-permalink cb-course-edit-permalink">',
+			'state_a'     => $state_a,
+			'state_b'     => $state_b,
+			'hidden_base' => $hidden_base,
+			'placeholder' => $placeholder,
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $view );
 	}
 
 	public function edit_title( $lesson_model ) {

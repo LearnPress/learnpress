@@ -102,9 +102,14 @@ div:where( .swal2-container ).swal2-center > .swal2-popup {
 	}
 }
 
-.swal2-container .swal2-popup .swal2-icon .swal2-icon-content::before {
-	content: '';
-	font-family: 'lp-icon';
-	font-size: 24px;
-	display: inline-block;
+.swal2-container .swal2-popup .swal2-icon.lp-cb-swal-icon-html .swal2-icon-content::before {
+	content: none;
+}
+
+#swal2-html-container:has( .lp-form-generate-data-ai ) {
+	padding-bottom: 24px;
+
+	.form-grid {
+		margin-bottom: 0;
+	}
 }

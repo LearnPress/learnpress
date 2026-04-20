@@ -1,6 +1,7 @@
 @import 'shared-tab-styles';
 
 .cb-section__quiz-edit,
+.cb-section__lesson-edit,
 .cb-section__question-edit,
 .lp-cb-tab-panel[data-section='question'] {
 	.cb-item-edit-content {
@@ -72,6 +73,149 @@
 
 	.cb-item-edit-permalink__placeholder {
 		color: $cb-text-secondary;
+	}
+
+	.cb-permalink-display {
+		display: flex;
+		align-items: flex-start;
+		gap: 8px;
+
+		&.lp-hidden {
+			display: none;
+		}
+	}
+
+	.cb-permalink-url {
+		display: block;
+		font-size: 13px;
+		line-height: 1.5;
+		color: $cb-primary;
+		text-decoration: none;
+		word-break: break-all;
+		flex: 1;
+		min-width: 0;
+		padding-top: 2px;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	.cb-permalink-edit-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		background: #fff;
+		border: 1px solid #e2e8f0;
+		border-radius: 4px;
+		cursor: pointer;
+		flex-shrink: 0;
+		transition: all 0.15s ease;
+
+		.dashicons {
+			font-size: 14px;
+			width: 14px;
+			height: 14px;
+			color: #64748b;
+		}
+
+		&:hover {
+			background: $cb-primary;
+			border-color: $cb-primary;
+
+			.dashicons {
+				color: #fff;
+			}
+		}
+	}
+
+	.cb-permalink-editor {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: 12px;
+		background: #fff;
+		border: 1px solid #e2e8f0;
+		border-radius: 6px;
+
+		&.lp-hidden {
+			display: none;
+		}
+	}
+
+	.cb-permalink-prefix {
+		font-size: 12px;
+		color: #94a3b8;
+		word-break: break-all;
+		line-height: 1.4;
+	}
+
+	.cb-permalink-input-row {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+
+	.cb-permalink-slug-input {
+		flex: 1;
+		min-width: 0;
+		padding: 8px 12px;
+		font-size: 14px;
+		font-weight: 500;
+		color: #1a1a1a;
+		border: 1px solid #e2e8f0;
+		border-radius: 6px;
+		outline: none;
+		transition:
+			border-color 0.15s ease,
+			box-shadow 0.15s ease;
+
+		&:focus {
+			border-color: $cb-primary;
+			box-shadow: 0 0 0 3px rgba( $cb-primary, 0.1 );
+		}
+	}
+
+	.cb-permalink-actions {
+		display: flex;
+		gap: 6px;
+		flex-shrink: 0;
+	}
+
+	.cb-permalink-ok-btn {
+		padding: 8px 16px;
+		font-size: 13px;
+		font-weight: 600;
+		color: #fff;
+		background: $cb-primary;
+		border: none;
+		border-radius: 6px;
+		cursor: pointer;
+		transition: background 0.15s ease;
+
+		&:hover {
+			background: darken( $cb-primary, 8% );
+		}
+	}
+
+	.cb-permalink-cancel-btn {
+		padding: 8px 14px;
+		font-size: 13px;
+		font-weight: 500;
+		color: #64748b;
+		background: #f8fafc;
+		border: 1px solid #e2e8f0;
+		border-radius: 6px;
+		cursor: pointer;
+		transition: all 0.15s ease;
+
+		&:hover {
+			background: #f1f5f9;
+			color: #475569;
+		}
 	}
 
 	.cb-item-edit-publish__title {

@@ -1,16 +1,23 @@
-import * as lpUtils from 'lpAssetsJsPath/utils.js';
-import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
-import SweetAlert from 'sweetalert2';
-import { BuilderEditQuiz } from './builder-edit-quiz.js';
-import { SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
-import { getFormState } from '../builder-form-state.js';
-
 /**
  * Builder Standalone Quiz Handler
  * Handles standalone quiz edit page (not popup)
  *
+ * Important separation note:
+ * - This file handles standalone quiz page orchestration (header actions, publish/draft/trash, permalink, tabs).
+ * - Question-tab internals are delegated to BuilderEditQuiz.
+ * - Do not merge the two responsibilities into one file unless there is a strong architectural reason.
+ *
  * @since 4.3.0
+ * @version 1.0.0
  */
+
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
+import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import SweetAlert from 'sweetalert2';
+import { BuilderEditQuiz } from './builder-edit-quiz.js';
+import { SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
+import { getFormState } from '../builder-form-state.js';
+
 export class BuilderStandaloneQuiz {
 	constructor() {
 		// BuilderEditQuiz instance for handling Question tab
@@ -27,6 +34,7 @@ export class BuilderStandaloneQuiz {
 		elBtnMainAction: '.cb-btn-main-action',
 		elBtnUpdate: '.cb-btn-update, .cb-btn-publish',
 		elBtnDraft: '.cb-btn-darft, .cb-dropdown-item[data-status="draft"]',
+		elBtnDuplicate: '.cb-btn-duplicate-quiz',
 		elBtnTrash: '.cb-btn-trash',
 		// Status badge
 		elQuizStatus: '.quiz-status, .quizze-status',
@@ -45,6 +53,7 @@ export class BuilderStandaloneQuiz {
 		elPermalinkUrl: '.cb-permalink-url',
 		elPermalinkBaseUrl: '#cb-permalink-base-url',
 		elPermalinkRoot: '.cb-item-edit-permalink, .cb-course-edit-permalink',
+		elPermalinkPlaceholder: '.cb-item-edit-permalink__placeholder',
 		// Tab handling selectors
 		elCBHorizontalTabs: '.lp-cb-tabs__item',
 		elCBTabPanels: '.lp-cb-tab-panel',
@@ -171,7 +180,10 @@ export class BuilderStandaloneQuiz {
 		}
 
 		// Skip if this is trash button - it has its own handler
-		if ( dropdownItem.classList.contains( 'cb-btn-trash' ) ) {
+		if (
+			dropdownItem.classList.contains( 'cb-btn-trash' ) ||
+			dropdownItem.classList.contains( 'cb-btn-duplicate-quiz' )
+		) {
 			return;
 		}
 
@@ -331,6 +343,11 @@ export class BuilderStandaloneQuiz {
 				selector: BuilderStandaloneQuiz.selectors.elBtnMainAction,
 				class: this,
 				callBack: this.updateQuiz.name,
+			},
+			{
+				selector: BuilderStandaloneQuiz.selectors.elBtnDuplicate,
+				class: this,
+				callBack: this.duplicateQuiz.name,
 			},
 			{
 				selector: BuilderStandaloneQuiz.selectors.elBtnTrash,
@@ -566,16 +583,47 @@ export class BuilderStandaloneQuiz {
 
 	updatePermalinkUIAfterSave( data = {} ) {
 		const permalinkRoot = this.getPermalinkRoot();
-		const { slugInput, urlLink } = this.getPermalinkElements( permalinkRoot );
+		if ( ! permalinkRoot ) {
+			return;
+		}
+
+		const { slugInput, urlLink, baseUrlInput, display, placeholder } =
+			this.getPermalinkElements( permalinkRoot );
+		const permalinkDisplayUrl = this.buildPermalinkDisplayUrl(
+			baseUrlInput ? baseUrlInput.value : '',
+			data?.quiz_slug,
+			data?.quiz_permalink
+		);
 
 		if ( slugInput && data?.quiz_slug ) {
 			slugInput.value = data.quiz_slug;
 			slugInput.dataset.originalValue = data.quiz_slug;
 		}
 
+		const shouldShowUnavailable =
+			data?.permalink_available === false ||
+			data?.status === 'draft' ||
+			data?.status === 'trash' ||
+			! data?.quiz_permalink;
+
+		if ( shouldShowUnavailable ) {
+			this.showPermalinkUnavailable( permalinkRoot, data?.permalink_notice );
+			return;
+		}
+
+		if ( placeholder ) {
+			placeholder.classList.add( 'lp-hidden' );
+		}
+
+		if ( display ) {
+			display.classList.remove( 'lp-hidden' );
+		}
+
 		if ( urlLink && data?.quiz_permalink ) {
 			urlLink.href = data.quiz_permalink;
-			urlLink.textContent = data.quiz_permalink;
+			urlLink.textContent = permalinkDisplayUrl || data.quiz_permalink;
+		} else if ( urlLink && permalinkDisplayUrl ) {
+			urlLink.textContent = permalinkDisplayUrl;
 		}
 	}
 
@@ -592,6 +640,17 @@ export class BuilderStandaloneQuiz {
 			.replace( /--+/g, '-' )
 			.replace( /^-+/, '' )
 			.replace( /-+$/, '' );
+	}
+
+	buildPermalinkDisplayUrl( baseUrl = '', slug = '', fallbackUrl = '' ) {
+		const normalizedBaseUrl = typeof baseUrl === 'string' ? baseUrl : '';
+		const normalizedSlug = typeof slug === 'string' ? slug.trim() : '';
+
+		if ( normalizedBaseUrl && normalizedSlug ) {
+			return `${ normalizedBaseUrl }${ normalizedSlug }`;
+		}
+
+		return typeof fallbackUrl === 'string' ? fallbackUrl : '';
 	}
 
 	getPermalinkRoot( target = null ) {
@@ -615,11 +674,55 @@ export class BuilderStandaloneQuiz {
 		return {
 			display: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkDisplay ),
 			editor: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkEditor ),
+			placeholder: permalinkRoot.querySelector(
+				BuilderStandaloneQuiz.selectors.elPermalinkPlaceholder
+			),
 			input: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkSlugInput ),
-			slugInput: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkSlugInput ),
+			slugInput: permalinkRoot.querySelector(
+				BuilderStandaloneQuiz.selectors.elPermalinkSlugInput
+			),
 			urlLink: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkUrl ),
-			baseUrlInput: permalinkRoot.querySelector( BuilderStandaloneQuiz.selectors.elPermalinkBaseUrl ),
+			baseUrlInput: permalinkRoot.querySelector(
+				BuilderStandaloneQuiz.selectors.elPermalinkBaseUrl
+			),
 		};
+	}
+
+	showPermalinkUnavailable( permalinkRoot, message = '' ) {
+		if ( ! permalinkRoot ) {
+			return;
+		}
+
+		const label =
+			permalinkRoot.querySelector( '.cb-item-edit-permalink__label' ) ||
+			permalinkRoot.querySelector( '.cb-permalink-label' );
+		const { display, editor } = this.getPermalinkElements( permalinkRoot );
+		let placeholder = permalinkRoot.querySelector(
+			BuilderStandaloneQuiz.selectors.elPermalinkPlaceholder
+		);
+
+		if ( ! placeholder ) {
+			placeholder = document.createElement( 'span' );
+			placeholder.className = 'cb-item-edit-permalink__placeholder';
+
+			if ( label ) {
+				label.insertAdjacentElement( 'afterend', placeholder );
+			} else {
+				permalinkRoot.prepend( placeholder );
+			}
+		}
+
+		placeholder.textContent =
+			message || 'Permalink is only available if the item is already assigned to a course.';
+		placeholder.classList.remove( 'lp-hidden' );
+
+		if ( display ) {
+			display.classList.add( 'lp-hidden' );
+		}
+
+		if ( editor ) {
+			editor.classList.add( 'lp-hidden' );
+		}
 	}
 
 	handlePermalinkEdit( args ) {
@@ -651,9 +754,8 @@ export class BuilderStandaloneQuiz {
 		if ( e ) e.preventDefault();
 
 		const permalinkRoot = this.getPermalinkRoot( target );
-		const { display, editor, input, urlLink, baseUrlInput } = this.getPermalinkElements(
-			permalinkRoot
-		);
+		const { display, editor, input, urlLink, baseUrlInput } =
+			this.getPermalinkElements( permalinkRoot );
 
 		if ( ! display || ! editor || ! input || ! urlLink ) return;
 
@@ -664,9 +766,9 @@ export class BuilderStandaloneQuiz {
 
 		input.value = newSlug;
 		const baseUrl = baseUrlInput ? baseUrlInput.value : '';
-		const newUrl = baseUrl + newSlug;
+		const newUrl = this.buildPermalinkDisplayUrl( baseUrl, newSlug, urlLink.textContent || '' );
 
-		urlLink.href = newUrl;
+		// Keep href as the current saved link and only update display text.
 		urlLink.textContent = newUrl;
 		editor.classList.add( 'lp-hidden' );
 		display.classList.remove( 'lp-hidden' );
@@ -893,6 +995,7 @@ export class BuilderStandaloneQuiz {
 		const result = await SweetAlert.fire( {
 			title: confirmMsg,
 			iconHtml: SWAL_ICON_TRASH_DRAFT,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -927,6 +1030,7 @@ export class BuilderStandaloneQuiz {
 			const result = await SweetAlert.fire( {
 				title: confirmMsg,
 				iconHtml: SWAL_ICON_TRASH_DRAFT,
+				customClass: { icon: 'lp-cb-swal-icon-html' },
 				showCloseButton: true,
 				showCancelButton: true,
 				cancelButtonText: lpData.i18n.cancel,
@@ -1025,6 +1129,7 @@ export class BuilderStandaloneQuiz {
 		const result = await SweetAlert.fire( {
 			title: 'Are you sure you want to trash this quiz?',
 			iconHtml: SWAL_ICON_TRASH_DRAFT,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -1078,6 +1183,8 @@ export class BuilderStandaloneQuiz {
 						this.updateActionButtons( data.status );
 					}
 
+					this.updatePermalinkUIAfterSave( data );
+
 					// Redirect if URL is provided, otherwise stay on page with updated UI
 					if ( data?.redirect_url ) {
 						window.location.href = data.redirect_url;
@@ -1089,6 +1196,70 @@ export class BuilderStandaloneQuiz {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( elBtnTrashQuiz, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	async duplicateQuiz( args ) {
+		// Context check: only handle if on quiz edit page
+		if ( ! this.isQuizContext() ) {
+			return;
+		}
+
+		const { target } = args;
+		const elBtnDuplicateQuiz = target.closest( BuilderStandaloneQuiz.selectors.elBtnDuplicate );
+		if ( ! elBtnDuplicateQuiz ) {
+			return;
+		}
+
+		const wrapperEl = document.querySelector( BuilderStandaloneQuiz.selectors.elDataQuiz );
+		const quizId = wrapperEl ? parseInt( wrapperEl.dataset.quizId, 10 ) || 0 : 0;
+		if ( ! quizId ) {
+			return;
+		}
+
+		const result = await SweetAlert.fire( {
+			title: elBtnDuplicateQuiz.dataset.title || 'Are you sure?',
+			text: elBtnDuplicateQuiz.dataset.content || 'Are you sure you want to duplicate this quiz?',
+			iconHtml: SWAL_ICON_DUPLICATE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} );
+
+		if ( ! result.isConfirmed ) {
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( elBtnDuplicateQuiz, 1 );
+
+		const dataSend = {
+			quiz_id: quizId,
+			action: 'duplicate_quiz',
+			args: {
+				id_url: 'duplicate-quiz',
+			},
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+				lpToastify.show( message || 'Duplicated successfully!', status );
+
+				if ( status === 'success' && data?.redirect_url ) {
+					window.location.href = data.redirect_url;
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( elBtnDuplicateQuiz, 0 );
 			},
 		};
 

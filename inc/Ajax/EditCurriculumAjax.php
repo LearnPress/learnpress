@@ -20,9 +20,6 @@ use LearnPress\Models\PostModel;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LP_Helper;
 use LP_REST_Response;
-use LP_Section_Items_DB;
-use LP_Section_Items_Filter;
-use stdClass;
 use Throwable;
 
 class EditCurriculumAjax extends AbstractAjax {

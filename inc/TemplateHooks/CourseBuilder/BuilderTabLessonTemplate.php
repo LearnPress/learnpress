@@ -104,6 +104,7 @@ class BuilderTabLessonTemplate {
 					$lessons[]    = $lesson_model;
 				}
 			}
+			wp_reset_postdata();
 
 			if ( ! empty( $lessons ) ) {
 				$html_lessons = $this->list_lessons( $lessons );
@@ -151,7 +152,7 @@ class BuilderTabLessonTemplate {
 				$html_list_lesson .= self::render_lesson( $lesson_model );
 			}
 
-			$header = '<div class="cb-list-table-header">';
+			$header  = '<div class="cb-list-table-header">';
 			$header .= sprintf( '<span>%s</span>', __( 'Lesson Title', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Courses', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
@@ -186,12 +187,15 @@ class BuilderTabLessonTemplate {
 	 * @version 1.0.0
 	 */
 	public static function render_lesson( LessonPostModel $lesson_model, array $settings = [] ): string {
+		$author      = get_user_by( 'ID', $lesson_model->post_author );
+		$author_name = $author && isset( $author->display_name ) ? $author->display_name : '--';
+
 		$lesson = array(
 			'id'            => $lesson_model->get_id(),
 			'title'         => $lesson_model->post_title,
 			'status'        => $lesson_model->post_status,
 			'courses'       => BuilderEditLessonTemplate::instance()->get_assigned( $lesson_model->get_id() ),
-			'author'        => get_user_by( 'ID', $lesson_model->post_author )->display_name,
+			'author'        => $author_name,
 			'preview'       => get_post_meta( $lesson_model->get_id(), '_lp_preview', true ),
 			'date_modified' => lp_jwt_prepare_date_response( $lesson_model->post_date_gmt ),
 		);
@@ -252,11 +256,11 @@ class BuilderTabLessonTemplate {
 					'date'          => sprintf( '<span class="lesson__date">%s</span>', ! empty( $lesson['date_modified'] ) ? date_i18n( 'm/d/Y', strtotime( $lesson['date_modified'] ) ) : '--' ),
 					'lesson_status' => ! empty( $status ) ? sprintf( '<span class="lesson-status %1$s">%1$s</span>', $status ) : '<span></span>',
 					'preview'       => sprintf(
-					'<span class="lesson__preview lp-btn-set-preview-item" data-id="%s" title="%s"><a class="%s"></a></span>',
-					$lesson['id'],
-					__( 'Toggle preview', 'learnpress' ),
-					$lesson['preview'] === 'yes' ? 'lp-icon-eye' : 'lp-icon-eye-slash'
-				),
+						'<span class="lesson__preview lp-btn-set-preview-item" data-id="%s" title="%s"><a class="%s"></a></span>',
+						$lesson['id'],
+						__( 'Toggle preview', 'learnpress' ),
+						$lesson['preview'] === 'yes' ? 'lp-icon-eye' : 'lp-icon-eye-slash'
+					),
 				],
 				$lesson,
 				$settings

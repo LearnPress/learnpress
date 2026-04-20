@@ -165,65 +165,59 @@ class BuilderEditQuizTemplate {
 	}
 
 	public function edit_permalink( $quiz_model ): string {
-		$post_id   = ! empty( $quiz_model ) ? absint( $quiz_model->get_id() ) : 0;
-		$post_name = '';
-		$full_url  = '';
+		$post_id           = ! empty( $quiz_model ) ? absint( $quiz_model->get_id() ) : 0;
+		$post              = $post_id ? get_post( $post_id ) : null;
+		$post_name         = $post && ! empty( $post->post_name ) ? (string) $post->post_name : '';
+		$full_url          = '';
+		$base_url          = '';
+		$display_classes   = 'cb-permalink-display';
+		$placeholder_class = 'cb-item-edit-permalink__placeholder';
+		$notice_no_link    = __(
+			'Permalink is only available if the item is already assigned to a course.',
+			'learnpress'
+		);
+		$placeholder_text  = __( 'Permalink will be available after saving.', 'learnpress' );
+		$show_unavailable  = true;
 
-		if ( ! $post_id ) {
-			return Template::combine_components(
-				[
-					'wrapper'     => '<div class="cb-item-edit-permalink">',
-					'label'       => sprintf( '<span class="cb-item-edit-permalink__label">%s</span>', __( 'Permalink', 'learnpress' ) ),
-					'content'     => sprintf(
-						'<span class="cb-item-edit-permalink__placeholder">%s</span>',
-						__( 'Permalink will be available after saving.', 'learnpress' )
-					),
-					'wrapper_end' => '</div>',
-				]
-			);
+		if ( $post_id ) {
+			$current_status = $post && ! empty( $post->post_status ) ? sanitize_key( $post->post_status ) : '';
+			if ( 'draft' !== $current_status ) {
+				$course_id_of_item = \LP_Course_DB::getInstance()->get_course_by_item_id( $post_id );
+				if ( $course_id_of_item ) {
+					$course = learn_press_get_course( $course_id_of_item );
+					if ( $course ) {
+						$full_url         = urldecode( $course->get_item_link( $post_id ) );
+						$base_url         = $full_url;
+						$show_unavailable = false;
+
+						if ( ! empty( $post_name ) ) {
+							$base_url = trailingslashit( preg_replace( '/' . preg_quote( $post_name, '/' ) . '\/?$/', '', $full_url ) );
+						}
+					}
+				}
+			}
 		}
 
-		$course_id_of_item = \LP_Course_DB::getInstance()->get_course_by_item_id( $post_id );
-		if ( ! $course_id_of_item ) {
-			return Template::combine_components(
-				[
-					'wrapper'     => '<div class="cb-item-edit-permalink">',
-					'label'       => sprintf( '<span class="cb-item-edit-permalink__label">%s</span>', __( 'Permalink', 'learnpress' ) ),
-					'content'     => sprintf(
-						'<span class="cb-item-edit-permalink__placeholder">%s</span>',
-						__(
-							'Permalink is only available if the item is already assigned to a course.',
-							'learnpress'
-						)
-					),
-					'wrapper_end' => '</div>',
-				]
-			);
+		if ( $show_unavailable && $post_id ) {
+			$placeholder_text = $notice_no_link;
 		}
 
-		$course = learn_press_get_course( $course_id_of_item );
-		if ( ! $course ) {
-			return '';
-		}
-
-		$post      = get_post( $post_id );
-		$post_name = $post ? $post->post_name : '';
-		$full_url  = urldecode( $course->get_item_link( $post_id ) );
-		$base_url  = $full_url;
-
-		if ( ! empty( $post_name ) ) {
-			$base_url = trailingslashit( preg_replace( '/' . preg_quote( $post_name, '/' ) . '\/?$/', '', $full_url ) );
+		if ( $show_unavailable ) {
+			$display_classes .= ' lp-hidden';
+		} else {
+			$placeholder_class .= ' lp-hidden';
 		}
 
 		$state_a = sprintf(
 			'<span class="cb-item-edit-permalink__label">%s</span>
-			<div class="cb-permalink-display">
+			<div class="%s">
 				<a href="%s" target="_blank" class="cb-permalink-url">%s</a>
 				<button type="button" class="cb-permalink-edit-btn" title="%s">
 					<span class="dashicons dashicons-edit"></span>
 				</button>
 			</div>',
 			__( 'Permalink', 'learnpress' ),
+			esc_attr( $display_classes ),
 			esc_url( $full_url ),
 			esc_html( $full_url ),
 			__( 'Edit', 'learnpress' )
@@ -252,11 +246,18 @@ class BuilderEditQuizTemplate {
 			esc_attr( $base_url )
 		);
 
+		$placeholder = sprintf(
+			'<span class="%s">%s</span>',
+			esc_attr( $placeholder_class ),
+			esc_html( $placeholder_text )
+		);
+
 		$view = [
 			'wrapper'     => '<div class="cb-item-edit-permalink cb-course-edit-permalink">',
 			'state_a'     => $state_a,
 			'state_b'     => $state_b,
 			'hidden_base' => $hidden_base,
+			'placeholder' => $placeholder,
 			'wrapper_end' => '</div>',
 		];
 

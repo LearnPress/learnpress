@@ -180,9 +180,31 @@ class BuilderEditQuestionTemplate {
 			);
 		}
 
-		$post      = get_post( $post_id );
-		$post_name = $post ? $post->post_name : '';
-		$full_url  = get_permalink( $post_id );
+		$post         = get_post( $post_id );
+		$post_name    = $post ? $post->post_name : '';
+		$full_url     = urldecode( (string) get_permalink( $post_id ) );
+		$display_data = $this->get_question_display_permalink_data( $post_id, (string) $post_name );
+		$display_url  = (string) ( $display_data['url'] ?? '' );
+		$editor_slug  = (string) ( $display_data['slug'] ?? '' );
+
+		if ( empty( $display_url ) ) {
+			$display_url = $full_url;
+		}
+
+		if ( empty( $full_url ) ) {
+			$full_url = $display_url;
+		}
+
+		if ( empty( $editor_slug ) ) {
+			$editor_slug = (string) $post_name;
+		}
+
+		if ( empty( $editor_slug ) && ! empty( $display_url ) ) {
+			$display_path = parse_url( $display_url, PHP_URL_PATH );
+			if ( is_string( $display_path ) && '' !== $display_path ) {
+				$editor_slug = basename( untrailingslashit( $display_path ) );
+			}
+		}
 
 		if ( empty( $full_url ) ) {
 			return Template::combine_components(
@@ -198,9 +220,15 @@ class BuilderEditQuestionTemplate {
 			);
 		}
 
-		$base_url = $full_url;
-		if ( ! empty( $post_name ) ) {
-			$base_url = trailingslashit( preg_replace( '/' . preg_quote( $post_name, '/' ) . '\/?$/', '', $full_url ) );
+		$base_url = $display_url;
+		if (
+			! empty( $editor_slug ) &&
+			false === strpos( $display_url, '?p=' ) &&
+			false === strpos( $display_url, '&p=' ) &&
+			false === strpos( $display_url, '?lp_question=' ) &&
+			false === strpos( $display_url, '&lp_question=' )
+		) {
+			$base_url = trailingslashit( preg_replace( '/' . preg_quote( $editor_slug, '/' ) . '\/?$/', '', $display_url ) );
 		}
 
 		$state_a = sprintf(
@@ -213,7 +241,7 @@ class BuilderEditQuestionTemplate {
 			</div>',
 			__( 'Permalink', 'learnpress' ),
 			esc_url( $full_url ),
-			esc_html( $full_url ),
+			esc_html( $display_url ),
 			__( 'Edit', 'learnpress' )
 		);
 
@@ -229,7 +257,7 @@ class BuilderEditQuestionTemplate {
 				</div>
 			</div>',
 			esc_html( $base_url ),
-			esc_attr( $post_name ),
+			esc_attr( $editor_slug ),
 			esc_attr__( 'your-slug', 'learnpress' ),
 			__( 'OK', 'learnpress' ),
 			__( 'Cancel', 'learnpress' )
@@ -249,6 +277,40 @@ class BuilderEditQuestionTemplate {
 		];
 
 		return Template::combine_components( $view );
+	}
+
+	/**
+	 * Get permalink display URL in publish-style format for editing slug.
+	 *
+	 * @param int $post_id
+	 * @param string $post_name
+	 *
+	 * @return array<string, string>
+	 */
+	private function get_question_display_permalink_data( int $post_id, string $post_name = '' ): array {
+		$display_url = urldecode( (string) get_permalink( $post_id ) );
+		$sample_slug = $post_name;
+
+		if ( ! function_exists( 'get_sample_permalink' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/post.php';
+		}
+
+		if ( function_exists( 'get_sample_permalink' ) ) {
+			$sample_permalink = get_sample_permalink( $post_id );
+			if ( is_array( $sample_permalink ) && ! empty( $sample_permalink[0] ) ) {
+				$sample_slug = ! empty( $sample_permalink[1] ) ? (string) $sample_permalink[1] : $sample_slug;
+				$display_url = str_replace(
+					[ '%postname%', '%pagename%' ],
+					$sample_slug,
+					(string) $sample_permalink[0]
+				);
+			}
+		}
+
+		return [
+			'url'  => urldecode( $display_url ),
+			'slug' => urldecode( (string) $sample_slug ),
+		];
 	}
 
 	public function edit_publish( $question_model ): string {

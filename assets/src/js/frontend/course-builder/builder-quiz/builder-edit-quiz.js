@@ -1,6 +1,11 @@
 /**
  * Builder Edit Quiz Handler
  *
+ * Important separation note:
+ * - This file is the Question-tab engine (question CRUD, sorting, TinyMCE, question bank).
+ * - It is reused in multiple contexts (standalone quiz page and popup quiz editor).
+ * - Keep this file focused on question-tab internals; page-level save/publish flow belongs to BuilderStandaloneQuiz.
+ *
  * @since 4.3.0
  * @version 1.0.0
  */

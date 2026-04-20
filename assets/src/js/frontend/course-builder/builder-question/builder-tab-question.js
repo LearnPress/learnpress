@@ -79,8 +79,10 @@ export class BuilderTabQuestion {
 
 		SweetAlert.fire( {
 			title: elQuestionDuplicate.dataset.title || 'Duplicate Question',
-			text: elQuestionDuplicate.dataset.content || 'Are you sure you want to duplicate this question?',
+			text:
+				elQuestionDuplicate.dataset.content || 'Are you sure you want to duplicate this question?',
 			iconHtml: SWAL_ICON_DUPLICATE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -98,33 +100,34 @@ export class BuilderTabQuestion {
 					question_id: questionId,
 				};
 
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message || 'Duplicated successfully!', status );
+				const callBack = {
+					success: ( response ) => {
+						const { status, message, data } = response;
+						lpToastify.show( message || 'Duplicated successfully!', status );
 
-				if ( data?.html ) {
-					const elQuestion = elQuestionDuplicate.closest( '.question' );
-					const elQuestionList = elQuestion.closest( '.questions-list' ) || elQuestion.parentElement;
+						if ( data?.html ) {
+							const elQuestion = elQuestionDuplicate.closest( '.question' );
+							const elQuestionList =
+								elQuestion.closest( '.questions-list' ) || elQuestion.parentElement;
 
-					if ( elQuestionList ) {
-						elQuestionList.insertAdjacentHTML( 'afterbegin', data.html );
-						const newQuestion = elQuestionList.firstElementChild;
+							if ( elQuestionList ) {
+								elQuestionList.insertAdjacentHTML( 'afterbegin', data.html );
+								const newQuestion = elQuestionList.firstElementChild;
 
-						if ( newQuestion ) {
-							newQuestion.scrollIntoView( {
-								behavior: 'smooth',
-								block: 'nearest',
-							} );
+								if ( newQuestion ) {
+									newQuestion.scrollIntoView( {
+										behavior: 'smooth',
+										block: 'nearest',
+									} );
 
-							newQuestion.classList.add( 'highlight-new-question' );
-							setTimeout( () => {
-								newQuestion.classList.remove( 'highlight-new-question' );
-							}, 1500 );
+									newQuestion.classList.add( 'highlight-new-question' );
+									setTimeout( () => {
+										newQuestion.classList.remove( 'highlight-new-question' );
+									}, 1500 );
+								}
+							}
 						}
-					}
-				}
-			},
+					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
 					},
@@ -151,8 +154,10 @@ export class BuilderTabQuestion {
 
 		SweetAlert.fire( {
 			title: elQuestionTrash.dataset.title || 'Trash Question',
-			text: elQuestionTrash.dataset.content || 'Are you sure you want to move this question to trash?',
+			text:
+				elQuestionTrash.dataset.content || 'Are you sure you want to move this question to trash?',
 			iconHtml: SWAL_ICON_TRASH_DRAFT,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -170,16 +175,16 @@ export class BuilderTabQuestion {
 					question_id: questionId,
 				};
 
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message, status );
+				const callBack = {
+					success: ( response ) => {
+						const { status, message, data } = response;
+						lpToastify.show( message, status );
 
-				if ( data?.status ) {
-					const elQuestion = elQuestionTrash.closest( '.question' );
-					this.updateStatusUI( elQuestion, data.status );
-				}
-			},
+						if ( data?.status ) {
+							const elQuestion = elQuestionTrash.closest( '.question' );
+							this.updateStatusUI( elQuestion, data.status );
+						}
+					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
 					},
@@ -226,7 +231,7 @@ export class BuilderTabQuestion {
 				}
 			},
 			error: ( error ) => {
-				this.showToast( error.message || error, 'error' );
+				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( elQuestionPublish, 0 );
@@ -253,8 +258,11 @@ export class BuilderTabQuestion {
 
 		SweetAlert.fire( {
 			title: elQuestionDelete.dataset.title || 'Delete Question',
-			text: elQuestionDelete.dataset.content || 'Are you sure you want to permanently delete this question?',
+			text:
+				elQuestionDelete.dataset.content ||
+				'Are you sure you want to permanently delete this question?',
 			iconHtml: SWAL_ICON_DELETE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,

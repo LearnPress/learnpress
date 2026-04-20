@@ -1,8 +1,10 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import SweetAlert from 'sweetalert2';
 import { EditCourseCurriculum } from 'lpAssetsJsPath/admin/edit-course/edit-curriculum';
 import { MetaboxExtraInfo } from './extra-info.js';
 import { getFormState } from '../builder-form-state.js';
+import { SWAL_ICON_DUPLICATE } from '../swal-icons.js';
 
 export class BuilderEditCourse {
 	constructor() {
@@ -27,6 +29,7 @@ export class BuilderEditCourse {
 		elBtnPendingCourse: '.cb-btn-pending',
 		elBtnDropdownAction: '.cb-dropdown-item[data-status]',
 		elBtnMainAction: '.cb-btn-main-action',
+		elBtnDuplicateCourse: '.cb-btn-duplicate-course',
 		elBtnTrashCourse: '.cb-btn-trash',
 		elBtnSaveSettings: '.cb-btn-save-settings',
 		elDropdownToggle: '.cb-btn-dropdown-toggle',
@@ -246,6 +249,11 @@ export class BuilderEditCourse {
 				callBack: this.updateCourse.name,
 			},
 			{
+				selector: BuilderEditCourse.selectors.elBtnDuplicateCourse,
+				class: this,
+				callBack: this.duplicateCourse.name,
+			},
+			{
 				selector: BuilderEditCourse.selectors.elBtnTrashCourse,
 				class: this,
 				callBack: this.trashCourse.name,
@@ -353,6 +361,11 @@ export class BuilderEditCourse {
 				selector: BuilderEditCourse.selectors.elPublishStatusSelect,
 				class: this,
 				callBack: this.handlePublishStatusChange.name,
+			},
+			{
+				selector: BuilderEditCourse.selectors.elPublishDateInput,
+				class: this,
+				callBack: this.handlePublishDateChange.name,
 			},
 		] );
 
@@ -1613,12 +1626,23 @@ export class BuilderEditCourse {
 						BuilderEditCourse.selectors.elPermalinkSlugInput
 					);
 					const urlLink = document.querySelector( BuilderEditCourse.selectors.elPermalinkUrl );
+					const baseUrlInput = document.querySelector(
+						BuilderEditCourse.selectors.elPermalinkBaseUrl
+					);
+					const permalinkDisplayUrl = this.buildPermalinkDisplayUrl(
+						baseUrlInput ? baseUrlInput.value : '',
+						data?.course_slug,
+						data?.course_permalink
+					);
 					if ( slugInput ) {
 						slugInput.value = data.course_slug;
+						slugInput.dataset.originalValue = data.course_slug;
 					}
 					if ( urlLink && data?.course_permalink ) {
 						urlLink.href = data.course_permalink;
-						urlLink.textContent = data.course_permalink;
+						urlLink.textContent = permalinkDisplayUrl || data.course_permalink;
+					} else if ( urlLink && permalinkDisplayUrl ) {
+						urlLink.textContent = permalinkDisplayUrl;
 					}
 				}
 			},
@@ -1679,7 +1703,7 @@ export class BuilderEditCourse {
 		let status = statusSelect?.value || fallbackStatus || 'publish';
 		const visibility = visibilitySelect?.value || 'public';
 
-		if ( visibility === 'private' && status !== 'draft' && status !== 'pending' ) {
+		if ( visibility === 'private' && status !== 'pending' ) {
 			status = 'private';
 		}
 
@@ -1713,6 +1737,22 @@ export class BuilderEditCourse {
 		}
 
 		const normalized = ( status || '' ).toString().toLowerCase();
+		const currentPrimaryStatus = ( statusSelect?.dataset?.primaryStatus || '' )
+			.toString()
+			.toLowerCase();
+		let primaryStatusToKeep = [ 'future', 'publish' ].includes( currentPrimaryStatus )
+			? currentPrimaryStatus
+			: 'publish';
+
+		if ( normalized === 'future' ) {
+			primaryStatusToKeep = 'future';
+		} else if ( [ 'publish', 'private' ].includes( normalized ) ) {
+			primaryStatusToKeep = 'publish';
+		}
+
+		if ( statusSelect ) {
+			statusSelect.dataset.primaryStatus = primaryStatusToKeep;
+		}
 
 		if ( statusSelect ) {
 			if ( normalized === 'private' ) {
@@ -1747,6 +1787,10 @@ export class BuilderEditCourse {
 		this.syncPublishDateLabel();
 	}
 
+	handlePublishDateChange() {
+		this.syncPublishDateLabel();
+	}
+
 	syncPublishVisibilityControls( focusPassword = false ) {
 		const visibilitySelect = document.querySelector(
 			BuilderEditCourse.selectors.elPublishVisibilitySelect
@@ -1769,16 +1813,24 @@ export class BuilderEditCourse {
 	}
 
 	syncPublishDateLabel() {
-		const statusSelect = document.querySelector(
-			BuilderEditCourse.selectors.elPublishStatusSelect
-		);
+		const dateInput = document.querySelector( BuilderEditCourse.selectors.elPublishDateInput );
 		const dateLabel = document.querySelector( BuilderEditCourse.selectors.elPublishDateLabel );
 
-		if ( ! statusSelect || ! dateLabel ) {
+		if ( ! dateLabel ) {
 			return;
 		}
 
-		dateLabel.textContent = statusSelect.value === 'future' ? 'Scheduled for' : 'Published on';
+		const dateValue = ( dateInput?.value || '' ).toString().trim();
+		let isFutureDate = false;
+
+		if ( dateValue ) {
+			const parsedDate = new Date( dateValue );
+			if ( ! Number.isNaN( parsedDate.getTime() ) ) {
+				isFutureDate = parsedDate.getTime() > Date.now();
+			}
+		}
+
+		dateLabel.textContent = isFutureDate ? 'Scheduled for' : 'Published on';
 	}
 
 	syncPublishStatusOptions( preferredStatus = '' ) {
@@ -1792,58 +1844,44 @@ export class BuilderEditCourse {
 		const publishLabel = statusSelect.dataset.publishLabel || 'Published';
 		const futureLabel = statusSelect.dataset.futureLabel || 'Scheduled';
 		const selectedStatus = ( preferredStatus || statusSelect.value || '' ).toLowerCase();
-		const publishOption = statusSelect.querySelector( 'option[value="publish"]' );
-		const futureOption = statusSelect.querySelector( 'option[value="future"]' );
+		const currentPrimaryStatus = ( statusSelect.dataset.primaryStatus || '' ).toLowerCase();
+		const draftLabel =
+			statusSelect.querySelector( 'option[value="draft"]' )?.textContent || 'Draft';
+		const pendingLabel =
+			statusSelect.querySelector( 'option[value="pending"]' )?.textContent || 'Pending Review';
+		const hasFutureOption = !! statusSelect.querySelector( 'option[value="future"]' );
+		const hasPublishOption = !! statusSelect.querySelector( 'option[value="publish"]' );
 
-		if ( selectedStatus === 'future' ) {
-			if ( publishOption ) {
-				publishOption.remove();
-			}
-
-			if ( ! futureOption ) {
-				const option = document.createElement( 'option' );
-				option.value = 'future';
-				option.textContent = futureLabel;
-				statusSelect.insertBefore( option, statusSelect.firstChild );
-			}
-			statusSelect.value = 'future';
-			return;
+		let primaryValue = 'publish';
+		if ( [ 'future', 'publish' ].includes( selectedStatus ) ) {
+			primaryValue = selectedStatus;
+		} else if ( [ 'future', 'publish' ].includes( currentPrimaryStatus ) ) {
+			primaryValue = currentPrimaryStatus;
+		} else if ( hasFutureOption && ! hasPublishOption ) {
+			primaryValue = 'future';
 		}
 
-		if ( selectedStatus === 'publish' ) {
-			if ( futureOption ) {
-				futureOption.remove();
-			}
+		const primaryLabel = primaryValue === 'future' ? futureLabel : publishLabel;
+		const valueToSelect = [ 'draft', 'pending', 'future', 'publish' ].includes( selectedStatus )
+			? selectedStatus
+			: primaryValue;
 
-			if ( ! publishOption ) {
-				const option = document.createElement( 'option' );
-				option.value = 'publish';
-				option.textContent = publishLabel;
-				statusSelect.insertBefore( option, statusSelect.firstChild );
-			}
-			statusSelect.value = 'publish';
-			return;
-		}
+		statusSelect.dataset.primaryStatus = primaryValue;
 
-		if ( ! publishOption ) {
+		statusSelect.innerHTML = '';
+
+		[
+			{ value: primaryValue, label: primaryLabel },
+			{ value: 'draft', label: draftLabel },
+			{ value: 'pending', label: pendingLabel },
+		].forEach( ( optionData ) => {
 			const option = document.createElement( 'option' );
-			option.value = 'publish';
-			option.textContent = publishLabel;
-			statusSelect.insertBefore( option, statusSelect.firstChild );
-		}
+			option.value = optionData.value;
+			option.textContent = optionData.label;
+			statusSelect.appendChild( option );
+		} );
 
-		if ( ! futureOption ) {
-			const option = document.createElement( 'option' );
-			option.value = 'future';
-			option.textContent = futureLabel;
-			if ( statusSelect.querySelector( 'option[value="publish"]' ) ) {
-				statusSelect
-					.querySelector( 'option[value="publish"]' )
-					.insertAdjacentElement( 'afterend', option );
-			} else {
-				statusSelect.insertBefore( option, statusSelect.firstChild );
-			}
-		}
+		statusSelect.value = valueToSelect;
 	}
 
 	formatStatusLabel( status ) {
@@ -2014,6 +2052,71 @@ export class BuilderEditCourse {
 		if ( elAdminLink ) {
 			elAdminLink.style.display = isTrash ? 'none' : '';
 		}
+	}
+
+	async duplicateCourse( args ) {
+		// Context check: only handle if on course edit page
+		if ( ! document.querySelector( BuilderEditCourse.selectors.elDataCourse ) ) {
+			return;
+		}
+
+		const { target } = args;
+		const elBtnDuplicateCourse = target.closest( BuilderEditCourse.selectors.elBtnDuplicateCourse );
+
+		if ( ! elBtnDuplicateCourse ) {
+			return;
+		}
+
+		const courseData = this.getCourseDataForUpdate();
+		const courseId = parseInt( courseData?.course_id, 10 ) || 0;
+
+		if ( ! courseId ) {
+			return;
+		}
+
+		const result = await SweetAlert.fire( {
+			title: elBtnDuplicateCourse.dataset.title || 'Are you sure?',
+			text:
+				elBtnDuplicateCourse.dataset.content || 'Are you sure you want to duplicate this course?',
+			iconHtml: SWAL_ICON_DUPLICATE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} );
+
+		if ( ! result.isConfirmed ) {
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( elBtnDuplicateCourse, 1 );
+
+		const dataSend = {
+			action: 'duplicate_course',
+			args: { id_url: 'duplicate-course' },
+			course_id: courseId,
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+				lpToastify.show( message || 'Duplicated successfully!', status );
+
+				if ( status === 'success' && data?.redirect_url ) {
+					window.location.href = data.redirect_url;
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( elBtnDuplicateCourse, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
 	trashCourse( args ) {
@@ -2414,6 +2517,17 @@ export class BuilderEditCourse {
 		return result;
 	}
 
+	buildPermalinkDisplayUrl( baseUrl = '', slug = '', fallbackUrl = '' ) {
+		const normalizedBaseUrl = typeof baseUrl === 'string' ? baseUrl : '';
+		const normalizedSlug = typeof slug === 'string' ? slug.trim() : '';
+
+		if ( normalizedBaseUrl && normalizedSlug ) {
+			return `${ normalizedBaseUrl }${ normalizedSlug }`;
+		}
+
+		return typeof fallbackUrl === 'string' ? fallbackUrl : '';
+	}
+
 	/**
 	 * Handle permalink Edit button click.
 	 * Shows editor mode, hides display mode.
@@ -2469,10 +2583,9 @@ export class BuilderEditCourse {
 
 		// Get base URL
 		const baseUrl = baseUrlInput ? baseUrlInput.value : '';
-		const newUrl = baseUrl + newSlug;
+		const newUrl = this.buildPermalinkDisplayUrl( baseUrl, newSlug, urlLink.textContent || '' );
 
-		// Update the display link
-		urlLink.href = newUrl;
+		// Keep href as the current saved link and only update display text.
 		urlLink.textContent = newUrl;
 
 		// Toggle visibility back to display mode
@@ -2568,14 +2681,6 @@ export class BuilderEditCourse {
 				} );
 			}
 		}
-
-		// Also handle text mode (quicktags)
-		const textarea = document.querySelector( BuilderEditCourse.selectors.elDescEditor );
-		if ( textarea ) {
-			textarea.addEventListener( 'input', () => {
-				this.updateDescWordCountFromText( textarea.value );
-			} );
-		}
 	}
 
 	updateDescWordCount( editor ) {
@@ -2596,15 +2701,6 @@ export class BuilderEditCourse {
 			count = this.countWords( content );
 		}
 
-		const wordText = count === 1 ? 'word' : 'words';
-		wordCountEl.textContent = `${ count } ${ wordText }`;
-	}
-
-	updateDescWordCountFromText( text ) {
-		const wordCountEl = document.querySelector( BuilderEditCourse.selectors.elDescWordCount );
-		if ( ! wordCountEl ) return;
-
-		const count = this.countWords( text );
 		const wordText = count === 1 ? 'word' : 'words';
 		wordCountEl.textContent = `${ count } ${ wordText }`;
 	}

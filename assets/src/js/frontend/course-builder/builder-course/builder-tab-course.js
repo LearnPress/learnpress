@@ -81,6 +81,7 @@ export class BuilderTabCourse {
 			title: elCourseDuplicate.dataset.title || 'Duplicate Course',
 			text: elCourseDuplicate.dataset.content || 'Are you sure you want to duplicate this course?',
 			iconHtml: SWAL_ICON_DUPLICATE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -104,11 +105,11 @@ export class BuilderTabCourse {
 						if ( data?.html ) {
 							const elCourse = elCourseDuplicate.closest( '.course' );
 							const elCourseList = elCourse.closest( '.courses-list' ) || elCourse.parentElement;
-							
+
 							if ( elCourseList ) {
 								elCourseList.insertAdjacentHTML( 'afterbegin', data.html );
 								const newCourse = elCourseList.firstElementChild;
-								
+
 								if ( newCourse ) {
 									newCourse.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
 									newCourse.classList.add( 'highlight-new-course' );
@@ -145,6 +146,7 @@ export class BuilderTabCourse {
 			title: elCourseTrash.dataset.title || 'Trash Course',
 			text: elCourseTrash.dataset.content || 'Are you sure you want to move this course to trash?',
 			iconHtml: SWAL_ICON_TRASH_DRAFT,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -194,12 +196,15 @@ export class BuilderTabCourse {
 		const statusEl = elCourseItem.querySelector( BuilderTabCourse.selectors.elCourseStatus );
 		const isPublished = statusEl && statusEl.classList.contains( 'publish' );
 		if ( isPublished ) {
-			const confirmMsg = elCourseDraft.dataset.confirmUnpublish || 'Saving as draft will unpublish this item. Are you sure?';
+			const confirmMsg =
+				elCourseDraft.dataset.confirmUnpublish ||
+				'Saving as draft will unpublish this item. Are you sure?';
 
 			SweetAlert.fire( {
 				title: 'Draft Course',
 				text: confirmMsg,
 				iconHtml: SWAL_ICON_TRASH_DRAFT,
+				customClass: { icon: 'lp-cb-swal-icon-html' },
 				showCloseButton: true,
 				showCancelButton: true,
 				cancelButtonText: lpData.i18n.cancel,
@@ -264,8 +269,11 @@ export class BuilderTabCourse {
 
 		SweetAlert.fire( {
 			title: elCourseDelete.dataset.title || 'Delete Course',
-			text: elCourseDelete.dataset.content || 'Are you sure you want to permanently delete this course?',
+			text:
+				elCourseDelete.dataset.content ||
+				'Are you sure you want to permanently delete this course?',
 			iconHtml: SWAL_ICON_DELETE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,

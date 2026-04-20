@@ -552,6 +552,14 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 			if ( $final_quiz ) {
 				$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
+				if ( '' === (string) $passing_grade ) {
+					$quiz_model = \LearnPress\Models\QuizPostModel::find( absint( $final_quiz ), true );
+					if ( $quiz_model ) {
+						$passing_grade = $quiz_model->get_passing_grade();
+					} else {
+						$passing_grade = 80;
+					}
+				}
 
 				$url = get_edit_post_link( $final_quiz ) . '#_lp_passing_grade';
 				$url = apply_filters(

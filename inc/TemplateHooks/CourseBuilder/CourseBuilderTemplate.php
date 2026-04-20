@@ -497,13 +497,6 @@ class CourseBuilderTemplate {
 			$classes[] = 'is-active';
 		}
 
-		$icons = [
-			'courses'   => 'dashicons-welcome-learn-more',
-			'lessons'   => 'dashicons-media-document',
-			'quizzes'   => 'dashicons-forms',
-			'questions' => 'dashicons-editor-help',
-		];
-
 		$icon  = isset( $tab_data['icon'] ) ? $tab_data['icon'] : '';
 		$title = $tab_data['title'];
 		$link  = CourseBuilder::get_tab_link( $slug );
@@ -582,18 +575,30 @@ class CourseBuilderTemplate {
 			$status_badge  = sprintf( '<span class="%1$s-status %2$s">%3$s</span>', esc_attr( $type_singular ), esc_attr( $status ), esc_html( $status_label ) );
 		}
 
-		$is_admin_user                 = current_user_can( ADMIN_ROLE );
-		$is_instructor_user            = current_user_can( LP_TEACHER_ROLE );
-		$course_post_type              = get_post_type_object( LP_COURSE_CPT );
-		$cap_publish_course            = ( $course_post_type && isset( $course_post_type->cap->publish_posts ) )
+		$is_admin_user                         = current_user_can( ADMIN_ROLE );
+		$is_instructor_user                    = current_user_can( LP_TEACHER_ROLE );
+		$course_post_type                      = get_post_type_object( LP_COURSE_CPT );
+		$cap_publish_course                    = ( $course_post_type && isset( $course_post_type->cap->publish_posts ) )
 			? $course_post_type->cap->publish_posts
 			: 'publish_lp_courses';
-		$can_publish_course            = current_user_can( $cap_publish_course );
-		$required_review               = \LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
-		$use_review_only_workflow      = ( $is_instructor_user && $required_review ) || ! $can_publish_course;
-		$is_review_only_course_context = 'courses' === $tab_current && ! $is_admin_user && $use_review_only_workflow;
-		$main_action_status            = in_array( $status, array( 'publish', 'draft', 'pending', 'future', 'private' ), true ) ? $status : 'publish';
-		$show_header_expanded_trash    = ! $is_new_post && in_array( $tab_current, array( 'courses', 'questions', 'quizzes' ), true );
+		$can_publish_course                    = current_user_can( $cap_publish_course );
+		$required_review                       = \LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
+		$use_review_only_workflow              = ( $is_instructor_user && $required_review ) || ! $can_publish_course;
+		$is_review_only_course_context         = 'courses' === $tab_current && ! $is_admin_user && $use_review_only_workflow;
+		$main_action_status                    = in_array( $status, array( 'publish', 'draft', 'pending', 'future', 'private' ), true ) ? $status : 'publish';
+		$show_header_expanded_trash            = ! $is_new_post && in_array( $tab_current, array( 'courses', 'questions', 'quizzes' ), true );
+		$header_expanded_duplicate_class_map   = array(
+			'courses'   => 'cb-btn-duplicate-course',
+			'quizzes'   => 'cb-btn-duplicate-quiz',
+			'questions' => 'cb-btn-duplicate-question',
+		);
+		$header_expanded_duplicate_content_map = array(
+			'courses'   => __( 'Are you sure you want to duplicate this course?', 'learnpress' ),
+			'quizzes'   => __( 'Are you sure you want to duplicate this quiz?', 'learnpress' ),
+			'questions' => __( 'Are you sure you want to duplicate this question?', 'learnpress' ),
+		);
+		$header_expanded_duplicate_class       = $header_expanded_duplicate_class_map[ $tab_current ] ?? '';
+		$header_expanded_duplicate_text        = $header_expanded_duplicate_content_map[ $tab_current ] ?? '';
 
 		ob_start();
 		?>
@@ -643,12 +648,20 @@ class CourseBuilderTemplate {
 					</div>
 						<?php if ( $show_header_expanded_trash ) : ?>
 							<div class="cb-header-action-expanded">
-								<button type="button" class="course-action-expanded" aria-haspopup="true" aria-label="<?php esc_attr_e( 'More actions', 'learnpress' ); ?>">
+									<button type="button" class="course-action-expanded" aria-haspopup="true" aria-expanded="false" aria-label="<?php esc_attr_e( 'More actions', 'learnpress' ); ?>">
 									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 										<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
 									</svg>
 								</button>
 								<div class="cb-header-action-expanded__items">
+									<?php if ( ! empty( $header_expanded_duplicate_class ) ) : ?>
+										<div class="cb-header-action-expanded__duplicate <?php echo esc_attr( $header_expanded_duplicate_class ); ?>"
+											data-title="<?php esc_attr_e( 'Are you sure?', 'learnpress' ); ?>"
+											data-content="<?php echo esc_attr( $header_expanded_duplicate_text ); ?>">
+											<span class="dashicons dashicons-admin-page"></span>
+											<?php esc_html_e( 'Duplicate', 'learnpress' ); ?>
+										</div>
+									<?php endif; ?>
 									<div class="cb-header-action-expanded__trash cb-btn-trash">
 										<span class="dashicons dashicons-trash"></span>
 										<?php esc_html_e( 'Move to Trash', 'learnpress' ); ?>
@@ -715,86 +728,6 @@ class CourseBuilderTemplate {
 		return ob_get_clean();
 	}
 
-	/**
-	 * Render breadcrumb navigation
-	 *
-	 * @param string $tab
-	 * @param WP_Post|null $post
-	 * @param bool $is_new_post
-	 *
-	 * @return string
-	 * @since 4.3.0
-	 */
-	protected function render_breadcrumb( $tab, $post, $is_new_post = false ) {
-		$tab_data   = CourseBuilder::get_data( $tab );
-		$tab_title  = $tab_data['title'] ?? ucfirst( $tab );
-		$tab_link   = CourseBuilder::get_tab_link( $tab );
-		$post_title = $is_new_post ? __( 'Add New', 'learnpress' ) : $post->post_title;
-
-		ob_start();
-		?>
-		<div class="lp-cb-breadcrumb">
-			<a href="<?php echo esc_url( $tab_link ); ?>" class="lp-cb-breadcrumb__item">
-				<?php echo esc_html( $tab_title ); ?>
-			</a>
-			<span class="lp-cb-breadcrumb__separator">›</span>
-			<span class="lp-cb-breadcrumb__item is-current">
-				<?php echo esc_html( $post_title ); ?>
-			</span>
-		</div>
-		<?php
-		return ob_get_clean();
-	}
-
-	public function html_nav_item( $tab = '', $post_id = '', $section = '' ) {
-		if ( ! $tab ) {
-			return '';
-		}
-
-		$tab_data = CourseBuilder::get_data( $tab );
-		if ( empty( $tab_data ) ) {
-			return '';
-		}
-
-		$tab_current     = CourseBuilder::get_current_tab();
-		$section_current = CourseBuilder::get_current_section();
-		$classes         = [ 'lp-course-builder_nav-item' ];
-
-		$content = '';
-		if ( $section ) {
-			$classes[]    = $section === $section_current ? $section . ' active' : $section;
-			$section_data = $tab_data['sections'][ $section ];
-			$title        = $section_data['title'];
-			$slug         = $section_data['slug'];
-			$link         = $section === $section_current ? '#' : CourseBuilder::get_tab_link( $tab, $post_id, $section );
-		} else {
-			$classes[] = $tab === $tab_current ? $tab . ' active' : $tab;
-			$title     = $tab_data['title'];
-			$slug      = $tab_data['slug'];
-			$link      = $tab === $tab_current ? '#' : CourseBuilder::get_tab_link( $slug );
-		}
-
-		$content = sprintf(
-			'<a href="%s"><span>%s</span></a>',
-			esc_url_raw( $link ),
-			$title,
-		);
-
-		$item = apply_filters(
-			'learn-press/course-builder/nav-item',
-			[
-				'wrapper'     => sprintf( '<li class="%s">', implode( ' ', $classes ) ),
-				'content'     => $content,
-				'wrapper_end' => '</li>',
-			],
-			$tab,
-			$post_id,
-			$section
-		);
-
-		return Template::combine_components( $item );
-	}
-
 	public function html_tab( $tab ) {
 		$tab_data = CourseBuilder::get_data( $tab );
 		$title    = $tab_data['title'];
@@ -843,45 +776,6 @@ class CourseBuilderTemplate {
 		return Template::combine_components( $tab );
 	}
 
-	public function html_tab_lessons() {
-		$list_lesson = '';
-		$btn         = $this->html_btn_add_new();
-		$tab         = [
-			'wrapper'     => '',
-			'btn'         => $btn,
-			'lessons'     => $list_lesson,
-			'wrapper_end' => '',
-		];
-
-		return Template::combine_components( $tab );
-	}
-
-	public function html_tab_quizzes() {
-		$list_quiz = '';
-		$btn       = $this->html_btn_add_new();
-		$tab       = [
-			'wrapper'     => '',
-			'btn'         => $btn,
-			'quizzes'     => $list_quiz,
-			'wrapper_end' => '',
-		];
-
-		return Template::combine_components( $tab );
-	}
-
-	public function html_tab_questions() {
-		$list_question = '';
-		$btn           = $this->html_btn_add_new();
-		$tab           = [
-			'wrapper'     => '',
-			'btn'         => $btn,
-			'questions'   => $list_question,
-			'wrapper_end' => '',
-		];
-
-		return Template::combine_components( $tab );
-	}
-
 	public function html_btn_add_new() {
 		$tab_current = CourseBuilder::get_current_tab();
 		$map_title   = [
@@ -905,7 +799,7 @@ class CourseBuilderTemplate {
 		$btn_close   = '</button>';
 
 		if ( 'courses' === $tab_current ) {
-			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_add_new_course( CourseBuilder::POST_NEW ) ) );
+			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_add_new_course() ) );
 			$btn_close   = '</a>';
 		}
 
@@ -969,9 +863,19 @@ class CourseBuilderTemplate {
 		$wp_admin_bar->add_node(
 			array(
 				'id'    => 'lp-course-builder',
-				'title' => '
-					<img style="width: 20px; height: 20px; padding: 0; line-height: 1.84615384; vertical-align: middle; margin: -6px 0 0 0;" src="data:image/png;base64,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">
-					<span class="ab-label">' . $title . '</span>',
+				'title' => '<svg width="26" height="18" viewBox="0 0 69 48" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="vertical-align: text-bottom;">
+								<path d="M50.9291 24.84L50.2591 21.69C50.5491 21.47 50.7391 21.11 50.7391 20.71C50.7391 20.03 50.1891 19.48 49.4991 19.48C48.8091 19.48 48.2591 20.03 48.2591 20.71C48.2591 21.11 48.4491 21.46 48.7391 21.69L48.0691 24.84C47.9891 25.21 48.1791 25.56 48.4791 25.56H50.5091C50.8091 25.56 50.9991 25.21 50.9191 24.84H50.9291Z" fill="currentColor"></path>
+								<path d="M50.8892 13.24H50.0092V20.92H48.9892V13.21L46.2992 13.18C43.3992 8.47 38.1692 5.34 32.2192 5.34C30.8292 5.34 29.4792 5.51 28.1892 5.83L24.9492 2.53C24.7992 2.38 24.8892 2.14 25.0992 2.11L40.7292 0L48.5492 9.68L49.7592 11.17L51.0992 12.83C51.2292 12.99 51.1092 13.24 50.8992 13.23L50.8892 13.24Z" fill="currentColor"></path>
+								<path d="M44.7392 13.1701L43.1392 17.1401C40.7292 13.1101 36.3092 10.4101 31.2592 10.4101C29.9992 10.4101 28.7892 10.5801 27.6292 10.8901L29.2292 6.93014C30.1992 6.74014 31.1992 6.64014 32.2192 6.64014C37.4092 6.64014 41.9892 9.22014 44.7392 13.1701Z" fill="currentColor"></path>
+								<path d="M25.4692 23.6899V23.8499C25.4692 23.9599 25.4592 24.0699 25.4592 24.1899C25.4592 24.0199 25.4592 23.8499 25.4692 23.6899Z" fill="currentColor"></path>
+								<path d="M43.3692 24.2601C43.3692 25.2901 43.2392 26.2901 42.9892 27.2501C42.3892 29.5401 41.1192 31.5601 39.4092 33.1001C37.9992 34.3601 36.2892 35.2901 34.3892 35.7701C33.4492 36.0101 32.4592 36.1401 31.4392 36.1401H27.9692V35.8001C27.9692 35.6601 27.9792 35.5301 27.9992 35.3901C28.2092 33.2201 29.5592 31.3901 31.4492 30.4901C31.6092 30.4101 31.7692 30.3401 31.9292 30.2801C32.1692 30.1901 32.4192 30.1201 32.6692 30.0601C32.7292 30.0501 32.7992 30.0301 32.8592 30.0201C35.4892 29.4101 37.4492 27.0601 37.4492 24.2501C37.4492 21.2701 35.2392 18.8001 32.3592 18.3901C32.0792 18.3501 31.7892 18.3301 31.4992 18.3301C31.2392 18.3301 30.9992 18.3501 30.7492 18.3801C28.2992 18.6901 26.2592 20.4801 25.6492 22.8201C25.5292 23.2901 25.4792 23.7701 25.4792 24.2401V42.7601C25.1492 45.6001 22.8092 47.8301 19.9092 47.9901H19.5592H16.4792C18.3092 46.6501 19.5092 44.5001 19.5092 42.0701V23.7001C19.5092 23.5601 19.5192 23.4301 19.5392 23.3001C19.6292 22.2301 19.8492 21.1901 20.2092 20.2201C20.4592 19.5401 20.7692 18.8801 21.1292 18.2501C21.7592 17.1801 22.5492 16.2201 23.4692 15.4001C24.6192 14.3701 25.9792 13.5601 27.4692 13.0401C28.7092 12.6001 30.0492 12.3701 31.4392 12.3701C32.4792 12.3701 33.4792 12.5001 34.4392 12.7501C36.6892 13.3301 38.6792 14.5401 40.2092 16.1901C40.2592 16.2401 40.3092 16.3001 40.3592 16.3501C40.3592 16.3501 40.3592 16.3501 40.3692 16.3601C41.9592 18.1401 43.0192 20.4101 43.2992 22.9001C43.3293 23.1701 43.3492 23.4501 43.3692 23.7201C43.3692 23.8901 43.3692 24.0601 43.3692 24.2401V24.2601Z" fill="currentColor"></path>
+								<path d="M25.4692 23.6899V23.8499C25.4692 23.9599 25.4592 24.0699 25.4592 24.1899C25.4592 24.0199 25.4592 23.8499 25.4692 23.6899Z" fill="currentColor"></path>
+								<path d="M6.13917 42.0799H18.0692C18.0592 45.3499 15.3792 47.9999 12.0892 47.9999H6.11917C2.83917 47.9999 0.16917 45.3499 0.14917 42.0799V12.3799H0.18917C3.46917 12.3799 6.13917 15.0299 6.13917 18.2999V42.0799Z" fill="currentColor"></path>
+								<path d="M67.6736 23.2845L63.9566 19.5676C63.1998 18.8108 61.9757 18.8108 61.219 19.5676L59.0266 21.7599L65.4812 28.2145L67.6736 26.0222C68.4303 25.2654 68.4303 24.0413 67.6736 23.2845Z" fill="currentColor"></path>
+								<path d="M45.4722 45.0411L46.3513 45.9203L42.078 46.7883C42.078 46.7883 42.0557 46.3432 41.477 45.7534C40.8983 45.1747 40.442 45.1524 40.442 45.1524L41.3101 40.879L42.1892 41.7582L59.817 24.1305L58.2256 22.5391L40.5979 40.1668L39.2513 46.7883C39.1066 47.4894 39.7298 48.1126 40.4309 47.968L47.0525 46.6214L64.6802 28.9937L63.0888 27.4023L45.4611 45.03L45.4722 45.0411Z" fill="currentColor"></path>
+								<path d="M60.6182 24.9316L42.9905 42.5594L44.6932 44.2621L62.3209 26.6343L60.6182 24.9316Z" fill="currentColor"></path>
+							</svg>
+							<span class="ab-label">' . $title . '</span>',
 				'href'  => $href,
 			)
 		);

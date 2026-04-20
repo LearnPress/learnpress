@@ -119,6 +119,75 @@ class CourseBuilderAjax extends AbstractAjax {
 	}
 
 	/**
+	 * Prepare desired slug when restoring a trashed post with a new permalink.
+	 *
+	 * WordPress stores `_wp_desired_post_slug` on trash and may restore that value
+	 * when status changes from `trash` to a non-trash status.
+	 *
+	 * @param int    $post_id
+	 * @param string $target_status
+	 * @param string $requested_slug
+	 *
+	 * @return bool
+	 */
+	protected function prepare_desired_slug_for_restore( int $post_id, string $target_status, string $requested_slug ): bool {
+		if ( $post_id <= 0 || '' === $requested_slug ) {
+			return false;
+		}
+
+		if ( ! in_array( $target_status, [ 'publish', 'draft' ], true ) ) {
+			return false;
+		}
+
+		if ( 'trash' !== get_post_status( $post_id ) ) {
+			return false;
+		}
+
+		update_post_meta( $post_id, '_wp_desired_post_slug', $requested_slug );
+
+		return true;
+	}
+
+	/**
+	 * Ensure restored post keeps requested slug after trash status transition.
+	 *
+	 * @param int    $post_id
+	 * @param string $requested_slug
+	 *
+	 * @return void
+	 */
+	protected function sync_slug_after_restore( int $post_id, string $requested_slug ): void {
+		if ( $post_id <= 0 || '' === $requested_slug ) {
+			return;
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post || 'trash' === $post->post_status ) {
+			return;
+		}
+
+		if ( $post->post_name === $requested_slug ) {
+			return;
+		}
+
+		wp_update_post(
+			[
+				'ID'        => $post_id,
+				'post_name' => $requested_slug,
+			]
+		);
+	}
+
+	/**
+	 * Permalink notice when lesson/quiz is not assigned to a course.
+	 *
+	 * @return string
+	 */
+	protected function get_item_permalink_unavailable_message(): string {
+		return __( 'Permalink is only available if the item is already assigned to a course.', 'learnpress' );
+	}
+
+	/**
 	 * Check whether a post status is public.
 	 *
 	 * @param string $status
@@ -739,115 +808,6 @@ class CourseBuilderAjax extends AbstractAjax {
 		$courseModel->post_author             = $new_author_id;
 	}
 
-	public function update_setting( $id, $settings ) {
-		switch ( $settings['type'] ) {
-			case 'text':
-				$value = sanitize_text_field( wp_unslash( $settings['value'] !== false ? $settings['value'] : $settings['default'] ) );
-
-				if ( isset( $settings['extra']['type_input'] ) && $settings['extra']['type_input'] === 'number' && $value !== '' ) {
-					$value = floatval( $value );
-
-					if ( $settings['extra']['custom_attributes']['step'] === '1' ) {
-						$value = (int) $value;
-					}
-
-					if ( isset( $settings['extra']['custom_attributes']['min'] ) ) {
-						$min = floatval( $settings['extra']['custom_attributes']['min'] );
-
-						if ( $value < $min ) {
-							$value = $min;
-						}
-
-						if ( floatval( $settings['extra']['custom_attributes']['min'] ) >= 0 ) {
-							$value = abs( $value );
-						}
-					}
-
-					if ( isset( $settings['extra']['custom_attributes']['max'] ) ) {
-						$max = floatval( $settings['extra']['custom_attributes']['max'] );
-
-						if ( $value > $max ) {
-							$value = $max;
-						}
-					}
-				}
-
-				update_post_meta( $id, $settings['id'], $value );
-				break;
-			case 'textarea':
-				update_post_meta( $id, $settings['id'], wp_kses_post( wp_unslash( $settings['value'] !== false ? $settings['value'] : $settings['default'] ) ) );
-				break;
-			case 'duration':
-				if ( $settings['value'] !== false && $settings['value'] !== '' ) {
-					$value = sanitize_text_field( wp_unslash( $settings['value'] ) );
-
-					$explode = explode( ' ', $value );
-					$number  = (float) $explode[0] < 0 ? 0 : absint( $explode[0] );
-					$unit    = $explode[1] ?? $settings['extra']['default_time'];
-
-					$value = $number . ' ' . $unit;
-				} else {
-					$value = absint( wp_unslash( $settings['default'] ) ) . ' ' . $settings['extra']['default_time'];
-				}
-
-				update_post_meta( $id, $settings['id'], $value );
-				break;
-			case 'extra':
-				$value = wp_unslash( $settings['value'] !== false && $settings['value'] !== '' ? $settings['value'] : $settings['default'] );
-				$value = array_filter(
-					$value,
-					function ( $item ) {
-						return ! is_null( $item ) && $item !== '';
-					}
-				);
-
-				update_post_meta( $id, $settings['id'], array_map( 'sanitize_text_field', array_values( $value ) ) );
-				break;
-
-			case 'file':
-				$value = wp_unslash( $settings['value'] !== false && $settings['value'] !== '' ? wp_unslash( array_map( 'absint', $settings['value'] ) ) : $settings['default'] );
-
-				update_post_meta( $id, $settings['id'], $value );
-				break;
-			case 'autocomplete':
-				$value = wp_unslash( $settings['value'] !== false && $settings['value'] !== '' ? wp_unslash( array_map( 'absint', $settings['value'] ) ) : $settings['default'] );
-				$value = apply_filters( 'learn-press/admin/metabox/autocomplete/' . $settings['id'] . '/save', $value, wp_unslash( $settings['value'] ), $id );
-
-				update_post_meta( $id, $settings['id'], $value );
-				break;
-			case 'select':
-				$value = wp_unslash( $settings['value'] !== false && $settings['value'] !== '' ? wp_unslash( $settings['value'] ) : $settings['default'] );
-
-				if ( ! empty( $settings['extra']['custom_save'] ) ) {
-					do_action( 'learnpress/admin/metabox/select/save', $settings['id'], $value, $id );
-				} else {
-					if ( ! empty( $settings['extra']['multil_meta'] ) ) {
-						$get_values = get_post_meta( $id, $settings['id'] ) ?? array();
-						$new_values = $value;
-
-						$array_get_values = ! empty( $get_values ) ? array_values( $get_values ) : array();
-						$array_new_values = ! empty( $new_values ) ? array_values( $new_values ) : array();
-
-						$del_val = array_diff( $array_get_values, $array_new_values );
-						$new_val = array_diff( $array_new_values, $array_get_values );
-
-						foreach ( $del_val as $level_id ) {
-							delete_post_meta( $id, $settings['id'], $level_id );
-						}
-
-						foreach ( $new_val as $level_id ) {
-							add_post_meta( $id, $settings['id'], $level_id, false );
-						}
-					} else {
-						update_post_meta( $id, $settings['id'], $value );
-					}
-				}
-				break;
-			default:
-				update_post_meta( $id, $settings['id'], wp_unslash( $settings['value'] !== false ? $settings['value'] : $settings['default'] ) );
-		}
-	}
-
 	/**
 	 * Duplicate for course.
 	 *
@@ -890,11 +850,13 @@ class CourseBuilderAjax extends AbstractAjax {
 				throw new Exception( $new_item_id->get_error_message() );
 			}
 
-			$course_model         = CourseModel::find( $new_item_id, true );
-			$html                 = BuilderTabCourseTemplate::render_course( $course_model );
-			$response->status     = 'success';
-			$response->data->html = $html;
-			$response->message    = __( 'Course duplicated successfully', 'learnpress' );
+			$course_model                  = CourseModel::find( $new_item_id, true );
+			$html                          = BuilderTabCourseTemplate::render_course( $course_model );
+			$response->status              = 'success';
+			$response->data->html          = $html;
+			$response->data->course_id_new = $new_item_id;
+			$response->data->redirect_url  = BuilderTabCourseTemplate::instance()->get_link_edit( $new_item_id );
+			$response->message             = __( 'Course duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -1134,27 +1096,34 @@ class CourseBuilderAjax extends AbstractAjax {
 			$is_elementor = $data['is_elementor'] ?? false;
 			$return_html  = ( $data['return_html'] ?? 'no' ) === 'yes';
 			$insert       = $data['insert'];
+			$lesson_slug  = ! empty( $data['lesson_permalink'] )
+				? sanitize_title( wp_unslash( (string) $data['lesson_permalink'] ) )
+				: '';
 			$course_id    = absint( $data['course_id'] ?? 0 );
 
 			// Determine target status (draft or publish)
-			$target_status = ! empty( $data['lesson_status'] ) && in_array( $data['lesson_status'], [ 'draft', 'publish' ], true )
+			$target_status            = ! empty( $data['lesson_status'] ) && in_array( $data['lesson_status'], [ 'draft', 'publish' ], true )
 				? sanitize_text_field( $data['lesson_status'] )
 				: 'publish';
+			$restore_with_custom_slug = false;
 
 			if ( $insert ) {
 				if ( ! CourseBuilderAccessPolicy::can_create_item_type( LP_LESSON_CPT ) ) {
 					throw new Exception( __( 'You are not allowed to create lessons', 'learnpress' ) );
 				}
 
-				$lesson_id = wp_insert_post(
-					array(
-						'post_type'    => LP_LESSON_CPT,
-						'post_title'   => sanitize_text_field( $title ?? '' ),
-						'post_content' => wp_kses_post( $description ?? '' ),
-						'post_status'  => $target_status,
-					),
-					true
+				$insert_arg = array(
+					'post_type'    => LP_LESSON_CPT,
+					'post_title'   => sanitize_text_field( $title ?? '' ),
+					'post_content' => wp_kses_post( $description ?? '' ),
+					'post_status'  => $target_status,
 				);
+
+				if ( ! empty( $lesson_slug ) ) {
+					$insert_arg['post_name'] = $lesson_slug;
+				}
+
+				$lesson_id = wp_insert_post( $insert_arg, true );
 
 				if ( is_wp_error( $lesson_id ) ) {
 					throw new Exception( $lesson_id->get_error_message() );
@@ -1198,10 +1167,20 @@ class CourseBuilderAjax extends AbstractAjax {
 					$update_arg['post_content'] = wp_kses_post( $description );
 				}
 
+				if ( ! empty( $lesson_slug ) ) {
+					$update_arg['post_name'] = $lesson_slug;
+				}
+
+				$restore_with_custom_slug = $this->prepare_desired_slug_for_restore( $lesson_id, $target_status, $lesson_slug );
+
 				$update = wp_update_post( $update_arg );
 
 				if ( is_wp_error( $update ) ) {
 					throw new Exception( $update->get_error_message() );
+				}
+
+				if ( $restore_with_custom_slug ) {
+					$this->sync_slug_after_restore( $lesson_id, $lesson_slug );
 				}
 			}
 
@@ -1216,13 +1195,34 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			do_action( 'learn-press/course-builder/update-lesson', $data, $lesson_model );
 
+			$saved_lesson_status = get_post_status( $lesson_id );
+			if ( ! is_string( $saved_lesson_status ) || '' === $saved_lesson_status ) {
+				$saved_lesson_status = $target_status;
+			}
+
 			$response->status              = 'success';
-			$response->data->status        = $target_status;
-			$response->data->button_title  = $target_status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
+			$response->data->status        = $saved_lesson_status;
+			$response->data->button_title  = $saved_lesson_status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 			$response->data->lesson_id_new = $insert ? $lesson_id : '';
 			$response->message             = $target_status === 'draft'
 				? esc_html__( 'Lesson saved as draft', 'learnpress' )
 				: ( $insert ? esc_html__( 'Insert lesson successfully', 'learnpress' ) : esc_html__( 'Update lesson successfully', 'learnpress' ) );
+
+			$saved_lesson_post = get_post( $lesson_id );
+			if ( $saved_lesson_post ) {
+				$response->data->lesson_slug = $saved_lesson_post->post_name;
+			}
+
+			$course_id_of_item                   = $this->get_course_by_item_id( $lesson_id );
+			$response->data->permalink_available = false;
+			$response->data->permalink_notice    = $this->get_item_permalink_unavailable_message();
+			if ( 'publish' === $saved_lesson_status && $course_id_of_item ) {
+				$course = learn_press_get_course( $course_id_of_item );
+				if ( $course ) {
+					$response->data->permalink_available = true;
+					$response->data->lesson_permalink    = urldecode( $course->get_item_link( $lesson_id ) );
+				}
+			}
 
 			if ( $insert && $return_html ) {
 				$lesson_model_new               = LessonPostModel::find( $lesson_id, true );
@@ -1246,6 +1246,9 @@ class CourseBuilderAjax extends AbstractAjax {
 			$lesson_id    = $data['lesson_id'] ?? 0;
 			$status       = $data['status'] ?? 'trash';
 			$lesson_model = $data['lesson_model'] ?? [];
+			$lesson_slug  = ! empty( $data['lesson_permalink'] )
+				? sanitize_title( wp_unslash( (string) $data['lesson_permalink'] ) )
+				: '';
 
 			if ( ! $lesson_model ) {
 				throw new Exception( __( 'Lesson not found', 'learnpress' ) );
@@ -1260,42 +1263,88 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			if ( $status === 'trash' ) {
-				$move_trash = wp_trash_post( $lesson_id );
+				$original_slug = (string) get_post_field( 'post_name', $lesson_id );
+				$move_trash    = wp_trash_post( $lesson_id );
 
 				if ( is_wp_error( $move_trash ) ) {
 					throw new Exception( esc_html__( 'Cannot move this lesson to trash', 'learnpress' ) );
 				}
-				$message = esc_html__( 'Delete this lesson successfully', 'learnpress' );
+
+				if ( '' !== $original_slug ) {
+					wp_update_post(
+						[
+							'ID'        => $lesson_id,
+							'post_name' => $original_slug,
+						]
+					);
+				}
+
+				$message = esc_html__( 'This lesson has been moved to trash.', 'learnpress' );
 			} elseif ( $status === 'delete' ) {
 				$delete = wp_delete_post( $lesson_id );
 
 				if ( is_wp_error( $delete ) ) {
 					throw new Exception( esc_html__( 'Cannot delete this lesson.', 'learnpress' ) );
 				}
-				$message = esc_html__( 'This lesson has been moved to trash.', 'learnpress' );
-			} elseif ( $status === 'publish' ) {
-				$update = wp_update_post(
-					array(
-						'ID'          => $lesson_id,
-						'post_type'   => LP_LESSON_CPT,
-						'post_status' => 'publish',
-					)
-				);
+				$message = esc_html__( 'Delete this lesson successfully', 'learnpress' );
+			} elseif ( in_array( $status, [ 'publish', 'draft' ], true ) ) {
+				$restore_with_custom_slug = $this->prepare_desired_slug_for_restore( $lesson_id, $status, $lesson_slug );
+				$update_args              = [
+					'ID'          => $lesson_id,
+					'post_type'   => LP_LESSON_CPT,
+					'post_status' => $status,
+				];
+
+				if ( '' !== $lesson_slug ) {
+					$update_args['post_name'] = $lesson_slug;
+				}
+
+				$update = wp_update_post( $update_args );
 				if ( ! $update ) {
+					if ( 'draft' === $status ) {
+						throw new Exception( __( 'Lesson cannot be moved to draft', 'learnpress' ) );
+					}
+
 					throw new Exception( __( 'Lesson cannot be moved to publish', 'learnpress' ) );
 				}
 
-				$message = __( 'Lesson has been moved to publish', 'learnpress' );
+				if ( $restore_with_custom_slug ) {
+					$this->sync_slug_after_restore( $lesson_id, $lesson_slug );
+				}
+
+				$message = 'draft' === $status
+					? __( 'Lesson has been moved to draft', 'learnpress' )
+					: __( 'Lesson has been moved to publish', 'learnpress' );
+			} else {
+				throw new Exception( __( 'Invalid lesson status transition', 'learnpress' ) );
 			}
 
-			if ( $status !== 'publish' ) {
+			$saved_lesson_status = get_post_status( $lesson_id );
+			if ( ! is_string( $saved_lesson_status ) || '' === $saved_lesson_status ) {
+				$saved_lesson_status = $status;
+			}
+
+			if ( $saved_lesson_status !== 'publish' ) {
 				$this->remove_course_item_from_curriculum( $lesson_id, $course_id );
 			}
 
-			$response->data->status       = $status;
-			$response->data->button_title = __( 'Publish', 'learnpress' );
-			$response->status             = 'success';
-			$response->message            = $message;
+			$response->data->status              = $saved_lesson_status;
+			$response->data->button_title        = 'publish' === $saved_lesson_status ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
+			$response->data->lesson_slug         = (string) get_post_field( 'post_name', $lesson_id );
+			$response->data->permalink_available = false;
+			$response->data->permalink_notice    = $this->get_item_permalink_unavailable_message();
+
+			$course_id_of_item = $this->get_course_by_item_id( $lesson_id );
+			if ( 'publish' === $saved_lesson_status && $course_id_of_item ) {
+				$course = learn_press_get_course( $course_id_of_item );
+				if ( $course ) {
+					$response->data->permalink_available = true;
+					$response->data->lesson_permalink    = urldecode( $course->get_item_link( $lesson_id ) );
+				}
+			}
+
+			$response->status  = 'success';
+			$response->message = $message;
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -1402,9 +1451,10 @@ class CourseBuilderAjax extends AbstractAjax {
 			$course_id    = absint( $data['course_id'] ?? 0 );
 
 			// Determine target status (draft or publish)
-			$target_status = ! empty( $data['quiz_status'] ) && in_array( $data['quiz_status'], [ 'draft', 'publish' ], true )
+			$target_status            = ! empty( $data['quiz_status'] ) && in_array( $data['quiz_status'], [ 'draft', 'publish' ], true )
 				? sanitize_text_field( $data['quiz_status'] )
 				: 'publish';
+			$restore_with_custom_slug = false;
 
 			if ( $insert ) {
 				if ( ! CourseBuilderAccessPolicy::can_create_item_type( LP_QUIZ_CPT ) ) {
@@ -1470,10 +1520,16 @@ class CourseBuilderAjax extends AbstractAjax {
 					\Elementor\Plugin::$instance->documents->get( $quiz_id )->set_is_built_with_elementor( ! empty( $is_elementor ) );
 				}
 
+				$restore_with_custom_slug = $this->prepare_desired_slug_for_restore( $quiz_id, $target_status, $quiz_slug );
+
 				$update = wp_update_post( $update_arg );
 
 				if ( is_wp_error( $update ) ) {
 					throw new Exception( $update->get_error_message() );
+				}
+
+				if ( $restore_with_custom_slug ) {
+					$this->sync_slug_after_restore( $quiz_id, $quiz_slug );
 				}
 			}
 
@@ -1506,11 +1562,14 @@ class CourseBuilderAjax extends AbstractAjax {
 				$response->data->quiz_slug = $saved_quiz_post->post_name;
 			}
 
-			$course_id_of_item = $this->get_course_by_item_id( $quiz_id );
-			if ( $course_id_of_item ) {
+			$course_id_of_item                   = $this->get_course_by_item_id( $quiz_id );
+			$response->data->permalink_available = false;
+			$response->data->permalink_notice    = $this->get_item_permalink_unavailable_message();
+			if ( 'publish' === $saved_quiz_status && $course_id_of_item ) {
 				$course = learn_press_get_course( $course_id_of_item );
 				if ( $course ) {
-					$response->data->quiz_permalink = urldecode( $course->get_item_link( $quiz_id ) );
+					$response->data->permalink_available = true;
+					$response->data->quiz_permalink      = urldecode( $course->get_item_link( $quiz_id ) );
 				}
 			}
 
@@ -1551,11 +1610,13 @@ class CourseBuilderAjax extends AbstractAjax {
 			if ( is_wp_error( $new_item_id ) ) {
 				throw new Exception( $new_item_id->get_error_message() );
 			}
-			$quiz_model_new       = QuizPostModel::find( $new_item_id, true );
-			$html                 = BuilderTabQuizTemplate::render_quiz( $quiz_model_new );
-			$response->status     = 'success';
-			$response->data->html = $html;
-			$response->message    = __( 'Quiz duplicated successfully', 'learnpress' );
+			$quiz_model_new               = QuizPostModel::find( $new_item_id, true );
+			$html                         = BuilderTabQuizTemplate::render_quiz( $quiz_model_new );
+			$response->status             = 'success';
+			$response->data->html         = $html;
+			$response->data->quiz_id_new  = $new_item_id;
+			$response->data->redirect_url = BuilderTabQuizTemplate::instance()->get_link_edit( $new_item_id );
+			$response->message            = __( 'Quiz duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -1573,6 +1634,9 @@ class CourseBuilderAjax extends AbstractAjax {
 			$quiz_id    = $data['quiz_id'] ?? 0;
 			$status     = $data['status'] ?? 'trash';
 			$quiz_model = $data['quiz_model'] ?? [];
+			$quiz_slug  = ! empty( $data['quiz_permalink'] )
+				? sanitize_title( wp_unslash( (string) $data['quiz_permalink'] ) )
+				: '';
 
 			if ( ! $quiz_model ) {
 				throw new Exception( __( 'Quiz not found', 'learnpress' ) );
@@ -1587,42 +1651,88 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			if ( $status === 'trash' ) {
-				$move_trash = wp_trash_post( $quiz_id );
+				$original_slug = (string) get_post_field( 'post_name', $quiz_id );
+				$move_trash    = wp_trash_post( $quiz_id );
 
 				if ( is_wp_error( $move_trash ) ) {
 					throw new Exception( esc_html__( 'Cannot move this quiz to trash', 'learnpress' ) );
 				}
-				$message = esc_html__( 'Delete this quiz successfully', 'learnpress' );
+
+				if ( '' !== $original_slug ) {
+					wp_update_post(
+						[
+							'ID'        => $quiz_id,
+							'post_name' => $original_slug,
+						]
+					);
+				}
+
+				$message = esc_html__( 'This quiz has been moved to trash.', 'learnpress' );
 			} elseif ( $status === 'delete' ) {
 				$delete = wp_delete_post( $quiz_id );
 
 				if ( is_wp_error( $delete ) ) {
 					throw new Exception( esc_html__( 'Cannot delete this quiz.', 'learnpress' ) );
 				}
-				$message = esc_html__( 'This quiz has been moved to trash.', 'learnpress' );
-			} elseif ( $status === 'publish' ) {
-				$update = wp_update_post(
-					array(
-						'ID'          => $quiz_id,
-						'post_type'   => LP_QUIZ_CPT,
-						'post_status' => 'publish',
-					)
-				);
+				$message = esc_html__( 'Delete this quiz successfully', 'learnpress' );
+			} elseif ( in_array( $status, [ 'publish', 'draft' ], true ) ) {
+				$restore_with_custom_slug = $this->prepare_desired_slug_for_restore( $quiz_id, $status, $quiz_slug );
+				$update_args              = [
+					'ID'          => $quiz_id,
+					'post_type'   => LP_QUIZ_CPT,
+					'post_status' => $status,
+				];
+
+				if ( '' !== $quiz_slug ) {
+					$update_args['post_name'] = $quiz_slug;
+				}
+
+				$update = wp_update_post( $update_args );
 				if ( ! $update ) {
+					if ( 'draft' === $status ) {
+						throw new Exception( __( 'Quiz cannot be moved to draft', 'learnpress' ) );
+					}
+
 					throw new Exception( __( 'Quiz cannot be moved to publish', 'learnpress' ) );
 				}
 
-				$message = __( 'Quiz has been moved to publish', 'learnpress' );
+				if ( $restore_with_custom_slug ) {
+					$this->sync_slug_after_restore( $quiz_id, $quiz_slug );
+				}
+
+				$message = 'draft' === $status
+					? __( 'Quiz has been moved to draft', 'learnpress' )
+					: __( 'Quiz has been moved to publish', 'learnpress' );
+			} else {
+				throw new Exception( __( 'Invalid quiz status transition', 'learnpress' ) );
 			}
 
-			if ( $status !== 'publish' ) {
+			$saved_quiz_status = get_post_status( $quiz_id );
+			if ( ! is_string( $saved_quiz_status ) || '' === $saved_quiz_status ) {
+				$saved_quiz_status = $status;
+			}
+
+			if ( $saved_quiz_status !== 'publish' ) {
 				$this->remove_course_item_from_curriculum( $quiz_id, $course_id );
 			}
 
-			$response->data->status       = $status;
-			$response->data->button_title = __( 'Publish', 'learnpress' );
-			$response->status             = 'success';
-			$response->message            = $message;
+			$response->data->status              = $saved_quiz_status;
+			$response->data->button_title        = 'publish' === $saved_quiz_status ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
+			$response->data->quiz_slug           = (string) get_post_field( 'post_name', $quiz_id );
+			$response->data->permalink_available = false;
+			$response->data->permalink_notice    = $this->get_item_permalink_unavailable_message();
+
+			$course_id_of_item = $this->get_course_by_item_id( $quiz_id );
+			if ( 'publish' === $saved_quiz_status && $course_id_of_item ) {
+				$course = learn_press_get_course( $course_id_of_item );
+				if ( $course ) {
+					$response->data->permalink_available = true;
+					$response->data->quiz_permalink      = urldecode( $course->get_item_link( $quiz_id ) );
+				}
+			}
+
+			$response->status  = 'success';
+			$response->message = $message;
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -1658,9 +1768,11 @@ class CourseBuilderAjax extends AbstractAjax {
 			$question_model_new = QuestionPostModel::find( $new_item_id, true );
 			$html               = BuilderTabQuestionTemplate::render_question( $question_model_new );
 
-			$response->status     = 'success';
-			$response->data->html = $html;
-			$response->message    = __( 'Question duplicated successfully', 'learnpress' );
+			$response->status                = 'success';
+			$response->data->html            = $html;
+			$response->data->question_id_new = $new_item_id;
+			$response->data->redirect_url    = BuilderTabQuestionTemplate::instance()->get_link_edit( $new_item_id );
+			$response->message               = __( 'Question duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
@@ -1674,13 +1786,13 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data         = self::check_valid_question();
-			$question_id  = $data['question_id'] ?? 0;
-			$title        = $data['question_title'] ?? '';
-			$description  = $data['question_description'] ?? '';
-			$is_elementor = $data['is_elementor'] ?? false;
-			$return_html  = ( $data['return_html'] ?? 'no' ) === 'yes';
-			$insert       = $data['insert'];
+			$data          = self::check_valid_question();
+			$question_id   = $data['question_id'] ?? 0;
+			$title         = $data['question_title'] ?? '';
+			$description   = $data['question_description'] ?? '';
+			$is_elementor  = $data['is_elementor'] ?? false;
+			$return_html   = ( $data['return_html'] ?? 'no' ) === 'yes';
+			$insert        = $data['insert'];
 			$question_slug = ! empty( $data['question_permalink'] )
 				? sanitize_title( wp_unslash( (string) $data['question_permalink'] ) )
 				: '';
@@ -1820,14 +1932,14 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( is_wp_error( $move_trash ) ) {
 					throw new Exception( esc_html__( 'Cannot move this question to trash', 'learnpress' ) );
 				}
-				$message = esc_html__( 'Delete this question successfully', 'learnpress' );
+				$message = esc_html__( 'This question has been moved to trash.', 'learnpress' );
 			} elseif ( $status === 'delete' ) {
 				$delete = wp_delete_post( $question_id );
 
 				if ( is_wp_error( $delete ) ) {
 					throw new Exception( esc_html__( 'Cannot delete this question.', 'learnpress' ) );
 				}
-				$message = esc_html__( 'This question has been moved to trash.', 'learnpress' );
+				$message = esc_html__( 'Delete this question successfully', 'learnpress' );
 
 			} elseif ( $status === 'publish' ) {
 				$update = wp_update_post(

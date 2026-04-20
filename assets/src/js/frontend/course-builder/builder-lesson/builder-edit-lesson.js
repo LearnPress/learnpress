@@ -22,6 +22,17 @@ export class BuilderEditLesson {
 		idTitle: 'title',
 		idDescEditor: 'lesson_description_editor',
 		elFormSetting: '.lp-form-setting-lesson',
+		// Permalink component
+		elPermalinkDisplay: '.cb-permalink-display',
+		elPermalinkEditor: '.cb-permalink-editor',
+		elPermalinkEditBtn: '.cb-permalink-edit-btn',
+		elPermalinkOkBtn: '.cb-permalink-ok-btn',
+		elPermalinkCancelBtn: '.cb-permalink-cancel-btn',
+		elPermalinkSlugInput: '.cb-permalink-slug-input',
+		elPermalinkUrl: '.cb-permalink-url',
+		elPermalinkBaseUrl: '#cb-permalink-base-url',
+		elPermalinkRoot: '.cb-item-edit-permalink, .cb-course-edit-permalink',
+		elPermalinkPlaceholder: '.cb-item-edit-permalink__placeholder',
 		// Tab handling selectors
 		elCBHorizontalTabs: '.lp-cb-tabs__item',
 		elCBTabPanels: '.lp-cb-tab-panel',
@@ -170,6 +181,21 @@ export class BuilderEditLesson {
 				class: this,
 				callBack: this.handleDropdownToggle.name,
 			},
+			{
+				selector: BuilderEditLesson.selectors.elPermalinkEditBtn,
+				class: this,
+				callBack: this.handlePermalinkEdit.name,
+			},
+			{
+				selector: BuilderEditLesson.selectors.elPermalinkOkBtn,
+				class: this,
+				callBack: this.handlePermalinkOk.name,
+			},
+			{
+				selector: BuilderEditLesson.selectors.elPermalinkCancelBtn,
+				class: this,
+				callBack: this.handlePermalinkCancel.name,
+			},
 		] );
 	}
 
@@ -220,6 +246,83 @@ export class BuilderEditLesson {
 		return !! document.querySelector( BuilderEditLesson.selectors.elDataLesson );
 	}
 
+	slugify( str ) {
+		return ( str || '' )
+			.toString()
+			.normalize( 'NFD' )
+			.replace( /[\u0300-\u036f]/g, '' )
+			.replace( /đ/g, 'd' )
+			.replace( /Đ/g, 'D' )
+			.toLowerCase()
+			.replace( /\s+/g, '-' )
+			.replace( /[^\w-]+/g, '' )
+			.replace( /--+/g, '-' )
+			.replace( /^-+/, '' )
+			.replace( /-+$/, '' );
+	}
+
+	buildPermalinkDisplayUrl( baseUrl = '', slug = '', fallbackUrl = '' ) {
+		const normalizedBaseUrl = typeof baseUrl === 'string' ? baseUrl : '';
+		const normalizedSlug = typeof slug === 'string' ? slug.trim() : '';
+
+		if ( normalizedBaseUrl && normalizedSlug ) {
+			return `${ normalizedBaseUrl }${ normalizedSlug }`;
+		}
+
+		return typeof fallbackUrl === 'string' ? fallbackUrl : '';
+	}
+
+	getPermalinkRoot( target = null ) {
+		if ( target?.closest ) {
+			const fromTarget = target.closest( BuilderEditLesson.selectors.elPermalinkRoot );
+			if ( fromTarget ) {
+				return fromTarget;
+			}
+		}
+
+		return document.querySelector(
+			`.cb-section__lesson-edit ${ BuilderEditLesson.selectors.elPermalinkRoot }`
+		);
+	}
+
+	showPermalinkUnavailable( permalinkRoot, message = '' ) {
+		if ( ! permalinkRoot ) {
+			return;
+		}
+
+		const label =
+			permalinkRoot.querySelector( '.cb-item-edit-permalink__label' ) ||
+			permalinkRoot.querySelector( '.cb-permalink-label' );
+		const display = permalinkRoot.querySelector( BuilderEditLesson.selectors.elPermalinkDisplay );
+		const editor = permalinkRoot.querySelector( BuilderEditLesson.selectors.elPermalinkEditor );
+		let placeholder = permalinkRoot.querySelector(
+			BuilderEditLesson.selectors.elPermalinkPlaceholder
+		);
+
+		if ( ! placeholder ) {
+			placeholder = document.createElement( 'span' );
+			placeholder.className = 'cb-item-edit-permalink__placeholder';
+
+			if ( label ) {
+				label.insertAdjacentElement( 'afterend', placeholder );
+			} else {
+				permalinkRoot.prepend( placeholder );
+			}
+		}
+
+		placeholder.textContent =
+			message || 'Permalink is only available if the item is already assigned to a course.';
+		placeholder.classList.remove( 'lp-hidden' );
+
+		if ( display ) {
+			display.classList.add( 'lp-hidden' );
+		}
+
+		if ( editor ) {
+			editor.classList.add( 'lp-hidden' );
+		}
+	}
+
 	getLessonDataForUpdate() {
 		const data = {};
 
@@ -237,6 +340,13 @@ export class BuilderEditLesson {
 			if ( editor ) {
 				data.lesson_description = editor.getContent();
 			}
+		}
+
+		const permalinkInput = document.querySelector(
+			`input[name="lesson_permalink"], #lesson_permalink, ${ BuilderEditLesson.selectors.elPermalinkSlugInput }`
+		);
+		if ( permalinkInput && permalinkInput.value ) {
+			data.lesson_permalink = permalinkInput.value;
 		}
 
 		const elFormSetting = document.querySelector( BuilderEditLesson.selectors.elFormSetting );
@@ -294,6 +404,158 @@ export class BuilderEditLesson {
 		}
 
 		return data;
+	}
+
+	updatePermalinkUIAfterSave( data = {} ) {
+		const permalinkRoot = this.getPermalinkRoot();
+		if ( ! permalinkRoot ) {
+			return;
+		}
+
+		const slugInput = permalinkRoot.querySelector( BuilderEditLesson.selectors.elPermalinkSlugInput );
+		const urlLink = permalinkRoot.querySelector( BuilderEditLesson.selectors.elPermalinkUrl );
+		const baseUrlInput = permalinkRoot.querySelector( BuilderEditLesson.selectors.elPermalinkBaseUrl );
+		const display = permalinkRoot.querySelector( BuilderEditLesson.selectors.elPermalinkDisplay );
+		const placeholder = permalinkRoot.querySelector(
+			BuilderEditLesson.selectors.elPermalinkPlaceholder
+		);
+		const permalinkDisplayUrl = this.buildPermalinkDisplayUrl(
+			baseUrlInput ? baseUrlInput.value : '',
+			data?.lesson_slug,
+			data?.lesson_permalink
+		);
+
+		if ( slugInput && data?.lesson_slug ) {
+			slugInput.value = data.lesson_slug;
+			slugInput.dataset.originalValue = data.lesson_slug;
+		}
+
+		const shouldShowUnavailable =
+			data?.permalink_available === false ||
+			data?.status === 'draft' ||
+			data?.status === 'trash' ||
+			! data?.lesson_permalink;
+
+		if ( shouldShowUnavailable ) {
+			this.showPermalinkUnavailable( permalinkRoot, data?.permalink_notice );
+			return;
+		}
+
+		if ( placeholder ) {
+			placeholder.classList.add( 'lp-hidden' );
+		}
+
+		if ( display ) {
+			display.classList.remove( 'lp-hidden' );
+		}
+
+		if ( urlLink && data?.lesson_permalink ) {
+			urlLink.href = data.lesson_permalink;
+			urlLink.textContent = permalinkDisplayUrl || data.lesson_permalink;
+		} else if ( urlLink && permalinkDisplayUrl ) {
+			urlLink.textContent = permalinkDisplayUrl;
+		}
+	}
+
+	handlePermalinkEdit( args ) {
+		if ( ! this.isLessonContext() ) {
+			return;
+		}
+
+		const { e, target } = args;
+		if ( e ) e.preventDefault();
+
+		const trigger = target?.closest( BuilderEditLesson.selectors.elPermalinkEditBtn );
+		const lessonRoot = trigger?.closest( BuilderEditLesson.selectors.elDataLesson ) ||
+			document.querySelector( BuilderEditLesson.selectors.elDataLesson );
+
+		if ( ! lessonRoot ) {
+			return;
+		}
+
+		const display = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkDisplay );
+		const editor = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkEditor );
+		const input = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkSlugInput );
+
+		if ( ! display || ! editor || ! input ) {
+			return;
+		}
+
+		input.dataset.originalValue = input.value;
+		display.classList.add( 'lp-hidden' );
+		editor.classList.remove( 'lp-hidden' );
+		input.focus();
+		input.select();
+	}
+
+	handlePermalinkOk( args ) {
+		if ( ! this.isLessonContext() ) {
+			return;
+		}
+
+		const { e, target } = args;
+		if ( e ) e.preventDefault();
+
+		const trigger = target?.closest( BuilderEditLesson.selectors.elPermalinkOkBtn );
+		const lessonRoot = trigger?.closest( BuilderEditLesson.selectors.elDataLesson ) ||
+			document.querySelector( BuilderEditLesson.selectors.elDataLesson );
+
+		if ( ! lessonRoot ) {
+			return;
+		}
+
+		const display = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkDisplay );
+		const editor = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkEditor );
+		const input = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkSlugInput );
+		const urlLink = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkUrl );
+		const baseUrlInput = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkBaseUrl );
+
+		if ( ! display || ! editor || ! input || ! urlLink ) {
+			return;
+		}
+
+		let newSlug = this.slugify( input.value.trim() );
+		if ( ! newSlug ) {
+			newSlug = input.dataset.originalValue || 'lesson';
+		}
+
+		input.value = newSlug;
+		const baseUrl = baseUrlInput ? baseUrlInput.value : '';
+		const newUrl = this.buildPermalinkDisplayUrl( baseUrl, newSlug, urlLink.textContent || '' );
+
+		// Keep href as the current saved link and only update display text.
+		urlLink.textContent = newUrl;
+		editor.classList.add( 'lp-hidden' );
+		display.classList.remove( 'lp-hidden' );
+	}
+
+	handlePermalinkCancel( args ) {
+		if ( ! this.isLessonContext() ) {
+			return;
+		}
+
+		const { e, target } = args;
+		if ( e ) e.preventDefault();
+
+		const trigger = target?.closest( BuilderEditLesson.selectors.elPermalinkCancelBtn );
+		const lessonRoot = trigger?.closest( BuilderEditLesson.selectors.elDataLesson ) ||
+			document.querySelector( BuilderEditLesson.selectors.elDataLesson );
+
+		if ( ! lessonRoot ) {
+			return;
+		}
+
+		const display = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkDisplay );
+		const editor = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkEditor );
+		const input = lessonRoot.querySelector( BuilderEditLesson.selectors.elPermalinkSlugInput );
+
+		if ( ! display || ! editor || ! input ) {
+			return;
+		}
+
+		input.value = input.dataset.originalValue || '';
+		editor.classList.add( 'lp-hidden' );
+		display.classList.remove( 'lp-hidden' );
 	}
 
 	updateLesson( args ) {
@@ -363,6 +625,8 @@ export class BuilderEditLesson {
 							}
 						}
 					}
+
+					this.updatePermalinkUIAfterSave( data );
 
 					// Reset form state to prevent "leave site" warning
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
@@ -455,6 +719,8 @@ export class BuilderEditLesson {
 						}
 					}
 
+					this.updatePermalinkUIAfterSave( data );
+
 					// Reset form state to prevent "leave site" warning
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 				}
@@ -524,6 +790,8 @@ export class BuilderEditLesson {
 							}
 						}
 					}
+
+					this.updatePermalinkUIAfterSave( data );
 				}
 			},
 			error: ( error ) => {

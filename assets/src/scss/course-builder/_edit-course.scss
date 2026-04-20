@@ -715,6 +715,10 @@
 		}
 	}
 
+	.cb-course-edit-publish {
+		margin-bottom: 20px;
+	}
+
 	.cb-course-edit-publish__title {
 		margin: 0 0 16px;
 		font-size: 16px;
@@ -1752,8 +1756,8 @@
 	}
 
 	.cb-course-edit-publish__title {
-		margin: 0 0 16px;
-		font-size: 16px;
+		margin: 0 0 8px;
+		font-size: 14px;
 		font-weight: 600;
 		color: #111827;
 	}
@@ -1962,6 +1966,12 @@
 			font-size: 13px;
 			color: #ef4444;
 			line-height: 1.5;
+		}
+
+		._lp_no_required_enroll_field {
+			.description {
+				margin-top: -13px;
+			}
 		}
 	}
 
@@ -2639,6 +2649,16 @@ ul.lp-meta-box__course-tab__tabs {
 				&:hover {
 					background: $cb-primary-bland;
 					color: $cb-primary;
+				}
+			}
+
+			&:has( .lp-btn-generate-with-ai ) {
+				.count-sections {
+					margin-left: 0;
+				}
+
+				.lp-btn-generate-with-ai {
+					margin-left: auto;
 				}
 			}
 		}

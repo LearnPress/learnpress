@@ -15,7 +15,6 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
 
-use LP_Course_Filter;
 use Throwable;
 use WP_Query;
 
@@ -105,6 +104,7 @@ class BuilderTabQuizTemplate {
 					$quizzes[]  = $quiz_model;
 				}
 			}
+			wp_reset_postdata();
 
 			if ( ! empty( $quizzes ) ) {
 				$html_quizzes = $this->list_quizzes( $quizzes );
@@ -152,7 +152,7 @@ class BuilderTabQuizTemplate {
 				$html_list_quiz .= self::render_quiz( $quiz_model );
 			}
 
-			$header = '<div class="cb-list-table-header">';
+			$header  = '<div class="cb-list-table-header">';
 			$header .= sprintf( '<span>%s</span>', __( 'Quiz Title', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Courses', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Questions', 'learnpress' ) );
@@ -188,12 +188,15 @@ class BuilderTabQuizTemplate {
 	 * @version 1.0.0
 	 */
 	public static function render_quiz( QuizPostModel $quiz_model, array $settings = [] ): string {
+		$author      = get_user_by( 'ID', $quiz_model->post_author );
+		$author_name = $author && isset( $author->display_name ) ? $author->display_name : '--';
+
 		$quiz = array(
 			'id'            => $quiz_model->get_id(),
 			'title'         => $quiz_model->post_title,
 			'status'        => $quiz_model->post_status,
 			'courses'       => BuilderEditQuizTemplate::instance()->get_assigned( $quiz_model->get_id() ),
-			'author'        => get_user_by( 'ID', $quiz_model->post_author )->display_name,
+			'author'        => $author_name,
 			'duration'      => learn_press_get_post_translated_duration( $quiz_model->get_id(), esc_html__( 'Lifetime', 'learnpress' ) ),
 			'date_modified' => lp_jwt_prepare_date_response( $quiz_model->post_date_gmt ),
 		);

@@ -11,7 +11,6 @@ import { GenerateWithOpenai } from '../admin/generate-with-openai.js';
 import { BuilderTabLesson } from './course-builder/builder-lesson/builder-tab-lesson.js';
 import { BuilderEditLesson } from './course-builder/builder-lesson/builder-edit-lesson.js';
 import { BuilderTabQuiz } from './course-builder/builder-quiz/builder-tab-quiz.js';
-import { BuilderEditQuiz } from './course-builder/builder-quiz/builder-edit-quiz.js';
 import { BuilderStandaloneQuiz } from './course-builder/builder-quiz/builder-standalone-quiz.js';
 import { BuilderTabQuestion } from './course-builder/builder-question/builder-tab-question.js';
 import { BuilderEditQuestion } from './course-builder/builder-question/builder-edit-question.js';
@@ -19,7 +18,7 @@ import { BuilderPopup } from './course-builder/builder-popup.js';
 import { BuilderMaterial } from './course-builder/builder-lesson/builder-material.js';
 import { BuilderDashboard } from './course-builder/builder-dashboard.js';
 import { BuilderSettings } from './course-builder/builder-settings.js';
-import { BuilderFormState, getFormState } from './course-builder/builder-form-state.js';
+import { getFormState } from './course-builder/builder-form-state.js';
 import { EditCurriculumAi } from '../admin/edit-course/edit-curriculum/edit-curriculum-ai.js';
 import { initElsTomSelect } from 'lpAssetsJsPath/admin/init-tom-select.js';
 import { Utils } from 'lpAssetsJsPath/admin/utils-admin.js';
@@ -67,6 +66,7 @@ const initBuilderComponents = () => {
 
 		// Initialize sidebar toggle
 		initSidebarToggle();
+		initHeaderMoreActions();
 	} catch ( e ) {
 		console.error( 'Error initializing builder components:', e );
 	}
@@ -106,6 +106,61 @@ const initSidebarToggle = () => {
 
 		// Save state
 		localStorage.setItem( storageKey, willCollapse ? 'true' : 'false' );
+	} );
+};
+
+/**
+ * Initialize "More actions" menu in edit header (duplicate/trash).
+ * Uses explicit open state to avoid focus-only behavior issues across browsers.
+ */
+const initHeaderMoreActions = () => {
+	const wrapSelector = '.cb-header-action-expanded';
+	const toggleSelector = '.course-action-expanded';
+	const openClass = 'is-open';
+
+	const closeAll = ( exclude = null ) => {
+		document.querySelectorAll( `${ wrapSelector }.${ openClass }` ).forEach( ( wrap ) => {
+			if ( exclude && wrap === exclude ) {
+				return;
+			}
+
+			wrap.classList.remove( openClass );
+			const btn = wrap.querySelector( toggleSelector );
+			if ( btn ) {
+				btn.setAttribute( 'aria-expanded', 'false' );
+			}
+		} );
+	};
+
+	document.addEventListener( 'click', ( e ) => {
+		const target = e.target;
+		const toggleBtn = target.closest( toggleSelector );
+
+		if ( toggleBtn ) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			const wrap = toggleBtn.closest( wrapSelector );
+			if ( ! wrap ) {
+				return;
+			}
+
+			const willOpen = ! wrap.classList.contains( openClass );
+			closeAll( wrap );
+			wrap.classList.toggle( openClass, willOpen );
+			toggleBtn.setAttribute( 'aria-expanded', willOpen ? 'true' : 'false' );
+			return;
+		}
+
+		if ( ! target.closest( wrapSelector ) ) {
+			closeAll();
+		}
+	} );
+
+	document.addEventListener( 'keydown', ( e ) => {
+		if ( e.key === 'Escape' ) {
+			closeAll();
+		}
 	} );
 };
 

@@ -2,7 +2,7 @@ import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
 import { EditQuestion } from 'lpAssetsJsPath/admin/edit-question.js';
-import { SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
+import { SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
 import { getFormState } from '../builder-form-state.js';
 
 export class BuilderEditQuestion {
@@ -17,6 +17,7 @@ export class BuilderEditQuestion {
 		elDataQuestion: '.cb-section__question-edit',
 		elBtnUpdateQuestion: '.cb-btn-update',
 		elBtnDraftQuestion: '.cb-btn-draft',
+		elBtnDuplicateQuestion: '.cb-btn-duplicate-question',
 		elBtnTrashQuestion: '.cb-btn-trash',
 		elBtnMainAction: '.cb-btn-main-action',
 		elQuestionStatus: '.question-status',
@@ -125,7 +126,10 @@ export class BuilderEditQuestion {
 		}
 
 		// Skip if this is trash button - it has its own handler
-		if ( dropdownItem.classList.contains( 'cb-btn-trash' ) ) {
+		if (
+			dropdownItem.classList.contains( 'cb-btn-trash' ) ||
+			dropdownItem.classList.contains( 'cb-btn-duplicate-question' )
+		) {
 			return;
 		}
 
@@ -394,6 +398,11 @@ export class BuilderEditQuestion {
 				selector: BuilderEditQuestion.selectors.elBtnDraftQuestion,
 				class: this,
 				callBack: this.saveDraftQuestion.name,
+			},
+			{
+				selector: BuilderEditQuestion.selectors.elBtnDuplicateQuestion,
+				class: this,
+				callBack: this.duplicateQuestion.name,
 			},
 			{
 				selector: BuilderEditQuestion.selectors.elBtnTrashQuestion,
@@ -710,10 +719,14 @@ export class BuilderEditQuestion {
 	}
 
 	updatePermalinkUIAfterSave( data = {} ) {
-		const slugInput = document.querySelector(
-			BuilderEditQuestion.selectors.elPermalinkSlugInput
-		);
+		const slugInput = document.querySelector( BuilderEditQuestion.selectors.elPermalinkSlugInput );
 		const urlLink = document.querySelector( BuilderEditQuestion.selectors.elPermalinkUrl );
+		const baseUrlInput = document.querySelector( BuilderEditQuestion.selectors.elPermalinkBaseUrl );
+		const permalinkDisplayUrl = this.buildPermalinkDisplayUrl(
+			baseUrlInput ? baseUrlInput.value : '',
+			data?.question_slug,
+			data?.question_permalink
+		);
 
 		if ( slugInput && data?.question_slug ) {
 			slugInput.value = data.question_slug;
@@ -722,7 +735,9 @@ export class BuilderEditQuestion {
 
 		if ( urlLink && data?.question_permalink ) {
 			urlLink.href = data.question_permalink;
-			urlLink.textContent = data.question_permalink;
+			urlLink.textContent = permalinkDisplayUrl || data.question_permalink;
+		} else if ( urlLink && permalinkDisplayUrl ) {
+			urlLink.textContent = permalinkDisplayUrl;
 		}
 	}
 
@@ -739,6 +754,17 @@ export class BuilderEditQuestion {
 			.replace( /--+/g, '-' )
 			.replace( /^-+/, '' )
 			.replace( /-+$/, '' );
+	}
+
+	buildPermalinkDisplayUrl( baseUrl = '', slug = '', fallbackUrl = '' ) {
+		const normalizedBaseUrl = typeof baseUrl === 'string' ? baseUrl : '';
+		const normalizedSlug = typeof slug === 'string' ? slug.trim() : '';
+
+		if ( normalizedBaseUrl && normalizedSlug ) {
+			return `${ normalizedBaseUrl }${ normalizedSlug }`;
+		}
+
+		return typeof fallbackUrl === 'string' ? fallbackUrl : '';
 	}
 
 	handlePermalinkEdit( args ) {
@@ -785,9 +811,9 @@ export class BuilderEditQuestion {
 
 		input.value = newSlug;
 		const baseUrl = baseUrlInput ? baseUrlInput.value : '';
-		const newUrl = baseUrl + newSlug;
+		const newUrl = this.buildPermalinkDisplayUrl( baseUrl, newSlug, urlLink.textContent || '' );
 
-		urlLink.href = newUrl;
+		// Keep href as the current saved link and only update display text.
 		urlLink.textContent = newUrl;
 		editor.classList.add( 'lp-hidden' );
 		display.classList.remove( 'lp-hidden' );
@@ -933,6 +959,7 @@ export class BuilderEditQuestion {
 		const result = await SweetAlert.fire( {
 			title: confirmMsg,
 			iconHtml: SWAL_ICON_TRASH_DRAFT,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -966,6 +993,7 @@ export class BuilderEditQuestion {
 			const result = await SweetAlert.fire( {
 				title: confirmMsg,
 				iconHtml: SWAL_ICON_TRASH_DRAFT,
+				customClass: { icon: 'lp-cb-swal-icon-html' },
 				showCloseButton: true,
 				showCancelButton: true,
 				cancelButtonText: lpData.i18n.cancel,
@@ -1071,6 +1099,7 @@ export class BuilderEditQuestion {
 		const result = await SweetAlert.fire( {
 			title: 'Are you sure you want to trash this question?',
 			iconHtml: SWAL_ICON_TRASH_DRAFT,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -1130,6 +1159,74 @@ export class BuilderEditQuestion {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( elBtnTrashQuestion, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	async duplicateQuestion( args ) {
+		// Context check: only handle if on question edit page
+		if ( ! this.isQuestionContext() ) {
+			return;
+		}
+
+		const { target } = args;
+		const elBtnDuplicateQuestion = target.closest(
+			BuilderEditQuestion.selectors.elBtnDuplicateQuestion
+		);
+		if ( ! elBtnDuplicateQuestion ) {
+			return;
+		}
+
+		const questionData = this.getQuestionDataForUpdate();
+		const questionId = parseInt( questionData?.question_id, 10 ) || 0;
+		if ( ! questionId ) {
+			return;
+		}
+
+		const result = await SweetAlert.fire( {
+			title: elBtnDuplicateQuestion.dataset.title || 'Are you sure?',
+			text:
+				elBtnDuplicateQuestion.dataset.content ||
+				'Are you sure you want to duplicate this question?',
+			iconHtml: SWAL_ICON_DUPLICATE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
+			showCloseButton: true,
+			showCancelButton: true,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
+			reverseButtons: true,
+		} );
+
+		if ( ! result.isConfirmed ) {
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( elBtnDuplicateQuestion, 1 );
+
+		const dataSend = {
+			action: 'duplicate_question',
+			args: {
+				id_url: 'duplicate-question',
+			},
+			question_id: questionId,
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+				lpToastify.show( message || 'Duplicated successfully!', status );
+
+				if ( status === 'success' && data?.redirect_url ) {
+					window.location.href = data.redirect_url;
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( elBtnDuplicateQuestion, 0 );
 			},
 		};
 

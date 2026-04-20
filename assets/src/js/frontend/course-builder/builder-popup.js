@@ -45,6 +45,11 @@ export class BuilderPopup {
 		tabPane: '.lp-builder-popup__tab-pane',
 		permalinkSlugInput: '.cb-permalink-slug-input',
 		permalinkUrl: '.cb-permalink-url',
+		permalinkBaseUrl: '#cb-permalink-base-url',
+		permalinkDisplay: '.cb-permalink-display',
+		permalinkEditor: '.cb-permalink-editor',
+		permalinkRoot: '.cb-item-edit-permalink, .cb-course-edit-permalink',
+		permalinkPlaceholder: '.cb-item-edit-permalink__placeholder',
 		// Trigger buttons
 		triggerLesson: '[data-popup-lesson]',
 		triggerQuiz: '[data-popup-quiz]',
@@ -1313,6 +1318,7 @@ export class BuilderPopup {
 				title: 'Are you sure?',
 				text: confirmMsg,
 				iconHtml: SWAL_ICON_TRASH_DRAFT,
+				customClass: { icon: 'lp-cb-swal-icon-html' },
 				showCloseButton: true,
 				showCancelButton: true,
 				cancelButtonText: lpData.i18n.cancel,
@@ -1471,6 +1477,7 @@ export class BuilderPopup {
 			title: 'Are you sure?',
 			text: confirmMsg,
 			iconHtml: SWAL_ICON_TRASH_DRAFT,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -1495,7 +1502,10 @@ export class BuilderPopup {
 			args: { id_url: `move-trash-${ this.currentType }` },
 			[ `${ this.currentType }_id` ]: this.currentId,
 		};
-		if ( [ 'lesson', 'quiz' ].includes( this.currentType ) && ( parseInt( this.openContext?.courseId ) || 0 ) > 0 ) {
+		if (
+			[ 'lesson', 'quiz' ].includes( this.currentType ) &&
+			( parseInt( this.openContext?.courseId ) || 0 ) > 0
+		) {
 			dataSend.course_id = parseInt( this.openContext.courseId ) || 0;
 		}
 
@@ -1527,6 +1537,8 @@ export class BuilderPopup {
 							this.removeQuestionFromAssignedQuiz( this.currentId );
 						}
 					}
+
+					this.updatePermalinkUIAfterSave( data );
 
 					this.savedData = { formData: this.getFormData(), data, wasNewItem: false };
 
@@ -1692,7 +1704,10 @@ export class BuilderPopup {
 
 		const idKey = `${ this.currentType }_id`;
 		data[ idKey ] = this.currentId || 0;
-		if ( [ 'lesson', 'quiz' ].includes( this.currentType ) && ( parseInt( this.openContext?.courseId ) || 0 ) > 0 ) {
+		if (
+			[ 'lesson', 'quiz' ].includes( this.currentType ) &&
+			( parseInt( this.openContext?.courseId ) || 0 ) > 0
+		) {
 			data.course_id = parseInt( this.openContext.courseId ) || 0;
 		}
 
@@ -1737,6 +1752,60 @@ export class BuilderPopup {
 		return data;
 	}
 
+	buildPermalinkDisplayUrl( baseUrl = '', slug = '', fallbackUrl = '' ) {
+		const normalizedBaseUrl = typeof baseUrl === 'string' ? baseUrl : '';
+		const normalizedSlug = typeof slug === 'string' ? slug.trim() : '';
+
+		if ( normalizedBaseUrl && normalizedSlug ) {
+			return `${ normalizedBaseUrl }${ normalizedSlug }`;
+		}
+
+		return typeof fallbackUrl === 'string' ? fallbackUrl : '';
+	}
+
+	showPermalinkUnavailable( popup, message = '' ) {
+		if ( ! popup ) {
+			return;
+		}
+
+		const permalinkRoot = popup.querySelector( BuilderPopup.selectors.permalinkRoot );
+		if ( ! permalinkRoot ) {
+			return;
+		}
+
+		const label =
+			permalinkRoot.querySelector( '.cb-item-edit-permalink__label' ) ||
+			permalinkRoot.querySelector( '.cb-permalink-label' );
+		const display = permalinkRoot.querySelector( BuilderPopup.selectors.permalinkDisplay );
+		const editor = permalinkRoot.querySelector( BuilderPopup.selectors.permalinkEditor );
+		let placeholder = permalinkRoot.querySelector(
+			BuilderPopup.selectors.permalinkPlaceholder
+		);
+
+		if ( ! placeholder ) {
+			placeholder = document.createElement( 'span' );
+			placeholder.className = 'cb-item-edit-permalink__placeholder';
+
+			if ( label ) {
+				label.insertAdjacentElement( 'afterend', placeholder );
+			} else {
+				permalinkRoot.prepend( placeholder );
+			}
+		}
+
+		placeholder.textContent =
+			message || 'Permalink is only available if the item is already assigned to a course.';
+		placeholder.classList.remove( 'lp-hidden' );
+
+		if ( display ) {
+			display.classList.add( 'lp-hidden' );
+		}
+
+		if ( editor ) {
+			editor.classList.add( 'lp-hidden' );
+		}
+	}
+
 	updatePermalinkUIAfterSave( data = {} ) {
 		if ( ! this.currentType || ! this.popupContainer ) {
 			return;
@@ -1751,6 +1820,14 @@ export class BuilderPopup {
 			`input[name="${ this.currentType }_permalink"], #${ this.currentType }_permalink, ${ BuilderPopup.selectors.permalinkSlugInput }`
 		);
 		const urlLink = popup.querySelector( BuilderPopup.selectors.permalinkUrl );
+		const baseUrlInput = popup.querySelector( BuilderPopup.selectors.permalinkBaseUrl );
+		const permalinkRoot = popup.querySelector( BuilderPopup.selectors.permalinkRoot );
+		const permalinkDisplay = permalinkRoot?.querySelector(
+			BuilderPopup.selectors.permalinkDisplay
+		);
+		const permalinkPlaceholder = permalinkRoot?.querySelector(
+			BuilderPopup.selectors.permalinkPlaceholder
+		);
 
 		const responseSlug = data?.[ `${ this.currentType }_slug` ];
 		if ( slugInput && responseSlug ) {
@@ -1759,9 +1836,36 @@ export class BuilderPopup {
 		}
 
 		const responsePermalink = data?.[ `${ this.currentType }_permalink` ];
+		const permalinkDisplayUrl = this.buildPermalinkDisplayUrl(
+			baseUrlInput ? baseUrlInput.value : '',
+			responseSlug,
+			responsePermalink
+		);
+
+		const isCourseItem = [ 'lesson', 'quiz' ].includes( this.currentType );
+		const shouldShowUnavailable =
+			data?.permalink_available === false ||
+			( isCourseItem &&
+				( data?.status === 'draft' || data?.status === 'trash' || ! responsePermalink ) );
+
+		if ( shouldShowUnavailable ) {
+			this.showPermalinkUnavailable( popup, data?.permalink_notice );
+			return;
+		}
+
+		if ( permalinkPlaceholder ) {
+			permalinkPlaceholder.classList.add( 'lp-hidden' );
+		}
+
+		if ( permalinkDisplay ) {
+			permalinkDisplay.classList.remove( 'lp-hidden' );
+		}
+
 		if ( urlLink && responsePermalink ) {
 			urlLink.href = responsePermalink;
-			urlLink.textContent = responsePermalink;
+			urlLink.textContent = permalinkDisplayUrl || responsePermalink;
+		} else if ( urlLink && permalinkDisplayUrl ) {
+			urlLink.textContent = permalinkDisplayUrl;
 		}
 	}
 

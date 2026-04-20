@@ -7,6 +7,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\QuizPostModel;
 use LP_Database;
 use LP_Meta_Box_Checkbox_Field;
 use LP_Meta_Box_Course;
@@ -130,12 +131,13 @@ class AdminEditSettingTemplate {
 	 * Helper to capture do_action output
 	 *
 	 * @param string $hook
-	 * @param int $post_id
+	 * @param int  $post_id
+	 * @param bool $allow_course_builder_context
 	 *
 	 * @return string
 	 */
-	private function capture_hook_content( string $hook, int $post_id ): string {
-		if ( $this->is_course_builder_context() ) {
+	private function capture_hook_content( string $hook, int $post_id, bool $allow_course_builder_context = false ): string {
+		if ( ! $allow_course_builder_context && $this->is_course_builder_context() ) {
 			return '';
 		}
 
@@ -158,7 +160,11 @@ class AdminEditSettingTemplate {
 			return '';
 		}
 
-		return $this->capture_hook_content( 'learn-press/course-builder/edit-course/settings/tab/content', $post_id );
+		return $this->capture_hook_content(
+			'learn-press/course-builder/edit-course/settings/tab/content',
+			$post_id,
+			true
+		);
 	}
 
 	/**
@@ -592,6 +598,14 @@ class AdminEditSettingTemplate {
 
 			if ( $final_quiz ) {
 				$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
+				if ( '' === (string) $passing_grade ) {
+					$quiz_model = QuizPostModel::find( absint( $final_quiz ), true );
+					if ( $quiz_model ) {
+						$passing_grade = $quiz_model->get_passing_grade();
+					} else {
+						$passing_grade = 80;
+					}
+				}
 
 				$url = get_edit_post_link( $final_quiz ) . '#_lp_passing_grade';
 

@@ -85,6 +85,7 @@ export class BuilderTabLesson {
 			title: elLessonDuplicate.dataset.title || 'Duplicate Lesson',
 			text: elLessonDuplicate.dataset.content || 'Are you sure you want to duplicate this lesson?',
 			iconHtml: SWAL_ICON_DUPLICATE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -102,32 +103,32 @@ export class BuilderTabLesson {
 					lesson_id: lessonId,
 				};
 
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message || 'Duplicated successfully!', status );
+				const callBack = {
+					success: ( response ) => {
+						const { status, message, data } = response;
+						lpToastify.show( message || 'Duplicated successfully!', status );
 
-				if ( data?.html ) {
-					const elLesson = elLessonDuplicate.closest( '.lesson' );
-					const elLessonList = elLesson.closest( '.lessons-list' ) || elLesson.parentElement;
+						if ( data?.html ) {
+							const elLesson = elLessonDuplicate.closest( '.lesson' );
+							const elLessonList = elLesson.closest( '.lessons-list' ) || elLesson.parentElement;
 
-					if ( elLessonList ) {
-						elLessonList.insertAdjacentHTML( 'afterbegin', data.html );
-						const newLesson = elLessonList.firstElementChild;
+							if ( elLessonList ) {
+								elLessonList.insertAdjacentHTML( 'afterbegin', data.html );
+								const newLesson = elLessonList.firstElementChild;
 
-						if ( newLesson ) {
-							newLesson.scrollIntoView( {
-								behavior: 'smooth',
-								block: 'nearest',
-							} );
-							newLesson.classList.add( 'highlight-new-lesson' );
-							setTimeout( () => {
-								newLesson.classList.remove( 'highlight-new-lesson' );
-							}, 1500 );
+								if ( newLesson ) {
+									newLesson.scrollIntoView( {
+										behavior: 'smooth',
+										block: 'nearest',
+									} );
+									newLesson.classList.add( 'highlight-new-lesson' );
+									setTimeout( () => {
+										newLesson.classList.remove( 'highlight-new-lesson' );
+									}, 1500 );
+								}
+							}
 						}
-					}
-				}
-			},
+					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
 					},
@@ -154,8 +155,11 @@ export class BuilderTabLesson {
 
 		SweetAlert.fire( {
 			title: elLessonTrash.dataset.title || 'Trash Lesson',
-			text: elLessonTrash.dataset.content || 'Are you sure? Moving it to the trash will cause this item to be removed from the course.',
+			text:
+				elLessonTrash.dataset.content ||
+				'Are you sure? Moving it to the trash will cause this item to be removed from the course.',
 			iconHtml: SWAL_ICON_TRASH_DRAFT,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,
@@ -173,16 +177,16 @@ export class BuilderTabLesson {
 					lesson_id: lessonId,
 				};
 
-		const callBack = {
-			success: ( response ) => {
-				const { status, message, data } = response;
-				lpToastify.show( message, status );
+				const callBack = {
+					success: ( response ) => {
+						const { status, message, data } = response;
+						lpToastify.show( message, status );
 
-				if ( data?.status ) {
-					const elLesson = elLessonTrash.closest( '.lesson' );
-					this.updateStatusUI( elLesson, data.status );
-				}
-			},
+						if ( data?.status ) {
+							const elLesson = elLessonTrash.closest( '.lesson' );
+							this.updateStatusUI( elLesson, data.status );
+						}
+					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
 					},
@@ -255,8 +259,11 @@ export class BuilderTabLesson {
 
 		SweetAlert.fire( {
 			title: elLessonDelete.dataset.title || 'Delete Lesson',
-			text: elLessonDelete.dataset.content || 'Are you sure you want to permanently delete this lesson?',
+			text:
+				elLessonDelete.dataset.content ||
+				'Are you sure you want to permanently delete this lesson?',
 			iconHtml: SWAL_ICON_DELETE,
+			customClass: { icon: 'lp-cb-swal-icon-html' },
 			showCloseButton: true,
 			showCancelButton: true,
 			cancelButtonText: lpData.i18n.cancel,

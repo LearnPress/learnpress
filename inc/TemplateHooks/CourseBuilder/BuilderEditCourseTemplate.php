@@ -12,7 +12,6 @@ use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
-use LearnPress\Models\ListCourseCategories;
 use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
@@ -78,8 +77,8 @@ class BuilderEditCourseTemplate {
 			'left_column'            => '<div class="cb-course-edit-column cb-course-edit-column--left">',
 			'edit_title'             => $html_edit_title,
 			'edit_permalink'         => $html_edit_permalink,
-			'edit_features'          => $html_edit_features,
 			'edit_publish'           => $html_edit_publish,
+			'edit_features'          => $html_edit_features,
 			'left_column_end'        => '</div>',
 			// Right column
 			'right_column'           => '<div class="cb-course-edit-column cb-course-edit-column--right">',
@@ -142,11 +141,39 @@ class BuilderEditCourseTemplate {
 			$base_url = trailingslashit( home_url() ) . 'courses/';
 		}
 
-		$full_url = get_permalink( $post_id );
+		$full_url     = urldecode( (string) get_permalink( $post_id ) );
+		$display_data = $this->get_course_display_permalink_data( (int) $post_id, (string) $post_name );
+		$display_url  = (string) ( $display_data['url'] ?? '' );
+		$editor_slug  = (string) ( $display_data['slug'] ?? '' );
 
-		// Adjust base URL for editor prefix if permalink has custom structure
-		if ( ! empty( $post_name ) && false === strpos( $full_url, '?p=' ) && false === strpos( $full_url, '?lp_course=' ) ) {
-			$base_url = trailingslashit( preg_replace( '/' . preg_quote( $post_name, '/' ) . '\/?$/', '', $full_url ) );
+		if ( empty( $display_url ) ) {
+			$display_url = $full_url;
+		}
+
+		if ( empty( $full_url ) ) {
+			$full_url = $display_url;
+		}
+
+		if ( empty( $editor_slug ) ) {
+			$editor_slug = (string) $post_name;
+		}
+
+		if ( empty( $editor_slug ) && ! empty( $display_url ) ) {
+			$display_path = parse_url( $display_url, PHP_URL_PATH );
+			if ( is_string( $display_path ) && '' !== $display_path ) {
+				$editor_slug = basename( untrailingslashit( $display_path ) );
+			}
+		}
+
+		// Use publish-style permalink as editable base, but keep href as current permalink.
+		if (
+			! empty( $editor_slug ) &&
+			false === strpos( $display_url, '?p=' ) &&
+			false === strpos( $display_url, '&p=' ) &&
+			false === strpos( $display_url, '?lp_course=' ) &&
+			false === strpos( $display_url, '&lp_course=' )
+		) {
+			$base_url = trailingslashit( preg_replace( '/' . preg_quote( $editor_slug, '/' ) . '\/?$/', '', $display_url ) );
 		}
 
 		$state_a = sprintf(
@@ -159,7 +186,7 @@ class BuilderEditCourseTemplate {
             </div>',
 			__( 'Permalink', 'learnpress' ),
 			esc_url( $full_url ),
-			esc_html( $full_url ),
+			esc_html( $display_url ),
 			__( 'Edit', 'learnpress' )
 		);
 
@@ -173,9 +200,9 @@ class BuilderEditCourseTemplate {
                         <button type="button" class="cb-permalink-cancel-btn">%s</button>
                     </div>
                 </div>
-            </div>',
+			</div>',
 			esc_html( $base_url ),
-			esc_attr( $post_name ),
+			esc_attr( $editor_slug ),
 			esc_attr__( 'your-slug', 'learnpress' ),
 			__( 'OK', 'learnpress' ),
 			__( 'Cancel', 'learnpress' )
@@ -195,6 +222,45 @@ class BuilderEditCourseTemplate {
 		];
 
 		return Template::combine_components( $edit );
+	}
+
+	/**
+	 * Get permalink display URL in publish-style format for editing slug.
+	 *
+	 * @param int $post_id
+	 * @param string $post_name
+	 *
+	 * @return array<string, string>
+	 */
+	private function get_course_display_permalink_data( int $post_id, string $post_name = '' ): array {
+		$display_url = urldecode( (string) get_permalink( $post_id ) );
+		$sample_slug = $post_name;
+
+		if ( ! function_exists( 'get_sample_permalink' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/post.php';
+		}
+
+		if ( function_exists( 'get_sample_permalink' ) ) {
+			$sample_permalink = get_sample_permalink( $post_id );
+			if ( is_array( $sample_permalink ) && ! empty( $sample_permalink[0] ) ) {
+				$sample_slug = ! empty( $sample_permalink[1] ) ? (string) $sample_permalink[1] : $sample_slug;
+				$display_url = str_replace(
+					[ '%postname%', '%pagename%' ],
+					$sample_slug,
+					(string) $sample_permalink[0]
+				);
+			}
+		}
+
+		$post = get_post( $post_id );
+		if ( $post instanceof \WP_Post ) {
+			$display_url = \LP_Helper::handle_lp_permalink_structure( $display_url, $post );
+		}
+
+		return [
+			'url'  => urldecode( $display_url ),
+			'slug' => urldecode( (string) $sample_slug ),
+		];
 	}
 
 	public function edit_desc( $course_model ) {
@@ -490,15 +556,6 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
-	public function input_checkbox_category_item( $term_id, $term_name, $is_checked ) {
-		$html  = '<div class="cb-course-edit-categories__checkbox">';
-		$html .= sprintf( '<input type="checkbox" name="course_categories[]" value="%s" id="course_category_%s" %s>', $term_id, $term_id, checked( $is_checked, true, false ) );
-		$html .= sprintf( '<label for="course_category_%s">%s</label>', $term_id, $term_name );
-		$html .= '</div>';
-
-		return $html;
-	}
-
 	public function input_checkbox_tag_item( $term_id, $term_name, $is_checked, $count = 0 ) {
 		if ( 0 === $count ) {
 			$tag_obj = get_term( $term_id, LP_COURSE_TAXONOMY_TAG );
@@ -651,32 +708,36 @@ class BuilderEditCourseTemplate {
 			$published_on = wp_date( 'Y-m-d\TH:i', strtotime( $post->post_date ), wp_timezone() );
 		}
 
-		$status_options        = [
-			'publish' => __( 'Published', 'learnpress' ),
-			'future'  => __( 'Scheduled', 'learnpress' ),
-			'draft'   => __( 'Draft', 'learnpress' ),
-			'pending' => __( 'Pending Review', 'learnpress' ),
-		];
-		$hide_publish_option   = 'future' === $status_for_select;
-		$hide_scheduled_option = 'publish' === $status_for_select;
+		$has_future_publish_date = false;
+		if ( $post && ! empty( $post->post_date ) && '0000-00-00 00:00:00' !== $post->post_date ) {
+			$has_future_publish_date = strtotime( $post->post_date ) > current_time( 'timestamp' );
+		}
 
-		$publish_date_label = 'future' === $status_for_select
+		$is_scheduled_status    = 'future' === $status_for_select
+			|| ( in_array( $status_for_select, [ 'draft', 'pending' ], true ) && $has_future_publish_date );
+		$primary_status_value   = $is_scheduled_status ? 'future' : 'publish';
+		$primary_status_label   = $is_scheduled_status
+			? __( 'Scheduled', 'learnpress' )
+			: __( 'Published', 'learnpress' );
+		$selected_status_for_ui = in_array( $status_for_select, [ 'draft', 'pending' ], true )
+			? $status_for_select
+			: $primary_status_value;
+		$status_options         = [
+			$primary_status_value => $primary_status_label,
+			'draft'               => __( 'Draft', 'learnpress' ),
+			'pending'             => __( 'Pending Review', 'learnpress' ),
+		];
+
+		$publish_date_label = $has_future_publish_date
 			? __( 'Scheduled for', 'learnpress' )
 			: __( 'Published on', 'learnpress' );
 
 		$status_options_html = '';
 		foreach ( $status_options as $value => $label ) {
-			if ( $hide_publish_option && 'publish' === $value ) {
-				continue;
-			}
-			if ( $hide_scheduled_option && 'future' === $value ) {
-				continue;
-			}
-
 			$status_options_html .= sprintf(
 				'<option value="%1$s" %2$s>%3$s</option>',
 				esc_attr( $value ),
-				selected( $status_for_select, $value, false ),
+				selected( $selected_status_for_ui, $value, false ),
 				esc_html( $label )
 			);
 		}
@@ -697,12 +758,13 @@ class BuilderEditCourseTemplate {
 			'status_row'       => sprintf(
 				'<div class="cb-course-edit-publish__row">
                     <label for="cb-course-publish-status" class="cb-course-edit-publish__label">%1$s</label>
-                    <select id="cb-course-publish-status" name="cb_course_publish_status" class="cb-course-edit-publish__control" data-publish-label="%3$s" data-future-label="%4$s">%2$s</select>
+                    <select id="cb-course-publish-status" name="cb_course_publish_status" class="cb-course-edit-publish__control" data-publish-label="%3$s" data-future-label="%4$s" data-primary-status="%5$s">%2$s</select>
                 </div>',
 				esc_html__( 'Status', 'learnpress' ),
 				$status_options_html,
 				esc_attr__( 'Published', 'learnpress' ),
-				esc_attr__( 'Scheduled', 'learnpress' )
+				esc_attr__( 'Scheduled', 'learnpress' ),
+				esc_attr( $primary_status_value )
 			),
 			'visibility_row'   => sprintf(
 				'<div class="cb-course-edit-publish__row">

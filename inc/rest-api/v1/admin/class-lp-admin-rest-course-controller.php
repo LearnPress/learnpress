@@ -70,7 +70,15 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 			if ( ! empty( $final_quiz ) ) {
 				update_post_meta( $course_id, '_lp_final_quiz', $final_quiz );
 				$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
-				$url           = $this->get_final_quiz_edit_link( $final_quiz, $course_id, $is_course_builder );
+				if ( '' === (string) $passing_grade ) {
+					$quiz_model = \LearnPress\Models\QuizPostModel::find( absint( $final_quiz ), true );
+					if ( $quiz_model ) {
+						$passing_grade = $quiz_model->get_passing_grade();
+					} else {
+						$passing_grade = 80;
+					}
+				}
+				$url = $this->get_final_quiz_edit_link( $final_quiz, $course_id, $is_course_builder );
 
 				ob_start();
 				?>

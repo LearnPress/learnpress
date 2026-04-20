@@ -6,10 +6,9 @@
  * @version 1.0.0
  */
 
-namespace LearnPress\TemplateHooks\CourseBuilder;
+namespace LearnPress\Ajax;
 
 use LearnPress\Helpers\Singleton;
-use LearnPress\Models\UserModel;
 use LP_REST_Admin_Statistics_Controller;
 use LP_Statistics_DB;
 use Throwable;
@@ -42,15 +41,13 @@ class BuilderDashboardAjax {
 			$is_admin   = user_can( $user_id, 'administrator' );
 
 			$instructor_id = $is_admin ? 0 : $user_id;
-
-			$filter = $this->get_period_filter( $period );
+			$filter        = $this->get_period_filter( $period );
 
 			if ( empty( $filter ) ) {
 				wp_send_json_error( [ 'message' => 'Invalid period' ] );
 			}
 
 			$lp_statistic_db = LP_Statistics_DB::getInstance();
-
 			if ( $chart_type === 'sales' ) {
 				$raw_data = $lp_statistic_db->get_net_sales_data_scoped(
 					$filter['filter_type'],
@@ -69,10 +66,12 @@ class BuilderDashboardAjax {
 			$stats_controller = new LP_REST_Admin_Statistics_Controller();
 			$chart_data       = $stats_controller->process_chart_data( $filter, $raw_data );
 
-			wp_send_json_success( [
-				'labels' => $chart_data['labels'] ?? [],
-				'data'   => $chart_data['data'] ?? [],
-			] );
+			wp_send_json_success(
+				[
+					'labels' => $chart_data['labels'] ?? [],
+					'data'   => $chart_data['data'] ?? [],
+				]
+			);
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 			wp_send_json_error( [ 'message' => 'Server error' ] );

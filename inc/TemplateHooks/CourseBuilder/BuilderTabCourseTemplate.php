@@ -32,11 +32,9 @@ class BuilderTabCourseTemplate {
 		$html_filter = $this->html_filter_bar();
 
 		$tab = [
-			'wrapper'      => '',
 			'filter_bar'   => $html_filter,
 			'courses'      => $list_course,
 			'ai_templates' => $this->html_ai_templates(),
-			'wrapper_end'  => '</div>',
 		];
 
 		echo Template::combine_components( $tab );
@@ -88,7 +86,7 @@ class BuilderTabCourseTemplate {
 		// Row 1: Page header — title + add new button
 		$btn_add_new = sprintf(
 			'<a href="%s" class="cb-btn-add-new">%s</a>',
-			esc_url( CourseBuilder::get_link_add_new_course( CourseBuilder::POST_NEW ) ),
+			esc_url( CourseBuilder::get_link_add_new_course() ),
 			__( 'Add New Course', 'learnpress' )
 		);
 

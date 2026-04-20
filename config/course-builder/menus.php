@@ -1,9 +1,5 @@
 <?php
 
-use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
-
-$builderTabCourseTemplate = BuilderTabCourseTemplate::instance();
-
 $menu_arr = [
 	'dashboard' => array(
 		'title'    => esc_html__( 'Dashboard', 'learnpress' ),

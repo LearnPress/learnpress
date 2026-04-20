@@ -105,6 +105,7 @@ class BuilderTabQuestionTemplate {
 					$questions[]    = $question_model;
 				}
 			}
+			wp_reset_postdata();
 
 			if ( ! empty( $questions ) ) {
 				$html_questions = $this->list_questions( $questions );
@@ -152,7 +153,7 @@ class BuilderTabQuestionTemplate {
 				$html_list_question .= self::render_question( $question_model );
 			}
 
-			$header = '<div class="cb-list-table-header">';
+			$header  = '<div class="cb-list-table-header">';
 			$header .= sprintf( '<span>%s</span>', __( 'Question Title', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Quiz', 'learnpress' ) );
 			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
@@ -190,13 +191,15 @@ class BuilderTabQuestionTemplate {
 		$types         = LP_Question::get_types();
 		$type          = get_post_meta( $question_model->get_id(), '_lp_type', true );
 		$question_type = $types[ $type ] ?? '';
+		$author        = get_user_by( 'ID', $question_model->post_author );
+		$author_name   = $author && isset( $author->display_name ) ? $author->display_name : '--';
 
 		$question = array(
 			'id'            => $question_model->get_id(),
 			'title'         => $question_model->post_title,
 			'status'        => $question_model->post_status,
 			'quizzes'       => BuilderEditQuestionTemplate::instance()->get_assigned_question( $question_model->get_id() ),
-			'author'        => get_user_by( 'ID', $question_model->post_author )->display_name,
+			'author'        => $author_name,
 			'type'          => $question_type,
 			'date_modified' => lp_jwt_prepare_date_response( $question_model->post_date_gmt ),
 		);
