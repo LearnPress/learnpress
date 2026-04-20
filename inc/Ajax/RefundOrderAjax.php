@@ -36,7 +36,13 @@ class RefundOrderAjax extends AbstractAjax {
 		$action   = sanitize_key( wp_unslash( $_GET['lp-refund-action'] ) );
 		$nonce    = isset( $_GET['lp-refund-nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['lp-refund-nonce'] ) ) : '';
 
-		$redirect_url = learn_press_get_admin_order_edit_url( $order_id );
+		$redirect_url = add_query_arg(
+			array(
+				'post'   => $order_id,
+				'action' => 'edit',
+			),
+			admin_url( 'post.php' )
+		);
 		$notice_args  = array();
 
 		try {
@@ -248,8 +254,8 @@ class RefundOrderAjax extends AbstractAjax {
 			delete_post_meta( $order_id, '_lp_refund_reason' );
 		}
 
-		$request_user_id = $user->get_id();
-		$request_time    = current_time( 'mysql' );
+		$request_user_id      = $user->get_id();
+		$request_time         = current_time( 'mysql' );
 		$refund_request_count = absint( get_post_meta( $order_id, '_lp_refund_request_count', true ) );
 		update_post_meta( $order_id, '_lp_refund_request_count', $refund_request_count + 1 );
 
@@ -273,6 +279,11 @@ class RefundOrderAjax extends AbstractAjax {
 		);
 
 		$auto_refund = learn_press_get_refund_setting( 'auto_refund', 'no' ) === 'yes';
+
+		// Write requester meta once before branching (shared by both auto and manual paths).
+		update_post_meta( $order_id, '_lp_refund_requested_by', $request_user_id );
+		update_post_meta( $order_id, '_lp_refund_requested_at', $request_time );
+
 		if ( $auto_refund ) {
 			if ( 'denied' === $previous_request_status ) {
 				$rerequest_event_data = learn_press_get_order_refund_event_data(
@@ -308,8 +319,6 @@ class RefundOrderAjax extends AbstractAjax {
 			$result_data['order_status']   = LP_ORDER_REFUNDED;
 			$message                       = sprintf( __( 'Order #%s has been refunded.', 'learnpress' ), $order->get_order_number() );
 		} else {
-			update_post_meta( $order_id, '_lp_refund_requested_by', $request_user_id );
-			update_post_meta( $order_id, '_lp_refund_requested_at', $request_time );
 			update_post_meta( $order_id, '_lp_refund_request_status', 'pending' );
 			delete_post_meta( $order_id, '_lp_refund_reviewed_by' );
 			delete_post_meta( $order_id, '_lp_refund_reviewed_at' );
@@ -398,6 +407,7 @@ class RefundOrderAjax extends AbstractAjax {
 				throw new Exception( __( 'Invalid refund request.', 'learnpress' ) );
 			}
 
+			// Defense-in-depth: ownership is already checked in eligibility, but must be re-validated at execution.
 			$order_user_ids = array_map( 'absint', (array) $order->get_user_id() );
 			if ( empty( $actor_id ) || ! in_array( $actor_id, $order_user_ids, true ) ) {
 				throw new Exception( __( 'You do not have permission to refund this order.', 'learnpress' ) );
@@ -406,6 +416,7 @@ class RefundOrderAjax extends AbstractAjax {
 			throw new Exception( __( 'Invalid refund actor.', 'learnpress' ) );
 		}
 
+		// Defense-in-depth: order status may change between request creation and execution (e.g., admin review delay).
 		if ( ! $order->has_status( LP_ORDER_COMPLETED ) ) {
 			throw new Exception( __( 'Only completed orders can be refunded.', 'learnpress' ) );
 		}
@@ -422,14 +433,7 @@ class RefundOrderAjax extends AbstractAjax {
 
 		$refund_calculation = self::calculate_refund_amount_by_completion( $order, $context );
 		$refund_amount      = floatval( $refund_calculation['refund_amount'] ?? 0 );
-		$is_full_refund     = ! empty( $refund_calculation['is_full_refund'] );
-		$is_partial_refund  = ! $is_full_refund;
-
-		if ( $is_partial_refund ) {
-			$refund_result = $gateway->refund( $order_id, $refund_amount );
-		} else {
-			$refund_result = $gateway->refund( $order_id );
-		}
+		$refund_result      = $gateway->refund( $order_id );
 
 		if ( is_wp_error( $refund_result ) ) {
 			throw new Exception( $refund_result->get_error_message() );
@@ -453,12 +457,12 @@ class RefundOrderAjax extends AbstractAjax {
 		update_post_meta( $order_id, '_lp_refund_request_status', sanitize_key( $request_status ) );
 
 		$requested_by = absint( $context['requested_by'] );
-		if ( ! empty( $requested_by ) ) {
+		if ( ! empty( $requested_by ) && empty( get_post_meta( $order_id, '_lp_refund_requested_by', true ) ) ) {
 			update_post_meta( $order_id, '_lp_refund_requested_by', $requested_by );
 		}
 
 		$requested_at = (string) $context['requested_at'];
-		if ( ! empty( $requested_at ) ) {
+		if ( ! empty( $requested_at ) && empty( get_post_meta( $order_id, '_lp_refund_requested_at', true ) ) ) {
 			update_post_meta( $order_id, '_lp_refund_requested_at', $requested_at );
 		}
 
@@ -535,11 +539,11 @@ class RefundOrderAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Calculate completion-based refund amount.
+	 * Calculate refund data from completion-based eligibility gate.
 	 * Rule:
-	 * - refund_max_completion = 0 => full refund.
-	 * - refund_max_completion > 0 => refund percent decreases linearly from 100% to 0%
-	 *   in range [0, refund_max_completion].
+	 * - refund_max_completion = 0 => no completion limit.
+	 * - refund_max_completion > 0 => reject when completion percent > threshold.
+	 * - If eligible, refund is always full order amount.
 	 *
 	 * @since 4.3.5
 	 * @version 1.0.0
@@ -558,38 +562,42 @@ class RefundOrderAjax extends AbstractAjax {
 	 */
 	private static function calculate_refund_amount_by_completion( LP_Order $order, array $context = array() ): array {
 		$order_total        = max( 0, floatval( $order->get_total() ) );
-		$max_completion     = max( 0, min( 100, floatval( learn_press_get_refund_setting( 'refund_max_completion', 0 ) ) ) );
 		$completion_percent = 0.0;
 		$refund_percent     = 100.0;
+		$max_completion     = max( 0, min( 100, floatval( learn_press_get_refund_setting( 'refund_max_completion', 0 ) ) ) );
 
 		if ( $max_completion > 0 ) {
-			$refund_user_id = self::resolve_refund_user_id( $order, $context );
+			// Resolve refund user id inline (was resolve_refund_user_id).
+			$refund_user_id = absint( $context['requested_by'] ?? 0 );
+			if ( empty( $refund_user_id ) ) {
+				$refund_user_id = absint( get_post_meta( $order->get_id(), '_lp_refund_requested_by', true ) );
+			}
+			if ( empty( $refund_user_id ) && sanitize_key( (string) ( $context['actor_type'] ?? '' ) ) === 'customer' ) {
+				$refund_user_id = absint( $context['actor_id'] ?? 0 );
+			}
 			if ( $refund_user_id <= 0 ) {
 				throw new Exception( __( 'Could not determine refund requester for completion-based refund.', 'learnpress' ) );
 			}
 
-			$completion_data    = function_exists( 'learn_press_get_order_refund_completion_data' )
-				? learn_press_get_order_refund_completion_data( $order, $refund_user_id )
-				: array();
-			$completion_percent = floatval( $completion_data['completion_percent'] ?? 0 );
+			$completion_data = learn_press_get_order_refund_completion_data( $order, $refund_user_id );
+
+			$completion_percent_fallback = max( 0, min( 100, floatval( $completion_data['completion_percent'] ?? 0 ) ) );
+			$completion_policy           = array(
+				'completion_percent' => $completion_percent_fallback,
+				'exceeded'           => $completion_percent_fallback > $max_completion,
+			);
+
+			$completion_percent = floatval( $completion_policy['completion_percent'] ?? 0 );
 			$completion_percent = max( 0, min( 100, $completion_percent ) );
 
 			// Keep runtime guard aligned with eligibility checks.
-			if ( $completion_percent >= $max_completion ) {
+			if ( ! empty( $completion_policy['exceeded'] ) ) {
 				throw new Exception( __( 'Course completion exceeds the refund limit.', 'learnpress' ) );
 			}
-
-			$refund_percent = ( ( $max_completion - $completion_percent ) / $max_completion ) * 100;
 		}
 
-		$refund_percent = max( 0, min( 100, $refund_percent ) );
-		$refund_amount  = round( min( $order_total, ( $order_total * $refund_percent / 100 ) ), 2 );
-
-		if ( $max_completion > 0 && $refund_amount <= 0 ) {
-			throw new Exception( __( 'Calculated refund amount is zero. Refund cannot be processed.', 'learnpress' ) );
-		}
-
-		$is_full_refund = abs( $refund_amount - $order_total ) < 0.0001;
+		$refund_amount  = round( $order_total, 2 );
+		$is_full_refund = true;
 
 		$calculation = array(
 			'max_completion'     => $max_completion,
@@ -605,37 +613,5 @@ class RefundOrderAjax extends AbstractAjax {
 		}
 
 		return wp_parse_args( $filtered_calculation, $calculation );
-	}
-
-	/**
-	 * Resolve target user id for completion-based refund calculation.
-	 *
-	 * @since 4.3.5
-	 * @version 1.0.0
-	 *
-	 * @param LP_Order $order
-	 * @param array    $context
-	 *
-	 * @return int
-	 */
-	private static function resolve_refund_user_id( LP_Order $order, array $context = array() ): int {
-		$user_id = absint( $context['requested_by'] ?? 0 );
-		if ( ! empty( $user_id ) ) {
-			return $user_id;
-		}
-
-		$user_id = absint( get_post_meta( $order->get_id(), '_lp_refund_requested_by', true ) );
-		if ( ! empty( $user_id ) ) {
-			return $user_id;
-		}
-
-		if ( sanitize_key( (string) ( $context['actor_type'] ?? '' ) ) === 'customer' ) {
-			$user_id = absint( $context['actor_id'] ?? 0 );
-			if ( ! empty( $user_id ) ) {
-				return $user_id;
-			}
-		}
-
-		return 0;
 	}
 }

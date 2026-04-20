@@ -78,8 +78,8 @@ if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
 			$request_status = sanitize_key( (string) ( $event_data['request_status'] ?? get_post_meta( $order->get_id(), '_lp_refund_request_status', true ) ) );
 			$admin_order_edit_url = (string) ( $event_data['admin_order_edit_url'] ?? '' );
 
-			if ( empty( $admin_order_edit_url ) && function_exists( 'learn_press_get_admin_order_edit_url' ) ) {
-				$admin_order_edit_url = learn_press_get_admin_order_edit_url( $order->get_id() );
+			if ( empty( $admin_order_edit_url ) ) {
+				$admin_order_edit_url = add_query_arg( array( 'post' => $order_id, 'action' => 'edit' ), admin_url( 'post.php' ) );
 			}
 
 			$requested_email = (string) ( $event_data['requester_email'] ?? '' );

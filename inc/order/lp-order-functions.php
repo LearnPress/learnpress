@@ -6,7 +6,7 @@
  * @package LearnPress/Functions
  * @version 1.0
  */
-
+use LearnPress\Models\UserItems\UserCourseModel;
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -406,35 +406,48 @@ if ( ! function_exists( 'learn_press_get_order_refund_supported_gateways' ) ) {
 	 * Get list gateways that support refund.
 	 *
 	 * @since 4.3.4
-	 * @version 1.0.0
+	 * @version 1.1.0
 	 * @return array
 	 */
 	function learn_press_get_order_refund_supported_gateways(): array {
-		$gateways = apply_filters( 'learn-press/order/refund/supported-gateways', array( 'paypal', 'stripe' ) );
-		if ( ! is_array( $gateways ) ) {
-			$gateways = array();
+		if ( ! class_exists( 'LP_Gateways' ) ) {
+			return array();
 		}
 
-		return array_values(
-			array_filter(
-				array_map(
-					static function( $gateway ) {
-						return sanitize_key( (string) $gateway );
-					},
-					$gateways
-				)
-			)
-		);
+		$gateways_instance  = LP_Gateways::instance();
+		if ( ! $gateways_instance || ! method_exists( $gateways_instance, 'get_gateways' ) ) {
+			return array();
+		}
+
+		$supported_gateways = array();
+		$all_gateways       = (array) $gateways_instance->get_gateways();
+		foreach ( $all_gateways as $gateway_id => $gateway ) {
+			$gateway_id = sanitize_key( (string) $gateway_id );
+			if ( empty( $gateway_id ) ) {
+				continue;
+			}
+
+			if ( ! is_object( $gateway ) || ! is_callable( array( $gateway, 'refund' ) ) ) {
+				continue;
+			}
+
+			$supported_gateways[] = $gateway_id;
+		}
+
+		return array_values( array_unique( $supported_gateways ) );
 	}
 }
 
 if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 	/**
-	 * Get unified completion data for refund policy.
+	 * Get unified completion data and policy for refund.
 	 * Policy uses max course completion percent of courses in the order.
 	 *
+	 * Returns both raw progress data and policy gate fields (max_completion,
+	 * is_limited, exceeded) so callers don't need a separate policy helper.
+	 *
 	 * @since 4.3.5
-	 * @version 1.0.0
+	 * @version 1.1.0
 	 *
 	 * @param LP_Order $order
 	 * @param int      $user_id
@@ -443,23 +456,26 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 	 *     user_id: int,
 	 *     completion_percent: float,
 	 *     course_progress: array<int,float>,
-	 *     has_course_progress: bool
+	 *     has_course_progress: bool,
+	 *     max_completion: float,
+	 *     is_limited: bool,
+	 *     exceeded: bool
 	 * }
 	 */
 	function learn_press_get_order_refund_completion_data( LP_Order $order, int $user_id = 0 ): array {
+		$max_completion = max( 0, min( 100, floatval( learn_press_get_refund_setting( 'refund_max_completion', 0 ) ) ) );
+
 		$data = array(
 			'user_id'             => $user_id,
 			'completion_percent'  => 0.0,
 			'course_progress'     => array(),
 			'has_course_progress' => false,
+			'max_completion'      => $max_completion,
+			'is_limited'          => $max_completion > 0,
+			'exceeded'            => false,
 		);
 
 		if ( $user_id <= 0 ) {
-			return $data;
-		}
-
-		$user = learn_press_get_user( $user_id );
-		if ( ! $user instanceof LP_User ) {
 			return $data;
 		}
 
@@ -473,12 +489,17 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 
 		$max_progress = 0.0;
 		foreach ( $course_ids as $course_id ) {
-			$user_course = $user->get_course_data( $course_id );
-			if ( ! is_object( $user_course ) || ! method_exists( $user_course, 'get_results' ) ) {
-				continue;
+			$progress = 0.0;
+
+			$user_course_model = UserCourseModel::find( $user_id, $course_id, true );
+			if ( $user_course_model instanceof UserCourseModel ) {
+				$course_results = $user_course_model->calculate_course_results( true );
+				if ( is_array( $course_results ) && isset( $course_results['result'] ) ) {
+					$progress = floatval( $course_results['result'] );
+				}
 			}
 
-			$progress = max( 0, min( 100, floatval( $user_course->get_results( 'result' ) ) ) );
+			$progress                              = max( 0, min( 100, $progress ) );
 			$data['course_progress'][ $course_id ] = $progress;
 			$data['has_course_progress']           = true;
 			if ( $progress > $max_progress ) {
@@ -486,14 +507,18 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 			}
 		}
 
-		$data['completion_percent'] = round( $max_progress, 2 );
-		$filtered_data              = apply_filters( 'learn-press/order/refund/completion-data', $data, $order, $user_id );
+		$completion_percent         = round( $max_progress, 2 );
+		$data['completion_percent'] = $completion_percent;
+		$data['exceeded']           = $max_completion > 0 && $completion_percent > $max_completion;
+
+		$filtered_data = apply_filters( 'learn-press/order/refund/completion-data', $data, $order, $user_id );
 		if ( ! is_array( $filtered_data ) ) {
 			return $data;
 		}
 
 		return wp_parse_args( $filtered_data, $data );
 	}
+
 
 	/**
 	 * Check if an order is eligible for user refund request.
@@ -529,6 +554,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 			return $result;
 		}
 
+		// Defense-in-depth: request-time gate; execution gate is re-checked later before calling gateway.
 		if ( ! $order->has_status( LP_ORDER_COMPLETED ) ) {
 			$result['code'] = 'invalid_status';
 			return $result;
@@ -552,6 +578,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 			return $result;
 		}
 
+		// Defense-in-depth: ownership is validated here for early feedback and again in execution for runtime safety.
 		if ( $user_id > 0 ) {
 			$user_ids = array_map( 'absint', (array) $order->get_user_id() );
 			if ( ! in_array( $user_id, $user_ids, true ) ) {
@@ -578,16 +605,10 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 			}
 		}
 
-		$max_completion = floatval( learn_press_get_refund_setting( 'refund_max_completion', 0 ) );
-		$max_completion = max( 0, min( 100, $max_completion ) );
-		if ( $max_completion > 0 && $user_id > 0 ) {
-			$completion_data    = learn_press_get_order_refund_completion_data( $order, $user_id );
-			$completion_percent = floatval( $completion_data['completion_percent'] ?? 0 );
-
-			if ( $completion_percent >= $max_completion ) {
-				$result['code'] = 'completion_exceeded';
-				return $result;
-			}
+		$completion_data = learn_press_get_order_refund_completion_data( $order, $user_id );
+		if ( $user_id > 0 && ! empty( $completion_data['is_limited'] ) && ! empty( $completion_data['exceeded'] ) ) {
+			$result['code'] = 'completion_exceeded';
+			return $result;
 		}
 
 		$result['eligible'] = true;
@@ -706,7 +727,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 			'reviewed_at'          => (string) get_post_meta( $order_id, '_lp_refund_reviewed_at', true ),
 			'reason'               => (string) get_post_meta( $order_id, '_lp_refund_reason', true ),
 			'requester_email'      => '',
-			'admin_order_edit_url' => function_exists( 'learn_press_get_admin_order_edit_url' ) ? learn_press_get_admin_order_edit_url( $order_id ) : add_query_arg(
+			'admin_order_edit_url' => add_query_arg(
 				array(
 					'post'   => $order_id,
 					'action' => 'edit',
@@ -731,27 +752,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_get_admin_order_edit_url' ) ) {
-	/**
-	 * Build order edit URL for admin.
-	 *
-	 * @param int $order_id
-	 *
-	 * @since 4.3.4
-	 
-	 * @return string
-	 */
-	function learn_press_get_admin_order_edit_url( int $order_id ): string {
 
-		return add_query_arg(
-			array(
-				'post'   => $order_id,
-				'action' => 'edit',
-			),
-			admin_url( 'post.php' )
-		);
-	}
-}
 
 if ( ! function_exists( 'learn_press_admin_refund_order_notices' ) ) {
 	/**
@@ -814,22 +815,33 @@ if ( ! function_exists( 'learn_press_admin_order_refund_request_panel' ) ) {
 			return;
 		}
 
-		$refund_request_status = get_post_meta( $order_id, '_lp_refund_request_status', true );
-		if ( 'pending' !== $refund_request_status ) {
+		$refund_event_data     = learn_press_get_order_refund_event_data( $order );
+		$refund_request_status = sanitize_key( (string) ( $refund_event_data['request_status'] ?? '' ) );
+		$requested_by          = absint( $refund_event_data['requested_by'] ?? 0 );
+		$requested_at          = (string) ( $refund_event_data['requested_at'] ?? '' );
+		$refund_reason         = trim( (string) ( $refund_event_data['reason'] ?? '' ) );
+		$requester_email       = '';
+
+		if ( empty( $refund_request_status ) && empty( $requested_by ) && empty( $requested_at ) && empty( $refund_reason ) ) {
 			return;
 		}
 
-		$refund_event_data = learn_press_get_order_refund_event_data( $order );
-		$requested_by      = absint( $refund_event_data['requested_by'] ?? 0 );
-		$requested_at      = (string) ( $refund_event_data['requested_at'] ?? '' );
-		$refund_reason     = trim( (string) ( $refund_event_data['reason'] ?? '' ) );
-		$requester_email   = '';
+		$status_labels = array(
+			'pending'       => __( 'Pending review', 'learnpress' ),
+			'approved'      => __( 'Approved', 'learnpress' ),
+			'auto-approved' => __( 'Auto approved', 'learnpress' ),
+			'denied'        => __( 'Denied', 'learnpress' ),
+		);
+		$status_label  = $status_labels[ $refund_request_status ] ?? '';
+		if ( empty( $status_label ) && ! empty( $refund_request_status ) ) {
+			$status_label = ucwords( str_replace( '-', ' ', $refund_request_status ) );
+		}
 
 		$requester = __( 'Unknown', 'learnpress' );
 		if ( ! empty( $requested_by ) ) {
 			$user = get_user_by( 'id', $requested_by );
 			if ( $user instanceof WP_User ) {
-				$requester = sprintf( '%s (#%d)', $user->display_name, $requested_by );
+				$requester       = sprintf( '%s (#%d)', $user->display_name, $requested_by );
 				$requester_email = $user->user_email;
 			}
 		}
@@ -842,13 +854,21 @@ if ( ! function_exists( 'learn_press_admin_order_refund_request_panel' ) ) {
 			}
 		}
 
+		$order_edit_url = add_query_arg(
+			array(
+				'post'   => $order_id,
+				'action' => 'edit',
+			),
+			admin_url( 'post.php' )
+		);
+
 		$approve_url = wp_nonce_url(
 			add_query_arg(
 				array(
 					'lp-refund-order'  => $order_id,
 					'lp-refund-action' => 'approve',
 				),
-				learn_press_get_admin_order_edit_url( $order_id )
+				$order_edit_url
 			),
 			'lp-admin-refund-order-' . $order_id,
 			'lp-refund-nonce'
@@ -860,7 +880,7 @@ if ( ! function_exists( 'learn_press_admin_order_refund_request_panel' ) ) {
 					'lp-refund-order'  => $order_id,
 					'lp-refund-action' => 'deny',
 				),
-				learn_press_get_admin_order_edit_url( $order_id )
+				$order_edit_url
 			),
 			'lp-admin-refund-order-' . $order_id,
 			'lp-refund-nonce'
@@ -890,14 +910,21 @@ if ( ! function_exists( 'learn_press_admin_order_refund_request_panel' ) ) {
 					<?php echo wp_kses_post( nl2br( esc_html( $refund_reason ) ) ); ?>
 				</p>
 			<?php endif; ?>
-			<p>
-				<a class="button button-primary" href="<?php echo esc_url( $approve_url ); ?>">
-					<?php esc_html_e( 'Approve Refund', 'learnpress' ); ?>
-				</a>
-				<a class="button" href="<?php echo esc_url( $deny_url ); ?>">
-					<?php esc_html_e( 'Deny Refund', 'learnpress' ); ?>
-				</a>
-			</p>
+			<?php if ( ! empty( $status_label ) ) : ?>
+				<p class="description">
+					<?php echo esc_html( sprintf( __( 'Request status: %s', 'learnpress' ), $status_label ) ); ?>
+				</p>
+			<?php endif; ?>
+			<?php if ( 'pending' === $refund_request_status ) : ?>
+				<p>
+					<a class="button button-primary" href="<?php echo esc_url( $approve_url ); ?>">
+						<?php esc_html_e( 'Approve Refund', 'learnpress' ); ?>
+					</a>
+					<a class="button" href="<?php echo esc_url( $deny_url ); ?>">
+						<?php esc_html_e( 'Deny Refund', 'learnpress' ); ?>
+					</a>
+				</p>
+			<?php endif; ?>
 		</div>
 		
 		<?php

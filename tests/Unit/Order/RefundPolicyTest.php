@@ -141,6 +141,33 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 			);
 		}
 
+		if ( ! class_exists( '\LearnPress\Models\UserItems\UserCourseModel', false ) ) {
+			eval(
+				'namespace LearnPress\Models\UserItems;
+				class UserCourseModel {
+					public static array $result_map = [];
+					private array $results = [];
+					public function __construct( array $results = [] ) {
+						$this->results = $results;
+					}
+					public static function find( int $user_id, int $course_id, bool $check_cache = false ) {
+						$key = $user_id . ":" . $course_id;
+						if ( ! array_key_exists( $key, self::$result_map ) ) {
+							return false;
+						}
+						$results = self::$result_map[ $key ];
+						if ( ! is_array( $results ) ) {
+							$results = [ "result" => (float) $results ];
+						}
+						return new self( $results );
+					}
+					public function calculate_course_results( bool $force_cache = false ): array {
+						return $this->results;
+					}
+				}'
+			);
+		}
+
 		if ( ! class_exists( 'LP_Test_Refund_Gateway', false ) ) {
 			eval(
 				'class LP_Test_Refund_Gateway {
@@ -164,6 +191,19 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 							self::$instance = new self();
 						}
 						return self::$instance;
+					}
+					public function __construct() {
+						$gateway = new LP_Test_Refund_Gateway();
+						$this->gateways["paypal"] = $gateway;
+						$this->gateways["stripe"] = new LP_Test_Refund_Gateway();
+						$this->gateways["offline-payment"] = new class() {
+							public function process_payment() {
+								return [];
+							}
+						};
+					}
+					public function get_gateways(): array {
+						return $this->gateways;
 					}
 					public function get_gateway( $id ) {
 						return $this->gateways[ $id ] ?? null;
@@ -262,6 +302,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		parent::setUp();
 		$this->boot_refund_dependencies();
 		\LP_Settings::$options = [];
+		\LearnPress\Models\UserItems\UserCourseModel::$result_map = [];
 	}
 
 	private function set_refund_settings( array $options ): void {
@@ -274,6 +315,12 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 				'require_refund_reason'  => 'no',
 			),
 			$options
+		);
+	}
+
+	private function set_course_result( int $user_id, int $course_id, float $result ): void {
+		\LearnPress\Models\UserItems\UserCourseModel::$result_map[ $user_id . ':' . $course_id ] = array(
+			'result' => $result,
 		);
 	}
 
@@ -308,10 +355,9 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 	public function completion_helper_returns_max_progress_across_courses(): void {
 		$order            = new \LP_Order( 1001 );
 		$order->course_ids = array( 101, 202, 303 );
-
-		Functions\when( 'learn_press_get_user' )->alias(
-			static fn( $user_id ) => $user_id === 77 ? new \LP_User( array( 101 => 20, 202 => 65, 303 => 40 ) ) : null
-		);
+		$this->set_course_result( 77, 101, 20 );
+		$this->set_course_result( 77, 202, 65 );
+		$this->set_course_result( 77, 303, 40 );
 
 		$data = learn_press_get_order_refund_completion_data( $order, 77 );
 
@@ -320,10 +366,10 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 	}
 
 	#[Test]
-	public function eligibility_rejects_when_completion_hits_threshold(): void {
+	public function eligibility_allows_when_completion_equals_threshold(): void {
 		$this->set_refund_settings(
 			array(
-				'refund_max_completion' => 50,
+				'refund_max_completion' => 30,
 			)
 		);
 
@@ -334,10 +380,34 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$order->user_ids     = array( 77 );
 		$order->guest        = false;
 		$order->order_time   = 1_699_990_000;
-
-		Functions\when( 'learn_press_get_user' )->alias(
-			static fn( $user_id ) => $user_id === 77 ? new \LP_User( array( 101 => 50 ) ) : null
+		$this->set_course_result( 77, 101, 30 );
+		Functions\when( 'get_post_meta' )->alias(
+			static fn() => ''
 		);
+
+		$result = learn_press_get_order_refund_eligibility( $order, 77 );
+
+		$this->assertTrue( $result['eligible'] );
+		$this->assertSame( 'ok', $result['code'] );
+	}
+
+	#[Test]
+	public function eligibility_rejects_when_completion_exceeds_threshold(): void {
+		$this->set_refund_settings(
+			array(
+				'refund_max_completion' => 30,
+			)
+		);
+
+		$order                 = new \LP_Order( 10021 );
+		$order->payment_method = 'stripe';
+		$order->status         = 'completed';
+		$order->course_ids     = array( 101 );
+		$order->user_ids       = array( 77 );
+		$order->guest          = false;
+		$order->order_time     = 1_699_990_000;
+		$this->set_course_result( 77, 101, 31 );
+
 		Functions\when( 'get_post_meta' )->alias(
 			static fn() => ''
 		);
@@ -357,9 +427,6 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$order->status       = 'completed';
 		$order->user_ids     = array( 77 );
 
-		Functions\when( 'learn_press_get_user' )->alias(
-			static fn( $user_id ) => $user_id === 77 ? new \LP_User( array( 101 => 10 ) ) : null
-		);
 		Functions\when( 'get_post_meta' )->alias(
 			static fn() => ''
 		);
@@ -503,10 +570,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$order->course_ids     = array( 101 );
 		$order->guest          = false;
 		$order->order_time     = 1_699_990_000;
-
-		Functions\when( 'learn_press_get_user' )->alias(
-			static fn( $user_id ) => $user_id === 77 ? new \LP_User( array( 101 => 20 ) ) : null
-		);
+		$this->set_course_result( 77, 101, 20 );
 		Functions\when( 'get_post_meta' )->alias(
 			static function( int $post_id, string $key ) {
 				return '_lp_refund_request_status' === $key ? 'denied' : '';
@@ -568,6 +632,33 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$this->assertTrue( $result['eligible'] );
 		$this->assertTrue( $result['require_reason'] );
 		$this->assertSame( 10, $result['reason_min'] );
+	}
+
+	#[Test]
+	public function eligibility_allows_when_threshold_is_hundred_and_completion_hundred(): void {
+		$this->set_refund_settings(
+			array(
+				'refund_max_completion' => 100,
+				'refund_time_limit'     => 0,
+			)
+		);
+
+		$order                 = new \LP_Order( 100381 );
+		$order->status         = 'completed';
+		$order->payment_method = 'stripe';
+		$order->user_ids       = array( 77 );
+		$order->course_ids     = array( 101 );
+		$order->guest          = false;
+		$this->set_course_result( 77, 101, 100 );
+
+		Functions\when( 'get_post_meta' )->alias(
+			static fn() => ''
+		);
+
+		$result = learn_press_get_order_refund_eligibility( $order, 77 );
+
+		$this->assertTrue( $result['eligible'] );
+		$this->assertSame( 'ok', $result['code'] );
 	}
 
 	#[Test]
@@ -706,7 +797,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 	#[Test]
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function execute_refund_paypal_partial_refund_calls_gateway_with_amount(): void {
+	public function execute_refund_paypal_completion_limited_still_calls_full_refund_signature(): void {
 		$this->boot_refund_dependencies();
 		$this->set_refund_settings(
 			array(
@@ -722,9 +813,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$order->user_ids       = array( 77 );
 
 		$meta = array();
-		Functions\when( 'learn_press_get_user' )->alias(
-			static fn( $user_id ) => $user_id === 77 ? new \LP_User( array( 101 => 40 ) ) : null
-		);
+		$this->set_course_result( 77, 101, 40 );
 		Functions\when( 'get_post_meta' )->alias(
 			static function( int $post_id, string $key ) use ( &$meta ) {
 				return $meta[ $post_id ][ $key ] ?? '';
@@ -760,15 +849,14 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 
 		$this->assertSame( 'success', $result['result'] );
 		$this->assertCount( 1, $gateway->calls );
-		$this->assertCount( 2, $gateway->calls[0] );
+		$this->assertCount( 1, $gateway->calls[0] );
 		$this->assertSame( 10044, $gateway->calls[0][0] );
-		$this->assertSame( 100.0, $gateway->calls[0][1] );
 		$this->assertSame( 'approved', $meta[10044]['_lp_refund_request_status'] );
 		$this->assertSame( 77, $meta[10044]['_lp_refund_requested_by'] );
 		$this->assertSame( '2026-04-17 09:05:00', $meta[10044]['_lp_refund_requested_at'] );
 		$this->assertSame( 6, $meta[10044]['_lp_refund_reviewed_by'] );
-		$this->assertSame( 100.0, $meta[10044]['_lp_refund_amount'] );
-		$this->assertSame( 50.0, $meta[10044]['_lp_refund_percent'] );
+		$this->assertSame( 200.0, $meta[10044]['_lp_refund_amount'] );
+		$this->assertSame( 100.0, $meta[10044]['_lp_refund_percent'] );
 		$this->assertSame( 40.0, $meta[10044]['_lp_refund_completion'] );
 	}
 
@@ -806,7 +894,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 	#[Test]
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function calculation_returns_partial_amount_for_completion_based_refund(): void {
+	public function calculation_returns_full_amount_for_completion_limited_mode(): void {
 		$this->boot_refund_dependencies();
 		$this->set_refund_settings(
 			array(
@@ -819,9 +907,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$order->course_ids   = array( 101 );
 		$order->user_ids     = array( 77 );
 
-		Functions\when( 'learn_press_get_user' )->alias(
-			static fn( $user_id ) => $user_id === 77 ? new \LP_User( array( 101 => 40 ) ) : null
-		);
+		$this->set_course_result( 77, 101, 40 );
 		Functions\when( 'get_post_meta' )->alias(
 			static fn() => 0
 		);
@@ -832,9 +918,9 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 
 		$result = $method->invoke( null, $order, array( 'requested_by' => 77 ) );
 
-		$this->assertSame( 50.0, $result['refund_percent'] );
-		$this->assertSame( 100.0, $result['refund_amount'] );
-		$this->assertFalse( $result['is_full_refund'] );
+		$this->assertSame( 100.0, $result['refund_percent'] );
+		$this->assertSame( 200.0, $result['refund_amount'] );
+		$this->assertTrue( $result['is_full_refund'] );
 	}
 
 	#[Test]
@@ -852,9 +938,6 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$order->total      = 100.00;
 		$order->course_ids = array( 101 );
 
-		Functions\when( 'learn_press_get_user' )->alias(
-			static fn() => null
-		);
 		Functions\when( 'get_post_meta' )->alias(
 			static fn() => 0
 		);
@@ -871,22 +954,20 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 	#[Test]
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function calculation_rejects_when_partial_amount_rounds_to_zero(): void {
+	public function calculation_rejects_when_completion_exceeds_threshold(): void {
 		$this->boot_refund_dependencies();
 		$this->set_refund_settings(
 			array(
-				'refund_max_completion' => 80,
+				'refund_max_completion' => 30,
 			)
 		);
 
 		$order             = new \LP_Order( 1006 );
-		$order->total      = 0.01;
+		$order->total      = 200;
 		$order->course_ids = array( 101 );
 		$order->user_ids   = array( 77 );
 
-		Functions\when( 'learn_press_get_user' )->alias(
-			static fn( $user_id ) => $user_id === 77 ? new \LP_User( array( 101 => 79.99 ) ) : null
-		);
+		$this->set_course_result( 77, 101, 31 );
 		Functions\when( 'get_post_meta' )->alias(
 			static fn() => 0
 		);
@@ -896,7 +977,34 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$method->setAccessible( true );
 
 		$this->expectException( \Exception::class );
-		$this->expectExceptionMessage( 'Calculated refund amount is zero. Refund cannot be processed.' );
+		$this->expectExceptionMessage( 'Course completion exceeds the refund limit.' );
 		$method->invoke( null, $order, array( 'requested_by' => 77 ) );
+	}
+
+	#[Test]
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function calculation_does_not_require_requester_when_threshold_is_unlimited(): void {
+		$this->boot_refund_dependencies();
+		$this->set_refund_settings(
+			array(
+				'refund_max_completion' => 0,
+			)
+		);
+
+		$order             = new \LP_Order( 10061 );
+		$order->total      = 88.5;
+		$order->course_ids = array( 101 );
+		$order->user_ids   = array();
+
+		$reflection = new ReflectionClass( RefundOrderAjax::class );
+		$method     = $reflection->getMethod( 'calculate_refund_amount_by_completion' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( null, $order, array( 'actor_type' => 'admin' ) );
+
+		$this->assertSame( 88.5, $result['refund_amount'] );
+		$this->assertSame( 100.0, $result['refund_percent'] );
+		$this->assertTrue( $result['is_full_refund'] );
 	}
 }
