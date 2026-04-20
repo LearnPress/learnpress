@@ -31,7 +31,7 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 	&__toggle {
 		position: fixed;
 		right: 1.5rem;
-		bottom: 5.5rem;
+		bottom: 50%;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -343,12 +343,13 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 
 		&:hover,
 		&:focus-visible {
-			svg path {
-				stroke: $color-primary;
-			}
 			color: $color-primary;
 			transform: translateX(1px);
 			outline: none;
+
+			svg path {
+				stroke: $color-primary;
+			}
 		}
 
 		&:disabled {
