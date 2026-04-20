@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Views
- * @version 4.0.1
+ * @version 4.0.2
  */
 
 defined( 'ABSPATH' ) || die;
@@ -16,7 +16,7 @@ if ( ! isset( $user_id ) ) {
 $profile              = LP_Profile::instance( $user_id );
 $user                 = $profile->get_user();
 $slug_profile_courses = LP_Settings::instance()->get( 'profile_endpoints.my-courses', 'my-courses' );
-$link_user_profile    = learn_press_user_profile_link( $user_id ) . $slug_profile_courses;
+$link_user_profile    = $profile->get_tab_link( $slug_profile_courses );
 ?>
 <p>
 	<b><?php _e( 'The course list of enrolled users', 'learnpress' ); ?></b>

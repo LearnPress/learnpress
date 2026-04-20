@@ -1125,15 +1125,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 							$user_id = $userModel->get_id();
 						} else {
 							// Get user by slug.
-							$wp_user = get_user_by( 'slug', $user_slug );
+							$wp_user = get_user_by( 'login', $user_slug );
 							// Only allow view instructor when user is administrator or view his/her profile.
 							if ( $wp_user ) {
-								$userModel = UserModel::find( $wp_user->ID, true );
+								$userModelBySlug = UserModel::find( $wp_user->ID, true );
 								if ( current_user_can( UserModel::ROLE_ADMINISTRATOR )
 									|| ( $userModelCurrent && $userModelCurrent->get_id() === $wp_user->ID ) ) {
-									$user_id = $userModelCurrent->get_id();
-								} elseif ( empty( $userModel->get_pretty_slug( false ) ) ) {
-									$user_id = $userModel->get_id();
+									$user_id = $userModelBySlug->get_id();
+								} elseif ( empty( $userModelBySlug->get_pretty_slug( false ) ) ) {
+									$user_id = $userModelBySlug->get_id();
 								}
 							}
 						}

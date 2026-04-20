@@ -33,9 +33,6 @@ class UserService {
 	 * @since 4.3.4
 	 */
 	public function get_user_by_pretty_slug( string $slug ) {
-		$slug = trim( urldecode( $slug ) );
-		$slug = sanitize_title( $slug );
-
 		if ( '' === $slug ) {
 			return false;
 		}

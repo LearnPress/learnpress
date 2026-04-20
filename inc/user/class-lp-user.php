@@ -916,7 +916,7 @@ class LP_User extends LP_Abstract_User {
 	 * Get url instructor.
 	 *
 	 * @return string
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.3
 	 */
 	public function get_url_instructor(): string {
@@ -930,7 +930,7 @@ class LP_User extends LP_Abstract_User {
 			}
 
 			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
-			$user_model                = new UserModel( $author );
+			$user_model                = new UserModel( $author->data );
 			$user_slug                 = $user_model->get_pretty_slug();
 			$single_instructor_link    = trailingslashit( trailingslashit( get_page_link( $single_instructor_page_id ) ) . $user_slug );
 		} catch ( Throwable $e ) {

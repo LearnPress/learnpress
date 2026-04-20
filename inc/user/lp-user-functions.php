@@ -1090,7 +1090,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 		return '';
 	}
 
-	$user_model = new UserModel( $wp_user );
+	$user_model = new UserModel( $wp_user->data );
 	$args       = array(
 		'user' => $user_model->get_pretty_slug(),
 	);
@@ -1104,7 +1104,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 	 * then no need the username in profile link.
 	 */
 	if ( ( $user_id == get_current_user_id() ) && ! isset( $args['tab'] ) ) {
-		unset( $args['user'] );
+		//unset( $args['user'] );
 	}
 
 	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );

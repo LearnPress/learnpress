@@ -15,7 +15,6 @@ defined( 'ABSPATH' ) || die;
 /**
  * @var WP_User $user
  */
-
 if ( empty( $user ) ) {
 	return;
 }
@@ -24,7 +23,7 @@ $extra_profile_fields = learn_press_social_profiles();
 $extra_profile        = learn_press_get_user_extra_profile_info( $user->ID );
 
 $custom_profile = lp_get_user_custom_register_fields( $user->ID );
-$user_model     = new UserModel( $user );
+$user_model     = new UserModel( $user->data );
 $lp_message     = LP_Request::get_param( 'lp-message' );
 ?>
 
