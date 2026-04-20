@@ -5,8 +5,8 @@ namespace LearnPress\Services;
 use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\UserModel;
-use LearnPress\Databases\UserDB;
-use LearnPress\Filters\UserFilter;
+use Throwable;
+use WP_Error;
 use WP_User;
 
 
@@ -33,7 +33,7 @@ class UserService {
 	 * @version 1.0.1
 	 * @since 4.3.4
 	 */
-	public function get_user_by_pretty_slug( string $slug ) {
+	/*public function get_user_by_pretty_slug( string $slug ) {
 		if ( '' === $slug ) {
 			return false;
 		}
@@ -50,7 +50,7 @@ class UserService {
 		$user_id = (int) $lp_user_db->wpdb->get_var( $query );
 
 		return UserModel::find( $user_id, true );
-	}
+	}*/
 
 	/**
 	 * Generate pretty slug for all users who don't have it yet.
@@ -89,7 +89,7 @@ class UserService {
 				continue;
 			}
 
-			$generated = $userModel->generate_pretty_slug();
+			$generated = $this->generate_pretty_slug( $userModel );
 			if ( is_wp_error( $generated ) ) {
 				++ $result['failed'];
 			} else {
@@ -98,6 +98,56 @@ class UserService {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Create a unique pretty slug for user.
+	 *
+	 * If the user already has a pretty slug, it will return the existing one without generating a new one.
+	 * The slug is generated based on the user's first name and last name.
+	 * If empty user's first name and last name, it will use the username with uniqid() to generate a slug.
+	 *
+	 * @return string|WP_Error
+	 * @since 4.3.4
+	 * @version 1.0.1
+	 */
+	public function generate_pretty_slug( UserModel $userModel ) {
+		$user_slug_new = '';
+
+		try {
+			// Check if pretty slug already exists, if exists, return it without generating a new one.
+			$existing_slug = $userModel->get_slug_link();
+			if ( ! empty( $existing_slug ) ) {
+				return $existing_slug;
+			}
+
+			// Generate pretty slug based on first name and last name.
+			$first_name  = $userModel->get_meta_value_by_key( 'first_name', '' );
+			$last_name   = $userModel->get_meta_value_by_key( 'last_name', '' );
+			$base_source = trim( "{$first_name} {$last_name}" );
+			$base_slug   = sanitize_title( $base_source );
+
+			if ( empty( $base_slug ) ) {
+				// Shuffle username with uniqid to make it more unique and less guessable, get first 10 characters to make slug shorter.
+				$base_slug = substr( str_shuffle( sanitize_title( $userModel->user_login . uniqid() ) ), 0, 10 );
+			} else {
+				$base_slug = $base_slug . substr( str_shuffle( uniqid() ), 0, 3 );
+			}
+
+			// Check slug exists.
+			$userModelFind = UserService::instance()->get_user_by_slug_link( $base_slug );
+			if ( ! $userModelFind ) {
+				$userModel->user_nicename = $base_slug;
+				$userModel->save();
+			} else {
+				// Regenerate slug by adding random string at the end of base slug until it is unique.
+				$user_slug_new = $this->generate_pretty_slug( $userModel );
+			}
+		} catch ( Throwable $e ) {
+			return new WP_Error( 'lp_user_slug_generation_failed', $e->getMessage() );
+		}
+
+		return $user_slug_new;
 	}
 
 	/**

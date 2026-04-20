@@ -135,7 +135,7 @@ return apply_filters(
 					'placeholder' => 'order-details',
 					'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.order-details', 'order-details' ) . '</code>/123' ),
 				),
-				array(
+				/*array(
 					'title'   => esc_html__( 'Users pretty slug', 'learnpress' ),
 					'id'      => 'lp_generate_user_slug_row',
 					'type'    => 'html',
@@ -146,7 +146,7 @@ return apply_filters(
 						esc_html__( 'Generate public user slugs for existing users on old sites. Existing pretty slugs will be kept unchanged.', 'learnpress' ),
 						esc_html__( 'This slug replaces the default username in profile and instructor links to uniquely identify users.', 'learnpress' )
 					),
-				),
+				),*/
 			),
 			$this
 		),

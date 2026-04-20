@@ -55,13 +55,8 @@ $lp_message     = LP_Request::get_param( 'lp-message' );
 				<p class="description">
 					<?php
 					printf(
-						'%s<br>%s',
-						esc_html__( 'Custom slug to replace the WP login username, use for link lp profile/instructor. Must be unique.', 'learnpress' ),
-						sprintf(
-							/* translators: 1: link to permalink settings page */
-							__( 'Set for all uses not exists pretty slug <a href="%s">here</a>. Then click "Generate users slug"', 'learnpress' ),
-							esc_url( admin_url( 'admin.php?page=learn-press-settings&tab=permalink' ) )
-						)
+						'%s',
+						esc_html__( 'Custom slug to replace the WP login username, use for link lp profile/instructor. Must be unique.', 'learnpress' )
 					);
 					?>
 				</p>

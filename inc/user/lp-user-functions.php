@@ -30,7 +30,7 @@ function learn_press_maybe_generate_user_pretty_slug_on_register( int $user_id )
 	$userModel->generate_pretty_slug();
 }
 
-add_action( 'user_register', 'learn_press_maybe_generate_user_pretty_slug_on_register' );
+//add_action( 'user_register', 'learn_press_maybe_generate_user_pretty_slug_on_register' );
 
 /**
  * Delete user data by user ID
@@ -1374,7 +1374,7 @@ function learn_press_update_extra_user_profile_fields( $user_id ) {
 			return;
 		}
 
-		$slug_result = $userModel->update_pretty_slug( (string) $_POST['lp_user_slug'] );
+		$slug_result = $userModel->update_user_nicename( (string) $_POST['lp_user_slug'] );
 		if ( is_wp_error( $slug_result ) ) {
 			wp_safe_redirect(
 				add_query_arg(
