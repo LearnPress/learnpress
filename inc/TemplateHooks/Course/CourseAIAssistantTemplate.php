@@ -25,6 +25,25 @@ defined( 'ABSPATH' ) || exit;
 
 class CourseAIAssistantTemplate {
 
+	/**
+	 * Shared footer action used to collect launcher buttons inside one wrapper.
+	 */
+	const FOOTER_LAUNCHERS_HOOK = 'learn-press/course-item-footer-launchers';
+
+	/**
+	 * Cached render state for the current request.
+	 *
+	 * @var array|false
+	 */
+	protected $render_state = false;
+
+	/**
+	 * Whether the render state has already been resolved.
+	 *
+	 * @var bool
+	 */
+	protected $render_state_resolved = false;
+
 	public static function instance() {
 		static $instance = null;
 
@@ -36,7 +55,22 @@ class CourseAIAssistantTemplate {
 	}
 
 	protected function __construct() {
-		add_action( 'wp_footer', array( $this, 'render_widget' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_action( 'wp_footer', array( $this, 'render_launcher_wrapper' ), 5 );
+		add_action( self::FOOTER_LAUNCHERS_HOOK, array( $this, 'render_launcher' ), 20 );
+		add_action( 'wp_footer', array( $this, 'render_panel' ), 10 );
+	}
+
+	/**
+	 * Enqueue frontend assets early so launcher markup does not rely on inline styles.
+	 */
+	public function enqueue_assets() {
+		if ( ! $this->get_render_state() ) {
+			return;
+		}
+
+		wp_enqueue_script( 'lp-ai-assistant' );
+		wp_enqueue_style( 'lp-ai-assistant' );
 	}
 
 	/**
@@ -75,93 +109,158 @@ class CourseAIAssistantTemplate {
 	}
 
 	/**
-	 * Render the widget on wp_footer.
+	 * Resolve and cache the render state for the current request.
 	 *
-	 * Enqueues assets, injects localized data, then prints HTML.
+	 * @return array|false
+	 */
+	protected function get_render_state() {
+		if ( $this->render_state_resolved ) {
+			return $this->render_state;
+		}
+
+		$this->render_state_resolved = true;
+
+		if ( ! $this->should_render() ) {
+			return $this->render_state = false;
+		}
+
+		$context   = $this->detect_context();
+		$item      = LP_Global::course_item();
+		$item_id   = $item ? absint( $item->get_id() ) : 0;
+		$course_id = $item ? absint( $item->get_course_id() ) : 0;
+		$user_id   = get_current_user_id();
+
+		$enabled_actions   = AIAssistantController::get_enabled_actions();
+		$free_chat_enabled = LP_Settings::get_option( 'ai_assistant_free_chat', 'no' ) === 'yes';
+
+		if ( $context === 'quiz' ) {
+			if ( ! ( $enabled_actions['smart_review'] ?? true ) ) {
+				return $this->render_state = false;
+			}
+
+			$quiz_result = $this->get_completed_quiz_result( $user_id, $item_id, $course_id );
+			if ( $quiz_result === false ) {
+				return $this->render_state = false;
+			}
+
+			$enabled_actions   = array(
+				'summarize'    => false,
+				'explain'      => false,
+				'quick_quiz'   => false,
+				'smart_review' => true,
+			);
+			$free_chat_enabled = false;
+		} else {
+			$enabled_actions['smart_review'] = false;
+
+			if ( ! $free_chat_enabled && ! in_array( true, $enabled_actions, true ) ) {
+				return $this->render_state = false;
+			}
+
+			$quiz_result = null;
+		}
+
+		return $this->render_state = array(
+			'context'           => $context,
+			'item_id'           => $item_id,
+			'course_id'         => $course_id,
+			'enabled_actions'   => $enabled_actions,
+			'free_chat_enabled' => $free_chat_enabled,
+			'quiz_result'       => $quiz_result,
+		);
+	}
+
+	/**
+	 * Enqueue assets and localize runtime data for the frontend widget.
+	 *
+	 * @param array $render_state Computed render state.
+	 */
+	protected function localize_script_data( array $render_state ) {
+		$js_data = wp_json_encode(
+			array(
+				'ajaxUrl'         => LP_Settings::url_handle_lp_ajax(),
+				'nonce'           => wp_create_nonce( 'wp_rest' ),
+				'lessonId'        => $render_state['item_id'],
+				'itemId'          => $render_state['item_id'],
+				'courseId'        => $render_state['course_id'],
+				'context'         => $render_state['context'],
+				'quizCompleted'   => $render_state['context'] === 'quiz',
+				'quizResult'      => $render_state['quiz_result'],
+				'enabled'         => true,
+				'freeChatEnabled' => $render_state['free_chat_enabled'],
+				'enabledActions'  => $render_state['enabled_actions'],
+				'i18n'            => array(
+					'you'               => __( 'You', 'learnpress' ),
+					'assistant'         => __( 'AI Assistant', 'learnpress' ),
+					'thinking'          => __( 'Thinking...', 'learnpress' ),
+					'sendError'         => __( 'An error occurred. Please try again.', 'learnpress' ),
+					'clearConfirm'      => __( 'Clear chat history?', 'learnpress' ),
+					'quizPrompt'        => __( 'Create a quick quiz from this lesson.', 'learnpress' ),
+					'explainPrompt'     => __( 'Explain a concept from this lesson.', 'learnpress' ),
+					'summarizePrompt'   => __( 'Summarize this lesson with key points.', 'learnpress' ),
+					'smartReviewPrompt' => __( 'Give me a smart review of my quiz results.', 'learnpress' ),
+					'quizCorrectTitle'  => __( 'Correct', 'learnpress' ),
+					'quizWrongTitle'    => __( 'Incorrect', 'learnpress' ),
+				),
+			)
+		);
+
+		wp_add_inline_script( 'lp-ai-assistant', 'window.lpAIAssistant = ' . $js_data . ';', 'before' );
+	}
+
+	/**
+	 * Backward-compatible entrypoint kept for external callers.
 	 */
 	public function render_widget() {
+		$this->render_panel();
+	}
+
+	/**
+	 * Render the shared footer wrapper for launcher buttons.
+	 */
+	public function render_launcher_wrapper() {
+		ob_start();
+		do_action( self::FOOTER_LAUNCHERS_HOOK );
+		$launchers_html = trim( ob_get_clean() );
+
+		if ( '' === $launchers_html ) {
+			return;
+		}
+
+		printf(
+			'<div class="lp-footer-launchers" aria-label="%1$s">%2$s</div>',
+			esc_attr__( 'Learning tools', 'learnpress' ),
+			$launchers_html // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		);
+	}
+
+	/**
+	 * Render the AI Assistant launcher into the shared wrapper.
+	 */
+	public function render_launcher() {
+		if ( ! $this->get_render_state() ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->html_toggle();
+	}
+
+	/**
+	 * Render the AI Assistant panel on wp_footer.
+	 */
+	public function render_panel() {
 		try {
-			if ( ! $this->should_render() ) {
+			$render_state = $this->get_render_state();
+			if ( ! $render_state ) {
 				return;
 			}
 
-			$context   = $this->detect_context();
-			$item      = LP_Global::course_item();
-			$item_id   = $item ? absint( $item->get_id() ) : 0;
-			$course_id = $item ? absint( $item->get_course_id() ) : 0;
-			$user_id   = get_current_user_id();
-
-			$enabled_actions   = AIAssistantController::get_enabled_actions();
-			$free_chat_enabled = LP_Settings::get_option( 'ai_assistant_free_chat', 'no' ) === 'yes';
-
-			if ( $context === 'quiz' ) {
-				// Quiz page: show ONLY Smart Review, ONLY after quiz is completed.
-				if ( ! ( $enabled_actions['smart_review'] ?? true ) ) {
-					return; // Smart Review disabled by admin.
-				}
-
-				$quiz_result = $this->get_completed_quiz_result( $user_id, $item_id, $course_id );
-				if ( $quiz_result === false ) {
-					return; // Quiz not completed yet — hide the entire widget.
-				}
-
-				// Override: only Smart Review button, no free chat on quiz page.
-				$enabled_actions   = array(
-					'summarize'    => false,
-					'explain'      => false,
-					'quick_quiz'   => false,
-					'smart_review' => true,
-				);
-				$free_chat_enabled = false;
-			} else {
-				// Lesson page: never show Smart Review (it belongs to quiz pages only).
-				$enabled_actions['smart_review'] = false;
-
-				if ( ! $free_chat_enabled && ! in_array( true, $enabled_actions, true ) ) {
-					return;
-				}
-
-				$quiz_result = null; // Not relevant on lesson pages.
-			}
-
-			// Enqueue assets (registered in LP_Assets::_get_scripts / _get_styles).
-			wp_enqueue_script( 'lp-ai-assistant' );
-			wp_enqueue_style( 'lp-ai-assistant' );
-
-			// Inject dynamic data before the script body runs.
-			$js_data = wp_json_encode(
-				array(
-					'ajaxUrl'         => LP_Settings::url_handle_lp_ajax(),
-					'nonce'           => wp_create_nonce( 'wp_rest' ),
-					'lessonId'        => $item_id,
-					'itemId'          => $item_id,
-					'courseId'        => $course_id,
-					'context'         => $context,
-					'quizCompleted'   => $context === 'quiz',
-					'quizResult'      => $quiz_result,
-					'enabled'         => true,
-					'freeChatEnabled' => $free_chat_enabled,
-					'enabledActions'  => $enabled_actions,
-					'i18n'            => array(
-						'you'               => __( 'You', 'learnpress' ),
-						'assistant'         => __( 'AI Assistant', 'learnpress' ),
-						'thinking'          => __( 'Thinking...', 'learnpress' ),
-						'sendError'         => __( 'An error occurred. Please try again.', 'learnpress' ),
-						'clearConfirm'      => __( 'Clear chat history?', 'learnpress' ),
-						'quizPrompt'        => __( 'Create a quick quiz from this lesson.', 'learnpress' ),
-						'explainPrompt'     => __( 'Explain a concept from this lesson.', 'learnpress' ),
-						'summarizePrompt'   => __( 'Summarize this lesson with key points.', 'learnpress' ),
-						'smartReviewPrompt' => __( 'Give me a smart review of my quiz results.', 'learnpress' ),
-						'quizCorrectTitle'  => __( 'Correct', 'learnpress' ),
-						'quizWrongTitle'    => __( 'Incorrect', 'learnpress' ),
-					),
-				)
+			$this->localize_script_data( $render_state );
+			$this->html_panel_widget(
+				$render_state['free_chat_enabled'],
+				$render_state['enabled_actions']
 			);
-
-			wp_add_inline_script( 'lp-ai-assistant', 'window.lpAIAssistant = ' . $js_data . ';', 'before' );
-
-			$this->html_widget( $free_chat_enabled, $enabled_actions );
-
 		} catch ( Throwable $e ) {
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -473,6 +572,26 @@ class CourseAIAssistantTemplate {
 		);
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Root widget that contains only the floating panel.
+	 *
+	 * @param bool  $free_chat_enabled Whether to render the full chat input area.
+	 * @param array $enabled_actions Enabled quick actions.
+	 */
+	public function html_panel_widget( bool $free_chat_enabled = true, array $enabled_actions = array() ) {
+		$section = apply_filters(
+			'learn-press/ai-assistant/html-panel-widget',
+			array(
+				'wrapper'     => '<div id="lp-ai-assistant" class="lp-ai-assistant" aria-hidden="true">',
+				'panel'       => $this->html_panel( $free_chat_enabled, $enabled_actions ),
+				'wrapper_end' => '</div>',
+			)
+		);
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo Template::combine_components( $section );
 	}
 
 	/**

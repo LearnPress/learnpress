@@ -122,7 +122,7 @@ export class AIAssistantWidget {
 	}
 
 	cacheElements() {
-		this.elements.toggleBtn = this.root.querySelector( AIAssistantWidget.selectors.toggleBtn );
+		this.elements.toggleBtn = document.querySelector( AIAssistantWidget.selectors.toggleBtn );
 		this.elements.panel = this.root.querySelector( AIAssistantWidget.selectors.panel );
 		this.elements.closeBtn = this.root.querySelector( AIAssistantWidget.selectors.closeBtn );
 		this.elements.clearBtn = this.root.querySelector( AIAssistantWidget.selectors.clearBtn );
@@ -188,7 +188,7 @@ export class AIAssistantWidget {
 
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.toggleBtn }`,
+				selector: AIAssistantWidget.selectors.toggleBtn,
 				class: this,
 				callBack: this.handleToggleClick.name,
 			},
@@ -348,6 +348,7 @@ export class AIAssistantWidget {
 		this.elements.panel.hidden = false;
 		this.root.setAttribute( 'aria-hidden', 'false' );
 		this.elements.toggleBtn.setAttribute( 'aria-expanded', 'true' );
+		this.elements.toggleBtn.classList.add( 'is-hidden' );
 		this.elements.inputEl?.focus();
 
 		if ( this.elements.msgList ) {
@@ -359,6 +360,7 @@ export class AIAssistantWidget {
 		this.elements.panel.hidden = true;
 		this.root.setAttribute( 'aria-hidden', 'true' );
 		this.elements.toggleBtn.setAttribute( 'aria-expanded', 'false' );
+		this.elements.toggleBtn.classList.remove( 'is-hidden' );
 		this.elements.toggleBtn.focus();
 	}
 
