@@ -49,10 +49,10 @@ export class EditCurriculumAi {
 				elCountSections.insertAdjacentHTML(
 					'afterend',
 					`<button type="button"
-						class="lp-btn-generate-with-ai lp-btn-ai-style"
-						data-template="#lp-tmpl-edit-course-curriculum-ai">
-						<i class="lp-ico-ai"></i><span>Generate with AI</span>
-					</button>`
+					class="lp-btn-generate-with-ai lp-btn-ai-style"
+					data-template="#lp-tmpl-edit-course-curriculum-ai">
+					<i class="lp-ico-ai"></i><span>Generate with AI</span>
+				</button>`,
 				);
 			} );
 		}

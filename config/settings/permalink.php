@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Models\UserModel;
+
 $currencies = learn_press_currencies();
 
 foreach ( $currencies as $code => $name ) {
@@ -7,8 +10,8 @@ foreach ( $currencies as $code => $name ) {
 }
 
 $settings      = LP_Settings::instance();
-$user          = wp_get_current_user();
-$username      = $user->user_login;
+$userModel     = UserModel::find( get_current_user_id(), true );
+$username      = $userModel->get_pretty_slug();
 $settings_slug = $settings->get( 'profile_endpoints.settings', 'settings' );
 $profile_slug  = 'profile';
 
@@ -138,6 +141,18 @@ return apply_filters(
 					'default'     => 'order-details',
 					'placeholder' => 'order-details',
 					'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.order-details', 'order-details' ) . '</code>/123' ),
+				),
+				array(
+					'title'   => esc_html__( 'Users pretty slug', 'learnpress' ),
+					'id'      => 'lp_generate_user_slug_row',
+					'type'    => 'html',
+					'default' => sprintf(
+						'<button class="button" type="submit" name="lp_generate_user_slug" value="yes">%s</button>
+							<p>%s<br>%s</p>',
+						esc_html__( 'Generate users slug', 'learnpress' ),
+						esc_html__( 'Generate public user slugs for existing users on old sites. Existing pretty slugs will be kept unchanged.', 'learnpress' ),
+						esc_html__( 'This slug replaces the default username in profile and instructor links to uniquely identify users.', 'learnpress' )
+					),
 				),
 			),
 			$this

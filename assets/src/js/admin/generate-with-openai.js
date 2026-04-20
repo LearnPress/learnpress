@@ -46,20 +46,22 @@ export class GenerateWithOpenai {
 				el.insertAdjacentHTML(
 					'afterend',
 					`<button type="button"
-						class="lp-btn-generate-with-ai lp-btn-ai-style"
-						data-template="#lp-tmpl-edit-title-ai">
-						<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
-					</button>`
+					style="margin-left: 5px"
+					class="lp-btn-generate-with-ai lp-btn-ai-style"
+					data-template="#lp-tmpl-edit-title-ai">
+					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
+				</button>`
 				);
 			} );
 			lpUtils.lpOnElementReady( '#wp-content-media-buttons', ( el ) => {
 				el.insertAdjacentHTML(
 					'beforeend',
 					`<button type="button"
-						class="lp-btn-generate-with-ai lp-btn-ai-style"
-						data-template="#lp-tmpl-edit-description-ai">
-						<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
-					</button>`
+					style="padding: 5px 10px; justify-content: center;"
+					class="lp-btn-generate-with-ai lp-btn-ai-style"
+					data-template="#lp-tmpl-edit-description-ai">
+					<i class="lp-ico-ai"></i><span>Generate description with AI</span>
+				</button>`,
 				);
 			} );
 			lpUtils.lpOnElementReady( '#postimagediv', ( el ) => {
@@ -67,11 +69,11 @@ export class GenerateWithOpenai {
 				elInside.insertAdjacentHTML(
 					'afterend',
 					`<button type="button"
-						style="margin: 12px 12px 0 12px;"
-						class="lp-btn-generate-with-ai lp-btn-ai-style"
-						data-template="#lp-tmpl-edit-image-ai">
-						<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
-					</button>`
+					style="padding: 5px 10px; justify-content: center;"
+					class="lp-btn-generate-with-ai lp-btn-ai-style"
+					data-template="#lp-tmpl-edit-image-ai">
+					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
+				</button>`
 				);
 			} );
 

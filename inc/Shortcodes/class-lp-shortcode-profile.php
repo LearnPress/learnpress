@@ -10,6 +10,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -31,7 +32,7 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 		/**
 		 * @return bool|LP_User|LP_User_Guest|WP_Error
 		 */
-		public function can_view_profile() {
+		/*public function can_view_profile() {
 			global $wp;
 
 			$current_user = learn_press_get_current_user();
@@ -41,7 +42,9 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 				if ( empty( $wp->query_vars['user'] ) ) {
 					$viewing_user = $current_user;
 				} else {
-					$wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) );
+					$request_user = urldecode( (string) $wp->query_vars['user'] );
+					$user_model   = new UserModel();
+					$wp_user      = $user_model->resolve_user_by_public_identifier( $request_user );
 
 					if ( $wp_user ) {
 						$viewing_user = learn_press_get_user( $wp_user->ID );
@@ -60,7 +63,7 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 			}
 
 			return $viewing_user;
-		}
+		}*/
 
 		/**
 		 * Shortcode content.
@@ -68,47 +71,32 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 		 * @return string
 		 */
 		public function output() {
-			$profile = LP_Profile::instance();
-			$output  = '';
 			wp_enqueue_style( 'learnpress' );
 			wp_enqueue_script( 'lp-profile' );
+			ob_start();
 
 			try {
-				ob_start();
-
+				$profile = LP_Profile::instance();
 				if ( ! LP_Page_Controller::is_page_profile() ) {
-					$customer_message = [
-						'status'  => 'error',
-						'content' => sprintf(
-							__( 'This shortcode LP Profile only use on the page <a href="%s">%s</a>', 'learnpress' ),
+					throw new Exception(
+						sprintf(
+							__( 'This shortcode LP Profile only use on the page <a href="%1$s">%2$s</a>', 'learnpress' ),
 							admin_url( 'admin.php?page=learn-press-settings' ),
 							'<strong>' . esc_html__( 'Profile', 'learnpress' ) . '</strong>'
 						)
-					];
-					Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'customer_message' ) );
-
-					return ob_get_clean();
+					);
 				}
 
-				if ( is_wp_error( $this->can_view_profile() ) ) {
-					$messages = [
-						'status'  => 'error',
-						'content' => $this->can_view_profile()->get_error_message(),
-					];
-
-					learn_press_set_message( $messages );
-					learn_press_show_message();
-				} else {
-					learn_press_show_message();
-					Template::instance()->get_frontend_template( 'pages/profile.php', compact( 'profile' ) );
-				}
-
-				$output = ob_get_clean();
+				learn_press_show_message();
+				Template::instance()->get_frontend_template(
+					'pages/profile.php',
+					compact( 'profile' )
+				);
 			} catch ( Throwable $e ) {
-				error_log( $e->getMessage() );
+				Template::print_message( $e->getMessage(), 'error' );
 			}
 
-			return $output;
+			return ob_get_clean();
 		}
 	}
 }

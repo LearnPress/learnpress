@@ -108,7 +108,7 @@ class QuestionAnswerModel {
 		}
 
 		// Set cache
-		if ( $model instanceof QuestionPostModel ) {
+		if ( $model instanceof QuestionAnswerModel ) {
 			$cache->set_cache( $key_cache, $model );
 		}
 

@@ -23,6 +23,17 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	public function get_settings( $section = '', $tab = '' ) {
 		return Config::instance()->get( 'advanced', 'settings' );
 	}
+
+	/**
+	 * Get sections for advanced settings.
+	 *
+	 * @return array<string, string>
+	 */
+	public function get_sections() {
+		return array(
+			'general' => esc_html__( 'General', 'learnpress' ),
+		);
+	}
 }
 
 return new LP_Settings_Advanced();

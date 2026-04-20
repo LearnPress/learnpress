@@ -87,7 +87,15 @@ if ( $userModel ) {
 if ( ! $userQuizModel ) {
 	// Display quiz content.
 	echo '<div class="quiz-content">';
+	global $post;
+	$original_post = $post;
+	$post          = get_post( $quizPostModel->get_id() );
+	setup_postdata( $post );
+
 	echo $quizPostModel->get_the_content();
+
+	$post = $original_post;
+	setup_postdata( $post );
 	echo '</div>';
 }
 
@@ -136,8 +144,17 @@ $js = array(
 	'results'                => array(),
 	'required_password'      => post_password_required( $quiz->get_id() ),
 	'allow_retake'           => $quizPostModel->get_retake_count() == - 1,
-	'quiz_description'       => $quizPostModel->get_the_content(),
 );
+
+global $post;
+$original_post = $post;
+$post          = get_post( $quizPostModel->get_id() );
+setup_postdata( $post );
+
+$js['quiz_description'] = $quizPostModel->get_the_content();
+
+$post = $original_post;
+setup_postdata( $post );
 
 $js = array_merge( $js, $user_js );
 

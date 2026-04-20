@@ -193,6 +193,7 @@ class ListCoursesTemplate {
 			$course = CourseModel::find( $course->get_id(), true );
 		}
 		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$show_view_students   = ! empty( $settings['show_view_students'] );
 
 		try {
 			// New layout course item.
@@ -251,6 +252,8 @@ class ListCoursesTemplate {
 				$html_meta_data = sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data );
 			}
 
+			$btn_read_more_text = SingleCourseTemplate::text_button_course( $course );
+
 			// HTML bottom section end.
 			$section_bottom_end = apply_filters(
 				'learn-press/layout/list-courses/item/section/bottom/end',
@@ -263,8 +266,16 @@ class ListCoursesTemplate {
 					'btn_read_more' => sprintf(
 						'<div class="course-readmore"><a href="%s">%s</a></div>',
 						$course->get_permalink(),
-						__( 'Read more', 'learnpress' )
+						$btn_read_more_text
 					),
+					'btn_view_list' => $show_view_students ? sprintf(
+						'<div class="lp-wrap-btn-view-course-students">
+							<button type="button" class="lp-button lp-btn-view-students" data-course-id="%d" data-course-title="%s">%s</button>
+						</div>',
+						$course->get_id(),
+						esc_attr( $course->get_title() ),
+						esc_html__( 'View List Students', 'learnpress' )
+					) : '',
 					//'course_footer_end' => '</div>',
 					'wrapper_end'   => '</div>',
 				],

@@ -25,7 +25,6 @@ languages/learnpress.pot
 languages/learnpress-js.pot
 /assets/js/vendor/
 /assets/js/admin/lp-material.min.js
-/inc/test.php
 /local-debug.php
 /releases
 /build
@@ -33,7 +32,6 @@ languages/learnpress-js.pot
 /**/*.asset.php
 /**/*.deps.json
 /**/_bk/
-test list.txt
 
 package-lock.json
 /vendor/
@@ -45,4 +43,6 @@ script.sh
 /.settings
 /yarn-error.log
 /yarn.lock
+
+.phpunit.result.cache
 

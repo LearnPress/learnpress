@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Models\UserModel;
+
 /**
  * Class LP_Profile_Tabs
  */
@@ -158,63 +160,55 @@ class LP_Profile_Tabs {
 	/**
 	 * @param bool $tab
 	 * @param bool $with_section
-	 * @param LP_User $user
+	 * @param string $user_slug
 	 *
 	 * @return string
 	 * @since 3.0.0
-	 * @version 4.0.0
+	 * @version 4.0.1
 	 */
-	public function get_tab_link( $tab = false, $with_section = false, $user = null ) {
-		if ( ( $tab || $with_section ) && empty( $user ) ) {
-			$current_user = learn_press_get_current_user();
-			$user         = $current_user->get_username();
+	public function get_tab_link( $tab = false, $with_section = false, $user_slug = '' ) {
+		$url  = '';
+		$args = array( 'user' => $user_slug );
+
+		if ( false === $tab ) {
+			$tab = $this->get_current_tab( null, false );
 		}
 
-		$args = array( 'user' => $user );
-
-		if ( isset( $args['user'] ) ) {
-			if ( false === $tab ) {
-				$tab = $this->get_current_tab( null, false );
+		$tab_data = $this->get_tab_at( $tab );
+		if ( $tab_data instanceof LP_Profile_Tab ) {
+			$slug = $this->get_slug( $tab_data, $tab );
+			if ( $slug ) {
+				$args['tab'] = $slug;
+			} else {
+				unset( $args['user'] );
 			}
 
-			$tab_data = $this->get_tab_at( $tab );
-			if ( $tab_data instanceof LP_Profile_Tab ) {
-				$slug = $this->get_slug( $tab_data, $tab );
-				if ( $slug ) {
-					$args['tab'] = $slug;
-				} else {
-					unset( $args['user'] );
+			if ( $with_section && ! empty( $tab_data->get( 'sections' ) ) ) {
+				if ( $with_section === true ) {
+					$section_keys  = array_keys( $tab_data->get( 'sections' ) );
+					$first_section = reset( $section_keys );
+					$with_section  = $this->get_slug( $tab_data->get( 'sections' )[ $first_section ], $first_section );
 				}
-
-				if ( $with_section && ! empty( $tab_data->get( 'sections' ) ) ) {
-					if ( $with_section === true ) {
-						$section_keys  = array_keys( $tab_data->get( 'sections' ) );
-						$first_section = reset( $section_keys );
-						$with_section  = $this->get_slug( $tab_data->get( 'sections' )[ $first_section ], $first_section );
-					}
-					$args['section'] = $with_section;
-				}
+				$args['section'] = $with_section;
 			}
 		}
+
 		$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
-
 		if ( $profile_link ) {
 			if ( get_option( 'permalink_structure' ) ) {
 				$url = trailingslashit( $profile_link . join( '/', array_values( $args ) ) );
 			} else {
 				$url = esc_url_raw( add_query_arg( $args, $profile_link ) );
 			}
-		} else {
-			$url = get_author_posts_url( $user->get_id() );
 		}
 
-		return apply_filters( 'learnpress/profile/tab/link', $url, $tab, $with_section, $user );
+		return apply_filters( 'learnpress/profile/tab/link', $url, $tab, $with_section, $user_slug );
 	}
 
 	/**
 	 * Get the slug of tab or section if defined.
 	 *
-	 * @param array $tab_or_section
+	 * @param $tab_or_section
 	 * @param string $default
 	 *
 	 * @return string
@@ -247,8 +241,23 @@ class LP_Profile_Tabs {
 			return '';
 		}
 
+		$lp_profile = $this->get_profile();
+		/**
+		 * @var $lp_user LP_User
+		 */
+		$lp_user              = $lp_profile->get_user();
 		$current_section_slug = $this->get_current_section();
-		$url                  = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, $this->get_profile()->get_user()->get_username() );
+		if ( ! $lp_user instanceof WP_User ) {
+			return '';
+		}
+
+		$userModel = UserModel::find( $lp_user->get_id(), true );
+		if ( ! $userModel ) {
+			return '';
+		}
+
+		$user_pretty_slug = $userModel->get_pretty_slug();
+		$url              = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, $user_pretty_slug );
 		if ( is_array( $args ) && $args ) {
 			if ( ! $with_permalink ) {
 				$url = esc_url_raw( add_query_arg( $args, $url ) );
@@ -376,6 +385,7 @@ class LP_Profile_Tab {
 	 */
 	public function user_can_view() {
 		_deprecated_function( __METHOD__, '4.2.6.2' );
+
 		return false;
 		if ( $this->is_public() || current_user_can( ADMIN_ROLE ) ) {
 			return true;
@@ -391,7 +401,9 @@ class LP_Profile_Tab {
 	 */
 	public function user_can_view_section( $section ) {
 		_deprecated_function( __METHOD__, '4.2.6.2' );
+
 		return false;
+
 		return $this->get_profile()->current_user_can( "view-section-{$section}" );
 	}
 
@@ -416,6 +428,7 @@ class LP_Profile_Tab {
 	 */
 	public function is_public() {
 		_deprecated_function( __METHOD__, '4.2.6.2' );
+
 		return false;
 		$public_tabs = $this->profile->get_public_tabs();
 

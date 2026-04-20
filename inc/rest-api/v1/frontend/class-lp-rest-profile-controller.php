@@ -34,19 +34,19 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'course-attend'        => array(
+			/*'course-attend'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'course_attend' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
-			),
+			),*/
 			'get-avatar'           => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_avatar' ),
 					'permission_callback' => function () {
-						return get_current_user_id() ? true : false;
+						return (bool) get_current_user_id();
 					},
 				),
 			),
@@ -55,7 +55,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'upload_avatar' ),
 					'permission_callback' => function () {
-						return get_current_user_id() ? true : false;
+						return (bool) get_current_user_id();
 					},
 				),
 			),
@@ -64,11 +64,11 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'remove_avatar' ),
 					'permission_callback' => function () {
-						return get_current_user_id() ? true : false;
+						return (bool) get_current_user_id();
 					},
 				),
 			),
-			'cover-image'   => array(
+			'cover-image'          => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'handle_cover_image' ),
@@ -110,7 +110,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 		$thumb_size = learn_press_get_avatar_thumb_size();
 
-		$profile    = learn_press_get_profile( get_current_user_id() );
+		$profile    = LP_Profile::instance( get_current_user_id() );
 		$avatar_url = $profile->get_upload_profile_src();
 
 		$response->data->width  = $thumb_size['width'];
@@ -126,7 +126,6 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$user_id = get_current_user_id();
-
 			if ( ! $user_id ) {
 				throw new Exception( __( 'User not found', 'learnpress' ) );
 			}
@@ -230,7 +229,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 */
 	public function student_statistics( WP_REST_Request $request ) {
-		$user_id        = $request->get_param( 'userID' );
+		$user_id        = (int) $request->get_param( 'userID' );
 		$response       = new LP_REST_Response();
 		$response->data = '';
 
@@ -239,12 +238,18 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
 			}
 
-			$user = learn_press_get_user( $user_id );
-			if ( ! $user ) {
+			$userModel = UserModel::find( $user_id, true );
+			if ( ! $userModel ) {
 				throw new Exception( esc_html__( 'The user does not exist!', 'learnpress' ) );
 			}
 
-			$statistic = $user->get_student_statistic();
+			// Check permission
+			$profile = LP_Profile::instance( $user_id );
+			if ( ! $profile->current_user_can( 'view-tab-my-courses' ) ) {
+				throw new Exception( esc_html__( 'You do not have permission to view this statistic!', 'learnpress' ) );
+			}
+
+			$statistic = $userModel->get_student_statistic();
 			$data      = apply_filters(
 				'learn-press/profile/student-statistics/info',
 				[
@@ -308,17 +313,22 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
 			}
 
-			$user = learn_press_get_user( $user_id );
-			if ( ! $user ) {
+			$userModel = UserModel::find( $user_id, true );
+			if ( ! $userModel ) {
 				throw new Exception( esc_html__( 'The user does not exist!', 'learnpress' ) );
 			}
 
-			$profile = learn_press_get_profile( $user_id );
+			$profile = LP_Profile::instance( $user_id );
 			if ( $profile instanceof WP_Error ) {
 				throw new Exception( $profile->get_error_message() );
 			}
 
-			$statistic = $user->get_instructor_statistic();
+			// Check permission
+			if ( ! $profile->current_user_can( 'view-tab-courses' ) ) {
+				throw new Exception( esc_html__( 'You do not have permission to view this statistic!', 'learnpress' ) );
+			}
+
+			$statistic = $userModel->get_instructor_statistic();
 
 			$data = apply_filters(
 				'learn-press/profile/instructor-statistics/info',
@@ -385,14 +395,14 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
 			}
 
-			$profile = learn_press_get_profile( $user_id );
+			$profile = LP_Profile::instance( $user_id );
 			if ( 'purchased' === $query_type ) {
 				if ( ! $profile->current_user_can( 'view-tab-my-courses' ) ) {
-					throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
+					throw new Exception( esc_html__( 'You do not have permission to view this tab!', 'learnpress' ) );
 				}
 			} elseif ( 'own' === $query_type ) {
 				if ( ! $profile->current_user_can( 'view-tab-courses' ) ) {
-					throw new Exception( esc_html__( 'Request invalid!', 'learnpress' ) );
+					throw new Exception( esc_html__( 'You do not have permission to view this tab!', 'learnpress' ) );
 				}
 			} else {
 				throw new Exception( esc_html__( 'Request invalid!', 'learnpress' ) );
@@ -470,7 +480,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	 * @version 1.0.0
 	 * @author tungnx
 	 */
-	public function course_attend( WP_REST_Request $request ): LP_REST_Response {
+	/*public function course_attend( WP_REST_Request $request ): LP_REST_Response {
 		$params   = $request->get_params();
 		$user_id  = get_current_user_id();
 		$status   = $params['status'] ?? '';
@@ -495,7 +505,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return $response;
-	}
+	}*/
 
 	/**
 	 * API upload cover image profile.
@@ -526,9 +536,10 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			if ( $action === 'remove' ) {
 				$user->delete_cover_image();
 
-				$response->status  = 'success';
-				$response->message = __( 'Cover image has been removed successfully', 'learnpress' );
+				$response->status       = 'success';
+				$response->message      = __( 'Cover image has been removed successfully', 'learnpress' );
 				$response->data->action = $action;
+
 				return $response;
 			}
 
@@ -575,9 +586,9 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 			do_action( 'learnpress/rest/frontend/profile/upload_cover_image', $user_id );
 
-			$response->status     = 'success';
-			$response->message    = __( 'Cover image is updated', 'learnpress' );
-			$response->data->url = $user->get_cover_image_url();
+			$response->status       = 'success';
+			$response->message      = __( 'Cover image is updated', 'learnpress' );
+			$response->data->url    = $user->get_cover_image_url();
 			$response->data->action = $action;
 		} catch ( Throwable $th ) {
 			$response->message = $th->getMessage();

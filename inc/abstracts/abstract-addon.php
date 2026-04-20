@@ -121,7 +121,7 @@ class LP_Addon {
 
 			// Deactivate plugin .
 			if ( ! empty( $this->plugin_base ) ) {
-				deactivate_plugins( $this->plugin_base );
+				//deactivate_plugins( $this->plugin_base );
 			}
 		}
 
@@ -153,7 +153,7 @@ class LP_Addon {
 
 			// Deactivate plugin .
 			if ( ! empty( $this->plugin_base ) ) {
-				deactivate_plugins( plugin_basename( $this->plugin_base ) );
+				//deactivate_plugins( plugin_basename( $this->plugin_base ) );
 			}
 		}
 

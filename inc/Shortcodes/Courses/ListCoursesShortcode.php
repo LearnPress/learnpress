@@ -11,6 +11,7 @@ use LearnPress\Models\Courses;
 use LearnPress\Shortcodes\AbstractShortcode;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LP_Debug;
+use LP_Helper;
 use Throwable;
 
 /**
@@ -41,7 +42,7 @@ class ListCoursesShortcode extends AbstractShortcode {
 				$attrs = [];
 			}
 
-			$attrs['c_status'] = $attrs['c_status'] ?? 'publish';
+			$attrs['c_status'] = LP_Helper::sanitize_params_submitted( $attrs['c_status'] ?? 'publish' );
 			$filter            = new CourseJsonFilter();
 			Courses::handle_params_for_query_list_courses( $filter, $attrs );
 			$filter->only_fields = [ CourseJsonFilter::COL_ID ];
@@ -52,7 +53,7 @@ class ListCoursesShortcode extends AbstractShortcode {
 			$attrs['total_pages']      = $total_pages;
 			$attrs['total_rows']       = $total_rows;
 			$attrs['courses_per_page'] = $filter->limit;
-			$skin                      = $attrs['skin'] ?? 'list';
+			$skin                      = LP_Helper::sanitize_params_submitted( $attrs['skin'] ?? 'list' );
 			$paged                     = $attrs['paged'] ?? 1;
 			$attrs['paged']            = $paged;
 			$listCoursesTemplate       = self::instance();
@@ -73,9 +74,9 @@ class ListCoursesShortcode extends AbstractShortcode {
 				[
 					'wrap'     => sprintf(
 						'<ul class="learn-press-courses lp-list-courses-no-css %1$s learn-press-courses-shortcode" data-layout="%1$s">',
-						$skin
+						esc_attr( $skin )
 					),
-					'courses'  => $html_courses,
+					'courses'  => wp_kses_post( $html_courses ),
 					'wrap_end' => '</ul>',
 				],
 				$courses,

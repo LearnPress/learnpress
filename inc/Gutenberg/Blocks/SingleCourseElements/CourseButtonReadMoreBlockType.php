@@ -3,7 +3,9 @@
 namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 
 use LearnPress\Gutenberg\Utils\StyleAttributes;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseModernLayout;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
 use WP_Block;
@@ -98,15 +100,20 @@ class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
 
 			$style_wrapper = 'style="display: flex; ' . 'align-items: ' . esc_attr( $align_items ) . ';' . 'justify-content: ' . esc_attr( $justify_content ) . ';' . '"';
 			$wrapper       = get_block_wrapper_attributes( $extra_attributes );
+			$btn_text      = SingleCourseTemplate::text_button_course( $courseModel );
 			$html          = sprintf(
-				'<div class="course-button-read-more" %s><a href="%s" %s aria-label="%s"><button %s aria-label="%s">%s</button></a>',
+				'<div class="course-button-read-more" %s>
+					<a href="%s" %s aria-label="%s">
+						<button %s aria-label="%s">%s</button>
+					</a>
+				</div>',
 				$style_wrapper,
 				$courseModel->get_permalink(),
 				'style=" width: ' . $width . '%;"',
 				__( 'Learn more about this course', 'learnpress' ),
 				$wrapper,
-				__( 'Read more', 'learnpress' ),
-				__( 'Read more', 'learnpress' )
+				$btn_text,
+				$btn_text
 			);
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );

@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.3.2.9-beta.1
+ * Version: 4.3.5
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -19,6 +19,7 @@ use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
+use LearnPress\Ajax\MCP\McpApiKeysAjax;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Ajax\BuilderDashboardAjax;
 use LearnPress\Ajax\ExportOrderCSVAjax;
@@ -29,6 +30,8 @@ use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Gutenberg\GutenbergHandleMain;
 use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\SendEmailAjax;
+use LearnPress\MCP\Abilities;
+use LearnPress\MCP\Auth\ApiKeyAuthenticator;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
@@ -42,6 +45,7 @@ use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
+use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditSettingTemplate;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
@@ -57,6 +61,7 @@ use LearnPress\TemplateHooks\Profile\ProfileCoursesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileGeneralInfoTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileStudentEnrolledTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
@@ -367,6 +372,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			BuilderEditQuestionTemplate::instance();
 			BuilderPopupTemplate::instance();
 			ProfileCoursesTemplate::instance();
+			ProfileStudentEnrolledTemplate::instance();
 
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
@@ -379,6 +385,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminCreateCourseAITemplate::instance();
 			AdminEditWithAITemplate::instance();
 			AdminEditCourseCurriculumWithAITemplate::instance();
+			AdminListStudentsEnrolled::instance();
 			// WP GDPR
 			ErasePersonalData::instance();
 			ExportPersonalData::instance();
@@ -706,7 +713,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				$addon_valid            = $addon->check_require_version_addon();
 
 				if ( $addons_valid ) {
-					$addon_valid = $addon->check_require_version_lp();
+					//$addon_valid = $addon->check_require_version_lp();
 				}
 
 				if ( ! $addon_valid ) {
@@ -719,6 +726,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Initial common hooks
 		 */
 		public function hooks() {
+			add_action( 'init', array( $this, 'maybe_init_mcp_abilities' ), 20 );
+
 			/**
 			 * Handle lp ajax.
 			 * Set priority after register_post_type to register capabilities for post type of LP.
@@ -735,6 +744,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					CourseBuilderAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
+					McpApiKeysAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},
@@ -862,6 +872,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_deactivate() {
 			do_action( 'learn-press/deactivate', $this );
+		}
+
+		/**
+		 * Conditionally bootstrap MCP abilities.
+		 *
+		 * @return void
+		 */
+		public function maybe_init_mcp_abilities() {
+			if ( LP_Settings::get_option( 'enable_mcp_integration', 'no' ) !== 'yes' ) {
+				return;
+			}
+
+			ApiKeyAuthenticator::init();
+			Abilities::init();
 		}
 
 		/**

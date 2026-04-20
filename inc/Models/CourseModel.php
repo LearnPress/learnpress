@@ -101,6 +101,10 @@ class CourseModel {
 	 * @var array list sections items
 	 */
 	public $sections_items;
+	/**
+	 * @var array|null cached items of course (per instance)
+	 */
+	protected array $only_items;
 
 	/**
 	 * If data get from database, map to object.
@@ -471,21 +475,22 @@ class CourseModel {
 	 *
 	 * @return array
 	 * @since 4.3.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_only_items(): array {
-		static $items;
-		if ( isset( $items ) ) {
-			return $items;
+		if ( isset( $this->only_items ) ) {
+			return $this->only_items;
 		}
+
+		$this->only_items = [];
 
 		foreach ( $this->get_section_items() as $section ) {
 			foreach ( $section->items as $item ) {
-				$items[ $item->item_id ] = $item;
+				$this->only_items[ $item->item_id ] = $item;
 			}
 		}
 
-		return $items ?? [];
+		return $this->only_items;
 	}
 
 	/**
@@ -836,6 +841,7 @@ class CourseModel {
 			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
+		$value = maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;
