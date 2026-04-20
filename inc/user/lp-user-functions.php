@@ -1092,7 +1092,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 
 	$user_model = new UserModel( $wp_user->data );
 	$args       = array(
-		'user' => $user_model->get_pretty_slug(),
+		'user' => $user_model->get_slug_link(),
 	);
 
 	if ( $tab ) {

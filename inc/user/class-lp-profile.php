@@ -336,7 +336,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				return '';
 			}
 
-			$user_pretty_slug = $userModel->get_pretty_slug();
+			$user_pretty_slug = $userModel->get_slug_link();
 			$url              = $this->get_tabs()->get_tab_link( $tab, $with_section, $user_pretty_slug );
 
 			/**
@@ -1132,7 +1132,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 								if ( current_user_can( UserModel::ROLE_ADMINISTRATOR )
 									|| ( $userModelCurrent && $userModelCurrent->get_id() === $wp_user->ID ) ) {
 									$user_id = $userModelBySlug->get_id();
-								} elseif ( empty( $userModelBySlug->get_pretty_slug( false ) ) ) {
+								} elseif ( empty( $userModelBySlug->get_slug_link() ) ) {
 									$user_id = $userModelBySlug->get_id();
 								}
 							}

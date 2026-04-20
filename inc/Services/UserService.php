@@ -83,7 +83,7 @@ class UserService {
 				continue;
 			}
 
-			if ( '' !== $userModel->get_pretty_slug( false ) ) {
+			if ( '' !== $userModel->get_slug_link() ) {
 				++ $result['skipped'];
 				continue;
 			}

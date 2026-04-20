@@ -264,7 +264,7 @@ class SingleInstructorTemplate extends UserTemplate {
 							if ( current_user_can( UserModel::ROLE_ADMINISTRATOR )
 								|| ( $userModelCurrent && $userModelCurrent->get_id() === $wp_user->ID ) ) {
 								$instructor = $userModelBySlug;
-							} elseif ( empty( $userModelBySlug->get_pretty_slug( false ) ) ) {
+							} elseif ( empty( $userModelBySlug->get_slug_link() ) ) {
 								$instructor = $userModelBySlug;
 							}
 						}

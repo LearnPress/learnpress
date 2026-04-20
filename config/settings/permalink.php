@@ -11,7 +11,7 @@ foreach ( $currencies as $code => $name ) {
 
 $settings      = LP_Settings::instance();
 $userModel     = UserModel::find( get_current_user_id(), true );
-$username      = $userModel->get_pretty_slug();
+$username      = $userModel->get_slug_link();
 $settings_slug = $settings->get( 'profile_endpoints.settings', 'settings' );
 $profile_slug  = 'profile';
 
@@ -23,7 +23,8 @@ if ( learn_press_get_page_id( 'profile' ) ) {
 	}
 }
 
-$profile_url = site_url() . '/' . $profile_slug . '/' . $username;
+//$profile_url = site_url() . '/' . $profile_slug . '/' . $username;
+$profile_url = home_url( $profile_slug . '/' . $username );
 
 return apply_filters(
 	'lp/settings/permalinks',

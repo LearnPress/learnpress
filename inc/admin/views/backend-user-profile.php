@@ -23,7 +23,7 @@ $extra_profile_fields = learn_press_social_profiles();
 $extra_profile        = learn_press_get_user_extra_profile_info( $user->ID );
 
 $custom_profile = lp_get_user_custom_register_fields( $user->ID );
-$user_model     = new UserModel( $user->data );
+$userModel      = new UserModel( $user->data );
 $lp_message     = LP_Request::get_param( 'lp-message' );
 ?>
 
@@ -45,7 +45,7 @@ $lp_message     = LP_Request::get_param( 'lp-message' );
 			<td>
 				<input class="regular-text"
 					type="text"
-					value="<?php echo esc_attr( $user_model->get_pretty_slug( false ) ); ?>"
+					value="<?php echo esc_attr( $userModel->get_slug_link() ); ?>"
 					name="lp_user_slug">
 				<?php
 				if ( ! empty( $lp_message ) ) {

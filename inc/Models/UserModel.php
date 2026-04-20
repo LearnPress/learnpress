@@ -244,6 +244,18 @@ class UserModel {
 	}
 
 	/**
+	 * Get slug link of user.
+	 * Get from column user_nicename of table wp_users
+	 *
+	 * @return string
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function get_slug_link(): string {
+		return (string) $this->user_nicename;
+	}
+
+	/**
 	 * Create a unique pretty slug for user.
 	 *
 	 * If the user already has a pretty slug, it will return the existing one without generating a new one.
@@ -259,7 +271,7 @@ class UserModel {
 
 		try {
 			// Check if pretty slug already exists, if exists, return it without generating a new one.
-			$existing_slug = $this->get_pretty_slug( false );
+			$existing_slug = $this->get_slug_link();
 			if ( ! empty( $existing_slug ) ) {
 				return $existing_slug;
 			}
@@ -464,7 +476,7 @@ class UserModel {
 		$single_instructor_link = '';
 
 		try {
-			$user_name                 = $this->get_pretty_slug();
+			$user_name                 = $this->get_slug_link();
 			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
 			if ( ! $single_instructor_page_id ) {
 				return $single_instructor_link;
