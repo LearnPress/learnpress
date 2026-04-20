@@ -5,8 +5,8 @@ namespace LearnPress\Services;
 use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\UserModel;
-use LP_User_DB;
-use LP_User_Filter;
+use LearnPress\Databases\UserDB;
+use LearnPress\Filters\UserFilter;
 
 
 /**
@@ -29,7 +29,7 @@ class UserService {
 	 *
 	 * @return false|UserModel
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.3.4
 	 */
 	public function get_user_by_pretty_slug( string $slug ) {
@@ -37,8 +37,8 @@ class UserService {
 			return false;
 		}
 
-		$lp_user_db          = LP_User_DB::instance();
-		$filter              = new LP_User_Filter();
+		$lp_user_db          = UserDB::getInstance();
+		$filter              = new UserFilter();
 		$filter->only_fields = [ 'u.ID' ];
 		$lp_user_db->get_query_single_row( $filter );
 		$filter->join[]  = "INNER JOIN {$lp_user_db->wpdb->usermeta} AS um ON um.user_id = u.ID";

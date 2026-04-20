@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Views
- * @version 4.0.2
+ * @version 4.0.3
  */
 
 use LearnPress\Helpers\Template;

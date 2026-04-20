@@ -17,9 +17,8 @@ use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Services\UserService;
 use LP_Cache;
 use LP_Debug;
-use LP_User;
-use LP_User_DB;
-use LP_User_Filter;
+use LearnPress\Databases\UserDB;
+use LearnPress\Filters\UserFilter;
 
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
@@ -122,7 +121,7 @@ class UserModel {
 	 * @return false|static
 	 */
 	public static function find( int $user_id, bool $check_cache = false ) {
-		$filter_user     = new LP_User_Filter();
+		$filter_user     = new UserFilter();
 		$filter_user->ID = $user_id;
 		$key_cache       = "userModel/find/id/{$user_id}";
 		$lp_course_cache = new LP_Cache();
@@ -151,14 +150,14 @@ class UserModel {
 	 * If not exists, return false.
 	 * If exists, return CoursePostModel.
 	 *
-	 * @param LP_User_Filter $filter
+	 * @param UserFilter $filter
 	 *
 	 * @return UserModel|false|static
 	 * @since 4.2.6.9
 	 * @version 1.0.1
 	 */
-	public static function get_user_model_from_db( LP_User_Filter $filter ) {
-		$lp_user_db = LP_User_DB::instance();
+	public static function get_user_model_from_db( UserFilter $filter ) {
+		$lp_user_db = UserDB::getInstance();
 		$user_model = false;
 
 		try {
