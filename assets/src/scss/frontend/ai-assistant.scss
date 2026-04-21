@@ -92,7 +92,7 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 	}
 	&__panel {
 		position: fixed;
-		top: 0;
+		top: 24px;
 		right: 0;
 		bottom: 0;
 		width: min(#{$lp-ai-sidebar-width}, calc(100vw - 1rem));
