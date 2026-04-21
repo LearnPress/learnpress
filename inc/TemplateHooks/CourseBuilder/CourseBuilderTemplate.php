@@ -370,7 +370,7 @@ class CourseBuilderTemplate {
 			return '';
 		}
 
-		$tab_current     = CourseBuilder::get_current_tab();
+		$menu_current    = CourseBuilder::get_menu_current();
 		$section_current = CourseBuilder::get_current_section();
 		$post_id         = CourseBuilder::get_post_id();
 
@@ -378,13 +378,13 @@ class CourseBuilderTemplate {
 
 		// If viewing entity detail (has post_id), show breadcrumb + horizontal tabs
 		if ( ! empty( $post_id ) && ! empty( $section_current ) ) {
-			echo $this->render_detail_view( $tab_current, $post_id, $section_current );
+			echo $this->render_detail_view( $menu_current, $post_id, $section_current );
 		} elseif ( ! empty( $section_current ) ) {
 			// Legacy section view (fallback)
-			echo $this->html_section( $tab_current, $section_current );
+			echo $this->html_section( $menu_current, $section_current );
 		} else {
 			// List view
-			echo $this->html_tab( $tab_current );
+			echo $this->html_tab( $menu_current );
 		}
 
 		$content = ob_get_clean();
@@ -448,7 +448,7 @@ class CourseBuilderTemplate {
 	 * @since 4..0
 	 */
 	protected function html_nav_item_main( $slug, $tab_data ) {
-		$tab_current = CourseBuilder::get_current_tab();
+		$tab_current = CourseBuilder::get_menu_current();
 		$is_active   = $slug === $tab_current;
 		$classes     = [ 'lp-cb-sidebar__item', $slug ];
 
@@ -736,7 +736,7 @@ class CourseBuilderTemplate {
 	}
 
 	public function html_btn_add_new() {
-		$tab_current = CourseBuilder::get_current_tab();
+		$tab_current = CourseBuilder::get_menu_current();
 		$map_title   = [
 			'courses'   => __( 'Course', 'learnpress' ),
 			'lessons'   => __( 'Lesson', 'learnpress' ),

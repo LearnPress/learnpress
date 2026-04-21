@@ -52,7 +52,7 @@ class LP_Query {
 			'%question%'             => '([^&]+)',
 			'%user%'                 => '([^/]*)',
 			'%view%'                 => '([^/]*)',
-			'%tab%'                  => '([^/]*)',
+			'%lp_cb_menu_slug%'      => '([^/]*)',
 			'%view_id%'              => '(.*)',
 			'%section%'              => '(.*)',
 			'%content-item-only%'    => '(.*)',
@@ -271,29 +271,29 @@ class LP_Query {
 
 						$rules['course-builder'][ $tab_key . '_' . $section_key . '_new' ] = [
 							"^{$page}/({$tab_slug})/(post-new)/({$section_slug})/?$" =>
-							'index.php?is_course_builder=1&tab=' . $tab_slug . '&post_id=post-new&section=' . $section_slug,
+							'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=post-new&section=' . $section_slug,
 						];
 
 						$rules['course-builder'][ $tab_key . '_' . $section_key ] = [
 							"^{$page}/({$tab_slug})/?([0-9]*)/({$section_slug})/?$" =>
-							'index.php?is_course_builder=1&tab=' . $tab_slug . '&post_id=$matches[2]&section=' . $section_slug,
+							'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=$matches[2]&section=' . $section_slug,
 						];
 					}
 				}
 
 				$rules['course-builder'][ $tab_key . '_new' ] = [
 					"^{$page}/({$tab_slug})/(post-new)/?$" =>
-						'index.php?is_course_builder=1&tab=' . $tab_slug . '&post_id=post-new',
+						'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=post-new',
 				];
 
 				$rules['course-builder'][ $tab_key . '_page' ] = [
 					"^{$page}/({$tab_slug})/(page)/?([0-9]*)/?$" =>
-						'index.php?is_course_builder=1&tab=' . $tab_slug . '&paged=$matches[3]',
+						'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&paged=$matches[3]',
 				];
 
 				$rules['course-builder'][ $tab_key ] = [
 					"^{$page}/({$tab_slug})/?([0-9]*)/?$" =>
-						'index.php?is_course_builder=1&tab=' . $tab_slug . '&post_id=$matches[2]',
+						'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=$matches[2]',
 				];
 			}
 		}

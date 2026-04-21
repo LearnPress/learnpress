@@ -10,6 +10,7 @@ use LP_Course_Post_Type;
 use LP_Forms_Handler;
 use LP_REST_Profile_Controller;
 use LP_Settings;
+use WP_Query;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_User;
@@ -37,7 +38,7 @@ class CourseBuilder {
 	 * Get menus structure default in course builder.
 	 *
 	 * @return array
-	 * @since 4.3.0
+	 * @since 4.3.6
 	 * @version 1.0.0
 	 */
 	public static function get_menus_arr(): array {
@@ -45,31 +46,19 @@ class CourseBuilder {
 	}
 
 	/**
-	 * Get the current course builder tab.
-	 * @param string $current
-	 * @return string
+	 * Get the current menu slug for the Course Builder page.
 	 *
-	 * @since 4.3.0
+	 * Retrieves the active menu slug from the WP_Query object based on the 'lp_cb_menu_slug' query variable.
+	 *
+	 * @return string The current menu slug.
+	 *
+	 * @since 4.3.6
 	 * @version 1.0.0
 	 */
-	public static function get_current_tab() {
-		global $wp;
-		$current = '';
-		if ( ! empty( $_REQUEST['tab'] ) ) {
-			$current = sanitize_text_field( $_REQUEST['tab'] );
-		} elseif ( ! empty( $wp->query_vars['tab'] ) ) {
-			$current = $wp->query_vars['tab'];
-		} else {
-			$tab_data    = self::get_menus_arr();
-			$current_tab = reset( $tab_data );
-			if ( ! empty( $current_tab['slug'] ) ) {
-				$current = $current_tab['slug'];
-			} else {
-				$current = array_keys( $tab_data );
-			}
-		}
-
-		return $current;
+	public static function get_menu_current(): string {
+		/** @var WP_Query $wp_query */
+		global $wp_query;
+		return (string) $wp_query->get( 'lp_cb_menu_slug' );
 	}
 
 	/**
@@ -94,7 +83,7 @@ class CourseBuilder {
 			$current = $wp->query_vars['section'];
 		} else {
 			if ( ! $tab ) {
-				$current_tab = self::get_current_tab();
+				$current_tab = self::get_menu_current();
 			} else {
 				$current_tab = $tab;
 			}
