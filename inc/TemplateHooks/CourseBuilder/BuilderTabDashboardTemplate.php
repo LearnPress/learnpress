@@ -50,11 +50,13 @@ class BuilderTabDashboardTemplate {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
-		echo Template::combine_components( [
-			'wrapper'     => '<div class="lp-course-builder-dashboard">',
-			'content'     => $html,
-			'wrapper_end' => '</div>',
-		] );
+		echo Template::combine_components(
+			[
+				'wrapper'     => '<div class="lp-course-builder-dashboard">',
+				'content'     => $html,
+				'wrapper_end' => '</div>',
+			]
+		);
 	}
 
 	/**
@@ -72,28 +74,30 @@ class BuilderTabDashboardTemplate {
 			$statistic = $user->get_instructor_statistic();
 		}
 
-		$stats_html          = $this->render_statistics_cards( $statistic, $is_admin );
-		$charts_html         = $this->render_charts_section( $is_admin, $user->get_id() );
+		$stats_html           = $this->render_statistics_cards( $statistic, $is_admin );
+		$charts_html          = $this->render_charts_section( $is_admin, $user->get_id() );
 		$top_instructors_html = $is_admin ? $this->render_top_instructors_section() : '';
-		$charts_row_class    = $is_admin
+		$charts_row_class     = $is_admin
 			? 'lp-cb-dashboard__charts-row lp-cb-dashboard__charts-row--admin'
 			: 'lp-cb-dashboard__charts-row lp-cb-dashboard__charts-row--instructor';
-		$top_courses_html    = $this->render_top_courses_section( $is_admin ? 0 : $user->get_id() );
-		$recent_courses_html = $this->render_recent_courses_section( $user );
-		$quick_actions_html  = $this->render_quick_actions();
+		$top_courses_html     = $this->render_top_courses_section( $is_admin ? 0 : $user->get_id() );
+		$recent_courses_html  = $this->render_recent_courses_section( $user );
+		$quick_actions_html   = $this->render_quick_actions();
 
-		return Template::combine_components( [
-			'stats'           => $stats_html,
-			'charts_row'      => sprintf(
-				'<div class="%s">%s%s</div>',
-				esc_attr( $charts_row_class ),
-				$charts_html,
-				$top_instructors_html
-			),
-			'top_courses'     => $top_courses_html,
-			'quick_actions'   => $quick_actions_html,
-			'recent_courses'  => $recent_courses_html,
-		] );
+		return Template::combine_components(
+			[
+				'stats'          => $stats_html,
+				'charts_row'     => sprintf(
+					'<div class="%s">%s%s</div>',
+					esc_attr( $charts_row_class ),
+					$charts_html,
+					$top_instructors_html
+				),
+				'top_courses'    => $top_courses_html,
+				'quick_actions'  => $quick_actions_html,
+				'recent_courses' => $recent_courses_html,
+			]
+		);
 	}
 
 	/**
@@ -124,8 +128,8 @@ class BuilderTabDashboardTemplate {
 			$statistic['pending_course']   = intval( $course_counts->pending ?? 0 );
 
 			// Total unique students enrolled in any course
-			$tb_user_items = $wpdb->prefix . 'learnpress_user_items';
-			$total_students = $wpdb->get_var(
+			$tb_user_items              = $wpdb->prefix . 'learnpress_user_items';
+			$total_students             = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(DISTINCT user_id) FROM {$tb_user_items} WHERE item_type = %s",
 					LP_COURSE_CPT
@@ -220,7 +224,7 @@ class BuilderTabDashboardTemplate {
 
 		$cards_html = '';
 		foreach ( $cards as $card ) {
-			$value = $statistic[ $card['key'] ] ?? 0;
+			$value       = $statistic[ $card['key'] ] ?? 0;
 			$cards_html .= sprintf(
 				'<div class="lp-cb-dashboard__stat-card" style="--card-color: %s; --card-bg: %s15">
 					<div class="stat-card__icon">%s</div>
@@ -235,11 +239,13 @@ class BuilderTabDashboardTemplate {
 			);
 		}
 
-		return Template::combine_components( [
-			'wrapper'     => '<div class="lp-cb-dashboard__stats">',
-			'content'     => $cards_html,
-			'wrapper_end' => '</div>',
-		] );
+		return Template::combine_components(
+			[
+				'wrapper'     => '<div class="lp-cb-dashboard__stats">',
+				'content'     => $cards_html,
+				'wrapper_end' => '</div>',
+			]
+		);
 	}
 
 	/**
@@ -266,16 +272,28 @@ class BuilderTabDashboardTemplate {
 			$stats_ctrl = new \LP_REST_Admin_Statistics_Controller();
 
 			$sales_chart    = $stats_ctrl->process_chart_data(
-				[ 'filter_type' => 'year', 'time' => $current_date ],
+				[
+					'filter_type' => 'year',
+					'time'        => $current_date,
+				],
 				$sales_data
 			);
 			$students_chart = $stats_ctrl->process_chart_data(
-				[ 'filter_type' => 'previous_days', 'time' => 6 ],
+				[
+					'filter_type' => 'previous_days',
+					'time'        => 6,
+				],
 				$students_data
 			);
 		} catch ( Throwable $e ) {
-			$sales_chart    = [ 'labels' => [], 'data' => [] ];
-			$students_chart = [ 'labels' => [], 'data' => [] ];
+			$sales_chart    = [
+				'labels' => [],
+				'data'   => [],
+			];
+			$students_chart = [
+				'labels' => [],
+				'data'   => [],
+			];
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -316,12 +334,20 @@ class BuilderTabDashboardTemplate {
 			esc_html__( 'This week', 'learnpress' ),
 			esc_html__( 'This month', 'learnpress' ),
 			esc_html__( 'This year', 'learnpress' ),
-			wp_json_encode( [
-				'sales'    => [ 'labels' => $sales_chart['labels'] ?? [], 'data' => $sales_chart['data'] ?? [] ],
-				'students' => [ 'labels' => $students_chart['labels'] ?? [], 'data' => $students_chart['data'] ?? [] ],
-				'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
-				'nonce'    => $nonce,
-			] )
+			wp_json_encode(
+				[
+					'sales'    => [
+						'labels' => $sales_chart['labels'] ?? [],
+						'data'   => $sales_chart['data'] ?? [],
+					],
+					'students' => [
+						'labels' => $students_chart['labels'] ?? [],
+						'data'   => $students_chart['data'] ?? [],
+					],
+					'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
+					'nonce'    => $nonce,
+				]
+			)
 		);
 
 		return $html;
@@ -346,7 +372,7 @@ class BuilderTabDashboardTemplate {
 			$items_html = '<div class="no-data">' . esc_html__( 'No instructors found', 'learnpress' ) . '</div>';
 		} else {
 			foreach ( $instructors as $instructor ) {
-				$avatar = get_avatar( $instructor->instructor_id, 40 );
+				$avatar      = get_avatar( $instructor->instructor_id, 40 );
 				$items_html .= sprintf(
 					'<div class="instructor-item">
 						<div class="instructor-item__avatar">%s</div>
@@ -395,12 +421,14 @@ class BuilderTabDashboardTemplate {
 		$top_enrolled_html = $this->render_top_enrolled_courses( $user_id );
 		$top_selling_html  = $this->render_top_selling_courses( $user_id );
 
-		return Template::combine_components( [
-			'wrapper'      => '<div class="lp-cb-dashboard__top-courses-wrapper">',
-			'top_enrolled' => $top_enrolled_html,
-			'top_selling'  => $top_selling_html,
-			'wrapper_end'  => '</div>',
-		] );
+		return Template::combine_components(
+			[
+				'wrapper'      => '<div class="lp-cb-dashboard__top-courses-wrapper">',
+				'top_enrolled' => $top_enrolled_html,
+				'top_selling'  => $top_selling_html,
+				'wrapper_end'  => '</div>',
+			]
+		);
 	}
 
 	/**
@@ -426,12 +454,12 @@ class BuilderTabDashboardTemplate {
 		} else {
 			foreach ( $top_courses as $course ) {
 				$total_enrolled += intval( $course->enrollment_count );
-				$thumbnail = get_the_post_thumbnail( $course->course_id, 'thumbnail' );
+				$thumbnail       = get_the_post_thumbnail( $course->course_id, 'thumbnail' );
 				if ( empty( $thumbnail ) ) {
 					$thumbnail = '<div class="course-item__thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>';
 				}
 
-				$categories = wp_get_post_terms( $course->course_id, 'course_category', array( 'fields' => 'names' ) );
+				$categories    = wp_get_post_terms( $course->course_id, 'course_category', array( 'fields' => 'names' ) );
 				$category_text = '';
 				if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) {
 					$category_text = sprintf( ' %s <span class="category">%s</span>', esc_html__( 'in', 'learnpress' ), esc_html( implode( ', ', $categories ) ) );
@@ -504,14 +532,14 @@ class BuilderTabDashboardTemplate {
 		} else {
 			foreach ( $top_courses as $course ) {
 				$total_revenue += floatval( $course->total_revenue ?? 0 );
-				$thumbnail = get_the_post_thumbnail( $course->course_id, 'thumbnail' );
+				$thumbnail      = get_the_post_thumbnail( $course->course_id, 'thumbnail' );
 				if ( empty( $thumbnail ) ) {
 					$thumbnail = '<div class="course-item__thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>';
 				}
 
 				$currency_symbol = function_exists( 'learn_press_get_currency_symbol' ) ? learn_press_get_currency_symbol() : '$';
-				
-				$lp_course = function_exists( 'learn_press_get_course' ) ? learn_press_get_course( $course->course_id ) : false;
+
+				$lp_course  = function_exists( 'learn_press_get_course' ) ? learn_press_get_course( $course->course_id ) : false;
 				$price_html = '';
 				if ( $lp_course ) {
 					$price = $lp_course->get_price();
@@ -583,27 +611,27 @@ class BuilderTabDashboardTemplate {
 		$actions = [
 			[
 				'label' => __( 'Create Course', 'learnpress' ),
-				'url'   => CourseBuilder::get_tab_link( 'courses', CourseBuilder::POST_NEW, 'overview' ),
+				'url'   => CourseBuilder::get_link_add_new( 'courses' ),
 				'color' => '#ef4444',
-				'svg'   => '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_5791_4587)"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 4C3 3.46957 3.21071 2.96086 3.58579 2.58579C3.96086 2.21072 4.46957 2 5 2H7C7.364 2 7.706 2.097 8 2.268C8.30385 2.09201 8.64886 1.99954 9 2H11C11.727 2 12.364 2.388 12.714 2.969C12.924 2.801 13.17 2.673 13.446 2.599L15.378 2.082C15.6317 2.01394 15.8963 1.99653 16.1568 2.03077C16.4172 2.065 16.6684 2.1502 16.8959 2.28151C17.1234 2.41281 17.3228 2.58765 17.4828 2.79604C17.6427 3.00442 17.76 3.24227 17.828 3.496L21.968 18.951C22.0361 19.2047 22.0535 19.4694 22.0192 19.7298C21.985 19.9902 21.8998 20.2414 21.7685 20.4689C21.6372 20.6964 21.4624 20.8958 21.254 21.0558C21.0456 21.2157 20.8077 21.333 20.554 21.401L18.622 21.918C18.3683 21.9861 18.1037 22.0035 17.8432 21.9692C17.5828 21.935 17.3316 21.8498 17.1041 21.7185C16.8766 21.5872 16.6772 21.4124 16.5172 21.204C16.3573 20.9956 16.24 20.7577 16.172 20.504L13 8.663V20C13 20.5304 12.7893 21.0391 12.4142 21.4142C12.0391 21.7893 11.5304 22 11 22H9C8.64886 22.0005 8.30385 21.908 8 21.732C7.69615 21.908 7.35114 22.0005 7 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V4ZM5 4H7V20H5V4ZM11 20H9V4H11V20ZM13.964 4.531L15.895 4.014L20.037 19.469L18.105 19.986L13.964 4.531Z" fill="currentColor"/></g><defs><clipPath id="clip0_5791_4587"><rect width="24" height="24" fill="white"/></clipPath></defs></svg>',
+				'svg'   => wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-courses-2.svg' ),
 			],
 			[
 				'label' => __( 'Create Lesson', 'learnpress' ),
 				'attr'  => 'data-add-new-lesson',
 				'color' => '#7067ED',
-				'svg'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+				'icon'  => 'lp-icon-file-text-o',
 			],
 			[
 				'label' => __( 'Create Quiz', 'learnpress' ),
-				'url'   => CourseBuilder::get_tab_link( 'quizzes', CourseBuilder::POST_NEW, 'overview' ),
+				'url'   => CourseBuilder::get_link_add_new( 'quizzes' ),
 				'color' => '#f59e0b',
-				'svg'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 3.5C7 1.56772 8.56772 0 10.5 0C12.4323 0 14 1.56772 14 3.5V4H17C18.6523 4 20 5.34772 20 7V10H20.5C22.4323 10 24 11.5677 24 13.5C24 15.4323 22.4323 17 20.5 17H20V20C20 21.6523 18.6523 23 17 23H12.2V20.5C12.2 19.5623 11.4377 18.8 10.5 18.8C9.56229 18.8 8.8 19.5623 8.8 20.5V23H4C2.34772 23 1 21.6523 1 20V15.2H3.5C4.43771 15.2 5.2 14.4377 5.2 13.5C5.2 12.5623 4.43772 11.8 3.5 11.8H1.01V7C1.01 5.35425 2.3412 4 4 4H7V3.5ZM10.5 2C9.67229 2 9 2.67228 9 3.5V6H4C3.4588 6 3.01 6.44575 3.01 7V9.8H3.5C5.54228 9.8 7.2 11.4577 7.2 13.5C7.2 15.5423 5.54228 17.2 3.5 17.2H3V20C3 20.5477 3.45228 21 4 21H6.8V20.5C6.8 18.4577 8.45771 16.8 10.5 16.8C12.5423 16.8 14.2 18.4577 14.2 20.5V21H17C17.5477 21 18 20.5477 18 20V15H20.5C21.3277 15 22 14.3277 22 13.5C22 12.6723 21.3277 12 20.5 12H18V7C18 6.45228 17.5477 6 17 6H12V3.5C12 2.67228 11.3277 2 10.5 2Z" fill=""/></svg>',
+				'icon'  => 'lp-icon-puzzle-piece',
 			],
 			[
 				'label' => __( 'Create Question', 'learnpress' ),
-				'url'   => CourseBuilder::get_tab_link( 'questions', CourseBuilder::POST_NEW, 'overview' ),
+				'url'   => CourseBuilder::get_link_add_new( 'questions', CourseBuilder::POST_NEW, 'overview' ),
 				'color' => '#6b7280',
-				'svg'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C17.523 2 22 6.477 22 12C22 17.523 17.523 22 12 22C6.477 22 2 17.523 2 12C2 6.477 6.477 2 12 2ZM12 4C9.87827 4 7.84344 4.84285 6.34315 6.34315C4.84285 7.84344 4 9.87827 4 12C4 14.1217 4.84285 16.1566 6.34315 17.6569C7.84344 19.1571 9.87827 20 12 20C14.1217 20 16.1566 19.1571 17.6569 17.6569C19.1571 16.1566 20 14.1217 20 12C20 9.87827 19.1571 7.84344 17.6569 6.34315C16.1566 4.84285 14.1217 4 12 4ZM12 16C12.2652 16 12.5196 16.1054 12.7071 16.2929C12.8946 16.4804 13 16.7348 13 17C13 17.2652 12.8946 17.5196 12.7071 17.7071C12.5196 17.8946 12.2652 18 12 18C11.7348 18 11.4804 17.8946 11.2929 17.7071C11.1054 17.5196 11 17.2652 11 17C11 16.7348 11.1054 16.4804 11.2929 16.2929C11.4804 16.1054 11.7348 16 12 16ZM12 6.5C12.8423 6.50003 13.6583 6.79335 14.3078 7.3296C14.9573 7.86585 15.3998 8.61154 15.5593 9.43858C15.7188 10.2656 15.5853 11.1224 15.1818 11.8617C14.7783 12.601 14.1299 13.1768 13.348 13.49C13.2328 13.5337 13.1286 13.6024 13.043 13.691C12.999 13.741 12.992 13.805 12.993 13.871L13 14C12.9997 14.2549 12.9021 14.5 12.7272 14.6854C12.5522 14.8707 12.313 14.9822 12.0586 14.9972C11.8042 15.0121 11.5536 14.9293 11.3582 14.7657C11.1627 14.6021 11.0371 14.3701 11.007 14.117L11 14V13.75C11 12.597 11.93 11.905 12.604 11.634C12.8783 11.5245 13.1176 11.3423 13.2962 11.107C13.4748 10.8717 13.5859 10.5922 13.6176 10.2986C13.6493 10.0049 13.6004 9.70813 13.4762 9.44014C13.352 9.17215 13.1571 8.94307 12.9125 8.77748C12.6679 8.61189 12.3829 8.51606 12.0879 8.50027C11.793 8.48448 11.4993 8.54934 11.2384 8.68787C10.9775 8.8264 10.7593 9.03338 10.6072 9.28658C10.4551 9.53978 10.3748 9.82962 10.375 10.125C10.375 10.3902 10.2696 10.6446 10.0821 10.8321C9.89457 11.0196 9.64022 11.125 9.375 11.125C9.10978 11.125 8.85543 11.0196 8.66789 10.8321C8.48036 10.6446 8.375 10.3902 8.375 10.125C8.375 9.16359 8.75692 8.24156 9.43674 7.56174C10.1166 6.88192 11.0386 6.5 12 6.5Z" fill=""/></svg>',
+				'icon'  => 'lp-icon-question-circle-o',
 			],
 		];
 
@@ -613,26 +641,28 @@ class BuilderTabDashboardTemplate {
 				// Render as button with data attribute (opens popup)
 				$buttons_html .= sprintf(
 					'<button type="button" %s class="quick-action__btn" style="--action-color: %s; --action-bg: %s10">
-						<span class="quick-action__icon">%s</span>
+						<span class="quick-action__icon %s">%s</span>
 						<span class="quick-action__label">%s</span>
 					</button>',
 					esc_attr( $action['attr'] ),
 					esc_attr( $action['color'] ),
 					esc_attr( $action['color'] ),
-					$action['svg'],
+					esc_attr( $action['icon'] ?? '' ),
+					$action['svg'] ?? '',
 					esc_html( $action['label'] )
 				);
 			} else {
 				// Render as link
 				$buttons_html .= sprintf(
 					'<a href="%s" class="quick-action__btn" style="--action-color: %s; --action-bg: %s10">
-						<span class="quick-action__icon">%s</span>
+						<span class="quick-action__icon %s">%s</span>
 						<span class="quick-action__label">%s</span>
 					</a>',
 					esc_url( $action['url'] ),
 					esc_attr( $action['color'] ),
 					esc_attr( $action['color'] ),
-					$action['svg'],
+					$action['icon'] ?? '',
+					$action['svg'] ?? '',
 					esc_html( $action['label'] )
 				);
 			}
@@ -683,11 +713,13 @@ class BuilderTabDashboardTemplate {
 				}
 
 				if ( ! empty( $html_list_course ) ) {
-					$list_html = Template::combine_components( [
-						'wrapper'     => '<div class="courses-builder__course-tab learn-press-courses"><ul class="cb-list-course">',
-						'list_course' => $html_list_course,
-						'wrapper_end' => '</ul></div>',
-					] );
+					$list_html = Template::combine_components(
+						[
+							'wrapper'     => '<div class="courses-builder__course-tab learn-press-courses"><ul class="cb-list-course">',
+							'list_course' => $html_list_course,
+							'wrapper_end' => '</ul></div>',
+						]
+					);
 				}
 			}
 

@@ -58,7 +58,7 @@ class CourseBuilder {
 	public static function get_menu_current(): string {
 		/** @var WP_Query $wp_query */
 		global $wp_query;
-		return (string) $wp_query->get( 'lp_cb_menu_slug' );
+		return (string) $wp_query->get( 'lp_cb_menu_slug', 'dashboard' );
 	}
 
 	/**
@@ -117,35 +117,27 @@ class CourseBuilder {
 		return false !== $key ? ( array_key_exists( $key, $tabs ) ? $tabs[ $key ] : [] ) : $tabs;
 	}
 
-	public static function get_link_course_builder( $sub = '' ) {
+	/**
+	 * Get link for course builder
+	 *
+	 * @param string $sub
+	 *
+	 * @return string
+	 */
+	public static function get_link_course_builder( string $sub = '' ): string {
 		$page = LP_Settings::get_option( 'course_builder', 'course-builder' );
-		$link = sprintf( '%s/%s/', home_url(), $page );
-
-		if ( $sub ) {
-			$link .= $sub . '/';
-		}
-
-		return $link;
+		return home_url( "{$page}/{$sub}" );
 	}
 
 	/**
-	 * Get link for add new course
+	 * Get link for add new an item.
+	 *
+	 * @param $type
 	 *
 	 * @return string
-	 * @since 4.3.0
 	 */
-	public static function get_link_add_new_course() {
-		return self::get_tab_link( 'courses', self::POST_NEW, 'overview' );
-	}
-
-	/**
-	 * Get link for add new quiz
-	 *
-	 * @return string
-	 * @since 4.3.0
-	 */
-	public static function get_link_add_new_quiz() {
-		return self::get_tab_link( 'quizzes', self::POST_NEW, 'overview' );
+	public static function get_link_add_new( $type ): string {
+		return self::get_link_course_builder( "{$type}/create" );
 	}
 
 	/**

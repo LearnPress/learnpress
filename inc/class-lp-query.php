@@ -270,7 +270,7 @@ class LP_Query {
 						$section_slug = $section['slug'] ?? $section_key;
 
 						$rules['course-builder'][ $tab_key . '_' . $section_key . '_new' ] = [
-							"^{$page}/({$tab_slug})/(post-new)/({$section_slug})/?$" =>
+							"^{$page}/({$tab_slug})/create/({$section_slug})/?$" =>
 							'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=post-new&section=' . $section_slug,
 						];
 
@@ -282,7 +282,7 @@ class LP_Query {
 				}
 
 				$rules['course-builder'][ $tab_key . '_new' ] = [
-					"^{$page}/({$tab_slug})/(post-new)/?$" =>
+					"^{$page}/({$tab_slug})/create/?$" =>
 						'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=post-new',
 				];
 

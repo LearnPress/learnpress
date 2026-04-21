@@ -758,17 +758,26 @@ class CourseBuilderTemplate {
 		$btn_close   = '</button>';
 
 		if ( 'courses' === $tab_current ) {
-			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_add_new_course() ) );
+			$btn_add_new = sprintf(
+				'<a href="%s" class="lp-button cb-btn-add-new">',
+				esc_url( CourseBuilder::get_link_add_new( 'courses' ) )
+			);
 			$btn_close   = '</a>';
 		}
 
 		if ( 'quizzes' === $tab_current ) {
-			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_link_add_new_quiz() ) );
+			$btn_add_new = sprintf(
+				'<a href="%s" class="lp-button cb-btn-add-new">',
+				esc_url( CourseBuilder::get_link_add_new( 'quizzes' ) )
+			);
 			$btn_close   = '</a>';
 		}
 
 		if ( 'questions' === $tab_current ) {
-			$btn_add_new = sprintf( '<a href="%s" class="lp-button cb-btn-add-new">', esc_url( CourseBuilder::get_tab_link( 'questions', CourseBuilder::POST_NEW, 'overview' ) ) );
+			$btn_add_new = sprintf(
+				'<a href="%s" class="lp-button cb-btn-add-new">',
+				esc_url( CourseBuilder::get_link_add_new( 'questions' ) )
+			);
 			$btn_close   = '</a>';
 		}
 
@@ -813,7 +822,7 @@ class CourseBuilderTemplate {
 					if ( isset( $_GET['post'] ) ) {
 						$href = CourseBuilder::get_tab_link( 'courses', absint( $_GET['post'] ), 'overview' );
 					} else {
-						$href = CourseBuilder::get_link_add_new_course();
+						$href = CourseBuilder::get_link_add_new( 'courses' );
 					}
 				}
 			}
