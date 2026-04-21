@@ -18,12 +18,10 @@ defined( 'ABSPATH' ) || exit();
 	<link rel="profile" href="https://gmpg.org/xfn/11">
 	<title><?php echo wp_get_document_title(); ?></title>
 	<?php
-	do_action( 'wp_enqueue_scripts' );
 
-	// Add required LearnPress inline data (lpData, lpSettingCourses) and root CSS that would originally be printed in wp_head
-	if ( class_exists( 'LP_Assets' ) ) {
-		LP_Assets::instance()->load_scripts_styles_on_head();
-	}
+	$asset = LP_Assets::instance();
+	$asset->load_scripts();
+	$asset->load_scripts_on_head();
 
 	wp_print_styles();
 	wp_print_head_scripts();

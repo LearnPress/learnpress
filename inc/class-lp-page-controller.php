@@ -77,7 +77,7 @@ class LP_Page_Controller {
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 			add_filter( 'template_include', array( $this, 'logout' ), 30 );
-			add_action( 'template_redirect', array( $this, 'template_redirect_force_course_builder' ), 0 );
+			add_action( 'template_redirect', array( $this, 'template_redirect' ), -1 );
 
 			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
@@ -459,14 +459,6 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
-		global $wp_query;
-
-		if ( ! empty( $wp_query->get( 'is_course_builder' ) ) ) {
-			$template = LP_TEMPLATE_PATH . 'pages/course-builder.php';
-
-			return $template;
-		}
-
 		if ( wp_is_block_theme() ) {
 			return $template;
 		}
@@ -500,30 +492,13 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * Force render Course Builder template on matching path before theme template rendering.
-	 *
-	 * @return void
+	 * Check if current page is Course Builder
 	 */
-	public function template_redirect_force_course_builder(): void {
-		if ( is_admin() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
-			return;
+	public function template_redirect() {
+		if ( LP_Page_Controller::is_page_course_builder() ) {
+			include LP_TEMPLATE_PATH . 'pages/course-builder.php';
+			die;
 		}
-
-		if ( ! $this->is_request_course_builder_path() ) {
-			return;
-		}
-
-		global $wp_query, $wp;
-		$wp_query->set( 'is_course_builder', 1 );
-		if ( isset( $wp ) && $wp instanceof WP ) {
-			$wp->query_vars['is_course_builder'] = 1;
-		}
-		$this->hydrate_course_builder_query_vars_from_request_path( $wp_query );
-
-		status_header( 200 );
-		nocache_headers();
-		include LP_TEMPLATE_PATH . 'pages/course-builder.php';
-		exit;
 	}
 
 	/**
