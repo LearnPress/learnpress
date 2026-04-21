@@ -298,7 +298,17 @@ export class BuilderTabQuiz {
 	toggleExpandedAction( args ) {
 		const { target } = args;
 		const elQuizActionExpanded = target.closest( BuilderTabQuiz.selectors.elQuizActionExpanded );
+
+		if ( ! elQuizActionExpanded ) {
+			return;
+		}
+
 		const elQuizItem = elQuizActionExpanded.closest( BuilderTabQuiz.selectors.elQuizItem );
+
+		if ( ! elQuizItem ) {
+			return;
+		}
+
 		const elExpandedItems = elQuizItem.querySelector(
 			BuilderTabQuiz.selectors.elQuizExpandedItems
 		);
@@ -334,6 +344,10 @@ export class BuilderTabQuiz {
 			item.classList.remove( 'is-dropup' );
 
 			const quizItem = item.closest( BuilderTabQuiz.selectors.elQuizItem );
+			if ( ! quizItem ) {
+				return;
+			}
+
 			const expandedBtn = quizItem.querySelector( BuilderTabQuiz.selectors.elQuizActionExpanded );
 			if ( expandedBtn ) {
 				expandedBtn.classList.remove( 'active' );

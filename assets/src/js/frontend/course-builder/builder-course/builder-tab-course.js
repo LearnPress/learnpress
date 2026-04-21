@@ -317,7 +317,13 @@ export class BuilderTabCourse {
 		const elCourseActionExpanded = target.closest(
 			BuilderTabCourse.selectors.elCourseActionExpanded
 		);
+
+		if ( ! elCourseActionExpanded ) return;
+
 		const elCourseItem = elCourseActionExpanded.closest( BuilderTabCourse.selectors.elCourseItem );
+
+		if ( ! elCourseItem ) return;
+
 		const elExpandedItems = elCourseItem.querySelector(
 			BuilderTabCourse.selectors.elCourseExpandedItems
 		);
@@ -342,6 +348,9 @@ export class BuilderTabCourse {
 			item.classList.remove( 'active' );
 
 			const courseItem = item.closest( BuilderTabCourse.selectors.elCourseItem );
+
+			if ( ! courseItem ) return;
+
 			const expandedBtn = courseItem.querySelector(
 				BuilderTabCourse.selectors.elCourseActionExpanded
 			);

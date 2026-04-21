@@ -323,7 +323,7 @@ class BuilderEditCourseTemplate {
 		$button_label = esc_html__( 'Generate with AI', 'learnpress' );
 
 		return sprintf(
-			'<button type="button" class="cb-course-edit-ai-btn lp-btn-generate-with-ai" data-template="%1$s" title="%2$s" aria-label="%2$s"><i class="lp-ico-ai" aria-hidden="true"></i><span class="screen-reader-text">%2$s</span></button>',
+			'<button type="button" class="cb-course-edit-ai-btn lp-btn-generate-with-ai" data-template="%1$s" title="%2$s" aria-label="%2$s"><i class="lp-ico-ai" aria-hidden="true"></i></button>',
 			esc_attr( $template_id ),
 			esc_attr( $button_label )
 		);
