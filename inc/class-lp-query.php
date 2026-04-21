@@ -255,7 +255,7 @@ class LP_Query {
 	public function add_rewrite_rules_course_builder( &$rules ) {
 		// Course Builder
 		$page = LP_Settings::get_option( 'course_builder', 'course-builder' );
-		$tabs = CourseBuilder::get_tabs_arr();
+		$tabs = CourseBuilder::get_menus_arr();
 
 		if ( $tabs ) {
 			$rules['course-builder']['home'] = [

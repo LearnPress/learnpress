@@ -34,13 +34,13 @@ class CourseBuilder {
 	}
 
 	/**
-	 * Get tabs default in course builder.
+	 * Get menus structure default in course builder.
 	 *
 	 * @return array
 	 * @since 4.3.0
 	 * @version 1.0.0
 	 */
-	public static function get_tabs_arr(): array {
+	public static function get_menus_arr(): array {
 		return Config::instance()->get( 'menus', 'course-builder' );
 	}
 
@@ -60,7 +60,7 @@ class CourseBuilder {
 		} elseif ( ! empty( $wp->query_vars['tab'] ) ) {
 			$current = $wp->query_vars['tab'];
 		} else {
-			$tab_data    = self::get_tabs_arr();
+			$tab_data    = self::get_menus_arr();
 			$current_tab = reset( $tab_data );
 			if ( ! empty( $current_tab['slug'] ) ) {
 				$current = $current_tab['slug'];
@@ -124,7 +124,7 @@ class CourseBuilder {
 	 * @version 1.0.0
 	 */
 	public static function get_data( $key = false ) {
-		$tabs = self::get_tabs_arr();
+		$tabs = self::get_menus_arr();
 		return false !== $key ? ( array_key_exists( $key, $tabs ) ? $tabs[ $key ] : [] ) : $tabs;
 	}
 
@@ -197,7 +197,7 @@ class CourseBuilder {
 	/**
 	 * Get post id
 	 *
-	 * @return int| post-new
+	 * @return int
 	 *
 	 * @since 4.3.0
 	 * @version 1.0.0

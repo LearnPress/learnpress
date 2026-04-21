@@ -297,7 +297,7 @@ class CourseBuilderTemplate {
 			return '';
 		}
 
-		$tabs        = CourseBuilder::get_tabs_arr();
+		$tabs        = CourseBuilder::get_menus_arr();
 		$nav_content = '';
 		$is_admin    = current_user_can( ADMIN_ROLE );
 
