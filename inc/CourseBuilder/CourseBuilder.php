@@ -208,4 +208,21 @@ class CourseBuilder {
 	public static function can_view_course_builder() {
 		return is_user_logged_in() && current_user_can( 'edit_lp_courses' );
 	}
+
+	/**
+	 * Get title page
+	 *
+	 * @return string
+	 */
+	public static function get_title_page(): string {
+		$title = '';
+
+		$menu_current = self::get_menu_current();
+		$menus        = self::get_menus_arr();
+		if ( isset( $menus[ $menu_current ] ) ) {
+			$title = $menus[ $menu_current ]['title'];
+		}
+
+		return $title;
+	}
 }

@@ -8,6 +8,8 @@
  * @since 4.3.6
  */
 
+use LearnPress\CourseBuilder\CourseBuilder;
+
 defined( 'ABSPATH' ) || exit();
 
 ?>
@@ -17,7 +19,16 @@ defined( 'ABSPATH' ) || exit();
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="profile" href="https://gmpg.org/xfn/11">
-	<title><?php echo wp_get_document_title(); ?></title>
+	<title>
+		<?php
+		printf(
+			'%s &lsaquo; %s &#8212; %s',
+			CourseBuilder::get_title_page(),
+			__( 'Course Builder', 'learnpress' ),
+			esc_html( get_bloginfo( 'name' ) ),
+		)
+		?>
+	</title>
 	<?php
 
 	$asset = LP_Assets::instance();
