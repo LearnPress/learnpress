@@ -31,7 +31,7 @@ class CourseBuilderTemplate {
 		// Hide admin bar for instructor (not admin)
 		add_filter( 'show_admin_bar', [ $this, 'hide_admin_bar_for_instructor' ] );
 		// Dequeue theme styles on Course Builder page (must run during wp_head, not after)
-		add_action( 'wp_enqueue_scripts', [ $this, 'dequeue_theme_styles' ], 9999 );
+		//add_action( 'wp_enqueue_scripts', [ $this, 'dequeue_theme_styles' ], 9999 );
 	}
 
 	/**
@@ -82,7 +82,7 @@ class CourseBuilderTemplate {
 	public function layout() {
 		try {
 			// Enqueue assets(js,css) for Course Builder
-			$this->enqueue_assets();
+			//$this->enqueue_assets();
 
 			$profile = LP_Profile::instance();
 
@@ -127,25 +127,7 @@ class CourseBuilderTemplate {
 	 * @since 4.3.x
 	 * @version 1.0.0
 	 */
-	protected function enqueue_assets() {
-
-		wp_enqueue_style( 'lp-course-builder' );
-		// Load dashicons for sidebar icons
-		wp_enqueue_style( 'dashicons' );
-		wp_enqueue_script( 'lp-load-ajax' );
-		wp_enqueue_script( 'chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js', [], '4.4.7', true );
-		wp_enqueue_script( 'lp-course-builder' );
-		wp_enqueue_editor();
-		wp_enqueue_media();
-
-		// Print lpData inline script if not already printed
-		// This ensures lpAjaxUrl is available for AJAX calls
-		/*$lp_assets = LP_Assets::instance();
-		if ( $lp_assets ) {
-			$localize_data = $lp_assets->localize_data_global();
-			LP_Helper::print_inline_script_tag( 'lpData', $localize_data, [ 'id' => 'lpData-course-builder' ] );
-		}*/
-	}
+	protected function enqueue_assets() {}
 
 	/**
 	 * Auto-detect and dequeue all theme/child-theme stylesheets.
@@ -160,7 +142,7 @@ class CourseBuilderTemplate {
 	 * @since 4.3.0
 	 * @version 1.0.0
 	 */
-	public function dequeue_theme_styles() {
+	/*public function dequeue_theme_styles() {
 		global $wp_styles, $wp_scripts;
 
 		if ( ! LP_Page_Controller::is_page_course_builder() ) {
@@ -233,7 +215,7 @@ class CourseBuilderTemplate {
 				}
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Header with logo and user profile

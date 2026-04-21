@@ -20,8 +20,11 @@ defined( 'ABSPATH' ) || exit();
 	<?php
 
 	$asset = LP_Assets::instance();
-	$asset->load_scripts();
 	$asset->load_scripts_on_head();
+	$asset->load_scripts();
+
+	wp_enqueue_editor();
+	wp_enqueue_media();
 
 	wp_print_styles();
 	wp_print_head_scripts();
