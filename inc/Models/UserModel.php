@@ -783,11 +783,12 @@ class UserModel {
 	 *
 	 * @return bool
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function is_instructor(): bool {
-		return user_can( $this->get_id(), self::ROLE_INSTRUCTOR )
-				|| user_can( $this->get_id(), self::ROLE_ADMINISTRATOR );
+		$wp_user = new WP_User( $this );
+		return user_can( $wp_user, self::ROLE_INSTRUCTOR )
+				|| user_can( $wp_user, self::ROLE_ADMINISTRATOR );
 	}
 
 	/**

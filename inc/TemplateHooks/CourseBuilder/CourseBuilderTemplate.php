@@ -14,11 +14,9 @@ use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
-use LP_Assets;
-use LP_Helper;
 use LP_Profile;
+use LP_Settings;
 use Throwable;
-use LP_Page_Controller;
 
 class CourseBuilderTemplate {
 	use Singleton;
@@ -77,46 +75,40 @@ class CourseBuilderTemplate {
 	/**
 	 * Layout for Course Builder.
 	 *
-	 * @since 4.3.x
+	 * @since 4.3.6
+	 * @version 1.0.0
 	 */
 	public function layout() {
 		try {
 			// Enqueue assets(js,css) for Course Builder
 			//$this->enqueue_assets();
 
-			$profile = LP_Profile::instance();
-
-			if ( ! is_user_logged_in() ) {
-				throw new Exception(
-					sprintf(
-						'<a href="%s">%s</a>',
-						$profile->get_login_url(),
-						__( 'Authentication required', 'learnpress' )
-					)
-				);
-			} else {
-				$userModel = UserModel::find( get_current_user_id(), true );
-				if ( ! $userModel->is_instructor() ) {
-					throw new Exception( __( "Sorry, you don't have permission to access Course Builder", 'learnpress' ) );
-				}
+			// Check permission
+			$user_id   = get_current_user_id();
+			$userModel = UserModel::find( $user_id, true );
+			if ( ! $userModel || ! $userModel->is_instructor() ) {
+				throw new Exception( __( "Sorry, you don't have permission to access Course Builder", 'learnpress' ) );
 			}
+
+			$data = [
+				'userModel' => $userModel,
+			];
 
 			$layout = [
 				'wrapper'     => '<div class="learn-press-course-builder">',
-				'header'      => $this->html_header(),
+				'header'      => $this->html_header( $data ),
 				'body'        => '<div class="lp-cb-body">',
-				'sidebar'     => $this->html_sidebar(),
-				'content'     => $this->html_content(),
+				'sidebar'     => $this->html_sidebar( $data ),
+				'content'     => $this->html_content( $data ),
 				'body_end'    => '</div>',
 				'wrapper_end' => '</div>',
 			];
 
 			echo Template::combine_components( $layout );
 		} catch ( Throwable $e ) {
-			echo Template::print_message(
+			Template::print_message(
 				wp_kses_post( $e->getMessage() ),
-				'error',
-				false
+				'error'
 			);
 		}
 	}
@@ -220,19 +212,26 @@ class CourseBuilderTemplate {
 	/**
 	 * Header with logo and user profile
 	 *
+	 * @param array $data
+	 *
 	 * @return string
-	 * @since 4.3.x
+	 * @throws Exception
 	 * @version 1.0.0
+	 * @since 4.3.6
 	 */
-	protected function html_header(): string {
-		$user         = wp_get_current_user();
-		$avatar       = get_avatar( $user->ID, 32 );
-		$display_name = $user->display_name;
-		$profile      = LP_Profile::instance();
-		$profile_url  = $profile->get_current_url();
+	protected function html_header( array $data = [] ): string {
+		/** @var UserModel $userModel */
+		$userModel = $data['userModel'] ?? false;
+		if ( ! $userModel ) {
+			return '';
+		}
+
+		$avatar       = $userModel->get_avatar_url();
+		$display_name = $userModel->get_display_name();
+		$profile      = LP_Profile::instance( $userModel->get_id() );
+		$profile_url  = $profile->get_tab_link();
 		$logout_url   = wp_logout_url( home_url() );
-		$logo_id      = absint( \LP_Settings::get_option( 'course_builder_logo_id', 0 ) );
-		$custom_logo  = '';
+		$logo_id      = absint( LP_Settings::get_option( 'course_builder_logo_id', 0 ) );
 
 		if ( $logo_id ) {
 			$custom_logo = wp_get_attachment_image(
@@ -252,25 +251,15 @@ class CourseBuilderTemplate {
 			'wrapper'     => '<header class="lp-cb-top-header">',
 			'logo'        => sprintf(
 				'<div class="lp-cb-top-header__logo">
-					<a href="%s">
-						<svg width="181" height="36" viewBox="0 0 181 36" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-							<rect width="181" height="36" fill="url(#pattern0_5770_7958)"/>
-							<defs>
-							<pattern id="pattern0_5770_7958" patternContentUnits="objectBoundingBox" width="1" height="1">
-							<use xlink:href="#image0_5770_7958" transform="scale(0.00205761 0.0104167)"/>
-							</pattern>
-							<image id="image0_5770_7958" width="486" height="96" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/>
-							</defs>
-						</svg>
-					</a>
+					<a href="%s">%s</a>
 				</div>',
 				esc_url( CourseBuilder::get_link_course_builder() ),
-				__( 'Course Builder', 'learnpress' )
+				$custom_logo ?? wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-logo-course-builder.svg' ),
 			),
 			'user'        => sprintf(
 				'<div class="lp-cb-top-header__user">
 					<div class="lp-cb-top-header__user-avatar">
-						%s
+						<img src="%s" class="lp-cb-top-header__user-avatar-image">
 						<span class="lp-cb-top-header__online-dot"></span>
 					</div>
 					<div class="lp-cb-top-header__user-info">
@@ -278,9 +267,7 @@ class CourseBuilderTemplate {
 						<a href="%s" class="lp-cb-top-header__user-link" target="_blank">%s</a>
 					</div>
 					<a href="%s" class="lp-cb-top-header__logout" title="%s">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M12 3C12.2549 3.00028 12.5 3.09788 12.6854 3.27285C12.8707 3.44782 12.9822 3.68695 12.9972 3.94139C13.0121 4.19584 12.9293 4.44638 12.7657 4.64183C12.6021 4.83729 12.3701 4.9629 12.117 4.993L12 5H7C6.75507 5.00003 6.51866 5.08996 6.33563 5.25272C6.15259 5.41547 6.03566 5.63975 6.007 5.883L6 6V18C6.00003 18.2449 6.08996 18.4813 6.25272 18.6644C6.41547 18.8474 6.63975 18.9643 6.883 18.993L7 19H11.5C11.7549 19.0003 12 19.0979 12.1854 19.2728C12.3707 19.4478 12.4822 19.687 12.4972 19.9414C12.5121 20.1958 12.4293 20.4464 12.2657 20.6418C12.1021 20.8373 11.8701 20.9629 11.617 20.993L11.5 21H7C6.23479 21 5.49849 20.7077 4.94174 20.1827C4.38499 19.6578 4.04989 18.9399 4.005 18.176L4 18V6C3.99996 5.23479 4.29233 4.49849 4.81728 3.94174C5.34224 3.38499 6.06011 3.04989 6.824 3.005L7 3H12ZM17.707 8.464L20.535 11.293C20.7225 11.4805 20.8278 11.7348 20.8278 12C20.8278 12.2652 20.7225 12.5195 20.535 12.707L17.707 15.536C17.5194 15.7235 17.2649 15.8288 16.9996 15.8287C16.7344 15.8286 16.48 15.7231 16.2925 15.5355C16.105 15.3479 15.9997 15.0934 15.9998 14.8281C15.9999 14.5629 16.1054 14.3085 16.293 14.121L17.414 13H12C11.7348 13 11.4804 12.8946 11.2929 12.7071C11.1054 12.5196 11 12.2652 11 12C11 11.7348 11.1054 11.4804 11.2929 11.2929C11.4804 11.1054 11.7348 11 12 11H17.414L16.293 9.879C16.1054 9.69149 15.9999 9.43712 15.9998 9.17185C15.9997 8.90658 16.105 8.65214 16.2925 8.4645C16.48 8.27686 16.7344 8.17139 16.9996 8.1713C17.2649 8.1712 17.5194 8.27649 17.707 8.464Z" fill="currentColor"/>
-						</svg>
+						%s
 					</a>
 				</div>',
 				$avatar,
@@ -288,35 +275,11 @@ class CourseBuilderTemplate {
 				esc_url( $profile_url ),
 				__( 'View Profile', 'learnpress' ),
 				esc_url( $logout_url ),
-				esc_attr__( 'Logout', 'learnpress' )
+				__( 'Logout', 'learnpress' ),
+				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-logout.svg' ),
 			),
 			'wrapper_end' => '</header>',
 		];
-
-		$default_logo_svg = '';
-		if ( preg_match( '/<svg\b[^>]*>.*?<\/svg>/is', $header['logo'], $default_logo_matches ) ) {
-			$default_logo_svg = $default_logo_matches[0];
-		}
-
-		if ( ! empty( $custom_logo ) ) {
-			$header['logo'] = preg_replace( '/<svg\b[^>]*>.*?<\/svg>/is', $custom_logo, $header['logo'], 1 );
-		}
-
-		if ( ! empty( $default_logo_svg ) ) {
-			$default_logo_template = sprintf(
-				'<template id="lp-cb-default-logo-template">%s</template>',
-				$default_logo_svg
-			);
-
-			$header['logo'] = preg_replace_callback(
-				'/<div class="lp-cb-top-header__logo">\s*/i',
-				static function ( array $matches ) use ( $default_logo_template ): string {
-					return $matches[0] . $default_logo_template;
-				},
-				$header['logo'],
-				1
-			);
-		}
 
 		return Template::combine_components( $header );
 	}
@@ -324,9 +287,16 @@ class CourseBuilderTemplate {
 	/**
 	 * HTML Sidebar
 	 *
+	 * @param array $data
+	 *
 	 * @return string
 	 */
-	public function html_sidebar(): string {
+	public function html_sidebar( array $data = [] ): string {
+		$userModel = $data['userModel'] ?? false;
+		if ( ! $userModel ) {
+			return '';
+		}
+
 		$tabs        = CourseBuilder::get_tabs_arr();
 		$nav_content = '';
 		$is_admin    = current_user_can( ADMIN_ROLE );
@@ -388,11 +358,18 @@ class CourseBuilderTemplate {
 	/**
 	 * HTML main content area
 	 *
+	 * @param array $data
+	 *
 	 * @return string
-	 * @since 4.3.x
+	 * @since 4.3.6
 	 * @version 1.0.0
 	 */
-	public function html_content(): string {
+	public function html_content( array $data = [] ): string {
+		$userModel = $data['userModel'] ?? false;
+		if ( ! $userModel ) {
+			return '';
+		}
+
 		$tab_current     = CourseBuilder::get_current_tab();
 		$section_current = CourseBuilder::get_current_section();
 		$post_id         = CourseBuilder::get_post_id();
@@ -428,7 +405,7 @@ class CourseBuilderTemplate {
 	 * @since 4.3.0
 	 */
 	protected function sidebar_footer() {
-		$is_cb_admin_mode = \LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
+		$is_cb_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
 		$is_admin         = current_user_can( ADMIN_ROLE );
 		$is_instructor    = current_user_can( LP_TEACHER_ROLE );
 		$dashboard_url    = admin_url();

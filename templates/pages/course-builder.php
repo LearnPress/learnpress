@@ -4,7 +4,8 @@
  *
  * @author   VuxMinhThanh
  * @package  Learnpress/Templates
- * @version  4.3.0
+ * @version  1.0.0
+ * @since 4.3.6
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -26,6 +27,7 @@ defined( 'ABSPATH' ) || exit();
 	wp_enqueue_editor();
 	wp_enqueue_media();
 
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
 	wp_print_styles();
 	wp_print_head_scripts();
 	?>

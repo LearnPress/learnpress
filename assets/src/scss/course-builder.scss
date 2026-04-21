@@ -1,3 +1,9 @@
+// Reset
+body {
+	margin: 0;
+	padding: 0;
+}
+
 @import 'frontend/global';
 @import 'admin/openai';
 
@@ -362,8 +368,8 @@
 		position: relative;
 		padding: 10px 20px;
 		border-radius: $cb-radius-md;
-		background-color: $cb-info-bg;
-		color: $cb-info;
+		/*background-color: $cb-info-bg;
+		color: $cb-info;*/
 		width: 100%;
 	}
 
