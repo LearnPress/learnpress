@@ -308,7 +308,17 @@ export class BuilderTabLesson {
 		const elLessonActionExpanded = target.closest(
 			BuilderTabLesson.selectors.elLessonActionExpanded
 		);
+
+		if ( ! elLessonActionExpanded ) {
+			return;
+		}
+
 		const elLessonItem = elLessonActionExpanded.closest( BuilderTabLesson.selectors.elLessonItem );
+
+		if ( ! elLessonItem ) {
+			return;
+		}
+
 		const elExpandedItems = elLessonItem.querySelector(
 			BuilderTabLesson.selectors.elLessonExpandedItems
 		);
@@ -340,10 +350,16 @@ export class BuilderTabLesson {
 			if ( item === excludeElement ) {
 				return;
 			}
+
 			item.classList.remove( 'active' );
 			item.classList.remove( 'is-dropup' );
 
 			const lessonItem = item.closest( BuilderTabLesson.selectors.elLessonItem );
+
+			if ( ! lessonItem ) {
+				return;
+			}
+
 			const expandedBtn = lessonItem.querySelector(
 				BuilderTabLesson.selectors.elLessonActionExpanded
 			);

@@ -307,9 +307,19 @@ export class BuilderTabQuestion {
 		const elQuestionActionExpanded = target.closest(
 			BuilderTabQuestion.selectors.elQuestionActionExpanded
 		);
+
+		if ( ! elQuestionActionExpanded ) {
+			return;
+		}
+
 		const elQuestionItem = elQuestionActionExpanded.closest(
 			BuilderTabQuestion.selectors.elQuestionItem
 		);
+
+		if ( ! elQuestionItem ) {
+			return;
+		}
+
 		const elExpandedItems = elQuestionItem.querySelector(
 			BuilderTabQuestion.selectors.elQuestionExpandedItems
 		);
@@ -345,6 +355,11 @@ export class BuilderTabQuestion {
 			item.classList.remove( 'is-dropup' );
 
 			const questionItem = item.closest( BuilderTabQuestion.selectors.elQuestionItem );
+
+			if ( ! questionItem ) {
+				return;
+			}
+
 			const expandedBtn = questionItem.querySelector(
 				BuilderTabQuestion.selectors.elQuestionActionExpanded
 			);
