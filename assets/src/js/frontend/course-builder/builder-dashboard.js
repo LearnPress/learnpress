@@ -5,6 +5,8 @@
  * @version 1.0.0
  */
 
+import Chart from 'chart.js/auto';
+
 export class BuilderDashboard {
 	constructor() {
 		this.charts = {};
@@ -24,34 +26,9 @@ export class BuilderDashboard {
 			return;
 		}
 
-		// Wait for Chart.js to be available
-		this.waitForChartJs().then( () => {
-			this.initSalesChart();
-			this.initStudentsChart();
-			this.bindFilterEvents();
-		} );
-	}
-
-	waitForChartJs() {
-		return new Promise( ( resolve ) => {
-			if ( window.Chart ) {
-				resolve();
-				return;
-			}
-
-			const check = setInterval( () => {
-				if ( window.Chart ) {
-					clearInterval( check );
-					resolve();
-				}
-			}, 100 );
-
-			// Timeout after 10s
-			setTimeout( () => {
-				clearInterval( check );
-				resolve();
-			}, 10000 );
-		} );
+		this.initSalesChart();
+		this.initStudentsChart();
+		this.bindFilterEvents();
 	}
 
 	createGradient( ctx, color ) {
@@ -65,9 +42,9 @@ export class BuilderDashboard {
 		return {
 			type: 'line',
 			data: {
-				labels: labels,
+				labels,
 				datasets: [ {
-					data: data,
+					data,
 					borderColor: color,
 					borderWidth: 2.5,
 					backgroundColor: ( context ) => {
@@ -147,7 +124,7 @@ export class BuilderDashboard {
 
 		const { labels = [], data = [] } = this.chartData.sales || {};
 		const config = this.getChartConfig( labels, data, '#10b981', '$' );
-		this.charts.sales = new window.Chart( canvas, config );
+		this.charts.sales = new Chart( canvas, config );
 	}
 
 	initStudentsChart() {
@@ -158,7 +135,7 @@ export class BuilderDashboard {
 
 		const { labels = [], data = [] } = this.chartData.students || {};
 		const config = this.getChartConfig( labels, data, '#f59e0b', '', true );
-		this.charts.students = new window.Chart( canvas, config );
+		this.charts.students = new Chart( canvas, config );
 	}
 
 	bindFilterEvents() {
