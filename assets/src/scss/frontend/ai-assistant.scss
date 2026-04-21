@@ -21,11 +21,6 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
-	width: min(181px, calc(100vw - 2rem));
-	padding: 20px;
-	border: 1px solid #e2e0db;
-	border-radius: 20px;
-	background: $color-white;
 	transform: translateY(-50%);
 	box-sizing: border-box;
 
@@ -53,33 +48,70 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 100%;
-		min-height: 40px;
-		padding: 8px 12px;
+		width: 58px;
+		height: 58px;
+		min-height: 58px;
+		padding: 0;
 		border: 0;
-		gap: 4px;
-		border-radius: 6px;
-		background: $lp-ai-gradient;
-		color: $color-white;
+		gap: 0;
+		border-radius: 50%;
+		background: $color-primary;
+		color: var(--lp-color-white, #fff);
 		cursor: pointer;
 		pointer-events: auto;
-		font-size: 16px;
-		font-weight: 500;
-		line-height: 1.5;
+		font-size: 0;
+		line-height: 0;
 		transition:
 			transform 0.18s ease,
 			opacity 0.18s ease;
 		box-sizing: border-box;
+		position: relative;
 
 		&:hover,
 		&:focus-visible {
 			transform: translateY(-1px);
 			outline: none;
+			.lp-ai-assistant__toggle-label {
+				opacity: 1;
+				visibility: visible;
+				transform: translateY(-50%) translateX(0);
+			}
 		}
 	}
 
 	&__toggle-label {
-		line-height: 1.5;
+		position: absolute;
+		top: 50%;
+		right: calc(100% + 10px);
+		padding: 6px 10px;
+		border-radius: 8px;
+		background: rgba(17, 24, 39, 0.96);
+		color: #fff;
+		font-size: 12px;
+		font-weight: 500;
+		line-height: 1.2;
+		white-space: nowrap;
+		pointer-events: none;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(-50%) translateX(6px);
+		transition:
+			opacity 0.18s ease,
+			transform 0.18s ease,
+			visibility 0.18s ease;
+		z-index: 2;
+		&::after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: 100%;
+			width: 0;
+			height: 0;
+			border-top: 5px solid transparent;
+			border-bottom: 5px solid transparent;
+			border-left: 6px solid rgba(17, 24, 39, 0.96);
+			transform: translateY(-50%);
+		}
 	}
 
 	&__toggle-icon,
@@ -524,16 +556,6 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 	}
 }
 @media (max-width: 767px) {
-	.lp-footer-launchers {
-		top: auto;
-		right: 1rem;
-		bottom: 1rem;
-		left: auto;
-		width: min(181px, calc(100vw - 2rem));
-		padding: 20px;
-		transform: none;
-	}
-
 	.lp-ai-assistant__toggle {
 		min-height: 40px;
 	}
