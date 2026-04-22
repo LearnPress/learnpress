@@ -532,7 +532,7 @@
 	}
 
 	.lp-question-fib-buttons button,
-	.lp-btn-add-question-answer {
+	.lp-btn-add-question-answer.lp-btn-edit-primary {
 		background: #fff;
 		color: $cb-text-secondary;
 		border: 1px solid $cb-border-input;
@@ -556,6 +556,7 @@
 		}
 
 		&:hover {
+			color: $cb-text-secondary;
 			background: $cb-bg-hover;
 			border-color: $cb-text-placeholder;
 		}
@@ -587,6 +588,8 @@
 		}
 
 		&.lp-collapse {
+			border: none;
+
 			.lp-question-data-edit-header {
 				margin-bottom: 0;
 				border-radius: $cb-radius-lg $cb-radius-lg $cb-radius-lg $cb-radius-lg;
