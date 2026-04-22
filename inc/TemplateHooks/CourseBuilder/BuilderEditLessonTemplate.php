@@ -38,10 +38,9 @@ class BuilderEditLessonTemplate {
 		return $callbacks;
 	}
 
-
-	public function section_overview() {
+	public function section_overview( $lesson_id = null ) {
 		wp_enqueue_script( 'lp-course-builder' );
-		$lesson_id    = CourseBuilder::get_item_id();
+		$lesson_id    = empty( $lesson_id ) ? CourseBuilder::get_item_id() : $lesson_id;
 		$lesson_model = '';
 
 		if ( $lesson_id === CourseBuilder::POST_NEW ) {
@@ -253,20 +252,19 @@ class BuilderEditLessonTemplate {
 		return Template::combine_components( $edit );
 	}
 
-	public function section_settings() {
-		$lesson_id = CourseBuilder::get_item_id();
+	public function section_settings( $lesson_id = null ) {
+		$lesson_id    = empty( $lesson_id ) ? CourseBuilder::get_item_id() : $lesson_id;
+		$lesson_model = '';
 
-		if ( $lesson_id === CourseBuilder::POST_NEW ) {
+		if ( $lesson_id === CourseBuilder::POST_NEW || absint( $lesson_id ) <= 0 ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Lesson before setting lesson', 'learnpress' ) );
 			echo $message;
 			return;
 		}
 
-		if ( absint( $lesson_id ) ) {
-			$lesson_model = LessonPostModel::find( $lesson_id, true );
-			if ( empty( $lesson_model ) ) {
-				return;
-			}
+		$lesson_model = LessonPostModel::find( absint( $lesson_id ), true );
+		if ( empty( $lesson_model ) ) {
+			return;
 		}
 
 		if ( ! class_exists( 'LP_Meta_Box_Lesson' ) ) {

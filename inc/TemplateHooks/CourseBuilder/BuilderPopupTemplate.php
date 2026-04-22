@@ -64,22 +64,6 @@ class BuilderPopupTemplate {
 	}
 
 	/**
-	 * Helper to capture output from existing template functions.
-	 *
-	 * @param callable $callback
-	 * @return string
-	 */
-	private function capture_output( callable $callback ): string {
-		ob_start();
-		try {
-			call_user_func( $callback );
-		} catch ( \Throwable $e ) {
-			error_log( $e->getMessage() );
-		}
-		return ob_get_clean();
-	}
-
-	/**
 	 * Get popup wrapper HTML structure.
 	 */
 	public function get_popup_wrapper( string $type, int $post_id, string $title, string $status = '' ): array {
@@ -185,10 +169,16 @@ class BuilderPopupTemplate {
 	 * Build lesson content
 	 */
 	private function build_lesson_content( int $lesson_id ): string {
-		$template = BuilderEditLessonTemplate::instance();
+		$template          = BuilderEditLessonTemplate::instance();
+		$lesson_context_id = $lesson_id > 0 ? $lesson_id : CourseBuilder::POST_NEW;
 
-		$overview_html = $this->capture_output( [ $template, 'section_overview' ] );
-		$settings_html = $this->capture_output( [ $template, 'section_settings' ] );
+		ob_start();
+		$template->section_overview( $lesson_context_id );
+		$overview_html = ob_get_clean();
+
+		ob_start();
+		$template->section_settings( $lesson_context_id );
+		$settings_html = ob_get_clean();
 
 		$sections = [
 			'wrapper'           => sprintf( '<div class="cb-section__lesson-edit" data-lesson-id="%d">', $lesson_id ),
@@ -233,11 +223,20 @@ class BuilderPopupTemplate {
 	 * Build quiz content
 	 */
 	private function build_quiz_content( int $quiz_id ): string {
-		$template = BuilderEditQuizTemplate::instance();
+		$template        = BuilderEditQuizTemplate::instance();
+		$quiz_context_id = $quiz_id > 0 ? $quiz_id : CourseBuilder::POST_NEW;
 
-		$overview_html = $this->capture_output( [ $template, 'section_overview' ] );
-		$question_html = $this->capture_output( [ $template, 'section_question' ] );
-		$settings_html = $this->capture_output( [ $template, 'section_settings' ] );
+		ob_start();
+		$template->section_overview( $quiz_context_id );
+		$overview_html = ob_get_clean();
+
+		ob_start();
+		$template->section_question( $quiz_context_id );
+		$question_html = ob_get_clean();
+
+		ob_start();
+		$template->section_settings( $quiz_context_id );
+		$settings_html = ob_get_clean();
 
 		$sections = [
 			'wrapper'           => sprintf( '<div class="cb-section__quiz-edit" data-quiz-id="%d">', $quiz_id ),
@@ -283,10 +282,16 @@ class BuilderPopupTemplate {
 	 * Build question content
 	 */
 	private function build_question_content( int $question_id ): string {
-		$template = BuilderEditQuestionTemplate::instance();
+		$template            = BuilderEditQuestionTemplate::instance();
+		$question_context_id = $question_id > 0 ? $question_id : CourseBuilder::POST_NEW;
 
-		$overview_html = $this->capture_output( [ $template, 'section_overview' ] );
-		$settings_html = $this->capture_output( [ $template, 'section_settings' ] );
+		ob_start();
+		$template->section_overview( $question_context_id );
+		$overview_html = ob_get_clean();
+
+		ob_start();
+		$template->section_settings( $question_context_id );
+		$settings_html = ob_get_clean();
 
 		$sections = [
 			'wrapper'           => sprintf( '<div class="cb-section__question-edit" data-question-id="%d">', $question_id ),

@@ -42,10 +42,9 @@ class BuilderEditQuizTemplate {
 		return $callbacks;
 	}
 
-
-	public function section_overview() {
+	public function section_overview( $quiz_id = null ) {
 		wp_enqueue_script( 'lp-course-builder' );
-		$quiz_id    = CourseBuilder::get_item_id();
+		$quiz_id    = empty( $quiz_id ) ? CourseBuilder::get_item_id() : $quiz_id;
 		$quiz_model = '';
 
 		if ( $quiz_id === CourseBuilder::POST_NEW ) {
@@ -295,21 +294,19 @@ class BuilderEditQuizTemplate {
 		return Template::combine_components( $publish );
 	}
 
-	public function section_question() {
+	public function section_question( $quiz_id = null ) {
 		// Load edit curriculum style
 		wp_enqueue_style( 'lp-edit-quiz' );
 
-		$quiz_id    = CourseBuilder::get_item_id();
+		$quiz_id    = empty( $quiz_id ) ? CourseBuilder::get_item_id() : $quiz_id;
 		$quiz_model = '';
-		if ( $quiz_id === CourseBuilder::POST_NEW ) {
+		if ( $quiz_id === CourseBuilder::POST_NEW || absint( $quiz_id ) <= 0 ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Quiz before add question', 'learnpress' ) );
 			echo $message;
 			return;
 		}
 
-		if ( absint( $quiz_id ) ) {
-			$quiz_model = QuizPostModel::find( $quiz_id, true );
-		}
+		$quiz_model = QuizPostModel::find( absint( $quiz_id ), true );
 
 		if ( empty( $quiz_model ) ) {
 			return '';
@@ -327,25 +324,24 @@ class BuilderEditQuizTemplate {
 		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
 	}
 
-	public function section_settings() {
+	public function section_settings( $quiz_id = null ) {
 		wp_enqueue_script( 'lp-cb-edit-curriculum' );
 		wp_enqueue_script( 'lp-tom-select' );
 		wp_enqueue_style( 'lp-cb-edit-curriculum' );
 		wp_enqueue_script( 'lp-cb-learnpress' );
 
-		$quiz_id = CourseBuilder::get_item_id();
+		$quiz_id    = empty( $quiz_id ) ? CourseBuilder::get_item_id() : $quiz_id;
+		$quiz_model = '';
 
-		if ( $quiz_id == CourseBuilder::POST_NEW ) {
+		if ( $quiz_id === CourseBuilder::POST_NEW || absint( $quiz_id ) <= 0 ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Quiz before setting quiz', 'learnpress' ) );
 			echo $message;
 			return;
 		}
 
-		if ( absint( $quiz_id ) ) {
-			$quiz_model = QuizPostModel::find( $quiz_id, true );
-			if ( empty( $quiz_model ) ) {
-				return;
-			}
+		$quiz_model = QuizPostModel::find( absint( $quiz_id ), true );
+		if ( empty( $quiz_model ) ) {
+			return;
 		}
 
 		if ( ! class_exists( 'LP_Meta_Box_Quiz' ) ) {
