@@ -58,7 +58,30 @@ class CourseBuilder {
 	public static function get_menu_current(): string {
 		/** @var WP_Query $wp_query */
 		global $wp_query;
-		return (string) $wp_query->get( 'lp_cb_menu_slug', 'dashboard' );
+		$menu_current = (string) $wp_query->get( 'lp_cb_menu_slug' );
+		if ( '' !== $menu_current ) {
+			return $menu_current;
+		}
+
+		$menus = self::get_menus_arr();
+		if ( isset( $menus['dashboard']['slug'] ) ) {
+			return (string) $menus['dashboard']['slug'];
+		}
+
+		if ( ! empty( $menus ) ) {
+			reset( $menus );
+			$first_menu = current( $menus );
+			if ( is_array( $first_menu ) && ! empty( $first_menu['slug'] ) ) {
+				return (string) $first_menu['slug'];
+			}
+
+			$first_key = key( $menus );
+			if ( is_string( $first_key ) ) {
+				return $first_key;
+			}
+		}
+
+		return '';
 	}
 
 	/**

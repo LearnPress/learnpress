@@ -689,7 +689,12 @@ class CourseBuilderTemplate {
 
 	public function html_tab( $tab ) {
 		$tab_data = CourseBuilder::get_data( $tab );
-		$title    = $tab_data['title'];
+
+		if ( empty( $tab_data ) ) {
+			return '';
+		}
+
+		$title = $tab_data['title'] ?? '';
 
 		ob_start();
 		do_action( "learn-press/course-builder/{$tab}/layout" );
