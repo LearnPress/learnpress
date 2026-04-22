@@ -443,7 +443,7 @@ class CourseAIAssistantTemplate {
 		if ( $enabled_actions['quick_quiz'] ?? true ) {
 			$buttons[] = sprintf(
 				'<button type="button" class="lp-ai-assistant__quick-btn" data-lp-ai-action="quick-quiz">%s</button>',
-				esc_html__( 'Mini Quiz', 'learnpress' )
+				esc_html__( 'Quick Quiz', 'learnpress' )
 			);
 		}
 
