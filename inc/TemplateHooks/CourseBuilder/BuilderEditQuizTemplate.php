@@ -45,10 +45,10 @@ class BuilderEditQuizTemplate {
 
 	public function section_overview() {
 		wp_enqueue_script( 'lp-course-builder' );
-		$quiz_id    = CourseBuilder::get_post_id();
+		$quiz_id    = CourseBuilder::get_item_id();
 		$quiz_model = '';
 
-		if ( $quiz_id === 'post-new' ) {
+		if ( $quiz_id === CourseBuilder::POST_NEW ) {
 			$quiz_model = '';
 		}
 
@@ -299,9 +299,9 @@ class BuilderEditQuizTemplate {
 		// Load edit curriculum style
 		wp_enqueue_style( 'lp-edit-quiz' );
 
-		$quiz_id    = CourseBuilder::get_post_id();
+		$quiz_id    = CourseBuilder::get_item_id();
 		$quiz_model = '';
-		if ( $quiz_id === 'post-new' ) {
+		if ( $quiz_id === CourseBuilder::POST_NEW ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Quiz before add question', 'learnpress' ) );
 			echo $message;
 			return;
@@ -333,9 +333,9 @@ class BuilderEditQuizTemplate {
 		wp_enqueue_style( 'lp-cb-edit-curriculum' );
 		wp_enqueue_script( 'lp-cb-learnpress' );
 
-		$quiz_id = CourseBuilder::get_post_id();
+		$quiz_id = CourseBuilder::get_item_id();
 
-		if ( $quiz_id === 'post-new' ) {
+		if ( $quiz_id == CourseBuilder::POST_NEW ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Quiz before setting quiz', 'learnpress' ) );
 			echo $message;
 			return;

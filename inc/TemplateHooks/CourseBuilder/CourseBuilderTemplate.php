@@ -372,7 +372,7 @@ class CourseBuilderTemplate {
 
 		$menu_current    = CourseBuilder::get_menu_current();
 		$section_current = CourseBuilder::get_current_section();
-		$post_id         = CourseBuilder::get_post_id();
+		$post_id         = CourseBuilder::get_item_id();
 
 		ob_start();
 

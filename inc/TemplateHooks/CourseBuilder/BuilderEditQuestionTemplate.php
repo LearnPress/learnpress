@@ -44,10 +44,10 @@ class BuilderEditQuestionTemplate {
 
 	public function section_overview() {
 		wp_enqueue_script( 'lp-course-builder' );
-		$question_id    = CourseBuilder::get_post_id();
+		$question_id    = CourseBuilder::get_item_id();
 		$question_model = '';
 
-		if ( $question_id === 'post-new' ) {
+		if ( $question_id === CourseBuilder::POST_NEW ) {
 			$question_model = '';
 		}
 
@@ -347,9 +347,9 @@ class BuilderEditQuestionTemplate {
 	public function section_settings() {
 		wp_enqueue_style( 'lp-edit-question' );
 
-		$question_id = CourseBuilder::get_post_id();
+		$question_id = CourseBuilder::get_item_id();
 
-		if ( $question_id === 'post-new' ) {
+		if ( $question_id === CourseBuilder::POST_NEW ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Question before setting question', 'learnpress' ) );
 			echo $message;
 			return;

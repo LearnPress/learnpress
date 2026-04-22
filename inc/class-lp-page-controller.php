@@ -1171,18 +1171,9 @@ class LP_Page_Controller {
 	}
 
 	public static function is_page_course_builder(): bool {
+		/** @var WP_Query $wp_query */
 		global $wp_query;
-		static $flag;
-		if ( ! is_null( $flag ) ) {
-			return $flag;
-		}
-
-		$flag = false;
-		if ( $wp_query->get( 'is_course_builder' ) ) {
-			$flag = true;
-		}
-
-		return $flag;
+		return $wp_query->get( 'is_course_builder' );
 	}
 
 	/**

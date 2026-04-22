@@ -2,18 +2,10 @@
 
 namespace LearnPress\CourseBuilder;
 
-use Exception;
 use LearnPress\Helpers\Config;
-use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
-use LP_Course_Post_Type;
-use LP_Forms_Handler;
-use LP_REST_Profile_Controller;
 use LP_Settings;
 use WP_Query;
-use WP_REST_Request;
-use WP_REST_Response;
-use WP_User;
 
 /**
  * Course Builder class.
@@ -25,7 +17,10 @@ class CourseBuilder {
 	/**
 	 * Constant for new post identifier
 	 */
-	const POST_NEW = 'post-new';
+	const POST_NEW                    = 'new';
+	const QUERY_VAR_IS_COURSE_BUILDER = 'is_course_builder';
+	const QUERY_VAR_ITEM_ID           = 'lp_cb_item_id';
+	const QUERY_VAR_MENU_SLUG         = 'lp_cb_menu_slug';
 
 	/**
 	 *  Constructor
@@ -73,7 +68,7 @@ class CourseBuilder {
 	public static function get_current_section( $current = '', $tab = '' ) {
 		global $wp;
 
-		if ( empty( $_REQUEST['post_id'] ) && empty( $wp->query_vars['post_id'] ) ) {
+		if ( empty( $_REQUEST[ self::QUERY_VAR_ITEM_ID ] ) && empty( $wp->query_vars[ self::QUERY_VAR_ITEM_ID ] ) ) {
 			return $current;
 		}
 
@@ -176,25 +171,18 @@ class CourseBuilder {
 	}
 
 	/**
-	 * Get post id
+	 * Get item id
 	 *
-	 * @return int
+	 * @return int|string
 	 *
-	 * @since 4.3.0
+	 * @since 4.3.6
 	 * @version 1.0.0
 	 */
-	public static function get_post_id() {
-		global $wp;
-		$post_id = 0;
-		if ( ! empty( $_REQUEST['post_id'] ) ) {
-			$post_id = $_REQUEST['post_id'];
-		}
+	public static function get_item_id() {
+		/** @var WP_Query $wp_query */
+		global $wp_query;
 
-		if ( ! empty( $wp->query_vars['post_id'] ) ) {
-			$post_id = $wp->query_vars['post_id'];
-		}
-
-		return $post_id;
+		return $wp_query->get( self::QUERY_VAR_ITEM_ID );
 	}
 
 	/**
@@ -224,9 +212,9 @@ class CourseBuilder {
 		if ( isset( $menus[ $menu_current ] ) ) {
 			$title = $menus[ $menu_current ]['title'] ?? '';
 
-			$post_id = $wp_query->get( 'post_id' );
+			$post_id = CourseBuilder::get_item_id();
 			if ( ! empty( $post_id ) ) {
-				if ( $post_id === 'post-new' ) {
+				if ( $post_id === self::POST_NEW ) {
 					$title .= ' - ' . __( 'New', 'learnpress' );
 				} else {
 					$post = get_post( $post_id );

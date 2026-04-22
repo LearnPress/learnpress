@@ -41,10 +41,10 @@ class BuilderEditLessonTemplate {
 
 	public function section_overview() {
 		wp_enqueue_script( 'lp-course-builder' );
-		$lesson_id    = CourseBuilder::get_post_id();
+		$lesson_id    = CourseBuilder::get_item_id();
 		$lesson_model = '';
 
-		if ( $lesson_id === 'post-new' ) {
+		if ( $lesson_id === CourseBuilder::POST_NEW ) {
 			$lesson_model = '';
 		}
 
@@ -254,9 +254,9 @@ class BuilderEditLessonTemplate {
 	}
 
 	public function section_settings() {
-		$lesson_id = CourseBuilder::get_post_id();
+		$lesson_id = CourseBuilder::get_item_id();
 
-		if ( $lesson_id === 'post-new' ) {
+		if ( $lesson_id === CourseBuilder::POST_NEW ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Lesson before setting lesson', 'learnpress' ) );
 			echo $message;
 			return;

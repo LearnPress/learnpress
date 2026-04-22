@@ -64,19 +64,6 @@ class BuilderPopupTemplate {
 	}
 
 	/**
-	 * Helper to setup context for CourseBuilder::get_post_id()
-	 *
-	 * @param int $id
-	 */
-	public function setup_request_context( int $id ) {
-		$post_val            = ( $id > 0 ) ? $id : 'post-new';
-		$_REQUEST['post']    = $post_val;
-		$_REQUEST['post_id'] = $post_val;
-		$_GET['post']        = $post_val;
-		$_POST['post']       = $post_val;
-	}
-
-	/**
 	 * Helper to capture output from existing template functions.
 	 *
 	 * @param callable $callback
@@ -176,9 +163,6 @@ class BuilderPopupTemplate {
 		$lesson_id = absint( $args['lesson_id'] ?? 0 );
 		self::ensure_popup_access( LP_LESSON_CPT, $lesson_id );
 
-		// Setup context
-		self::instance()->setup_request_context( $lesson_id );
-
 		$lesson_model = $lesson_id ? LessonPostModel::find( $lesson_id, true ) : null;
 		$title        = $lesson_model ? __( 'Edit Lesson', 'learnpress' ) : __( 'New Lesson', 'learnpress' );
 		$status       = $lesson_model ? $lesson_model->post_status : '';
@@ -226,9 +210,6 @@ class BuilderPopupTemplate {
 		$response = new stdClass();
 		$quiz_id  = absint( $args['quiz_id'] ?? 0 );
 		self::ensure_popup_access( LP_QUIZ_CPT, $quiz_id );
-
-		// Setup context
-		self::instance()->setup_request_context( $quiz_id );
 
 		$quiz_model = $quiz_id ? QuizPostModel::find( $quiz_id, true ) : null;
 		$title      = $quiz_model ? __( 'Edit Quiz', 'learnpress' ) : __( 'New Quiz', 'learnpress' );
@@ -279,9 +260,6 @@ class BuilderPopupTemplate {
 		$response    = new stdClass();
 		$question_id = absint( $args['question_id'] ?? 0 );
 		self::ensure_popup_access( LP_QUESTION_CPT, $question_id );
-
-		// Setup context
-		self::instance()->setup_request_context( $question_id );
 
 		$question_model = $question_id ? QuestionPostModel::find( $question_id, true ) : null;
 		$title          = $question_model ? __( 'Edit Question', 'learnpress' ) : __( 'New Question', 'learnpress' );

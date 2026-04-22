@@ -47,19 +47,20 @@ class LP_Query {
 	 */
 	public function add_rewrite_tags() {
 		$tags = [
-			'%course-item%'          => '([^&]+)',
-			'%item-type%'            => '([^&]+)',
-			'%question%'             => '([^&]+)',
-			'%user%'                 => '([^/]*)',
-			'%view%'                 => '([^/]*)',
-			'%lp_cb_menu_slug%'      => '([^/]*)',
-			'%view_id%'              => '(.*)',
-			'%section%'              => '(.*)',
-			'%content-item-only%'    => '(.*)',
-			'%is_single_instructor%' => '(.*)',
-			'%post_id%'              => '(.*)',
-			'%is_course_builder%'    => '(.*)',
-			'%instructor_name%'      => '(.*)',
+			'%course-item%'                                => '([^&]+)',
+			'%item-type%'                                  => '([^&]+)',
+			'%question%'                                   => '([^&]+)',
+			'%user%'                                       => '([^/]*)',
+			'%view%'                                       => '([^/]*)',
+			'%view_id%'                                    => '(.*)',
+			'%section%'                                    => '(.*)',
+			'%content-item-only%'                          => '(.*)',
+			'%is_single_instructor%'                       => '(.*)',
+			'%instructor_name%'                            => '(.*)',
+			// For Course builder
+			'%' . CourseBuilder::QUERY_VAR_MENU_SLUG . '%' => '([^/]*)',
+			'%' . CourseBuilder::QUERY_VAR_ITEM_ID . '%'   => '(.*)',
+			'%' . CourseBuilder::QUERY_VAR_IS_COURSE_BUILDER . '%' => '(.*)',
 		];
 
 		$tags = apply_filters( 'learn-press/rewrite/tags', $tags );
@@ -254,51 +255,51 @@ class LP_Query {
 	 */
 	public function add_rewrite_rules_course_builder( &$rules ) {
 		// Course Builder
-		$page = LP_Settings::get_option( 'course_builder', 'course-builder' );
-		$tabs = CourseBuilder::get_menus_arr();
+		$page     = LP_Settings::get_option( 'course_builder', 'course-builder' );
+		$menus    = CourseBuilder::get_menus_arr();
+		$key_rule = 'course-builder';
 
-		if ( $tabs ) {
-			$rules['course-builder']['home'] = [
+		if ( $menus ) {
+			$rules[ $key_rule ]['home'] = [
 				"^{$page}/?$" => 'index.php?is_course_builder=1',
 			];
 
-			foreach ( $tabs as $tab_key => $args ) {
-				$tab_slug = $args['slug'] ?? $tab_key;
-
-				if ( ! empty( $args['sections'] ) ) {
-					foreach ( $args['sections'] as $section_key => $section ) {
-						$section_slug = $section['slug'] ?? $section_key;
-
-						$rules['course-builder'][ $tab_key . '_' . $section_key . '_new' ] = [
-							"^{$page}/({$tab_slug})/create/({$section_slug})/?$" =>
-							'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=post-new&section=' . $section_slug,
-						];
-
-						$rules['course-builder'][ $tab_key . '_' . $section_key ] = [
-							"^{$page}/({$tab_slug})/?([0-9]*)/({$section_slug})/?$" =>
-							'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=$matches[2]&section=' . $section_slug,
-						];
-					}
-				}
-
-				$rules['course-builder'][ $tab_key . '_new' ] = [
-					"^{$page}/({$tab_slug})/create/?$" =>
-						'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=post-new',
+			foreach ( $menus as $menu_slug => $args ) {
+				$rules[ $key_rule ][ $menu_slug . '_create' ] = [
+					"^{$page}/({$menu_slug})/(?:create)/?$" =>
+						sprintf(
+							'index.php?%s=1&%s=%s&%s=new',
+							CourseBuilder::QUERY_VAR_IS_COURSE_BUILDER,
+							CourseBuilder::QUERY_VAR_MENU_SLUG,
+							$menu_slug,
+							CourseBuilder::QUERY_VAR_ITEM_ID
+						),
 				];
 
-				$rules['course-builder'][ $tab_key . '_page' ] = [
-					"^{$page}/({$tab_slug})/(page)/?([0-9]*)/?$" =>
-						'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&paged=$matches[3]',
+				$rules[ $key_rule ][ $menu_slug . '_pagination' ] = [
+					"^{$page}/{$menu_slug}/(?:page)/?([0-9]*)/?$" =>
+						sprintf(
+							'index.php?%s=1&%s=%s&paged=$matches[1]',
+							CourseBuilder::QUERY_VAR_IS_COURSE_BUILDER,
+							CourseBuilder::QUERY_VAR_MENU_SLUG,
+							$menu_slug
+						),
 				];
 
-				$rules['course-builder'][ $tab_key ] = [
-					"^{$page}/({$tab_slug})/?([0-9]*)/?$" =>
-						'index.php?is_course_builder=1&lp_cb_menu_slug=' . $tab_slug . '&post_id=$matches[2]',
+				$rules[ $key_rule ][ $menu_slug ] = [
+					"^{$page}/{$menu_slug}/?([0-9]*)/?$" =>
+						sprintf(
+							'index.php?%s=1&%s=%s&%s=$matches[1]',
+							CourseBuilder::QUERY_VAR_IS_COURSE_BUILDER,
+							CourseBuilder::QUERY_VAR_MENU_SLUG,
+							$menu_slug,
+							CourseBuilder::QUERY_VAR_ITEM_ID
+						),
 				];
 			}
 		}
 
-		apply_filters( 'learn-press/rewrite-rules/course-builder', $rules['course-builder'], $page );
+		apply_filters( 'learn-press/rewrite-rules/course-builder', $rules[ $key_rule ], $page );
 	}
 
 	/**
