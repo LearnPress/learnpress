@@ -24,6 +24,7 @@ export class BuilderSettings {
 		elForm: '#lp-cb-settings-form',
 		elCheckbox: 'input[name="enable_cb_admin_mode"]',
 		elBadge: '[data-setting-badge]',
+		elHeaderLogoLink: '.lp-cb-top-header__logo a',
 		elLogoSetting: '[data-cb-logo-setting]',
 		elDefaultLogoTemplate: '#lp-cb-default-logo-template',
 		elLogoPreviewDefault: '[data-cb-logo-preview-default]',
@@ -49,6 +50,7 @@ export class BuilderSettings {
 	}
 
 	cacheElements() {
+		this.headerLogoLink = document.querySelector( BuilderSettings.selectors.elHeaderLogoLink );
 		this.logoSetting = this.form?.querySelector( BuilderSettings.selectors.elLogoSetting );
 		this.logoPreviewDefault = this.form?.querySelector(
 			BuilderSettings.selectors.elLogoPreviewDefault
@@ -183,6 +185,8 @@ export class BuilderSettings {
 		} else if ( savedLogoID === 0 ) {
 			this.clearLogoUI();
 		}
+
+		this.syncHeaderLogo( savedLogoID > 0 ? savedLogoSrc : '' );
 	}
 
 	handleSaveError( message ) {
@@ -340,5 +344,31 @@ export class BuilderSettings {
 		}
 
 		this.setLogoVisibility( false );
+	}
+
+	syncHeaderLogo( source = '' ) {
+		if ( ! this.headerLogoLink ) {
+			return;
+		}
+
+		const logoSource = source || this.defaultLogoURL;
+		if ( ! logoSource ) {
+			return;
+		}
+
+		let logoImage = this.headerLogoLink.querySelector( '.lp-cb-top-header__logo-image' );
+		if ( ! logoImage ) {
+			logoImage = document.createElement( 'img' );
+			logoImage.classList.add( 'lp-cb-top-header__logo-image' );
+			logoImage.alt = 'Course Builder';
+			logoImage.loading = 'eager';
+			logoImage.decoding = 'async';
+			this.headerLogoLink.textContent = '';
+			this.headerLogoLink.appendChild( logoImage );
+		}
+
+		logoImage.removeAttribute( 'srcset' );
+		logoImage.removeAttribute( 'sizes' );
+		logoImage.src = logoSource;
 	}
 }

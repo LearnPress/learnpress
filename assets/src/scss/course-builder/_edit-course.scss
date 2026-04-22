@@ -1040,6 +1040,7 @@
 				display: inline-block !important;
 				margin: 0 !important;
 				padding: 0 !important;
+				border: none;
 
 				a {
 					text-decoration: none;
@@ -1138,6 +1139,10 @@
 					border: solid #fff;
 					border-width: 0 2px 2px 0;
 					transform: rotate( 45deg );
+				}
+
+				&::before {
+					content : '';
 				}
 			}
 		}

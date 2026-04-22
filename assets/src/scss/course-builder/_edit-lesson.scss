@@ -55,7 +55,7 @@
 		margin-bottom: 8px;
 	}
 
-	.cb-lesson-edit-title__input {
+	input.cb-lesson-edit-title__input {
 		width: 100%;
 		padding: 10px 12px;
 		font-size: 14px;
@@ -65,7 +65,7 @@
 		transition: border-color 0.2s;
 	}
 
-	.cb-lesson-edit-title__input:focus {
+	input.cb-lesson-edit-title__input:focus {
 		border-color: #2271b1;
 		box-shadow: 0 0 0 1px #2271b1;
 	}
