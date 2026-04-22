@@ -52,6 +52,16 @@ defined( 'ABSPATH' ) || exit();
 	<?php
 	// Print media templates required by wp.media (usually resides in admin_footer or wp_footer)
 	if ( function_exists( 'wp_print_media_templates' ) ) {
+		wp_print_styles(
+			[
+				'media-views',
+				'imgareaselect',
+				'mediaelement',
+				'wp-mediaelement',
+				'buttons',
+				'wp-admin',
+			]
+		);
 		wp_print_media_templates();
 	}
 
