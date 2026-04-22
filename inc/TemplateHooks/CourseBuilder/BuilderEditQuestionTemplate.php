@@ -41,10 +41,10 @@ class BuilderEditQuestionTemplate {
 		return $callbacks;
 	}
 
-
-	public function section_overview() {
+	public function section_overview( $question_id = null ) {
 		wp_enqueue_script( 'lp-course-builder' );
-		$question_id    = CourseBuilder::get_item_id();
+
+		$question_id    = empty( $question_id ) ? CourseBuilder::get_item_id() : $question_id;
 		$question_model = '';
 
 		if ( $question_id === CourseBuilder::POST_NEW ) {
@@ -344,22 +344,21 @@ class BuilderEditQuestionTemplate {
 		return Template::combine_components( $publish );
 	}
 
-	public function section_settings() {
+	public function section_settings( $question_id = null ) {
 		wp_enqueue_style( 'lp-edit-question' );
 
-		$question_id = CourseBuilder::get_item_id();
+		$question_id    = empty( $question_id ) ? CourseBuilder::get_item_id() : $question_id;
+		$question_model = '';
 
-		if ( $question_id === CourseBuilder::POST_NEW ) {
+		if ( $question_id === CourseBuilder::POST_NEW || absint( $question_id ) <= 0 ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Question before setting question', 'learnpress' ) );
 			echo $message;
 			return;
 		}
 
-		if ( absint( $question_id ) ) {
-			$question_model = QuestionPostModel::find( $question_id, true );
-			if ( empty( $question_model ) ) {
-				return;
-			}
+		$question_model = QuestionPostModel::find( absint( $question_id ), true );
+		if ( empty( $question_model ) ) {
+			return;
 		}
 
 		$settings = AdminEditQuestionTemplate::instance()->html_edit_question( $question_model );
