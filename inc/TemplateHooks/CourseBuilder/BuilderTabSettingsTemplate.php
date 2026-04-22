@@ -128,7 +128,10 @@ class BuilderTabSettingsTemplate {
 		];
 
 		$logo_setting = [
-			'wrapper'             => '<div class="lp-cb-logo-setting" data-cb-logo-setting>',
+			'wrapper'             => sprintf(
+				'<div class="lp-cb-logo-setting" data-cb-logo-setting data-cb-default-logo-url="%s">',
+				esc_url( LP_PLUGIN_URL . 'assets/images/icons/ico-logo-course-builder.svg' )
+			),
 			'preview_wrapper'     => '<div class="lp-cb-logo-setting__preview-wrap" data-cb-logo-preview-wrap>',
 			'preview_row'         => '<div class="lp-cb-logo-setting__preview-row">',
 			'preview'             => Template::combine_components( $preview ),

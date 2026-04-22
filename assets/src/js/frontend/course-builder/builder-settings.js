@@ -50,12 +50,17 @@ export class BuilderSettings {
 
 	cacheElements() {
 		this.logoSetting = this.form?.querySelector( BuilderSettings.selectors.elLogoSetting );
-		this.logoPreviewDefault = this.form?.querySelector( BuilderSettings.selectors.elLogoPreviewDefault );
-		this.logoPreviewImage = this.form?.querySelector( BuilderSettings.selectors.elLogoPreviewImage );
+		this.logoPreviewDefault = this.form?.querySelector(
+			BuilderSettings.selectors.elLogoPreviewDefault
+		);
+		this.logoPreviewImage = this.form?.querySelector(
+			BuilderSettings.selectors.elLogoPreviewImage
+		);
 		this.logoChooseBtn = this.form?.querySelector( BuilderSettings.selectors.elLogoChooseBtn );
 		this.logoRemoveBtn = this.form?.querySelector( BuilderSettings.selectors.elLogoRemoveBtn );
 		this.logoIdInput = this.form?.querySelector( BuilderSettings.selectors.elLogoIdInput );
 		this.logoRemoveInput = this.form?.querySelector( BuilderSettings.selectors.elLogoRemoveInput );
+		this.defaultLogoURL = this.logoSetting?.dataset?.cbDefaultLogoUrl || '';
 	}
 
 	events() {
@@ -286,13 +291,15 @@ export class BuilderSettings {
 			return;
 		}
 
-		const defaultLogoTemplate = document.querySelector( BuilderSettings.selectors.elDefaultLogoTemplate );
+		const defaultLogoTemplate = document.querySelector(
+			BuilderSettings.selectors.elDefaultLogoTemplate
+		);
 		const defaultLogoSVG =
 			defaultLogoTemplate?.content?.querySelector( 'svg' ) ||
 			defaultLogoTemplate?.querySelector( 'svg' ) ||
 			document.querySelector( '.lp-cb-top-header__logo svg' );
 
-		if ( ! defaultLogoSVG ) {
+		if ( ! defaultLogoSVG && ! this.defaultLogoURL ) {
 			return;
 		}
 
@@ -300,9 +307,13 @@ export class BuilderSettings {
 		svgPreviewImage.classList.add( 'lp-cb-logo-setting__preview-default-image' );
 		svgPreviewImage.setAttribute( 'aria-hidden', 'true' );
 		svgPreviewImage.alt = 'Course Builder default logo';
-		svgPreviewImage.src = `data:image/svg+xml;charset=UTF-8,${ encodeURIComponent(
-			defaultLogoSVG.outerHTML
-		) }`;
+		if ( defaultLogoSVG ) {
+			svgPreviewImage.src = `data:image/svg+xml;charset=UTF-8,${ encodeURIComponent(
+				defaultLogoSVG.outerHTML
+			) }`;
+		} else {
+			svgPreviewImage.src = this.defaultLogoURL;
+		}
 
 		this.logoPreviewDefault.appendChild( svgPreviewImage );
 	}
