@@ -242,6 +242,12 @@
 		grid-template-columns: repeat( 2, 1fr );
 		gap: 20px;
 		margin-bottom: 24px;
+		overflow-x: hidden;
+		transition: overflow-x 0.3s ease;
+
+		&:hover {
+			overflow-x: auto;
+		}
 
 		@media ( max-width: 900px ) {
 			grid-template-columns: 1fr;
@@ -427,10 +433,10 @@
 	// =====================
 	.lp-cb-dashboard__quick-actions {
 		background: $cb-bg;
-		border-radius: $cb-radius-lg;
-		padding: 20px;
-		box-shadow: $cb-shadow-sm;
-		border: 1px solid $cb-border;
+		//border-radius: $cb-radius-lg;
+		//padding: 20px;
+		//box-shadow: $cb-shadow-sm;
+		//border: 1px solid $cb-border;
 
 		.quick-actions__title {
 			font-size: $cb-font-lg;
@@ -493,10 +499,10 @@
 
 	.lp-cb-dashboard__recent-courses {
 		background: $cb-bg;
-		border-radius: $cb-radius-lg;
-		padding: 20px;
-		box-shadow: $cb-shadow-sm;
-		border: 1px solid $cb-border;
+		//border-radius: $cb-radius-lg;
+		//padding: 20px;
+		//box-shadow: $cb-shadow-sm;
+		//border: 1px solid $cb-border;
 
 		.recent-courses__title {
 			font-size: $cb-font-lg;
