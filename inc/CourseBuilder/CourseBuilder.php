@@ -197,22 +197,44 @@ class CourseBuilder {
 		return $post_id;
 	}
 
-	public static function can_view_course_builder() {
-		return is_user_logged_in() && current_user_can( 'edit_lp_courses' );
+	/**
+	 * Get permission to view course builder
+	 *
+	 * @return bool
+	 */
+	public static function can_view_course_builder(): bool {
+		$userModel = UserModel::find( get_current_user_id(), true );
+		return $userModel && $userModel->is_instructor();
 	}
 
 	/**
-	 * Get title page
+	 * Get title page of course builder
 	 *
 	 * @return string
+	 * @since 4.3.6
+	 * @version 1.0.0
 	 */
 	public static function get_title_page(): string {
+		/** @var WP_Query $wp_query */
+		global $wp_query;
 		$title = '';
 
 		$menu_current = self::get_menu_current();
 		$menus        = self::get_menus_arr();
 		if ( isset( $menus[ $menu_current ] ) ) {
-			$title = $menus[ $menu_current ]['title'];
+			$title = $menus[ $menu_current ]['title'] ?? '';
+
+			$post_id = $wp_query->get( 'post_id' );
+			if ( ! empty( $post_id ) ) {
+				if ( $post_id === 'post-new' ) {
+					$title .= ' - ' . __( 'New', 'learnpress' );
+				} else {
+					$post = get_post( $post_id );
+					if ( $post ) {
+						$title = sprintf( __( 'Edit "%1$s" - %2$s', 'learnpress' ), $post->post_title, $title );
+					}
+				}
+			}
 		}
 
 		return $title;
