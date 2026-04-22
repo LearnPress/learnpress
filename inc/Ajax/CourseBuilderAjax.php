@@ -9,6 +9,7 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
@@ -479,12 +480,11 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			// Return full redirect URL for new courses
 			if ( $insert && $course_id ) {
-				$response->data->redirect_url = \LearnPress\CourseBuilder\CourseBuilder::get_tab_link( 'courses', $course_id, 'overview' );
+				$response->data->redirect_url = CourseBuilder::get_link_course_builder( "courses/{$course_id}" );
 			}
 
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
-			$response->status  = 'error';
+		} catch ( Throwable $th ) {
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
 		}
@@ -976,7 +976,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$html = sprintf(
 				'<li id="in-course_category-%1$s" class="popular-category">
                     <label class="selectit">
-                        <input value="%1$s" type="checkbox" name="tax_input[course_category][]" id="in-course_category-%1$s" checked="checked"> 
+                        <input value="%1$s" type="checkbox" name="tax_input[course_category][]" id="in-course_category-%1$s" checked="checked">
                         %2$s
                     </label>
                 </li>',
