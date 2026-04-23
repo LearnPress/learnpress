@@ -256,7 +256,7 @@ class LP_Profile_Tabs {
 			return '';
 		}
 
-		$user_pretty_slug = $userModel->get_pretty_slug();
+		$user_pretty_slug = $userModel->get_slug_link();
 		$url              = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, $user_pretty_slug );
 		if ( is_array( $args ) && $args ) {
 			if ( ! $with_permalink ) {

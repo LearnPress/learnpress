@@ -31,7 +31,7 @@ class LPProfileInstanceTest extends BrainMonkeyTestCase {
 					public function get_id(): int {
 						return $this->id;
 					}
-					public function get_pretty_slug( bool $fallbackToUsername = true ): string {
+					public function get_slug_link(): string {
 						return $this->prettySlug;
 					}
 				}'

@@ -28,7 +28,8 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 		/**
 		 * @var LP_Profile_Tab $profile_tab
 		 */
-		foreach ( $profile->get_tabs()->tabs() as $tab_key => $profile_tab ) {
+		$tabs = $profile->get_tabs()->tabs();
+		foreach ( $tabs as $tab_key => $profile_tab ) {
 			if ( ! is_object( $profile_tab ) || ! $profile_tab || $profile_tab->is_hidden() || ! $profile->current_user_can( 'view-tab-' . $tab_key ) ) {
 				continue;
 			}
