@@ -1223,8 +1223,12 @@ export class BuilderEditCourse {
 	}
 
 	activateTab( linkElement ) {
-		const tabItems = document.querySelectorAll( BuilderEditCourse.selectors.elTabItems );
-		const panels = document.querySelectorAll( BuilderEditCourse.selectors.elTabPanels );
+		const tabItems = document.querySelectorAll(
+			BuilderEditCourse.selectors.elTabItems,
+		);
+		const panels = document.querySelectorAll(
+			BuilderEditCourse.selectors.elTabPanels,
+		);
 		const targetId = linkElement.getAttribute( 'href' ).substring( 1 );
 		const targetPanel = document.getElementById( targetId );
 		if ( ! targetPanel ) return;
@@ -1254,6 +1258,10 @@ export class BuilderEditCourse {
 		const allTabs = document.querySelectorAll( BuilderEditCourse.selectors.elCBHorizontalTabs );
 		allTabs.forEach( ( t ) => t.classList.remove( 'is-active' ) );
 		tab.classList.add( 'is-active' );
+
+		const url = new URL( window.location.href );
+		url.searchParams.set( 'tab', sectionSlug );
+		window.history.replaceState( {}, '', url );
 
 		// Show/hide panels using lpShowHideEl
 		const allPanels = document.querySelectorAll( BuilderEditCourse.selectors.elCBTabPanels );

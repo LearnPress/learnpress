@@ -8,46 +8,241 @@
 
 namespace LearnPress\TemplateHooks\CourseBuilder;
 
+use Exception;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\PostModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
-use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Settings;
 use Throwable;
 
 class BuilderEditCourseTemplate {
 	use Singleton;
 
 	public function init() {
+		add_action( 'learn-press/course-builder/course/edit/layout', [ $this, 'layout' ] );
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
-		add_action( 'learn-press/course-builder/courses/overview/layout', [ $this, 'section_overview' ] );
+		/*add_action( 'learn-press/course-builder/courses/overview/layout', [ $this, 'section_overview' ] );
 		add_action( 'learn-press/course-builder/courses/curriculum/layout', [ $this, 'section_curriculum' ] );
-		add_action( 'learn-press/course-builder/courses/settings/layout', [ $this, 'section_settings' ] );
+		add_action( 'learn-press/course-builder/courses/settings/layout', [ $this, 'section_settings' ] );*/
 
 		// Register filter for adding edit popup button in Course Builder curriculum
 		add_filter( 'learn-press/admin/curriculum/section-item/actions', [ $this, 'add_edit_popup_button' ], 10, 5 );
 	}
 
 	/**
-	 * Allow callback for AJAX.
-	 * @use self::render_edit_course_curriculum
-	 * @use self::render_html
+	 * Display layout edit/create course
 	 *
-	 * @param array $callbacks
+	 * @param array $data
 	 *
-	 * @return array
+	 * @throws Exception
 	 */
-	public function allow_callback( array $callbacks ): array {
-		$callbacks[] = AdminEditCurriculumTemplate::class . ':render_edit_course_curriculum';
+	public function layout( array $data = [] ) {
+		// Check permission
+		$userModel = UserModel::find( get_current_user_id(), true );
+		if ( ! $userModel || ! $userModel->is_instructor() ) {
+			throw new Exception( __( 'You do not have permission to create or edit courses', 'learnpress' ) );
+		}
 
-		return $callbacks;
+		$userCoursePostModel = new CoursePostModel();
+		if ( ! $userCoursePostModel->check_capabilities_create() ) {
+			throw new Exception( __( 'You do not have permission to create or edit courses', 'learnpress' ) );
+		}
+
+		$item_id = $data['item_id'] ?? '';
+		if ( empty( $item_id ) ) {
+			throw new Exception( __( 'Invalid course ID', 'learnpress' ) );
+		}
+
+		$is_create_new = $item_id === CourseBuilder::POST_NEW;
+		$courseModel   = false;
+
+		if ( ! $is_create_new ) {
+			$courseModel = CourseModel::find( (int) $item_id, true );
+			if ( ! $courseModel ) {
+				throw new Exception( __( 'Course not found', 'learnpress' ) );
+			}
+		}
+
+		$enable_wp_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
+		$title                = $courseModel ? $courseModel->get_title() : __( 'Add New Course', 'learnpress' );
+		$status_badge         = $courseModel ? $courseModel->get_status() : '';
+		$status               = '';
+		if ( $courseModel ) {
+			$status = $courseModel->get_status();
+		}
+		$main_action_status = in_array(
+			$status,
+			array(
+				'publish',
+				'draft',
+				'pending',
+				'future',
+				'private',
+			),
+			true
+		) ? $status : 'publish';
+
+		$section = [
+			'wrap'               => sprintf(
+				'<div class="lp-cb-content" data-post-id="%1$s">',
+				esc_attr( $item_id ),
+			),
+			'header_wrap'        => '<div class="lp-cb-header">',
+			'header_left'        => '<div class="lp-cb-header__left">',
+			'title'              => sprintf(
+				'<h1 class="lp-cb-header__title">%s</h1>',
+				esc_html( $title )
+			),
+			'status_badge'       => $courseModel ? sprintf(
+				'<span class="course-status %s">%s</span>',
+				$status_badge,
+				esc_html( $courseModel->get_post_model()->get_status_i18n() )
+			) : '',
+			'link_edit_on_wp'    => ! $is_create_new
+									&& ( $enable_wp_admin_mode && user_can( $userModel->get_id(), UserModel::ROLE_ADMINISTRATOR ) )
+									&& ( $courseModel && $courseModel->get_status() === PostModel::STATUS_TRASH ) ? sprintf(
+										'<a href="%1$s" class="lp-cb-admin-link" target="_blank" title="%2$s">
+					<span class="dashicons dashicons-wordpress"></span>
+					<span>%2$s</span>
+				</a>',
+										esc_url( admin_url( "post.php?post={$item_id}&action=edit" ) ),
+										esc_attr__( 'Edit with WordPress', 'learnpress' ),
+									) : '',
+			'header_left_end'    => '</div>',
+			'header_actions'     => '<div class="lp-cb-header__actions">',
+			'preview_btn'        => $courseModel && $courseModel->get_status() !== PostModel::STATUS_TRASH ? sprintf(
+				'<a href="%1$s" class="cb-button cb-btn-preview cb-btn-secondary" target="_blank">%2$s</a>',
+				esc_url( get_permalink( $item_id ) ),
+				esc_html__( 'Preview', 'learnpress' )
+			) : '',
+			'dropdown_wrap'      => sprintf(
+				'<div class="cb-header-actions-dropdown cb-header-actions-dropdown--single">',
+			),
+			'update_btn'         => sprintf(
+				'<div class="cb-btn-update cb-btn-primary cb-btn-main-action"
+					data-status="%1$s"
+					data-title-update="%2$s"
+					data-title-publish="%3$s"
+					data-title-draft="%4$s"
+					data-title-submit-review="%5$s">%6$s</div>',
+				esc_attr( $main_action_status ),
+				esc_attr__( 'Update', 'learnpress' ),
+				esc_attr__( 'Publish', 'learnpress' ),
+				esc_attr__( 'Save Draft', 'learnpress' ),
+				esc_attr__( 'Submit for Review', 'learnpress' ),
+				esc_html__( 'Update', 'learnpress' )
+			),
+			'dropdown_wrap_end'  => '</div>',
+			'expanded_actions'   => $courseModel ? sprintf(
+				'<div class="cb-header-action-expanded">
+					<button type="button" class="course-action-expanded" aria-haspopup="true" aria-expanded="false" aria-label="%1$s">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+						</svg>
+					</button>
+					<div class="cb-header-action-expanded__items">
+						%2$s
+						<div class="cb-header-action-expanded__trash cb-btn-trash">
+							<span class="dashicons dashicons-trash"></span>
+							%3$s
+						</div>
+					</div>
+				</div>',
+				esc_attr__( 'More actions', 'learnpress' ),
+				! empty( $header_expanded_duplicate_class ) ? sprintf(
+					'<div class="cb-header-action-expanded__duplicate %1$s" data-title="%2$s" data-content="%3$s">
+						<span class="dashicons dashicons-admin-page"></span>
+						%4$s
+					</div>',
+					esc_attr( $header_expanded_duplicate_class ),
+					esc_attr__( 'Are you sure?', 'learnpress' ),
+					esc_attr__( 'Are you sure you want to duplicate this question?', 'learnpress' ),
+					esc_html__( 'Duplicate', 'learnpress' )
+				) : '',
+				esc_html__( 'Move to Trash', 'learnpress' )
+			) : '',
+			'header_actions_end' => '</div>',
+			'header_end'         => '</div>',
+			//'horizontal_tabs'    => $this->render_horizontal_tabs( $tab_current, $item_id, $sections, '' ),
+			'tabs'               => $this->html_tabs(),
+			'wrap_end'           => '</div>',
+		];
+
+		echo Template::combine_components( $section );
 	}
 
-	public function section_overview() {
+	/**
+	 * Render tabs
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function html_tabs( array $data = [] ): string {
+		$menus        = CourseBuilder::get_menus_arr();
+		$menu_current = CourseBuilder::get_menu_current();
+		$tabs         = $menus[ $menu_current ]['tabs'] ?? [];
+		if ( empty( $tabs ) ) {
+			return '';
+		}
+
+		$tab_active = array_key_first( $tabs );
+		if ( isset( $_GET['tab'] ) ) {
+			$tab_active = $_GET['tab'];
+		}
+
+		$section_tab = [
+			'tabs_wrap' => '<div class="lp-cb-tabs">',
+			'tabs'      => '',
+			'tabs_end'  => '</div>',
+		];
+
+		$section_content = [
+			'wrap'     => '<div class="lp-cb-tab-content">',
+			'content'  => '',
+			'wrap-end' => '</div>',
+		];
+
+		foreach ( $tabs as $key => $tab ) {
+			$is_active = $key === $tab_active;
+
+			$section_tab['tabs'] .= sprintf(
+				'<a href="#" class="lp-cb-tabs__item %s" data-tab-section="%s">%s</a>',
+				$is_active ? 'is-active' : '',
+				esc_attr( $tab['slug'] ?? $key ),
+				esc_html( $tab['title'] ?? '' )
+			);
+
+			/**
+			 * @uses html_tab_overview
+			 * @uses html_tab_curriculum
+			 * @uses html_tab_settings
+			 */
+			$section_content['content'] .= sprintf(
+				'<div class="lp-cb-tab-panel %s" data-section="%s">%s</div>',
+				$is_active ? '' : 'lp-hidden',
+				esc_attr( $key ),
+				$this->{ "html_tab_{$key}" }( $data )
+			);
+		}
+
+		$section = [
+			'tabs'     => Template::combine_components( $section_tab ),
+			'contents' => Template::combine_components( $section_content ),
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_tab_overview( array $data = [] ) {
 		wp_enqueue_script( 'lp-course-builder' );
 		$course_id = CourseBuilder::get_item_id();
 
@@ -93,7 +288,110 @@ class BuilderEditCourseTemplate {
 			'wrapper_end'            => '</div>',
 		];
 
-		echo Template::combine_components( $section );
+		return Template::combine_components( $section );
+	}
+
+	public function html_tab_curriculum( array $data = [] ) {
+		wp_enqueue_script( 'lp-cb-edit-curriculum' );
+		wp_enqueue_style( 'lp-cb-edit-curriculum' );
+		wp_enqueue_script( 'lp-cb-admin-learnpress' );
+
+		$course_id = CourseBuilder::get_item_id();
+
+		if ( $course_id === CourseBuilder::POST_NEW ) {
+			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before add Section' ) );
+			return $message;
+		}
+
+		if ( absint( $course_id ) ) {
+			$course_model = CourseModel::find( $course_id, true );
+			if ( empty( $course_model ) ) {
+				return;
+			}
+		}
+
+		// Load curriculum with is_course_builder flag
+		ob_start();
+		AdminEditCurriculumTemplate::instance()->edit_course_curriculum_layout( $course_model );
+		$html_curriculum = ob_get_clean();
+
+		return $html_curriculum . $this->html_curriculum_ai_templates();
+	}
+
+	public function html_tab_settings( array $data = [] ) {
+		wp_enqueue_script( 'lp-cb-edit-curriculum' );
+		wp_enqueue_script( 'lp-tom-select' );
+		wp_enqueue_style( 'lp-cb-edit-curriculum' );
+		wp_enqueue_script( 'lp-cb-learnpress' );
+
+		$course_id = CourseBuilder::get_item_id();
+
+		if ( $course_id === CourseBuilder::POST_NEW ) {
+			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before setting course' ) );
+			return $message;
+		}
+
+		if ( absint( $course_id ) ) {
+			$course_model = CourseModel::find( $course_id, true );
+			if ( empty( $course_model ) ) {
+				return;
+			}
+		}
+
+		if ( ! class_exists( 'LP_Meta_Box_Course' ) ) {
+			require_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
+		}
+
+		add_filter( 'learnpress/course/metabox/tabs', [ $this, 'filter_course_builder_settings_tabs' ], 999 );
+		add_filter(
+			'learn-press/course/meta-box/assessment/final-quiz/edit-link',
+			[
+				$this,
+				'filter_course_builder_assessment_final_quiz_edit_link',
+			],
+			10,
+			2
+		);
+
+		$metabox = \LP_Meta_Box_Course::instance();
+		ob_start();
+		$metabox->output( $course_model );
+		$settings = ob_get_clean();
+
+		remove_filter( 'learnpress/course/metabox/tabs', [ $this, 'filter_course_builder_settings_tabs' ], 999 );
+		remove_filter(
+			'learn-press/course/meta-box/assessment/final-quiz/edit-link',
+			[
+				$this,
+				'filter_course_builder_assessment_final_quiz_edit_link',
+			],
+			10
+		);
+
+		$output = [
+			'wrapper'          => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
+			'form_setting'     => '<form name="lp-form-setting-course" class="lp-form-setting-course" method="post" enctype="multipart/form-data">',
+			'settings'         => $settings,
+			'form_setting_end' => '</form>',
+			'wrapper_end'      => '</div>',
+		];
+
+		return Template::combine_components( $output );
+	}
+
+	/**
+	 * Allow callback for AJAX.
+	 * @use self::render_edit_course_curriculum
+	 * @use self::render_html
+	 *
+	 * @param array $callbacks
+	 *
+	 * @return array
+	 */
+	public function allow_callback( array $callbacks ): array {
+		$callbacks[] = AdminEditCurriculumTemplate::class . ':render_edit_course_curriculum';
+
+		return $callbacks;
 	}
 
 	public function edit_title( $course_model ) {
@@ -382,6 +680,7 @@ class BuilderEditCourseTemplate {
 			if ( isset( $args['taxonomy'] ) && 'course_category' === $args['taxonomy'] ) {
 				$args['checked_ontop'] = false;
 			}
+
 			return $args;
 		};
 
@@ -797,58 +1096,6 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
-	public function section_curriculum() {
-		wp_enqueue_script( 'lp-cb-edit-curriculum' );
-		wp_enqueue_style( 'lp-cb-edit-curriculum' );
-		wp_enqueue_script( 'lp-cb-admin-learnpress' );
-
-		$course_id = CourseBuilder::get_item_id();
-
-		if ( $course_id === CourseBuilder::POST_NEW ) {
-			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before add Section' ) );
-			echo $message;
-			return;
-		}
-
-		if ( absint( $course_id ) ) {
-			$course_model = CourseModel::find( $course_id, true );
-			if ( empty( $course_model ) ) {
-				return;
-			}
-		}
-
-		// Load curriculum with is_course_builder flag
-		$this->load_curriculum_for_course_builder( $course_model );
-		echo $this->html_curriculum_ai_templates();
-	}
-
-	/**
-	 * Load curriculum for Course Builder with special flag.
-	 * This method loads curriculum via AJAX with is_course_builder flag.
-	 *
-	 * @since 4.3.0
-	 * @version 1.0.0
-	 *
-	 * @param CourseModel $courseModel
-	 */
-	protected function load_curriculum_for_course_builder( CourseModel $courseModel ) {
-		wp_enqueue_style( 'lp-edit-curriculum' );
-		wp_enqueue_script( 'lp-edit-course' );
-
-		$args = [
-			'id_url'            => 'edit-course-curriculum',
-			'course_id'         => $courseModel->ID,
-			'is_course_builder' => true, // Flag to identify Course Builder context
-		];
-
-		$call_back = [
-			'class'  => AdminEditCurriculumTemplate::class,
-			'method' => 'render_edit_course_curriculum',
-		];
-
-		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
-	}
-
 	/**
 	 * Add edit popup button for lesson and quiz items in Course Builder curriculum.
 	 * Replace the default edit button with popup button for lesson and quiz items.
@@ -905,53 +1152,6 @@ class BuilderEditCourseTemplate {
 		);
 
 		return $section_action;
-	}
-
-	public function section_settings() {
-		wp_enqueue_script( 'lp-cb-edit-curriculum' );
-		wp_enqueue_script( 'lp-tom-select' );
-		wp_enqueue_style( 'lp-cb-edit-curriculum' );
-		wp_enqueue_script( 'lp-cb-learnpress' );
-
-		$course_id = CourseBuilder::get_item_id();
-
-		if ( $course_id === CourseBuilder::POST_NEW ) {
-			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before setting course' ) );
-			echo $message;
-			return;
-		}
-
-		if ( absint( $course_id ) ) {
-			$course_model = CourseModel::find( $course_id, true );
-			if ( empty( $course_model ) ) {
-				return;
-			}
-		}
-
-		if ( ! class_exists( 'LP_Meta_Box_Course' ) ) {
-			require_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
-		}
-
-		add_filter( 'learnpress/course/metabox/tabs', [ $this, 'filter_course_builder_settings_tabs' ], 999 );
-		add_filter( 'learn-press/course/meta-box/assessment/final-quiz/edit-link', [ $this, 'filter_course_builder_assessment_final_quiz_edit_link' ], 10, 2 );
-
-		$metabox = \LP_Meta_Box_Course::instance();
-		ob_start();
-		$metabox->output( $course_model );
-		$settings = ob_get_clean();
-
-		remove_filter( 'learnpress/course/metabox/tabs', [ $this, 'filter_course_builder_settings_tabs' ], 999 );
-		remove_filter( 'learn-press/course/meta-box/assessment/final-quiz/edit-link', [ $this, 'filter_course_builder_assessment_final_quiz_edit_link' ], 10 );
-
-		$output = [
-			'wrapper'          => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
-			'form_setting'     => '<form name="lp-form-setting-course" class="lp-form-setting-course" method="post" enctype="multipart/form-data">',
-			'settings'         => $settings,
-			'form_setting_end' => '</form>',
-			'wrapper_end'      => '</div>',
-		];
-
-		echo Template::combine_components( $output );
 	}
 
 	/**

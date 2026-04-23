@@ -149,6 +149,17 @@ class CourseModel {
 		return $this->ID;
 	}
 
+	/**
+	 * Get post model
+	 *
+	 * @return CoursePostModel
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function get_post_model(): CoursePostModel {
+		return new CoursePostModel( $this );
+	}
+
 	public function get_title(): string {
 		$course_post = new CoursePostModel( $this );
 

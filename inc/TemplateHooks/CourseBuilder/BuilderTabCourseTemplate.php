@@ -24,20 +24,30 @@ class BuilderTabCourseTemplate {
 	use Singleton;
 
 	public function init() {
-		add_action( 'learn-press/course-builder/courses/layout', [ $this, 'html_tab_courses' ] );
+		add_action( 'learn-press/course-builder/courses/layout', [ $this, 'layout' ] );
 	}
 
-	public function html_tab_courses() {
-		$list_course = $this->tab_list_courses();
-		$html_filter = $this->html_filter_bar();
+	public function layout() {
+		// Check to switch layout.
+		$item_id = CourseBuilder::get_item_id();
+		$section = [];
 
-		$tab = [
-			'filter_bar'   => $html_filter,
-			'courses'      => $list_course,
-			'ai_templates' => $this->html_ai_templates(),
-		];
+		if ( ! empty( $item_id ) ) {
+			// Show edit course
+			do_action(
+				'learn-press/course-builder/course/edit/layout',
+				compact( 'item_id' )
+			);
+		} else {
+			// Show list courses
+			$section = [
+				'filter_bar'   => $this->html_filter_bar(),
+				'courses'      => $this->tab_list_courses(),
+				'ai_templates' => $this->html_ai_templates(),
+			];
+		}
 
-		echo Template::combine_components( $tab );
+		echo Template::combine_components( $section );
 	}
 
 	/**

@@ -370,23 +370,10 @@ class CourseBuilderTemplate {
 			return '';
 		}
 
-		$menu_current    = CourseBuilder::get_menu_current();
-		$section_current = CourseBuilder::get_current_section();
-		$post_id         = CourseBuilder::get_item_id();
+		$menu_current = CourseBuilder::get_menu_current();
 
 		ob_start();
-
-		// If viewing entity detail (has post_id), show breadcrumb + horizontal tabs
-		if ( ! empty( $post_id ) && ! empty( $section_current ) ) {
-			echo $this->render_detail_view( $menu_current, $post_id, $section_current );
-		} elseif ( ! empty( $section_current ) ) {
-			// Legacy section view (fallback)
-			echo $this->html_section( $menu_current, $section_current );
-		} else {
-			// List view
-			echo $this->html_tab( $menu_current );
-		}
-
+		do_action( "learn-press/course-builder/{$menu_current}/layout" );
 		$content = ob_get_clean();
 
 		$output = [

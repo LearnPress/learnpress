@@ -89,8 +89,13 @@ class PostModel {
 	 */
 	public $filter;
 
-	const STATUS_PUBLISH = 'publish';
-	const STATUS_TRASH   = 'trash';
+	const STATUS_PUBLISH    = 'publish';
+	const STATUS_TRASH      = 'trash';
+	const STATUS_DRAFT      = 'draft';
+	const STATUS_PRIVATE    = 'private';
+	const STATUS_PENDING    = 'pending';
+	const STATUS_PROTECTED  = 'protected';
+	const STATUS_AUTO_DRAFT = 'auto-draft';
 
 	/**
 	 * If data get from database, map to object.
@@ -472,7 +477,7 @@ class PostModel {
 			$value = $default_value;
 		}
 
-		$value = maybe_unserialize( $value );
+		$value                   = maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;
@@ -598,5 +603,31 @@ class PostModel {
 		 * get_post_type_object is null.
 		 */
 		//return get_edit_post_link( $this->get_id() );
+	}
+
+	/**
+	 * Get i18n status
+	 *
+	 * @return string
+	 */
+	public function get_status_i18n(): string {
+		switch ( $this->post_status ) {
+			case self::STATUS_PUBLISH:
+				return __( 'Publish', 'learnpress' );
+			case self::STATUS_TRASH:
+				return __( 'Trash', 'learnpress' );
+			case self::STATUS_DRAFT:
+				return __( 'Draft', 'learnpress' );
+			case self::STATUS_PRIVATE:
+				return __( 'Private', 'learnpress' );
+			case self::STATUS_PENDING:
+				return __( 'Pending', 'learnpress' );
+			case self::STATUS_PROTECTED:
+				return __( 'Protected', 'learnpress' );
+			case self::STATUS_AUTO_DRAFT:
+				return __( 'Auto Draft', 'learnpress' );
+			default:
+				return ucfirst( $this->post_status );
+		}
 	}
 }
