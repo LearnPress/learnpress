@@ -9,6 +9,8 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Models\CourseModel;
@@ -17,12 +19,9 @@ use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
-use LearnPress\TemplateHooks\CourseBuilder\BuilderEditCourseTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuestionTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuizTemplate;
-use LP_Course_Cache;
 use LP_Course_CURD;
 use LP_Helper;
 use LP_Lesson_CURD;

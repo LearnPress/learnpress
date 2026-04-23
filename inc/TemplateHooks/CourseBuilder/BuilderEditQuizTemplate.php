@@ -8,6 +8,7 @@
 
 namespace LearnPress\TemplateHooks\CourseBuilder;
 
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
