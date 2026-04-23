@@ -323,6 +323,11 @@ export class EditSectionItem {
 			item_type: typeValue,
 			args: { id_url: idUrlHandle },
 		};
+
+		if ( document.querySelector( '#lp-course-builder' ) ) {
+			dataSend.is_course_builder = 1;
+		}
+
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
@@ -673,9 +678,7 @@ export class EditSectionItem {
 			elItemNew.classList.add( item.type );
 			elItemNew.classList.remove( 'clone' );
 			elItemNew.dataset.itemType = item.type;
-			elItemNew
-				.querySelector( '.edit-link' )
-				.setAttribute( 'href', item.editLink || '' );
+			elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.editLink || '' );
 			elInputTitleNew.value = item.titleSelected || '';
 
 			lpUtils.lpSetLoadingEl( elItemNew, 1 );
@@ -814,7 +817,7 @@ export class EditSectionItem {
 	 *
 	 * @param {HTMLElement} elItem - The item element
 	 * @param {number} itemId - The item ID
-	 * @param {string} itemType - The item type (lp_lesson, lp_quiz)
+	 * @param {string} itemType - The item type (lp_lesson, lp_quiz, lp_assignment)
 	 */
 	addPopupAttributesToItem( elItem, itemId, itemType ) {
 		// Check if we're in Course Builder context
@@ -824,8 +827,10 @@ export class EditSectionItem {
 			return;
 		}
 
-		// Only add popup attributes for lesson and quiz
-		if ( ! [ 'lp_lesson', 'lp_quiz' ].includes( itemType ) ) {
+		const popupType = itemType.replace( /^lp_/, '' );
+		const templateSelector = `#lp-tmpl-builder-popup-curriculum-${ popupType }-course-${ this.courseId }`;
+
+		if ( ! popupType || ! document.querySelector( templateSelector ) ) {
 			return;
 		}
 
@@ -857,8 +862,9 @@ export class EditSectionItem {
 		editLink.classList.add( 'edit-popup-link' );
 
 		// Store additional data for popup on the <li> element
-		editBtn.setAttribute( 'data-item-id', itemId );
-		editBtn.setAttribute( 'data-item-type', itemType );
 		editBtn.setAttribute( 'data-course-id', this.courseId );
+		editBtn.setAttribute( 'data-popup-type', popupType );
+		editBtn.setAttribute( 'data-popup-id', itemId );
+		editBtn.setAttribute( 'data-template', templateSelector );
 	}
 }

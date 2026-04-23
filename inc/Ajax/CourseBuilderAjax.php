@@ -301,6 +301,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$course_id               = $data['course_id'] ?? 0;
 			$settings                = $data['course_settings'] ?? false;
 			$insert                  = $data['insert'];
+			$course_title            = isset( $data['course_title'] ) ? trim( sanitize_text_field( wp_unslash( (string) $data['course_title'] ) ) ) : '';
 			$course_status_requested = ! empty( $data['course_status'] ) ? sanitize_text_field( $data['course_status'] ) : 'publish';
 			$course_visibility       = ! empty( $data['course_visibility'] ) ? sanitize_key( $data['course_visibility'] ) : '';
 			$course_password_raw     = isset( $data['course_password'] ) ? wp_unslash( (string) $data['course_password'] ) : '';
@@ -308,6 +309,10 @@ class CourseBuilderAjax extends AbstractAjax {
 			$course_post_date_raw    = ! empty( $data['course_post_date'] ) ? sanitize_text_field( $data['course_post_date'] ) : '';
 			$course_post_date_data   = $this->normalize_course_post_date_for_save( $course_post_date_raw );
 			$post_password_to_update = null;
+
+			if ( '' === $course_title ) {
+				throw new Exception( __( 'Course title is required.', 'learnpress' ) );
+			}
 
 			if ( $insert ) {
 				// Check user capability before insert
@@ -322,7 +327,7 @@ class CourseBuilderAjax extends AbstractAjax {
 
 				$insert_post_data = array(
 					'post_type'    => LP_COURSE_CPT,
-					'post_title'   => sanitize_text_field( $data['course_title'] ?? '' ),
+					'post_title'   => $course_title,
 					'post_content' => wp_unslash( $data['course_description'] ?? '' ),
 					'post_status'  => $course_status,
 					'tax_input'    => array(
@@ -388,11 +393,11 @@ class CourseBuilderAjax extends AbstractAjax {
 					}
 				}
 
-				if ( ! empty( $data['course_title'] ) ) {
+				if ( '' !== $course_title ) {
 					$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
 					$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
 
-					$courseModel->post_title   = sanitize_text_field( $data['course_title'] );
+					$courseModel->post_title   = $course_title;
 					$courseModel->post_content = wp_unslash( $data['course_description'] ?? '' );
 
 					wp_set_post_terms( $courseModel->ID, $categories, 'course_category' );
