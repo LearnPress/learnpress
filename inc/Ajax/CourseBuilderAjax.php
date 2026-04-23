@@ -18,7 +18,7 @@ use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderEditCourseTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuestionTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuizTemplate;
@@ -851,11 +851,11 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			$course_model                  = CourseModel::find( $new_item_id, true );
-			$html                          = BuilderTabCourseTemplate::render_course( $course_model );
+			$html                          = BuilderCourseTemplate::render_course( $course_model );
 			$response->status              = 'success';
 			$response->data->html          = $html;
 			$response->data->course_id_new = $new_item_id;
-			$response->data->redirect_url  = BuilderTabCourseTemplate::instance()->get_link_edit( $new_item_id );
+			$response->data->redirect_url  = CourseBuilder::get_link_course_builder( "courses/{$new_item_id}" );
 			$response->message             = __( 'Course duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {

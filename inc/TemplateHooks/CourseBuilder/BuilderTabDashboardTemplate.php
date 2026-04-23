@@ -708,7 +708,7 @@ class BuilderTabDashboardTemplate {
 					$course = \LearnPress\Models\CourseModel::find( $course_obj->ID, true );
 					if ( $course ) {
 						// Reuse course item from Courses tab
-						$html_list_course .= BuilderTabCourseTemplate::render_course( $course );
+						$html_list_course .= BuilderCourseTemplate::render_course( $course );
 					}
 				}
 

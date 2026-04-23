@@ -72,7 +72,7 @@ use LearnPress\TemplateHooks\CourseBuilder\BuilderEditQuestionTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderEditQuizTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\BuilderTabCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabDashboardTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabSettingsTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
@@ -359,7 +359,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			FilterCourseTemplate::instance();
 			ProfileQuizzesTemplate::instance();
 			CourseBuilderTemplate::instance();
-			BuilderTabCourseTemplate::instance();
+			BuilderCourseTemplate::instance();
 			BuilderTabDashboardTemplate::instance();
 			BuilderTabSettingsTemplate::instance();
 			BuilderDashboardAjax::instance();

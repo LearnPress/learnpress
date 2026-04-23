@@ -20,7 +20,7 @@ use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Course_Filter;
 use Throwable;
 
-class BuilderTabCourseTemplate {
+class BuilderCourseTemplate {
 	use Singleton;
 
 	public function init() {
@@ -289,7 +289,7 @@ class BuilderTabCourseTemplate {
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 
 		try {
-			$edit_link = BuilderTabCourseTemplate::instance()->get_link_edit( $course->get_id() );
+			$edit_link = BuilderCourseTemplate::instance()->get_link_edit( $course->get_id() );
 
 			// Offline badge overlay
 			$offline_badge = '';

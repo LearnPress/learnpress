@@ -216,7 +216,7 @@ class BuilderTabLessonTemplate {
 					$course_title = $course['title'] ?? '';
 
 					if ( $course_id && $course_title ) {
-						$course_link    = BuilderTabCourseTemplate::instance()->get_link_edit( $course_id );
+						$course_link    = CourseBuilder::get_link_course_builder( "courses/{$course_id}" );
 						$course_htmls[] = sprintf(
 							'<a href="%s" target="_blank">%s</a>',
 							esc_url( $course_link ),
