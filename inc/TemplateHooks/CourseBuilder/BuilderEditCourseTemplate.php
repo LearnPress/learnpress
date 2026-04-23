@@ -40,13 +40,13 @@ class BuilderEditCourseTemplate {
 	/**
 	 * Display layout edit/create course
 	 *
-	 * @param array $data
+	 * @param array $data [ 'userModel' => UserModel, 'courseModel' => CourseModel, 'item_id' => int ]
 	 *
 	 * @throws Exception
 	 */
 	public function layout( array $data = [] ) {
 		// Check permission
-		$userModel = UserModel::find( get_current_user_id(), true );
+		$userModel = $data['userModel'] ?? false;
 		if ( ! $userModel || ! $userModel->is_instructor() ) {
 			throw new Exception( __( 'You do not have permission to create or edit courses', 'learnpress' ) );
 		}
@@ -71,6 +71,31 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
+		$data['courseModel'] = $courseModel;
+
+		$section = [
+			'wrap'     => sprintf(
+				'<div class="lp-cb-content" data-post-id="%1$s">',
+				esc_attr( $item_id ),
+			),
+			'header'   => $this->html_header( $data ),
+			'tabs'     => $this->html_tabs( $data ),
+			'wrap_end' => '</div>',
+		];
+
+		echo Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML header
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function html_header( array $data = [] ): string {
+		$userModel            = $data['userModel'] ?? false;
+		$courseModel          = $data['courseModel'] ?? false;
 		$enable_wp_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
 		$title                = $courseModel ? $courseModel->get_title() : __( 'Add New Course', 'learnpress' );
 		$status_badge         = $courseModel ? $courseModel->get_status() : '';
@@ -91,10 +116,6 @@ class BuilderEditCourseTemplate {
 		) ? $status : 'publish';
 
 		$section = [
-			'wrap'               => sprintf(
-				'<div class="lp-cb-content" data-post-id="%1$s">',
-				esc_attr( $item_id ),
-			),
 			'header_wrap'        => '<div class="lp-cb-header">',
 			'header_left'        => '<div class="lp-cb-header__left">',
 			'title'              => sprintf(
@@ -106,26 +127,23 @@ class BuilderEditCourseTemplate {
 				$status_badge,
 				esc_html( $courseModel->get_post_model()->get_status_i18n() )
 			) : '',
-			'link_edit_on_wp'    => ! $is_create_new
-									&& ( $enable_wp_admin_mode && user_can( $userModel->get_id(), UserModel::ROLE_ADMINISTRATOR ) )
+			'link_edit_on_wp'    => ( $enable_wp_admin_mode && user_can( $userModel->get_id(), UserModel::ROLE_ADMINISTRATOR ) )
 									&& ( $courseModel && $courseModel->get_status() === PostModel::STATUS_TRASH ) ? sprintf(
 										'<a href="%1$s" class="lp-cb-admin-link" target="_blank" title="%2$s">
 					<span class="dashicons dashicons-wordpress"></span>
 					<span>%2$s</span>
 				</a>',
-										esc_url( admin_url( "post.php?post={$item_id}&action=edit" ) ),
+										esc_url( admin_url( "post.php?post={$courseModel->get_id()}&action=edit" ) ),
 										esc_attr__( 'Edit with WordPress', 'learnpress' ),
 									) : '',
 			'header_left_end'    => '</div>',
 			'header_actions'     => '<div class="lp-cb-header__actions">',
 			'preview_btn'        => $courseModel && $courseModel->get_status() !== PostModel::STATUS_TRASH ? sprintf(
 				'<a href="%1$s" class="cb-button cb-btn-preview cb-btn-secondary" target="_blank">%2$s</a>',
-				esc_url( get_permalink( $item_id ) ),
+				esc_url( get_permalink( $courseModel->get_id() ) ),
 				esc_html__( 'Preview', 'learnpress' )
 			) : '',
-			'dropdown_wrap'      => sprintf(
-				'<div class="cb-header-actions-dropdown cb-header-actions-dropdown--single">',
-			),
+			'dropdown_wrap'      => '<div class="cb-header-actions-dropdown cb-header-actions-dropdown--single">',
 			'update_btn'         => sprintf(
 				'<div class="cb-btn-update cb-btn-primary cb-btn-main-action"
 					data-status="%1$s"
@@ -171,12 +189,9 @@ class BuilderEditCourseTemplate {
 			) : '',
 			'header_actions_end' => '</div>',
 			'header_end'         => '</div>',
-			//'horizontal_tabs'    => $this->render_horizontal_tabs( $tab_current, $item_id, $sections, '' ),
-			'tabs'               => $this->html_tabs(),
-			'wrap_end'           => '</div>',
 		];
 
-		echo Template::combine_components( $section );
+		return Template::combine_components( $section );
 	}
 
 	/**
@@ -187,18 +202,6 @@ class BuilderEditCourseTemplate {
 	 * @return string
 	 */
 	public function html_tabs( array $data = [] ): string {
-		$menus        = CourseBuilder::get_menus_arr();
-		$menu_current = CourseBuilder::get_menu_current();
-		$tabs         = $menus[ $menu_current ]['tabs'] ?? [];
-		if ( empty( $tabs ) ) {
-			return '';
-		}
-
-		$tab_active = array_key_first( $tabs );
-		if ( isset( $_GET['tab'] ) ) {
-			$tab_active = $_GET['tab'];
-		}
-
 		$section_tab = [
 			'tabs_wrap' => '<div class="lp-cb-tabs">',
 			'tabs'      => '',
@@ -210,6 +213,30 @@ class BuilderEditCourseTemplate {
 			'content'  => '',
 			'wrap-end' => '</div>',
 		];
+
+		$tabs = apply_filters(
+			'learn-press/course-builder/course/edit/tabs',
+			[
+				'overview'   => [
+					'title' => esc_html__( 'Overview', 'learnpress' ),
+					'html'  => $this->html_tab_overview( $data ),
+				],
+				'curriculum' => [
+					'title' => esc_html__( 'Curriculum', 'learnpress' ),
+					'html'  => $this->html_tab_curriculum( $data ),
+				],
+				'settings'   => [
+					'title' => esc_html__( 'Settings', 'learnpress' ),
+					'html'  => $this->html_tab_settings( $data ),
+				],
+			],
+			$data
+		);
+
+		$tab_active = array_key_first( $tabs );
+		if ( isset( $_GET['tab'] ) ) {
+			$tab_active = $_GET['tab'];
+		}
 
 		foreach ( $tabs as $key => $tab ) {
 			$is_active = $key === $tab_active;
@@ -230,7 +257,7 @@ class BuilderEditCourseTemplate {
 				'<div class="lp-cb-tab-panel %s" data-section="%s">%s</div>',
 				$is_active ? '' : 'lp-hidden',
 				esc_attr( $key ),
-				$this->{ "html_tab_{$key}" }( $data )
+				$tab['html']
 			);
 		}
 

@@ -27,16 +27,17 @@ class BuilderTabCourseTemplate {
 		add_action( 'learn-press/course-builder/courses/layout', [ $this, 'layout' ] );
 	}
 
-	public function layout() {
+	public function layout( array $data = [] ) {
 		// Check to switch layout.
-		$item_id = CourseBuilder::get_item_id();
-		$section = [];
+		$item_id         = CourseBuilder::get_item_id();
+		$data['item_id'] = $item_id;
+		$section         = [];
 
 		if ( ! empty( $item_id ) ) {
 			// Show edit course
 			do_action(
 				'learn-press/course-builder/course/edit/layout',
-				compact( 'item_id' )
+				$data
 			);
 		} else {
 			// Show list courses
@@ -82,14 +83,14 @@ class BuilderTabCourseTemplate {
 		// Build status dropdown HTML
 		$status_options = '';
 		foreach ( $statuses as $value => $label ) {
-			$selected        = ( $current_status === $value ) ? 'selected' : '';
+			$selected       = ( $current_status === $value ) ? 'selected' : '';
 			$status_options .= sprintf( '<option value="%s" %s>%s</option>', esc_attr( $value ), $selected, esc_html( $label ) );
 		}
 
 		// Build per page dropdown HTML
 		$per_page_html = '';
 		foreach ( $per_page_options as $option ) {
-			$selected       = ( (int) $current_limit === $option ) ? 'selected' : '';
+			$selected      = ( (int) $current_limit === $option ) ? 'selected' : '';
 			$per_page_html .= sprintf( '<option value="%d" %s>%d</option>', $option, $selected, $option );
 		}
 
@@ -101,7 +102,7 @@ class BuilderTabCourseTemplate {
 		);
 
 		$enable_open_ai  = \LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes'
-			&& ! empty( \LP_Settings::get_option( 'open_ai_secret_key', '' ) );
+		                   && ! empty( \LP_Settings::get_option( 'open_ai_secret_key', '' ) );
 		$ai_btn_class    = $enable_open_ai ? 'lp-btn-generate-course-with-ai' : 'lp-btn-warning-enable-ai';
 		$btn_generate_ai = sprintf(
 			'<button type="button" class="cb-btn-add-new %s">
@@ -256,7 +257,7 @@ class BuilderTabCourseTemplate {
 			foreach ( $courses as $course_obj ) {
 				// Read fresh model to avoid stale post_status in long-lived cache,
 				// especially around future -> publish transitions.
-				$course            = CourseModel::find( $course_obj->ID, false );
+				$course           = CourseModel::find( $course_obj->ID, false );
 				$html_list_course .= self::render_course( $course );
 			}
 
@@ -350,7 +351,7 @@ class BuilderTabCourseTemplate {
 			$html_meta_data = '';
 			if ( ! empty( $meta_data ) ) {
 				foreach ( $meta_data as $k => $v ) {
-					$icon            = $meta_icons[ $k ] ?? '';
+					$icon           = $meta_icons[ $k ] ?? '';
 					$html_meta_data .= sprintf( '<div class="meta-item meta-item-%s">%s%s</div>', $k, $icon, $v );
 				}
 

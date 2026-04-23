@@ -373,7 +373,7 @@ class CourseBuilderTemplate {
 		$menu_current = CourseBuilder::get_menu_current();
 
 		ob_start();
-		do_action( "learn-press/course-builder/{$menu_current}/layout" );
+		do_action( "learn-press/course-builder/{$menu_current}/layout", $data );
 		$content = ob_get_clean();
 
 		$output = [
