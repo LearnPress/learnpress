@@ -2,19 +2,19 @@
 /**
  * Template hooks Tab Course in Course Builder.
  *
- * @since 4.3.0
+ * @since 4.3.6
  * @version 1.0.0
  */
 
 namespace LearnPress\TemplateHooks\CourseBuilder\Course;
 
 use LearnPress\CourseBuilder\CourseBuilder;
+use LearnPress\Databases\DataBase;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserModel;
-use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseOfflineTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
@@ -194,9 +194,8 @@ class BuilderListCoursesTemplate {
 			}
 
 			$data_pagination = [
-				'base'        => add_query_arg( 'paged', '%#%', '' ),
 				'paged'       => $filter->page,
-				'total_pages' => $total_courses,
+				'total_pages' => DataBase::get_total_pages( $filter->limit, $total_courses ),
 			];
 
 			$sections = apply_filters(
@@ -256,22 +255,23 @@ class BuilderListCoursesTemplate {
 	/**
 	 * Render course in course builder
 	 *
-	 * @param CourseModel
+	 * @param CourseModel $courseModel
 	 * @param array $settings
 	 *
 	 * @return string
-	 * @since 4.3.0
+	 * @since 4.3.6
 	 * @version 1.0.0
 	 */
-	public static function render_course( CourseModel $course, array $settings = [] ): string {
+	public static function render_course( CourseModel $courseModel, array $settings = [] ): string {
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 
 		try {
-			$edit_link = CourseBuilder::get_link_course_builder( 'courses/{course_id}' );
+			$course_id = $courseModel->get_id();
+			$edit_link = CourseBuilder::get_link_course_builder( "courses/{$course_id}" );
 
 			// Offline badge overlay
 			$offline_badge = '';
-			if ( $course->is_offline() ) {
+			if ( $courseModel->is_offline() ) {
 				$offline_badge = '<span class="cb-item-status-badge offline">Offline</span>';
 			}
 
@@ -280,12 +280,12 @@ class BuilderListCoursesTemplate {
 				[
 					'wrapper'     => '<div class="course-thumbnail">',
 					'link'        => sprintf( '<a href="%s">', $edit_link ),
-					'img'         => $singleCourseTemplate->html_image( $course ),
+					'img'         => $singleCourseTemplate->html_image( $courseModel ),
 					'badge'       => $offline_badge,
 					'link_end'    => '</a>',
 					'wrapper_end' => '</div>',
 				],
-				$course,
+				$courseModel,
 				$settings
 			);
 
@@ -302,27 +302,27 @@ class BuilderListCoursesTemplate {
 			$meta_data = apply_filters(
 				'learn-press/course-builder/list-courses/item/meta-data',
 				[
-					'duration' => $singleCourseTemplate->html_duration( $course ),
-					'level'    => $singleCourseTemplate->html_level( $course ),
-					'lesson'   => $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
-					'quiz'     => $singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ),
-					'student'  => $singleCourseTemplate->html_count_student( $course ),
+					'duration' => $singleCourseTemplate->html_duration( $courseModel ),
+					'level'    => $singleCourseTemplate->html_level( $courseModel ),
+					'lesson'   => $singleCourseTemplate->html_count_item( $courseModel, LP_LESSON_CPT ),
+					'quiz'     => $singleCourseTemplate->html_count_item( $courseModel, LP_QUIZ_CPT ),
+					'student'  => $singleCourseTemplate->html_count_student( $courseModel ),
 				],
-				$course,
+				$courseModel,
 				$settings
 			);
 
-			if ( $course->is_offline() ) {
+			if ( $courseModel->is_offline() ) {
 				$singleCourseOfflineTemplate = SingleCourseOfflineTemplate::instance();
 				unset( $meta_data['quiz'] );
 				unset( $meta_data['student'] );
 				if ( ! empty( $meta_data['lesson'] ) ) {
-					$meta_data['lesson'] = $singleCourseOfflineTemplate->html_lesson_info( $course, true );
+					$meta_data['lesson'] = $singleCourseOfflineTemplate->html_lesson_info( $courseModel, true );
 				}
 
-				$html_address = $singleCourseOfflineTemplate->html_address( $course );
+				$html_address = $singleCourseOfflineTemplate->html_address( $courseModel );
 				if ( ! empty( $html_address ) ) {
-					$meta_data['address'] = $singleCourseOfflineTemplate->html_address( $course );
+					$meta_data['address'] = $singleCourseOfflineTemplate->html_address( $courseModel );
 				}
 			}
 
@@ -336,7 +336,7 @@ class BuilderListCoursesTemplate {
 				$html_meta_data = sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data );
 			}
 
-			$course_status = $course->get_status();
+			$course_status = $courseModel->get_status();
 			$status_label  = 'future' === $course_status ? __( 'Scheduled', 'learnpress' ) : $course_status;
 			$html_status   = sprintf(
 				'<div class="course-status %1$s"><span>%2$s</span></div>',
@@ -345,11 +345,11 @@ class BuilderListCoursesTemplate {
 			);
 
 			// Price
-			$html_price = sprintf( '<div class="course-item-price-wrap">%s</div>', $singleCourseTemplate->html_price( $course ) );
+			$html_price = sprintf( '<div class="course-item-price-wrap">%s</div>', $singleCourseTemplate->html_price( $courseModel ) );
 
 			// Categories
 			$html_categories = '';
-			$categories      = $course->get_categories();
+			$categories      = $courseModel->get_categories();
 			if ( ! empty( $categories ) ) {
 				$cat_names = array();
 				foreach ( $categories as $cat ) {
@@ -368,7 +368,7 @@ class BuilderListCoursesTemplate {
 			}
 
 			// Last Updated
-			$post_obj          = get_post( $course->get_id() );
+			$post_obj          = get_post( $courseModel->get_id() );
 			$html_last_updated = '';
 			if ( $post_obj && ! empty( $post_obj->post_modified ) ) {
 				$modified_time     = strtotime( $post_obj->post_modified );
@@ -388,12 +388,12 @@ class BuilderListCoursesTemplate {
 					'last_updated' => $html_last_updated,
 					'wrapper_end'  => '</div>',
 				],
-				$course,
+				$courseModel,
 				$settings
 			);
 
 			// Instructor with categories
-			$instructor               = $course->get_author_model();
+			$instructor               = $courseModel->get_author_model();
 			$instructor_name          = $instructor ? $instructor->get_display_name() : '';
 			$html_instructor_category = '';
 			if ( ! empty( $instructor_name ) ) {
@@ -412,14 +412,14 @@ class BuilderListCoursesTemplate {
 					'title'       => sprintf(
 						'<h3 class="wap-course-title"><a href="%s">%s</a></h3>',
 						$edit_link,
-						$singleCourseTemplate->html_title( $course )
+						$singleCourseTemplate->html_title( $courseModel )
 					),
 					'instructor'  => $html_instructor_category,
 					'meta'        => $html_meta_data,
 					'info'        => Template::combine_components( $section_bottom_end ),
 					'wrapper_end' => '</div>',
 				],
-				$course,
+				$courseModel,
 				$settings
 			);
 
@@ -434,7 +434,7 @@ class BuilderListCoursesTemplate {
 					),
 					'action_expanded_button'      => '<div class="course-action-expanded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></div>',
 					'action_expanded_wrapper'     => '<div style="display:none;" class="course-action-expanded__items">',
-					'action_expanded_view'        => sprintf( '<a class="course-action-expanded__view" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_url_raw( $course->get_permalink() ), __( 'View', 'learnpress' ) ),
+					'action_expanded_view'        => sprintf( '<a class="course-action-expanded__view" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_url_raw( $courseModel->get_permalink() ), __( 'View', 'learnpress' ) ),
 					'action_expanded_duplicate'   => sprintf( '<span class="course-action-expanded__duplicate">%s</span>', __( 'Duplicate', 'learnpress' ) ),
 					'action_expanded_restore'     => sprintf( '<span class="course-action-expanded__draft">%s</span>', __( 'Draft', 'learnpress' ) ),
 					'action_expanded_trash'       => sprintf( '<span class="course-action-expanded__trash">%s</span>', __( 'Trash', 'learnpress' ) ),
@@ -442,7 +442,7 @@ class BuilderListCoursesTemplate {
 					'action_expanded_wrapper_end' => '</div>',
 					'wrapper_end'                 => '</div>',
 				],
-				$course,
+				$courseModel,
 				$settings
 			);
 
@@ -450,14 +450,14 @@ class BuilderListCoursesTemplate {
 				'learn-press/course-builder/list-courses/item-li',
 				[
 					'wrapper_li'      => '<li class="course">',
-					'wrapper_div'     => sprintf( '<div class="course-item" data-course-id="%s">', $course->get_id() ),
+					'wrapper_div'     => sprintf( '<div class="course-item" data-course-id="%s">', $courseModel->get_id() ),
 					'media'           => Template::combine_components( $html_img ),
 					'course_info'     => Template::combine_components( $html_content ),
 					'course_action'   => Template::combine_components( $html_action ),
 					'wrapper_div_end' => '</div>',
 					'wrapper_li_end'  => '</li>',
 				],
-				$course,
+				$courseModel,
 				$settings
 			);
 
@@ -467,55 +467,5 @@ class BuilderListCoursesTemplate {
 		}
 
 		return $html_item;
-	}
-
-	/**
-	 * Pagination courses.
-	 *
-	 * @param int $page
-	 * @param int $limit
-	 * @param int $total_courses
-	 *
-	 * @return string
-	 */
-	public function courses_pagination( int $page, int $limit, int $total_courses ): string {
-		$content = '';
-
-		try {
-			$total_pages = \LP_Database::get_total_pages( $limit, $total_courses );
-			$link_tab    = CourseBuilder::get_tab_link( 'courses' );
-			$base_url    = trailingslashit( $link_tab ) . 'page/%#%';
-			$query_args  = lp_archive_skeleton_get_args();
-			unset( $query_args['paged'] );
-			unset( $query_args['post_id'] );
-			unset( $query_args['tab'] );
-			unset( $query_args['section'] );
-			$query_args = array_filter(
-				$query_args,
-				static function ( $value ) {
-					return '' !== $value && null !== $value;
-				}
-			);
-			if ( ! empty( $query_args ) ) {
-				$base_url .= '?' . http_build_query( $query_args, '', '&' );
-			}
-
-			$data_pagination = array(
-				'total'    => $total_pages,
-				'current'  => max( 1, $page ),
-				'base'     => $base_url,
-				'format'   => '',
-				'per_page' => $limit,
-			);
-
-			ob_start();
-			Template::instance()->get_frontend_template( 'shared/pagination.php', $data_pagination );
-			$content = ob_get_clean();
-		} catch ( Throwable $e ) {
-			ob_end_clean();
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
 	}
 }

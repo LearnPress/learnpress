@@ -363,9 +363,9 @@ class Template {
 			apply_filters(
 				'learn_press_pagination_args',
 				array(
-					'base'      => $data['base'] ?? '',
-					'format'    => '',
-					'add_args'  => '',
+					'base'      => $data['base'] ?? add_query_arg( 'paged', '%#%', '' ),
+					'format'    => $data['format'] ?? '?paged=%#%',
+					'add_args'  => $data['add_args'] ?? '',
 					'current'   => max( 1, $paged ),
 					'total'     => $total_pages,
 					'prev_text' => '<i class="lp-icon-arrow-left"></i>',
