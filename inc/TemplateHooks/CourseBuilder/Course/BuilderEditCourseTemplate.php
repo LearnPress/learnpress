@@ -113,6 +113,8 @@ class BuilderEditCourseTemplate {
 			),
 			true
 		) ? $status : 'publish';
+		$is_admin_user      = current_user_can( ADMIN_ROLE );
+		$hide_wp_edit_link  = $enable_wp_admin_mode && ! $is_admin_user && $userModel->is_instructor();
 
 		$section = [
 			'header_wrap'        => '<div class="lp-cb-header">',
@@ -126,15 +128,15 @@ class BuilderEditCourseTemplate {
 				$status_badge,
 				esc_html( $courseModel->get_post_model()->get_status_i18n() )
 			) : '',
-			'link_edit_on_wp'    => ( $enable_wp_admin_mode && user_can( $userModel->get_id(), UserModel::ROLE_ADMINISTRATOR ) )
-									&& ( $courseModel && $courseModel->get_status() === PostModel::STATUS_TRASH ) ? sprintf(
-										'<a href="%1$s" class="lp-cb-admin-link" target="_blank" title="%2$s">
+			'link_edit_on_wp'    => $courseModel && ! $hide_wp_edit_link ? sprintf(
+				'<a href="%1$s" class="lp-cb-admin-link" target="_blank" title="%2$s"%3$s>
 					<span class="dashicons dashicons-wordpress"></span>
 					<span>%2$s</span>
 				</a>',
-										esc_url( admin_url( "post.php?post={$courseModel->get_id()}&action=edit" ) ),
-										esc_attr__( 'Edit with WordPress', 'learnpress' ),
-									) : '',
+				esc_url( admin_url( "post.php?post={$courseModel->get_id()}&action=edit" ) ),
+				esc_attr__( 'Edit with WordPress', 'learnpress' ),
+				PostModel::STATUS_TRASH === $status ? ' style="display:none"' : ''
+			) : '',
 			'header_left_end'    => '</div>',
 			'header_actions'     => '<div class="lp-cb-header__actions">',
 			'preview_btn'        => $courseModel && $courseModel->get_status() !== PostModel::STATUS_TRASH ? sprintf(
@@ -164,25 +166,23 @@ class BuilderEditCourseTemplate {
 						%2$s
 					</button>
 					<div class="cb-header-action-expanded__items">
-						%3$s
+						<div class="cb-header-action-expanded__duplicate cb-btn-duplicate-course"
+							data-title="%3$s"
+							data-content="%4$s">
+							<span class="dashicons dashicons-admin-page"></span>
+							%5$s
+						</div>
 						<div class="cb-header-action-expanded__trash cb-btn-trash">
 							<span class="dashicons dashicons-trash"></span>
-							%4$s
+							%6$s
 						</div>
 					</div>
 				</div>',
 				esc_attr__( 'More actions', 'learnpress' ),
 				$more_actions_icon,
-				! empty( $header_expanded_duplicate_class ) ? sprintf(
-					'<div class="cb-header-action-expanded__duplicate %1$s" data-title="%2$s" data-content="%3$s">
-						<span class="dashicons dashicons-admin-page"></span>
-						%4$s
-					</div>',
-					esc_attr( $header_expanded_duplicate_class ),
-					esc_attr__( 'Are you sure?', 'learnpress' ),
-					esc_attr__( 'Are you sure you want to duplicate this question?', 'learnpress' ),
-					esc_html__( 'Duplicate', 'learnpress' )
-				) : '',
+				esc_attr__( 'Are you sure?', 'learnpress' ),
+				esc_attr__( 'Are you sure you want to duplicate this course?', 'learnpress' ),
+				esc_html__( 'Duplicate', 'learnpress' ),
 				esc_html__( 'Move to Trash', 'learnpress' )
 			) : '',
 			'header_actions_end' => '</div>',
@@ -335,12 +335,7 @@ class BuilderEditCourseTemplate {
 			}
 		}
 
-		// Load curriculum with is_course_builder flag
-		ob_start();
-		AdminEditCurriculumTemplate::instance()->edit_course_curriculum_layout( $course_model );
-		$html_curriculum = ob_get_clean();
-
-		return $html_curriculum . $this->html_curriculum_ai_templates();
+		return $this->html_curriculum( $course_model );
 	}
 
 	public function html_tab_settings( array $data = [] ) {
@@ -1121,26 +1116,17 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
-	public function section_curriculum() {
-		wp_enqueue_script( 'lp-cb-edit-curriculum' );
-		wp_enqueue_style( 'lp-cb-edit-curriculum' );
-		wp_enqueue_script( 'lp-cb-admin-learnpress' );
+	protected function html_curriculum( CourseModel $course_model ): string {
+		ob_start();
+		$this->load_curriculum_for_course_builder( $course_model );
+		$html_curriculum = ob_get_clean();
 
-		$course_id = CourseBuilder::get_item_id();
+		return $html_curriculum
+			. $this->html_curriculum_popup_templates( $course_model )
+			. $this->html_curriculum_ai_templates();
+	}
 
-		if ( $course_id === CourseBuilder::POST_NEW ) {
-			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before add Section' ) );
-			echo $message;
-			return;
-		}
-
-		if ( absint( $course_id ) ) {
-			$course_model = CourseModel::find( $course_id, true );
-			if ( empty( $course_model ) ) {
-				return;
-			}
-		}
-
+	protected function html_curriculum_popup_templates( CourseModel $course_model ): string {
 		$popup_templates = apply_filters(
 			'learn-press/course-builder/courses/curriculum/popup-templates',
 			[
@@ -1194,10 +1180,7 @@ class BuilderEditCourseTemplate {
 			$course_model
 		);
 
-		// Load curriculum with is_course_builder flag
-		$this->load_curriculum_for_course_builder( $course_model );
-		echo Template::combine_components( $popup_templates );
-		echo $this->html_curriculum_ai_templates();
+		return Template::combine_components( $popup_templates );
 	}
 
 	/**
