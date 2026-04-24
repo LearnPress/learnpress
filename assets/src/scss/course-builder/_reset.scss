@@ -92,9 +92,17 @@ html {
 		margin: 0;
 	}
 
-	a:focus {
-		border-color: none;
-		box-shadow: unset;
-		outline: unset;
+	a {
+		color: $cb-primary;
+
+		&:hover {
+			color: $cb-primary-hover;
+		}
+
+		&:focus {
+			border-color: none;
+			box-shadow: unset;
+			outline: unset;
+		}
 	}
 }

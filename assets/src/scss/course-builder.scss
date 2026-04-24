@@ -722,16 +722,17 @@ body {
 	color: $cb-primary;
 }
 
-input.lp-search-title-item {
+.lp-popup-items-to-select input.lp-search-title-item {
 	padding: 12px 16px;
 	border-color: $cb-border;
 	border-radius: 8px;
 	outline: none;
 	transition: border-color 0.2s;
+	margin: 0;
 }
 
-input.lp-search-title-item:focus {
-	border-color: #3b82f6;
+.lp-popup-items-to-select input.lp-search-title-item:focus {
+	border-color: $cb-primary;
 	box-shadow: 0 0 0 2px rgba( 59, 130, 246, 0.1 );
 }
 
@@ -786,6 +787,10 @@ input.lp-search-title-item:focus {
 	border: solid white;
 	border-width: 0 2px 2px 0;
 	transform: rotate( 45deg );
+}
+
+.lp-select-item input[type='checkbox']:checked::before {
+	display: none;
 }
 
 .lp-select-item .title {

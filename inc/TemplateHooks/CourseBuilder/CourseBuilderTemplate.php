@@ -14,6 +14,7 @@ use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Profile;
 use LP_Settings;
 use Throwable;
@@ -742,12 +743,40 @@ class CourseBuilderTemplate {
 			'questions' => 'question',
 		];
 
-		$title   = isset( $map_title[ $tab_current ] ) ? $map_title[ $tab_current ] : '';
-		$type    = isset( $map_type[ $tab_current ] ) ? $map_type[ $tab_current ] : '';
-		$add_new = 'data-add-new-' . esc_attr( $type );
+		$title         = isset( $map_title[ $tab_current ] ) ? $map_title[ $tab_current ] : '';
+		$type          = isset( $map_type[ $tab_current ] ) ? $map_type[ $tab_current ] : '';
+		$add_new       = 'data-add-new-' . esc_attr( $type );
+		$template_html = '';
+		$template_attr = '';
 
 		$btn_add_new = sprintf( '<button %s class="lp-button cb-btn-add-new">', $add_new );
 		$btn_close   = '</button>';
+
+		if ( 'lessons' === $tab_current ) {
+			$template_id   = 'lp-tmpl-builder-popup-lesson-tab-new';
+			$template_attr = sprintf(
+				' data-template="#%1$s" data-popup-type="lesson" data-popup-id="0"',
+				esc_attr( $template_id )
+			);
+			$template_html = sprintf(
+				'<script type="text/template" id="%1$s"><div class="lp-builder-popup-overlay"></div><div class="lp-builder-popup lp-builder-popup--loading">%2$s</div></script>',
+				esc_attr( $template_id ),
+				TemplateAJAX::load_content_via_ajax(
+					[
+						'id_url'                  => 'builder-popup-lesson-tab-new',
+						'lesson_id'               => 0,
+						'html_no_load_ajax_first' => sprintf(
+							'<div class="lp-builder-popup__loader"><div class="lp-loading-circle"></div><span>%s</span></div>',
+							esc_html__( 'Loading...', 'learnpress' )
+						),
+					],
+					[
+						'class'  => BuilderPopupTemplate::class,
+						'method' => 'render_lesson_popup',
+					]
+				)
+			);
+		}
 
 		if ( 'courses' === $tab_current ) {
 			$btn_add_new = sprintf(
@@ -774,10 +803,12 @@ class CourseBuilderTemplate {
 		}
 
 		$btn = [
-			'wrapper'     => $btn_add_new,
+			'wrapper'     => str_replace( '>', $template_attr . '>', $btn_add_new ),
 			'content'     => sprintf( '%s %s', __( 'Add New', 'learnpress' ), $title ),
 			'wrapper_end' => $btn_close,
+			'template'    => $template_html,
 		];
+		$btn = apply_filters( 'learn-press/course-builder/button-add-new', $btn, $tab_current, $type );
 
 		return Template::combine_components( $btn );
 	}

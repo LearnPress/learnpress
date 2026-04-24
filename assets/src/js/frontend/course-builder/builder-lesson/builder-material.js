@@ -671,7 +671,7 @@ export class BuilderMaterial {
 			const res = await response.json();
 
 			if ( res.status !== 200 ) {
-				alert( 'Sort table fail.' );
+				console.error( 'Sort table fail.' );
 			}
 		} catch ( err ) {
 			console.error( 'Update sort error:', err );

@@ -1123,6 +1123,112 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
+	public function section_curriculum() {
+		wp_enqueue_script( 'lp-cb-edit-curriculum' );
+		wp_enqueue_style( 'lp-cb-edit-curriculum' );
+		wp_enqueue_script( 'lp-cb-admin-learnpress' );
+
+		$course_id = CourseBuilder::get_item_id();
+
+		if ( $course_id === CourseBuilder::POST_NEW ) {
+			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before add Section' ) );
+			echo $message;
+			return;
+		}
+
+		if ( absint( $course_id ) ) {
+			$course_model = CourseModel::find( $course_id, true );
+			if ( empty( $course_model ) ) {
+				return;
+			}
+		}
+
+		$popup_templates = apply_filters(
+			'learn-press/course-builder/courses/curriculum/popup-templates',
+			[
+				'lesson' => sprintf(
+					'<script type="text/template" id="%1$s"><div class="lp-builder-popup-overlay"></div><div class="lp-builder-popup lp-builder-popup--loading">%2$s</div></script>',
+					esc_attr(
+						sprintf(
+							'lp-tmpl-builder-popup-curriculum-lesson-course-%d',
+							$course_model->get_id()
+						)
+					),
+					TemplateAJAX::load_content_via_ajax(
+						[
+							'id_url'                  => 'builder-popup-lesson-curriculum',
+							'lesson_id'               => 0,
+							'html_no_load_ajax_first' => sprintf(
+								'<div class="lp-builder-popup__loader"><div class="lp-loading-circle"></div><span>%s</span></div>',
+								esc_html__( 'Loading...', 'learnpress' )
+							),
+						],
+						[
+							'class'  => BuilderPopupTemplate::class,
+							'method' => 'render_lesson_popup',
+						]
+					)
+				),
+				'quiz'   => sprintf(
+					'<script type="text/template" id="%1$s"><div class="lp-builder-popup-overlay"></div><div class="lp-builder-popup lp-builder-popup--loading">%2$s</div></script>',
+					esc_attr(
+						sprintf(
+							'lp-tmpl-builder-popup-curriculum-quiz-course-%d',
+							$course_model->get_id()
+						)
+					),
+					TemplateAJAX::load_content_via_ajax(
+						[
+							'id_url'                  => 'builder-popup-quiz-curriculum',
+							'quiz_id'                 => 0,
+							'html_no_load_ajax_first' => sprintf(
+								'<div class="lp-builder-popup__loader"><div class="lp-loading-circle"></div><span>%s</span></div>',
+								esc_html__( 'Loading...', 'learnpress' )
+							),
+						],
+						[
+							'class'  => BuilderPopupTemplate::class,
+							'method' => 'render_quiz_popup',
+						]
+					)
+				),
+			],
+			$course_model
+		);
+
+		// Load curriculum with is_course_builder flag
+		$this->load_curriculum_for_course_builder( $course_model );
+		echo Template::combine_components( $popup_templates );
+		echo $this->html_curriculum_ai_templates();
+	}
+
+	/**
+	 * Load curriculum for Course Builder with special flag.
+	 * This method loads curriculum via AJAX with is_course_builder flag.
+	 *
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 *
+	 * @param CourseModel $courseModel
+	 */
+	protected function load_curriculum_for_course_builder( CourseModel $courseModel ) {
+		wp_enqueue_style( 'lp-edit-curriculum' );
+		wp_enqueue_script( 'lp-edit-course' );
+
+		$args = [
+			'id_url'            => 'edit-course-curriculum',
+			'course_id'         => $courseModel->ID,
+			'is_course_builder' => true, // Flag to identify Course Builder context
+		];
+
+		$call_back = [
+			'class'  => AdminEditCurriculumTemplate::class,
+			'method' => 'render_edit_course_curriculum',
+		];
+
+		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
+	}
+
 	/**
 	 * Add edit popup button for lesson and quiz items in Course Builder curriculum.
 	 * Replace the default edit button with popup button for lesson and quiz items.
@@ -1149,32 +1255,52 @@ class BuilderEditCourseTemplate {
 		$item_id   = $item->item_id ?? 0;
 		$item_type = $item->item_type ?? '';
 
-		// Only replace edit button for lesson and quiz items
-		if ( ! in_array( $item_type, [ LP_LESSON_CPT, LP_QUIZ_CPT ], true ) ) {
+		$popup_data_attr = '';
+		$popup_type      = '';
+		if ( $item_type === LP_LESSON_CPT ) {
+			$popup_data_attr = sprintf( 'data-popup-lesson="%s"', $item_id );
+			$popup_type      = 'lesson';
+		} elseif ( $item_type === LP_QUIZ_CPT ) {
+			$popup_data_attr = sprintf( 'data-popup-quiz="%s"', $item_id );
+			$popup_type      = 'quiz';
+		}
+
+		$popup_type = sanitize_key(
+			(string) apply_filters(
+				'learn-press/course-builder/courses/curriculum/popup-item-type',
+				$popup_type,
+				$item_type,
+				$item,
+				$itemModel,
+				$courseModel,
+				$context_data
+			)
+		);
+		if ( empty( $popup_type ) ) {
 			return $section_action;
 		}
 
-		// Build popup data attribute based on item type
-		$popup_data_attr = '';
-		if ( $item_type === LP_LESSON_CPT ) {
-			$popup_data_attr = sprintf( 'data-popup-lesson="%s"', $item_id );
-		} elseif ( $item_type === LP_QUIZ_CPT ) {
-			$popup_data_attr = sprintf( 'data-popup-quiz="%s"', $item_id );
-		}
+		$popup_template_id = sprintf(
+			'lp-tmpl-builder-popup-curriculum-%1$s-course-%2$d',
+			$popup_type,
+			$courseModel->get_id()
+		);
 
 		// Replace edit button with popup button - use lp-icon-edit-square instead of lp-icon-expand
 		$section_action['edit'] = sprintf(
 			'<li title="%s" class="lp-btn-edit-item-popup"
-                data-item-id="%s"
-                data-item-type="%s"
                 data-course-id="%s"
+                data-template="#%s"
+                data-popup-type="%s"
+                data-popup-id="%d"
                 %s>
-                <a class="lp-icon-edit-square edit-popup-link"></a>
+                <a class="lp-icon-edit-square edit-link edit-popup-link"></a>
             </li>',
 			__( 'Edit in popup', 'learnpress' ),
-			$item_id,
-			$item_type,
 			$courseModel->get_id(),
+			esc_attr( $popup_template_id ),
+			esc_attr( $popup_type ),
+			$item_id,
 			$popup_data_attr
 		);
 

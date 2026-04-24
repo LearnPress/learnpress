@@ -1386,50 +1386,6 @@ export class BuilderEditCourse {
 		return data;
 	}
 
-	/**
-	 * Validate title is not empty before update.
-	 *
-	 * @return {boolean} True if valid, false if invalid
-	 */
-	validateTitleBeforeUpdate() {
-		const titleInput = document.querySelector( BuilderEditCourse.selectors.elTitleInput );
-		if ( ! titleInput ) return true;
-
-		const title = titleInput.value.trim();
-		if ( ! title ) {
-			const i18n =
-				typeof lpAdminCourseEditorSettings !== 'undefined' && lpAdminCourseEditorSettings.i18n
-					? lpAdminCourseEditorSettings.i18n
-					: { notice_title_required: 'Course title is required.' };
-			lpToastify.show( i18n.notice_title_required || 'Course title is required.', 'error' );
-			titleInput.focus();
-			return false;
-		}
-		return true;
-	}
-
-	validatePricingBeforeUpdate() {
-		const regularPriceInput = document.querySelector(
-			BuilderEditCourse.selectors.elRegularPriceInput
-		);
-		const salePriceInput = document.querySelector( BuilderEditCourse.selectors.elSalePriceInput );
-		if ( ! regularPriceInput || ! salePriceInput ) return true;
-		const regularVal = parseFloat( regularPriceInput.value ) || 0;
-		const saleVal = parseFloat( salePriceInput.value ) || 0;
-		if ( salePriceInput.value !== '' && saleVal > regularVal ) {
-			const i18n =
-				typeof lpAdminCourseEditorSettings !== 'undefined' && lpAdminCourseEditorSettings.i18n
-					? lpAdminCourseEditorSettings.i18n
-					: { notice_sale_price: 'Sale price must be less than regular price.' };
-			lpToastify.show( i18n.notice_sale_price, 'error' );
-			const priceTabLink = document.querySelector( '.price_tab a' );
-			if ( priceTabLink ) priceTabLink.click();
-			salePriceInput.focus();
-			return false;
-		}
-		return true;
-	}
-
 	updateCourse( args ) {
 		// Context check: only handle if on course edit page
 		if ( ! document.querySelector( BuilderEditCourse.selectors.elDataCourse ) ) {
@@ -1445,10 +1401,6 @@ export class BuilderEditCourse {
 		if ( e ) {
 			e.preventDefault();
 		}
-		// Validate title is not empty
-		if ( ! this.validateTitleBeforeUpdate() ) return;
-		if ( ! this.validatePricingBeforeUpdate() ) return;
-
 		// Find which button was clicked and determine status from data attribute
 		const elBtnMainAction = target.closest( BuilderEditCourse.selectors.elBtnMainAction );
 		const elBtnHeaderSave = target.closest( BuilderEditCourse.selectors.elBtnHeaderSave );
@@ -2177,8 +2129,6 @@ export class BuilderEditCourse {
 
 	saveSettings( args ) {
 		const { target } = args;
-		if ( ! this.validatePricingBeforeUpdate() ) return;
-
 		const elBtnSaveSettings = target.closest( BuilderEditCourse.selectors.elBtnSaveSettings );
 		lpUtils.lpSetLoadingEl( elBtnSaveSettings, 1 );
 

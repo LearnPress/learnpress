@@ -13,6 +13,7 @@ use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Course_Filter;
 use LP_Statistics_DB;
 use Throwable;
@@ -606,6 +607,26 @@ class BuilderTabDashboardTemplate {
 	 * @return string
 	 */
 	private function render_quick_actions(): string {
+		$create_lesson_template_id = 'lp-tmpl-builder-popup-lesson-dashboard-new';
+		$create_lesson_template    = sprintf(
+			'<script type="text/template" id="%1$s"><div class="lp-builder-popup-overlay"></div><div class="lp-builder-popup lp-builder-popup--loading">%2$s</div></script>',
+			esc_attr( $create_lesson_template_id ),
+			TemplateAJAX::load_content_via_ajax(
+				[
+					'id_url'                  => 'builder-popup-lesson-dashboard-new',
+					'lesson_id'               => 0,
+					'html_no_load_ajax_first' => sprintf(
+						'<div class="lp-builder-popup__loader"><div class="lp-loading-circle"></div><span>%s</span></div>',
+						esc_html__( 'Loading...', 'learnpress' )
+					),
+				],
+				[
+					'class'  => BuilderPopupTemplate::class,
+					'method' => 'render_lesson_popup',
+				]
+			)
+		);
+
 		$actions = [
 			[
 				'label' => __( 'Create Course', 'learnpress' ),
@@ -614,10 +635,14 @@ class BuilderTabDashboardTemplate {
 				'svg'   => wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-courses-2.svg' ),
 			],
 			[
-				'label' => __( 'Create Lesson', 'learnpress' ),
-				'attr'  => 'data-add-new-lesson',
-				'color' => '#7067ED',
-				'icon'  => 'lp-icon-file-text-o',
+				'label'         => __( 'Create Lesson', 'learnpress' ),
+				'attr'          => 'data-add-new-lesson',
+				'popup_type'    => 'lesson',
+				'popup_id'      => 0,
+				'template_id'   => $create_lesson_template_id,
+				'template_html' => $create_lesson_template,
+				'color'         => '#7067ED',
+				'icon'          => 'lp-icon-file-text-o',
 			],
 			[
 				'label' => __( 'Create Quiz', 'learnpress' ),
@@ -632,22 +657,40 @@ class BuilderTabDashboardTemplate {
 				'icon'  => 'lp-icon-question-circle-o',
 			],
 		];
+		$actions = apply_filters( 'learn-press/course-builder/dashboard/quick-actions', $actions );
 
 		$buttons_html = '';
 		foreach ( $actions as $action ) {
-			if ( ! empty( $action['attr'] ) ) {
+			if ( ! empty( $action['attr'] ) || ! empty( $action['template_id'] ) ) {
+				$button_attrs  = [];
+				$template_html = $action['template_html'] ?? '';
+				if ( ! empty( $action['attr'] ) ) {
+					$button_attrs[] = $action['attr'];
+				}
+				if ( ! empty( $action['template_id'] ) ) {
+					$button_attrs[] = sprintf( 'data-template="#%s"', esc_attr( $action['template_id'] ) );
+				}
+				if ( ! empty( $action['popup_type'] ) ) {
+					$button_attrs[] = sprintf( 'data-popup-type="%s"', esc_attr( $action['popup_type'] ) );
+				}
+				if ( isset( $action['popup_id'] ) ) {
+					$button_attrs[] = sprintf( 'data-popup-id="%d"', absint( $action['popup_id'] ) );
+				}
+				$button_attrs = ! empty( $button_attrs ) ? ' ' . implode( ' ', $button_attrs ) : '';
+
 				// Render as button with data attribute (opens popup)
 				$buttons_html .= sprintf(
-					'<button type="button" %s class="quick-action__btn" style="--action-color: %s; --action-bg: %s10">
+					'<button type="button"%s class="quick-action__btn" style="--action-color: %s; --action-bg: %s10">
 						<span class="quick-action__icon %s">%s</span>
 						<span class="quick-action__label">%s</span>
-					</button>',
-					esc_attr( $action['attr'] ),
+					</button>%s',
+					$button_attrs,
 					esc_attr( $action['color'] ),
 					esc_attr( $action['color'] ),
 					esc_attr( $action['icon'] ?? '' ),
 					$action['svg'] ?? '',
-					esc_html( $action['label'] )
+					esc_html( $action['label'] ),
+					$template_html
 				);
 			} else {
 				// Render as link

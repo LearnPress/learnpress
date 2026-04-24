@@ -19,6 +19,7 @@ export class BuilderPopup {
 		this.popupContainer = null;
 		this.currentType = null;
 		this.currentId = null;
+		this.currentTemplate = '';
 		this.isNewItem = false;
 		this.savedData = null;
 		this.openContext = this.getDefaultOpenContext();
@@ -51,27 +52,26 @@ export class BuilderPopup {
 		permalinkRoot: '.cb-item-edit-permalink, .cb-course-edit-permalink',
 		permalinkPlaceholder: '.cb-item-edit-permalink__placeholder',
 		// Trigger buttons
+		popupTrigger:
+			'[data-popup-lesson], [data-popup-quiz], [data-popup-question], [data-add-new-lesson], [data-template][data-popup-type]',
 		triggerLesson: '[data-popup-lesson]',
 		triggerQuiz: '[data-popup-quiz]',
 		triggerQuestion: '[data-popup-question]',
 		// Add new buttons
 		addNewLesson: '[data-add-new-lesson]',
-		addNewQuiz: '[data-add-new-quiz]',
-		addNewQuestion: '[data-add-new-question]',
 	};
 
 	init() {
-		this.createPopupContainer();
-		this.events();
-	}
+		let popupContainer = document.querySelector( BuilderPopup.selectors.popupContainer );
 
-	createPopupContainer() {
-		if ( ! document.querySelector( BuilderPopup.selectors.popupContainer ) ) {
-			const container = document.createElement( 'div' );
-			container.id = 'lp-builder-popup-container';
-			document.body.appendChild( container );
+		if ( ! popupContainer ) {
+			popupContainer = document.createElement( 'div' );
+			popupContainer.id = 'lp-builder-popup-container';
+			document.body.appendChild( popupContainer );
 		}
-		this.popupContainer = document.querySelector( BuilderPopup.selectors.popupContainer );
+
+		this.popupContainer = popupContainer;
+		this.events();
 	}
 
 	events() {
@@ -80,91 +80,58 @@ export class BuilderPopup {
 		}
 		BuilderPopup._loadedEvents = true;
 
-		// Open popup events
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: BuilderPopup.selectors.triggerLesson,
+				selector: BuilderPopup.selectors.popupTrigger,
 				class: this,
-				callBack: 'openLessonPopup',
+				callBack: this.openPopup.name,
 			},
 			{
-				selector: BuilderPopup.selectors.triggerQuiz,
+				selector: `${ BuilderPopup.selectors.closeBtn }, ${ BuilderPopup.selectors.cancelBtn }, ${ BuilderPopup.selectors.popupOverlay }`,
 				class: this,
-				callBack: 'openQuizPopup',
+				callBack: this.closePopup.name,
+				conditionBeforeCallBack: () => this.isPopupOpen(),
 			},
 			{
-				selector: BuilderPopup.selectors.triggerQuestion,
+				selector: BuilderPopup.selectors.resizeBtn,
 				class: this,
-				callBack: 'openQuestionPopup',
+				callBack: this.toggleFullscreen.name,
+				conditionBeforeCallBack: () => this.isPopupOpen(),
 			},
 			{
-				selector: BuilderPopup.selectors.addNewLesson,
+				selector: BuilderPopup.selectors.tab,
 				class: this,
-				callBack: 'addNewLesson',
+				callBack: this.switchTab.name,
+				conditionBeforeCallBack: () => this.isPopupOpen(),
 			},
 			{
-				selector: BuilderPopup.selectors.addNewQuiz,
+				selector: BuilderPopup.selectors.saveBtn,
 				class: this,
-				callBack: 'addNewQuiz',
+				callBack: this.handleSave.name,
+				conditionBeforeCallBack: () => this.isPopupOpen(),
 			},
 			{
-				selector: BuilderPopup.selectors.addNewQuestion,
+				selector: BuilderPopup.selectors.draftBtn,
 				class: this,
-				callBack: 'addNewQuestion',
+				callBack: this.handleDraft.name,
+				conditionBeforeCallBack: () => this.isPopupOpen(),
+			},
+			{
+				selector: BuilderPopup.selectors.trashBtn,
+				class: this,
+				callBack: this.handleTrash.name,
+				conditionBeforeCallBack: () => this.isPopupOpen(),
 			},
 		] );
 
-		// Close popup events
-		document.addEventListener( 'click', ( e ) => {
-			if (
-				e.target.closest( BuilderPopup.selectors.closeBtn ) ||
-				e.target.closest( BuilderPopup.selectors.cancelBtn ) ||
-				e.target.matches( BuilderPopup.selectors.popupOverlay )
-			) {
-				this.closePopup();
-			}
-		} );
-
-		// Resize/fullscreen toggle event
-		document.addEventListener( 'click', ( e ) => {
-			const resizeBtn = e.target.closest( BuilderPopup.selectors.resizeBtn );
-			if ( resizeBtn && this.isPopupOpen() ) {
-				this.toggleFullscreen();
-			}
-		} );
-
-		// Tab switching
-		document.addEventListener( 'click', ( e ) => {
-			const tab = e.target.closest( BuilderPopup.selectors.tab );
-			if ( tab && this.isPopupOpen() ) {
-				this.switchTab( tab );
-			}
-		} );
-
-		// Save, draft, and trash button events
-		document.addEventListener( 'click', ( e ) => {
-			const saveBtn = e.target.closest( BuilderPopup.selectors.saveBtn );
-			if ( saveBtn && this.isPopupOpen() ) {
-				this.handleSave( saveBtn );
-			}
-
-			const draftBtn = e.target.closest( BuilderPopup.selectors.draftBtn );
-			if ( draftBtn && this.isPopupOpen() ) {
-				this.handleDraft( draftBtn );
-			}
-
-			const trashBtn = e.target.closest( BuilderPopup.selectors.trashBtn );
-			if ( trashBtn && this.isPopupOpen() ) {
-				this.handleTrash( trashBtn );
-			}
-		} );
-
-		// Close on Escape key
-		document.addEventListener( 'keydown', ( e ) => {
-			if ( e.key === 'Escape' && this.isPopupOpen() ) {
-				this.closePopup();
-			}
-		} );
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: 'body',
+				class: this,
+				callBack: this.closePopup.name,
+				conditionBeforeCallBack: ( args ) => args.e.key === 'Escape' && this.isPopupOpen(),
+			},
+		] );
 	}
 
 	/**
@@ -200,136 +167,219 @@ export class BuilderPopup {
 		);
 	}
 
-	/**
-	 * Add new item handlers
-	 */
-	addNewLesson( args ) {
+	openPopup( args ) {
 		const { target } = args;
-		if ( target.closest( BuilderPopup.selectors.addNewLesson ) ) {
-			this.loadPopup( 'lesson', 0, this.getDefaultOpenContext() );
+		const triggerEl = target.closest( BuilderPopup.selectors.popupTrigger );
+		if ( ! triggerEl ) {
+			return;
 		}
-	}
 
-	addNewQuiz( args ) {
-		const { target } = args;
-		if ( target.closest( BuilderPopup.selectors.addNewQuiz ) ) {
-			this.loadPopup( 'quiz', 0, this.getDefaultOpenContext() );
-		}
-	}
+		let type = '';
+		let id = 0;
 
-	addNewQuestion( args ) {
-		const { target } = args;
-		if ( target.closest( BuilderPopup.selectors.addNewQuestion ) ) {
-			this.loadPopup( 'question', 0, this.getDefaultOpenContext() );
+		if ( triggerEl.matches( BuilderPopup.selectors.addNewLesson ) ) {
+			type = 'lesson';
+		} else if ( triggerEl.dataset.popupType ) {
+			type = triggerEl.dataset.popupType;
+			id = parseInt( triggerEl.dataset.popupId ) || 0;
+		} else if ( triggerEl.dataset.popupLesson !== undefined ) {
+			type = 'lesson';
+			id = parseInt( triggerEl.dataset.popupLesson ) || 0;
+		} else if ( triggerEl.dataset.popupQuiz !== undefined ) {
+			type = 'quiz';
+			id = parseInt( triggerEl.dataset.popupQuiz ) || 0;
+		} else if ( triggerEl.dataset.popupQuestion !== undefined ) {
+			type = 'question';
+			id = parseInt( triggerEl.dataset.popupQuestion ) || 0;
 		}
-	}
 
-	/**
-	 * Open popup handlers
-	 */
-	openLessonPopup( args ) {
-		const { target } = args;
-		const triggerEl = target.closest( BuilderPopup.selectors.triggerLesson );
-		if ( triggerEl ) {
-			const lessonId = parseInt( triggerEl.dataset.popupLesson ) || 0;
-			this.loadPopup(
-				'lesson',
-				lessonId,
-				this.resolveOpenContext( triggerEl, 'lesson', lessonId )
-			);
+		if ( ! type ) {
+			return;
 		}
-	}
 
-	openQuizPopup( args ) {
-		const { target } = args;
-		const triggerEl = target.closest( BuilderPopup.selectors.triggerQuiz );
-		if ( triggerEl ) {
-			const quizId = parseInt( triggerEl.dataset.popupQuiz ) || 0;
-			this.loadPopup( 'quiz', quizId, this.resolveOpenContext( triggerEl, 'quiz', quizId ) );
-		}
-	}
-
-	openQuestionPopup( args ) {
-		const { target } = args;
-		const triggerEl = target.closest( BuilderPopup.selectors.triggerQuestion );
-		if ( triggerEl ) {
-			const questionId = parseInt( triggerEl.dataset.popupQuestion ) || 0;
-			this.loadPopup(
-				'question',
-				questionId,
-				this.resolveOpenContext( triggerEl, 'question', questionId )
-			);
-		}
+		this.showPopup( triggerEl, type, id, this.resolveOpenContext( triggerEl ) );
 	}
 
 	getDefaultOpenContext() {
 		return {
-			source: 'other',
 			isCurriculum: false,
 			courseId: 0,
-			itemType: null,
-			itemId: 0,
 		};
 	}
 
-	resolveOpenContext( triggerEl, itemType, itemId ) {
+	resolveOpenContext( triggerEl ) {
 		const isCurriculumContainer =
 			!! triggerEl?.closest( '#lp-course-edit-curriculum' ) ||
 			!! triggerEl?.closest( '.lp-edit-curriculum-wrap' );
-		const isCurriculum =
-			isCurriculumContainer && !! triggerEl?.closest( '.lp-btn-edit-item-popup' );
 		const courseId = parseInt( triggerEl?.dataset?.courseId ) || 0;
+		const isCurriculum = isCurriculumContainer && courseId > 0;
 
 		return {
-			source: isCurriculum ? 'curriculum' : 'other',
 			isCurriculum,
 			courseId,
-			itemType: itemType || null,
-			itemId: parseInt( itemId ) || 0,
 		};
 	}
 
-	/**
-	 * Load popup content via AJAX
-	 */
-	loadPopup( type, id, openContext = null ) {
+	showPopup( triggerEl, type, id, openContext = null ) {
+		const templateId = triggerEl?.dataset?.template || '';
+		const templateEl = document.querySelector( templateId );
+		if ( ! templateId || ! templateEl ) {
+			return;
+		}
+
 		this.currentType = type;
 		this.currentId = id;
+		this.currentTemplate = templateId;
 		this.isNewItem = id === 0;
 		this.openContext = openContext ? { ...openContext } : this.getDefaultOpenContext();
 
-		this.ensurePopupContainer();
-		this.showLoading();
+		if ( ! this.popupContainer ) {
+			return;
+		}
 
-		const methodMap = {
-			lesson: 'render_lesson_popup',
-			quiz: 'render_quiz_popup',
-			question: 'render_question_popup',
-		};
+		this.popupContainer.innerHTML = templateEl.innerHTML;
+		this.popupContainer.classList.add( 'active' );
+		document.body.classList.add( 'lp-popup-open' );
 
-		const dataSend = {
-			callback: {
-				class: 'LearnPress\\TemplateHooks\\CourseBuilder\\BuilderPopupTemplate',
-				method: methodMap[ type ],
-			},
-			args: {
-				[ `${ type }_id` ]: id,
-			},
-		};
+		const elLPTarget = this.popupContainer.querySelector( '.lp-target' );
+		if ( ! elLPTarget || ! window.lpAJAXG ) {
+			return;
+		}
+
+		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		dataSend.args = dataSend.args || {};
+		dataSend.args[ `${ type }_id` ] = id;
+		window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+
+		this.requestPopupContent( dataSend );
+	}
+
+	reloadCurrentPopup() {
+		if ( ! this.currentTemplate || ! this.currentType ) {
+			return;
+		}
+
+		const templateEl = document.querySelector( this.currentTemplate );
+		if ( ! templateEl ) {
+			return;
+		}
+
+		if ( ! this.popupContainer ) {
+			return;
+		}
+
+		this.popupContainer.innerHTML = templateEl.innerHTML;
+		this.popupContainer.classList.add( 'active' );
+		document.body.classList.add( 'lp-popup-open' );
+
+		const elLPTarget = this.popupContainer.querySelector( '.lp-target' );
+		if ( ! elLPTarget || ! window.lpAJAXG ) {
+			return;
+		}
+
+		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		dataSend.args = dataSend.args || {};
+		dataSend.args[ `${ this.currentType }_id` ] = this.currentId;
+		window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+
+		this.requestPopupContent( dataSend );
+	}
+
+	requestPopupContent( dataSend ) {
+		if ( ! this.popupContainer || ! window.lpAJAXG ) {
+			return;
+		}
 
 		const callBack = {
 			success: ( response ) => {
 				const { status, data } = response;
 				if ( status === 'success' && data?.content ) {
-					this.renderPopup( data.content );
+					this.popupContainer.innerHTML = data.content;
+					this.popupContainer.classList.add( 'active' );
+					document.body.classList.add( 'lp-popup-open' );
+
+					this.loadedTabAssets.clear();
+					this.initializedTabs.clear(); // Clear initialized tabs cache
+					const ajaxElements = this.popupContainer.querySelectorAll(
+						'.lp-load-ajax-element.loaded'
+					);
+					ajaxElements.forEach( ( el ) => el.classList.remove( 'loaded' ) );
+
+					setTimeout( () => window.lpAJAXG.getElements(), 50 );
+
+					const popup = this.popupContainer.querySelector( BuilderPopup.selectors.popup );
+					const activeTab = popup?.querySelector( `${ BuilderPopup.selectors.tab }.active` );
+					const activeTabName = activeTab?.dataset.tab || 'overview';
+					const activePane = popup?.querySelector(
+						`${ BuilderPopup.selectors.tabPane }[data-tab="${ activeTabName }"]`
+					);
+
+					if ( activePane ) {
+						this.loadTabAssets( activeTabName, activePane );
+					}
+
+					if ( activeTabName === 'overview' ) {
+						setTimeout( () => this.initTinyMCE(), 50 );
+					}
+
+					if ( this.currentType === 'quiz' ) {
+						if ( ! this.builderEditQuiz ) {
+							this.builderEditQuiz = new BuilderEditQuiz();
+						}
+
+						if ( activeTabName === 'questions' ) {
+							const tabKey = `${ this.currentType }-${ activeTabName }`;
+							setTimeout( () => {
+								this.triggerAjaxLoadForTab( activePane );
+								this.builderEditQuiz.reinit( this.popupContainer );
+								this.initializedTabs.set( tabKey, true );
+							}, 100 );
+						}
+					} else if ( this.currentType === 'question' ) {
+						if ( ! this.builderEditQuestion ) {
+							this.builderEditQuestion = new BuilderEditQuestion();
+						}
+
+						if ( activeTabName === 'settings' ) {
+							const tabKey = `${ this.currentType }-${ activeTabName }`;
+							setTimeout( () => {
+								this.triggerAjaxLoadForTab( activePane );
+								this.builderEditQuestion.reinit( this.popupContainer );
+								this.initializedTabs.set( tabKey, true );
+							}, 100 );
+						}
+					} else if ( this.currentType === 'lesson' ) {
+						if ( ! this.builderMaterial ) {
+							this.builderMaterial = new BuilderMaterial();
+						}
+
+						if ( activeTabName === 'settings' ) {
+							const tabKey = `${ this.currentType }-${ activeTabName }`;
+							setTimeout( () => {
+								this.triggerAjaxLoadForTab( activePane );
+								this.builderMaterial.reinit( this.popupContainer );
+								this.initializedTabs.set( tabKey, true );
+							}, 100 );
+						}
+					}
+
+					document.dispatchEvent(
+						new CustomEvent( 'lp-builder-popup-opened', {
+							detail: { type: this.currentType, id: this.currentId, isNew: this.isNewItem },
+						} )
+					);
 				} else {
 					lpToastify.show( response.message || 'Failed to load popup', 'error' );
-					this.hideLoading();
+					this.popupContainer.innerHTML = '';
+					this.popupContainer.classList.remove( 'active' );
+					document.body.classList.remove( 'lp-popup-open' );
 				}
 			},
 			error: ( error ) => {
 				lpToastify.show( error.message || 'Failed to load popup', 'error' );
-				this.hideLoading();
+				this.popupContainer.innerHTML = '';
+				this.popupContainer.classList.remove( 'active' );
+				document.body.classList.remove( 'lp-popup-open' );
 			},
 			completed: () => {
 				// Loading hidden in success/error
@@ -337,178 +387,6 @@ export class BuilderPopup {
 		};
 
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
-	}
-
-	/**
-	 * Ensure popup container exists
-	 */
-	ensurePopupContainer() {
-		let container = document.querySelector( BuilderPopup.selectors.popupContainer );
-
-		if ( ! container ) {
-			container = document.createElement( 'div' );
-			container.id = 'lp-builder-popup-container';
-			document.body.appendChild( container );
-		}
-
-		this.popupContainer = container;
-	}
-
-	/**
-	 * Render popup HTML
-	 */
-	renderPopup( html ) {
-		this.ensurePopupContainer();
-
-		if ( ! this.popupContainer ) {
-			console.error( 'BuilderPopup: popupContainer is null' );
-			return;
-		}
-
-		this.popupContainer.innerHTML = html;
-		this.popupContainer.classList.add( 'active' );
-		document.body.classList.add( 'lp-popup-open' );
-
-		this.loadedTabAssets.clear();
-		this.initializedTabs.clear(); // Clear initialized tabs cache
-		this.resetAjaxElements();
-		this.loadActiveTabAssets();
-
-		// Initialize type-specific handlers
-		this.initTypeSpecificHandlers();
-
-		document.dispatchEvent(
-			new CustomEvent( 'lp-builder-popup-opened', {
-				detail: { type: this.currentType, id: this.currentId, isNew: this.isNewItem },
-			} )
-		);
-	}
-
-	/**
-	 * Initialize type-specific handlers based on current popup type
-	 */
-	initTypeSpecificHandlers() {
-		const activeTab = this.popupContainer.querySelector( `${ BuilderPopup.selectors.tab }.active` );
-		const activeTabName = activeTab?.dataset.tab || 'overview';
-
-		// Initialize TinyMCE for overview tab
-		if ( activeTabName === 'overview' ) {
-			setTimeout( () => this.initTinyMCE(), 50 );
-		}
-
-		// Type-specific initialization
-		switch ( this.currentType ) {
-			case 'quiz':
-				this.initQuizHandlers( activeTabName );
-				break;
-			case 'question':
-				this.initQuestionHandlers( activeTabName );
-				break;
-			case 'lesson':
-				this.initLessonHandlers( activeTabName );
-				break;
-		}
-	}
-
-	/**
-	 * Initialize quiz-specific handlers
-	 */
-	initQuizHandlers( activeTabName ) {
-		if ( ! this.builderEditQuiz ) {
-			this.builderEditQuiz = new BuilderEditQuiz();
-		}
-
-		if ( activeTabName === 'questions' ) {
-			const tabKey = `${ this.currentType }-${ activeTabName }`;
-
-			setTimeout( () => {
-				const questionsPane = this.popupContainer.querySelector(
-					`${ BuilderPopup.selectors.tabPane }[data-tab="questions"]`
-				);
-				if ( questionsPane ) {
-					this.triggerAjaxLoadForTab( questionsPane );
-					this.builderEditQuiz.reinit( this.popupContainer );
-				}
-
-				// Only init once per popup instance
-				if ( ! this.initializedTabs.has( tabKey ) ) {
-					this.builderEditQuiz.reinit( this.popupContainer );
-					this.initializedTabs.set( tabKey, true );
-				}
-			}, 100 );
-		}
-	}
-
-	/**
-	 * Initialize question-specific handlers
-	 */
-	initQuestionHandlers( activeTabName ) {
-		if ( ! this.builderEditQuestion ) {
-			this.builderEditQuestion = new BuilderEditQuestion();
-		}
-
-		if ( activeTabName === 'settings' ) {
-			const tabKey = `${ this.currentType }-${ activeTabName }`;
-
-			setTimeout( () => {
-				const settingsPane = this.popupContainer.querySelector(
-					`${ BuilderPopup.selectors.tabPane }[data-tab="settings"]`
-				);
-				if ( settingsPane ) {
-					this.triggerAjaxLoadForTab( settingsPane );
-				}
-
-				// Only init once per popup instance
-				if ( ! this.initializedTabs.has( tabKey ) ) {
-					this.builderEditQuestion.reinit( this.popupContainer );
-					this.initializedTabs.set( tabKey, true );
-				}
-			}, 100 );
-		}
-	}
-
-	/**
-	 * Initialize lesson-specific handlers
-	 */
-	initLessonHandlers( activeTabName ) {
-		if ( ! this.builderMaterial ) {
-			this.builderMaterial = new BuilderMaterial();
-		}
-
-		if ( activeTabName === 'settings' ) {
-			const tabKey = `${ this.currentType }-${ activeTabName }`;
-
-			setTimeout( () => {
-				const settingsPane = this.popupContainer.querySelector(
-					`${ BuilderPopup.selectors.tabPane }[data-tab="settings"]`
-				);
-				if ( settingsPane ) {
-					this.triggerAjaxLoadForTab( settingsPane );
-				}
-
-				// Only init once per popup instance
-				if ( ! this.initializedTabs.has( tabKey ) ) {
-					this.builderMaterial.reinit( this.popupContainer );
-					this.initializedTabs.set( tabKey, true );
-				}
-			}, 100 );
-		}
-	}
-
-	/**
-	 * Reset AJAX elements to allow fresh loading
-	 */
-	resetAjaxElements() {
-		if ( ! this.popupContainer ) {
-			return;
-		}
-
-		const ajaxElements = this.popupContainer.querySelectorAll( '.lp-load-ajax-element.loaded' );
-		ajaxElements.forEach( ( el ) => el.classList.remove( 'loaded' ) );
-
-		if ( window.lpAJAXG ) {
-			setTimeout( () => window.lpAJAXG.getElements(), 50 );
-		}
 	}
 
 	/**
@@ -540,6 +418,7 @@ export class BuilderPopup {
 
 		this.currentType = null;
 		this.currentId = null;
+		this.currentTemplate = '';
 		this.isNewItem = false;
 		this.savedData = null;
 		this.openContext = this.getDefaultOpenContext();
@@ -594,15 +473,85 @@ export class BuilderPopup {
 			);
 		}
 
-		// Type-specific updates
-		const typeUpdaters = {
-			lesson: () => this.updateLessonListItem( listItem, formData, data ),
-			quiz: () => this.updateQuizListItem( listItem, formData, data ),
-			question: () => this.updateQuestionListItem( listItem, formData, data ),
-		};
+		if ( type === 'lesson' ) {
+			const duration = formData._lp_duration || data?.duration;
+			if ( duration ) {
+				this.updateDuration( listItem, duration );
+			}
 
-		if ( typeUpdaters[ type ] ) {
-			typeUpdaters[ type ]();
+			const preview = formData._lp_preview || data?.preview;
+			const isPreview = preview === 'yes' || preview === true || preview === '1';
+			const previewEl = listItem.querySelector(
+				'.lp-btn-set-preview-item a, .course-item-preview'
+			);
+			if ( previewEl ) {
+				if ( isPreview ) {
+					previewEl.classList.remove( 'lp-icon-eye-slash' );
+					previewEl.classList.add( 'lp-icon-eye' );
+				} else {
+					previewEl.classList.remove( 'lp-icon-eye' );
+					previewEl.classList.add( 'lp-icon-eye-slash' );
+				}
+			}
+
+			const checkbox = listItem.querySelector( 'input[type="checkbox"].preview-checkbox' );
+			if ( checkbox ) {
+				checkbox.checked = isPreview;
+			}
+
+			listItem.classList.toggle( 'is-preview', isPreview );
+			listItem.classList.toggle( 'preview-item', isPreview );
+		} else if ( type === 'quiz' ) {
+			const duration = formData._lp_duration || data?.duration;
+			if ( duration ) {
+				this.updateDuration( listItem, duration );
+			}
+
+			const questionCount = data?.question_count || data?.questions_count;
+			if ( questionCount !== null && questionCount !== undefined ) {
+				const questionCountEl = listItem.querySelector( '.question-count' );
+				if ( questionCountEl ) {
+					questionCountEl.textContent = `${ questionCount } ${
+						questionCount === 1 ? 'Question' : 'Questions'
+					}`;
+				}
+			}
+
+			const passingGrade = formData._lp_passing_grade || data?.passing_grade;
+			if ( passingGrade ) {
+				const passingGradeEl = listItem.querySelector( '.passing-grade' );
+				if ( passingGradeEl ) {
+					passingGradeEl.textContent = `${ passingGrade }%`;
+				}
+			}
+		} else if ( type === 'question' ) {
+			const questionType = formData._lp_type || data?.type;
+			if ( questionType ) {
+				const typeMap = {
+					true_or_false: 'True or False',
+					single_choice: 'Single Choice',
+					multi_choice: 'Multi Choice',
+					fill_in_blanks: 'Fill in Blanks',
+				};
+
+				this.updateElementText(
+					listItem,
+					[ '.question-type', '.item-type' ],
+					typeMap[ questionType ] || questionType
+				);
+
+				const typeClasses = [ 'true_or_false', 'single_choice', 'multi_choice', 'fill_in_blanks' ];
+				typeClasses.forEach( ( cls ) => listItem.classList.remove( cls ) );
+				listItem.classList.add( questionType );
+			}
+
+			const mark = formData._lp_mark || data?.mark;
+			if ( mark ) {
+				const questionMarkEl = listItem.querySelector( '.question-mark' );
+				if ( questionMarkEl ) {
+					questionMarkEl.textContent = mark;
+				}
+			}
 		}
 
 		document.dispatchEvent(
@@ -662,7 +611,24 @@ export class BuilderPopup {
 		}
 
 		listContainer.prepend( newListItem );
-		this.highlightNewListItem( newListItem, type );
+		const highlightClassByType = {
+			lesson: 'highlight-new-lesson',
+			quiz: 'highlight-new-quiz',
+			question: 'highlight-new-question',
+		};
+		const highlightClass = highlightClassByType[ type ];
+
+		if ( highlightClass ) {
+			newListItem.classList.add( highlightClass );
+			newListItem.scrollIntoView( {
+				behavior: 'smooth',
+				block: 'nearest',
+			} );
+
+			setTimeout( () => {
+				newListItem.classList.remove( highlightClass );
+			}, 1500 );
+		}
 
 		return this.findListItem( type, id ) || newListItem;
 	}
@@ -689,7 +655,8 @@ export class BuilderPopup {
 			question: 'cb-list-question',
 		};
 
-		const listSelector = listSelectorByType[ type ];
+		const listSelector =
+			listSelectorByType[ type ] || `.cb-list-${ type }, [data-builder-list="${ type }"]`;
 		if ( ! listSelector ) {
 			return null;
 		}
@@ -699,8 +666,10 @@ export class BuilderPopup {
 			return existingList;
 		}
 
-		const tabContainer = document.querySelector( tabSelectorByType[ type ] );
-		const listClass = listClassByType[ type ];
+		const tabContainer = document.querySelector(
+			tabSelectorByType[ type ] || `.courses-builder__${ type }-tab, [data-builder-tab="${ type }"]`
+		);
+		const listClass = listClassByType[ type ] || `cb-list-${ type }`;
 
 		if ( ! tabContainer || ! listClass ) {
 			return null;
@@ -716,32 +685,6 @@ export class BuilderPopup {
 		tabContainer.appendChild( listContainer );
 
 		return listContainer;
-	}
-
-	/**
-	 * Highlight a newly inserted list item.
-	 */
-	highlightNewListItem( listItem, type ) {
-		const highlightClassByType = {
-			lesson: 'highlight-new-lesson',
-			quiz: 'highlight-new-quiz',
-			question: 'highlight-new-question',
-		};
-
-		const highlightClass = highlightClassByType[ type ];
-		if ( ! listItem || ! highlightClass ) {
-			return;
-		}
-
-		listItem.classList.add( highlightClass );
-		listItem.scrollIntoView( {
-			behavior: 'smooth',
-			block: 'nearest',
-		} );
-
-		setTimeout( () => {
-			listItem.classList.remove( highlightClass );
-		}, 1500 );
 	}
 
 	/**
@@ -780,66 +723,6 @@ export class BuilderPopup {
 	}
 
 	/**
-	 * Update lesson-specific data
-	 */
-	updateLessonListItem( listItem, formData, data ) {
-		const duration = formData._lp_duration || data?.duration;
-		if ( duration ) {
-			this.updateDuration( listItem, duration );
-		}
-
-		const preview = formData._lp_preview || data?.preview;
-		this.updateLessonPreview( listItem, preview );
-	}
-
-	/**
-	 * Update quiz-specific data
-	 */
-	updateQuizListItem( listItem, formData, data ) {
-		const duration = formData._lp_duration || data?.duration;
-		if ( duration ) {
-			this.updateDuration( listItem, duration );
-		}
-
-		const questionCount = data?.question_count || data?.questions_count;
-		if ( questionCount !== null && questionCount !== undefined ) {
-			this.updateMeta(
-				listItem,
-				'.question-count',
-				`${ questionCount } ${ questionCount === 1 ? 'Question' : 'Questions' }`
-			);
-		}
-
-		const passingGrade = formData._lp_passing_grade || data?.passing_grade;
-		if ( passingGrade ) {
-			this.updateMeta( listItem, '.passing-grade', `${ passingGrade }%` );
-		}
-	}
-
-	/**
-	 * Update question-specific data
-	 */
-	updateQuestionListItem( listItem, formData, data ) {
-		const questionType = formData._lp_type || data?.type;
-		if ( questionType ) {
-			this.updateElementText(
-				listItem,
-				[ '.question-type', '.item-type' ],
-				this.formatQuestionType( questionType )
-			);
-
-			const typeClasses = [ 'true_or_false', 'single_choice', 'multi_choice', 'fill_in_blanks' ];
-			typeClasses.forEach( ( cls ) => listItem.classList.remove( cls ) );
-			listItem.classList.add( questionType );
-		}
-
-		const mark = formData._lp_mark || data?.mark;
-		if ( mark ) {
-			this.updateMeta( listItem, '.question-mark', mark );
-		}
-	}
-
-	/**
 	 * Update duration meta
 	 */
 	updateDuration( listItem, duration ) {
@@ -863,16 +746,6 @@ export class BuilderPopup {
 				}
 				durationEl.textContent = durationStr;
 			}
-		}
-	}
-
-	/**
-	 * Update meta element
-	 */
-	updateMeta( listItem, selector, value ) {
-		const el = listItem.querySelector( selector );
-		if ( el ) {
-			el.textContent = value;
 		}
 	}
 
@@ -912,48 +785,6 @@ export class BuilderPopup {
 	}
 
 	/**
-	 * Update lesson preview status
-	 */
-	updateLessonPreview( listItem, preview ) {
-		const isPreview = preview === 'yes' || preview === true || preview === '1';
-
-		// Update preview icon
-		const previewEl = listItem.querySelector( '.lp-btn-set-preview-item a, .course-item-preview' );
-		if ( previewEl ) {
-			if ( isPreview ) {
-				previewEl.classList.remove( 'lp-icon-eye-slash' );
-				previewEl.classList.add( 'lp-icon-eye' );
-			} else {
-				previewEl.classList.remove( 'lp-icon-eye' );
-				previewEl.classList.add( 'lp-icon-eye-slash' );
-			}
-		}
-
-		// Update preview checkbox
-		const checkbox = listItem.querySelector( 'input[type="checkbox"].preview-checkbox' );
-		if ( checkbox ) {
-			checkbox.checked = isPreview;
-		}
-
-		// Toggle preview class
-		listItem.classList.toggle( 'is-preview', isPreview );
-		listItem.classList.toggle( 'preview-item', isPreview );
-	}
-
-	/**
-	 * Format question type for display
-	 */
-	formatQuestionType( type ) {
-		const typeMap = {
-			true_or_false: 'True or False',
-			single_choice: 'Single Choice',
-			multi_choice: 'Multi Choice',
-			fill_in_blanks: 'Fill in Blanks',
-		};
-		return typeMap[ type ] || type;
-	}
-
-	/**
 	 * Check if popup is open
 	 */
 	isPopupOpen() {
@@ -961,35 +792,14 @@ export class BuilderPopup {
 	}
 
 	/**
-	 * Show loading state
-	 */
-	showLoading() {
-		this.popupContainer.innerHTML = `
-			<div class="lp-builder-popup-overlay"></div>
-			<div class="lp-builder-popup lp-builder-popup--loading">
-				<div class="lp-builder-popup__loader">
-					<div class="lp-loading-circle"></div>
-					<span>Loading...</span>
-				</div>
-			</div>
-		`;
-		this.popupContainer.classList.add( 'active' );
-		document.body.classList.add( 'lp-popup-open' );
-	}
-
-	/**
-	 * Hide loading state
-	 */
-	hideLoading() {
-		this.popupContainer.innerHTML = '';
-		this.popupContainer.classList.remove( 'active' );
-		document.body.classList.remove( 'lp-popup-open' );
-	}
-
-	/**
 	 * Switch tab with dynamic asset loading
 	 */
-	switchTab( tabEl ) {
+	switchTab( args ) {
+		const tabEl = args?.target ? args.target.closest( BuilderPopup.selectors.tab ) : args;
+		if ( ! tabEl ) {
+			return;
+		}
+
 		const tabName = tabEl.dataset.tab;
 		const popup = tabEl.closest( BuilderPopup.selectors.popup );
 
@@ -1021,60 +831,44 @@ export class BuilderPopup {
 
 		targetPane.classList.add( 'active' );
 		this.loadTabAssets( tabName, targetPane );
+		const tabKey = `${ this.currentType }-${ tabName }`;
 
-		// Handle tab-specific initialization
-		this.handleTabSwitch( tabName, targetPane );
+		if ( ! this.initializedTabs.has( tabKey ) ) {
+			if ( tabName === 'overview' ) {
+				setTimeout( () => this.initTinyMCE(), 100 );
+				this.initializedTabs.set( tabKey, true );
+			} else if ( tabName === 'questions' && this.currentType === 'quiz' ) {
+				this.triggerAjaxLoadForTab( targetPane );
+				if ( this.builderEditQuiz ) {
+					setTimeout( () => {
+						this.builderEditQuiz.reinit( this.popupContainer );
+						this.initializedTabs.set( tabKey, true );
+					}, 100 );
+				}
+			} else if ( tabName === 'settings' && this.currentType === 'question' ) {
+				this.triggerAjaxLoadForTab( targetPane );
+				if ( this.builderEditQuestion ) {
+					setTimeout( () => {
+						this.builderEditQuestion.reinit( this.popupContainer );
+						this.initializedTabs.set( tabKey, true );
+					}, 100 );
+				}
+			} else if ( tabName === 'settings' && this.currentType === 'lesson' ) {
+				this.triggerAjaxLoadForTab( targetPane );
+				if ( this.builderMaterial ) {
+					setTimeout( () => {
+						this.builderMaterial.reinit( this.popupContainer );
+						this.initializedTabs.set( tabKey, true );
+					}, 100 );
+				}
+			}
+		}
 
 		document.dispatchEvent(
 			new CustomEvent( 'lp-builder-tab-switched', {
 				detail: { tabName, type: this.currentType, id: this.currentId },
 			} )
 		);
-	}
-
-	/**
-	 * Handle tab switch for specific types
-	 */
-	handleTabSwitch( tabName, targetPane ) {
-		const tabKey = `${ this.currentType }-${ tabName }`;
-
-		// Check if tab already initialized
-		if ( this.initializedTabs.has( tabKey ) ) {
-			// Already initialized, just show the tab - no need to reinit
-			return;
-		}
-
-		if ( tabName === 'overview' ) {
-			setTimeout( () => this.initTinyMCE(), 100 );
-			this.initializedTabs.set( tabKey, true );
-		}
-
-		// Type-specific tab handling - only init if not already initialized
-		if ( tabName === 'questions' && this.currentType === 'quiz' ) {
-			this.triggerAjaxLoadForTab( targetPane );
-			if ( this.builderEditQuiz ) {
-				setTimeout( () => {
-					this.builderEditQuiz.reinit( this.popupContainer );
-					this.initializedTabs.set( tabKey, true );
-				}, 100 );
-			}
-		} else if ( tabName === 'settings' && this.currentType === 'question' ) {
-			this.triggerAjaxLoadForTab( targetPane );
-			if ( this.builderEditQuestion ) {
-				setTimeout( () => {
-					this.builderEditQuestion.reinit( this.popupContainer );
-					this.initializedTabs.set( tabKey, true );
-				}, 100 );
-			}
-		} else if ( tabName === 'settings' && this.currentType === 'lesson' ) {
-			this.triggerAjaxLoadForTab( targetPane );
-			if ( this.builderMaterial ) {
-				setTimeout( () => {
-					this.builderMaterial.reinit( this.popupContainer );
-					this.initializedTabs.set( tabKey, true );
-				}, 100 );
-			}
-		}
 	}
 
 	/**
@@ -1238,7 +1032,12 @@ export class BuilderPopup {
 	/**
 	 * Handle save action
 	 */
-	handleSave( saveBtn ) {
+	handleSave( args ) {
+		const saveBtn = args?.target ? args.target.closest( BuilderPopup.selectors.saveBtn ) : args;
+		if ( ! saveBtn ) {
+			return;
+		}
+
 		if ( ! this.currentType ) {
 			return;
 		}
@@ -1285,7 +1084,7 @@ export class BuilderPopup {
 				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
-					this.handleSaveSuccess( saveBtn, data, formData, wasNewItem );
+					this.handleSaveSuccess( data, formData, wasNewItem );
 				}
 			},
 			error: ( error ) => {
@@ -1302,7 +1101,12 @@ export class BuilderPopup {
 	/**
 	 * Handle save as draft action
 	 */
-	async handleDraft( draftBtn ) {
+	async handleDraft( args ) {
+		const draftBtn = args?.target ? args.target.closest( BuilderPopup.selectors.draftBtn ) : args;
+		if ( ! draftBtn ) {
+			return;
+		}
+
 		if ( ! this.currentType ) {
 			return;
 		}
@@ -1366,7 +1170,7 @@ export class BuilderPopup {
 				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
-					this.handleSaveSuccess( draftBtn, data, formData, wasNewItem );
+					this.handleSaveSuccess( data, formData, wasNewItem );
 				}
 			},
 			error: ( error ) => {
@@ -1383,7 +1187,7 @@ export class BuilderPopup {
 	/**
 	 * Handle save success
 	 */
-	handleSaveSuccess( saveBtn, data, formData, wasNewItem ) {
+	handleSaveSuccess( data, formData, wasNewItem ) {
 		if ( data?.button_title ) {
 			const primarySaveBtn = this.popupContainer.querySelector( BuilderPopup.selectors.saveBtn );
 			if ( primarySaveBtn ) {
@@ -1451,7 +1255,7 @@ export class BuilderPopup {
 			// Reload popup to show all tabs
 			setTimeout( () => {
 				this.destroyAllTinyMCE();
-				this.loadPopup( this.currentType, this.currentId, this.openContext );
+				this.reloadCurrentPopup();
 			}, 300 );
 		} else {
 			document.dispatchEvent(
@@ -1465,7 +1269,12 @@ export class BuilderPopup {
 	/**
 	 * Handle trash action
 	 */
-	async handleTrash( trashBtn ) {
+	async handleTrash( args ) {
+		const trashBtn = args?.target ? args.target.closest( BuilderPopup.selectors.trashBtn ) : args;
+		if ( ! trashBtn ) {
+			return;
+		}
+
 		if ( ! this.currentType || ! this.currentId ) {
 			return;
 		}
@@ -1503,7 +1312,7 @@ export class BuilderPopup {
 			[ `${ this.currentType }_id` ]: this.currentId,
 		};
 		if (
-			[ 'lesson', 'quiz' ].includes( this.currentType ) &&
+			!! this.openContext?.isCurriculum &&
 			( parseInt( this.openContext?.courseId ) || 0 ) > 0
 		) {
 			dataSend.course_id = parseInt( this.openContext.courseId ) || 0;
@@ -1563,11 +1372,9 @@ export class BuilderPopup {
 	shouldRemoveFromCurriculum( status ) {
 		const normalizedStatus = ( status || '' ).toString().toLowerCase();
 		const removableStatuses = [ 'draft', 'trash' ];
-		const supportedTypes = [ 'lesson', 'quiz' ];
 
 		return (
 			!! this.openContext?.isCurriculum &&
-			supportedTypes.includes( this.currentType ) &&
 			removableStatuses.includes( normalizedStatus ) &&
 			( parseInt( this.currentId ) || 0 ) > 0
 		);
@@ -1705,7 +1512,7 @@ export class BuilderPopup {
 		const idKey = `${ this.currentType }_id`;
 		data[ idKey ] = this.currentId || 0;
 		if (
-			[ 'lesson', 'quiz' ].includes( this.currentType ) &&
+			!! this.openContext?.isCurriculum &&
 			( parseInt( this.openContext?.courseId ) || 0 ) > 0
 		) {
 			data.course_id = parseInt( this.openContext.courseId ) || 0;
@@ -1752,60 +1559,6 @@ export class BuilderPopup {
 		return data;
 	}
 
-	buildPermalinkDisplayUrl( baseUrl = '', slug = '', fallbackUrl = '' ) {
-		const normalizedBaseUrl = typeof baseUrl === 'string' ? baseUrl : '';
-		const normalizedSlug = typeof slug === 'string' ? slug.trim() : '';
-
-		if ( normalizedBaseUrl && normalizedSlug ) {
-			return `${ normalizedBaseUrl }${ normalizedSlug }`;
-		}
-
-		return typeof fallbackUrl === 'string' ? fallbackUrl : '';
-	}
-
-	showPermalinkUnavailable( popup, message = '' ) {
-		if ( ! popup ) {
-			return;
-		}
-
-		const permalinkRoot = popup.querySelector( BuilderPopup.selectors.permalinkRoot );
-		if ( ! permalinkRoot ) {
-			return;
-		}
-
-		const label =
-			permalinkRoot.querySelector( '.cb-item-edit-permalink__label' ) ||
-			permalinkRoot.querySelector( '.cb-permalink-label' );
-		const display = permalinkRoot.querySelector( BuilderPopup.selectors.permalinkDisplay );
-		const editor = permalinkRoot.querySelector( BuilderPopup.selectors.permalinkEditor );
-		let placeholder = permalinkRoot.querySelector(
-			BuilderPopup.selectors.permalinkPlaceholder
-		);
-
-		if ( ! placeholder ) {
-			placeholder = document.createElement( 'span' );
-			placeholder.className = 'cb-item-edit-permalink__placeholder';
-
-			if ( label ) {
-				label.insertAdjacentElement( 'afterend', placeholder );
-			} else {
-				permalinkRoot.prepend( placeholder );
-			}
-		}
-
-		placeholder.textContent =
-			message || 'Permalink is only available if the item is already assigned to a course.';
-		placeholder.classList.remove( 'lp-hidden' );
-
-		if ( display ) {
-			display.classList.add( 'lp-hidden' );
-		}
-
-		if ( editor ) {
-			editor.classList.add( 'lp-hidden' );
-		}
-	}
-
 	updatePermalinkUIAfterSave( data = {} ) {
 		if ( ! this.currentType || ! this.popupContainer ) {
 			return;
@@ -1819,12 +1572,7 @@ export class BuilderPopup {
 		const slugInput = popup.querySelector(
 			`input[name="${ this.currentType }_permalink"], #${ this.currentType }_permalink, ${ BuilderPopup.selectors.permalinkSlugInput }`
 		);
-		const urlLink = popup.querySelector( BuilderPopup.selectors.permalinkUrl );
-		const baseUrlInput = popup.querySelector( BuilderPopup.selectors.permalinkBaseUrl );
 		const permalinkRoot = popup.querySelector( BuilderPopup.selectors.permalinkRoot );
-		const permalinkDisplay = permalinkRoot?.querySelector(
-			BuilderPopup.selectors.permalinkDisplay
-		);
 		const permalinkPlaceholder = permalinkRoot?.querySelector(
 			BuilderPopup.selectors.permalinkPlaceholder
 		);
@@ -1836,12 +1584,6 @@ export class BuilderPopup {
 		}
 
 		const responsePermalink = data?.[ `${ this.currentType }_permalink` ];
-		const permalinkDisplayUrl = this.buildPermalinkDisplayUrl(
-			baseUrlInput ? baseUrlInput.value : '',
-			responseSlug,
-			responsePermalink
-		);
-
 		const isCourseItem = [ 'lesson', 'quiz' ].includes( this.currentType );
 		const shouldShowUnavailable =
 			data?.permalink_available === false ||
@@ -1849,8 +1591,59 @@ export class BuilderPopup {
 				( data?.status === 'draft' || data?.status === 'trash' || ! responsePermalink ) );
 
 		if ( shouldShowUnavailable ) {
-			this.showPermalinkUnavailable( popup, data?.permalink_notice );
+			if ( ! permalinkRoot ) {
+				return;
+			}
+
+			const permalinkDisplay = permalinkRoot.querySelector(
+				BuilderPopup.selectors.permalinkDisplay
+			);
+			const label =
+				permalinkRoot.querySelector( '.cb-item-edit-permalink__label' ) ||
+				permalinkRoot.querySelector( '.cb-permalink-label' );
+			const editor = permalinkRoot.querySelector( BuilderPopup.selectors.permalinkEditor );
+			let placeholder = permalinkPlaceholder;
+
+			if ( ! placeholder ) {
+				placeholder = document.createElement( 'span' );
+				placeholder.className = 'cb-item-edit-permalink__placeholder';
+
+				if ( label ) {
+					label.insertAdjacentElement( 'afterend', placeholder );
+				} else {
+					permalinkRoot.prepend( placeholder );
+				}
+			}
+
+			placeholder.textContent =
+				data?.permalink_notice ||
+				'Permalink is only available if the item is already assigned to a course.';
+			placeholder.classList.remove( 'lp-hidden' );
+
+			if ( permalinkDisplay ) {
+				permalinkDisplay.classList.add( 'lp-hidden' );
+			}
+
+			if ( editor ) {
+				editor.classList.add( 'lp-hidden' );
+			}
+
 			return;
+		}
+
+		const urlLink = popup.querySelector( BuilderPopup.selectors.permalinkUrl );
+		const permalinkDisplay = permalinkRoot?.querySelector(
+			BuilderPopup.selectors.permalinkDisplay
+		);
+		const baseUrlInput = popup.querySelector( BuilderPopup.selectors.permalinkBaseUrl );
+		const normalizedBaseUrl = typeof baseUrlInput?.value === 'string' ? baseUrlInput.value : '';
+		const normalizedSlug = typeof responseSlug === 'string' ? responseSlug.trim() : '';
+		let permalinkDisplayUrl = '';
+
+		if ( normalizedBaseUrl && normalizedSlug ) {
+			permalinkDisplayUrl = `${ normalizedBaseUrl }${ normalizedSlug }`;
+		} else if ( typeof responsePermalink === 'string' ) {
+			permalinkDisplayUrl = responsePermalink;
 		}
 
 		if ( permalinkPlaceholder ) {
@@ -1917,26 +1710,6 @@ export class BuilderPopup {
 	}
 
 	/**
-	 * Load active tab assets on initial render
-	 */
-	loadActiveTabAssets() {
-		const popup = this.popupContainer.querySelector( BuilderPopup.selectors.popup );
-		if ( ! popup ) {
-			return;
-		}
-
-		const activeTab = popup.querySelector( `${ BuilderPopup.selectors.tab }.active` );
-		const activeTabName = activeTab?.dataset.tab || 'overview';
-		const activePane = popup.querySelector(
-			`${ BuilderPopup.selectors.tabPane }[data-tab="${ activeTabName }"]`
-		);
-
-		if ( activePane ) {
-			this.loadTabAssets( activeTabName, activePane );
-		}
-	}
-
-	/**
 	 * Load tab-specific assets (CSS/JS)
 	 */
 	loadTabAssets( tabName, tabPane ) {
@@ -1994,7 +1767,32 @@ export class BuilderPopup {
 		if ( ! BuilderPopup._instance ) {
 			BuilderPopup._instance = new BuilderPopup();
 		}
-		BuilderPopup._instance.loadPopup( type, id, BuilderPopup._instance.getDefaultOpenContext() );
+
+		const selectors = {
+			lesson: id ? `[data-popup-lesson="${ id }"]` : BuilderPopup.selectors.addNewLesson,
+			quiz: id ? `[data-popup-quiz="${ id }"]` : '',
+			question: id ? `[data-popup-question="${ id }"]` : '',
+		};
+		const triggerSelector =
+			selectors[ type ] ||
+			( id
+				? `[data-popup-type="${ type }"][data-popup-id="${ id }"]`
+				: `[data-popup-type="${ type }"][data-template]` );
+		if ( ! triggerSelector ) {
+			return;
+		}
+
+		const triggerEl = document.querySelector( triggerSelector );
+		if ( ! triggerEl ) {
+			return;
+		}
+
+		BuilderPopup._instance.showPopup(
+			triggerEl,
+			type,
+			id,
+			BuilderPopup._instance.resolveOpenContext( triggerEl )
+		);
 	}
 
 	/**

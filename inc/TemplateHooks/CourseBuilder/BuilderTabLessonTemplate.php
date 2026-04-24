@@ -13,6 +13,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\TemplateAJAX;
 
 use Throwable;
 use WP_Query;
@@ -25,9 +26,26 @@ class BuilderTabLessonTemplate {
 	}
 
 	public function html_tab_lessons() {
-		$list_lesson = $this->tab_list_lessons();
-		$hmtl_search = $this->html_search();
-		$btn         = CourseBuilderTemplate::instance()->html_btn_add_new();
+		$list_lesson    = $this->tab_list_lessons();
+		$hmtl_search    = $this->html_search();
+		$btn            = CourseBuilderTemplate::instance()->html_btn_add_new();
+		$popup_template = sprintf(
+			'<script type="text/template" id="lp-tmpl-builder-popup-lesson-list"><div class="lp-builder-popup-overlay"></div><div class="lp-builder-popup lp-builder-popup--loading">%s</div></script>',
+			TemplateAJAX::load_content_via_ajax(
+				[
+					'id_url'                  => 'builder-popup-lesson-list',
+					'lesson_id'               => 0,
+					'html_no_load_ajax_first' => sprintf(
+						'<div class="lp-builder-popup__loader"><div class="lp-loading-circle"></div><span>%s</span></div>',
+						esc_html__( 'Loading...', 'learnpress' )
+					),
+				],
+				[
+					'class'  => BuilderPopupTemplate::class,
+					'method' => 'render_lesson_popup',
+				]
+			)
+		);
 
 		$tab = [
 			'wrapper'            => '<div class="cb-tab-lesson">',
@@ -36,6 +54,7 @@ class BuilderTabLessonTemplate {
 			'btn'                => $btn,
 			'wrapper_action_end' => '</div>',
 			'lessons'            => $list_lesson,
+			'popup_template'     => $popup_template,
 			'wrapper_end'        => '</div>',
 		];
 
@@ -248,7 +267,7 @@ class BuilderTabLessonTemplate {
 				'learn-press/course-builder/list-lessons/item/section/bottom',
 				[
 					'title'         => sprintf(
-						'<h3 class="wap-lesson-title"><button data-popup-lesson="%s">%s</button></h3>',
+						'<h3 class="wap-lesson-title"><button data-popup-lesson="%1$s" data-popup-type="lesson" data-popup-id="%1$s" data-template="#lp-tmpl-builder-popup-lesson-list">%2$s</button></h3>',
 						$lesson_model->get_id(),
 						$lesson['title']
 					),
@@ -271,7 +290,7 @@ class BuilderTabLessonTemplate {
 				[
 					'wrapper'                     => '<div class="lesson-action">',
 					'edit'                        => sprintf(
-						'<div class="lesson-action-editor"><button class="btn-edit-lesson lesson-edit-permalink" data-popup-lesson="%s">%s %s</button></div>',
+						'<div class="lesson-action-editor"><button class="btn-edit-lesson lesson-edit-permalink" data-popup-lesson="%1$s" data-popup-type="lesson" data-popup-id="%1$s" data-template="#lp-tmpl-builder-popup-lesson-list">%2$s %3$s</button></div>',
 						$lesson['id'],
 						'<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>',
 						__( 'Edit', 'learnpress' )

@@ -1,9 +1,8 @@
 @import 'shared-tab-styles';
-
-.cb-section__quiz-edit,
-.cb-section__lesson-edit,
-.cb-section__question-edit,
-.lp-cb-tab-panel[data-section='question'] {
+.lp-course-builder-canvas .cb-section__quiz-edit,
+.lp-course-builder-canvas .cb-section__lesson-edit,
+.lp-course-builder-canvas .cb-section__question-edit,
+.lp-course-builder-canvas .lp-cb-tab-panel[data-section='question'] {
 	.cb-item-edit-content {
 		display: flex;
 		gap: 40px;
