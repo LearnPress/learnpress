@@ -157,13 +157,24 @@ class BuilderListLessonsTemplate {
 				);
 			}
 
+			$total_pages     = \LP_Database::get_total_pages( $query_args['paged'] ?? 1, $total_lessons );
+			$link_tab        = CourseBuilder::get_tab_link( 'lessons' );
+			$data_pagination = [
+				'paged'       => max( 1, $query_args['posts_per_page'] ),
+				'total_pages' => $total_pages,
+				'base'        => trailingslashit( $link_tab ) . 'page/%#%',
+				'format'      => '',
+			];
+
+			$pagination = Template::instance()->html_pagination( $data_pagination );
+
 			$sections = apply_filters(
 				'learn-press/course-builder/lessons/sections',
 				[
 					'wrapper'     => '<div class="courses-builder__lesson-tab learn-press-lessons">',
 					'lessons'     => $html_lessons,
 					'wrapper_end' => '</div>',
-					'pagination'  => $this->lessons_pagination( $query_args['paged'] ?? 1, $query_args['posts_per_page'], $total_lessons ),
+					'pagination'  => $pagination,
 				],
 				$lessons,
 				$userModel
@@ -348,35 +359,5 @@ class BuilderListLessonsTemplate {
 		}
 
 		return $html_item;
-	}
-
-	/**
-	 * Pagination lessons.
-	 *
-	 * @param int $page
-	 * @param int $limit
-	 * @param int $total_lessons
-	 *
-	 * @return string
-	 */
-	public function lessons_pagination( int $page, int $limit, int $total_lessons ): string {
-		$content = '';
-
-		try {
-			$total_pages     = \LP_Database::get_total_pages( $limit, $total_lessons );
-			$link_tab        = CourseBuilder::get_tab_link( 'lessons' );
-			$data_pagination = [
-				'paged'       => max( 1, $page ),
-				'total_pages' => $total_pages,
-				'base'        => trailingslashit( $link_tab ) . 'page/%#%',
-				'format'      => '',
-			];
-
-			$content = Template::instance()->html_pagination( $data_pagination );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
 	}
 }
