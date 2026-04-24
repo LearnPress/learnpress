@@ -25,9 +25,7 @@ use Throwable;
 class BuilderListCoursesTemplate {
 	use Singleton;
 
-	public function init() {
-		add_action( 'learn-press/course-builder/list-courses/layout', [ $this, 'layout' ] );
-	}
+	public function init() {}
 
 	public function layout( array $data = [] ) {
 		$section = [

@@ -27,11 +27,7 @@ class BuilderEditCourseTemplate {
 	use Singleton;
 
 	public function init() {
-		add_action( 'learn-press/course-builder/course/edit/layout', [ $this, 'layout' ] );
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
-		/*add_action( 'learn-press/course-builder/courses/overview/layout', [ $this, 'section_overview' ] );
-		add_action( 'learn-press/course-builder/courses/curriculum/layout', [ $this, 'section_curriculum' ] );
-		add_action( 'learn-press/course-builder/courses/settings/layout', [ $this, 'section_settings' ] );*/
 
 		// Register filter for adding edit popup button in Course Builder curriculum
 		add_filter( 'learn-press/admin/curriculum/section-item/actions', [ $this, 'add_edit_popup_button' ], 10, 5 );
