@@ -483,7 +483,7 @@ export class BuilderMaterial {
 			}
 
 			const { message, data, status } = res;
-			alert( message );
+			// console.log( message );
 
 			if ( status === 'success' && data?.length > 0 ) {
 				const { thead, tbody } = this.elements;

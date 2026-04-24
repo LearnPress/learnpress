@@ -130,11 +130,16 @@ body {
 			}
 
 			.description {
+				max-width: max-content;
 				grid-column: 2 / 3;
 				grid-row: 2;
 				font-size: 13px;
 				line-height: 1.5;
 				margin: 0;
+			}
+
+			.learn-press-tip {
+				max-width: max-content;
 			}
 		}
 
@@ -789,6 +794,10 @@ body {
 }
 
 .lp-select-item input[type='checkbox']:checked::before {
+	display: none;
+}
+
+.lp-answers-config input[type='radio']:checked::before {
 	display: none;
 }
 
