@@ -3,6 +3,7 @@
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
+use LearnPress\Models\UserModel;
 
 /**
  * Class LP_Page_Controller
@@ -212,12 +213,14 @@ class LP_Page_Controller {
 	 * @param string $title
 	 *
 	 * @return string
-	 * @author tungnx
+	 * @throws Exception
 	 * @since  3.2.7.7
-	 * @version 1.0.1
+	 * @version 1.0.2
+	 * @author tungnx
 	 */
 	public function set_title_pages( $title = '' ): string {
 		$flag_title_course = false;
+		$user_id           = get_current_user_id();
 
 		$course_archive_page_id = LP_Settings::get_option( 'courses_page_id', 0 );
 
@@ -246,16 +249,21 @@ class LP_Page_Controller {
 
 			$flag_title_course = true;
 		} elseif ( LP_Page_Controller::is_page_profile() ) {
-			$profile  = LP_Profile::instance();
-			$tab_slug = $profile->get_current_tab();
-			$tab      = $profile->get_tab_at( $tab_slug );
-			$page_id  = learn_press_get_page_id( 'profile' );
+			$userModel = UserModel::find( get_current_user_id(), true );
+			$profile   = LP_Profile::instance( $user_id );
+			$page_id   = learn_press_get_page_id( 'profile' );
+			$tab       = false;
+			if ( $userModel ) {
+				$tab_slug = $profile->get_current_tab();
+				$tab      = $profile->get_tab_at( $tab_slug );
+			}
 
 			if ( $page_id ) {
 				$page_title = get_the_title( $page_id );
 			} else {
 				$page_title = '';
 			}
+
 			if ( $tab instanceof LP_Profile_Tab ) {
 				$title = join(
 					' ',
@@ -268,6 +276,8 @@ class LP_Page_Controller {
 						)
 					)
 				);
+			} else {
+				$title = $page_title;
 			}
 
 			$flag_title_course = true;
