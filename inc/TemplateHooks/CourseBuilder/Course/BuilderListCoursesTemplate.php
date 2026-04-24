@@ -15,6 +15,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserModel;
+use LearnPress\Services\OpenAiService;
 use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseOfflineTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
@@ -24,18 +25,56 @@ use Throwable;
 class BuilderListCoursesTemplate {
 	use Singleton;
 
-	public function init() {
-		add_action( 'learn-press/course-builder/list-courses/layout', [ $this, 'layout' ] );
-	}
+	public function init() {}
 
 	public function layout( array $data = [] ) {
 		$section = [
+			'header'       => $this->html_header( $data ),
 			'filter_bar'   => $this->html_filter_bar(),
 			'courses'      => $this->tab_list_courses(),
 			'ai_templates' => AdminCreateCourseAITemplate::instance()->render_for_frontend(),
 		];
 
 		echo Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML header
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function html_header( array $data = [] ): string {
+		$btn_add_new = sprintf(
+			'<a href="%s" class="cb-btn-add-new lp-button">%s</a>',
+			esc_url( CourseBuilder::get_link_course_builder( 'courses/create' ) ),
+			__( 'Add New Course', 'learnpress' )
+		);
+
+		$enable_open_ai  = OpenAiService::instance()->is_enable()
+							&& ! empty( OpenAiService::instance()->get_secret_key() );
+		$ai_btn_class    = $enable_open_ai ? 'lp-btn-generate-course-with-ai' : 'lp-btn-warning-enable-ai';
+		$btn_generate_ai = sprintf(
+			'<button type="button" class="cb-btn-add-new %s">
+				<i class="lp-ico-ai"></i> %s
+			</button>',
+			esc_attr( $ai_btn_class ),
+			esc_html__( 'Generate with AI', 'learnpress' )
+		);
+
+		$header = [
+			'wrapper'     => '<div class="cb-tab-header">',
+			'title'       => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', __( 'Courses', 'learnpress' ) ),
+			'actions'     => sprintf(
+				'<div class="cb-tab-header-actions" style="display:flex;align-items:center;gap:8px;">%s%s</div>',
+				$btn_add_new,
+				$btn_generate_ai
+			),
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $header );
 	}
 
 	/**
@@ -81,35 +120,6 @@ class BuilderListCoursesTemplate {
 			$per_page_html .= sprintf( '<option value="%d" %s>%d</option>', $option, $selected, $option );
 		}
 
-		// Row 1: Page header — title + add new button
-		$btn_add_new = sprintf(
-			'<a href="%s" class="cb-btn-add-new">%s</a>',
-			esc_url( CourseBuilder::get_link_add_new( 'courses' ) ),
-			__( 'Add New Course', 'learnpress' )
-		);
-
-		$enable_open_ai  = \LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes'
-							&& ! empty( \LP_Settings::get_option( 'open_ai_secret_key', '' ) );
-		$ai_btn_class    = $enable_open_ai ? 'lp-btn-generate-course-with-ai' : 'lp-btn-warning-enable-ai';
-		$btn_generate_ai = sprintf(
-			'<button type="button" class="cb-btn-add-new %s">
-				<i class="lp-ico-ai"></i> %s
-			</button>',
-			esc_attr( $ai_btn_class ),
-			esc_html__( 'Generate with AI', 'learnpress' )
-		);
-
-		$header = [
-			'wrapper'     => '<div class="cb-tab-header">',
-			'title'       => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', __( 'Courses', 'learnpress' ) ),
-			'actions'     => sprintf(
-				'<div class="cb-tab-header-actions" style="display:flex;align-items:center;gap:8px;">%s%s</div>',
-				$btn_add_new,
-				$btn_generate_ai
-			),
-			'wrapper_end' => '</div>',
-		];
-
 		// Row 2: Filter toolbar
 		$filter = [
 			'wrapper'     => sprintf( '<form class="cb-tab-filter-bar" method="get" action="%s">', esc_url( $link_tab ) ),
@@ -149,7 +159,7 @@ class BuilderListCoursesTemplate {
 			'wrapper_end' => '</form>',
 		];
 
-		return Template::combine_components( $header ) . Template::combine_components( $filter );
+		return Template::combine_components( $filter );
 	}
 
 	public function tab_list_courses(): string {

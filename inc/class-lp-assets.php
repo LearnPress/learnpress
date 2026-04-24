@@ -7,6 +7,8 @@
  * @version 4.0.1
  */
 
+use LearnPress\Services\OpenAiService;
+
 defined( 'ABSPATH' ) || exit;
 
 class LP_Assets extends LP_Abstract_Assets {
@@ -228,7 +230,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'generate_with_ai' => esc_html__( 'Generate with AI', 'learnpress' ),
 					'confirm_close_ai' => esc_html__( 'Are you sure you want to close? Generate data will stop.', 'learnpress' ),
 				],
-				'enable_open_ai'    => LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes'
+				'enable_open_ai'    => OpenAiService::instance()->is_enable()
 					&& ! empty( LP_Settings::get_option( 'open_ai_secret_key', '' ) ),
 			]
 		);
