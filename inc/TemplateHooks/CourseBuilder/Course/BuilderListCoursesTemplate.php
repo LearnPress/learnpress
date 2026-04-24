@@ -349,7 +349,9 @@ class BuilderListCoursesTemplate {
 			$course_status = $courseModel->get_status();
 			$status_label  = 'future' === $course_status ? __( 'Scheduled', 'learnpress' ) : $course_status;
 			$html_status   = sprintf(
-				'<div class="course-status %1$s"><span>%2$s</span></div>',
+				'<div class="course-status %1$s">
+					<span>%2$s</span>
+				</div>',
 				esc_attr( $course_status ),
 				esc_html( $status_label )
 			);

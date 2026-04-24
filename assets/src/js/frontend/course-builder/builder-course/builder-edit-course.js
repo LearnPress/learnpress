@@ -1508,8 +1508,8 @@ export class BuilderEditCourse {
 		const dataSend = {
 			...courseData,
 			course_status: targetStatus,
-			action: 'save_courses',
-			args: { id_url: 'save-courses' },
+			action: 'cb_save_course',
+			args: { id_url: 'cb-save-course' },
 		};
 		if ( typeof lpCourseBuilder !== 'undefined' && lpCourseBuilder.nonce ) {
 			dataSend.nonce = lpCourseBuilder.nonce;

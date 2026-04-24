@@ -19,7 +19,7 @@ use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Ajax\BuilderDashboardAjax;
-use LearnPress\Ajax\CourseBuilderAjax;
+use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
@@ -27,6 +27,7 @@ use LearnPress\Ajax\ExportOrderCSVAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\MCP\McpApiKeysAjax;
+use LearnPress\Ajax\CourseBuilder\CBEditCourseAjax;
 use LearnPress\Ajax\SendEmailAjax;
 use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
@@ -753,6 +754,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					OpenAiAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
 					McpApiKeysAjax::catch_lp_ajax();
+					CBEditCourseAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},

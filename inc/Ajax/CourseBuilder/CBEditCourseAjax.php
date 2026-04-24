@@ -1,0 +1,222 @@
+<?php
+/**
+ * class CourseBuilderAjax
+ *
+ * @since 4.3
+ * @version 1.0.0
+ */
+
+namespace LearnPress\Ajax\CourseBuilder;
+
+use DateTime;
+use Exception;
+use LearnPress\Ajax\AbstractAjax;
+use LearnPress\CourseBuilder\CourseBuilder;
+use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\CourseSectionItemModel;
+use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\PostModel;
+use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserModel;
+use LearnPress\Services\CourseService;
+use LearnPress\Services\UserService;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderListLessonsTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderListQuestionsTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderQuestionTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderListQuizzesTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderQuizTemplate;
+use LP_Course_CURD;
+use LP_Datetime;
+use LP_Helper;
+use LP_Lesson_CURD;
+use LP_Question_CURD;
+use LP_Quiz_CURD;
+use LP_REST_Response;
+use stdClass;
+use Throwable;
+
+class CBEditCourseAjax extends AbstractAjax {
+	/**
+	 * Check permissions and validate parameters.
+	 *
+	 * @throws Exception
+	 *
+	 * @since 4.3
+	 * @version 1.0.0
+	 */
+	public static function check_valid_course() {
+		$params = wp_unslash( $_POST['data'] ?? '' );
+		if ( empty( $params ) ) {
+			throw new Exception( 'Error: params invalid!' );
+		}
+
+		// Check permission
+		$userModel = UserModel::find( get_current_user_id(), true );
+		if ( ! $userModel || ! $userModel->is_instructor() ) {
+			throw new Exception( __( 'You are not allowed to edit courses', 'learnpress' ) );
+		}
+
+		$params      = LP_Helper::json_decode( $params, true );
+		$course_id   = $params['course_id'] ?? 0;
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( $courseModel ) {
+			$params['courseModel'] = $courseModel;
+		}
+		$params['userModel'] = $userModel;
+
+		return $params;
+	}
+
+	/**
+	 * Save Course.
+	 *
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public static function cb_save_course() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$data = self::check_valid_course();
+			/** @var CourseModel $courseModel */
+			$courseModel         = $data['courseModel'] ?? null;
+			$userModel           = $data['userModel'] ?? null;
+			$settings            = $data['course_settings'] ?? false;
+			$is_edit             = $courseModel instanceof CourseModel;
+			$course_title        = trim( LP_Helper::sanitize_params_submitted( $data['course_title'] ?? '' ) );
+			$course_description  = LP_Helper::sanitize_params_submitted( $data['course_description'] ?? '', 'html', false );
+			$course_status       = LP_Helper::sanitize_params_submitted( $data['course_status'] ?? 'draft' );
+			$course_visibility   = LP_Helper::sanitize_params_submitted( $data['course_visibility'] ?? '', 'key' );
+			$course_password     = LP_Helper::sanitize_params_submitted( $data['course_password'] ?? '' );
+			$course_post_date    = LP_Helper::sanitize_params_submitted( $data['course_post_date'] ?? '' );
+			$course_permalink    = LP_Helper::sanitize_params_submitted( $data['course_permalink'] ?? '', 'sanitize_title' );
+			$course_thumbnail_id = LP_Helper::sanitize_params_submitted( $data['course_thumbnail_id'] ?? '', 'int' );
+
+			if ( ! $userModel instanceof UserModel ) {
+				throw new Exception( __( 'Invalid user.', 'learnpress' ) );
+			}
+
+			if ( empty( $course_title ) ) {
+				throw new Exception( __( 'Course title is required.', 'learnpress' ) );
+			}
+
+			$status_allows = [
+				PostModel::STATUS_PUBLISH,
+				PostModel::STATUS_PENDING,
+				PostModel::STATUS_DRAFT,
+				PostModel::STATUS_PRIVATE,
+				PostModel::STATUS_TRASH,
+				PostModel::STATUS_FEATURE,
+			];
+			if ( ! in_array( $course_status, $status_allows ) ) {
+				throw new Exception( __( 'Invalid course status.', 'learnpress' ) );
+			}
+
+			$lp_date_modified = new LP_Datetime( current_time( 'mysql' ) );
+
+			$data_save = [
+				'post_title'        => $course_title,
+				'post_content'      => $course_description,
+				'post_status'       => $course_status,
+				'post_author'       => $userModel->get_id(),
+				'post_modified'     => $lp_date_modified->format( LP_DateTime::$format ),
+				'post_modified_gmt' => $lp_date_modified->to_gmt_string( $lp_date_modified ),
+			];
+
+			// Handle status
+			if ( $course_visibility === PostModel::VISIBILITY_PASSWORD ) {
+				if ( ! empty( $course_password ) ) {
+					$data_save['post_password'] = $course_password;
+				}
+			}
+
+			// Handle date
+			if ( ! empty( $course_post_date ) ) {
+				$lp_date                    = new LP_Datetime( $course_post_date );
+				$data_save['post_date']     = $lp_date->format( LP_DateTime::$format );
+				$data_save['post_date_gmt'] = $lp_date->to_gmt_string( $lp_date );
+			}
+
+			if ( ! $is_edit ) {
+				// Create new course
+				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
+				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
+
+				$data_save['tax_input'] = [
+					'course_category' => $categories,
+					'course_tag'      => $tags,
+				];
+
+				$coursePostModelNew = CourseService::instance()->create_info_main( $data_save );
+				$courseModel        = new CourseModel( $coursePostModelNew );
+				$course_id          = $courseModel->ID;
+			} else {
+				// Update course
+				foreach ( $data_save as $key => $value ) {
+					if ( isset( $courseModel->{$key} ) ) {
+						$courseModel->{$key} = $value;
+					}
+				}
+
+				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
+				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
+				wp_set_post_terms( $courseModel->ID, $categories, 'course_category' );
+				wp_set_post_terms( $courseModel->ID, $tags, 'course_tag' );
+
+				// Update permalink/slug if provided
+				if ( ! empty( $course_permalink ) ) {
+					$courseModel->post_name = $course_permalink;
+				}
+
+				$course_id = $courseModel->ID;
+			}
+
+			if ( $settings ) {
+				$courseBuilderAjax = new CourseBuilderAjax();
+				$courseBuilderAjax->save_course_settings_to_model( $courseModel, $data );
+			}
+
+			if ( ! empty( $courseModel->meta_data ) ) {
+				$coursePostModel = new CoursePostModel( $courseModel );
+				foreach ( $courseModel->meta_data as $meta_key => $meta_value ) {
+					$coursePostModel->save_meta_value_by_key( $meta_key, $meta_value );
+				}
+				$coursePostModel->save();
+			}
+
+			// Save or remove thumbnail
+			if ( isset( $data['course_thumbnail_id'] ) ) {
+				if ( $course_thumbnail_id > 0 ) {
+					set_post_thumbnail( $course_id, $course_thumbnail_id );
+				} else {
+					delete_post_thumbnail( $course_id );
+				}
+			}
+
+			$response->status       = 'success';
+			$response->message      = ! $is_edit ?
+				__( 'Create course successfully!', 'learnpress' ) :
+				__( 'Update course successfully!', 'learnpress' );
+			$response->data->course = $courseModel;
+			$response->data->course->permalink = $courseModel->get_permalink();
+
+			// Return redirect detail if new course
+			if ( ! $is_edit && $course_id ) {
+				$response->data->redirect_url = CourseBuilder::get_link_course_builder(
+					CourseBuilderTemplate::MENU_COURSES . "/{$course_id}"
+				);
+			}
+		} catch ( Throwable $th ) {
+			$response->message = $th->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+}

@@ -29,8 +29,6 @@ class BuilderEditCourseTemplate {
 	use Singleton;
 
 	public function init() {
-		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
-
 		// Register filter for adding edit popup button in Course Builder curriculum
 		add_filter( 'learn-press/admin/curriculum/section-item/actions', [ $this, 'add_edit_popup_button' ], 10, 5 );
 	}
@@ -397,21 +395,6 @@ class BuilderEditCourseTemplate {
 		];
 
 		return Template::combine_components( $output );
-	}
-
-	/**
-	 * Allow callback for AJAX.
-	 * @use self::render_edit_course_curriculum
-	 * @use self::render_html
-	 *
-	 * @param array $callbacks
-	 *
-	 * @return array
-	 */
-	public function allow_callback( array $callbacks ): array {
-		$callbacks[] = AdminEditCurriculumTemplate::class . ':render_edit_course_curriculum';
-
-		return $callbacks;
 	}
 
 	public function edit_title( $course_model ) {

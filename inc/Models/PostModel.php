@@ -35,47 +35,20 @@ class PostModel {
 	 *
 	 * @var int
 	 */
-	public $ID = 0;
-	/**
-	 * @var string author id, foreign key
-	 */
-	public $post_author = 0;
-	/**
-	 * @var string post date
-	 */
-	public $post_date = null;
-	/**
-	 * @var string post date gmt
-	 */
-	public $post_date_gmt = null;
-	/**
-	 * @var string post content
-	 */
-	public $post_content = '';
-	/**
-	 * @var string Post title
-	 */
-	public $post_title = '';
-	/**
-	 * @var string Post excerpt
-	 */
-	public $post_excerpt = '';
-	/**
-	 * @var string Post Status (publish, draft, ...)
-	 */
-	public $post_status = '';
-	/**
-	 * @var string Post name (slug for link)
-	 */
-	public $post_name = '';
-	/**
-	 * @var string Post type
-	 */
-	public $post_type = 'post';
-	/**
-	 * @var int post parent
-	 */
-	public $post_parent = 0;
+	public $ID                = 0;
+	public $post_author       = 0;
+	public $post_date         = null;
+	public $post_date_gmt     = null;
+	public $post_modified     = null;
+	public $post_modified_gmt = null;
+	public $post_content      = '';
+	public $post_title        = '';
+	public $post_excerpt      = '';
+	public $post_status       = '';
+	public $post_password     = '';
+	public $post_name         = '';
+	public $post_type         = 'post';
+	public $post_parent       = 0;
 	/**
 	 * @var stdClass all meta data
 	 */
@@ -89,13 +62,14 @@ class PostModel {
 	 */
 	public $filter;
 
-	const STATUS_PUBLISH    = 'publish';
-	const STATUS_TRASH      = 'trash';
-	const STATUS_DRAFT      = 'draft';
-	const STATUS_PRIVATE    = 'private';
-	const STATUS_PENDING    = 'pending';
-	const STATUS_PROTECTED  = 'protected';
-	const STATUS_AUTO_DRAFT = 'auto-draft';
+	const STATUS_PUBLISH      = 'publish';
+	const STATUS_TRASH        = 'trash';
+	const STATUS_DRAFT        = 'draft';
+	const STATUS_PRIVATE      = 'private';
+	const STATUS_PENDING      = 'pending';
+	const STATUS_FEATURE      = 'future';
+	const STATUS_AUTO_DRAFT   = 'auto-draft';
+	const VISIBILITY_PASSWORD = 'password';
 
 	/**
 	 * If data get from database, map to object.
@@ -330,10 +304,7 @@ class PostModel {
 	 * @version 1.0.3
 	 */
 	public function save( bool $force_save = false ) {
-		$data = [];
-		foreach ( get_object_vars( $this ) as $property => $value ) {
-			$data[ $property ] = $value;
-		}
+		$data = get_object_vars( $this );
 
 		// Check if exists course id.
 		if ( empty( $this->ID ) ) { // Insert data.
@@ -622,7 +593,7 @@ class PostModel {
 				return __( 'Private', 'learnpress' );
 			case self::STATUS_PENDING:
 				return __( 'Pending', 'learnpress' );
-			case self::STATUS_PROTECTED:
+			case self::VISIBILITY_PASSWORD:
 				return __( 'Protected', 'learnpress' );
 			case self::STATUS_AUTO_DRAFT:
 				return __( 'Auto Draft', 'learnpress' );

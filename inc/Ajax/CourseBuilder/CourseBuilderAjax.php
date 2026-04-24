@@ -6,10 +6,10 @@
  * @version 1.0.0
  */
 
-namespace LearnPress\Ajax;
+namespace LearnPress\Ajax\CourseBuilder;
 
 use Exception;
-use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
+use LearnPress\Ajax\AbstractAjax;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Models\CourseModel;
@@ -18,6 +18,7 @@ use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderListLessonsTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderListQuestionsTemplate;
@@ -552,7 +553,7 @@ class CourseBuilderAjax extends AbstractAjax {
 	 * @param CourseModel $courseModel
 	 * @param array $data
 	 */
-	protected function save_course_settings_to_model( CourseModel &$courseModel, array $data ) {
+	public function save_course_settings_to_model( CourseModel &$courseModel, array $data ) {
 		// General settings
 		$this->save_general_settings_to_model( $courseModel, $data );
 

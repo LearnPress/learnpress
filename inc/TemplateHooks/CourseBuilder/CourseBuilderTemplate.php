@@ -22,6 +22,12 @@ use Throwable;
 class CourseBuilderTemplate {
 	use Singleton;
 
+	const MENU_COURSES   = 'courses';
+	const MENU_LESSONS   = 'lessons';
+	const MENU_QUIZZES   = 'quizzes';
+	const MENU_QUESTIONS = 'questions';
+	const MENU_SETTINGS  = 'settings';
+
 	public function init() {
 		//add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
 		add_action( 'learn-press/course-builder/layout', [ $this, 'layout' ] );
@@ -372,6 +378,16 @@ class CourseBuilderTemplate {
 		}
 
 		$menu_current = CourseBuilder::get_menu_current();
+
+		//Todo: new way - Switch layout display by menu, via model
+		switch ( $menu_current ) {
+			case self::MENU_COURSES:
+				//BuilderCourseTemplate::instance()->layout( $data );
+				break;
+			default:
+				//$content = apply_filters( "learn-press/course-builder/content/layout", $menu_current, $data );
+				break;
+		}
 
 		ob_start();
 		do_action( "learn-press/course-builder/{$menu_current}/layout", $data );
