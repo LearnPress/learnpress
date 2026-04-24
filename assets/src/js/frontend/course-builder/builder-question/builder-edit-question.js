@@ -287,6 +287,10 @@ export class BuilderEditQuestion {
 		allTabs.forEach( ( tab ) => tab.classList.remove( 'is-active' ) );
 		tabLink.classList.add( 'is-active' );
 
+		const url = new URL( window.location.href );
+		url.searchParams.set( 'tab', section );
+		window.history.replaceState( {}, '', url );
+
 		// Show/hide panels
 		const allPanels = document.querySelectorAll( BuilderEditQuestion.selectors.elCBTabPanels );
 		allPanels.forEach( ( panel ) => {

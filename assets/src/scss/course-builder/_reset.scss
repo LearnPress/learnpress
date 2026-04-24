@@ -88,6 +88,7 @@ html {
 		margin: 0;
 	}
 
+	input[type='radio']:checked::before,
 	input[type='checkbox']:checked::before {
 		margin: 0;
 	}

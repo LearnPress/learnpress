@@ -80,6 +80,7 @@ class BuilderEditQuizTemplate {
 		$userModel            = $data['userModel'] ?? false;
 		$quizModel            = $data['quizModel'] ?? false;
 		$enable_wp_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
+		$more_actions_icon    = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
 		$title                = $quizModel ? $quizModel->get_the_title() : __( 'Add New Quiz', 'learnpress' );
 		$status               = $quizModel ? sanitize_key( (string) $quizModel->post_status ) : '';
 		$status_label         = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
@@ -127,24 +128,23 @@ class BuilderEditQuizTemplate {
 			'expanded_actions'   => $quizModel ? sprintf(
 				'<div class="cb-header-action-expanded">
 					<button type="button" class="course-action-expanded" aria-haspopup="true" aria-expanded="false" aria-label="%1$s">
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-						</svg>
+						%2$s
 					</button>
 					<div class="cb-header-action-expanded__items">
 						<div class="cb-header-action-expanded__duplicate cb-btn-duplicate-quiz"
-							data-title="%2$s"
-							data-content="%3$s">
+							data-title="%3$s"
+							data-content="%4$s">
 							<span class="dashicons dashicons-admin-page"></span>
-							%4$s
+							%5$s
 						</div>
 						<div class="cb-header-action-expanded__trash cb-btn-trash">
 							<span class="dashicons dashicons-trash"></span>
-							%5$s
+							%6$s
 						</div>
 					</div>
 				</div>',
 				esc_attr__( 'More actions', 'learnpress' ),
+				$more_actions_icon,
 				esc_attr__( 'Are you sure?', 'learnpress' ),
 				esc_attr__( 'Are you sure you want to duplicate this quiz?', 'learnpress' ),
 				esc_html__( 'Duplicate', 'learnpress' ),
@@ -189,25 +189,39 @@ class BuilderEditQuizTemplate {
 			$data
 		);
 
-		$tab_active = array_key_first( $tabs );
-		if ( isset( $_GET['tab'] ) && isset( $tabs[ $_GET['tab'] ] ) ) {
-			$tab_active = $_GET['tab'];
+		$tab_sections = [];
+		foreach ( $tabs as $key => $tab ) {
+			$tab_sections[ $key ] = $tab['slug'] ?? $key;
+		}
+
+		$tab_active = (string) reset( $tab_sections );
+		if ( isset( $_GET['tab'] ) ) {
+			$requested_tab = sanitize_key( wp_unslash( $_GET['tab'] ) );
+			if ( in_array( $requested_tab, $tab_sections, true ) ) {
+				$tab_active = $requested_tab;
+			}
 		}
 
 		foreach ( $tabs as $key => $tab ) {
-			$is_active = $key === $tab_active;
+			$tab_section = $tab_sections[ $key ];
+			$is_active   = $tab_section === $tab_active;
 
 			$section_tab['tabs'] .= sprintf(
 				'<a href="#" class="lp-cb-tabs__item %s" data-tab-section="%s">%s</a>',
 				$is_active ? 'is-active' : '',
-				esc_attr( $tab['slug'] ?? $key ),
+				esc_attr( $tab_section ),
 				esc_html( $tab['title'] ?? '' )
 			);
 
+			/**
+			 * @uses html_tab_overview
+			 * @uses html_tab_question
+			 * @uses html_tab_settings
+			 */
 			$section_content['content'] .= sprintf(
 				'<div class="lp-cb-tab-panel %s" data-section="%s">%s</div>',
 				$is_active ? '' : 'lp-hidden',
-				esc_attr( $tab['slug'] ?? $key ),
+				esc_attr( $tab_section ),
 				$tab['html'] ?? ''
 			);
 		}

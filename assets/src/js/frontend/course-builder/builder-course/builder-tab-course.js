@@ -9,7 +9,7 @@ export class BuilderTabCourse {
 	}
 
 	static selectors = {
-		elBtnCreateCourse: '.cb-btn-add-new',
+		elBtnCreateCourse: 'a.cb-btn-add-new[href]',
 		elCourseItem: '.course-item',
 		elCourseExpandedItems: '.course-action-expanded__items',
 		elCourseDuplicate: '.course-action-expanded__duplicate',
@@ -59,8 +59,16 @@ export class BuilderTabCourse {
 			{
 				selector: BuilderTabCourse.selectors.elBtnCreateCourse,
 				callBack: ( args ) => {
-					const { target, e } = args;
-					lpUtils.lpSetLoadingEl( target, 1 );
+					const { target } = args;
+					const elBtnCreateCourse = target.closest(
+						BuilderTabCourse.selectors.elBtnCreateCourse
+					);
+
+					if ( ! elBtnCreateCourse ) {
+						return;
+					}
+
+					lpUtils.lpSetLoadingEl( elBtnCreateCourse, 1 );
 				},
 			},
 		] );

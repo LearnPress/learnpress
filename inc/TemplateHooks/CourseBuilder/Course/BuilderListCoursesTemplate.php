@@ -433,6 +433,8 @@ class BuilderListCoursesTemplate {
 				$settings
 			);
 
+			$more_actions_icon = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
+
 			$html_action = apply_filters(
 				'learn-press/course-builder/list-courses/item/action',
 				[
@@ -442,7 +444,10 @@ class BuilderListCoursesTemplate {
 						$edit_link,
 						__( 'Edit', 'learnpress' )
 					),
-					'action_expanded_button'      => '<div class="course-action-expanded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></div>',
+					'action_expanded_button'      => sprintf(
+						'<div class="course-action-expanded">%s</div>',
+						$more_actions_icon
+					),
 					'action_expanded_wrapper'     => '<div style="display:none;" class="course-action-expanded__items">',
 					'action_expanded_view'        => sprintf( '<a class="course-action-expanded__view" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_url_raw( $courseModel->get_permalink() ), __( 'View', 'learnpress' ) ),
 					'action_expanded_duplicate'   => sprintf( '<span class="course-action-expanded__duplicate">%s</span>', __( 'Duplicate', 'learnpress' ) ),

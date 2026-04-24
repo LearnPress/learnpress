@@ -209,6 +209,17 @@ class BuilderListQuizzesTemplate {
 	 * @version 1.0.0
 	 */
 	public static function render_quiz( QuizPostModel $quiz_model, array $settings = [] ): string {
+		static $edit_icon         = null;
+		static $more_actions_icon = null;
+
+		if ( null === $edit_icon ) {
+			$edit_icon = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-edit.svg' );
+		}
+
+		if ( null === $more_actions_icon ) {
+			$more_actions_icon = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
+		}
+
 		$author      = get_user_by( 'ID', $quiz_model->post_author );
 		$author_name = $author && isset( $author->display_name ) ? $author->display_name : '--';
 
@@ -284,10 +295,13 @@ class BuilderListQuizzesTemplate {
 					'edit'                        => sprintf(
 						'<div class="quiz-action-editor"><a class="btn-edit-quiz quiz-edit-permalink" href="%s">%s %s</a></div>',
 						esc_url( $edit_link ),
-						'<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>',
+						$edit_icon,
 						__( 'Edit', 'learnpress' )
 					),
-					'action_expanded_button'      => '<div class="quiz-action-expanded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></div>',
+					'action_expanded_button'      => sprintf(
+						'<div class="quiz-action-expanded">%s</div>',
+						$more_actions_icon
+					),
 					'action_expanded_wrapper'     => '<div style="display:none;" class="quiz-action-expanded__items">',
 					'action_expanded_duplicate'   => sprintf( '<span class="quiz-action-expanded__duplicate" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to duplicate this quiz?', 'learnpress' ), __( 'Duplicate', 'learnpress' ) ),
 					'action_expanded_publish'     => sprintf( '<span class="quiz-action-expanded__publish">%s</span>', __( 'Publish', 'learnpress' ) ),
@@ -335,23 +349,17 @@ class BuilderListQuizzesTemplate {
 		$content = '';
 
 		try {
-			$total_pages = \LP_Database::get_total_pages( $limit, $total_quizzes );
-			$link_tab    = CourseBuilder::get_tab_link( 'quizzes' );
-			$base_url    = trailingslashit( $link_tab ) . 'page/%#%';
+			$total_pages     = \LP_Database::get_total_pages( $limit, $total_quizzes );
+			$link_tab        = CourseBuilder::get_tab_link( 'quizzes' );
+			$data_pagination = [
+				'paged'       => max( 1, $page ),
+				'total_pages' => $total_pages,
+				'base'        => trailingslashit( $link_tab ) . 'page/%#%',
+				'format'      => '',
+			];
 
-			$data_pagination = array(
-				'total'    => $total_pages,
-				'current'  => max( 1, $page ),
-				'base'     => $base_url,
-				'format'   => '',
-				'per_page' => $limit,
-			);
-
-			ob_start();
-			Template::instance()->get_frontend_template( 'shared/pagination.php', $data_pagination );
-			$content = ob_get_clean();
+			$content = Template::instance()->html_pagination( $data_pagination );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
