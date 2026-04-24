@@ -9,6 +9,7 @@ export class BuilderTabCourse {
 	}
 
 	static selectors = {
+		elBtnCreateCourse: '.cb-btn-add-new',
 		elCourseItem: '.course-item',
 		elCourseExpandedItems: '.course-action-expanded__items',
 		elCourseDuplicate: '.course-action-expanded__duplicate',
@@ -55,6 +56,13 @@ export class BuilderTabCourse {
 				class: this,
 				callBack: this.toggleExpandedAction.name,
 			},
+			{
+				selector: BuilderTabCourse.selectors.elBtnCreateCourse,
+				callBack: ( args ) => {
+					const { target, e } = args;
+					lpUtils.lpSetLoadingEl( target, 1 );
+				},
+			},
 		] );
 
 		document.addEventListener( 'click', ( e ) => {
@@ -69,7 +77,9 @@ export class BuilderTabCourse {
 		const elCourseDuplicate = target.closest( BuilderTabCourse.selectors.elCourseDuplicate );
 		const elCourseItem = elCourseDuplicate.closest( BuilderTabCourse.selectors.elCourseItem );
 
-		if ( ! elCourseItem ) return;
+		if ( ! elCourseItem ) {
+			return;
+		}
 
 		const courseId = elCourseItem.dataset.courseId || '';
 
@@ -138,7 +148,9 @@ export class BuilderTabCourse {
 		const elCourseTrash = target.closest( BuilderTabCourse.selectors.elCourseTrash );
 		const elCourseItem = elCourseTrash.closest( BuilderTabCourse.selectors.elCourseItem );
 
-		if ( ! elCourseItem ) return;
+		if ( ! elCourseItem ) {
+			return;
+		}
 
 		const courseId = elCourseItem.dataset.courseId || '';
 
@@ -190,7 +202,9 @@ export class BuilderTabCourse {
 		const elCourseDraft = target.closest( BuilderTabCourse.selectors.elCourseDraft );
 		const elCourseItem = elCourseDraft.closest( BuilderTabCourse.selectors.elCourseItem );
 
-		if ( ! elCourseItem ) return;
+		if ( ! elCourseItem ) {
+			return;
+		}
 
 		// Check if published to show confirm unpublish modal
 		const statusEl = elCourseItem.querySelector( BuilderTabCourse.selectors.elCourseStatus );
@@ -259,7 +273,9 @@ export class BuilderTabCourse {
 		const elCourseDelete = target.closest( BuilderTabCourse.selectors.elCourseDelete );
 		const elCourseItem = elCourseDelete.closest( BuilderTabCourse.selectors.elCourseItem );
 
-		if ( ! elCourseItem ) return;
+		if ( ! elCourseItem ) {
+			return;
+		}
 
 		const courseId = elCourseItem.dataset.courseId || '';
 
@@ -318,17 +334,23 @@ export class BuilderTabCourse {
 			BuilderTabCourse.selectors.elCourseActionExpanded
 		);
 
-		if ( ! elCourseActionExpanded ) return;
+		if ( ! elCourseActionExpanded ) {
+			return;
+		}
 
 		const elCourseItem = elCourseActionExpanded.closest( BuilderTabCourse.selectors.elCourseItem );
 
-		if ( ! elCourseItem ) return;
+		if ( ! elCourseItem ) {
+			return;
+		}
 
 		const elExpandedItems = elCourseItem.querySelector(
 			BuilderTabCourse.selectors.elCourseExpandedItems
 		);
 
-		if ( ! elExpandedItems ) return;
+		if ( ! elExpandedItems ) {
+			return;
+		}
 
 		// Close others
 		this.closeAllExpanded( elExpandedItems );
@@ -343,13 +365,17 @@ export class BuilderTabCourse {
 		);
 
 		allExpandedItems.forEach( ( item ) => {
-			if ( item === excludeElement ) return;
+			if ( item === excludeElement ) {
+				return;
+			}
 
 			item.classList.remove( 'active' );
 
 			const courseItem = item.closest( BuilderTabCourse.selectors.elCourseItem );
 
-			if ( ! courseItem ) return;
+			if ( ! courseItem ) {
+				return;
+			}
 
 			const expandedBtn = courseItem.querySelector(
 				BuilderTabCourse.selectors.elCourseActionExpanded

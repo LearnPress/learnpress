@@ -8,6 +8,7 @@
 
 namespace LearnPress\TemplateHooks\CourseBuilder\Course;
 
+use Exception;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
@@ -33,6 +34,7 @@ class BuilderCourseTemplate {
 	 * @param array $data
 	 *
 	 * @return void
+	 * @throws Exception
 	 */
 	public function layout( array $data = [] ) {
 		// Check to switch layout.
@@ -41,10 +43,7 @@ class BuilderCourseTemplate {
 
 		if ( ! empty( $item_id ) ) {
 			// Show edit course
-			do_action(
-				'learn-press/course-builder/course/edit/layout',
-				$data
-			);
+			BuilderEditCourseTemplate::instance()->layout( $data );
 		} else {
 			// Show list courses
 			BuilderListCoursesTemplate::instance()->layout( $data );
