@@ -137,13 +137,24 @@ class BuilderListQuizzesTemplate {
 				);
 			}
 
+			$total_pages     = \LP_Database::get_total_pages( $query_args['posts_per_page'], $total_quizzes );
+			$link_tab        = CourseBuilder::get_tab_link( 'quizzes' );
+			$data_pagination = [
+				'paged'       => max( 1, $query_args['paged'] ?? 1 ),
+				'total_pages' => $total_pages,
+				'base'        => trailingslashit( $link_tab ) . 'page/%#%',
+				'format'      => '',
+			];
+
+			$pagination = Template::instance()->html_pagination( $data_pagination );
+
 			$sections = apply_filters(
 				'learn-press/course-builder/quizzes/sections',
 				[
 					'wrapper'     => '<div class="courses-builder__quiz-tab learn-press-quizzes">',
 					'quizzes'     => $html_quizzes,
 					'wrapper_end' => '</div>',
-					'pagination'  => $this->quizzes_pagination( $query_args['paged'] ?? 1, $query_args['posts_per_page'], $total_quizzes ),
+					'pagination'  => $pagination,
 				],
 				$quizzes,
 				$userModel
@@ -334,35 +345,5 @@ class BuilderListQuizzesTemplate {
 		}
 
 		return $html_item;
-	}
-
-	/**
-	 * Pagination quizzes.
-	 *
-	 * @param int $page
-	 * @param int $limit
-	 * @param int $total_quizzes
-	 *
-	 * @return string
-	 */
-	public function quizzes_pagination( int $page, int $limit, int $total_quizzes ): string {
-		$content = '';
-
-		try {
-			$total_pages     = \LP_Database::get_total_pages( $limit, $total_quizzes );
-			$link_tab        = CourseBuilder::get_tab_link( 'quizzes' );
-			$data_pagination = [
-				'paged'       => max( 1, $page ),
-				'total_pages' => $total_pages,
-				'base'        => trailingslashit( $link_tab ) . 'page/%#%',
-				'format'      => '',
-			];
-
-			$content = Template::instance()->html_pagination( $data_pagination );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
 	}
 }

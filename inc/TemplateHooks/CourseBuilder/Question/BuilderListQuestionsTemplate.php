@@ -139,13 +139,24 @@ class BuilderListQuestionsTemplate {
 				);
 			}
 
+			$total_pages     = \LP_Database::get_total_pages( $query_args['posts_per_page'], $total_questions );
+			$link_tab        = CourseBuilder::get_tab_link( 'questions' );
+			$data_pagination = [
+				'paged'       => max( 1, $query_args['paged'] ?? 1 ),
+				'total_pages' => $total_pages,
+				'base'        => trailingslashit( $link_tab ) . 'page/%#%',
+				'format'      => '',
+			];
+
+			$pagination = Template::instance()->html_pagination( $data_pagination );
+
 			$sections = apply_filters(
 				'learn-press/course-builder/questions/sections',
 				[
 					'wrapper'     => '<div class="courses-builder__question-tab learn-press-questions">',
 					'questions'   => $html_questions,
 					'wrapper_end' => '</div>',
-					'pagination'  => $this->questions_pagination( $query_args['paged'] ?? 1, $query_args['posts_per_page'], $total_questions ),
+					'pagination'  => $pagination,
 				],
 				$questions,
 				$userModel
@@ -210,7 +221,7 @@ class BuilderListQuestionsTemplate {
 	 * @version 1.0.0
 	 */
 	public static function render_question( QuestionPostModel $question_model, array $settings = [] ): string {
-		static $edit_icon = null;
+		static $edit_icon         = null;
 		static $more_actions_icon = null;
 
 		if ( null === $edit_icon ) {
@@ -337,35 +348,5 @@ class BuilderListQuestionsTemplate {
 		}
 
 		return $html_item;
-	}
-
-	/**
-	 * Pagination questions.
-	 *
-	 * @param int $page
-	 * @param int $limit
-	 * @param int $total_questions
-	 *
-	 * @return string
-	 */
-	public function questions_pagination( int $page, int $limit, int $total_questions ): string {
-		$content = '';
-
-		try {
-			$total_pages     = \LP_Database::get_total_pages( $limit, $total_questions );
-			$link_tab        = CourseBuilder::get_tab_link( 'questions' );
-			$data_pagination = [
-				'paged'       => max( 1, $page ),
-				'total_pages' => $total_pages,
-				'base'        => trailingslashit( $link_tab ) . 'page/%#%',
-				'format'      => '',
-			];
-
-			$content = Template::instance()->html_pagination( $data_pagination );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
 	}
 }

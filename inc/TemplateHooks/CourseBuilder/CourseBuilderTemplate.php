@@ -596,7 +596,7 @@ class CourseBuilderTemplate {
 			array(
 				'id'    => 'lp-course-builder',
 				'title' => sprintf(
-					'<span class="lp-cb-admin-bar-icon" style="vertical-align: text-bottom;">%1$s</span><span class="ab-label">%2$s</span>',
+					'<span class="lp-cb-admin-bar-icon">%1$s</span><span class="ab-label">%2$s</span>',
 					$admin_bar_icon,
 					$title
 				),
