@@ -154,7 +154,7 @@ class BuilderListQuizzesTemplate {
 					'wrapper'     => '<div class="courses-builder__quiz-tab learn-press-quizzes">',
 					'quizzes'     => $html_quizzes,
 					'wrapper_end' => '</div>',
-					'pagination'  => $$pagination,
+					'pagination'  => $pagination,
 				],
 				$quizzes,
 				$userModel
