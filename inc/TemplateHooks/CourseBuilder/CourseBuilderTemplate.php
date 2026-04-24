@@ -10,10 +10,10 @@ namespace LearnPress\TemplateHooks\CourseBuilder;
 
 use Exception;
 use LearnPress\CourseBuilder\CourseBuilder;
-use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Profile;
 use LP_Settings;
@@ -467,267 +467,6 @@ class CourseBuilderTemplate {
 		return Template::combine_components( $item );
 	}
 
-	/**
-	 * Render detail view with breadcrumb and horizontal tabs
-	 *
-	 * @param string $tab_current
-	 * @param int|string $post_id
-	 * @param string $section_current
-	 *
-	 * @return string
-	 * @since 4.3.0
-	 */
-	protected function render_detail_view( $tab_current, $post_id, $section_current ) {
-		if ( ! CourseBuilderAccessPolicy::can_access_tab_post( $tab_current, $post_id ) ) {
-			return Template::print_message(
-				__( "Sorry, you don't have permission to access this content", 'learnpress' ),
-				'error',
-				false
-			);
-		}
-
-		$is_new_post = ( $post_id === CourseBuilder::POST_NEW );
-		$post        = null;
-
-		if ( ! $is_new_post ) {
-			$post = get_post( $post_id );
-			if ( ! $post ) {
-				return Template::print_message( __( 'Item not found.', 'learnpress' ), 'error', false );
-			}
-		}
-
-		$tab_data = CourseBuilder::get_data( $tab_current );
-		$sections = $tab_data['sections'] ?? [];
-
-		// Get status for button labels and status badge
-		$status = $is_new_post ? 'auto-draft' : $post->post_status;
-
-		// Dynamic title for new posts based on tab type
-		$new_post_titles = array(
-			'courses'   => __( 'Add New Course', 'learnpress' ),
-			'quizzes'   => __( 'Add New Quiz', 'learnpress' ),
-			'lessons'   => __( 'Add New Lesson', 'learnpress' ),
-			'questions' => __( 'Add New Question', 'learnpress' ),
-		);
-		$post_title      = $is_new_post
-			? ( $new_post_titles[ $tab_current ] ?? __( 'Add New', 'learnpress' ) )
-			: $post->post_title;
-
-		// Status badge HTML (hide for new post)
-		$status_badge = '';
-		if ( ! $is_new_post && ! empty( $status ) ) {
-			// Use type-specific status class based on current tab
-			$type_singular = rtrim( $tab_current, 's' ); // courses -> course, quizzes -> quiz, etc.
-			$status_label  = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
-			$status_badge  = sprintf( '<span class="%1$s-status %2$s">%3$s</span>', esc_attr( $type_singular ), esc_attr( $status ), esc_html( $status_label ) );
-		}
-
-		$is_admin_user                         = current_user_can( ADMIN_ROLE );
-		$is_instructor_user                    = current_user_can( LP_TEACHER_ROLE );
-		$course_post_type                      = get_post_type_object( LP_COURSE_CPT );
-		$cap_publish_course                    = ( $course_post_type && isset( $course_post_type->cap->publish_posts ) )
-			? $course_post_type->cap->publish_posts
-			: 'publish_lp_courses';
-		$can_publish_course                    = current_user_can( $cap_publish_course );
-		$required_review                       = \LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
-		$use_review_only_workflow              = ( $is_instructor_user && $required_review ) || ! $can_publish_course;
-		$is_review_only_course_context         = 'courses' === $tab_current && ! $is_admin_user && $use_review_only_workflow;
-		$main_action_status                    = in_array( $status, array( 'publish', 'draft', 'pending', 'future', 'private' ), true ) ? $status : 'publish';
-		$show_header_expanded_trash            = ! $is_new_post && in_array( $tab_current, array( 'courses', 'questions', 'quizzes' ), true );
-		$header_expanded_duplicate_class_map   = array(
-			'courses'   => 'cb-btn-duplicate-course',
-			'quizzes'   => 'cb-btn-duplicate-quiz',
-			'questions' => 'cb-btn-duplicate-question',
-		);
-		$header_expanded_duplicate_content_map = array(
-			'courses'   => __( 'Are you sure you want to duplicate this course?', 'learnpress' ),
-			'quizzes'   => __( 'Are you sure you want to duplicate this quiz?', 'learnpress' ),
-			'questions' => __( 'Are you sure you want to duplicate this question?', 'learnpress' ),
-		);
-		$header_expanded_duplicate_class       = $header_expanded_duplicate_class_map[ $tab_current ] ?? '';
-		$header_expanded_duplicate_text        = $header_expanded_duplicate_content_map[ $tab_current ] ?? '';
-
-		ob_start();
-		?>
-		<div class="lp-cb-content" data-post-id="<?php echo esc_attr( $post_id ); ?>"
-			data-is-new="<?php echo $is_new_post ? '1' : '0'; ?>"
-			data-status="<?php echo esc_attr( $status ); ?>">
-
-			<div class="lp-cb-header">
-				<div class="lp-cb-header__left">
-					<h1 class="lp-cb-header__title"><?php echo esc_html( $post_title ); ?></h1>
-					<?php echo $status_badge; ?>
-					<?php
-					$is_cb_admin_mode = \LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
-					$is_instructor    = current_user_can( LP_TEACHER_ROLE );
-					// Hide "Edit with WordPress" for instructors when CB admin mode is on
-					// Admins always see this link
-					$hide_wp_edit_link = $is_cb_admin_mode && $is_instructor && ! $is_admin_user;
-					?>
-					<?php if ( ! $is_new_post && ! $hide_wp_edit_link ) : ?>
-						<?php $hide_style = ( 'trash' === $status ) ? 'style="display:none"' : ''; ?>
-						<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) ); ?>" class="lp-cb-admin-link" target="_blank" title="<?php esc_attr_e( 'Edit with WordPress', 'learnpress' ); ?>" <?php echo $hide_style; ?>>
-							<span class="dashicons dashicons-wordpress"></span>
-							<span><?php esc_html_e( 'Edit with WordPress', 'learnpress' ); ?></span>
-						</a>
-					<?php endif; ?>
-				</div>
-				<div class="lp-cb-header__actions">
-					<?php
-					// Only show preview for courses (questions and quizzes don't have standalone permalinks)
-					$show_preview = ! $is_new_post && 'courses' === $tab_current;
-					?>
-					<?php if ( $show_preview ) : ?>
-						<?php $hide_style = ( 'trash' === $status ) ? 'style="display:none"' : ''; ?>
-						<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="cb-button cb-btn-preview cb-btn-secondary" target="_blank" <?php echo $hide_style; ?>>
-							<?php esc_html_e( 'Preview', 'learnpress' ); ?>
-						</a>
-					<?php endif; ?>
-					<div class="cb-header-actions-dropdown cb-header-actions-dropdown--single" data-current-status="<?php echo esc_attr( $main_action_status ); ?>" data-review-only-course="<?php echo esc_attr( $is_review_only_course_context ? 'yes' : 'no' ); ?>">
-						<div class="cb-btn-update cb-btn-primary cb-btn-main-action"
-							data-status="<?php echo esc_attr( $main_action_status ); ?>"
-							data-title-update="<?php esc_attr_e( 'Update', 'learnpress' ); ?>"
-							data-title-publish="<?php esc_attr_e( 'Publish', 'learnpress' ); ?>"
-							data-title-draft="<?php esc_attr_e( 'Save Draft', 'learnpress' ); ?>"
-							data-title-submit-review="<?php esc_attr_e( 'Submit for Review', 'learnpress' ); ?>">
-							<?php esc_html_e( 'Update', 'learnpress' ); ?>
-						</div>
-					</div>
-						<?php if ( $show_header_expanded_trash ) : ?>
-							<div class="cb-header-action-expanded">
-									<button type="button" class="course-action-expanded" aria-haspopup="true" aria-expanded="false" aria-label="<?php esc_attr_e( 'More actions', 'learnpress' ); ?>">
-									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-									</svg>
-								</button>
-								<div class="cb-header-action-expanded__items">
-									<?php if ( ! empty( $header_expanded_duplicate_class ) ) : ?>
-										<div class="cb-header-action-expanded__duplicate <?php echo esc_attr( $header_expanded_duplicate_class ); ?>"
-											data-title="<?php esc_attr_e( 'Are you sure?', 'learnpress' ); ?>"
-											data-content="<?php echo esc_attr( $header_expanded_duplicate_text ); ?>">
-											<span class="dashicons dashicons-admin-page"></span>
-											<?php esc_html_e( 'Duplicate', 'learnpress' ); ?>
-										</div>
-									<?php endif; ?>
-									<div class="cb-header-action-expanded__trash cb-btn-trash">
-										<span class="dashicons dashicons-trash"></span>
-										<?php esc_html_e( 'Move to Trash', 'learnpress' ); ?>
-									</div>
-								</div>
-							</div>
-						<?php endif; ?>
-					</div>
-				</div>
-
-			<?php echo $this->render_horizontal_tabs( $tab_current, $post_id, $sections, $section_current ); ?>
-
-			<div class="lp-cb-tab-content">
-				<?php
-				// Render ALL section contents for client-side tab switching
-				foreach ( $sections as $key => $section ) :
-					$section_slug    = $section['slug'];
-					$is_active_panel = ( $key === $section_current || $section_slug === $section_current );
-					$hidden_class    = $is_active_panel ? '' : 'lp-hidden';
-					?>
-					<div class="lp-cb-tab-panel <?php echo esc_attr( $hidden_class ); ?>" data-section="<?php echo esc_attr( $section_slug ); ?>">
-						<?php do_action( "learn-press/course-builder/{$tab_current}/{$section_slug}/layout", $post_id, $is_new_post ); ?>
-					</div>
-				<?php endforeach; ?>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
-	}
-
-	/**
-	 * Render horizontal tab navigation
-	 *
-	 * @param string $tab
-	 * @param int $post_id
-	 * @param array $sections
-	 * @param string $current_section
-	 *
-	 * @return string
-	 * @since 4.3.0
-	 */
-	protected function render_horizontal_tabs( $tab, $post_id, $sections, $current_section ) {
-		if ( empty( $sections ) ) {
-			return '';
-		}
-
-		ob_start();
-		?>
-		<div class="lp-cb-tabs">
-			<?php
-			foreach ( $sections as $key => $section ) :
-				$is_active = $key === $current_section || $section['slug'] === $current_section;
-				$classes   = [ 'lp-cb-tabs__item' ];
-				if ( $is_active ) {
-					$classes[] = 'is-active';
-				}
-				?>
-				<a href="#" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" data-tab-section="<?php echo esc_attr( $section['slug'] ); ?>">
-					<?php echo esc_html( $section['title'] ); ?>
-				</a>
-			<?php endforeach; ?>
-		</div>
-		<?php
-		return ob_get_clean();
-	}
-
-	public function html_tab( $tab ) {
-		$tab_data = CourseBuilder::get_data( $tab );
-
-		if ( empty( $tab_data ) ) {
-			return '';
-		}
-
-		$title = $tab_data['title'] ?? '';
-
-		ob_start();
-		do_action( "learn-press/course-builder/{$tab}/layout" );
-		$content = ob_get_clean();
-
-		$tab_slug = $tab; // preserve slug before overwriting
-
-		$sections = [
-			'wrapper'     => '<div class="lp-course-builder-content__tab">',
-			'content'     => $content,
-			'wrapper_end' => '</div>',
-		];
-
-		// Only add generic title for non-courses tabs
-		// The courses tab renders its own title inside BuilderTabCourseTemplate
-		if ( 'courses' !== $tab_slug ) {
-			$sections = array_merge(
-				[ 'wrapper' => $sections['wrapper'] ],
-				[ 'title' => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', $title ) ],
-				[
-					'content'     => $sections['content'],
-					'wrapper_end' => $sections['wrapper_end'],
-				]
-			);
-		}
-
-		$tab = $sections;
-
-		return Template::combine_components( $tab );
-	}
-
-	public function html_section( $tab, $section ) {
-		ob_start();
-		do_action( "learn-press/course-builder/{$tab}/{$section}/layout" );
-		$content = ob_get_clean();
-
-		$tab = [
-			'wrapper'     => '<div class="lp-course-builder-content__section">',
-			'content'     => $content,
-			'wrapper_end' => '</div>',
-		];
-
-		return Template::combine_components( $tab );
-	}
-
 	public function html_btn_add_new() {
 		$tab_current = CourseBuilder::get_menu_current();
 		$map_title   = [
@@ -823,7 +562,7 @@ class CourseBuilderTemplate {
 		// Check if on frontend single course page
 		if ( is_singular( LP_COURSE_CPT ) && get_the_ID() ) {
 			$title = esc_html__( 'Edit with Course Builder', 'learnpress' );
-			$href  = CourseBuilder::get_tab_link( 'courses', get_the_ID(), 'overview' );
+			$href  = BuilderCourseTemplate::instance()->get_link_edit( get_the_ID() );
 		}
 
 		// Check if on admin edit course page (post.php or post-new.php)
@@ -843,7 +582,7 @@ class CourseBuilderTemplate {
 				if ( LP_COURSE_CPT === $post_type ) {
 					$title = esc_html__( 'Edit with Course Builder', 'learnpress' );
 					if ( isset( $_GET['post'] ) ) {
-						$href = CourseBuilder::get_tab_link( 'courses', absint( $_GET['post'] ), 'overview' );
+						$href = BuilderCourseTemplate::instance()->get_link_edit( $_GET['post'] );
 					} else {
 						$href = CourseBuilder::get_link_add_new( 'courses' );
 					}

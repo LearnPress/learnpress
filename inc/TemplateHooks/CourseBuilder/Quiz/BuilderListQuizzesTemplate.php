@@ -6,7 +6,7 @@
  * @version 1.0.0
  */
 
-namespace LearnPress\TemplateHooks\CourseBuilder;
+namespace LearnPress\TemplateHooks\CourseBuilder\Quiz;
 
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
@@ -14,33 +14,54 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
-
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use Throwable;
 use WP_Query;
 
-class BuilderTabQuizTemplate {
+class BuilderListQuizzesTemplate {
 	use Singleton;
 
 	public function init() {
-		add_action( 'learn-press/course-builder/quizzes/layout', [ $this, 'html_tab_quizzes' ] );
+		add_action( 'learn-press/course-builder/list-quizzes/layout', [ $this, 'layout' ] );
 	}
 
-	public function html_tab_quizzes() {
-		$list_quiz   = $this->tab_list_quizzes();
-		$hmtl_search = $this->html_search();
-		$btn         = CourseBuilderTemplate::instance()->html_btn_add_new();
+	public function layout( array $data = [] ) {
+		$list_quiz = $this->tab_list_quizzes();
 
 		$tab = [
-			'wrapper'            => '<div class="cb-tab-quiz">',
-			'wrapper_action'     => '<div class="cb-tab-quiz__action">',
-			'search_quiz'        => $hmtl_search,
-			'btn'                => $btn,
-			'wrapper_action_end' => '</div>',
-			'quizzes'            => $list_quiz,
-			'wrapper_end'        => '</div>',
+			'wrapper'     => '<div class="cb-tab-quiz">',
+			'header'      => $this->html_header(),
+			'filter_bar'  => $this->html_filter_bar(),
+			'quizzes'     => $list_quiz,
+			'wrapper_end' => '</div>',
 		];
 
 		echo Template::combine_components( $tab );
+	}
+
+	public function html_header(): string {
+		$section = [
+			'wrapper'     => '<div class="cb-tab-header">',
+			'title'       => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', __( 'Quizzes', 'learnpress' ) ),
+			'actions'     => sprintf(
+				'<div class="cb-tab-header-actions" style="display:flex;align-items:center;gap:8px;">%s</div>',
+				CourseBuilderTemplate::instance()->html_btn_add_new()
+			),
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_filter_bar(): string {
+		$section = [
+			'wrapper_action'     => '<div class="cb-tab-quiz__action">',
+			'search_quiz'        => $this->html_search(),
+			'wrapper_action_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	public function html_search() {
@@ -202,7 +223,7 @@ class BuilderTabQuizTemplate {
 		);
 
 		try {
-			$edit_link = BuilderTabQuizTemplate::instance()->get_link_edit( $quiz['id'] );
+			$edit_link = BuilderQuizTemplate::instance()->get_link_edit( $quiz['id'] );
 
 			$html_courses = '';
 			$assigned     = '--';
@@ -217,7 +238,7 @@ class BuilderTabQuizTemplate {
 					$course_title = $course['title'] ?? '';
 
 					if ( $course_id && $course_title ) {
-						$course_link    = CourseBuilder::get_link_course_builder( "courses/{$course_id}" );
+						$course_link    = BuilderCourseTemplate::instance()->get_link_edit( $course_id );
 						$course_htmls[] = sprintf(
 							'<a href="%s" target="_blank">%s</a>',
 							esc_url( $course_link ),
@@ -335,17 +356,5 @@ class BuilderTabQuizTemplate {
 		}
 
 		return $content;
-	}
-
-	public function get_link_edit( $quiz_id = 0 ) {
-		if ( ! $quiz_id ) {
-			return '';
-		}
-
-		$section  = CourseBuilder::get_current_section( '', 'quizzes' );
-		$link_tab = CourseBuilder::get_tab_link( 'quizzes' );
-		$link     = $link_tab . $quiz_id . '/' . $section;
-
-		return $link;
 	}
 }

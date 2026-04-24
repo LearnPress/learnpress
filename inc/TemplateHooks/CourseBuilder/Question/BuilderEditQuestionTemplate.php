@@ -6,53 +6,224 @@
  * @version 1.0.0
  */
 
-namespace LearnPress\TemplateHooks\CourseBuilder;
+namespace LearnPress\TemplateHooks\CourseBuilder\Question;
 
+use Exception;
 use LearnPress\CourseBuilder\CourseBuilder;
+use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderQuizTemplate;
 use LP_Question_CURD;
+use LP_Settings;
 
 class BuilderEditQuestionTemplate {
 	use Singleton;
 
 	public function init() {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
-		add_action( 'learn-press/course-builder/questions/overview/layout', [ $this, 'section_overview' ] );
-		add_action( 'learn-press/course-builder/questions/settings/layout', [ $this, 'section_settings' ] );
+		add_action( 'learn-press/course-builder/questions/edit/layout', [ $this, 'layout' ] );
 	}
 
 	/**
-	 * Allow callback for AJAX.
-	 * @use self::render_edit_course_curriculum
-	 * @use self::render_html
+	 * Display layout edit/create question.
 	 *
-	 * @param array $callbacks
+	 * @param array $data [ 'userModel' => UserModel, 'item_id' => int|string ]
 	 *
-	 * @return array
+	 * @throws Exception
 	 */
-	public function allow_callback( array $callbacks ): array {
-		$callbacks[] = AdminEditCurriculumTemplate::class . ':render_edit_course_curriculum';
-
-		return $callbacks;
-	}
-
-	public function section_overview( $question_id = null ) {
-		wp_enqueue_script( 'lp-course-builder' );
-
-		$question_id    = empty( $question_id ) ? CourseBuilder::get_item_id() : $question_id;
-		$question_model = '';
-
-		if ( $question_id === CourseBuilder::POST_NEW ) {
-			$question_model = '';
+	public function layout( array $data = [] ) {
+		$userModel = $data['userModel'] ?? false;
+		if ( ! $userModel || ! $userModel->is_instructor() ) {
+			throw new Exception( __( 'You do not have permission to create or edit questions', 'learnpress' ) );
 		}
 
-		if ( absint( $question_id ) ) {
-			$question_model = QuestionPostModel::find( $question_id, true );
+		$item_id = $data['item_id'] ?? '';
+		if ( empty( $item_id ) ) {
+			throw new Exception( __( 'Invalid question ID', 'learnpress' ) );
+		}
+
+		if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'questions', $item_id ) ) {
+			throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
+		}
+
+		$is_create_new = $item_id === CourseBuilder::POST_NEW;
+		$questionModel = false;
+
+		if ( ! $is_create_new ) {
+			$questionModel = QuestionPostModel::find( (int) $item_id, true );
+			if ( ! $questionModel ) {
+				throw new Exception( __( 'Question not found', 'learnpress' ) );
+			}
+		}
+
+		$data['questionModel'] = $questionModel;
+
+		$section = [
+			'wrap'     => sprintf(
+				'<div class="lp-cb-content" data-post-id="%1$s">',
+				esc_attr( $item_id )
+			),
+			'header'   => $this->html_header( $data ),
+			'tabs'     => $this->html_tabs( $data ),
+			'wrap_end' => '</div>',
+		];
+
+		echo Template::combine_components( $section );
+	}
+
+	public function html_header( array $data = [] ): string {
+		$userModel            = $data['userModel'] ?? false;
+		$questionModel        = $data['questionModel'] ?? false;
+		$enable_wp_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
+		$title                = $questionModel ? $questionModel->get_the_title() : __( 'Add New Question', 'learnpress' );
+		$status               = $questionModel ? sanitize_key( (string) $questionModel->post_status ) : '';
+		$status_label         = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
+		$main_action_status   = in_array( $status, [ 'publish', 'draft', 'pending', 'future', 'private' ], true ) ? $status : 'publish';
+		$is_admin_user        = current_user_can( ADMIN_ROLE );
+		$hide_wp_edit_link    = $enable_wp_admin_mode && ! $is_admin_user && $userModel->is_instructor();
+
+		$section = [
+			'header_wrap'        => '<div class="lp-cb-header">',
+			'header_left'        => '<div class="lp-cb-header__left">',
+			'title'              => sprintf(
+				'<h1 class="lp-cb-header__title">%s</h1>',
+				esc_html( $title )
+			),
+			'status_badge'       => $questionModel && $status ? sprintf(
+				'<span class="question-status %1$s">%2$s</span>',
+				esc_attr( $status ),
+				esc_html( $status_label )
+			) : '',
+			'link_edit_on_wp'    => $questionModel && ! $hide_wp_edit_link ? sprintf(
+				'<a href="%1$s" class="lp-cb-admin-link" target="_blank" title="%2$s"%3$s>
+					<span class="dashicons dashicons-wordpress"></span>
+					<span>%2$s</span>
+				</a>',
+				esc_url( admin_url( 'post.php?post=' . $questionModel->get_id() . '&action=edit' ) ),
+				esc_attr__( 'Edit with WordPress', 'learnpress' ),
+				'trash' === $status ? ' style="display:none"' : ''
+			) : '',
+			'header_left_end'    => '</div>',
+			'header_actions'     => '<div class="lp-cb-header__actions">',
+			'dropdown_wrap'      => '<div class="cb-header-actions-dropdown cb-header-actions-dropdown--single">',
+			'update_btn'         => sprintf(
+				'<div class="cb-btn-update cb-btn-primary cb-btn-main-action"
+					data-status="%1$s"
+					data-title-update="%2$s"
+					data-title-publish="%3$s"
+					data-title-draft="%4$s">%5$s</div>',
+				esc_attr( $main_action_status ),
+				esc_attr__( 'Update', 'learnpress' ),
+				esc_attr__( 'Publish', 'learnpress' ),
+				esc_attr__( 'Save Draft', 'learnpress' ),
+				esc_html( $questionModel ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) )
+			),
+			'dropdown_wrap_end'  => '</div>',
+			'expanded_actions'   => $questionModel ? sprintf(
+				'<div class="cb-header-action-expanded">
+					<button type="button" class="course-action-expanded" aria-haspopup="true" aria-expanded="false" aria-label="%1$s">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+						</svg>
+					</button>
+					<div class="cb-header-action-expanded__items">
+						<div class="cb-header-action-expanded__duplicate cb-btn-duplicate-question"
+							data-title="%2$s"
+							data-content="%3$s">
+							<span class="dashicons dashicons-admin-page"></span>
+							%4$s
+						</div>
+						<div class="cb-header-action-expanded__trash cb-btn-trash">
+							<span class="dashicons dashicons-trash"></span>
+							%5$s
+						</div>
+					</div>
+				</div>',
+				esc_attr__( 'More actions', 'learnpress' ),
+				esc_attr__( 'Are you sure?', 'learnpress' ),
+				esc_attr__( 'Are you sure you want to duplicate this question?', 'learnpress' ),
+				esc_html__( 'Duplicate', 'learnpress' ),
+				esc_html__( 'Move to Trash', 'learnpress' )
+			) : '',
+			'header_actions_end' => '</div>',
+			'header_end'         => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_tabs( array $data = [] ): string {
+		$section_tab = [
+			'tabs_wrap' => '<div class="lp-cb-tabs">',
+			'tabs'      => '',
+			'tabs_end'  => '</div>',
+		];
+
+		$section_content = [
+			'wrap'     => '<div class="lp-cb-tab-content">',
+			'content'  => '',
+			'wrap-end' => '</div>',
+		];
+
+		$tabs = apply_filters(
+			'learn-press/course-builder/questions/edit/tabs',
+			[
+				'overview' => [
+					'title' => esc_html__( 'Overview', 'learnpress' ),
+					'html'  => $this->html_tab_overview( $data ),
+				],
+				'settings' => [
+					'title' => esc_html__( 'Settings', 'learnpress' ),
+					'html'  => $this->html_tab_settings( $data ),
+				],
+			],
+			$data
+		);
+
+		$tab_active = array_key_first( $tabs );
+		if ( isset( $_GET['tab'] ) && isset( $tabs[ $_GET['tab'] ] ) ) {
+			$tab_active = $_GET['tab'];
+		}
+
+		foreach ( $tabs as $key => $tab ) {
+			$is_active = $key === $tab_active;
+
+			$section_tab['tabs'] .= sprintf(
+				'<a href="#" class="lp-cb-tabs__item %s" data-tab-section="%s">%s</a>',
+				$is_active ? 'is-active' : '',
+				esc_attr( $tab['slug'] ?? $key ),
+				esc_html( $tab['title'] ?? '' )
+			);
+
+			$section_content['content'] .= sprintf(
+				'<div class="lp-cb-tab-panel %s" data-section="%s">%s</div>',
+				$is_active ? '' : 'lp-hidden',
+				esc_attr( $tab['slug'] ?? $key ),
+				$tab['html'] ?? ''
+			);
+		}
+
+		return Template::combine_components(
+			[
+				'tabs'     => Template::combine_components( $section_tab ),
+				'contents' => Template::combine_components( $section_content ),
+			]
+		);
+	}
+
+	public function html_tab_overview( array $data = [] ): string {
+		wp_enqueue_script( 'lp-course-builder' );
+
+		$question_model = $data['questionModel'] ?? false;
+		$question_id    = $data['item_id'] ?? ( $question_model ? $question_model->get_id() : CourseBuilder::POST_NEW );
+
+		if ( absint( $question_id ) && ! $question_model ) {
+			$question_model = QuestionPostModel::find( absint( $question_id ), true );
 			if ( empty( $question_model ) ) {
 				return '';
 			}
@@ -79,7 +250,52 @@ class BuilderEditQuestionTemplate {
 			'wrapper_end'         => '</div>',
 		];
 
-		echo Template::combine_components( $section );
+		return Template::combine_components( $section );
+	}
+
+	public function html_tab_settings( array $data = [] ): string {
+		wp_enqueue_style( 'lp-edit-question' );
+
+		$question_model = $data['questionModel'] ?? false;
+		$question_id    = $data['item_id'] ?? ( $question_model ? $question_model->get_id() : CourseBuilder::POST_NEW );
+
+		if ( $question_id === CourseBuilder::POST_NEW || absint( $question_id ) <= 0 ) {
+			return sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Question before setting question', 'learnpress' ) );
+		}
+
+		if ( ! $question_model ) {
+			$question_model = QuestionPostModel::find( absint( $question_id ), true );
+			if ( empty( $question_model ) ) {
+				return '';
+			}
+		}
+
+		$settings = AdminEditQuestionTemplate::instance()->html_edit_question( $question_model );
+
+		$output = [
+			'wrapper'          => sprintf( '<div class="cb-section__question-edit" data-question-id="%s">', $question_id ),
+			'form_setting'     => '<form name="lp-form-setting-question" class="lp-form-setting-question" method="post" enctype="multipart/form-data">',
+			'settings'         => $settings,
+			'form_setting_end' => '</form>',
+			'wrapper_end'      => '</div>',
+		];
+
+		return Template::combine_components( $output );
+	}
+
+	/**
+	 * Allow callback for AJAX.
+	 * @use self::render_edit_course_curriculum
+	 * @use self::render_html
+	 *
+	 * @param array $callbacks
+	 *
+	 * @return array
+	 */
+	public function allow_callback( array $callbacks ): array {
+		$callbacks[] = AdminEditCurriculumTemplate::class . ':render_edit_course_curriculum';
+
+		return $callbacks;
 	}
 
 	public function assigned_quiz( $question_model ) {
@@ -97,7 +313,7 @@ class BuilderEditQuestionTemplate {
 				$quiz_title = $quiz['title'] ?? '';
 
 				if ( $quiz_id && $quiz_title ) {
-					$quiz_link    = BuilderTabQuizTemplate::instance()->get_link_edit( $quiz_id );
+					$quiz_link    = BuilderQuizTemplate::instance()->get_link_edit( $quiz_id );
 					$quiz_htmls[] = sprintf(
 						'<a href="%s">%s</a>',
 						esc_url( $quiz_link ),
@@ -342,36 +558,6 @@ class BuilderEditQuestionTemplate {
 		];
 
 		return Template::combine_components( $publish );
-	}
-
-	public function section_settings( $question_id = null ) {
-		wp_enqueue_style( 'lp-edit-question' );
-
-		$question_id    = empty( $question_id ) ? CourseBuilder::get_item_id() : $question_id;
-		$question_model = '';
-
-		if ( $question_id === CourseBuilder::POST_NEW || absint( $question_id ) <= 0 ) {
-			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Question before setting question', 'learnpress' ) );
-			echo $message;
-			return;
-		}
-
-		$question_model = QuestionPostModel::find( absint( $question_id ), true );
-		if ( empty( $question_model ) ) {
-			return;
-		}
-
-		$settings = AdminEditQuestionTemplate::instance()->html_edit_question( $question_model );
-
-		$output = [
-			'wrapper'          => sprintf( '<div class="cb-section__question-edit" data-question-id="%s">', $question_id ),
-			'form_setting'     => '<form name="lp-form-setting-question" class="lp-form-setting-question" method="post" enctype="multipart/form-data">',
-			'settings'         => $settings,
-			'form_setting_end' => '</form>',
-			'wrapper_end'      => '</div>',
-		];
-
-		echo Template::combine_components( $output );
 	}
 
 	public function get_assigned_question( $id ) {

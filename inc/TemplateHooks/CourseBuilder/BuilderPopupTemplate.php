@@ -17,7 +17,9 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\Question\QuestionPostModel;
-use LearnPress\TemplateHooks\TemplateAJAX;
+use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderEditLessonTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderEditQuestionTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderEditQuizTemplate;
 use stdClass;
 
 class BuilderPopupTemplate {
@@ -152,7 +154,7 @@ class BuilderPopupTemplate {
 		$status       = $lesson_model ? $lesson_model->post_status : '';
 
 		$instance = self::instance();
-		$content  = $instance->build_lesson_content( $lesson_id );
+		$content  = $instance->build_lesson_content( $lesson_id, $lesson_model );
 
 		$html = array_merge(
 			$instance->get_popup_wrapper( 'lesson', $lesson_id, $title, $status ),
@@ -168,17 +170,15 @@ class BuilderPopupTemplate {
 	/**
 	 * Build lesson content
 	 */
-	private function build_lesson_content( int $lesson_id ): string {
+	private function build_lesson_content( int $lesson_id, $lesson_model = false ): string {
 		$template          = BuilderEditLessonTemplate::instance();
 		$lesson_context_id = $lesson_id > 0 ? $lesson_id : CourseBuilder::POST_NEW;
-
-		ob_start();
-		$template->section_overview( $lesson_context_id );
-		$overview_html = ob_get_clean();
-
-		ob_start();
-		$template->section_settings( $lesson_context_id );
-		$settings_html = ob_get_clean();
+		$lesson_data       = [
+			'item_id'     => $lesson_context_id,
+			'lessonModel' => $lesson_model,
+		];
+		$overview_html     = $template->html_tab_overview( $lesson_data );
+		$settings_html     = $template->html_tab_settings( $lesson_data );
 
 		$sections = [
 			'wrapper'           => sprintf( '<div class="cb-section__lesson-edit" data-lesson-id="%d">', $lesson_id ),
@@ -206,7 +206,7 @@ class BuilderPopupTemplate {
 		$status     = $quiz_model ? $quiz_model->post_status : '';
 
 		$instance = self::instance();
-		$content  = $instance->build_quiz_content( $quiz_id );
+		$content  = $instance->build_quiz_content( $quiz_id, $quiz_model );
 
 		$html = array_merge(
 			$instance->get_popup_wrapper( 'quiz', $quiz_id, $title, $status ),
@@ -222,21 +222,16 @@ class BuilderPopupTemplate {
 	/**
 	 * Build quiz content
 	 */
-	private function build_quiz_content( int $quiz_id ): string {
+	private function build_quiz_content( int $quiz_id, $quiz_model = false ): string {
 		$template        = BuilderEditQuizTemplate::instance();
 		$quiz_context_id = $quiz_id > 0 ? $quiz_id : CourseBuilder::POST_NEW;
-
-		ob_start();
-		$template->section_overview( $quiz_context_id );
-		$overview_html = ob_get_clean();
-
-		ob_start();
-		$template->section_question( $quiz_context_id );
-		$question_html = ob_get_clean();
-
-		ob_start();
-		$template->section_settings( $quiz_context_id );
-		$settings_html = ob_get_clean();
+		$quiz_data        = [
+			'item_id'   => $quiz_context_id,
+			'quizModel' => $quiz_model,
+		];
+		$overview_html   = $template->html_tab_overview( $quiz_data );
+		$question_html   = $template->html_tab_question( $quiz_data );
+		$settings_html   = $template->html_tab_settings( $quiz_data );
 
 		$sections = [
 			'wrapper'           => sprintf( '<div class="cb-section__quiz-edit" data-quiz-id="%d">', $quiz_id ),
@@ -265,7 +260,7 @@ class BuilderPopupTemplate {
 		$status         = $question_model ? $question_model->post_status : '';
 
 		$instance = self::instance();
-		$content  = $instance->build_question_content( $question_id );
+		$content  = $instance->build_question_content( $question_id, $question_model );
 
 		$html = array_merge(
 			$instance->get_popup_wrapper( 'question', $question_id, $title, $status ),
@@ -281,17 +276,15 @@ class BuilderPopupTemplate {
 	/**
 	 * Build question content
 	 */
-	private function build_question_content( int $question_id ): string {
+	private function build_question_content( int $question_id, $question_model = false ): string {
 		$template            = BuilderEditQuestionTemplate::instance();
 		$question_context_id = $question_id > 0 ? $question_id : CourseBuilder::POST_NEW;
-
-		ob_start();
-		$template->section_overview( $question_context_id );
-		$overview_html = ob_get_clean();
-
-		ob_start();
-		$template->section_settings( $question_context_id );
-		$settings_html = ob_get_clean();
+		$question_data       = [
+			'item_id'       => $question_context_id,
+			'questionModel' => $question_model,
+		];
+		$overview_html       = $template->html_tab_overview( $question_data );
+		$settings_html       = $template->html_tab_settings( $question_data );
 
 		$sections = [
 			'wrapper'           => sprintf( '<div class="cb-section__question-edit" data-question-id="%d">', $question_id ),

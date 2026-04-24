@@ -6,41 +6,63 @@
  * @version 1.0.0
  */
 
-namespace LearnPress\TemplateHooks\CourseBuilder;
+namespace LearnPress\TemplateHooks\CourseBuilder\Question;
 
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderQuizTemplate;
 use LP_Question;
 use LP_Question_CURD;
 use Throwable;
 use WP_Query;
 
-class BuilderTabQuestionTemplate {
+class BuilderListQuestionsTemplate {
 	use Singleton;
 
 	public function init() {
-		add_action( 'learn-press/course-builder/questions/layout', [ $this, 'html_tab_questions' ] );
+		add_action( 'learn-press/course-builder/list-questions/layout', [ $this, 'layout' ] );
 	}
 
-	public function html_tab_questions() {
+	public function layout( array $data = [] ) {
 		$list_question = $this->tab_list_questions();
-		$hmtl_search   = $this->html_search();
-		$btn           = CourseBuilderTemplate::instance()->html_btn_add_new();
 
 		$tab = [
-			'wrapper'            => '<div class="cb-tab-question">',
-			'wrapper_action'     => '<div class="cb-tab-question__action">',
-			'search_question'    => $hmtl_search,
-			'btn'                => $btn,
-			'wrapper_action_end' => '</div>',
-			'questions'          => $list_question,
-			'wrapper_end'        => '</div>',
+			'wrapper'     => '<div class="cb-tab-question">',
+			'header'      => $this->html_header(),
+			'filter_bar'  => $this->html_filter_bar(),
+			'questions'   => $list_question,
+			'wrapper_end' => '</div>',
 		];
 
 		echo Template::combine_components( $tab );
+	}
+
+	public function html_header(): string {
+		$section = [
+			'wrapper'     => '<div class="cb-tab-header">',
+			'title'       => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', __( 'Questions', 'learnpress' ) ),
+			'actions'     => sprintf(
+				'<div class="cb-tab-header-actions" style="display:flex;align-items:center;gap:8px;">%s</div>',
+				CourseBuilderTemplate::instance()->html_btn_add_new()
+			),
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_filter_bar(): string {
+		$section = [
+			'wrapper_action'     => '<div class="cb-tab-question__action">',
+			'search_question'    => $this->html_search(),
+			'wrapper_action_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	public function html_search() {
@@ -205,7 +227,7 @@ class BuilderTabQuestionTemplate {
 		);
 
 		try {
-			$edit_link = BuilderTabQuestionTemplate::instance()->get_link_edit( $question['id'] );
+			$edit_link = BuilderQuestionTemplate::instance()->get_link_edit( $question['id'] );
 
 			$html_quizzes = '';
 			$assigned     = '--';
@@ -220,7 +242,7 @@ class BuilderTabQuestionTemplate {
 					$quiz_title = $quiz['title'] ?? '';
 
 					if ( $quiz_id && $quiz_title ) {
-						$quiz_link    = BuilderTabQuizTemplate::instance()->get_link_edit( $quiz_id );
+						$quiz_link    = BuilderQuizTemplate::instance()->get_link_edit( $quiz_id );
 						$quiz_htmls[] = sprintf(
 							'<a href="%s">%s</a>',
 							esc_url( $quiz_link ),
@@ -337,17 +359,5 @@ class BuilderTabQuestionTemplate {
 		}
 
 		return $content;
-	}
-
-	public function get_link_edit( $question_id = 0 ) {
-		if ( ! $question_id ) {
-			return '';
-		}
-
-		$section  = CourseBuilder::get_current_section( '', 'questions' );
-		$link_tab = CourseBuilder::get_tab_link( 'questions' );
-		$link     = $link_tab . $question_id . '/' . $section;
-
-		return $link;
 	}
 }

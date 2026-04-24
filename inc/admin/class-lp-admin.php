@@ -7,6 +7,7 @@
 
 use LearnPress\Background\LPBackgroundAjax;
 use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -941,7 +942,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				return;
 			}
 
-			$course_builder_url = \LearnPress\CourseBuilder\CourseBuilder::get_tab_link( 'courses', $post->ID, 'overview' ) ?? '';
+			$course_builder_url = BuilderCourseTemplate::instance()->get_link_edit( $post->ID ) ?? '';
 			?>
 			<div class="lp-edit-with-course-builder" style="margin: 10px 0 20px 0;">
 				<a href="<?php echo esc_url( $course_builder_url ); ?>" class="button button-primary button-large" style="background: #7067ED; border-color: #7067ED; display: inline-flex; align-items: center; gap: 6px; padding: 0 16px; font-size: 14px; border-radius: 3px; line-height: 3;">

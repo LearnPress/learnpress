@@ -9,7 +9,6 @@
 namespace LearnPress\Ajax;
 
 use Exception;
-use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
@@ -19,9 +18,12 @@ use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
-use LearnPress\TemplateHooks\CourseBuilder\BuilderTabLessonTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuestionTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\BuilderTabQuizTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderListLessonsTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderListQuestionsTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderQuestionTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderListQuizzesTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderQuizTemplate;
 use LP_Course_CURD;
 use LP_Helper;
 use LP_Lesson_CURD;
@@ -855,7 +857,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			$course_model                  = CourseModel::find( $new_item_id, true );
-			$html                          = BuilderCourseTemplate::render_course( $course_model );
+			$html                          = BuilderListCoursesTemplate::render_course( $course_model );
 			$response->status              = 'success';
 			$response->data->html          = $html;
 			$response->data->course_id_new = $new_item_id;
@@ -1068,7 +1070,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				throw new Exception( $new_item_id->get_error_message() );
 			}
 			$lesson_model_new     = LessonPostModel::find( $new_item_id, true );
-			$html                 = BuilderTabLessonTemplate::render_lesson( $lesson_model_new );
+			$html                 = BuilderListLessonsTemplate::render_lesson( $lesson_model_new );
 			$response->status     = 'success';
 			$response->data->html = $html;
 			$response->message    = __( 'Lesson duplicated successfully', 'learnpress' );
@@ -1230,7 +1232,7 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			if ( $insert && $return_html ) {
 				$lesson_model_new               = LessonPostModel::find( $lesson_id, true );
-				$response->data->list_item_html = BuilderTabLessonTemplate::render_lesson( $lesson_model_new );
+				$response->data->list_item_html = BuilderListLessonsTemplate::render_lesson( $lesson_model_new );
 			}
 
 			wp_send_json( $response );
@@ -1579,7 +1581,7 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			if ( $insert && $return_html ) {
 				$quiz_model_new                 = QuizPostModel::find( $quiz_id, true );
-				$response->data->list_item_html = BuilderTabQuizTemplate::render_quiz( $quiz_model_new );
+				$response->data->list_item_html = BuilderListQuizzesTemplate::render_quiz( $quiz_model_new );
 			}
 
 			wp_send_json( $response );
@@ -1615,11 +1617,11 @@ class CourseBuilderAjax extends AbstractAjax {
 				throw new Exception( $new_item_id->get_error_message() );
 			}
 			$quiz_model_new               = QuizPostModel::find( $new_item_id, true );
-			$html                         = BuilderTabQuizTemplate::render_quiz( $quiz_model_new );
+			$html                         = BuilderListQuizzesTemplate::render_quiz( $quiz_model_new );
 			$response->status             = 'success';
 			$response->data->html         = $html;
 			$response->data->quiz_id_new  = $new_item_id;
-			$response->data->redirect_url = BuilderTabQuizTemplate::instance()->get_link_edit( $new_item_id );
+			$response->data->redirect_url = BuilderQuizTemplate::instance()->get_link_edit( $new_item_id );
 			$response->message            = __( 'Quiz duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
@@ -1770,12 +1772,12 @@ class CourseBuilderAjax extends AbstractAjax {
 				throw new Exception( $new_item_id->get_error_message() );
 			}
 			$question_model_new = QuestionPostModel::find( $new_item_id, true );
-			$html               = BuilderTabQuestionTemplate::render_question( $question_model_new );
+			$html               = BuilderListQuestionsTemplate::render_question( $question_model_new );
 
 			$response->status                = 'success';
 			$response->data->html            = $html;
 			$response->data->question_id_new = $new_item_id;
-			$response->data->redirect_url    = BuilderTabQuestionTemplate::instance()->get_link_edit( $new_item_id );
+			$response->data->redirect_url    = BuilderQuestionTemplate::instance()->get_link_edit( $new_item_id );
 			$response->message               = __( 'Question duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( \Throwable $th ) {
@@ -1901,7 +1903,7 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			if ( $insert && $return_html ) {
 				$question_model_new             = QuestionPostModel::find( $question_id, true );
-				$response->data->list_item_html = BuilderTabQuestionTemplate::render_question( $question_model_new );
+				$response->data->list_item_html = BuilderListQuestionsTemplate::render_question( $question_model_new );
 			}
 
 			wp_send_json( $response );

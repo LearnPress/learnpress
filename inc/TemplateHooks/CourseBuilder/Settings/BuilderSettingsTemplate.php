@@ -1,54 +1,71 @@
 <?php
 /**
- * Template hooks Tab Settings in Course Builder.
+ * Template hooks Settings in Course Builder.
  *
  * @since 4.3.x
- * @version 1.0.1
+ * @version 1.0.2
  */
 
-namespace LearnPress\TemplateHooks\CourseBuilder;
+namespace LearnPress\TemplateHooks\CourseBuilder\Settings;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 use LP_Settings;
 use Throwable;
 
-class BuilderTabSettingsTemplate {
+class BuilderSettingsTemplate {
 	use Singleton;
 
 	public function init() {
-		add_action( 'learn-press/course-builder/settings/layout', [ $this, 'html_tab_settings' ] );
+		add_action( 'learn-press/course-builder/settings/layout', [ $this, 'layout' ] );
 	}
 
-	public function html_tab_settings() {
+	public function layout( array $data = [] ) {
 		try {
-			if ( ! $this->can_manage_settings() ) {
+			if ( ! $this->can_manage_settings( $data ) ) {
 				echo Template::print_message( __( 'Only administrators can manage instructor access in Course Builder.', 'learnpress' ), 'error', false );
 				return;
 			}
 
 			wp_enqueue_script( 'lp-course-builder' );
 
-			$settings_data = $this->get_settings_data();
-			$sections      = apply_filters(
+			$settings_data   = $this->get_settings_data();
+			$layout_sections = apply_filters(
 				'learn-press/course-builder/settings/sections',
 				[
 					'wrapper'     => '<div class="lp-cb-settings">',
+					'header'      => $this->html_header(),
 					'content'     => '<div class="lp-cb-settings__content">',
-					'form'        => $this->html_form_settings( $settings_data ),
+					'form'        => $this->html_content( $settings_data ),
 					'content_end' => '</div>',
 					'wrapper_end' => '</div>',
 				],
 				$settings_data
 			);
 
-			echo Template::combine_components( $sections );
+			echo Template::combine_components( $layout_sections );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
 
-	protected function can_manage_settings(): bool {
+	protected function html_header(): string {
+		return Template::combine_components(
+			[
+				'wrapper'     => '<div class="cb-tab-header">',
+				'title'       => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', __( 'Settings', 'learnpress' ) ),
+				'wrapper_end' => '</div>',
+			]
+		);
+	}
+
+	protected function can_manage_settings( array $data = [] ): bool {
+		$userModel = $data['userModel'] ?? false;
+		if ( $userModel instanceof UserModel ) {
+			return user_can( $userModel->get_id(), ADMIN_ROLE );
+		}
+
 		$user_id = get_current_user_id();
 
 		return $user_id && current_user_can( ADMIN_ROLE );
@@ -69,7 +86,7 @@ class BuilderTabSettingsTemplate {
 		);
 	}
 
-	protected function html_form_settings( array $settings_data ): string {
+	protected function html_content( array $settings_data ): string {
 		$form_sections = apply_filters(
 			'learn-press/course-builder/settings/form/sections',
 			[

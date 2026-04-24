@@ -6,29 +6,29 @@
  * @version 1.0.0
  */
 
-namespace LearnPress\TemplateHooks\CourseBuilder;
+namespace LearnPress\TemplateHooks\CourseBuilder\Lesson;
 
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
-
 use Throwable;
 use WP_Query;
 
-class BuilderTabLessonTemplate {
+class BuilderListLessonsTemplate {
 	use Singleton;
 
 	public function init() {
-		add_action( 'learn-press/course-builder/lessons/layout', [ $this, 'html_tab_lessons' ] );
+		add_action( 'learn-press/course-builder/list-lessons/layout', [ $this, 'layout' ] );
 	}
 
-	public function html_tab_lessons() {
+	public function layout( array $data = [] ) {
 		$list_lesson    = $this->tab_list_lessons();
-		$hmtl_search    = $this->html_search();
-		$btn            = CourseBuilderTemplate::instance()->html_btn_add_new();
 		$popup_template = sprintf(
 			'<script type="text/template" id="lp-tmpl-builder-popup-lesson-list"><div class="lp-builder-popup-overlay"></div><div class="lp-builder-popup lp-builder-popup--loading">%s</div></script>',
 			TemplateAJAX::load_content_via_ajax(
@@ -48,17 +48,39 @@ class BuilderTabLessonTemplate {
 		);
 
 		$tab = [
-			'wrapper'            => '<div class="cb-tab-lesson">',
-			'wrapper_action'     => '<div class="cb-tab-lesson__action">',
-			'search_lesson'      => $hmtl_search,
-			'btn'                => $btn,
-			'wrapper_action_end' => '</div>',
-			'lessons'            => $list_lesson,
-			'popup_template'     => $popup_template,
-			'wrapper_end'        => '</div>',
+			'wrapper'        => '<div class="cb-tab-lesson">',
+			'header'         => $this->html_header(),
+			'filter_bar'     => $this->html_filter_bar(),
+			'lessons'        => $list_lesson,
+			'popup_template' => $popup_template,
+			'wrapper_end'    => '</div>',
 		];
 
 		echo Template::combine_components( $tab );
+	}
+
+	public function html_header(): string {
+		$section = [
+			'wrapper'     => '<div class="cb-tab-header">',
+			'title'       => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', __( 'Lessons', 'learnpress' ) ),
+			'actions'     => sprintf(
+				'<div class="cb-tab-header-actions" style="display:flex;align-items:center;gap:8px;">%s</div>',
+				CourseBuilderTemplate::instance()->html_btn_add_new()
+			),
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_filter_bar(): string {
+		$section = [
+			'wrapper_action'     => '<div class="cb-tab-lesson__action">',
+			'search_lesson'      => $this->html_search(),
+			'wrapper_action_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	public function html_search() {
@@ -220,7 +242,7 @@ class BuilderTabLessonTemplate {
 		);
 
 		try {
-			$edit_link = BuilderTabLessonTemplate::instance()->get_link_edit( $lesson['id'] );
+			$edit_link = BuilderLessonTemplate::instance()->get_link_edit( $lesson['id'] );
 
 			$html_courses = '';
 			$assigned     = '--';
@@ -235,7 +257,7 @@ class BuilderTabLessonTemplate {
 					$course_title = $course['title'] ?? '';
 
 					if ( $course_id && $course_title ) {
-						$course_link    = CourseBuilder::get_link_course_builder( "courses/{$course_id}" );
+						$course_link    = BuilderCourseTemplate::instance()->get_link_edit( $course_id );
 						$course_htmls[] = sprintf(
 							'<a href="%s" target="_blank">%s</a>',
 							esc_url( $course_link ),
@@ -364,17 +386,5 @@ class BuilderTabLessonTemplate {
 		}
 
 		return $content;
-	}
-
-	public function get_link_edit( $lesson_id = 0 ) {
-		if ( ! $lesson_id ) {
-			return '';
-		}
-
-		$section  = CourseBuilder::get_current_section( '', 'lessons' );
-		$link_tab = CourseBuilder::get_tab_link( 'lessons' );
-		$link     = $link_tab . $lesson_id . '/' . $section;
-
-		return $link;
 	}
 }

@@ -1,50 +1,56 @@
 <?php
 /**
- * Template hooks Tab Dashboard in Course Builder.
+ * Template hooks Dashboard in Course Builder.
  *
  * @since 4.3.0
- * @version 2.0.0
+ * @version 2.0.1
  */
 
-namespace LearnPress\TemplateHooks\CourseBuilder;
+namespace LearnPress\TemplateHooks\CourseBuilder\Dashboard;
 
-use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Course_Filter;
 use LP_Statistics_DB;
 use Throwable;
 
-class BuilderTabDashboardTemplate {
+class BuilderDashboardTemplate {
 	use Singleton;
 
 	public function init() {
-		add_action( 'learn-press/course-builder/dashboard/layout', [ $this, 'html_tab_dashboard' ] );
+		add_action( 'learn-press/course-builder/dashboard/layout', [ $this, 'layout' ] );
 	}
 
 	/**
-	 * Render dashboard tab HTML.
+	 * Render dashboard layout.
+	 *
+	 * @param array $data
 	 *
 	 * @return void
 	 */
-	public function html_tab_dashboard() {
+	public function layout( array $data = [] ) {
 		$html = '';
 
 		try {
-			$user_id = get_current_user_id();
-			if ( ! $user_id ) {
-				return;
+			$user = $data['userModel'] ?? false;
+			if ( ! $user instanceof UserModel ) {
+				$user_id = get_current_user_id();
+				if ( ! $user_id ) {
+					return;
+				}
+
+				$user = UserModel::find( $user_id );
+				if ( ! $user ) {
+					return;
+				}
 			}
 
-			$user = UserModel::find( $user_id );
-			if ( ! $user ) {
-				return;
-			}
-
-			$html = $this->render_dashboard_content( $user );
+			$html = $this->html_content( $user );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -52,7 +58,18 @@ class BuilderTabDashboardTemplate {
 		echo Template::combine_components(
 			[
 				'wrapper'     => '<div class="lp-course-builder-dashboard">',
+				'header'      => $this->html_header(),
 				'content'     => $html,
+				'wrapper_end' => '</div>',
+			]
+		);
+	}
+
+	private function html_header(): string {
+		return Template::combine_components(
+			[
+				'wrapper'     => '<div class="cb-tab-header">',
+				'title'       => sprintf( '<h2 class="lp-cb-tab__title">%s</h2>', __( 'Dashboard', 'learnpress' ) ),
 				'wrapper_end' => '</div>',
 			]
 		);
@@ -64,7 +81,7 @@ class BuilderTabDashboardTemplate {
 	 * @param UserModel $user
 	 * @return string
 	 */
-	private function render_dashboard_content( UserModel $user ): string {
+	private function html_content( UserModel $user ): string {
 		$is_admin = user_can( $user->get_id(), 'administrator' );
 
 		if ( $is_admin ) {
@@ -73,15 +90,15 @@ class BuilderTabDashboardTemplate {
 			$statistic = $user->get_instructor_statistic();
 		}
 
-		$stats_html           = $this->render_statistics_cards( $statistic, $is_admin );
-		$charts_html          = $this->render_charts_section( $is_admin, $user->get_id() );
-		$top_instructors_html = $is_admin ? $this->render_top_instructors_section() : '';
+		$stats_html           = $this->html_statistics_cards( $statistic, $is_admin );
+		$charts_html          = $this->html_charts_section( $is_admin, $user->get_id() );
+		$top_instructors_html = $is_admin ? $this->html_top_instructors_section() : '';
 		$charts_row_class     = $is_admin
 			? 'lp-cb-dashboard__charts-row lp-cb-dashboard__charts-row--admin'
 			: 'lp-cb-dashboard__charts-row lp-cb-dashboard__charts-row--instructor';
-		$top_courses_html     = $this->render_top_courses_section( $is_admin ? 0 : $user->get_id() );
-		$recent_courses_html  = $this->render_recent_courses_section( $user );
-		$quick_actions_html   = $this->render_quick_actions();
+		$top_courses_html     = $this->html_top_courses_section( $is_admin ? 0 : $user->get_id() );
+		$recent_courses_html  = $this->html_recent_courses_section( $user );
+		$quick_actions_html   = $this->html_quick_actions();
 
 		return Template::combine_components(
 			[
@@ -176,7 +193,7 @@ class BuilderTabDashboardTemplate {
 	 * @param bool  $is_admin
 	 * @return string
 	 */
-	private function render_statistics_cards( array $statistic, bool $is_admin ): string {
+	private function html_statistics_cards( array $statistic, bool $is_admin ): string {
 		$cards = [
 			[
 				'key'   => 'total_course',
@@ -254,7 +271,7 @@ class BuilderTabDashboardTemplate {
 	 * @param int  $user_id
 	 * @return string
 	 */
-	private function render_charts_section( bool $is_admin, int $user_id ): string {
+	private function html_charts_section( bool $is_admin, int $user_id ): string {
 		$instructor_id = $is_admin ? 0 : $user_id;
 		$nonce         = wp_create_nonce( 'lp_cb_dashboard_nonce' );
 
@@ -357,7 +374,7 @@ class BuilderTabDashboardTemplate {
 	 *
 	 * @return string
 	 */
-	private function render_top_instructors_section(): string {
+	private function html_top_instructors_section(): string {
 		try {
 			$lp_statistic_db = LP_Statistics_DB::getInstance();
 			$instructors     = $lp_statistic_db->get_top_instructors( 4 );
@@ -416,9 +433,9 @@ class BuilderTabDashboardTemplate {
 	 * @param int $user_id
 	 * @return string
 	 */
-	private function render_top_courses_section( int $user_id ): string {
-		$top_enrolled_html = $this->render_top_enrolled_courses( $user_id );
-		$top_selling_html  = $this->render_top_selling_courses( $user_id );
+	private function html_top_courses_section( int $user_id ): string {
+		$top_enrolled_html = $this->html_top_enrolled_courses( $user_id );
+		$top_selling_html  = $this->html_top_selling_courses( $user_id );
 
 		return Template::combine_components(
 			[
@@ -436,7 +453,7 @@ class BuilderTabDashboardTemplate {
 	 * @param int $user_id
 	 * @return string
 	 */
-	private function render_top_enrolled_courses( int $user_id ): string {
+	private function html_top_enrolled_courses( int $user_id ): string {
 		try {
 			$lp_statistic_db = LP_Statistics_DB::getInstance();
 			$top_courses     = $lp_statistic_db->get_top_enrolled_courses_by_instructor( $user_id, 3 );
@@ -514,7 +531,7 @@ class BuilderTabDashboardTemplate {
 	 * @param int $user_id
 	 * @return string
 	 */
-	private function render_top_selling_courses( int $user_id ): string {
+	private function html_top_selling_courses( int $user_id ): string {
 		try {
 			$lp_statistic_db = LP_Statistics_DB::getInstance();
 			$top_courses     = $lp_statistic_db->get_top_sold_courses_by_instructor( $user_id, 3 );
@@ -606,7 +623,7 @@ class BuilderTabDashboardTemplate {
 	 *
 	 * @return string
 	 */
-	private function render_quick_actions(): string {
+	private function html_quick_actions(): string {
 		$create_lesson_template_id = 'lp-tmpl-builder-popup-lesson-dashboard-new';
 		$create_lesson_template    = sprintf(
 			'<script type="text/template" id="%1$s"><div class="lp-builder-popup-overlay"></div><div class="lp-builder-popup lp-builder-popup--loading">%2$s</div></script>',
@@ -725,7 +742,7 @@ class BuilderTabDashboardTemplate {
 	 * @param UserModel $user
 	 * @return string
 	 */
-	private function render_recent_courses_section( UserModel $user ): string {
+	private function html_recent_courses_section( UserModel $user ): string {
 		$content = '';
 
 		try {
@@ -749,7 +766,7 @@ class BuilderTabDashboardTemplate {
 					$course = \LearnPress\Models\CourseModel::find( $course_obj->ID, true );
 					if ( $course ) {
 						// Reuse course item from Courses tab
-						$html_list_course .= BuilderCourseTemplate::render_course( $course );
+						$html_list_course .= BuilderListCoursesTemplate::render_course( $course );
 					}
 				}
 
