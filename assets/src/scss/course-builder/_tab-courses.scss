@@ -118,12 +118,13 @@
 
 	// Course list
 	.cb-list-course {
-		list-style: none;
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: $cb-spacing-xl;
-		padding: 0 0 $cb-spacing-xl;
 		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		li.course {
+			margin-bottom: $cb-spacing-xl;
+		}
 	}
 
 	.course {
@@ -147,14 +148,18 @@
 	}
 
 	.course-thumbnail {
-		width: 260px;
-		min-width: 260px;
-		border-radius: $cb-radius-md;
-		aspect-ratio: 16/10;
-		overflow: hidden;
-		background-color: $cb-bg-hover;
 		position: relative;
 		margin: -2px;
+		
+		@media ( min-width: 769px ) {
+			width: 26%;
+		}
+
+		img {
+			width: 100%;
+			border-radius: $cb-radius-md;
+			object-fit: cover;
+		}
 
 		// Badge overlay (e.g., "Offline" status)
 		.cb-item-status-badge {
@@ -187,14 +192,11 @@
 
 	.course-content {
 		flex: 1;
-		display: flex;
-		flex-direction: column;
 	}
 
 	.wap-course-title {
 		margin-top: 0;
 		margin-bottom: $cb-spacing-sm;
-		padding-right: 120px; /* Space for action buttons */
 	}
 
 	.course-permalink {
@@ -793,11 +795,6 @@
 		.cb-list-course {
 			gap: 15px;
 		}
-
-		.course-thumbnail {
-			width: 200px;
-			min-width: 200px;
-		}
 	}
 
 	@media ( max-width: 768px ) {
@@ -818,11 +815,6 @@
 
 		.course-item {
 			flex-direction: column;
-		}
-
-		.course-thumbnail {
-			width: 100%;
-			min-width: 100%;
 		}
 
 		.cb-list-course {
