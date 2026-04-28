@@ -63,6 +63,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! LP_Settings::is_created_tb_mcp_api_keys() ) {
 				$this->create_table_mcp_api_keys();
 			}
+
+			// Set roles and capabilities.
+			learn_press_add_user_roles();
+
 			ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 		}
 
@@ -110,9 +114,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			/*if ( ! get_option( 'users_can_register' ) ) {
 				update_option( 'users_can_register', 1 );
 			}*/
-
-			// Set roles and capabilities.
-			learn_press_add_user_roles();
 		}
 
 		/**
