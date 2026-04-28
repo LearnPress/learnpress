@@ -17,6 +17,7 @@ use LearnPress\Models\PostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
+use LP_Course_CURD;
 use LP_Datetime;
 use LP_Helper;
 use LP_REST_Response;
@@ -166,6 +167,7 @@ class CBEditCourseAjax extends AbstractAjax {
 				$coursePostModel = new CoursePostModel( $courseModel );
 				foreach ( $courseModel->meta_data as $meta_key => $meta_value ) {
 					$coursePostModel->save_meta_value_by_key( $meta_key, $meta_value );
+					$coursePostModel->meta_data->{$meta_key} = $meta_value;
 				}
 				$coursePostModel->save();
 			}
@@ -195,6 +197,69 @@ class CBEditCourseAjax extends AbstractAjax {
 			}
 		} catch ( Throwable $th ) {
 			$response->message = $th->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Quick edit course.
+	 *
+	 * @return void
+	 */
+	public static function cb_quick_edit_save_course() {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+		$courseService  = CourseService::instance();
+
+		try {
+			$data = self::check_valid_course();
+			/** @var CourseModel $courseModel */
+			$courseModel = $data['courseModel'] ?? null;
+			$userModel   = $data['userModel'] ?? null;
+			$action_type = $data['action_type'] ?? null;
+			if ( ! $action_type || ! $courseModel instanceof CourseModel ) {
+				throw new Exception( __( 'Invalid request.', 'learnpress' ) );
+			}
+
+			$coursePostModel = new CoursePostModel( $courseModel );
+
+			switch ( $action_type ) {
+				case 'duplicate':
+					//$courseService->duplicate( $courseModel );
+					// Use old class temporarily
+					include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
+					$course_curd                  = new LP_Course_CURD();
+					$course_id                    = $courseModel->get_id();
+					$course_id_new                = $course_curd->duplicate( $course_id );
+					$response->data->redirect_url = CourseBuilder::get_link_course_builder(
+						CourseBuilderTemplate::MENU_COURSES . "/{$course_id_new}"
+					);
+					$response->message            = __( 'Duplicate course successfully!', 'learnpress' );
+					break;
+				case PostModel::STATUS_TRASH:
+				case PostModel::STATUS_PUBLISH:
+				case PostModel::STATUS_PENDING:
+					$coursePostModel->post_status = $action_type;
+					$coursePostModel->save();
+					$response->message = __( 'Update course status successfully!', 'learnpress' );
+					break;
+				case 'restore':
+					$coursePostModel->post_status = PostModel::STATUS_DRAFT;
+					$coursePostModel->save();
+					break;
+				case 'delete':
+					if ( $courseModel->get_status() !== PostModel::STATUS_TRASH ) {
+						throw new Exception( __( 'Course must be trashed before deleting.', 'learnpress' ) );
+					}
+					$coursePostModel->delete();
+					$response->message = __( 'Delete course successfully!', 'learnpress' );
+					break;
+			}
+
+			$response->status = 'success';
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
 		}
 
 		wp_send_json( $response );

@@ -344,3 +344,63 @@
 		}
 	}
 }
+
+// Class use for item actions on list.
+.lp-cb-item-action-wrap {
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	position: relative;
+}
+
+.lp-cb-item-action-expand-toggle {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 6px;
+	transition: all 0.2s;
+	padding: 0;
+
+	svg {
+		width: 18px;
+		height: 18px;
+		color: $cb-text-muted;
+	}
+}
+
+.lp-cb-item-action-expand {
+	display: flex;
+	position: absolute;
+	min-width: 160px;
+	white-space: nowrap;
+	top: 60px;
+	right: 16px;
+	transform: translate(15px, -15px);
+	padding: 10px;
+	flex-direction: column;
+	background-color: #ffffff;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	font-size: 16px;
+	font-weight: 500;
+	z-index: 100;
+}
+
+.lp-cb-item-action {
+	padding: 10px;
+	cursor: pointer;
+	text-decoration: none;
+	border-radius: 6px;
+	color: #1e1e1e;
+
+	&:hover {
+		background-color: #f3f4f6;
+	}
+
+	&.trash, &.delete {
+		color: #ef4444;
+	}
+}

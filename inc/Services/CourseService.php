@@ -37,23 +37,15 @@ class CourseService {
 	 */
 	public function create_info_main( array $data ): CoursePostModel {
 		$coursePostModelNew = new CoursePostModel( $data );
+
+		// Set meta data
+		if ( isset( $data['meta_input'] ) ) {
+			$coursePostModelNew->meta_data = (object) $data['meta_input'];
+		}
+
 		$coursePostModelNew->save();
 
 		return $coursePostModelNew;
-	}
-
-	/**
-	 * Create metadata for course
-	 *
-	 * @param CoursePostModel $coursePostModel
-	 * @param array $data
-	 *
-	 * @throws Exception
-	 */
-	public function create_meta_data( CoursePostModel $coursePostModel, array $data ) {
-		foreach ( $data as $key => $value ) {
-			$coursePostModel->save_meta_value_by_key( $key, $value );
-		}
 	}
 
 	/**
@@ -100,5 +92,59 @@ class CourseService {
 		}
 
 		wp_set_post_terms( $course_id, $tag_ids, CoursePostModel::TAXONOMY_TAG );
+	}
+
+	/**
+	 * Duplicate course
+	 *
+	 * @throws Exception
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function duplicate( CourseModel $courseModel ): CourseModel {
+		$coursePostModel = new CoursePostModel( $courseModel );
+		$coursePostModel->get_all_metadata();
+		$coursePostModelNew             = new CoursePostModel( $coursePostModel );
+		$coursePostModelNew->ID         = null;
+		$coursePostModelNew->post_title = $coursePostModelNew->post_title . ' (Copy)';
+		$coursePostModelNew->save();
+
+		// Duplicate sections
+		$sections = $courseModel->get_section_items();
+		foreach ( $sections as $section ) {
+			$section_name        = $section->section_name ?? $section->title ?? '';
+			$section_description = $section->section_description ?? $section->description ?? '';
+
+			$courseSectionModel = $coursePostModelNew->add_section(
+				[
+					'section_name'        => $section_name,
+					'section_description' => $section_description,
+				]
+			);
+
+			// Duplicate items for section
+			$items = $section->items ?? [];
+			foreach ( $items as $item ) {
+				$item_title   = $item->title ?? '';
+				$item_type    = $item->type ?? $item->item_type ?? '';
+				$item_content = '';
+
+				// Get item content from post
+				$item_post = get_post( $item->item_id ?? $item->id ?? 0 );
+				if ( $item_post ) {
+					$item_content = $item_post->post_content ?? '';
+				}
+
+				$courseSectionModel->create_item_and_add(
+					[
+						'item_title'   => $item_title,
+						'item_type'    => $item_type,
+						'item_content' => $item_content,
+					]
+				);
+			}
+		}
+
+		return $courseModel;
 	}
 }
