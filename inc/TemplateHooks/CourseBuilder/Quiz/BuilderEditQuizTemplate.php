@@ -122,7 +122,7 @@ class BuilderEditQuizTemplate {
 				esc_attr__( 'Update', 'learnpress' ),
 				esc_attr__( 'Publish', 'learnpress' ),
 				esc_attr__( 'Save Draft', 'learnpress' ),
-				esc_html( $quizModel ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' ) )
+				esc_html__( 'Update', 'learnpress' )
 			),
 			'dropdown_wrap_end'  => '</div>',
 			'expanded_actions'   => $quizModel ? sprintf(
