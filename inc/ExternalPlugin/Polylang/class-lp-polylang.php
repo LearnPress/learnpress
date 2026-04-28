@@ -257,17 +257,29 @@ class LP_Polylang {
 	 * @since 4.1.5
 	 */
 	public function get_link_switcher( $url, $slug, $locale ) {
+		unset( $locale );
+
+		$page_current = LP_Page_Controller::page_current();
 		$slug_lang = '';
 		if ( $slug !== pll_default_language() ) {
 			$slug_lang = '_' . $slug;
 		}
 
-		$arr_page = array( LP_PAGE_COURSES, LP_PAGE_PROFILE );
-		if ( in_array( LP_Page_Controller::page_current(), $arr_page )
+		$arr_page = array( LP_PAGE_COURSES, LP_PAGE_PROFILE, LP_PAGE_INSTRUCTORS, LP_PAGE_INSTRUCTOR );
+		if ( in_array( $page_current, $arr_page, true )
 			&& ! learn_press_is_course_tax()
 			&& ! learn_press_is_course_tag() ) {
-			$name_page = str_replace( 'lp_page_', '', LP_Page_Controller::page_current() );
-			$url       = get_permalink( LP_Settings::get_option( $name_page . '_page_id' . $slug_lang ) );
+			$name_page       = str_replace( 'lp_page_', '', $page_current );
+			$current_page_id = learn_press_get_page_id( $name_page );
+			$target_page_id  = LP_Settings::get_option( $name_page . '_page_id' . $slug_lang );
+			$target_url      = get_permalink( $target_page_id );
+
+			if ( $current_page_id && ! empty( $target_url ) ) {
+				$current_url = get_permalink( $current_page_id );
+				$url         = $this->map_current_path_to_translated_page( $current_url, $target_url );
+			} elseif ( ! empty( $target_url ) ) {
+				$url = $target_url;
+			}
 		}
 
 		return $url;
@@ -293,7 +305,6 @@ class LP_Polylang {
 		$lang_default  = pll_default_language();
 		$lang_current  = pll_current_language();
 		$pll_options   = $this->get_pll_options();
-		$all_lang      = pll_languages_list();
 		$hide_default  = $pll_options['hide_default'] ?? 1;
 		$force_lang    = $pll_options['force_lang'] ?? 1;
 		$force_rewrite = $pll_options['rewrite'] ?? 1;
@@ -329,47 +340,85 @@ class LP_Polylang {
 			}
 		}
 
+		$translated_rules = [];
+
 		// Rewrite url for courses
 		// Not use learn_press_get_page_id( 'courses' ) because it $lang_current = false with $pll_options['force_lang'] = 0
-		/*$courses_page_id_lang = LP_Settings::get_option( 'courses_page_id' . $lang_get_option, false );
+		$courses_page_id_lang = LP_Settings::get_option( 'courses_page_id' . $lang_get_option, false );
 		if ( $courses_page_id_lang ) {
 			$courses_slug = get_post_field( 'post_name', $courses_page_id_lang );
 
-			$rules['courses'][ 'pll-archive-' . $lang ] = [
+			$translated_rules['courses'][ 'pll-archive-' . $lang ] = [
 				"^{$lang_slug}{$courses_slug}/?(?:page/)?([^/][0-9]*)?/?$" =>
 					'index.php?paged=$matches[1]&post_type=' . LP_COURSE_CPT,
 			];
-		}*/
+		}
 
 		// Rewrite url for instructors
-		/*$instructors_page_id_lang = LP_Settings::get_option( 'instructors_page_id' . $lang_get_option, false );
+		$instructors_page_id_lang = LP_Settings::get_option( 'instructors_page_id' . $lang_get_option, false );
 		if ( $instructors_page_id_lang ) {
 			$instructors_slug = get_post_field( 'post_name', $instructors_page_id_lang );
 
-			$rules['instructors'][ 'pll-archive-' . $lang ] = [
+			$translated_rules['instructors'][ 'pll-archive-' . $lang ] = [
 				"^{$lang_slug}{$instructors_slug}/?(?:page/)?([^/][0-9]*)?/?$" =>
 					'index.php?page_id=' . $instructors_page_id_lang,
 			];
-		}*/
+		}
 
 		// Rewrite url for instructor
-		/*$single_instructor_page_id = LP_Settings::get_option( 'single_instructor_page_id' . $lang_get_option, false );
+		$single_instructor_page_id = LP_Settings::get_option( 'single_instructor_page_id' . $lang_get_option, false );
 		if ( $single_instructor_page_id ) {
 			$instructor_slug = get_post_field( 'post_name', $single_instructor_page_id );
 
-			$rules['instructor'][ 'has_name_' . $lang ] = [
+			$translated_rules['instructor'][ 'has_name_' . $lang ] = [
 				"^{$lang_slug}{$instructor_slug}/([^/]+)/?(?:page/)?([^/][0-9]*)?/?$" =>
 					'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&instructor_name=$matches[1]&paged=$matches[2]',
 			];
-			$rules['instructor'][ 'no_name_' . $lang ]  = [
+			$translated_rules['instructor'][ 'no_name_' . $lang ]  = [
 				"^{$lang_slug}{$instructor_slug}/?$" =>
 					'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&paged=$matches[2]',
 			];
-		}*/
+		}
 
-		//$this->add_rewrite_rules_profile( $rules, $lang_slug, $lang_get_option, $lang );
+		$this->add_rewrite_rules_profile( $translated_rules, $lang_slug, $lang_get_option, $lang );
+
+		foreach ( $translated_rules as $key_group => $group_rules ) {
+			$rules[ $key_group ] = array_merge( $group_rules, $rules[ $key_group ] ?? [] );
+		}
 
 		return apply_filters( 'learn-press/polylang-rewrite-url', $rules );
+	}
+
+	/**
+	 * Preserve the current LearnPress path suffix when switching to a translated page.
+	 *
+	 * @param string $current_url
+	 * @param string $target_url
+	 *
+	 * @return string
+	 */
+	protected function map_current_path_to_translated_page( string $current_url, string $target_url ): string {
+		$request_uri  = $_SERVER['REQUEST_URI'] ?? '';
+		$request_path = wp_parse_url( $request_uri, PHP_URL_PATH );
+		$current_path = wp_parse_url( $current_url, PHP_URL_PATH );
+
+		if ( empty( $request_path ) || empty( $current_path ) ) {
+			return $target_url;
+		}
+
+		$request_path = untrailingslashit( $request_path );
+		$current_path = untrailingslashit( $current_path );
+
+		if ( $request_path !== $current_path && 0 !== strpos( $request_path . '/', $current_path . '/' ) ) {
+			return $target_url;
+		}
+
+		$suffix = trim( substr( $request_path, strlen( $current_path ) ), '/' );
+		if ( '' === $suffix ) {
+			return $target_url;
+		}
+
+		return trailingslashit( $target_url ) . $suffix . '/';
 	}
 
 	/**
