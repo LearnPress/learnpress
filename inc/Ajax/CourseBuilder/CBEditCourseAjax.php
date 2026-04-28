@@ -8,38 +8,21 @@
 
 namespace LearnPress\Ajax\CourseBuilder;
 
-use DateTime;
 use Exception;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\CourseBuilder\CourseBuilder;
-use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
-use LearnPress\Models\CourseSectionItemModel;
-use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\PostModel;
-use LearnPress\Models\Question\QuestionPostModel;
-use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
-use LearnPress\Services\UserService;
-use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderListLessonsTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderListQuestionsTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderQuestionTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderListQuizzesTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderQuizTemplate;
-use LP_Course_CURD;
 use LP_Datetime;
 use LP_Helper;
-use LP_Lesson_CURD;
-use LP_Question_CURD;
-use LP_Quiz_CURD;
 use LP_REST_Response;
 use stdClass;
 use Throwable;
+use WP_Post;
 
 class CBEditCourseAjax extends AbstractAjax {
 	/**
@@ -82,22 +65,27 @@ class CBEditCourseAjax extends AbstractAjax {
 	public static function cb_save_course() {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
+		$courseService  = CourseService::instance();
 
 		try {
 			$data = self::check_valid_course();
 			/** @var CourseModel $courseModel */
-			$courseModel         = $data['courseModel'] ?? null;
-			$userModel           = $data['userModel'] ?? null;
-			$settings            = $data['course_settings'] ?? false;
-			$is_edit             = $courseModel instanceof CourseModel;
-			$course_title        = trim( LP_Helper::sanitize_params_submitted( $data['course_title'] ?? '' ) );
-			$course_description  = LP_Helper::sanitize_params_submitted( $data['course_description'] ?? '', 'html', false );
-			$course_status       = LP_Helper::sanitize_params_submitted( $data['course_status'] ?? 'draft' );
-			$course_visibility   = LP_Helper::sanitize_params_submitted( $data['course_visibility'] ?? '', 'key' );
-			$course_password     = LP_Helper::sanitize_params_submitted( $data['course_password'] ?? '' );
-			$course_post_date    = LP_Helper::sanitize_params_submitted( $data['course_post_date'] ?? '' );
-			$course_permalink    = LP_Helper::sanitize_params_submitted( $data['course_permalink'] ?? '', 'sanitize_title' );
-			$course_thumbnail_id = LP_Helper::sanitize_params_submitted( $data['course_thumbnail_id'] ?? '', 'int' );
+			$courseModel           = $data['courseModel'] ?? null;
+			$userModel             = $data['userModel'] ?? null;
+			$settings              = $data['course_settings'] ?? false;
+			$is_edit               = $courseModel instanceof CourseModel;
+			$course_title          = trim( LP_Helper::sanitize_params_submitted( $data['course_title'] ?? '' ) );
+			$course_description    = LP_Helper::sanitize_params_submitted( $data['course_description'] ?? '', 'html', false );
+			$course_status         = LP_Helper::sanitize_params_submitted( $data['course_status'] ?? 'draft' );
+			$course_visibility     = LP_Helper::sanitize_params_submitted( $data['course_visibility'] ?? '', 'key' );
+			$course_password       = LP_Helper::sanitize_params_submitted( $data['course_password'] ?? '' );
+			$course_post_date      = LP_Helper::sanitize_params_submitted( $data['course_post_date'] ?? '' );
+			$course_permalink      = LP_Helper::sanitize_params_submitted( $data['course_permalink'] ?? '', 'sanitize_title' );
+			$course_thumbnail_id   = LP_Helper::sanitize_params_submitted( $data['course_thumbnail_id'] ?? '', 'int' );
+			$course_categories_str = LP_Helper::sanitize_params_submitted( $data['course_categories'] ?? '' );
+			$course_categories     = array_map( 'absint', explode( ',', $course_categories_str ) );
+			$course_tags_str       = LP_Helper::sanitize_params_submitted( $data['course_tags'] ?? '' );
+			$course_tags           = array_map( 'absint', explode( ',', $course_tags_str ) );
 
 			if ( ! $userModel instanceof UserModel ) {
 				throw new Exception( __( 'Invalid user.', 'learnpress' ) );
@@ -146,15 +134,7 @@ class CBEditCourseAjax extends AbstractAjax {
 
 			if ( ! $is_edit ) {
 				// Create new course
-				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
-				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
-
-				$data_save['tax_input'] = [
-					'course_category' => $categories,
-					'course_tag'      => $tags,
-				];
-
-				$coursePostModelNew = CourseService::instance()->create_info_main( $data_save );
+				$coursePostModelNew = $courseService->create_info_main( $data_save );
 				$courseModel        = new CourseModel( $coursePostModelNew );
 				$course_id          = $courseModel->ID;
 			} else {
@@ -165,11 +145,6 @@ class CBEditCourseAjax extends AbstractAjax {
 					}
 				}
 
-				$categories = ! empty( $data['course_categories'] ) ? array_map( 'absint', explode( ',', $data['course_categories'] ) ) : array();
-				$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
-				wp_set_post_terms( $courseModel->ID, $categories, 'course_category' );
-				wp_set_post_terms( $courseModel->ID, $tags, 'course_tag' );
-
 				// Update permalink/slug if provided
 				if ( ! empty( $course_permalink ) ) {
 					$courseModel->post_name = $course_permalink;
@@ -177,6 +152,10 @@ class CBEditCourseAjax extends AbstractAjax {
 
 				$course_id = $courseModel->ID;
 			}
+
+			// Set categories and tags
+			$courseService->update_categories( $course_id, $course_categories );
+			$courseService->update_tags( $course_id, $course_tags );
 
 			if ( $settings ) {
 				$courseBuilderAjax = new CourseBuilderAjax();
@@ -193,18 +172,19 @@ class CBEditCourseAjax extends AbstractAjax {
 
 			// Save or remove thumbnail
 			if ( isset( $data['course_thumbnail_id'] ) ) {
+				$post = new WP_Post( $courseModel );
 				if ( $course_thumbnail_id > 0 ) {
-					set_post_thumbnail( $course_id, $course_thumbnail_id );
+					set_post_thumbnail( $post, $course_thumbnail_id );
 				} else {
-					delete_post_thumbnail( $course_id );
+					delete_post_thumbnail( $post );
 				}
 			}
 
-			$response->status       = 'success';
-			$response->message      = ! $is_edit ?
+			$response->status                  = 'success';
+			$response->message                 = ! $is_edit ?
 				__( 'Create course successfully!', 'learnpress' ) :
 				__( 'Update course successfully!', 'learnpress' );
-			$response->data->course = $courseModel;
+			$response->data->course            = $courseModel;
 			$response->data->course->permalink = $courseModel->get_permalink();
 
 			// Return redirect detail if new course

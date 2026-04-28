@@ -55,4 +55,50 @@ class CourseService {
 			$coursePostModel->save_meta_value_by_key( $key, $value );
 		}
 	}
+
+	/**
+	 * Update categories for course
+	 * Create categories if not exists
+	 *
+	 * @param $course_id
+	 * @param int[] $category_ids
+	 *
+	 * @return void
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function update_categories( $course_id, array $category_ids ) {
+		// Create categories if not exists
+		foreach ( $category_ids as $category_id ) {
+			$term_check = term_exists( $category_id, CoursePostModel::TAXONOMY_CATEGORY );
+			if ( ! $term_check ) {
+				wp_insert_term( $category_id, CoursePostModel::TAXONOMY_CATEGORY );
+			}
+		}
+
+		wp_set_post_terms( $course_id, $category_ids, CoursePostModel::TAXONOMY_CATEGORY );
+	}
+
+	/**
+	 * Update tags for course
+	 * Create tags if not exists
+	 *
+	 * @param $course_id
+	 * @param array $tag_ids
+	 *
+	 * @return void
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function update_tags( $course_id, array $tag_ids ) {
+		// Create tags if not exists
+		foreach ( $tag_ids as $tag_id ) {
+			$term_check = term_exists( $tag_id, CoursePostModel::TAXONOMY_TAG );
+			if ( ! $term_check ) {
+				wp_insert_term( $tag_id, CoursePostModel::TAXONOMY_TAG );
+			}
+		}
+
+		wp_set_post_terms( $course_id, $tag_ids, CoursePostModel::TAXONOMY_TAG );
+	}
 }
