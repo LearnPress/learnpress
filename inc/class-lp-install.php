@@ -317,7 +317,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					} elseif ( 'term_conditions' === $page ) {
 						$page_title = 'Terms and Conditions';
 						$page_slug  = $page;
-					}else {
+					} else {
 						$page_title = ucwords( str_replace( '_', ' ', $page ) );
 						$page_slug  = 'lp-' . str_replace( '_', '-', $page );
 					}
