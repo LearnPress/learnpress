@@ -52,20 +52,27 @@ class AdminEditCurriculumTemplate {
 	 * Layout for edit course curriculum.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
+	 *
+	 * @param CourseModel $courseModel
+	 * @param array       $context Additional context merged into AJAX args (e.g. ['is_course_builder' => true]).
 	 */
-	public function edit_course_curriculum_layout( CourseModel $courseModel ) {
+	public function edit_course_curriculum_layout( CourseModel $courseModel, array $context = [] ) {
 		wp_enqueue_style( 'lp-edit-curriculum' );
 		wp_enqueue_script( 'lp-edit-course' );
 
-		$args      = [
-			'id_url'    => 'edit-course-curriculum',
-			'course_id' => $courseModel->ID,
-		];
-		$call_back = array(
+		$args = array_merge(
+			[
+				'id_url'    => 'edit-course-curriculum',
+				'course_id' => $courseModel->ID,
+			],
+			$context
+		);
+
+		$call_back = [
 			'class'  => self::class,
 			'method' => 'render_edit_course_curriculum',
-		);
+		];
 
 		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
 	}

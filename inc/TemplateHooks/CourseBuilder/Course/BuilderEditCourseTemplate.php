@@ -29,6 +29,8 @@ class BuilderEditCourseTemplate {
 	use Singleton;
 
 	public function init() {
+		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
+
 		// Register filter for adding edit popup button in Course Builder curriculum
 		add_filter( 'learn-press/admin/curriculum/section-item/actions', [ $this, 'add_edit_popup_button' ], 10, 5 );
 	}
@@ -178,7 +180,7 @@ class BuilderEditCourseTemplate {
 				</div>',
 				esc_attr__( 'More actions', 'learnpress' ),
 				$more_actions_icon,
-				esc_attr__( 'Are you sure?', 'learnpress' ),
+					esc_attr__( 'Are you sure?', 'learnpress' ),
 				esc_attr__( 'Are you sure you want to duplicate this course?', 'learnpress' ),
 				esc_html__( 'Duplicate', 'learnpress' ),
 				esc_html__( 'Move to Trash', 'learnpress' )
@@ -395,6 +397,21 @@ class BuilderEditCourseTemplate {
 		];
 
 		return Template::combine_components( $output );
+	}
+
+	/**
+	 * Allow callback for AJAX.
+	 * @use self::render_edit_course_curriculum
+	 * @use self::render_html
+	 *
+	 * @param array $callbacks
+	 *
+	 * @return array
+	 */
+	public function allow_callback( array $callbacks ): array {
+		$callbacks[] = AdminEditCurriculumTemplate::class . ':render_edit_course_curriculum';
+
+		return $callbacks;
 	}
 
 	public function edit_title( $course_model ) {
@@ -1101,7 +1118,10 @@ class BuilderEditCourseTemplate {
 
 	protected function html_curriculum( CourseModel $course_model ): string {
 		ob_start();
-		$this->load_curriculum_for_course_builder( $course_model );
+		AdminEditCurriculumTemplate::instance()->edit_course_curriculum_layout(
+			$course_model,
+			[ 'is_course_builder' => true ]
+		);
 		$html_curriculum = ob_get_clean();
 
 		return $html_curriculum
@@ -1166,32 +1186,6 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $popup_templates );
 	}
 
-	/**
-	 * Load curriculum for Course Builder with special flag.
-	 * This method loads curriculum via AJAX with is_course_builder flag.
-	 *
-	 * @since 4.3.0
-	 * @version 1.0.0
-	 *
-	 * @param CourseModel $courseModel
-	 */
-	protected function load_curriculum_for_course_builder( CourseModel $courseModel ) {
-		wp_enqueue_style( 'lp-edit-curriculum' );
-		wp_enqueue_script( 'lp-edit-course' );
-
-		$args = [
-			'id_url'            => 'edit-course-curriculum',
-			'course_id'         => $courseModel->ID,
-			'is_course_builder' => true, // Flag to identify Course Builder context
-		];
-
-		$call_back = [
-			'class'  => AdminEditCurriculumTemplate::class,
-			'method' => 'render_edit_course_curriculum',
-		];
-
-		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
-	}
 
 	/**
 	 * Add edit popup button for lesson and quiz items in Course Builder curriculum.
