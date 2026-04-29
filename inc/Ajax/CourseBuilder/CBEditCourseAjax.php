@@ -16,6 +16,7 @@ use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LP_Course_CURD;
 use LP_Datetime;
@@ -235,14 +236,17 @@ class CBEditCourseAjax extends AbstractAjax {
 					$response->data->redirect_url = CourseBuilder::get_link_course_builder(
 						CourseBuilderTemplate::MENU_COURSES . "/{$course_id_new}"
 					);
-					$response->message            = __( 'Duplicate course successfully!', 'learnpress' );
+					$response->message            = __( 'Duplicate course successfully. Redirecting...!', 'learnpress' );
 					break;
 				case PostModel::STATUS_TRASH:
 				case PostModel::STATUS_PUBLISH:
 				case PostModel::STATUS_PENDING:
+				case PostModel::STATUS_DRAFT:
 					$coursePostModel->post_status = $action_type;
 					$coursePostModel->save();
+					$courseModel = CourseModel::find( $coursePostModel->get_id(), true );
 					$response->message = __( 'Update course status successfully!', 'learnpress' );
+					$response->data->html = BuilderListCoursesTemplate::render_course( $courseModel );
 					break;
 				case 'restore':
 					$coursePostModel->post_status = PostModel::STATUS_DRAFT;

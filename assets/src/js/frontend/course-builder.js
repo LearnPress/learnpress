@@ -193,7 +193,17 @@ const initHeaderMoreActions = () => {
 		// Item action
 		if ( target.closest( '.lp-cb-item-action' ) ) {
 			const elAction = target.closest( '.lp-cb-item-action' );
+			const elParentActionWrap = elAction.closest(
+				'.lp-cb-item-action-wrap',
+			);
+			const elParentActionExpand = elParentActionWrap.querySelector(
+				'.lp-cb-item-action-expand-toggle',
+			);
 			const dataSend = JSON.parse( elAction.dataset.send );
+
+			lpUtils.lpSetLoadingEl( elParentActionExpand, 1 );
+			const svg = elParentActionExpand.querySelector( 'svg' );
+			//lpUtils.lpShowHideEl( svg, 0 );
 
 			// Ajax to generate prompt
 			const callBack = {
@@ -203,14 +213,19 @@ const initHeaderMoreActions = () => {
 					lpToastify.show( message, status );
 
 					if ( status === 'success' ) {
-
+						if ( data.redirect_url ) {
+							window.location.href = data.redirect_url;
+						} else if ( data.html ) {
+							const elParentLi = elAction.closest( 'li.course' );
+							elParentLi.outerHTML = data.html;
+						}
 					}
 				},
 				error: ( error ) => {
 					lpToastify.show( error, 'error' );
 				},
 				completed: () => {
-					lpUtils.lpSetLoadingEl( target, false );
+					lpUtils.lpSetLoadingEl( elParentActionExpand, 0 );
 				},
 			};
 
