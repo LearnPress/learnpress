@@ -131,27 +131,8 @@ export class BuilderTabQuestion {
 						const { status, message, data } = response;
 						lpToastify.show( message || 'Duplicated successfully!', status );
 
-						if ( data?.html ) {
-							const elQuestion = elQuestionDuplicate.closest( '.question' );
-							const elQuestionList =
-								elQuestion.closest( '.questions-list' ) || elQuestion.parentElement;
-
-							if ( elQuestionList ) {
-								elQuestionList.insertAdjacentHTML( 'afterbegin', data.html );
-								const newQuestion = elQuestionList.firstElementChild;
-
-								if ( newQuestion ) {
-									newQuestion.scrollIntoView( {
-										behavior: 'smooth',
-										block: 'nearest',
-									} );
-
-									newQuestion.classList.add( 'highlight-new-question' );
-									setTimeout( () => {
-										newQuestion.classList.remove( 'highlight-new-question' );
-									}, 1500 );
-								}
-							}
+						if ( status === 'success' && data?.redirect_url ) {
+							window.location.href = data.redirect_url;
 						}
 					},
 					error: ( error ) => {

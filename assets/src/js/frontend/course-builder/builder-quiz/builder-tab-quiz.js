@@ -128,26 +128,8 @@ export class BuilderTabQuiz {
 						const { status, message, data } = response;
 						lpToastify.show( message || 'Duplicated successfully!', status );
 
-						if ( data?.html ) {
-							const elQuiz = elQuizDuplicate.closest( '.quiz' );
-							const elQuizList = elQuiz.closest( '.quizzes-list' ) || elQuiz.parentElement;
-
-							if ( elQuizList ) {
-								elQuizList.insertAdjacentHTML( 'afterbegin', data.html );
-								const newQuiz = elQuizList.firstElementChild;
-
-								if ( newQuiz ) {
-									newQuiz.scrollIntoView( {
-										behavior: 'smooth',
-										block: 'nearest',
-									} );
-
-									newQuiz.classList.add( 'highlight-new-quiz' );
-									setTimeout( () => {
-										newQuiz.classList.remove( 'highlight-new-quiz' );
-									}, 1500 );
-								}
-							}
+						if ( status === 'success' && data?.redirect_url ) {
+							window.location.href = data.redirect_url;
 						}
 					},
 					error: ( error ) => {

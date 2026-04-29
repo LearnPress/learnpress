@@ -1681,12 +1681,8 @@ class CourseBuilderAjax extends AbstractAjax {
 			if ( is_wp_error( $new_item_id ) ) {
 				throw new Exception( $new_item_id->get_error_message() );
 			}
-			$quiz_model_new               = QuizPostModel::find( $new_item_id, true );
-			$html                         = BuilderListQuizzesTemplate::render_quiz( $quiz_model_new );
 			$response->status             = 'success';
-			$response->data->html         = $html;
-			$response->data->quiz_id_new  = $new_item_id;
-			$response->data->redirect_url = BuilderQuizTemplate::instance()->get_link_edit( $new_item_id );
+			$response->data->redirect_url = CourseBuilder::get_link_course_builder( CourseBuilderTemplate::MENU_QUIZZES . "/{$new_item_id}" );
 			$response->message            = __( 'Quiz duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( Throwable $th ) {
@@ -1848,14 +1844,9 @@ class CourseBuilderAjax extends AbstractAjax {
 			if ( is_wp_error( $new_item_id ) ) {
 				throw new Exception( $new_item_id->get_error_message() );
 			}
-			$question_model_new = QuestionPostModel::find( $new_item_id, true );
-			$html               = BuilderListQuestionsTemplate::render_question( $question_model_new );
-
-			$response->status                = 'success';
-			$response->data->html            = $html;
-			$response->data->question_id_new = $new_item_id;
-			$response->data->redirect_url    = BuilderQuestionTemplate::instance()->get_link_edit( $new_item_id );
-			$response->message               = __( 'Question duplicated successfully', 'learnpress' );
+			$response->status             = 'success';
+			$response->data->redirect_url = CourseBuilder::get_link_course_builder( CourseBuilderTemplate::MENU_QUESTIONS . "/{$new_item_id}" );
+			$response->message            = __( 'Question duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
 		} catch ( Throwable $th ) {
 			$response->status  = 'error';
