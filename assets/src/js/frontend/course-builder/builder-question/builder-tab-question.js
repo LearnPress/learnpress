@@ -13,10 +13,12 @@ export class BuilderTabQuestion {
 		elQuestionExpandedItems: '.question-action-expanded__items',
 		elQuestionDuplicate: '.question-action-expanded__duplicate',
 		elQuestionTrash: '.question-action-expanded__trash',
+		elQuestionRestore: '.question-action-expanded__restore',
 		elQuestionPublish: '.question-action-expanded__publish',
 		elQuestionDelete: '.question-action-expanded__delete',
 		elQuestionActionExpanded: '.question-action-expanded',
 		elQuestionStatus: '.question-status',
+		elBtnEditQuestion: '.btn-edit-question',
 	};
 
 	init() {
@@ -46,6 +48,11 @@ export class BuilderTabQuestion {
 				callBack: this.publishQuestion.name,
 			},
 			{
+				selector: BuilderTabQuestion.selectors.elQuestionRestore,
+				class: this,
+				callBack: this.restoreQuestion.name,
+			},
+			{
 				selector: BuilderTabQuestion.selectors.elQuestionDelete,
 				class: this,
 				callBack: this.deleteQuestion.name,
@@ -55,6 +62,11 @@ export class BuilderTabQuestion {
 				class: this,
 				callBack: this.toggleExpandedAction.name,
 			},
+			{
+				selector: BuilderTabQuestion.selectors.elBtnEditQuestion,
+				class: this,
+				callBack: this.editQuestion.name,
+			},
 		] );
 
 		document.addEventListener( 'click', ( e ) => {
@@ -62,6 +74,17 @@ export class BuilderTabQuestion {
 				this.closeAllExpanded();
 			}
 		} );
+	}
+
+	editQuestion( args ) {
+		const { target } = args;
+		const elBtnEditQuestion = target.closest( BuilderTabQuestion.selectors.elBtnEditQuestion );
+
+		if ( ! elBtnEditQuestion ) {
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( elBtnEditQuestion, 1 );
 	}
 
 	duplicateQuestion( args ) {
@@ -75,6 +98,9 @@ export class BuilderTabQuestion {
 			return;
 		}
 
+		const elActionExpanded = elQuestionItem.querySelector(
+			BuilderTabQuestion.selectors.elQuestionActionExpanded
+		);
 		const questionId = elQuestionItem.dataset.questionId || '';
 
 		SweetAlert.fire( {
@@ -90,7 +116,7 @@ export class BuilderTabQuestion {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
-				lpUtils.lpSetLoadingEl( elQuestionDuplicate, 1 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 				const dataSend = {
 					action: 'duplicate_question',
@@ -132,7 +158,7 @@ export class BuilderTabQuestion {
 						lpToastify.show( error.message || error, 'error' );
 					},
 					completed: () => {
-						lpUtils.lpSetLoadingEl( elQuestionDuplicate, 0 );
+						lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 					},
 				};
 
@@ -150,6 +176,9 @@ export class BuilderTabQuestion {
 			return;
 		}
 
+		const elActionExpanded = elQuestionItem.querySelector(
+			BuilderTabQuestion.selectors.elQuestionActionExpanded
+		);
 		const questionId = elQuestionItem.dataset.questionId || '';
 
 		SweetAlert.fire( {
@@ -165,7 +194,7 @@ export class BuilderTabQuestion {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
-				lpUtils.lpSetLoadingEl( elQuestionTrash, 1 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 				const dataSend = {
 					action: 'move_trash_question',
@@ -180,16 +209,15 @@ export class BuilderTabQuestion {
 						const { status, message, data } = response;
 						lpToastify.show( message, status );
 
-						if ( data?.status ) {
-							const elQuestion = elQuestionTrash.closest( '.question' );
-							this.updateStatusUI( elQuestion, data.status );
+						if ( data?.html ) {
+							this.replaceItemHtml( elQuestionTrash.closest( '.question' ), data.html );
 						}
 					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
 					},
 					completed: () => {
-						lpUtils.lpSetLoadingEl( elQuestionTrash, 0 );
+						lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 					},
 				};
 
@@ -207,7 +235,10 @@ export class BuilderTabQuestion {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elQuestionPublish, 1 );
+		const elActionExpanded = elQuestionItem.querySelector(
+			BuilderTabQuestion.selectors.elQuestionActionExpanded
+		);
+		lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 		const questionId = elQuestionItem.dataset.questionId || '';
 
@@ -225,16 +256,60 @@ export class BuilderTabQuestion {
 				const { status, message, data } = response;
 				lpToastify.show( message, status );
 
-				if ( data?.status ) {
-					const elQuestion = elQuestionPublish.closest( '.question' );
-					this.updateStatusUI( elQuestion, data.status );
+				if ( data?.html ) {
+					this.replaceItemHtml( elQuestionPublish.closest( '.question' ), data.html );
 				}
 			},
 			error: ( error ) => {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elQuestionPublish, 0 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	restoreQuestion( args ) {
+		const { target } = args;
+		const elQuestionRestore = target.closest( BuilderTabQuestion.selectors.elQuestionRestore );
+		const elQuestionItem = elQuestionRestore.closest( BuilderTabQuestion.selectors.elQuestionItem );
+
+		if ( ! elQuestionItem ) {
+			return;
+		}
+
+		const elActionExpanded = elQuestionItem.querySelector(
+			BuilderTabQuestion.selectors.elQuestionActionExpanded
+		);
+		lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
+
+		const questionId = elQuestionItem.dataset.questionId || '';
+
+		const dataSend = {
+			action: 'move_trash_question',
+			args: {
+				id_url: 'move-trash-question',
+			},
+			question_id: questionId,
+			status: 'draft',
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+				lpToastify.show( message, status );
+
+				if ( data?.html ) {
+					this.replaceItemHtml( elQuestionRestore.closest( '.question' ), data.html );
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 			},
 		};
 
@@ -250,6 +325,9 @@ export class BuilderTabQuestion {
 			return;
 		}
 
+		const elActionExpanded = elQuestionItem.querySelector(
+			BuilderTabQuestion.selectors.elQuestionActionExpanded
+		);
 		const questionId = elQuestionItem.dataset.questionId || '';
 
 		if ( ! questionId ) {
@@ -270,6 +348,8 @@ export class BuilderTabQuestion {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
+
 				const dataSend = {
 					action: 'move_trash_question',
 					args: {
@@ -283,17 +363,23 @@ export class BuilderTabQuestion {
 					success: ( response ) => {
 						const { status, message } = response;
 						lpToastify.show( message, status );
-						const elQuestion = elQuestionDelete.closest( '.question' );
-						elQuestion.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
-						elQuestion.style.opacity = '0';
-						elQuestion.style.transform = 'translateX(160px)';
 
-						setTimeout( () => {
-							elQuestion.remove();
-						}, 400 );
+						if ( status === 'success' ) {
+							const elQuestion = elQuestionDelete.closest( '.question' );
+							elQuestion.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+							elQuestion.style.opacity = '0';
+							elQuestion.style.transform = 'translateX(160px)';
+
+							setTimeout( () => {
+								elQuestion.remove();
+							}, 400 );
+						}
 					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 					},
 				};
 
@@ -386,17 +472,15 @@ export class BuilderTabQuestion {
 		}
 	}
 
-	updateStatusUI( elQuestion, status ) {
-		const elStatus = elQuestion.querySelector( BuilderTabQuestion.selectors.elQuestionStatus );
-		const elSpanStatus = elQuestion.querySelector(
-			`${ BuilderTabQuestion.selectors.elQuestionStatus } span`
-		);
-		if ( elSpanStatus && elStatus ) {
-			elStatus.className = 'question-status ' + status;
-			elSpanStatus.textContent = status;
-		} else if ( elStatus ) {
-			elStatus.className = 'question-status ' + status;
-			elStatus.textContent = status;
+	replaceItemHtml( elQuestion, html ) {
+		if ( ! elQuestion || ! html ) {
+			return;
+		}
+		const tmp = document.createElement( 'div' );
+		tmp.innerHTML = html;
+		const newEl = tmp.firstElementChild;
+		if ( newEl ) {
+			elQuestion.replaceWith( newEl );
 		}
 	}
 }

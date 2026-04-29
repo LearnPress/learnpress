@@ -89,7 +89,7 @@ class BuilderListLessonsTemplate {
 
 		$search = [
 			'wrapper'       => sprintf( '<form class="cb-search-form" method="get" action="%s">', $link_tab ),
-			'search_lesson' => '<button class="cb-search-btn" type="submit"> <i class="lp-icon-search"> </i></button>',
+			'search_lesson' => '<button class="lp-button cb-search-btn" type="submit"> <i class="lp-icon-search"> </i></button>',
 			'input'         => sprintf( '<input class="cb-input-search-lesson" type="search" placeholder="%s" name="c_search" value="%s">', __( 'Search', 'learnpress' ), $args['c_search'] ?? '' ),
 			'wrapper_end'   => '</form>',
 		];
@@ -157,10 +157,10 @@ class BuilderListLessonsTemplate {
 				);
 			}
 
-			$total_pages     = \LP_Database::get_total_pages( $query_args['paged'] ?? 1, $total_lessons );
+			$total_pages     = \LP_Database::get_total_pages( $query_args['posts_per_page'], $total_lessons );
 			$link_tab        = CourseBuilder::get_tab_link( 'lessons' );
 			$data_pagination = [
-				'paged'       => max( 1, $query_args['posts_per_page'] ),
+				'paged'       => max( 1, $query_args['paged'] ?? 1 ),
 				'total_pages' => $total_pages,
 				'base'        => trailingslashit( $link_tab ) . 'page/%#%',
 				'format'      => '',
@@ -300,7 +300,7 @@ class BuilderListLessonsTemplate {
 					'date'          => sprintf( '<span class="lesson__date">%s</span>', ! empty( $lesson['date_modified'] ) ? date_i18n( 'm/d/Y', strtotime( $lesson['date_modified'] ) ) : '--' ),
 					'lesson_status' => ! empty( $status ) ? sprintf( '<span class="lesson-status %1$s">%1$s</span>', $status ) : '<span></span>',
 					'preview'       => sprintf(
-						'<span class="lesson__preview lp-btn-set-preview-item" data-id="%s" title="%s"><a class="%s"></a></span>',
+						'<span class="lesson__preview lp-button lp-btn-set-preview-item" data-id="%s" title="%s"><a class="%s"></a></span>',
 						$lesson['id'],
 						__( 'Toggle preview', 'learnpress' ),
 						$lesson['preview'] === 'yes' ? 'lp-icon-eye' : 'lp-icon-eye-slash'
@@ -318,20 +318,29 @@ class BuilderListLessonsTemplate {
 				[
 					'wrapper'                     => '<div class="lesson-action">',
 					'edit'                        => sprintf(
-						'<div class="lesson-action-editor"><button class="btn-edit-lesson lesson-edit-permalink" data-popup-lesson="%1$s" data-popup-type="lesson" data-popup-id="%1$s" data-template="#lp-tmpl-builder-popup-lesson-list">%2$s %3$s</button></div>',
+						'<div class="lesson-action-editor"><button class="lp-button btn-edit-lesson lesson-edit-permalink" data-popup-lesson="%1$s" data-popup-type="lesson" data-popup-id="%1$s" data-template="#lp-tmpl-builder-popup-lesson-list">%2$s %3$s</button></div>',
 						$lesson['id'],
 						$edit_icon,
 						__( 'Edit', 'learnpress' )
 					),
 					'action_expanded_button'      => sprintf(
-						'<div class="lesson-action-expanded">%s</div>',
+						'<button type="button" class="lp-button lesson-action-expanded">%s</button>',
 						$more_actions_icon
 					),
 					'action_expanded_wrapper'     => '<div style="display:none;" class="lesson-action-expanded__items">',
-					'action_expanded_duplicate'   => sprintf( '<span class="lesson-action-expanded__duplicate" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to duplicate this lesson?', 'learnpress' ), __( 'Duplicate', 'learnpress' ) ),
-					'action_expanded_publish'     => sprintf( '<span class="lesson-action-expanded__publish">%s</span>', __( 'Publish', 'learnpress' ) ),
-					'action_expanded_trash'       => sprintf( '<span class="lesson-action-expanded__trash">%s</span>', __( 'Trash', 'learnpress' ) ),
-					'action_expanded_delete'      => sprintf( '<span class="lesson-action-expanded__delete" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to delete this lesson? This action cannot be undone.', 'learnpress' ), __( 'Delete', 'learnpress' ) ),
+					'action_expanded_duplicate'   => sprintf( '<span class="lp-button lesson-action-expanded__duplicate" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to duplicate this lesson?', 'learnpress' ), __( 'Duplicate', 'learnpress' ) ),
+					'action_expanded_publish'     => sprintf( '<span class="lp-button lesson-action-expanded__publish">%s</span>', __( 'Publish', 'learnpress' ) ),
+					'action_expanded_trash'       => sprintf(
+						'<span class="lp-button lesson-action-expanded__trash"%s>%s</span>',
+						$status === 'trash' ? ' style="display:none"' : '',
+						__( 'Trash', 'learnpress' )
+					),
+					'action_expanded_restore'     => sprintf(
+						'<span class="lp-button lesson-action-expanded__restore"%s>%s</span>',
+						$status !== 'trash' ? ' style="display:none"' : '',
+						__( 'Restore', 'learnpress' )
+					),
+					'action_expanded_delete'      => sprintf( '<span class="lp-button lesson-action-expanded__delete" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to delete this lesson? This action cannot be undone.', 'learnpress' ), __( 'Delete', 'learnpress' ) ),
 					'action_expanded_wrapper_end' => '</div>',
 					'wrapper_end'                 => '</div>',
 				],
@@ -343,7 +352,7 @@ class BuilderListLessonsTemplate {
 				'learn-press/course-builder/list-lessons/item-li',
 				[
 					'wrapper_li'      => '<li class="lesson">',
-					'wrapper_div'     => sprintf( '<div class="lesson-item" data-lesson-id="%s">', $lesson['id'] ),
+					'wrapper_div'     => sprintf( '<div class="lesson-item" data-lesson-id="%s" data-status="%s">', $lesson['id'], $status ),
 					'lesson_info'     => Template::combine_components( $html_content ),
 					'lesson_action'   => Template::combine_components( $html_action ),
 					'wrapper_div_end' => '</div>',

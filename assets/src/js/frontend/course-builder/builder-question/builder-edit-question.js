@@ -45,6 +45,7 @@ export class BuilderEditQuestion {
 		elDropdownMenu: '.cb-dropdown-menu',
 		elDropdownItem: '.cb-dropdown-item',
 		elHeaderActionsDropdown: '.cb-header-actions-dropdown',
+		elQuestionActionExpanded: '.course-action-expanded',
 	};
 
 	init() {
@@ -1015,7 +1016,11 @@ export class BuilderEditQuestion {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elBtnDraftQuestion, 1 );
+		const elActionExpanded = document.querySelector(
+			BuilderEditQuestion.selectors.elQuestionActionExpanded
+		);
+
+		lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 		const questionData = this.getQuestionDataForUpdate();
 
@@ -1081,7 +1086,7 @@ export class BuilderEditQuestion {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtnDraftQuestion, 0 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 			},
 		};
 
@@ -1115,7 +1120,10 @@ export class BuilderEditQuestion {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elBtnTrashQuestion, 1 );
+		const elActionExpanded = document.querySelector(
+			BuilderEditQuestion.selectors.elQuestionActionExpanded
+		);
+		lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 		const questionData = this.getQuestionDataForUpdate();
 		const dataSend = {
@@ -1162,7 +1170,7 @@ export class BuilderEditQuestion {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtnTrashQuestion, 0 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 			},
 		};
 
@@ -1207,7 +1215,11 @@ export class BuilderEditQuestion {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elBtnDuplicateQuestion, 1 );
+		const elActionExpanded = document.querySelector(
+			BuilderEditQuestion.selectors.elQuestionActionExpanded
+		);
+
+		lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 		const dataSend = {
 			action: 'duplicate_question',
@@ -1230,7 +1242,7 @@ export class BuilderEditQuestion {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtnDuplicateQuestion, 0 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 			},
 		};
 

@@ -102,7 +102,7 @@ class BuilderPopupTemplate {
 		$btn_trash = '';
 		if ( $post_id > 0 ) {
 			$btn_trash = sprintf(
-				'<button type="button" class="cb-button cb-btn-trash__%s lp-builder-popup__btn lp-builder-popup__btn--trash">%s</button>',
+				'<button type="button" class="cb-button lp-button cb-btn-trash__%s lp-builder-popup__btn lp-builder-popup__btn--trash">%s</button>',
 				$type,
 				__( 'Move to trash', 'learnpress' )
 			);
@@ -110,7 +110,7 @@ class BuilderPopupTemplate {
 
 		// Save Draft button
 		$btn_draft = sprintf(
-			'<button type="button" class="cb-button cb-button--secondary cb-btn-draft__%s lp-builder-popup__btn lp-builder-popup__btn--draft" data-confirm-unpublish="%s">%s</button>',
+			'<button type="button" class="cb-button lp-button cb-button--secondary cb-btn-draft__%s lp-builder-popup__btn lp-builder-popup__btn--draft" data-confirm-unpublish="%s">%s</button>',
 			$type,
 			esc_attr__( 'Saving as draft will unpublish this item from the course. Are you sure?', 'learnpress' ),
 			__( 'Save Draft', 'learnpress' )
@@ -129,7 +129,7 @@ class BuilderPopupTemplate {
 			),
 			'btn_draft'        => $btn_draft,
 			'btn_save'         => sprintf(
-				'<button type="button" class="cb-button cb-btn-update__%s lp-builder-popup__btn lp-builder-popup__btn--save" data-title-update="%s" data-title-publish="%s">%s</button>',
+				'<button type="button" class="cb-button lp-button cb-btn-update__%s lp-builder-popup__btn lp-builder-popup__btn--save" data-title-update="%s" data-title-publish="%s">%s</button>',
 				$type,
 				__( 'Update', 'learnpress' ),
 				__( 'Publish', 'learnpress' ),

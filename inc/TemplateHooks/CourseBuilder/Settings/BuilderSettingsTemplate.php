@@ -130,7 +130,7 @@ class BuilderSettingsTemplate {
 	protected function html_section_logo( array $settings_data ): string {
 		$preview_default_class = trim( 'lp-cb-logo-setting__preview-default ' . ( $settings_data['has_custom_logo'] ? 'is-hidden' : '' ) );
 		$preview_image_class   = $settings_data['has_custom_logo'] ? '' : 'is-hidden';
-		$remove_btn_class      = trim( 'button lp-cb-logo-setting__btn lp-cb-logo-setting__btn-danger ' . ( $settings_data['has_custom_logo'] ? '' : 'is-hidden' ) );
+		$remove_btn_class      = trim( 'button lp-button lp-cb-logo-setting__btn lp-cb-logo-setting__btn-danger ' . ( $settings_data['has_custom_logo'] ? '' : 'is-hidden' ) );
 
 		$preview = [
 			'wrapper'     => '<div class="lp-cb-logo-setting__preview">',
@@ -155,7 +155,7 @@ class BuilderSettingsTemplate {
 			'preview_row_end'     => '</div>',
 			'actions'             => '<div class="lp-cb-logo-setting__actions">',
 			'btn_remove'          => sprintf( '<button type="button" class="%s" data-cb-logo-remove>%s</button>', esc_attr( $remove_btn_class ), esc_html__( 'Remove', 'learnpress' ) ),
-			'btn_replace'         => sprintf( '<button type="button" class="button lp-cb-logo-setting__btn" data-cb-logo-choose>%s</button>', esc_html__( 'Replace', 'learnpress' ) ),
+			'btn_replace'         => sprintf( '<button type="button" class="button lp-button lp-cb-logo-setting__btn" data-cb-logo-choose>%s</button>', esc_html__( 'Replace', 'learnpress' ) ),
 			'actions_end'         => '</div>',
 			'preview_wrapper_end' => '</div>',
 			'input_logo_id'       => sprintf(

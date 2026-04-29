@@ -407,7 +407,7 @@ export class BuilderPopup {
 		this.initializedTabs.clear(); // Clear initialized tabs cache
 
 		if ( savedData && closedId ) {
-			this.updateListItemOnClose( closedType, closedId, savedData );
+			this.updateListItem( closedType, closedId, savedData );
 		}
 
 		document.dispatchEvent(
@@ -425,134 +425,167 @@ export class BuilderPopup {
 	}
 
 	/**
-	 * Update list item when popup closes after save
+	 * Update list item in the background list
 	 */
-	updateListItemOnClose( type, id, savedData ) {
+	updateListItem( type, id, savedData ) {
 		if ( ! type || ! id || ! savedData ) {
 			return;
 		}
 
 		const { formData, data, wasNewItem } = savedData;
-		let listItem = this.findListItem( type, id );
+		let listItems = this.findListItems( type, id );
 
 		// New items created from popup need to be inserted into the list first.
-		if ( ! listItem && wasNewItem ) {
-			listItem = this.insertNewListItem( type, id, data?.list_item_html );
+		if ( ( ! listItems || listItems.length === 0 ) && wasNewItem ) {
+			const newItem = this.insertNewListItem( type, id, data?.list_item_html );
+			if ( newItem ) {
+				listItems = [ newItem ];
+			}
 		}
 
-		if ( ! listItem ) {
+		if ( ! listItems || listItems.length === 0 ) {
 			return;
 		}
 
-		// Update title
-		const newTitle = formData[ `${ type }_title` ];
-		if ( newTitle ) {
-			this.updateElementText(
-				listItem,
-				[
-					'.item-title',
-					'.lp-item-title',
-					`.lp-${ type }-title`,
-					'.curriculum-item-title',
-					'.item-name',
-					'span.title',
-					'.lp-question-title-input',
-					'.section-item-title input',
-					'.section-item-title span',
-				],
-				newTitle
-			);
-		}
+		listItems.forEach( ( listItem ) => {
+			let currentItem = listItem;
 
-		// Update status
-		if ( data?.status ) {
-			this.updateElementClass(
-				listItem,
-				[ `.${ type }-status`, '.item-status', '.post-status' ],
-				data.status
-			);
-		}
+			// Replace the entire item HTML if returned from the server
+			if ( data?.section_item_html && currentItem.classList.contains( 'section-item' ) ) {
+				const template = document.createElement( 'template' );
+				template.innerHTML = data.section_item_html.trim();
+				const newListItem = template.content.firstElementChild;
+				if ( newListItem ) {
+					currentItem.replaceWith( newListItem );
+					currentItem = newListItem;
+				}
+			} else if ( data?.list_item_html && ! currentItem.classList.contains( 'section-item' ) ) {
+				const template = document.createElement( 'template' );
+				template.innerHTML = data.list_item_html.trim();
+				const newListItem = template.content.firstElementChild;
+				if ( newListItem ) {
+					currentItem.replaceWith( newListItem );
+					currentItem = newListItem;
+				}
+			} else {
+				// Fallback: manually update elements if HTML replacement isn't used
+				// Update title
+				const newTitle = formData[ `${ type }_title` ];
+				if ( newTitle ) {
+					this.updateElementText(
+						currentItem,
+						[
+							'.item-title',
+							'.lp-item-title',
+							`.lp-${ type }-title`,
+							'.curriculum-item-title',
+							'.item-name',
+							'span.title',
+							'.lp-question-title-input',
+							'.section-item-title input',
+							'.section-item-title span',
+							'.lp-item-title-input',
+						],
+						newTitle
+					);
+				}
 
-		if ( type === 'lesson' ) {
-			const duration = formData._lp_duration || data?.duration;
-			if ( duration ) {
-				this.updateDuration( listItem, duration );
-			}
+				// Update status
+				if ( data?.status ) {
+					this.updateElementClass(
+						currentItem,
+						[ `.${ type }-status`, '.item-status', '.post-status' ],
+						data.status
+					);
+				}
 
-			const preview = formData._lp_preview || data?.preview;
-			const isPreview = preview === 'yes' || preview === true || preview === '1';
-			const previewEl = listItem.querySelector(
-				'.lp-btn-set-preview-item a, .course-item-preview'
-			);
-			if ( previewEl ) {
-				if ( isPreview ) {
-					previewEl.classList.remove( 'lp-icon-eye-slash' );
-					previewEl.classList.add( 'lp-icon-eye' );
-				} else {
-					previewEl.classList.remove( 'lp-icon-eye' );
-					previewEl.classList.add( 'lp-icon-eye-slash' );
+				if ( type === 'lesson' ) {
+					const duration = formData._lp_duration || data?.duration;
+					if ( duration ) {
+						this.updateDuration( currentItem, duration );
+					}
+
+					const preview = formData._lp_preview || data?.preview;
+					const isPreview = preview === 'yes' || preview === true || preview === '1';
+					const previewEl = currentItem.querySelector(
+						'.lp-btn-set-preview-item a, .course-item-preview'
+					);
+					if ( previewEl ) {
+						if ( isPreview ) {
+							previewEl.classList.remove( 'lp-icon-eye-slash' );
+							previewEl.classList.add( 'lp-icon-eye' );
+						} else {
+							previewEl.classList.remove( 'lp-icon-eye' );
+							previewEl.classList.add( 'lp-icon-eye-slash' );
+						}
+					}
+
+					const checkbox = currentItem.querySelector( 'input[type="checkbox"].preview-checkbox' );
+					if ( checkbox ) {
+						checkbox.checked = isPreview;
+					}
+
+					currentItem.classList.toggle( 'is-preview', isPreview );
+					currentItem.classList.toggle( 'preview-item', isPreview );
+				} else if ( type === 'quiz' ) {
+					const duration = formData._lp_duration || data?.duration;
+					if ( duration ) {
+						this.updateDuration( currentItem, duration );
+					}
+
+					const questionCount = data?.question_count || data?.questions_count;
+					if ( questionCount !== null && questionCount !== undefined ) {
+						const questionCountEl = currentItem.querySelector( '.question-count' );
+						if ( questionCountEl ) {
+							questionCountEl.textContent = `${ questionCount } ${
+								questionCount === 1 ? 'Question' : 'Questions'
+							}`;
+						}
+					}
+
+					const passingGrade = formData._lp_passing_grade || data?.passing_grade;
+					if ( passingGrade ) {
+						const passingGradeEl = currentItem.querySelector( '.passing-grade' );
+						if ( passingGradeEl ) {
+							passingGradeEl.textContent = `${ passingGrade }%`;
+						}
+					}
+				} else if ( type === 'question' ) {
+					const questionType = formData._lp_type || data?.type;
+					if ( questionType ) {
+						const typeMap = {
+							true_or_false: 'True or False',
+							single_choice: 'Single Choice',
+							multi_choice: 'Multi Choice',
+							fill_in_blanks: 'Fill in Blanks',
+						};
+
+						this.updateElementText(
+							currentItem,
+							[ '.question-type', '.item-type' ],
+							typeMap[ questionType ] || questionType
+						);
+
+						const typeClasses = [
+							'true_or_false',
+							'single_choice',
+							'multi_choice',
+							'fill_in_blanks',
+						];
+						typeClasses.forEach( ( cls ) => currentItem.classList.remove( cls ) );
+						currentItem.classList.add( questionType );
+					}
+
+					const mark = formData._lp_mark || data?.mark;
+					if ( mark ) {
+						const questionMarkEl = currentItem.querySelector( '.question-mark' );
+						if ( questionMarkEl ) {
+							questionMarkEl.textContent = mark;
+						}
+					}
 				}
 			}
-
-			const checkbox = listItem.querySelector( 'input[type="checkbox"].preview-checkbox' );
-			if ( checkbox ) {
-				checkbox.checked = isPreview;
-			}
-
-			listItem.classList.toggle( 'is-preview', isPreview );
-			listItem.classList.toggle( 'preview-item', isPreview );
-		} else if ( type === 'quiz' ) {
-			const duration = formData._lp_duration || data?.duration;
-			if ( duration ) {
-				this.updateDuration( listItem, duration );
-			}
-
-			const questionCount = data?.question_count || data?.questions_count;
-			if ( questionCount !== null && questionCount !== undefined ) {
-				const questionCountEl = listItem.querySelector( '.question-count' );
-				if ( questionCountEl ) {
-					questionCountEl.textContent = `${ questionCount } ${
-						questionCount === 1 ? 'Question' : 'Questions'
-					}`;
-				}
-			}
-
-			const passingGrade = formData._lp_passing_grade || data?.passing_grade;
-			if ( passingGrade ) {
-				const passingGradeEl = listItem.querySelector( '.passing-grade' );
-				if ( passingGradeEl ) {
-					passingGradeEl.textContent = `${ passingGrade }%`;
-				}
-			}
-		} else if ( type === 'question' ) {
-			const questionType = formData._lp_type || data?.type;
-			if ( questionType ) {
-				const typeMap = {
-					true_or_false: 'True or False',
-					single_choice: 'Single Choice',
-					multi_choice: 'Multi Choice',
-					fill_in_blanks: 'Fill in Blanks',
-				};
-
-				this.updateElementText(
-					listItem,
-					[ '.question-type', '.item-type' ],
-					typeMap[ questionType ] || questionType
-				);
-
-				const typeClasses = [ 'true_or_false', 'single_choice', 'multi_choice', 'fill_in_blanks' ];
-				typeClasses.forEach( ( cls ) => listItem.classList.remove( cls ) );
-				listItem.classList.add( questionType );
-			}
-
-			const mark = formData._lp_mark || data?.mark;
-			if ( mark ) {
-				const questionMarkEl = listItem.querySelector( '.question-mark' );
-				if ( questionMarkEl ) {
-					questionMarkEl.textContent = mark;
-				}
-			}
-		}
+		} );
 
 		document.dispatchEvent(
 			new CustomEvent( 'lp-builder-list-item-updated', {
@@ -562,9 +595,9 @@ export class BuilderPopup {
 	}
 
 	/**
-	 * Find list item by type and ID
+	 * Find all instances of a list item by type and ID
 	 */
-	findListItem( type, id ) {
+	findListItems( type, id ) {
 		const selectors = [
 			`[data-${ type }-id="${ id }"]`,
 			`[data-id="${ id }"]`,
@@ -574,14 +607,36 @@ export class BuilderPopup {
 			`.lp-${ type }-item[data-id="${ id }"]`,
 		];
 
+		const foundItems = new Set();
+
 		for ( const selector of selectors ) {
-			const item = document.querySelector( selector );
-			if ( item ) {
-				return item;
+			const items = document.querySelectorAll( selector );
+			for ( const item of items ) {
+				// Ensure we don't select elements inside the popup itself
+				if ( ! item.closest( '#lp-builder-popup-container' ) ) {
+					// Exclude elements that are merely trigger buttons but not the list item container itself
+					// If it's just a generic button to open a popup, it might not be the actual item container.
+					// However, some UI lists use the trigger button as the container. We rely on the DOM structure.
+					// We can assume `.section-item` and `.lp-lesson-item` and `.cb-list-item` are containers.
+					if (
+						item.classList.contains( 'section-item' ) ||
+						item.classList.contains( `lp-${ type }-item` ) ||
+						item.classList.contains( 'list-item' ) ||
+						item.classList.contains( 'cb-list-item' ) ||
+						item.tagName === 'LI'
+					) {
+						foundItems.add( item );
+					} else {
+						// If it's a wrapper, like a div in Content Bank
+						if ( item.closest( 'ul' ) ) {
+							foundItems.add( item );
+						}
+					}
+				}
 			}
 		}
 
-		return null;
+		return Array.from( foundItems );
 	}
 
 	/**
@@ -592,9 +647,9 @@ export class BuilderPopup {
 			return null;
 		}
 
-		const existingListItem = this.findListItem( type, id );
-		if ( existingListItem ) {
-			return existingListItem;
+		const existingListItems = this.findListItems( type, id );
+		if ( existingListItems && existingListItems.length > 0 ) {
+			return existingListItems[ 0 ];
 		}
 
 		const listContainer = this.findListContainer( type );
@@ -630,7 +685,8 @@ export class BuilderPopup {
 			}, 1500 );
 		}
 
-		return this.findListItem( type, id ) || newListItem;
+		const finalListItems = this.findListItems( type, id );
+		return finalListItems && finalListItems.length > 0 ? finalListItems[ 0 ] : newListItem;
 	}
 
 	/**
@@ -1074,7 +1130,7 @@ export class BuilderPopup {
 			action: actionMap[ this.currentType ] || `builder_update_${ this.currentType }`,
 			args: { id_url: `builder-update-${ this.currentType }` },
 			[ `${ this.currentType }_status` ]: targetStatus,
-			return_html: wasNewItem ? 'yes' : 'no',
+			return_html: 'yes',
 		};
 
 		const callBack = {
@@ -1160,7 +1216,7 @@ export class BuilderPopup {
 			action: actionMap[ this.currentType ] || `builder_update_${ this.currentType }`,
 			args: { id_url: `builder-update-${ this.currentType }` },
 			[ `${ this.currentType }_status` ]: 'draft',
-			return_html: wasNewItem ? 'yes' : 'no',
+			return_html: 'yes',
 		};
 
 		const callBack = {
@@ -1236,6 +1292,9 @@ export class BuilderPopup {
 
 		// Store saved data
 		this.savedData = { formData, data, wasNewItem };
+
+		// Update the list item immediately
+		this.updateListItem( this.currentType, this.currentId, this.savedData );
 
 		// Handle new item creation
 		if ( wasNewItem && this.currentId ) {

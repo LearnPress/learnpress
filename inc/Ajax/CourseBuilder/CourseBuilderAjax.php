@@ -8,6 +8,8 @@
 
 namespace LearnPress\Ajax\CourseBuilder;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use Exception;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\CourseBuilder\CourseBuilder;
@@ -18,6 +20,7 @@ use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderListLessonsTemplate;
@@ -31,6 +34,7 @@ use LP_Lesson_CURD;
 use LP_Question_CURD;
 use LP_Quiz_CURD;
 use LP_REST_Response;
+use LP_Settings;
 use stdClass;
 use Throwable;
 
@@ -225,7 +229,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 
 		$is_instructor_user = current_user_can( LP_TEACHER_ROLE );
-		$required_review    = \LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
+		$required_review    = LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
 		$can_publish_course = current_user_can( 'publish_' . LP_COURSE_CPT . 's' );
 
 		$current_status  = $insert ? 'auto-draft' : (string) ( $course_model->post_status ?? 'draft' );
@@ -262,12 +266,12 @@ class CourseBuilderAjax extends AbstractAjax {
 		$parsed   = null;
 
 		foreach ( $formats as $format ) {
-			$date_candidate = \DateTimeImmutable::createFromFormat( $format, $datetime_value, $timezone );
-			if ( ! $date_candidate instanceof \DateTimeImmutable ) {
+			$date_candidate = DateTimeImmutable::createFromFormat( $format, $datetime_value, $timezone );
+			if ( ! $date_candidate instanceof DateTimeImmutable ) {
 				continue;
 			}
 
-			$errors = \DateTimeImmutable::getLastErrors();
+			$errors = DateTimeImmutable::getLastErrors();
 			if ( is_array( $errors ) && ( ! empty( $errors['warning_count'] ) || ! empty( $errors['error_count'] ) ) ) {
 				continue;
 			}
@@ -276,11 +280,11 @@ class CourseBuilderAjax extends AbstractAjax {
 			break;
 		}
 
-		if ( ! $parsed instanceof \DateTimeImmutable ) {
+		if ( ! $parsed instanceof DateTimeImmutable ) {
 			return null;
 		}
 
-		$gmt_timezone = new \DateTimeZone( 'UTC' );
+		$gmt_timezone = new DateTimeZone( 'UTC' );
 
 		return [
 			'post_date'     => $parsed->format( 'Y-m-d H:i:s' ),
@@ -540,7 +544,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->message = __( 'Settings saved successfully!', 'learnpress' );
 
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -865,7 +869,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->redirect_url  = CourseBuilder::get_link_course_builder( "courses/{$new_item_id}" );
 			$response->message             = __( 'Course duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -939,7 +943,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->status       = $status;
 			$response->message            = $message;
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -997,7 +1001,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->parent  = $parent;
 			$response->message       = __( 'Insert category successfully!', 'learnpress' );
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1035,7 +1039,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->html = $html;
 			$response->message    = __( 'Insert term successfully!', 'learnpress' );
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1076,7 +1080,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->html = $html;
 			$response->message    = __( 'Lesson duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1189,6 +1193,14 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( $restore_with_custom_slug ) {
 					$this->sync_slug_after_restore( $lesson_id, $lesson_slug );
 				}
+
+				if ( $course_id ) {
+					$course_model_cache = CourseModel::find( $course_id, true );
+					if ( $course_model_cache ) {
+						$course_model_cache->sections_items = null;
+						$course_model_cache->save();
+					}
+				}
 			}
 
 			if ( $settings && $lesson_model ) {
@@ -1231,13 +1243,27 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 			}
 
-			if ( $insert && $return_html ) {
-				$lesson_model_new               = LessonPostModel::find( $lesson_id, true );
-				$response->data->list_item_html = BuilderListLessonsTemplate::render_lesson( $lesson_model_new );
+			$lesson_model_for_html = LessonPostModel::find( $lesson_id, true );
+			if ( $return_html ) {
+				$response->data->list_item_html = $lesson_model_for_html
+					? BuilderListLessonsTemplate::render_lesson( $lesson_model_for_html )
+					: '';
+
+				if ( $course_id ) {
+					$course_model_for_html = CourseModel::find( $course_id, true );
+					if ( $course_model_for_html && $lesson_model_for_html ) {
+						$item            = new stdClass();
+						$item->item_id   = $lesson_id;
+						$item->title     = $lesson_model_for_html->post_title;
+						$item->item_type = LP_LESSON_CPT;
+						AdminEditCurriculumTemplate::instance()->context_data = [ 'is_course_builder' => true ];
+						$response->data->section_item_html                    = AdminEditCurriculumTemplate::instance()->html_section_item( $course_model_for_html, $item );
+					}
+				}
 			}
 
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1288,6 +1314,11 @@ class CourseBuilderAjax extends AbstractAjax {
 
 				$message = esc_html__( 'This lesson has been moved to trash.', 'learnpress' );
 			} elseif ( $status === 'delete' ) {
+
+				if ( $lesson_model->post_status !== 'trash' ) {
+					throw new Exception( esc_html__( 'Lesson must be trashed before deleting.', 'learnpress' ) );
+				}
+
 				$delete = wp_delete_post( $lesson_id );
 
 				if ( is_wp_error( $delete ) ) {
@@ -1350,10 +1381,15 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 			}
 
+			if ( 'delete' !== $status ) {
+				$lesson_model_new     = LessonPostModel::find( $lesson_id, true );
+				$response->data->html = $lesson_model_new ? BuilderListLessonsTemplate::render_lesson( $lesson_model_new ) : '';
+			}
+
 			$response->status  = 'success';
 			$response->message = $message;
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1538,6 +1574,14 @@ class CourseBuilderAjax extends AbstractAjax {
 				if ( $restore_with_custom_slug ) {
 					$this->sync_slug_after_restore( $quiz_id, $quiz_slug );
 				}
+
+				if ( $course_id ) {
+					$course_model_cache = CourseModel::find( $course_id, true );
+					if ( $course_model_cache ) {
+						$course_model_cache->sections_items = null;
+						$course_model_cache->save();
+					}
+				}
 			}
 
 			if ( $settings && $quiz_model ) {
@@ -1580,13 +1624,27 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 			}
 
-			if ( $insert && $return_html ) {
+			if ( $return_html ) {
 				$quiz_model_new                 = QuizPostModel::find( $quiz_id, true );
-				$response->data->list_item_html = BuilderListQuizzesTemplate::render_quiz( $quiz_model_new );
+				$response->data->list_item_html = $quiz_model_new
+					? BuilderListQuizzesTemplate::render_quiz( $quiz_model_new )
+					: '';
+
+				if ( $course_id ) {
+					$course_model_for_html = CourseModel::find( $course_id, true );
+					if ( $course_model_for_html && $quiz_model_new ) {
+						$item            = new stdClass();
+						$item->item_id   = $quiz_id;
+						$item->title     = $quiz_model_new->post_title;
+						$item->item_type = LP_QUIZ_CPT;
+						AdminEditCurriculumTemplate::instance()->context_data = [ 'is_course_builder' => true ];
+						$response->data->section_item_html                    = AdminEditCurriculumTemplate::instance()->html_section_item( $course_model_for_html, $item );
+					}
+				}
 			}
 
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1625,7 +1683,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->redirect_url = BuilderQuizTemplate::instance()->get_link_edit( $new_item_id );
 			$response->message            = __( 'Quiz duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1676,6 +1734,11 @@ class CourseBuilderAjax extends AbstractAjax {
 
 				$message = esc_html__( 'This quiz has been moved to trash.', 'learnpress' );
 			} elseif ( $status === 'delete' ) {
+
+				if ( $quiz_model->post_status !== 'trash' ) {
+					throw new Exception( esc_html__( 'Quiz must be trashed before deleting.', 'learnpress' ) );
+				}
+
 				$delete = wp_delete_post( $quiz_id );
 
 				if ( is_wp_error( $delete ) ) {
@@ -1738,10 +1801,17 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 			}
 
+			if ( 'delete' !== $status ) {
+				$fresh_quiz_model     = QuizPostModel::find( $quiz_id, true );
+				$response->data->html = $fresh_quiz_model
+					? BuilderListQuizzesTemplate::render_quiz( $fresh_quiz_model )
+					: '';
+			}
+
 			$response->status  = 'success';
 			$response->message = $message;
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1781,7 +1851,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->redirect_url    = BuilderQuestionTemplate::instance()->get_link_edit( $new_item_id );
 			$response->message               = __( 'Question duplicated successfully', 'learnpress' );
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1902,13 +1972,15 @@ class CourseBuilderAjax extends AbstractAjax {
 				$response->data->question_permalink = get_permalink( $question_id );
 			}
 
-			if ( $insert && $return_html ) {
+			if ( $return_html ) {
 				$question_model_new             = QuestionPostModel::find( $question_id, true );
-				$response->data->list_item_html = BuilderListQuestionsTemplate::render_question( $question_model_new );
+				$response->data->list_item_html = $question_model_new
+					? BuilderListQuestionsTemplate::render_question( $question_model_new )
+					: '';
 			}
 
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -1941,6 +2013,11 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 				$message = esc_html__( 'This question has been moved to trash.', 'learnpress' );
 			} elseif ( $status === 'delete' ) {
+
+				if ( $question_model->post_status !== 'trash' ) {
+					throw new Exception( esc_html__( 'Question must be trashed before deleting.', 'learnpress' ) );
+				}
+
 				$delete = wp_delete_post( $question_id );
 
 				if ( is_wp_error( $delete ) ) {
@@ -1961,6 +2038,19 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				$message = __( 'Question has been moved to publish', 'learnpress' );
+			} elseif ( $status === 'draft' ) {
+				$update = wp_update_post(
+					array(
+						'ID'          => $question_id,
+						'post_type'   => LP_QUESTION_CPT,
+						'post_status' => 'draft',
+					)
+				);
+				if ( ! $update ) {
+					throw new Exception( __( 'Question cannot be restored to draft', 'learnpress' ) );
+				}
+
+				$message = __( 'Question has been restored to draft', 'learnpress' );
 			}
 
 			if ( $status !== 'publish' ) {
@@ -1969,10 +2059,18 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			$response->data->status       = $status;
 			$response->data->button_title = __( 'Publish', 'learnpress' );
-			$response->status             = 'success';
-			$response->message            = $message;
+
+			if ( 'delete' !== $status ) {
+				$fresh_question_model = QuestionPostModel::find( $question_id, true );
+				$response->data->html = $fresh_question_model
+					? BuilderListQuestionsTemplate::render_question( $fresh_question_model )
+					: '';
+			}
+
+			$response->status  = 'success';
+			$response->message = $message;
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );
@@ -2139,8 +2237,8 @@ class CourseBuilderAjax extends AbstractAjax {
 				$logo_id = 0;
 			}
 
-			\LP_Settings::update_option( 'enable_cb_admin_mode', $enable_cb_admin_mode );
-			\LP_Settings::update_option( 'course_builder_logo_id', $logo_id );
+			LP_Settings::update_option( 'enable_cb_admin_mode', $enable_cb_admin_mode );
+			LP_Settings::update_option( 'course_builder_logo_id', $logo_id );
 
 			$logo_url = '';
 			if ( $logo_id ) {
@@ -2154,7 +2252,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->course_builder_logo_url = $logo_url;
 
 			wp_send_json( $response );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 			wp_send_json( $response );

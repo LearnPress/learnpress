@@ -71,7 +71,7 @@ class BuilderListQuestionsTemplate {
 
 		$search = [
 			'wrapper'         => sprintf( '<form class="cb-search-form" method="get" action="%s">', $link_tab ),
-			'search_question' => '<button class="cb-search-btn" type="submit"> <i class="lp-icon-search"> </i></button>',
+			'search_question' => '<button class="lp-button cb-search-btn" type="submit"> <i class="lp-icon-search"> </i></button>',
 			'input'           => sprintf( '<input class="cb-input-search-question" type="search" placeholder="%s" name="c_search" value="%s">', __( 'Search', 'learnpress' ), $args['c_search'] ?? '' ),
 			'wrapper_end'     => '</form>',
 		];
@@ -307,20 +307,29 @@ class BuilderListQuestionsTemplate {
 				[
 					'wrapper'                     => '<div class="question-action">',
 					'edit'                        => sprintf(
-						'<div class="question-action-editor"><a class="btn-edit-question question-edit-permalink" href="%s">%s %s</a></div>',
+						'<div class="question-action-editor"><a class="lp-button btn-edit-question question-edit-permalink" href="%s">%s %s</a></div>',
 						esc_url( $edit_link ),
 						$edit_icon,
 						__( 'Edit', 'learnpress' )
 					),
 					'action_expanded_button'      => sprintf(
-						'<div class="question-action-expanded">%s</div>',
+						'<button type="button" class="lp-button question-action-expanded">%s</button>',
 						$more_actions_icon
 					),
 					'action_expanded_wrapper'     => '<div style="display:none;" class="question-action-expanded__items">',
-					'action_expanded_duplicate'   => sprintf( '<span class="question-action-expanded__duplicate">%s</span>', __( 'Duplicate', 'learnpress' ) ),
-					'action_expanded_publish'     => sprintf( '<span class="question-action-expanded__publish">%s</span>', __( 'Publish', 'learnpress' ) ),
-					'action_expanded_trash'       => sprintf( '<span class="question-action-expanded__trash">%s</span>', __( 'Trash', 'learnpress' ) ),
-					'action_expanded_delete'      => sprintf( '<span class="question-action-expanded__delete">%s</span>', __( 'Delete', 'learnpress' ) ),
+					'action_expanded_duplicate'   => sprintf( '<span class="lp-button question-action-expanded__duplicate">%s</span>', __( 'Duplicate', 'learnpress' ) ),
+					'action_expanded_publish'     => sprintf( '<span class="lp-button question-action-expanded__publish">%s</span>', __( 'Publish', 'learnpress' ) ),
+					'action_expanded_trash'       => sprintf(
+						'<span class="lp-button question-action-expanded__trash"%s>%s</span>',
+						$status === 'trash' ? ' style="display:none"' : '',
+						__( 'Trash', 'learnpress' )
+					),
+					'action_expanded_restore'     => sprintf(
+						'<span class="lp-button question-action-expanded__restore"%s>%s</span>',
+						$status !== 'trash' ? ' style="display:none"' : '',
+						__( 'Restore', 'learnpress' )
+					),
+					'action_expanded_delete'      => sprintf( '<span class="lp-button question-action-expanded__delete">%s</span>', __( 'Delete', 'learnpress' ) ),
 					'action_expanded_wrapper_end' => '</div>',
 					'wrapper_end'                 => '</div>',
 				],
@@ -332,7 +341,7 @@ class BuilderListQuestionsTemplate {
 				'learn-press/course-builder/list-questions/item-li',
 				[
 					'wrapper_li'      => '<li class="question">',
-					'wrapper_div'     => sprintf( '<div class="question-item" data-question-id="%s">', $question['id'] ),
+					'wrapper_div'     => sprintf( '<div class="question-item" data-question-id="%s" data-status="%s">', $question['id'], $status ),
 					'question_info'   => Template::combine_components( $html_content ),
 					'question_action' => Template::combine_components( $html_action ),
 					'wrapper_div_end' => '</div>',

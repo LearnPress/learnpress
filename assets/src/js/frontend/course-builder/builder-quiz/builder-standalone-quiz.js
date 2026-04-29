@@ -62,6 +62,7 @@ export class BuilderStandaloneQuiz {
 		elDropdownMenu: '.cb-dropdown-menu',
 		elDropdownItem: '.cb-dropdown-item',
 		elHeaderActionsDropdown: '.cb-header-actions-dropdown',
+		elQuizActionExpanded: '.course-action-expanded',
 	};
 
 	init() {
@@ -1052,7 +1053,11 @@ export class BuilderStandaloneQuiz {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elBtnDraftQuiz, 1 );
+		const elQuizActionExpanded = document.querySelector(
+			BuilderStandaloneQuiz.selectors.elQuizActionExpanded
+		);
+
+		lpUtils.lpSetLoadingEl( elQuizActionExpanded, 1 );
 
 		const quizData = this.getQuizDataForUpdate();
 
@@ -1110,7 +1115,7 @@ export class BuilderStandaloneQuiz {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtnDraftQuiz, 0 );
+				lpUtils.lpSetLoadingEl( elQuizActionExpanded, 0 );
 			},
 		};
 
@@ -1145,7 +1150,11 @@ export class BuilderStandaloneQuiz {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elBtnTrashQuiz, 1 );
+		const elQuizActionExpanded = document.querySelector(
+			BuilderStandaloneQuiz.selectors.elQuizActionExpanded
+		);
+
+		lpUtils.lpSetLoadingEl( elQuizActionExpanded, 1 );
 
 		const wrapperEl = document.querySelector( BuilderStandaloneQuiz.selectors.elDataQuiz );
 		const quizId = wrapperEl ? parseInt( wrapperEl.dataset.quizId ) || 0 : 0;
@@ -1199,7 +1208,7 @@ export class BuilderStandaloneQuiz {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtnTrashQuiz, 0 );
+				lpUtils.lpSetLoadingEl( elQuizActionExpanded, 0 );
 			},
 		};
 
@@ -1240,7 +1249,11 @@ export class BuilderStandaloneQuiz {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elBtnDuplicateQuiz, 1 );
+		const elQuizActionExpanded = document.querySelector(
+			BuilderStandaloneQuiz.selectors.elQuizActionExpanded
+		);
+
+		lpUtils.lpSetLoadingEl( elQuizActionExpanded, 1 );
 
 		const dataSend = {
 			quiz_id: quizId,
@@ -1263,7 +1276,7 @@ export class BuilderStandaloneQuiz {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elBtnDuplicateQuiz, 0 );
+				lpUtils.lpSetLoadingEl( elQuizActionExpanded, 0 );
 			},
 		};
 

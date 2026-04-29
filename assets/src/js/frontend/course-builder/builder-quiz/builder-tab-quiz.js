@@ -13,10 +13,12 @@ export class BuilderTabQuiz {
 		elQuizExpandedItems: '.quiz-action-expanded__items',
 		elQuizDuplicate: '.quiz-action-expanded__duplicate',
 		elQuizTrash: '.quiz-action-expanded__trash',
+		elQuizRestore: '.quiz-action-expanded__restore',
 		elQuizPublish: '.quiz-action-expanded__publish',
 		elQuizDelete: '.quiz-action-expanded__delete',
 		elQuizActionExpanded: '.quiz-action-expanded',
 		elQuizStatus: '.quiz-status',
+		elBtnEditQuiz: '.btn-edit-quiz',
 	};
 
 	init() {
@@ -46,6 +48,11 @@ export class BuilderTabQuiz {
 				callBack: this.publishQuiz.name,
 			},
 			{
+				selector: BuilderTabQuiz.selectors.elQuizRestore,
+				class: this,
+				callBack: this.restoreQuiz.name,
+			},
+			{
 				selector: BuilderTabQuiz.selectors.elQuizDelete,
 				class: this,
 				callBack: this.deleteQuiz.name,
@@ -55,6 +62,11 @@ export class BuilderTabQuiz {
 				class: this,
 				callBack: this.toggleExpandedAction.name,
 			},
+			{
+				selector: BuilderTabQuiz.selectors.elBtnEditQuiz,
+				class: this,
+				callBack: this.editQuiz.name,
+			},
 		] );
 
 		document.addEventListener( 'click', ( e ) => {
@@ -62,6 +74,17 @@ export class BuilderTabQuiz {
 				this.closeAllExpanded();
 			}
 		} );
+	}
+
+	editQuiz( args ) {
+		const { target } = args;
+		const elBtnEditQuiz = target.closest( BuilderTabQuiz.selectors.elBtnEditQuiz );
+
+		if ( ! elBtnEditQuiz ) {
+			return;
+		}
+
+		lpUtils.lpSetLoadingEl( elBtnEditQuiz, 1 );
 	}
 
 	duplicateQuiz( args ) {
@@ -73,6 +96,9 @@ export class BuilderTabQuiz {
 			return;
 		}
 
+		const elActionExpanded = elQuizItem.querySelector(
+			BuilderTabQuiz.selectors.elQuizActionExpanded
+		);
 		const quizId = elQuizItem.dataset.quizId || '';
 
 		SweetAlert.fire( {
@@ -87,7 +113,7 @@ export class BuilderTabQuiz {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
-				lpUtils.lpSetLoadingEl( elQuizDuplicate, 1 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 				const dataSend = {
 					action: 'duplicate_quiz',
@@ -128,7 +154,7 @@ export class BuilderTabQuiz {
 						lpToastify.show( error.message || error, 'error' );
 					},
 					completed: () => {
-						lpUtils.lpSetLoadingEl( elQuizDuplicate, 0 );
+						lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 					},
 				};
 
@@ -146,6 +172,9 @@ export class BuilderTabQuiz {
 			return;
 		}
 
+		const elActionExpanded = elQuizItem.querySelector(
+			BuilderTabQuiz.selectors.elQuizActionExpanded
+		);
 		const quizId = elQuizItem.dataset.quizId || '';
 
 		SweetAlert.fire( {
@@ -160,7 +189,7 @@ export class BuilderTabQuiz {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
-				lpUtils.lpSetLoadingEl( elQuizTrash, 1 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 				const dataSend = {
 					action: 'move_trash_quiz',
@@ -175,16 +204,15 @@ export class BuilderTabQuiz {
 						const { status, message, data } = response;
 						lpToastify.show( message, status );
 
-						if ( data?.status ) {
-							const elQuiz = elQuizTrash.closest( '.quiz' );
-							this.updateStatusUI( elQuiz, data.status );
+						if ( data?.html ) {
+							this.replaceItemHtml( elQuizTrash.closest( '.quiz' ), data.html );
 						}
 					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
 					},
 					completed: () => {
-						lpUtils.lpSetLoadingEl( elQuizTrash, 0 );
+						lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 					},
 				};
 
@@ -202,7 +230,10 @@ export class BuilderTabQuiz {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elQuizPublish, 1 );
+		const elActionExpanded = elQuizItem.querySelector(
+			BuilderTabQuiz.selectors.elQuizActionExpanded
+		);
+		lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 		const quizId = elQuizItem.dataset.quizId || '';
 
@@ -219,16 +250,59 @@ export class BuilderTabQuiz {
 			success: ( response ) => {
 				const { status, message, data } = response;
 				lpToastify.show( message, status );
-				if ( data?.status ) {
-					const elQuiz = elQuizPublish.closest( '.quiz' );
-					this.updateStatusUI( elQuiz, data.status );
+				if ( data?.html ) {
+					this.replaceItemHtml( elQuizPublish.closest( '.quiz' ), data.html );
 				}
 			},
 			error: ( error ) => {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elQuizPublish, 0 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	restoreQuiz( args ) {
+		const { target } = args;
+		const elQuizRestore = target.closest( BuilderTabQuiz.selectors.elQuizRestore );
+		const elQuizItem = elQuizRestore.closest( BuilderTabQuiz.selectors.elQuizItem );
+
+		if ( ! elQuizItem ) {
+			return;
+		}
+
+		const elActionExpanded = elQuizItem.querySelector(
+			BuilderTabQuiz.selectors.elQuizActionExpanded
+		);
+		lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
+
+		const quizId = elQuizItem.dataset.quizId || '';
+
+		const dataSend = {
+			action: 'move_trash_quiz',
+			args: {
+				id_url: 'move-trash-quiz',
+			},
+			quiz_id: quizId,
+			status: 'draft',
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+				lpToastify.show( message, status );
+				if ( data?.html ) {
+					this.replaceItemHtml( elQuizRestore.closest( '.quiz' ), data.html );
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 			},
 		};
 
@@ -244,6 +318,9 @@ export class BuilderTabQuiz {
 			return;
 		}
 
+		const elActionExpanded = elQuizItem.querySelector(
+			BuilderTabQuiz.selectors.elQuizActionExpanded
+		);
 		const quizId = elQuizItem.dataset.quizId || '';
 
 		if ( ! quizId ) {
@@ -263,6 +340,8 @@ export class BuilderTabQuiz {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
+
 				const dataSend = {
 					action: 'move_trash_quiz',
 					args: {
@@ -276,17 +355,23 @@ export class BuilderTabQuiz {
 					success: ( response ) => {
 						const { status, message } = response;
 						lpToastify.show( message, status );
-						const elQuiz = elQuizDelete.closest( '.quiz' );
-						elQuiz.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
-						elQuiz.style.opacity = '0';
-						elQuiz.style.transform = 'translateX(160px)';
 
-						setTimeout( () => {
-							elQuiz.remove();
-						}, 400 );
+						if ( status === 'success' ) {
+							const elQuiz = elQuizDelete.closest( '.quiz' );
+							elQuiz.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+							elQuiz.style.opacity = '0';
+							elQuiz.style.transform = 'translateX(160px)';
+
+							setTimeout( () => {
+								elQuiz.remove();
+							}, 400 );
+						}
 					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 					},
 				};
 
@@ -372,15 +457,15 @@ export class BuilderTabQuiz {
 		}
 	}
 
-	updateStatusUI( elQuiz, status ) {
-		const elStatus = elQuiz.querySelector( BuilderTabQuiz.selectors.elQuizStatus );
-		const elSpanStatus = elQuiz.querySelector( `${ BuilderTabQuiz.selectors.elQuizStatus } span` );
-		if ( elSpanStatus && elStatus ) {
-			elStatus.className = 'quiz-status ' + status;
-			elSpanStatus.textContent = status;
-		} else if ( elStatus ) {
-			elStatus.className = 'quiz-status ' + status;
-			elStatus.textContent = status;
+	replaceItemHtml( elQuiz, html ) {
+		if ( ! elQuiz || ! html ) {
+			return;
+		}
+		const tmp = document.createElement( 'div' );
+		tmp.innerHTML = html;
+		const newEl = tmp.firstElementChild;
+		if ( newEl ) {
+			elQuiz.replaceWith( newEl );
 		}
 	}
 }

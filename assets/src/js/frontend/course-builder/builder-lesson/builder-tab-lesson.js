@@ -13,6 +13,7 @@ export class BuilderTabLesson {
 		elLessonExpandedItems: '.lesson-action-expanded__items',
 		elLessonDuplicate: '.lesson-action-expanded__duplicate',
 		elLessonTrash: '.lesson-action-expanded__trash',
+		elLessonRestore: '.lesson-action-expanded__restore',
 		elLessonPublish: '.lesson-action-expanded__publish',
 		elLessonDelete: '.lesson-action-expanded__delete',
 		elLessonActionExpanded: '.lesson-action-expanded',
@@ -47,6 +48,11 @@ export class BuilderTabLesson {
 				callBack: this.publishLesson.name,
 			},
 			{
+				selector: BuilderTabLesson.selectors.elLessonRestore,
+				class: this,
+				callBack: this.restoreLesson.name,
+			},
+			{
 				selector: BuilderTabLesson.selectors.elLessonDelete,
 				class: this,
 				callBack: this.deleteLesson.name,
@@ -68,6 +74,24 @@ export class BuilderTabLesson {
 				this.closeAllExpanded();
 			}
 		} );
+
+		document.addEventListener( 'lp-builder-popup-saved', ( e ) => {
+			const { type, id, data } = e.detail;
+			if ( type !== 'lesson' || ! data?.list_item_html ) return;
+			const elItem = document.querySelector( `.lesson-item[data-lesson-id="${ id }"]` );
+			if ( elItem ) {
+				this.replaceItemHtml( elItem.closest( '.lesson' ), data.list_item_html );
+			}
+		} );
+
+		document.addEventListener( 'lp-builder-popup-trashed', ( e ) => {
+			const { type, id, data } = e.detail;
+			if ( type !== 'lesson' || ! data?.html ) return;
+			const elItem = document.querySelector( `.lesson-item[data-lesson-id="${ id }"]` );
+			if ( elItem ) {
+				this.replaceItemHtml( elItem.closest( '.lesson' ), data.html );
+			}
+		} );
 	}
 
 	duplicateLesson( args ) {
@@ -79,6 +103,9 @@ export class BuilderTabLesson {
 			return;
 		}
 
+		const elActionExpanded = elLessonItem.querySelector(
+			BuilderTabLesson.selectors.elLessonActionExpanded
+		);
 		const lessonId = elLessonItem.dataset.lessonId || '';
 
 		SweetAlert.fire( {
@@ -93,7 +120,7 @@ export class BuilderTabLesson {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
-				lpUtils.lpSetLoadingEl( elLessonDuplicate, 1 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 				const dataSend = {
 					action: 'duplicate_lesson',
@@ -133,7 +160,7 @@ export class BuilderTabLesson {
 						lpToastify.show( error.message || error, 'error' );
 					},
 					completed: () => {
-						lpUtils.lpSetLoadingEl( elLessonDuplicate, 0 );
+						lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 					},
 				};
 
@@ -151,6 +178,9 @@ export class BuilderTabLesson {
 			return;
 		}
 
+		const elActionExpanded = elLessonItem.querySelector(
+			BuilderTabLesson.selectors.elLessonActionExpanded
+		);
 		const lessonId = elLessonItem.dataset.lessonId || '';
 
 		SweetAlert.fire( {
@@ -167,7 +197,7 @@ export class BuilderTabLesson {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
-				lpUtils.lpSetLoadingEl( elLessonTrash, 1 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 				const dataSend = {
 					action: 'move_trash_lesson',
@@ -182,16 +212,15 @@ export class BuilderTabLesson {
 						const { status, message, data } = response;
 						lpToastify.show( message, status );
 
-						if ( data?.status ) {
-							const elLesson = elLessonTrash.closest( '.lesson' );
-							this.updateStatusUI( elLesson, data.status );
+						if ( data?.html ) {
+							this.replaceItemHtml( elLessonTrash.closest( '.lesson' ), data.html );
 						}
 					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
 					},
 					completed: () => {
-						lpUtils.lpSetLoadingEl( elLessonTrash, 0 );
+						lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 					},
 				};
 
@@ -209,7 +238,10 @@ export class BuilderTabLesson {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( elLessonPublish, 1 );
+		const elActionExpanded = elLessonItem.querySelector(
+			BuilderTabLesson.selectors.elLessonActionExpanded
+		);
+		lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
 
 		const lessonId = elLessonItem.dataset.lessonId || '';
 
@@ -226,16 +258,59 @@ export class BuilderTabLesson {
 			success: ( response ) => {
 				const { status, message, data } = response;
 				lpToastify.show( message, status );
-				if ( data?.status ) {
-					const elLesson = elLessonPublish.closest( '.lesson' );
-					this.updateStatusUI( elLesson, data.status );
+				if ( data?.html ) {
+					this.replaceItemHtml( elLessonPublish.closest( '.lesson' ), data.html );
 				}
 			},
 			error: ( error ) => {
 				lpToastify.show( error.message || error, 'error' );
 			},
 			completed: () => {
-				lpUtils.lpSetLoadingEl( elLessonPublish, 0 );
+				lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
+			},
+		};
+
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}
+
+	restoreLesson( args ) {
+		const { target } = args;
+		const elLessonRestore = target.closest( BuilderTabLesson.selectors.elLessonRestore );
+		const elLessonItem = elLessonRestore.closest( BuilderTabLesson.selectors.elLessonItem );
+
+		if ( ! elLessonItem ) {
+			return;
+		}
+
+		const elActionExpanded = elLessonItem.querySelector(
+			BuilderTabLesson.selectors.elLessonActionExpanded
+		);
+		lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
+
+		const lessonId = elLessonItem.dataset.lessonId || '';
+
+		const dataSend = {
+			action: 'move_trash_lesson',
+			args: {
+				id_url: 'move-trash-lesson',
+			},
+			lesson_id: lessonId,
+			status: 'draft',
+		};
+
+		const callBack = {
+			success: ( response ) => {
+				const { status, message, data } = response;
+				lpToastify.show( message, status );
+				if ( data?.html ) {
+					this.replaceItemHtml( elLessonRestore.closest( '.lesson' ), data.html );
+				}
+			},
+			error: ( error ) => {
+				lpToastify.show( error.message || error, 'error' );
+			},
+			completed: () => {
+				lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 			},
 		};
 
@@ -251,6 +326,9 @@ export class BuilderTabLesson {
 			return;
 		}
 
+		const elActionExpanded = elLessonItem.querySelector(
+			BuilderTabLesson.selectors.elLessonActionExpanded
+		);
 		const lessonId = elLessonItem.dataset.lessonId || '';
 
 		if ( ! lessonId ) {
@@ -271,6 +349,8 @@ export class BuilderTabLesson {
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
+				lpUtils.lpSetLoadingEl( elActionExpanded, 1 );
+
 				const dataSend = {
 					action: 'move_trash_lesson',
 					args: {
@@ -284,17 +364,23 @@ export class BuilderTabLesson {
 					success: ( response ) => {
 						const { status, message } = response;
 						lpToastify.show( message, status );
-						const elLesson = elLessonDelete.closest( '.lesson' );
-						elLesson.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
-						elLesson.style.opacity = '0';
-						elLesson.style.transform = 'translateX(160px)';
 
-						setTimeout( () => {
-							elLesson.remove();
-						}, 400 );
+						if ( status === 'success' ) {
+							const elLesson = elLessonDelete.closest( '.lesson' );
+							elLesson.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+							elLesson.style.opacity = '0';
+							elLesson.style.transform = 'translateX(160px)';
+
+							setTimeout( () => {
+								elLesson.remove();
+							}, 400 );
+						}
 					},
 					error: ( error ) => {
 						lpToastify.show( error.message || error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elActionExpanded, 0 );
 					},
 				};
 
@@ -457,17 +543,15 @@ export class BuilderTabLesson {
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
-	updateStatusUI( elLesson, status ) {
-		const elStatus = elLesson.querySelector( BuilderTabLesson.selectors.elLessonStatus );
-		const elSpanStatus = elLesson.querySelector(
-			`${ BuilderTabLesson.selectors.elLessonStatus } span`
-		);
-		if ( elSpanStatus && elStatus ) {
-			elStatus.className = 'lesson-status ' + status;
-			elSpanStatus.textContent = status;
-		} else if ( elStatus ) {
-			elStatus.className = 'lesson-status ' + status;
-			elStatus.textContent = status;
+	replaceItemHtml( elLesson, html ) {
+		if ( ! elLesson || ! html ) {
+			return;
+		}
+		const tmp = document.createElement( 'div' );
+		tmp.innerHTML = html;
+		const newEl = tmp.firstElementChild;
+		if ( newEl ) {
+			elLesson.replaceWith( newEl );
 		}
 	}
 }

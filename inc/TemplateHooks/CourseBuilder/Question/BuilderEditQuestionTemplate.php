@@ -113,7 +113,7 @@ class BuilderEditQuestionTemplate {
 			'header_actions'     => '<div class="lp-cb-header__actions">',
 			'dropdown_wrap'      => '<div class="cb-header-actions-dropdown cb-header-actions-dropdown--single">',
 			'update_btn'         => sprintf(
-				'<div class="cb-btn-update cb-btn-primary cb-btn-main-action"
+				'<div class="cb-btn-update lp-button cb-btn-primary cb-btn-main-action"
 					data-status="%1$s"
 					data-title-update="%2$s"
 					data-title-publish="%3$s"
@@ -127,17 +127,17 @@ class BuilderEditQuestionTemplate {
 			'dropdown_wrap_end'  => '</div>',
 			'expanded_actions'   => $questionModel ? sprintf(
 				'<div class="cb-header-action-expanded">
-					<button type="button" class="course-action-expanded" aria-haspopup="true" aria-expanded="false" aria-label="%1$s">
+					<button type="button" class="lp-button course-action-expanded" aria-haspopup="true" aria-expanded="false" aria-label="%1$s">
 						%2$s
 					</button>
 					<div class="cb-header-action-expanded__items">
-						<div class="cb-header-action-expanded__duplicate cb-btn-duplicate-question"
+						<div class="cb-header-action-expanded__duplicate lp-button cb-btn-duplicate-question"
 							data-title="%3$s"
 							data-content="%4$s">
 							<span class="dashicons dashicons-admin-page"></span>
 							%5$s
 						</div>
-						<div class="cb-header-action-expanded__trash cb-btn-trash">
+						<div class="cb-header-action-expanded__trash lp-button cb-btn-trash">
 							<span class="dashicons dashicons-trash"></span>
 							%6$s
 						</div>

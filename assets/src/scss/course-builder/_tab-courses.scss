@@ -78,7 +78,7 @@
 		display: flex;
 		align-items: center;
 		border-radius: $cb-radius-lg;
-		padding: $cb-spacing-md $cb-spacing-sm;
+		padding: 5px 0px;
 		gap: $cb-spacing-sm;
 		margin-bottom: 0;
 		border: 1px solid $cb-border;
@@ -110,6 +110,14 @@
 		cursor: pointer;
 		border: none;
 		background: none;
+
+		&.loading {
+			pointer-events: none;
+
+			i {
+				display: none;
+			}
+		}
 	}
 
 	.cb-btn-back a {

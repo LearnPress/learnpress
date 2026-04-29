@@ -164,6 +164,20 @@ const initHeaderMoreActions = () => {
 	} );
 };
 
+// Add loading state to search buttons on form submit (page reload)
+document.addEventListener( 'submit', ( e ) => {
+	const form = e.target.closest( '.cb-search-form' );
+	if ( ! form ) {
+		return;
+	}
+
+	const searchBtn = form.querySelector( '.cb-search-btn' );
+	if ( searchBtn ) {
+		searchBtn.classList.add( 'loading' );
+		searchBtn.disabled = true;
+	}
+} );
+
 // Initialize components
 initBuilderComponents();
 

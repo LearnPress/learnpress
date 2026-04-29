@@ -28,13 +28,17 @@ $lesson-grid: 2fr 1.5fr 1fr 100px 80px 80px;
 			display: flex;
 			margin-left: $cb-spacing-md;
 			justify-content: flex-start;
+			border: none;
+			padding: 0;
+
 			&.loading,
 			&.lp-loading {
 				pointer-events: none;
 				opacity: 0.7;
+				margin-left: 19px;
 
 				a {
-					pointer-events: none;
+					display: none;
 				}
 			}
 
