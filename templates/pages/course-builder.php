@@ -59,7 +59,7 @@ defined( 'ABSPATH' ) || exit();
 				'mediaelement',
 				'wp-mediaelement',
 				'buttons',
-				'wp-admin',
+				//'wp-admin', // Comment it, it good for style media, but it makes wp-editor error (theme2021)
 			]
 		);
 		wp_print_media_templates();
