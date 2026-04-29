@@ -301,10 +301,17 @@ class PostModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function save( bool $force_save = false ) {
 		$data = get_object_vars( $this );
+
+		if ( ! empty( $this->meta_data ) ) {
+			$data['meta_input'] = [];
+			foreach ( $this->meta_data as $key_meta => $value_meta ) {
+				$data['meta_input'][ $key_meta ] = $value_meta;
+			}
+		}
 
 		// Check if exists course id.
 		if ( empty( $this->ID ) ) { // Insert data.
@@ -347,6 +354,20 @@ class PostModel {
 			$this->{$property} = $value;
 		}
 
+		$this->clean_caches();
+	}
+
+	/**
+	 * Delete row
+	 *
+	 * @throws Exception
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function delete() {
+		wp_delete_post( $this->get_id(), true );
+
+		// Clear cache
 		$this->clean_caches();
 	}
 

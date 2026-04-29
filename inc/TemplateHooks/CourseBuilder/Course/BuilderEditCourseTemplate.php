@@ -43,45 +43,58 @@ class BuilderEditCourseTemplate {
 	 * @throws Exception
 	 */
 	public function layout( array $data = [] ) {
-		// Check permission
-		$userModel = $data['userModel'] ?? false;
-		if ( ! $userModel || ! $userModel->is_instructor() ) {
-			throw new Exception( __( 'You do not have permission to create or edit courses', 'learnpress' ) );
-		}
-
-		$userCoursePostModel = new CoursePostModel();
-		if ( ! $userCoursePostModel->check_capabilities_create() ) {
-			throw new Exception( __( 'You do not have permission to create or edit courses', 'learnpress' ) );
-		}
-
-		$item_id = $data['item_id'] ?? '';
-		if ( empty( $item_id ) ) {
-			throw new Exception( __( 'Invalid course ID', 'learnpress' ) );
-		}
-
-		$is_create_new = $item_id === CourseBuilder::POST_NEW;
-		$courseModel   = false;
-
-		if ( ! $is_create_new ) {
-			$courseModel = CourseModel::find( (int) $item_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
+		try {
+			// Check permission
+			$userModel = $data['userModel'] ?? false;
+			if ( ! $userModel || ! $userModel->is_instructor() ) {
+				throw new Exception( __( 'You do not have permission to create or edit courses', 'learnpress' ) );
 			}
+
+			$userCoursePostModel = new CoursePostModel();
+			if ( ! $userCoursePostModel->check_capabilities_create() ) {
+				throw new Exception( __( 'You do not have permission to create or edit courses', 'learnpress' ) );
+			}
+
+			$item_id = $data['item_id'] ?? '';
+			if ( empty( $item_id ) ) {
+				throw new Exception( __( 'Invalid course ID', 'learnpress' ) );
+			}
+
+			$is_create_new = $item_id === CourseBuilder::POST_NEW;
+			$courseModel   = false;
+
+			if ( ! $is_create_new ) {
+				$courseModel = CourseModel::find( (int) $item_id, true );
+				if ( ! $courseModel ) {
+					throw new Exception( __( 'Course not found', 'learnpress' ) );
+				}
+
+				if ( $courseModel->get_status() === PostModel::STATUS_TRASH ) {
+					throw new Exception(
+						__(
+							'You cannot edit this item because it is in the Trash. Please restore it and try again.',
+							'learnpress'
+						)
+					);
+				}
+			}
+
+			$data['courseModel'] = $courseModel;
+
+			$section = [
+				'wrap'     => sprintf(
+					'<div class="lp-cb-content" data-post-id="%1$s">',
+					esc_attr( $item_id ),
+				),
+				'header'   => $this->html_header( $data ),
+				'tabs'     => $this->html_tabs( $data ),
+				'wrap_end' => '</div>',
+			];
+
+			echo Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), 'error' );
 		}
-
-		$data['courseModel'] = $courseModel;
-
-		$section = [
-			'wrap'     => sprintf(
-				'<div class="lp-cb-content" data-post-id="%1$s">',
-				esc_attr( $item_id ),
-			),
-			'header'   => $this->html_header( $data ),
-			'tabs'     => $this->html_tabs( $data ),
-			'wrap_end' => '</div>',
-		];
-
-		echo Template::combine_components( $section );
 	}
 
 	/**
@@ -180,7 +193,7 @@ class BuilderEditCourseTemplate {
 				</div>',
 				esc_attr__( 'More actions', 'learnpress' ),
 				$more_actions_icon,
-					esc_attr__( 'Are you sure?', 'learnpress' ),
+				esc_attr__( 'Are you sure?', 'learnpress' ),
 				esc_attr__( 'Are you sure you want to duplicate this course?', 'learnpress' ),
 				esc_html__( 'Duplicate', 'learnpress' ),
 				esc_html__( 'Move to Trash', 'learnpress' )
@@ -325,13 +338,14 @@ class BuilderEditCourseTemplate {
 
 		if ( $course_id === CourseBuilder::POST_NEW ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before add Section' ) );
+
 			return $message;
 		}
 
 		if ( absint( $course_id ) ) {
 			$course_model = CourseModel::find( $course_id, true );
 			if ( empty( $course_model ) ) {
-				return;
+				return '';
 			}
 		}
 
@@ -348,6 +362,7 @@ class BuilderEditCourseTemplate {
 
 		if ( $course_id === CourseBuilder::POST_NEW ) {
 			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before setting course' ) );
+
 			return $message;
 		}
 
@@ -623,7 +638,7 @@ class BuilderEditCourseTemplate {
 	 */
 	protected function can_show_overview_ai_button(): bool {
 		return \LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes'
-			&& ! empty( \LP_Settings::get_option( 'open_ai_secret_key', '' ) );
+				&& ! empty( \LP_Settings::get_option( 'open_ai_secret_key', '' ) );
 	}
 
 	/**
@@ -1125,8 +1140,8 @@ class BuilderEditCourseTemplate {
 		$html_curriculum = ob_get_clean();
 
 		return $html_curriculum
-			. $this->html_curriculum_popup_templates( $course_model )
-			. $this->html_curriculum_ai_templates();
+				. $this->html_curriculum_popup_templates( $course_model )
+				. $this->html_curriculum_ai_templates();
 	}
 
 	protected function html_curriculum_popup_templates( CourseModel $course_model ): string {
@@ -1191,16 +1206,16 @@ class BuilderEditCourseTemplate {
 	 * Add edit popup button for lesson and quiz items in Course Builder curriculum.
 	 * Replace the default edit button with popup button for lesson and quiz items.
 	 *
-	 * @since 4.3.0
-	 * @version 1.0.2
-	 *
 	 * @param array $section_action Array of action buttons.
 	 * @param object|null $item Item data.
 	 * @param PostModel|null $itemModel Item model.
-	 * @param CourseModel $courseModel.
+	 * @param CourseModel $courseModel .
 	 * @param array $context_data Context data passed from AJAX.
 	 *
 	 * @return array
+	 * @since 4.3.0
+	 * @version 1.0.2
+	 *
 	 */
 	public function add_edit_popup_button( array $section_action, $item, $itemModel, $courseModel, $context_data = [] ): array {
 		// Check if we are in Course Builder context via the flag passed in AJAX args
@@ -1288,7 +1303,7 @@ class BuilderEditCourseTemplate {
 	 * Convert final quiz edit link to Course Builder quiz settings URL.
 	 *
 	 * @param string $url
-	 * @param int    $final_quiz_id
+	 * @param int $final_quiz_id
 	 *
 	 * @return string
 	 */

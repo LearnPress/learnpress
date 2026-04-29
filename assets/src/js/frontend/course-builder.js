@@ -1,9 +1,10 @@
 /**
  * Course builder JS handler.
  *
- * @since 4.3.0
+ * @since 4.3.6
  * @version 1.0.0
  */
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import { BuilderTabCourse } from './course-builder/builder-course/builder-tab-course.js';
 import { BuilderEditCourse } from './course-builder/builder-course/builder-edit-course.js';
 import { CreateCourseViaAI } from '../admin/courses/generate-with-ai.js';
@@ -22,6 +23,7 @@ import { getFormState } from './course-builder/builder-form-state.js';
 import { EditCurriculumAi } from '../admin/edit-course/edit-curriculum/edit-curriculum-ai.js';
 import { initElsTomSelect } from 'lpAssetsJsPath/admin/init-tom-select.js';
 import { Utils } from 'lpAssetsJsPath/admin/utils-admin.js';
+import * as lpToastify from 'lpAssetsJsPath/lpToastify';
 
 // Initialize all builder components
 const initBuilderComponents = () => {
@@ -148,13 +150,73 @@ const initHeaderMoreActions = () => {
 			const willOpen = ! wrap.classList.contains( openClass );
 			closeAll( wrap );
 			wrap.classList.toggle( openClass, willOpen );
-			toggleBtn.setAttribute( 'aria-expanded', willOpen ? 'true' : 'false' );
+			toggleBtn.setAttribute(
+				'aria-expanded',
+				willOpen ? 'true' : 'false',
+			);
 			return;
 		}
 
 		if ( ! target.closest( wrapSelector ) ) {
 			closeAll();
 		}
+
+		// New expand item
+		const elActionExpands = document.querySelectorAll(
+			'.lp-cb-item-action-expand',
+		);
+		if ( target.closest( '.lp-cb-item-action-expand-toggle' ) ) {
+			const elParentAction = target.closest( '.lp-cb-item-action-wrap' );
+			const elActionExpand = elParentAction.querySelector(
+				'.lp-cb-item-action-expand',
+			);
+
+			elActionExpand.classList.toggle( lpUtils.lpClassName.hidden );
+
+			// Close all
+			elActionExpands.forEach( ( elActionExpandCheck ) => {
+				if ( elActionExpandCheck !== elActionExpand ) {
+					elActionExpandCheck.classList.add( lpUtils.lpClassName.hidden );
+				}
+			} );
+		}
+
+		if ( ! target.closest( '.lp-cb-item-action-expand-toggle' ) ) {
+			elActionExpands.forEach( ( elActionExpandCheck ) => {
+				elActionExpandCheck.classList.add(
+					lpUtils.lpClassName.hidden,
+				);
+			} );
+		}
+		// End new expand item
+
+		// Item action
+		if ( target.closest( '.lp-cb-item-action' ) ) {
+			const elAction = target.closest( '.lp-cb-item-action' );
+			const dataSend = JSON.parse( elAction.dataset.send );
+
+			// Ajax to generate prompt
+			const callBack = {
+				success: ( response ) => {
+					const { message, status, data } = response;
+
+					lpToastify.show( message, status );
+
+					if ( status === 'success' ) {
+
+					}
+				},
+				error: ( error ) => {
+					lpToastify.show( error, 'error' );
+				},
+				completed: () => {
+					lpUtils.lpSetLoadingEl( target, false );
+				},
+			};
+
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		}
+		// End item action
 	} );
 
 	document.addEventListener( 'keydown', ( e ) => {

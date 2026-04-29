@@ -14,11 +14,13 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\OpenAiService;
 use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseOfflineTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LP_Course_Filter;
 use Throwable;
 
@@ -276,8 +278,9 @@ class BuilderListCoursesTemplate {
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 
 		try {
-			$course_id = $courseModel->get_id();
-			$edit_link = CourseBuilder::get_link_course_builder( "courses/{$course_id}" );
+			$course_id     = $courseModel->get_id();
+			$course_status = $courseModel->get_status();
+			$edit_link     = CourseBuilder::get_link_course_builder( CourseBuilderTemplate::MENU_COURSES . "/{$course_id}" );
 
 			// Offline badge overlay
 			$offline_badge = '';
@@ -346,9 +349,8 @@ class BuilderListCoursesTemplate {
 				$html_meta_data = sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data );
 			}
 
-			$course_status = $courseModel->get_status();
-			$status_label  = 'future' === $course_status ? __( 'Scheduled', 'learnpress' ) : $course_status;
-			$html_status   = sprintf(
+			$status_label = 'future' === $course_status ? __( 'Scheduled', 'learnpress' ) : $course_status;
+			$html_status  = sprintf(
 				'<div class="course-status %1$s">
 					<span>%2$s</span>
 				</div>',
@@ -437,27 +439,55 @@ class BuilderListCoursesTemplate {
 
 			$more_actions_icon = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
 
+			// Set action by status
+			$action_by_status = [];
+			if ( $course_status === PostModel::STATUS_TRASH ) {
+				$action_by_status['restore'] = __( 'Restore', 'learnpress' );
+				$action_by_status['delete']  = __( 'Delete permanently', 'learnpress' );
+			} else {
+				$action_by_status['duplicate']                 = __( 'Duplicate', 'learnpress' );
+				$action_by_status[ PostModel::STATUS_PUBLISH ] = __( 'Publish', 'learnpress' );
+				$action_by_status[ PostModel::STATUS_PENDING ] = __( 'Pending Review', 'learnpress' );
+				$action_by_status[ PostModel::STATUS_DRAFT ]   = __( 'Draft', 'learnpress' );
+				$action_by_status[ PostModel::STATUS_TRASH ]   = __( 'Trash', 'learnpress' );
+			}
+			// Unset current status on action
+			unset( $action_by_status[ $course_status ] );
+
+			$html_action_by_status = '';
+
+			$data_send_action = [
+				'id_url'    => 'cb-quick-edit-action',
+				'action'    => 'cb_quick_edit_save_course',
+				'course_id' => $courseModel->get_id(),
+			];
+
+			foreach ( $action_by_status as $action_status => $action_label ) {
+				$html_action_by_status .= sprintf(
+					'<span class="lp-cb-item-action %s" data-send="%s">%s</span>',
+					$action_status,
+					Template::convert_data_to_json( $data_send_action + [ 'action_type' => $action_status ] ),
+					$action_label
+				);
+			}
+
 			$html_action = apply_filters(
 				'learn-press/course-builder/list-courses/item/action',
 				[
-					'wrapper'                     => '<div class="course-action">',
-					'edit'                        => sprintf(
+					'wrapper'                => '<div class="lp-cb-item-action-wrap">',
+					'edit'                   => $course_status !== PostModel::STATUS_TRASH ? sprintf(
 						'<div class="course-action-editor"><a class="btn-edit-course course-edit-permalink" href="%s">%s</a></div>',
 						$edit_link,
 						__( 'Edit', 'learnpress' )
-					),
-					'action_expanded_button'      => sprintf(
-						'<div class="course-action-expanded">%s</div>',
+					) : '',
+					'action_expanded_button' => sprintf(
+						'<div class="lp-cb-item-action-expand-toggle lp-button">%s</div>',
 						$more_actions_icon
 					),
-					'action_expanded_wrapper'     => '<div style="display:none;" class="course-action-expanded__items">',
-					'action_expanded_view'        => sprintf( '<a class="course-action-expanded__view" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_url_raw( $courseModel->get_permalink() ), __( 'View', 'learnpress' ) ),
-					'action_expanded_duplicate'   => sprintf( '<span class="course-action-expanded__duplicate">%s</span>', __( 'Duplicate', 'learnpress' ) ),
-					'action_expanded_restore'     => sprintf( '<span class="course-action-expanded__draft">%s</span>', __( 'Draft', 'learnpress' ) ),
-					'action_expanded_trash'       => sprintf( '<span class="course-action-expanded__trash">%s</span>', __( 'Trash', 'learnpress' ) ),
-					'action_expanded_delete'      => sprintf( '<span class="course-action-expanded__delete" data-title="%s" data-content="%s">%s</span>', __( 'Are you sure?', 'learnpress' ), __( 'Are you sure you want to delete this course? This action cannot be undone.', 'learnpress' ), __( 'Delete', 'learnpress' ) ),
-					'action_expanded_wrapper_end' => '</div>',
-					'wrapper_end'                 => '</div>',
+					'action_wrap'            => '<div class="lp-cb-item-action-expand lp-hidden">',
+					'action'                 => $html_action_by_status,
+					'action_wrap_end'        => '</div>',
+					'wrapper_end'            => '</div>',
 				],
 				$courseModel,
 				$settings
