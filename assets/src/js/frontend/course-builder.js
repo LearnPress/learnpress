@@ -215,6 +215,9 @@ const initHeaderMoreActions = () => {
 					if ( status === 'success' ) {
 						if ( data.redirect_url ) {
 							window.location.href = data.redirect_url;
+						} else if ( data.html ) {
+							const elParentLi = elAction.closest( 'li.course' );
+							elParentLi.outerHTML = data.html;
 						}
 					}
 				},
