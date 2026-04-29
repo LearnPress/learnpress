@@ -23,6 +23,7 @@ use LearnPress\Models\QuizPostModel;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderListLessonsTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderListQuestionsTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderQuestionTemplate;
@@ -1600,10 +1601,15 @@ class CourseBuilderAjax extends AbstractAjax {
 				$saved_quiz_status = $target_status;
 			}
 
+			if ( $insert ) {
+				$response->data->redirect_url = CourseBuilder::get_link_course_builder(
+					CourseBuilderTemplate::MENU_QUIZZES . "/{$quiz_id}"
+				);
+			}
+
 			$response->status             = 'success';
 			$response->data->status       = $saved_quiz_status;
 			$response->data->button_title = $saved_quiz_status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
-			$response->data->quiz_id_new  = $insert ? $quiz_id : '';
 			$response->message            = $target_status === 'draft'
 				? esc_html__( 'Quiz saved as draft', 'learnpress' )
 				: ( $insert ? esc_html__( 'Insert quiz successfully', 'learnpress' ) : esc_html__( 'Update quiz successfully', 'learnpress' ) );
@@ -1958,11 +1964,17 @@ class CourseBuilderAjax extends AbstractAjax {
 				$saved_question_status = $target_status;
 			}
 
-			$response->status                = 'success';
-			$response->data->status          = $saved_question_status;
-			$response->data->button_title    = $saved_question_status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
-			$response->data->question_id_new = $insert ? $question_id : '';
-			$response->message               = $target_status === 'draft'
+			if ( $insert ) {
+				$response->data->redirect_url = CourseBuilder::get_link_course_builder(
+					CourseBuilderTemplate::MENU_QUESTIONS . "/{$question_id}"
+				);
+			}
+
+			$response->status             = 'success';
+			$response->data->status       = $saved_question_status;
+			$response->data->button_title = $saved_question_status === 'publish' ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
+
+			$response->message = $target_status === 'draft'
 				? esc_html__( 'Question saved as draft', 'learnpress' )
 				: ( $insert ? esc_html__( 'Insert question successfully', 'learnpress' ) : esc_html__( 'Update question successfully', 'learnpress' ) );
 
