@@ -251,6 +251,9 @@ class CBEditCourseAjax extends AbstractAjax {
 				case 'restore':
 					$coursePostModel->post_status = PostModel::STATUS_DRAFT;
 					$coursePostModel->save();
+					$response->message = __( 'Restore course successfully!', 'learnpress' );
+					$courseModel = CourseModel::find( $coursePostModel->get_id(), true );
+					$response->data->html = BuilderListCoursesTemplate::render_course( $courseModel );
 					break;
 				case 'delete':
 					if ( $courseModel->get_status() !== PostModel::STATUS_TRASH ) {

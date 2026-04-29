@@ -218,6 +218,9 @@ const initHeaderMoreActions = () => {
 						} else if ( data.html ) {
 							const elParentLi = elAction.closest( 'li.course' );
 							elParentLi.outerHTML = data.html;
+						} else if ( dataSend.action_type === 'delete' ) {
+							const elParentLi = elAction.closest( 'li.course' );
+							elParentLi.remove();
 						}
 					}
 				},
