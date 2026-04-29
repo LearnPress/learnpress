@@ -110,7 +110,12 @@ class BuilderEditCourseTemplate {
 	 * @return string
 	 */
 	public function html_header( array $data = [] ): string {
-		$userModel            = $data['userModel'] ?? false;
+		$userModel = $data['userModel'] ?? false;
+		if ( ! $userModel ) {
+			return '';
+		}
+
+		/** @var CourseModel|false $courseModel */
 		$courseModel          = $data['courseModel'] ?? false;
 		$enable_wp_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
 		$more_actions_icon    = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
@@ -287,26 +292,20 @@ class BuilderEditCourseTemplate {
 
 	public function html_tab_overview( array $data = [] ) {
 		wp_enqueue_script( 'lp-course-builder' );
-		$course_id = CourseBuilder::get_item_id();
 
-		if ( $course_id === CourseBuilder::POST_NEW ) {
-			$course_model = '';
+		$courseMoel = $data['courseModel'] ?? null;
+		$course_id  = 0;
+		if ( $courseMoel instanceof CourseModel ) {
+			$course_id = $courseMoel->get_id();
 		}
 
-		if ( absint( $course_id ) ) {
-			$course_model = CourseModel::find( $course_id, true );
-			if ( empty( $course_model ) ) {
-				return;
-			}
-		}
-
-		$html_edit_title     = $this->edit_title( $course_model );
-		$html_edit_permalink = $this->edit_permalink( $course_model );
-		$html_edit_features  = $this->edit_featured_image( $course_model );
-		$html_edit_publish   = $this->edit_publish( $course_model );
-		$html_edit_desc      = $this->edit_desc( $course_model );
-		$html_edit_cat       = $this->edit_categories( $course_model );
-		$html_edit_tags      = $this->edit_tags( $course_model );
+		$html_edit_title     = $this->edit_title( $courseMoel );
+		$html_edit_permalink = $this->edit_permalink( $courseMoel );
+		$html_edit_features  = $this->edit_featured_image( $courseMoel );
+		$html_edit_publish   = $this->edit_publish( $courseMoel );
+		$html_edit_desc      = $this->edit_desc( $courseMoel );
+		$html_edit_cat       = $this->edit_categories( $courseMoel );
+		$html_edit_tags      = $this->edit_tags( $courseMoel );
 
 		$section = [
 			'wrapper'                => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
@@ -334,7 +333,14 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $section );
 	}
 
-	public function html_tab_curriculum( array $data = [] ) {
+	/**
+	 * HTML Curriculum
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function html_tab_curriculum( array $data = [] ): string {
 		wp_enqueue_script( 'lp-cb-edit-curriculum' );
 		wp_enqueue_style( 'lp-cb-edit-curriculum' );
 		wp_enqueue_script( 'lp-cb-admin-learnpress' );
@@ -342,19 +348,15 @@ class BuilderEditCourseTemplate {
 		$course_id = CourseBuilder::get_item_id();
 
 		if ( $course_id === CourseBuilder::POST_NEW ) {
-			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before add Section' ) );
-
-			return $message;
+			return Template::print_message( __( 'Please save Course before add Section', 'learnpress' ), 'info', false );
 		}
 
-		if ( absint( $course_id ) ) {
-			$course_model = CourseModel::find( $course_id, true );
-			if ( empty( $course_model ) ) {
-				return '';
-			}
+		$courseModel = $data['courseModel'] ?? null;
+		if ( ! $courseModel instanceof CourseModel ) {
+			return Template::print_message( __( 'Course is invalid!', 'learnpress' ), 'error', false );
 		}
 
-		return $this->html_curriculum( $course_model );
+		return $this->html_curriculum( $courseModel );
 	}
 
 	public function html_tab_settings( array $data = [] ) {
@@ -366,16 +368,12 @@ class BuilderEditCourseTemplate {
 		$course_id = CourseBuilder::get_item_id();
 
 		if ( $course_id === CourseBuilder::POST_NEW ) {
-			$message = sprintf( '<span class="lp-message lp-message--info">%s</span>', __( 'Please save Course before setting course' ) );
-
-			return $message;
+			return Template::print_message( __( 'Please save Course before setting course', 'learnpress' ), 'info', false );
 		}
 
-		if ( absint( $course_id ) ) {
-			$course_model = CourseModel::find( $course_id, true );
-			if ( empty( $course_model ) ) {
-				return;
-			}
+		$courseModel = $data['courseModel'] ?? null;
+		if ( ! $courseModel instanceof CourseModel ) {
+			return Template::print_message( __( 'Course is invalid!', 'learnpress' ), 'error', false );
 		}
 
 		if ( ! class_exists( 'LP_Meta_Box_Course' ) ) {
@@ -395,7 +393,7 @@ class BuilderEditCourseTemplate {
 
 		$metabox = \LP_Meta_Box_Course::instance();
 		ob_start();
-		$metabox->output( $course_model );
+		$metabox->output( $courseModel );
 		$settings = ob_get_clean();
 
 		remove_filter( 'learnpress/course/metabox/tabs', [ $this, 'filter_course_builder_settings_tabs' ], 999 );

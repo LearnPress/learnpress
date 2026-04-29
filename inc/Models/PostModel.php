@@ -605,7 +605,9 @@ class PostModel {
 	public function get_status_i18n(): string {
 		switch ( $this->post_status ) {
 			case self::STATUS_PUBLISH:
-				return __( 'Publish', 'learnpress' );
+				return __( 'Published', 'learnpress' );
+			case self::STATUS_FEATURE:
+				return __( 'Scheduled', 'learnpress' );
 			case self::STATUS_TRASH:
 				return __( 'Trash', 'learnpress' );
 			case self::STATUS_DRAFT:
@@ -614,10 +616,11 @@ class PostModel {
 				return __( 'Private', 'learnpress' );
 			case self::STATUS_PENDING:
 				return __( 'Pending', 'learnpress' );
-			case self::VISIBILITY_PASSWORD:
-				return __( 'Protected', 'learnpress' );
 			case self::STATUS_AUTO_DRAFT:
 				return __( 'Auto Draft', 'learnpress' );
+			case self::VISIBILITY_PASSWORD:
+				return __( 'Protected', 'learnpress' );
+
 			default:
 				return ucfirst( $this->post_status );
 		}
