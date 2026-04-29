@@ -17,6 +17,7 @@ export class BuilderEditCourse {
 	}
 
 	static selectors = {
+		elCBContent: '.lp-cb-content',
 		elTabLinks: '.lp-meta-box__course-tab__tabs li a',
 		elTabItems: '.lp-meta-box__course-tab__tabs li',
 		elTabPanels: '.lp-meta-box-course-panels',
@@ -1503,7 +1504,7 @@ export class BuilderEditCourse {
 		};
 
 		this.isSavingCourse = true;
-		setActionLoadingState( true );
+		setActionLoadingState(true);
 		const courseData = this.getCourseDataForUpdate();
 		const dataSend = {
 			...courseData,
@@ -1549,61 +1550,18 @@ export class BuilderEditCourse {
 					this.updateHeaderTitle( courseData.course_title );
 					// Dispatch event to reset form state (remove unsaved changes warning)
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
-				}
 
-				const statusForUI = this.resolveStatusForUIAfterSave( data?.status, targetStatus );
-
-				// Update action buttons based on new status
-				if ( statusForUI ) {
-					this.syncPublishPanelStatus( statusForUI, data?.visibility || '' );
-					this.updateActionButtons( statusForUI );
-					// Update status badge
-					const elStatus = document.querySelector( BuilderEditCourse.selectors.elStatus );
-					if ( elStatus ) {
-						elStatus.className = 'course-status ' + statusForUI;
-						elStatus.textContent = this.formatStatusLabel( statusForUI );
+					if ( data?.html ) {
+						const elContent = elBtnMainAction.closest( BuilderEditCourse.selectors.elCBContent );
+						if ( elContent ) {
+							elContent.outerHTML = data.html;
+						}
 					}
-					// Toggle preview/admin link visibility for trash status
-					this.toggleTrashElements( statusForUI );
 				}
+
 				// Use redirect_url from backend if available (for new courses)
 				if ( data?.redirect_url ) {
 					window.location.href = data.redirect_url;
-				} else if ( data?.course_id_new ) {
-					// Fallback: build redirect URL manually
-					const currentUrl = window.location.href;
-					const newUrl = currentUrl.replace(
-						/\/post-new\/?(\\?.*)?$/,
-						`/${ data.course_id_new }/overview/`
-					);
-					if ( newUrl !== currentUrl ) {
-						window.location.href = newUrl;
-					}
-				}
-				// Update permalink display with actual saved slug (handles duplicate slug resolution)
-				if ( data?.course_slug ) {
-					const slugInput = document.querySelector(
-						BuilderEditCourse.selectors.elPermalinkSlugInput
-					);
-					const urlLink = document.querySelector( BuilderEditCourse.selectors.elPermalinkUrl );
-					const baseUrlInput = document.querySelector(
-						BuilderEditCourse.selectors.elPermalinkBaseUrl
-					);
-					const permalinkDisplayUrl = this.buildPermalinkDisplayUrl(
-						baseUrlInput ? baseUrlInput.value : '',
-						data?.course_slug,
-						data?.course_permalink
-					);
-					if ( slugInput ) {
-						slugInput.value = data.course_slug;
-						slugInput.dataset.originalValue = data.course_slug;
-					}
-					if ( urlLink && data?.course_permalink ) {
-						urlLink.href = data.course_permalink;
-						urlLink.textContent = permalinkDisplayUrl || data.course_permalink;
-					} else if ( urlLink && permalinkDisplayUrl ) {
-						urlLink.textContent = permalinkDisplayUrl;
-					}
 				}
 			},
 			error: ( error ) => {

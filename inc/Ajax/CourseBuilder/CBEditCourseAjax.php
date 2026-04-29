@@ -16,6 +16,7 @@ use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LP_Course_CURD;
@@ -129,9 +130,26 @@ class CBEditCourseAjax extends AbstractAjax {
 
 			// Handle date
 			if ( ! empty( $course_post_date ) ) {
-				$lp_date                    = new LP_Datetime( $course_post_date );
+				// Time by local
+				$lp_date               = new LP_Datetime( $course_post_date );
+				$lp_date_timestamp     = $lp_date->getTimestamp();
+				$lp_date_now           = new LP_Datetime( current_time( 'mysql', 1 ) );
+				$lp_date_now_timestamp = $lp_date_now->getTimestamp();
+
+				// Check with time now and status
+				if ( $lp_date_timestamp > $lp_date_now_timestamp && $course_status === PostModel::STATUS_PUBLISH ) {
+					$data_save['post_status'] = PostModel::STATUS_FEATURE;
+				} elseif ( $lp_date_timestamp <= $lp_date_now_timestamp && $course_status === PostModel::STATUS_FEATURE ) {
+					$data_save['post_status'] = PostModel::STATUS_PUBLISH;
+				}
+
 				$data_save['post_date']     = $lp_date->format( LP_DateTime::$format );
 				$data_save['post_date_gmt'] = $lp_date->to_gmt_string( $lp_date );
+			}
+
+			// Check visibility
+			if ( $course_visibility === PostModel::STATUS_PRIVATE ) {
+				$data_save['post_status'] = PostModel::STATUS_PRIVATE;
 			}
 
 			if ( ! $is_edit ) {
@@ -151,6 +169,9 @@ class CBEditCourseAjax extends AbstractAjax {
 				if ( ! empty( $course_permalink ) ) {
 					$courseModel->post_name = $course_permalink;
 				}
+
+				$coursePostModelNew = new CoursePostModel( $courseModel );
+				$coursePostModelNew->save();
 
 				$course_id = $courseModel->ID;
 			}
@@ -183,12 +204,19 @@ class CBEditCourseAjax extends AbstractAjax {
 				}
 			}
 
-			$response->status                  = 'success';
-			$response->message                 = ! $is_edit ?
+			ob_start();
+			$data_edit_course_html = [
+				'userModel' => $userModel,
+				'item_id'   => $course_id,
+			];
+			BuilderEditCourseTemplate::instance()->layout( $data_edit_course_html );
+			$html_edit_course = ob_get_clean();
+
+			$response->status     = 'success';
+			$response->message    = ! $is_edit ?
 				__( 'Create course successfully!', 'learnpress' ) :
 				__( 'Update course successfully!', 'learnpress' );
-			$response->data->course            = $courseModel;
-			$response->data->course->permalink = $courseModel->get_permalink();
+			$response->data->html = $html_edit_course;
 
 			// Return redirect detail if new course
 			if ( ! $is_edit && $course_id ) {
@@ -244,15 +272,15 @@ class CBEditCourseAjax extends AbstractAjax {
 				case PostModel::STATUS_DRAFT:
 					$coursePostModel->post_status = $action_type;
 					$coursePostModel->save();
-					$courseModel = CourseModel::find( $coursePostModel->get_id(), true );
-					$response->message = __( 'Update course status successfully!', 'learnpress' );
+					$courseModel          = CourseModel::find( $coursePostModel->get_id(), true );
+					$response->message    = __( 'Update course status successfully!', 'learnpress' );
 					$response->data->html = BuilderListCoursesTemplate::render_course( $courseModel );
 					break;
 				case 'restore':
 					$coursePostModel->post_status = PostModel::STATUS_DRAFT;
 					$coursePostModel->save();
-					$response->message = __( 'Restore course successfully!', 'learnpress' );
-					$courseModel = CourseModel::find( $coursePostModel->get_id(), true );
+					$courseModel          = CourseModel::find( $coursePostModel->get_id(), true );
+					$response->message    = __( 'Restore course successfully!', 'learnpress' );
 					$response->data->html = BuilderListCoursesTemplate::render_course( $courseModel );
 					break;
 				case 'delete':
