@@ -11,6 +11,7 @@ namespace LearnPress\TemplateHooks\CourseBuilder\Question;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
@@ -306,12 +307,12 @@ class BuilderListQuestionsTemplate {
 				'learn-press/course-builder/list-questions/item/action',
 				[
 					'wrapper'                     => '<div class="question-action">',
-					'edit'                        => sprintf(
+					'edit'                        => $status !== PostModel::STATUS_TRASH ? sprintf(
 						'<div class="question-action-editor"><a class="lp-button btn-edit-question question-edit-permalink" href="%s">%s %s</a></div>',
 						esc_url( $edit_link ),
 						$edit_icon,
 						__( 'Edit', 'learnpress' )
-					),
+					) : '',
 					'action_expanded_button'      => sprintf(
 						'<button type="button" class="lp-button question-action-expanded">%s</button>',
 						$more_actions_icon

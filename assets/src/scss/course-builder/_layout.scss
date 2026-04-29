@@ -996,7 +996,7 @@ html:has( #wpadminbar ) {
 		}
 	}
 
-	.cb-btn-update {
+	.lp-cb-header .lp-cb-header__actions .cb-btn-update {
 		background: $cb-primary;
 		color: #fff;
 
@@ -1007,6 +1007,7 @@ html:has( #wpadminbar ) {
 		&.cb-btn-primary {
 			background: $cb-primary;
 			color: #fff;
+			border-radius: 12px;
 
 			&:hover {
 				background: $cb-primary-hover;
@@ -1014,13 +1015,8 @@ html:has( #wpadminbar ) {
 		}
 	}
 
-	.cb-btn-preview {
-		border: 1px solid #e5e7eb;
-		color: $cb-text;
-		text-decoration: none;
-		display: inline-flex;
-		align-items: center;
-		background: #fff;
+	.lp-cb-header .lp-cb-header__actions .cb-btn-preview {
+		border-radius: 12px;
 
 		&:hover {
 			border-color: $cb-primary;
@@ -1082,6 +1078,7 @@ html:has( #wpadminbar ) {
 			height: 40px;
 			width: 40px;
 			justify-content: center;
+			border-radius: 12px;
 
 			&:hover {
 				background: $cb-bg-hover;
@@ -1127,12 +1124,12 @@ html:has( #wpadminbar ) {
 			transition: all 0.2s ease;
 		}
 
-			&.is-open .cb-header-action-expanded__items {
-				opacity: 1;
-				visibility: visible;
-				transform: translateY( 0 );
-				pointer-events: auto;
-			}
+		&.is-open .cb-header-action-expanded__items {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY( 0 );
+			pointer-events: auto;
+		}
 
 		.lp-button.cb-header-action-expanded__trash {
 			gap: 10px;

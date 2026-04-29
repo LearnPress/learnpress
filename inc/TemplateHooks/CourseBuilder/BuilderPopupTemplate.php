@@ -15,6 +15,7 @@ use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderEditLessonTemplate;
@@ -100,21 +101,33 @@ class BuilderPopupTemplate {
 
 		// Trash button - only show if item exists (post_id > 0)
 		$btn_trash = '';
-		if ( $post_id > 0 ) {
-			$btn_trash = sprintf(
-				'<button type="button" class="cb-button lp-button cb-btn-trash__%s lp-builder-popup__btn lp-builder-popup__btn--trash">%s</button>',
-				$type,
-				__( 'Move to trash', 'learnpress' )
-			);
-		}
-
 		// Save Draft button
-		$btn_draft = sprintf(
-			'<button type="button" class="cb-button lp-button cb-button--secondary cb-btn-draft__%s lp-builder-popup__btn lp-builder-popup__btn--draft" data-confirm-unpublish="%s">%s</button>',
-			$type,
-			esc_attr__( 'Saving as draft will unpublish this item from the course. Are you sure?', 'learnpress' ),
-			__( 'Save Draft', 'learnpress' )
-		);
+		$btn_draft = '';
+		$btn_save  = '';
+		if ( $status !== 'trash' ) {
+			$btn_draft = sprintf(
+				'<button type="button" class="cb-button lp-button cb-button--secondary cb-btn-draft__%s lp-builder-popup__btn lp-builder-popup__btn--draft" data-confirm-unpublish="%s">%s</button>',
+				$type,
+				esc_attr__( 'Saving as draft will unpublish this item from the course. Are you sure?', 'learnpress' ),
+				__( 'Save Draft', 'learnpress' )
+			);
+
+			$btn_save = sprintf(
+				'<button type="button" class="cb-button lp-button cb-btn-update__%s lp-builder-popup__btn lp-builder-popup__btn--save" data-title-update="%s" data-title-publish="%s">%s</button>',
+				$type,
+				__( 'Update', 'learnpress' ),
+				__( 'Publish', 'learnpress' ),
+				$btn_save_text
+			);
+
+			if ( $post_id > 0 ) {
+				$btn_trash = sprintf(
+					'<button type="button" class="cb-button lp-button cb-btn-trash__%s lp-builder-popup__btn lp-builder-popup__btn--trash">%s</button>',
+					$type,
+					__( 'Move to trash', 'learnpress' )
+				);
+			}
+		}
 
 		return [
 			'body_end'         => '</div>',
@@ -128,13 +141,7 @@ class BuilderPopupTemplate {
 				__( 'Cancel', 'learnpress' )
 			),
 			'btn_draft'        => $btn_draft,
-			'btn_save'         => sprintf(
-				'<button type="button" class="cb-button lp-button cb-btn-update__%s lp-builder-popup__btn lp-builder-popup__btn--save" data-title-update="%s" data-title-publish="%s">%s</button>',
-				$type,
-				__( 'Update', 'learnpress' ),
-				__( 'Publish', 'learnpress' ),
-				$btn_save_text
-			),
+			'btn_save'         => $btn_save,
 			'footer_right_end' => '</div>',
 			'footer_end'       => '</div>',
 			'wrapper_end'      => '</div>',
@@ -170,12 +177,21 @@ class BuilderPopupTemplate {
 	/**
 	 * Build lesson content
 	 */
-	private function build_lesson_content( int $lesson_id, $lesson_model = false ): string {
+	private function build_lesson_content( int $lesson_id, $lesson_model ): string {
+		if ( $lesson_model && $lesson_model->post_status === PostModel::STATUS_TRASH ) {
+			$message = __(
+				'You cannot edit this item because it is in the Trash. Please restore it and try again.',
+				'learnpress'
+			);
+
+			return Template::print_message( $message, 'error', false );
+		}
+
 		$template          = BuilderEditLessonTemplate::instance();
 		$lesson_context_id = $lesson_id > 0 ? $lesson_id : CourseBuilder::POST_NEW;
 		$lesson_data       = [
 			'item_id'     => $lesson_context_id,
-			'lessonModel' => $lesson_model,
+			'lessonModel' => $lesson_model ?? false,
 		];
 		$overview_html     = $template->html_tab_overview( $lesson_data );
 		$settings_html     = $template->html_tab_settings( $lesson_data );
@@ -225,7 +241,7 @@ class BuilderPopupTemplate {
 	private function build_quiz_content( int $quiz_id, $quiz_model = false ): string {
 		$template        = BuilderEditQuizTemplate::instance();
 		$quiz_context_id = $quiz_id > 0 ? $quiz_id : CourseBuilder::POST_NEW;
-		$quiz_data        = [
+		$quiz_data       = [
 			'item_id'   => $quiz_context_id,
 			'quizModel' => $quiz_model,
 		];

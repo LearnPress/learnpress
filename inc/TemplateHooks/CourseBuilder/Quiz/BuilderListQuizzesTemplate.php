@@ -12,6 +12,7 @@ use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
@@ -303,12 +304,12 @@ class BuilderListQuizzesTemplate {
 				'learn-press/course-builder/list-quizzes/item/action',
 				[
 					'wrapper'                     => '<div class="quiz-action">',
-					'edit'                        => sprintf(
+					'edit'                        => $status !== PostModel::STATUS_TRASH ? sprintf(
 						'<div class="quiz-action-editor"><a class="lp-button btn-edit-quiz quiz-edit-permalink" href="%s">%s %s</a></div>',
 						esc_url( $edit_link ),
 						$edit_icon,
 						__( 'Edit', 'learnpress' )
-					),
+					) : '',
 					'action_expanded_button'      => sprintf(
 						'<button type="button" class="lp-button quiz-action-expanded">%s</button>',
 						$more_actions_icon

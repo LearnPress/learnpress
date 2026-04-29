@@ -23,7 +23,6 @@ class BuilderEditLessonTemplate {
 
 	public function init() {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
-		add_action( 'learn-press/course-builder/lessons/edit/layout', [ $this, 'layout' ] );
 	}
 
 	/**

@@ -12,6 +12,7 @@ use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
@@ -317,12 +318,12 @@ class BuilderListLessonsTemplate {
 				'learn-press/course-builder/list-lessons/item/action',
 				[
 					'wrapper'                     => '<div class="lesson-action">',
-					'edit'                        => sprintf(
+					'edit'                        => $status !== PostModel::STATUS_TRASH ? sprintf(
 						'<div class="lesson-action-editor"><button class="lp-button btn-edit-lesson lesson-edit-permalink" data-popup-lesson="%1$s" data-popup-type="lesson" data-popup-id="%1$s" data-template="#lp-tmpl-builder-popup-lesson-list">%2$s %3$s</button></div>',
 						$lesson['id'],
 						$edit_icon,
 						__( 'Edit', 'learnpress' )
-					),
+					) : '',
 					'action_expanded_button'      => sprintf(
 						'<button type="button" class="lp-button lesson-action-expanded">%s</button>',
 						$more_actions_icon

@@ -14,19 +14,20 @@ use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Settings;
+use Throwable;
 
 class BuilderEditQuizTemplate {
 	use Singleton;
 
 	public function init() {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
-		add_action( 'learn-press/course-builder/quizzes/edit/layout', [ $this, 'layout' ] );
 	}
 
 	/**
@@ -37,43 +38,57 @@ class BuilderEditQuizTemplate {
 	 * @throws Exception
 	 */
 	public function layout( array $data = [] ) {
-		$userModel = $data['userModel'] ?? false;
-		if ( ! $userModel || ! $userModel->is_instructor() ) {
-			throw new Exception( __( 'You do not have permission to create or edit quizzes', 'learnpress' ) );
-		}
-
-		$item_id = $data['item_id'] ?? '';
-		if ( empty( $item_id ) ) {
-			throw new Exception( __( 'Invalid quiz ID', 'learnpress' ) );
-		}
-
-		if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'quizzes', $item_id ) ) {
-			throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
-		}
-
-		$is_create_new = $item_id === CourseBuilder::POST_NEW;
-		$quizModel     = false;
-
-		if ( ! $is_create_new ) {
-			$quizModel = QuizPostModel::find( (int) $item_id, true );
-			if ( ! $quizModel ) {
-				throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+		try {
+			$userModel = $data['userModel'] ?? false;
+			if ( ! $userModel || ! $userModel->is_instructor() ) {
+				throw new Exception( __( 'You do not have permission to create or edit quizzes', 'learnpress' ) );
 			}
+
+			$item_id = $data['item_id'] ?? '';
+			if ( empty( $item_id ) ) {
+				throw new Exception( __( 'Invalid quiz ID', 'learnpress' ) );
+			}
+
+			if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'quizzes', $item_id ) ) {
+				throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
+			}
+
+			$is_create_new = $item_id === CourseBuilder::POST_NEW;
+			$quizModel     = false;
+
+			if ( ! $is_create_new ) {
+				$quizModel = QuizPostModel::find( (int) $item_id, true );
+				if ( ! $quizModel ) {
+					throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+				}
+
+				if ( $quizModel->post_status === PostModel::STATUS_TRASH ) {
+					throw new Exception(
+						__(
+							'You cannot edit this item because it is in the Trash. Please restore it and try again.',
+							'learnpress'
+						)
+					);
+				}
+			}
+
+			$data['quizModel'] = $quizModel;
+
+			$section = [
+				'wrap'     => sprintf(
+					'<div class="lp-cb-content" data-post-id="%1$s">',
+					esc_attr( $item_id )
+				),
+				'header'   => $this->html_header( $data ),
+				'tabs'     => $this->html_tabs( $data ),
+				'wrap_end' => '</div>',
+			];
+
+			echo Template::combine_components( $section );
+
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), 'error' );
 		}
-
-		$data['quizModel'] = $quizModel;
-
-		$section = [
-			'wrap'     => sprintf(
-				'<div class="lp-cb-content" data-post-id="%1$s">',
-				esc_attr( $item_id )
-			),
-			'header'   => $this->html_header( $data ),
-			'tabs'     => $this->html_tabs( $data ),
-			'wrap_end' => '</div>',
-		];
-
-		echo Template::combine_components( $section );
 	}
 
 	public function html_header( array $data = [] ): string {

@@ -19,19 +19,17 @@ class BuilderQuizTemplate {
 	}
 
 	public function layout( array $data = [] ) {
+		// Check to switch layout.
 		$item_id         = CourseBuilder::get_item_id();
 		$data['item_id'] = $item_id;
 
 		if ( ! empty( $item_id ) ) {
-			do_action(
-				'learn-press/course-builder/quizzes/edit/layout',
-				$data
-			);
-
-			return;
+			// Show edit quiz
+			BuilderEditQuizTemplate::instance()->layout( $data );
+		} else {
+			// Show list quizzes
+			BuilderListQuizzesTemplate::instance()->layout( $data );
 		}
-
-		BuilderListQuizzesTemplate::instance()->layout( $data );
 	}
 
 	public function get_link_edit( $quiz_id = 0 ) {
