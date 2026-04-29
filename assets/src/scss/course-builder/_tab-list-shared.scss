@@ -8,7 +8,7 @@
 // Quizzes:   Title | Assigned | Duration | Create Date | Status | Actions
 // Questions: Title | Assigned | Create Date | Status | Preview | Actions
 
-@mixin tab-list-styles($type) {
+@mixin tab-list-styles( $type ) {
 	#lp-course-builder {
 		// Table container (on the ul)
 		.cb-list-#{$type} {
@@ -87,8 +87,6 @@
 			box-shadow: $cb-shadow-highlight;
 		}
 
-
-
 		// ===========================================
 		// Column cells — title
 		// ===========================================
@@ -149,7 +147,7 @@
 		.#{$type}-action {
 			display: flex;
 			align-items: center;
-			justify-content: center;
+			justify-content: flex-end;
 			gap: $cb-spacing-sm;
 			position: relative;
 		}
@@ -261,11 +259,11 @@
 }
 
 // Mixin for action-dropdown items (duplicate/publish/trash/delete)
-@mixin tab-action-items($type) {
+@mixin tab-action-items( $type ) {
 	display: none;
 	position: absolute;
 	min-width: 160px;
-	top: calc(100% + 4px);
+	top: calc( 100% + 4px );
 	right: 0;
 	transform: none;
 	padding: 10px;
@@ -283,35 +281,35 @@
 
 	&.is-dropup {
 		top: auto;
-		bottom: calc(100% + 4px);
+		bottom: calc( 100% + 4px );
 	}
 
-		.#{$type}-action-expanded__duplicate,
-		.#{$type}-action-expanded__publish,
-		.#{$type}-action-expanded__trash,
-		.#{$type}-action-expanded__restore,
-		.#{$type}-action-expanded__delete  {
-			padding: 10px;
-			cursor: pointer;
-			text-decoration: none;
-			border-radius: $cb-radius;
-			color: $cb-text;
-			border: none;
+	.#{$type}-action-expanded__duplicate,
+	.#{$type}-action-expanded__publish,
+	.#{$type}-action-expanded__trash,
+	.#{$type}-action-expanded__restore,
+	.#{$type}-action-expanded__delete {
+		padding: 10px;
+		cursor: pointer;
+		text-decoration: none;
+		border-radius: $cb-radius;
+		color: $cb-text;
+		border: none;
 
-			&:hover {
-				background-color: $cb-bg-hover;
-			}
-		}
-
-		.#{$type}-action-expanded__trash,
-		.#{$type}-action-expanded__delete {
-			color: #ef4444;
-
-			&:hover {
-				background-color: #fef2f2;
-			}
+		&:hover {
+			background-color: $cb-bg-hover;
 		}
 	}
+
+	.#{$type}-action-expanded__trash,
+	.#{$type}-action-expanded__delete {
+		color: #ef4444;
+
+		&:hover {
+			background-color: #fef2f2;
+		}
+	}
+}
 
 // Status badges — green pill style
 @mixin post-status-badge {
@@ -376,7 +374,7 @@
 // Class use for item actions on list.
 .lp-cb-item-action-wrap {
 	display: flex;
-	justify-content: center;
+	justify-content: flex-end;
 	gap: 8px;
 	position: relative;
 }
@@ -403,7 +401,7 @@
 	}
 
 	&:hover {
-		background-color: #EEF1FF;
+		background-color: #eef1ff;
 	}
 }
 
@@ -414,12 +412,12 @@
 	white-space: nowrap;
 	top: 60px;
 	right: 16px;
-	transform: translate(15px, -15px);
+	transform: translate( 15px, -15px );
 	padding: 10px;
 	flex-direction: column;
 	background-color: #ffffff;
 	border-radius: 12px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 4px 12px rgba( 0, 0, 0, 0.1 );
 	font-size: 16px;
 	font-weight: 500;
 	z-index: 100;
@@ -436,7 +434,8 @@
 		background-color: #f3f4f6;
 	}
 
-	&.trash, &.delete {
+	&.trash,
+	&.delete {
 		color: #ef4444;
 	}
 }

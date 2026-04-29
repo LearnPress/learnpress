@@ -369,13 +369,14 @@ body {
 #lp-builder-popup-container,
 #lp-course-builder {
 	.learn-press-message {
-		margin: 0;
+		margin: 20px 10px;
 		position: relative;
 		padding: 10px 20px;
 		border-radius: $cb-radius-md;
 		/*background-color: $cb-info-bg;
 		color: $cb-info;*/
-		width: 100%;
+		max-width: 100%;
+		width: fit-content;
 	}
 
 	select {

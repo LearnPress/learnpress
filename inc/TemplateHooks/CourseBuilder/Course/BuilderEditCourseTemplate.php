@@ -153,13 +153,13 @@ class BuilderEditCourseTemplate {
 			'header_left_end'    => '</div>',
 			'header_actions'     => '<div class="lp-cb-header__actions">',
 			'preview_btn'        => $courseModel && $courseModel->get_status() !== PostModel::STATUS_TRASH ? sprintf(
-				'<a href="%1$s" class="cb-button cb-btn-preview cb-btn-secondary" target="_blank">%2$s</a>',
+				'<a href="%1$s" class="cb-button cb-btn-preview cb-btn-secondary lp-button" target="_blank">%2$s</a>',
 				esc_url( get_permalink( $courseModel->get_id() ) ),
 				esc_html__( 'Preview', 'learnpress' )
 			) : '',
 			'dropdown_wrap'      => '<div class="cb-header-actions-dropdown cb-header-actions-dropdown--single">',
 			'update_btn'         => sprintf(
-				'<div class="cb-btn-update cb-btn-primary cb-btn-main-action"
+				'<div class="cb-btn-update cb-btn-primary cb-btn-main-action lp-button"
 					data-status="%1$s"
 					data-title-update="%2$s"
 					data-title-publish="%3$s"
@@ -175,17 +175,17 @@ class BuilderEditCourseTemplate {
 			'dropdown_wrap_end'  => '</div>',
 			'expanded_actions'   => $courseModel ? sprintf(
 				'<div class="cb-header-action-expanded">
-					<button type="button" class="course-action-expanded" aria-haspopup="true" aria-expanded="false" aria-label="%1$s">
+					<button type="button" class="course-action-expanded lp-button" aria-haspopup="true" aria-expanded="false" aria-label="%1$s">
 						%2$s
 					</button>
 					<div class="cb-header-action-expanded__items">
-						<div class="cb-header-action-expanded__duplicate cb-btn-duplicate-course"
+						<div class="cb-header-action-expanded__duplicate cb-btn-duplicate-course lp-button"
 							data-title="%3$s"
 							data-content="%4$s">
 							<span class="dashicons dashicons-admin-page"></span>
 							%5$s
 						</div>
-						<div class="cb-header-action-expanded__trash cb-btn-trash">
+						<div class="cb-header-action-expanded__trash cb-btn-trash lp-button">
 							<span class="dashicons dashicons-trash"></span>
 							%6$s
 						</div>

@@ -19,19 +19,17 @@ class BuilderQuestionTemplate {
 	}
 
 	public function layout( array $data = [] ) {
+		// Check to switch layout.
 		$item_id         = CourseBuilder::get_item_id();
 		$data['item_id'] = $item_id;
 
 		if ( ! empty( $item_id ) ) {
-			do_action(
-				'learn-press/course-builder/questions/edit/layout',
-				$data
-			);
-
-			return;
+			// Show edit question
+			BuilderEditQuestionTemplate::instance()->layout( $data );
+		} else {
+			// Show list questions
+			BuilderListQuestionsTemplate::instance()->layout( $data );
 		}
-
-		BuilderListQuestionsTemplate::instance()->layout( $data );
 	}
 
 	public function get_link_edit( $question_id = 0 ) {
