@@ -1027,3 +1027,8 @@ body {
 		}
 	}
 }
+
+#wp-media-modal label.screen-reader-text,
+#wp-media-modal span.screen-reader-text {
+	display: none;
+}
