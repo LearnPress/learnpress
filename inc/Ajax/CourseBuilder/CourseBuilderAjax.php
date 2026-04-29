@@ -555,10 +555,12 @@ class CourseBuilderAjax extends AbstractAjax {
 	/**
 	 * Save all course settings to CourseModel
 	 *
-	 * @param CourseModel $courseModel
+	 * @param CoursePostModel $courseModel
 	 * @param array $data
+	 *
+	 * @throws Exception
 	 */
-	public function save_course_settings_to_model( CourseModel &$courseModel, array $data ) {
+	public function save_course_settings_to_model( CoursePostModel &$courseModel, array $data ) {
 		// General settings
 		$this->save_general_settings_to_model( $courseModel, $data );
 
@@ -581,10 +583,10 @@ class CourseBuilderAjax extends AbstractAjax {
 	/**
 	 * Save general settings to CourseModel
 	 *
-	 * @param CourseModel $courseModel
+	 * @param CoursePostModel $courseModel
 	 * @param array $data
 	 */
-	protected function save_general_settings_to_model( CourseModel &$courseModel, array $data ) {
+	protected function save_general_settings_to_model( CoursePostModel &$courseModel, array $data ) {
 		if ( isset( $data['_lp_duration'] ) ) {
 			$duration_value = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '0 minute';
 			$explode        = explode( ' ', $duration_value );
@@ -638,10 +640,10 @@ class CourseBuilderAjax extends AbstractAjax {
 	/**
 	 * Save offline course settings to CourseModel
 	 *
-	 * @param CourseModel $courseModel
+	 * @param CoursePostModel $courseModel
 	 * @param array $data
 	 */
-	protected function save_offline_settings_to_model( CourseModel &$courseModel, array $data ) {
+	protected function save_offline_settings_to_model( CoursePostModel &$courseModel, array $data ) {
 		if ( isset( $data['_lp_offline_course'] ) ) {
 			$courseModel->meta_data->{CoursePostModel::META_KEY_OFFLINE_COURSE} = $data['_lp_offline_course'] === 'yes' ? 'yes' : '';
 		}
@@ -662,10 +664,10 @@ class CourseBuilderAjax extends AbstractAjax {
 	/**
 	 * Save price settings to CourseModel
 	 *
-	 * @param CourseModel $courseModel
+	 * @param CoursePostModel $courseModel
 	 * @param array $data
 	 */
-	protected function save_price_settings_to_model( CourseModel &$courseModel, array $data ) {
+	protected function save_price_settings_to_model( CoursePostModel &$courseModel, array $data ) {
 		// Regular price
 		if ( isset( $data['_lp_regular_price'] ) ) {
 			$regular_price = floatval( $data['_lp_regular_price'] );
@@ -708,22 +710,15 @@ class CourseBuilderAjax extends AbstractAjax {
 		if ( isset( $data['_lp_no_required_enroll'] ) ) {
 			$courseModel->meta_data->{CoursePostModel::META_KEY_NO_REQUIRED_ENROLL} = $data['_lp_no_required_enroll'] === 'yes' ? 'yes' : '';
 		}
-
-		// Calculate and set the actual price
-		$courseModel->price_to_sort = $courseModel->get_price();
-
-		// Set is_sale flag
-		$has_sale             = $courseModel->has_sale_price();
-		$courseModel->is_sale = $has_sale ? 1 : 0;
 	}
 
 	/**
 	 * Save extra info settings to CourseModel
 	 *
-	 * @param CourseModel $courseModel
+	 * @param CoursePostModel $courseModel
 	 * @param array $data
 	 */
-	protected function save_extra_settings_to_model( CourseModel &$courseModel, array $data ) {
+	protected function save_extra_settings_to_model( CoursePostModel &$courseModel, array $data ) {
 		// Requirements
 		if ( isset( $data['_lp_requirements'] ) ) {
 			$requirements = ! empty( $data['_lp_requirements'] ) ? explode( ',', $data['_lp_requirements'] ) : [];
@@ -780,10 +775,10 @@ class CourseBuilderAjax extends AbstractAjax {
 	/**
 	 * Save assessment settings to CourseModel
 	 *
-	 * @param CourseModel $courseModel
+	 * @param CoursePostModel $courseModel
 	 * @param array $data
 	 */
-	protected function save_assessment_settings_to_model( CourseModel &$courseModel, array $data ) {
+	protected function save_assessment_settings_to_model( CoursePostModel &$courseModel, array $data ) {
 		// Course result evaluation type
 		if ( isset( $data['_lp_course_result'] ) ) {
 			$courseModel->meta_data->{CoursePostModel::META_KEY_EVALUATION_TYPE} = sanitize_text_field( $data['_lp_course_result'] );
@@ -804,10 +799,10 @@ class CourseBuilderAjax extends AbstractAjax {
 	/**
 	 * Save author settings to CourseModel
 	 *
-	 * @param CourseModel $courseModel
+	 * @param CoursePostModel $courseModel
 	 * @param array $data
 	 */
-	protected function save_author_settings_to_model( CourseModel &$courseModel, array $data ) {
+	protected function save_author_settings_to_model( CoursePostModel &$courseModel, array $data ) {
 		if ( ! isset( $data['_post_author'] ) ) {
 			return;
 		}

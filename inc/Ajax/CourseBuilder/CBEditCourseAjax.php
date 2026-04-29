@@ -159,40 +159,33 @@ class CBEditCourseAjax extends AbstractAjax {
 				$course_id          = $courseModel->ID;
 			} else {
 				// Update course
+				$coursePostModel = new CoursePostModel( $courseModel );
 				foreach ( $data_save as $key => $value ) {
-					if ( isset( $courseModel->{$key} ) ) {
-						$courseModel->{$key} = $value;
+					if ( isset( $coursePostModel->{$key} ) ) {
+						$coursePostModel->{$key} = $value;
 					}
 				}
 
 				// Update permalink/slug if provided
 				if ( ! empty( $course_permalink ) ) {
-					$courseModel->post_name = $course_permalink;
+					$coursePostModel->post_name = $course_permalink;
 				}
 
-				$coursePostModelNew = new CoursePostModel( $courseModel );
-				$coursePostModelNew->save();
+				if ( $settings ) {
+					$courseBuilderAjax = new CourseBuilderAjax();
+					$courseBuilderAjax->save_course_settings_to_model( $coursePostModel, $data );
+				}
+
+				$coursePostModel->save();
 
 				$course_id = $courseModel->ID;
+
+				$courseModel = CourseModel::find( $course_id, true );
 			}
 
 			// Set categories and tags
 			$courseService->update_categories( $course_id, $course_categories );
 			$courseService->update_tags( $course_id, $course_tags );
-
-			if ( $settings ) {
-				$courseBuilderAjax = new CourseBuilderAjax();
-				$courseBuilderAjax->save_course_settings_to_model( $courseModel, $data );
-			}
-
-			if ( ! empty( $courseModel->meta_data ) ) {
-				$coursePostModel = new CoursePostModel( $courseModel );
-				foreach ( $courseModel->meta_data as $meta_key => $meta_value ) {
-					$coursePostModel->save_meta_value_by_key( $meta_key, $meta_value );
-					$coursePostModel->meta_data->{$meta_key} = $meta_value;
-				}
-				$coursePostModel->save();
-			}
 
 			// Save or remove thumbnail
 			if ( isset( $data['course_thumbnail_id'] ) ) {

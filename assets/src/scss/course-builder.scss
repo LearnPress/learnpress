@@ -37,6 +37,16 @@ body {
 @import 'course-builder/edit-question';
 @import 'course-builder/builder-popup';
 
+// Animation for loading lp-icon-spinner
+@keyframes rotation {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(359deg);
+	}
+}
+
 //Style global for course builder
 .learn-press-course-builder {
 	#lp-course-builder-content {

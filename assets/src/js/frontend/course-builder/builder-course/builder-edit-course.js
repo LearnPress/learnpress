@@ -1553,8 +1553,21 @@ export class BuilderEditCourse {
 
 					if ( data?.html ) {
 						const elContent = elBtnMainAction.closest( BuilderEditCourse.selectors.elCBContent );
+						const newHtml = new DOMParser().parseFromString( data.html, 'text/html' );
 						if ( elContent ) {
-							elContent.outerHTML = data.html;
+							// elContent.outerHTML = data.html;
+							// Temporary change each elements
+							const elements = [
+								".lp-cb-header",
+								".cb-course-edit-column--left",
+							];
+
+							for ( const elementNew of elements ) {
+								const el = elContent.querySelector( elementNew );
+								if ( el ) {
+									el.innerHTML = newHtml.querySelector( elementNew ).innerHTML;
+								}
+							}
 						}
 					}
 				}
