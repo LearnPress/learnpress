@@ -369,6 +369,14 @@
 		height: 18px;
 		color: $cb-text-muted;
 	}
+
+	&.lp-button {
+		border: none;
+	}
+
+	&:hover {
+		background-color: #EEF1FF;
+	}
 }
 
 .lp-cb-item-action-expand {
