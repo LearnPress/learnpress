@@ -143,7 +143,7 @@ return apply_filters(
 		array(
 			'title'   => esc_html__( 'Redirect Instructors to Course Builder', 'learnpress' ),
 			'desc'    => esc_html__( 'When enabled, Instructors will be redirected to Course Builder when trying to access wp-admin. Administrators are not affected.', 'learnpress' ),
-			'id'      => 'enable_cb_admin_mode',
+			'id'      => 'hide_instructor_access_admin_screen',
 			'default' => 'no',
 			'type'    => 'checkbox',
 		),

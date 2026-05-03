@@ -78,7 +78,7 @@ class BuilderSettingsTemplate {
 		return apply_filters(
 			'learn-press/course-builder/settings/data',
 			[
-				'is_cb_admin_mode'    => LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes',
+				'hide_instructor_access_admin_screen' => LP_Settings::is_hide_instructor_access_admin_screen(),
 				'course_builder_logo' => $course_builder_logo,
 				'course_builder_src'  => $course_builder_src,
 				'has_custom_logo'     => ! empty( $course_builder_src ),
@@ -102,14 +102,25 @@ class BuilderSettingsTemplate {
 	}
 
 	protected function html_section_instructor_access( array $settings_data ): string {
-		$field_checked = checked( $settings_data['is_cb_admin_mode'], true, false );
+		$field_checked = checked( $settings_data['hide_instructor_access_admin_screen'], true, false );
 		$field         = [
-			'wrapper'     => '<div class="form-field lp-cb-settings__field enable_cb_admin_mode_field">',
-			'label'       => sprintf( '<label for="enable_cb_admin_mode">%s</label>', esc_html__( 'Instructor Access', 'learnpress' ) ),
-			'input'       => sprintf( '<input type="checkbox" id="enable_cb_admin_mode" name="enable_cb_admin_mode" value="yes" %s>', $field_checked ),
+			'wrapper'     => '<div class="form-field lp-cb-settings__field hide_instructor_access_admin_screen_field">',
+			'label'       => sprintf(
+				'<label for="hide_instructor_access_admin_screen">%s</label>',
+				esc_html__( 'Restrict Instructor Access', 'learnpress' )
+			),
+			'input'       => sprintf(
+				'<input type="checkbox"
+				id="hide_instructor_access_admin_screen"
+				name="hide_instructor_access_admin_screen" value="yes" %s>',
+				$field_checked
+			),
 			'description' => sprintf(
 				'<span class="description">%s</span>',
-				esc_html__( 'When enabled, instructors are redirected away from most wp-admin pages and continue their work in Course Builder instead. Administrators keep full access.', 'learnpress' )
+				esc_html__(
+					'When enabled, the admin menu will be hidden for instructors. Instructors will not be able to access wp-admin.',
+					'learnpress'
+				)
 			),
 			'wrapper_end' => '</div>',
 		];

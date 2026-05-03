@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
@@ -1120,64 +1121,32 @@ class LP_Page_Controller {
 		return false;
 	}
 
+	/**
+	 * Redirect admin to course builder if hide instructor access admin screen
+	 *
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
 	public function redirect_admin_to_course_builder() {
 		// Skip AJAX requests
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 			return;
 		}
 
-		// Skip REST API requests
-		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
-			return;
+		// Check hide instructor access admin screen
+		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
+		if ( $hide_instructor_access_admin_screen
+			&& current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+			$cb_url = CourseBuilder::get_link_course_builder();
+
+			// Avoid infinite redirect
+			if ( strpos( LP_Helper::getUrlCurrent(), $cb_url ) !== false ) {
+				return;
+			}
+
+			wp_redirect( $cb_url );
+			exit;
 		}
-
-		// Skip WP-CLI
-		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			return;
-		}
-
-		// Administrators should NEVER be blocked from wp-admin
-		if ( current_user_can( ADMIN_ROLE ) ) {
-			return;
-		}
-
-		// Only apply to instructors (LP_TEACHER_ROLE)
-		if ( ! current_user_can( LP_TEACHER_ROLE ) ) {
-			return;
-		}
-
-		// Check if Course Builder admin mode is enabled
-		$is_cb_admin_mode = \LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
-		if ( ! $is_cb_admin_mode ) {
-			return;
-		}
-
-		// Allow instructors to access essential admin pages (media upload, admin-ajax, etc.)
-		$allowed_pages = apply_filters(
-			'learn-press/course-builder/admin-allowed-pages',
-			array(
-				'async-upload.php',
-				'media-upload.php',
-				'admin-ajax.php',
-				'upload.php',
-				'media-new.php',
-			)
-		);
-
-		global $pagenow;
-		if ( in_array( $pagenow, $allowed_pages, true ) ) {
-			return;
-		}
-
-		$cb_url = \LearnPress\CourseBuilder\CourseBuilder::get_link_course_builder();
-
-		// Avoid infinite redirect
-		if ( strpos( \LP_Helper::getUrlCurrent(), $cb_url ) !== false ) {
-			return;
-		}
-
-		wp_redirect( $cb_url );
-		exit;
 	}
 
 	public static function is_page_course_builder(): bool {

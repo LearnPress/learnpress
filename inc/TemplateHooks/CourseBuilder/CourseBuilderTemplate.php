@@ -18,6 +18,7 @@ use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Profile;
 use LP_Settings;
 use Throwable;
+use WP_User;
 
 class CourseBuilderTemplate {
 	use Singleton;
@@ -48,18 +49,9 @@ class CourseBuilderTemplate {
 	 * @since 4.3.0
 	 */
 	public function hide_admin_bar_for_instructor( bool $show_admin_bar ): bool {
-		if ( ! is_user_logged_in() ) {
+		// Check enable hide admin bar for instructor
+		if ( ! LP_Settings::get_option( 'hide_admin_bar_for_instructor', 'no' ) ) {
 			return $show_admin_bar;
-		}
-
-		$user = UserModel::find( get_current_user_id(), true );
-		if ( ! $user ) {
-			return $show_admin_bar;
-		}
-
-		// Hide admin bar if user is instructor but not admin
-		if ( $user->is_instructor() && ! current_user_can( ADMIN_ROLE ) ) {
-			return false;
 		}
 
 		return $show_admin_bar;
@@ -355,7 +347,7 @@ class CourseBuilderTemplate {
 			'wrapper'     => '<aside id="lp-course-builder-sidebar" class="lp-cb-sidebar">',
 			'nav'         => Template::combine_components( $nav ),
 			'toggle'      => $toggle,
-			'footer'      => $this->sidebar_footer(),
+			'footer'      => $this->sidebar_footer( $data ),
 			'wrapper_end' => '</aside>',
 		];
 
@@ -405,13 +397,20 @@ class CourseBuilderTemplate {
 	/**
 	 * Sidebar footer with "Back to Dashboard" link
 	 *
+	 * @param array $data
+	 *
 	 * @return string
 	 * @since 4.3.0
 	 */
-	protected function sidebar_footer() {
-		$is_cb_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
-		$is_admin         = current_user_can( ADMIN_ROLE );
-		$is_instructor    = current_user_can( LP_TEACHER_ROLE );
+	protected function sidebar_footer( array $data = [] ): string {
+		$userModel = $data['userModel'] ?? false;
+		if ( ! $userModel instanceof UserModel ) {
+			return '';
+		}
+
+		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
+		$wp_user = new WP_User( $userModel );
+		$is_instructor    = user_can( $wp_user,  UserModel::ROLE_INSTRUCTOR );
 		$dashboard_url    = admin_url();
 
 		$footer = [
@@ -420,7 +419,7 @@ class CourseBuilderTemplate {
 
 		// Hide "Back to WordPress" for instructors when CB admin mode is on
 		// Admins always see this link
-		$hide_back_link = $is_cb_admin_mode && $is_instructor && ! $is_admin;
+		$hide_back_link = $hide_instructor_access_admin_screen && $is_instructor;
 
 		if ( ! $hide_back_link ) {
 			$back_to_wp_text = __( 'Back to WordPress', 'learnpress' );

@@ -22,7 +22,7 @@ export class BuilderSettings {
 
 	static selectors = {
 		elForm: '#lp-cb-settings-form',
-		elCheckbox: 'input[name="enable_cb_admin_mode"]',
+		elCheckbox: 'input[name="hide_instructor_access_admin_screen"]',
 		elBadge: '[data-setting-badge]',
 		elHeaderLogoLink: '.lp-cb-top-header__logo a',
 		elLogoSetting: '[data-cb-logo-setting]',
@@ -160,7 +160,7 @@ export class BuilderSettings {
 		return {
 			action: 'save_global_settings',
 			args: { id_url: 'save-global-settings' },
-			enable_cb_admin_mode: this.getCurrentValue(),
+			hide_instructor_access_admin_screen: this.getCurrentValue(),
 			course_builder_logo_id: this.getLogoId(),
 			course_builder_logo_remove: this.getLogoRemoveValue(),
 		};
@@ -211,7 +211,7 @@ export class BuilderSettings {
 
 	getStateFingerprint() {
 		return JSON.stringify( {
-			enable_cb_admin_mode: this.getCurrentValue(),
+			hide_instructor_access_admin_screen: this.getCurrentValue(),
 			course_builder_logo_id: this.getLogoId(),
 			course_builder_logo_remove: this.getLogoRemoveValue(),
 		} );

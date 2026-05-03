@@ -2208,7 +2208,7 @@ class CourseBuilderAjax extends AbstractAjax {
 	/**
 	 * Save global settings for Course Builder.
 	 *
-	 * @since 4.3.0
+	 * @since 4.3.6
 	 * @version 1.0.0
 	 */
 	public function save_global_settings() {
@@ -2227,7 +2227,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				throw new Exception( __( 'Permission denied', 'learnpress' ) );
 			}
 
-			$enable_cb_admin_mode = ! empty( $data['enable_cb_admin_mode'] ) && $data['enable_cb_admin_mode'] === 'yes' ? 'yes' : 'no';
+			$hide_instructor_access_admin_screen = ! empty( $data['hide_instructor_access_admin_screen'] ) && $data['hide_instructor_access_admin_screen'] === 'yes' ? 'yes' : 'no';
 			$logo_remove          = ! empty( $data['course_builder_logo_remove'] ) && $data['course_builder_logo_remove'] === 'yes';
 			$logo_id              = absint( $data['course_builder_logo_id'] ?? 0 );
 
@@ -2235,7 +2235,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$logo_id = 0;
 			}
 
-			LP_Settings::update_option( 'enable_cb_admin_mode', $enable_cb_admin_mode );
+			LP_Settings::update_option( 'hide_instructor_access_admin_screen', $hide_instructor_access_admin_screen );
 			LP_Settings::update_option( 'course_builder_logo_id', $logo_id );
 
 			$logo_url = '';
@@ -2245,7 +2245,7 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			$response->status                        = 'success';
 			$response->message                       = __( 'Course Builder settings updated.', 'learnpress' );
-			$response->data->enable_cb_admin_mode    = $enable_cb_admin_mode;
+			$response->data->hide_instructor_access_admin_screen    = $hide_instructor_access_admin_screen;
 			$response->data->course_builder_logo_id  = $logo_id;
 			$response->data->course_builder_logo_url = $logo_url;
 

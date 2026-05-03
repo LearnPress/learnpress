@@ -25,6 +25,7 @@ use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Settings;
 use Throwable;
+use WP_User;
 
 class BuilderEditCourseTemplate {
 	use Singleton;
@@ -110,14 +111,15 @@ class BuilderEditCourseTemplate {
 	 * @return string
 	 */
 	public function html_header( array $data = [] ): string {
+		/** @var UserModel $userModel */
 		$userModel = $data['userModel'] ?? false;
-		if ( ! $userModel ) {
+		if ( ! $userModel instanceof UserModel ) {
 			return '';
 		}
 
 		/** @var CourseModel|false $courseModel */
 		$courseModel          = $data['courseModel'] ?? false;
-		$enable_wp_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
+		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
 		$more_actions_icon    = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
 		$title                = $courseModel ? $courseModel->get_title() : __( 'Add New Course', 'learnpress' );
 		$status_badge         = $courseModel ? $courseModel->get_status() : '';
@@ -136,8 +138,8 @@ class BuilderEditCourseTemplate {
 			),
 			true
 		) ? $status : 'publish';
-		$is_admin_user      = current_user_can( ADMIN_ROLE );
-		$hide_wp_edit_link  = $enable_wp_admin_mode && ! $is_admin_user && $userModel->is_instructor();
+		$wp_user      = new WP_User( $userModel ) ;
+		$hide_wp_edit_link  = $hide_instructor_access_admin_screen && user_can( $wp_user, UserModel::ROLE_INSTRUCTOR );
 
 		$section = [
 			'header_wrap'        => '<div class="lp-cb-header">',

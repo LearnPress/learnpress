@@ -10,6 +10,7 @@ namespace LearnPress\TemplateHooks\CourseBuilder\Quiz;
 
 use Exception;
 use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
@@ -22,6 +23,7 @@ use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Settings;
 use Throwable;
+use WP_User;
 
 class BuilderEditQuizTemplate {
 	use Singleton;
@@ -93,15 +95,19 @@ class BuilderEditQuizTemplate {
 
 	public function html_header( array $data = [] ): string {
 		$userModel            = $data['userModel'] ?? false;
+		if ( ! $userModel instanceof UserModel ) {
+			return '';
+		}
+
 		$quizModel            = $data['quizModel'] ?? false;
-		$enable_wp_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
+		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
 		$more_actions_icon    = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
 		$title                = $quizModel ? $quizModel->get_the_title() : __( 'Add New Quiz', 'learnpress' );
-		$status               = $quizModel ? sanitize_key( (string) $quizModel->post_status ) : '';
+		$status               = $quizModel ? $quizModel->post_status : '';
 		$status_label         = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
 		$main_action_status   = in_array( $status, [ 'publish', 'draft', 'pending', 'future', 'private' ], true ) ? $status : 'publish';
-		$is_admin_user        = current_user_can( ADMIN_ROLE );
-		$hide_wp_edit_link    = $enable_wp_admin_mode && ! $is_admin_user && $userModel->is_instructor();
+		$wp_user              = new WP_User( $userModel );
+		$hide_wp_edit_link    = $hide_instructor_access_admin_screen && user_can( $wp_user, UserModel::ROLE_INSTRUCTOR );
 
 		$section = [
 			'header_wrap'        => '<div class="lp-cb-header">',

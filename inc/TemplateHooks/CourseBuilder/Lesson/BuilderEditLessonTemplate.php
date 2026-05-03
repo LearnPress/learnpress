@@ -14,9 +14,11 @@ use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LP_Settings;
+use WP_User;
 
 class BuilderEditLessonTemplate {
 	use Singleton;
@@ -74,13 +76,17 @@ class BuilderEditLessonTemplate {
 
 	public function html_header( array $data = [] ): string {
 		$userModel            = $data['userModel'] ?? false;
+		if ( ! $userModel instanceof UserModel ) {
+			return '';
+		}
+
+		$wp_user = new WP_User( $userModel );
 		$lessonModel          = $data['lessonModel'] ?? false;
-		$enable_wp_admin_mode = LP_Settings::get_option( 'enable_cb_admin_mode', 'no' ) === 'yes';
+		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
 		$title                = $lessonModel ? $lessonModel->get_the_title() : __( 'Add New Lesson', 'learnpress' );
 		$status               = $lessonModel ? sanitize_key( (string) $lessonModel->post_status ) : '';
 		$status_label         = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
-		$is_admin_user        = current_user_can( ADMIN_ROLE );
-		$hide_wp_edit_link    = $enable_wp_admin_mode && ! $is_admin_user && $userModel->is_instructor();
+		$hide_wp_edit_link    = $hide_instructor_access_admin_screen && user_can( $wp_user, UserModel::ROLE_INSTRUCTOR );
 		$main_action_label    = $lessonModel && 'publish' === $status ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 
 		$section = [
