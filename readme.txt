@@ -279,6 +279,13 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.3.6 (2026-05-03) =
+~ Feature: course builder. For teacher, admin manager course without access WP Admin screen.
+~ Fixed: link profile.
+~ Fixed: save lesson change data course assigned.
+~ Fixed: save author via quick edit.
+~ Fixed: security.
+
 = 4.3.5 (2026-04-10) =
 ~ Added: MCP (Model Context Protocol) support for get information courses, curriculum, lessons, users enroll... with AI.
 ~ Fixed: minor bugs.
