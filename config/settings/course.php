@@ -85,7 +85,7 @@ return apply_filters(
 					'custom_attributes' => array(
 						'min' => '1',
 					),
-					'css'               => 'min-width: 50px; width: 50px;',
+					'css'               => 'min-width: 70px; width: 70px;',
 				),
 				array(
 					'title'   => esc_html__( 'Include courses in subcategory', 'learnpress' ),
