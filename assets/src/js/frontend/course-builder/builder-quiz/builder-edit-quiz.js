@@ -27,6 +27,7 @@ export class BuilderEditQuiz {
 		this.sortableAnswerInstances = [];
 		this.editQuestion = null;
 		this.initPromise = null;
+		this.tinyMCEInitToken = null;
 		this.isInitialized = false;
 	}
 
@@ -48,6 +49,7 @@ export class BuilderEditQuiz {
 		LPTarget: '.lp-target',
 		elCollapse: 'lp-collapse',
 		elAnswersConfig: '.lp-answers-config',
+		elQuestionTinymce: '.lp-question-edit-main .lp-editor-tinymce',
 	};
 
 	init( container = null ) {
@@ -78,6 +80,7 @@ export class BuilderEditQuiz {
 			this.initPromise.cancelled = true;
 		}
 		this.initPromise = null;
+		this.tinyMCEInitToken = null;
 
 		this.elEditQuizWrap = null;
 		this.elEditListQuestions = null;
@@ -193,7 +196,7 @@ export class BuilderEditQuiz {
 		// Init EditQuestion
 		this._initEditQuestion( elEditQuizWrap );
 
-		// Init TinyMCE asynchronously
+		// Init TinyMCE asynchronously after EditQuestion events are registered.
 		this._initTinyMCEAsync( elEditQuizWrap );
 
 		this.isInitialized = true;
@@ -260,29 +263,6 @@ export class BuilderEditQuiz {
 				console.warn( 'Error registering EditQuestion events:', e );
 			}
 		}
-
-		// Init TinyMCE for question editors
-		this._initEditQuestionTinyMCE( elEditQuizWrap );
-	}
-
-	/**
-	 * Initialize TinyMCE for question editors
-	 */
-	_initEditQuestionTinyMCE( elEditQuizWrap ) {
-		if ( ! this.editQuestion || ! elEditQuizWrap || typeof window.tinymce === 'undefined' ) {
-			return;
-		}
-
-		const elTextareas = elEditQuizWrap.querySelectorAll( '.lp-question-edit-main .lp-editor-tinymce' );
-		elTextareas.forEach( ( elTextarea ) => {
-			if ( elTextarea?.id && this.editQuestion?.reInitTinymce ) {
-				try {
-					this.editQuestion.reInitTinymce( elTextarea.id );
-				} catch ( e ) {
-					console.warn( 'TinyMCE init error:', e );
-				}
-			}
-		} );
 	}
 
 	/**
@@ -342,17 +322,41 @@ export class BuilderEditQuiz {
 			return;
 		}
 
-		const elTextareas = elEditQuizWrap.querySelectorAll( '.lp-question-edit-main .lp-editor-tinymce' );
-		if ( elTextareas.length === 0 ) {
+		const elTextareas = Array.from(
+			elEditQuizWrap.querySelectorAll(
+				`${ BuilderEditQuiz.selectors.elQuestionItem }:not(.${ BuilderEditQuiz.selectors.elCollapse }) ${ BuilderEditQuiz.selectors.elQuestionTinymce }`
+			)
+		);
+		if ( ! elTextareas.length ) {
 			return;
 		}
 
-		const textareaArray = Array.from( elTextareas );
 		const chunkSize = 2;
 		let index = 0;
+		const initToken = {};
+		this.tinyMCEInitToken = initToken;
 
-		const processChunk = () => {
-			const chunk = textareaArray.slice( index, index + chunkSize );
+		const queueInit = ( callback ) => {
+			if ( window.requestIdleCallback ) {
+				window.requestIdleCallback( () => callback(), { timeout: 100 } );
+			} else {
+				setTimeout( () => callback(), 50 );
+			}
+		};
+
+		const processChunk = ( attempts = 0 ) => {
+			if ( this.tinyMCEInitToken !== initToken ) {
+				return;
+			}
+
+			if ( typeof window.tinymce === 'undefined' ) {
+				if ( attempts < 20 ) {
+					setTimeout( () => processChunk( attempts + 1 ), 100 );
+				}
+				return;
+			}
+
+			const chunk = elTextareas.slice( index, index + chunkSize );
 			chunk.forEach( ( elTextarea ) => {
 				if ( elTextarea?.id ) {
 					this._reInitTinymce( elTextarea.id );
@@ -360,20 +364,12 @@ export class BuilderEditQuiz {
 			} );
 
 			index += chunkSize;
-			if ( index < textareaArray.length ) {
-				if ( window.requestIdleCallback ) {
-					window.requestIdleCallback( processChunk, { timeout: 100 } );
-				} else {
-					setTimeout( processChunk, 50 );
-				}
+			if ( index < elTextareas.length ) {
+				queueInit( processChunk );
 			}
 		};
 
-		if ( window.requestIdleCallback ) {
-			window.requestIdleCallback( processChunk, { timeout: 100 } );
-		} else {
-			setTimeout( processChunk, 50 );
-		}
+		queueInit( processChunk );
 	}
 
 	/**
@@ -411,12 +407,7 @@ export class BuilderEditQuiz {
 		try {
 			window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 			window.tinymce.execCommand( 'mceAddEditor', true, id );
-
-			const wrapEditor = document.querySelector( `#wp-${ id }-wrap` );
-			if ( wrapEditor ) {
-				wrapEditor.classList.add( 'tmce-active' );
-				wrapEditor.classList.remove( 'html-active' );
-			}
+			this.editQuestion?.setDefaultEditorTab?.( id );
 		} catch ( e ) {
 			console.warn( 'Manual TinyMCE init error:', e );
 		}
@@ -433,19 +424,9 @@ export class BuilderEditQuiz {
 		// Init answer sortable
 		this._sortAbleQuestionAnswer( elQuestionEditMain );
 
-		// Init TinyMCE
-		if ( this.editQuestion?.reInitTinymce ) {
-			const elTextareas = elQuestionEditMain.querySelectorAll( '.lp-editor-tinymce' );
-			elTextareas.forEach( ( elTextarea ) => {
-				if ( elTextarea?.id ) {
-					try {
-						this.editQuestion.reInitTinymce( elTextarea.id );
-					} catch ( e ) {
-						console.warn( 'TinyMCE init error:', e );
-					}
-				}
-			} );
-		}
+		this._initQuestionTinymce(
+			elQuestionEditMain.closest( BuilderEditQuiz.selectors.elQuestionItem )
+		);
 
 		// Init answer sortable via EditQuestion
 		if ( this.editQuestion?.sortAbleQuestionAnswer ) {
@@ -455,6 +436,27 @@ export class BuilderEditQuiz {
 				console.warn( 'Error initializing answer sortable:', e );
 			}
 		}
+	}
+
+	/**
+	 * Initialize TinyMCE only after a question item is expanded.
+	 */
+	_initQuestionTinymce( elQuestionItem ) {
+		if (
+			! elQuestionItem ||
+			elQuestionItem.classList.contains( BuilderEditQuiz.selectors.elCollapse )
+		) {
+			return;
+		}
+
+		const elTextareas = elQuestionItem.querySelectorAll(
+			BuilderEditQuiz.selectors.elQuestionTinymce
+		);
+		elTextareas.forEach( ( elTextarea ) => {
+			if ( elTextarea?.id ) {
+				this._reInitTinymce( elTextarea.id );
+			}
+		} );
 	}
 
 	events() {
@@ -544,7 +546,10 @@ export class BuilderEditQuiz {
 		// Toggle collapse
 		document.addEventListener( 'click', ( e ) => {
 			const target = e.target;
-			lpUtils.toggleCollapse( e, target, BuilderEditQuiz.selectors.elQuestionToggle, [], () => this.checkAllQuestionsCollapsed() );
+			lpUtils.toggleCollapse( e, target, BuilderEditQuiz.selectors.elQuestionToggle, [], ( elQuestionItem ) => {
+				this._initQuestionTinymce( elQuestionItem );
+				this.checkAllQuestionsCollapsed();
+			} );
 		} );
 	}
 
@@ -835,6 +840,9 @@ export class BuilderEditQuiz {
 		elQuestionItems.forEach( ( el ) => {
 			if ( el ) {
 				el.classList.toggle( BuilderEditQuiz.selectors.elCollapse, shouldCollapse );
+				if ( ! shouldCollapse ) {
+					this._initQuestionTinymce( el );
+				}
 			}
 		} );
 	}

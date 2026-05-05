@@ -222,8 +222,65 @@ export class EditQuestion {
 	}
 
 	reInitTinymce( id ) {
+		if ( ! window.tinymce || ! id ) {
+			return;
+		}
+
+		const elTextarea = document.getElementById( id );
+		if ( ! elTextarea ) {
+			return;
+		}
+
+		this.reInitQuicktags( id );
+		const editor = window.tinymce.get( id );
+		const editorContainer = editor?.getContainer?.();
+		const isEditorAttached = editor && (
+			editor.targetElm === elTextarea ||
+			editor.getElement?.() === elTextarea ||
+			editorContainer?.contains( elTextarea )
+		);
+
+		if ( isEditorAttached ) {
+			this.setDefaultEditorTab( id );
+			return;
+		}
+
 		window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 		window.tinymce.execCommand( 'mceAddEditor', true, id );
+		this.setDefaultEditorTab( id );
+	}
+
+	reInitQuicktags( id ) {
+		const toolbar = document.getElementById( `qt_${ id }_toolbar` );
+		if ( ! toolbar || toolbar.children.length || ! window.quicktags ) {
+			return;
+		}
+
+		const settings = window.tinyMCEPreInit?.qtInit?.[ id ] || { id };
+		window.quicktags( settings );
+
+		if ( window.QTags?._buttonsInit ) {
+			window.QTags._buttonsInit();
+		}
+	}
+
+	setDefaultEditorTab( id ) {
+		const wrapEditor = document.getElementById( `wp-${ id }-wrap` );
+		if ( ! wrapEditor ) {
+			return;
+		}
+
+		if ( wrapEditor.classList.contains( 'html-active' ) && window.switchEditors?.go ) {
+			window.switchEditors.go( id, 'tmce' );
+		}
+
+		wrapEditor.classList.add( 'tmce-active' );
+		wrapEditor.classList.remove( 'html-active' );
+
+		const visualTab = document.getElementById( `${ id }-tmce` );
+		const codeTab = document.getElementById( `${ id }-html` );
+		visualTab?.setAttribute( 'aria-pressed', 'true' );
+		codeTab?.setAttribute( 'aria-pressed', 'false' );
 	}
 
 	// Events for TinyMCE editor
@@ -239,12 +296,7 @@ export class EditQuestion {
 				return;
 			}
 
-			// Active tab visual
-			const wrapEditor = document.querySelector( `#wp-${ id }-wrap` );
-			if ( wrapEditor ) {
-				wrapEditor.classList.add( 'tmce-active' );
-				wrapEditor.classList.remove( 'html-active' );
-			}
+			this.setDefaultEditorTab( id );
 
 			const elTextarea = document.getElementById( id );
 
