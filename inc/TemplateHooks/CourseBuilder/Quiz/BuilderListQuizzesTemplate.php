@@ -11,12 +11,12 @@ namespace LearnPress\TemplateHooks\CourseBuilder\Quiz;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-use LearnPress\Models\CourseModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
+use LP_WP_Filesystem;
 use Throwable;
 use WP_Query;
 
@@ -221,16 +221,8 @@ class BuilderListQuizzesTemplate {
 	 * @version 1.0.0
 	 */
 	public static function render_quiz( QuizPostModel $quiz_model, array $settings = [] ): string {
-		static $edit_icon         = null;
-		static $more_actions_icon = null;
-
-		if ( null === $edit_icon ) {
-			$edit_icon = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-edit.svg' );
-		}
-
-		if ( null === $more_actions_icon ) {
-			$more_actions_icon = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
-		}
+		$edit_icon         = LP_WP_Filesystem::get_icon_svg( 'ico-cb-edit.svg' );
+		$more_actions_icon = LP_WP_Filesystem::get_icon_svg( 'ico-cb-more.svg' );
 
 		$author      = get_user_by( 'ID', $quiz_model->post_author );
 		$author_name = $author && isset( $author->display_name ) ? $author->display_name : '--';

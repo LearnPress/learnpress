@@ -22,6 +22,7 @@ use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Settings;
+use LP_WP_Filesystem;
 use Throwable;
 use WP_User;
 
@@ -94,20 +95,20 @@ class BuilderEditQuizTemplate {
 	}
 
 	public function html_header( array $data = [] ): string {
-		$userModel            = $data['userModel'] ?? false;
+		$userModel = $data['userModel'] ?? false;
 		if ( ! $userModel instanceof UserModel ) {
 			return '';
 		}
 
-		$quizModel            = $data['quizModel'] ?? false;
+		$quizModel                           = $data['quizModel'] ?? false;
 		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
-		$more_actions_icon    = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
-		$title                = $quizModel ? $quizModel->get_the_title() : __( 'Add New Quiz', 'learnpress' );
-		$status               = $quizModel ? $quizModel->post_status : '';
-		$status_label         = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
-		$main_action_status   = in_array( $status, [ 'publish', 'draft', 'pending', 'future', 'private' ], true ) ? $status : 'publish';
-		$wp_user              = new WP_User( $userModel );
-		$hide_wp_edit_link    = $hide_instructor_access_admin_screen && user_can( $wp_user, UserModel::ROLE_INSTRUCTOR );
+		$more_actions_icon                   = LP_WP_Filesystem::get_icon_svg( 'ico-cb-more.svg' );
+		$title                               = $quizModel ? $quizModel->get_the_title() : __( 'Add New Quiz', 'learnpress' );
+		$status                              = $quizModel ? $quizModel->post_status : '';
+		$status_label                        = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
+		$main_action_status                  = in_array( $status, [ 'publish', 'draft', 'pending', 'future', 'private' ], true ) ? $status : 'publish';
+		$wp_user                             = new WP_User( $userModel );
+		$hide_wp_edit_link                   = $hide_instructor_access_admin_screen && user_can( $wp_user, UserModel::ROLE_INSTRUCTOR );
 
 		$section = [
 			'header_wrap'        => '<div class="lp-cb-header">',

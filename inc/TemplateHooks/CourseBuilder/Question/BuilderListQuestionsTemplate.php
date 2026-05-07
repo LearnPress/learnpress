@@ -18,6 +18,7 @@ use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderQuizTemplate;
 use LP_Question;
 use LP_Question_CURD;
+use LP_WP_Filesystem;
 use Throwable;
 use WP_Query;
 
@@ -222,16 +223,8 @@ class BuilderListQuestionsTemplate {
 	 * @version 1.0.0
 	 */
 	public static function render_question( QuestionPostModel $question_model, array $settings = [] ): string {
-		static $edit_icon         = null;
-		static $more_actions_icon = null;
-
-		if ( null === $edit_icon ) {
-			$edit_icon = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-edit.svg' );
-		}
-
-		if ( null === $more_actions_icon ) {
-			$more_actions_icon = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
-		}
+		$edit_icon         = LP_WP_Filesystem::get_icon_svg( 'ico-cb-edit.svg' );
+		$more_actions_icon = LP_WP_Filesystem::get_icon_svg( 'ico-cb-more.svg' );
 
 		$types         = LP_Question::get_types();
 		$type          = get_post_meta( $question_model->get_id(), '_lp_type', true );

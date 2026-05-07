@@ -17,6 +17,7 @@ use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Course_Filter;
 use LP_Statistics_DB;
+use LP_WP_Filesystem;
 use Throwable;
 
 class BuilderDashboardTemplate {
@@ -186,16 +187,6 @@ class BuilderDashboardTemplate {
 		return intval( $result );
 	}
 
-	private function get_icon_svg( string $icon ): string {
-		static $icons = [];
-
-		if ( ! isset( $icons[ $icon ] ) ) {
-			$icons[ $icon ] = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/' . ltrim( $icon, '/' ) );
-		}
-
-		return $icons[ $icon ];
-	}
-
 	/**
 	 * Render statistics cards.
 	 *
@@ -259,7 +250,7 @@ class BuilderDashboardTemplate {
 				</div>',
 				esc_attr( $card['color'] ),
 				esc_attr( $card['color'] ),
-				$this->get_icon_svg( $card['icon'] ?? '' ),
+				LP_WP_Filesystem::get_icon_svg( $card['icon'] ?? '' ),
 				esc_html( $card['label'] ),
 				esc_html( number_format_i18n( $value ) )
 			);
@@ -484,7 +475,7 @@ class BuilderDashboardTemplate {
 				if ( empty( $thumbnail ) ) {
 					$thumbnail = sprintf(
 						'<div class="course-item__thumb-placeholder">%s</div>',
-						$this->get_icon_svg( 'ico-cb-dashboard-course-placeholder.svg' )
+						LP_WP_Filesystem::get_icon_svg( 'ico-cb-dashboard-course-placeholder.svg' )
 					);
 				}
 
@@ -565,7 +556,7 @@ class BuilderDashboardTemplate {
 				if ( empty( $thumbnail ) ) {
 					$thumbnail = sprintf(
 						'<div class="course-item__thumb-placeholder">%s</div>',
-						$this->get_icon_svg( 'ico-cb-dashboard-course-placeholder.svg' )
+						LP_WP_Filesystem::get_icon_svg( 'ico-cb-dashboard-course-placeholder.svg' )
 					);
 				}
 
@@ -665,7 +656,7 @@ class BuilderDashboardTemplate {
 				'label' => __( 'Create Course', 'learnpress' ),
 				'url'   => CourseBuilder::get_link_add_new( 'courses' ),
 				'color' => '#ef4444',
-				'svg'   => wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-courses-2.svg' ),
+				'svg'   => LP_WP_Filesystem::get_icon_svg( 'ico-courses-2.svg' ),
 			],
 			[
 				'label'         => __( 'Create Lesson', 'learnpress' ),

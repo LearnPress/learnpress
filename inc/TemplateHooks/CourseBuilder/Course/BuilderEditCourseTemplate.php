@@ -24,6 +24,7 @@ use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Settings;
+use LP_WP_Filesystem;
 use Throwable;
 use WP_User;
 
@@ -120,7 +121,7 @@ class BuilderEditCourseTemplate {
 		/** @var CourseModel|false $courseModel */
 		$courseModel          = $data['courseModel'] ?? false;
 		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
-		$more_actions_icon    = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
+		$more_actions_icon    = LP_WP_Filesystem::get_icon_svg( 'ico-cb-more.svg' );
 		$title                = $courseModel ? $courseModel->get_title() : __( 'Add New Course', 'learnpress' );
 		$status_badge         = $courseModel ? $courseModel->get_status() : '';
 		$status               = '';

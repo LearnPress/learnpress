@@ -18,6 +18,7 @@ use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_WP_Filesystem;
 use Throwable;
 use WP_Query;
 
@@ -311,8 +312,8 @@ class BuilderListLessonsTemplate {
 				$settings
 			);
 
-			$edit_icon         = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-edit.svg' );
-			$more_actions_icon = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-cb-more.svg' );
+			$edit_icon         = LP_WP_Filesystem::get_icon_svg( 'ico-cb-edit.svg' );
+			$more_actions_icon = LP_WP_Filesystem::get_icon_svg( 'ico-cb-more.svg' );
 
 			$html_action = apply_filters(
 				'learn-press/course-builder/list-lessons/item/action',
