@@ -39,13 +39,17 @@ class BuilderEditCourseTemplate {
 	}
 
 	/**
-	 * Display layout edit/create course
+	 * HTML edit/create course on Course Builder screen
 	 *
-	 * @param array $data [ 'userModel' => UserModel, 'courseModel' => CourseModel, 'item_id' => int ]
+	 * @param array $data
 	 *
-	 * @throws Exception
+	 * @since 4.3.6
+	 * @version 1.0.1
+	 * @return string
 	 */
-	public function layout( array $data = [] ) {
+	public function layout( array $data = [] ): string {
+		$html = '';
+
 		try {
 			// Check permission
 			$userModel = $data['userModel'] ?? false;
@@ -98,10 +102,12 @@ class BuilderEditCourseTemplate {
 				'wrap_end' => '</div>',
 			];
 
-			echo Template::combine_components( $section );
+			$html = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
-			Template::print_message( $e->getMessage(), 'error' );
+			$html = Template::print_message( $e->getMessage(), 'error', false );
 		}
+
+		return $html;
 	}
 
 	/**
@@ -119,12 +125,12 @@ class BuilderEditCourseTemplate {
 		}
 
 		/** @var CourseModel|false $courseModel */
-		$courseModel          = $data['courseModel'] ?? false;
+		$courseModel                         = $data['courseModel'] ?? false;
 		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
-		$more_actions_icon    = LP_WP_Filesystem::get_icon_svg( 'ico-cb-more.svg' );
-		$title                = $courseModel ? $courseModel->get_title() : __( 'Add New Course', 'learnpress' );
-		$status_badge         = $courseModel ? $courseModel->get_status() : '';
-		$status               = '';
+		$more_actions_icon                   = LP_WP_Filesystem::get_icon_svg( 'ico-cb-more.svg' );
+		$title                               = $courseModel ? $courseModel->get_title() : __( 'Add New Course', 'learnpress' );
+		$status_badge                        = $courseModel ? $courseModel->get_status() : '';
+		$status                              = '';
 		if ( $courseModel ) {
 			$status = $courseModel->get_status();
 		}
@@ -139,7 +145,7 @@ class BuilderEditCourseTemplate {
 			),
 			true
 		) ? $status : 'publish';
-		$wp_user      = new WP_User( $userModel ) ;
+		$wp_user            = new WP_User( $userModel );
 		$hide_wp_edit_link  = $hide_instructor_access_admin_screen && user_can( $wp_user, UserModel::ROLE_INSTRUCTOR );
 
 		$section = [

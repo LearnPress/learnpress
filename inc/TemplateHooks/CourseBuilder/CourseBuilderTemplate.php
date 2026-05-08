@@ -361,8 +361,9 @@ class CourseBuilderTemplate {
 	 * @param array $data
 	 *
 	 * @return string
+	 * @throws Exception
+	 * @version 1.0.1
 	 * @since 4.3.6
-	 * @version 1.0.0
 	 */
 	public function html_content( array $data = [] ): string {
 		$userModel = $data['userModel'] ?? false;
@@ -372,19 +373,23 @@ class CourseBuilderTemplate {
 
 		$menu_current = CourseBuilder::get_menu_current();
 
-		//Todo: new way - Switch layout display by menu, via model
+		//Switch layout display by menu, via model, @since 4.3.7
 		switch ( $menu_current ) {
 			case self::MENU_COURSES:
-				//BuilderCourseTemplate::instance()->layout( $data );
+				$content = BuilderCourseTemplate::instance()->layout( $data );
 				break;
 			default:
-				//$content = apply_filters( "learn-press/course-builder/content/layout", $menu_current, $data );
+				if ( has_action( "learn-press/course-builder/{$menu_current}/layout" ) ) {
+					// Hook old @since 4.3.6.
+					ob_start();
+					do_action( "learn-press/course-builder/{$menu_current}/layout", $data );
+					$content = ob_get_clean();
+				} else {
+					// Hook new @since 4.3.7.
+					$content = apply_filters( 'learn-press/course-builder/content/layout', '', $menu_current, $data );
+				}
 				break;
 		}
-
-		ob_start();
-		do_action( "learn-press/course-builder/{$menu_current}/layout", $data );
-		$content = ob_get_clean();
 
 		$output = [
 			'wrapper'     => '<div id="lp-course-builder-content" class="lp-cb-main">',
@@ -620,5 +625,4 @@ class CourseBuilderTemplate {
 			)
 		);
 	}
-
 }

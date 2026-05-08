@@ -30,7 +30,16 @@ class BuilderListCoursesTemplate {
 
 	public function init() {}
 
-	public function layout( array $data = [] ) {
+	/**
+	 * HTML list courses on Course Builder screen
+	 *
+	 * @param array $data
+	 *
+	 * @since 4.3.6
+	 * @version 1.0.1
+	 * @return string
+	 */
+	public function layout( array $data = [] ): string {
 		$section = [
 			'header'       => $this->html_header( $data ),
 			'filter_bar'   => $this->html_filter_bar(),
@@ -38,7 +47,7 @@ class BuilderListCoursesTemplate {
 			'ai_templates' => AdminCreateCourseAITemplate::instance()->render_for_frontend(),
 		];
 
-		echo Template::combine_components( $section );
+		return Template::combine_components( $section );
 	}
 
 	/**

@@ -15,30 +15,33 @@ use LearnPress\Helpers\Singleton;
 class BuilderCourseTemplate {
 	use Singleton;
 
-	public function init() {
-		add_action( 'learn-press/course-builder/courses/layout', [ $this, 'layout' ] );
-	}
+	public function init() {}
 
 	/**
 	 * Check query var to switch layout.
 	 *
 	 * @param array $data
 	 *
+	 * @since 4.3.6
+	 * @version 1.0.1
 	 * @return void
 	 * @throws Exception
 	 */
-	public function layout( array $data = [] ) {
+	public function layout( array $data = [] ): string {
 		// Check to switch layout.
 		$item_id         = CourseBuilder::get_item_id();
 		$data['item_id'] = $item_id;
+		$html            = '';
 
 		if ( ! empty( $item_id ) ) {
 			// Show edit course
-			BuilderEditCourseTemplate::instance()->layout( $data );
+			$html = BuilderEditCourseTemplate::instance()->layout( $data );
 		} else {
 			// Show list courses
-			BuilderListCoursesTemplate::instance()->layout( $data );
+			$html = BuilderListCoursesTemplate::instance()->layout( $data );
 		}
+
+		return $html;
 	}
 
 	public function get_link_edit( $course_id = 0 ) {
