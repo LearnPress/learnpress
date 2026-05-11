@@ -85,8 +85,8 @@ class AdminListStudentsEnrolled {
 				$wp_screen = get_current_screen();
 				if ( $wp_screen ) {
 					// Page on the Admin screen.
-					if ( $wp_screen->id === 'learnpress_page_lp-enrolled-students' ) {
-						$page_current = 'learnpress_page_lp-enrolled-students';
+					if ( $wp_screen->id === 'learnpress_page_learn-press-students-enrolled' ) {
+						$page_current = 'learnpress_page_learn-press-students-enrolled';
 					}
 				}
 			}
