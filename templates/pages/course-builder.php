@@ -35,6 +35,8 @@ defined( 'ABSPATH' ) || exit();
 	$asset->load_scripts_on_head();
 	$asset->load_scripts();
 
+	do_action( 'learn-press/course-builder/head' );
+
 	wp_enqueue_editor();
 	wp_enqueue_media();
 

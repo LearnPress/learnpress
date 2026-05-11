@@ -7,50 +7,6 @@
 
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
-const m = ( e ) => {
-	console.log( e );
-};
-
-const functionNeedDebounce = lpUtils.debounce( ( args ) => {
-	m( args );
-} );
-
-const functionNeedDebounceg = lpUtils.debounce( ( args ) => {
-	m( args );
-} );
-
-const m2 = lpUtils.debounce( ( args ) => {
-	console.log( args );
-});
-const m3 = lpUtils.debounce( ( args ) => {
-	console.log( args );
-});
-
-lpUtils.eventHandlers(
-	'click',
-	[
-		{ selector: '.course-title', callBack: () => {
-			/*const g = lpUtils.debounce( m );
-			g( 'tesst' );*/
-
-			/*functionNeedDebounce( 'okok' );
-			functionNeedDebounceg('ccccc');
-
-			lpUtils.debounce( m, 500, 'gggg' );
-			lpUtils.debounce( m, 500, 'nnnn' );*/
-
-			lpUtils.debounceInline( ( args ) => {
-				console.log( args );
-			}, 'test' );
-
-			lpUtils.debounceInline( m, 'test2' );
-
-			m3( 'test3' );
-			m2( 'test4' );
-		} },
-	]
-);
-
 // Events
 /**
  * 1. Handle click section header
