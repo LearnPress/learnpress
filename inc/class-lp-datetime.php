@@ -262,6 +262,31 @@ class LP_Datetime {
 	}
 
 	/**
+	 * Convert local time to gmt+0 time.
+	 *
+	 * @param LP_Datetime $date_time_local
+	 * @param string $format
+	 *
+	 * @return string
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function to_gmt_string( LP_Datetime $date_time_local, string $format = 'Y-m-d H:i:s' ): string {
+		$time_stamp = $date_time_local->getTimestamp() - $this->get_wp_option_gmt_offset() * HOUR_IN_SECONDS;
+		$time       = new LP_Datetime( $time_stamp );
+		return $time->format( $format );
+	}
+
+	/**
+	 * Get gmt offset from wp option.
+	 *
+	 * @return false|mixed|null
+	 */
+	public function get_wp_option_gmt_offset() {
+		return get_option( 'gmt_offset' );
+	}
+
+	/**
 	 * Get timestamp of Date.
 	 *
 	 * @return int

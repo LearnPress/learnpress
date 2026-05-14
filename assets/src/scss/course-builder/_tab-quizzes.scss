@@ -1,0 +1,50 @@
+// Quizzes tab — uses shared tab-list mixin
+@include tab-list-styles( 'quiz' );
+
+// Grid column definition for quizzes:
+// Title(2fr) | Assigned(1.5fr) | Questions(70px) | Duration(1fr) | Create Date(1fr) | Status(100px) | Actions(80px)
+$quiz-grid: 2fr 1.5fr 80px 1fr 1fr 100px 80px;
+
+#lp-course-builder {
+	// Table container — wraps header + list
+	.courses-builder__quiz-tab {
+		background: $cb-bg;
+		border: 1px solid $cb-border;
+		border-radius: $cb-radius-md;
+		overflow: visible;
+
+		// Grid scoped to THIS tab wrapper — prevents cascade conflicts
+		.cb-list-table-header,
+		.quiz-item {
+			grid-template-columns: $quiz-grid;
+		}
+
+		.lesson-assigned-courses .label {
+			display: none;
+		}
+	}
+
+	// Remove border from inner list — container has it
+	.cb-list-quiz {
+		border: none;
+		border-radius: 0;
+	}
+
+	.quiz-status,
+	.quizzes-status {
+		@include post-status-badge;
+	}
+
+	.quiz-assigned-courses,
+	.lesson-assigned-courses {
+		@include assigned-items-display;
+
+		.label {
+			color: $cb-text;
+		}
+	}
+
+	.quiz-action-expanded__items {
+		@include tab-action-items( 'quiz' );
+	}
+}

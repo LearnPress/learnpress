@@ -507,7 +507,9 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'options'           => $options,
 						'style'             => 'min-width:200px;',
 						'tom_select'        => true,
-						'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ],
+						'custom_attributes' => [
+							'data-struct' => htmlentities2( json_encode( $data_struct ) ),
+						],
 					)
 				),
 			)
@@ -550,8 +552,22 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 			if ( $final_quiz ) {
 				$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
+				if ( '' === (string) $passing_grade ) {
+					$quiz_model = \LearnPress\Models\QuizPostModel::find( absint( $final_quiz ), true );
+					if ( $quiz_model ) {
+						$passing_grade = $quiz_model->get_passing_grade();
+					} else {
+						$passing_grade = 80;
+					}
+				}
 
 				$url = get_edit_post_link( $final_quiz ) . '#_lp_passing_grade';
+				$url = apply_filters(
+					'learn-press/course/meta-box/assessment/final-quiz/edit-link',
+					$url,
+					$final_quiz,
+					$thepostid
+				);
 
 				$final_quizz_passing = '
 					<div class="lp-metabox-evaluate-final_quiz">
@@ -624,73 +640,14 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 	public function output( $post ) {
 		parent::output( $post );
-		?>
 
-		<div class="lp-meta-box lp-meta-box--course">
-			<div class="lp-meta-box__inner">
-				<div class="lp-meta-box__course-tab">
-					<ul class="lp-meta-box__course-tab__tabs">
-						<?php
-						foreach ( $this->metabox( $post->ID ) as $key => $tab ) {
-							if ( $key === 'author' && ! is_super_admin() ) {
-								continue;
-							}
+		$course_id   = $post->ID;
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel instanceof CourseModel ) {
+			return;
+		}
 
-							$class_tab = '';
-
-							if ( isset( $tab['class'] ) ) {
-								$class_tab = implode( ' ', (array) $tab['class'] );
-							}
-							?>
-							<li class="<?php echo esc_attr( $key ); ?>_options <?php echo esc_attr( $key ); ?>_tab <?php echo esc_attr( $class_tab ); ?>">
-								<a href="#<?php echo esc_attr( $tab['target'] ); ?>">
-									<?php if ( isset( $tab['icon'] ) ) : ?>
-										<i class="<?php echo esc_attr( $tab['icon'] ); ?>"></i>
-									<?php endif; ?>
-									<span><?php echo esc_html( $tab['label'] ); ?></span>
-								</a>
-							</li>
-						<?php } ?>
-					</ul>
-
-					<div class="lp-meta-box__course-tab__content">
-						<?php foreach ( $this->metabox( $post->ID ) as $key => $tab_content ) { ?>
-							<?php
-							if ( $key === 'author' && ! is_super_admin() ) {
-								continue;
-							}
-							?>
-							<?php if ( isset( $tab_content['content'] ) ) { ?>
-								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>"
-									class="lp-meta-box-course-panels">
-									<?php
-									do_action( 'learnpress/course-settings/before-' . $key );
-
-									foreach ( $tab_content['content'] as $meta_key => $object ) {
-										if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
-											$object->id = $meta_key;
-											$output     = $object->output( $post->ID );
-											if ( ! empty( $output ) ) {
-												echo wp_kses_post( $output );
-											}
-										}
-									}
-
-									do_action( 'learnpress/course-settings/after-' . $key );
-									?>
-								</div>
-								<?php
-							}
-						}
-
-						do_action( 'lp_course_data_setting_tab_content', $post );
-						?>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<?php
+		do_action( 'learn-press/admin/course/edit-setting/layout', $courseModel->ID );
 	}
 
 	/**

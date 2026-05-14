@@ -43,25 +43,9 @@ class AdminListStudentsEnrolled {
 		add_action( 'learn-press/admin/enrolled-students/layout', array( $this, 'enrolled_students_layout' ) );
 		// 2. Whitelist AJAX callback.
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
-		// 3. Register WP admin submenu page.
-		add_action( 'admin_menu', array( $this, 'register_admin_submenu' ), 30 );
 		// 4. Render a modal toolbar template from PHP (used by JS modal).
 		add_action( 'admin_footer', array( $this, 'print_modal_toolbar_template' ) );
 		add_action( 'wp_footer', array( $this, 'print_modal_toolbar_template' ) );
-	}
-
-	/**
-	 * Register submenu under LearnPress.
-	 */
-	public function register_admin_submenu() {
-		add_submenu_page(
-			'learn_press',
-			__( 'Enrolled Students', 'learnpress' ),
-			__( 'Enrolled Students', 'learnpress' ),
-			'edit_posts', // Both admin + lp_teacher
-			'lp-enrolled-students',
-			array( $this, 'admin_page_output' )
-		);
 	}
 
 	/**
@@ -101,8 +85,8 @@ class AdminListStudentsEnrolled {
 				$wp_screen = get_current_screen();
 				if ( $wp_screen ) {
 					// Page on the Admin screen.
-					if ( $wp_screen->id === 'learnpress_page_lp-enrolled-students' ) {
-						$page_current = 'learnpress_page_lp-enrolled-students';
+					if ( $wp_screen->id === 'learnpress_page_learn-press-students-enrolled' ) {
+						$page_current = 'learnpress_page_learn-press-students-enrolled';
 					}
 				}
 			}

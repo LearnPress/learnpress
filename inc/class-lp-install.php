@@ -58,6 +58,15 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! LP_Settings::is_created_tb_material_files() ) {
 				$this->create_table_learnpress_files();
 			}
+
+			// Runtime migration for MCP API keys table.
+			if ( ! LP_Settings::is_created_tb_mcp_api_keys() ) {
+				$this->create_table_mcp_api_keys();
+			}
+
+			// Set roles and capabilities.
+			learn_press_add_user_roles();
+
 			ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 		}
 
@@ -105,9 +114,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			/*if ( ! get_option( 'users_can_register' ) ) {
 				update_option( 'users_can_register', 1 );
 			}*/
-
-			// Set roles and capabilities.
-			learn_press_add_user_roles();
 		}
 
 		/**
@@ -126,6 +132,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 				if ( ! LP_Settings::is_created_tb_material_files() ) {
 					$this->create_table_learnpress_files();
+				}
+
+				// Ensure MCP API keys table exists for activation/upgrade flows.
+				// Keep this explicit guard in addition to tables-v4 config loading.
+				if ( ! LP_Settings::is_created_tb_mcp_api_keys() ) {
+					$this->create_table_mcp_api_keys();
 				}
 
 				update_option( 'learn_press_check_tables', 'yes' );
@@ -235,6 +247,41 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				if ( $rs ) {
 					update_option( 'table_learnpress_files_created', 'yes' );
 				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Create table learnpress_mcp_api_keys.
+		 *
+		 * @since 4.3.3
+		 * @return void
+		 */
+		public function create_table_mcp_api_keys() {
+			global $wpdb;
+
+			try {
+				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+
+				$sql = "CREATE TABLE IF NOT EXISTS {$this->lp_db->tb_lp_mcp_api_keys} (
+					key_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					user_id bigint(20) unsigned NOT NULL,
+					description varchar(200) NULL DEFAULT NULL,
+					permissions varchar(10) NOT NULL DEFAULT 'read',
+					consumer_key char(64) NOT NULL,
+					consumer_secret char(64) NOT NULL,
+					truncated_key char(7) NOT NULL,
+					last_access datetime NULL DEFAULT NULL,
+					call_count bigint(20) unsigned NOT NULL DEFAULT 0,
+					created_at datetime NOT NULL,
+					updated_at datetime NULL DEFAULT NULL,
+					PRIMARY KEY (key_id),
+					UNIQUE KEY consumer_key (consumer_key),
+					KEY user_id (user_id)
+				) $collation";
+
+				$wpdb->query( $sql );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}

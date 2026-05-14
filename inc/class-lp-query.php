@@ -6,6 +6,8 @@
  * @version 4.2.2.3
  */
 
+use LearnPress\CourseBuilder\CourseBuilder;
+
 defined( 'ABSPATH' ) || exit;
 
 class LP_Query {
@@ -45,16 +47,20 @@ class LP_Query {
 	 */
 	public function add_rewrite_tags() {
 		$tags = [
-			'%course-item%'          => '([^&]+)',
-			'%item-type%'            => '([^&]+)',
-			'%question%'             => '([^&]+)',
-			'%user%'                 => '([^/]*)',
-			'%view%'                 => '([^/]*)',
-			'%view_id%'              => '(.*)',
-			'%section%'              => '(.*)',
-			'%content-item-only%'    => '(.*)',
-			'%is_single_instructor%' => '(.*)',
-			'%instructor_name%'      => '(.*)',
+			'%course-item%'                                => '([^&]+)',
+			'%item-type%'                                  => '([^&]+)',
+			'%question%'                                   => '([^&]+)',
+			'%user%'                                       => '([^/]*)',
+			'%view%'                                       => '([^/]*)',
+			'%view_id%'                                    => '(.*)',
+			'%section%'                                    => '(.*)',
+			'%content-item-only%'                          => '(.*)',
+			'%is_single_instructor%'                       => '(.*)',
+			'%instructor_name%'                            => '(.*)',
+			// For Course builder
+			'%' . CourseBuilder::QUERY_VAR_MENU_SLUG . '%' => '([^/]*)',
+			'%' . CourseBuilder::QUERY_VAR_ITEM_ID . '%'   => '(.*)',
+			'%' . CourseBuilder::QUERY_VAR_IS_COURSE_BUILDER . '%' => '(.*)',
 		];
 
 		$tags = apply_filters( 'learn-press/rewrite/tags', $tags );
@@ -78,6 +84,14 @@ class LP_Query {
 		}
 
 		$endpoints = $settings->get_profile_endpoints();
+		if ( $endpoints ) {
+			foreach ( $endpoints as $endpoint => $value ) {
+				LearnPress::instance()->query_vars[ $endpoint ] = $value;
+				add_rewrite_endpoint( $value, EP_PAGES );
+			}
+		}
+
+		$endpoints = $settings->get_course_builder_endpoints();
 		if ( $endpoints ) {
 			foreach ( $endpoints as $endpoint => $value ) {
 				LearnPress::instance()->query_vars[ $endpoint ] = $value;
@@ -177,6 +191,9 @@ class LP_Query {
 				'^lp-ajax-handle/?$' => 'index.php',
 			];
 
+			// Course builder
+			$this->add_rewrite_rules_course_builder( $rules );
+
 			$rules = apply_filters( 'learn-press/rewrite/rules', $rules );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
@@ -227,6 +244,62 @@ class LP_Query {
 
 			apply_filters( 'learn-press/rewrite-rules/profile', $rules['profile'], $profile_id );
 		}
+	}
+
+	/**
+	 * Add rewrite rules for profile page.
+	 *
+	 * @param $rules
+	 *
+	 * @return void
+	 */
+	public function add_rewrite_rules_course_builder( &$rules ) {
+		// Course Builder
+		$page     = LP_Settings::get_option( 'course_builder', 'course-builder' );
+		$menus    = CourseBuilder::get_menus_arr();
+		$key_rule = 'course-builder';
+
+		if ( $menus ) {
+			$rules[ $key_rule ]['home'] = [
+				"^{$page}/?$" => 'index.php?is_course_builder=1',
+			];
+
+			foreach ( $menus as $menu_slug => $args ) {
+				$rules[ $key_rule ][ $menu_slug . '_create' ] = [
+					"^{$page}/({$menu_slug})/(?:create)/?$" =>
+						sprintf(
+							'index.php?%s=1&%s=%s&%s=new',
+							CourseBuilder::QUERY_VAR_IS_COURSE_BUILDER,
+							CourseBuilder::QUERY_VAR_MENU_SLUG,
+							$menu_slug,
+							CourseBuilder::QUERY_VAR_ITEM_ID
+						),
+				];
+
+				$rules[ $key_rule ][ $menu_slug . '_pagination' ] = [
+					"^{$page}/{$menu_slug}/(?:page)/?([0-9]*)/?$" =>
+						sprintf(
+							'index.php?%s=1&%s=%s&paged=$matches[1]',
+							CourseBuilder::QUERY_VAR_IS_COURSE_BUILDER,
+							CourseBuilder::QUERY_VAR_MENU_SLUG,
+							$menu_slug
+						),
+				];
+
+				$rules[ $key_rule ][ $menu_slug ] = [
+					"^{$page}/{$menu_slug}/?([0-9]*)/?$" =>
+						sprintf(
+							'index.php?%s=1&%s=%s&%s=$matches[1]',
+							CourseBuilder::QUERY_VAR_IS_COURSE_BUILDER,
+							CourseBuilder::QUERY_VAR_MENU_SLUG,
+							$menu_slug,
+							CourseBuilder::QUERY_VAR_ITEM_ID
+						),
+				];
+			}
+		}
+
+		apply_filters( 'learn-press/rewrite-rules/course-builder', $rules[ $key_rule ], $page );
 	}
 
 	/**

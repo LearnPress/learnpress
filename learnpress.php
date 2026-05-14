@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.3.4
+ * Version: 4.3.7-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -14,54 +14,77 @@
  * @package LearnPress
  */
 
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
+use LearnPress\Ajax\AI\OpenAiAjax;
+use LearnPress\Ajax\BuilderDashboardAjax;
+use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
+use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
+use LearnPress\Ajax\ExportOrderCSVAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
-use LearnPress\Ajax\AI\OpenAiAjax;
-use LearnPress\Ajax\ExportOrderCSVAjax;
+use LearnPress\Ajax\MCP\McpApiKeysAjax;
+use LearnPress\Ajax\CourseBuilder\CBEditCourseAjax;
+use LearnPress\Ajax\SendEmailAjax;
 use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Gutenberg\GutenbergHandleMain;
-use LearnPress\Ajax\EditCurriculumAjax;
-use LearnPress\Ajax\SendEmailAjax;
+use LearnPress\MCP\Abilities;
+use LearnPress\MCP\Auth\ApiKeyAuthenticator;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
 use LearnPress\Shortcodes\CourseButtonShortcode;
+use LearnPress\Shortcodes\CourseMaterialShortcode;
 use LearnPress\Shortcodes\Courses\ListCoursesShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
-use LearnPress\Shortcodes\CourseMaterialShortcode;
-use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
-use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
-use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
+use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
+use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
+use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
+use LearnPress\TemplateHooks\Course\AdminEditSettingTemplate;
+use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
+use LearnPress\TemplateHooks\Course\SingleCourseClassicTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseModernLayout;
 use LearnPress\TemplateHooks\Course\SingleCourseOfflineTemplate;
-use LearnPress\TemplateHooks\Course\SingleCourseClassicTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Dashboard\BuilderDashboardTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderEditLessonTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderLessonTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderListLessonsTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderEditQuestionTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderListQuestionsTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderQuestionTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderEditQuizTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderListQuizzesTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderQuizTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\Settings\BuilderSettingsTemplate;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LearnPress\TemplateHooks\Order\AdminOrderItemsTemplate;
+use LearnPress\TemplateHooks\Order\AdminOrderListTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileCoursesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileGeneralInfoTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
-use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
-use LearnPress\TemplateHooks\Profile\ProfileStudentEnrolledTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileStudentEnrolledTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
-use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
-use LearnPress\TemplateHooks\Order\AdminOrderItemsTemplate;
-use LearnPress\TemplateHooks\Order\AdminOrderListTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
@@ -340,11 +363,29 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ProfileGeneralInfoTemplate::instance();
 			FilterCourseTemplate::instance();
 			ProfileQuizzesTemplate::instance();
+			CourseBuilderTemplate::instance();
+			BuilderCourseTemplate::instance();
+			BuilderListCoursesTemplate::instance();
+			BuilderDashboardTemplate::instance();
+			BuilderSettingsTemplate::instance();
+			BuilderDashboardAjax::instance();
+			BuilderEditCourseTemplate::instance();
+			BuilderLessonTemplate::instance();
+			BuilderListLessonsTemplate::instance();
+			BuilderEditLessonTemplate::instance();
+			BuilderQuizTemplate::instance();
+			BuilderListQuizzesTemplate::instance();
+			BuilderEditQuizTemplate::instance();
+			BuilderQuestionTemplate::instance();
+			BuilderListQuestionsTemplate::instance();
+			BuilderEditQuestionTemplate::instance();
+			BuilderPopupTemplate::instance();
 			ProfileCoursesTemplate::instance();
 			ProfileStudentEnrolledTemplate::instance();
 
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
+			AdminEditSettingTemplate::instance();
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
@@ -682,7 +723,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				$addon_valid            = $addon->check_require_version_addon();
 
 				if ( $addons_valid ) {
-					$addon_valid = $addon->check_require_version_lp();
+					//$addon_valid = $addon->check_require_version_lp();
 				}
 
 				if ( ! $addon_valid ) {
@@ -695,6 +736,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Initial common hooks
 		 */
 		public function hooks() {
+			add_action( 'init', array( $this, 'maybe_init_mcp_abilities' ), 20 );
+
 			/**
 			 * Handle lp ajax.
 			 * Set priority after register_post_type to register capabilities for post type of LP.
@@ -708,8 +751,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
 					SendEmailAjax::catch_lp_ajax();
+					CourseBuilderAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
+					McpApiKeysAjax::catch_lp_ajax();
+					CBEditCourseAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},
@@ -837,6 +883,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_deactivate() {
 			do_action( 'learn-press/deactivate', $this );
+		}
+
+		/**
+		 * Conditionally bootstrap MCP abilities.
+		 *
+		 * @return void
+		 */
+		public function maybe_init_mcp_abilities() {
+			if ( LP_Settings::get_option( 'enable_mcp_integration', 'no' ) !== 'yes' ) {
+				return;
+			}
+
+			ApiKeyAuthenticator::init();
+			Abilities::init();
 		}
 
 		/**

@@ -22,7 +22,14 @@ if ( ! isset( $title ) || ! isset( $items ) ) {
 	<div class="course-extra-box__content">
 		<div class="course-extra-box__content-inner">
 			<ul>
-				<?php foreach ( $items as $item ) : ?>
+
+				<?php
+				if ( ! is_array( $items ) ) {
+					$items = array();
+				}
+
+				foreach ( $items as $item ) :
+					?>
 				<li><?php echo wp_kses_post( $item ); ?></li>
 				<?php endforeach; ?>
 			</ul>

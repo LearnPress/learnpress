@@ -215,36 +215,15 @@ class UserModelTest extends BrainMonkeyTestCase {
 	}
 
 	// -------------------------------------------------------------------------
-	// 4. get_pretty_slug
+	// 4. get_slug_link
 	// -------------------------------------------------------------------------
 
-	public function test_get_pretty_slug_returns_slug_from_meta(): void {
-		Functions\when( 'sanitize_title' )->returnArg( 1 );
-
+	public function test_get_slug_link_returns_user_nicename(): void {
 		$user = $this->make_user(
-			[ 'user_login' => 'myuser' ],
-			[ UserModel::META_KEY_USER_SLUG => 'my-pretty-slug' ]
+			[ 'user_login' => 'myuser', 'user_nicename' => 'myuser' ]
 		);
 
-		$this->assertSame( 'my-pretty-slug', $user->get_pretty_slug() );
-	}
-
-	public function test_get_pretty_slug_falls_back_to_username_when_no_slug(): void {
-		Functions\when( 'sanitize_title' )->justReturn( '' );
-		Functions\when( 'get_user_meta' )->justReturn( '' );
-
-		$user = $this->make_user( [ 'user_login' => 'fallbackuser' ] );
-
-		$this->assertSame( 'fallbackuser', $user->get_pretty_slug( true ) );
-	}
-
-	public function test_get_pretty_slug_returns_empty_when_no_slug_and_fallback_disabled(): void {
-		Functions\when( 'sanitize_title' )->justReturn( '' );
-		Functions\when( 'get_user_meta' )->justReturn( '' );
-
-		$user = $this->make_user( [ 'user_login' => 'myuser' ] );
-
-		$this->assertSame( '', $user->get_pretty_slug( false ) );
+		$this->assertSame( 'myuser', $user->get_slug_link() );
 	}
 
 	public function test_generate_pretty_slug_returns_existing_pretty_slug_when_already_set(): void {
@@ -316,7 +295,7 @@ class UserModelTest extends BrainMonkeyTestCase {
 		Functions\when( 'sanitize_title' )->returnArg( 1 );
 
 		// We need to prevent check_user_slug_pretty from hitting the DB.
-		// Use a partial approach: manually set meta so get_pretty_slug finds no existing slug,
+		// Use a partial approach: manually set meta so get_slug_link finds no existing slug,
 		// then stub the DB function it calls.
 		Functions\when( 'get_var' )->justReturn( 0 );
 

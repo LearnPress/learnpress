@@ -13,7 +13,12 @@ let editSection = null;
 let editSectionItem = null;
 
 export class EditCurriculumAi {
-	constructor() {
+	constructor( options = {} ) {
+		this.options = {
+			isCourseBuilder: false,
+			...options,
+		};
+
 		this.init();
 	}
 
@@ -26,12 +31,21 @@ export class EditCurriculumAi {
 			return;
 		}
 
-		lpUtils.lpOnElementReady(
-			EditCourseCurriculum.selectors.idElEditCurriculum,
-			( el ) => {
-				const elCountSections = el.querySelector(
-					EditSection.selectors.elCountSections
+		if ( this.options.isCourseBuilder ) {
+			lpUtils.lpOnElementReady( EditCourseCurriculum.selectors.idElEditCurriculum, ( el ) => {
+				const elCountSections = el.querySelector( EditSection.selectors.elCountSections );
+				elCountSections.insertAdjacentHTML(
+					'beforebegin',
+					`<button type="button"
+						class="cb-course-edit-ai-btn lp-btn-generate-with-ai"
+						data-template="#lp-tmpl-edit-course-curriculum-ai">
+						<i class="lp-ico-ai"></i>
+					</button>`
 				);
+			} );
+		} else {
+			lpUtils.lpOnElementReady( EditCourseCurriculum.selectors.idElEditCurriculum, ( el ) => {
+				const elCountSections = el.querySelector( EditSection.selectors.elCountSections );
 				elCountSections.insertAdjacentHTML(
 					'afterend',
 					`<button type="button"
@@ -40,8 +54,8 @@ export class EditCurriculumAi {
 					<i class="lp-ico-ai"></i><span>Generate with AI</span>
 				</button>`,
 				);
-			}
-		);
+			} );
+		}
 
 		this.events();
 	}
@@ -64,10 +78,7 @@ export class EditCurriculumAi {
 	async applyData( args ) {
 		const { e, target } = args;
 		let dataSend = JSON.parse( target.dataset.send );
-		dataSend = lpUtils.mergeDataWithDatForm(
-			target.closest( 'form' ),
-			dataSend
-		);
+		dataSend = lpUtils.mergeDataWithDatForm( target.closest( 'form' ), dataSend );
 
 		if ( ! dataSend[ 'lp-openai-generated-data' ] ) {
 			return;
@@ -79,13 +90,10 @@ export class EditCurriculumAi {
 
 		const sections = data[ 0 ].sections;
 		if ( ! sections || sections.length === 0 ) {
-			lpToastify.show(
-				'No sections found in the generated data.',
-				'error'
-			);
+			lpToastify.show( 'No sections found in the generated data.', 'error' );
 		}
 
-		console.log( 'Generated Sections:', sections );
+		// console.log( 'Generated Sections:', sections );
 
 		SweetAlert.close();
 
@@ -225,14 +233,11 @@ export class EditCurriculumAi {
 	async addItemToSection( args ) {
 		const { itemData, elSection, elEditCurriculum } = args;
 
-		const elBtnAddItem = elSection.querySelector(
-			EditSectionItem.selectors.elBtnAddItem
-		);
+		const elBtnAddItem = elSection.querySelector( EditSectionItem.selectors.elBtnAddItem );
 		const elAddItemTypeTitleInput = elSection.querySelector(
 			EditSectionItem.selectors.elAddItemTypeTitleInput
 		);
-		elAddItemTypeTitleInput.value =
-			itemData.lesson_title || itemData.quiz_title || '';
+		elAddItemTypeTitleInput.value = itemData.lesson_title || itemData.quiz_title || '';
 
 		// Scroll to element add item
 		elBtnAddItem.scrollIntoView( { behavior: 'smooth', block: 'center' } );

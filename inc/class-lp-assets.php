@@ -7,6 +7,8 @@
  * @version 4.0.1
  */
 
+use LearnPress\Services\OpenAiService;
+
 defined( 'ABSPATH' ) || exit;
 
 class LP_Assets extends LP_Abstract_Assets {
@@ -81,6 +83,36 @@ class LP_Assets extends LP_Abstract_Assets {
 					self::url( 'css/widgets' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),
 					array(),
+					0
+				),
+				'lp-edit-curriculum' => new LP_Asset_Key(
+					$this->url( 'css/edit-curriculum' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
+					1
+				),
+				'lp-edit-quiz'       => new LP_Asset_Key(
+					$this->url( 'css/edit-quiz' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
+					1
+				),
+				'lp-edit-question'   => new LP_Asset_Key(
+					$this->url( 'css/edit-question' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
+					1
+				),
+				'lp-course-builder'  => new LP_Asset_Key(
+					self::url( 'css/course-builder' . $is_rtl . self::$_min_assets . '.css' ),
+					array(),
+					array( LP_PAGE_COURSE_BUILDER ),
+					0
+				),
+				'lp-tom-select'      => new LP_Asset_Key(
+					self::url( 'src/css/vendor/tom-select.min.css' ),
+					[],
+					[],
 					0
 				),
 			)
@@ -192,7 +224,14 @@ class LP_Assets extends LP_Abstract_Assets {
 					'stopOnFocus' => 1,
 					'classPrefix' => 'lp-toast',
 				],
-				'i18n'              => [],
+				'i18n'              => [
+					'yes'              => esc_html__( 'Yes' ),
+					'cancel'           => esc_html__( 'Cancel' ),
+					'generate_with_ai' => esc_html__( 'Generate with AI', 'learnpress' ),
+					'confirm_close_ai' => esc_html__( 'Are you sure you want to close? Generate data will stop.', 'learnpress' ),
+				],
+				'enable_open_ai'    => OpenAiService::instance()->is_enable()
+					&& ! empty( LP_Settings::get_option( 'open_ai_secret_key', '' ) ),
 			]
 		);
 	}
@@ -418,6 +457,15 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					'',
 					[ 'strategy' => 'async' ]
+				),
+				'lp-course-builder'    => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/course-builder' . self::$_min_assets . '.js' ),
+					array( 'wp-tinymce', 'editor', 'lp-load-ajax' ),
+					array( LP_PAGE_COURSE_BUILDER ),
+					0,
+					0,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 			)
 		);

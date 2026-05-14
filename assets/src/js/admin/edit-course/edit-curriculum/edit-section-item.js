@@ -101,20 +101,12 @@ export class EditSectionItem {
 				callBack: this.deleteItem.name,
 			},
 			{
-				selector:
-					LpPopupSelectItemToAdd.selectors
-						.elBtnShowPopupItemsToSelect,
-				callBack: ( args ) => {
-					const { e, target } = args;
-					const elSection = target.closest(
-						EditSection.selectors.elSection
-					);
-					this.sectionIdSelected = elSection.dataset.sectionId;
-				},
+				selector: LpPopupSelectItemToAdd.selectors.elBtnShowPopupItemsToSelect,
+				class: this,
+				callBack: this.handleShowPopupItemsToSelect.name,
 			},
 			{
-				selector:
-					LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected,
+				selector: LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected,
 				class: lpPopupSelectItemToAdd,
 				callBack: lpPopupSelectItemToAdd.addItemsSelectedToSection.name,
 				callBackHandle: this.addItemsSelectedToSection.bind( this ),
@@ -176,6 +168,29 @@ export class EditSectionItem {
 		] );
 	}
 
+	/* Handle show popup items to select - set sectionIdSelected */
+	handleShowPopupItemsToSelect( args ) {
+		const { e, target } = args;
+
+		const elQuizWrap = target.closest( '.lp-edit-quiz-wrap' );
+		if ( elQuizWrap ) {
+			this.sectionIdSelected = null;
+			return;
+		}
+
+		const elSection = target.closest( EditSection.selectors.elSection );
+
+		const elEditCurriculum =
+			target.closest( '#lp-course-edit-curriculum' ) ||
+			target.closest( '.lp-edit-curriculum-wrap' );
+
+		if ( elSection && elEditCurriculum ) {
+			this.sectionIdSelected = elSection.dataset.sectionId;
+		} else {
+			this.sectionIdSelected = null;
+		}
+	}
+
 	/* Add item type */
 	addItemType( args ) {
 		const { e, target } = args;
@@ -186,9 +201,7 @@ export class EditSectionItem {
 		const itemPlaceholder = elBtnSelectItemType.dataset.placeholder;
 		const itemBtnAddText = elBtnSelectItemType.dataset.buttonAddText;
 
-		const elSection = elBtnSelectItemType.closest(
-			`${ EditSection.selectors.elSection }`
-		);
+		const elSection = elBtnSelectItemType.closest( `${ EditSection.selectors.elSection }` );
 		const elSectionActions = elSection.querySelector(
 			`${ EditSectionItem.selectors.elSectionActions }`
 		);
@@ -211,19 +224,14 @@ export class EditSectionItem {
 		elAddItemTypeInput.setAttribute( 'placeholder', itemPlaceholder );
 		elAddItemTypeInput.dataset.itemType = itemType;
 		elBtnAddItem.textContent = itemBtnAddText;
-		elSectionActions.insertAdjacentElement(
-			'beforebegin',
-			elNewItemByType
-		);
+		elSectionActions.insertAdjacentElement( 'beforebegin', elNewItemByType );
 		elAddItemTypeInput.focus();
 	}
 
 	/* Cancel add item type */
 	cancelAddItemType( args ) {
 		const { e, target } = args;
-		const elAddItemType = target.closest(
-			`${ EditSectionItem.selectors.elAddItemType }`
-		);
+		const elAddItemType = target.closest( `${ EditSectionItem.selectors.elAddItemType }` );
 		if ( elAddItemType ) {
 			elAddItemType.remove();
 		}
@@ -234,12 +242,8 @@ export class EditSectionItem {
 		const { e, target, callBackNest } = args;
 		e.preventDefault();
 
-		const elAddItemType = target.closest(
-			`${ EditSectionItem.selectors.elAddItemType }`
-		);
-		const elSection = elAddItemType.closest(
-			`${ EditSection.selectors.elSection }`
-		);
+		const elAddItemType = target.closest( `${ EditSectionItem.selectors.elAddItemType }` );
+		const elSection = elAddItemType.closest( `${ EditSection.selectors.elSection }` );
 		const sectionId = elSection.dataset.sectionId;
 		const elAddItemTypeTitleInput = elAddItemType.querySelector(
 			`${ EditSectionItem.selectors.elAddItemTypeTitleInput }`
@@ -254,9 +258,7 @@ export class EditSectionItem {
 		}
 
 		// Clone new section item
-		const elItemClone = elSection.querySelector(
-			`${ EditSectionItem.selectors.elItemClone }`
-		);
+		const elItemClone = elSection.querySelector( `${ EditSectionItem.selectors.elItemClone }` );
 		const elItemNew = elItemClone.cloneNode( true );
 		const elItemTitleInput = elItemNew.querySelector(
 			`${ EditSectionItem.selectors.elItemTitleInput }`
@@ -283,16 +285,15 @@ export class EditSectionItem {
 					elItemNew.remove();
 				} else if ( status === 'success' ) {
 					const { section_item, item_link } = data || {};
-					elItemNew.dataset.itemId = section_item.item_id || 0;
-					elItemNew
-						.querySelector( '.edit-link' )
-						.setAttribute( 'href', item_link || '' );
+					const itemId = section_item.item_id || 0;
+					elItemNew.dataset.itemId = itemId;
+					elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item_link || '' );
+
+					// Add popup attributes for Course Builder context
+					this.addPopupAttributesToItem( elItemNew, itemId, typeValue );
 
 					// Call callback nest if exists
-					if (
-						callBackNest &&
-						typeof callBackNest.success === 'function'
-					) {
+					if ( callBackNest && typeof callBackNest.success === 'function' ) {
 						args.elItemNew = elItemNew;
 						callBackNest.success( args );
 					}
@@ -307,10 +308,7 @@ export class EditSectionItem {
 				this.updateCountItems( elSection );
 
 				// Call callback nest if exists
-				if (
-					callBackNest &&
-					typeof callBackNest.completed === 'function'
-				) {
+				if ( callBackNest && typeof callBackNest.completed === 'function' ) {
 					args.elItemNew = elItemNew;
 					callBackNest.completed( args );
 				}
@@ -325,15 +323,18 @@ export class EditSectionItem {
 			item_type: typeValue,
 			args: { id_url: idUrlHandle },
 		};
+
+		if ( document.querySelector( '#lp-course-builder' ) ) {
+			dataSend.is_course_builder = 1;
+		}
+
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 
 	/* Typing in title input */
 	changeTitle( args ) {
 		const { target } = args;
-		const elItemTitleInput = target.closest(
-			`${ EditSectionItem.selectors.elItemTitleInput }`
-		);
+		const elItemTitleInput = target.closest( `${ EditSectionItem.selectors.elItemTitleInput }` );
 		if ( ! elItemTitleInput ) {
 			return;
 		}
@@ -359,9 +360,7 @@ export class EditSectionItem {
 	focusTitleInput( args ) {
 		const { target, focusIn = true } = args;
 
-		const elItemTitleInput = target.closest(
-			`${ EditSectionItem.selectors.elItemTitleInput }`
-		);
+		const elItemTitleInput = target.closest( `${ EditSectionItem.selectors.elItemTitleInput }` );
 		if ( ! elItemTitleInput ) {
 			return;
 		}
@@ -417,16 +416,12 @@ export class EditSectionItem {
 
 		e.preventDefault();
 
-		const elSectionItem = target.closest(
-			`${ EditSectionItem.selectors.elSectionItem }`
-		);
+		const elSectionItem = target.closest( `${ EditSectionItem.selectors.elSectionItem }` );
 		if ( ! elSectionItem ) {
 			return;
 		}
 
-		const elSection = elSectionItem.closest(
-			`${ EditSection.selectors.elSection }`
-		);
+		const elSection = elSectionItem.closest( `${ EditSection.selectors.elSection }` );
 		if ( ! elSection ) {
 			return;
 		}
@@ -513,24 +508,18 @@ export class EditSectionItem {
 	/* Delete item from section */
 	deleteItem( args ) {
 		const { e, target } = args;
-		const elBtnDeleteItem = target.closest(
-			`${ EditSectionItem.selectors.elBtnDeleteItem }`
-		);
+		const elBtnDeleteItem = target.closest( `${ EditSectionItem.selectors.elBtnDeleteItem }` );
 		if ( ! elBtnDeleteItem ) {
 			return;
 		}
 
-		const elSectionItem = elBtnDeleteItem.closest(
-			`${ EditSectionItem.selectors.elSectionItem }`
-		);
+		const elSectionItem = elBtnDeleteItem.closest( `${ EditSectionItem.selectors.elSectionItem }` );
 		if ( ! elSectionItem ) {
 			return;
 		}
 
 		const itemId = elSectionItem.dataset.itemId;
-		const elSection = elSectionItem.closest(
-			`${ EditSection.selectors.elSection }`
-		);
+		const elSection = elSectionItem.closest( `${ EditSection.selectors.elSection }` );
 		const sectionId = elSection.dataset.sectionId;
 
 		SweetAlert.fire( {
@@ -539,8 +528,8 @@ export class EditSectionItem {
 			icon: 'warning',
 			showCloseButton: true,
 			showCancelButton: true,
-			cancelButtonText: lpDataAdmin.i18n.cancel,
-			confirmButtonText: lpDataAdmin.i18n.yes,
+			cancelButtonText: lpData.i18n.cancel,
+			confirmButtonText: lpData.i18n.yes,
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
@@ -597,9 +586,8 @@ export class EditSectionItem {
 					const dataSectionsItems = [];
 
 					const elItemDragged = evt.item;
-					sectionIdEnd = elItemDragged.closest(
-						`${ EditSection.selectors.elSection }`
-					).dataset.sectionId;
+					sectionIdEnd = elItemDragged.closest( `${ EditSection.selectors.elSection }` ).dataset
+						.sectionId;
 
 					const dataSend = {
 						course_id: this.courseId,
@@ -615,9 +603,7 @@ export class EditSectionItem {
 					const section = this.elCurriculumSections.querySelector(
 						`.section[data-section-id="${ sectionIdEnd }"]`
 					);
-					const items = section.querySelectorAll(
-						`${ EditSectionItem.selectors.elSectionItem }`
-					);
+					const items = section.querySelectorAll( `${ EditSectionItem.selectors.elSectionItem }` );
 					items.forEach( ( elItem ) => {
 						const itemId = parseInt( elItem.dataset.itemId || 0 );
 						if ( itemId === 0 ) {
@@ -653,9 +639,7 @@ export class EditSectionItem {
 				onChoose: ( evt ) => {
 					const elChooseItem = evt.item;
 					itemIdChoose = elChooseItem.dataset.itemId;
-					elSectionChoose = elChooseItem.closest(
-						`${ EditSection.selectors.elSection }`
-					);
+					elSectionChoose = elChooseItem.closest( `${ EditSection.selectors.elSection }` );
 					sectionIdChoose = elSectionChoose.dataset.sectionId;
 				},
 				onUpdate: ( /*evt*/ ) => {},
@@ -665,12 +649,24 @@ export class EditSectionItem {
 
 	/* Add items selected to section */
 	addItemsSelectedToSection( itemsSelectedData ) {
+		// Skip if not in curriculum context (e.g., quiz popup)
+		if ( ! this.sectionIdSelected ) {
+			return;
+		}
+
 		const elSection = document.querySelector(
 			`.section[data-section-id="${ this.sectionIdSelected }"]`
 		);
-		const elItemClone = elSection.querySelector(
-			`${ EditSectionItem.selectors.elItemClone }`
-		);
+
+		// Skip if section element not found
+		if ( ! elSection ) {
+			return;
+		}
+
+		const elItemClone = elSection.querySelector( `${ EditSectionItem.selectors.elItemClone }` );
+
+		// Check if we're in Course Builder context
+		const isCourseBuilder = document.querySelector( '#lp-course-builder' ) !== null;
 
 		itemsSelectedData.forEach( ( item ) => {
 			const elItemNew = elItemClone.cloneNode( true );
@@ -682,10 +678,9 @@ export class EditSectionItem {
 			elItemNew.classList.add( item.type );
 			elItemNew.classList.remove( 'clone' );
 			elItemNew.dataset.itemType = item.type;
-			elItemNew
-				.querySelector( '.edit-link' )
-				.setAttribute( 'href', item.editLink || '' );
+			elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.editLink || '' );
 			elInputTitleNew.value = item.titleSelected || '';
+
 			lpUtils.lpSetLoadingEl( elItemNew, 1 );
 			lpUtils.lpShowHideEl( elItemNew, 1 );
 			elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
@@ -698,6 +693,7 @@ export class EditSectionItem {
 			action: 'add_items_to_section',
 			section_id: this.sectionIdSelected,
 			items: itemsSelectedData,
+			is_course_builder: isCourseBuilder ? 1 : 0,
 			args: { id_url: idUrlHandle },
 		};
 		window.lpAJAXG.fetchAJAX( dataSend, {
@@ -715,7 +711,8 @@ export class EditSectionItem {
 					}
 				} );
 
-				if ( status === 'success' ) {
+				if ( status === 'success' && html ) {
+					// Server returns HTML with popup attributes already included when is_course_builder=1
 					elItemClone.insertAdjacentHTML( 'beforebegin', html );
 				}
 			},
@@ -793,8 +790,7 @@ export class EditSectionItem {
 	/* Update count items when item add/delete or section delete */
 	updateCountItems( elSection ) {
 		const elEditCurriculum = this.elEditCurriculum;
-		const elCountItemsAll =
-			elEditCurriculum.querySelector( '.total-items' );
+		const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
 		const elItemsAll = elEditCurriculum.querySelectorAll(
 			`${ EditSectionItem.selectors.elSectionItem }:not(.clone)`
 		);
@@ -804,9 +800,7 @@ export class EditSectionItem {
 		elCountItemsAll.querySelector( '.count' ).textContent = itemsAllCount;
 
 		// Count items in section
-		const elSectionItemsCount = elSection.querySelector(
-			'.section-items-counts'
-		);
+		const elSectionItemsCount = elSection.querySelector( '.section-items-counts' );
 
 		const elItems = elSection.querySelectorAll(
 			`${ EditSectionItem.selectors.elSectionItem }:not(.clone)`
@@ -815,5 +809,62 @@ export class EditSectionItem {
 
 		elSectionItemsCount.dataset.count = itemsCount;
 		elSectionItemsCount.querySelector( '.count' ).textContent = itemsCount;
+	}
+
+	/**
+	 * Add popup attributes to item element for Course Builder context.
+	 * Only applies when in Course Builder (not admin edit course page).
+	 *
+	 * @param {HTMLElement} elItem - The item element
+	 * @param {number} itemId - The item ID
+	 * @param {string} itemType - The item type (lp_lesson, lp_quiz, lp_assignment)
+	 */
+	addPopupAttributesToItem( elItem, itemId, itemType ) {
+		// Check if we're in Course Builder context
+		const isCourseBuilder = document.querySelector( '#lp-course-builder' ) !== null;
+
+		if ( ! isCourseBuilder || ! itemId ) {
+			return;
+		}
+
+		const popupType = itemType.replace( /^lp_/, '' );
+		const templateSelector = `#lp-tmpl-builder-popup-curriculum-${ popupType }-course-${ this.courseId }`;
+
+		if ( ! popupType || ! document.querySelector( templateSelector ) ) {
+			return;
+		}
+
+		// Find the edit link element - it's an <a> with class 'edit-link' inside .item-actions
+		const editLink = elItem.querySelector( '.item-actions .edit-link' );
+		if ( ! editLink ) {
+			return;
+		}
+
+		// Get the parent <li> element of the edit link
+		const editBtn = editLink.closest( 'li' );
+		if ( ! editBtn ) {
+			return;
+		}
+
+		// Add popup data attributes based on item type
+		if ( itemType === 'lp_lesson' ) {
+			editBtn.setAttribute( 'data-popup-lesson', itemId );
+		} else if ( itemType === 'lp_quiz' ) {
+			editBtn.setAttribute( 'data-popup-quiz', itemId );
+		}
+
+		// Add popup class to the <li> element
+		editBtn.classList.add( 'lp-btn-edit-item-popup' );
+
+		// Update edit link: remove target="_blank" and update classes for popup behavior
+		editLink.removeAttribute( 'target' );
+		editLink.removeAttribute( 'href' );
+		editLink.classList.add( 'edit-popup-link' );
+
+		// Store additional data for popup on the <li> element
+		editBtn.setAttribute( 'data-course-id', this.courseId );
+		editBtn.setAttribute( 'data-popup-type', popupType );
+		editBtn.setAttribute( 'data-popup-id', itemId );
+		editBtn.setAttribute( 'data-template', templateSelector );
 	}
 }

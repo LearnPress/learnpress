@@ -48,6 +48,20 @@ class AdminEditCourseCurriculumWithAITemplate {
 				return;
 			}
 
+			echo $this->render_for_frontend();
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+	}
+
+	/**
+	 * Render curriculum AI popup template for frontend contexts (e.g. Course Builder).
+	 *
+	 * @return string
+	 * @since 4.3.0
+	 */
+	public function render_for_frontend(): string {
+		try {
 			$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
 
 			$components = [
@@ -123,10 +137,12 @@ class AdminEditCourseCurriculumWithAITemplate {
 				'wrap-script-template-end' => '</script>',
 			];
 
-			echo Template::combine_components( $components );
+			return Template::combine_components( $components );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
+
+		return '';
 	}
 
 	public function html_step_header(): string {

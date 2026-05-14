@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Views
- * @version 4.0.2
+ * @version 4.0.3
  */
 
 use LearnPress\Helpers\Template;
@@ -15,7 +15,6 @@ defined( 'ABSPATH' ) || die;
 /**
  * @var WP_User $user
  */
-
 if ( empty( $user ) ) {
 	return;
 }
@@ -24,7 +23,7 @@ $extra_profile_fields = learn_press_social_profiles();
 $extra_profile        = learn_press_get_user_extra_profile_info( $user->ID );
 
 $custom_profile = lp_get_user_custom_register_fields( $user->ID );
-$user_model     = new UserModel( $user );
+$userModel      = new UserModel( $user->data );
 $lp_message     = LP_Request::get_param( 'lp-message' );
 ?>
 
@@ -46,7 +45,7 @@ $lp_message     = LP_Request::get_param( 'lp-message' );
 			<td>
 				<input class="regular-text"
 					type="text"
-					value="<?php echo esc_attr( $user_model->get_pretty_slug( false ) ); ?>"
+					value="<?php echo esc_attr( $userModel->get_slug_link() ); ?>"
 					name="lp_user_slug">
 				<?php
 				if ( ! empty( $lp_message ) ) {
@@ -56,13 +55,8 @@ $lp_message     = LP_Request::get_param( 'lp-message' );
 				<p class="description">
 					<?php
 					printf(
-						'%s<br>%s',
-						esc_html__( 'Custom slug to replace the WP login username, use for link lp profile/instructor. Must be unique.', 'learnpress' ),
-						sprintf(
-							/* translators: 1: link to permalink settings page */
-							__( 'Set for all uses not exists pretty slug <a href="%s">here</a>. Then click "Generate users slug"', 'learnpress' ),
-							esc_url( admin_url( 'admin.php?page=learn-press-settings&tab=permalink' ) )
-						)
+						'%s',
+						esc_html__( 'Custom slug to replace the WP login username, use for link lp profile/instructor. Must be unique.', 'learnpress' )
 					);
 					?>
 				</p>

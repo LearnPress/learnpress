@@ -25,6 +25,10 @@ class CoursePostModel extends PostModel {
 	 */
 	public $post_type = LP_COURSE_CPT;
 
+	// Taxonomy
+	const TAXONOMY_CATEGORY = 'course_category';
+	const TAXONOMY_TAG      = 'course_tag';
+
 	/**
 	 * Const meta key
 	 */

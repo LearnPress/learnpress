@@ -1,11 +1,11 @@
 /**
  * Handle curriculum
  *
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.7.6
  */
 
-import { lpShowHideEl, lpOnElementReady } from '../utils.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 // Events
 /**
@@ -64,8 +64,8 @@ const toggleSectionAll = ( elToggleAllSections ) => {
 	const elCollapse = elCurriculum.querySelector( '.course-toggle-all-sections.lp-collapse' );
 
 	if ( elToggleAllSections.classList.contains( 'lp-collapse' ) ) {
-		lpShowHideEl( elExpand, 1 );
-		lpShowHideEl( elCollapse, 0 );
+		lpUtils.lpShowHideEl( elExpand, 1 );
+		lpUtils.lpShowHideEl( elCollapse, 0 );
 
 		elSections.forEach( ( el ) => {
 			if ( ! el.classList.contains( 'lp-collapse' ) ) {
@@ -74,8 +74,8 @@ const toggleSectionAll = ( elToggleAllSections ) => {
 		} );
 	} else {
 		elSections.forEach( ( el ) => {
-			lpShowHideEl( elExpand, 0 );
-			lpShowHideEl( elCollapse, 1 );
+			lpUtils.lpShowHideEl( elExpand, 0 );
+			lpUtils.lpShowHideEl( elCollapse, 1 );
 
 			if ( el.classList.contains( 'lp-collapse' ) ) {
 				el.classList.remove( 'lp-collapse' );
@@ -107,11 +107,11 @@ const checkAllSectionsCollapsed = ( elCurriculum ) => {
 	} );
 
 	if ( isAllCollapsed ) {
-		lpShowHideEl( elExpand, 1 );
-		lpShowHideEl( elCollapse, 0 );
+		lpUtils.lpShowHideEl( elExpand, 1 );
+		lpUtils.lpShowHideEl( elCollapse, 0 );
 	} else {
-		lpShowHideEl( elExpand, 0 );
-		lpShowHideEl( elCollapse, 1 );
+		lpUtils.lpShowHideEl( elExpand, 0 );
+		lpUtils.lpShowHideEl( elCollapse, 1 );
 	}
 };
 
@@ -128,19 +128,19 @@ const searchItemCourse = ( text ) => {
 			const titleItem = elItem.querySelector( '.course-item-title' ).textContent;
 
 			if ( ! searchText( titleItem, text ) ) {
-				lpShowHideEl( elItem, 0 );
+				lpUtils.lpShowHideEl( elItem, 0 );
 				elItem.classList.add( 'lp-hide' );
 			} else {
 				found = true;
-				lpShowHideEl( elItem, 1 );
+				lpUtils.lpShowHideEl( elItem, 1 );
 				elSection.classList.remove( 'lp-collapse' );
 			}
 		} );
 
 		if ( ! found ) {
-			lpShowHideEl( elSection, 0 );
+			lpUtils.lpShowHideEl( elSection, 0 );
 		} else {
-			lpShowHideEl( elSection, 1 );
+			lpUtils.lpShowHideEl( elSection, 1 );
 		}
 	} );
 };
@@ -189,7 +189,7 @@ const scrollToItemViewing = ( elCurriculum ) => {
 	} );
 };
 
-lpOnElementReady( '.lp-course-curriculum', ( elCurriculum ) => {
+lpUtils.lpOnElementReady( '.lp-course-curriculum', ( elCurriculum ) => {
 	checkAllSectionsCollapsed( elCurriculum );
 
 	// Set interval to check if item viewing is changed

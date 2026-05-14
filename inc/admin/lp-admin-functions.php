@@ -48,7 +48,7 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 						$link['data'],
 						$link['title']
 					) . '</li>';
-				};
+				}
 
 				$drop_down[] = '</ul>';
 				$link        = sprintf(
@@ -238,8 +238,8 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	if ( $echo ) {
 		$allowed_html           = wp_kses_allowed_html( 'post' );
 		$allowed_html['select'] = [
-			'name'        => [],
-			'class'       => [],
+			'name'  => [],
+			'class' => [],
 		];
 		$allowed_html['option'] = [
 			'value'    => [],
@@ -1138,11 +1138,11 @@ function learn_press_get_courses_by_status( $status ) {
 	$sql_join    = '';
 	if ( 'course' === $report_sales_by ) {
 		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
-					 . ' ON o.ID=lpoi.order_id '
-					 . " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
-					 . ' ON lpoi.order_item_id=loim.learnpress_order_item_id '
-					 . " AND loim.meta_key='_course_id' "
-					 . ' AND CAST(loim.meta_value AS SIGNED)=%d ';
+					. ' ON o.ID=lpoi.order_id '
+					. " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
+					. ' ON lpoi.order_item_id=loim.learnpress_order_item_id '
+					. " AND loim.meta_key='_course_id' "
+					. ' AND CAST(loim.meta_value AS SIGNED)=%d ';
 		if ( current_user_can( LP_TEACHER_ROLE ) ) {
 			$user_id   = learn_press_get_current_user_id();
 			$sql_join .= $wpdb->prepare(
@@ -1156,16 +1156,16 @@ function learn_press_get_courses_by_status( $status ) {
 
 	} elseif ( 'category' === $report_sales_by ) {
 		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
-					   . ' ON o.ID=lpoi.order_id '
-					   . " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
-					   . ' ON lpoi.order_item_id=loim.learnpress_order_item_id '
-					   . " AND loim.meta_key='_course_id' "
-					   . ' AND CAST(loim.meta_value AS SIGNED) IN('
-					   // sub query
-					   . ' SELECT tr.object_id '
-					   . " FROM {$wpdb->prefix}term_taxonomy tt INNER JOIN {$wpdb->prefix}term_relationships tr "
-					   . " ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy='course_category' "
-					   . ' WHERE tt.term_id=%d)';
+						. ' ON o.ID=lpoi.order_id '
+						. " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
+						. ' ON lpoi.order_item_id=loim.learnpress_order_item_id '
+						. " AND loim.meta_key='_course_id' "
+						. ' AND CAST(loim.meta_value AS SIGNED) IN('
+						// sub query
+						. ' SELECT tr.object_id '
+						. " FROM {$wpdb->prefix}term_taxonomy tt INNER JOIN {$wpdb->prefix}term_relationships tr "
+						. " ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy='course_category' "
+						. ' WHERE tt.term_id=%d)';
 		$query_join .= $wpdb->prepare( $sql_join, $cat_id );
 	}
 	if ( current_user_can( LP_TEACHER_ROLE ) ) {
@@ -1643,7 +1643,11 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 			'post_parent'    => $post->post_parent,
 			'post_password'  => $post->post_password,
 			'post_status'    => 'draft',
-			'post_title'     => $post->post_title . __( 'Copy', 'learnpress' ),
+			'post_title'     => sprintf(
+				'%1$s (%2$s)',
+				$post->post_title,
+				_x( 'Copy', 'Duplicate item title suffix', 'learnpress' )
+			),
 			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order,
@@ -1729,7 +1733,7 @@ if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 
 				for ( $j = $i + 1; $j < count( $ktypes ); $j ++ ) {
 					if ( isset( $question_types[ $ktypes[ $j ] ], $question_types[ $ktypes[ $max ] ] )
-						 && $question_types[ $ktypes[ $j ] ] > $question_types[ $ktypes[ $max ] ]
+						&& $question_types[ $ktypes[ $j ] ] > $question_types[ $ktypes[ $max ] ]
 					) {
 						$max = $j;
 					}

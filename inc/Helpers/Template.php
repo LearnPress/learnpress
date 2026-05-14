@@ -3,6 +3,8 @@
 namespace LearnPress\Helpers;
 
 use LP_Breadcrumb;
+use LP_Debug;
+use Throwable;
 
 /**
  * Class Template
@@ -125,14 +127,23 @@ class Template {
 	 *
 	 * @return string|void
 	 * @since 1.0.0
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_template( string $path_file, array $args = array() ) {
 		try {
-			extract( $args );
+			//extract( $args );
+
+			// Remove any '..' from the path to prevent directory traversal attacks
+			$path_file = preg_replace( '/\.\.+/', '', $path_file );
 
 			if ( file_exists( $path_file ) ) {
 				if ( $this->include ) {
+					// Extract args
+					foreach ( $args as $key => $value ) {
+						$$key = $value;
+					}
+					unset( $key, $value ); // Clean up
+
 					include $path_file;
 				} else {
 					return $path_file;
@@ -141,8 +152,8 @@ class Template {
 				printf( esc_html__( 'Path file %s not exists', 'learnpress' ), $path_file );
 				echo '<br>';
 			}
-		} catch ( \Throwable $e ) {
-			error_log( $e->getMessage() );
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
 		}
 	}
 
@@ -363,9 +374,9 @@ class Template {
 			apply_filters(
 				'learn_press_pagination_args',
 				array(
-					'base'      => $data['base'] ?? '',
-					'format'    => '',
-					'add_args'  => '',
+					'base'      => $data['base'] ?? add_query_arg( 'paged', '%#%', '' ),
+					'format'    => $data['format'] ?? '?paged=%#%',
+					'add_args'  => $data['add_args'] ?? '',
 					'current'   => max( 1, $paged ),
 					'total'     => $total_pages,
 					'prev_text' => '<i class="lp-icon-arrow-left"></i>',

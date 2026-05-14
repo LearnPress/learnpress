@@ -23,7 +23,7 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_final_quiz' ),
-					'permission_callback' => function() {
+					'permission_callback' => function () {
 						return current_user_can( 'edit_posts' );
 					},
 				),
@@ -39,11 +39,12 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 	 * @return void
 	 */
 	public function get_final_quiz( WP_REST_Request $request ) {
-		$params         = $request->get_params();
-		$course_id      = $params['courseId'] ?? false;
-		$response       = new LP_REST_Response();
-		$response->data = '';
-		$final_quiz     = '';
+		$params            = $request->get_params();
+		$course_id         = $params['courseId'] ?? false;
+		$is_course_builder = ! empty( $params['is_course_builder'] ) || ! empty( $params['isCourseBuilder'] );
+		$response          = new LP_REST_Response();
+		$response->data    = '';
+		$final_quiz        = '';
 
 		try {
 			if ( empty( $course_id ) ) {
@@ -69,9 +70,15 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 			if ( ! empty( $final_quiz ) ) {
 				update_post_meta( $course_id, '_lp_final_quiz', $final_quiz );
 				$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
-
-				$post_type_object = get_post_type_object( LP_QUIZ_CPT );
-				$url              = admin_url( sprintf( $post_type_object->_edit_link . '&action=edit#_lp_passing_grade', $final_quiz ) );
+				if ( '' === (string) $passing_grade ) {
+					$quiz_model = \LearnPress\Models\QuizPostModel::find( absint( $final_quiz ), true );
+					if ( $quiz_model ) {
+						$passing_grade = $quiz_model->get_passing_grade();
+					} else {
+						$passing_grade = 80;
+					}
+				}
+				$url = $this->get_final_quiz_edit_link( $final_quiz, $course_id, $is_course_builder );
 
 				ob_start();
 				?>
@@ -92,5 +99,30 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return rest_ensure_response( $response );
+	}
+
+	/**
+	 * Build edit link for final quiz in course settings.
+	 *
+	 * @param int  $final_quiz_id
+	 * @param int  $course_id
+	 * @param bool $is_course_builder
+	 *
+	 * @return string
+	 */
+	protected function get_final_quiz_edit_link( int $final_quiz_id, int $course_id, bool $is_course_builder = false ): string {
+		$post_type_object = get_post_type_object( LP_QUIZ_CPT );
+		$url              = admin_url( sprintf( $post_type_object->_edit_link . '&action=edit#_lp_passing_grade', $final_quiz_id ) );
+
+		if ( $is_course_builder && class_exists( '\LearnPress\CourseBuilder\CourseBuilder' ) ) {
+			$url = \LearnPress\CourseBuilder\CourseBuilder::get_tab_link( 'quizzes', absint( $final_quiz_id ), 'settings' ) . '#_lp_passing_grade';
+		}
+
+		return apply_filters(
+			'learn-press/course/meta-box/assessment/final-quiz/edit-link',
+			$url,
+			$final_quiz_id,
+			$course_id
+		);
 	}
 }

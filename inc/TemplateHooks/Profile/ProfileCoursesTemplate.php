@@ -8,6 +8,7 @@
 
 namespace LearnPress\TemplateHooks\Profile;
 
+use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LP_Profile;
@@ -56,12 +57,26 @@ class ProfileCoursesTemplate {
 			);
 		}
 
+		$show_course_builder_link = $profile->is_current_user() && CourseBuilder::can_view_course_builder();
+		$tabs_classes             = [ 'learn-press-tabs' ];
+		$course_builder_link      = '';
+
+		if ( $show_course_builder_link ) {
+			$tabs_classes[]      = 'learn-press-tabs--with-course-builder';
+			$course_builder_link = sprintf(
+				'<a class="learn-press-course-builder-link" href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+				esc_url( CourseBuilder::get_link_course_builder() ),
+				esc_html__( 'Course Builder', 'learnpress' )
+			);
+		}
+
 		$section_tabs = [
-			'wrap'     => '<div class="learn-press-tabs">',
-			'ul'       => '<ul class="learn-press-filters">',
-			'content'  => $html_li_tabs,
-			'ul-end'   => '</ul>',
-			'wrap-end' => '</div>',
+			'wrap'           => sprintf( '<div class="%s">', esc_attr( implode( ' ', $tabs_classes ) ) ),
+			'ul'             => '<ul class="learn-press-filters">',
+			'content'        => $html_li_tabs,
+			'ul-end'         => '</ul>',
+			'course-builder' => $course_builder_link,
+			'wrap-end'       => '</div>',
 		];
 
 		$section_contents = [

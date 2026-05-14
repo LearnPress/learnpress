@@ -50,6 +50,19 @@ class AdminCreateCourseAITemplate {
 		}
 	}
 
+	/**
+	 * Render AI templates for non-admin contexts (e.g. Course Builder frontend).
+	 *
+	 * @return string
+	 */
+	public function render_for_frontend(): string {
+		$this->config = Config::instance()->get( 'open-ai-modal', 'settings' );
+
+		return $this->html_create_course_via_ai()
+			. $this->html_creating_course()
+			. $this->html_warning_enable_ai();
+	}
+
 	public function html_create_course_via_ai(): string {
 		$components = [
 			'wrap-script-template'     => '<script type="text/template" id="lp-tmpl-create-course-ai">',
