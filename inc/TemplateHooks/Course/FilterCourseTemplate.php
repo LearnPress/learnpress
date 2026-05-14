@@ -429,7 +429,7 @@ class FilterCourseTemplate {
 			'<input name="term_id" type="checkbox" value="%s" %s %s>',
 			esc_attr( $category_id ),
 			esc_attr( $checked ),
-			$disabled
+			esc_attr( $disabled )
 		);
 		$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $category_name ) );
 		$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
@@ -505,7 +505,7 @@ class FilterCourseTemplate {
 					'<input name="tag_id" type="checkbox" value="%s" %s %s>',
 					esc_attr( $value ),
 					esc_attr( $checked ),
-					$disabled
+					esc_attr( $disabled )
 				);
 				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
@@ -589,7 +589,7 @@ class FilterCourseTemplate {
 					'<input name="c_authors" type="checkbox" value="%s" %s %s>',
 					esc_attr( $value ),
 					esc_attr( $checked ),
-					$disabled
+					esc_attr( $disabled )
 				);
 				$label   = sprintf( '<label for="">%s</label>', esc_html( $userModel->get_display_name() ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
@@ -730,7 +730,7 @@ class FilterCourseTemplate {
 			foreach ( $filter_types as $key => $type ) {
 				$checked  = in_array( $key, $data_selected ) ? 'checked' : '';
 				$input    = sprintf(
-					'<input name="c_type" type="checkbox" value="%1$s" %2$s>',
+					'<input name="c_type" type="checkbox" value="%s" %s>',
 					esc_attr( $key ),
 					esc_attr( $checked )
 				);
