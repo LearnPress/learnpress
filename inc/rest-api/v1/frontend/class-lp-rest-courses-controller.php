@@ -47,6 +47,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'args'                => array(),
 				),
 			),
+			'courses-suggest'        => array(
+				array(
+					'methods'             => WP_REST_Server::ALLMETHODS,
+					'callback'            => array( $this, 'courses_suggest' ),
+					'permission_callback' => '__return_true',
+					'args'                => [],
+				),
+			),
 			'purchase-course'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
@@ -259,11 +267,57 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
+	 * Get list courses for search suggest
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return Response
+	 * @since 4.3.7
+	 * @version 1.0.0
+	 */
+	public function courses_suggest( WP_REST_Request $request ): Response {
+		$response = new Response();
+
+		try {
+			$filter     = new CourseJsonFilter();
+			$params     = $request->get_params();
+			$total_rows = 0;
+
+			CourseService::handle_params_for_query_list_courses( $filter, $params );
+			$filter->only_fields = [ CourseJsonFilter::COL_ID ];
+			$filter->post_status = [ PostModel::STATUS_PUBLISH ];
+
+			$coursesRs = CourseService::get_list_courses( $filter, $total_rows );
+
+			$courses = [];
+			foreach ( $coursesRs as $course ) {
+				$courseModel = CourseModel::find( $course->ID, true );
+				$courses[]   = $courseModel;
+			}
+
+			$data = array(
+				'courses'      => $courses,
+				'keyword'      => $request['c_search'],
+				'total_course' => $total_rows,
+			);
+			ob_start();
+			do_action( 'learn-press/rest-api/courses/suggest/layout', $data );
+			$response->data->content = ob_get_clean();
+			$response->data->totals  = $total_rows;
+			$response->status        = Response::STATUS_SUCCESS;
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return apply_filters( 'lp/rest-api/courses-search-suggest/response', $response );
+	}
+
+	/**
 	 * Get list courses
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @depreacted 4.3.9
+	 * @depreacted 4.3.7
 	 * @return LP_REST_Response
 	 */
 	public function list_courses( WP_REST_Request $request ): LP_REST_Response {
@@ -273,6 +327,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$pagination_type     = LP_Settings::get_option( 'course_pagination_type' );
 
 		try {
+			throw new Exception( 'Deprecated function from 4.3.7' );
 			$filter             = new CourseJsonFilter();
 			$params             = $request->get_params();
 			$params['c_status'] = 'publish';

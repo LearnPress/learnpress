@@ -1,5 +1,5 @@
-import API from '../api';
-import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam, lpShowHideEl } from '../utils.js';
+import API from 'lpAssetsJsPath/api';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 const classCourseFilter = 'lp-form-course-filter';
 const classProcessing = 'processing';
@@ -103,11 +103,6 @@ window.lpCourseFilter = {
 		controller = new AbortController();
 		signal = controller.signal;
 
-		let url = API.frontend.apiCourses + '?c_search=' + keyword + '&c_suggest=1';
-		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
-			url += '&lang=' + lpData.urlParams.lang;
-		}
-
 		let paramsFetch = {
 			method: 'GET',
 		};
@@ -119,6 +114,13 @@ window.lpCourseFilter = {
 				},
 			};
 		}
+
+		const paramsUrl = { c_search: keyword };
+		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
+			paramsUrl.lang = lpData.urlParams.lang;
+		}
+
+		const url = lpUtils.lpAddQueryArgs( API.apiCoursesSuggest, paramsUrl );
 
 		fetch( url, { ...paramsFetch, signal } )
 			.then( ( response ) => response.json() )
@@ -208,9 +210,9 @@ window.lpCourseFilter = {
 					const elBtnDone = widgetForm.querySelector( '.course-filter-submit.lp-btn-done' );
 					if ( elBtnDone ) {
 						if ( window.outerWidth <= 991 ) {
-							lpShowHideEl( elBtnDone, 1 );
+							lpUtils.lpShowHideEl( elBtnDone, 1 );
 						} else {
-							lpShowHideEl( elBtnDone, 0 );
+							lpUtils.lpShowHideEl( elBtnDone, 0 );
 						}
 					}
 				} else if ( message ) {
@@ -232,7 +234,7 @@ window.lpCourseFilter = {
 		};
 
 		// Call API load widget
-		lpFetchAPI( url, paramsFetch, callBack );
+		lpUtils.lpFetchAPI( url, paramsFetch, callBack );
 	},
 	submit: ( form ) => {
 		const formData = new FormData( form ); // Create a FormData object from the form
@@ -320,7 +322,7 @@ window.lpCourseFilter = {
 			// Set url params to reload page.
 			// Todo: need check allow set url params.
 			lpData.urlParams = filterCourses;
-			window.history.pushState( {}, '', lpAddQueryArgs( lpGetCurrentURLNoParam(), lpData.urlParams ) );
+			window.history.pushState( {}, '', lpUtils.lpAddQueryArgs( lpUtils.lpGetCurrentURLNoParam(), lpData.urlParams ) );
 			// End.
 
 			// Load AJAX widget by params

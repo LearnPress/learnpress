@@ -383,7 +383,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-courses'           => new LP_Asset_Key(
+				/*'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
 					array(
 						'lp-global',
@@ -394,8 +394,8 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					'',
 					[ 'strategy' => 'defer' ]
-				),
-				'lp-courses-v2'        => new LP_Asset_Key(
+				),*/
+				'lp-courses-v2'             => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses-v2' . self::$_min_assets . '.js' ),
 					[ 'utils', 'wp-hooks' ], // dependency utils of wp, because js is using wpCookies
 					[ LP_PAGE_COURSES ],
