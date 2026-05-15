@@ -8,6 +8,8 @@ use LearnPress\Filters\Course\CourseJsonFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\PostModel;
+use LearnPress\Models\UserModel;
 use LP_Debug;
 use LP_Helper;
 use LP_Settings;
@@ -216,6 +218,11 @@ class CourseService {
 			if ( 'all' !== $post_status ) {
 				$filter->post_status = explode( ',', $post_status );
 			}
+
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
+				|| ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+				$filter->post_status = [ PostModel::STATUS_PUBLISH ];
+			}
 		}
 
 		// Type price
@@ -277,17 +284,21 @@ class CourseService {
 		}
 
 		// Order by
-		$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $param['order_by'] ) ? $param['order_by'] : 'post_date_gmt', 'key' );
-		$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $param['order'] ) ? $param['order'] : 'DESC', 'key' );
+		$order_by = LP_Helper::sanitize_params_submitted( $param['order_by'] ?? 'post_date_gmt', 'key' );
+		if ( $order_by === 'post_date' ) {
+			$order_by = 'post_date_gmt';
+		}
+		$filter->order_by = $order_by;
+		$filter->order    = LP_Helper::sanitize_params_submitted( $param['order'] ?? 'DESC', 'key' );
 		$filter->limit    = $param['limit'] ?? LP_Settings::get_option( 'archive_course_limit', 10 );
 
 		// For search suggest courses
 		if ( ! empty( $param['c_suggest'] ) ) {
 			$filter->only_fields = [ 'ID', 'post_title' ];
-			$filter->limit       = apply_filters( 'learn-press/rest-api/courses/suggest-limit', 10 );
+			$filter->limit       = apply_filters( 'learn-press/services/rest-api/courses/suggest-limit', 10 );
 		}
 
-		do_action( 'learn-press/courses/handle_params_for_query_list_courses', $filter, $param );
+		do_action( 'learn-press/services/courses/handle_params_for_query_list_courses', $filter, $param );
 	}
 
 	/**

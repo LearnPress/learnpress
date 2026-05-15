@@ -34,6 +34,7 @@ if ( 'undefined' !== typeof lpData ) {
 
 if ( lp_rest_url ) {
 	lplistAPI.apiCourses = lp_rest_url + 'lp/v1/courses/';
+	lplistAPI.apiEditCoursesArchiveBlock = lp_rest_url + 'lp/v1/courses/edit-archive-block';
 }
 
 export default lplistAPI;
