@@ -21,7 +21,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		 */
 		public static function instance(): LP_Subscription_Manager {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new static();
 			}
 
 			return self::$_instance;

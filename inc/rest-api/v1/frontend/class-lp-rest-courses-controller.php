@@ -6,13 +6,14 @@
 
 use LearnPress\Background\LPBackgroundAjax;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
+use LearnPress\Filters\Course\CourseJsonFilter;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
-use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
+use LearnPress\Services\CourseService;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
@@ -191,6 +192,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request
 	 *
+	 * @depreacted 4.3.9
 	 * @return LP_REST_Response
 	 */
 	public function list_courses( WP_REST_Request $request ): LP_REST_Response {
@@ -200,8 +202,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$pagination_type     = LP_Settings::get_option( 'course_pagination_type' );
 
 		try {
-			$filter = new LP_Course_Filter();
-			Courses::handle_params_for_query_courses( $filter, $request->get_params() );
+			$filter             = new CourseJsonFilter();
+			$params             = $request->get_params();
+			$params['c_status'] = 'publish';
+			$params['c_fields'] = 'ID, post_title, post_content, post_status, post_author, meta_input';
+			CourseService::handle_params_for_query_list_courses( $filter, $params );
 
 			// Check is in category page.
 			/*if ( ! empty( $request->get_param( 'page_term_id_current' ) ) &&
@@ -213,10 +218,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$filter->tag_ids[] = $request->get_param( 'page_tag_id_current' );
 			}*/
 
-			$total_rows = 0;
-			$filter     = apply_filters( 'lp/api/courses/filter', $filter, $request );
-
-			$courses     = Courses::get_courses( $filter, $total_rows );
+			$total_rows  = 0;
+			$courses     = CourseService::get_list_courses( $filter, $total_rows );
 			$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
 			$return_type = $request['return_type'] ?? 'html';
 			if ( 'json' === $return_type ) {
