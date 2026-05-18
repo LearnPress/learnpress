@@ -366,7 +366,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$coursePost = new CoursePostModel( $courseModel );
 					$coursePost->get_all_metadata();
 					// Temporary unset _elementor_page_assets of El, reason by method get_all_metadata get not use maybe_unserialize, make save invalid serialize
-					unset( $coursePost->meta_data->_elementor_page_assets );
+					$coursePost->meta_data->_elementor_page_assets = [];
+
 					$courseModel->meta_data = $coursePost->meta_data;
 				}
 
