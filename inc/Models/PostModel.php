@@ -203,6 +203,8 @@ class PostModel {
 	 *
 	 * @return stdClass|null
 	 * @throws Exception
+	 * @version 1.0.1
+	 * @since 4.2.6.9
 	 */
 	public function get_all_metadata() {
 		if ( ! isset( $this->is_got_meta_data ) ) {
@@ -216,7 +218,7 @@ class PostModel {
 			if ( ! $metadata_rs instanceof stdClass ) {
 				$this->meta_data = new stdClass();
 				foreach ( $metadata_rs as $value ) {
-					$this->meta_data->{$value->meta_key} = $value->meta_value;
+					$this->meta_data->{$value->meta_key} = maybe_unserialize( $value->meta_value );
 				}
 			}
 
