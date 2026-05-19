@@ -84,6 +84,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		protected $subscription_webhook_id = '';
 
+		const PAYPAL_TOKEN = 'paypal_token';
+
 		/**
 		 * LP_Gateway_Paypal constructor.
 		 */
@@ -267,9 +269,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		/**
 		 * Get access token from PayPal
 		 *
+		 * Check token expire time before get new token
+		 *
 		 * @throws Exception
 		 * @since 4.2.4
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function get_access_token() {
 			$client_id     = $this->client_id;
@@ -281,6 +285,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			if ( ! $client_secret ) {
 				throw new Exception( __( 'Paypal Client secret is required', 'learnpress' ) );
+			}
+
+			// Check token expire
+			$token_exist = LP_Settings::get_option( self::PAYPAL_TOKEN );
+			if ( ! empty( $token_exist ) ) {
+				$token_exist      = LP_Helper::json_decode( $token_exist );
+				$five_minutes_ago = time() - 5 * 60;
+				if ( ! empty( $token_exist->lp_time_end ) && $token_exist->lp_time_end > $five_minutes_ago ) {
+					return $token_exist;
+				}
 			}
 
 			$params   = array( 'grant_type' => 'client_credentials' );
@@ -295,13 +309,15 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				)
 			);
 
-			$data_token_str = wp_remote_retrieve_body( $response );
-			$data_token     = LP_Helper::json_decode( $data_token_str );
+			$data_token_str          = wp_remote_retrieve_body( $response );
+			$data_token              = LP_Helper::json_decode( $data_token_str );
+			$data_token->lp_time_end = time() + $data_token->expires_in;
+			$data_token_str          = json_encode( $data_token );
 			if ( isset( $data_token->error ) ) {
 				throw new Exception( $data_token->error_description );
 			}
 
-			LP_Settings::update_option( 'paypal_token', $data_token_str );
+			LP_Settings::update_option( self::PAYPAL_TOKEN, $data_token_str );
 
 			return $data_token;
 		}
@@ -424,12 +440,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * https://developer.paypal.com/docs/api/orders/v2/#orders_capture
 		 *
 		 * @return bool True when capture is completed and order status is updated.
+		 * @throws Exception
+		 * @version 1.0.1
 		 * @since 4.2.4
-		 * @version 1.0.0
 		 */
 		public function capture_payment_for_order( string $paypal_order_id ): bool {
-			$data_token_str = LP_Settings::get_option( 'paypal_token' );
-			$data_token     = json_decode( $data_token_str );
+			$data_token = $this->get_access_token();
 			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
 				return false;
 			}
@@ -1406,6 +1422,93 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			return LP_Subscription_Manager::instance()->process_webhook_event( $this, $event );
+		}
+
+		/**
+		 * Receive data from webhook.
+		 * Verify, normalize, and dispatch PayPal subscription webhook event.
+		 *
+		 * @param WP_REST_Request $request
+		 *
+		 * @throws Exception
+		 */
+		public function incoming_subscription_webhook( WP_REST_Request $request ) {
+
+			error_log( 'Test: ' . json_encode( $request ) );
+
+			$webhook_data = LP_Helper::json_decode( $request->get_body(), true );
+
+			// Verify data from webhook
+			$webhook_data_verify = [
+				'auth_algo'         => $request->get_header( 'PAYPAL-AUTH-ALGO' ) ?? '',
+				'cert_url'          => $request->get_header( 'PAYPAL-CERT-URL' ) ?? '',
+				'transmission_id'   => $request->get_header( 'PAYPAL-TRANSMISSION-ID' ) ?? '',
+				'transmission_sig'  => $request->get_header( 'PAYPAL-TRANSMISSION-SIG' ) ?? '',
+				'transmission_time' => $request->get_header( 'PAYPAL-TRANSMISSION-TIME' ) ?? '',
+				'webhook_id'        => $this->subscription_webhook_id,
+				'webhook_event'     => $webhook_data,
+			];
+
+			$this->verify_data_from_webhook_subscription( $webhook_data_verify );
+
+			// Normalize event
+			$this->normalize_subscription_data( $webhook_data );
+
+			// Dispatch event
+		}
+
+		/**
+		 * Reverse verify PayPal subscription webhook before processing.
+		 * Doc: https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature_post
+		 *
+		 * @param array $webhook_data
+		 *
+		 * @throws Exception
+		 */
+		public function verify_data_from_webhook_subscription( array $webhook_data ) {
+			$data_token = $this->get_access_token();
+
+			$response = wp_remote_post(
+				$this->api_url . 'v1/notifications/verify-webhook-signature',
+				array(
+					'body'    => wp_json_encode( $webhook_data ),
+					'headers' => array(
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+						'Content-Type'  => 'application/json',
+					),
+					'timeout' => 60,
+				)
+			);
+
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message(), $response->get_error_code() );
+			}
+
+			$verify_result = LP_Helper::json_decode( wp_remote_retrieve_body( $response ), true );
+			$is_verified   = ! empty( $verify_result['verification_status'] )
+							&& 'SUCCESS' === strtoupper( $verify_result['verification_status'] );
+			if ( ! $is_verified ) {
+				throw new Exception( __( 'PayPal webhook verification failed.', 'learnpress' ), 400 );
+			}
+		}
+
+		/**
+		 * Normalize PayPal webhook event into LearnPress subscription event schema.
+		 *
+		 * Maps PayPal event names into LP canonical event_type values and extracts
+		 * identifiers needed by Subscription Manager (event_id, subscription_id,
+		 * parent_order_id, renewal_key, amount/currency).
+		 *
+		 * @param array $provider_event
+		 *
+		 * @return array
+		 */
+		public function normalize_subscription_data( $webhook_data ): array {
+			$webhook_data = parent::normalize_subscription_data( $webhook_data );
+
+
+
+			return $webhook_data;
 		}
 
 		/**

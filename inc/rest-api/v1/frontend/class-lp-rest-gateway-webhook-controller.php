@@ -5,6 +5,8 @@
  * @since 4.3.4
  */
 
+use LearnPress\Helpers\Response;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
@@ -32,7 +34,7 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 			$this->routes = array(
 				'(?P<gateway>[a-zA-Z0-9_-]+)/subscription-webhook' => array(
 					array(
-						'methods'             => WP_REST_Server::CREATABLE,
+						'methods'             => WP_REST_Server::ALLMETHODS,
 						'callback'            => array( $this, 'listen_subscription_webhook' ),
 						'permission_callback' => '__return_true',
 					),
@@ -51,7 +53,9 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		 *
 		 * @return WP_REST_Response
 		 */
-		public function listen_subscription_webhook( WP_REST_Request $request ): WP_REST_Response {
+		public function listen_subscription_webhook( WP_REST_Request $request ): Response {
+			$response = new Response();
+
 			try {
 				$gateway_id = sanitize_key( (string) $request->get_param( 'gateway' ) );
 				if ( empty( $gateway_id ) ) {
@@ -64,24 +68,20 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 				}
 
 				if ( ! $gateway->is_enabled() ) {
-					throw new Exception( __( 'Gateway not found.', 'learnpress' ), 404 );
+					throw new Exception( __( 'Gateway is not enable.', 'learnpress' ), 404 );
 				}
 
 				/**
 				 * @var LP_Gateway_Paypal|LP_Gateway_Stripe $gateway
 				 */
-				$result = $gateway->listen_webhook_subscription( $request );
-
-				$status_code = 200;
-				if ( isset( $result['status_code'] ) ) {
-					$status_code = absint( $result['status_code'] );
-					unset( $result['status_code'] );
-				}
-
-				return new WP_REST_Response( $result, $status_code );
+				$gateway->incoming_subscription_webhook( $request );
 			} catch ( Throwable $e ) {
-				return $this->build_error_response( $e );
+				LP_Debug::error_log( $e );
+				//return $this->build_error_response( $e );
+				$response->message = $e->getMessage();
 			}
+
+			return $response;
 		}
 
 		/**

@@ -87,7 +87,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 				switch ( $event_type ) {
 					case 'subscription_activated':
 						if ( ! $order_subscription ) {
-							throw new Exception( __( 'Parent subscription order not found.', 'learnpress' ) );
+							throw new Exception( __( 'Order not found.', 'learnpress' ) );
 						}
 
 						$this->update_subscription_status( $order_subscription->get_id(), 'active' );

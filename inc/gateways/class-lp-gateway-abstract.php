@@ -527,6 +527,23 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
+	 * Receive subscription webhook from provider.
+	 *
+	 * @throws Exception
+	 *
+	 * @since 4.3.7
+	 * @version 1.0.0
+	 */
+	public function incoming_subscription_webhook( WP_REST_Request $request ) {
+		throw new Exception(
+			sprintf(
+				__( 'Gateway %s does not support subscription webhook.', 'learnpress' ),
+				$this->get_id()
+			)
+		);
+	}
+
+	/**
 	 * Verify subscription webhook payload/signature with provider.
 	 *
 	 * Child gateways should return verified provider event payload/object.
@@ -636,6 +653,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 				);
 		}
 	}
+
 	/**
 	 * Normalize provider webhook event to LP event payload.
 	 *
@@ -649,7 +667,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	public function normalize_subscription_event( $provider_event ): array {
 		$event = array(
 			'event_id'        => '',
-			'event_type'      => 'ignored',
+			'event_type'      => '',
 			'subscription_id' => '',
 			'customer_id'     => '',
 			'price_id'        => '',
@@ -663,6 +681,35 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		);
 
 		return (array) apply_filters( 'learn-press/gateway/subscription/event', $event, $provider_event, $this );
+	}
+
+	/**
+	 * Normalize provider webhook event to LP event payload.
+	 *
+	 * Child gateways should map provider-specific event types/fields into this
+	 * canonical schema so Subscription Manager can process consistently.
+	 *
+	 * @param array|object $provider_event
+	 *
+	 * @return array
+	 */
+	public function normalize_subscription_data( $webhook_data ): array {
+		$event = array(
+			'event_id'        => '',
+			'event_type'      => '',
+			'subscription_id' => '',
+			'customer_id'     => '',
+			'price_id'        => '',
+			'parent_order_id' => 0,
+			'transaction_id'  => '',
+			'amount'          => 0,
+			'currency'        => '',
+			'status'          => '',
+			'metadata'        => array(),
+			'raw'             => $webhook_data,
+		);
+
+		return (array) apply_filters( 'learn-press/gateway/subscription/event', $event, $webhook_data, $this );
 	}
 
 	/**
