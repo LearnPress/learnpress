@@ -7,7 +7,7 @@ Content-Type: application/json
 	"password": "admin"
 }
 
-###
+### Webhook subscription
 POST http://lp.test/wp-json/lp/v1/gateways/paypal/subscription-webhook
 Content-Type: application/json
 User-Agent: PayPal-Notification-Service
@@ -133,6 +133,20 @@ PAYPAL-TRANSMISSION-TIME: 2026-05-19T09:15:30Z
     ],
     "event_version": "1.0",
     "resource_version": "2.0"
+}
+
+### Pay subscription
+POST http://lp.test/wp-json/lp/v1/gateways/paypal/subscription-webhook/?pay=1
+Content-Type: application/json
+User-Agent: PayPal-Notification-Service
+PAYPAL-AUTH-ALGO: SHA256withRSA
+PAYPAL-CERT-URL: https://api.sandbox.paypal.com/v1/notifications/certs/CERT-36024213-c3510c41
+PAYPAL-TRANSMISSION-ID: 80894560-15cc-11ee-be56-0242ac120002
+PAYPAL-TRANSMISSION-SIG: MEYCIQCrn3vF9RzZ/jX9K5mDPrvPkW0U0+r6bX6tZJqWkX7X7gIhAOT7w5l8j1eU3+fJcK8N2Y7Z4yVb6fBv1kX3Z4yVb6fB
+PAYPAL-TRANSMISSION-TIME: 2026-05-19T09:15:30Z
+
+{
+
 }
 
 ###

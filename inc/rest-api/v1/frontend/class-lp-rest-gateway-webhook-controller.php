@@ -1,15 +1,15 @@
 <?php
-/**
- * REST API endpoint for gateway subscription webhooks.
- *
- * @since 4.3.4
- */
-
 use LearnPress\Helpers\Response;
 
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
+	/**
+	 * REST API endpoint for gateway subscription webhooks.
+	 *
+	 * @since 4.3.7
+	 * @version 1.0.0
+	 */
 	class LP_REST_Gateway_Webhook_Controller extends LP_Abstract_REST_Controller {
 		/**
 		 * Configure REST namespace/base for gateway webhook routes.
@@ -51,7 +51,9 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		 *
 		 * @param WP_REST_Request $request
 		 *
-		 * @return WP_REST_Response
+		 * @return Response
+		 * @since 4.3.7
+		 * @version 1.0.0
 		 */
 		public function listen_subscription_webhook( WP_REST_Request $request ): Response {
 			$response = new Response();
@@ -71,13 +73,29 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 					throw new Exception( __( 'Gateway is not enable.', 'learnpress' ), 404 );
 				}
 
+				// Test
+				if ( isset( $_GET['pay'] ) ) {
+					/** @var LP_Gateway_Paypal $gateway */
+					$plan = $gateway->get_plan( 'P-8N4379132G8477049NIFPNJY' );
+
+					$data_pay = [
+						'lp_order_id' => 2841,
+						//'plan_id'             => 'P-8N4379132G8477049NIFPNJY', // trial no fee
+						//'plan_id'     => 'P-13E70519U63465016NIGWAMI', // no trial
+						'plan_id'     => 'P-4WL6731348515332ANIGXMPI', // trial with fee first, fee trial
+					];
+					$g        = $gateway->pay_via_subscription( $data_pay );
+					$m        = 2;
+					return $response;
+				}
+				// End test
+
 				/**
 				 * @var LP_Gateway_Paypal|LP_Gateway_Stripe $gateway
 				 */
-				$gateway->incoming_subscription_webhook( $request );
+				$gateway->capture_subscription_webhook( $request );
 			} catch ( Throwable $e ) {
 				LP_Debug::error_log( $e );
-				//return $this->build_error_response( $e );
 				$response->message = $e->getMessage();
 			}
 

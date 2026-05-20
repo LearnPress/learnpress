@@ -534,7 +534,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @since 4.3.7
 	 * @version 1.0.0
 	 */
-	public function incoming_subscription_webhook( WP_REST_Request $request ) {
+	public function capture_subscription_webhook( WP_REST_Request $request ) {
 		throw new Exception(
 			sprintf(
 				__( 'Gateway %s does not support subscription webhook.', 'learnpress' ),
@@ -686,30 +686,86 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Normalize provider webhook event to LP event payload.
 	 *
-	 * Child gateways should map provider-specific event types/fields into this
-	 * canonical schema so Subscription Manager can process consistently.
+	 * Merge data from provider webhook event to LP event payload.
 	 *
-	 * @param array|object $provider_event
+	 * @param array $webhook_data [lp_order_id, plan_id, subscription_id, subscription_status]
 	 *
-	 * @return array
+	 * @return void
 	 */
-	public function normalize_subscription_data( $webhook_data ): array {
-		$event = array(
-			'event_id'        => '',
-			'event_type'      => '',
-			'subscription_id' => '',
-			'customer_id'     => '',
-			'price_id'        => '',
-			'parent_order_id' => 0,
-			'transaction_id'  => '',
-			'amount'          => 0,
-			'currency'        => '',
-			'status'          => '',
-			'metadata'        => array(),
-			'raw'             => $webhook_data,
-		);
+	public function normalize_subscription_data( array &$webhook_data = [] ) {
+		$webhook_data['lp_order_id']            = 0;
+		$webhook_data['lp_plan_id']             = '';
+		$webhook_data['lp_subscription_id']     = '';
+		$webhook_data['lp_subscription_status'] = '';
+	}
 
-		return (array) apply_filters( 'learn-press/gateway/subscription/event', $event, $webhook_data, $this );
+	/**
+	 *
+	 *
+	 * @param array $webhook_data
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	public function process_subscription_webhook( array $webhook_data = [] ) {
+		// Check lp_order
+		$lp_order_id = $webhook_data['lp_order_id'] ?? 0;
+		$lp_order    = learn_press_get_order( $lp_order_id );
+		if ( ! $lp_order ) {
+			throw new Exception( 'LP Order is not found!', 'learnpress' );
+		}
+
+		error_log( 'Progress wit data: ' . json_encode( $webhook_data ) );
+
+		$lp_subscription_status = $webhook_data['lp_subscription_status'] ?? '';
+		switch ( $lp_subscription_status ) {
+			case LP_Subscription_Manager::STATUS_TRIAL:
+				do_action( 'learn-press/subscription/trial', $this, $lp_order, $webhook_data );
+				break;
+			case LP_Subscription_Manager::STATUS_ACTIVATED:
+				do_action( 'learn-press/subscription/active', $this, $lp_order, $webhook_data );
+				// Create new Order child
+				break;
+			case LP_Subscription_Manager::STATUS_EXPIRED:
+				do_action( 'learn-press/subscription/expired', $this, $lp_order, $webhook_data );
+				// Create new Order child
+				break;
+			case LP_Subscription_Manager::STATUS_SUSPENDED:
+				do_action( 'learn-press/subscription/suspended', $this, $lp_order, $webhook_data );
+				break;
+		}
+
+		do_action( 'learn-press/subscription/process', $this, $lp_order, $webhook_data );
+	}
+
+	/**
+	 * Process order when subscription payment first.
+	 */
+	public function process_subscription_when_payment_first( LP_Order $order, $webhook_data ) {
+		$order->update_status( 'completed' );
+		$order->set_data( 'webhook_subscription_data', json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
+	}
+
+	/**
+	 * Process order when payment recurring success.
+	 *
+	 * @throws Exception
+	 */
+	public function process_subscription_when_payment_renew_success( LP_Order $order, $webhook_data ) {
+		// Create new Order child
+		$order_renew = new LP_Order();
+		$order_renew->set_parent_id( $order->get_id() );
+		$order_renew->set_user_id( $order->get_user_id() );
+		$order_renew->set_checkout_email( $order->get_checkout_email() );
+		$order_renew->set_status( LP_ORDER_COMPLETED );
+		$order_renew->set_created_via( 'subscription' );
+		$order_renew->set_currency( $order->get_currency() );
+		$order_renew->set_total( $webhook_data['lp_total_price'] ?? 0 );
+		$order_renew->set_subtotal( $webhook_data['lp_total_price'] ?? 0 );
+		$order_renew->set_data( 'payment_method', $order->get_data( 'payment_method' ) );
+		$order_renew->set_data( 'payment_method_title', $order->get_payment_method_title() );
+
+		$order_renew->save();
 	}
 
 	/**
