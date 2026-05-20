@@ -1543,11 +1543,13 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			];
 			//$this->verify_data_from_webhook_subscription( $webhook_data_verify );
 
-			// For case has fee when payment first
-			//$this->process_subscription_must_payment_first( $webhook_data );
+			// For case has fee when payment first (Fee setup)
+			$is_payment_setup_fee = $this->capturePaymentSetupFee( $webhook_data );
 
 			// Verify and normalize data
-			$this->normalize_subscription_data( $webhook_data );
+			if ( ! $is_payment_setup_fee ) {
+				$this->normalize_subscription_data( $webhook_data );
+			}
 
 			// Dispatch webhook
 			$this->process_subscription_webhook( $webhook_data );
@@ -1683,6 +1685,58 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$webhook_data['lp_plan_id']             = $resource['plan_id'] ?? '';
 			$webhook_data['lp_subscription_id']     = $resource['id'] ?? '';
 			$webhook_data['lp_subscription_status'] = $lp_subscription_status;
+		}
+
+		/**
+		 * Normalize PayPal setup-fee payment webhook data.
+		 *
+		 * @param array $webhook_data
+		 *
+		 * @return bool
+		 * @throws Exception
+		 */
+		public function capturePaymentSetupFee( array &$webhook_data ): bool {
+			parent::normalize_subscription_data( $webhook_data );
+
+			$resource_type = $webhook_data['resource_type'] ?? '';
+			$event_type    = $webhook_data['event_type'] ?? '';
+			if ( 'sale' !== $resource_type || 'PAYMENT.SALE.COMPLETED' !== $event_type ) {
+				return false;
+			}
+
+			if ( empty( $webhook_data['resource'] ) || ! is_array( $webhook_data['resource'] ) ) {
+				throw new Exception( __( 'PayPal setup fee payment resource is invalid.', 'learnpress' ), 400 );
+			}
+
+			$resource = $webhook_data['resource'];
+			$state    = strtolower( (string) ( $resource['state'] ?? ( $resource['status'] ?? '' ) ) );
+			if ( 'completed' !== $state ) {
+				throw new Exception( __( 'PayPal setup fee payment is not completed.', 'learnpress' ), 400 );
+			}
+
+			$lp_order_id = ! empty( $resource['custom'] ) ? $resource['custom'] : ( $resource['custom_id'] ?? '' );
+			$lp_order = learn_press_get_order( (int) $lp_order_id );
+			if ( ! $lp_order ) {
+				throw new Exception( __( 'LearnPress order is invalid.', 'learnpress' ), 400 );
+			}
+
+			$billing_agreement_id = $resource['billing_agreement_id'] ?? '';
+			if ( ! empty( $billing_agreement_id ) ) {
+				throw new Exception( __( 'PayPal billing agreement ID is invalid.', 'learnpress' ), 400 );
+			}
+
+			// Todo: get subscription_id from lp order to compare with $billing_agreement_id
+			$subscription_id = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_ID, true );
+			$plan_id = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_PLAN_ID, true );
+
+			$webhook_data['lp_order_id']            = $lp_order_id;
+			$webhook_data['lp_plan_id']             = $plan_id;
+			$webhook_data['lp_subscription_id']     = $billing_agreement_id;
+			$webhook_data['lp_subscription_status'] = LP_Subscription_Manager::STATUS_ACTIVATED;
+
+			$this->process_subscription_when_payment_first( $lp_order, $webhook_data );
+
+			return true;
 		}
 
 		/**

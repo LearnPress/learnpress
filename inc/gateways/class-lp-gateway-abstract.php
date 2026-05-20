@@ -743,7 +743,10 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 */
 	public function process_subscription_when_payment_first( LP_Order $order, $webhook_data ) {
 		$order->update_status( 'completed' );
-		$order->set_data( 'webhook_subscription_data', json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
+		$order->set_data(
+			'webhook_subscription_data',
+			json_encode( $webhook_data, JSON_UNESCAPED_UNICODE )
+		);
 	}
 
 	/**
