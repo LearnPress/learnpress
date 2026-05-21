@@ -80,6 +80,11 @@ class LP_Cart {
 	 */
 	public function add_to_cart( int $item_id = 0, int $quantity = 1, array $item_data = array() ) {
 		try {
+			/**
+			 * Todo: check it to change, not use get_post_type
+			 * Ex: addon membership has plan need payment, but not use custom post type
+			 * Or addon certificate, currently use custom post type, but feature after upgrade, not save on posts table
+			 */
 			$item_type = get_post_type( $item_id );
 
 			if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
