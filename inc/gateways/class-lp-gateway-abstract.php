@@ -26,6 +26,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	const META_SUBSCRIPTION_LAST_EVENT_ID = '_lp_subscription_last_event_id';
 	const META_SUBSCRIPTION_EVENT_ID      = '_lp_subscription_event_id';
 	const META_SUBSCRIPTION_MANAGE_URL    = '_lp_subscription_manage_url';
+	const META_SUBSCRIPTION_DATA_RECEIVER = '_lp_subscription_data_receiver';
 
 	/**
 	 * @var null|string
@@ -720,17 +721,124 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		$lp_subscription_status = $webhook_data['lp_subscription_status'] ?? '';
 		switch ( $lp_subscription_status ) {
 			case LP_Subscription_Manager::STATUS_TRIAL:
+				$lp_order->add_note(
+					sprintf(
+						'LP Order: %s %s: %s. %s. %s, %s',
+						sprintf(
+							'<a href="%s">%s</a>',
+							$lp_order->get_edit_link(),
+							$lp_order->get_order_number()
+						),
+						__( 'Started trialing created at', 'learnpress' ),
+						$webhook_data['create_time'] ?? '',
+						sprintf( '%s %s', __( 'Next billing time', 'learnpress' ), $webhook_data['next_billing_time'] ),
+						sprintf(
+							__( 'Subscription ID: %s', 'learnpress' ),
+							$webhook_data['lp_subscription_id']
+						),
+						sprintf(
+							__( 'Plan ID: %s', 'learnpress' ),
+							$webhook_data['lp_plan_id']
+						)
+					)
+				);
+				$this->process_subscription_when_payment_first( $lp_order, $webhook_data );
 				do_action( 'learn-press/subscription/trial', $this, $lp_order, $webhook_data );
 				break;
 			case LP_Subscription_Manager::STATUS_ACTIVATED:
+				$lp_order->add_note(
+					sprintf(
+						'LP Order: %s %s: %s. %s. %s, %s',
+						sprintf(
+							'<a href="%s">%s</a>',
+							$lp_order->get_edit_link(),
+							$lp_order->get_order_number()
+						),
+						__( 'Activated created at', 'learnpress' ),
+						$webhook_data['create_time'] ?? '',
+						sprintf( '%s: %s', __( 'Next billing time', 'learnpress' ), $webhook_data['next_billing_time'] ),
+						sprintf(
+							__( 'Subscription ID: %s', 'learnpress' ),
+							$webhook_data['lp_subscription_id']
+						),
+						sprintf(
+							__( 'Plan ID: %s', 'learnpress' ),
+							$webhook_data['lp_plan_id']
+						)
+					)
+				);
+				$this->process_subscription_when_payment_first( $lp_order, $webhook_data );
 				do_action( 'learn-press/subscription/active', $this, $lp_order, $webhook_data );
 				// Create new Order child
 				break;
 			case LP_Subscription_Manager::STATUS_EXPIRED:
+				$lp_order->add_note(
+					sprintf(
+						'LP Order: %s %s: %s. %s, %s',
+						sprintf(
+							'<a href="%s">%s</a>',
+							$lp_order->get_edit_link(),
+							$lp_order->get_order_number()
+						),
+						__( 'Expired created at', 'learnpress' ),
+						$webhook_data['create_time'] ?? '',
+						sprintf(
+							__( 'Subscription ID: %s', 'learnpress' ),
+							$webhook_data['lp_subscription_id']
+						),
+						sprintf(
+							__( 'Plan ID: %s', 'learnpress' ),
+							$webhook_data['lp_plan_id']
+						)
+					)
+				);
 				do_action( 'learn-press/subscription/expired', $this, $lp_order, $webhook_data );
 				// Create new Order child
 				break;
+			case LP_Subscription_Manager::STATUS_CREATED:
+				$lp_order->add_note(
+					sprintf(
+						'LP Order: %s %s: %s. %s, %s',
+						sprintf(
+							'<a href="%s">%s</a>',
+							$lp_order->get_edit_link(),
+							$lp_order->get_order_number()
+						),
+						__( 'Subscription cancelled created at', 'learnpress' ),
+						$webhook_data['create_time'] ?? '',
+						sprintf(
+							__( 'Subscription ID: %s', 'learnpress' ),
+							$webhook_data['lp_subscription_id']
+						),
+						sprintf(
+							__( 'Plan ID: %s', 'learnpress' ),
+							$webhook_data['lp_plan_id']
+						)
+					)
+				);
+				do_action( 'learn-press/subscription/expired', $this, $lp_order, $webhook_data );
+				break;
 			case LP_Subscription_Manager::STATUS_SUSPENDED:
+				$lp_order->add_note(
+					sprintf(
+						'LP Order: %s %s: %s. %s, %s',
+						sprintf(
+							'<a href="%s">%s</a>',
+							$lp_order->get_edit_link(),
+							$lp_order->get_order_number()
+						),
+						__( 'Suspended at', 'learnpress' ),
+						$webhook_data['create_time'] ?? '',
+						sprintf(
+							__( 'Subscription ID: %s', 'learnpress' ),
+							$webhook_data['lp_subscription_id']
+						),
+						sprintf(
+							__( 'Plan ID: %s', 'learnpress' ),
+							$webhook_data['lp_plan_id']
+						)
+					)
+				);
 				do_action( 'learn-press/subscription/suspended', $this, $lp_order, $webhook_data );
 				break;
 		}
@@ -742,9 +850,15 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * Process order when subscription payment first.
 	 */
 	public function process_subscription_when_payment_first( LP_Order $order, $webhook_data ) {
-		$order->update_status( 'completed' );
-		$order->set_data(
-			'webhook_subscription_data',
+		$order->update_status( LP_ORDER_COMPLETED );
+		update_post_meta(
+			$order->get_id(),
+			self::META_SUBSCRIPTION_STATUS,
+			$webhook_data['lp_subscription_status']
+		);
+		update_post_meta(
+			$order->get_id(),
+			self::META_SUBSCRIPTION_DATA_RECEIVER,
 			json_encode( $webhook_data, JSON_UNESCAPED_UNICODE )
 		);
 	}

@@ -1038,30 +1038,29 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		public function add_note( $note = null ) {
+			$comment_author       = '';
+			$comment_author_email = '';
 			if ( is_user_logged_in() ) {
 				$user                 = get_user_by( 'id', get_current_user_id() );
 				$comment_author       = $user->display_name;
 				$comment_author_email = $user->user_email;
-				$comment_post_ID      = $this->get_id();
-				$comment_author_url   = '';
-				$comment_content      = $note;
-				$comment_agent        = 'LearnPress';
-				$comment_type         = 'lp_order_note';
-				$comment_parent       = 0;
-				$comment_approved     = 1;
-
-				$commentdata = apply_filters(
-					'learn_press_new_order_note_data',
-					compact( 'comment_post_ID', 'comment_author', 'comment_author_email', 'comment_author_url', 'comment_content', 'comment_agent', 'comment_type', 'comment_parent', 'comment_approved' ),
-					$this->get_id()
-				);
-
-				$comment_id = wp_insert_comment( $commentdata );
-
-				return $comment_id;
 			}
 
-			return false;
+			$comment_post_ID    = $this->get_id();
+			$comment_author_url = '';
+			$comment_content    = $note;
+			$comment_agent      = 'LearnPress';
+			$comment_type       = 'lp_order_note';
+			$comment_parent     = 0;
+			$comment_approved   = 1;
+
+			$commentdata = apply_filters(
+				'learn_press_new_order_note_data',
+				compact( 'comment_post_ID', 'comment_author', 'comment_author_email', 'comment_author_url', 'comment_content', 'comment_agent', 'comment_type', 'comment_parent', 'comment_approved' ),
+				$this->get_id()
+			);
+
+			return wp_insert_comment( $commentdata );
 		}
 
 		/**
