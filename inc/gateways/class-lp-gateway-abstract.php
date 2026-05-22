@@ -696,10 +696,15 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @return void
 	 */
 	public function normalize_subscription_data( array &$webhook_data = [] ) {
-		$webhook_data['lp_order_id']            = 0;
-		$webhook_data['lp_plan_id']             = '';
-		$webhook_data['lp_subscription_id']     = '';
-		$webhook_data['lp_subscription_status'] = '';
+		$webhook_data = array_merge(
+			array(
+				'lp_order_id'            => 0,
+				'lp_plan_id'             => '',
+				'lp_subscription_id'     => '',
+				'lp_subscription_status' => '',
+			),
+			$webhook_data
+		);
 	}
 
 	/**
@@ -802,7 +807,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 							$lp_order->get_edit_link(),
 							$lp_order->get_order_number()
 						),
-						__( 'Activated created at', 'learnpress' ),
+						__( 'Renew created at', 'learnpress' ),
 						$webhook_data['create_time'] ?? '',
 						sprintf( '%s: %s', __( 'Next billing time', 'learnpress' ), $webhook_data['next_billing_time'] ?? '' ),
 						sprintf(

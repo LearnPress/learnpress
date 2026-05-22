@@ -1596,12 +1596,13 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			// Check lp order exists
 			// SUBSCRIPTION return custom_id, PAYMENT.SALE return custom
-			$lp_order_id = $resource['custom'] ?? $resource['custom_id'] ?? '';
+			$lp_order_id = $webhook_data['resource']['custom'] ?? $webhook_data['resource']['custom_id'] ?? '';
 			$lp_order    = learn_press_get_order( $lp_order_id );
 			if ( ! $lp_order ) {
 				error_log( 'LearnPress order is invalid.' );
 				return;
 			}
+			$webhook_data['lp_order_id'] = $lp_order_id;
 
 			// For case has fee when payment first (Fee setup) or renewal
 			$is_payment_setup_fee_or_renew = $this->capturePaymentSetupFeeOrRenewal( $lp_order, $webhook_data );
