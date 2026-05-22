@@ -73,12 +73,7 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 					throw new Exception( __( 'Gateway is not enable.', 'learnpress' ), 404 );
 				}
 
-				$commentdata = [
-					'comment_post_ID' => 123,
-					'comment_content' => json_encode( $request->get_body(), JSON_UNESCAPED_UNICODE ),
-					'comment_type'    => 'ttttt', // Default is 'comment'
-				];
-				wp_insert_comment( $commentdata );
+				LP_Debug::log_to_comment( 'Webhook payload: ' . json_encode( $request->get_body(), JSON_UNESCAPED_UNICODE ) );
 
 				// Test
 				if ( isset( $_GET['pay'] ) ) {
@@ -87,9 +82,10 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 
 					$data_pay = [
 						'lp_order_id' => 2841,
-						'plan_id'             => 'P-8N4379132G8477049NIFPNJY', // Not setup fee, trial 10 day
+//						'plan_id'             => 'P-8N4379132G8477049NIFPNJY', // Not setup fee, trial 10 day
 //						'plan_id'     => 'P-13E70519U63465016NIGWAMI', // Not fee, Not trial
 //						'plan_id'     => 'P-4FB01122917417635NIHNBWI', // Fee, trial
+						'plan_id'     => 'P-2MM29025B1701164HNIH4WGA', // Plan one day
 					];
 					$g        = $gateway->pay_via_subscription( $data_pay );
 					$m        = 2;

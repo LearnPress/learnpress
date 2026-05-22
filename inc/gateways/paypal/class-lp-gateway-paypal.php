@@ -1255,36 +1255,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			// If the user already completed a trial for this plan on a previous order.
-			$user_has_trial_done = 1;
+			$user_has_trial_done = get_user_meta( $lp_order->get_user_id(), 'lp_subscription_trial', true );
 			if ( $user_has_trial_done ) {
-				$request_body['plan']['billing_cycles']      = [
-					[
-						'sequence'       => 1,
-						'tenure_type'    => 'REGULAR',
-						'frequency'      => [
-							'interval_unit'  => 'MONTH', // 2. Phải đảm bảo là MONTH
-							'interval_count' => 1,       // Phải đảm bảo là 1
-						],
-						'pricing_scheme' => [
-							'fixed_price' => [
-								'currency_code' => 'USD',
-								'value'         => '100.0',
-							],
-						],
-					],
-				];
-				$request_body['plan']['payment_preferences'] = [
-					'service_type'              => 'PREPAID',
-					'auto_bill_outstanding'     => true,
-					'setup_fee'                 => [
-						'currency_code' => 'USD',
-						'value'         => '0.0',
-					],
-					'setup_fee_failure_action'  => 'CONTINUE',
-					'payment_failure_threshold' => 3,
-				];
-
-				/*// Fetch plan details to find the REGULAR billing cycle and its pricing.
+				// Fetch plan details to find the REGULAR billing cycle and its pricing.
 				$plan_response = wp_remote_get(
 					$this->api_url . 'v1/billing/plans/' . rawurlencode( $plan_id ),
 					array(
@@ -1296,18 +1269,14 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					)
 				);
 
-				wp_insert_comment(
-					[
-						'comment_post_ID' => 123,
-						'comment_content' => json_encode( $plan_response, JSON_UNESCAPED_UNICODE ),
-						'comment_type'    => 'ttttt', // Default is 'comment'
-					]
-				);
-
 				if ( ! is_wp_error( $plan_response ) ) {
-					$plan_body     = LP_Helper::json_decode( wp_remote_retrieve_body( $plan_response ), true );
+					$plan_body           = LP_Helper::json_decode( wp_remote_retrieve_body( $plan_response ), true );
+					$plan_billing_cycles = $plan_body['billing_cycles'] ?? array();
+
+					LP_Debug::log_to_comment( 'Plan: ' . json_encode( $plan_body, JSON_UNESCAPED_UNICODE ) );
+
 					$regular_cycle = null;
-					foreach ( (array) ( $plan_body['billing_cycles'] ?? array() ) as $cycle ) {
+					foreach ( $plan_billing_cycles as $cycle ) {
 						if ( ( $cycle['tenure_type'] ?? '' ) === 'REGULAR' ) {
 							$regular_cycle = $cycle;
 							break;
@@ -1324,17 +1293,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 							$override_cycle['pricing_scheme'] = $regular_cycle['pricing_scheme'];
 						}
 						$request_body['plan']['billing_cycles'] = array( $override_cycle );
+						//$request_body['plan']['payment_preferences'] = $plan_body['payment_preferences'] ?? '';
 					}
-				}*/
+				}
 			}
 
-			wp_insert_comment(
-				[
-					'comment_post_ID' => 123,
-					'comment_content' => json_encode( $request_body, JSON_UNESCAPED_UNICODE ),
-					'comment_type'    => 'ttttt', // Default is 'comment'
-				]
-			);
+			LP_Debug::log_to_comment( 'Payment param send: ' . json_encode( $request_body, JSON_UNESCAPED_UNICODE ) );
 
 			$response = wp_remote_post(
 				$this->api_url . 'v1/billing/subscriptions',
@@ -1355,7 +1319,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$body          = wp_remote_retrieve_body( $response );
 			$response_data = LP_Helper::json_decode( $body, true );
 
-			error_log( 'Pay subscription: ' . $body );
+			//error_log( 'Pay subscription: ' . $body );
+			LP_Debug::log_to_comment( 'Pay subscription: ' . $body );
 
 			// Error return from PayPal
 			if ( ! empty( $response_data['debug_id'] ) ) {
@@ -1606,6 +1571,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Receive data from webhook.
 		 * Verify, normalize, and dispatch PayPal subscription webhook event.
 		 *
+		 * Flow for a plan purchase lifecycle:
+		 * First purchase: BILLING.SUBSCRIPTION.CREATED -> BILLING.SUBSCRIPTION.ACTIVATED -> PAYMENT.SALE.COMPLETED
+		 * Renewal: PAYMENT.SALE.COMPLETED
+		 *
 		 * @param WP_REST_Request $request
 		 *
 		 * @throws Exception
@@ -1623,11 +1592,20 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				'webhook_id'        => $this->subscription_webhook_id,
 				'webhook_event'     => $webhook_data,
 			];
-			//$this->verify_data_from_webhook_subscription( $webhook_data_verify );
+			$this->verify_data_from_webhook_subscription( $webhook_data_verify );
 
-			// For case has fee when payment first (Fee setup)
-			$is_payment_setup_fee = $this->capturePaymentSetupFee( $webhook_data );
-			if ( ! $is_payment_setup_fee ) {
+			// Check lp order exists
+			// SUBSCRIPTION return custom_id, PAYMENT.SALE return custom
+			$lp_order_id = $resource['custom'] ?? $resource['custom_id'] ?? '';
+			$lp_order    = learn_press_get_order( $lp_order_id );
+			if ( ! $lp_order ) {
+				error_log( 'LearnPress order is invalid.' );
+				return;
+			}
+
+			// For case has fee when payment first (Fee setup) or renewal
+			$is_payment_setup_fee_or_renew = $this->capturePaymentSetupFeeOrRenewal( $lp_order, $webhook_data );
+			if ( ! $is_payment_setup_fee_or_renew ) {
 				// Verify and normalize data subscription
 				$this->normalize_subscription_data( $webhook_data );
 			}
@@ -1639,7 +1617,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			// Dispatch webhook
-			$this->process_subscription_webhook( $webhook_data );
+			$this->process_subscription_webhook( $lp_order, $webhook_data );
 		}
 
 		/**
@@ -1685,11 +1663,17 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @param array $webhook_data
 		 *
-		 * @throws Exception
 		 * @return void
+		 * @throws Exception
 		 */
 		public function normalize_subscription_data( array &$webhook_data = [] ) {
 			parent::normalize_subscription_data( $webhook_data );
+
+			$lp_order_id = $webhook_data['lp_order_id'] ?? 0;
+			$lp_order    = learn_press_get_order( $lp_order_id );
+			if ( ! $lp_order ) {
+				throw new Exception( __( 'LearnPress order is invalid.', 'learnpress' ), 400 );
+			}
 
 			$message_data_not_type_subscription = sprintf(
 				'%s %s',
@@ -1757,9 +1741,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 							}
 						}
 
-						error_log( 'STSSSS: ' . $lp_subscription_status );
-
-						$webhook_data['next_billing_time'] = $billing_info['next_billing_time'] ?? '';
+						$webhook_data['lp_subscription_ammount']  = $billing_info['last_payment']['amount']['value'] ?? 0;
+						$webhook_data['lp_subscription_currency'] = $billing_info['last_payment']['amount']['currency_code'] ?? '';
+						update_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_DATA_RECEIVER, $webhook_data );
 					}
 					break;
 				case 'BILLING.SUBSCRIPTION.CANCELLED':
@@ -1780,21 +1764,29 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'LP PayPal get status from webhook is invalid.', 'learnpress' ), 400 );
 			}
 
+			LP_Debug::log_to_comment(
+				'LP PayPal normalize subscription data' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE )
+			);
+
 			$webhook_data['lp_order_id']            = $resource['custom_id'];
 			$webhook_data['lp_plan_id']             = $resource['plan_id'] ?? '';
 			$webhook_data['lp_subscription_id']     = $resource['id'] ?? '';
 			$webhook_data['lp_subscription_status'] = $lp_subscription_status;
+
+			// Key tmp for check if payment success and has key will set lp_subscription_status = value of subscription_status_tmp
+			update_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_STATUS_TMP, $lp_subscription_status );
 		}
 
 		/**
 		 * Normalize PayPal setup-fee payment webhook data.
 		 *
+		 * @param LP_Order $lp_order
 		 * @param array $webhook_data
 		 *
 		 * @return bool
 		 * @throws Exception
 		 */
-		public function capturePaymentSetupFee( array &$webhook_data ): bool {
+		public function capturePaymentSetupFeeOrRenewal( $lp_order, array &$webhook_data ): bool {
 			parent::normalize_subscription_data( $webhook_data );
 
 			$resource_type = $webhook_data['resource_type'] ?? '';
@@ -1804,21 +1796,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			if ( empty( $webhook_data['resource'] ) || ! is_array( $webhook_data['resource'] ) ) {
-				throw new Exception( __( 'PayPal setup fee payment resource is invalid.', 'learnpress' ), 400 );
+				throw new Exception( __( 'PayPal setup fee/renew payment resource is invalid.', 'learnpress' ), 400 );
 			}
 
-			$resource = $webhook_data['resource'];
-			$state    = strtolower( (string) ( $resource['state'] ?? ( $resource['status'] ?? '' ) ) );
-			if ( 'completed' !== $state ) {
-				throw new Exception( __( 'PayPal setup fee payment is not completed.', 'learnpress' ), 400 );
-			}
-
-			$lp_order_id = ! empty( $resource['custom'] ) ? $resource['custom'] : ( $resource['custom_id'] ?? '' );
-			$lp_order    = learn_press_get_order( (int) $lp_order_id );
-			if ( ! $lp_order ) {
-				throw new Exception( __( 'LearnPress order is invalid.', 'learnpress' ), 400 );
-			}
-
+			$resource             = $webhook_data['resource'];
 			$billing_agreement_id = $resource['billing_agreement_id'] ?? '';
 			if ( empty( $billing_agreement_id ) ) {
 				throw new Exception( __( 'PayPal billing agreement ID is invalid.', 'learnpress' ), 400 );
@@ -1831,10 +1812,14 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'PayPal billing subscription not same with subscription on LP Order.', 'learnpress' ), 400 );
 			}
 
-			$webhook_data['lp_order_id']            = $lp_order_id;
-			$webhook_data['lp_plan_id']             = $plan_id;
-			$webhook_data['lp_subscription_id']     = $billing_agreement_id;
-			$webhook_data['lp_subscription_status'] = LP_Subscription_Manager::STATUS_ACTIVATED;
+			$webhook_data['lp_order_id']              = $lp_order->get_id();
+			$webhook_data['lp_plan_id']               = $plan_id;
+			$webhook_data['lp_subscription_id']       = $billing_agreement_id;
+			$webhook_data['lp_subscription_ammount']  = $resource['amount']['total'] ?? 0;
+			$webhook_data['lp_subscription_currency'] = $resource['amount']['currency'] ?? '';
+
+			// Save payment data to combine with subscription status defined by LP later
+			update_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_DATA_PAYMENT_SUCCESS, $webhook_data );
 
 			// Add note to order
 			$lp_order->add_note(
@@ -1845,7 +1830,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 						$lp_order->get_edit_link(),
 						$lp_order->get_order_number()
 					),
-					__( 'PayPal payment setup fee success created at', 'learnpress' ),
+					__( 'PayPal payment setup fee/renew success created at', 'learnpress' ),
 					$webhook_data['create_time'] ?? '',
 					sprintf(
 						__( 'Subscription ID: %s', 'learnpress' ),

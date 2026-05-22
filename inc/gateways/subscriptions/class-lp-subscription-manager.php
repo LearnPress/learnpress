@@ -15,6 +15,7 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		protected static $_instance = null;
 
 		const STATUS_ACTIVATED = 'activated';
+		const STATUS_RENEWED   = 'renewed';
 		const STATUS_CANCELLED = 'cancelled';
 		const STATUS_EXPIRED   = 'expired';
 		const STATUS_SUSPENDED = 'suspended';

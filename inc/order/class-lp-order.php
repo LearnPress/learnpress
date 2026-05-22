@@ -1248,7 +1248,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 				$return = $this->_curd->update( $this );
 			} else {
-				$return = $this->_curd->create( $this );
+				$return    = $this->_curd->create( $this );
+				$this->_id = $return;
 			}
 
 			$new_status_post = get_post_status( $this->get_id() );
