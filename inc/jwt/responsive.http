@@ -136,7 +136,7 @@ PAYPAL-TRANSMISSION-TIME: 2026-05-19T09:15:30Z
 }
 
 ### Pay subscription
-POST http://lp.test/wp-json/lp/v1/gateways/paypal/subscription-webhook/?pay=1
+POST http://lpx.local/wp-json/lp/v1/gateways/paypal/subscription-webhook/?pay=1
 Content-Type: application/json
 User-Agent: PayPal-Notification-Service
 PAYPAL-AUTH-ALGO: SHA256withRSA

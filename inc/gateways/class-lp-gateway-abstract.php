@@ -726,27 +726,39 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 		$lp_payment_success         = $lp_order->get_meta( self::META_SUBSCRIPTION_DATA_PAYMENT_SUCCESS );
 		$lp_subscription_status_tmp = $lp_order->get_meta( self::META_SUBSCRIPTION_STATUS_TMP );
-		$lp_subscription_status     = $webhook_data['lp_subscription_status'] ?? '';
+		$lp_subscription_status     = $lp_order->get_meta( self::META_SUBSCRIPTION_STATUS );
+		$lp_subscription_status_receiver     = '';
+
+		LP_Debug::log_to_comment( 'LP status: ' . $lp_order->get_status() );
 
 		// Check lp order status is trialed or activated
 		if ( $lp_order->is_completed() ) {
-			$lp_subscription_status = LP_Subscription_Manager::STATUS_RENEWED;
-		} elseif ( ! empty( $lp_payment_success ) && ! empty( $lp_subscription_status_tmp ) ) {
+			if ( $lp_subscription_status === LP_Subscription_Manager::STATUS_ACTIVATED ) {
+				LP_Debug::log_to_comment( 'Activated to renew' );
+				$lp_subscription_status_receiver = LP_Subscription_Manager::STATUS_RENEWED;
+			}
+		} elseif ( ! empty( $lp_payment_success )
+		    && $lp_subscription_status_tmp === LP_Subscription_Manager::STATUS_ACTIVATED ) {
 			// If payment success and subscription status tmp is not empty, use subscription status tmp
-			$lp_subscription_status = $lp_subscription_status_tmp;
-		} elseif (
-			! in_array(
-				$lp_subscription_status,
-				[
-					LP_Subscription_Manager::STATUS_TRIAL,
-					LP_Subscription_Manager::STATUS_ACTIVATED,
-				]
-			) ) {
+			LP_Debug::log_to_comment( 'Payment success and subscription status tmp is not empty' );
+			$lp_subscription_status_receiver = LP_Subscription_Manager::STATUS_ACTIVATED;
+		} elseif ( $webhook_data['lp_subscription_status'] !== LP_Subscription_Manager::STATUS_ACTIVATED ) {
 			// If subscription status is not trial or activated, use subscription status from webhook
-			$lp_subscription_status = $webhook_data['lp_subscription_status'] ?? '';
+			$lp_subscription_status_receiver = $webhook_data['lp_subscription_status'] ?? '';
+			LP_Debug::log_to_comment( 'Subscription status is not activated: ' . $lp_subscription_status_receiver );
 		}
 
-		switch ( $lp_subscription_status ) {
+		$lp_subscription_status_receiver = apply_filters(
+			'learn-press/gateway/subscription/status',
+			$lp_subscription_status_receiver,
+			$lp_order,
+			$webhook_data,
+			$this
+		);
+
+		LP_Debug::log_to_comment( 'xxx LP subscription status receiver: ' . $lp_subscription_status_receiver );
+
+		switch ( $lp_subscription_status_receiver ) {
 			case LP_Subscription_Manager::STATUS_TRIAL:
 				$lp_order->add_note(
 					sprintf(
@@ -773,6 +785,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 				do_action( 'learn-press/subscription/trial', $this, $lp_order, $webhook_data );
 				break;
 			case LP_Subscription_Manager::STATUS_ACTIVATED:
+
+				LP_Debug::log_to_comment( 'Data payment? ' . json_encode( $lp_payment_success, JSON_UNESCAPED_UNICODE ) );
+
 				$lp_order->add_note(
 					sprintf(
 						'LP Order: %s %s: %s. %s. %s, %s',
@@ -796,7 +811,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 				);
 				$this->process_subscription_when_payment_first( $lp_order, $webhook_data );
 				do_action( 'learn-press/subscription/active', $this, $lp_order, $webhook_data );
-				// Create new Order child
 				break;
 			case LP_Subscription_Manager::STATUS_RENEWED:
 				$lp_order->add_note(
@@ -822,7 +836,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 				);
 				$this->process_subscription_when_payment_renew_success( $lp_order, $webhook_data );
 				do_action( 'learn-press/subscription/renew', $this, $lp_order, $webhook_data );
-				// Create new Order child
 				break;
 			case LP_Subscription_Manager::STATUS_EXPIRED:
 				$lp_order->add_note(
@@ -846,7 +859,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 					)
 				);
 				do_action( 'learn-press/subscription/expired', $this, $lp_order, $webhook_data );
-				// Create new Order child
 				break;
 			case LP_Subscription_Manager::STATUS_CREATED:
 				$lp_order->add_note(

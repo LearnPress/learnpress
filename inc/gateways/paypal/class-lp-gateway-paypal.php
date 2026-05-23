@@ -1599,7 +1599,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$lp_order_id = $webhook_data['resource']['custom'] ?? $webhook_data['resource']['custom_id'] ?? '';
 			$lp_order    = learn_press_get_order( $lp_order_id );
 			if ( ! $lp_order ) {
-				error_log( 'LearnPress order is invalid.' );
+				error_log( 'LearnPress order is invalid: ' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
 				return;
 			}
 			$webhook_data['lp_order_id'] = $lp_order_id;
@@ -1739,6 +1739,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 							// 2. Check not trial
 							if ( empty( $lp_subscription_status ) && $regularCycle ) {
 								$lp_subscription_status = LP_Subscription_Manager::STATUS_ACTIVATED;
+								// Key tmp for check if payment success and has key will set lp_subscription_status = value of subscription_status_tmp
+								update_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_STATUS_TMP, $lp_subscription_status );
 							}
 						}
 
@@ -1765,17 +1767,14 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'LP PayPal get status from webhook is invalid.', 'learnpress' ), 400 );
 			}
 
-			LP_Debug::log_to_comment(
-				'LP PayPal normalize subscription data' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE )
-			);
-
 			$webhook_data['lp_order_id']            = $resource['custom_id'];
 			$webhook_data['lp_plan_id']             = $resource['plan_id'] ?? '';
 			$webhook_data['lp_subscription_id']     = $resource['id'] ?? '';
 			$webhook_data['lp_subscription_status'] = $lp_subscription_status;
 
-			// Key tmp for check if payment success and has key will set lp_subscription_status = value of subscription_status_tmp
-			update_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_STATUS_TMP, $lp_subscription_status );
+			LP_Debug::log_to_comment(
+				'LP PayPal normalize subscription data' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE )
+			);
 		}
 
 		/**
