@@ -1578,6 +1578,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param WP_REST_Request $request
 		 *
 		 * @throws Exception
+		 * @since 4.3.7
+		 * @version 1.0.0
 		 */
 		public function capture_subscription_webhook( WP_REST_Request $request ) {
 			$webhook_data = LP_Helper::json_decode( $request->get_body(), true );
@@ -1604,21 +1606,44 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 			$webhook_data['lp_order_id'] = $lp_order_id;
 
-			// For case has fee when payment first (Fee setup) or renewal
-			$is_payment_setup_fee_or_renew = $this->capturePaymentSetupFeeOrRenewal( $lp_order, $webhook_data );
-			if ( ! $is_payment_setup_fee_or_renew ) {
-				// Verify and normalize data subscription
-				$this->normalize_subscription_data( $webhook_data );
-			}
-
-			// If billing created, create subscription
-			$is_billing_subscription_created = $this->capture_billing_subscription_create( $webhook_data );
+			// Webhook billing subscription create
+			$is_billing_subscription_created = $this->capture_billing_subscription_create( $lp_order, $webhook_data );
 			if ( $is_billing_subscription_created ) {
 				return;
 			}
 
+			// Capture payment setup fee or renewal
+			$this->capturePaymentSetupFeeOrRenewal( $lp_order, $webhook_data );
+			// Capture subscription data
+			$this->capture_subscription_data( $webhook_data );
+
+			$lp_payment_success         = $lp_order->get_meta( self::META_SUBSCRIPTION_DATA_PAYMENT_SUCCESS );
+			$lp_subscription_status_tmp = $lp_order->get_meta( self::META_SUBSCRIPTION_STATUS_TMP );
+			$lp_subscription_status     = $lp_order->get_meta( self::META_SUBSCRIPTION_STATUS );
+
+			// Check lp order status is activated will renew
+			if ( $lp_order->is_completed() ) {
+				if ( $lp_subscription_status === LP_Subscription_Manager::STATUS_ACTIVATED ) {
+					LP_Debug::log_to_comment( 'Activated to renew' );
+					$lp_subscription_status_set_to_handle = LP_Subscription_Manager::STATUS_RENEWED;
+				}
+			} elseif ( ! empty( $lp_payment_success )
+						&& $lp_subscription_status_tmp === LP_Subscription_Manager::STATUS_ACTIVATED ) {
+				// If payment success and subscription status tmp is not empty
+				LP_Debug::log_to_comment( 'Payment success and subscription status tmp is not empty' );
+				$lp_subscription_status_set_to_handle = LP_Subscription_Manager::STATUS_ACTIVATED;
+			} elseif ( $webhook_data['lp_subscription_status'] !== LP_Subscription_Manager::STATUS_ACTIVATED ) {
+				// If subscription status is not activated, use subscription status from webhook
+				$lp_subscription_status_set_to_handle = $webhook_data['lp_subscription_status'] ?? '';
+				LP_Debug::log_to_comment( 'Subscription status is not activated: ' . $lp_subscription_status_set_to_handle );
+			}
+
+			if ( empty( $lp_subscription_status_set_to_handle ) ) {
+				return;
+			}
+
 			// Dispatch webhook
-			$this->process_subscription_webhook( $lp_order, $webhook_data );
+			$this->process_subscription_by_status( $lp_order, $lp_subscription_status_set_to_handle, $webhook_data );
 		}
 
 		/**
@@ -1657,17 +1682,27 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Normalize PayPal webhook data into LearnPress subscription data.
+		 * Capture PayPal subscription state from webhook data.
 		 *
-		 * User can set multiple events, can have events not only subscription for link web hook, so we need to check to ignore, not log.
-		 * Or need write guide set only event for subscription link webhook
+		 * This method only handles PayPal webhook payloads whose resource type is
+		 * `subscription`. Other webhook events can still be sent to the same endpoint,
+		 * so non-subscription resources, missing resources, and completed parent orders
+		 * are ignored instead of treated as errors.
+		 *
+		 * For `BILLING.SUBSCRIPTION.ACTIVATED`, the PayPal billing cycle data is used
+		 * to decide whether the LearnPress subscription status should be trial or
+		 * activated. Cancelled, suspended, and expired events are mapped to the matching
+		 * LearnPress subscription statuses. The resolved status is written back into
+		 * `$webhook_data['lp_subscription_status']` for later dispatch.
 		 *
 		 * @param array $webhook_data
 		 *
 		 * @return void
-		 * @throws Exception
+		 * @throws Exception When the LearnPress order is invalid, the PayPal event type is missing, or no subscription status can be resolved.
+		 * @since 4.3.7
+		 * @version 1.0.0
 		 */
-		public function normalize_subscription_data( array &$webhook_data = [] ) {
+		public function capture_subscription_data( array &$webhook_data = [] ) {
 			parent::normalize_subscription_data( $webhook_data );
 
 			$lp_order_id = $webhook_data['lp_order_id'] ?? 0;
@@ -1676,19 +1711,23 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'LearnPress order is invalid.', 'learnpress' ), 400 );
 			}
 
-			$message_data_not_type_subscription = sprintf(
-				'%s %s',
-				__( 'Data not type billing subscription: ', 'learnpress' ),
-				json_encode( $webhook_data )
-			);
-
 			if ( empty( $webhook_data['resource'] ) || ! is_array( $webhook_data['resource'] ) ) {
-				throw new Exception( $message_data_not_type_subscription, 5001 );
+				return;
 			}
 
+			$resource      = $webhook_data['resource'];
 			$resource_type = $webhook_data['resource_type'] ?? '';
 			if ( $resource_type !== 'subscription' ) {
-				throw new Exception( $message_data_not_type_subscription, 5001 );
+				return;
+			}
+
+			/*
+			 * If order is completed, skip if is data webhook subscription
+			 * Because if order completed with subscription activated and payment success
+			 * The next for renewal only get via payment, not return subscription
+			 */
+			if ( $lp_order->is_completed() ) {
+				throw new Exception( __( 'Ignore lp order completed with subscription activated.', 'learnpress' ), 400 );
 			}
 
 			$event_type = $webhook_data['event_type'] ?? '';
@@ -1696,18 +1735,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( 'PayPal subscription event type is invalid.', 400 );
 			}
 
-			$resource = $webhook_data['resource'];
-			if ( empty( $resource['custom_id'] ) ) {
-				throw new Exception( __( 'LearnPress order ID is invalid.', 'learnpress' ), 400 );
-			}
-
 			$lp_subscription_status = '';
 			switch ( $event_type ) {
-				case 'BILLING.SUBSCRIPTION.CREATED':
-					$lp_subscription_status = LP_Subscription_Manager::STATUS_CREATED;
-					break;
 				case 'BILLING.SUBSCRIPTION.ACTIVATED':
-					// Check is trial
+					// Check is trial or active
 					$billing_info = $resource['billing_info'] ?? false;
 					if ( ! empty( $billing_info ) ) {
 						$cycle_executions = $billing_info['cycle_executions'] ?? [];
@@ -1743,10 +1774,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 								update_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_STATUS_TMP, $lp_subscription_status );
 							}
 						}
-
-						$webhook_data['lp_subscription_ammount']  = $billing_info['last_payment']['amount']['value'] ?? 0;
-						$webhook_data['lp_subscription_currency'] = $billing_info['last_payment']['amount']['currency_code'] ?? '';
-						update_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_DATA_RECEIVER, $webhook_data );
 					}
 					break;
 				case 'BILLING.SUBSCRIPTION.CANCELLED':
@@ -1764,12 +1791,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			if ( empty( $lp_subscription_status ) ) {
+				error_log( 'Empty subscription status: ' . json_encode( $webhook_data ) );
 				throw new Exception( __( 'LP PayPal get status from webhook is invalid.', 'learnpress' ), 400 );
 			}
 
-			$webhook_data['lp_order_id']            = $resource['custom_id'];
-			$webhook_data['lp_plan_id']             = $resource['plan_id'] ?? '';
-			$webhook_data['lp_subscription_id']     = $resource['id'] ?? '';
 			$webhook_data['lp_subscription_status'] = $lp_subscription_status;
 
 			LP_Debug::log_to_comment(
@@ -1778,21 +1803,27 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Normalize PayPal setup-fee payment webhook data.
+		 * Capture PayPal setup-fee or renewal payment data.
+		 *
+		 * This method handles `PAYMENT.SALE.COMPLETED` webhook payloads whose resource
+		 * type is `sale`. It verifies that the PayPal billing agreement matches the
+		 * subscription id stored on the LearnPress parent order, stores the successful
+		 * payment payload for first-payment coordination when the parent order is not
+		 * completed yet, and appends normalized amount/currency values to `$webhook_data`.
 		 *
 		 * @param LP_Order $lp_order
 		 * @param array $webhook_data
 		 *
-		 * @return bool
-		 * @throws Exception
+		 * @return true|void
+		 * @throws Exception When the sale resource is invalid or does not match the stored subscription id.
+		 * @since 4.3.7
+		 * @version 1.0.0
 		 */
-		public function capturePaymentSetupFeeOrRenewal( $lp_order, array &$webhook_data ): bool {
-			parent::normalize_subscription_data( $webhook_data );
-
+		public function capturePaymentSetupFeeOrRenewal( $lp_order, array &$webhook_data ) {
 			$resource_type = $webhook_data['resource_type'] ?? '';
 			$event_type    = $webhook_data['event_type'] ?? '';
 			if ( 'sale' !== $resource_type || 'PAYMENT.SALE.COMPLETED' !== $event_type ) {
-				return false;
+				return;
 			}
 
 			if ( empty( $webhook_data['resource'] ) || ! is_array( $webhook_data['resource'] ) ) {
@@ -1805,26 +1836,28 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'PayPal billing agreement ID is invalid.', 'learnpress' ), 400 );
 			}
 
-			// Todo: get subscription_id from lp order to compare with $billing_agreement_id
+			// Verify subscription id receiver sample with subscription id on LP Order
 			$subscription_id = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_ID, true );
-			$plan_id         = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_PLAN_ID, true );
 			if ( $billing_agreement_id !== $subscription_id ) {
 				throw new Exception( __( 'PayPal billing subscription not same with subscription on LP Order.', 'learnpress' ), 400 );
 			}
 
-			$webhook_data['lp_order_id']              = $lp_order->get_id();
-			$webhook_data['lp_plan_id']               = $plan_id;
-			$webhook_data['lp_subscription_id']       = $billing_agreement_id;
-			$webhook_data['lp_subscription_ammount']  = $resource['amount']['total'] ?? 0;
-			$webhook_data['lp_subscription_currency'] = $resource['amount']['currency'] ?? '';
+			// Save payment data to combine with subscription status defined by LP later, not for renewal
+			if ( ! $lp_order->is_completed() ) {
+				update_post_meta(
+					$lp_order->get_id(),
+					self::META_SUBSCRIPTION_DATA_PAYMENT_SUCCESS,
+					wp_json_encode( $webhook_data, JSON_UNESCAPED_UNICODE )
+				);
+			}
 
-			// Save payment data to combine with subscription status defined by LP later
-			update_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_DATA_PAYMENT_SUCCESS, $webhook_data );
+			$webhook_data['lp_subscription_amount']   = $resource['amount']['total'] ?? 0;
+			$webhook_data['lp_subscription_currency'] = $resource['amount']['currency'] ?? '';
 
 			// Add note to order
 			$lp_order->add_note(
 				sprintf(
-					'LP Order: %s %s: %s. %s, %s',
+					'LP Order: %s %s: %s. %s',
 					sprintf(
 						'<a href="%s">%s</a>',
 						$lp_order->get_edit_link(),
@@ -1834,11 +1867,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$webhook_data['create_time'] ?? '',
 					sprintf(
 						__( 'Subscription ID: %s', 'learnpress' ),
-						$webhook_data['lp_subscription_id']
-					),
-					sprintf(
-						__( 'Plan ID: %s', 'learnpress' ),
-						$webhook_data['lp_plan_id']
+						$subscription_id
 					)
 				)
 			);
@@ -1847,22 +1876,25 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Capture web hook billing subscription create
+		 * Capture PayPal billing subscription creation webhook.
 		 *
+		 * `BILLING.SUBSCRIPTION.CREATED` is acknowledged by adding an order note and
+		 * returning true so the caller can stop processing. The actual order completion
+		 * and subscription status update happen later when activation/payment webhooks
+		 * are received.
+		 *
+		 * @param LP_Order $lp_order
 		 * @param array $webhook_data
 		 *
 		 * @return bool
+		 * @since 4.3.7
+		 * @version 1.0.0
 		 */
-		public function capture_billing_subscription_create( array $webhook_data ): bool {
+		public function capture_billing_subscription_create( $lp_order, array $webhook_data ): bool {
 			// If billing created, create subscription
-			$event_type  = $webhook_data['event_type'] ?? '';
-			$lp_order_id = (int) $webhook_data['lp_order_id'] ?? '';
-			if ( $event_type === 'BILLING.SUBSCRIPTION.CREATED' && ! empty( $lp_order_id ) ) {
-				$lp_order = learn_press_get_order( $lp_order_id );
+			$event_type = $webhook_data['event_type'] ?? '';
+			if ( $event_type === 'BILLING.SUBSCRIPTION.CREATED' ) {
 				if ( $lp_order ) {
-					// Set subscription id
-					$lp_order->set_data( 'subscription_id', $webhook_data['subscription_id'] ?? '' );
-
 					// Add note to order
 					$lp_order->add_note(
 						sprintf(

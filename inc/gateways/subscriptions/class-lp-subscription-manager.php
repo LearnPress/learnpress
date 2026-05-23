@@ -14,13 +14,12 @@ if ( ! class_exists( 'LP_Subscription_Manager' ) ) {
 		 */
 		protected static $_instance = null;
 
+		const STATUS_TRIAL     = 'trial';
 		const STATUS_ACTIVATED = 'activated';
 		const STATUS_RENEWED   = 'renewed';
 		const STATUS_CANCELLED = 'cancelled';
 		const STATUS_EXPIRED   = 'expired';
 		const STATUS_SUSPENDED = 'suspended';
-		const STATUS_TRIAL     = 'trial';
-		const STATUS_CREATED   = 'created';
 
 		/**
 		 * Get singleton instance of subscription manager.

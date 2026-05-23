@@ -708,58 +708,32 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * Process subscription webhook.
+	 * Process subscription by status.
 	 *
 	 * Status flow:
 	 * - trial/activated: triggers once on the parent LP Order (first payment).
 	 * - renewed: triggers on each renewal, creating a child LP Order.
-	 * - created/expired/cancelled/suspended: logged, do_action only, no order state change.
+	 * - created/expired/canceled/suspended: logged, do_action only, no order state change.
 	 *
 	 * @param LP_Order $lp_order
+	 * @param string $lp_subscription_status_set_to_handle Status you want set to handle by case
 	 * @param array $webhook_data
 	 *
 	 * @return void
 	 * @throws Exception
+	 * @since 4.3.7
+	 * @version 1.0.0
 	 */
-	public function process_subscription_webhook( $lp_order, array $webhook_data = [] ) {
+	public function process_subscription_by_status(
+		$lp_order,
+		string $lp_subscription_status_set_to_handle,
+		array $webhook_data = []
+	) {
 		LP_Debug::log_to_comment( 'Progress wit data: ' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
 
-		$lp_payment_success         = $lp_order->get_meta( self::META_SUBSCRIPTION_DATA_PAYMENT_SUCCESS );
-		$lp_subscription_status_tmp = $lp_order->get_meta( self::META_SUBSCRIPTION_STATUS_TMP );
-		$lp_subscription_status     = $lp_order->get_meta( self::META_SUBSCRIPTION_STATUS );
-		$lp_subscription_status_receiver     = '';
-
-		LP_Debug::log_to_comment( 'LP status: ' . $lp_order->get_status() );
-
-		// Check lp order status is trialed or activated
-		if ( $lp_order->is_completed() ) {
-			if ( $lp_subscription_status === LP_Subscription_Manager::STATUS_ACTIVATED ) {
-				LP_Debug::log_to_comment( 'Activated to renew' );
-				$lp_subscription_status_receiver = LP_Subscription_Manager::STATUS_RENEWED;
-			}
-		} elseif ( ! empty( $lp_payment_success )
-		    && $lp_subscription_status_tmp === LP_Subscription_Manager::STATUS_ACTIVATED ) {
-			// If payment success and subscription status tmp is not empty, use subscription status tmp
-			LP_Debug::log_to_comment( 'Payment success and subscription status tmp is not empty' );
-			$lp_subscription_status_receiver = LP_Subscription_Manager::STATUS_ACTIVATED;
-		} elseif ( $webhook_data['lp_subscription_status'] !== LP_Subscription_Manager::STATUS_ACTIVATED ) {
-			// If subscription status is not trial or activated, use subscription status from webhook
-			$lp_subscription_status_receiver = $webhook_data['lp_subscription_status'] ?? '';
-			LP_Debug::log_to_comment( 'Subscription status is not activated: ' . $lp_subscription_status_receiver );
-		}
-
-		$lp_subscription_status_receiver = apply_filters(
-			'learn-press/gateway/subscription/status',
-			$lp_subscription_status_receiver,
-			$lp_order,
-			$webhook_data,
-			$this
-		);
-
-		LP_Debug::log_to_comment( 'xxx LP subscription status receiver: ' . $lp_subscription_status_receiver );
-
-		switch ( $lp_subscription_status_receiver ) {
+		switch ( $lp_subscription_status_set_to_handle ) {
 			case LP_Subscription_Manager::STATUS_TRIAL:
+				// For trial, update LP order to complete, set subscription status to trial
 				$lp_order->add_note(
 					sprintf(
 						'LP Order: %s %s: %s. %s. %s, %s',
@@ -781,13 +755,12 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 						)
 					)
 				);
-				$this->process_subscription_when_payment_first( $lp_order, $webhook_data );
+				$this->process_subscription_when_payment_first( $lp_order, LP_Subscription_Manager::STATUS_TRIAL, $webhook_data );
 				do_action( 'learn-press/subscription/trial', $this, $lp_order, $webhook_data );
 				break;
 			case LP_Subscription_Manager::STATUS_ACTIVATED:
-
-				LP_Debug::log_to_comment( 'Data payment? ' . json_encode( $lp_payment_success, JSON_UNESCAPED_UNICODE ) );
-
+				// For payment plan first success, update LP order to complete, set subscription status to activated
+				$this->process_subscription_when_payment_first( $lp_order, $lp_subscription_status_set_to_handle, $webhook_data );
 				$lp_order->add_note(
 					sprintf(
 						'LP Order: %s %s: %s. %s. %s, %s',
@@ -809,10 +782,11 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 						)
 					)
 				);
-				$this->process_subscription_when_payment_first( $lp_order, $webhook_data );
 				do_action( 'learn-press/subscription/active', $this, $lp_order, $webhook_data );
 				break;
 			case LP_Subscription_Manager::STATUS_RENEWED:
+				// For payment plan renew success, parent order is completed and payment renew success
+				$this->process_subscription_when_payment_renew_success( $lp_order, $webhook_data );
 				$lp_order->add_note(
 					sprintf(
 						'LP Order: %s %s: %s. %s. %s, %s',
@@ -834,10 +808,10 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 						)
 					)
 				);
-				$this->process_subscription_when_payment_renew_success( $lp_order, $webhook_data );
 				do_action( 'learn-press/subscription/renew', $this, $lp_order, $webhook_data );
 				break;
 			case LP_Subscription_Manager::STATUS_EXPIRED:
+				// For payment plan expired, not impact orders
 				$lp_order->add_note(
 					sprintf(
 						'LP Order: %s %s: %s. %s, %s',
@@ -860,30 +834,8 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 				);
 				do_action( 'learn-press/subscription/expired', $this, $lp_order, $webhook_data );
 				break;
-			case LP_Subscription_Manager::STATUS_CREATED:
-				$lp_order->add_note(
-					sprintf(
-						'LP Order: %s %s: %s. %s, %s',
-						sprintf(
-							'<a href="%s">%s</a>',
-							$lp_order->get_edit_link(),
-							$lp_order->get_order_number()
-						),
-						__( 'Subscription cancelled created at', 'learnpress' ),
-						$webhook_data['create_time'] ?? '',
-						sprintf(
-							__( 'Subscription ID: %s', 'learnpress' ),
-							$webhook_data['lp_subscription_id']
-						),
-						sprintf(
-							__( 'Plan ID: %s', 'learnpress' ),
-							$webhook_data['lp_plan_id']
-						)
-					)
-				);
-				do_action( 'learn-press/subscription/expired', $this, $lp_order, $webhook_data );
-				break;
 			case LP_Subscription_Manager::STATUS_SUSPENDED:
+				// For payment plan suspended, not impact orders
 				$lp_order->add_note(
 					sprintf(
 						'LP Order: %s %s: %s. %s, %s',
@@ -906,6 +858,30 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 				);
 				do_action( 'learn-press/subscription/suspended', $this, $lp_order, $webhook_data );
 				break;
+			case LP_Subscription_Manager::STATUS_CANCELLED:
+				// For payment plan canceled, not impact orders
+				$lp_order->add_note(
+					sprintf(
+						'LP Order: %s %s: %s. %s, %s',
+						sprintf(
+							'<a href="%s">%s</a>',
+							$lp_order->get_edit_link(),
+							$lp_order->get_order_number()
+						),
+						__( 'Canceled at', 'learnpress' ),
+						$webhook_data['create_time'] ?? '',
+						sprintf(
+							__( 'Subscription ID: %s', 'learnpress' ),
+							$webhook_data['lp_subscription_id']
+						),
+						sprintf(
+							__( 'Plan ID: %s', 'learnpress' ),
+							$webhook_data['lp_plan_id']
+						)
+					)
+				);
+				do_action( 'learn-press/subscription/cancelled', $this, $lp_order, $webhook_data );
+				break;
 		}
 
 		do_action( 'learn-press/subscription/process', $this, $lp_order, $webhook_data );
@@ -913,14 +889,32 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 	/**
 	 * Process order when subscription payment first.
+	 *
+	 * @since 4.3.7
+	 * @version 1.0.0
 	 */
-	public function process_subscription_when_payment_first( LP_Order $order, $webhook_data ) {
-		error_log( 'first pay' );
+	public function process_subscription_when_payment_first(
+		LP_Order $order,
+		string $lp_subscription_status_set_to_handle,
+		$webhook_data
+	) {
+		$lp_subscription_amount   = $webhook_data['lp_subscription_amount'] ?? 0;
+		$lp_subscription_currency = $webhook_data['lp_subscription_currency'] ?? '';
 		$order->update_status( LP_ORDER_COMPLETED );
 		update_post_meta(
 			$order->get_id(),
 			self::META_SUBSCRIPTION_STATUS,
-			$webhook_data['lp_subscription_status']
+			$lp_subscription_status_set_to_handle
+		);
+		update_post_meta(
+			$order->get_id(),
+			'lp_subscription_amount',
+			$lp_subscription_amount
+		);
+		update_post_meta(
+			$order->get_id(),
+			'lp_subscription_currency',
+			$lp_subscription_currency
 		);
 	}
 
@@ -928,41 +922,45 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * Process order when payment recurring success.
 	 *
 	 * @throws Exception
+	 * @since 4.3.7
+	 * @version 1.0.0
 	 */
-	public function process_subscription_when_payment_renew_success( LP_Order $order, $webhook_data ) {
+	public function process_subscription_when_payment_renew_success( LP_Order $lp_order_parent, $webhook_data ) {
 		error_log( 'renew pay' );
+
+		$lp_subscription_amount   = $webhook_data['lp_subscription_amount'] ?? 0;
+		$lp_subscription_currency = $webhook_data['lp_subscription_currency'] ?? '';
 
 		// Create new Order child
 		$order_renew = new LP_Order();
-		$order_renew->set_parent_id( $order->get_id() );
-		$order_renew->set_user_id( $order->get_user_id() );
-		$order_renew->set_checkout_email( $order->get_checkout_email() );
+		$order_renew->set_parent_id( $lp_order_parent->get_id() );
+		$order_renew->set_user_id( $lp_order_parent->get_user_id() );
+		$order_renew->set_checkout_email( $lp_order_parent->get_checkout_email() );
 		$order_renew->set_status( LP_ORDER_COMPLETED );
 		$order_renew->set_created_via( 'subscription' );
-		$order_renew->set_currency( $webhook_data['lp_subscription_currency'] ?? $order->get_currency() );
-		$order_renew->set_total( $webhook_data['lp_subscription_ammount'] ?? 0 );
-		$order_renew->set_subtotal( $webhook_data['lp_subscription_ammount'] ?? 0 );
-		$order_renew->set_data( 'payment_method', $order->get_data( 'payment_method' ) );
-		$order_renew->set_data( 'payment_method_title', $order->get_payment_method_title() );
+		$order_renew->set_currency( $lp_subscription_currency ?? $lp_order_parent->get_currency() );
+		$order_renew->set_total( $lp_subscription_amount );
+		$order_renew->set_subtotal( $lp_subscription_amount );
+		$order_renew->set_data( 'payment_method', $lp_order_parent->get_data( 'payment_method' ) );
+		$order_renew->set_data( 'payment_method_title', $lp_order_parent->get_payment_method_title() );
 		$order_renew->save();
 
 		error_log( 'renew ' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
 
-		// Update subscription status
-		update_post_meta(
-			$order_renew->get_id(),
-			self::META_SUBSCRIPTION_ID,
-			$webhook_data['lp_subscription_id']
-		);
-		update_post_meta(
-			$order_renew->get_id(),
-			self::META_SUBSCRIPTION_STATUS,
-			$webhook_data['lp_subscription_status']
-		);
 		update_post_meta(
 			$order_renew->get_id(),
 			self::META_SUBSCRIPTION_DATA_RECEIVER,
-			$webhook_data
+			wp_json_encode( $webhook_data, JSON_UNESCAPED_UNICODE )
+		);
+		update_post_meta(
+			$order_renew->get_id(),
+			'lp_subscription_amount',
+			$lp_subscription_amount
+		);
+		update_post_meta(
+			$order_renew->get_id(),
+			'lp_subscription_currency',
+			$lp_subscription_currency
 		);
 	}
 
