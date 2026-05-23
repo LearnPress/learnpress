@@ -71,6 +71,7 @@ const releasesFiles = [
 	'!packages/**',
 	'!languages/strings/**',
 	'!languages/learnpress-js.pot',
+	'!docs/**',
 ];
 
 const errorHandler = ( err ) => {
