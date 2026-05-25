@@ -14,6 +14,7 @@ use Exception;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\CourseSectionItemModel;
@@ -335,7 +336,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$insert_post_data = array(
 					'post_type'    => LP_COURSE_CPT,
 					'post_title'   => $course_title,
-					'post_content' => wp_unslash( $data['course_description'] ?? '' ),
+					'post_content' => Template::sanitize_html_content( $data['course_description'] ?? '' ),
 					'post_status'  => $course_status,
 					'tax_input'    => array(
 						'course_category' => $categories,
@@ -405,7 +406,7 @@ class CourseBuilderAjax extends AbstractAjax {
 					$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
 
 					$courseModel->post_title   = $course_title;
-					$courseModel->post_content = wp_unslash( $data['course_description'] ?? '' );
+					$courseModel->post_content = Template::sanitize_html_content( $data['course_description'] ?? '' );
 
 					wp_set_post_terms( $courseModel->ID, $categories, 'course_category' );
 					wp_set_post_terms( $courseModel->ID, $tags, 'course_tag' );
@@ -1122,7 +1123,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$insert_arg = array(
 					'post_type'    => LP_LESSON_CPT,
 					'post_title'   => sanitize_text_field( $title ?? '' ),
-					'post_content' => wp_kses_post( $description ?? '' ),
+					'post_content' => Template::sanitize_html_content( $description ?? '' ),
 					'post_status'  => $target_status,
 				);
 
@@ -1171,7 +1172,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				if ( isset( $data['lesson_description'] ) ) {
-					$update_arg['post_content'] = wp_kses_post( $description );
+					$update_arg['post_content'] = Template::sanitize_html_content( $description ?? '' );
 				}
 
 				if ( ! empty( $lesson_slug ) ) {
@@ -1503,7 +1504,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$insert_arg = array(
 					'post_type'    => LP_QUIZ_CPT,
 					'post_title'   => sanitize_text_field( $title ?? '' ),
-					'post_content' => wp_kses_post( $description ?? '' ),
+					'post_content' => Template::sanitize_html_content( $description ?? '' ),
 					'post_status'  => $target_status,
 				);
 
@@ -1548,7 +1549,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				if ( isset( $data['quiz_description'] ) ) {
-					$update_arg['post_content'] = wp_kses_post( $description );
+					$update_arg['post_content'] = Template::sanitize_html_content( $description ?? '' );
 				}
 
 				if ( ! empty( $quiz_slug ) ) {
@@ -1879,7 +1880,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$insert_arg = array(
 					'post_type'    => LP_QUESTION_CPT,
 					'post_title'   => sanitize_text_field( $title ?? '' ),
-					'post_content' => $description ?? '',
+					'post_content' => Template::sanitize_html_content( $description ?? '' ),
 					'post_status'  => $target_status,
 				);
 
@@ -1924,7 +1925,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				if ( isset( $data['question_description'] ) ) {
-					$update_arg['post_content'] = wp_kses_post( $description );
+					$update_arg['post_content'] = Template::sanitize_html_content( $description ?? '' );
 				}
 
 				if ( ! empty( $question_slug ) ) {
