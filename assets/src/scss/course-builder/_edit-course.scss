@@ -2733,7 +2733,7 @@ ul.lp-meta-box__course-tab__tabs {
 				border: 1px solid #e5e7eb;
 				border-radius: $cb-radius-lg;
 				margin-bottom: 16px;
-				transition: all 0.2s ease;
+				transition: background 200ms ease-out;
 
 				&:hover {
 					border-color: #d1d5db;
@@ -2749,7 +2749,7 @@ ul.lp-meta-box__course-tab__tabs {
 		.section-head {
 			display: flex;
 			align-items: center;
-			padding: 10px 20px;
+			padding: 14px 16px;
 			background-color: #ffffff;
 			border-bottom: 1px solid transparent;
 			border-radius: $cb-radius-lg;
@@ -2787,7 +2787,7 @@ ul.lp-meta-box__course-tab__tabs {
 			font-size: 15px;
 			font-weight: 600;
 			color: #1e1e1e;
-			padding: 6px 10px;
+			padding: 8px 12px;
 			border-radius: 6px;
 			transition: all 0.2s;
 			width: auto;

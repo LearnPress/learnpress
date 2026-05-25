@@ -370,7 +370,7 @@
 		border-radius: $cb-radius-lg;
 		margin-bottom: 12px;
 		background: #fff;
-		transition: all 0.2s;
+		transition: background 200ms ease-out;
 
 		.lp-btn-update-question-title,
 		.lp-btn-cancel-update-question-title {
