@@ -379,6 +379,23 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
+	 * Generic subscription checkout flow.
+	 *
+	 * Child gateways should override this method and return a payload with at
+	 * least `status` and `redirect_url` on success.
+	 *
+	 * @param array $data
+	 *
+	 * @return array
+	 * @throws Exception
+	 * @since 4.3.8
+	 * @version 1.0.0
+	 */
+	public function pay_via_subscription( array $data ): array {
+		throw new Exception( sprintf( __( 'Gateway %s does not support subscription payment.', 'learnpress' ), $this->get_id() ) );
+	}
+
+	/**
 	 * Normalize and validate shared plan-creation payload.
 	 *
 	 * Common payload contract:
@@ -756,6 +773,12 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 					)
 				);
 				$this->process_subscription_when_payment_first( $lp_order, LP_Subscription_Manager::STATUS_TRIAL, $webhook_data );
+				// Set user is using plan trial
+				$order_user_ids = $lp_order->get_users();
+				$plan_id        = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_PLAN_ID, true );
+				foreach ( $order_user_ids as $user_id ) {
+					update_user_meta( $user_id, 'user_plan_trial', $plan_id );
+				}
 				do_action( 'learn-press/subscription/trial', $this, $lp_order, $webhook_data );
 				break;
 			case LP_Subscription_Manager::STATUS_ACTIVATED:

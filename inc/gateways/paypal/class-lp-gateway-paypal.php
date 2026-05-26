@@ -1220,6 +1220,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *     message:string
 		 * }
 		 * @throws Exception
+		 * @since 4.3.7
+		 * @version 1.0.1
 		 */
 		public function pay_via_subscription( array $data ): array {
 			if ( ! $this->is_subscription_enabled() ) {
@@ -1231,12 +1233,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'PayPal subscription plan ID is invalid.', 'learnpress' ) );
 			}
 
-			$lp_order_id = $data['lp_order_id'] ?? '';
+			$lp_order_id = (int) $data['lp_order_id'] ?? '';
 			if ( empty( $lp_order_id ) ) {
 				throw new Exception( __( 'LearnPress order ID is invalid.', 'learnpress' ) );
 			}
 
-			$lp_order = learn_press_get_order( (int) $lp_order_id );
+			$lp_order = learn_press_get_order( $lp_order_id );
 			if ( ! $lp_order ) {
 				throw new Exception( __( 'LearnPress order is invalid.', 'learnpress' ) );
 			}
@@ -1244,9 +1246,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$data_token = $this->get_access_token();
 
 			$request_body = array(
-				'plan_id'             => (string) ( $data['plan_id'] ?? '' ),
-				'quantity'            => (string) max( 1, absint( $data['quantity'] ?? 0 ) ),
-				'custom_id'           => (string) ( $data['lp_order_id'] ?? '' ),
+				'plan_id'             => $plan_id,
+				'quantity'            => max( 1, absint( $data['quantity'] ?? 0 ) ),
+				'custom_id'           => $lp_order_id,
 				'application_context' => array(
 					'brand_name' => ! empty( get_bloginfo() ) ? get_bloginfo() : 'LearnPress',
 					'return_url' => esc_url_raw( (string) ( $data['success_url'] ?? '' ) ),
@@ -1255,8 +1257,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			// If the user already completed a trial for this plan on a previous order.
-			$user_has_trial_done = get_user_meta( $lp_order->get_user_id(), 'lp_subscription_trial', true );
-			if ( $user_has_trial_done ) {
+			$user_has_trial_done = get_user_meta( $lp_order->get_user_id(), 'user_plan_trial', true );
+			if ( $user_has_trial_done && $user_has_trial_done === $plan_id ) {
+				LP_Debug::log_to_comment( 'Pay renew for user trial done: ' . $plan_id );
 				// Fetch plan details to find the REGULAR billing cycle and its pricing.
 				$plan_response = wp_remote_get(
 					$this->api_url . 'v1/billing/plans/' . rawurlencode( $plan_id ),
@@ -1597,7 +1600,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$this->verify_data_from_webhook_subscription( $webhook_data_verify );
 
 			// Check lp order exists
-			// SUBSCRIPTION return custom_id, PAYMENT.SALE return custom
+			// SUBSCRIPTION return 'custom_id', PAYMENT.SALE return 'custom'
 			$lp_order_id = $webhook_data['resource']['custom'] ?? $webhook_data['resource']['custom_id'] ?? '';
 			$lp_order    = learn_press_get_order( $lp_order_id );
 			if ( ! $lp_order ) {
@@ -1621,10 +1624,14 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$lp_subscription_status_tmp = $lp_order->get_meta( self::META_SUBSCRIPTION_STATUS_TMP );
 			$lp_subscription_status     = $lp_order->get_meta( self::META_SUBSCRIPTION_STATUS );
 
-			// Check lp order status is activated will renew
+			// Check lp order status is activated/trial will renew
 			if ( $lp_order->is_completed() ) {
-				if ( $lp_subscription_status === LP_Subscription_Manager::STATUS_ACTIVATED ) {
-					LP_Debug::log_to_comment( 'Activated to renew' );
+				if ( in_array(
+					$lp_subscription_status,
+					[ LP_Subscription_Manager::STATUS_ACTIVATED, LP_Subscription_Manager::STATUS_TRIAL ]
+				) ) {
+					LP_Debug::log_to_comment( 'Activated/Trial to renew' );
+					update_post_meta( $lp_order_id, self::META_SUBSCRIPTION_STATUS, LP_Subscription_Manager::STATUS_ACTIVATED );
 					$lp_subscription_status_set_to_handle = LP_Subscription_Manager::STATUS_RENEWED;
 				}
 			} elseif ( ! empty( $lp_payment_success )
@@ -1633,7 +1640,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				LP_Debug::log_to_comment( 'Payment success and subscription status tmp is not empty' );
 				$lp_subscription_status_set_to_handle = LP_Subscription_Manager::STATUS_ACTIVATED;
 			} elseif ( $webhook_data['lp_subscription_status'] !== LP_Subscription_Manager::STATUS_ACTIVATED ) {
-				// If subscription status is not activated, use subscription status from webhook
+				// If subscription status is not activated, use subscription status from webhook data switch
 				$lp_subscription_status_set_to_handle = $webhook_data['lp_subscription_status'] ?? '';
 				LP_Debug::log_to_comment( 'Subscription status is not activated: ' . $lp_subscription_status_set_to_handle );
 			}
