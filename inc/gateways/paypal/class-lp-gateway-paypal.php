@@ -197,24 +197,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		public function process_payment( $order_id = 0 ): array {
 			$order = new LP_Order( $order_id );
 
-			$subscription_data = $this->resolve_subscription_payment_data( $order );
+			//$subscription_data = $this->resolve_subscription_payment_data( $order );
 
+			$subscription_data = $this->is_data_for_payment_subscription( $order );
 			if ( ! empty( $subscription_data ) ) {
-				$subscription_res = $this->pay_subscription( $subscription_data );
-
-				update_post_meta( $order_id, self::META_SUBSCRIPTION_STATUS, 'pending' );
-				if ( ! empty( $subscription_res['subscription_id'] ) ) {
-					update_post_meta( $order_id, self::META_SUBSCRIPTION_ID, sanitize_text_field( (string) $subscription_res['subscription_id'] ) );
-				}
-
-				return array(
-					'result'   => 'success',
-					'redirect' => esc_url_raw( (string) ( $subscription_res['redirect_url'] ?? '' ) ),
-				);
+				$subscription_res   = $this->pay_via_subscription( $order, $subscription_data );
+				$paypal_payment_url = $subscription_res['redirect_url'] ?? '';
+			} else {
+				$data_token         = $this->get_access_token();
+				$paypal_payment_url = $this->create_payment_url( $order, $data_token );
 			}
-
-			$data_token         = $this->get_access_token();
-			$paypal_payment_url = $this->create_payment_url( $order, $data_token );
 
 			$result['result']   = 'success';
 			$result['redirect'] = $paypal_payment_url;
@@ -1210,7 +1202,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * - custom_id = LearnPress parent order id for reconciliation.
 		 * - return/cancel URLs = checkout callbacks.
 		 *
-		 * @param array $data Normalized payload from get_subscription_context().
+		 * @param array $data [ 'plan_id' => string, 'quantity' => int, 'success_url' => string, 'cancel_url' => string ]
+		 * Required: plan_id
 		 *
 		 * @return array{
 		 *     status:string,
@@ -1223,7 +1216,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @since 4.3.7
 		 * @version 1.0.1
 		 */
-		public function pay_via_subscription( array $data ): array {
+		public function pay_via_subscription( LP_Order $lp_order, array $data ): array {
 			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
@@ -1233,17 +1226,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'PayPal subscription plan ID is invalid.', 'learnpress' ) );
 			}
 
-			$lp_order_id = (int) $data['lp_order_id'] ?? '';
-			if ( empty( $lp_order_id ) ) {
-				throw new Exception( __( 'LearnPress order ID is invalid.', 'learnpress' ) );
-			}
-
-			$lp_order = learn_press_get_order( $lp_order_id );
-			if ( ! $lp_order ) {
-				throw new Exception( __( 'LearnPress order is invalid.', 'learnpress' ) );
-			}
-
-			$data_token = $this->get_access_token();
+			$lp_order_id = $lp_order->get_id();
+			$data_token  = $this->get_access_token();
 
 			$request_body = array(
 				'plan_id'             => $plan_id,

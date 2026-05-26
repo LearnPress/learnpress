@@ -307,6 +307,37 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
+	 * Check data is type payment for subscription
+	 * If LP order has data plan id, return data subscription
+	 *
+	 * @return false|array
+	 * @since 4.3.8
+	 * @version 1.0.0
+	 */
+	public function is_data_for_payment_subscription( LP_Order $lp_order ) {
+		$data_subscription = [
+			'plan_id'     => '',
+			'success_url' => $this->get_return_url( $lp_order ),
+			'cancel_url'  => LP_Helper::get_link_no_cache( learn_press_get_page_link( 'checkout' ) ),
+		];
+
+		// Check LP order has data plan id
+		$plan_id = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_PLAN_ID, true );
+		if ( empty( $plan_id ) ) {
+			return false;
+		}
+
+		$data_subscription['plan_id'] = $plan_id;
+
+		return apply_filters(
+			'learn-press/gateway/subscription-payment-data',
+			$data_subscription,
+			$lp_order,
+			$this
+		);
+	}
+
+	/**
 	 * Normalize and validate the shared subscription checkout payload.
 	 *
 	 * This method is intentionally gateway-agnostic and is used by child gateways
@@ -383,7 +414,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * Child gateways should override this method and return a payload with at
 	 * least `status` and `redirect_url` on success.
+	 * $data required key: plan_id
 	 *
+	 * @param LP_Order $lp_order
 	 * @param array $data
 	 *
 	 * @return array
@@ -391,7 +424,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @since 4.3.8
 	 * @version 1.0.0
 	 */
-	public function pay_via_subscription( array $data ): array {
+	public function pay_via_subscription( LP_Order $lp_order, array $data ): array {
 		throw new Exception( sprintf( __( 'Gateway %s does not support subscription payment.', 'learnpress' ), $this->get_id() ) );
 	}
 
