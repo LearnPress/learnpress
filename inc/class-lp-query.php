@@ -20,7 +20,7 @@ class LP_Query {
 			return;
 		}
 
-		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000 );
+		add_action( 'init', array( $this, 'add_rewrite_tags' ) );
 		add_action( 'init', array( $this, 'add_rewrite_endpoints' ) );
 		add_filter( 'option_rewrite_rules', [ $this, 'update_option_rewrite_rules' ], 1 );
 	}
