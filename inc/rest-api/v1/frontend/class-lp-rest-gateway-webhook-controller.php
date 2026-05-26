@@ -75,24 +75,6 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 
 				LP_Debug::log_to_comment( 'Webhook payload: ' . json_encode( $request->get_body(), JSON_UNESCAPED_UNICODE ) );
 
-				// Test
-				if ( isset( $_GET['pay'] ) ) {
-					/** @var LP_Gateway_Paypal $gateway */
-					$plan = $gateway->get_plan( 'P-8N4379132G8477049NIFPNJY' );
-
-					$data_pay = [
-						'lp_order_id' => 94,
-//						'plan_id'             => 'P-8N4379132G8477049NIFPNJY', // Not setup fee, trial 10 day
-//						'plan_id'     => 'P-13E70519U63465016NIGWAMI', // Not fee, Not trial
-//						'plan_id'     => 'P-4FB01122917417635NIHNBWI', // Fee, trial
-						'plan_id'     => 'P-2MM29025B1701164HNIH4WGA', // Plan one day
-					];
-					$g        = $gateway->pay_via_subscription( $data_pay );
-					$m        = 2;
-					return $response;
-				}
-				// End test
-
 				/**
 				 * @var LP_Gateway_Paypal|LP_Gateway_Stripe $gateway
 				 */
