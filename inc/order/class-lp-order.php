@@ -7,8 +7,12 @@
  * @version 4.0.1
  */
 
+use LearnPress\Databases\Order\LPOrderItemsDB;
 use LearnPress\Databases\PostDB;
+use LearnPress\Filters\Order\OrderItemsFilter;
 use LearnPress\Filters\PostFilter;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
