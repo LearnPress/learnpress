@@ -1205,13 +1205,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param array $data [ 'plan_id' => string, 'quantity' => int, 'success_url' => string, 'cancel_url' => string ]
 		 * Required: plan_id
 		 *
-		 * @return array{
-		 *     status:string,
-		 *     redirect_url:string,
-		 *     provider_reference:string,
-		 *     subscription_id:string,
-		 *     message:string
-		 * }
+		 * @return array [ 'redirect_url' => string, and data from v1/billing/subscriptions ]
 		 * @throws Exception
 		 * @since 4.3.7
 		 * @version 1.0.1
@@ -1242,6 +1236,13 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			// If the user already completed a trial for this plan on a previous order.
 			$user_has_trial_done = get_user_meta( $lp_order->get_user_id(), 'user_plan_trial', true );
+			$user_has_trial_done = apply_filters(
+				'learn-press/subscription/user-has-trial',
+				$user_has_trial_done,
+				$lp_order,
+				$plan_id,
+				$this
+			);
 			if ( $user_has_trial_done && $user_has_trial_done === $plan_id ) {
 				LP_Debug::log_to_comment( 'Pay renew for user trial done: ' . $plan_id );
 				// Fetch plan details to find the REGULAR billing cycle and its pricing.

@@ -784,6 +784,15 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		switch ( $lp_subscription_status_set_to_handle ) {
 			case LP_Subscription_Manager::STATUS_TRIAL:
 				// For trial, update LP order to complete, set subscription status to trial
+				$this->process_subscription_when_payment_first( $lp_order, LP_Subscription_Manager::STATUS_TRIAL, $webhook_data );
+
+				// Set user is using plan trial
+				$order_user_ids = $lp_order->get_users();
+				$plan_id        = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_PLAN_ID, true );
+				foreach ( $order_user_ids as $user_id ) {
+					update_user_meta( $user_id, 'user_plan_trial', $plan_id );
+				}
+
 				$lp_order->add_note(
 					sprintf(
 						'LP Order: %s %s: %s. %s. %s, %s',
@@ -805,13 +814,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 						)
 					)
 				);
-				$this->process_subscription_when_payment_first( $lp_order, LP_Subscription_Manager::STATUS_TRIAL, $webhook_data );
-				// Set user is using plan trial
-				$order_user_ids = $lp_order->get_users();
-				$plan_id        = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_PLAN_ID, true );
-				foreach ( $order_user_ids as $user_id ) {
-					update_user_meta( $user_id, 'user_plan_trial', $plan_id );
-				}
 				do_action( 'learn-press/subscription/trial', $this, $lp_order, $webhook_data );
 				break;
 			case LP_Subscription_Manager::STATUS_ACTIVATED:
