@@ -24,6 +24,7 @@ use LP_Course_Item;
 use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
 use LP_Datetime;
+use LP_Debug;
 use LP_Helper;
 use LP_Section_Items_Filter;
 use LP_Settings;
@@ -767,7 +768,7 @@ class CourseModel {
 				}
 			);
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $sections_items;
@@ -967,7 +968,7 @@ class CourseModel {
 			$total        = $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
 			$lp_course_cache->set_total_students_enrolled_or_purchased( $this->get_id(), $total );
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $total;
@@ -1286,7 +1287,7 @@ class CourseModel {
 				$item              = PostModel::get_item_model_from_db( $filter );
 			}
 		} catch ( Exception $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $item;
@@ -1318,7 +1319,7 @@ class CourseModel {
 				$course_model->get_author_model();
 			}
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $course_model;

@@ -20,6 +20,7 @@ use LP_Course_Cache;
 use LP_Course_Item;
 use LP_Courses_Cache;
 use LP_Datetime;
+use LP_Debug;
 use LP_User;
 use LP_User_Item_Course;
 use LP_User_Items_Cache;
@@ -455,6 +456,9 @@ class UserCourseModel extends UserItemModel {
 			}
 
 			$results_evaluate['result'] = round( $results_evaluate['result'], 2 );
+			if ( $results_evaluate['result'] > 100 ) {
+				$results_evaluate['result'] = 100;
+			}
 
 			$completed_items = intval( $count_items_completed->count_status ?? 0 );
 
@@ -484,7 +488,7 @@ class UserCourseModel extends UserItemModel {
 
 			LP_Cache::cache_load_first( 'set', $key_first_cache, $results );
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $results;
