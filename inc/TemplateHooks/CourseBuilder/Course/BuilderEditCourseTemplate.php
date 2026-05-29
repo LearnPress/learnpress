@@ -302,19 +302,19 @@ class BuilderEditCourseTemplate {
 	public function html_tab_overview( array $data = [] ) {
 		wp_enqueue_script( 'lp-course-builder' );
 
-		$courseMoel = $data['courseModel'] ?? null;
-		$course_id  = 0;
-		if ( $courseMoel instanceof CourseModel ) {
-			$course_id = $courseMoel->get_id();
+		$courseModel = $data['courseModel'] ?? null;
+		$course_id   = 0;
+		if ( $courseModel instanceof CourseModel ) {
+			$course_id = $courseModel->get_id();
 		}
 
-		$html_edit_title     = $this->edit_title( $courseMoel );
-		$html_edit_permalink = $this->edit_permalink( $courseMoel );
-		$html_edit_features  = $this->edit_featured_image( $courseMoel );
-		$html_edit_publish   = $this->edit_publish( $courseMoel );
-		$html_edit_desc      = $this->edit_desc( $courseMoel );
-		$html_edit_cat       = $this->edit_categories( $courseMoel );
-		$html_edit_tags      = $this->edit_tags( $courseMoel );
+		$html_edit_title     = $this->edit_title( $courseModel );
+		$html_edit_permalink = $this->edit_permalink( $courseModel );
+		$html_edit_features  = $this->edit_featured_image( $courseModel );
+		$html_edit_publish   = $this->edit_publish( $courseModel );
+		$html_edit_desc      = $this->edit_desc( $courseModel );
+		$html_edit_cat       = $this->edit_categories( $courseModel );
+		$html_edit_tags      = $this->edit_tags( $courseModel );
 
 		$section = [
 			'wrapper'                => sprintf( '<div class="cb-section__course-edit" data-course-id="%s">', $course_id ),
@@ -441,10 +441,23 @@ class BuilderEditCourseTemplate {
 		return $callbacks;
 	}
 
-	public function edit_title( $course_model ) {
+	/**
+	 * Render Course Builder course title field.
+	 *
+	 * Uses the raw post title for existing courses so the edit field does not receive
+	 * display filters. New courses start with an empty value and still render the
+	 * optional AI button when AI settings are enabled.
+	 *
+	 * @param CourseModel|false|null $courseModel Course model being edited, or empty when creating a new course.
+	 *
+	 * @return string HTML markup for the title input, character count, and optional AI button.
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public function edit_title( $courseModel ) {
 		$title = '';
-		if ( ! empty( $course_model ) ) {
-			$post_id = absint( $course_model->get_id() );
+		if ( ! empty( $courseModel ) ) {
+			$post_id = absint( $courseModel->get_id() );
 			$title   = $post_id ? (string) get_post_field( 'post_title', $post_id, 'raw' ) : '';
 		}
 		$char_count = mb_strlen( wp_strip_all_tags( $title ) );
@@ -463,8 +476,21 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
-	public function edit_permalink( $course_model ) {
-		$post_id   = ! empty( $course_model ) ? $course_model->get_id() : '';
+	/**
+	 * Render Course Builder permalink editor.
+	 *
+	 * Permalink editing is hidden for unsaved courses. Existing courses use
+	 * get_sample_permalink() when available to display a publish-style URL for slug
+	 * editing, while the preview link keeps the current permalink as its href.
+	 *
+	 * @param CourseModel|false|null $courseModel Course model being edited, or empty when creating a new course.
+	 *
+	 * @return string HTML markup for the permalink display/editor, or an empty string for new courses.
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public function edit_permalink( $courseModel ) {
+		$post_id   = ! empty( $courseModel ) ? $courseModel->get_id() : '';
 		$post_name = '';
 
 		// Hide permalink for new courses
@@ -608,9 +634,20 @@ class BuilderEditCourseTemplate {
 		];
 	}
 
-	public function edit_desc( $course_model ) {
-		$desc            = ! empty( $course_model ) ? $course_model->get_description() : '';
-		$word_count      = str_word_count( wp_strip_all_tags( $desc ) );
+	/**
+	 * Render Course Builder description editor.
+	 *
+	 * Uses the current course post content when editing an existing CourseModel.
+	 * For new courses, the editor starts with an empty value. AI button rendering
+	 * is delegated to html_overview_ai_button().
+	 *
+	 * @param CourseModel|false|null $courseModel Course model being edited, or empty when creating a new course.
+	 *
+	 * @return string HTML markup for the course description editor.
+	 */
+	public function edit_desc( $courseModel ) {
+		$desc = $courseModel ? $courseModel->post_content : '';
+
 		$editor_id       = 'course_description_editor';
 		$ai_button       = $this->html_overview_ai_button( '#lp-tmpl-edit-description-ai' );
 		$editor_settings = array(
@@ -712,7 +749,20 @@ class BuilderEditCourseTemplate {
 		return '';
 	}
 
-	public function edit_categories( $course_model ) {
+	/**
+	 * Render Course Builder course category selector.
+	 *
+	 * Reuses the WordPress post_categories_meta_box() output for course_category,
+	 * then adds Course Builder search and "add new category" controls. During render,
+	 * checked_ontop is forced off so the checklist keeps taxonomy order.
+	 *
+	 * @param CourseModel|false|null $courseModel Course model being edited, or empty when creating a new course.
+	 *
+	 * @return string HTML markup for the course category checklist, search toolbar, and add-new form.
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public function edit_categories( $courseModel ) {
 		if ( ! function_exists( 'post_categories_meta_box' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/meta-boxes.php';
 		}
@@ -720,7 +770,7 @@ class BuilderEditCourseTemplate {
 			require_once ABSPATH . 'wp-admin/includes/template.php';
 		}
 
-		$post_id = ! empty( $course_model ) ? $course_model->get_id() : get_the_ID();
+		$post_id = ! empty( $courseModel ) ? $courseModel->get_id() : get_the_ID();
 		$post    = get_post( $post_id );
 
 		$force_checked_ontop_false = function ( $args ) {
@@ -816,8 +866,21 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
-	public function edit_tags( $course_model ) {
-		$course_terms = ! empty( $course_model ) ? $course_model->get_tags() : [];
+	/**
+	 * Render Course Builder course tag selector.
+	 *
+	 * Builds tag chips from all course tags, placing selected tags before available
+	 * tags so the current course state is visible first. The returned markup includes
+	 * search, empty-state text, and add-new controls consumed by the builder runtime.
+	 *
+	 * @param CourseModel|false|null $courseModel Course model being edited, or empty when creating a new course.
+	 *
+	 * @return string HTML markup for the selected/available tag chips, search toolbar, and add-new form.
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public function edit_tags( $courseModel ) {
+		$course_terms = ! empty( $courseModel ) ? $courseModel->get_tags() : [];
 		$tags         = get_terms(
 			[
 				'taxonomy'   => LP_COURSE_TAXONOMY_TAG,
@@ -939,8 +1002,21 @@ class BuilderEditCourseTemplate {
 		return $html;
 	}
 
-	public function edit_featured_image( $course_model ) {
-		$post_id   = ! empty( $course_model ) ? $course_model->get_id() : '';
+	/**
+	 * Render Course Builder featured image uploader.
+	 *
+	 * Existing courses render the current thumbnail preview with replace/remove
+	 * controls. Courses without a thumbnail render the upload dropzone and hidden
+	 * course_thumbnail_id field used by the builder save flow.
+	 *
+	 * @param CourseModel|false|null $courseModel Course model being edited, or empty when creating a new course.
+	 *
+	 * @return string HTML markup for the featured image dropzone, thumbnail hidden field, and optional AI button.
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	public function edit_featured_image( $courseModel ) {
+		$post_id   = ! empty( $courseModel ) ? $courseModel->get_id() : '';
 		$ai_button = $this->html_overview_ai_button( '#lp-tmpl-edit-image-ai' );
 
 		$thumbnail_id  = ! empty( $post_id ) ? get_post_thumbnail_id( $post_id ) : '';
@@ -1028,12 +1104,12 @@ class BuilderEditCourseTemplate {
 	/**
 	 * Render publish panel (status, visibility, publish date, danger zone) for Course Builder overview.
 	 *
-	 * @param CourseModel|string $course_model
+	 * @param CourseModel|false|string|null $courseModel
 	 *
 	 * @return string
 	 */
-	public function edit_publish( $course_model ): string {
-		$post_id = ! empty( $course_model ) ? absint( $course_model->get_id() ) : 0;
+	public function edit_publish( $courseModel ): string {
+		$post_id = ! empty( $courseModel ) ? absint( $courseModel->get_id() ) : 0;
 		$post    = $post_id ? get_post( $post_id ) : null;
 
 		$current_status = 'draft';
@@ -1143,20 +1219,33 @@ class BuilderEditCourseTemplate {
 		return Template::combine_components( $edit );
 	}
 
-	protected function html_curriculum( CourseModel $course_model ): string {
+	/**
+	 * Render Course Builder curriculum editor.
+	 *
+	 * Delegates the main curriculum layout to AdminEditCurriculumTemplate with the
+	 * is_course_builder context flag, then appends popup templates and optional AI
+	 * curriculum templates needed by the builder UI.
+	 *
+	 * @param CourseModel $courseModel Course model used to render curriculum sections and popup template IDs.
+	 *
+	 * @return string HTML markup for the curriculum editor plus Course Builder popup and AI templates.
+	 * @since 4.3.0
+	 * @version 1.0.0
+	 */
+	protected function html_curriculum( CourseModel $courseModel ): string {
 		ob_start();
 		AdminEditCurriculumTemplate::instance()->edit_course_curriculum_layout(
-			$course_model,
+			$courseModel,
 			[ 'is_course_builder' => true ]
 		);
 		$html_curriculum = ob_get_clean();
 
 		return $html_curriculum
-				. $this->html_curriculum_popup_templates( $course_model )
+				. $this->html_curriculum_popup_templates( $courseModel )
 				. $this->html_curriculum_ai_templates();
 	}
 
-	protected function html_curriculum_popup_templates( CourseModel $course_model ): string {
+	protected function html_curriculum_popup_templates( CourseModel $courseModel ): string {
 		$popup_templates = apply_filters(
 			'learn-press/course-builder/courses/curriculum/popup-templates',
 			[
@@ -1165,7 +1254,7 @@ class BuilderEditCourseTemplate {
 					esc_attr(
 						sprintf(
 							'lp-tmpl-builder-popup-curriculum-lesson-course-%d',
-							$course_model->get_id()
+							$courseModel->get_id()
 						)
 					),
 					TemplateAJAX::load_content_via_ajax(
@@ -1188,7 +1277,7 @@ class BuilderEditCourseTemplate {
 					esc_attr(
 						sprintf(
 							'lp-tmpl-builder-popup-curriculum-quiz-course-%d',
-							$course_model->get_id()
+							$courseModel->get_id()
 						)
 					),
 					TemplateAJAX::load_content_via_ajax(
@@ -1207,7 +1296,7 @@ class BuilderEditCourseTemplate {
 					)
 				),
 			],
-			$course_model
+			$courseModel
 		);
 
 		return Template::combine_components( $popup_templates );
