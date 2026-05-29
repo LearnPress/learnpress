@@ -450,30 +450,33 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @return array
 	 * @throws Exception
+	 * @since 4.3.7
+	 * @version 1.0.1
 	 */
 	protected function validate_data_plan_payload( array $data ): array {
 		$data                   = wp_parse_args(
 			$data,
 			array(
-				'name'           => '',
+				'name'           => '', // Name of plan and product (if product_id is empty)
 				'amount'         => 0,
 				'currency'       => learn_press_get_currency(),
 				'interval'       => 'month',
 				'interval_count' => 1,
 				'setup_fee'      => 0,
-				'product_id'     => '',
+				'product_id'     => '', // if empty, will create product, then create plan with product created
 				'metadata'       => array(),
 			)
 		);
-		$data['name']           = sanitize_text_field( wp_unslash( (string) $data['name'] ) );
+		$data['name']           = LP_Helper::sanitize_params_submitted( $data['name'] );
 		$data['amount']         = (float) $data['amount'];
-		$data['currency']       = strtoupper( sanitize_text_field( wp_unslash( (string) $data['currency'] ) ) );
-		$data['interval']       = strtolower( sanitize_key( (string) $data['interval'] ) );
+		$data['currency']       = LP_Helper::sanitize_params_submitted( $data['currency'], 'key' );
+		$data['interval']       = LP_Helper::sanitize_params_submitted( $data['interval'], 'key' );
 		$data['interval_count'] = max( 1, absint( $data['interval_count'] ) );
 		$data['setup_fee']      = (float) $data['setup_fee'];
-		$data['product_id']     = sanitize_text_field( wp_unslash( (string) $data['product_id'] ) );
+		$data['product_id']     = LP_Helper::sanitize_params_submitted( $data['product_id'] );
 		$data['metadata']       = is_array( $data['metadata'] ) ? $data['metadata'] : array();
-		if ( empty( $data['product_id'] ) && empty( $data['name'] ) ) {
+
+		if ( empty( $data['name'] ) ) {
 			throw new Exception( __( 'Missing subscription plan name.', 'learnpress' ) );
 		}
 
@@ -488,6 +491,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		if ( empty( $data['currency'] ) ) {
 			throw new Exception( __( 'Missing subscription currency.', 'learnpress' ) );
 		}
+
 		$allowed_intervals = array( 'day', 'week', 'month', 'year' );
 		if ( ! in_array( $data['interval'], $allowed_intervals, true ) ) {
 			throw new Exception( __( 'Invalid subscription interval.', 'learnpress' ) );
@@ -670,52 +674,52 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @throws Exception
 	 * @deprecated 4.3.8
 	 */
-//	protected function validate_webhook_data_contract( array $webhook_data, array $required_top_level_keys = array(), array $required_headers = array() ) {
-//
-//		$missing = array();
-//
-//		foreach ( $required_top_level_keys as $required_key ) {
-//			$required_key = sanitize_key( (string) $required_key );
-//
-//			switch ( $required_key ) {
-//				case 'raw_body':
-//					if ( empty( $webhook_data['raw_body'] ) || ! is_string( $webhook_data['raw_body'] ) ) {
-//						$missing[] = 'raw_body';
-//					}
-//					break;
-//				case 'body':
-//					if ( empty( $webhook_data['body'] ) || ! is_array( $webhook_data['body'] ) ) {
-//						$missing[] = 'body';
-//					}
-//					break;
-//				case 'headers':
-//					if ( ! isset( $webhook_data['headers'] ) || ! is_array( $webhook_data['headers'] ) ) {
-//						$missing[] = 'headers';
-//					}
-//					break;
-//			}
-//		}
-//
-//		$headers_map = is_array( $webhook_data['headers'] ?? null ) ? $webhook_data['headers'] : array();
-//		foreach ( $required_headers as $required_header ) {
-//			$required_header = strtolower( sanitize_key( (string) $required_header ) );
-//			$header_value    = sanitize_text_field( (string) ( $headers_map[ $required_header ] ?? '' ) );
-//			if ( '' === $header_value ) {
-//				$missing[] = 'headers.' . $required_header;
-//			}
-//		}
-//
-//		if ( ! empty( $missing ) ) {
-//				throw new Exception(
-//					sprintf(
-//					/* translators: %s: comma separated required webhook fields. */
-//						__( 'Invalid webhook request data: missing %s.', 'learnpress' ),
-//						implode( ', ', array_unique( $missing ) )
-//					),
-//					400
-//				);
-//		}
-//	}
+	//  protected function validate_webhook_data_contract( array $webhook_data, array $required_top_level_keys = array(), array $required_headers = array() ) {
+	//
+	//      $missing = array();
+	//
+	//      foreach ( $required_top_level_keys as $required_key ) {
+	//          $required_key = sanitize_key( (string) $required_key );
+	//
+	//          switch ( $required_key ) {
+	//              case 'raw_body':
+	//                  if ( empty( $webhook_data['raw_body'] ) || ! is_string( $webhook_data['raw_body'] ) ) {
+	//                      $missing[] = 'raw_body';
+	//                  }
+	//                  break;
+	//              case 'body':
+	//                  if ( empty( $webhook_data['body'] ) || ! is_array( $webhook_data['body'] ) ) {
+	//                      $missing[] = 'body';
+	//                  }
+	//                  break;
+	//              case 'headers':
+	//                  if ( ! isset( $webhook_data['headers'] ) || ! is_array( $webhook_data['headers'] ) ) {
+	//                      $missing[] = 'headers';
+	//                  }
+	//                  break;
+	//          }
+	//      }
+	//
+	//      $headers_map = is_array( $webhook_data['headers'] ?? null ) ? $webhook_data['headers'] : array();
+	//      foreach ( $required_headers as $required_header ) {
+	//          $required_header = strtolower( sanitize_key( (string) $required_header ) );
+	//          $header_value    = sanitize_text_field( (string) ( $headers_map[ $required_header ] ?? '' ) );
+	//          if ( '' === $header_value ) {
+	//              $missing[] = 'headers.' . $required_header;
+	//          }
+	//      }
+	//
+	//      if ( ! empty( $missing ) ) {
+	//              throw new Exception(
+	//                  sprintf(
+	//                  /* translators: %s: comma separated required webhook fields. */
+	//                      __( 'Invalid webhook request data: missing %s.', 'learnpress' ),
+	//                      implode( ', ', array_unique( $missing ) )
+	//                  ),
+	//                  400
+	//              );
+	//      }
+	//  }
 
 	/**
 	 * Normalize provider webhook event to LP event payload.
