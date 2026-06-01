@@ -1012,14 +1012,14 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			// Check if interval is changed will not allow to change
 			if ( ! empty( $data['interval'] ?? '' ) ) {
-				if ( $data['interval'] == $current_sum['interval'] ) {
+				if ( $data['interval'] !== $current_sum['interval'] ) {
 					throw new Exception( __( 'PayPal plan interval cannot be changed. Create a new plan instead.', 'learnpress' ) );
 				}
 			}
 
 			// Check if interval count is changed will not allow to change
 			if ( ! empty( $data['interval_count'] ?? '' ) ) {
-				if ( $data['interval_count'] == $current_sum['interval_count'] ) {
+				if ( $data['interval_count'] !== $current_sum['interval_count'] ) {
 					throw new Exception( __( 'PayPal plan interval count cannot be changed. Create a new plan instead.', 'learnpress' ) );
 				}
 			}
