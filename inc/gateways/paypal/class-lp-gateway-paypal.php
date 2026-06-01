@@ -104,6 +104,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 		/**
 		 * Init.
+		 * @throws Exception
 		 */
 		public function init() {
 			if ( $this->is_enabled() ) {
@@ -136,11 +137,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @return bool
 		 */
 		public function is_subscription_enabled(): bool {
-
 			return $this->settings->get( 'enable_subscriptions', 'no' ) === 'yes';
 		}
+
 		/**
-		 * Listen callback, webhook form PayPal.
+		 * Listen callback, webhook payment from PayPal.
 		 */
 		public function check_webhook_callback() {
 			if ( ! isset( $_GET['paypay_express_checkout'] ) ) {
@@ -152,7 +153,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				return;
 			}
 
-			$this->capture_payment_for_order( $paypal_order_id );
+			try {
+				$this->capture_payment_for_order( $paypal_order_id );
+			} catch ( Throwable $e ) {
+				LP_Debug::error_log( $e );
+			}
 		}
 
 		/**
@@ -160,8 +165,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Check validate IPN.
 		 *
 		 * @return bool
+		 * @deprecated 4.3.8
 		 */
-		public function validate_ipn(): bool {
+		/*public function validate_ipn(): bool {
 			$validate_ipn  = array( 'cmd' => '_notify-validate' );
 			$validate_ipn += wp_unslash( $_POST );
 
@@ -184,7 +190,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Handle payment.
@@ -197,24 +203,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		public function process_payment( $order_id = 0 ): array {
 			$order = new LP_Order( $order_id );
 
-			$subscription_data = $this->resolve_subscription_payment_data( $order );
+			//$subscription_data = $this->resolve_subscription_payment_data( $order );
 
+			$subscription_data = $this->is_data_for_payment_subscription( $order );
 			if ( ! empty( $subscription_data ) ) {
-				$subscription_res = $this->pay_subscription( $subscription_data );
-
-				update_post_meta( $order_id, self::META_SUBSCRIPTION_STATUS, 'pending' );
-				if ( ! empty( $subscription_res['subscription_id'] ) ) {
-					update_post_meta( $order_id, self::META_SUBSCRIPTION_ID, sanitize_text_field( (string) $subscription_res['subscription_id'] ) );
-				}
-
-				return array(
-					'result'   => 'success',
-					'redirect' => esc_url_raw( (string) ( $subscription_res['redirect_url'] ?? '' ) ),
-				);
+				$subscription_res   = $this->pay_via_subscription( $order, $subscription_data );
+				$paypal_payment_url = $subscription_res['redirect_url'] ?? '';
+			} else {
+				$data_token         = $this->get_access_token();
+				$paypal_payment_url = $this->create_payment_url( $order, $data_token );
 			}
-
-			$data_token         = $this->get_access_token();
-			$paypal_payment_url = $this->create_payment_url( $order, $data_token );
 
 			$result['result']   = 'success';
 			$result['redirect'] = $paypal_payment_url;
@@ -230,8 +228,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @return array
 		 * @since 3.0.0
 		 * @version 1.0.1
+		 * @deprecated 4.3.8
 		 */
-		public function get_paypal_args( LP_Order $order ): array {
+		/*public function get_paypal_args( LP_Order $order ): array {
 			$checkout   = LearnPress::instance()->checkout();
 			$custom     = array(
 				'order_id'       => $order->get_id(),
@@ -264,7 +263,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			return apply_filters( 'learn-press/paypal/args', $args );
-		}
+		}*/
 
 		/**
 		 * Get access token from PayPal
@@ -504,8 +503,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return array
 		 * @throws Exception
+		 * @deprecated 4.3.8
 		 */
-		protected function validate_subscription_payload( array $data ): array {
+		/*protected function validate_subscription_payload( array $data ): array {
 			$data = parent::validate_subscription_payload( $data );
 
 			// PayPal subscription API expects a plan id string and positive quantity.
@@ -513,7 +513,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$data['quantity'] = max( 1, absint( $data['quantity'] ) );
 
 			return $data;
-		}
+		}*/
 
 		/**
 		 * Convert generic interval to PayPal interval unit.
@@ -521,8 +521,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param string $interval
 		 *
 		 * @return string
+		 * @deprecated 4.3.8
 		 */
-		protected function map_paypal_interval_unit( string $interval ): string {
+		/*protected function map_paypal_interval_unit( string $interval ): string {
 
 			$map = array(
 				'day'   => 'DAY',
@@ -532,7 +533,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			return $map[ $interval ] ?? 'MONTH';
-		}
+		}*/
 
 		/**
 		 * Convert PayPal interval unit to LearnPress interval slug.
@@ -540,8 +541,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param string $interval_unit
 		 *
 		 * @return string
+		 * @deprecated 4.3.8
 		 */
-		protected function map_paypal_interval_slug( string $interval_unit ): string {
+		/*protected function map_paypal_interval_slug( string $interval_unit ): string {
 
 			$map = array(
 				'DAY'   => 'day',
@@ -553,64 +555,70 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$interval_unit = strtoupper( sanitize_text_field( $interval_unit ) );
 
 			return $map[ $interval_unit ] ?? 'month';
-		}
+		}*/
 
 		/**
 		 * Build normalized summary from PayPal plan payload.
 		 *
-		 * @param object $plan_body
+		 * @param array $plan_data
 		 *
 		 * @return array
+		 * @since 4.3.7
+		 * @version 1.0.1
 		 */
-		protected function build_paypal_plan_summary( object $plan_body ): array {
-
+		protected function build_paypal_plan_summary( array $plan_data ): array {
 			$summary = array(
-				'plan_id'        => (string) ( $plan_body->id ?? '' ),
-				'status'         => strtolower( (string) ( $plan_body->status ?? '' ) ),
+				'plan_id'        => $plan_data['id'] ?? '',
+				'status'         => strtolower( (string) ( $plan_data['status'] ?? '' ) ),
 				'amount'         => 0.0,
 				'currency'       => '',
 				'interval'       => '',
 				'interval_count' => 1,
 				'setup_fee'      => 0.0,
-				'product_id'     => (string) ( $plan_body->product_id ?? '' ),
+				'product_id'     => (string) ( $plan_data['product_id'] ?? '' ),
 			);
 
-			if ( ! empty( $plan_body->payment_preferences->setup_fee->value ) ) {
-				$summary['setup_fee'] = (float) $plan_body->payment_preferences->setup_fee->value;
+			if ( ! empty( $plan_data['payment_preferences']['setup_fee']['value'] ) ) {
+				$summary['setup_fee'] = (float) $plan_data['payment_preferences']['setup_fee']['value'];
 			}
 
-			if ( ! empty( $plan_body->billing_cycles ) && is_array( $plan_body->billing_cycles ) ) {
-				foreach ( $plan_body->billing_cycles as $billing_cycle ) {
-					if ( ! is_object( $billing_cycle ) ) {
+			if ( ! empty( $plan_data['billing_cycles'] ) && is_array( $plan_data['billing_cycles'] ) ) {
+				foreach ( $plan_data['billing_cycles'] as $billing_cycle ) {
+					if ( ! is_array( $billing_cycle ) ) {
 						continue;
 					}
-					if ( ( $billing_cycle->tenure_type ?? '' ) !== 'REGULAR' ) {
+					if ( ( $billing_cycle['tenure_type'] ?? '' ) !== 'REGULAR' ) {
 						continue;
 					}
 
-					$summary['amount']         = (float) ( $billing_cycle->pricing_scheme->fixed_price->value ?? 0 );
-					$summary['currency']       = strtoupper( (string) ( $billing_cycle->pricing_scheme->fixed_price->currency_code ?? '' ) );
-					$summary['interval']       = $this->map_paypal_interval_slug( (string) ( $billing_cycle->frequency->interval_unit ?? '' ) );
-					$summary['interval_count'] = max( 1, absint( $billing_cycle->frequency->interval_count ?? 1 ) );
+					$summary['amount']         = (float) ( $billing_cycle['pricing_scheme']['fixed_price']['value'] ?? 0 );
+					$summary['currency']       = strtolower( (string) ( $billing_cycle['pricing_scheme']['fixed_price']['currency_code'] ?? '' ) );
+					$summary['interval']       = strtolower( (string) ( $billing_cycle['frequency']['interval_unit'] ?? '' ) );
+					$summary['interval_count'] = max( 1, absint( $billing_cycle['frequency']['interval_count'] ?? 1 ) );
 					break;
 				}
 			}
 
 			return $summary;
 		}
+
 		/**
-		 * Create PayPal billing plan resource (catalog product + billing plan).
+		 * Create a PayPal subscription plan (creates product first if needed).
 		 *
-		 * Returned `plan` object contains PayPal `plan_id` (`$plan->id`) for later
-		 * subscription checkout via `pay_subscription()`.
+		 * - If `product_id` is empty, creates a new PayPal product via v1/catalogs/products API,
+		 *   then creates a billing plan via v1/billing/plans API.
+		 * - Supports trial period and setup fee.
+		 * - Returns full PayPal product and plan data on success.
 		 *
-		 * @param array $data
+		 * @param array $data Required: name, amount, currency, interval, interval_count.
+		 * Optional: description, trial_days, setup_fee, product_id, metadata.
 		 *
-		 * @return array
-		 * @throws Exception
+		 * @return array With keys: status, product, plan, message.
+		 * @throws Exception On API errors or validation failures. Includes full PayPal error details if available.
+		 * @since 4.3.7
+		 * @version 1.0.1
 		 */
 		public function create_plan( array $data ): array {
-
 			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
@@ -618,29 +626,27 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$data = $this->validate_data_plan_payload( $data );
 
 			// PayPal-specific optional keys are normalized at gateway level.
-			$description = sanitize_text_field( wp_unslash( (string) ( $data['description'] ?? '' ) ) );
+			$description = LP_Helper::sanitize_params_submitted( $data['description'] ?? '', 'html' );
 			$trial_days  = absint( $data['trial_days'] ?? 0 );
 			$setup_fee   = (float) ( $data['setup_fee'] ?? 0 );
 
-			// PayPal billing plans require a plan name.
-			if ( empty( $data['name'] ) ) {
-				throw new Exception( __( 'Missing subscription plan name.', 'learnpress' ) );
-			}
 			$data_token = $this->get_access_token();
-			if ( empty( $data_token->access_token ) || empty( $data_token->token_type ) ) {
-				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
-			}
 
-			$product_id   = (string) $data['product_id'];
-			$product_body = (object) array( 'id' => $product_id );
+			// Create product before create plan
+			$product_id   = $data['product_id'] ?? '';
+			$product_data = [ 'id' => $product_id ];
 			if ( empty( $product_id ) ) {
 				$product_payload = array(
-					'name' => (string) $data['name'],
+					'name' => $data['name'] ?? '',
 					'type' => 'SERVICE',
 				);
+
+				// Add description if not empty
 				if ( ! empty( $description ) ) {
-					$product_payload['description'] = (string) $description;
+					$product_payload['description'] = $description;
 				}
+
+				// Call API create product
 				$product_response = wp_remote_post(
 					$this->api_url . 'v1/catalogs/products',
 					array(
@@ -656,22 +662,26 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					throw new Exception( $product_response->get_error_message() );
 				}
 
-					$product_body = LP_Helper::json_decode( wp_remote_retrieve_body( $product_response ) );
-				if ( empty( $product_body->id ) ) {
-					$error_message = __( 'Invalid PayPal product response.', 'learnpress' );
-					if ( ! empty( $product_body->message ) ) {
-						$error_message = (string) $product_body->message;
-					}
+				$product_body = wp_remote_retrieve_body( $product_response );
+				$product_data = LP_Helper::json_decode( $product_body, true );
 
-					throw new Exception( $error_message );
+				// Error create product return from PayPal
+				if ( ! empty( $product_data['debug_id'] ) ) {
+					throw new Exception( __( 'Create Product: ' ) . $product_data['details'][0]['description'] );
 				}
 
-					$product_id = (string) $product_body->id;
+				if ( empty( $product_data['id'] ) ) {
+					throw new Exception( __( 'Invalid PayPal product response.', 'learnpress' ) );
+				}
+
+				$product_id = $product_data['id'];
 			}
 
-			$currency_code  = (string) $data['currency'];
+			$currency_code  = strtoupper( (string) $data['currency'] );
 			$billing_cycles = array();
 			$sequence       = 1;
+
+			// Set trial period
 			if ( $trial_days > 0 ) {
 				$billing_cycles[] = array(
 					'frequency'      => array(
@@ -691,10 +701,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$sequence         = 2;
 			}
 
+			// Set regular price
 			$billing_cycles[] = array(
 				'frequency'      => array(
-					'interval_unit'  => $this->map_paypal_interval_unit( (string) $data['interval'] ),
-					'interval_count' => max( 1, absint( $data['interval_count'] ) ),
+					'interval_unit'  => strtoupper( (string) $data['interval'] ?? 'MONTH' ),
+					'interval_count' => max( 1, absint( $data['interval_count'] ?? 0 ) ),
 				),
 				'tenure_type'    => 'REGULAR',
 				'sequence'       => $sequence,
@@ -709,9 +720,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			$plan_payload = array(
 				'product_id'          => $product_id,
-				'name'                => (string) $data['name'],
+				'name'                => $data['name'] ?? '',
 				'status'              => 'ACTIVE',
 				'billing_cycles'      => $billing_cycles,
+				'description'         => $description,
 				'payment_preferences' => array(
 					'auto_bill_outstanding'     => true,
 					'setup_fee'                 => array(
@@ -722,9 +734,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					'payment_failure_threshold' => 3,
 				),
 			);
-			if ( ! empty( $description ) ) {
-					$plan_payload['description'] = (string) $description;
-			}
+
+			// Call API create plan
 			$plan_response = wp_remote_post(
 				$this->api_url . 'v1/billing/plans',
 				array(
@@ -740,20 +751,22 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( $plan_response->get_error_message() );
 			}
 
-			$plan_body = LP_Helper::json_decode( wp_remote_retrieve_body( $plan_response ) );
-			if ( empty( $plan_body->id ) ) {
-				$error_message = __( 'Invalid PayPal plan response.', 'learnpress' );
-				if ( ! empty( $plan_body->message ) ) {
-					$error_message = (string) $plan_body->message;
-				}
+			$body          = wp_remote_retrieve_body( $plan_response );
+			$response_data = LP_Helper::json_decode( $body, true );
 
-				throw new Exception( $error_message );
+			// Error return from PayPal
+			if ( ! empty( $response_data['debug_id'] ) ) {
+				throw new Exception( __( 'Create Plan: ' ) . $response_data['details'][0]['description'] );
+			}
+
+			if ( empty( $response_data['id'] ) ) {
+				throw new Exception( __( 'Invalid PayPal plan response.', 'learnpress' ) );
 			}
 
 			return array(
 				'status'  => 'success',
-				'product' => $product_body,
-				'plan'    => $plan_body,
+				'product' => $product_data,
+				'plan'    => $response_data,
 				'message' => __( 'PayPal subscription plan created.', 'learnpress' ),
 			);
 		}
@@ -765,8 +778,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return array
 		 * @throws Exception
+		 * @deprecated 4.3.8
 		 */
-		public function list_plans( array $args = array() ): array {
+		/*public function list_plans( array $args = array() ): array {
 
 			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
@@ -837,7 +851,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				'total_pages' => absint( $plans_body->total_pages ?? 1 ),
 				'message'     => __( 'PayPal subscription plans fetched.', 'learnpress' ),
 			);
-		}
+		}*/
 
 		/**
 		 * Get PayPal billing plan details by plan id.
@@ -851,20 +865,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @throws Exception
 		 */
 		public function get_plan( string $plan_id ): array {
-
 			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
 
-			$plan_id = sanitize_text_field( wp_unslash( $plan_id ) );
+			$plan_id = LP_Helper::sanitize_params_submitted( $plan_id );
 			if ( empty( $plan_id ) ) {
 				throw new Exception( __( 'Missing subscription plan id.', 'learnpress' ) );
 			}
 
 			$data_token = $this->get_access_token();
-			if ( empty( $data_token->access_token ) || empty( $data_token->token_type ) ) {
-				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
-			}
 
 			$plan_response = wp_remote_get(
 				$this->api_url . 'v1/billing/plans/' . rawurlencode( $plan_id ),
@@ -881,21 +891,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( $plan_response->get_error_message() );
 			}
 
-			$plan_body = LP_Helper::json_decode( wp_remote_retrieve_body( $plan_response ) );
-			if ( empty( $plan_body->id ) ) {
-				$error_message = __( 'Invalid PayPal plan response.', 'learnpress' );
-				if ( ! empty( $plan_body->message ) ) {
-					$error_message = (string) $plan_body->message;
-				}
-
-				throw new Exception( $error_message );
+			$plan_data = LP_Helper::json_decode( wp_remote_retrieve_body( $plan_response ), true );
+			if ( isset( $plan_data['debug_id'] ) ) {
+				throw new Exception( __( 'Get plan: ', 'learnpress' ) . $plan_data['details'][0]['description'] );
 			}
 
-			$summary = $this->build_paypal_plan_summary( $plan_body );
+			$summary = $this->build_paypal_plan_summary( $plan_data );
 
 			return array(
 				'status'  => 'success',
-				'plan'    => $plan_body,
+				'plan'    => $plan_data,
 				'summary' => $summary,
 				'message' => __( 'PayPal subscription plan fetched.', 'learnpress' ),
 			);
@@ -913,14 +918,15 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return array
 		 * @throws Exception
+		 * @since 4.3.7
+		 * @version 1.0.1
 		 */
 		public function update_plan( string $plan_id, array $data ): array {
-
 			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
 
-			$plan_id = sanitize_text_field( wp_unslash( $plan_id ) );
+			$plan_id = LP_Helper::sanitize_params_submitted( $plan_id );
 			if ( empty( $plan_id ) ) {
 				throw new Exception( __( 'Missing subscription plan id.', 'learnpress' ) );
 			}
@@ -929,19 +935,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$current_plan = $current['plan'];
 			$current_sum  = $current['summary'];
 
-			$data = wp_parse_args(
-				$data,
-				array(
-					'name'           => null,
-					'description'    => null,
-					'status'         => null,
-					'amount'         => null,
-					'currency'       => '',
-					'interval'       => '',
-					'interval_count' => null,
-					'setup_fee'      => null,
-				)
-			);
+			$data = $this->validate_data_plan_payload( $data );
 
 			$data_token = $this->get_access_token();
 			if ( empty( $data_token->access_token ) || empty( $data_token->token_type ) ) {
@@ -949,21 +943,21 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			$patches = array();
-			if ( null !== $data['name'] ) {
+			if ( ! empty( $data['name'] ?? '' ) ) {
 				$patches[] = array(
 					'op'    => 'replace',
 					'path'  => '/name',
 					'value' => sanitize_text_field( wp_unslash( (string) $data['name'] ) ),
 				);
 			}
-			if ( null !== $data['description'] ) {
+			if ( ! empty( $data['description'] ?? '' ) ) {
 				$patches[] = array(
 					'op'    => 'replace',
 					'path'  => '/description',
 					'value' => sanitize_text_field( wp_unslash( (string) $data['description'] ) ),
 				);
 			}
-			if ( null !== $data['status'] ) {
+			if ( ! empty( $data['status'] ?? '' ) ) {
 				$status = strtoupper( sanitize_text_field( wp_unslash( (string) $data['status'] ) ) );
 				if ( ! in_array( $status, array( 'ACTIVE', 'INACTIVE' ), true ) ) {
 					throw new Exception( __( 'Invalid PayPal subscription plan status.', 'learnpress' ) );
@@ -974,7 +968,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					'value' => $status,
 				);
 			}
-			if ( null !== $data['setup_fee'] ) {
+			if ( isset( $data['setup_fee'] ) && '' !== $data['setup_fee'] ) {
 				$setup_fee = (float) $data['setup_fee'];
 				if ( $setup_fee < 0 ) {
 					throw new Exception( __( 'Invalid subscription setup fee.', 'learnpress' ) );
@@ -984,56 +978,71 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					'path'  => '/payment_preferences/setup_fee',
 					'value' => array(
 						'value'         => number_format( $setup_fee, 2, '.', '' ),
-						'currency_code' => (string) $current_sum['currency'],
+						'currency_code' => strtoupper( $current_sum['currency'] ?? '' ),
 					),
 				);
 			}
 
 			if ( ! empty( $patches ) ) {
-					$patch_response = wp_remote_request(
-						$this->api_url . 'v1/billing/plans/' . rawurlencode( $plan_id ),
-						array(
-							'method'  => 'PATCH',
-							'body'    => wp_json_encode( $patches ),
-							'headers' => array(
-								'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
-								'Content-Type'  => 'application/json',
-							),
-							'timeout' => 60,
-						)
-					);
+				$patch_response = wp_remote_request(
+					$this->api_url . 'v1/billing/plans/' . rawurlencode( $plan_id ),
+					array(
+						'method'  => 'PATCH',
+						'body'    => wp_json_encode( $patches ),
+						'headers' => array(
+							'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+							'Content-Type'  => 'application/json',
+						),
+						'timeout' => 60,
+					)
+				);
 				if ( is_wp_error( $patch_response ) ) {
-						throw new Exception( $patch_response->get_error_message() );
+					throw new Exception( $patch_response->get_error_message() );
+				}
+
+				// Empty is for success, not empty is for error
+				$patch_response_body = wp_remote_retrieve_body( $patch_response );
+				if ( ! empty( $patch_response_body ) ) {
+					$patched_plan = LP_Helper::json_decode( $patch_response_body, true );
+					if ( isset( $patched_plan['debug_id'] ) ) {
+						throw new Exception( __( 'Update plan: ', 'learnpress' ) . $patched_plan['details'][0]['description'] );
+					}
 				}
 			}
 
-			if ( null !== $data['interval_count'] || ! empty( $data['interval'] ) ) {
-				$new_interval       = ! empty( $data['interval'] ) ? strtolower( sanitize_key( (string) $data['interval'] ) ) : (string) $current_sum['interval'];
-				$new_interval_count = null !== $data['interval_count'] ? max( 1, absint( $data['interval_count'] ) ) : (int) $current_sum['interval_count'];
-				if ( $new_interval !== (string) $current_sum['interval'] || $new_interval_count !== (int) $current_sum['interval_count'] ) {
+			// Check if interval is changed will not allow to change
+			if ( ! empty( $data['interval'] ?? '' ) ) {
+				if ( $data['interval'] !== $current_sum['interval'] ) {
 					throw new Exception( __( 'PayPal plan interval cannot be changed. Create a new plan instead.', 'learnpress' ) );
 				}
 			}
 
-			if ( null !== $data['amount'] ) {
+			// Check if interval count is changed will not allow to change
+			if ( ! empty( $data['interval_count'] ?? '' ) ) {
+				if ( $data['interval_count'] !== $current_sum['interval_count'] ) {
+					throw new Exception( __( 'PayPal plan interval count cannot be changed. Create a new plan instead.', 'learnpress' ) );
+				}
+			}
+
+			if ( ! empty( $data['amount'] ?? '' ) ) {
 				$new_amount = (float) $data['amount'];
 				if ( $new_amount <= 0 ) {
 					throw new Exception( __( 'Invalid subscription amount.', 'learnpress' ) );
 				}
 
-				$currency_code = ! empty( $data['currency'] ) ? strtoupper( sanitize_text_field( wp_unslash( (string) $data['currency'] ) ) ) : (string) $current_sum['currency'];
+				$currency_code = strtoupper( $data['currency'] ?? '' );
 				if ( empty( $currency_code ) ) {
-						throw new Exception( __( 'Missing subscription currency.', 'learnpress' ) );
+					throw new Exception( __( 'Missing subscription currency.', 'learnpress' ) );
 				}
 
 				$regular_sequence = 1;
-				if ( ! empty( $current_plan->billing_cycles ) && is_array( $current_plan->billing_cycles ) ) {
-					foreach ( $current_plan->billing_cycles as $billing_cycle ) {
-						if ( ! is_object( $billing_cycle ) ) {
+				if ( ! empty( $current_plan['billing_cycles'] ) && is_array( $current_plan['billing_cycles'] ) ) {
+					foreach ( $current_plan['billing_cycles'] as $billing_cycle ) {
+						if ( ! is_array( $billing_cycle ) ) {
 							continue;
 						}
-						if ( ( $billing_cycle->tenure_type ?? '' ) === 'REGULAR' ) {
-							$regular_sequence = max( 1, absint( $billing_cycle->sequence ?? 1 ) );
+						if ( ( $billing_cycle['tenure_type'] ?? '' ) === 'REGULAR' ) {
+							$regular_sequence = max( 1, absint( $billing_cycle['sequence'] ?? 1 ) );
 							break;
 						}
 					}
@@ -1067,6 +1076,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				if ( is_wp_error( $pricing_response ) ) {
 					throw new Exception( $pricing_response->get_error_message() );
 				}
+
+				if ( isset( $pricing_response['debug_id'] ) ) {
+					throw new Exception( __( 'Update plan pricing: ', 'learnpress' ) . $pricing_response['details'][0]['description'] );
+				}
 			}
 
 			$updated            = $this->get_plan( $plan_id );
@@ -1087,7 +1100,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @throws Exception
 		 */
 		public function delete_plan( string $plan_id ): array {
-
 			$deleted            = $this->update_plan(
 				$plan_id,
 				array(
@@ -1117,8 +1129,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *     message:string
 		 * }
 		 * @throws Exception
+		 * @deprecated 4.3.8 Use pay_via_subscription() instead.
 		 */
-		public function pay_subscription( array $data ): array {
+		/*public function pay_subscription( array $data ): array {
 			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
@@ -1200,7 +1213,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				'subscription_id'    => (string) $data->id,
 				'message'            => __( 'Redirecting to PayPal subscription checkout.', 'learnpress' ),
 			);
-		}
+		}*/
 
 		/**
 		 * Create PayPal subscription checkout and return redirect payload.
@@ -1210,20 +1223,15 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * - custom_id = LearnPress parent order id for reconciliation.
 		 * - return/cancel URLs = checkout callbacks.
 		 *
-		 * @param array $data Normalized payload from get_subscription_context().
+		 * @param array $data [ 'plan_id' => string, 'quantity' => int, 'success_url' => string, 'cancel_url' => string ]
+		 * Required: plan_id
 		 *
-		 * @return array{
-		 *     status:string,
-		 *     redirect_url:string,
-		 *     provider_reference:string,
-		 *     subscription_id:string,
-		 *     message:string
-		 * }
+		 * @return array [ 'redirect_url' => string, and data from v1/billing/subscriptions ]
 		 * @throws Exception
 		 * @since 4.3.7
 		 * @version 1.0.1
 		 */
-		public function pay_via_subscription( array $data ): array {
+		public function pay_via_subscription( LP_Order $lp_order, array $data ): array {
 			if ( ! $this->is_subscription_enabled() ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
@@ -1233,17 +1241,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'PayPal subscription plan ID is invalid.', 'learnpress' ) );
 			}
 
-			$lp_order_id = (int) $data['lp_order_id'] ?? '';
-			if ( empty( $lp_order_id ) ) {
-				throw new Exception( __( 'LearnPress order ID is invalid.', 'learnpress' ) );
-			}
-
-			$lp_order = learn_press_get_order( $lp_order_id );
-			if ( ! $lp_order ) {
-				throw new Exception( __( 'LearnPress order is invalid.', 'learnpress' ) );
-			}
-
-			$data_token = $this->get_access_token();
+			$lp_order_id = $lp_order->get_id();
+			$data_token  = $this->get_access_token();
 
 			$request_body = array(
 				'plan_id'             => $plan_id,
@@ -1251,13 +1250,20 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				'custom_id'           => $lp_order_id,
 				'application_context' => array(
 					'brand_name' => ! empty( get_bloginfo() ) ? get_bloginfo() : 'LearnPress',
-					'return_url' => esc_url_raw( (string) ( $data['success_url'] ?? '' ) ),
-					'cancel_url' => esc_url_raw( (string) ( $data['cancel_url'] ?? '' ) ),
+					'return_url' => esc_url_raw( $data['success_url'] ?? '' ),
+					'cancel_url' => esc_url_raw( $data['cancel_url'] ?? '' ),
 				),
 			);
 
 			// If the user already completed a trial for this plan on a previous order.
 			$user_has_trial_done = get_user_meta( $lp_order->get_user_id(), 'user_plan_trial', true );
+			$user_has_trial_done = apply_filters(
+				'learn-press/subscription/user-has-trial',
+				$user_has_trial_done,
+				$lp_order,
+				$plan_id,
+				$this
+			);
 			if ( $user_has_trial_done && $user_has_trial_done === $plan_id ) {
 				LP_Debug::log_to_comment( 'Pay renew for user trial done: ' . $plan_id );
 				// Fetch plan details to find the REGULAR billing cycle and its pricing.
@@ -1322,7 +1328,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$body          = wp_remote_retrieve_body( $response );
 			$response_data = LP_Helper::json_decode( $body, true );
 
-			//error_log( 'Pay subscription: ' . $body );
 			LP_Debug::log_to_comment( 'Pay subscription: ' . $body );
 
 			// Error return from PayPal
@@ -1355,8 +1360,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return array Verified webhook payload array on success.
 		 * @throws Exception
+		 * @deprecated 4.3.8
 		 */
-		public function verify_subscription_webhook( array $webhook_data ): array {
+		/*public function verify_subscription_webhook( array $webhook_data ): array {
 
 			if ( empty( $this->subscription_webhook_id ) ) {
 				throw new Exception( __( 'PayPal subscription webhook id is missing.', 'learnpress' ), 500 );
@@ -1436,7 +1442,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			return $payload;
-		}
+		}*/
 
 		/**
 		 * Normalize PayPal webhook event into LearnPress subscription event schema.
@@ -1448,8 +1454,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param array|object $provider_event
 		 *
 		 * @return array
+		 * @deprecated 4.3.8 Use normalize_subscription_data instead.
 		 */
-		public function normalize_subscription_event( $provider_event ): array {
+		/*public function normalize_subscription_event( $provider_event ): array {
 			$event = parent::normalize_subscription_event( $provider_event );
 			if ( is_object( $provider_event ) ) {
 				$provider_event = (array) $provider_event;
@@ -1528,7 +1535,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			return $event;
-		}
+		}*/
 
 		/**
 		 * Verify, normalize, and dispatch PayPal subscription webhook event.
@@ -1540,8 +1547,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return array
 		 * @throws Exception
+		 * @deprecated 4.3.8 Use capture_subscription_webhook instead.
 		 */
-		public function listen_webhook_subscription( WP_REST_Request $request ): array {
+		/*public function listen_webhook_subscription( WP_REST_Request $request ): array {
 
 			$required_headers = array(
 				'paypal-auth-algo',
@@ -1568,7 +1576,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			return LP_Subscription_Manager::instance()->process_webhook_event( $this, $event );
-		}
+		}*/
 
 		/**
 		 * Receive data from webhook.
@@ -1616,7 +1624,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			// Capture payment setup fee or renewal
-			$this->capturePaymentSetupFeeOrRenewal( $lp_order, $webhook_data );
+			$this->capture_payment_setup_fee_or_renewal( $lp_order, $webhook_data );
 			// Capture subscription data
 			$this->capture_subscription_data( $webhook_data );
 
@@ -1635,7 +1643,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$lp_subscription_status_set_to_handle = LP_Subscription_Manager::STATUS_RENEWED;
 				}
 			} elseif ( ! empty( $lp_payment_success )
-						&& $lp_subscription_status_tmp === LP_Subscription_Manager::STATUS_ACTIVATED ) {
+				&& $lp_subscription_status_tmp === LP_Subscription_Manager::STATUS_ACTIVATED ) {
 				// If payment success and subscription status tmp is not empty
 				LP_Debug::log_to_comment( 'Payment success and subscription status tmp is not empty' );
 				$lp_subscription_status_set_to_handle = LP_Subscription_Manager::STATUS_ACTIVATED;
@@ -1826,7 +1834,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @since 4.3.7
 		 * @version 1.0.0
 		 */
-		public function capturePaymentSetupFeeOrRenewal( $lp_order, array &$webhook_data ) {
+		public function capture_payment_setup_fee_or_renewal( $lp_order, array &$webhook_data ) {
 			$resource_type = $webhook_data['resource_type'] ?? '';
 			$event_type    = $webhook_data['event_type'] ?? '';
 			if ( 'sale' !== $resource_type || 'PAYMENT.SALE.COMPLETED' !== $event_type ) {

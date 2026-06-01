@@ -192,8 +192,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @param LP_Order $order
 	 *
 	 * @return bool
+	 * @deprecated 4.3.8 Use is_data_for_payment_subscription() instead.
 	 */
-	public function is_subscription_order( LP_Order $order ): bool {
+	/*public function is_subscription_order( LP_Order $order ): bool {
 
 		$order_id       = $order->get_id();
 		$saved_price_id = sanitize_text_field( (string) get_post_meta( $order_id, self::META_SUBSCRIPTION_PLAN_ID, true ) );
@@ -208,7 +209,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		);
 
 		return $is_subscription;
-	}
+	}*/
 
 	/**
 	 * Get subscription context for provider APIs.
@@ -219,8 +220,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @param LP_Order $order
 	 *
 	 * @return array
+	 * @deprecated 4.3.8
 	 */
-	public function get_subscription_context( LP_Order $order ): array {
+	/*public function get_subscription_context( LP_Order $order ): array {
 		$order_id = $order->get_id();
 
 		$context = array(
@@ -242,7 +244,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		}
 
 		return (array) apply_filters( 'learn-press/gateway/subscription-context', $context, $order, $this );
-	}
+	}*/
 
 	/**
 	 * Persist subscription identifiers to order before payment execution.
@@ -254,14 +256,15 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @param array    $data
 	 *
 	 * @return void
+	 * @deprecated 4.3.8
 	 */
-	protected function persist_subscription_payment_identifiers( LP_Order $order, array $data ) {
+	/*protected function persist_subscription_payment_identifiers( LP_Order $order, array $data ) {
 
 		$order_id = $order->get_id();
 
 		update_post_meta( $order_id, self::META_SUBSCRIPTION_PLAN_ID, sanitize_text_field( (string) ( $data['price_id'] ?? '' ) ) );
 		update_post_meta( $order_id, self::META_SUBSCRIPTION_QUANTITY, max( 1, absint( $data['quantity'] ?? 1 ) ) );
-	}
+	}*/
 	/**
 	 * Resolve normalized subscription payment params from order context.
 	 *
@@ -276,8 +279,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @return array
 	 * @throws Exception
+	 * @deprecated 4.3.8 Use is_data_for_payment_subscription() instead.
 	 */
-	public function resolve_subscription_payment_data( LP_Order $order ): array {
+	/*public function resolve_subscription_payment_data( LP_Order $order ): array {
 		$context = $this->get_subscription_context( $order );
 		$context = wp_parse_args(
 			$context,
@@ -304,6 +308,37 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		}
 
 		return array();
+	}*/
+
+	/**
+	 * Check data is type payment for subscription
+	 * If LP order has data plan id, return data subscription
+	 *
+	 * @return false|array
+	 * @since 4.3.8
+	 * @version 1.0.0
+	 */
+	public function is_data_for_payment_subscription( LP_Order $lp_order ) {
+		$data_subscription = [
+			'plan_id'     => '',
+			'success_url' => $this->get_return_url( $lp_order ),
+			'cancel_url'  => LP_Helper::get_link_no_cache( learn_press_get_page_link( 'checkout' ) ),
+		];
+
+		// Check LP order has data plan id
+		$plan_id = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_PLAN_ID, true );
+		if ( empty( $plan_id ) ) {
+			return false;
+		}
+
+		$data_subscription['plan_id'] = $plan_id;
+
+		return apply_filters(
+			'learn-press/gateway/subscription-payment-data',
+			$data_subscription,
+			$lp_order,
+			$this
+		);
 	}
 
 	/**
@@ -322,8 +357,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @return array Normalized payload array.
 	 * @throws Exception
+	 * @deprecated 4.3.8
 	 */
-	protected function validate_subscription_payload( array $data ): array {
+	/*protected function validate_subscription_payload( array $data ): array {
 		// Apply safe defaults to guarantee a stable input shape.
 		$data = wp_parse_args(
 			$data,
@@ -361,7 +397,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		}
 
 		return $data;
-	}
+	}*/
 
 	/**
 	 * Generic subscription checkout flow.
@@ -383,7 +419,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * Child gateways should override this method and return a payload with at
 	 * least `status` and `redirect_url` on success.
+	 * $data required key: plan_id
 	 *
+	 * @param LP_Order $lp_order
 	 * @param array $data
 	 *
 	 * @return array
@@ -391,7 +429,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @since 4.3.8
 	 * @version 1.0.0
 	 */
-	public function pay_via_subscription( array $data ): array {
+	public function pay_via_subscription( LP_Order $lp_order, array $data ): array {
 		throw new Exception( sprintf( __( 'Gateway %s does not support subscription payment.', 'learnpress' ), $this->get_id() ) );
 	}
 
@@ -412,30 +450,33 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @return array
 	 * @throws Exception
+	 * @since 4.3.7
+	 * @version 1.0.1
 	 */
 	protected function validate_data_plan_payload( array $data ): array {
 		$data                   = wp_parse_args(
 			$data,
 			array(
-				'name'           => '',
+				'name'           => '', // Name of plan and product (if product_id is empty)
 				'amount'         => 0,
 				'currency'       => learn_press_get_currency(),
 				'interval'       => 'month',
 				'interval_count' => 1,
 				'setup_fee'      => 0,
-				'product_id'     => '',
+				'product_id'     => '', // if empty, will create product, then create plan with product created
 				'metadata'       => array(),
 			)
 		);
-		$data['name']           = sanitize_text_field( wp_unslash( (string) $data['name'] ) );
+		$data['name']           = LP_Helper::sanitize_params_submitted( $data['name'] );
 		$data['amount']         = (float) $data['amount'];
-		$data['currency']       = strtoupper( sanitize_text_field( wp_unslash( (string) $data['currency'] ) ) );
-		$data['interval']       = strtolower( sanitize_key( (string) $data['interval'] ) );
+		$data['currency']       = LP_Helper::sanitize_params_submitted( $data['currency'], 'key' );
+		$data['interval']       = LP_Helper::sanitize_params_submitted( $data['interval'], 'key' );
 		$data['interval_count'] = max( 1, absint( $data['interval_count'] ) );
 		$data['setup_fee']      = (float) $data['setup_fee'];
-		$data['product_id']     = sanitize_text_field( wp_unslash( (string) $data['product_id'] ) );
+		$data['product_id']     = LP_Helper::sanitize_params_submitted( $data['product_id'] );
 		$data['metadata']       = is_array( $data['metadata'] ) ? $data['metadata'] : array();
-		if ( empty( $data['product_id'] ) && empty( $data['name'] ) ) {
+
+		if ( empty( $data['name'] ) ) {
 			throw new Exception( __( 'Missing subscription plan name.', 'learnpress' ) );
 		}
 
@@ -450,6 +491,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		if ( empty( $data['currency'] ) ) {
 			throw new Exception( __( 'Missing subscription currency.', 'learnpress' ) );
 		}
+
 		$allowed_intervals = array( 'day', 'week', 'month', 'year' );
 		if ( ! in_array( $data['interval'], $allowed_intervals, true ) ) {
 			throw new Exception( __( 'Invalid subscription interval.', 'learnpress' ) );
@@ -531,6 +573,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 		throw new Exception( sprintf( __( 'Gateway %s does not support deleting subscription plan.', 'learnpress' ), $this->get_id() ) );
 	}
+
 	/**
 	 * Generic subscription webhook listener.
 	 *
@@ -541,10 +584,11 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @return array
 	 * @throws Exception
+	 * @deprecated 4.3.8 Use capture_subscription_webhook instead.
 	 */
-	public function listen_webhook_subscription( WP_REST_Request $request ): array {
+	/*public function listen_webhook_subscription( WP_REST_Request $request ): array {
 		throw new Exception( sprintf( __( 'Gateway %s does not support subscription webhook.', 'learnpress' ), $this->get_id() ) );
-	}
+	}*/
 
 	/**
 	 * Receive subscription webhook from provider.
@@ -572,11 +616,12 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @return array|object
 	 * @throws Exception
+	 * @deprecated 4.3.8
 	 */
-	public function verify_subscription_webhook( array $webhook_data ) {
+	/*public function verify_subscription_webhook( array $webhook_data ) {
 
 		throw new Exception( sprintf( __( 'Gateway %s does not support subscription webhook verification.', 'learnpress' ), $this->get_id() ) );
-	}
+	}*/
 
 	/**
 	 * Build normalized webhook data array from transport-specific REST request.
@@ -591,8 +636,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @param bool            $decode_body
 	 *
 	 * @return array
+	 * @deprecated 4.3.8
 	 */
-	protected function build_webhook_data_from_request( WP_REST_Request $request, array $required_headers = array(), bool $decode_body = true ): array {
+	/*protected function build_webhook_data_from_request( WP_REST_Request $request, array $required_headers = array(), bool $decode_body = true ): array {
 
 		$raw_body = (string) $request->get_body();
 		$headers  = array();
@@ -612,7 +658,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 			'body'     => is_array( $body ) ? $body : null,
 			'headers'  => $headers,
 		);
-	}
+	}*/
 
 	/**
 	 * Validate normalized webhook payload contract before provider verification.
@@ -626,53 +672,54 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @return void
 	 * @throws Exception
+	 * @deprecated 4.3.8
 	 */
-	protected function validate_webhook_data_contract( array $webhook_data, array $required_top_level_keys = array(), array $required_headers = array() ) {
-
-		$missing = array();
-
-		foreach ( $required_top_level_keys as $required_key ) {
-			$required_key = sanitize_key( (string) $required_key );
-
-			switch ( $required_key ) {
-				case 'raw_body':
-					if ( empty( $webhook_data['raw_body'] ) || ! is_string( $webhook_data['raw_body'] ) ) {
-						$missing[] = 'raw_body';
-					}
-					break;
-				case 'body':
-					if ( empty( $webhook_data['body'] ) || ! is_array( $webhook_data['body'] ) ) {
-						$missing[] = 'body';
-					}
-					break;
-				case 'headers':
-					if ( ! isset( $webhook_data['headers'] ) || ! is_array( $webhook_data['headers'] ) ) {
-						$missing[] = 'headers';
-					}
-					break;
-			}
-		}
-
-		$headers_map = is_array( $webhook_data['headers'] ?? null ) ? $webhook_data['headers'] : array();
-		foreach ( $required_headers as $required_header ) {
-			$required_header = strtolower( sanitize_key( (string) $required_header ) );
-			$header_value    = sanitize_text_field( (string) ( $headers_map[ $required_header ] ?? '' ) );
-			if ( '' === $header_value ) {
-				$missing[] = 'headers.' . $required_header;
-			}
-		}
-
-		if ( ! empty( $missing ) ) {
-				throw new Exception(
-					sprintf(
-					/* translators: %s: comma separated required webhook fields. */
-						__( 'Invalid webhook request data: missing %s.', 'learnpress' ),
-						implode( ', ', array_unique( $missing ) )
-					),
-					400
-				);
-		}
-	}
+	//  protected function validate_webhook_data_contract( array $webhook_data, array $required_top_level_keys = array(), array $required_headers = array() ) {
+	//
+	//      $missing = array();
+	//
+	//      foreach ( $required_top_level_keys as $required_key ) {
+	//          $required_key = sanitize_key( (string) $required_key );
+	//
+	//          switch ( $required_key ) {
+	//              case 'raw_body':
+	//                  if ( empty( $webhook_data['raw_body'] ) || ! is_string( $webhook_data['raw_body'] ) ) {
+	//                      $missing[] = 'raw_body';
+	//                  }
+	//                  break;
+	//              case 'body':
+	//                  if ( empty( $webhook_data['body'] ) || ! is_array( $webhook_data['body'] ) ) {
+	//                      $missing[] = 'body';
+	//                  }
+	//                  break;
+	//              case 'headers':
+	//                  if ( ! isset( $webhook_data['headers'] ) || ! is_array( $webhook_data['headers'] ) ) {
+	//                      $missing[] = 'headers';
+	//                  }
+	//                  break;
+	//          }
+	//      }
+	//
+	//      $headers_map = is_array( $webhook_data['headers'] ?? null ) ? $webhook_data['headers'] : array();
+	//      foreach ( $required_headers as $required_header ) {
+	//          $required_header = strtolower( sanitize_key( (string) $required_header ) );
+	//          $header_value    = sanitize_text_field( (string) ( $headers_map[ $required_header ] ?? '' ) );
+	//          if ( '' === $header_value ) {
+	//              $missing[] = 'headers.' . $required_header;
+	//          }
+	//      }
+	//
+	//      if ( ! empty( $missing ) ) {
+	//              throw new Exception(
+	//                  sprintf(
+	//                  /* translators: %s: comma separated required webhook fields. */
+	//                      __( 'Invalid webhook request data: missing %s.', 'learnpress' ),
+	//                      implode( ', ', array_unique( $missing ) )
+	//                  ),
+	//                  400
+	//              );
+	//      }
+	//  }
 
 	/**
 	 * Normalize provider webhook event to LP event payload.
@@ -683,8 +730,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @param array|object $provider_event
 	 *
 	 * @return array
+	 * @deprecated 4.3.8 Use normalize_subscription_data instead.
 	 */
-	public function normalize_subscription_event( $provider_event ): array {
+	/*public function normalize_subscription_event( $provider_event ): array {
 		$event = array(
 			'event_id'        => '',
 			'event_type'      => '',
@@ -701,7 +749,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		);
 
 		return (array) apply_filters( 'learn-press/gateway/subscription/event', $event, $provider_event, $this );
-	}
+	}*/
 
 	/**
 	 * Normalize provider webhook event to LP event payload.
@@ -751,6 +799,15 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		switch ( $lp_subscription_status_set_to_handle ) {
 			case LP_Subscription_Manager::STATUS_TRIAL:
 				// For trial, update LP order to complete, set subscription status to trial
+				$this->process_subscription_when_payment_first( $lp_order, LP_Subscription_Manager::STATUS_TRIAL, $webhook_data );
+
+				// Set user is using plan trial
+				$order_user_ids = $lp_order->get_users();
+				$plan_id        = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_PLAN_ID, true );
+				foreach ( $order_user_ids as $user_id ) {
+					update_user_meta( $user_id, 'user_plan_trial', $plan_id );
+				}
+
 				$lp_order->add_note(
 					sprintf(
 						'LP Order: %s %s: %s. %s. %s, %s',
@@ -772,13 +829,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 						)
 					)
 				);
-				$this->process_subscription_when_payment_first( $lp_order, LP_Subscription_Manager::STATUS_TRIAL, $webhook_data );
-				// Set user is using plan trial
-				$order_user_ids = $lp_order->get_users();
-				$plan_id        = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_PLAN_ID, true );
-				foreach ( $order_user_ids as $user_id ) {
-					update_user_meta( $user_id, 'user_plan_trial', $plan_id );
-				}
 				do_action( 'learn-press/subscription/trial', $this, $lp_order, $webhook_data );
 				break;
 			case LP_Subscription_Manager::STATUS_ACTIVATED:

@@ -7,8 +7,12 @@
  * @version 4.0.1
  */
 
+use LearnPress\Databases\Order\LPOrderItemsDB;
 use LearnPress\Databases\PostDB;
+use LearnPress\Filters\Order\OrderItemsFilter;
 use LearnPress\Filters\PostFilter;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -938,23 +942,34 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return esc_html( $this->get_data( 'payment_method_title', '' ) );
 		}
 
+		/**
+		 * Get view order detail url.
+		 *
+		 * @return string
+		 */
 		public function get_view_order_url() {
 			global $wp_query;
 
-			$view_order_url      = learn_press_get_endpoint_url( 'view-order', $this->get_id(), learn_press_get_page_link( 'profile' ) );
-			$user                = learn_press_get_current_user();
+			$userModel           = UserModel::find( get_current_user_id(), true );
 			$view_order_endpoint = LP_Settings::instance()->get( 'profile_endpoints.order-details' );
 
 			if ( ! $view_order_endpoint ) {
 				$view_order_endpoint = 'order-details';
 			}
 
+			if ( ! $userModel ) {
+				return '';
+			}
+
+			$user_slug    = $userModel->user_nicename;
+			$link_profile = learn_press_get_page_link( 'profile' );
+
 			$view_order_endpoint = urlencode( $view_order_endpoint );
 			if ( get_option( 'permalink_structure' ) ) {
-				$view_order_url = learn_press_get_page_link( 'profile' ) . $user->get_data( 'user_login' ) . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
+				$view_order_url = $link_profile . $user_slug . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
 			} else {
 				$args         = array(
-					'user' => $user->get_data( 'user_login' ),
+					'user' => $user_slug,
 				);
 				$args['view'] = $view_order_endpoint;
 
@@ -963,7 +978,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				}
 				$view_order_url = add_query_arg(
 					$args,
-					learn_press_get_page_link( 'profile' )
+					$link_profile
 				);
 			}
 
