@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 7.0
-Stable tag: 4.3.7
+Stable tag: 4.3.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -278,6 +278,10 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.3.8 (2026-06-01) =
+~ Feature: add PayPal subscription support to facilitate payments for the upcoming LP Membership add-on.
+~ Fixed: minor bugs Course Builder.
 
 = 4.3.7 (2026-05-24) =
 ~ Fixed security.
