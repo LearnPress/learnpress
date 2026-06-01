@@ -40,10 +40,10 @@ body {
 // Animation for loading lp-icon-spinner
 @keyframes rotation {
 	0% {
-		transform: rotate(0deg);
+		transform: rotate( 0deg );
 	}
 	100% {
-		transform: rotate(359deg);
+		transform: rotate( 359deg );
 	}
 }
 
@@ -1043,4 +1043,11 @@ body {
 #wp-media-modal label.screen-reader-text,
 #wp-media-modal span.screen-reader-text {
 	display: none;
+}
+
+.lp-course-builder-canvas {
+	label.screen-reader-text,
+	span.screen-reader-text {
+		display: none;
+	}
 }

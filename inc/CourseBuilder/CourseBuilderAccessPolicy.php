@@ -22,12 +22,12 @@ class CourseBuilderAccessPolicy {
 			return false;
 		}
 
-		$course_model = CourseModel::find( $course_id, true );
-		if ( ! $course_model ) {
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
 			return false;
 		}
 
-		return self::can_edit_course( $course_model );
+		return self::can_edit_course( $courseModel );
 	}
 
 	/**
@@ -122,11 +122,11 @@ class CourseBuilderAccessPolicy {
 	/**
 	 * Check if current user can edit a course model by owner/co-instructor/admin.
 	 *
-	 * @param CourseModel $course_model
+	 * @param CourseModel $courseModel
 	 *
 	 * @return bool
 	 */
-	private static function can_edit_course( CourseModel $course_model ): bool {
+	private static function can_edit_course( CourseModel $courseModel ): bool {
 		if ( ! is_user_logged_in() ) {
 			return false;
 		}
@@ -136,13 +136,13 @@ class CourseBuilderAccessPolicy {
 		}
 
 		$current_user_id = get_current_user_id();
-		if ( absint( $course_model->post_author ) === $current_user_id ) {
+		if ( absint( $courseModel->post_author ) === $current_user_id ) {
 			return true;
 		}
 
-		$co_instructor_ids = $course_model->get_meta_value_by_key( '_lp_co_teacher', [] );
+		$co_instructor_ids = $courseModel->get_meta_value_by_key( '_lp_co_teacher', [] );
 		if ( empty( $co_instructor_ids ) ) {
-			$co_instructor_ids = get_post_meta( $course_model->ID, '_lp_co_teacher', false );
+			$co_instructor_ids = get_post_meta( $courseModel->ID, '_lp_co_teacher', false );
 		}
 
 		$co_instructor_ids = self::normalize_user_ids( $co_instructor_ids );

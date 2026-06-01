@@ -68,6 +68,7 @@ const initBuilderComponents = () => {
 
 		// Initialize sidebar toggle
 		initSidebarToggle();
+		initSidebarSubMenus();
 		initHeaderMoreActions();
 	} catch ( e ) {
 		console.error( 'Error initializing builder components:', e );
@@ -108,6 +109,37 @@ const initSidebarToggle = () => {
 
 		// Save state
 		localStorage.setItem( storageKey, willCollapse ? 'true' : 'false' );
+	} );
+};
+
+/**
+ * Initialize nested sidebar submenu toggles.
+ */
+const initSidebarSubMenus = () => {
+	const sidebar = document.getElementById( 'lp-course-builder-sidebar' );
+
+	if ( ! sidebar || sidebar.dataset.subMenusInitialized === 'true' ) {
+		return;
+	}
+
+	sidebar.dataset.subMenusInitialized = 'true';
+
+	sidebar.addEventListener( 'click', ( e ) => {
+		const toggleBtn = e.target.closest( '.lp-cb-sidebar__sub-menu-toggle' );
+
+		if ( ! toggleBtn || ! sidebar.contains( toggleBtn ) ) {
+			return;
+		}
+
+		const item = toggleBtn.closest( '.lp-cb-sidebar__item.has-sub-menu' );
+		if ( ! item ) {
+			return;
+		}
+
+		e.preventDefault();
+
+		const isExpanded = item.classList.toggle( 'is-expanded' );
+		toggleBtn.setAttribute( 'aria-expanded', isExpanded ? 'true' : 'false' );
 	} );
 };
 

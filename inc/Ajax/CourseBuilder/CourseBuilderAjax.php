@@ -14,6 +14,7 @@ use Exception;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\CourseSectionItemModel;
@@ -54,15 +55,15 @@ class CourseBuilderAjax extends AbstractAjax {
 			throw new Exception( 'Error: params invalid!' );
 		}
 
-		$params       = LP_Helper::json_decode( $params, true );
-		$course_id    = ! empty( $params['course_id'] ) ? (int) $params['course_id'] : 0;
-		$course_model = CourseModel::find( $course_id, true );
-		if ( empty( $course_model ) ) {
+		$params      = LP_Helper::json_decode( $params, true );
+		$course_id   = ! empty( $params['course_id'] ) ? (int) $params['course_id'] : 0;
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( empty( $courseModel ) ) {
 			$params['insert']       = true;
 			$params['course_model'] = '';
 		} else {
 			$params['insert']       = false;
-			$params['course_model'] = $course_model;
+			$params['course_model'] = $courseModel;
 		}
 
 		return $params;
@@ -214,11 +215,11 @@ class CourseBuilderAjax extends AbstractAjax {
 	 *
 	 * @param string          $requested_status
 	 * @param bool            $insert
-	 * @param CourseModel|null $course_model
+	 * @param CourseModel|null $courseModel
 	 *
 	 * @return string
 	 */
-	protected function normalize_course_status_for_save( string $requested_status, bool $insert, ?CourseModel $course_model ): string {
+	protected function normalize_course_status_for_save( string $requested_status, bool $insert, ?CourseModel $courseModel ): string {
 		$allowed_statuses = [ 'publish', 'future', 'draft', 'pending', 'private' ];
 		if ( ! in_array( $requested_status, $allowed_statuses, true ) ) {
 			$requested_status = 'draft';
@@ -233,7 +234,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$required_review    = LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
 		$can_publish_course = current_user_can( 'publish_' . LP_COURSE_CPT . 's' );
 
-		$current_status  = $insert ? 'auto-draft' : (string) ( $course_model->post_status ?? 'draft' );
+		$current_status  = $insert ? 'auto-draft' : (string) ( $courseModel->post_status ?? 'draft' );
 		$is_public_state = $this->is_public_post_status( $current_status );
 
 		// Require moderation for instructors when review is enabled.
@@ -335,7 +336,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$insert_post_data = array(
 					'post_type'    => LP_COURSE_CPT,
 					'post_title'   => $course_title,
-					'post_content' => wp_unslash( $data['course_description'] ?? '' ),
+					'post_content' => Template::sanitize_html_content( $data['course_description'] ?? '' ),
 					'post_status'  => $course_status,
 					'tax_input'    => array(
 						'course_category' => $categories,
@@ -405,7 +406,7 @@ class CourseBuilderAjax extends AbstractAjax {
 					$tags       = ! empty( $data['course_tags'] ) ? array_map( 'absint', explode( ',', $data['course_tags'] ) ) : array();
 
 					$courseModel->post_title   = $course_title;
-					$courseModel->post_content = wp_unslash( $data['course_description'] ?? '' );
+					$courseModel->post_content = Template::sanitize_html_content( $data['course_description'] ?? '' );
 
 					wp_set_post_terms( $courseModel->ID, $categories, 'course_category' );
 					wp_set_post_terms( $courseModel->ID, $tags, 'course_tag' );
@@ -824,11 +825,11 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data         = self::check_valid_course();
-			$course_id    = $data['course_id'] ?? 0;
-			$course_model = $data['course_model'];
+			$data        = self::check_valid_course();
+			$course_id   = $data['course_id'] ?? 0;
+			$courseModel = $data['course_model'];
 
-			if ( absint( $course_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+			if ( absint( $courseModel->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
 				throw new Exception( __( 'You are not allowed to duplicate this course', 'learnpress' ) );
 			}
 
@@ -857,8 +858,8 @@ class CourseBuilderAjax extends AbstractAjax {
 				throw new Exception( $new_item_id->get_error_message() );
 			}
 
-			$course_model                  = CourseModel::find( $new_item_id, true );
-			$html                          = BuilderListCoursesTemplate::render_course( $course_model );
+			$courseModel                   = CourseModel::find( $new_item_id, true );
+			$html                          = BuilderListCoursesTemplate::render_course( $courseModel );
 			$response->status              = 'success';
 			$response->data->html          = $html;
 			$response->data->course_id_new = $new_item_id;
@@ -877,15 +878,15 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data         = self::check_valid_course();
-			$course_id    = $data['course_id'] ?? 0;
-			$course_model = $data['course_model'];
-			$status       = $data['status'] ?? 'trash';
+			$data        = self::check_valid_course();
+			$course_id   = $data['course_id'] ?? 0;
+			$courseModel = $data['course_model'];
+			$status      = $data['status'] ?? 'trash';
 
 			$co_instructor_ids = get_post_meta( $course_id, '_lp_co_teacher', false );
 			$co_instructor_ids = ! empty( $co_instructor_ids ) ? $co_instructor_ids : array();
 
-			if ( absint( $course_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) && ! in_array( get_current_user_id(), $co_instructor_ids ) ) {
+			if ( absint( $courseModel->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) && ! in_array( get_current_user_id(), $co_instructor_ids ) ) {
 				throw new Exception( __( 'You are not allowed to delete this course', 'learnpress' ) );
 			}
 
@@ -913,7 +914,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$message = __( 'Course has been moved to draft', 'learnpress' );
 			} else {
 				// Store original slug before trashing (wp_trash_post adds __trashed suffix)
-				$original_slug = $course_model->post_name;
+				$original_slug = $courseModel->post_name;
 
 				$delete = wp_trash_post( $course_id );
 
@@ -1122,7 +1123,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$insert_arg = array(
 					'post_type'    => LP_LESSON_CPT,
 					'post_title'   => sanitize_text_field( $title ?? '' ),
-					'post_content' => wp_kses_post( $description ?? '' ),
+					'post_content' => Template::sanitize_html_content( $description ?? '' ),
 					'post_status'  => $target_status,
 				);
 
@@ -1171,7 +1172,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				if ( isset( $data['lesson_description'] ) ) {
-					$update_arg['post_content'] = wp_kses_post( $description );
+					$update_arg['post_content'] = Template::sanitize_html_content( $description ?? '' );
 				}
 
 				if ( ! empty( $lesson_slug ) ) {
@@ -1191,10 +1192,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				if ( $course_id ) {
-					$course_model_cache = CourseModel::find( $course_id, true );
-					if ( $course_model_cache ) {
-						$course_model_cache->sections_items = null;
-						$course_model_cache->save();
+					$courseModelCache = CourseModel::find( $course_id, true );
+					if ( $courseModelCache ) {
+						$courseModelCache->sections_items = null;
+						$courseModelCache->save();
 					}
 				}
 			}
@@ -1246,14 +1247,14 @@ class CourseBuilderAjax extends AbstractAjax {
 					: '';
 
 				if ( $course_id ) {
-					$course_model_for_html = CourseModel::find( $course_id, true );
-					if ( $course_model_for_html && $lesson_model_for_html ) {
+					$courseModelForHtml = CourseModel::find( $course_id, true );
+					if ( $courseModelForHtml && $lesson_model_for_html ) {
 						$item            = new stdClass();
 						$item->item_id   = $lesson_id;
 						$item->title     = $lesson_model_for_html->post_title;
 						$item->item_type = LP_LESSON_CPT;
 						AdminEditCurriculumTemplate::instance()->context_data = [ 'is_course_builder' => true ];
-						$response->data->section_item_html                    = AdminEditCurriculumTemplate::instance()->html_section_item( $course_model_for_html, $item );
+						$response->data->section_item_html                    = AdminEditCurriculumTemplate::instance()->html_section_item( $courseModelForHtml, $item );
 					}
 				}
 			}
@@ -1503,7 +1504,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$insert_arg = array(
 					'post_type'    => LP_QUIZ_CPT,
 					'post_title'   => sanitize_text_field( $title ?? '' ),
-					'post_content' => wp_kses_post( $description ?? '' ),
+					'post_content' => Template::sanitize_html_content( $description ?? '' ),
 					'post_status'  => $target_status,
 				);
 
@@ -1548,7 +1549,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				if ( isset( $data['quiz_description'] ) ) {
-					$update_arg['post_content'] = wp_kses_post( $description );
+					$update_arg['post_content'] = Template::sanitize_html_content( $description ?? '' );
 				}
 
 				if ( ! empty( $quiz_slug ) ) {
@@ -1572,10 +1573,10 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				if ( $course_id ) {
-					$course_model_cache = CourseModel::find( $course_id, true );
-					if ( $course_model_cache ) {
-						$course_model_cache->sections_items = null;
-						$course_model_cache->save();
+					$courseModelCache = CourseModel::find( $course_id, true );
+					if ( $courseModelCache ) {
+						$courseModelCache->sections_items = null;
+						$courseModelCache->save();
 					}
 				}
 			}
@@ -1632,14 +1633,14 @@ class CourseBuilderAjax extends AbstractAjax {
 					: '';
 
 				if ( $course_id ) {
-					$course_model_for_html = CourseModel::find( $course_id, true );
-					if ( $course_model_for_html && $quiz_model_new ) {
+					$courseModelForHtml = CourseModel::find( $course_id, true );
+					if ( $courseModelForHtml && $quiz_model_new ) {
 						$item            = new stdClass();
 						$item->item_id   = $quiz_id;
 						$item->title     = $quiz_model_new->post_title;
 						$item->item_type = LP_QUIZ_CPT;
 						AdminEditCurriculumTemplate::instance()->context_data = [ 'is_course_builder' => true ];
-						$response->data->section_item_html                    = AdminEditCurriculumTemplate::instance()->html_section_item( $course_model_for_html, $item );
+						$response->data->section_item_html                    = AdminEditCurriculumTemplate::instance()->html_section_item( $courseModelForHtml, $item );
 					}
 				}
 			}
@@ -1879,7 +1880,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$insert_arg = array(
 					'post_type'    => LP_QUESTION_CPT,
 					'post_title'   => sanitize_text_field( $title ?? '' ),
-					'post_content' => $description ?? '',
+					'post_content' => Template::sanitize_html_content( $description ?? '' ),
 					'post_status'  => $target_status,
 				);
 
@@ -1924,7 +1925,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 
 				if ( isset( $data['question_description'] ) ) {
-					$update_arg['post_content'] = wp_kses_post( $description );
+					$update_arg['post_content'] = Template::sanitize_html_content( $description ?? '' );
 				}
 
 				if ( ! empty( $question_slug ) ) {
@@ -2139,14 +2140,14 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 
 		try {
-			$course_model = CourseModel::find( $course_id, true );
-			if ( ! $course_model ) {
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel ) {
 				return;
 			}
 
-			$course_model->sections_items = null;
-			$course_model->total_items    = null;
-			$course_model->save( true );
+			$courseModel->sections_items = null;
+			$courseModel->total_items    = null;
+			$courseModel->save( true );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -2228,8 +2229,8 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			$hide_instructor_access_admin_screen = ! empty( $data['hide_instructor_access_admin_screen'] ) && $data['hide_instructor_access_admin_screen'] === 'yes' ? 'yes' : 'no';
-			$logo_remove          = ! empty( $data['course_builder_logo_remove'] ) && $data['course_builder_logo_remove'] === 'yes';
-			$logo_id              = absint( $data['course_builder_logo_id'] ?? 0 );
+			$logo_remove                         = ! empty( $data['course_builder_logo_remove'] ) && $data['course_builder_logo_remove'] === 'yes';
+			$logo_id                             = absint( $data['course_builder_logo_id'] ?? 0 );
 
 			if ( $logo_remove ) {
 				$logo_id = 0;
@@ -2243,11 +2244,11 @@ class CourseBuilderAjax extends AbstractAjax {
 				$logo_url = wp_get_attachment_image_url( $logo_id, 'full' );
 			}
 
-			$response->status                        = 'success';
-			$response->message                       = __( 'Course Builder settings updated.', 'learnpress' );
-			$response->data->hide_instructor_access_admin_screen    = $hide_instructor_access_admin_screen;
-			$response->data->course_builder_logo_id  = $logo_id;
-			$response->data->course_builder_logo_url = $logo_url;
+			$response->status                                    = 'success';
+			$response->message                                   = __( 'Course Builder settings updated.', 'learnpress' );
+			$response->data->hide_instructor_access_admin_screen = $hide_instructor_access_admin_screen;
+			$response->data->course_builder_logo_id              = $logo_id;
+			$response->data->course_builder_logo_url             = $logo_url;
 
 			wp_send_json( $response );
 		} catch ( Throwable $th ) {

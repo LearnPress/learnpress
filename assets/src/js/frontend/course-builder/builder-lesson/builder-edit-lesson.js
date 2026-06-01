@@ -285,6 +285,38 @@ export class BuilderEditLesson {
 		);
 	}
 
+	isDescriptionEditorInCodeMode() {
+		const editorId = BuilderEditLesson.selectors.idDescEditor;
+		const wrapper =
+			document.getElementById( `wp-${ editorId }-wrap` ) ||
+			document.getElementById( `${ editorId }-wrap` );
+		if ( wrapper?.classList.contains( 'html-active' ) ) {
+			return true;
+		}
+
+		const editor = typeof tinymce !== 'undefined' ? tinymce.get( editorId ) : null;
+
+		return !! ( editor?.isHidden && editor.isHidden() );
+	}
+
+	getDescriptionContentForUpdate() {
+		const editorId = BuilderEditLesson.selectors.idDescEditor;
+		const descEditor = document.getElementById( editorId );
+
+		if ( this.isDescriptionEditorInCodeMode() ) {
+			return descEditor ? descEditor.value : '';
+		}
+
+		if ( typeof tinymce !== 'undefined' ) {
+			const editor = tinymce.get( editorId );
+			if ( editor ) {
+				return editor.getContent();
+			}
+		}
+
+		return descEditor ? descEditor.value : '';
+	}
+
 	showPermalinkUnavailable( permalinkRoot, message = '' ) {
 		if ( ! permalinkRoot ) {
 			return;
@@ -332,15 +364,7 @@ export class BuilderEditLesson {
 		const titleInput = document.getElementById( BuilderEditLesson.selectors.idTitle );
 		data.lesson_title = titleInput ? titleInput.value : '';
 
-		const descEditor = document.getElementById( BuilderEditLesson.selectors.idDescEditor );
-		data.lesson_description = descEditor ? descEditor.value : '';
-
-		if ( typeof tinymce !== 'undefined' ) {
-			const editor = tinymce.get( BuilderEditLesson.selectors.idDescEditor );
-			if ( editor ) {
-				data.lesson_description = editor.getContent();
-			}
-		}
+		data.lesson_description = this.getDescriptionContentForUpdate();
 
 		const permalinkInput = document.querySelector(
 			`input[name="lesson_permalink"], #lesson_permalink, ${ BuilderEditLesson.selectors.elPermalinkSlugInput }`

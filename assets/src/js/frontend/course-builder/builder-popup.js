@@ -1002,16 +1002,47 @@ export class BuilderPopup {
 		const editorId = `${ this.currentType }_description_editor`;
 		const editor = tinymce.get( editorId );
 
-		if ( editor ) {
+		if ( editor && ! this.isEditorInCodeMode( editorId ) ) {
 			editor.save();
 		}
 
 		// Sync additional editors
 		tinymce.editors.forEach( ( ed ) => {
-			if ( ed.id?.includes( this.currentType ) ) {
+			if ( ed.id?.includes( this.currentType ) && ! this.isEditorInCodeMode( ed.id ) ) {
 				ed.save();
 			}
 		} );
+	}
+
+	isEditorInCodeMode( editorId ) {
+		const wrapper =
+			document.getElementById( `wp-${ editorId }-wrap` ) ||
+			document.getElementById( `${ editorId }-wrap` );
+		if ( wrapper?.classList.contains( 'html-active' ) ) {
+			return true;
+		}
+
+		const editor = typeof tinymce !== 'undefined' ? tinymce.get( editorId ) : null;
+
+		return !! ( editor?.isHidden && editor.isHidden() );
+	}
+
+	getEditorContent( editorId, root = document ) {
+		const textarea =
+			root?.querySelector?.( `#${ editorId }` ) || document.getElementById( editorId );
+
+		if ( this.isEditorInCodeMode( editorId ) ) {
+			return textarea ? textarea.value : '';
+		}
+
+		if ( typeof tinymce !== 'undefined' ) {
+			const editor = tinymce.get( editorId );
+			if ( editor ) {
+				return editor.getContent();
+			}
+		}
+
+		return textarea ? textarea.value : '';
 	}
 
 	/**
@@ -1587,16 +1618,7 @@ export class BuilderPopup {
 
 		// Get description
 		const editorId = `${ this.currentType }_description_editor`;
-		let descContent = '';
-
-		if ( typeof tinymce !== 'undefined' && tinymce.get( editorId ) ) {
-			descContent = tinymce.get( editorId ).getContent();
-		} else {
-			const descTextarea = popup.querySelector( `#${ editorId }` );
-			if ( descTextarea ) {
-				descContent = descTextarea.value;
-			}
-		}
+		const descContent = this.getEditorContent( editorId, popup );
 
 		data[ `${ this.currentType }_description` ] = descContent;
 

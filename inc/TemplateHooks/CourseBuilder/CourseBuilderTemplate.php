@@ -457,35 +457,178 @@ class CourseBuilderTemplate {
 	 * @since 4..0
 	 */
 	protected function html_nav_item_main( $slug, $tab_data ) {
-		$tab_current = CourseBuilder::get_menu_current();
-		$is_active   = $slug === $tab_current;
-		$classes     = [ 'lp-cb-sidebar__item', $slug ];
+		$tab_current        = CourseBuilder::get_menu_current();
+		$sub_menu_items     = $this->get_nav_item_sub_menu_items( $slug, $tab_data );
+		$has_sub_menu       = ! empty( $sub_menu_items );
+		$has_active_submenu = $has_sub_menu && ! empty(
+			array_filter(
+				$sub_menu_items,
+				static function ( array $item ): bool {
+					return ! empty( $item['is_active'] );
+				}
+			)
+		);
+		$is_active          = $slug === $tab_current || ! empty( $has_active_submenu );
+		$classes            = [ 'lp-cb-sidebar__item', $slug ];
+
+		if ( $has_sub_menu ) {
+			$classes[] = 'has-sub-menu';
+		}
 
 		if ( $is_active ) {
 			$classes[] = 'is-active';
 		}
 
-		$icon  = isset( $tab_data['icon'] ) ? $tab_data['icon'] : '';
-		$title = $tab_data['title'];
-		$link  = CourseBuilder::get_tab_link( $slug );
+		if ( $has_sub_menu && $is_active ) {
+			$classes[] = 'is-expanded';
+		}
 
-		$item = [
-			'wrapper'     => sprintf( '<li class="%s">', implode( ' ', $classes ) ),
-			'content'     => sprintf(
-				'<a href="%s" title="%s" aria-label="%s">
-					%s
-					<span class="lp-cb-sidebar__item-title">%s</span>
+		$icon         = isset( $tab_data['icon'] ) ? $tab_data['icon'] : '';
+		$title        = $tab_data['title'];
+		$link         = CourseBuilder::get_tab_link( $slug );
+		$sub_menu_id  = 'lp-cb-sidebar-sub-menu-' . sanitize_html_class( $slug );
+		$aria_current = $is_active && empty( $has_active_submenu ) ? ' aria-current="page"' : '';
+
+		if ( $has_sub_menu ) {
+			$content = sprintf(
+				'<div class="lp-cb-sidebar__item-control">
+					<a href="%1$s" class="lp-cb-sidebar__item-link" title="%2$s" aria-label="%2$s"%3$s>
+						%4$s
+						<span class="lp-cb-sidebar__item-title">%5$s</span>
+					</a>
+					<button type="button" class="lp-cb-sidebar__sub-menu-toggle" aria-label="%6$s" aria-expanded="%7$s" aria-controls="%8$s">
+						<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
+					</button>
+				</div>',
+				esc_url( $link ),
+				esc_attr( $title ),
+				$aria_current,
+				$icon,
+				esc_html( $title ),
+				esc_attr( sprintf( __( 'Toggle %s submenu', 'learnpress' ), $title ) ),
+				$is_active ? 'true' : 'false',
+				esc_attr( $sub_menu_id )
+			);
+		} else {
+			$content = sprintf(
+				'<a href="%1$s" class="lp-cb-sidebar__item-link" title="%2$s" aria-label="%2$s"%3$s>
+					%4$s
+					<span class="lp-cb-sidebar__item-title">%5$s</span>
 				</a>',
 				esc_url( $link ),
 				esc_attr( $title ),
-				esc_attr( $title ),
+				$aria_current,
 				$icon,
 				esc_html( $title )
-			),
+			);
+		}
+
+		$item = [
+			'wrapper'     => sprintf( '<li class="%s">', implode( ' ', $classes ) ),
+			'content'     => $content,
 			'wrapper_end' => '</li>',
 		];
 
+		if ( $has_sub_menu ) {
+			$item['content'] .= $this->html_nav_item_sub_menu( $sub_menu_items, $sub_menu_id, $title );
+		}
+
 		return Template::combine_components( $item );
+	}
+
+	protected function get_nav_item_sub_menu_items( string $parent_slug, array $tab_data ): array {
+		$items = [];
+		if ( ! empty( $tab_data['sub_menu'] ) && is_array( $tab_data['sub_menu'] ) ) {
+			$items = $this->normalize_nav_sub_menu_items( $parent_slug, $tab_data['sub_menu'] );
+		}
+
+		return $items;
+	}
+
+	protected function normalize_nav_sub_menu_items( string $parent_slug, array $sub_menu ): array {
+		$is_admin = current_user_can( ADMIN_ROLE );
+		$items    = [];
+
+		foreach ( $sub_menu as $key => $item ) {
+			if ( ! is_array( $item ) || ( ! empty( $item['admin_only'] ) && ! $is_admin ) ) {
+				continue;
+			}
+
+			$title = $item['title'] ?? '';
+			if ( '' === $title ) {
+				continue;
+			}
+
+			$slug = ! empty( $item['slug'] ) ? (string) $item['slug'] : ( is_string( $key ) ? $key : sanitize_title( $title ) );
+			if ( '' === $slug ) {
+				continue;
+			}
+
+			$url = $item['url'] ?? '';
+			if ( '' === $url ) {
+				$url = CourseBuilder::get_tab_link( $parent_slug, $slug );
+			}
+
+			if ( '' === $url ) {
+				continue;
+			}
+
+			$is_active = false;
+			if ( $parent_slug === CourseBuilder::get_menu_current() ) {
+				$is_active = $slug === (string) CourseBuilder::get_item_id();
+			}
+
+			$items[] = [
+				'class'     => is_string( $key ) ? $key : sanitize_title( $title ),
+				'icon'      => $item['icon'] ?? '',
+				'is_active' => $is_active,
+				'rel'       => ! empty( $item['target'] ) && '_blank' === $item['target'] ? 'noopener noreferrer' : '',
+				'slug'      => $slug,
+				'target'    => $item['target'] ?? '',
+				'title'     => $title,
+				'url'       => $url,
+			];
+		}
+
+		return $items;
+	}
+
+	protected function html_nav_item_sub_menu( array $sub_menu_items, string $sub_menu_id, string $parent_title = '' ): string {
+		if ( empty( $sub_menu_items ) ) {
+			return '';
+		}
+
+		$content = '';
+
+		foreach ( $sub_menu_items as $item ) {
+			$target       = '' !== $item['target'] ? sprintf( ' target="%s"', esc_attr( $item['target'] ) ) : '';
+			$rel          = '' !== $item['rel'] ? sprintf( ' rel="%s"', esc_attr( $item['rel'] ) ) : '';
+			$active_class = ! empty( $item['is_active'] ) ? ' is-active' : '';
+			$aria_current = ! empty( $item['is_active'] ) ? ' aria-current="page"' : '';
+
+			$content .= sprintf(
+				'<li class="lp-cb-sidebar__sub-menu-item %1$s%2$s"><a href="%3$s" class="lp-cb-sidebar__sub-menu-link"%4$s%5$s%6$s>%7$s<span class="lp-cb-sidebar__sub-menu-title">%8$s</span></a></li>',
+				esc_attr( sanitize_html_class( $item['class'] ) ),
+				esc_attr( $active_class ),
+				esc_url( $item['url'] ),
+				$target,
+				$rel,
+				$aria_current,
+				$item['icon'],
+				esc_html( $item['title'] )
+			);
+		}
+
+		if ( '' === $content ) {
+			return '';
+		}
+
+		return sprintf(
+			'<ul id="%1$s" class="lp-cb-sidebar__sub-menu" aria-label="%2$s">%3$s</ul>',
+			esc_attr( $sub_menu_id ),
+			esc_attr( sprintf( __( '%s submenu', 'learnpress' ), $parent_title ) ),
+			$content
+		);
 	}
 
 	public function html_btn_add_new() {
