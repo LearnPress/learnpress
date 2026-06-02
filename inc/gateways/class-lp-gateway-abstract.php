@@ -1019,6 +1019,12 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		$order_renew->save();
 
 		//error_log( 'renew ' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
+		// Add item to order renew
+		foreach ( $lp_order_parent->get_all_items() as $item ) {
+			$item['subtotal'] = $lp_subscription_amount;
+			$item['total']    = $lp_subscription_amount;
+			$order_renew->add_item( $item );
+		}
 
 		update_post_meta(
 			$order_renew->get_id(),
