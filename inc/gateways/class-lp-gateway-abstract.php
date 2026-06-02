@@ -410,9 +410,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @return array
 	 * @throws Exception
 	 */
-	public function pay_subscription( array $data ): array {
+	/*public function pay_subscription( array $data ): array {
 		throw new Exception( sprintf( __( 'Gateway %s does not support subscription payment.', 'learnpress' ), $this->get_id() ) );
-	}
+	}*/
 
 	/**
 	 * Generic subscription checkout flow.
@@ -501,10 +501,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * Generic provider plan/price creation flow.
-	 *
-	 * Child gateways should override and return created provider identifiers,
-	 * typically a `price_id`/`plan_id` to be used later by `pay_subscription()`.
+	 * Create plan of Payment provider.
 	 *
 	 * @param array $data
 	 *
@@ -512,7 +509,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @throws Exception
 	 */
 	public function create_plan( array $data ): array {
-
 		throw new Exception( sprintf( __( 'Gateway %s does not support subscription plan creation.', 'learnpress' ), $this->get_id() ) );
 	}
 
@@ -543,7 +539,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @throws Exception
 	 */
 	public function get_plan( string $plan_id ): array {
-
 		throw new Exception( sprintf( __( 'Gateway %s does not support fetching subscription plan.', 'learnpress' ), $this->get_id() ) );
 	}
 
@@ -557,7 +552,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @throws Exception
 	 */
 	public function update_plan( string $plan_id, array $data ): array {
-
 		throw new Exception( sprintf( __( 'Gateway %s does not support updating subscription plan.', 'learnpress' ), $this->get_id() ) );
 	}
 
@@ -570,7 +564,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @throws Exception
 	 */
 	public function delete_plan( string $plan_id ): array {
-
 		throw new Exception( sprintf( __( 'Gateway %s does not support deleting subscription plan.', 'learnpress' ), $this->get_id() ) );
 	}
 
@@ -752,21 +745,19 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}*/
 
 	/**
-	 * Normalize provider webhook event to LP event payload.
-	 *
-	 * Merge data from provider webhook event to LP event payload.
+	 * Define key of system LearnPress for webhook data.
 	 *
 	 * @param array $webhook_data [lp_order_id, plan_id, subscription_id, subscription_status]
 	 *
 	 * @return void
 	 */
-	public function normalize_subscription_data( array &$webhook_data = [] ) {
+	final public function normalize_subscription_data( array &$webhook_data = [] ) {
 		$webhook_data = array_merge(
 			array(
 				'lp_order_id'            => 0,
-				'lp_plan_id'             => '',
-				'lp_subscription_id'     => '',
-				'lp_subscription_status' => '',
+				'lp_plan_id'             => '', // Plan id of payment, not membership plan id.
+				'lp_subscription_id'     => '', // Subscription id of payment plan id.
+				'lp_subscription_status' => '', // Subscription status of payment plan id.
 			),
 			$webhook_data
 		);
@@ -789,7 +780,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @since 4.3.7
 	 * @version 1.0.0
 	 */
-	public function process_subscription_by_status(
+	final public function process_subscription_by_status(
 		$lp_order,
 		string $lp_subscription_status_set_to_handle,
 		array $webhook_data = []
@@ -962,45 +953,54 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 	/**
 	 * Process order when subscription payment first.
+	 * Update status of order parent to completed
+	 * Save META_SUBSCRIPTION_STATUS, lp_subscription_amount, lp_subscription_currency
 	 *
 	 * @since 4.3.7
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function process_subscription_when_payment_first(
-		LP_Order $order,
+	private function process_subscription_when_payment_first(
+		LP_Order $lp_order,
 		string $lp_subscription_status_set_to_handle,
 		$webhook_data
 	) {
 		$lp_subscription_amount   = $webhook_data['lp_subscription_amount'] ?? 0;
 		$lp_subscription_currency = $webhook_data['lp_subscription_currency'] ?? '';
-		$order->update_status( LP_ORDER_COMPLETED );
+		$lp_order->update_status( LP_ORDER_COMPLETED );
 		update_post_meta(
-			$order->get_id(),
+			$lp_order->get_id(),
 			self::META_SUBSCRIPTION_STATUS,
 			$lp_subscription_status_set_to_handle
 		);
 		update_post_meta(
-			$order->get_id(),
+			$lp_order->get_id(),
 			'lp_subscription_amount',
 			$lp_subscription_amount
 		);
 		update_post_meta(
-			$order->get_id(),
+			$lp_order->get_id(),
 			'lp_subscription_currency',
 			$lp_subscription_currency
 		);
+		update_post_meta(
+			$lp_order->get_id(),
+			self::META_SUBSCRIPTION_DATA_RECEIVER,
+			wp_json_encode( $webhook_data, JSON_UNESCAPED_UNICODE )
+		);
+
+		do_action( 'learn-press/subscription/order/success', $lp_order, $webhook_data );
 	}
 
 	/**
 	 * Process order when payment recurring success.
+	 * Create new order child
+	 * Save META_SUBSCRIPTION_DATA_RECEIVER, lp_subscription_amount, lp_subscription_currency
 	 *
 	 * @throws Exception
 	 * @since 4.3.7
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function process_subscription_when_payment_renew_success( LP_Order $lp_order_parent, $webhook_data ) {
-		error_log( 'renew pay' );
-
+	private function process_subscription_when_payment_renew_success( LP_Order $lp_order_parent, $webhook_data ) {
 		$lp_subscription_amount   = $webhook_data['lp_subscription_amount'] ?? 0;
 		$lp_subscription_currency = $webhook_data['lp_subscription_currency'] ?? '';
 
@@ -1018,7 +1018,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		$order_renew->set_data( 'payment_method_title', $lp_order_parent->get_payment_method_title() );
 		$order_renew->save();
 
-		error_log( 'renew ' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
+		//error_log( 'renew ' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
 
 		update_post_meta(
 			$order_renew->get_id(),
@@ -1035,6 +1035,8 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 			'lp_subscription_currency',
 			$lp_subscription_currency
 		);
+
+		do_action( 'learn-press/subscription/order/renew-success', $order_renew, $webhook_data );
 	}
 
 	/**
@@ -1108,7 +1110,14 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		return apply_filters( 'learn_press_get_return_url', $return_url, $order );
 	}
 
+	/**
+	 * @param string $prop
+	 *
+	 * @deprecated 4.3.9
+	 */
 	public function __get( $prop ) {
+		_deprecated_function( __METHOD__, '4.3.9' );
+		return false;
 		switch ( $prop ) {
 			case 'method_title':
 			case 'method_description':
@@ -1119,23 +1128,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 			default:
 				return property_exists( $this, $prop ) ? $this->{$prop} : false;
 		}
-	}
-
-	/**
-	 * @since 3.0.0
-	 *
-	 * return bool
-	 * @deprecated 4.2.3.5
-	 */
-	public function is_display() {
-		_deprecated_function( __METHOD__, '4.2.3.5' );
-		$display = apply_filters( 'learn-press/payment-method/display', true, $this->id );
-		$display = apply_filters( 'learn-press/payment-method-' . $this->id . '/display', $display );
-
-		// @deprecated
-		$display = apply_filters( 'learn_press_display_payment_method', $display, $this->id );
-
-		return $display;
 	}
 
 	/**

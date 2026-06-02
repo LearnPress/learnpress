@@ -723,7 +723,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				'name'                => $data['name'] ?? '',
 				'status'              => 'ACTIVE',
 				'billing_cycles'      => $billing_cycles,
-				'description'         => $description,
 				'payment_preferences' => array(
 					'auto_bill_outstanding'     => true,
 					'setup_fee'                 => array(
@@ -734,6 +733,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					'payment_failure_threshold' => 3,
 				),
 			);
+
+			// Add description if not empty
+			if ( ! empty( $description ) ) {
+				$plan_payload['description'] = $description;
+			}
 
 			// Call API create plan
 			$plan_response = wp_remote_post(
