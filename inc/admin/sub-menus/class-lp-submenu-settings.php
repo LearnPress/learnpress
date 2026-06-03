@@ -22,7 +22,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->menu_title = esc_html__( 'Settings', 'learnpress' );
 		$this->page_title = esc_html__( 'LearnPress Settings', 'learnpress' );
 		$this->priority   = 30;
-		$this->callback   = [ $this, 'display' ];
+		$this->callback   = array( $this, 'display' );
 
 		$this->tabs = apply_filters(
 			'learn-press/admin/settings-tabs-array',
@@ -33,32 +33,67 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 				'payments'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-payments.php',
 				'emails'    => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-emails.php',
 				'permalink' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-permalink.php',
-				'mcp'       => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-mcp.php',
 				'advanced'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
 				'open-ai'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-open-ai.php',
 			)
 		);
-
 		add_action( 'learn-press/admin/page-content-settings', array( $this, 'page_contents' ) );
 		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array( $this, 'section_content' ) );
 
 		/** Save metabox in LP4 */
+		add_action( 'admin_init', array( $this, 'redirect_legacy_mcp_tab' ), 5 );
+		add_action( 'load-learnpress_page_learn-press-settings', array( $this, 'redirect_legacy_mcp_tab' ) );
 		add_action( 'admin_init', array( $this, 'save_settings' ) );
 
 		parent::__construct();
 	}
-
 	/**
 	 * Display menu content
 	 */
 	public function page_content() {
+
 		parent::page_content();
 	}
 
+	/**
+	 * Redirect old MCP tab URLs to the merged Advanced MCP section.
+	 *
+	 * @return void
+	 */
+	public function redirect_legacy_mcp_tab() {
+
+		if ( ! is_admin() || 'GET' !== strtoupper( $_SERVER['REQUEST_METHOD'] ?? '' ) ) {
+			return;
+		}
+
+		$page = sanitize_key( $_GET['page'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$tab  = sanitize_key( $_GET['tab'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( 'learn-press-settings' !== $page || 'mcp' !== $tab ) {
+			return;
+		}
+
+		$action        = sanitize_key( $_GET['action'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$action_bottom = sanitize_key( $_GET['action2'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( isset( $_GET['lp_mcp_key_action'] ) || 'bulk-revoke' === $action || 'bulk-revoke' === $action_bottom ) {
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
+		$query_args            = wp_unslash( $_GET ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$query_args['page']    = 'learn-press-settings';
+		$query_args['tab']     = 'advanced';
+		$query_args['section'] = 'mcp';
+
+		wp_safe_redirect( esc_url_raw( add_query_arg( $query_args, admin_url( 'admin.php' ) ) ) );
+		exit;
+	}
+
 	public function page_contents() {
+
 		$active_tab = $this->get_active_tab();
 		$section    = $this->get_active_section();
-
 		if ( 'permalink' === $active_tab && isset( $_GET['lp-user-slug-generated'] ) ) {
 			$processed = absint( $_GET['lp-user-slug-processed'] ?? 0 );
 			$generated = absint( $_GET['lp-user-slug-generated'] ?? 0 );
@@ -87,8 +122,8 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->tabs[ $active_tab ]->admin_page_settings( $section, $this->get_sections() );
 
 		$hide_save_button = false;
-		if ( 'mcp' === $active_tab && class_exists( 'LP_Settings_Mcp' ) ) {
-			$hide_save_button = ! LP_Settings_Mcp::is_mcp_adapter_active();
+		if ( 'advanced' === $active_tab && 'mcp' === $section && class_exists( 'LP_Settings_Advanced' ) ) {
+			$hide_save_button = ! LP_Settings_Advanced::is_mcp_adapter_active();
 		}
 		?>
 
@@ -148,7 +183,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$lp_settings_cache->clean_lp_settings();
 
 		// Clear cache lp rewrite rules
-		//$lp_settings_cache->clean_lp_rewrite_rules();
+		// $lp_settings_cache->clean_lp_rewrite_rules();
 
 		// Flush rewrite rules after save settings.
 		if ( isset( $_REQUEST['tab'] ) && 'permalink' === $_REQUEST['tab'] ) {

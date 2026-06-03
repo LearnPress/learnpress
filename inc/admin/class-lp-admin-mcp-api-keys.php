@@ -68,16 +68,16 @@ class LP_Admin_MCP_API_Keys {
 			'lpMcpApiKeysSettings',
 			array(
 				'is_mcp_keys_section' => $this->is_mcp_keys_settings_screen(),
-				'actions' => array(
+				'actions'             => array(
 					'create' => 'mcp_create_api_key',
 				),
-				'i18n'     => array(
-					'processing'      => __( 'Processing...', 'learnpress' ),
-					'created'         => __( 'API key created.', 'learnpress' ),
-					'request_failed'  => __( 'Request failed. Please try again.', 'learnpress' ),
-					'confirm_revoke'  => __( 'Revoke this API key?', 'learnpress' ),
-					'copy_success'    => __( 'Copied.', 'learnpress' ),
-					'copy_fallback'   => __( 'Copy this value manually.', 'learnpress' ),
+				'i18n'                => array(
+					'processing'     => __( 'Processing...', 'learnpress' ),
+					'created'        => __( 'API key created.', 'learnpress' ),
+					'request_failed' => __( 'Request failed. Please try again.', 'learnpress' ),
+					'confirm_revoke' => __( 'Revoke this API key?', 'learnpress' ),
+					'copy_success'   => __( 'Copied.', 'learnpress' ),
+					'copy_fallback'  => __( 'Copy this value manually.', 'learnpress' ),
 				),
 			)
 		);
@@ -172,7 +172,8 @@ class LP_Admin_MCP_API_Keys {
 		$url = add_query_arg(
 			array(
 				'page'          => 'learn-press-settings',
-				'tab'           => 'mcp',
+				'tab'           => 'advanced',
+				'section'       => 'mcp',
 				'lp_mcp_notice' => $notice_code,
 			),
 			admin_url( 'admin.php' )
@@ -191,9 +192,18 @@ class LP_Admin_MCP_API_Keys {
 	 */
 	protected function notice_from_code( string $code ): ?array {
 		$map = array(
-			'revoked'      => array( 'type' => 'success', 'message' => __( 'API key revoked.', 'learnpress' ) ),
-			'bulk_revoked' => array( 'type' => 'success', 'message' => __( 'Selected API keys revoked.', 'learnpress' ) ),
-			'no_selection' => array( 'type' => 'warning', 'message' => __( 'No API keys selected.', 'learnpress' ) ),
+			'revoked'      => array(
+				'type'    => 'success',
+				'message' => __( 'API key revoked.', 'learnpress' ),
+			),
+			'bulk_revoked' => array(
+				'type'    => 'success',
+				'message' => __( 'Selected API keys revoked.', 'learnpress' ),
+			),
+			'no_selection' => array(
+				'type'    => 'warning',
+				'message' => __( 'No API keys selected.', 'learnpress' ),
+			),
 		);
 
 		return $map[ $code ] ?? null;
@@ -218,11 +228,16 @@ class LP_Admin_MCP_API_Keys {
 	 * @return bool
 	 */
 	protected function is_mcp_keys_settings_screen(): bool {
+
 		$page    = sanitize_key( $_REQUEST['page'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$tab     = sanitize_key( $_REQUEST['tab'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$section = sanitize_key( $_REQUEST['section'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		return 'learn-press-settings' === $page
-			&& 'mcp' === $tab;
+		if ( 'learn-press-settings' !== $page ) {
+			return false;
+		}
+
+		return ( 'advanced' === $tab && 'mcp' === $section )
+			|| 'mcp' === $tab;
 	}
-
 }
