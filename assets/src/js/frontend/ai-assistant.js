@@ -366,8 +366,12 @@ export class AIAssistantWidget {
 
 	setLoadingState( isLoading ) {
 		this.isRequesting = isLoading;
-		if ( this.elements.sendBtn ) this.elements.sendBtn.disabled = isLoading;
-		if ( this.elements.inputEl ) this.elements.inputEl.disabled = isLoading;
+		if ( this.elements.sendBtn ) {
+			this.elements.sendBtn.disabled = isLoading;
+		}
+		if ( this.elements.inputEl ) {
+			this.elements.inputEl.disabled = isLoading;
+		}
 	}
 
 	setQuizInputMode( isQuizActive ) {
@@ -625,7 +629,9 @@ export class AIAssistantWidget {
 		const contextHistory = this.history.slice();
 		this.history.push( { role: 'user', content: text } );
 		this.saveHistory();
-		if ( this.elements.inputEl ) this.elements.inputEl.value = '';
+		if ( this.elements.inputEl ) {
+			this.elements.inputEl.value = '';
+		}
 
 		const pendingEl = this.appendMessage( 'assistant', this.config.i18n.thinking );
 		const pendingTextEl = pendingEl.querySelector( '.lp-ai-assistant__msg-text' );

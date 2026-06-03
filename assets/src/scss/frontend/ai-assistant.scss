@@ -67,10 +67,19 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 		box-sizing: border-box;
 		position: relative;
 
+		.lp-icon{
+			font-size: 24px; /* Adjust size as needed */
+			line-height: 1;
+			display: inline-block;
+			width: auto;
+			height: auto;
+		}
+
 		&:hover,
 		&:focus-visible {
 			transform: translateY(-1px);
 			outline: none;
+			background: $color-primary;
 			.lp-ai-assistant__toggle-label {
 				opacity: 1;
 				visibility: visible;
