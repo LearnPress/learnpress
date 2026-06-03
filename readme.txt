@@ -23,7 +23,7 @@ LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress. This is one 
 
 LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress Based LMS**. Also, LearnPress is highly recommended by WPML as the <a href="https://wpml.org/plugin-functionality/lms/" target="_blank">Learning Management System Plugin for Multilingual Sites</a>. Just try and see how amazing it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-ons to empower its core system.
 
-[https://www.youtube.com/watch?v=vH7h1cE2llU]
+[youtube https://www.youtube.com/watch?v=vH7h1cE2llU]
 
 Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have Premium LearnPress Add-Ons included already.
 
@@ -245,7 +245,6 @@ And if you want to extend or use LearnPress, see our [Wiki](https://github.com/L
 
 = Where can I get support or talk to other users? =
 If you get troubles when using LearnPress you can ask for help on the [LearnPress Support Forum](https://help.thimpress.com/) or [join the private Facebook group](https://www.facebook.com/groups/learnpress/). You could share your feedback about LearnPress. And let us know which feature you want us to build next.
-For help with premium add-ons, use our <a href="https://thimpress.com/forums/forum/learnpress-premium-add-ons/">helpdesk</a>.
 
 = Where can I ask for new features, suggest new ideas or new themes for LearnPress? =
 You can send us your thoughts via email: support@thimpress.com or create post at [Feature Requests](https://learnpress.canny.io/feature-requests).
