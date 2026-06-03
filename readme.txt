@@ -23,6 +23,8 @@ LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress. This is one 
 
 LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress Based LMS**. Also, LearnPress is highly recommended by WPML as the <a href="https://wpml.org/plugin-functionality/lms/" target="_blank">Learning Management System Plugin for Multilingual Sites</a>. Just try and see how amazing it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-ons to empower its core system.
 
+[https://www.youtube.com/watch?v=vH7h1cE2llU]
+
 Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have Premium LearnPress Add-Ons included already.
 
 - [Eduma | Education WordPress Theme](https://1.envato.market/G5Ook) (#1 Selling Education WordPress Theme).
@@ -76,7 +78,6 @@ Add [Thim Blocks](https://wordpress.org/plugins/thim-blocks/) - our Page Builder
 - [LearnPress Tutorials](https://learnpresslms.com/docs/learnpress/)
 - How to create an Udemy or Coursera clone easily with LearnPress [Click here >>](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 - Step-by-step YouTube guide on setting up your own Online Course site. [Click here >>](https://www.youtube.com/watch?v=0mJBC9IpiS0)
-[youtube https://www.youtube.com/watch?v=0mJBC9IpiS0]
 
 Are you looking for *the best LMS WordPress Plugin*?
 
