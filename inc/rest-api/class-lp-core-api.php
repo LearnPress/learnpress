@@ -32,6 +32,7 @@ class LP_Core_API extends LP_Abstract_API {
 			'class-lp-rest-material-controller.php',
 			'class-lp-rest-instructor-controller.php',
 			'class-lp-rest-ajax-controller.php',
+			'class-lp-rest-gateway-webhook-controller.php',
 		);
 
 		$path_version  = $this->version . '/frontend/';
@@ -56,6 +57,7 @@ class LP_Core_API extends LP_Abstract_API {
 			'LP_Rest_Material_Controller',
 			'LP_REST_Instructor_Controller',
 			'LP_REST_AJAX_Controller',
+			'LP_REST_Gateway_Webhook_Controller',
 		);
 
 		$this->controllers = apply_filters( 'learn-press/core-api/controllers', $controllers );

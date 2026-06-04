@@ -5,8 +5,8 @@ namespace LearnPress\MCP\Auth;
 use LP_Database;
 use LP_Filter;
 use LP_Helper;
-use LP_User_DB;
-use LP_User_Filter;
+use LearnPress\Databases\UserDB;
+use LearnPress\Filters\UserFilter;
 use Exception;
 
 defined( 'ABSPATH' ) || exit;
@@ -51,11 +51,12 @@ class ApiKeysRepository {
 	/**
 	 * Create a new API key and return plaintext credentials once.
 	 *
-	 * @param int    $user_id User ID that owns the key.
+	 * @param int $user_id User ID that owns the key.
 	 * @param string $description Optional key description.
 	 * @param string $permissions Key permission.
 	 *
 	 * @return array<string, mixed>|null
+	 * @throws Exception
 	 */
 	public function create_key( int $user_id, string $description = '', string $permissions = 'read' ): ?array {
 		$user_id = absint( $user_id );
@@ -494,6 +495,7 @@ class ApiKeysRepository {
 	 * @param int $user_id User ID.
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	protected function is_valid_user_id( int $user_id ): bool {
 		$user_id = absint( $user_id );
@@ -501,14 +503,14 @@ class ApiKeysRepository {
 			return false;
 		}
 
-		$filter              = new LP_User_Filter();
+		$filter              = new UserFilter();
 		$filter->ID          = $user_id;
 		$filter->limit       = 1;
 		$filter->only_fields = array( 'u.ID' );
 		$filter->field_count = 'u.ID';
 
 		$total_rows = 0;
-		$rows       = LP_User_DB::instance()->get_users( $filter, $total_rows );
+		$rows       = UserDB::getInstance()->get_users( $filter, $total_rows );
 
 		return is_array( $rows ) && ! empty( $rows );
 	}

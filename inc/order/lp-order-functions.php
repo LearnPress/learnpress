@@ -372,9 +372,9 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 			return;
 		}
 
-		$user = learn_press_get_current_user();
-		$url  = learn_press_user_profile_link(
-			$user->get_id(),
+		$user_id = get_current_user_id();
+		$profile = LP_Profile::instance( $user_id );
+		$url     = $profile->get_tab_link(
 			LP_Settings::instance()->get( 'profile_endpoints.orders', 'orders' )
 		);
 
@@ -392,7 +392,7 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 			}
 
 			$user_ids = (array) $order->get_user_id();
-			if ( ! in_array( $user->get_id(), $user_ids ) ) {
+			if ( ! in_array( $user_id, $user_ids ) ) {
 				throw new Exception( __( 'You do not have permission to cancel this order.', 'learnpress' ) );
 			}
 

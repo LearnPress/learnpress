@@ -853,6 +853,10 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
+		// Fixed security, with request ?context=edit
+		if ( isset( $_REQUEST['context'] ) ) {
+			die();
+		}
 
 		// Retrieve the list of registered collection query parameters.
 		$registered = $this->get_collection_params();

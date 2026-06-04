@@ -238,6 +238,9 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 			$total_items > 0 ? $calculate['completed_items'] * 100 / $total_items : 0,
 			2
 		);
+		if ( $progress_items_completed_percent > 100 ) {
+			$progress_items_completed_percent = 100;
+		}
 
 		$section = [
 			'wrapper'          => '<div class="course-progress">',
@@ -329,6 +332,9 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 			$total_items > 0 ? $calculate['completed_items'] * 100 / $total_items : 0,
 			2
 		);
+		if ( $progress_items_completed_percent > 100 ) {
+			$progress_items_completed_percent = 100;
+		}
 
 		$section = [
 			'wrapper'       => sprintf(

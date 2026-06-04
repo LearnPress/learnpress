@@ -1,0 +1,85 @@
+// Lessons tab — uses shared tab-list mixin
+@include tab-list-styles('lesson');
+
+// Grid column definition for lessons:
+// Title(2fr) | Assigned(1.5fr) | Create Date(1fr) | Status(100px) | Preview(80px) | Actions(80px)
+$lesson-grid: 2fr 1.5fr 1fr 100px 80px 80px;
+
+#lp-course-builder {
+	// Table container — wraps header + list
+	.courses-builder__lesson-tab {
+		background: $cb-bg;
+		border: 1px solid $cb-border;
+		border-radius: $cb-radius-md;
+		overflow: visible;
+
+		// Grid scoped to THIS tab wrapper — prevents cascade conflicts
+		.cb-list-table-header,
+		.lesson-item {
+			grid-template-columns: $lesson-grid;
+		}
+
+		.lesson-assigned-courses .label {
+			display: none;
+		}
+
+		.lesson__preview.lp-btn-set-preview-item {
+			cursor: pointer;
+			display: flex;
+			margin-left: $cb-spacing-md;
+			justify-content: flex-start;
+			border: none;
+			padding: 0;
+
+			&.loading,
+			&.lp-loading {
+				pointer-events: none;
+				opacity: 0.7;
+				margin-left: 19px;
+
+				a {
+					display: none;
+				}
+			}
+
+			a {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 32px;
+				height: 32px;
+				text-decoration: none;
+				font-size: 16px;
+				border-radius: $cb-radius;
+				background-color: transparent;
+				border: none;
+				color: $cb-text-muted;
+				cursor: pointer;
+				transition: all 0.2s;
+
+				&:hover {
+					background-color: $cb-primary-bland;
+					color: $cb-primary;
+				}
+			}
+		}
+	}
+
+	// Remove border from inner list — container has it
+	.cb-list-lesson {
+		border: none;
+		border-radius: 0;
+	}
+
+	.lesson-status {
+		@include post-status-badge;
+	}
+
+	.lesson-assigned-courses {
+		@include assigned-items-display;
+	}
+
+	.lesson-action-expanded__items {
+		@include tab-action-items('lesson');
+	}
+}

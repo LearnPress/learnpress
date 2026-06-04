@@ -46,11 +46,14 @@ class Config {
 	 * @param string $path | from folder 'config'
 	 *
 	 * @return array|mixed
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.1.6.4
 	 */
 	public function get( string $key = '', string $path = '', array $args = [] ) {
-		extract( $args );
+		// Extract args
+		foreach ( $args as $arg_key => $arg_value ) {
+			$$arg_key = $arg_value;
+		}
 		$data_config        = array();
 		$data_config_by_key = array();
 

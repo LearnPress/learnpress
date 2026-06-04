@@ -6,13 +6,15 @@
 
 use LearnPress\Background\LPBackgroundAjax;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
+use LearnPress\Filters\Course\CourseJsonFilter;
+use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
-use LearnPress\Models\CoursePostModel;
-use LearnPress\Models\Courses;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
+use LearnPress\Services\CourseService;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
@@ -33,10 +35,24 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$this->routes = array(
 			''                       => array(
 				array(
+					'methods'  => WP_REST_Server::ALLMETHODS,
+					'callback' => array( $this, 'get_courses' ),
+				),
+			),
+			'edit-archive-block'     => array(
+				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
-					'callback'            => array( $this, 'get_courses' ),
+					'callback'            => array( $this, 'get_courses_archive_block' ),
 					'permission_callback' => '__return_true',
 					'args'                => array(),
+				),
+			),
+			'courses-suggest'        => array(
+				array(
+					'methods'             => WP_REST_Server::ALLMETHODS,
+					'callback'            => array( $this, 'courses_suggest' ),
+					'permission_callback' => '__return_true',
+					'args'                => [],
 				),
 			),
 			'purchase-course'        => array(
@@ -132,21 +148,85 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @return LP_REST_Response
+	 * @return Response
 	 * @since 4.2.8.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_courses( WP_REST_Request $request ): LP_REST_Response {
-		$response = new LP_REST_Response();
+	public function get_courses( WP_REST_Request $request ): Response {
+		$response = new Response();
 
 		try {
-			$filter     = new LP_Course_Filter();
+			$filter     = new CourseJsonFilter();
 			$params     = $request->get_params();
 			$total_rows = 0;
 
-			Courses::handle_params_for_query_courses( $filter, $params );
-			$filter->only_fields = [ 'ID' ];
-			$coursesRs           = Courses::get_courses( $filter, $total_rows );
+			CourseService::handle_params_for_query_list_courses( $filter, $params );
+			$filter->only_fields = [ CourseJsonFilter::COL_ID ];
+
+			$coursesRs = CourseService::get_list_courses( $filter, $total_rows );
+
+			$courses = [];
+			foreach ( $coursesRs as $course ) {
+				$courseModel  = CourseModel::find( $course->ID, true );
+				$allow_fields = apply_filters(
+					'lp/rest-api/courses/allow_fields',
+					[
+						CourseJsonFilter::COL_ID,
+						CourseJsonFilter::COL_POST_TITLE,
+						CourseJsonFilter::COL_POST_NAME,
+						CourseJsonFilter::COL_POST_AUTHOR,
+						CourseJsonFilter::COL_LANG,
+						CourseJsonFilter::COL_IS_SALE,
+					],
+					$courseModel,
+					$params
+				);
+				if ( ! $courseModel ) {
+					continue;
+				}
+
+				$course_info = new stdClass();
+				foreach ( $allow_fields as $field ) {
+					$course_info->$field = $courseModel->$field;
+				}
+
+				$courses[] = $course_info;
+			}
+
+			$response->status            = Response::STATUS_SUCCESS;
+			$response->data->courses     = $courses;
+			$response->data->total       = $total_rows;
+			$response->data->page        = $filter->page;
+			$response->data->total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response );
+	}
+
+	/**
+	 * Get list courses display layout when edit on archive block
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return Response
+	 * @since 4.3.7
+	 * @version 1.0.0
+	 */
+	public function get_courses_archive_block( WP_REST_Request $request ): Response {
+		$response = new Response();
+
+		try {
+			$filter     = new CourseJsonFilter();
+			$params     = $request->get_params();
+			$total_rows = 0;
+
+			CourseService::handle_params_for_query_list_courses( $filter, $params );
+			// For permission, it only displays for Editor easy config layout, not for get data primary
+			$filter->only_fields = [ CourseJsonFilter::COL_ID ];
+			$filter->post_status = [ PostModel::STATUS_PUBLISH ];
+			$coursesRs           = CourseService::get_list_courses( $filter, $total_rows );
 
 			$courses              = [];
 			$singleCourseTemplate = SingleCourseTemplate::instance();
@@ -174,7 +254,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$courses[] = apply_filters( 'lp/rest-api/frontend/course/archive_course/courses', $courseItem, $courseModel );
 			}
 
-			$response->status            = 'success';
+			$response->status            = Response::STATUS_SUCCESS;
 			$response->data->courses     = $courses;
 			$response->data->total       = $total_rows;
 			$response->data->page        = $filter->page;
@@ -187,10 +267,57 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
+	 * Get list courses for search suggest
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return Response
+	 * @since 4.3.7
+	 * @version 1.0.0
+	 */
+	public function courses_suggest( WP_REST_Request $request ): Response {
+		$response = new Response();
+
+		try {
+			$filter     = new CourseJsonFilter();
+			$params     = $request->get_params();
+			$total_rows = 0;
+
+			CourseService::handle_params_for_query_list_courses( $filter, $params );
+			$filter->only_fields = [ CourseJsonFilter::COL_ID ];
+			$filter->post_status = [ PostModel::STATUS_PUBLISH ];
+
+			$coursesRs = CourseService::get_list_courses( $filter, $total_rows );
+
+			$courses = [];
+			foreach ( $coursesRs as $course ) {
+				$courseModel = CourseModel::find( $course->ID, true );
+				$courses[]   = $courseModel;
+			}
+
+			$data = array(
+				'courses'      => $courses,
+				'keyword'      => $request['c_search'],
+				'total_course' => $total_rows,
+			);
+			ob_start();
+			do_action( 'learn-press/rest-api/courses/suggest/layout', $data );
+			$response->data->content = ob_get_clean();
+			$response->data->totals  = $total_rows;
+			$response->status        = Response::STATUS_SUCCESS;
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return apply_filters( 'lp/rest-api/courses-search-suggest/response', $response );
+	}
+
+	/**
 	 * Get list courses
 	 *
 	 * @param WP_REST_Request $request
 	 *
+	 * @depreacted 4.3.7
 	 * @return LP_REST_Response
 	 */
 	public function list_courses( WP_REST_Request $request ): LP_REST_Response {
@@ -200,8 +327,12 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$pagination_type     = LP_Settings::get_option( 'course_pagination_type' );
 
 		try {
-			$filter = new LP_Course_Filter();
-			Courses::handle_params_for_query_courses( $filter, $request->get_params() );
+			throw new Exception( 'Deprecated function from 4.3.7' );
+			$filter             = new CourseJsonFilter();
+			$params             = $request->get_params();
+			$params['c_status'] = 'publish';
+			$params['c_fields'] = 'ID, post_title, post_content, post_status, post_author, meta_input';
+			CourseService::handle_params_for_query_list_courses( $filter, $params );
 
 			// Check is in category page.
 			/*if ( ! empty( $request->get_param( 'page_term_id_current' ) ) &&
@@ -213,10 +344,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$filter->tag_ids[] = $request->get_param( 'page_tag_id_current' );
 			}*/
 
-			$total_rows = 0;
-			$filter     = apply_filters( 'lp/api/courses/filter', $filter, $request );
-
-			$courses     = Courses::get_courses( $filter, $total_rows );
+			$total_rows  = 0;
+			$courses     = CourseService::get_list_courses( $filter, $total_rows );
 			$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
 			$return_type = $request['return_type'] ?? 'html';
 			if ( 'json' === $return_type ) {

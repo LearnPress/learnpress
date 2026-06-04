@@ -11,7 +11,7 @@ foreach ( $currencies as $code => $name ) {
 
 $settings      = LP_Settings::instance();
 $userModel     = UserModel::find( get_current_user_id(), true );
-$username      = $userModel->get_pretty_slug();
+$username      = $userModel->get_slug_link();
 $settings_slug = $settings->get( 'profile_endpoints.settings', 'settings' );
 $profile_slug  = 'profile';
 
@@ -23,7 +23,8 @@ if ( learn_press_get_page_id( 'profile' ) ) {
 	}
 }
 
-$profile_url = site_url() . '/' . $profile_slug . '/' . $username;
+//$profile_url = site_url() . '/' . $profile_slug . '/' . $username;
+$profile_url = home_url( $profile_slug . '/' . $username );
 
 return apply_filters(
 	'lp/settings/permalinks',
@@ -72,6 +73,14 @@ return apply_filters(
 					'type'        => 'text',
 					'placeholder' => 'course-tag',
 					'desc'        => sprintf( 'e.g. %s/course/%s/sample-tag/', home_url(), '<code>course-tag</code>' ),
+				],
+				[
+					'title'       => esc_html__( 'Course Builder', 'learnpress' ),
+					'id'          => 'course_builder',
+					'default'     => 'course-builder',
+					'type'        => 'text',
+					'placeholder' => 'course-builder',
+					'desc'        => sprintf( 'e.g. %s/%s/', home_url(), '<code>course-builder</code>' ),
 				],
 				[
 					'type' => 'sectionend',
@@ -134,7 +143,7 @@ return apply_filters(
 					'placeholder' => 'order-details',
 					'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.order-details', 'order-details' ) . '</code>/123' ),
 				),
-				array(
+				/*array(
 					'title'   => esc_html__( 'Users pretty slug', 'learnpress' ),
 					'id'      => 'lp_generate_user_slug_row',
 					'type'    => 'html',
@@ -145,7 +154,7 @@ return apply_filters(
 						esc_html__( 'Generate public user slugs for existing users on old sites. Existing pretty slugs will be kept unchanged.', 'learnpress' ),
 						esc_html__( 'This slug replaces the default username in profile and instructor links to uniquely identify users.', 'learnpress' )
 					),
-				),
+				),*/
 			),
 			$this
 		),

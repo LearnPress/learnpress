@@ -17,7 +17,17 @@ let dispatchGutenberg;
 let editorGutenberg;
 
 export class GenerateWithOpenai {
-	constructor() {
+	constructor( options = {} ) {
+		this.options = {
+			autoInsertButtons: true,
+			isCourseBuilder: false,
+			titleInputSelector: 'input[name=post_title]',
+			courseBuilderTitleInputSelector: 'input[name=course_title]',
+			editorIdClassic: 'content',
+			editorIdCourseBuilder: 'course_description_editor',
+			...options,
+		};
+
 		this.init();
 	}
 
@@ -31,48 +41,8 @@ export class GenerateWithOpenai {
 			return;
 		}
 
-		lpUtils.lpOnElementReady( '#titlewrap', ( el ) => {
-			el.insertAdjacentHTML(
-				'afterend',
-				`<button type="button"
-					class="lp-btn-generate-with-ai lp-btn-ai-style"
-					data-template="#lp-tmpl-edit-title-ai">
-					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
-				</button>`
-			);
-		} );
-		lpUtils.lpOnElementReady( '#wp-content-media-buttons', ( el ) => {
-			el.insertAdjacentHTML(
-				'beforeend',
-				`<button type="button"
-					class="lp-btn-generate-with-ai lp-btn-ai-style"
-					data-template="#lp-tmpl-edit-description-ai">
-					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
-				</button>`
-			);
-		} );
-		lpUtils.lpOnElementReady( '#postimagediv', ( el ) => {
-			const elInside = el.querySelector( '.postbox-header' );
-			elInside.insertAdjacentHTML(
-				'afterend',
-				`<button type="button"
-					style="margin: 12px 12px 0 12px;"
-					class="lp-btn-generate-with-ai lp-btn-ai-style"
-					data-template="#lp-tmpl-edit-image-ai">
-					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
-				</button>`
-			);
-		} );
-
-		// Check is layout Gutenberg
-		if ( wp.data && wp.data.select( 'core/editor' ) ) {
-			isLayoutGutenberg = true;
-			selectGutenberg = wp.data.select;
-			dispatchGutenberg = wp.data.dispatch;
-			editorGutenberg = selectGutenberg( 'core/editor' );
-
-			// For layout Gutenberg - button for title
-			lpUtils.lpOnElementReady( '.editor-document-bar', ( el ) => {
+		if ( this.options.autoInsertButtons ) {
+			lpUtils.lpOnElementReady( '#titlewrap', ( el ) => {
 				el.insertAdjacentHTML(
 					'afterend',
 					`<button type="button"
@@ -83,11 +53,9 @@ export class GenerateWithOpenai {
 				</button>`
 				);
 			} );
-
-			// For layout Gutenberg - button for description
-			lpUtils.lpOnElementReady( '.editor-post-featured-image', ( el ) => {
+			lpUtils.lpOnElementReady( '#wp-content-media-buttons', ( el ) => {
 				el.insertAdjacentHTML(
-					'beforebegin',
+					'beforeend',
 					`<button type="button"
 					style="padding: 5px 10px; justify-content: center;"
 					class="lp-btn-generate-with-ai lp-btn-ai-style"
@@ -96,10 +64,9 @@ export class GenerateWithOpenai {
 				</button>`,
 				);
 			} );
-
-			// For layout Gutenberg - button for image
-			lpUtils.lpOnElementReady( '.editor-post-featured-image', ( el ) => {
-				el.insertAdjacentHTML(
+			lpUtils.lpOnElementReady( '#postimagediv', ( el ) => {
+				const elInside = el.querySelector( '.postbox-header' );
+				elInside.insertAdjacentHTML(
 					'afterend',
 					`<button type="button"
 					style="padding: 5px 10px; justify-content: center;"
@@ -109,9 +76,112 @@ export class GenerateWithOpenai {
 				</button>`
 				);
 			} );
+
+			// Check is layout Gutenberg
+			if ( wp.data && wp.data.select( 'core/editor' ) ) {
+				isLayoutGutenberg = true;
+				selectGutenberg = wp.data.select;
+				dispatchGutenberg = wp.data.dispatch;
+				editorGutenberg = selectGutenberg( 'core/editor' );
+
+				// For layout Gutenberg - button for title
+				lpUtils.lpOnElementReady( '.editor-document-bar', ( el ) => {
+					el.insertAdjacentHTML(
+						'afterend',
+						`<button type="button"
+						style="margin-left: 5px"
+						class="lp-btn-generate-with-ai"
+						data-template="#lp-tmpl-edit-title-ai">
+						<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
+					</button>`
+					);
+				} );
+
+				// For layout Gutenberg - button for description
+				lpUtils.lpOnElementReady( '.editor-post-featured-image', ( el ) => {
+					el.insertAdjacentHTML(
+						'beforebegin',
+						`<button type="button"
+						style="padding: 5px 10px; justify-content: center;"
+						class="lp-btn-generate-with-ai"
+						data-template="#lp-tmpl-edit-description-ai">
+						<i class="lp-ico-ai"></i><span>Generate description with AI</span>
+					</button>`
+					);
+				} );
+
+				// For layout Gutenberg - button for image
+				lpUtils.lpOnElementReady( '.editor-post-featured-image', ( el ) => {
+					el.insertAdjacentHTML(
+						'afterend',
+						`<button type="button"
+						style="padding: 5px 10px; justify-content: center;"
+						class="lp-btn-generate-with-ai"
+						data-template="#lp-tmpl-edit-image-ai">
+						<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
+					</button>`
+					);
+				} );
+			}
 		}
 
 		this.events();
+	}
+
+	getTitleInputSelector() {
+		return this.options.isCourseBuilder
+			? this.options.courseBuilderTitleInputSelector
+			: this.options.titleInputSelector;
+	}
+
+	getEditorId() {
+		return this.options.isCourseBuilder
+			? this.options.editorIdCourseBuilder
+			: this.options.editorIdClassic;
+	}
+
+	setCourseBuilderPostId( form ) {
+		if ( ! this.options.isCourseBuilder || ! form ) {
+			return;
+		}
+
+		const postIdInput = form.querySelector( '[name="post-id"]' );
+		if ( ! postIdInput ) {
+			return;
+		}
+
+		const courseEditWrap = document.querySelector( '.cb-section__course-edit[data-course-id]' );
+		const courseId = courseEditWrap?.dataset?.courseId || '';
+		if ( courseId ) {
+			postIdInput.value = courseId;
+		}
+	}
+
+	extractImageSourceFromHtml( html ) {
+		if ( ! html ) {
+			return '';
+		}
+
+		const tempWrapper = document.createElement( 'div' );
+		tempWrapper.innerHTML = html;
+		return tempWrapper.querySelector( 'img' )?.getAttribute( 'src' ) || '';
+	}
+
+	applyCourseBuilderFeaturedImage( attachmentId, imageSrc ) {
+		if ( ! attachmentId || ! imageSrc ) {
+			return false;
+		}
+
+		document.dispatchEvent(
+			new CustomEvent( 'lp-course-builder/ai-featured-image-applied', {
+				detail: {
+					attachmentId,
+					imageSrc,
+				},
+			} )
+		);
+
+		return true;
 	}
 
 	events() {
@@ -176,8 +246,11 @@ export class GenerateWithOpenai {
 
 	showPopup( args ) {
 		const { e, target } = args;
-		const templateId = target.dataset.template || target.closest( '.lp-btn-generate-with-ai' ).dataset.template ||
-			target.closest( '.lp-generate-data-ai-wrap' ).dataset.template || '';
+		const templateId =
+			target.dataset.template ||
+			target.closest( '.lp-btn-generate-with-ai' ).dataset.template ||
+			target.closest( '.lp-generate-data-ai-wrap' ).dataset.template ||
+			'';
 
 		const modalTemplate = document.querySelector( templateId );
 
@@ -199,7 +272,7 @@ export class GenerateWithOpenai {
 				popupSweetAlert.click();
 
 				// Set post title and post content to hidden fields of form to AI prompt reference
-				const elPostTitleInput = document.querySelector( 'input[name=post_title]' );
+				const elPostTitleInput = document.querySelector( this.getTitleInputSelector() );
 				let post_title = '';
 				if ( elPostTitleInput ) {
 					post_title = elPostTitleInput.value;
@@ -212,22 +285,20 @@ export class GenerateWithOpenai {
 
 				let post_content = '';
 				if ( ! isLayoutGutenberg ) {
-					if ( ! window.tinymce || ! window.tinymce.get( 'content' ) ) {
-						post_content = document
-							.querySelector( '#content' )
-							.value;
+					const editorId = this.getEditorId();
+					if ( ! window.tinymce || ! window.tinymce.get( editorId ) ) {
+						const editorElement = document.querySelector( `#${ editorId }` );
+						post_content = editorElement ? editorElement.value : '';
 					} else {
-						post_content = window.tinymce
-							.get( 'content' )
-							.getContent( { format: 'text' } );
+						post_content = window.tinymce.get( editorId ).getContent( { format: 'text' } );
 					}
 				} else {
 					const content = editorGutenberg.getEditedPostContent();
-					post_content = content
-						.replace( /(<([^>]+)>)/gi, '' ); // Remove HTML tags
+					post_content = content.replace( /(<([^>]+)>)/gi, '' ); // Remove HTML tags
 				}
 
 				const form = popupSweetAlert.querySelector( 'form' );
+				this.setCourseBuilderPostId( form );
 				const elPostTitle = form.querySelector( '[name=post-title]' );
 				if ( elPostTitle ) {
 					elPostTitle.value = post_title;
@@ -241,9 +312,7 @@ export class GenerateWithOpenai {
 					}
 				}
 
-				const elPostContent = form.querySelector(
-					'[name=post-content]'
-				);
+				const elPostContent = form.querySelector( '[name=post-content]' );
 				if ( elPostContent ) {
 					elPostContent.value = post_content;
 
@@ -321,15 +390,9 @@ export class GenerateWithOpenai {
 
 		elBtnActions.dataset.step = step;
 		const elForm = target.closest( 'form' );
-		const elContentStep = elForm.querySelector(
-			`.step-content[data-step="${ step }"]`
-		);
-		const elItemStep = elCreateCourseAIWrap.querySelector(
-			`.step-item[data-step="${ step }"]`
-		);
-		elForm
-			.querySelectorAll( '.step-content' )
-			.forEach( ( el ) => el.classList.remove( 'active' ) );
+		const elContentStep = elForm.querySelector( `.step-content[data-step="${ step }"]` );
+		const elItemStep = elCreateCourseAIWrap.querySelector( `.step-item[data-step="${ step }"]` );
+		elForm.querySelectorAll( '.step-content' ).forEach( ( el ) => el.classList.remove( 'active' ) );
 		elContentStep.classList.add( 'active' );
 		elCreateCourseAIWrap
 			.querySelectorAll( '.step-item' )
@@ -340,9 +403,7 @@ export class GenerateWithOpenai {
 		const form = target.closest( 'form' );
 		const elBtnSteps = form.querySelectorAll( 'button[data-step-show]' );
 		elBtnSteps.forEach( ( el ) => {
-			const stepsShow = el.dataset.stepShow
-				.split( ',' )
-				.map( ( s ) => parseInt( s.trim() ) );
+			const stepsShow = el.dataset.stepShow.split( ',' ).map( ( s ) => parseInt( s.trim() ) );
 			if ( stepsShow.includes( step ) ) {
 				lpUtils.lpShowHideEl( el, 1 );
 			} else {
@@ -377,9 +438,7 @@ export class GenerateWithOpenai {
 						'textarea[name=lp-openai-prompt-generated-field]'
 					);
 					elPromptTextarea.value = data;
-					const elBtnNext = form.querySelector(
-						'.lp-btn-step[data-action=next]'
-					);
+					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
 					elBtnNext.click();
 				}
 			},
@@ -424,14 +483,10 @@ export class GenerateWithOpenai {
 					lp_structure_course = data.lp_structure_course;
 
 					// Set preview HTML
-					const elResults = form.querySelector(
-						'.lp-ai-generated-results'
-					);
+					const elResults = form.querySelector( '.lp-ai-generated-results' );
 					elResults.innerHTML = data.lp_html_preview;
 
-					const elBtnNext = form.querySelector(
-						'.lp-btn-step[data-action=next]'
-					);
+					const elBtnNext = form.querySelector( '.lp-btn-step[data-action=next]' );
 					elBtnNext.click();
 				}
 			},
@@ -461,9 +516,10 @@ export class GenerateWithOpenai {
 				if ( dataTarget === 'set-wp-editor-content' ) {
 					this.setWPEditorContent( dataApply );
 				} else if ( dataTarget === 'set-wp-title' ) {
-					const elTitleInput = document.querySelector( 'input[name=post_title]' );
+					const elTitleInput = document.querySelector( this.getTitleInputSelector() );
 					if ( elTitleInput ) {
 						elTitleInput.value = dataApply;
+						elTitleInput.dispatchEvent( new Event( 'input', { bubbles: true } ) );
 					}
 				}
 			} else if ( dataTarget === 'set-wp-editor-content' ) {
@@ -521,17 +577,25 @@ export class GenerateWithOpenai {
 	}
 
 	setWPEditorContent( htmlContent ) {
-		const editor = window.tinymce.get( 'content' );
-		editor.setContent( htmlContent );
+		const editorId = this.getEditorId();
+		const editor = window.tinymce?.get( editorId );
+
+		if ( editor ) {
+			editor.setContent( htmlContent );
+			return;
+		}
+
+		const editorElement = document.querySelector( `#${ editorId }` );
+		if ( editorElement ) {
+			editorElement.value = htmlContent;
+			editorElement.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+		}
 	}
 
 	applyImageData( args ) {
 		const { e, target } = args;
 		let dataSend = JSON.parse( target.dataset.send );
-		dataSend = lpUtils.mergeDataWithDatForm(
-			target.closest( 'form' ),
-			dataSend
-		);
+		dataSend = lpUtils.mergeDataWithDatForm( target.closest( 'form' ), dataSend );
 		//e.preventDefault();
 		lpUtils.lpSetLoadingEl( target, true );
 
@@ -543,11 +607,18 @@ export class GenerateWithOpenai {
 				lpToastify.show( message, status );
 
 				if ( status === 'success' ) {
-					if ( ! isLayoutGutenberg ) {
+					if ( this.options.isCourseBuilder ) {
+						const attachmentId = parseInt( data?.attachment_id || 0, 10 );
+						const imageSrc = this.extractImageSourceFromHtml( data?.html_image || '' );
+						const applied = this.applyCourseBuilderFeaturedImage( attachmentId, imageSrc );
+
+						if ( ! applied ) {
+							lpToastify.show( 'Failed to apply image to course featured image.', 'error' );
+							return;
+						}
+					} else if ( ! isLayoutGutenberg ) {
 						// Set image
-						const elImagePreview = document.querySelector(
-							'#postimagediv .inside'
-						);
+						const elImagePreview = document.querySelector( '#postimagediv .inside' );
 						elImagePreview.outerHTML = data.html_image;
 					} else {
 						dispatchGutenberg( 'core/editor' ).editPost( { featured_media: data.attachment_id } );

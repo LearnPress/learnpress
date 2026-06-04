@@ -18,7 +18,8 @@ import {
 	RangeControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import API from '../../../../../js/api.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
+import API from 'lpAssetsJsPath/api.js';
 const TEMPLATE_DEFAULT = [
 	[ 'learnpress/course-image' ],
 	[ 'learnpress/course-title' ],
@@ -72,14 +73,10 @@ function PostTemplateBlockPreview( {
 }
 
 const fetchLearnPressCourses = async ( courseQuery, signal ) => {
-	const url = API.apiCourses;
-	let params = '?return_type=json';
+	let url = API.apiEditCoursesArchiveBlock;
+	url = lpUtils.lpAddQueryArgs( url, courseQuery );
 
-	if ( courseQuery ) {
-		params += `&${ new URLSearchParams( courseQuery ).toString() }`;
-	}
-
-	const response = await fetch( url + params, {
+	const response = await fetch( url, {
 		method: 'GET',
 		signal,
 	} );
@@ -183,31 +180,31 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 
 	function paginationTypeDisplay( type ) {
 		switch ( type ) {
-			case 'load-more':
-				return (
-					<button className="courses-btn-load-more">{ __( 'Load More', 'learnpress' ) }</button>
-				);
-			case 'infinite':
-				return '';
-			default:
-				return (
-					<nav className="learnpress-block-pagination navigation pagination">
-						<ul className="page-numbers">
-							<li>
-								<a className="prev page-numbers" href="?paged=1">
-									<i className="lp-icon-arrow-left"></i>
+		case 'load-more':
+			return (
+				<button className="courses-btn-load-more">{ __( 'Load More', 'learnpress' ) }</button>
+			);
+		case 'infinite':
+			return '';
+		default:
+			return (
+				<nav className="learnpress-block-pagination navigation pagination">
+					<ul className="page-numbers">
+						<li>
+							<a className="prev page-numbers" href="?paged=1">
+								<i className="lp-icon-arrow-left"></i>
+							</a>
+						</li>
+						{ Array.from( { length: 3 }, ( _, index ) => (
+							<li key={ index }>
+								<a className="page-numbers" href="{index}">
+									{ index + 1 }
 								</a>
 							</li>
-							{ Array.from( { length: 3 }, ( _, index ) => (
-								<li key={ index }>
-									<a className="page-numbers" href="{index}">
-										{ index + 1 }
-									</a>
-								</li>
-							) ) }
-						</ul>
-					</nav>
-				);
+						) ) }
+					</ul>
+				</nav>
+			);
 		}
 	}
 
@@ -265,8 +262,8 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 						<BlockContextProvider key={ blockContext.courseId } value={ blockContext }>
 							{ blockContext.courseId ===
 							( activeBlockContextId || blockContexts[ 0 ]?.courseId ) ? (
-								<PostTemplateInnerBlocks classList={ blockContext.classList } />
-							) : null }
+									<PostTemplateInnerBlocks classList={ blockContext.classList } />
+								) : null }
 							<MemoizedPostTemplateBlockPreview
 								blocks={ blocks }
 								blockContextId={ blockContext.courseId }

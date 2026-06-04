@@ -971,6 +971,9 @@ class SingleCourseTemplate {
 		try {
 			$show_heading = $data['show_heading'] ?? true;
 			$faqs         = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
+			if ( ! is_array( $faqs ) && ! is_object( $faqs ) ) {
+				return '';
+			}
 			if ( empty( $faqs ) ) {
 				return '';
 			}
@@ -1073,6 +1076,9 @@ class SingleCourseTemplate {
 
 		try {
 			$requirements = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_REQUIREMENTS, [] );
+			if ( ! is_array( $requirements ) && ! is_object( $requirements ) ) {
+				return '';
+			}
 			if ( empty( $requirements ) ) {
 				return '';
 			}
@@ -1121,6 +1127,9 @@ class SingleCourseTemplate {
 
 		try {
 			$features = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURES, [] );
+			if ( ! is_array( $features ) && ! is_object( $features ) ) {
+				return '';
+			}
 			if ( empty( $features ) ) {
 				return '';
 			}
@@ -1169,6 +1178,9 @@ class SingleCourseTemplate {
 
 		try {
 			$targets = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_TARGET, [] );
+			if ( ! is_array( $targets ) && ! is_object( $targets ) ) {
+				return '';
+			}
 			if ( empty( $targets ) ) {
 				return '';
 			}

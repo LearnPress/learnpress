@@ -3,6 +3,8 @@
  * Fields settings PayPal Payment
  */
 
+$subscription_webhook_url = esc_url( rest_url( 'lp/v1/gateways/paypal/subscription-webhook' ) );
+
 return apply_filters(
 	'learn-press/gateway-payment/paypal/settings',
 	array(
@@ -59,6 +61,24 @@ return apply_filters(
 				__( 'How to get <a href="%s" target="_blank">Client Secret</a>', 'learnpress' ),
 				'https://developer.paypal.com/api/rest/#link-getclientidandclientsecret'
 			),
+		),
+		array(
+			'title'   => esc_html__( 'Enable subscriptions', 'learnpress' ),
+			'id'      => '[enable_subscriptions]',
+			'default' => 'no',
+			'type'    => 'checkbox',
+			'desc'    => sprintf(
+				'%1$s<br /><strong>%2$s</strong> <code>%3$s</code>',
+				esc_html__( 'Enable PayPal subscription checkout flow.', 'learnpress' ),
+				esc_html__( 'Webhook URL:', 'learnpress' ),
+				esc_html( $subscription_webhook_url )
+			),
+		),
+		array(
+			'title' => esc_html__( 'Subscription webhook ID', 'learnpress' ),
+			'id'    => '[subscription_webhook_id]',
+			'type'  => 'text',
+			'desc'  => esc_html__( 'PayPal webhook ID used to reverse-verify subscription events.', 'learnpress' ),
 		),
 		array(
 			'type' => 'sectionend',

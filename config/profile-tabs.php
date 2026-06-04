@@ -3,7 +3,7 @@
  * Profile tabs
  *
  * @since 4.2.6.4
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;

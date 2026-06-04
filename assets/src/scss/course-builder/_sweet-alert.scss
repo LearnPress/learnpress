@@ -1,0 +1,121 @@
+.swal2-popup {
+	padding: 20px;
+	border-radius: 16px;
+}
+
+.swal2-popup .content-title {
+	margin: 0 0 20px 0;
+	padding: 0;
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+.swal2-popup.lp-select-items-popup {
+	padding: 20px !important;
+}
+
+button.swal2-close {
+	height: 32px;
+	width: 32px;
+}
+
+button.swal2-cancel.swal2-styled {
+	border-radius: 10px;
+	padding: 10px 24px;
+	background: #fff;
+	color: #aaaaaa;
+	border: 1px solid #e1e1e1;
+	font-weight: 500;
+	min-width: 140px;
+}
+
+button.swal2-confirm.swal2-styled {
+	background: #7067ed;
+	border-radius: 12px;
+	padding: 10px 24px;
+	min-width: 140px;
+}
+
+.swal2-icon.swal2-icon-show {
+	border: none;
+	margin-bottom: 5px;
+}
+
+#swal2-title {
+	padding: 0;
+	font-size: 22px;
+	color: #111111;
+}
+
+#swal2-html-container {
+	padding-top: 8px;
+	font-size: 15px;
+	color: #4f4f4f;
+}
+
+#swal2-html-container:has( .lp-must-enable-ai-wrap ) {
+	padding: 0;
+}
+
+div:where( .swal2-container ).swal2-backdrop-show,
+div:where( .swal2-container ).swal2-noanimation {
+	background: none !important;
+	backdrop-filter: blur( 3px );
+}
+
+div:where( .swal2-container ).swal2-center > .swal2-popup {
+	border-radius: 12px;
+	box-shadow: 0 10px 40px rgba( 0, 0, 0, 0.2 );
+}
+
+.swal2-container {
+	.button {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		background: $cb-primary;
+		color: #fff;
+		padding: 12px 20px;
+		border-radius: 12px;
+		text-decoration: none;
+		font-size: 14px;
+		font-weight: 500;
+		border: none;
+		cursor: pointer;
+		transition: background-color 0.2s;
+
+		&:hover {
+			background-color: $cb-primary-hover;
+		}
+	}
+
+	.button.lp-btn-close-ai-popup {
+		&:hover {
+			background-color: transparent;
+			color: $cb-primary;
+		}
+	}
+
+	.lp-generate-data-ai-wrap .lp-form-generate-data-ai .btn-primary:hover {
+		background-color: $cb-primary-hover;
+	}
+}
+
+.swal2-container .swal2-popup .swal2-icon.lp-cb-swal-icon-html .swal2-icon-content::before {
+	content: none;
+}
+
+.swal2-container .swal2-popup .swal2-icon.lp-cb-swal-icon-html .swal2-icon-content .lp-cb-swal-icon-image {
+	display: block;
+	width: 48px;
+	height: 48px;
+}
+
+#swal2-html-container:has( .lp-form-generate-data-ai ) {
+	padding-bottom: 24px;
+
+	.form-grid {
+		margin-bottom: 0;
+	}
+}

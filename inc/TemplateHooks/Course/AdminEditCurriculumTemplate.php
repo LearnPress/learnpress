@@ -23,7 +23,7 @@ use stdClass;
  * Template hooks Admin Edit Course Curriculum.
  *
  * @since 4.2.8.6
- * @version 1.0.0
+ * @version 1.0.1
  */
 class AdminEditCurriculumTemplate {
 	use Singleton;
@@ -35,6 +35,14 @@ class AdminEditCurriculumTemplate {
 	 */
 	public $courseModel;
 
+	/**
+	 * Context data from AJAX request.
+	 * Contains flags like is_course_builder.
+	 *
+	 * @var array
+	 */
+	public $context_data = [];
+
 	public function init() {
 		add_action( 'learn-press/admin/edit-curriculum/layout', [ $this, 'edit_course_curriculum_layout' ] );
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
@@ -44,20 +52,27 @@ class AdminEditCurriculumTemplate {
 	 * Layout for edit course curriculum.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
+	 *
+	 * @param CourseModel $courseModel
+	 * @param array       $context Additional context merged into AJAX args (e.g. ['is_course_builder' => true]).
 	 */
-	public function edit_course_curriculum_layout( CourseModel $courseModel ) {
+	public function edit_course_curriculum_layout( CourseModel $courseModel, array $context = [] ) {
 		wp_enqueue_style( 'lp-edit-curriculum' );
 		wp_enqueue_script( 'lp-edit-course' );
 
-		$args      = [
-			'id_url'    => 'edit-course-curriculum',
-			'course_id' => $courseModel->ID,
-		];
-		$call_back = array(
+		$args = array_merge(
+			[
+				'id_url'    => 'edit-course-curriculum',
+				'course_id' => $courseModel->ID,
+			],
+			$context
+		);
+
+		$call_back = [
 			'class'  => self::class,
 			'method' => 'render_edit_course_curriculum',
-		);
+		];
 
 		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
 	}
@@ -90,7 +105,8 @@ class AdminEditCurriculumTemplate {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
 
-		self::instance()->courseModel = $courseModel;
+		self::instance()->courseModel  = $courseModel;
+		self::instance()->context_data = $data; // Store context data for filters
 
 		$coursePostModel = new CoursePostModel( $courseModel );
 		if ( ! $coursePostModel->check_capabilities_create() ) {
@@ -404,6 +420,18 @@ class AdminEditCurriculumTemplate {
 		 */
 		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
 
+		$edit_button = apply_filters(
+			'learn-press/admin/curriculum/section-item/edit-button',
+			sprintf(
+				'<li title="%s"><a href="%s" target="_blank" class="lp-icon-edit-square edit-link"></a></li>',
+				__( 'Edit item detail', 'learnpress' ),
+				$itemModel ? $itemModel->get_edit_link() : ''
+			),
+			$item,
+			$itemModel,
+			$courseModel
+		);
+
 		$section_action = [
 			'wrap'     => '<ul class="item-actions">',
 			'preview'  => sprintf(
@@ -412,11 +440,7 @@ class AdminEditCurriculumTemplate {
 				$itemModel && $itemModel->post_type === LP_LESSON_CPT
 				&& $itemModel->has_preview() ? 'lp-icon-eye' : 'lp-icon-eye-slash'
 			),
-			'edit'     => sprintf(
-				'<li title="%s"><a href="%s" target="_blank" class="lp-icon-edit-square edit-link"></a></li>',
-				__( 'Edit item detail', 'learnpress' ),
-				$itemModel ? $itemModel->get_edit_link() : ''
-			),
+			'edit'     => $edit_button,
 			'delete'   => sprintf(
 				'<li class="action lp-btn-delete-item"
 					data-title="%s" data-content="%s">%s</li>',
@@ -426,6 +450,15 @@ class AdminEditCurriculumTemplate {
 			),
 			'wrap_end' => '</ul>',
 		];
+
+		$section_action = apply_filters(
+			'learn-press/admin/curriculum/section-item/actions',
+			$section_action,
+			$item,
+			$itemModel,
+			$courseModel,
+			$this->context_data
+		);
 
 		$section = [
 			'li'           => sprintf(

@@ -48,6 +48,17 @@ class OpenAiService {
 		return LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes';
 	}
 
+	/**
+	 * Get secret key
+	 *
+	 * @return string
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function get_secret_key(): string {
+		return (string) LP_Settings::get_option( 'open_ai_secret_key', '' );
+	}
+
 	public function get_settings() {
 		$this->secret_key        = LP_Settings::get_option( 'open_ai_secret_key', '' );
 		$this->text_model_type   = LP_Settings::get_option( 'open_ai_text_model_type', 'gpt-4.1' );
