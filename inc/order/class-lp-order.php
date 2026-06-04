@@ -1004,17 +1004,15 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return bool|string
 		 */
 		public function get_refund_order_url() {
-			$url = false;
+			$url  = false;
 			$user = learn_press_get_current_user();
 			if ( ! $user instanceof LP_User || $user->get_id() <= 0 ) {
 				return apply_filters( 'learn-press/order-refund-url', $url, $this->get_id() );
 			}
 
-			if ( function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
-				$eligibility = learn_press_get_order_refund_eligibility( $this, $user->get_id() );
-				if ( empty( $eligibility['eligible'] ) ) {
-					return apply_filters( 'learn-press/order-refund-url', $url, $this->get_id() );
-				}
+			$eligibility = learn_press_get_order_refund_eligibility( $this, $user->get_id() );
+			if ( empty( $eligibility['eligible'] ) ) {
+				return apply_filters( 'learn-press/order-refund-url', $url, $this->get_id() );
 			}
 
 			$url = learn_press_user_profile_link(
@@ -1047,7 +1045,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				);
 			}
 
-			$enable_refund = function_exists( 'learn_press_get_refund_setting' ) && 'yes' === learn_press_get_refund_setting( 'enable_refund_requests', 'no' );
+			$enable_refund = 'yes' === learn_press_get_refund_setting( 'enable_refund_requests', 'no' );
 			if ( $enable_refund ) {
 				$refund_request_status = get_post_meta( $this->get_id(), '_lp_refund_request_status', true );
 				if ( 'pending' === $refund_request_status ) {
@@ -1063,9 +1061,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						if ( function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 							$current_user = learn_press_get_current_user();
 							if ( $current_user instanceof LP_User && $current_user->get_id() > 0 ) {
-								$eligibility = learn_press_get_order_refund_eligibility( $this, $current_user->get_id() );
-								$reason_min = absint( $eligibility['reason_min'] ?? $reason_min );
-								$reason_min = $reason_min > 0 ? $reason_min : 10;
+								$eligibility    = learn_press_get_order_refund_eligibility( $this, $current_user->get_id() );
+								$reason_min     = absint( $eligibility['reason_min'] ?? $reason_min );
+								$reason_min     = $reason_min > 0 ? $reason_min : 10;
 								$require_reason = ! empty( $eligibility['require_reason'] );
 							}
 						}
@@ -1075,17 +1073,17 @@ if ( ! class_exists( 'LP_Order' ) ) {
 							'text'  => __( 'Refund', 'learnpress' ),
 							'class' => 'lp-refund-order-action',
 							'data'  => array(
-								'order_id'         => $this->get_id(),
-								'require_reason'   => $require_reason ? 'yes' : 'no',
-								'reason_min'       => $reason_min,
-								'reason_prompt'    => __( 'Enter your refund reason', 'learnpress' ),
+								'order_id'           => $this->get_id(),
+								'require_reason'     => $require_reason ? 'yes' : 'no',
+								'reason_min'         => $reason_min,
+								'reason_prompt'      => __( 'Enter your refund reason', 'learnpress' ),
 								'reason_placeholder' => __( 'Please describe why you want a refund.', 'learnpress' ),
-								'reason_required'  => __( 'Refund reason is required.', 'learnpress' ),
-								'reason_too_short' => sprintf( __( 'Refund reason must be at least %d characters.', 'learnpress' ), $reason_min ),
-								'confirm_title'    => __( 'Request a refund?', 'learnpress' ),
-								'confirm_text'     => __( 'This request will be sent and processed according to payment settings.', 'learnpress' ),
-								'confirm_button'   => __( 'Submit Request', 'learnpress' ),
-								'cancel_button'    => __( 'Cancel', 'learnpress' ),
+								'reason_required'    => __( 'Refund reason is required.', 'learnpress' ),
+								'reason_too_short'   => sprintf( __( 'Refund reason must be at least %d characters.', 'learnpress' ), $reason_min ),
+								'confirm_title'      => __( 'Request a refund?', 'learnpress' ),
+								'confirm_text'       => __( 'This request will be sent and processed according to payment settings.', 'learnpress' ),
+								'confirm_button'     => __( 'Submit Request', 'learnpress' ),
+								'cancel_button'      => __( 'Cancel', 'learnpress' ),
 							),
 						);
 					}
