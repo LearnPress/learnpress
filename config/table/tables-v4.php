@@ -208,6 +208,22 @@ return array(
 			KEY user_id (user_id)
 		) $collate;
 	",
+	$lp_db->tb_lp_webhooks            => "
+		CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_webhooks} (
+			webhook_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			status varchar(20) NOT NULL DEFAULT 'active',
+			name varchar(200) NOT NULL DEFAULT '',
+			delivery_url longtext NOT NULL,
+			secret text NOT NULL,
+			events longtext NOT NULL,
+			created_at datetime NOT NULL,
+			updated_at datetime NULL DEFAULT NULL,
+			PRIMARY KEY (webhook_id),
+			KEY user_id (user_id),
+			KEY status (status)
+		) $collate;
+	",
 	$lp_db->tb_thim_cache             => "
 		CREATE TABLE IF NOT EXISTS {$lp_db->tb_thim_cache} (
 			key_cache VARCHAR (100) NOT NULL UNIQUE,
