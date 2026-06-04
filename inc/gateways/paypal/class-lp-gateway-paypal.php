@@ -669,7 +669,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				if ( ! empty( $product_data['debug_id'] ) ) {
 					throw new Exception(
 						__( 'Create Product: ' ) . $product_data['details'][0]['description'],
-						$product_data['debug_id']
+						(int) $product_data['debug_id']
 					);
 				}
 
@@ -765,7 +765,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			if ( ! empty( $response_data['debug_id'] ) ) {
 				throw new Exception(
 					__( 'Create Plan: ' ) . $response_data['details'][0]['description'],
-					$response_data['debug_id']
+					(int) $response_data['debug_id']
 				);
 			}
 
@@ -905,7 +905,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			if ( isset( $plan_data['debug_id'] ) ) {
 				throw new Exception(
 					__( 'Get plan: ', 'learnpress' ) . $plan_data['details'][0]['description'],
-					$plan_data['debug_id']
+					(int) $plan_data['debug_id']
 				);
 			}
 
@@ -1020,7 +1020,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					if ( isset( $patched_plan['debug_id'] ) ) {
 						throw new Exception(
 							__( 'Update plan: ', 'learnpress' ) . $patched_plan['details'][0]['description'],
-							$patched_plan['debug_id']
+							(int) $patched_plan['debug_id']
 						);
 					}
 				}
@@ -1096,7 +1096,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				if ( isset( $pricing_response['debug_id'] ) ) {
 					throw new Exception(
 						__( 'Update plan pricing: ', 'learnpress' ) . $pricing_response['details'][0]['description'],
-						$pricing_response['debug_id']
+						(int) $pricing_response['debug_id']
 					);
 				}
 			}
@@ -1351,7 +1351,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			// Error return from PayPal
 			if ( ! empty( $response_data['debug_id'] ) ) {
-				throw new Exception( $response_data['details'][0]['description'], $response_data['debug_id'] );
+				throw new Exception(
+					__( 'Pay PayPal subscription: ', 'learnpress' ) . $response_data['details'][0]['description'],
+					(int) $response_data['debug_id']
+				);
 			}
 
 			if ( empty( $response_data['id'] ) ) {
