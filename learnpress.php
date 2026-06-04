@@ -719,7 +719,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 				$lp_addon_version = $lp_addon_info['Version'];
 
-				$addon                  = new Lp_Addon();
+				$addon                  = new LP_Addon();
 				$addon->version         = $lp_addon_version;
 				$addon->plugin_base     = $lp_addon;
 				$addon->require_version = $lp_addon_info['Require_LP_Version'];

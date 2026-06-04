@@ -565,7 +565,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function get_percent_result( $decimal = 2 ) {
-		return apply_filters( 'learn-press/user/quiz-percent-result', sprintf( '%s%%', round( $this->get_result( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
+		return apply_filters( 'learn-press/user/quiz-percent-result', sprintf( '%s%%', round( $this->get_result( 'result' ), $decimal ) ), $this->get_user_id(), $this->get_item_id() );
 	}
 
 	public function get_time_interval( $context = '' ) {
