@@ -41,7 +41,7 @@ class Agent {
 	 * Run the assistant agent loop.
 	 *
 	 * @param string $user_message  The learner's message.
-	 * @param int    $lesson_id     Current lesson ID.
+	 * @param int    $item_id     Current lesson ID.
 	 * @param int    $course_id     Current course ID.
 	 * @param int    $user_id       Current user ID.
 	 * @param array  $history       Previous conversation messages (role/content pairs).
@@ -51,7 +51,7 @@ class Agent {
 	 */
 	public function run(
 		string $user_message,
-		int $lesson_id,
+		int $item_id,
 		int $course_id,
 		int $user_id,
 		array $history = array(),
@@ -72,7 +72,7 @@ class Agent {
 		}
 
 		// Use validated quick-action hint when present, otherwise classify intent via OpenAI.
-		$intent = $this->resolve_intent( $user_message, $history, $lesson_id, $course_id, $user_id, $action_hint );
+		$intent = $this->resolve_intent( $user_message, $history, $item_id, $course_id, $user_id, $action_hint );
 		if ( $this->quota_guard->is_blocked() ) {
 			return $this->normalizer->build_response( $this->quota_guard->get_block_message() );
 		}
@@ -84,20 +84,20 @@ class Agent {
 
 		switch ( $intent ) {
 			case IntentClassifier::INTENT_SUMMARIZE:
-				return $this->handle_summarize( $data_loaders, $user_message, $lesson_id, $user_id, $history );
+				return $this->handle_summarize( $data_loaders, $user_message, $item_id, $user_id, $history );
 
 			case IntentClassifier::INTENT_EXPLAIN:
-				return $this->handle_explain( $data_loaders, $user_message, $lesson_id, $user_id, $history );
+				return $this->handle_explain( $data_loaders, $user_message, $item_id, $user_id, $history );
 
 			case IntentClassifier::INTENT_SMART_REVIEW:
-				return $this->handle_smart_review( $data_loaders, $user_message, $user_id, $course_id, $lesson_id, $history );
+				return $this->handle_smart_review( $data_loaders, $user_message, $user_id, $course_id, $item_id, $history );
 
 			case IntentClassifier::INTENT_QUICK_QUIZ:
-				return $this->quiz_engine->start( $data_loaders, $user_message, $lesson_id, $user_id, $history );
+				return $this->quiz_engine->start( $data_loaders, $user_message, $item_id, $user_id, $history );
 
 			case IntentClassifier::INTENT_GENERAL:
 			default:
-				return $this->handle_general( $data_loaders, $user_message, $lesson_id, $user_id, $history );
+				return $this->handle_general( $data_loaders, $user_message, $item_id, $user_id, $history );
 		}
 	}
 
@@ -106,7 +106,7 @@ class Agent {
 	 *
 	 * @param string      $user_message Learner input.
 	 * @param array       $history      Conversation history.
-	 * @param int         $lesson_id    Current lesson ID.
+	 * @param int         $item_id    Current lesson ID.
 	 * @param int         $course_id    Current course ID.
 	 * @param int         $user_id      Current user ID.
 	 * @param string|null $action_hint  Optional quick-action hint from frontend.
@@ -116,7 +116,7 @@ class Agent {
 	private function resolve_intent(
 		string $user_message,
 		array $history,
-		int $lesson_id,
+		int $item_id,
 		int $course_id,
 		int $user_id,
 		?string $action_hint
@@ -127,7 +127,7 @@ class Agent {
 			return $hint_intent;
 		}
 
-		return $this->classifier->classify( $user_message, $history, $lesson_id, $course_id, $user_id );
+		return $this->classifier->classify( $user_message, $history, $item_id, $course_id, $user_id );
 	}
 
 	/**

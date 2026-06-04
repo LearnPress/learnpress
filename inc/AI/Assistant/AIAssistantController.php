@@ -85,7 +85,7 @@ class AIAssistantController {
 	 */
 	public function handle_chat( array $data ): array {
 		$message     = trim( $data['message'] ?? '' );
-		$lesson_id   = absint( $data['lesson_id'] ?? 0 );
+		$item_id     = absint( $data['item_id'] ?? 0 );
 		$course_id   = absint( $data['course_id'] ?? 0 );
 		$history     = $data['history'] ?? array();
 		$quiz_data   = $data['active_quiz_questions'] ?? array();
@@ -95,8 +95,8 @@ class AIAssistantController {
 			throw new Exception( __( 'Message is required.', 'learnpress' ) );
 		}
 
-		if ( $lesson_id === 0 ) {
-			throw new Exception( __( 'Lesson ID is required.', 'learnpress' ) );
+		if ( empty( $item_id ) ) {
+			throw new Exception( __( 'Item ID is required.', 'learnpress' ) );
 		}
 
 		if ( $course_id === 0 ) {
@@ -130,7 +130,7 @@ class AIAssistantController {
 
 		return $agent->run(
 			sanitize_textarea_field( $message ),
-			$lesson_id,
+			$item_id,
 			$course_id,
 			$user_id,
 			$sanitized_history,

@@ -640,7 +640,7 @@ export class AIAssistantWidget {
 		const dataSend = {
 			action: 'openai_assistant_chat',
 			message: text,
-			lesson_id: this.config.itemId,
+			item_id: this.config.itemId,
 			course_id: this.config.courseId,
 			history: contextHistory,
 			active_quiz_questions: this.activeQuizState || [],

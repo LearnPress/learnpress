@@ -60,39 +60,18 @@ class AIAssistantAjax extends AbstractAjax {
 				throw new Exception( __( 'Invalid request data.', 'learnpress' ) );
 			}
 
-			$data = $this->normalize_request_data( $data );
-
 			$controller = new AIAssistantController();
 			$result     = $controller->handle_chat( $data );
 			$result     = $this->normalize_response_data( $result );
 
-			$response->status  = 'success';
-			$response->message = '';
-			$response->data    = $result;
+			$response->status = 'success';
+			$response->data   = $result;
 		} catch ( Throwable $e ) {
-			$response->status  = 'error';
 			$response->message = $e->getMessage();
 			$response->data    = $this->normalize_response_data( array() );
 		}
 
 		wp_send_json( $response );
-	}
-
-	/**
-	 * Normalize request payload to a stable shape before controller validation.
-	 *
-	 * @param array $data
-	 *
-	 * @return array
-	 */
-	private function normalize_request_data( array $data ): array {
-		return array(
-			'message'               => isset( $data['message'] ) ? (string) $data['message'] : '',
-			'lesson_id'             => absint( $data['lesson_id'] ?? 0 ),
-			'course_id'             => absint( $data['course_id'] ?? 0 ),
-			'history'               => is_array( $data['history'] ?? null ) ? $data['history'] : array(),
-			'active_quiz_questions' => is_array( $data['active_quiz_questions'] ?? null ) ? $data['active_quiz_questions'] : array(),
-		);
 	}
 
 	/**
