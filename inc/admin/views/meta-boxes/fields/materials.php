@@ -6,6 +6,9 @@
  * @version 1.0.0
  * @since 4.2.2
  */
+
+use LearnPress\Databases\MaterialFilesDB;
+
 if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 	class LP_Meta_Box_Material_Fields extends LP_Meta_Box_Field {
 		/**
@@ -33,7 +36,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 		 * @return [html]            [content of Download material tab]
 		 */
 		public function output( $thepostid ) {
-			$material_init       = LP_Material_Files_DB::getInstance();
+			$material_init       = MaterialFilesDB::getInstance();
 			$course_materials    = $material_init->get_material_by_item_id( $thepostid, 0, 0, 1 );
 			$max_file_size       = (int) LP_Settings::get_option( 'material_max_file_size', 2 );
 			$allow_upload_amount = (int) LP_Settings::get_option( 'material_upload_files', 2 );
@@ -187,7 +190,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					return;
 				}
 
-				$material_init = LP_Material_Files_DB::getInstance();
+				$material_init = MaterialFilesDB::getInstance();
 				$material_init->delete_material_by_item_id( $post_id );
 			} catch ( Throwable $e ) {
 				error_log( __METHOD__ . ': ' . $e->getMessage() );

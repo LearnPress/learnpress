@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Databases\MaterialFilesDB;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
@@ -124,7 +125,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$file          = $upload_file['file'] ?? false;
 
 			// DB Init
-			$material_db = LP_Material_Files_DB::getInstance();
+			$material_db = MaterialFilesDB::getInstance();
 			// LP Material Settings
 			$max_file_size       = (int) LP_Settings::get_option( 'material_max_file_size', 2 );
 			$allow_upload_amount = (int) LP_Settings::get_option( 'material_upload_files', 2 );
@@ -281,7 +282,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Invalid item id!', 'learnpress' ) );
 			}
 
-			$material_db    = LP_Material_Files_DB::getInstance();
+			$material_db    = MaterialFilesDB::getInstance();
 			$page           = absint( $params['page'] ?? 1 );
 			$per_page       = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
 			$offset         = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
@@ -375,7 +376,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$item_id     = $request['item_id'];
 			$sort_arr    = $request->get_param( 'sort_arr' );
 			$sort_arr    = json_decode( wp_unslash( $sort_arr ), true );
-			$material_db = LP_Material_Files_DB::getInstance();
+			$material_db = MaterialFilesDB::getInstance();
 			$update_sort = $material_db->update_material_orders( $sort_arr, $item_id );
 			if ( $update_sort ) {
 				$response->status  = 200;
@@ -408,7 +409,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Invalid file identifier', 'learnpress' ) );
 			}
 			// DB Init
-			$material_db = LP_Material_Files_DB::getInstance();
+			$material_db = MaterialFilesDB::getInstance();
 			$file        = $material_db->get_material( $file_id );
 			if ( ! $file ) {
 				throw new Exception( esc_html__( 'File not found', 'learnpress' ) );
@@ -499,7 +500,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				$get_materials_for_item_id = $item_id;
 			}
 
-			$material_db    = LP_Material_Files_DB::getInstance();
+			$material_db    = MaterialFilesDB::getInstance();
 			$page           = absint( $params['page'] ?? 1 );
 			$per_page       = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
 			$offset         = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;

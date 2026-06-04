@@ -12,7 +12,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
-use LP_Material_Files_DB;
+use LearnPress\Databases\MaterialFilesDB;
 use stdClass;
 use LP_Global;
 use LP_WP_Filesystem;
@@ -63,7 +63,7 @@ class CourseMaterialTemplate {
 			throw new Exception( __( 'Item not found', 'learnpress' ) );
 		}
 		// $item_id     = $item->get_id();
-		$material_db = LP_Material_Files_DB::getInstance();
+		$material_db = MaterialFilesDB::getInstance();
 		$per_page    = (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
 		$total_rows  = $material_db->get_total( $item_id );
 		$total_pages = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
@@ -130,12 +130,12 @@ class CourseMaterialTemplate {
 			$can_show = apply_filters( 'learn-press/course-material/can-show', $can_show, $courseModel, $userModel );
 
 			$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
-			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $courseModel->get_id() );
+			$count_files   = MaterialFilesDB::getInstance()->get_total( $courseModel->get_id() );
 			if ( ! $can_show || $file_per_page == 0 || $count_files <= 0 ) {
 				throw new Exception( '' );
 			}
 
-			$material_db = LP_Material_Files_DB::getInstance();
+			$material_db = MaterialFilesDB::getInstance();
 			$paged       = absint( $args['paged'] ?? 1 );
 			$per_page    = intval( $args['per_page'] ?? 1 );
 			$offset      = ( $per_page > 0 && $paged > 1 ) ? $per_page * ( $paged - 1 ) : 0;
