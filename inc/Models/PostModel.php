@@ -129,7 +129,7 @@ class PostModel {
 	 * @param bool $check_cache
 	 *
 	 * @return false|PostModel
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.3.2
 	 */
 	public static function find_by_id( int $post_id, bool $check_cache = false ) {
@@ -149,9 +149,9 @@ class PostModel {
 
 		// Check cache
 		if ( $check_cache ) {
-			$quizPostModel = $lp_cache->get_cache( $key_cache );
-			if ( $quizPostModel instanceof QuizPostModel ) {
-				return $quizPostModel;
+			$postModel = $lp_cache->get_cache( $key_cache );
+			if ( $postModel instanceof PostModel ) {
+				return $postModel;
 			}
 		}
 
