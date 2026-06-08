@@ -210,8 +210,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$subscription_res   = $this->pay_via_subscription( $order, $subscription_data );
 				$paypal_payment_url = $subscription_res['redirect_url'] ?? '';
 			} else {
-				$data_token         = $this->get_access_token();
-				$paypal_payment_url = $this->create_payment_url( $order, $data_token );
+				$paypal_payment_url = $this->create_payment_url( $order );
 			}
 
 			$result['result']   = 'success';
@@ -377,22 +376,18 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Create Order PayPal and get checkout url
 		 *
 		 * @param LP_Order $order
-		 * @param object   $data_token { scope, access_token, token_type, app_id, expires_in, nonce }
 		 *
 		 * @return string
 		 * @throws Exception
 		 * @since 4.2.4
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
-		public function create_payment_url( LP_Order $order, $data_token ): string {
+		public function create_payment_url( LP_Order $order ): string {
 			$checkout_url = '';
 			$params       = $this->get_order_args( $order );
 
-			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
-				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
-			}
-
-			$response = wp_remote_post(
+			$data_token = $this->get_access_token();
+			$response   = wp_remote_post(
 				$this->api_url . 'v2/checkout/orders',
 				array(
 					'body'    => json_encode( $params ),
@@ -444,16 +439,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return bool True when capture is completed and order status is updated.
 		 * @throws Exception
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 * @since 4.2.4
 		 */
 		public function capture_payment_for_order( string $paypal_order_id ): bool {
 			$data_token = $this->get_access_token();
-			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
-				return false;
-			}
-
-			$response = wp_remote_post(
+			$response   = wp_remote_post(
 				$this->api_url . 'v2/checkout/orders/' . $paypal_order_id . '/capture',
 				array(
 					'headers' => array(
@@ -464,44 +455,38 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				)
 			);
 
-			if ( $response['response']['code'] === 201 ) {
-				$body        = wp_remote_retrieve_body( $response );
-				$transaction = LP_Helper::json_decode( $body );
-				if ( $transaction->status === 'COMPLETED' ) {
-					$order_id   = $transaction->purchase_units[0]->payments->captures[0]->custom_id;
-					$lp_order   = learn_press_get_order( $order_id );
-					$capture    = $transaction->purchase_units[0]->payments->captures[0] ?? null;
-					$capture_id = $capture->id ?? '';
-					update_post_meta( $order_id, '_paypal_capture_id', $capture_id );
-					$lp_order->payment_complete( $capture_id );
-				}
-			}
-
 			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message() );
+			}
+
+			$body          = wp_remote_retrieve_body( $response );
+			$response_data = LP_Helper::json_decode( $body );
+			if ( isset( $response_data->debug_id ) ) {
+				throw new Exception( $response_data->details[0]->description );
+			}
+
+			$capture = $response_data->purchase_units[0]->payments->captures[0] ?? null;
+			if ( empty( $capture ) ) {
 				return false;
 			}
 
-			$response_code = absint( $response['response']['code'] ?? 0 );
-			if ( 201 !== $response_code ) {
-				return false;
-			}
-
-			$body        = wp_remote_retrieve_body( $response );
-			$transaction = LP_Helper::json_decode( $body );
-			if ( empty( $transaction ) || ! is_object( $transaction ) || ( $transaction->status ?? '' ) !== 'COMPLETED' ) {
-				return false;
-			}
-
-			$order_id = absint( $transaction->purchase_units[0]->payments->captures[0]->custom_id ?? 0 );
+			$order_id = absint( $capture->custom_id ?? 0 );
 			if ( $order_id <= 0 ) {
 				return false;
 			}
 
+			$capture_id = $capture->id ?? '';
+			if ( empty( $capture_id ) ) {
+				return false;
+			}
+
 			$lp_order = learn_press_get_order( $order_id );
-			if ( $lp_order instanceof LP_Order ) {
-				$capture    = $transaction->purchase_units[0]->payments->captures[0] ?? null;
-				$capture_id = $capture->id ?? '';
-				update_post_meta( $order_id, '_paypal_capture_id', $capture_id );
+			if ( $lp_order instanceof LP_Order && $capture->status === 'COMPLETED' ) {
+				$transaction_id = get_post_meta( $order_id, '_transaction_id', true );
+				if ( $transaction_id === $capture_id ) {
+					return true;
+				}
+
 				$lp_order->payment_complete( $capture_id );
 				return true;
 			}
@@ -646,8 +631,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$trial_days  = absint( $data['trial_days'] ?? 0 );
 			$setup_fee   = (float) ( $data['setup_fee'] ?? 0 );
 
-			$data_token = $this->get_access_token();
-
 			// Create product before create plan
 			$product_id   = $data['product_id'] ?? '';
 			$product_data = [ 'id' => $product_id ];
@@ -663,6 +646,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				}
 
 				// Call API create product
+				$data_token       = $this->get_access_token();
 				$product_response = wp_remote_post(
 					$this->api_url . 'v1/catalogs/products',
 					array(
@@ -966,11 +950,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			$data = $this->validate_data_plan_payload( $data );
 
-			$data_token = $this->get_access_token();
-			if ( empty( $data_token->access_token ) || empty( $data_token->token_type ) ) {
-				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
-			}
-
 			$patches = array();
 			if ( ! empty( $data['name'] ?? '' ) ) {
 				$patches[] = array(
@@ -1013,6 +992,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			if ( ! empty( $patches ) ) {
+				$data_token     = $this->get_access_token();
 				$patch_response = wp_remote_request(
 					$this->api_url . 'v1/billing/plans/' . rawurlencode( $plan_id ),
 					array(
@@ -2000,7 +1980,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return array
 		 * @throws Exception
-		 * @since 4.3.4
+		 * @since 4.4.0
 		 * @version 1.0.0
 		 */
 		public function refund( $order_id = 0, $amount = 0, string $note_to_payer = '' ): array {
@@ -2015,20 +1995,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			$order_id   = $order->get_id();
-			$capture_id = get_post_meta( $order_id, '_paypal_capture_id', true );
-			if ( empty( $capture_id ) ) {
-				$capture_id = get_post_meta( $order_id, '_transaction_id', true );
-			}
-
+			$capture_id = get_post_meta( $order_id, '_transaction_id', true );
 			if ( empty( $capture_id ) ) {
 				throw new Exception( __( 'Missing PayPal capture id to refund.', 'learnpress' ) );
 			}
 
-			$data_token = $this->get_access_token();
-			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
-				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
-			}
-
+			$data_token  = $this->get_access_token();
 			$refund_args = [];
 			$amount      = floatval( $amount );
 			if ( $amount > 0 ) {
