@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.3.8\n"
+"Project-Id-Version: LearnPress 4.3.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-04T07:42:41+03:00\n"
+"POT-Creation-Date: 2026-06-08T05:18:28+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -7180,36 +7180,36 @@ msgstr ""
 msgid "Invalid course status."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:210
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:214
 msgid "Create course successfully!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:211
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:215
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:472
 msgid "Update course successfully!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:244
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:248
 msgid "Invalid request."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:260
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:264
 msgid "Duplicate course successfully. Redirecting...!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:269
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:273
 msgid "Update course status successfully!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:276
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:280
 msgid "Restore course successfully!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:281
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:285
 msgid "Course must be trashed before deleting."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:284
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:288
 msgid "Delete course successfully!"
 msgstr ""
 
@@ -9261,17 +9261,17 @@ msgid "Missing subscription plan name."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:484
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1034
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1046
 msgid "Invalid subscription amount."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:488
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:978
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:987
 msgid "Invalid subscription setup fee."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:492
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1039
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1051
 msgid "Missing subscription currency."
 msgstr ""
 
@@ -9294,73 +9294,73 @@ msgstr ""
 msgid "Gateway %s does not support fetching subscription plan."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:555
+#: inc/gateways/class-lp-gateway-abstract.php:557
 #, php-format
 msgid "Gateway %s does not support updating subscription plan."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:567
+#: inc/gateways/class-lp-gateway-abstract.php:569
 #, php-format
 msgid "Gateway %s does not support deleting subscription plan."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:597
+#: inc/gateways/class-lp-gateway-abstract.php:599
 #, php-format
 msgid "Gateway %s does not support subscription webhook."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:810
-msgid "Started trialing created at"
-msgstr ""
-
 #: inc/gateways/class-lp-gateway-abstract.php:812
-#: inc/gateways/class-lp-gateway-abstract.php:838
-#: inc/gateways/class-lp-gateway-abstract.php:864
-msgid "Next billing time"
+msgid "Started trialing created at"
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:814
 #: inc/gateways/class-lp-gateway-abstract.php:840
 #: inc/gateways/class-lp-gateway-abstract.php:866
-#: inc/gateways/class-lp-gateway-abstract.php:890
-#: inc/gateways/class-lp-gateway-abstract.php:914
-#: inc/gateways/class-lp-gateway-abstract.php:938
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1888
+msgid "Next billing time"
+msgstr ""
+
+#: inc/gateways/class-lp-gateway-abstract.php:816
+#: inc/gateways/class-lp-gateway-abstract.php:842
+#: inc/gateways/class-lp-gateway-abstract.php:868
+#: inc/gateways/class-lp-gateway-abstract.php:892
+#: inc/gateways/class-lp-gateway-abstract.php:916
+#: inc/gateways/class-lp-gateway-abstract.php:940
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1906
 #, php-format
 msgid "Subscription ID: %s"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:818
-#: inc/gateways/class-lp-gateway-abstract.php:844
-#: inc/gateways/class-lp-gateway-abstract.php:870
-#: inc/gateways/class-lp-gateway-abstract.php:894
-#: inc/gateways/class-lp-gateway-abstract.php:918
-#: inc/gateways/class-lp-gateway-abstract.php:942
+#: inc/gateways/class-lp-gateway-abstract.php:820
+#: inc/gateways/class-lp-gateway-abstract.php:846
+#: inc/gateways/class-lp-gateway-abstract.php:872
+#: inc/gateways/class-lp-gateway-abstract.php:896
+#: inc/gateways/class-lp-gateway-abstract.php:920
+#: inc/gateways/class-lp-gateway-abstract.php:944
 #, php-format
 msgid "Plan ID: %s"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:836
+#: inc/gateways/class-lp-gateway-abstract.php:838
 msgid "Activated created at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:862
+#: inc/gateways/class-lp-gateway-abstract.php:864
 msgid "Renew created at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:887
+#: inc/gateways/class-lp-gateway-abstract.php:889
 msgid "Expired created at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:911
+#: inc/gateways/class-lp-gateway-abstract.php:913
 msgid "Suspended at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:935
+#: inc/gateways/class-lp-gateway-abstract.php:937
 msgid "Canceled at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:1131
+#: inc/gateways/class-lp-gateway-abstract.php:1133
 #, php-format
 msgid "%s has been deprecated. Please use % instead of."
 msgstr ""
@@ -9398,7 +9398,7 @@ msgid "Invalid PayPal access token"
 msgstr ""
 
 #: inc/gateways/paypal/class-lp-gateway-paypal.php:392
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:946
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:955
 msgid "Invalid Paypal access token"
 msgstr ""
 
@@ -9411,110 +9411,114 @@ msgid "Invalid Paypal checkout url"
 msgstr ""
 
 #: inc/gateways/paypal/class-lp-gateway-paypal.php:623
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:873
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:930
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1240
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:879
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:939
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1255
 msgid "PayPal subscriptions are disabled."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:674
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:677
 msgid "Invalid PayPal product response."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:767
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:773
 msgid "Invalid PayPal plan response."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:774
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:780
 msgid "PayPal subscription plan created."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:878
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:935
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:884
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:944
 msgid "Missing subscription plan id."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:900
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:907
 msgid "Get plan: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:909
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:918
 msgid "PayPal subscription plan fetched."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:967
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:976
 msgid "Invalid PayPal subscription plan status."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1012
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1022
 msgid "Update plan: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1020
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1032
 msgid "PayPal plan interval cannot be changed. Create a new plan instead."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1027
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1039
 msgid "PayPal plan interval count cannot be changed. Create a new plan instead."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1085
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1098
 msgid "Update plan pricing: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1090
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1105
 msgid "PayPal subscription plan updated."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1113
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1128
 msgid "PayPal subscription plan deactivated."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1245
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1260
 msgid "PayPal subscription plan ID is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1343
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1355
+msgid "Pay PayPal subscription: "
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1361
 msgid "Invalid PayPal subscription response."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1699
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1717
 msgid "PayPal webhook verification failed."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1730
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1748
 msgid "LearnPress order is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1749
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1767
 msgid "Ignore lp order completed with subscription activated."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1814
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1832
 msgid "LP PayPal get status from webhook is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1849
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1867
 msgid "PayPal setup fee/renew payment resource is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1855
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1873
 msgid "PayPal billing agreement ID is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1861
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1879
 msgid "PayPal billing subscription not same with subscription on LP Order."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1885
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1903
 msgid "PayPal payment setup fee/renew success created at"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1926
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1944
 msgid "PayPal subscription created at"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1929
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1947
 #, php-format
 msgid "Link payment: %s"
 msgstr ""
