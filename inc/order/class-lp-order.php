@@ -1058,14 +1058,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					if ( $refund_url ) {
 						$reason_min     = 10;
 						$require_reason = 'yes' === learn_press_get_refund_setting( 'require_refund_reason', 'no' );
-						if ( function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
-							$current_user = learn_press_get_current_user();
-							if ( $current_user instanceof LP_User && $current_user->get_id() > 0 ) {
-								$eligibility    = learn_press_get_order_refund_eligibility( $this, $current_user->get_id() );
-								$reason_min     = absint( $eligibility['reason_min'] ?? $reason_min );
-								$reason_min     = $reason_min > 0 ? $reason_min : 10;
-								$require_reason = ! empty( $eligibility['require_reason'] );
-							}
+						$current_user = learn_press_get_current_user();
+						if ( $current_user instanceof LP_User && $current_user->get_id() > 0 ) {
+							$eligibility    = learn_press_get_order_refund_eligibility( $this, $current_user->get_id() );
+							$reason_min     = absint( $eligibility['reason_min'] ?? $reason_min );
+							$reason_min     = $reason_min > 0 ? $reason_min : 10;
+							$require_reason = ! empty( $eligibility['require_reason'] );
 						}
 
 						$actions['refund'] = array(

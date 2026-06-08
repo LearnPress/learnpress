@@ -926,7 +926,7 @@ if ( ! function_exists( 'learn_press_admin_order_refund_request_panel' ) ) {
 				</p>
 			<?php endif; ?>
 		</div>
-		
+
 		<?php
 	}
 }
