@@ -186,7 +186,6 @@ class CBEditCourseAjax extends AbstractAjax {
 			// Set categories and tags
 			$courseService->update_categories( $course_id, $course_categories );
 			$courseService->update_tags( $course_id, $course_tags );
-			$courseModel->save();
 
 			// Save or remove thumbnail
 			if ( isset( $data['course_thumbnail_id'] ) ) {
@@ -197,6 +196,10 @@ class CBEditCourseAjax extends AbstractAjax {
 					delete_post_thumbnail( $post );
 				}
 			}
+
+			$coursePostModel = CoursePostModel::find( $course_id, true );
+			// Save to clear cache
+			$coursePostModel->save();
 
 			ob_start();
 			$data_edit_course_html = [
