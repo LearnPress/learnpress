@@ -149,6 +149,8 @@ https://www.transifex.com/projects/p/learnpress/
 ## For Developer.
 # Note: node use is version 17 or higher.
 
+* [Receiving LearnPress webhooks](docs/webhooks/receiving-webhooks.md)
+
 1. <code>git clone https://github.com/LearnPress/learnpress.git</code>
 
 2. <code>npm install</code> *Install required packages.*

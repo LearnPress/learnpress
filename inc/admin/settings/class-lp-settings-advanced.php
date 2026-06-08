@@ -50,6 +50,16 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	}
 
 	/**
+	 * Settings fields for the Webhook section.
+	 *
+	 * @return mixed
+	 */
+	public function get_settings_webhook() {
+
+		return Config::instance()->get( 'webhook', 'settings' );
+	}
+
+	/**
 	 * Check whether MCP Adapter plugin is active.
 	 *
 	 * @return bool
@@ -99,20 +109,24 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	 */
 	public function admin_page_settings( $section = null, $tab = '' ) {
 
-		if ( 'mcp' !== $section ) {
-			parent::admin_page_settings( $section, $tab );
-			return;
-		}
-
-		if ( ! self::is_mcp_adapter_active() ) {
+		if ( 'mcp' === $section ) {
+			if ( ! self::is_mcp_adapter_active() ) {
 				$this->render_missing_adapter_notice();
+				return;
+			}
+
+			parent::admin_page_settings( $section, $tab );
+
+			if ( class_exists( 'LP_Admin_MCP_API_Keys' ) ) {
+				LP_Admin_MCP_API_Keys::instance()->render_page();
+			}
 			return;
 		}
 
 		parent::admin_page_settings( $section, $tab );
 
-		if ( class_exists( 'LP_Admin_MCP_API_Keys' ) ) {
-			LP_Admin_MCP_API_Keys::instance()->render_page();
+		if ( 'webhook' === $section ) {
+			LP_Admin_Webhooks::instance()->render_page();
 		}
 	}
 
@@ -143,6 +157,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 		return array(
 			'general' => esc_html__( 'General', 'learnpress' ),
 			'mcp'     => esc_html__( 'MCP', 'learnpress' ),
+			'webhook' => esc_html__( 'Webhook', 'learnpress' ),
 		);
 	}
 }

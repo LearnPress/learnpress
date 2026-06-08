@@ -451,8 +451,13 @@ class UserItemModel {
 			$this->set_user_item_id( $user_item_id_new );
 		}
 
-		// Clear caches.
+		// Clear caches before firing the created hook. Webhook and third-party listeners may reload
+		// this user item from the model/cache layer, so firing earlier can expose stale data.
 		$this->clean_caches();
+
+		if ( $user_item_id_new ) {
+			do_action( 'learn-press/user-item/created', $this );
+		}
 
 		return $this;
 	}

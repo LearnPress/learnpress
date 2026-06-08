@@ -1252,6 +1252,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function save() {
 			$old_status = '';
+			$is_created = ! $this->get_id();
 
 			if ( $this->get_id() ) {
 				$old_status_post = get_post_status( $this->get_id() );
@@ -1275,6 +1276,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			$order_id = $this->get_id();
+
+			if ( $is_created && $order_id ) {
+				do_action( 'learn-press/order/created', $order_id, $this );
+			}
 
 			if ( $new_status !== $old_status ) {
 				do_action( 'learn-press/order/status-changed', $order_id, $old_status, $new_status );

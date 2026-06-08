@@ -199,8 +199,17 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-admin'            => $lp_admin_js,
 				'lp-admin-mcp-api-keys' => new LP_Asset_Key(
-					$this->url( 'src/js/admin/mcp-api-keys.js' ),
+					$this->url( 'js/dist/admin/mcp-api-keys.js' ),
 					[ 'lp-load-ajax' ],
+					[ 'learnpress_page_learn-press-settings' ],
+					0,
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
+				'lp-admin-webhooks'     => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/webhooks.js' ),
+					[ 'lp-load-ajax', 'lp-admin' ],
 					[ 'learnpress_page_learn-press-settings' ],
 					0,
 					1,
