@@ -110,10 +110,6 @@ class CBEditCourseAjax extends AbstractAjax {
 				throw new Exception( __( 'Invalid course status.', 'learnpress' ) );
 			}
 
-			// Set categories and tags
-			$courseService->update_categories( $courseModel->ID, $course_categories );
-			$courseService->update_tags( $courseModel->ID, $course_tags );
-
 			$lp_date_modified = new LP_Datetime( current_time( 'mysql' ) );
 
 			$data_save = [
@@ -186,6 +182,11 @@ class CBEditCourseAjax extends AbstractAjax {
 
 				$courseModel = CourseModel::find( $course_id, true );
 			}
+
+			// Set categories and tags
+			$courseService->update_categories( $course_id, $course_categories );
+			$courseService->update_tags( $course_id, $course_tags );
+			$courseModel->save();
 
 			// Save or remove thumbnail
 			if ( isset( $data['course_thumbnail_id'] ) ) {
