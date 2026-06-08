@@ -8,14 +8,16 @@
 
 namespace LearnPress\TemplateHooks\Course;
 
+defined( 'ABSPATH' ) || exit;
+
 use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
 use LearnPress\Models\ListCourseCategories;
 use LearnPress\Models\UserModel;
-use LP_Course;
 use LP_Course_Filter;
+use LP_Debug;
 use LP_Request;
 use Throwable;
 
@@ -171,10 +173,10 @@ class FilterCourseTemplate {
 			$value    = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
 			$content  = sprintf(
 				'<input type="text" name="c_search" placeholder="%s" value="%s" class="%s" data-search-suggest="%d">',
-				__( 'Search Course', 'learnpress' ),
-				$value,
-				'lp-course-filter-search',
-				$data['search_suggestion'] ?? 1
+				esc_html__( 'Search Course', 'learnpress' ),
+				esc_attr( $value ),
+				esc_attr( 'lp-course-filter-search' ),
+				esc_attr( $data['search_suggestion'] ?? 1 )
 			);
 			$content .= '<span class="lp-loading-circle lp-loading-no-css hide"></span>';
 
@@ -427,7 +429,7 @@ class FilterCourseTemplate {
 			'<input name="term_id" type="checkbox" value="%s" %s %s>',
 			esc_attr( $category_id ),
 			esc_attr( $checked ),
-			$disabled
+			esc_attr( $disabled )
 		);
 		$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $category_name ) );
 		$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
@@ -499,7 +501,12 @@ class FilterCourseTemplate {
 					continue;
 				}
 				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
-				$input   = sprintf( '<input name="tag_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
+				$input   = sprintf(
+					'<input name="tag_id" type="checkbox" value="%s" %s %s>',
+					esc_attr( $value ),
+					esc_attr( $checked ),
+					esc_attr( $disabled )
+				);
 				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
 
@@ -578,7 +585,12 @@ class FilterCourseTemplate {
 					continue;
 				}
 				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
-				$input   = sprintf( '<input name="c_authors" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
+				$input   = sprintf(
+					'<input name="c_authors" type="checkbox" value="%s" %s %s>',
+					esc_attr( $value ),
+					esc_attr( $checked ),
+					esc_attr( $disabled )
+				);
 				$label   = sprintf( '<label for="">%s</label>', esc_html( $userModel->get_display_name() ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
 
@@ -605,7 +617,7 @@ class FilterCourseTemplate {
 
 			$content = $this->html_item( esc_html__( 'Author', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $content;
@@ -718,7 +730,7 @@ class FilterCourseTemplate {
 			foreach ( $filter_types as $key => $type ) {
 				$checked  = in_array( $key, $data_selected ) ? 'checked' : '';
 				$input    = sprintf(
-					'<input name="c_type" type="checkbox" value="%1$s" %2$s>',
+					'<input name="c_type" type="checkbox" value="%s" %s>',
 					esc_attr( $key ),
 					esc_attr( $checked )
 				);
@@ -745,8 +757,9 @@ class FilterCourseTemplate {
 
 			$content = $this->html_item( esc_html__( 'Type', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
+
 		return $content;
 	}
 
@@ -812,7 +825,7 @@ class FilterCourseTemplate {
 			'icon'                  => '<span class="lp-icon lp-icon-filter"></span>',
 			'count_fields_selected' => sprintf(
 				'<span class="course-filter-count-fields-selected">%s</span>',
-				$count
+				esc_html( $count )
 			),
 			'wrapper_end'           => '</div>',
 		];

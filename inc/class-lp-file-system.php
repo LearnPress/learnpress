@@ -195,6 +195,35 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 		}
 
 		/**
+		 * Get LearnPress icon SVG content from local plugin files.
+		 *
+		 * @param string $icon
+		 *
+		 * @return string
+		 */
+		public static function get_icon_svg( string $icon ): string {
+			static $icons = [];
+
+			$icon = ltrim( $icon, '/' );
+			if ( '' === $icon ) {
+				return '';
+			}
+
+			if ( ! isset( $icons[ $icon ] ) ) {
+				$icons[ $icon ] = '';
+				$svg_path       = LP_PLUGIN_PATH . 'assets/images/icons/' . $icon;
+				$lp_filesystem  = self::instance();
+
+				if ( $lp_filesystem->file_exists( $svg_path ) ) {
+					$svg_content    = $lp_filesystem->file_get_contents( $svg_path );
+					$icons[ $icon ] = is_string( $svg_content ) ? $svg_content : '';
+				}
+			}
+
+			return $icons[ $icon ];
+		}
+
+		/**
 		 * Put content to file
 		 *
 		 * @param $path

@@ -30,7 +30,7 @@ function learn_press_maybe_generate_user_pretty_slug_on_register( int $user_id )
 	$userModel->generate_pretty_slug();
 }
 
-add_action( 'user_register', 'learn_press_maybe_generate_user_pretty_slug_on_register' );
+//add_action( 'user_register', 'learn_press_maybe_generate_user_pretty_slug_on_register' );
 
 /**
  * Delete user data by user ID
@@ -1090,9 +1090,9 @@ function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 		return '';
 	}
 
-	$user_model = new UserModel( $wp_user );
+	$user_model = new UserModel( $wp_user->data );
 	$args       = array(
-		'user' => $user_model->get_pretty_slug(),
+		'user' => $user_model->get_slug_link(),
 	);
 
 	if ( $tab ) {
@@ -1104,7 +1104,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 	 * then no need the username in profile link.
 	 */
 	if ( ( $user_id == get_current_user_id() ) && ! isset( $args['tab'] ) ) {
-		unset( $args['user'] );
+		//unset( $args['user'] );
 	}
 
 	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
@@ -1374,7 +1374,7 @@ function learn_press_update_extra_user_profile_fields( $user_id ) {
 			return;
 		}
 
-		$slug_result = $userModel->update_pretty_slug( (string) $_POST['lp_user_slug'] );
+		$slug_result = $userModel->update_user_nicename( (string) $_POST['lp_user_slug'] );
 		if ( is_wp_error( $slug_result ) ) {
 			wp_safe_redirect(
 				add_query_arg(

@@ -21,6 +21,7 @@ use LP_Settings;
 use LP_Settings_Courses;
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
+use LP_WP_Filesystem;
 use stdClass;
 use Throwable;
 use WP_Term;
@@ -511,9 +512,10 @@ class ListCoursesTemplate {
 			'<div class="courses-layouts-display">' => '</div>',
 		];
 
-		$ico_grid_default = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-grid.svg' );
-		$ico_list_default = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-list.svg' );
-		$layouts          = [
+		$ico_grid_default = LP_WP_Filesystem::get_icon_svg( 'ico-grid.svg' );
+		$ico_list_default = LP_WP_Filesystem::get_icon_svg( 'ico-list.svg' );
+
+		$layouts = [
 			'list' => $data['courses_ico_list'] ?? $ico_list_default,
 			'grid' => $data['courses_ico_grid'] ?? $ico_grid_default,
 		];
@@ -620,6 +622,8 @@ class ListCoursesTemplate {
 	 * @param array $data
 	 *
 	 * @return void
+	 * @since 4.2.3.2
+	 * @version 1.0.1
 	 */
 	public function sections_course_suggest( array $data = [] ) {
 		$content              = '';
@@ -637,9 +641,9 @@ class ListCoursesTemplate {
 				if ( ! is_object( $courseObj ) ) {
 					continue;
 				}
-				$course_id = $courseObj->ID;
-				$course    = learn_press_get_course( $course_id );
-				if ( ! $course ) {
+				$course_id   = $courseObj->ID;
+				$courseModel = CourseModel::find( $course_id, true );
+				if ( ! $courseModel ) {
 					continue;
 				}
 
@@ -647,15 +651,15 @@ class ListCoursesTemplate {
 					'learn-press/course-suggest/item/sections',
 					[
 						'wrapper'      => '<li class="item-course-suggest">',
-						'course_image' => $singleCourseTemplate->html_image( $course ),
+						'course_image' => $singleCourseTemplate->html_image( $courseModel ),
 						'course_title' => sprintf(
 							'<a href="%s">%s</a>',
-							$course->get_permalink(),
-							$singleCourseTemplate->html_title( $course )
+							esc_url_raw( $courseModel->get_permalink() ),
+							$singleCourseTemplate->html_title( $courseModel )
 						),
 						'wrapper_end'  => '</li>',
 					],
-					$course,
+					$courseModel,
 					$key_search,
 					$data
 				);
@@ -686,8 +690,7 @@ class ListCoursesTemplate {
 			$content = Template::combine_components( $section );
 			echo $content;
 		} catch ( Throwable $e ) {
-			ob_end_clean();
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			Template::print_message( $e->getMessage(), 'error' );
 		}
 	}
 

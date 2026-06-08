@@ -1,0 +1,109 @@
+// ============================================
+// Course Builder — Lightweight Defensive Reset
+// Only sets base inherited properties (font, color)
+// and box-sizing. Theme styles are primarily handled
+// by PHP dequeue in CourseBuilderTemplate::dequeue_theme_styles()
+// ============================================
+
+html {
+	margin-top: 0 !important;
+}
+
+.lp-course-builder-canvas,
+.lp-toast,
+.swal2-container {
+	// Base typography — override any theme <body> inheritance
+	font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue',
+		sans-serif;
+	font-size: 14px;
+	line-height: 1.5;
+	color: $cb-text;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	// Enforce box-sizing for all children
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	button {
+		font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue',
+			sans-serif;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	input[type='date'],
+	input[type='datetime-local'],
+	input[type='datetime'],
+	input[type='email'],
+	input[type='month'],
+	input[type='number'],
+	input[type='password'],
+	input[type='search'],
+	input[type='tel'],
+	input[type='text'],
+	input[type='time'],
+	input[type='url'],
+	input[type='week'] {
+		padding: 0;
+		line-height: normal;
+		min-height: unset;
+
+		&:focus {
+			border-color: none;
+			box-shadow: unset;
+			outline: unset;
+		}
+	}
+
+	input[type='checkbox']:focus,
+	input[type='color']:focus,
+	input[type='date']:focus,
+	input[type='datetime-local']:focus,
+	input[type='datetime']:focus,
+	input[type='email']:focus,
+	input[type='month']:focus,
+	input[type='number']:focus,
+	input[type='password']:focus,
+	input[type='radio']:focus,
+	input[type='search']:focus,
+	input[type='tel']:focus,
+	input[type='text']:focus,
+	input[type='time']:focus,
+	input[type='url']:focus,
+	input[type='week']:focus,
+	select:focus,
+	textarea:focus {
+		border-color: none;
+		box-shadow: unset;
+		outline: unset;
+	}
+
+	input[type='checkbox'],
+	input[type='radio'] {
+		box-shadow: unset;
+		margin: 0;
+	}
+
+	input[type='radio']:checked::before,
+	input[type='checkbox']:checked::before {
+		margin: 0;
+	}
+
+	a {
+		color: $cb-primary;
+
+		&:hover {
+			color: $cb-primary-hover;
+		}
+
+		&:focus {
+			border-color: none;
+			box-shadow: unset;
+			outline: unset;
+		}
+	}
+}

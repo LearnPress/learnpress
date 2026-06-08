@@ -48,7 +48,7 @@ class UserModelTest extends BrainMonkeyTestCase {
 	private function set_user_service_slug_lookup_result( $result ): void {
 		if ( ! class_exists( '\\LearnPress\\Services\\UserService', false ) ) {
 			eval(
-				'namespace LearnPress\\Services;
+			'namespace LearnPress\\Services;
 				class UserService {
 					public static $slugLookupResult = false;
 					public static function instance(): self {
@@ -59,7 +59,7 @@ class UserModelTest extends BrainMonkeyTestCase {
 
 						return $instance;
 					}
-					public function get_user_by_pretty_slug( string $slug ) {
+					public function get_user_by_slug_link( string $slug ) {
 						return self::$slugLookupResult;
 					}
 				}'
@@ -215,177 +215,82 @@ class UserModelTest extends BrainMonkeyTestCase {
 	}
 
 	// -------------------------------------------------------------------------
-	// 4. get_pretty_slug
+	// 4. get_slug_link
 	// -------------------------------------------------------------------------
 
-	public function test_get_pretty_slug_returns_slug_from_meta(): void {
-		Functions\when( 'sanitize_title' )->returnArg( 1 );
-
+	public function test_get_slug_link_returns_user_nicename(): void {
 		$user = $this->make_user(
-			[ 'user_login' => 'myuser' ],
-			[ UserModel::META_KEY_USER_SLUG => 'my-pretty-slug' ]
+			[ 'user_login' => 'myuser', 'user_nicename' => 'myuser' ]
 		);
 
-		$this->assertSame( 'my-pretty-slug', $user->get_pretty_slug() );
-	}
-
-	public function test_get_pretty_slug_falls_back_to_username_when_no_slug(): void {
-		Functions\when( 'sanitize_title' )->justReturn( '' );
-		Functions\when( 'get_user_meta' )->justReturn( '' );
-
-		$user = $this->make_user( [ 'user_login' => 'fallbackuser' ] );
-
-		$this->assertSame( 'fallbackuser', $user->get_pretty_slug( true ) );
-	}
-
-	public function test_get_pretty_slug_returns_empty_when_no_slug_and_fallback_disabled(): void {
-		Functions\when( 'sanitize_title' )->justReturn( '' );
-		Functions\when( 'get_user_meta' )->justReturn( '' );
-
-		$user = $this->make_user( [ 'user_login' => 'myuser' ] );
-
-		$this->assertSame( '', $user->get_pretty_slug( false ) );
-	}
-
-	public function test_generate_pretty_slug_returns_existing_pretty_slug_when_already_set(): void {
-		Functions\when( 'sanitize_title' )->returnArg( 1 );
-
-		$user = $this->make_user(
-			[ 'user_login' => 'johnny' ],
-			[ UserModel::META_KEY_USER_SLUG => 'existing-slug' ]
-		);
-
-		$result = $user->generate_pretty_slug();
-
-		$this->assertSame( 'existing-slug', $result );
-	}
-
-	public function test_generate_pretty_slug_sets_slug_from_full_name_when_slug_is_unique(): void {
-		Functions\when( 'sanitize_title' )->alias(
-			static function ( $value ) {
-				$value = strtolower( trim( (string) $value ) );
-				$value = preg_replace( '/\s+/', '-', $value );
-
-				return $value ?? '';
-			}
-		);
-		Functions\when( 'get_user_meta' )->justReturn( '' );
-		Functions\when( 'update_user_meta' )->justReturn( true );
-		$this->set_user_service_slug_lookup_result( false );
-
-		$user = $this->make_user(
-			[ 'ID' => 15, 'user_login' => 'jdoe' ],
-			[ 'first_name' => 'John', 'last_name' => 'Doe' ]
-		);
-
-		$result = $user->generate_pretty_slug();
-
-		$this->assertIsString( $result );
-		$this->assertSame( 'john-doe', $user->meta_data->{UserModel::META_KEY_USER_SLUG} );
-	}
-
-	public function test_generate_pretty_slug_returns_wp_error_when_slug_generation_fails(): void {
-		Functions\when( 'get_user_meta' )->justReturn( '' );
-		Functions\when( 'sanitize_title' )->alias(
-			static function () {
-				throw new \Exception( 'sanitize failed' );
-			}
-		);
-
-		$user = $this->make_user( [ 'ID' => 2, 'user_login' => 'johnny' ] );
-
-		$result = $user->generate_pretty_slug();
-
-		$this->assertInstanceOf( \WP_Error::class, $result );
-		$this->assertSame( 'lp_user_slug_generation_failed', $result->code );
+		$this->assertSame( 'myuser', $user->get_slug_link() );
 	}
 
 	// -------------------------------------------------------------------------
-	// 5. update_pretty_slug
+	// 5. update_user_nicename
 	// -------------------------------------------------------------------------
 
-	public function test_update_pretty_slug_returns_sanitized_slug(): void {
+	public function test_update_user_nicename_returns_sanitized_slug_when_not_taken(): void {
 		Functions\when( 'sanitize_title' )->returnArg( 1 );
 		Functions\when( 'wp_unslash' )->returnArg( 1 );
-		Functions\when( 'get_user_meta' )->justReturn( '' ); // no existing slug for another user
-		Functions\when( 'update_user_meta' )->justReturn( true );
-
-		$user = $this->make_user( [ 'ID' => 5 ] );
-
-		// Stub check_user_slug_pretty to return 0 (no conflict).
-		Functions\when( 'sanitize_title' )->returnArg( 1 );
-
-		// We need to prevent check_user_slug_pretty from hitting the DB.
-		// Use a partial approach: manually set meta so get_pretty_slug finds no existing slug,
-		// then stub the DB function it calls.
-		Functions\when( 'get_var' )->justReturn( 0 );
-
-		$result = $user->update_pretty_slug( 'new-slug' );
-
-		// Returns the sanitized slug or WP_Error — here slug has no conflict (get_user_meta returns '').
-		// Since check_user_slug_pretty queries the DB (wpdb), we can only test the WP_Error path
-		// indirectly. We assert it doesn't throw an exception.
-		$this->assertNotNull( $result );
-	}
-
-	public function test_update_pretty_slug_deletes_meta_when_empty_slug(): void {
-		Functions\when( 'sanitize_title' )->justReturn( '' );
-		Functions\when( 'wp_unslash' )->returnArg( 1 );
-		Functions\when( 'delete_user_meta' )->justReturn( true );
-		Functions\when( 'update_user_meta' )->justReturn( true );
-
-		$user = $this->make_user( [ 'ID' => 5 ], [ UserModel::META_KEY_USER_SLUG => 'old-slug' ] );
-
-		$result = $user->update_pretty_slug( '' );
-
-		$this->assertSame( '', $result );
-		$this->assertSame( '', $user->meta_data->{UserModel::META_KEY_USER_SLUG} );
-	}
-
-	public function test_update_pretty_slug_sets_sanitized_slug_when_not_taken(): void {
-		Functions\when( 'sanitize_title' )->alias(
-			static function ( $value ) {
-				$value = strtolower( trim( (string) $value ) );
-				$value = preg_replace( '/\s+/', '-', $value );
-
-				return $value ?? '';
-			}
-		);
-		Functions\when( 'wp_unslash' )->returnArg( 1 );
-		Functions\when( 'update_user_meta' )->justReturn( true );
+		Functions\when( 'current_user_can' )->justReturn( true );
+		Functions\when( 'wp_update_user' )->justReturn( 5 );
+		Functions\when( 'is_wp_error' )->justReturn( false );
 		$this->set_user_service_slug_lookup_result( false );
 
 		$user   = $this->make_user( [ 'ID' => 5 ] );
-		$result = $user->update_pretty_slug( '  New Slug  ' );
+		$result = $user->update_user_nicename( 'new-slug' );
 
 		$this->assertSame( 'new-slug', $result );
-		$this->assertSame( 'new-slug', $user->meta_data->{UserModel::META_KEY_USER_SLUG} );
+		$this->assertSame( 'new-slug', $user->user_nicename );
 	}
 
-	public function test_update_pretty_slug_returns_wp_error_when_slug_is_used_by_another_user(): void {
+	public function test_update_user_nicename_returns_wp_error_when_empty(): void {
+		Functions\when( 'sanitize_title' )->justReturn( '' );
+		Functions\when( 'wp_unslash' )->returnArg( 1 );
+
+		$user   = $this->make_user( [ 'ID' => 5 ] );
+		$result = $user->update_user_nicename( '' );
+
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'lp_user_slug_update_failed', $result->get_error_code() );
+	}
+
+	public function test_update_user_nicename_returns_wp_error_when_too_long(): void {
 		Functions\when( 'sanitize_title' )->returnArg( 1 );
 		Functions\when( 'wp_unslash' )->returnArg( 1 );
-		Functions\when( 'esc_html__' )->returnArg( 1 );
+
+		$user   = $this->make_user( [ 'ID' => 5 ] );
+		$result = $user->update_user_nicename( str_repeat( 'a', 51 ) );
+
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'lp_user_slug_update_failed', $result->get_error_code() );
+	}
+
+	public function test_update_user_nicename_returns_wp_error_when_slug_taken_by_other_user(): void {
+		Functions\when( 'sanitize_title' )->returnArg( 1 );
+		Functions\when( 'wp_unslash' )->returnArg( 1 );
 		$this->set_user_service_slug_lookup_result( $this->make_user( [ 'ID' => 99 ] ) );
 
 		$user   = $this->make_user( [ 'ID' => 5 ] );
-		$result = $user->update_pretty_slug( 'duplicate-slug' );
+		$result = $user->update_user_nicename( 'duplicate-slug' );
 
 		$this->assertInstanceOf( \WP_Error::class, $result );
-		$this->assertSame( 'lp_user_slug_update_failed', $result->code );
+		$this->assertSame( 'lp_user_slug_update_failed', $result->get_error_code() );
 	}
 
-	public function test_update_pretty_slug_allows_same_slug_for_current_user(): void {
+	public function test_update_user_nicename_allows_same_slug_for_current_user(): void {
 		Functions\when( 'sanitize_title' )->returnArg( 1 );
 		Functions\when( 'wp_unslash' )->returnArg( 1 );
-		Functions\when( 'update_user_meta' )->justReturn( true );
+		Functions\when( 'current_user_can' )->justReturn( true );
+		Functions\when( 'wp_update_user' )->justReturn( 5 );
+		Functions\when( 'is_wp_error' )->justReturn( false );
 		$this->set_user_service_slug_lookup_result( $this->make_user( [ 'ID' => 5 ] ) );
 
 		$user   = $this->make_user( [ 'ID' => 5 ] );
-		$result = $user->update_pretty_slug( 'same-slug' );
+		$result = $user->update_user_nicename( 'same-slug' );
 
 		$this->assertSame( 'same-slug', $result );
-		$this->assertSame( 'same-slug', $user->meta_data->{UserModel::META_KEY_USER_SLUG} );
 	}
 
 	// -------------------------------------------------------------------------
@@ -455,12 +360,52 @@ class UserModelTest extends BrainMonkeyTestCase {
 	// 10. save & clean_caches
 	// -------------------------------------------------------------------------
 
-	public function test_save_returns_self(): void {
+	public function test_save_updates_existing_user(): void {
+		Functions\when( 'current_user_can' )->justReturn( true );
+		Functions\when( 'wp_update_user' )->justReturn( 7 );
 		Functions\when( 'wp_cache_delete' )->justReturn( true );
 
-		$user   = $this->make_user( [ 'ID' => 7 ] );
-		$result = $user->save();
+		$user = $this->make_user( [ 'ID' => 7 ] );
+		$user->save();
 
-		$this->assertSame( $user, $result );
+		$this->assertSame( 7, $user->get_id() );
+	}
+
+	public function test_save_throws_exception_when_user_cannot_be_edited(): void {
+		Functions\when( 'current_user_can' )->justReturn( false );
+
+		$user = $this->make_user( [ 'ID' => 7 ] );
+
+		$this->expectException( \Exception::class );
+		$user->save();
+	}
+
+	public function test_save_force_save_skips_capability_check(): void {
+		Functions\when( 'wp_update_user' )->justReturn( 7 );
+		Functions\when( 'wp_cache_delete' )->justReturn( true );
+
+		$user = $this->make_user( [ 'ID' => 7 ] );
+		$user->save( true );
+
+		$this->assertSame( 7, $user->get_id() );
+	}
+
+	public function test_save_throws_exception_when_wp_update_user_returns_wp_error(): void {
+		Functions\when( 'current_user_can' )->justReturn( true );
+		Functions\when( 'wp_update_user' )->alias(
+			static function () {
+				return new \WP_Error( 'invalid_user', 'Invalid user.' );
+			}
+		);
+		Functions\when( 'is_wp_error' )->alias(
+			static function ( $thing ) {
+				return $thing instanceof \WP_Error;
+			}
+		);
+
+		$user = $this->make_user( [ 'ID' => 7 ] );
+
+		$this->expectException( \Exception::class );
+		$user->save();
 	}
 }

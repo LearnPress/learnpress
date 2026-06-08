@@ -99,6 +99,9 @@ export class LpPopupSelectItemToAdd {
 			return;
 		}
 
+		// Reset items selected data when opening popup
+		itemsSelectedData = [];
+
 		const templateId = target.dataset.template || '';
 		const modalTemplate = document.querySelector( templateId );
 

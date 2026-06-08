@@ -135,6 +135,15 @@ class LP_Debug {
 		error_log( sprintf( 'MESSAGE: %s FILE: %s LINE: %s', $e->getMessage(), $e->getFile(), $e->getLine() ) );
 	}
 
+	public static function log_to_comment( $comment_content ) {
+		wp_insert_comment(
+			[
+				'comment_content' => $comment_content,
+				'comment_type'    => 'lp_debug_log',
+			]
+		);
+	}
+
 	/**
 	 * @return LP_Debug|null
 	 */

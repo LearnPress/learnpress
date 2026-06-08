@@ -105,7 +105,7 @@ function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
 		$atts = ' ' . implode( ' ', $options );
 	}
 
-	$tip = sprintf( '<span class="learn-press-tip" ' . $atts . '>%s</span>', $tip );
+	$tip = sprintf( '<div class="learn-press-tip" ' . $atts . '><span>%s</span></div>', $tip );
 
 	if ( $echo ) {
 		echo wp_kses_post( $tip );

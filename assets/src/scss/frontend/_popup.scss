@@ -236,7 +236,9 @@
 	border-bottom: 1px solid #d9e0f1;
 	background: var(--lp-secondary-color);
 	align-items: center;
-	@include transition(left 0.25s);
+	transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	will-change: left;
+	transform: translateZ(0);
 
 	.course-title {
 		margin: 0;
@@ -318,7 +320,10 @@
 	position: relative;
 	box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.1);
 	flex: 0 0 475px;
- 	@include transition(0.25s);
+	// Smooth animation for zoom in/out
+	transition: flex-basis 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	will-change: flex-basis;
+	transform: translateZ(0); // GPU acceleration
 
 	.search-course {
 		display: flex;
@@ -660,7 +665,10 @@
 	margin: 0 auto;
 	border-top: 1px solid #ebebeb;
 	background: $bg-color-lesson;
-	@include transition(left 0.25s);
+	// Smooth animation for zoom in/out
+	transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	will-change: left;
+	transform: translateZ(0); // GPU acceleration
 
 	@media (max-width: 1024px) {
 		width: auto;

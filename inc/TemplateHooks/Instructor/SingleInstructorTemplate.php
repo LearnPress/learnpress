@@ -241,7 +241,7 @@ class SingleInstructorTemplate extends UserTemplate {
 	 *
 	 * @return false|UserModel
 	 * @since 4.2.3.4
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function detect_instructor_by_page() {
 		$instructor = false;
@@ -251,24 +251,7 @@ class SingleInstructorTemplate extends UserTemplate {
 			if ( get_query_var( 'is_single_instructor' ) ) {
 				$instructor_name = get_query_var( 'instructor_name' );
 				if ( $instructor_name && 'page' !== $instructor_name ) {
-					// Try to get user by pretty slug first, if not found, get by slug.
-					$userModel = UserService::instance()->get_user_by_pretty_slug( $instructor_name );
-					if ( $userModel instanceof UserModel ) {
-						$instructor = $userModel;
-					} else {
-						// Get user by slug.
-						$wp_user = get_user_by( 'slug', $instructor_name );
-						// Only allow view instructor when user is administrator or view his/her profile.
-						if ( $wp_user ) {
-							$userModelBySlug = UserModel::find( $wp_user->ID, true );
-							if ( current_user_can( UserModel::ROLE_ADMINISTRATOR )
-								|| ( $userModelCurrent && $userModelCurrent->get_id() === $wp_user->ID ) ) {
-								$instructor = $userModelBySlug;
-							} elseif ( empty( $userModelBySlug->get_pretty_slug( false ) ) ) {
-								$instructor = $userModelBySlug;
-							}
-						}
-					}
+					$instructor = UserService::instance()->get_user_by_slug_link( $instructor_name );
 				} else {
 					$instructor = $userModelCurrent;
 				}

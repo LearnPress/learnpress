@@ -37,6 +37,9 @@ if ( $userCourseModel && $user->get_id() > 0 ) {
 		$total_items > 0 ? $calculate['completed_items'] * 100 / $total_items : 0,
 		2
 	);
+	if ( $progress_items_completed_percent > 100 ) {
+		$progress_items_completed_percent = 100;
+	}
 }
 ?>
 

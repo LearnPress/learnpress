@@ -22,7 +22,7 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	}
 
 	public function get_settings( $section = '', $tab = '' ) {
-		if ( ! self::is_mcp_adapter_active() ) {
+		if ( ! self::is_mcp_available() ) {
 			return array();
 		}
 
@@ -30,11 +30,21 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	}
 
 	/**
-	 * Check whether MCP Adapter plugin is active.
+	 * Check whether MCP capabilities are available in current WordPress runtime.
 	 *
 	 * @return bool
 	 */
-	public static function is_mcp_adapter_active(): bool {
+	public static function is_mcp_available(): bool {
+		$wp_version = (string) get_bloginfo( 'version' );
+
+		if ( version_compare( $wp_version, '7.0', '>=' ) ) {
+			return true;
+		}
+
+		if ( ! version_compare( $wp_version, '6.9', '>=' ) ) {
+			return false;
+		}
+
 		if ( ! function_exists( 'is_plugin_active' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
@@ -43,20 +53,20 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	}
 
 	/**
-	 * Render missing MCP Adapter requirement notice.
+	 * Render MCP unavailable notice.
 	 *
 	 * @return void
 	 */
-	protected function render_missing_adapter_notice(): void {
+	protected function render_mcp_unavailable_notice(): void {
 		$learn_more = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
-			esc_url( 'https://github.com/WordPress/mcp-adapter' ),
+			esc_url( 'https://learnpresslms.com/docs/learnpress-developer-documentation/model-context-protocol-mcp-integration/' ),
 			esc_html__( 'Learn more', 'learnpress' )
 		);
 
 		$message = sprintf(
 			'%1$s %2$s',
-			esc_html__( 'This feature requires the MCP Adapter plugin. Please install and activate it to access the settings. ', 'learnpress' ),
+			esc_html__( 'This feature requires WordPress 7.0+ or WordPress 6.9+ with the MCP Adapter plugin activated.', 'learnpress' ),
 			$learn_more
 		);
 		?>
@@ -75,8 +85,8 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	 * @return void
 	 */
 	public function admin_page_settings( $section = null, $tab = '' ) {
-		if ( ! self::is_mcp_adapter_active() ) {
-			$this->render_missing_adapter_notice();
+		if ( ! self::is_mcp_available() ) {
+			$this->render_mcp_unavailable_notice();
 			return;
 		}
 
@@ -88,7 +98,7 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	}
 
 	/**
-	 * Save MCP settings when MCP Adapter is available.
+	 * Save MCP settings when MCP support is available.
 	 *
 	 * @param string $section
 	 * @param string $tab
@@ -96,7 +106,7 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	 * @return void
 	 */
 	public function save_settings( $section = null, $tab = '' ) {
-		if ( ! self::is_mcp_adapter_active() ) {
+		if ( ! self::is_mcp_available() ) {
 			return;
 		}
 

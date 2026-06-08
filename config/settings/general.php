@@ -141,6 +141,13 @@ return apply_filters(
 			'desc'     => __( 'Public all user profile pages (only the overview tab).', 'learnpress' ),
 		),
 		array(
+			'title'   => esc_html__( 'Redirect Instructors to Course Builder', 'learnpress' ),
+			'desc'    => esc_html__( 'When enabled, Instructors will be redirected to Course Builder when trying to access wp-admin. Administrators are not affected.', 'learnpress' ),
+			'id'      => 'hide_instructor_access_admin_screen',
+			'default' => 'no',
+			'type'    => 'checkbox',
+		),
+		array(
 			'title'   => esc_html__( 'Instructor registration', 'learnpress' ),
 			'desc'    => esc_html__( 'Enable the option in all registration forms.', 'learnpress' ),
 			'id'      => 'instructor_registration',

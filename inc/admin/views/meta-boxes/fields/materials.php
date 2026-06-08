@@ -34,7 +34,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 		 */
 		public function output( $thepostid ) {
 			$material_init       = LP_Material_Files_DB::getInstance();
-			$course_materials    = $material_init->get_material_by_item_id( $thepostid, 0, 0, 1 );
+			$course_materials    = $material_init->get_material_by_item_id( $thepostid, 0, 0, 1 ) ?? [];
 			$max_file_size       = (int) LP_Settings::get_option( 'material_max_file_size', 2 );
 			$allow_upload_amount = (int) LP_Settings::get_option( 'material_upload_files', 2 );
 			// check file was uploaded
@@ -60,7 +60,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						<?php
 						echo '+ ';
 						echo sprintf(
-							__( 'Maximum amount of files you can upload more: %d files (maximum file size is %s MB)', 'learnpress' ),
+							__( 'Maximum amount of files you can upload more: %1$d files (maximum file size is %2$s MB)', 'learnpress' ),
 							$can_upload,
 							$max_file_size
 						);
@@ -87,7 +87,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 							<div class="lp-material--field-wrap">
 								<label><?php esc_html_e( 'File Title', 'learnpress' ); ?></label>
 								<input type="text" class="lp-material--field-title" value=""
-									   placeholder="<?php esc_attr_e( 'Enter File Title', 'learnpress' ); ?>"/>
+										placeholder="<?php esc_attr_e( 'Enter File Title', 'learnpress' ); ?>"/>
 							</div>
 							<div class="lp-material--field-wrap">
 								<label><?php esc_html_e( 'Method', 'learnpress' ); ?></label>
@@ -99,9 +99,9 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 							</div>
 							<div class="lp-material--field-wrap lp-material--upload-wrap">
 								<label><?php esc_html_e( 'Choose File  ', 'learnpress' ); ?><input type="file"
-																								   class="lp-material--field-upload"
-																								   value=""
-																								   accept="<?php esc_attr_e( $accept ); ?>"/></label>
+																									class="lp-material--field-upload"
+																									value=""
+																									accept="<?php esc_attr_e( $accept ); ?>"/></label>
 							</div>
 							<div class="lp-material--field-wrap field-action-wrap">
 								<button type="button"
@@ -116,7 +116,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 							<label>
 								<?php esc_html_e( 'Choose File  ', 'learnpress' ); ?>
 								<input type="file" class="lp-material--field-upload" value=""
-									   accept="<?php esc_attr_e( $accept ); ?>"/>
+										accept="<?php esc_attr_e( $accept ); ?>"/>
 							</label>
 						</div>
 					</div>
@@ -124,14 +124,14 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						<div class="lp-material--field-wrap lp-material--external-wrap">
 							<label><?php esc_html_e( 'File URL', 'learnpress' ); ?></label>
 							<input type="url" class="lp-material--field-external-link" value=""
-								   placeholder="<?php esc_attr_e( 'Enter File URL', 'learnpress' ); ?>"/>
+									placeholder="<?php esc_attr_e( 'Enter File URL', 'learnpress' ); ?>"/>
 						</div>
 					</div>
 					<input type="hidden" id="current-material-post-id" value="<?php echo esc_attr( $thepostid ); ?>">
 					<input type="hidden" id="delete-material-message"
-						   value="<?php esc_attr_e( 'Do you want to delete this file?', 'learnpress' ); ?>">
+							value="<?php esc_attr_e( 'Do you want to delete this file?', 'learnpress' ); ?>">
 					<input type="hidden" id="delete-material-row-text"
-						   value="<?php esc_attr_e( 'Delete', 'learnpress' ); ?>">
+							value="<?php esc_attr_e( 'Delete', 'learnpress' ); ?>">
 					<table class="lp-material--table">
 						<?php
 						$class_hidden_thead = '';
@@ -149,7 +149,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						<tbody>
 
 						<!-- <?php if ( $course_materials ) : ?>
-					<?php foreach ( $course_materials as $row ) : ?>
+							<?php foreach ( $course_materials as $row ) : ?>
 						<tr data-id="<?php esc_attr_e( $row->file_id ); ?>" data-sort="<?php esc_attr_e( $row->orders ); ?>">
 						<td class="sort"><?php esc_attr_e( $row->file_name ); ?></td>
 						<td><?php esc_attr_e( ucfirst( $row->method ) ); ?></td>

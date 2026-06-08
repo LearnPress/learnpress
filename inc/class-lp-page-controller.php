@@ -1,8 +1,10 @@
 <?php
 
+use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
+use LearnPress\Models\UserModel;
 
 /**
  * Class LP_Page_Controller
@@ -43,7 +45,7 @@ class LP_Page_Controller {
 		}
 
 		if ( is_admin() ) {
-
+			add_action( 'admin_init', [ $this, 'redirect_admin_to_course_builder' ] );
 		} else {
 			//add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), - 1 );
@@ -77,6 +79,7 @@ class LP_Page_Controller {
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 			add_filter( 'template_include', array( $this, 'logout' ), 30 );
+			add_action( 'template_redirect', array( $this, 'template_redirect' ), -1 );
 
 			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
@@ -211,12 +214,14 @@ class LP_Page_Controller {
 	 * @param string $title
 	 *
 	 * @return string
-	 * @author tungnx
+	 * @throws Exception
 	 * @since  3.2.7.7
-	 * @version 1.0.1
+	 * @version 1.0.2
+	 * @author tungnx
 	 */
 	public function set_title_pages( $title = '' ): string {
 		$flag_title_course = false;
+		$user_id           = get_current_user_id();
 
 		$course_archive_page_id = LP_Settings::get_option( 'courses_page_id', 0 );
 
@@ -245,16 +250,21 @@ class LP_Page_Controller {
 
 			$flag_title_course = true;
 		} elseif ( LP_Page_Controller::is_page_profile() ) {
-			$profile  = LP_Profile::instance();
-			$tab_slug = $profile->get_current_tab();
-			$tab      = $profile->get_tab_at( $tab_slug );
-			$page_id  = learn_press_get_page_id( 'profile' );
+			$userModel = UserModel::find( get_current_user_id(), true );
+			$profile   = LP_Profile::instance( $user_id );
+			$page_id   = learn_press_get_page_id( 'profile' );
+			$tab       = false;
+			if ( $userModel ) {
+				$tab_slug = $profile->get_current_tab();
+				$tab      = $profile->get_tab_at( $tab_slug );
+			}
 
 			if ( $page_id ) {
 				$page_title = get_the_title( $page_id );
 			} else {
 				$page_title = '';
 			}
+
 			if ( $tab instanceof LP_Profile_Tab ) {
 				$title = join(
 					' ',
@@ -267,6 +277,8 @@ class LP_Page_Controller {
 						)
 					)
 				);
+			} else {
+				$title = $page_title;
 			}
 
 			$flag_title_course = true;
@@ -458,7 +470,6 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
-
 		if ( wp_is_block_theme() ) {
 			return $template;
 		}
@@ -489,6 +500,16 @@ class LP_Page_Controller {
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Check if current page is Course Builder
+	 */
+	public function template_redirect() {
+		if ( LP_Page_Controller::is_page_course_builder() ) {
+			include LP_TEMPLATE_PATH . 'pages/course-builder.php';
+			die;
+		}
 	}
 
 	/**
@@ -893,6 +914,11 @@ class LP_Page_Controller {
 		 */
 		global $wp_query;
 
+		// Course Builder page detection
+		if ( self::is_page_course_builder() ) {
+			return LP_PAGE_COURSE_BUILDER;
+		}
+
 		if ( ! is_object( $wp_query ) || ! $wp_query->get_queried_object() ) {
 			return '';
 		}
@@ -1096,6 +1122,40 @@ class LP_Page_Controller {
 	}
 
 	/**
+	 * Redirect admin to course builder if hide instructor access admin screen
+	 *
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function redirect_admin_to_course_builder() {
+		// Skip AJAX requests
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return;
+		}
+
+		// Check hide instructor access admin screen
+		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
+		if ( $hide_instructor_access_admin_screen
+			&& current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
+			$cb_url = CourseBuilder::get_link_course_builder();
+
+			// Avoid infinite redirect
+			if ( strpos( LP_Helper::getUrlCurrent(), $cb_url ) !== false ) {
+				return;
+			}
+
+			wp_redirect( $cb_url );
+			exit;
+		}
+	}
+
+	public static function is_page_course_builder(): bool {
+		/** @var WP_Query $wp_query */
+		global $wp_query;
+		return $wp_query->get( 'is_course_builder' );
+	}
+
+	/**
 	 * Get link page by name
 	 *
 	 * @param string $page_name
@@ -1151,13 +1211,14 @@ class LP_Page_Controller {
 		$page_profile_id = learn_press_get_page_id( 'profile' );
 		if ( $page_profile_id && get_post_status( $page_profile_id ) != 'trash' ) {
 			$user_id = $current_user->ID;
+			$profile = LP_Profile::instance( $user_id );
 
 			$wp_admin_bar->add_menu(
 				array(
 					'id'     => 'course_profile',
 					'parent' => 'user-actions',
 					'title'  => get_the_title( $page_profile_id ),
-					'href'   => learn_press_user_profile_link( $user_id, false ),
+					'href'   => $profile->get_tab_link(),
 				)
 			);
 		}

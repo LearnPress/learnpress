@@ -35,47 +35,20 @@ class PostModel {
 	 *
 	 * @var int
 	 */
-	public $ID = 0;
-	/**
-	 * @var string author id, foreign key
-	 */
-	public $post_author = 0;
-	/**
-	 * @var string post date
-	 */
-	public $post_date = null;
-	/**
-	 * @var string post date gmt
-	 */
-	public $post_date_gmt = null;
-	/**
-	 * @var string post content
-	 */
-	public $post_content = '';
-	/**
-	 * @var string Post title
-	 */
-	public $post_title = '';
-	/**
-	 * @var string Post excerpt
-	 */
-	public $post_excerpt = '';
-	/**
-	 * @var string Post Status (publish, draft, ...)
-	 */
-	public $post_status = '';
-	/**
-	 * @var string Post name (slug for link)
-	 */
-	public $post_name = '';
-	/**
-	 * @var string Post type
-	 */
-	public $post_type = 'post';
-	/**
-	 * @var int post parent
-	 */
-	public $post_parent = 0;
+	public $ID                = 0;
+	public $post_author       = 0;
+	public $post_date         = null;
+	public $post_date_gmt     = null;
+	public $post_modified     = null;
+	public $post_modified_gmt = null;
+	public $post_content      = '';
+	public $post_title        = '';
+	public $post_excerpt      = '';
+	public $post_status       = '';
+	public $post_password     = '';
+	public $post_name         = '';
+	public $post_type         = 'post';
+	public $post_parent       = 0;
 	/**
 	 * @var stdClass all meta data
 	 */
@@ -89,8 +62,14 @@ class PostModel {
 	 */
 	public $filter;
 
-	const STATUS_PUBLISH = 'publish';
-	const STATUS_TRASH   = 'trash';
+	const STATUS_PUBLISH      = 'publish';
+	const STATUS_TRASH        = 'trash';
+	const STATUS_DRAFT        = 'draft';
+	const STATUS_PRIVATE      = 'private';
+	const STATUS_PENDING      = 'pending';
+	const STATUS_FEATURE      = 'future';
+	const STATUS_AUTO_DRAFT   = 'auto-draft';
+	const VISIBILITY_PASSWORD = 'password';
 
 	/**
 	 * If data get from database, map to object.
@@ -150,7 +129,7 @@ class PostModel {
 	 * @param bool $check_cache
 	 *
 	 * @return false|PostModel
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.3.2
 	 */
 	public static function find_by_id( int $post_id, bool $check_cache = false ) {
@@ -170,9 +149,9 @@ class PostModel {
 
 		// Check cache
 		if ( $check_cache ) {
-			$quizPostModel = $lp_cache->get_cache( $key_cache );
-			if ( $quizPostModel instanceof QuizPostModel ) {
-				return $quizPostModel;
+			$postModel = $lp_cache->get_cache( $key_cache );
+			if ( $postModel instanceof PostModel ) {
+				return $postModel;
 			}
 		}
 
@@ -224,6 +203,8 @@ class PostModel {
 	 *
 	 * @return stdClass|null
 	 * @throws Exception
+	 * @version 1.0.1
+	 * @since 4.2.6.9
 	 */
 	public function get_all_metadata() {
 		if ( ! isset( $this->is_got_meta_data ) ) {
@@ -237,7 +218,7 @@ class PostModel {
 			if ( ! $metadata_rs instanceof stdClass ) {
 				$this->meta_data = new stdClass();
 				foreach ( $metadata_rs as $value ) {
-					$this->meta_data->{$value->meta_key} = $value->meta_value;
+					$this->meta_data->{$value->meta_key} = maybe_unserialize( $value->meta_value );
 				}
 			}
 
@@ -322,12 +303,16 @@ class PostModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function save( bool $force_save = false ) {
-		$data = [];
-		foreach ( get_object_vars( $this ) as $property => $value ) {
-			$data[ $property ] = $value;
+		$data = get_object_vars( $this );
+
+		if ( ! empty( $this->meta_data ) ) {
+			$data['meta_input'] = [];
+			foreach ( $this->meta_data as $key_meta => $value_meta ) {
+				$data['meta_input'][ $key_meta ] = $value_meta;
+			}
 		}
 
 		// Check if exists course id.
@@ -371,6 +356,20 @@ class PostModel {
 			$this->{$property} = $value;
 		}
 
+		$this->clean_caches();
+	}
+
+	/**
+	 * Delete row
+	 *
+	 * @throws Exception
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function delete() {
+		wp_delete_post( $this->get_id(), true );
+
+		// Clear cache
 		$this->clean_caches();
 	}
 
@@ -472,7 +471,7 @@ class PostModel {
 			$value = $default_value;
 		}
 
-		$value = maybe_unserialize( $value );
+		$value                   = maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;
@@ -598,5 +597,34 @@ class PostModel {
 		 * get_post_type_object is null.
 		 */
 		//return get_edit_post_link( $this->get_id() );
+	}
+
+	/**
+	 * Get i18n status
+	 *
+	 * @return string
+	 */
+	public function get_status_i18n(): string {
+		switch ( $this->post_status ) {
+			case self::STATUS_PUBLISH:
+				return __( 'Published', 'learnpress' );
+			case self::STATUS_FEATURE:
+				return __( 'Scheduled', 'learnpress' );
+			case self::STATUS_TRASH:
+				return __( 'Trash', 'learnpress' );
+			case self::STATUS_DRAFT:
+				return __( 'Draft', 'learnpress' );
+			case self::STATUS_PRIVATE:
+				return __( 'Private', 'learnpress' );
+			case self::STATUS_PENDING:
+				return __( 'Pending', 'learnpress' );
+			case self::STATUS_AUTO_DRAFT:
+				return __( 'Auto Draft', 'learnpress' );
+			case self::VISIBILITY_PASSWORD:
+				return __( 'Protected', 'learnpress' );
+
+			default:
+				return ucfirst( $this->post_status );
+		}
 	}
 }

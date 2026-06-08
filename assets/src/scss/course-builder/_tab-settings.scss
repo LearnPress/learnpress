@@ -1,0 +1,159 @@
+// Settings Tab Styles for Course Builder
+// Match field layout used in Edit Course settings.
+// @since 4.3.x
+// @version 1.0.1
+
+#lp-course-builder .lp-cb-settings {
+	@include shared-form-fields;
+
+	.lp-cb-logo-setting {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		width: 100%;
+		max-width: 620px;
+	}
+
+	.lp-cb-settings__section {
+		margin-bottom: 20px;
+	}
+
+	.lp-cb-logo-setting__actions {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-wrap: wrap;
+		padding-top: 10px;
+	}
+
+	.lp-cb-logo-setting__btn {
+		min-height: 34px;
+		border-radius: $cb-radius;
+
+		&:not( .lp-cb-logo-setting__btn-danger ) {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			background: $cb-primary;
+			color: #fff;
+			padding: 12px 20px;
+			border-radius: 12px;
+			text-decoration: none;
+			font-size: 14px;
+			font-weight: 500;
+			border: none;
+			cursor: pointer;
+			transition: background-color 0.2s;
+
+			&:hover,
+			&:focus {
+				background: $cb-primary-hover;
+				border-color: $cb-primary-hover;
+				color: #fff;
+			}
+		}
+
+		&.is-hidden {
+			display: none;
+		}
+	}
+
+	.lp-cb-logo-setting__btn-danger {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		background-color: #ffffff;
+		color: #6b7280;
+		border: 1px solid #e5e7eb;
+		padding: 12px 20px;
+		border-radius: 12px;
+		text-decoration: none;
+		font-size: 14px;
+		font-weight: 500;
+		cursor: pointer;
+
+		&:hover,
+		&:focus {
+			color: $cb-danger;
+			border-color: $cb-danger-bg;
+			background: $cb-danger-bg;
+		}
+	}
+
+	.lp-cb-logo-setting__preview-wrap {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		width: 100%;
+	}
+
+	.lp-cb-logo-setting__preview-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+	}
+
+	.lp-cb-logo-setting__preview-label {
+		font-size: 13px;
+		font-weight: 600;
+		color: $cb-text;
+		white-space: nowrap;
+	}
+
+	.lp-cb-logo-setting__preview-default {
+		display: inline-flex;
+		align-items: center;
+		justify-content: flex-start;
+		width: 100%;
+
+		&.is-hidden {
+			display: none;
+		}
+	}
+
+	.lp-cb-logo-setting__preview-default-svg {
+		display: block;
+		width: 181px;
+		max-width: 100%;
+		height: auto;
+	}
+
+	.lp-cb-logo-setting__preview-default-image {
+		display: block;
+		width: auto;
+		max-width: 100%;
+		height: auto;
+		max-height: 40px;
+		object-fit: contain;
+	}
+
+	.lp-cb-logo-setting__preview img {
+		display: block;
+		width: auto;
+		height: auto;
+		max-width: 260px;
+		max-height: 40px;
+		object-fit: contain;
+
+		&.is-hidden {
+			display: none;
+		}
+	}
+
+	@media ( max-width: 767px ) {
+		.lp-cb-logo-setting {
+			max-width: 100%;
+		}
+
+		.lp-cb-logo-setting__preview-row {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.lp-cb-logo-setting__preview {
+			width: 100%;
+			max-width: 100%;
+		}
+	}
+}

@@ -326,6 +326,55 @@ class LP_Settings {
 	}
 
 	/**
+	 * Get settings endpoints for course builder page.
+	 *
+	 * @return array
+	 * @since 4.3.0
+	 */
+	public function get_course_builder_endpoints() {
+		$endpoints = LP_Object_Cache::get( 'course-builder', 'learn-press-endpoints' );
+
+		if ( false === $endpoints ) {
+			$endpoints = array();
+			$defaults  = [
+				'courses'            => 'courses',
+				'courses-edit'       => 'edit',
+				'courses-curriculum' => 'curriculum',
+				'courses-settings'   => 'settings',
+				'lessons'            => 'lessons',
+				'lessons-edit'       => 'edit',
+				'lessons-settings'   => 'settings',
+				'quizzes'            => 'quizzes',
+				'quizzes-edit'       => 'edit',
+				'quizzes-questions'  => 'questions',
+				'quizzes-settings'   => 'settings',
+				'questions'          => 'questions',
+				'questions-edit'     => 'edit',
+				'questions-settings' => 'settings',
+			];
+
+			$settings = array();
+
+			if ( $settings ) {
+				foreach ( $settings as $k => $v ) {
+					$k               = preg_replace( '!_!', '-', $k );
+					$endpoints[ $k ] = $v;
+				}
+			}
+
+			foreach ( $defaults as $k => $v ) {
+				if ( empty( $endpoints[ $k ] ) ) {
+					$endpoints[ $k ] = $v;
+				}
+			}
+
+			LP_Object_Cache::set( 'course-builder', $endpoints, 'learn-press-endpoints' );
+		}
+
+		return apply_filters( 'learn-press/endpoints/course-builder', $endpoints );
+	}
+
+	/**
 	 * Check setting enable option "Auto start"
 	 *
 	 * @return bool
@@ -500,6 +549,20 @@ class LP_Settings {
 	 */
 	public static function url_handle_lp_ajax(): string {
 		return home_url( 'lp-ajax-handle' );
+	}
+
+	/**
+	 * Check if instructor access to WordPress admin screens is restricted
+	 *
+	 * When enabled, instructors are redirected away from most wp-admin pages
+	 * and continue their work in Course Builder instead. Administrators keep full access.
+	 *
+	 * @return bool True if instructor access is restricted, false otherwise
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public static function is_hide_instructor_access_admin_screen(): bool {
+		return self::get_option( 'hide_instructor_access_admin_screen', 'no' ) === 'yes';
 	}
 }
 

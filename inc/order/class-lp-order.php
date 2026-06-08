@@ -7,8 +7,12 @@
  * @version 4.0.1
  */
 
+use LearnPress\Databases\Order\LPOrderItemsDB;
 use LearnPress\Databases\PostDB;
+use LearnPress\Filters\Order\OrderItemsFilter;
 use LearnPress\Filters\PostFilter;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -939,23 +943,34 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return esc_html( $this->get_data( 'payment_method_title', '' ) );
 		}
 
+		/**
+		 * Get view order detail url.
+		 *
+		 * @return string
+		 */
 		public function get_view_order_url() {
 			global $wp_query;
 
-			$view_order_url      = learn_press_get_endpoint_url( 'view-order', $this->get_id(), learn_press_get_page_link( 'profile' ) );
-			$user                = learn_press_get_current_user();
+			$userModel           = UserModel::find( get_current_user_id(), true );
 			$view_order_endpoint = LP_Settings::instance()->get( 'profile_endpoints.order-details' );
 
 			if ( ! $view_order_endpoint ) {
 				$view_order_endpoint = 'order-details';
 			}
 
+			if ( ! $userModel ) {
+				return '';
+			}
+
+			$user_slug    = $userModel->user_nicename;
+			$link_profile = learn_press_get_page_link( 'profile' );
+
 			$view_order_endpoint = urlencode( $view_order_endpoint );
 			if ( get_option( 'permalink_structure' ) ) {
-				$view_order_url = learn_press_get_page_link( 'profile' ) . $user->get_data( 'user_login' ) . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
+				$view_order_url = $link_profile . $user_slug . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
 			} else {
 				$args         = array(
-					'user' => $user->get_data( 'user_login' ),
+					'user' => $user_slug,
 				);
 				$args['view'] = $view_order_endpoint;
 
@@ -964,7 +979,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				}
 				$view_order_url = add_query_arg(
 					$args,
-					learn_press_get_page_link( 'profile' )
+					$link_profile
 				);
 			}
 
@@ -982,8 +997,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			$url = false;
 			if ( $this->has_status( 'pending' ) ) {
-				$user = learn_press_get_current_user();
-				$url  = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.orders' ) );
+				$user_id = get_current_user_id();
+				$profile = LP_Profile::instance( $user_id );
+				$url     = $profile->get_tab_link( LP_Settings::instance()->get( 'profile_endpoints.orders' ) );
 				if ( ! $force ) {
 					$url = esc_url_raw( add_query_arg( 'cancel-order', $this->get_id(), $url ) );
 				} else {
@@ -1094,30 +1110,29 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		public function add_note( $note = null ) {
+			$comment_author       = '';
+			$comment_author_email = '';
 			if ( is_user_logged_in() ) {
 				$user                 = get_user_by( 'id', get_current_user_id() );
 				$comment_author       = $user->display_name;
 				$comment_author_email = $user->user_email;
-				$comment_post_ID      = $this->get_id();
-				$comment_author_url   = '';
-				$comment_content      = $note;
-				$comment_agent        = 'LearnPress';
-				$comment_type         = 'lp_order_note';
-				$comment_parent       = 0;
-				$comment_approved     = 1;
-
-				$commentdata = apply_filters(
-					'learn_press_new_order_note_data',
-					compact( 'comment_post_ID', 'comment_author', 'comment_author_email', 'comment_author_url', 'comment_content', 'comment_agent', 'comment_type', 'comment_parent', 'comment_approved' ),
-					$this->get_id()
-				);
-
-				$comment_id = wp_insert_comment( $commentdata );
-
-				return $comment_id;
 			}
 
-			return false;
+			$comment_post_ID    = $this->get_id();
+			$comment_author_url = '';
+			$comment_content    = $note;
+			$comment_agent      = 'LearnPress';
+			$comment_type       = 'lp_order_note';
+			$comment_parent     = 0;
+			$comment_approved   = 1;
+
+			$commentdata = apply_filters(
+				'learn_press_new_order_note_data',
+				compact( 'comment_post_ID', 'comment_author', 'comment_author_email', 'comment_author_url', 'comment_content', 'comment_agent', 'comment_type', 'comment_parent', 'comment_approved' ),
+				$this->get_id()
+			);
+
+			return wp_insert_comment( $commentdata );
 		}
 
 		/**
@@ -1305,7 +1320,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 				$return = $this->_curd->update( $this );
 			} else {
-				$return = $this->_curd->create( $this );
+				$return    = $this->_curd->create( $this );
+				$this->_id = $return;
 			}
 
 			$new_status_post = get_post_status( $this->get_id() );

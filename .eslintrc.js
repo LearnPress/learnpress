@@ -3,6 +3,9 @@ const eslintConfig = require( '@wordpress/scripts/config/.eslintrc' );
 module.exports = {
 	...eslintConfig,
 	extends: [ 'plugin:@wordpress/eslint-plugin/recommended-with-formatting' ],
+	parserOptions: {
+		requireConfigFile: false,
+	},
 	rules: {
 		indent: [ 'error', 'tab' ],
 		'space-in-parens': [ 'error', 'always' ],

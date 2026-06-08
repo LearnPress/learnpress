@@ -17,9 +17,8 @@ use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Services\UserService;
 use LP_Cache;
 use LP_Debug;
-use LP_User;
-use LP_User_DB;
-use LP_User_Filter;
+use LearnPress\Databases\UserDB;
+use LearnPress\Filters\UserFilter;
 
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
@@ -122,7 +121,7 @@ class UserModel {
 	 * @return false|static
 	 */
 	public static function find( int $user_id, bool $check_cache = false ) {
-		$filter_user     = new LP_User_Filter();
+		$filter_user     = new UserFilter();
 		$filter_user->ID = $user_id;
 		$key_cache       = "userModel/find/id/{$user_id}";
 		$lp_course_cache = new LP_Cache();
@@ -151,14 +150,14 @@ class UserModel {
 	 * If not exists, return false.
 	 * If exists, return CoursePostModel.
 	 *
-	 * @param LP_User_Filter $filter
+	 * @param UserFilter $filter
 	 *
 	 * @return UserModel|false|static
 	 * @since 4.2.6.9
 	 * @version 1.0.1
 	 */
-	public static function get_user_model_from_db( LP_User_Filter $filter ) {
-		$lp_user_db = LP_User_DB::instance();
+	public static function get_user_model_from_db( UserFilter $filter ) {
+		$lp_user_db = UserDB::getInstance();
 		$user_model = false;
 
 		try {
@@ -234,7 +233,7 @@ class UserModel {
 	 *
 	 * @return string
 	 */
-	public function get_pretty_slug( bool $fallback_to_username = true ): string {
+	/*public function get_pretty_slug( bool $fallback_to_username = true ): string {
 		$slug = sanitize_title( (string) $this->get_meta_value_by_key( self::META_KEY_USER_SLUG, '' ) );
 
 		if ( '' !== $slug || ! $fallback_to_username ) {
@@ -242,56 +241,18 @@ class UserModel {
 		}
 
 		return $this->get_username();
-	}
+	}*/
 
 	/**
-	 * Create a unique pretty slug for user.
+	 * Get slug link of user.
+	 * Get from column user_nicename of table wp_users
 	 *
-	 * If the user already has a pretty slug, it will return the existing one without generating a new one.
-	 * The slug is generated based on the user's first name and last name.
-	 * If empty user's first name and last name, it will use the username with uniqid() to generate a slug.
-	 *
-	 * @return string|WP_Error
-	 * @since 4.3.4
-	 * @version 1.0.1
+	 * @return string
+	 * @since 4.3.6
+	 * @version 1.0.0
 	 */
-	public function generate_pretty_slug() {
-		$user_slug_new = '';
-
-		try {
-			// Check if pretty slug already exists, if exists, return it without generating a new one.
-			$existing_slug = $this->get_pretty_slug( false );
-			if ( ! empty( $existing_slug ) ) {
-				return $existing_slug;
-			}
-
-			// Generate pretty slug based on first name and last name.
-			$first_name  = $this->get_meta_value_by_key( 'first_name', '' );
-			$last_name   = $this->get_meta_value_by_key( 'last_name', '' );
-			$base_source = trim( "{$first_name} {$last_name}" );
-			$base_slug   = sanitize_title( $base_source );
-
-			if ( empty( $base_slug ) ) {
-				// Shuffle username with uniqid to make it more unique and less guessable, get first 10 characters to make slug shorter.
-				$base_slug = substr( str_shuffle( sanitize_title( $this->user_login . uniqid() ) ), 0, 10 );
-			} else {
-				$base_slug = $base_slug . substr( str_shuffle( uniqid() ), 0, 3 );
-			}
-
-			// Check slug exists.
-			$userModelFind = UserService::instance()->get_user_by_pretty_slug( $base_slug );
-			if ( ! $userModelFind ) {
-				$this->set_meta_value_by_key( self::META_KEY_USER_SLUG, $base_slug );
-				$user_slug_new = $base_slug;
-			} else {
-				// Regenerate slug by adding random string at the end of base slug until it is unique.
-				$user_slug_new = $this->generate_pretty_slug();
-			}
-		} catch ( Throwable $e ) {
-			return new WP_Error( 'lp_user_slug_generation_failed', $e->getMessage() );
-		}
-
-		return $user_slug_new;
+	public function get_slug_link(): string {
+		return (string) $this->user_nicename;
 	}
 
 	/**
@@ -301,26 +262,23 @@ class UserModel {
 	 *
 	 * @return string|WP_Error
 	 * @since 4.3.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function update_pretty_slug( string $slug ) {
+	public function update_user_nicename( string $slug ) {
 		try {
 			$slug = sanitize_title( wp_unslash( $slug ) );
 
-			if ( '' === $slug ) {
-				delete_user_meta( $this->get_id(), self::META_KEY_USER_SLUG );
-				$this->meta_data->{self::META_KEY_USER_SLUG} = '';
-				$this->save();
-
-				return '';
+			if ( empty( $slug ) ) {
+				throw new Exception( __( 'Cannot create a user with an empty nicename.' ) );
+			} elseif ( mb_strlen( $slug ) > 50 ) {
+				throw new Exception( __( 'Nicename may not be longer than 50 characters.' ) );
 			}
 
-			$userModelFind = UserService::instance()->get_user_by_pretty_slug( $slug );
+			$userModelFind = UserService::instance()->get_user_by_slug_link( $slug );
 			// If not found any user with the slug, or found user is current user, update slug, else throw error.
 			if ( ! $userModelFind ) {
-				$this->set_meta_value_by_key( self::META_KEY_USER_SLUG, $slug );
-
-				return $slug;
+				$this->user_nicename = $slug;
+				$this->save();
 			} elseif ( $userModelFind->get_id() !== $this->get_id() ) {
 				// Found another user with the slug, throw error.
 				throw new Exception(
@@ -331,8 +289,6 @@ class UserModel {
 					)
 				);
 			}
-
-			$this->set_meta_value_by_key( self::META_KEY_USER_SLUG, $slug );
 		} catch ( Throwable $e ) {
 			return new WP_Error( 'lp_user_slug_update_failed', $e->getMessage() );
 		}
@@ -465,7 +421,7 @@ class UserModel {
 		$single_instructor_link = '';
 
 		try {
-			$user_name                 = $this->get_pretty_slug();
+			$user_name                 = $this->get_slug_link();
 			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
 			if ( ! $single_instructor_page_id ) {
 				return $single_instructor_link;
@@ -596,16 +552,34 @@ class UserModel {
 	 *
 	 * If user_item_id is empty, insert new data, else update data.
 	 *
-	 * @return UserModel
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function save(): UserModel {
-		// Clear caches.
-		$this->clean_caches();
+	public function save( bool $force_save = false ) {
+		$data = get_object_vars( $this );
 
-		return $this;
+		// Check if exists user id.
+		if ( empty( $this->ID ) ) { // Insert data.
+			unset( $data['ID'] );
+			$user_id = wp_insert_user( $data );
+		} else { // Update data.
+			if ( ! $force_save ) {
+				if ( ! current_user_can( 'edit_user', $this->get_id() ) ) {
+					throw new Exception( __( 'Sorry, you are not allowed to edit this user.' ) );
+				}
+			}
+
+			$user_id = wp_update_user( $data );
+		}
+
+		if ( is_wp_error( $user_id ) ) {
+			throw new Exception( $user_id->get_error_message() );
+		} else {
+			$this->ID = $user_id;
+		}
+
+		$this->clean_caches();
 	}
 
 	/**
@@ -783,11 +757,12 @@ class UserModel {
 	 *
 	 * @return bool
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function is_instructor(): bool {
-		return user_can( $this->get_id(), self::ROLE_INSTRUCTOR )
-				|| user_can( $this->get_id(), self::ROLE_ADMINISTRATOR );
+		$wp_user = new WP_User( $this );
+		return user_can( $wp_user, self::ROLE_INSTRUCTOR )
+				|| user_can( $wp_user, self::ROLE_ADMINISTRATOR );
 	}
 
 	/**
@@ -810,5 +785,17 @@ class UserModel {
 		$filter->ref_type  = LP_COURSE_CPT;
 
 		return $lp_db_user_items->get_user_items( $filter, $total_rows );
+	}
+
+	/**
+	 * Get roles of user.
+	 *
+	 * @return array
+	 * @since 4.3.6
+	 * @version 1.0.0
+	 */
+	public function get_roles(): array {
+		$user = new WP_User( $this );
+		return is_array( $user->roles ) ? $user->roles : [];
 	}
 }

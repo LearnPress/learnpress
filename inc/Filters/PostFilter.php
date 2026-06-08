@@ -108,6 +108,10 @@ class PostFilter extends FilterBase {
 	 * @var string
 	 */
 	public $taxonomy;
+	/**
+	 * @var int @since 4.3.9
+	 */
+	public $post_parent;
 
 	public function __construct() {}
 }

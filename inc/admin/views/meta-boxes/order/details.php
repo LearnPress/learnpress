@@ -139,7 +139,8 @@ $user_ids     = $order->get_user_id();
 					<div class="advanced-list">
 						<div class="ts-control">
 							<?php
-							if ( ! $order->is_manual() && $order->is_guest() ) {
+							$order_user_id = $order->get_user_id();
+							if ( ! $order->is_manual() && ! is_array( $order_user_id ) && $order->is_guest() ) {
 								printf(
 									'<li>
 										<div class="item">%s</div>
