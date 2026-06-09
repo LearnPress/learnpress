@@ -46,10 +46,9 @@ class LP_Admin_Webhooks {
 	 * @return void
 	 */
 	public function localize_admin_script(): void {
-		if ( ! $this->is_webhook_settings_screen() || ! wp_script_is( 'lp-admin-webhooks', 'enqueued' ) ) {
+		if ( ! $this->is_webhook_settings_screen() || ! $this->is_webhook_integration_enabled() || ! wp_script_is( 'lp-admin-webhooks', 'enqueued' ) ) {
 			return;
 		}
-
 		wp_localize_script(
 			'lp-admin-webhooks',
 			'lpWebhooksSettings',
@@ -89,6 +88,9 @@ class LP_Admin_Webhooks {
 		if ( ! current_user_can( $this->required_capability ) ) {
 			wp_die( esc_html__( 'Sorry, you are not allowed to manage webhooks.', 'learnpress' ) );
 		}
+		if ( ! $this->is_webhook_integration_enabled() ) {
+			return;
+		}
 
 		$table = new LP_Admin_Webhooks_Table_List();
 		$table->prepare_items();
@@ -108,5 +110,14 @@ class LP_Admin_Webhooks {
 		$section = sanitize_key( $_REQUEST['section'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		return 'learn-press-settings' === $page && 'advanced' === $tab && 'webhook' === $section;
+	}
+
+	/**
+	 * Check whether webhook integration is enabled.
+	 *
+	 * @return bool
+	 */
+	protected function is_webhook_integration_enabled(): bool {
+		return 'yes' === LP_Settings::get_option( 'enable_webhook_integration', 'no' );
 	}
 }

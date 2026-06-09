@@ -35,23 +35,9 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	 * @return bool
 	 */
 	public static function is_mcp_available(): bool {
-		$wp_version = (string) get_bloginfo( 'version' );
 
-		if ( version_compare( $wp_version, '7.0', '>=' ) ) {
-			return true;
-		}
-
-		if ( ! version_compare( $wp_version, '6.9', '>=' ) ) {
-			return false;
-		}
-
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		return function_exists( 'is_plugin_active' ) && is_plugin_active( 'mcp-adapter/mcp-adapter.php' );
+		return learn_press_is_mcp_available();
 	}
-
 	/**
 	 * Render MCP unavailable notice.
 	 *

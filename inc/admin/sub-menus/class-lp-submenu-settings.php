@@ -123,7 +123,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		$hide_save_button = false;
 		if ( 'advanced' === $active_tab && 'mcp' === $section && class_exists( 'LP_Settings_Advanced' ) ) {
-			$hide_save_button = ! LP_Settings_Advanced::is_mcp_adapter_active();
+			$hide_save_button = ! learn_press_is_mcp_available();
 		}
 		?>
 

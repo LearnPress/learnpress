@@ -7,6 +7,7 @@ use LearnPress\Ajax\AbstractAjax;
 use LearnPress\Models\Webhook\WebhookModel;
 use LearnPress\Webhook\WebhookEvents;
 use LP_Helper;
+use LP_Settings;
 use LP_REST_Response;
 use Throwable;
 
@@ -30,6 +31,10 @@ class WebhooksAjax extends AbstractAjax {
 	public static function check_valid(): array {
 		if ( ! current_user_can( self::$required_capability ) ) {
 			throw new Exception( __( 'You are not allowed to manage webhooks.', 'learnpress' ) );
+		}
+
+		if ( 'yes' !== LP_Settings::get_option( 'enable_webhook_integration', 'no' ) ) {
+			throw new Exception( __( 'Webhook integration is disabled.', 'learnpress' ) );
 		}
 
 		$params = wp_unslash( $_REQUEST['data'] ?? '' );
