@@ -24,7 +24,7 @@
 	},
 	"_comment": "If the tijsverkoyen Emogrifier library does not work properly, try pelago/emogrifier.",
 	"require": {
-		"tijsverkoyen/css-to-inline-styles": "v2.3.0"
+		"tijsverkoyen/css-to-inline-styles": "v2.4.0"
 	},
 	"autoload-dev": {
 		"psr-4": {

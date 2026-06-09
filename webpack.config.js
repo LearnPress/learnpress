@@ -90,6 +90,7 @@ module.exports = {
 		'./assets/js/dist/frontend/widgets': './assets/src/js/frontend/widgets.js',
 		'./assets/js/dist/frontend/course-filter': './assets/src/js/frontend/course-filter.js',
 		'./assets/js/dist/frontend/course-builder': './assets/src/js/frontend/course-builder.js',
+		'./assets/js/dist/frontend/ai-assistant': './assets/src/js/frontend/ai-assistant.js',
 
 		// Block Gutenberg
 		'./assets/js/dist/blocks/archive-course-legacy': './assets/src/apps/js/blocks/archive-course-legacy/index.js',

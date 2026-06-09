@@ -667,7 +667,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 				// Error create product return from PayPal
 				if ( ! empty( $product_data['debug_id'] ) ) {
-					throw new Exception( __( 'Create Product: ' ) . $product_data['details'][0]['description'] );
+					throw new Exception(
+						__( 'Create Product: ' ) . $product_data['details'][0]['description'],
+						(int) $product_data['debug_id']
+					);
 				}
 
 				if ( empty( $product_data['id'] ) ) {
@@ -760,7 +763,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			// Error return from PayPal
 			if ( ! empty( $response_data['debug_id'] ) ) {
-				throw new Exception( __( 'Create Plan: ' ) . $response_data['details'][0]['description'] );
+				throw new Exception(
+					__( 'Create Plan: ' ) . $response_data['details'][0]['description'],
+					(int) $response_data['debug_id']
+				);
 			}
 
 			if ( empty( $response_data['id'] ) ) {
@@ -897,7 +903,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			$plan_data = LP_Helper::json_decode( wp_remote_retrieve_body( $plan_response ), true );
 			if ( isset( $plan_data['debug_id'] ) ) {
-				throw new Exception( __( 'Get plan: ', 'learnpress' ) . $plan_data['details'][0]['description'] );
+				throw new Exception(
+					__( 'Get plan: ', 'learnpress' ) . $plan_data['details'][0]['description'],
+					(int) $plan_data['debug_id']
+				);
 			}
 
 			$summary = $this->build_paypal_plan_summary( $plan_data );
@@ -1009,7 +1018,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				if ( ! empty( $patch_response_body ) ) {
 					$patched_plan = LP_Helper::json_decode( $patch_response_body, true );
 					if ( isset( $patched_plan['debug_id'] ) ) {
-						throw new Exception( __( 'Update plan: ', 'learnpress' ) . $patched_plan['details'][0]['description'] );
+						throw new Exception(
+							__( 'Update plan: ', 'learnpress' ) . $patched_plan['details'][0]['description'],
+							(int) $patched_plan['debug_id']
+						);
 					}
 				}
 			}
@@ -1082,7 +1094,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				}
 
 				if ( isset( $pricing_response['debug_id'] ) ) {
-					throw new Exception( __( 'Update plan pricing: ', 'learnpress' ) . $pricing_response['details'][0]['description'] );
+					throw new Exception(
+						__( 'Update plan pricing: ', 'learnpress' ) . $pricing_response['details'][0]['description'],
+						(int) $pricing_response['debug_id']
+					);
 				}
 			}
 
@@ -1336,7 +1351,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			// Error return from PayPal
 			if ( ! empty( $response_data['debug_id'] ) ) {
-				throw new Exception( $response_data['details'][0]['description'] );
+				throw new Exception(
+					__( 'Pay PayPal subscription: ', 'learnpress' ) . $response_data['details'][0]['description'],
+					(int) $response_data['debug_id']
+				);
 			}
 
 			if ( empty( $response_data['id'] ) ) {

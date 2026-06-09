@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 7.0
-Stable tag: 4.3.8
+Stable tag: 4.3.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,6 +22,8 @@ LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress. This is one 
 <a href="https://www.figma.com/community/file/1444252888298116868/education-website-design-system-learnpress" target="_blank">Figma LearnPress UI Kit - Free Download</a>
 
 LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress Based LMS**. Also, LearnPress is highly recommended by WPML as the <a href="https://wpml.org/plugin-functionality/lms/" target="_blank">Learning Management System Plugin for Multilingual Sites</a>. Just try and see how amazing it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-ons to empower its core system.
+
+[youtube https://www.youtube.com/watch?v=vH7h1cE2llU]
 
 Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have Premium LearnPress Add-Ons included already.
 
@@ -76,7 +78,6 @@ Add [Thim Blocks](https://wordpress.org/plugins/thim-blocks/) - our Page Builder
 - [LearnPress Tutorials](https://learnpresslms.com/docs/learnpress/)
 - How to create an Udemy or Coursera clone easily with LearnPress [Click here >>](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 - Step-by-step YouTube guide on setting up your own Online Course site. [Click here >>](https://www.youtube.com/watch?v=0mJBC9IpiS0)
-[youtube https://www.youtube.com/watch?v=0mJBC9IpiS0]
 
 Are you looking for *the best LMS WordPress Plugin*?
 
@@ -244,7 +245,6 @@ And if you want to extend or use LearnPress, see our [Wiki](https://github.com/L
 
 = Where can I get support or talk to other users? =
 If you get troubles when using LearnPress you can ask for help on the [LearnPress Support Forum](https://help.thimpress.com/) or [join the private Facebook group](https://www.facebook.com/groups/learnpress/). You could share your feedback about LearnPress. And let us know which feature you want us to build next.
-For help with premium add-ons, use our <a href="https://thimpress.com/forums/forum/learnpress-premium-add-ons/">helpdesk</a>.
 
 = Where can I ask for new features, suggest new ideas or new themes for LearnPress? =
 You can send us your thoughts via email: support@thimpress.com or create post at [Feature Requests](https://learnpress.canny.io/feature-requests).
@@ -278,6 +278,10 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.3.9 (2026-06-08) =
+~ Feature: AI assistant to help students learn better - ask questions about lessons and create questions to check understanding.
+~ Fixed: minor bugs.
 
 = 4.3.8 (2026-06-01) =
 ~ Feature: add PayPal subscription support to facilitate payments for the upcoming LP Membership add-on.

@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.3.8\n"
+"Project-Id-Version: LearnPress 4.3.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-01T06:16:37+03:00\n"
+"POT-Creation-Date: 2026-06-08T05:18:28+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -70,7 +70,7 @@ msgstr ""
 #: assets/src/apps/js/admin/react/question/index.js:313
 #: inc/admin/views/meta-boxes/fields/materials.php:110
 #: inc/admin/views/tools/course/html-unassign-course.php:97
-#: inc/class-lp-assets.php:177
+#: inc/class-lp-assets.php:183
 #: inc/TemplateHooks/CourseBuilder/Settings/BuilderSettingsTemplate.php:168
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:185
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:281
@@ -125,7 +125,7 @@ msgstr ""
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:203
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:207
 #: inc/TemplateHooks/CourseBuilder/Settings/BuilderSettingsTemplate.php:57
-#: learnpress.php:860
+#: learnpress.php:864
 msgid "Settings"
 msgstr ""
 
@@ -608,7 +608,7 @@ msgid "Display full content of Single Course, can not edit."
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:41
-#: inc/class-lp-assets.php:149
+#: inc/class-lp-assets.php:155
 #: inc/lp-core-functions.php:2084
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:578
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:385
@@ -619,7 +619,7 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:44
 #: inc/admin/views/meta-boxes/fields/date.php:56
-#: inc/class-lp-assets.php:150
+#: inc/class-lp-assets.php:156
 #: inc/lp-core-functions.php:2085
 #: inc/Models/UserItems/UserItemModel.php:526
 #: inc/order/class-lp-order.php:1031
@@ -648,12 +648,14 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:81
 #: assets/js/dist/frontend/quiz.min.js:204
 #: inc/custom-post-types/question.php:129
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:202
 msgid "Correct"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:207
 #: assets/js/dist/frontend/quiz.min.js:82
 #: inc/custom-post-types/question.php:135
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:203
 msgid "Incorrect"
 msgstr ""
 
@@ -1184,7 +1186,7 @@ msgstr ""
 #: config/elementor/course/list-courses-by-page.php:67
 #: config/elementor/course/list-courses-by-page.php:89
 #: config/elementor/course/list-courses-by-page.php:101
-#: inc/class-lp-assets.php:151
+#: inc/class-lp-assets.php:157
 #: inc/lp-core-functions.php:2086
 msgid "Yes"
 msgstr ""
@@ -1198,7 +1200,7 @@ msgstr ""
 #: config/elementor/course/list-courses-by-page.php:68
 #: config/elementor/course/list-courses-by-page.php:90
 #: config/elementor/course/list-courses-by-page.php:102
-#: inc/class-lp-assets.php:152
+#: inc/class-lp-assets.php:158
 #: inc/lp-core-functions.php:2087
 msgid "No"
 msgstr ""
@@ -1583,7 +1585,7 @@ msgid "Button Processing text"
 msgstr ""
 
 #: config/elementor/instructor/become-a-teacher.php:37
-#: inc/class-lp-assets.php:168
+#: inc/class-lp-assets.php:174
 #: inc/order/class-lp-order.php:288
 #: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:90
 msgid "Processing"
@@ -2990,204 +2992,264 @@ msgid "Enable Model Context Protocol integration for AI-powered LMS operations. 
 msgstr ""
 
 #: config/settings/open-ai-admin.php:9
-msgid "Open AI"
+msgid "OpenAI"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:13
-msgid "Enable Open AI"
+msgid "Enable OpenAI"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:17
-msgid "Enable this option and enter your OpenAI Secret key below to activate the feature."
+msgid "Enable this option and enter your OpenAI secret key below to activate this feature."
 msgstr ""
 
 #: config/settings/open-ai-admin.php:20
-msgid "Secret key"
+msgid "Secret Key"
 msgstr ""
 
 #. translators: 1. profile url
 #: config/settings/open-ai-admin.php:26
 #, php-format
-msgid ""
-"Get your Open AI secret key from <a href=\"%1$s\" target=\"_blank\">here</a>.\r\n"
-"                            Read more guide from <a href=\"%2$s\" target=\"_blank\">here</a>."
+msgid "Get your OpenAI secret key <a href=\"%1$s\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>. Read the quickstart guide <a href=\"%2$s\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>."
 msgstr ""
 
-#: config/settings/open-ai-admin.php:36
-msgid "Text Model Type"
+#: config/settings/open-ai-admin.php:35
+msgid "Text Model"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:40
+msgid "GPT-5.2"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:41
-msgid "ChatGPT 5.2"
+msgid "GPT-5"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:42
-msgid "ChatGPT 5"
+msgid "GPT-5 Mini"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:43
-msgid "ChatGPT 5 mini"
+msgid "GPT-5 Nano"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:44
-msgid "ChatGPT 5 nano"
+msgid "GPT-4.1"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:45
-msgid "ChatGPT 4.1"
+#: config/settings/open-ai-admin.php:46
+msgid "GPT-4o"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:47
-msgid "GPT 4o"
+msgid "GPT-4o Mini"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:48
-msgid "GPT 4o Mini"
+msgid "GPT-4"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:49
-msgid "GPT 4"
+msgid "GPT-3.5 Turbo"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:50
-msgid "GPT 3.5 Turbo"
+msgid "GPT-3.5 Turbo Instruct"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:51
-msgid "GPT 3.5 Turbo Instruct"
+#: config/settings/open-ai-admin.php:54
+msgid "Image Model"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:55
-msgid "Image Model Type"
+#: config/settings/open-ai-admin.php:59
+msgid "GPT Image 1"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:60
-msgid "GPT image 1"
+msgid "DALL-E 3"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:61
-msgid "DALL E 3"
+msgid "DALL-E 2"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:62
-msgid "DALL E 2 "
+#: config/settings/open-ai-admin.php:65
+msgid "Frequency Penalty"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:66
-msgid "Frequency Penalty Level"
-msgstr ""
-
-#: config/settings/open-ai-admin.php:71
+#: config/settings/open-ai-admin.php:70
 msgid "Very High Repetition (-2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:72
+#: config/settings/open-ai-admin.php:71
 msgid "High Repetition (-1.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:73
+#: config/settings/open-ai-admin.php:72
 msgid "Moderate Repetition (-1.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:74
+#: config/settings/open-ai-admin.php:73
 msgid "Low Repetition (-0.5)"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:74
+#: config/settings/open-ai-admin.php:91
+msgid "No Penalty (0.0)"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:75
 #: config/settings/open-ai-admin.php:92
-msgid "No Penalty (0.0)"
+msgid "Low Penalty (0.5)"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:76
 #: config/settings/open-ai-admin.php:93
-msgid "Low Penalty (0.5)"
+msgid "Moderate Penalty (1.0)"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:77
 #: config/settings/open-ai-admin.php:94
-msgid "Moderate Penalty (1.0)"
+msgid "High Penalty (1.5)"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:78
 #: config/settings/open-ai-admin.php:95
-msgid "High Penalty (1.5)"
-msgstr ""
-
-#: config/settings/open-ai-admin.php:79
-#: config/settings/open-ai-admin.php:96
 msgid "Very High Penalty (2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:83
-msgid "Presence Penalty Level"
+#: config/settings/open-ai-admin.php:82
+msgid "Presence Penalty"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:88
+#: config/settings/open-ai-admin.php:87
 msgid "Very High Repetition Allowed (-2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:89
+#: config/settings/open-ai-admin.php:88
 msgid "High Repetition Allowed (-1.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:90
+#: config/settings/open-ai-admin.php:89
 msgid "Moderate Repetition Allowed (-1.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:91
+#: config/settings/open-ai-admin.php:90
 msgid "Low Repetition Allowed (-0.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:100
+#: config/settings/open-ai-admin.php:99
 msgid "Creativity Level"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:105
+#: config/settings/open-ai-admin.php:104
 msgid "Very Low Creativity (0.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:106
+#: config/settings/open-ai-admin.php:105
 msgid "Low Creativity (0.2)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:107
+#: config/settings/open-ai-admin.php:106
 msgid "Low Creativity (0.3)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:108
+#: config/settings/open-ai-admin.php:107
 msgid "Moderate Creativity (0.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:109
+#: config/settings/open-ai-admin.php:108
 msgid "High Creativity (0.7)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:110
+#: config/settings/open-ai-admin.php:109
 msgid "High Creativity (0.8)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:111
+#: config/settings/open-ai-admin.php:110
 msgid "Very High Creativity (1.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:112
+#: config/settings/open-ai-admin.php:111
 msgid "Extreme Creativity (1.1)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:113
+#: config/settings/open-ai-admin.php:112
 msgid "Extreme Creativity (1.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:114
+#: config/settings/open-ai-admin.php:113
 msgid "Maximum Creativity (2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:118
-msgid "Max Token"
+#: config/settings/open-ai-admin.php:117
+msgid "Max Tokens"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:122
-msgid "Set 0 for no limit."
+#: config/settings/open-ai-admin.php:121
+msgid "Set to 0 for no limit."
+msgstr ""
+
+#: config/settings/open-ai-admin.php:131
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:194
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:324
+msgid "AI Assistant"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:135
+msgid "Enable AI Assistant"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:139
+msgid "Enable the AI Assistant for learners on lesson pages. Requires OpenAI to be enabled and a valid secret key."
+msgstr ""
+
+#: config/settings/open-ai-admin.php:142
+msgid "Enable Free Chat"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:146
+msgid "Allow learners to type free-form questions. When disabled, only quick action buttons are shown."
+msgstr ""
+
+#: config/settings/open-ai-admin.php:149
+msgid "Enable Summarize Lesson"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:153
+msgid "Allow learners to use the Summarize Lesson action."
+msgstr ""
+
+#: config/settings/open-ai-admin.php:156
+msgid "Enable Explain Concept"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:160
+msgid "Allow learners to use the Explain Concept action."
+msgstr ""
+
+#: config/settings/open-ai-admin.php:163
+msgid "Enable Quick Quiz"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:167
+msgid "Allow learners to start and continue quick quizzes."
+msgstr ""
+
+#: config/settings/open-ai-admin.php:170
+msgid "Enable Smart Review"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:174
+msgid "Allow learners to use the Smart Review action."
+msgstr ""
+
+#: config/settings/open-ai-admin.php:177
+msgid "Max Usage Tokens Per Day"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:181
+msgid "Maximum total AI tokens each learner can use per day. Set to 0 for no limit."
 msgstr ""
 
 #: config/settings/open-ai-modal.php:6
@@ -3941,14 +4003,14 @@ msgid "Select page"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:69
-#: inc/class-lp-assets.php:230
+#: inc/class-lp-assets.php:236
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:705
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:75
 msgid "Generate with AI"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:70
-#: inc/class-lp-assets.php:231
+#: inc/class-lp-assets.php:237
 msgid "Are you sure you want to close? Generate data will stop."
 msgstr ""
 
@@ -4762,7 +4824,7 @@ msgstr ""
 
 #: inc/admin/meta-box/fields/image.php:27
 #: inc/admin/views/meta-boxes/fields/materials.php:96
-#: inc/class-lp-assets.php:175
+#: inc/class-lp-assets.php:181
 #: templates/profile/tabs/settings/avatar.php:40
 #: templates/profile/tabs/settings/cover-image.php:22
 msgid "Upload"
@@ -4826,12 +4888,12 @@ msgstr ""
 msgid "MCP"
 msgstr ""
 
-#: inc/admin/settings/class-lp-settings-mcp.php:54
+#: inc/admin/settings/class-lp-settings-mcp.php:64
 msgid "Learn more"
 msgstr ""
 
-#: inc/admin/settings/class-lp-settings-mcp.php:59
-msgid "This feature requires the MCP Adapter plugin. Please install and activate it to access the settings. "
+#: inc/admin/settings/class-lp-settings-mcp.php:69
+msgid "This feature requires WordPress 7.0+ or WordPress 6.9+ with the MCP Adapter plugin activated."
 msgstr ""
 
 #: inc/admin/settings/class-lp-settings-open-ai.php:20
@@ -4919,7 +4981,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:18
-#: learnpress.php:862
+#: learnpress.php:866
 msgid "Add-ons"
 msgstr ""
 
@@ -5067,7 +5129,7 @@ msgstr ""
 
 #: inc/admin/views/addons.php:245
 #: inc/admin/views/meta-boxes/fields/materials.php:82
-#: inc/class-lp-assets.php:178
+#: inc/class-lp-assets.php:184
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:175
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:271
 #: templates/profile/tabs/settings/avatar.php:27
@@ -6837,6 +6899,208 @@ msgstr ""
 msgid "The course list of enrolled users"
 msgstr ""
 
+#: inc/AI/Assistant/Agent.php:174
+msgid "You are a helpful AI learning assistant for an online course. You help learners understand lesson content, explain concepts, generate practice quizzes, and review their quiz performance. Always ground your answers in the actual course data provided by tools. Respond in the same language the learner uses."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:190
+msgid "Summarize this lesson clearly with key points, practical takeaways, and 3 quick review bullets."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:205
+msgid "Explain the learner request using lesson context only. Give a short explanation, one concrete example, and one self-check question."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:220
+msgid "Create a smart review for this completed quiz attempt. Summarize performance, identify weak concepts, and provide a concise next-step study plan."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:237
+msgid "Answer naturally and keep guidance grounded in the provided lesson context. If context is missing, say so clearly."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:272
+msgid "Output contract: return ONLY valid JSON with exactly one key \"message\" (string). Put the full reply text inside \"message\". Do not include keys like language, locale, intent, type, or key_points."
+msgstr ""
+
+#. translators: %s: JSON encoded learning context.
+#: inc/AI/Assistant/Agent.php:278
+#, php-format
+msgid "Grounded context (JSON): %s"
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:308
+msgid "I was unable to complete the request. Please try again."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:384
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:422
+msgid "Summarize Lesson"
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:385
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:408
+msgid "Explain Concept"
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:386
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:415
+msgid "Quick Quiz"
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:387
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:429
+msgid "Smart Review"
+msgstr ""
+
+#. translators: %s: assistant action label.
+#: inc/AI/Assistant/Agent.php:393
+#, php-format
+msgid "The %s action is currently disabled by the site administrator."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:394
+msgid "requested"
+msgstr ""
+
+#: inc/AI/Assistant/AIAssistantController.php:95
+msgid "Message is required."
+msgstr ""
+
+#: inc/AI/Assistant/AIAssistantController.php:99
+msgid "Item ID is required."
+msgstr ""
+
+#: inc/AI/Assistant/AIAssistantController.php:103
+msgid "Course ID is required."
+msgstr ""
+
+#: inc/AI/Assistant/AIAssistantController.php:109
+msgid "User must be logged in."
+msgstr ""
+
+#: inc/AI/Assistant/DataLoaders.php:33
+#: inc/MCP/Concerns/AbilityExecutors.php:233
+msgid "Lesson not found."
+msgstr ""
+
+#: inc/AI/Assistant/DataLoaders.php:55
+msgid "Quiz review is unavailable for this request."
+msgstr ""
+
+#: inc/AI/Assistant/DataLoaders.php:62
+#: inc/MCP/Concerns/AbilityExecutors.php:125
+#: inc/MCP/Concerns/AbilityExecutors.php:178
+#: inc/MCP/Concerns/AbilityExecutors.php:289
+msgid "Course not found."
+msgstr ""
+
+#: inc/AI/Assistant/DataLoaders.php:70
+msgid "Smart Review is only available for quizzes in this course."
+msgstr ""
+
+#: inc/AI/Assistant/DataLoaders.php:84
+#: inc/AI/Assistant/DataLoaders.php:90
+msgid "Please complete this quiz to use Smart Review."
+msgstr ""
+
+#: inc/AI/Assistant/DataLoaders.php:97
+msgid "Quiz result is unavailable for Smart Review."
+msgstr ""
+
+#: inc/AI/Assistant/IntentClassifier.php:108
+msgid "You classify learner intent for LearnPress AI Assistant."
+msgstr ""
+
+#: inc/AI/Assistant/IntentClassifier.php:112
+msgid "Return ONLY valid JSON object in this exact shape: {\"intent\":\"<value>\"}. Allowed values: summarize, explain, quick_quiz, smart_review, general. Do not add extra keys."
+msgstr ""
+
+#: inc/AI/Assistant/IntentClassifier.php:116
+msgid "Rules: use smart_review only when the current item type is quiz and the learner asks for quiz-result feedback. If uncertain, return general."
+msgstr ""
+
+#. translators: %s: JSON context payload for intent classification.
+#: inc/AI/Assistant/IntentClassifier.php:122
+#, php-format
+msgid "Intent context (JSON): %s"
+msgstr ""
+
+#. translators: 1: learner message sample, 2: locale hint.
+#: inc/AI/Assistant/LanguageResolver.php:32
+#, php-format
+msgid "Language policy: reply strictly in the same language as the learner. Do not default to English. Learner sample: \"%1$s\". Locale fallback: %2$s."
+msgstr ""
+
+#. translators: %s: locale hint.
+#: inc/AI/Assistant/LanguageResolver.php:40
+#, php-format
+msgid "Language policy: reply strictly in the learner language and do not default to English. If the latest learner message is language-neutral, use locale fallback: %s."
+msgstr ""
+
+#. translators: %d: requested number of quiz questions.
+#: inc/AI/Assistant/QuickQuizEngine.php:62
+#, php-format
+msgid "Create a quick quiz from lesson content. Return ONLY valid JSON with keys: intro (string), questions (array of exactly %d items). Each question must contain: question (string), options (array of 4 strings), correct_index (0-3 integer), explanation (string)."
+msgstr ""
+
+#: inc/AI/Assistant/QuickQuizEngine.php:65
+msgid "Create a quick quiz from lesson content with 3-5 questions. Return ONLY valid JSON with keys: intro (string), questions (array of objects). Each question must contain: question (string), options (array of 4 strings), correct_index (0-3 integer), explanation (string)."
+msgstr ""
+
+#: inc/AI/Assistant/QuickQuizEngine.php:106
+msgid "I could not generate a quiz right now. Please try again."
+msgstr ""
+
+#: inc/AI/Assistant/QuickQuizEngine.php:120
+msgid "Quick quiz started. Answer each question to continue."
+msgstr ""
+
+#: inc/AI/Assistant/QuickQuizEngine.php:140
+msgid "Quiz state is invalid. Please start a new quick quiz."
+msgstr ""
+
+#: inc/AI/Assistant/QuickQuizEngine.php:149
+msgid "Please answer with option number (1-4), letter (A-D), or full option text."
+msgstr ""
+
+#. translators: 1: score, 2: total questions.
+#: inc/AI/Assistant/QuickQuizEngine.php:183
+#, php-format
+msgid "Quiz complete. You scored %1$d/%2$d."
+msgstr ""
+
+#: inc/AI/Assistant/QuickQuizEngine.php:195
+msgid "Correct. Great job! Moving to the next question."
+msgstr ""
+
+#: inc/AI/Assistant/QuickQuizEngine.php:196
+msgid "Not quite. Let us move to the next question."
+msgstr ""
+
+#: inc/AI/Assistant/ResponseNormalizer.php:69
+#: inc/AI/Assistant/ResponseNormalizer.php:82
+msgid "I could not generate a complete answer. Please try rephrasing your request."
+msgstr ""
+
+#. translators: %d: max usage tokens per learner per day.
+#: inc/AI/Assistant/TokenQuotaGuard.php:207
+#, php-format
+msgid "Daily AI usage limit reached (%d tokens). Please try again tomorrow or contact the site administrator."
+msgstr ""
+
+#: inc/Ajax/AI/AIAssistantAjax.php:49
+msgid "You must be logged in to use the AI Assistant."
+msgstr ""
+
+#: inc/Ajax/AI/AIAssistantAjax.php:53
+msgid "AI Assistant is not available."
+msgstr ""
+
+#: inc/Ajax/AI/AIAssistantAjax.php:60
+msgid "Invalid request data."
+msgstr ""
+
 #: inc/Ajax/AI/OpenAiAjax.php:40
 #: inc/Ajax/AI/OpenAiAjax.php:67
 #: inc/Ajax/AI/OpenAiAjax.php:109
@@ -6916,36 +7180,36 @@ msgstr ""
 msgid "Invalid course status."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:210
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:214
 msgid "Create course successfully!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:211
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:215
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:472
 msgid "Update course successfully!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:244
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:248
 msgid "Invalid request."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:260
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:264
 msgid "Duplicate course successfully. Redirecting...!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:269
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:273
 msgid "Update course status successfully!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:276
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:280
 msgid "Restore course successfully!"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:281
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:285
 msgid "Course must be trashed before deleting."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:284
+#: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:288
 msgid "Delete course successfully!"
 msgstr ""
 
@@ -7637,24 +7901,24 @@ msgstr ""
 msgid "Course has been finished successfully."
 msgstr ""
 
-#: inc/class-lp-assets.php:169
+#: inc/class-lp-assets.php:175
 msgid "Redirecting"
 msgstr ""
 
-#: inc/class-lp-assets.php:170
+#: inc/class-lp-assets.php:176
 msgid "Invalid field"
 msgstr ""
 
-#: inc/class-lp-assets.php:171
+#: inc/class-lp-assets.php:177
 msgid "Unknown error"
 msgstr ""
 
-#: inc/class-lp-assets.php:172
+#: inc/class-lp-assets.php:178
 #: templates/checkout/payment.php:70
 msgid "Place order"
 msgstr ""
 
-#: inc/class-lp-assets.php:176
+#: inc/class-lp-assets.php:182
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1081
 #: inc/TemplateHooks/CourseBuilder/Settings/BuilderSettingsTemplate.php:169
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:170
@@ -8987,7 +9251,6 @@ msgstr ""
 msgid "Register Form"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:414
 #: inc/gateways/class-lp-gateway-abstract.php:433
 #, php-format
 msgid "Gateway %s does not support subscription payment."
@@ -8998,17 +9261,17 @@ msgid "Missing subscription plan name."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:484
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1030
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1046
 msgid "Invalid subscription amount."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:488
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:974
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:987
 msgid "Invalid subscription setup fee."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:492
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1035
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1051
 msgid "Missing subscription currency."
 msgstr ""
 
@@ -9016,88 +9279,88 @@ msgstr ""
 msgid "Invalid subscription interval."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:516
+#: inc/gateways/class-lp-gateway-abstract.php:512
 #, php-format
 msgid "Gateway %s does not support subscription plan creation."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:529
+#: inc/gateways/class-lp-gateway-abstract.php:525
 #, php-format
 msgid "Gateway %s does not support listing subscription plans."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:547
+#: inc/gateways/class-lp-gateway-abstract.php:542
 #, php-format
 msgid "Gateway %s does not support fetching subscription plan."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:561
+#: inc/gateways/class-lp-gateway-abstract.php:557
 #, php-format
 msgid "Gateway %s does not support updating subscription plan."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:574
+#: inc/gateways/class-lp-gateway-abstract.php:569
 #, php-format
 msgid "Gateway %s does not support deleting subscription plan."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:604
+#: inc/gateways/class-lp-gateway-abstract.php:599
 #, php-format
 msgid "Gateway %s does not support subscription webhook."
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:819
+#: inc/gateways/class-lp-gateway-abstract.php:812
 msgid "Started trialing created at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:821
-#: inc/gateways/class-lp-gateway-abstract.php:847
-#: inc/gateways/class-lp-gateway-abstract.php:873
+#: inc/gateways/class-lp-gateway-abstract.php:814
+#: inc/gateways/class-lp-gateway-abstract.php:840
+#: inc/gateways/class-lp-gateway-abstract.php:866
 msgid "Next billing time"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:823
-#: inc/gateways/class-lp-gateway-abstract.php:849
-#: inc/gateways/class-lp-gateway-abstract.php:875
-#: inc/gateways/class-lp-gateway-abstract.php:899
-#: inc/gateways/class-lp-gateway-abstract.php:923
-#: inc/gateways/class-lp-gateway-abstract.php:947
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1884
+#: inc/gateways/class-lp-gateway-abstract.php:816
+#: inc/gateways/class-lp-gateway-abstract.php:842
+#: inc/gateways/class-lp-gateway-abstract.php:868
+#: inc/gateways/class-lp-gateway-abstract.php:892
+#: inc/gateways/class-lp-gateway-abstract.php:916
+#: inc/gateways/class-lp-gateway-abstract.php:940
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1906
 #, php-format
 msgid "Subscription ID: %s"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:827
-#: inc/gateways/class-lp-gateway-abstract.php:853
-#: inc/gateways/class-lp-gateway-abstract.php:879
-#: inc/gateways/class-lp-gateway-abstract.php:903
-#: inc/gateways/class-lp-gateway-abstract.php:927
-#: inc/gateways/class-lp-gateway-abstract.php:951
+#: inc/gateways/class-lp-gateway-abstract.php:820
+#: inc/gateways/class-lp-gateway-abstract.php:846
+#: inc/gateways/class-lp-gateway-abstract.php:872
+#: inc/gateways/class-lp-gateway-abstract.php:896
+#: inc/gateways/class-lp-gateway-abstract.php:920
+#: inc/gateways/class-lp-gateway-abstract.php:944
 #, php-format
 msgid "Plan ID: %s"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:845
+#: inc/gateways/class-lp-gateway-abstract.php:838
 msgid "Activated created at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:871
+#: inc/gateways/class-lp-gateway-abstract.php:864
 msgid "Renew created at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:896
+#: inc/gateways/class-lp-gateway-abstract.php:889
 msgid "Expired created at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:920
+#: inc/gateways/class-lp-gateway-abstract.php:913
 msgid "Suspended at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:944
+#: inc/gateways/class-lp-gateway-abstract.php:937
 msgid "Canceled at"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:1116
+#: inc/gateways/class-lp-gateway-abstract.php:1133
 #, php-format
 msgid "%s has been deprecated. Please use % instead of."
 msgstr ""
@@ -9135,7 +9398,7 @@ msgid "Invalid PayPal access token"
 msgstr ""
 
 #: inc/gateways/paypal/class-lp-gateway-paypal.php:392
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:942
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:955
 msgid "Invalid Paypal access token"
 msgstr ""
 
@@ -9148,110 +9411,114 @@ msgid "Invalid Paypal checkout url"
 msgstr ""
 
 #: inc/gateways/paypal/class-lp-gateway-paypal.php:623
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:869
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:926
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1236
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:879
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:939
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1255
 msgid "PayPal subscriptions are disabled."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:674
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:677
 msgid "Invalid PayPal product response."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:763
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:773
 msgid "Invalid PayPal plan response."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:770
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:780
 msgid "PayPal subscription plan created."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:874
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:931
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:884
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:944
 msgid "Missing subscription plan id."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:896
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:907
 msgid "Get plan: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:905
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:918
 msgid "PayPal subscription plan fetched."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:963
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:976
 msgid "Invalid PayPal subscription plan status."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1008
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1022
 msgid "Update plan: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1016
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1032
 msgid "PayPal plan interval cannot be changed. Create a new plan instead."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1023
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1039
 msgid "PayPal plan interval count cannot be changed. Create a new plan instead."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1081
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1098
 msgid "Update plan pricing: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1086
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1105
 msgid "PayPal subscription plan updated."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1109
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1128
 msgid "PayPal subscription plan deactivated."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1241
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1260
 msgid "PayPal subscription plan ID is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1339
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1355
+msgid "Pay PayPal subscription: "
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1361
 msgid "Invalid PayPal subscription response."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1695
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1717
 msgid "PayPal webhook verification failed."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1726
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1748
 msgid "LearnPress order is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1745
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1767
 msgid "Ignore lp order completed with subscription activated."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1810
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1832
 msgid "LP PayPal get status from webhook is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1845
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1867
 msgid "PayPal setup fee/renew payment resource is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1851
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1873
 msgid "PayPal billing agreement ID is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1857
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1879
 msgid "PayPal billing subscription not same with subscription on LP Order."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1881
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1903
 msgid "PayPal payment setup fee/renew success created at"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1922
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1944
 msgid "PayPal subscription created at"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1925
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1947
 #, php-format
 msgid "Link payment: %s"
 msgstr ""
@@ -10317,90 +10584,90 @@ msgstr ""
 msgid "The LearnPress webhook process is complete"
 msgstr ""
 
-#: inc/MCP/Abilities.php:117
+#: inc/MCP/Abilities.php:119
 msgid "LearnPress LMS"
 msgstr ""
 
-#: inc/MCP/Abilities.php:118
+#: inc/MCP/Abilities.php:120
 msgid "Read-only abilities for LearnPress LMS data."
 msgstr ""
 
-#: inc/MCP/Abilities.php:131
+#: inc/MCP/Abilities.php:133
 msgid "Get Courses"
 msgstr ""
 
-#: inc/MCP/Abilities.php:132
+#: inc/MCP/Abilities.php:134
 msgid "List courses with optional filters and pagination."
 msgstr ""
 
-#: inc/MCP/Abilities.php:140
+#: inc/MCP/Abilities.php:142
 msgid "Get Course Details"
 msgstr ""
 
-#: inc/MCP/Abilities.php:141
+#: inc/MCP/Abilities.php:143
 msgid "Get details and curriculum summary for a course."
 msgstr ""
 
-#: inc/MCP/Abilities.php:149
+#: inc/MCP/Abilities.php:151
 msgid "List Lessons"
 msgstr ""
 
-#: inc/MCP/Abilities.php:150
+#: inc/MCP/Abilities.php:152
 msgid "List lessons in a course with optional filters."
 msgstr ""
 
-#: inc/MCP/Abilities.php:158
+#: inc/MCP/Abilities.php:160
 msgid "Get Lesson Details"
 msgstr ""
 
-#: inc/MCP/Abilities.php:159
+#: inc/MCP/Abilities.php:161
 msgid "Get lesson details including content, video intro, and materials."
 msgstr ""
 
-#: inc/MCP/Abilities.php:167
+#: inc/MCP/Abilities.php:169
 msgid "List Quizzes"
 msgstr ""
 
-#: inc/MCP/Abilities.php:168
+#: inc/MCP/Abilities.php:170
 msgid "List quizzes in a course with pagination."
 msgstr ""
 
-#: inc/MCP/Abilities.php:176
+#: inc/MCP/Abilities.php:178
 msgid "Get Quiz Details"
 msgstr ""
 
-#: inc/MCP/Abilities.php:177
+#: inc/MCP/Abilities.php:179
 msgid "Get quiz details including duration, passing grade, and question count."
 msgstr ""
 
-#: inc/MCP/Abilities.php:185
+#: inc/MCP/Abilities.php:187
 msgid "Get Student Progress"
 msgstr ""
 
-#: inc/MCP/Abilities.php:186
+#: inc/MCP/Abilities.php:188
 msgid "Get user progress and results for a course enrollment."
 msgstr ""
 
-#: inc/MCP/Abilities.php:194
+#: inc/MCP/Abilities.php:196
 msgid "Get Enrollments"
 msgstr ""
 
-#: inc/MCP/Abilities.php:195
+#: inc/MCP/Abilities.php:197
 msgid "List course enrollments with optional filters and pagination."
 msgstr ""
 
-#: inc/MCP/Abilities.php:356
+#: inc/MCP/Abilities.php:358
 msgid "Missing or invalid MCP authentication."
 msgstr ""
 
 #. translators: %s: capability.
-#: inc/MCP/Abilities.php:379
+#: inc/MCP/Abilities.php:381
 #, php-format
 msgid "Current user does not have required base capability: %s."
 msgstr ""
 
 #. translators: 1: required scope, 2: granted scope.
-#: inc/MCP/Abilities.php:400
+#: inc/MCP/Abilities.php:402
 #, php-format
 msgid "API key scope is insufficient. Required: %1$s. Granted: %2$s."
 msgstr ""
@@ -10431,18 +10698,8 @@ msgstr ""
 msgid "course_id is required and must be a positive integer."
 msgstr ""
 
-#: inc/MCP/Concerns/AbilityExecutors.php:125
-#: inc/MCP/Concerns/AbilityExecutors.php:178
-#: inc/MCP/Concerns/AbilityExecutors.php:289
-msgid "Course not found."
-msgstr ""
-
 #: inc/MCP/Concerns/AbilityExecutors.php:228
 msgid "lesson_id is required and must be a positive integer."
-msgstr ""
-
-#: inc/MCP/Concerns/AbilityExecutors.php:233
-msgid "Lesson not found."
 msgstr ""
 
 #: inc/MCP/Concerns/AbilityExecutors.php:333
@@ -11503,6 +11760,10 @@ msgstr ""
 msgid "The quiz is invalid!"
 msgstr ""
 
+#: inc/Services/OpenAiService.php:161
+msgid "Empty response from OpenAI API."
+msgstr ""
+
 #: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:75
 #, php-format
 msgid "Please %s to send your request!"
@@ -12320,6 +12581,74 @@ msgstr ""
 
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:632
 msgid "You do not have permission view list"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:193
+msgid "You"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:195
+msgid "Thinking..."
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:196
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:197
+msgid "Clear chat history?"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:198
+msgid "Create a quick quiz from this lesson."
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:199
+msgid "Explain a concept from this lesson."
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:200
+msgid "Summarize this lesson with key points."
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:201
+msgid "Give me a smart review of my quiz results."
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:232
+msgid "Learning tools"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:332
+msgid "Open AI Learning Assistant"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:351
+msgid "AI Learning Assistant"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:355
+msgid "Clear chat history"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:359
+msgid "Close AI Assistant"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:440
+msgid "AI assistant quick actions"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:457
+msgid "Your message to the AI assistant"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:458
+msgid "Type your message"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:463
+msgid "Send message"
 msgstr ""
 
 #: inc/TemplateHooks/Course/CourseMaterialTemplate.php:110
@@ -13624,7 +13953,7 @@ msgstr ""
 msgid "Browser User Agent"
 msgstr ""
 
-#: learnpress.php:861
+#: learnpress.php:865
 msgid "Documentation"
 msgstr ""
 

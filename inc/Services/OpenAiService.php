@@ -118,6 +118,58 @@ class OpenAiService {
 	}
 
 	/**
+	 * Send a chat completion request and return the raw message object(s).
+	 *
+	 * Unlike send_request() which pipes through detected_data() (JSON-parsing
+	 * content into lp_structure_data), this method returns the raw
+	 * choices[].message objects so callers can handle tool_calls, content,
+	 * and role directly. Used by the AI Assistant agent loop.
+	 *
+	 * @param array $params Must include 'messages' array. May include 'tools', 'tool_choice'.
+	 *
+	 * @return array The first choice's message object (keys: role, content, tool_calls, etc.)
+	 * @throws Exception On API error or empty response.
+	 * @since 4.3.0
+	 */
+	public function send_chat_request( array $params ): array {
+		$args = $this->handle_params_for_send_chat_completion( $params );
+
+		$response = wp_remote_post(
+			$this->urlChartCompletion,
+			[
+				'headers' => [
+					'Authorization' => 'Bearer ' . $this->secret_key,
+					'Content-Type'  => 'application/json',
+				],
+				'body'    => json_encode( $args ),
+				'timeout' => 3600,
+			]
+		);
+
+		if ( is_wp_error( $response ) ) {
+			throw new Exception( $response->get_error_message(), 400 );
+		}
+
+		$body = wp_remote_retrieve_body( $response );
+		$data = LP_Helper::json_decode( $body, true );
+
+		if ( isset( $data['error'] ) ) {
+			throw new Exception( $data['error']['message'] );
+		}
+
+		if ( empty( $data['choices'][0]['message'] ) ) {
+			throw new Exception( __( 'Empty response from OpenAI API.', 'learnpress' ) );
+		}
+
+		$message = $data['choices'][0]['message'];
+		if ( isset( $data['usage'] ) && is_array( $data['usage'] ) ) {
+			$message['usage'] = $data['usage'];
+		}
+
+		return $message;
+	}
+
+	/**
 	 * @throws Exception
 	 */
 	public function send_request_create_image( $args ) {
@@ -171,15 +223,14 @@ class OpenAiService {
 	 * @throws Exception
 	 */
 	public function handle_params_for_send_chat_completion( $params ): array {
-		$params = [
-			'model'                 => $this->text_model_type,
-			'frequency_penalty'     => $this->frequency_penalty,
-			'presence_penalty'      => $this->presence_penalty,
-			'temperature'           => $this->creativity_level,
-			'max_completion_tokens' => $this->max_token,
-			'response_format'       => [ 'type' => 'json_object' ],
-			'n'                     => $args['outputs'] ?? 1,
-			'messages'              => [
+		$has_tools = ! empty( $params['tools'] );
+
+		// When caller supplies a pre-built messages array (e.g. multi-turn assistant),
+		// use it as-is instead of rebuilding from a single prompt string.
+		if ( ! empty( $params['messages'] ) && is_array( $params['messages'] ) ) {
+			$messages = $params['messages'];
+		} else {
+			$messages = [
 				[
 					'role'    => 'system',
 					'content' => 'You are an AI assistant specialized in education and course design.',
@@ -188,14 +239,38 @@ class OpenAiService {
 					'role'    => 'user',
 					'content' => $params['prompt'] ?? '',
 				],
-			],
-		];
-
-		if ( $this->max_token === 0 ) {
-			unset( $params['max_completion_tokens'] );
+			];
 		}
 
-		return $params;
+		$result = [
+			'model'                 => $this->text_model_type,
+			'frequency_penalty'     => $this->frequency_penalty,
+			'presence_penalty'      => $this->presence_penalty,
+			'temperature'           => $this->creativity_level,
+			'max_completion_tokens' => $this->max_token,
+			'n'                     => $params['outputs'] ?? 1,
+			'messages'              => $messages,
+		];
+
+		// Only set response_format when tools are NOT present.
+		// Forced json_object mode conflicts with tool_calls responses.
+		if ( ! $has_tools ) {
+			$result['response_format'] = [ 'type' => 'json_object' ];
+		}
+
+		if ( $has_tools ) {
+			$result['tools'] = $params['tools'];
+
+			if ( ! empty( $params['tool_choice'] ) ) {
+				$result['tool_choice'] = $params['tool_choice'];
+			}
+		}
+
+		if ( $this->max_token === 0 ) {
+			unset( $result['max_completion_tokens'] );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -210,7 +285,7 @@ class OpenAiService {
 			'model'       => $this->text_model_type,
 			'temperature' => $this->creativity_level,
 			'max_tokens'  => $this->max_token,
-			'n'           => $args['outputs'] ?? 1,
+			'n'           => $params['outputs'] ?? 1,
 			'prompt'      => $params['prompt'] ?? '',
 		];
 

@@ -545,6 +545,8 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Update provider plan details by plan id.
 	 *
+	 * @uses LP_Gateway_Paypal::update_plan
+	 *
 	 * @param string $plan_id
 	 * @param array  $data
 	 *
@@ -1088,7 +1090,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @return string
 	 */
 	public function get_payment_form() {
-		return '';
+		return apply_filters( 'learn_press_gateway_payment_form', '', $this );
 	}
 
 	/**

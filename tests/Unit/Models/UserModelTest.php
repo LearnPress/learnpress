@@ -48,7 +48,7 @@ class UserModelTest extends BrainMonkeyTestCase {
 	private function set_user_service_slug_lookup_result( $result ): void {
 		if ( ! class_exists( '\\LearnPress\\Services\\UserService', false ) ) {
 			eval(
-				'namespace LearnPress\\Services;
+			'namespace LearnPress\\Services;
 				class UserService {
 					public static $slugLookupResult = false;
 					public static function instance(): self {

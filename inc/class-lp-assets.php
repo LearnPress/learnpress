@@ -115,6 +115,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					[],
 					0
 				),
+				'lp-ai-assistant'   => new LP_Asset_Key(
+					self::url( 'css/frontend/ai-assistant' . self::$_min_assets . '.css' ),
+					array(),
+					array( LP_PAGE_SINGLE_COURSE_CURRICULUM ),
+					1
+				),
 			)
 		);
 
@@ -466,6 +472,13 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					'',
 					[ 'strategy' => 'defer' ]
+				),
+				'lp-ai-assistant'      => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/ai-assistant' . self::$_min_assets . '.js' ),
+					array(),
+					array( LP_PAGE_SINGLE_COURSE_CURRICULUM ),
+					1,
+					1,
 				),
 			)
 		);
