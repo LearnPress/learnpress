@@ -4,6 +4,7 @@ namespace LearnPress\Ajax\MCP;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\MCP\Auth\ApiKeysRepository;
 use LP_Helper;
+use LP_Settings;
 use LP_REST_Response;
 use Throwable;
 use Exception;
@@ -33,6 +34,10 @@ class McpApiKeysAjax extends AbstractAjax {
 	public static function check_valid(): array {
 		if ( ! current_user_can( self::$required_capability ) ) {
 			throw new Exception( __( 'You are not allowed to manage MCP API keys.', 'learnpress' ) );
+		}
+
+		if ( 'yes' !== LP_Settings::get_option( 'enable_mcp_integration', 'no' ) ) {
+			throw new Exception( __( 'MCP integration is disabled.', 'learnpress' ) );
 		}
 
 		$params = wp_unslash( $_REQUEST['data'] ?? '' );

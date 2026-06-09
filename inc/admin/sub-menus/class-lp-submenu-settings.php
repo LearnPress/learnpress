@@ -87,8 +87,8 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->tabs[ $active_tab ]->admin_page_settings( $section, $this->get_sections() );
 
 		$hide_save_button = false;
-		if ( 'mcp' === $active_tab && class_exists( 'LP_Settings_Mcp' ) ) {
-			$hide_save_button = ! LP_Settings_Mcp::is_mcp_available();
+		if ( 'mcp' === $active_tab ) {
+			$hide_save_button = ! learn_press_is_mcp_available();
 		}
 		?>
 
