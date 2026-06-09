@@ -30,17 +30,16 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 		/**
 		 * LP_Order_Post_Type constructor.
-		 *
 		 */
 		public function __construct() {
 			add_action( 'admin_init', array( $this, 'register_post_statues' ) );
-			//add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+			// add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 			add_action( 'posts_pre_query', array( $this, 'posts_pre_query' ), 999, 2 );
-			//add_action( 'admin_init', array( $this, 'remove_box' ) );
-			//add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			// add_action( 'admin_init', array( $this, 'remove_box' ) );
+			// add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_filter( 'wp_untrash_post_status', array( $this, 'restore_status_order' ), 11, 3 );
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
-			//add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
+			// add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
 			// Download order CSV file
 			$this->download_order_csv_file();
 
@@ -119,7 +118,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * Restore user course item when the order is stored (usually from trash).
 		 *
 		 * @param string $new_status
-		 * @param int $post_id
+		 * @param int    $post_id
 		 * @param string $previous_status
 		 *
 		 * @return string
@@ -135,9 +134,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Save order post.
 		 *
-		 * @param int $post_id
+		 * @param int     $post_id
 		 * @param WP_Post $post
-		 * @param bool $is_update
+		 * @param bool    $is_update
 		 *
 		 * @editor tungnx
 		 * @version 1.0.6
@@ -220,7 +219,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @return string
 		 * @throws Exception
 		 */
-		/*public function posts_where_paged( $where ) {
+		/*
+		public function posts_where_paged( $where ) {
 			// Code temporary, when release about 1 week, will remove it.
 			$lp_filter_post              = new LP_Post_Type_Filter();
 			$lp_filter_post->post_type   = LP_ORDER_CPT;
@@ -291,30 +291,31 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			return $where;
 		}*/
 
-		//      public function posts_orderby( $orderby ) {
-		//          global $wpdb;
+		// public function posts_orderby( $orderby ) {
+		// global $wpdb;
 		//
-		//          $order = $this->get_order_sort();
+		// $order = $this->get_order_sort();
 		//
-		//          switch ( $this->get_order_by() ) {
-		//              case 'title':
-		//                  $orderby = "{$wpdb->posts}.ID {$order}";
-		//                  break;
-		//              /*case 'student':
-		//                  $orderby = "uu.user_login {$order}";
-		//                  break;*/
-		//              case 'date':
-		//                  $orderby = "{$wpdb->posts}.post_date {$order}";
-		//                  break;
-		//              case 'order_total':
-		//                  $orderby = "CAST(pm2.meta_value AS UNSIGNED) {$order}";
-		//                  break;
-		//          }
+		// switch ( $this->get_order_by() ) {
+		// case 'title':
+		// $orderby = "{$wpdb->posts}.ID {$order}";
+		// break;
+		// *case 'student':
+		// $orderby = "uu.user_login {$order}";
+		// break;*/
+		// case 'date':
+		// $orderby = "{$wpdb->posts}.post_date {$order}";
+		// break;
+		// case 'order_total':
+		// $orderby = "CAST(pm2.meta_value AS UNSIGNED) {$order}";
+		// break;
+		// }
 		//
-		//          return $orderby;
-		//      }
+		// return $orderby;
+		// }
 
-		/*public function posts_join_paged( $join ) {
+		/*
+		public function posts_join_paged( $join ) {
 			global $wpdb, $wp_query;
 			$lp_db = LP_Database::getInstance();
 
@@ -374,7 +375,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @since 2.1.7
 		 * @deprecated 4.2.6.4
 		 */
-		/*public function row_actions( $actions, $post ) {
+		/*
+		public function row_actions( $actions, $post ) {
 			if ( ! empty( $actions['inline hide-if-no-js'] ) ) {
 				unset( $actions['inline hide-if-no-js'] );
 			}
@@ -427,7 +429,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			// Search by author id
-			/*if ( ! empty( $wp_query->get( 'author' ) ) ) {
+			/*
+			if ( ! empty( $wp_query->get( 'author' ) ) ) {
 				$user_id = absint( $wp_query->get( 'author' ) );
 				//$where   .= $wpdb->prepare( ' AND uu.ID like %s ', $user_id );
 				$where .= " AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id ) ";
@@ -437,17 +440,17 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( ! empty( $post_author ) ) {
 				$user_id    = absint( $post_author );
 				$meta_query = array(
-					//                  'relation' => 'OR',
+					// 'relation' => 'OR',
 					array(
 						'key'     => '_user_id',
 						'value'   => '%"' . $user_id . '"%',
 						'compare' => 'LIKE',
 					),
-					//                  array(
-					//                      'key'     => '_user_id',
-					//                      'value'   => $user_id,
-					//                      'compare' => '=',
-					//                  ),
+					// array(
+					// 'key'     => '_user_id',
+					// 'value'   => $user_id,
+					// 'compare' => '=',
+					// ),
 				);
 				$wp_query->set( 'meta_query', $meta_query );
 			}
@@ -458,7 +461,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Query lp orders in admin via Post DB
 		 *
-		 * @param array $posts
+		 * @param array    $posts
 		 * @param WP_Query $wp_query
 		 *
 		 * @return array|WP_Query
@@ -481,21 +484,23 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$posts_per_page = 20;
 				}
 
-				$paged         = max( 1, get_query_var( 'paged' ) );
-				$user_of_order = $wp_query->get( 'author' );
-				$status        = $wp_query->get( 'post_status' );
-				$key           = $wp_query->get( 's' );
-				$month         = $wp_query->get( 'm' );
+				$paged                 = max( 1, get_query_var( 'paged' ) );
+				$user_of_order         = $wp_query->get( 'author' );
+				$status                = $wp_query->get( 'post_status' );
+				$key                   = $wp_query->get( 's' );
+				$month                 = $wp_query->get( 'm' );
+				$refund_request_status = LP_Request::get_param( 'refund_request_status', '', 'key', 'get' );
 
 				$filter = new OrderPostFilter();
-				$param  = [
-					'paged'          => $paged,
-					'posts_per_page' => $posts_per_page,
-					'author'         => $user_of_order,
-					'post_status'    => $status,
-					's'              => $key,
-					'm'              => $month,
-				];
+				$param  = array(
+					'paged'                 => $paged,
+					'posts_per_page'        => $posts_per_page,
+					'author'                => $user_of_order,
+					'post_status'           => $status,
+					's'                     => $key,
+					'm'                     => $month,
+					'refund_request_status' => $refund_request_status,
+				);
 				LP_Order::handle_params_query_list_orders( $filter, $param );
 
 				// Get lp orders
@@ -600,10 +605,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 									$user->get_data( 'display_name' ),
 									$user->get_data( 'user_email' )
 								);
-							} else {
-								if ( sizeof( $user_ids ) == 1 ) {
+							} elseif ( sizeof( $user_ids ) == 1 ) {
 									$outputs[] = $lp_order->get_customer_name();
-								}
 							}
 						}
 						echo join( ', ', $outputs );
@@ -615,7 +618,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$lp_order_icons = LP_Order::get_icons_status();
 					$icon           = $lp_order_icons[ $lp_order->get_status() ] ?? '';
 					$badge_html     = '';
-					
+
 					$refund_request_status = get_post_meta( $lp_order->get_id(), '_lp_refund_request_status', true );
 					if ( 'pending' === $refund_request_status ) {
 						$badge_html = sprintf(
@@ -623,7 +626,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 							esc_html__( 'Refund Requested', 'learnpress' )
 						);
 					}
-					echo sprintf(
+					printf(
 						'<span class="lp-order-status %1$s">%2$s%3$s</span>%4$s',
 						$lp_order->get_status(),
 						$icon,
@@ -754,10 +757,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					return;
 				}
 
-				$order_item_ids = [];
+				$order_item_ids = array();
 				$user_ids       = $order->get_users();
 				foreach ( $user_ids as $user_id ) {
-					//delete_user_meta( $user_id, 'orders' );
+					// delete_user_meta( $user_id, 'orders' );
 					foreach ( $items as $itemArr ) {
 						$order_item_ids[] = $itemArr['order_item_id'] ?? 0;
 						$item_type        = $itemArr['item_type'] ?? '';

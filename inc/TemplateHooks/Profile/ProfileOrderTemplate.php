@@ -33,7 +33,7 @@ class ProfileOrderTemplate {
 	}
 
 	protected function __construct() {
-		add_action( 'learn-press/profile/layout/order-detail', [ $this, 'sections' ] );
+		add_action( 'learn-press/profile/layout/order-detail', array( $this, 'sections' ) );
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 	}
 
@@ -153,10 +153,10 @@ class ProfileOrderTemplate {
 		}
 		$total_pages     = $lp_order_db::get_total_pages( $limit, $total_row );
 		$html_pagination = Template::instance()->html_pagination(
-			[
+			array(
 				'total_pages' => $total_pages,
 				'paged'       => $paged,
-			]
+			)
 		);
 		if ( ! empty( $html_pagination ) ) {
 			$html_pagination = sprintf(
@@ -249,7 +249,7 @@ class ProfileOrderTemplate {
 	 * HTMl for each order item row in order detail page.
 	 *
 	 * @param LP_Order $order
-	 * @param object $item
+	 * @param object   $item
 	 *
 	 * @return string
 	 * @since 4.3.2
@@ -305,12 +305,12 @@ class ProfileOrderTemplate {
 	 */
 	public static function order_detail_content_footer( $order ): string {
 		$section = array(
-			'order_key'    => sprintf(
+			'order_key'             => sprintf(
 				'<p><strong>%s</strong> %s</p>',
 				esc_html__( 'Order key:', 'learnpress' ),
 				esc_html( $order->get_order_key() )
 			),
-			'order_status' => sprintf(
+			'order_status'          => sprintf(
 				'<p>
 					<strong>%s</strong>
 					<span class="lp-label label-%s">%s</span>
@@ -319,8 +319,71 @@ class ProfileOrderTemplate {
 				esc_attr( $order->get_status() ),
 				wp_kses_post( $order->get_order_status_html() )
 			),
+			'refund_request_status' => self::refund_request_status_html( $order ),
+			'refund_note'           => self::refund_note_html( $order ),
 		);
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML for refund request status in order detail page.
+	 *
+	 * @param LP_Order $order
+	 *
+	 * @return string
+	 * @since 4.3.9
+	 * @version 1.0.0
+	 */
+	public static function refund_request_status_html( $order ): string {
+
+		$refund_request_status = sanitize_key( (string) get_post_meta( $order->get_id(), '_lp_refund_request_status', true ) );
+		if ( empty( $refund_request_status ) ) {
+			return '';
+		}
+
+		$status_labels = array(
+			'pending'       => __( 'Pending', 'learnpress' ),
+			'denied'        => __( 'Rejected', 'learnpress' ),
+			'approved'      => __( 'Accepted', 'learnpress' ),
+			'auto-approved' => __( 'Accepted', 'learnpress' ),
+		);
+		$status_label  = $status_labels[ $refund_request_status ] ?? ucwords( str_replace( '-', ' ', $refund_request_status ) );
+
+		return sprintf(
+			'<p class="lp-order-refund-request-status">
+				<strong>%s</strong>
+				<span class="lp-label label-%s">%s</span>
+			</p>',
+			esc_html__( 'Refund request:', 'learnpress' ),
+			esc_attr( $refund_request_status ),
+			esc_html( $status_label )
+		);
+	}
+
+	/**
+	 * HTML for refund note in order detail page.
+	 *
+	 * @param LP_Order $order
+	 *
+	 * @return string
+	 * @since 4.3.9
+	 * @version 1.0.0
+	 */
+	public static function refund_note_html( $order ): string {
+
+		$refund_note = trim( (string) get_post_meta( $order->get_id(), '_lp_refund_note', true ) );
+		if ( empty( $refund_note ) ) {
+			return '';
+		}
+
+		return sprintf(
+			'<p class="lp-order-refund-note">
+				<strong>%s</strong>
+				<span>%s</span>
+			</p>',
+			esc_html__( 'Refund note:', 'learnpress' ),
+			nl2br( esc_html( $refund_note ) )
+		);
 	}
 }

@@ -414,7 +414,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_supported_gateways' ) ) {
 			return array();
 		}
 
-		$gateways_instance  = LP_Gateways::instance();
+		$gateways_instance = LP_Gateways::instance();
 		if ( ! $gateways_instance || ! method_exists( $gateways_instance, 'get_gateways' ) ) {
 			return array();
 		}
@@ -755,184 +755,101 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 		return $data;
 	}
 }
+/**
+ * Render pending refund request panel on order detail.
+ *
+ * @since 4.3.4
+ * @version 1.0.0
+ * @param LP_Order $order
+ */
+function learn_press_admin_order_refund_request_panel( $order ) {
 
-
-
-if ( ! function_exists( 'learn_press_admin_refund_order_notices' ) ) {
-	/**
-	 * Show admin notices after approve/deny refund actions.
-	 *
-	 * @since 4.3.4
-	 * @version 1.0.0
-	 */
-	function learn_press_admin_refund_order_notices() {
-
-		if ( empty( $_GET['lp-refund-admin'] ) ) {
-			return;
-		}
-
-		$notice  = sanitize_key( wp_unslash( $_GET['lp-refund-admin'] ) );
-		$type    = 'success';
-		$message = '';
-
-		switch ( $notice ) {
-			case 'approved':
-				$message = __( 'Refund approved successfully.', 'learnpress' );
-				break;
-			case 'denied':
-				$message = __( 'Refund request denied.', 'learnpress' );
-				break;
-			case 'error':
-				$type    = 'error';
-				$message = isset( $_GET['lp-refund-message'] ) ? sanitize_text_field( wp_unslash( $_GET['lp-refund-message'] ) ) : __( 'Could not process refund request.', 'learnpress' );
-				break;
-		}
-
-		if ( empty( $message ) ) {
-			return;
-		}
-
-		printf(
-			'<div class="notice notice-%1$s is-dismissible"><p>%2$s</p></div>',
-			esc_attr( $type ),
-			esc_html( $message )
-		);
+	if ( ! $order instanceof LP_Order ) {
+		return;
 	}
-}
-add_action( 'admin_notices', 'learn_press_admin_refund_order_notices' );
-if ( ! function_exists( 'learn_press_admin_order_refund_request_panel' ) ) {
-	/**
-	 * Render pending refund request panel on order detail.
-	 *
-	 * @since 4.3.4
-	 * @version 1.0.0
-	 * @param LP_Order $order
-	 */
-	function learn_press_admin_order_refund_request_panel( $order ) {
 
-		if ( ! $order instanceof LP_Order ) {
-			return;
-		}
-
-		$order_id = $order->get_id();
-		if ( ! current_user_can( 'edit_post', $order_id ) ) {
-			return;
-		}
-
-		$refund_event_data     = learn_press_get_order_refund_event_data( $order );
-		$refund_request_status = sanitize_key( (string) ( $refund_event_data['request_status'] ?? '' ) );
-		$requested_by          = absint( $refund_event_data['requested_by'] ?? 0 );
-		$requested_at          = (string) ( $refund_event_data['requested_at'] ?? '' );
-		$refund_reason         = trim( (string) ( $refund_event_data['reason'] ?? '' ) );
-		$requester_email       = '';
-
-		if ( empty( $refund_request_status ) && empty( $requested_by ) && empty( $requested_at ) && empty( $refund_reason ) ) {
-			return;
-		}
-
-		$status_labels = array(
-			'pending'       => __( 'Pending review', 'learnpress' ),
-			'approved'      => __( 'Approved', 'learnpress' ),
-			'auto-approved' => __( 'Auto approved', 'learnpress' ),
-			'denied'        => __( 'Denied', 'learnpress' ),
-		);
-		$status_label  = $status_labels[ $refund_request_status ] ?? '';
-		if ( empty( $status_label ) && ! empty( $refund_request_status ) ) {
-			$status_label = ucwords( str_replace( '-', ' ', $refund_request_status ) );
-		}
-
-		$requester = __( 'Unknown', 'learnpress' );
-		if ( ! empty( $requested_by ) ) {
-			$user = get_user_by( 'id', $requested_by );
-			if ( $user instanceof WP_User ) {
-				$requester       = sprintf( '%s (#%d)', $user->display_name, $requested_by );
-				$requester_email = $user->user_email;
-			}
-		}
-
-		$requested_time = __( 'Unknown time', 'learnpress' );
-		if ( ! empty( $requested_at ) ) {
-			$timestamp = strtotime( $requested_at );
-			if ( $timestamp ) {
-				$requested_time = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $timestamp );
-			}
-		}
-
-		$order_edit_url = add_query_arg(
-			array(
-				'post'   => $order_id,
-				'action' => 'edit',
-			),
-			admin_url( 'post.php' )
-		);
-
-		$approve_url = wp_nonce_url(
-			add_query_arg(
-				array(
-					'lp-refund-order'  => $order_id,
-					'lp-refund-action' => 'approve',
-				),
-				$order_edit_url
-			),
-			'lp-admin-refund-order-' . $order_id,
-			'lp-refund-nonce'
-		);
-
-		$deny_url = wp_nonce_url(
-			add_query_arg(
-				array(
-					'lp-refund-order'  => $order_id,
-					'lp-refund-action' => 'deny',
-				),
-				$order_edit_url
-			),
-			'lp-admin-refund-order-' . $order_id,
-			'lp-refund-nonce'
-		);
-		?>
-		<div class="order-data-field order-data-refund-request">
-			<label><?php esc_html_e( 'Refund Request', 'learnpress' ); ?></label>
-			<p class="description">
-				<?php
-				echo esc_html(
-					sprintf(
-						__( 'Requested by %1$s at %2$s.', 'learnpress' ),
-						$requester,
-						$requested_time
-					)
-				);
-				?>
-			</p>
-			<?php if ( ! empty( $requester_email ) ) : ?>
-				<p class="description">
-					<?php echo esc_html( sprintf( __( 'Requester email: %s', 'learnpress' ), $requester_email ) ); ?>
-				</p>
-			<?php endif; ?>
-			<?php if ( ! empty( $refund_reason ) ) : ?>
-				<p class="description">
-					<strong><?php esc_html_e( 'Reason:', 'learnpress' ); ?></strong>
-					<?php echo wp_kses_post( nl2br( esc_html( $refund_reason ) ) ); ?>
-				</p>
-			<?php endif; ?>
-			<?php if ( ! empty( $status_label ) ) : ?>
-				<p class="description">
-					<?php echo esc_html( sprintf( __( 'Request status: %s', 'learnpress' ), $status_label ) ); ?>
-				</p>
-			<?php endif; ?>
-			<?php if ( 'pending' === $refund_request_status ) : ?>
-				<p>
-					<a class="button button-primary" href="<?php echo esc_url( $approve_url ); ?>">
-						<?php esc_html_e( 'Approve Refund', 'learnpress' ); ?>
-					</a>
-					<a class="button" href="<?php echo esc_url( $deny_url ); ?>">
-						<?php esc_html_e( 'Deny Refund', 'learnpress' ); ?>
-					</a>
-				</p>
-			<?php endif; ?>
-		</div>
-
-		<?php
+	$order_id = $order->get_id();
+	if ( ! current_user_can( 'edit_post', $order_id ) ) {
+		return;
 	}
+
+	$refund_event_data     = learn_press_get_order_refund_event_data( $order );
+	$refund_request_status = sanitize_key( (string) ( $refund_event_data['request_status'] ?? '' ) );
+	$requested_by          = absint( $refund_event_data['requested_by'] ?? 0 );
+	$requested_at          = (string) ( $refund_event_data['requested_at'] ?? '' );
+	$refund_reason         = trim( (string) ( $refund_event_data['reason'] ?? '' ) );
+	$requester_email       = '';
+
+	if ( empty( $refund_request_status ) && empty( $requested_by ) && empty( $requested_at ) && empty( $refund_reason ) ) {
+		return;
+	}
+
+	$status_labels = array(
+		'pending'       => __( 'Pending review', 'learnpress' ),
+		'approved'      => __( 'Approved', 'learnpress' ),
+		'auto-approved' => __( 'Auto approved', 'learnpress' ),
+		'denied'        => __( 'Denied', 'learnpress' ),
+	);
+	$status_label  = $status_labels[ $refund_request_status ] ?? '';
+	if ( empty( $status_label ) && ! empty( $refund_request_status ) ) {
+		$status_label = ucwords( str_replace( '-', ' ', $refund_request_status ) );
+	}
+
+	$requester = __( 'Unknown', 'learnpress' );
+	if ( ! empty( $requested_by ) ) {
+		$user = get_user_by( 'id', $requested_by );
+		if ( $user instanceof WP_User ) {
+			$requester       = sprintf( '%s (#%d)', $user->display_name, $requested_by );
+			$requester_email = $user->user_email;
+		}
+	}
+
+	$requested_time = __( 'Unknown time', 'learnpress' );
+	if ( ! empty( $requested_at ) ) {
+		$timestamp = strtotime( $requested_at );
+		if ( $timestamp ) {
+			$requested_time = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $timestamp );
+		}
+	}
+
+	$render_statuses = array( 'pending', 'approved', 'auto-approved' );
+	if ( ! in_array( $refund_request_status, $render_statuses, true ) ) {
+		return;
+	}
+
+	$is_pending      = ( 'pending' === $refund_request_status );
+	$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
+
+	$order_total           = round( max( 0, floatval( $order->get_total() ) ), 2 );
+	$order_total_formatted = learn_press_format_price( $order_total, $currency_symbol );
+
+	// Refund amount is only meaningful once the refund has been executed
+	// (approved/auto-approved), when _lp_refund_amount has been written.
+	$refund_amount_formatted = '';
+	if ( ! $is_pending ) {
+		$refund_amount = get_post_meta( $order_id, '_lp_refund_amount', true );
+		if ( '' === $refund_amount || null === $refund_amount ) {
+			$refund_amount = $order_total; // Fallback for full refunds without a stored amount.
+		}
+		$refund_amount           = round( max( 0, floatval( $refund_amount ) ), 2 );
+		$refund_amount_formatted = learn_press_format_price( $refund_amount, $currency_symbol );
+	}
+
+	learn_press_admin_view(
+		'meta-boxes/order/refund-request-panel',
+		array(
+			'order_id'                => $order_id,
+			'is_pending'              => $is_pending,
+			'order_total'             => $order_total,
+			'order_total_formatted'   => $order_total_formatted,
+			'refund_amount_formatted' => $refund_amount_formatted,
+			'requester'               => $requester,
+			'requested_time'          => $requested_time,
+			'requester_email'         => $requester_email,
+			'refund_reason'           => $refund_reason,
+			'status_label'            => $status_label,
+		)
+	);
 }
 add_action( 'lp/admin/order/detail/after-order-key', 'learn_press_admin_order_refund_request_panel' );
 

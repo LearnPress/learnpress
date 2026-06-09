@@ -18,6 +18,7 @@ if ( ! class_exists( 'LP_Email_Refunded_Order_User' ) ) {
 
 			$this->default_subject = __( 'Your order on {{order_date}} has been refunded', 'learnpress' );
 			$this->default_heading = __( 'Your order has been refunded', 'learnpress' );
+			$this->template_html   = 'emails/refund/refunded-order-user.php';
 
 			parent::__construct();
 		}

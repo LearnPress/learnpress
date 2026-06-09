@@ -19,6 +19,7 @@ if ( ! class_exists( 'LP_Email_Refunded_Order_Admin' ) ) {
 			$this->default_subject = __( 'The order placed on {{order_date}} has been refunded', 'learnpress' );
 			$this->default_heading = __( 'The user order has been refunded', 'learnpress' );
 			$this->recipient       = LP_Settings::instance()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
+			$this->template_html   = 'emails/refund/refunded-order-admin.php';
 
 			parent::__construct();
 		}

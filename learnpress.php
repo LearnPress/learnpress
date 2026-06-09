@@ -768,8 +768,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				11
 			);
 
-			add_action( 'admin_init', array( RefundOrderAjax::class, 'admin_refund_order_process' ) );
-
 			// Add links setting|document|addon on plugins page.
 			add_filter( 'plugin_action_links_' . LP_PLUGIN_BASENAME, array( $this, 'plugin_links' ) );
 

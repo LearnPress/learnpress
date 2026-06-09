@@ -219,7 +219,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Updates order to new status if needed
 		 *
 		 * @param mixed $new_status
-		 * @param bool $manual Is this a manual order status change?.
+		 * @param bool  $manual Is this a manual order status change?.
 		 *
 		 * @return bool
 		 */
@@ -322,14 +322,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @version 1.0.0
 		 */
 		public static function get_icons_status(): array {
-			$icons = [
+			$icons = array(
 				LP_ORDER_COMPLETED  => "<i class='dashicons dashicons-yes-alt'></i>",
 				LP_ORDER_PENDING    => "<i class='dashicons dashicons-flag'></i>",
 				LP_ORDER_PROCESSING => "<i class='dashicons dashicons-clock'></i>",
 				LP_ORDER_CANCELLED  => "<i class='dashicons dashicons-dismiss'></i>",
 				LP_ORDER_FAILED     => "<i class='dashicons dashicons-warning'></i>",
 				LP_ORDER_REFUNDED   => "<i class='dashicons dashicons-undo'></i>",
-			];
+			);
 
 			return apply_filters( 'lp/order/status/icons', $icons );
 		}
@@ -347,7 +347,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function set_status( string $new_status = '', string $note = '' ) {
 			// Ensure status not has prefix 'lp-'.
 			$new_status     = str_replace( 'lp-', '', $new_status );
-			$valid_statuses = array_values( LP_Order::get_order_statuses() );
+			$valid_statuses = array_values( self::get_order_statuses() );
 			if ( ! in_array( $new_status, $valid_statuses ) && 'trash' !== $new_status ) {
 				$new_status = LP_ORDER_PENDING;
 			}
@@ -466,7 +466,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return apply_filters( 'learn-press/order/guest-customer-name', $customer_name );
 		}
 
-		/*public function customer_exists() {
+		/*
+		public function customer_exists() {
 			return false !== get_userdata( $this->get_data( 'user_id' ) );
 		}*/
 
@@ -549,7 +550,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				 * Comment by tungnx. Because it will error if item didn't have key 'course_id'.
 				 * Ex: case buy certificate, will not have that key
 				 */
-				//return @wp_list_pluck( $items, 'course_id' );
+				// return @wp_list_pluck( $items, 'course_id' );
 			}
 
 			return false;
@@ -802,7 +803,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
 
-			//Clear cache
+			// Clear cache
 			$key = "order/{$this->get_id()}/{$this->get_status()}/items";
 			LP_Cache::cache_load_first( 'clear', $key );
 
@@ -869,6 +870,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get user id in array.
 		 * user_id = 0 -> User type Guest
+		 *
 		 * @return int[]
 		 * @editor tungnx
 		 * @modify 4.1.4
@@ -905,7 +907,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				} else {
 					$found_selected = false;
 				}
-				echo sprintf( '<option value="%d" %s>%s</option>', esc_attr( $user->get_id() ), selected( $found_selected, true, false ), esc_html( $user->user_login ) );
+				printf( '<option value="%d" %s>%s</option>', esc_attr( $user->get_id() ), selected( $found_selected, true, false ), esc_html( $user->user_login ) );
 			}
 			echo '</select>';
 		}
@@ -1074,7 +1076,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					if ( $refund_url ) {
 						$reason_min     = 10;
 						$require_reason = 'yes' === learn_press_get_refund_setting( 'require_refund_reason', 'no' );
-						$current_user = learn_press_get_current_user();
+						$current_user   = learn_press_get_current_user();
 						if ( $current_user instanceof LP_User && $current_user->get_id() > 0 ) {
 							$eligibility    = learn_press_get_order_refund_eligibility( $this, $current_user->get_id() );
 							$reason_min     = absint( $eligibility['reason_min'] ?? $reason_min );
@@ -1312,7 +1314,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			if ( $this->get_id() ) {
 				$old_status_post = get_post_status( $this->get_id() );
-				if ( ! in_array( $old_status_post, [ 'trash', 'auto-draft' ] ) ) {
+				if ( ! in_array( $old_status_post, array( 'trash', 'auto-draft' ) ) ) {
 					$old_status = str_replace( 'lp-', '', $old_status_post );
 				} else {
 					$old_status = $old_status_post;
@@ -1325,7 +1327,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			$new_status_post = get_post_status( $this->get_id() );
-			if ( ! in_array( $new_status_post, [ 'trash', 'auto-draft' ] ) ) {
+			if ( ! in_array( $new_status_post, array( 'trash', 'auto-draft' ) ) ) {
 				$new_status = str_replace( 'lp-', '', $new_status_post );
 			} else {
 				$new_status = $new_status_post;
@@ -1339,7 +1341,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $order_id );
 			}
 
-			//$this->_save_status();
+			// $this->_save_status();
 
 			return $return;
 		}
@@ -1359,7 +1361,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		/** Getter/Setter  **/
-
 		public function set_customer_message( $message ) {
 			$this->_set_data( 'customer_message', $message );
 		}
@@ -1472,14 +1473,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array
 		 */
 		public static function get_order_statuses(): array {
-			$order_statuses = [
+			$order_statuses = array(
 				LP_ORDER_COMPLETED_DB  => LP_ORDER_COMPLETED,
 				LP_ORDER_PROCESSING_DB => LP_ORDER_PROCESSING,
 				LP_ORDER_PENDING_DB    => LP_ORDER_PENDING,
 				LP_ORDER_CANCELLED_DB  => LP_ORDER_CANCELLED,
 				LP_ORDER_FAILED_DB     => LP_ORDER_FAILED,
 				LP_ORDER_REFUNDED_DB   => LP_ORDER_REFUNDED,
-			];
+			);
 
 			return apply_filters( 'lp/order/statuses', $order_statuses );
 		}
@@ -1488,23 +1489,23 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Query list orders.
 		 *
 		 * @param PostFilter $post_filter
-		 * @param array $param [ 'author' => int, 'post_status' => string|array, 's' => string, 'm' => string, 'posts_per_page' => int, 'paged' => int, 'orderby' => string, 'order' => string ]
+		 * @param array      $param [ 'author' => int, 'post_status' => string|array, 'refund_request_status' => string, 's' => string, 'm' => string, 'posts_per_page' => int, 'paged' => int, 'orderby' => string, 'order' => string ]
 		 *
 		 * @return void
 		 * @throws Exception
 		 * @since 4.3.2.8
 		 * @version 1.0.0
 		 */
-		public static function handle_params_query_list_orders( PostFilter &$post_filter, array $param = [] ) {
-			$post_db       = PostDB::getInstance();
-			$user_of_order = absint( $param['author'] ?? 0 );
-			$status        = $param['post_status'] ?? '';
-			$key           = $param['s'] ?? '';
-			$month         = $param['m'] ?? '';
-			$limit         = $param['posts_per_page'] ?? 20;
-			$paged         = $param['paged'] ?? 1;
-
-			$order_by = $param['orderby'] ?? 'date';
+		public static function handle_params_query_list_orders( PostFilter &$post_filter, array $param = array() ) {
+			$post_db               = PostDB::getInstance();
+			$user_of_order         = absint( $param['author'] ?? 0 );
+			$status                = $param['post_status'] ?? '';
+			$key                   = $param['s'] ?? '';
+			$month                 = $param['m'] ?? '';
+			$limit                 = $param['posts_per_page'] ?? 20;
+			$paged                 = $param['paged'] ?? 1;
+			$refund_request_status = sanitize_key( (string) ( $param['refund_request_status'] ?? '' ) );
+			$order_by              = $param['orderby'] ?? 'date';
 			if ( empty( $order_by ) ) {
 				$order_by = 'ID';
 			} else {
@@ -1575,6 +1576,18 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$post_filter->where[] = "AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id )";
 			}
 
+			if ( ! empty( $refund_request_status ) ) {
+				$post_filter->where[] = $post_db->wpdb->prepare(
+					"AND EXISTS (
+						SELECT 1 FROM {$post_db->tb_postmeta} refund_request_pm
+						WHERE refund_request_pm.post_id = p.ID
+						AND refund_request_pm.meta_key = %s
+						AND refund_request_pm.meta_value = %s
+					)",
+					'_lp_refund_request_status',
+					$refund_request_status
+				);
+			}
 			if ( ! empty( $status ) && $status !== 'all' ) {
 				$post_filter->post_status = (array) $status;
 			} else {

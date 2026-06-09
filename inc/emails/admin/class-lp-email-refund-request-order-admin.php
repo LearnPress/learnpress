@@ -19,6 +19,7 @@ if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
 			$this->default_subject = __( 'A refund request was submitted on {{order_date}}', 'learnpress' );
 			$this->default_heading = __( 'A customer submitted a refund request', 'learnpress' );
 			$this->recipient       = LP_Settings::instance()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
+			$this->template_html   = 'emails/refund/refund-request-order-admin.php';
 
 			parent::__construct();
 

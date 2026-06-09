@@ -20,34 +20,33 @@ use Throwable;
 
 class RefundOrderAjax extends AbstractAjax {
 	/**
-	 * Process admin approve/deny refund request via admin action URL.
+	 * Process admin approve/deny refund request via AJAX.
 	 *
 	 * @since 4.3.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 *
 	 * @return void
 	 */
-	public static function admin_refund_order_process() {
-		if ( empty( $_GET['lp-refund-order'] ) || empty( $_GET['lp-refund-action'] ) ) {
-			return;
-		}
+	public function admin_refund_order_process() {
 
-		$order_id = absint( $_GET['lp-refund-order'] );
-		$action   = sanitize_key( wp_unslash( $_GET['lp-refund-action'] ) );
-		$nonce    = isset( $_GET['lp-refund-nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['lp-refund-nonce'] ) ) : '';
-
-		$redirect_url = add_query_arg(
-			array(
-				'post'   => $order_id,
-				'action' => 'edit',
-			),
-			admin_url( 'post.php' )
-		);
-		$notice_args  = array();
+		$response = new LP_REST_Response();
+		$order_id = 0;
+		$action   = '';
+		$order    = false;
 
 		try {
-			if ( ! wp_verify_nonce( $nonce, 'lp-admin-refund-order-' . $order_id ) ) {
-				throw new Exception( __( 'Invalid refund request nonce.', 'learnpress' ) );
+			$params = LP_Helper::json_decode( LP_Request::get_param( 'data' ), true );
+			if ( ! is_array( $params ) ) {
+				throw new Exception( __( 'Invalid refund review request.', 'learnpress' ) );
+			}
+
+			$order_id      = absint( $params['order_id'] ?? 0 );
+			$action        = sanitize_key( (string) ( $params['refund_action'] ?? '' ) );
+			$refund_amount = round( floatval( $params['refund_amount'] ?? 0 ), 2 );
+			$note          = sanitize_textarea_field( (string) ( $params['note'] ?? '' ) );
+
+			if ( empty( $order_id ) ) {
+				throw new Exception( __( 'Invalid refund review request.', 'learnpress' ) );
 			}
 
 			if ( ! current_user_can( 'edit_post', $order_id ) ) {
@@ -58,7 +57,6 @@ class RefundOrderAjax extends AbstractAjax {
 			if ( ! $order ) {
 				throw new Exception( __( 'Order not found.', 'learnpress' ) );
 			}
-
 			$request_status = get_post_meta( $order_id, '_lp_refund_request_status', true );
 			if ( 'pending' !== $request_status ) {
 				throw new Exception( __( 'This order has no pending refund request.', 'learnpress' ) );
@@ -66,18 +64,37 @@ class RefundOrderAjax extends AbstractAjax {
 
 			$admin_id = get_current_user_id();
 			if ( 'approve' === $action ) {
-				self::execute_order_refund(
+				$order_total = round( max( 0, floatval( $order->get_total() ) ), 2 );
+				if ( $refund_amount <= 0 || $refund_amount > $order_total ) {
+					throw new Exception(
+						sprintf(
+							__( 'Refund amount must be greater than 0 and must not exceed %s.', 'learnpress' ),
+							learn_press_format_price( $order_total, learn_press_get_currency_symbol( $order->get_currency() ) )
+						)
+					);
+				}
+
+				$refund_result = self::execute_order_refund(
 					$order,
 					array(
 						'actor_id'       => $admin_id,
 						'actor_type'     => 'admin',
 						'request_status' => 'approved',
 						'reviewed_by'    => $admin_id,
+						'refund_amount'  => $refund_amount,
+						'note'           => $note,
 					)
 				);
+				$refund_amount = floatval( $refund_result['refund_amount'] ?? $refund_amount );
 
-				$notice_args = array(
-					'lp-refund-admin' => 'approved',
+				$response->message = __( 'Refund approved successfully.', 'learnpress' );
+				$response->data    = array(
+					'order_id'                => $order_id,
+					'refund_action'           => $action,
+					'request_status'          => 'approved',
+					'order_status'            => LP_ORDER_REFUNDED,
+					'refund_amount'           => $refund_amount,
+					'refund_amount_formatted' => learn_press_format_price( $refund_amount, learn_press_get_currency_symbol( $order->get_currency() ) ),
 				);
 			} elseif ( 'deny' === $action ) {
 				update_post_meta( $order_id, '_lp_refund_request_status', 'denied' );
@@ -103,27 +120,35 @@ class RefundOrderAjax extends AbstractAjax {
 				);
 				do_action( 'learn-press/order/refund-denied', $order_id, $admin_id, $deny_event_data );
 
-				$notice_args = array(
-					'lp-refund-admin' => 'denied',
+					$response->message = __( 'Refund request denied.', 'learnpress' );
+				$response->data        = array(
+					'order_id'       => $order_id,
+					'refund_action'  => $action,
+					'request_status' => 'denied',
+					'order_status'   => $order->get_status(),
 				);
 			} else {
-				throw new Exception( __( 'Invalid refund review action.', 'learnpress' ) );
+					throw new Exception( __( 'Invalid refund review action.', 'learnpress' ) );
 			}
+
+			$response->status = 'success';
 		} catch ( Throwable $e ) {
 			if ( ! empty( $order ) && $order instanceof LP_Order && 'approve' === $action ) {
 				$order->add_note( sprintf( __( 'Refund approval failed: %s', 'learnpress' ), $e->getMessage() ) );
 			}
 
-			$notice_args = array(
-				'lp-refund-admin'   => 'error',
-				'lp-refund-message' => $e->getMessage(),
+			$response->status  = 'error';
+			$response->message = $e->getMessage();
+			$response->data    = array(
+				'order_id'       => $order_id,
+				'refund_action'  => $action,
+				'request_status' => '',
+				'order_status'   => '',
 			);
 		}
 
-		wp_safe_redirect( add_query_arg( $notice_args, $redirect_url ) );
-		exit();
+		wp_send_json( $response );
 	}
-
 	/**
 	 * Customer request refund order from profile page.
 	 *
@@ -368,7 +393,7 @@ class RefundOrderAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Execute full refund and update order/meta state.
+	 * Execute refund and update order/meta state.
 	 *
 	 * @since 4.3.5
 	 * @version 1.0.0
@@ -380,7 +405,7 @@ class RefundOrderAjax extends AbstractAjax {
 	 * @throws Exception
 	 */
 	private static function execute_order_refund( LP_Order $order, array $context = array() ): array {
-		$context = wp_parse_args(
+		$context    = wp_parse_args(
 			$context,
 			array(
 				'actor_id'       => get_current_user_id(),
@@ -390,10 +415,10 @@ class RefundOrderAjax extends AbstractAjax {
 				'requested_at'   => '',
 				'reviewed_by'    => 0,
 				'auto_approved'  => false,
+				'refund_amount'  => 0,
 				'note'           => '',
 			)
 		);
-
 		$order_id   = $order->get_id();
 		$actor_type = sanitize_key( (string) $context['actor_type'] );
 		$actor_id   = absint( $context['actor_id'] );
@@ -433,7 +458,20 @@ class RefundOrderAjax extends AbstractAjax {
 
 		$refund_calculation = self::calculate_refund_amount_by_completion( $order, $context );
 		$refund_amount      = floatval( $refund_calculation['refund_amount'] ?? 0 );
-		$refund_result      = $gateway->refund( $order_id );
+		$refund_note        = sanitize_textarea_field( trim( (string) $context['note'] ) );
+
+		if ( 'admin' === $actor_type ) {
+			if ( empty( $refund_calculation['is_full_refund'] ) ) {
+				$refund_method = new \ReflectionMethod( $gateway, 'refund' );
+				if ( $refund_method->getNumberOfParameters() < 2 && ! $refund_method->isVariadic() ) {
+					throw new Exception( __( 'This payment gateway does not support partial refunds.', 'learnpress' ) );
+				}
+			}
+
+			$refund_result = $gateway->refund( $order_id, $refund_amount, $refund_note );
+		} else {
+			$refund_result = $gateway->refund( $order_id );
+		}
 
 		if ( is_wp_error( $refund_result ) ) {
 			throw new Exception( $refund_result->get_error_message() );
@@ -474,9 +512,8 @@ class RefundOrderAjax extends AbstractAjax {
 		}
 		update_post_meta( $order_id, '_lp_refund_reviewed_at', current_time( 'mysql' ) );
 
-		$refund_note = trim( (string) $context['note'] );
 		if ( ! empty( $refund_note ) ) {
-			update_post_meta( $order_id, '_lp_refund_note', sanitize_textarea_field( $refund_note ) );
+			update_post_meta( $order_id, '_lp_refund_note', $refund_note );
 		}
 		update_post_meta( $order_id, '_lp_refund_amount', $refund_amount );
 		update_post_meta( $order_id, '_lp_refund_percent', floatval( $refund_calculation['refund_percent'] ?? 100 ) );
@@ -533,9 +570,13 @@ class RefundOrderAjax extends AbstractAjax {
 		);
 		do_action( 'learn-press/order/refund-approved', $order_id, $actor_id, $event_data );
 
-		return is_array( $refund_result ) ? $refund_result : array(
-			'result' => 'success',
-		);
+		$result_data                       = is_array( $refund_result ) ? $refund_result : array( 'result' => 'success' );
+		$result_data['refund_amount']      = $refund_amount;
+		$result_data['refund_percent']     = floatval( $refund_calculation['refund_percent'] ?? 100 );
+		$result_data['is_full_refund']     = ! empty( $refund_calculation['is_full_refund'] );
+		$result_data['completion_percent'] = floatval( $refund_calculation['completion_percent'] ?? 0 );
+
+		return $result_data;
 	}
 
 	/**
@@ -543,7 +584,8 @@ class RefundOrderAjax extends AbstractAjax {
 	 * Rule:
 	 * - refund_max_completion = 0 => no completion limit.
 	 * - refund_max_completion > 0 => reject when completion percent > threshold.
-	 * - If eligible, refund is always full order amount.
+	 * - Customer auto-refund defaults to the full order amount.
+	 * - Admin may provide a partial amount up to the order total.
 	 *
 	 * @since 4.3.5
 	 * @version 1.0.0
@@ -561,11 +603,9 @@ class RefundOrderAjax extends AbstractAjax {
 	 * @throws Exception
 	 */
 	private static function calculate_refund_amount_by_completion( LP_Order $order, array $context = array() ): array {
-		$order_total        = max( 0, floatval( $order->get_total() ) );
+		$order_total        = round( max( 0, floatval( $order->get_total() ) ), 2 );
 		$completion_percent = 0.0;
-		$refund_percent     = 100.0;
 		$max_completion     = max( 0, min( 100, floatval( learn_press_get_refund_setting( 'refund_max_completion', 0 ) ) ) );
-
 		if ( $max_completion > 0 ) {
 			// Resolve refund user id inline (was resolve_refund_user_id).
 			$refund_user_id = absint( $context['requested_by'] ?? 0 );
@@ -596,13 +636,22 @@ class RefundOrderAjax extends AbstractAjax {
 			}
 		}
 
-		$refund_amount  = round( $order_total, 2 );
-		$is_full_refund = true;
+		$refund_amount = round( floatval( $context['refund_amount'] ?? 0 ), 2 );
+		if ( $refund_amount <= 0 ) {
+			$refund_amount = $order_total;
+		}
+
+		if ( $refund_amount <= 0 || $refund_amount > $order_total ) {
+			throw new Exception( __( 'Refund amount must be greater than 0 and must not exceed the order total.', 'learnpress' ) );
+		}
+
+		$refund_percent = round( ( $refund_amount / $order_total ) * 100, 2 );
+		$is_full_refund = $refund_amount === $order_total;
 
 		$calculation = array(
 			'max_completion'     => $max_completion,
 			'completion_percent' => round( $completion_percent, 2 ),
-			'refund_percent'     => round( $refund_percent, 2 ),
+			'refund_percent'     => $refund_percent,
 			'refund_amount'      => $refund_amount,
 			'is_full_refund'     => $is_full_refund,
 		);
@@ -612,6 +661,16 @@ class RefundOrderAjax extends AbstractAjax {
 			return $calculation;
 		}
 
-		return wp_parse_args( $filtered_calculation, $calculation );
+		$filtered_calculation = wp_parse_args( $filtered_calculation, $calculation );
+		$filtered_amount      = round( floatval( $filtered_calculation['refund_amount'] ?? 0 ), 2 );
+		if ( $filtered_amount <= 0 || $filtered_amount > $order_total ) {
+			throw new Exception( __( 'Refund amount must be greater than 0 and must not exceed the order total.', 'learnpress' ) );
+		}
+
+		$filtered_calculation['refund_amount']  = $filtered_amount;
+		$filtered_calculation['refund_percent'] = round( ( $filtered_amount / $order_total ) * 100, 2 );
+		$filtered_calculation['is_full_refund'] = $filtered_amount === $order_total;
+
+		return $filtered_calculation;
 	}
 }

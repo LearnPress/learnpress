@@ -7,13 +7,14 @@
  * @version 4.0.0
  */
 
+use LearnPress\Helpers\Config;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Class LP_Settings_Payments
  *
  * Manage all payments are registered and settings to control order process.
- *
  */
 class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	/**
@@ -50,6 +51,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 			$gateways = LP_Gateways::instance()->get_gateways();
 			$sections = array(
 				'general' => esc_html__( 'General', 'learnpress' ),
+				'refund'  => esc_html__( 'Refund', 'learnpress' ),
 			);
 
 			if ( $gateways ) {
@@ -97,56 +99,6 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					'type'    => 'checkbox',
 					'desc'    => esc_html__( 'Enable the register form in the checkout.', 'learnpress' ),
 				),
-				array(
-					'title'   => esc_html__( 'Enable Refund Requests', 'learnpress' ),
-					'id'      => 'enable_refund_requests',
-					'default' => 'no',
-					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Allow users to submit refund requests.', 'learnpress' ),
-				),
-				array(
-					'title'   => esc_html__( 'Auto Refund', 'learnpress' ),
-					'id'      => 'auto_refund',
-					'default' => 'no',
-					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Enable auto refund, skip admin review.', 'learnpress' ),
-					'show_if_checked' => 'enable_refund_requests',
-				),
-				array(
-					'title'           => esc_html__( 'Refund Time Limit (days)', 'learnpress' ),
-					'id'              => 'refund_time_limit',
-					'default'         => 30,
-					'type'            => 'number',
-					'min'             => 0,
-					'desc'            => esc_html__( 'Maximum days after purchase that users can request a refund. 0 means unlimited.', 'learnpress' ),
-					'show_if_checked' => 'enable_refund_requests',
-				),
-				array(
-					'title'           => esc_html__( 'Require Refund Reason', 'learnpress' ),
-					'id'              => 'require_refund_reason',
-					'default'         => 'no',
-					'type'            => 'checkbox',
-					'desc'            => esc_html__( 'Require users to enter a reason when requesting a refund.', 'learnpress' ),
-					'show_if_checked' => 'enable_refund_requests',
-				),
-				array(
-					'title'           => esc_html__( 'Allow Re-Request After Rejection', 'learnpress' ),
-					'id'              => 'allow_refund_rerequest',
-					'default'         => 'no',
-					'type'            => 'checkbox',
-					'desc'            => esc_html__( 'Allow users to submit a new request after a denied refund request.', 'learnpress' ),
-					'show_if_checked' => 'enable_refund_requests',
-				),
-				array(
-					'title'           => esc_html__( 'User Completion Progress (%)', 'learnpress' ),
-					'id'              => 'refund_max_completion',
-					'default'         => 0,
-					'type'            => 'number',
-					'min'             => 0,
-					'max'             => 100,
-					'desc'            => esc_html__( 'Maximum completion percentage to remain eligible for refund. 0 means no limit.', 'learnpress' ),
-					'show_if_checked' => 'enable_refund_requests',
-				),
 			)
 		);
 
@@ -179,6 +131,43 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		return apply_filters( 'learn-press/payment-settings', array_merge( $guest, $enpoints, $payment ) );
 	}
 
+	/**
+	 * Settings fields of refund section.
+	 *
+	 * @return array
+	 */
+	public function get_settings_refund() {
+		return Config::instance()->get( 'refund', 'settings/payments' );
+	}
+
+	/**
+	 * Keep refund option names compatible with the former general settings fields.
+	 *
+	 * @param string $name Field name.
+	 *
+	 * @return mixed
+	 */
+	public function get_admin_field_name( $name ) {
+		$items   = LP_Admin_Menu::instance()->get_menu_items();
+		$tab     = '';
+		$section = '';
+
+		if ( ! empty( $items['settings'] ) ) {
+			$tab     = $items['settings']->get_active_tab();
+			$section = $items['settings']->get_active_section();
+		}
+
+		if ( 'payments' === $tab && 'refund' === $section ) {
+			if ( empty( $name ) ) {
+				$name = md5( microtime( true ) );
+			}
+
+			return apply_filters( 'learn_press_settings_field_name_' . $name, "learn_press_{$name}" );
+		}
+
+		return parent::get_admin_field_name( $name );
+	}
+
 	public function admin_page_settings( $section = null, $tab = null ) {
 		$sections = array();
 		$items    = LP_Admin_Menu::instance()->get_menu_items();
@@ -207,6 +196,16 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	 * @param string $tab
 	 */
 	public function admin_options_general( $section, $tab ) {
+		parent::admin_page_settings( $section, $tab );
+	}
+
+	/**
+	 * Output admin option of refund page.
+	 *
+	 * @param string $section
+	 * @param string $tab
+	 */
+	public function admin_options_refund( $section, $tab ) {
 		parent::admin_page_settings( $section, $tab );
 	}
 }

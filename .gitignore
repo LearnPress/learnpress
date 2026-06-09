@@ -47,3 +47,5 @@ script.sh
 .phpunit.result.cache
 
 .worktrees/
+AGENTS.md
+.codex/

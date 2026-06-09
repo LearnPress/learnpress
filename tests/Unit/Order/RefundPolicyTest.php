@@ -733,7 +733,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 	#[Test]
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function execute_refund_paypal_full_refund_calls_gateway_without_amount(): void {
+	public function execute_refund_paypal_partial_refund_passes_amount_and_note_to_gateway(): void {
 		$this->boot_refund_dependencies();
 		$this->set_refund_settings(
 			array(
@@ -778,26 +778,34 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 				'requested_by'   => 77,
 				'requested_at'   => '2026-04-17 09:00:00',
 				'reviewed_by'    => 5,
+				'refund_amount'  => 75.00,
+				'note'           => 'Approved by support.',
 			)
 		);
 
 		$this->assertSame( 'success', $result['result'] );
 		$this->assertCount( 1, $gateway->calls );
-		$this->assertCount( 1, $gateway->calls[0] );
+		$this->assertCount( 3, $gateway->calls[0] );
 		$this->assertSame( 10043, $gateway->calls[0][0] );
+		$this->assertSame( 75.0, $gateway->calls[0][1] );
+		$this->assertSame( 'Approved by support.', $gateway->calls[0][2] );
+		$this->assertSame( 75.0, $result['refund_amount'] );
+		$this->assertSame( 50.0, $result['refund_percent'] );
+		$this->assertFalse( $result['is_full_refund'] );
 		$this->assertSame( 'refunded', $order->status );
 		$this->assertSame( 'approved', $meta[10043]['_lp_refund_request_status'] );
 		$this->assertSame( 77, $meta[10043]['_lp_refund_requested_by'] );
 		$this->assertSame( '2026-04-17 09:00:00', $meta[10043]['_lp_refund_requested_at'] );
 		$this->assertSame( 5, $meta[10043]['_lp_refund_reviewed_by'] );
-		$this->assertSame( 150.0, $meta[10043]['_lp_refund_amount'] );
-		$this->assertSame( 100.0, $meta[10043]['_lp_refund_percent'] );
+		$this->assertSame( 'Approved by support.', $meta[10043]['_lp_refund_note'] );
+		$this->assertSame( 75.0, $meta[10043]['_lp_refund_amount'] );
+		$this->assertSame( 50.0, $meta[10043]['_lp_refund_percent'] );
 	}
 
 	#[Test]
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function execute_refund_paypal_completion_limited_still_calls_full_refund_signature(): void {
+	public function execute_refund_paypal_completion_limited_passes_full_amount_to_gateway(): void {
 		$this->boot_refund_dependencies();
 		$this->set_refund_settings(
 			array(
@@ -849,8 +857,10 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 
 		$this->assertSame( 'success', $result['result'] );
 		$this->assertCount( 1, $gateway->calls );
-		$this->assertCount( 1, $gateway->calls[0] );
+		$this->assertCount( 3, $gateway->calls[0] );
 		$this->assertSame( 10044, $gateway->calls[0][0] );
+		$this->assertSame( 200.0, $gateway->calls[0][1] );
+		$this->assertSame( '', $gateway->calls[0][2] );
 		$this->assertSame( 'approved', $meta[10044]['_lp_refund_request_status'] );
 		$this->assertSame( 77, $meta[10044]['_lp_refund_requested_by'] );
 		$this->assertSame( '2026-04-17 09:05:00', $meta[10044]['_lp_refund_requested_at'] );
@@ -889,6 +899,68 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$this->assertSame( 120.5, $result['refund_amount'] );
 		$this->assertSame( 100.0, $result['refund_percent'] );
 		$this->assertTrue( $result['is_full_refund'] );
+	}
+
+	#[Test]
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function calculation_accepts_admin_partial_refund_amount(): void {
+		$this->boot_refund_dependencies();
+		$this->set_refund_settings(
+			array(
+				'refund_max_completion' => 0,
+			)
+		);
+
+		$order        = new \LP_Order( 10040 );
+		$order->total = 120.00;
+
+		$reflection = new ReflectionClass( RefundOrderAjax::class );
+		$method     = $reflection->getMethod( 'calculate_refund_amount_by_completion' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke(
+			null,
+			$order,
+			array(
+				'actor_type'    => 'admin',
+				'refund_amount' => 45.50,
+			)
+		);
+
+		$this->assertSame( 45.5, $result['refund_amount'] );
+		$this->assertSame( 37.92, $result['refund_percent'] );
+		$this->assertFalse( $result['is_full_refund'] );
+	}
+
+	#[Test]
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function calculation_rejects_refund_amount_above_order_total(): void {
+		$this->boot_refund_dependencies();
+		$this->set_refund_settings(
+			array(
+				'refund_max_completion' => 0,
+			)
+		);
+
+		$order        = new \LP_Order( 10041 );
+		$order->total = 120.00;
+
+		$reflection = new ReflectionClass( RefundOrderAjax::class );
+		$method     = $reflection->getMethod( 'calculate_refund_amount_by_completion' );
+		$method->setAccessible( true );
+
+		$this->expectException( \Exception::class );
+		$this->expectExceptionMessage( 'Refund amount must be greater than 0 and must not exceed the order total.' );
+		$method->invoke(
+			null,
+			$order,
+			array(
+				'actor_type'    => 'admin',
+				'refund_amount' => 120.01,
+			)
+		);
 	}
 
 	#[Test]
