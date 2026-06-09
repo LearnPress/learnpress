@@ -22,21 +22,9 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	}
 
 	public function get_settings( $section = '', $tab = '' ) {
-		if ( ! self::is_mcp_available() ) {
-			return array();
-		}
-
 		return Config::instance()->get( 'mcp', 'settings' );
 	}
 
-	/**
-	 * Check whether MCP capabilities are available in current WordPress runtime.
-	 *
-	 * @return bool
-	 */
-	public static function is_mcp_available(): bool {
-		return learn_press_is_mcp_available();
-	}
 	/**
 	 * Render MCP unavailable notice.
 	 *
@@ -70,11 +58,6 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	 * @return void
 	 */
 	public function admin_page_settings( $section = null, $tab = '' ) {
-		if ( ! self::is_mcp_available() ) {
-			$this->render_mcp_unavailable_notice();
-			return;
-		}
-
 		parent::admin_page_settings( $section, $tab );
 
 		if ( 'yes' === LP_Settings::get_option( 'enable_mcp_integration', 'no' ) && class_exists( 'LP_Admin_MCP_API_Keys' ) ) {
@@ -91,10 +74,6 @@ class LP_Settings_Mcp extends LP_Abstract_Settings_Page {
 	 * @return void
 	 */
 	public function save_settings( $section = null, $tab = '' ) {
-		if ( ! self::is_mcp_available() ) {
-			return;
-		}
-
 		parent::save_settings( $section, $tab );
 	}
 }
