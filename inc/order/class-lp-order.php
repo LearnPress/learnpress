@@ -65,6 +65,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			'_checkout_email'       => '',
 		);
 
+		const META_KEY_TRANSACTION_ID = '_transaction_id';
+
 		/**
 		 * Store order status in transactions.
 		 *
@@ -1593,6 +1595,17 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			} else {
 				$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', LP_ORDER_TRASH );
 			}
+		}
+
+		/**
+		 * Get transaction id from order meta
+		 *
+		 * @since 4.4.0
+		 * @version 1.0.0
+		 * @return string
+		 */
+		public function get_transaction_id(): string {
+			return $this->get_meta( self::META_KEY_TRANSACTION_ID );
 		}
 	}
 }

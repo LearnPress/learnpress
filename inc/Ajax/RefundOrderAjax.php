@@ -586,6 +586,7 @@ class RefundOrderAjax extends AbstractAjax {
 	 * - refund_max_completion > 0 => reject when completion percent > threshold.
 	 * - Customer auto-refund defaults to the full order amount.
 	 * - Admin may provide a partial amount up to the order total.
+	 * - If eligible, refund is always full order amount.
 	 *
 	 * @since 4.3.5
 	 * @version 1.0.0
@@ -606,6 +607,7 @@ class RefundOrderAjax extends AbstractAjax {
 		$order_total        = round( max( 0, floatval( $order->get_total() ) ), 2 );
 		$completion_percent = 0.0;
 		$max_completion     = max( 0, min( 100, floatval( learn_press_get_refund_setting( 'refund_max_completion', 0 ) ) ) );
+
 		if ( $max_completion > 0 ) {
 			// Resolve refund user id inline (was resolve_refund_user_id).
 			$refund_user_id = absint( $context['requested_by'] ?? 0 );
