@@ -65,6 +65,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			'_checkout_email'       => '',
 		);
 
+		const META_KEY_TRANSACTION_ID = '_transaction_id';
+
 		/**
 		 * Store order status in transactions.
 		 *
@@ -1074,7 +1076,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					if ( $refund_url ) {
 						$reason_min     = 10;
 						$require_reason = 'yes' === learn_press_get_refund_setting( 'require_refund_reason', 'no' );
-						$current_user = learn_press_get_current_user();
+						$current_user   = learn_press_get_current_user();
 						if ( $current_user instanceof LP_User && $current_user->get_id() > 0 ) {
 							$eligibility    = learn_press_get_order_refund_eligibility( $this, $current_user->get_id() );
 							$reason_min     = absint( $eligibility['reason_min'] ?? $reason_min );
@@ -1580,6 +1582,17 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			} else {
 				$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', LP_ORDER_TRASH );
 			}
+		}
+
+		/**
+		 * Get transaction id from order meta
+		 *
+		 * @since 4.4.0
+		 * @version 1.0.0
+		 * @return string
+		 */
+		public function get_transaction_id(): string {
+			return $this->get_meta( self::META_KEY_TRANSACTION_ID );
 		}
 	}
 }

@@ -433,7 +433,7 @@ class RefundOrderAjax extends AbstractAjax {
 
 		$refund_calculation = self::calculate_refund_amount_by_completion( $order, $context );
 		$refund_amount      = floatval( $refund_calculation['refund_amount'] ?? 0 );
-		$refund_result      = $gateway->refund( $order_id );
+		$refund_result      = $gateway->refund( $order, $refund_amount );
 
 		if ( is_wp_error( $refund_result ) ) {
 			throw new Exception( $refund_result->get_error_message() );
