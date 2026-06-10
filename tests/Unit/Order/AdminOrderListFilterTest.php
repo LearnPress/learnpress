@@ -86,7 +86,7 @@ class AdminOrderListFilterTest extends BrainMonkeyTestCase {
 		$where = implode( ' ', $filter->where );
 
 		$this->assertStringContainsString( 'EXISTS', $where );
-		$this->assertStringContainsString( '_lp_refund_request_status', $where );
+		$this->assertStringContainsString( '_lp_refund_request', $where );
 		$this->assertStringContainsString( 'pendingscript', $where );
 	}
 }

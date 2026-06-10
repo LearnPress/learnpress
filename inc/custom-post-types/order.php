@@ -619,7 +619,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$icon           = $lp_order_icons[ $lp_order->get_status() ] ?? '';
 					$badge_html     = '';
 
-					$refund_request_status = get_post_meta( $lp_order->get_id(), '_lp_refund_request_status', true );
+					$refund_request_status = $lp_order->get_refund_request();
 					if ( 'pending' === $refund_request_status ) {
 						$badge_html = sprintf(
 							'<span class="lp-order-refund-request-badge">%s</span>',

@@ -567,7 +567,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 			return $result;
 		}
 
-		$refund_request_status = get_post_meta( $order->get_id(), '_lp_refund_request_status', true );
+		$refund_request_status = $order->get_refund_request();
 		if ( 'pending' === $refund_request_status ) {
 			$result['code'] = 'pending_request';
 			return $result;
@@ -724,7 +724,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 			'order_number'         => $order->get_order_number(),
 			'order_key'            => $order->get_order_key(),
 			'order_status'         => $order->get_status(),
-			'request_status'       => (string) get_post_meta( $order_id, '_lp_refund_request_status', true ),
+			'request_status'       => $order->get_refund_request(),
 			'requested_by'         => absint( get_post_meta( $order_id, '_lp_refund_requested_by', true ) ),
 			'requested_at'         => (string) get_post_meta( $order_id, '_lp_refund_requested_at', true ),
 			'reviewed_by'          => absint( get_post_meta( $order_id, '_lp_refund_reviewed_by', true ) ),

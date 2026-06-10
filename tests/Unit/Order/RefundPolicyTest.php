@@ -519,7 +519,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 
 		Functions\when( 'get_post_meta' )->alias(
 			static function( int $post_id, string $key ) {
-				return '_lp_refund_request_status' === $key ? 'pending' : '';
+				return '_lp_refund_request' === $key ? 'pending' : '';
 			}
 		);
 
@@ -544,7 +544,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 
 		Functions\when( 'get_post_meta' )->alias(
 			static function( int $post_id, string $key ) {
-				return '_lp_refund_request_status' === $key ? 'denied' : '';
+				return '_lp_refund_request' === $key ? 'denied' : '';
 			}
 		);
 
@@ -573,7 +573,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$this->set_course_result( 77, 101, 20 );
 		Functions\when( 'get_post_meta' )->alias(
 			static function( int $post_id, string $key ) {
-				return '_lp_refund_request_status' === $key ? 'denied' : '';
+				return '_lp_refund_request' === $key ? 'denied' : '';
 			}
 		);
 
@@ -793,7 +793,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$this->assertSame( 50.0, $result['refund_percent'] );
 		$this->assertFalse( $result['is_full_refund'] );
 		$this->assertSame( 'refunded', $order->status );
-		$this->assertSame( 'approved', $meta[10043]['_lp_refund_request_status'] );
+		$this->assertSame( 'approved', $meta[10043]['_lp_refund_request'] );
 		$this->assertSame( 77, $meta[10043]['_lp_refund_requested_by'] );
 		$this->assertSame( '2026-04-17 09:00:00', $meta[10043]['_lp_refund_requested_at'] );
 		$this->assertSame( 5, $meta[10043]['_lp_refund_reviewed_by'] );
@@ -861,7 +861,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$this->assertSame( 10044, $gateway->calls[0][0] );
 		$this->assertSame( 200.0, $gateway->calls[0][1] );
 		$this->assertSame( '', $gateway->calls[0][2] );
-		$this->assertSame( 'approved', $meta[10044]['_lp_refund_request_status'] );
+		$this->assertSame( 'approved', $meta[10044]['_lp_refund_request'] );
 		$this->assertSame( 77, $meta[10044]['_lp_refund_requested_by'] );
 		$this->assertSame( '2026-04-17 09:05:00', $meta[10044]['_lp_refund_requested_at'] );
 		$this->assertSame( 6, $meta[10044]['_lp_refund_reviewed_by'] );

@@ -56,7 +56,7 @@ if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
 				$this->set_data_content( $order, $event_data );
 				$this->send_email();
 			} catch ( Throwable $e ) {
-				error_log( $e->getMessage() );
+				LP_Debug::error_log( $e );
 			}
 		}
 
@@ -73,14 +73,20 @@ if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
 				$event_data = wp_parse_args( $event_data, learn_press_get_order_refund_event_data( $order ) );
 			}
 
-			$requested_by = absint( $event_data['requested_by'] ?? get_post_meta( $order->get_id(), '_lp_refund_requested_by', true ) );
-			$requested_at = (string) ( $event_data['requested_at'] ?? get_post_meta( $order->get_id(), '_lp_refund_requested_at', true ) );
-			$reason       = (string) ( $event_data['reason'] ?? get_post_meta( $order->get_id(), '_lp_refund_reason', true ) );
-			$request_status = sanitize_key( (string) ( $event_data['request_status'] ?? get_post_meta( $order->get_id(), '_lp_refund_request_status', true ) ) );
+			$requested_by         = absint( $event_data['requested_by'] ?? get_post_meta( $order->get_id(), '_lp_refund_requested_by', true ) );
+			$requested_at         = (string) ( $event_data['requested_at'] ?? get_post_meta( $order->get_id(), '_lp_refund_requested_at', true ) );
+			$reason               = (string) ( $event_data['reason'] ?? get_post_meta( $order->get_id(), '_lp_refund_reason', true ) );
+			$request_status       = sanitize_key( (string) ( $event_data['request_status'] ?? $order->get_refund_request() ) );
 			$admin_order_edit_url = (string) ( $event_data['admin_order_edit_url'] ?? '' );
 
 			if ( empty( $admin_order_edit_url ) ) {
-				$admin_order_edit_url = add_query_arg( array( 'post' => $order_id, 'action' => 'edit' ), admin_url( 'post.php' ) );
+				$admin_order_edit_url = add_query_arg(
+					array(
+						'post'   => $order->get_id(),
+						'action' => 'edit',
+					),
+					admin_url( 'post.php' )
+				);
 			}
 
 			$requested_email = (string) ( $event_data['requester_email'] ?? '' );
@@ -102,12 +108,12 @@ if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
 			$this->variables = array_merge(
 				$this->variables,
 				array(
-					'{{refund_request_status}}' => $request_status,
-					'{{refund_requested_by}}'   => (string) $requested_by,
+					'{{refund_request_status}}'  => $request_status,
+					'{{refund_requested_by}}'    => (string) $requested_by,
 					'{{refund_requested_email}}' => $requested_email,
-					'{{refund_requested_at}}'   => $requested_at_display,
-					'{{refund_reason}}'         => $reason,
-					'{{admin_order_edit_url}}'  => $admin_order_edit_url,
+					'{{refund_requested_at}}'    => $requested_at_display,
+					'{{refund_reason}}'          => $reason,
+					'{{admin_order_edit_url}}'   => $admin_order_edit_url,
 				)
 			);
 		}

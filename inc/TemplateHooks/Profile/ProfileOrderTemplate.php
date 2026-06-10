@@ -337,7 +337,7 @@ class ProfileOrderTemplate {
 	 */
 	public static function refund_request_status_html( $order ): string {
 
-		$refund_request_status = sanitize_key( (string) get_post_meta( $order->get_id(), '_lp_refund_request_status', true ) );
+		$refund_request_status = $order->get_refund_request();
 		if ( empty( $refund_request_status ) ) {
 			return '';
 		}

@@ -138,9 +138,7 @@ export class OrderRefund {
 
 		ajaxHandle.fetchAJAX( dataSend, {
 			success: ( response ) => {
-				const status = response?.status || 'error';
-				const message = response?.message || 'Refund request failed.';
-				const responseData = response?.data || {};
+				const { status, message, data } = response;
 
 				if ( status !== 'success' ) {
 					throw new Error( message );
@@ -148,8 +146,10 @@ export class OrderRefund {
 
 				lpToastify.show( message, 'success' );
 
-				const redirect = responseData.redirect || actionLink.href || window.location.href;
-				window.location.href = redirect;
+				window.location.href =
+					data.redirect ||
+					actionLink.href ||
+					window.location.href;
 			},
 			error: ( error ) => {
 				const message = error?.message || error || 'Refund request failed.';

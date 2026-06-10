@@ -67,6 +67,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 		const META_KEY_TRANSACTION_ID = '_transaction_id';
 
+		const META_KEY_REFUND_REQUEST = '_lp_refund_request';
+
 		/**
 		 * Store order status in transactions.
 		 *
@@ -1067,7 +1069,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			$enable_refund = 'yes' === learn_press_get_refund_setting( 'enable_refund_requests', 'no' );
 			if ( $enable_refund ) {
-				$refund_request_status = get_post_meta( $this->get_id(), '_lp_refund_request_status', true );
+				$refund_request_status = $this->get_refund_request();
 				if ( 'pending' === $refund_request_status ) {
 					$actions['refund-requested'] = array(
 						'url'  => '',
@@ -1586,7 +1588,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						AND refund_request_pm.meta_key = %s
 						AND refund_request_pm.meta_value = %s
 					)",
-					'_lp_refund_request_status',
+					LP_Order::META_KEY_REFUND_REQUEST,
 					$refund_request_status
 				);
 			}
@@ -1605,7 +1607,18 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return string
 		 */
 		public function get_transaction_id(): string {
-			return $this->get_meta( self::META_KEY_TRANSACTION_ID );
+			return (string) $this->get_meta( self::META_KEY_TRANSACTION_ID );
+		}
+
+		/**
+		 * Get refund request status from order meta.
+		 *
+		 * @since 4.4.0
+		 * @version 1.0.0
+		 * @return string pending|approved|auto-approved|denied|''
+		 */
+		public function get_refund_request(): string {
+			return (string) get_post_meta( $this->get_id(), self::META_KEY_REFUND_REQUEST, true );
 		}
 	}
 }
