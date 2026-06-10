@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.3.9\n"
+"Project-Id-Version: LearnPress 4.3.9.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-08T05:18:28+03:00\n"
+"POT-Creation-Date: 2026-06-10T05:05:17+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -894,7 +894,7 @@ msgstr ""
 #: learnpress.php
 #: inc/admin/class-lp-admin.php:158
 #: inc/admin/class-lp-admin.php:166
-#: inc/admin/lp-admin-functions.php:1503
+#: inc/admin/lp-admin-functions.php:1520
 #: inc/admin/settings/class-lp-settings-emails.php:153
 #: inc/ExternalPlugin/Elementor/LPElementor.php:56
 #: inc/ExternalPlugin/Elementor/LPElementor.php:112
@@ -1849,7 +1849,7 @@ msgstr ""
 
 #: config/settings/advanced.php:57
 #: config/settings/permalink.php:40
-#: inc/admin/lp-admin-functions.php:57
+#: inc/admin/lp-admin-functions.php:74
 #: inc/admin/meta-box/fields/course-permalink.php:22
 #: inc/class-lp-helper.php:550
 #: inc/custom-post-types/abstract.php:974
@@ -4204,7 +4204,7 @@ msgid "Processing..."
 msgstr ""
 
 #: inc/admin/class-lp-admin-mcp-api-keys.php:76
-#: inc/Ajax/MCP/McpApiKeysAjax.php:79
+#: inc/Ajax/MCP/McpApiKeysAjax.php:84
 msgid "API key created."
 msgstr ""
 
@@ -4224,15 +4224,15 @@ msgstr ""
 msgid "Sorry, you are not allowed to manage MCP API keys."
 msgstr ""
 
-#: inc/admin/class-lp-admin-mcp-api-keys.php:194
+#: inc/admin/class-lp-admin-mcp-api-keys.php:196
 msgid "API key revoked."
 msgstr ""
 
-#: inc/admin/class-lp-admin-mcp-api-keys.php:195
+#: inc/admin/class-lp-admin-mcp-api-keys.php:200
 msgid "Selected API keys revoked."
 msgstr ""
 
-#: inc/admin/class-lp-admin-mcp-api-keys.php:196
+#: inc/admin/class-lp-admin-mcp-api-keys.php:204
 msgid "No API keys selected."
 msgstr ""
 
@@ -4314,14 +4314,14 @@ msgstr ""
 msgid "Thanks :)"
 msgstr ""
 
-#: inc/admin/class-lp-admin.php:912
+#: inc/admin/class-lp-admin.php:916
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:196
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:320
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:469
 msgid "Permalink is only available if the item is already assigned to a course."
 msgstr ""
 
-#: inc/admin/class-lp-admin.php:961
+#: inc/admin/class-lp-admin.php:965
 #: inc/TemplateHooks/CourseBuilder/CourseBuilderTemplate.php:728
 #: inc/TemplateHooks/CourseBuilder/CourseBuilderTemplate.php:747
 msgid "Edit with Course Builder"
@@ -4601,96 +4601,96 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:32
+#: inc/admin/lp-admin-functions.php:49
 msgctxt "copy course"
 msgid "Duplicate"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:79
+#: inc/admin/lp-admin-functions.php:96
 msgctxt "copy quiz"
 msgid "Duplicate"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:88
+#: inc/admin/lp-admin-functions.php:105
 msgctxt "copy question"
 msgid "Duplicate"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:97
+#: inc/admin/lp-admin-functions.php:114
 msgctxt "copy lesson"
 msgid "Duplicate"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:136
+#: inc/admin/lp-admin-functions.php:153
 msgid "[ Add a new page ]"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:159
+#: inc/admin/lp-admin-functions.php:176
 msgid "Select Page"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:177
+#: inc/admin/lp-admin-functions.php:194
 #: inc/admin/meta-box/fields/select-page.php:24
 msgid "Select a page&hellip;"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:205
+#: inc/admin/lp-admin-functions.php:222
 msgctxt "dropdown pages"
 msgid "or"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:208
+#: inc/admin/lp-admin-functions.php:225
 msgid "Create new"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:213
+#: inc/admin/lp-admin-functions.php:230
 msgid "New page title"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:215
+#: inc/admin/lp-admin-functions.php:232
 msgid "Ok [Enter]"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:217
+#: inc/admin/lp-admin-functions.php:234
 msgid "Cancel [ESC]"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:222
+#: inc/admin/lp-admin-functions.php:239
 msgid "Edit page"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:225
+#: inc/admin/lp-admin-functions.php:242
 msgid "View page"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:348
+#: inc/admin/lp-admin-functions.php:365
 msgid "Minutes"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:439
+#: inc/admin/lp-admin-functions.php:456
 msgid "Plain Text"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:440
+#: inc/admin/lp-admin-functions.php:457
 msgid "HTML"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1649
+#: inc/admin/lp-admin-functions.php:1666
 msgctxt "Duplicate item title suffix"
 msgid "Copy"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1758
+#: inc/admin/lp-admin-functions.php:1775
 #, php-format
 msgid "Question id %s does not exist."
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1762
+#: inc/admin/lp-admin-functions.php:1779
 #, php-format
 msgid "Quiz id %s does not exist."
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:2092
+#: inc/admin/lp-admin-functions.php:2109
 #: inc/admin/views/addons.php:264
 #: inc/TemplateHooks/Profile/ProfileQuizzesTemplate.php:250
 #: inc/templates/class-lp-template-profile.php:116
@@ -4700,7 +4700,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:2097
+#: inc/admin/lp-admin-functions.php:2114
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:476
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:939
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1221
@@ -4727,14 +4727,14 @@ msgstr ""
 msgid "Publish"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:2102
+#: inc/admin/lp-admin-functions.php:2119
 #: inc/Models/PostModel.php:620
 #: inc/order/class-lp-order.php:285
 #: inc/templates/class-lp-template-profile.php:118
 msgid "Pending"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:2107
+#: inc/admin/lp-admin-functions.php:2124
 #: inc/admin/views/addons.php:164
 #: inc/admin/views/addons.php:266
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:235
@@ -4742,7 +4742,7 @@ msgstr ""
 msgid "Paid"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:2112
+#: inc/admin/lp-admin-functions.php:2129
 #: inc/admin/views/addons.php:164
 #: inc/admin/views/addons.php:267
 #: inc/course/abstract-course.php:674
@@ -4888,11 +4888,11 @@ msgstr ""
 msgid "MCP"
 msgstr ""
 
-#: inc/admin/settings/class-lp-settings-mcp.php:64
+#: inc/admin/settings/class-lp-settings-mcp.php:37
 msgid "Learn more"
 msgstr ""
 
-#: inc/admin/settings/class-lp-settings-mcp.php:69
+#: inc/admin/settings/class-lp-settings-mcp.php:42
 msgid "This feature requires WordPress 7.0+ or WordPress 6.9+ with the MCP Adapter plugin activated."
 msgstr ""
 
@@ -5008,12 +5008,12 @@ msgid "LearnPress Settings"
 msgstr ""
 
 #. translators: 1: processed users, 2: generated slugs, 3: skipped users, 4: failed users
-#: inc/admin/sub-menus/class-lp-submenu-settings.php:74
+#: inc/admin/sub-menus/class-lp-submenu-settings.php:77
 #, php-format
 msgid "User slug generation finished. Processed: %1$d, Generated: %2$d, Skipped: %3$d, Failed: %4$d."
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-settings.php:98
+#: inc/admin/sub-menus/class-lp-submenu-settings.php:101
 msgid "Save settings"
 msgstr ""
 
@@ -7818,36 +7818,40 @@ msgstr ""
 msgid "Congrats! You have completed \"%s\"."
 msgstr ""
 
-#: inc/Ajax/MCP/McpApiKeysAjax.php:35
+#: inc/Ajax/MCP/McpApiKeysAjax.php:36
 msgid "You are not allowed to manage MCP API keys."
 msgstr ""
 
 #: inc/Ajax/MCP/McpApiKeysAjax.php:40
+msgid "MCP integration is disabled."
+msgstr ""
+
 #: inc/Ajax/MCP/McpApiKeysAjax.php:45
+#: inc/Ajax/MCP/McpApiKeysAjax.php:50
 msgid "Error: params invalid!"
 msgstr ""
 
-#: inc/Ajax/MCP/McpApiKeysAjax.php:75
+#: inc/Ajax/MCP/McpApiKeysAjax.php:80
 msgid "Could not create API key."
 msgstr ""
 
-#: inc/Ajax/MCP/McpApiKeysAjax.php:117
+#: inc/Ajax/MCP/McpApiKeysAjax.php:122
 msgid "Could not update API key."
 msgstr ""
 
-#: inc/Ajax/MCP/McpApiKeysAjax.php:121
+#: inc/Ajax/MCP/McpApiKeysAjax.php:126
 msgid "API key updated."
 msgstr ""
 
-#: inc/Ajax/MCP/McpApiKeysAjax.php:148
+#: inc/Ajax/MCP/McpApiKeysAjax.php:153
 msgid "Invalid key ID."
 msgstr ""
 
-#: inc/Ajax/MCP/McpApiKeysAjax.php:153
+#: inc/Ajax/MCP/McpApiKeysAjax.php:158
 msgid "Could not regenerate API key."
 msgstr ""
 
-#: inc/Ajax/MCP/McpApiKeysAjax.php:157
+#: inc/Ajax/MCP/McpApiKeysAjax.php:162
 msgid "API key regenerated."
 msgstr ""
 
