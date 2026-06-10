@@ -20,11 +20,7 @@ defined( 'ABSPATH' ) || exit();
 function learn_press_is_mcp_available(): bool {
 	$wp_version = (string) get_bloginfo( 'version' );
 
-	if ( version_compare( $wp_version, '7.0', '>=' ) ) {
-		return true;
-	}
-
-	if ( ! version_compare( $wp_version, '6.9', '>=' ) ) {
+	if ( version_compare( $wp_version, '6.9', '<' ) ) {
 		return false;
 	}
 
