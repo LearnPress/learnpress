@@ -344,7 +344,7 @@ class ProfileOrderTemplate {
 
 		$status_labels = array(
 			'pending'       => __( 'Pending', 'learnpress' ),
-			'denied'        => __( 'Rejected', 'learnpress' ),
+			'rejected'      => __( 'Rejected', 'learnpress' ),
 			'approved'      => __( 'Accepted', 'learnpress' ),
 			'auto-approved' => __( 'Accepted', 'learnpress' ),
 		);

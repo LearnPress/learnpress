@@ -45,7 +45,7 @@ return apply_filters(
 		),
 		array(
 			'title'           => esc_html__( 'Allow Re-Request After Rejection', 'learnpress' ),
-			'id'              => 'allow_refund_rerequest',
+			'id'              => 'allow_resend_after_rejected',
 			'default'         => 'no',
 			'type'            => 'checkbox',
 			'desc'            => esc_html__( 'Allow users to submit a new request after a denied refund request.', 'learnpress' ),

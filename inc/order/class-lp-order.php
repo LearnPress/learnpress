@@ -1620,5 +1620,98 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_refund_request(): string {
 			return (string) get_post_meta( $this->get_id(), self::META_KEY_REFUND_REQUEST, true );
 		}
+
+		/**
+		 * Method check order can refund
+		 *
+		 * @return bool|WP_Error
+		 */
+		public function can_refund() {
+			try {
+				$error_code = '';
+				if ( 'yes' !== learn_press_get_refund_setting( 'enable_refund_requests', 'no' ) ) {
+					$error_code = 'refund_disabled';
+					throw new Exception( __( 'Refund requests are currently disabled.', 'learnpress' ) );
+				}
+
+				if ( $this->has_status( LP_ORDER_REFUNDED ) ) {
+					$error_code = 'order_refunded';
+					throw new Exception( __( 'Order has refunded', 'learnpress' ) );
+				}
+
+				if ( ! $this->has_status( LP_ORDER_COMPLETED ) ) {
+					$error_code = 'order_not_completed';
+					throw new Exception( __( 'Order is not completed', 'learnpress' ) );
+				}
+
+				$payment_method = strtolower( $this->get_data( 'payment_method', '' ) );
+				$gateway        = LP_Gateways::instance()->get_gateway( $payment_method );
+				if ( ! $gateway || ! is_callable( array( $gateway, 'refund' ) ) ) {
+					throw new Exception( __( 'Refund gateway is unavailable.', 'learnpress' ) );
+				}
+			} catch ( Throwable $e ) {
+				if ( empty( $error_code ) ) {
+					$error_code = 'order_can_not_refund';
+				}
+
+				return new WP_Error( $error_code, $e->getMessage() );
+			}
+
+			return true;
+		}
+
+		/**
+		 * Method check user can send request refund
+		 *
+		 * Apply for cache 1 user 1 order, only user of this order can send request refund
+		 *
+		 * @since 4.4.0
+		 * @version 1.0.0
+		 * @return bool|WP_Error
+		 */
+		public function can_send_request_refund( UserModel $userModel ) {
+			try {
+				$error_code = '';
+
+				$order_user = $this->get_user_id();
+				if ( $order_user !== $userModel->get_id() ) {
+					$error_code = 'user_can_not_send_request_refund';
+					throw new Exception( __( 'You do not have permission to refund this order.', 'learnpress' ) );
+				}
+
+				$request_status = $this->get_refund_request();
+				if ( 'rejected' === $request_status
+					&& 'yes' !== learn_press_get_refund_setting( 'allow_resend_after_rejected', 'no' ) ) {
+					throw new Exception( __( 'Request refund is rejected!.', 'learnpress' ) );
+				} elseif ( ! empty( $request_status ) ) {
+					throw new Exception(
+						sprintf(
+							__( 'Request refund has %s', 'learnpress' ),
+							$request_status
+						)
+					);
+				}
+
+				$refund_time_limit = learn_press_get_refund_setting( 'refund_time_limit', 30 );
+				if ( $refund_time_limit > 0 ) {
+					$order_time = absint( $this->get_order_date( 'timestamp' ) );
+					if ( $order_time > 0 ) {
+						$now                = current_time( 'timestamp' );
+						$allowed_time_limit = strtotime( '+ ' . $refund_time_limit . ' day', $order_time );
+						if ( $allowed_time_limit > $now ) {
+							throw new Exception( __( 'Time for refund request expired', 'learnpress' ) );
+						}
+					}
+				}
+			} catch ( Throwable $e ) {
+				if ( empty( $error_code ) ) {
+					$error_code = 'user_can_not_send_request_refund';
+				}
+
+				return new WP_Error( $error_code, $e->getMessage() );
+			}
+
+			return true;
+		}
 	}
 }

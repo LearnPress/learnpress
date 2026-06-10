@@ -91,7 +91,7 @@ class PaymentsSettingsTest extends BrainMonkeyTestCase {
 				'auto_refund'             => 'no',
 				'refund_time_limit'       => 30,
 				'require_refund_reason'   => 'no',
-				'allow_refund_rerequest'  => 'no',
+				'allow_resend_after_rejected' => 'no',
 				'refund_max_completion'   => 0,
 			],
 			$refund_defaults

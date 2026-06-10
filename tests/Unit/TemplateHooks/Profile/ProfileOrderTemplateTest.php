@@ -39,7 +39,7 @@ class ProfileOrderTemplateTest extends BrainMonkeyTestCase {
 
 		$expected_labels = array(
 			'pending'       => 'Pending',
-			'denied'        => 'Rejected',
+			'rejected'      => 'Rejected',
 			'approved'      => 'Accepted',
 			'auto-approved' => 'Accepted',
 		);

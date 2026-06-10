@@ -15,11 +15,57 @@ use LP_Gateways;
 use LP_User;
 use LP_Request;
 use LP_REST_Response;
+use WP_Error;
 use WP_User;
 use Exception;
 use Throwable;
 
 class RefundOrderAjax extends AbstractAjax {
+	/**
+	 * Customer request refund order from profile page.
+	 *
+	 * @since 4.4.0
+	 * @version 1.0.0
+	 *
+	 * @return void
+	 */
+	public function request_refund_order() {
+		$response = new LP_REST_Response();
+
+		try {
+			$userModel = UserModel::find( get_current_user_id(), true );
+			if ( ! $userModel ) {
+				throw new Exception( __( 'Invalid user.', 'learnpress' ) );
+			}
+
+			$params   = LP_Helper::json_decode( LP_Request::get_param( 'data' ), true );
+			$order_id = absint( $params['order_id'] ?? 0 );
+			$reason   = LP_Helper::sanitize_params_submitted( $params['reason'] ?? '' );
+
+			$lp_order = learn_press_get_order( $order_id );
+			if ( ! $lp_order ) {
+				throw new Exception( __( 'Invalid order.', 'learnpress' ) );
+			}
+
+			$order_users = $lp_order->get_users();
+			if ( ! in_array( $userModel->get_id(), $order_users ) ) {
+				throw new Exception( __( 'Invalid order.', 'learnpress' ) );
+			}
+
+			// Check valid refund request
+			$lp_order->can_send_request_refund( $userModel );
+
+			$result            = $this->process_refund_order( $lp_order, $reason );
+			$response->status  = 'success';
+			$response->message = $result['message'];
+			$response->data    = $result['data'];
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
 	/**
 	 * Process admin approve/deny refund request via AJAX.
 	 *
@@ -95,7 +141,7 @@ class RefundOrderAjax extends AbstractAjax {
 					'refund_amount_formatted' => learn_press_format_price( $refund_amount, learn_press_get_currency_symbol( $lp_order->get_currency() ) ),
 				);
 			} elseif ( 'deny' === $action ) {
-				update_post_meta( $order_id, '_lp_refund_request', 'denied' );
+				update_post_meta( $order_id, '_lp_refund_request', 'rejected' );
 				update_post_meta( $order_id, '_lp_refund_reviewed_by', $admin_id );
 				update_post_meta( $order_id, '_lp_refund_reviewed_at', current_time( 'mysql' ) );
 
@@ -109,7 +155,7 @@ class RefundOrderAjax extends AbstractAjax {
 				$deny_event_data = learn_press_get_order_refund_event_data(
 					$lp_order,
 					array(
-						'request_status' => 'denied',
+						'request_status' => 'rejected',
 						'reviewed_by'    => $admin_id,
 						'order_status'   => $lp_order->get_status(),
 						'actor_id'       => $admin_id,
@@ -118,11 +164,11 @@ class RefundOrderAjax extends AbstractAjax {
 				);
 				do_action( 'learn-press/order/refund-denied', $order_id, $admin_id, $deny_event_data );
 
-					$response->message = __( 'Refund request denied.', 'learnpress' );
-				$response->data        = array(
+				$response->message = __( 'Refund request denied.', 'learnpress' );
+				$response->data    = array(
 					'order_id'       => $order_id,
 					'refund_action'  => $action,
-					'request_status' => 'denied',
+					'request_status' => 'rejected',
 					'order_status'   => $lp_order->get_status(),
 				);
 			} else {
@@ -130,47 +176,6 @@ class RefundOrderAjax extends AbstractAjax {
 			}
 
 			$response->status = 'success';
-		} catch ( Throwable $e ) {
-			$response->message = $e->getMessage();
-		}
-
-		wp_send_json( $response );
-	}
-	/**
-	 * Customer request refund order from profile page.
-	 *
-	 * @since 4.3.5
-	 * @version 1.0.0
-	 *
-	 * @return void
-	 */
-	public function request_refund_order() {
-		$response = new LP_REST_Response();
-
-		try {
-			$userModel = UserModel::find( get_current_user_id(), true );
-			if ( ! $userModel ) {
-				throw new Exception( __( 'Invalid user.', 'learnpress' ) );
-			}
-
-			$params   = LP_Helper::json_decode( LP_Request::get_param( 'data' ), true );
-			$order_id = absint( $params['order_id'] ?? 0 );
-			$reason   = LP_Helper::sanitize_params_submitted( $params['reason'] ?? '' );
-
-			$lp_order = learn_press_get_order( $order_id );
-			if ( ! $lp_order ) {
-				throw new Exception( __( 'Invalid order.', 'learnpress' ) );
-			}
-
-			$order_users = $lp_order->get_users();
-			if ( ! in_array( $userModel->get_id(), $order_users ) ) {
-				throw new Exception( __( 'Invalid order.', 'learnpress' ) );
-			}
-
-			$result            = $this->process_refund_order( $lp_order, $reason );
-			$response->status  = 'success';
-			$response->message = $result['message'];
-			$response->data    = $result['data'];
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
@@ -191,58 +196,14 @@ class RefundOrderAjax extends AbstractAjax {
 	 * @throws Exception
 	 */
 	private function process_refund_order( $lp_order, string $reason ): array {
-		if ( is_admin() ) {
-			throw new Exception( __( 'Invalid refund request.', 'learnpress' ) );
-		}
-
-		if ( 'yes' !== learn_press_get_refund_setting( 'enable_refund_requests', 'no' ) ) {
-			throw new Exception( __( 'Refund requests are currently disabled.', 'learnpress' ) );
-		}
-
-		$order_id    = $lp_order->get_id();
-		$user_id     = $lp_order->get_user_id();
-		$eligibility = learn_press_get_order_refund_eligibility( $lp_order, $user_id );
-		if ( empty( $eligibility['eligible'] ) ) {
-			$eligibility_code    = sanitize_key( (string) ( $eligibility['code'] ?? '' ) );
-			$eligibility_message = (string) ( $eligibility['message'] ?? '' );
-			if ( empty( $eligibility_message ) ) {
-				$eligibility_messages = array(
-					'refund_disabled'       => __( 'Refund requests are currently disabled.', 'learnpress' ),
-					'guest_not_supported'   => __( 'Guest account cannot request refunds.', 'learnpress' ),
-					'invalid_status'        => __( 'Only completed orders can be refunded.', 'learnpress' ),
-					'unsupported_gateway'   => __( 'This payment gateway does not support refunds.', 'learnpress' ),
-					'pending_request'       => __( 'A refund request is already pending for this order.', 'learnpress' ),
-					'already_refunded'      => __( 'This order has already been refunded.', 'learnpress' ),
-					'rerequest_not_allowed' => __( 'You cannot submit another refund request for this order.', 'learnpress' ),
-					'invalid_owner'         => __( 'You do not have permission to refund this order.', 'learnpress' ),
-					'time_limit_exceeded'   => __( 'This order is outside the refund period.', 'learnpress' ),
-					'completion_exceeded'   => __( 'Course completion exceeds the refund limit.', 'learnpress' ),
-				);
-				$eligibility_message  = $eligibility_messages[ $eligibility_code ] ?? __( 'This order is not eligible for refund.', 'learnpress' );
-			}
-
-			throw new Exception( $eligibility_message );
+		$order_id   = $lp_order->get_id();
+		$user_id    = $lp_order->get_user_id();
+		$can_refund = $lp_order->can_refund();
+		if ( $can_refund instanceof WP_Error ) {
+			throw new Exception( $can_refund->get_error_message() );
 		}
 
 		$previous_request_status = $lp_order->get_refund_request();
-
-		$require_reason = ! empty( $eligibility['require_reason'] );
-		$reason_min     = absint( $eligibility['reason_min'] ?? 10 );
-		if ( $require_reason ) {
-			if ( empty( $reason ) ) {
-				throw new Exception( __( 'Refund reason is required.', 'learnpress' ) );
-			}
-
-			$reason_length = function_exists( 'mb_strlen' ) ? mb_strlen( $reason ) : strlen( $reason );
-			if ( $reason_length < $reason_min ) {
-				throw new Exception(
-					sprintf(
-						__( 'Refund reason must be at least %d characters.', 'learnpress' ),
-						$reason_min
-					)
-				);
-			}
-		}
 
 		if ( ! empty( $reason ) ) {
 			update_post_meta( $order_id, '_lp_refund_reason', $reason );
@@ -274,7 +235,7 @@ class RefundOrderAjax extends AbstractAjax {
 		update_post_meta( $order_id, '_lp_refund_requested_at', $request_time );
 
 		if ( $auto_refund ) {
-			if ( 'denied' === $previous_request_status ) {
+			if ( 'rejected' === $previous_request_status ) {
 				$rerequest_event_data = learn_press_get_order_refund_event_data(
 					$lp_order,
 					array(
@@ -336,7 +297,7 @@ class RefundOrderAjax extends AbstractAjax {
 				)
 			);
 
-			if ( 'denied' === $previous_request_status ) {
+			if ( 'rejected' === $previous_request_status ) {
 				do_action( 'learn-press/order/refund-rerequested', $order_id, $request_user_id, $request_event_data );
 			}
 

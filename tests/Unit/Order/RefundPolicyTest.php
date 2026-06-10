@@ -309,7 +309,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		\LP_Settings::$options = array_merge(
 			array(
 				'enable_refund_requests' => 'yes',
-				'allow_refund_rerequest' => 'no',
+				'allow_resend_after_rejected' => 'no',
 				'refund_time_limit'      => 30,
 				'refund_max_completion'  => 0,
 				'require_refund_reason'  => 'no',
@@ -533,7 +533,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 	public function eligibility_rejects_rerequest_when_denied_and_not_allowed(): void {
 		$this->set_refund_settings(
 			array(
-				'allow_refund_rerequest' => 'no',
+				'allow_resend_after_rejected' => 'no',
 			)
 		);
 
@@ -544,7 +544,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 
 		Functions\when( 'get_post_meta' )->alias(
 			static function( int $post_id, string $key ) {
-				return '_lp_refund_request' === $key ? 'denied' : '';
+				return '_lp_refund_request' === $key ? 'rejected' : '';
 			}
 		);
 
@@ -558,7 +558,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 	public function eligibility_allows_rerequest_when_denied_and_setting_enabled(): void {
 		$this->set_refund_settings(
 			array(
-				'allow_refund_rerequest' => 'yes',
+				'allow_resend_after_rejected' => 'yes',
 				'refund_max_completion'  => 80,
 			)
 		);
@@ -573,7 +573,7 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 		$this->set_course_result( 77, 101, 20 );
 		Functions\when( 'get_post_meta' )->alias(
 			static function( int $post_id, string $key ) {
-				return '_lp_refund_request' === $key ? 'denied' : '';
+				return '_lp_refund_request' === $key ? 'rejected' : '';
 			}
 		);
 

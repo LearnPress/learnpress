@@ -385,12 +385,12 @@ if ( ! function_exists( 'learn_press_get_refund_setting' ) ) {
 	 */
 	function learn_press_get_refund_setting( string $key, $default = null ) {
 		$defaults = array(
-			'enable_refund_requests' => 'no',
-			'auto_refund'            => 'no',
-			'refund_time_limit'      => 30,
-			'require_refund_reason'  => 'no',
-			'allow_refund_rerequest' => 'no',
-			'refund_max_completion'  => 0,
+			'enable_refund_requests'      => 'no',
+			'auto_refund'                 => 'no',
+			'refund_time_limit'           => 30,
+			'require_refund_reason'       => 'no',
+			'allow_resend_after_rejected' => 'no',
+			'refund_max_completion'       => 0,
 		);
 
 		if ( null === $default && array_key_exists( $key, $defaults ) ) {
@@ -573,7 +573,8 @@ if ( ! function_exists( 'learn_press_get_order_refund_eligibility' ) ) {
 			return $result;
 		}
 
-		if ( 'denied' === $refund_request_status && 'yes' !== learn_press_get_refund_setting( 'allow_refund_rerequest', 'no' ) ) {
+		if ( 'rejected' === $refund_request_status
+			&& 'yes' !== learn_press_get_refund_setting( 'allow_resend_after_rejected', 'no' ) ) {
 			$result['code'] = 'rerequest_not_allowed';
 			return $result;
 		}
@@ -788,7 +789,7 @@ function learn_press_admin_order_refund_request_panel( $order ) {
 		'pending'       => __( 'Pending review', 'learnpress' ),
 		'approved'      => __( 'Approved', 'learnpress' ),
 		'auto-approved' => __( 'Auto approved', 'learnpress' ),
-		'denied'        => __( 'Denied', 'learnpress' ),
+		'rejected'      => __( 'Rejected', 'learnpress' ),
 	);
 	$status_label  = $status_labels[ $refund_request_status ] ?? '';
 	if ( empty( $status_label ) && ! empty( $refund_request_status ) ) {
