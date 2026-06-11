@@ -145,11 +145,9 @@ export class OrderRefund {
 				}
 
 				lpToastify.show( message, 'success' );
-
-				window.location.href =
-					data.redirect ||
-					actionLink.href ||
-					window.location.href;
+				setTimeout( () => {
+					window.location.reload();
+				}, 1200 );
 			},
 			error: ( error ) => {
 				const message = error?.message || error || 'Refund request failed.';

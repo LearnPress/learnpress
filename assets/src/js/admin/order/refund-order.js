@@ -1,6 +1,6 @@
 import SweetAlert from 'sweetalert2';
-import * as lpToastify from '../../lpToastify';
-import * as lpUtils from '../../utils.js';
+import * as lpToastify from 'lpAssetsJsPath/lpToastify';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 /**
  * Handle admin approve/deny refund actions.
@@ -37,15 +37,6 @@ export class RefundOrder {
 				callBack: this.handleAction.name,
 			},
 		] );
-	}
-
-	getAjaxHandle() {
-		const ajaxHandle = window.lpAJAXG;
-		if ( ! ajaxHandle || typeof ajaxHandle.fetchAJAX !== 'function' ) {
-			return null;
-		}
-
-		return ajaxHandle;
 	}
 
 	getPanelData( panel ) {
@@ -140,14 +131,8 @@ export class RefundOrder {
 		} );
 	}
 
-	sendAction( panel, refundAction, refundAmount = 0, note = '' ) {
-		const ajaxHandle = this.getAjaxHandle();
+	sendAction( actionButton, panel, refundAction, refundAmount = 0, note = '' ) {
 		const data = this.getPanelData( panel );
-
-		if ( ! ajaxHandle ) {
-			lpToastify.show( 'Refund action is unavailable right now.', 'error' );
-			return;
-		}
 
 		if ( ! data.orderId ) {
 			lpToastify.show( 'Invalid order.', 'error' );
@@ -156,10 +141,11 @@ export class RefundOrder {
 
 		this.isRequesting = true;
 		this.setLoadingState( panel, true );
+		lpUtils.lpSetLoadingEl( actionButton, 1 );
 
-		ajaxHandle.fetchAJAX(
+		window.lpAJAXG.fetchAJAX(
 			{
-				action: 'admin_refund_order_process',
+				action: 'admin_handle_request_refund',
 				order_id: data.orderId,
 				refund_action: refundAction,
 				refund_amount: refundAmount,
@@ -167,19 +153,19 @@ export class RefundOrder {
 			},
 			{
 				success: ( response ) => {
-					const status = response?.status || 'error';
-					const messageResponse = response?.message || 'Refund action failed.';
+					const { status, message, data } = response;
 
 					if ( status !== 'success' ) {
-						throw new Error( messageResponse );
+						throw new Error( message );
 					}
 
-					lpToastify.show( messageResponse, 'success' );
+					lpToastify.show( message, 'success' );
 					this.isReloading = true;
 					window.setTimeout( () => window.location.reload(), 1200 );
 				},
 				error: ( error ) => {
-					const messageResponse = error?.message || error || 'Refund action failed.';
+					const messageResponse =
+						error?.message || error || 'Refund action failed.';
 					lpToastify.show( messageResponse, 'error' );
 				},
 				completed: () => {
@@ -189,8 +175,9 @@ export class RefundOrder {
 
 					this.isRequesting = false;
 					this.setLoadingState( panel, false );
+					lpUtils.lpSetLoadingEl( actionButton, 0 );
 				},
-			}
+			},
 		);
 	}
 
@@ -205,21 +192,19 @@ export class RefundOrder {
 		}
 
 		const refundAction = actionButton.dataset.refundAction || '';
-		if ( refundAction === 'deny' ) {
-			this.sendAction( panel, refundAction );
-			return;
-		}
+		let amount = '';
+		let note = '';
 
-		if ( refundAction !== 'approve' ) {
-			return;
+		if ( 'reject' === refundAction ) {
+			return this.sendAction( actionButton, panel, refundAction );
 		}
 
 		const result = await this.openApproveModal( this.getPanelData( panel ) );
-		if ( ! result.isConfirmed || ! result.value ) {
-			return;
+		if ( result.isConfirmed && result.value ) {
+			amount = result.value.refundAmount;
+			note = result.value.note;
+			this.sendAction( actionButton, panel, refundAction, amount, note );
 		}
-
-		this.sendAction( panel, refundAction, result.value.refundAmount, result.value.note );
 	}
 }
 
