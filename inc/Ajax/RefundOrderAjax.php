@@ -230,8 +230,6 @@ class RefundOrderAjax extends AbstractAjax {
 
 		$auto_refund = learn_press_get_refund_setting( 'auto_refund', 'no' ) === 'yes';
 
-		// Write requester meta once before branching (shared by both auto and manual paths).
-		update_post_meta( $order_id, '_lp_refund_requested_by', $request_user_id );
 		update_post_meta( $order_id, '_lp_refund_requested_at', $request_time );
 
 		if ( $auto_refund ) {
@@ -416,11 +414,6 @@ class RefundOrderAjax extends AbstractAjax {
 		}
 		update_post_meta( $order_id, '_lp_refund_request', sanitize_key( $request_status ) );
 
-		$requested_by = absint( $context['requested_by'] );
-		if ( ! empty( $requested_by ) && empty( get_post_meta( $order_id, '_lp_refund_requested_by', true ) ) ) {
-			update_post_meta( $order_id, '_lp_refund_requested_by', $requested_by );
-		}
-
 		$requested_at = (string) $context['requested_at'];
 		if ( ! empty( $requested_at ) && empty( get_post_meta( $order_id, '_lp_refund_requested_at', true ) ) ) {
 			update_post_meta( $order_id, '_lp_refund_requested_at', $requested_at );
@@ -478,7 +471,7 @@ class RefundOrderAjax extends AbstractAjax {
 			$lp_order,
 			array(
 				'request_status'     => $request_status,
-				'requested_by'       => $requested_by ?: absint( get_post_meta( $order_id, '_lp_refund_requested_by', true ) ),
+				'requested_by'       => $requested_by,
 				'requested_at'       => ! empty( $requested_at ) ? $requested_at : (string) get_post_meta( $order_id, '_lp_refund_requested_at', true ),
 				'reviewed_by'        => $reviewed_by ?: absint( get_post_meta( $order_id, '_lp_refund_reviewed_by', true ) ),
 				'order_status'       => LP_ORDER_REFUNDED,
@@ -533,9 +526,6 @@ class RefundOrderAjax extends AbstractAjax {
 		if ( $max_completion > 0 ) {
 			// Resolve refund user id inline (was resolve_refund_user_id).
 			$refund_user_id = absint( $context['requested_by'] ?? 0 );
-			if ( empty( $refund_user_id ) ) {
-				$refund_user_id = absint( get_post_meta( $lp_order->get_id(), '_lp_refund_requested_by', true ) );
-			}
 			if ( empty( $refund_user_id ) && sanitize_key( (string) ( $context['actor_type'] ?? '' ) ) === 'customer' ) {
 				$refund_user_id = absint( $context['actor_id'] ?? 0 );
 			}

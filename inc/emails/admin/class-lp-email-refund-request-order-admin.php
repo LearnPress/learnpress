@@ -73,7 +73,7 @@ if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
 				$event_data = wp_parse_args( $event_data, learn_press_get_order_refund_event_data( $order ) );
 			}
 
-			$requested_by         = absint( $event_data['requested_by'] ?? get_post_meta( $order->get_id(), '_lp_refund_requested_by', true ) );
+			$requested_by         = absint( $event_data['requested_by'] ?? 0 );
 			$requested_at         = (string) ( $event_data['requested_at'] ?? get_post_meta( $order->get_id(), '_lp_refund_requested_at', true ) );
 			$reason               = (string) ( $event_data['reason'] ?? get_post_meta( $order->get_id(), '_lp_refund_reason', true ) );
 			$request_status       = sanitize_key( (string) ( $event_data['request_status'] ?? $order->get_refund_request() ) );

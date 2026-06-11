@@ -726,7 +726,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 			'order_key'            => $order->get_order_key(),
 			'order_status'         => $order->get_status(),
 			'request_status'       => $order->get_refund_request(),
-			'requested_by'         => absint( get_post_meta( $order_id, '_lp_refund_requested_by', true ) ),
+			'requested_by'         => $order->get_user_id(),
 			'requested_at'         => (string) get_post_meta( $order_id, '_lp_refund_requested_at', true ),
 			'reviewed_by'          => absint( get_post_meta( $order_id, '_lp_refund_reviewed_by', true ) ),
 			'reviewed_at'          => (string) get_post_meta( $order_id, '_lp_refund_reviewed_at', true ),
