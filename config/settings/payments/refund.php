@@ -52,16 +52,6 @@ return apply_filters(
 			'show_if_checked' => 'enable_refund_requests',
 		),
 		array(
-			'title'           => esc_html__( 'User Completion Progress (%)', 'learnpress' ),
-			'id'              => 'refund_max_completion',
-			'default'         => 0,
-			'type'            => 'number',
-			'min'             => 0,
-			'max'             => 100,
-			'desc'            => esc_html__( 'Maximum completion percentage to remain eligible for refund. 0 means no limit.', 'learnpress' ),
-			'show_if_checked' => 'enable_refund_requests',
-		),
-		array(
 			'type' => 'sectionend',
 		),
 	)

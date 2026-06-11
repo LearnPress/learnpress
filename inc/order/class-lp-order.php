@@ -1622,11 +1622,30 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		/**
-		 * Method check order can refund
+		 * Check the order can be refunded.
 		 *
-		 * @return bool|WP_Error
+		 * Validates multiple conditions required for refund eligibility:
+		 * - Refund requests must be enabled in settings
+		 * - Order must not already be refunded
+		 * - Order must be in 'completed' status
+		 * - Refund amount must not exceed order total (including previously refunded amount)
+		 * - Payment gateway must have refund method implemented (override from abstract)
+		 *
+		 * @param float $amount The amount to refund..
+		 *
+		 * @return bool|WP_Error Returns true if refund is allowed, WP_Error with specific error code otherwise.
+		 *
+		 * Error codes:
+		 * - 'refund_disabled': Refund feature is disabled in settings
+		 * - 'order_refunded': Order already has refunded status
+		 * - 'order_not_completed': Order is not in completed status
+		 * - 'order_refund_amount_exceeds_total': Generic error (amount exceeds total or gateway unavailable)
+		 * - 'order_refund_gateway_unavailable': Gateway does not support refund
+		 *
+		 * @since 4.4.0
+		 * @version 1.0.0
 		 */
-		public function can_refund() {
+		public function can_refund( $amount = 0 ) {
 			try {
 				$error_code = '';
 				if ( 'yes' !== learn_press_get_refund_setting( 'enable_refund_requests', 'no' ) ) {
@@ -1644,9 +1663,28 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					throw new Exception( __( 'Order is not completed', 'learnpress' ) );
 				}
 
+				$refunded_amount = $this->get_meta( '_lp_refunded_ammount' );
+				if ( $refunded_amount > 0 ) {
+					$amount = $refunded_amount + $amount;
+				}
+
+				if ( $amount > $this->get_total() ) {
+					$error_code = 'order_refund_amount_exceeds_total';
+					throw new Exception( __( 'Refund amount is greater than order total.', 'learnpress' ) );
+				}
+
 				$payment_method = strtolower( $this->get_data( 'payment_method', '' ) );
 				$gateway        = LP_Gateways::instance()->get_gateway( $payment_method );
-				if ( ! $gateway || ! is_callable( array( $gateway, 'refund' ) ) ) {
+
+				$has_refund_override = false;
+				if ( $gateway && method_exists( $gateway, 'refund' ) ) {
+					// Check gateway has refund method override
+					$reflection          = new ReflectionMethod( $gateway, 'refund' );
+					$has_refund_override = $reflection->class === get_class( $gateway );
+				}
+
+				if ( ! $gateway || ! $has_refund_override ) {
+					$error_code = 'order_refund_gateway_unavailable';
 					throw new Exception( __( 'Refund gateway is unavailable.', 'learnpress' ) );
 				}
 			} catch ( Throwable $e ) {
@@ -1661,7 +1699,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		/**
-		 * Method check user can send request refund
+		 * Check user can send request refund
 		 *
 		 * Apply for cache 1 user 1 order, only user of this order can send request refund
 		 *
@@ -1675,15 +1713,17 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 				$order_user = $this->get_user_id();
 				if ( $order_user !== $userModel->get_id() ) {
-					$error_code = 'user_can_not_send_request_refund';
+					$error_code = 'request_refund_user_invalid';
 					throw new Exception( __( 'You do not have permission to refund this order.', 'learnpress' ) );
 				}
 
 				$request_status = $this->get_refund_request();
 				if ( 'rejected' === $request_status
 					&& 'yes' !== learn_press_get_refund_setting( 'allow_resend_after_rejected', 'no' ) ) {
+					$error_code = 'request_refund_is_rejected';
 					throw new Exception( __( 'Request refund is rejected!.', 'learnpress' ) );
 				} elseif ( ! empty( $request_status ) ) {
+					$error_code = 'request_refund_status_invalid';
 					throw new Exception(
 						sprintf(
 							__( 'Request refund has %s', 'learnpress' ),
@@ -1699,6 +1739,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						$now                = current_time( 'timestamp' );
 						$allowed_time_limit = strtotime( '+ ' . $refund_time_limit . ' day', $order_time );
 						if ( $allowed_time_limit > $now ) {
+							$error_code = 'request_refund_time_expired';
 							throw new Exception( __( 'Time for refund request expired', 'learnpress' ) );
 						}
 					}
@@ -1712,6 +1753,39 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			return true;
+		}
+
+		/**
+		 * Refund order with amount
+		 *
+		 * @return void
+		 * @throws Exception
+		 */
+		public function refund( $amount ) {
+			$can_refund = $this->can_refund( $amount );
+			if ( is_wp_error( $can_refund ) ) {
+				throw new Exception( $can_refund->get_error_message() );
+			}
+
+			$payment_method = strtolower( $this->get_data( 'payment_method', '' ) );
+			$gateway        = LP_Gateways::instance()->get_gateway( $payment_method );
+			/** @var LP_Gateway_Abstract|LP_Gateway_Paypal $gateway */
+			$gateway->refund( $this, $amount );
+
+			$user_id = get_current_user_id();
+			update_post_meta( $this->get_id(), '_lp_refunded_ammount', (float) $amount );
+			update_post_meta( $this->get_id(), '_lp_refunded_by', $user_id );
+
+			update_post_meta( $this->get_id(), '_lp_refunded_at', gmdate( LP_Datetime::$format, time() ) );
+			$this->update_status( LP_ORDER_REFUNDED );
+
+			$this->add_note(
+				sprintf(
+					__( 'Order %1$s has been refunded %2$s.', 'learnpress' ),
+					$this->get_order_number(),
+					learn_press_format_price( $amount, learn_press_get_currency_symbol( $this->get_currency() ) )
+				)
+			);
 		}
 	}
 }
