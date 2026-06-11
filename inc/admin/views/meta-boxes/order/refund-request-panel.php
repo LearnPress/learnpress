@@ -12,8 +12,8 @@
  * @var float  $order_total
  * @var string $order_total_formatted
  * @var string $refund_amount_formatted Empty unless the refund has been approved/auto-approved.
- * @var string $requester
- * @var string $requested_time
+ * @var string $requested_by
+ * @var string $requested_at
  * @var string $requester_email
  * @var string $refund_reason
  * @var string $status_label
@@ -48,11 +48,11 @@ defined( 'ABSPATH' ) || exit();
 	<label><?php esc_html_e( 'Refund Request', 'learnpress' ); ?></label>
 	<p class="description">
 		<?php
-		echo esc_html(
+		echo wp_kses_post(
 			sprintf(
-				__( 'Requested by %1$s at %2$s.', 'learnpress' ),
-				$requester,
-				$requested_time
+				__( 'Requested by <strong>%1$s</strong> at %2$s.', 'learnpress' ),
+				$requested_by,
+				$requested_at
 			)
 		);
 		?>
@@ -75,11 +75,11 @@ defined( 'ABSPATH' ) || exit();
 		</p>
 	<?php endif; ?>
 	<p>
-		<button type="button" class="button button-primary lp-admin-refund-order-action" data-refund-action="approve">
+		<button type="button" class="button button-primary lp-button lp-admin-refund-order-action" data-refund-action="approve">
 			<?php esc_html_e( 'Approve Refund', 'learnpress' ); ?>
 		</button>
-		<button type="button" class="button lp-admin-refund-order-action" data-refund-action="deny">
-			<?php esc_html_e( 'Deny Refund', 'learnpress' ); ?>
+		<button type="button" class="button lp-button lp-admin-refund-order-action" data-refund-action="reject">
+			<?php esc_html_e( 'Reject Refund', 'learnpress' ); ?>
 		</button>
 	</p>
 </div>

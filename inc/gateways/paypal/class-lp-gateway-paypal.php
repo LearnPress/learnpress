@@ -1984,15 +1984,15 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Refund PayPal capture via REST API.
 		 *
 		 * @param LP_Order $lp_order
-		 * @param float|string $amount 0 or empty means full refund.
-		 * @param string $note_to_payer
+		 * @param float $amount 0 or empty means full refund.
+		 * @param string $note
 		 *
 		 * @return array
 		 * @throws Exception
 		 * @since 4.4.0
 		 * @version 1.0.0
 		 */
-		public function refund( $lp_order, $amount = 0, string $note_to_payer = '' ): array {
+		public function refund( $lp_order, float $amount = 0, string $note = '' ): array {
 			$order_id   = $lp_order->get_id();
 			$capture_id = $lp_order->get_transaction_id();
 			if ( empty( $capture_id ) ) {
@@ -2000,7 +2000,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			$refund_args = [];
-			$amount      = floatval( $amount );
 			if ( $amount > 0 ) {
 				$refund_args['amount'] = [
 					'currency_code' => $lp_order->get_currency(),
@@ -2008,7 +2007,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				];
 			}
 
-			$note_to_payer = trim( $note_to_payer );
+			$note_to_payer = trim( $note );
 			if ( ! empty( $note_to_payer ) ) {
 				$refund_args['note_to_payer'] = $note_to_payer;
 			}

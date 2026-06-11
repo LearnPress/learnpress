@@ -1144,4 +1144,17 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	public function __toString() {
 		return $this->method_title;
 	}
+
+	/**
+	 * Refund payment
+	 *
+	 *
+	 * @since 4.4.0
+	 * @version 1.0.0
+	 * @return void
+	 * @throws Exception
+	 */
+	public function refund( $lp_order, float $amount = 0, string $note = '' ) {
+		throw new Exception( __( 'This gateway does not support refund.', 'learnpress' ) );
+	}
 }

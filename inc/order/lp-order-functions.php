@@ -7,6 +7,8 @@
  * @version 1.0
  */
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -718,7 +720,24 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 	 * @return array
 	 */
 	function learn_press_get_order_refund_event_data( LP_Order $order, array $overrides = array() ): array {
-		$order_id = $order->get_id();
+		$order_id     = $order->get_id();
+		$requested_at = get_post_meta( $order_id, '_lp_refund_requested_at', true );
+		if ( ! empty( $requested_at ) ) {
+			$requested_at = new LP_Datetime( $requested_at );
+			$requested_at = sprintf(
+				esc_html__( '%1$s %2$s', 'learnpress' ),
+				$requested_at->format( LP_Datetime::I18N_FORMAT_HAS_TIME ),
+				LP_Datetime::get_timezone_string()
+			);
+		}
+
+		$user_id        = $order->get_user_id();
+		$userOrderModel = UserModel::find( $user_id, true );
+		if ( $userOrderModel instanceof UserModel ) {
+			$requested_by = $userOrderModel->get_display_name();
+		} else {
+			$requested_by = $order->get_checkout_email();
+		}
 
 		$data = array(
 			'order_id'             => $order_id,
@@ -726,8 +745,8 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 			'order_key'            => $order->get_order_key(),
 			'order_status'         => $order->get_status(),
 			'request_status'       => $order->get_refund_request(),
-			'requested_by'         => $order->get_user_id(),
-			'requested_at'         => (string) get_post_meta( $order_id, '_lp_refund_requested_at', true ),
+			'requested_by'         => $requested_by,
+			'requested_at'         => $requested_at,
 			'reviewed_by'          => absint( get_post_meta( $order_id, '_lp_refund_reviewed_by', true ) ),
 			'reviewed_at'          => (string) get_post_meta( $order_id, '_lp_refund_reviewed_at', true ),
 			'reason'               => (string) get_post_meta( $order_id, '_lp_refund_reason', true ),
@@ -776,14 +795,10 @@ function learn_press_admin_order_refund_request_panel( $order ) {
 
 	$refund_event_data     = learn_press_get_order_refund_event_data( $order );
 	$refund_request_status = sanitize_key( (string) ( $refund_event_data['request_status'] ?? '' ) );
-	$requested_by          = absint( $refund_event_data['requested_by'] ?? 0 );
-	$requested_at          = (string) ( $refund_event_data['requested_at'] ?? '' );
-	$refund_reason         = trim( (string) ( $refund_event_data['reason'] ?? '' ) );
+	$requested_by          = $refund_event_data['requested_by'] ?? '';
+	$requested_at          = $refund_event_data['requested_at'] ?? '';
+	$refund_reason         = $refund_event_data['reason'] ?? '';
 	$requester_email       = '';
-
-	if ( empty( $refund_request_status ) && empty( $requested_by ) && empty( $requested_at ) && empty( $refund_reason ) ) {
-		return;
-	}
 
 	$status_labels = array(
 		'pending'       => __( 'Pending review', 'learnpress' ),
@@ -794,23 +809,6 @@ function learn_press_admin_order_refund_request_panel( $order ) {
 	$status_label  = $status_labels[ $refund_request_status ] ?? '';
 	if ( empty( $status_label ) && ! empty( $refund_request_status ) ) {
 		$status_label = ucwords( str_replace( '-', ' ', $refund_request_status ) );
-	}
-
-	$requester = __( 'Unknown', 'learnpress' );
-	if ( ! empty( $requested_by ) ) {
-		$user = get_user_by( 'id', $requested_by );
-		if ( $user instanceof WP_User ) {
-			$requester       = sprintf( '%s (#%d)', $user->display_name, $requested_by );
-			$requester_email = $user->user_email;
-		}
-	}
-
-	$requested_time = __( 'Unknown time', 'learnpress' );
-	if ( ! empty( $requested_at ) ) {
-		$timestamp = strtotime( $requested_at );
-		if ( $timestamp ) {
-			$requested_time = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $timestamp );
-		}
 	}
 
 	$render_statuses = array( 'pending', 'approved', 'auto-approved' );
@@ -838,17 +836,17 @@ function learn_press_admin_order_refund_request_panel( $order ) {
 
 	learn_press_admin_view(
 		'meta-boxes/order/refund-request-panel',
-		array(
-			'order_id'                => $order_id,
-			'is_pending'              => $is_pending,
-			'order_total'             => $order_total,
-			'order_total_formatted'   => $order_total_formatted,
-			'refund_amount_formatted' => $refund_amount_formatted,
-			'requester'               => $requester,
-			'requested_time'          => $requested_time,
-			'requester_email'         => $requester_email,
-			'refund_reason'           => $refund_reason,
-			'status_label'            => $status_label,
+		compact(
+			'order_id',
+			'is_pending',
+			'order_total',
+			'order_total_formatted',
+			'refund_amount_formatted',
+			'requested_by',
+			'requested_at',
+			'requester_email',
+			'refund_reason',
+			'status_label'
 		)
 	);
 }
