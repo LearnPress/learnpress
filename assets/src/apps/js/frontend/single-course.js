@@ -303,7 +303,7 @@ const retakeCourse = () => {
 };
 
 // Rest API load content course progress - Nhamdv.
-const courseProgress = () => {
+/*const courseProgress = () => {
 	const elements = document.querySelectorAll( '.lp-course-progress-wrapper' );
 
 	if ( ! elements.length ) {
@@ -347,7 +347,7 @@ const courseProgress = () => {
 
 		ele.innerHTML = data;
 	};
-};
+};*/
 
 const accordionExtraTab = () => {
 	const elements = document.querySelectorAll( '.course-extra-box' );
@@ -421,7 +421,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	enrollCourse();
 	purchaseCourse();
 	retakeCourse();
-	courseProgress();
+	//courseProgress();
 	courseContinue();
 	lpModalOverlayCompleteItem.init();
 	lpMaterialsLoad();

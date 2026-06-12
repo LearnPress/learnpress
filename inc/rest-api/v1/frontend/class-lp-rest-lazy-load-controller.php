@@ -15,7 +15,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'course-progress'         => array(
+			/*'course-progress'         => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'user_progress' ),
@@ -23,21 +23,21 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 						return is_user_logged_in();
 					},
 				),
-			),
-			'course-curriculum'       => array(
+			),*/
+			/*'course-curriculum'       => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'course_curriculum' ),
 					'permission_callback' => '__return_true',
 				),
-			),
-			'course-curriculum-items' => array(
+			),*/
+			/*'course-curriculum-items' => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'course_curriculum_items' ),
 					'permission_callback' => '__return_true',
 				),
-			),
+			),*/
 			'items-progress'          => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -111,12 +111,15 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 * @editor tungnx
 	 * @version 1.0.1
 	 * @sicne 4.0.0
+	 * @deprecated 4.4.0
 	 */
 	public function user_progress( WP_REST_Request $request ): LP_REST_Response {
+		_deprecated_function( __METHOD__, '4.4.0' );
+		$response = new LP_REST_Response();
+		return $response;
 		$params         = $request->get_params();
 		$course_id      = intval( $params['courseId'] ?? 0 );
 		$user_id        = intval( $params['userId'] ?? 0 );
-		$response       = new LP_REST_Response();
 		$response->data = '';
 
 		try {
@@ -171,7 +174,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function course_curriculum( WP_REST_Request $request ): LP_REST_Response {
 		_deprecated_function( __METHOD__, '4.2.8.7.1' );
-		$response     = new LP_REST_Response();
+		$response = new LP_REST_Response();
 		return $response;
 		$params       = $request->get_params();
 		$total_rows   = 0;
@@ -252,16 +255,18 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 * @since 4.1.5
 	 * @version 1.0.2
 	 * @author nhamdv
+	 * @deprecated 4.4.0
 	 */
 	public function course_curriculum_items( WP_REST_Request $request ) {
+		_deprecated_function( __METHOD__, '4.4.0' );
+		$response = new LP_REST_Response();
+		return $response;
 		$params = $request->get_params();
 
-		$section_id = absint( $params['sectionId'] ?? 0 );
-		$course_id  = absint( $params['courseId'] ?? 0 );
-		$per_page   = LP_Settings::get_option( 'course_item_per_page', - 1 );
-		$page       = absint( $params['page'] ?? 1 );
-
-		$response                = new LP_REST_Response();
+		$section_id              = absint( $params['sectionId'] ?? 0 );
+		$course_id               = absint( $params['courseId'] ?? 0 );
+		$per_page                = LP_Settings::get_option( 'course_item_per_page', - 1 );
+		$page                    = absint( $params['page'] ?? 1 );
 		$response->data->content = '';
 
 		try {

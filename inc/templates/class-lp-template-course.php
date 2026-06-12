@@ -4,6 +4,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Course\SingleCourseModernLayout;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 
@@ -938,8 +939,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Show info time handle of user
 	 *
 	 * @throws Exception
+	 * @deprecated 4.4.0
 	 */
 	public function user_time() {
+		_deprecated_function( __METHOD__, '4.4.0' );
+		return;
 		$user = learn_press_get_current_user();
 
 		if ( ! $user ) {
@@ -985,22 +989,15 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @author Nhamdv.
 	 */
 	public function user_progress() {
-		if ( ! is_user_logged_in() ) {
+		$courseModel = CourseModel::find( get_the_ID(), true );
+		if ( ! $courseModel ) {
 			return;
 		}
 
-		$course = learn_press_get_course();
-		$user   = learn_press_get_current_user();
+		$userModel = UserModel::find( get_current_user_id(), true );
+		echo SingleCourseModernLayout::instance()->html_info_learning( $courseModel, $userModel );
 
-		if ( ! $course ) {
-			return;
-		}
-
-		if ( ! $user->has_enrolled_or_finished( $course->get_id() ) ) {
-			return;
-		}
-
-		if ( LP_LAZY_LOAD_ANIMATION ) {
+		/*if ( LP_LAZY_LOAD_ANIMATION ) {
 			echo '<div class="lp-course-progress-wrapper">';
 			lp_skeleton_animation_html();
 			echo '</div>';
@@ -1016,7 +1013,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 				'single-course/sidebar/user-progress',
 				compact( 'user', 'course', 'course_data', 'course_results' )
 			);
-		}
+		}*/
 	}
 
 	public function course_extra_boxes_position_control() {

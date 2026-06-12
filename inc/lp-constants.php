@@ -120,4 +120,4 @@ const LP_GRADUATION_PASSED      = 'passed';
 const LP_GRADUATION_FAILED      = 'failed';
 
 // Enable lazy-load animation placeholder.
-const LP_LAZY_LOAD_ANIMATION = true;
+//const LP_LAZY_LOAD_ANIMATION = true;

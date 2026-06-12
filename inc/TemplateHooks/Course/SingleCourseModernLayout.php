@@ -16,6 +16,7 @@ use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LP_Datetime;
 
 class SingleCourseModernLayout {
 	use Singleton;
@@ -91,7 +92,7 @@ class SingleCourseModernLayout {
 		if ( ! empty( $html_categories ) ) {
 			$html_categories = sprintf(
 				'<div>%s %s</div>',
-				sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
+				sprintf( '<label>%s</label>', esc_html__( 'in', 'learnpress' ) ),
 				$html_categories
 			);
 		}
@@ -123,7 +124,7 @@ class SingleCourseModernLayout {
 
 		$html_instructor = sprintf(
 			'<div>%s %s</div>',
-			sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
+			sprintf( '<label>%s</label>', esc_html__( 'by', 'learnpress' ) ),
 			$this->singleCourseTemplate->html_instructor( $course )
 		);
 
@@ -199,23 +200,23 @@ class SingleCourseModernLayout {
 
 		$data_info_meta = [
 			'student'  => [
-				'label' => sprintf( '<i class="lp-icon-user-graduate"></i>%s:', __( 'Student', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-user-graduate"></i>%s:', esc_html__( 'Student', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_count_student( $course ),
 			],
 			'lesson'   => [
-				'label' => sprintf( '<i class="lp-icon-file-o"></i>%s:', __( 'Lesson', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-file-o"></i>%s:', esc_html__( 'Lesson', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
 			],
 			'duration' => [
-				'label' => sprintf( '<i class="lp-icon-clock-o"></i>%s:', __( 'Duration', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-clock-o"></i>%s:', esc_html__( 'Duration', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_duration( $course ),
 			],
 			'quiz'     => [
-				'label' => sprintf( '<i class="lp-icon-puzzle-piece"></i>%s:', __( 'Quiz', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-puzzle-piece"></i>%s:', esc_html__( 'Quiz', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ),
 			],
 			'level'    => [
-				'label' => sprintf( '<i class="lp-icon-signal"></i>%s:', __( 'Level', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-signal"></i>%s:', esc_html__( 'Level', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_level( $course ),
 			],
 		];
@@ -341,10 +342,10 @@ class SingleCourseModernLayout {
 					'<li>
 						<a target="_blank" href="%s" title="%s">%s<span>%s</span></a>
 					</li>',
-					$social['url'],
-					$social['label'],
-					$social['icon'],
-					$social['label']
+					esc_url_raw( $social['url'] ?? '' ),
+					esc_attr( $social['label'] ?? '' ),
+					Template::sanitize_html_content( $social['icon'] ?? '' ),
+					esc_html( $social['label'] ?? '' )
 				);
 			}
 		} else {
@@ -362,7 +363,10 @@ class SingleCourseModernLayout {
 
 		$clipboard = [
 			'wrapper'     => '<div class="clipboard-post">',
-			'input'       => sprintf( '<input class="clipboard-value" type="text" value="%s">', $courseModel->get_permalink() ),
+			'input'       => sprintf(
+				'<input class="clipboard-value" type="text" value="%s">',
+				$courseModel->get_permalink()
+			),
 			'button'      => sprintf(
 				'<button class="btn-clipboard" data-copied="%s">%s<span class="tooltip">%s</span></button>',
 				esc_html__( 'Copied!', 'learnpress' ),
@@ -377,7 +381,11 @@ class SingleCourseModernLayout {
 			[
 				'wrapper'                   => '<div class="social-swapper social-share-toggle">',
 				'toggle'                    => '<div class="share-toggle-icon">',
-				'toggle_icon'               => sprintf( '<i class="lp-icon-share-alt"></i><label class="share-label">%s</label>', __( 'Share', 'learnpress' ) ),
+				'toggle_icon'               => sprintf(
+					'<i class="lp-icon-share-alt"></i>
+							<label class="share-label">%s</label>',
+					esc_html__( 'Share', 'learnpress' )
+				),
 				'toggle_end'                => '</div>',
 				'wrapper_content'           => '<div class="wrapper-content-widget">',
 				'wrapper_content_inner'     => '<div class="content-widget-social-share">',
@@ -452,7 +460,10 @@ class SingleCourseModernLayout {
 			'learn-press/single-course/modern/section-instructor',
 			[
 				'wrapper'          => '<div class="lp-section-instructor">',
-				'header'           => sprintf( '<h3 class="section-title">%s</h3>', __( 'Instructor', 'learnpress' ) ),
+				'header'           => sprintf(
+					'<h3 class="section-title">%s</h3>',
+					esc_html__( 'Instructor', 'learnpress' )
+				),
 				'wrapper_info'     => '<div class="lp-instructor-info">',
 				'image'            => $html_instructor_image,
 				'instructor_right' => Template::combine_components( $section_instructor_right ),
@@ -465,7 +476,12 @@ class SingleCourseModernLayout {
 
 		if ( ! has_filter( 'learn-press/single-course/modern/section-instructor' ) ) {
 			// Do not use this hook, this hook only for handle hook without update from Addon, when handle on Addon, will remove this hook
-			$section_instructor = apply_filters( 'learn-press/single-course/offline/section-instructor', $section_instructor, $course, $user );
+			$section_instructor = apply_filters(
+				'learn-press/single-course/offline/section-instructor',
+				$section_instructor,
+				$course,
+				$user
+			);
 		}
 
 		return Template::combine_components( $section_instructor );
@@ -479,7 +495,7 @@ class SingleCourseModernLayout {
 	 *
 	 * @return string
 	 * @since 4.2.8.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function html_info_learning( CourseModel $course, $user = false ): string {
 		$html_info_learning = '';
@@ -497,30 +513,47 @@ class SingleCourseModernLayout {
 			$userCourseTemplate = UserCourseTemplate::instance();
 			$html_end_date      = '';
 			$html_graduation    = '';
+			$html_will_end_date = '';
 
 			if ( $userCourseModel->has_finished() ) {
 				$html_end_date   = sprintf(
 					'<div class="end-date">%s: %s</div>',
-					__( 'End date', 'learnpress' ),
+					esc_html__( 'End date', 'learnpress' ),
 					$userCourseTemplate->html_end_date_time( $userCourseModel, false )
 				);
 				$html_graduation = $userCourseTemplate->html_graduation( $userCourseModel );
+			} else {
+				$started_date       = $userCourseModel->get_start_time();
+				$duration           = $course->get_duration();
+				$will_end_date      = new LP_Datetime( strtotime( "+ $duration", strtotime( $started_date ) ) );
+				$will_end_date      = $will_end_date->format( LP_Datetime::I18N_FORMAT );
+				$html_will_end_date = sprintf(
+					'<div class="will-end-date">%s: %s</div>',
+					esc_html__( 'Will end date', 'learnpress' ),
+					$will_end_date
+				);
 			}
 
-			$section_info_learning = [
-				'wrapper'               => '<div class="info-learning">',
-				'message_lock'          => $userCourseTemplate->html_message_lock( $userCourseModel ),
-				'graduation'            => $html_graduation,
-				'progress'              => $userCourseTemplate->html_progress( $userCourseModel ),
-				'start_date'            => sprintf(
-					'<div class="start-date">%s: %s</div>',
-					__( 'Start date', 'learnpress' ),
-					$userCourseTemplate->html_start_date_time( $userCourseModel, false )
-				),
-				'end_date'              => $html_end_date,
-				'count_items_completed' => $userCourseTemplate->html_count_items_completed( $userCourseModel ),
-				'wrapper_end'           => '</div>',
-			];
+			$section_info_learning = apply_filters(
+				'learn-press/single-course/modern/section-info-learning',
+				[
+					'wrapper'               => '<div class="info-learning">',
+					'message_lock'          => $userCourseTemplate->html_message_lock( $userCourseModel ),
+					'graduation'            => $html_graduation,
+					'progress'              => $userCourseTemplate->html_progress( $userCourseModel ),
+					'start_date'            => sprintf(
+						'<div class="start-date">%s: %s</div>',
+						esc_html__( 'Start date', 'learnpress' ),
+						$userCourseTemplate->html_start_date_time( $userCourseModel, false )
+					),
+					'will_end_date'         => $html_will_end_date,
+					'end_date'              => $html_end_date,
+					'count_items_completed' => $userCourseTemplate->html_count_items_completed( $userCourseModel ),
+					'wrapper_end'           => '</div>',
+				],
+				$course,
+				$user
+			);
 
 			$html_info_learning = Template::combine_components( $section_info_learning );
 		}
