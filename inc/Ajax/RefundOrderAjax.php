@@ -138,17 +138,8 @@ class RefundOrderAjax extends AbstractAjax {
 			}
 
 			if ( 'approve' === $action ) {
-				$order_total = round( max( 0, floatval( $lp_order->get_total() ) ), 2 );
-				if ( $refund_amount <= 0 || $refund_amount > $order_total ) {
-					throw new Exception(
-						sprintf(
-							__( 'Refund amount must be greater than 0 and must not exceed %s.', 'learnpress' ),
-							learn_press_format_price( $order_total, learn_press_get_currency_symbol( $lp_order->get_currency() ) )
-						)
-					);
-				}
-
 				$lp_order->refund( $refund_amount );
+				update_post_meta( $order_id, '_lp_refund_request', 'approved' );
 				$response->message = __( 'Refund approved successfully.', 'learnpress' );
 			} elseif ( 'reject' === $action ) {
 				update_post_meta( $order_id, '_lp_refund_request', 'rejected' );

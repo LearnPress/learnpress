@@ -65,9 +65,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			'_checkout_email'       => '',
 		);
 
-		const META_KEY_TRANSACTION_ID = '_transaction_id';
-
-		const META_KEY_REFUND_REQUEST = '_lp_refund_request';
+		const META_KEY_TRANSACTION_ID  = '_transaction_id';
+		const META_KEY_REFUND_REQUEST  = '_lp_refund_request';
+		const META_KEY_REFUNDED_BY     = '_lp_refunded_by';
+		const META_KEY_REFUNDED_AT     = '_lp_refunded_at';
+		const META_KEY_REFUNDED_AMOUNT = '_lp_refunded_amount';
 
 		/**
 		 * Store order status in transactions.
@@ -1773,10 +1775,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$gateway->refund( $this, $amount );
 
 			$user_id = get_current_user_id();
-			update_post_meta( $this->get_id(), '_lp_refunded_ammount', (float) $amount );
-			update_post_meta( $this->get_id(), '_lp_refunded_by', $user_id );
-
-			update_post_meta( $this->get_id(), '_lp_refunded_at', gmdate( LP_Datetime::$format, time() ) );
+			update_post_meta( $this->get_id(), self::META_KEY_REFUNDED_AMOUNT, (float) $amount );
+			update_post_meta( $this->get_id(), self::META_KEY_REFUNDED_BY, $user_id );
+			update_post_meta( $this->get_id(), self::META_KEY_REFUNDED_AT, gmdate( LP_Datetime::$format, time() ) );
 			$this->update_status( LP_ORDER_REFUNDED );
 
 			$this->add_note(

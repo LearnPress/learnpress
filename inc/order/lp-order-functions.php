@@ -826,7 +826,7 @@ function learn_press_admin_order_refund_request_panel( $order ) {
 	// (approved/auto-approved), when _lp_refund_amount has been written.
 	$refund_amount_formatted = '';
 	if ( ! $is_pending ) {
-		$refund_amount = get_post_meta( $order_id, '_lp_refund_amount', true );
+		$refund_amount = get_post_meta( $order_id, LP_Order::META_KEY_REFUNDED_AMOUNT, true );
 		if ( '' === $refund_amount || null === $refund_amount ) {
 			$refund_amount = $order_total; // Fallback for full refunds without a stored amount.
 		}
