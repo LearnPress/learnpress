@@ -17,7 +17,7 @@ class CourseBuilderAccessPolicy {
 	 *
 	 * @return bool
 	 */
-	public static function can_edit_course_by_id( int $course_id ): bool {
+	/*public static function can_edit_course_by_id( int $course_id ): bool {
 		if ( $course_id <= 0 ) {
 			return false;
 		}
@@ -28,7 +28,7 @@ class CourseBuilderAccessPolicy {
 		}
 
 		return self::can_edit_course( $courseModel );
-	}
+	}*/
 
 	/**
 	 * Check if current user can access the tab/post pair in Course Builder.
@@ -57,9 +57,9 @@ class CourseBuilderAccessPolicy {
 			return false;
 		}
 
-		if ( $item_type === LP_COURSE_CPT ) {
+		/*if ( $item_type === LP_COURSE_CPT ) {
 			return self::can_edit_course_by_id( $item_id );
-		}
+		}*/
 
 		return self::can_edit_item( $item_type, $item_id );
 	}
@@ -116,7 +116,8 @@ class CourseBuilderAccessPolicy {
 			return false;
 		}
 
-		return self::can_edit_course_by_id( $course_id );
+		return false;
+		//return self::can_edit_course_by_id( $course_id );
 	}
 
 	/**
@@ -126,7 +127,7 @@ class CourseBuilderAccessPolicy {
 	 *
 	 * @return bool
 	 */
-	private static function can_edit_course( CourseModel $courseModel ): bool {
+	/*private static function can_edit_course( CourseModel $courseModel ): bool {
 		if ( ! is_user_logged_in() ) {
 			return false;
 		}
@@ -148,7 +149,7 @@ class CourseBuilderAccessPolicy {
 		$co_instructor_ids = self::normalize_user_ids( $co_instructor_ids );
 
 		return in_array( $current_user_id, $co_instructor_ids, true );
-	}
+	}*/
 
 	/**
 	 * Find related course ID for item.

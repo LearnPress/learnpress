@@ -952,16 +952,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data      = self::check_valid_course();
-			$course_id = absint( $data['course_id'] ?? 0 );
-			if ( $course_id > 0 ) {
-				if ( ! CourseBuilderAccessPolicy::can_edit_course_by_id( $course_id ) ) {
-					throw new Exception( __( 'You are not allowed to update this course', 'learnpress' ) );
-				}
-			} elseif ( ! CourseBuilderAccessPolicy::can_create_item_type( LP_COURSE_CPT ) ) {
-				throw new Exception( __( 'You are not allowed to create courses', 'learnpress' ) );
-			}
-
+			$data = self::check_valid_course();
 			if ( ! current_user_can( 'edit_lp_courses' ) ) {
 				throw new Exception( __( 'You are not allowed to create categories', 'learnpress' ) );
 			}
@@ -1010,16 +1001,7 @@ class CourseBuilderAjax extends AbstractAjax {
 		$response->data = new stdClass();
 
 		try {
-			$data      = self::check_valid_course();
-			$course_id = absint( $data['course_id'] ?? 0 );
-			if ( $course_id > 0 ) {
-				if ( ! CourseBuilderAccessPolicy::can_edit_course_by_id( $course_id ) ) {
-					throw new Exception( __( 'You are not allowed to update this course', 'learnpress' ) );
-				}
-			} elseif ( ! CourseBuilderAccessPolicy::can_create_item_type( LP_COURSE_CPT ) ) {
-				throw new Exception( __( 'You are not allowed to create courses', 'learnpress' ) );
-			}
-
+			$data = self::check_valid_course();
 			if ( ! current_user_can( 'edit_lp_courses' ) ) {
 				throw new Exception( __( 'You are not allowed to create tags', 'learnpress' ) );
 			}
