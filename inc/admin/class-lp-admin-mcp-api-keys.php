@@ -59,7 +59,7 @@ class LP_Admin_MCP_API_Keys {
 	 * @return void
 	 */
 	public function localize_admin_script(): void {
-		if ( ! LP_Settings_Mcp::is_mcp_available() || ! wp_script_is( 'lp-admin-mcp-api-keys', 'enqueued' ) ) {
+		if ( ! $this->is_mcp_integration_enabled() || ! wp_script_is( 'lp-admin-mcp-api-keys', 'enqueued' ) ) {
 			return;
 		}
 
@@ -68,16 +68,16 @@ class LP_Admin_MCP_API_Keys {
 			'lpMcpApiKeysSettings',
 			array(
 				'is_mcp_keys_section' => $this->is_mcp_keys_settings_screen(),
-				'actions' => array(
+				'actions'             => array(
 					'create' => 'mcp_create_api_key',
 				),
-				'i18n'     => array(
-					'processing'      => __( 'Processing...', 'learnpress' ),
-					'created'         => __( 'API key created.', 'learnpress' ),
-					'request_failed'  => __( 'Request failed. Please try again.', 'learnpress' ),
-					'confirm_revoke'  => __( 'Revoke this API key?', 'learnpress' ),
-					'copy_success'    => __( 'Copied.', 'learnpress' ),
-					'copy_fallback'   => __( 'Copy this value manually.', 'learnpress' ),
+				'i18n'                => array(
+					'processing'     => __( 'Processing...', 'learnpress' ),
+					'created'        => __( 'API key created.', 'learnpress' ),
+					'request_failed' => __( 'Request failed. Please try again.', 'learnpress' ),
+					'confirm_revoke' => __( 'Revoke this API key?', 'learnpress' ),
+					'copy_success'   => __( 'Copied.', 'learnpress' ),
+					'copy_fallback'  => __( 'Copy this value manually.', 'learnpress' ),
 				),
 			)
 		);
@@ -94,7 +94,7 @@ class LP_Admin_MCP_API_Keys {
 		if ( ! current_user_can( $this->required_capability ) ) {
 			wp_die( esc_html__( 'Sorry, you are not allowed to manage MCP API keys.', 'learnpress' ) );
 		}
-		if ( ! LP_Settings_Mcp::is_mcp_available() ) {
+		if ( ! $this->is_mcp_integration_enabled() ) {
 			return;
 		}
 
@@ -125,7 +125,7 @@ class LP_Admin_MCP_API_Keys {
 	 * @return void
 	 */
 	public function handle_admin_actions(): void {
-		if ( ! $this->is_mcp_keys_settings_screen() || ! current_user_can( $this->required_capability ) || ! LP_Settings_Mcp::is_mcp_available() ) {
+		if ( ! $this->is_mcp_keys_settings_screen() || ! current_user_can( $this->required_capability ) || ! $this->is_mcp_integration_enabled() ) {
 			return;
 		}
 
@@ -191,9 +191,18 @@ class LP_Admin_MCP_API_Keys {
 	 */
 	protected function notice_from_code( string $code ): ?array {
 		$map = array(
-			'revoked'      => array( 'type' => 'success', 'message' => __( 'API key revoked.', 'learnpress' ) ),
-			'bulk_revoked' => array( 'type' => 'success', 'message' => __( 'Selected API keys revoked.', 'learnpress' ) ),
-			'no_selection' => array( 'type' => 'warning', 'message' => __( 'No API keys selected.', 'learnpress' ) ),
+			'revoked'      => array(
+				'type'    => 'success',
+				'message' => __( 'API key revoked.', 'learnpress' ),
+			),
+			'bulk_revoked' => array(
+				'type'    => 'success',
+				'message' => __( 'Selected API keys revoked.', 'learnpress' ),
+			),
+			'no_selection' => array(
+				'type'    => 'warning',
+				'message' => __( 'No API keys selected.', 'learnpress' ),
+			),
 		);
 
 		return $map[ $code ] ?? null;
@@ -205,10 +214,19 @@ class LP_Admin_MCP_API_Keys {
 	 * @return bool
 	 */
 	protected function is_mcp_keys_settings_screen(): bool {
-		$page    = sanitize_key( $_REQUEST['page'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$tab     = sanitize_key( $_REQUEST['tab'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$page = LP_Request::get_param( 'page', '', 'key' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$tab  = LP_Request::get_param( 'tab', '', 'key' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		return 'learn-press-settings' === $page
 			&& 'mcp' === $tab;
+	}
+
+	/**
+	 * Check whether MCP integration is enabled.
+	 *
+	 * @return bool
+	 */
+	protected function is_mcp_integration_enabled(): bool {
+		return 'yes' === LP_Settings::get_option( 'enable_mcp_integration', 'no' );
 	}
 }

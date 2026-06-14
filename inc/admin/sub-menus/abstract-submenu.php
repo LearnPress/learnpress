@@ -348,7 +348,10 @@ abstract class LP_Abstract_Submenu {
 			$classes  = array( 'lp-admin-tabs' );
 			$sections = $this->get_sections();
 
-			if ( $sections && sizeof( $sections ) > 1 ) {
+			$has_sections = $sections && sizeof( $sections ) > 1;
+			$has_sections = apply_filters( 'learn-press/admin/submenu-has-sections', $has_sections, $sections, $active_tab, $this );
+
+			if ( $has_sections ) {
 				$classes[] = 'has-sections';
 			}
 

@@ -33,11 +33,21 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 				'payments'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-payments.php',
 				'emails'    => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-emails.php',
 				'permalink' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-permalink.php',
-				'mcp'       => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-mcp.php',
 				'advanced'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
 				'open-ai'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-open-ai.php',
+				'addons'    => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-addons.php',
 			)
 		);
+
+		if ( isset( $this->tabs['addons'] )
+			&& $this->tabs['addons'] instanceof LP_Settings_Addons
+			&& ! $this->tabs['addons']->has_sections() ) {
+			unset( $this->tabs['addons'] );
+		}
+
+		if ( learn_press_is_mcp_available() ) {
+			$this->tabs['mcp'] = include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-mcp.php';
+		}
 
 		add_action( 'learn-press/admin/page-content-settings', array( $this, 'page_contents' ) );
 		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array( $this, 'section_content' ) );
@@ -87,8 +97,8 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->tabs[ $active_tab ]->admin_page_settings( $section, $this->get_sections() );
 
 		$hide_save_button = false;
-		if ( 'mcp' === $active_tab && class_exists( 'LP_Settings_Mcp' ) ) {
-			$hide_save_button = ! LP_Settings_Mcp::is_mcp_available();
+		if ( 'mcp' === $active_tab ) {
+			$hide_save_button = ! learn_press_is_mcp_available();
 		}
 		?>
 

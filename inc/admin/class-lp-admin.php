@@ -804,8 +804,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			require_once LP_PLUGIN_PATH . 'inc/background-process/class-lp-background-query-items.php';
 			include_once 'class-lp-admin-assets.php';
 			LP_Admin_Assets::instance();
-			include_once 'class-lp-admin-mcp-api-keys.php';
-			LP_Admin_MCP_API_Keys::instance();
+			// For MCP
+			if ( learn_press_is_mcp_available() ) {
+				include_once 'class-lp-admin-mcp-api-keys.php';
+				LP_Admin_MCP_API_Keys::instance();
+			}
+			// End MCP
 			include_once 'class-lp-admin-dashboard.php';
 			// include_once 'class-lp-admin-tools.php';
 			include_once 'class-lp-admin-ajax.php';

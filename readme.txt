@@ -279,6 +279,9 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.3.9.1 (2026-06-10) =
+~ Fixed: MCP AI assistant.
+
 = 4.3.9 (2026-06-08) =
 ~ Feature: AI assistant to help students learn better - ask questions about lessons and create questions to check understanding.
 ~ Fixed: minor bugs.
