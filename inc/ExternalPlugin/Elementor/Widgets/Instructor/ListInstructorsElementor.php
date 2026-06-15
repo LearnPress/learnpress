@@ -80,7 +80,11 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 					".elementor-repeater-item-{$item_layout['_id']}",
 					$item_layout['layout_custom_css']
 				);
-				echo '<style id="' . esc_attr( $this->get_id() ) . '">' . $item_layout['layout_custom_css'] . '</style>';
+				printf(
+					'<style id="%s">%s</style>',
+					esc_attr( $this->get_id() ),
+					esc_html( $item_layout['layout_custom_css'] )
+				);
 			}
 
 			// Show list instructors
