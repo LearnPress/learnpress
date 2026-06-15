@@ -305,7 +305,7 @@
 	button {
 		@include input();
 		box-shadow: 0 0 0;
-
+		margin-bottom: 0;
 		i {
 			font-size: 1.2em;
 			line-height: 1.2;
