@@ -641,11 +641,10 @@ function learn_press_admin_order_refund_request_panel( $order ) {
 		)
 	);
 }
-add_action( 'lp/admin/order/detail/after-order-key', 'learn_press_admin_order_refund_request_panel' );
 
-	/**
-	 * get total price order complete
-	 */
+/**
+ * get total price order complete
+ */
 function learn_press_get_total_price_order_complete() {
 	global $wpdb;
 

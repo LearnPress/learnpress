@@ -1666,7 +1666,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					throw new Exception( __( 'Order is not completed', 'learnpress' ) );
 				}
 
-				$refunded_amount = $this->get_meta( '_lp_refunded_ammount' );
+				$refunded_amount = $this->get_meta( LP_Order::META_KEY_REFUNDED_AMOUNT );
 				if ( $refunded_amount > 0 ) {
 					$amount = $refunded_amount + $amount;
 				}
@@ -1737,10 +1737,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 				// Check request refund status exists
 				$request_status = $this->get_refund_request();
-				if ( 'rejected' === $request_status
-					&& 'yes' !== learn_press_get_refund_setting( 'allow_resend_after_rejected', 'no' ) ) {
-					$error_code = 'request_refund_is_rejected';
-					throw new Exception( __( 'Request refund is rejected!.', 'learnpress' ) );
+				if ( 'rejected' === $request_status ) {
+					if ( 'yes' !== learn_press_get_refund_setting( 'allow_resend_after_rejected', 'no' ) ) {
+						$error_code = 'request_refund_is_rejected';
+						throw new Exception( __( 'Request refund is rejected!.', 'learnpress' ) );
+					}
 				} elseif ( ! empty( $request_status ) ) {
 					$error_code = 'request_refund_sent';
 					throw new Exception(

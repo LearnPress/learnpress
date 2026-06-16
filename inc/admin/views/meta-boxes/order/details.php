@@ -192,6 +192,8 @@ $user_ids     = $order->get_user_id();
 			<?php echo esc_html( $order->get_order_key() ); ?>
 		</div>
 
+		<?php learn_press_admin_order_refund_request_panel( $order ); ?>
+
 		<?php do_action( 'lp/admin/order/detail/after-order-key', $order ); ?>
 
 		<div class="order-data-field order-data-note">
