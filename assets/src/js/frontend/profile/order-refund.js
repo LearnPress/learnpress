@@ -69,14 +69,13 @@ export class OrderRefund {
 			orderId: parseInt( actionLink.dataset.orderId || '0', 10 ),
 			requireReason: actionLink.dataset.requireReason === 'yes',
 			reasonMin: Number.isNaN( reasonMin ) ? 10 : reasonMin,
-			reasonPrompt: actionLink.dataset.reasonPrompt || 'Enter your refund reason',
+			reasonPrompt: actionLink.dataset.reasonPrompt || '',
 			reasonPlaceholder: actionLink.dataset.reasonPlaceholder || '',
-			reasonRequired: actionLink.dataset.reasonRequired || 'Refund reason is required.',
-			reasonTooShort: actionLink.dataset.reasonTooShort || 'Refund reason is too short.',
-			confirmTitle: actionLink.dataset.confirmTitle || 'Request a refund?',
+			reasonRequired: actionLink.dataset.reasonRequired || '',
+			confirmTitle: actionLink.dataset.confirmTitle || '',
 			confirmText: actionLink.dataset.confirmText || '',
-			confirmButton: actionLink.dataset.confirmButton || 'Submit Request',
-			cancelButton: actionLink.dataset.cancelButton || 'Cancel',
+			confirmButton: actionLink.dataset.confirmButton || '',
+			cancelButton: actionLink.dataset.cancelButton || '',
 		};
 	}
 
@@ -93,10 +92,6 @@ export class OrderRefund {
 				const reason = ( value || '' ).trim();
 				if ( ! reason.length ) {
 					return data.reasonRequired;
-				}
-
-				if ( reason.length < data.reasonMin ) {
-					return data.reasonTooShort;
 				}
 
 				return undefined;

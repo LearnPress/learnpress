@@ -1,8 +1,9 @@
 <?php
 
-namespace LearnPress\Ajax;
+namespace LearnPress\Ajax\Order;
 
 use Exception;
+use LearnPress\Ajax\AbstractAjax;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
 use LearnPress\Models\UserModel;
@@ -12,6 +13,8 @@ use LP_Order;
 use LP_Request;
 use LP_REST_Response;
 use Throwable;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Class ExportOrderCSVAjax

@@ -5,7 +5,7 @@ declare( strict_types=1 );
 namespace LearnPress\Tests\Unit\Order;
 
 use Brain\Monkey\Functions;
-use LearnPress\Ajax\RefundOrderAjax;
+use LearnPress\Ajax\Order\RefundOrderAjax;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -293,8 +293,8 @@ class RefundPolicyTest extends BrainMonkeyTestCase {
 			require_once dirname( __DIR__, 3 ) . '/inc/Ajax/AbstractAjax.php';
 		}
 
-		if ( ! class_exists( '\LearnPress\Ajax\RefundOrderAjax', false ) ) {
-			require_once dirname( __DIR__, 3 ) . '/inc/Ajax/RefundOrderAjax.php';
+		if ( ! class_exists( '\LearnPress\Ajax\Order\RefundOrderAjax', false ) ) {
+			require_once dirname( __DIR__, 3 ) . '/inc/Ajax/Order/RefundOrderAjax.php';
 		}
 	}
 

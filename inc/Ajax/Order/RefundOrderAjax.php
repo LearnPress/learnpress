@@ -1,27 +1,24 @@
 <?php
-/**
- * class RefundOrderAjax
- *
- * @since 4.3.5
- * @version 1.0.0
- */
 
-namespace LearnPress\Ajax;
-
+namespace LearnPress\Ajax\Order;
+use LearnPress\Ajax\AbstractAjax;
 use LearnPress\Helpers\Response;
 use LearnPress\Models\UserModel;
 use LP_Datetime;
 use LP_Helper;
-use LP_Order;
-use LP_Gateways;
-use LP_User;
 use LP_Request;
-use LP_REST_Response;
 use WP_Error;
-use WP_User;
 use Exception;
 use Throwable;
 
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * class RefundOrderAjax
+ *
+ * @since 4.4.0
+ * @version 1.0.0
+ */
 class RefundOrderAjax extends AbstractAjax {
 	/**
 	 * Customer request refund order from profile page.

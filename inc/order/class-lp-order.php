@@ -1027,7 +1027,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @version 1.0.0
 		 * @return bool|string
 		 */
-		public function get_refund_order_url() {
+		/*public function get_refund_order_url() {
 			$url  = false;
 			$user = learn_press_get_current_user();
 			if ( ! $user instanceof LP_User || $user->get_id() <= 0 ) {
@@ -1046,7 +1046,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$url = esc_url_raw( $url );
 
 			return apply_filters( 'learn-press/order-refund-url', $url, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Get profile order's actions.
@@ -1054,6 +1054,18 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_profile_order_actions() {
+			$actions = [];
+
+			$userModel = UserModel::find( get_current_user_id(), true );
+			if ( ! $userModel instanceof UserModel ) {
+				return $actions;
+			}
+
+			$order_user_id = $this->get_users();
+			if ( ! in_array( $userModel->get_id(), $order_user_id ) ) {
+				return $actions;
+			}
+
 			$actions = array(
 				'view' => array(
 					'url'  => $this->get_view_order_url(),
@@ -1069,47 +1081,35 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				);
 			}
 
-			$enable_refund = 'yes' === learn_press_get_refund_setting( 'enable_refund_requests', 'no' );
-			if ( $enable_refund ) {
-				$refund_request_status = $this->get_refund_request();
-				if ( 'pending' === $refund_request_status ) {
-					$actions['refund-requested'] = array(
-						'url'  => '',
-						'text' => __( 'Refund Requested', 'learnpress' ),
-					);
-				} else {
-					$refund_url = $this->get_refund_order_url();
-					if ( $refund_url ) {
-						$reason_min     = 10;
-						$require_reason = 'yes' === learn_press_get_refund_setting( 'require_refund_reason', 'no' );
-						$current_user   = learn_press_get_current_user();
-						if ( $current_user instanceof LP_User && $current_user->get_id() > 0 ) {
-							$eligibility    = learn_press_get_order_refund_eligibility( $this, $current_user->get_id() );
-							$reason_min     = absint( $eligibility['reason_min'] ?? $reason_min );
-							$reason_min     = $reason_min > 0 ? $reason_min : 10;
-							$require_reason = ! empty( $eligibility['require_reason'] );
-						}
+			$refund_request_status   = $this->get_refund_request();
+			$can_send_request_refund = $this->can_send_request_refund( $userModel );
+			if ( 'pending' === $refund_request_status ) {
+				$actions['refund-requested'] = array(
+					'url'  => '',
+					'text' => __( 'Refund Requested', 'learnpress' ),
+				);
+			} elseif ( $can_send_request_refund === true ) {
+				$require_reason = 'yes' === learn_press_get_refund_setting( 'require_refund_reason', 'no' );
 
-						$actions['refund'] = array(
-							'url'   => $refund_url,
-							'text'  => __( 'Refund', 'learnpress' ),
-							'class' => 'lp-refund-order-action',
-							'data'  => array(
-								'order_id'           => $this->get_id(),
-								'require_reason'     => $require_reason ? 'yes' : 'no',
-								'reason_min'         => $reason_min,
-								'reason_prompt'      => __( 'Enter your refund reason', 'learnpress' ),
-								'reason_placeholder' => __( 'Please describe why you want a refund.', 'learnpress' ),
-								'reason_required'    => __( 'Refund reason is required.', 'learnpress' ),
-								'reason_too_short'   => sprintf( __( 'Refund reason must be at least %d characters.', 'learnpress' ), $reason_min ),
-								'confirm_title'      => __( 'Request a refund?', 'learnpress' ),
-								'confirm_text'       => __( 'This request will be sent and processed according to payment settings.', 'learnpress' ),
-								'confirm_button'     => __( 'Submit Request', 'learnpress' ),
-								'cancel_button'      => __( 'Cancel', 'learnpress' ),
-							),
-						);
-					}
-				}
+				$actions['refund'] = array(
+					'url'   => learn_press_user_profile_link(
+						$userModel->get_id(),
+						LP_Settings::instance()->get( 'profile_endpoints.orders', 'orders' )
+					),
+					'text'  => __( 'Refund', 'learnpress' ),
+					'class' => 'lp-refund-order-action',
+					'data'  => array(
+						'order_id'           => $this->get_id(),
+						'require_reason'     => $require_reason ? 'yes' : 'no',
+						'reason_prompt'      => __( 'Enter your refund reason', 'learnpress' ),
+						'reason_placeholder' => __( 'Please describe why you want a refund.', 'learnpress' ),
+						'reason_required'    => __( 'Refund reason is required.', 'learnpress' ),
+						'confirm_title'      => __( 'Request a refund?', 'learnpress' ),
+						'confirm_text'       => __( 'This request will be sent and processed according to payment settings.', 'learnpress' ),
+						'confirm_button'     => __( 'Submit Request', 'learnpress' ),
+						'cancel_button'      => __( 'Cancel', 'learnpress' ),
+					),
+				);
 			}
 
 			$actions = apply_filters( 'learn-press/profile-order-actions', $actions, $this->get_id() );
@@ -1713,19 +1713,35 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			try {
 				$error_code = '';
 
-				$order_user = $this->get_user_id();
+				// Check user of this order
+				$order_user = (int) $this->get_user_id();
 				if ( $order_user !== $userModel->get_id() ) {
 					$error_code = 'request_refund_user_invalid';
-					throw new Exception( __( 'You do not have permission to refund this order.', 'learnpress' ) );
+					throw new Exception(
+						__( 'You do not have permission to refund this order.', 'learnpress' )
+					);
 				}
 
+				// Check refund requests are enabled
+				if ( 'yes' !== learn_press_get_refund_setting( 'enable_refund_requests', 'no' ) ) {
+					$error_code = 'refund_disabled';
+					throw new Exception( __( 'Refund requests are currently disabled.', 'learnpress' ) );
+				}
+
+				// Check order total > 0
+				if ( $this->get_total() <= 0 ) {
+					$error_code = 'order_total_invalid';
+					throw new Exception( __( 'Order total is not valid.', 'learnpress' ) );
+				}
+
+				// Check request refund status exists
 				$request_status = $this->get_refund_request();
 				if ( 'rejected' === $request_status
 					&& 'yes' !== learn_press_get_refund_setting( 'allow_resend_after_rejected', 'no' ) ) {
 					$error_code = 'request_refund_is_rejected';
 					throw new Exception( __( 'Request refund is rejected!.', 'learnpress' ) );
 				} elseif ( ! empty( $request_status ) ) {
-					$error_code = 'request_refund_status_invalid';
+					$error_code = 'request_refund_sent';
 					throw new Exception(
 						sprintf(
 							__( 'Request refund has %s', 'learnpress' ),
@@ -1734,17 +1750,34 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					);
 				}
 
+				// Check time limit for refund request
 				$refund_time_limit = learn_press_get_refund_setting( 'refund_time_limit', 30 );
 				if ( $refund_time_limit > 0 ) {
 					$order_time = absint( $this->get_order_date( 'timestamp' ) );
 					if ( $order_time > 0 ) {
 						$now                = current_time( 'timestamp' );
 						$allowed_time_limit = strtotime( '+ ' . $refund_time_limit . ' day', $order_time );
-						if ( $allowed_time_limit > $now ) {
+						if ( $allowed_time_limit < $now ) {
 							$error_code = 'request_refund_time_expired';
 							throw new Exception( __( 'Time for refund request expired', 'learnpress' ) );
 						}
 					}
+				}
+
+				// Check gateway support refund
+				$payment_method = strtolower( $this->get_data( 'payment_method', '' ) );
+				$gateway        = LP_Gateways::instance()->get_gateway( $payment_method );
+
+				$gateway_has_refund_override = false;
+				if ( $gateway && method_exists( $gateway, 'refund' ) ) {
+					// Check gateway has refund method override
+					$reflection                  = new ReflectionMethod( $gateway, 'refund' );
+					$gateway_has_refund_override = $reflection->class === get_class( $gateway );
+				}
+
+				if ( ! $gateway || ! $gateway_has_refund_override ) {
+					$error_code = 'order_refund_gateway_unavailable';
+					throw new Exception( __( 'Refund gateway is unavailable.', 'learnpress' ) );
 				}
 			} catch ( Throwable $e ) {
 				if ( empty( $error_code ) ) {

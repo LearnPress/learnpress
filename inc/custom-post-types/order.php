@@ -7,7 +7,7 @@
  * @version 1.0.2
  */
 
-use LearnPress\Ajax\ExportOrderCSVAjax;
+use LearnPress\Ajax\Order\ExportOrderCSVAjax;
 use LearnPress\Databases\DataBase;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
