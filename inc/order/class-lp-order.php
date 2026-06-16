@@ -65,11 +65,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			'_checkout_email'       => '',
 		);
 
-		const META_KEY_TRANSACTION_ID  = '_transaction_id';
-		const META_KEY_REFUND_REQUEST  = '_lp_refund_request';
-		const META_KEY_REFUNDED_BY     = '_lp_refunded_by';
-		const META_KEY_REFUNDED_AT     = '_lp_refunded_at';
-		const META_KEY_REFUNDED_AMOUNT = '_lp_refunded_amount';
+		const META_KEY_TRANSACTION_ID        = '_transaction_id';
+		const META_KEY_REFUND_REQUEST        = '_lp_refund_request';
+		const META_KEY_REFUND_REQUEST_REASON = '_lp_refund_request_reason';
+		const META_KEY_REFUNDED_BY           = '_lp_refunded_by';
+		const META_KEY_REFUNDED_AT           = '_lp_refunded_at';
+		const META_KEY_REFUNDED_AMOUNT       = '_lp_refunded_amount';
 
 		/**
 		 * Store order status in transactions.

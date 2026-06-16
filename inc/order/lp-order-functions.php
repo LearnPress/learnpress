@@ -540,7 +540,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 			'requested_at'         => $requested_at,
 			'reviewed_by'          => absint( get_post_meta( $order_id, '_lp_refund_reviewed_by', true ) ),
 			'reviewed_at'          => (string) get_post_meta( $order_id, '_lp_refund_reviewed_at', true ),
-			'reason'               => (string) get_post_meta( $order_id, '_lp_refund_reason', true ),
+			'reason'               => (string) get_post_meta( $order_id, LP_Order::META_KEY_REFUND_REQUEST_REASON, true ),
 			'requester_email'      => '',
 			'admin_order_edit_url' => add_query_arg(
 				array(

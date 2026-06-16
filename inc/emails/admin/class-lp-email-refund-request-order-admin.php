@@ -1,13 +1,12 @@
 <?php
-
-/**
- * Class LP_Email_Refund_Request_Order_Admin
- *
- * @package LearnPress/Classes
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
+	/**
+	 * Class LP_Email_Refund_Request_Order_Admin
+	 *
+	 * @package LearnPress/Classes
+	 */
 	class LP_Email_Refund_Request_Order_Admin extends LP_Email_Type_Order_Admin {
 		/**
 		 * LP_Email_Refund_Request_Order_Admin constructor.
@@ -53,7 +52,7 @@ if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
 					$event_data = array();
 				}
 
-				$this->set_data_content( $order, $event_data );
+				$this->set_data_content( $order );
 				$this->send_email();
 			} catch ( Throwable $e ) {
 				LP_Debug::error_log( $e );
@@ -64,30 +63,22 @@ if ( ! class_exists( 'LP_Email_Refund_Request_Order_Admin' ) ) {
 		 * Set variables for content email.
 		 *
 		 * @param LP_Order $order
-		 * @param array    $event_data
 		 */
-		public function set_data_content( LP_Order $order, array $event_data = array() ) {
+		public function set_data_content( LP_Order $order ) {
 			parent::set_data_content( $order );
 
-			if ( function_exists( 'learn_press_get_order_refund_event_data' ) ) {
-				$event_data = wp_parse_args( $event_data, learn_press_get_order_refund_event_data( $order ) );
-			}
-
+			$event_data           = learn_press_get_order_refund_event_data( $order );
 			$requested_by         = absint( $event_data['requested_by'] ?? 0 );
-			$requested_at         = (string) ( $event_data['requested_at'] ?? get_post_meta( $order->get_id(), '_lp_refund_requested_at', true ) );
-			$reason               = (string) ( $event_data['reason'] ?? get_post_meta( $order->get_id(), '_lp_refund_reason', true ) );
-			$request_status       = sanitize_key( (string) ( $event_data['request_status'] ?? $order->get_refund_request() ) );
-			$admin_order_edit_url = (string) ( $event_data['admin_order_edit_url'] ?? '' );
-
-			if ( empty( $admin_order_edit_url ) ) {
-				$admin_order_edit_url = add_query_arg(
-					array(
-						'post'   => $order->get_id(),
-						'action' => 'edit',
-					),
-					admin_url( 'post.php' )
-				);
-			}
+			$requested_at         = (string) get_post_meta( $order->get_id(), '_lp_refund_requested_at', true );
+			$reason               = (string) get_post_meta( $order->get_id(), LP_Order::META_KEY_REFUND_REQUEST_REASON, true );
+			$request_status       = $order->get_refund_request();
+			$admin_order_edit_url = add_query_arg(
+				array(
+					'post'   => $order->get_id(),
+					'action' => 'edit',
+				),
+				admin_url( 'post.php' )
+			);
 
 			$requested_email = (string) ( $event_data['requester_email'] ?? '' );
 			if ( empty( $requested_email ) && ! empty( $requested_by ) ) {
