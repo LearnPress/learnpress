@@ -458,6 +458,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$params = $this->convert_params_query_courses( $params );
 
 			Courses::handle_params_for_query_courses( $filter, $params );
+
+			// Filter by slug (post_name).
+			if ( ! empty( $params['slug'] ) ) {
+				$filter->post_name = is_array( $params['slug'] ) ? reset( $params['slug'] ) : $params['slug'];
+			}
+
 			$key_cache             = 'api/' . md5( json_encode( $params ) );
 			$key_cache_total       = $key_cache . '_total';
 			$key_cache_total_pages = $key_cache . '_total_pages';
@@ -542,10 +548,14 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				continue;
 			}
 
-			$courseObjPrepare             = new stdClass();
-			$courseObjPrepare->id         = (int) $courseObj->ID ?? 0;
-			$courseObjPrepare->name       = html_entity_decode( $course->get_title() );
-			$courseObjPrepare->image      = $course->get_image_url();
+			$courseObjPrepare                 = new stdClass();
+			$courseObjPrepare->id             = (int) $courseObj->ID ?? 0;
+			$courseObjPrepare->name           = html_entity_decode( $course->get_title() );
+			$courseObjPrepare->slug           = $courseObj->post_name ?? get_post_field( 'post_name', $courseObj->ID );
+			$courseObjPrepare->permalink      = get_permalink( $courseObj->ID );
+			$courseObjPrepare->excerpt        = $courseObj->post_excerpt ?? '';
+			$courseObjPrepare->count_students = method_exists( $course, 'count_students' ) ? (int) $course->count_students() : 0;
+			$courseObjPrepare->image          = $course->get_image_url();
 			$author                       = $course->get_author_model();
 			$courseObjPrepare->instructor = ! empty( $author ) ? $this->get_author_info( $author ) : [];
 			$duration                     = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '' );
@@ -729,6 +739,11 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	public function prepare_object_for_response( $object, $request ) {
 		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
 		$data    = $this->get_course_data( $object, $context, $request );
+
+		// Ensure sections are always included for single-item response, regardless of schema/context filtering.
+		if ( empty( $request['optimize'] ) && ! isset( $data['sections'] ) ) {
+			$data['sections'] = $this->get_all_items( $object );
+		}
 
 		$response = rest_ensure_response( $data );
 
@@ -1138,6 +1153,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 							$data_item[] = array(
 								'id'         => $item->get_id(),
 								'type'       => $item->get_item_type(),
+								'slug'       => $post->post_name,
 								'title'      => $post->post_title,
 								'preview'    => $item->is_preview(),
 								'duration'   => $item->get_duration()->to_timer( $format, true ),
@@ -1569,6 +1585,11 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 									),
 									'type'       => array(
 										'description' => __( 'Item Type.', 'learnpress' ),
+										'type'        => 'string',
+										'context'     => array( 'view', 'edit' ),
+									),
+									'slug'       => array(
+										'description' => __( 'Item slug.', 'learnpress' ),
 										'type'        => 'string',
 										'context'     => array( 'view', 'edit' ),
 									),
