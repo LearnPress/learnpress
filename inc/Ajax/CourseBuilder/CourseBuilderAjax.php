@@ -1491,7 +1491,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$quizPostModelNew->save();
 				$quiz_id = $quizPostModelNew->ID;
 
-				$quiz_model      = $quizPostModelNew;
+				$quiz_model        = $quizPostModelNew;
 				$response->message = __( 'Create quiz successfully', 'learnpress' );
 			} else {
 				$quiz_model = $data['quiz_model'] ?? null;
@@ -1538,13 +1538,16 @@ class CourseBuilderAjax extends AbstractAjax {
 				$this->remove_course_item_from_curriculum( $quiz_id, $course_id );
 			}
 
-			$response->status              = 'success';
-			$response->data->status        = $quiz_model->post_status;
-			$response->data->button_title  = $quiz_model->post_status === 'publish' ?
+			$response->status             = 'success';
+			$response->data->status       = $quiz_model->post_status;
+			$response->data->button_title = $quiz_model->post_status === 'publish' ?
 				__( 'Update', 'learnpress' ) :
 				__( 'Publish', 'learnpress' );
-			$response->data->quiz_id_new = $insert ? $quiz_id : '';
-			$response->message             = $target_status === 'draft'
+			$response->data->quiz_id_new  = $insert ? $quiz_id : '';
+			if ( $insert && $quiz_id ) {
+				$response->data->redirect_url = CourseBuilder::get_link_course_builder( CourseBuilderTemplate::MENU_QUIZZES . "/{$quiz_id}" );
+			}
+			$response->message = $target_status === 'draft'
 				? esc_html__( 'Quiz saved as draft', 'learnpress' )
 				: ( $insert ? esc_html__( 'Insert quiz successfully', 'learnpress' ) : esc_html__( 'Update quiz successfully', 'learnpress' ) );
 
@@ -1829,7 +1832,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				$questionPostModelNew->save();
 				$question_id = $questionPostModelNew->ID;
 
-				$question_model      = $questionPostModelNew;
+				$question_model    = $questionPostModelNew;
 				$response->message = __( 'Create question successfully', 'learnpress' );
 			} else {
 				$question_model = $data['question_model'] ?? null;
@@ -1862,13 +1865,16 @@ class CourseBuilderAjax extends AbstractAjax {
 
 			do_action( 'learn-press/course-builder/update-question', $data, $question_model );
 
-			$response->status              = 'success';
-			$response->data->status        = $question_model->post_status;
-			$response->data->button_title  = $question_model->post_status === 'publish' ?
+			$response->status                = 'success';
+			$response->data->status          = $question_model->post_status;
+			$response->data->button_title    = $question_model->post_status === 'publish' ?
 				__( 'Update', 'learnpress' ) :
 				__( 'Publish', 'learnpress' );
 			$response->data->question_id_new = $insert ? $question_id : '';
-			$response->message             = $target_status === 'draft'
+			if ( $insert && $question_id ) {
+				$response->data->redirect_url = CourseBuilder::get_link_course_builder( CourseBuilderTemplate::MENU_QUESTIONS . "/{$question_id}" );
+			}
+			$response->message = $target_status === 'draft'
 				? esc_html__( 'Question saved as draft', 'learnpress' )
 				: ( $insert ? esc_html__( 'Insert question successfully', 'learnpress' ) : esc_html__( 'Update question successfully', 'learnpress' ) );
 
