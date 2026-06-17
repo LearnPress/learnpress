@@ -241,13 +241,36 @@ export class EditQuestion {
 		);
 
 		if ( isEditorAttached ) {
-			this.setDefaultEditorTab( id );
+			this.applyDefaultEditorTabWhenReady( id );
 			return;
 		}
 
 		window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 		window.tinymce.execCommand( 'mceAddEditor', true, id );
-		this.setDefaultEditorTab( id );
+		this.applyDefaultEditorTabWhenReady( id );
+	}
+
+	// Apply the default (Visual) tab only once the editor instance is ready.
+	// window.switchEditors.go() throws if it runs before TinyMCE has registered
+	// and rendered the editor (e.g. right after mceAddEditor, or inside AddEditor
+	// which fires before `init`), so defer to the editor's `init` event when the
+	// instance is not initialized yet.
+	applyDefaultEditorTabWhenReady( id ) {
+		if ( ! id ) {
+			return;
+		}
+
+		const editor = window.tinymce?.get?.( id );
+		if ( ! editor ) {
+			return;
+		}
+
+		if ( editor.initialized ) {
+			this.setDefaultEditorTab( id );
+			return;
+		}
+
+		editor.on( 'init', () => this.setDefaultEditorTab( id ) );
 	}
 
 	reInitQuicktags( id ) {
