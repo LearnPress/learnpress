@@ -172,7 +172,7 @@ class ProfileOrderTemplate {
 				'<h3>%s</h3>',
 				esc_html__( 'Order Details', 'learnpress' )
 			),
-			'table'           => '<table class="lp-list-table order-table-details">',
+			'table'           => '<div class="lp-table-wrap"><table class="lp-list-table order-table-details">',
 			'table-header'    => self::table_header(),
 			'table-body'      => '<tbody>',
 			'items'           => $html_items,
@@ -180,7 +180,7 @@ class ProfileOrderTemplate {
 			'do_action_items' => self::action_table_items( $order ),
 			'table-body-end'  => '</tbody>',
 			'table-footer'    => self::table_footer( $order ),
-			'table-end'       => '</table>',
+			'table-end'       => '</table></div>',
 			'footer'          => self::order_detail_content_footer( $order ),
 		);
 		$content->content = Template::combine_components( $section );
