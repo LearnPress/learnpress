@@ -319,7 +319,7 @@ export class EditQuestion {
 				return;
 			}
 
-			this.setDefaultEditorTab( id );
+			this.applyDefaultEditorTabWhenReady( id );
 
 			const elTextarea = document.getElementById( id );
 
