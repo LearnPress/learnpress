@@ -295,6 +295,11 @@ export class EditQuestion {
 
 		if ( wrapEditor.classList.contains( 'html-active' ) && window.switchEditors?.go ) {
 			window.switchEditors.go( id, 'tmce' );
+
+			const elTextarea = document.getElementById( id );
+			if ( elTextarea ) {
+				elTextarea.style.visibility = '';
+			}
 		}
 
 		wrapEditor.classList.add( 'tmce-active' );
