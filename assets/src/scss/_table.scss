@@ -68,7 +68,7 @@ table.lp-list-table {
 		tr {
 			border: none;
 
-			td {
+			td, th {
 				border: none;
 
 				>div {
@@ -82,4 +82,8 @@ table.lp-list-table {
 			padding: 0;
 		}
 	}
+}
+
+.lp_profile_course_progress__nav{
+	margin-top: 16px;
 }
