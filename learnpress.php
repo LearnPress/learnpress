@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.3.9.1
+ * Version: 4.4.0-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -23,7 +23,7 @@ use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
-use LearnPress\Ajax\ExportOrderCSVAjax;
+use LearnPress\Ajax\Order\ExportOrderCSVAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\AI\AIAssistantAjax;
@@ -35,7 +35,7 @@ use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Gutenberg\GutenbergHandleMain;
-use LearnPress\Ajax\RefundOrderAjax;
+use LearnPress\Ajax\Order\RefundOrderAjax;
 use LearnPress\MCP\Abilities;
 use LearnPress\MCP\Auth\ApiKeyAuthenticator;
 use LearnPress\Models\CourseModel;
