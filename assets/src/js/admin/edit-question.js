@@ -247,7 +247,6 @@ export class EditQuestion {
 
 		window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 		window.tinymce.execCommand( 'mceAddEditor', true, id );
-		this.applyDefaultEditorTabWhenReady( id );
 	}
 
 	// Apply the default (Visual) tab only once the editor instance is ready.
