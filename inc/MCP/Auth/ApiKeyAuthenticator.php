@@ -2,6 +2,7 @@
 
 namespace LearnPress\MCP\Auth;
 
+use LearnPress\MCP\Support\Errors;
 use LP_Helper;
 use WP_Error;
 use WP_REST_Request;
@@ -111,11 +112,7 @@ class ApiKeyAuthenticator {
 		}
 
 		if ( ! AuthContext::is_api_key_auth() ) {
-			return new WP_Error(
-				'learnpress_mcp_api_key_required',
-				__( 'MCP API key authentication is required.', 'learnpress' ),
-				array( 'status' => 401 )
-			);
+			return Errors::api_key_required();
 		}
 
 		return $error;
@@ -149,19 +146,19 @@ class ApiKeyAuthenticator {
 		$consumer_secret = $credentials['consumer_secret'];
 
 		if ( '' === $consumer_key || '' === $consumer_secret ) {
-			$this->auth_error = $this->invalid_credentials_error();
+			$this->auth_error = Errors::invalid_api_credentials();
 			return 0;
 		}
 
 		$key = $this->keys_repository->find_by_consumer_key( $consumer_key );
 		if ( ! $key || empty( $key->consumer_secret ) || ! $this->keys_repository->verify_secret_hash( (string) $key->consumer_secret, $consumer_secret ) ) {
-			$this->auth_error = $this->invalid_credentials_error();
+			$this->auth_error = Errors::invalid_api_credentials();
 			return 0;
 		}
 
 		$resolved_user_id = absint( $key->user_id );
 		if ( $resolved_user_id <= 0 || ! get_user_by( 'id', $resolved_user_id ) ) {
-			$this->auth_error = $this->invalid_credentials_error();
+			$this->auth_error = Errors::invalid_api_credentials();
 			return 0;
 		}
 
@@ -384,20 +381,6 @@ class ApiKeyAuthenticator {
 
 		return false;
 	}
-	/**
-	 * Standardized invalid credentials error.
-	 *
-	 * @return WP_Error
-	 */
-	protected function invalid_credentials_error(): WP_Error {
-
-		return new WP_Error(
-			'learnpress_mcp_invalid_api_key_credentials',
-			__( 'Invalid MCP API credentials.', 'learnpress' ),
-			array( 'status' => 401 )
-		);
-	}
-
 	/**
 	 * Validate expected consumer key format.
 	 *
