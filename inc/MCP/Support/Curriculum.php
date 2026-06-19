@@ -70,13 +70,21 @@ class Curriculum {
 	 *
 	 * @param int $section_id Section ID.
 	 * @param int $item_id    Item ID.
+	 * @param int $course_id  Course ID.
 	 *
 	 * @return bool True when a relationship row was found and removed.
 	 */
-	public static function remove_item_from_section( int $section_id, int $item_id ): bool {
+	public static function remove_item_from_section( int $section_id, int $item_id, int $course_id = 0 ): bool {
 		$relation = CourseSectionItemModel::find( $section_id, $item_id, true );
 		if ( ! $relation instanceof CourseSectionItemModel ) {
 			return false;
+		}
+
+		// CourseSectionItemModel::find() does not populate section_course_id, which
+		// delete() needs for its capability check (otherwise it resolves course 0 and
+		// CourseSectionItemModel::get_course_model() throws a TypeError). Supply it.
+		if ( $course_id > 0 ) {
+			$relation->section_course_id = $course_id;
 		}
 
 		$relation->delete();

@@ -201,7 +201,7 @@ class LessonTools {
 		try {
 			$removed_from_curriculum = false;
 			if ( $location['section_id'] > 0 ) {
-				$removed_from_curriculum = Curriculum::remove_item_from_section( $location['section_id'], $lesson_id );
+				$removed_from_curriculum = Curriculum::remove_item_from_section( $location['section_id'], $lesson_id, $location['course_id'] );
 			}
 
 			$trashed = wp_trash_post( $lesson_id );
