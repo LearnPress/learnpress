@@ -95,7 +95,10 @@ class FilterCourseTemplate {
 			$wrapper = apply_filters(
 				'lp/filter-courses/sections/wrapper',
 				[
-					'wrapper'     => sprintf( '<form class="%s">', $class_wrapper_form ),
+					'wrapper'     => sprintf(
+						'<form class="%s">',
+						esc_attr( $class_wrapper_form )
+					),
 					'sections'    => Template::combine_components( $sections ),
 					'close'       => sprintf(
 						'<div class="lp-form-course-filter__close">%s<i class="lp-icon-close"></i></div>',
@@ -108,7 +111,7 @@ class FilterCourseTemplate {
 
 			echo Template::combine_components( $wrapper );
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 	}
 
@@ -151,7 +154,7 @@ class FilterCourseTemplate {
 
 			$content = Template::combine_components( $wrapper );
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $content;
@@ -203,7 +206,7 @@ class FilterCourseTemplate {
 
 			$content = Template::combine_components( $wrapper );
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $content;
