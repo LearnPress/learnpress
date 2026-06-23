@@ -382,7 +382,7 @@ class BuilderEditQuestionTemplate {
 		$edit  = [
 			'wrapper'     => '<div class="cb-question-edit-title">',
 			'label'       => sprintf( '<label for="title" class="cb-question-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
-			'input'       => sprintf( '<input type="text" name="question_title" size="30" value="%s" id="title" class="cb-question-edit-title__input">', $title ),
+			'input'       => sprintf( '<input type="text" name="question_title" size="30" value="%s" id="title" class="cb-question-edit-title__input">', esc_attr( $title ) ),
 			'wrapper_end' => '</div>',
 		];
 

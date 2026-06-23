@@ -420,7 +420,7 @@ class BuilderEditLessonTemplate {
 		$edit  = [
 			'wrapper'     => '<div class="cb-lesson-edit-title">',
 			'label'       => sprintf( '<label for="title" class="cb-lesson-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
-			'input'       => sprintf( '<input type="text" name="lesson_title" size="30" value="%s" id="title" class="cb-lesson-edit-title__input">', $title ),
+			'input'       => sprintf( '<input type="text" name="lesson_title" size="30" value="%s" id="title" class="cb-lesson-edit-title__input">', esc_attr( $title ) ),
 			'wrapper_end' => '</div>',
 		];
 
