@@ -464,7 +464,7 @@ class OpenAiAjax extends AbstractAjax {
 				throw new Exception( __( 'Invalid post ID.', 'learnpress' ) );
 			}
 
-			// Check permission if user is Instructor
+			// Check permission
 			$post_type = get_post_type( $post_id );
 			if ( $post_type === LP_COURSE_CPT ) {
 				$coursePostModel = CoursePostModel::find( $post_id, true );
@@ -472,7 +472,11 @@ class OpenAiAjax extends AbstractAjax {
 					throw new Exception( __( 'Invalid course ID.', 'learnpress' ) );
 				}
 
-				$coursePostModel->check_capabilities_update();
+				if ( ! $coursePostModel->check_capabilities_update() ) {
+					throw new Exception(
+						__( 'You do not have permission to perform this action.', 'learnpress' )
+					);
+				}
 			} else {
 				$course_item_types = CourseModel::item_types_support();
 				if ( ! in_array( $post_type, $course_item_types ) ) {
