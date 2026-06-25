@@ -503,7 +503,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 	 * Build normalized refund event payload.
 	 *
 	 * @since 4.3.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 *
 	 * @param LP_Order $order
 	 * @param array    $overrides
@@ -522,7 +522,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 			);
 		}
 
-		$user_id        = $order->get_user_id();
+		$user_id        = (int) $order->get_user_id();
 		$userOrderModel = UserModel::find( $user_id, true );
 		if ( $userOrderModel instanceof UserModel ) {
 			$requested_by = $userOrderModel->get_display_name();

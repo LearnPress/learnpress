@@ -73,7 +73,7 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 					throw new Exception( __( 'Gateway is not enable.', 'learnpress' ), 404 );
 				}
 
-				LP_Debug::log_to_comment( 'Webhook payload: ' . json_encode( $request->get_body(), JSON_UNESCAPED_UNICODE ) );
+				//LP_Debug::log_to_comment( 'Webhook payload: ' . json_encode( $request->get_body(), JSON_UNESCAPED_UNICODE ) );
 
 				/**
 				 * @var LP_Gateway_Paypal|LP_Gateway_Stripe $gateway
