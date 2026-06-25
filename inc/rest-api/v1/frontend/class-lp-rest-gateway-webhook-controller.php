@@ -53,13 +53,13 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		 *
 		 * @return Response
 		 * @since 4.3.7
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function listen_subscription_webhook( WP_REST_Request $request ): Response {
-			$response = new Response();
+			$response   = new Response();
+			$gateway_id = sanitize_key( (string) $request->get_param( 'gateway' ) );
 
 			try {
-				$gateway_id = sanitize_key( (string) $request->get_param( 'gateway' ) );
 				if ( empty( $gateway_id ) ) {
 					throw new Exception( __( 'Gateway is required.', 'learnpress' ), 400 );
 				}
@@ -80,6 +80,7 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 				 */
 				$gateway->capture_subscription_webhook( $request );
 			} catch ( Throwable $e ) {
+				LP_Debug::log_to_comment( 'Webhook error: ' . $gateway_id . ' - ' . $e->getMessage() );
 				LP_Debug::error_log( $e );
 				$response->message = $e->getMessage();
 			}
