@@ -84,7 +84,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		protected $subscription_webhook_id = '';
 
-		const PAYPAL_TOKEN = 'paypal_token';
+		const PAYPAL_TOKEN                    = 'paypal_token';
+		const META_PAYPAL_TRANSACTION_TYPE    = '_paypal_transaction_type';
+		const PAYPAL_TRANSACTION_TYPE_CAPTURE = 'capture';
+		const PAYPAL_TRANSACTION_TYPE_SALE    = 'sale';
 
 		/**
 		 * LP_Gateway_Paypal constructor.
@@ -484,10 +487,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			if ( $lp_order instanceof LP_Order && $capture->status === 'COMPLETED' ) {
 				$transaction_id = $lp_order->get_transaction_id();
 				if ( $transaction_id === $capture_id ) {
+					update_post_meta( $order_id, self::META_PAYPAL_TRANSACTION_TYPE, self::PAYPAL_TRANSACTION_TYPE_CAPTURE );
 					return true;
 				}
 
 				$lp_order->payment_complete( $capture_id );
+				update_post_meta( $order_id, self::META_PAYPAL_TRANSACTION_TYPE, self::PAYPAL_TRANSACTION_TYPE_CAPTURE );
 
 				$lp_order->add_note(
 					sprintf(
@@ -1685,7 +1690,52 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			// Dispatch webhook
-			$this->process_subscription_by_status( $lp_order, $lp_subscription_status_set_to_handle, $webhook_data );
+			$this->process_paypal_subscription_by_status( $lp_order, $lp_subscription_status_set_to_handle, $webhook_data );
+		}
+
+		/**
+		 * Dispatch PayPal subscription status and persist PayPal transaction data
+		 * for renewal orders created by the shared subscription flow.
+		 *
+		 * @param LP_Order $lp_order
+		 * @param string   $lp_subscription_status_set_to_handle
+		 * @param array    $webhook_data
+		 *
+		 * @return void
+		 * @throws Exception
+		 */
+		protected function process_paypal_subscription_by_status(
+			$lp_order,
+			string $lp_subscription_status_set_to_handle,
+			array $webhook_data
+		) {
+			$transaction_id                  = sanitize_text_field( (string) ( $webhook_data['transaction_id'] ?? '' ) );
+			$save_renewal_transaction_data   = null;
+			$should_save_renewal_transaction = LP_Subscription_Manager::STATUS_RENEWED === $lp_subscription_status_set_to_handle
+				&& '' !== $transaction_id;
+
+			if ( $should_save_renewal_transaction ) {
+				$save_renewal_transaction_data = function ( $order_renew, $webhook_data ) use ( $transaction_id ) {
+					if ( ! $order_renew instanceof LP_Order ) {
+						return;
+					}
+
+					$this->save_paypal_transaction_for_order(
+						$order_renew,
+						$transaction_id,
+						self::PAYPAL_TRANSACTION_TYPE_SALE
+					);
+				};
+				add_action( 'learn-press/subscription/order/renew-success', $save_renewal_transaction_data, 10, 2 );
+			}
+
+			try {
+				$this->process_subscription_by_status( $lp_order, $lp_subscription_status_set_to_handle, $webhook_data );
+			} finally {
+				if ( $save_renewal_transaction_data ) {
+					remove_action( 'learn-press/subscription/order/renew-success', $save_renewal_transaction_data, 10 );
+				}
+			}
 		}
 
 		/**
@@ -1878,6 +1928,14 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'PayPal billing agreement ID is invalid.', 'learnpress' ), 400 );
 			}
 
+			$transaction_id = sanitize_text_field( (string) ( $resource['id'] ?? '' ) );
+			if ( empty( $transaction_id ) ) {
+				throw new Exception( __( 'PayPal sale transaction ID is invalid.', 'learnpress' ), 400 );
+			}
+
+			$webhook_data['transaction_id'] = $transaction_id;
+			$webhook_data['renewal_key']    = 'paypal_sale_' . $transaction_id;
+
 			// Verify subscription id receiver sample with subscription id on LP Order
 			$subscription_id = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_ID, true );
 			if ( $billing_agreement_id !== $subscription_id ) {
@@ -1890,6 +1948,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$lp_order->get_id(),
 					self::META_SUBSCRIPTION_DATA_PAYMENT_SUCCESS,
 					wp_json_encode( $webhook_data, JSON_UNESCAPED_UNICODE )
+				);
+
+				$this->save_paypal_transaction_for_order(
+					$lp_order,
+					$transaction_id,
+					self::PAYPAL_TRANSACTION_TYPE_SALE
 				);
 			}
 
@@ -1915,6 +1979,32 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			return true;
+		}
+
+		/**
+		 * Save PayPal transaction data on an LP order.
+		 *
+		 * @param LP_Order $lp_order
+		 * @param string   $transaction_id
+		 * @param string   $transaction_type
+		 *
+		 * @return void
+		 */
+		protected function save_paypal_transaction_for_order(
+			$lp_order,
+			string $transaction_id,
+			string $transaction_type = self::PAYPAL_TRANSACTION_TYPE_SALE
+		) {
+			$transaction_id = sanitize_text_field( $transaction_id );
+			if ( '' === $transaction_id ) {
+				return;
+			}
+
+			if ( empty( get_post_meta( $lp_order->get_id(), '_transaction_id', true ) ) ) {
+				update_post_meta( $lp_order->get_id(), '_transaction_id', $transaction_id );
+			}
+
+			update_post_meta( $lp_order->get_id(), self::META_PAYPAL_TRANSACTION_TYPE, sanitize_key( $transaction_type ) );
 		}
 
 		/**
@@ -1993,31 +2083,46 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @version 1.0.0
 		 */
 		public function refund( $lp_order, float $amount = 0, string $note = '' ): array {
-			$order_id   = $lp_order->get_id();
-			$capture_id = $lp_order->get_transaction_id();
-			if ( empty( $capture_id ) ) {
-				throw new Exception( __( 'Missing PayPal capture id to refund.', 'learnpress' ) );
+			$order_id              = $lp_order->get_id();
+			$paypal_transaction_id = $lp_order->get_transaction_id();
+			if ( empty( $paypal_transaction_id ) ) {
+				throw new Exception( __( 'Missing PayPal transaction id to refund.', 'learnpress' ) );
 			}
 
+			$transaction_type = $this->get_paypal_refund_transaction_type( $lp_order, $paypal_transaction_id );
 			$refund_args = [];
 			if ( $amount > 0 ) {
-				$refund_args['amount'] = [
-					'currency_code' => $lp_order->get_currency(),
-					'value'         => strval( round( $amount, 2 ) ),
-				];
+				if ( self::PAYPAL_TRANSACTION_TYPE_SALE === $transaction_type ) {
+					$refund_args['amount'] = [
+						'currency' => $lp_order->get_currency(),
+						'total'    => strval( round( $amount, 2 ) ),
+					];
+				} else {
+					$refund_args['amount'] = [
+						'currency_code' => $lp_order->get_currency(),
+						'value'         => strval( round( $amount, 2 ) ),
+					];
+				}
 			}
 
 			$note_to_payer = trim( $note );
 			if ( ! empty( $note_to_payer ) ) {
-				$refund_args['note_to_payer'] = $note_to_payer;
+				if ( self::PAYPAL_TRANSACTION_TYPE_SALE === $transaction_type ) {
+					$refund_args['description'] = $note_to_payer;
+				} else {
+					$refund_args['note_to_payer'] = $note_to_payer;
+				}
 			}
 
 			$refund_args = apply_filters( 'learn-press/paypal-refund/args', $refund_args, $lp_order, $this );
 			$data_token  = $this->get_access_token();
+			$refund_path = self::PAYPAL_TRANSACTION_TYPE_SALE === $transaction_type
+				? 'v1/payments/sale/' . rawurlencode( $paypal_transaction_id ) . '/refund'
+				: 'v2/payments/captures/' . rawurlencode( $paypal_transaction_id ) . '/refund';
 			$response    = wp_remote_post(
-				$this->api_url . 'v2/payments/captures/' . rawurlencode( $capture_id ) . '/refund',
+				$this->api_url . $refund_path,
 				[
-					'body'    => json_encode( $refund_args ),
+					'body'    => wp_json_encode( $refund_args ),
 					'headers' => [
 						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
 						'Content-Type'  => 'application/json',
@@ -2036,7 +2141,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( $response_data->details[0]->description );
 			}
 
-			if ( ! empty( $response_data->status ) && $response_data->status === 'COMPLETED' ) {
+			$refund_status = strtoupper( (string) ( $response_data->status ?? ( $response_data->state ?? '' ) ) );
+			if ( 'COMPLETED' === $refund_status ) {
 				update_post_meta( $order_id, '_paypal_refund_id', $response_data->id );
 
 				$lp_order->add_note(
@@ -2054,9 +2160,60 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			return [
 				'result'    => 'success',
 				'refund_id' => $response_data->id,
-				'status'    => $result->status ?? '',
+				'status'    => $refund_status,
 				'response'  => $response_data,
 			];
+		}
+
+		/**
+		 * Resolve which PayPal refund API should handle this order transaction.
+		 *
+		 * One-time checkout stores a v2 capture id. Subscription webhooks send a
+		 * Payments v1 sale id, so refund must use the matching sale endpoint.
+		 *
+		 * @param LP_Order $lp_order
+		 * @param string   $paypal_transaction_id
+		 *
+		 * @return string
+		 */
+		protected function get_paypal_refund_transaction_type( $lp_order, string $paypal_transaction_id ): string {
+			$transaction_type = sanitize_key(
+				(string) get_post_meta( $lp_order->get_id(), self::META_PAYPAL_TRANSACTION_TYPE, true )
+			);
+			if ( in_array( $transaction_type, [ self::PAYPAL_TRANSACTION_TYPE_CAPTURE, self::PAYPAL_TRANSACTION_TYPE_SALE ], true ) ) {
+				return $transaction_type;
+			}
+
+			$subscription_payload_meta_keys = [
+				self::META_SUBSCRIPTION_DATA_PAYMENT_SUCCESS,
+				self::META_SUBSCRIPTION_DATA_RECEIVER,
+			];
+			foreach ( $subscription_payload_meta_keys as $meta_key ) {
+				$payload = get_post_meta( $lp_order->get_id(), $meta_key, true );
+				if ( empty( $payload ) ) {
+					continue;
+				}
+
+				if ( is_string( $payload ) ) {
+					$payload = LP_Helper::json_decode( $payload, true );
+				}
+				if ( ! is_array( $payload ) ) {
+					continue;
+				}
+
+				$resource = $payload['resource'] ?? [];
+				if ( ! is_array( $resource ) ) {
+					continue;
+				}
+
+				$resource_type = (string) ( $payload['resource_type'] ?? '' );
+				$resource_id   = (string) ( $resource['id'] ?? '' );
+				if ( 'sale' === $resource_type && $resource_id === $paypal_transaction_id ) {
+					return self::PAYPAL_TRANSACTION_TYPE_SALE;
+				}
+			}
+
+			return self::PAYPAL_TRANSACTION_TYPE_CAPTURE;
 		}
 
 		/**
