@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.5
+ * @version  4.0.6
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -15,16 +15,22 @@ $checkout = LearnPress::instance()->checkout();
 ?>
 <?php
 if ( ! is_user_logged_in() ) {
+	$enable_login_on_page_checkout = LP_Settings::get_option( 'enable_login_checkout', 'yes' ) === 'yes';
+	$login_text = sprintf(
+		'<a class="lp-link-login" href="%s">%s</a>',
+		learn_press_get_login_url( LP_Helper::getUrlCurrent() ),
+		__( 'login', 'learnpress' )
+	);
+
+	if ( $enable_login_on_page_checkout ) {
+		$login_text = __( 'login', 'learnpress' );
+	}
 	?>
 	<div class="learn-press-message error">
 		<?php
 		printf(
 			__( 'Please %s in to enroll in the course!', 'learnpress' ),
-			sprintf(
-				'<a class="lp-link-login" href="%s">%s</a>',
-				learn_press_get_login_url( LP_Helper::getUrlCurrent() ),
-				__( 'login', 'learnpress' )
-			)
+			$login_text
 		);
 		?>
 	</div>
