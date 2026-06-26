@@ -279,6 +279,10 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.1 (2026-06-26) =
+~ Fixed: security.
+~ Fixed: minor bugs.
+
 = 4.4.0 (2026-06-16) =
 ~ Fixed: security.
 ~ Fixed: check permission create/edit course/lesson/quiz/question on Course Builder.
