@@ -44,7 +44,6 @@ defined( 'ABSPATH' ) || die();
 			<li>
 				<p><?php _e( 'Course price', 'learnpress' ); ?></p>
 				<input type="number" size="3" value="" min="0" name="<?php echo CoursePostModel::META_KEY_REGULAR_PRICE; ?>">
-				<input type="hidden" value="all" name="<?php echo CoursePostModel::META_KEY_LEVEL; ?>">
 			</li>
 		</ul>
 	</fieldset>
