@@ -16,22 +16,22 @@ class LP_Install_Sample_Data {
 	/**
 	 * @var array
 	 */
-	public static $section_range = array( 5, 10 );
+	public static $section_range = array( 3, 3 );
 
 	/**
 	 * @var array
 	 */
-	public static $item_range = array( 10, 15 );
+	public static $item_range = array( 5, 10 );
 
 	/**
 	 * @var array
 	 */
-	public static $question_range = array( 10, 15 );
+	public static $question_range = array( 2, 5 );
 
 	/**
 	 * @var array
 	 */
-	public static $answer_range = array( 3, 5 );
+	public static $answer_range = array( 2, 5 );
 
 	/**
 	 * @var int
