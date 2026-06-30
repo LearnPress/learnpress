@@ -1419,7 +1419,7 @@ function learn_press_get_question_options_for_js( $question, $args = array() ) {
 		$args,
 		array(
 			'cryptoJsAes'     => false,
-			'include_is_true' => true,
+			'include_is_true' => false,
 			'answer'          => false,
 		)
 	);

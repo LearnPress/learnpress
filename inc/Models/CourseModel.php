@@ -853,7 +853,7 @@ class CourseModel {
 			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
-		$value = maybe_unserialize( $value );
+		$value                   = maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;
@@ -1259,11 +1259,17 @@ class CourseModel {
 	 *
 	 * @return mixed|false|null|WP_Post|PostModel
 	 * @since v4.2.7.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_item_model( int $item_id, string $item_type ) {
 		try {
 			$item = false;
+
+			// Find item has in section
+			$section_id = $this->get_section_of_item( $item_id );
+			if ( ! $section_id ) {
+				return $item;
+			}
 
 			switch ( $item_type ) {
 				case LP_LESSON_CPT:
