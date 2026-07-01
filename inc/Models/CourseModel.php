@@ -1257,17 +1257,21 @@ class CourseModel {
 	/**
 	 * Get item model assigned to this course
 	 *
+	 * @param int $item_id
+	 * @param string $item_type
+	 * @param bool $check_assign | default true check assign item to course
+	 *
 	 * @return mixed|false|null|WP_Post|PostModel
 	 * @since v4.2.7.6
 	 * @version 1.0.2
 	 */
-	public function get_item_model( int $item_id, string $item_type ) {
+	public function get_item_model( int $item_id, string $item_type, bool $check_assign = true ) {
 		try {
 			$item = false;
 
 			// Find item has in section
 			$section_id = $this->get_section_of_item( $item_id );
-			if ( ! $section_id ) {
+			if ( $check_assign && ! $section_id ) {
 				return $item;
 			}
 
