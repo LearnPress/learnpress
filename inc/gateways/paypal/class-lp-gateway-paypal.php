@@ -100,6 +100,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			parent::__construct();
 
 			$this->init();
+
+			if ( is_admin() ) {
+				add_action( 'admin_enqueue_scripts', array( $this, 'localize_webhook_admin_script' ) );
+			}
 		}
 
 		/**
@@ -2066,6 +2070,243 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function get_settings(): array {
 			return Config::instance()->get( $this->id, 'settings/gateway' );
+		}
+
+		/**
+		 * Create (or reuse) the PayPal webhook used for LearnPress subscription events.
+		 *
+		 * Registers the REST subscription-webhook listener URL with PayPal via
+		 * v1/notifications/webhooks. PayPal returns `WEBHOOK_URL_ALREADY_EXISTS`
+		 * when the same URL is already subscribed for this app (max 10 webhooks
+		 * per app); in that case the existing webhook id for the same URL is
+		 * looked up and reused so this action is safe to run more than once.
+		 *
+		 * @return string Webhook ID.
+		 * @throws Exception
+		 * @since 4.4.1
+		 */
+		public function create_subscription_webhook(): string {
+			if ( ! $this->is_subscription_enabled() ) {
+				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
+			}
+
+			$listener_url = $this->get_subscription_webhook_listener_url();
+			$event_types  = $this->get_subscription_webhook_event_types( $listener_url );
+
+			$data_token = $this->get_access_token();
+
+			$response = wp_remote_post(
+				$this->api_url . 'v1/notifications/webhooks',
+				array(
+					'body'    => wp_json_encode(
+						array(
+							'url'         => $listener_url,
+							'event_types' => array_map(
+								function ( $event_type ) {
+									return array( 'name' => $event_type );
+								},
+								$event_types
+							),
+						)
+					),
+					'headers' => array(
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+						'Content-Type'  => 'application/json',
+					),
+					'timeout' => 60,
+				)
+			);
+
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message() );
+			}
+
+			$result = LP_Helper::json_decode( wp_remote_retrieve_body( $response ), true );
+
+			if ( ! empty( $result['id'] ) ) {
+				return (string) $result['id'];
+			}
+
+			// This specific error name means the URL is already subscribed for the app.
+			if ( 'WEBHOOK_URL_ALREADY_EXISTS' === ( $result['name'] ?? '' ) ) {
+				$existing_id = $this->find_existing_webhook_id( $listener_url, $data_token );
+				if ( ! empty( $existing_id ) ) {
+					return $existing_id;
+				}
+			}
+
+			$error_message = $result['details'][0]['description']
+				?? ( $result['message'] ?? __( 'Invalid PayPal webhook response.', 'learnpress' ) );
+			throw new Exception( $error_message );
+		}
+
+		/**
+		 * Find an existing PayPal webhook id already subscribed for the given listener URL.
+		 *
+		 * @param string $listener_url
+		 * @param object $data_token
+		 *
+		 * @return string
+		 * @throws Exception
+		 * @since 4.4.1
+		 */
+		protected function find_existing_webhook_id( string $listener_url, $data_token ): string {
+			$response = wp_remote_get(
+				$this->api_url . 'v1/notifications/webhooks',
+				array(
+					'headers' => array(
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+						'Content-Type'  => 'application/json',
+					),
+					'timeout' => 60,
+				)
+			);
+
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message() );
+			}
+
+			$result   = LP_Helper::json_decode( wp_remote_retrieve_body( $response ), true );
+			$webhooks = $result['webhooks'] ?? array();
+
+			foreach ( $webhooks as $webhook ) {
+				if ( ( $webhook['url'] ?? '' ) === $listener_url ) {
+					return (string) ( $webhook['id'] ?? '' );
+				}
+			}
+
+			return '';
+		}
+
+		/**
+		 * Get the REST listener URL PayPal should call for subscription events.
+		 *
+		 * @return string
+		 * @since 4.4.1
+		 */
+		protected function get_subscription_webhook_listener_url(): string {
+			return esc_url_raw( rest_url( 'lp/v1/gateways/paypal/subscription-webhook' ) );
+		}
+
+		/**
+		 * Get the PayPal event types LearnPress subscription webhooks should be registered for.
+		 *
+		 * @param string $listener_url
+		 *
+		 * @return string[]
+		 * @since 4.4.1
+		 */
+		protected function get_subscription_webhook_event_types( string $listener_url ): array {
+			return apply_filters(
+				'learn-press/paypal/webhook/event-types',
+				array(
+					'BILLING.SUBSCRIPTION.CREATED',
+					'BILLING.SUBSCRIPTION.ACTIVATED',
+					'BILLING.SUBSCRIPTION.CANCELLED',
+					'BILLING.SUBSCRIPTION.SUSPENDED',
+					'BILLING.SUBSCRIPTION.EXPIRED',
+					'PAYMENT.SALE.COMPLETED',
+				),
+				$listener_url,
+				$this
+			);
+		}
+
+		/**
+		 * Check whether the configured PayPal subscription webhook is still alive.
+		 *
+		 * Calls PayPal's `GET v1/notifications/webhooks/{id}` for the webhook id
+		 * saved in settings and compares its registered url/event types against
+		 * what LearnPress currently expects, so drift (e.g. a moved domain or a
+		 * webhook deleted from the PayPal dashboard) can be surfaced to the admin.
+		 *
+		 * @return array{
+		 *     webhook_id:string,
+		 *     url:string,
+		 *     event_types:string[],
+		 *     url_matches:bool,
+		 *     missing_event_types:string[]
+		 * }
+		 * @throws Exception When no webhook id is saved, or PayPal reports the webhook is invalid/missing.
+		 * @since 4.4.1
+		 */
+		public function check_subscription_webhook_status(): array {
+			if ( ! $this->is_subscription_enabled() ) {
+				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
+			}
+
+			if ( empty( $this->subscription_webhook_id ) ) {
+				throw new Exception( __( 'No PayPal webhook ID is saved yet. Create a webhook first.', 'learnpress' ) );
+			}
+
+			$data_token = $this->get_access_token();
+
+			$response = wp_remote_get(
+				$this->api_url . 'v1/notifications/webhooks/' . rawurlencode( $this->subscription_webhook_id ),
+				array(
+					'headers' => array(
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+						'Content-Type'  => 'application/json',
+					),
+					'timeout' => 60,
+				)
+			);
+
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message() );
+			}
+
+			$result = LP_Helper::json_decode( wp_remote_retrieve_body( $response ), true );
+
+			if ( empty( $result['id'] ) ) {
+				$error_message = $result['details'][0]['description']
+					?? ( $result['message'] ?? __( 'PayPal webhook was not found. It may have been deleted, or the saved ID is invalid.', 'learnpress' ) );
+				throw new Exception( $error_message );
+			}
+
+			$listener_url     = $this->get_subscription_webhook_listener_url();
+			$registered_url   = (string) ( $result['url'] ?? '' );
+			$event_types      = wp_list_pluck( $result['event_types'] ?? array(), 'name' );
+			$required_events  = $this->get_subscription_webhook_event_types( $listener_url );
+
+			return array(
+				'webhook_id'          => (string) $result['id'],
+				'url'                 => $registered_url,
+				'event_types'         => $event_types,
+				'url_matches'         => $registered_url === $listener_url,
+				'missing_event_types' => array_values( array_diff( $required_events, $event_types ) ),
+			);
+		}
+
+		/**
+		 * Localize PayPal webhook admin script for the settings screen.
+		 *
+		 * Data is exposed under `window.lpPaypalWebhookSettings` and consumed by
+		 * the `lp-admin-paypal-webhook` runtime script.
+		 *
+		 * @return void
+		 * @since 4.4.1
+		 */
+		public function localize_webhook_admin_script(): void {
+			if ( ! wp_script_is( 'lp-admin-paypal-webhook', 'enqueued' ) ) {
+				return;
+			}
+
+			wp_localize_script(
+				'lp-admin-paypal-webhook',
+				'lpPaypalWebhookSettings',
+				array(
+					'action'           => 'paypal_create_subscription_webhook',
+					'checkAction'      => 'paypal_check_subscription_webhook_status',
+					'webhook_id_field' => 'learn_press_paypal[subscription_webhook_id]',
+					'i18n'             => array(
+						'processing'     => __( 'Creating webhook...', 'learnpress' ),
+						'created'        => __( 'Webhook created.', 'learnpress' ),
+						'checking'       => __( 'Checking webhook status...', 'learnpress' ),
+						'request_failed' => __( 'Request failed. Please try again.', 'learnpress' ),
+					),
+				)
+			);
 		}
 	}
 }

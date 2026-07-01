@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-26T10:30:43+00:00\n"
+"POT-Creation-Date: 2026-07-01T03:28:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: learnpress\n"
 
 #: assets/js/dist/admin/pages/tools.min.js:118
@@ -86,6 +86,14 @@ msgstr ""
 msgid "Add Blank"
 msgstr ""
 
+#: assets/src/apps/js/blocks/archive-course/edit.js:11
+msgid "Archive Course"
+msgstr ""
+
+#: assets/src/apps/js/blocks/archive-course/edit.js:15
+msgid "This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it"
+msgstr ""
+
 #: assets/src/apps/js/blocks/archive-course-legacy/edit.js:11
 msgid "Archive Course (Legacy)"
 msgstr ""
@@ -129,7 +137,7 @@ msgstr ""
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:208
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:212
 #: inc/TemplateHooks/CourseBuilder/Settings/BuilderSettingsTemplate.php:57
-#: learnpress.php:866
+#: learnpress.php:868
 msgid "Settings"
 msgstr ""
 
@@ -527,7 +535,6 @@ msgid "Columns"
 msgstr ""
 
 #: assets/src/apps/js/blocks/courses/course-results/edit.js:9
-#, js-format
 msgid "Showing %d-%d of %d results"
 msgstr ""
 
@@ -603,6 +610,22 @@ msgstr ""
 msgid "Add nofollow attribute"
 msgstr ""
 
+#: assets/src/apps/js/blocks/item-curriculum-course/edit.js:13
+msgid "Item Curriculum Course"
+msgstr ""
+
+#: assets/src/apps/js/blocks/item-curriculum-course/edit.js:17
+msgid "This is an editor placeholder for the Item Curriculum Course page. Content will render content of single item curriculum course. Should be not remove it"
+msgstr ""
+
+#: assets/src/apps/js/blocks/single-course/edit.js:11
+msgid "Single Course"
+msgstr ""
+
+#: assets/src/apps/js/blocks/single-course/edit.js:15
+msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
+msgstr ""
+
 #: assets/src/apps/js/blocks/single-course-legacy/edit.js:11
 msgid "Single Course (Legacy)"
 msgstr ""
@@ -612,6 +635,7 @@ msgid "Display full content of Single Course, can not edit."
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:41
+#: assets/js/dist/frontend/quiz.min.js:261
 #: inc/class-lp-assets.php:155
 #: inc/lp-core-functions.php:2084
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:584
@@ -622,6 +646,8 @@ msgid "OK"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:44
+#: assets/js/dist/frontend/quiz.min.js:96
+#: assets/js/dist/frontend/quiz.min.js:139
 #: inc/admin/views/meta-boxes/fields/date.php:56
 #: inc/admin/views/meta-boxes/order/refund-request-panel.php:46
 #: inc/class-lp-assets.php:156
@@ -653,6 +679,7 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:207
 #: assets/js/dist/frontend/quiz.min.js:81
 #: assets/js/dist/frontend/quiz.min.js:204
+#: assets/js/dist/frontend/quiz.min.js:559
 #: inc/custom-post-types/question.php:129
 #: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:202
 msgid "Correct"
@@ -660,13 +687,13 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:207
 #: assets/js/dist/frontend/quiz.min.js:82
+#: assets/js/dist/frontend/quiz.min.js:559
 #: inc/custom-post-types/question.php:135
 #: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:203
 msgid "Incorrect"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:208
-#, js-format
 msgid "%d/%d point"
 msgstr ""
 
@@ -683,7 +710,6 @@ msgid "point"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:34
-#, js-format
 msgid "Question <code>%s</code> invalid!"
 msgstr ""
 
@@ -753,6 +779,7 @@ msgid "Hint"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:17
+#: assets/js/dist/frontend/quiz.min.js:92
 msgid "Are you sure you want to retake the quiz?"
 msgstr ""
 
@@ -775,6 +802,7 @@ msgid "Next"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:268
+#: assets/js/dist/frontend/quiz.min.js:95
 #: inc/admin/views/meta-boxes/quiz/settings.php:64
 msgid "Retake"
 msgstr ""
@@ -807,7 +835,7 @@ msgid "Questions:"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:87
-#: inc/admin/class-lp-install-sample-data.php:157
+#: inc/admin/class-lp-install-sample-data.php:154
 #: inc/custom-post-types/abstract.php:1001
 #: inc/custom-post-types/question.php:359
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:567
@@ -873,27 +901,101 @@ msgid "Minus points"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:93
-#, js-format
 msgid "Question <span>%d to %d of %d</span>"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:95
 #: assets/js/dist/frontend/quiz.min.js:98
-#, js-format
 msgid "Question <span>%d of %d</span>"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:107
-#, js-format
 msgid "Earned Point: %s"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:116
+#: assets/js/dist/frontend/quiz.min.js:95
 msgid "Submitting…"
+msgstr ""
+
+#: assets/src/js/admin/edit-course/edit-curriculum/edit-course-ai.js:1379
+#: assets/src/js/admin/edit-course/edit-curriculum/edit-course-ai.js:1395
+#: assets/src/js/admin/edit-course/edit-curriculum/edit-course-ai.js:1411
+#: assets/src/js/admin/edit-course/edit-curriculum/edit-course-ai.js:1431
+msgid "Edit with AI"
 msgstr ""
 
 #: assets/src/js/frontend/course-builder/builder-form-state.js:174
 msgid "You have unsaved changes. Are you sure you want to leave this page?"
+msgstr ""
+
+#: assets/js/dist/frontend/profile.min.js:131
+msgid "The file size is too large. You need to upload a file < 2MB."
+msgstr ""
+
+#: assets/js/dist/frontend/profile.min.js:133
+msgid "The image size must be greater than or equal to %1$sx%2$spx"
+msgstr ""
+
+#: assets/js/dist/frontend/profile.min.js:146
+msgid "Are you sure you want to remove your avatar?"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:91
+msgid "Retake Quiz?"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:225
+msgid "Failed to start quiz. Please try again."
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:134
+msgid "Submit Quiz?"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:135
+msgid "Are you sure you want to submit the quiz? You cannot change your answers after submission."
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:138
+#: config/elementor/instructor/become-a-teacher.php:32
+#: inc/admin/views/addons.php:225
+#: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:89
+#: templates/global/become-teacher-form.php:58
+msgid "Submit"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:342
+msgid "Submitted"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:361
+msgid "Failed to submit quiz: "
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:362
+#: assets/js/dist/frontend/quiz.min.js:374
+msgid "Submit Quiz"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:373
+msgid "Failed to submit quiz. Please try again."
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:135
+msgid "Failed to load content"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:276
+msgid "Failed to load content. Please try again."
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:258
+msgid "Time Expired!"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:259
+msgid "Your quiz time has expired. The quiz will be submitted automatically."
 msgstr ""
 
 #. Plugin Name of the plugin
@@ -1285,7 +1387,7 @@ msgid "Radius"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:353
-#: inc/admin/class-lp-admin-assets.php:650
+#: inc/admin/class-lp-admin-assets.php:659
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:175
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:276
@@ -1579,13 +1681,6 @@ msgstr ""
 msgid "Button text"
 msgstr ""
 
-#: config/elementor/instructor/become-a-teacher.php:32
-#: inc/admin/views/addons.php:225
-#: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:89
-#: templates/global/become-teacher-form.php:58
-msgid "Submit"
-msgstr ""
-
 #: config/elementor/instructor/become-a-teacher.php:36
 msgid "Button Processing text"
 msgstr ""
@@ -1828,7 +1923,6 @@ msgstr ""
 
 #: config/settings/advanced.php:24
 #: config/settings/advanced.php:34
-#, php-format
 msgid "Default: %s"
 msgstr ""
 
@@ -1870,7 +1964,7 @@ msgstr[1] ""
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseLessonBlockType.php:79
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseOfflineLessonBlockType.php:80
 #: inc/lp-template-functions.php:1098
-#: inc/Models/CourseModel.php:1515
+#: inc/Models/CourseModel.php:1521
 #: inc/TemplateHooks/Admin/AI/AdminCreateCourseAITemplate.php:480
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:207
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:560
@@ -1888,7 +1982,7 @@ msgstr[1] ""
 #: inc/custom-post-types/quiz.php:89
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseQuizBlockType.php:79
 #: inc/lp-template-functions.php:1088
-#: inc/Models/CourseModel.php:1518
+#: inc/Models/CourseModel.php:1524
 #: inc/TemplateHooks/Admin/AI/AdminCreateCourseAITemplate.php:527
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:215
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:563
@@ -2820,7 +2914,6 @@ msgid "Client ID"
 msgstr ""
 
 #: config/settings/gateway/paypal.php:52
-#, php-format
 msgid "How to get <a href=\"%s\" target=\"_blank\">Client ID</a>"
 msgstr ""
 
@@ -2829,7 +2922,6 @@ msgid "Client Secret"
 msgstr ""
 
 #: config/settings/gateway/paypal.php:61
-#, php-format
 msgid "How to get <a href=\"%s\" target=\"_blank\">Client Secret</a>"
 msgstr ""
 
@@ -2846,10 +2938,20 @@ msgid "Webhook URL:"
 msgstr ""
 
 #: config/settings/gateway/paypal.php:78
+#: inc/admin/meta-box/fields/paypal-create-webhook.php:20
+msgid "Create webhook"
+msgstr ""
+
+#. translators: %s: PayPal subscription webhook listener URL.
+#: config/settings/gateway/paypal.php:83
+msgid "Registers %s with PayPal for subscription events and fills in the webhook ID below."
+msgstr ""
+
+#: config/settings/gateway/paypal.php:88
 msgid "Subscription webhook ID"
 msgstr ""
 
-#: config/settings/gateway/paypal.php:81
+#: config/settings/gateway/paypal.php:91
 msgid "PayPal webhook ID used to reverse-verify subscription events."
 msgstr ""
 
@@ -2986,7 +3088,6 @@ msgstr ""
 
 #. translators: %s: MCP documentation URL.
 #: config/settings/mcp.php:21
-#, php-format
 msgid "Enable Model Context Protocol integration for AI-powered LMS operations. Review all AI actions before executing. <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Learn more</a>."
 msgstr ""
 
@@ -3008,7 +3109,6 @@ msgstr ""
 
 #. translators: 1. profile url
 #: config/settings/open-ai-admin.php:26
-#, php-format
 msgid "Get your OpenAI secret key <a href=\"%1$s\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>. Read the quickstart guide <a href=\"%2$s\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>."
 msgstr ""
 
@@ -3954,27 +4054,22 @@ msgid "No settings available."
 msgstr ""
 
 #: inc/abstracts/abstract-addon.php:169
-#, php-format
 msgid "<strong>LearnPress version %1$s require %2$s</strong> version %3$s or higher"
 msgstr ""
 
 #: inc/abstracts/abstract-addon.php:190
-#, php-format
 msgid "<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher %4$s"
 msgstr ""
 
 #: inc/abstracts/abstract-addon.php:257
-#, php-format
 msgid "%s plugin file does not exist."
 msgstr ""
 
 #: inc/abstracts/abstract-addon.php:276
-#, php-format
 msgid "%s plugin class does not exist."
 msgstr ""
 
 #: inc/abstracts/abstract-object-data.php:346
-#, php-format
 msgid "The following functions %1$s do not exist in %2$s"
 msgstr ""
 
@@ -4071,7 +4166,7 @@ msgstr ""
 msgid "Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:643
+#: inc/admin/class-lp-admin-assets.php:652
 #: inc/class-lp-query-list-table.php:32
 #: inc/TemplateHooks/Table/TableListTemplate.php:150
 msgid "item"
@@ -4079,18 +4174,18 @@ msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/admin/class-lp-admin-assets.php:644
+#: inc/admin/class-lp-admin-assets.php:653
 msgid "Create a new"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:645
+#: inc/admin/class-lp-admin-assets.php:654
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:172
 #: inc/TemplateHooks/Admin/AdminTemplate.php:114
 msgid "Back"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:646
+#: inc/admin/class-lp-admin-assets.php:655
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:173
@@ -4098,37 +4193,37 @@ msgstr ""
 msgid "Selected items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:647
+#: inc/admin/class-lp-admin-assets.php:656
 msgid "Do you want to remove the \"{{ITEM_NAME}}\" item from the course?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:648
+#: inc/admin/class-lp-admin-assets.php:657
 msgid "Do you want to move the \"{{ITEM_NAME}}\" item to the trash?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:651
+#: inc/admin/class-lp-admin-assets.php:660
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:176
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:277
 msgid "Items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:653
+#: inc/admin/class-lp-admin-assets.php:662
 msgid "The course sale price must be less than the regular price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:654
+#: inc/admin/class-lp-admin-assets.php:663
 msgid "The course price must be greater than the sale price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:655
+#: inc/admin/class-lp-admin-assets.php:664
 msgid "The sale start date must be before the sale end date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:656
+#: inc/admin/class-lp-admin-assets.php:665
 msgid "The sale end date must be after the sale start date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:657
+#: inc/admin/class-lp-admin-assets.php:666
 msgid "Invalid date"
 msgstr ""
 
@@ -4249,6 +4344,7 @@ msgid "API key created."
 msgstr ""
 
 #: inc/admin/class-lp-admin-mcp-api-keys.php:77
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2308
 msgid "Request failed. Please try again."
 msgstr ""
 
@@ -4321,7 +4417,6 @@ msgid "Available Courses"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:429
-#, php-format
 msgid "LearnPress Pages (%d)"
 msgstr ""
 
@@ -4336,17 +4431,14 @@ msgid "Deny"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:610
-#, php-format
 msgid "Pending Request %s"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:678
-#, php-format
 msgid "A user has %s to become a teacher."
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:707
-#, php-format
 msgid "If you like <strong>LearnPress</strong> please leave us a %1$s&#9733;&#9733;&#9733;&#9733;&#9733;%2$s rating. A huge thanks from the LearnPress team for your generosity."
 msgstr ""
 
@@ -4367,20 +4459,19 @@ msgstr ""
 msgid "Edit with Course Builder"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:71
+#: inc/admin/class-lp-install-sample-data.php:72
 msgid "Are you sure you want to install the sample course data?"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:72
+#: inc/admin/class-lp-install-sample-data.php:73
 msgid "Are you sure you want to delete the sample course data?"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:154
-#, php-format
+#: inc/admin/class-lp-install-sample-data.php:151
 msgid "The Course \"%s\" has been created"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:155
+#: inc/admin/class-lp-install-sample-data.php:152
 #: inc/admin/views/meta-boxes/course/assigned.php:23
 #: inc/admin/views/meta-boxes/quiz/assigned.php:35
 #: inc/admin/views/meta-boxes/quiz/assigned.php:44
@@ -4393,25 +4484,25 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:183
+#: inc/admin/class-lp-install-sample-data.php:180
 msgid "No data sample."
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:204
+#: inc/admin/class-lp-install-sample-data.php:201
 msgid "The sample data was successfully deleted!"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:351
+#: inc/admin/class-lp-install-sample-data.php:349
 #: inc/admin/views/tools/course/html-install-sample-data.php:22
 msgid "Sample course"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:693
+#: inc/admin/class-lp-install-sample-data.php:702
 msgctxt "install-sample-course"
 msgid "[TRUE] - "
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:701
+#: inc/admin/class-lp-install-sample-data.php:710
 msgctxt "install-sample-course"
 msgid " [TRUE] - "
 msgstr ""
@@ -4595,19 +4686,16 @@ msgstr ""
 
 #. translators: 1: Plugin name and version.
 #: inc/admin/helpers/class-lp-plugins-helper.php:241
-#, php-format
 msgid "Install %s now"
 msgstr ""
 
 #. translators: 1: Plugin name and version
 #: inc/admin/helpers/class-lp-plugins-helper.php:248
-#, php-format
 msgid "Update %s now"
 msgstr ""
 
 #: inc/admin/helpers/class-lp-plugins-helper.php:255
 #: inc/admin/helpers/class-lp-plugins-helper.php:264
-#, php-format
 msgid "Disable %s now"
 msgstr ""
 
@@ -4618,7 +4706,6 @@ msgstr ""
 
 #: inc/admin/helpers/class-lp-plugins-helper.php:257
 #: inc/admin/helpers/class-lp-plugins-helper.php:266
-#, php-format
 msgid "Enable %s now"
 msgstr ""
 
@@ -4628,7 +4715,6 @@ msgid "Enable Now"
 msgstr ""
 
 #: inc/admin/helpers/class-lp-plugins-helper.php:271
-#, php-format
 msgid "Buy %s now"
 msgstr ""
 
@@ -4721,12 +4807,10 @@ msgid "Copy"
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1775
-#, php-format
 msgid "Question id %s does not exist."
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1779
-#, php-format
 msgid "Quiz id %s does not exist."
 msgstr ""
 
@@ -4819,7 +4903,6 @@ msgid "Add new"
 msgstr ""
 
 #: inc/admin/meta-box/fields/email-content.php:95
-#, php-format
 msgid "This template has been overridden by your theme and can be found in: <code>%s</code>. <br />Please open the file in an editor program to edit"
 msgstr ""
 
@@ -4890,6 +4973,10 @@ msgstr ""
 
 #: inc/admin/meta-box/fields/list-emails.php:59
 msgid "Disable all"
+msgstr ""
+
+#: inc/admin/meta-box/fields/paypal-create-webhook.php:23
+msgid "Check webhook status"
 msgstr ""
 
 #: inc/admin/settings/class-lp-settings-addons.php:21
@@ -5039,7 +5126,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:18
-#: learnpress.php:868
+#: learnpress.php:870
 msgid "Add-ons"
 msgstr ""
 
@@ -5053,7 +5140,6 @@ msgid "* If you use a Premium Theme that includes LearnPress add-ons, you can go
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:45
-#, php-format
 msgid "If you have purchased a premium add-on separately, you can enter your purchase code (%s) to download or update the add-ons here."
 msgstr ""
 
@@ -5067,7 +5153,6 @@ msgstr ""
 
 #. translators: 1: processed users, 2: generated slugs, 3: skipped users, 4: failed users
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:84
-#, php-format
 msgid "User slug generation finished. Processed: %1$d, Generated: %2$d, Skipped: %3$d, Failed: %4$d."
 msgstr ""
 
@@ -5144,7 +5229,6 @@ msgid "Your update and support has expired!"
 msgstr ""
 
 #: inc/admin/views/addons.php:148
-#, php-format
 msgid "You have a license of for this item with %s days of update & support remaining. Please extend the update & support license to keep updating the latest versions & receive customer support from ThimPress before it expires."
 msgstr ""
 
@@ -5162,8 +5246,8 @@ msgstr ""
 
 #: inc/admin/views/addons.php:198
 #: inc/admin/views/addons.php:201
-#: inc/admin/views/tools/course/html-install-sample-data.php:54
-#: inc/admin/views/tools/course/html-install-sample-data.php:57
+#: inc/admin/views/tools/course/html-install-sample-data.php:53
+#: inc/admin/views/tools/course/html-install-sample-data.php:56
 msgid "Install"
 msgstr ""
 
@@ -5266,7 +5350,6 @@ msgid "Check now!"
 msgstr ""
 
 #: inc/admin/views/admin-notices/plugin-base.php:19
-#, php-format
 msgid "The LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case-sensitive) to ensure all functions work properly and are fully operational (currently <strong>%s</strong>)"
 msgstr ""
 
@@ -5399,7 +5482,6 @@ msgstr ""
 
 #: inc/admin/views/dashboard/html-orders.php:37
 #: inc/admin/views/dashboard/html-orders.php:39
-#, php-format
 msgid "%d order"
 msgid_plural "%d orders"
 msgstr[0] ""
@@ -5436,12 +5518,10 @@ msgid "Current Version"
 msgstr ""
 
 #: inc/admin/views/html-admin-notice-templates.php:35
-#, php-format
 msgid "There is a new update on LearnPress. You may need to update your theme <strong>(%s)</strong> to avoid outdated template files."
 msgstr ""
 
 #: inc/admin/views/html-admin-notice-templates.php:40
-#, php-format
 msgid "This is not a bug, don't worry. Read more about the outdated template files notice <a href=\\\"%s\\\" target=\\\"_blank\\\">here</a>."
 msgstr ""
 
@@ -5693,7 +5773,6 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/course/settings.php:368
 #: inc/TemplateHooks/Course/AdminEditSettingTemplate.php:416
-#, php-format
 msgid "Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>."
 msgstr ""
 
@@ -5777,7 +5856,6 @@ msgstr ""
 #: inc/admin/views/meta-boxes/course/settings.php:577
 #: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:88
 #: inc/TemplateHooks/Course/AdminEditSettingTemplate.php:617
-#, php-format
 msgid "Edit: %s"
 msgstr ""
 
@@ -5827,12 +5905,10 @@ msgid "Downloadable Materials is not allowed!"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/fields/materials.php:63
-#, php-format
 msgid "Maximum amount of files you can upload more: %1$d files (maximum file size is %2$s MB)"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/fields/materials.php:72
-#, php-format
 msgid "And allow upload only these types: %s."
 msgstr ""
 
@@ -5989,7 +6065,6 @@ msgid "Total"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/details.php:28
-#, php-format
 msgid "Order %s"
 msgstr ""
 
@@ -6097,7 +6172,6 @@ msgid "Refund amount"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/refund-request-panel.php:44
-#, php-format
 msgid "Refund amount must be greater than 0 and must not exceed %s."
 msgstr ""
 
@@ -6111,12 +6185,10 @@ msgid "Refund Request"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/refund-request-panel.php:53
-#, php-format
 msgid "Requested by <strong>%1$s</strong> at %2$s."
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/refund-request-panel.php:62
-#, php-format
 msgid "Requester email: %s"
 msgstr ""
 
@@ -6125,7 +6197,6 @@ msgid "Reason:"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/refund-request-panel.php:74
-#, php-format
 msgid "Request status: %s"
 msgstr ""
 
@@ -6392,7 +6463,6 @@ msgid "Continue"
 msgstr ""
 
 #: inc/admin/views/setup/footer.php:17
-#, php-format
 msgid "LearnPress %s. Designed by @ThimPress."
 msgstr ""
 
@@ -6486,7 +6556,6 @@ msgid "The pages will display the content of LP's necessary pages, such as Cours
 msgstr ""
 
 #: inc/admin/views/setup/steps/pages.php:17
-#, php-format
 msgid "If you are not sure, click <a href=\"%s\" id=\"create-pages\">here</a> to create pages automatically."
 msgstr ""
 
@@ -6769,20 +6838,20 @@ msgstr ""
 msgid "Course price"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:55
+#: inc/admin/views/tools/course/html-install-sample-data.php:54
 msgid "Installing..."
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:59
+#: inc/admin/views/tools/course/html-install-sample-data.php:58
 msgid "Show options"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:61
-#: inc/admin/views/tools/course/html-install-sample-data.php:64
+#: inc/admin/views/tools/course/html-install-sample-data.php:60
+#: inc/admin/views/tools/course/html-install-sample-data.php:63
 msgid "Delete sample course"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:62
+#: inc/admin/views/tools/course/html-install-sample-data.php:61
 msgid "Deleting..."
 msgstr ""
 
@@ -6956,7 +7025,6 @@ msgid "Cleaning..."
 msgstr ""
 
 #: inc/admin/views/tools/html-template.php:30
-#, php-format
 msgid "Override Templates (%s)"
 msgstr ""
 
@@ -6965,17 +7033,14 @@ msgid "File"
 msgstr ""
 
 #: inc/admin/views/tools/html-template.php:42
-#, php-format
 msgid "All (%d)"
 msgstr ""
 
 #: inc/admin/views/tools/html-template.php:50
-#, php-format
 msgid "Outdated (%d)"
 msgstr ""
 
 #: inc/admin/views/tools/html-template.php:52
-#, php-format
 msgid "Unversioned (%d)"
 msgstr ""
 
@@ -7005,7 +7070,6 @@ msgid "Items completed:"
 msgstr ""
 
 #: inc/admin/views/user/course-progress.php:30
-#, php-format
 msgid "%1$d of %2$d items"
 msgstr ""
 
@@ -7045,7 +7109,6 @@ msgstr ""
 
 #. translators: %s: JSON encoded learning context.
 #: inc/AI/Assistant/Agent.php:278
-#, php-format
 msgid "Grounded context (JSON): %s"
 msgstr ""
 
@@ -7075,7 +7138,6 @@ msgstr ""
 
 #. translators: %s: assistant action label.
 #: inc/AI/Assistant/Agent.php:393
-#, php-format
 msgid "The %s action is currently disabled by the site administrator."
 msgstr ""
 
@@ -7142,25 +7204,21 @@ msgstr ""
 
 #. translators: %s: JSON context payload for intent classification.
 #: inc/AI/Assistant/IntentClassifier.php:122
-#, php-format
 msgid "Intent context (JSON): %s"
 msgstr ""
 
 #. translators: 1: learner message sample, 2: locale hint.
 #: inc/AI/Assistant/LanguageResolver.php:32
-#, php-format
 msgid "Language policy: reply strictly in the same language as the learner. Do not default to English. Learner sample: \"%1$s\". Locale fallback: %2$s."
 msgstr ""
 
 #. translators: %s: locale hint.
 #: inc/AI/Assistant/LanguageResolver.php:40
-#, php-format
 msgid "Language policy: reply strictly in the learner language and do not default to English. If the latest learner message is language-neutral, use locale fallback: %s."
 msgstr ""
 
 #. translators: %d: requested number of quiz questions.
 #: inc/AI/Assistant/QuickQuizEngine.php:62
-#, php-format
 msgid "Create a quick quiz from lesson content. Return ONLY valid JSON with keys: intro (string), questions (array of exactly %d items). Each question must contain: question (string), options (array of 4 strings), correct_index (0-3 integer), explanation (string)."
 msgstr ""
 
@@ -7186,7 +7244,6 @@ msgstr ""
 
 #. translators: 1: score, 2: total questions.
 #: inc/AI/Assistant/QuickQuizEngine.php:183
-#, php-format
 msgid "Quiz complete. You scored %1$d/%2$d."
 msgstr ""
 
@@ -7205,7 +7262,6 @@ msgstr ""
 
 #. translators: %d: max usage tokens per learner per day.
 #: inc/AI/Assistant/TokenQuotaGuard.php:207
-#, php-format
 msgid "Daily AI usage limit reached (%d tokens). Please try again tomorrow or contact the site administrator."
 msgstr ""
 
@@ -7832,6 +7888,28 @@ msgstr ""
 msgid "Question position updated successfully"
 msgstr ""
 
+#: inc/Ajax/Gateway/PaypalWebhookAjax.php:35
+#: inc/Ajax/Gateway/PaypalWebhookAjax.php:71
+msgid "You are not allowed to manage PayPal settings."
+msgstr ""
+
+#: inc/Ajax/Gateway/PaypalWebhookAjax.php:45
+msgid "PayPal webhook created."
+msgstr ""
+
+#: inc/Ajax/Gateway/PaypalWebhookAjax.php:78
+msgid "The webhook URL registered on PayPal does not match this site's current webhook URL."
+msgstr ""
+
+#. translators: %s: comma-separated list of PayPal event type names.
+#: inc/Ajax/Gateway/PaypalWebhookAjax.php:83
+msgid "Missing event types: %s."
+msgstr ""
+
+#: inc/Ajax/Gateway/PaypalWebhookAjax.php:88
+msgid "Webhook is active on PayPal."
+msgstr ""
+
 #: inc/Ajax/LessonAjax.php:46
 #: inc/class-lp-checkout.php:477
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:371
@@ -7849,7 +7927,6 @@ msgid "You have not started lesson"
 msgstr ""
 
 #: inc/Ajax/LessonAjax.php:77
-#, php-format
 msgid "Congrats! You have completed \"%s\"."
 msgstr ""
 
@@ -7965,7 +8042,6 @@ msgid "(No customer)"
 msgstr ""
 
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:177
-#, php-format
 msgid "User #%d (Deleted)"
 msgstr ""
 
@@ -7988,17 +8064,14 @@ msgid "Invalid order."
 msgstr ""
 
 #: inc/Ajax/Order/RefundOrderAjax.php:74
-#, php-format
 msgid "Order #%s has been refunded."
 msgstr ""
 
 #: inc/Ajax/Order/RefundOrderAjax.php:79
-#, php-format
 msgid "Refund request submitted by customer %1$s(#%2$d) and waiting for admin review. %3$s"
 msgstr ""
 
 #: inc/Ajax/Order/RefundOrderAjax.php:82
-#, php-format
 msgid "Reason: %s"
 msgstr ""
 
@@ -8032,7 +8105,6 @@ msgid "Refund approved successfully."
 msgstr ""
 
 #: inc/Ajax/Order/RefundOrderAjax.php:149
-#, php-format
 msgid "Refund request rejected by admin(#%d)."
 msgstr ""
 
@@ -8066,7 +8138,6 @@ msgid "Course is not exists!"
 msgstr ""
 
 #: inc/class-lp-ajax.php:100
-#, php-format
 msgid "The order %s has been successfully recovered."
 msgstr ""
 
@@ -8125,23 +8196,19 @@ msgid "Error 404"
 msgstr ""
 
 #: inc/class-lp-breadcrumb.php:228
-#, php-format
 msgid "Courses tagged &ldquo;%s&rdquo;"
 msgstr ""
 
 #: inc/class-lp-breadcrumb.php:286
-#, php-format
 msgid "Posts tagged &ldquo;%s&rdquo;"
 msgstr ""
 
 #: inc/class-lp-breadcrumb.php:364
-#, php-format
 msgid "Author: %s"
 msgstr ""
 
 #: inc/class-lp-breadcrumb.php:396
 #: inc/class-lp-breadcrumb.php:400
-#, php-format
 msgid "Search results for &ldquo;%s&rdquo;"
 msgstr ""
 
@@ -8158,7 +8225,6 @@ msgid "Create account failed"
 msgstr ""
 
 #: inc/class-lp-checkout.php:306
-#, php-format
 msgid "Error %d: Unable to add item to order. Please try again."
 msgstr ""
 
@@ -8182,54 +8248,46 @@ msgstr ""
 #: inc/class-lp-datetime.php:119
 #: inc/custom-post-types/order.php:644
 #: inc/order/class-lp-order.php:160
-#, php-format
 msgid "%s ago"
 msgstr ""
 
 #: inc/class-lp-datetime.php:330
-#, php-format
 msgid "%s Second"
 msgid_plural "%s Seconds"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/class-lp-datetime.php:336
-#, php-format
 msgid "%s Minute"
 msgid_plural "%s Minutes"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/class-lp-datetime.php:342
-#, php-format
 msgid "%s Hour"
 msgid_plural "%s Hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/class-lp-datetime.php:348
-#, php-format
 msgid "%s Day"
 msgid_plural "%s Days"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/class-lp-datetime.php:354
-#, php-format
 msgid "%s Week"
 msgid_plural "%s Weeks"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/class-lp-datetime.php:360
-#, php-format
 msgid "%s Month"
 msgid_plural "%s Months"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/class-lp-datetime.php:366
-#, php-format
 msgid "%s Year"
 msgid_plural "%s Years"
 msgstr[0] ""
@@ -8415,27 +8473,22 @@ msgid "You've already completed the quiz."
 msgstr ""
 
 #: inc/class-lp-strings.php:24
-#, php-format
 msgid "Do you want to redo the quiz \"%s\"?"
 msgstr ""
 
 #: inc/class-lp-strings.php:25
-#, php-format
 msgid "Do you want to complete the quiz \"%s\"?"
 msgstr ""
 
 #: inc/class-lp-strings.php:26
-#, php-format
 msgid "Do you want to complete the lesson \"%s\"?"
 msgstr ""
 
 #: inc/class-lp-strings.php:27
-#, php-format
 msgid "Do you want to finish the course \"%s\"?"
 msgstr ""
 
 #: inc/class-lp-strings.php:28
-#, php-format
 msgid "Do you want to retake the course \"%s\"?"
 msgstr ""
 
@@ -8448,12 +8501,10 @@ msgstr ""
 #: inc/course/abstract-course.php:813
 #: inc/lesson/class-lp-lesson.php:104
 #: inc/quiz/class-lp-quiz.php:651
-#, php-format
 msgid "The function %s doesn't exist"
 msgstr ""
 
 #: inc/course/abstract-course.php:1344
-#, php-format
 msgid "This course will end within the next %s"
 msgstr ""
 
@@ -8526,7 +8577,6 @@ msgid "New"
 msgstr ""
 
 #: inc/CourseBuilder/CourseBuilder.php:222
-#, php-format
 msgid "Edit \"%1$s\" - %2$s"
 msgstr ""
 
@@ -8540,12 +8590,10 @@ msgid "New Lesson"
 msgstr ""
 
 #: inc/curds/class-lp-lesson-curd.php:139
-#, php-format
 msgid "Invalid lesson with ID \"%d\"."
 msgstr ""
 
 #: inc/curds/class-lp-order-curd.php:478
-#, php-format
 msgid "Invalid order with ID \"%d\"."
 msgstr ""
 
@@ -8575,7 +8623,6 @@ msgid "Failed to duplicate answer"
 msgstr ""
 
 #: inc/curds/class-lp-question-curd.php:283
-#, php-format
 msgid "Invalid question with ID \"%d\"."
 msgstr ""
 
@@ -8585,7 +8632,6 @@ msgid "The quiz does not exist."
 msgstr ""
 
 #: inc/curds/class-lp-quiz-curd.php:43
-#, php-format
 msgid "Invalid quiz with ID \"%d\"."
 msgstr ""
 
@@ -8607,7 +8653,6 @@ msgid "Unknown"
 msgstr ""
 
 #: inc/custom-post-types/abstract.php:983
-#, php-format
 msgid "Course (%1$d %2$s)"
 msgid_plural "Course (%1$d %2$s)"
 msgstr[0] ""
@@ -8632,7 +8677,6 @@ msgstr ""
 
 #. translators: %s: date and time of the revision
 #: inc/custom-post-types/abstract.php:1106
-#, php-format
 msgid "The lesson has been restored to revision from %s"
 msgstr ""
 
@@ -8649,7 +8693,6 @@ msgid "submitted."
 msgstr ""
 
 #: inc/custom-post-types/abstract.php:1111
-#, php-format
 msgid "scheduled for: <strong>%1$s</strong>."
 msgstr ""
 
@@ -8707,7 +8750,6 @@ msgid "Search Courses"
 msgstr ""
 
 #: inc/custom-post-types/course.php:60
-#, php-format
 msgid "You have not had any courses yet. Click <a href=\"%s\">Add new</a> to start"
 msgstr ""
 
@@ -8838,7 +8880,6 @@ msgid "Refund Requested"
 msgstr ""
 
 #: inc/custom-post-types/order.php:662
-#, php-format
 msgid "Pay via <strong>%s</strong>"
 msgstr ""
 
@@ -8975,7 +9016,6 @@ msgid "Search Quizzes"
 msgstr ""
 
 #: inc/custom-post-types/quiz.php:97
-#, php-format
 msgid "You haven't had any quizzes yet. Click <a href=\"%s\">Add new</a> to start"
 msgstr ""
 
@@ -8992,7 +9032,6 @@ msgid "Do you want to move the \"{{QUESTION_NAME}}\" question to the trash?"
 msgstr ""
 
 #: inc/custom-post-types/quiz.php:294
-#, php-format
 msgid "%d question"
 msgid_plural "%d questions"
 msgstr[0] ""
@@ -9497,7 +9536,6 @@ msgid "Register Form"
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:433
-#, php-format
 msgid "Gateway %s does not support subscription payment."
 msgstr ""
 
@@ -9506,17 +9544,17 @@ msgid "Missing subscription plan name."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:484
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1051
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1055
 msgid "Invalid subscription amount."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:488
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:991
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:995
 msgid "Invalid subscription setup fee."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:492
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1056
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1060
 msgid "Missing subscription currency."
 msgstr ""
 
@@ -9525,32 +9563,26 @@ msgid "Invalid subscription interval."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:512
-#, php-format
 msgid "Gateway %s does not support subscription plan creation."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:525
-#, php-format
 msgid "Gateway %s does not support listing subscription plans."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:542
-#, php-format
 msgid "Gateway %s does not support fetching subscription plan."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:557
-#, php-format
 msgid "Gateway %s does not support updating subscription plan."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:569
-#, php-format
 msgid "Gateway %s does not support deleting subscription plan."
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:599
-#, php-format
 msgid "Gateway %s does not support subscription webhook."
 msgstr ""
 
@@ -9570,8 +9602,7 @@ msgstr ""
 #: inc/gateways/class-lp-gateway-abstract.php:892
 #: inc/gateways/class-lp-gateway-abstract.php:916
 #: inc/gateways/class-lp-gateway-abstract.php:940
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1911
-#, php-format
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1915
 msgid "Subscription ID: %s"
 msgstr ""
 
@@ -9581,7 +9612,6 @@ msgstr ""
 #: inc/gateways/class-lp-gateway-abstract.php:896
 #: inc/gateways/class-lp-gateway-abstract.php:920
 #: inc/gateways/class-lp-gateway-abstract.php:944
-#, php-format
 msgid "Plan ID: %s"
 msgstr ""
 
@@ -9606,7 +9636,6 @@ msgid "Canceled at"
 msgstr ""
 
 #: inc/gateways/class-lp-gateway-abstract.php:1133
-#, php-format
 msgid "%s has been deprecated. Please use % instead of."
 msgstr ""
 
@@ -9634,155 +9663,178 @@ msgstr ""
 msgid "Pay with PayPal"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:281
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:285
 msgid "Paypal Client id is required."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:285
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:289
 msgid "Paypal Client secret is required"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:319
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:323
 msgid "Invalid PayPal access token"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:417
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:421
 msgid "Invalid Paypal checkout"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:428
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:432
 msgid "Invalid Paypal checkout url"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:494
-#, php-format
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:498
 msgid "PayPal payment %1$s completed at %2$s %3$s"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:633
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:888
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:948
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1260
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:637
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:892
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:952
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1264
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2090
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2237
 msgid "PayPal subscriptions are disabled."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:686
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:690
 msgid "Invalid PayPal product response."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:782
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:786
 msgid "Invalid PayPal plan response."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:789
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:793
 msgid "PayPal subscription plan created."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:893
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:953
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:897
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:957
 msgid "Missing subscription plan id."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:916
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:920
 msgid "Get plan: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:927
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:931
 msgid "PayPal subscription plan fetched."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:980
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:984
 msgid "Invalid PayPal subscription plan status."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1027
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1031
 msgid "Update plan: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1037
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1041
 msgid "PayPal plan interval cannot be changed. Create a new plan instead."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1044
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1048
 msgid "PayPal plan interval count cannot be changed. Create a new plan instead."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1103
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1107
 msgid "Update plan pricing: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1110
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1114
 msgid "PayPal subscription plan updated."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1133
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1137
 msgid "PayPal subscription plan deactivated."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1265
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1269
 msgid "PayPal subscription plan ID is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1360
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1364
 msgid "Pay PayPal subscription: "
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1366
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1370
 msgid "Invalid PayPal subscription response."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1722
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1726
 msgid "PayPal webhook verification failed."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1753
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1757
 msgid "LearnPress order is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1772
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1776
 msgid "Ignore lp order completed with subscription activated."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1837
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1841
 msgid "LP PayPal get status from webhook is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1872
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1876
 msgid "PayPal setup fee/renew payment resource is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1878
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1882
 msgid "PayPal billing agreement ID is invalid."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1884
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1888
 msgid "PayPal billing subscription not same with subscription on LP Order."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1908
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1912
 msgid "PayPal payment setup fee/renew success created at"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1949
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1953
 msgid "PayPal subscription created at"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1952
-#, php-format
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:1956
 msgid "Link payment: %s"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:1999
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2003
 msgid "Missing PayPal capture id to refund."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:2044
-#, php-format
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2048
 msgid "PayPal refund completed at %1$s %2$s"
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:2051
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2055
 msgid "PayPal refund something went wrong."
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2139
+msgid "Invalid PayPal webhook response."
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2241
+msgid "No PayPal webhook ID is saved yet. Create a webhook first."
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2265
+msgid "PayPal webhook was not found. It may have been deleted, or the saved ID is invalid."
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2305
+msgid "Creating webhook..."
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2306
+msgid "Webhook created."
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:2307
+msgid "Checking webhook status..."
 msgstr ""
 
 #: inc/Gutenberg/Blocks/Courses/CourseItemTemplateBlock.php:61
@@ -9879,7 +9931,6 @@ msgid "Function not found"
 msgstr ""
 
 #: inc/Helpers/Template.php:152
-#, php-format
 msgid "Path file %s not exists"
 msgstr ""
 
@@ -10036,31 +10087,26 @@ msgstr ""
 #. translators: %s: post type
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:679
 #: inc/jwt/rest-api/version1/class-lp-rest-posts-controller.php:148
-#, php-format
 msgid "Cannot create existing %s."
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1125
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:160
-#, php-format
 msgid "%s days"
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1126
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:161
-#, php-format
 msgid "%s hours"
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1127
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:162
-#, php-format
 msgid "%s mins"
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1128
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:163
-#, php-format
 msgid "%s secs"
 msgstr ""
 
@@ -10395,7 +10441,6 @@ msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-posts-controller.php:14
 #: inc/jwt/rest-api/version1/class-lp-rest-posts-controller.php:475
-#, php-format
 msgid "The method '%s' not implemented. It must be overridden in the subclass."
 msgstr ""
 
@@ -10674,7 +10719,6 @@ msgstr ""
 
 #: inc/lp-core-functions.php:986
 #: inc/lp-template-functions.php:1496
-#, php-format
 msgid "%s week"
 msgid_plural "%s weeks"
 msgstr[0] ""
@@ -10682,7 +10726,6 @@ msgstr[1] ""
 
 #: inc/lp-core-functions.php:990
 #: inc/lp-template-functions.php:1492
-#, php-format
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
@@ -10690,7 +10733,6 @@ msgstr[1] ""
 
 #: inc/lp-core-functions.php:995
 #: inc/lp-template-functions.php:1487
-#, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
@@ -10698,7 +10740,6 @@ msgstr[1] ""
 
 #: inc/lp-core-functions.php:999
 #: inc/lp-template-functions.php:1481
-#, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
@@ -10838,7 +10879,6 @@ msgid "Expert"
 msgstr ""
 
 #: inc/lp-webhooks.php:85
-#, php-format
 msgid "LearnPress webhook %s process completed"
 msgstr ""
 
@@ -10924,13 +10964,11 @@ msgstr ""
 
 #. translators: %s: capability.
 #: inc/MCP/Abilities.php:381
-#, php-format
 msgid "Current user does not have required base capability: %s."
 msgstr ""
 
 #. translators: 1: required scope, 2: granted scope.
 #: inc/MCP/Abilities.php:402
-#, php-format
 msgid "API key scope is insufficient. Required: %1$s. Granted: %2$s."
 msgstr ""
 
@@ -10981,7 +11019,6 @@ msgid "Enrollment not found for this user and course."
 msgstr ""
 
 #: inc/MCP/Concerns/AbilityHelpers.php:36
-#, php-format
 msgid "Invalid input for ability \"%s\". Input must be an object."
 msgstr ""
 
@@ -11325,7 +11362,6 @@ msgstr ""
 
 #. translators: 1: user slug
 #: inc/Models/UserModel.php:287
-#, php-format
 msgid "This user slug \"%s\" already exists."
 msgstr ""
 
@@ -11356,7 +11392,6 @@ msgid "Refunded"
 msgstr ""
 
 #: inc/order/class-lp-order.php:468
-#, php-format
 msgid "%s (Guest)"
 msgstr ""
 
@@ -11385,7 +11420,6 @@ msgid "Submit Request"
 msgstr ""
 
 #: inc/order/class-lp-order.php:1163
-#, php-format
 msgctxt "full name"
 msgid "%1$s"
 msgstr ""
@@ -11425,7 +11459,6 @@ msgid "Request refund is rejected!."
 msgstr ""
 
 #: inc/order/class-lp-order.php:1749
-#, php-format
 msgid "Request refund has %s"
 msgstr ""
 
@@ -11434,7 +11467,6 @@ msgid "Time for refund request expired"
 msgstr ""
 
 #: inc/order/class-lp-order.php:1820
-#, php-format
 msgid "Order %1$s has been refunded %2$s."
 msgstr ""
 
@@ -11444,7 +11476,6 @@ msgid "Completed"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:292
-#, php-format
 msgid "Completed <span class=\"count\">(%s)</span>"
 msgid_plural "Completed <span class=\"count\">(%s)</span>"
 msgstr[0] ""
@@ -11456,7 +11487,6 @@ msgid "Pending"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:300
-#, php-format
 msgid "Pending Payment <span class=\"count\">(%s)</span>"
 msgid_plural "Pending Payment <span class=\"count\">(%s)</span>"
 msgstr[0] ""
@@ -11468,7 +11498,6 @@ msgid "Processing"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:308
-#, php-format
 msgid "Processing <span class=\"count\">(%s)</span>"
 msgid_plural "Processing <span class=\"count\">(%s)</span>"
 msgstr[0] ""
@@ -11480,7 +11509,6 @@ msgid "Cancelled"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:316
-#, php-format
 msgid "Cancelled <span class=\"count\">(%s)</span>"
 msgid_plural "Cancelled <span class=\"count\">(%s)</span>"
 msgstr[0] ""
@@ -11492,7 +11520,6 @@ msgid "Failed"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:324
-#, php-format
 msgid "Failed <span class=\"count\">(%s)</span>"
 msgid_plural "Failed <span class=\"count\">(%s)</span>"
 msgstr[0] ""
@@ -11504,7 +11531,6 @@ msgid "Refunded"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:332
-#, php-format
 msgid "Refunded <span class=\"count\">(%s)</span>"
 msgid_plural "Refunded <span class=\"count\">(%s)</span>"
 msgstr[0] ""
@@ -11516,7 +11542,6 @@ msgid "Trash"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:340
-#, php-format
 msgid "Trash <span class=\"count\">(%s)</span>"
 msgid_plural "Trash <span class=\"count\">(%s)</span>"
 msgstr[0] ""
@@ -11543,7 +11568,6 @@ msgid "Order was refunded to the customer."
 msgstr ""
 
 #: inc/order/lp-order-functions.php:471
-#, php-format
 msgid "Order number <strong>%s</strong> not found"
 msgstr ""
 
@@ -11556,17 +11580,14 @@ msgid "The order is cancelled by the customer"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:484
-#, php-format
 msgid "Order number <strong>%s</strong> has been cancelled"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:487
-#, php-format
 msgid "The order number <strong>%s</strong> can not be cancelled."
 msgstr ""
 
 #: inc/order/lp-order-functions.php:519
-#, php-format
 msgid "%1$s %2$s"
 msgstr ""
 
@@ -11722,13 +11743,11 @@ msgid "Showing only one result"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:423
-#, php-format
 msgid "Showing last course of %s results"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:438
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:488
-#, php-format
 msgid "Showing %1$s of %2$s results"
 msgstr ""
 
@@ -11758,7 +11777,6 @@ msgid "Repurchase Options"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:695
-#, php-format
 msgid "\"%s\" has been added to your cart. Redirecting..."
 msgstr ""
 
@@ -11817,7 +11835,6 @@ msgstr ""
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:132
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:190
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:195
-#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:164
 #: inc/Widgets/course-progress.php:65
 msgid "The course is invalid!"
 msgstr ""
@@ -11875,32 +11892,26 @@ msgid "Your uploaded files reach the maximum amount!"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:155
-#, php-format
 msgid "File \"%s\" title is not empty!"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:160
-#, php-format
 msgid "File %s method is invalid!"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:167
-#, php-format
 msgid "File %s size is too large!"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:177
-#, php-format
 msgid "File %s type is invalid!"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:191
-#, php-format
 msgid "File %s: "
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:208
-#, php-format
 msgid "An error occurred while checking %1$s. %2$s"
 msgstr ""
 
@@ -11909,7 +11920,6 @@ msgid "Oops! That file type isn’t allowed."
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:234
-#, php-format
 msgid "Cannot save file %s"
 msgstr ""
 
@@ -12106,20 +12116,18 @@ msgstr ""
 msgid "Cover image is updated"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:97
+#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:89
 msgid "The ID of the course item object."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:103
+#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:95
 msgid "The ID of the course object."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:124
-#, php-format
+#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:116
 msgid "%s was not registered as a request argument."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:168
 #: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:295
 msgid "The quiz is invalid!"
 msgstr ""
@@ -12129,7 +12137,6 @@ msgid "Empty response from OpenAI API."
 msgstr ""
 
 #: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:75
-#, php-format
 msgid "Please %s to send your request!"
 msgstr ""
 
@@ -12160,12 +12167,10 @@ msgstr ""
 
 #: inc/Shortcodes/class-lp-shortcode-login-form.php:36
 #: inc/Shortcodes/class-lp-shortcode-register-form.php:38
-#, php-format
 msgid "Your are logged in as %1$s. <a href=\"%2$s\">Log out</a>?"
 msgstr ""
 
 #: inc/Shortcodes/class-lp-shortcode-profile.php:83
-#, php-format
 msgid "This shortcode LP Profile only use on the page <a href=\"%1$s\">%2$s</a>"
 msgstr ""
 
@@ -12173,7 +12178,6 @@ msgstr ""
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:158
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:171
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:272
-#, php-format
 msgid "<span class=\"count\">%1$s</span> %2$s"
 msgstr ""
 
@@ -12618,7 +12622,7 @@ msgstr ""
 
 #: inc/TemplateHooks/Admin/AI/AdminCreateCourseAITemplate.php:631
 msgid ""
-"LearnPress AI helps you create courses, lessons, quizzes, and\n"
+"LearnPress AI helps you create courses, lessons, quizzes, and\r\n"
 "\t\t\t\t\tlearning content faster with intelligent AI assistance."
 msgstr ""
 
@@ -12763,7 +12767,6 @@ msgid "Select how many title options the system will generate for you."
 msgstr ""
 
 #: inc/TemplateHooks/Admin/AI/AdminEditWithAITemplate.php:370
-#, php-format
 msgid "Result %d"
 msgstr ""
 
@@ -12926,17 +12929,14 @@ msgid "Drag to reorder item"
 msgstr ""
 
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:512
-#, php-format
 msgid "Create a new %s"
 msgstr ""
 
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:513
-#, php-format
 msgid "Add %s"
 msgstr ""
 
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:514
-#, php-format
 msgid "New %s"
 msgstr ""
 
@@ -13067,7 +13067,6 @@ msgstr ""
 
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:602
 #: templates/courses-top-bar.php:33
-#, php-format
 msgid "Switch to %s"
 msgstr ""
 
@@ -13160,21 +13159,18 @@ msgid "There are no items in the curriculum yet."
 msgstr ""
 
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1521
-#, php-format
 msgid "%d Section"
 msgid_plural "%d Sections"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1528
-#, php-format
 msgid "%d Lesson"
 msgid_plural "%d Lessons"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1738
-#, php-format
 msgid "%d Question"
 msgid_plural "%d Questions"
 msgstr[0] ""
@@ -13260,7 +13256,6 @@ msgid "Please save Course before setting course"
 msgstr ""
 
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:475
-#, php-format
 msgid "%d characters"
 msgstr ""
 
@@ -13404,12 +13399,10 @@ msgid "Back to WordPress"
 msgstr ""
 
 #: inc/TemplateHooks/CourseBuilder/CourseBuilderTemplate.php:508
-#, php-format
 msgid "Toggle %s submenu"
 msgstr ""
 
 #: inc/TemplateHooks/CourseBuilder/CourseBuilderTemplate.php:629
-#, php-format
 msgid "%s submenu"
 msgstr ""
 
@@ -13428,7 +13421,6 @@ msgstr ""
 
 #. translators: %s: number of courses
 #: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:405
-#, php-format
 msgid "%s course"
 msgid_plural "%s courses"
 msgstr[0] ""
@@ -13438,7 +13430,6 @@ msgstr[1] ""
 #: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:410
 #: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:509
 #: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:596
-#, php-format
 msgid "%s student"
 msgid_plural "%s students"
 msgstr[0] ""
@@ -13653,7 +13644,6 @@ msgid "Course Builder Logo"
 msgstr ""
 
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:349
-#, php-format
 msgid "%s does not have any courses"
 msgstr ""
 
@@ -13761,7 +13751,6 @@ msgid "Drag and drop or click here to choose image"
 msgstr ""
 
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:125
-#, php-format
 msgid "Accepted file types: JPG, PNG %1$d x %2$d (px)"
 msgstr ""
 
@@ -13801,12 +13790,10 @@ msgstr ""
 
 #: inc/TemplateHooks/UserItem/UserCourseTemplate.php:274
 #: templates/single-course/sidebar/user-progress.php:99
-#, php-format
 msgid "Passing condition: %s%%"
 msgstr ""
 
 #: inc/TemplateHooks/UserItem/UserCourseTemplate.php:343
-#, php-format
 msgid "%1$d of %2$d items completed"
 msgstr ""
 
@@ -13837,7 +13824,6 @@ msgid "edit avatar"
 msgstr ""
 
 #: inc/templates/class-lp-template-course.php:112
-#, php-format
 msgid "%1$d question"
 msgid_plural "%1$d questions"
 msgstr[0] ""
@@ -13853,21 +13839,18 @@ msgid "Key features"
 msgstr ""
 
 #: inc/templates/class-lp-template-course.php:765
-#, php-format
 msgid "%d lesson"
 msgid_plural "%d lessons"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/templates/class-lp-template-course.php:769
-#, php-format
 msgid "%d quiz"
 msgid_plural "%d quizzes"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/templates/class-lp-template-course.php:773
-#, php-format
 msgid "%d student"
 msgid_plural "%d students"
 msgstr[0] ""
@@ -13894,7 +13877,6 @@ msgid "Not Enrolled"
 msgstr ""
 
 #: inc/user/abstract-lp-user.php:704
-#, php-format
 msgid "The role %s for the user doesn't exist"
 msgstr ""
 
@@ -14137,7 +14119,6 @@ msgstr ""
 
 #: inc/Widgets/course-progress.php:72
 #: inc/Widgets/course-progress.php:76
-#, php-format
 msgid "You haven't started %s"
 msgstr ""
 
@@ -14322,12 +14303,11 @@ msgstr ""
 msgid "Browser User Agent"
 msgstr ""
 
-#: learnpress.php:867
+#: learnpress.php:869
 msgid "Documentation"
 msgstr ""
 
 #: templates/checkout/account-logged-in.php:25
-#, php-format
 msgid "Logged in as <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
@@ -14400,13 +14380,13 @@ msgid "Already had an account?"
 msgstr ""
 
 #: templates/checkout/form.php:22
-#, php-format
-msgid "Please %s in to enroll in the course!"
-msgstr ""
-
 #: templates/checkout/form.php:26
 #: templates/single-course/content-protected.php:29
 msgid "login"
+msgstr ""
+
+#: templates/checkout/form.php:32
+msgid "Please %s in to enroll in the course!"
 msgstr ""
 
 #: templates/checkout/guest-checkout-link.php:16
@@ -14436,7 +14416,6 @@ msgid "Sign in"
 msgstr ""
 
 #: templates/checkout/guest-checkout.php:48
-#, php-format
 msgid "Or you can %1$s%2$s %3$s now."
 msgstr ""
 
@@ -14449,7 +14428,6 @@ msgid "Note to administrator"
 msgstr ""
 
 #: templates/checkout/order-received.php:52
-#, php-format
 msgid "Go to %1$s to continue browsing or go to %2$s"
 msgstr ""
 
@@ -14482,7 +14460,6 @@ msgid "Terms of Service"
 msgstr ""
 
 #: templates/checkout/term-conditions.php:30
-#, php-format
 msgid "By completing your purchase you agree to those <a href=\"%1$s\" target=\"_blank\">%2$s</a>."
 msgstr ""
 
@@ -14526,12 +14503,10 @@ msgid "User Email"
 msgstr ""
 
 #: templates/emails/plain/order-items-table.php:76
-#, php-format
 msgid "Quantity: %s"
 msgstr ""
 
 #: templates/emails/plain/order-items-table.php:78
-#, php-format
 msgid "Cost: %s"
 msgstr ""
 
@@ -14572,7 +14547,6 @@ msgid "Please contact the administrator to set up this page."
 msgstr ""
 
 #: templates/global/before-main-content.php:30
-#, php-format
 msgid "Please <a href=\\\"%s\\\" target=\\\"_blank\\\">setup</a> it so users can purchase courses."
 msgstr ""
 
@@ -14645,7 +14619,6 @@ msgid "Recover"
 msgstr ""
 
 #: templates/profile/not-logged-in.php:16
-#, php-format
 msgid "Please <a href=\"%s\">login</a> to see your profile content"
 msgstr ""
 
@@ -14687,12 +14660,10 @@ msgid "No orders!"
 msgstr ""
 
 #: templates/profile/tabs/orders/order-message.php:20
-#, php-format
 msgid "This order is paid for %s"
 msgstr ""
 
 #: templates/profile/tabs/orders/order-message.php:24
-#, php-format
 msgid "This order is paid by %s"
 msgstr ""
 
@@ -14761,7 +14732,6 @@ msgid "Next"
 msgstr ""
 
 #: templates/single-course/content-item/popup-header.php:39
-#, php-format
 msgid "<span class=\"items-completed\">%1$s</span> of %2$d items"
 msgstr ""
 
@@ -14771,7 +14741,6 @@ msgid "Search for course content"
 msgstr ""
 
 #: templates/single-course/content-protected.php:22
-#, php-format
 msgid "This content is protected, please %1$s and %2$s in the course to view this content!"
 msgstr ""
 
@@ -14790,7 +14759,6 @@ msgid "About the Instructor"
 msgstr ""
 
 #: templates/single-course/loop-section.php:67
-#, php-format
 msgid "Section progress %s%%"
 msgstr ""
 
@@ -14811,12 +14779,10 @@ msgid "Quizzes finished:"
 msgstr ""
 
 #: templates/single-course/sidebar/user-progress.php:68
-#, php-format
 msgid "Failed %1$d, Passed %2$d"
 msgstr ""
 
 #: templates/single-course/sidebar/user-progress.php:68
-#, php-format
 msgid "%1$d/%2$d"
 msgstr ""
 

@@ -208,6 +208,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					array( 'strategy' => 'defer' )
 				),
+				'lp-admin-paypal-webhook'   => new LP_Asset_Key(
+					$this->url( 'dist/js/admin/paypal-webhook' . self::$_min_assets . '.js' ),
+					array( 'lp-load-ajax' ),
+					array( 'learnpress_page_learn-press-settings' ),
+					0,
+					0,
+					'',
+					array( 'strategy' => 'async' )
+				),
 				'lp-admin-learnpress'       => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/learnpress' . self::$_min_assets . '.js' ),
 					array(

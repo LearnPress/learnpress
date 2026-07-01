@@ -75,6 +75,16 @@ return apply_filters(
 			),
 		),
 		array(
+			'title' => esc_html__( 'Create webhook', 'learnpress' ),
+			'id'    => '[create_subscription_webhook]',
+			'type'  => 'paypal-create-webhook',
+			'desc'  => sprintf(
+				/* translators: %s: PayPal subscription webhook listener URL. */
+				esc_html__( 'Registers %s with PayPal for subscription events and fills in the webhook ID below.', 'learnpress' ),
+				'<code>' . esc_html( $subscription_webhook_url ) . '</code>'
+			),
+		),
+		array(
 			'title' => esc_html__( 'Subscription webhook ID', 'learnpress' ),
 			'id'    => '[subscription_webhook_id]',
 			'type'  => 'text',

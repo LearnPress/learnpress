@@ -27,6 +27,7 @@ use LearnPress\Ajax\Order\ExportOrderCSVAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\AI\AIAssistantAjax;
+use LearnPress\Ajax\Gateway\PaypalWebhookAjax;
 use LearnPress\Ajax\MCP\McpApiKeysAjax;
 use LearnPress\Ajax\CourseBuilder\CBEditCourseAjax;
 use LearnPress\Ajax\SendEmailAjax;
@@ -761,6 +762,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					AIAssistantAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
 					McpApiKeysAjax::catch_lp_ajax();
+					PaypalWebhookAjax::catch_lp_ajax();
 					CBEditCourseAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
