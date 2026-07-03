@@ -12,6 +12,7 @@ use LearnPress\Databases\DataBase;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
 use LearnPress\Filters\PostFilter;
+use LearnPress\Helpers\LPDateTime;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -654,6 +655,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						esc_html( $time_display )
 					);
 
+					$m = new LPDateTime( '2026-07-03 13:00:00' );
+					echo '<br>' . $m->format( LPDateTime::FORMAT_I18N_DATE_TIME_TIMEZONE, true ) . '<br>';
 					break;
 				case 'order_items':
 					do_action( 'learn-press/admin/order-items/layout', $lp_order );
