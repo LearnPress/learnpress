@@ -325,8 +325,11 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param array $data - Array with key is method and value is value to set
 		 *
 		 * @throws Exception
+		 * @deprecated 4.4.2
 		 */
 		public function set_data_via_methods( $data ) {
+			_deprecated_function( __METHOD__, '4.4.2' );
+			return;
 			$errors = array_keys( $data );
 			foreach ( $data as $prop => $value ) {
 				$setter = "set_$prop";

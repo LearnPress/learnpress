@@ -12,6 +12,7 @@ use LearnPress\Databases\DataBase;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
 use LearnPress\Filters\PostFilter;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 
@@ -167,13 +168,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				if ( isset( $_POST['order-customer'] ) && $order->is_manual() ) {
 					$user_id = LP_Request::get_param( 'order-customer' );
 					$order->set_user_id( $user_id );
-				}
-
-				if ( isset( $_POST['order-date'] ) ) {
-					$order_date = LP_Request::get_param( 'order-date' );
-					$order_hour = LP_Request::get_param( 'order-hour', '00' );
-					$order_min  = LP_Request::get_param( 'order-minute', '00' );
-					$order->set_order_date( $order_date . ' ' . $order_hour . ':' . $order_min . ':00' );
 				}
 
 				$status = LP_Request::get_param( 'order-status' );
@@ -588,7 +582,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function columns_content( $column, $post_id = 0 ) {
 			global $post;
-			$lp_order = learn_press_get_order( $post->ID );
+			$lp_order            = learn_press_get_order( $post->ID );
+			$filter              = new PostFilter();
+			$filter->post_type   = LP_ORDER_CPT;
+			$filter->ID          = $post->ID;
+			$filter->limit       = 1;
+			$filter->query_count = false;
+			$orderPostModel      = PostModel::get_item_model_from_db( $filter );
 
 			switch ( $column ) {
 				case 'order_student':
@@ -635,18 +635,24 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					);
 					break;
 				case 'order_date':
-					$t_time    = get_the_time( 'Y/m/d g:i:s a' );
-					$m_time    = $post->post_date;
-					$time      = get_post_time( 'G', true, $post );
-					$time_diff = current_time( 'U' ) - $time;
+					$time      = strtotime( $orderPostModel->post_date_gmt );
+					$time_diff = time() - $time;
+
+					$lpDateTime              = new LP_Datetime( $orderPostModel->post_date_gmt );
+					$time_local              = $lpDateTime->format( LP_Datetime::I18N_FORMAT_HAS_TIME );
+					$time_local_format_mysql = ( new LP_Datetime( $time_local ) )->format( LP_Datetime::$format );
 
 					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-						$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time, current_time( 'U' ) ) );
+						$time_display = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
 					} else {
-						$h_time = mysql2date( 'Y/m/d', $m_time );
+						$time_display = $lpDateTime->format( LP_Datetime::I18N_FORMAT_HAS_TIME );
 					}
 
-					echo '<abbr title="' . esc_attr( $t_time ) . '">' . esc_html( apply_filters( 'learn_press_order_column_time', $h_time, $lp_order ) ) . '</abbr>';
+					echo sprintf(
+						'<abbr title="%s">%s</abbr>',
+						esc_attr( $time_local_format_mysql ),
+						esc_html( $time_display )
+					);
 
 					break;
 				case 'order_items':

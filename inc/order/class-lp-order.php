@@ -114,7 +114,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Set order date.
 		 *
-		 * @param int|string $date
+		 * @param int|string $date Date time string is time zone of WP setting
 		 */
 		public function set_order_date( $date ): LP_Order {
 			$this->set_data_date( 'order_date', $date );

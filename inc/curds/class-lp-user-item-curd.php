@@ -35,16 +35,11 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
 		}
 
-		$quiz->set_data_via_methods(
-			array(
-				'retake_count'       => get_post_meta( $quiz->get_id(), '_lp_retake_count', true ),
-				'show_result'        => get_post_meta( $quiz->get_id(), '_lp_show_result', true ),
-				'passing_grade_type' => get_post_meta( $quiz->get_id(), '_lp_passing_grade_type', true ),
-				'passing_grade'      => get_post_meta( $quiz->get_id(), '_lp_passing_grade', true ),
-				'instant_check'      => get_post_meta( $quiz->get_id(), '_lp_instant_check', true ),
-				'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review', true ),
-			)
-		);
+		$quiz->set_retake_count( get_post_meta( $quiz->get_id(), '_lp_retake_count', true ) );
+		$quiz->set_passing_grade_type( get_post_meta( $quiz->get_id(), '_lp_passing_grade_type', true ) );
+		$quiz->set_passing_grade( get_post_meta( $quiz->get_id(), '_lp_passing_grade', true ) );
+		$quiz->set_instant_check( get_post_meta( $quiz->get_id(), '_lp_instant_check', true ) );
+		$quiz->set_review_questions( get_post_meta( $quiz->get_id(), '_lp_review', true ) );
 
 		$this->_load_questions( $quiz );
 		// $this->_update_meta_cache( $quiz );
