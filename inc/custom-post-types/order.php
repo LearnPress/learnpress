@@ -639,14 +639,21 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$time      = strtotime( $orderPostModel->post_date_gmt );
 					$time_diff = time() - $time;
 
-					$lpDateTime              = new LP_Datetime( $orderPostModel->post_date_gmt );
-					$time_local              = $lpDateTime->format( LP_Datetime::I18N_FORMAT_HAS_TIME );
-					$time_local_format_mysql = ( new LP_Datetime( $time_local ) )->format( LP_Datetime::$format );
+					$lpDateTimeGMT           = new LPDateTime( $orderPostModel->post_date_gmt );
+					$time_local_format_mysql = $lpDateTimeGMT->format( LPDateTime::FORMAT_MYSQL, 'gmt_to_local' );
 
 					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-						$time_display = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
+						$time_display = $lpDateTimeGMT->format(
+							LPDateTime::FORMAT_HUMAN,
+							'gmt_to_local',
+							true
+						);
 					} else {
-						$time_display = $lpDateTime->format( LP_Datetime::I18N_FORMAT_HAS_TIME );
+						$time_display = $lpDateTimeGMT->format(
+							LPDateTime::FORMAT_I18N_DATE_TIME,
+							'gmt_to_local',
+							true
+						);
 					}
 
 					echo sprintf(
@@ -654,9 +661,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						esc_attr( $time_local_format_mysql ),
 						esc_html( $time_display )
 					);
-
-					$m = new LPDateTime( '2026-07-03 13:00:00' );
-					echo '<br>' . $m->format( LPDateTime::FORMAT_I18N_DATE_TIME_TIMEZONE, true ) . '<br>';
 					break;
 				case 'order_items':
 					do_action( 'learn-press/admin/order-items/layout', $lp_order );
