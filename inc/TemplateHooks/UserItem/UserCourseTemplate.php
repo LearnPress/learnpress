@@ -225,7 +225,7 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 		$evaluation_type   = $courseModel::get_evaluation_types( $courseModel->get_evaluation_type() );
 		$calculate         = $userCourseModel->calculate_course_results();
 		$passing_condition = $courseModel->get_passing_condition();
-		if ( array_key_first( $evaluation_type ) === 'evaluate_final_quiz' ) {
+		if ( $courseModel->get_evaluation_type() === 'evaluate_final_quiz' ) {
 			$final_quiz = $courseModel->get_final_quiz();
 			if ( $final_quiz ) {
 				$quizModel         = QuizPostModel::find( $final_quiz, true );

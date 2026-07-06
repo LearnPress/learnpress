@@ -549,7 +549,7 @@ class CourseModel {
 	 *
 	 * @return array
 	 * @since 4.3.2.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function get_evaluation_types( string $type = '' ): array {
 		if ( has_filter( 'learnpress/course-evaluation/methods' ) ) {
@@ -585,7 +585,10 @@ class CourseModel {
 		if ( empty( $type ) ) {
 			return $types;
 		} elseif ( empty( $types[ $type ] ) && ! empty( $methods[ $type ] ) ) {
-			return $methods[ $type ];
+			$types[ $type ] = [
+				'label' => strip_tags( $methods[ $type ] ),
+				'tip'   => strip_tags( $methods[ $type ] ),
+			];
 		}
 
 		return $types[ $type ] ?? [];
