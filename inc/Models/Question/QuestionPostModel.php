@@ -273,4 +273,22 @@ class QuestionPostModel extends PostModel {
 	public function random_value( int $length = 10 ): string {
 		return substr( md5( uniqid( mt_rand(), true ) ), 0, $length );
 	}
+
+	/**
+	 * Check capabilities create question
+	 *
+	 * @return bool
+	 */
+	public function check_capabilities_create(): bool {
+		return current_user_can( 'edit_' . LP_LESSON_CPT . 's' );
+	}
+
+	/**
+	 * Check capabilities update question
+	 *
+	 * @return bool
+	 */
+	public function check_capabilities_update(): bool {
+		return current_user_can( 'edit_' . LP_LESSON_CPT, $this->ID );
+	}
 }

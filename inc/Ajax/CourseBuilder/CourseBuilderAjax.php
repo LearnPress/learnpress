@@ -1115,6 +1115,7 @@ class CourseBuilderAjax extends AbstractAjax {
 					'post_title'   => $title,
 					'post_content' => $description,
 					'post_status'  => $target_status,
+					'post_author'  => get_current_user_id(),
 				);
 
 				$lessonPostModelNew = new LessonPostModel( $insert_arg );
@@ -1483,6 +1484,7 @@ class CourseBuilderAjax extends AbstractAjax {
 					'post_title'   => $title,
 					'post_content' => $description,
 					'post_status'  => $target_status,
+					'post_author'  => get_current_user_id(),
 				);
 
 				$quizPostModelNew = new QuizPostModel( $insert_arg );
@@ -1824,6 +1826,7 @@ class CourseBuilderAjax extends AbstractAjax {
 					'post_title'   => $title,
 					'post_content' => $description,
 					'post_status'  => $target_status,
+					'post_author'  => get_current_user_id(),
 				);
 
 				$questionPostModelNew = new QuestionPostModel( $insert_arg );

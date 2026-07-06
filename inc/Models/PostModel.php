@@ -233,10 +233,10 @@ class PostModel {
 	 *
 	 * @return bool
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function check_capabilities_create(): bool {
-		return true;
+		return current_user_can( 'edit_' . $this->post_type . 's' );
 	}
 
 	/**
@@ -244,10 +244,10 @@ class PostModel {
 	 *
 	 * @return bool
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function check_capabilities_update(): bool {
-		return true;
+		return current_user_can( 'edit_' . $this->post_type, $this->ID );
 	}
 
 	/**
