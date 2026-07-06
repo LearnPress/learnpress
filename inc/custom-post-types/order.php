@@ -630,6 +630,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					);
 					break;
 				case 'order_date':
+					// Check column post_date_gmt is default value
+					if ( $orderPostModel->post_date_gmt === '0000-00-00 00:00:00' ) {
+						$convert_post_date_gmt         = get_gmt_from_date( $orderPostModel->post_date );
+						$orderPostModel->post_date_gmt = $convert_post_date_gmt;
+					}
+
 					$time      = strtotime( $orderPostModel->post_date_gmt );
 					$time_diff = time() - $time;
 

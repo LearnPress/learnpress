@@ -79,6 +79,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			return false;
 		}
 
+		$post      = get_post( $order->get_id() );
 		$status    = $this->format_status_save_db( $order );
 		$post_data = array(
 			'post_status' => $status,
@@ -96,6 +97,10 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$lpDateTimeLocal            = new LP_Datetime( $date_time_local );
 			$date_time_gmt              = $lpDateTimeLocal->to_gmt_string( $lpDateTimeLocal );
 			$post_data['post_date']     = $date_time_local;
+			$post_data['post_date_gmt'] = $date_time_gmt;
+		} elseif ( $post->post_status === 'auto-draft'
+			&& $post->post_date_gmt === '0000-00-00 00:00:00' ) {
+			$date_time_gmt              = get_gmt_from_date( $post->post_date );
 			$post_data['post_date_gmt'] = $date_time_gmt;
 		}
 
