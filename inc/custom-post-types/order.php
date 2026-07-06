@@ -11,9 +11,8 @@ use LearnPress\Ajax\Order\ExportOrderCSVAjax;
 use LearnPress\Databases\DataBase;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
-use LearnPress\Filters\PostFilter;
 use LearnPress\Helpers\LPDateTime;
-use LearnPress\Models\PostModel;
+use LearnPress\Models\OrderPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 
@@ -583,13 +582,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function columns_content( $column, $post_id = 0 ) {
 			global $post;
-			$lp_order            = learn_press_get_order( $post->ID );
-			$filter              = new PostFilter();
-			$filter->post_type   = LP_ORDER_CPT;
-			$filter->ID          = $post->ID;
-			$filter->limit       = 1;
-			$filter->query_count = false;
-			$orderPostModel      = PostModel::get_item_model_from_db( $filter );
+			$lp_order       = learn_press_get_order( $post->ID );
+			$orderPostModel = OrderPostModel::find_by_id( $post->ID, true );
 
 			switch ( $column ) {
 				case 'order_student':
