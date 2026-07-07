@@ -1,4 +1,19 @@
 {
+  "learnpress-exams": {
+    "name": "Exam add-on for learnpress",
+    "basename": "learnpress-exams/learnpress-exams.php",
+    "version": "4.0.0",
+    "require_lp": "4.4.1",
+    "description": "Build exams in minutes by reusing questions from your question bank.",
+    "image": "https://updates.thimpress.com/images/learnpress-exams.png",
+    "link": "https://thimpress.com/product/exam-add-on-for-learnpress/",
+    "link_doc": "",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "setting": "course-builder/exams/listing/",
+    "order": 0
+  },
   "learnpress-membership": {
     "name": "Memberships & Subscriptions Add-on for LearnPress",
     "basename": "learnpress-membership/learnpress-membership.php",
