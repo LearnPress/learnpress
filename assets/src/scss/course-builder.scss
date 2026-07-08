@@ -37,6 +37,9 @@ body {
 @import 'course-builder/edit-question';
 @import 'course-builder/builder-popup';
 
+// Tom Select fields on settings form (Author, Co-Instructors...)
+@import 'tomSelect';
+
 // Animation for loading lp-icon-spinner
 @keyframes rotation {
 	0% {
