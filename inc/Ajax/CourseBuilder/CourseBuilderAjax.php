@@ -583,6 +583,17 @@ class CourseBuilderAjax extends AbstractAjax {
 
 		// Author settings
 		$this->save_author_settings_to_model( $courseModel, $data );
+
+		/**
+		 * Allow addons to persist their own course settings fields added to the
+		 * settings metabox tabs (e.g. Co-Instructor) when saving from Course Builder.
+		 *
+		 * @param CoursePostModel $courseModel Course model being saved.
+		 * @param array $data Submitted settings data.
+		 *
+		 * @since 4.3.8
+		 */
+		do_action( 'learn-press/course-builder/save-course-settings', $courseModel, $data );
 	}
 
 	/**
@@ -718,6 +729,25 @@ class CourseBuilderAjax extends AbstractAjax {
 	}
 
 	/**
+	 * Normalize an extra-info field value to an array.
+	 *
+	 * The Course Builder sends these fields as arrays (one entry per input);
+	 * older paths may send a comma-separated string. Splitting on comma must
+	 * never be applied to array input, or values that legitimately contain a
+	 * comma get broken into multiple entries.
+	 *
+	 * @param mixed $value
+	 * @return array
+	 */
+	protected function extra_field_to_array( $value ): array {
+		if ( is_array( $value ) ) {
+			return $value;
+		}
+
+		return $value !== '' ? explode( ',', (string) $value ) : [];
+	}
+
+	/**
 	 * Save extra info settings to CourseModel
 	 *
 	 * @param CoursePostModel $courseModel
@@ -726,9 +756,8 @@ class CourseBuilderAjax extends AbstractAjax {
 	protected function save_extra_settings_to_model( CoursePostModel &$courseModel, array $data ) {
 		// Requirements
 		if ( isset( $data['_lp_requirements'] ) ) {
-			$requirements = ! empty( $data['_lp_requirements'] ) ? explode( ',', $data['_lp_requirements'] ) : [];
 			$requirements = array_filter(
-				$requirements,
+				$this->extra_field_to_array( $data['_lp_requirements'] ),
 				function ( $item ) {
 					return ! is_null( $item ) && $item !== '';
 				}
@@ -737,9 +766,8 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 
 		if ( isset( $data['_lp_target_audiences'] ) ) {
-			$target_audiences = ! empty( $data['_lp_target_audiences'] ) ? explode( ',', $data['_lp_target_audiences'] ) : [];
 			$target_audiences = array_filter(
-				$target_audiences,
+				$this->extra_field_to_array( $data['_lp_target_audiences'] ),
 				function ( $item ) {
 					return ! is_null( $item ) && $item !== '';
 				}
@@ -748,9 +776,8 @@ class CourseBuilderAjax extends AbstractAjax {
 		}
 
 		if ( isset( $data['_lp_key_features'] ) ) {
-			$key_features = ! empty( $data['_lp_key_features'] ) ? explode( ',', $data['_lp_key_features'] ) : [];
 			$key_features = array_filter(
-				$key_features,
+				$this->extra_field_to_array( $data['_lp_key_features'] ),
 				function ( $item ) {
 					return ! is_null( $item ) && $item !== '';
 				}
@@ -760,8 +787,8 @@ class CourseBuilderAjax extends AbstractAjax {
 
 		// FAQs
 		if ( isset( $data['_lp_faqs_question'] ) ) {
-			$questions = ! empty( $data['_lp_faqs_question'] ) ? explode( ',', $data['_lp_faqs_question'] ) : [];
-			$answers   = ! empty( $data['_lp_faqs_answer'] ) ? explode( ',', $data['_lp_faqs_answer'] ) : [];
+			$questions = $this->extra_field_to_array( $data['_lp_faqs_question'] );
+			$answers   = ! empty( $data['_lp_faqs_answer'] ) ? $this->extra_field_to_array( $data['_lp_faqs_answer'] ) : [];
 			$faqs      = [];
 
 			if ( ! empty( $questions ) ) {
