@@ -444,10 +444,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @version 1.0.2
 		 */
 		public function current_user_can( $capability ) {
-			$privacy = array(
-				'view-tab-courses'    => self::get_option_publish_profile() === 'yes',
-				'view-tab-my-courses' => $this->get_privacy( 'courses' ) == 'yes',
-				'view-tab-quizzes'    => $this->get_privacy( 'quizzes' ) == 'yes',
+			$privacy = apply_filters(
+				'learn-press/profile/current-user-can/vew-tab',
+				array(
+					'view-tab-courses'    => self::get_option_publish_profile() === 'yes',
+					'view-tab-my-courses' => $this->get_privacy( 'courses' ) == 'yes',
+					'view-tab-quizzes'    => $this->get_privacy( 'quizzes' ) == 'yes',
+				)
 			);
 
 			if ( current_user_can( ADMIN_ROLE ) ) {
