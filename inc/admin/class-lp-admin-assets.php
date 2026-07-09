@@ -99,15 +99,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		$current_screen = get_current_screen();
 
 		return array(
-			'learn-press-global'              => learn_press_global_script_params(),
-			'learn-press-meta-box-order'      => apply_filters(
+			'learn-press-global' => learn_press_global_script_params(),
+			/*'learn-press-meta-box-order'      => apply_filters(
 				'learn-press/meta-box-order/script-data',
 				array(
 					'i18n_error' => esc_html__( 'Oops! Error.', 'learnpress' ),
 					'i18n_guest' => esc_html__( 'Guest', 'learnpress' ),
 				)
-			),
-			'learn-press-update'              => apply_filters(
+			),*/
+			/*'learn-press-update' => apply_filters(
 				'learn-press/upgrade/script-data',
 				array(
 					'i18n_confirm' => esc_html__(
@@ -115,8 +115,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					),
 				)
-			),
-			'lp-admin'                        => apply_filters(
+			),*/
+			'lp-admin'           => apply_filters(
 				'learn-press/admin/script-data',
 				array(
 					'ajax'                 => admin_url( 'admin-ajax.php' ),
@@ -125,7 +125,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'screen'               => $current_screen,
 				)
 			),
-			'learn-press-admin-course-editor' => $this->get_course_data_for_editor_vue(),
+			// @deprecated tag 'learn-press-admin-course-editor' 4.4.2 - no any enqueue js for that.
+			//'learn-press-admin-course-editor' => $this->get_course_data_for_editor_vue(),
 		);
 	}
 
@@ -599,8 +600,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * Get course data for Vue Editor Course use.
 	 *
 	 * @return array|mixed|null
+	 * @deprecated 4.4.2 - no any enqueue js for that.
 	 */
-	public function get_course_data_for_editor_vue() {
+	/*public function get_course_data_for_editor_vue() {
 		global $post, $pagenow;
 
 		if ( empty( $post ) || ( get_post_type() !== LP_COURSE_CPT ) || ! in_array(
@@ -663,7 +665,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 			)
 		);
-	}
+	}*/
 
 	public static function instance() {
 		if ( ! is_admin() ) {

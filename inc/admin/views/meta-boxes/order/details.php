@@ -223,12 +223,12 @@ $lpDateTime = new LPDateTime( $oderPostModel->post_date_gmt );
 </div>
 
 <?php
-$assets = LP_Admin_Assets::instance();
+/*$assets = LP_Admin_Assets::instance();
 $assets->add_localize( 'learn-press-meta-box-order', 'users', $order->get_user_data() );
 $assets->add_localize( 'learn-press-meta-box-order', 'userTextFormat', '{{display_name}} ({{email}})' );
 
 wp_enqueue_script( 'jquery-ui-datepicker' );
-wp_enqueue_style( 'jquery-ui' );
+wp_enqueue_style( 'jquery-ui' );*/
 ?>
 
 <script type="text/html" id="tmpl-learn-press-modal-add-order-courses">

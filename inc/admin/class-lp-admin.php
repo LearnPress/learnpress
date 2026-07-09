@@ -840,7 +840,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				return;
 			}
 
-			global $post_type, $pagenow;
+			/*global $post_type, $pagenow;
 
 			if ( current_user_can( ADMIN_ROLE ) ) {
 				return;
@@ -857,11 +857,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			if ( ! in_array( $post_type, $post_type_valid ) ) {
 				return;
-			}
+			}*/
 
 			// $query->set( 'author', get_current_user_id() );
 
-			$query = apply_filters( 'learnpress/get-post-type-lp-on-backend', $query );
+			// Hook only Co-instructor using.
+			return apply_filters( 'learnpress/get-post-type-lp-on-backend', $query );
 
 			//add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
 			//remove_filter( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );
