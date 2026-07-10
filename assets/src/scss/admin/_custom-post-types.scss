@@ -36,6 +36,10 @@
 					background: #f00;
 				}
 
+				&.refunded {
+					background: #2196f3;
+				}
+
 				&.trash {
 					color: rgba(128, 128, 128, 0.68);
 				}
@@ -44,6 +48,13 @@
 					display: inline-block;
 				}
 			}
+		}
+
+		.lp-order-refund-request-badge {
+			display: inline-block;
+			margin-top: 10px;
+			padding: 0 !important;
+			color: #F59E0B !important;
 		}
 
 		.column-title,

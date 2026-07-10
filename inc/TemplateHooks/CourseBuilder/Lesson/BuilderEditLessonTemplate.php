@@ -35,6 +35,7 @@ class BuilderEditLessonTemplate {
 	 * @throws Exception
 	 */
 	public function layout( array $data = [] ) {
+		/** @var UserModel|false $userModel */
 		$userModel = $data['userModel'] ?? false;
 		if ( ! $userModel || ! $userModel->is_instructor() ) {
 			throw new Exception( __( 'You do not have permission to create or edit lessons', 'learnpress' ) );
@@ -45,21 +46,26 @@ class BuilderEditLessonTemplate {
 			throw new Exception( __( 'Invalid lesson ID', 'learnpress' ) );
 		}
 
-		if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'lessons', $item_id ) ) {
+		/*if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'lessons', $item_id ) ) {
 			throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
-		}
+		}*/
 
-		$is_create_new = $item_id === CourseBuilder::POST_NEW;
-		$lessonModel   = false;
+		$is_create_new   = $item_id === CourseBuilder::POST_NEW;
+		$lessonPostModel = false;
 
 		if ( ! $is_create_new ) {
-			$lessonModel = LessonPostModel::find( (int) $item_id, true );
-			if ( ! $lessonModel ) {
+			$lessonPostModel = LessonPostModel::find( (int) $item_id, true );
+			if ( ! $lessonPostModel ) {
 				throw new Exception( __( 'Lesson not found', 'learnpress' ) );
 			}
+
+			$lessonPostModel->check_capabilities_update_item_course();
+		} else {
+			$lessonPostModelNew = new LessonPostModel();
+			$lessonPostModelNew->check_capabilities_create_item_course();
 		}
 
-		$data['lessonModel'] = $lessonModel;
+		$data['lessonModel'] = $lessonPostModel;
 
 		$section = [
 			'wrap'     => sprintf(
@@ -75,19 +81,19 @@ class BuilderEditLessonTemplate {
 	}
 
 	public function html_header( array $data = [] ): string {
-		$userModel            = $data['userModel'] ?? false;
+		$userModel = $data['userModel'] ?? false;
 		if ( ! $userModel instanceof UserModel ) {
 			return '';
 		}
 
-		$wp_user = new WP_User( $userModel );
-		$lessonModel          = $data['lessonModel'] ?? false;
+		$wp_user                             = new WP_User( $userModel );
+		$lessonModel                         = $data['lessonModel'] ?? false;
 		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
-		$title                = $lessonModel ? $lessonModel->get_the_title() : __( 'Add New Lesson', 'learnpress' );
-		$status               = $lessonModel ? sanitize_key( (string) $lessonModel->post_status ) : '';
-		$status_label         = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
-		$hide_wp_edit_link    = $hide_instructor_access_admin_screen && user_can( $wp_user, UserModel::ROLE_INSTRUCTOR );
-		$main_action_label    = $lessonModel && 'publish' === $status ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
+		$title                               = $lessonModel ? $lessonModel->get_the_title() : __( 'Add New Lesson', 'learnpress' );
+		$status                              = $lessonModel ? sanitize_key( (string) $lessonModel->post_status ) : '';
+		$status_label                        = 'future' === $status ? __( 'scheduled', 'learnpress' ) : $status;
+		$hide_wp_edit_link                   = $hide_instructor_access_admin_screen && user_can( $wp_user, UserModel::ROLE_INSTRUCTOR );
+		$main_action_label                   = $lessonModel && 'publish' === $status ? __( 'Update', 'learnpress' ) : __( 'Publish', 'learnpress' );
 
 		$section = [
 			'header_wrap'        => '<div class="lp-cb-header">',
@@ -414,7 +420,7 @@ class BuilderEditLessonTemplate {
 		$edit  = [
 			'wrapper'     => '<div class="cb-lesson-edit-title">',
 			'label'       => sprintf( '<label for="title" class="cb-lesson-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
-			'input'       => sprintf( '<input type="text" name="lesson_title" size="30" value="%s" id="title" class="cb-lesson-edit-title__input">', $title ),
+			'input'       => sprintf( '<input type="text" name="lesson_title" size="30" value="%s" id="title" class="cb-lesson-edit-title__input">', esc_attr( $title ) ),
 			'wrapper_end' => '</div>',
 		];
 

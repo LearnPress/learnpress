@@ -549,7 +549,7 @@ class CourseModel {
 	 *
 	 * @return array
 	 * @since 4.3.2.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function get_evaluation_types( string $type = '' ): array {
 		if ( has_filter( 'learnpress/course-evaluation/methods' ) ) {
@@ -585,7 +585,10 @@ class CourseModel {
 		if ( empty( $type ) ) {
 			return $types;
 		} elseif ( empty( $types[ $type ] ) && ! empty( $methods[ $type ] ) ) {
-			return $methods[ $type ];
+			$types[ $type ] = [
+				'label' => strip_tags( $methods[ $type ] ),
+				'tip'   => strip_tags( $methods[ $type ] ),
+			];
 		}
 
 		return $types[ $type ] ?? [];
@@ -853,7 +856,7 @@ class CourseModel {
 			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
-		$value = maybe_unserialize( $value );
+		$value                   = maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;
@@ -1257,13 +1260,23 @@ class CourseModel {
 	/**
 	 * Get item model assigned to this course
 	 *
+	 * @param int $item_id
+	 * @param string $item_type
+	 * @param bool $check_assign | default true check assign item to course
+	 *
 	 * @return mixed|false|null|WP_Post|PostModel
 	 * @since v4.2.7.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function get_item_model( int $item_id, string $item_type ) {
+	public function get_item_model( int $item_id, string $item_type, bool $check_assign = true ) {
 		try {
 			$item = false;
+
+			// Find item has in section
+			$section_id = $this->get_section_of_item( $item_id );
+			if ( $check_assign && ! $section_id ) {
+				return $item;
+			}
 
 			switch ( $item_type ) {
 				case LP_LESSON_CPT:

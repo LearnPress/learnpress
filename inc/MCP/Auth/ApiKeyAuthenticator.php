@@ -210,19 +210,6 @@ class ApiKeyAuthenticator {
 	 * @return array<string, mixed>
 	 */
 	protected function parse_credentials(): array {
-		$consumer_key_present    = isset( $_GET['consumer_key'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$consumer_secret_present = isset( $_GET['consumer_secret'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
-		$consumer_key    = $consumer_key_present ? LP_Helper::sanitize_params_submitted( $_GET['consumer_key'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$consumer_secret = $consumer_secret_present ? LP_Helper::sanitize_params_submitted( $_GET['consumer_secret'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
-		if ( $consumer_key_present || $consumer_secret_present ) {
-			return array(
-				'present'         => true,
-				'consumer_key'    => $consumer_key,
-				'consumer_secret' => $consumer_secret,
-			);
-		}
 
 		$has_php_auth_user = isset( $_SERVER['PHP_AUTH_USER'] );
 		$has_php_auth_pw   = isset( $_SERVER['PHP_AUTH_PW'] );

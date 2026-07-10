@@ -14,6 +14,8 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 	 * @uses SendEmailAjax::send_mail_order_status_pending_to_completed
 	 * @uses SendEmailAjax::send_mail_order_status_update_to_completed
 	 * @uses SendEmailAjax::send_mail_order_status_update_to_cancelled
+	 * @uses SendEmailAjax::send_mail_order_status_update_to_refunded
+	 * @uses SendEmailAjax::send_mail_order_refund_requested
 	 * @uses SendEmailAjax::send_mail_user_course_finished
 	 */
 	class LP_Email_Hooks {
@@ -37,6 +39,10 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 					'learn-press/order/status-completed' => 'send_mail_order_status_update_to_completed',
 					// Cancelled order
 					'learn-press/order/status-cancelled' => 'send_mail_order_status_update_to_cancelled',
+					// Refunded order
+					'learn-press/order/status-refunded'  => 'send_mail_order_status_update_to_refunded',
+					// Refund requested
+					'learn-press/order/refund-requested' => 'send_mail_order_refund_requested',
 					// Finished course
 					'learn-press/user-course-finished'   => 'send_mail_user_course_finished',
 				]

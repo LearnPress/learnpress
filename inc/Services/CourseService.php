@@ -32,6 +32,7 @@ class CourseService {
 
 	/**
 	 * Create course info main
+	 * Data of columns posts
 	 *
 	 * meta_input for metadata
 	 *
@@ -361,5 +362,16 @@ class CourseService {
 		}
 
 		return $courses;
+	}
+
+	/**
+	 * Check item type is support of course
+	 *
+	 * @param string $item_type
+	 * @return bool
+	 */
+	public static function check_is_item_type_of_course( string $item_type ): bool {
+		$course_item_types = coursemodel::item_types_support();
+		return in_array( $item_type, $course_item_types );
 	}
 }

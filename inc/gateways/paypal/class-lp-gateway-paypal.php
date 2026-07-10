@@ -210,14 +210,13 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$subscription_res   = $this->pay_via_subscription( $order, $subscription_data );
 				$paypal_payment_url = $subscription_res['redirect_url'] ?? '';
 			} else {
-				$data_token         = $this->get_access_token();
-				$paypal_payment_url = $this->create_payment_url( $order, $data_token );
+				$paypal_payment_url = $this->create_payment_url( $order );
 			}
 
-			$result['result']   = 'success';
-			$result['redirect'] = $paypal_payment_url;
-
-			return $result;
+			return [
+				'result'   => 'success',
+				'redirect' => $paypal_payment_url,
+			];
 		}
 
 		/**
@@ -377,22 +376,18 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Create Order PayPal and get checkout url
 		 *
 		 * @param LP_Order $order
-		 * @param object   $data_token { scope, access_token, token_type, app_id, expires_in, nonce }
 		 *
 		 * @return string
 		 * @throws Exception
 		 * @since 4.2.4
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
-		public function create_payment_url( LP_Order $order, $data_token ): string {
+		public function create_payment_url( LP_Order $order ): string {
 			$checkout_url = '';
 			$params       = $this->get_order_args( $order );
 
-			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
-				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
-			}
-
-			$response = wp_remote_post(
+			$data_token = $this->get_access_token();
+			$response   = wp_remote_post(
 				$this->api_url . 'v2/checkout/orders',
 				array(
 					'body'    => json_encode( $params ),
@@ -444,16 +439,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return bool True when capture is completed and order status is updated.
 		 * @throws Exception
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 * @since 4.2.4
 		 */
 		public function capture_payment_for_order( string $paypal_order_id ): bool {
 			$data_token = $this->get_access_token();
-			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
-				return false;
-			}
-
-			$response = wp_remote_post(
+			$response   = wp_remote_post(
 				$this->api_url . 'v2/checkout/orders/' . $paypal_order_id . '/capture',
 				array(
 					'headers' => array(
@@ -465,28 +456,47 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message() );
+			}
+
+			$body          = wp_remote_retrieve_body( $response );
+			$response_data = LP_Helper::json_decode( $body );
+			if ( isset( $response_data->debug_id ) ) {
+				throw new Exception( $response_data->details[0]->description );
+			}
+
+			$capture = $response_data->purchase_units[0]->payments->captures[0] ?? null;
+			if ( empty( $capture ) ) {
 				return false;
 			}
 
-			$response_code = absint( $response['response']['code'] ?? 0 );
-			if ( 201 !== $response_code ) {
-				return false;
-			}
-
-			$body        = wp_remote_retrieve_body( $response );
-			$transaction = LP_Helper::json_decode( $body );
-			if ( empty( $transaction ) || ! is_object( $transaction ) || ( $transaction->status ?? '' ) !== 'COMPLETED' ) {
-				return false;
-			}
-
-			$order_id = absint( $transaction->purchase_units[0]->payments->captures[0]->custom_id ?? 0 );
+			$order_id = absint( $capture->custom_id ?? 0 );
 			if ( $order_id <= 0 ) {
 				return false;
 			}
 
+			$capture_id = $capture->id ?? '';
+			if ( empty( $capture_id ) ) {
+				return false;
+			}
+
 			$lp_order = learn_press_get_order( $order_id );
-			if ( $lp_order instanceof LP_Order ) {
-				$lp_order->update_status( LP_ORDER_COMPLETED );
+			if ( $lp_order instanceof LP_Order && $capture->status === 'COMPLETED' ) {
+				$transaction_id = $lp_order->get_transaction_id();
+				if ( $transaction_id === $capture_id ) {
+					return true;
+				}
+
+				$lp_order->payment_complete( $capture_id );
+
+				$lp_order->add_note(
+					sprintf(
+						__( 'PayPal payment %1$s completed at %2$s %3$s', 'learnpress' ),
+						$capture_id,
+						wp_date( 'Y-m-d H:i:s' ),
+						wp_timezone_string()
+					)
+				);
 				return true;
 			}
 
@@ -623,14 +633,13 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( __( 'PayPal subscriptions are disabled.', 'learnpress' ) );
 			}
 
-			$data = $this->validate_data_plan_payload( $data );
+			$data       = $this->validate_data_plan_payload( $data );
+			$data_token = $this->get_access_token();
 
 			// PayPal-specific optional keys are normalized at gateway level.
 			$description = LP_Helper::sanitize_params_submitted( $data['description'] ?? '', 'html' );
 			$trial_days  = absint( $data['trial_days'] ?? 0 );
 			$setup_fee   = (float) ( $data['setup_fee'] ?? 0 );
-
-			$data_token = $this->get_access_token();
 
 			// Create product before create plan
 			$product_id   = $data['product_id'] ?? '';
@@ -950,11 +959,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			$data = $this->validate_data_plan_payload( $data );
 
-			$data_token = $this->get_access_token();
-			if ( empty( $data_token->access_token ) || empty( $data_token->token_type ) ) {
-				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
-			}
-
 			$patches = array();
 			if ( ! empty( $data['name'] ?? '' ) ) {
 				$patches[] = array(
@@ -997,6 +1001,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			if ( ! empty( $patches ) ) {
+				$data_token     = $this->get_access_token();
 				$patch_response = wp_remote_request(
 					$this->api_url . 'v1/billing/plans/' . rawurlencode( $plan_id ),
 					array(
@@ -1973,6 +1978,85 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$manage_url = trailingslashit( $this->paypal_url ) . 'myaccount/autopay/';
 
 			return (string) apply_filters( 'learn-press/paypal/subscription/manage-url', $manage_url, $order, $subscription_id, $this );
+		}
+
+		/**
+		 * Refund PayPal capture via REST API.
+		 *
+		 * @param LP_Order $lp_order
+		 * @param float $amount 0 or empty means full refund.
+		 * @param string $note
+		 *
+		 * @return array
+		 * @throws Exception
+		 * @since 4.4.0
+		 * @version 1.0.0
+		 */
+		public function refund( $lp_order, float $amount = 0, string $note = '' ): array {
+			$order_id   = $lp_order->get_id();
+			$capture_id = $lp_order->get_transaction_id();
+			if ( empty( $capture_id ) ) {
+				throw new Exception( __( 'Missing PayPal capture id to refund.', 'learnpress' ) );
+			}
+
+			$refund_args = [];
+			if ( $amount > 0 ) {
+				$refund_args['amount'] = [
+					'currency_code' => $lp_order->get_currency(),
+					'value'         => strval( round( $amount, 2 ) ),
+				];
+			}
+
+			$note_to_payer = trim( $note );
+			if ( ! empty( $note_to_payer ) ) {
+				$refund_args['note_to_payer'] = $note_to_payer;
+			}
+
+			$refund_args = apply_filters( 'learn-press/paypal-refund/args', $refund_args, $lp_order, $this );
+			$data_token  = $this->get_access_token();
+			$response    = wp_remote_post(
+				$this->api_url . 'v2/payments/captures/' . rawurlencode( $capture_id ) . '/refund',
+				[
+					'body'    => json_encode( $refund_args ),
+					'headers' => [
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+						'Content-Type'  => 'application/json',
+					],
+					'timeout' => 60,
+				]
+			);
+
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message() );
+			}
+
+			$body          = wp_remote_retrieve_body( $response );
+			$response_data = LP_Helper::json_decode( $body );
+			if ( isset( $response_data->debug_id ) ) {
+				throw new Exception( $response_data->details[0]->description );
+			}
+
+			if ( ! empty( $response_data->status ) && $response_data->status === 'COMPLETED' ) {
+				update_post_meta( $order_id, '_paypal_refund_id', $response_data->id );
+
+				$lp_order->add_note(
+					sprintf(
+						__( 'PayPal refund completed at %1$s %2$s', 'learnpress' ),
+						wp_date( 'Y-m-d H:i:s' ),
+						wp_timezone_string()
+					)
+				);
+				do_action( 'learn-press/paypal-refund/success', $lp_order, $response_data, $this );
+			} else {
+				throw new Exception( __( 'PayPal refund something went wrong.', 'learnpress' ) );
+			}
+
+			return [
+				'result'    => 'success',
+				'refund_id' => $response_data->id,
+				'status'    => $result->status ?? '',
+				'response'  => $response_data,
+			];
 		}
 
 		/**

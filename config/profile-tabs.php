@@ -49,7 +49,7 @@ $default_settings = array(
 		'priority' => 30,
 	),
 	'enrolled-students' => array(
-		'title'    => __( 'Enrolled Students', 'learnpress' ),
+		'title'    => __( 'Students', 'learnpress' ),
 		'slug'     => 'enrolled-students',
 		'callback' => [ ProfileStudentEnrolledTemplate::class, 'tab_content' ],
 		'priority' => 35,

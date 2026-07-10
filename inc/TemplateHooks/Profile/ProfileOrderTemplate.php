@@ -33,7 +33,7 @@ class ProfileOrderTemplate {
 	}
 
 	protected function __construct() {
-		add_action( 'learn-press/profile/layout/order-detail', [ $this, 'sections' ] );
+		add_action( 'learn-press/profile/layout/order-detail', array( $this, 'sections' ) );
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 	}
 
@@ -153,10 +153,10 @@ class ProfileOrderTemplate {
 		}
 		$total_pages     = $lp_order_db::get_total_pages( $limit, $total_row );
 		$html_pagination = Template::instance()->html_pagination(
-			[
+			array(
 				'total_pages' => $total_pages,
 				'paged'       => $paged,
-			]
+			)
 		);
 		if ( ! empty( $html_pagination ) ) {
 			$html_pagination = sprintf(
@@ -172,7 +172,7 @@ class ProfileOrderTemplate {
 				'<h3>%s</h3>',
 				esc_html__( 'Order Details', 'learnpress' )
 			),
-			'table'           => '<table class="lp-list-table order-table-details">',
+			'table'           => '<div class="lp-table-wrap"><table class="lp-list-table order-table-details">',
 			'table-header'    => self::table_header(),
 			'table-body'      => '<tbody>',
 			'items'           => $html_items,
@@ -180,7 +180,7 @@ class ProfileOrderTemplate {
 			'do_action_items' => self::action_table_items( $order ),
 			'table-body-end'  => '</tbody>',
 			'table-footer'    => self::table_footer( $order ),
-			'table-end'       => '</table>',
+			'table-end'       => '</table></div>',
 			'footer'          => self::order_detail_content_footer( $order ),
 		);
 		$content->content = Template::combine_components( $section );
@@ -249,7 +249,7 @@ class ProfileOrderTemplate {
 	 * HTMl for each order item row in order detail page.
 	 *
 	 * @param LP_Order $order
-	 * @param object $item
+	 * @param object   $item
 	 *
 	 * @return string
 	 * @since 4.3.2
@@ -305,12 +305,12 @@ class ProfileOrderTemplate {
 	 */
 	public static function order_detail_content_footer( $order ): string {
 		$section = array(
-			'order_key'    => sprintf(
+			'order_key'             => sprintf(
 				'<p><strong>%s</strong> %s</p>',
 				esc_html__( 'Order key:', 'learnpress' ),
 				esc_html( $order->get_order_key() )
 			),
-			'order_status' => sprintf(
+			'order_status'          => sprintf(
 				'<p>
 					<strong>%s</strong>
 					<span class="lp-label label-%s">%s</span>
@@ -319,8 +319,93 @@ class ProfileOrderTemplate {
 				esc_attr( $order->get_status() ),
 				wp_kses_post( $order->get_order_status_html() )
 			),
+			'refund_request_status' => self::refund_request_status_html( $order ),
+			'refund_note'           => self::refund_note_html( $order ),
 		);
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML for refund request status in order detail page.
+	 *
+	 * @param LP_Order $order
+	 *
+	 * @return string
+	 * @since 4.3.9
+	 * @version 1.0.0
+	 */
+	public static function refund_request_status_html( $order ): string {
+
+		$refund_request_status = $order->get_refund_request();
+		if ( empty( $refund_request_status ) ) {
+			return '';
+		}
+
+		$status_labels = array(
+			'pending'       => __( 'Pending', 'learnpress' ),
+			'rejected'      => __( 'Rejected', 'learnpress' ),
+			'approved'      => __( 'Accepted', 'learnpress' ),
+			'auto-approved' => __( 'Accepted', 'learnpress' ),
+		);
+		$status_label  = $status_labels[ $refund_request_status ] ?? ucwords( str_replace( '-', ' ', $refund_request_status ) );
+
+		$html_status = sprintf(
+			'<p class="lp-order-refund-request-status">
+				<strong>%s</strong>
+				<span class="lp-label label-%s">%s</span>
+			</p>',
+			esc_html__( 'Refund request:', 'learnpress' ),
+			esc_attr( $refund_request_status ),
+			esc_html( $status_label )
+		);
+
+		$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
+		$refunded_amount = (float) $order->get_meta( LP_Order::META_KEY_REFUNDED_AMOUNT );
+		$html_amount     = '';
+		if ( $refunded_amount > 0 ) {
+			$refunded_amount = learn_press_format_price( $refunded_amount, $currency_symbol );
+			$html_amount     = sprintf(
+				'<p class="lp-order-refunded-amount">
+					<strong>%s</strong>
+					<span>%s</span>
+				</p>',
+				esc_html__( 'Refund amount:', 'learnpress' ),
+				esc_html( $refunded_amount )
+			);
+		}
+
+		return Template::combine_components(
+			[
+				'status' => $html_status,
+				'amount' => $html_amount,
+			]
+		);
+	}
+
+	/**
+	 * HTML for refund note in order detail page.
+	 *
+	 * @param LP_Order $order
+	 *
+	 * @return string
+	 * @since 4.3.9
+	 * @version 1.0.0
+	 */
+	public static function refund_note_html( $order ): string {
+
+		$refund_note = trim( (string) get_post_meta( $order->get_id(), '_lp_refund_note', true ) );
+		if ( empty( $refund_note ) ) {
+			return '';
+		}
+
+		return sprintf(
+			'<p class="lp-order-refund-note">
+				<strong>%s</strong>
+				<span>%s</span>
+			</p>',
+			esc_html__( 'Refund note:', 'learnpress' ),
+			nl2br( esc_html( $refund_note ) )
+		);
 	}
 }

@@ -796,17 +796,10 @@
 		position: static;
 		margin: 0;
 		width: auto;
-		height: auto;
-		//position: absolute;
-		//top: 50%;
-		//left: 50%;
-		//color: var(--lp-primary-color);
-		font-family: 'lp-icon';
-		//font-size: 1.125em;
-		//font-weight: 900;
-		content: "\f0d9";
-		//transition: 0.25s;
-		//transform: translate(-50%, -50%);
+		height: auto; 
+		font-family: 'lp-icon'; 
+		content: "\f0d9"; 
+		line-height: 1;
 	}
 
 	&:focus {

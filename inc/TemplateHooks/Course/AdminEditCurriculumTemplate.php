@@ -609,7 +609,7 @@ class AdminEditCurriculumTemplate {
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	public static function render_list_items_not_assign( $data ): stdClass {
 		$user                   = wp_get_current_user();
@@ -686,7 +686,7 @@ class AdminEditCurriculumTemplate {
 				/**
 				 * @var $itemModel PostModel
 				 */
-				$itemModel = $courseModel->get_item_model( $post->ID, $post->post_type );
+				$itemModel = $courseModel->get_item_model( $post->ID, $post->post_type, false );
 				if ( ! $itemModel ) {
 					continue;
 				}

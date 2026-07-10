@@ -7,6 +7,9 @@ use LearnPress;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
@@ -434,7 +437,7 @@ class OpenAiAjax extends AbstractAjax {
 	 * Upload image to media and set as feature image for post
 	 *
 	 * @since 4.3.0
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function openai_apply_image_feature() {
 		$response = new LP_REST_Response();
@@ -459,6 +462,29 @@ class OpenAiAjax extends AbstractAjax {
 
 			if ( empty( $post_id ) ) {
 				throw new Exception( __( 'Invalid post ID.', 'learnpress' ) );
+			}
+
+			// Check permission
+			$post_type = get_post_type( $post_id );
+			if ( $post_type === LP_COURSE_CPT ) {
+				$coursePostModel = CoursePostModel::find( $post_id, true );
+				if ( ! $coursePostModel ) {
+					throw new Exception( __( 'Invalid course ID.', 'learnpress' ) );
+				}
+
+				if ( ! $coursePostModel->check_capabilities_update() ) {
+					throw new Exception(
+						__( 'You do not have permission to perform this action.', 'learnpress' )
+					);
+				}
+			} else {
+				$course_item_types = CourseModel::item_types_support();
+				if ( ! in_array( $post_type, $course_item_types ) ) {
+					throw new Exception( __( 'Invalid post type.', 'learnpress' ) );
+				}
+
+				$postModel = PostModel::find_by_id( $post_id, true );
+				$postModel->check_capabilities_update_item_course();
 			}
 
 			if ( ! function_exists( 'media_handle_sideload' ) ) {

@@ -7,13 +7,14 @@
  * @version 4.0.0
  */
 
+use LearnPress\Helpers\Config;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Class LP_Settings_Payments
  *
  * Manage all payments are registered and settings to control order process.
- *
  */
 class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	/**
@@ -50,6 +51,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 			$gateways = LP_Gateways::instance()->get_gateways();
 			$sections = array(
 				'general' => esc_html__( 'General', 'learnpress' ),
+				'refund'  => esc_html__( 'Refund', 'learnpress' ),
 			);
 
 			if ( $gateways ) {
@@ -129,6 +131,43 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		return apply_filters( 'learn-press/payment-settings', array_merge( $guest, $enpoints, $payment ) );
 	}
 
+	/**
+	 * Settings fields of refund section.
+	 *
+	 * @return array
+	 */
+	public function get_settings_refund() {
+		return Config::instance()->get( 'refund', 'settings/payments' );
+	}
+
+	/**
+	 * Keep refund option names compatible with the former general settings fields.
+	 *
+	 * @param string $name Field name.
+	 *
+	 * @return mixed
+	 */
+	public function get_admin_field_name( $name ) {
+		$items   = LP_Admin_Menu::instance()->get_menu_items();
+		$tab     = '';
+		$section = '';
+
+		if ( ! empty( $items['settings'] ) ) {
+			$tab     = $items['settings']->get_active_tab();
+			$section = $items['settings']->get_active_section();
+		}
+
+		if ( 'payments' === $tab && 'refund' === $section ) {
+			if ( empty( $name ) ) {
+				$name = md5( microtime( true ) );
+			}
+
+			return apply_filters( 'learn_press_settings_field_name_' . $name, "learn_press_{$name}" );
+		}
+
+		return parent::get_admin_field_name( $name );
+	}
+
 	public function admin_page_settings( $section = null, $tab = null ) {
 		$sections = array();
 		$items    = LP_Admin_Menu::instance()->get_menu_items();
@@ -157,6 +196,16 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	 * @param string $tab
 	 */
 	public function admin_options_general( $section, $tab ) {
+		parent::admin_page_settings( $section, $tab );
+	}
+
+	/**
+	 * Output admin option of refund page.
+	 *
+	 * @param string $section
+	 * @param string $tab
+	 */
+	public function admin_options_refund( $section, $tab ) {
 		parent::admin_page_settings( $section, $tab );
 	}
 }

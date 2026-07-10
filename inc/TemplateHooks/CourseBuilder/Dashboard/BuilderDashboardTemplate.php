@@ -524,7 +524,7 @@ class BuilderDashboardTemplate {
 			esc_html__( 'Top Enrolled Courses', 'learnpress' ),
 			esc_html__( 'Total:', 'learnpress' ),
 			esc_html( number_format_i18n( $total_enrolled ) ),
-			esc_html__( 'enrolled students', 'learnpress' ),
+			esc_html__( 'students', 'learnpress' ),
 			$items_html
 		);
 	}

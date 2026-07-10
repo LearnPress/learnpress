@@ -2,7 +2,7 @@
 /**
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.1
+ * @version 4.0.2
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
 	// Buttons.
 	LearnPress::instance()->template( 'course' )->course_buttons();
 
-	LearnPress::instance()->template( 'course' )->user_time();
+	//LearnPress::instance()->template( 'course' )->user_time();
 
 	LearnPress::instance()->template( 'course' )->user_progress();
 	?>

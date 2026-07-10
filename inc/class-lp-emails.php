@@ -89,6 +89,12 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			$this->emails['LP_Email_Cancelled_Order_User']       = include_once 'emails/student/class-lp-email-cancelled-order-user.php';
 			$this->emails['LP_Email_Cancelled_Order_Guest']      = include_once 'emails/guest/class-lp-email-cancelled-order-guest.php';
 
+			// Refunded order
+			$this->emails['LP_Email_Refunded_Order_Admin']       = include_once 'emails/admin/class-lp-email-refunded-order-admin.php';
+			$this->emails['LP_Email_Refunded_Order_Instructor']  = include_once 'emails/instructor/class-lp-email-refunded-order-instructor.php';
+			$this->emails['LP_Email_Refunded_Order_User']        = include_once 'emails/student/class-lp-email-refunded-order-user.php';
+			$this->emails['LP_Email_Refund_Request_Order_Admin'] = include_once 'emails/admin/class-lp-email-refund-request-order-admin.php';
+
 			// Enrolled course
 			$this->emails['LP_Email_Enrolled_Course_Admin']      = include_once 'emails/admin/class-lp-email-enrolled-course-admin.php';
 			$this->emails['LP_Email_Enrolled_Course_Instructor'] = include_once 'emails/instructor/class-lp-email-enrolled-course-instructor.php';

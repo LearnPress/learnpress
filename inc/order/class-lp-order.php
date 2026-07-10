@@ -65,6 +65,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			'_checkout_email'       => '',
 		);
 
+		const META_KEY_TRANSACTION_ID        = '_transaction_id';
+		const META_KEY_REFUND_REQUEST        = '_lp_refund_request';
+		const META_KEY_REFUND_REQUEST_REASON = '_lp_refund_request_reason';
+		const META_KEY_REFUNDED_BY           = '_lp_refunded_by';
+		const META_KEY_REFUNDED_AT           = '_lp_refunded_at';
+		const META_KEY_REFUNDED_AMOUNT       = '_lp_refunded_amount';
+
 		/**
 		 * Store order status in transactions.
 		 *
@@ -107,7 +114,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Set order date.
 		 *
-		 * @param int|string $date
+		 * @param int|string $date Date time string is time zone of WP setting
 		 */
 		public function set_order_date( $date ): LP_Order {
 			$this->set_data_date( 'order_date', $date );
@@ -219,7 +226,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Updates order to new status if needed
 		 *
 		 * @param mixed $new_status
-		 * @param bool $manual Is this a manual order status change?.
+		 * @param bool  $manual Is this a manual order status change?.
 		 *
 		 * @return bool
 		 */
@@ -299,7 +306,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				case 'on-hold':
 					$status = __( 'On hold', 'learnpress' );
 					break;
-				case 'refunded':
+				case LP_ORDER_REFUNDED:
 					$status = __( 'Refunded', 'learnpress' );
 					break;
 				default:
@@ -322,13 +329,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @version 1.0.0
 		 */
 		public static function get_icons_status(): array {
-			$icons = [
+			$icons = array(
 				LP_ORDER_COMPLETED  => "<i class='dashicons dashicons-yes-alt'></i>",
 				LP_ORDER_PENDING    => "<i class='dashicons dashicons-flag'></i>",
 				LP_ORDER_PROCESSING => "<i class='dashicons dashicons-clock'></i>",
 				LP_ORDER_CANCELLED  => "<i class='dashicons dashicons-dismiss'></i>",
 				LP_ORDER_FAILED     => "<i class='dashicons dashicons-warning'></i>",
-			];
+				LP_ORDER_REFUNDED   => "<i class='dashicons dashicons-undo'></i>",
+			);
 
 			return apply_filters( 'lp/order/status/icons', $icons );
 		}
@@ -346,7 +354,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function set_status( string $new_status = '', string $note = '' ) {
 			// Ensure status not has prefix 'lp-'.
 			$new_status     = str_replace( 'lp-', '', $new_status );
-			$valid_statuses = array_values( LP_Order::get_order_statuses() );
+			$valid_statuses = array_values( self::get_order_statuses() );
 			if ( ! in_array( $new_status, $valid_statuses ) && 'trash' !== $new_status ) {
 				$new_status = LP_ORDER_PENDING;
 			}
@@ -465,7 +473,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return apply_filters( 'learn-press/order/guest-customer-name', $customer_name );
 		}
 
-		/*public function customer_exists() {
+		/*
+		public function customer_exists() {
 			return false !== get_userdata( $this->get_data( 'user_id' ) );
 		}*/
 
@@ -548,7 +557,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				 * Comment by tungnx. Because it will error if item didn't have key 'course_id'.
 				 * Ex: case buy certificate, will not have that key
 				 */
-				//return @wp_list_pluck( $items, 'course_id' );
+				// return @wp_list_pluck( $items, 'course_id' );
 			}
 
 			return false;
@@ -801,7 +810,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
 
-			//Clear cache
+			// Clear cache
 			$key = "order/{$this->get_id()}/{$this->get_status()}/items";
 			LP_Cache::cache_load_first( 'clear', $key );
 
@@ -868,6 +877,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get user id in array.
 		 * user_id = 0 -> User type Guest
+		 *
 		 * @return int[]
 		 * @editor tungnx
 		 * @modify 4.1.4
@@ -904,7 +914,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				} else {
 					$found_selected = false;
 				}
-				echo sprintf( '<option value="%d" %s>%s</option>', esc_attr( $user->get_id() ), selected( $found_selected, true, false ), esc_html( $user->user_login ) );
+				printf( '<option value="%d" %s>%s</option>', esc_attr( $user->get_id() ), selected( $found_selected, true, false ), esc_html( $user->user_login ) );
 			}
 			echo '</select>';
 		}
@@ -1012,11 +1022,51 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		/**
+		 * Get refund URL if order can be refunded by customer.
+		 *
+		 * @since 4.3.4
+		 * @version 1.0.0
+		 * @return bool|string
+		 */
+		/*public function get_refund_order_url() {
+			$url  = false;
+			$user = learn_press_get_current_user();
+			if ( ! $user instanceof LP_User || $user->get_id() <= 0 ) {
+				return apply_filters( 'learn-press/order-refund-url', $url, $this->get_id() );
+			}
+
+			$eligibility = learn_press_get_order_refund_eligibility( $this, $user->get_id() );
+			if ( empty( $eligibility['eligible'] ) ) {
+				return apply_filters( 'learn-press/order-refund-url', $url, $this->get_id() );
+			}
+
+			$url = learn_press_user_profile_link(
+				$user->get_id(),
+				LP_Settings::instance()->get( 'profile_endpoints.orders', 'orders' )
+			);
+			$url = esc_url_raw( $url );
+
+			return apply_filters( 'learn-press/order-refund-url', $url, $this->get_id() );
+		}*/
+
+		/**
 		 * Get profile order's actions.
 		 *
 		 * @return array|mixed
 		 */
 		public function get_profile_order_actions() {
+			$actions = [];
+
+			$userModel = UserModel::find( get_current_user_id(), true );
+			if ( ! $userModel instanceof UserModel ) {
+				return $actions;
+			}
+
+			$order_user_id = $this->get_users();
+			if ( ! in_array( $userModel->get_id(), $order_user_id ) ) {
+				return $actions;
+			}
+
 			$actions = array(
 				'view' => array(
 					'url'  => $this->get_view_order_url(),
@@ -1032,19 +1082,35 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				);
 			}
 
-			$payment_method      = sanitize_key( (string) get_post_meta( $this->get_id(), '_payment_method', true ) );
-			$subscription_status = get_post_meta( $this->get_id(), LP_Gateway_Abstract::META_SUBSCRIPTION_STATUS, true );
-			if ( ! empty( $payment_method ) && in_array( $subscription_status, array( 'active', 'trialing', 'past_due' ), true ) ) {
-				$gateway = LP_Gateways::instance()->get_gateway( $payment_method );
-				if ( $gateway instanceof LP_Gateway_Abstract ) {
-					$manage_url = $gateway->get_manage_subscription_url( $this );
-					if ( ! empty( $manage_url ) ) {
-						$actions['manage-subscription'] = array(
-							'url'  => esc_url_raw( $manage_url ),
-							'text' => __( 'Manage subscription', 'learnpress' ),
-						);
-					}
-				}
+			$refund_request_status   = $this->get_refund_request();
+			$can_send_request_refund = $this->can_send_request_refund( $userModel );
+			if ( 'pending' === $refund_request_status ) {
+				$actions['refund-requested'] = array(
+					'url'  => '',
+					'text' => __( 'Refund Requested', 'learnpress' ),
+				);
+			} elseif ( $can_send_request_refund === true ) {
+				$require_reason = 'yes' === learn_press_get_refund_setting( 'require_refund_reason', 'no' );
+
+				$actions['refund'] = array(
+					'url'   => learn_press_user_profile_link(
+						$userModel->get_id(),
+						LP_Settings::instance()->get( 'profile_endpoints.orders', 'orders' )
+					),
+					'text'  => __( 'Refund', 'learnpress' ),
+					'class' => 'lp-refund-order-action',
+					'data'  => array(
+						'order_id'           => $this->get_id(),
+						'require_reason'     => $require_reason ? 'yes' : 'no',
+						'reason_prompt'      => __( 'Enter your refund reason', 'learnpress' ),
+						'reason_placeholder' => __( 'Please describe why you want a refund.', 'learnpress' ),
+						'reason_required'    => __( 'Refund reason is required.', 'learnpress' ),
+						'confirm_title'      => __( 'Request a refund?', 'learnpress' ),
+						'confirm_text'       => __( 'This request will be sent and processed according to payment settings.', 'learnpress' ),
+						'confirm_button'     => __( 'Submit Request', 'learnpress' ),
+						'cancel_button'      => __( 'Cancel', 'learnpress' ),
+					),
+				);
 			}
 
 			$actions = apply_filters( 'learn-press/profile-order-actions', $actions, $this->get_id() );
@@ -1256,7 +1322,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			if ( $this->get_id() ) {
 				$old_status_post = get_post_status( $this->get_id() );
-				if ( ! in_array( $old_status_post, [ 'trash', 'auto-draft' ] ) ) {
+				if ( ! in_array( $old_status_post, array( 'trash', 'auto-draft' ) ) ) {
 					$old_status = str_replace( 'lp-', '', $old_status_post );
 				} else {
 					$old_status = $old_status_post;
@@ -1269,7 +1335,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			$new_status_post = get_post_status( $this->get_id() );
-			if ( ! in_array( $new_status_post, [ 'trash', 'auto-draft' ] ) ) {
+			if ( ! in_array( $new_status_post, array( 'trash', 'auto-draft' ) ) ) {
 				$new_status = str_replace( 'lp-', '', $new_status_post );
 			} else {
 				$new_status = $new_status_post;
@@ -1287,7 +1353,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $order_id );
 			}
 
-			//$this->_save_status();
+			// $this->_save_status();
 
 			return $return;
 		}
@@ -1307,7 +1373,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		/** Getter/Setter  **/
-
 		public function set_customer_message( $message ) {
 			$this->_set_data( 'customer_message', $message );
 		}
@@ -1420,13 +1485,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array
 		 */
 		public static function get_order_statuses(): array {
-			$order_statuses = [
+			$order_statuses = array(
 				LP_ORDER_COMPLETED_DB  => LP_ORDER_COMPLETED,
 				LP_ORDER_PROCESSING_DB => LP_ORDER_PROCESSING,
 				LP_ORDER_PENDING_DB    => LP_ORDER_PENDING,
 				LP_ORDER_CANCELLED_DB  => LP_ORDER_CANCELLED,
 				LP_ORDER_FAILED_DB     => LP_ORDER_FAILED,
-			];
+				LP_ORDER_REFUNDED_DB   => LP_ORDER_REFUNDED,
+			);
 
 			return apply_filters( 'lp/order/statuses', $order_statuses );
 		}
@@ -1435,23 +1501,23 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Query list orders.
 		 *
 		 * @param PostFilter $post_filter
-		 * @param array $param [ 'author' => int, 'post_status' => string|array, 's' => string, 'm' => string, 'posts_per_page' => int, 'paged' => int, 'orderby' => string, 'order' => string ]
+		 * @param array      $param [ 'author' => int, 'post_status' => string|array, 'refund_request_status' => string, 's' => string, 'm' => string, 'posts_per_page' => int, 'paged' => int, 'orderby' => string, 'order' => string ]
 		 *
 		 * @return void
 		 * @throws Exception
 		 * @since 4.3.2.8
 		 * @version 1.0.0
 		 */
-		public static function handle_params_query_list_orders( PostFilter &$post_filter, array $param = [] ) {
-			$post_db       = PostDB::getInstance();
-			$user_of_order = absint( $param['author'] ?? 0 );
-			$status        = $param['post_status'] ?? '';
-			$key           = $param['s'] ?? '';
-			$month         = $param['m'] ?? '';
-			$limit         = $param['posts_per_page'] ?? 20;
-			$paged         = $param['paged'] ?? 1;
-
-			$order_by = $param['orderby'] ?? 'date';
+		public static function handle_params_query_list_orders( PostFilter &$post_filter, array $param = array() ) {
+			$post_db               = PostDB::getInstance();
+			$user_of_order         = absint( $param['author'] ?? 0 );
+			$status                = $param['post_status'] ?? '';
+			$key                   = $param['s'] ?? '';
+			$month                 = $param['m'] ?? '';
+			$limit                 = $param['posts_per_page'] ?? 20;
+			$paged                 = $param['paged'] ?? 1;
+			$refund_request_status = sanitize_key( (string) ( $param['refund_request_status'] ?? '' ) );
+			$order_by              = $param['orderby'] ?? 'date';
 			if ( empty( $order_by ) ) {
 				$order_by = 'ID';
 			} else {
@@ -1522,11 +1588,245 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$post_filter->where[] = "AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id )";
 			}
 
+			if ( ! empty( $refund_request_status ) ) {
+				$post_filter->where[] = $post_db->wpdb->prepare(
+					"AND EXISTS (
+						SELECT 1 FROM {$post_db->tb_postmeta} refund_request_pm
+						WHERE refund_request_pm.post_id = p.ID
+						AND refund_request_pm.meta_key = %s
+						AND refund_request_pm.meta_value = %s
+					)",
+					LP_Order::META_KEY_REFUND_REQUEST,
+					$refund_request_status
+				);
+			}
 			if ( ! empty( $status ) && $status !== 'all' ) {
 				$post_filter->post_status = (array) $status;
 			} else {
 				$post_filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', LP_ORDER_TRASH );
 			}
+		}
+
+		/**
+		 * Get transaction id from order meta
+		 *
+		 * @since 4.4.0
+		 * @version 1.0.0
+		 * @return string
+		 */
+		public function get_transaction_id(): string {
+			return (string) $this->get_meta( self::META_KEY_TRANSACTION_ID );
+		}
+
+		/**
+		 * Get refund request status from order meta.
+		 *
+		 * @since 4.4.0
+		 * @version 1.0.0
+		 * @return string pending|approved|auto-approved|denied|''
+		 */
+		public function get_refund_request(): string {
+			return (string) get_post_meta( $this->get_id(), self::META_KEY_REFUND_REQUEST, true );
+		}
+
+		/**
+		 * Check the order can be refunded.
+		 *
+		 * Validates multiple conditions required for refund eligibility:
+		 * - Refund requests must be enabled in settings
+		 * - Order must not already be refunded
+		 * - Order must be in 'completed' status
+		 * - Refund amount must not exceed order total (including previously refunded amount)
+		 * - Payment gateway must have refund method implemented (override from abstract)
+		 *
+		 * @param float $amount The amount to refund..
+		 *
+		 * @return bool|WP_Error Returns true if refund is allowed, WP_Error with specific error code otherwise.
+		 *
+		 * Error codes:
+		 * - 'refund_disabled': Refund feature is disabled in settings
+		 * - 'order_refunded': Order already has refunded status
+		 * - 'order_not_completed': Order is not in completed status
+		 * - 'order_refund_amount_exceeds_total': Generic error (amount exceeds total or gateway unavailable)
+		 * - 'order_refund_gateway_unavailable': Gateway does not support refund
+		 *
+		 * @since 4.4.0
+		 * @version 1.0.0
+		 */
+		public function can_refund( $amount = 0 ) {
+			try {
+				$error_code = '';
+				if ( 'yes' !== learn_press_get_refund_setting( 'enable_refund_requests', 'no' ) ) {
+					$error_code = 'refund_disabled';
+					throw new Exception( __( 'Refund requests are currently disabled.', 'learnpress' ) );
+				}
+
+				if ( $this->has_status( LP_ORDER_REFUNDED ) ) {
+					$error_code = 'order_refunded';
+					throw new Exception( __( 'Order has refunded', 'learnpress' ) );
+				}
+
+				if ( ! $this->has_status( LP_ORDER_COMPLETED ) ) {
+					$error_code = 'order_not_completed';
+					throw new Exception( __( 'Order is not completed', 'learnpress' ) );
+				}
+
+				$refunded_amount = $this->get_meta( LP_Order::META_KEY_REFUNDED_AMOUNT );
+				if ( $refunded_amount > 0 ) {
+					$amount = $refunded_amount + $amount;
+				}
+
+				if ( $amount > $this->get_total() ) {
+					$error_code = 'order_refund_amount_exceeds_total';
+					throw new Exception( __( 'Refund amount is greater than order total.', 'learnpress' ) );
+				}
+
+				$payment_method = strtolower( $this->get_data( 'payment_method', '' ) );
+				$gateway        = LP_Gateways::instance()->get_gateway( $payment_method );
+
+				$has_refund_override = false;
+				if ( $gateway && method_exists( $gateway, 'refund' ) ) {
+					// Check gateway has refund method override
+					$reflection          = new ReflectionMethod( $gateway, 'refund' );
+					$has_refund_override = $reflection->class === get_class( $gateway );
+				}
+
+				if ( ! $gateway || ! $has_refund_override ) {
+					$error_code = 'order_refund_gateway_unavailable';
+					throw new Exception( __( 'Refund gateway is unavailable.', 'learnpress' ) );
+				}
+			} catch ( Throwable $e ) {
+				if ( empty( $error_code ) ) {
+					$error_code = 'order_can_not_refund';
+				}
+
+				return new WP_Error( $error_code, $e->getMessage() );
+			}
+
+			return true;
+		}
+
+		/**
+		 * Check user can send request refund
+		 *
+		 * Apply for cache 1 user 1 order, only user of this order can send request refund
+		 *
+		 * @since 4.4.0
+		 * @version 1.0.0
+		 * @return bool|WP_Error
+		 */
+		public function can_send_request_refund( UserModel $userModel ) {
+			try {
+				$error_code = '';
+
+				// Check user of this order
+				$order_user = (int) $this->get_user_id();
+				if ( $order_user !== $userModel->get_id() ) {
+					$error_code = 'request_refund_user_invalid';
+					throw new Exception(
+						__( 'You do not have permission to refund this order.', 'learnpress' )
+					);
+				}
+
+				// Check refund requests are enabled
+				if ( 'yes' !== learn_press_get_refund_setting( 'enable_refund_requests', 'no' ) ) {
+					$error_code = 'refund_disabled';
+					throw new Exception( __( 'Refund requests are currently disabled.', 'learnpress' ) );
+				}
+
+				// Check order total > 0
+				if ( $this->get_total() <= 0 ) {
+					$error_code = 'order_total_invalid';
+					throw new Exception( __( 'Order total is not valid.', 'learnpress' ) );
+				}
+
+				// Check request refund status exists
+				$request_status = $this->get_refund_request();
+				if ( 'rejected' === $request_status ) {
+					if ( 'yes' !== learn_press_get_refund_setting( 'allow_resend_after_rejected', 'no' ) ) {
+						$error_code = 'request_refund_is_rejected';
+						throw new Exception( __( 'Request refund is rejected!.', 'learnpress' ) );
+					}
+				} elseif ( ! empty( $request_status ) ) {
+					$error_code = 'request_refund_sent';
+					throw new Exception(
+						sprintf(
+							__( 'Request refund has %s', 'learnpress' ),
+							$request_status
+						)
+					);
+				}
+
+				// Check time limit for refund request
+				$refund_time_limit = learn_press_get_refund_setting( 'refund_time_limit', 30 );
+				if ( $refund_time_limit > 0 ) {
+					$order_time = absint( $this->get_order_date( 'timestamp' ) );
+					if ( $order_time > 0 ) {
+						$now                = current_time( 'timestamp' );
+						$allowed_time_limit = strtotime( '+ ' . $refund_time_limit . ' day', $order_time );
+						if ( $allowed_time_limit < $now ) {
+							$error_code = 'request_refund_time_expired';
+							throw new Exception( __( 'Time for refund request expired', 'learnpress' ) );
+						}
+					}
+				}
+
+				// Check gateway support refund
+				$payment_method = strtolower( $this->get_data( 'payment_method', '' ) );
+				$gateway        = LP_Gateways::instance()->get_gateway( $payment_method );
+
+				$gateway_has_refund_override = false;
+				if ( $gateway && method_exists( $gateway, 'refund' ) ) {
+					// Check gateway has refund method override
+					$reflection                  = new ReflectionMethod( $gateway, 'refund' );
+					$gateway_has_refund_override = $reflection->class === get_class( $gateway );
+				}
+
+				if ( ! $gateway || ! $gateway_has_refund_override ) {
+					$error_code = 'order_refund_gateway_unavailable';
+					throw new Exception( __( 'Refund gateway is unavailable.', 'learnpress' ) );
+				}
+			} catch ( Throwable $e ) {
+				if ( empty( $error_code ) ) {
+					$error_code = 'user_can_not_send_request_refund';
+				}
+
+				return new WP_Error( $error_code, $e->getMessage() );
+			}
+
+			return true;
+		}
+
+		/**
+		 * Refund order with amount
+		 *
+		 * @return void
+		 * @throws Exception
+		 */
+		public function refund( $amount ) {
+			$can_refund = $this->can_refund( $amount );
+			if ( is_wp_error( $can_refund ) ) {
+				throw new Exception( $can_refund->get_error_message() );
+			}
+
+			$payment_method = strtolower( $this->get_data( 'payment_method', '' ) );
+			$gateway        = LP_Gateways::instance()->get_gateway( $payment_method );
+			/** @var LP_Gateway_Abstract|LP_Gateway_Paypal $gateway */
+			$gateway->refund( $this, $amount );
+
+			$user_id = get_current_user_id();
+			update_post_meta( $this->get_id(), self::META_KEY_REFUNDED_AMOUNT, (float) $amount );
+			update_post_meta( $this->get_id(), self::META_KEY_REFUNDED_BY, $user_id );
+			update_post_meta( $this->get_id(), self::META_KEY_REFUNDED_AT, gmdate( LP_Datetime::$format, time() ) );
+			$this->update_status( LP_ORDER_REFUNDED );
+
+			$this->add_note(
+				sprintf(
+					__( 'Order %1$s has been refunded %2$s.', 'learnpress' ),
+					$this->get_order_number(),
+					learn_press_format_price( $amount, learn_press_get_currency_symbol( $this->get_currency() ) )
+				)
+			);
 		}
 	}
 }

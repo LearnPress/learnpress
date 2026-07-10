@@ -36,10 +36,10 @@ $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instanc
 			$is_installed    = false;
 			$is_activated    = false;
 			$is_updated      = false;
-			$is_free         = $addon->is_free;
-			$addon_base      = $addon->basename;
-			$version_latest  = $addon->version;
-			$version_current = 0;
+			$is_free         = $addon->is_free ?? 0;
+			$addon_base      = $addon->basename ?? '';
+			$version_latest  = $addon->version ?? 0;
+			$version_current = $addon->version ?? 0;
 			$classes_status  = [];
 			$addon_purchased = $addon->purchase_info ?? false;
 			// Addon is free or paid.

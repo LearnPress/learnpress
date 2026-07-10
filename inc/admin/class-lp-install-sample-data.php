@@ -2,6 +2,7 @@
 
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Services\CourseService;
 
 /**
  * Class LP_Install_Sample_Data
@@ -16,22 +17,22 @@ class LP_Install_Sample_Data {
 	/**
 	 * @var array
 	 */
-	public static $section_range = array( 5, 10 );
+	public static $section_range = array( 3, 3 );
 
 	/**
 	 * @var array
 	 */
-	public static $item_range = array( 10, 15 );
+	public static $item_range = array( 5, 10 );
 
 	/**
 	 * @var array
 	 */
-	public static $question_range = array( 10, 15 );
+	public static $question_range = array( 2, 5 );
 
 	/**
 	 * @var array
 	 */
-	public static $answer_range = array( 3, 5 );
+	public static $answer_range = array( 2, 5 );
 
 	/**
 	 * @var int
@@ -122,15 +123,11 @@ class LP_Install_Sample_Data {
 			self::$answer_range = $answer_range;
 		}
 
-		$data['price'] = LP_Request::get_param( 'course-price', 0, 'float' );
+		$data['price'] = LP_Request::get_param( CoursePostModel::META_KEY_REGULAR_PRICE, 0, 'float' );
 		$data['name']  = LP_Request::get_param( 'custom-name' );
 
 		try {
 			$course_id = $this->create_course( $data );
-
-			if ( ! $course_id ) {
-				throw new Exception( 'Create course failed.' );
-			}
 
 			$this->create_sections( $course_id );
 
@@ -342,9 +339,10 @@ class LP_Install_Sample_Data {
 	 *
 	 * @param array $data
 	 *
-	 * @return int|WP_Error
+	 * @return int
+	 * @throws Exception
 	 */
-	protected function create_course( array $data ) {
+	protected function create_course( array $data ): int {
 		$title = $data['name'] ?? '';
 
 		$data_insert = array(
@@ -354,45 +352,56 @@ class LP_Install_Sample_Data {
 			'post_content' => $this->generate_content( 25, 40, 5 ),
 		);
 
-		$course_id = wp_insert_post( $data_insert );
+		$courseService   = CourseService::instance();
+		$coursePostModel = $courseService->create_info_main( $data_insert );
 
-		if ( $course_id ) {
-			$metas = [
-				CoursePostModel::META_KEY_DURATION    => '10 week',
-				CoursePostModel::META_KEY_SAMPLE_DATA => 'yes',
-				CoursePostModel::META_KEY_LEVEL       => 'all',
-			];
-			foreach ( $metas as $key => $value ) {
-				update_post_meta( $course_id, $key, $value );
-			}
+		$course_id = $coursePostModel->get_id();
 
-			$this->add_extra_info( $course_id );
+		// Set price
+		if ( $data['price'] > 0 ) {
+			$coursePostModel->meta_data->{CoursePostModel::META_KEY_PRICE}         = $data['price'];
+			$coursePostModel->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE} = $data['price'];
 		}
 
-		return $course_id;
-	}
+		// Save meta data
+		$coursePostModel->meta_data->{CoursePostModel::META_KEY_DURATION}    = '10 week';
+		$coursePostModel->meta_data->{CoursePostModel::META_KEY_SAMPLE_DATA} = 'yes';
+		$coursePostModel->meta_data->{CoursePostModel::META_KEY_LEVEL}       = 'all';
 
-	protected function add_extra_info( $course_id ) {
-		$features = array( 'requirements', 'target_audiences', 'key_features' );
-
-		// Requirements, Target audiences, Key Features
-		foreach ( $features as $feature ) {
-			$feature_data = array();
-			for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
-				$feature_data[] = $this->generate_title();
-			}
-			update_post_meta( $course_id, '_lp_' . $feature, $feature_data );
+		// Requirements
+		$requirements = array();
+		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
+			$requirements[] = $this->generate_title();
 		}
+		$coursePostModel->meta_data->{CoursePostModel::META_KEY_REQUIREMENTS} = $requirements;
+
+		// Target audiences
+		$target_audiences = array();
+		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
+			$target_audiences[] = $this->generate_title();
+		}
+		$coursePostModel->meta_data->{CoursePostModel::META_KEY_TARGET} = $target_audiences;
+
+		// Key features
+		$key_features = array();
+		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
+			$key_features[] = $this->generate_title();
+		}
+		$coursePostModel->meta_data->{CoursePostModel::META_KEY_FEATURES} = $key_features;
 
 		// FAQs
-		$feature_data = array();
+		$faqs = array();
 		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
-			$feature_data[] = array( $this->generate_title() . '?', $this->generate_content( 20, 30, 3 ) );
+			$faqs[] = array( $this->generate_title() . '?', $this->generate_content( 20, 30, 3 ) );
 		}
-		update_post_meta( $course_id, '_lp_faqs', $feature_data );
+		$coursePostModel->meta_data->{CoursePostModel::META_KEY_FAQS} = $faqs;
 
 		// Featured review
-		update_post_meta( $course_id, '_lp_featured_review', $this->generate_title( 30, 40 ) );
+		$coursePostModel->meta_data->{CoursePostModel::META_KEY_FEATURED_REVIEW} = $this->generate_title( 30, 40 );
+
+		$coursePostModel->save();
+
+		return $course_id;
 	}
 
 	/**

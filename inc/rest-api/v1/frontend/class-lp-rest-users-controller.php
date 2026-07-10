@@ -1,7 +1,8 @@
 <?php
 
 use LearnPress\Models\CourseModel;
-use LearnPress\Models\UserItemMeta\UserQuizMetaModel;
+use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\Models\Quiz\QuizQuestionModel;
 use LearnPress\Models\UserItems\UserQuizModel;
 
 /**
@@ -63,15 +64,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'args'                => $this->get_item_endpoint_args(),
 				),
 			),
-			/*'hint-answer'  => array(
-				array(
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'hint_answer' ),
-					// 'permission_callback' => array( $this, 'check_admin_permission' ),
-					'permission_callback' => '__return_true',
-					'args'                => $this->get_item_endpoint_args(),
-				),
-			),*/
 			'check-answer' => array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
@@ -137,7 +129,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @editor tungnx
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 * @sicne 4.0.0
 	 * @return WP_REST_Response
 	 */
@@ -160,22 +152,23 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$course = learn_press_get_course( $course_id );
 			$quiz   = learn_press_get_quiz( $item_id );
 
-			if ( ! $course ) {
-				throw new Exception( __( 'The course is invalid!', 'learnpress' ) );
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel ) {
+				throw new Exception( 'The course is invalid', 'learnrpess' );
 			}
 
-			if ( ! $quiz ) {
-				throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
+			$quizPostModel = $courseModel->get_item_model( $item_id, LP_QUIZ_CPT );
+			if ( ! $quizPostModel ) {
+				throw new Exception( 'The quiz is invalid', 'learnrpess' );
 			}
 
 			$quiz->set_course( $course );
 
 			do_action( 'learn-press/user/before/start-quiz', $item_id, $course_id, $user_id );
 
-			$courseModel = CourseModel::find( $course_id, true );
-			$link        = LP_Helper::get_link_no_cache( $courseModel->get_item_link( $item_id, LP_QUIZ_CPT ) );
+			$link = LP_Helper::get_link_no_cache( $courseModel->get_item_link( $item_id, LP_QUIZ_CPT ) );
 
-			// For no required enroll course
+			// For no required enroll course (no need login)
 			if ( $user->is_guest() && $course->is_no_required_enroll() ) {
 				$no_required_enroll       = new LP_Course_No_Required_Enroll( $course );
 				$response                 = $no_required_enroll->guest_start_quiz( $quiz );
@@ -268,7 +261,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 * @editor tungnx
 	 * @modify 4.1.4.1
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function submit_quiz( WP_REST_Request $request ) {
 		//$response = new LP_REST_Response();
@@ -286,9 +279,16 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$user       = learn_press_get_user( $user_id );
 			$course     = learn_press_get_course( $course_id );
 
-			if ( ! $course ) {
-				throw new Exception( 'The course is invalid!' );
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel ) {
+				throw new Exception( 'The course is invalid', 'learnrpess' );
 			}
+
+			$quizPostModel = $courseModel->get_item_model( $item_id, LP_QUIZ_CPT );
+			if ( ! $quizPostModel ) {
+				throw new Exception( 'The quiz is invalid', 'learnrpess' );
+			}
+
 			// Use for Review Quiz.
 			$quiz = learn_press_get_quiz( $item_id );
 			if ( ! $quiz ) {
@@ -296,7 +296,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			}
 			$quiz->set_course( $course );
 
-			// Course is no required enroll
+			// Course is no required enroll (no need login)
 			if ( $course->is_no_required_enroll() ) {
 				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
 
@@ -376,24 +376,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Hint the question and response hint content.
+	 * Check answer
 	 *
 	 * @param WP_REST_Request $request
-	 *
-	 * @return mixed|WP_REST_Response
+	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
+	 * @since 4.1.4.1
+	 * @version 1.0.2
 	 */
-	/*public function hint_answer( $request ) {
-		$question_id = $request['question_id'];
-		$question    = learn_press_get_question( $question_id );
-
-		$response = array(
-			'hint' => $question->get_hint(),
-		);
-
-		return rest_ensure_response( $response );
-	}*/
-
-	public function check_answer( $request ) {
+	public function check_answer( WP_REST_Request $request ) {
 		$response = array(
 			'status'  => 'error',
 			'message' => '',
@@ -407,10 +397,32 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$course      = learn_press_get_course( $course_id );
 			$checked     = [];
 
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel ) {
+				throw new Exception( 'The course is invalid', 'learnrpess' );
+			}
+
+			$quizPostModel = $courseModel->get_item_model( $quiz_id, LP_QUIZ_CPT );
+			if ( ! $quizPostModel ) {
+				throw new Exception( 'The quiz is invalid', 'learnrpess' );
+			}
+
+			// Check question has in quiz
+			$quizQuestionModel = QuizQuestionModel::find( $quiz_id, $question_id );
+			if ( ! $quizQuestionModel ) {
+				throw new Exception( 'The quiz question is invalid', 'learnrpess' );
+			}
+
+			$questionModel = QuestionPostModel::find( $question_id, true );
+			if ( ! $questionModel ) {
+				throw new Exception( 'The question is invalid', 'learnrpess' );
+			}
+
+			// For case user not login
 			if ( $course->is_no_required_enroll() ) {
 				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
 				$checked            = $no_required_enroll->guest_check_question( $question_id, $answered );
-			} else {
+			} else { // For case user logged in
 				$user = learn_press_get_current_user();
 				if ( $user->is_guest() ) {
 					throw new Exception( 'The user is invalid', 'learnrpess' );

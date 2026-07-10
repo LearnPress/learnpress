@@ -11,8 +11,8 @@ class LP_Submenu_Students_Enrolled extends LP_Abstract_Submenu {
 	 */
 	public function __construct() {
 		$this->id         = 'learn-press-students-enrolled';
-		$this->menu_title = __( 'Enrolled Students', 'learnpress' );
-		$this->page_title = __( 'Enrolled Students', 'learnpress' );
+		$this->menu_title = __( 'Students', 'learnpress' );
+		$this->page_title = __( 'Students', 'learnpress' );
 		$this->priority   = 20;
 		$this->callback   = [ AdminListStudentsEnrolled::instance(), 'admin_page_output' ];
 

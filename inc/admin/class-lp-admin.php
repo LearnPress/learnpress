@@ -804,8 +804,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			require_once LP_PLUGIN_PATH . 'inc/background-process/class-lp-background-query-items.php';
 			include_once 'class-lp-admin-assets.php';
 			LP_Admin_Assets::instance();
-			include_once 'class-lp-admin-mcp-api-keys.php';
-			LP_Admin_MCP_API_Keys::instance();
+			// For MCP
+			if ( learn_press_is_mcp_available() ) {
+				include_once 'class-lp-admin-mcp-api-keys.php';
+				LP_Admin_MCP_API_Keys::instance();
+			}
+			// End MCP
 			include_once 'class-lp-admin-webhooks.php';
 			LP_Admin_Webhooks::instance();
 			include_once 'class-lp-admin-dashboard.php';
@@ -838,7 +842,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				return;
 			}
 
-			global $post_type, $pagenow;
+			/*global $post_type, $pagenow;
 
 			if ( current_user_can( ADMIN_ROLE ) ) {
 				return;
@@ -855,11 +859,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			if ( ! in_array( $post_type, $post_type_valid ) ) {
 				return;
-			}
+			}*/
 
 			// $query->set( 'author', get_current_user_id() );
 
-			$query = apply_filters( 'learnpress/get-post-type-lp-on-backend', $query );
+			// Hook only Co-instructor using.
+			return apply_filters( 'learnpress/get-post-type-lp-on-backend', $query );
 
 			//add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
 			//remove_filter( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );

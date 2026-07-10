@@ -283,12 +283,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				throw new Exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $id ) );
 			}
 
-			$question->set_data_via_methods(
-				array(
-					'explanation' => get_post_meta( $id, '_lp_explanation', true ),
-					'hint'        => get_post_meta( $id, '_lp_hint', true ),
-				)
-			);
+			$question->set_explanation( get_post_meta( $id, '_lp_explanation', true ) );
+			$question->set_hint( get_post_meta( $id, '_lp_hint', true ) );
 			// $this->_load_answer_options( $question );
 			$this->_load_meta( $question );
 
@@ -306,11 +302,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			// $question->set_type( $type );
 
 			$mark = $this->_get_question_mark( $question->get_id() );
-			$question->set_data_via_methods(
-				array(
-					'mark' => $mark,
-				)
-			);
+			$question->set_mark( $mark );
 		}
 
 		public function _get_question_mark( $question_id ) {

@@ -59,7 +59,7 @@ class LP_Admin_MCP_API_Keys {
 	 * @return void
 	 */
 	public function localize_admin_script(): void {
-		if ( ! learn_press_is_mcp_available() || ! $this->is_mcp_integration_enabled() || ! wp_script_is( 'lp-admin-mcp-api-keys', 'enqueued' ) ) {
+		if ( ! $this->is_mcp_integration_enabled() || ! wp_script_is( 'lp-admin-mcp-api-keys', 'enqueued' ) ) {
 			return;
 		}
 
@@ -94,7 +94,7 @@ class LP_Admin_MCP_API_Keys {
 		if ( ! current_user_can( $this->required_capability ) ) {
 			wp_die( esc_html__( 'Sorry, you are not allowed to manage MCP API keys.', 'learnpress' ) );
 		}
-		if ( ! learn_press_is_mcp_available() || ! $this->is_mcp_integration_enabled() ) {
+		if ( ! $this->is_mcp_integration_enabled() ) {
 			return;
 		}
 
@@ -125,7 +125,7 @@ class LP_Admin_MCP_API_Keys {
 	 * @return void
 	 */
 	public function handle_admin_actions(): void {
-		if ( ! $this->is_mcp_keys_settings_screen() || ! current_user_can( $this->required_capability ) || ! learn_press_is_mcp_available() || ! $this->is_mcp_integration_enabled() ) {
+		if ( ! $this->is_mcp_keys_settings_screen() || ! current_user_can( $this->required_capability ) || ! $this->is_mcp_integration_enabled() ) {
 			return;
 		}
 
@@ -226,6 +226,15 @@ class LP_Admin_MCP_API_Keys {
 
 		return ( 'advanced' === $tab && 'mcp' === $section )
 			|| 'mcp' === $tab;
+	}
+
+	/**
+	 * Check whether MCP integration is enabled.
+	 *
+	 * @return bool
+	 */
+	protected function is_mcp_integration_enabled(): bool {
+		return 'yes' === LP_Settings::get_option( 'enable_mcp_integration', 'no' );
 	}
 
 	/**

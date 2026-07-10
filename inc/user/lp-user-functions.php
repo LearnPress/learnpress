@@ -2,6 +2,7 @@
 
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
+use LearnPress\Services\UserService;
 
 /**
  * Common functions to process actions about user
@@ -131,176 +132,19 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 }
 
 /**
- * Add more 2 user roles teacher and student
+ * Add roles and add capabilities for roles
  */
 function learn_press_add_user_roles() {
-	$course_cap = LP_COURSE_CPT . 's';
-	$lesson_cap = LP_LESSON_CPT . 's';
-	$order_cap  = LP_ORDER_CPT . 's';
+	$item_types = [
+		LP_COURSE_CPT,
+		LP_LESSON_CPT,
+		LP_ORDER_CPT,
+	];
 
-	if ( ! get_role( LP_TEACHER_ROLE ) ) {
-		add_role( LP_TEACHER_ROLE, 'LP Instructor' );
-	}
-
-	$teacher = get_role( LP_TEACHER_ROLE );
-	if ( $teacher ) {
-		$teacher->add_cap( 'read_private_' . $course_cap );
-		$teacher->add_cap( 'delete_published_' . $course_cap );
-		$teacher->add_cap( 'edit_published_' . $course_cap );
-		$teacher->add_cap( 'edit_' . $course_cap );
-		$teacher->add_cap( 'delete_' . $course_cap );
-		// $teacher->add_cap( 'unfiltered_html' );
-		if ( $teacher->has_cap( 'unfiltered_html' ) ) {
-			$teacher->remove_cap( 'unfiltered_html' );
-		}
-
-		if ( LP_Settings::get_option( 'required_review', 'yes' ) == 'yes' ) {
-			$teacher->remove_cap( 'publish_' . $course_cap );
-		} else {
-			$teacher->add_cap( 'publish_' . $course_cap );
-		}
-
-		$teacher->add_cap( 'read_private_' . $lesson_cap );
-		$teacher->add_cap( 'delete_published_' . $lesson_cap );
-		$teacher->add_cap( 'edit_published_' . $lesson_cap );
-		$teacher->add_cap( 'edit_' . $lesson_cap );
-		$teacher->add_cap( 'delete_' . $lesson_cap );
-		$teacher->add_cap( 'publish_' . $lesson_cap );
-		$teacher->add_cap( 'upload_files' );
-		$teacher->add_cap( 'read' );
-		$teacher->add_cap( 'edit_posts' );
-	}
-
-	// administrator
-	$admin = get_role( 'administrator' );
-	if ( $admin ) {
-		$admin->add_cap( 'lp_mcp_access' );
-
-		$admin->add_cap( 'read_private_' . $course_cap );
-		$admin->add_cap( 'delete_' . $course_cap );
-		$admin->add_cap( 'delete_published_' . $course_cap );
-		$admin->add_cap( 'edit_' . $course_cap );
-		$admin->add_cap( 'edit_published_' . $course_cap );
-		$admin->add_cap( 'publish_' . $course_cap );
-		$admin->add_cap( 'delete_private_' . $course_cap );
-		$admin->add_cap( 'edit_private_' . $course_cap );
-		$admin->add_cap( 'delete_others_' . $course_cap );
-		$admin->add_cap( 'edit_others_' . $course_cap );
-
-		$admin->add_cap( 'read_private_' . $lesson_cap );
-		$admin->add_cap( 'delete_' . $lesson_cap );
-		$admin->add_cap( 'delete_published_' . $lesson_cap );
-		$admin->add_cap( 'edit_' . $lesson_cap );
-		$admin->add_cap( 'edit_published_' . $lesson_cap );
-		$admin->add_cap( 'publish_' . $lesson_cap );
-		$admin->add_cap( 'delete_private_' . $lesson_cap );
-		$admin->add_cap( 'edit_private_' . $lesson_cap );
-		$admin->add_cap( 'delete_others_' . $lesson_cap );
-		$admin->add_cap( 'edit_others_' . $lesson_cap );
-
-		$admin->add_cap( 'delete_' . $order_cap );
-		$admin->add_cap( 'delete_published_' . $order_cap );
-		$admin->add_cap( 'edit_' . $order_cap );
-		$admin->add_cap( 'edit_published_' . $order_cap );
-		$admin->add_cap( 'publish_' . $order_cap );
-		$admin->add_cap( 'delete_private_' . $order_cap );
-		$admin->add_cap( 'edit_private_' . $order_cap );
-		$admin->add_cap( 'delete_others_' . $order_cap );
-		$admin->add_cap( 'edit_others_' . $order_cap );
+	foreach ( $item_types as $item_type ) {
+		UserService::instance()->add_capabilities_for_roles( $item_type );
 	}
 }
-
-/**
- * Remove capabilities added for MCP integration.
- *
- * @return void
- */
-function learn_press_remove_mcp_capabilities() {
-
-	$admin = get_role( 'administrator' );
-	if ( $admin ) {
-		$admin->remove_cap( 'lp_mcp_access' );
-	}
-}
-/*
-function learn_press_current_user_is( $check_type = null ) {
-	global $current_user;
-	$user_roles = $current_user->roles;
-	$user_type  = '';
-
-	if ( in_array( 'lpr_teacher', $user_roles ) ) {
-		$user_type = 'instructor';
-	} elseif ( in_array( 'lp_teacher', $user_roles ) ) {
-		$user_type = 'instructor';
-	} elseif ( in_array( 'administrator', $user_roles ) ) {
-		$user_type = 'administrator';
-	}
-
-	return $check_type ? $check_type == $user_type : $user_type;
-}*/
-
-/*
-function learn_press_user_has_roles( $roles, $user_id = null ) {
-	$has_role = false;
-	if ( ! $user_id ) {
-		$user = wp_get_current_user();
-	} else {
-		$user = get_user_by( 'id', $user_id );
-	}
-	$available_roles = (array) $user->roles;
-	if ( is_array( $roles ) ) {
-		foreach ( $roles as $role ) {
-			if ( in_array( $role, $available_roles ) ) {
-				$has_role = true;
-				break; // only need one of roles is in available
-			}
-		}
-	} else {
-		if ( in_array( $roles, $available_roles ) ) {
-			$has_role = true;
-		}
-	}
-
-	return $has_role;
-}*/
-
-/*
-function learn_press_current_user_can_view_profile_section( $section, $user ) {
-	$current_user = wp_get_current_user();
-	$view         = true;
-	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP_Settings::instance()->get(
-		'profile_endpoints.orders',
-		'profile-orders'
-	) ) {
-		$view = false;
-	}
-
-	return apply_filters( 'learn_press_current_user_can_view_profile_section', $view, $section, $user );
-}*/
-
-/*
-function learn_press_profile_tab_quizzes_content( $current, $tab, $user ) {
-	learn_press_get_template(
-		'profile/tabs/quizzes.php',
-		array(
-			'user'    => $user,
-			'current' => $current,
-			'tab'     => $tab,
-		)
-	);
-}*/
-
-/*
-function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
-	learn_press_get_template(
-		'profile/tabs/orders.php',
-		array(
-			'user'    => $user,
-			'current' => $current,
-			'tab'     => $tab,
-		)
-	);
-}*/
 
 /**
  * Get queried user in profile link

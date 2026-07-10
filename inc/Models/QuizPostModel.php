@@ -390,4 +390,22 @@ class QuizPostModel extends PostModel {
 
 		$quizQuestionModel->delete();
 	}
+
+	/**
+	 * Check create
+	 *
+	 * @return bool
+	 */
+	public function check_capabilities_create(): bool {
+		return current_user_can( 'edit_' . LP_LESSON_CPT . 's' );
+	}
+
+	/**
+	 * Check update
+	 *
+	 * @return bool
+	 */
+	public function check_capabilities_update(): bool {
+		return current_user_can( 'edit_' . LP_LESSON_CPT, $this->ID );
+	}
 }

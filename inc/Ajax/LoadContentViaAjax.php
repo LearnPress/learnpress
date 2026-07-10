@@ -1,22 +1,23 @@
 <?php
+namespace LearnPress\Ajax;
+
+use Exception;
+use LearnPress\Helpers\Response;
+use LP_Helper;
+use stdClass;
+use Throwable;
+
+defined( 'ABSPATH' ) || exit;
+
 /**
  * class AjaxBase
  *
  * @since 4.2.7.6
- * @version 1.0.1
+ * @version 1.0.2
  */
-
-namespace LearnPress\Ajax;
-
-use Exception;
-use LP_Helper;
-use LP_REST_Response;
-use stdClass;
-use Throwable;
-
 class LoadContentViaAjax extends AbstractAjax {
 	public function load_content_via_ajax() {
-		$response = new LP_REST_Response();
+		$response = new Response();
 
 		try {
 			$params = wp_unslash( $_REQUEST['data'] ?? '' );
@@ -70,12 +71,11 @@ class LoadContentViaAjax extends AbstractAjax {
 			$response->message = $data->message ?? '';
 			unset( $data->message );
 
-			$response->status = $data->status ?? 'success';
+			$response->status = $data->status ?? Response::STATUS_SUCCESS;
 			unset( $data->status );
 
 			$response->data = $data;
 		} catch ( Throwable $e ) {
-			$response->status  = 'error';
 			$response->message = $e->getMessage();
 		}
 

@@ -1004,7 +1004,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * @deprecated
+		 * Set option skip question will be minus points
 		 *
 		 * @param $skip
 		 */

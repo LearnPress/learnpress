@@ -176,10 +176,10 @@ class ProfileQuizzesTemplate {
 							esc_html( $quizPostModel->get_the_title() )
 						),
 						sprintf(
-							'<span class="result-percent">%s%%</span><span class="lp-label label-%s">&nbsp;%s</span>',
+							'<span class="result-percent">%s%%</span><span class="lp-label %s">&nbsp;%s</span>',
 							esc_html( $userQuizModel->get_result()['result'] ),
-							esc_attr( $user_quiz->status ),
-							$userQuizModel->get_status_label( $user_quiz->graduation )
+							esc_attr( $userQuizModel->get_graduation() ),
+							$userQuizModel->get_graduation_label()
 						),
 						$userQuizModel->get_time_spend(),
 						( new LP_Datetime( $userQuizModel->get_start_time() ) )->format( LP_Datetime::I18N_FORMAT ),

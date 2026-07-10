@@ -120,12 +120,16 @@ window.lpCheckout = {
 				return;
 			}
 
+			el.classList.remove( 'selected' );
+
 			if ( elPaymentMethod !== el ) {
 				elPaymentMethodForm.style.display = 'none';
 			} else {
 				elPaymentMethodForm.style.display = 'block';
 			}
 		} );
+
+		elPaymentMethod.classList.add( 'selected' );
 	},
 	checkEmailGuest: ( e ) => {
 		const target = e.target;

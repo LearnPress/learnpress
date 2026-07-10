@@ -68,7 +68,7 @@ table.lp-list-table {
 		tr {
 			border: none;
 
-			td {
+			td, th {
 				border: none;
 
 				>div {
@@ -82,4 +82,34 @@ table.lp-list-table {
 			padding: 0;
 		}
 	}
+
+	&.order-table-details{
+		tbody{
+			tr:last-child{
+				--lp-white-grey: var(--lp-border-color, #E2E0DB);
+			}
+		}
+		tfoot{
+			border-top: 1px solid var(--lp-border-color, #E2E0DB);
+			tr{
+ 				td,th{
+					 padding: 10px 20px;
+					background-color: transparent;	
+				}
+				&:not(:last-child){
+					td,th{
+						padding-bottom: 0;
+					}
+				}	
+			}	 
+		}
+	}
+}
+
+.lp_profile_course_progress__nav{
+	margin-top: 1rem;
+}
+
+#profile-content-order-details .lp-table-wrap{
+	margin-bottom: 1rem;
 }

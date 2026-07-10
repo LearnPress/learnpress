@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.3.9
+ * Version: 4.4.2-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -23,7 +23,7 @@ use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
-use LearnPress\Ajax\ExportOrderCSVAjax;
+use LearnPress\Ajax\Order\ExportOrderCSVAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\AI\AIAssistantAjax;
@@ -36,6 +36,7 @@ use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Gutenberg\GutenbergHandleMain;
+use LearnPress\Ajax\Order\RefundOrderAjax;
 use LearnPress\MCP\Abilities;
 use LearnPress\MCP\Auth\ApiKeyAuthenticator;
 use LearnPress\Models\CourseModel;
@@ -757,6 +758,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
 					SendEmailAjax::catch_lp_ajax();
+					RefundOrderAjax::catch_lp_ajax();
 					CourseBuilderAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
 					AIAssistantAjax::catch_lp_ajax();
@@ -978,32 +980,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			return $this->cart;
-		}
-
-		/**
-		 * Check type of request.
-		 *
-		 * @param string $type ajax, frontend or admin.
-		 *
-		 * @return bool
-		 * @deprecated 4.2.9.4
-		 */
-		public function is_request( $type ) {
-			_deprecated_function( __METHOD__, '4.2.9.4' );
-			return false;
-
-			switch ( $type ) {
-				case 'admin':
-					return is_admin();
-				case 'ajax':
-					return defined( 'LP_DOING_AJAX' );
-				case 'cron':
-					return defined( 'DOING_CRON' );
-				case 'frontend':
-					return ( ! is_admin() || defined( 'LP_DOING_AJAX' ) ) && ! defined( 'DOING_CRON' );
-				default:
-					return strtolower( $_SERVER['REQUEST_METHOD'] ) == $type;
-			}
 		}
 
 		/**

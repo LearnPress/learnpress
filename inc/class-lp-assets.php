@@ -115,7 +115,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					[],
 					0
 				),
-				'lp-ai-assistant'   => new LP_Asset_Key(
+				'lp-ai-assistant'    => new LP_Asset_Key(
 					self::url( 'css/frontend/ai-assistant' . self::$_min_assets . '.css' ),
 					array(),
 					array( LP_PAGE_SINGLE_COURSE_CURRICULUM ),
@@ -278,24 +278,24 @@ class LP_Assets extends LP_Abstract_Assets {
 		$scripts = apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
-				'vue-libs'             => new LP_Asset_Key(
+				'vue-libs'                  => new LP_Asset_Key(
 					self::url( 'src/js/vendor/vue/vue_libs_special.min.js' )
 				),
-				'lp-modal'             => new LP_Asset_Key(
+				'lp-modal'                  => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/modal' . self::$_min_assets . '.js' ),
 					array( 'jquery' )
 				),
 				// lp-plugins-all use only for FE, when FE 2 release will remove it.
-				'lp-plugins-all'       => new LP_Asset_Key( self::url( 'js/vendor/plugins.all.min.js' ) ),
-				'lp-global'            => new LP_Asset_Key(
+				'lp-plugins-all'            => new LP_Asset_Key( self::url( 'js/vendor/plugins.all.min.js' ) ),
+				'lp-global'                 => new LP_Asset_Key(
 					self::url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'underscore', 'utils' )
 				),
-				'lp-utils'             => new LP_Asset_Key(
+				'lp-utils'                  => new LP_Asset_Key(
 					self::url( 'js/dist/utils' . self::$_min_assets . '.js' ),
 					array( 'jquery' )
 				),
-				'lp-load-ajax'         => new LP_Asset_Key(
+				'lp-load-ajax'              => new LP_Asset_Key(
 					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
 					[ 'wp-hooks' ],
 					[],
@@ -304,7 +304,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-checkout'          => new LP_Asset_Key(
+				'lp-checkout'               => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/checkout' . self::$_min_assets . '.js' ),
 					[],
 					[ LP_PAGE_CHECKOUT ],
@@ -313,23 +313,23 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-data-controls'     => new LP_Asset_Key(
+				'lp-data-controls'          => new LP_Asset_Key(
 					self::url( 'js/dist/js/data-controls' . self::$_min_assets . '.js' ),
 					array_merge( $wp_js, array( 'lp-global' ) )
 				),
-				'lp-config'            => new LP_Asset_Key(
+				'lp-config'                 => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/lp-configs' . self::$_min_assets . '.js' ),
 					array_merge( $wp_js, array( 'lp-global' ) )
 				),
 				// 'lp-lesson'           => new LP_Asset_Key( self::url( self::$_folder_source .'js/frontend/lesson' . self::$_min_assets . '.js' ) ),
-				'lp-question-types'    => new LP_Asset_Key(
+				'lp-question-types'         => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/question-types' . self::$_min_assets . '.js' ),
 					array_merge( $wp_js, array( 'lp-global' ) ),
 					array(),
 					1,
 					1
 				),
-				'lp-single-curriculum' => new LP_Asset_Key(
+				'lp-single-curriculum'      => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/single-curriculum' . self::$_min_assets . '.js' ),
 					array_merge(
 						$wp_js,
@@ -344,7 +344,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-curriculum'        => new LP_Asset_Key(
+				'lp-curriculum'             => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/curriculum' . self::$_min_assets . '.js' ),
 					[],
 					array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_SINGLE_COURSE ),
@@ -353,7 +353,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-quiz'              => new LP_Asset_Key(
+				'lp-quiz'                   => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/quiz' . self::$_min_assets . '.js' ),
 					array_merge(
 						$wp_js,
@@ -374,7 +374,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-single-course'     => new LP_Asset_Key(
+				'lp-single-course'          => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/single-course' . self::$_min_assets . '.js' ),
 					array_merge(
 						$wp_js,
@@ -410,7 +410,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-instructors'       => new LP_Asset_Key(
+				'lp-instructors'            => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/instructors' . self::$_min_assets . '.js' ),
 					[ 'lp-global' ],
 					[],
@@ -419,7 +419,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-profile'           => new LP_Asset_Key(
+				'lp-profile'                => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/profile' . self::$_min_assets . '.js' ),
 					[ 'lp-load-ajax', 'wp-i18n' ],
 					array( LP_PAGE_PROFILE ),
@@ -437,7 +437,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-widgets'           => new LP_Asset_Key(
+				'lp-widgets'                => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/widgets' . self::$_min_assets . '.js' ),
 					[ 'lp-course-filter' ],
 					array(),
@@ -446,7 +446,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-become-a-teacher'  => new LP_Asset_Key(
+				'lp-become-a-teacher'       => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/become-teacher' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
 					array( LP_PAGE_BECOME_A_TEACHER ),
@@ -455,7 +455,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-course-filter'     => new LP_Asset_Key(
+				'lp-course-filter'          => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/course-filter' . self::$_min_assets . '.js' ),
 					array(),
 					array(),
@@ -464,7 +464,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-course-builder'    => new LP_Asset_Key(
+				'lp-course-builder'         => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/course-builder' . self::$_min_assets . '.js' ),
 					array( 'wp-tinymce', 'editor', 'lp-load-ajax' ),
 					array( LP_PAGE_COURSE_BUILDER ),
@@ -473,7 +473,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-ai-assistant'      => new LP_Asset_Key(
+				'lp-ai-assistant'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/ai-assistant' . self::$_min_assets . '.js' ),
 					array(),
 					array( LP_PAGE_SINGLE_COURSE_CURRICULUM ),

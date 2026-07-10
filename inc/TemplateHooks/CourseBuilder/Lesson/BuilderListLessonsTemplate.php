@@ -92,7 +92,7 @@ class BuilderListLessonsTemplate {
 		$search = [
 			'wrapper'       => sprintf( '<form class="cb-search-form" method="get" action="%s">', $link_tab ),
 			'search_lesson' => '<button class="lp-button cb-search-btn" type="submit"> <i class="lp-icon-search"> </i></button>',
-			'input'         => sprintf( '<input class="cb-input-search-lesson" type="search" placeholder="%s" name="c_search" value="%s">', __( 'Search', 'learnpress' ), $args['c_search'] ?? '' ),
+			'input'         => sprintf( '<input class="cb-input-search-lesson" type="search" placeholder="%s" name="c_search" value="%s">', __( 'Search', 'learnpress' ), esc_attr( $args['c_search'] ?? '' ) ),
 			'wrapper_end'   => '</form>',
 		];
 

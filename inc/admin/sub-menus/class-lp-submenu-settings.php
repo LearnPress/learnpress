@@ -35,8 +35,17 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 				'permalink' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-permalink.php',
 				'advanced'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
 				'open-ai'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-open-ai.php',
+				'mcp'       => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-mcp.php',
+				'addons'    => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-addons.php',
 			)
 		);
+
+		if ( isset( $this->tabs['addons'] )
+			&& $this->tabs['addons'] instanceof LP_Settings_Addons
+			&& ! $this->tabs['addons']->has_sections() ) {
+			unset( $this->tabs['addons'] );
+		}
+
 		add_action( 'learn-press/admin/page-content-settings', array( $this, 'page_contents' ) );
 		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array( $this, 'section_content' ) );
 

@@ -67,9 +67,9 @@ class BuilderEditCourseTemplate {
 				throw new Exception( __( 'Invalid course ID', 'learnpress' ) );
 			}
 
-			if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'courses', $item_id ) ) {
+			/*if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'courses', $item_id ) ) {
 				throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
-			}
+			}*/
 
 			$is_create_new = $item_id === CourseBuilder::POST_NEW;
 			$courseModel   = false;
@@ -78,6 +78,12 @@ class BuilderEditCourseTemplate {
 				$courseModel = CourseModel::find( (int) $item_id, true );
 				if ( ! $courseModel ) {
 					throw new Exception( __( 'Course not found', 'learnpress' ) );
+				}
+
+				// Check permission
+				$coursePostModel = $courseModel->get_post_model();
+				if ( ! $coursePostModel->check_capabilities_update() ) {
+					throw new Exception( __( 'You do not have permission to edit this course', 'learnpress' ) );
 				}
 
 				if ( $courseModel->get_status() === PostModel::STATUS_TRASH ) {

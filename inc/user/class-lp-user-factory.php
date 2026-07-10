@@ -40,6 +40,7 @@ class LP_User_Factory {
 				case LP_ORDER_PROCESSING:
 				case LP_ORDER_CANCELLED:
 				case LP_ORDER_FAILED:
+				case LP_ORDER_REFUNDED:
 					self::_update_user_item_order_pending( $order, $old_status, $new_status );
 					break;
 				case LP_ORDER_COMPLETED:

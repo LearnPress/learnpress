@@ -12,29 +12,21 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! function_exists( 'learn_press_is_mcp_available' ) ) {
-	/**
-	 * Check whether MCP capabilities are available in current WordPress runtime.
-	 *
-	 * @return bool
-	 */
-	function learn_press_is_mcp_available(): bool {
-		$wp_version = (string) get_bloginfo( 'version' );
+/**
+ * Check whether MCP capabilities are available in current WordPress runtime.
+ *
+ * @return bool
+ */
+function learn_press_is_mcp_available(): bool {
+	$wp_version = (string) get_bloginfo( 'version' );
 
-		if ( version_compare( $wp_version, '7.0', '>=' ) ) {
-			return true;
-		}
-
-		if ( ! version_compare( $wp_version, '6.9', '>=' ) ) {
-			return false;
-		}
-
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		return function_exists( 'is_plugin_active' ) && is_plugin_active( 'mcp-adapter/mcp-adapter.php' );
+	if ( version_compare( $wp_version, '6.9', '<' ) ) {
+		return false;
 	}
+
+	require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+	return is_plugin_active( 'mcp-adapter/mcp-adapter.php' );
 }
 
 if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {

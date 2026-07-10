@@ -6,6 +6,8 @@
  * @package LearnPress/Functions
  * @version 1.0
  */
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -178,7 +180,7 @@ function learn_press_count_orders( $args = array() ) {
 /**
  * Format price with currency and other settings.
  *
- * @param float $price
+ * @param float  $price
  * @param string $currency
  *
  * @return string
@@ -321,6 +323,14 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' ),
 	);
+	$order_statues['lp-refunded']   = array(
+		'label'                     => _x( 'Refunded', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'learnpress' ),
+	);
 	$order_statues['trash']         = array(
 		'label'                     => _x( 'Trash', 'Order status', 'learnpress' ),
 		'public'                    => false,
@@ -334,16 +344,18 @@ function learn_press_get_register_order_statuses() {
 }
 
 function _learn_press_get_order_status_description( $status ) {
+
+	$status       = str_replace( 'lp-', '', (string) $status );
 	$descriptions = array(
 		'pending'    => __( 'Order received in case a user purchases a course but doesn\'t finalize the order.', 'learnpress' ),
 		'processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
 		'completed'  => __( 'The order is fulfilled and completed.', 'learnpress' ),
 		'cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' ),
+		'refunded'   => __( 'Order was refunded to the customer.', 'learnpress' ),
 	);
 
 	return apply_filters( 'learn_press_order_status_description', ! empty( $descriptions[ $status ] ) ? $descriptions[ $status ] : '' );
 }
-
 /**
  * Get status of an order by the ID.
  *
@@ -352,6 +364,7 @@ function _learn_press_get_order_status_description( $status ) {
  * @return bool|string
  */
 function learn_press_get_order_status( $order_id ) {
+
 	$order = learn_press_get_order( $order_id );
 
 	if ( $order ) {
@@ -361,12 +374,79 @@ function learn_press_get_order_status( $order_id ) {
 	return false;
 }
 
+if ( ! function_exists( 'learn_press_get_refund_setting' ) ) {
+	/**
+	 * Get refund setting value with safe defaults.
+	 *
+	 * @param string $key
+	 * @param mixed  $default
+	 *
+	 * @since 4.3.4
+	 * @version 1.0.0
+	 * @return mixed
+	 */
+	function learn_press_get_refund_setting( string $key, $default = null ) {
+		$defaults = array(
+			'enable_refund_requests'      => 'no',
+			'auto_refund'                 => 'no',
+			'refund_time_limit'           => 30,
+			'require_refund_reason'       => 'no',
+			'allow_resend_after_rejected' => 'no',
+			'refund_max_completion'       => 0,
+		);
+
+		if ( null === $default && array_key_exists( $key, $defaults ) ) {
+			$default = $defaults[ $key ];
+		}
+
+		return LP_Settings::get_option( $key, $default );
+	}
+}
+
+if ( ! function_exists( 'learn_press_get_order_refund_supported_gateways' ) ) {
+	/**
+	 * Get list gateways that support refund.
+	 *
+	 * @since 4.3.4
+	 * @version 1.1.0
+	 * @return array
+	 */
+	function learn_press_get_order_refund_supported_gateways(): array {
+		if ( ! class_exists( 'LP_Gateways' ) ) {
+			return array();
+		}
+
+		$gateways_instance = LP_Gateways::instance();
+		if ( ! $gateways_instance || ! method_exists( $gateways_instance, 'get_gateways' ) ) {
+			return array();
+		}
+
+		$supported_gateways = array();
+		$all_gateways       = (array) $gateways_instance->get_gateways();
+		foreach ( $all_gateways as $gateway_id => $gateway ) {
+			$gateway_id = sanitize_key( (string) $gateway_id );
+			if ( empty( $gateway_id ) ) {
+				continue;
+			}
+
+			if ( ! is_object( $gateway ) || ! is_callable( array( $gateway, 'refund' ) ) ) {
+				continue;
+			}
+
+			$supported_gateways[] = $gateway_id;
+		}
+
+		return array_values( array_unique( $supported_gateways ) );
+	}
+}
+
 if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 	/**
 	 * Process action allows user to cancel an order is pending
 	 * in their profile.
 	 */
 	function learn_press_cancel_order_process() {
+
 		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) ||
 			! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
 			return;
@@ -379,10 +459,10 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 		);
 
 		try {
-			$message = [
+			$message = array(
 				'status'  => 'error',
 				'content' => '',
-			];
+			);
 
 			$order_id = absint( $_REQUEST['cancel-order'] );
 			$order    = learn_press_get_order( $order_id );
@@ -418,13 +498,153 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 	}
 }
 add_action( 'init', 'learn_press_cancel_order_process' );
+if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
+	/**
+	 * Build normalized refund event payload.
+	 *
+	 * @since 4.3.5
+	 * @version 1.0.1
+	 *
+	 * @param LP_Order $order
+	 * @param array    $overrides
+	 *
+	 * @return array
+	 */
+	function learn_press_get_order_refund_event_data( LP_Order $order, array $overrides = array() ): array {
+		$order_id     = $order->get_id();
+		$requested_at = get_post_meta( $order_id, '_lp_refund_requested_at', true );
+		if ( ! empty( $requested_at ) ) {
+			$requested_at = new LP_Datetime( $requested_at );
+			$requested_at = sprintf(
+				esc_html__( '%1$s %2$s', 'learnpress' ),
+				$requested_at->format( LP_Datetime::I18N_FORMAT_HAS_TIME ),
+				LP_Datetime::get_timezone_string()
+			);
+		}
 
+		$user_id        = (int) $order->get_user_id();
+		$userOrderModel = UserModel::find( $user_id, true );
+		if ( $userOrderModel instanceof UserModel ) {
+			$requested_by = $userOrderModel->get_display_name();
+		} else {
+			$requested_by = $order->get_checkout_email();
+		}
+
+		$data = array(
+			'order_id'             => $order_id,
+			'order_number'         => $order->get_order_number(),
+			'order_key'            => $order->get_order_key(),
+			'order_status'         => $order->get_status(),
+			'request_status'       => $order->get_refund_request(),
+			'requested_by'         => $requested_by,
+			'requested_at'         => $requested_at,
+			'reviewed_by'          => absint( get_post_meta( $order_id, '_lp_refund_reviewed_by', true ) ),
+			'reviewed_at'          => (string) get_post_meta( $order_id, '_lp_refund_reviewed_at', true ),
+			'reason'               => (string) get_post_meta( $order_id, LP_Order::META_KEY_REFUND_REQUEST_REASON, true ),
+			'requester_email'      => '',
+			'admin_order_edit_url' => add_query_arg(
+				array(
+					'post'   => $order_id,
+					'action' => 'edit',
+				),
+				admin_url( 'post.php' )
+			),
+		);
+
+		$requested_user_id = absint( $data['requested_by'] );
+		if ( ! empty( $requested_user_id ) ) {
+			$requested_user = get_user_by( 'id', $requested_user_id );
+			if ( $requested_user instanceof WP_User ) {
+				$data['requester_email'] = $requested_user->user_email;
+			}
+		}
+
+		if ( ! empty( $overrides ) ) {
+			$data = array_merge( $data, $overrides );
+		}
+
+		return $data;
+	}
+}
+/**
+ * Render pending refund request panel on order detail.
+ *
+ * @since 4.3.4
+ * @version 1.0.0
+ * @param LP_Order $order
+ */
+function learn_press_admin_order_refund_request_panel( $order ) {
+
+	if ( ! $order instanceof LP_Order ) {
+		return;
+	}
+
+	$order_id = $order->get_id();
+	if ( ! current_user_can( 'edit_post', $order_id ) ) {
+		return;
+	}
+
+	$refund_event_data     = learn_press_get_order_refund_event_data( $order );
+	$refund_request_status = sanitize_key( (string) ( $refund_event_data['request_status'] ?? '' ) );
+	$requested_by          = $refund_event_data['requested_by'] ?? '';
+	$requested_at          = $refund_event_data['requested_at'] ?? '';
+	$refund_reason         = $refund_event_data['reason'] ?? '';
+	$requester_email       = '';
+
+	$status_labels = array(
+		'pending'       => __( 'Pending review', 'learnpress' ),
+		'approved'      => __( 'Approved', 'learnpress' ),
+		'auto-approved' => __( 'Auto approved', 'learnpress' ),
+		'rejected'      => __( 'Rejected', 'learnpress' ),
+	);
+	$status_label  = $status_labels[ $refund_request_status ] ?? '';
+	if ( empty( $status_label ) && ! empty( $refund_request_status ) ) {
+		$status_label = ucwords( str_replace( '-', ' ', $refund_request_status ) );
+	}
+
+	$render_statuses = array( 'pending', 'approved', 'auto-approved' );
+	if ( ! in_array( $refund_request_status, $render_statuses, true ) ) {
+		return;
+	}
+
+	$is_pending      = ( 'pending' === $refund_request_status );
+	$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
+
+	$order_total           = round( max( 0, floatval( $order->get_total() ) ), 2 );
+	$order_total_formatted = learn_press_format_price( $order_total, $currency_symbol );
+
+	// Refund amount is only meaningful once the refund has been executed
+	// (approved/auto-approved), when _lp_refund_amount has been written.
+	$refund_amount_formatted = '';
+	if ( ! $is_pending ) {
+		$refund_amount = get_post_meta( $order_id, LP_Order::META_KEY_REFUNDED_AMOUNT, true );
+		if ( '' === $refund_amount || null === $refund_amount ) {
+			$refund_amount = $order_total; // Fallback for full refunds without a stored amount.
+		}
+		$refund_amount           = round( max( 0, floatval( $refund_amount ) ), 2 );
+		$refund_amount_formatted = learn_press_format_price( $refund_amount, $currency_symbol );
+	}
+
+	learn_press_admin_view(
+		'meta-boxes/order/refund-request-panel',
+		compact(
+			'order_id',
+			'is_pending',
+			'order_total',
+			'order_total_formatted',
+			'refund_amount_formatted',
+			'requested_by',
+			'requested_at',
+			'requester_email',
+			'refund_reason',
+			'status_label'
+		)
+	);
+}
 
 /**
  * get total price order complete
- *
  */
-
 function learn_press_get_total_price_order_complete() {
 	global $wpdb;
 

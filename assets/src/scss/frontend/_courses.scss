@@ -654,6 +654,7 @@
 	flex-wrap: wrap;
 
 	.courses-order-by {
+		margin-bottom: 0;
 		@include order_by_course();
 	}
 
