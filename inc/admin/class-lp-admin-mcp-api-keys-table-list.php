@@ -107,14 +107,14 @@ class LP_Admin_MCP_API_Keys_Table_List extends WP_List_Table {
 	protected function column_description( $item ) {
 		$description = $item->description ? $item->description : esc_html__( '(No description)', 'learnpress' );
 
-		$base_url = add_query_arg(
+		$base_url   = add_query_arg(
 			array(
 				'page'    => 'learn-press-settings',
-				'tab'     => 'mcp',
+				'tab'     => 'advanced',
+				'section' => 'mcp',
 			),
 			admin_url( 'admin.php' )
 		);
-
 		$revoke_url = wp_nonce_url(
 			add_query_arg(
 				array(

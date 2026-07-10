@@ -28,6 +28,7 @@ use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\AI\AIAssistantAjax;
 use LearnPress\Ajax\MCP\McpApiKeysAjax;
+use LearnPress\Ajax\Webhook\WebhooksAjax;
 use LearnPress\Ajax\CourseBuilder\CBEditCourseAjax;
 use LearnPress\Ajax\SendEmailAjax;
 use LearnPress\Background\LPBackgroundTrigger;
@@ -91,6 +92,7 @@ use LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
+use LearnPress\Webhook\WebhookDispatcher;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -504,6 +506,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			include_once 'inc/user/lp-user-functions.php';
 			include_once 'inc/user/class-lp-user-factory.php';
+			WebhookDispatcher::instance();
 			include_once 'inc/user/abstract-lp-user.php';
 			include_once 'inc/user/class-lp-user.php';
 			include_once 'inc/user/class-lp-profile.php';
@@ -761,6 +764,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					AIAssistantAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
 					McpApiKeysAjax::catch_lp_ajax();
+					WebhooksAjax::catch_lp_ajax();
 					CBEditCourseAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );

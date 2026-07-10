@@ -810,6 +810,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				LP_Admin_MCP_API_Keys::instance();
 			}
 			// End MCP
+			include_once 'class-lp-admin-webhooks.php';
+			LP_Admin_Webhooks::instance();
 			include_once 'class-lp-admin-dashboard.php';
 			// include_once 'class-lp-admin-tools.php';
 			include_once 'class-lp-admin-ajax.php';

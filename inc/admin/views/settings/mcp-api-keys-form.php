@@ -83,7 +83,8 @@ $permissions  = 'read';
 	<div class="lp-mcp-key-list" style="background:#fff; padding: 16px; border: 1px solid #dcdcde;">
 		<h2 style="margin-top:0;"><?php esc_html_e( 'API Keys', 'learnpress' ); ?></h2>
 		<input type="hidden" name="page" value="learn-press-settings" />
-		<input type="hidden" name="tab" value="mcp" />
+		<input type="hidden" name="tab" value="advanced" />
+		<input type="hidden" name="section" value="mcp" />
 		<?php wp_nonce_field( 'lp_mcp_bulk_revoke_action', 'lp_mcp_bulk_revoke_nonce' ); ?>
 		<?php $table->search_box( __( 'Search keys', 'learnpress' ), 'lp-mcp-keys-search' ); ?>
 		<?php $table->display(); ?>

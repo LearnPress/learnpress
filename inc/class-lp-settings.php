@@ -430,6 +430,16 @@ class LP_Settings {
 		return $lp_db->check_table_exists( $lp_db->tb_lp_mcp_api_keys );
 	}
 
+	/**
+	 * Check table learnpress_webhooks is created.
+	 *
+	 * @return bool
+	 */
+	public static function is_created_tb_webhooks(): bool {
+		$lp_db = LP_Database::getInstance();
+		return $lp_db->check_table_exists( $lp_db->tb_lp_webhooks );
+	}
+
 	public static function lp_material_file_types(): array {
 		return array(
 			'txt'      => 'text/plain',

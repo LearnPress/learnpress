@@ -1,3 +1,5 @@
+import * as lpUtils from '../utils.js';
+
 ( function() {
 	'use strict';
 
@@ -11,11 +13,11 @@
 		return;
 	}
 
-	const elSubmit = document.getElementById( 'lp-mcp-key-submit' );
-	const elStatus = document.getElementById( 'lp-mcp-key-status' );
-	const elReveal = document.getElementById( 'lp-mcp-key-reveal' );
-	const elConsumerKey = document.getElementById( 'lp-mcp-consumer-key' );
-	const elConsumerSecret = document.getElementById( 'lp-mcp-consumer-secret' );
+	const elSubmit = document.querySelector( '#lp-mcp-key-submit' );
+	const elStatus = document.querySelector( '#lp-mcp-key-status' );
+	const elReveal = document.querySelector( '#lp-mcp-key-reveal' );
+	const elConsumerKey = document.querySelector( '#lp-mcp-consumer-key' );
+	const elConsumerSecret = document.querySelector( '#lp-mcp-consumer-secret' );
 
 	const lpDataAdmin = window.lpDataAdmin || {};
 	const i18n = cfg.i18n || lpDataAdmin.i18n || {};
@@ -63,7 +65,7 @@
 			if ( newList && currentList.parentNode ) {
 				currentList.replaceWith( newList );
 			}
-		} catch ( e ) {
+		} catch {
 			// Keep current UI state when table refresh fails.
 		}
 	};
@@ -110,9 +112,9 @@
 			return;
 		}
 
-		const elUser = document.getElementById( 'lp-mcp-key-user' );
-		const elDescription = document.getElementById( 'lp-mcp-key-description' );
-		const elPermissions = document.getElementById( 'lp-mcp-key-permissions' );
+		const elUser = document.querySelector( '#lp-mcp-key-user' );
+		const elDescription = document.querySelector( '#lp-mcp-key-description' );
+		const elPermissions = document.querySelector( '#lp-mcp-key-permissions' );
 
 		const dataSend = {
 			action: actions.create || 'mcp_create_api_key',
@@ -126,11 +128,8 @@
 
 		runRequest( dataSend, {
 			success: ( response ) => {
-				const status = response && response.status ? response.status : '';
-				const message =
-					response && response.message
-						? response.message
-						: i18n.request_failed || 'Request failed.';
+				const status = response?.status || '';
+				const message = response?.message || i18n.request_failed || 'Request failed.';
 
 				if ( status !== 'success' ) {
 					setStatus( message, true );
@@ -138,11 +137,7 @@
 				}
 
 				setStatus( message, false );
-				renderCredentials(
-					response && response.data && response.data.key
-						? response.data.key
-						: null
-				);
+				renderCredentials( response?.data?.key || null );
 
 				refreshKeysTable();
 			},
@@ -152,21 +147,18 @@
 	};
 
 	const onCopy = async ( elCopy ) => {
-		const targetId =
-			elCopy && elCopy.dataset && elCopy.dataset.target
-				? elCopy.dataset.target
-				: '';
+		const targetId = elCopy?.dataset?.target || '';
 		if ( ! targetId ) {
 			return;
 		}
 
-		const input = document.getElementById( targetId );
+		const input = document.querySelector( `#${ targetId }` );
 		if ( ! input ) {
 			return;
 		}
 
 		try {
-			if ( navigator.clipboard && navigator.clipboard.writeText ) {
+			if ( navigator.clipboard?.writeText ) {
 				await navigator.clipboard.writeText( input.value );
 			} else {
 				input.select();
@@ -175,25 +167,27 @@
 			}
 
 			setStatus( i18n.copy_success || 'Copied.', false );
-		} catch ( e ) {
+		} catch {
 			setStatus( i18n.copy_fallback || 'Copy this value manually.', false );
 		}
 	};
 
-	document.addEventListener( 'click', ( e ) => {
-		const target = e.target;
-		if ( ! target ) {
-			return;
-		}
-
-		const elCopy = target.closest( '.lp-mcp-copy' );
-		if ( elCopy ) {
-			onCopy( elCopy );
-			return;
-		}
-
-		if ( elSubmit && target.closest( '#lp-mcp-key-submit' ) ) {
-			onSubmitKey();
-		}
-	} );
+	lpUtils.eventHandlers( 'click', [
+		{
+			selector: '.lp-mcp-copy',
+			callBack: ( args ) => {
+				const { target } = args;
+				const elCopy = target.closest( '.lp-mcp-copy' );
+				if ( elCopy ) {
+					onCopy( elCopy );
+				}
+			},
+		},
+		{
+			selector: '#lp-mcp-key-submit',
+			callBack: () => {
+				onSubmitKey();
+			},
+		},
+	] );
 } )();
