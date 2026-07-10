@@ -6,6 +6,8 @@
  * @since 4.2.6
  */
 
+use LearnPress\Statistics\StatisticsScope;
+
 defined( 'ABSPATH' ) || exit();
 
 class LP_Statistics_DB extends LP_Database {
@@ -308,11 +310,12 @@ class LP_Statistics_DB extends LP_Database {
 
 	/**
 	 * get_completed_order_data use this for complete order report chart
-	 * @param  string $type  time type filter: date|month|year|previous_days|custom
-	 * @param  string $value time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  string          $type  time type filter: date|month|year|previous_days|custom
+	 * @param  string          $value time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  StatisticsScope $scope optional instructor/category scope. @since 4.4.2
 	 * @return array  completed order data
 	 */
-	public function get_completed_order_data( string $type, string $value ) {
+	public function get_completed_order_data( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
@@ -330,6 +333,10 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->limit         = -1;
 		$filter->order_by      = $time_field;
 		$filter->order         = "asc";
+
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply_to_orders( $filter, 'p.ID' );
+		}
 
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
@@ -355,11 +362,12 @@ class LP_Statistics_DB extends LP_Database {
 	}
 	/**
 	 * get LP Order count of a filter time
-	 * @param  string $type  date|month|year|previous_days|custom
-	 * @param  string $value time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  string          $type  date|month|year|previous_days|custom
+	 * @param  string          $value time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  StatisticsScope $scope optional instructor/category scope. @since 4.4.2
 	 * @return array  result of LP Order count foreach status
 	 */
-	public function get_order_statics( string $type, string $value ) {
+	public function get_order_statics( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
@@ -369,6 +377,9 @@ class LP_Statistics_DB extends LP_Database {
 		$time_field               = "p.post_date";
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                   = $this->filter_order_count_statics( $filter );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply_to_orders( $filter, 'p.ID' );
+		}
 		$filter->limit            = -1;
 		$result                   = $this->execute( $filter );
 
@@ -377,11 +388,12 @@ class LP_Statistics_DB extends LP_Database {
 	/*Overviews statistics*/
 	/**
 	 * get sales amount of complete order
-	 * @param  string $type  [time type filter: date|month|year|previous_days|custom]
-	 * @param  string $value [time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom  ]
+	 * @param  string          $type  [time type filter: date|month|year|previous_days|custom]
+	 * @param  string          $value [time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom  ]
+	 * @param  StatisticsScope $scope optional instructor/category scope. @since 4.4.2
 	 * @return array  completed order data
 	 */
-	public function get_net_sales_data( string $type, string $value ) {
+	public function get_net_sales_data( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
@@ -405,10 +417,13 @@ class LP_Statistics_DB extends LP_Database {
 		];
 		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                  = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'oi.item_id' );
+		}
 		$filter->order_by        = $time_field;
 		$filter->order           = "asc";
 		$filter->run_query_count = false;
-		
+
 		$result                  = $this->execute( $filter );
 		// error_log( $this->check_execute_has_error() );
 		return $result;
@@ -418,11 +433,12 @@ class LP_Statistics_DB extends LP_Database {
 	 * get top categories of sold course
 	 * @param  string  $type                date|month|year|previous_days|custom
 	 * @param  string  $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
-	 * @param  integer $limit               limit of query, default is 10
-	 * @param  boolean $exclude_free_course exclude free course
+	 * @param  integer         $limit               limit of query, default is 10
+	 * @param  boolean         $exclude_free_course exclude free course
+	 * @param  StatisticsScope $scope               optional instructor/category scope. @since 4.4.2
 	 * @return array   return term_id and term_count
 	 */
-	public function get_top_sold_categories( string $type, string $value, $limit = 0, $exclude_free_course = false ) {
+	public function get_top_sold_categories( string $type, string $value, $limit = 0, $exclude_free_course = false, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
@@ -458,6 +474,9 @@ class LP_Statistics_DB extends LP_Database {
 			$this->wpdb->prepare( "AND tax_term.taxonomy=%s", LP_COURSE_CATEGORY_TAX ),
 		);
 		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'oi.item_id' );
+		}
 		$filter->group_by        = "term_id";
 		$filter->order_by        = "term_count";
 		$filter->order           = "DESC";
@@ -471,11 +490,12 @@ class LP_Statistics_DB extends LP_Database {
 	 * get top courses was sold in the filter
 	 * @param  string  $type                date|month|year|previous_days|custom
 	 * @param  string  $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
-	 * @param  integer $limit               limit of query, default 10
-	 * @param  boolean $exclude_free_course exclude free course, get result only purchase course
+	 * @param  integer         $limit               limit of query, default 10
+	 * @param  boolean         $exclude_free_course exclude free course, get result only purchase course
+	 * @param  StatisticsScope $scope               optional instructor/category scope. @since 4.4.2
 	 * @return array   $result
 	 */
-	public function get_top_sold_courses( string $type, string $value, $limit = 0, $exclude_free_course = false ) {
+	public function get_top_sold_courses( string $type, string $value, $limit = 0, $exclude_free_course = false, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
@@ -508,6 +528,9 @@ class LP_Statistics_DB extends LP_Database {
 		);
 
 		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'oi.item_id' );
+		}
 		$filter->group_by        = "course_id";
 		$filter->order_by        = "course_count";
 		$filter->order           = "DESC";
@@ -522,7 +545,7 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
 	 * @return int     $result course count
 	 */
-	public function get_total_course_created( string $type, string $value ) {
+	public function get_total_course_created( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
@@ -534,6 +557,9 @@ class LP_Statistics_DB extends LP_Database {
 
 		$filter->where[]     = $this->wpdb->prepare( "AND p.post_type=%s", LP_COURSE_CPT );
 		$filter              = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'p.ID' );
+		}
 		$filter->query_count = true;
 		$result              = $this->execute( $filter );
 		return $result;
@@ -544,7 +570,7 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
 	 * @return int     $result order count
 	 */
-	public function get_total_order_created( string $type, string $value ) {
+	public function get_total_order_created( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
@@ -557,6 +583,9 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->where[]     = $this->wpdb->prepare( "AND p.post_type = %s", LP_ORDER_CPT );
 		$filter->where[]     = $this->wpdb->prepare( "AND p.post_status != %s", 'auto-draft' );
 		$filter              = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply_to_orders( $filter, 'p.ID' );
+		}
 		$filter->query_count = true;
 		$result              = $this->execute( $filter );
 		return $result;
@@ -619,7 +648,7 @@ class LP_Statistics_DB extends LP_Database {
 	 *
 	 * @return array   The published course data.
 	 */
-	public function get_published_course_data( string $type, string $value ) {
+	public function get_published_course_data( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
@@ -631,6 +660,9 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->only_fields[] = "count( p.ID) as x_data";
 		$filter                = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'p.ID' );
+		}
 		$filter->where[]       = $this->wpdb->prepare( "AND p.post_status=%s", 'publish' );
 		$filter->where[]       = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
 		$filter->limit         = -1;
@@ -650,7 +682,7 @@ class LP_Statistics_DB extends LP_Database {
 	 *
 	 * @return array   $result  The course count by statuses.
 	 */
-	public function get_course_count_by_statuses( string $type, string $value ) {
+	public function get_course_count_by_statuses( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
@@ -661,6 +693,9 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->only_fields[]    = "p.post_status as course_status";
 		$time_field               = "p.post_date";
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'p.ID' );
+		}
 		$filter->where[]          = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
 		$filter->where[]          = $this->wpdb->prepare( 'AND p.post_status IN (%s, %s, %s)', 'publish', 'pending', 'future' );
 		$filter->limit            = -1;
@@ -736,7 +771,7 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string  $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
 	 * @return int     $result  count users by graduation statuses.
 	 */
-	public function get_users_by_user_item_graduation_statuses( string $type, string $value ) {
+	public function get_users_by_user_item_graduation_statuses( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
@@ -749,6 +784,9 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->limit            = -1;
 		$filter->where[]          = $this->wpdb->prepare( "AND ui.item_type=%s", LP_COURSE_CPT );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'ui.item_id' );
+		}
 		$filter->group_by         = "graduation_status";
 		$filter->run_query_count  = false;
 		$result                   = $this->execute( $filter );
@@ -775,7 +813,7 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->collection       = $table_user;
 		$filter->collection_alias = "u";
 		$filter->only_fields[]    = "u.ID";
-		$filter->where[]          = $this->wpdb->prepare( "AND NOT EXISTS (SELECT * FROM $table_useritems as ui WHERE ui.user_id = u.ID $time_condition)" );
+		$filter->where[]          = "AND NOT EXISTS (SELECT * FROM $table_useritems as ui WHERE ui.user_id = u.ID $time_condition)";
 		$filter->limit            = -1;
 		$filter->query_count      = true;
 		// use this to see the sql query
@@ -787,11 +825,12 @@ class LP_Statistics_DB extends LP_Database {
 	 * get top courses was enrolled by users
 	 * @param  string  $type                date|month|year|previous_days|custom
 	 * @param  string  $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
-	 * @param  integer $limit               limit of query, default 10
-	 * @param  boolean $exclude_free_course exclude free course, get result only purchase course
+	 * @param  integer         $limit               limit of query, default 10
+	 * @param  boolean         $exclude_free_course exclude free course, get result only purchase course
+	 * @param  StatisticsScope $scope               optional instructor/category scope. @since 4.4.2
 	 * @return array   $result
 	 */
-	public function get_top_enrolled_courses( string $type, string $value, $limit = 0, $exclude_free_course = false ) {
+	public function get_top_enrolled_courses( string $type, string $value, $limit = 0, $exclude_free_course = false, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
@@ -809,6 +848,9 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->join[]           = "INNER JOIN $this->tb_users AS u ON u.ID = p.post_author";
 		$filter->where[]          = $this->wpdb->prepare( "AND ui.item_type=%s", LP_COURSE_CPT );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'ui.item_id' );
+		}
 		$filter->group_by         = "course_id";
 		$filter->order_by         = "enrolled_user";
 		$filter->order            = "DESC";
@@ -1007,11 +1049,12 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param string $type   Time filter type.
 	 * @param string $value  Time filter value.
 	 * @param int    $instructor_id Instructor ID (0 for all).
+	 * @param StatisticsScope $scope optional instructor/category scope. @since 4.4.2
 	 *
 	 * @return array Enrollment chart data.
 	 * @since 4.3.0
 	 */
-	public function get_enrollment_chart_data( string $type, string $value, int $instructor_id = 0 ): array {
+	public function get_enrollment_chart_data( string $type, string $value, int $instructor_id = 0, ?StatisticsScope $scope = null ): array {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
@@ -1027,6 +1070,10 @@ class LP_Statistics_DB extends LP_Database {
 		if ( $instructor_id > 0 ) {
 			$filter->join[]  = "INNER JOIN {$this->tb_posts} AS p ON p.ID = ui.item_id";
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author=%d', $instructor_id );
+		}
+
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'ui.item_id' );
 		}
 
 		$filter->limit           = -1;

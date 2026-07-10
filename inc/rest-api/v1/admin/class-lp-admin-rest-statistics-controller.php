@@ -1,6 +1,13 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Statistics\DashboardStatisticsDB;
+use LearnPress\Statistics\FilterOptionsProvider;
+use LearnPress\Statistics\HealthCheckProvider;
+use LearnPress\Statistics\InstructorStatisticsProvider;
+use LearnPress\Statistics\OrderExceptionsProvider;
+use LearnPress\Statistics\PeriodHelper;
+use LearnPress\Statistics\StatisticsScope;
 
 /**
  * Class LP_REST_Admin_Statistics_Controller
@@ -18,31 +25,52 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'overviews-statistics' => array(
+			'overviews-statistics'  => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_overviews_statistics' ),
 					'permission_callback' => array( $this, 'permission_check' ),
 				),
 			),
-			'order-statistics'     => array(
+			'order-statistics'      => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_order_statistics' ),
 					'permission_callback' => array( $this, 'permission_check' ),
 				),
 			),
-			'course-statistics'    => array(
+			'course-statistics'     => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_courses_statistics' ),
 					'permission_callback' => array( $this, 'permission_check' ),
 				),
 			),
-			'user-statistics'      => array(
+			'user-statistics'       => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_users_statistics' ),
+					'permission_callback' => array( $this, 'permission_check' ),
+				),
+			),
+			'filter-options'        => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_filter_options' ),
+					'permission_callback' => array( $this, 'permission_check' ),
+				),
+			),
+			'instructor-statistics' => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_instructor_statistics' ),
+					'permission_callback' => array( $this, 'permission_check' ),
+				),
+			),
+			'instructor-report'     => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_instructor_report' ),
 					'permission_callback' => array( $this, 'permission_check' ),
 				),
 			),
@@ -66,6 +94,13 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$params = LP_Helper::sanitize_params_submitted( $params );
 			$filter = $this->get_statistics_filter( $params );
 
+			// Report drill-down: only the requested table, capped — for the popup. @since 4.4.2
+			if ( ! empty( $params['report'] ) ) {
+				$response->data   = $this->get_dashboard_report( $filter, $params );
+				$response->status = 'success';
+				return $response;
+			}
+
 			$lp_statistic_db                    = LP_Statistics_DB::getInstance();
 			$net_sales                          = $lp_statistic_db->get_net_sales_data( $filter['filter_type'], $filter['time'] );
 			$total_courses                      = $lp_statistic_db->get_total_course_created( $filter['filter_type'], $filter['time'] );
@@ -78,7 +113,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$chart_data['line_label']           = __( 'Net sales', 'learnpress' );
 			$total_sales                        = html_entity_decode( learn_press_format_price( array_sum( $chart_data['data'] ) ) );
 
-			$data             = array(
+			$data = array(
 				'total_sales'       => $total_sales,
 				'total_orders'      => $total_orders,
 				'total_instructors' => $total_instructors,
@@ -88,8 +123,10 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 				'top_courses'       => $top_courses,
 				'top_categories'    => $top_categories,
 			);
-			$response->data   = $data;
-			$response->status = 'success';
+			// New dashboard payload (scoped); keys above stay byte-identical. @since 4.4.2
+			$data['dashboard'] = $this->get_dashboard_data( $filter, $params );
+			$response->data    = $data;
+			$response->status  = 'success';
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 			$response->status  = 'error';
@@ -106,9 +143,16 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$params                   = $request->get_params();
-			$params                   = LP_Helper::sanitize_params_submitted( $params );
-			$filter                   = $this->get_statistics_filter( $params );
+			$params = $request->get_params();
+			$params = LP_Helper::sanitize_params_submitted( $params );
+			$filter = $this->get_statistics_filter( $params );
+
+			if ( ! empty( $params['report'] ) ) {
+				$response->data   = $this->get_order_dashboard_report( $filter, $params );
+				$response->status = 'success';
+				return $response;
+			}
+
 			$lp_statistic_db          = LP_Statistics_DB::getInstance();
 			$statistics               = $lp_statistic_db->get_order_statics( $filter['filter_type'], $filter['time'] );
 			$completed_orders         = $lp_statistic_db->get_completed_order_data( $filter['filter_type'], $filter['time'] );
@@ -117,6 +161,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$data                     = array(
 				'statistics' => $statistics,
 				'chart_data' => $chart_data,
+				'dashboard'  => $this->get_order_dashboard_data( $filter, $params ),
 			);
 			$response->data           = $data;
 			$response->status         = 'success';
@@ -130,9 +175,16 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function get_courses_statistics( $request ) {
 		$response = new LP_REST_Response();
 		try {
-			$params                   = $request->get_params();
-			$params                   = LP_Helper::sanitize_params_submitted( $params );
-			$filter                   = $this->get_statistics_filter( $params );
+			$params = $request->get_params();
+			$params = LP_Helper::sanitize_params_submitted( $params );
+			$filter = $this->get_statistics_filter( $params );
+
+			if ( ! empty( $params['report'] ) ) {
+				$response->data   = $this->get_courses_dashboard_report( $filter, $params );
+				$response->status = 'success';
+				return $response;
+			}
+
 			$lp_statistic_db          = LP_Statistics_DB::getInstance();
 			$published_course         = $lp_statistic_db->get_published_course_data( $filter['filter_type'], $filter['time'] );
 			$courses                  = $lp_statistic_db->get_course_count_by_statuses( $filter['filter_type'], $filter['time'] );
@@ -143,6 +195,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 				'courses'    => $courses,
 				'items'      => $items,
 				'chart_data' => $chart_data,
+				'dashboard'  => $this->get_courses_dashboard_data( $filter, $params ),
 			);
 			$response->data           = $data;
 			$response->status         = 'success';
@@ -161,9 +214,16 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function get_users_statistics( $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
-			$params                  = $request->get_params();
-			$params                  = LP_Helper::sanitize_params_submitted( $params );
-			$filter                  = $this->get_statistics_filter( $params );
+			$params = $request->get_params();
+			$params = LP_Helper::sanitize_params_submitted( $params );
+			$filter = $this->get_statistics_filter( $params );
+
+			if ( ! empty( $params['report'] ) ) {
+				$response->data   = $this->get_users_dashboard_report( $filter, $params );
+				$response->status = 'success';
+				return $response;
+			}
+
 			$lp_statistic_db         = LP_Statistics_DB::getInstance();
 			$user_registers          = $lp_statistic_db->get_user_registered_data( $filter['filter_type'], $filter['time'] );
 			$user_course_statused    = $lp_statistic_db->get_users_by_user_item_graduation_statuses( $filter['filter_type'], $filter['time'] );
@@ -194,6 +254,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 				'top_enrolled_instructor' => $top_enrolled_instructor,
 				'total_instructors'       => $total_instructors,
 				'total_students'          => $total_students,
+				'dashboard'               => $this->get_users_dashboard_data( $filter, $params, (int) $user_not_start_course ),
 			);
 			$response->data           = $data;
 			$response->status         = 'success';
@@ -508,6 +569,717 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			}
 		}
 		return $data;
+	}
+
+	/**
+	 * Bucket order-count rows ( from get_order_statics ) by status.
+	 *
+	 * @param mixed $rows Rows of { count_order, order_status }.
+	 * @return array Known statuses => int counts.
+	 * @since 4.4.2
+	 */
+	private function get_order_status_buckets( $rows ): array {
+		$buckets = array(
+			'completed'  => 0,
+			'processing' => 0,
+			'pending'    => 0,
+			'cancelled'  => 0,
+			'failed'     => 0,
+		);
+
+		foreach ( (array) $rows as $row ) {
+			$status = $row->order_status ?? '';
+			if ( isset( $buckets[ $status ] ) ) {
+				$buckets[ $status ] = (int) $row->count_order;
+			}
+		}
+
+		return $buckets;
+	}
+
+	/**
+	 * Bucket course-count rows by status.
+	 *
+	 * @param mixed $rows Rows of { course_count, course_status }.
+	 * @return array Known statuses => int counts.
+	 * @since 4.4.2
+	 */
+	private function get_course_status_buckets( $rows ): array {
+		$buckets = array(
+			'publish' => 0,
+			'pending' => 0,
+			'future'  => 0,
+			'draft'   => 0,
+		);
+
+		foreach ( (array) $rows as $row ) {
+			$status = $row->course_status ?? '';
+			if ( isset( $buckets[ $status ] ) ) {
+				$buckets[ $status ] = (int) $row->course_count;
+			}
+		}
+
+		return $buckets;
+	}
+
+	/**
+	 * Sum x_data values from a chart-query result set.
+	 *
+	 * @param mixed $rows
+	 * @return float
+	 * @since 4.4.2
+	 */
+	private function sum_chart_rows( $rows ): float {
+		return round(
+			array_sum(
+				array_map(
+					function ( $row ) {
+						return (float) ( $row->x_data ?? 0 );
+					},
+					(array) $rows
+				)
+			),
+			2
+		);
+	}
+
+	/**
+	 * Assemble the scoped dashboard payload for the Orders tab.
+	 *
+	 * @param array $filter [ 'filter_type', 'time' ] from get_statistics_filter().
+	 * @param array $params Sanitized request params.
+	 * @return array
+	 * @since 4.4.2
+	 */
+	private function get_order_dashboard_data( array $filter, array $params ): array {
+		$scope       = StatisticsScope::from_params( $params );
+		$prev_filter = PeriodHelper::get_previous_filter( $filter );
+		$db          = DashboardStatisticsDB::getInstance();
+		$lp_stats_db = LP_Statistics_DB::getInstance();
+		$type        = $filter['filter_type'];
+		$time        = (string) $filter['time'];
+		$prev_type   = $prev_filter['filter_type'] ?? '';
+		$prev_time   = isset( $prev_filter['time'] ) ? (string) $prev_filter['time'] : '';
+
+		$order_buckets  = $this->get_order_status_buckets( $lp_stats_db->get_order_statics( $type, $time, $scope ) );
+		$prev_buckets   = $prev_filter
+			? $this->get_order_status_buckets( $lp_stats_db->get_order_statics( $prev_type, $prev_time, $scope ) )
+			: null;
+		$total_orders   = array_sum( $order_buckets );
+		$prev_total     = $prev_buckets ? array_sum( $prev_buckets ) : null;
+		$cancelled_fail = $order_buckets['cancelled'] + $order_buckets['failed'];
+		$prev_cf        = $prev_buckets ? $prev_buckets['cancelled'] + $prev_buckets['failed'] : null;
+
+		$net_sales  = $this->sum_chart_rows( $lp_stats_db->get_net_sales_data( $type, $time, $scope ) );
+		$prev_sales = $prev_filter ? $this->sum_chart_rows( $lp_stats_db->get_net_sales_data( $prev_type, $prev_time, $scope ) ) : null;
+
+		$completed_orders = $order_buckets['completed'];
+		$aov              = $completed_orders > 0 ? round( $net_sales / $completed_orders, 2 ) : null;
+		$cancel_fail_rate = $total_orders > 0 ? round( $cancelled_fail / $total_orders * 100, 1 ) : null;
+
+		$paid_courses = $db->get_paid_courses_sold( $type, $time, $scope );
+		$prev_paid    = $prev_filter ? $db->get_paid_courses_sold( $prev_type, $prev_time, $scope ) : null;
+
+		$top_sold_courses = array_map(
+			function ( $row ) {
+				$row['revenue_formatted'] = html_entity_decode( learn_press_format_price( $row['revenue'] ) );
+				$row['aov_formatted']     = null !== $row['aov'] ? html_entity_decode( learn_press_format_price( $row['aov'] ) ) : null;
+				return $row;
+			},
+			$db->get_top_sold_courses_detailed( $type, $time, $scope, 20 )
+		);
+
+		return array(
+			'kpis'             => array(
+				'net_sales'         => PeriodHelper::kpi_payload( $net_sales, $prev_sales ) + array(
+					'formatted' => html_entity_decode( learn_press_format_price( $net_sales ) ),
+				),
+				'completed_orders'  => PeriodHelper::kpi_payload( $completed_orders, $prev_buckets['completed'] ?? null ) + array(
+					'aov'           => $aov,
+					'aov_formatted' => null !== $aov ? html_entity_decode( learn_press_format_price( $aov ) ) : null,
+				),
+				'processing'        => PeriodHelper::kpi_payload( $order_buckets['processing'], $prev_buckets['processing'] ?? null ),
+				'pending'           => PeriodHelper::kpi_payload( $order_buckets['pending'], $prev_buckets['pending'] ?? null ),
+				'cancelled_failed'  => PeriodHelper::kpi_payload( $cancelled_fail, $prev_cf ) + array(
+					'rate_pct'      => $cancel_fail_rate,
+					'prev_rate_pct' => $prev_total > 0 && null !== $prev_cf ? round( $prev_cf / $prev_total * 100, 1 ) : null,
+				),
+				'paid_courses_sold' => PeriodHelper::kpi_payload( $paid_courses, $prev_paid ),
+			),
+			'order_health'       => $order_buckets,
+			'top_sold_courses' => $top_sold_courses,
+			'exceptions'       => OrderExceptionsProvider::getInstance()->get_exceptions( $type, $time, $scope, 20 ),
+		);
+	}
+
+	/**
+	 * Orders dashboard drill-down for report popups.
+	 *
+	 * @param array $filter [ 'filter_type', 'time' ].
+	 * @param array $params Sanitized request params.
+	 * @return array
+	 * @since 4.4.2
+	 */
+	private function get_order_dashboard_report( array $filter, array $params ): array {
+		$report = sanitize_key( $params['report'] );
+		$limit  = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
+		$scope  = StatisticsScope::from_params( $params );
+		$type   = $filter['filter_type'];
+		$time   = (string) $filter['time'];
+
+		switch ( $report ) {
+			case 'top_sold_courses':
+				$rows = array_map(
+					function ( $row ) {
+						$row['revenue_formatted'] = html_entity_decode( learn_press_format_price( $row['revenue'] ) );
+						$row['aov_formatted']     = null !== $row['aov'] ? html_entity_decode( learn_press_format_price( $row['aov'] ) ) : null;
+						return $row;
+					},
+					DashboardStatisticsDB::getInstance()->get_top_sold_courses_detailed( $type, $time, $scope, $limit )
+				);
+				break;
+			case 'exceptions':
+				$rows = OrderExceptionsProvider::getInstance()->get_exceptions( $type, $time, $scope, $limit );
+				break;
+			default:
+				$rows = array();
+		}
+
+		return array(
+			'report' => $report,
+			'rows'   => $rows,
+			'limit'  => $limit,
+		);
+	}
+
+	/**
+	 * Assemble the scoped dashboard payload for the Courses tab.
+	 *
+	 * Legacy response keys are built unscoped in get_courses_statistics(); this
+	 * payload honors instructor/category scope for the upgraded dashboard UI.
+	 *
+	 * @param array $filter [ 'filter_type', 'time' ] from get_statistics_filter().
+	 * @param array $params Sanitized request params.
+	 * @return array
+	 * @since 4.4.2
+	 */
+	private function get_courses_dashboard_data( array $filter, array $params ): array {
+		$scope       = StatisticsScope::from_params( $params );
+		$db          = DashboardStatisticsDB::getInstance();
+		$lp_stats_db = LP_Statistics_DB::getInstance();
+		$type        = $filter['filter_type'];
+		$time        = (string) $filter['time'];
+		$target      = (int) apply_filters( 'learn-press/statistics/completion-target', 70 );
+
+		$inventory       = $db->get_content_inventory( $scope );
+		$status_buckets  = $this->get_course_status_buckets( $lp_stats_db->get_course_count_by_statuses( $type, $time, $scope ) );
+		$completion_rows = $db->get_completion_rows( $type, $time, $scope );
+		$completion      = DashboardStatisticsDB::completion_from_rows( $completion_rows, $target );
+		$health_raw      = HealthCheckProvider::getInstance()->get_checks( $scope );
+
+		return array(
+			'kpis'          => array(
+				'published'                  => array(
+					'value'           => (int) ( $inventory['courses']['publish'] ?? 0 ),
+					'added_in_period' => $status_buckets['publish'],
+				),
+				'pending_review'             => array(
+					'value'           => (int) ( $inventory['courses']['pending'] ?? 0 ),
+					'added_in_period' => $status_buckets['pending'],
+				),
+				'future'                     => array(
+					'value'           => (int) ( $inventory['courses']['future'] ?? 0 ),
+					'added_in_period' => $status_buckets['future'],
+				),
+				'enrollments'                => array(
+					'value' => $db->get_enrollments_count( $type, $time, $scope ),
+				),
+				'avg_completion'             => array(
+					'value'  => DashboardStatisticsDB::average_completion_rate_from_rows( $completion_rows ),
+					'target' => $target,
+				),
+				'courses_without_enrollment' => array(
+					'value' => (int) ( $health_raw['no_enrollment'] ?? 0 ),
+				),
+			),
+			'performance'   => $this->format_course_performance_rows( $db->get_top_courses_performance( $type, $time, $scope, 10 ) ),
+			'health_checks' => array(
+				'no_curriculum'  => (int) ( $health_raw['no_content'] ?? 0 ),
+				'no_students'    => (int) ( $health_raw['no_enrollment'] ?? 0 ),
+				'low_completion' => (int) $completion['courses_below_target'],
+				'low_quiz_pass'  => (int) ( $health_raw['quiz_low_pass'] ?? 0 ),
+				'pending_review' => (int) ( $health_raw['pending_review'] ?? 0 ),
+			),
+			'inventory'     => $inventory,
+		);
+	}
+
+	/**
+	 * Courses dashboard drill-down for report popups.
+	 *
+	 * @param array $filter [ 'filter_type', 'time' ].
+	 * @param array $params Sanitized request params.
+	 * @return array
+	 * @since 4.4.2
+	 */
+	private function get_courses_dashboard_report( array $filter, array $params ): array {
+		$report = sanitize_key( $params['report'] );
+		$limit  = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
+		$scope  = StatisticsScope::from_params( $params );
+		$rows   = array();
+
+		if ( 'performance' === $report ) {
+			$rows = $this->format_course_performance_rows(
+				DashboardStatisticsDB::getInstance()->get_top_courses_performance(
+					$filter['filter_type'],
+					(string) $filter['time'],
+					$scope,
+					$limit
+				)
+			);
+		}
+
+		return array(
+			'report' => $report,
+			'rows'   => $rows,
+			'limit'  => $limit,
+		);
+	}
+
+	/**
+	 * Format course performance rows for the Courses tab contract.
+	 *
+	 * @param array $rows Rows from DashboardStatisticsDB::get_top_courses_performance().
+	 * @return array
+	 * @since 4.4.2
+	 */
+	private function format_course_performance_rows( array $rows ): array {
+		$course_ids  = array_map(
+			function ( $row ) {
+				return absint( $row['course_id'] ?? 0 );
+			},
+			$rows
+		);
+		$instructors = $this->get_course_instructor_map( $course_ids );
+
+		return array_map(
+			function ( $row ) use ( $instructors ) {
+				$course_id = absint( $row['course_id'] ?? 0 );
+				$revenue   = (float) ( $row['revenue'] ?? 0 );
+
+				return array(
+					'course_id'         => $course_id,
+					'name'              => (string) ( $row['course_name'] ?? '' ),
+					'instructor'        => $instructors[ $course_id ] ?? '',
+					'revenue'           => $revenue,
+					'revenue_formatted' => html_entity_decode( learn_press_format_price( $revenue ) ),
+					'orders'            => (int) ( $row['order_count'] ?? 0 ),
+					'enrollments'       => (int) ( $row['enrolled'] ?? 0 ),
+					'completed'         => (int) ( $row['completed'] ?? 0 ),
+					'completion_rate'   => $row['completion_rate'] ?? null,
+					'edit_link'         => $course_id > 0 ? (string) get_edit_post_link( $course_id, 'raw' ) : '',
+				);
+			},
+			$rows
+		);
+	}
+
+	/**
+	 * Batch-map course IDs to instructor display names.
+	 *
+	 * @param array $course_ids
+	 * @return array course_id => display_name
+	 * @since 4.4.2
+	 */
+	private function get_course_instructor_map( array $course_ids ): array {
+		global $wpdb;
+
+		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
+		if ( empty( $course_ids ) ) {
+			return array();
+		}
+
+		$placeholders = implode( ', ', array_fill( 0, count( $course_ids ), '%d' ) );
+		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Dynamic %d list is built from absint-normalized IDs.
+		$sql = $wpdb->prepare(
+			"SELECT p.ID AS course_id, u.display_name AS instructor
+			FROM {$wpdb->posts} AS p
+			LEFT JOIN {$wpdb->users} AS u ON u.ID = p.post_author
+			WHERE p.ID IN ( {$placeholders} )",
+			...$course_ids
+		);
+		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$rows = $wpdb->get_results( $sql );
+		$map  = array();
+
+		foreach ( (array) $rows as $row ) {
+			$map[ (int) $row->course_id ] = (string) $row->instructor;
+		}
+
+		return $map;
+	}
+
+	/**
+	 * Assemble the scoped dashboard payload for the Overview tab.
+	 *
+	 * Legacy response keys are built unscoped elsewhere and stay byte-identical;
+	 * everything here honors instructor_id/category_id and carries
+	 * previous-period deltas via PeriodHelper.
+	 *
+	 * @param array $filter [ 'filter_type', 'time' ] from get_statistics_filter().
+	 * @param array $params Sanitized request params.
+	 * @return array
+	 * @since 4.4.2
+	 */
+	private function get_dashboard_data( array $filter, array $params ): array {
+		$scope       = StatisticsScope::from_params( $params );
+		$prev_filter = PeriodHelper::get_previous_filter( $filter );
+		$db          = DashboardStatisticsDB::getInstance();
+		$lp_stats_db = LP_Statistics_DB::getInstance();
+		$type        = $filter['filter_type'];
+		$time        = (string) $filter['time'];
+		$prev_type   = $prev_filter['filter_type'] ?? '';
+		$prev_time   = isset( $prev_filter['time'] ) ? (string) $prev_filter['time'] : '';
+
+		// Orders: current + previous buckets (one query each).
+		$order_buckets = $this->get_order_status_buckets( $lp_stats_db->get_order_statics( $type, $time, $scope ) );
+		$prev_buckets  = $prev_filter
+			? $this->get_order_status_buckets( $lp_stats_db->get_order_statics( $prev_type, $prev_time, $scope ) )
+			: null;
+		$total_orders  = array_sum( $order_buckets );
+
+		// Revenue: chart series + period sums.
+		$revenue_chart = $this->process_chart_data( $filter, $lp_stats_db->get_net_sales_data( $type, $time, $scope ) );
+		$net_sales     = round( array_sum( $revenue_chart['data'] ), 2 );
+		$prev_sales    = null;
+		if ( $prev_filter ) {
+			$prev_rows  = $lp_stats_db->get_net_sales_data( $prev_type, $prev_time, $scope );
+			$prev_sales = round( array_sum( array_map( fn( $row ) => (float) $row->x_data, (array) $prev_rows ) ), 2 );
+		}
+
+		// Enrollments chart series (same label processing as revenue).
+		$enroll_chart = $this->process_chart_data(
+			$filter,
+			$lp_stats_db->get_enrollment_chart_data( $type, $time, 0, $scope )
+		);
+
+		$enrollments      = $db->get_enrollments_count( $type, $time, $scope );
+		$prev_enrollments = $prev_filter ? $db->get_enrollments_count( $prev_type, $prev_time, $scope ) : null;
+
+		$completion      = $db->get_completion_stats( $type, $time, $scope );
+		$prev_completion = $prev_filter ? $db->get_completion_stats( $prev_type, $prev_time, $scope ) : null;
+
+		$active_learners = $db->get_active_learners_count( $type, $time, $scope );
+		$prev_active     = $prev_filter ? $db->get_active_learners_count( $prev_type, $prev_time, $scope ) : null;
+
+		$completed_orders = $order_buckets['completed'];
+		$aov              = $completed_orders > 0 ? round( $net_sales / $completed_orders, 2 ) : null;
+		$failed_orders    = $order_buckets['failed'];
+		$fail_rate        = $total_orders > 0 ? round( $failed_orders / $total_orders * 100, 1 ) : null;
+
+		$kpis = array(
+			'net_sales'        => PeriodHelper::kpi_payload( $net_sales, $prev_sales ) + array(
+				'formatted' => html_entity_decode( learn_press_format_price( $net_sales ) ),
+			),
+			'completed_orders' => PeriodHelper::kpi_payload( $completed_orders, $prev_buckets['completed'] ?? null ) + array(
+				'aov'           => $aov,
+				'aov_formatted' => null !== $aov ? html_entity_decode( learn_press_format_price( $aov ) ) : null,
+			),
+			'enrollments'      => PeriodHelper::kpi_payload( $enrollments, $prev_enrollments ),
+			'completion_rate'  => PeriodHelper::kpi_payload( $completion['rate'], $prev_completion['rate'] ?? null ) + array(
+				'courses_below_target' => $completion['courses_below_target'],
+			),
+			'active_learners'  => PeriodHelper::kpi_payload( $active_learners, $prev_active ),
+			'failed_orders'    => PeriodHelper::kpi_payload( $failed_orders, $prev_buckets['failed'] ?? null ) + array(
+				'fail_rate_pct' => $fail_rate,
+			),
+		);
+
+		$top_courses = array_map(
+			function ( $row ) {
+				$row['revenue_formatted'] = html_entity_decode( learn_press_format_price( $row['revenue'] ) );
+				return $row;
+			},
+			$db->get_top_courses_performance( $type, $time, $scope )
+		);
+
+		$instructor_summary = array_map(
+			function ( $row ) {
+				$row['revenue_formatted'] = html_entity_decode( learn_press_format_price( $row['revenue'] ) );
+				return $row;
+			},
+			$db->get_instructor_performance( $type, $time, $scope )
+		);
+
+		$health_checks                   = HealthCheckProvider::getInstance()->get_checks( $scope );
+		$health_checks['low_completion'] = $completion['courses_below_target'];
+
+		return array(
+			'kpis'               => $kpis,
+			'chart'              => array(
+				'labels'      => $revenue_chart['labels'],
+				'revenue'     => $revenue_chart['data'],
+				'enrollments' => $enroll_chart['data'],
+				'x_label'     => $revenue_chart['x_label'],
+			),
+			'funnel'             => $db->get_learner_funnel( $type, $time, $scope ),
+			'top_courses'        => $top_courses,
+			'instructor_summary' => $instructor_summary,
+			'order_health'       => $order_buckets + array(
+				'total'            => $total_orders,
+				'cancelled_failed' => $order_buckets['cancelled'] + $failed_orders,
+			),
+			'health_checks'      => $health_checks,
+		);
+	}
+
+	/**
+	 * Single-table drill-down for the report popup.
+	 *
+	 * @param array $filter [ 'filter_type', 'time' ].
+	 * @param array $params Sanitized request params ( report, limit, scope ).
+	 * @return array [ 'report' => string, 'rows' => array, 'limit' => int ]
+	 * @since 4.4.2
+	 */
+	private function get_dashboard_report( array $filter, array $params ): array {
+		$report = sanitize_key( $params['report'] );
+		$limit  = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
+		$scope  = StatisticsScope::from_params( $params );
+
+		switch ( $report ) {
+			case 'top_courses':
+				$rows = array_map(
+					function ( $row ) {
+						$row['revenue_formatted'] = html_entity_decode( learn_press_format_price( $row['revenue'] ) );
+						return $row;
+					},
+					DashboardStatisticsDB::getInstance()->get_top_courses_performance(
+						$filter['filter_type'],
+						(string) $filter['time'],
+						$scope,
+						$limit
+					)
+				);
+				break;
+			default:
+				$rows = array();
+		}
+
+		return array(
+			'report' => $report,
+			'rows'   => $rows,
+			'limit'  => $limit,
+		);
+	}
+
+	/**
+	 * Assemble the scoped dashboard payload for the Users tab.
+	 *
+	 * users_activated/students/instructors totals are role-based user counts
+	 * (no course dimension) and stay unscoped like their legacy siblings;
+	 * everything course-linked honors instructor_id/category_id.
+	 *
+	 * @param array $filter [ 'filter_type', 'time' ] from get_statistics_filter().
+	 * @param array $params Sanitized request params.
+	 * @param int   $not_started Reused from the legacy assembly — get_users_not_started_any_course() is expensive.
+	 * @return array
+	 * @since 4.4.2
+	 */
+	private function get_users_dashboard_data( array $filter, array $params, int $not_started = 0 ): array {
+		$scope       = StatisticsScope::from_params( $params );
+		$db          = DashboardStatisticsDB::getInstance();
+		$lp_stats_db = LP_Statistics_DB::getInstance();
+		$type        = $filter['filter_type'];
+		$time        = (string) $filter['time'];
+
+		$total_instructors = (int) $lp_stats_db->get_total_instructor_created( $type, $time );
+		$total_students    = (int) $lp_stats_db->get_total_student_created( $type, $time );
+		$funnel            = $db->get_learner_funnel( $type, $time, $scope, true );
+		$completion        = $db->get_completion_stats( $type, $time, $scope );
+
+		return array(
+			'kpis'                    => array(
+				'users_activated' => array(
+					'value'         => $total_instructors + $total_students,
+					'new_in_period' => $funnel['registered'],
+				),
+				'students'        => array(
+					'value'     => $total_students,
+					// '6' matches the last7days button window ( CURDATE() - 6 → today ).
+					'active_7d' => $db->get_active_learners_count( 'previous_days', '6', $scope ),
+				),
+				'instructors'     => array(
+					'value'            => $total_instructors,
+					'active_in_period' => $db->get_instructors_active_in_period( $type, $time, $scope ),
+				),
+				'not_started'     => array(
+					'value' => $not_started,
+				),
+				'in_progress'     => array(
+					'value' => $db->get_users_in_progress_count( $type, $time, $scope ),
+				),
+				'finished'        => array(
+					'value'           => $funnel['completed'],
+					'completion_rate' => $completion['rate'],
+				),
+			),
+			'funnel'                  => $funnel,
+			'top_students'            => $db->get_top_students( $type, $time, $scope, 10 ),
+			'top_courses_by_students' => $db->get_courses_by_students( $type, $time, $scope, 10 ),
+		);
+	}
+
+	/**
+	 * Users dashboard drill-down for report popups.
+	 *
+	 * @param array $filter [ 'filter_type', 'time' ].
+	 * @param array $params Sanitized request params.
+	 * @return array
+	 * @since 4.4.2
+	 */
+	private function get_users_dashboard_report( array $filter, array $params ): array {
+		$report = sanitize_key( $params['report'] );
+		$limit  = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
+		$scope  = StatisticsScope::from_params( $params );
+		$db     = DashboardStatisticsDB::getInstance();
+		$rows   = array();
+
+		if ( 'top_students' === $report ) {
+			$rows = $db->get_top_students( $filter['filter_type'], (string) $filter['time'], $scope, $limit );
+		} elseif ( 'courses_by_students' === $report ) {
+			$rows = $db->get_courses_by_students( $filter['filter_type'], (string) $filter['time'], $scope, $limit );
+		}
+
+		return array(
+			'report' => $report,
+			'rows'   => $rows,
+			'limit'  => $limit,
+		);
+	}
+
+	/**
+	 * Instructors tab payload: KPIs, operations widget, performance + watchlist tables.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 * @since 4.4.2
+	 */
+	public function get_instructor_statistics( WP_REST_Request $request ): LP_REST_Response {
+		$response = new LP_REST_Response();
+
+		try {
+			$params = $request->get_params();
+			$params = LP_Helper::sanitize_params_submitted( $params );
+			$filter = $this->get_statistics_filter( $params );
+			$scope  = StatisticsScope::from_params( $params );
+
+			// Performance drill-down: the full (500-capped) table for the popup. @since 4.4.2
+			if ( ! empty( $params['report'] ) ) {
+				$limit = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
+				$rows  = 'performance' === sanitize_key( $params['report'] )
+					? InstructorStatisticsProvider::format_performance(
+						DashboardStatisticsDB::getInstance()->get_instructor_performance(
+							$filter['filter_type'],
+							(string) $filter['time'],
+							$scope,
+							$limit
+						)
+					)
+					: array();
+
+				$response->data   = array(
+					'report' => sanitize_key( $params['report'] ),
+					'rows'   => $rows,
+					'limit'  => $limit,
+				);
+				$response->status = 'success';
+				return $response;
+			}
+
+			$type        = $filter['filter_type'];
+			$time        = (string) $filter['time'];
+			$lp_stats_db = LP_Statistics_DB::getInstance();
+
+			$revenue_chart = $this->process_chart_data( $filter, $lp_stats_db->get_net_sales_data( $type, $time, $scope ) );
+			$enroll_chart  = $this->process_chart_data(
+				$filter,
+				$lp_stats_db->get_enrollment_chart_data( $type, $time, 0, $scope )
+			);
+
+			$response->data   = array(
+				'dashboard'  => InstructorStatisticsProvider::get_statistics( $type, $time, $scope ),
+				'chart_data' => array(
+					'labels'      => $revenue_chart['labels'] ?? array(),
+					'revenue'     => $revenue_chart['data'] ?? array(),
+					'enrollments' => $enroll_chart['data'] ?? array(),
+					'x_label'     => $revenue_chart['x_label'] ?? '',
+				),
+			);
+			$response->status = 'success';
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+			$response->status  = 'error';
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Per-instructor drill-down for the performance-row popup.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 * @since 4.4.2
+	 */
+	public function get_instructor_report( WP_REST_Request $request ): LP_REST_Response {
+		$response = new LP_REST_Response();
+
+		try {
+			$params        = $request->get_params();
+			$params        = LP_Helper::sanitize_params_submitted( $params );
+			$instructor_id = absint( $params['instructor_id'] ?? 0 );
+			$limit         = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
+
+			$report = InstructorStatisticsProvider::get_report( $instructor_id, $limit );
+
+			if ( ! empty( $report['error'] ) ) {
+				$response->message = __( 'Instructor not found or has no courses.', 'learnpress' );
+				$response->status  = 'error';
+				return $response;
+			}
+
+			$response->data   = $report;
+			$response->status = 'success';
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+			$response->status  = 'error';
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Options for the global statistics filters (instructor/category dropdowns).
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 * @since 4.4.2
+	 */
+	public function get_filter_options( WP_REST_Request $request ): LP_REST_Response {
+		$response = new LP_REST_Response();
+
+		try {
+			$response->data   = FilterOptionsProvider::get_options();
+			$response->status = 'success';
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+			$response->status  = 'error';
+		}
+
+		return $response;
 	}
 
 	public function permission_check( $request ) {

@@ -17,10 +17,11 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 		$this->priority   = 10;
 		$this->callback   = [ $this, 'display' ];
 		$tabs             = array(
-			'overview' => __( 'Overview', 'learnpress' ),
-			'orders'   => __( 'Orders', 'learnpress' ),
-			'courses'  => __( 'Courses', 'learnpress' ),
-			'users'    => __( 'Users', 'learnpress' ),
+			'overview'    => __( 'Overview', 'learnpress' ),
+			'orders'      => __( 'Orders', 'learnpress' ),
+			'courses'     => __( 'Courses', 'learnpress' ),
+			'users'       => __( 'Users', 'learnpress' ),
+			'instructors' => __( 'Instructors', 'learnpress' ),
 		);
 		$this->tabs       = apply_filters(
 			'learn-press/admin/page-statistic-tabs',
@@ -46,6 +47,10 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 
 	public function page_content_orders() {
 		learn_press_admin_view( 'statistics/orders' );
+	}
+
+	public function page_content_instructors() {
+		learn_press_admin_view( 'statistics/instructors' );
 	}
 }
 
