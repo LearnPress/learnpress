@@ -152,7 +152,7 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 				'{{user_name}}'             => $userModel->get_username(),
 				'{{user_display_name}}'     => $userModel->get_display_name(),
 				'{{user_email}}'            => $userModel->get_email(),
-				'{{course_grade}}'          => $userCourseModel->get_string_i18n( $userCourseModel->get_graduation() ),
+				'{{course_grade}}'          => $userCourseModel->get_graduation_label(),
 				'{{course_result_percent}}' => $userCourseResult['result'],
 			]
 		);

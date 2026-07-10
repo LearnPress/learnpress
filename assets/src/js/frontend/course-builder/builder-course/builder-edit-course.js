@@ -1353,6 +1353,15 @@ export class BuilderEditCourse {
 					if ( element.checked ) {
 						data[ fieldName ] = element.value;
 					}
+				} else if ( element.type === 'select-multiple' ) {
+					// Collect every selected option, not just the first one (element.value).
+					const selectedValues = Array.from( element.selectedOptions )
+						.map( ( option ) => option.value )
+						.filter( ( value ) => value !== '' );
+					if ( ! Array.isArray( data[ fieldName ] ) ) {
+						data[ fieldName ] = [];
+					}
+					data[ fieldName ].push( ...selectedValues );
 				} else if ( element.type === 'file' ) {
 					if ( element.files && element.files.length > 0 ) {
 						data[ fieldName ] = element.files;
@@ -1376,8 +1385,19 @@ export class BuilderEditCourse {
 		}
 
 		// Convert settings arrays to comma-separated strings for API
-		// Exclude course_categories and course_tags - they're handled separately
-		const excludeFromConversion = [ 'course_categories', 'course_tags' ];
+		// Exclude course_categories and course_tags - they're handled separately.
+		// Exclude the extra-info fields too: their values are free text that may
+		// contain commas, so they must stay as arrays (one entry per input) and
+		// not be comma-joined, or the server splits a single value into several.
+		const excludeFromConversion = [
+			'course_categories',
+			'course_tags',
+			'_lp_requirements',
+			'_lp_target_audiences',
+			'_lp_key_features',
+			'_lp_faqs_question',
+			'_lp_faqs_answer',
+		];
 		Object.keys( data ).forEach( ( key ) => {
 			if ( Array.isArray( data[ key ] ) && ! excludeFromConversion.includes( key ) ) {
 				data[ key ] = data[ key ].join( ',' );

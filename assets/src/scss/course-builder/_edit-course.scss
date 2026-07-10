@@ -2328,6 +2328,10 @@
 					color: #ef4444;
 				}
 			}
+
+			input {
+				max-width: unset;
+			}
 		}
 
 		.lp_course_faq_meta_box__content {
@@ -2489,12 +2493,22 @@
 				font-weight: 500;
 				border-radius: 4px;
 				margin-bottom: 0;
+
+				.item {
+					background: transparent;
+				}
 			}
 		}
 
-		.form-field input[type='text'] {
+		// :not(.dropdown-input): keep the tom-select dropdown search input
+		// on its own width from _tomSelect.scss.
+		.form-field input[type='text']:not( .dropdown-input ) {
 			width: unset;
 			height: unset;
+		}
+
+		._post_author_field {
+			margin-bottom: 24px;
 		}
 	}
 

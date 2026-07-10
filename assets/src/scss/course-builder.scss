@@ -37,6 +37,9 @@ body {
 @import 'course-builder/edit-question';
 @import 'course-builder/builder-popup';
 
+// Tom Select fields on settings form (Author, Co-Instructors...)
+@import 'tomSelect';
+
 // Animation for loading lp-icon-spinner
 @keyframes rotation {
 	0% {
@@ -179,8 +182,10 @@ body {
 			gap: 10px;
 		}
 
+		// :not(.dropdown-input): the tom-select dropdown search input keeps
+		// its own width from _tomSelect.scss.
 		.form-field input[type='number'],
-		.form-field input[type='text'],
+		.form-field input[type='text']:not( .dropdown-input ),
 		.form-field input[type='datetime-local'],
 		.lp-meta-box__duration input[type='number'] {
 			width: 100%;
