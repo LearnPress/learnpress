@@ -3,9 +3,21 @@
 namespace LearnPress\MCP;
 
 use LearnPress\MCP\Auth\AuthContext;
-use LearnPress\MCP\Concerns\AbilityExecutors;
-use LearnPress\MCP\Concerns\AbilityHelpers;
-use LearnPress\MCP\Concerns\AbilitySchemas;
+use LearnPress\MCP\Domain\CourseTools;
+use LearnPress\MCP\Domain\SectionTools;
+use LearnPress\MCP\Domain\LessonTools;
+use LearnPress\MCP\Domain\QuizTools;
+use LearnPress\MCP\Domain\QuestionTools;
+use LearnPress\MCP\Domain\EnrollmentTools;
+use LearnPress\MCP\Schemas\CourseSchemas;
+use LearnPress\MCP\Schemas\SectionSchemas;
+use LearnPress\MCP\Schemas\LessonSchemas;
+use LearnPress\MCP\Schemas\QuizSchemas;
+use LearnPress\MCP\Schemas\QuestionSchemas;
+use LearnPress\MCP\Schemas\EnrollmentSchemas;
+use LearnPress\MCP\Support\Errors;
+use LearnPress\MCP\Support\Pagination;
+use LearnPress\MCP\Support\Schemas;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -23,10 +35,6 @@ defined( 'ABSPATH' ) || exit;
  * Execution logic, schemas, and mapping helpers are split into traits.
  */
 class Abilities {
-
-	use AbilitySchemas;
-	use AbilityHelpers;
-	use AbilityExecutors;
 
 	/**
 	 * Abilities API category slug for LearnPress abilities.
@@ -132,72 +140,250 @@ class Abilities {
 			'learnpress/get-courses',
 			__( 'Get Courses', 'learnpress' ),
 			__( 'List courses with optional filters and pagination.', 'learnpress' ),
-			self::schema_get_courses_input(),
-			self::schema_list_output( self::schema_course_summary() ),
-			array( __CLASS__, 'execute_get_courses' )
+			CourseSchemas::get_courses_input(),
+			Pagination::list_output( CourseSchemas::course_summary() ),
+			array( CourseTools::class, 'get_courses' )
 		);
 
 		self::reg(
 			'learnpress/get-course-details',
 			__( 'Get Course Details', 'learnpress' ),
 			__( 'Get details and curriculum summary for a course.', 'learnpress' ),
-			self::schema_required_id( 'course_id' ),
-			self::schema_course_detail_output(),
-			array( __CLASS__, 'execute_get_course_details' )
+			Schemas::required_id( 'course_id' ),
+			Schemas::object_output( 'course' ),
+			array( CourseTools::class, 'get_course_details' )
 		);
 
 		self::reg(
 			'learnpress/list-lessons',
 			__( 'List Lessons', 'learnpress' ),
 			__( 'List lessons in a course with optional filters.', 'learnpress' ),
-			self::schema_list_lessons_input(),
-			self::schema_list_output( self::schema_lesson_summary() ),
-			array( __CLASS__, 'execute_list_lessons' )
+			LessonSchemas::list_lessons_input(),
+			Pagination::list_output( LessonSchemas::lesson_summary() ),
+			array( LessonTools::class, 'list_lessons' )
 		);
 
 		self::reg(
 			'learnpress/get-lesson-details',
 			__( 'Get Lesson Details', 'learnpress' ),
 			__( 'Get lesson details including content, video intro, and materials.', 'learnpress' ),
-			self::schema_required_id( 'lesson_id' ),
-			self::schema_lesson_detail_output(),
-			array( __CLASS__, 'execute_get_lesson_details' )
+			Schemas::required_id( 'lesson_id' ),
+			Schemas::object_output( 'lesson' ),
+			array( LessonTools::class, 'get_lesson_details' )
 		);
 
 		self::reg(
 			'learnpress/list-quizzes',
 			__( 'List Quizzes', 'learnpress' ),
 			__( 'List quizzes in a course with pagination.', 'learnpress' ),
-			self::schema_list_quizzes_input(),
-			self::schema_list_output( self::schema_quiz_summary() ),
-			array( __CLASS__, 'execute_list_quizzes' )
+			QuizSchemas::list_quizzes_input(),
+			Pagination::list_output( QuizSchemas::quiz_summary() ),
+			array( QuizTools::class, 'list_quizzes' )
 		);
 
 		self::reg(
 			'learnpress/get-quiz-details',
 			__( 'Get Quiz Details', 'learnpress' ),
 			__( 'Get quiz details including duration, passing grade, and question count.', 'learnpress' ),
-			self::schema_required_id( 'quiz_id' ),
-			self::schema_quiz_detail_output(),
-			array( __CLASS__, 'execute_get_quiz_details' )
+			Schemas::required_id( 'quiz_id' ),
+			Schemas::object_output( 'quiz' ),
+			array( QuizTools::class, 'get_quiz_details' )
 		);
 
 		self::reg(
 			'learnpress/get-student-progress',
 			__( 'Get Student Progress', 'learnpress' ),
 			__( 'Get user progress and results for a course enrollment.', 'learnpress' ),
-			self::schema_progress_input(),
-			self::schema_object_output( 'progress' ),
-			array( __CLASS__, 'execute_get_student_progress' )
+			EnrollmentSchemas::progress_input(),
+			Schemas::object_output( 'progress' ),
+			array( EnrollmentTools::class, 'get_student_progress' )
 		);
 
 		self::reg(
 			'learnpress/get-enrollments',
 			__( 'Get Enrollments', 'learnpress' ),
 			__( 'List course enrollments with optional filters and pagination.', 'learnpress' ),
-			self::schema_get_enrollments_input(),
-			self::schema_list_output( array( 'type' => 'object' ) ),
-			array( __CLASS__, 'execute_get_enrollments' )
+			EnrollmentSchemas::get_enrollments_input(),
+			Pagination::list_output( array( 'type' => 'object' ) ),
+			array( EnrollmentTools::class, 'get_enrollments' )
+		);
+
+		self::register_write_abilities();
+	}
+
+	/**
+	 * Register all Phase 2 write abilities (course, section, lesson, quiz,
+	 * quiz question, and enrollment management).
+	 *
+	 * Domain logic lives in focused `LearnPress\MCP\Domain` executors and
+	 * `LearnPress\MCP\Schemas` providers, not in this orchestration class.
+	 *
+	 * @return void
+	 */
+	protected static function register_write_abilities(): void {
+		// Course tools.
+		self::reg(
+			'learnpress/create-course',
+			__( 'Create Course', 'learnpress' ),
+			__( 'Create a new LearnPress course.', 'learnpress' ),
+			CourseSchemas::create_input(),
+			CourseSchemas::write_output(),
+			array( CourseTools::class, 'create_course' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/update-course',
+			__( 'Update Course', 'learnpress' ),
+			__( 'Update an existing LearnPress course.', 'learnpress' ),
+			CourseSchemas::update_input(),
+			CourseSchemas::write_output(),
+			array( CourseTools::class, 'update_course' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/delete-course',
+			__( 'Delete Course', 'learnpress' ),
+			__( 'Move a LearnPress course to trash (reversible).', 'learnpress' ),
+			CourseSchemas::delete_input(),
+			CourseSchemas::delete_output(),
+			array( CourseTools::class, 'delete_course' ),
+			self::destructive_annotations()
+		);
+
+		// Section tools.
+		self::reg(
+			'learnpress/create-section',
+			__( 'Create Section', 'learnpress' ),
+			__( 'Create a curriculum section in a course.', 'learnpress' ),
+			SectionSchemas::create_input(),
+			SectionSchemas::write_output(),
+			array( SectionTools::class, 'create_section' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/update-section',
+			__( 'Update Section', 'learnpress' ),
+			__( 'Update a curriculum section in a course.', 'learnpress' ),
+			SectionSchemas::update_input(),
+			SectionSchemas::write_output(),
+			array( SectionTools::class, 'update_section' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/delete-section',
+			__( 'Delete Section', 'learnpress' ),
+			__( 'Remove a section relationship while preserving its lessons/quizzes (reversible).', 'learnpress' ),
+			SectionSchemas::delete_input(),
+			SectionSchemas::delete_output(),
+			array( SectionTools::class, 'delete_section' ),
+			self::destructive_annotations()
+		);
+
+		// Lesson tools.
+		self::reg(
+			'learnpress/create-lesson',
+			__( 'Create Lesson', 'learnpress' ),
+			__( 'Create a lesson and assign it to a course section.', 'learnpress' ),
+			LessonSchemas::create_input(),
+			LessonSchemas::write_output(),
+			array( LessonTools::class, 'create_lesson' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/update-lesson',
+			__( 'Update Lesson', 'learnpress' ),
+			__( 'Update an existing lesson.', 'learnpress' ),
+			LessonSchemas::update_input(),
+			LessonSchemas::write_output(),
+			array( LessonTools::class, 'update_lesson' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/delete-lesson',
+			__( 'Delete Lesson', 'learnpress' ),
+			__( 'Move a lesson to trash and remove it from the curriculum (reversible).', 'learnpress' ),
+			LessonSchemas::delete_input(),
+			LessonSchemas::delete_output(),
+			array( LessonTools::class, 'delete_lesson' ),
+			self::destructive_annotations()
+		);
+
+		// Quiz tools.
+		self::reg(
+			'learnpress/create-quiz',
+			__( 'Create Quiz', 'learnpress' ),
+			__( 'Create a quiz and assign it to a course section.', 'learnpress' ),
+			QuizSchemas::create_input(),
+			QuizSchemas::write_output(),
+			array( QuizTools::class, 'create_quiz' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/update-quiz',
+			__( 'Update Quiz', 'learnpress' ),
+			__( 'Update an existing quiz and its settings.', 'learnpress' ),
+			QuizSchemas::update_input(),
+			QuizSchemas::write_output(),
+			array( QuizTools::class, 'update_quiz' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/delete-quiz',
+			__( 'Delete Quiz', 'learnpress' ),
+			__( 'Move a quiz to trash and remove it from the curriculum (reversible).', 'learnpress' ),
+			QuizSchemas::delete_input(),
+			QuizSchemas::delete_output(),
+			array( QuizTools::class, 'delete_quiz' ),
+			self::destructive_annotations()
+		);
+
+		// Quiz question tools.
+		self::reg(
+			'learnpress/add-quiz-question',
+			__( 'Add Quiz Question', 'learnpress' ),
+			__( 'Create a question and add it to a quiz.', 'learnpress' ),
+			QuestionSchemas::add_input(),
+			QuestionSchemas::add_output(),
+			array( QuestionTools::class, 'add_quiz_question' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/update-quiz-question',
+			__( 'Update Quiz Question', 'learnpress' ),
+			__( 'Update a quiz question and its answers.', 'learnpress' ),
+			QuestionSchemas::update_input(),
+			QuestionSchemas::write_output(),
+			array( QuestionTools::class, 'update_quiz_question' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/delete-quiz-question',
+			__( 'Delete Quiz Question', 'learnpress' ),
+			__( 'Remove a question from a quiz while preserving the question post (reversible).', 'learnpress' ),
+			QuestionSchemas::delete_input(),
+			QuestionSchemas::delete_output(),
+			array( QuestionTools::class, 'delete_quiz_question' ),
+			self::destructive_annotations()
+		);
+
+		// Enrollment tools.
+		self::reg(
+			'learnpress/enroll-student',
+			__( 'Enroll Student', 'learnpress' ),
+			__( 'Manually enroll a student in a course.', 'learnpress' ),
+			EnrollmentSchemas::enroll_input(),
+			EnrollmentSchemas::enroll_output(),
+			array( EnrollmentTools::class, 'enroll_student' ),
+			self::write_annotations()
+		);
+		self::reg(
+			'learnpress/update-enrollment',
+			__( 'Update Enrollment', 'learnpress' ),
+			__( 'Update enrollment status and learning result metadata.', 'learnpress' ),
+			EnrollmentSchemas::update_input(),
+			EnrollmentSchemas::write_output(),
+			array( EnrollmentTools::class, 'update_enrollment' ),
+			self::write_annotations()
 		);
 	}
 
@@ -212,25 +398,25 @@ class Abilities {
 	public static function permission_callback( string $ability_name, $input = null ) {
 
 		if ( ! AuthContext::is_api_key_auth() ) {
-			return self::error_missing_auth();
+			return Errors::missing_auth();
 		}
 
 		$current_user_id = get_current_user_id();
 		$base_capability = self::get_base_capability( $ability_name, $input );
 
 		if ( $current_user_id <= 0 ) {
-			return self::error_missing_auth();
+			return Errors::missing_auth();
 		}
 
 		if ( ! current_user_can( $base_capability ) ) {
-			return self::error_missing_base_capability( $base_capability );
+			return Errors::missing_capability( $base_capability );
 		}
 
 		$required_scope = self::get_required_scope( $ability_name, $input );
 		$granted_scope  = AuthContext::get_permissions();
 
 		if ( ! self::scope_allows( $granted_scope, $required_scope ) ) {
-			return self::error_insufficient_scope( $required_scope, $granted_scope );
+			return Errors::insufficient_scope( $required_scope, $granted_scope );
 		}
 
 		return true;
@@ -244,6 +430,9 @@ class Abilities {
 	 * @param array    $input_schema     Input JSON schema.
 	 * @param array    $output_schema    Output JSON schema.
 	 * @param callable $execute_callback Callback that executes the ability.
+	 * @param array    $annotations      Optional MCP annotation overrides
+	 *                                   (readonly, destructive, idempotent).
+	 *                                   Read tools keep the read-only defaults.
 	 *
 	 * @return void
 	 */
@@ -253,11 +442,21 @@ class Abilities {
 		string $description,
 		array $input_schema,
 		array $output_schema,
-		$execute_callback
+		$execute_callback,
+		array $annotations = array()
 	): void {
 		$permission_callback = static function ( $input = null ) use ( $name ) {
 			return self::permission_callback( $name, $input );
 		};
+
+		$annotations = array_merge(
+			array(
+				'readonly'    => true,
+				'destructive' => false,
+				'idempotent'  => true,
+			),
+			$annotations
+		);
 
 		wp_register_ability(
 			$name,
@@ -270,11 +469,7 @@ class Abilities {
 				'input_schema'        => $input_schema,
 				'output_schema'       => $output_schema,
 				'meta'                => array(
-					'annotations'  => array(
-						'readonly'    => true,
-						'destructive' => false,
-						'idempotent'  => true,
-					),
+					'annotations'  => $annotations,
 					'mcp'          => array(
 						'public'         => true,
 						'type'           => 'tool',
@@ -283,6 +478,32 @@ class Abilities {
 					'show_in_rest' => true,
 				),
 			)
+		);
+	}
+
+	/**
+	 * Annotation set for create/update write tools.
+	 *
+	 * @return array
+	 */
+	protected static function write_annotations(): array {
+		return array(
+			'readonly'    => false,
+			'destructive' => false,
+			'idempotent'  => false,
+		);
+	}
+
+	/**
+	 * Annotation set for destructive (delete) write tools.
+	 *
+	 * @return array
+	 */
+	protected static function destructive_annotations(): array {
+		return array(
+			'readonly'    => false,
+			'destructive' => true,
+			'idempotent'  => false,
 		);
 	}
 
@@ -320,6 +541,24 @@ class Abilities {
 			'learnpress/get-quiz-details'     => 'read',
 			'learnpress/get-student-progress' => 'read',
 			'learnpress/get-enrollments'      => 'read',
+			// Phase 2 write tools require write (or read_write) scope.
+			'learnpress/create-course'        => 'write',
+			'learnpress/update-course'        => 'write',
+			'learnpress/delete-course'        => 'write',
+			'learnpress/create-section'       => 'write',
+			'learnpress/update-section'       => 'write',
+			'learnpress/delete-section'       => 'write',
+			'learnpress/create-lesson'        => 'write',
+			'learnpress/update-lesson'        => 'write',
+			'learnpress/delete-lesson'        => 'write',
+			'learnpress/create-quiz'          => 'write',
+			'learnpress/update-quiz'          => 'write',
+			'learnpress/delete-quiz'          => 'write',
+			'learnpress/add-quiz-question'    => 'write',
+			'learnpress/update-quiz-question' => 'write',
+			'learnpress/delete-quiz-question' => 'write',
+			'learnpress/enroll-student'       => 'write',
+			'learnpress/update-enrollment'    => 'write',
 		);
 
 		$scope = $default_scopes[ $ability_name ] ?? 'read';
@@ -343,67 +582,5 @@ class Abilities {
 		}
 
 		return $granted_scope === $required_scope;
-	}
-
-	/**
-	 * Error for missing/invalid authentication.
-	 *
-	 * @param string $message Optional custom error message.
-	 *
-	 * @return WP_Error
-	 */
-	protected static function error_missing_auth( string $message = '' ): WP_Error {
-
-		if ( '' === $message ) {
-			$message = __( 'Missing or invalid MCP authentication.', 'learnpress' );
-		}
-
-		return new WP_Error(
-			'learnpress_mcp_missing_auth',
-			$message,
-			array( 'status' => 401 )
-		);
-	}
-
-	/**
-	 * Error for base capability failure.
-	 *
-	 * @param string $capability Required capability name.
-	 *
-	 * @return WP_Error
-	 */
-	protected static function error_missing_base_capability( string $capability ): WP_Error {
-
-		return new WP_Error(
-			'learnpress_mcp_missing_base_capability',
-			sprintf(
-				/* translators: %s: capability. */
-				__( 'Current user does not have required base capability: %s.', 'learnpress' ),
-				$capability
-			),
-			array( 'status' => 403 )
-		);
-	}
-
-	/**
-	 * Error for scope mismatch.
-	 *
-	 * @param string $required_scope Required scope for the ability.
-	 * @param string $granted_scope  Scope granted by authenticated API key.
-	 *
-	 * @return WP_Error
-	 */
-	protected static function error_insufficient_scope( string $required_scope, string $granted_scope ): WP_Error {
-
-		return new WP_Error(
-			'learnpress_mcp_insufficient_scope',
-			sprintf(
-				/* translators: 1: required scope, 2: granted scope. */
-				__( 'API key scope is insufficient. Required: %1$s. Granted: %2$s.', 'learnpress' ),
-				$required_scope,
-				$granted_scope
-			),
-			array( 'status' => 403 )
-		);
 	}
 }
