@@ -2,6 +2,7 @@
 
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
+use LearnPress\Services\UserService;
 
 /**
  * Common functions to process actions about user
@@ -131,82 +132,17 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 }
 
 /**
- * Add more 2 user roles teacher and student
+ * Add roles and add capabilities for roles
  */
 function learn_press_add_user_roles() {
-	$course_cap = LP_COURSE_CPT . 's';
-	$lesson_cap = LP_LESSON_CPT . 's';
-	$order_cap  = LP_ORDER_CPT . 's';
+	$item_types = [
+		LP_COURSE_CPT,
+		LP_LESSON_CPT,
+		LP_ORDER_CPT,
+	];
 
-	if ( ! get_role( LP_TEACHER_ROLE ) ) {
-		add_role( LP_TEACHER_ROLE, 'LP Instructor' );
-	}
-
-	$teacher = get_role( LP_TEACHER_ROLE );
-	if ( $teacher ) {
-		$teacher->add_cap( 'read_private_' . $course_cap );
-		$teacher->add_cap( 'delete_published_' . $course_cap );
-		$teacher->add_cap( 'edit_published_' . $course_cap );
-		$teacher->add_cap( 'edit_' . $course_cap );
-		$teacher->add_cap( 'delete_' . $course_cap );
-		// $teacher->add_cap( 'unfiltered_html' );
-		if ( $teacher->has_cap( 'unfiltered_html' ) ) {
-			$teacher->remove_cap( 'unfiltered_html' );
-		}
-
-		if ( LP_Settings::get_option( 'required_review', 'yes' ) == 'yes' ) {
-			$teacher->remove_cap( 'publish_' . $course_cap );
-		} else {
-			$teacher->add_cap( 'publish_' . $course_cap );
-		}
-
-		$teacher->add_cap( 'read_private_' . $lesson_cap );
-		$teacher->add_cap( 'delete_published_' . $lesson_cap );
-		$teacher->add_cap( 'edit_published_' . $lesson_cap );
-		$teacher->add_cap( 'edit_' . $lesson_cap );
-		$teacher->add_cap( 'delete_' . $lesson_cap );
-		$teacher->add_cap( 'publish_' . $lesson_cap );
-		$teacher->add_cap( 'upload_files' );
-		$teacher->add_cap( 'read' );
-		$teacher->add_cap( 'edit_posts' );
-	}
-
-	// administrator
-	$admin = get_role( 'administrator' );
-	if ( $admin ) {
-		$admin->add_cap( 'lp_mcp_access' );
-
-		$admin->add_cap( 'read_private_' . $course_cap );
-		$admin->add_cap( 'delete_' . $course_cap );
-		$admin->add_cap( 'delete_published_' . $course_cap );
-		$admin->add_cap( 'edit_' . $course_cap );
-		$admin->add_cap( 'edit_published_' . $course_cap );
-		$admin->add_cap( 'publish_' . $course_cap );
-		$admin->add_cap( 'delete_private_' . $course_cap );
-		$admin->add_cap( 'edit_private_' . $course_cap );
-		$admin->add_cap( 'delete_others_' . $course_cap );
-		$admin->add_cap( 'edit_others_' . $course_cap );
-
-		$admin->add_cap( 'read_private_' . $lesson_cap );
-		$admin->add_cap( 'delete_' . $lesson_cap );
-		$admin->add_cap( 'delete_published_' . $lesson_cap );
-		$admin->add_cap( 'edit_' . $lesson_cap );
-		$admin->add_cap( 'edit_published_' . $lesson_cap );
-		$admin->add_cap( 'publish_' . $lesson_cap );
-		$admin->add_cap( 'delete_private_' . $lesson_cap );
-		$admin->add_cap( 'edit_private_' . $lesson_cap );
-		$admin->add_cap( 'delete_others_' . $lesson_cap );
-		$admin->add_cap( 'edit_others_' . $lesson_cap );
-
-		$admin->add_cap( 'delete_' . $order_cap );
-		$admin->add_cap( 'delete_published_' . $order_cap );
-		$admin->add_cap( 'edit_' . $order_cap );
-		$admin->add_cap( 'edit_published_' . $order_cap );
-		$admin->add_cap( 'publish_' . $order_cap );
-		$admin->add_cap( 'delete_private_' . $order_cap );
-		$admin->add_cap( 'edit_private_' . $order_cap );
-		$admin->add_cap( 'delete_others_' . $order_cap );
-		$admin->add_cap( 'edit_others_' . $order_cap );
+	foreach ( $item_types as $item_type ) {
+		UserService::instance()->add_capabilities_for_roles( $item_type );
 	}
 }
 
