@@ -236,13 +236,4 @@ class LP_Admin_MCP_API_Keys {
 	protected function is_mcp_integration_enabled(): bool {
 		return 'yes' === LP_Settings::get_option( 'enable_mcp_integration', 'no' );
 	}
-
-	/**
-	 * Check whether MCP integration is enabled.
-	 *
-	 * @return bool
-	 */
-	protected function is_mcp_integration_enabled(): bool {
-		return 'yes' === LP_Settings::get_option( 'enable_mcp_integration', 'no' );
-	}
 }

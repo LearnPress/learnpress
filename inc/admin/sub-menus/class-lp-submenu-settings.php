@@ -35,7 +35,6 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 				'permalink' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-permalink.php',
 				'advanced'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
 				'open-ai'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-open-ai.php',
-				'mcp'       => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-mcp.php',
 				'addons'    => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-addons.php',
 			)
 		);

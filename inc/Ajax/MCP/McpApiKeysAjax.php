@@ -6,7 +6,6 @@ use LearnPress\MCP\Auth\ApiKeysRepository;
 use LP_Helper;
 use LP_Settings;
 use LP_REST_Response;
-use LP_Settings;
 use Throwable;
 use Exception;
 
