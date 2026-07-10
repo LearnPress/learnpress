@@ -167,7 +167,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				// need build if change source vue
 				'vue-libs'                  => new LP_Asset_Key( $this->url( 'js/vendor/vue/vue_libs.js' ) ),
-				'select2'                   => new LP_Asset_Key( $this->url( 'src/js/vendor/select2.full.min.js' ) ),
+				//'select2'                   => new LP_Asset_Key( $this->url( 'src/js/vendor/select2.full.min.js' ) ),
 				'jquery-tipsy'              => new LP_Asset_Key( $this->url( 'src/js/vendor/jquery/jquery-tipsy.js' ) ),
 				'html2pdf'                  => new LP_Asset_Key( $this->url( 'src/js/vendor/html2pdf.bundle.min.js' ) ),
 				'lp-utils'                  => new LP_Asset_Key(
@@ -176,10 +176,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array(),
 					1
 				),
-				'dropdown-pages'            => new LP_Asset_Key(
+				/*'dropdown-pages'            => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/dropdown-pages' . self::$_min_assets . '.js' ),
 					array( 'lp-utils', 'select2' )
-				),
+				),*/
 				/*
 				'jquery-ui-timepicker-addon'        => new LP_Asset_Key(
 					$this->url( 'src/js/vendor/jquery/jquery-ui-timepicker-addon.js' ),
@@ -224,7 +224,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learn-press-global',
 						'wp-color-picker',
 						'jquery-tipsy',
-						'dropdown-pages',
+						//'dropdown-pages',
 						'wp-api-fetch',
 						// 'jquery-ui-timepicker-addon',
 						// 'select2'
@@ -509,9 +509,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-styles',
 			array(
-				'select2'               => new LP_Asset_Key(
+				/*'select2'               => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/select2.min.css' )
-				),
+				),*/
 				/*
 				'font-awesome'          => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/font-awesome-5.min.css' )
