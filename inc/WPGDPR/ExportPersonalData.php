@@ -266,7 +266,7 @@ class ExportPersonalData {
 					$value = get_the_title( $useritem->item_id );
 					break;
 				case 'status':
-					$value = $userCourseModel->is_finished() ? $userCourseModel->get_string_i18n( $userCourseModel->get_graduation() ) : $userCourseModel->get_string_i18n( $userCourseModel->get_status() );
+					$value = $userCourseModel->is_finished() ? $userCourseModel->get_graduation_label() : $userCourseModel->get_status_label();
 					break;
 				case 'start_time':
 					$value = wp_date( $date_format, strtotime( $userCourseModel->start_time ) );
