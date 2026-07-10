@@ -8,6 +8,7 @@
  */
 
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Template;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -84,24 +85,22 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	 * @return void
 	 */
 	protected function render_mcp_unavailable_notice(): void {
-
-		$learn_more = sprintf(
-			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
-			esc_url( 'https://learnpresslms.com/docs/learnpress-developer-documentation/model-context-protocol-mcp-integration/' ),
-			esc_html__( 'Learn more', 'learnpress' )
+		Template::print_message(
+			sprintf(
+				'This feature requires the %s and WP from 6.9+. Please install and activate it to access the settings. %s',
+				sprintf(
+					'<a href="%s">%s</a>',
+					esc_url_raw( 'https://github.com/wordpress/mcp-adapter/' ),
+					esc_html__( 'MCP Adapter plugin', 'learnpress' )
+				),
+				sprintf(
+					'<a href="%s">%s</a>',
+					esc_url_raw( 'https://learnpresslms.com/docs/learnpress-developer-documentation/model-context-protocol-mcp-integration/' ),
+					esc_html__( 'Learn more', 'learnpress' )
+				)
+			),
+			'warning'
 		);
-
-		$message = sprintf(
-			'%1$s %2$s',
-			esc_html__( 'This feature requires WordPress 7.0+ or WordPress 6.9+ with the MCP Adapter plugin activated.', 'learnpress' ),
-			$learn_more
-		);
-		?>
-		<div class="notice notice-warning inline">
-			<p><?php echo wp_kses_post( $message ); ?></p>
-		</div>
-		
-		<?php
 	}
 
 	/**
@@ -113,21 +112,20 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	 * @return void
 	 */
 	public function admin_page_settings( $section = null, $tab = '' ) {
+		parent::admin_page_settings( $section, $tab );
 
 		if ( 'mcp' === $section ) {
 			if ( ! self::is_mcp_available() ) {
 				$this->render_mcp_unavailable_notice();
 				return;
 			}
-			parent::admin_page_settings( $section, $tab );
+			//parent::admin_page_settings( $section, $tab );
 
 			if ( 'yes' === LP_Settings::get_option( 'enable_mcp_integration', 'no' ) && class_exists( 'LP_Admin_MCP_API_Keys' ) ) {
 				LP_Admin_MCP_API_Keys::instance()->render_page();
 			}
 			return;
 		}
-
-		parent::admin_page_settings( $section, $tab );
 
 		if ( 'webhook' === $section && 'yes' === LP_Settings::get_option( 'enable_webhook_integration', 'no' ) ) {
 			LP_Admin_Webhooks::instance()->render_page();
