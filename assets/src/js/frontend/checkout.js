@@ -115,12 +115,11 @@ window.lpCheckout = {
 
 		const elPaymentMethods = elUlPaymentMethods.querySelectorAll( `.${ window.lpCheckout.classPaymentMethod }` );
 		elPaymentMethods.forEach( ( el ) => {
+			el.classList.remove( 'selected' );
 			const elPaymentMethodForm = el.querySelector( `.${ window.lpCheckout.classPaymentMethodForm }` );
 			if ( ! elPaymentMethodForm ) {
 				return;
 			}
-
-			el.classList.remove( 'selected' );
 
 			if ( elPaymentMethod !== el ) {
 				elPaymentMethodForm.style.display = 'none';
