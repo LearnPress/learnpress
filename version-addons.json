@@ -257,8 +257,8 @@
   "learnpress-h5p": {
     "name": "H5P Add-On for LearnPress",
     "basename": "learnpress-h5p/learnpress-h5p.php",
-    "version": "4.0.9",
-    "require_lp": "4.3.2.7",
+    "version": "4.1.0",
+    "require_lp": "4.4.2",
     "description": "H5P add-on for LearnPress is to integrate the questions from plugin H5P to the LearnPress system.\n\n",
     "image": "https://updates.thimpress.com/images/learnpress-h5p.png",
     "link": "https://thimpress.com/product/h5p/",
