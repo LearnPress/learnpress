@@ -85,6 +85,7 @@ class LP_Manager_Addons {
 			'user-agent' => site_url(),
 		];
 
+		// For addon must buy.
 		if ( 0 == $addon['is_free'] ) {
 			$key_purchase                   = LP_Settings::get_option( $this->key_purchase_addons, [] );
 			$key_purchase[ $addon['slug'] ] = $purchase_code;
