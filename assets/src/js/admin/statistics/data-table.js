@@ -1,6 +1,11 @@
 /**
  * Data table renderer — createElement/textContent only, no innerHTML.
  *
+ * Emits the plugin's shared table markup ( .lp-table-wrap > table.lp-list-table,
+ * per TableListTemplate ) so the dashboard widgets match every other LearnPress
+ * table. The extra lp-stats-table class carries the stats-only behaviours
+ * ( row hover/highlight, clickable performance rows, empty state ).
+ *
  * Column definition:
  * { key, label,
  *   format?: ( value, row ) => string|Node  // Node for links etc.
@@ -9,7 +14,7 @@
  * }
  *
  * @since 4.4.2
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 import { getStatsI18n } from './api.js';
@@ -33,8 +38,11 @@ export const renderDataTable = (
 
 	elContainer.textContent = '';
 
+	const wrap = document.createElement( 'div' );
+	wrap.className = 'lp-table-wrap';
+
 	const table = document.createElement( 'table' );
-	table.className = 'lp-stats-table';
+	table.className = 'lp-list-table lp-stats-table';
 
 	const thead = document.createElement( 'thead' );
 	const headRow = document.createElement( 'tr' );
@@ -95,7 +103,8 @@ export const renderDataTable = (
 	}
 
 	table.appendChild( tbody );
-	elContainer.appendChild( table );
+	wrap.appendChild( table );
+	elContainer.appendChild( wrap );
 
 	return { columns, rows };
 };

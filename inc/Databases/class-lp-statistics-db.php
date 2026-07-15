@@ -868,7 +868,7 @@ class LP_Statistics_DB extends LP_Database {
 	 * @return array Top sold courses for the instructor.
 	 * @since 4.3.0
 	 */
-	public function get_top_sold_courses_by_instructor( int $instructor_id, int $limit = 5 ): array {
+	public function get_top_sold_courses_by_instructor( int $instructor_id, int $limit = 5, string $search = '' ): array {
 		$tb_posts  = $this->tb_posts;
 		$oi_table  = $this->tb_lp_order_items;
 		$oim_table = $this->tb_lp_order_itemmeta;
@@ -901,6 +901,11 @@ class LP_Statistics_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND p2.post_author=%d', $instructor_id );
 		}
 
+		$search = trim( $search );
+		if ( '' !== $search ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND p2.post_title LIKE %s', '%' . $this->wpdb->esc_like( $search ) . '%' );
+		}
+
 		$filter->group_by        = 'course_id';
 		$filter->order_by        = 'course_count';
 		$filter->order           = 'DESC';
@@ -919,7 +924,7 @@ class LP_Statistics_DB extends LP_Database {
 	 * @return array Top enrolled courses for the instructor.
 	 * @since 4.3.0
 	 */
-	public function get_top_enrolled_courses_by_instructor( int $instructor_id, int $limit = 5 ): array {
+	public function get_top_enrolled_courses_by_instructor( int $instructor_id, int $limit = 5, string $search = '' ): array {
 		$filter                   = new \LP_Filter();
 		$filter->collection       = $this->tb_lp_user_items;
 		$filter->collection_alias = 'ui';
@@ -936,6 +941,11 @@ class LP_Statistics_DB extends LP_Database {
 
 		if ( $instructor_id > 0 ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author=%d', $instructor_id );
+		}
+
+		$search = trim( $search );
+		if ( '' !== $search ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' . $this->wpdb->esc_like( $search ) . '%' );
 		}
 
 		$filter->group_by        = 'course_id';

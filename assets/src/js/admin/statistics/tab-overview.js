@@ -363,22 +363,11 @@ export class LpStatsTabOverview {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( btn, 1 );
-		lpStatsFetch(
-			'overviews-statistics',
-			{ report: 'top_courses', limit: 500 },
-			{
-				success: ( response ) => {
-					lpStatsReportModal.open( {
-						title: getStatsI18n( 'topCourses', 'Top Courses' ),
-						tableId: 'top-courses',
-						columns: this.topCoursesColumns(),
-						rows: response.data?.rows || [],
-					} );
-				},
-				completed: () => lpUtils.lpSetLoadingEl( btn, 0 ),
-			}
-		);
+		lpStatsReportModal.open( {
+			report: 'top_courses',
+			title: getStatsI18n( 'topCourses', 'Top courses' ),
+			tableId: 'top-courses',
+		} );
 	}
 
 	exportTables() {

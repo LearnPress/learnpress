@@ -376,28 +376,10 @@ $lp-stats-muted: #646970;
 }
 
 // Data tables (top courses, exceptions, watchlist, …).
+// The base look comes from the shared _table.scss ( table.lp-list-table ); this
+// class only adds the stats-specific behaviours. Widget tables sit in a 2-column
+// grid, so relax the shared 768px min-width to avoid a forced horizontal scroll.
 .lp-stats-table {
-	width: 100%;
-	min-width: 680px;
-	border-collapse: collapse;
-	background: #fff;
-
-	th,
-	td {
-		padding: 11px 16px;
-		border-bottom: 1px solid $lp-stats-border;
-		text-align: start;
-		font-size: 14px;
-	}
-
-	th {
-		background: #f6f7f7;
-		color: #50575e;
-		font-size: 12px;
-		font-weight: 600;
-		text-transform: uppercase;
-	}
-
 	tbody tr:hover {
 		background: #f6f7f7;
 	}
@@ -419,6 +401,34 @@ $lp-stats-muted: #646970;
 	}
 }
 
+// The shared _table.scss wrapper ( 1px border + 5px radius + 768px min-width +
+// overflow-x ) is built for full-width standalone tables. Inside the dashboard
+// section cards and the report popup it reads as a nested box with a needless
+// horizontal scrollbar. Strip that chrome and drop the min-width so the tables
+// sit flush and fit their column width. Scoped to statistics only — every other
+// LearnPress table keeps the shared look.
+.lp-admin-statistics-tab-content,
+.lp-stats-report-modal {
+	.lp-table-wrap {
+		border: 0;
+		border-radius: 0;
+		// Scroll a table horizontally when it is wider than its box rather than
+		// clipping columns or squashing them unreadably.
+		overflow-x: auto;
+	}
+
+	table.lp-list-table {
+		min-width: 0;
+	}
+}
+
+// Enlarged report popup shell ( SweetAlert2 customClass — the % width is set
+// inline by the JS ). Kept near-full-width so wide reports have room; the body
+// scrolls, so the dialog never grows past the viewport.
+.lp-stats-report-popup.swal2-popup {
+	max-width: 1600px;
+}
+
 // Report popup body — rendered inside a SweetAlert2 popup, which supplies
 // overlay, dialog, title and close button.
 .lp-stats-report-modal {
@@ -435,16 +445,44 @@ $lp-stats-muted: #646970;
 			max-width: 320px;
 		}
 
-		.lp-stats-report-modal__count {
-			color: $lp-stats-muted;
-			font-size: 13px;
+		.lp-stats-report-modal__export {
 			margin-inline-start: auto;
 		}
 	}
 
-	&__table {
+	&__body {
 		overflow: auto;
-		max-height: 60vh;
+		// Taller now that the popup is large; the table area takes most of the height.
+		max-height: 72vh;
+	}
+
+	// Report tables carry more columns than the compact widget tables — keep them
+	// at a readable width and let the wrap scroll horizontally on narrow screens.
+	table.lp-list-table {
+		min-width: 720px;
+	}
+
+	&__loading {
+		padding: 40px 0;
+		text-align: center;
+		color: $lp-stats-muted;
+		font-size: 14px;
+	}
+
+	// Base table look comes from the shared _table.scss ( table.lp-list-table ).
+
+	.lp-stats-report-table-footer {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 10px;
+		padding-top: 6px;
+
+		&__count {
+			color: $lp-stats-muted;
+			font-size: 13px;
+		}
 	}
 }
 
@@ -656,19 +694,6 @@ $lp-stats-muted: #646970;
 	@media screen and (max-width: 1200px) {
 		grid-template-columns: minmax(0, 1fr);
 	}
-}
-
-.lp-stats-table-top-courses,
-.lp-stats-table-instructors,
-.lp-stats-table-course-performance,
-.lp-stats-table-content-inventory,
-.lp-stats-table-top-sold-courses,
-.lp-stats-table-order-exceptions,
-.lp-stats-table-top-students,
-.lp-stats-table-courses-by-students,
-.lp-stats-table-instructor-performance,
-.lp-stats-table-instructor-watchlist {
-	overflow-x: auto;
 }
 
 .lp-stats-health-checks {

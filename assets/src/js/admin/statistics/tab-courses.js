@@ -130,7 +130,9 @@ export class LpStatsTabCourses {
 
 		this.renderKpis( dashboard.kpis || {} );
 		this.renderTables( dashboard );
-		this.renderChart( data.chart_data || {} );
+		// Prefer the scoped chart from the dashboard payload so instructor/category
+		// changes redraw the chart; fall back to the legacy unscoped series.
+		this.renderChart( dashboard.chart || data.chart_data || {} );
 		this.renderHealthChecks( dashboard.health_checks || {} );
 	}
 
@@ -196,7 +198,7 @@ export class LpStatsTabCourses {
 					{
 						label:
 							chartData.line_label ||
-							getStatsI18n( 'publishedCourses', 'Published Courses' ),
+							getStatsI18n( 'publishedCourses', 'Published courses' ),
 						data: chartData.data || [],
 						yAxisID: 'y',
 					},
@@ -364,25 +366,11 @@ export class LpStatsTabCourses {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( btn, 1 );
-		lpStatsFetch(
-			'course-statistics',
-			{ report: 'performance', limit: 500 },
-			{
-				success: ( response ) => {
-					lpStatsReportModal.open( {
-						title: getStatsI18n(
-							'coursePerformance',
-							'Course Performance'
-						),
-						tableId: 'course-performance',
-						columns: this.performanceColumns(),
-						rows: response.data?.rows || [],
-					} );
-				},
-				completed: () => lpUtils.lpSetLoadingEl( btn, 0 ),
-			}
-		);
+		lpStatsReportModal.open( {
+			report: 'course_performance',
+			title: getStatsI18n( 'coursePerformance', 'Course performance' ),
+			tableId: 'course-performance',
+		} );
 	}
 
 	exportTables() {

@@ -293,7 +293,7 @@ export class LpStatsTabInstructors {
 			},
 			{
 				key: 'action',
-				label: getStatsI18n( 'actionRequired', 'Action Required' ),
+				label: getStatsI18n( 'actionRequired', 'Action required' ),
 				format: ( value ) => this.actionLabel( value ),
 				csv: ( row ) => this.actionLabel( row.action ),
 			},
@@ -356,43 +356,14 @@ export class LpStatsTabInstructors {
 			return;
 		}
 		const instructorName =
-			row.dataset.instructorName || getStatsI18n( 'instructorReport', 'Instructor Report' );
+			row.dataset.instructorName || getStatsI18n( 'instructorReport', 'Instructor report' );
 
-		lpStatsFetch(
-			'instructor-report',
-			{ instructor_id: instructorId, limit: 500 },
-			{
-				success: ( response ) => {
-					lpStatsReportModal.open( {
-						title: instructorName,
-						tableId: `instructor-${ instructorId }`,
-						columns: this.reportColumns(),
-						rows: response.data?.rows || [],
-					} );
-				},
-				error: () => {
-					lpStatsReportModal.open( {
-						title: instructorName,
-						tableId: `instructor-${ instructorId }`,
-						columns: this.reportColumns(),
-						rows: [],
-					} );
-				},
-			}
-		);
-	}
-
-	reportColumns() {
-		return [
-			{ key: 'name', label: getStatsI18n( 'course', 'Course' ) },
-			{ key: 'sold', label: getStatsI18n( 'sold', 'Sold' ) },
-			{
-				key: 'revenue_formatted',
-				label: getStatsI18n( 'revenue', 'Revenue' ),
-				csv: ( row ) => row.revenue,
-			},
-			{ key: 'enrolled', label: getStatsI18n( 'enrolled', 'Enrolled' ) },
-		];
+		lpStatsReportModal.open( {
+			report: 'instructor_report',
+			title: instructorName,
+			tableId: `instructor-${ instructorId }`,
+			args: { instructor_id: instructorId },
+		} );
 	}
 
 	viewAllInstructors( args ) {
@@ -403,26 +374,14 @@ export class LpStatsTabInstructors {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( btn, 1 );
-		lpStatsFetch(
-			'instructor-statistics',
-			{ report: 'performance', limit: 500 },
-			{
-				success: ( response ) => {
-					const rows = response.data?.rows || [];
-					lpStatsReportModal.open( {
-						title: getStatsI18n(
-							'instructorPerformance',
-							'Instructor Performance'
-						),
-						tableId: 'instructor-performance',
-						columns: this.performanceColumns(),
-						rows,
-					} );
-				},
-				completed: () => lpUtils.lpSetLoadingEl( btn, 0 ),
-			}
-		);
+		lpStatsReportModal.open( {
+			report: 'instructor_performance',
+			title: getStatsI18n(
+				'instructorPerformance',
+				'Instructor performance'
+			),
+			tableId: 'instructor-performance',
+		} );
 	}
 
 	exportTables() {

@@ -59,38 +59,52 @@ class InstructorStatisticsProvider {
 	}
 
 	/**
-	 * Per-instructor drill-down: sold + enrolled courses merged by course_id.
+	 * Per-instructor drill-down: sold + enrolled courses merged by course_id,
+	 * paginated for the report popup.
 	 *
-	 * @param int $instructor_id
-	 * @param int $limit
-	 * @return array { instructor_id, rows: [...], error?: string }
+	 * The two source queries are merged in PHP, so the page slice happens after
+	 * the merge over a bounded candidate set ( learn-press/statistics/report-max-rows ).
+	 *
+	 * @param int    $instructor_id
+	 * @param int    $paged  1-based page.
+	 * @param int    $limit  Rows per page.
+	 * @param string $search Optional course-title filter.
+	 * @return array { instructor_id, rows: [...], total: int, error?: string }
 	 */
-	public static function get_report( int $instructor_id, int $limit = 500 ): array {
+	public static function get_report( int $instructor_id, int $paged = 1, int $limit = 20, string $search = '' ): array {
 		$instructor_id = absint( $instructor_id );
 		if ( $instructor_id <= 0 || ! get_user_by( 'id', $instructor_id ) ) {
 			return array(
 				'instructor_id' => $instructor_id,
 				'rows'          => array(),
+				'total'         => 0,
 				'error'         => 'invalid_instructor',
 			);
 		}
 
+		$cap         = (int) apply_filters( 'learn-press/statistics/report-max-rows', 2000 );
 		$lp_stats_db = LP_Statistics_DB::getInstance();
-		$sold        = $lp_stats_db->get_top_sold_courses_by_instructor( $instructor_id, $limit );
-		$enrolled    = $lp_stats_db->get_top_enrolled_courses_by_instructor( $instructor_id, $limit );
+		$sold        = $lp_stats_db->get_top_sold_courses_by_instructor( $instructor_id, $cap, $search );
+		$enrolled    = $lp_stats_db->get_top_enrolled_courses_by_instructor( $instructor_id, $cap, $search );
 
-		$rows = self::merge_report_rows( $sold, $enrolled );
+		$all    = self::merge_report_rows( $sold, $enrolled );
+		$total  = count( $all );
+		$paged  = max( 1, $paged );
+		$limit  = max( 1, $limit );
+		$offset = ( $paged - 1 ) * $limit;
+
 		$rows = array_map(
 			function ( $row ) {
 				$row['revenue_formatted'] = html_entity_decode( learn_press_format_price( $row['revenue'] ) );
 				return $row;
 			},
-			$rows
+			array_slice( $all, $offset, $limit )
 		);
 
 		return array(
 			'instructor_id' => $instructor_id,
 			'rows'          => $rows,
+			'total'         => $total,
 		);
 	}
 

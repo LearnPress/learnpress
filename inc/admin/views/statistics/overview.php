@@ -14,7 +14,7 @@ $order_health_boxes = array(
 	'completed'        => __( 'Completed', 'learnpress' ),
 	'processing'       => __( 'Processing', 'learnpress' ),
 	'pending'          => __( 'Pending', 'learnpress' ),
-	'cancelled_failed' => __( 'Cancelled / Failed', 'learnpress' ),
+	'cancelled_failed' => __( 'Cancelled / failed', 'learnpress' ),
 );
 
 $health_checks = array(
@@ -48,12 +48,12 @@ $funnel_steps = array(
 );
 
 $kpi_cards = array(
-	'net-sales'        => __( 'Net Sales', 'learnpress' ),
-	'completed-orders' => __( 'Completed Orders', 'learnpress' ),
+	'net-sales'        => __( 'Net sales', 'learnpress' ),
+	'completed-orders' => __( 'Completed orders', 'learnpress' ),
 	'enrollments'      => __( 'Enrollments', 'learnpress' ),
-	'completion-rate'  => __( 'Completion Rate', 'learnpress' ),
-	'active-learners'  => __( 'Active Learners', 'learnpress' ),
-	'failed-orders'    => __( 'Failed Orders', 'learnpress' ),
+	'completion-rate'  => __( 'Completion rate', 'learnpress' ),
+	'active-learners'  => __( 'Active learners', 'learnpress' ),
+	'failed-orders'    => __( 'Failed orders', 'learnpress' ),
 );
 ?>
 <div class="lp-admin-statistics-tab-content lp-stats-tab-overview">

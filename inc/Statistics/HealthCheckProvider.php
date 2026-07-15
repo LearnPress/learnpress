@@ -46,12 +46,20 @@ class HealthCheckProvider extends LP_Database {
 	 * @return array [ 'no_enrollment' => int, 'no_content' => int, 'pending_review' => int, 'quiz_low_pass' => int ]
 	 */
 	public function get_checks( ?StatisticsScope $scope = null ): array {
-		return [
-			'no_enrollment'  => $this->count_courses_without_enrollment( $scope ),
-			'no_content'     => $this->count_courses_without_content( $scope ),
-			'pending_review' => $this->count_pending_courses( $scope ),
-			'quiz_low_pass'  => $this->count_low_pass_quizzes( $scope ),
-		];
+		$sig = $scope ? $scope->signature() : [ 0, 0 ];
+
+		return StatisticsCache::remember(
+			'health_checks',
+			[ $sig ],
+			function () use ( $scope ) {
+				return [
+					'no_enrollment'  => $this->count_courses_without_enrollment( $scope ),
+					'no_content'     => $this->count_courses_without_content( $scope ),
+					'pending_review' => $this->count_pending_courses( $scope ),
+					'quiz_low_pass'  => $this->count_low_pass_quizzes( $scope ),
+				];
+			}
+		);
 	}
 
 	/**

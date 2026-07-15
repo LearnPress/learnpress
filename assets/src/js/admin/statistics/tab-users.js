@@ -183,7 +183,7 @@ export class LpStatsTabUsers {
 					{
 						label:
 							chartData.line_label ||
-							getStatsI18n( 'registeredUsers', 'Registered Users' ),
+							getStatsI18n( 'registeredUsers', 'Registered users' ),
 						data: chartData.data || [],
 						yAxisID: 'y',
 					},
@@ -370,23 +370,11 @@ export class LpStatsTabUsers {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( btn, 1 );
-		lpStatsFetch(
-			'user-statistics',
-			{ report: 'top_students', limit: 500 },
-			{
-				success: ( response ) => {
-					const rows = response.data?.rows || [];
-					lpStatsReportModal.open( {
-						title: getStatsI18n( 'topStudents', 'Top Students' ),
-						tableId: 'top-students',
-						columns: this.topStudentsColumns( this.hasScores( rows ) ),
-						rows,
-					} );
-				},
-				completed: () => lpUtils.lpSetLoadingEl( btn, 0 ),
-			}
-		);
+		lpStatsReportModal.open( {
+			report: 'top_students',
+			title: getStatsI18n( 'topStudents', 'Top students' ),
+			tableId: 'top-students',
+		} );
 	}
 
 	viewAllCoursesByStudents( args ) {
@@ -397,25 +385,14 @@ export class LpStatsTabUsers {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( btn, 1 );
-		lpStatsFetch(
-			'user-statistics',
-			{ report: 'courses_by_students', limit: 500 },
-			{
-				success: ( response ) => {
-					lpStatsReportModal.open( {
-						title: getStatsI18n(
-							'topCoursesByStudents',
-							'Top Courses by Students'
-						),
-						tableId: 'courses-by-students',
-						columns: this.coursesByStudentsColumns(),
-						rows: response.data?.rows || [],
-					} );
-				},
-				completed: () => lpUtils.lpSetLoadingEl( btn, 0 ),
-			}
-		);
+		lpStatsReportModal.open( {
+			report: 'courses_by_students',
+			title: getStatsI18n(
+				'topCoursesByStudents',
+				'Top courses by students'
+			),
+			tableId: 'courses-by-students',
+		} );
 	}
 
 	exportTables() {

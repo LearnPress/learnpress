@@ -11,11 +11,11 @@
 defined( 'ABSPATH' ) || exit();
 
 $kpi_cards = array(
-	'users-activated' => __( 'Users Activated', 'learnpress' ),
+	'users-activated' => __( 'Users activated', 'learnpress' ),
 	'students'        => __( 'Students', 'learnpress' ),
 	'instructors'     => __( 'Instructors', 'learnpress' ),
-	'not-started'     => __( 'Not Started', 'learnpress' ),
-	'in-progress'     => __( 'In Progress', 'learnpress' ),
+	'not-started'     => __( 'Not started', 'learnpress' ),
+	'in-progress'     => __( 'In progress', 'learnpress' ),
 	'finished'        => __( 'Finished', 'learnpress' ),
 );
 

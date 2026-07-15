@@ -389,22 +389,11 @@ export class LpStatsTabOrders {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( btn, 1 );
-		lpStatsFetch(
-			'order-statistics',
-			{ report: 'top_sold_courses', limit: 500 },
-			{
-				success: ( response ) => {
-					lpStatsReportModal.open( {
-						title: getStatsI18n( 'topSoldCourses', 'Top Sold Courses' ),
-						tableId: 'top-sold-courses',
-						columns: this.topSoldColumns(),
-						rows: response.data?.rows || [],
-					} );
-				},
-				completed: () => lpUtils.lpSetLoadingEl( btn, 0 ),
-			}
-		);
+		lpStatsReportModal.open( {
+			report: 'top_sold_courses',
+			title: getStatsI18n( 'topSoldCourses', 'Top sold courses' ),
+			tableId: 'top-sold-courses',
+		} );
 	}
 
 	viewAllExceptions( args ) {
@@ -415,25 +404,16 @@ export class LpStatsTabOrders {
 			return;
 		}
 
-		lpUtils.lpSetLoadingEl( btn, 1 );
-		lpStatsFetch(
-			'order-statistics',
-			{ report: 'exceptions', limit: 500 },
-			{
-				success: ( response ) => {
-					lpStatsReportModal.open( {
-						title: getStatsI18n(
-							'orderExceptions',
-							'Recent Order Exceptions'
-						),
-						tableId: 'exceptions',
-						columns: this.exceptionColumns(),
-						rows: this.filterExceptions( response.data?.rows || [] ),
-					} );
-				},
-				completed: () => lpUtils.lpSetLoadingEl( btn, 0 ),
-			}
-		);
+		// The cancelled/failed deep-link is pushed to the server so pagination
+		// totals match the rows shown ( no more client-side filterExceptions ).
+		lpStatsReportModal.open( {
+			report: 'exceptions',
+			title: getStatsI18n( 'orderExceptions', 'Recent order exceptions' ),
+			tableId: 'exceptions',
+			orderStatus: [ 'cancelled', 'failed' ].includes( this.orderStatusFilter )
+				? this.orderStatusFilter
+				: '',
+		} );
 	}
 
 	exportTables() {

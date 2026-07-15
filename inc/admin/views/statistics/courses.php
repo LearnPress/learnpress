@@ -11,12 +11,12 @@
 defined( 'ABSPATH' ) || exit();
 
 $kpi_cards = array(
-	'published'                  => __( 'Published Courses', 'learnpress' ),
-	'pending-review'             => __( 'Pending Review', 'learnpress' ),
-	'future'                     => __( 'Future Courses', 'learnpress' ),
+	'published'                  => __( 'Published courses', 'learnpress' ),
+	'pending-review'             => __( 'Pending review', 'learnpress' ),
+	'future'                     => __( 'Future courses', 'learnpress' ),
 	'enrollments'                => __( 'Enrollments', 'learnpress' ),
-	'avg-completion'             => __( 'Avg. Completion', 'learnpress' ),
-	'courses-without-enrollment' => __( 'Courses Without Enrollment', 'learnpress' ),
+	'avg-completion'             => __( 'Avg. completion', 'learnpress' ),
+	'courses-without-enrollment' => __( 'Courses without enrollment', 'learnpress' ),
 );
 
 $health_checks = array(

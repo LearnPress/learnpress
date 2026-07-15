@@ -1,37 +1,34 @@
 /**
- * Report popup controller — SweetAlert2, house pattern per ViewStudentsModal.
+ * Report popup controller — SweetAlert2 shell over a server-rendered table.
  *
- * open() receives a data-table handle and fires a SweetAlert popup whose body
- * comes from the lp-tmpl-stats-report-modal template. Search filters
- * client-side into a NEW array (source rows never mutated, reopening always
- * shows full data); export sends the currently filtered rows. Close button,
- * overlay click and Escape are SweetAlert2 defaults.
+ * The table is built in PHP ( AdminStatisticsReportTable ) via TableListTemplate
+ * and delivered through TemplateAJAX: open() injects the popup body, points the
+ * .lp-target at the requested report + current filters, and triggers loadAJAX to
+ * fetch it. Pagination is handled by loadAJAX.js ( .page-numbers ). Search
+ * re-queries the server ( debounced, resets to page 1 ); export asks the server
+ * for the full CSV and downloads it.
  *
  * @since 4.4.2
- * @version 1.1.0
+ * @version 3.0.0
  */
 
 import SweetAlert from 'sweetalert2';
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
-import { renderDataTable } from './data-table.js';
-import { exportCsv, buildCsvFilename } from './csv.js';
+import { lpStatsState } from './state.js';
+import { getStatsI18n } from './api.js';
 
 export class LpStatsReportModal {
 	static selectors = {
 		template: '#lp-tmpl-stats-report-modal',
 		elContainer: '.lp-stats-report-modal',
 		elSearch: '.lp-stats-report-modal__search',
-		elCount: '.lp-stats-report-modal__count',
 		elExport: '.lp-stats-report-modal__export',
-		elTable: '.lp-stats-report-modal__table',
+		elTarget: '.lp-target',
 	};
 
 	constructor() {
 		this.title = '';
 		this.tableId = '';
-		this.columns = [];
-		this.allRows = [];
-		this.filteredRows = [];
 	}
 
 	init() {
@@ -45,13 +42,13 @@ export class LpStatsReportModal {
 		LpStatsReportModal._loadedEvents = this;
 
 		// Debounced ONCE here — never create a debounce inside a handler.
-		this.debouncedSearch = lpUtils.debounce( () => this.applySearch(), 300 );
+		this.debouncedSearch = lpUtils.debounce( () => this.applySearch(), 400 );
 
 		lpUtils.eventHandlers( 'click', [
 			{
 				selector: LpStatsReportModal.selectors.elExport,
 				class: this,
-				callBack: this.exportFiltered.name,
+				callBack: this.exportCsv.name,
 			},
 		] );
 
@@ -62,6 +59,24 @@ export class LpStatsReportModal {
 				callBack: this.onSearchInput.name,
 			},
 		] );
+	}
+
+	/**
+	 * @return {Object|null} window.lpAJAXG when it exposes the API we need.
+	 */
+	getAjaxHandle() {
+		const handle = window.lpAJAXG;
+		if (
+			! handle ||
+			'function' !== typeof handle.getDataSetCurrent ||
+			'function' !== typeof handle.setDataSetCurrent ||
+			'function' !== typeof handle.fetchAJAX ||
+			'function' !== typeof handle.showHideLoading
+		) {
+			return null;
+		}
+
+		return handle;
 	}
 
 	getModalPopup() {
@@ -77,6 +92,13 @@ export class LpStatsReportModal {
 		return popup.querySelector( LpStatsReportModal.selectors.elContainer );
 	}
 
+	getTarget() {
+		const content = this.getModalContent();
+		return content
+			? content.querySelector( LpStatsReportModal.selectors.elTarget )
+			: null;
+	}
+
 	getModalHtml() {
 		const template = document.querySelector(
 			LpStatsReportModal.selectors.template
@@ -85,32 +107,35 @@ export class LpStatsReportModal {
 		return template ? template.innerHTML : '';
 	}
 
+	isOpen() {
+		return !! this.getModalContent();
+	}
+
 	/**
-	 * @param {Object} report { title, tableId?, columns, rows } — a data-table handle.
+	 * @param {Object} report { report, title, tableId?, orderStatus? }
+	 *   - report:      server report slug ( e.g. 'top_courses' ).
+	 *   - orderStatus: cancelled/failed deep-link for the exceptions report.
 	 */
 	open( report = {} ) {
 		const modalHtml = this.getModalHtml();
-		if ( ! modalHtml ) {
+		if ( ! modalHtml || ! report.report ) {
 			return;
 		}
 
 		this.init();
 
 		this.title = report.title || '';
-		this.tableId = report.tableId || this.title;
-		this.columns = report.columns || [];
-		this.allRows = report.rows || [];
-		this.filteredRows = [ ...this.allRows ];
+		this.tableId = report.tableId || report.report;
 
 		SweetAlert.fire( {
 			title: this.title,
 			html: modalHtml,
-			width: '80%',
+			// Large by default; the custom class lets the SCSS push it (near) full size.
+			width: '100%',
+			customClass: { popup: 'lp-stats-report-popup' },
 			showConfirmButton: false,
 			showCloseButton: true,
-			didOpen: () => {
-				this.renderRows();
-			},
+			didOpen: () => this.loadReport( report ),
 		} );
 	}
 
@@ -118,8 +143,37 @@ export class LpStatsReportModal {
 		SweetAlert.close();
 	}
 
-	isOpen() {
-		return !! this.getModalContent();
+	/**
+	 * Seed the .lp-target with report + current filters and fetch page 1.
+	 *
+	 * @param {Object} report
+	 */
+	loadReport( report ) {
+		const target = this.getTarget();
+		const handle = this.getAjaxHandle();
+		if ( ! target || ! handle ) {
+			if ( target ) {
+				target.innerHTML = getStatsI18n( 'loadError', 'Request failed.' );
+			}
+			return;
+		}
+
+		const dataSend = handle.getDataSetCurrent( target );
+		dataSend.args = {
+			...( dataSend.args || {} ),
+			...lpStatsState.get(),
+			report: report.report,
+			search: '',
+			paged: 1,
+			// Report-specific args ( e.g. instructor_id ) win over the global filters.
+			...( report.args || {} ),
+		};
+		if ( report.orderStatus ) {
+			dataSend.args.order_status = report.orderStatus;
+		}
+		handle.setDataSetCurrent( target, dataSend );
+
+		this.reloadTarget( target, dataSend );
 	}
 
 	onSearchInput() {
@@ -127,64 +181,118 @@ export class LpStatsReportModal {
 	}
 
 	applySearch() {
-		const elContent = this.getModalContent();
-		if ( ! elContent ) {
+		const content = this.getModalContent();
+		const target = this.getTarget();
+		const handle = this.getAjaxHandle();
+		if ( ! content || ! target || ! handle ) {
 			return;
 		}
 
-		const elSearch = elContent.querySelector(
+		const elSearch = content.querySelector(
 			LpStatsReportModal.selectors.elSearch
 		);
-		const term = ( elSearch?.value || '' ).trim().toLowerCase();
+		const dataSend = handle.getDataSetCurrent( target );
+		dataSend.args = dataSend.args || {};
+		dataSend.args.search = ( elSearch?.value || '' ).trim();
+		dataSend.args.paged = 1;
+		handle.setDataSetCurrent( target, dataSend );
 
-		if ( ! term ) {
-			this.filteredRows = [ ...this.allRows ];
-		} else {
-			this.filteredRows = this.allRows.filter( ( row ) =>
-				this.columns.some( ( column ) => {
-					const value = row[ column.key ];
-					return (
-						( 'string' === typeof value ||
-							'number' === typeof value ) &&
-						String( value ).toLowerCase().includes( term )
+		this.reloadTarget( target, dataSend );
+	}
+
+	/**
+	 * Loading indicator + AJAX fetch, swapping the target's innerHTML.
+	 *
+	 * @param {Element} target
+	 * @param {Object}  dataSend
+	 */
+	reloadTarget( target, dataSend ) {
+		const handle = this.getAjaxHandle();
+		if ( ! handle ) {
+			return;
+		}
+
+		handle.showHideLoading( target, 1 );
+
+		handle.fetchAJAX( dataSend, {
+			success: ( response ) => {
+				const { status, message, data } = response;
+				if ( 'success' === status ) {
+					target.innerHTML = data.content || '';
+				} else {
+					target.innerHTML =
+						message || getStatsI18n( 'loadError', 'Request failed.' );
+				}
+			},
+			error: ( err ) => {
+				// eslint-disable-next-line no-console
+				console.error( 'LP Statistics report:', err );
+			},
+			completed: () => handle.showHideLoading( target, 0 ),
+		} );
+	}
+
+	/**
+	 * Ask the server for the full ( capped ) CSV and download it.
+	 */
+	exportCsv( args ) {
+		const content = this.getModalContent();
+		const target = this.getTarget();
+		const handle = this.getAjaxHandle();
+		if ( ! content || ! target || ! handle ) {
+			return;
+		}
+
+		const btn = args?.target?.closest( LpStatsReportModal.selectors.elExport );
+		if ( ! btn || btn.classList.contains( 'loading' ) ) {
+			return;
+		}
+
+		// Clone the current request but hit the CSV callback.
+		const current = handle.getDataSetCurrent( target );
+		const dataSend = {
+			...current,
+			args: { ...( current.args || {} ) },
+			callback: { ...( current.callback || {} ), method: 'render_report_csv' },
+		};
+
+		lpUtils.lpSetLoadingEl( btn, 1 );
+
+		handle.fetchAJAX( dataSend, {
+			success: ( response ) => {
+				const { status, data } = response;
+				if ( 'success' === status && data && data.csv ) {
+					this.download(
+						data.filename || 'learnpress-report.csv',
+						data.csv
 					);
-				} )
-			);
-		}
-
-		this.renderRows();
+				}
+			},
+			error: ( err ) => {
+				// eslint-disable-next-line no-console
+				console.error( 'LP Statistics export:', err );
+			},
+			completed: () => lpUtils.lpSetLoadingEl( btn, 0 ),
+		} );
 	}
 
-	renderRows() {
-		const elContent = this.getModalContent();
-		if ( ! elContent ) {
-			return;
-		}
-
-		renderDataTable(
-			elContent.querySelector( LpStatsReportModal.selectors.elTable ),
-			this.columns,
-			this.filteredRows
-		);
-
-		const elCount = elContent.querySelector(
-			LpStatsReportModal.selectors.elCount
-		);
-		if ( elCount ) {
-			elCount.textContent = `${ this.filteredRows.length } / ${ this.allRows.length }`;
-		}
-	}
-
-	exportFiltered() {
-		if ( ! this.isOpen() || ! this.columns.length ) {
-			return;
-		}
-
-		exportCsv(
-			buildCsvFilename( 'report', this.tableId ),
-			this.columns,
-			this.filteredRows
-		);
+	/**
+	 * @param {string} filename
+	 * @param {string} csv
+	 */
+	download( filename, csv ) {
+		// BOM keeps Excel reading UTF-8 (Vietnamese titles etc.).
+		const blob = new Blob( [ '\u{FEFF}' + csv ], {
+			type: 'text/csv;charset=utf-8;',
+		} );
+		const url = URL.createObjectURL( blob );
+		const link = document.createElement( 'a' );
+		link.href = url;
+		link.download = filename;
+		document.body.appendChild( link );
+		link.click();
+		document.body.removeChild( link );
+		URL.revokeObjectURL( url );
 	}
 }
 

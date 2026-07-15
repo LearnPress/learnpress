@@ -75,6 +75,32 @@ class DashboardStatisticsDB extends LP_Database {
 	}
 
 	/**
+	 * Prepared "AND {$field} LIKE '%...%'" fragment for the report popup search
+	 * box. Empty search → no condition. LIKE wildcards in the term are escaped.
+	 *
+	 * The returned fragment is meant to be interpolated into ANOTHER
+	 * wpdb::prepare() string (the report queries build their SQL that way). To
+	 * survive that second prepare pass its literal '%' are doubled — the outer
+	 * prepare() collapses each '%%' back to '%', reproducing the fragment
+	 * verbatim instead of mistaking '%term%' for placeholders.
+	 *
+	 * @param string $search
+	 * @param string $field Hardcoded, already-qualified column (e.g. 'p2.post_title').
+	 * @return string
+	 * @since 4.4.2
+	 */
+	private function search_condition( string $search, string $field ): string {
+		$search = trim( $search );
+		if ( '' === $search ) {
+			return '';
+		}
+
+		$fragment = $this->wpdb->prepare( " AND {$field} LIKE %s", '%' . $this->wpdb->esc_like( $search ) . '%' );
+
+		return str_replace( '%', '%%', $fragment );
+	}
+
+	/**
 	 * Course enrollments started in the range.
 	 *
 	 * @param string               $type
@@ -251,6 +277,27 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array [ 'registered' => int, 'enrolled' => int, 'started' => int, 'completed' => int, 'failed'? => int ]
 	 */
 	public function get_learner_funnel( string $type, string $value, ?StatisticsScope $scope = null, bool $with_failed = false ): array {
+		$sig = $scope ? $scope->signature() : [ 0, 0 ];
+
+		return StatisticsCache::remember(
+			'funnel',
+			[ $type, $value, $sig, $with_failed ],
+			function () use ( $type, $value, $scope, $with_failed ) {
+				return $this->compute_learner_funnel( $type, $value, $scope, $with_failed );
+			}
+		);
+	}
+
+	/**
+	 * Uncached funnel computation. See get_learner_funnel().
+	 *
+	 * @param string               $type
+	 * @param string               $value
+	 * @param StatisticsScope|null $scope
+	 * @param bool                 $with_failed
+	 * @return array
+	 */
+	private function compute_learner_funnel( string $type, string $value, ?StatisticsScope $scope, bool $with_failed ): array {
 		if ( ! $type || ! $value ) {
 			$empty = [
 				'registered' => 0,
@@ -321,15 +368,17 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @param string               $value
 	 * @param StatisticsScope|null $scope
 	 * @param int                  $limit Row cap (popup drill-down needs more than the widget's 50).
+	 * @param string               $search Optional course-title filter (popup search box).
 	 * @return array Rows of { course_id, course_name, revenue, order_count }.
 	 */
-	public function get_course_revenue_rows( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 50 ): array {
+	public function get_course_revenue_rows( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 50, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
 
-		$time  = $this->time_condition( $type, $value, 'p.post_date' );
-		$where = $this->scope_condition( $scope, 'oi.item_id' );
+		$time   = $this->time_condition( $type, $value, 'p.post_date' );
+		$where  = $this->scope_condition( $scope, 'oi.item_id' );
+		$search = $this->search_condition( $search, 'p2.post_title' );
 
 		$sql = $this->wpdb->prepare(
 			"SELECT oi.item_id AS course_id,
@@ -340,7 +389,7 @@ class DashboardStatisticsDB extends LP_Database {
 			INNER JOIN {$this->tb_lp_order_items} AS oi ON oi.order_id = p.ID
 			INNER JOIN {$this->tb_posts} AS p2 ON p2.ID = oi.item_id
 			INNER JOIN {$this->tb_lp_order_itemmeta} AS oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = %s
-			WHERE p.post_type = %s AND p.post_status = %s AND oi.item_type = %s {$time} {$where}
+			WHERE p.post_type = %s AND p.post_status = %s AND oi.item_type = %s {$time} {$where} {$search}
 			GROUP BY oi.item_id, p2.post_title
 			ORDER BY revenue DESC
 			LIMIT %d",
@@ -363,15 +412,17 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @param string               $value
 	 * @param StatisticsScope|null $scope
 	 * @param int                  $limit Row cap (popup drill-down needs more than the widget's 50).
+	 * @param string               $search Optional course-title filter (report popup search box).
 	 * @return array Rows of { course_id, course_name, enrolled, completed }.
 	 */
-	public function get_course_enrollment_rows( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 50 ): array {
+	public function get_course_enrollment_rows( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 50, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
 
-		$time  = $this->time_condition( $type, $value, 'ui.start_time' );
-		$where = $this->scope_condition( $scope, 'ui.item_id' );
+		$time   = $this->time_condition( $type, $value, 'ui.start_time' );
+		$where  = $this->scope_condition( $scope, 'ui.item_id' );
+		$search = $this->search_condition( $search, 'p2.post_title' );
 
 		$sql = $this->wpdb->prepare(
 			"SELECT ui.item_id AS course_id,
@@ -380,7 +431,7 @@ class DashboardStatisticsDB extends LP_Database {
 				SUM( ui.status = %s ) AS completed
 			FROM {$this->tb_lp_user_items} AS ui
 			INNER JOIN {$this->tb_posts} AS p2 ON p2.ID = ui.item_id
-			WHERE ui.item_type = %s {$time} {$where}
+			WHERE ui.item_type = %s {$time} {$where} {$search}
 			GROUP BY ui.item_id, p2.post_title
 			ORDER BY enrolled DESC
 			LIMIT %d",
@@ -459,16 +510,144 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @param string               $value
 	 * @param StatisticsScope|null $scope
 	 * @param int                  $limit
+	 * @param string               $search Optional course-title filter (report popup search box).
 	 * @return array See merge_course_performance().
 	 */
-	public function get_top_courses_performance( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 5 ): array {
+	public function get_top_courses_performance( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 5, string $search = '' ): array {
 		$fetch_limit = max( 50, $limit );
 
 		return self::merge_course_performance(
-			$this->get_course_revenue_rows( $type, $value, $scope, $fetch_limit ),
-			$this->get_course_enrollment_rows( $type, $value, $scope, $fetch_limit ),
+			$this->get_course_revenue_rows( $type, $value, $scope, $fetch_limit, $search ),
+			$this->get_course_enrollment_rows( $type, $value, $scope, $fetch_limit, $search ),
 			$limit
 		);
+	}
+
+	/**
+	 * Batch-map course IDs to their author's display name.
+	 *
+	 * @param array $course_ids
+	 * @return array course_id => display_name
+	 * @since 4.4.2
+	 */
+	public function get_course_instructor_names( array $course_ids ): array {
+		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
+		if ( empty( $course_ids ) ) {
+			return [];
+		}
+
+		$placeholders = implode( ', ', array_fill( 0, count( $course_ids ), '%d' ) );
+		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Dynamic %d list is built from absint-normalized IDs.
+		$sql = $this->wpdb->prepare(
+			"SELECT p.ID AS course_id, u.display_name AS instructor
+			FROM {$this->tb_posts} AS p
+			LEFT JOIN {$this->tb_users} AS u ON u.ID = p.post_author
+			WHERE p.ID IN ( {$placeholders} )",
+			...$course_ids
+		);
+		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$rows = $this->wpdb->get_results( $sql );
+		$map  = [];
+
+		foreach ( (array) $rows as $row ) {
+			$map[ (int) $row->course_id ] = (string) $row->instructor;
+		}
+
+		return $map;
+	}
+
+	/**
+	 * Batch-map course IDs to their course-category names.
+	 *
+	 * Returns a list per course ( sorted by name ) so callers can show the
+	 * primary category on screen while exporting the full set to CSV.
+	 *
+	 * @param array $course_ids
+	 * @return array course_id => string[] category names
+	 * @since 4.4.2
+	 */
+	public function get_course_category_names( array $course_ids ): array {
+		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
+		if ( empty( $course_ids ) ) {
+			return [];
+		}
+
+		$placeholders = implode( ', ', array_fill( 0, count( $course_ids ), '%d' ) );
+		// Multi-char separator that will not occur inside a term name, so the
+		// GROUP_CONCAT can be split back into a clean list in PHP.
+		$sep = '|~|';
+		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Dynamic %d list is built from absint-normalized IDs.
+		$sql = $this->wpdb->prepare(
+			"SELECT tr.object_id AS course_id,
+				GROUP_CONCAT( DISTINCT t.name ORDER BY t.name SEPARATOR '{$sep}' ) AS category
+			FROM {$this->wpdb->term_relationships} AS tr
+			INNER JOIN {$this->wpdb->term_taxonomy} AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy = %s
+			INNER JOIN {$this->wpdb->terms} AS t ON t.term_id = tt.term_id
+			WHERE tr.object_id IN ( {$placeholders} )
+			GROUP BY tr.object_id",
+			LP_COURSE_CATEGORY_TAX,
+			...$course_ids
+		);
+		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$rows = $this->wpdb->get_results( $sql );
+		$map  = [];
+
+		foreach ( (array) $rows as $row ) {
+			// Term names are entity-encoded in the DB; the cell re-escapes, so decode here.
+			$names = explode( $sep, wp_specialchars_decode( (string) $row->category ) );
+			$names = array_values( array_filter( array_map( 'trim', $names ), 'strlen' ) );
+
+			$map[ (int) $row->course_id ] = $names;
+		}
+
+		return $map;
+	}
+
+	/**
+	 * Completed-order revenue per course for a set of course IDs in the range.
+	 * Used to compute the report "Trend" ( current vs previous period ).
+	 *
+	 * @param string               $type
+	 * @param string               $value
+	 * @param StatisticsScope|null $scope
+	 * @param array                $course_ids
+	 * @return array course_id => float revenue
+	 * @since 4.4.2
+	 */
+	public function get_course_revenue_totals( string $type, string $value, ?StatisticsScope $scope, array $course_ids ): array {
+		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
+		if ( ! $type || ! $value || empty( $course_ids ) ) {
+			return [];
+		}
+
+		$time         = $this->time_condition( $type, $value, 'p.post_date' );
+		$where        = $this->scope_condition( $scope, 'oi.item_id' );
+		$placeholders = implode( ', ', array_fill( 0, count( $course_ids ), '%d' ) );
+
+		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Dynamic %d list is built from absint-normalized IDs.
+		$sql = $this->wpdb->prepare(
+			"SELECT oi.item_id AS course_id,
+				SUM( CAST( oim.meta_value AS DECIMAL(10,2) ) ) AS revenue
+			FROM {$this->tb_posts} AS p
+			INNER JOIN {$this->tb_lp_order_items} AS oi ON oi.order_id = p.ID
+			INNER JOIN {$this->tb_lp_order_itemmeta} AS oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = %s
+			WHERE p.post_type = %s AND p.post_status = %s AND oi.item_type = %s AND oi.item_id IN ( {$placeholders} ) {$time} {$where}
+			GROUP BY oi.item_id",
+			'_total',
+			LP_ORDER_CPT,
+			LP_ORDER_COMPLETED_DB,
+			LP_COURSE_CPT,
+			...$course_ids
+		);
+		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$rows = $this->wpdb->get_results( $sql );
+		$map  = [];
+
+		foreach ( (array) $rows as $row ) {
+			$map[ (int) $row->course_id ] = (float) $row->revenue;
+		}
+
+		return $map;
 	}
 
 	/**
@@ -596,16 +775,20 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @param string               $value
 	 * @param StatisticsScope|null $scope
 	 * @param int                  $limit
+	 * @param int                  $offset Row offset for report-popup pagination.
+	 * @param string               $search Optional course-title filter.
 	 * @return array Rows of { course_id, name, revenue, orders, aov, status_label }.
 	 */
-	public function get_top_sold_courses_detailed( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10 ): array {
+	public function get_top_sold_courses_detailed( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10, int $offset = 0, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
 
-		$limit = max( 1, $limit );
-		$time  = $this->time_condition( $type, $value, 'p.post_date' );
-		$where = $this->scope_condition( $scope, 'oi.item_id' );
+		$limit  = max( 1, $limit );
+		$offset = max( 0, $offset );
+		$time   = $this->time_condition( $type, $value, 'p.post_date' );
+		$where  = $this->scope_condition( $scope, 'oi.item_id' );
+		$search = $this->search_condition( $search, 'p2.post_title' );
 
 		$sql = $this->wpdb->prepare(
 			"SELECT oi.item_id AS course_id,
@@ -616,15 +799,16 @@ class DashboardStatisticsDB extends LP_Database {
 			INNER JOIN {$this->tb_lp_order_items} AS oi ON oi.order_id = p.ID
 			INNER JOIN {$this->tb_posts} AS p2 ON p2.ID = oi.item_id
 			INNER JOIN {$this->tb_lp_order_itemmeta} AS oim_total ON oim_total.learnpress_order_item_id = oi.order_item_id AND oim_total.meta_key = %s AND CAST( oim_total.meta_value AS DECIMAL(10,2) ) > 0
-			WHERE p.post_type = %s AND p.post_status = %s AND oi.item_type = %s {$time} {$where}
+			WHERE p.post_type = %s AND p.post_status = %s AND oi.item_type = %s {$time} {$where} {$search}
 			GROUP BY oi.item_id, p2.post_title
 			ORDER BY revenue DESC, orders DESC
-			LIMIT %d",
+			LIMIT %d OFFSET %d",
 			'_total',
 			LP_ORDER_CPT,
 			LP_ORDER_COMPLETED_DB,
 			LP_COURSE_CPT,
-			$limit
+			$limit,
+			$offset
 		);
 
 		$rows = $this->wpdb->get_results( $sql );
@@ -659,6 +843,45 @@ class DashboardStatisticsDB extends LP_Database {
 			},
 			$rows
 		);
+	}
+
+	/**
+	 * Total distinct paid courses matching get_top_sold_courses_detailed()'s
+	 * filters — the row total for report-popup pagination.
+	 *
+	 * @param string               $type
+	 * @param string               $value
+	 * @param StatisticsScope|null $scope
+	 * @param string               $search
+	 * @return int
+	 * @since 4.4.2
+	 */
+	public function count_top_sold_courses( string $type, string $value, ?StatisticsScope $scope = null, string $search = '' ): int {
+		if ( ! $type || ! $value ) {
+			return 0;
+		}
+
+		$time   = $this->time_condition( $type, $value, 'p.post_date' );
+		$where  = $this->scope_condition( $scope, 'oi.item_id' );
+		$search = $this->search_condition( $search, 'p2.post_title' );
+
+		$sql = $this->wpdb->prepare(
+			"SELECT COUNT(*) FROM (
+				SELECT oi.item_id
+				FROM {$this->tb_posts} AS p
+				INNER JOIN {$this->tb_lp_order_items} AS oi ON oi.order_id = p.ID
+				INNER JOIN {$this->tb_posts} AS p2 ON p2.ID = oi.item_id
+				INNER JOIN {$this->tb_lp_order_itemmeta} AS oim_total ON oim_total.learnpress_order_item_id = oi.order_item_id AND oim_total.meta_key = %s AND CAST( oim_total.meta_value AS DECIMAL(10,2) ) > 0
+				WHERE p.post_type = %s AND p.post_status = %s AND oi.item_type = %s {$time} {$where} {$search}
+				GROUP BY oi.item_id, p2.post_title
+			) AS t",
+			'_total',
+			LP_ORDER_CPT,
+			LP_ORDER_COMPLETED_DB,
+			LP_COURSE_CPT
+		);
+
+		return (int) $this->wpdb->get_var( $sql );
 	}
 
 	/**
@@ -776,20 +999,42 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @param string               $value
 	 * @param StatisticsScope|null $scope
 	 * @param int                  $limit
+	 * @param int                  $offset Row offset for report-popup pagination.
+	 * @param string               $search Optional instructor-name filter.
 	 * @return array Rows of { instructor_id, instructor_name, course_count, revenue, enrolled, completed, completion_rate }.
 	 */
-	public function get_instructor_performance( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 5 ): array {
+	public function get_instructor_performance( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 5, int $offset = 0, string $search = '' ): array {
+		$sig = $scope ? $scope->signature() : [ 0, 0 ];
+
+		return StatisticsCache::remember(
+			'instructor_performance',
+			[ $type, $value, $sig, $limit, $offset, $search ],
+			function () use ( $type, $value, $scope, $limit, $offset, $search ) {
+				return $this->compute_instructor_performance( $type, $value, $scope, $limit, $offset, $search );
+			}
+		);
+	}
+
+	/**
+	 * Uncached instructor performance query. See get_instructor_performance().
+	 *
+	 * @param string               $type
+	 * @param string               $value
+	 * @param StatisticsScope|null $scope
+	 * @param int                  $limit
+	 * @param int                  $offset
+	 * @param string               $search
+	 * @return array
+	 */
+	private function compute_instructor_performance( string $type, string $value, ?StatisticsScope $scope, int $limit, int $offset, string $search ): array {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
 
+		$offset      = max( 0, $offset );
 		$time_orders = $this->time_condition( $type, $value, 'o.post_date' );
 		$time_items  = $this->time_condition( $type, $value, 'ui.start_time' );
-		$list_where  = $this->scope_condition( $scope, 'p.ID' );
-
-		if ( $scope && $scope->instructor_id > 0 ) {
-			$list_where .= $this->wpdb->prepare( ' AND u.ID = %d', $scope->instructor_id );
-		}
+		$list_where  = $this->instructor_list_where( $scope, $search );
 
 		$sql = $this->wpdb->prepare(
 			"SELECT u.ID AS instructor_id,
@@ -817,14 +1062,15 @@ class DashboardStatisticsDB extends LP_Database {
 			WHERE 1=1 {$list_where}
 			GROUP BY u.ID, u.display_name
 			ORDER BY revenue DESC
-			LIMIT %d",
+			LIMIT %d OFFSET %d",
 			LP_ORDER_CPT,
 			LP_ORDER_COMPLETED_DB,
 			LP_COURSE_CPT,
 			LP_COURSE_CPT,
 			LP_COURSE_CPT,
 			LP_COURSE_CPT,
-			max( 1, $limit )
+			max( 1, $limit ),
+			$offset
 		);
 
 		$rows = $this->wpdb->get_results( $sql );
@@ -849,6 +1095,56 @@ class DashboardStatisticsDB extends LP_Database {
 			},
 			$rows
 		);
+	}
+
+	/**
+	 * Shared WHERE fragment for the instructor list (scope + explicit instructor
+	 * + name search) so get_instructor_performance() and its count stay in sync.
+	 *
+	 * @param StatisticsScope|null $scope
+	 * @param string               $search
+	 * @return string
+	 * @since 4.4.2
+	 */
+	private function instructor_list_where( ?StatisticsScope $scope, string $search = '' ): string {
+		$list_where = $this->scope_condition( $scope, 'p.ID' );
+
+		if ( $scope && $scope->instructor_id > 0 ) {
+			$list_where .= $this->wpdb->prepare( ' AND u.ID = %d', $scope->instructor_id );
+		}
+
+		$list_where .= $this->search_condition( $search, 'u.display_name' );
+
+		return $list_where;
+	}
+
+	/**
+	 * Total instructors matching get_instructor_performance()'s filters — the
+	 * row total for report-popup pagination.
+	 *
+	 * @param string               $type
+	 * @param string               $value
+	 * @param StatisticsScope|null $scope
+	 * @param string               $search
+	 * @return int
+	 * @since 4.4.2
+	 */
+	public function count_instructor_performance( string $type, string $value, ?StatisticsScope $scope = null, string $search = '' ): int {
+		if ( ! $type || ! $value ) {
+			return 0;
+		}
+
+		$list_where = $this->instructor_list_where( $scope, $search );
+
+		$sql = $this->wpdb->prepare(
+			"SELECT COUNT( DISTINCT u.ID )
+			FROM {$this->tb_users} AS u
+			INNER JOIN {$this->tb_posts} AS p ON p.post_author = u.ID AND p.post_type = %s AND p.post_status = 'publish'
+			WHERE 1=1 {$list_where}",
+			LP_COURSE_CPT
+		);
+
+		return (int) $this->wpdb->get_var( $sql );
 	}
 
 	/**
@@ -946,15 +1242,19 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @param string               $value
 	 * @param StatisticsScope|null $scope
 	 * @param int                  $limit
+	 * @param int                  $offset Row offset for report-popup pagination.
+	 * @param string               $search Optional student-name filter.
 	 * @return array Rows of { user_id, name, enrolled, completed, avg_score, last_active, status }.
 	 */
-	public function get_top_students( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10 ): array {
+	public function get_top_students( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10, int $offset = 0, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
 
-		$time  = $this->time_condition( $type, $value, 'ui.start_time' );
-		$where = $this->scope_condition( $scope, 'ui.item_id' );
+		$offset  = max( 0, $offset );
+		$time    = $this->time_condition( $type, $value, 'ui.start_time' );
+		$where   = $this->scope_condition( $scope, 'ui.item_id' );
+		$search  = $this->search_condition( $search, 'u.display_name' );
 
 		$rows = $this->wpdb->get_results(
 			$this->wpdb->prepare(
@@ -964,13 +1264,14 @@ class DashboardStatisticsDB extends LP_Database {
 					SUM( ui.status = %s ) AS completed
 				FROM {$this->tb_lp_user_items} AS ui
 				INNER JOIN {$this->tb_users} AS u ON u.ID = ui.user_id
-				WHERE ui.item_type = %s {$time} {$where}
+				WHERE ui.item_type = %s {$time} {$where} {$search}
 				GROUP BY ui.user_id, u.display_name
 				ORDER BY enrolled DESC, completed DESC
-				LIMIT %d",
+				LIMIT %d OFFSET %d",
 				'finished',
 				LP_COURSE_CPT,
-				max( 1, $limit )
+				max( 1, $limit ),
+				$offset
 			)
 		);
 
@@ -1039,6 +1340,38 @@ class DashboardStatisticsDB extends LP_Database {
 	}
 
 	/**
+	 * Total distinct students matching get_top_students()'s filters — the row
+	 * total for report-popup pagination.
+	 *
+	 * @param string               $type
+	 * @param string               $value
+	 * @param StatisticsScope|null $scope
+	 * @param string               $search
+	 * @return int
+	 * @since 4.4.2
+	 */
+	public function count_top_students( string $type, string $value, ?StatisticsScope $scope = null, string $search = '' ): int {
+		if ( ! $type || ! $value ) {
+			return 0;
+		}
+
+		$time   = $this->time_condition( $type, $value, 'ui.start_time' );
+		$where  = $this->scope_condition( $scope, 'ui.item_id' );
+		$search = $this->search_condition( $search, 'u.display_name' );
+		$join   = '' !== $search ? "INNER JOIN {$this->tb_users} AS u ON u.ID = ui.user_id" : '';
+
+		$sql = $this->wpdb->prepare(
+			"SELECT COUNT( DISTINCT ui.user_id )
+			FROM {$this->tb_lp_user_items} AS ui
+			{$join}
+			WHERE ui.item_type = %s {$time} {$where} {$search}",
+			LP_COURSE_CPT
+		);
+
+		return (int) $this->wpdb->get_var( $sql );
+	}
+
+	/**
 	 * Courses ranked by students in the range, with started/active-7d
 	 * conditional sums — one GROUP BY, no per-row queries.
 	 *
@@ -1046,15 +1379,19 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @param string               $value
 	 * @param StatisticsScope|null $scope
 	 * @param int                  $limit
+	 * @param int                  $offset Row offset for report-popup pagination.
+	 * @param string               $search Optional course-title filter.
 	 * @return array Rows of { course_id, name, enrolled, started, completed, completion_rate, active_7d }.
 	 */
-	public function get_courses_by_students( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10 ): array {
+	public function get_courses_by_students( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10, int $offset = 0, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
 			return [];
 		}
 
-		$time  = $this->time_condition( $type, $value, 'ui.start_time' );
-		$where = $this->scope_condition( $scope, 'ui.item_id' );
+		$offset = max( 0, $offset );
+		$time   = $this->time_condition( $type, $value, 'ui.start_time' );
+		$where  = $this->scope_condition( $scope, 'ui.item_id' );
+		$search = $this->search_condition( $search, 'p.post_title' );
 
 		$rows = $this->wpdb->get_results(
 			$this->wpdb->prepare(
@@ -1073,17 +1410,18 @@ class DashboardStatisticsDB extends LP_Database {
 					) ) AS active_7d
 				FROM {$this->tb_lp_user_items} AS ui
 				INNER JOIN {$this->tb_posts} AS p ON p.ID = ui.item_id
-				WHERE ui.item_type = %s {$time} {$where}
+				WHERE ui.item_type = %s {$time} {$where} {$search}
 				GROUP BY ui.item_id, p.post_title
 				ORDER BY enrolled DESC
-				LIMIT %d",
+				LIMIT %d OFFSET %d",
 				'finished',
 				LP_LESSON_CPT,
 				LP_QUIZ_CPT,
 				LP_LESSON_CPT,
 				LP_QUIZ_CPT,
 				LP_COURSE_CPT,
-				max( 1, $limit )
+				max( 1, $limit ),
+				$offset
 			)
 		);
 
@@ -1108,6 +1446,38 @@ class DashboardStatisticsDB extends LP_Database {
 			},
 			$rows
 		);
+	}
+
+	/**
+	 * Total distinct courses matching get_courses_by_students()'s filters — the
+	 * row total for report-popup pagination.
+	 *
+	 * @param string               $type
+	 * @param string               $value
+	 * @param StatisticsScope|null $scope
+	 * @param string               $search
+	 * @return int
+	 * @since 4.4.2
+	 */
+	public function count_courses_by_students( string $type, string $value, ?StatisticsScope $scope = null, string $search = '' ): int {
+		if ( ! $type || ! $value ) {
+			return 0;
+		}
+
+		$time   = $this->time_condition( $type, $value, 'ui.start_time' );
+		$where  = $this->scope_condition( $scope, 'ui.item_id' );
+		$search = $this->search_condition( $search, 'p.post_title' );
+		$join   = '' !== $search ? "INNER JOIN {$this->tb_posts} AS p ON p.ID = ui.item_id" : '';
+
+		$sql = $this->wpdb->prepare(
+			"SELECT COUNT( DISTINCT ui.item_id )
+			FROM {$this->tb_lp_user_items} AS ui
+			{$join}
+			WHERE ui.item_type = %s {$time} {$where} {$search}",
+			LP_COURSE_CPT
+		);
+
+		return (int) $this->wpdb->get_var( $sql );
 	}
 
 	/**
@@ -1180,6 +1550,27 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array Rows of { course_id, name, instructor, completion_rate, risk, action }.
 	 */
 	public function get_course_watchlist( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10 ): array {
+		$sig = $scope ? $scope->signature() : [ 0, 0 ];
+
+		return StatisticsCache::remember(
+			'watchlist',
+			[ $type, $value, $sig, $limit ],
+			function () use ( $type, $value, $scope, $limit ) {
+				return $this->compute_course_watchlist( $type, $value, $scope, $limit );
+			}
+		);
+	}
+
+	/**
+	 * Uncached watchlist query. See get_course_watchlist().
+	 *
+	 * @param string               $type
+	 * @param string               $value
+	 * @param StatisticsScope|null $scope
+	 * @param int                  $limit
+	 * @return array
+	 */
+	private function compute_course_watchlist( string $type, string $value, ?StatisticsScope $scope, int $limit ): array {
 		if ( ! $type || ! $value ) {
 			return [];
 		}

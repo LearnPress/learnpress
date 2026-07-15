@@ -65,19 +65,3 @@ export const lpStatsFetch = ( endpoint, extraArgs = {}, functions = {} ) => {
 		}
 	);
 };
-
-/**
- * Escape a DB-sourced string for the rare renderers that must build HTML
- * strings. Prefer textContent; this is the fallback for template literals.
- *
- * @param {*} str
- * @return {string} Escaped string.
- */
-export const lpEscHtml = ( str ) => {
-	return String( str ?? '' )
-		.replace( /&/g, '&amp;' )
-		.replace( /</g, '&lt;' )
-		.replace( />/g, '&gt;' )
-		.replace( /"/g, '&quot;' )
-		.replace( /'/g, '&#039;' );
-};

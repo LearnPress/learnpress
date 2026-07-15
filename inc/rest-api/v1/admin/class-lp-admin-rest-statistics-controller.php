@@ -1,6 +1,5 @@
 <?php
 
-use LearnPress\Helpers\Template;
 use LearnPress\Statistics\DashboardStatisticsDB;
 use LearnPress\Statistics\FilterOptionsProvider;
 use LearnPress\Statistics\HealthCheckProvider;
@@ -67,13 +66,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'permission_check' ),
 				),
 			),
-			'instructor-report'     => array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_instructor_report' ),
-					'permission_callback' => array( $this, 'permission_check' ),
-				),
-			),
 		);
 
 		parent::register_routes();
@@ -93,13 +85,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$params = $request->get_params();
 			$params = LP_Helper::sanitize_params_submitted( $params );
 			$filter = $this->get_statistics_filter( $params );
-
-			// Report drill-down: only the requested table, capped — for the popup. @since 4.4.2
-			if ( ! empty( $params['report'] ) ) {
-				$response->data   = $this->get_dashboard_report( $filter, $params );
-				$response->status = 'success';
-				return $response;
-			}
 
 			$lp_statistic_db                    = LP_Statistics_DB::getInstance();
 			$net_sales                          = $lp_statistic_db->get_net_sales_data( $filter['filter_type'], $filter['time'] );
@@ -147,12 +132,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$params = LP_Helper::sanitize_params_submitted( $params );
 			$filter = $this->get_statistics_filter( $params );
 
-			if ( ! empty( $params['report'] ) ) {
-				$response->data   = $this->get_order_dashboard_report( $filter, $params );
-				$response->status = 'success';
-				return $response;
-			}
-
 			$lp_statistic_db          = LP_Statistics_DB::getInstance();
 			$statistics               = $lp_statistic_db->get_order_statics( $filter['filter_type'], $filter['time'] );
 			$completed_orders         = $lp_statistic_db->get_completed_order_data( $filter['filter_type'], $filter['time'] );
@@ -178,12 +157,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$params = $request->get_params();
 			$params = LP_Helper::sanitize_params_submitted( $params );
 			$filter = $this->get_statistics_filter( $params );
-
-			if ( ! empty( $params['report'] ) ) {
-				$response->data   = $this->get_courses_dashboard_report( $filter, $params );
-				$response->status = 'success';
-				return $response;
-			}
 
 			$lp_statistic_db          = LP_Statistics_DB::getInstance();
 			$published_course         = $lp_statistic_db->get_published_course_data( $filter['filter_type'], $filter['time'] );
@@ -218,12 +191,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$params = LP_Helper::sanitize_params_submitted( $params );
 			$filter = $this->get_statistics_filter( $params );
 
-			if ( ! empty( $params['report'] ) ) {
-				$response->data   = $this->get_users_dashboard_report( $filter, $params );
-				$response->status = 'success';
-				return $response;
-			}
-
 			$lp_statistic_db         = LP_Statistics_DB::getInstance();
 			$user_registers          = $lp_statistic_db->get_user_registered_data( $filter['filter_type'], $filter['time'] );
 			$user_course_statused    = $lp_statistic_db->get_users_by_user_item_graduation_statuses( $filter['filter_type'], $filter['time'] );
@@ -245,7 +212,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 					}
 				}
 			}
-			$chart_data['line_label'] = __( 'User registed', 'learnpress' );
+			$chart_data['line_label'] = __( 'Registered users', 'learnpress' );
 			$data                     = array(
 				'chart_data'              => $chart_data,
 				'user_course_statused'    => $user_course_statused,
@@ -382,6 +349,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return $filter;
 	}
+
 	/**
 	 * process data of a date ( in 24h )
 	 *
@@ -713,46 +681,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Orders dashboard drill-down for report popups.
-	 *
-	 * @param array $filter [ 'filter_type', 'time' ].
-	 * @param array $params Sanitized request params.
-	 * @return array
-	 * @since 4.4.2
-	 */
-	private function get_order_dashboard_report( array $filter, array $params ): array {
-		$report = sanitize_key( $params['report'] );
-		$limit  = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
-		$scope  = StatisticsScope::from_params( $params );
-		$type   = $filter['filter_type'];
-		$time   = (string) $filter['time'];
-
-		switch ( $report ) {
-			case 'top_sold_courses':
-				$rows = array_map(
-					function ( $row ) {
-						$row['revenue_formatted'] = html_entity_decode( learn_press_format_price( $row['revenue'] ) );
-						$row['aov_formatted']     = null !== $row['aov'] ? html_entity_decode( learn_press_format_price( $row['aov'] ) ) : null;
-						return $row;
-					},
-					DashboardStatisticsDB::getInstance()->get_top_sold_courses_detailed( $type, $time, $scope, $limit )
-				);
-				break;
-			case 'exceptions':
-				$rows = OrderExceptionsProvider::getInstance()->get_exceptions( $type, $time, $scope, $limit );
-				break;
-			default:
-				$rows = array();
-		}
-
-		return array(
-			'report' => $report,
-			'rows'   => $rows,
-			'limit'  => $limit,
-		);
-	}
-
-	/**
 	 * Assemble the scoped dashboard payload for the Courses tab.
 	 *
 	 * Legacy response keys are built unscoped in get_courses_statistics(); this
@@ -776,6 +704,12 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		$completion_rows = $db->get_completion_rows( $type, $time, $scope );
 		$completion      = DashboardStatisticsDB::completion_from_rows( $completion_rows, $target );
 		$health_raw      = HealthCheckProvider::getInstance()->get_checks( $scope );
+
+		// Scoped published-courses chart. The legacy top-level `chart_data` stays
+		// unscoped for addon compatibility; this scoped copy is what the tab reads
+		// so instructor/category changes actually redraw the chart.
+		$chart               = $this->process_chart_data( $filter, $lp_stats_db->get_published_course_data( $type, $time, $scope ) );
+		$chart['line_label'] = __( 'Published Courses', 'learnpress' );
 
 		return array(
 			'kpis'          => array(
@@ -802,7 +736,8 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 					'value' => (int) ( $health_raw['no_enrollment'] ?? 0 ),
 				),
 			),
-			'performance'   => $this->format_course_performance_rows( $db->get_top_courses_performance( $type, $time, $scope, 10 ) ),
+			'performance'   => self::format_course_performance_rows( $db->get_top_courses_performance( $type, $time, $scope, 10 ) ),
+			'chart'         => $chart,
 			'health_checks' => array(
 				'no_curriculum'  => (int) ( $health_raw['no_content'] ?? 0 ),
 				'no_students'    => (int) ( $health_raw['no_enrollment'] ?? 0 ),
@@ -815,52 +750,20 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Courses dashboard drill-down for report popups.
-	 *
-	 * @param array $filter [ 'filter_type', 'time' ].
-	 * @param array $params Sanitized request params.
-	 * @return array
-	 * @since 4.4.2
-	 */
-	private function get_courses_dashboard_report( array $filter, array $params ): array {
-		$report = sanitize_key( $params['report'] );
-		$limit  = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
-		$scope  = StatisticsScope::from_params( $params );
-		$rows   = array();
-
-		if ( 'performance' === $report ) {
-			$rows = $this->format_course_performance_rows(
-				DashboardStatisticsDB::getInstance()->get_top_courses_performance(
-					$filter['filter_type'],
-					(string) $filter['time'],
-					$scope,
-					$limit
-				)
-			);
-		}
-
-		return array(
-			'report' => $report,
-			'rows'   => $rows,
-			'limit'  => $limit,
-		);
-	}
-
-	/**
 	 * Format course performance rows for the Courses tab contract.
 	 *
 	 * @param array $rows Rows from DashboardStatisticsDB::get_top_courses_performance().
 	 * @return array
 	 * @since 4.4.2
 	 */
-	private function format_course_performance_rows( array $rows ): array {
+	public static function format_course_performance_rows( array $rows ): array {
 		$course_ids  = array_map(
 			function ( $row ) {
 				return absint( $row['course_id'] ?? 0 );
 			},
 			$rows
 		);
-		$instructors = $this->get_course_instructor_map( $course_ids );
+		$instructors = self::get_course_instructor_map( $course_ids );
 
 		return array_map(
 			function ( $row ) use ( $instructors ) {
@@ -891,7 +794,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	 * @return array course_id => display_name
 	 * @since 4.4.2
 	 */
-	private function get_course_instructor_map( array $course_ids ): array {
+	public static function get_course_instructor_map( array $course_ids ): array {
 		global $wpdb;
 
 		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
@@ -1034,45 +937,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Single-table drill-down for the report popup.
-	 *
-	 * @param array $filter [ 'filter_type', 'time' ].
-	 * @param array $params Sanitized request params ( report, limit, scope ).
-	 * @return array [ 'report' => string, 'rows' => array, 'limit' => int ]
-	 * @since 4.4.2
-	 */
-	private function get_dashboard_report( array $filter, array $params ): array {
-		$report = sanitize_key( $params['report'] );
-		$limit  = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
-		$scope  = StatisticsScope::from_params( $params );
-
-		switch ( $report ) {
-			case 'top_courses':
-				$rows = array_map(
-					function ( $row ) {
-						$row['revenue_formatted'] = html_entity_decode( learn_press_format_price( $row['revenue'] ) );
-						return $row;
-					},
-					DashboardStatisticsDB::getInstance()->get_top_courses_performance(
-						$filter['filter_type'],
-						(string) $filter['time'],
-						$scope,
-						$limit
-					)
-				);
-				break;
-			default:
-				$rows = array();
-		}
-
-		return array(
-			'report' => $report,
-			'rows'   => $rows,
-			'limit'  => $limit,
-		);
-	}
-
-	/**
 	 * Assemble the scoped dashboard payload for the Users tab.
 	 *
 	 * users_activated/students/instructors totals are role-based user counts
@@ -1130,34 +994,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Users dashboard drill-down for report popups.
-	 *
-	 * @param array $filter [ 'filter_type', 'time' ].
-	 * @param array $params Sanitized request params.
-	 * @return array
-	 * @since 4.4.2
-	 */
-	private function get_users_dashboard_report( array $filter, array $params ): array {
-		$report = sanitize_key( $params['report'] );
-		$limit  = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
-		$scope  = StatisticsScope::from_params( $params );
-		$db     = DashboardStatisticsDB::getInstance();
-		$rows   = array();
-
-		if ( 'top_students' === $report ) {
-			$rows = $db->get_top_students( $filter['filter_type'], (string) $filter['time'], $scope, $limit );
-		} elseif ( 'courses_by_students' === $report ) {
-			$rows = $db->get_courses_by_students( $filter['filter_type'], (string) $filter['time'], $scope, $limit );
-		}
-
-		return array(
-			'report' => $report,
-			'rows'   => $rows,
-			'limit'  => $limit,
-		);
-	}
-
-	/**
 	 * Instructors tab payload: KPIs, operations widget, performance + watchlist tables.
 	 *
 	 * @param WP_REST_Request $request
@@ -1173,29 +1009,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$params = LP_Helper::sanitize_params_submitted( $params );
 			$filter = $this->get_statistics_filter( $params );
 			$scope  = StatisticsScope::from_params( $params );
-
-			// Performance drill-down: the full (500-capped) table for the popup. @since 4.4.2
-			if ( ! empty( $params['report'] ) ) {
-				$limit = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
-				$rows  = 'performance' === sanitize_key( $params['report'] )
-					? InstructorStatisticsProvider::format_performance(
-						DashboardStatisticsDB::getInstance()->get_instructor_performance(
-							$filter['filter_type'],
-							(string) $filter['time'],
-							$scope,
-							$limit
-						)
-					)
-					: array();
-
-				$response->data   = array(
-					'report' => sanitize_key( $params['report'] ),
-					'rows'   => $rows,
-					'limit'  => $limit,
-				);
-				$response->status = 'success';
-				return $response;
-			}
 
 			$type        = $filter['filter_type'];
 			$time        = (string) $filter['time'];
@@ -1216,41 +1029,6 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 					'x_label'     => $revenue_chart['x_label'] ?? '',
 				),
 			);
-			$response->status = 'success';
-		} catch ( Throwable $e ) {
-			$response->message = $e->getMessage();
-			$response->status  = 'error';
-		}
-
-		return $response;
-	}
-
-	/**
-	 * Per-instructor drill-down for the performance-row popup.
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return LP_REST_Response
-	 * @since 4.4.2
-	 */
-	public function get_instructor_report( WP_REST_Request $request ): LP_REST_Response {
-		$response = new LP_REST_Response();
-
-		try {
-			$params        = $request->get_params();
-			$params        = LP_Helper::sanitize_params_submitted( $params );
-			$instructor_id = absint( $params['instructor_id'] ?? 0 );
-			$limit         = min( 500, max( 1, absint( $params['limit'] ?? 500 ) ) );
-
-			$report = InstructorStatisticsProvider::get_report( $instructor_id, $limit );
-
-			if ( ! empty( $report['error'] ) ) {
-				$response->message = __( 'Instructor not found or has no courses.', 'learnpress' );
-				$response->status  = 'error';
-				return $response;
-			}
-
-			$response->data   = $report;
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
