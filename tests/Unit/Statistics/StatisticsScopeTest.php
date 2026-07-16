@@ -4,6 +4,7 @@ declare( strict_types=1 );
 
 namespace LearnPress\Tests\Unit\Statistics;
 
+use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
 use InvalidArgumentException;
 use LearnPress\Statistics\StatisticsScope;
@@ -85,6 +86,32 @@ class StatisticsScopeTest extends BrainMonkeyTestCase {
 	public function test_from_params_missing_keys_default_to_unscoped(): void {
 		$scope = StatisticsScope::from_params( [] );
 
+		$this->assertTrue( $scope->is_empty() );
+	}
+
+	public function test_from_params_honors_scope_filter(): void {
+		Filters\expectApplied( 'learn-press/statistics/scope' )
+			->once()
+			->andReturnUsing(
+				static function ( $scope ) {
+					$scope->instructor_id = 42;
+					return $scope;
+				}
+			);
+
+		$scope = StatisticsScope::from_params( [ 'instructor_id' => 5 ] );
+
+		$this->assertSame( 42, $scope->instructor_id );
+	}
+
+	public function test_from_params_falls_back_when_filter_returns_wrong_type(): void {
+		Filters\expectApplied( 'learn-press/statistics/scope' )
+			->once()
+			->andReturn( 'not-a-scope' );
+
+		$scope = StatisticsScope::from_params( [ 'instructor_id' => 5 ] );
+
+		$this->assertInstanceOf( StatisticsScope::class, $scope );
 		$this->assertTrue( $scope->is_empty() );
 	}
 

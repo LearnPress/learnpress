@@ -19,7 +19,7 @@ import { lpStatsReportModal } from './report-modal.js';
 import { exportCsv, buildCsvFilename } from './csv.js';
 
 const sprintfLite = ( template, value ) =>
-	String( template ).replace( /%[ds]/, String( value ) );
+	String( template ).replace( /%[ds]/, String( value ) ).replace( /%%/g, '%' );
 
 export class LpStatsTabInstructors {
 	static selectors = {
@@ -180,6 +180,7 @@ export class LpStatsTabInstructors {
 					},
 				],
 				xLabel: chartData.x_label || '',
+				granularity: chartData.granularity || '',
 			}
 		);
 	}

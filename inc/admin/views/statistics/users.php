@@ -26,9 +26,22 @@ $funnel_steps = array(
 	'completed'  => __( 'Completed', 'learnpress' ),
 	'failed'     => __( 'Failed', 'learnpress' ),
 );
+
+// Section config filters — add/remove/relabel cards and lists. @since 4.4.2
+$kpi_cards    = (array) apply_filters( 'learn-press/statistics/users/kpi-cards', $kpi_cards );
+$funnel_steps = (array) apply_filters( 'learn-press/statistics/users/funnel-steps', $funnel_steps );
 ?>
 <div class="lp-admin-statistics-tab-content lp-stats-tab-users">
-	<?php learn_press_admin_view( 'statistics/parts/filter-bar' ); ?>
+	<?php
+	/**
+	 * Fires at the top of the Users statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/users/before' );
+
+	learn_press_admin_view( 'statistics/parts/filter-bar' );
+	?>
 
 	<div class="lp-stats-dashboard-body">
 		<div class="lp-stats-kpi-grid">
@@ -100,5 +113,14 @@ $funnel_steps = array(
 		</div>
 	</div>
 
-	<?php learn_press_admin_view( 'statistics/parts/report-modal' ); ?>
+	<?php
+	learn_press_admin_view( 'statistics/parts/report-modal' );
+
+	/**
+	 * Fires at the bottom of the Users statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/users/after' );
+	?>
 </div>

@@ -19,6 +19,47 @@ class FilterOptionsProvider {
 	const TRANSIENT_KEY = 'lp_statistics_filter_options';
 
 	/**
+	 * Register cache-invalidation hooks so a newly published course's author or a
+	 * new/changed course category appears in the filter dropdowns promptly,
+	 * instead of waiting out the transient TTL. Call once from the plugin bootstrap.
+	 *
+	 * @return void
+	 * @since 4.4.2
+	 */
+	public static function register_flush_hooks(): void {
+		// Publish/update/unpublish/trash a course → author list may change.
+		add_action( 'save_post_' . LP_COURSE_CPT, array( __CLASS__, 'flush' ) );
+		add_action( 'deleted_post', array( __CLASS__, 'flush_on_course_delete' ) );
+		// Category taxonomy changes → category list may change.
+		add_action( 'created_' . LP_COURSE_CATEGORY_TAX, array( __CLASS__, 'flush' ) );
+		add_action( 'edited_' . LP_COURSE_CATEGORY_TAX, array( __CLASS__, 'flush' ) );
+		add_action( 'delete_' . LP_COURSE_CATEGORY_TAX, array( __CLASS__, 'flush' ) );
+	}
+
+	/**
+	 * Drop the cached options so the next request rebuilds them.
+	 *
+	 * @return void
+	 * @since 4.4.2
+	 */
+	public static function flush(): void {
+		delete_transient( self::TRANSIENT_KEY );
+	}
+
+	/**
+	 * Flush only when the deleted post is a course ( deleted_post is global ).
+	 *
+	 * @param int $post_id
+	 * @return void
+	 * @since 4.4.2
+	 */
+	public static function flush_on_course_delete( $post_id ): void {
+		if ( LP_COURSE_CPT === get_post_type( $post_id ) ) {
+			self::flush();
+		}
+	}
+
+	/**
 	 * Get dropdown options, cached in a transient.
 	 *
 	 * Always returns both keys with arrays (possibly empty) — the JS iterates blindly.
@@ -31,10 +72,10 @@ class FilterOptionsProvider {
 			return $cached;
 		}
 
-		$options = [
+		$options = array(
 			'instructors' => self::get_instructors(),
 			'categories'  => self::get_categories(),
-		];
+		);
 
 		$ttl = (int) apply_filters( 'learn-press/statistics/filter-options-ttl', 600 );
 		set_transient( self::TRANSIENT_KEY, $options, $ttl );
@@ -68,15 +109,15 @@ class FilterOptionsProvider {
 		);
 
 		if ( ! is_array( $results ) ) {
-			return [];
+			return array();
 		}
 
-		$instructors = [];
+		$instructors = array();
 		foreach ( $results as $row ) {
-			$instructors[] = [
+			$instructors[] = array(
 				'id'   => (int) $row->id,
 				'name' => (string) $row->name,
-			];
+			);
 		}
 
 		return $instructors;
@@ -89,24 +130,24 @@ class FilterOptionsProvider {
 	 */
 	private static function get_categories(): array {
 		$terms = get_terms(
-			[
+			array(
 				'taxonomy'   => LP_COURSE_CATEGORY_TAX,
 				'hide_empty' => true,
 				'fields'     => 'id=>name',
-			]
+			)
 		);
 
 		if ( is_wp_error( $terms ) || ! is_array( $terms ) ) {
-			return [];
+			return array();
 		}
 
-		$categories = [];
+		$categories = array();
 		foreach ( $terms as $term_id => $name ) {
-			$categories[] = [
+			$categories[] = array(
 				'id'   => (int) $term_id,
 				// Term names are entity-encoded in the DB; JS renders via textContent, so decode here.
 				'name' => wp_specialchars_decode( (string) $name ),
-			];
+			);
 		}
 
 		return $categories;

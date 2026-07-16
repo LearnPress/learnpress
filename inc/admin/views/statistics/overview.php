@@ -55,9 +55,24 @@ $kpi_cards = array(
 	'active-learners'  => __( 'Active learners', 'learnpress' ),
 	'failed-orders'    => __( 'Failed orders', 'learnpress' ),
 );
+
+// Section config filters — add/remove/relabel cards and lists. @since 4.4.2
+$kpi_cards          = (array) apply_filters( 'learn-press/statistics/overview/kpi-cards', $kpi_cards );
+$health_checks      = (array) apply_filters( 'learn-press/statistics/overview/health-checks', $health_checks );
+$funnel_steps       = (array) apply_filters( 'learn-press/statistics/overview/funnel-steps', $funnel_steps );
+$order_health_boxes = (array) apply_filters( 'learn-press/statistics/overview/order-health-boxes', $order_health_boxes );
 ?>
 <div class="lp-admin-statistics-tab-content lp-stats-tab-overview">
-	<?php learn_press_admin_view( 'statistics/parts/filter-bar' ); ?>
+	<?php
+	/**
+	 * Fires at the top of the Overview statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/overview/before' );
+
+	learn_press_admin_view( 'statistics/parts/filter-bar' );
+	?>
 
 	<div class="lp-stats-dashboard-body">
 		<div class="lp-stats-kpi-grid">
@@ -162,5 +177,14 @@ $kpi_cards = array(
 		</div>
 	</div>
 
-	<?php learn_press_admin_view( 'statistics/parts/report-modal' ); ?>
+	<?php
+	learn_press_admin_view( 'statistics/parts/report-modal' );
+
+	/**
+	 * Fires at the bottom of the Overview statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/overview/after' );
+	?>
 </div>

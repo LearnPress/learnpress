@@ -9,7 +9,7 @@
  */
 
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
-import { lpStatsState, LP_STATS_FILTER_CHANGED, LP_STATS_EXPORT_CSV } from './state.js';
+import { LP_STATS_FILTER_CHANGED, LP_STATS_EXPORT_CSV } from './state.js';
 import { lpStatsFetch, getStatsConfig, getStatsI18n } from './api.js';
 import { renderKpi } from './kpi.js';
 import { renderLineChart } from './chart.js';
@@ -18,7 +18,7 @@ import { lpStatsReportModal } from './report-modal.js';
 import { exportCsv, buildCsvFilename } from './csv.js';
 
 const sprintfLite = ( template, value ) =>
-	String( template ).replace( /%[ds]/, String( value ) );
+	String( template ).replace( /%[ds]/, String( value ) ).replace( /%%/g, '%' );
 
 export class LpStatsTabOverview {
 	static selectors = {
@@ -170,75 +170,24 @@ export class LpStatsTabOverview {
 		);
 	}
 
-	labelFormatter() {
-		const { filtertype } = lpStatsState.get();
-
-		if ( 'today' === filtertype || 'yesterday' === filtertype ) {
-			return ( label ) => `${ label }h`;
-		}
-
-		if ( 'last7days' === filtertype ) {
-			return ( label ) => {
-				const date = new Date( String( label ) );
-				return isNaN( date.getTime() )
-					? String( label )
-					: new Intl.DateTimeFormat( undefined, {
-						weekday: 'short',
-						day: 'numeric',
-					} ).format( date );
-			};
-		}
-
-		if ( 'thisyear' === filtertype ) {
-			return ( label ) => {
-				const month = parseInt( label, 10 );
-				return month >= 1 && month <= 12
-					? new Intl.DateTimeFormat( undefined, { month: 'short' } ).format(
-						new Date( 2000, month - 1, 1 )
-					)
-					: String( label );
-			};
-		}
-
-		if ( 'last12months' === filtertype ) {
-			// Labels are 'mm-YYYY'.
-			return ( label ) => {
-				const parts = String( label ).split( '-' );
-				const month = parseInt( parts[ 0 ], 10 );
-				if ( 2 === parts.length && month >= 1 && month <= 12 ) {
-					return new Intl.DateTimeFormat( undefined, {
-						month: 'short',
-						year: '2-digit',
-					} ).format( new Date( parseInt( parts[ 1 ], 10 ), month - 1, 1 ) );
-				}
-				return String( label );
-			};
-		}
-
-		return ( label ) => String( label );
-	}
-
 	renderChart( chart ) {
-		renderLineChart(
-			LpStatsTabOverview.selectors.elChartCanvas,
-			{
-				labels: chart.labels || [],
-				datasets: [
-					{
-						label: getStatsI18n( 'revenue', 'Revenue' ),
-						data: chart.revenue || [],
-						yAxisID: 'y',
-					},
-					{
-						label: getStatsI18n( 'enrollments', 'Enrollments' ),
-						data: chart.enrollments || [],
-						yAxisID: 'y1',
-					},
-				],
-				xLabel: chart.x_label || '',
-			},
-			{ formatLabel: this.labelFormatter() }
-		);
+		renderLineChart( LpStatsTabOverview.selectors.elChartCanvas, {
+			labels: chart.labels || [],
+			datasets: [
+				{
+					label: getStatsI18n( 'revenue', 'Revenue' ),
+					data: chart.revenue || [],
+					yAxisID: 'y',
+				},
+				{
+					label: getStatsI18n( 'enrollments', 'Enrollments' ),
+					data: chart.enrollments || [],
+					yAxisID: 'y1',
+				},
+			],
+			xLabel: chart.x_label || '',
+			granularity: chart.granularity || '',
+		} );
 	}
 
 	renderFunnel( funnel ) {

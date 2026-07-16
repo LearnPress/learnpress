@@ -135,36 +135,169 @@ $lp-stats-muted: #646970;
 	padding: 16px;
 	border-bottom: 1px solid $lp-stats-border;
 	background: #fff;
+}
 
-	button.btn-filter-time {
+// WC-style date-range dropdown ( supersedes the .btn-filter-time preset row ).
+.lp-stats-daterange {
+	position: relative;
+
+	.lp-stats-daterange__toggle {
+		display: flex;
+		align-items: center;
+		gap: 8px;
 		min-height: 38px;
-		border: 1px solid $lp-stats-blue !important;
-		color: $lp-stats-blue;
-		background: transparent;
-		padding: 8px 20px;
+		padding: 8px 12px;
+		border: 1px solid $lp-stats-panel-border;
+		border-radius: 2px;
+		background: #fff;
+		color: #1d2327;
 		font-size: 14px;
 		font-weight: 500;
 		line-height: 20px;
-	}
+		cursor: pointer;
 
-	button.btn-filter-time.active {
-		border-color: $lp-stats-blue !important;
-		color: #fff;
-		background: $lp-stats-blue;
-	}
-
-	.custom-filter-time {
-		align-items: center;
-		gap: 8px;
-
-		input[type="date"] {
-			min-height: 36px;
+		&:hover,
+		&[aria-expanded="true"] {
+			border-color: $lp-stats-blue;
+			color: $lp-stats-blue;
 		}
 
-		.custom-filter-btn {
-			min-height: 36px;
+		.dashicons {
+			font-size: 18px;
+			width: 18px;
+			height: 18px;
+		}
+
+		.lp-stats-daterange__caret {
+			font-size: 14px;
+			width: 14px;
+			height: 14px;
+			color: $lp-stats-muted;
+		}
+	}
+
+	.lp-stats-daterange__panel {
+		position: absolute;
+		z-index: 100;
+		top: calc(100% + 4px);
+		inset-inline-start: 0;
+		min-width: 280px;
+		border: 1px solid $lp-stats-panel-border;
+		border-radius: 2px;
+		background: #fff;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+	}
+
+	.lp-stats-daterange__tabs {
+		display: flex;
+		border-bottom: 1px solid $lp-stats-border;
+
+		.lp-stats-daterange__tab {
+			flex: 1;
+			padding: 10px 16px;
 			border: 0;
-			background: $lp-stats-blue;
+			border-bottom: 2px solid transparent;
+			background: none;
+			color: $lp-stats-muted;
+			font-size: 13px;
+			font-weight: 600;
+			cursor: pointer;
+
+			&.active {
+				border-bottom-color: $lp-stats-blue;
+				color: $lp-stats-blue;
+			}
+
+			&:focus-visible {
+				outline: 1.5px solid $lp-stats-blue;
+				outline-offset: -2px;
+			}
+		}
+	}
+
+	.lp-stats-daterange__presets {
+		max-height: 320px;
+		margin: 0;
+		padding: 8px 0;
+		overflow-y: auto;
+		list-style: none;
+
+		li {
+			margin: 0;
+		}
+
+		.lp-stats-daterange__preset {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 7px 16px;
+			font-size: 13px;
+			cursor: pointer;
+
+			&:hover {
+				background: #f0f0f1;
+			}
+
+			input[type="radio"] {
+				margin: 0;
+			}
+		}
+	}
+
+	.lp-stats-daterange__tabpanel[data-tabpanel="custom"] {
+		padding: 16px;
+
+		.lp-stats-daterange__custom-fields {
+			display: flex;
+			gap: 12px;
+			margin-bottom: 12px;
+
+			label {
+				display: flex;
+				flex-direction: column;
+				gap: 4px;
+				font-size: 12px;
+				color: $lp-stats-muted;
+			}
+
+			input[type="date"] {
+				min-height: 34px;
+			}
+		}
+	}
+
+	.lp-stats-daterange__compare {
+		margin: 0;
+		padding: 12px 16px 14px;
+		border: 0;
+		border-top: 1px solid $lp-stats-border;
+
+		legend {
+			padding: 12px 0 6px;
+			font-size: 12px;
+			font-weight: 600;
+			color: $lp-stats-muted;
+			text-transform: uppercase;
+		}
+
+		label {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 4px 0;
+			font-size: 13px;
+			cursor: pointer;
+
+			input[type="radio"] {
+				margin: 0;
+			}
+		}
+	}
+
+	@media screen and (max-width: 782px) {
+		.lp-stats-daterange__panel {
+			min-width: 0;
+			width: min(320px, calc(100vw - 48px));
 		}
 	}
 }

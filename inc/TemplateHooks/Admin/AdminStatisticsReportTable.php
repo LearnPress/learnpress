@@ -8,12 +8,14 @@ use LearnPress\Statistics\DashboardStatisticsDB;
 use LearnPress\Statistics\InstructorStatisticsProvider;
 use LearnPress\Statistics\OrderExceptionsProvider;
 use LearnPress\Statistics\PeriodHelper;
+use LearnPress\Statistics\PeriodResolver;
 use LearnPress\Statistics\StatisticsScope;
 use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LP_Debug;
 use LP_Helper;
 use stdClass;
 use Throwable;
+use Exception;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -81,20 +83,68 @@ class AdminStatisticsReportTable {
 			$per_page = self::PER_PAGE;
 			$total    = 0;
 
-			$rows    = $self->fetch_rows( $report, $data, $paged, $per_page, $total );
+			$rows = $self->fetch_rows( $report, $data, $paged, $per_page, $total );
+			/**
+			 * Filter the fetched report rows before the table / CSV is built.
+			 *
+			 * @param array  $rows   Row data for the current page.
+			 * @param string $report Report id.
+			 * @param array  $data   Sent args.
+			 * @since 4.4.2
+			 */
+			$rows    = (array) apply_filters( 'learn-press/statistics/report/rows', $rows, $report, $data );
 			$columns = $self->columns_for( $report, $rows );
+			/**
+			 * Filter the report column specs before the table / CSV is built.
+			 *
+			 * Each column: [ 'label', 'class'?, 'key'?, 'render'?( row ):html, 'csv'?( row ):string ].
+			 * A 'render' callback owns its own escaping ( its return is echoed as cell HTML ).
+			 *
+			 * @param array  $columns Column specs.
+			 * @param string $report  Report id.
+			 * @param array  $rows    Current page rows.
+			 * @since 4.4.2
+			 */
+			$columns = (array) apply_filters( 'learn-press/statistics/report/columns', $columns, $report, $rows );
 
 			if ( empty( $columns ) ) {
-				throw new \Exception( esc_html__( 'Unknown report.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Unknown report.', 'learnpress' ) );
 			}
 
-			$content->content = $self->html_table( $report, $rows, $columns, $paged, $per_page, $total );
+			$content->content = $self->capped_notice( $report, $total ) . $self->html_table( $report, $rows, $columns, $paged, $per_page, $total );
 		} catch ( Throwable $e ) {
 			$content->content = Template::print_message( $e->getMessage(), 'error', false );
 			LP_Debug::error_log( $e );
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Notice shown when a PHP-merged report is truncated at max_rows(). Those
+	 * reports ( top_courses / course_performance ) merge two query result sets
+	 * in PHP and paginate the merged array, so rows beyond the cap are not
+	 * reachable — surface that instead of silently hiding them. Empty string
+	 * for SQL-paginated reports or when the cap was not hit.
+	 *
+	 * @param string $report
+	 * @param int    $total
+	 * @return string
+	 * @since 4.4.2
+	 */
+	private function capped_notice( string $report, int $total ): string {
+		$php_merged = array( 'top_courses', 'course_performance' );
+		if ( ! in_array( $report, $php_merged, true ) || $total < self::max_rows() ) {
+			return '';
+		}
+
+		$message = sprintf(
+			/* translators: %d: maximum number of rows shown. */
+			__( 'Showing the first %d rows. Narrow the period or filters to see the rest.', 'learnpress' ),
+			self::max_rows()
+		);
+
+		return '<p class="lp-stats-report-capped">' . esc_html( $message ) . '</p>';
 	}
 
 	/**
@@ -117,8 +167,12 @@ class AdminStatisticsReportTable {
 			$total  = 0;
 
 			// One page big enough to hold everything ( capped ).
-			$rows    = $self->fetch_rows( $report, $data, 1, self::max_rows(), $total );
+			$rows = $self->fetch_rows( $report, $data, 1, self::max_rows(), $total );
+			/** This filter is documented in inc/TemplateHooks/Admin/AdminStatisticsReportTable.php */
+			$rows    = (array) apply_filters( 'learn-press/statistics/report/rows', $rows, $report, $data );
 			$columns = $self->columns_for( $report, $rows );
+			/** This filter is documented in inc/TemplateHooks/Admin/AdminStatisticsReportTable.php */
+			$columns = (array) apply_filters( 'learn-press/statistics/report/columns', $columns, $report, $rows );
 
 			if ( ! empty( $columns ) ) {
 				$out->csv      = $self->build_csv( $columns, $rows );
@@ -132,66 +186,30 @@ class AdminStatisticsReportTable {
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private static function guard_permission() {
 		$allowed = apply_filters( 'learnpress/admin-statistics/permission', current_user_can( 'administrator' ) );
 		if ( ! $allowed ) {
-			throw new \Exception( esc_html__( 'You do not have permission to view this report.', 'learnpress' ) );
+			throw new Exception( esc_html__( 'You do not have permission to view this report.', 'learnpress' ) );
 		}
 	}
 
 	/**
 	 * Map the request filtertype/date into [ filter_type, time ].
-	 * Mirrors LP_REST_Admin_Statistics_Controller::get_statistics_filter().
+	 * Same PeriodResolver as LP_REST_Admin_Statistics_Controller::get_statistics_filter(),
+	 * so report popups/CSV honor every preset — new and legacy — identically.
 	 *
 	 * @param array $data
 	 * @return array
 	 */
 	private function resolve_filter( array $data ): array {
-		$filter     = array(
-			'filter_type' => 'date',
-			'time'        => current_time( 'Y-m-d' ),
+		$range = PeriodResolver::resolve(
+			(string) ( $data['filtertype'] ?? 'today' ),
+			(string) LP_Helper::sanitize_params_submitted( $data['date'] ?? '' )
 		);
-		$filtertype = $data['filtertype'] ?? 'today';
 
-		switch ( $filtertype ) {
-			case 'yesterday':
-				$filter['filter_type'] = 'date';
-				$filter['time']        = date( 'Y-m-d', strtotime( current_time( 'Y-m-d' ) . '-1 days' ) );
-				break;
-			case 'last7days':
-				$filter['filter_type'] = 'previous_days';
-				$filter['time']        = 6;
-				break;
-			case 'last30days':
-				$filter['filter_type'] = 'previous_days';
-				$filter['time']        = 30;
-				break;
-			case 'thismonth':
-				$filter['filter_type'] = 'month';
-				$filter['time']        = current_time( 'Y-m-d' );
-				break;
-			case 'last12months':
-				$filter['filter_type'] = 'previous_months';
-				$filter['time']        = 11;
-				break;
-			case 'thisyear':
-				$filter['filter_type'] = 'year';
-				$filter['time']        = current_time( 'Y-m-d' );
-				break;
-			case 'custom':
-				$filter['filter_type'] = 'custom';
-				$filter['time']        = LP_Helper::sanitize_params_submitted( $data['date'] ?? '' );
-				break;
-			case 'today':
-			default:
-				$filter['filter_type'] = 'date';
-				$filter['time']        = current_time( 'Y-m-d' );
-				break;
-		}
-
-		return $filter;
+		return $range->legacy_pair();
 	}
 
 	/**
@@ -212,6 +230,36 @@ class AdminStatisticsReportTable {
 		$offset = ( $paged - 1 ) * $limit;
 		$db     = DashboardStatisticsDB::getInstance();
 		$search = trim( (string) LP_Helper::sanitize_params_submitted( $data['search'] ?? '' ) );
+
+		/**
+		 * Filter the report query args before fetching a page of rows.
+		 *
+		 * Bounded scalars only ( no raw SQL ); every value is re-sanitized below
+		 * so a handler cannot smuggle unsafe input. Use to change page size,
+		 * inject a default search term, or repoint the report.
+		 *
+		 * @param array  $args   [ report, paged, limit, search ].
+		 * @param string $report Report id.
+		 * @param array  $data   Raw sent args.
+		 * @since 4.4.2
+		 */
+		$args = apply_filters(
+			'learn-press/statistics/report/query-args',
+			array(
+				'report' => $report,
+				'paged'  => $paged,
+				'limit'  => $limit,
+				'search' => $search,
+			),
+			$report,
+			$data
+		);
+
+		$report = sanitize_key( $args['report'] ?? $report );
+		$paged  = max( 1, absint( $args['paged'] ?? $paged ) );
+		$limit  = max( 1, absint( $args['limit'] ?? $limit ) );
+		$search = trim( (string) ( $args['search'] ?? $search ) );
+		$offset = ( $paged - 1 ) * $limit; // Derived from the resolved paged/limit so it can never desync.
 
 		switch ( $report ) {
 			case 'top_courses':
@@ -378,10 +426,10 @@ class AdminStatisticsReportTable {
 
 		return array_map(
 			function ( $row ) use ( $prev_map ) {
-				$current           = (float) ( $row['revenue'] ?? 0 );
-				$previous          = (float) ( $prev_map[ absint( $row['course_id'] ?? 0 ) ] ?? 0 );
-				$row['trend']      = $this->trend_direction( $current, $previous );
-				$row['trend_pct']  = $this->trend_pct( $current, $previous );
+				$current          = (float) ( $row['revenue'] ?? 0 );
+				$previous         = (float) ( $prev_map[ absint( $row['course_id'] ?? 0 ) ] ?? 0 );
+				$row['trend']     = $this->trend_direction( $current, $previous );
+				$row['trend_pct'] = $this->trend_pct( $current, $previous );
 				return $row;
 			},
 			$rows
@@ -422,20 +470,20 @@ class AdminStatisticsReportTable {
 	 * @return string HTML trend badge ( arrow + % ).
 	 */
 	private function trend_cell( array $row ): string {
-		$dir     = (string) ( $row['trend'] ?? 'flat' );
-		$pct     = $row['trend_pct'] ?? null;
-		$arrows  = array(
+		$dir    = (string) ( $row['trend'] ?? 'flat' );
+		$pct    = $row['trend_pct'] ?? null;
+		$arrows = array(
 			'up'   => '▲',
 			'down' => '▼',
 			'flat' => '—',
 		);
-		$colors  = array(
+		$colors = array(
 			'up'   => 'green',
 			'down' => 'red',
 			'flat' => 'grey',
 		);
-		$arrow   = $arrows[ $dir ] ?? '—';
-		$color   = $colors[ $dir ] ?? 'grey';
+		$arrow  = $arrows[ $dir ] ?? '—';
+		$color  = $colors[ $dir ] ?? 'grey';
 
 		if ( null !== $pct ) {
 			$label = $arrow . ' ' . abs( $pct ) . '%';
@@ -496,15 +544,18 @@ class AdminStatisticsReportTable {
 			'issue'           => __( 'Issue', 'learnpress' ),
 			'date'            => __( 'Date', 'learnpress' ),
 			'severity'        => __( 'Severity', 'learnpress' ),
-			'avg_score'       => __( 'Avg score', 'learnpress' ),
+			'avg_score'       => __( 'Quiz pass rate', 'learnpress' ),
 			'last_active'     => __( 'Last active', 'learnpress' ),
 			'sold'            => __( 'Sold', 'learnpress' ),
 		);
 
-		$col_text        = function ( $key, $label ) {
-			return array( 'label' => $label, 'key' => $key );
+		$col_text       = function ( $key, $label ) {
+			return array(
+				'label' => $label,
+				'key'   => $key,
+			);
 		};
-		$col_revenue     = function ( $label = null ) use ( $i18n ) {
+		$col_revenue    = function ( $label = null ) use ( $i18n ) {
 			return array(
 				'label'  => $label ?: $i18n['revenue'],
 				'render' => function ( $row ) {
@@ -515,7 +566,7 @@ class AdminStatisticsReportTable {
 				},
 			);
 		};
-		$col_completion  = function ( $key, $label ) {
+		$col_completion = function ( $key, $label ) {
 			return array(
 				'label'  => $label,
 				'render' => function ( $row ) use ( $key ) {
@@ -528,7 +579,7 @@ class AdminStatisticsReportTable {
 			);
 		};
 		// Table shows only the primary category; CSV exports every category.
-		$col_category    = function () use ( $i18n ) {
+		$col_category = function () use ( $i18n ) {
 			return array(
 				'label'  => $i18n['category'],
 				'render' => function ( $row ) {
@@ -779,9 +830,9 @@ class AdminStatisticsReportTable {
 	}
 
 	/**
-	 * @param int    $total
-	 * @param int    $paged
-	 * @param int    $per_page
+	 * @param int $total
+	 * @param int $paged
+	 * @param int $per_page
 	 * @return string
 	 */
 	private function html_pagination( int $total, int $paged, int $per_page ): string {

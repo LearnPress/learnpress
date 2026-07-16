@@ -26,9 +26,22 @@ $operations = array(
 	'no_new_enrollments' => __( 'No new enrollments', 'learnpress' ),
 	'review_queue_count' => __( 'Review queue', 'learnpress' ),
 );
+
+// Section config filters — add/remove/relabel cards and lists. @since 4.4.2
+$kpi_cards  = (array) apply_filters( 'learn-press/statistics/instructors/kpi-cards', $kpi_cards );
+$operations = (array) apply_filters( 'learn-press/statistics/instructors/operations', $operations );
 ?>
 <div class="lp-admin-statistics-tab-content lp-stats-tab-instructors">
-	<?php learn_press_admin_view( 'statistics/parts/filter-bar' ); ?>
+	<?php
+	/**
+	 * Fires at the top of the Instructors statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/instructors/before' );
+
+	learn_press_admin_view( 'statistics/parts/filter-bar' );
+	?>
 
 	<div class="lp-stats-dashboard-body">
 		<div class="lp-stats-kpi-grid">
@@ -96,5 +109,14 @@ $operations = array(
 		</div>
 	</div>
 
-	<?php learn_press_admin_view( 'statistics/parts/report-modal' ); ?>
+	<?php
+	learn_press_admin_view( 'statistics/parts/report-modal' );
+
+	/**
+	 * Fires at the bottom of the Instructors statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/instructors/after' );
+	?>
 </div>

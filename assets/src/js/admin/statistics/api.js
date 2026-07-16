@@ -12,7 +12,7 @@
  */
 
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
-import { lpStatsState } from './state.js';
+import { lpStatsState, LP_STATS_RANGE_RESOLVED } from './state.js';
 
 export const getStatsConfig = () => window.lpAdminStatisticSettings || {};
 
@@ -49,6 +49,14 @@ export const lpStatsFetch = ( endpoint, extraArgs = {}, functions = {} ) => {
 			...functions,
 			success: ( response ) => {
 				if ( response && 'success' === response.status ) {
+					// Broadcast the server-resolved range so the filter bar can
+					// reconcile its toggle label ( fixes the past-midnight case ).
+					const range = response.data && response.data.range;
+					if ( range && range.label ) {
+						document.dispatchEvent(
+							new CustomEvent( LP_STATS_RANGE_RESOLVED, { detail: range } )
+						);
+					}
 					if ( 'function' === typeof functions.success ) {
 						functions.success( response );
 					}

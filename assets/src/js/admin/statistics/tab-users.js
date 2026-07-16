@@ -19,7 +19,7 @@ import { lpStatsReportModal } from './report-modal.js';
 import { exportCsv, buildCsvFilename } from './csv.js';
 
 const sprintfLite = ( template, value ) =>
-	String( template ).replace( /%[ds]/, String( value ) );
+	String( template ).replace( /%[ds]/, String( value ) ).replace( /%%/g, '%' );
 
 export class LpStatsTabUsers {
 	static selectors = {
@@ -148,8 +148,8 @@ export class LpStatsTabUsers {
 			}
 			if ( 'students' === key ) {
 				payload.subline = sprintfLite(
-					getStatsI18n( 'activeLast7d', '%d active in the last 7 days' ),
-					payload.active_7d ?? 0
+					getStatsI18n( 'activeInPeriod', '%d active in this period' ),
+					payload.active_in_period ?? 0
 				);
 			}
 			if ( 'instructors' === key ) {
@@ -189,6 +189,7 @@ export class LpStatsTabUsers {
 					},
 				],
 				xLabel: chartData.x_label || '',
+				granularity: chartData.granularity || '',
 			},
 			{ yCurrency: false }
 		);
@@ -294,7 +295,7 @@ export class LpStatsTabUsers {
 		if ( withScore ) {
 			columns.push( {
 				key: 'avg_score',
-				label: getStatsI18n( 'avgScore', 'Avg. quiz score' ),
+				label: getStatsI18n( 'avgScore', 'Quiz pass rate' ),
 				format: ( value ) => ( null == value ? '—' : `${ value }%` ),
 			} );
 		}

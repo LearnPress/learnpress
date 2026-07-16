@@ -49,6 +49,8 @@ use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
+use LearnPress\TemplateHooks\Admin\AdminStatisticsReportTable;
+use LearnPress\Statistics\FilterOptionsProvider;
 use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
 use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
 use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
@@ -399,6 +401,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditWithAITemplate::instance();
 			AdminEditCourseCurriculumWithAITemplate::instance();
 			AdminListStudentsEnrolled::instance();
+			AdminStatisticsReportTable::instance();
+			FilterOptionsProvider::register_flush_hooks();
 			// WP GDPR
 			ErasePersonalData::instance();
 			ExportPersonalData::instance();

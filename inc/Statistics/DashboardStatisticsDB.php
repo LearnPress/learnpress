@@ -135,7 +135,7 @@ class DashboardStatisticsDB extends LP_Database {
 	 */
 	public function get_completion_rows( string $type, string $value, ?StatisticsScope $scope = null ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
 		$time  = $this->time_condition( $type, $value, 'ui.start_time' );
@@ -154,7 +154,7 @@ class DashboardStatisticsDB extends LP_Database {
 
 		$rows = $this->wpdb->get_results( $sql );
 
-		return is_array( $rows ) ? $rows : [];
+		return is_array( $rows ) ? $rows : array();
 	}
 
 	/**
@@ -181,12 +181,12 @@ class DashboardStatisticsDB extends LP_Database {
 			}
 		}
 
-		return [
+		return array(
 			'rate'                 => $enrolled > 0 ? round( $completed / $enrolled * 100, 1 ) : null,
 			'enrolled'             => $enrolled,
 			'completed'            => $completed,
 			'courses_below_target' => $below,
-		];
+		);
 	}
 
 	/**
@@ -277,11 +277,11 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array [ 'registered' => int, 'enrolled' => int, 'started' => int, 'completed' => int, 'failed'? => int ]
 	 */
 	public function get_learner_funnel( string $type, string $value, ?StatisticsScope $scope = null, bool $with_failed = false ): array {
-		$sig = $scope ? $scope->signature() : [ 0, 0 ];
+		$sig = $scope ? $scope->signature() : array( 0, 0 );
 
 		return StatisticsCache::remember(
 			'funnel',
-			[ $type, $value, $sig, $with_failed ],
+			array( $type, $value, $sig, $with_failed ),
 			function () use ( $type, $value, $scope, $with_failed ) {
 				return $this->compute_learner_funnel( $type, $value, $scope, $with_failed );
 			}
@@ -299,12 +299,12 @@ class DashboardStatisticsDB extends LP_Database {
 	 */
 	private function compute_learner_funnel( string $type, string $value, ?StatisticsScope $scope, bool $with_failed ): array {
 		if ( ! $type || ! $value ) {
-			$empty = [
+			$empty = array(
 				'registered' => 0,
 				'enrolled'   => 0,
 				'started'    => 0,
 				'completed'  => 0,
-			];
+			);
 			if ( $with_failed ) {
 				$empty['failed'] = 0;
 			}
@@ -340,12 +340,12 @@ class DashboardStatisticsDB extends LP_Database {
 			)
 		);
 
-		$funnel = [
+		$funnel = array(
 			'registered' => $registered,
 			'enrolled'   => $enrolled,
 			'started'    => $started,
 			'completed'  => $completed,
-		];
+		);
 
 		if ( $with_failed ) {
 			$funnel['failed'] = (int) $this->wpdb->get_var(
@@ -373,7 +373,7 @@ class DashboardStatisticsDB extends LP_Database {
 	 */
 	public function get_course_revenue_rows( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 50, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
 		$time   = $this->time_condition( $type, $value, 'p.post_date' );
@@ -402,7 +402,7 @@ class DashboardStatisticsDB extends LP_Database {
 
 		$rows = $this->wpdb->get_results( $sql );
 
-		return is_array( $rows ) ? $rows : [];
+		return is_array( $rows ) ? $rows : array();
 	}
 
 	/**
@@ -417,7 +417,7 @@ class DashboardStatisticsDB extends LP_Database {
 	 */
 	public function get_course_enrollment_rows( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 50, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
 		$time   = $this->time_condition( $type, $value, 'ui.start_time' );
@@ -442,7 +442,7 @@ class DashboardStatisticsDB extends LP_Database {
 
 		$rows = $this->wpdb->get_results( $sql );
 
-		return is_array( $rows ) ? $rows : [];
+		return is_array( $rows ) ? $rows : array();
 	}
 
 	/**
@@ -455,11 +455,11 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array Rows of { course_id, course_name, revenue, order_count, enrolled, completed, completion_rate }.
 	 */
 	public static function merge_course_performance( array $revenue_rows, array $enroll_rows, int $limit ): array {
-		$merged = [];
+		$merged = array();
 
 		foreach ( $revenue_rows as $row ) {
 			$course_id            = (int) $row->course_id;
-			$merged[ $course_id ] = [
+			$merged[ $course_id ] = array(
 				'course_id'       => $course_id,
 				'course_name'     => (string) $row->course_name,
 				'revenue'         => (float) $row->revenue,
@@ -467,14 +467,14 @@ class DashboardStatisticsDB extends LP_Database {
 				'enrolled'        => 0,
 				'completed'       => 0,
 				'completion_rate' => null,
-			];
+			);
 		}
 
 		foreach ( $enroll_rows as $row ) {
 			$course_id = (int) $row->course_id;
 
 			if ( ! isset( $merged[ $course_id ] ) ) {
-				$merged[ $course_id ] = [
+				$merged[ $course_id ] = array(
 					'course_id'       => $course_id,
 					'course_name'     => (string) $row->course_name,
 					'revenue'         => 0.0,
@@ -482,7 +482,7 @@ class DashboardStatisticsDB extends LP_Database {
 					'enrolled'        => 0,
 					'completed'       => 0,
 					'completion_rate' => null,
-				];
+				);
 			}
 
 			$enrolled  = (int) $row->enrolled;
@@ -496,7 +496,7 @@ class DashboardStatisticsDB extends LP_Database {
 		usort(
 			$merged,
 			function ( $a, $b ) {
-				return [ $b['revenue'], $b['enrolled'] ] <=> [ $a['revenue'], $a['enrolled'] ];
+				return array( $b['revenue'], $b['enrolled'] ) <=> array( $a['revenue'], $a['enrolled'] );
 			}
 		);
 
@@ -516,11 +516,96 @@ class DashboardStatisticsDB extends LP_Database {
 	public function get_top_courses_performance( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 5, string $search = '' ): array {
 		$fetch_limit = max( 50, $limit );
 
-		return self::merge_course_performance(
+		$merged = self::merge_course_performance(
 			$this->get_course_revenue_rows( $type, $value, $scope, $fetch_limit, $search ),
 			$this->get_course_enrollment_rows( $type, $value, $scope, $fetch_limit, $search ),
 			$limit
 		);
+
+		if ( empty( $merged ) ) {
+			return $merged;
+		}
+
+		// The revenue and enrollment lists are each capped independently, so a
+		// displayed course can arrive missing the OTHER dimension ( shown as 0 /
+		// null ). Re-query both metrics for exactly the displayed course ids so
+		// every row's revenue and enrollment/completion are exact.
+		$course_ids  = array_map(
+			function ( $row ) {
+				return (int) $row['course_id'];
+			},
+			$merged
+		);
+		$revenue_map = $this->get_course_revenue_totals( $type, $value, $scope, $course_ids );
+		$enroll_map  = $this->get_course_enrollment_totals( $type, $value, $scope, $course_ids );
+
+		foreach ( $merged as &$row ) {
+			$course_id = (int) $row['course_id'];
+
+			if ( isset( $revenue_map[ $course_id ] ) ) {
+				$row['revenue'] = $revenue_map[ $course_id ];
+			}
+
+			if ( isset( $enroll_map[ $course_id ] ) ) {
+				$enrolled               = (int) $enroll_map[ $course_id ]['enrolled'];
+				$completed              = (int) $enroll_map[ $course_id ]['completed'];
+				$row['enrolled']        = $enrolled;
+				$row['completed']       = $completed;
+				$row['completion_rate'] = $enrolled > 0 ? round( $completed / $enrolled * 100, 1 ) : null;
+			}
+		}
+		unset( $row );
+
+		return $merged;
+	}
+
+	/**
+	 * Enrolled/completed course-row totals for a set of course IDs in the range.
+	 * Companion to get_course_revenue_totals() — used to backfill the enrollment
+	 * side of top-course performance for the displayed courses.
+	 *
+	 * @param string               $type
+	 * @param string               $value
+	 * @param StatisticsScope|null $scope
+	 * @param array                $course_ids
+	 * @return array course_id => [ 'enrolled' => int, 'completed' => int ]
+	 * @since 4.4.2
+	 */
+	public function get_course_enrollment_totals( string $type, string $value, ?StatisticsScope $scope, array $course_ids ): array {
+		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
+		if ( ! $type || ! $value || empty( $course_ids ) ) {
+			return array();
+		}
+
+		$time         = $this->time_condition( $type, $value, 'ui.start_time' );
+		$where        = $this->scope_condition( $scope, 'ui.item_id' );
+		$placeholders = implode( ', ', array_fill( 0, count( $course_ids ), '%d' ) );
+
+		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Dynamic %d list is built from absint-normalized IDs.
+		$sql = $this->wpdb->prepare(
+			"SELECT ui.item_id AS course_id,
+				COUNT(*) AS enrolled,
+				SUM( ui.status = %s ) AS completed
+			FROM {$this->tb_lp_user_items} AS ui
+			WHERE ui.item_type = %s AND ui.item_id IN ( {$placeholders} ) {$time} {$where}
+			GROUP BY ui.item_id",
+			'finished',
+			LP_COURSE_CPT,
+			...$course_ids
+		);
+		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+
+		$rows = $this->wpdb->get_results( $sql );
+		$map  = array();
+
+		foreach ( (array) $rows as $row ) {
+			$map[ (int) $row->course_id ] = array(
+				'enrolled'  => (int) $row->enrolled,
+				'completed' => (int) $row->completed,
+			);
+		}
+
+		return $map;
 	}
 
 	/**
@@ -533,7 +618,7 @@ class DashboardStatisticsDB extends LP_Database {
 	public function get_course_instructor_names( array $course_ids ): array {
 		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
 		if ( empty( $course_ids ) ) {
-			return [];
+			return array();
 		}
 
 		$placeholders = implode( ', ', array_fill( 0, count( $course_ids ), '%d' ) );
@@ -547,7 +632,7 @@ class DashboardStatisticsDB extends LP_Database {
 		);
 		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 		$rows = $this->wpdb->get_results( $sql );
-		$map  = [];
+		$map  = array();
 
 		foreach ( (array) $rows as $row ) {
 			$map[ (int) $row->course_id ] = (string) $row->instructor;
@@ -569,7 +654,7 @@ class DashboardStatisticsDB extends LP_Database {
 	public function get_course_category_names( array $course_ids ): array {
 		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
 		if ( empty( $course_ids ) ) {
-			return [];
+			return array();
 		}
 
 		$placeholders = implode( ', ', array_fill( 0, count( $course_ids ), '%d' ) );
@@ -590,7 +675,7 @@ class DashboardStatisticsDB extends LP_Database {
 		);
 		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 		$rows = $this->wpdb->get_results( $sql );
-		$map  = [];
+		$map  = array();
 
 		foreach ( (array) $rows as $row ) {
 			// Term names are entity-encoded in the DB; the cell re-escapes, so decode here.
@@ -617,7 +702,7 @@ class DashboardStatisticsDB extends LP_Database {
 	public function get_course_revenue_totals( string $type, string $value, ?StatisticsScope $scope, array $course_ids ): array {
 		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
 		if ( ! $type || ! $value || empty( $course_ids ) ) {
-			return [];
+			return array();
 		}
 
 		$time         = $this->time_condition( $type, $value, 'p.post_date' );
@@ -641,7 +726,7 @@ class DashboardStatisticsDB extends LP_Database {
 		);
 		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 		$rows = $this->wpdb->get_results( $sql );
-		$map  = [];
+		$map  = array();
 
 		foreach ( (array) $rows as $row ) {
 			$map[ (int) $row->course_id ] = (float) $row->revenue;
@@ -688,7 +773,7 @@ class DashboardStatisticsDB extends LP_Database {
 
 		$rows = $this->wpdb->get_results( $sql );
 
-		return self::content_inventory_from_rows( is_array( $rows ) ? $rows : [], $include_assignments );
+		return self::content_inventory_from_rows( is_array( $rows ) ? $rows : array(), $include_assignments );
 	}
 
 	/**
@@ -699,19 +784,19 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array
 	 */
 	public static function content_inventory_from_rows( array $rows, bool $include_assignments ): array {
-		$statuses             = [ 'publish', 'pending', 'future', 'draft' ];
+		$statuses             = array( 'publish', 'pending', 'future', 'draft' );
 		$assignment_post_type = defined( 'LP_ASSIGNMENT_CPT' ) ? LP_ASSIGNMENT_CPT : 'lp_assignment';
-		$bucket_map           = [
+		$bucket_map           = array(
 			LP_COURSE_CPT => 'courses',
 			LP_LESSON_CPT => 'lessons',
 			LP_QUIZ_CPT   => 'quizzes',
-		];
+		);
 
 		if ( $include_assignments ) {
 			$bucket_map[ $assignment_post_type ] = 'assignments';
 		}
 
-		$inventory = [];
+		$inventory = array();
 		foreach ( $bucket_map as $bucket ) {
 			$inventory[ $bucket ]          = array_fill_keys( $statuses, 0 );
 			$inventory[ $bucket ]['total'] = 0;
@@ -781,7 +866,7 @@ class DashboardStatisticsDB extends LP_Database {
 	 */
 	public function get_top_sold_courses_detailed( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10, int $offset = 0, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
 		$limit  = max( 1, $limit );
@@ -813,7 +898,7 @@ class DashboardStatisticsDB extends LP_Database {
 
 		$rows = $this->wpdb->get_results( $sql );
 		if ( ! is_array( $rows ) ) {
-			return [];
+			return array();
 		}
 
 		$course_ids      = array_map( 'absint', wp_list_pluck( $rows, 'course_id' ) );
@@ -828,7 +913,7 @@ class DashboardStatisticsDB extends LP_Database {
 				$orders          = (int) $row->orders;
 				$completion_rate = $completion_map[ $course_id ] ?? null;
 
-				return [
+				return array(
 					'course_id'    => $course_id,
 					'name'         => (string) $row->name,
 					'revenue'      => $revenue,
@@ -839,7 +924,7 @@ class DashboardStatisticsDB extends LP_Database {
 						! empty( $low_quiz_map[ $course_id ] ),
 						$completion_goal
 					),
-				];
+				);
 			},
 			$rows
 		);
@@ -913,25 +998,28 @@ class DashboardStatisticsDB extends LP_Database {
 	private function get_course_completion_rate_map( string $type, string $value, array $course_ids ): array {
 		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
 		if ( empty( $course_ids ) ) {
-			return [];
+			return array();
 		}
 
-		$course_ids_sql = implode( ', ', $course_ids );
-		$time           = $this->time_condition( $type, $value, 'ui.start_time' );
+		$placeholders = implode( ', ', array_fill( 0, count( $course_ids ), '%d' ) );
+		$time         = $this->time_condition( $type, $value, 'ui.start_time' );
 
+		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Dynamic %d list is built from absint-normalized IDs.
 		$sql = $this->wpdb->prepare(
 			"SELECT ui.item_id AS course_id,
 				COUNT(*) AS enrolled,
 				SUM( ui.status = %s ) AS completed
 			FROM {$this->tb_lp_user_items} AS ui
-			WHERE ui.item_type = %s AND ui.item_id IN ( {$course_ids_sql} ) {$time}
+			WHERE ui.item_type = %s AND ui.item_id IN ( {$placeholders} ) {$time}
 			GROUP BY ui.item_id",
 			'finished',
-			LP_COURSE_CPT
+			LP_COURSE_CPT,
+			...$course_ids
 		);
+		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 
 		$rows = $this->wpdb->get_results( $sql );
-		$map  = [];
+		$map  = array();
 
 		foreach ( (array) $rows as $row ) {
 			$enrolled                     = (int) $row->enrolled;
@@ -948,13 +1036,13 @@ class DashboardStatisticsDB extends LP_Database {
 	private function get_low_quiz_course_map( array $course_ids ): array {
 		$course_ids = array_values( array_filter( array_unique( array_map( 'absint', $course_ids ) ) ) );
 		if ( empty( $course_ids ) ) {
-			return [];
+			return array();
 		}
 
-		$threshold      = (float) apply_filters( 'learn-press/statistics/quiz-pass-alert', 50 );
-		$min_attempts   = (int) apply_filters( 'learn-press/statistics/quiz-pass-alert-min-attempts', 5 );
-		$course_ids_sql = implode( ', ', $course_ids );
+		list( $threshold, $min_attempts ) = self::quiz_alert_config();
+		$placeholders                     = implode( ', ', array_fill( 0, count( $course_ids ), '%d' ) );
 
+		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Dynamic %d list is built from absint-normalized IDs.
 		$sql = $this->wpdb->prepare(
 			"SELECT low_quizzes.course_id
 			FROM (
@@ -966,18 +1054,20 @@ class DashboardStatisticsDB extends LP_Database {
 				GROUP BY s.section_course_id, ui.item_id
 				HAVING COUNT(*) >= %d AND ( SUM( ui.graduation = %s ) / COUNT(*) ) * 100 < %f
 			) AS low_quizzes
-			WHERE low_quizzes.course_id IN ( {$course_ids_sql} )
+			WHERE low_quizzes.course_id IN ( {$placeholders} )
 			GROUP BY low_quizzes.course_id",
 			LP_QUIZ_CPT,
 			'passed',
 			'failed',
 			$min_attempts,
 			'passed',
-			$threshold
+			$threshold,
+			...$course_ids
 		);
+		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 
 		$rows = $this->wpdb->get_col( $sql );
-		$map  = [];
+		$map  = array();
 
 		foreach ( (array) $rows as $course_id ) {
 			$map[ (int) $course_id ] = true;
@@ -1004,11 +1094,11 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array Rows of { instructor_id, instructor_name, course_count, revenue, enrolled, completed, completion_rate }.
 	 */
 	public function get_instructor_performance( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 5, int $offset = 0, string $search = '' ): array {
-		$sig = $scope ? $scope->signature() : [ 0, 0 ];
+		$sig = $scope ? $scope->signature() : array( 0, 0 );
 
 		return StatisticsCache::remember(
 			'instructor_performance',
-			[ $type, $value, $sig, $limit, $offset, $search ],
+			array( $type, $value, $sig, $limit, $offset, $search ),
 			function () use ( $type, $value, $scope, $limit, $offset, $search ) {
 				return $this->compute_instructor_performance( $type, $value, $scope, $limit, $offset, $search );
 			}
@@ -1028,7 +1118,7 @@ class DashboardStatisticsDB extends LP_Database {
 	 */
 	private function compute_instructor_performance( string $type, string $value, ?StatisticsScope $scope, int $limit, int $offset, string $search ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
 		$offset      = max( 0, $offset );
@@ -1036,37 +1126,46 @@ class DashboardStatisticsDB extends LP_Database {
 		$time_items  = $this->time_condition( $type, $value, 'ui.start_time' );
 		$list_where  = $this->instructor_list_where( $scope, $search );
 
+		// Revenue and enrollment are pre-aggregated per author in derived tables
+		// ( one grouped pass each ) and LEFT JOINed, instead of three correlated
+		// subqueries evaluated per instructor row. rev/enr hold at most one row per
+		// author, so MAX() over the publish-course group returns that author's
+		// value; COALESCE mirrors the old NULL→0 cast. Result is identical.
 		$sql = $this->wpdb->prepare(
 			"SELECT u.ID AS instructor_id,
 				u.display_name AS instructor_name,
 				COUNT( DISTINCT p.ID ) AS course_count,
-				( SELECT SUM( CAST( oim.meta_value AS DECIMAL(10,2) ) )
-					FROM {$this->tb_lp_order_items} AS oi
-					INNER JOIN {$this->tb_posts} AS o ON o.ID = oi.order_id
-					INNER JOIN {$this->tb_posts} AS pc ON pc.ID = oi.item_id
-					INNER JOIN {$this->tb_lp_order_itemmeta} AS oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = '_total'
-					WHERE pc.post_author = u.ID AND o.post_type = %s AND o.post_status = %s AND oi.item_type = %s {$time_orders}
-				) AS revenue,
-				( SELECT COUNT(*)
-					FROM {$this->tb_lp_user_items} AS ui
-					INNER JOIN {$this->tb_posts} AS pc2 ON pc2.ID = ui.item_id
-					WHERE pc2.post_author = u.ID AND ui.item_type = %s {$time_items}
-				) AS enrolled,
-				( SELECT COUNT(*)
-					FROM {$this->tb_lp_user_items} AS ui
-					INNER JOIN {$this->tb_posts} AS pc3 ON pc3.ID = ui.item_id
-					WHERE pc3.post_author = u.ID AND ui.item_type = %s AND ui.status = 'finished' {$time_items}
-				) AS completed
+				COALESCE( MAX( rev.revenue ), 0 ) AS revenue,
+				COALESCE( MAX( enr.enrolled ), 0 ) AS enrolled,
+				COALESCE( MAX( enr.completed ), 0 ) AS completed
 			FROM {$this->tb_users} AS u
 			INNER JOIN {$this->tb_posts} AS p ON p.post_author = u.ID AND p.post_type = %s AND p.post_status = 'publish'
+			LEFT JOIN (
+				SELECT pc.post_author AS author_id,
+					SUM( CAST( oim.meta_value AS DECIMAL(10,2) ) ) AS revenue
+				FROM {$this->tb_lp_order_items} AS oi
+				INNER JOIN {$this->tb_posts} AS o ON o.ID = oi.order_id
+				INNER JOIN {$this->tb_posts} AS pc ON pc.ID = oi.item_id
+				INNER JOIN {$this->tb_lp_order_itemmeta} AS oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = '_total'
+				WHERE o.post_type = %s AND o.post_status = %s AND oi.item_type = %s {$time_orders}
+				GROUP BY pc.post_author
+			) AS rev ON rev.author_id = u.ID
+			LEFT JOIN (
+				SELECT pc2.post_author AS author_id,
+					COUNT(*) AS enrolled,
+					SUM( ui.status = 'finished' ) AS completed
+				FROM {$this->tb_lp_user_items} AS ui
+				INNER JOIN {$this->tb_posts} AS pc2 ON pc2.ID = ui.item_id
+				WHERE ui.item_type = %s {$time_items}
+				GROUP BY pc2.post_author
+			) AS enr ON enr.author_id = u.ID
 			WHERE 1=1 {$list_where}
 			GROUP BY u.ID, u.display_name
 			ORDER BY revenue DESC
 			LIMIT %d OFFSET %d",
+			LP_COURSE_CPT,
 			LP_ORDER_CPT,
 			LP_ORDER_COMPLETED_DB,
-			LP_COURSE_CPT,
-			LP_COURSE_CPT,
 			LP_COURSE_CPT,
 			LP_COURSE_CPT,
 			max( 1, $limit ),
@@ -1075,7 +1174,7 @@ class DashboardStatisticsDB extends LP_Database {
 
 		$rows = $this->wpdb->get_results( $sql );
 		if ( ! is_array( $rows ) ) {
-			return [];
+			return array();
 		}
 
 		return array_map(
@@ -1083,7 +1182,7 @@ class DashboardStatisticsDB extends LP_Database {
 				$enrolled  = (int) $row->enrolled;
 				$completed = (int) $row->completed;
 
-				return [
+				return array(
 					'instructor_id'   => (int) $row->instructor_id,
 					'instructor_name' => (string) $row->instructor_name,
 					'course_count'    => (int) $row->course_count,
@@ -1091,7 +1190,7 @@ class DashboardStatisticsDB extends LP_Database {
 					'enrolled'        => $enrolled,
 					'completed'       => $completed,
 					'completion_rate' => $enrolled > 0 ? round( $completed / $enrolled * 100, 1 ) : null,
-				];
+				);
 			},
 			$rows
 		);
@@ -1248,13 +1347,13 @@ class DashboardStatisticsDB extends LP_Database {
 	 */
 	public function get_top_students( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10, int $offset = 0, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
-		$offset  = max( 0, $offset );
-		$time    = $this->time_condition( $type, $value, 'ui.start_time' );
-		$where   = $this->scope_condition( $scope, 'ui.item_id' );
-		$search  = $this->search_condition( $search, 'u.display_name' );
+		$offset = max( 0, $offset );
+		$time   = $this->time_condition( $type, $value, 'ui.start_time' );
+		$where  = $this->scope_condition( $scope, 'ui.item_id' );
+		$search = $this->search_condition( $search, 'u.display_name' );
 
 		$rows = $this->wpdb->get_results(
 			$this->wpdb->prepare(
@@ -1276,7 +1375,7 @@ class DashboardStatisticsDB extends LP_Database {
 		);
 
 		if ( ! is_array( $rows ) || ! $rows ) {
-			return [];
+			return array();
 		}
 
 		$user_ids     = array_map(
@@ -1294,7 +1393,7 @@ class DashboardStatisticsDB extends LP_Database {
 				FROM {$this->tb_lp_user_items} AS c
 				WHERE c.item_type IN ( %s, %s ) AND c.user_id IN ( {$placeholders} )
 				GROUP BY c.user_id",
-				...array_merge( [ LP_LESSON_CPT, LP_QUIZ_CPT ], $user_ids )
+				...array_merge( array( LP_LESSON_CPT, LP_QUIZ_CPT ), $user_ids )
 			)
 		);
 		$last_active = array_column( (array) $activity_rows, 'last_active', 'user_id' );
@@ -1306,17 +1405,17 @@ class DashboardStatisticsDB extends LP_Database {
 				FROM {$this->tb_lp_user_items} AS q
 				WHERE q.item_type = %s AND q.graduation IN ( %s, %s ) AND q.user_id IN ( {$placeholders} )
 				GROUP BY q.user_id",
-				...array_merge( [ 'passed', LP_QUIZ_CPT, 'passed', 'failed' ], $user_ids )
+				...array_merge( array( 'passed', LP_QUIZ_CPT, 'passed', 'failed' ), $user_ids )
 			)
 		);
 		$avg_score = array_column( (array) $score_rows, 'avg_score', 'user_id' );
 
 		$rules = apply_filters(
 			'learn-press/statistics/student-status-rules',
-			[
+			array(
 				'active_days'   => 7,
 				'at_risk_ratio' => 2,
-			]
+			)
 		);
 		$now   = current_time( 'mysql' );
 
@@ -1325,7 +1424,7 @@ class DashboardStatisticsDB extends LP_Database {
 				$user_id = (int) $row->user_id;
 				$active  = $last_active[ $user_id ] ?? null;
 
-				return [
+				return array(
 					'user_id'     => $user_id,
 					'name'        => (string) $row->name,
 					'enrolled'    => (int) $row->enrolled,
@@ -1333,7 +1432,7 @@ class DashboardStatisticsDB extends LP_Database {
 					'avg_score'   => isset( $avg_score[ $user_id ] ) ? round( (float) $avg_score[ $user_id ], 1 ) : null,
 					'last_active' => $active,
 					'status'      => self::student_status( (int) $row->enrolled, (int) $row->completed, $active, $rules, $now ),
-				];
+				);
 			},
 			$rows
 		);
@@ -1385,13 +1484,16 @@ class DashboardStatisticsDB extends LP_Database {
 	 */
 	public function get_courses_by_students( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10, int $offset = 0, string $search = '' ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
 		$offset = max( 0, $offset );
 		$time   = $this->time_condition( $type, $value, 'ui.start_time' );
 		$where  = $this->scope_condition( $scope, 'ui.item_id' );
 		$search = $this->search_condition( $search, 'p.post_title' );
+		// active_in_period counts enrollments whose child activity ( lesson/quiz
+		// start_time ) falls in the SELECTED period, not a fixed last-7-days window.
+		$time_child = $this->time_condition( $type, $value, 'c.start_time' );
 
 		$rows = $this->wpdb->get_results(
 			$this->wpdb->prepare(
@@ -1399,24 +1501,22 @@ class DashboardStatisticsDB extends LP_Database {
 					p.post_title AS name,
 					COUNT(*) AS enrolled,
 					SUM( ui.status = %s ) AS completed,
-					SUM( EXISTS (
-						SELECT 1 FROM {$this->tb_lp_user_items} AS c
-						WHERE c.parent_id = ui.user_item_id AND c.item_type IN ( %s, %s )
-					) ) AS started,
-					SUM( EXISTS (
-						SELECT 1 FROM {$this->tb_lp_user_items} AS c7
-						WHERE c7.parent_id = ui.user_item_id AND c7.item_type IN ( %s, %s )
-						AND c7.start_time >= DATE_ADD( NOW(), INTERVAL -7 DAY )
-					) ) AS active_7d
+					SUM( ch.pid IS NOT NULL ) AS started,
+					SUM( ch.in_period = 1 ) AS active_in_period
 				FROM {$this->tb_lp_user_items} AS ui
 				INNER JOIN {$this->tb_posts} AS p ON p.ID = ui.item_id
+				LEFT JOIN (
+					SELECT c.parent_id AS pid,
+						MAX( ( 0 = 0 {$time_child} ) ) AS in_period
+					FROM {$this->tb_lp_user_items} AS c
+					WHERE c.item_type IN ( %s, %s )
+					GROUP BY c.parent_id
+				) AS ch ON ch.pid = ui.user_item_id
 				WHERE ui.item_type = %s {$time} {$where} {$search}
 				GROUP BY ui.item_id, p.post_title
 				ORDER BY enrolled DESC
 				LIMIT %d OFFSET %d",
 				'finished',
-				LP_LESSON_CPT,
-				LP_QUIZ_CPT,
 				LP_LESSON_CPT,
 				LP_QUIZ_CPT,
 				LP_COURSE_CPT,
@@ -1426,7 +1526,7 @@ class DashboardStatisticsDB extends LP_Database {
 		);
 
 		if ( ! is_array( $rows ) ) {
-			return [];
+			return array();
 		}
 
 		return array_map(
@@ -1434,15 +1534,15 @@ class DashboardStatisticsDB extends LP_Database {
 				$enrolled  = (int) $row->enrolled;
 				$completed = (int) $row->completed;
 
-				return [
-					'course_id'       => (int) $row->course_id,
-					'name'            => (string) $row->name,
-					'enrolled'        => $enrolled,
-					'started'         => (int) $row->started,
-					'completed'       => $completed,
-					'completion_rate' => $enrolled > 0 ? round( $completed / $enrolled * 100, 1 ) : null,
-					'active_7d'       => (int) $row->active_7d,
-				];
+				return array(
+					'course_id'        => (int) $row->course_id,
+					'name'             => (string) $row->name,
+					'enrolled'         => $enrolled,
+					'started'          => (int) $row->started,
+					'completed'        => $completed,
+					'completion_rate'  => $enrolled > 0 ? round( $completed / $enrolled * 100, 1 ) : null,
+					'active_in_period' => (int) $row->active_in_period,
+				);
 			},
 			$rows
 		);
@@ -1550,14 +1650,30 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array Rows of { course_id, name, instructor, completion_rate, risk, action }.
 	 */
 	public function get_course_watchlist( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10 ): array {
-		$sig = $scope ? $scope->signature() : [ 0, 0 ];
+		$sig = $scope ? $scope->signature() : array( 0, 0 );
 
 		return StatisticsCache::remember(
 			'watchlist',
-			[ $type, $value, $sig, $limit ],
+			// Risk bands + quiz-pass config shape risk/action, so they must vary the key —
+			// otherwise a filter change stays masked until the TTL expires.
+			array( $type, $value, $sig, $limit, self::quiz_alert_config(), (array) apply_filters( 'learn-press/statistics/risk-bands', array( 40, 55 ) ) ),
 			function () use ( $type, $value, $scope, $limit ) {
 				return $this->compute_course_watchlist( $type, $value, $scope, $limit );
 			}
+		);
+	}
+
+	/**
+	 * Quiz low-pass alert config ( threshold %, minimum attempts ) — read in one
+	 * place so query methods and the cache keys that must vary on it stay in sync.
+	 *
+	 * @return array [ float threshold, int min_attempts ]
+	 * @since 4.4.2
+	 */
+	private static function quiz_alert_config(): array {
+		return array(
+			(float) apply_filters( 'learn-press/statistics/quiz-pass-alert', 50 ),
+			(int) apply_filters( 'learn-press/statistics/quiz-pass-alert-min-attempts', 5 ),
 		);
 	}
 
@@ -1572,7 +1688,7 @@ class DashboardStatisticsDB extends LP_Database {
 	 */
 	private function compute_course_watchlist( string $type, string $value, ?StatisticsScope $scope, int $limit ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
 		$time  = $this->time_condition( $type, $value, 'ui.start_time' );
@@ -1605,7 +1721,7 @@ class DashboardStatisticsDB extends LP_Database {
 		);
 
 		if ( ! is_array( $rows ) || ! $rows ) {
-			return [];
+			return array();
 		}
 
 		$course_ids   = array_map(
@@ -1615,7 +1731,7 @@ class DashboardStatisticsDB extends LP_Database {
 			$rows
 		);
 		$low_quiz_map = $this->get_low_quiz_course_map( $course_ids );
-		$bands        = (array) apply_filters( 'learn-press/statistics/risk-bands', [ 40, 55 ] );
+		$bands        = (array) apply_filters( 'learn-press/statistics/risk-bands', array( 40, 55 ) );
 
 		return array_map(
 			function ( $row ) use ( $low_quiz_map, $bands ) {
@@ -1626,7 +1742,7 @@ class DashboardStatisticsDB extends LP_Database {
 				$risk            = self::watchlist_risk( $completion_rate, $bands );
 				$action          = self::watchlist_action( $risk, $has_curriculum, $has_low_quiz );
 
-				return [
+				return array(
 					'course_id'       => (int) $row->course_id,
 					'name'            => (string) $row->name,
 					'instructor'      => (string) $row->instructor,
@@ -1634,7 +1750,7 @@ class DashboardStatisticsDB extends LP_Database {
 					'risk'            => $risk,
 					// Per-row override point for gateway/add-on rules.
 					'action'          => (string) apply_filters( 'learn-press/statistics/watchlist-actions', $action, $row, $risk ),
-				];
+				);
 			},
 			$rows
 		);
@@ -1670,16 +1786,16 @@ class DashboardStatisticsDB extends LP_Database {
 		);
 
 		if ( ! is_array( $rows ) ) {
-			return [];
+			return array();
 		}
 
 		return array_map(
 			function ( $row ) {
-				return [
+				return array(
 					'instructor_id' => (int) $row->instructor_id,
 					'name'          => (string) $row->name,
 					'pending'       => (int) $row->pending,
-				];
+				);
 			},
 			$rows
 		);

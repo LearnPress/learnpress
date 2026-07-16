@@ -36,8 +36,8 @@ class StatisticsScope {
 	 * never interpolated from request data.
 	 * ui2 = parent course user_item row; s = learnpress_sections.
 	 */
-	private const COURSE_ID_FIELDS = [ 'oi.item_id', 'ui.item_id', 'p.ID', 'ui2.item_id', 's.section_course_id' ];
-	private const ORDER_ID_FIELDS  = [ 'p.ID' ];
+	private const COURSE_ID_FIELDS = array( 'oi.item_id', 'ui.item_id', 'p.ID', 'ui2.item_id', 's.section_course_id' );
+	private const ORDER_ID_FIELDS  = array( 'p.ID' );
 
 	/**
 	 * Build a scope from request params. Negative/garbage values collapse to 0 (= unscoped).
@@ -50,7 +50,21 @@ class StatisticsScope {
 		$scope->instructor_id = absint( $params['instructor_id'] ?? 0 );
 		$scope->category_id   = absint( $params['category_id'] ?? 0 );
 
-		return $scope;
+		/**
+		 * Filter the resolved statistics scope before it shapes any query.
+		 *
+		 * Fires once per request at the single scope sanitation boundary, so a
+		 * handler here reaches every scoped query and report across all tabs
+		 * ( e.g. force a teacher role to only their own courses ).
+		 *
+		 * @param StatisticsScope $scope  Resolved scope.
+		 * @param array           $params Sanitized request params.
+		 * @since 4.4.2
+		 */
+		$scope = apply_filters( 'learn-press/statistics/scope', $scope, $params );
+
+		// Poka-yoke: a handler returning the wrong type falls back to an unscoped scope.
+		return $scope instanceof self ? $scope : new self();
 	}
 
 	/**
@@ -66,7 +80,7 @@ class StatisticsScope {
 	 * @return array [ int instructor_id, int category_id ]
 	 */
 	public function signature(): array {
-		return [ $this->instructor_id, $this->category_id ];
+		return array( $this->instructor_id, $this->category_id );
 	}
 
 	/**

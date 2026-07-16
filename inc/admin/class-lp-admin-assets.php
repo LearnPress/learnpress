@@ -3,6 +3,7 @@
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Statistics\PeriodResolver;
 
 /**
  * Class LP_Admin_Assets
@@ -100,14 +101,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 
 		return array(
 			'learn-press-global' => learn_press_global_script_params(),
-			/*'learn-press-meta-box-order'      => apply_filters(
+			/*
+			'learn-press-meta-box-order'      => apply_filters(
 				'learn-press/meta-box-order/script-data',
 				array(
 					'i18n_error' => esc_html__( 'Oops! Error.', 'learnpress' ),
 					'i18n_guest' => esc_html__( 'Guest', 'learnpress' ),
 				)
 			),*/
-			/*'learn-press-update' => apply_filters(
+			/*
+			'learn-press-update' => apply_filters(
 				'learn-press/upgrade/script-data',
 				array(
 					'i18n_confirm' => esc_html__(
@@ -143,9 +146,26 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 							'yellow' => 40,
 						)
 					),
+					// Date-range dropdown: per-preset resolved labels ( the server is the
+					// single source of calendar logic — JS never re-derives windows ).
+					'dateRange'        => array(
+						'presets'     => self::statistics_date_range_presets(),
+						'startOfWeek' => (int) get_option( 'start_of_week', 1 ),
+						'dateFormat'  => (string) get_option( 'date_format', 'F j, Y' ),
+					),
 					'i18n'             => array(
 						'loadError'              => esc_html__( 'Failed to load statistics data.', 'learnpress' ),
 						'noData'                 => esc_html__( 'No data for this period.', 'learnpress' ),
+						// Date-range dropdown.
+						'presets'                => esc_html__( 'Presets', 'learnpress' ),
+						'custom'                 => esc_html__( 'Custom', 'learnpress' ),
+						'compareTo'              => esc_html__( 'Compare to', 'learnpress' ),
+						'previousPeriod'         => esc_html__( 'Previous period', 'learnpress' ),
+						'previousYear'           => esc_html__( 'Previous year', 'learnpress' ),
+						'update'                 => esc_html__( 'Update', 'learnpress' ),
+						'from'                   => esc_html__( 'From', 'learnpress' ),
+						'to'                     => esc_html__( 'To', 'learnpress' ),
+						'selectDateRange'        => esc_html__( 'Select a date range', 'learnpress' ),
 						'itemsCount'             => esc_html__( '%d items', 'learnpress' ),
 						'cappedNotice'           => esc_html__( 'Showing the first %d rows. Narrow the period or filters to see the rest.', 'learnpress' ),
 						'vsPrevPeriod'           => esc_html__( 'vs previous period', 'learnpress' ),
@@ -197,7 +217,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'total'                  => esc_html__( 'Total', 'learnpress' ),
 						'content'                => esc_html__( 'Content', 'learnpress' ),
 						'newThisPeriod'          => esc_html__( '+%d this period', 'learnpress' ),
-						'activeLast7d'           => esc_html__( '%d active in the last 7 days', 'learnpress' ),
+						'activeInPeriod'         => esc_html__( '%d active in this period', 'learnpress' ),
 						'activeThisPeriod'       => esc_html__( 'active this period', 'learnpress' ),
 						'afterEnrollment'        => esc_html__( 'After enrollment', 'learnpress' ),
 						'currentLearners'        => esc_html__( 'Current learners', 'learnpress' ),
@@ -205,7 +225,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'registeredUsers'        => esc_html__( 'Registered users', 'learnpress' ),
 						'topStudents'            => esc_html__( 'Top students', 'learnpress' ),
 						'topCoursesByStudents'   => esc_html__( 'Top courses by students', 'learnpress' ),
-						'avgScore'               => esc_html__( 'Avg. quiz score', 'learnpress' ),
+						'avgScore'               => esc_html__( 'Quiz pass rate', 'learnpress' ),
 						'lastActive'             => esc_html__( 'Last active', 'learnpress' ),
 						'startedLabel'           => esc_html__( 'Started', 'learnpress' ),
 						'completedLabel'         => esc_html__( 'Completed', 'learnpress' ),
@@ -237,8 +257,31 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				)
 			),
 			// @deprecated tag 'learn-press-admin-course-editor' 4.4.2 - no any enqueue js for that.
-			//'learn-press-admin-course-editor' => $this->get_course_data_for_editor_vue(),
+			// 'learn-press-admin-course-editor' => $this->get_course_data_for_editor_vue(),
 		);
+	}
+
+	/**
+	 * Preset entries for the statistics date-range dropdown.
+	 *
+	 * UI presets in display order. Labels are resolved server-side so JS never
+	 * re-implements calendar logic.
+	 *
+	 * @return array[] [ { value, name, rangeLabel } ]
+	 * @since 4.4.2
+	 */
+	private static function statistics_date_range_presets(): array {
+		$presets = array();
+
+		foreach ( PeriodResolver::UI_PRESETS as $preset ) {
+			$presets[] = array(
+				'value'      => $preset,
+				'name'       => PeriodResolver::preset_name( $preset ),
+				'rangeLabel' => PeriodResolver::range_label_for( PeriodResolver::resolve( $preset ) ),
+			);
+		}
+
+		return $presets;
 	}
 
 	/**
@@ -713,7 +756,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * @return array|mixed|null
 	 * @deprecated 4.4.2 - no any enqueue js for that.
 	 */
-	/*public function get_course_data_for_editor_vue() {
+	/*
+	public function get_course_data_for_editor_vue() {
 		global $post, $pagenow;
 
 		if ( empty( $post ) || ( get_post_type() !== LP_COURSE_CPT ) || ! in_array(

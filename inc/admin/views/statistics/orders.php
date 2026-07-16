@@ -26,9 +26,22 @@ $payment_health = array(
 	'cancelled'  => __( 'Cancelled', 'learnpress' ),
 	'failed'     => __( 'Failed', 'learnpress' ),
 );
+
+// Section config filters — add/remove/relabel cards and lists. @since 4.4.2
+$kpi_cards      = (array) apply_filters( 'learn-press/statistics/orders/kpi-cards', $kpi_cards );
+$payment_health = (array) apply_filters( 'learn-press/statistics/orders/payment-health', $payment_health );
 ?>
 <div class="lp-admin-statistics-tab-content lp-stats-tab-orders">
-	<?php learn_press_admin_view( 'statistics/parts/filter-bar' ); ?>
+	<?php
+	/**
+	 * Fires at the top of the Orders statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/orders/before' );
+
+	learn_press_admin_view( 'statistics/parts/filter-bar' );
+	?>
 
 	<div class="lp-stats-dashboard-body">
 		<div class="lp-stats-kpi-grid">
@@ -95,5 +108,14 @@ $payment_health = array(
 		</div>
 	</div>
 
-	<?php learn_press_admin_view( 'statistics/parts/report-modal' ); ?>
+	<?php
+	learn_press_admin_view( 'statistics/parts/report-modal' );
+
+	/**
+	 * Fires at the bottom of the Orders statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/orders/after' );
+	?>
 </div>
