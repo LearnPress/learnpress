@@ -51,7 +51,7 @@ class ApiKeysRepository {
 	/**
 	 * Create a new API key and return plaintext credentials once.
 	 *
-	 * @param int $user_id User ID that owns the key.
+	 * @param int    $user_id User ID that owns the key.
 	 * @param string $description Optional key description.
 	 * @param string $permissions Key permission.
 	 *

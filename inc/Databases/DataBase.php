@@ -30,6 +30,7 @@ class DataBase {
 	public $tb_lp_upgrade_db;
 	public $tb_lp_sessions;
 	public $tb_lp_files;
+	public $tb_lp_webhooks;
 	public $tb_thim_cache;
 	private $collate         = '';
 	public $max_index_length = '191';
@@ -63,6 +64,7 @@ class DataBase {
 		$this->tb_lp_upgrade_db          = $prefix . 'learnpress_upgrade_db';
 		$this->tb_lp_sessions            = $prefix . 'learnpress_sessions';
 		$this->tb_lp_files               = $prefix . 'learnpress_files';
+		$this->tb_lp_webhooks            = $prefix . 'learnpress_webhooks';
 		$this->tb_thim_cache             = $prefix . 'thim_cache';
 		$this->wpdb->hide_errors();
 		$this->set_collate();

@@ -2,8 +2,8 @@
 Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: elearning, education, course, lms, learning management system
-Tested up to: 7.0
-Stable tag: 4.4.0
+Tested up to: 7.0.1
+Stable tag: 4.4.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -278,6 +278,16 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.4.2 (2026-07-11) =
+~ Fixed: security.
+~ Fixed: display Date time on Order.
+~ Fixed: selected method payment on the checkout page.
+~ Fixed: minor bug on Course Builder.
+~ Unregister select2 library.
+~ Added: feature Webhook.
+~ MCP: added function create course/lesson/quiz/question.
+~ Change label Will End to Expiry date.
 
 = 4.4.1 (2026-06-26) =
 ~ Fixed: security.

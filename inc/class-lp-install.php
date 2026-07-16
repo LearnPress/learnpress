@@ -64,6 +64,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				$this->create_table_mcp_api_keys();
 			}
 
+			// Runtime migration for Webhooks table.
+			if ( ! LP_Settings::is_created_tb_webhooks() ) {
+				$this->create_table_webhooks();
+			}
+
 			// Set roles and capabilities.
 			learn_press_add_user_roles();
 
@@ -138,6 +143,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				// Keep this explicit guard in addition to tables-v4 config loading.
 				if ( ! LP_Settings::is_created_tb_mcp_api_keys() ) {
 					$this->create_table_mcp_api_keys();
+				}
+
+				// Ensure Webhooks table exists for activation/upgrade flows.
+				// Keep this explicit guard in addition to tables-v4 config loading.
+				if ( ! LP_Settings::is_created_tb_webhooks() ) {
+					$this->create_table_webhooks();
 				}
 
 				update_option( 'learn_press_check_tables', 'yes' );
@@ -279,6 +290,39 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					PRIMARY KEY (key_id),
 					UNIQUE KEY consumer_key (consumer_key),
 					KEY user_id (user_id)
+				) $collation";
+
+				$wpdb->query( $sql );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Create table learnpress_webhooks.
+		 *
+		 * @since 4.3.3
+		 * @return void
+		 */
+		public function create_table_webhooks() {
+			global $wpdb;
+
+			try {
+				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+
+				$sql = "CREATE TABLE IF NOT EXISTS {$this->lp_db->tb_lp_webhooks} (
+					webhook_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+					status varchar(20) NOT NULL DEFAULT 'active',
+					name varchar(200) NOT NULL DEFAULT '',
+					delivery_url longtext NOT NULL,
+					secret text NOT NULL,
+					events longtext NOT NULL,
+					created_at datetime NOT NULL,
+					updated_at datetime NULL DEFAULT NULL,
+					PRIMARY KEY (webhook_id),
+					KEY user_id (user_id),
+					KEY status (status)
 				) $collation";
 
 				$wpdb->query( $sql );
