@@ -23,11 +23,7 @@ class Question extends Component {
 	}
 
 	componentDidMount( a ) {
-		const {
-			question,
-			isCurrent,
-			markQuestionRendered,
-		} = this.props;
+		const { question, isCurrent, markQuestionRendered } = this.props;
 
 		if ( isCurrent ) {
 			markQuestionRendered( question.id );
@@ -41,7 +37,10 @@ class Question extends Component {
 
 		LP.Hook.doAction( 'lp-question-compatible-builder' );
 
-		if ( typeof MathJax !== 'undefined' && typeof MathJax.Hub !== 'undefined' ) {
+		if (
+			typeof MathJax !== 'undefined' &&
+			typeof MathJax.Hub !== 'undefined'
+		) {
 			MathJax.Hub.Queue( [ 'Typeset', MathJax.Hub ] );
 		}
 
@@ -54,7 +53,13 @@ class Question extends Component {
 
 	parseOptions = ( options ) => {
 		if ( options ) {
-			options = ! isArray( options ) ? JSON.parse( CryptoJS.AES.decrypt( options.data, options.key, { format: CryptoJSAesJson } ).toString( CryptoJS.enc.Utf8 ) ) : options;
+			options = ! isArray( options )
+				? JSON.parse(
+						CryptoJS.AES.decrypt( options.data, options.key, {
+							format: CryptoJSAesJson,
+						} ).toString( CryptoJS.enc.Utf8 )
+				  )
+				: options;
 			options = ! isArray( options ) ? JSON.parse( options ) : options;
 		}
 
@@ -75,41 +80,61 @@ class Question extends Component {
 	};
 
 	getEditLink = () => {
-		const {
-			question,
-			editPermalink,
-		} = this.props;
+		const { question, editPermalink } = this.props;
 
-		return editPermalink ? editPermalink.replace( /post=(.*[0-9])/, `post=${ question.id }` ) : '';
+		return editPermalink
+			? editPermalink.replace( /post=(.*[0-9])/, `post=${ question.id }` )
+			: '';
 	};
 
 	editPermalink = ( editPermalink ) => {
-		return sprintf( '<a href="%s">%s</a>', editPermalink, __( 'Edit', 'learnpress' ) );
+		return sprintf(
+			'<a href="%s">%s</a>',
+			editPermalink,
+			__( 'Edit', 'learnpress' )
+		);
 	};
 
 	render() {
-		const {
-			question,
-			isShow,
-			isShowIndex,
-			isShowHint,
-			status,
-		} = this.props;
+		const { question, isShow, isShowIndex, isShowHint, status, results } =
+			this.props;
+
+		if (
+			results &&
+			results.questions &&
+			results.questions[ question.id ]
+		) {
+			if (
+				typeof results.questions[ question.id ].correct !== 'undefined'
+			) {
+				question.correct = results.questions[ question.id ].correct;
+			}
+		}
 
 		const QuestionTypes = LP.questionTypes.default;
 		const editPermalink = this.getEditLink();
 
 		if ( editPermalink ) {
-			jQuery( '#wp-admin-bar-edit-lp_question' ).find( '.ab-item' ).attr( 'href', editPermalink );
+			jQuery( '#wp-admin-bar-edit-lp_question' )
+				.find( '.ab-item' )
+				.attr( 'href', editPermalink );
 		}
 
 		const titleParts = {
 			index: () => {
-				return ( isShowIndex ? <span className="question-index">{ isShowIndex }.</span> : '' );
+				return isShowIndex ? (
+					<span className="question-index">{ isShowIndex }.</span>
+				) : (
+					''
+				);
 			},
 
 			title: () => {
-				return ( <span dangerouslySetInnerHTML={ { __html: question.title } } /> );
+				return (
+					<span
+						dangerouslySetInnerHTML={ { __html: question.title } }
+					/>
+				);
 			},
 
 			hint: () => {
@@ -120,9 +145,11 @@ class Question extends Component {
 				return (
 					editPermalink && (
 						<span
-							dangerouslySetInnerHTML={ { __html: this.editPermalink( editPermalink ) } }
-							className="edit-link">
-						</span>
+							dangerouslySetInnerHTML={ {
+								__html: this.editPermalink( editPermalink ),
+							} }
+							className="edit-link"
+						></span>
 					)
 				);
 			},
@@ -135,7 +162,8 @@ class Question extends Component {
 						{ LP.config.questionTitleParts().map( ( name ) => {
 							return (
 								<Fragment key={ `title-part-${ name }` }>
-									{ titleParts[ name ] && titleParts[ name ]() }
+									{ titleParts[ name ] &&
+										titleParts[ name ]() }
 								</Fragment>
 							);
 						} ) }
@@ -145,13 +173,20 @@ class Question extends Component {
 
 			content: () => {
 				return (
-					<div className="question-content" dangerouslySetInnerHTML={ { __html: question.content } } />
+					<div
+						className="question-content"
+						dangerouslySetInnerHTML={ { __html: question.content } }
+					/>
 				);
 			},
 
 			'answer-options': () => {
 				return (
-					this.$wrap && <QuestionTypes { ...{ ...this.props, $wrap: this.$wrap } } />
+					this.$wrap && (
+						<QuestionTypes
+							{ ...{ ...this.props, $wrap: this.$wrap } }
+						/>
+					)
 				);
 			},
 
@@ -160,9 +195,14 @@ class Question extends Component {
 					question.explanation && (
 						<>
 							<div className="question-explanation-content">
-								<strong className="explanation-title">{ __( 'Explanation', 'learnpress' ) }:</strong>
-								<div dangerouslySetInnerHTML={ { __html: question.explanation } }>
-								</div>
+								<strong className="explanation-title">
+									{ __( 'Explanation', 'learnpress' ) }:
+								</strong>
+								<div
+									dangerouslySetInnerHTML={ {
+										__html: question.explanation,
+									} }
+								></div>
 							</div>
 						</>
 					)
@@ -171,11 +211,19 @@ class Question extends Component {
 
 			hint: () => {
 				return (
-					question.hint && ! question.explanation && question.showHint && (
+					question.hint &&
+					! question.explanation &&
+					question.showHint && (
 						<>
 							<div className="question-hint-content">
-								<strong className="hint-title">{ __( 'Hint', 'learnpress' ) }:</strong>
-								<div dangerouslySetInnerHTML={ { __html: question.hint } } />
+								<strong className="hint-title">
+									{ __( 'Hint', 'learnpress' ) }:
+								</strong>
+								<div
+									dangerouslySetInnerHTML={ {
+										__html: question.hint,
+									} }
+								/>
 							</div>
 						</>
 					)
@@ -184,7 +232,7 @@ class Question extends Component {
 
 			buttons: () => {
 				return (
-					( 'started' === status ) && <Buttons question={ question } />
+					'started' === status && <Buttons question={ question } />
 				);
 			},
 		};
@@ -193,11 +241,12 @@ class Question extends Component {
 
 		return (
 			<>
-				<div className={ this.getWrapperClass().join( ' ' ) }
+				<div
+					className={ this.getWrapperClass().join( ' ' ) }
 					style={ { display: isShow ? '' : 'none' } }
 					data-id={ question.id }
-					ref={ this.setRef }>
-
+					ref={ this.setRef }
+				>
 					{ configBlocks.map( ( name ) => {
 						return (
 							<Fragment key={ `block-${ name }` }>
@@ -213,11 +262,8 @@ class Question extends Component {
 
 export default compose( [
 	withSelect( ( select, { question: { id } } ) => {
-		const {
-			getData,
-			getQuestionAnswered,
-			getQuestionMark,
-		} = select( 'learnpress/quiz' );
+		const { getData, getQuestionAnswered, getQuestionMark } =
+			select( 'learnpress/quiz' );
 
 		return {
 			status: getData( 'status' ),
@@ -227,6 +273,7 @@ export default compose( [
 			editPermalink: getData( 'editPermalink' ),
 			numPages: getData( 'numPages' ),
 			mark: getQuestionMark( id ) || '',
+			results: getData( 'results' ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
