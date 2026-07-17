@@ -443,7 +443,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			$question                = learn_press_get_question( $question_id );
 			$response['explanation'] = $question->get_explanation();
-			$response['options']     = learn_press_get_question_options_for_js( $question, array( 'answer' => $answered ) );
+			$response['options']     = learn_press_get_question_options_for_js(
+				$question,
+				array(
+					'include_is_true' => true,
+					'answer'          => $answered,
+				)
+			);
 			$response['result']      = $checked;
 			$response['status']      = 'success';
 		} catch ( Throwable $e ) {
