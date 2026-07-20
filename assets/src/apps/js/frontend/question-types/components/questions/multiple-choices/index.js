@@ -6,7 +6,11 @@ const { isBoolean } = lodash;
 
 class QuestionMultipleChoices extends QuestionBase {
 	isCorrect = () => {
-		const { answered } = this.props;
+		const { answered, question } = this.props;
+
+		if ( typeof question.correct !== 'undefined' ) {
+			return question.correct;
+		}
 
 		if ( isBoolean( answered ) || ! answered ) {
 			return false;
@@ -30,7 +34,7 @@ class QuestionMultipleChoices extends QuestionBase {
 	};
 
 	getOptionClass = ( option ) => {
-		const { answered } = this.props;
+		const { answered, question } = this.props;
 		const optionClass = [ ...this.state.optionClass ];
 
 		if ( this.maybeShowCorrectAnswer() ) {
@@ -39,10 +43,15 @@ class QuestionMultipleChoices extends QuestionBase {
 			}
 
 			if ( answered ) {
-				if ( option.isTrue === 'yes' ) {
-					answered.indexOf( option.value ) !== -1 && optionClass.push( 'answered-correct' );
+				const isSelected = answered.indexOf( option.value ) !== -1;
+
+				if (
+					option.isTrue === 'yes' ||
+					( isSelected && question.correct )
+				) {
+					isSelected && optionClass.push( 'answered-correct' );
 				} else {
-					answered.indexOf( option.value ) !== -1 && optionClass.push( 'answered-wrong' );
+					isSelected && optionClass.push( 'answered-wrong' );
 				}
 			}
 		}
