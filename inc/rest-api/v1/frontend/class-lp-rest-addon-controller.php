@@ -1,12 +1,13 @@
 <?php
 
+use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
- * REST API LP Widget.
- *
- * @author Nhamdv <daonham95@gmail.com>
+ * REST API LP manager addons.
  */
 class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	/**
@@ -48,8 +49,15 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 		parent::register_routes();
 	}
 
+	/**
+	 * Check user permission
+	 * 1. Multisite: Check super admin
+	 * 2. Single site: Check user is administrator
+	 *
+	 * @return bool
+	 */
 	public function permission_callback() {
-		return current_user_can( UserModel::ROLE_ADMINISTRATOR );
+		return is_multisite() ? is_super_admin() : current_user_can( UserModel::ROLE_ADMINISTRATOR );
 	}
 
 	/**
@@ -133,12 +141,12 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @return LP_REST_Response
-	 * @version 1.0.0
+	 * @return Response
+	 * @version 1.0.1
 	 * @since 4.2.1
 	 */
-	public function action( WP_REST_Request $request ): LP_REST_Response {
-		$response       = new LP_REST_Response();
+	public function action( WP_REST_Request $request ): Response {
+		$response       = new Response();
 		$response->data = '';
 		$lp_file_system = LP_WP_Filesystem::instance();
 
@@ -158,6 +166,10 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 			switch ( $action ) {
 				case 'install':
 				case 'update':
+					if ( ! current_user_can( 'install_plugins' ) ) {
+						throw new Exception( __( 'You do not have permission to install plugins.', 'learnpress' ) );
+					}
+
 					$link_download = '';
 					$path_file     = '';
 					$package       = '';
@@ -189,6 +201,10 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 					break;
 				case 'activate':
+					if ( ! current_user_can( 'activate_plugins' ) ) {
+						throw new Exception( __( 'You do not have permission to activate plugins.', 'learnpress' ) );
+					}
+
 					$this->lp_addons->activate( $addon );
 					break;
 				case 'deactivate':
