@@ -50,6 +50,7 @@ class LP_Jwt_Auth {
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php';
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php';
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/version1/class-lp-rest-checkout-v1-controller.php';
+		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/version1/class-lp-rest-settings-v1-controller.php';
 
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/lp-rest-function.php';
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/class-rest-api.php';

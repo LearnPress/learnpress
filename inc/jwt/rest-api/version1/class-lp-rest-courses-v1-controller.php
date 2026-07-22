@@ -587,9 +587,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				learn_press_format_price( $course->get_sale_price(), true )
 			);
 			// When release Addon Course Review v4.1.3 a long time, we will remove this code.
-			$courseObjPrepare->rating                           = $this->get_course_rating( $courseObj->ID );
-			$courseObjPrepare->meta_data                        = new stdClass();
-			$courseObjPrepare->meta_data->_lp_passing_condition = $course->get_meta_value_by_key( CoursePostModel::META_KEY_PASSING_CONDITION );
+			$courseObjPrepare->rating = $this->get_course_rating( $courseObj->ID );
+			// All settings of the course metabox, same as the single course response.
+			$courseObjPrepare->meta_data = (object) $this->get_course_meta( $courseObj->ID );
 
 			// Add more fields
 			if ( ! empty( $params['learned'] ) ) {
@@ -1009,8 +1009,39 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$output['name']        = $author->get_display_name();
 		$output['description'] = $author->get_description();
 		$output['social']      = $extra_info;
+		$output['statistic']   = $this->get_instructor_statistic( $author );
 
 		return $output;
+	}
+
+	/**
+	 * Count the courses and the students of an instructor.
+	 *
+	 * Only used for the single course response, it costs several queries and
+	 * "LP_Cache::cache_load_first" only keeps the result within the current request.
+	 *
+	 * @param UserModel $author
+	 *
+	 * @return array
+	 */
+	protected function get_instructor_statistic( UserModel $author ): array {
+		$statistic = $author->get_instructor_statistic();
+
+		// Keep the extra keys added by add-ons, only cast the ones of the core.
+		$numeric_keys = array(
+			'total_course',
+			'published_course',
+			'pending_course',
+			'total_student',
+			'student_completed',
+			'student_in_progress',
+		);
+
+		foreach ( $numeric_keys as $numeric_key ) {
+			$statistic[ $numeric_key ] = absint( $statistic[ $numeric_key ] ?? 0 );
+		}
+
+		return $statistic;
 	}
 
 	/**
@@ -1173,10 +1204,15 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return $output;
 	}
 
+	/**
+	 * Get all settings of the course metabox.
+	 *
+	 * @param int $id Course ID.
+	 *
+	 * @return array
+	 */
 	public function get_course_meta( $id ) {
-		$user_id = get_current_user_id();
-
-		if ( ! $user_id ) {
+		if ( empty( absint( $id ) ) ) {
 			return array();
 		}
 
@@ -1188,7 +1224,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
 		}
 
-		$metabox = new LP_Meta_Box_Course();
+		$metabox = LP_Meta_Box_Course::instance();
 
 		$output = array();
 
@@ -1540,6 +1576,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 							'social'      => array(
 								'description' => __( 'Social Infor.', 'learnpress' ),
 								'type'        => 'array',
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'statistic'   => array(
+								'description' => __( 'Total courses and students of the instructor.', 'learnpress' ),
+								'type'        => 'object',
 								'context'     => array( 'view' ),
 								'readonly'    => true,
 							),
