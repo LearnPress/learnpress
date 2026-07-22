@@ -16,6 +16,7 @@ use LearnPress;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\FilterBase;
 use LearnPress\Filters\PostFilter;
+use LearnPress\Services\CourseService;
 use LP_Cache;
 use LP_Post_Meta_DB;
 use LP_Post_Meta_Filter;
@@ -233,9 +234,10 @@ class PostModel {
 	 *
 	 * @return bool
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function check_capabilities_create(): bool {
+		//return current_user_can( 'edit_' . $this->post_type . 's' );
 		return true;
 	}
 
@@ -244,9 +246,10 @@ class PostModel {
 	 *
 	 * @return bool
 	 * @since 4.2.9.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function check_capabilities_update(): bool {
+		//return current_user_can( 'edit_' . $this->post_type, $this->ID );
 		return true;
 	}
 
@@ -256,17 +259,10 @@ class PostModel {
 	 *
 	 * @return void
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.9
 	 */
 	public function check_capabilities_create_item_course() {
-		$course_item_types = CourseModel::item_types_support();
-		// Questions not type item of course, it is type item of quiz, but need check here.
-		$course_item_types[] = LP_QUESTION_CPT;
-		if ( ! in_array( $this->post_type, $course_item_types, true ) ) {
-			return;
-		}
-
 		$user = wp_get_current_user();
 		if ( ! user_can( $user, 'edit_' . LP_LESSON_CPT . 's' ) ) {
 			throw new Exception( __( 'You do not have permission to create item.', 'learnpress' ) );
@@ -279,17 +275,10 @@ class PostModel {
 	 *
 	 * @return void
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.9
 	 */
 	public function check_capabilities_update_item_course() {
-		$course_item_types = CourseModel::item_types_support();
-		// Questions not type item of course, it is type item of quiz, but need check here.
-		$course_item_types[] = LP_QUESTION_CPT;
-		if ( ! in_array( $this->post_type, $course_item_types, true ) ) {
-			return;
-		}
-
 		$user = wp_get_current_user();
 		if ( ! user_can( $user, 'edit_' . LP_LESSON_CPT, $this->ID ) ) {
 			throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
@@ -303,7 +292,7 @@ class PostModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	public function save( bool $force_save = false ) {
 		$data = get_object_vars( $this );
@@ -319,11 +308,12 @@ class PostModel {
 		if ( empty( $this->ID ) ) { // Insert data.
 			// Check permission
 			if ( ! $force_save ) {
-				if ( ! $this->check_capabilities_create() ) {
+				if ( CourseService::check_is_item_type_of_course( $this->post_type )
+					|| LP_QUESTION_CPT === $this->post_type ) {
+					$this->check_capabilities_create_item_course();
+				} elseif ( ! $this->check_capabilities_create() ) {
 					throw new Exception( __( 'You do not have permission to create item.', 'learnpress' ) );
 				}
-
-				$this->check_capabilities_create_item_course();
 			}
 
 			unset( $data['ID'] );
@@ -331,11 +321,12 @@ class PostModel {
 		} else { // Update data.
 			// Check permission
 			if ( ! $force_save ) {
-				if ( ! $this->check_capabilities_update() ) {
-					throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+				if ( courseservice::check_is_item_type_of_course( $this->post_type )
+					|| LP_QUESTION_CPT === $this->post_type ) {
+					$this->check_capabilities_update_item_course();
+				} elseif ( ! $this->check_capabilities_update() ) {
+					throw new exception( __( 'you do not have permission to edit this item.', 'learnpress' ) );
 				}
-
-				$this->check_capabilities_update_item_course();
 			}
 
 			$post_id = wp_update_post( $data, true );

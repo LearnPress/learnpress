@@ -40,7 +40,7 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 					// Cancelled order
 					'learn-press/order/status-cancelled' => 'send_mail_order_status_update_to_cancelled',
 					// Refunded order
-					'learn-press/order/status-refunded' => 'send_mail_order_status_update_to_refunded',
+					'learn-press/order/status-refunded'  => 'send_mail_order_status_update_to_refunded',
 					// Refund requested
 					'learn-press/order/refund-requested' => 'send_mail_order_refund_requested',
 					// Finished course

@@ -4,7 +4,7 @@
  *
  * @author  ThimPres
  * @package LearnPress/Admin/Views
- * @version 3.0.0
+ * @version 3.0.1
  */
 
 defined( 'ABSPATH' ) or exit;
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) or exit;
 	<a class="button"
 		id="install-sample-course"
 		href="<?php echo esc_url_raw( admin_url( 'admin.php?page=learn-press-tools' ) ); ?>">
-		<?php _e( 'Install a demo course', 'learnpress' ); ?>
+		<?php _e( 'Install a Demo Course', 'learnpress' ); ?>
 	</a>
 
 	<a class="button" href="<?php echo LearnPress::$doc_link; ?>">
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) or exit;
 	</a>
 
 	<a class="button" href="<?php echo esc_url_raw( admin_url( 'post-new.php?post_type=lp_course' ) ); ?>">
-		<?php _e( 'Create a new course', 'learnpress' ); ?>
+		<?php _e( 'Create a New Course', 'learnpress' ); ?>
 	</a>
 
 	<a class="button" href="<?php echo esc_url_raw( admin_url( 'index.php' ) ); ?>">

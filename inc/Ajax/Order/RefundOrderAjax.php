@@ -6,6 +6,7 @@ use LearnPress\Helpers\Response;
 use LearnPress\Models\UserModel;
 use LP_Datetime;
 use LP_Helper;
+use LP_Order;
 use LP_Request;
 use WP_Error;
 use Exception;
@@ -60,7 +61,7 @@ class RefundOrderAjax extends AbstractAjax {
 			}
 
 			if ( ! empty( $reason ) ) {
-				update_post_meta( $order_id, '_lp_refund_reason', $reason );
+				update_post_meta( $order_id, LP_Order::META_KEY_REFUND_REQUEST_REASON, $reason );
 			}
 
 			$request_time = gmdate( LP_Datetime::$format, time() );
@@ -82,6 +83,7 @@ class RefundOrderAjax extends AbstractAjax {
 					)
 				);
 				$response->message = __( 'Your refund request has been sent to the admin for review.', 'learnpress' );
+				do_action( 'learn-press/order/refund-requested', $order_id );
 			}
 
 			$response->status = Response::STATUS_SUCCESS;

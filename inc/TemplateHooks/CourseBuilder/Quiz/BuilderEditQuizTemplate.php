@@ -52,9 +52,9 @@ class BuilderEditQuizTemplate {
 				throw new Exception( __( 'Invalid quiz ID', 'learnpress' ) );
 			}
 
-			if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'quizzes', $item_id ) ) {
+			/*if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'quizzes', $item_id ) ) {
 				throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
-			}
+			}*/
 
 			$is_create_new = $item_id === CourseBuilder::POST_NEW;
 			$quizModel     = false;
@@ -65,6 +65,8 @@ class BuilderEditQuizTemplate {
 					throw new Exception( __( 'Quiz not found', 'learnpress' ) );
 				}
 
+				$quizModel->check_capabilities_update_item_course();
+
 				if ( $quizModel->post_status === PostModel::STATUS_TRASH ) {
 					throw new Exception(
 						__(
@@ -73,6 +75,9 @@ class BuilderEditQuizTemplate {
 						)
 					);
 				}
+			} else {
+				$quizModelNew = new QuizPostModel();
+				$quizModelNew->check_capabilities_create_item_course();
 			}
 
 			$data['quizModel'] = $quizModel;
@@ -421,7 +426,7 @@ class BuilderEditQuizTemplate {
 		$edit  = [
 			'wrapper'     => '<div class="cb-quiz-edit-title">',
 			'label'       => sprintf( '<label for="title" class="cb-quiz-edit-title__label">%s</label>', __( 'Title', 'learnpress' ) ),
-			'input'       => sprintf( '<input type="text" name="quiz_title" size="30" value="%s" id="title" class="cb-quiz-edit-title__input">', $title ),
+			'input'       => sprintf( '<input type="text" name="quiz_title" size="30" value="%s" id="title" class="cb-quiz-edit-title__input">', esc_attr( $title ) ),
 			'wrapper_end' => '</div>',
 		];
 

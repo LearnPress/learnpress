@@ -451,8 +451,13 @@ class UserItemModel {
 			$this->set_user_item_id( $user_item_id_new );
 		}
 
-		// Clear caches.
+		// Clear caches before firing the created hook. Webhook and third-party listeners may reload
+		// this user item from the model/cache layer, so firing earlier can expose stale data.
 		$this->clean_caches();
+
+		if ( $user_item_id_new ) {
+			do_action( 'learn-press/user-item/created', $this );
+		}
 
 		return $this;
 	}
@@ -537,6 +542,61 @@ class UserItemModel {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Get status label.
+	 *
+	 * @return string
+	 * @since 4.4.2
+	 * @version 1.0.0
+	 */
+	public function get_status_label(): string {
+		switch ( $this->get_status() ) {
+			case self::STATUS_COMPLETED:
+				$value = __( 'Completed', 'learnpress' );
+				break;
+			case self::STATUS_FINISHED:
+				$value = __( 'Finished', 'learnpress' );
+				break;
+			case self::STATUS_ENROLLED:
+				$value = __( 'Enrolled', 'learnpress' );
+				break;
+			case self::STATUS_CANCEL:
+				$value = __( 'Cancel', 'learnpress' );
+				break;
+			default:
+				$value = $this->get_status();
+				break;
+		}
+
+		return (string) $value;
+	}
+
+	/**
+	 * Get graduation label.
+	 *
+	 * @return string
+	 * @since 4.4.2
+	 * @version 1.0.0
+	 */
+	public function get_graduation_label(): string {
+		switch ( $this->get_graduation() ) {
+			case self::GRADUATION_IN_PROGRESS:
+				$value = __( 'In Progress', 'learnpress' );
+				break;
+			case self::GRADUATION_PASSED:
+				$value = __( 'Passed', 'learnpress' );
+				break;
+			case self::GRADUATION_FAILED:
+				$value = __( 'Failed', 'learnpress' );
+				break;
+			default:
+				$value = $this->get_graduation();
+				break;
+		}
+
+		return (string) $value;
 	}
 
 	/**

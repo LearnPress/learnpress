@@ -172,7 +172,7 @@ class ProfileOrderTemplate {
 				'<h3>%s</h3>',
 				esc_html__( 'Order Details', 'learnpress' )
 			),
-			'table'           => '<table class="lp-list-table order-table-details">',
+			'table'           => '<div class="lp-table-wrap"><table class="lp-list-table order-table-details">',
 			'table-header'    => self::table_header(),
 			'table-body'      => '<tbody>',
 			'items'           => $html_items,
@@ -180,7 +180,7 @@ class ProfileOrderTemplate {
 			'do_action_items' => self::action_table_items( $order ),
 			'table-body-end'  => '</tbody>',
 			'table-footer'    => self::table_footer( $order ),
-			'table-end'       => '</table>',
+			'table-end'       => '</table></div>',
 			'footer'          => self::order_detail_content_footer( $order ),
 		);
 		$content->content = Template::combine_components( $section );
@@ -350,7 +350,7 @@ class ProfileOrderTemplate {
 		);
 		$status_label  = $status_labels[ $refund_request_status ] ?? ucwords( str_replace( '-', ' ', $refund_request_status ) );
 
-		return sprintf(
+		$html_status = sprintf(
 			'<p class="lp-order-refund-request-status">
 				<strong>%s</strong>
 				<span class="lp-label label-%s">%s</span>
@@ -358,6 +358,28 @@ class ProfileOrderTemplate {
 			esc_html__( 'Refund request:', 'learnpress' ),
 			esc_attr( $refund_request_status ),
 			esc_html( $status_label )
+		);
+
+		$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
+		$refunded_amount = (float) $order->get_meta( LP_Order::META_KEY_REFUNDED_AMOUNT );
+		$html_amount     = '';
+		if ( $refunded_amount > 0 ) {
+			$refunded_amount = learn_press_format_price( $refunded_amount, $currency_symbol );
+			$html_amount     = sprintf(
+				'<p class="lp-order-refunded-amount">
+					<strong>%s</strong>
+					<span>%s</span>
+				</p>',
+				esc_html__( 'Refund amount:', 'learnpress' ),
+				esc_html( $refunded_amount )
+			);
+		}
+
+		return Template::combine_components(
+			[
+				'status' => $html_status,
+				'amount' => $html_amount,
+			]
 		);
 	}
 

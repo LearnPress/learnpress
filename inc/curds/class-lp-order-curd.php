@@ -31,7 +31,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			return false;
 		}
 
-		$order->set_order_date( time() );
+		//$order->set_order_date( time() );
 		$order->set_order_key( learn_press_generate_order_key() );
 		$status  = $this->format_status_save_db( $order );
 		$lp_time = new LP_Datetime( time() );
@@ -79,14 +79,31 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			return false;
 		}
 
+		$post      = get_post( $order->get_id() );
 		$status    = $this->format_status_save_db( $order );
 		$post_data = array(
-			//'post_title'    => $order->get_order_number(),
-			'post_date'     => $order->get_order_date( 'edit' )->toSql( true ),
-			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql(),
-			'post_status'   => $status,
-			//'post_parent'   => $order->get_parent_id(),
+			'post_status' => $status,
 		);
+
+		// For case edit Order on Backend.
+		if ( isset( $_POST['order-date'] ) ) {
+			// Data time submit edit order will is local time
+			$order_date      = LP_Request::get_param( 'order-date' );
+			$order_hour      = LP_Request::get_param( 'order-hour', '00' );
+			$order_min       = LP_Request::get_param( 'order-minute', '00' );
+			$date_time_local = $order_date . ' ' . $order_hour . ':' . $order_min . ':00';
+
+			// Date GMT
+			$lpDateTimeLocal            = new LP_Datetime( $date_time_local );
+			$date_time_gmt              = $lpDateTimeLocal->to_gmt_string( $lpDateTimeLocal );
+			$post_data['post_date']     = $date_time_local;
+			$post_data['post_date_gmt'] = $date_time_gmt;
+		} elseif ( $post->post_status === 'auto-draft'
+			&& $post->post_date_gmt === '0000-00-00 00:00:00' ) {
+			$date_time_gmt              = get_gmt_from_date( $post->post_date );
+			$post_data['post_date_gmt'] = $date_time_gmt;
+		}
+
 		$post_data = apply_filters( 'learn-press/order/update-data', $post_data, $order->get_id() );
 
 		/**
@@ -495,23 +512,22 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$users = 0;
 			}
 
-			$order->set_data_via_methods(
-				array(
-					'user_id'         => $users,
-					'order_date'      => new LP_Datetime( $post->post_date ),
-					'date_modified'   => new LP_Datetime( $post->post_modified ),
-					'status'          => str_replace( 'lp-', '', $post->post_status ),
-					'parent_id'       => $post->post_parent,
-					'created_via'     => get_post_meta( $post->ID, '_created_via', true ),
-					'total'           => get_post_meta( $post->ID, '_order_total', true ),
-					'subtotal'        => get_post_meta( $post->ID, '_order_subtotal', true ),
-					'order_key'       => get_post_meta( $post->ID, '_order_key', true ),
-					'user_ip_address' => get_post_meta( $post->ID, '_user_ip_address', true ),
-					'user_agent'      => get_post_meta( $post->ID, '_user_agent', true ),
-					'checkout_email'  => get_post_meta( $post->ID, '_checkout_email', true ),
-					'currency'        => get_post_meta( $post->ID, '_order_currency', true ),
-				)
-			);
+			$lpDateTimeGmt = new LP_Datetime( $post->post_date_gmt );
+			$date_local    = $lpDateTimeGmt->toSql( true );
+			$order->set_order_date( new LP_Datetime( $date_local ) );
+
+			$order->set_user_id( $users );
+			$order->set_date_modified( new LP_Datetime( $post->post_modified ) );
+			$order->set_status( str_replace( 'lp-', '', $post->post_status ) );
+			$order->set_parent_id( $post->post_parent );
+			$order->set_created_via( get_post_meta( $post->ID, '_created_via', true ) );
+			$order->set_total( get_post_meta( $post->ID, '_order_total', true ) );
+			$order->set_subtotal( get_post_meta( $post->ID, '_order_subtotal', true ) );
+			$order->set_order_key( get_post_meta( $post->ID, '_order_key', true ) );
+			$order->set_user_ip_address( get_post_meta( $post->ID, '_user_ip_address', true ) );
+			$order->set_user_agent( get_post_meta( $post->ID, '_user_agent', true ) );
+			$order->set_checkout_email( get_post_meta( $post->ID, '_checkout_email', true ) );
+			$order->set_currency( get_post_meta( $post->ID, '_order_currency', true ) );
 			$order->set_data( 'order_subtotal', get_post_meta( $post->ID, '_order_subtotal', true ) );
 			$order->set_data( 'order_total', get_post_meta( $post->ID, '_order_total', true ) );
 			$order->set_data( 'payment_method', get_post_meta( $post->ID, '_payment_method', true ) );

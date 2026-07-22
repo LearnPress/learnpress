@@ -4,8 +4,11 @@
  *
  * @author  ThimPress (Nhamdv)
  * @package LearnPress/Admin/Views
- * @version 4.0.4
+ * @version 4.0.5
  */
+
+use LearnPress\Helpers\LPDateTime;
+use LearnPress\Models\OrderPostModel;
 
 if ( isset( $order_items ) ) {
 	$currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
@@ -17,10 +20,22 @@ if ( ! isset( $order ) || ! ( $order instanceof LP_Order ) ) {
 	return;
 }
 
-$post         = $order->get_post();
-$method_title = $order->get_payment_method_title();
-$user_ip      = $order->get_user_ip_address();
-$user_ids     = $order->get_user_id();
+$post          = $order->get_post();
+$method_title  = $order->get_payment_method_title();
+$user_ip       = $order->get_user_ip_address();
+$user_ids      = $order->get_user_id();
+$oderPostModel = OrderPostModel::find_by_id( $post->ID, true );
+if ( ! $oderPostModel ) {
+	return;
+}
+
+// Check create new Order Manual by WP
+if ( $oderPostModel->post_date_gmt === '0000-00-00 00:00:00' ) {
+	$convert_post_date_gmt        = get_gmt_from_date( $oderPostModel->post_date );
+	$oderPostModel->post_date_gmt = $convert_post_date_gmt;
+}
+
+$lpDateTime = new LPDateTime( $oderPostModel->post_date_gmt );
 ?>
 
 <div id="learn-press-order" class="order-details">
@@ -49,42 +64,42 @@ $user_ids     = $order->get_user_id();
 			<?php learn_press_touch_time( true, 1 ); ?>
 
 			<input type="date" class="order-date" name="order-date"
-					value="<?php echo esc_attr( $order->get_order_date( 'd' ) ); ?>">
+					value="<?php echo esc_attr( $lpDateTime->format( 'Y-m-d', 'gmt_to_local' ) ); ?>">
 			@
 			<input type="number" class="order-hour" name="order-hour" min="0" max="23"
-					value="<?php echo esc_attr( $order->get_order_date( 'h' ) ); ?>">
+					value="<?php echo esc_attr( $lpDateTime->format( 'H', 'gmt_to_local' ) ); ?>">
 			:
 			<input type="number" class="order-minute" name="order-minute" min="0" max="59"
-					value="<?php echo esc_attr( $order->get_order_date( 'm' ) ); ?>">
+					value="<?php echo esc_attr( $lpDateTime->format( 'i', 'gmt_to_local' ) ); ?>">
 
-			<!-- Hidden fields for date only for default save post of Wordpress -->
-			<input type="hidden" name="aa" value="<?php echo gmdate( 'Y', $order->get_order_date( 'timestamp' ) ); ?>">
-			<input type="hidden" name="mm" value="<?php echo gmdate( 'm', $order->get_order_date( 'timestamp' ) ); ?>">
-			<input type="hidden" name="jj" value="<?php echo gmdate( 'd', $order->get_order_date( 'timestamp' ) ); ?>">
-			<input type="hidden" name="ss" value="<?php echo gmdate( 's', $order->get_order_date( 'timestamp' ) ); ?>">
-			<input type="hidden" name="hh" value="<?php echo gmdate( 'h', $order->get_order_date( 'h' ) ); ?>">
-			<input type="hidden" name="mn" value="<?php echo gmdate( 'm', $order->get_order_date( 'm' ) ); ?>">
-			<!-- Hidden fields for date only for default save post of Wordpress -->
+			<!-- Hidden fields for date only for default save post of WordPress -->
+			<input type="hidden" name="aa" value="<?php echo esc_attr( $lpDateTime->format( 'Y', 'gmt_to_local' ) ); ?>">
+			<input type="hidden" name="mm" value="<?php echo esc_attr( $lpDateTime->format( 'm', 'gmt_to_local' ) ); ?>">
+			<input type="hidden" name="jj" value="<?php echo esc_attr( $lpDateTime->format( 'd', 'gmt_to_local' ) ); ?>">
+			<input type="hidden" name="ss" value="<?php echo esc_attr( $lpDateTime->format( 's', 'gmt_to_local' ) ); ?>">
+			<input type="hidden" name="hh" value="<?php echo esc_attr( $lpDateTime->format( 'h', 'gmt_to_local' ) ); ?>">
+			<input type="hidden" name="mn" value="<?php echo esc_attr( $lpDateTime->format( 'i', 'gmt_to_local' ) ); ?>">
+			<!-- Hidden fields for date only for default save post of WordPress -->
 		</div>
 
 		<div class="order-data-field order-data-status <?php echo sanitize_title( $order->get_post_status() ); ?>">
 			<label><?php esc_html_e( 'Status:', 'learnpress' ); ?></label>
-			<select name="order-status" data-status="<?php echo 'lp-' . $order->get_status(); ?>">
+			<select name="order-status" data-status="<?php echo $oderPostModel->post_status; ?>">
 				<?php
-				$statuses = LP_Order::get_order_statuses();
-				foreach ( $statuses as $status => $status_name ) {
+				$statuses = OrderPostModel::get_order_statuses();
+				foreach ( $statuses as $status => $status_label ) {
 					?>
 					<option data-desc="<?php echo esc_attr( _learn_press_get_order_status_description( $status ) ); ?>"
 							value="<?php echo esc_attr( $status ); ?>"
-						<?php echo selected( $status, 'lp-' . $order->get_status(), false ); ?>>
-						<?php echo esc_html( LP_Order::get_status_label( $status_name ) ); ?>
+						<?php echo selected( $status, $oderPostModel->post_status, false ); ?>>
+						<?php echo esc_html( $status_label ); ?>
 					</option>;
 					<?php
 				}
 				?>
 			</select>
 
-			<?php if ( $order->get_status() === 'completed' ) : ?>
+			<?php if ( $oderPostModel->post_status === OrderPostModel::STATUS_COMPLETED ) : ?>
 				<div>
 					<div
 						style="padding: 10px 18px; margin-top: 10px; border: 2px solid #d80000; border-radius: 4px; display: inline-block;">
@@ -99,7 +114,7 @@ $user_ids     = $order->get_user_id();
 			<div class="order-users">
 				<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
 				<?php
-				if ( LP_ORDER_PENDING === $order->get_status() && $order->is_manual() ) {
+				if ( OrderPostModel::STATUS_PENDING === $oderPostModel->post_status && $order->is_manual() ) {
 					$data_struct = [
 						'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
 						'dataType'    => 'users',
@@ -192,6 +207,8 @@ $user_ids     = $order->get_user_id();
 			<?php echo esc_html( $order->get_order_key() ); ?>
 		</div>
 
+		<?php learn_press_admin_order_refund_request_panel( $order ); ?>
+
 		<?php do_action( 'lp/admin/order/detail/after-order-key', $order ); ?>
 
 		<div class="order-data-field order-data-note">
@@ -206,12 +223,12 @@ $user_ids     = $order->get_user_id();
 </div>
 
 <?php
-$assets = LP_Admin_Assets::instance();
+/*$assets = LP_Admin_Assets::instance();
 $assets->add_localize( 'learn-press-meta-box-order', 'users', $order->get_user_data() );
 $assets->add_localize( 'learn-press-meta-box-order', 'userTextFormat', '{{display_name}} ({{email}})' );
 
 wp_enqueue_script( 'jquery-ui-datepicker' );
-wp_enqueue_style( 'jquery-ui' );
+wp_enqueue_style( 'jquery-ui' );*/
 ?>
 
 <script type="text/html" id="tmpl-learn-press-modal-add-order-courses">

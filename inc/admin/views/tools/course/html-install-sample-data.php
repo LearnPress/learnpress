@@ -2,17 +2,12 @@
 /**
  * @author  ThimPress
  * @package LearnPress/Admin/Views
- * @version 3.0.0
+ * @version 3.0.1
  */
 
 use LearnPress\Models\CoursePostModel;
 
-defined( 'ABSPATH' ) or die();
-
-$section_range  = LP_Install_Sample_Data::$section_range;
-$item_range     = LP_Install_Sample_Data::$item_range;
-$question_range = LP_Install_Sample_Data::$question_range;
-$answer_range   = LP_Install_Sample_Data::$answer_range;
+defined( 'ABSPATH' ) || die();
 ?>
 
 <div class="lp-install-sample">
@@ -28,28 +23,27 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
 			</li>
 			<li>
 				<p><?php _e( 'Random number of sections in range', 'learnpress' ); ?></p>
-				<input type="number" size="3" value="<?php echo esc_attr( $section_range[0] ); ?>" min="1" max="20" name="section-range[]">
-				<input type="number" size="3" value="<?php echo esc_attr( $section_range[1] ); ?>" min="1" max="20" name="section-range[]">
+				<input type="number" size="3" value="1" min="1" max="20" name="section-range[]">
+				<input type="number" size="3" value="3" min="1" max="20" name="section-range[]">
 			</li>
 			<li>
 				<p><?php _e( 'Random number of items in range (each section)', 'learnpress' ); ?></p>
-				<input type="number" size="3" value="<?php echo esc_attr( $item_range[0] ); ?>" min="1" max="50" name="item-range[]">
-				<input type="number" size="3" value="<?php echo esc_attr( $item_range[1] ); ?>" min="1" max="50" name="item-range[]">
+				<input type="number" size="3" value="1" min="1" max="50" name="item-range[]">
+				<input type="number" size="3" value="10" min="1" max="50" name="item-range[]">
 			</li>
 			<li>
 				<p><?php _e( 'Random number of questions in range (each quiz)', 'learnpress' ); ?></p>
-				<input type="number" size="3" value="<?php echo esc_attr( $question_range[0] ); ?>" min="1" max="50" name="question-range[]">
-				<input type="number" size="3" value="<?php echo esc_attr( $question_range[1] ); ?>" min="1" max="50" name="question-range[]">
+				<input type="number" size="3" value="1" min="1" max="50" name="question-range[]">
+				<input type="number" size="3" value="5" min="1" max="50" name="question-range[]">
 			</li>
 			<li>
 				<p><?php _e( 'Random number of answers in range (each question)', 'learnpress' ); ?></p>
-				<input type="number" size="3" value="<?php echo esc_attr( $answer_range[0] ); ?>" min="1" max="10" name="answer-range[]">
-				<input type="number" size="3" value="<?php echo esc_attr( $answer_range[1] ); ?>" min="1" max="10" name="answer-range[]">
+				<input type="number" size="3" value="2" min="1" max="10" name="answer-range[]">
+				<input type="number" size="3" value="5" min="1" max="10" name="answer-range[]">
 			</li>
 			<li>
 				<p><?php _e( 'Course price', 'learnpress' ); ?></p>
 				<input type="number" size="3" value="" min="0" name="<?php echo CoursePostModel::META_KEY_REGULAR_PRICE; ?>">
-				<input type="hidden" value="all" name="<?php echo CoursePostModel::META_KEY_LEVEL; ?>">
 			</li>
 		</ul>
 	</fieldset>

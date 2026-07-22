@@ -503,7 +503,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 	 * Build normalized refund event payload.
 	 *
 	 * @since 4.3.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 *
 	 * @param LP_Order $order
 	 * @param array    $overrides
@@ -522,7 +522,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 			);
 		}
 
-		$user_id        = $order->get_user_id();
+		$user_id        = (int) $order->get_user_id();
 		$userOrderModel = UserModel::find( $user_id, true );
 		if ( $userOrderModel instanceof UserModel ) {
 			$requested_by = $userOrderModel->get_display_name();
@@ -540,7 +540,7 @@ if ( ! function_exists( 'learn_press_get_order_refund_event_data' ) ) {
 			'requested_at'         => $requested_at,
 			'reviewed_by'          => absint( get_post_meta( $order_id, '_lp_refund_reviewed_by', true ) ),
 			'reviewed_at'          => (string) get_post_meta( $order_id, '_lp_refund_reviewed_at', true ),
-			'reason'               => (string) get_post_meta( $order_id, '_lp_refund_reason', true ),
+			'reason'               => (string) get_post_meta( $order_id, LP_Order::META_KEY_REFUND_REQUEST_REASON, true ),
 			'requester_email'      => '',
 			'admin_order_edit_url' => add_query_arg(
 				array(
@@ -641,11 +641,10 @@ function learn_press_admin_order_refund_request_panel( $order ) {
 		)
 	);
 }
-add_action( 'lp/admin/order/detail/after-order-key', 'learn_press_admin_order_refund_request_panel' );
 
-	/**
-	 * get total price order complete
-	 */
+/**
+ * get total price order complete
+ */
 function learn_press_get_total_price_order_complete() {
 	global $wpdb;
 

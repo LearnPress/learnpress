@@ -55,7 +55,7 @@ class AdminListStudentsEnrolled {
 		$instructor_id = self::resolve_instructor_id_for_request( array() );
 
 		echo '<div class="wrap" id="lp-enrolled-students">';
-		echo '<h1 class="wp-heading-inline">' . esc_html__( 'Enrolled Students', 'learnpress' ) . '</h1>';
+		echo '<h1 class="wp-heading-inline">' . esc_html__( 'Students', 'learnpress' ) . '</h1>';
 		do_action( 'learn-press/admin/enrolled-students/layout', $instructor_id );
 		echo '</div>';
 	}

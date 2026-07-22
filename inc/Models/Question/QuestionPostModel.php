@@ -11,12 +11,12 @@
 
 namespace LearnPress\Models\Question;
 
-use ClassPress\Helpers\Debug;
 use Exception;
 use LearnPress\Databases\QuestionAnswersDB;
 use LearnPress\Filters\QuestionAnswersFilter;
 use LearnPress\Models\PostModel;
 use LP_Cache;
+use LP_Debug;
 use LP_Question_Filter;
 
 class QuestionPostModel extends PostModel {
@@ -91,7 +91,7 @@ class QuestionPostModel extends PostModel {
 				$this->answer_options = $answer_options;
 			}
 		} catch ( Exception $e ) {
-			Debug::error_log( $e );
+			LP_Debug::error_log( $e );
 		}
 
 		return $this->answer_options;
@@ -159,17 +159,6 @@ class QuestionPostModel extends PostModel {
 		}
 
 		return $this->question_type;
-	}
-
-	/**
-	 * @param $question_type
-	 * @return $this
-	 */
-	public function set_type($question_type)
-	{
-		$this->question_type = $question_type;
-
-		return $this;
 	}
 
 	/**
@@ -272,5 +261,23 @@ class QuestionPostModel extends PostModel {
 	 */
 	public function random_value( int $length = 10 ): string {
 		return substr( md5( uniqid( mt_rand(), true ) ), 0, $length );
+	}
+
+	/**
+	 * Check capabilities create question
+	 *
+	 * @return bool
+	 */
+	public function check_capabilities_create(): bool {
+		return current_user_can( 'edit_' . LP_LESSON_CPT . 's' );
+	}
+
+	/**
+	 * Check capabilities update question
+	 *
+	 * @return bool
+	 */
+	public function check_capabilities_update(): bool {
+		return current_user_can( 'edit_' . LP_LESSON_CPT, $this->ID );
 	}
 }

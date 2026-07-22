@@ -529,7 +529,7 @@ class SingleCourseModernLayout {
 				$will_end_date      = $will_end_date->format( LP_Datetime::I18N_FORMAT );
 				$html_will_end_date = sprintf(
 					'<div class="will-end-date">%s: %s</div>',
-					esc_html__( 'Will end date', 'learnpress' ),
+					esc_html__( 'Expiry date', 'learnpress' ),
 					$will_end_date
 				);
 			}

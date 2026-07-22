@@ -22,7 +22,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->menu_title = esc_html__( 'Settings', 'learnpress' );
 		$this->page_title = esc_html__( 'LearnPress Settings', 'learnpress' );
 		$this->priority   = 30;
-		$this->callback   = [ $this, 'display' ];
+		$this->callback   = array( $this, 'display' );
 
 		$this->tabs = apply_filters(
 			'learn-press/admin/settings-tabs-array',
@@ -39,14 +39,11 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 			)
 		);
 
+		// Check if no addon config on tab addons then remove it
 		if ( isset( $this->tabs['addons'] )
 			&& $this->tabs['addons'] instanceof LP_Settings_Addons
 			&& ! $this->tabs['addons']->has_sections() ) {
 			unset( $this->tabs['addons'] );
-		}
-
-		if ( learn_press_is_mcp_available() ) {
-			$this->tabs['mcp'] = include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-mcp.php';
 		}
 
 		add_action( 'learn-press/admin/page-content-settings', array( $this, 'page_contents' ) );
@@ -57,18 +54,18 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		parent::__construct();
 	}
-
 	/**
 	 * Display menu content
 	 */
 	public function page_content() {
+
 		parent::page_content();
 	}
 
 	public function page_contents() {
+
 		$active_tab = $this->get_active_tab();
 		$section    = $this->get_active_section();
-
 		if ( 'permalink' === $active_tab && isset( $_GET['lp-user-slug-generated'] ) ) {
 			$processed = absint( $_GET['lp-user-slug-processed'] ?? 0 );
 			$generated = absint( $_GET['lp-user-slug-generated'] ?? 0 );
@@ -97,7 +94,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->tabs[ $active_tab ]->admin_page_settings( $section, $this->get_sections() );
 
 		$hide_save_button = false;
-		if ( 'mcp' === $active_tab ) {
+		if ( 'advanced' === $active_tab && 'mcp' === $section && class_exists( 'LP_Settings_Advanced' ) ) {
 			$hide_save_button = ! learn_press_is_mcp_available();
 		}
 		?>
@@ -158,7 +155,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$lp_settings_cache->clean_lp_settings();
 
 		// Clear cache lp rewrite rules
-		//$lp_settings_cache->clean_lp_rewrite_rules();
+		// $lp_settings_cache->clean_lp_rewrite_rules();
 
 		// Flush rewrite rules after save settings.
 		if ( isset( $_REQUEST['tab'] ) && 'permalink' === $_REQUEST['tab'] ) {

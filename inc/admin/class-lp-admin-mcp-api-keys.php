@@ -172,7 +172,8 @@ class LP_Admin_MCP_API_Keys {
 		$url = add_query_arg(
 			array(
 				'page'          => 'learn-press-settings',
-				'tab'           => 'mcp',
+				'tab'           => 'advanced',
+				'section'       => 'mcp',
 				'lp_mcp_notice' => $notice_code,
 			),
 			admin_url( 'admin.php' )
@@ -214,11 +215,17 @@ class LP_Admin_MCP_API_Keys {
 	 * @return bool
 	 */
 	protected function is_mcp_keys_settings_screen(): bool {
-		$page = LP_Request::get_param( 'page', '', 'key' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$tab  = LP_Request::get_param( 'tab', '', 'key' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		return 'learn-press-settings' === $page
-			&& 'mcp' === $tab;
+		$page    = sanitize_key( $_REQUEST['page'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$tab     = sanitize_key( $_REQUEST['tab'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$section = sanitize_key( $_REQUEST['section'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( 'learn-press-settings' !== $page ) {
+			return false;
+		}
+
+		return ( 'advanced' === $tab && 'mcp' === $section )
+			|| 'mcp' === $tab;
 	}
 
 	/**

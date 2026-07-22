@@ -213,10 +213,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$paypal_payment_url = $this->create_payment_url( $order );
 			}
 
-			$result['result']   = 'success';
-			$result['redirect'] = $paypal_payment_url;
-
-			return $result;
+			return [
+				'result'   => 'success',
+				'redirect' => $paypal_payment_url,
+			];
 		}
 
 		/**

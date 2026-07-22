@@ -222,35 +222,11 @@ export class EditQuestion {
 	}
 
 	reInitTinymce( id ) {
-		if ( ! window.tinymce || ! id ) {
-			return;
-		}
-
-		const elTextarea = document.getElementById( id );
-		if ( ! elTextarea ) {
-			return;
-		}
-
-		this.reInitQuicktags( id );
-		const editor = window.tinymce.get( id );
-		const editorContainer = editor?.getContainer?.();
-		const isEditorAttached = editor && (
-			editor.targetElm === elTextarea ||
-			editor.getElement?.() === elTextarea ||
-			editorContainer?.contains( elTextarea )
-		);
-
-		if ( isEditorAttached ) {
-			this.setDefaultEditorTab( id );
-			return;
-		}
-
 		window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 		window.tinymce.execCommand( 'mceAddEditor', true, id );
-		this.setDefaultEditorTab( id );
 	}
 
-	reInitQuicktags( id ) {
+	reInitQuickTags( id ) {
 		const toolbar = document.getElementById( `qt_${ id }_toolbar` );
 		if ( ! toolbar || toolbar.children.length || ! window.quicktags ) {
 			return;
@@ -272,6 +248,11 @@ export class EditQuestion {
 
 		if ( wrapEditor.classList.contains( 'html-active' ) && window.switchEditors?.go ) {
 			window.switchEditors.go( id, 'tmce' );
+
+			const elTextarea = document.getElementById( id );
+			if ( elTextarea ) {
+				elTextarea.style.visibility = '';
+			}
 		}
 
 		wrapEditor.classList.add( 'tmce-active' );
@@ -296,10 +277,7 @@ export class EditQuestion {
 				return;
 			}
 
-			this.setDefaultEditorTab( id );
-
 			const elTextarea = document.getElementById( id );
-
 			if ( ! elTextarea ) {
 				return;
 			}
@@ -325,6 +303,9 @@ export class EditQuestion {
 			editor.settings.document_base_url = lpData.site_url;
 			// End config use absolute url
 
+			// Add quick tags
+			this.reInitQuickTags( id );
+
 			// Events focus in TinyMCE editor
 			editor.on( 'change keyup', ( e ) => {
 				// Auto save if it has class lp-auto-save
@@ -349,7 +330,10 @@ export class EditQuestion {
 					border: 1px dashed rebeccapurple;
 					padding: 5px;
 				}
-			` );
+				` );
+
+				// Set default tab visual
+				this.setDefaultEditorTab( id );
 			} );
 			editor.on( 'setcontent', ( e ) => {
 				const uniquid = this.randomString();
@@ -372,8 +356,8 @@ export class EditQuestion {
 					fibSelection
 						.getNode()
 						.classList.contains(
-						`${ EditQuestion.selectors.elQuestionFibInput }`
-					)
+							`${ EditQuestion.selectors.elQuestionFibInput }`
+						)
 				) {
 					const blankId = fibSelection.getNode().dataset.id;
 					const textBlank = fibSelection.getNode().textContent.trim();
@@ -998,7 +982,7 @@ export class EditQuestion {
 	}
 
 	/***** Fill in the blank question type *****/
-		// For FIB question type
+	// For FIB question type
 	fibInsertBlank = ( args ) => {
 		const { e, target } = args;
 		const elBtnFibInsertBlank = target.closest(

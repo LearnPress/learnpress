@@ -41,5 +41,6 @@
 		<exclude name="WordPress.NamingConventions.ValidVariableName.MemberNotSnakeCase"/>
 		<exclude name="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase"/>
 		<exclude name="WordPress.NamingConventions.ValidVariableName.InterpolatedVariableNotSnakeCase"/>
+		<exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned" />
     </rule>
 </ruleset>

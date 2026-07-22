@@ -11,7 +11,8 @@ use LearnPress\Ajax\Order\ExportOrderCSVAjax;
 use LearnPress\Databases\DataBase;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
-use LearnPress\Filters\PostFilter;
+use LearnPress\Helpers\LPDateTime;
+use LearnPress\Models\OrderPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 
@@ -167,13 +168,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				if ( isset( $_POST['order-customer'] ) && $order->is_manual() ) {
 					$user_id = LP_Request::get_param( 'order-customer' );
 					$order->set_user_id( $user_id );
-				}
-
-				if ( isset( $_POST['order-date'] ) ) {
-					$order_date = LP_Request::get_param( 'order-date' );
-					$order_hour = LP_Request::get_param( 'order-hour', '00' );
-					$order_min  = LP_Request::get_param( 'order-minute', '00' );
-					$order->set_order_date( $order_date . ' ' . $order_hour . ':' . $order_min . ':00' );
 				}
 
 				$status = LP_Request::get_param( 'order-status' );
@@ -588,7 +582,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function columns_content( $column, $post_id = 0 ) {
 			global $post;
-			$lp_order = learn_press_get_order( $post->ID );
+			$lp_order       = learn_press_get_order( $post->ID );
+			$orderPostModel = OrderPostModel::find_by_id( $post->ID, true );
 
 			switch ( $column ) {
 				case 'order_student':
@@ -635,19 +630,37 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					);
 					break;
 				case 'order_date':
-					$t_time    = get_the_time( 'Y/m/d g:i:s a' );
-					$m_time    = $post->post_date;
-					$time      = get_post_time( 'G', true, $post );
-					$time_diff = current_time( 'U' ) - $time;
-
-					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-						$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time, current_time( 'U' ) ) );
-					} else {
-						$h_time = mysql2date( 'Y/m/d', $m_time );
+					// Check column post_date_gmt is default value
+					if ( $orderPostModel->post_date_gmt === '0000-00-00 00:00:00' ) {
+						$convert_post_date_gmt         = get_gmt_from_date( $orderPostModel->post_date );
+						$orderPostModel->post_date_gmt = $convert_post_date_gmt;
 					}
 
-					echo '<abbr title="' . esc_attr( $t_time ) . '">' . esc_html( apply_filters( 'learn_press_order_column_time', $h_time, $lp_order ) ) . '</abbr>';
+					$time      = strtotime( $orderPostModel->post_date_gmt );
+					$time_diff = time() - $time;
 
+					$lpDateTimeGMT           = new LPDateTime( $orderPostModel->post_date_gmt );
+					$time_local_format_mysql = $lpDateTimeGMT->format( LPDateTime::FORMAT_MYSQL, 'gmt_to_local' );
+
+					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
+						$time_display = $lpDateTimeGMT->format(
+							LPDateTime::FORMAT_HUMAN,
+							'gmt_to_local',
+							true
+						);
+					} else {
+						$time_display = $lpDateTimeGMT->format(
+							LPDateTime::FORMAT_I18N_DATE_TIME,
+							'gmt_to_local',
+							true
+						);
+					}
+
+					echo sprintf(
+						'<abbr title="%s">%s</abbr>',
+						esc_attr( $time_local_format_mysql ),
+						esc_html( $time_display )
+					);
 					break;
 				case 'order_items':
 					do_action( 'learn-press/admin/order-items/layout', $lp_order );

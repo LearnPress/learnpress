@@ -52,7 +52,7 @@ class BuilderPopupTemplate {
 	 *
 	 * @throws Exception
 	 */
-	private static function ensure_popup_access( string $item_type, int $item_id ) {
+	/*private static function ensure_popup_access( string $item_type, int $item_id ) {
 		if ( $item_id > 0 ) {
 			if ( ! CourseBuilderAccessPolicy::can_edit_item( $item_type, $item_id ) ) {
 				throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
@@ -64,7 +64,7 @@ class BuilderPopupTemplate {
 		if ( ! CourseBuilderAccessPolicy::can_create_item_type( $item_type ) ) {
 			throw new Exception( __( "Sorry, you don't have permission to create this item", 'learnpress' ) );
 		}
-	}
+	}*/
 
 	/**
 	 * Get popup wrapper HTML structure.
@@ -150,15 +150,24 @@ class BuilderPopupTemplate {
 
 	/**
 	 * Render Lesson Popup
+	 * @throws Exception
 	 */
 	public static function render_lesson_popup( array $args = [] ): stdClass {
 		$response  = new stdClass();
 		$lesson_id = absint( $args['lesson_id'] ?? 0 );
-		self::ensure_popup_access( LP_LESSON_CPT, $lesson_id );
+		//self::ensure_popup_access( LP_LESSON_CPT, $lesson_id );
 
 		$lesson_model = $lesson_id ? LessonPostModel::find( $lesson_id, true ) : null;
-		$title        = $lesson_model ? __( 'Edit Lesson', 'learnpress' ) : __( 'New Lesson', 'learnpress' );
-		$status       = $lesson_model ? $lesson_model->post_status : '';
+
+		if ( $lesson_model instanceof LessonPostModel ) {
+			$lesson_model->check_capabilities_update_item_course();
+		} else {
+			$lessonPostModelNew = new LessonPostModel();
+			$lessonPostModelNew->check_capabilities_create_item_course();
+		}
+
+		$title  = $lesson_model ? __( 'Edit Lesson', 'learnpress' ) : __( 'New Lesson', 'learnpress' );
+		$status = $lesson_model ? $lesson_model->post_status : '';
 
 		$instance = self::instance();
 		$content  = $instance->build_lesson_content( $lesson_id, $lesson_model );
@@ -176,6 +185,7 @@ class BuilderPopupTemplate {
 
 	/**
 	 * Build lesson content
+	 * @throws Exception
 	 */
 	private function build_lesson_content( int $lesson_id, $lesson_model ): string {
 		if ( $lesson_model && $lesson_model->post_status === PostModel::STATUS_TRASH ) {
@@ -211,15 +221,24 @@ class BuilderPopupTemplate {
 
 	/**
 	 * Render Quiz Popup
+	 * @throws Exception
 	 */
 	public static function render_quiz_popup( array $args = [] ): stdClass {
 		$response = new stdClass();
 		$quiz_id  = absint( $args['quiz_id'] ?? 0 );
-		self::ensure_popup_access( LP_QUIZ_CPT, $quiz_id );
+		//self::ensure_popup_access( LP_QUIZ_CPT, $quiz_id );
 
 		$quiz_model = $quiz_id ? QuizPostModel::find( $quiz_id, true ) : null;
-		$title      = $quiz_model ? __( 'Edit Quiz', 'learnpress' ) : __( 'New Quiz', 'learnpress' );
-		$status     = $quiz_model ? $quiz_model->post_status : '';
+
+		if ( $quiz_model instanceof QuizPostModel ) {
+			$quiz_model->check_capabilities_update_item_course();
+		} else {
+			$quizPostModelNew = new QuizPostModel();
+			$quizPostModelNew->check_capabilities_create_item_course();
+		}
+
+		$title  = $quiz_model ? __( 'Edit Quiz', 'learnpress' ) : __( 'New Quiz', 'learnpress' );
+		$status = $quiz_model ? $quiz_model->post_status : '';
 
 		$instance = self::instance();
 		$content  = $instance->build_quiz_content( $quiz_id, $quiz_model );
@@ -265,15 +284,24 @@ class BuilderPopupTemplate {
 
 	/**
 	 * Render Question Popup
+	 * @throws Exception
 	 */
 	public static function render_question_popup( array $args = [] ): stdClass {
 		$response    = new stdClass();
 		$question_id = absint( $args['question_id'] ?? 0 );
-		self::ensure_popup_access( LP_QUESTION_CPT, $question_id );
+		//self::ensure_popup_access( LP_QUESTION_CPT, $question_id );
 
 		$question_model = $question_id ? QuestionPostModel::find( $question_id, true ) : null;
-		$title          = $question_model ? __( 'Edit Question', 'learnpress' ) : __( 'New Question', 'learnpress' );
-		$status         = $question_model ? $question_model->post_status : '';
+
+		if ( $question_model instanceof QuestionPostModel ) {
+			$question_model->check_capabilities_update_item_course();
+		} else {
+			$questionPostModelNew = new QuestionPostModel();
+			$questionPostModelNew->check_capabilities_create_item_course();
+		}
+
+		$title  = $question_model ? __( 'Edit Question', 'learnpress' ) : __( 'New Question', 'learnpress' );
+		$status = $question_model ? $question_model->post_status : '';
 
 		$instance = self::instance();
 		$content  = $instance->build_question_content( $question_id, $question_model );

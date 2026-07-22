@@ -417,7 +417,7 @@ class CourseBuilderTemplate {
 		$hide_instructor_access_admin_screen = LP_Settings::is_hide_instructor_access_admin_screen();
 		$wp_user                             = new WP_User( $userModel );
 		$is_instructor                       = user_can( $wp_user, UserModel::ROLE_INSTRUCTOR );
-		$dashboard_url                       = admin_url();
+		$dashboard_url                       = admin_url( 'edit.php?post_type=' . LP_COURSE_CPT );
 
 		$footer = [
 			'wrapper' => '<div class="lp-cb-sidebar__footer">',

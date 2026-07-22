@@ -387,8 +387,18 @@
 			display: none;
 		}
 
-		&:not( .lp-collapse ) .lp-icon-angle-down {
-			display: none;
+		&:not( .lp-collapse ) {
+			.lp-icon-angle-down {
+				display: none;
+			}
+
+			.lp-question-fib-option-header .lp-icon-angle-down {
+				display: block;
+			}
+
+			.lp-question-fib-option-header .lp-icon-angle-up {
+				display: none;
+			}
 		}
 
 		&.lp-collapse {

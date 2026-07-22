@@ -115,6 +115,7 @@ window.lpCheckout = {
 
 		const elPaymentMethods = elUlPaymentMethods.querySelectorAll( `.${ window.lpCheckout.classPaymentMethod }` );
 		elPaymentMethods.forEach( ( el ) => {
+			el.classList.remove( 'selected' );
 			const elPaymentMethodForm = el.querySelector( `.${ window.lpCheckout.classPaymentMethodForm }` );
 			if ( ! elPaymentMethodForm ) {
 				return;
@@ -126,6 +127,8 @@ window.lpCheckout = {
 				elPaymentMethodForm.style.display = 'block';
 			}
 		} );
+
+		elPaymentMethod.classList.add( 'selected' );
 	},
 	checkEmailGuest: ( e ) => {
 		const target = e.target;

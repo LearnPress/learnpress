@@ -24,7 +24,7 @@ if ( empty( $data['dismiss'] ) ) {
 			Template::instance()->get_admin_template( 'admin-notices/button-dismiss.php', array( 'key' => 'lp-addons-new-version' ) );
 		}
 		?>
-		<p><?php echo sprintf( '<strong>%s</strong>', __( 'New version Addons.', 'learnpress' ) ); ?></p>
+		<p><?php echo sprintf( '<strong>%s</strong>', __( 'New version available', 'learnpress' ) ); ?></p>
 		<p style="display: flex;gap: 5px;flex-wrap: wrap">
 			<?php
 			foreach ( $data['addons'] as $addon ) {

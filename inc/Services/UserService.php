@@ -3,10 +3,12 @@
 namespace LearnPress\Services;
 
 use Exception;
+use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\UserModel;
 use Throwable;
 use WP_Error;
+use WP_Role;
 use WP_User;
 
 
@@ -167,5 +169,37 @@ class UserService {
 		}
 
 		return new UserModel( $wp_user->data );
+	}
+
+	/**
+	 * Set capabilities for roles.
+	 *
+	 * @param string $item_type Ex: "lp_course", "lp_lesson", "lp_assignment", "lp_h5p"
+	 * @return void
+	 * @since 4.4.2
+	 * @version 1.0.0
+	 */
+	public function add_capabilities_for_roles( string $item_type ) {
+		$role_capabilities = Config::instance()->get( 'user-roles-caps' );
+		foreach ( $role_capabilities as $role_key => $role_data ) {
+			$role_label  = $role_data['label'] ?? '';
+			$prefix_caps = $role_data['prefix_capabilities'] ?? [];
+			$role        = get_role( $role_key );
+			if ( $role_key !== UserModel::ROLE_ADMINISTRATOR
+				&& ! $role instanceof WP_Role ) {
+				add_role( $role_key, $role_label );
+				$role = get_role( $role_key );
+			}
+
+			if ( $role instanceof WP_Role ) {
+				foreach ( $prefix_caps as $prefix_cap ) {
+					// Example: "publish_lp_courses", "edit_lp_courses",...
+					$cap = "{$prefix_cap}_{$item_type}s";
+					if ( ! $role->has_cap( $cap ) ) {
+						$role->add_cap( $cap );
+					}
+				}
+			}
+		}
 	}
 }

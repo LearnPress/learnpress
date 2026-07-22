@@ -65,11 +65,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			'_checkout_email'       => '',
 		);
 
-		const META_KEY_TRANSACTION_ID  = '_transaction_id';
-		const META_KEY_REFUND_REQUEST  = '_lp_refund_request';
-		const META_KEY_REFUNDED_BY     = '_lp_refunded_by';
-		const META_KEY_REFUNDED_AT     = '_lp_refunded_at';
-		const META_KEY_REFUNDED_AMOUNT = '_lp_refunded_amount';
+		const META_KEY_TRANSACTION_ID        = '_transaction_id';
+		const META_KEY_REFUND_REQUEST        = '_lp_refund_request';
+		const META_KEY_REFUND_REQUEST_REASON = '_lp_refund_request_reason';
+		const META_KEY_REFUNDED_BY           = '_lp_refunded_by';
+		const META_KEY_REFUNDED_AT           = '_lp_refunded_at';
+		const META_KEY_REFUNDED_AMOUNT       = '_lp_refunded_amount';
 
 		/**
 		 * Store order status in transactions.
@@ -113,7 +114,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Set order date.
 		 *
-		 * @param int|string $date
+		 * @param int|string $date Date time string is time zone of WP setting
 		 */
 		public function set_order_date( $date ): LP_Order {
 			$this->set_data_date( 'order_date', $date );
@@ -1317,6 +1318,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function save() {
 			$old_status = '';
+			$is_created = ! $this->get_id();
 
 			if ( $this->get_id() ) {
 				$old_status_post = get_post_status( $this->get_id() );
@@ -1340,6 +1342,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			$order_id = $this->get_id();
+
+			if ( $is_created && $order_id ) {
+				do_action( 'learn-press/order/created', $order_id, $this );
+			}
 
 			if ( $new_status !== $old_status ) {
 				do_action( 'learn-press/order/status-changed', $order_id, $old_status, $new_status );
@@ -1665,7 +1671,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					throw new Exception( __( 'Order is not completed', 'learnpress' ) );
 				}
 
-				$refunded_amount = $this->get_meta( '_lp_refunded_ammount' );
+				$refunded_amount = $this->get_meta( LP_Order::META_KEY_REFUNDED_AMOUNT );
 				if ( $refunded_amount > 0 ) {
 					$amount = $refunded_amount + $amount;
 				}
@@ -1736,10 +1742,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 				// Check request refund status exists
 				$request_status = $this->get_refund_request();
-				if ( 'rejected' === $request_status
-					&& 'yes' !== learn_press_get_refund_setting( 'allow_resend_after_rejected', 'no' ) ) {
-					$error_code = 'request_refund_is_rejected';
-					throw new Exception( __( 'Request refund is rejected!.', 'learnpress' ) );
+				if ( 'rejected' === $request_status ) {
+					if ( 'yes' !== learn_press_get_refund_setting( 'allow_resend_after_rejected', 'no' ) ) {
+						$error_code = 'request_refund_is_rejected';
+						throw new Exception( __( 'Request refund is rejected!.', 'learnpress' ) );
+					}
 				} elseif ( ! empty( $request_status ) ) {
 					$error_code = 'request_refund_sent';
 					throw new Exception(

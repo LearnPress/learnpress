@@ -245,9 +245,8 @@ export class BuilderStandaloneQuiz {
 					// Reset form state before potential redirect.
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 
-					if ( data?.quiz_id_new ) {
-						const currentUrl = window.location.href;
-						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.quiz_id_new }/` );
+					if ( data?.redirect_url ) {
+						window.location.href = data.redirect_url;
 					}
 
 					if ( data?.status ) {
@@ -1082,9 +1081,8 @@ export class BuilderStandaloneQuiz {
 					// Reset form state before potential redirect.
 					document.dispatchEvent( new CustomEvent( 'lp-course-builder-saved' ) );
 
-					if ( data?.quiz_id_new ) {
-						const currentUrl = window.location.href;
-						window.location.href = currentUrl.replace( /post-new\/?/, `${ data.quiz_id_new }/` );
+					if ( data?.redirect_url ) {
+						window.location.href = data.redirect_url;
 					}
 
 					if ( data?.status ) {
