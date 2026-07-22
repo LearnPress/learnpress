@@ -422,7 +422,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-url',
 						'wp-api-fetch',
 						'lodash',
-						'select2',
+						//'select2',
 					),
 					array( 'widgets', 'elementor' ),
 					0,
