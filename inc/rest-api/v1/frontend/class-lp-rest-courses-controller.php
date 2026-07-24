@@ -81,14 +81,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					),
 				),
 			),
-			'archive-course'         => array(
+			/*'archive-course'         => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'list_courses' ),
 					'permission_callback' => '__return_true',
 					'args'                => [],
 				),
-			),
+			),*/
 			'courses-widget-by-page' => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
