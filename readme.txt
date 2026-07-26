@@ -279,6 +279,11 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.3 (2026-07-26) =
+~ Fixed: security.
+~ Fixed: minor bugs.
+~ Tweak: UI/UX statistic.
+
 = 4.4.2 (2026-07-11) =
 ~ Fixed: security.
 ~ Fixed: display Date time on Order.
