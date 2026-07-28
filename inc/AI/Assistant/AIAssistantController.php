@@ -7,6 +7,7 @@ use LearnPress\Models\PostModel;
 use LP_Settings;
 use LP_User;
 use LearnPress\Services\OpenAiService;
+use Exception;
 
 /**
  * AI Assistant Controller — validates requests, sanitizes input, calls Agent.
@@ -114,7 +115,7 @@ class AIAssistantController {
 	 * @param int    $item_id   Course item ID.
 	 *
 	 * @return array{course:CourseModel,item:PostModel,item_id:int,item_type:string} Trusted context.
-	 * @throws PublicException When the tuple is invalid or the user may not view the item.
+	 * @throws Exception When the tuple is invalid or the user may not view the item.
 	 */
 	public static function resolve_item_access( int $user_id, int $course_id, string $item_type, int $item_id ): array {
 		$denied = __( 'You do not have permission to use the AI Assistant for this course item.', 'learnpress' );
@@ -122,18 +123,18 @@ class AIAssistantController {
 		// item_type is mandatory: without it there is no identity to verify.
 		$item_type = sanitize_key( $item_type );
 		if ( empty( $item_type ) || ! in_array( $item_type, self::get_supported_item_types(), true ) ) {
-			throw new PublicException(
+			throw new Exception(
 				__( 'The AI Assistant is not available for this type of course item.', 'learnpress' )
 			);
 		}
 
 		if ( $user_id <= 0 || $course_id <= 0 || $item_id <= 0 ) {
-			throw new PublicException( $denied );
+			throw new Exception( $denied );
 		}
 
 		$courseModel = CourseModel::find( $course_id, true );
 		if ( ! $courseModel instanceof CourseModel ) {
-			throw new PublicException( $denied );
+			throw new Exception( $denied );
 		}
 
 		/**
@@ -143,19 +144,19 @@ class AIAssistantController {
 		 */
 		$itemModel = $courseModel->get_item_model( $item_id, $item_type, true );
 		if ( ! $itemModel instanceof PostModel ) {
-			throw new PublicException( $denied );
+			throw new Exception( $denied );
 		}
 
 		// Reject drafts, pending, private and trashed items — get_item_model() does not filter status.
 		if ( PostModel::STATUS_PUBLISH !== $itemModel->post_status ) {
-			throw new PublicException( $denied );
+			throw new Exception( $denied );
 		}
 
 		// Canonical LearnPress access policy: course-level gate, then the item-level rule
 		// that lets preview items through. Both must pass.
 		$user = learn_press_get_user( $user_id );
 		if ( ! $user instanceof LP_User ) {
-			throw new PublicException( $denied );
+			throw new Exception( $denied );
 		}
 
 		$can_view_course = $user->can_view_content_course( $course_id );
@@ -163,7 +164,7 @@ class AIAssistantController {
 		if ( empty( $can_view_item->flag ) ) {
 			$message = (string) ( $can_view_item->message ?? '' );
 
-			throw new PublicException( '' !== $message ? $message : $denied );
+			throw new Exception( '' !== $message ? $message : $denied );
 		}
 
 		return array(
@@ -180,8 +181,8 @@ class AIAssistantController {
 	 * @param array $data Raw decoded data from the AJAX request.
 	 *
 	 * @return array{type: string, message: string, quiz: array|null}
-	 * @throws PublicException On validation failure or denied access.
-	 * @throws \Throwable On provider/transport failure — logged and masked by the AJAX layer.
+	 * @throws Exception On validation failure or denied access.
+	 * @throws Throwable On provider/transport failure — logged and masked by the AJAX layer.
 	 */
 	public function handle_chat( array $data ): array {
 		$message     = trim( $data['message'] ?? '' );
@@ -193,21 +194,21 @@ class AIAssistantController {
 		$action_hint = $this->sanitize_action_hint( $data['action_hint'] ?? '' );
 
 		if ( $message === '' ) {
-			throw new PublicException( __( 'Message is required.', 'learnpress' ) );
+			throw new Exception( __( 'Message is required.', 'learnpress' ) );
 		}
 
 		if ( empty( $item_id ) ) {
-			throw new PublicException( __( 'Item ID is required.', 'learnpress' ) );
+			throw new Exception( __( 'Item ID is required.', 'learnpress' ) );
 		}
 
 		if ( $course_id === 0 ) {
-			throw new PublicException( __( 'Course ID is required.', 'learnpress' ) );
+			throw new Exception( __( 'Course ID is required.', 'learnpress' ) );
 		}
 
 		$user_id = get_current_user_id();
 
 		if ( $user_id === 0 ) {
-			throw new PublicException( __( 'User must be logged in.', 'learnpress' ) );
+			throw new Exception( __( 'User must be logged in.', 'learnpress' ) );
 		}
 
 		/**

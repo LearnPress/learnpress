@@ -4,7 +4,6 @@ declare( strict_types=1 );
 
 namespace LearnPress\Tests\Unit\AI\Assistant;
 
-use LearnPress\AI\Assistant\PublicException;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -242,7 +241,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 		$controller = new \LearnPress\AI\Assistant\AIAssistantController();
 
-		$this->expectException( PublicException::class );
+		$this->expectException( \Exception::class );
 		$this->expectExceptionMessage( 'Message is required.' );
 		$controller->handle_chat( $this->chat_payload( array( 'message' => '   ' ) ) );
 	}
@@ -259,8 +258,8 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 		try {
 			$controller->handle_chat( $payload );
-			$this->fail( 'Expected PublicException for a missing item_type.' );
-		} catch ( PublicException $e ) {
+			$this->fail( 'Expected \Exception for a missing item_type.' );
+		} catch ( \Exception $e ) {
 			$this->assertStringContainsString( 'not available for this type', $e->getMessage() );
 		}
 
@@ -278,8 +277,8 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 		try {
 			$controller->handle_chat( $this->chat_payload( array( 'item_type' => 'lp_question' ) ) );
-			$this->fail( 'Expected PublicException for an unsupported item_type.' );
-		} catch ( PublicException $e ) {
+			$this->fail( 'Expected \Exception for an unsupported item_type.' );
+		} catch ( \Exception $e ) {
 			$this->assertStringContainsString( 'not available for this type', $e->getMessage() );
 		}
 
@@ -316,7 +315,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 		$controller = new \LearnPress\AI\Assistant\AIAssistantController();
 
-		$this->expectException( PublicException::class );
+		$this->expectException( \Exception::class );
 		$controller->handle_chat( $this->chat_payload( array( 'item_type' => 'lp_lesson', 'item_id' => 77 ) ) );
 	}
 
@@ -331,7 +330,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 		$controller = new \LearnPress\AI\Assistant\AIAssistantController();
 
-		$this->expectException( PublicException::class );
+		$this->expectException( \Exception::class );
 		$controller->handle_chat( $this->chat_payload() );
 	}
 
@@ -345,7 +344,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 		$controller = new \LearnPress\AI\Assistant\AIAssistantController();
 
-		$this->expectException( PublicException::class );
+		$this->expectException( \Exception::class );
 		$controller->handle_chat( $this->chat_payload() );
 	}
 
@@ -376,8 +375,8 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 			try {
 				$controller->handle_chat( $this->chat_payload() );
-				$this->fail( "Expected PublicException for post_status '$status'." );
-			} catch ( PublicException $e ) {
+				$this->fail( "Expected \\Exception for post_status '$status'." );
+			} catch ( \Exception $e ) {
 				$this->assertNotSame( '', $e->getMessage() );
 			}
 
@@ -399,8 +398,8 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 		try {
 			$controller->handle_chat( $this->chat_payload() );
-			$this->fail( 'Expected PublicException when item access is refused.' );
-		} catch ( PublicException $e ) {
+			$this->fail( 'Expected \Exception when item access is refused.' );
+		} catch ( \Exception $e ) {
 			$this->assertStringContainsString( 'protected', strtolower( $e->getMessage() ) );
 		}
 
@@ -434,7 +433,7 @@ class AIAssistantControllerTest extends BrainMonkeyTestCase {
 
 		$controller = new \LearnPress\AI\Assistant\AIAssistantController();
 
-		$this->expectException( PublicException::class );
+		$this->expectException( \Exception::class );
 		$this->expectExceptionMessage( 'User must be logged in.' );
 		$controller->handle_chat( $this->chat_payload() );
 	}

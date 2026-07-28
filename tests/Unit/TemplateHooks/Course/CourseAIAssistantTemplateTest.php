@@ -205,7 +205,7 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 					public static function resolve_item_access( int $user_id, int $course_id, string $item_type, int $item_id ): array {
 						self::$access_calls[] = compact( "user_id", "course_id", "item_type", "item_id" );
 						if ( ! self::$can_view ) {
-							throw new PublicException( "This content is protected." );
+							throw new \Exception( "This content is protected." );
 						}
 						return array(
 							"course" => null,

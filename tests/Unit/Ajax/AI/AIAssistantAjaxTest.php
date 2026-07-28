@@ -144,12 +144,12 @@ class AIAssistantAjaxTest extends BrainMonkeyTestCase {
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
-	public function test_openai_assistant_chat_returns_public_exception_message_verbatim(): void {
+	public function test_openai_assistant_chat_returns_exception_message_verbatim(): void {
 		$this->load_ajax_with_stubs();
 
 		AIAssistantAjaxState::$logged_in                         = true;
 		\LearnPress\AI\Assistant\AIAssistantController::$enabled  = true;
-		\LearnPress\AI\Assistant\AIAssistantController::$throw    = new \LearnPress\AI\Assistant\PublicException( 'This content is protected.' );
+		\LearnPress\AI\Assistant\AIAssistantController::$throw    = new \Exception( 'This content is protected.' );
 		\LP_Request::$params['data']                              = json_encode( array( 'message' => 'hi' ) );
 
 		$ajax = new \LearnPress\Ajax\AI\AIAssistantAjax();

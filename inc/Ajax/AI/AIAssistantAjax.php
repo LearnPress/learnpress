@@ -4,11 +4,11 @@ namespace LearnPress\Ajax\AI;
 
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\AI\Assistant\AIAssistantController;
-use LearnPress\AI\Assistant\PublicException;
 use LP_Debug;
 use LP_Helper;
 use LP_Request;
 use LP_REST_Response;
+use Exception;
 use Throwable;
 
 /**
@@ -54,18 +54,18 @@ class AIAssistantAjax extends AbstractAjax {
 
 		try {
 			if ( ! is_user_logged_in() ) {
-				throw new PublicException( __( 'You must be logged in to use the AI Assistant.', 'learnpress' ) );
+				throw new Exception( __( 'You must be logged in to use the AI Assistant.', 'learnpress' ) );
 			}
 
 			if ( ! AIAssistantController::is_enabled() ) {
-				throw new PublicException( __( 'AI Assistant is not available.', 'learnpress' ) );
+				throw new Exception( __( 'AI Assistant is not available.', 'learnpress' ) );
 			}
 
 			$data_str = LP_Request::get_param( 'data' );
 			$data     = LP_Helper::json_decode( $data_str, true );
 
 			if ( ! is_array( $data ) ) {
-				throw new PublicException( __( 'Invalid request data.', 'learnpress' ) );
+				throw new Exception( __( 'Invalid request data.', 'learnpress' ) );
 			}
 
 			$controller = new AIAssistantController();
@@ -74,7 +74,7 @@ class AIAssistantAjax extends AbstractAjax {
 
 			$response->status = 'success';
 			$response->data   = $result;
-		} catch ( PublicException $e ) {
+		} catch ( Exception $e ) {
 			// Validation and access-denial messages are authored here and safe to return.
 			$response->message = $e->getMessage();
 			$response->data    = $this->normalize_response_data( array() );
