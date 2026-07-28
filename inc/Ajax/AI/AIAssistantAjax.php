@@ -74,15 +74,7 @@ class AIAssistantAjax extends AbstractAjax {
 
 			$response->status = 'success';
 			$response->data   = $result;
-		} catch ( Exception $e ) {
-			// Validation and access-denial messages are authored here and safe to return.
-			$response->message = $e->getMessage();
-			$response->data    = $this->normalize_response_data( array() );
 		} catch ( Throwable $e ) {
-			// Provider/transport/PHP failures: log server-side, return a fixed message so
-			// no OpenAI or internal detail reaches the browser.
-			LP_Debug::error_log( $e );
-
 			$response->message = __( 'The AI Assistant is unavailable right now. Please try again later.', 'learnpress' );
 			$response->data    = $this->normalize_response_data( array() );
 		}
