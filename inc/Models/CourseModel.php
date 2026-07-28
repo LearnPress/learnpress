@@ -508,27 +508,44 @@ class CourseModel {
 	/**
 	 * Get section id of item
 	 *
-	 * @param int $item_id
+	 * A curriculum item's identity is the (item_id, item_type) pair, not the numeric
+	 * ID alone: once items live in per-type tables a lesson and a quiz can share the
+	 * same ID. Pass $item_type to match the composite identity.
+	 *
+	 * @param int    $item_id
+	 * @param string $item_type Optional. Curriculum item type to match as well. Empty
+	 *                          keeps the legacy ID-only match for callers not yet migrated.
 	 *
 	 * @return int
 	 * @since 4.2.8
-	 * @version 1.0.0
+	 * @version 1.1.0
 	 */
-	public function get_section_of_item( int $item_id ): int {
-		$section_id = 0;
-
+	public function get_section_of_item( int $item_id, string $item_type = '' ): int {
 		$section_items = $this->get_section_items();
+
 		foreach ( $section_items as $section ) {
+			if ( empty( $section->items ) ) {
+				continue;
+			}
+
 			foreach ( $section->items as $item ) {
 				$item_id_check = (int) ( $item->item_id ?? $item->id ?? 0 );
-				if ( $item_id_check === $item_id ) {
-					$section_id = $section->section_id ?? $section->id ?? 0;
-					break;
+				if ( $item_id_check !== $item_id ) {
+					continue;
 				}
+
+				if ( '' !== $item_type ) {
+					$item_type_check = (string) ( $item->item_type ?? $item->type ?? '' );
+					if ( $item_type_check !== $item_type ) {
+						continue;
+					}
+				}
+
+				return (int) ( $section->section_id ?? $section->id ?? 0 );
 			}
 		}
 
-		return (int) $section_id;
+		return 0;
 	}
 
 	/**
@@ -1266,14 +1283,15 @@ class CourseModel {
 	 *
 	 * @return mixed|false|null|WP_Post|PostModel
 	 * @since v4.2.7.6
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function get_item_model( int $item_id, string $item_type, bool $check_assign = true ) {
 		try {
 			$item = false;
 
-			// Find item has in section
-			$section_id = $this->get_section_of_item( $item_id );
+			// Find item has in section. Match the composite (item_id, item_type) identity,
+			// so a quiz ID can never resolve through a lesson request and vice versa.
+			$section_id = $this->get_section_of_item( $item_id, $item_type );
 			if ( $check_assign && ! $section_id ) {
 				return $item;
 			}

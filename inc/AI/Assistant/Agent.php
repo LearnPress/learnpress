@@ -40,18 +40,25 @@ class Agent {
 	/**
 	 * Run the assistant agent loop.
 	 *
+	 * Callers must pass an $item_type already resolved and authorized by
+	 * AIAssistantController::resolve_item_access(). This method routes on it but does
+	 * not authorize — it is not a security boundary.
+	 *
 	 * @param string $user_message  The learner's message.
-	 * @param int    $item_id     Current lesson ID.
+	 * @param int    $item_id       Current course item ID, type proven by $item_type.
+	 * @param string $item_type     Resolved curriculum type: LP_LESSON_CPT or LP_QUIZ_CPT.
 	 * @param int    $course_id     Current course ID.
 	 * @param int    $user_id       Current user ID.
 	 * @param array  $history       Previous conversation messages (role/content pairs).
 	 * @param array  $active_quiz   Active quiz state for quiz-mode continuation.
+	 * @param string $action_hint   Optional validated quick-action hint.
 	 *
 	 * @return array{type: string, message: string, quiz: array|null}
 	 */
 	public function run(
 		string $user_message,
 		int $item_id,
+		string $item_type,
 		int $course_id,
 		int $user_id,
 		array $history = array(),
@@ -62,8 +69,22 @@ class Agent {
 		$this->quota_guard->reset();
 		$data_loaders = new DataLoaders();
 
-		// Resume active quiz session.
+		$is_lesson = LP_LESSON_CPT === $item_type;
+		$is_quiz   = LP_QUIZ_CPT === $item_type;
+
+		if ( ! $is_lesson && ! $is_quiz ) {
+			return $this->normalizer->build_response(
+				__( 'The AI Assistant is not available for this type of course item.', 'learnpress' )
+			);
+		}
+
+		// Resume active quiz session. Quick quiz is generated from lesson content, so a
+		// session may only continue while the authorized context is still a lesson.
 		if ( ! empty( $active_quiz['is_active'] ) && empty( $active_quiz['completed'] ) ) {
+			if ( ! $is_lesson ) {
+				return $this->get_lesson_only_response();
+			}
+
 			if ( ! AIAssistantController::is_action_enabled( IntentClassifier::INTENT_QUICK_QUIZ ) ) {
 				return $this->get_disabled_action_response( IntentClassifier::INTENT_QUICK_QUIZ );
 			}
@@ -82,15 +103,31 @@ class Agent {
 			return $this->get_disabled_action_response( $intent );
 		}
 
+		/**
+		 * Typed routing. Smart Review reads a quiz attempt; every other intent is
+		 * grounded in lesson content. $item_id is only renamed to $quiz_id/$lesson_id
+		 * once the corresponding type check has passed.
+		 */
+		if ( IntentClassifier::INTENT_SMART_REVIEW === $intent ) {
+			if ( ! $is_quiz ) {
+				return $this->normalizer->build_response(
+					__( 'Smart Review is only available on a quiz you have completed.', 'learnpress' )
+				);
+			}
+
+			return $this->handle_smart_review( $data_loaders, $user_message, $user_id, $course_id, $item_id, $history );
+		}
+
+		if ( ! $is_lesson ) {
+			return $this->get_lesson_only_response();
+		}
+
 		switch ( $intent ) {
 			case IntentClassifier::INTENT_SUMMARIZE:
 				return $this->handle_summarize( $data_loaders, $user_message, $item_id, $user_id, $history );
 
 			case IntentClassifier::INTENT_EXPLAIN:
 				return $this->handle_explain( $data_loaders, $user_message, $item_id, $user_id, $history );
-
-			case IntentClassifier::INTENT_SMART_REVIEW:
-				return $this->handle_smart_review( $data_loaders, $user_message, $user_id, $course_id, $item_id, $history );
 
 			case IntentClassifier::INTENT_QUICK_QUIZ:
 				return $this->quiz_engine->start( $data_loaders, $user_message, $item_id, $user_id, $history );
@@ -106,7 +143,7 @@ class Agent {
 	 *
 	 * @param string      $user_message Learner input.
 	 * @param array       $history      Conversation history.
-	 * @param int         $item_id    Current lesson ID.
+	 * @param int         $item_id      Current course item ID (lesson or quiz).
 	 * @param int         $course_id    Current course ID.
 	 * @param int         $user_id      Current user ID.
 	 * @param string|null $action_hint  Optional quick-action hint from frontend.
@@ -369,6 +406,17 @@ class Agent {
 				IntentClassifier::INTENT_SMART_REVIEW,
 			),
 			true
+		);
+	}
+
+	/**
+	 * Build a user-facing response for an action that requires a lesson context.
+	 *
+	 * @return array{type: string, message: string, quiz: array|null}
+	 */
+	private function get_lesson_only_response(): array {
+		return $this->normalizer->build_response(
+			__( 'This assistant action is only available on a lesson.', 'learnpress' )
 		);
 	}
 

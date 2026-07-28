@@ -2,9 +2,10 @@
 
 namespace LearnPress\Ajax\AI;
 
-use Exception;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\AI\Assistant\AIAssistantController;
+use LearnPress\AI\Assistant\PublicException;
+use LP_Debug;
 use LP_Helper;
 use LP_Request;
 use LP_REST_Response;
@@ -29,13 +30,20 @@ class AIAssistantAjax extends AbstractAjax {
 	/**
 	 * Handle assistant chat request from a logged-in learner.
 	 *
-	 * Request data (JSON-encoded in 'data' param):
+	 * Nonce is verified by AbstractAjax::catch_lp_ajax() and is CSRF protection only —
+	 * never authorization. Login is checked here; per-item authorization is the
+	 * controller's job, via AIAssistantController::resolve_item_access().
+	 *
+	 * Request data (JSON-encoded in 'data' param). A course item is addressed by the
+	 * full tuple (course_id, item_type, item_id); all three are required.
 	 * {
 	 *   "message": string,
-	 *   "lesson_id": int,
 	 *   "course_id": int,
+	 *   "item_type": string,   // lp_lesson | lp_quiz — validated against the curriculum
+	 *   "item_id": int,
 	 *   "history": [{role, content}, ...],
-	 *   "active_quiz_questions": []
+	 *   "active_quiz_questions": {},
+	 *   "action_hint": string
 	 * }
 	 *
 	 * Response shape:
@@ -46,18 +54,18 @@ class AIAssistantAjax extends AbstractAjax {
 
 		try {
 			if ( ! is_user_logged_in() ) {
-				throw new Exception( __( 'You must be logged in to use the AI Assistant.', 'learnpress' ) );
+				throw new PublicException( __( 'You must be logged in to use the AI Assistant.', 'learnpress' ) );
 			}
 
 			if ( ! AIAssistantController::is_enabled() ) {
-				throw new Exception( __( 'AI Assistant is not available.', 'learnpress' ) );
+				throw new PublicException( __( 'AI Assistant is not available.', 'learnpress' ) );
 			}
 
 			$data_str = LP_Request::get_param( 'data' );
 			$data     = LP_Helper::json_decode( $data_str, true );
 
 			if ( ! is_array( $data ) ) {
-				throw new Exception( __( 'Invalid request data.', 'learnpress' ) );
+				throw new PublicException( __( 'Invalid request data.', 'learnpress' ) );
 			}
 
 			$controller = new AIAssistantController();
@@ -66,8 +74,16 @@ class AIAssistantAjax extends AbstractAjax {
 
 			$response->status = 'success';
 			$response->data   = $result;
-		} catch ( Throwable $e ) {
+		} catch ( PublicException $e ) {
+			// Validation and access-denial messages are authored here and safe to return.
 			$response->message = $e->getMessage();
+			$response->data    = $this->normalize_response_data( array() );
+		} catch ( Throwable $e ) {
+			// Provider/transport/PHP failures: log server-side, return a fixed message so
+			// no OpenAI or internal detail reaches the browser.
+			LP_Debug::error_log( $e );
+
+			$response->message = __( 'The AI Assistant is unavailable right now. Please try again later.', 'learnpress' );
 			$response->data    = $this->normalize_response_data( array() );
 		}
 

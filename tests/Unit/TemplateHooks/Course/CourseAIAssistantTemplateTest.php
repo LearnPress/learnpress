@@ -185,6 +185,8 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 				'namespace LearnPress\\AI\\Assistant;
 				class AIAssistantController {
 					public static bool $enabled = true;
+					public static bool $can_view = true;
+					public static array $access_calls = array();
 					public static array $enabled_actions = array(
 						"summarize" => true,
 						"explain" => true,
@@ -196,6 +198,21 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 					}
 					public static function get_enabled_actions(): array {
 						return self::$enabled_actions;
+					}
+					public static function get_supported_item_types(): array {
+						return array( LP_LESSON_CPT, LP_QUIZ_CPT );
+					}
+					public static function resolve_item_access( int $user_id, int $course_id, string $item_type, int $item_id ): array {
+						self::$access_calls[] = compact( "user_id", "course_id", "item_type", "item_id" );
+						if ( ! self::$can_view ) {
+							throw new PublicException( "This content is protected." );
+						}
+						return array(
+							"course" => null,
+							"item" => null,
+							"item_id" => $item_id,
+							"item_type" => $item_type,
+						);
 					}
 				}'
 			);
@@ -451,6 +468,9 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 
 		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
 
+		// add_action() is a no-op here, so drive the wp_enqueue_scripts callback directly.
+		$template->enqueue_assets();
+
 		ob_start();
 		$template->render_widget();
 		$output = ob_get_clean();
@@ -459,12 +479,53 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		$this->assertContains( 'lp-ai-assistant', CourseAIAssistantTemplateState::$scripts );
 		$this->assertContains( 'lp-ai-assistant', CourseAIAssistantTemplateState::$styles );
 		$this->assertStringContainsString( '"lessonId":15', (string) CourseAIAssistantTemplateState::$inline_data );
+		$this->assertStringContainsString( '"itemType":"lp_lesson"', (string) CourseAIAssistantTemplateState::$inline_data );
 		$this->assertStringContainsString( '"context":"lesson"', (string) CourseAIAssistantTemplateState::$inline_data );
+
+		// The renderer resolves the full composite identity, not just the numeric ID.
+		$access_call = \LearnPress\AI\Assistant\AIAssistantController::$access_calls[0] ?? array();
+		$this->assertSame( 77, $access_call['user_id'] ?? null );
+		$this->assertSame( 30, $access_call['course_id'] ?? null );
+		$this->assertSame( 'lp_lesson', $access_call['item_type'] ?? null );
+		$this->assertSame( 15, $access_call['item_id'] ?? null );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_render_widget_emits_nothing_when_item_access_is_denied(): void {
+		$this->load_template_with_stubs();
+
+		\LP_Page_Controller::$page                                = LP_PAGE_SINGLE_COURSE_CURRICULUM;
+		\LP_Global::$is_quiz                                      = false;
+		CourseAIAssistantTemplateState::$logged_in                = true;
+		CourseAIAssistantTemplateState::$user_id                  = 77;
+		\LearnPress\AI\Assistant\AIAssistantController::$enabled   = true;
+		\LearnPress\AI\Assistant\AIAssistantController::$can_view  = false;
+		\LP_Global::$item                                         = new CourseAIAssistantItemStub( 15, 30 );
+
+		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
+
+		$template->enqueue_assets();
+
+		ob_start();
+		$template->render_widget();
+		$panel = ob_get_clean();
+
+		ob_start();
+		$template->render_launcher();
+		$launcher = ob_get_clean();
+
+		// No markup, no launcher, no assets and no localized config leak on denial.
+		$this->assertSame( '', $panel );
+		$this->assertSame( '', $launcher );
+		$this->assertSame( array(), CourseAIAssistantTemplateState::$scripts );
+		$this->assertSame( array(), CourseAIAssistantTemplateState::$styles );
+		$this->assertSame( '', (string) CourseAIAssistantTemplateState::$inline_data );
 	}
 }
 
 class CourseAIAssistantItemStub {
-	public function __construct( private int $id, private int $course_id ) {}
+	public function __construct( private int $id, private int $course_id, private string $item_type = 'lp_lesson' ) {}
 
 	public function get_id(): int {
 		return $this->id;
@@ -472,6 +533,10 @@ class CourseAIAssistantItemStub {
 
 	public function get_course_id(): int {
 		return $this->course_id;
+	}
+
+	public function get_item_type(): string {
+		return $this->item_type;
 	}
 }
 

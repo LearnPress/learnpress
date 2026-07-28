@@ -43,6 +43,14 @@ export class AIAssistantWidget {
 		quizOptionBtn: '.lp-ai-assistant__quiz-option',
 	};
 
+	/**
+	 * Curriculum item types the assistant supports.
+	 *
+	 * Mirrors AIAssistantController::get_supported_item_types(). The server re-validates,
+	 * so this only avoids pointless requests.
+	 */
+	static itemTypes = [ 'lp_lesson', 'lp_quiz' ];
+
 	init() {
 		if ( ! this.validateConfig() ) {
 			return;
@@ -89,6 +97,16 @@ export class AIAssistantWidget {
 		}
 
 		if ( ! Number.isInteger( this.config.courseId ) || this.config.courseId <= 0 ) {
+			return false;
+		}
+
+		/**
+		 * itemType is required and must come from the server-localized config. It is
+		 * never guessed from context, lessonId or the numeric ID: a course item is
+		 * identified by (courseId, itemType, itemId), and inferring one leg of that
+		 * tuple on the client would let a lesson request address a quiz record.
+		 */
+		if ( ! AIAssistantWidget.itemTypes.includes( this.config.itemType ) ) {
 			return false;
 		}
 
@@ -421,20 +439,36 @@ export class AIAssistantWidget {
 		this.setQuizInputMode( false );
 	}
 
-	escHtml( text ) {
-		const div = document.createElement( 'div' );
-		div.appendChild( document.createTextNode( String( text ) ) );
-		return div.innerHTML;
+	/**
+	 * Create an element with a class and plain text content.
+	 *
+	 * All assistant content originates from OpenAI output, so it is built through the
+	 * DOM API only. Nothing on this path goes through innerHTML: text assigned via
+	 * textContent can never become markup, and attributes set via the DOM API can never
+	 * break out into a new attribute or event handler.
+	 *
+	 * @param {string} tag       Tag name.
+	 * @param {string} className Class attribute.
+	 * @param {string} text      Text content.
+	 * @return {HTMLElement} The created element.
+	 */
+	createEl( tag, className, text = '' ) {
+		const el = document.createElement( tag );
+		if ( className ) {
+			el.className = className;
+		}
+		if ( text !== '' ) {
+			el.textContent = String( text );
+		}
+		return el;
 	}
 
 	appendMessage( role, text ) {
-		const el = document.createElement( 'div' );
-		el.className = `lp-ai-assistant__msg lp-ai-assistant__msg--${ role }`;
-
+		const el = this.createEl( 'div', `lp-ai-assistant__msg lp-ai-assistant__msg--${ role }` );
 		const label = role === 'user' ? this.config.i18n.you : this.config.i18n.assistant;
-		el.innerHTML =
-			`<span class="lp-ai-assistant__msg-label">${ this.escHtml( label ) }</span>` +
-			`<p class="lp-ai-assistant__msg-text">${ this.escHtml( text ) }</p>`;
+
+		el.appendChild( this.createEl( 'span', 'lp-ai-assistant__msg-label', label ) );
+		el.appendChild( this.createEl( 'p', 'lp-ai-assistant__msg-text', text ) );
 
 		this.elements.msgList.appendChild( el );
 		this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
@@ -512,12 +546,29 @@ export class AIAssistantWidget {
 		return true;
 	}
 
-	renderQuizReviewOptions( review ) {
+	/**
+	 * Build one quiz option button.
+	 *
+	 * @param {string}   option       Option text from model output.
+	 * @param {number}   index        Zero-based option index.
+	 * @param {string[]} extraClasses Additional state classes.
+	 * @return {HTMLButtonElement} The option button.
+	 */
+	buildQuizOption( option, index, extraClasses = [] ) {
+		const classes = [ 'lp-ai-assistant__quiz-option', ...extraClasses ].join( ' ' );
+		const letter = String.fromCharCode( 65 + index );
+
+		const btn = this.createEl( 'button', classes, `${ letter }. ${ String( option ) }` );
+		btn.type = 'button';
+
+		return btn;
+	}
+
+	buildQuizReviewOptions( review ) {
 		const options = Array.isArray( review.options ) ? review.options : [];
 
 		return options.map( ( option, index ) => {
-			const letter = String.fromCharCode( 65 + index );
-			const classes = [ 'lp-ai-assistant__quiz-option' ];
+			const classes = [];
 			if ( index === review.correct_index ) {
 				classes.push( 'is-correct-answer' );
 			}
@@ -526,30 +577,44 @@ export class AIAssistantWidget {
 				classes.push( review.is_correct ? 'is-selected-correct' : 'is-selected-wrong' );
 			}
 
-			return `<button class="${ classes.join( ' ' ) }" disabled>${ letter }. ${ this.escHtml( option ) }</button>`;
-		} ).join( '' );
+			const btn = this.buildQuizOption( option, index, classes );
+			btn.disabled = true;
+
+			return btn;
+		} );
 	}
 
 	appendQuizReviewCard( review ) {
-		const card = document.createElement( 'div' );
-		card.className = 'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--review';
-		card.setAttribute( 'data-review-key', this.getQuizReviewKey( review ) );
+		const card = this.createEl( 'div', 'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--review' );
+		card.dataset.reviewKey = this.getQuizReviewKey( review );
+
+		const optionCount = Array.isArray( review.options ) ? review.options.length : 0;
+		const total = review.total || optionCount;
+
+		card.appendChild(
+			this.createEl( 'div', 'lp-ai-assistant__quiz-head', `Question ${ review.question_index + 1 }/${ total }` )
+		);
+		card.appendChild( this.createEl( 'div', 'lp-ai-assistant__quiz-question', review.question || '' ) );
+
+		const optionsEl = this.createEl( 'div', 'lp-ai-assistant__quiz-options' );
+		this.buildQuizReviewOptions( review ).forEach( ( btn ) => optionsEl.appendChild( btn ) );
+		card.appendChild( optionsEl );
 
 		const feedbackClass = review.is_correct ? 'is-correct' : 'is-wrong';
-		const feedbackTitle = review.is_correct
-			? this.config.i18n.quizCorrectTitle
-			: this.config.i18n.quizWrongTitle;
-		const feedbackHtml =
-			`<div class="lp-ai-assistant__quiz-feedback ${ feedbackClass }">` +
-				`<strong>${ this.escHtml( feedbackTitle ) }</strong>` +
-				( review.explanation ? `<div>${ this.escHtml( review.explanation ) }</div>` : '' ) +
-			'</div>';
+		const feedbackEl = this.createEl( 'div', `lp-ai-assistant__quiz-feedback ${ feedbackClass }` );
+		feedbackEl.appendChild(
+			this.createEl(
+				'strong',
+				'',
+				review.is_correct ? this.config.i18n.quizCorrectTitle : this.config.i18n.quizWrongTitle
+			)
+		);
 
-		card.innerHTML =
-			`<div class="lp-ai-assistant__quiz-head">Question ${ review.question_index + 1 }/${ review.total || review.options.length }</div>` +
-			`<div class="lp-ai-assistant__quiz-question">${ this.escHtml( review.question || '' ) }</div>` +
-			`<div class="lp-ai-assistant__quiz-options">${ this.renderQuizReviewOptions( review ) }</div>` +
-			feedbackHtml;
+		if ( review.explanation ) {
+			feedbackEl.appendChild( this.createEl( 'div', '', review.explanation ) );
+		}
+
+		card.appendChild( feedbackEl );
 
 		this.elements.msgList.appendChild( card );
 	}
@@ -585,19 +650,30 @@ export class AIAssistantWidget {
 			return;
 		}
 
-		const card = document.createElement( 'div' );
-		card.className = 'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--active';
-
+		const card = this.createEl( 'div', 'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--active' );
 		const options = Array.isArray( question.options ) ? question.options : [];
-		const optionsHtml = options.map( ( option, index ) => {
-			const letter = String.fromCharCode( 65 + index );
-			return `<button class="lp-ai-assistant__quiz-option" data-index="${ index }" data-option="${ this.escHtml( option ) }">${ letter }. ${ this.escHtml( option ) }</button>`;
-		} ).join( '' );
 
-		card.innerHTML =
-			`<div class="lp-ai-assistant__quiz-head">Question ${ currentIndex + 1 }/${ quiz.total || options.length }</div>` +
-			`<div class="lp-ai-assistant__quiz-question">${ this.escHtml( question.question || '' ) }</div>` +
-			`<div class="lp-ai-assistant__quiz-options">${ optionsHtml }</div>`;
+		card.appendChild(
+			this.createEl(
+				'div',
+				'lp-ai-assistant__quiz-head',
+				`Question ${ currentIndex + 1 }/${ quiz.total || options.length }`
+			)
+		);
+		card.appendChild( this.createEl( 'div', 'lp-ai-assistant__quiz-question', question.question || '' ) );
+
+		const optionsEl = this.createEl( 'div', 'lp-ai-assistant__quiz-options' );
+		options.forEach( ( option, index ) => {
+			const btn = this.buildQuizOption( option, index );
+
+			// Assigned through dataset, never interpolated into an HTML attribute — model
+			// output containing a quote cannot open a new attribute or event handler.
+			btn.dataset.index = String( index );
+			btn.dataset.option = String( option );
+
+			optionsEl.appendChild( btn );
+		} );
+		card.appendChild( optionsEl );
 
 		this.elements.msgList.appendChild( card );
 		this.setQuizInputMode( true );
@@ -640,8 +716,10 @@ export class AIAssistantWidget {
 		const dataSend = {
 			action: 'openai_assistant_chat',
 			message: text,
-			item_id: this.config.itemId,
+			// Composite item identity — all three legs are required server-side.
 			course_id: this.config.courseId,
+			item_type: this.config.itemType,
+			item_id: this.config.itemId,
 			history: contextHistory,
 			active_quiz_questions: this.activeQuizState || [],
 			action_hint: typeof actionHint === 'string' ? actionHint : '',
