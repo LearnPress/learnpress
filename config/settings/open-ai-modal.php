@@ -116,25 +116,10 @@ return apply_filters(
 			'1536x1024' => esc_html__( '1536x1024 (landscape)', 'learnpress' ),
 			'1024x1536' => esc_html__( '1024x1536 (portrait)', 'learnpress' ),
 		],
-		'image-size-dall-e-2'       => [
-			'256x256'   => esc_html__( '256x256', 'learnpress' ),
-			'512x512'   => esc_html__( '512x512', 'learnpress' ),
-			'1024x1024' => esc_html__( '1024x1024', 'learnpress' ),
-		],
-		'image-size-dall-e-3'       => [
-			'1024x1024' => esc_html__( '1024x1024', 'learnpress' ),
-			'1024x1792' => esc_html__( '1024x1792', 'learnpress' ),
-			'1792x1024' => esc_html__( '1792x1024', 'learnpress' ),
-		],
 		'image-quality-gpt-image-1' => [
 			'auto'   => esc_html__( 'Auto', 'learnpress' ),
 			'high'   => esc_html__( 'High', 'learnpress' ),
 			'medium' => esc_html__( 'low', 'learnpress' ),
-		],
-		'image-quality-dall-e-3'    => [
-			'auto'     => esc_html__( 'Auto', 'learnpress' ),
-			'hd'       => esc_html__( 'HD', 'learnpress' ),
-			'standard' => esc_html__( 'Standard', 'learnpress' ),
 		],
 		'image-quality'             => [
 			'auto'     => esc_html__( 'Auto', 'learnpress' ),

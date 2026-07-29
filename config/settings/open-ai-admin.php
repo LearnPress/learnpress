@@ -37,17 +37,16 @@ return apply_filters(
 					'default' => 'gpt-4.1',
 					'type'    => 'select',
 					'options' => array(
+						'gpt-5.6'                => esc_html__( 'GPT-5.6', 'learnpress' ),
+						'gpt-5.5'                => esc_html__( 'GPT-5.5', 'learnpress' ),
+						'gpt-5.4'                => esc_html__( 'GPT-5.4', 'learnpress' ),
+						'gpt-5.3'                => esc_html__( 'GPT-5.3', 'learnpress' ),
 						'gpt-5.2'                => esc_html__( 'GPT-5.2', 'learnpress' ),
+						'gpt-5.1'                => esc_html__( 'GPT-5.1', 'learnpress' ),
 						'gpt-5'                  => esc_html__( 'GPT-5', 'learnpress' ),
 						'gpt-5-mini'             => esc_html__( 'GPT-5 Mini', 'learnpress' ),
 						'gpt-5-nano'             => esc_html__( 'GPT-5 Nano', 'learnpress' ),
 						'gpt-4.1'                => esc_html__( 'GPT-4.1', 'learnpress' ),
-						//'chatgpt-4o-latest'      => esc_html__( 'ChatGPT 4o-Latest', 'learnpress' ),
-						'gpt-4o'                 => esc_html__( 'GPT-4o', 'learnpress' ),
-						'gpt-4o-mini'            => esc_html__( 'GPT-4o Mini', 'learnpress' ),
-						'gpt-4'                  => esc_html__( 'GPT-4', 'learnpress' ),
-						'gpt-3.5-turbo'          => esc_html__( 'GPT-3.5 Turbo', 'learnpress' ),
-						'gpt-3.5-turbo-instruct' => esc_html__( 'GPT-3.5 Turbo Instruct', 'learnpress' ),
 					),
 				],
 				[
@@ -57,8 +56,7 @@ return apply_filters(
 					'type'    => 'select',
 					'options' => array(
 						'gpt-image-1' => esc_html__( 'GPT Image 1', 'learnpress' ),
-						'dall-e-3'    => esc_html__( 'DALL-E 3', 'learnpress' ),
-						'dall-e-2'    => esc_html__( 'DALL-E 2', 'learnpress' ),
+						'gpt-image-2' => esc_html__( 'GPT Image 2', 'learnpress' ),
 					),
 				],
 				[

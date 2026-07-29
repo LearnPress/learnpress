@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.3\n"
+"Project-Id-Version: LearnPress 4.4.4-beta-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-26T12:08:31+00:00\n"
+"POT-Creation-Date: 2026-07-28T10:20:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -90,14 +90,6 @@ msgstr ""
 msgid "Add Blank"
 msgstr ""
 
-#: assets/src/apps/js/blocks/archive-course/edit.js:11
-msgid "Archive Course"
-msgstr ""
-
-#: assets/src/apps/js/blocks/archive-course/edit.js:15
-msgid "This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it"
-msgstr ""
-
 #: assets/src/apps/js/blocks/archive-course-legacy/edit.js:11
 msgid "Archive Course (Legacy)"
 msgstr ""
@@ -121,7 +113,6 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-quiz/edit.js:17
 #: assets/src/apps/js/blocks/course-elements/course-student/edit.js:17
 #: assets/src/apps/js/blocks/course-elements/course-title/edit.js:26
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:10
 #: assets/src/apps/js/blocks/course-filter/edit.js:10
 #: assets/src/apps/js/blocks/courses/course-item-template/edit.js:214
 #: assets/src/apps/js/blocks/instructor-elements/instructor-background/edit.js:25
@@ -396,7 +387,39 @@ msgstr ""
 msgid "Make the title a link"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/button-reset-filter/edit.js:8
+#: assets/src/apps/js/blocks/course-filter/edit.js:12
+msgid "Show title"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:22
+#: config/widgets/course/filter-course.php:14
+msgid "Level of category to display on Frontend"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:34
+#: config/elementor/course/filter-course-el.php:135
+#: config/widgets/course/filter-course.php:25
+msgid "Load widget via REST"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:44
+#: config/widgets/course/filter-course.php:30
+msgid "Hide field has count is zero"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:54
+#: config/elementor/course/filter-course-el.php:146
+#: config/widgets/course/filter-course.php:35
+msgid "Enable Keyword Search Suggestion"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:66
+#: config/widgets/course/filter-course.php:11
+#: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:37
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:324
+msgid "Course Filter"
+msgstr ""
+
 #: assets/src/apps/js/blocks/course-filter-elements/button-reset-filter/edit.js:8
 #: inc/admin/views/tools/course/html-user-item.php:26
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:807
@@ -404,14 +427,12 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/button-submit-filter/edit.js:8
 #: assets/src/apps/js/blocks/course-filter-elements/button-submit-filter/edit.js:8
 #: inc/TemplateHooks/Admin/AI/AdminEditWithAITemplate.php:387
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:779
 msgid "Apply"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-author-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-author-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:43
 #: config/widgets/course/filter-course.php:65
@@ -425,7 +446,6 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-categories-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-categories-filter/edit.js:9
 #: inc/custom-post-types/course.php:110
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:523
@@ -434,55 +454,6 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:12
-#: config/elementor/course/filter-course-el.php:430
-#: config/elementor/instructor/become-a-teacher.php:20
-#: config/elementor/instructor/become-a-teacher.php:46
-#: config/elementor/login-user-form.php:19
-#: config/elementor/register-user-form.php:19
-#: config/widgets/course/filter-course.php:9
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:38
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:58
-#: inc/admin/views/setup/setup-stripe.php:7
-#: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:422
-#: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:384
-#: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:428
-#: inc/Widgets/course-extra.php:25
-#: inc/Widgets/course-info.php:32
-#: inc/Widgets/course-progress.php:29
-#: inc/Widgets/featured-courses.php:28
-#: inc/Widgets/popular-courses.php:24
-#: inc/Widgets/recent-courses.php:29
-msgid "Title"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:22
-#: assets/src/apps/js/blocks/course-filter/edit.js:22
-#: config/widgets/course/filter-course.php:14
-msgid "Level of category to display on Frontend"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:34
-#: assets/src/apps/js/blocks/course-filter/edit.js:34
-#: config/elementor/course/filter-course-el.php:135
-#: config/widgets/course/filter-course.php:25
-msgid "Load widget via REST"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:44
-#: assets/src/apps/js/blocks/course-filter/edit.js:44
-#: config/widgets/course/filter-course.php:30
-msgid "Hide field has count is zero"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:54
-#: assets/src/apps/js/blocks/course-filter/edit.js:54
-#: config/elementor/course/filter-course-el.php:146
-#: config/widgets/course/filter-course.php:35
-msgid "Enable Keyword Search Suggestion"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-level-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-level-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:44
 #: config/widgets/course/filter-course.php:69
@@ -495,7 +466,6 @@ msgstr ""
 msgid "Level"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-price-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-price-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:40
 #: config/elementor/course/list-courses.php:123
@@ -508,7 +478,6 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-search-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-search-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:488
 #: inc/admin/views/search-author-field.php:64
@@ -523,7 +492,6 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-tag-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-tag-filter/edit.js:9
 #: inc/admin/lp-admin-actions.php:224
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:11
@@ -531,17 +499,6 @@ msgstr ""
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:536
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:943
 msgid "Tags"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/edit.js:12
-msgid "Show title"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/edit.js:66
-#: config/widgets/course/filter-course.php:11
-#: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:37
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:324
-msgid "Course Filter"
 msgstr ""
 
 #: assets/src/apps/js/blocks/courses/course-item-template/edit.js:162
@@ -651,22 +608,6 @@ msgstr ""
 msgid "Add nofollow attribute"
 msgstr ""
 
-#: assets/src/apps/js/blocks/item-curriculum-course/edit.js:13
-msgid "Item Curriculum Course"
-msgstr ""
-
-#: assets/src/apps/js/blocks/item-curriculum-course/edit.js:17
-msgid "This is an editor placeholder for the Item Curriculum Course page. Content will render content of single item curriculum course. Should be not remove it"
-msgstr ""
-
-#: assets/src/apps/js/blocks/single-course/edit.js:11
-msgid "Single Course"
-msgstr ""
-
-#: assets/src/apps/js/blocks/single-course/edit.js:15
-msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
-msgstr ""
-
 #: assets/src/apps/js/blocks/single-course-legacy/edit.js:11
 msgid "Single Course (Legacy)"
 msgstr ""
@@ -707,21 +648,6 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: assets/js/dist/frontend/profile.min.js:131
-#: assets/js/dist/frontend/profile.min.js:131
-msgid "The file size is too large. You need to upload a file < 2MB."
-msgstr ""
-
-#: assets/js/dist/frontend/profile.min.js:133
-#: assets/js/dist/frontend/profile.min.js:133
-msgid "The image size must be greater than or equal to %1$sx%2$spx"
-msgstr ""
-
-#: assets/js/dist/frontend/profile.min.js:146
-#: assets/js/dist/frontend/profile.min.js:146
-msgid "Are you sure you want to remove your avatar?"
-msgstr ""
-
 #: assets/js/dist/frontend/quiz.min.js:94
 msgid "LP Error: can not set answers"
 msgstr ""
@@ -734,14 +660,14 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:81
 #: assets/js/dist/frontend/quiz.min.js:204
 #: inc/custom-post-types/question.php:129
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:202
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:222
 msgid "Correct"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:233
 #: assets/js/dist/frontend/quiz.min.js:82
 #: inc/custom-post-types/question.php:135
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:203
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:223
 msgid "Incorrect"
 msgstr ""
 
@@ -974,17 +900,6 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:116
 msgid "Submitting…"
-msgstr ""
-
-#: assets/src/js/admin/admin.js:107
-msgid "Search by user"
-msgstr ""
-
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:700
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:705
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:710
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:723
-msgid "Edit with AI"
 msgstr ""
 
 #: assets/src/js/frontend/course-builder/builder-form-state.js:174
@@ -1395,6 +1310,27 @@ msgstr ""
 
 #: config/elementor/course/filter-course-el.php:416
 msgid "Toggle Offset Y (px)"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:430
+#: config/elementor/instructor/become-a-teacher.php:20
+#: config/elementor/instructor/become-a-teacher.php:46
+#: config/elementor/login-user-form.php:19
+#: config/elementor/register-user-form.php:19
+#: config/widgets/course/filter-course.php:9
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:38
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:58
+#: inc/admin/views/setup/setup-stripe.php:7
+#: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:422
+#: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:384
+#: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:428
+#: inc/Widgets/course-extra.php:25
+#: inc/Widgets/course-info.php:32
+#: inc/Widgets/course-progress.php:29
+#: inc/Widgets/featured-courses.php:28
+#: inc/Widgets/popular-courses.php:24
+#: inc/Widgets/recent-courses.php:29
+msgid "Title"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:441
@@ -1950,7 +1886,7 @@ msgstr[1] ""
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseLessonBlockType.php:79
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseOfflineLessonBlockType.php:80
 #: inc/lp-template-functions.php:1098
-#: inc/Models/CourseModel.php:1528
+#: inc/Models/CourseModel.php:1546
 #: inc/TemplateHooks/Admin/AI/AdminCreateCourseAITemplate.php:480
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:207
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:560
@@ -1968,7 +1904,7 @@ msgstr[1] ""
 #: inc/custom-post-types/quiz.php:89
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseQuizBlockType.php:79
 #: inc/lp-template-functions.php:1088
-#: inc/Models/CourseModel.php:1531
+#: inc/Models/CourseModel.php:1549
 #: inc/TemplateHooks/Admin/AI/AdminCreateCourseAITemplate.php:527
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:215
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:563
@@ -3270,8 +3206,8 @@ msgid "Set to 0 for no limit."
 msgstr ""
 
 #: config/settings/open-ai-admin.php:131
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:194
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:324
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:214
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:344
 msgid "AI Assistant"
 msgstr ""
 
@@ -7747,83 +7683,100 @@ msgstr ""
 msgid "The course list of enrolled users"
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:174
+#: inc/AI/Assistant/Agent.php:77
+#: inc/AI/Assistant/AIAssistantController.php:127
+msgid "The AI Assistant is not available for this type of course item."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:114
+msgid "Smart Review is only available on a quiz you have completed."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:211
 msgid "You are a helpful AI learning assistant for an online course. You help learners understand lesson content, explain concepts, generate practice quizzes, and review their quiz performance. Always ground your answers in the actual course data provided by tools. Respond in the same language the learner uses."
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:190
+#: inc/AI/Assistant/Agent.php:227
 msgid "Summarize this lesson clearly with key points, practical takeaways, and 3 quick review bullets."
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:205
+#: inc/AI/Assistant/Agent.php:242
 msgid "Explain the learner request using lesson context only. Give a short explanation, one concrete example, and one self-check question."
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:220
+#: inc/AI/Assistant/Agent.php:257
 msgid "Create a smart review for this completed quiz attempt. Summarize performance, identify weak concepts, and provide a concise next-step study plan."
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:237
+#: inc/AI/Assistant/Agent.php:274
 msgid "Answer naturally and keep guidance grounded in the provided lesson context. If context is missing, say so clearly."
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:272
+#: inc/AI/Assistant/Agent.php:309
 msgid "Output contract: return ONLY valid JSON with exactly one key \"message\" (string). Put the full reply text inside \"message\". Do not include keys like language, locale, intent, type, or key_points."
 msgstr ""
 
 #. translators: %s: JSON encoded learning context.
-#: inc/AI/Assistant/Agent.php:278
+#: inc/AI/Assistant/Agent.php:315
 #, php-format
 msgid "Grounded context (JSON): %s"
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:308
+#: inc/AI/Assistant/Agent.php:345
 msgid "I was unable to complete the request. Please try again."
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:384
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:422
+#: inc/AI/Assistant/Agent.php:419
+msgid "This assistant action is only available on a lesson."
+msgstr ""
+
+#: inc/AI/Assistant/Agent.php:432
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:442
 msgid "Summarize Lesson"
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:385
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:408
+#: inc/AI/Assistant/Agent.php:433
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:428
 msgid "Explain Concept"
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:386
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:415
+#: inc/AI/Assistant/Agent.php:434
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:435
 msgid "Quick Quiz"
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:387
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:429
+#: inc/AI/Assistant/Agent.php:435
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:449
 msgid "Smart Review"
 msgstr ""
 
 #. translators: %s: assistant action label.
-#: inc/AI/Assistant/Agent.php:393
+#: inc/AI/Assistant/Agent.php:441
 #, php-format
 msgid "The %s action is currently disabled by the site administrator."
 msgstr ""
 
-#: inc/AI/Assistant/Agent.php:394
+#: inc/AI/Assistant/Agent.php:442
 msgid "requested"
 msgstr ""
 
-#: inc/AI/Assistant/AIAssistantController.php:95
+#: inc/AI/Assistant/AIAssistantController.php:121
+msgid "You do not have permission to use the AI Assistant for this course item."
+msgstr ""
+
+#: inc/AI/Assistant/AIAssistantController.php:197
 msgid "Message is required."
 msgstr ""
 
-#: inc/AI/Assistant/AIAssistantController.php:99
+#: inc/AI/Assistant/AIAssistantController.php:201
 msgid "Item ID is required."
 msgstr ""
 
-#: inc/AI/Assistant/AIAssistantController.php:103
+#: inc/AI/Assistant/AIAssistantController.php:205
 msgid "Course ID is required."
 msgstr ""
 
-#: inc/AI/Assistant/AIAssistantController.php:109
+#: inc/AI/Assistant/AIAssistantController.php:211
 msgid "User must be logged in."
 msgstr ""
 
@@ -7907,29 +7860,29 @@ msgstr ""
 msgid "I could not generate a quiz right now. Please try again."
 msgstr ""
 
-#: inc/AI/Assistant/QuickQuizEngine.php:120
+#: inc/AI/Assistant/QuickQuizEngine.php:122
 msgid "Quick quiz started. Answer each question to continue."
 msgstr ""
 
-#: inc/AI/Assistant/QuickQuizEngine.php:140
+#: inc/AI/Assistant/QuickQuizEngine.php:142
 msgid "Quiz state is invalid. Please start a new quick quiz."
 msgstr ""
 
-#: inc/AI/Assistant/QuickQuizEngine.php:149
+#: inc/AI/Assistant/QuickQuizEngine.php:151
 msgid "Please answer with option number (1-4), letter (A-D), or full option text."
 msgstr ""
 
 #. translators: 1: score, 2: total questions.
-#: inc/AI/Assistant/QuickQuizEngine.php:183
+#: inc/AI/Assistant/QuickQuizEngine.php:185
 #, php-format
 msgid "Quiz complete. You scored %1$d/%2$d."
 msgstr ""
 
-#: inc/AI/Assistant/QuickQuizEngine.php:195
+#: inc/AI/Assistant/QuickQuizEngine.php:197
 msgid "Correct. Great job! Moving to the next question."
 msgstr ""
 
-#: inc/AI/Assistant/QuickQuizEngine.php:196
+#: inc/AI/Assistant/QuickQuizEngine.php:198
 msgid "Not quite. Let us move to the next question."
 msgstr ""
 
@@ -7938,22 +7891,30 @@ msgstr ""
 msgid "I could not generate a complete answer. Please try rephrasing your request."
 msgstr ""
 
+#: inc/AI/Assistant/TokenQuotaGuard.php:356
+msgid "Another AI Assistant request is still running. Please wait a moment and try again."
+msgstr ""
+
 #. translators: %d: max usage tokens per learner per day.
-#: inc/AI/Assistant/TokenQuotaGuard.php:207
+#: inc/AI/Assistant/TokenQuotaGuard.php:370
 #, php-format
 msgid "Daily AI usage limit reached (%d tokens). Please try again tomorrow or contact the site administrator."
 msgstr ""
 
-#: inc/Ajax/AI/AIAssistantAjax.php:49
+#: inc/Ajax/AI/AIAssistantAjax.php:57
 msgid "You must be logged in to use the AI Assistant."
 msgstr ""
 
-#: inc/Ajax/AI/AIAssistantAjax.php:53
+#: inc/Ajax/AI/AIAssistantAjax.php:61
 msgid "AI Assistant is not available."
 msgstr ""
 
-#: inc/Ajax/AI/AIAssistantAjax.php:60
+#: inc/Ajax/AI/AIAssistantAjax.php:68
 msgid "Invalid request data."
+msgstr ""
+
+#: inc/Ajax/AI/AIAssistantAjax.php:78
+msgid "The AI Assistant is unavailable right now. Please try again later."
 msgstr ""
 
 #: inc/Ajax/AI/OpenAiAjax.php:43
@@ -8020,11 +7981,11 @@ msgstr ""
 msgid "Invalid post type."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:507
+#: inc/Ajax/AI/OpenAiAjax.php:509
 msgid "No image data provided."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:531
+#: inc/Ajax/AI/OpenAiAjax.php:533
 msgid "Apply image successfully!"
 msgstr ""
 
@@ -11320,7 +11281,7 @@ msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:44
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:40
-#: inc/Models/CourseModel.php:1059
+#: inc/Models/CourseModel.php:1076
 #: inc/user/class-lp-user.php:295
 msgid "The course is not public"
 msgstr ""
@@ -11555,7 +11516,7 @@ msgid "Evaluate via passed quizzes"
 msgstr ""
 
 #: inc/lp-core-functions.php:2217
-#: inc/Models/CourseModel.php:575
+#: inc/Models/CourseModel.php:592
 msgid "Evaluate via questions"
 msgstr ""
 
@@ -12033,87 +11994,87 @@ msgstr ""
 msgid "User not found."
 msgstr ""
 
-#: inc/Models/CourseModel.php:563
+#: inc/Models/CourseModel.php:580
 msgid "Evaluate via completed lessons"
 msgstr ""
 
-#: inc/Models/CourseModel.php:564
+#: inc/Models/CourseModel.php:581
 msgid "Course will be completed when all lessons are completed."
 msgstr ""
 
-#: inc/Models/CourseModel.php:567
+#: inc/Models/CourseModel.php:584
 msgid "Evaluate via final quiz"
 msgstr ""
 
-#: inc/Models/CourseModel.php:568
+#: inc/Models/CourseModel.php:585
 msgid "Course will be completed when the final quiz is passed."
 msgstr ""
 
-#: inc/Models/CourseModel.php:571
+#: inc/Models/CourseModel.php:588
 msgid "Evaluate via quizzes"
 msgstr ""
 
-#: inc/Models/CourseModel.php:572
+#: inc/Models/CourseModel.php:589
 msgid "Course will be completed when all quizzes are passed."
 msgstr ""
 
-#: inc/Models/CourseModel.php:576
+#: inc/Models/CourseModel.php:593
 msgid "Course will be completed when all questions are answered correctly."
 msgstr ""
 
-#: inc/Models/CourseModel.php:579
+#: inc/Models/CourseModel.php:596
 msgid "Evaluate via marks"
 msgstr ""
 
-#: inc/Models/CourseModel.php:580
+#: inc/Models/CourseModel.php:597
 msgid "Course will be completed when the passing mark is achieved."
 msgstr ""
 
-#: inc/Models/CourseModel.php:1069
+#: inc/Models/CourseModel.php:1086
 #: inc/user/class-lp-user.php:318
 msgid "Course can retake."
 msgstr ""
 
-#: inc/Models/CourseModel.php:1076
+#: inc/Models/CourseModel.php:1093
 #: inc/user/class-lp-user.php:306
 msgid "The course is full of students."
 msgstr ""
 
-#: inc/Models/CourseModel.php:1083
+#: inc/Models/CourseModel.php:1100
 msgid "This course is already enrolled!"
 msgstr ""
 
-#: inc/Models/CourseModel.php:1086
+#: inc/Models/CourseModel.php:1103
 msgid "The course is finished."
 msgstr ""
 
-#: inc/Models/CourseModel.php:1094
-#: inc/Models/CourseModel.php:1196
+#: inc/Models/CourseModel.php:1111
+#: inc/Models/CourseModel.php:1213
 #: inc/user/class-lp-user.php:324
 msgid "Enrollment in the course is not mandatory. You can access course for learning now."
 msgstr ""
 
-#: inc/Models/CourseModel.php:1108
+#: inc/Models/CourseModel.php:1125
 #: inc/user/class-lp-user.php:313
 msgid "The course is external"
 msgstr ""
 
-#: inc/Models/CourseModel.php:1114
-#: inc/Models/CourseModel.php:1117
+#: inc/Models/CourseModel.php:1131
+#: inc/Models/CourseModel.php:1134
 #: inc/user/class-lp-user.php:330
 msgid "The course is not purchased."
 msgstr ""
 
-#: inc/Models/CourseModel.php:1189
+#: inc/Models/CourseModel.php:1206
 msgid "The course is free."
 msgstr ""
 
-#: inc/Models/CourseModel.php:1205
+#: inc/Models/CourseModel.php:1222
 #: inc/user/class-lp-user.php:394
 msgid "Course is purchased"
 msgstr ""
 
-#: inc/Models/CourseModel.php:1216
+#: inc/Models/CourseModel.php:1233
 #: inc/user/class-lp-user.php:407
 msgid "Course is enrolled or finished"
 msgstr ""
@@ -14065,71 +14026,71 @@ msgstr ""
 msgid "You do not have permission view list"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:193
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:213
 msgid "You"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:195
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:215
 msgid "Thinking..."
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:196
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:216
 msgid "An error occurred. Please try again."
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:197
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:217
 msgid "Clear chat history?"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:198
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:218
 msgid "Create a quick quiz from this lesson."
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:199
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:219
 msgid "Explain a concept from this lesson."
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:200
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:220
 msgid "Summarize this lesson with key points."
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:201
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:221
 msgid "Give me a smart review of my quiz results."
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:232
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:252
 msgid "Learning tools"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:332
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:352
 msgid "Open AI Learning Assistant"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:351
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:371
 msgid "AI Learning Assistant"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:355
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:375
 msgid "Clear chat history"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:359
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:379
 msgid "Close AI Assistant"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:440
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:460
 msgid "AI assistant quick actions"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:457
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:477
 msgid "Your message to the AI assistant"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:458
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:478
 msgid "Type your message"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:463
+#: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:483
 msgid "Send message"
 msgstr ""
 

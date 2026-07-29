@@ -747,8 +747,8 @@ class AdminEditWithAITemplate {
 	public function html_image_step_1(): string {
 		$model_type   = LP_Settings::instance()->get( 'open_ai_image_model_type' );
 		$options      = $this->config;
-		$size_opts    = $options[ "image-size-$model_type" ] ?? [];
-		$quality_opts = $options[ "image-quality-$model_type" ] ?? $options['image-quality'] ?? [];
+		$size_opts    = $options[ "image-size-$model_type" ] ?? [ 'auto' ];
+		$quality_opts = $options[ "image-quality-$model_type" ] ?? $options['image-quality'] ?? [ 'auto' ];
 
 		$components = [
 			'step'          => '<div class="step-content active" data-step="1">',
@@ -843,7 +843,7 @@ class AdminEditWithAITemplate {
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Outputs', 'learnpress' ),
-				esc_html__( 'Number of images you want the system to generate (model dall-e-3 only 1 supported).', 'learnpress' )
+				esc_html__( 'Number of images you want the system to generate.', 'learnpress' )
 			),
 			'form-grid-end' => '</div>',
 			'step_close'    => '</div>',

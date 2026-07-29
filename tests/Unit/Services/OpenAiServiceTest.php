@@ -41,15 +41,14 @@ class OpenAiServiceTest extends BrainMonkeyTestCase {
 
 	private function reset_singleton( string $class_name ): void {
 		$ref = new \ReflectionProperty( $class_name, 'instance' );
-		$ref->setAccessible( true );
 		$ref->setValue( null, null );
 	}
 
 	private function make_service(): OpenAiService {
 		\LP_Settings::$options = array(
 			'open_ai_secret_key'              => 'sk-test',
-			'open_ai_text_model_type'         => 'gpt-4o',
-			'open_ai_image_model_type'        => 'dall-e-3',
+			'open_ai_text_model_type'         => 'gpt-4.1',
+			'open_ai_image_model_type'        => 'gpt-image-1',
 			'open_ai_frequency_penalty_level' => 0.2,
 			'open_ai_presence_penalty_level'  => 0.1,
 			'open_ai_creativity_level'        => 0.7,

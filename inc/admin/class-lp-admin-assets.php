@@ -83,7 +83,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'single_instructor_id'     => learn_press_get_page_id( 'single_instructor' ),
 				'lpAi'                     => array(
 					'config'     => Config::instance()->get( 'open-ai-modal', 'settings' ),
-					'modelImage' => LP_Settings::get_option( 'open_ai_image_model_type', 'dall-e-3' ),
+					'modelImage' => LP_Settings::get_option( 'open_ai_image_model_type', 'gpt-image-1' ),
 				),
 				'enable_open_ai'           => LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes'
 					&& ! empty( LP_Settings::get_option( 'open_ai_secret_key', '' ) ),

@@ -21,7 +21,7 @@ $main_subject = ! empty( $goal ) ? "The main subject of the image must be: $goal
 $title        = ! empty( $title ) ? "The image should be inspired by the course title: $title." : '';
 
 /**
- *A text description of the desired image(s).
+ * A text description of the desired image(s).
  * The maximum length is 32000 characters for gpt-image-1,
  * 1000 characters for dall-e-2
  * and 4000 characters for dall-e-3.

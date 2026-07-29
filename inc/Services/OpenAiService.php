@@ -14,7 +14,7 @@ use LP_Settings;
  *
  * @package LearnPress\Services
  * @since 4.3.0
- * @version 1.0.0
+ * @version 1.0.1
  */
 class OpenAiService {
 	use Singleton;
@@ -22,7 +22,6 @@ class OpenAiService {
 	public string $baseUrl = 'https://api.openai.com/v1/';
 	public string $urlChartCompletion;
 	public string $urlResponses;
-	public string $urlCompletionLegacy;
 	public string $urlImage;
 
 	public string $secret_key;
@@ -34,10 +33,9 @@ class OpenAiService {
 	public int $max_token;
 
 	public function init() {
-		$this->urlChartCompletion  = $this->baseUrl . 'chat/completions';
-		$this->urlCompletionLegacy = $this->baseUrl . 'completions';
-		$this->urlResponses        = $this->baseUrl . 'responses';
-		$this->urlImage            = $this->baseUrl . 'images/generations';
+		$this->urlChartCompletion = $this->baseUrl . 'chat/completions';
+		$this->urlResponses       = $this->baseUrl . 'responses';
+		$this->urlImage           = $this->baseUrl . 'images/generations';
 		$this->get_settings();
 	}
 
@@ -62,7 +60,7 @@ class OpenAiService {
 	public function get_settings() {
 		$this->secret_key        = LP_Settings::get_option( 'open_ai_secret_key', '' );
 		$this->text_model_type   = LP_Settings::get_option( 'open_ai_text_model_type', 'gpt-4.1' );
-		$this->image_model_type  = LP_Settings::get_option( 'open_ai_image_model_type', 'dall-e-3' );
+		$this->image_model_type  = LP_Settings::get_option( 'open_ai_image_model_type', 'gpt-image-1' );
 		$this->frequency_penalty = LP_Settings::get_option( 'open_ai_frequency_penalty_level', 0.0 );
 		$this->presence_penalty  = LP_Settings::get_option( 'open_ai_presence_penalty_level', 0.0 );
 		$this->creativity_level  = LP_Settings::get_option( 'open_ai_creativity_level', 1.0 );
@@ -75,22 +73,8 @@ class OpenAiService {
 	 * @throws Exception
 	 */
 	public function send_request( array $args ): array {
-		// Handle args before send request
-		$url = '';
-
-		if ( in_array(
-			$this->text_model_type,
-			[ 'chatgpt-4o-latest', 'gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo' ]
-		) ) {
-			$url  = $this->urlChartCompletion;
-			$args = $this->handle_params_for_send_chat_completion( $args );
-		} elseif ( $this->text_model_type == 'gpt-3.5-turbo-instruct' ) {
-			$url  = $this->urlCompletionLegacy;
-			$args = $this->handle_params_for_send_completion_legacy( $args );
-		} else {
-			$url  = $this->urlResponses;
-			$args = $this->handle_params_for_send_responses( $args );
-		}
+		$url  = $this->urlResponses;
+		$args = $this->handle_params_for_send_responses( $args );
 
 		$response = wp_remote_post(
 			$url,
@@ -185,10 +169,10 @@ class OpenAiService {
 			unset( $args['n'] );
 		}
 
-		if ( $model_type == 'dall-e-3' ) {
+		/*if ( $model_type == 'dall-e-3' ) {
 			// only n=1 is supported.
 			$args['n'] = 1;
-		}
+		}*/
 
 		$response = wp_remote_post(
 			$this->urlImage,
@@ -271,29 +255,6 @@ class OpenAiService {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Handle params for send chat completion
-	 *
-	 * @docs https://platform.openai.com/docs/api-reference/completions/create
-	 *
-	 * @throws Exception
-	 */
-	public function handle_params_for_send_completion_legacy( $params ): array {
-		$params = [
-			'model'       => $this->text_model_type,
-			'temperature' => $this->creativity_level,
-			'max_tokens'  => $this->max_token,
-			'n'           => $params['outputs'] ?? 1,
-			'prompt'      => $params['prompt'] ?? '',
-		];
-
-		if ( $this->max_token === 0 ) {
-			unset( $params['max_tokens'] );
-		}
-
-		return $params;
 	}
 
 	/**
