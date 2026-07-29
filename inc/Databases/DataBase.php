@@ -34,13 +34,15 @@ class DataBase {
 	public $tb_thim_cache;
 	private $collate         = '';
 	public $max_index_length = '191';
+	public $prefix;
 
 	protected function __construct() {
 		/**
 		 * @var wpdb $wpdb
 		 */
 		global $wpdb;
-		$prefix = $wpdb->prefix;
+		$prefix       = $wpdb->prefix;
+		$this->prefix = $prefix;
 
 		$this->wpdb                      = $wpdb;
 		$this->tb_users                  = $wpdb->users;
