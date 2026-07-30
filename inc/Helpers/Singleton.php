@@ -20,5 +20,5 @@ trait Singleton {
 		$this->init();
 	}
 
-	abstract function init();
+	abstract public function init();
 }

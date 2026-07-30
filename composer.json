@@ -26,6 +26,7 @@
 	},
 	"_comment": "If the tijsverkoyen Emogrifier library does not work properly, try pelago/emogrifier.",
 	"require": {
+		"ext-json": "*",
 		"tijsverkoyen/css-to-inline-styles": "v2.4.0"
 	},
 	"autoload-dev": {
