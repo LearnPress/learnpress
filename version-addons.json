@@ -1,4 +1,19 @@
 {
+  "learnpress-interactive": {
+    "name": "Klarna addon for learnpress",
+    "basename": "learnpress-interactive/learnpress-interactive.php",
+    "version": "4.0.0",
+    "require_lp": "4.4.4",
+    "description": "Interactive lets you build slide decks and flashcards and display them anywhere on your site via shortcode.",
+    "image": "https://updates.thimpress.com/images/learnpress-interactive.png",
+    "link": "https://thimpress.com/product/interactive-blocks-add-on-for-learnpress/",
+    "link_doc": "https://learnpresslms.com/docs/interactive-add-on-for-learnpress/",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "setting": "",
+    "order": 0
+  },
   "learnpress-klarna-payment": {
     "name": "Klarna addon for learnpress",
     "basename": "learnpress-klarna-payment/learnpress-klarna-payment.php",
