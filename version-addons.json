@@ -1,6 +1,6 @@
 {
   "learnpress-interactive": {
-    "name": "Klarna addon for learnpress",
+    "name": "Interactive Add-On for learnpress",
     "basename": "learnpress-interactive/learnpress-interactive.php",
     "version": "4.0.0",
     "require_lp": "4.4.4",
@@ -15,7 +15,7 @@
     "order": 0
   },
   "learnpress-klarna-payment": {
-    "name": "Klarna addon for learnpress",
+    "name": "Klarna Add-On for learnpress",
     "basename": "learnpress-klarna-payment/learnpress-klarna-payment.php",
     "version": "4.0.0",
     "require_lp": "4.4.2",
