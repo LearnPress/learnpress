@@ -96,7 +96,7 @@ abstract class LP_Abstract_Submenu {
 	}
 
 	public function is_displaying() {
-		return $this->get_id() === LP_Request::get_string( 'page' );
+		return $this->get_id() === LP_Request::get_param( 'page' );
 	}
 
 	/**
