@@ -277,19 +277,11 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array [ 'registered' => int, 'enrolled' => int, 'started' => int, 'completed' => int, 'failed'? => int ]
 	 */
 	public function get_learner_funnel( string $type, string $value, ?StatisticsScope $scope = null, bool $with_failed = false ): array {
-		$sig = $scope ? $scope->signature() : array( 0, 0 );
-
-		return StatisticsCache::remember(
-			'funnel',
-			array( $type, $value, $sig, $with_failed ),
-			function () use ( $type, $value, $scope, $with_failed ) {
-				return $this->compute_learner_funnel( $type, $value, $scope, $with_failed );
-			}
-		);
+		return $this->compute_learner_funnel( $type, $value, $scope, $with_failed );
 	}
 
 	/**
-	 * Uncached funnel computation. See get_learner_funnel().
+	 * Funnel computation. See get_learner_funnel().
 	 *
 	 * @param string               $type
 	 * @param string               $value
@@ -1094,19 +1086,11 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array Rows of { instructor_id, instructor_name, course_count, revenue, enrolled, completed, completion_rate }.
 	 */
 	public function get_instructor_performance( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 5, int $offset = 0, string $search = '' ): array {
-		$sig = $scope ? $scope->signature() : array( 0, 0 );
-
-		return StatisticsCache::remember(
-			'instructor_performance',
-			array( $type, $value, $sig, $limit, $offset, $search ),
-			function () use ( $type, $value, $scope, $limit, $offset, $search ) {
-				return $this->compute_instructor_performance( $type, $value, $scope, $limit, $offset, $search );
-			}
-		);
+		return $this->compute_instructor_performance( $type, $value, $scope, $limit, $offset, $search );
 	}
 
 	/**
-	 * Uncached instructor performance query. See get_instructor_performance().
+	 * Instructor performance query. See get_instructor_performance().
 	 *
 	 * @param string               $type
 	 * @param string               $value
@@ -1650,22 +1634,12 @@ class DashboardStatisticsDB extends LP_Database {
 	 * @return array Rows of { course_id, name, instructor, completion_rate, risk, action }.
 	 */
 	public function get_course_watchlist( string $type, string $value, ?StatisticsScope $scope = null, int $limit = 10 ): array {
-		$sig = $scope ? $scope->signature() : array( 0, 0 );
-
-		return StatisticsCache::remember(
-			'watchlist',
-			// Risk bands + quiz-pass config shape risk/action, so they must vary the key —
-			// otherwise a filter change stays masked until the TTL expires.
-			array( $type, $value, $sig, $limit, self::quiz_alert_config(), (array) apply_filters( 'learn-press/statistics/risk-bands', array( 40, 55 ) ) ),
-			function () use ( $type, $value, $scope, $limit ) {
-				return $this->compute_course_watchlist( $type, $value, $scope, $limit );
-			}
-		);
+		return $this->compute_course_watchlist( $type, $value, $scope, $limit );
 	}
 
 	/**
 	 * Quiz low-pass alert config ( threshold %, minimum attempts ) — read in one
-	 * place so query methods and the cache keys that must vary on it stay in sync.
+	 * place so query methods stay in sync.
 	 *
 	 * @return array [ float threshold, int min_attempts ]
 	 * @since 4.4.2
@@ -1678,7 +1652,7 @@ class DashboardStatisticsDB extends LP_Database {
 	}
 
 	/**
-	 * Uncached watchlist query. See get_course_watchlist().
+	 * Watchlist query. See get_course_watchlist().
 	 *
 	 * @param string               $type
 	 * @param string               $value

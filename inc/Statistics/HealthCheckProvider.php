@@ -46,25 +46,11 @@ class HealthCheckProvider extends LP_Database {
 	 * @return array [ 'no_enrollment' => int, 'no_content' => int, 'pending_review' => int, 'quiz_low_pass' => int ]
 	 */
 	public function get_checks( ?StatisticsScope $scope = null ): array {
-		$sig = $scope ? $scope->signature() : array( 0, 0 );
-		// The low-pass quiz check depends on these filters, so vary the key on them —
-		// otherwise a threshold change stays masked until the TTL expires.
-		$quiz_config = array(
-			(float) apply_filters( 'learn-press/statistics/quiz-pass-alert', 50 ),
-			(int) apply_filters( 'learn-press/statistics/quiz-pass-alert-min-attempts', 5 ),
-		);
-
-		return StatisticsCache::remember(
-			'health_checks',
-			array( $sig, $quiz_config ),
-			function () use ( $scope ) {
-				return array(
-					'no_enrollment'  => $this->count_courses_without_enrollment( $scope ),
-					'no_content'     => $this->count_courses_without_content( $scope ),
-					'pending_review' => $this->count_pending_courses( $scope ),
-					'quiz_low_pass'  => $this->count_low_pass_quizzes( $scope ),
-				);
-			}
+		return array(
+			'no_enrollment'  => $this->count_courses_without_enrollment( $scope ),
+			'no_content'     => $this->count_courses_without_content( $scope ),
+			'pending_review' => $this->count_pending_courses( $scope ),
+			'quiz_low_pass'  => $this->count_low_pass_quizzes( $scope ),
 		);
 	}
 

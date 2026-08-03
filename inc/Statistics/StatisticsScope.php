@@ -75,15 +75,6 @@ class StatisticsScope {
 	}
 
 	/**
-	 * Stable identity for cache keys — two scopes with the same ids share a cache entry.
-	 *
-	 * @return array [ int instructor_id, int category_id ]
-	 */
-	public function signature(): array {
-		return array( $this->instructor_id, $this->category_id );
-	}
-
-	/**
 	 * Add scope joins/where to a query whose rows already carry a course id column.
 	 *
 	 * @param LP_Filter $filter          Query filter to extend.
