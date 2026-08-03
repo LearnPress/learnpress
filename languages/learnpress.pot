@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.4-beta-1\n"
+"Project-Id-Version: LearnPress 4.4.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-28T10:20:52+00:00\n"
+"POT-Creation-Date: 2026-08-03T03:04:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -279,9 +279,8 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-image/edit.js:103
 #: assets/src/apps/js/blocks/course-elements/course-image/edit.js:120
 #: config/settings/open-ai-modal.php:114
-#: config/settings/open-ai-modal.php:130
-#: config/settings/open-ai-modal.php:135
-#: config/settings/open-ai-modal.php:140
+#: config/settings/open-ai-modal.php:120
+#: config/settings/open-ai-modal.php:125
 msgid "Auto"
 msgstr ""
 
@@ -845,7 +844,7 @@ msgstr ""
 #: inc/TemplateHooks/UserItem/UserItemBaseTemplate.php:167
 #: inc/templates/class-lp-template-profile.php:161
 #: inc/user-item/class-lp-user-item-quiz.php:147
-#: inc/user/class-lp-profile.php:833
+#: inc/user/class-lp-profile.php:835
 msgid "Passed"
 msgstr ""
 
@@ -862,7 +861,7 @@ msgstr ""
 #: inc/TemplateHooks/UserItem/UserItemBaseTemplate.php:170
 #: inc/templates/class-lp-template-profile.php:162
 #: inc/user-item/class-lp-user-item-quiz.php:148
-#: inc/user/class-lp-profile.php:834
+#: inc/user/class-lp-profile.php:836
 msgid "Failed"
 msgstr ""
 
@@ -960,7 +959,7 @@ msgstr ""
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:80
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderListLessonsTemplate.php:211
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderListQuizzesTemplate.php:190
-#: inc/user/class-lp-profile.php:552
+#: inc/user/class-lp-profile.php:554
 #: templates/checkout/order-received.php:56
 msgid "Courses"
 msgstr ""
@@ -1001,7 +1000,7 @@ msgstr ""
 #: inc/custom-post-types/quiz.php:88
 #: inc/custom-post-types/quiz.php:92
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderListQuizzesTemplate.php:47
-#: inc/user/class-lp-profile.php:559
+#: inc/user/class-lp-profile.php:561
 #: inc/WPGDPR/ExportPersonalData.php:360
 #: templates/widgets/course-info.php:30
 msgid "Quizzes"
@@ -3033,237 +3032,233 @@ msgid "Text Model"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:40
-msgid "GPT-5.2"
+msgid "GPT-5.6"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:41
-msgid "GPT-5"
+msgid "GPT-5.5"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:42
-msgid "GPT-5 Mini"
+msgid "GPT-5.4"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:43
-msgid "GPT-5 Nano"
+msgid "GPT-5.3"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:44
-msgid "GPT-4.1"
+msgid "GPT-5.2"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:45
+msgid "GPT-5.1"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:46
-msgid "GPT-4o"
+msgid "GPT-5"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:47
-msgid "GPT-4o Mini"
+msgid "GPT-5 Mini"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:48
-msgid "GPT-4"
+msgid "GPT-5 Nano"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:49
-msgid "GPT-3.5 Turbo"
+msgid "GPT-4.1"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:50
-msgid "GPT-3.5 Turbo Instruct"
-msgstr ""
-
-#: config/settings/open-ai-admin.php:54
+#: config/settings/open-ai-admin.php:53
 msgid "Image Model"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:59
+#: config/settings/open-ai-admin.php:58
 msgid "GPT Image 1"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:60
-msgid "DALL-E 3"
+#: config/settings/open-ai-admin.php:59
+msgid "GPT Image 2"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:61
-msgid "DALL-E 2"
-msgstr ""
-
-#: config/settings/open-ai-admin.php:65
+#: config/settings/open-ai-admin.php:63
 msgid "Frequency Penalty"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:70
+#: config/settings/open-ai-admin.php:68
 msgid "Very High Repetition (-2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:71
+#: config/settings/open-ai-admin.php:69
 msgid "High Repetition (-1.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:72
+#: config/settings/open-ai-admin.php:70
 msgid "Moderate Repetition (-1.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:73
+#: config/settings/open-ai-admin.php:71
 msgid "Low Repetition (-0.5)"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:72
+#: config/settings/open-ai-admin.php:89
+msgid "No Penalty (0.0)"
+msgstr ""
+
+#: config/settings/open-ai-admin.php:73
+#: config/settings/open-ai-admin.php:90
+msgid "Low Penalty (0.5)"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:74
 #: config/settings/open-ai-admin.php:91
-msgid "No Penalty (0.0)"
+msgid "Moderate Penalty (1.0)"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:75
 #: config/settings/open-ai-admin.php:92
-msgid "Low Penalty (0.5)"
+msgid "High Penalty (1.5)"
 msgstr ""
 
 #: config/settings/open-ai-admin.php:76
 #: config/settings/open-ai-admin.php:93
-msgid "Moderate Penalty (1.0)"
-msgstr ""
-
-#: config/settings/open-ai-admin.php:77
-#: config/settings/open-ai-admin.php:94
-msgid "High Penalty (1.5)"
-msgstr ""
-
-#: config/settings/open-ai-admin.php:78
-#: config/settings/open-ai-admin.php:95
 msgid "Very High Penalty (2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:82
+#: config/settings/open-ai-admin.php:80
 msgid "Presence Penalty"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:87
+#: config/settings/open-ai-admin.php:85
 msgid "Very High Repetition Allowed (-2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:88
+#: config/settings/open-ai-admin.php:86
 msgid "High Repetition Allowed (-1.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:89
+#: config/settings/open-ai-admin.php:87
 msgid "Moderate Repetition Allowed (-1.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:90
+#: config/settings/open-ai-admin.php:88
 msgid "Low Repetition Allowed (-0.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:99
+#: config/settings/open-ai-admin.php:97
 msgid "Creativity Level"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:104
+#: config/settings/open-ai-admin.php:102
 msgid "Very Low Creativity (0.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:105
+#: config/settings/open-ai-admin.php:103
 msgid "Low Creativity (0.2)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:106
+#: config/settings/open-ai-admin.php:104
 msgid "Low Creativity (0.3)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:107
+#: config/settings/open-ai-admin.php:105
 msgid "Moderate Creativity (0.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:108
+#: config/settings/open-ai-admin.php:106
 msgid "High Creativity (0.7)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:109
+#: config/settings/open-ai-admin.php:107
 msgid "High Creativity (0.8)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:110
+#: config/settings/open-ai-admin.php:108
 msgid "Very High Creativity (1.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:111
+#: config/settings/open-ai-admin.php:109
 msgid "Extreme Creativity (1.1)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:112
+#: config/settings/open-ai-admin.php:110
 msgid "Extreme Creativity (1.5)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:113
+#: config/settings/open-ai-admin.php:111
 msgid "Maximum Creativity (2.0)"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:117
+#: config/settings/open-ai-admin.php:115
 msgid "Max Tokens"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:121
+#: config/settings/open-ai-admin.php:119
 msgid "Set to 0 for no limit."
 msgstr ""
 
-#: config/settings/open-ai-admin.php:131
+#: config/settings/open-ai-admin.php:129
 #: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:214
 #: inc/TemplateHooks/Course/CourseAIAssistantTemplate.php:344
 msgid "AI Assistant"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:135
+#: config/settings/open-ai-admin.php:133
 msgid "Enable AI Assistant"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:139
+#: config/settings/open-ai-admin.php:137
 msgid "Enable the AI Assistant for learners on lesson pages. Requires OpenAI to be enabled and a valid secret key."
 msgstr ""
 
-#: config/settings/open-ai-admin.php:142
+#: config/settings/open-ai-admin.php:140
 msgid "Enable Free Chat"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:146
+#: config/settings/open-ai-admin.php:144
 msgid "Allow learners to type free-form questions. When disabled, only quick action buttons are shown."
 msgstr ""
 
-#: config/settings/open-ai-admin.php:149
+#: config/settings/open-ai-admin.php:147
 msgid "Enable Summarize Lesson"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:153
+#: config/settings/open-ai-admin.php:151
 msgid "Allow learners to use the Summarize Lesson action."
 msgstr ""
 
-#: config/settings/open-ai-admin.php:156
+#: config/settings/open-ai-admin.php:154
 msgid "Enable Explain Concept"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:160
+#: config/settings/open-ai-admin.php:158
 msgid "Allow learners to use the Explain Concept action."
 msgstr ""
 
-#: config/settings/open-ai-admin.php:163
+#: config/settings/open-ai-admin.php:161
 msgid "Enable Quick Quiz"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:167
+#: config/settings/open-ai-admin.php:165
 msgid "Allow learners to start and continue quick quizzes."
 msgstr ""
 
-#: config/settings/open-ai-admin.php:170
+#: config/settings/open-ai-admin.php:168
 msgid "Enable Smart Review"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:174
+#: config/settings/open-ai-admin.php:172
 msgid "Allow learners to use the Smart Review action."
 msgstr ""
 
-#: config/settings/open-ai-admin.php:177
+#: config/settings/open-ai-admin.php:175
 msgid "Max Usage Tokens Per Day"
 msgstr ""
 
-#: config/settings/open-ai-admin.php:181
+#: config/settings/open-ai-admin.php:179
 msgid "Maximum total AI tokens each learner can use per day. Set to 0 for no limit."
 msgstr ""
 
@@ -3669,8 +3664,6 @@ msgid "Technical"
 msgstr ""
 
 #: config/settings/open-ai-modal.php:115
-#: config/settings/open-ai-modal.php:122
-#: config/settings/open-ai-modal.php:125
 msgid "1024x1024"
 msgstr ""
 
@@ -3682,109 +3675,88 @@ msgstr ""
 msgid "1024x1536 (portrait)"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:120
-msgid "256x256"
-msgstr ""
-
 #: config/settings/open-ai-modal.php:121
-msgid "512x512"
-msgstr ""
-
-#: config/settings/open-ai-modal.php:126
-msgid "1024x1792"
-msgstr ""
-
-#: config/settings/open-ai-modal.php:127
-msgid "1792x1024"
-msgstr ""
-
-#: config/settings/open-ai-modal.php:131
 #: inc/admin/class-lp-admin-assets.php:198
 #: inc/admin/class-lp-admin-assets.php:243
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1016
 msgid "High"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:132
+#: config/settings/open-ai-modal.php:122
 msgid "low"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:136
-msgid "HD"
-msgstr ""
-
-#: config/settings/open-ai-modal.php:137
-#: config/settings/open-ai-modal.php:141
+#: config/settings/open-ai-modal.php:126
 #: inc/custom-post-types/lesson.php:308
 msgid "Standard"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:144
+#: config/settings/open-ai-modal.php:129
 msgid "Impressionism"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:145
+#: config/settings/open-ai-modal.php:130
 msgid "Cubism"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:146
+#: config/settings/open-ai-modal.php:131
 msgid "Surrealism"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:147
+#: config/settings/open-ai-modal.php:132
 msgid "Abstract"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:148
+#: config/settings/open-ai-modal.php:133
 msgid "Realism"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:149
+#: config/settings/open-ai-modal.php:134
 msgid "Expressionism"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:150
+#: config/settings/open-ai-modal.php:135
 msgid "Baroque"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:151
+#: config/settings/open-ai-modal.php:136
 msgid "Renaissance"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:152
+#: config/settings/open-ai-modal.php:137
 msgid "Gothic"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:153
+#: config/settings/open-ai-modal.php:138
 msgid "Pop Art"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:154
+#: config/settings/open-ai-modal.php:139
 msgid "Art Nouveau"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:155
+#: config/settings/open-ai-modal.php:140
 msgid "Minimalism"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:156
+#: config/settings/open-ai-modal.php:141
 msgid "Fauvism"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:159
+#: config/settings/open-ai-modal.php:144
 msgid "Introductory"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:160
+#: config/settings/open-ai-modal.php:145
 msgid "Foundational"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:161
+#: config/settings/open-ai-modal.php:146
 #: inc/lp-template-functions.php:1531
 msgid "Intermediate"
 msgstr ""
 
-#: config/settings/open-ai-modal.php:162
+#: config/settings/open-ai-modal.php:147
 #: inc/admin/settings/class-lp-settings-advanced.php:19
 msgid "Advanced"
 msgstr ""
@@ -5287,7 +5259,7 @@ msgstr ""
 #: inc/TemplateHooks/Profile/ProfileQuizzesTemplate.php:250
 #: inc/templates/class-lp-template-profile.php:116
 #: inc/templates/class-lp-template-profile.php:158
-#: inc/user/class-lp-profile.php:831
+#: inc/user/class-lp-profile.php:833
 #: templates/widgets/course-info.php:35
 msgid "All"
 msgstr ""
@@ -7359,7 +7331,7 @@ msgstr ""
 #: inc/TemplateHooks/Profile/ProfileQuizzesTemplate.php:251
 #: inc/templates/class-lp-template-profile.php:160
 #: inc/user-item/class-lp-user-item.php:691
-#: inc/user/class-lp-profile.php:832
+#: inc/user/class-lp-profile.php:834
 msgid "Finished"
 msgstr ""
 
@@ -7917,75 +7889,87 @@ msgstr ""
 msgid "The AI Assistant is unavailable right now. Please try again later."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:43
-#: inc/Ajax/AI/OpenAiAjax.php:70
-#: inc/Ajax/AI/OpenAiAjax.php:112
-#: inc/Ajax/AI/OpenAiAjax.php:235
-#: inc/Ajax/AI/OpenAiAjax.php:283
-#: inc/Ajax/AI/OpenAiAjax.php:366
-#: inc/Ajax/AI/OpenAiAjax.php:450
-#: inc/Ajax/AI/OpenAiAjax.php:477
+#: inc/Ajax/AI/OpenAiAjax.php:44
+#: inc/Ajax/AI/OpenAiAjax.php:71
+#: inc/Ajax/AI/OpenAiAjax.php:113
+#: inc/Ajax/AI/OpenAiAjax.php:236
+#: inc/Ajax/AI/OpenAiAjax.php:284
+#: inc/Ajax/AI/OpenAiAjax.php:367
+#: inc/Ajax/AI/OpenAiAjax.php:451
+#: inc/Ajax/AI/OpenAiAjax.php:478
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:38
 #: inc/MCP/Support/Errors.php:65
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:52
-#: inc/Ajax/AI/OpenAiAjax.php:265
+#: inc/Ajax/AI/OpenAiAjax.php:53
+#: inc/Ajax/AI/OpenAiAjax.php:266
 msgid "Generate prompt successfully!"
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:86
+#: inc/Ajax/AI/OpenAiAjax.php:87
 msgid "Error: no data structure course generated!"
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:94
-#: inc/Ajax/AI/OpenAiAjax.php:344
+#: inc/Ajax/AI/OpenAiAjax.php:95
+#: inc/Ajax/AI/OpenAiAjax.php:345
 msgid "Generate course successfully!"
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:120
+#: inc/Ajax/AI/OpenAiAjax.php:121
 msgid "Invalid data to create course!"
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:215
+#: inc/Ajax/AI/OpenAiAjax.php:216
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:579
 msgid "Redirecting..."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:217
+#: inc/Ajax/AI/OpenAiAjax.php:218
 msgid "Create Course Successfully! Redirecting to course detail..."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:306
+#: inc/Ajax/AI/OpenAiAjax.php:307
 msgid "Error: No data was generated. The requested data may be large, increase the Max Tokens in settings and try again."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:418
+#: inc/Ajax/AI/OpenAiAjax.php:419
 msgid "Apply Image"
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:427
+#: inc/Ajax/AI/OpenAiAjax.php:428
 msgid "Generate image successfully!"
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:464
+#: inc/Ajax/AI/OpenAiAjax.php:465
 msgid "Invalid post ID."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:472
+#: inc/Ajax/AI/OpenAiAjax.php:473
 msgid "Invalid course ID."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:483
+#: inc/Ajax/AI/OpenAiAjax.php:484
 msgid "Invalid post type."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:509
+#: inc/Ajax/AI/OpenAiAjax.php:501
+msgid "Invalid image data."
+msgstr ""
+
+#: inc/Ajax/AI/OpenAiAjax.php:506
+msgid "Decoded data is not a valid image."
+msgstr ""
+
+#: inc/Ajax/AI/OpenAiAjax.php:513
+msgid "Decoded image is not readable."
+msgstr ""
+
+#: inc/Ajax/AI/OpenAiAjax.php:517
 msgid "No image data provided."
 msgstr ""
 
-#: inc/Ajax/AI/OpenAiAjax.php:533
+#: inc/Ajax/AI/OpenAiAjax.php:541
 msgid "Apply image successfully!"
 msgstr ""
 
@@ -9751,21 +9735,21 @@ msgstr ""
 #: inc/Databases/class-lp-db.php:865
 #: inc/Databases/class-lp-db.php:927
 #: inc/Databases/DataBase.php:796
-#: inc/Databases/DataBase.php:858
+#: inc/Databases/DataBase.php:857
 msgid "Data must be an array!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:873
 #: inc/Databases/class-lp-db.php:923
 #: inc/Databases/DataBase.php:804
-#: inc/Databases/DataBase.php:854
+#: inc/Databases/DataBase.php:853
 msgid "Filter must have property all_fields!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:877
 #: inc/Databases/class-lp-db.php:935
 #: inc/Databases/DataBase.php:808
-#: inc/Databases/DataBase.php:866
+#: inc/Databases/DataBase.php:865
 msgid "Table name is required!"
 msgstr ""
 
@@ -9775,7 +9759,7 @@ msgid "Key auto increment must be a string!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:931
-#: inc/Databases/DataBase.php:862
+#: inc/Databases/DataBase.php:861
 msgid "Invalid where key!"
 msgstr ""
 
@@ -13119,7 +13103,7 @@ msgstr ""
 msgid "The quiz is invalid!"
 msgstr ""
 
-#: inc/Services/OpenAiService.php:161
+#: inc/Services/OpenAiService.php:145
 msgid "Empty response from OpenAI API."
 msgstr ""
 
@@ -13933,7 +13917,7 @@ msgid "Select the desired image quality such as standard, high, or premium."
 msgstr ""
 
 #: inc/TemplateHooks/Admin/AI/AdminEditWithAITemplate.php:846
-msgid "Number of images you want the system to generate (model dall-e-3 only 1 supported)."
+msgid "Number of images you want the system to generate."
 msgstr ""
 
 #: inc/TemplateHooks/Admin/AI/AdminEditWithAITemplate.php:862
@@ -14919,7 +14903,7 @@ msgstr ""
 
 #: inc/TemplateHooks/UserTemplate.php:129
 #: inc/TemplateHooks/UserTemplate.php:191
-#: inc/user/class-lp-profile.php:1031
+#: inc/user/class-lp-profile.php:1033
 msgid "User Avatar"
 msgstr ""
 
@@ -15021,11 +15005,11 @@ msgstr ""
 msgid "Account privacy updated successfully."
 msgstr ""
 
-#: inc/user/class-lp-profile.php:556
+#: inc/user/class-lp-profile.php:558
 msgid "Public your profile courses attended."
 msgstr ""
 
-#: inc/user/class-lp-profile.php:563
+#: inc/user/class-lp-profile.php:565
 msgid "Public your profile quizzes."
 msgstr ""
 
