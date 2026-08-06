@@ -263,15 +263,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$user_of_profile = $this->get_user();
 			$tabs            = self::get_tabs_arr();
 
-			$userModelProfile = UserModel::find( $user_of_profile->get_id(), true );
-			if ( $userModelProfile ) {
-				$userModelProfileRoles = $userModelProfile->get_roles();
+			if ( $user_of_profile ) {
+				$userModelProfile = UserModel::find( $user_of_profile->get_id(), true );
+				if ( $userModelProfile ) {
+					$userModelProfileRoles = $userModelProfile->get_roles();
 
-				/*
-				 * Check if user not Admin/Instructor, will be hide tab Courses.
-				 */
-				if ( ! array_intersect( $userModelProfileRoles, [ UserModel::ROLE_ADMINISTRATOR, UserModel::ROLE_INSTRUCTOR ] ) ) {
-					unset( $tabs['courses'] );
+					/*
+					 * Check if user not Admin/Instructor, will be hide tab Courses.
+					 */
+					if ( ! array_intersect( $userModelProfileRoles, [ UserModel::ROLE_ADMINISTRATOR, UserModel::ROLE_INSTRUCTOR ] ) ) {
+						unset( $tabs['courses'] );
+					}
 				}
 			}
 

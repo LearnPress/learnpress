@@ -20,6 +20,7 @@ use LearnPress\TemplateHooks\Admin\AI\AdminEditWithAITemplate;
 use LP_Helper;
 use LP_Request;
 use LP_REST_Response;
+use LP_WP_Filesystem;
 use Throwable;
 
 /**
@@ -372,7 +373,7 @@ class OpenAiAjax extends AbstractAjax {
 			$args     = [
 				'prompt' => $prompt,
 				'n'      => intval( $params['outputs'] ?? 1 ),
-				'size'   => $params['size'] ?? '',
+				'size'   => '1024x1024',
 			];
 
 			$result                    = OpenAiService::instance()->send_request_create_image( $args );
@@ -437,7 +438,7 @@ class OpenAiAjax extends AbstractAjax {
 	 * Upload image to media and set as feature image for post
 	 *
 	 * @since 4.3.0
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function openai_apply_image_feature() {
 		$response = new LP_REST_Response();
@@ -493,15 +494,24 @@ class OpenAiAjax extends AbstractAjax {
 				require_once ABSPATH . 'wp-admin/includes/image.php';
 			}
 
-			if ( ! empty( $image_url ) ) {
-				$tmp      = download_url( $image_url );
-				$fileExt  = pathinfo( parse_url( $image_url, PHP_URL_PATH ), PATHINFO_EXTENSION );
-				$filename = sanitize_file_name( $post_slug . '-' . uniqid() . '.' . $fileExt );
-
-			} elseif ( ! empty( $image_base64 ) ) {
+			// model gpt-image-1 only return base64, so don't need to download from url
+			if ( ! empty( $image_base64 ) ) {
 				$decoded_image = base64_decode( $image_base64 );
-				$tmp           = wp_tempnam();
-				file_put_contents( $tmp, $decoded_image );
+				if ( false === $decoded_image || '' === $decoded_image ) {
+					throw new Exception( __( 'Invalid image data.', 'learnpress' ) );
+				}
+
+				$image_info = @getimagesizefromstring( $decoded_image );
+				if ( false === $image_info ) {
+					throw new Exception( __( 'Decoded data is not a valid image.', 'learnpress' ) );
+				}
+
+				$tmp                 = wp_tempnam();
+				$lp_wp_filesystem    = LP_WP_Filesystem::instance();
+				$put_contents_result = $lp_wp_filesystem->put_contents( $tmp, $decoded_image );
+				if ( ! $put_contents_result || ! is_readable( $tmp ) ) {
+					throw new Exception( __( 'Decoded image is not readable.', 'learnpress' ) );
+				}
 				$filename = sanitize_file_name( $post_slug . '-' . uniqid() . '.png' );
 			} else {
 				throw new Exception( __( 'No image data provided.', 'learnpress' ) );

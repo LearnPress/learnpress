@@ -3,6 +3,7 @@
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Statistics\PeriodResolver;
 
 /**
  * Class LP_Admin_Assets
@@ -82,7 +83,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'single_instructor_id'     => learn_press_get_page_id( 'single_instructor' ),
 				'lpAi'                     => array(
 					'config'     => Config::instance()->get( 'open-ai-modal', 'settings' ),
-					'modelImage' => LP_Settings::get_option( 'open_ai_image_model_type', 'dall-e-3' ),
+					'modelImage' => LP_Settings::get_option( 'open_ai_image_model_type', 'gpt-image-1' ),
 				),
 				'enable_open_ai'           => LP_Settings::get_option( 'enable_open_ai', 'no' ) === 'yes'
 					&& ! empty( LP_Settings::get_option( 'open_ai_secret_key', '' ) ),
@@ -100,14 +101,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 
 		return array(
 			'learn-press-global' => learn_press_global_script_params(),
-			/*'learn-press-meta-box-order'      => apply_filters(
+			/*
+			'learn-press-meta-box-order'      => apply_filters(
 				'learn-press/meta-box-order/script-data',
 				array(
 					'i18n_error' => esc_html__( 'Oops! Error.', 'learnpress' ),
 					'i18n_guest' => esc_html__( 'Guest', 'learnpress' ),
 				)
 			),*/
-			/*'learn-press-update' => apply_filters(
+			/*
+			'learn-press-update' => apply_filters(
 				'learn-press/upgrade/script-data',
 				array(
 					'i18n_confirm' => esc_html__(
@@ -125,9 +128,160 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'screen'               => $current_screen,
 				)
 			),
+			// Statistics dashboard config → JS global lpAdminStatisticSettings.
+			// REST root + nonce come from lpDataAdmin (already on every admin page).
+			'lp-admin-statistic' => apply_filters(
+				'learn-press/admin/statistics/script-data',
+				array(
+					'restNamespace'    => 'lp/v1/statistics',
+					'adminUrl'         => admin_url(),
+					// decode: JS renders via textContent, entities would show literally.
+					'currencySymbol'   => html_entity_decode( learn_press_get_currency_symbol() ),
+					'completionTarget' => (int) apply_filters( 'learn-press/statistics/completion-target', 70 ),
+					// Completion badge bands: >= green is green, >= yellow is yellow, below is red.
+					'completionBadge'  => apply_filters(
+						'learn-press/statistics/completion-badge-thresholds',
+						array(
+							'green'  => 60,
+							'yellow' => 40,
+						)
+					),
+					// Date-range dropdown: per-preset resolved labels ( the server is the
+					// single source of calendar logic — JS never re-derives windows ).
+					'dateRange'        => array(
+						'presets'     => self::statistics_date_range_presets(),
+						'startOfWeek' => (int) get_option( 'start_of_week', 1 ),
+						'dateFormat'  => (string) get_option( 'date_format', 'F j, Y' ),
+					),
+					'i18n'             => array(
+						'loadError'              => esc_html__( 'Failed to load statistics data.', 'learnpress' ),
+						'noData'                 => esc_html__( 'No data for this period.', 'learnpress' ),
+						// Date-range dropdown.
+						'presets'                => esc_html__( 'Presets', 'learnpress' ),
+						'custom'                 => esc_html__( 'Custom', 'learnpress' ),
+						'compareTo'              => esc_html__( 'Compare to', 'learnpress' ),
+						'previousPeriod'         => esc_html__( 'Previous period', 'learnpress' ),
+						'previousYear'           => esc_html__( 'Previous year', 'learnpress' ),
+						'update'                 => esc_html__( 'Update', 'learnpress' ),
+						'from'                   => esc_html__( 'From', 'learnpress' ),
+						'to'                     => esc_html__( 'To', 'learnpress' ),
+						'selectDateRange'        => esc_html__( 'Select a date range', 'learnpress' ),
+						'itemsCount'             => esc_html__( '%d items', 'learnpress' ),
+						'cappedNotice'           => esc_html__( 'Showing the first %d rows. Narrow the period or filters to see the rest.', 'learnpress' ),
+						'vsPrevPeriod'           => esc_html__( 'vs previous period', 'learnpress' ),
+						'revenue'                => esc_html__( 'Revenue', 'learnpress' ),
+						'enrollments'            => esc_html__( 'Enrollments', 'learnpress' ),
+						'aov'                    => esc_html__( 'Avg. order value: %s', 'learnpress' ),
+						'belowTarget'            => esc_html__( '%d below completion target', 'learnpress' ),
+						'failRate'               => esc_html__( '%s%% of all orders', 'learnpress' ),
+						'course'                 => esc_html__( 'Course', 'learnpress' ),
+						'orders'                 => esc_html__( 'Orders', 'learnpress' ),
+						'aovShort'               => esc_html__( 'AOV', 'learnpress' ),
+						'status'                 => esc_html__( 'Status', 'learnpress' ),
+						'enrolled'               => esc_html__( 'Enrolled', 'learnpress' ),
+						'completion'             => esc_html__( 'Completion', 'learnpress' ),
+						'instructor'             => esc_html__( 'Instructor', 'learnpress' ),
+						'courses'                => esc_html__( 'Courses', 'learnpress' ),
+						'topCourses'             => esc_html__( 'Top courses', 'learnpress' ),
+						'topSoldCourses'         => esc_html__( 'Top sold courses', 'learnpress' ),
+						'healthy'                => esc_html__( 'Healthy', 'learnpress' ),
+						'watchCompletion'        => esc_html__( 'Watch completion', 'learnpress' ),
+						'highFailedQuizzes'      => esc_html__( 'High failed quizzes', 'learnpress' ),
+						'needsFulfillmentReview' => esc_html__( 'Needs fulfillment review', 'learnpress' ),
+						'awaitingPayment'        => esc_html__( 'Awaiting payment', 'learnpress' ),
+						'exceptionRate'          => esc_html__( '%s%% of all orders', 'learnpress' ),
+						'orderId'                => esc_html__( 'Order ID', 'learnpress' ),
+						'student'                => esc_html__( 'Student', 'learnpress' ),
+						'issue'                  => esc_html__( 'Issue', 'learnpress' ),
+						'date'                   => esc_html__( 'Date', 'learnpress' ),
+						'severity'               => esc_html__( 'Severity', 'learnpress' ),
+						'high'                   => esc_html__( 'High', 'learnpress' ),
+						'medium'                 => esc_html__( 'Medium', 'learnpress' ),
+						'low'                    => esc_html__( 'Low', 'learnpress' ),
+						'orderExceptions'        => esc_html__( 'Recent order exceptions', 'learnpress' ),
+						'noOrderExceptions'      => esc_html__( 'No failed or cancelled orders in this period.', 'learnpress' ),
+						'addedThisPeriod'        => esc_html__( '%d added this period', 'learnpress' ),
+						'needsInstructorAction'  => esc_html__( 'Needs instructor action', 'learnpress' ),
+						'scheduledReleases'      => esc_html__( 'Scheduled releases', 'learnpress' ),
+						'targetPercent'          => esc_html__( 'Target: %s%%', 'learnpress' ),
+						'publishedCourses'       => esc_html__( 'Published courses', 'learnpress' ),
+						'noCoursePerformance'    => esc_html__( 'No course performance data in this period.', 'learnpress' ),
+						'coursePerformance'      => esc_html__( 'Course performance', 'learnpress' ),
+						'lessons'                => esc_html__( 'Lessons', 'learnpress' ),
+						'quizzes'                => esc_html__( 'Quizzes', 'learnpress' ),
+						'assignments'            => esc_html__( 'Assignments', 'learnpress' ),
+						'published'              => esc_html__( 'Published', 'learnpress' ),
+						'pending'                => esc_html__( 'Pending', 'learnpress' ),
+						'future'                 => esc_html__( 'Future', 'learnpress' ),
+						'drafts'                 => esc_html__( 'Drafts', 'learnpress' ),
+						'total'                  => esc_html__( 'Total', 'learnpress' ),
+						'content'                => esc_html__( 'Content', 'learnpress' ),
+						'newThisPeriod'          => esc_html__( '+%d this period', 'learnpress' ),
+						'activeInPeriod'         => esc_html__( '%d active in this period', 'learnpress' ),
+						'activeThisPeriod'       => esc_html__( 'active this period', 'learnpress' ),
+						'afterEnrollment'        => esc_html__( 'After enrollment', 'learnpress' ),
+						'currentLearners'        => esc_html__( 'Current learners', 'learnpress' ),
+						'completionRateSub'      => esc_html__( '%s%% completion rate', 'learnpress' ),
+						'registeredUsers'        => esc_html__( 'Registered users', 'learnpress' ),
+						'topStudents'            => esc_html__( 'Top students', 'learnpress' ),
+						'topCoursesByStudents'   => esc_html__( 'Top courses by students', 'learnpress' ),
+						'avgScore'               => esc_html__( 'Quiz pass rate', 'learnpress' ),
+						'lastActive'             => esc_html__( 'Last active', 'learnpress' ),
+						'startedLabel'           => esc_html__( 'Started', 'learnpress' ),
+						'completedLabel'         => esc_html__( 'Completed', 'learnpress' ),
+						'activeLast7dShort'      => esc_html__( 'Active 7d', 'learnpress' ),
+						'statusActive'           => esc_html__( 'Active', 'learnpress' ),
+						'statusAtRisk'           => esc_html__( 'At risk', 'learnpress' ),
+						'statusIdle'             => esc_html__( 'Idle', 'learnpress' ),
+						// Instructors tab.
+						'ofNetSales'             => esc_html__( '%s%% of net sales', 'learnpress' ),
+						'ofTotalInstructors'     => esc_html__( '%d total', 'learnpress' ),
+						'students'               => esc_html__( 'Students', 'learnpress' ),
+						'sold'                   => esc_html__( 'Sold', 'learnpress' ),
+						'risk'                   => esc_html__( 'Risk', 'learnpress' ),
+						'actionRequired'         => esc_html__( 'Action required', 'learnpress' ),
+						'riskHigh'               => esc_html__( 'High', 'learnpress' ),
+						'riskMedium'             => esc_html__( 'Medium', 'learnpress' ),
+						'riskHealthy'            => esc_html__( 'Healthy', 'learnpress' ),
+						'instructorPerformance'  => esc_html__( 'Instructor performance', 'learnpress' ),
+						'instructorReport'       => esc_html__( 'Instructor report', 'learnpress' ),
+						'noInstructorData'       => esc_html__( 'No instructor data in this period.', 'learnpress' ),
+						'instructorReportEmpty'  => esc_html__( 'This instructor has no courses yet.', 'learnpress' ),
+						'watchlistActions'       => array(
+							'review_quiz_difficulty' => esc_html__( 'Review quiz difficulty', 'learnpress' ),
+							'build_curriculum'       => esc_html__( 'Build the curriculum', 'learnpress' ),
+							'add_practice_content'   => esc_html__( 'Add practice content', 'learnpress' ),
+							'monitor'                => esc_html__( 'Monitor', 'learnpress' ),
+						),
+					),
+				)
+			),
 			// @deprecated tag 'learn-press-admin-course-editor' 4.4.2 - no any enqueue js for that.
-			//'learn-press-admin-course-editor' => $this->get_course_data_for_editor_vue(),
+			// 'learn-press-admin-course-editor' => $this->get_course_data_for_editor_vue(),
 		);
+	}
+
+	/**
+	 * Preset entries for the statistics date-range dropdown.
+	 *
+	 * UI presets in display order. Labels are resolved server-side so JS never
+	 * re-implements calendar logic.
+	 *
+	 * @return array[] [ { value, name, rangeLabel } ]
+	 * @since 4.4.2
+	 */
+	private static function statistics_date_range_presets(): array {
+		$presets = array();
+
+		foreach ( PeriodResolver::UI_PRESETS as $preset ) {
+			$presets[] = array(
+				'value'      => $preset,
+				'name'       => PeriodResolver::preset_name( $preset ),
+				'rangeLabel' => PeriodResolver::range_label_for( PeriodResolver::resolve( $preset ) ),
+			);
+		}
+
+		return $presets;
 	}
 
 	/**
@@ -422,7 +576,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-url',
 						'wp-api-fetch',
 						'lodash',
-						'select2',
+						//'select2',
 					),
 					array( 'widgets', 'elementor' ),
 					0,
@@ -467,7 +621,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-admin-statistic'        => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-statistic' . self::$_min_assets . '.js' ),
-					array( 'wp-api-fetch' ),
+					array( 'lp-load-ajax' ),
 					array( 'learnpress_page_learn-press-statistics' ),
 					0,
 					0,
@@ -611,7 +765,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * @return array|mixed|null
 	 * @deprecated 4.4.2 - no any enqueue js for that.
 	 */
-	/*public function get_course_data_for_editor_vue() {
+	/*
+	public function get_course_data_for_editor_vue() {
 		global $post, $pagenow;
 
 		if ( empty( $post ) || ( get_post_type() !== LP_COURSE_CPT ) || ! in_array(

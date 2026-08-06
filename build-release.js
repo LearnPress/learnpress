@@ -4,32 +4,29 @@
  * @since 4.1.3
  * @version 1.0.0
  */
-const {spawn} = require('child_process');
+const { spawn } = require( 'child_process' );
 
-console.log('Starting build...');
+console.log( 'Starting build...' );
 
 // Run command: npm run start
-const buildJS = spawn('npm', ['run', 'start'], {
+const buildJS = spawn( 'npm', [ 'run', 'start' ], {
 	stdio: 'inherit',
-	shell: true,
-	env: { ...process.env, NODE_OPTIONS: '--openssl-legacy-provider' }
-});
+	env: { ...process.env, NODE_OPTIONS: '--openssl-legacy-provider' },
+} );
 
-buildJS.on('exit', () => {
-	console.log('Build finished.');
-});
+buildJS.on( 'exit', () => {
+	console.log( 'Build finished.' );
+} );
 
-buildJS.on('spawn', () => {
+buildJS.on( 'spawn', () => {
 	// Run command: npm run build-makepot-zip
-	const releaseProcess = spawn('npm', ['run', 'build-makepot-zip'], {
+	const releaseProcess = spawn( 'npm', [ 'run', 'build-makepot-zip' ], {
 		stdio: 'inherit',
-		shell: true,
-		env: { ...process.env, NODE_OPTIONS: '--openssl-legacy-provider' }
-	});
+		env: { ...process.env, NODE_OPTIONS: '--openssl-legacy-provider' },
+	} );
 
-	releaseProcess.on('exit', (code) => {
+	releaseProcess.on( 'exit', ( code ) => {
 		buildJS.kill();
-	});
-});
-
+	} );
+} );
 

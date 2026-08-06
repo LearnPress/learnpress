@@ -2,12 +2,13 @@
 
 namespace LearnPress\Ajax\AI;
 
-use Exception;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\AI\Assistant\AIAssistantController;
+use LP_Debug;
 use LP_Helper;
 use LP_Request;
 use LP_REST_Response;
+use Exception;
 use Throwable;
 
 /**
@@ -29,13 +30,20 @@ class AIAssistantAjax extends AbstractAjax {
 	/**
 	 * Handle assistant chat request from a logged-in learner.
 	 *
-	 * Request data (JSON-encoded in 'data' param):
+	 * Nonce is verified by AbstractAjax::catch_lp_ajax() and is CSRF protection only —
+	 * never authorization. Login is checked here; per-item authorization is the
+	 * controller's job, via AIAssistantController::resolve_item_access().
+	 *
+	 * Request data (JSON-encoded in 'data' param). A course item is addressed by the
+	 * full tuple (course_id, item_type, item_id); all three are required.
 	 * {
 	 *   "message": string,
-	 *   "lesson_id": int,
 	 *   "course_id": int,
+	 *   "item_type": string,   // lp_lesson | lp_quiz — validated against the curriculum
+	 *   "item_id": int,
 	 *   "history": [{role, content}, ...],
-	 *   "active_quiz_questions": []
+	 *   "active_quiz_questions": {},
+	 *   "action_hint": string
 	 * }
 	 *
 	 * Response shape:
@@ -67,7 +75,7 @@ class AIAssistantAjax extends AbstractAjax {
 			$response->status = 'success';
 			$response->data   = $result;
 		} catch ( Throwable $e ) {
-			$response->message = $e->getMessage();
+			$response->message = __( 'The AI Assistant is unavailable right now. Please try again later.', 'learnpress' );
 			$response->data    = $this->normalize_response_data( array() );
 		}
 

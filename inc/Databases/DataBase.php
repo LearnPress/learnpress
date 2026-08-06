@@ -837,14 +837,13 @@ class DataBase {
 	 *
 	 * @throws Exception
 	 * @since 4.2.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function update_data( array $args ): bool {
 		$data       = $args['data'] ?? [];
 		$filter     = $args['filter'] ?? null;
 		$table_name = $args['table_name'] ?? '';
 		$where_key  = $args['where_key'] ?? '';
-		$where_key  = sanitize_key( $where_key );
 
 		/*if ( ! $filter instanceof FilterBase ) {
 			throw new Exception( __( 'Invalid filter!', 'learnpress' ) . ' | ' . __FUNCTION__ );

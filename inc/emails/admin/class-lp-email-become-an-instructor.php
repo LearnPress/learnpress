@@ -4,8 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.1
- * @author tungnx
+ * @version 3.0.2
  * @modify 4.1.3
  */
 
@@ -81,15 +80,42 @@ if ( ! class_exists( 'LP_Email_Become_An_Instructor' ) ) {
 				return false;
 			}
 
+			$content_format = $this->get_content_format();
+			$is_html        = 'text/plain' !== $content_format;
+
+			$admin_user_manager = admin_url( 'users.php?lp-action=pending-request' );
+			$accept_url         = admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID );
+			$deny_url           = admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID );
+
+			if ( $is_html ) {
+				$admin_user_manager = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url( $admin_user_manager ),
+					esc_url( $admin_user_manager )
+				);
+
+				$accept_url = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url( $accept_url ),
+					esc_url( $accept_url )
+				);
+
+				$deny_url = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url( $deny_url ),
+					esc_url( $deny_url )
+				);
+			}
+
 			$this->variables = apply_filters(
 				'lp/email/type-become-an-instructor-admin/variables-mapper',
 				[
 					'{{request_email}}'      => $bat_email,
 					'{{request_phone}}'      => $bat_phone,
 					'{{request_message}}'    => $bat_message,
-					'{{admin_user_manager}}' => admin_url( 'users.php?lp-action=pending-request' ),
-					'{{accept_url}}'         => admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ),
-					'{{deny_url}}'           => admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ),
+					'{{admin_user_manager}}' => $admin_user_manager,
+					'{{accept_url}}'         => $accept_url,
+					'{{deny_url}}'           => $deny_url,
 				]
 			);
 
@@ -102,4 +128,3 @@ if ( ! class_exists( 'LP_Email_Become_An_Instructor' ) ) {
 
 	return new LP_Email_Become_An_Instructor();
 }
-

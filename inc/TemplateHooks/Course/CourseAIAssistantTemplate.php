@@ -127,8 +127,24 @@ class CourseAIAssistantTemplate {
 		$context   = $this->detect_context();
 		$item      = LP_Global::course_item();
 		$item_id   = $item ? absint( $item->get_id() ) : 0;
+		$item_type = $item ? (string) $item->get_item_type() : '';
 		$course_id = $item ? absint( $item->get_course_id() ) : 0;
 		$user_id   = get_current_user_id();
+
+		/**
+		 * Defense in depth: run the same resolver the AJAX controller uses, so the widget
+		 * is never offered for an item the user cannot view. This is not the security
+		 * boundary — AIAssistantController::handle_chat() is, because the AJAX action is
+		 * reachable without this markup ever rendering.
+		 *
+		 * Catches Throwable because this runs on wp_enqueue_scripts, outside the
+		 * render_panel() try/catch. Any failure denies rather than fatals the page.
+		 */
+		try {
+			AIAssistantController::resolve_item_access( $user_id, $course_id, $item_type, $item_id );
+		} catch ( Throwable $e ) {
+			return $this->render_state = false;
+		}
 
 		$enabled_actions   = AIAssistantController::get_enabled_actions();
 		$free_chat_enabled = LP_Settings::get_option( 'ai_assistant_free_chat', 'no' ) === 'yes';
@@ -163,6 +179,7 @@ class CourseAIAssistantTemplate {
 		return $this->render_state = array(
 			'context'           => $context,
 			'item_id'           => $item_id,
+			'item_type'         => $item_type,
 			'course_id'         => $course_id,
 			'enabled_actions'   => $enabled_actions,
 			'free_chat_enabled' => $free_chat_enabled,
@@ -182,6 +199,9 @@ class CourseAIAssistantTemplate {
 				'nonce'           => wp_create_nonce( 'wp_rest' ),
 				'lessonId'        => $render_state['item_id'],
 				'itemId'          => $render_state['item_id'],
+				// Server-resolved curriculum type. The client echoes it back as item_type
+				// and the server re-validates it; it is transport, not proof.
+				'itemType'        => $render_state['item_type'],
 				'courseId'        => $render_state['course_id'],
 				'context'         => $render_state['context'],
 				'quizCompleted'   => $render_state['context'] === 'quiz',

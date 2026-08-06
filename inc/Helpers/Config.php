@@ -8,7 +8,7 @@ namespace LearnPress\Helpers;
  *
  * @package LP\Helpers
  * @since 4.1.6.4
- * @version 1.0.0
+ * @version 1.0.1
  */
 class Config {
 	/*
@@ -17,8 +17,6 @@ class Config {
 	 * @var array
 	 */
 	protected static $instance;
-	protected $file_name = '';
-	protected $items     = array();
 	/**
 	 * @var array Array name files config.
 	 */
@@ -35,8 +33,6 @@ class Config {
 	 */
 	protected function __construct( array $items = array() ) {
 		$this->dir = LP_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
-
-		$this->items = $items;
 	}
 
 	/**
@@ -90,7 +86,7 @@ class Config {
 		}
 	}
 
-	public static function instance(): self {
+	public static function instance() {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}

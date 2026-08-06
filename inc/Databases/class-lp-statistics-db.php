@@ -6,6 +6,8 @@
  * @since 4.2.6
  */
 
+use LearnPress\Statistics\StatisticsScope;
+
 defined( 'ABSPATH' ) || exit();
 
 class LP_Statistics_DB extends LP_Database {
@@ -24,62 +26,97 @@ class LP_Statistics_DB extends LP_Database {
 	}
 
 	/**
+	 * Apply a statistics-scoped filter to every LP_Filter query this class runs,
+	 * then defer to the core query builder.
+	 *
+	 * Single choke point for all statistics queries: the DTO ( collection /
+	 * only_fields / where / join / group_by / order_by ) is exposed for shaping,
+	 * and no raw SQL string is passed, so a handler customizes a specific query
+	 * by inspecting $filter ( e.g. $filter->collection, $filter->only_fields )
+	 * and returning a mutated LP_Filter. Note the generic lp/query/* filters
+	 * still fire downstream in the query builder as before.
+	 *
+	 * @param LP_Filter $filter     Query DTO.
+	 * @param int       $total_rows Total rows, by reference.
+	 * @return mixed
+	 * @since 4.4.2
+	 */
+	public function execute( $filter, int &$total_rows = 0 ) {
+		/**
+		 * Filter a statistics query DTO before execution.
+		 *
+		 * @param LP_Filter        $filter The query DTO.
+		 * @param LP_Statistics_DB $db     This DB instance.
+		 * @since 4.4.2
+		 */
+		$filter = apply_filters( 'learn-press/statistics/query/filter', $filter, $this );
+
+		return parent::execute( $filter, $total_rows );
+	}
+
+	/**
 	 * filter to get data for chart of a day.
+	 *
 	 * @param  LP_Filter $filter
 	 * @param  string    $time_field the column use to filter time
 	 * @return LP_Filter
 	 */
 	public function chart_filter_date_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "HOUR($time_field) as x_data_label";
-		$filter->group_by      = "x_data_label";
+		$filter->group_by      = 'x_data_label';
 		return $filter;
 	}
 	/**
 	 * filter to get data for chart of last some days. ex: last 7 days, last 30 days,...
+	 *
 	 * @param  LP_Filter $filter
 	 * @param  string    $time_field the column use to filter time
 	 * @return LP_Filter
 	 */
 	public function chart_filter_previous_days_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "CAST($time_field AS DATE) as x_data_label";
-		$filter->group_by      = "x_data_label";
+		$filter->group_by      = 'x_data_label';
 		return $filter;
 	}
 	/**
 	 * filter to get data for chart of a month
+	 *
 	 * @param  LP_Filter $filter
 	 * @param  string    $time_field the column use to filter time
 	 * @return LP_Filter
 	 */
 	public function chart_filter_month_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "DAY($time_field) as x_data_label";
-		$filter->group_by      = "x_data_label";
+		$filter->group_by      = 'x_data_label';
 		return $filter;
 	}
 	/**
 	 * filter to get data for chart of months. ex: last 3 months, 6 months, 9 months,...
+	 *
 	 * @param  LP_Filter $filter
 	 * @param  string    $time_field the column use to filter time
 	 * @return LP_Filter
 	 */
 	public function chart_filter_previous_months_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "DATE_FORMAT( $time_field , '%m-%Y') as x_data_label";
-		$filter->group_by      = "x_data_label";
+		$filter->group_by      = 'x_data_label';
 		return $filter;
 	}
 	/**
 	 * filter to get data for chart of a year
+	 *
 	 * @param  LP_Filter $filter
 	 * @param  string    $time_field the column use to filter time. ex: post_date with posts table, user_registered on users table
 	 * @return LP_Filter
 	 */
 	public function chart_filter_year_group_by( LP_Filter $filter, string $time_field ) {
 		$filter->only_fields[] = "MONTH($time_field) as x_data_label";
-		$filter->group_by      = "x_data_label";
+		$filter->group_by      = 'x_data_label';
 		return $filter;
 	}
 	/**
 	 * filter to get data for chart of a custom date ranges
+	 *
 	 * @param  LP_Filter $filter
 	 * @param  array     $dates array of date range use to filer
 	 * @param  string    $time_field the column use to filter time. ex: post_date with posts table, user_registered on users table
@@ -112,12 +149,12 @@ class LP_Statistics_DB extends LP_Database {
 			$filter = $this->chart_filter_previous_months_group_by( $filter, $time_field );
 		} elseif ( $y < 5 ) {
 			// from 2-5years return data of year quarters
-			$filter->only_fields[] = $this->wpdb->prepare( "CONCAT( %s, QUARTER($time_field) ,%s, Year($time_field)) as x_data_label", [ 'q', '-' ] );
-			$filter->group_by      = "x_data_label";
+			$filter->only_fields[] = $this->wpdb->prepare( "CONCAT( %s, QUARTER($time_field) ,%s, Year($time_field)) as x_data_label", array( 'q', '-' ) );
+			$filter->group_by      = 'x_data_label';
 		} else {
 			// more than 5 years, return data of years
 			$filter->only_fields[] = "YEAR($time_field) as x_data_label";
-			$filter->group_by      = "x_data_label";
+			$filter->group_by      = 'x_data_label';
 		}
 		return $filter;
 	}
@@ -186,6 +223,7 @@ class LP_Statistics_DB extends LP_Database {
 	}
 	/**
 	 * get data for each month in year
+	 *
 	 * @param  LP_Filter $filter
 	 * @param  string    $date       choose a date to query, format Y-m-d
 	 * @param  string    $time_field $time_field the column use to filter time. ex: post_date with posts table, user_registered on
@@ -201,6 +239,7 @@ class LP_Statistics_DB extends LP_Database {
 	}
 	/**
 	 * custom query with data range
+	 *
 	 * @param  LP_Filter $filter
 	 * @param  array     $dates      date ranges, array of 2 dates.
 	 * @param  string    $time_field $time_field the column use to filter time. ex: post_date with posts table, user_registered on
@@ -226,6 +265,7 @@ class LP_Statistics_DB extends LP_Database {
 
 	/**
 	 * choose filter type foreach filter time
+	 *
 	 * @param  LP_Filter $filter
 	 * @param  string    $type       date|month|year|previous_days|custom
 	 * @param  string    $time_field datetime colummn
@@ -267,13 +307,17 @@ class LP_Statistics_DB extends LP_Database {
 	}
 	/**
 	 * format return data foreach type of filter
-	 * @param  LP_Filter $filter
-	 * @param  string    $type       date|month|year|previous_days|custom
-	 * @param  string    $time_field datetime colummn
-	 * @param  boolean   $value      value to query datetimes
+	 *
+	 * @param  LP_Filter   $filter
+	 * @param  string      $type        date|month|year|previous_days|custom
+	 * @param  string      $time_field  datetime colummn
+	 * @param  boolean     $value       value to query datetimes
+	 * @param  string|null $granularity explicit chart resolution ( hour|day|month ) from PeriodResolver;
+	 *                                  only honored for the custom type — named legacy types keep their
+	 *                                  historical grouping so existing output never changes. @since 4.4.2
 	 * @return LP_Filter
 	 */
-	public function chart_filter_group_by( LP_Filter $filter, string $type, string $time_field, $value = false ) {
+	public function chart_filter_group_by( LP_Filter $filter, string $type, string $time_field, $value = false, ?string $granularity = null ) {
 		switch ( $type ) {
 			case 'date':
 				$filter = $this->chart_filter_date_group_by( $filter, $time_field );
@@ -291,6 +335,10 @@ class LP_Statistics_DB extends LP_Database {
 				$filter = $this->chart_filter_previous_months_group_by( $filter, $time_field );
 				break;
 			case 'custom':
+				if ( $granularity ) {
+					$filter = $this->chart_filter_granularity_group_by( $filter, $granularity, $time_field );
+					break;
+				}
 				if ( empty( $value ) ) {
 					throw new Exception( 'Empty statistic time', 'learnpress' );
 				}
@@ -307,29 +355,62 @@ class LP_Statistics_DB extends LP_Database {
 	}
 
 	/**
+	 * Group a custom-range chart by an explicit granularity instead of the
+	 * span heuristics of chart_filter_custom_group_by().
+	 *
+	 * hour → HOUR( field ), day → CAST( field AS DATE ), month → 'mm-YYYY' —
+	 * the same label shapes the date/previous_days/previous_months groupings
+	 * produce, so the controller processors handle them unchanged.
+	 *
+	 * @param  LP_Filter $filter
+	 * @param  string    $granularity hour|day|month
+	 * @param  string    $time_field  datetime column
+	 * @return LP_Filter
+	 * @since 4.4.2
+	 */
+	public function chart_filter_granularity_group_by( LP_Filter $filter, string $granularity, string $time_field ) {
+		switch ( $granularity ) {
+			case 'hour':
+				return $this->chart_filter_date_group_by( $filter, $time_field );
+			case 'month':
+				return $this->chart_filter_previous_months_group_by( $filter, $time_field );
+			case 'day':
+			default:
+				return $this->chart_filter_previous_days_group_by( $filter, $time_field );
+		}
+	}
+
+	/**
 	 * get_completed_order_data use this for complete order report chart
-	 * @param  string $type  time type filter: date|month|year|previous_days|custom
-	 * @param  string $value time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 *
+	 * @param  string          $type  time type filter: date|month|year|previous_days|custom
+	 * @param  string          $value time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  StatisticsScope $scope optional instructor/category scope. @since 4.4.2
+	 * @param  string|null     $granularity explicit chart resolution ( hour|day|month ), custom type only. @since 4.4.2
 	 * @return array  completed order data
 	 */
-	public function get_completed_order_data( string $type, string $value ) {
+	public function get_completed_order_data( string $type, string $value, ?StatisticsScope $scope = null, ?string $granularity = null ) {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = "p";
-		$time_field               = "p.post_date";
+		$filter->collection_alias = 'p';
+		$time_field               = 'p.post_date';
 
 		// count completed orders
-		$filter->only_fields[] = "count( p.ID) as x_data";
+		$filter->only_fields[] = 'count( p.ID) as x_data';
 		$filter                = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
-		$filter->where[]       = $this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB );
-		$filter->where[]       = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
+		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value, $granularity );
+		$filter->where[]       = $this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB );
+		$filter->where[]       = $this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type );
 		$filter->limit         = -1;
 		$filter->order_by      = $time_field;
-		$filter->order         = "asc";
+		$filter->order         = 'asc';
+
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply_to_orders( $filter, 'p.ID' );
+		}
 
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
@@ -339,128 +420,145 @@ class LP_Statistics_DB extends LP_Database {
 
 	/**
 	 * query to count LP Orders with all statuses
+	 *
 	 * @param  LP_Order_Filter $filter
 	 * @return LP_Order_Filter
 	 */
 	public function filter_order_count_statics( LP_Order_Filter $filter ) {
 		// $filter->query_count = true;
-		$filter->only_fields[]   = "count( p.ID) as count_order";
+		$filter->only_fields[]   = 'count( p.ID) as count_order';
 		$filter->only_fields[]   = "REPLACE(p.post_status,'lp-','') as order_status";
-		$filter->group_by        = "p.post_status";
+		$filter->group_by        = 'p.post_status';
 		$filter->where[]         = $this->wpdb->prepare( "AND p.post_status LIKE CONCAT(%s,'%')", 'lp-' );
-		$filter->where[]         = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
+		$filter->where[]         = $this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type );
 		$filter->run_query_count = false;
 
 		return $filter;
 	}
 	/**
 	 * get LP Order count of a filter time
-	 * @param  string $type  date|month|year|previous_days|custom
-	 * @param  string $value time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 *
+	 * @param  string          $type  date|month|year|previous_days|custom
+	 * @param  string          $value time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  StatisticsScope $scope optional instructor/category scope. @since 4.4.2
 	 * @return array  result of LP Order count foreach status
 	 */
-	public function get_order_statics( string $type, string $value ) {
+	public function get_order_statics( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = "p";
-		$time_field               = "p.post_date";
+		$filter->collection_alias = 'p';
+		$time_field               = 'p.post_date';
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                   = $this->filter_order_count_statics( $filter );
-		$filter->limit            = -1;
-		$result                   = $this->execute( $filter );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply_to_orders( $filter, 'p.ID' );
+		}
+		$filter->limit = -1;
+		$result        = $this->execute( $filter );
 
 		return $result;
 	}
 	/*Overviews statistics*/
 	/**
 	 * get sales amount of complete order
-	 * @param  string $type  [time type filter: date|month|year|previous_days|custom]
-	 * @param  string $value [time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom  ]
+	 *
+	 * @param  string          $type  [time type filter: date|month|year|previous_days|custom]
+	 * @param  string          $value [time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom  ]
+	 * @param  StatisticsScope $scope optional instructor/category scope. @since 4.4.2
+	 * @param  string|null     $granularity explicit chart resolution ( hour|day|month ), custom type only. @since 4.4.2
 	 * @return array  completed order data
 	 */
-	public function get_net_sales_data( string $type, string $value ) {
+	public function get_net_sales_data( string $type, string $value, ?StatisticsScope $scope = null, ?string $granularity = null ) {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = "p";
+		$filter->collection_alias = 'p';
 		$oi_table                 = $this->tb_lp_order_items;
 		$oim_table                = $this->tb_lp_order_itemmeta;
 		// net sales summary
-		$filter->only_fields[]   = "SUM(CAST(oim.meta_value AS DECIMAL(10,2))) as x_data";
-		$time_field              = "p.post_date";
-		$filter->join            = [
+		$filter->only_fields[] = 'SUM(CAST(oim.meta_value AS DECIMAL(10,2))) as x_data';
+		$time_field            = 'p.post_date';
+		$filter->join          = array(
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
-		];
-		$filter->limit           = -1;
-		$filter->where           = [
-			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
-			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
-			$this->wpdb->prepare( "AND oim.meta_key=%s", '_total' ),
-		];
-		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter                  = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
+		);
+		$filter->limit         = -1;
+		$filter->where         = array(
+			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
+			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' ),
+		);
+		$filter                = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value, $granularity );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'oi.item_id' );
+		}
 		$filter->order_by        = $time_field;
-		$filter->order           = "asc";
+		$filter->order           = 'asc';
 		$filter->run_query_count = false;
-		
-		$result                  = $this->execute( $filter );
+
+		$result = $this->execute( $filter );
 		// error_log( $this->check_execute_has_error() );
 		return $result;
 	}
 
 	/**
 	 * get top categories of sold course
-	 * @param  string  $type                date|month|year|previous_days|custom
-	 * @param  string  $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
-	 * @param  integer $limit               limit of query, default is 10
-	 * @param  boolean $exclude_free_course exclude free course
+	 *
+	 * @param  string          $type                date|month|year|previous_days|custom
+	 * @param  string          $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  integer         $limit               limit of query, default is 10
+	 * @param  boolean         $exclude_free_course exclude free course
+	 * @param  StatisticsScope $scope               optional instructor/category scope. @since 4.4.2
 	 * @return array   return term_id and term_count
 	 */
-	public function get_top_sold_categories( string $type, string $value, $limit = 0, $exclude_free_course = false ) {
+	public function get_top_sold_categories( string $type, string $value, $limit = 0, $exclude_free_course = false, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = "p";
-		$filter->only_fields[]    = "r_term.term_taxonomy_id as term_id";
-		$filter->only_fields[]    = "SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as term_count";
-		$filter->only_fields[]    = "terms.name as term_name";
+		$filter->collection_alias = 'p';
+		$filter->only_fields[]    = 'r_term.term_taxonomy_id as term_id';
+		$filter->only_fields[]    = 'SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as term_count';
+		$filter->only_fields[]    = 'terms.name as term_name';
 		$filter->limit            = $limit > 0 ? $limit : 10;
-		$time_field               = "p.post_date";
+		$time_field               = 'p.post_date';
 		$tb_term_relationships    = $this->tb_term_relationships;
 		$tb_term_taxonomy         = $this->tb_term_taxonomy;
 		$tb_terms                 = $this->tb_terms;
 		$oi_table                 = $this->tb_lp_order_items;
 		$oim_table                = $this->tb_lp_order_itemmeta;
 
-		$filter->join = [
+		$filter->join = array(
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $tb_term_relationships AS r_term ON oi.item_id = r_term.object_id",
 			"INNER JOIN $tb_term_taxonomy AS tax_term ON tax_term.term_taxonomy_id = r_term.term_taxonomy_id",
 			"INNER JOIN $tb_terms AS terms ON terms.term_id = r_term.term_taxonomy_id",
 			"INNER JOIN $oim_table AS oim_qty ON oi.order_item_id = oim_qty.learnpress_order_item_id AND oim_qty.meta_key = '_quantity'",
-		];
+		);
 		if ( $exclude_free_course ) {
 			$filter->join[] = "INNER JOIN $oim_table AS oim_total ON oi.order_item_id = oim_total.learnpress_order_item_id AND oim_total.meta_key = '_total' AND CAST(oim_total.meta_value AS DECIMAL(10,2)) > 0";
 		}
 
 		$filter->where = array(
-			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
-			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
-			$this->wpdb->prepare( "AND oi.item_type=%s", LP_COURSE_CPT ),
-			$this->wpdb->prepare( "AND tax_term.taxonomy=%s", LP_COURSE_CATEGORY_TAX ),
+			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
+			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( 'AND oi.item_type=%s', LP_COURSE_CPT ),
+			$this->wpdb->prepare( 'AND tax_term.taxonomy=%s', LP_COURSE_CATEGORY_TAX ),
 		);
-		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter->group_by        = "term_id";
-		$filter->order_by        = "term_count";
-		$filter->order           = "DESC";
+		$filter        = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'oi.item_id' );
+		}
+		$filter->group_by        = 'term_id';
+		$filter->order_by        = 'term_count';
+		$filter->order           = 'DESC';
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
 
@@ -469,48 +567,53 @@ class LP_Statistics_DB extends LP_Database {
 
 	/**
 	 * get top courses was sold in the filter
-	 * @param  string  $type                date|month|year|previous_days|custom
-	 * @param  string  $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
-	 * @param  integer $limit               limit of query, default 10
-	 * @param  boolean $exclude_free_course exclude free course, get result only purchase course
+	 *
+	 * @param  string          $type                date|month|year|previous_days|custom
+	 * @param  string          $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  integer         $limit               limit of query, default 10
+	 * @param  boolean         $exclude_free_course exclude free course, get result only purchase course
+	 * @param  StatisticsScope $scope               optional instructor/category scope. @since 4.4.2
 	 * @return array   $result
 	 */
-	public function get_top_sold_courses( string $type, string $value, $limit = 0, $exclude_free_course = false ) {
+	public function get_top_sold_courses( string $type, string $value, $limit = 0, $exclude_free_course = false, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
 		$filter                   = new LP_Order_Filter();
 		$tb_posts                 = $this->tb_posts;
 		$filter->collection       = $tb_posts;
-		$filter->collection_alias = "p";
-		$filter->only_fields[]    = "oi.item_id as course_id";
-		$filter->only_fields[]    = "SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as course_count";
-		$filter->only_fields[]    = "p2.post_title as course_name";
+		$filter->collection_alias = 'p';
+		$filter->only_fields[]    = 'oi.item_id as course_id';
+		$filter->only_fields[]    = 'SUM(CAST(oim_qty.meta_value AS UNSIGNED)) as course_count';
+		$filter->only_fields[]    = 'p2.post_title as course_name';
 		$filter->limit            = $limit > 0 ? $limit : 10;
-		$time_field               = "p.post_date";
+		$time_field               = 'p.post_date';
 		$oi_table                 = $this->tb_lp_order_items;
 		$oim_table                = $this->tb_lp_order_itemmeta;
 
-		$filter->join  = [
+		$filter->join = array(
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $tb_posts AS p2 ON p2.ID = oi.item_id",
 			"INNER JOIN $oim_table AS oim_qty ON oi.order_item_id = oim_qty.learnpress_order_item_id AND oim_qty.meta_key = '_quantity'",
-		];
+		);
 
 		if ( $exclude_free_course ) {
 			$filter->join[] = "INNER JOIN $oim_table AS oim_total ON oi.order_item_id = oim_total.learnpress_order_item_id AND oim_total.meta_key = '_total' AND CAST(oim_total.meta_value AS DECIMAL(10,2)) > 0";
 		}
 
 		$filter->where = array(
-			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
-			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
-			$this->wpdb->prepare( "AND oi.item_type=%s", LP_COURSE_CPT ),
+			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
+			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( 'AND oi.item_type=%s', LP_COURSE_CPT ),
 		);
 
-		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter->group_by        = "course_id";
-		$filter->order_by        = "course_count";
-		$filter->order           = "DESC";
+		$filter = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'oi.item_id' );
+		}
+		$filter->group_by        = 'course_id';
+		$filter->order_by        = 'course_count';
+		$filter->order           = 'DESC';
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
 
@@ -518,53 +621,62 @@ class LP_Statistics_DB extends LP_Database {
 	}
 	/**
 	 * Overviews get total courses was created ( all statuses )
-	 * @param  string  $type   date|month|year|previous_days|custom
-	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
+	 *
+	 * @param  string $type   date|month|year|previous_days|custom
+	 * @param  string $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
 	 * @return int     $result course count
 	 */
-	public function get_total_course_created( string $type, string $value ) {
+	public function get_total_course_created( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
 		$filter                   = new LP_Course_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = "p";
-		$filter->only_fields[]    = "p.ID";
-		$time_field               = "p.post_date";
+		$filter->collection_alias = 'p';
+		$filter->only_fields[]    = 'p.ID';
+		$time_field               = 'p.post_date';
 
-		$filter->where[]     = $this->wpdb->prepare( "AND p.post_type=%s", LP_COURSE_CPT );
-		$filter              = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter->where[] = $this->wpdb->prepare( 'AND p.post_type=%s', LP_COURSE_CPT );
+		$filter          = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'p.ID' );
+		}
 		$filter->query_count = true;
 		$result              = $this->execute( $filter );
 		return $result;
 	}
 	/**
 	 * Overviews get total orders was created ( all statuses )
-	 * @param  string  $type   date|month|year|previous_days|custom
-	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
+	 *
+	 * @param  string $type   date|month|year|previous_days|custom
+	 * @param  string $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
 	 * @return int     $result order count
 	 */
-	public function get_total_order_created( string $type, string $value ) {
+	public function get_total_order_created( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
 		$filter                   = new LP_Course_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = "p";
-		$filter->only_fields[]    = "p.ID";
-		$time_field               = "p.post_date";
+		$filter->collection_alias = 'p';
+		$filter->only_fields[]    = 'p.ID';
+		$time_field               = 'p.post_date';
 
-		$filter->where[]     = $this->wpdb->prepare( "AND p.post_type = %s", LP_ORDER_CPT );
-		$filter->where[]     = $this->wpdb->prepare( "AND p.post_status != %s", 'auto-draft' );
-		$filter              = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter->where[] = $this->wpdb->prepare( 'AND p.post_type = %s', LP_ORDER_CPT );
+		$filter->where[] = $this->wpdb->prepare( 'AND p.post_status != %s', 'auto-draft' );
+		$filter          = $this->filter_time( $filter, $type, $time_field, $value );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply_to_orders( $filter, 'p.ID' );
+		}
 		$filter->query_count = true;
 		$result              = $this->execute( $filter );
 		return $result;
 	}
 	/**
 	 * Overviews get total instructors was created ( administrator and lp_teacher )
-	 * @param  string  $type   date|month|year|previous_days|custom
-	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
+	 *
+	 * @param  string $type   date|month|year|previous_days|custom
+	 * @param  string $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
 	 * @return int     $result user count
 	 */
 	public function get_total_instructor_created( string $type, string $value ) {
@@ -573,14 +685,14 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->wpdb->users;
-		$filter->collection_alias = "u";
-		$filter->only_fields[]    = "u.ID";
+		$filter->collection_alias = 'u';
+		$filter->only_fields[]    = 'u.ID';
 		$usermeta_table           = $this->wpdb->usermeta;
 		$filter->join[]           = "INNER JOIN $usermeta_table AS um ON um.user_id = u.ID";
-		$time_field               = "u.user_registered";
-		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_key=%s", $this->wpdb->prefix . 'capabilities' );
-		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_value LIKE %s", '%' . ADMIN_ROLE . '%' );
-		$filter->where[]          = $this->wpdb->prepare( "OR um.meta_value LIKE %s", '%' . LP_TEACHER_ROLE . '%' );
+		$time_field               = 'u.user_registered';
+		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', $this->wpdb->prefix . 'capabilities' );
+		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_value LIKE %s', '%' . ADMIN_ROLE . '%' );
+		$filter->where[]          = $this->wpdb->prepare( 'OR um.meta_value LIKE %s', '%' . LP_TEACHER_ROLE . '%' );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value, true );
 		$filter->query_count      = true;
 		$result                   = $this->execute( $filter );
@@ -588,8 +700,9 @@ class LP_Statistics_DB extends LP_Database {
 	}
 	/**
 	 * Overviews get total student was created ( subscriber )
-	 * @param  string  $type   date|month|year|previous_days|custom
-	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
+	 *
+	 * @param  string $type   date|month|year|previous_days|custom
+	 * @param  string $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
 	 * @return int     $result user count
 	 */
 	public function get_total_student_created( string $type, string $value ) {
@@ -598,13 +711,13 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->wpdb->users;
-		$filter->collection_alias = "u";
-		$filter->only_fields[]    = "u.ID";
+		$filter->collection_alias = 'u';
+		$filter->only_fields[]    = 'u.ID';
 		$usermeta_table           = $this->wpdb->usermeta;
 		$filter->join[]           = "INNER JOIN $usermeta_table AS um ON um.user_id = u.ID";
-		$time_field               = "u.user_registered";
-		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_key=%s", $this->wpdb->prefix . 'capabilities' );
-		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_value LIKE %s", '%subscriber%' );
+		$time_field               = 'u.user_registered';
+		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', $this->wpdb->prefix . 'capabilities' );
+		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_value LIKE %s', '%subscriber%' );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value, true );
 		$filter->query_count      = true;
 		$result                   = $this->execute( $filter );
@@ -614,28 +727,33 @@ class LP_Statistics_DB extends LP_Database {
 	/**
 	 * Gets the published course data.
 	 *
-	 * @param  string  $type    date|month|year|previous_days|custom
-	 * @param  string  $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  string          $type    date|month|year|previous_days|custom
+	 * @param  string          $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  StatisticsScope $scope optional instructor/category scope. @since 4.4.2
+	 * @param  string|null     $granularity explicit chart resolution ( hour|day|month ), custom type only. @since 4.4.2
 	 *
 	 * @return array   The published course data.
 	 */
-	public function get_published_course_data( string $type, string $value ) {
+	public function get_published_course_data( string $type, string $value, ?StatisticsScope $scope = null, ?string $granularity = null ) {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 		$filter                   = new LP_Course_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = "p";
-		$time_field               = "p.post_date";
+		$filter->collection_alias = 'p';
+		$time_field               = 'p.post_date';
 		// count published course
-		$filter->only_fields[] = "count( p.ID) as x_data";
+		$filter->only_fields[] = 'count( p.ID) as x_data';
 		$filter                = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
-		$filter->where[]       = $this->wpdb->prepare( "AND p.post_status=%s", 'publish' );
-		$filter->where[]       = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
-		$filter->limit         = -1;
-		$filter->order_by      = $time_field;
-		$filter->order         = 'asc';
+		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value, $granularity );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'p.ID' );
+		}
+		$filter->where[]  = $this->wpdb->prepare( 'AND p.post_status=%s', 'publish' );
+		$filter->where[]  = $this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type );
+		$filter->limit    = -1;
+		$filter->order_by = $time_field;
+		$filter->order    = 'asc';
 
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
@@ -645,35 +763,38 @@ class LP_Statistics_DB extends LP_Database {
 	/**
 	 * Gets the course count by statuses.
 	 *
-	 * @param  string  $type    date|month|year|previous_days|custom
-	 * @param  string  $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  string $type    date|month|year|previous_days|custom
+	 * @param  string $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
 	 *
 	 * @return array   $result  The course count by statuses.
 	 */
-	public function get_course_count_by_statuses( string $type, string $value ) {
+	public function get_course_count_by_statuses( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 		$filter                   = new LP_Course_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = "p";
-		$filter->only_fields[]    = "COUNT(p.ID) as course_count";
-		$filter->only_fields[]    = "p.post_status as course_status";
-		$time_field               = "p.post_date";
+		$filter->collection_alias = 'p';
+		$filter->only_fields[]    = 'COUNT(p.ID) as course_count';
+		$filter->only_fields[]    = 'p.post_status as course_status';
+		$time_field               = 'p.post_date';
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter->where[]          = $this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type );
-		$filter->where[]          = $this->wpdb->prepare( 'AND p.post_status IN (%s, %s, %s)', 'publish', 'pending', 'future' );
-		$filter->limit            = -1;
-		$filter->group_by         = 'p.post_status';
-		$filter->run_query_count  = false;
-		$result                   = $this->execute( $filter );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'p.ID' );
+		}
+		$filter->where[]         = $this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type );
+		$filter->where[]         = $this->wpdb->prepare( 'AND p.post_status IN (%s, %s, %s)', 'publish', 'pending', 'future' );
+		$filter->limit           = -1;
+		$filter->group_by        = 'p.post_status';
+		$filter->run_query_count = false;
+		$result                  = $this->execute( $filter );
 		return $result;
 	}
 	/**
 	 * Gets the course items count.
 	 *
-	 * @param  string  $type    date|month|year|previous_days|custom
-	 * @param  string  $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  string $type    date|month|year|previous_days|custom
+	 * @param  string $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
 	 *
 	 * @return int     $result  The course items count.
 	 */
@@ -683,10 +804,10 @@ class LP_Statistics_DB extends LP_Database {
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->tb_posts;
-		$filter->collection_alias = "p";
-		$filter->only_fields[]    = "COUNT(p.ID) as item_count";
-		$filter->only_fields[]    = "p.post_type as item_type";
-		$time_field               = "p.post_date";
+		$filter->collection_alias = 'p';
+		$filter->only_fields[]    = 'COUNT(p.ID) as item_count';
+		$filter->only_fields[]    = 'p.post_type as item_type';
+		$time_field               = 'p.post_date';
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
 		if ( class_exists( 'LP_Assignment' ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_type IN (%s, %s, %s)', LP_LESSON_CPT, LP_QUIZ_CPT, LP_ASSIGNMENT_CPT );
@@ -704,26 +825,27 @@ class LP_Statistics_DB extends LP_Database {
 	/**
 	 * Gets the user registered data.
 	 *
-	 * @param  string  $type    date|month|year|previous_days|custom
-	 * @param  string  $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  string      $type    date|month|year|previous_days|custom
+	 * @param  string      $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  string|null $granularity explicit chart resolution ( hour|day|month ), custom type only. @since 4.4.2
 	 *
 	 * @return array   $result  The user registered data.
 	 */
-	public function get_user_registered_data( string $type, string $value ) {
+	public function get_user_registered_data( string $type, string $value, ?string $granularity = null ) {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->tb_users;
-		$filter->collection_alias = "u";
-		$time_field               = "u.user_registered";
+		$filter->collection_alias = 'u';
+		$time_field               = 'u.user_registered';
 		// count user_registered
-		$filter->only_fields[] = "count( u.ID) as x_data";
+		$filter->only_fields[] = 'count( u.ID) as x_data';
 		$filter                = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
+		$filter                = $this->chart_filter_group_by( $filter, $type, $time_field, $value, $granularity );
 		$filter->limit         = -1;
 		$filter->order_by      = $time_field;
-		$filter->order         = "asc";
+		$filter->order         = 'asc';
 
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
@@ -732,32 +854,37 @@ class LP_Statistics_DB extends LP_Database {
 
 	/**
 	 * Gets the users by user item graduation statuses.
-	 * @param  string  $type    date|month|year|previous_days|custom
-	 * @param  string  $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 *
+	 * @param  string $type    date|month|year|previous_days|custom
+	 * @param  string $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
 	 * @return int     $result  count users by graduation statuses.
 	 */
-	public function get_users_by_user_item_graduation_statuses( string $type, string $value ) {
+	public function get_users_by_user_item_graduation_statuses( string $type, string $value, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->tb_lp_user_items;
-		$filter->collection_alias = "ui";
-		$filter->only_fields[]    = "ui.graduation as graduation_status";
-		$filter->only_fields[]    = "COUNT(distinct(ui.user_id)) as user_count";
-		$time_field               = "ui.start_time";
+		$filter->collection_alias = 'ui';
+		$filter->only_fields[]    = 'ui.graduation as graduation_status';
+		$filter->only_fields[]    = 'COUNT(distinct(ui.user_id)) as user_count';
+		$time_field               = 'ui.start_time';
 		$filter->limit            = -1;
-		$filter->where[]          = $this->wpdb->prepare( "AND ui.item_type=%s", LP_COURSE_CPT );
+		$filter->where[]          = $this->wpdb->prepare( 'AND ui.item_type=%s', LP_COURSE_CPT );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter->group_by         = "graduation_status";
-		$filter->run_query_count  = false;
-		$result                   = $this->execute( $filter );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'ui.item_id' );
+		}
+		$filter->group_by        = 'graduation_status';
+		$filter->run_query_count = false;
+		$result                  = $this->execute( $filter );
 		return $result;
 	}
 	/**
 	 * filter user dont study any course in the filter time
-	 * @param  string  $type    date|month|year|previous_days|custom
-	 * @param  string  $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 *
+	 * @param  string $type    date|month|year|previous_days|custom
+	 * @param  string $value   time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
 	 * @return int     $result  count users
 	 */
 	public function get_users_not_started_any_course( string $type, string $value ) {
@@ -767,15 +894,15 @@ class LP_Statistics_DB extends LP_Database {
 		$filter          = new LP_Filter();
 		$table_useritems = $this->tb_lp_user_items;
 		$table_user      = $this->tb_users;
-		$time_filter     = $this->filter_time( $filter, $type, "ui.start_time", $value );
+		$time_filter     = $this->filter_time( $filter, $type, 'ui.start_time', $value );
 		// get time_filter condition SQL
 		$time_condition = $time_filter->where[0];
 		// reset where
 		$filter->where            = array();
 		$filter->collection       = $table_user;
-		$filter->collection_alias = "u";
-		$filter->only_fields[]    = "u.ID";
-		$filter->where[]          = $this->wpdb->prepare( "AND NOT EXISTS (SELECT * FROM $table_useritems as ui WHERE ui.user_id = u.ID $time_condition)" );
+		$filter->collection_alias = 'u';
+		$filter->only_fields[]    = 'u.ID';
+		$filter->where[]          = "AND NOT EXISTS (SELECT * FROM $table_useritems as ui WHERE ui.user_id = u.ID $time_condition)";
 		$filter->limit            = -1;
 		$filter->query_count      = true;
 		// use this to see the sql query
@@ -785,35 +912,40 @@ class LP_Statistics_DB extends LP_Database {
 	}
 	/**
 	 * get top courses was enrolled by users
-	 * @param  string  $type                date|month|year|previous_days|custom
-	 * @param  string  $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
-	 * @param  integer $limit               limit of query, default 10
-	 * @param  boolean $exclude_free_course exclude free course, get result only purchase course
+	 *
+	 * @param  string          $type                date|month|year|previous_days|custom
+	 * @param  string          $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  integer         $limit               limit of query, default 10
+	 * @param  boolean         $exclude_free_course exclude free course, get result only purchase course
+	 * @param  StatisticsScope $scope               optional instructor/category scope. @since 4.4.2
 	 * @return array   $result
 	 */
-	public function get_top_enrolled_courses( string $type, string $value, $limit = 0, $exclude_free_course = false ) {
+	public function get_top_enrolled_courses( string $type, string $value, $limit = 0, $exclude_free_course = false, ?StatisticsScope $scope = null ) {
 		if ( ! $type || ! $value ) {
 			return;
 		}
 		$filter                   = new LP_Filter();
 		$filter->collection       = $this->tb_lp_user_items;
-		$filter->collection_alias = "ui";
-		$filter->only_fields[]    = "ui.item_id as course_id";
-		$filter->only_fields[]    = "COUNT(ui.user_item_id) as enrolled_user";
-		$filter->only_fields[]    = "p.post_author as instructor_id";
-		$filter->only_fields[]    = "p.post_title as course_name";
-		$filter->only_fields[]    = "u.display_name as instructor_name";
+		$filter->collection_alias = 'ui';
+		$filter->only_fields[]    = 'ui.item_id as course_id';
+		$filter->only_fields[]    = 'COUNT(ui.user_item_id) as enrolled_user';
+		$filter->only_fields[]    = 'p.post_author as instructor_id';
+		$filter->only_fields[]    = 'p.post_title as course_name';
+		$filter->only_fields[]    = 'u.display_name as instructor_name';
 		$filter->limit            = ! $limit ? 10 : $limit;
-		$time_field               = "ui.start_time";
+		$time_field               = 'ui.start_time';
 		$filter->join[]           = "INNER JOIN $this->tb_posts AS p ON p.ID = ui.item_id";
 		$filter->join[]           = "INNER JOIN $this->tb_users AS u ON u.ID = p.post_author";
-		$filter->where[]          = $this->wpdb->prepare( "AND ui.item_type=%s", LP_COURSE_CPT );
+		$filter->where[]          = $this->wpdb->prepare( 'AND ui.item_type=%s', LP_COURSE_CPT );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter->group_by         = "course_id";
-		$filter->order_by         = "enrolled_user";
-		$filter->order            = "DESC";
-		$filter->run_query_count  = false;
-		$result                   = $this->execute( $filter );
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'ui.item_id' );
+		}
+		$filter->group_by        = 'course_id';
+		$filter->order_by        = 'enrolled_user';
+		$filter->order           = 'DESC';
+		$filter->run_query_count = false;
+		$result                  = $this->execute( $filter );
 		return $result;
 	}
 
@@ -826,7 +958,7 @@ class LP_Statistics_DB extends LP_Database {
 	 * @return array Top sold courses for the instructor.
 	 * @since 4.3.0
 	 */
-	public function get_top_sold_courses_by_instructor( int $instructor_id, int $limit = 5 ): array {
+	public function get_top_sold_courses_by_instructor( int $instructor_id, int $limit = 5, string $search = '' ): array {
 		$tb_posts  = $this->tb_posts;
 		$oi_table  = $this->tb_lp_order_items;
 		$oim_table = $this->tb_lp_order_itemmeta;
@@ -841,13 +973,13 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->only_fields[]    = 'SUM(CAST(oim_total.meta_value AS DECIMAL(10,2))) as total_revenue';
 		$filter->limit            = $limit > 0 ? $limit : 5;
 
-		$filter->join = [
+		$filter->join = array(
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $tb_posts AS p2 ON p2.ID = oi.item_id",
 			"INNER JOIN {$this->tb_users} AS u ON u.ID = p2.post_author",
 			"INNER JOIN $oim_table AS oim_qty ON oi.order_item_id = oim_qty.learnpress_order_item_id AND oim_qty.meta_key = '_quantity'",
 			"INNER JOIN $oim_table AS oim_total ON oi.order_item_id = oim_total.learnpress_order_item_id AND oim_total.meta_key = '_total'",
-		];
+		);
 
 		$filter->where = array(
 			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
@@ -859,13 +991,18 @@ class LP_Statistics_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND p2.post_author=%d', $instructor_id );
 		}
 
+		$search = trim( $search );
+		if ( '' !== $search ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND p2.post_title LIKE %s', '%' . $this->wpdb->esc_like( $search ) . '%' );
+		}
+
 		$filter->group_by        = 'course_id';
 		$filter->order_by        = 'course_count';
 		$filter->order           = 'DESC';
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
 
-		return is_array( $result ) ? $result : [];
+		return is_array( $result ) ? $result : array();
 	}
 
 	/**
@@ -877,7 +1014,7 @@ class LP_Statistics_DB extends LP_Database {
 	 * @return array Top enrolled courses for the instructor.
 	 * @since 4.3.0
 	 */
-	public function get_top_enrolled_courses_by_instructor( int $instructor_id, int $limit = 5 ): array {
+	public function get_top_enrolled_courses_by_instructor( int $instructor_id, int $limit = 5, string $search = '' ): array {
 		$filter                   = new \LP_Filter();
 		$filter->collection       = $this->tb_lp_user_items;
 		$filter->collection_alias = 'ui';
@@ -896,13 +1033,18 @@ class LP_Statistics_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author=%d', $instructor_id );
 		}
 
+		$search = trim( $search );
+		if ( '' !== $search ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' . $this->wpdb->esc_like( $search ) . '%' );
+		}
+
 		$filter->group_by        = 'course_id';
 		$filter->order_by        = 'enrollment_count';
 		$filter->order           = 'DESC';
 		$filter->run_query_count = false;
 		$result                  = $this->execute( $filter );
 
-		return is_array( $result ) ? $result : [];
+		return is_array( $result ) ? $result : array();
 	}
 
 	/**
@@ -947,7 +1089,7 @@ class LP_Statistics_DB extends LP_Database {
 
 		$results = $this->wpdb->get_results( $sql );
 
-		return is_array( $results ) ? $results : [];
+		return is_array( $results ) ? $results : array();
 	}
 
 	/**
@@ -962,7 +1104,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function get_net_sales_data_scoped( string $type, string $value, int $instructor_id = 0 ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
 		$filter                   = new \LP_Order_Filter();
@@ -971,49 +1113,51 @@ class LP_Statistics_DB extends LP_Database {
 		$oi_table                 = $this->tb_lp_order_items;
 		$oim_table                = $this->tb_lp_order_itemmeta;
 
-		$filter->only_fields[] = "SUM(CAST(oim.meta_value AS DECIMAL(10,2))) as x_data";
-		$time_field            = "p.post_date";
+		$filter->only_fields[] = 'SUM(CAST(oim.meta_value AS DECIMAL(10,2))) as x_data';
+		$time_field            = 'p.post_date';
 
-		$filter->join = [
+		$filter->join = array(
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
-		];
+		);
 
-		$filter->where = [
-			$this->wpdb->prepare( "AND p.post_type=%s", $filter->post_type ),
-			$this->wpdb->prepare( "AND p.post_status=%s", LP_ORDER_COMPLETED_DB ),
-			$this->wpdb->prepare( "AND oim.meta_key=%s", '_total' ),
-		];
+		$filter->where = array(
+			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
+			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' ),
+		);
 
 		if ( $instructor_id > 0 ) {
-			$filter->join[] = "INNER JOIN {$this->tb_posts} AS p2 ON p2.ID = oi.item_id";
-			$filter->where[] = $this->wpdb->prepare( "AND p2.post_author=%d", $instructor_id );
+			$filter->join[]  = "INNER JOIN {$this->tb_posts} AS p2 ON p2.ID = oi.item_id";
+			$filter->where[] = $this->wpdb->prepare( 'AND p2.post_author=%d', $instructor_id );
 		}
 
 		$filter->limit           = -1;
 		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter                  = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
 		$filter->order_by        = $time_field;
-		$filter->order           = "asc";
+		$filter->order           = 'asc';
 		$filter->run_query_count = false;
 
 		$result = $this->execute( $filter );
-		return is_array( $result ) ? $result : [];
+		return is_array( $result ) ? $result : array();
 	}
 
 	/**
 	 * Get enrollment chart data scoped by instructor.
 	 *
-	 * @param string $type   Time filter type.
-	 * @param string $value  Time filter value.
-	 * @param int    $instructor_id Instructor ID (0 for all).
+	 * @param string          $type   Time filter type.
+	 * @param string          $value  Time filter value.
+	 * @param int             $instructor_id Instructor ID (0 for all).
+	 * @param StatisticsScope $scope optional instructor/category scope. @since 4.4.2
+	 * @param string|null     $granularity explicit chart resolution ( hour|day|month ), custom type only. @since 4.4.2
 	 *
 	 * @return array Enrollment chart data.
 	 * @since 4.3.0
 	 */
-	public function get_enrollment_chart_data( string $type, string $value, int $instructor_id = 0 ): array {
+	public function get_enrollment_chart_data( string $type, string $value, int $instructor_id = 0, ?StatisticsScope $scope = null, ?string $granularity = null ): array {
 		if ( ! $type || ! $value ) {
-			return [];
+			return array();
 		}
 
 		$filter                   = new \LP_Filter();
@@ -1029,14 +1173,18 @@ class LP_Statistics_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author=%d', $instructor_id );
 		}
 
+		if ( $scope && ! $scope->is_empty() ) {
+			$filter = $scope->apply( $filter, 'ui.item_id' );
+		}
+
 		$filter->limit           = -1;
 		$filter                  = $this->filter_time( $filter, $type, $time_field, $value );
-		$filter                  = $this->chart_filter_group_by( $filter, $type, $time_field, $value );
+		$filter                  = $this->chart_filter_group_by( $filter, $type, $time_field, $value, $granularity );
 		$filter->order_by        = $time_field;
 		$filter->order           = 'asc';
 		$filter->run_query_count = false;
 
 		$result = $this->execute( $filter );
-		return is_array( $result ) ? $result : [];
+		return is_array( $result ) ? $result : array();
 	}
 }

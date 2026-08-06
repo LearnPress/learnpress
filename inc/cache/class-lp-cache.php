@@ -57,7 +57,7 @@ class LP_Cache {
 				Thim_Cache_DB::instance()->set_value( $key, $data, $expire );
 			}
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 	}
 

@@ -74,6 +74,9 @@ class AgentTest extends BrainMonkeyTestCase {
 					return $length === null
 						? substr( (string) $string, (int) $start )
 						: substr( (string) $string, (int) $start, (int) $length );
+				}
+				function wp_cache_delete( $key, $group = "" ) {
+					return true;
 				}'
 			);
 		}
@@ -88,6 +91,57 @@ class AgentTest extends BrainMonkeyTestCase {
 				}'
 			);
 		}
+
+		/**
+		 * In-memory wp_options stand-in for TokenQuotaGuard's atomic lock.
+		 *
+		 * Reproduces the one behaviour the lock depends on: INSERT IGNORE against the
+		 * unique option_name index inserts and reports 1 row only when the name is free,
+		 * and reports 0 without overwriting when it is already taken.
+		 */
+		if ( ! class_exists( 'LP_AI_Test_WPDB', false ) ) {
+			eval(
+				'class LP_AI_Test_WPDB {
+					public string $options = "wp_options";
+					public array $store = array();
+					public function prepare( string $query, ...$args ): string {
+						foreach ( $args as $arg ) {
+							$replacement = is_int( $arg ) ? (string) $arg : "\'" . $arg . "\'";
+							$query = preg_replace( "/%[sd]/", $replacement, $query, 1 );
+						}
+						return $query;
+					}
+					public function query( string $query ) {
+						$query = str_replace( "`", "", $query );
+						if ( false === stripos( $query, "INSERT IGNORE" ) ) {
+							return 0;
+						}
+						if ( ! preg_match( "/VALUES \\( \'([^\']+)\', \'([^\']*)\'/", $query, $m ) ) {
+							throw new \\RuntimeException( "Unparsed INSERT in wpdb stub: " . $query );
+						}
+						if ( array_key_exists( $m[1], $this->store ) ) {
+							return 0;
+						}
+						$this->store[ $m[1] ] = $m[2];
+						return 1;
+					}
+					public function get_var( string $query ) {
+						$query = str_replace( "`", "", $query );
+						if ( ! preg_match( "/option_name\\s*=\\s*\'([^\']+)\'/", $query, $m ) ) {
+							throw new \\RuntimeException( "Unparsed SELECT in wpdb stub: " . $query );
+						}
+						return $this->store[ $m[1] ] ?? null;
+					}
+					public function delete( string $table, array $where ) {
+						$name = $where["option_name"] ?? "";
+						unset( $this->store[ $name ] );
+						return 1;
+					}
+				}'
+			);
+		}
+
+		$GLOBALS['wpdb'] = new \LP_AI_Test_WPDB();
 
 		if ( ! class_exists( 'LP_Helper', false ) ) {
 			eval(
@@ -208,7 +262,7 @@ class AgentTest extends BrainMonkeyTestCase {
 			)
 		);
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( '/quick-quiz', 10, 20, 30 );
+		$result = $agent->run( '/quick-quiz', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertSame( 'Quick quiz ready', $result['message'] );
@@ -260,7 +314,7 @@ class AgentTest extends BrainMonkeyTestCase {
 			)
 		);
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'Create a quick quiz for me with 3 questions.', 10, 20, 30 );
+		$result = $agent->run( 'Create a quick quiz for me with 3 questions.', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertSame( 3, count( $result['quiz']['questions'] ) );
@@ -279,7 +333,7 @@ class AgentTest extends BrainMonkeyTestCase {
 		$this->queue_intent_and_responses( 'quick_quiz', array() );
 
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'Create a quick quiz for me with 3 questions.', 10, 20, 30 );
+		$result = $agent->run( 'Create a quick quiz for me with 3 questions.', 10, 'lp_lesson', 20, 30 );
 		$this->assertSame( 'text', $result['type'] );
 		$this->assertStringContainsString( 'Quick Quiz', $result['message'] );
 		$this->assertStringContainsString( 'disabled', strtolower( $result['message'] ) );
@@ -323,7 +377,7 @@ class AgentTest extends BrainMonkeyTestCase {
 			)
 		);
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'Create a quick quiz for me with two, please.', 10, 20, 30 );
+		$result = $agent->run( 'Create a quick quiz for me with two, please.', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertSame( 3, count( $result['quiz']['questions'] ) );
@@ -392,7 +446,7 @@ class AgentTest extends BrainMonkeyTestCase {
 			)
 		);
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'tạo quick quiz gồm sáu câu hỏi', 10, 20, 30 );
+		$result = $agent->run( 'tạo quick quiz gồm sáu câu hỏi', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertSame( 7, count( $result['quiz']['questions'] ) );
@@ -451,7 +505,7 @@ class AgentTest extends BrainMonkeyTestCase {
 		// Numeric count parsing is language-agnostic: "quick quiz with 5 questions"
 		// Parser should find "5" regardless of surrounding context
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'quick quiz with 5 questions', 10, 20, 30 );
+		$result = $agent->run( 'quick quiz with 5 questions', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertSame( 5, count( $result['quiz']['questions'] ) );
@@ -500,7 +554,7 @@ class AgentTest extends BrainMonkeyTestCase {
 		// Parser returns null, system prompt allows 3-5 flexibility
 		// When no explicit count, we trust OpenAI's judgment (typically 3)
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'create a quick quiz', 10, 20, 30 );
+		$result = $agent->run( 'create a quick quiz', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		// When count is null, no capping applied—if OpenAI returns 3, we keep all 3
@@ -538,7 +592,7 @@ class AgentTest extends BrainMonkeyTestCase {
 		);
 
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'Tao cho minh ba cau hoi luyen tap', 10, 20, 30 );
+		$result = $agent->run( 'Tao cho minh ba cau hoi luyen tap', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertTrue( $result['quiz']['is_active'] );
@@ -574,7 +628,7 @@ class AgentTest extends BrainMonkeyTestCase {
 		);
 
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'Bat dau nhanh giup toi', 10, 20, 30, array(), array(), 'quick_quiz' );
+		$result = $agent->run( 'Bat dau nhanh giup toi', 10, 'lp_lesson', 20, 30, array(), array(), 'quick_quiz' );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertSame( 'Quick quiz ready', $result['message'] );
@@ -611,7 +665,7 @@ class AgentTest extends BrainMonkeyTestCase {
 		);
 
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'Summarize this lesson for me.', 10, 20, 30 );
+		$result = $agent->run( 'Summarize this lesson for me.', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'text', $result['type'] );
 		$this->assertStringContainsString( 'Daily AI usage limit reached', $result['message'] );
@@ -631,7 +685,7 @@ class AgentTest extends BrainMonkeyTestCase {
 			)
 		);
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( '/summarize', 10, 20, 30 );
+		$result = $agent->run( '/summarize', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'text', $result['type'] );
 		$this->assertStringContainsString( 'unable to complete', strtolower( $result['message'] ) );
@@ -655,7 +709,7 @@ class AgentTest extends BrainMonkeyTestCase {
 			)
 		);
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( '/summarize', 10, 20, 30 );
+		$result = $agent->run( '/summarize', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'text', $result['type'] );
 		$this->assertSame( 'Key points: one, two, three.', $result['message'] );
@@ -686,7 +740,7 @@ class AgentTest extends BrainMonkeyTestCase {
 		);
 
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'tong hop noi dung', 10, 20, 30 );
+		$result = $agent->run( 'tong hop noi dung', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'text', $result['type'] );
 		$this->assertSame( 'Tom tat bai hoc.', $result['message'] );
@@ -715,7 +769,7 @@ class AgentTest extends BrainMonkeyTestCase {
 		);
 
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( 'tong hop noi dung bai hoc', 10, 20, 30 );
+		$result = $agent->run( 'tong hop noi dung bai hoc', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'text', $result['type'] );
 		$this->assertSame( 'Noi dung bai hoc tap trung vao cac khai niem cot loi va vi du thuc te.', $result['message'] );
@@ -736,7 +790,7 @@ class AgentTest extends BrainMonkeyTestCase {
 			)
 		);
 		$agent  = new \LearnPress\AI\Assistant\Agent();
-		$result = $agent->run( '/summarize', 10, 20, 30 );
+		$result = $agent->run( '/summarize', 10, 'lp_lesson', 20, 30 );
 
 		$this->assertSame( 'text', $result['type'] );
 		$this->assertSame( 'This is a plain text summary.', $result['message'] );
@@ -770,7 +824,7 @@ class AgentTest extends BrainMonkeyTestCase {
 			),
 		);
 
-		$result = $agent->run( '2', 10, 20, 30, array(), $active_quiz );
+		$result = $agent->run( '2', 10, 'lp_lesson', 20, 30, array(), $active_quiz );
 
 		$this->assertSame( 'quiz', $result['type'] );
 		$this->assertTrue( $result['quiz']['is_active'] );
@@ -778,6 +832,154 @@ class AgentTest extends BrainMonkeyTestCase {
 		$this->assertSame( 1, $result['quiz']['current_index'] );
 		$this->assertTrue( $result['quiz']['feedback']['is_correct'] );
 		$this->assertSame( 'Because B1', $result['quiz']['feedback']['explanation'] );
+	}
+
+	/**
+	 * Lock option name used by TokenQuotaGuard for a user on the stubbed "today".
+	 */
+	private function quota_lock_name( int $user_id ): string {
+		return '_lp_ai_assistant_quota_lock_' . $user_id . '_2026-04-15';
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_fails_closed_when_another_request_holds_the_quota_lock(): void {
+		$this->load_agent_with_stubs();
+		$this->queue_intent_and_responses( 'summarize', array( array( 'content' => 'should not be reached' ) ) );
+
+		// A quota must be configured for the lock to be taken at all.
+		\LP_Settings::$options['ai_assistant_max_usage_tokens_per_day'] = 500;
+
+		// Simulate a concurrent in-flight request from the same learner.
+		$GLOBALS['wpdb']->store[ $this->quota_lock_name( 30 ) ] = (string) time();
+
+		$queued_before = count( \LearnPress\Services\OpenAiService::$queue );
+
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( '/summarize', 10, 'lp_lesson', 20, 30 );
+
+		$this->assertSame( 'text', $result['type'] );
+		$this->assertStringContainsString( 'still running', $result['message'] );
+
+		// Nothing was sent to OpenAI: the quota could not be verified, so we refused.
+		$this->assertCount( $queued_before, \LearnPress\Services\OpenAiService::$queue );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_recovers_a_stale_quota_lock_left_by_a_dead_request(): void {
+		$this->load_agent_with_stubs();
+		$this->queue_intent_and_responses(
+			'summarize',
+			array(
+				array( 'content' => json_encode( array( 'message' => 'Recovered and summarized.' ) ) ),
+			)
+		);
+
+		\LP_Settings::$options['ai_assistant_max_usage_tokens_per_day'] = 500;
+
+		// Lock far older than LOCK_TTL: the holder died without releasing it.
+		$GLOBALS['wpdb']->store[ $this->quota_lock_name( 30 ) ] = (string) ( time() - 10000 );
+
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( '/summarize', 10, 'lp_lesson', 20, 30 );
+
+		$this->assertSame( 'text', $result['type'] );
+		$this->assertSame( 'Recovered and summarized.', $result['message'] );
+
+		// Released again on the way out, so the next request is not blocked.
+		$this->assertArrayNotHasKey( $this->quota_lock_name( 30 ), $GLOBALS['wpdb']->store );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_releases_the_quota_lock_after_a_normal_request(): void {
+		$this->load_agent_with_stubs();
+		$this->queue_intent_and_responses(
+			'summarize',
+			array(
+				array( 'content' => json_encode( array( 'message' => 'Summary.' ) ) ),
+			)
+		);
+
+		\LP_Settings::$options['ai_assistant_max_usage_tokens_per_day'] = 500;
+
+		$agent = new \LearnPress\AI\Assistant\Agent();
+		$agent->run( '/summarize', 10, 'lp_lesson', 20, 30 );
+
+		$this->assertArrayNotHasKey( $this->quota_lock_name( 30 ), $GLOBALS['wpdb']->store );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_refuses_smart_review_when_item_is_a_lesson(): void {
+		$this->load_agent_with_stubs();
+		$this->queue_intent_and_responses( 'smart_review', array() );
+
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( 'Review my quiz results', 10, 'lp_lesson', 20, 30 );
+
+		$this->assertSame( 'text', $result['type'] );
+		$this->assertStringContainsString( 'only available on a quiz', $result['message'] );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_refuses_lesson_grounded_intent_when_item_is_a_quiz(): void {
+		$this->load_agent_with_stubs();
+		$this->queue_intent_and_responses( 'summarize', array() );
+
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( '/summarize', 999, 'lp_quiz', 20, 30 );
+
+		$this->assertSame( 'text', $result['type'] );
+		$this->assertStringContainsString( 'only available on a lesson', $result['message'] );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_refuses_unsupported_item_type_before_calling_openai(): void {
+		$this->load_agent_with_stubs();
+		$this->queue_intent_and_responses( 'summarize', array() );
+
+		$queued_before = count( \LearnPress\Services\OpenAiService::$queue );
+
+		$agent  = new \LearnPress\AI\Assistant\Agent();
+		$result = $agent->run( '/summarize', 10, 'lp_question', 20, 30 );
+
+		$this->assertSame( 'text', $result['type'] );
+		$this->assertStringContainsString( 'not available for this type', $result['message'] );
+
+		// Nothing was consumed from the queue: no classification call was made.
+		$this->assertCount( $queued_before, \LearnPress\Services\OpenAiService::$queue );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_run_refuses_to_continue_quick_quiz_when_item_is_a_quiz(): void {
+		$this->load_agent_with_stubs();
+
+		$agent       = new \LearnPress\AI\Assistant\Agent();
+		$active_quiz = array(
+			'is_active'     => true,
+			'completed'     => false,
+			'current_index' => 0,
+			'score'         => 0,
+			'total'         => 1,
+			'questions'     => array(
+				array(
+					'question'      => 'Q1',
+					'options'       => array( 'A1', 'B1' ),
+					'correct_index' => 1,
+					'explanation'   => 'Because B1',
+				),
+			),
+		);
+
+		$result = $agent->run( '2', 999, 'lp_quiz', 20, 30, array(), $active_quiz );
+
+		$this->assertSame( 'text', $result['type'] );
+		$this->assertStringContainsString( 'only available on a lesson', $result['message'] );
 	}
 
 	public function test_agent_contains_i18n_translator_comments_for_placeholders(): void {

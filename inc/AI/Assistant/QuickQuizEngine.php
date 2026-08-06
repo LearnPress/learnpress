@@ -115,9 +115,11 @@ class QuickQuizEngine {
 			'questions'     => $questions,
 		);
 
+		$intro = sanitize_textarea_field( (string) ( $decoded['intro'] ?? '' ) );
+
 		return array(
 			'type'    => 'quiz',
-			'message' => $decoded['intro'] ?? __( 'Quick quiz started. Answer each question to continue.', 'learnpress' ),
+			'message' => ! empty( $intro ) ? $intro : __( 'Quick quiz started. Answer each question to continue.', 'learnpress' ),
 			'quiz'    => $quiz_state,
 		);
 	}
@@ -340,26 +342,22 @@ class QuickQuizEngine {
 	/**
 	 * Sanitize and normalize generated quiz questions from model output.
 	 *
-	 * If $question_count is null, returns questions as-is (trusting OpenAI's output).
-	 * If $question_count is set, caps to exactly that many questions.
+	 * Every question is sanitized and given a known shape regardless of whether an
+	 * explicit count was requested. Model output is untrusted input: this state is sent
+	 * to the browser, persisted in localStorage, and echoed back on the next turn, so
+	 * the previous "trust the model when no count was asked for" path is not safe.
+	 *
+	 * $question_count only caps how many valid questions are kept.
 	 *
 	 * @param array    $questions      Raw question payload.
-	 * @param int|null $question_count Maximum number of questions to keep, or null to trust model.
+	 * @param int|null $question_count Exact number of questions to keep, or null to keep all valid ones.
 	 *
 	 * @return array
 	 */
 	private function sanitize_quiz_questions( array $questions, ?int $question_count = null ): array {
 
-		if ( empty( $questions ) || ! is_array( $questions ) ) {
+		if ( empty( $questions ) ) {
 			return array();
-		}
-
-		// If no explicit count, trust OpenAI's output (typically 3-5 questions).
-		if ( $question_count === null ) {
-			return array_filter(
-				array_map( static fn( $q ) => is_array( $q ) ? $q : null, $questions ),
-				static fn( $q ) => null !== $q
-			);
 		}
 
 		$sanitized = array();
@@ -392,7 +390,7 @@ class QuickQuizEngine {
 				'explanation'   => sanitize_textarea_field( (string) ( $question['explanation'] ?? '' ) ),
 			);
 
-			if ( count( $sanitized ) >= max( 1, $question_count ) ) {
+			if ( null !== $question_count && count( $sanitized ) >= max( 1, $question_count ) ) {
 				break;
 			}
 		}

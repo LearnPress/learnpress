@@ -1,57 +1,121 @@
 <?php
 /**
- * Template for displaying orders statistics tab Orders statistics page.
+ * Template for displaying the Orders statistics dashboard tab.
+ *
+ * Data is rendered by assets/src/js/admin/statistics/tab-orders.js from the
+ * `dashboard` key of the order-statistics endpoint.
+ *
+ * @since 4.4.2
  */
-?>
 
-<div class="lp-admin-statistics-tab-content">
-	<div class="btn-group btn-group-filter">
-		<button class="btn-filter-time active" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ); ?></button>
-		<!-- <button class="btn-filter-time" type="button" data-filter="yesterday" ><?php _e( 'Yesterday', 'learnpress' ); ?></button> -->
-		<button class="btn-filter-time" type="button" data-filter="last7days" ><?php _e( 'Last 7 days', 'learnpress' ); ?></button>
-		<button class="btn-filter-time" type="button" data-filter="last30days" ><?php _e( 'Last 30 days', 'learnpress' ); ?></button>
-		<!-- <button class="btn-filter-time" type="button" data-filter="thismonth" ><?php _e( 'This month', 'learnpress' ); ?></button> -->
-		<button class="btn-filter-time" type="button" data-filter="last12months"><?php _e( 'Last 12 months', 'learnpress' ); ?></button>
-		<button class="btn-filter-time" type="button" data-filter="thisyear" ><?php _e( 'This year', 'learnpress' ); ?></button>
-		<button class="btn-filter-time" type="button" data-filter="custom" ><?php _e( 'Custom', 'learnpress' ); ?></button>
-		<div class="custom-filter-time">
-			<input type="date" id="ct-filter-1" />
-			<input type="date" id="ct-filter-2">
-			<button class="custom-filter-btn button button-primary" type="button"><?php _e( 'Filter', 'learnpress' ); ?></button>
+defined( 'ABSPATH' ) || exit();
+
+$kpi_cards = array(
+	'net-sales'         => __( 'Net sales', 'learnpress' ),
+	'completed-orders'  => __( 'Completed orders', 'learnpress' ),
+	'processing'        => __( 'Processing orders', 'learnpress' ),
+	'pending'           => __( 'Pending orders', 'learnpress' ),
+	'cancelled-failed'  => __( 'Cancelled / failed', 'learnpress' ),
+	'paid-courses-sold' => __( 'Paid courses sold', 'learnpress' ),
+);
+
+$payment_health = array(
+	'completed'  => __( 'Completed', 'learnpress' ),
+	'processing' => __( 'Processing', 'learnpress' ),
+	'pending'    => __( 'Pending', 'learnpress' ),
+	'cancelled'  => __( 'Cancelled', 'learnpress' ),
+	'failed'     => __( 'Failed', 'learnpress' ),
+);
+
+// Section config filters — add/remove/relabel cards and lists. @since 4.4.2
+$kpi_cards      = (array) apply_filters( 'learn-press/statistics/orders/kpi-cards', $kpi_cards );
+$payment_health = (array) apply_filters( 'learn-press/statistics/orders/payment-health', $payment_health );
+?>
+<div class="lp-admin-statistics-tab-content lp-stats-tab-orders">
+	<?php
+	/**
+	 * Fires at the top of the Orders statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/orders/before' );
+
+	learn_press_admin_view( 'statistics/parts/filter-bar' );
+	?>
+
+	<div class="lp-stats-dashboard-body">
+		<div class="lp-stats-kpi-grid">
+			<?php
+			foreach ( $kpi_cards as $key => $title ) {
+				learn_press_admin_view(
+					'statistics/parts/kpi-card',
+					array(
+						'key'   => $key,
+						'title' => $title,
+					)
+				);
+			}
+			?>
+		</div>
+
+		<div class="lp-stats-overview-grid lp-stats-overview-grid--chart">
+			<div class="lp-stats-section statistics-content">
+				<div class="lp-stats-section__header">
+					<div>
+						<h3 class="lp-stats-section__title"><?php esc_html_e( 'Order volume and revenue', 'learnpress' ); ?></h3>
+						<p class="lp-stats-section__description"><?php esc_html_e( 'Completed order revenue, order count, and status health for the selected period.', 'learnpress' ); ?></p>
+					</div>
+				</div>
+				<div id="orders-chart" class="statistics-chart-wrapper">
+					<?php lp_skeleton_animation_html( 10, 100 ); ?>
+					<canvas id="orders-chart-content" style="display: none;"></canvas>
+				</div>
+			</div>
+
+			<div class="lp-stats-section">
+				<div class="lp-stats-section__header">
+					<h3 class="lp-stats-section__title"><?php esc_html_e( 'Payment health', 'learnpress' ); ?></h3>
+				</div>
+				<ul class="lp-stats-payment-health">
+					<?php foreach ( $payment_health as $status => $label ) : ?>
+						<li class="lp-stats-payment-health__row" data-status="<?php echo esc_attr( $status ); ?>">
+							<span class="lp-stats-payment-health__label"><?php echo esc_html( $label ); ?></span>
+							<span class="lp-stats-payment-health__count">&ndash;</span>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+		</div>
+
+		<div class="lp-stats-overview-grid lp-stats-overview-grid--tables">
+			<div class="lp-stats-section">
+				<div class="lp-stats-section__header">
+					<h3 class="lp-stats-section__title"><?php esc_html_e( 'Top sold courses', 'learnpress' ); ?></h3>
+					<button type="button" class="button-link lp-stats-section__action lp-stats-view-all-top-sold"><?php esc_html_e( 'Open report', 'learnpress' ); ?></button>
+				</div>
+				<?php lp_skeleton_animation_html( 5, 100 ); ?>
+				<div class="lp-stats-table-top-sold-courses"></div>
+			</div>
+
+			<div class="lp-stats-section">
+				<div class="lp-stats-section__header">
+					<h3 class="lp-stats-section__title"><?php esc_html_e( 'Recent order exceptions', 'learnpress' ); ?></h3>
+					<button type="button" class="button-link lp-stats-section__action lp-stats-view-all-exceptions"><?php esc_html_e( 'Open report', 'learnpress' ); ?></button>
+				</div>
+				<?php lp_skeleton_animation_html( 5, 100 ); ?>
+				<div class="lp-stats-table-order-exceptions"></div>
+			</div>
 		</div>
 	</div>
-	<div class="statistics-content">
-		<input class="statistics-type" type="hidden" value="orders-statistics">
-		<div class="statistics-group group-statistic-order">
-			<div class="statistics-item">
-				<span class="statistics-item-title"><?php _e( 'Total Orders', 'learnpress' ); ?></span>
-				<span class="statistics-item-count total-order-count">0</span>
-			</div>
-			<div class="statistics-item">
-				<span class="statistics-item-title"><?php _e( 'Completed Orders', 'learnpress' ); ?></span>
-				<span class="statistics-item-count completed-order-count">0</span>
-			</div>
-			<div class="statistics-item">
-				<span class="statistics-item-title"><?php _e( 'Proccessing Orders', 'learnpress' ); ?></span>
-				<span class="statistics-item-count processing-order-count">0</span>
-			</div>
-			<div class="statistics-item">
-				<span class="statistics-item-title"><?php _e( 'Pending Orders', 'learnpress' ); ?></span>
-				<span class="statistics-item-count pending-order-count">0</span>
-			</div>
-			<div class="statistics-item">
-				<span class="statistics-item-title"><?php _e( 'Cancelled Orders', 'learnpress' ); ?></span>
-				<span class="statistics-item-count cancelled-order-count">0</span>
-			</div>
-			<div class="statistics-item">
-				<span class="statistics-item-title"><?php _e( 'Fail Orders', 'learnpress' ); ?></span>
-				<span class="statistics-item-count failed-order-count">0</span>
-			</div>
-		</div>
-		<h3 class="statistics-title"><?php _e( 'Completed Orders', 'learnpress' ); ?></h3>
-		<div id="orders-chart" class="statistics-chart-wrapper">
-			<?php lp_skeleton_animation_html( 10, 100 ); ?>
-			<canvas id="orders-chart-content" style="display: none;"></canvas>
-		</div>
-	</div>
+
+	<?php
+	learn_press_admin_view( 'statistics/parts/report-modal' );
+
+	/**
+	 * Fires at the bottom of the Orders statistics tab, inside the tab container.
+	 *
+	 * @since 4.4.2
+	 */
+	do_action( 'learn-press/statistics/orders/after' );
+	?>
 </div>

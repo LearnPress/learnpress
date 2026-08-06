@@ -1,6 +1,9 @@
 .lp-admin-statistics-tab-content {
     box-sizing: border-box;
 	max-width: 100%;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+
 	.btn-group {
 		display: flex;
 		margin: 20px 0;
@@ -95,5 +98,760 @@
 			line-height: 1.2;
 			font-weight: 700;
 		}
+	}
+}
+
+// ─── Statistics dashboard components (@since 4.4.2) ─────────────────────────
+// Prefixes: lp-stats- / lp-kpi- / lp-badge. Colors follow the WP admin palette.
+
+$lp-stats-blue: #3858e9;
+$lp-stats-up: #00a32a;
+$lp-stats-down: #d63638;
+$lp-stats-warning: #dba617;
+$lp-stats-border: #dcdcde;
+$lp-stats-panel-border: #c3c4c7;
+$lp-stats-muted: #646970;
+
+.lp-admin-statistics-tab-content > .lp-stats-kpi-grid {
+	margin: 20px 20px 14px;
+}
+
+.lp-admin-statistics-tab-content > .lp-stats-layout {
+	margin: 0 20px 20px;
+}
+
+.lp-stats-dashboard-body {
+	padding: 20px;
+}
+
+.lp-admin-statistics-tab-content .lp-stats-section.statistics-content {
+	padding: 0;
+}
+
+.lp-statistics-filter-bar {
+	align-items: center;
+	gap: 8px;
+	margin: 0 !important;
+	padding: 16px;
+	border-bottom: 1px solid $lp-stats-border;
+	background: #fff;
+}
+
+// WC-style date-range dropdown ( supersedes the .btn-filter-time preset row ).
+.lp-stats-daterange {
+	position: relative;
+
+	.lp-stats-daterange__toggle {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		min-height: 38px;
+		padding: 8px 12px;
+		border: 1px solid $lp-stats-panel-border;
+		border-radius: 2px;
+		background: #fff;
+		color: #1d2327;
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 20px;
+		cursor: pointer;
+
+		&:hover,
+		&[aria-expanded="true"] {
+			border-color: $lp-stats-blue;
+			color: $lp-stats-blue;
+		}
+
+		.dashicons {
+			font-size: 18px;
+			width: 18px;
+			height: 18px;
+		}
+
+		.lp-stats-daterange__caret {
+			font-size: 14px;
+			width: 14px;
+			height: 14px;
+			color: $lp-stats-muted;
+		}
+	}
+
+	.lp-stats-daterange__panel {
+		position: absolute;
+		z-index: 100;
+		top: calc(100% + 4px);
+		inset-inline-start: 0;
+		min-width: 280px;
+		border: 1px solid $lp-stats-panel-border;
+		border-radius: 2px;
+		background: #fff;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+	}
+
+	.lp-stats-daterange__tabs {
+		display: flex;
+		border-bottom: 1px solid $lp-stats-border;
+
+		.lp-stats-daterange__tab {
+			flex: 1;
+			padding: 10px 16px;
+			border: 0;
+			border-bottom: 2px solid transparent;
+			background: none;
+			color: $lp-stats-muted;
+			font-size: 13px;
+			font-weight: 600;
+			cursor: pointer;
+
+			&.active {
+				border-bottom-color: $lp-stats-blue;
+				color: $lp-stats-blue;
+			}
+
+			&:focus-visible {
+				outline: 1.5px solid $lp-stats-blue;
+				outline-offset: -2px;
+			}
+		}
+	}
+
+	.lp-stats-daterange__presets {
+		max-height: 320px;
+		margin: 0;
+		padding: 8px 0;
+		overflow-y: auto;
+		list-style: none;
+
+		li {
+			margin: 0;
+		}
+
+		.lp-stats-daterange__preset {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 7px 16px;
+			font-size: 13px;
+			cursor: pointer;
+
+			&:hover {
+				background: #f0f0f1;
+			}
+
+			input[type="radio"] {
+				margin: 0;
+			}
+		}
+	}
+
+	.lp-stats-daterange__tabpanel[data-tabpanel="custom"] {
+		padding: 16px;
+
+		.lp-stats-daterange__custom-fields {
+			display: flex;
+			gap: 12px;
+			margin-bottom: 12px;
+
+			label {
+				display: flex;
+				flex-direction: column;
+				gap: 4px;
+				font-size: 12px;
+				color: $lp-stats-muted;
+			}
+
+			input[type="date"] {
+				min-height: 34px;
+			}
+		}
+	}
+
+	.lp-stats-daterange__compare {
+		margin: 0;
+		padding: 12px 16px 14px;
+		border: 0;
+		border-top: 1px solid $lp-stats-border;
+
+		legend {
+			padding: 12px 0 6px;
+			font-size: 12px;
+			font-weight: 600;
+			color: $lp-stats-muted;
+			text-transform: uppercase;
+		}
+
+		label {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 4px 0;
+			font-size: 13px;
+			cursor: pointer;
+
+			input[type="radio"] {
+				margin: 0;
+			}
+		}
+	}
+
+	@media screen and (max-width: 782px) {
+		.lp-stats-daterange__panel {
+			min-width: 0;
+			width: min(320px, calc(100vw - 48px));
+		}
+	}
+}
+
+.lp-stats-filter-scope {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-inline-start: auto;
+
+	select {
+		width: 145px;
+		max-width: 180px;
+		min-height: 36px;
+	}
+
+	.lp-stats-export-csv {
+		min-height: 36px;
+		border-color: $lp-stats-panel-border;
+		background: #f6f7f7;
+		font-weight: 500;
+	}
+}
+
+// KPI cards: 6-up desktop → 2-up mobile.
+.lp-admin-statistics-tab-content .lp-stats-section .statistics-chart-wrapper {
+	position: relative;
+	box-sizing: border-box;
+	height: 360px;
+	max-height: 380px;
+	padding: 20px;
+
+	canvas {
+		width: 100% !important;
+		height: 100% !important;
+		max-height: 100%;
+	}
+
+	@media screen and (max-width: 782px) {
+		height: 280px;
+		padding: 16px;
+	}
+}
+
+.lp-stats-kpi-grid {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 16px;
+	margin-bottom: 14px;
+
+	@media screen and (max-width: 1400px) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	@media screen and (max-width: 782px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+.lp-kpi-card {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-height: 110px;
+	box-sizing: border-box;
+	padding: 16px;
+	border: 1px solid $lp-stats-border;
+	background: #fff;
+
+	&.is-highlighted {
+		border-color: #2271b1;
+		box-shadow: inset 0 0 0 1px #2271b1;
+	}
+
+	.lp-kpi-title {
+		font-size: 12px;
+		font-weight: 600;
+		text-transform: uppercase;
+		color: #8c8f94;
+	}
+
+	.lp-kpi-value {
+		font-size: 24px;
+		font-weight: 700;
+		line-height: 1.2;
+	}
+
+	.lp-kpi-delta {
+		font-size: 12px;
+		font-weight: 600;
+
+		&.is-up {
+			color: $lp-stats-up;
+		}
+
+		&.is-down {
+			color: $lp-stats-down;
+		}
+	}
+
+	.lp-kpi-subline {
+		font-size: 12px;
+		color: $lp-stats-muted;
+	}
+
+	.lp-kpi-progress {
+		display: block;
+		height: 6px;
+		margin-top: 4px;
+		background: #f0f0f1;
+		overflow: hidden;
+	}
+
+	.lp-kpi-progress__bar {
+		display: block;
+		height: 100%;
+		background: #2271b1;
+	}
+}
+
+// Status badges.
+.lp-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	color: #fff;
+
+	&--green {
+		background: $lp-stats-up;
+	}
+
+	&--yellow {
+		background: $lp-stats-warning;
+	}
+
+	&--red {
+		background: $lp-stats-down;
+	}
+
+	&--grey {
+		background: $lp-stats-muted;
+	}
+}
+
+// Watchlist risk badges: emoji is pseudo-content so it never lands in the
+// payload or CSV export (the cell text stays "High/Medium/Healthy").
+.lp-risk {
+	&--high {
+		background: $lp-stats-down;
+
+		&::before {
+			content: "\1F534 ";
+		}
+	}
+
+	&--medium {
+		background: $lp-stats-warning;
+
+		&::before {
+			content: "\1F7E1 ";
+		}
+	}
+
+	&--healthy {
+		background: $lp-stats-up;
+
+		&::before {
+			content: "\1F7E2 ";
+		}
+	}
+}
+
+// Instructor Operations widget.
+.lp-stats-operations {
+	margin: 0;
+	padding: 16px;
+
+	&__row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 8px;
+		padding: 10px 0;
+		border-bottom: 1px solid $lp-stats-border;
+
+		&:last-child {
+			border-bottom: 0;
+		}
+	}
+
+	&__label {
+		flex: 1;
+		font-size: 13px;
+		color: $lp-stats-muted;
+	}
+
+	&__value {
+		font-weight: 700;
+		font-size: 14px;
+	}
+
+	&__name {
+		flex-basis: 100%;
+		font-size: 12px;
+		color: $lp-stats-muted;
+	}
+}
+
+// Data tables (top courses, exceptions, watchlist, …).
+// The base look comes from the shared _table.scss ( table.lp-list-table ); this
+// class only adds the stats-specific behaviours. Widget tables sit in a 2-column
+// grid, so relax the shared 768px min-width to avoid a forced horizontal scroll.
+.lp-stats-table {
+	tbody tr:hover {
+		background: #f6f7f7;
+	}
+
+	.lp-stats-course-performance-row,
+	.lp-stats-instructor-performance-row {
+		cursor: pointer;
+	}
+
+	tbody tr.is-highlighted {
+		background: #f0f6fc;
+		box-shadow: inset 3px 0 0 #2271b1;
+	}
+
+	.lp-stats-table__empty {
+		color: $lp-stats-muted;
+		text-align: center;
+		padding: 24px 12px;
+	}
+}
+
+// The shared _table.scss wrapper ( 1px border + 5px radius + 768px min-width +
+// overflow-x ) is built for full-width standalone tables. Inside the dashboard
+// section cards and the report popup it reads as a nested box with a needless
+// horizontal scrollbar. Strip that chrome and drop the min-width so the tables
+// sit flush and fit their column width. Scoped to statistics only — every other
+// LearnPress table keeps the shared look.
+.lp-admin-statistics-tab-content,
+.lp-stats-report-modal {
+	.lp-table-wrap {
+		border: 0;
+		border-radius: 0;
+		// Scroll a table horizontally when it is wider than its box rather than
+		// clipping columns or squashing them unreadably.
+		overflow-x: auto;
+	}
+
+	table.lp-list-table {
+		min-width: 0;
+	}
+}
+
+// Enlarged report popup shell ( SweetAlert2 customClass — the % width is set
+// inline by the JS ). Kept near-full-width so wide reports have room; the body
+// scrolls, so the dialog never grows past the viewport.
+.lp-stats-report-popup.swal2-popup {
+	max-width: 1600px;
+}
+
+// Report popup body — rendered inside a SweetAlert2 popup, which supplies
+// overlay, dialog, title and close button.
+.lp-stats-report-modal {
+	text-align: start;
+
+	&__toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 10px 0;
+
+		.lp-stats-report-modal__search {
+			flex: 1;
+			max-width: 320px;
+		}
+
+		.lp-stats-report-modal__export {
+			margin-inline-start: auto;
+		}
+	}
+
+	&__body {
+		overflow: auto;
+		// Taller now that the popup is large; the table area takes most of the height.
+		max-height: 72vh;
+	}
+
+	// Report tables carry more columns than the compact widget tables — keep them
+	// at a readable width and let the wrap scroll horizontally on narrow screens.
+	table.lp-list-table {
+		min-width: 720px;
+	}
+
+	&__loading {
+		padding: 40px 0;
+		text-align: center;
+		color: $lp-stats-muted;
+		font-size: 14px;
+	}
+
+	// Base table look comes from the shared _table.scss ( table.lp-list-table ).
+
+	.lp-stats-report-table-footer {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 10px;
+		padding-top: 6px;
+
+		&__count {
+			color: $lp-stats-muted;
+			font-size: 13px;
+		}
+	}
+}
+
+// Learner funnel bars.
+.lp-stats-funnel {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 18px 16px 16px;
+
+	.lp-stats-funnel__step {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 6px 10px;
+	}
+
+	.lp-stats-funnel__label {
+		font-size: 14px;
+	}
+
+	.lp-stats-funnel__track {
+		grid-column: 1 / -1;
+		background: #f0f0f1;
+	}
+
+	.lp-stats-funnel__bar {
+		display: block;
+		height: 8px;
+		min-width: 2px;
+		background: $lp-stats-blue;
+	}
+
+	// Users tab: failed step is an alert annotation, not a narrowing step.
+	.lp-stats-funnel__step[data-step="failed"] .lp-stats-funnel__bar {
+		background: $lp-stats-down;
+	}
+
+	.lp-stats-funnel__count {
+		font-size: 14px;
+		font-weight: 600;
+	}
+}
+
+.lp-stats-payment-health {
+	margin: 0;
+	padding: 16px;
+	list-style: none;
+
+	&__row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		margin: 0;
+		padding: 10px 0;
+		border-bottom: 1px solid $lp-stats-border;
+
+		&:last-child {
+			border-bottom: 0;
+		}
+	}
+
+	&__label {
+		color: #1d2327;
+		font-size: 14px;
+	}
+
+	&__count {
+		font-size: 14px;
+		font-weight: 600;
+	}
+}
+
+// Health checks: 4-box grid.
+.lp-stats-health-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 10px;
+
+	@media screen and (max-width: 1200px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.lp-stats-health-box {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		padding: 12px 15px;
+		border: 1px solid $lp-stats-border;
+		background: #fff;
+
+		&.is-alert {
+			border-inline-start: 4px solid $lp-stats-down;
+		}
+
+		.lp-stats-health-box__count {
+			font-size: 20px;
+			font-weight: 700;
+		}
+
+		.lp-stats-health-box__label {
+			font-size: 12px;
+			color: $lp-stats-muted;
+		}
+	}
+}
+
+// 2-column layout: main content + sidebar.
+.lp-stats-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 320px;
+	gap: 20px;
+	align-items: start;
+
+	@media screen and (max-width: 1200px) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.lp-stats-layout__sidebar > * + * {
+		margin-top: 20px;
+	}
+}
+
+// Section wrapper with heading, used by every widget.
+.lp-stats-section {
+	background: #fff;
+	border: 1px solid $lp-stats-border;
+	padding: 0;
+	margin-bottom: 20px;
+	overflow: hidden;
+
+	.lp-stats-section__header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 16px;
+		min-height: 50px;
+		box-sizing: border-box;
+		padding: 14px 16px 12px;
+		border-bottom: 1px solid $lp-stats-border;
+	}
+
+	.lp-stats-section__title {
+		margin: 0;
+		font-size: 16px;
+		font-weight: 600;
+		line-height: 24px;
+	}
+
+	> .lp-stats-section__title {
+		padding: 14px 16px 12px;
+		border-bottom: 1px solid $lp-stats-border;
+	}
+
+	.lp-stats-section__description {
+		margin: 4px 0 0;
+		color: #50575e;
+		font-size: 13px;
+		line-height: 20px;
+	}
+
+	.lp-stats-section__action {
+		align-self: center;
+		color: $lp-stats-blue;
+		font-size: 14px;
+		text-decoration: none;
+	}
+
+	> .lp-stats-health-grid,
+	> .lp-stats-health-checks {
+		margin: 0;
+		padding: 16px;
+	}
+
+	> .lp-skeleton-animation {
+		margin: 16px;
+	}
+}
+
+.lp-stats-overview-grid {
+	display: grid;
+	gap: 20px;
+	margin-top: 20px;
+
+	.lp-stats-section {
+		margin-bottom: 0;
+	}
+
+	&:first-of-type {
+		margin-top: 0;
+	}
+
+	&--chart {
+		grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+
+		.lp-stats-section {
+			min-height: 440px;
+		}
+	}
+
+	&--tables {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	&--health {
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+	}
+
+	@media screen and (max-width: 1200px) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+.lp-stats-health-checks {
+	list-style: none;
+
+	li {
+		margin: 0;
+		border-bottom: 1px solid $lp-stats-border;
+
+		&:last-child {
+			border-bottom: 0;
+		}
+	}
+
+	a {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 10px 0;
+		text-decoration: none;
+	}
+
+	.lp-stats-health-check__count {
+		order: 2;
+		font-weight: 600;
 	}
 }
