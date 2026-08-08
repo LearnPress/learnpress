@@ -142,7 +142,7 @@ class GutenbergHandleMain {
 	 *
 	 * @return array
 	 * @since 4.2.2.3
-	 * @version 1.0.6
+	 * @version 1.0.7
 	 */
 	public function set_blocks_template( array $query_result, array $query, $template_type ): array {
 		if ( $template_type === 'wp_template_part' ) { // Template not Template part
@@ -161,6 +161,8 @@ class GutenbergHandleMain {
 			$lp_course_item = learn_press_get_post_by_name( $vars['course-item'] ?? '', $item_type );
 			$item_types     = CourseModel::item_types_support();
 			if ( $lp_course_item && in_array( $lp_course_item->post_type, $item_types ) ) {
+				// Course items use their own template, not a course-level theme or post template.
+				$query_result                  = [];
 				$singleCourseItemBlockTemplate = new SingleCourseItemBlockTemplate();
 				$block_custom                  = $this->is_custom_block_template( $template_type, $singleCourseItemBlockTemplate->slug );
 				if ( $block_custom ) {
