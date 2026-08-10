@@ -30,3 +30,13 @@
 		<?php endforeach; ?>
 	</tbody>
 </table>
+
+<div class="lp-payment-addons-promo">
+	<p>
+		<?php esc_html_e( 'Need more payment options?', 'learnpress' ); ?>
+		<a href="https://thimpress.com/product-tag/payment/" target="_blank" rel="noopener noreferrer" class="lp-payment-addons-promo__link">
+			<?php esc_html_e( 'Explore Addons', 'learnpress' ); ?>
+			<span class="dashicons dashicons-external"></span>
+		</a>
+	</p>
+</div>
