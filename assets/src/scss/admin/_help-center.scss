@@ -1,0 +1,414 @@
+// Local design tokens (Figma spec) — kept separate from the global
+// $color-primary etc. in _variables.scss because those resolve to the
+// site's configurable theme color and would drift from this fixed spec.
+$lp-hc-accent: #ffb608;
+$lp-hc-accent-hover: #f5ac00;
+$lp-hc-white: #fff;
+$lp-hc-border-color: #e2e4e7;
+$lp-hc-radius: 6px;
+$lp-hc-text-muted: #646970;
+$lp-hc-text-dark: #1d2327;
+$lp-hc-text-heading: #262626;
+$lp-hc-text-body: #4f4f4f;
+$lp-hc-icon-muted: #a7aaad;
+$lp-hc-font-size-sm: 0.8125rem;
+$lp-hc-font-family: "DM Sans", sans-serif;
+
+.learn-press-help-center {
+    max-width: 100%;
+
+    .wp-heading-inline {
+        color: $lp-hc-text-heading;
+        font-family: $lp-hc-font-family;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 120%;
+        letter-spacing: 0;
+    }
+
+    .lp-help-center-subtitle {
+        margin: 4px 0 24px;
+        color: $lp-hc-text-body;
+        font-family: $lp-hc-font-family;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 150%;
+        letter-spacing: 0;
+    }
+
+    a {
+        &:focus {
+            box-shadow: none;
+        }
+    }
+}
+
+.lp-help-center-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.lp-help-center-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid $lp-hc-border-color;
+    border-radius: $lp-hc-radius;
+    background: $lp-hc-white;
+
+    &__icon {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+            width: 48px;
+            height: 48px;
+        }
+    }
+
+    &__content {
+        flex: 1 1 auto;
+        min-width: 0;
+
+        h3 {
+            margin: 0 0 4px;
+            color: $lp-hc-text-heading;
+            font-family: $lp-hc-font-family;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 120%;
+            letter-spacing: 0;
+        }
+
+        p {
+            margin: 0;
+            color: $lp-hc-text-body;
+            font-family: $lp-hc-font-family;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 150%;
+            letter-spacing: 0;
+        }
+    }
+
+    &__button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+}
+
+// Selector follows the real DOM path (4 classes) so its specificity beats
+// WP core's `.wp-core-ui .button` rules (2 classes) without needing !important.
+// display/align-items/justify-content live here too (not in the plain
+// `&__button` block above) since WP core also sets `display: inline-block`
+// on `.wp-core-ui .button` and would otherwise win and misalign the text.
+// Also covers :visited explicitly, since visited external links (docs,
+// Facebook group, YouTube, etc.) otherwise keep the browser's default link color.
+.learn-press-help-center .lp-help-center-grid .lp-help-center-card .lp-help-center-card__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-color: $lp-hc-accent;
+    color: $lp-hc-accent;
+    font-family: $lp-hc-font-family;
+    font-size: 16px;
+    line-height: 150%;
+    letter-spacing: 0.16px;
+
+    &:visited {
+        border-color: $lp-hc-accent;
+        color: $lp-hc-accent;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+        border-color: $lp-hc-accent;
+        color: $lp-hc-accent;
+        background: #fef3e2;
+    }
+}
+
+.lp-help-center-whats-new {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 32px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    color: $lp-hc-white;
+    background: linear-gradient(90deg, #2e1067 0%, #6c28d7 100%);
+
+    &__main {
+        flex: 1 1 50%;
+    }
+
+    &__badge {
+        display: inline-block;
+        padding: 4px 10px;
+        margin-bottom: 12px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        color: $lp-hc-white;
+        font-family: $lp-hc-font-family;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 150%;
+        letter-spacing: 0;
+    }
+
+    h2 {
+        margin: 0 0 8px;
+        color: $lp-hc-white;
+        font-family: $lp-hc-font-family;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 120%;
+        letter-spacing: 0;
+    }
+
+    p {
+        max-width: 420px;
+        margin: 0 0 20px;
+        color: #e2e0db;
+        font-family: $lp-hc-font-family;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 150%;
+        letter-spacing: 0;
+    }
+
+    &__cta {
+        border: none;
+    }
+
+    &__features {
+        flex: 1 1 45%;
+        margin: 0;
+        list-style: none;
+
+        li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin: 0 0 14px;
+            color: $lp-hc-white;
+            font-family: $lp-hc-font-family;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 150%;
+            letter-spacing: 0;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .lp-help-center-whats-new__tick {
+                display: flex;
+                flex: 0 0 auto;
+
+                svg {
+                    width: 18px;
+                    height: 18px;
+                }
+            }
+        }
+    }
+}
+
+// Selector follows the real DOM path (3 classes) so its specificity beats
+// WP core's `.wp-core-ui .button-primary` rules (2 classes) without !important.
+.learn-press-help-center .lp-help-center-whats-new .lp-help-center-whats-new__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-color: $lp-hc-accent;
+    color: $lp-hc-white;
+    background: $lp-hc-accent;
+    font-family: $lp-hc-font-family;
+    font-size: 16px;
+    line-height: 150%;
+    letter-spacing: 0.16px;
+
+    &:visited {
+        color: $lp-hc-white;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+        border-color: $lp-hc-accent-hover;
+        color: $lp-hc-white;
+        background: $lp-hc-accent-hover;
+    }
+}
+
+.lp-help-center-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.lp-help-center-articles {
+    padding: 20px 24px;
+    border: 1px solid $lp-hc-border-color;
+    border-radius: $lp-hc-radius;
+    background: $lp-hc-white;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+        h2 {
+            margin: 0;
+            color: $lp-hc-text-heading;
+            font-family: $lp-hc-font-family;
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 120%;
+            letter-spacing: 0;
+        }
+
+        a {
+            color: $lp-hc-accent;
+            font-family: $lp-hc-font-family;
+            font-size: 16px;
+            line-height: 150%;
+            letter-spacing: 0.16px;
+            text-decoration: none;
+        }
+    }
+
+    &__list {
+        margin: 0;
+        list-style: none;
+
+        li {
+            border-top: 1px solid #f0f0f1;
+
+            &:last-child {
+                a {
+                    padding-bottom: 0;
+                }
+            }
+        }
+
+        a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            color: $lp-hc-text-dark;
+            text-decoration: none;
+
+            &:hover strong {
+                color: #7f54b3;
+            }
+        }
+    }
+
+    &__thumbnail {
+        overflow: hidden;
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: $lp-hc-radius;
+        background: #f0f0f1;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__text {
+        display: flex;
+        overflow: hidden;
+        flex: 1 1 auto;
+        flex-direction: column;
+        gap: 2px;
+
+        strong {
+            overflow: hidden;
+            color: $lp-hc-text-dark;
+            font-size: 0.875rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        span {
+            color: $lp-hc-text-muted;
+            font-size: $lp-hc-font-size-sm;
+        }
+    }
+
+    .dashicons {
+        flex: 0 0 auto;
+        color: $lp-hc-icon-muted;
+    }
+}
+
+.lp-help-center-banner-ad {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 316px;
+    border: 1px solid $lp-hc-border-color;
+    border-radius: $lp-hc-radius;
+    background: $lp-hc-white;
+
+    a,
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: $lp-hc-radius;
+        object-fit: cover;
+    }
+
+    &__placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        min-height: 220px;
+        color: $lp-hc-icon-muted;
+
+        .dashicons {
+            width: 32px;
+            height: 32px;
+            font-size: 32px;
+        }
+
+        p {
+            margin: 0;
+            font-size: $lp-hc-font-size-sm;
+        }
+    }
+}
+
+@media (max-width: 960px) {
+    .lp-help-center-grid,
+    .lp-help-center-bottom {
+        grid-template-columns: 1fr;
+    }
+
+    .lp-help-center-whats-new {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

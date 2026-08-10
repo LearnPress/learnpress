@@ -57,23 +57,23 @@ class LP_Admin_Menu {
 			return;
 		}
 
-		$url_pages = [
-			'lp-courses'     => [
+		$url_pages = array(
+			'lp-courses'     => array(
 				'title'  => esc_html__( 'View Page Courses', 'learnpress' ),
 				'href'   => learn_press_get_page_link( 'courses' ),
 				'parent' => 'site-name',
-			],
-			'lp-profile'     => [
+			),
+			'lp-profile'     => array(
 				'title'  => esc_html__( 'View Page Profile', 'learnpress' ),
 				'href'   => learn_press_get_page_link( 'profile' ),
 				'parent' => 'site-name',
-			],
-			'lp-instructors' => [
+			),
+			'lp-instructors' => array(
 				'title'  => esc_html__( 'View Page Instructors', 'learnpress' ),
 				'href'   => learn_press_get_page_link( 'instructors' ),
 				'parent' => 'site-name',
-			],
-		];
+			),
+		);
 
 		foreach ( $url_pages as $id => $url_page ) {
 			$wp_admin_bar->add_node(
@@ -118,6 +118,7 @@ class LP_Admin_Menu {
 		$menu_items['addons']           = include_once 'sub-menus/class-lp-submenu-addons.php';
 		$menu_items['themes']           = include_once 'sub-menus/class-lp-submenu-themes.php';
 		$menu_items['settings']         = include_once 'sub-menus/class-lp-submenu-settings.php';
+		$menu_items['help-center']      = include_once 'sub-menus/class-lp-submenu-help-center.php';
 		$menu_items['tools']            = include_once 'sub-menus/class-lp-submenu-tools.php';
 		$menu_items['categories']       = include_once 'sub-menus/class-lp-submenu-categories.php';
 		$menu_items['tags']             = include_once 'sub-menus/class-lp-submenu-tags.php';
@@ -153,7 +154,7 @@ class LP_Admin_Menu {
 					continue;
 				}
 
-				if ( in_array( $k, [ 'tags', 'categories' ] ) ) {
+				if ( in_array( $k, array( 'tags', 'categories' ) ) ) {
 					$callback = false;
 				} else {
 					$callback = $item->get_callback();
@@ -171,7 +172,7 @@ class LP_Admin_Menu {
 			$this->menu_items = $menu_items;
 		}
 
-		//$addons = LP_Admin::instance()->get_addons();
+		// $addons = LP_Admin::instance()->get_addons();
 	}
 
 	/**
