@@ -141,6 +141,11 @@ const lpAJAX = () => {
 				return;
 			}
 
+			// Check btnNumber is tag a
+			if ( btnNumber.tagName.toLowerCase() !== 'a' ) {
+				return;
+			}
+
 			const elLPTarget = btnNumber.closest( `${ classLPTarget }` );
 			if ( ! elLPTarget ) {
 				return;
