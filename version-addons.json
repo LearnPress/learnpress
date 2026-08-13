@@ -1,4 +1,19 @@
 {
+  "learnpress-scorm": {
+    "name": "scorm add-on for learnpress",
+    "basename": "learnpress-scorm/learnpress-scorm.php",
+    "version": "4.0.0",
+    "require_lp": "4.4.4",
+    "description": "Interactive lets you build slide decks and flashcards and display them anywhere on your site via shortcode.",
+    "image": "https://updates.thimpress.com/images/learnpress-interactive.png",
+    "link": "https://thimpress.com/product/scorm-add-on-for-learnpress/",
+    "link_doc": "",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "setting": "",
+    "order": 0
+  },
   "learnpress-interactive": {
     "name": "Interactive Add-On for learnpress",
     "basename": "learnpress-interactive/learnpress-interactive.php",
