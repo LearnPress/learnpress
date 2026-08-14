@@ -174,4 +174,80 @@ class AdminTemplate {
 
 		return Template::combine_components( $section );
 	}
+
+	/**
+	 * Render a toggle switch (checkbox + track) for enabling or disabling a setting.
+	 *
+	 * @param array $data Toggle configuration. Accepts:
+	 *                    - classes: CSS classes for the input.
+	 *                    - name:    Input name attribute (default: 'lp_toggle_enable').
+	 *                    - value:   Current value (truthy/falsy).
+	 *
+	 * @return string HTML markup for the toggle switch.
+	 * @since 4.4.5
+	 * @version 1.0.0
+	 */
+	public static function html_toggle_enable( array $data = [] ): string {
+		$classes = $data['classes'] ?? '';
+		$name    = $data['name'] ?? 'lp_toggle_enable';
+		$value   = $data['value'] ?? 0;
+		$checked = $value ? 'checked' : '';
+
+		$section = [
+			'wrapper'     => sprintf(
+				'<label class="lp-toggle-enable %s">',
+				$value ? 'is-enabled' : ''
+			),
+			'input'        => sprintf(
+				'<input type="checkbox" class="lp-toggle-enable__input %s"
+				name="%s"
+				value="%s"
+				data-info="%s"
+				%s/>',
+				esc_attr( $classes ),
+				esc_attr( $name ),
+				esc_attr( $value ),
+				esc_attr( Template::convert_data_to_json( $data ) ),
+				esc_attr( $checked )
+			),
+			'track'        => '<span class="lp-toggle-enable__track"></span>',
+			'wrapper-end' => '</label>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML form filter
+	 *
+	 * @param array $data
+	 * @return string
+	 * @since 4.4.5
+	 * @version 1.0.0
+	 */
+	public static function html_form_filter( array $data = [] ): string {
+		$classes          = $data['classes'] ?? '';
+		$id               = $data['id'] ?? '';
+		$html_fields      = $data['fields'] ?? '';
+		$html_btn_actions = $data['btn_actions'] ?? '';
+
+		$sections = array(
+			'wrap'   => sprintf(
+				'<form class="lp-form-filter %s"%s>',
+				esc_attr( $classes ),
+				$id ? sprintf( ' id="%s"', esc_attr( $id ) ) : ''
+			),
+			'fields' => sprintf(
+				'<div class="lp-form-filter__fields">%s</div>',
+				$html_fields
+			),
+			'btn-actions'      => sprintf(
+				'<div class="lp-form-filter__actions">%s</div>',
+				$html_btn_actions
+			),
+			'wrap_end'     => '</form>',
+		);
+
+		return Template::combine_components( $sections );
+	}
 }

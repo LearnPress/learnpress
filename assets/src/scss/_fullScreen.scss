@@ -1,0 +1,46 @@
+/**
+ * Custom fullscreen view overlay.
+ *
+ * Applied directly to the target element; a close button is injected inside it.
+ *
+ * @since 4.4.5
+ * @version 1.0.0
+ */
+html.lp-full-screen-active,
+html.lp-full-screen-active body {
+	overflow: hidden;
+}
+
+.lp-full-screen-view {
+	position: fixed !important;
+	top: 0;
+	left: 0;
+	width: 100vw !important;
+	height: 100vh !important;
+	max-width: 100vw !important;
+	max-height: 100vh !important;
+	z-index: 99999;
+	background: #fff;
+	overflow: auto;
+
+	&__close {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		z-index: 999999;
+		background: white;
+		color: #f10808;
+		border: 1px solid white;
+		border-radius: 4px;
+		padding: 0.5em 0.75em;
+		cursor: pointer;
+
+		&:hover {
+			border-color: #f10808;
+		}
+	}
+
+	> div {
+		padding: 40px 10px 0 !important;
+	}
+}

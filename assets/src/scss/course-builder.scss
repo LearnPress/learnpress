@@ -40,6 +40,10 @@ body {
 // Tom Select fields on settings form (Author, Co-Instructors...)
 @import 'tomSelect';
 
+// Table
+@import "table";
+@import "formFilter";
+
 // Animation for loading lp-icon-spinner
 @keyframes rotation {
 	0% {

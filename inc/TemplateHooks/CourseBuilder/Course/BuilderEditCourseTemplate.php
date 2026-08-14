@@ -672,7 +672,10 @@ class BuilderEditCourseTemplate {
 		$edit = [
 			'wrapper'        => '<div class="cb-course-edit-desc">',
 			'label_wrap'     => '<div class="cb-course-edit-desc__label-wrap">',
-			'label'          => sprintf( '<label for="course_description" class="cb-course-edit-desc__label">%s</label>', __( 'Description', 'learnpress' ) ),
+			'label'          => sprintf(
+				'<label for="course_description" class="cb-course-edit-desc__label">%s</label>',
+				__( 'Description', 'learnpress' )
+			),
 			'ai_button'      => $ai_button,
 			'label_wrap_end' => '</div>',
 			'edit'           => AdminTemplate::editor_tinymce(
