@@ -48,15 +48,15 @@ class LP_Submenu_Help_Center extends LP_Abstract_Submenu {
 	 * @return void
 	 */
 	public function enqueue_assets() {
-		// Styles are bundled inside the main admin.css (see _help-center.scss).
+		// Styles are loaded via LP_Admin_Assets::_get_styles() as 'lp-help-center'.
 	}
 
 	/**
 	 * Quick-link cards shown at the top of the page.
 	 *
-	 * Icon files live in assets/images/icons/ico-hc-*.svg and are inlined via
-	 * LP_WP_Filesystem::get_icon_svg(), same convention as the Course Builder
-	 * dashboard cards (see BuilderDashboardTemplate::html_statistics_cards()).
+	 * Icon files live in assets/images/icons/help-center/ico-hc-*.svg and are
+	 * inlined via LP_WP_Filesystem::get_icon_svg(), same convention as the
+	 * Course Builder dashboard cards (see BuilderDashboardTemplate::html_statistics_cards()).
 	 *
 	 * @return array
 	 */
@@ -65,42 +65,42 @@ class LP_Submenu_Help_Center extends LP_Abstract_Submenu {
 			'learn-press/admin/help-center/quick-links',
 			array(
 				array(
-					'icon'        => 'ico-hc-support-ticket.svg',
+					'icon'        => 'help-center/ico-hc-support-ticket.svg',
 					'title'       => __( 'Support Ticket', 'learnpress' ),
 					'description' => __( 'Need help with your LMS website? Submit a ticket to the LearnPress support team.', 'learnpress' ),
 					'button'      => __( 'Create Ticket', 'learnpress' ),
 					'url'         => 'https://help.thimpress.com/',
 				),
 				array(
-					'icon'        => 'ico-hc-video-tutorials.svg',
+					'icon'        => 'help-center/ico-hc-video-tutorials.svg',
 					'title'       => __( 'Video Tutorials', 'learnpress' ),
 					'description' => __( 'Watch step-by-step videos about LearnPress settings and common workflows.', 'learnpress' ),
 					'button'      => __( 'Watch Videos', 'learnpress' ),
 					'url'         => 'https://www.youtube.com/@LearnPressLMS/videos',
 				),
 				array(
-					'icon'        => 'ico-hc-documentation.svg',
+					'icon'        => 'help-center/ico-hc-documentation.svg',
 					'title'       => __( 'Documentation', 'learnpress' ),
 					'description' => __( 'Browse LearnPress setup guides, course management, quizzes, payment, and emails.', 'learnpress' ),
 					'button'      => __( 'Read Docs', 'learnpress' ),
 					'url'         => 'https://learnpresslms.com/docs/',
 				),
 				array(
-					'icon'        => 'ico-hc-community.svg',
+					'icon'        => 'help-center/ico-hc-community.svg',
 					'title'       => __( 'Community', 'learnpress' ),
 					'description' => __( 'Join the LearnPress community to share ideas, ask questions, and connect with LMS site owners.', 'learnpress' ),
 					'button'      => __( 'Join Community', 'learnpress' ),
 					'url'         => 'https://www.facebook.com/groups/learnpress/',
 				),
 				array(
-					'icon'        => 'ico-hc-feedback.svg',
+					'icon'        => 'help-center/ico-hc-feedback.svg',
 					'title'       => __( 'Feedback', 'learnpress' ),
 					'description' => __( 'Share your thoughts, report issues, and help improve the LearnPress experience.', 'learnpress' ),
 					'button'      => __( 'Send Feedback', 'learnpress' ),
 					'url'         => 'https://learnpresslms.com/feedback/',
 				),
 				array(
-					'icon'        => 'ico-hc-affiliate.svg',
+					'icon'        => 'help-center/ico-hc-affiliate.svg',
 					'title'       => __( 'Affiliate', 'learnpress' ),
 					'description' => __( 'Promote LearnPress products, track referrals, and manage your affiliate resources.', 'learnpress' ),
 					'button'      => __( 'Join Affiliate', 'learnpress' ),
@@ -193,7 +193,7 @@ class LP_Submenu_Help_Center extends LP_Abstract_Submenu {
 				'whats_new'   => $remote_data['whats_new'] ?? array(),
 				'articles'    => $remote_data['articles'] ?? array(),
 				'banner_ad'   => $this->get_banner_ad(),
-				'tick_icon'   => LP_WP_Filesystem::get_icon_svg( 'ico-hc-tick.svg' ),
+				'tick_icon'   => LP_WP_Filesystem::get_icon_svg( 'help-center/ico-hc-tick.svg' ),
 			)
 		);
 	}
