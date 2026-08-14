@@ -465,7 +465,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					[ 'strategy' => 'async' ]
 				),
 				'lp-course-builder'         => new LP_Asset_Key(
-					self::url( 'js/dist/frontend/course-builder' . self::$_min_assets . '.js' ),
+					self::url( 'dist/js/frontend/course-builder' . self::$_min_assets . '.js' ),
 					array( 'wp-tinymce', 'editor', 'lp-load-ajax' ),
 					array( LP_PAGE_COURSE_BUILDER ),
 					0,
