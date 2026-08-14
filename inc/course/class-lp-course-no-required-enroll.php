@@ -29,7 +29,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @param array $answered
 		 *
 		 * @since 4.0.0
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 * @return array
 		 */
 		public function get_result_quiz( LP_Quiz $quiz, array $answered = [] ): array {
@@ -54,7 +54,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				return $result;
 			}
 
-			$question_ids             = array_keys( $answered );
+			$question_ids             = $quiz->get_question_ids();
 			$result['question_count'] = count( $question_ids );
 			$questions                = learn_press_rest_prepare_user_questions( $question_ids );
 

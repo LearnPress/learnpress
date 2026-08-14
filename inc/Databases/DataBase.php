@@ -199,7 +199,7 @@ class DataBase {
 	 */
 	public function add_col_table( string $name_table, string $name_col, string $type, string $after_col = '' ) {
 		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			throw new Exception( 'You don\'t have permission' );
+			return false;
 		}
 
 		$query_add = '';

@@ -1,0 +1,45 @@
+/**
+* Style for the Form Filter list
+* @since 4.4.5
+* @version 1.0.0
+*/
+
+.lp-form-filter {
+	display: grid;
+	gap: 12px;
+	margin-bottom: 24px;
+
+	&__fields {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		gap: 14px;
+
+		& > * {
+			flex: 1 1 0;
+			min-width: 0;
+		}
+	}
+
+	.filter-field {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+
+		label {
+			text-align: left;
+		}
+	}
+
+	button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&__actions {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+}

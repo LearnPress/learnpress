@@ -22,12 +22,15 @@ $title-color: #111111;
 	//font-size: 13px;
 	//line-height: 2.15384615;
 	min-height: 30px;
-	padding: 0 10px;
+	padding: 11px 10px;
 	cursor: pointer;
 	-webkit-appearance: none;
 	border-radius: 3px;
 	white-space: nowrap;
 	box-sizing: border-box;
+	margin: 0 5px 5px 0;
+	vertical-align: top;
+	justify-content: center;
 
 	&:active{
 		box-shadow: none;
