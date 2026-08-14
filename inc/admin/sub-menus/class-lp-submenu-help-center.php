@@ -17,19 +17,6 @@ defined( 'ABSPATH' ) || exit;
 class LP_Submenu_Help_Center extends LP_Abstract_Submenu {
 
 	/**
-	 * URL of the remote "What's New" + "Latest Articles" JSON.
-	 *
-	 * Fetched the same way LP_Manager_Addons::$url_list_addons is (plain
-	 * wp_remote_get, no auth, no transient caching) — see
-	 * LP_Rest_Addon_Controller::list_addons(). Left empty until the team
-	 * finalizes the hosting URL and JSON schema; while empty, get_remote_data()
-	 * falls back to the local demo file so the page still renders.
-	 *
-	 * @var string
-	 */
-	protected $url_help_center_data = '';
-
-	/**
 	 * LP_Submenu_Help_Center constructor.
 	 */
 	public function __construct() {
@@ -118,81 +105,15 @@ class LP_Submenu_Help_Center extends LP_Abstract_Submenu {
 	}
 
 	/**
-	 * "What's New" + "Latest Articles" data.
-	 *
-	 * Fetches $url_help_center_data the same way the Add-ons page does
-	 * (wp_remote_get, 30s timeout, no auth — see
-	 * LP_Rest_Addon_Controller::list_addons()). Falls back to the local demo
-	 * JSON bundled with the plugin when the URL isn't set yet or the request
-	 * fails, so the page keeps rendering while the schema is finalized.
-	 *
-	 * @return array
-	 */
-	protected function get_remote_data(): array {
-		$default = array(
-			'whats_new' => array(),
-			'articles'  => array(),
-		);
-
-		$data = null;
-
-		if ( ! empty( $this->url_help_center_data ) ) {
-			$response = wp_remote_get( $this->url_help_center_data, array( 'timeout' => 30 ) );
-
-			if ( ! is_wp_error( $response ) ) {
-				try {
-					$data = LP_Helper::json_decode( wp_remote_retrieve_body( $response ), true );
-				} catch ( Exception $e ) {
-					$data = null;
-				}
-			}
-		}
-
-		if ( ! is_array( $data ) ) {
-			$file          = LP()->plugin_path( 'inc/admin/data/help-center-demo.json' );
-			$lp_filesystem = LP_WP_Filesystem::instance();
-			$data          = $lp_filesystem->file_exists( $file )
-				? json_decode( $lp_filesystem->file_get_contents( $file ), true )
-				: null;
-		}
-
-		if ( ! is_array( $data ) ) {
-			return $default;
-		}
-
-		return apply_filters( 'learn-press/admin/help-center/remote-data', wp_parse_args( $data, $default ) );
-	}
-
-	/**
-	 * Banner ad image shown in place of the newsletter sign-up box.
-	 *
-	 * @return array{image: string, url: string}
-	 */
-	protected function get_banner_ad(): array {
-		return apply_filters(
-			'learn-press/admin/help-center/banner-ad',
-			array(
-				'image' => LP_PLUGIN_URL . 'assets/images/image-help-center.jpeg',
-				'url'   => '',
-			)
-		);
-	}
-
-	/**
 	 * Display page content.
 	 *
 	 * @return void
 	 */
 	public function display() {
-		$remote_data = $this->get_remote_data();
-
 		learn_press_admin_view(
 			'help-center/html-help-center',
 			array(
 				'quick_links' => $this->get_quick_links(),
-				'whats_new'   => $remote_data['whats_new'] ?? array(),
-				'articles'    => $remote_data['articles'] ?? array(),
-				'banner_ad'   => $this->get_banner_ad(),
 				'tick_icon'   => LP_WP_Filesystem::get_icon_svg( 'help-center/ico-hc-tick.svg' ),
 			)
 		);
