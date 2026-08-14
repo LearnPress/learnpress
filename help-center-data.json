@@ -1,0 +1,44 @@
+{
+	"whats_new": {
+		"badge": "What's New in LearnPress",
+		"title": "Discover New LearnPress Features",
+		"description": "Explore the latest improvements, add-ons, integrations, and tools designed to help you build a better LMS website.",
+		"cta_text": "Explore New Features",
+		"cta_url": "https://learnpresslms.com/whats-new/",
+		"features": [
+			"New course creation and management improvements",
+			"Updated checkout, payment, and order experience",
+			"Enhanced instructor, student, and enrollment tools",
+			"New add-ons, integrations, and performance updates"
+		]
+	},
+	"articles": {
+		"title": "Latest LearnPress Articles",
+		"more_text": "More",
+		"more_url": "https://learnpresslms.com/blog/",
+		"items": [
+			{
+				"title": "How To Create Your First LearnPress Course",
+				"subtitle": "Course setup guide",
+				"image": "",
+				"url": "https://learnpresslms.com/blog/how-to-create-your-first-course/"
+			},
+			{
+				"title": "Configure LearnPress Checkout And Payments",
+				"subtitle": "Payment guide",
+				"image": "",
+				"url": "https://learnpresslms.com/blog/configure-checkout-and-payments/"
+			},
+			{
+				"title": "Best Add-Ons To Extend Your LMS Website",
+				"subtitle": "Add-on guide",
+				"image": "",
+				"url": "https://learnpresslms.com/blog/best-add-ons/"
+			}
+		]
+	},
+	"banner_ad": {
+		"image": "",
+		"url": ""
+	}
+}
