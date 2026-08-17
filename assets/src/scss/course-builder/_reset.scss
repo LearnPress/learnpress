@@ -106,4 +106,14 @@ html {
 			outline: unset;
 		}
 	}
+
+	select,
+	input,
+	textarea {
+		border: 1px solid $cb-border-input;
+		border-radius: 6px;
+		font-size: 14px;
+		color: #1a1a1a;
+		background: #fff;
+	}
 }
