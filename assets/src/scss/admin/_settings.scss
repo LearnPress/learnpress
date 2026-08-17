@@ -142,3 +142,38 @@
         z-index: 99999;
     }
 }
+
+.lp-payment-addons-promo {
+    margin-top: 15px;
+    padding: 12px 16px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+
+    p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #555;
+    }
+
+    &__link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: 6px;
+        color: #7f54b3;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover {
+            color: #5e3d8a;
+            text-decoration: underline;
+        }
+
+        .dashicons {
+            width: 14px;
+            height: 14px;
+            font-size: 14px;
+        }
+    }
+}
