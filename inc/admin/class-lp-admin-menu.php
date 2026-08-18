@@ -33,6 +33,7 @@ class LP_Admin_Menu {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'admin_menu', array( $this, 'lp_group_menus' ), 9999 );
 
 		if ( apply_filters( 'learn_press_show_admin_bar_courses_page', true ) ) {
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_menus' ), 50 );
@@ -126,7 +127,7 @@ class LP_Admin_Menu {
 		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
 
 		// Sort menu items by its priority
-		uasort( $menu_items, 'learn_press_sort_list_by_priority_callback' );
+		//uasort( $menu_items, 'learn_press_sort_list_by_priority_callback' );
 
 		add_action(
 			'parent_file',
@@ -166,13 +167,124 @@ class LP_Admin_Menu {
 					$item->get_menu_title(),
 					$item->get_capability(),
 					$item->get_id(),
-					$callback
+					$callback,
+					//$item->get_priority()
 				);
 			}
 			$this->menu_items = $menu_items;
 		}
 
 		// $addons = LP_Admin::instance()->get_addons();
+	}
+
+	/**
+	 * Group and reorder the LearnPress admin submenu items.
+	 *
+	 * Items are grouped by the 'learn-press/wp-admin/menu-group' filter
+	 * and ordered by the default group and slug order. Unmatched items
+	 * are added to the 'operations' group. A divider is inserted between
+	 * each group.
+	 *
+	 * @return void
+	 */
+	public function lp_group_menus() {
+		global $submenu;
+
+		$lp_menus = $submenu['learn_press'] ?? [];
+		if ( empty( $lp_menus ) ) {
+			return;
+		}
+
+		$group_menus_default = apply_filters(
+			'learn-press/wp-admin/menu-group',
+			[
+				'content' => [
+					'courses' => 'edit.php?post_type=' . LP_COURSE_CPT,
+					'lessons' => 'edit.php?post_type=' . LP_LESSON_CPT,
+					'quizzes' => 'edit.php?post_type=' . LP_QUIZ_CPT,
+					'questions' => 'edit.php?post_type=' . LP_QUESTION_CPT,
+					'course_category' => 'edit-tags.php?taxonomy=course_category',
+					'course_tag' => 'edit-tags.php?taxonomy=course_tag',
+				],
+				'operations' => [
+					'orders' => 'edit.php?post_type=' . LP_ORDER_CPT,
+					'students' => 'learn-press-students-enrolled',
+					'statistics' => 'learn-press-statistics',
+				],
+				'system' => [
+					'addons' => 'learn-press-addons',
+					'themes' => 'learn-press-themes',
+					'settings' => 'learn-press-settings',
+					'tools' => 'learn-press-tools',
+					'help_center' => 'learn-press-help-center',
+				],
+			]
+		);
+
+		$group_menus = [];
+
+		// Group menus by default
+		foreach ( $lp_menus as $item ) {
+			$slug     = $item[2] ?? '';
+			$in_group = false;
+
+			foreach ( $group_menus_default as $group => $menus ) {
+				if ( in_array( $slug, $menus ) ) {
+					$group_menus[ $group ][] = $item;
+					$in_group                = true;
+				}
+			}
+
+			// If not in any group, add to operations
+			if ( ! $in_group ) {
+				$group_menus['operations'][] = $item;
+			}
+		}
+
+		// Reorder menus
+		$menus_new = [];
+		$i         = 0;
+		$count     = count( $group_menus_default );
+		foreach ( $group_menus_default as $group => $menus ) {
+			if ( ! isset( $group_menus[ $group ] ) ) {
+				continue;
+			}
+
+			// Order items by the default slug order, then append leftovers.
+			$items_by_slug = [];
+			foreach ( $group_menus[ $group ] as $item ) {
+				$items_by_slug[ $item[2] ?? '' ] = $item;
+			}
+
+			foreach ( $menus as $menu_slug ) {
+				if ( ! is_string( $menu_slug ) ) {
+					continue;
+				}
+
+				if ( isset( $items_by_slug[ $menu_slug ] ) ) {
+					$menus_new[] = $items_by_slug[ $menu_slug ];
+					unset( $items_by_slug[ $menu_slug ] );
+				}
+			}
+
+			foreach ( $items_by_slug as $item ) {
+				$menus_new[] = $item;
+			}
+
+			++$i;
+			if ( $i < $count ) {
+				// Add divider between groups
+				$menus_new[] = array(
+					'',
+					$this->get_capability(),
+					'lp-menu-divider-' . $group,
+					'',
+					'lp-menu-divider',
+				);
+			}
+		}
+
+		$submenu['learn_press'] = $menus_new;
 	}
 
 	/**
