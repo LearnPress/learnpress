@@ -109,24 +109,6 @@
 		} );
 	};
 
-	const createPages = function createPages( e ) {
-		e.preventDefault();
-		blockContent();
-
-		$.post( {
-			url: $( this ).attr( 'href' ),
-			dataType: 'html',
-			data: getFormData( {
-				'lp-ajax': 'setup-create-pages',
-			} ),
-			success( res ) {
-				replaceMainContent( $( res ).contents().filter( '#main' ) );
-				$( '.learn-press-dropdown-pages' ).LP( 'DropdownPages' );
-				blockContent( false );
-			},
-		} );
-	};
-
 	function isEmail( email ) {
 		const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test( email );
@@ -135,12 +117,11 @@
 	$( function() {
 		$main = $( '#main' );
 		$setupForm = $( '#learn-press-setup-form' );
-		$( '.learn-press-select2' ).select2();
+		//$( '.learn-press-select2' ).select2();
 
 		$( document ).
 			// on( 'click', '.buttons .button', navPages ).
 			on( 'change', '#currency', updateCurrency ).
-			on( 'change', 'input, select', updatePrice ).
-			on( 'click', '#create-pages', createPages );
+			on( 'change', 'input, select', updatePrice );
 	} );
 }( jQuery ) );

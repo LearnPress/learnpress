@@ -149,9 +149,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	$id           = null;
 	$class        = null;
 	$css          = null;
-	$before       = array(
-		'add_new_page' => __( '[ Add a new page ]', 'learnpress' ),
-	);
+	$before       = [];
 	$after        = null;
 	$echo         = true;
 	$allow_create = true;

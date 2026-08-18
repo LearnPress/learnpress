@@ -330,10 +330,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array(),
 					1
 				),
-				/*'dropdown-pages'            => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/share/dropdown-pages' . self::$_min_assets . '.js' ),
-					array( 'lp-utils', 'select2' )
-				),*/
 				/*
 				'jquery-ui-timepicker-addon'        => new LP_Asset_Key(
 					$this->url( 'src/js/vendor/jquery/jquery-ui-timepicker-addon.js' ),
@@ -378,7 +374,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learn-press-global',
 						'wp-color-picker',
 						'jquery-tipsy',
-						//'dropdown-pages',
 						'wp-api-fetch',
 						// 'jquery-ui-timepicker-addon',
 						// 'select2'
