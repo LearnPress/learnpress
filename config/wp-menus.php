@@ -8,6 +8,7 @@
 
 use LearnPress\TemplateHooks\Admin\AdminAddonsPage;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
+use LearnPress\TemplateHooks\Admin\AdminSettingsPage;
 use LearnPress\TemplateHooks\Admin\AdminStatisticsReportTable;
 use LearnPress\TemplateHooks\Admin\AdminToolsPage;
 
@@ -53,19 +54,14 @@ $menu_items = [
 		},
 	],
 	// Settings.
-	/*'settings'         => [
+	'settings'         => [
 		'id'         => 'learn-press-settings',
 		'menu_title' => esc_html__( 'Settings', 'learnpress' ),
 		'page_title' => esc_html__( 'LearnPress Settings', 'learnpress' ),
 		'capability' => 'manage_options',
 		'priority'   => 30,
-		'tabs'       => lp_submenu_settings_tabs(),
-		'callbacks'  => [
-			'save_settings'   => 'lp_submenu_settings_save_settings',
-			'page_contents'   => 'lp_submenu_settings_page_contents',
-			'section_content' => 'lp_submenu_settings_section_content',
-		],
-	],*/
+		'callback'   => [ AdminSettingsPage::instance(), 'html_page' ],
+	],
 	// Help Center.
 	'help-center'      => [
 		'id'         => 'learn-press-help-center',

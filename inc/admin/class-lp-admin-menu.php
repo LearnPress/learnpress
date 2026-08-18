@@ -115,9 +115,8 @@ class LP_Admin_Menu {
 		);
 
 		// Default submenu items from config (array-based).
-		$menu_items             = Config::instance()->get( 'wp-menus' );
-		$menu_items['settings'] = include_once 'sub-menus/class-lp-submenu-settings.php';
-		$menu_items             = apply_filters( 'learn-press/admin/menu-items', $menu_items );
+		$menu_items = Config::instance()->get( 'wp-menus' );
+		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
 
 		add_action(
 			'parent_file',
