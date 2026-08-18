@@ -7,6 +7,8 @@
  * @version     1.0
  */
 
+use LearnPress\Helpers\Config;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -112,22 +114,10 @@ class LP_Admin_Menu {
 			'3.14'
 		);
 
-		// Default submenu items
-		$menu_items                     = array();
-		$menu_items['statistic']        = include_once 'sub-menus/class-lp-submenu-statistics.php';
-		$menu_items['student-enrolled'] = include_once 'sub-menus/class-lp-submenu-students-enrolled.php';
-		$menu_items['addons']           = include_once 'sub-menus/class-lp-submenu-addons.php';
-		$menu_items['themes']           = include_once 'sub-menus/class-lp-submenu-themes.php';
-		$menu_items['settings']         = include_once 'sub-menus/class-lp-submenu-settings.php';
-		$menu_items['help-center']      = include_once 'sub-menus/class-lp-submenu-help-center.php';
-		$menu_items['tools']            = include_once 'sub-menus/class-lp-submenu-tools.php';
-		$menu_items['categories']       = include_once 'sub-menus/class-lp-submenu-categories.php';
-		$menu_items['tags']             = include_once 'sub-menus/class-lp-submenu-tags.php';
-
-		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
-
-		// Sort menu items by its priority
-		//uasort( $menu_items, 'learn_press_sort_list_by_priority_callback' );
+		// Default submenu items from config (array-based).
+		$menu_items             = Config::instance()->get( 'wp-menus' );
+		$menu_items['settings'] = include_once 'sub-menus/class-lp-submenu-settings.php';
+		$menu_items             = apply_filters( 'learn-press/admin/menu-items', $menu_items );
 
 		add_action(
 			'parent_file',
@@ -147,27 +137,35 @@ class LP_Admin_Menu {
 
 		if ( $menu_items ) {
 			foreach ( $menu_items as $k => $item ) {
+				// Third-party classes passed as string.
 				if ( is_string( $item ) && class_exists( $item ) ) {
 					$item = new $item();
 				}
 
-				if ( ! $item instanceof LP_Abstract_Submenu ) {
+				// For declare type new menu item from config array.
+				if ( is_array( $item ) ) {
+					add_submenu_page(
+						'learn_press',
+						$item['page_title'] ?? '',
+						$item['menu_title'] ?? '',
+						$item['capability'] ?? '',
+						$item['id'] ?? '',
+						$item['callback'] ?? false,
+						$item['priority'] ?? 10
+						//$item->get_priority()
+					);
+
 					continue;
 				}
 
-				if ( in_array( $k, array( 'tags', 'categories' ) ) ) {
-					$callback = false;
-				} else {
-					$callback = $item->get_callback();
-				}
-
+				// For declare type old menu item from class.
 				add_submenu_page(
 					'learn_press',
 					$item->get_page_title(),
 					$item->get_menu_title(),
 					$item->get_capability(),
 					$item->get_id(),
-					$callback,
+					$item->get_callback(),
 					//$item->get_priority()
 				);
 			}

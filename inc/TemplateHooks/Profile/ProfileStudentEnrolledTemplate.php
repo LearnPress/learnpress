@@ -9,6 +9,7 @@
 namespace LearnPress\TemplateHooks\Profile;
 
 use LearnPress\Helpers\Singleton;
+use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
 use LP_Profile;
 
 class ProfileStudentEnrolledTemplate {
@@ -88,7 +89,7 @@ class ProfileStudentEnrolledTemplate {
 
 		ob_start();
 		echo '<div id="lp-enrolled-students">';
-		do_action( 'learn-press/admin/enrolled-students/layout', (int) $user->get_id() );
+		AdminListStudentsEnrolled::instance()->enrolled_students_layout( (int) $user->get_id() );
 		echo '</div>';
 
 		return ob_get_clean();

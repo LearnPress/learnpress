@@ -54,6 +54,66 @@ class AdminStatisticsReportTable {
 	}
 
 	/**
+	 * Tabs of the Statistics page.
+	 *
+	 * @return array
+	 */
+	private static function get_tabs(): array {
+		return array(
+			'overview'    => __( 'Overview', 'learnpress' ),
+			'orders'      => __( 'Orders', 'learnpress' ),
+			'courses'     => __( 'Courses', 'learnpress' ),
+			'users'       => __( 'Users', 'learnpress' ),
+			'instructors' => __( 'Instructors', 'learnpress' ),
+		);
+	}
+
+	public function html_statistics() {
+		$tabs = self::get_tabs();
+		$tab  = isset( $_REQUEST['tab'] ) ? LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ) : 'overview';
+		$tab  = array_key_exists( $tab, $tabs ) ? $tab : 'overview';
+
+		$view = apply_filters( 'learn-press/statistics/tab-view', "statistics/{$tab}", $tab, $this );
+
+		ob_start();
+		if ( $view ) {
+			learn_press_admin_view( $view );
+		}
+		$content = ob_get_clean();
+
+		$wrapper = [ '<div class="lp-admin-tabs"><div class="lp-admin-tab-content">' => '</div></div>' ];
+		?>
+		<div class="wrap lp-submenu-page learn-press-statistics">
+			<h1 class="wp-heading-inline"><?php echo esc_html__( 'Statistics', 'learnpress' ); ?></h1>
+
+			<h2 class="nav-tab-wrapper">
+				<?php foreach ( $tabs as $tab_slug => $tab_label ) : ?>
+					<?php if ( $tab_slug === $tab ) : ?>
+						<span class="nav-tab nav-tab-active"><?php echo esc_html( $tab_label ); ?></span>
+					<?php else : ?>
+						<a class="nav-tab" href="
+						<?php
+						echo esc_url(
+							add_query_arg(
+								array(
+									'page' => 'learn-press-statistics',
+									'tab' => $tab_slug,
+								),
+								admin_url( 'admin.php' )
+							)
+						);
+						?>
+						"><?php echo esc_html( $tab_label ); ?></a>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</h2>
+
+			<?php echo Template::instance()->nest_elements( $wrapper, $content ); ?>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Row cap for the PHP-merged reports (top_courses / course_performance /
 	 * instructor_report) and for CSV export.
 	 *

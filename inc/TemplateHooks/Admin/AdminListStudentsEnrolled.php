@@ -37,10 +37,7 @@ class AdminListStudentsEnrolled {
 
 	const PER_PAGE = 10;
 
-	public function init() {
-
-		// 1. Register render hook for both admin + frontend profile.
-		add_action( 'learn-press/admin/enrolled-students/layout', array( $this, 'enrolled_students_layout' ) );
+	public function init(): void {
 		// 2. Whitelist AJAX callback.
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 		// 4. Render a modal toolbar template from PHP (used by JS modal).
@@ -56,7 +53,7 @@ class AdminListStudentsEnrolled {
 
 		echo '<div class="wrap" id="lp-enrolled-students">';
 		echo '<h1 class="wp-heading-inline">' . esc_html__( 'Students', 'learnpress' ) . '</h1>';
-		do_action( 'learn-press/admin/enrolled-students/layout', $instructor_id );
+		$this->enrolled_students_layout( $instructor_id );
 		echo '</div>';
 	}
 
