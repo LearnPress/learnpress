@@ -568,7 +568,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				$user_id   = $user_course['user_id'] ?? 0;
 				$course_id = $user_course['course_id'] ?? 0;
 				if ( ! $user_id || ! $course_id ) {
-					throw new Exception( 'User or Course is invalid', 'learnpress' );
+					throw new Exception( __( 'User or Course is invalid', 'learnpress' ) );
 				}
 
 				$can_handle = apply_filters(
@@ -647,7 +647,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				$user_id   = $user_course['user_id'] ?? 0;
 				$course_id = $user_course['course_id'] ?? 0;
 				if ( ! $user_id || ! $course_id ) {
-					throw new Exception( 'User or Course is invalid', 'learnpress' );
+					throw new Exception( __( 'User or Course is invalid', 'learnpress' ) );
 				}
 
 				// Delete data user who already enrolled this course.

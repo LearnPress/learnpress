@@ -88,7 +88,7 @@ class LP_Cart {
 			$item_type = get_post_type( $item_id );
 
 			if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
-				throw new Exception( 'Item type is invalid!', 'learnpress' );
+				throw new Exception( __( 'Item type is invalid!', 'learnpress' ) );
 			}
 
 			switch ( $item_type ) {
