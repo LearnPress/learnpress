@@ -5,6 +5,7 @@
  * @version 1.0.0
  */
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
+import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 
 export class DropdownPages {
 	static selectors = {
@@ -187,24 +188,23 @@ export class DropdownPages {
 			method: 'POST',
 			body: formData,
 		} )
-			.then( ( response ) => response.text() )
+			.then( ( response ) => response.json() )
 			.then( ( response ) => {
-				const data = lpUtils.lpAjaxParseJsonOld( response );
-				if ( data.page ) {
-					this.addNewPageToList( {
-						ID: data.page.ID,
-						name: data.page.post_title,
-						positions: data.positions,
-					} );
+				const { message, status, data } = response;
+				if ( status === 'success' ) {
 					elForm.classList.add( 'hide-if-js' );
-					window.location.reload();
-				} else if ( data.error ) {
-					alert( data.error );
+
+					lpToastify.show( message, 'success' );
+
+					setTimeout( () => {
+						window.location.reload();
+					}, 1000 )
+				} else {
+					throw new Error( message );
 				}
 			} )
 			.catch( ( error ) => {
-				// eslint-disable-next-line no-console
-				console.error( error );
+				lpToastify.show( error.message, 'error' );
 			} )
 			.finally( () => {
 				elButton.disabled = false;

@@ -231,6 +231,30 @@ class LP_Helper {
 		$page_id = 0;
 
 		try {
+			/**
+			 * Whitelist of allowed page option keys for security.
+			 * Prevents arbitrary options from being set via the key_option parameter.
+			 */
+			$key_pages_allow = apply_filters(
+				'learn-press/pages/create-allow',
+				array(
+					'learn_press_checkout_page_id',
+					'learn_press_profile_page_id',
+					'learn_press_courses_page_id',
+					'learn_press_instructors_page_id',
+					'learn_press_single_instructor_page_id',
+					'learn_press_become_a_teacher_page_id',
+					'learn_press_term_conditions_page_id',
+					'learn_press_exams_page_id', // Must update Addon Exam v4.0.0
+					'learn_press_collections_page_id', // Must update Addon Collections v4.0.5
+					'learn_press_packages_page_id', // Must update Addon UpSell v4.0.9
+				)
+			);
+
+			if ( ! in_array( $key_option, $key_pages_allow ) ) {
+				throw new Exception( __( 'Invalid key page', 'learnpress' ) );
+			}
+
 			if ( ! isset( $args['post_title'] ) ) {
 				throw new Exception( __( 'Missing post title', 'learnpress' ) );
 			}
