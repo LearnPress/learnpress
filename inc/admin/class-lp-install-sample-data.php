@@ -446,63 +446,62 @@ class LP_Install_Sample_Data {
 	protected function create_course( array $data ): int {
 		$title = $data['name'] ?? '';
 
-		$data_insert = array(
-			'post_title'   => ! empty( $title ) ? $title : __( 'Sample course', 'learnpress' ),
-			'post_type'    => LP_COURSE_CPT,
-			'post_status'  => 'publish',
-			'post_content' => $this->generate_content( 25, 40, 5 ),
+		$meta_input = array(
+			CoursePostModel::META_KEY_DURATION    => '10 week',
+			CoursePostModel::META_KEY_SAMPLE_DATA => 'yes',
+			CoursePostModel::META_KEY_LEVEL       => 'all',
 		);
-
-		$courseService   = CourseService::instance();
-		$coursePostModel = $courseService->create_info_main( $data_insert );
-
-		$course_id = $coursePostModel->get_id();
 
 		// Set price
 		if ( $data['price'] > 0 ) {
-			$coursePostModel->meta_data->{CoursePostModel::META_KEY_PRICE}         = $data['price'];
-			$coursePostModel->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE} = $data['price'];
+			$meta_input[ CoursePostModel::META_KEY_PRICE ]         = $data['price'];
+			$meta_input[ CoursePostModel::META_KEY_REGULAR_PRICE ] = $data['price'];
 		}
-
-		// Save meta data
-		$coursePostModel->meta_data->{CoursePostModel::META_KEY_DURATION}    = '10 week';
-		$coursePostModel->meta_data->{CoursePostModel::META_KEY_SAMPLE_DATA} = 'yes';
-		$coursePostModel->meta_data->{CoursePostModel::META_KEY_LEVEL}       = 'all';
 
 		// Requirements
 		$requirements = array();
 		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 			$requirements[] = $this->generate_title();
 		}
-		$coursePostModel->meta_data->{CoursePostModel::META_KEY_REQUIREMENTS} = $requirements;
+		$meta_input[ CoursePostModel::META_KEY_REQUIREMENTS ] = $requirements;
 
 		// Target audiences
 		$target_audiences = array();
 		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 			$target_audiences[] = $this->generate_title();
 		}
-		$coursePostModel->meta_data->{CoursePostModel::META_KEY_TARGET} = $target_audiences;
+		$meta_input[ CoursePostModel::META_KEY_TARGET ] = $target_audiences;
 
 		// Key features
 		$key_features = array();
 		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 			$key_features[] = $this->generate_title();
 		}
-		$coursePostModel->meta_data->{CoursePostModel::META_KEY_FEATURES} = $key_features;
+		$meta_input[ CoursePostModel::META_KEY_FEATURES ] = $key_features;
 
 		// FAQs
 		$faqs = array();
 		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 			$faqs[] = array( $this->generate_title() . '?', $this->generate_content( 20, 30, 3 ) );
 		}
-		$coursePostModel->meta_data->{CoursePostModel::META_KEY_FAQS} = $faqs;
+		$meta_input[ CoursePostModel::META_KEY_FAQS ] = $faqs;
 
 		// Featured review
-		$coursePostModel->meta_data->{CoursePostModel::META_KEY_FEATURED_REVIEW} = $this->generate_title( 30, 40 );
+		$meta_input[ CoursePostModel::META_KEY_FEATURED_REVIEW ] = $this->generate_title( 30, 40 );
 
-		$coursePostModel->save();
+		$data_insert = array(
+			'post_title'   => ! empty( $title ) ? $title : __( 'Sample course', 'learnpress' ),
+			'post_type'    => LP_COURSE_CPT,
+			'post_status'  => 'publish',
+			'post_content' => $this->generate_content( 25, 40, 5 ),
+			'post_author'  => get_current_user_id(),
+			'meta_input'   => $meta_input,
+		);
 
-		return $course_id;
+		$courseService   = CourseService::instance();
+		$coursePostModel = $courseService->create_info_main( $data_insert );
+
+		return $coursePostModel->get_id();
 	}
 
 	/**

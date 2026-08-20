@@ -52,7 +52,7 @@ class GutenbergHandleMain {
 				}
 
 				$wp_screen = get_current_screen();
-				if ( $wp_screen->id === 'edit-lp_order' ) {
+				if ( ! empty( $wp_screen->id ) && $wp_screen->id === 'edit-lp_order' ) {
 					$flag = false;
 				}
 

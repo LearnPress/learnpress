@@ -335,7 +335,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @param bool $is_update
 		 *
 		 * @since 4.2.6.9
-		 * @version 1.0.2
+		 * @version 1.0.3
 		 */
 		public function save_post( int $post_id, ?WP_Post $post = null, bool $is_update = false ) {
 			try {
@@ -355,21 +355,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$courseModel = new CourseModel( $post );
 				}
 
+				// Get all metadata of post
+				$all_metadata           = $courseModel->get_post_model()->get_all_metadata();
+				$courseModel->meta_data = $all_metadata;
+				// Temporary unset _elementor_page_assets of El, reason by method get_all_metadata get not use maybe_unserialize, make save invalid serialize
+				$courseModel->meta_data->_elementor_page_assets = [];
+
 				// Merge object post and courseModel
 				$new_obj     = (array) $post;
 				$old_obj     = (array) $courseModel;
 				$old_now     = array_merge( $old_obj, $new_obj );
 				$courseModel = new CourseModel( $old_now );
-
-				// Get all metadata of course
-				if ( $is_update && empty( $wp_screen ) ) {
-					$coursePost = new CoursePostModel( $courseModel );
-					$coursePost->get_all_metadata();
-					// Temporary unset _elementor_page_assets of El, reason by method get_all_metadata get not use maybe_unserialize, make save invalid serialize
-					$coursePost->meta_data->_elementor_page_assets = [];
-
-					$courseModel->meta_data = $coursePost->meta_data;
-				}
 
 				// Save option single course
 				include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
@@ -396,6 +392,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 								);
 							}
 						} elseif ( ! $is_update ) {
+							if ( isset( $courseModel->meta_data->{$meta_key} ) ) {
+								continue;
+							}
 							$courseModel->meta_data->{$meta_key} = $option->default ?? '';
 						} elseif ( ! empty( $wp_screen ) && LP_COURSE_CPT === $wp_screen->id ) {
 							$value_saved                         = $option->save( $courseModel->ID );
