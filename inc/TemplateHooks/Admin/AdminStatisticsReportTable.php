@@ -36,7 +36,7 @@ class AdminStatisticsReportTable {
 
 	const PER_PAGE = 20;
 
-	public function init() {
+	public function init(): void {
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 	}
 

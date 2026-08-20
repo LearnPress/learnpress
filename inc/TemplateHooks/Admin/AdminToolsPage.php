@@ -69,47 +69,29 @@ class AdminToolsPage {
 		$tab_views = self::get_tab_views();
 		$tab       = isset( $_REQUEST['tab'] ) ? LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ) : '';
 		$tab       = array_key_exists( $tab, $tabs ) ? $tab : ( array_key_first( $tabs ) ?? '' );
+
+		ob_start();
 		?>
-		<div class="wrap lp-submenu-page learn-press-tools">
-			<h1 class="wp-heading-inline"><?php esc_html_e( 'LearnPress Tools', 'learnpress' ); ?></h1>
-
-			<h2 class="nav-tab-wrapper">
-				<?php foreach ( $tabs as $tab_slug => $tab_label ) : ?>
-					<?php if ( $tab_slug === $tab ) : ?>
-						<span class="nav-tab nav-tab-active"><?php echo esc_html( $tab_label ); ?></span>
-					<?php else : ?>
-						<a class="nav-tab" href="
-						<?php
-						echo esc_url(
-							add_query_arg(
-								array(
-									'page' => 'learn-press-tools',
-									'tab'  => $tab_slug,
-								),
-								admin_url( 'admin.php' )
-							)
-						);
-						?>
-						">
-							<?php echo esc_html( $tab_label ); ?>
-						</a>
-					<?php endif; ?>
-				<?php endforeach; ?>
-			</h2>
-
-			<div class="lp-admin-tabs">
-				<div class="lp-admin-tab-content">
-					<?php
-					if ( isset( $tab_views[ $tab ] ) ) {
-						learn_press_admin_view( $tab_views[ $tab ] );
-					} else {
-						$this->render_custom_tab( $tab );
-					}
-					?>
-				</div>
+			<div class="lp-admin-tab-content">
+				<?php
+				if ( isset( $tab_views[ $tab ] ) ) {
+					learn_press_admin_view( $tab_views[ $tab ] );
+				} else {
+					$this->render_custom_tab( $tab );
+				}
+				?>
 			</div>
-		</div>
 		<?php
+		$content = ob_get_clean();
+
+		echo AdminTemplate::html_on_wp_admin_screen(
+			array(
+				'tabs'    => $tabs,
+				'content' => $content,
+				'title'   => __( 'LearnPress Tools', 'learnpress' ),
+				'id'      => 'learn-press-tools',
+			)
+		);
 	}
 
 	/**

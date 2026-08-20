@@ -271,12 +271,6 @@ class AdminTemplate {
 		$title   = $data['title'] ?? '';
 		$id      = $data['id'] ?? '';
 
-		/**
-		 * Logic get content
-		 * 1. if $data['content'] not empty will get $data['content']
-		 * 2. if $data['content'] empty default search by tab
-		 */
-
 		$classes = array( 'wrap' );
 		if ( $id ) {
 			$classes[] = $id;
