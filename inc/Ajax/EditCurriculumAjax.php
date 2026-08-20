@@ -213,7 +213,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function addItemToSection call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function create_item_add_to_section() {
 		$response = new LP_REST_Response();
@@ -234,6 +234,9 @@ class EditCurriculumAjax extends AbstractAjax {
 			}
 
 			$courseSectionItemModel = $courseSectionModel->create_item_and_add( $data );
+
+			// Reload course model to get updated sections
+			$courseModel = CourseModel::find( $course_id, true );
 
 			$response->data->section_item = $courseSectionItemModel;
 
@@ -265,7 +268,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function addItemsSelectedToSection call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function add_items_to_section() {
 		$response = new LP_REST_Response();
@@ -290,6 +293,9 @@ class EditCurriculumAjax extends AbstractAjax {
 				throw new Exception( __( 'No items were added to the section', 'learnpress' ) );
 			}
 
+			// Reload course model to get updated sections
+			$courseModel = CourseModel::find( $course_id, true );
+
 			// Set context_data for Course Builder context
 			$is_course_builder                                    = ! empty( $data['is_course_builder'] );
 			AdminEditCurriculumTemplate::instance()->context_data = [
@@ -304,8 +310,7 @@ class EditCurriculumAjax extends AbstractAjax {
 				$courseSectionItemAlias        = (object) get_object_vars( $courseSectionItem );
 				$itemModel                     = $courseModel->get_item_model(
 					$courseSectionItem->item_id,
-					$courseSectionItem->item_type,
-					false
+					$courseSectionItem->item_type
 				);
 				$courseSectionItemAlias->title = $itemModel ? $itemModel->get_the_title() : '';
 				$response->data->html         .= AdminEditCurriculumTemplate::instance()->html_section_item(
