@@ -3,7 +3,7 @@
  * Class ProfileStudentEnrolledTemplate.
  *
  * @since 4.3.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\TemplateHooks\Profile;
@@ -15,7 +15,7 @@ use LP_Profile;
 class ProfileStudentEnrolledTemplate {
 	use Singleton;
 
-	public function init() {
+	public function init(): void {
 		add_filter( 'learn-press/get-profile-tabs', array( $this, 'display_profile_tab' ), 10, 3 );
 	}
 
@@ -88,7 +88,7 @@ class ProfileStudentEnrolledTemplate {
 		}
 
 		ob_start();
-		echo '<div id="lp-enrolled-students">';
+		echo '<div class="lp-enrolled-students">';
 		AdminListStudentsEnrolled::instance()->enrolled_students_layout( (int) $user->get_id() );
 		echo '</div>';
 
