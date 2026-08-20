@@ -295,55 +295,49 @@ class AdminSettingsPage {
 	public function html_page() {
 		$tabs       = $this->get_tabs();
 		$active_tab = $this->get_active_tab();
-		?>
 
-		<div class="wrap lp-submenu-page <?php echo esc_attr( self::PAGE_ID ); ?>">
-			<?php do_action( 'learn-press/admin/heading-icon', $active_tab ); ?>
+		$flat_tabs = array();
+		foreach ( $tabs as $tab_slug => $tab_obj ) {
+			$tab_id               = $tab_obj->id ?? $tab_slug;
+			$tab_title            = $tab_obj->text ?? $tab_slug;
+			$flat_tabs[ $tab_id ] = apply_filters( 'learn-press/admin/submenu-heading-tab-title', $tab_title, $tab_id );
+		}
 
-			<h1 class="wp-heading-inline">
-				<?php echo esc_html__( 'Settings', 'learnpress' ); ?>
-				<?php do_action( 'learn-press/admin/heading-title', $active_tab ); ?>
-			</h1>
+		ob_start();
+		do_action( 'learn-press/admin/heading-icon', $active_tab );
+		echo esc_html__( 'Settings', 'learnpress' );
+		do_action( 'learn-press/admin/heading-title', $active_tab );
+		$title = ob_get_clean();
 
-			<?php if ( $tabs ) : ?>
-				<h2 class="nav-tab-wrapper">
-					<?php foreach ( $tabs as $tab_slug => $tab_obj ) : ?>
-						<?php
-						$tab_id       = $tab_obj->id ?? $tab_slug;
-						$tab_title    = apply_filters( 'learn-press/admin/submenu-heading-tab-title', $tab_obj->text ?? $tab_slug, $tab_id );
-						$active_class = ( $tab_id === $active_tab ) ? ' nav-tab-active' : '';
-						?>
+		$classes  = array( 'lp-admin-tabs' );
+		$sections = $this->get_sections();
 
-						<?php if ( $active_class ) : ?>
-							<span class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo esc_html( $tab_title ); ?></span>
-						<?php else : ?>
-							<a class="nav-tab" href="?page=<?php echo esc_attr( self::PAGE_ID ); ?>&tab=<?php echo esc_attr( $tab_id ); ?>"><?php echo esc_html( $tab_title ); ?></a>
-						<?php endif; ?>
-					<?php endforeach; ?>
-				</h2>
-			<?php endif; ?>
+		$has_sections = $sections && sizeof( $sections ) > 1;
+		$has_sections = apply_filters( 'learn-press/admin/submenu-has-sections', $has_sections, $sections, $active_tab );
 
-			<?php
-			$classes  = array( 'lp-admin-tabs' );
-			$sections = $this->get_sections();
+		if ( $has_sections ) {
+			$classes[] = 'has-sections';
+		}
 
-			$has_sections = $sections && sizeof( $sections ) > 1;
-			$has_sections = apply_filters( 'learn-press/admin/submenu-has-sections', $has_sections, $sections, $active_tab );
+		ob_start();
+		$this->page_content();
+		$page_content = ob_get_clean();
 
-			if ( $has_sections ) {
-				$classes[] = 'has-sections';
-			}
+		$wrapper = array(
+			sprintf(
+				'<form class="%s" method="post" enctype="multipart/form-data">',
+				esc_attr( implode( ' ', $classes ) )
+			) => '</form>',
+		);
 
-			ob_start();
-			$this->page_content();
-			$content = ob_get_clean();
-
-			$wrapper = array( sprintf( '<form class="%s" method="post" enctype="multipart/form-data">', esc_attr( implode( ' ', $classes ) ) ) => '</form>' );
-
-			echo Template::instance()->nest_elements( $wrapper, $content );
-			?>
-		</div>
-		<?php
+		echo AdminTemplate::html_on_wp_admin_screen(
+			array(
+				'tabs'    => $flat_tabs,
+				'content' => Template::instance()->nest_elements( $wrapper, $page_content ),
+				'title'   => $title,
+				'id'      => self::PAGE_ID,
+			)
+		);
 	}
 
 	/**
