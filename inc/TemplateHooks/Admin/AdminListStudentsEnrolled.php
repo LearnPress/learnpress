@@ -20,6 +20,7 @@ use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 use LP_Debug;
 use LP_Helper;
 use LP_Page_Controller;
+use LP_Request;
 use stdClass;
 use Throwable;
 
@@ -30,7 +31,7 @@ use Throwable;
  * Provides WP Admin submenu + Frontend profile tab.
  *
  * @since 4.3.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 class AdminListStudentsEnrolled {
 	use Singleton;
@@ -49,12 +50,17 @@ class AdminListStudentsEnrolled {
 	 * Admin page output callback.
 	 */
 	public function admin_page_output() {
-		$instructor_id = self::resolve_instructor_id_for_request( array() );
+		ob_start();
+		$this->enrolled_students_layout();
+		$content = ob_get_clean();
 
-		echo '<div class="wrap" id="lp-enrolled-students">';
-		echo '<h1 class="wp-heading-inline">' . esc_html__( 'Students', 'learnpress' ) . '</h1>';
-		$this->enrolled_students_layout( $instructor_id );
-		echo '</div>';
+		echo AdminTemplate::html_on_wp_admin_screen(
+			array(
+				'content' => $content,
+				'title'   => __( 'Students', 'learnpress' ),
+				'id'      => 'lp-enrolled-students',
+			)
+		);
 	}
 
 	/**
@@ -72,10 +78,8 @@ class AdminListStudentsEnrolled {
 
 	/**
 	 * Render initial layout with TemplateAJAX::load_content_via_ajax().
-	 *
-	 * @param int $instructor_id 0 for Admin (all), user ID for Instructor.
 	 */
-	public function enrolled_students_layout( $instructor_id = 0 ) {
+	public function enrolled_students_layout() {
 		try {
 			$page_current = '';
 			if ( function_exists( 'get_current_screen' ) ) {
@@ -88,23 +92,14 @@ class AdminListStudentsEnrolled {
 				}
 			}
 
-			// Enqueue styles — lp-enrolled-students-table CSS is loaded via admin.css/frontend.css import.
-			// Build toolbar HTML (outside AJAX so it persists across reloads).
-			$instructor_id = self::resolve_instructor_id_for_request(
-				array(
-					'instructor_id' => $instructor_id,
-				)
-			);
-
 			$args = array(
 				'id_url'                => 'lp-enrolled-students',
-				'instructor_id'         => (int) $instructor_id,
-				'course_id'             => abs( LP_Helper::sanitize_params_submitted( $_GET['course_id'] ?? 0, 'int' ) ),
-				'course_name'           => LP_Helper::sanitize_params_submitted( $_GET['course_name'] ?? '' ),
+				'course_id'             => LP_Request::get_param( 'course_id', 0 ),
+				'course_name'           => LP_Request::get_param( 'course_name' ),
 				'paged'                 => 1,
-				'search'                => LP_Helper::sanitize_params_submitted( $_GET['search'] ?? '' ),
-				'start_date'            => self::sanitize_date_filter( $_GET['start_date'] ?? '' ),
-				'end_date'              => self::sanitize_date_filter( $_GET['end_date'] ?? '' ),
+				'search'                => lp_request::get_param( 'search' ),
+				'start_date'            => LP_Request::get_param( 'start_date' ),
+				'end_date'              => LP_Request::get_param( 'end_date' ),
 				'enableUpdateParamsUrl' => false,
 			);
 
@@ -125,7 +120,6 @@ class AdminListStudentsEnrolled {
 
 			echo Template::combine_components( $section );
 		} catch ( Throwable $e ) {
-			LP_Debug::error_log( $e );
 			Template::print_message( $e->getMessage(), 'error' );
 		}
 	}
@@ -150,14 +144,12 @@ class AdminListStudentsEnrolled {
 				throw new Exception( esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) );
 			}
 
-			$instructor_id = self::resolve_instructor_id_for_request( $data );
-
 			$course_id   = abs( LP_Helper::sanitize_params_submitted( $data['course_id'] ?? 0, 'int' ) );
 			$paged       = max( 1, abs( LP_Helper::sanitize_params_submitted( $data['paged'] ?? 1, 'int' ) ) );
 			$course_name = LP_Helper::sanitize_params_submitted( $data['course_name'] ?? '' );
 			$search      = LP_Helper::sanitize_params_submitted( $data['search'] ?? '' );
-			$start_date  = self::sanitize_date_filter( $data['start_date'] ?? '' );
-			$end_date    = self::sanitize_date_filter( $data['end_date'] ?? '' );
+			$start_date  = lp_helper::sanitize_params_submitted( $data['start_date'] ?? '' );
+			$end_date    = lp_helper::sanitize_params_submitted( $data['end_date'] ?? '' );
 			$per_page    = self::PER_PAGE;
 
 			// Normalize date range if request is reversed.
@@ -190,7 +182,8 @@ class AdminListStudentsEnrolled {
 			$filter->join[]      = "JOIN {$lp_db_user_items->wpdb->posts} p ON ui.item_id = p.ID";
 			$filter->join[]      = "JOIN {$lp_db_user_items->wpdb->users} u ON ui.user_id = u.ID";
 
-			if ( $instructor_id > 0 ) {
+			$instructor_id = get_current_user_id();
+			if ( $instructor_id > 0 && current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
 				$filter->where[] = $lp_db_user_items->wpdb->prepare( 'AND p.post_author = %d', $instructor_id );
 			}
 
@@ -227,6 +220,10 @@ class AdminListStudentsEnrolled {
 				);
 			}
 
+			$filter     = apply_filters(
+				'learn-press/filter-enrolled-students',
+				$filter
+			);
 			$total_rows = 0;
 			$rows       = $lp_db_user_items->get_user_items( $filter, $total_rows );
 			if ( ! is_array( $rows ) ) {
@@ -254,52 +251,6 @@ class AdminListStudentsEnrolled {
 	}
 
 	/**
-	 * Check whether user can view enrolled students content.
-	 *
-	 * @param int $user_id
-	 *
-	 * @return bool
-	 */
-	private static function can_view_enrolled_students( int $user_id = 0 ): bool {
-		if ( $user_id < 1 ) {
-			$user_id = get_current_user_id();
-		}
-
-		if ( $user_id < 1 ) {
-			return false;
-		}
-
-		$user_model = UserModel::find( $user_id, true );
-		if ( ! $user_model instanceof UserModel ) {
-			return false;
-		}
-
-		return $user_model->is_instructor();
-	}
-
-	/**
-	 * Resolve instructor_id from request by permission.
-	 * Admin can keep requested instructor_id; instructor is forced to self.
-	 *
-	 * @param array $data
-	 *
-	 * @return int
-	 */
-	private static function resolve_instructor_id_for_request( array $data ): int {
-		$current_user_id = get_current_user_id();
-		if ( ! self::can_view_enrolled_students( $current_user_id ) ) {
-			return 0;
-		}
-
-		$is_admin = user_can( $current_user_id, UserModel::ROLE_ADMINISTRATOR );
-		if ( $is_admin ) {
-			return max( 0, abs( LP_Helper::sanitize_params_submitted( $data['instructor_id'] ?? 0, 'int' ) ) );
-		}
-
-		return $current_user_id;
-	}
-
-	/**
 	 * HTML builder: toolbar (course filter, search).
 	 *
 	 * @return string
@@ -311,21 +262,34 @@ class AdminListStudentsEnrolled {
 		$selected_course = abs( LP_Helper::sanitize_params_submitted( $data_get['course_id'] ?? 0, 'int' ) );
 		$search_course   = LP_Helper::sanitize_params_submitted( $data_get['course_name'] ?? '' );
 		$search_student  = LP_Helper::sanitize_params_submitted( $data_get['search'] ?? '' );
-		$search_start    = self::sanitize_date_filter( $data_get['start_date'] ?? '' );
-		$search_end      = self::sanitize_date_filter( $data_get['end_date'] ?? '' );
+		$search_start    = lp_helper::sanitize_params_submitted( $data_get['start_date'] ?? '' );
+		$search_end      = lp_helper::sanitize_params_submitted( $data_get['end_date'] ?? '' );
 
 		$html_fields = sprintf(
 			'<div class="filter-field">
 				<label for="lp-enrolled-filter-course-name">%s</label>
-				<input id="lp-enrolled-filter-course-name" class="lp-enrolled-filter-course-name" type="text" name="course_name" list="lp-enrolled-course-list" value="%s" placeholder="%s">
+				<input id="lp-enrolled-filter-course-name"
+					class="lp-enrolled-filter-course-name"
+					type="text"
+					name="course_name"
+					list="lp-enrolled-course-list"
+					value="%s"
+					placeholder="%s">
 			</div>
 			<div class="filter-field">
 				<label for="lp-enrolled-search-input">%s</label>
-				<input id="lp-enrolled-search-input" class="lp-enrolled-search-input" type="text" name="search" value="%s" placeholder="%s">
+				<input id="lp-enrolled-search-input"
+					class="lp-enrolled-search-input"
+					type="text"
+					name="search" value="%s" placeholder="%s">
 			</div>
 			<div class="filter-field">
 				<label for="lp-enrolled-filter-start-date">%s</label>
-				<input id="lp-enrolled-filter-start-date" class="lp-enrolled-filter-start-date" type="date" name="start_date" value="%s" placeholder="mm/dd/yyyy">
+				<input id="lp-enrolled-filter-start-date"
+					class="lp-enrolled-filter-start-date"
+					type="date" name="start_date"
+					value="%s"
+					placeholder="mm/dd/yyyy">
 			</div>
 			<div class="filter-field">
 				<label for="lp-enrolled-filter-end-date">%s</label>
@@ -377,15 +341,21 @@ class AdminListStudentsEnrolled {
 		$html_fields = sprintf(
 			'<div class="filter-field">
 				<label for="lp-modal-enrolled-search-input">%s</label>
-				<input id="lp-modal-enrolled-search-input" class="lp-enrolled-search-input" type="text" name="search" placeholder="%s">
+				<input id="lp-modal-enrolled-search-input"
+					class="lp-enrolled-search-input"
+					type="text" name="search" placeholder="%s">
 			</div>
 			<div class="filter-field">
 				<label for="lp-modal-enrolled-filter-start-date">%s</label>
-				<input id="lp-modal-enrolled-filter-start-date" class="lp-enrolled-filter-start-date" type="date" name="start_date" placeholder="mm/dd/yyyy">
+				<input id="lp-modal-enrolled-filter-start-date"
+					class="lp-enrolled-filter-start-date"
+					type="date" name="start_date" placeholder="mm/dd/yyyy">
 			</div>
 			<div class="filter-field">
 				<label for="lp-modal-enrolled-filter-end-date">%s</label>
-				<input id="lp-modal-enrolled-filter-end-date" class="lp-enrolled-filter-end-date" type="date" name="end_date" placeholder="mm/dd/yyyy">
+				<input id="lp-modal-enrolled-filter-end-date"
+					class="lp-enrolled-filter-end-date"
+					type="date" name="end_date" placeholder="mm/dd/yyyy">
 			</div>',
 			esc_html__( 'Student', 'learnpress' ),
 			esc_attr__( 'Enter student name or email', 'learnpress' ),
@@ -486,7 +456,10 @@ class AdminListStudentsEnrolled {
 		if ( empty( $rows ) ) {
 			$section_empty = array(
 				'wrap'     => '<div class="lp-enrolled-students-table-wrap">',
-				'empty'    => '<div class="lp-enrolled-empty"><p>' . esc_html__( 'No students found.', 'learnpress' ) . '</p></div>',
+				'empty'    => sprintf(
+					'<div class="lp-enrolled-empty"><p>%s</p></div>',
+					esc_html__( 'No students found.', 'learnpress' )
+				),
 				'wrap-end' => '</div>',
 			);
 			$section_empty = apply_filters(
@@ -737,25 +710,5 @@ class AdminListStudentsEnrolled {
 		);
 
 		return Template::combine_components( $section );
-	}
-
-	/**
-	 * Sanitize date filter value in Y-m-d format.
-	 *
-	 * @param string $date
-	 *
-	 * @return string
-	 */
-	private static function sanitize_date_filter( $date ): string {
-		if ( ! is_scalar( $date ) ) {
-			return '';
-		}
-
-		$date = LP_Helper::sanitize_params_submitted( (string) $date );
-		if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
-			return $date;
-		}
-
-		return '';
 	}
 }

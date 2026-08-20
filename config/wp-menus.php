@@ -29,7 +29,7 @@ $menu_items = [
 		'id'         => 'learn-press-students-enrolled',
 		'menu_title' => __( 'Students', 'learnpress' ),
 		'page_title' => __( 'Students', 'learnpress' ),
-		'capability' => 'manage_options',
+		'capability' => 'edit_' . LP_COURSE_CPT . 's',
 		'priority'   => 20,
 		'callback'   => [ AdminListStudentsEnrolled::instance(), 'admin_page_output' ],
 	],

@@ -17,7 +17,7 @@ export class ListStudentsEnrolled {
 	}
 
 	static selectors = {
-		elContainer: '#lp-enrolled-students',
+		elContainer: '.lp-enrolled-students',
 		elForm: '.lp-enrolled-students-form',
 		elLPTarget: '.lp-target',
 		elCourseNameInput: '.lp-enrolled-filter-course-name',
