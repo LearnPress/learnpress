@@ -1,7 +1,21 @@
 <?php
 
+use LearnPress\Databases\PostDB;
+use LearnPress\Databases\QuestionAnswersDB;
+use LearnPress\Databases\QuizQuestionsDB;
+use LearnPress\Filters\PostFilter;
+use LearnPress\Filters\QuestionAnswersFilter;
+use LearnPress\Filters\QuizQuestionsFilter;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\CourseSectionModel;
+use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\PostModel;
+use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\Models\Quiz\QuizQuestionModel;
+use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserModel;
 use LearnPress\Services\CourseService;
 
 /**
@@ -44,6 +58,7 @@ class LP_Install_Sample_Data {
 	 */
 	protected $dummy_text = '';
 
+	public const KEY_META_SAMPLE_DATA = '_lp_sample_data';
 	/**
 	 * LP_Install_Sample_Data constructor.
 	 */
@@ -170,38 +185,64 @@ class LP_Install_Sample_Data {
 	 * Un-install
 	 */
 	public function uninstall() {
+		set_time_limit( 0 );
+
 		if ( ! wp_verify_nonce( LP_Request::get_param( '_wpnonce' ), 'uninstall-sample-course' ) ) {
 			return;
 		}
 
-		$posts = $this->get_sample_posts();
 		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+				throw new Exception( esc_html__( 'You do not have permission to uninstall sample data.', 'learnpress' ) );
+			}
+
+			$posts = $this->get_sample_posts();
 			if ( ! $posts ) {
 				throw new Exception( esc_html__( 'No data sample.', 'learnpress' ) );
 			}
 
 			foreach ( $posts as $post ) {
+				$post_id = (int) $post->ID;
+
 				switch ( $post->post_type ) {
 					case LP_COURSE_CPT:
-						$this->_delete_course( $post->ID );
+						$this->delete_sample_course( $post_id );
 						break;
 					case LP_QUIZ_CPT:
-						$this->_delete_quiz( $post->ID );
+						$this->delete_sample_quiz( $post_id );
+
+						$quizPostModel = QuizPostModel::find( $post_id );
+						if ( $quizPostModel instanceof QuizPostModel ) {
+							$quizPostModel->delete();
+						}
 						break;
 					case LP_QUESTION_CPT:
-						$this->_delete_question( $post->ID );
+						$this->delete_sample_question_answers( $post_id );
+
+						$questionPostModel = QuestionPostModel::find( $post_id );
+						if ( $questionPostModel instanceof QuestionPostModel ) {
+							$questionPostModel->delete();
+						}
+						break;
+					case LP_LESSON_CPT:
+						$lessonPostModel = LessonPostModel::find( $post_id );
+						if ( $lessonPostModel instanceof LessonPostModel ) {
+							$lessonPostModel->delete();
+						}
+						break;
+					default:
+						$postModel = PostModel::find_by_id( $post_id );
+						if ( $postModel instanceof PostModel ) {
+							$postModel->delete();
+						}
 						break;
 				}
-
-				$this->_delete_post( $post->ID );
 			}
-			?>
 
-			<div class="lp-install-sample__response success">
-				<?php esc_html_e( 'The sample data was successfully deleted!', 'learnpress' ); ?>
-			</div>
-
-			<?php
+			Template::print_message(
+				'he sample data was successfully deleted!',
+			);
 		} catch ( Exception $ex ) {
 
 			echo '<div class="lp-install-sample__response fail">';
@@ -209,62 +250,122 @@ class LP_Install_Sample_Data {
 			echo '</div>';
 		}
 
+		set_time_limit( LearnPress::$time_limit_default_of_sever );
+
 		die();
 	}
 
 	/**
 	 * Get all posts marked as "sample data"
 	 *
-	 * @return array|null|object
+	 * Use PostDB/PostFilter instead of raw $wpdb query.
+	 *
+	 * @return array
+	 * @throws Exception
 	 */
-	public function get_sample_posts() {
-		global $wpdb;
+	public function get_sample_posts(): array {
+		$db         = PostDB::getInstance();
+		$post_types = [ LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ];
+		$posts      = [];
 
-		$query = $wpdb->prepare(
-			"
-	        SELECT p.ID, post_type
-	        FROM {$wpdb->posts} p
-	        INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s AND pm.meta_value = %s
-	    ",
-			'_lp_sample_data',
-			'yes'
-		);
+		foreach ( $post_types as $post_type ) {
+			$filter                  = new PostFilter();
+			$filter->post_type       = $post_type;
+			$filter->only_fields     = [ 'p.ID', 'p.post_type' ];
+			$filter->join[]          = sprintf(
+				"INNER JOIN %s AS pm ON p.ID = pm.post_id AND pm.meta_key = '%s' AND pm.meta_value = 'yes'",
+				$db->tb_postmeta,
+				self::KEY_META_SAMPLE_DATA
+			);
+			$filter->run_query_count = false;
 
-		return $wpdb->get_results( $query );
+			$rows = $db->get_posts( $filter );
+			if ( is_array( $rows ) ) {
+				$posts = array_merge( $posts, $rows );
+			}
+		}
+
+		return $posts;
 	}
 
-	protected function _delete_course( $id ) {
-		global $wpdb;
-		$query = $wpdb->prepare(
-			"
-	        SELECT section_id
-	        FROM {$wpdb->learnpress_sections}
-	        WHERE section_course_id = %d
-	    ",
-			$id
-		);
+	/**
+	 * Delete a sample course: its section items (lessons/quizzes with their
+	 * questions/answers), sections, the course row and the course post.
+	 *
+	 * @param int $course_id
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	protected function delete_sample_course( int $course_id ) {
+		// Not load from cache, to get from Posts table
+		$courseModel = CourseModel::find( $course_id );
 
-		$section_ids = $wpdb->get_col( $query );
-		if ( $section_ids ) {
-			$wpdb->query( "DELETE FROM {$wpdb->learnpress_section_items} WHERE section_id IN(" . join( ',', $section_ids ) . ')' );
-			$wpdb->query( "DELETE FROM {$wpdb->learnpress_sections} WHERE section_id IN(" . join( ',', $section_ids ) . ')' );
+		if ( $courseModel instanceof CourseModel ) {
+			$sections_items = $courseModel->get_section_items();
+
+			foreach ( $sections_items as $section ) {
+				$section_id = $section->section_id ?? 0;
+
+				// Only delete section, not delete items inside section
+				$courseSectionModel = CourseSectionModel::find( $section_id, $course_id, false );
+				if ( $courseSectionModel instanceof CourseSectionModel ) {
+					$courseSectionModel->delete();
+				}
+			}
+
+			// No need delete here, delete via hook when trigger $coursePostModel->delete();
+			//$courseModel->delete();
+		}
+
+		// Delete course post and via hook will delete course on the learnpress_courses table
+		$coursePostModel = CoursePostModel::find_by_id( $course_id );
+		if ( $coursePostModel instanceof CoursePostModel ) {
+			$coursePostModel->delete();
 		}
 	}
 
-	protected function _delete_quiz( $id ) {
-		global $wpdb;
-		$wpdb->query( "DELETE FROM {$wpdb->learnpress_quiz_questions} WHERE quiz_id = {$id}" );
+	/**
+	 * Delete quiz questions and their answers of a sample quiz.
+	 * Does not delete the quiz post itself.
+	 *
+	 * @param int $quiz_id
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	protected function delete_sample_quiz( int $quiz_id ) {
+		$db                      = QuizQuestionsDB::getInstance();
+		$filter                  = new QuizQuestionsFilter();
+		$filter->quiz_id         = $quiz_id;
+		$filter->query_count     = false;
+		$filter->run_query_count = false;
+		$filter->field_count     = QuizQuestionsFilter::COL_QUIZ_QUESTION_ID;
+		$quiz_questions          = $db->get_quiz_questions( $filter );
+
+		if ( is_array( $quiz_questions ) ) {
+			foreach ( $quiz_questions as $quiz_question ) {
+				// Only delete map quiz question, not delete question inside quiz
+				$quizQuestionModel = new QuizQuestionModel( $quiz_question );
+				$quizQuestionModel->delete();
+			}
+		}
 	}
 
-	protected function _delete_question( $id ) {
-		global $wpdb;
-		$wpdb->query( "DELETE FROM {$wpdb->learnpress_question_answers} WHERE question_id = {$id}" );
-	}
-
-	protected function _delete_post( $post_id ) {
-		global $wpdb;
-		$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id = $post_id" );
-		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE ID = $post_id" );
+	/**
+	 * Delete all answers of a sample question.
+	 *
+	 * @param int $question_id
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	protected function delete_sample_question_answers( int $question_id ) {
+		$db                 = QuestionAnswersDB::getInstance();
+		$filter             = new QuestionAnswersFilter();
+		$filter->where[]    = $db->wpdb->prepare( 'AND question_id = %d', $question_id );
+		$filter->collection = $db->tb_lp_question_answers;
+		$db->delete_execute( $filter );
 	}
 
 	protected function _delete_user_items( $ids ) {
@@ -513,7 +614,7 @@ class LP_Install_Sample_Data {
 
 		if ( $lesson_id ) {
 
-			update_post_meta( $lesson_id, '_lp_sample_data', 'yes' );
+			update_post_meta( $lesson_id, self::KEY_META_SAMPLE_DATA, 'yes' );
 
 			$section_data = array(
 				'section_id' => $section_id,
@@ -567,7 +668,7 @@ class LP_Install_Sample_Data {
 				// '_lp_archive_history'      => 'no',
 				// '_lp_show_check_answer'    => '0',
 				// '_lp_show_hint'            => '0',
-				'_lp_sample_data'          => 'yes',
+				self::KEY_META_SAMPLE_DATA => 'yes',
 				'_lp_negative_marking'     => 'no',
 				'_lp_minus_skip_questions' => 'no',
 				'_lp_instant_check'        => 'no',
@@ -627,7 +728,7 @@ class LP_Install_Sample_Data {
 			$type = $this->get_question_type();
 
 			update_post_meta( $question_id, '_lp_type', $type );
-			update_post_meta( $question_id, '_lp_sample_data', 'yes' );
+			update_post_meta( $question_id, self::KEY_META_SAMPLE_DATA, 'yes' );
 
 			$quiz_question_data = array(
 				'quiz_id'     => $quiz_id,
