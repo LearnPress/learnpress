@@ -2,6 +2,7 @@
 namespace LearnPress\TemplateHooks\Admin;
 
 use LearnPress\Helpers\Template;
+use LP_Request;
 
 /**
  * Template Show list items to select in popup.
@@ -246,6 +247,80 @@ class AdminTemplate {
 				$html_btn_actions
 			),
 			'wrap_end'     => '</form>',
+		);
+
+		return Template::combine_components( $sections );
+	}
+
+	/**
+	 * Display content html by format WP Admin Screen
+	 *
+	 * @param array $data ['tabs' => [ 'tab' => 'name' ], 'content' => '', 'title' => '', 'id' => ''].
+	 * @return string
+	 * @since 4.4.5
+	 * @version 1.0.0
+	 */
+	public static function html_on_wp_admin_screen( array $data = [] ): string {
+		$tabs       = $data['tabs'] ?? [];
+		$active_tab = LP_Request::get_param( 'tab' );
+		if ( empty( $active_tab ) || ! isset( $tabs[ $active_tab ] ) ) {
+			$tab_keys   = array_keys( $tabs );
+			$active_tab = reset( $tab_keys );
+		}
+		$content = $data['content'] ?? '';
+		$title   = $data['title'] ?? '';
+		$id      = $data['id'] ?? '';
+
+		/**
+		 * Logic get content
+		 * 1. if $data['content'] not empty will get $data['content']
+		 * 2. if $data['content'] empty default search by tab
+		 */
+
+		$classes = array( 'wrap' );
+		if ( $id ) {
+			$classes[] = $id;
+		}
+
+		$html_tabs = '';
+		if ( $tabs ) {
+			foreach ( $tabs as $tab => $tab_title ) {
+				$active_class = ( $tab == $active_tab ) ? ' nav-tab-active' : '';
+
+				if ( $active_class ) {
+					$html_tabs .= sprintf(
+						'<span class="nav-tab%s">%s</span>',
+						esc_attr( $active_class ),
+						esc_html( $tab_title )
+					);
+				} else {
+					$html_tabs .= sprintf(
+						'<a class="nav-tab" href="?page=%s&tab=%s">%s</a>',
+						esc_attr( $id ),
+						esc_attr( $tab ),
+						esc_html( $tab_title )
+					);
+				}
+			}
+		}
+
+		$sections = array(
+			'wrap'         => sprintf(
+				'<div class="%s">',
+				esc_attr( implode( ' ', $classes ) )
+			),
+			'heading'      => $title ? sprintf(
+				'<h1 class="wp-heading-inline">%s</h1>',
+				wp_kses_post( $title )
+			) : '',
+			'tabs'         => $tabs ? sprintf(
+				'<h2 class="nav-tab-wrapper">%s</h2>',
+				$html_tabs
+			) : '',
+			'wrap-content' => '<div class="lp-admin-tabs">',
+			'content'      => $content,
+			'wrap-content-end' => '</div>',
+			'wrap-end'     => '</div>',
 		);
 
 		return Template::combine_components( $sections );

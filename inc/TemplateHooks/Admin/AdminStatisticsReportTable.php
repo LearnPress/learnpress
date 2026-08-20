@@ -73,44 +73,19 @@ class AdminStatisticsReportTable {
 		$tab  = isset( $_REQUEST['tab'] ) ? LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ) : 'overview';
 		$tab  = array_key_exists( $tab, $tabs ) ? $tab : 'overview';
 
-		$view = apply_filters( 'learn-press/statistics/tab-view', "statistics/{$tab}", $tab, $this );
-
+		$view = "statistics/{$tab}";
 		ob_start();
-		if ( $view ) {
-			learn_press_admin_view( $view );
-		}
+		learn_press_admin_view( $view );
 		$content = ob_get_clean();
 
-		$wrapper = [ '<div class="lp-admin-tabs"><div class="lp-admin-tab-content">' => '</div></div>' ];
-		?>
-		<div class="wrap lp-submenu-page learn-press-statistics">
-			<h1 class="wp-heading-inline"><?php echo esc_html__( 'Statistics', 'learnpress' ); ?></h1>
-
-			<h2 class="nav-tab-wrapper">
-				<?php foreach ( $tabs as $tab_slug => $tab_label ) : ?>
-					<?php if ( $tab_slug === $tab ) : ?>
-						<span class="nav-tab nav-tab-active"><?php echo esc_html( $tab_label ); ?></span>
-					<?php else : ?>
-						<a class="nav-tab" href="
-						<?php
-						echo esc_url(
-							add_query_arg(
-								array(
-									'page' => 'learn-press-statistics',
-									'tab' => $tab_slug,
-								),
-								admin_url( 'admin.php' )
-							)
-						);
-						?>
-						"><?php echo esc_html( $tab_label ); ?></a>
-					<?php endif; ?>
-				<?php endforeach; ?>
-			</h2>
-
-			<?php echo Template::instance()->nest_elements( $wrapper, $content ); ?>
-		</div>
-		<?php
+		echo AdminTemplate::html_on_wp_admin_screen(
+			array(
+				'tabs'    => $tabs,
+				'content' => $content,
+				'title'   => __( 'Statistics', 'learnpress' ),
+				'id'      => 'learn-press-statistics',
+			)
+		);
 	}
 
 	/**
