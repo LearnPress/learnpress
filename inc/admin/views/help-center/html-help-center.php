@@ -12,6 +12,7 @@
  */
 
 use LearnPress\TemplateHooks\Admin\AdminHelpCenterDataTemplate;
+use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 
 defined( 'ABSPATH' ) || exit;
@@ -69,8 +70,7 @@ foreach ( $quick_links as &$link ) {
 unset( $link );
 ?>
 
-<div class="wrap lp-submenu-page learn-press-help-center">
-	<h1 class="wp-heading-inline"><?php esc_html_e( 'LearnPress Help Center', 'learnpress' ); ?></h1>
+<?php ob_start(); ?>
 	<p class="lp-help-center-subtitle">
 		<?php esc_html_e( 'Find documentation, tutorials, troubleshooting guides, and support resources for LearnPress.', 'learnpress' ); ?>
 	</p>
@@ -107,4 +107,13 @@ unset( $link );
 		]
 	)
 	?>
-</div>
+<?php
+$content = ob_get_clean();
+
+echo AdminTemplate::html_on_wp_admin_screen(
+	array(
+		'content' => $content,
+		'title'   => __( 'LearnPress Help Center', 'learnpress' ),
+		'id'      => 'learn-press-help-center',
+	)
+);
