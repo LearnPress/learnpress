@@ -304,7 +304,8 @@ class EditCurriculumAjax extends AbstractAjax {
 				$courseSectionItemAlias        = (object) get_object_vars( $courseSectionItem );
 				$itemModel                     = $courseModel->get_item_model(
 					$courseSectionItem->item_id,
-					$courseSectionItem->item_type
+					$courseSectionItem->item_type,
+					false
 				);
 				$courseSectionItemAlias->title = $itemModel ? $itemModel->get_the_title() : '';
 				$response->data->html         .= AdminEditCurriculumTemplate::instance()->html_section_item(
