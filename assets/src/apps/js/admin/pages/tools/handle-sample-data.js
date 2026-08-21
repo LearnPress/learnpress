@@ -86,12 +86,16 @@ export default class HandleSampleData {
 		);
 
 		e.preventDefault();
+		const elMessage = this.wrapper.querySelector(
+			HandleSampleData.selectors.elMessage
+		);
 
 		const message = button.dataset.message;
 		if ( ! message || ! confirm( message ) ) {
 			return;
 		}
 
+		elMessage.innerHTML = '';
 		lpUtils.lpSetLoadingEl( button, true );
 
 		const wrapper = button.closest( HandleSampleData.selectors.wrapper );
@@ -117,6 +121,9 @@ export default class HandleSampleData {
 			},
 			completed: () => {
 				lpUtils.lpSetLoadingEl( button, false );
+				setTimeout(() => {
+					elMessage.innerHTML = '';
+				}, 3000);
 			},
 		};
 
