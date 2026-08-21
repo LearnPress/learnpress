@@ -1,12 +1,23 @@
 <?php
+/**
+ * Class SampleDataService
+ *
+ * Create and delete sample course data.
+ *
+ * @since 4.4.5
+ * @version 1.0.0
+ */
 
+namespace LearnPress\Services;
+
+use Exception;
 use LearnPress\Databases\PostDB;
 use LearnPress\Databases\QuestionAnswersDB;
 use LearnPress\Databases\QuizQuestionsDB;
 use LearnPress\Filters\PostFilter;
 use LearnPress\Filters\QuestionAnswersFilter;
 use LearnPress\Filters\QuizQuestionsFilter;
-use LearnPress\Helpers\Template;
+use LearnPress\Helpers\Singleton;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\CourseSectionModel;
@@ -15,263 +26,181 @@ use LearnPress\Models\PostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
 use LearnPress\Models\QuizPostModel;
-use LearnPress\Models\UserModel;
-use LearnPress\Services\CourseService;
+use LP_WP_Filesystem;
+use Throwable;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
- * Class LP_Install_Sample_Data
- *
- * Create sample course for testing purpose.
- * This will create sections, items, questions, answers, ...
- *
- * @since 3.0.0
+ * Class SampleDataService
  */
-class LP_Install_Sample_Data {
+class SampleDataService {
+	use Singleton;
+
+	/**
+	 * Singleton init.
+	 */
+	public function init(): void {}
+
+	/**
+	 * Meta key to mark sample data.
+	 */
+	public const KEY_META_SAMPLE_DATA = '_lp_sample_data';
 
 	/**
 	 * @var array
 	 */
-	public static $section_range = array( 3, 3 );
+	protected $section_range = array( 3, 3 );
 
 	/**
 	 * @var array
 	 */
-	public static $item_range = array( 5, 10 );
+	protected $item_range = array( 5, 10 );
 
 	/**
 	 * @var array
 	 */
-	public static $question_range = array( 2, 5 );
+	protected $question_range = array( 2, 5 );
 
 	/**
 	 * @var array
 	 */
-	public static $answer_range = array( 2, 5 );
+	protected $answer_range = array( 2, 5 );
 
 	/**
 	 * @var int
 	 */
-	public static $max_content_paragraph = 5;
+	protected $max_content_paragraph = 5;
 
 	/**
 	 * @var string
 	 */
 	protected $dummy_text = '';
 
-	public const KEY_META_SAMPLE_DATA = '_lp_sample_data';
 	/**
-	 * LP_Install_Sample_Data constructor.
-	 */
-	public function __construct() {
-		add_filter( 'learn-press/script-data', array( $this, 'i18n' ), 10, 2 );
-
-		$actions = array(
-			'lp-install-sample-data',
-			'lp-uninstall-sample-data',
-		);
-
-		if ( ! in_array( LP_Request::get_param( 'page' ), $actions ) ) {
-			return;
-		}
-
-		add_action( 'init', array( $this, 'install' ) );
-		add_action( 'init', array( $this, 'uninstall' ) );
-	}
-
-	public function i18n( $data, $handle ) {
-		if ( 'learn-press-global' !== $handle ) {
-			return $data;
-		}
-
-		$i18n = array(
-			'confirm_install_sample_data'   => esc_html__( 'Are you sure you want to install the sample course data?', 'learnpress' ),
-			'confirm_uninstall_sample_data' => esc_html__( 'Are you sure you want to delete the sample course data?', 'learnpress' ),
-		);
-
-		if ( empty( $data['i18n'] ) ) {
-			$data['i18n'] = $i18n;
-		} else {
-			$data['i18n'] = array_merge( $data['i18n'], $i18n );
-		}
-
-		return $data;
-	}
-
-	/**
-	 * Install
+	 * Install sample course data.
 	 *
-	 * @TODO - Need write to api, not hook init.
+	 * @param array $params
+	 *
+	 * @return array
+	 * @throws Exception
 	 */
-	public function install() {
-		if ( ! wp_verify_nonce( LP_Request::get_param( '_wpnonce', 'key' ), 'install-sample-course' ) ) {
-			return;
-		}
-
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			return;
-		}
-
-		ini_set( 'max_execution_time', 0 );
-
-		$data = [];
-
+	public function install( array $params ): array {
 		$dummy_text       = LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . '/dummy-data/dummy-text.txt' );
 		$this->dummy_text = preg_split( '!\s!', $dummy_text );
 
-		$section_range = LP_Request::get_param( 'section-range', 0, 'int' );
-		if ( $section_range ) {
-			self::$section_range = $section_range;
+		$section_range = $params['section_range'] ?? array();
+		if ( is_array( $section_range ) && 2 === count( $section_range ) ) {
+			$this->section_range = array_map( 'intval', $section_range );
 		}
 
-		$item_range = LP_Request::get_param( 'item-range', 0, 'int' );
-		if ( $item_range ) {
-			self::$item_range = $item_range;
+		$item_range = $params['item_range'] ?? array();
+		if ( is_array( $item_range ) && 2 === count( $item_range ) ) {
+			$this->item_range = array_map( 'intval', $item_range );
 		}
 
-		$question_range = LP_Request::get_param( 'question-range', 0, 'int' );
-		if ( $question_range ) {
-			self::$question_range = $question_range;
+		$question_range = $params['question_range'] ?? array();
+		if ( is_array( $question_range ) && 2 === count( $question_range ) ) {
+			$this->question_range = array_map( 'intval', $question_range );
 		}
 
-		$answer_range = LP_Request::get_param( 'answer-range', 0, 'int' );
-		if ( $answer_range ) {
-			self::$answer_range = $answer_range;
+		$answer_range = $params['answer_range'] ?? array();
+		if ( is_array( $answer_range ) && 2 === count( $answer_range ) ) {
+			$this->answer_range = array_map( 'intval', $answer_range );
 		}
 
-		$data['price'] = LP_Request::get_param( CoursePostModel::META_KEY_REGULAR_PRICE, 0, 'float' );
-		$data['name']  = LP_Request::get_param( 'custom-name' );
+		$data = array(
+			'price' => floatval( $params['price'] ?? 0 ),
+			'name'  => sanitize_text_field( $params['name'] ?? '' ),
+		);
 
-		try {
-			$course_id = $this->create_course( $data );
+		$course_id = $this->create_course( $data );
 
-			$this->create_sections( $course_id );
+		$this->create_sections( $course_id );
 
-			$courseModel = CourseModel::find( $course_id, true );
-			// Unset value of keys for calculate again
-			unset( $courseModel->first_item_id );
-			unset( $courseModel->total_items );
-			unset( $courseModel->sections_items );
-			unset( $courseModel->meta_data->_lp_final_quiz );
-			$courseModel->get_first_item_id();
-			$courseModel->get_total_items();
-			$courseModel->get_section_items();
-			$courseModel->get_final_quiz();
-			$courseModel->save();
+		$courseModel = CourseModel::find( $course_id, true );
+		// Unset value of keys for calculate again.
+		unset( $courseModel->first_item_id );
+		unset( $courseModel->total_items );
+		unset( $courseModel->sections_items );
+		unset( $courseModel->meta_data->_lp_final_quiz );
+		$courseModel->get_first_item_id();
+		$courseModel->get_total_items();
+		$courseModel->get_section_items();
+		$courseModel->get_final_quiz();
+		$courseModel->save();
 
-			$link_course = get_the_permalink( $course_id );
-			$link_course = LP_Helper::handle_lp_permalink_structure( $link_course, get_post( $course_id ) );
-			?>
-
-			<div class="lp-install-sample__response success">
-				<?php printf( __( 'The Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
-				<a href="<?php echo esc_url_raw( $link_course ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
-				|
-				<a href="<?php echo esc_url_raw( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>" target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
-			</div>
-
-			<?php
-		} catch ( Exception $ex ) {
-			echo '<div class="lp-install-sample__response fail">';
-			echo wp_kses_post( $ex->getMessage() );
-			echo '</div>';
-		}
-
-		ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
-
-		die();
+		return compact( 'course_id', 'courseModel' );
 	}
 
 	/**
-	 * Un-install
+	 * Uninstall sample data.
+	 *
+	 * @return void
+	 * @throws Exception
 	 */
 	public function uninstall() {
-		set_time_limit( 0 );
-
-		if ( ! wp_verify_nonce( LP_Request::get_param( '_wpnonce' ), 'uninstall-sample-course' ) ) {
-			return;
+		$posts = $this->get_sample_posts();
+		if ( ! $posts ) {
+			throw new Exception( esc_html__( 'No data sample.', 'learnpress' ) );
 		}
 
-		try {
-			// Check permission
-			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
-				throw new Exception( esc_html__( 'You do not have permission to uninstall sample data.', 'learnpress' ) );
+		foreach ( $posts as $post ) {
+			$post_id = (int) $post->ID;
+
+			switch ( $post->post_type ) {
+				case LP_COURSE_CPT:
+					$this->delete_sample_course( $post_id );
+					break;
+				case LP_QUIZ_CPT:
+					$this->delete_sample_quiz( $post_id );
+
+					$quizPostModel = QuizPostModel::find( $post_id );
+					if ( $quizPostModel instanceof QuizPostModel ) {
+						$quizPostModel->delete();
+					}
+					break;
+				case LP_QUESTION_CPT:
+					$this->delete_sample_question_answers( $post_id );
+
+					$questionPostModel = QuestionPostModel::find( $post_id );
+					if ( $questionPostModel instanceof QuestionPostModel ) {
+						$questionPostModel->delete();
+					}
+					break;
+				case LP_LESSON_CPT:
+					$lessonPostModel = LessonPostModel::find( $post_id );
+					if ( $lessonPostModel instanceof LessonPostModel ) {
+						$lessonPostModel->delete();
+					}
+					break;
+				default:
+					$postModel = PostModel::find_by_id( $post_id );
+					if ( $postModel instanceof PostModel ) {
+						$postModel->delete();
+					}
+					break;
 			}
-
-			$posts = $this->get_sample_posts();
-			if ( ! $posts ) {
-				throw new Exception( esc_html__( 'No data sample.', 'learnpress' ) );
-			}
-
-			foreach ( $posts as $post ) {
-				$post_id = (int) $post->ID;
-
-				switch ( $post->post_type ) {
-					case LP_COURSE_CPT:
-						$this->delete_sample_course( $post_id );
-						break;
-					case LP_QUIZ_CPT:
-						$this->delete_sample_quiz( $post_id );
-
-						$quizPostModel = QuizPostModel::find( $post_id );
-						if ( $quizPostModel instanceof QuizPostModel ) {
-							$quizPostModel->delete();
-						}
-						break;
-					case LP_QUESTION_CPT:
-						$this->delete_sample_question_answers( $post_id );
-
-						$questionPostModel = QuestionPostModel::find( $post_id );
-						if ( $questionPostModel instanceof QuestionPostModel ) {
-							$questionPostModel->delete();
-						}
-						break;
-					case LP_LESSON_CPT:
-						$lessonPostModel = LessonPostModel::find( $post_id );
-						if ( $lessonPostModel instanceof LessonPostModel ) {
-							$lessonPostModel->delete();
-						}
-						break;
-					default:
-						$postModel = PostModel::find_by_id( $post_id );
-						if ( $postModel instanceof PostModel ) {
-							$postModel->delete();
-						}
-						break;
-				}
-			}
-
-			Template::print_message(
-				'he sample data was successfully deleted!',
-			);
-		} catch ( Exception $ex ) {
-
-			echo '<div class="lp-install-sample__response fail">';
-			echo 'Error: ' . $ex->getMessage();
-			echo '</div>';
 		}
-
-		set_time_limit( LearnPress::$time_limit_default_of_sever );
-
-		die();
 	}
 
 	/**
-	 * Get all posts marked as "sample data"
+	 * Get all posts marked as "sample data".
 	 *
 	 * Use PostDB/PostFilter instead of raw $wpdb query.
 	 *
 	 * @return array
 	 * @throws Exception
 	 */
-	public function get_sample_posts(): array {
+	protected function get_sample_posts(): array {
 		$db         = PostDB::getInstance();
-		$post_types = [ LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ];
-		$posts      = [];
+		$post_types = array( LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT );
+		$posts      = array();
 
 		foreach ( $post_types as $post_type ) {
 			$filter                  = new PostFilter();
 			$filter->post_type       = $post_type;
-			$filter->only_fields     = [ 'p.ID', 'p.post_type' ];
+			$filter->only_fields     = array( 'p.ID', 'p.post_type' );
 			$filter->join[]          = sprintf(
 				"INNER JOIN %s AS pm ON p.ID = pm.post_id AND pm.meta_key = '%s' AND pm.meta_value = 'yes'",
 				$db->tb_postmeta,
@@ -298,7 +227,7 @@ class LP_Install_Sample_Data {
 	 * @throws Exception
 	 */
 	protected function delete_sample_course( int $course_id ) {
-		// Not load from cache, to get from Posts table
+		// Not load from cache, to get from Posts table.
 		$courseModel = CourseModel::find( $course_id );
 
 		if ( $courseModel instanceof CourseModel ) {
@@ -307,18 +236,17 @@ class LP_Install_Sample_Data {
 			foreach ( $sections_items as $section ) {
 				$section_id = $section->section_id ?? 0;
 
-				// Only delete section, not delete items inside section
+				// Only delete section, not delete items inside section.
 				$courseSectionModel = CourseSectionModel::find( $section_id, $course_id, false );
 				if ( $courseSectionModel instanceof CourseSectionModel ) {
 					$courseSectionModel->delete();
 				}
 			}
 
-			// No need delete here, delete via hook when trigger $coursePostModel->delete();
-			//$courseModel->delete();
+			// No need delete here, delete via hook when trigger $coursePostModel->delete().
 		}
 
-		// Delete course post and via hook will delete course on the learnpress_courses table
+		// Delete course post and via hook will delete course on the learnpress_courses table.
 		$coursePostModel = CoursePostModel::find_by_id( $course_id );
 		if ( $coursePostModel instanceof CoursePostModel ) {
 			$coursePostModel->delete();
@@ -345,7 +273,7 @@ class LP_Install_Sample_Data {
 
 		if ( is_array( $quiz_questions ) ) {
 			foreach ( $quiz_questions as $quiz_question ) {
-				// Only delete map quiz question, not delete question inside quiz
+				// Only delete map quiz question, not delete question inside quiz.
 				$quizQuestionModel = new QuizQuestionModel( $quiz_question );
 				$quizQuestionModel->delete();
 			}
@@ -366,21 +294,6 @@ class LP_Install_Sample_Data {
 		$filter->where[]    = $db->wpdb->prepare( 'AND question_id = %d', $question_id );
 		$filter->collection = $db->tb_lp_question_answers;
 		$db->delete_execute( $filter );
-	}
-
-	protected function _delete_user_items( $ids ) {
-		global $wpdb;
-		$format = array_fill( 0, sizeof( $ids ), '%d' );
-		$query  = $wpdb->prepare(
-			"
-	        DELETE
-	        FROM {$wpdb->learnpress_user_items}
-	        WHERE item_id IN(" . join( ',', $format ) . ')
-	    ',
-			$ids
-		);
-
-		$wpdb->query( $query );
 	}
 
 	/**
@@ -404,7 +317,7 @@ class LP_Install_Sample_Data {
 		$p = array();
 
 		if ( ! $paragraphs ) {
-			$paragraphs = self::$max_content_paragraph;
+			$paragraphs = $this->max_content_paragraph;
 		}
 
 		while ( $words && sizeof( $p ) < $paragraphs ) {
@@ -452,41 +365,41 @@ class LP_Install_Sample_Data {
 			CoursePostModel::META_KEY_LEVEL       => 'all',
 		);
 
-		// Set price
+		// Set price.
 		if ( $data['price'] > 0 ) {
 			$meta_input[ CoursePostModel::META_KEY_PRICE ]         = $data['price'];
 			$meta_input[ CoursePostModel::META_KEY_REGULAR_PRICE ] = $data['price'];
 		}
 
-		// Requirements
+		// Requirements.
 		$requirements = array();
 		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 			$requirements[] = $this->generate_title();
 		}
 		$meta_input[ CoursePostModel::META_KEY_REQUIREMENTS ] = $requirements;
 
-		// Target audiences
+		// Target audiences.
 		$target_audiences = array();
 		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 			$target_audiences[] = $this->generate_title();
 		}
 		$meta_input[ CoursePostModel::META_KEY_TARGET ] = $target_audiences;
 
-		// Key features
+		// Key features.
 		$key_features = array();
 		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 			$key_features[] = $this->generate_title();
 		}
 		$meta_input[ CoursePostModel::META_KEY_FEATURES ] = $key_features;
 
-		// FAQs
+		// FAQs.
 		$faqs = array();
 		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 			$faqs[] = array( $this->generate_title() . '?', $this->generate_content( 20, 30, 3 ) );
 		}
 		$meta_input[ CoursePostModel::META_KEY_FAQS ] = $faqs;
 
-		// Featured review
+		// Featured review.
 		$meta_input[ CoursePostModel::META_KEY_FEATURED_REVIEW ] = $this->generate_title( 30, 40 );
 
 		$data_insert = array(
@@ -510,7 +423,7 @@ class LP_Install_Sample_Data {
 	 * @param int $course_id
 	 */
 	protected function create_sections( $course_id ) {
-		$section_length = call_user_func_array( 'rand', ( self::$section_range ) );
+		$section_length = call_user_func_array( 'rand', $this->section_range );
 
 		for ( $i = 1; $i <= $section_length; $i++ ) {
 			$section_id = $this->create_section( 'Section ' . $i, $course_id );
@@ -563,13 +476,12 @@ class LP_Install_Sample_Data {
 	 * @param int $course_id
 	 */
 	protected function create_section_items( $section_id, $course_id ) {
-
 		static $lesson_count = 1;
 		static $quiz_count   = 1;
 
 		$order = 0;
 
-		$item_length = call_user_func_array( 'rand', self::$item_range );
+		$item_length = call_user_func_array( 'rand', $this->item_range );
 
 		for ( $i = 1; $i < $item_length; $i++ ) {
 			$lesson_id = $this->create_lesson( 'Lesson ' . $lesson_count++, $section_id, $course_id, $order );
@@ -577,7 +489,7 @@ class LP_Install_Sample_Data {
 			if ( $lesson_id ) {
 				++$order;
 
-				if ( $i == 1 ) {
+				if ( 1 === $i ) {
 					update_post_meta( $lesson_id, '_lp_preview', 'yes' );
 				}
 			}
@@ -596,6 +508,7 @@ class LP_Install_Sample_Data {
 	 * @param string $name
 	 * @param int    $section_id
 	 * @param int    $course_id
+	 * @param int    $order
 	 *
 	 * @return int|WP_Error
 	 */
@@ -612,7 +525,6 @@ class LP_Install_Sample_Data {
 		$lesson_id = wp_insert_post( $data );
 
 		if ( $lesson_id ) {
-
 			update_post_meta( $lesson_id, self::KEY_META_SAMPLE_DATA, 'yes' );
 
 			$section_data = array(
@@ -638,6 +550,7 @@ class LP_Install_Sample_Data {
 	 * @param string $name
 	 * @param int    $section_id
 	 * @param int    $course_id
+	 * @param int    $order
 	 *
 	 * @return int|WP_Error
 	 */
@@ -654,19 +567,10 @@ class LP_Install_Sample_Data {
 		$quiz_id = wp_insert_post( $data );
 
 		if ( $quiz_id ) {
-
 			$metas = array(
 				'_lp_preview'              => 'no',
-				// '_lp_minus_points'         => 0,
-				// '_lp_show_hide_question'   => 'no',
-				// '_lp_review_questions'     => 'yes',
-				// '_lp_show_result'          => 'yes',
 				'_lp_duration'             => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
 				'_lp_passing_grade'        => rand( 5, 9 ) * 10,
-				// '_lp_retake_count'         => rand( 0, 10 ),
-				// '_lp_archive_history'      => 'no',
-				// '_lp_show_check_answer'    => '0',
-				// '_lp_show_hint'            => '0',
 				self::KEY_META_SAMPLE_DATA => 'yes',
 				'_lp_negative_marking'     => 'no',
 				'_lp_minus_skip_questions' => 'no',
@@ -709,7 +613,7 @@ class LP_Install_Sample_Data {
 		static $question_index = 1;
 		global $wpdb;
 
-		$question_count = call_user_func_array( 'rand', self::$question_range );
+		$question_count = call_user_func_array( 'rand', $this->question_range );
 		for ( $i = 1; $i <= $question_count; $i++ ) {
 			$data = array(
 				'post_title'   => 'Question ' . $question_index++,
@@ -743,7 +647,7 @@ class LP_Install_Sample_Data {
 			if ( $wpdb->insert_id ) {
 				$this->create_question_answers( $question_id, $type );
 			} else {
-				error_log( 'create_quiz_questions => ', $wpdb->last_error );
+				error_log( 'create_quiz_questions => ' . $wpdb->last_error );
 			}
 		}
 	}
@@ -785,7 +689,7 @@ class LP_Install_Sample_Data {
 	protected function get_answers( $type ) {
 		$answers = array();
 
-		$option_count = $type === 'true_or_false' ? 2 : call_user_func_array( 'rand', self::$answer_range );
+		$option_count = 'true_or_false' === $type ? 2 : call_user_func_array( 'rand', $this->answer_range );
 
 		for ( $i = 1; $i <= $option_count; $i++ ) {
 			$answers[] = array(
@@ -795,8 +699,8 @@ class LP_Install_Sample_Data {
 			);
 		}
 
-		// Set option is TRUE randomize
-		if ( $type !== 'multi_choice' ) {
+		// Set option is TRUE randomize.
+		if ( 'multi_choice' !== $type ) {
 			$at                        = rand( 0, sizeof( $answers ) - 1 );
 			$answers[ $at ]['is_true'] = 'yes';
 			$answers[ $at ]['title']   = _x( '[TRUE] - ', 'install-sample-course', 'learnpress' ) . $answers[ $at ]['title'];
@@ -806,7 +710,7 @@ class LP_Install_Sample_Data {
 				foreach ( $answers as $k => $v ) {
 					$answers[ $k ]['is_true'] = rand( 0, 100 ) % 2 ? 'yes' : 'no';
 
-					if ( $answers[ $k ]['is_true'] === 'yes' ) {
+					if ( 'yes' === $answers[ $k ]['is_true'] ) {
 						$answers[ $k ]['title'] = _x( ' [TRUE] - ', 'install-sample-course', 'learnpress' ) . $answers[ $k ]['title'];
 						$has_true_option        = true;
 					}
@@ -832,5 +736,3 @@ class LP_Install_Sample_Data {
 		return $types[ rand( 0, sizeof( $types ) - 1 ) ];
 	}
 }
-
-new LP_Install_Sample_Data();

@@ -26,6 +26,7 @@ use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\Order\ExportOrderCSVAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
+use LearnPress\Ajax\SampleDataAJAX;
 use LearnPress\Ajax\AI\AIAssistantAjax;
 use LearnPress\Ajax\MCP\McpApiKeysAjax;
 use LearnPress\Ajax\Webhook\WebhooksAjax;
@@ -758,6 +759,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				function () {
 					LoadContentViaAjax::catch_lp_ajax();
 					LessonAjax::catch_lp_ajax();
+					SampleDataAJAX::catch_lp_ajax();
 					EditCurriculumAjax::catch_lp_ajax();
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
