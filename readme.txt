@@ -301,6 +301,19 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.5 (2026-08-22) =
+~ Added: LearnPress Help Center in the admin menu.
+~ Improved admin menu structure and how submenus are registered.
+~ Improved reusable UI components: form filter, fullscreen, toggle enable.
+~ Improved Students Enrolled screen and course builder persistence.
+~ Improved sample course data creation and deletion.
+~ Added payment settings explore addons promo box.
+~ Fixed: security.
+~ Fixed: checkout emails not sending when login/register on checkout page.
+~ Fixed: blank value when adding items from Content Bank.
+~ Fixed: wrong exception throw.
+~ Fixed: post_id not passed to course settings actions.
+
 = 4.4.4 (2026-08-03) =
 ~ Fixed: security.
 ~ Fixed: minor bugs.
