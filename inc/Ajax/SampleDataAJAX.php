@@ -14,6 +14,7 @@ use Exception;
 use LearnPress;
 use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 use LearnPress\Services\SampleDataService;
 use LP_Helper;
 use LP_Request;
@@ -35,7 +36,7 @@ class SampleDataAJAX extends AbstractAjax {
 		ini_set( 'max_execution_time', 0 );
 
 		try {
-			if ( ! current_user_can( ADMIN_ROLE ) ) {
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
 				throw new Exception(
 					esc_html__(
 						'You do not have permission to install sample data.',
@@ -50,28 +51,41 @@ class SampleDataAJAX extends AbstractAjax {
 			}
 
 			$service = SampleDataService::instance();
-			$result  = $service->install( $params );
 
-			$course_id   = $result['course_id'];
-			$courseModel = $result['courseModel'];
+			// Convert string to array.
+			$items_range = [
+				'section_range',
+				'item_range',
+				'question_range',
+				'answer_range',
+			];
+
+			foreach ( $items_range as $item_range ) {
+				$params[ $item_range ] = $params[ $item_range ] ?? '';
+				if ( ! empty( $params[ $item_range ] ) ) {
+					$params[ $item_range ] = explode( ',', $params[ $item_range ] );
+				}
+			}
+
+			$coursePostModel = $service->install( $params );
 
 			$response->status  = Response::STATUS_SUCCESS;
 			$response->message = sprintf(
 				__( 'The Course "%s" has been created.', 'learnpress' ),
-				get_the_title( $course_id )
+				$coursePostModel->get_the_title()
 			);
 
 			$message_html         = sprintf(
 				__( 'The course "%1$s" has been created %2$s | %3$s', 'learnpress' ),
-				$courseModel->get_title(),
+				$coursePostModel->get_the_title(),
 				sprintf(
 					'<a href="%s" target="_blank">%s</a>',
-					$courseModel->get_permalink(),
+					$coursePostModel->get_permalink(),
 					__( 'View', 'learnpress' )
 				),
 				sprintf(
 					'<a href="%s" target="_blank">%s</a>',
-					$courseModel->get_post_model()->get_edit_link(),
+					$coursePostModel->get_edit_link(),
 					__( 'Edit', 'learnpress' )
 				),
 			);
@@ -105,7 +119,7 @@ class SampleDataAJAX extends AbstractAjax {
 		try {
 			set_time_limit( 0 );
 
-			if ( ! current_user_can( ADMIN_ROLE ) ) {
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
 				throw new Exception( esc_html__( 'You do not have permission to uninstall sample data.', 'learnpress' ) );
 			}
 

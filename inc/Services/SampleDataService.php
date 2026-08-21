@@ -20,6 +20,7 @@ use LearnPress\Filters\QuizQuestionsFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\PostModel;
@@ -28,6 +29,7 @@ use LearnPress\Models\Quiz\QuizQuestionModel;
 use LearnPress\Models\QuizPostModel;
 use LP_WP_Filesystem;
 use Throwable;
+use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -85,7 +87,7 @@ class SampleDataService {
 	 * @return array
 	 * @throws Exception
 	 */
-	public function install( array $params ): array {
+	public function install( array $params ): CoursePostModel {
 		$dummy_text       = LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . '/dummy-data/dummy-text.txt' );
 		$this->dummy_text = preg_split( '!\s!', $dummy_text );
 
@@ -114,9 +116,10 @@ class SampleDataService {
 			'name'  => sanitize_text_field( $params['name'] ?? '' ),
 		);
 
-		$course_id = $this->create_course( $data );
+		$coursePostModel = $this->create_course( $data );
+		$course_id       = $coursePostModel->get_id();
 
-		$this->create_sections( $course_id );
+		$this->create_sections( $coursePostModel );
 
 		$courseModel = CourseModel::find( $course_id, true );
 		// Unset value of keys for calculate again.
@@ -130,7 +133,7 @@ class SampleDataService {
 		$courseModel->get_final_quiz();
 		$courseModel->save();
 
-		return compact( 'course_id', 'courseModel' );
+		return $coursePostModel;
 	}
 
 	/**
@@ -353,10 +356,10 @@ class SampleDataService {
 	 *
 	 * @param array $data
 	 *
-	 * @return int
+	 * @return CoursePostModel
 	 * @throws Exception
 	 */
-	protected function create_course( array $data ): int {
+	protected function create_course( array $data ): CoursePostModel {
 		$title = $data['name'] ?? '';
 
 		$meta_input = array(
@@ -411,71 +414,38 @@ class SampleDataService {
 			'meta_input'   => $meta_input,
 		);
 
-		$courseService   = CourseService::instance();
-		$coursePostModel = $courseService->create_info_main( $data_insert );
-
-		return $coursePostModel->get_id();
+		$courseService = CourseService::instance();
+		return $courseService->create_info_main( $data_insert );
 	}
 
 	/**
 	 * Create sections.
 	 *
-	 * @param int $course_id
+	 * @param CoursePostModel $coursePostModel
+	 * @throws Exception
 	 */
-	protected function create_sections( $course_id ) {
+	protected function create_sections( CoursePostModel $coursePostModel ) {
 		$section_length = call_user_func_array( 'rand', $this->section_range );
 
 		for ( $i = 1; $i <= $section_length; $i++ ) {
-			$section_id = $this->create_section( 'Section ' . $i, $course_id );
+			$courseSectionModel = $coursePostModel->add_section(
+				[ 'section_name' => __( 'Section ', 'learnpress' ) . $i ]
+			);
+			$section_id         = $courseSectionModel->get_section_id();
 
 			if ( $section_id ) {
-				$this->create_section_items( $section_id, $course_id );
+				$this->create_section_items( $courseSectionModel );
 			}
 		}
 	}
 
 	/**
-	 * Create section.
-	 *
-	 * @param string $name
-	 * @param int    $course_id
-	 *
-	 * @return int
-	 */
-	protected function create_section( $name, $course_id ) {
-		static $order = 1;
-
-		global $wpdb;
-
-		$data = array(
-			'section_name'        => $name,
-			'section_course_id'   => $course_id,
-			'section_order'       => $order,
-			'section_description' => $this->generate_title(),
-		);
-
-		$wpdb->insert(
-			$wpdb->learnpress_sections,
-			$data,
-			array( '%s', '%d', '%d', '%s' )
-		);
-
-		if ( $wpdb->insert_id ) {
-			++$order;
-
-			return $wpdb->insert_id;
-		}
-
-		return 0;
-	}
-
-	/**
 	 * Create section items.
 	 *
-	 * @param int $section_id
-	 * @param int $course_id
+	 * @param CourseSectionModel $courseSectionModel
+	 * @throws Exception
 	 */
-	protected function create_section_items( $section_id, $course_id ) {
+	protected function create_section_items( CourseSectionModel $courseSectionModel ) {
 		static $lesson_count = 1;
 		static $quiz_count   = 1;
 
@@ -484,18 +454,16 @@ class SampleDataService {
 		$item_length = call_user_func_array( 'rand', $this->item_range );
 
 		for ( $i = 1; $i < $item_length; $i++ ) {
-			$lesson_id = $this->create_lesson( 'Lesson ' . $lesson_count++, $section_id, $course_id, $order );
-
-			if ( $lesson_id ) {
-				++$order;
-
-				if ( 1 === $i ) {
-					update_post_meta( $lesson_id, '_lp_preview', 'yes' );
-				}
-			}
+			$this->create_lesson_and_add_to_section(
+				$courseSectionModel,
+				__( 'Lesson ', 'learnpress' ) . $lesson_count++
+			);
 		}
 
-		$quiz_id = $this->create_quiz( 'Quiz ' . $quiz_count++, $section_id, $course_id, $order );
+		$quiz_id = $this->create_quiz_and_add_to_section(
+			$courseSectionModel,
+			__( 'Quiz ', 'learnpress' ) . $quiz_count++
+		);
 
 		if ( $quiz_id ) {
 			++$order;
@@ -506,96 +474,67 @@ class SampleDataService {
 	 * Create lesson.
 	 *
 	 * @param string $name
-	 * @param int    $section_id
-	 * @param int    $course_id
-	 * @param int    $order
-	 *
-	 * @return int|WP_Error
+	 * @param CourseSectionModel $courseSectionModel
+	 * @return CourseSectionItemModel|false
+	 * @throws Exception
 	 */
-	protected function create_lesson( $name, $section_id, $course_id, $order ) {
-		global $wpdb;
+	protected function create_lesson_and_add_to_section( CourseSectionModel $courseSectionModel, string $name ) {
+		$lessonPostModel               = new LessonPostModel();
+		$lessonPostModel->post_title   = $name;
+		$lessonPostModel->post_status  = 'publish';
+		$lessonPostModel->post_author  = get_current_user_id();
+		$lessonPostModel->post_type    = LP_LESSON_CPT;
+		$lessonPostModel->post_content = $this->generate_content();
+		$lessonPostModel->meta_data->{self::KEY_META_SAMPLE_DATA} = 'yes';
 
-		$data = array(
-			'post_title'   => $name,
-			'post_type'    => LP_LESSON_CPT,
-			'post_status'  => 'publish',
-			'post_content' => $this->generate_content(),
-		);
+		$lessonPostModel->save();
 
-		$lesson_id = wp_insert_post( $data );
+		$items              = [
+			'items' => [
+				[
+					'id'    => $lessonPostModel->get_id(),
+					'type'  => LP_LESSON_CPT,
+				],
+			],
+		];
+		$courseSectionItems = $courseSectionModel->add_items( $items );
 
-		if ( $lesson_id ) {
-			update_post_meta( $lesson_id, self::KEY_META_SAMPLE_DATA, 'yes' );
-
-			$section_data = array(
-				'section_id' => $section_id,
-				'item_id'    => $lesson_id,
-				'item_type'  => LP_LESSON_CPT,
-				'item_order' => absint( $order ),
-			);
-
-			$wpdb->insert(
-				$wpdb->learnpress_section_items,
-				$section_data,
-				array( '%d', '%d', '%s', '%d' )
-			);
-		}
-
-		return $lesson_id;
+		return $courseSectionItems[0] ?? false;
 	}
 
 	/**
 	 * Create quiz.
 	 *
 	 * @param string $name
-	 * @param int    $section_id
-	 * @param int    $course_id
-	 * @param int    $order
+	 * @param CourseSectionModel $courseSectionModel
 	 *
-	 * @return int|WP_Error
+	 * @return int
+	 * @throws Exception
 	 */
-	protected function create_quiz( $name, $section_id, $course_id, $order ) {
-		global $wpdb;
+	protected function create_quiz_and_add_to_section( CourseSectionModel $courseSectionModel, string $name ): int {
+		$quizPostModel               = new QuizPostModel();
+		$quizPostModel->post_title   = $name;
+		$quizPostModel->post_status  = 'publish';
+		$quizPostModel->post_author  = get_current_user_id();
+		$quizPostModel->post_type    = LP_QUIZ_CPT;
+		$quizPostModel->post_content = $this->generate_content( 25, 40, 2 );
+		$quizPostModel->meta_data->{self::KEY_META_SAMPLE_DATA} = 'yes';
 
-		$data = array(
-			'post_title'   => $name,
-			'post_type'    => LP_QUIZ_CPT,
-			'post_status'  => 'publish',
-			'post_content' => $this->generate_content( 25, 40, 2 ),
-		);
+		$quizPostModel->save();
 
-		$quiz_id = wp_insert_post( $data );
-
+		$quiz_id = $quizPostModel->get_id();
 		if ( $quiz_id ) {
-			$metas = array(
-				'_lp_preview'              => 'no',
-				'_lp_duration'             => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
-				'_lp_passing_grade'        => rand( 5, 9 ) * 10,
-				self::KEY_META_SAMPLE_DATA => 'yes',
-				'_lp_negative_marking'     => 'no',
-				'_lp_minus_skip_questions' => 'no',
-				'_lp_instant_check'        => 'no',
-				'_lp_retake_count'         => '0',
-				'_lp_pagination'           => '1',
-				'_lp_review'               => 'yes',
-				'_lp_show_correct_review'  => 'yes',
-			);
+			$items = [
+				'items' => [
+					[
+						'id'    => $quizPostModel->get_id(),
+						'type'  => LP_QUIZ_CPT,
+					],
+				],
+			];
 
-			foreach ( $metas as $key => $value ) {
-				update_post_meta( $quiz_id, $key, $value );
-			}
-
-			$section_data = array(
-				'section_id' => $section_id,
-				'item_id'    => $quiz_id,
-				'item_type'  => LP_QUIZ_CPT,
-				'item_order' => absint( $order ),
-			);
-
-			$wpdb->insert(
-				$wpdb->learnpress_section_items,
-				$section_data,
-				array( '%d', '%d', '%s', '%d' )
+			$courseSectionItems = $courseSectionModel->add_items(
+				$items
 			);
 
 			$this->create_quiz_questions( $quiz_id );
