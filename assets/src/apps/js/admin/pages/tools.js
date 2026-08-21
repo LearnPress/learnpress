@@ -3,7 +3,7 @@ import createIndexes from './tools/database/create_indexs';
 import reUpgradeDB from './tools/database/re-upgrade-db';
 import cleanDatabases from './tools/database/clean_database';
 
-import resetData from './tools/reset-data';
+import ResetCourseProgress from './tools/reset-course-progress';
 import HandleSampleData from './tools/handle-sample-data';
 
 ( function( $ ) {
@@ -45,8 +45,8 @@ import HandleSampleData from './tools/handle-sample-data';
 		getStepsUpgradeStatus();
 		createIndexes();
 		reUpgradeDB();
-		resetData();
 		cleanDatabases();
+		( new ResetCourseProgress() ).init();
 		( new HandleSampleData() ).init();
 		$doc.on( 'click', '#learn-press-clear-cache', clearHardCache )
 			.on( 'click', 'input[name="enable_hard_cache"]', toggleHardCache );

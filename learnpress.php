@@ -19,6 +19,7 @@ use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Ajax\BuilderDashboardAjax;
+use LearnPress\Ajax\CourseAjax;
 use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\EditQuestionAjax;
@@ -52,6 +53,7 @@ use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
 use LearnPress\TemplateHooks\Admin\AdminStatisticsReportTable;
+use LearnPress\TemplateHooks\Admin\Tools\AdminCourseTools;
 use LearnPress\Statistics\FilterOptionsProvider;
 use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
 use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
@@ -396,6 +398,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditSettingTemplate::instance();
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
+			AdminCourseTools::instance();
 			CourseMaterialTemplate::instance();
 			CourseAIAssistantTemplate::instance();
 			AdminOrderItemsTemplate::instance();
@@ -772,6 +775,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					McpApiKeysAjax::catch_lp_ajax();
 					WebhooksAjax::catch_lp_ajax();
 					CBEditCourseAjax::catch_lp_ajax();
+					CourseAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},
