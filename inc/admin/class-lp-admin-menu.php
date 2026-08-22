@@ -257,9 +257,9 @@ class LP_Admin_Menu {
 				$menus_new[] = array(
 					'',
 					$this->get_capability(),
-					'lp-menu-divider-' . $group,
+					'#',
 					'',
-					'lp-menu-divider',
+					'lp-menu-divider lp-menu-divider-' . $group,
 				);
 			}
 		}
