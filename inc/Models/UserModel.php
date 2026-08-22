@@ -190,11 +190,13 @@ class UserModel {
 	 * @param string $key
 	 * @param mixed $default_value
 	 *
+	 * @sicne 4.2.6.9
+	 * @version 1.0.3
 	 * @return false|mixed
 	 */
 	public function get_meta_value_by_key( string $key, $default_value = false ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
-			return $this->meta_data->{$key};
+			return maybe_unserialize( $this->meta_data->{$key} );
 		}
 
 		$value = get_user_meta( $this->ID, $key, true );
@@ -202,7 +204,7 @@ class UserModel {
 			$value = $default_value;
 		}
 
-		$this->meta_data->{$key} = $value;
+		$this->meta_data->{$key} = maybe_unserialize( $value );
 
 		return $value;
 	}
