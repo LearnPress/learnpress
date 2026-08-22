@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.4.5
+ * Version: 4.4.6-beta
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -874,12 +874,24 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return array
 		 * @since 4.3.11
-		 *
+		 * @version 1.0.1
 		 */
 		public function plugin_links( array $links ): array {
-			$links[] = sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=learn-press-settings' ), __( 'Settings', 'learnpress' ) );
-			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', LearnPress::$doc_link, __( 'Documentation', 'learnpress' ) );
-			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', get_admin_url() . '/admin.php?page=learn-press-addons', __( 'Add-ons', 'learnpress' ) );
+			$links[] = sprintf(
+				'<a href="%s">%s</a>',
+				esc_url_raw( admin_url( 'admin.php?page=learn-press-settings' ) ),
+				esc_html__( 'Settings', 'learnpress' )
+			);
+			$links[] = sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				esc_url_raw( LearnPress::$doc_link ),
+				esc_html__( 'Documentation', 'learnpress' )
+			);
+			$links[] = sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				esc_url_raw( admin_url( 'admin.php?page=learn-press-addons' ) ),
+				esc_html__( 'Add-ons', 'learnpress' )
+			);
 
 			return $links;
 		}
