@@ -1506,7 +1506,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return void
 		 * @throws Exception
 		 * @since 4.3.2.8
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public static function handle_params_query_list_orders( PostFilter &$post_filter, array $param = array() ) {
 			$post_db               = PostDB::getInstance();
@@ -1525,8 +1525,17 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					case 'date':
 						$order_by = 'post_date';
 						break;
-					case 'title':
-						$order_by = 'ID';
+					default:
+						$allowed_key = array(
+							'ID',
+							'post_title',
+							'post_author',
+							'post_status',
+							'order_total'
+						);
+						if ( ! in_array( $order_by, $allowed_key ) ) {
+							$order_by = 'ID';
+						}
 						break;
 				}
 			}

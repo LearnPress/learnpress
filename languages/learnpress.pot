@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.5-beta-1\n"
+"Project-Id-Version: LearnPress 4.4.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-19T02:47:42+00:00\n"
+"POT-Creation-Date: 2026-08-22T03:33:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -57,8 +57,8 @@ msgstr ""
 #: config/wp-menus.php:31
 #: inc/admin/class-lp-admin-assets.php:239
 #: inc/admin/views/statistics/users.php:15
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:55
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:596
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:60
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:571
 #: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:349
 msgid "Students"
 msgstr ""
@@ -127,14 +127,14 @@ msgstr ""
 #: config/settings/permalink.php:165
 #: config/wp-menus.php:59
 #: inc/admin/views/addons.php:181
-#: inc/TemplateHooks/Admin/AdminSettingsPage.php:304
+#: inc/TemplateHooks/Admin/AdminSettingsPage.php:308
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:354
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:265
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:161
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:208
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:212
 #: inc/TemplateHooks/CourseBuilder/Settings/BuilderSettingsTemplate.php:57
-#: learnpress.php:874
+#: learnpress.php:876
 msgid "Settings"
 msgstr ""
 
@@ -416,7 +416,7 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-filter/edit.js:66
 #: config/widgets/course/filter-course.php:11
 #: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:37
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:335
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:299
 msgid "Course Filter"
 msgstr ""
 
@@ -448,7 +448,7 @@ msgstr ""
 
 #: assets/src/apps/js/blocks/course-filter-elements/course-categories-filter/edit.js:9
 #: inc/custom-post-types/course.php:110
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:583
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:558
 #: inc/TemplateHooks/Course/SingleCourseClassicTemplate.php:245
 #: templates/single-course/meta/category.php:15
 msgid "Category"
@@ -482,8 +482,8 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:488
 #: inc/admin/views/search-author-field.php:64
 #: inc/admin/views/tools/course/html-user.php:21
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:351
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:399
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:315
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:369
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:195
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:146
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderListLessonsTemplate.php:95
@@ -814,7 +814,7 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:94
 #: inc/admin/class-lp-admin-webhooks-table-list.php:68
-#: inc/admin/class-lp-install-sample-data.php:154
+#: inc/Ajax/SampleDataAJAX.php:89
 #: inc/custom-post-types/abstract.php:1001
 #: inc/custom-post-types/question.php:359
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:567
@@ -916,7 +916,7 @@ msgstr ""
 #: inc/admin/views/help-center/data-online.php:86
 #: inc/ExternalPlugin/Elementor/LPElementor.php:56
 #: inc/ExternalPlugin/Elementor/LPElementor.php:112
-#: inc/Gutenberg/GutenbergHandleMain.php:414
+#: inc/Gutenberg/GutenbergHandleMain.php:412
 msgid "LearnPress"
 msgstr ""
 
@@ -958,7 +958,7 @@ msgstr ""
 #: inc/lp-template-functions.php:315
 #: inc/settings/class-lp-settings-courses.php:16
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:65
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:598
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:573
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:80
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderListLessonsTemplate.php:211
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderListQuizzesTemplate.php:190
@@ -1770,7 +1770,7 @@ msgstr ""
 #: inc/custom-post-types/order.php:695
 #: inc/custom-post-types/order.php:699
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:64
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:587
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:562
 msgid "Orders"
 msgstr ""
 
@@ -1870,8 +1870,8 @@ msgstr ""
 #: inc/class-lp-helper.php:574
 #: inc/custom-post-types/abstract.php:974
 #: inc/custom-post-types/quiz.php:246
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:526
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:582
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:499
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:557
 #: inc/TemplateHooks/CourseBuilder/CourseBuilderTemplate.php:637
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:69
 #: templates/emails/order-items-table.php:87
@@ -3689,7 +3689,7 @@ msgstr ""
 #: config/settings/open-ai-modal.php:121
 #: inc/admin/class-lp-admin-assets.php:198
 #: inc/admin/class-lp-admin-assets.php:243
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1076
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1051
 msgid "High"
 msgstr ""
 
@@ -3964,12 +3964,12 @@ msgstr ""
 
 #: config/wp-menus.php:21
 #: config/wp-menus.php:22
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:87
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:85
 msgid "Statistics"
 msgstr ""
 
 #: config/wp-menus.php:39
-#: learnpress.php:876
+#: learnpress.php:878
 msgid "Add-ons"
 msgstr ""
 
@@ -3995,7 +3995,7 @@ msgid "Help Center"
 msgstr ""
 
 #: config/wp-menus.php:69
-#: inc/admin/views/help-center/html-help-center.php:73
+#: inc/admin/views/help-center/html-help-center.php:116
 msgid "LearnPress Help Center"
 msgstr ""
 
@@ -4004,7 +4004,7 @@ msgid "Tools"
 msgstr ""
 
 #: config/wp-menus.php:80
-#: inc/TemplateHooks/Admin/AdminToolsPage.php:74
+#: inc/TemplateHooks/Admin/AdminToolsPage.php:91
 msgid "LearnPress Tools"
 msgstr ""
 
@@ -4194,7 +4194,7 @@ msgstr ""
 
 #. translators: %d: maximum number of rows shown.
 #: inc/admin/class-lp-admin-assets.php:170
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:203
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:178
 #, php-format
 msgid "Showing the first %d rows. Narrow the period or filters to see the rest."
 msgstr ""
@@ -4204,7 +4204,7 @@ msgid "vs previous period"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:172
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:585
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:560
 #: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:600
 msgid "Revenue"
 msgstr ""
@@ -4212,7 +4212,7 @@ msgstr ""
 #: inc/admin/class-lp-admin-assets.php:173
 #: inc/admin/views/statistics/courses.php:17
 #: inc/admin/views/statistics/overview.php:53
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:589
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:564
 msgid "Enrollments"
 msgstr ""
 
@@ -4233,7 +4233,7 @@ msgid "%s%% of all orders"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:179
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:602
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:577
 msgid "AOV"
 msgstr ""
 
@@ -4243,8 +4243,8 @@ msgstr ""
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:72
 #: inc/custom-post-types/order.php:562
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1628
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:538
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:600
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:511
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:575
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1194
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:155
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderListLessonsTemplate.php:213
@@ -4266,13 +4266,13 @@ msgstr ""
 #: inc/admin/views/statistics/users.php:24
 #: inc/Models/UserItems/UserItemModel.php:528
 #: inc/Models/UserItems/UserItemModel.php:563
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:588
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:563
 #: inc/user-item/class-lp-user-item.php:687
 msgid "Enrolled"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:182
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:590
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:565
 msgid "Completion"
 msgstr ""
 
@@ -4283,7 +4283,7 @@ msgstr ""
 #: inc/emails/instructor/class-lp-email-new-order-instructor.php:21
 #: inc/emails/instructor/class-lp-email-refunded-order-instructor.php:16
 #: inc/lp-template-functions.php:64
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:584
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:559
 #: inc/TemplateHooks/Course/SingleCourseClassicTemplate.php:207
 #: inc/TemplateHooks/Course/SingleCourseClassicTemplate.php:265
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:465
@@ -4303,17 +4303,17 @@ msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:187
 #: inc/admin/class-lp-admin-assets.php:245
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1055
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1030
 msgid "Healthy"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:188
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1056
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1031
 msgid "Watch completion"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:189
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1057
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1032
 msgid "High failed quizzes"
 msgstr ""
 
@@ -4326,7 +4326,7 @@ msgid "Awaiting payment"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:193
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:603
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:578
 msgid "Order ID"
 msgstr ""
 
@@ -4335,10 +4335,10 @@ msgstr ""
 #: inc/custom-post-types/order.php:558
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseStudentBlockType.php:79
 #: inc/Models/WPTables/CoursesTable.php:49
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:338
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:390
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:522
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:595
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:302
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:360
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:495
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:570
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:791
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:203
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:496
@@ -4350,14 +4350,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: inc/admin/class-lp-admin-assets.php:195
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:604
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:579
 msgid "Issue"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:196
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:70
 #: inc/custom-post-types/order.php:560
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:605
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:580
 #: templates/checkout/order-received.php:153
 #: templates/profile/tabs/orders/list.php:33
 #: templates/profile/tabs/quizzes.php:59
@@ -4365,18 +4365,18 @@ msgid "Date"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:197
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:606
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:581
 msgid "Severity"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:199
 #: inc/admin/class-lp-admin-assets.php:244
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1077
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1052
 msgid "Medium"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:200
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1078
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1053
 msgid "Low"
 msgstr ""
 
@@ -4517,17 +4517,17 @@ msgid "Top courses by students"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:228
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:607
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:582
 msgid "Quiz pass rate"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:229
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:608
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:583
 msgid "Last active"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:230
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:593
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:568
 #: inc/user-item/class-lp-user-item.php:690
 msgid "Started"
 msgstr ""
@@ -4541,7 +4541,7 @@ msgstr ""
 #: inc/Models/UserItems/UserItemModel.php:522
 #: inc/Models/UserItems/UserItemModel.php:557
 #: inc/order/class-lp-order.php:289
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:592
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:567
 #: inc/user-item/class-lp-user-item-quiz.php:146
 #: inc/user-item/class-lp-user-item.php:689
 #: templates/content-lesson/button-complete.php:45
@@ -4549,7 +4549,7 @@ msgid "Completed"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:232
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:594
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:569
 msgid "Active 7d"
 msgstr ""
 
@@ -4557,17 +4557,17 @@ msgstr ""
 #: inc/admin/class-lp-admin-webhooks-table-list.php:94
 #: inc/admin/class-lp-admin-webhooks-table-list.php:174
 #: inc/admin/views/settings/webhooks-form.php:39
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1097
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1072
 msgid "Active"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:234
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1098
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1073
 msgid "At risk"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:235
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1099
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1074
 msgid "Idle"
 msgstr ""
 
@@ -4582,7 +4582,7 @@ msgid "%d total"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:240
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:609
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:584
 msgid "Sold"
 msgstr ""
 
@@ -4955,60 +4955,11 @@ msgstr ""
 msgid "Edit with Course Builder"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:72
-msgid "Are you sure you want to install the sample course data?"
-msgstr ""
-
-#: inc/admin/class-lp-install-sample-data.php:73
-msgid "Are you sure you want to delete the sample course data?"
-msgstr ""
-
-#: inc/admin/class-lp-install-sample-data.php:151
-#, php-format
-msgid "The Course \"%s\" has been created"
-msgstr ""
-
-#: inc/admin/class-lp-install-sample-data.php:152
-#: inc/admin/views/meta-boxes/course/assigned.php:23
-#: inc/admin/views/meta-boxes/quiz/assigned.php:35
-#: inc/admin/views/meta-boxes/quiz/assigned.php:44
-#: inc/admin/views/user/courses.php:23
-#: inc/custom-post-types/abstract.php:1003
-#: inc/custom-post-types/abstract.php:1121
-#: inc/custom-post-types/abstract.php:1131
-#: inc/custom-post-types/question.php:361
-#: inc/order/class-lp-order.php:1073
-msgid "View"
-msgstr ""
-
-#: inc/admin/class-lp-install-sample-data.php:180
-msgid "No data sample."
-msgstr ""
-
-#: inc/admin/class-lp-install-sample-data.php:201
-msgid "The sample data was successfully deleted!"
-msgstr ""
-
-#: inc/admin/class-lp-install-sample-data.php:349
-#: inc/admin/views/tools/course/html-install-sample-data.php:22
-msgid "Sample course"
-msgstr ""
-
-#: inc/admin/class-lp-install-sample-data.php:702
-msgctxt "install-sample-course"
-msgid "[TRUE] - "
-msgstr ""
-
-#: inc/admin/class-lp-install-sample-data.php:710
-msgctxt "install-sample-course"
-msgid " [TRUE] - "
-msgstr ""
-
 #: inc/admin/class-lp-modal-search-items.php:60
 #: inc/admin/class-lp-modal-search-users.php:50
 #: inc/admin/views/course/modal-choose-items.php:92
 #: inc/admin/views/quiz/modal-choose-items.php:83
-#: inc/TemplateHooks/Admin/AdminTemplate.php:105
+#: inc/TemplateHooks/Admin/AdminTemplate.php:106
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:843
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:959
 msgid "Add"
@@ -5569,13 +5520,13 @@ msgid "Review Course"
 msgstr ""
 
 #: inc/admin/settings/email-groups/class-lp-settings-enrolled-course-emails.php:28
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:258
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:306
 #: inc/WPGDPR/ExportPersonalData.php:158
 msgid "Enrolled Course"
 msgstr ""
 
 #: inc/admin/settings/email-groups/class-lp-settings-finished-course-emails.php:28
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:268
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:316
 #: inc/WPGDPR/ExportPersonalData.php:170
 msgid "Finished Course"
 msgstr ""
@@ -5633,8 +5584,7 @@ msgstr ""
 
 #: inc/admin/views/addons.php:198
 #: inc/admin/views/addons.php:201
-#: inc/admin/views/tools/course/html-install-sample-data.php:53
-#: inc/admin/views/tools/course/html-install-sample-data.php:56
+#: inc/admin/views/tools/course/html-install-sample-data.php:71
 msgid "Install"
 msgstr ""
 
@@ -5682,15 +5632,15 @@ msgstr ""
 msgid "Search name addon"
 msgstr ""
 
-#: inc/admin/views/addons/html-loop-theme.php:32
+#: inc/admin/views/addons/html-loop-theme.php:34
 msgid " sales"
 msgstr ""
 
-#: inc/admin/views/addons/html-loop-theme.php:45
+#: inc/admin/views/addons/html-loop-theme.php:47
 msgid "Get it now"
 msgstr ""
 
-#: inc/admin/views/addons/html-loop-theme.php:46
+#: inc/admin/views/addons/html-loop-theme.php:48
 msgid "View Demo"
 msgstr ""
 
@@ -5767,12 +5717,12 @@ msgstr ""
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:173
-#: inc/TemplateHooks/Admin/AdminTemplate.php:109
+#: inc/TemplateHooks/Admin/AdminTemplate.php:110
 msgid "Selected items"
 msgstr ""
 
 #: inc/admin/views/course/modal-choose-items.php:71
-#: inc/TemplateHooks/Admin/AdminTemplate.php:87
+#: inc/TemplateHooks/Admin/AdminTemplate.php:88
 msgid "Type here to search for an item"
 msgstr ""
 
@@ -5889,76 +5839,76 @@ msgstr ""
 msgid "No banner image set"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:23
+#: inc/admin/views/help-center/html-help-center.php:24
 msgid "Support Ticket"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:24
+#: inc/admin/views/help-center/html-help-center.php:25
 msgid "Need help with your LMS website? Submit a ticket to the LearnPress support team."
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:25
+#: inc/admin/views/help-center/html-help-center.php:26
 msgid "Create Ticket"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:30
+#: inc/admin/views/help-center/html-help-center.php:31
 msgid "Video Tutorials"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:31
+#: inc/admin/views/help-center/html-help-center.php:32
 msgid "Watch step-by-step videos about LearnPress settings and common workflows."
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:32
+#: inc/admin/views/help-center/html-help-center.php:33
 msgid "Watch Videos"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:37
-#: learnpress.php:875
+#: inc/admin/views/help-center/html-help-center.php:38
+#: learnpress.php:877
 msgid "Documentation"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:38
+#: inc/admin/views/help-center/html-help-center.php:39
 msgid "Browse LearnPress setup guides, course management, quizzes, payment, and emails."
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:39
+#: inc/admin/views/help-center/html-help-center.php:40
 msgid "Read Docs"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:44
+#: inc/admin/views/help-center/html-help-center.php:45
 msgid "Community"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:45
+#: inc/admin/views/help-center/html-help-center.php:46
 msgid "Join the LearnPress community to share ideas, ask questions, and connect with LMS site owners."
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:46
+#: inc/admin/views/help-center/html-help-center.php:47
 msgid "Join Community"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:51
+#: inc/admin/views/help-center/html-help-center.php:52
 msgid "Feedback"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:52
+#: inc/admin/views/help-center/html-help-center.php:53
 msgid "Share your thoughts, report issues, and help improve the LearnPress experience."
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:53
+#: inc/admin/views/help-center/html-help-center.php:54
 msgid "Send Feedback"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:58
+#: inc/admin/views/help-center/html-help-center.php:59
 msgid "Affiliate"
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:59
+#: inc/admin/views/help-center/html-help-center.php:60
 msgid "Promote LearnPress products, track referrals, and manage your affiliate resources."
 msgstr ""
 
-#: inc/admin/views/help-center/html-help-center.php:60
+#: inc/admin/views/help-center/html-help-center.php:61
 msgid "Join Affiliate"
 msgstr ""
 
@@ -5982,6 +5932,19 @@ msgstr ""
 
 #: inc/admin/views/html-admin-notice-templates.php:57
 msgid "Dismiss"
+msgstr ""
+
+#: inc/admin/views/meta-boxes/course/assigned.php:23
+#: inc/admin/views/meta-boxes/quiz/assigned.php:35
+#: inc/admin/views/meta-boxes/quiz/assigned.php:44
+#: inc/admin/views/user/courses.php:23
+#: inc/Ajax/SampleDataAJAX.php:84
+#: inc/custom-post-types/abstract.php:1003
+#: inc/custom-post-types/abstract.php:1121
+#: inc/custom-post-types/abstract.php:1131
+#: inc/custom-post-types/question.php:361
+#: inc/order/class-lp-order.php:1073
+msgid "View"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/assigned.php:29
@@ -6767,7 +6730,6 @@ msgid "Clear content"
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:23
-#: inc/admin/views/tools/course/html-install-sample-data.php:17
 msgid "Options"
 msgstr ""
 
@@ -6956,7 +6918,7 @@ msgstr ""
 
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:172
-#: inc/TemplateHooks/Admin/AdminTemplate.php:114
+#: inc/TemplateHooks/Admin/AdminTemplate.php:115
 msgid "Back"
 msgstr ""
 
@@ -7077,7 +7039,7 @@ msgid "The following wizard will help you configure your LMS site and get you st
 msgstr ""
 
 #: inc/admin/views/statistics/courses.php:15
-#: inc/order/lp-order-functions.php:595
+#: inc/order/lp-order-functions.php:597
 msgid "Pending review"
 msgstr ""
 
@@ -7154,7 +7116,7 @@ msgid "Instructor revenue"
 msgstr ""
 
 #: inc/admin/views/statistics/instructors.php:16
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:599
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:574
 msgid "Courses managed"
 msgstr ""
 
@@ -7393,6 +7355,16 @@ msgstr ""
 msgid "Assign"
 msgstr ""
 
+#: inc/admin/views/tools/course/html-install-sample-data.php:12
+#: inc/admin/views/tools/course/html-install-sample-data.php:64
+msgid "Are you sure you want to install the sample course data?"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-install-sample-data.php:13
+#: inc/admin/views/tools/course/html-install-sample-data.php:84
+msgid "Are you sure you want to delete the sample course data?"
+msgstr ""
+
 #: inc/admin/views/tools/course/html-install-sample-data.php:14
 msgid "Install Sample Data"
 msgstr ""
@@ -7401,47 +7373,48 @@ msgstr ""
 msgid "Create a <strong>Sample course</strong> with lessons and quizzes. The content will be filled with <strong>Lorem</strong> text."
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:21
+#: inc/admin/views/tools/course/html-install-sample-data.php:20
 #: inc/WPGDPR/ExportPersonalData.php:253
 #: inc/WPGDPR/ExportPersonalData.php:354
 msgid "Course name"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-install-sample-data.php:21
+#: inc/Services/SampleDataService.php:409
+msgid "Sample course"
 msgstr ""
 
 #: inc/admin/views/tools/course/html-install-sample-data.php:25
 msgid "Random number of sections in range"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:30
+#: inc/admin/views/tools/course/html-install-sample-data.php:32
 msgid "Random number of items in range (each section)"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:35
+#: inc/admin/views/tools/course/html-install-sample-data.php:39
 msgid "Random number of questions in range (each quiz)"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:40
+#: inc/admin/views/tools/course/html-install-sample-data.php:46
 msgid "Random number of answers in range (each question)"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:45
+#: inc/admin/views/tools/course/html-install-sample-data.php:52
 msgid "Course price"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:54
-msgid "Installing..."
+#: inc/admin/views/tools/course/html-install-sample-data.php:75
+msgid "Hide options"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:58
+#: inc/admin/views/tools/course/html-install-sample-data.php:76
+#: inc/admin/views/tools/course/html-install-sample-data.php:78
 msgid "Show options"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:60
-#: inc/admin/views/tools/course/html-install-sample-data.php:63
+#: inc/admin/views/tools/course/html-install-sample-data.php:91
 msgid "Delete sample course"
-msgstr ""
-
-#: inc/admin/views/tools/course/html-install-sample-data.php:61
-msgid "Deleting..."
 msgstr ""
 
 #: inc/admin/views/tools/course/html-unassign-course.php:71
@@ -8023,6 +7996,7 @@ msgid "Update course successfully!"
 msgstr ""
 
 #: inc/Ajax/CourseBuilder/CBEditCourseAjax.php:248
+#: inc/Ajax/SampleDataAJAX.php:50
 msgid "Invalid request."
 msgstr ""
 
@@ -8388,11 +8362,11 @@ msgstr ""
 #: inc/Ajax/EditCurriculumAjax.php:145
 #: inc/Ajax/EditCurriculumAjax.php:186
 #: inc/Ajax/EditCurriculumAjax.php:228
-#: inc/Ajax/EditCurriculumAjax.php:280
-#: inc/Ajax/EditCurriculumAjax.php:345
-#: inc/Ajax/EditCurriculumAjax.php:395
-#: inc/Ajax/EditCurriculumAjax.php:441
-#: inc/Ajax/EditCurriculumAjax.php:497
+#: inc/Ajax/EditCurriculumAjax.php:283
+#: inc/Ajax/EditCurriculumAjax.php:351
+#: inc/Ajax/EditCurriculumAjax.php:401
+#: inc/Ajax/EditCurriculumAjax.php:447
+#: inc/Ajax/EditCurriculumAjax.php:503
 #: inc/Models/CoursePostModel.php:197
 #: inc/Models/CourseSectionModel.php:231
 #: inc/Models/CourseSectionModel.php:296
@@ -8416,9 +8390,9 @@ msgstr ""
 #: inc/Ajax/EditCurriculumAjax.php:111
 #: inc/Ajax/EditCurriculumAjax.php:150
 #: inc/Ajax/EditCurriculumAjax.php:233
-#: inc/Ajax/EditCurriculumAjax.php:285
-#: inc/Ajax/EditCurriculumAjax.php:350
-#: inc/Ajax/EditCurriculumAjax.php:446
+#: inc/Ajax/EditCurriculumAjax.php:288
+#: inc/Ajax/EditCurriculumAjax.php:356
+#: inc/Ajax/EditCurriculumAjax.php:452
 msgid "Section not found"
 msgstr ""
 
@@ -8433,51 +8407,51 @@ msgstr ""
 msgid "Invalid section position"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:250
+#: inc/Ajax/EditCurriculumAjax.php:253
 msgid "Item added to section successfully"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:290
+#: inc/Ajax/EditCurriculumAjax.php:293
 msgid "No items were added to the section"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:317
+#: inc/Ajax/EditCurriculumAjax.php:323
 msgid "Items added to section successfully"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:356
-#: inc/Ajax/EditCurriculumAjax.php:451
+#: inc/Ajax/EditCurriculumAjax.php:362
+#: inc/Ajax/EditCurriculumAjax.php:457
 #: inc/Models/CoursePostModel.php:241
 msgid "Item not found in section"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:364
+#: inc/Ajax/EditCurriculumAjax.php:370
 msgid "Item deleted from section successfully"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:402
+#: inc/Ajax/EditCurriculumAjax.php:408
 msgid "Item position updated successfully"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:436
+#: inc/Ajax/EditCurriculumAjax.php:442
 #: inc/Models/CourseSectionModel.php:241
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:481
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:549
 msgid "Item title is required"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:459
-#: inc/Ajax/EditCurriculumAjax.php:509
+#: inc/Ajax/EditCurriculumAjax.php:465
+#: inc/Ajax/EditCurriculumAjax.php:515
 #: inc/TemplateHooks/Course/CourseMaterialTemplate.php:63
 msgid "Item not found"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:469
-#: inc/Ajax/EditCurriculumAjax.php:519
+#: inc/Ajax/EditCurriculumAjax.php:475
+#: inc/Ajax/EditCurriculumAjax.php:525
 msgid "Item updated successfully"
 msgstr ""
 
-#: inc/Ajax/EditCurriculumAjax.php:501
+#: inc/Ajax/EditCurriculumAjax.php:507
 msgid "Only lesson can be set preview"
 msgstr ""
 
@@ -8536,7 +8510,7 @@ msgid "Question position updated successfully"
 msgstr ""
 
 #: inc/Ajax/LessonAjax.php:46
-#: inc/class-lp-checkout.php:477
+#: inc/class-lp-checkout.php:483
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:371
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:391
 msgid "Course is invalid!"
@@ -8667,7 +8641,7 @@ msgid "Your refund request has been sent to the admin for review."
 msgstr ""
 
 #: inc/Ajax/Order/RefundOrderAjax.php:110
-#: inc/order/class-lp-order.php:1727
+#: inc/order/class-lp-order.php:1736
 msgid "You do not have permission to refund this order."
 msgstr ""
 
@@ -8702,6 +8676,37 @@ msgstr ""
 
 #: inc/Ajax/Order/RefundOrderAjax.php:156
 msgid "Invalid refund review action."
+msgstr ""
+
+#: inc/Ajax/SampleDataAJAX.php:41
+msgid "You do not have permission to install sample data."
+msgstr ""
+
+#: inc/Ajax/SampleDataAJAX.php:74
+#, php-format
+msgid "The Course \"%s\" has been created."
+msgstr ""
+
+#: inc/Ajax/SampleDataAJAX.php:79
+#, php-format
+msgid "The course \"%1$s\" has been created %2$s | %3$s"
+msgstr ""
+
+#: inc/Ajax/SampleDataAJAX.php:100
+msgid "The course data created failed!"
+msgstr ""
+
+#: inc/Ajax/SampleDataAJAX.php:123
+msgid "You do not have permission to uninstall sample data."
+msgstr ""
+
+#: inc/Ajax/SampleDataAJAX.php:129
+#: inc/Ajax/SampleDataAJAX.php:131
+msgid "The sample data was successfully deleted!"
+msgstr ""
+
+#: inc/Ajax/SampleDataAJAX.php:138
+msgid "Sample data uninstall failed!"
 msgstr ""
 
 #: inc/Ajax/Webhook/WebhooksAjax.php:33
@@ -8782,6 +8787,10 @@ msgstr ""
 
 #: inc/background-process/class-lp-background-query-items.php:232
 msgid "No item found!"
+msgstr ""
+
+#: inc/cart/class-lp-cart.php:91
+msgid "Item type is invalid!"
 msgstr ""
 
 #: inc/cart/class-lp-cart.php:98
@@ -8868,37 +8877,37 @@ msgstr ""
 msgid "Search results for &ldquo;%s&rdquo;"
 msgstr ""
 
-#: inc/class-lp-checkout.php:172
+#: inc/class-lp-checkout.php:174
 msgid "Your email is not valid!"
 msgstr ""
 
-#: inc/class-lp-checkout.php:250
+#: inc/class-lp-checkout.php:252
 msgid "New account email is existed"
 msgstr ""
 
-#: inc/class-lp-checkout.php:260
+#: inc/class-lp-checkout.php:266
 msgid "Create account failed"
 msgstr ""
 
-#: inc/class-lp-checkout.php:306
+#: inc/class-lp-checkout.php:312
 #, php-format
 msgid "Error %d: Unable to add item to order. Please try again."
 msgstr ""
 
-#: inc/class-lp-checkout.php:399
+#: inc/class-lp-checkout.php:405
 msgid "Your session has expired."
 msgstr ""
 
-#: inc/class-lp-checkout.php:421
+#: inc/class-lp-checkout.php:427
 msgid "No payment method is selected"
 msgstr ""
 
-#: inc/class-lp-checkout.php:450
+#: inc/class-lp-checkout.php:456
 #: templates/checkout/empty-cart.php:16
 msgid "Your cart is currently empty."
 msgstr ""
 
-#: inc/class-lp-checkout.php:457
+#: inc/class-lp-checkout.php:463
 msgid "Type item buy invalid!"
 msgstr ""
 
@@ -9124,7 +9133,7 @@ msgid "Course Search Results"
 msgstr ""
 
 #: inc/class-lp-query-list-table.php:32
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:935
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:910
 #: inc/TemplateHooks/Table/TableListTemplate.php:150
 msgid "item"
 msgid_plural "items"
@@ -9263,8 +9272,8 @@ msgid "Require"
 msgstr ""
 
 #: inc/CourseBuilder/CourseBuilder.php:218
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:551
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:566
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:526
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:541
 msgid "New"
 msgstr ""
 
@@ -9628,7 +9637,7 @@ msgstr ""
 
 #: inc/custom-post-types/order.php:868
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:414
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:134
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:145
 msgid "File not found"
 msgstr ""
 
@@ -9760,32 +9769,32 @@ msgstr ""
 
 #: inc/Databases/class-lp-db.php:865
 #: inc/Databases/class-lp-db.php:927
-#: inc/Databases/DataBase.php:796
-#: inc/Databases/DataBase.php:857
+#: inc/Databases/DataBase.php:795
+#: inc/Databases/DataBase.php:856
 msgid "Data must be an array!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:873
 #: inc/Databases/class-lp-db.php:923
-#: inc/Databases/DataBase.php:804
-#: inc/Databases/DataBase.php:853
+#: inc/Databases/DataBase.php:803
+#: inc/Databases/DataBase.php:852
 msgid "Filter must have property all_fields!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:877
 #: inc/Databases/class-lp-db.php:935
-#: inc/Databases/DataBase.php:808
-#: inc/Databases/DataBase.php:865
+#: inc/Databases/DataBase.php:807
+#: inc/Databases/DataBase.php:864
 msgid "Table name is required!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:881
-#: inc/Databases/DataBase.php:812
+#: inc/Databases/DataBase.php:811
 msgid "Key auto increment must be a string!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:931
-#: inc/Databases/DataBase.php:861
+#: inc/Databases/DataBase.php:860
 msgid "Invalid where key!"
 msgstr ""
 
@@ -9810,6 +9819,32 @@ msgstr ""
 
 #: inc/Databases/class-lp-section-items-db.php:203
 msgid "Invalid section_item_id!"
+msgstr ""
+
+#: inc/Databases/class-lp-statistics-db.php:129
+msgid "Custom filter date is invalid."
+msgstr ""
+
+#: inc/Databases/class-lp-statistics-db.php:183
+msgid "Day must be greater than 2 days."
+msgstr ""
+
+#: inc/Databases/class-lp-statistics-db.php:215
+msgid "Values must be greater than 2 months."
+msgstr ""
+
+#: inc/Databases/class-lp-statistics-db.php:250
+msgid "Select date"
+msgstr ""
+
+#: inc/Databases/class-lp-statistics-db.php:278
+#: inc/Databases/class-lp-statistics-db.php:343
+msgid "Empty statistic time"
+msgstr ""
+
+#: inc/Databases/class-lp-statistics-db.php:299
+#: inc/Databases/class-lp-statistics-db.php:347
+msgid "Invalid custom time"
 msgstr ""
 
 #: inc/Databases/class-lp-user-item-meta-db.php:108
@@ -10216,7 +10251,7 @@ msgid "User is not Instructor!"
 msgstr ""
 
 #: inc/ExternalPlugin/Elementor/Widgets/Instructor/SingleInstructorElementor.php:16
-#: inc/Gutenberg/GutenbergHandleMain.php:403
+#: inc/Gutenberg/GutenbergHandleMain.php:401
 msgid "Single Instructor"
 msgstr ""
 
@@ -10566,35 +10601,35 @@ msgctxt "search course input placeholder"
 msgid "Search for course content"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:310
+#: inc/Gutenberg/GutenbergHandleMain.php:308
 msgid "LearnPress Legacy"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:315
+#: inc/Gutenberg/GutenbergHandleMain.php:313
 msgid "LearnPress Global"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:320
+#: inc/Gutenberg/GutenbergHandleMain.php:318
 msgid "LearnPress Course Elements"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:382
+#: inc/Gutenberg/GutenbergHandleMain.php:380
 msgid "Layout List Course"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:383
+#: inc/Gutenberg/GutenbergHandleMain.php:381
 msgid "List Course Learnpress"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:392
+#: inc/Gutenberg/GutenbergHandleMain.php:390
 msgid "Layout Grid Course"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:393
+#: inc/Gutenberg/GutenbergHandleMain.php:391
 msgid "List Course Learnpress - layout grid"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:404
+#: inc/Gutenberg/GutenbergHandleMain.php:402
 msgid "Single Instructor Learnpress"
 msgstr ""
 
@@ -12339,7 +12374,7 @@ msgid "You have exceeded the number of retakes."
 msgstr ""
 
 #. translators: 1: user slug
-#: inc/Models/UserModel.php:287
+#: inc/Models/UserModel.php:289
 #, php-format
 msgid "This user slug \"%s\" already exists."
 msgstr ""
@@ -12401,46 +12436,46 @@ msgstr ""
 msgid "Order on"
 msgstr ""
 
-#: inc/order/class-lp-order.php:1661
-#: inc/order/class-lp-order.php:1734
+#: inc/order/class-lp-order.php:1670
+#: inc/order/class-lp-order.php:1743
 msgid "Refund requests are currently disabled."
 msgstr ""
 
-#: inc/order/class-lp-order.php:1666
+#: inc/order/class-lp-order.php:1675
 msgid "Order has refunded"
 msgstr ""
 
-#: inc/order/class-lp-order.php:1671
+#: inc/order/class-lp-order.php:1680
 msgid "Order is not completed"
 msgstr ""
 
-#: inc/order/class-lp-order.php:1681
+#: inc/order/class-lp-order.php:1690
 msgid "Refund amount is greater than order total."
 msgstr ""
 
-#: inc/order/class-lp-order.php:1696
-#: inc/order/class-lp-order.php:1787
+#: inc/order/class-lp-order.php:1705
+#: inc/order/class-lp-order.php:1796
 msgid "Refund gateway is unavailable."
 msgstr ""
 
-#: inc/order/class-lp-order.php:1740
+#: inc/order/class-lp-order.php:1749
 msgid "Order total is not valid."
 msgstr ""
 
-#: inc/order/class-lp-order.php:1748
+#: inc/order/class-lp-order.php:1757
 msgid "Request refund is rejected!."
 msgstr ""
 
-#: inc/order/class-lp-order.php:1754
+#: inc/order/class-lp-order.php:1763
 #, php-format
 msgid "Request refund has %s"
 msgstr ""
 
-#: inc/order/class-lp-order.php:1769
+#: inc/order/class-lp-order.php:1778
 msgid "Time for refund request expired"
 msgstr ""
 
-#: inc/order/class-lp-order.php:1825
+#: inc/order/class-lp-order.php:1834
 #, php-format
 msgid "Order %1$s has been refunded %2$s."
 msgstr ""
@@ -12567,25 +12602,25 @@ msgstr ""
 msgid "Order number <strong>%s</strong> has been cancelled"
 msgstr ""
 
-#: inc/order/lp-order-functions.php:487
+#: inc/order/lp-order-functions.php:488
 #, php-format
 msgid "The order number <strong>%s</strong> can not be cancelled."
 msgstr ""
 
-#: inc/order/lp-order-functions.php:519
+#: inc/order/lp-order-functions.php:521
 #, php-format
 msgid "%1$s %2$s"
 msgstr ""
 
-#: inc/order/lp-order-functions.php:596
+#: inc/order/lp-order-functions.php:598
 msgid "Approved"
 msgstr ""
 
-#: inc/order/lp-order-functions.php:597
+#: inc/order/lp-order-functions.php:599
 msgid "Auto approved"
 msgstr ""
 
-#: inc/order/lp-order-functions.php:598
+#: inc/order/lp-order-functions.php:600
 #: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:347
 msgid "Rejected"
 msgstr ""
@@ -12627,7 +12662,7 @@ msgid "No Course ID available!"
 msgstr ""
 
 #: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:57
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:428
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:476
 msgid "No Course available!"
 msgstr ""
 
@@ -12688,6 +12723,11 @@ msgstr ""
 
 #: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:274
 msgid "Dismissed!"
+msgstr ""
+
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:571
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:650
+msgid "User or Course is invalid"
 msgstr ""
 
 #: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:612
@@ -12959,156 +12999,181 @@ msgstr ""
 msgid "There is an error when delete this file."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:130
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:136
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:141
 msgid "User not found"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:146
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:202
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:567
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:157
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:250
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:615
 msgid "The upload directory is not writable"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:168
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:580
-msgid "Cannot write the file"
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:175
+msgid "Invalid avatar image data"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:175
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:181
+msgid "Avatar image is too large"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:187
+msgid "Cannot create temporary file"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:193
+msgid "Cannot write temporary file"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:202
+msgid "Invalid avatar image type"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:213
+msgid "Cannot create image editor"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:223
 msgid "Avatar updated"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:190
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:238
+#: inc/user/lp-user-functions.php:780
 msgid "The user is invalid"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:214
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:262
 msgid "The profile picture has been removed successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:238
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:313
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:395
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:286
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:361
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:443
 msgid "No user ID found!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:243
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:318
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:291
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:366
 msgid "The user does not exist!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:249
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:328
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:297
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:376
 msgid "You do not have permission to view this statistic!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:257
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:305
 #: templates/profile/tabs/courses/general-statistic.php:26
 msgid "Total enrolled courses"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:262
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:310
 msgid "Total course is in progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:263
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:311
 #: inc/WPGDPR/ExportPersonalData.php:164
 msgid "Inprogress Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:267
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:315
 msgid "Total courses finished"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:272
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:320
 msgid "Total courses passed"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:273
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:321
 #: inc/WPGDPR/ExportPersonalData.php:176
 msgid "Passed Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:277
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:325
 msgid "Total courses failed"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:278
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:326
 #: inc/WPGDPR/ExportPersonalData.php:182
 msgid "Failed Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:337
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:338
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:385
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:386
 #: inc/WPGDPR/ExportPersonalData.php:105
 msgid "Total Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:342
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:343
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:390
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:391
 #: inc/WPGDPR/ExportPersonalData.php:111
 msgid "Published Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:347
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:348
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:395
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:396
 #: inc/WPGDPR/ExportPersonalData.php:117
 msgid "Pending Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:352
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:353
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:400
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:401
 #: inc/WPGDPR/ExportPersonalData.php:123
 msgid "Total Student"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:357
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:358
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:405
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:406
 #: inc/WPGDPR/ExportPersonalData.php:129
 msgid "Student Completed"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:362
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:363
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:410
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:411
 #: inc/WPGDPR/ExportPersonalData.php:135
 msgid "Student In-progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:401
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:405
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:449
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:453
 msgid "You do not have permission to view this tab!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:408
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:456
 msgid "Request invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:439
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:487
 msgid "No Course IDs available!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:445
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:493
 msgid "No User available!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:528
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:533
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:576
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:581
 msgid "User is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:540
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:588
 msgid "Cover image has been removed successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:547
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:595
 msgid "File is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:557
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:605
 msgid "File type is not allowed"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:590
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:628
+msgid "Cannot write the file"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:638
 msgid "Cover image is updated"
 msgstr ""
 
@@ -13163,6 +13228,32 @@ msgstr ""
 
 #: inc/Services/OpenAiService.php:145
 msgid "Empty response from OpenAI API."
+msgstr ""
+
+#: inc/Services/SampleDataService.php:148
+msgid "No data sample."
+msgstr ""
+
+#: inc/Services/SampleDataService.php:432
+msgid "Section "
+msgstr ""
+
+#: inc/Services/SampleDataService.php:459
+msgid "Lesson "
+msgstr ""
+
+#: inc/Services/SampleDataService.php:465
+msgid "Quiz "
+msgstr ""
+
+#: inc/Services/SampleDataService.php:645
+msgctxt "install-sample-course"
+msgid "[TRUE] - "
+msgstr ""
+
+#: inc/Services/SampleDataService.php:653
+msgctxt "install-sample-course"
+msgid " [TRUE] - "
 msgstr ""
 
 #: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:75
@@ -13402,56 +13493,56 @@ msgstr ""
 msgid "Match any value in a set of words. Use fill, blank, or question to match any value in the set."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:150
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:144
 msgid "You do not have permission to view enrolled students."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:337
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:301
 msgid "Search course..."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:340
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:391
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:304
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:361
 msgid "Enter student name or email"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:341
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:392
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:305
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:362
 msgid "Start Date"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:343
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:307
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:521
 msgid "End date"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:352
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:400
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:316
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:370
 msgid "Clear Filter"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:393
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:363
 msgid "End Date"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:428
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:398
 msgid "Loading"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:489
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:461
 msgid "No students found."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:530
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:503
 msgid "Enrolled Date"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:534
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:507
 msgid "Progress"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:554
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:926
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:527
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:901
 msgid "student"
 msgid_plural "students"
 msgstr[0] ""
@@ -13471,43 +13562,43 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:171
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:146
 msgid "Unknown report."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:254
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:229
 msgid "You do not have permission to view this report."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:586
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:561
 msgid "Total revenue"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:591
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:566
 msgid "Avg completion"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:597
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:572
 msgid "Active students"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:601
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:576
 msgid "Trend"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:923
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:898
 msgid "course"
 msgid_plural "courses"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:929
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:904
 msgid "instructor"
 msgid_plural "instructors"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:932
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:907
 msgid "order"
 msgid_plural "orders"
 msgstr[0] ""
@@ -13537,7 +13628,7 @@ msgstr ""
 msgid "Cache"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminToolsPage.php:134
+#: inc/TemplateHooks/Admin/AdminToolsPage.php:116
 msgid "Clear all cache"
 msgstr ""
 

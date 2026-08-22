@@ -24,6 +24,13 @@ class LP_Admin_Menu {
 	protected $menu_items = array();
 
 	/**
+	 * Array of menu groups.
+	 *
+	 * @var array
+	 */
+	protected $group_menus = array();
+
+	/**
 	 * Main menu capability.
 	 *
 	 * @var string
@@ -114,9 +121,10 @@ class LP_Admin_Menu {
 			'3.14'
 		);
 
-		// Default submenu items from config (array-based).
-		$menu_items = Config::instance()->get( 'wp-menus' );
-		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
+		// Default submenu items and groups from config.
+		$wp_menus_config   = Config::instance()->get( 'wp-menus' );
+		$menu_items        = $wp_menus_config['menus'] ?? array();
+		$this->group_menus = $wp_menus_config['group_menus'] ?? array();
 
 		add_action(
 			'parent_file',
@@ -192,33 +200,8 @@ class LP_Admin_Menu {
 			return;
 		}
 
-		$group_menus_default = apply_filters(
-			'learn-press/wp-admin/menu-group',
-			[
-				'content' => [
-					'courses' => 'edit.php?post_type=' . LP_COURSE_CPT,
-					'lessons' => 'edit.php?post_type=' . LP_LESSON_CPT,
-					'quizzes' => 'edit.php?post_type=' . LP_QUIZ_CPT,
-					'questions' => 'edit.php?post_type=' . LP_QUESTION_CPT,
-					'course_category' => 'edit-tags.php?taxonomy=course_category',
-					'course_tag' => 'edit-tags.php?taxonomy=course_tag',
-				],
-				'operations' => [
-					'orders' => 'edit.php?post_type=' . LP_ORDER_CPT,
-					'students' => 'learn-press-students-enrolled',
-					'statistics' => 'learn-press-statistics',
-				],
-				'system' => [
-					'addons' => 'learn-press-addons',
-					'themes' => 'learn-press-themes',
-					'settings' => 'learn-press-settings',
-					'tools' => 'learn-press-tools',
-					'help_center' => 'learn-press-help-center',
-				],
-			]
-		);
-
-		$group_menus = [];
+		$group_menus_default = $this->group_menus;
+		$group_menus         = array();
 
 		// Group menus by default
 		foreach ( $lp_menus as $item ) {

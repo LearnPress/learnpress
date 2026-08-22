@@ -120,6 +120,12 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		return rest_ensure_response( $response );
 	}
 
+	/**
+	 * Upload avatar
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
+	 */
 	public function upload_avatar( WP_REST_Request $request ) {
 		$file_base64 = $request->get_param( 'file' );
 		$response    = new LP_REST_Response();
@@ -130,11 +136,16 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'User not found', 'learnpress' ) );
 			}
 
+			$userModel = UserModel::find( $user_id, true );
+			if ( ! $userModel ) {
+				throw new Exception( __( 'User not found', 'learnpress' ) );
+			}
+
 			if ( empty( $file_base64 ) ) {
 				throw new Exception( __( 'File not found', 'learnpress' ) );
 			}
 
-			$upload_dir = learn_press_user_profile_picture_upload_dir( true );
+			$upload_dir = learn_press_user_profile_picture_upload_dir();
 
 			$target_dir = LP_WP_Filesystem::instance()->is_dir( $upload_dir['path'] );
 
@@ -147,8 +158,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			// Delete old image if exists
-			$path_img = get_user_meta( $user_id, '_lp_profile_picture', true );
-
+			$path_img = $userModel->get_meta_value_by_key( UserModel::META_KEY_IMAGE );
 			if ( $path_img ) {
 				$path = $upload_dir['basedir'] . '/' . $path_img;
 
@@ -161,19 +171,57 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 			$file_base64 = str_replace( 'data:image/png;base64,', '', $file_base64 );
 			$file_base64 = base64_decode( $file_base64 );
-
-			$put_content = LP_WP_Filesystem::instance()->put_contents( $upload_dir['path'] . '/' . $file_name, $file_base64 );
-
-			if ( ! $put_content ) {
-				throw new Exception( __( 'Cannot write the file', 'learnpress' ) );
+			if ( false === $file_base64 ) {
+				throw new Exception( __( 'Invalid avatar image data', 'learnpress' ) );
 			}
 
-			update_user_meta( $user_id, '_lp_profile_picture', $upload_dir['subdir'] . '/' . $file_name );
+			// Check file size
+			$max_size = wp_max_upload_size();
+			if ( $max_size > 0 && strlen( $file_base64 ) > $max_size ) {
+				throw new Exception( __( 'Avatar image is too large', 'learnpress' ) );
+			}
+
+			// Create file temp to check MIME
+			$tmp_file = wp_tempnam();
+			if ( ! $tmp_file ) {
+				throw new Exception( __( 'Cannot create temporary file', 'learnpress' ) );
+			}
+
+			$write_tmp = LP_WP_Filesystem::instance()->put_contents( $tmp_file, $file_base64 );
+			if ( false === $write_tmp ) {
+				LP_WP_Filesystem::instance()->unlink( $tmp_file );
+				throw new Exception( __( 'Cannot write temporary file', 'learnpress' ) );
+			}
+
+			$allowed_mimes = array(
+				'png'   => 'image/png',
+			);
+			$check         = wp_check_filetype_and_ext( $write_tmp, $file_name, $allowed_mimes );
+
+			if ( empty( $check['type'] ) ) {
+				throw new Exception( __( 'Invalid avatar image type', 'learnpress' ) );
+			}
+
+			if ( ! empty( $check['proper_filename'] ) ) {
+				$file_name = $check['proper_filename'];
+			}
+
+			// Re-encode the image to strip embedded scripts or malicious metadata.
+			$editor = wp_get_image_editor( $tmp_file );
+			if ( is_wp_error( $editor ) ) {
+				LP_WP_Filesystem::instance()->unlink( $write_tmp );
+				throw new Exception( __( 'Cannot create image editor', 'learnpress' ) );
+			}
+
+			$editor->set_quality( 100 );
+			$editor->save( $upload_dir['path'] . '/' . $file_name );
+
+			$userModel->set_meta_value_by_key( UserModel::META_KEY_IMAGE, $file_name );
 			do_action( 'learnpress/rest/frontend/profile/upload_avatar', $user_id );
 
 			$response->status  = 'success';
 			$response->message = __( 'Avatar updated', 'learnpress' );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->message = $th->getMessage();
 		}
 

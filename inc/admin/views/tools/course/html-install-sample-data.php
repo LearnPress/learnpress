@@ -68,7 +68,7 @@ $message_uninstall = esc_html__( 'Are you sure you want to delete the sample cou
 			class="lp-install-sample__toggle-options"
 			data-hide-text="<?php esc_attr_e( 'Hide options', 'learnpress' ); ?>"
 			data-show-text="<?php esc_attr_e( 'Show options', 'learnpress' ); ?>"
-			>
+		>
 			<?php esc_html_e( 'Show options', 'learnpress' ); ?>
 		</a>
 		<button class="lp-button button lp-btn-install-sample-handle"
