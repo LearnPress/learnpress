@@ -2,8 +2,8 @@
 Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: elearning, education, course, lms, learning management system
-Tested up to: 7.0.0
-Stable tag: 4.4.4
+Tested up to: 7.1
+Stable tag: 4.4.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -308,11 +308,10 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 ~ Improved Students Enrolled screen and course builder persistence.
 ~ Improved sample course data creation and deletion.
 ~ Added payment settings explore addons promo box.
-~ Fixed: security.
+~ Fixed: security (Props @Wordfence PRISM, @Moshe Levi, @Badr Azeez).
 ~ Fixed: checkout emails not sending when login/register on checkout page.
 ~ Fixed: blank value when adding items from Content Bank.
-~ Fixed: wrong exception throw.
-~ Fixed: post_id not passed to course settings actions.
+~ Fixed: incorrect exception handling (Props @sungbyeongchan).
 
 = 4.4.4 (2026-08-03) =
 ~ Fixed: security.

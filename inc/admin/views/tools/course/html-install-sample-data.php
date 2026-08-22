@@ -6,11 +6,12 @@
  */
 
 defined( 'ABSPATH' ) || die();
+
+$message_install   = esc_html__( 'Are you sure you want to install the sample course data?', 'learnpress' );
+$message_uninstall = esc_html__( 'Are you sure you want to delete the sample course data?', 'learnpress' );
 ?>
 
-<div class="lp-install-sample"
-	data-confirm-install="<?php esc_attr_e( 'Are you sure you want to install the sample course data?', 'learnpress' ); ?>"
-	data-confirm-uninstall="<?php esc_attr_e( 'Are you sure you want to delete the sample course data?', 'learnpress' ); ?>">
+<div class="lp-install-sample">
 	<h2><?php _e( 'Install Sample Data', 'learnpress' ); ?></h2>
 	<p><?php _e( 'Create a <strong>Sample course</strong> with lessons and quizzes. The content will be filled with <strong>Lorem</strong> text.', 'learnpress' ); ?></p>
 	<form class="lp-form-handle-sample-data lp-install-sample__options lp-hidden">
@@ -58,36 +59,22 @@ defined( 'ABSPATH' ) || die();
 	<div class="lp-install-sample-message"></div>
 	<p class="lp-install-sample__buttons">
 		<button class="lp-button button button-primary lp-btn-install-sample-handle"
-			data-action="lp_install_sample_data"
-			data-message="
-			<?php
-				esc_attr_e(
-					'Are you sure you want to install the sample course data?',
-					'learnpress'
-				);
-				?>
-			"
-			href="#">
+				data-action="lp_install_sample_data"
+				data-message="<?php echo esc_attr( $message_install ); ?>"
+				href="#">
 			<?php esc_html_e( 'Install', 'learnpress' ); ?>
 		</button>
 		<a href="#"
-			class="lp-install-sample__toggle-options"
-			data-hide-text="<?php esc_attr_e( 'Hide options', 'learnpress' ); ?>"
-			data-show-text="<?php esc_attr_e( 'Show options', 'learnpress' ); ?>"
-			>
+		   class="lp-install-sample__toggle-options"
+		   data-hide-text="<?php esc_attr_e( 'Hide options', 'learnpress' ); ?>"
+		   data-show-text="<?php esc_attr_e( 'Show options', 'learnpress' ); ?>"
+		>
 			<?php esc_html_e( 'Show options', 'learnpress' ); ?>
 		</a>
 		<button class="lp-button button lp-btn-install-sample-handle"
-			data-action="lp_uninstall_sample_data"
-			data-message="
-			<?php
-				esc_attr_e(
-					'Are you sure you want to delete the sample course data?',
-					'learnpress'
-				);
-				?>
-			"
-			href="#">
+				data-action="lp_uninstall_sample_data"
+				data-message="<?php echo esc_attr( $message_uninstall ); ?>"
+				href="#">
 			<?php esc_html_e( 'Delete sample course', 'learnpress' ); ?>
 		</button>
 	</p>

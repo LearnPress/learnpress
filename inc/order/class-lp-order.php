@@ -1531,6 +1531,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 							'post_title',
 							'post_author',
 							'post_status',
+							'order_total'
 						);
 						if ( ! in_array( $order_by, $allowed_key ) ) {
 							$order_by = 'ID';
