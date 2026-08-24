@@ -22,7 +22,8 @@ class AdminHelpCenterDataTemplate {
 	 *
 	 * @var string
 	 */
-	protected static $url_help_center_data = 'https://learnpress.github.io/learnpress/help-center-data.json';
+	// protected static $url_help_center_data = 'https://learnpress.github.io/learnpress/help-center-data.json';
+	protected static $url_help_center_data = LP_PLUGIN_URL . '/dummy-data/help-data-example.json';
 
 	/**
 	 * Render the online Help Center data section via AJAX.
