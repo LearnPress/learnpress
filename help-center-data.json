@@ -4,12 +4,13 @@
 		"title": "Discover New LearnPress Features",
 		"description": "Explore the latest improvements, add-ons, integrations, and tools designed to help you build a better LMS website.",
 		"cta_text": "Explore New Features",
-		"cta_url": "https://learnpresslms.com/whats-new/",
+		"cta_url": "https://learnpresslms.com/changelog/",
 		"features": [
-			"New course creation and management improvements",
-			"Updated checkout, payment, and order experience",
-			"Enhanced instructor, student, and enrollment tools",
-			"New add-ons, integrations, and performance updates"
+			"Improved admin menu with new Help Center",
+			"Smoother UI components and course builder experience",
+			"Better student enrollment and sample course tools",
+			"Updated payment settings and checkout email fixes",
+			"Security and exception handling improvements"
 		]
 	},
 	"articles": {
@@ -18,22 +19,22 @@
 		"more_url": "https://learnpresslms.com/blog/",
 		"items": [
 			{
-				"title": "How To Create Your First LearnPress Course",
-				"subtitle": "Course setup guide",
-				"image": "",
-				"url": "https://learnpresslms.com/blog/how-to-create-your-first-course/"
+				"title": "Chat Room Add-on for LearnPress: Real-Time Chat to Keep Students Engaged",
+				"subtitle": "LearnPress Add-Ons",
+				"image": "https://learnpresslms.com/wp-content/uploads/2026/08/chat-room-thumbnail-1-410x215.png",
+				"url": "https://learnpresslms.com/blog/chat-room-add-on-for-learnpress/"
 			},
 			{
-				"title": "Configure LearnPress Checkout And Payments",
-				"subtitle": "Payment guide",
-				"image": "",
-				"url": "https://learnpresslms.com/blog/configure-checkout-and-payments/"
+				"title": "What is LearnPress Cloud? The Ultimate No-Code LMS for Course Creators",
+				"subtitle": "LearnPress Cloud",
+				"image": "https://learnpresslms.com/blog/what-is-learnpress-cloud/",
+				"url": "https://learnpresslms.com/blog/what-is-learnpress-cloud/"
 			},
 			{
-				"title": "Best Add-Ons To Extend Your LMS Website",
-				"subtitle": "Add-on guide",
-				"image": "",
-				"url": "https://learnpresslms.com/blog/best-add-ons/"
+				"title": "WordPress Classroom Management Plugin: The Ultimate Guide",
+				"subtitle": "ClassPress",
+				"image": "https://learnpresslms.com/wp-content/uploads/2026/08/Gemini_Generated_Image_s0b91ys0b91ys0b9-410x215.webp",
+				"url": "https://learnpresslms.com/blog/wordpress-classroom-management-plugin/"
 			}
 		]
 	},
