@@ -628,8 +628,8 @@
   "learnpress-mobile-app": {
     "name": "LearnPress - Mobile App",
     "basename": "learnpress-mobile-app/learnpress-mobile-app.php",
-    "version": "4.0.3",
-    "require_lp": "4.2.5.7",
+    "version": "4.0.4",
+    "require_lp": "4.4.5",
     "description": "Support for Mobile App.",
     "image": "https://updates.thimpress.com/images/default.svg",
     "link": "https://thimpress.com/product/learnpress-mobile-app/",
