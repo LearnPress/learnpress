@@ -12,46 +12,31 @@
 
 @mixin box-sizing($args:border-box) {
 	-webkit-box-sizing: $args;
-	-moz-box-sizing: $args;
 	box-sizing: $args;
 }
 
 @mixin border-radius($args...) {
-	-webkit-border-radius: $args;
-	-moz-border-radius: $args;
 	border-radius: $args;
 }
 
 @mixin animation($args...) {
-	-webkit-animation: $args;
-	-moz-animation: $args;
 	animation: $args;
 }
 
 @mixin transition($args...) {
 	-webkit-transition: $args;
-	-moz-transition: $args;
-	-ms-transition: $args;
-	-o-transition: $args;
 	transition: $args;
 }
 
 @mixin transform($args...) {
 	-webkit-transform: $args;
-	-moz-transform: $args;
-	-ms-transform: $args;
-	-o-transform: $args;
 	transform: $args;
 }
 
 @mixin box-shadow($args...) {
-	-webkit-box-shadow: $args;
-	-moz-box-shadow: $args;
 	box-shadow: $args;
 
 	&:focus {
-		-webkit-box-shadow: $args;
-		-moz-box-shadow: $args;
 		box-shadow: $args;
 	}
 }
@@ -73,11 +58,6 @@
 }
 
 @mixin flex() {
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -moz-flex;
-	display: -webkit-flex;
 	display: flex;
 }
 
@@ -92,106 +72,30 @@
 }
 
 @mixin placeholder-color($color) {
-
-	&::-webkit-input-placeholder {
-		color: $color;
-	}
-
-	&::-moz-placeholder {
-		color: $color;
-	}
-
-	&:-ms-input-placeholder {
-		color: $color;
-	}
-
-	&:-moz-placeholder {
-		color: $color;
-	}
-
 	&::placeholder {
 		color: $color;
 	}
 }
 
 @mixin placeholder-fontStyle($style) {
-
-	&::-webkit-input-placeholder {
-		font-style: $style;
-	}
-
-	&::-moz-placeholder {
-		font-style: $style;
-	}
-
-	&:-ms-input-placeholder {
-		font-style: $style;
-	}
-
-	&:-moz-placeholder {
-		font-style: $style;
-	}
-
 	&::placeholder {
 		font-style: $style;
 
 	}
 }
 
-
-@-webkit-keyframes rotating4 {
-
-	from {
-		-webkit-transform: rotate(0deg);
-		-o-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-
-	to {
-		-webkit-transform: rotate(360deg);
-		-o-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
-}
-
 @keyframes rotating4 {
-
 	from {
-		-ms-transform: rotate(0deg);
-		-moz-transform: rotate(0deg);
-		-webkit-transform: rotate(0deg);
-		-o-transform: rotate(0deg);
 		transform: rotate(0deg);
 	}
 
 	to {
-		-ms-transform: rotate(360deg);
-		-moz-transform: rotate(360deg);
-		-webkit-transform: rotate(360deg);
-		-o-transform: rotate(360deg);
 		transform: rotate(360deg);
 	}
 }
 
 @mixin rotating4($args: rotating4 2s linear infinite) {
-	-webkit-animation: $args;
-	-moz-animation: $args;
-	-ms-animation: $args;
-	-o-animation: $args;
 	animation: $args;
-}
-
-@-webkit-keyframes animation4 {
-
-	from {
-		left: -40%;
-		width: 40%;
-	}
-
-	to {
-		left: 100%;
-		width: 10%;
-	}
 }
 
 @keyframes animation4 {
@@ -208,10 +112,6 @@
 }
 
 @mixin animation4($args: animation4 2s linear infinite) {
-	-webkit-animation: $args;
-	-moz-animation: $args;
-	-ms-animation: $args;
-	-o-animation: $args;
 	animation: $args;
 }
 
@@ -256,11 +156,9 @@
 		margin-right: 5px;
 		font-variant: normal;
 		text-transform: none;
-		//line-height: 1;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 		vertical-align: middle;
-		//margin-top: -2px;
 	}
  }
 // mixin for lp-courses-bar
@@ -271,7 +169,6 @@
 	background-size: 0.8em;
 	background-position: calc(100% - 0.5em) center;
 	background-repeat: no-repeat;
-	-moz-appearance: none;
 	-webkit-appearance: none;
 	appearance: none;
 	line-height: 1.1;

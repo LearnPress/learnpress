@@ -130,22 +130,24 @@
 	}
 }
 
-// Logo menu LearnPress
-#adminmenu .wp-menu-image img {
-	width: 17px;
-}
+// Menu LearnPress
+#adminmenu {
+	.wp-menu-image img {
+		width: 17px;
+	}
 
-.wp-submenu li.lp-menu-divider {
-	height: 0;
-	margin: 8px 0;
-	border-top: 1px solid rgba(240, 246, 252, 0.15);
-
-	a {
+	.wp-submenu li.lp-menu-divider {
 		height: 0;
-		margin: 0;
-		padding: 0;
-		pointer-events: none;
-		overflow: hidden;
-		text-indent: -9999px;
+		margin: 8px 0;
+		border-top: 1px solid rgba(240, 246, 252, 0.15);
+
+		a {
+			height: 0;
+			margin: 0;
+			padding: 0;
+			pointer-events: none;
+			overflow: hidden;
+			text-indent: -9999px;
+		}
 	}
 }

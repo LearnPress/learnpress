@@ -39,21 +39,14 @@
 	}
 
 	&__content {
-		// display: none;
 		overflow: hidden;
 		transition: height 0.3s ease;
 
 		&-inner {
-
-			-webkit-animation-name: course-extra-box__content-inner-transform;
 			animation-name: course-extra-box__content-inner-transform;
-			-webkit-animation-duration: 0.3s;
 			animation-duration: 0.3s;
-			-webkit-animation-timing-function: ease-in-out;
 			animation-timing-function: ease-in-out;
-			-webkit-animation-iteration-count: 1;
 			animation-iteration-count: 1;
-			-webkit-animation-direction: normal;
 			animation-direction: normal;
 
 			> ul {

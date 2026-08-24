@@ -1,15 +1,3 @@
-@-moz-keyframes lp-spinner {
-	100% {
-		-moz-transform: rotate(360deg);
-	}
-}
-
-@-webkit-keyframes lp-spinner {
-	100% {
-		-webkit-transform: rotate(360deg);
-	}
-}
-
 @keyframes lp-spinner {
 	100% {
 		-webkit-transform: rotate(360deg);

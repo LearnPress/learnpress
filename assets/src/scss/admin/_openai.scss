@@ -11,26 +11,26 @@ $white: #FFFFFF;
 $title-color: #111111;
 
 .lp-btn-ai-style{
+	margin: 0 10px;
+	padding: 7px 10px;
 	background: #f6f7f7;
+	font-weight: 500;
 	border: 1px solid #2271b1;
 	color: #2271b1;
 	text-decoration: none;
 	text-shadow: none;
+
+	position: relative; 
+	top: -1.5px;
 	display: inline-flex;
 	align-items: center;
-	gap: 5px;
-	//font-size: 13px;
-	//line-height: 2.15384615;
-	min-height: 30px;
-	padding: 11px 10px;
-	cursor: pointer;
-	-webkit-appearance: none;
-	border-radius: 3px;
-	white-space: nowrap;
-	box-sizing: border-box;
-	margin: 0 5px 5px 0;
-	vertical-align: top;
 	justify-content: center;
+	gap: 5px;
+	min-height: 32px;
+	appearance: none;
+	border-radius: 2px;
+	white-space: nowrap;
+	cursor: pointer;
 
 	&:active{
 		box-shadow: none;
@@ -38,16 +38,15 @@ $title-color: #111111;
 	}
 
 	&:hover{
-		//opacity: 0.8;
 		background: #6B46E9 !important;
 		color: #fff !important;
 	}
 }
 
-.lp-btn-generate-course-with-ai, .lp-btn-warning-enable-ai {
-	position: absolute;
-	margin: 10px 0 0 10px !important;
-}
+// .lp-btn-generate-course-with-ai, .lp-btn-warning-enable-ai {
+// 	position: absolute;
+// 	margin: 10px 0 0 10px !important;
+// }
 
 .create-course-modal {
 	padding: 0;
@@ -854,7 +853,7 @@ $title-color: #111111;
 		color: #ccc;
 
 		&:hover {
-			color: #f27474;;
+			color: #f27474;
 		}
 	}
 
