@@ -704,6 +704,18 @@
  	button {
 		font-size: 1em;
 	}
+
+	@media (min-width: 992px) {
+		.lp-is-mobile {
+			display: none;
+		}
+	}
+
+	@media (max-width: 991px) {
+		.lp-is-pc {
+			display: none;
+		}
+	}
 }
 
 .course-featured {
