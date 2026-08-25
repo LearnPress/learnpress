@@ -212,8 +212,8 @@
   "learnpress-collections": {
     "name": "Collections Add-On for LearnPress",
     "basename": "learnpress-collections/learnpress-collections.php",
-    "version": "4.0.4",
-    "require_lp": "4.2.9.3",
+    "version": "4.1.0",
+    "require_lp": "4.4.5",
     "description": "Collections add-on for LearnPress provides courses suggestion to make the learning process becomes more efficient.",
     "image": "https://updates.thimpress.com/images/learnpress-collections.png",
     "link": "https://thimpress.com/product/collections-add-on-for-learnpress/",
