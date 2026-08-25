@@ -10,18 +10,20 @@ $input-bg: #F7FAFC;
 $white: #FFFFFF;
 $title-color: #111111;
 
-.lp-btn-ai-style{
-	margin: 0 10px;
-	padding: 7px 10px;
+
+.lp-btn-ai-style {
+	margin: 10px;
+}
+
+.lp-btn-ai-style, .lp-btn-generate-with-ai{
+	padding: 8px 10px;
 	background: #f6f7f7;
 	font-weight: 500;
 	border: 1px solid #2271b1;
 	color: #2271b1;
+	line-height: 1;
 	text-decoration: none;
 	text-shadow: none;
-
-	position: relative; 
-	top: -1.5px;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -40,6 +42,19 @@ $title-color: #111111;
 	&:hover{
 		background: #6B46E9 !important;
 		color: #fff !important;
+	}
+}
+
+// classic editor: edit post screen
+#post-body-content {
+	.lp-btn-ai-style {
+		padding: 12px;
+	}
+	#wp-content-media-buttons {
+		.lp-btn-ai-style {
+			margin-top: 0;
+			margin-bottom: 0;
+		} 
 	}
 }
 
@@ -992,9 +1007,6 @@ $title-color: #111111;
 		i {
 			margin-right: 10px;
 			color: #DC2626;
-			//background: #FEE2E2;
-			//padding: 5px;
-			//border-radius: 50%;
 		}
 	}
 
