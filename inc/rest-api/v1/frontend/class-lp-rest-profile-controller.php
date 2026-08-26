@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
 
@@ -160,7 +161,11 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			// Delete old image if exists
 			$path_img = $userModel->get_meta_value_by_key( UserModel::META_KEY_IMAGE );
 			if ( $path_img ) {
-				$path = $upload_dir['basedir'] . '/' . $path_img;
+				if ( 0 === strpos( $path_img, '/' ) ) {
+					$path = $upload_dir['basedir'] . $path_img;
+				} else {
+					$path = trailingslashit( $upload_dir['path'] ) . basename( $path_img );
+				}
 
 				if ( file_exists( $path ) ) {
 					LP_WP_Filesystem::instance()->unlink( $path );
@@ -216,7 +221,8 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$editor->set_quality( 100 );
 			$editor->save( $upload_dir['path'] . '/' . $file_name );
 
-			$userModel->set_meta_value_by_key( UserModel::META_KEY_IMAGE, $file_name );
+			$path_save = trailingslashit( $upload_dir['subdir'] ) . $file_name;
+			$userModel->set_meta_value_by_key( UserModel::META_KEY_IMAGE, $path_save );
 			do_action( 'learnpress/rest/frontend/profile/upload_avatar', $user_id );
 
 			$response->status  = 'success';
@@ -229,7 +235,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	public function remove_avatar( WP_REST_Request $request ) {
-		$response = new LP_REST_Response();
+		$response = new Response();
 
 		try {
 			$user_id = get_current_user_id();
@@ -250,19 +256,25 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'The upload directory is not writable', 'learnpress' ) );
 			}
 
-			$path_img = get_user_meta( $user_id, '_lp_profile_picture', true );
+			$path_img = get_user_meta( $user_id, UserModel::META_KEY_IMAGE, true );
 
 			if ( $path_img ) {
-				$path = $upload_dir['basedir'] . '/' . $path_img;
+				if ( 0 === strpos( $path_img, '/' ) ) {
+					$path = $upload_dir['basedir'] . $path_img;
+				} else {
+					$path = trailingslashit( $upload_dir['path'] ) . basename( $path_img );
+				}
 
 				if ( file_exists( $path ) ) {
 					LP_WP_Filesystem::instance()->unlink( $path );
-
-					$response->status  = 'success';
-					$response->message = esc_html__( 'The profile picture has been removed successfully', 'learnpress' );
 				}
+
+				delete_user_meta( $user_id, UserModel::META_KEY_IMAGE );
+
+				$response->status  = Response::STATUS_SUCCESS;
+				$response->message = esc_html__( 'The profile picture has been removed successfully', 'learnpress' );
 			}
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			$response->message = $th->getMessage();
 		}
 
