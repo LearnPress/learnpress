@@ -202,4 +202,32 @@ class UserService {
 			}
 		}
 	}
+
+	/**
+	 * Create or get CSRF token to verify
+	 *
+	 * @return mixed|string|null
+	 * @since 4.4.6
+	 * @version 1.0.0
+	 */
+	public static function csrf_token() {
+		static $token = null;
+		$cookie_name  = 'lp_csrf_token';
+
+		if ( null !== $token ) {
+			return $token;
+		}
+
+		if ( ! empty( $_COOKIE[ $cookie_name ] ) ) {
+			$token = sanitize_text_field( wp_unslash( $_COOKIE[ $cookie_name ] ) );
+			return $token;
+		}
+
+		$token = wp_generate_password( 20, false );
+		if ( ! headers_sent() ) {
+			learn_press_setcookie( $cookie_name, $token, time() + DAY_IN_SECONDS );
+		}
+
+		return $token;
+	}
 }

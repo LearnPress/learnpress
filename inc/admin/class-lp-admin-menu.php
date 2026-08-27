@@ -126,6 +126,9 @@ class LP_Admin_Menu {
 		$menu_items        = $wp_menus_config['menus'] ?? array();
 		$this->group_menus = $wp_menus_config['group_menus'] ?? array();
 
+		// Old hook declare type Class Submenu.
+		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
+
 		add_action(
 			'parent_file',
 			function ( $parent_file ) {

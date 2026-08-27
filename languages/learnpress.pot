@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.5\n"
+"Project-Id-Version: LearnPress 4.4.5.1-beta-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-22T03:33:56+00:00\n"
+"POT-Creation-Date: 2026-08-24T10:33:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -53,8 +53,8 @@ msgstr ""
 #: assets/js/dist/admin/pages/tools.min.js:156
 #: config/profile-tabs.php:52
 #: config/settings/open-ai-modal.php:80
-#: config/wp-menus.php:30
-#: config/wp-menus.php:31
+#: config/wp-menus.php:33
+#: config/wp-menus.php:34
 #: inc/admin/class-lp-admin-assets.php:239
 #: inc/admin/views/statistics/users.php:15
 #: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:60
@@ -125,7 +125,7 @@ msgstr ""
 #: config/course-builder/menus.php:71
 #: config/profile-tabs.php:59
 #: config/settings/permalink.php:165
-#: config/wp-menus.php:59
+#: config/wp-menus.php:62
 #: inc/admin/views/addons.php:181
 #: inc/TemplateHooks/Admin/AdminSettingsPage.php:308
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:354
@@ -493,8 +493,8 @@ msgid "Search"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-filter-elements/course-tag-filter/edit.js:9
-#: config/wp-menus.php:96
-#: config/wp-menus.php:97
+#: config/wp-menus.php:99
+#: config/wp-menus.php:100
 #: inc/admin/lp-admin-actions.php:224
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:536
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:946
@@ -3962,54 +3962,54 @@ msgstr ""
 msgid "Type (Online/Offline)"
 msgstr ""
 
-#: config/wp-menus.php:21
-#: config/wp-menus.php:22
+#: config/wp-menus.php:24
+#: config/wp-menus.php:25
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:85
 msgid "Statistics"
 msgstr ""
 
-#: config/wp-menus.php:39
+#: config/wp-menus.php:42
 #: learnpress.php:878
 msgid "Add-ons"
 msgstr ""
 
-#: config/wp-menus.php:40
+#: config/wp-menus.php:43
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:40
 msgid "LearnPress Add-ons"
 msgstr ""
 
-#: config/wp-menus.php:48
+#: config/wp-menus.php:51
 msgid "Themes"
 msgstr ""
 
-#: config/wp-menus.php:49
+#: config/wp-menus.php:52
 msgid "LearnPress Themes"
 msgstr ""
 
-#: config/wp-menus.php:60
+#: config/wp-menus.php:63
 msgid "LearnPress Settings"
 msgstr ""
 
-#: config/wp-menus.php:68
+#: config/wp-menus.php:71
 msgid "Help Center"
 msgstr ""
 
-#: config/wp-menus.php:69
+#: config/wp-menus.php:72
 #: inc/admin/views/help-center/html-help-center.php:116
 msgid "LearnPress Help Center"
 msgstr ""
 
-#: config/wp-menus.php:79
+#: config/wp-menus.php:82
 msgid "Tools"
 msgstr ""
 
-#: config/wp-menus.php:80
+#: config/wp-menus.php:83
 #: inc/TemplateHooks/Admin/AdminToolsPage.php:91
 msgid "LearnPress Tools"
 msgstr ""
 
-#: config/wp-menus.php:88
-#: config/wp-menus.php:89
+#: config/wp-menus.php:91
+#: config/wp-menus.php:92
 #: inc/admin/lp-admin-actions.php:219
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:343
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:802
@@ -4776,19 +4776,19 @@ msgstr ""
 msgid "No API keys selected."
 msgstr ""
 
-#: inc/admin/class-lp-admin-menu.php:65
+#: inc/admin/class-lp-admin-menu.php:72
 msgid "View Page Courses"
 msgstr ""
 
-#: inc/admin/class-lp-admin-menu.php:70
+#: inc/admin/class-lp-admin-menu.php:77
 msgid "View Page Profile"
 msgstr ""
 
-#: inc/admin/class-lp-admin-menu.php:75
+#: inc/admin/class-lp-admin-menu.php:82
 msgid "View Page Instructors"
 msgstr ""
 
-#: inc/admin/class-lp-admin-menu.php:108
+#: inc/admin/class-lp-admin-menu.php:115
 msgid "Learning Management System"
 msgstr ""
 
@@ -5584,7 +5584,7 @@ msgstr ""
 
 #: inc/admin/views/addons.php:198
 #: inc/admin/views/addons.php:201
-#: inc/admin/views/tools/course/html-install-sample-data.php:71
+#: inc/admin/views/tools/course/html-install-sample-data.php:65
 msgid "Install"
 msgstr ""
 
@@ -7355,65 +7355,63 @@ msgstr ""
 msgid "Assign"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:12
-#: inc/admin/views/tools/course/html-install-sample-data.php:64
+#: inc/admin/views/tools/course/html-install-sample-data.php:10
 msgid "Are you sure you want to install the sample course data?"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:13
-#: inc/admin/views/tools/course/html-install-sample-data.php:84
+#: inc/admin/views/tools/course/html-install-sample-data.php:11
 msgid "Are you sure you want to delete the sample course data?"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:14
+#: inc/admin/views/tools/course/html-install-sample-data.php:15
 msgid "Install Sample Data"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:15
+#: inc/admin/views/tools/course/html-install-sample-data.php:16
 msgid "Create a <strong>Sample course</strong> with lessons and quizzes. The content will be filled with <strong>Lorem</strong> text."
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:20
+#: inc/admin/views/tools/course/html-install-sample-data.php:21
 #: inc/WPGDPR/ExportPersonalData.php:253
 #: inc/WPGDPR/ExportPersonalData.php:354
 msgid "Course name"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:21
+#: inc/admin/views/tools/course/html-install-sample-data.php:22
 #: inc/Services/SampleDataService.php:409
 msgid "Sample course"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:25
+#: inc/admin/views/tools/course/html-install-sample-data.php:26
 msgid "Random number of sections in range"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:32
+#: inc/admin/views/tools/course/html-install-sample-data.php:33
 msgid "Random number of items in range (each section)"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:39
+#: inc/admin/views/tools/course/html-install-sample-data.php:40
 msgid "Random number of questions in range (each quiz)"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:46
+#: inc/admin/views/tools/course/html-install-sample-data.php:47
 msgid "Random number of answers in range (each question)"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:52
+#: inc/admin/views/tools/course/html-install-sample-data.php:53
 msgid "Course price"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:75
+#: inc/admin/views/tools/course/html-install-sample-data.php:69
 msgid "Hide options"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:76
-#: inc/admin/views/tools/course/html-install-sample-data.php:78
+#: inc/admin/views/tools/course/html-install-sample-data.php:70
+#: inc/admin/views/tools/course/html-install-sample-data.php:72
 msgid "Show options"
 msgstr ""
 
-#: inc/admin/views/tools/course/html-install-sample-data.php:91
+#: inc/admin/views/tools/course/html-install-sample-data.php:78
 msgid "Delete sample course"
 msgstr ""
 

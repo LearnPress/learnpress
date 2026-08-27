@@ -455,10 +455,9 @@
 			width: 100%;
 			border: unset;
 			align-items: start;
-			//padding: 24px;
+		
 			@media (max-width: 767px) {
 				flex-direction: column;
-				//padding: 16px 16px 0 16px;
 			}
 		}
 
@@ -467,20 +466,6 @@
 			@media (max-width: 767px) {
 				padding: 16px 0;
 			}
-
-			//.course-instructor {
-			//	display: inline-block;
-			//}
-
-			//.course-categories {
-			//	a {
-			//		position: relative;
-			//		padding: 2px 20px 2px 15px;
-			//		-webkit-clip-path: polygon(0% 0%, 100% 0, 88% 50%, 100% 100%, 0% 100%);
-			//		clip-path: polygon(0% 0%, 100% 0, 88% 50%, 100% 100%, 0% 100%);
-			//		line-height: 1.3em;
-			//	}
-			//}
 
 			.course-tags a {
 				margin: 0 10px 10px 0;
