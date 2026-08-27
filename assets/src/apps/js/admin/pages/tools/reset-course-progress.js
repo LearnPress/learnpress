@@ -1,7 +1,7 @@
 /**
  * Reset course progress handler.
  *
- * @since 4.2.9
+ * @since 4.4.6
  * @version 1.0.0
  */
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
@@ -22,6 +22,7 @@ export default class ResetCourseProgress {
 	init() {
 		this.preparePopupTemplate();
 		this.events();
+		this.btnChooseCourses = null;
 	}
 
 	/**
@@ -60,12 +61,15 @@ export default class ResetCourseProgress {
 		// Click events.
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: LpPopupSelectItemToAdd.selectors.elBtnShowPopupItemsToSelect,
+				selector:
+					LpPopupSelectItemToAdd.selectors
+						.elBtnShowPopupItemsToSelect,
 				class: this,
 				callBack: this.handleShowPopupItemsToSelect.name,
 			},
 			{
-				selector: LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected,
+				selector:
+					LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected,
 				class: lpPopupSelectItemToAdd,
 				callBack: lpPopupSelectItemToAdd.addItemsSelectedToSection.name,
 				callBackHandle: this.addItemsSelectedToSection.bind( this ),
@@ -79,7 +83,11 @@ export default class ResetCourseProgress {
 	 * @param {Object} args Event arguments.
 	 */
 	handleShowPopupItemsToSelect( args ) {
-		// No extra context needed for the tools page.
+		const { e, target } = args;
+
+		this.btnChooseCourses = target.closest(
+			'.lp-btn-choose-courses-to-reset-progress'
+		);
 	}
 
 	/**
@@ -88,41 +96,36 @@ export default class ResetCourseProgress {
 	 * @param {Array} itemsSelectedData Selected item data from the popup.
 	 */
 	addItemsSelectedToSection( itemsSelectedData ) {
-		if ( ! itemsSelectedData || itemsSelectedData.length === 0 ) {
-			lpToastify.show( 'Please choose at least one course.', 'error' );
+		if ( ! this.btnChooseCourses ) {
 			return;
 		}
+
+		this.btnChooseCourses.textContent =
+			this.btnChooseCourses.dataset.messageResetting;
+		lpUtils.lpSetLoadingEl( this.btnChooseCourses, 1 );
 
 		const courseIds = itemsSelectedData
 			.map( ( item ) => parseInt( item.id, 10 ) )
 			.filter( ( id ) => ! isNaN( id ) && id > 0 );
 
-		if ( courseIds.length === 0 ) {
-			lpToastify.show( 'Please choose at least one course.', 'error' );
-			return;
-		}
-
 		window.lpAJAXG.fetchAJAX(
 			{
+				id_url: 'course-reset-progress-tool',
 				action: 'reset_progress_courses',
-				args: {
-					course_ids: courseIds,
-				},
+				course_ids: courseIds,
 			},
 			{
 				success: ( response ) => {
 					const { status, message } = response;
-					if ( status === 'success' ) {
-						lpToastify.show( message || 'Course progress has been reset.', 'success' );
-					} else {
-						lpToastify.show( message || 'Failed to reset course progress.', 'error' );
-					}
+					lpToastify.show( message, status );
 				},
 				error: ( error ) => {
-					lpToastify.show(
-						error.message || 'Failed to reset course progress.',
-						'error'
-					);
+					lpToastify.show( error.message, 'error' );
+				},
+				completed: () => {
+					this.btnChooseCourses.textContent =
+						this.btnChooseCourses.dataset.messageChoose;
+					lpUtils.lpSetLoadingEl( this.btnChooseCourses, 0 );
 				},
 			}
 		);

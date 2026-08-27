@@ -1,16 +1,19 @@
 <?php
 /**
- * Class CourseAjax
+ * Class CourseToolsAjax
  *
  * Handle admin reset course progress via LearnPress AJAX dispatcher.
  *
- * @since 4.4.5
+ * @since 4.4.6
  * @version 1.0.0
  */
 
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress;
+use LearnPress\Databases\UserItemsDB;
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\Response;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
@@ -23,9 +26,9 @@ use Throwable;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class CourseAjax
+ * Class CourseToolsAjax
  */
-class CourseAjax extends AbstractAjax {
+class CourseToolsAjax extends AbstractAjax {
 	/**
 	 * Register AJAX callbacks with the abstract dispatcher.
 	 *
@@ -43,6 +46,7 @@ class CourseAjax extends AbstractAjax {
 	public function reset_progress_courses() {
 		$response = new Response();
 
+		ini_set( 'max_execution_time', 0 );
 		try {
 			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
 				throw new Exception(
@@ -51,11 +55,11 @@ class CourseAjax extends AbstractAjax {
 			}
 
 			$params = LP_Helper::json_decode( LP_Request::get_param( 'data' ), true );
-			if ( ! is_array( $params ) || empty( $params['args']['course_ids'] ) ) {
+			if ( ! is_array( $params ) || empty( $params['course_ids'] ) ) {
 				throw new Exception( esc_html__( 'No courses selected.', 'learnpress' ) );
 			}
 
-			$course_ids = array_map( 'absint', (array) $params['args']['course_ids'] );
+			$course_ids = array_map( 'absint', (array) $params['course_ids'] );
 			$course_ids = array_filter( $course_ids );
 
 			if ( empty( $course_ids ) ) {
@@ -63,13 +67,12 @@ class CourseAjax extends AbstractAjax {
 			}
 
 			foreach ( $course_ids as $course_id ) {
-				$filter            = new LP_User_Items_Filter();
+				$filter            = new UserItemsFilter();
 				$filter->item_id   = $course_id;
 				$filter->item_type = LP_COURSE_CPT;
 				$filter->limit     = - 1;
 
-				$user_courses = LP_User_Items_DB::getInstance()->get_user_items( $filter );
-
+				$user_courses = UserItemsDB::getInstance()->get_user_items( $filter );
 				if ( empty( $user_courses ) || ! is_array( $user_courses ) ) {
 					continue;
 				}
@@ -81,10 +84,19 @@ class CourseAjax extends AbstractAjax {
 			}
 
 			$response->status  = Response::STATUS_SUCCESS;
-			$response->message = esc_html__( 'Course progress has been reset.', 'learnpress' );
-		} catch ( Throwable $ex ) {
-			$response->message = $ex->getMessage();
+			$response->message = sprintf(
+				esc_html__(
+					'Progress of %1$d %2$s has been reset.',
+					'learnpress'
+				),
+				count( $course_ids ),
+				_n( 'course', 'courses', count( $course_ids ), 'learnpress' )
+			);
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
 		}
+
+		ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 
 		wp_send_json( $response );
 	}

@@ -19,7 +19,7 @@ use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Ajax\BuilderDashboardAjax;
-use LearnPress\Ajax\CourseAjax;
+use LearnPress\Ajax\CourseToolsAjax;
 use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\EditQuestionAjax;
@@ -775,7 +775,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					McpApiKeysAjax::catch_lp_ajax();
 					WebhooksAjax::catch_lp_ajax();
 					CBEditCourseAjax::catch_lp_ajax();
-					CourseAjax::catch_lp_ajax();
+					CourseToolsAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},

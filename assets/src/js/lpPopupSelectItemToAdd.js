@@ -109,7 +109,7 @@ export class LpPopupSelectItemToAdd {
 			html: modalTemplate.innerHTML,
 			showConfirmButton: false,
 			showCloseButton: true,
-			width: '60%',
+			width: 'max(350px, 65vw)',
 			customClass: {
 				popup: 'lp-select-items-popup',
 				htmlContainer: 'lp-select-items-html-container',

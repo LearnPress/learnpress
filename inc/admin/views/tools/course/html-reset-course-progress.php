@@ -22,9 +22,12 @@ defined( 'ABSPATH' ) or die();
 	echo sprintf(
 		'<button type="button"
 			data-template="#lp-tmpl-select-courses-to-reset-progress"
+			data-message-resetting="%1$s"
+			data-message-choose="%2$s"
 			class="lp-button button lp-btn-show-popup-items-to-select lp-btn-choose-courses-to-reset-progress">
-			%s
+			%2$s
 		</button>',
+		esc_html__( 'Resetting courses progress', 'learnpress' ),
 		esc_html__( 'Choose courses to reset progress', 'learnpress' )
 	); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 

@@ -3,7 +3,7 @@
  * Admin templates for LearnPress tools.
  *
  * @package LearnPress\TemplateHooks\Admin\Tools
- * @since 4.4.5
+ * @since 4.4.6
  * @version 1.0.0
  */
 
@@ -54,7 +54,8 @@ class AdminCourseTools {
 	 * @param array $data Request arguments.
 	 *
 	 * @return stdClass
-	 * @throws Exception
+	 * @since 4.4.6
+	 * @version 1.0.0
 	 */
 	public static function render_courses_to_reset_progress( array $data ): stdClass {
 		$content = new stdClass();
@@ -62,10 +63,7 @@ class AdminCourseTools {
 		try {
 			$item_selecting = $data['item_selecting'] ?? [];
 			$search_title   = $data['search_title'] ?? '';
-			$paged          = intval( $data['paged'] ?? 1 );
-			if ( $paged < 1 ) {
-				$paged = 1;
-			}
+			$paged          = max( 1, intval( $data['paged'] ?? 1 ) );
 
 			$selected_compare = new stdClass();
 			if ( ! empty( $item_selecting ) && is_array( $item_selecting ) ) {
@@ -83,12 +81,16 @@ class AdminCourseTools {
 			$total_rows          = 0;
 			$filter              = new UserItemsFilter();
 			$filter->limit       = $limit;
+			$filter->page        = $paged;
 			$filter->item_type   = LP_COURSE_CPT;
 			$filter->only_fields = [ 'item_id', 'user_item_id', 'post_title' ];
 			$filter->join[]      = "INNER JOIN {$db->tb_lp_courses} AS c ON ui.item_id = c.ID";
 
 			if ( ! empty( $search_title ) ) {
-				$filter->where[] = $db->wpdb->prepare( 'AND c.post_title LIKE %s', "%s{$search_title}%s" );
+				$filter->where[] = $db->wpdb->prepare(
+					'AND c.post_title LIKE %s',
+					'%' . $db->wpdb->esc_like( $search_title ) . '%'
+				);
 			}
 
 			$userCourses = $db->get_user_items( $filter, $total_rows );
@@ -127,13 +129,14 @@ class AdminCourseTools {
 						'<li class="lp-select-item">%s%s</li>',
 						sprintf(
 							'<input name="lp-select-item"
-							value="%d" data-type="%s"
-							data-title="%s" %s
+							value="%1$d"
+							data-id="%1$d"
+							data-title="%2$s"
+							%3$s
 							type="checkbox" />',
 							esc_attr( $courseModel->get_id() ),
-							esc_attr( LP_COURSE_CPT ),
 							esc_attr( $title_display ),
-							$checked
+							esc_attr( $checked )
 						),
 						$title_display
 					);
