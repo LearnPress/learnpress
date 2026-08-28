@@ -47,7 +47,10 @@
 	}
 }
 
-.lp-form-filter.lp-form-filter-reset-course-progress {
-	gap: 0;
-	margin-bottom: 10px;
+.lp-form-filter {
+	&.lp-form-filter-reset-course-progress,
+	&.lp-form-filter-reset-item-progress {
+		gap: 0;
+		margin-bottom: 10px;
+	}
 }

@@ -1,5 +1,5 @@
 /**
- * Reset course user progress handler.
+ * Reset item user progress handler.
  *
  * @since 4.4.6
  * @version 1.0.0
@@ -9,25 +9,27 @@ import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import { LpPopupSelectItemToAdd } from 'lpAssetsJsPath/lpPopupSelectItemToAdd.js';
 import SweetAlert from "sweetalert2";
 
-const lpPopupSelectItemToAdd = new LpPopupSelectItemToAdd();
+const lpPopupSelectItemToAdd = new LpPopupSelectItemToAdd( {
+	openButtonSelector: '.lp-btn-choose-item-to-reset-progress',
+} );
 
-export default class ResetCourseProgress {
+export default class ResetItemProgress {
 	static selectors = {
-		elPopupTemplate: '#lp-tmpl-select-courses-to-reset-progress',
+		elPopupTemplate: '#lp-tmpl-select-items-to-reset-progress',
 		elFilterField: '.lp-filter-field',
-		elFormFilter: '.lp-form-filter-reset-course-progress',
-		elPopupItemsToSelect: '.lp-popup-select-courses-to-reset-progress',
-		elBtnResetAll: '.lp-btn-reset-all-courses-progress',
+		elFormFilter: '.lp-form-filter-reset-item-progress',
+		elPopupItemsToSelect: '.lp-popup-select-items-to-reset-progress',
+		elBtnResetAll: '.lp-btn-reset-all-items-progress',
 	};
 
 	constructor() {
-		this.btnChooseCourses = null;
+		this.btnChooseItems = null;
 		this.elFormFilter = null;
 		this.elPopupItemsToSelect = null;
 		this.elBtnResetAll = null;
 		this.elBtnAddItemsSelected = null;
-		this.debouncedSearchUsers = lpUtils.debounce( ( elForm ) => {
-			this.fetchCourses( elForm )
+		this.debouncedSearchItems = lpUtils.debounce( ( elForm ) => {
+			this.fetchItems( elForm )
 		}, 800 );
 	}
 
@@ -37,11 +39,11 @@ export default class ResetCourseProgress {
 
 	events() {
 		// Check and attach events only once.
-		if ( ResetCourseProgress._loadedEvents ) {
+		if ( ResetItemProgress._loadedEvents ) {
 			return;
 		}
 
-		ResetCourseProgress._loadedEvents = this;
+		ResetItemProgress._loadedEvents = this;
 
 		// Click events.
 		lpUtils.eventHandlers( 'click', [
@@ -61,27 +63,35 @@ export default class ResetCourseProgress {
 				conditionBeforeCallBack: ( args ) => {
 					// Only run when the Add button inside this tool's popup is clicked.
 					return !! args.target.closest(
-						ResetCourseProgress.selectors.elPopupItemsToSelect
+						ResetItemProgress.selectors.elPopupItemsToSelect
 					);
 				},
 			},
 			{
 				selector:
-				ResetCourseProgress.selectors
+				ResetItemProgress.selectors
 					.elBtnResetAll,
 				class: this,
-				callBack: this.resetAllCoursesProgress.name,
+				callBack: this.resetAllItemsProgress.name,
 			},
 		] );
 
 		// Change events.
 		lpUtils.eventHandlers( 'keyup', [
 			{
-				selector: ResetCourseProgress.selectors.elFilterField,
+				selector: ResetItemProgress.selectors.elFilterField,
 				class: this,
-				callBack: this.filterCourses.name,
+				callBack: this.filterItems.name,
 			}
-		] )
+		] );
+
+		lpUtils.eventHandlers( 'change', [
+			{
+				selector: ResetItemProgress.selectors.elFilterField,
+				class: this,
+				callBack: this.filterItems.name,
+			}
+		] );
 	}
 
 	/**
@@ -91,40 +101,33 @@ export default class ResetCourseProgress {
 	 */
 	handleShowPopupItemsToSelect( args ) {
 		const { e, target } = args;
-
-		this.btnChooseCourses = target.closest(
-			'.lp-btn-choose-courses-to-reset-progress'
+		this.btnChooseItems = target.closest(
+			'.lp-btn-choose-item-to-reset-progress'
 		);
-		if ( ! this.btnChooseCourses ) {
+
+		if ( ! this.btnChooseItems ) {
 			return;
 		}
 
 		this.elPopupItemsToSelect = SweetAlert.getPopup().querySelector(
-			ResetCourseProgress.selectors.elPopupItemsToSelect
+			ResetItemProgress.selectors.elPopupItemsToSelect
 		);
-		if ( ! this.elPopupItemsToSelect ) {
-			return;
-		}
 
 		this.elBtnAddItemsSelected = this.elPopupItemsToSelect.querySelector(
 			LpPopupSelectItemToAdd.selectors.elBtnAddItemsSelected
 		);
-		if ( ! this.elBtnAddItemsSelected ) {
-			return;
-		}
-
 		this.elBtnResetAll = this.elPopupItemsToSelect.querySelector(
-			ResetCourseProgress.selectors.elBtnResetAll
+			ResetItemProgress.selectors.elBtnResetAll
 		);
 	}
 
 	/**
-	 * Called after courses are selected in the popup and the action button is clicked.
+	 * Called after items are selected in the popup and the action button is clicked.
 	 *
 	 * @param {Array} itemsSelectedData Selected item data from the popup.
 	 */
 	addItemsSelectedToSection( itemsSelectedData ) {
-		if ( ! this.btnChooseCourses ) {
+		if ( ! this.btnChooseItems ) {
 			return;
 		}
 
@@ -133,23 +136,19 @@ export default class ResetCourseProgress {
 			return;
 		}
 
-		this.btnChooseCourses.textContent =
-			this.btnChooseCourses.dataset.messageResetting;
-		lpUtils.lpSetLoadingEl( this.btnChooseCourses, 1 );
+		this.btnChooseItems.textContent =
+			this.btnChooseItems.dataset.messageResetting;
+		lpUtils.lpSetLoadingEl( this.btnChooseItems, 1 );
 
 		const userItemIds = itemsSelectedData
 			.map( ( item ) => parseInt( item.id, 10 ) )
 			.filter( ( id ) => ! isNaN( id ) && id > 0 );
 
-		const elSearchUser = this.elFormFilter?.querySelector( '.lp-search-user' );
-		const searchUserValue = elSearchUser?.value || '';
-
 		window.lpAJAXG.fetchAJAX(
 			{
-				id_url: 'course-reset-progress-tool',
-				action: 'reset_progress_courses',
+				id_url: 'item-reset-progress-tool',
+				action: 'reset_progress_items_course',
 				user_item_ids: userItemIds,
-				search_user: searchUserValue,
 			},
 			{
 				success: ( response ) => {
@@ -160,28 +159,28 @@ export default class ResetCourseProgress {
 					lpToastify.show( error.message, 'error' );
 				},
 				completed: () => {
-					this.btnChooseCourses.textContent =
-						this.btnChooseCourses.dataset.messageChoose;
-					lpUtils.lpSetLoadingEl( this.btnChooseCourses, 0 );
+					this.btnChooseItems.textContent =
+						this.btnChooseItems.dataset.messageChoose;
+					lpUtils.lpSetLoadingEl( this.btnChooseItems, 0 );
 				},
 			}
 		);
 	}
 
 	/**
-	 * Reset all courses progress.
+	 * Reset all items progress.
 	 *
 	 * @param {Object} args Event arguments.
 	 */
-	resetAllCoursesProgress( args ) {
+	resetAllItemsProgress( args ) {
 		const { e, target } = args;
 
-		const elPopupItemsToSelect = target.closest( ResetCourseProgress.selectors.elPopupItemsToSelect );
+		const elPopupItemsToSelect = target.closest( ResetItemProgress.selectors.elPopupItemsToSelect );
 		if ( ! elPopupItemsToSelect ) {
 			return;
 		}
 
-		const elFormFilter = elPopupItemsToSelect.querySelector( ResetCourseProgress.selectors.elFormFilter );
+		const elFormFilter = elPopupItemsToSelect.querySelector( ResetItemProgress.selectors.elFormFilter );
 		if ( ! elFormFilter ) {
 			return;
 		}
@@ -192,7 +191,7 @@ export default class ResetCourseProgress {
 		}
 
 		// Show loading
-		lpUtils.lpSetLoadingEl( this.btnChooseCourses, 1 );
+		lpUtils.lpSetLoadingEl( this.btnChooseItems, 1 );
 
 		SweetAlert.close();
 
@@ -200,8 +199,8 @@ export default class ResetCourseProgress {
 
 		window.lpAJAXG.fetchAJAX(
 			{
-				id_url: 'course-reset-progress-tool',
-				action: 'reset_progress_courses',
+				id_url: 'item-reset-progress-tool',
+				action: 'reset_progress_items_course',
 				reset_all: 1,
 				...formData,
 			},
@@ -214,25 +213,25 @@ export default class ResetCourseProgress {
 					lpToastify.show( error.message, 'error' );
 				},
 				completed: () => {
-					this.btnChooseCourses.textContent =
-						this.btnChooseCourses.dataset.messageChoose;
-					lpUtils.lpSetLoadingEl( this.btnChooseCourses, 0 );
+					this.btnChooseItems.textContent =
+						this.btnChooseItems.dataset.messageChoose;
+					lpUtils.lpSetLoadingEl( this.btnChooseItems, 0 );
 				},
 			}
 		);
 	}
 
 	/**
-	 * Fetch courses to reset progress.
+	 * Fetch items to reset progress.
 	 *
 	 * @param {HTMLElement} elForm The form element.
 	 */
-	fetchCourses( elForm ) {
+	fetchItems( elForm ) {
 		this.elFormFilter = elForm;
-		const elPopup = elForm.closest( ResetCourseProgress.selectors.elPopupItemsToSelect );
+		const elPopup = elForm.closest( ResetItemProgress.selectors.elPopupItemsToSelect );
 		const elLPTarget = elPopup.querySelector( '.lp-target' );
 		let dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
-		dataSend.args = lpUtils.mergeDataWithDatForm( elForm, dataSend.args  );
+		dataSend.args = lpUtils.mergeDataWithDatForm( elForm, dataSend.args );
 		dataSend.args.paged = 1;
 		window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
 
@@ -254,24 +253,24 @@ export default class ResetCourseProgress {
 	}
 
 	/**
-	 * Filter courses to reset progress.
+	 * Filter items to reset progress.
 	 *
 	 * @param {Object} args Event arguments.
 	 */
-	filterCourses( args ) {
+	filterItems( args ) {
 		const { target } = args;
 		const elFilterField = target.closest(
-			ResetCourseProgress.selectors.elFilterField
+			ResetItemProgress.selectors.elFilterField
 		);
 		if ( ! elFilterField ) {
 			return;
 		}
 
-		const elForm = elFilterField.closest( ResetCourseProgress.selectors.elFormFilter );
+		const elForm = elFilterField.closest( ResetItemProgress.selectors.elFormFilter );
 		if ( ! elForm ) {
 			return;
 		}
 
-		this.debouncedSearchUsers( elForm );
+		this.debouncedSearchItems( elForm );
 	}
 }

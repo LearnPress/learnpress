@@ -824,7 +824,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-setup-wizard.php';
 			// include_once 'class-lp-updater.php';
 			// include_once 'class-lp-install-sample-data.php'; // Replaced by LearnPress\Ajax\SampleDataAJAX.
-			include_once 'class-lp-reset-data.php';
+			// include_once 'class-lp-reset-data.php'; // Deprecated: replaced by CourseToolsAjax::reset_progress_items_course.
 			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
 			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/class-lp-meta-box-course-offline.php';
 			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/quiz/settings.php';

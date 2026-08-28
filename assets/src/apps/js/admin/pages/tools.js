@@ -4,6 +4,7 @@ import reUpgradeDB from './tools/database/re-upgrade-db';
 import cleanDatabases from './tools/database/clean_database';
 
 import ResetCourseProgress from './tools/reset-course-progress';
+import ResetItemProgress from './tools/reset-item-progress';
 import HandleSampleData from './tools/handle-sample-data';
 
 ( function( $ ) {
@@ -47,6 +48,7 @@ import HandleSampleData from './tools/handle-sample-data';
 		reUpgradeDB();
 		cleanDatabases();
 		( new ResetCourseProgress() ).init();
+		( new ResetItemProgress() ).init();
 		( new HandleSampleData() ).init();
 		$doc.on( 'click', '#learn-press-clear-cache', clearHardCache )
 			.on( 'click', 'input[name="enable_hard_cache"]', toggleHardCache );

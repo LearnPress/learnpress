@@ -13,7 +13,7 @@ use LearnPress\TemplateHooks\TemplateAJAX;
 defined( 'ABSPATH' ) or die();
 ?>
 
-<div id="learn-press-reset-course-users" class="card">
+<div id="learn-press-reset-course-users" class="card lp-max-width-768">
 	<h2><?php echo esc_html__( 'Reset User Course Progress', 'learnpress' ); ?></h2>
 	<p><?php echo esc_html__( 'This action will reset course progress of users who have enrolled.', 'learnpress' ); ?></p>
 	<?php

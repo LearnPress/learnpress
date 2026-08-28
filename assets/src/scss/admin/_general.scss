@@ -89,15 +89,6 @@
 		outline: none;
 		box-shadow: none;
 	}
-
-	.lp-install-sample-data-options {
-		padding: 0 20px 10px 20px;
-		border: 1px solid #ddd;
-
-		legend {
-			font-size: 1rem;
-		}
-	}
 }
 
 /* Metabox email template field */
@@ -533,4 +524,8 @@
 		opacity: 0.8;
 		@include loading();
 	}
+}
+
+.lp-max-width-768 {
+	max-width: 768px !important;
 }

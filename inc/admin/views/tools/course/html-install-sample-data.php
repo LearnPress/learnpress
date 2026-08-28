@@ -11,7 +11,7 @@ $message_install   = esc_html__( 'Are you sure you want to install the sample co
 $message_uninstall = esc_html__( 'Are you sure you want to delete the sample course data?', 'learnpress' );
 ?>
 
-<div class="lp-install-sample">
+<div class="lp-install-sample lp-max-width-768 card">
 	<h2><?php _e( 'Install Sample Data', 'learnpress' ); ?></h2>
 	<p><?php _e( 'Create a <strong>Sample course</strong> with lessons and quizzes. The content will be filled with <strong>Lorem</strong> text.', 'learnpress' ); ?></p>
 	<form class="lp-form-handle-sample-data lp-install-sample__options lp-hidden">
