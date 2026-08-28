@@ -95,7 +95,7 @@ defined( 'ABSPATH' ) or die();
 						'Are you sure you want to reset all data progress by filter?',
 						'learnpress'
 					),
-					__( 'Reset all', 'learnpress' )
+					__( 'Reset all data progress', 'learnpress' )
 				),
 			]
 		),

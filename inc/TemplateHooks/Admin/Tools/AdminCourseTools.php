@@ -126,7 +126,7 @@ class AdminCourseTools {
 			$html_lis = '';
 			if ( empty( $userCourses ) ) {
 				$html_lis = Template::print_message(
-					esc_html__( 'No courses found', 'learnpress' ),
+					esc_html__( 'No data found', 'learnpress' ),
 					'info',
 					false
 				);

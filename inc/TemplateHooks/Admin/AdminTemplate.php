@@ -112,8 +112,8 @@ class AdminTemplate {
 			'btn-add'              => sprintf(
 				'<button type="button" disabled="disabled"
 					class="button lp-btn-add-items-selected lp-btn-edit-primary %s" %s>%s</button>',
-				esc_attr( $extra_data['btn-add-classes'] ),
-				$extra_data['btn-add-attrs'], // No esc_attr here
+				esc_attr( $extra_data['btn-add-classes'] ?? '' ),
+				$extra_data['btn-add-attrs'] ?? '', // No esc_attr here
 				$extra_data['btn-add-label'] ?? __( 'Add', 'learnpress' )
 			),
 			'count-items-selected' => sprintf(
