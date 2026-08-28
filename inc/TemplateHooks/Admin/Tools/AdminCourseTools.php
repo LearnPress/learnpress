@@ -15,8 +15,7 @@ use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-use LearnPress\Models\CourseModel;
-use LP_Database;
+use LearnPress\Models\UserItems\UserCourseModel;
 use stdClass;
 use Throwable;
 
@@ -62,7 +61,8 @@ class AdminCourseTools {
 
 		try {
 			$item_selecting = $data['item_selecting'] ?? [];
-			$search_title   = $data['search_title'] ?? '';
+			$search_course  = trim( $data['lp-search-course'] ?? '' );
+			$search_user    = trim( $data['lp-search-user'] ?? '' );
 			$paged          = max( 1, intval( $data['paged'] ?? 1 ) );
 
 			$selected_compare = new stdClass();
@@ -83,18 +83,44 @@ class AdminCourseTools {
 			$filter->limit       = $limit;
 			$filter->page        = $paged;
 			$filter->item_type   = LP_COURSE_CPT;
-			$filter->only_fields = [ 'item_id', 'user_item_id', 'post_title' ];
-			$filter->join[]      = "INNER JOIN {$db->tb_lp_courses} AS c ON ui.item_id = c.ID";
+			$filter->only_fields = [ 'DISTINCT(ui.user_item_id)', 'ui.item_id', 'ui.user_id' ];
 
-			if ( ! empty( $search_title ) ) {
-				$filter->where[] = $db->wpdb->prepare(
+			// Get only courses has items attendance
+			$filter_course_attendance                      = new UserItemsFilter();
+			$filter_course_attendance->only_fields         = [ 'parent_id' ];
+			$filter_course_attendance->ref_type            = LP_COURSE_CPT;
+			$filter_course_attendance->return_string_query = 1;
+			$filter_course_attendance->limit               = -1;
+			$query_course_attendance                       = $db->get_user_items( $filter_course_attendance );
+			$filter->where[]                               = "AND ui.user_item_id IN ({$query_course_attendance})";
+			// End get only courses has items attendance
+
+			// Get only user_id > 0
+			$filter->where[] = 'AND ui.user_id > 0';
+
+			// Search course
+			if ( ! empty( $search_course ) ) {
+				$filter->only_fields[] = 'post_title';
+				$filter->join[]        = "INNER JOIN {$db->tb_lp_courses} AS c ON ui.item_id = c.ID";
+				$filter->where[]       = $db->wpdb->prepare(
 					'AND c.post_title LIKE %s',
-					'%' . $db->wpdb->esc_like( $search_title ) . '%'
+					'%' . $db->wpdb->esc_like( $search_course ) . '%'
+				);
+			}
+
+			// Search user
+			if ( ! empty( $search_user ) ) {
+				$filter->join[]  = "INNER JOIN {$db->tb_users} AS u ON ui.user_id = u.ID";
+				$esc_search_user = '%' . $db->wpdb->esc_like( $search_user ) . '%';
+				$filter->where[] = $db->wpdb->prepare(
+					'AND (u.display_name LIKE %s OR u.user_login LIKE %s OR u.user_email LIKE %s)',
+					$esc_search_user,
+					$esc_search_user,
+					$esc_search_user
 				);
 			}
 
 			$userCourses = $db->get_user_items( $filter, $total_rows );
-
 			$total_pages = DataBase::get_total_pages( $limit, $total_rows );
 
 			$html_lis = '';
@@ -106,22 +132,31 @@ class AdminCourseTools {
 				);
 			} else {
 				foreach ( $userCourses as $userCourse ) {
-					$courseModel = CourseModel::find( $userCourse->item_id, true );
+					$userCourseModel = UserCourseModel::find( $userCourse->user_id, $userCourse->item_id, true );
+					if ( ! $userCourseModel ) {
+						continue;
+					}
+
+					$courseModel = $userCourseModel->get_course_model();
 					$checked     = '';
-					if ( isset( $selected_compare->{$courseModel->get_id()} ) ) {
+					if ( isset( $selected_compare->{$userCourseModel->get_user_item_id()} ) ) {
 						$checked = ' checked="checked"';
 					}
 
+					$userModel = $userCourseModel->get_user_model();
+					$user_id   = $userModel ? $userModel->get_id() : 0;
+
 					$students_text = sprintf(
 					/* translators: %d: number of enrolled students */
-						__( '%d students', 'learnpress' ),
-						number_format_i18n( (int) $courseModel->count_students() )
+						__( '%1$s (#%2$d)', 'learnpress' ),
+						$user_id ? $userModel->get_display_name() : esc_html__( 'Unknown', 'learnpress' ),
+						$user_id
 					);
 
 					$title_display = sprintf(
 						'<span class="title">%s<strong>(#%d - %s)</strong></span>',
-						esc_html( $courseModel->get_title() ),
-						esc_html( $courseModel->get_id() ),
+						esc_html( $courseModel ? $courseModel->get_title() : __( 'Unknown', 'learnpress' ) ),
+						esc_html( $courseModel ? $courseModel->get_id() : 0 ),
 						esc_html( $students_text )
 					);
 
@@ -129,16 +164,16 @@ class AdminCourseTools {
 						'<li class="lp-select-item">%s%s</li>',
 						sprintf(
 							'<input name="lp-select-item"
-							value="%1$d"
+							value="%1$s"
 							data-id="%1$d"
 							data-title="%2$s"
 							%3$s
 							type="checkbox" />',
-							esc_attr( $courseModel->get_id() ),
+							esc_attr( $userCourseModel->get_user_item_id() ),
 							esc_attr( $title_display ),
 							esc_attr( $checked )
 						),
-						$title_display
+						$title_display,
 					);
 				}
 			}

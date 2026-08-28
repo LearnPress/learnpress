@@ -48,10 +48,18 @@ class AdminTemplate {
 	 *
 	 * @param array $tabs [ [ key => label ] ].
 	 * @param string $html_items
-	 *
+	 * @param string $html_filter_fields @since LP v4.4.6
+	 * @param array $extra_data @since LP v4.4.6 { 'classes' => '' }
 	 * @return string
+	 * @since 4.2.8.7.1
+	 * @version 1.0.1
 	 */
-	public static function html_popup_items_to_select_clone( array $tabs, string $html_items ): string {
+	public static function html_popup_items_to_select_clone(
+		array $tabs,
+		string $html_items,
+		string $html_filter_fields = '',
+		array $extra_data = []
+	): string {
 		$html_tabs = '';
 		$i         = 0;
 		foreach ( $tabs as $key => $label ) {
@@ -82,7 +90,7 @@ class AdminTemplate {
 		$section_main = [
 			'wrap'                => '<div class="main">',
 			'wrap_items'          => '<div class="list-items-wrap">',
-			'search'              => sprintf(
+			'search'              => ! empty( $html_filter_fields ) ? $html_filter_fields : sprintf(
 				'<input class="%1$s" name="%1$s" type="text" placeholder="%2$s">',
 				'lp-search-title-item',
 				__( 'Type here to search for an item', 'learnpress' )
@@ -102,8 +110,11 @@ class AdminTemplate {
 		$section_footer = [
 			'wrap'                 => '<div class="footer">',
 			'btn-add'              => sprintf(
-				'<button type="button" disabled="disabled" class="button lp-btn-add-items-selected lp-btn-edit-primary">%s</button>',
-				__( 'Add', 'learnpress' )
+				'<button type="button" disabled="disabled"
+					class="button lp-btn-add-items-selected lp-btn-edit-primary %s" %s>%s</button>',
+				esc_attr( $extra_data['btn-add-classes'] ),
+				$extra_data['btn-add-attrs'], // No esc_attr here
+				$extra_data['btn-add-label'] ?? __( 'Add', 'learnpress' )
 			),
 			'count-items-selected' => sprintf(
 				'<button type="button" disabled="disabled" class="button lp-btn-count-items-selected">%s %s</button>',
@@ -114,11 +125,15 @@ class AdminTemplate {
 				'<button type="button" class="button lp-btn-back-to-select-items lp-hidden">%s</button>',
 				__( 'Back', 'learnpress' )
 			),
+			'btn-custom'           => $extra_data['btn-custom'] ?? '',
 			'wrap_end'             => '</div>',
 		];
 
 		$section = [
-			'wrap'     => '<div class="lp-popup-items-to-select">',
+			'wrap'     => sprintf(
+				'<div class="lp-popup-items-to-select %s">',
+				esc_attr( $extra_data['classes'] ?? '' )
+			),
 			'header'   => Template::combine_components( $section_header ),
 			'main'     => Template::combine_components( $section_main ),
 			'footer'   => Template::combine_components( $section_footer ),
@@ -141,7 +156,7 @@ class AdminTemplate {
 	 *
 	 * @return string
 	 * @since 4.3.0
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function html_tom_select( array $args = [] ): string {
 		$html_options = '';
@@ -152,6 +167,8 @@ class AdminTemplate {
 		$default_value = $args['default_value'] ?? '';
 		$multiple      = $args['multiple'] ?? false;
 		$multiple      = $multiple ? 'multiple' : '';
+		$struct        = $args['struct'] ?? [];
+		$saved         = $args['saved'] ?? '';
 		foreach ( $options as $key => $value ) {
 			if ( is_array( $default_value ) ) {
 				$selected = in_array( $key, $default_value, true ) ? 'selected' : '';
@@ -164,10 +181,12 @@ class AdminTemplate {
 
 		$section = [
 			'select'     => sprintf(
-				'<select name="%s" class="%s lp-tom-select" %s>',
+				'<select name="%s" class="%s lp-tom-select" %s data-struct="%s" data-save="%s">',
 				esc_attr( $name ),
 				esc_attr( $class_name ),
-				$multiple
+				esc_attr( $multiple ),
+				esc_attr( htmlentities2( json_encode( $struct ) ) ),
+				esc_attr( htmlentities2( json_encode( $saved ) ) ),
 			),
 			'options'    => $html_options,
 			'select-end' => '</select>',
@@ -227,7 +246,7 @@ class AdminTemplate {
 	 * @version 1.0.0
 	 */
 	public static function html_form_filter( array $data = [] ): string {
-		$classes          = $data['classes'] ?? '';
+		$form_classes     = $data['form_classes'] ?? '';
 		$id               = $data['id'] ?? '';
 		$html_fields      = $data['fields'] ?? '';
 		$html_btn_actions = $data['btn_actions'] ?? '';
@@ -235,7 +254,7 @@ class AdminTemplate {
 		$sections = array(
 			'wrap'   => sprintf(
 				'<form class="lp-form-filter %s"%s>',
-				esc_attr( $classes ),
+				esc_attr( $form_classes ),
 				$id ? sprintf( ' id="%s"', esc_attr( $id ) ) : ''
 			),
 			'fields' => sprintf(
