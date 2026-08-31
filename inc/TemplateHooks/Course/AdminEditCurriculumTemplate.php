@@ -14,9 +14,6 @@ use LearnPress\Models\PostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
-use LP_Database;
-use LP_Post_DB;
-use LP_Post_Type_Filter;
 use stdClass;
 
 /**
@@ -43,7 +40,7 @@ class AdminEditCurriculumTemplate {
 	 */
 	public $context_data = [];
 
-	public function init() {
+	public function init(): void {
 		add_action( 'learn-press/admin/edit-curriculum/layout', [ $this, 'edit_course_curriculum_layout' ] );
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
 	}
@@ -386,7 +383,7 @@ class AdminEditCurriculumTemplate {
 						'course_id' => $this->courseModel->get_id(),
 						'id_url'    => 'course-add-section',
 					]
-				),
+				)
 			),
 			'button'   => sprintf(
 				'<button type="button"
@@ -665,7 +662,7 @@ class AdminEditCurriculumTemplate {
 			$courseModel
 		);
 		$posts       = $lp_posts_db->get_posts( $filter, $total_rows );
-		$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
+		$total_pages = DataBase::get_total_pages( $filter->limit, $total_rows );
 
 		$html_lis = '';
 		if ( empty( $posts ) ) {
@@ -673,12 +670,12 @@ class AdminEditCurriculumTemplate {
 		} else {
 			if ( ! empty( $item_selecting ) ) {
 				foreach ( $item_selecting as $item ) {
-					if ( ! isset( $item['item_id'] ) || ! isset( $item['item_type'] ) ) {
+					if ( ! isset( $item['id'] ) || ! isset( $item['type'] ) ) {
 						continue;
 					}
 
-					$item_selecting_compare->{$item['item_id']}            = new stdClass();
-					$item_selecting_compare->{$item['item_id']}->item_type = $item['item_type'];
+					$item_selecting_compare->{$item['id']}            = new stdClass();
+					$item_selecting_compare->{$item['id']}->item_type = $item['type'];
 				}
 			}
 
@@ -693,14 +690,15 @@ class AdminEditCurriculumTemplate {
 
 				$checked = '';
 
-				if ( isset( $item_selecting_compare->{$post->ID} ) ) {
+				if ( isset( $item_selecting_compare->{$post->ID} )
+					&& $item_selecting_compare->{$post->ID}->item_type === $post->post_type ) {
 					$checked = ' checked="checked"';
 				}
 
 				$title_display = sprintf(
 					'<span class="title">%s<strong>(#%d)</strong></span>',
 					$post->post_title,
-					$post->ID,
+					$post->ID
 				);
 
 				$html_lis .= sprintf(

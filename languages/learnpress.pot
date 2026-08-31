@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.5.1-beta-1\n"
+"Project-Id-Version: LearnPress 4.4.6-beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-24T10:33:29+00:00\n"
+"POT-Creation-Date: 2026-08-31T02:07:53+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -32,7 +32,6 @@ msgstr ""
 
 #: assets/js/dist/admin/pages/tools.min.js:154
 #: inc/admin/meta-box/fields/payment-order.php:8
-#: inc/admin/views/tools/course/html-user.php:28
 msgid "ID"
 msgstr ""
 
@@ -43,7 +42,6 @@ msgstr ""
 #: inc/admin/class-lp-admin-webhooks-table-list.php:25
 #: inc/admin/views/quiz/editor.php:47
 #: inc/admin/views/settings/webhooks-form.php:21
-#: inc/admin/views/tools/course/html-user.php:29
 #: inc/TemplateHooks/Course/CourseMaterialTemplate.php:183
 #: templates/global/become-teacher-form.php:35
 #: templates/profile/tabs/courses/course-list.php:31
@@ -90,6 +88,14 @@ msgstr ""
 msgid "Add Blank"
 msgstr ""
 
+#: assets/src/apps/js/blocks/archive-course/edit.js:11
+msgid "Archive Course"
+msgstr ""
+
+#: assets/src/apps/js/blocks/archive-course/edit.js:15
+msgid "This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it"
+msgstr ""
+
 #: assets/src/apps/js/blocks/archive-course-legacy/edit.js:11
 msgid "Archive Course (Legacy)"
 msgstr ""
@@ -113,6 +119,7 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-quiz/edit.js:17
 #: assets/src/apps/js/blocks/course-elements/course-student/edit.js:17
 #: assets/src/apps/js/blocks/course-elements/course-title/edit.js:26
+#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:10
 #: assets/src/apps/js/blocks/course-filter/edit.js:10
 #: assets/src/apps/js/blocks/courses/course-item-template/edit.js:214
 #: assets/src/apps/js/blocks/instructor-elements/instructor-background/edit.js:25
@@ -134,7 +141,7 @@ msgstr ""
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:208
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:212
 #: inc/TemplateHooks/CourseBuilder/Settings/BuilderSettingsTemplate.php:57
-#: learnpress.php:876
+#: learnpress.php:883
 msgid "Settings"
 msgstr ""
 
@@ -387,52 +394,21 @@ msgstr ""
 msgid "Make the title a link"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/edit.js:12
-msgid "Show title"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/edit.js:22
-#: config/widgets/course/filter-course.php:14
-msgid "Level of category to display on Frontend"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/edit.js:34
-#: config/elementor/course/filter-course-el.php:135
-#: config/widgets/course/filter-course.php:25
-msgid "Load widget via REST"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/edit.js:44
-#: config/widgets/course/filter-course.php:30
-msgid "Hide field has count is zero"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/edit.js:54
-#: config/elementor/course/filter-course-el.php:146
-#: config/widgets/course/filter-course.php:35
-msgid "Enable Keyword Search Suggestion"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/edit.js:66
-#: config/widgets/course/filter-course.php:11
-#: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:37
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:299
-msgid "Course Filter"
-msgstr ""
-
+#: assets/src/apps/js/blocks/course-filter/button-reset-filter/edit.js:8
 #: assets/src/apps/js/blocks/course-filter-elements/button-reset-filter/edit.js:8
-#: inc/admin/views/tools/course/html-user-item.php:26
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:807
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:168
 msgid "Reset"
 msgstr ""
 
+#: assets/src/apps/js/blocks/course-filter/button-submit-filter/edit.js:8
 #: assets/src/apps/js/blocks/course-filter-elements/button-submit-filter/edit.js:8
 #: inc/TemplateHooks/Admin/AI/AdminEditWithAITemplate.php:387
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:779
 msgid "Apply"
 msgstr ""
 
+#: assets/src/apps/js/blocks/course-filter/course-author-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-author-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:43
 #: config/widgets/course/filter-course.php:65
@@ -446,6 +422,7 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
+#: assets/src/apps/js/blocks/course-filter/course-categories-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-categories-filter/edit.js:9
 #: inc/custom-post-types/course.php:110
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:558
@@ -454,6 +431,55 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
+#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:12
+#: config/elementor/course/filter-course-el.php:430
+#: config/elementor/instructor/become-a-teacher.php:20
+#: config/elementor/instructor/become-a-teacher.php:46
+#: config/elementor/login-user-form.php:19
+#: config/elementor/register-user-form.php:19
+#: config/widgets/course/filter-course.php:9
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:38
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:58
+#: inc/admin/views/setup/setup-stripe.php:7
+#: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:422
+#: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:384
+#: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:428
+#: inc/Widgets/course-extra.php:25
+#: inc/Widgets/course-info.php:32
+#: inc/Widgets/course-progress.php:29
+#: inc/Widgets/featured-courses.php:28
+#: inc/Widgets/popular-courses.php:24
+#: inc/Widgets/recent-courses.php:29
+msgid "Title"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:22
+#: assets/src/apps/js/blocks/course-filter/edit.js:22
+#: config/widgets/course/filter-course.php:14
+msgid "Level of category to display on Frontend"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:34
+#: assets/src/apps/js/blocks/course-filter/edit.js:34
+#: config/elementor/course/filter-course-el.php:135
+#: config/widgets/course/filter-course.php:25
+msgid "Load widget via REST"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:44
+#: assets/src/apps/js/blocks/course-filter/edit.js:44
+#: config/widgets/course/filter-course.php:30
+msgid "Hide field has count is zero"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:54
+#: assets/src/apps/js/blocks/course-filter/edit.js:54
+#: config/elementor/course/filter-course-el.php:146
+#: config/widgets/course/filter-course.php:35
+msgid "Enable Keyword Search Suggestion"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/course-level-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-level-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:44
 #: config/widgets/course/filter-course.php:69
@@ -466,6 +492,7 @@ msgstr ""
 msgid "Level"
 msgstr ""
 
+#: assets/src/apps/js/blocks/course-filter/course-price-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-price-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:40
 #: config/elementor/course/list-courses.php:123
@@ -478,10 +505,10 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
+#: assets/src/apps/js/blocks/course-filter/course-search-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-search-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:488
 #: inc/admin/views/search-author-field.php:64
-#: inc/admin/views/tools/course/html-user.php:21
 #: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:315
 #: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:369
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:195
@@ -492,6 +519,7 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+#: assets/src/apps/js/blocks/course-filter/course-tag-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-tag-filter/edit.js:9
 #: config/wp-menus.php:99
 #: config/wp-menus.php:100
@@ -499,6 +527,17 @@ msgstr ""
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:536
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:946
 msgid "Tags"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:12
+msgid "Show title"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:66
+#: config/widgets/course/filter-course.php:11
+#: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:37
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:299
+msgid "Course Filter"
 msgstr ""
 
 #: assets/src/apps/js/blocks/courses/course-item-template/edit.js:162
@@ -608,6 +647,22 @@ msgstr ""
 msgid "Add nofollow attribute"
 msgstr ""
 
+#: assets/src/apps/js/blocks/item-curriculum-course/edit.js:13
+msgid "Item Curriculum Course"
+msgstr ""
+
+#: assets/src/apps/js/blocks/item-curriculum-course/edit.js:17
+msgid "This is an editor placeholder for the Item Curriculum Course page. Content will render content of single item curriculum course. Should be not remove it"
+msgstr ""
+
+#: assets/src/apps/js/blocks/single-course/edit.js:11
+msgid "Single Course"
+msgstr ""
+
+#: assets/src/apps/js/blocks/single-course/edit.js:15
+msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
+msgstr ""
+
 #: assets/src/apps/js/blocks/single-course-legacy/edit.js:11
 msgid "Single Course (Legacy)"
 msgstr ""
@@ -646,6 +701,21 @@ msgstr ""
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:276
 #: templates/profile/tabs/settings/avatar.php:28
 msgid "Cancel"
+msgstr ""
+
+#: assets/js/dist/frontend/profile.min.js:131
+#: assets/js/dist/frontend/profile.min.js:131
+msgid "The file size is too large. You need to upload a file < 2MB."
+msgstr ""
+
+#: assets/js/dist/frontend/profile.min.js:133
+#: assets/js/dist/frontend/profile.min.js:133
+msgid "The image size must be greater than or equal to %1$sx%2$spx"
+msgstr ""
+
+#: assets/js/dist/frontend/profile.min.js:146
+#: assets/js/dist/frontend/profile.min.js:146
+msgid "Are you sure you want to remove your avatar?"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:94
@@ -902,6 +972,17 @@ msgstr ""
 msgid "Submitting…"
 msgstr ""
 
+#: assets/src/js/admin/admin.js:107
+msgid "Search by user"
+msgstr ""
+
+#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:700
+#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:705
+#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:710
+#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:723
+msgid "Edit with AI"
+msgstr ""
+
 #: assets/src/js/frontend/course-builder/builder-form-state.js:174
 msgid "You have unsaved changes. Are you sure you want to leave this page?"
 msgstr ""
@@ -951,7 +1032,7 @@ msgstr ""
 #: inc/admin/class-lp-admin-assets.php:184
 #: inc/admin/class-lp-admin.php:28
 #: inc/admin/lp-admin-actions.php:214
-#: inc/admin/views/tools/course/html-user.php:30
+#: inc/admin/views/tools/course/html-reset-course-progress.php:71
 #: inc/class-lp-page-controller.php:248
 #: inc/custom-post-types/course.php:50
 #: inc/custom-post-types/course.php:52
@@ -1297,6 +1378,7 @@ msgstr ""
 
 #: config/elementor/course/filter-course-el.php:353
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
+#: inc/admin/views/tools/course/html-reset-user-item.php:71
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:175
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:276
 #: inc/TemplateHooks/Order/AdminOrderItemsTemplate.php:319
@@ -1312,27 +1394,6 @@ msgstr ""
 
 #: config/elementor/course/filter-course-el.php:416
 msgid "Toggle Offset Y (px)"
-msgstr ""
-
-#: config/elementor/course/filter-course-el.php:430
-#: config/elementor/instructor/become-a-teacher.php:20
-#: config/elementor/instructor/become-a-teacher.php:46
-#: config/elementor/login-user-form.php:19
-#: config/elementor/register-user-form.php:19
-#: config/widgets/course/filter-course.php:9
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:38
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:58
-#: inc/admin/views/setup/setup-stripe.php:7
-#: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:422
-#: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:384
-#: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:428
-#: inc/Widgets/course-extra.php:25
-#: inc/Widgets/course-info.php:32
-#: inc/Widgets/course-progress.php:29
-#: inc/Widgets/featured-courses.php:28
-#: inc/Widgets/popular-courses.php:24
-#: inc/Widgets/recent-courses.php:29
-msgid "Title"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:441
@@ -1867,6 +1928,7 @@ msgstr ""
 #: inc/admin/class-lp-admin-assets.php:177
 #: inc/admin/lp-admin-functions.php:74
 #: inc/admin/meta-box/fields/course-permalink.php:22
+#: inc/admin/views/tools/course/html-reset-course-progress.php:45
 #: inc/class-lp-helper.php:574
 #: inc/custom-post-types/abstract.php:974
 #: inc/custom-post-types/quiz.php:246
@@ -3969,7 +4031,7 @@ msgid "Statistics"
 msgstr ""
 
 #: config/wp-menus.php:42
-#: learnpress.php:878
+#: learnpress.php:893
 msgid "Add-ons"
 msgstr ""
 
@@ -4331,6 +4393,8 @@ msgid "Order ID"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:194
+#: inc/admin/views/tools/course/html-reset-course-progress.php:47
+#: inc/admin/views/tools/course/html-reset-user-item.php:75
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:68
 #: inc/custom-post-types/order.php:558
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseStudentBlockType.php:79
@@ -4959,7 +5023,7 @@ msgstr ""
 #: inc/admin/class-lp-modal-search-users.php:50
 #: inc/admin/views/course/modal-choose-items.php:92
 #: inc/admin/views/quiz/modal-choose-items.php:83
-#: inc/TemplateHooks/Admin/AdminTemplate.php:106
+#: inc/TemplateHooks/Admin/AdminTemplate.php:117
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:843
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:959
 msgid "Add"
@@ -5021,11 +5085,13 @@ msgstr ""
 msgid "Search users"
 msgstr ""
 
-#: inc/admin/class-lp-reset-data.php:112
+#: inc/admin/class-lp-reset-data.php:110
 msgid "Item progress is deleted"
 msgstr ""
 
-#: inc/admin/class-lp-reset-data.php:114
+#: inc/admin/class-lp-reset-data.php:112
+#: inc/TemplateHooks/Admin/Tools/AdminCourseTools.php:160
+#: inc/TemplateHooks/Admin/Tools/AdminCourseTools.php:309
 msgid "No data found"
 msgstr ""
 
@@ -5258,6 +5324,7 @@ msgstr ""
 
 #: inc/admin/lp-admin-functions.php:2107
 #: inc/admin/views/addons.php:264
+#: inc/admin/views/tools/course/html-reset-user-item.php:33
 #: inc/TemplateHooks/Profile/ProfileQuizzesTemplate.php:250
 #: inc/templates/class-lp-template-profile.php:116
 #: inc/templates/class-lp-template-profile.php:158
@@ -5520,13 +5587,13 @@ msgid "Review Course"
 msgstr ""
 
 #: inc/admin/settings/email-groups/class-lp-settings-enrolled-course-emails.php:28
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:306
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:318
 #: inc/WPGDPR/ExportPersonalData.php:158
 msgid "Enrolled Course"
 msgstr ""
 
 #: inc/admin/settings/email-groups/class-lp-settings-finished-course-emails.php:28
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:316
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:328
 #: inc/WPGDPR/ExportPersonalData.php:170
 msgid "Finished Course"
 msgstr ""
@@ -5717,12 +5784,12 @@ msgstr ""
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:173
-#: inc/TemplateHooks/Admin/AdminTemplate.php:110
+#: inc/TemplateHooks/Admin/AdminTemplate.php:121
 msgid "Selected items"
 msgstr ""
 
 #: inc/admin/views/course/modal-choose-items.php:71
-#: inc/TemplateHooks/Admin/AdminTemplate.php:88
+#: inc/TemplateHooks/Admin/AdminTemplate.php:96
 msgid "Type here to search for an item"
 msgstr ""
 
@@ -5864,7 +5931,7 @@ msgid "Watch Videos"
 msgstr ""
 
 #: inc/admin/views/help-center/html-help-center.php:38
-#: learnpress.php:877
+#: learnpress.php:888
 msgid "Documentation"
 msgstr ""
 
@@ -6776,7 +6843,6 @@ msgid "Match any value in a set of words. Use <code>fill, blank, or question</co
 msgstr ""
 
 #: inc/admin/views/quiz/editor.php:49
-#: inc/admin/views/tools/course/html-user.php:31
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderListLessonsTemplate.php:215
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderListQuestionsTemplate.php:197
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderListQuizzesTemplate.php:195
@@ -6918,7 +6984,7 @@ msgstr ""
 
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:172
-#: inc/TemplateHooks/Admin/AdminTemplate.php:115
+#: inc/TemplateHooks/Admin/AdminTemplate.php:126
 msgid "Back"
 msgstr ""
 
@@ -7415,6 +7481,90 @@ msgstr ""
 msgid "Delete sample course"
 msgstr ""
 
+#: inc/admin/views/tools/course/html-reset-course-progress.php:17
+msgid "Reset User Course Progress"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-course-progress.php:18
+msgid "This action will reset course progress of users who have enrolled."
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-course-progress.php:28
+msgid "Resetting courses progress"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-course-progress.php:29
+#: inc/admin/views/tools/course/html-reset-user-item.php:29
+msgid "Choose data to reset progress"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-course-progress.php:46
+msgid "Search course by title"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-course-progress.php:48
+msgid "Search student by name or email"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-course-progress.php:82
+#: inc/admin/views/tools/course/html-reset-user-item.php:111
+msgid "Reset data progress"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-course-progress.php:86
+#: inc/admin/views/tools/course/html-reset-user-item.php:115
+msgid "Are you sure you want to reset data progress choosed?"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-course-progress.php:94
+#: inc/admin/views/tools/course/html-reset-user-item.php:123
+msgid "Are you sure you want to reset all data progress by filter?"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-course-progress.php:98
+#: inc/admin/views/tools/course/html-reset-user-item.php:127
+msgid "Reset all data progress"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-user-item.php:17
+msgid "Reset Item Progress"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-user-item.php:18
+msgid "This action will reset progress of a specific lesson, quiz, or other course item."
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-user-item.php:28
+msgid "Resetting item progress"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-user-item.php:69
+msgid "Item type"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-user-item.php:72
+msgid "Search item by title"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-user-item.php:73
+msgid "Course's Item"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-user-item.php:74
+#: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:147
+msgid "Search by title"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-user-item.php:76
+msgid "Search by name or email"
+msgstr ""
+
+#: inc/admin/views/tools/course/html-reset-user-item.php:100
+#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:176
+#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:277
+msgid "Items"
+msgstr ""
+
 #: inc/admin/views/tools/course/html-unassign-course.php:71
 msgid "Unassign Course"
 msgstr ""
@@ -7425,62 +7575,6 @@ msgstr ""
 
 #: inc/admin/views/tools/course/html-unassign-course.php:77
 msgid "Noted: when remove user from course, the progress of user with course assign will eraser, so be careful before do this."
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user-item.php:12
-msgid "Reset Item Progress"
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user-item.php:14
-msgid "This action will reset progress of a specific lesson or quiz."
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user-item.php:18
-msgid "User ID or Email"
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user-item.php:21
-msgid "ID of quiz or lesson"
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user-item.php:33
-msgid "Are you sure to reset progress of this item?"
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user.php:12
-msgid "Reset User Progress"
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user.php:14
-msgid "This action will reset all course progresses of users."
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user.php:15
-msgid "Search results only show if users have course data."
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user.php:19
-msgid "Search user by login name or email"
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user.php:56
-msgid "Delete All"
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user.php:63
-msgid "Please enter at least 3 characters."
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user.php:64
-msgid "No user found."
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user.php:65
-msgid "Searching user..."
-msgstr ""
-
-#: inc/admin/views/tools/course/html-user.php:73
-msgid "Are you sure to reset course progress of all users enrolled this course?"
 msgstr ""
 
 #: inc/admin/views/tools/database/html-clean-database.php:19
@@ -7892,6 +7986,7 @@ msgstr ""
 #: inc/Ajax/AI/OpenAiAjax.php:478
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:38
 #: inc/MCP/Support/Errors.php:65
+#: inc/TemplateHooks/Admin/Tools/AdminCourseTools.php:69
 msgid "You do not have permission to perform this action."
 msgstr ""
 
@@ -8353,6 +8448,39 @@ msgstr ""
 
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2210
 msgid "Course Builder settings updated."
+msgstr ""
+
+#: inc/Ajax/CourseToolsAjax.php:55
+msgid "You do not have permission to reset course progress."
+msgstr ""
+
+#: inc/Ajax/CourseToolsAjax.php:61
+#: inc/Ajax/CourseToolsAjax.php:161
+msgid "Data invalid."
+msgstr ""
+
+#: inc/Ajax/CourseToolsAjax.php:114
+#: inc/Ajax/CourseToolsAjax.php:228
+#: inc/Ajax/CourseToolsAjax.php:238
+msgid "No data reset."
+msgstr ""
+
+#: inc/Ajax/CourseToolsAjax.php:125
+#: inc/Ajax/CourseToolsAjax.php:248
+#, php-format
+msgid "Progress of %1$d %2$s has been reset."
+msgstr ""
+
+#: inc/Ajax/CourseToolsAjax.php:130
+msgid "data"
+msgstr ""
+
+#: inc/Ajax/CourseToolsAjax.php:155
+msgid "You do not have permission to reset item progress."
+msgstr ""
+
+#: inc/Ajax/CourseToolsAjax.php:253
+msgid "item(s)"
 msgstr ""
 
 #: inc/Ajax/EditCurriculumAjax.php:60
@@ -9353,6 +9481,11 @@ msgstr ""
 
 #: inc/custom-post-types/abstract.php:902
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:201
+#: inc/TemplateHooks/Admin/Tools/AdminCourseTools.php:177
+#: inc/TemplateHooks/Admin/Tools/AdminCourseTools.php:179
+#: inc/TemplateHooks/Admin/Tools/AdminCourseTools.php:181
+#: inc/TemplateHooks/Admin/Tools/AdminCourseTools.php:332
+#: inc/TemplateHooks/Admin/Tools/AdminCourseTools.php:338
 msgid "Unknown"
 msgstr ""
 
@@ -9635,7 +9768,7 @@ msgstr ""
 
 #: inc/custom-post-types/order.php:868
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:414
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:145
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:146
 msgid "File not found"
 msgstr ""
 
@@ -12309,19 +12442,19 @@ msgstr ""
 msgid "You can not retake this course!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1099
+#: inc/Models/UserItems/UserCourseModel.php:1142
 msgid "User not exists!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1104
+#: inc/Models/UserItems/UserCourseModel.php:1147
 msgid "You have not enroll this course!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1108
+#: inc/Models/UserItems/UserCourseModel.php:1151
 msgid "You have finished this course!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1112
+#: inc/Models/UserItems/UserCourseModel.php:1155
 msgid "Course was blocked by expire!"
 msgstr ""
 
@@ -12660,7 +12793,7 @@ msgid "No Course ID available!"
 msgstr ""
 
 #: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:57
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:476
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:488
 msgid "No Course available!"
 msgstr ""
 
@@ -12997,181 +13130,181 @@ msgstr ""
 msgid "There is an error when delete this file."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:136
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:141
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:137
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:142
 msgid "User not found"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:157
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:250
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:615
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:158
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:256
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:627
 msgid "The upload directory is not writable"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:175
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:180
 msgid "Invalid avatar image data"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:181
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:186
 msgid "Avatar image is too large"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:187
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:192
 msgid "Cannot create temporary file"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:193
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:198
 msgid "Cannot write temporary file"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:202
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:207
 msgid "Invalid avatar image type"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:213
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:218
 msgid "Cannot create image editor"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:223
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:229
 msgid "Avatar updated"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:238
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:244
 #: inc/user/lp-user-functions.php:780
 msgid "The user is invalid"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:262
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:275
 msgid "The profile picture has been removed successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:286
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:361
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:443
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:298
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:373
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:455
 msgid "No user ID found!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:291
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:366
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:303
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:378
 msgid "The user does not exist!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:297
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:376
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:309
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:388
 msgid "You do not have permission to view this statistic!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:305
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:317
 #: templates/profile/tabs/courses/general-statistic.php:26
 msgid "Total enrolled courses"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:310
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:322
 msgid "Total course is in progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:311
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:323
 #: inc/WPGDPR/ExportPersonalData.php:164
 msgid "Inprogress Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:315
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:327
 msgid "Total courses finished"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:320
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:332
 msgid "Total courses passed"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:321
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:333
 #: inc/WPGDPR/ExportPersonalData.php:176
 msgid "Passed Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:325
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:337
 msgid "Total courses failed"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:326
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:338
 #: inc/WPGDPR/ExportPersonalData.php:182
 msgid "Failed Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:385
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:386
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:397
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:398
 #: inc/WPGDPR/ExportPersonalData.php:105
 msgid "Total Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:390
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:391
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:402
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:403
 #: inc/WPGDPR/ExportPersonalData.php:111
 msgid "Published Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:395
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:396
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:407
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:408
 #: inc/WPGDPR/ExportPersonalData.php:117
 msgid "Pending Course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:400
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:401
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:412
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:413
 #: inc/WPGDPR/ExportPersonalData.php:123
 msgid "Total Student"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:405
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:406
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:417
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:418
 #: inc/WPGDPR/ExportPersonalData.php:129
 msgid "Student Completed"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:410
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:411
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:422
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:423
 #: inc/WPGDPR/ExportPersonalData.php:135
 msgid "Student In-progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:449
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:453
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:461
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:465
 msgid "You do not have permission to view this tab!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:456
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:468
 msgid "Request invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:487
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:499
 msgid "No Course IDs available!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:493
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:505
 msgid "No User available!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:576
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:581
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:588
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:593
 msgid "User is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:588
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:600
 msgid "Cover image has been removed successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:595
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:607
 msgid "File is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:605
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:617
 msgid "File type is not allowed"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:628
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:640
 msgid "Cannot write the file"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:638
+#: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:650
 msgid "Cover image is updated"
 msgstr ""
 
@@ -14139,6 +14272,12 @@ msgstr ""
 msgid "Generate Course Curriculum"
 msgstr ""
 
+#. translators: %d: number of enrolled students
+#: inc/TemplateHooks/Admin/Tools/AdminCourseTools.php:331
+#, php-format
+msgid "%1$s (#%2$d)"
+msgstr ""
+
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:113
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:86
 msgid "You do not have permission to edit this course"
@@ -14146,11 +14285,6 @@ msgstr ""
 
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:163
 msgid "Sections"
-msgstr ""
-
-#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:176
-#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:277
-msgid "Items"
 msgstr ""
 
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:242
@@ -14624,10 +14758,6 @@ msgstr ""
 
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:109
 msgid "All Status"
-msgstr ""
-
-#: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:147
-msgid "Search by title"
 msgstr ""
 
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:163

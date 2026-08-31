@@ -36,6 +36,10 @@ table.lp-list-table {
 			top: 0;
 			z-index: 2;
 			background: #fff;
+
+			&:hover {
+				background: #eff6ff
+			}
 		}
 
 		th {
@@ -59,11 +63,15 @@ table.lp-list-table {
 			border: none;
 			border-bottom: 1px solid var(--lp-white-grey, #F7F7FB);
 
-			&:nth-child(odd) td {
+			&:hover {
+				background: #eff6ff !important;
+			}
+
+			&:nth-child(odd) {
 				background: #f6f7f7;
 			}
 
-			&:nth-child(even) td {
+			&:nth-child(even) {
 				background: #fff;
 			}
 
