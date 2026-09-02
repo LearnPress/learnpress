@@ -161,7 +161,7 @@ class QuestionAnswerModel {
 	 */
 	public function check_capabilities_create() {
 		$user = wp_get_current_user();
-		if ( ! user_can( $user, 'edit_' . LP_LESSON_CPT . 's' ) ) {
+		if ( ! user_can( $user, 'edit_' . LP_LESSON_CPT, $this->question_id ) ) {
 			throw new Exception( __( 'You do not have permission to create answer.', 'learnpress' ) );
 		}
 	}
