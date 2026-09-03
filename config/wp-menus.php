@@ -76,6 +76,16 @@ $menu_items = apply_filters(
 				learn_press_admin_view( 'help-center/html-help-center' );
 			},
 		],
+		'theme-new'      => [
+			'id'         => 'learn-press-theme-new',
+			'menu_title' => __( 'Theme New', 'learnpress' ),
+			'page_title' => __( 'LearnPress Theme New', 'learnpress' ),
+			'capability' => 'manage_options',
+			'priority'   => 25,
+			'callback'   => function () {
+				learn_press_admin_view( 'themes/html-themes' );
+			},
+		],
 		// Tools.
 		'tools'            => [
 			'id'         => 'learn-press-tools',
