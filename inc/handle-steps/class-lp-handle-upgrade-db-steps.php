@@ -19,9 +19,10 @@ class LP_Handle_Upgrade_Steps extends LP_Handle_Steps {
 	 * Finish Step.
 	 *
 	 * @param LP_Step $step .
-	 * @param string  $message .
+	 * @param string $message .
 	 *
 	 * @return LP_Step
+	 * @throws Exception
 	 */
 	public function finish_step( LP_Step $step, string $message ): LP_Step {
 		$lp_db = LP_Database::getInstance();

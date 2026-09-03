@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit();
  * Class DataBase
  *
  * @since 4.2.9.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 class DataBase {
 	private static $_instance;
@@ -122,10 +122,6 @@ class DataBase {
 	 * @throws Exception
 	 */
 	public function clone_table( string $name_table ): bool {
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			throw new Exception( 'You don\'t have permission' );
-		}
-
 		$table_bk = $name_table . '_bk';
 
 		// Drop table bk if exists.
@@ -169,10 +165,6 @@ class DataBase {
 	 * @throws Exception
 	 */
 	public function drop_col_table( string $name_table = '', string $name_col = '' ) {
-		if ( ! current_user_can( 'administrator' ) ) {
-			return false;
-		}
-
 		$check_table = $this->check_col_table( $name_table, $name_col );
 
 		if ( $check_table ) {
@@ -198,10 +190,6 @@ class DataBase {
 	 * @throws Exception
 	 */
 	public function add_col_table( string $name_table, string $name_col, string $type, string $after_col = '' ) {
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			return false;
-		}
-
 		$query_add = '';
 
 		$col_exists = $this->check_col_table( $name_table, $name_col );
@@ -288,10 +276,6 @@ class DataBase {
 	 * @throws Exception
 	 */
 	public function drop_table( string $name_table = '' ) {
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			throw new Exception( 'You don\'t have permission' );
-		}
-
 		// Check table exists.
 		$tb_exists = $this->check_table_exists( $name_table );
 		if ( $tb_exists ) {
@@ -385,10 +369,6 @@ class DataBase {
 	 * @return int|bool
 	 */
 	public function set_step_complete( string $step, string $status ) {
-		if ( ! current_user_can( 'administrator' ) ) {
-			return false;
-		}
-
 		return $this->wpdb->insert(
 			$this->tb_lp_upgrade_db,
 			array(
@@ -453,10 +433,6 @@ class DataBase {
 	 * @author tungnx
 	 */
 	public function rename_table( string $name_table = '', string $new_name = '' ) {
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			throw new Exception( 'You don\'t have permission' );
-		}
-
 		$tb_exists = $this->check_table_exists( $name_table );
 
 		if ( ! $tb_exists ) {

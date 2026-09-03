@@ -188,10 +188,6 @@ class LP_Database {
 	 * @throws Exception
 	 */
 	public function clone_table( string $name_table ): bool {
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			throw new Exception( 'You don\'t have permission' );
-		}
-
 		$table_bk = $name_table . '_bk';
 
 		// Drop table bk if exists.
@@ -235,10 +231,6 @@ class LP_Database {
 	 * @throws Exception
 	 */
 	public function drop_col_table( string $name_table = '', string $name_col = '' ) {
-		if ( ! current_user_can( 'administrator' ) ) {
-			return false;
-		}
-
 		$check_table = $this->check_col_table( $name_table, $name_col );
 
 		if ( $check_table ) {
@@ -264,10 +256,6 @@ class LP_Database {
 	 * @throws Exception
 	 */
 	public function add_col_table( string $name_table, string $name_col, string $type, string $after_col = '' ) {
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			throw new Exception( 'You don\'t have permission' );
-		}
-
 		$query_add = '';
 
 		$col_exists = $this->check_col_table( $name_table, $name_col );
@@ -354,10 +342,6 @@ class LP_Database {
 	 * @throws Exception
 	 */
 	public function drop_table( string $name_table = '' ) {
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			throw new Exception( 'You don\'t have permission' );
-		}
-
 		// Check table exists.
 		$tb_exists = $this->check_table_exists( $name_table );
 		if ( $tb_exists ) {
@@ -449,13 +433,10 @@ class LP_Database {
 	 * @param string $status .
 	 *
 	 * @return int|bool
+	 * @throws Exception
 	 */
 	public function set_step_complete( string $step, string $status ) {
-		if ( ! current_user_can( 'administrator' ) ) {
-			return false;
-		}
-
-		return $this->wpdb->insert(
+		$execute = $this->wpdb->insert(
 			$this->tb_lp_upgrade_db,
 			array(
 				'step'   => $step,
@@ -463,6 +444,10 @@ class LP_Database {
 			),
 			array( '%s', '%s' )
 		);
+
+		$this->check_execute_has_error();
+
+		return $execute;
 	}
 
 	/**
@@ -514,15 +499,11 @@ class LP_Database {
 	 * Rename table
 	 *
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.0.3
 	 * @author tungnx
 	 */
 	public function rename_table( string $name_table = '', string $new_name = '' ) {
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			throw new Exception( 'You don\'t have permission' );
-		}
-
 		$tb_exists = $this->check_table_exists( $name_table );
 
 		if ( ! $tb_exists ) {
