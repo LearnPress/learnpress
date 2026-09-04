@@ -109,7 +109,11 @@ class UserItemResultsDB extends DataBase {
 		}
 
 		if ( ! empty( $filter->graduations ) ) {
-			$graduations     = array_map( [ $this->wpdb, 'prepare' ], array_fill( 0, count( $filter->graduations ), '%s' ), $filter->graduations );
+			$graduations     = array_map(
+				[ $this->wpdb, 'prepare' ],
+				array_fill( 0, count( $filter->graduations ), '%s' ),
+				$filter->graduations
+			);
 			$filter->where[] = "AND {$alias}.graduation IN (" . implode( ',', $graduations ) . ')';
 		}
 

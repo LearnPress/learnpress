@@ -4,6 +4,7 @@ use LearnPress\Filters\Course\CourseJsonFilter;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
 
 /**
  * Class LP_REST_Admin_Tools_Controller
@@ -678,7 +679,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 * @return bool
 	 */
 	public function check_permission( $request = null ): bool {
-		$permission = current_user_can( ADMIN_ROLE );
+		$permission = current_user_can( UserModel::ROLE_ADMINISTRATOR );
 		$permission = apply_filters( 'learn-press/api-admin-tools/permission', $permission, $request );
 
 		return $permission;

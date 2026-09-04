@@ -13,6 +13,7 @@ namespace LearnPress\Models\UserItems;
 use Exception;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\UserItemResults\UserItemResultModel;
 use LP_Datetime;
 use WP_Error;
 
@@ -93,6 +94,17 @@ class UserLessonModel extends UserItemModel {
 		$this->end_time   = gmdate( LP_Datetime::$format, time() );
 		$this->graduation = self::GRADUATION_PASSED;
 		$this->save();
+
+		// Get course results
+		$userCourseResults = UserItemResultModel::find_by_user_item_id( $userCourseModel->get_user_item_id(), true );
+
+		// Store results
+		$userItemResultModel               = new UserItemResultModel( $this );
+		$userItemResultModel->user_item_id = $this->get_user_item_id();
+		$userItemResultModel->parent_id    = $userCourseResults->get_id();
+		$userItemResultModel->save();
+
+		// Find userCourseResultModel and set user_item_id
 
 		do_action( 'learn-press/user-completed-lesson', $this->item_id, $this->ref_id, $this->user_id );
 		do_action( 'learn-press/user-lesson/completed', $this );

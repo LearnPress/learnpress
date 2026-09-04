@@ -11,10 +11,12 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Filters\UserItemResultsFilter;
 use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserItemResults\UserItemResultModel;
 use LP_Cache;
 use LP_Course_Cache;
 use LP_Course_Item;
@@ -411,8 +413,17 @@ class UserCourseModel extends UserItemModel {
 
 			if ( $this->is_finished() ) {
 				// Get result from lp_user_item_results
-				// Todo: tungnx - set cache
-				return LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+				//return LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+				$userCourseResult = UserItemResultModel::find_by_user_item_id(
+					$this->get_user_item_id(),
+					true
+				);
+				if ( $userCourseResult instanceof UserItemResultModel ) {
+					return array_merge(
+						$results,
+						$userCourseResult->get_result()
+					);
+				}
 			}
 
 			if ( $this->status !== LP_COURSE_ENROLLED ) {
@@ -507,12 +518,15 @@ class UserCourseModel extends UserItemModel {
 		$flag = 0;
 
 		try {
-			$course = $this->get_course_model();
-			if ( ! $course ) {
+			$courseModel = $this->get_course_model();
+			if ( ! $courseModel ) {
 				return $flag;
 			}
 
-			$retake_option = (int) $course->get_meta_value_by_key( CoursePostModel::META_KEY_RETAKE_COUNT, 0 );
+			$retake_option = (int) $courseModel->get_meta_value_by_key(
+				CoursePostModel::META_KEY_RETAKE_COUNT,
+				0
+			);
 			if ( $retake_option > 0 ) {
 				/**
 				 * Check course is finished
@@ -1032,8 +1046,19 @@ class UserCourseModel extends UserItemModel {
 		$this->end_time   = gmdate( LP_Datetime::$format, time() );
 		$this->save();
 
-		// Save result for course
-		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $course_results ) );
+		// Save the full course results snapshot to user_item_results for history.
+		$userItemResult = UserItemResultModel::find_by_user_item_id( $this->get_user_item_id() );
+		if ( $userItemResult instanceof UserItemResultModel ) {
+			foreach ( get_object_vars( $this ) as $key => $value ) {
+				if ( $key !== UserItemResultsFilter::COL_ID ) {
+					$userItemResult->{$key} = $this->{$key};
+				}
+			}
+
+			$userItemResult->set_result( $course_results );
+			$userItemResult->save();
+			//LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $course_results ) );
+		}
 
 		do_action( 'learn-press/user-course-finished', $this->item_id, $this->user_id, $this->get_user_item_id() );
 		do_action( 'learn-press/user-course/finished', $this );
@@ -1080,7 +1105,10 @@ class UserCourseModel extends UserItemModel {
 		}
 
 		// Create new result in table learnpress_user_item_results.
-		LP_User_Items_Result_DB::instance()->insert( $this->get_user_item_id() );
+		$userCourseResult               = new UserItemResultModel( $this );
+		$userCourseResult->user_item_id = $this->get_user_item_id();
+		$userCourseResult->save();
+		//LP_User_Items_Result_DB::instance()->insert( $this->get_user_item_id() );
 	}
 
 	/**

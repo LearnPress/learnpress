@@ -233,10 +233,13 @@
 
 .lp-notice-update-database {
     border: 1px solid rebeccapurple;
-    border-left-color: #f00;
     border-radius: 3px;
     color: white;
     background: rebeccapurple;
+
+	p {
+		color: white;
+	}
 
     &.do-updating {
         &::before {

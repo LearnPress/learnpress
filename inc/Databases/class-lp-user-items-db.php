@@ -664,7 +664,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @param int $course_id
 	 * @author tungnx
 	 * @since 4.1.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function delete_user_items_old( int $user_id = 0, int $course_id = 0 ) {
 		$lp_user_items_db     = LP_User_Items_DB::getInstance();

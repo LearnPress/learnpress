@@ -152,6 +152,8 @@ return array(
 			guest_key varchar(64) not null default '' COMMENT 'Key to identify users not logged in.',
 			item_id bigint(20) unsigned NOT NULL DEFAULT '0',
 			item_type varchar(45) NOT NULL DEFAULT '',
+			start_time datetime NULL DEFAULT NULL,
+			end_time datetime NULL DEFAULT NULL,
 			status varchar(45) NOT NULL DEFAULT '',
 			graduation varchar(20) NULL DEFAULT NULL,
 			ref_id bigint(20) unsigned NOT NULL DEFAULT '0',

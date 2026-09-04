@@ -479,9 +479,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$lp_user_items_db->remove_user_itemmeta( $filter_delete );
 
 				// Delete user_item_results
-				$lp_user_item_results->remove_user_item_results( $filter_delete );
+				// $lp_user_item_results->remove_user_item_results( $filter_delete );
 			} catch ( Throwable $e ) {
-				error_log( __FUNCTION__ . ':' . $e->getMessage() );
+				LP_Debug::error_log( $e );
 			}
 		}
 

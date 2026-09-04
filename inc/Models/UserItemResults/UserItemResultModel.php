@@ -1,15 +1,4 @@
 <?php
-
-/**
- * Class UserItemResultModel
- *
- * Model for learnpress_user_item_results table.
- *
- * @package LearnPress/Classes
- * @version 1.0.0
- * @since 4.5.0
- */
-
 namespace LearnPress\Models\UserItemResults;
 
 use Exception;
@@ -22,6 +11,18 @@ use LP_Helper;
 use stdClass;
 use Throwable;
 
+defined( 'ABSPATH' ) || exit();
+
+/**
+ * Class UserItemResultModel
+ *
+ * Model for learnpress_user_item_results table.
+ * Model for store history user items
+ *
+ * @package LearnPress/Classes
+ * @version 1.0.0
+ * @since 4.5.0
+ */
 class UserItemResultModel extends UserItemModel {
 	/**
 	 * Auto increment, Primary key
@@ -49,25 +50,24 @@ class UserItemResultModel extends UserItemModel {
 	 *
 	 * @var string|null
 	 */
-	public $result = null;
+	private $result = null;
 
 	/**
-	 * Store more data type JSON
-	 *
-	 * @var string|null
-	 */
-	public $extra_data = null;
-
-	/**
-	 * If data get from database, map to object.
-	 * Else create new object to save data to database.
+	 * Map array, object data to UserItemResultModel.
+	 * Use for data get from database.
 	 *
 	 * @param array|object|mixed $data
+	 *
+	 * @return UserItemResultModel
 	 */
-	public function __construct( $data = null ) {
-		if ( $data ) {
-			$this->map_to_object( $data );
+	public function map_to_object( $data ): UserItemResultModel {
+		foreach ( $data as $key => $value ) {
+			if ( property_exists( $this, $key ) ) {
+				$this->{$key} = $value;
+			}
 		}
+
+		return $this;
 	}
 
 	/**
@@ -89,24 +89,6 @@ class UserItemResultModel extends UserItemModel {
 	}
 
 	/**
-	 * Get user item id
-	 *
-	 * @return int
-	 */
-	public function get_user_item_id(): int {
-		return $this->user_item_id;
-	}
-
-	/**
-	 * Get user id
-	 *
-	 * @return int
-	 */
-	public function get_user_id(): int {
-		return $this->user_id;
-	}
-
-	/**
 	 * Get guest key
 	 *
 	 * @return string
@@ -116,126 +98,45 @@ class UserItemResultModel extends UserItemModel {
 	}
 
 	/**
-	 * Get item id
-	 *
-	 * @return int
-	 */
-	public function get_item_id(): int {
-		return $this->item_id;
-	}
-
-	/**
-	 * Get item type
-	 *
-	 * @return string
-	 */
-	public function get_item_type(): string {
-		return $this->item_type;
-	}
-
-	/**
-	 * Get status
-	 *
-	 * @return string
-	 */
-	public function get_status(): string {
-		return $this->status;
-	}
-
-	/**
-	 * Get graduation
-	 *
-	 * @return string
-	 */
-	public function get_graduation(): string {
-		return is_null( $this->graduation ) ? '' : $this->graduation;
-	}
-
-	/**
-	 * Get ref id
-	 *
-	 * @return int
-	 */
-	public function get_ref_id(): int {
-		return $this->ref_id;
-	}
-
-	/**
-	 * Get ref type
-	 *
-	 * @return string
-	 */
-	public function get_ref_type(): string {
-		return $this->ref_type;
-	}
-
-	/**
-	 * Get parent id
-	 *
-	 * @return int
-	 */
-	public function get_parent_id(): int {
-		return $this->parent_id;
-	}
-
-	/**
 	 * Get result as decoded data
 	 *
 	 * @return mixed
 	 */
 	public function get_result() {
-		return $this->decode_json_field( $this->result );
-	}
-
-	/**
-	 * Decoded `extra_data` blob. Always an array, even for legacy rows that
-	 * stored NULL or invalid JSON.
-	 *
-	 * @return array
-	 */
-	public function get_extra_data(): array {
 		try {
-			if ( empty( $this->extra_data ) ) {
+			if ( empty( $this->result ) ) {
 				return array();
 			}
 
-			return LP_Helper::json_decode( $this->extra_data, true );
+			return LP_Helper::json_decode( $this->result, true );
 		} catch ( Throwable $e ) {
 			return array();
 		}
 	}
 
 	/**
-	 * Write one key into `extra_data`, preserving the others. Does not save().
+	 * Replace the entire result data with the provided array.
+	 *
+	 * @param array $data
+	 * @return void
+	 */
+	public function set_result( array $data = [] ) {
+		$this->result = (string) wp_json_encode( $data, JSON_UNESCAPED_UNICODE );
+	}
+
+	/**
+	 * Update a single result value by key, merging it into the existing decoded result.
 	 *
 	 * @param string $key
 	 * @param mixed  $value
 	 *
 	 * @return void
 	 */
-	public function set_extra_data( string $key, $value ) {
-		$data         = $this->get_extra_data();
+	public function set_result_with_key_value( string $key, $value ) {
+		$data         = $this->get_result();
 		$data[ $key ] = $value;
 
-		$this->extra_data = (string) wp_json_encode( $data, JSON_UNESCAPED_UNICODE );
-	}
-
-	/**
-	 * Map array, object data to UserItemResultModel.
-	 * Use for data get from database.
-	 *
-	 * @param array|object|mixed $data
-	 *
-	 * @return UserItemResultModel
-	 */
-	public function map_to_object( $data ): UserItemResultModel {
-		foreach ( $data as $key => $value ) {
-			if ( property_exists( $this, $key ) ) {
-				$this->{$key} = $value;
-			}
-		}
-
-		return $this;
+		$this->result = (string) wp_json_encode( $data, JSON_UNESCAPED_UNICODE );
 	}
 
 	/**
@@ -270,22 +171,6 @@ class UserItemResultModel extends UserItemModel {
 	}
 
 	/**
-	 * Find user item result by id.
-	 *
-	 * @param int $id
-	 *
-	 * @return UserItemResultModel|false|static
-	 */
-	public static function find( int $id ) {
-		$filter           = new UserItemResultsFilter();
-		$filter->id       = $id;
-		$filter->order_by = UserItemResultsFilter::COL_ID;
-		$filter->order    = UserItemResultsFilter::ORDER_DESC;
-
-		return static::get_user_item_result_model_from_db( $filter );
-	}
-
-	/**
 	 * Find User Item by user_id, item_id, item_type.
 	 *
 	 * @param int $user_id
@@ -296,8 +181,8 @@ class UserItemResultModel extends UserItemModel {
 	 * @param bool $check_cache
 	 *
 	 * @return false|UserItemModel|static
-	 * @since 4.2.7.3
-	 * @version 1.0.2
+	 * @since 4.5.0
+	 * @version 1.0.0
 	 */
 	public static function find_user_item(
 		int $user_id,
@@ -325,19 +210,60 @@ class UserItemResultModel extends UserItemModel {
 		// Check cache
 		if ( $check_cache ) {
 			$userItemModel = $lpUserItemCache->get_cache( $key_cache );
-			if ( $userItemModel instanceof UserItemModel ) {
+			if ( $userItemModel instanceof UserItemResultModel ) {
 				return new static( $userItemModel );
 			}
 		}
 
 		$userItemModel = static::get_user_item_result_model_from_db( $filter );
 		// Set cache
-		if ( $userItemModel instanceof UserItemModel ) {
+		if ( $userItemModel instanceof UserItemResultModel ) {
 			if ( ! $userItemModel->meta_data instanceof stdClass ) {
 				$userItemModel->meta_data = new stdClass();
 			}
 
 			$lpUserItemCache->set_cache( $key_cache, $userItemModel );
+		}
+
+		return $userItemModel;
+	}
+
+	/**
+	 * Find User Item by user_id, item_id, item_type.
+	 *
+	 * @param int $user_item_id
+	 * @param bool $check_cache
+	 *
+	 * @return false|UserItemModel|static
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public static function find_by_user_item_id(
+		int $user_item_id,
+		bool $check_cache = false
+	) {
+		$key_cache            = "userItemResultModel/find_user_item_id/{$user_item_id}";
+		$filter               = new UserItemResultsFilter();
+		$filter->user_item_id = $user_item_id;
+
+		$lp_cache = new LP_Cache();
+
+		// Check cache
+		if ( $check_cache ) {
+			$userItemModel = $lp_cache->get_cache( $key_cache );
+			if ( $userItemModel instanceof UserItemResultModel ) {
+				return new static( $userItemModel );
+			}
+		}
+
+		$userItemModel = static::get_user_item_result_model_from_db( $filter );
+		// Set cache
+		if ( $userItemModel instanceof UserItemResultModel ) {
+			if ( ! $userItemModel->meta_data instanceof stdClass ) {
+				$userItemModel->meta_data = new stdClass();
+			}
+
+			$lp_cache->set_cache( $key_cache, $userItemModel );
 		}
 
 		return $userItemModel;
@@ -356,17 +282,10 @@ class UserItemResultModel extends UserItemModel {
 		$id_new = 0;
 		$data   = get_object_vars( $this );
 
-		// Encode JSON fields if needed.
-		foreach ( [ 'result', 'extra_data' ] as $json_field ) {
-			if ( isset( $data[ $json_field ] ) && ( is_array( $data[ $json_field ] ) || is_object( $data[ $json_field ] ) ) ) {
-				$data[ $json_field ] = json_encode( $data[ $json_field ], JSON_UNESCAPED_UNICODE );
-			}
-		}
-
 		$args = [
 			'data'       => $data,
 			'filter'     => new UserItemResultsFilter(),
-			'table_name' => $db->tb_lp_question_answers,
+			'table_name' => $db->tb_lp_user_item_results,
 			'key_auto_increment' => UserItemResultsFilter::COL_ID, // For insert
 			'where_key' => UserItemResultsFilter::COL_ID, // For update
 		];
@@ -424,6 +343,15 @@ class UserItemResultModel extends UserItemModel {
 	 * @return void
 	 */
 	public function clean_caches() {
-		// Caching can be added here later if needed.
+		$lp_cache = new LP_Cache();
+
+		$key_cache_user_item = "userItemResultModel/find/{$this->user_id}/{$this->item_id}/{$this->item_type}";
+		$lp_cache->clear( $key_cache_user_item );
+
+		$key_cache_user_item_ref = "userItemResultModel/find/{$this->user_id}/{$this->item_id}/{$this->item_type}/{$this->ref_id}/{$this->ref_type}";
+		$lp_cache->clear( $key_cache_user_item_ref );
+
+		$key_cache_user_item_id = "userItemResultModel/find_user_item_id/{$this->get_user_item_id()}";
+		$lp_cache->clear( $key_cache_user_item_id );
 	}
 }

@@ -97,6 +97,8 @@ class LP_Upgrade_6 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'guest_key', "varchar(64) NOT NULL DEFAULT '' COMMENT 'Key to identify users not logged in.'", 'user_id' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'item_id', "bigint(20) unsigned NOT NULL DEFAULT '0'", 'guest_key' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'item_type', "varchar(45) NOT NULL DEFAULT ''", 'item_id' );
+			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'start_time', 'datetime NULL default NULL', 'item_type' );
+			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'end_time', 'datetime NULL default NULL', 'start_date' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'ref_id', "varchar(45) NOT NULL DEFAULT ''", 'item_type' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'ref_type', "varchar(45) NOT NULL DEFAULT ''", 'ref_id' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'status', "varchar(45) NOT NULL DEFAULT ''", 'ref_type' );

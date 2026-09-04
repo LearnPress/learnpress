@@ -28,6 +28,8 @@ class UserItemResultsFilter extends UserItemsFilter {
 		self::COL_GUEST_KEY,
 		self::COL_ITEM_ID,
 		self::COL_ITEM_TYPE,
+		self::COL_START_TIME,
+		self::COL_END_TIME,
 		self::COL_STATUS,
 		self::COL_GRADUATION,
 		self::COL_REF_ID,

@@ -18,6 +18,7 @@ use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LearnPress\Models\UserModel;
 use LP_Datetime;
+use LP_Helper;
 use LP_User_Item_Meta_DB;
 use LP_User_Item_Meta_Filter;
 use LP_User_Items_Cache;
@@ -87,6 +88,12 @@ class UserItemModel {
 	 * @var int
 	 */
 	public $parent_id = 0;
+	/**
+	 * Store more data type JSON
+	 *
+	 * @var string|null
+	 */
+	public $extra_data = null;
 	/**
 	 * @var null|PostModel|CoursePostModel
 	 */
@@ -597,6 +604,43 @@ class UserItemModel {
 		}
 
 		return (string) $value;
+	}
+
+	/**
+	 * Decoded `extra_data` blob. Always an array, even for legacy rows that
+	 * stored NULL or invalid JSON.
+	 *
+	 * @return array
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function get_extra_data(): array {
+		try {
+			if ( empty( $this->extra_data ) ) {
+				return array();
+			}
+
+			return LP_Helper::json_decode( $this->extra_data, true );
+		} catch ( Throwable $e ) {
+			return array();
+		}
+	}
+
+	/**
+	 * Write one key into `extra_data`, preserving the others. Does not save().
+	 *
+	 * @param string $key
+	 * @param mixed  $value
+	 *
+	 * @return void
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function set_extra_data( string $key, $value ) {
+		$data         = $this->get_extra_data();
+		$data[ $key ] = $value;
+
+		$this->extra_data = (string) wp_json_encode( $data, JSON_UNESCAPED_UNICODE );
 	}
 
 	/**
