@@ -8,7 +8,8 @@ use stdClass;
 
 class AdminThemesDataTemplate {
 
-	protected static $url_themes_data = 'https://learnpress.github.io/learnpress/themes-data.json';
+	// protected static $url_themes_data = 'https://learnpress.github.io/learnpress/themes-data.json';
+	protected static $url_themes_data = 'https://duyluan38ht.github.io/Test-data/themes-data.json';
 
 	public static function init(): void {
 		add_filter(
