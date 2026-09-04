@@ -302,7 +302,7 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 == Changelog ==
 
 = 4.4.6 (2026-09-02) =
-~ Fixed: security (Props @Wade Sparks).
+~ Fixed: security (Props @Yll Berisha).
 ~ Fixed: selected items from content bank "Edit curriculum".
 ~ Fixed: LP profile avatar save wrong path image.
 ~ Fixed: button AI.
