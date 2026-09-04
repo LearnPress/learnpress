@@ -113,6 +113,15 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	}
 
 	/**
+	 * Allow guests/unauthenticated users to query the list endpoint (filtered by slug).
+	 * Per-item visibility is still enforced by check_read_permission, which only
+	 * allows preview items for guests.
+	 */
+	public function get_items_permissions_check( $request ) {
+		return true;
+	}
+
+	/**
 	 * Checks if a course can be read.
 	 *
 	 * Correctly handles courses with the inherit status.
@@ -141,6 +150,18 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return false;
 		}
 
+		// Allow guests and unenrolled users to read items marked as preview.
+		$course_id = $this->get_course_by_item_id( $post_id );
+		if ( $course_id ) {
+			$course = learn_press_get_course( $course_id );
+			if ( $course ) {
+				$item = $course->get_item( $post_id );
+				if ( $item && $item->is_preview() ) {
+					return true;
+				}
+			}
+		}
+
 		$user_id = get_current_user_id();
 
 		if ( ! $user_id ) {
@@ -148,9 +169,6 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		$user = learn_press_get_user( $user_id );
-
-		// Get course ID by lesson ID assigned.
-		$course_id = $this->get_course_by_item_id( $post_id );
 
 		if ( empty( $course_id ) ) {
 			return false;
@@ -472,12 +490,16 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		$duration = $quiz->get_duration();
 
+		// Plugin's get_pagination() returns 0 when value <= 1 (treats 1 as "no pagination").
+		// Override here so admins can set 1 question per page for step-by-step quizzes.
+		$pagination_raw = absint( get_post_meta( $quiz->get_id(), '_lp_pagination', true ) );
+
 		$array = array(
 			'passing_grade'      => $quiz->get_passing_grade(),
 			'negative_marking'   => $quiz->get_negative_marking(),
 			'instant_check'      => $quiz->get_instant_check(),
 			'retake_count'       => (float) $quiz->get_retake_count(),
-			'questions_per_page' => $quiz->get_pagination(),
+			'questions_per_page' => $pagination_raw > 0 ? $pagination_raw : 0,
 			'page_numbers'       => get_post_meta( $quiz->get_id(), '_lp_pagination_numbers', true ) === 'yes',
 			'review_questions'   => $quiz->get_review_questions(),
 			'support_options'    => learn_press_get_question_support_answer_options(),
@@ -495,6 +517,74 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'show_correct_review' => $show_correct_review,
 				)
 			);
+
+			// Post-process FIB questions: the actual question content (with [fib] shortcodes)
+			// is stored in lp_question_answers.title — NOT post_content. Read it from there,
+			// strip `fill=` answers, replace shortcodes with {{FIB_<id>}} placeholders for
+			// the client. On reveal, attach `fib_answers` with per-blank correctness.
+			foreach ( $questions as &$q ) {
+				if ( ! isset( $q['type'] ) || $q['type'] !== 'fill_in_blanks' ) {
+					continue;
+				}
+
+				$question_obj = $q['object'] ?? null;
+				if ( ! $question_obj || ! method_exists( $question_obj, 'get_data' ) ) {
+					continue;
+				}
+
+				$question_id    = $q['id'] ?? 0;
+				$answer_options = $question_obj->get_data( 'answer_options' );
+				if ( empty( $answer_options ) || ! is_array( $answer_options ) ) {
+					continue;
+				}
+
+				$first_answer    = reset( $answer_options );
+				$raw_content     = $first_answer['title'] ?? '';
+				$answer_id       = $first_answer['question_answer_id'] ?? 0;
+				$user_answer     = $answered[ $question_id ]['answered'] ?? '';
+				$revealed        = $show_check || $status === 'completed';
+
+				$q['content'] = apply_filters(
+					'learn-press/question/fib/regex-content',
+					$raw_content,
+					$answer_id,
+					$revealed,
+					$user_answer
+				);
+
+				// FIB has no answer "options" in radio/checkbox sense; clear them.
+				$q['options'] = array();
+
+				if ( $revealed && method_exists( $question_obj, 'get_answer_data' ) ) {
+					$q['fib_answers'] = $question_obj->get_answer_data(
+						$raw_content,
+						$answer_id,
+						$user_answer
+					);
+				}
+			}
+			unset( $q );
+
+			// Plugin's `learn_press_rest_prepare_user_questions()` only emits `explanation`
+			// when the user explicitly triggered instant_check on a question (it reads
+			// `$args['status']` which is never set in the defaults). For completed quizzes
+			// fill in explanations here so clients can render them on the review screen.
+			if ( $status === 'completed' ) {
+				foreach ( $questions as &$q ) {
+					if ( ! empty( $q['explanation'] ) ) {
+						continue;
+					}
+					$question_obj = $q['object'] ?? null;
+					if ( $question_obj && method_exists( $question_obj, 'get_explanation' ) ) {
+						$explanation = $question_obj->get_explanation();
+						if ( $explanation ) {
+							$q['explanation']     = $explanation;
+							$q['has_explanation'] = true;
+						}
+					}
+				}
+				unset( $q );
+			}
 
 			$output['questions'] = $questions;
 		}

@@ -458,6 +458,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$params = $this->convert_params_query_courses( $params );
 
 			Courses::handle_params_for_query_courses( $filter, $params );
+
+			// Filter by slug (post_name).
+			if ( ! empty( $params['slug'] ) ) {
+				$filter->post_name = is_array( $params['slug'] ) ? reset( $params['slug'] ) : $params['slug'];
+			}
+
 			$key_cache             = 'api/' . md5( json_encode( $params ) );
 			$key_cache_total       = $key_cache . '_total';
 			$key_cache_total_pages = $key_cache . '_total_pages';
@@ -542,10 +548,14 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				continue;
 			}
 
-			$courseObjPrepare             = new stdClass();
-			$courseObjPrepare->id         = (int) $courseObj->ID ?? 0;
-			$courseObjPrepare->name       = html_entity_decode( $course->get_title() );
-			$courseObjPrepare->image      = $course->get_image_url();
+			$courseObjPrepare                 = new stdClass();
+			$courseObjPrepare->id             = (int) $courseObj->ID ?? 0;
+			$courseObjPrepare->name           = html_entity_decode( $course->get_title() );
+			$courseObjPrepare->slug           = $courseObj->post_name ?? get_post_field( 'post_name', $courseObj->ID );
+			$courseObjPrepare->permalink      = get_permalink( $courseObj->ID );
+			$courseObjPrepare->excerpt        = $courseObj->post_excerpt ?? '';
+			$courseObjPrepare->count_students = method_exists( $course, 'count_students' ) ? (int) $course->count_students() : 0;
+			$courseObjPrepare->image          = $course->get_image_url();
 			$author                       = $course->get_author_model();
 			$courseObjPrepare->instructor = ! empty( $author ) ? $this->get_author_info( $author ) : [];
 			$duration                     = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '' );
@@ -577,9 +587,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				learn_press_format_price( $course->get_sale_price(), true )
 			);
 			// When release Addon Course Review v4.1.3 a long time, we will remove this code.
-			$courseObjPrepare->rating                           = $this->get_course_rating( $courseObj->ID );
-			$courseObjPrepare->meta_data                        = new stdClass();
-			$courseObjPrepare->meta_data->_lp_passing_condition = $course->get_meta_value_by_key( CoursePostModel::META_KEY_PASSING_CONDITION );
+			$courseObjPrepare->rating = $this->get_course_rating( $courseObj->ID );
+			// All settings of the course metabox, same as the single course response.
+			$courseObjPrepare->meta_data = (object) $this->get_course_meta( $courseObj->ID );
 
 			// Add more fields
 			if ( ! empty( $params['learned'] ) ) {
@@ -729,6 +739,11 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	public function prepare_object_for_response( $object, $request ) {
 		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
 		$data    = $this->get_course_data( $object, $context, $request );
+
+		// Ensure sections are always included for single-item response, regardless of schema/context filtering.
+		if ( empty( $request['optimize'] ) && ! isset( $data['sections'] ) ) {
+			$data['sections'] = $this->get_all_items( $object );
+		}
 
 		$response = rest_ensure_response( $data );
 
@@ -994,8 +1009,39 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$output['name']        = $author->get_display_name();
 		$output['description'] = $author->get_description();
 		$output['social']      = $extra_info;
+		$output['statistic']   = $this->get_instructor_statistic( $author );
 
 		return $output;
+	}
+
+	/**
+	 * Count the courses and the students of an instructor.
+	 *
+	 * Only used for the single course response, it costs several queries and
+	 * "LP_Cache::cache_load_first" only keeps the result within the current request.
+	 *
+	 * @param UserModel $author
+	 *
+	 * @return array
+	 */
+	protected function get_instructor_statistic( UserModel $author ): array {
+		$statistic = $author->get_instructor_statistic();
+
+		// Keep the extra keys added by add-ons, only cast the ones of the core.
+		$numeric_keys = array(
+			'total_course',
+			'published_course',
+			'pending_course',
+			'total_student',
+			'student_completed',
+			'student_in_progress',
+		);
+
+		foreach ( $numeric_keys as $numeric_key ) {
+			$statistic[ $numeric_key ] = absint( $statistic[ $numeric_key ] ?? 0 );
+		}
+
+		return $statistic;
 	}
 
 	/**
@@ -1138,6 +1184,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 							$data_item[] = array(
 								'id'         => $item->get_id(),
 								'type'       => $item->get_item_type(),
+								'slug'       => $post->post_name,
 								'title'      => $post->post_title,
 								'preview'    => $item->is_preview(),
 								'duration'   => $item->get_duration()->to_timer( $format, true ),
@@ -1157,10 +1204,15 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return $output;
 	}
 
+	/**
+	 * Get all settings of the course metabox.
+	 *
+	 * @param int $id Course ID.
+	 *
+	 * @return array
+	 */
 	public function get_course_meta( $id ) {
-		$user_id = get_current_user_id();
-
-		if ( ! $user_id ) {
+		if ( empty( absint( $id ) ) ) {
 			return array();
 		}
 
@@ -1172,7 +1224,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
 		}
 
-		$metabox = new LP_Meta_Box_Course();
+		$metabox = LP_Meta_Box_Course::instance();
 
 		$output = array();
 
@@ -1527,6 +1579,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 								'context'     => array( 'view' ),
 								'readonly'    => true,
 							),
+							'statistic'   => array(
+								'description' => __( 'Total courses and students of the instructor.', 'learnpress' ),
+								'type'        => 'object',
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
 						),
 					),
 				),
@@ -1569,6 +1627,11 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 									),
 									'type'       => array(
 										'description' => __( 'Item Type.', 'learnpress' ),
+										'type'        => 'string',
+										'context'     => array( 'view', 'edit' ),
+									),
+									'slug'       => array(
+										'description' => __( 'Item slug.', 'learnpress' ),
 										'type'        => 'string',
 										'context'     => array( 'view', 'edit' ),
 									),
