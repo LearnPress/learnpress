@@ -37,30 +37,26 @@ class PaymentsSettingsTest extends BrainMonkeyTestCase {
 				}
 			}'
 		);
+		$GLOBALS['lp_test_active_section'] = 'refund';
+
 		eval(
-			'class LP_Test_Settings_Menu {
-				public static $section = "refund";
+			'namespace LearnPress\TemplateHooks\Admin;
+			class AdminSettingsPage {
+				public static function instance() {
+					return new self();
+				}
 				public function get_active_tab() {
 					return "payments";
 				}
 				public function get_active_section() {
-					return self::$section;
+					return $GLOBALS["lp_test_active_section"];
 				}
 				public function get_sections() {
 					return [];
 				}
 			}'
 		);
-		eval(
-			'class LP_Admin_Menu {
-				public static function instance() {
-					return new self();
-				}
-				public function get_menu_items() {
-					return [ "settings" => new LP_Test_Settings_Menu() ];
-				}
-			}'
-		);
+
 		eval(
 			'class LP_Gateways {
 				public static function instance() {
@@ -101,7 +97,7 @@ class PaymentsSettingsTest extends BrainMonkeyTestCase {
 			$settings->get_admin_field_name( 'enable_refund_requests' )
 		);
 
-		\LP_Test_Settings_Menu::$section = 'paypal';
+		$GLOBALS['lp_test_active_section'] = 'paypal';
 		$this->assertSame( 'learn_press_paypal[enable]', $settings->get_admin_field_name( '[enable]' ) );
 	}
 }

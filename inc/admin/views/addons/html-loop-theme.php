@@ -11,16 +11,18 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <li class="plugin-card-learnpress" id="learn-press-theme-<?php echo esc_attr( $theme['id'] ); ?>">
+	<?php  
+	$demo_url = isset( $theme['attributes'][4] ) ? $theme['attributes'][4]['value'] : $theme['url']; ?>
 	<div class="plugin-card-top">
 		<div class="image-thumbnail">
-			<a href="<?php echo esc_url_raw( $theme['url'] ); ?>">
+			<a href="<?php echo esc_url_raw( $demo_url ); ?>" target="_blank">
 				<img src="<?php echo esc_url_raw( $theme['previews']['landscape_preview']['landscape_url'] ); ?>" alt="<?php echo esc_attr( $theme['name'] ); ?>">
 			</a>
 		</div>
 
 		<div class="theme-content">
 			<h2 class="theme-title">
-				<a class="item-title" href="<?php echo esc_url_raw( $theme['url'] ); ?>">
+				<a class="item-title" href="<?php echo esc_url_raw( $demo_url ); ?>" target="_blank">
 					<?php echo wp_kses_post( $theme['name'] ); ?>
 				</a>
 			</h2>
@@ -41,9 +43,9 @@ defined( 'ABSPATH' ) || exit();
 				?>
 			</div>
 			<div class="theme-footer">
-				<?php $demo_url = isset( $theme['attributes'][4] ) ? $theme['attributes'][4]['value'] : $theme['url']; ?>
-				<a class="button button-primary" href="<?php echo esc_url_raw( $theme['url'] ); ?>"><?php echo esc_html__( 'Get it now', 'learnpress' ); ?></a>
-				<a class="button" href="<?php echo esc_url_raw( $demo_url ); ?>"><?php esc_html_e( 'View Demo', 'learnpress' ); ?></a>
+				
+				<!-- <a class="button button-primary" href="<?php echo esc_url_raw( $theme['url'] ); ?>"><?php echo esc_html__( 'Get it now', 'learnpress' ); ?></a> -->
+				<a class="button" href="<?php echo esc_url_raw( $demo_url ); ?>" target="_blank"><?php esc_html_e( 'View Demo', 'learnpress' ); ?></a>
 				<div class="theme-rating">
 					<span>
 						<?php

@@ -22,41 +22,6 @@ class LP_Setup_Wizard {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'setup_wizard' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
-
-		$actions = array(
-			'setup-create-pages' => 'create_pages',
-			'get-price-format'   => 'get_price_format',
-		);
-
-		foreach ( $actions as $action => $callback ) {
-			LP_Request::register_ajax( $action, array( $this, $callback ) );
-		}
-	}
-
-	/**
-	 * Create static pages action
-	 */
-	public function create_pages() {
-		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce', 'setup-create-pages' ) ) ) {
-			die();
-		}
-
-		$settings = LP_Request::get( 'settings' );
-		foreach ( $settings['pages'] as $page => $page_id ) {
-			if ( empty( $page_id ) ) {
-				$_REQUEST['settings']['pages'][ $page ] = $this->create_page( $page );
-			}
-		}
-
-		LP_Request::$ajax_shutdown = false;
-	}
-
-	/**
-	 * Get sample format price
-	 */
-	public static function get_price_format() {
-		self::instance()->save();
-		die();
 	}
 
 	/**
@@ -97,9 +62,11 @@ class LP_Setup_Wizard {
 	 * Add an empty menu item for validating page.
 	 */
 	public function admin_menu() {
-		if ( 'lp-setup' !== LP_Request::get_string( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
+		if ( 'lp-setup' !== LP_Request::get_param( 'page' )
+			|| ! current_user_can( 'install_plugins' ) ) {
 			return;
 		}
+
 		add_dashboard_page( '', '', 'manage_options', 'lp-setup', '' );
 	}
 
@@ -107,11 +74,11 @@ class LP_Setup_Wizard {
 	 * Display setup page a ignore anything else in the rest
 	 */
 	public function setup_wizard() {
-		if ( 'lp-setup' !== LP_Request::get_string( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
+		if ( 'lp-setup' !== LP_Request::get_param( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
 			return;
 		}
 
-		if ( 'finish' === LP_Request::get_string( 'step' ) ) {
+		if ( 'finish' === LP_Request::get_param( 'step' ) ) {
 			update_option( 'learn_press_setup_wizard_completed', 'yes' );
 		}
 
@@ -150,7 +117,6 @@ class LP_Setup_Wizard {
 		//wp_enqueue_script( 'lp-select2', $assets->url( 'src/js/vendor/select2.full.min.js' ) );
 		wp_enqueue_script( 'lp-utils', $assets->url( 'js/dist/utils.js' ) );
 		wp_enqueue_script( 'lp-admin', $assets->url( 'js/dist/admin/admin.js' ), uniqid(), true );
-		//wp_enqueue_script( 'drop-down-page', $assets->url( 'src/js/admin/share/dropdown-pages.js' ), uniqid(), true );
 		wp_register_script(
 			'lp-setup',
 			$assets->url( 'js/dist/admin/pages/setup.js' ),
@@ -174,28 +140,48 @@ class LP_Setup_Wizard {
 	 * @TODO tungnx - need review
 	 */
 	public function save() {
-		$step = LP_Request::get_string( 'lp-setup-step' );
+		// Check is request post
+		$posts = $_POST;
+		if ( empty( $posts ) ) {
+			return;
+		}
 
-		if ( ! wp_verify_nonce( LP_Request::get_string( 'lp-setup-nonce' ), 'lp-setup-step-' . $step ) ) {
+		$step = LP_Request::get_param( 'lp-setup-step' );
+
+		if ( ! wp_verify_nonce( LP_Request::get_param( 'lp-setup-nonce' ), 'lp-setup-step-' . $step ) ) {
 			return;
 		}
 
 		$postdata = LP_Request::get_param( 'settings' );
 		$steps    = array( 'payment', 'pages', 'currency', 'emails' );
 
-		if ( ( 'yes' !== LP_Request::get_param( 'skip' ) ) && in_array( $step, $steps ) ) {
+		if ( $this->get_current_step() === 'pages' ) {
+			$key_pages = [
+				'learn_press_courses_page_id',
+				'learn_press_instructors_page_id',
+				'learn_press_single_instructor_page_id',
+				'learn_press_profile_page_id',
+				'learn_press_checkout_page_id',
+				'learn_press_become_a_teacher_page_id',
+				'learn_press_term_conditions_page_id',
+				'learn_press_logout_redirect_page_id',
+			];
+			foreach ( $key_pages as $key ) {
+				if ( isset( $_POST[ $key ] ) ) {
+					update_option( $key, sanitize_text_field( $_POST[ $key ] ) );
+				}
+			}
+		}
+
+		if ( ( 'yes' !== LP_Request::get_param( 'skip' ) )
+			&& ! empty( $postdata )
+			&& in_array( $step, $steps ) ) {
 			if ( array_key_exists( 'paypal', $postdata ) ) {
 				update_option( 'learn_press_paypal', $postdata['paypal'] );
 			}
 
 			if ( array_key_exists( 'currency', $postdata ) ) {
 				foreach ( $postdata['currency'] as $k => $v ) {
-					update_option( 'learn_press_' . $k, $v );
-				}
-			}
-
-			if ( array_key_exists( 'pages', $postdata ) ) {
-				foreach ( $postdata['pages'] as $k => $v ) {
 					update_option( 'learn_press_' . $k, $v );
 				}
 			}
@@ -211,12 +197,14 @@ class LP_Setup_Wizard {
 					}
 				}
 			}
-
-			$lp_settings_cache = new LP_Settings_Cache( true );
-			$lp_settings_cache->clean_lp_settings();
 		}
 
+		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_settings_cache->clean_lp_settings();
+
 		do_action( 'learn-press/setup-wizard/update-settings', $postdata, $step );
+
+		wp_send_json_success();
 	}
 
 	/**

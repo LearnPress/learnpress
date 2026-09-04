@@ -7,6 +7,8 @@
  * @version 4.0.0
  */
 
+use LearnPress\TemplateHooks\Admin\AdminSettingsPage;
+
 defined( 'ABSPATH' ) || exit;
 
 require_once 'email-groups/class-lp-settings-emails-group.php';
@@ -176,14 +178,9 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 * @version 4.0.0
 	 */
 	public function admin_page_settings( $section = null, $tab = null ) {
-		$sections = array();
-		$items    = LP_Admin_Menu::instance()->get_menu_items();
-
-		if ( ! empty( $items['settings'] ) ) {
-			$tab      = $items['settings']->get_active_tab();
-			$section  = $items['settings']->get_active_section();
-			$sections = $items['settings']->get_sections();
-		}
+		$tab          = AdminSettingsPage::instance()->get_active_tab();
+		$section      = AdminSettingsPage::instance()->get_active_section();
+		$sections     = AdminSettingsPage::instance()->get_sections();
 		$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
 
 		if ( $section_data instanceof LP_Email ) {

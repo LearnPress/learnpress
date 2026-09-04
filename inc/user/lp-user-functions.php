@@ -777,7 +777,7 @@ function learn_press_update_user_profile_change_password() {
 	try {
 		$user = wp_get_current_user();
 		if ( ! $user ) {
-			throw new Exception( 'error_lp_profile_update_pass', 'The user is invalid' );
+			throw new Exception( __( 'The user is invalid', 'learnpress' ) );
 		}
 
 		$old_pass = LP_Request::get_param( 'pass0', '', 'text', 'post' );

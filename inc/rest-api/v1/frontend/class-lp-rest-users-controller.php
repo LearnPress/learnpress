@@ -129,7 +129,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @editor tungnx
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 * @sicne 4.0.0
 	 * @return WP_REST_Response
 	 */
@@ -154,12 +154,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			$courseModel = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
-				throw new Exception( 'The course is invalid', 'learnrpess' );
+				throw new Exception( esc_html__( 'The course is invalid', 'learnpress' ) );
 			}
 
 			$quizPostModel = $courseModel->get_item_model( $item_id, LP_QUIZ_CPT );
 			if ( ! $quizPostModel ) {
-				throw new Exception( 'The quiz is invalid', 'learnrpess' );
+				throw new Exception( esc_html__( 'The quiz is invalid', 'learnpress' ) );
 			}
 
 			$quiz->set_course( $course );
@@ -281,18 +281,18 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			$courseModel = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
-				throw new Exception( 'The course is invalid', 'learnrpess' );
+				throw new Exception( esc_html__( 'The course is invalid', 'learnpress' ) );
 			}
 
 			$quizPostModel = $courseModel->get_item_model( $item_id, LP_QUIZ_CPT );
 			if ( ! $quizPostModel ) {
-				throw new Exception( 'The quiz is invalid', 'learnrpess' );
+				throw new Exception( esc_html__( 'The quiz is invalid', 'learnpress' ) );
 			}
 
 			// Use for Review Quiz.
 			$quiz = learn_press_get_quiz( $item_id );
 			if ( ! $quiz ) {
-				throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The quiz is invalid!', 'learnpress' ) );
 			}
 			$quiz->set_course( $course );
 
@@ -399,23 +399,23 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			$courseModel = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
-				throw new Exception( 'The course is invalid', 'learnrpess' );
+				throw new Exception( esc_html__( 'The course is invalid', 'learnpress' ) );
 			}
 
 			$quizPostModel = $courseModel->get_item_model( $quiz_id, LP_QUIZ_CPT );
 			if ( ! $quizPostModel ) {
-				throw new Exception( 'The quiz is invalid', 'learnrpess' );
+				throw new Exception( esc_html__( 'The quiz is invalid', 'learnpress' ) );
 			}
 
 			// Check question has in quiz
 			$quizQuestionModel = QuizQuestionModel::find( $quiz_id, $question_id );
 			if ( ! $quizQuestionModel ) {
-				throw new Exception( 'The quiz question is invalid', 'learnrpess' );
+				throw new Exception( esc_html__( 'The quiz question is invalid', 'learnpress' ) );
 			}
 
 			$questionModel = QuestionPostModel::find( $question_id, true );
 			if ( ! $questionModel ) {
-				throw new Exception( 'The question is invalid', 'learnrpess' );
+				throw new Exception( esc_html__( 'The question is invalid', 'learnpress' ) );
 			}
 
 			// For case user not login
@@ -425,17 +425,17 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			} else { // For case user logged in
 				$user = learn_press_get_current_user();
 				if ( $user->is_guest() ) {
-					throw new Exception( 'The user is invalid', 'learnrpess' );
+					throw new Exception( esc_html__( 'You must be logged in to check answer.', 'learnpress' ) );
 				}
 
 				$user_course = $user->get_course_data( $course_id );
 				if ( ! $user_course ) {
-					throw new Exception( 'User\'s course no data!', 'learnrpess' );
+					throw new Exception( esc_html__( 'User\'s course no data!', 'learnpress' ) );
 				}
 
 				$user_quiz = $user_course->get_item( $quiz_id );
 				if ( ! $user_quiz ) {
-					throw new Exception( 'User\'s quiz no data!', 'learnrpess' );
+					throw new Exception( esc_html__( 'User\'s quiz no data!', 'learnpress' ) );
 				}
 
 				$checked = $user_quiz->instant_check_question( $question_id, $answered );

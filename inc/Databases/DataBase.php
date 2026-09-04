@@ -199,7 +199,7 @@ class DataBase {
 	 */
 	public function add_col_table( string $name_table, string $name_col, string $type, string $after_col = '' ) {
 		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			throw new Exception( 'You don\'t have permission' );
+			return false;
 		}
 
 		$query_add = '';
@@ -790,7 +790,6 @@ class DataBase {
 		$filter             = $args['filter'] ?? null;
 		$table_name         = $args['table_name'] ?? '';
 		$key_auto_increment = $args['key_auto_increment'] ?? '';
-		$key_auto_increment = sanitize_key( $key_auto_increment );
 
 		if ( empty( $data ) || ! is_array( $data ) ) {
 			throw new Exception( __( 'Data must be an array!', 'learnpress' ) . ' | ' . __FUNCTION__ );

@@ -52,7 +52,7 @@ class GutenbergHandleMain {
 				}
 
 				$wp_screen = get_current_screen();
-				if ( $wp_screen->id === 'edit-lp_order' ) {
+				if ( ! empty( $wp_screen->id ) && $wp_screen->id === 'edit-lp_order' ) {
 					$flag = false;
 				}
 
@@ -142,7 +142,7 @@ class GutenbergHandleMain {
 	 *
 	 * @return array
 	 * @since 4.2.2.3
-	 * @version 1.0.6
+	 * @version 1.0.7
 	 */
 	public function set_blocks_template( array $query_result, array $query, $template_type ): array {
 		if ( $template_type === 'wp_template_part' ) { // Template not Template part
@@ -175,8 +175,7 @@ class GutenbergHandleMain {
 				 * Slug 'single-lp_course_item' is for save content of block template.
 				 */
 				$singleCourseItemBlockTemplate->slug = 'single-lp_course';
-				$query_result[]                      = $singleCourseItemBlockTemplate;
-				return $query_result;
+				return [ $singleCourseItemBlockTemplate ];
 			}
 		}
 		// End check course item.
@@ -197,8 +196,7 @@ class GutenbergHandleMain {
 					}
 
 					$singleCourseOfflineBlockTemplate->slug = 'single-lp_course';
-					$query_result[]                         = $singleCourseOfflineBlockTemplate;
-					return $query_result;
+					return [ $singleCourseOfflineBlockTemplate ];
 				}
 			}
 		}

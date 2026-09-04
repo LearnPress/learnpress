@@ -2,6 +2,9 @@
 /**
  * Class LP_Abstract_Settings
  */
+
+use LearnPress\TemplateHooks\Admin\AdminSettingsPage;
+
 abstract class LP_Abstract_Settings {
 
 	/**
@@ -36,13 +39,8 @@ abstract class LP_Abstract_Settings {
 	 * @return mixed
 	 */
 	public function get_admin_field_name( $name ) {
-		$items   = LP_Admin_Menu::instance()->get_menu_items();
-		$section = '';
-
-		if ( ! empty( $items['settings'] ) ) {
-			$tab     = $items['settings']->get_active_tab();
-			$section = $items['settings']->get_active_section();
-		}
+		$tab     = AdminSettingsPage::instance()->get_active_tab();
+		$section = AdminSettingsPage::instance()->get_active_section();
 
 		if ( $tab === 'payments' && $section !== 'general' && ! empty( $name ) ) {
 			if ( strpos( $name, '[' ) === 0 ) {

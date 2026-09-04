@@ -41,7 +41,7 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 		<div class="lp-meta-box lp-meta-box--lesson">
 			<div class="lp-meta-box__inner">
 				<?php
-				do_action( 'learnpress/lesson-settings/before' );
+				do_action( 'learnpress/lesson-settings/before', $post );
 				// Check if add_filter to old version.
 				$is_old = false;
 
@@ -72,7 +72,7 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 					lp_meta_box_output( $this->metabox( $post->ID ) );
 				}
 
-				do_action( 'learnpress/lesson-settings/after' );
+				do_action( 'learnpress/lesson-settings/after', $post );
 				?>
 			</div>
 		</div>

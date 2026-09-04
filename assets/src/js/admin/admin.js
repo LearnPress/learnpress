@@ -1,5 +1,6 @@
 import { initElsTomSelect, searchUserOnListPost } from './init-tom-select.js';
 import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
+import { DropdownPages } from './share/dropdown-pages.js';
 
 ( function( $ ) {
 	/**
@@ -145,7 +146,8 @@ import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
 	const onReady = function onReady() {
 		lpMetaboxFileInput();
 		//updateDb();
-		$( '.learn-press-dropdown-pages' ).LP( 'DropdownPages' );
+		const dropdownPages = new DropdownPages();
+		dropdownPages.init();
 		//$( '.learn-press-advertisement-slider' ).LP( 'Advertisement', 'a', 's' ).appendTo( $( '#wpbody-content' ) );
 		//$( '.learn-press-toggle-item-preview' ).on( 'change', updateItemPreview );
 		$( '.learn-press-tip' ).LP( 'QuickTip' ); //$('.learn-press-tabs').LP('AdminTab');

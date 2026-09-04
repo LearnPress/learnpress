@@ -7,6 +7,12 @@
  * @since 4.3.3
  */
 
+.lp-enrolled-students {
+	h1.wp-heading-inline {
+		margin-bottom: 24px;
+	}
+}
+
 // ──────────────────────────────────────────
 // Table wrapper (card)
 // ──────────────────────────────────────────
@@ -31,133 +37,6 @@
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
-		}
-	}
-}
-
-// ──────────────────────────────────────────
-// Toolbar (filter / search)
-// ──────────────────────────────────────────
-.lp-enrolled-students-table-toolbar {
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
-	padding: 20px 20px;
-	border: 1px solid var(--lp-border-color, #E2E0DB);
-	border-radius: 5px;
-	background: var(--lp-white-grey, #F7F7FB);
-
-	&__row {
-		display: grid;
-		gap: 14px;
-	}
-
-	&__row--course {
-		grid-template-columns: minmax(0, 1fr);
-	}
-
-	&__row--filters {
-		grid-template-columns: minmax(0, 1fr) minmax(145px, 200px) minmax(145px, 150px) auto;
-		align-items: end;
-		max-width: 1000px;
-	}
-
-	&__field {
-		display: flex;
-		flex-direction: column;
-		//gap: 8px;
-		min-width: 0;
-
-		input {
-			border: 1px solid var(--lp-border-color, #E2E0DB);
-		}
-	}
-
-	&__label {
-		color: #3f4a5c;
-		font-size: 14px;
-		font-weight: 600;
-		line-height: 1.3;
-		margin-bottom: 10px;
-		text-align: left;
-	}
-
-	&__input {
-		width: 100%;
-		height: 38px;
-		padding: 0 12px;
-		border: 1px solid #c6cfdb;
-		border-radius: 7px;
-		color: #2f3a4a;
-		background: #fff;
-		font-size: 14px;
-		line-height: 1.4;
-		box-shadow: none;
-
-		&:focus {
-			border-color: #2f75ff;
-			outline: none;
-			box-shadow: 0 0 0 1px #2f75ff;
-		}
-	}
-
-	&__actions {
-		display: flex;
-		align-items: flex-end;
-		gap: 8px;
-	}
-
-	/*&__actions .button {
-		min-width: 95px;
-		height: 36px;
-		padding: 0 18px;
-		border-radius: 7px;
-		font-size: 14px;
-		font-weight: 600;
-		line-height: 34px;
-		border-color: #b9c3d2;
-		color: #46546c;
-		background: #fff;
-	}*/
-
-	&__actions .button:hover,
-	&__actions .button:focus {
-		border-color: #99a7bc;
-		color: #2f3a4a;
-		background: #f4f7fb;
-	}
-
-	@media (max-width: 1024px) {
-		&__row--filters {
-			grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr) minmax(150px, 1fr);
-		}
-
-		&__actions {
-			grid-column: 1 / -1;
-		}
-	}
-
-	@media (max-width: 782px) {
-		&__row--filters {
-			grid-template-columns: 1fr 1fr;
-		}
-
-		&__field--student {
-			grid-column: 1 / -1;
-		}
-
-		&__actions {
-			grid-column: 1 / -1;
-		}
-	}
-
-	@media (max-width: 640px) {
-		&__row--filters {
-			grid-template-columns: 1fr;
-		}
-
-		&__actions .button {
-			width: 100%;
 		}
 	}
 }
@@ -479,6 +358,10 @@
 #lp-modal-enrolled-wrap {
 	position: relative;
 
+	.lp-table-wrap {
+		max-height: 60vh;
+	}
+
 	/*tbody {
 		display: block;
 		max-height: 400px;
@@ -497,21 +380,6 @@
 
 	button {
 		width: 100%;
-	}
-}
-
-// For Backend
-.lp-students-enrolled-layout {
-	&.learnpress_page_learn-press-students-enrolled {
-		.lp-enrolled-students-table-toolbar {
-			background: white;
-		}
-
-		.lp-list-table {
-			tbody {
-				background: white;
-			}
-		}
 	}
 }
 

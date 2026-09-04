@@ -90,7 +90,7 @@ class AdminEditSettingTemplate {
 
 			if ( isset( $tab['content'] ) ) {
 				ob_start();
-				do_action( 'learnpress/course-settings/before-' . $key );
+				do_action( 'learnpress/course-settings/before-' . $key, $post_id );
 
 				foreach ( $tab['content'] as $meta_key => $object ) {
 					if ( is_a( $object, LP_Meta_Box_Field::class ) ) {
@@ -102,7 +102,7 @@ class AdminEditSettingTemplate {
 					}
 				}
 
-				do_action( 'learnpress/course-settings/after-' . $key );
+				do_action( 'learnpress/course-settings/after-' . $key, $post_id );
 				$panel_html = ob_get_clean();
 
 				$panels .= sprintf(

@@ -12,7 +12,9 @@
  * Prevent loading this file directly
  */
 
+use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -499,7 +501,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
 			$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
 			$order_items                 = $order->get_items();
-			$html = '';
+			$html                        = '';
 			if ( $order_items ) {
 				foreach ( $order_items as $item ) {
 					ob_start();
@@ -618,59 +620,53 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @note tungnnx checked use
 		 */
 		public static function create_page() {
-			$response = array(
-				'code'    => 0,
-				'message' => '',
-			);
+			$response = new Response();
 
-			/**
-			 * Check valid
-			 *
-			 * 1. Capability - user can edit pages (add\edit\delete)
-			 * 2. Check nonce return true
-			 * 3. param post page_name not empty
-			 *
-			 * @since  3.2.6.8
-			 * @author tungnx
-			 */
-			if ( ! current_user_can( 'edit_pages' ) || empty( $_POST['page_name'] ) ) {
-				$response['message'] = 'Request invalid';
-				learn_press_send_json( $response );
-			}
+			try {
+				/**
+				 * Check valid
+				 *
+				 * 1. Capability - user can edit pages (add\edit\delete)
+				 * 2. Check nonce return true
+				 * 3. param post page_name not empty
+				 *
+				 * @since  3.2.6.8
+				 */
+				if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
+					|| empty( $_POST['page_name'] ) ) {
+					throw new Exception( 'Request invalid' );
+				}
 
-			// Check nonce
-			$nonce = LP_Request::get_param( 'nonce' );
-			if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-				$response['message'] = 'Request invalid';
-				learn_press_send_json( $response );
-			}
+				// Check nonce
+				$nonce = LP_Request::get_param( 'nonce' );
+				if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+					throw new Exception( 'Request invalid' );
+				}
 
-			$page_name  = LP_Helper::sanitize_params_submitted( $_POST['page_name'] );
-			$field_name = LP_Request::get_param( 'field_name' );
+				$page_name  = LP_Helper::sanitize_params_submitted( $_POST['page_name'] );
+				$field_name = LP_Request::get_param( 'field_name' );
 
-			if ( $page_name ) {
+				if ( ! $page_name ) {
+					throw new Exception( __( 'Empty page name!', 'learnpress' ) );
+				}
+
 				$data_create_page = array(
 					'post_title' => $page_name,
 				);
 
 				$page_id = LP_Helper::create_page( $data_create_page, $field_name );
 
-				if ( $page_id ) {
-					$response['code']    = 1;
-					$response['message'] = 'create page success';
-					$response['page']    = get_post( $page_id );
-					$html                = learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
-					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
-					$response['positions'] = $matches[1];
-					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
-					$response['html']      .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
-				} else {
-					$response['error'] = __( 'Error! Page creation failed. Please try again.', 'learnpress' );
+				if ( ! $page_id ) {
+					throw new Exception( __( 'Error! Page creation failed. Please try again.', 'learnpress' ) );
 				}
-			} else {
-				$response['error'] = __( 'Empty page name!', 'learnpress' );
+
+				$response->status  = Response::STATUS_SUCCESS;
+				$response->message = 'create page success';
+			} catch ( Exception $e ) {
+				$response->message = $e->getMessage();
 			}
-			learn_press_send_json( $response );
+
+			wp_send_json( $response );
 		}
 
 		/**
@@ -681,9 +677,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			?>
 
 			<a href="<?php echo get_edit_post_link( $page_id ); ?>"
-			   target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+				target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
 			<a href="<?php echo get_permalink( $page_id ); ?>"
-			   target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+				target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 
 			<?php
 			die();

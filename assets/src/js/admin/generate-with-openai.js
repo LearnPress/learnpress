@@ -57,7 +57,6 @@ export class GenerateWithOpenai {
 				el.insertAdjacentHTML(
 					'beforeend',
 					`<button type="button"
-					style="padding: 5px 10px; justify-content: center;"
 					class="lp-btn-generate-with-ai lp-btn-ai-style"
 					data-template="#lp-tmpl-edit-description-ai">
 					<i class="lp-ico-ai"></i><span>Generate description with AI</span>
@@ -69,7 +68,6 @@ export class GenerateWithOpenai {
 				elInside.insertAdjacentHTML(
 					'afterend',
 					`<button type="button"
-					style="padding: 5px 10px; justify-content: center;"
 					class="lp-btn-generate-with-ai lp-btn-ai-style"
 					data-template="#lp-tmpl-edit-image-ai">
 					<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>
@@ -102,7 +100,6 @@ export class GenerateWithOpenai {
 					el.insertAdjacentHTML(
 						'beforebegin',
 						`<button type="button"
-						style="padding: 5px 10px; justify-content: center;"
 						class="lp-btn-generate-with-ai"
 						data-template="#lp-tmpl-edit-description-ai">
 						<i class="lp-ico-ai"></i><span>Generate description with AI</span>
@@ -115,7 +112,6 @@ export class GenerateWithOpenai {
 					el.insertAdjacentHTML(
 						'afterend',
 						`<button type="button"
-						style="padding: 5px 10px; justify-content: center;"
 						class="lp-btn-generate-with-ai"
 						data-template="#lp-tmpl-edit-image-ai">
 						<i class="lp-ico-ai"></i><span>${ lpData.i18n.generate_with_ai }</span>

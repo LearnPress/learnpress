@@ -37,6 +37,9 @@
 @import "../popupSweetAlert";
 @import "enrolled-students-table";
 @import "../table";
+@import "../formFilter";
+@import "../fullScreen";
+@import "../toggleEnable";
 
 
 .button {
@@ -200,8 +203,6 @@
         outline: none;
         color: #72777c;
         background: 0 0;
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
         box-shadow: none;
         cursor: pointer;
 
@@ -377,10 +378,6 @@
             width: 0;
             height: 5px;
             background: #5bc4f9;
-            -webkit-transition: width 0.25s;
-            -moz-transition: width 0.25s;
-            -ms-transition: width 0.25s;
-            -o-transition: width 0.25s;
             transition: width 0.25s;
 
             &::before {

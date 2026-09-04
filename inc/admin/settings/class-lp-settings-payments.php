@@ -8,6 +8,7 @@
  */
 
 use LearnPress\Helpers\Config;
+use LearnPress\TemplateHooks\Admin\AdminSettingsPage;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -148,14 +149,8 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	 * @return mixed
 	 */
 	public function get_admin_field_name( $name ) {
-		$items   = LP_Admin_Menu::instance()->get_menu_items();
-		$tab     = '';
-		$section = '';
-
-		if ( ! empty( $items['settings'] ) ) {
-			$tab     = $items['settings']->get_active_tab();
-			$section = $items['settings']->get_active_section();
-		}
+		$tab     = AdminSettingsPage::instance()->get_active_tab();
+		$section = AdminSettingsPage::instance()->get_active_section();
 
 		if ( 'payments' === $tab && 'refund' === $section ) {
 			if ( empty( $name ) ) {
@@ -169,15 +164,9 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	}
 
 	public function admin_page_settings( $section = null, $tab = null ) {
-		$sections = array();
-		$items    = LP_Admin_Menu::instance()->get_menu_items();
-
-		if ( ! empty( $items['settings'] ) ) {
-			$tab      = $items['settings']->get_active_tab();
-			$section  = $items['settings']->get_active_section();
-			$sections = $items['settings']->get_sections();
-		}
-
+		$tab          = AdminSettingsPage::instance()->get_active_tab();
+		$section      = AdminSettingsPage::instance()->get_active_section();
+		$sections     = AdminSettingsPage::instance()->get_sections();
 		$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
 
 		if ( $section_data instanceof LP_Abstract_Settings ) {

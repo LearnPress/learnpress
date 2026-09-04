@@ -1346,7 +1346,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			if ( is_wp_error( $response ) ) {
-				throw new Exception( $response->get_error_message(), $response->get_error_code() );
+				throw new Exception( $response->get_error_message() );
 			}
 
 			$body          = wp_remote_retrieve_body( $response );
@@ -1712,7 +1712,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			if ( is_wp_error( $response ) ) {
-				throw new Exception( $response->get_error_message(), $response->get_error_code() );
+				throw new Exception( $response->get_error_message() );
 			}
 
 			$verify_result = LP_Helper::json_decode( wp_remote_retrieve_body( $response ), true );

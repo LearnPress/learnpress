@@ -1,36 +1,40 @@
 <?php
 
+namespace LearnPress\TemplateHooks\Admin;
+
+use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 
+defined( 'ABSPATH' ) || exit();
+
 /**
- * Class LP_Submenu_Addons
+ * Admin Add-ons page renderer.
  *
- * @since 3.0.1
- * @version 1.0.1
+ * @since 4.2.8
  */
-class LP_Submenu_Addons extends LP_Abstract_Submenu {
+class AdminAddonsPage {
+	use Singleton;
 
 	/**
-	 * LP_Submenu_Addons constructor.
+	 * Singleton initialization hook.
+	 *
+	 * @return void
 	 */
-	public function __construct() {
-		$this->id         = 'learn-press-addons';
-		$this->menu_title = __( 'Add-ons', 'learnpress' ) . '<span class="lp-notify has-addon-update"></span>';
-		$this->page_title = __( 'LearnPress Add-ons', 'learnpress' );
-		$this->priority   = 20;
-		$this->callback   = [ $this, 'display' ];
+	public function init(): void {}
 
-		parent::__construct();
-	}
-
-	public function display() {
+	/**
+	 * Render the LearnPress Add-ons page.
+	 *
+	 * @return void
+	 */
+	public function html_page() {
 		ob_start();
 		lp_skeleton_animation_html( 20 );
 		$html_loading = ob_get_clean();
 
 		$section = apply_filters(
 			'learn-press/admin/manager-addons/section',
-			[
+			array(
 				'label'      => sprintf(
 					'<h1>%s</h1>',
 					__( 'LearnPress Add-ons', 'learnpress' )
@@ -51,11 +55,9 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 					)
 				),
 				'list'       => sprintf( '<div class="lp-addons-page">%s</div>', $html_loading ),
-			]
+			)
 		);
 
 		echo Template::combine_components( $section );
 	}
 }
-
-return new LP_Submenu_Addons();

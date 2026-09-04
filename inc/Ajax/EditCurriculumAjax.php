@@ -213,7 +213,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function addItemToSection call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function create_item_add_to_section() {
 		$response = new LP_REST_Response();
@@ -234,6 +234,9 @@ class EditCurriculumAjax extends AbstractAjax {
 			}
 
 			$courseSectionItemModel = $courseSectionModel->create_item_and_add( $data );
+
+			// Reload course model to get updated sections
+			$courseModel = CourseModel::find( $course_id, true );
 
 			$response->data->section_item = $courseSectionItemModel;
 
@@ -265,7 +268,7 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function addItemsSelectedToSection call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function add_items_to_section() {
 		$response = new LP_REST_Response();
@@ -289,6 +292,9 @@ class EditCurriculumAjax extends AbstractAjax {
 			if ( empty( $courseSectionItems ) ) {
 				throw new Exception( __( 'No items were added to the section', 'learnpress' ) );
 			}
+
+			// Reload course model to get updated sections
+			$courseModel = CourseModel::find( $course_id, true );
 
 			// Set context_data for Course Builder context
 			$is_course_builder                                    = ! empty( $data['is_course_builder'] );

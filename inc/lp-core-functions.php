@@ -1955,8 +1955,9 @@ function learn_press_static_page_ids() {
  *
  * @return int
  * @since 3.0.0
+ * @deprecated 4.4.5
  */
-function learn_press_sort_list_by_priority_callback( $a, $b ) {
+/*function learn_press_sort_list_by_priority_callback( $a, $b ) {
 	$a_priority = null;
 	$b_priority = null;
 
@@ -1985,7 +1986,7 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
 	}
 
 	return ( $a_priority < $b_priority ) ? - 1 : 1;
-}
+}*/
 
 /**
  * Localize date with custom format.

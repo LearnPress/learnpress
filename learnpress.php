@@ -4,7 +4,7 @@
  * Plugin URI: https://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.4.4
+ * Version: 4.4.6
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -19,6 +19,7 @@ use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderEditCourseTemplate;
 use LearnPress\Ajax\AI\OpenAiAjax;
 use LearnPress\Ajax\BuilderDashboardAjax;
+use LearnPress\Ajax\CourseToolsAjax;
 use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Ajax\EditQuestionAjax;
@@ -26,6 +27,7 @@ use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\Order\ExportOrderCSVAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
+use LearnPress\Ajax\SampleDataAJAX;
 use LearnPress\Ajax\AI\AIAssistantAjax;
 use LearnPress\Ajax\MCP\McpApiKeysAjax;
 use LearnPress\Ajax\Webhook\WebhooksAjax;
@@ -51,6 +53,7 @@ use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
 use LearnPress\TemplateHooks\Admin\AdminStatisticsReportTable;
+use LearnPress\TemplateHooks\Admin\Tools\AdminCourseTools;
 use LearnPress\Statistics\FilterOptionsProvider;
 use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
 use LearnPress\TemplateHooks\Admin\AI\AdminEditCourseCurriculumWithAITemplate;
@@ -395,6 +398,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditSettingTemplate::instance();
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
+			AdminCourseTools::instance();
 			CourseMaterialTemplate::instance();
 			CourseAIAssistantTemplate::instance();
 			AdminOrderItemsTemplate::instance();
@@ -758,6 +762,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				function () {
 					LoadContentViaAjax::catch_lp_ajax();
 					LessonAjax::catch_lp_ajax();
+					SampleDataAJAX::catch_lp_ajax();
 					EditCurriculumAjax::catch_lp_ajax();
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
@@ -770,6 +775,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					McpApiKeysAjax::catch_lp_ajax();
 					WebhooksAjax::catch_lp_ajax();
 					CBEditCourseAjax::catch_lp_ajax();
+					CourseToolsAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},
@@ -868,12 +874,24 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return array
 		 * @since 4.3.11
-		 *
+		 * @version 1.0.1
 		 */
 		public function plugin_links( array $links ): array {
-			$links[] = sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=learn-press-settings' ), __( 'Settings', 'learnpress' ) );
-			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', LearnPress::$doc_link, __( 'Documentation', 'learnpress' ) );
-			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', get_admin_url() . '/admin.php?page=learn-press-addons', __( 'Add-ons', 'learnpress' ) );
+			$links[] = sprintf(
+				'<a href="%s">%s</a>',
+				esc_url_raw( admin_url( 'admin.php?page=learn-press-settings' ) ),
+				esc_html__( 'Settings', 'learnpress' )
+			);
+			$links[] = sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				esc_url_raw( LearnPress::$doc_link ),
+				esc_html__( 'Documentation', 'learnpress' )
+			);
+			$links[] = sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				esc_url_raw( admin_url( 'admin.php?page=learn-press-addons' ) ),
+				esc_html__( 'Add-ons', 'learnpress' )
+			);
 
 			return $links;
 		}

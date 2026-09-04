@@ -819,7 +819,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.1.4
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	public function continue_course( WP_REST_Request $request ): LP_REST_Response {
 		$params         = $request->get_params();
@@ -830,7 +830,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$flag_found = false;
 			$item_link  = '';
 			$course_id  = absint( $params['courseId'] ?? 0 );
-			$user_id    = absint( $params['userId'] ?? 0 );
+			$user_id    = get_current_user_id();
 
 			$user   = UserModel::find( $user_id, true );
 			$course = CourseModel::find( $course_id, true );

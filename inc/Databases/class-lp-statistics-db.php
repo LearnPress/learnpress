@@ -126,7 +126,7 @@ class LP_Statistics_DB extends LP_Database {
 		$diff1 = date_create( $dates[0] );
 		$diff2 = date_create( $dates[1] );
 		if ( ! $diff1 || ! $diff2 ) {
-			throw new Exception( 'Custom filter date is invalid.', 'learnpress' );
+			throw new Exception( __( 'Custom filter date is invalid.', 'learnpress' ) );
 		}
 		$diff = date_diff( $diff1, $diff2, true );
 		$y    = $diff->y;
@@ -180,7 +180,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function previous_days_filter( LP_Filter $filter, int $value, string $time_field, $is_until = false ) {
 		if ( $value < 2 ) {
-			throw new Exception( 'Day must be greater than 2 days.', 'learnpress' );
+			throw new Exception( __( 'Day must be greater than 2 days.', 'learnpress' ) );
 		}
 		if ( $is_until ) {
 			$filter->where[] = "AND $time_field <= CURDATE()";
@@ -212,7 +212,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function previous_months_filter( LP_Filter $filter, int $value, string $time_field, $is_until = false ) {
 		if ( $value < 2 ) {
-			throw new Exception( 'Values must be greater than 2 months.', 'learnpress' );
+			throw new Exception( __( 'Values must be greater than 2 months.', 'learnpress' ) );
 		}
 		if ( $is_until ) {
 			$filter->where[] = "AND $time_field <= CURDATE()";
@@ -247,7 +247,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function custom_time_filter( LP_Filter $filter, array $dates, string $time_field, $is_until = false ) {
 		if ( empty( $dates ) ) {
-			throw new Exception( 'Select date', 'learnpress' );
+			throw new Exception( __( 'Select date', 'learnpress' ) );
 		}
 		sort( $dates );
 		if ( $is_until ) {
@@ -275,7 +275,7 @@ class LP_Statistics_DB extends LP_Database {
 	 */
 	public function filter_time( LP_Filter $filter, string $type, string $time_field, $value = false, $is_until = false ) {
 		if ( ! $value ) {
-			throw new Exception( 'Empty statistic time', 'learnpress' );
+			throw new Exception( __( 'Empty statistic time', 'learnpress' ) );
 		}
 		switch ( $type ) {
 			case 'date':
@@ -296,7 +296,7 @@ class LP_Statistics_DB extends LP_Database {
 			case 'custom':
 				$value = explode( '+', $value );
 				if ( count( $value ) !== 2 ) {
-					throw new Exception( 'Invalid custom time', 'learnpress' );
+					throw new Exception( __( 'Invalid custom time', 'learnpress' ) );
 				}
 				$filter = $this->custom_time_filter( $filter, $value, $time_field, $is_until );
 			default:
@@ -340,11 +340,11 @@ class LP_Statistics_DB extends LP_Database {
 					break;
 				}
 				if ( empty( $value ) ) {
-					throw new Exception( 'Empty statistic time', 'learnpress' );
+					throw new Exception( __( 'Empty statistic time', 'learnpress' ) );
 				}
 				$value = explode( '+', $value );
 				if ( count( $value ) !== 2 ) {
-					throw new Exception( 'Invalid custom time', 'learnpress' );
+					throw new Exception( __( 'Invalid custom time', 'learnpress' ) );
 				}
 				$filter = $this->chart_filter_custom_group_by( $filter, $value, $time_field );
 			default:

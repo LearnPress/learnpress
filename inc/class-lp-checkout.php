@@ -61,10 +61,12 @@ class LP_Checkout {
 	 */
 	protected $checkout_action = '';
 
-	public function init() {
+	public function init(): void {
 		if ( ! is_null( LearnPress::instance()->session ) ) {
 			$this->_checkout_email = LearnPress::instance()->session->get( 'checkout-email' );
 		}
+
+		add_action( 'set_logged_in_cookie', [ $this, 'set_logged_in_cookie' ] );
 	}
 
 	/**
@@ -255,7 +257,11 @@ class LP_Checkout {
 				$user_id = $this->create_account();
 				if ( $user_id ) {
 					// Notify mail create user success
-					wp_new_user_notification( $user_id, null, apply_filters( 'learn-press/email-create-new-user-when-checkout', 'user' ) );
+					wp_new_user_notification(
+						$user_id,
+						null,
+						apply_filters( 'learn-press/email-create-new-user-when-checkout', 'user' )
+					);
 				} else {
 					throw new Exception( __( 'Create account failed', 'learnpress' ), 0 );
 				}
@@ -569,5 +575,26 @@ class LP_Checkout {
 
 		ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 		learn_press_send_json( $result );
+	}
+
+	/**
+	 * Sync $_COOKIE[LOGGED_IN_COOKIE] within the current checkout request.
+	 *
+	 * Checkout runs over AJAX. When login/register succeeds, wp_signon() only
+	 * sends a Set-Cookie header to the browser (effective on the next request)
+	 * and does not update $_COOKIE for the current request. Hooking into
+	 * 'set_logged_in_cookie' lets us grab the newly generated cookie value and
+	 * assign it to $_COOKIE manually, so subsequent code in the same request
+	 * (e.g. creating the order) correctly recognizes the logged-in user.
+	 * LPBackgroundAjax use $_COOKIE to send mails.
+	 *
+	 * @param string $logged_in_cookie The newly generated logged_in cookie value.
+	 */
+	public function set_logged_in_cookie( $logged_in_cookie ) {
+		if ( ! isset( $_POST['learn-press-checkout-nonce'] ) ) {
+			return;
+		}
+
+		$_COOKIE[ LOGGED_IN_COOKIE ] = $logged_in_cookie;
 	}
 }

@@ -1111,13 +1111,16 @@ if ( ! function_exists( 'learn_press_item_meta_type' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_sort_course_tabs' ) ) {
+/**
+ * @deprecated 4.4.5
+ */
+/*if ( ! function_exists( 'learn_press_sort_course_tabs' ) ) {
 	function learn_press_sort_course_tabs( $tabs = array() ) {
 		uasort( $tabs, 'learn_press_sort_list_by_priority_callback' );
 
 		return $tabs;
 	}
-}
+}*/
 
 if ( ! function_exists( 'learn_press_get_profile_display_name' ) ) {
 	/**

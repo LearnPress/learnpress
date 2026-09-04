@@ -1412,6 +1412,17 @@ class CourseBuilderAjax extends AbstractAjax {
 			$enable = $data['_lp_preview'] === 'yes';
 			$lessonModel->set_preview( $enable );
 		}
+
+		/**
+		 * Allow addons to persist their own lesson settings fields added to the
+		 * settings metabox tabs when saving from Course Builder.
+		 *
+		 * @param LessonPostModel $lessonModel Lesson model being saved.
+		 * @param array $data Submitted settings data.
+		 *
+		 * @since 4.3.8
+		 */
+		do_action( 'learn-press/course-builder/save-lesson-settings', $lessonModel, $data );
 	}
 
 	/**
@@ -1465,6 +1476,17 @@ class CourseBuilderAjax extends AbstractAjax {
 				$quizModel->save_meta_value_by_key( $key, $value );
 			}
 		}
+
+		/**
+		 * Allow addons to persist their own quiz settings fields added to the
+		 * settings metabox tabs when saving from Course Builder.
+		 *
+		 * @param QuizPostModel $quizModel Quiz model being saved.
+		 * @param array $data Submitted settings data.
+		 *
+		 * @since 4.3.8
+		 */
+		do_action( 'learn-press/course-builder/save-quiz-settings', $quizModel, $data );
 	}
 
 	/**

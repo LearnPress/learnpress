@@ -14,6 +14,7 @@ use Exception;
 use LearnPress\Ajax\AbstractAjax;
 
 use LearnPress\Databases\QuestionAnswersDB;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostFIBModel;
 use LearnPress\Models\Question\QuestionPostModel;
@@ -145,7 +146,7 @@ class EditQuestionAjax extends AbstractAjax {
 
 		try {
 			$data         = self::check_valid();
-			$answer_title = $data['answer_title'] ?? '';
+			$answer_title = Template::sanitize_html_content( $data['answer_title'] ?? '' );
 			if ( empty( $answer_title ) ) {
 				throw new Exception( __( 'Answer title is required', 'learnpress' ) );
 			}

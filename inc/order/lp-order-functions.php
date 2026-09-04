@@ -484,8 +484,10 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 				$message['content'] = sprintf( __( 'Order number <strong>%s</strong> has been cancelled', 'learnpress' ), $order->get_order_number() );
 			} else {
 				throw new Exception(
-					__( 'The order number <strong>%s</strong> can not be cancelled.', 'learnpress' ),
-					$order->get_order_number()
+					sprintf(
+						__( 'The order number <strong>%s</strong> can not be cancelled.', 'learnpress' ),
+						$order->get_order_number()
+					)
 				);
 			}
 		} catch ( Throwable $e ) {

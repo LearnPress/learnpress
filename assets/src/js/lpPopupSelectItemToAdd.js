@@ -109,7 +109,7 @@ export class LpPopupSelectItemToAdd {
 			html: modalTemplate.innerHTML,
 			showConfirmButton: false,
 			showCloseButton: true,
-			width: '60%',
+			width: 'max(350px, 65vw)',
 			customClass: {
 				popup: 'lp-select-items-popup',
 				htmlContainer: 'lp-select-items-html-container',
@@ -121,26 +121,35 @@ export class LpPopupSelectItemToAdd {
 				const elLPTarget = elPopup.querySelector(
 					`${ LpPopupSelectItemToAdd.selectors.LPTarget }`
 				);
-				if ( elLPTarget ) {
-					const dataSend =
-						window.lpAJAXG.getDataSetCurrent( elLPTarget );
-					dataSend.args.paged = 1;
-					dataSend.args.item_selecting = itemsSelectedData || [];
-					window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
 
-					window.lpAJAXG.fetchAJAX( dataSend, {
-						success: ( response ) => {
-							const { data } = response;
-							const elSkeleton = elPopup.querySelector(
-								'.lp-skeleton-animation'
-							);
-							elSkeleton.remove();
-							elLPTarget.innerHTML = data.content || '';
+				// Avoid duplicate AJAX: loadAJAX.js handles fresh elements; skip if already loaded. Set timeout to ensure DOM is ready handle.
+				setTimeout( ()=> {
+					const elLoadAjaxElement = elLPTarget.closest( '.lp-load-ajax-element:not(.loaded)' );
+					if ( ! elLoadAjaxElement ) {
+						return;
+					}
 
-							this.watchItemsSelectedDataChange();
-						},
-					} );
-				}
+					if ( elLPTarget ) {
+						const dataSend =
+							window.lpAJAXG.getDataSetCurrent( elLPTarget );
+						dataSend.args.paged = 1;
+						dataSend.args.item_selecting = itemsSelectedData || [];
+						window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+
+						window.lpAJAXG.fetchAJAX( dataSend, {
+							success: ( response ) => {
+								const { data } = response;
+								const elSkeleton = elPopup.querySelector(
+									'.lp-skeleton-animation'
+								);
+								elSkeleton.remove();
+								elLPTarget.innerHTML = data.content || '';
+
+								this.watchItemsSelectedDataChange();
+							},
+						} );
+					}
+				}, 1 );
 			},
 		} ).then( ( result ) => {
 			if ( result.isDismissed ) {

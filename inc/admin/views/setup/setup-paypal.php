@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) or exit;
 
 $settings = LP_Settings::instance();
-
+$currency = $settings->get( 'currency', 'USD' );
 ?>
 <table>
 	<tr>
@@ -35,7 +35,10 @@ $settings = LP_Settings::instance();
 				if ( $payment_currencies ) {
 					foreach ( $payment_currencies as $code => $symbol ) {
 						?>
-						<option value="<?php echo esc_attr( $code ); ?>" data-symbol="<?php echo learn_press_get_currency_symbol( $code ); ?>" <?php selected( $code == 'USD' ); ?>><?php echo esc_html( $symbol ); ?></option>
+						<option value="<?php echo esc_attr( $code ); ?>"
+								data-symbol="<?php echo learn_press_get_currency_symbol( $code ); ?>"
+							<?php selected( $code === $currency ); ?>><?php echo esc_html( $symbol ); ?>
+						</option>
 						<?php
 					}
 				}

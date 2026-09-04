@@ -1084,6 +1084,49 @@ class UserCourseModel extends UserItemModel {
 	}
 
 	/**
+	 * Reset course progress for the enrolled user.
+	 *
+	 * Sets status back to enrolled, graduation to in-progress, removes all child
+	 * items (lessons, quizzes), clears cached item data and deletes the result.
+	 *
+	 * @return void
+	 * @throws Exception
+	 * @since 4.4.5
+	 * @version 1.0.0
+	 */
+	public function reset_progress() {
+		$this->status     = self::STATUS_ENROLLED;
+		$this->graduation = self::GRADUATION_IN_PROGRESS;
+		$this->start_time = gmdate( LP_Datetime::$format, time() );
+		$this->end_time   = null;
+		$this->set_meta_value_for_key( self::META_KEY_RETAKEN_COUNT, 0 );
+		$this->save();
+
+		$courseModel = $this->get_course_model();
+
+		if ( $courseModel && $courseModel->count_items() > 0 ) {
+			// Remove items' course user learned.
+			$filter_remove            = new LP_User_Items_Filter();
+			$filter_remove->parent_id = $this->get_user_item_id();
+			$filter_remove->user_id   = $this->user_id;
+			$filter_remove->limit     = - 1;
+			LP_User_Items_DB::getInstance()->remove_items_of_user_course( $filter_remove );
+
+			// Clean cache items.
+			foreach ( $courseModel->get_section_items() as $section_items ) {
+				foreach ( $section_items->items as $item ) {
+					$key_cache       = "userItemModel/find/{$this->user_id}/{$item->id}/{$item->type}/{$this->item_id}/" . LP_COURSE_CPT;
+					$lpUserItemCache = new LP_User_Items_Cache();
+					$lpUserItemCache->clear( $key_cache );
+				}
+			}
+		}
+
+		// Delete result in table learnpress_user_item_results.
+		LP_User_Items_Result_DB::instance()->delete( $this->get_user_item_id() );
+	}
+
+	/**
 	 * Check can impact item.
 	 *
 	 * @return bool|WP_Error

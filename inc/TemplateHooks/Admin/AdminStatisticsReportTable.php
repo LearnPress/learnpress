@@ -36,7 +36,7 @@ class AdminStatisticsReportTable {
 
 	const PER_PAGE = 20;
 
-	public function init() {
+	public function init(): void {
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 	}
 
@@ -51,6 +51,41 @@ class AdminStatisticsReportTable {
 		$callbacks[] = self::class . ':render_report_csv';
 
 		return $callbacks;
+	}
+
+	/**
+	 * Tabs of the Statistics page.
+	 *
+	 * @return array
+	 */
+	private static function get_tabs(): array {
+		return array(
+			'overview'    => __( 'Overview', 'learnpress' ),
+			'orders'      => __( 'Orders', 'learnpress' ),
+			'courses'     => __( 'Courses', 'learnpress' ),
+			'users'       => __( 'Users', 'learnpress' ),
+			'instructors' => __( 'Instructors', 'learnpress' ),
+		);
+	}
+
+	public function html_statistics() {
+		$tabs = self::get_tabs();
+		$tab  = isset( $_REQUEST['tab'] ) ? LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ) : 'overview';
+		$tab  = array_key_exists( $tab, $tabs ) ? $tab : 'overview';
+
+		$view = "statistics/{$tab}";
+		ob_start();
+		learn_press_admin_view( $view );
+		$content = ob_get_clean();
+
+		echo AdminTemplate::html_on_wp_admin_screen(
+			array(
+				'tabs'    => $tabs,
+				'content' => $content,
+				'title'   => __( 'Statistics', 'learnpress' ),
+				'id'      => 'learn-press-statistics',
+			)
+		);
 	}
 
 	/**
