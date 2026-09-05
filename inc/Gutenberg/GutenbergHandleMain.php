@@ -161,6 +161,8 @@ class GutenbergHandleMain {
 			$lp_course_item = learn_press_get_post_by_name( $vars['course-item'] ?? '', $item_type );
 			$item_types     = CourseModel::item_types_support();
 			if ( $lp_course_item && in_array( $lp_course_item->post_type, $item_types ) ) {
+				// Course items use their own template, not a course-level theme or post template.
+				$query_result                  = [];
 				$singleCourseItemBlockTemplate = new SingleCourseItemBlockTemplate();
 				$block_custom                  = $this->is_custom_block_template( $template_type, $singleCourseItemBlockTemplate->slug );
 				if ( $block_custom ) {
