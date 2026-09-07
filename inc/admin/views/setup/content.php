@@ -16,6 +16,8 @@ if ( ! isset( $steps ) ) {
 
 $current_step    = $wizard->get_current_step();
 $is_welcome_step = 'welcome' === $current_step;
+$is_finish_step  = 'finish' === $current_step;
+$next_url        = $is_finish_step ? admin_url( 'index.php' ) : $wizard->get_next_url();
 $main_class      = $is_welcome_step ? 'lp-setup-main--welcome' : 'lp-setup-main--wizard';
 $wizard_steps    = array();
 
@@ -29,21 +31,21 @@ $wizard_step_keys = array_keys( $wizard_steps );
 ?>
 
 <div id="main" class="<?php echo esc_attr( $main_class ); ?>">
-	<form id="learn-press-setup-form" class="lp-setup-content" name="lp-setup" method="post">
+	<form id="learn-press-setup-form" class="lp-setup-content lp-setup-wizard-form" name="lp-setup" method="post">
 		<?php
 		$step = $wizard->get_current_step( false );
 		?>
 		<input type="hidden" name="lp-setup-nonce"
-			value="<?php echo wp_create_nonce( 'lp-setup-step-' . $step['slug'] ); ?>">
+			value="<?php echo esc_attr( wp_create_nonce( 'lp-setup-step-' . $step['slug'] ) ); ?>">
 		<input type="hidden" name="lp-setup-step"
 			value="<?php echo esc_attr( $step['slug'] ); ?>">
 		<?php call_user_func( $step['callback'] ); ?>
-		<?php if ( ! $wizard->is_last_step() ) { ?>
+		<?php if ( ! $wizard->is_last_step() || $is_finish_step ) { ?>
 			<?php if ( $is_welcome_step ) { ?>
 				<div class="buttons">
-					<a class="button button-next button-primary" href="<?php echo esc_url_raw( $wizard->get_next_url() ); ?>">
+					<button type="button" class="lp-button button button-next button-primary" data-next-url="<?php echo esc_url( $next_url ); ?>">
 						<?php echo wp_kses_post( $step['next_button'] ); ?>
-					</a>
+					</button>
 					<a class="button-dismiss-setup" href="<?php echo esc_url( admin_url( 'index.php' ) ); ?>">
 						<?php esc_html_e( 'Dismiss Setup Wizard', 'learnpress' ); ?>
 					</a>
@@ -52,7 +54,7 @@ $wizard_step_keys = array_keys( $wizard_steps );
 				<div class="lp-setup-footer-bar">
 					<div class="lp-setup-footer-bar__back">
 						<?php if ( ! ( array_key_exists( 'back_button', $step ) && false === $step['back_button'] ) ) { ?>
-							<a class="button button-prev" href="<?php echo esc_url_raw( $wizard->get_prev_url() ); ?>">
+							<a class="lp-button button button-prev" href="<?php echo esc_url( $wizard->get_prev_url() ); ?>">
 								<?php echo ! empty( $step['back_button'] ) ? wp_kses_post( $step['back_button'] ) : esc_html__( 'Back', 'learnpress' ); ?>
 							</a>
 						<?php } ?>
@@ -84,12 +86,12 @@ $wizard_step_keys = array_keys( $wizard_steps );
 					</ol>
 
 					<div class="lp-setup-footer-bar__controls">
-						<a class="button-skip-next" href="<?php echo esc_url_raw( $wizard->get_next_url() ); ?>">
+						<a class="lp-button button-skip-next" href="<?php echo esc_url( $next_url ); ?>">
 							<?php esc_html_e( 'Skip this step', 'learnpress' ); ?>
 						</a>
-						<a class="button button-next button-primary" href="<?php echo esc_url_raw( $wizard->get_next_url() ); ?>">
+						<button type="button" class="lp-button button button-next button-primary" data-next-url="<?php echo esc_url( $next_url ); ?>">
 							<?php echo ! empty( $step['next_button'] ) ? wp_kses_post( $step['next_button'] ) : esc_html__( 'Next', 'learnpress' ); ?>
-						</a>
+						</button>
 					</div>
 				</div>
 			<?php } ?>

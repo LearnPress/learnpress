@@ -7,6 +7,8 @@
  * @version 4.3.2
  */
 
+use LearnPress\TemplateHooks\Admin\AdminTemplate;
+
 defined( 'ABSPATH' ) || exit;
 
 $is_block_theme = wp_is_block_theme();
@@ -89,19 +91,15 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 
 	<fieldset class="lp-setup-choice-group lp-setup-choice-group--enrollment">
 		<legend><?php esc_html_e( 'Course Enrollment', 'learnpress' ); ?></legend>
-		<label class="lp-setup-choice lp-setup-choice--wide">
-			<input type="hidden" name="settings[course][auto_enroll]" value="no">
-			<input type="checkbox" name="settings[course][auto_enroll]" value="yes" <?php checked( $auto_enroll, 'yes' ); ?>>
+		<div class="lp-setup-choice lp-setup-choice--wide">
 			<span class="lp-setup-choice__card">
-				<span class="lp-setup-choice__check" aria-hidden="true">
-					<svg viewBox="0 0 16 16" focusable="false"><path d="m4 8 2.5 2.5L12 5"/></svg>
-				</span>
+				<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'settings[course][auto_enroll]', 'value' => 'yes' === $auto_enroll, 'classes' => 'lp-setup-auto-enroll' ) ); ?>
 				<span class="lp-setup-choice__content">
 					<strong><?php esc_html_e( 'Start courses automatically after purchase', 'learnpress' ); ?></strong>
 					<span><?php esc_html_e( 'Students can start learning right away.', 'learnpress' ); ?></span>
 				</span>
 			</span>
-		</label>
+		</div>
 	</fieldset>
 
 	<p class="lp-setup-learning-experience__note">

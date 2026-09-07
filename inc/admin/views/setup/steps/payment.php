@@ -7,6 +7,8 @@
  * @version 4.3.2
  */
 
+use LearnPress\TemplateHooks\Admin\AdminTemplate;
+
 defined( 'ABSPATH' ) || exit;
 
 $settings         = LP_Settings::instance();
@@ -85,12 +87,8 @@ $paypal_enabled      = 'yes' === $settings->get( 'paypal.enable', 'no' );
 				<strong><?php esc_html_e( 'Offline / Manual Payment', 'learnpress' ); ?></strong>
 				<span><?php esc_html_e( 'Allow students to pay via bank transfer or cash.', 'learnpress' ); ?></span>
 			</div>
-			<label class="lp-setup-switch">
-				<span class="screen-reader-text"><?php esc_html_e( 'Enable Offline / Manual Payment', 'learnpress' ); ?></span>
-				<input type="hidden" name="settings[offline-payment][enable]" value="no">
-				<input type="checkbox" name="settings[offline-payment][enable]" value="yes"<?php checked( $offline_enabled ); ?>>
-				<span class="lp-setup-switch__control" aria-hidden="true"></span>
-			</label>
+			<span class="screen-reader-text"><?php esc_html_e( 'Enable Offline / Manual Payment', 'learnpress' ); ?></span>
+			<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'settings[offline-payment][enable]', 'value' => $offline_enabled, 'classes' => 'lp-setup-gateway-toggle' ) ); ?>
 		</article>
 
 		<article class="lp-setup-gateway-card lp-setup-gateway-card--paypal">
@@ -100,12 +98,8 @@ $paypal_enabled      = 'yes' === $settings->get( 'paypal.enable', 'no' );
 				<span><?php esc_html_e( 'Accept credit cards and PayPal balance online worldwide.', 'learnpress' ); ?></span>
 				<a class="lp-setup-connect-paypal" href="<?php echo esc_url( $paypal_settings_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Connect with PayPal', 'learnpress' ); ?></a>
 			</div>
-			<label class="lp-setup-switch">
-				<span class="screen-reader-text"><?php esc_html_e( 'Enable PayPal Standard', 'learnpress' ); ?></span>
-				<input type="hidden" name="settings[paypal][enable]" value="no">
-				<input type="checkbox" name="settings[paypal][enable]" value="yes"<?php checked( $paypal_enabled ); ?>>
-				<span class="lp-setup-switch__control" aria-hidden="true"></span>
-			</label>
+			<span class="screen-reader-text"><?php esc_html_e( 'Enable PayPal Standard', 'learnpress' ); ?></span>
+			<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'settings[paypal][enable]', 'value' => $paypal_enabled, 'classes' => 'lp-setup-gateway-toggle' ) ); ?>
 		</article>
 	</section>
 </section>
