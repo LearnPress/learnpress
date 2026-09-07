@@ -26,7 +26,7 @@ class SingleCourseModernLayout {
 	 */
 	public $singleCourseTemplate;
 
-	public function init() {
+	public function init(): void {
 		$this->singleCourseTemplate = SingleCourseTemplate::instance();
 
 		add_action(
@@ -54,11 +54,6 @@ class SingleCourseModernLayout {
 		do_action( 'learn-press/single-course/courses-related/layout', $course, 4 );
 		$html_courses_related = ob_get_clean();
 
-		// Global message
-		ob_start();
-		learn_press_show_message();
-		$global_message = ob_get_clean();
-
 		$sections = apply_filters(
 			'learn-press/single-course/modern/sections',
 			[
@@ -66,7 +61,6 @@ class SingleCourseModernLayout {
 				'section_header'        => $this->header_sections( $course, $user ),
 				'wrapper_container'     => '<div class="lp-content-area">',
 				'wrapper_main'          => '<div class="lp-single-course-main">',
-				'global_message'        => $global_message,
 				'section_left'          => $this->section_left( $course, $user ),
 				'section_right'         => $this->section_right( $course, $user ),
 				'wrapper_main_end'      => '</div>',
@@ -159,10 +153,16 @@ class SingleCourseModernLayout {
 	 * @return string
 	 */
 	public function section_left( $course, $user ): string {
+		// Global message
+		ob_start();
+		learn_press_show_message();
+		$global_message = ob_get_clean();
+
 		$section = apply_filters(
 			'learn-press/single-course/modern/section_left',
 			[
 				'wrapper'                => '<div class="lp-single-course-main__left">',
+				'global_message'         => $global_message,
 				'description'            => $this->singleCourseTemplate->html_description( $course ),
 				'features'               => $this->singleCourseTemplate->html_features( $course ),
 				'target'                 => $this->singleCourseTemplate->html_target( $course ),

@@ -731,6 +731,9 @@ body {
 // Course Progress
 .info-learning {
 	.course-progress {
+		> div {
+			margin-bottom: 8px;
+		}
 		&__line{
 			width: 100%;
 			background: #ccc;
@@ -764,5 +767,8 @@ body {
 				background: var(--lp-secondary-color);
 			}
 		}
+	}
+	.start-date,.end-date{
+		margin-bottom: 8px;
 	}
 }

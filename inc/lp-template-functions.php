@@ -203,9 +203,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 			$post_type_object = get_post_type_object( $lp_course_item->get_item_type() );
 
 			if ( $post_type_object && current_user_can(
-					'edit_post',
-					$lp_course_item->get_id()
-				) && $post_type_object->show_in_admin_bar && get_edit_post_link( $lp_course_item->get_id() ) ) {
+				'edit_post',
+				$lp_course_item->get_id()
+			) && $post_type_object->show_in_admin_bar && get_edit_post_link( $lp_course_item->get_id() ) ) {
 				$type = get_post_type( $lp_course_item->get_id() );
 
 				if ( apply_filters( 'learn-press/edit-admin-bar-button', true, $lp_course_item ) ) {
@@ -228,9 +228,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 			$edit_post_link   = get_edit_post_link( $lp_quiz_question->get_id() );
 
 			if ( $post_type_object && current_user_can(
-					'edit_post',
-					$lp_quiz_question->get_id()
-				) && $post_type_object->show_in_admin_bar && $edit_post_link ) {
+				'edit_post',
+				$lp_quiz_question->get_id()
+			) && $post_type_object->show_in_admin_bar && $edit_post_link ) {
 				$type = get_post_type( $lp_quiz_question->get_id() );
 				$wp_admin_bar->add_menu(
 					array(
@@ -641,7 +641,7 @@ function learn_press_set_message( array $message_data = [] ) {
 /**
  * Show message only one time.
  * @return void
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.2.0
  */
 function learn_press_show_message() {
@@ -656,7 +656,11 @@ function learn_press_show_message() {
 		unset( $message_data[ $customer_id ] );
 		update_option( 'lp-customer-message', $message_data );
 		//delete_option( 'lp-message' );
-		Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'customer_message' ) );
+		//Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'customer_message' ) );
+		Template::print_message(
+			$customer_message['content'] ?? '',
+			$customer_message['status'] ?? ''
+		);
 	} catch ( Throwable $e ) {
 		error_log( $e->getMessage() );
 	}
@@ -1551,7 +1555,7 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 	if ( $meta && isset( $meta[ $format ] ) ) {
 		$content = stripslashes( $meta[ $format ] );
 	} else {
-		$template      = ! empty( $field["template_{$format}"] ) ? $field["template_{$format}"] : null;
+		$template      = ! empty( $field[ "template_{$format}" ] ) ? $field[ "template_{$format}" ] : null;
 		$template_file = $field['template_base'] . $template;
 		$content       = LP_WP_Filesystem::instance()->file_get_contents( $template_file );
 	}
