@@ -1500,6 +1500,19 @@ class SingleCourseTemplate {
 			}
 
 			wp_enqueue_script( 'lp-curriculum' );
+			
+			$item_ids = [];
+
+			foreach ( $section_items as $section_item ) {
+				foreach ( $section_item->items as $item ) {
+					$item_ids[] = (int) $item->item_id;
+				}
+			}
+
+			if ( $item_ids ) {
+				_prime_post_caches( $item_ids, false, true );
+			}
+			
 			$li_section_items = '';
 			foreach ( $section_items as $section_item ) {
 				$li_section_items .= $this->render_html_section_item( $courseModel, $userModel, $section_item );
