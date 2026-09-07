@@ -153,7 +153,7 @@ class LP_Setup_Wizard {
 		}
 
 		$postdata = LP_Request::get_param( 'settings' );
-		$steps    = array( 'payment', 'pages', 'currency', 'emails' );
+		$steps    = array( 'learning-experience', 'payment', 'pages', 'currency', 'emails' );
 
 		if ( $this->get_current_step() === 'pages' ) {
 			$key_pages = [
@@ -176,13 +176,37 @@ class LP_Setup_Wizard {
 		if ( ( 'yes' !== LP_Request::get_param( 'skip' ) )
 			&& ! empty( $postdata )
 			&& in_array( $step, $steps ) ) {
-			if ( array_key_exists( 'paypal', $postdata ) ) {
-				update_option( 'learn_press_paypal', $postdata['paypal'] );
+			foreach ( array( 'paypal', 'offline-payment' ) as $gateway ) {
+				if ( array_key_exists( $gateway, $postdata ) && is_array( $postdata[ $gateway ] ) ) {
+					$gateway_settings = array_map( 'sanitize_text_field', wp_unslash( $postdata[ $gateway ] ) );
+					update_option( 'learn_press_' . $gateway, $gateway_settings );
+				}
 			}
 
 			if ( array_key_exists( 'currency', $postdata ) ) {
 				foreach ( $postdata['currency'] as $k => $v ) {
 					update_option( 'learn_press_' . $k, $v );
+				}
+			}
+
+			if ( 'learning-experience' === $step && array_key_exists( 'course', $postdata ) ) {
+				$course_settings = $postdata['course'];
+
+				if ( ! wp_is_block_theme() ) {
+					$course_layout = sanitize_key( $course_settings['layout_single_course'] ?? '' );
+					if ( in_array( $course_layout, array( 'modern', 'classic' ), true ) ) {
+						update_option( 'learn_press_layout_single_course', $course_layout );
+					}
+
+					$course_listing = sanitize_key( $course_settings['archive_courses_layout'] ?? '' );
+					if ( in_array( $course_listing, array( 'grid', 'list' ), true ) ) {
+						update_option( 'learn_press_archive_courses_layout', $course_listing );
+					}
+				}
+
+				$auto_enroll = sanitize_key( $course_settings['auto_enroll'] ?? '' );
+				if ( in_array( $auto_enroll, array( 'yes', 'no' ), true ) ) {
+					update_option( 'learn_press_auto_enroll', $auto_enroll );
 				}
 			}
 
@@ -221,7 +245,11 @@ class LP_Setup_Wizard {
 					'welcome' => array(
 						'title'       => __( 'Welcome', 'learnpress' ),
 						'callback'    => array( $this, 'step_welcome' ),
-						'next_button' => __( 'Run Setup Wizard', 'learnpress' ),
+						'next_button' => __( 'Get Started', 'learnpress' ),
+					),
+					'learning-experience' => array(
+						'title'    => __( 'Learning Experience', 'learnpress' ),
+						'callback' => array( $this, 'step_learning_experience' ),
 					),
 					'pages'   => array(
 						'title'    => __( 'Pages', 'learnpress' ),
@@ -234,13 +262,13 @@ class LP_Setup_Wizard {
 					// 'skip_prev_button' => false
 					// ),
 					'payment' => array(
-						'title'    => __( 'Payment', 'learnpress' ),
+						'title'    => __( 'Payment & Currency', 'learnpress' ),
 						'callback' => array( $this, 'step_payment' ),
 					),
-					// 'emails'   => array(
-					// 'title'    => __( 'Emails', 'learnpress' ),
-					// 'callback' => array( $this, 'step_emails' )
-					// ),
+					'emails'  => array(
+						'title'    => __( 'Emails', 'learnpress' ),
+						'callback' => array( $this, 'step_emails' ),
+					),
 					'finish'  => array(
 						'title'    => __( 'Finish', 'learnpress' ),
 						'callback' => array( $this, 'step_finish' ),
@@ -379,6 +407,13 @@ class LP_Setup_Wizard {
 	 */
 	public function step_welcome() {
 		learn_press_admin_view( 'setup/steps/welcome' );
+	}
+
+	/**
+	 * Learning Experience step content.
+	 */
+	public function step_learning_experience() {
+		learn_press_admin_view( 'setup/steps/learning-experience' );
 	}
 
 	/**
