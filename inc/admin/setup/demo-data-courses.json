@@ -1,7 +1,6 @@
 {
   "courses": [
     {
-      "slug": "introduction-to-learnpress-building-your-learning-management-system",
       "title": "Introduction to LearnPress: Building Your Learning Management System",
       "excerpt": "Learn the essential steps for creating and launching an online learning site with LearnPress.",
       "content": "<p>This introductory course explains how LearnPress organizes courses, lessons, students, and learning settings. Follow the lessons to prepare a practical LMS foundation that can grow with your academy.</p>",
@@ -39,7 +38,6 @@
       }
     },
     {
-      "slug": "create-and-manage-engaging-lms-websites-with-learnpress",
       "title": "Create and Manage Engaging LMS Websites with LearnPress",
       "excerpt": "Build a well-organized learning website and keep students engaged throughout their courses.",
       "content": "<p>This course focuses on planning an engaging academy, organizing useful content, and maintaining a consistent experience for students and instructors.</p>",
@@ -77,7 +75,6 @@
       }
     },
     {
-      "slug": "how-to-sell-in-person-course-with-learnpress",
       "title": "How To Sell In-Person Courses With LearnPress",
       "excerpt": "Use LearnPress to present, sell, and manage instructor-led classes held at a physical location.",
       "content": "<p>This course shows how to package an in-person class as a LearnPress course, communicate logistics, collect registrations, and manage the learner journey.</p>",
@@ -115,7 +112,6 @@
       }
     },
     {
-      "slug": "create-an-lms-website-with-learnpress",
       "title": "Create an LMS Website with LearnPress",
       "excerpt": "Follow a practical path from a new WordPress site to a working online academy.",
       "content": "<p>This course walks through the main decisions and setup tasks required to turn a WordPress website into a usable LearnPress learning platform.</p>",
@@ -153,7 +149,6 @@
       }
     },
     {
-      "slug": "introduction-learnpress-lms-plugin",
       "title": "Introduction LearnPress – LMS Plugin",
       "excerpt": "Explore the core LearnPress concepts used to create and manage online courses in WordPress.",
       "content": "<p>This beginner-friendly course introduces the LearnPress workflow and the main tools used by administrators, instructors, and students.</p>",

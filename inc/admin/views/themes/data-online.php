@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
 
 						<img
 							src="<?php echo esc_url( $theme['image'] ); ?>"
-							alt="<?php echo esc_attr( $theme['name'] ?? '' ); ?>"
+							alt="<?php echo esc_attr( $theme['name'] ?? $theme['title'] ?? '' ); ?>"
 							loading="lazy"
 						/>
 
