@@ -53,7 +53,7 @@ $wizard_step_keys = array_keys( $wizard_steps );
 			<?php } else { ?>
 				<div class="lp-setup-footer-bar">
 					<div class="lp-setup-footer-bar__back">
-						<?php if ( ! ( array_key_exists( 'back_button', $step ) && false === $step['back_button'] ) ) { ?>
+						<?php if ( ! $is_finish_step && ! ( array_key_exists( 'back_button', $step ) && false === $step['back_button'] ) ) { ?>
 							<a class="lp-button button button-prev" href="<?php echo esc_url( $wizard->get_prev_url() ); ?>">
 								<?php echo ! empty( $step['back_button'] ) ? wp_kses_post( $step['back_button'] ) : esc_html__( 'Back', 'learnpress' ); ?>
 							</a>
@@ -86,12 +86,18 @@ $wizard_step_keys = array_keys( $wizard_steps );
 					</ol>
 
 					<div class="lp-setup-footer-bar__controls">
-						<a class="lp-button button-skip-next" href="<?php echo esc_url( $next_url ); ?>">
-							<?php esc_html_e( 'Skip this step', 'learnpress' ); ?>
-						</a>
-						<button type="button" class="lp-button button button-next button-primary" data-next-url="<?php echo esc_url( $next_url ); ?>">
-							<?php echo ! empty( $step['next_button'] ) ? wp_kses_post( $step['next_button'] ) : esc_html__( 'Next', 'learnpress' ); ?>
-						</button>
+						<?php if ( $is_finish_step ) { ?>
+							<button type="button" class="lp-button button button-next button-primary" data-next-url="<?php echo esc_url( $next_url ); ?>">
+								<?php esc_html_e( 'Go to Dashboard', 'learnpress' ); ?>
+							</button>
+						<?php } else { ?>
+							<a class="lp-button button-skip-next" href="<?php echo esc_url( $next_url ); ?>">
+								<?php esc_html_e( 'Skip this step', 'learnpress' ); ?>
+							</a>
+							<button type="button" class="lp-button button button-next button-primary" data-next-url="<?php echo esc_url( $next_url ); ?>">
+								<?php echo ! empty( $step['next_button'] ) ? wp_kses_post( $step['next_button'] ) : esc_html__( 'Next', 'learnpress' ); ?>
+							</button>
+						<?php } ?>
 					</div>
 				</div>
 			<?php } ?>

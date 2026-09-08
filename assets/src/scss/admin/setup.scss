@@ -242,18 +242,6 @@
             }
         }
     }
-    // .button-skip-next,
-    // .button-skip-prev {
-    //     opacity: 0.7;
-    //     float: left;
-    //     margin-right: 4px;
-    //     border-color: transparent;
-
-    //     &:hover {
-    //         opacity: 1;
-    //     }
-    // }
-
 
     .button-dashboard-page {
         vertical-align: middle;
@@ -358,6 +346,21 @@
                 float: right;
             }
         }
+    }
+}
+
+.lp-setup .button-next {
+    position: relative;
+
+    &.loading:before {
+        position: absolute;
+        top: 50%;
+        inset-inline-start: 8px;
+        width: 14px;
+        height: 14px;
+        margin: -7px 0 0;
+        font-size: 14px;
+        line-height: 14px;
     }
 }
 
@@ -501,13 +504,10 @@
     box-sizing: border-box;
     min-height: 100vh;
     margin: 0;
-
     #content {
         width: 1146px;
         max-width: calc(100% - 48px);
         margin: 156px auto 80px;
-        height: 100vh;
-        padding-bottom: 90px;
     }
 
     .logo img {
@@ -521,6 +521,7 @@
         margin: 54px 0 0;
         padding: 0;
         border: 0;
+        padding-bottom: 120px;
     }
 
     footer {
@@ -926,6 +927,33 @@
     }
 }
 
+.lp-setup-step--learning-experience {
+    #content {
+        width: 910px;
+        margin-top: 60px;
+        margin-bottom: 128px;
+    }
+
+    .lp-setup-footer-bar {
+        padding-right: 120px;
+        padding-left: 120px;
+    }
+
+    @media (max-width: 1050px) {
+        .lp-setup-footer-bar {
+            padding-right: 32px;
+            padding-left: 32px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        #content {
+            margin-top: 40px;
+            margin-bottom: 120px;
+        }
+    }
+}
+
 .lp-setup-step--pages {
     #content {
         width: 910px;
@@ -1216,6 +1244,10 @@
     .lp-setup-gateway-card--paypal {
         align-items: flex-start;
         min-height: 145px;
+
+        .lp-setup-gateway-toggle {
+            align-self: center;
+        }
     }
 
     .lp-setup-gateway-card__icon {
@@ -1297,42 +1329,6 @@
             color: #FFF;
             background: #005C99;
         }
-    }
-
-    .lp-toggle-enable {
-        display: inline-flex;
-        flex: 0 0 auto;
-        position: relative;
-        margin: 0 0 0 20px;
-        cursor: pointer;
-
-        .lp-toggle-enable__input {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-            clip: rect(0 0 0 0);
-
-            &:focus-visible + .lp-toggle-enable__track {
-                outline: 2px solid #2271B1;
-                outline-offset: 2px;
-            }
-        }
-
-		.lp-toggle-enable__track {
-			width: 44px;
-			height: 26px;
-			background: #E1E1E1;
-
-			&:before {
-				width: 20px;
-				height: 20px;
-			}
-        }
-
-		&.is-enabled .lp-toggle-enable__track {
-			background: #00AD68;
-		}
     }
 
     @media (max-width: 1050px) {
@@ -1566,13 +1562,28 @@
     }
 
     .lp-setup-footer-bar {
+        grid-template-columns: minmax(0, 1fr) auto auto minmax(0, 1fr);
+        column-gap: 24px;
         padding-right: 120px;
         padding-left: 120px;
     }
 
-    .lp-setup-footer-bar__back .button-prev {
-        min-width: 86px;
-        text-align: center;
+    .lp-setup-footer-bar__back {
+        grid-column: 1;
+
+        .button-prev {
+            min-width: 86px;
+            text-align: center;
+        }
+    }
+
+    .lp-setup-stepper {
+        grid-column: 2;
+    }
+
+    .lp-setup-footer-bar__controls {
+        grid-column: 3;
+        justify-self: start;
     }
 
     .lp-setup-finish {
@@ -2028,6 +2039,18 @@
 
         .lp-setup-finish-card {
             min-height: 0;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .lp-setup-footer-bar {
+            grid-template-columns: 1fr auto;
+            column-gap: 0;
+        }
+
+        .lp-setup-footer-bar__controls {
+            grid-column: 2;
+            justify-self: end;
         }
     }
 

@@ -114,15 +114,13 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 			</div>
 
 			<div class="lp-setup-finish-summary__list">
-
-				<div class="lp-setup-finish-summary__item">
+				<!-- <div class="lp-setup-finish-summary__item">
 					<span><?php esc_html_e( 'Environment:', 'learnpress' ); ?></span>
 
 					<strong>
 						<?php echo esc_html( $environment_status ); ?>
 					</strong>
-				</div>
-
+				</div> -->
 				<div class="lp-setup-finish-summary__item">
 					<span><?php esc_html_e( 'Learning Experience:', 'learnpress' ); ?></span>
 
@@ -334,7 +332,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 						admin_url( 'admin.php?page=learn-press-settings' )
 					); ?>"
 				>
-					<?php esc_html_e( 'Advanced Settings', 'learnpress' ); ?>
+					<?php esc_html_e( 'Goto Settings', 'learnpress' ); ?>
 				</a>
 
 				<a

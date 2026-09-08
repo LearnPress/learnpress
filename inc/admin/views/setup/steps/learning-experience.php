@@ -24,7 +24,7 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 	</header>
 
 	<fieldset class="lp-setup-choice-group<?php echo esc_attr( $disabled_class ); ?>"<?php echo $is_block_theme ? ' aria-disabled="true"' : ''; ?>>
-		<legend><?php esc_html_e( 'Course Layout', 'learnpress' ); ?></legend>
+		<legend><?php esc_html_e( 'Layout single course', 'learnpress' ); ?></legend>
 		<div class="lp-setup-choice-grid">
 			<label class="lp-setup-choice">
 				<input type="radio" name="settings[course][layout_single_course]" value="modern"
