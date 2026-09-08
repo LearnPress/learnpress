@@ -603,6 +603,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					array( 'strategy' => 'defer' )
 				),
+				'lp-themes'                 => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/lp-themes' . self::$_min_assets . '.js' ),
+					array(),
+					array( 'learnpress_page_learn-press-themes' ),
+					0,
+					0,
+					'',
+					array( 'strategy' => 'defer' )
+				),
 				'lp-admin-statistic'        => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-statistic' . self::$_min_assets . '.js' ),
 					array( 'lp-load-ajax' ),
@@ -682,6 +691,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					$this->url( 'css/admin/help-center' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),
 					array( 'learnpress_page_learn-press-help-center' ),
+					0
+				),
+				'themes-new'        => new LP_Asset_Key(
+					$this->url( 'css/admin/themes-new' . $is_rtl . self::$_min_assets . '.css' ),
+					array(),
+					array( 'learnpress_page_learn-press-themes' ),
 					0
 				),
 				'lp-edit-curriculum'    => new LP_Asset_Key(

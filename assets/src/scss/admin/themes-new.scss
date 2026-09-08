@@ -1,0 +1,415 @@
+// Temporary styles for Themes page.
+// TODO: Move tokens to shared variables when UI is finalized.
+
+$lp-theme-accent: #ffb608;
+$lp-theme-accent-hover: #f5ac00;
+$lp-theme-white: #fff;
+$lp-theme-border: #e7e7e7;
+$lp-theme-border-light: #e2e4e7;
+$lp-theme-text-heading: #262626;
+$lp-theme-text-body: #4f4f4f;
+$lp-theme-text-muted: #666666;
+$lp-theme-text-secondary: #666;
+$lp-theme-radius: 6px;
+$lp-theme-button-radius: 4px;
+$lp-theme-font-family: "DM Sans", sans-serif;
+
+.learn-press-themes {
+	max-width: 100%;
+	font-family: $lp-theme-font-family;
+
+	.wp-heading-inline {
+		color: $lp-theme-text-heading;
+		font-family: $lp-theme-font-family;
+		font-size: 30px;
+		font-weight: 700;
+		line-height: 120%;
+		letter-spacing: 0;
+	}
+
+	.lp-themes-subtitle {
+		margin: 4px 0 24px;
+
+		color: $lp-theme-text-body;
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 150%;
+	}
+
+	a,
+	button {
+		&:focus {
+			box-shadow: none;
+			outline: none;
+		}
+	}
+}
+
+.lp-themes-toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+
+	margin-bottom: 20px;
+}
+
+.lp-themes-filter {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+
+	&__item {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		min-height: 36px;
+		padding: 7px 14px;
+
+		border: 1px solid $lp-theme-border-light;
+		border-radius: $lp-theme-button-radius;
+
+		color: $lp-theme-text-heading;
+		background: $lp-theme-white;
+
+		font-family: $lp-theme-font-family;
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 150%;
+
+		cursor: pointer;
+
+		transition: all 0.2s ease;
+
+		&:hover,
+		&:focus {
+			border-color: $lp-theme-accent;
+			color: $lp-theme-accent;
+			background: #fffaf0;
+		}
+
+		&.active {
+			border-color: $lp-theme-accent;
+			color: $lp-theme-white;
+			background: $lp-theme-accent;
+		}
+	}
+}
+
+.lp-themes-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 30px;
+
+	margin-bottom: 30px;
+}
+
+.lp-theme-card {
+	overflow: hidden;
+
+	position: relative;
+
+	display: flex;
+	flex-direction: column;
+
+	min-width: 0;
+
+	border: 1px solid $lp-theme-border;
+	border-radius: $lp-theme-radius;
+
+	background: $lp-theme-white;
+
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+	transition:
+		box-shadow 0.2s ease,
+		transform 0.2s ease;
+
+	&:hover {
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+		transform: translateY(-2px);
+	}
+
+	&[hidden] {
+		display: none !important;
+	}
+
+	&__thumbnail {
+		overflow: hidden;
+
+		position: relative;
+
+		width: 100%;
+		aspect-ratio: 16 / 9;
+
+		background: #f5f5f5;
+
+		img {
+			display: block;
+
+			width: 100%;
+			height: 100%;
+
+			object-fit: cover;
+			object-position: top center;
+		}
+	}
+
+	&__badge {
+		position: absolute;
+		z-index: 2;
+		top: 12px;
+		right: 12px;
+
+		display: inline-flex;
+		align-items: center;
+
+		padding: 8px 10px;
+
+		border-radius: $lp-theme-button-radius;
+
+		color: $lp-theme-white;
+		background: linear-gradient(
+			135deg,
+			rgba(255, 0, 0, 1) 0%,
+			rgba(175, 0, 184, 1) 100%
+		);
+
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 1;
+
+		text-transform: uppercase;
+	}
+
+	&__content {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+
+		min-width: 0;
+		padding: 20px;
+	}
+
+	&__title {
+		margin: 0 0 8px;
+
+		color: $lp-theme-text-heading;
+
+		font-size: 18px;
+		font-weight: 600;
+		line-height: 1.4;
+	}
+
+	&__description {
+		display: -webkit-box;
+		overflow: hidden;
+
+		min-height: 35px;
+		margin: 0 0 14px;
+
+		color: $lp-theme-text-muted;
+
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 1.45;
+
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+	}
+	&__footer {
+		display: flex;
+		margin-top: auto;
+		gap: 20px;
+	}
+	&__price {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+
+		margin: 0 0 12px;
+
+		strong {
+			color: #ff3b30;
+
+			font-size: 18px;
+			font-weight: 600;
+			line-height: 1.2;
+		}
+
+		del {
+			color: #999;
+
+			font-size: 14px;
+			font-weight: 400;
+			line-height: 1;
+		}
+	}
+
+	&__meta {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+
+		margin-bottom: 14px;
+
+		color: $lp-theme-text-heading;
+
+		font-size: 14px;
+		line-height: 1;
+	}
+
+	&__rating {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+
+		color: #333;
+
+		white-space: nowrap;
+	}
+
+	&__star {
+		color: $lp-theme-accent;
+
+		font-size: 15px;
+	}
+
+	&__sold {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+
+		white-space: nowrap;
+	}
+
+	&__cart {
+		color: $lp-theme-accent;
+
+		font-size: 15px;
+		line-height: 1;
+	}
+
+	&__actions {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 8px;
+
+		margin-top: auto;
+	}
+
+	&__buy {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		min-height: 36px;
+		padding: 7px 16px;
+
+		border: 1px solid $lp-theme-accent;
+		border-radius: $lp-theme-button-radius;
+
+		color: $lp-theme-white;
+		background: $lp-theme-accent;
+
+		font-family: $lp-theme-font-family;
+		font-size: 16px;
+		font-weight: 600;
+		line-height: 40px;
+
+		text-align: center;
+		text-decoration: none;
+
+		&:visited {
+			color: $lp-theme-white;
+		}
+
+		&:hover,
+		&:focus,
+		&:active {
+			border-color: $lp-theme-accent-hover;
+			color: $lp-theme-white;
+			background: $lp-theme-accent-hover;
+		}
+	}
+
+	&__demo {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		min-width: 56px;
+		min-height: 36px;
+		padding: 2px 16px;
+
+		border: 1px solid #ddd;
+		border-radius: $lp-theme-button-radius;
+
+		color: $lp-theme-text-secondary;
+		background: $lp-theme-white;
+
+		font-family: $lp-theme-font-family;
+		font-size: 16px;
+		font-weight: 500;
+		line-height: 40px;
+
+		text-align: center;
+		text-decoration: none;
+
+		&:visited {
+			color: $lp-theme-text-secondary;
+		}
+
+		&:hover,
+		&:focus,
+		&:active {
+			border-color: #bbb;
+			color: $lp-theme-text-heading;
+			background: #fafafa;
+		}
+	}
+}
+
+/**
+ * Increase specificity to override WordPress admin button styles.
+ */
+.learn-press-themes .lp-theme-card .lp-theme-card__actions .lp-theme-card__buy {
+	background: $lp-theme-accent;
+}
+
+@media (max-width: 1400px) {
+	.lp-themes-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 1200px) {
+	.lp-themes-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 782px) {
+	.lp-themes-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.lp-themes-toolbar {
+		align-items: stretch;
+		flex-direction: column;
+	}
+}
+
+@media (max-width: 480px) {
+	.lp-theme-card {
+		&__actions {
+			grid-template-columns: 1fr;
+		}
+
+		&__demo {
+			width: 100%;
+		}
+	}
+}
