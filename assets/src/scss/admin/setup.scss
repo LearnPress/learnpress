@@ -211,17 +211,48 @@
             float: left;
         }
     }
-
     .button-skip-next,
     .button-skip-prev {
-        opacity: 0.7;
+        position: relative;
         float: left;
         margin-right: 4px;
+        border-color: transparent;
+        opacity: 0.7;
+        padding: 0;
+        text-decoration: none;
+
+        &::after {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            content: '';
+            transition: width 0.3s ease;
+        }
 
         &:hover {
             opacity: 1;
+
+            &::after {
+                right: auto;
+                left: 0;
+                width: 100%;
+            }
         }
     }
+    // .button-skip-next,
+    // .button-skip-prev {
+    //     opacity: 0.7;
+    //     float: left;
+    //     margin-right: 4px;
+    //     border-color: transparent;
+
+    //     &:hover {
+    //         opacity: 1;
+    //     }
+    // }
 
 
     .button-dashboard-page {
@@ -694,6 +725,27 @@
             line-height: 1;
             text-align: center;
             box-shadow: none;
+            transition:
+                background-color 0.2s ease,
+                color 0.2s ease,
+                transform 0.15s ease;
+
+            &:hover,
+            &:focus {
+                color: #1D1D1D;
+                background: #E2E2E2;
+                box-shadow: none;
+            }
+
+            &:active {
+                background: #D8D8D8;
+                transform: translateY(1px);
+            }
+
+            &:focus-visible {
+                outline: 2px solid #FFB400;
+                outline-offset: 2px;
+            }
         }
     }
 
@@ -701,7 +753,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 35px;
+        gap: 60px;
         margin: 0;
         padding: 0;
         list-style: none;
@@ -715,15 +767,18 @@
         color: #4C4C4C;
         font-size: 14px;
         white-space: nowrap;
+        line-height: 28px;
 
         &:not(:last-child):after {
             position: absolute;
-            right: -23px;
-            color: #D9D6D1;
+            right: -30px;
+            // color: #D9D6D1;
             content: '›';
             font-size: 30px;
-            font-weight: 300;
-            line-height: 1;
+            font-weight: 200;
+            top: 50%;
+            transform: translateY(-50%);
+            line-height: 28px;
         }
 
         &.is-active {
