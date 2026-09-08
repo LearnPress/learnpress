@@ -332,7 +332,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 						admin_url( 'admin.php?page=learn-press-settings' )
 					); ?>"
 				>
-					<?php esc_html_e( 'Goto Settings', 'learnpress' ); ?>
+					<?php esc_html_e( 'Go to Settings', 'learnpress' ); ?>
 				</a>
 
 				<a
