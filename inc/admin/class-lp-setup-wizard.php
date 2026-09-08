@@ -78,11 +78,14 @@ class LP_Setup_Wizard {
 			return;
 		}
 
-		if ( 'finish' === LP_Request::get_param( 'step' ) ) {
-			update_option( 'learn_press_setup_wizard_completed', 'yes' );
-		}
-
 		$assets = LP_Admin_Assets::instance();
+		$min    = '.min';
+		$ver    = LEARNPRESS_VERSION;
+
+		if ( LP_Debug::is_debug() ) {
+			$min = '';
+			$ver = uniqid();
+		}
 
 		// tungnx: fix error with Woocommerce
 		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'register_scripts' ) );
@@ -105,7 +108,7 @@ class LP_Setup_Wizard {
 		wp_enqueue_style( 'dashboard' );
 		wp_enqueue_style( 'widgets' );
 		wp_enqueue_style( 'lp-admin', $assets->url( 'css/admin/admin.css' ) );
-		wp_enqueue_style( 'lp-setup', $assets->url( 'css/admin/setup.css' ) );
+		wp_enqueue_style( 'lp-setup', $assets->url( "css/admin/setup{$min}.css" ), array(), $ver );
 		//wp_enqueue_style( 'lp-select2', $assets->url( 'src/css/vendor/select2.min.css' ) );
 		wp_enqueue_style( 'lp-tom-select', $assets->url( 'src/css/vendor/tom-select.min.css' ) );
 
@@ -345,6 +348,7 @@ class LP_Setup_Wizard {
 
 	public function step_finish() {
 		learn_press_admin_view( 'setup/steps/finish' );
+		update_option( 'learn_press_setup_wizard_completed', 'yes' );
 	}
 
 	public function scripts() {
