@@ -1,24 +1,141 @@
 <?php
 /**
- * Template for displaying finish step.
+ * Template for displaying email notifications step.
  *
- * @author  ThimPres
+ * @author  ThimPress
  * @package LearnPress/Admin/Views
- * @version 3.0.0
+ * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or exit;
+use LearnPress\TemplateHooks\Admin\AdminTemplate;
+
+defined( 'ABSPATH' ) || exit;
+
+$email_notifications = array(
+	array(
+		'name'        => __( 'New Order Email', 'learnpress' ),
+		'description' => __( 'Sent to admin & instructor when a new order is placed.', 'learnpress' ),
+		'key'         => 'new_order',
+		'email_ids'   => array( 'new-order-admin', 'new-order-instructor' ),
+	),
+	array(
+		'name'        => __( 'Order Completed Email', 'learnpress' ),
+		'description' => __( 'Sent to student when payment is confirmed.', 'learnpress' ),
+		'key'         => 'order_completed',
+		'email_ids'   => array( 'completed-order-user' ),
+	),
+	array(
+		'name'        => __( 'Course Enrolled Email', 'learnpress' ),
+		'description' => __( 'Sent to student when enrolled into a course.', 'learnpress' ),
+		'key'         => 'course_enrolled',
+		'email_ids'   => array( 'enrolled-course-user' ),
+	),
+	array(
+		'name'        => __( 'Course Completed Email', 'learnpress' ),
+		'description' => __( 'Sent to student upon finishing a course.', 'learnpress' ),
+		'key'         => 'course_completed',
+		'email_ids'   => array( 'finished-course-user' ),
+	),
+	array(
+		'name'        => __( 'Become Instructor Request', 'learnpress' ),
+		'description' => __( 'Sent to admin when a user applies to become a teacher.', 'learnpress' ),
+		'key'         => 'become_instructor_request',
+		'email_ids'   => array( 'become-an-instructor' ),
+	),
+	array(
+		'name'        => __( 'Become Instructor Accepted', 'learnpress' ),
+		'description' => __( 'Sent to applicant when approved.', 'learnpress' ),
+		'key'         => 'become_instructor_accepted',
+		'email_ids'   => array( 'instructor-accepted' ),
+	),
+);
+
+$enabled_notifications = 0;
+foreach ( $email_notifications as &$email_notification ) {
+	$email_notification['enabled'] = true;
+	foreach ( $email_notification['email_ids'] as $email_id ) {
+		$email = LP_Emails::get_email( $email_id );
+		if ( ! $email || ! $email->enable() ) {
+			$email_notification['enabled'] = false;
+			break;
+		}
+	}
+
+	if ( $email_notification['enabled'] ) {
+		++$enabled_notifications;
+	}
+}
+unset( $email_notification );
+
+$has_enabled_notifications = $enabled_notifications === count( $email_notifications );
 ?>
-<h2><?php _e( 'Emails system', 'learnpress' ); ?></h2>
 
-<p><?php _e( 'Emails are sent to users or teachers for each particular action.', 'learnpress' ); ?></p>
-<p><?php _e( 'You can enable/disable each email in your LearnPress settings later.', 'learnpress' ); ?></p>
-<p><?php _e( 'But right now, you can enable all emails to see how emails work.', 'learnpress' ); ?></p>
-<p><?php _e( 'You can skip to the next step if you don’t want to.', 'learnpress' ); ?></p>
+<div class="lp-setup-emails">
+	<div class="lp-setup-section-header">
+		<h2><?php esc_html_e( 'Step 4: Email Notifications', 'learnpress' ); ?></h2>
 
-<p>
-	<label>
-		<input type="checkbox" name="settings[emails][enable]" value="yes">
-		<?php _e( 'Enable emails', 'learnpress' ); ?>
-	</label>
-</p>
+		<p>
+			<?php esc_html_e(
+				'Configure automated email notifications sent to students and instructors.',
+				'learnpress'
+			); ?>
+		</p>
+	</div>
+
+	<div class="lp-setup-emails__master">
+		<div class="lp-setup-emails__master-content">
+			<span class="lp-setup-emails__mail-icon" aria-hidden="true">
+				<svg viewBox="0 0 24 24">
+					<rect x="3" y="5" width="18" height="14" rx="2"></rect>
+					<path d="M4 7l8 6 8-6"></path>
+				</svg>
+			</span>
+
+			<strong>
+				<?php esc_html_e( 'Enable All Email Notifications', 'learnpress' ); ?>
+			</strong>
+		</div>
+
+		<span class="screen-reader-text"><?php esc_html_e( 'Enable all email notifications', 'learnpress' ); ?></span>
+		<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'email_notifications_master', 'value' => $has_enabled_notifications, 'classes' => 'lp-setup-email-master' ) ); ?>
+	</div>
+
+	<div class="lp-setup-emails__table-wrap">
+		<table class="lp-setup-emails__table">
+			<thead>
+				<tr>
+					<th>
+						<?php esc_html_e( 'Email Notification Type', 'learnpress' ); ?>
+					</th>
+
+					<th>
+						<?php esc_html_e( 'Description', 'learnpress' ); ?>
+					</th>
+
+					<th>
+						<?php esc_html_e( 'Status', 'learnpress' ); ?>
+					</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<?php foreach ( $email_notifications as $email ) : ?>
+					<tr>
+						<td class="lp-setup-emails__name">
+							<?php echo esc_html( $email['name'] ); ?>
+						</td>
+
+						<td class="lp-setup-emails__description">
+							<?php echo esc_html( $email['description'] ); ?>
+						</td>
+
+						<td class="lp-setup-emails__status">
+							<span class="screen-reader-text"><?php echo esc_html( sprintf( __( 'Enable %s', 'learnpress' ), $email['name'] ) ); ?></span>
+							<?php echo AdminTemplate::html_toggle_enable( array( 'name' => sprintf( 'settings[emails][notifications][%s]', $email['key'] ), 'value' => $email['enabled'], 'classes' => 'lp-setup-email-notification' ) ); ?>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+</div>
