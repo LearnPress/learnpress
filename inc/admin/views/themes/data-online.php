@@ -21,15 +21,17 @@ defined( 'ABSPATH' ) || exit;
 
 				<div class="lp-theme-card__thumbnail">
 
-					<?php if ( ! empty( $theme['image'] ) ) : ?>
+					<?php
+					$fallback_image = LP_PLUGIN_URL . 'assets/images/no-image.png';
+					$theme_image    = ! empty( $theme['image'] ) ? $theme['image'] : $fallback_image;
+					?>
 
-						<img
-							src="<?php echo esc_url( $theme['image'] ); ?>"
-							alt="<?php echo esc_attr( $theme['name'] ?? $theme['title'] ?? '' ); ?>"
-							loading="lazy"
-						/>
-
-					<?php endif; ?>
+					<img
+						src="<?php echo esc_url( $theme_image ); ?>"
+						data-fallback-src="<?php echo esc_url( $fallback_image ); ?>"
+						alt="<?php echo esc_attr( $theme['name'] ?? $theme['title'] ?? '' ); ?>"
+						loading="lazy"
+					/>
 
 					<?php if ( ! empty( $theme['badge'] ) ) : ?>
 

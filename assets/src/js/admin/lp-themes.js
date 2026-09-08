@@ -86,6 +86,19 @@
 		}
 	} );
 
+	document.addEventListener( 'error', function( event ) {
+		if ( ! ( event.target instanceof HTMLImageElement ) ||
+			! event.target.matches( '.lp-theme-card__thumbnail img' ) ) {
+			return;
+		}
+
+		const fallback = event.target.getAttribute( 'data-fallback-src' );
+
+		if ( fallback && event.target.src !== fallback ) {
+			event.target.src = fallback;
+		}
+	}, true );
+
 	function init() {
 		document.querySelectorAll( '.learn-press-themes' ).forEach( function( container ) {
 			filterThemes( container );
