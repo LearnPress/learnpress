@@ -14,6 +14,7 @@
  * Prevent loading this file directly
  */
 
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 
@@ -79,7 +80,7 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 
 			$user = UserModel::find( $user_id, true );
 
-			$filter            = new LP_User_Items_Filter();
+			$filter            = new UserItemsFilter();
 			$filter->user_id   = $user_id;
 			$filter->item_id   = $course_id;
 			$filter->item_type = LP_COURSE_CPT;

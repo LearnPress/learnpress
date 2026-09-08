@@ -358,7 +358,7 @@ class EnrollmentTools {
 	 * @return UserCourseModel|false
 	 */
 	protected static function find_by_id( int $enrollment_id ) {
-		$filter               = new LP_User_Items_Filter();
+		$filter               = new UserItemsFilter();
 		$filter->user_item_id = $enrollment_id;
 		$filter->item_type    = LP_COURSE_CPT;
 

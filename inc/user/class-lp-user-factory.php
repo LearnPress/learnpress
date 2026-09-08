@@ -1,6 +1,8 @@
 <?php
 
 use LearnPress\Background\LPBackgroundAjax;
+use LearnPress\Databases\UserItemsDB;
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -461,11 +463,11 @@ class LP_User_Factory {
 	 * @return UserCourseModel|false
 	 * @throws Exception
 	 * @since 4.2.7.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function get_user_course_guest( $course_id, $email_guest ) {
-		$lp_user_items_db = LP_User_Items_DB::getInstance();
-		$filter           = new LP_User_Items_Filter();
+		$lp_user_items_db = UserItemsDB::getInstance();
+		$filter           = new UserItemsFilter();
 		$filter->user_id  = 0;
 		$filter->item_id  = $course_id;
 		$filter->join[]   = "INNER JOIN {$lp_user_items_db->tb_postmeta} pm ON pm.post_id = ref_id";

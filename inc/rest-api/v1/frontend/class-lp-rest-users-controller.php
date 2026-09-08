@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
@@ -129,7 +130,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @editor tungnx
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 * @sicne 4.0.0
 	 * @return WP_REST_Response
 	 */
@@ -184,7 +185,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			 */
 			$retaken_count             = 0;
 			$attempts                  = [];
-			$filter_user_quiz          = new LP_User_Items_Filter();
+			$filter_user_quiz          = new UserItemsFilter();
 			$filter_user_quiz->user_id = $user_id;
 			$filter_user_quiz->item_id = $item_id;
 			$filter_user_quiz->ref_id  = $course_id;

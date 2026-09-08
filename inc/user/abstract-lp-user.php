@@ -12,6 +12,7 @@
  * Prevent loading this file directly
  */
 
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -136,14 +137,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $course_id
 		 * @return false|UserCourseModel
 		 * @since 4.2.5
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function get_course_attend( int $course_id = 0 ) {
 			if ( $this instanceof LP_User_Guest ) {
 				return false;
 			}
 
-			$filter          = new LP_User_Items_Filter();
+			$filter          = new UserItemsFilter();
 			$filter->item_id = $course_id;
 			$filter->user_id = $this->get_id();
 			return UserCourseModel::get_user_item_model_from_db( $filter );

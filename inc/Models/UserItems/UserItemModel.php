@@ -14,12 +14,14 @@ namespace LearnPress\Models\UserItems;
 use Exception;
 use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\UserItemsFilter;
+use LearnPress\Iyzico\Support\Log;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LearnPress\Models\UserItemResults\UserItemResultModel;
 use LearnPress\Models\UserModel;
 use LP_Datetime;
+use LP_Debug;
 use LP_Helper;
 use LP_User_Item_Meta_DB;
 use LP_User_Item_Meta_Filter;
@@ -236,10 +238,20 @@ class UserItemModel {
 	 *
 	 * @return UserItemModel|false|static
 	 * @since 4.2.5
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public static function get_user_item_model_from_db( $filter ) {
-		$lp_user_item_db = LP_User_Items_DB::getInstance();
+		if ( $filter instanceof LP_User_Items_Filter ) {
+			$user_items_filter = new UserItemsFilter();
+			foreach ( get_object_vars( $filter ) as $property => $value ) {
+				if ( property_exists( $user_items_filter, $property ) ) {
+					$user_items_filter->{$property} = $value;
+				}
+			}
+			$filter = $user_items_filter;
+		}
+
+		$lp_user_item_db = UserItemsDB::getInstance();
 		$user_item_model = false;
 
 		try {
@@ -257,7 +269,7 @@ class UserItemModel {
 				$user_item_model = new static( $user_item_rs );
 			}
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $user_item_model;
@@ -275,7 +287,7 @@ class UserItemModel {
 	 *
 	 * @return false|UserItemModel|static
 	 * @since 4.2.7.3
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public static function find_user_item(
 		int $user_id,
@@ -286,7 +298,7 @@ class UserItemModel {
 		bool $check_cache = false
 	) {
 		$key_cache         = "userItemModel/find/{$user_id}/{$item_id}/{$item_type}";
-		$filter            = new LP_User_Items_Filter();
+		$filter            = new UserItemsFilter();
 		$filter->user_id   = $user_id;
 		$filter->item_id   = $item_id;
 		$filter->item_type = $item_type;
@@ -433,16 +445,22 @@ class UserItemModel {
 	 * @version 1.0.4
 	 */
 	public function save(): UserItemModel {
-		$lp_user_item_db  = LP_User_Items_DB::getInstance();
-		$user_item_id_new = 0;
-		$data             = get_object_vars( $this );
+		$lp_user_item_db = UserItemsDB::getInstance();
+		$data            = get_object_vars( $this );
 
 		if ( ! isset( $data['start_time'] ) ) {
 			$data['start_time'] = gmdate( 'Y-m-d H:i:s', time() );
 			$this->start_time   = $data['start_time'];
 		}
 
-		// Check if exists user_item_id.
+		$args = [
+			'data'               => $data,
+			'filter'             => new UserItemsFilter(),
+			'table_name'         => $lp_user_item_db->tb_lp_user_items,
+			'key_auto_increment' => UserItemsFilter::COL_USER_ITEM_ID,
+			'where_key'          => UserItemsFilter::COL_USER_ITEM_ID,
+		];
+
 		if ( empty( $this->get_user_item_id() ) ) { // Insert data.
 			if ( empty( $data['item_id'] ) ) {
 				throw new Exception( 'Item ID is require.' );
@@ -456,7 +474,7 @@ class UserItemModel {
 				throw new Exception( 'User ID is require.' );
 			}
 
-			$user_item_id_new = $lp_user_item_db->insert_data( $data );
+			$user_item_id_new = $lp_user_item_db->insert_data( $args );
 			if ( empty( $user_item_id_new ) ) {
 				throw new Exception( 'Cannot insert data to database.' );
 			}
@@ -465,10 +483,12 @@ class UserItemModel {
 
 			do_action( 'learn-press/user-item/created', $this );
 
+			// Update data for table user_item_results
 			$this->create_data_table_result();
 		} else { // Update data.
-			$lp_user_item_db->update_data( $data );
+			$lp_user_item_db->update_data( $args );
 
+			// Update data for table user_item_results
 			if ( $this->must_create_new_data_table_result ) {
 				$this->create_data_table_result();
 			} else {
@@ -722,10 +742,10 @@ class UserItemModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.7.3
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function delete() {
-		// Delete meta data of user item.
+		// Delete metadata of user item.
 		$lp_user_item_meta_db = LP_User_Item_Meta_DB::getInstance();
 		$filter               = new LP_User_Item_Meta_Filter();
 		$filter->where[]      = $lp_user_item_meta_db->wpdb->prepare( 'AND learnpress_user_item_id = %d', $this->get_user_item_id() );
@@ -734,17 +754,15 @@ class UserItemModel {
 		$this->meta_data = null;
 
 		// Delete user item relationships.
-		$lp_user_item_db    = LP_User_Items_DB::getInstance();
-		$filter             = new LP_User_Items_Filter();
-		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND parent_id = %d', $this->get_user_item_id() );
-		$filter->collection = $lp_user_item_db->tb_lp_user_items;
+		$lp_user_item_db = UserItemsDB::getInstance();
+		$filter          = new UserItemsFilter();
+		$filter->where[] = $lp_user_item_db->wpdb->prepare( 'AND parent_id = %d', $this->get_user_item_id() );
 		$lp_user_item_db->delete_execute( $filter );
 
 		// Delete user item.
-		$lp_user_item_db    = LP_User_Items_DB::getInstance();
-		$filter             = new LP_User_Items_Filter();
-		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->get_user_item_id() );
-		$filter->collection = $lp_user_item_db->tb_lp_user_items;
+		$lp_user_item_db = UserItemsDB::getInstance();
+		$filter          = new UserItemsFilter();
+		$filter->where[] = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->get_user_item_id() );
 		$lp_user_item_db->delete_execute( $filter );
 
 		$this->clean_caches();

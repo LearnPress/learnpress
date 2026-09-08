@@ -86,7 +86,7 @@ class UserCourseModel extends UserItemModel {
 	public static function find( int $user_id, int $course_id, bool $check_cache = false ) {
 		static $staticData = [];
 
-		$filter            = new LP_User_Items_Filter();
+		$filter            = new UserItemsFilter();
 		$filter->user_id   = $user_id;
 		$filter->item_id   = $course_id;
 		$filter->item_type = LP_COURSE_CPT;

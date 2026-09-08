@@ -8,7 +8,7 @@
  * @author  tungnx
  * @package LearnPress/Classes/Filters
  * @since  4.0.0
- * @version 1.0.2
+ * @version 1.0.3
  */
 class LP_User_Items_Filter extends LP_Filter {
 	const COL_USER_ITEM_ID = 'user_item_id';
@@ -41,11 +41,11 @@ class LP_User_Items_Filter extends LP_Filter {
 	/**
 	 * @var int
 	 */
-	public $user_item_id = 0;
+	public $user_item_id;
 	/**
 	 * @var int
 	 */
-	public $user_id = false;
+	public $user_id;
 	/**
 	 * @var array int
 	 */
@@ -53,7 +53,7 @@ class LP_User_Items_Filter extends LP_Filter {
 	/**
 	 * @var int
 	 */
-	public $item_id = 0;
+	public $item_id;
 	/**
 	 * @var array int
 	 */
@@ -61,7 +61,7 @@ class LP_User_Items_Filter extends LP_Filter {
 	/**
 	 * @var string
 	 */
-	public $status = '';
+	public $status;
 	/**
 	 * @var string[]
 	 *
@@ -71,7 +71,7 @@ class LP_User_Items_Filter extends LP_Filter {
 	/**
 	 * @var string
 	 */
-	public $graduation = '';
+	public $graduation;
 	/**
 	 * @var string[]
 	 *
@@ -81,27 +81,27 @@ class LP_User_Items_Filter extends LP_Filter {
 	/**
 	 * @var string
 	 */
-	public $item_type = '';
+	public $item_type;
 	/**
 	 * @var int
 	 */
-	public $ref_id = 0;
+	public $ref_id;
 	/**
 	 * @var string
 	 */
-	public $ref_type = '';
+	public $ref_type;
 	/**
 	 * @var string
 	 */
-	public $start_time = '';
+	public $start_time;
 	/**
 	 * @var string
 	 */
-	public $end_time = '';
+	public $end_time;
 	/**
 	 * @var int
 	 */
-	public $parent_id = 0;
+	public $parent_id;
 	/**
 	 * @var int[]
 	 */
