@@ -15,16 +15,6 @@ ob_start();
 ?>
 
 	<div class="learn-press-themes">
-
-		<p class="lp-themes-subtitle">
-			<?php
-			esc_html_e(
-				'Discover high-performance Premium & Education themes optimized 100% for LearnPress LMS.',
-				'learnpress'
-			);
-			?>
-		</p>
-
 		<div class="lp-themes-toolbar">
 			<div class="lp-themes-filter">
 
@@ -34,7 +24,7 @@ ob_start();
 					data-category="all"
 					aria-pressed="true"
 				>
-					<?php esc_html_e( 'All Themes', 'learnpress' ); ?>
+					<?php esc_html_e( 'All Themes', 'learnpress' ); ?> <span class="lp-themes-filter__count"></span>
 				</button>
 
 				<button
@@ -43,7 +33,7 @@ ob_start();
 					data-category="paid"
 					aria-pressed="false"
 				>
-					<?php esc_html_e( 'Paid Themes', 'learnpress' ); ?>
+					<?php esc_html_e( 'Paid Themes', 'learnpress' ); ?> <span class="lp-themes-filter__count"></span>
 				</button>
 
 				<button
@@ -52,11 +42,21 @@ ob_start();
 					data-category="free"
 					aria-pressed="false"
 				>
-					<?php esc_html_e( 'Free Themes', 'learnpress' ); ?>
+					<?php esc_html_e( 'Free Themes', 'learnpress' ); ?> <span class="lp-themes-filter__count"></span>
 				</button>
 
 			</div>
+			<label class="lp-themes-search">
+				<span class="screen-reader-text"><?php esc_html_e( 'Search themes', 'learnpress' ); ?></span>
+				<svg class="lp-themes-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false">
+					<circle cx="10.5" cy="10.5" r="6.5" />
+					<path d="m16 16 4.5 4.5" />
+				</svg>
+				<input type="search" class="lp-themes-search__input" placeholder="<?php esc_attr_e( 'Search themes…', 'learnpress' ); ?>" />
+			</label>
 		</div>
+
+		<p class="lp-themes-empty" role="status" hidden><?php esc_html_e( 'No themes found. Try another search or category.', 'learnpress' ); ?></p>
 
 		<?php
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

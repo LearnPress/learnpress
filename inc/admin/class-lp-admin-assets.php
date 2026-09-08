@@ -609,7 +609,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array( 'learnpress_page_learn-press-themes' ),
 					0,
 					0,
-					'',
+					LEARNPRESS_VERSION,
 					array( 'strategy' => 'defer' )
 				),
 				'lp-admin-statistic'        => new LP_Asset_Key(
@@ -693,11 +693,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array( 'learnpress_page_learn-press-help-center' ),
 					0
 				),
-				'themes-new'        => new LP_Asset_Key(
-					$this->url( 'css/admin/themes-new' . $is_rtl . self::$_min_assets . '.css' ),
+				'lp-themes'             => new LP_Asset_Key(
+					$this->url( 'css/admin/themes' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),
 					array( 'learnpress_page_learn-press-themes' ),
-					0
+					0,
+					0,
+					LEARNPRESS_VERSION
 				),
 				'lp-edit-curriculum'    => new LP_Asset_Key(
 					$this->url( 'css/edit-curriculum' . $is_rtl . self::$_min_assets . '.css' ),
