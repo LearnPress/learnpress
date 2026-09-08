@@ -328,6 +328,10 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 		}
 	}
 
+	&[data-category="free"] &__price strong {
+		color: #10b981;
+	}
+
 	&__meta {
 		display: flex;
 		align-items: center;
