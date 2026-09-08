@@ -97,14 +97,14 @@ class LP_Upgrade_6 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'guest_key', "varchar(64) NOT NULL DEFAULT '' COMMENT 'Key to identify users not logged in.'", 'user_id' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'item_id', "bigint(20) unsigned NOT NULL DEFAULT '0'", 'guest_key' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'item_type', "varchar(45) NOT NULL DEFAULT ''", 'item_id' );
-			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'start_time', 'datetime NULL default NULL', 'item_type' );
-			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'end_time', 'datetime NULL default NULL', 'start_date' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'ref_id', "varchar(45) NOT NULL DEFAULT ''", 'item_type' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'ref_type', "varchar(45) NOT NULL DEFAULT ''", 'ref_id' );
-			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'status', "varchar(45) NOT NULL DEFAULT ''", 'ref_type' );
+			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'start_time', 'datetime NULL default NULL', 'ref_type' );
+			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'end_time', 'datetime NULL default NULL', 'start_time' );
+			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'status', "varchar(45) NOT NULL DEFAULT ''", 'end_time' );
 			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'graduation', 'varchar(20) NULL default NULL', 'status' );
-			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'parent_id', "varchar(45) NOT NULL DEFAULT ''", 'results' );
-			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'extra_data', "longtext COMMENT 'Store more data type JSON.'", 'results' );
+			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'parent_result_id', "varchar(45) NOT NULL DEFAULT ''", 'graduation' );
+			$lp_db->add_col_table( $lp_db->tb_lp_user_item_results, 'extra_data', "longtext COMMENT 'Store more data type JSON.'", 'result' );
 
 			$response = $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
 		} catch ( Exception $e ) {
@@ -155,8 +155,7 @@ class LP_Upgrade_6 extends LP_Handle_Upgrade_Steps {
 					uir.ref_id = ui.ref_id,
 					uir.ref_type = ui.ref_type,
 					uir.status = ui.status,
-					uir.graduation = ui.graduation,
-					uir.parent_id = ui.parent_id
+					uir.graduation = ui.graduation
 				WHERE uir.user_item_id > 0
 				"
 			);

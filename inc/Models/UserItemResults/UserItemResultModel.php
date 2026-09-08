@@ -32,18 +32,18 @@ class UserItemResultModel extends UserItemModel {
 	private $id = 0;
 
 	/**
-	 * User item id, foreign key
-	 *
-	 * @var int
-	 */
-	public $user_item_id = 0;
-
-	/**
 	 * Key to identify users not logged in
 	 *
 	 * @var string
 	 */
 	public $guest_key = '';
+
+	/**
+	 * Parent of item
+	 *
+	 * @var int
+	 */
+	public $parent_result_id = 0;
 
 	/**
 	 * Store result of user item type JSON
@@ -136,7 +136,7 @@ class UserItemResultModel extends UserItemModel {
 		$data         = $this->get_result();
 		$data[ $key ] = $value;
 
-		$this->result = (string) wp_json_encode( $data, JSON_UNESCAPED_UNICODE );
+		$this->set_result( $data );
 	}
 
 	/**
@@ -281,6 +281,7 @@ class UserItemResultModel extends UserItemModel {
 		$db     = UserItemResultsDB::getInstance();
 		$id_new = 0;
 		$data   = get_object_vars( $this );
+		unset( $data['parent_id'] );
 
 		$args = [
 			'data'       => $data,

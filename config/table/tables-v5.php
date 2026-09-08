@@ -158,7 +158,7 @@ return array(
 			graduation varchar(20) NULL DEFAULT NULL,
 			ref_id bigint(20) unsigned NOT NULL DEFAULT '0',
 			ref_type varchar(45) DEFAULT '',
-			parent_id bigint(20) unsigned NOT NULL DEFAULT '0',
+			parent_result_id bigint(20) unsigned NOT NULL DEFAULT '0',
 			`result` longtext COMMENT 'Store result of user item typ JSON.',
 			extra_data longtext COMMENT 'Store more data type JSON.',
 			PRIMARY KEY (id),

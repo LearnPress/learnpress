@@ -5,17 +5,19 @@
  * To replace class LP_User_Item
  *
  * @package LearnPress/Classes
- * @version 1.0.3
+ * @version 1.0.4
  * @since 4.2.5
  */
 
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
+use LearnPress\Models\UserItemResults\UserItemResultModel;
 use LearnPress\Models\UserModel;
 use LP_Datetime;
 use LP_Helper;
@@ -33,7 +35,7 @@ class UserItemModel {
 	 *
 	 * @var int
 	 */
-	private $user_item_id = 0;
+	protected $user_item_id = 0;
 	/**
 	 * @var string User ID, foreign key
 	 */
@@ -117,6 +119,14 @@ class UserItemModel {
 	const GRADUATION_FAILED      = 'failed';
 
 	/**
+	 * Whether to create a new user item result instead of updating the existing one.
+	 *
+	 * @var int 1 to create, 0 to update.
+	 * @since 4.5.0
+	 */
+	public $must_create_new_data_table_result = 0;
+
+	/**
 	 * If data get from database, map to object.
 	 * Else create new object to save data to database.
 	 *
@@ -184,7 +194,7 @@ class UserItemModel {
 	 *
 	 * @param int $user_item_id
 	 */
-	private function set_user_item_id( int $user_item_id ) {
+	protected function set_user_item_id( int $user_item_id ) {
 		$this->user_item_id = $user_item_id;
 	}
 
@@ -413,14 +423,14 @@ class UserItemModel {
 	}
 
 	/**
-	 * Update data to database.
+	 * Save the user item and its result data.
 	 *
-	 * If user_item_id is empty, insert new data, else update data.
+	 * Creates a new record when user_item_id is empty; otherwise, updates the existing record.
 	 *
 	 * @return UserItemModel
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function save(): UserItemModel {
 		$lp_user_item_db  = LP_User_Items_DB::getInstance();
@@ -450,23 +460,76 @@ class UserItemModel {
 			if ( empty( $user_item_id_new ) ) {
 				throw new Exception( 'Cannot insert data to database.' );
 			}
+
+			$this->set_user_item_id( $user_item_id_new );
+
+			do_action( 'learn-press/user-item/created', $this );
+
+			$this->create_data_table_result();
 		} else { // Update data.
 			$lp_user_item_db->update_data( $data );
-		}
 
-		if ( $user_item_id_new ) {
-			$this->set_user_item_id( $user_item_id_new );
+			if ( $this->must_create_new_data_table_result ) {
+				$this->create_data_table_result();
+			} else {
+				$this->update_data_table_result();
+			}
 		}
 
 		// Clear caches before firing the created hook. Webhook and third-party listeners may reload
 		// this user item from the model/cache layer, so firing earlier can expose stale data.
 		$this->clean_caches();
 
-		if ( $user_item_id_new ) {
-			do_action( 'learn-press/user-item/created', $this );
+		return $this;
+	}
+
+	/**
+	 * Create a user item result record for history.
+	 * Store on the table user_item_results
+	 *
+	 * @throws Exception
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function create_data_table_result() {
+		// Store user item result
+		// Find parent result id
+		if ( $this->parent_id > 0 ) {
+			$userParentResultModel = UserItemResultModel::find_by_user_item_id(
+				$this->parent_id,
+				true
+			);
 		}
 
-		return $this;
+		$userItemResultModelNew = new UserItemResultModel( $this );
+		if ( isset( $userParentResultModel )
+			&& $userParentResultModel instanceof UserItemResultModel ) {
+			$userItemResultModelNew->parent_result_id = $userParentResultModel->get_id();
+		}
+		$userItemResultModelNew->set_user_item_id( $this->get_user_item_id() );
+		$userItemResultModelNew->save();
+		// End store
+	}
+
+	/**
+	 * Update the existing user item result record.
+	 * Store on the table user_item_results
+	 *
+	 * @return void
+	 * @throws Exception
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function update_data_table_result() {
+		$userItemResultModel = UserItemResultModel::find_by_user_item_id( $this->get_user_item_id() );
+		if ( $userItemResultModel instanceof UserItemResultModel ) {
+			foreach ( get_object_vars( $this ) as $k => $v ) {
+				if ( property_exists( $userItemResultModel, $k ) ) {
+					$userItemResultModel->{$k} = $v;
+				}
+			}
+			$userItemResultModel->save();
+		}
 	}
 
 	/**
@@ -636,10 +699,21 @@ class UserItemModel {
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function set_extra_data( string $key, $value ) {
+	public function set_extra_data_by_key_value( string $key, $value ) {
 		$data         = $this->get_extra_data();
 		$data[ $key ] = $value;
 
+		$this->set_extra_data( $data );
+	}
+
+	/**
+	 * Set extra data
+	 *
+	 * @param array $data
+	 * @return void
+	 * @since 4.5.0
+	 */
+	public function set_extra_data( array $data = [] ) {
 		$this->extra_data = (string) wp_json_encode( $data, JSON_UNESCAPED_UNICODE );
 	}
 

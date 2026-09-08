@@ -1049,12 +1049,6 @@ class UserCourseModel extends UserItemModel {
 		// Save the full course results snapshot to user_item_results for history.
 		$userItemResult = UserItemResultModel::find_by_user_item_id( $this->get_user_item_id() );
 		if ( $userItemResult instanceof UserItemResultModel ) {
-			foreach ( get_object_vars( $this ) as $key => $value ) {
-				if ( $key !== UserItemResultsFilter::COL_ID ) {
-					$userItemResult->{$key} = $this->{$key};
-				}
-			}
-
 			$userItemResult->set_result( $course_results );
 			$userItemResult->save();
 			//LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $course_results ) );
@@ -1069,7 +1063,7 @@ class UserCourseModel extends UserItemModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function handle_retake() {
 		$remaining_retake = $this->can_retake();
@@ -1082,6 +1076,7 @@ class UserCourseModel extends UserItemModel {
 		$this->start_time = gmdate( LP_Datetime::$format, time() );
 		$this->end_time   = null;
 		$this->set_meta_value_for_key( self::META_KEY_RETAKEN_COUNT, $this->get_retaken_count() + 1 );
+		$this->must_create_new_data_table_result = 1;
 		$this->save();
 
 		$courseModel = $this->get_course_model();
@@ -1103,12 +1098,6 @@ class UserCourseModel extends UserItemModel {
 				}
 			}
 		}
-
-		// Create new result in table learnpress_user_item_results.
-		$userCourseResult               = new UserItemResultModel( $this );
-		$userCourseResult->user_item_id = $this->get_user_item_id();
-		$userCourseResult->save();
-		//LP_User_Items_Result_DB::instance()->insert( $this->get_user_item_id() );
 	}
 
 	/**
@@ -1120,7 +1109,7 @@ class UserCourseModel extends UserItemModel {
 	 * @return void
 	 * @throws Exception
 	 * @since 4.4.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function reset_progress() {
 		$this->status     = self::STATUS_ENROLLED;
@@ -1128,6 +1117,7 @@ class UserCourseModel extends UserItemModel {
 		$this->start_time = gmdate( LP_Datetime::$format, time() );
 		$this->end_time   = null;
 		$this->set_meta_value_for_key( self::META_KEY_RETAKEN_COUNT, 0 );
+		$this->must_create_new_data_table_result = 1;
 		$this->save();
 
 		$courseModel = $this->get_course_model();
@@ -1151,7 +1141,7 @@ class UserCourseModel extends UserItemModel {
 		}
 
 		// Delete result in table learnpress_user_item_results.
-		LP_User_Items_Result_DB::instance()->delete( $this->get_user_item_id() );
+		//LP_User_Items_Result_DB::instance()->delete( $this->get_user_item_id() );
 	}
 
 	/**

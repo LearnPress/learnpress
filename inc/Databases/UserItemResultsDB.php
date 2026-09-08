@@ -125,8 +125,8 @@ class UserItemResultsDB extends DataBase {
 			$filter->where[] = $this->wpdb->prepare( "AND {$alias}.ref_type = %s", $filter->ref_type );
 		}
 
-		if ( isset( $filter->parent_id ) ) {
-			$filter->where[] = $this->wpdb->prepare( "AND {$alias}.parent_id = %d", $filter->parent_id );
+		if ( isset( $filter->parent_result_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( "AND {$alias}.parent_result_id = %d", $filter->parent_result_id );
 		}
 
 		$filter = apply_filters( 'lp/user_item_results/query/filter', $filter );

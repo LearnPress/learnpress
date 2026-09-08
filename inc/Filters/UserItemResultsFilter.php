@@ -13,10 +13,11 @@ defined( 'ABSPATH' ) || exit();
  * @version 1.0.0
  */
 class UserItemResultsFilter extends UserItemsFilter {
-	const COL_ID         = 'id';
-	const COL_GUEST_KEY  = 'guest_key';
-	const COL_RESULT     = 'result';
-	const COL_EXTRA_DATA = 'extra_data';
+	const COL_ID               = 'id';
+	const COL_GUEST_KEY        = 'guest_key';
+	const COL_PARENT_RESULT_ID = 'parent_result_id';
+	const COL_RESULT           = 'result';
+	const COL_EXTRA_DATA       = 'extra_data';
 
 	/**
 	 * @var string[] all fields of table
@@ -34,7 +35,7 @@ class UserItemResultsFilter extends UserItemsFilter {
 		self::COL_GRADUATION,
 		self::COL_REF_ID,
 		self::COL_REF_TYPE,
-		self::COL_PARENT_ID,
+		self::COL_PARENT_RESULT_ID,
 		self::COL_RESULT,
 		self::COL_EXTRA_DATA,
 	];
@@ -58,6 +59,8 @@ class UserItemResultsFilter extends UserItemsFilter {
 	 * @var string
 	 */
 	public $extra_data;
+
+	public $parent_result_id;
 
 	/**
 	 * @var string
