@@ -160,7 +160,10 @@ class SetupWizard {
 		}
 		const finishButton = this.elSetupForm.querySelector( '.lp-setup-footer-bar .button-next' );
 		if ( finishButton ) {
-			finishButton.textContent = this.demoCourse.dataset.finishLabel;
+			const finishButtonLabel = finishButton.querySelector( '.lp-setup-button__label' );
+			if ( finishButtonLabel ) {
+				finishButtonLabel.textContent = this.demoCourse.dataset.finishLabel;
+			}
 		}
 	}
 
@@ -176,12 +179,16 @@ class SetupWizard {
 	}
 
 	saveStep( button ) {
-		if ( ! window.lpAJAXG ) {
+		if ( ! window.lpAJAXG || 'true' === button.getAttribute( 'aria-disabled' ) ) {
 			return;
 		}
 
+		const loadingStartedAt = Date.now();
+		const minimumLoadingDuration = 200;
+		let isNavigating = false;
+
 		lpUtils.lpSetLoadingEl( button, 1 );
-		button.disabled = true;
+		button.setAttribute( 'aria-disabled', 'true' );
 		const dataSend = lpUtils.getDataOfForm( this.elSetupForm );
 		dataSend.action = 'lp_setup_wizard_save_step';
 		dataSend.id_url = 'setup-wizard-save-step';
@@ -193,18 +200,28 @@ class SetupWizard {
 						throw new Error( response.message );
 					}
 
-					window.location.href = button.dataset.nextUrl;
+					isNavigating = true;
+					const loadingDuration = Date.now() - loadingStartedAt;
+					const redirectDelay = Math.max( 0, minimumLoadingDuration - loadingDuration );
+
+					window.setTimeout( () => {
+						window.location.href = button.dataset.nextUrl;
+					}, redirectDelay );
 				},
 				error: ( error ) => {
 					window.alert( error?.message || String( error ) );
 				},
 				completed: () => {
-					button.disabled = false;
+					if ( isNavigating ) {
+						return;
+					}
+
+					button.removeAttribute( 'aria-disabled' );
 					lpUtils.lpSetLoadingEl( button, 0 );
 				},
 			} );
 		} catch ( error ) {
-			button.disabled = false;
+			button.removeAttribute( 'aria-disabled' );
 			lpUtils.lpSetLoadingEl( button, 0 );
 			window.alert( error?.message || String( error ) );
 		}

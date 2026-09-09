@@ -54,7 +54,7 @@ $system_pages = array(
 			$page_id  = learn_press_get_page_id( $page_key );
 			$is_ready = $page_id && 'publish' === get_post_status( $page_id );
 			?>
-			<article class="lp-setup-page-card">
+			<article class="lp-setup-page-card lp-setup-card">
 				<div class="lp-setup-page-card__content">
 					<h3><?php echo esc_html( $page_data['title'] ); ?></h3>
 					<p><?php echo esc_html( $page_data['description'] ); ?></p>
@@ -63,17 +63,17 @@ $system_pages = array(
 				<div class="lp-setup-page-card__actions">
 					<?php if ( $is_ready ) { ?>
 						<span class="lp-setup-page-status lp-setup-page-status--ready">
-							<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m4 8 2.5 2.5L12 5"/></svg>
+							<span class="lp-icon-check" aria-hidden="true"></span>
 							<?php esc_html_e( 'Created & Ready to use', 'learnpress' ); ?>
 						</span>
 
 						<a class="lp-setup-page-card__edit" href="<?php echo esc_url( get_edit_post_link( $page_id ) ); ?>" target="_blank" rel="noopener noreferrer">
-							<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m13.8 3.5 2.7 2.7L7.2 15.5l-3.4.7.7-3.4zM12.3 5l2.7 2.7"/></svg>
+							<span class="lp-icon-edit" aria-hidden="true"></span>
 							<?php esc_html_e( 'Edit', 'learnpress' ); ?>
 						</a>
 
 						<a class="lp-setup-page-card__view" href="<?php echo esc_url( get_permalink( $page_id ) ); ?>" target="_blank" rel="noopener noreferrer">
-							<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M2.5 10s2.7-4 7.5-4 7.5 4 7.5 4-2.7 4-7.5 4-7.5-4-7.5-4z"/><circle cx="10" cy="10" r="1.8"/></svg>
+							<span class="lp-icon-eye" aria-hidden="true"></span>
 							<?php esc_html_e( 'View', 'learnpress' ); ?>
 						</a>
 					<?php } else { ?>

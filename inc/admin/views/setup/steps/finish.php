@@ -24,7 +24,7 @@ if ( wp_is_block_theme() ) {
 	$learning_experience = __( 'Managed by Gutenberg theme', 'learnpress' );
 } else {
 	$course_layout       = ucfirst( $settings->get( 'layout_single_course', 'modern' ) );
-	$course_listing      = ucfirst( $settings->get( 'archive_courses_layout', 'list' ) );
+	$course_listing      = ucfirst( $settings->get( 'archive_courses_layout', 'grid' ) );
 	$learning_experience = sprintf(
 		/* translators: 1: single-course layout, 2: course-listing layout. */
 		__( '%1$s Single / %2$s Listing', 'learnpress' ),
@@ -94,19 +94,10 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 	<div class="lp-setup-finish__grid">
 
 		<!-- Configuration Summary -->
-		<div class="lp-setup-finish-card lp-setup-finish-summary">
+		<div class="lp-setup-finish-card lp-setup-card lp-setup-finish-summary">
 
 			<div class="lp-setup-finish-card__heading">
-				<span class="lp-setup-finish-card__heading-icon" aria-hidden="true">
-					<svg viewBox="0 0 24 24">
-						<rect x="3" y="4" width="18" height="16" rx="2"></rect>
-						<path d="M7 8h3"></path>
-						<path d="M14 8h3"></path>
-						<path d="M7 12h3"></path>
-						<path d="M14 12h3"></path>
-						<path d="M7 16h3"></path>
-					</svg>
-				</span>
+				<span class="lp-setup-finish-card__heading-icon lp-icon-list-check" aria-hidden="true"></span>
 
 				<strong>
 					<?php esc_html_e( 'Configuration Summary', 'learnpress' ); ?>
@@ -192,17 +183,10 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 		</div>
 
 		<!-- What to do next -->
-		<div class="lp-setup-finish-card lp-setup-finish-next">
+		<div class="lp-setup-finish-card lp-setup-card lp-setup-finish-next">
 
 			<div class="lp-setup-finish-card__heading">
-				<span class="lp-setup-finish-card__heading-icon" aria-hidden="true">
-					<svg viewBox="0 0 24 24">
-						<path d="M6 3h9l4 4v14H6z"></path>
-						<path d="M15 3v5h5"></path>
-						<path d="M9 12h6"></path>
-						<path d="M9 16h4"></path>
-					</svg>
-				</span>
+				<span class="lp-setup-finish-card__heading-icon lp-icon-file-text-o" aria-hidden="true"></span>
 
 				<strong>
 					<?php esc_html_e( 'What to do next?', 'learnpress' ); ?>
@@ -212,7 +196,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 			<div class="lp-setup-finish-next__actions">
 
 				<a
-					class="lp-button lp-setup-finish__button lp-setup-finish__button--primary"
+					class="button button-primary lp-setup-finish__button"
 					href="<?php echo esc_url( admin_url( 'post-new.php?post_type=lp_course' ) ); ?>"
 				>
 					<?php esc_html_e( 'Create Your First Course', 'learnpress' ); ?>
@@ -230,7 +214,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 					<!-- IDLE -->
 					<button
 						type="button"
-						class="lp-button lp-setup-finish__button lp-setup-demo-course__install"
+						class="button lp-setup-finish__button lp-setup-demo-course__install"
 						id="install-sample-course"
 					>
 						<?php esc_html_e( 'Install Demo Course', 'learnpress' ); ?>
@@ -240,12 +224,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 					<div class="lp-setup-demo-course__progress">
 
 						<div class="lp-setup-demo-course__progress-title">
-							<span class="lp-setup-demo-course__spinner">
-								<svg viewBox="0 0 24 24">
-									<path d="M20 11a8 8 0 1 0-2.3 5.7"></path>
-									<path d="M20 5v6h-6"></path>
-								</svg>
-							</span>
+							<span class="lp-setup-demo-course__spinner lp-icon-spinner" aria-hidden="true"></span>
 
 							<strong>
 								<?php esc_html_e( 'Installing Demo Course...', 'learnpress' ); ?>
@@ -264,7 +243,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 							</strong>
 						</div>
 
-						<div class="lp-setup-demo-course__bar">
+						<div class="lp-progress-bar lp-setup-demo-course__bar">
 							<span style="width: 0;"></span>
 						</div>
 
@@ -274,12 +253,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 					<div class="lp-setup-demo-course__complete">
 
 						<div class="lp-setup-demo-course__complete-title">
-							<span>
-								<svg viewBox="0 0 24 24">
-									<circle cx="12" cy="12" r="9"></circle>
-									<path d="m8 12 3 3 5-6"></path>
-								</svg>
-							</span>
+							<span class="lp-icon-check-circle" aria-hidden="true"></span>
 
 							<strong>
 								<span class="lp-setup-demo-course__complete-count">0</span>
@@ -310,16 +284,16 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 							</strong>
 						</div>
 
-						<div class="lp-setup-demo-course__bar">
+						<div class="lp-progress-bar lp-setup-demo-course__bar">
 							<span style="width: 100%;"></span>
 						</div>
 
 					</div>
 
-					<div class="lp-setup-demo-course__error" role="alert">
+					<div class="learn-press-message error lp-setup-demo-course__error" role="alert">
 						<strong><?php esc_html_e( 'Demo course installation failed.', 'learnpress' ); ?></strong>
 						<span class="lp-setup-demo-course__error-message"></span>
-						<button type="button" class="lp-button lp-setup-demo-course__retry">
+						<button type="button" class="button-link lp-setup-demo-course__retry">
 							<?php esc_html_e( 'Try again', 'learnpress' ); ?>
 						</button>
 					</div>
@@ -327,7 +301,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 				</div>
 
 				<a
-					class="lp-button lp-setup-finish__button"
+					class="button lp-setup-finish__button"
 					href="<?php echo esc_url(
 						admin_url( 'admin.php?page=learn-press-settings' )
 					); ?>"
@@ -340,7 +314,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 					href="<?php echo esc_url( LearnPress::$doc_link ); ?>"
 					target="_blank"
 				>
-					<?php esc_html_e( 'Read LearnPress Documentation', 'learnpress' ); ?>
+					<?php esc_html_e( 'Documentation', 'learnpress' ); ?>
 				</a>
 
 			</div>

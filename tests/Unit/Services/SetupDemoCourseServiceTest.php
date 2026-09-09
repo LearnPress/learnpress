@@ -4,6 +4,7 @@ declare( strict_types=1 );
 
 namespace LearnPress\Tests\Unit\Services;
 
+use Brain\Monkey\Functions;
 use Exception;
 use LearnPress\Services\SetupDemoCourseService;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
@@ -13,6 +14,14 @@ class SetupDemoCourseServiceTest extends BrainMonkeyTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
+		Functions\when( 'sanitize_title' )->alias(
+			static fn( $value ) => strtolower( trim( preg_replace( '/[^a-z0-9]+/i', '-', (string) $value ), '-' ) )
+		);
+		Functions\when( 'sanitize_text_field' )->returnArg();
+		Functions\when( 'sanitize_textarea_field' )->returnArg();
+		Functions\when( 'sanitize_key' )->returnArg();
+		Functions\when( 'wp_kses_post' )->returnArg();
+		Functions\when( 'admin_url' )->alias( static fn( $path ) => 'https://example.test/wp-admin/' . $path );
 		$this->json_file = tempnam( sys_get_temp_dir(), 'lp-demo-' );
 	}
 
@@ -30,7 +39,8 @@ class SetupDemoCourseServiceTest extends BrainMonkeyTestCase {
 		$courses = $service->load_courses();
 
 		$this->assertCount( 1, $courses );
-		$this->assertSame( 'course-one', $courses[0]['slug'] );
+		$this->assertSame( 'Course One', $courses[0]['title'] );
+		$this->assertArrayNotHasKey( 'slug', $courses[0] );
 		$this->assertCount( 5, $courses[0]['section']['lessons'] );
 	}
 
@@ -44,12 +54,12 @@ class SetupDemoCourseServiceTest extends BrainMonkeyTestCase {
 		$this->make_service()->load_courses();
 	}
 
-	public function test_load_courses_rejects_duplicate_slugs(): void {
+	public function test_load_courses_rejects_duplicate_titles(): void {
 		$data = $this->course_data();
 		file_put_contents( $this->json_file, json_encode( array( 'courses' => array( $data, $data ) ) ) );
 
 		$this->expectException( Exception::class );
-		$this->expectExceptionMessage( 'unique slug' );
+		$this->expectExceptionMessage( 'unique title' );
 		$this->make_service()->load_courses();
 	}
 
@@ -72,15 +82,14 @@ class SetupDemoCourseServiceTest extends BrainMonkeyTestCase {
 		return new SetupDemoCourseService( $this->json_file, 'file_get_contents' );
 	}
 
-	private function course_data( string $slug = 'course-one' ): array {
+	private function course_data( string $title = 'Course One' ): array {
 		$lessons = array();
 		for ( $i = 1; $i <= 5; $i++ ) {
 			$lessons[] = array( 'title' => "Lesson {$i}", 'content' => "Content {$i}" );
 		}
 
 		return array(
-			'slug'    => $slug,
-			'title'   => ucwords( str_replace( '-', ' ', $slug ) ),
+			'title'   => $title,
 			'content' => 'Course content',
 			'section' => array( 'title' => 'Introduction', 'lessons' => $lessons ),
 		);

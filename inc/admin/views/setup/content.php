@@ -44,7 +44,7 @@ $wizard_step_keys = array_keys( $wizard_steps );
 			<?php if ( $is_welcome_step ) { ?>
 				<div class="buttons">
 					<button type="button" class="lp-button button button-next button-primary" data-next-url="<?php echo esc_url( $next_url ); ?>">
-						<?php echo wp_kses_post( $step['next_button'] ); ?>
+						<span class="lp-setup-button__label"><?php echo wp_kses_post( $step['next_button'] ); ?></span>
 					</button>
 					<a class="button-dismiss-setup" href="<?php echo esc_url( admin_url( 'index.php' ) ); ?>">
 						<?php esc_html_e( 'Dismiss Setup Wizard', 'learnpress' ); ?>
@@ -75,7 +75,7 @@ $wizard_step_keys = array_keys( $wizard_steps );
 							<li class="<?php echo esc_attr( $item_class ); ?>">
 								<span class="lp-setup-stepper__number">
 									<?php if ( false !== strpos( $item_class, 'is-complete' ) ) { ?>
-										<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m4 8 2.5 2.5L12 5"/></svg>
+										<span class="lp-icon-check" aria-hidden="true"></span>
 									<?php } else { ?>
 										<?php echo esc_html( $step_position + 1 ); ?>
 									<?php } ?>
@@ -88,14 +88,14 @@ $wizard_step_keys = array_keys( $wizard_steps );
 					<div class="lp-setup-footer-bar__controls">
 						<?php if ( $is_finish_step ) { ?>
 							<button type="button" class="lp-button button button-next button-primary" data-next-url="<?php echo esc_url( $next_url ); ?>">
-								<?php esc_html_e( 'Go to Dashboard', 'learnpress' ); ?>
+								<span class="lp-setup-button__label"><?php esc_html_e( 'Go to Dashboard', 'learnpress' ); ?></span>
 							</button>
 						<?php } else { ?>
-							<a class="lp-button button-skip-next" href="<?php echo esc_url( $next_url ); ?>">
+							<a class="lp-button button-link button-skip-next" href="<?php echo esc_url( $next_url ); ?>">
 								<?php esc_html_e( 'Skip this step', 'learnpress' ); ?>
 							</a>
 							<button type="button" class="lp-button button button-next button-primary" data-next-url="<?php echo esc_url( $next_url ); ?>">
-								<?php echo ! empty( $step['next_button'] ) ? wp_kses_post( $step['next_button'] ) : esc_html__( 'Next', 'learnpress' ); ?>
+								<span class="lp-setup-button__label"><?php echo ! empty( $step['next_button'] ) ? wp_kses_post( $step['next_button'] ) : esc_html__( 'Next', 'learnpress' ); ?></span>
 							</button>
 						<?php } ?>
 					</div>
@@ -103,5 +103,4 @@ $wizard_step_keys = array_keys( $wizard_steps );
 			<?php } ?>
 		<?php } ?>
 	</form>
-	<span class="icon-loading"></span>
 </div>

@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 $is_block_theme = wp_is_block_theme();
 $course_layout  = LP_Settings::get_option( 'layout_single_course', 'modern' );
-$course_listing = LP_Settings::get_option( 'archive_courses_layout', 'list' );
+$course_listing = LP_Settings::get_option( 'archive_courses_layout', 'grid' );
 $auto_enroll    = LP_Settings::get_option( 'auto_enroll', 'yes' );
 $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 ?>
@@ -29,7 +29,7 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 			<label class="lp-setup-choice">
 				<input type="radio" name="settings[course][layout_single_course]" value="modern"
 					<?php checked( $course_layout, 'modern' ); ?><?php disabled( $is_block_theme ); ?>>
-				<span class="lp-setup-choice__card">
+				<span class="lp-setup-choice__card lp-setup-card">
 					<span class="lp-setup-choice__icon" aria-hidden="true">
 						<svg viewBox="0 0 24 24" focusable="false"><path d="M4 5h16v14H4zM4 9h16M9 9v10"/></svg>
 					</span>
@@ -43,7 +43,7 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 			<label class="lp-setup-choice">
 				<input type="radio" name="settings[course][layout_single_course]" value="classic"
 					<?php checked( $course_layout, 'classic' ); ?><?php disabled( $is_block_theme ); ?>>
-				<span class="lp-setup-choice__card">
+				<span class="lp-setup-choice__card lp-setup-card">
 					<span class="lp-setup-choice__icon" aria-hidden="true">
 						<svg viewBox="0 0 24 24" focusable="false"><path d="M5 4h5v16H5zM14 8h5v12h-5z"/></svg>
 					</span>
@@ -62,9 +62,9 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 			<label class="lp-setup-choice">
 				<input type="radio" name="settings[course][archive_courses_layout]" value="grid"
 					<?php checked( $course_listing, 'grid' ); ?><?php disabled( $is_block_theme ); ?>>
-				<span class="lp-setup-choice__card">
+				<span class="lp-setup-choice__card lp-setup-card">
 					<span class="lp-setup-choice__icon" aria-hidden="true">
-						<svg viewBox="0 0 24 24" focusable="false"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+						<span class="lp-icon-th"></span>
 					</span>
 					<span class="lp-setup-choice__content">
 						<strong><?php esc_html_e( 'Grid', 'learnpress' ); ?></strong>
@@ -76,9 +76,9 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 			<label class="lp-setup-choice">
 				<input type="radio" name="settings[course][archive_courses_layout]" value="list"
 					<?php checked( $course_listing, 'list' ); ?><?php disabled( $is_block_theme ); ?>>
-				<span class="lp-setup-choice__card">
+				<span class="lp-setup-choice__card lp-setup-card">
 					<span class="lp-setup-choice__icon" aria-hidden="true">
-						<svg viewBox="0 0 24 24" focusable="false"><path d="M9 6h11M9 12h11M9 18h11M4 6h1M4 12h1M4 18h1"/></svg>
+						<span class="lp-icon-th-list"></span>
 					</span>
 					<span class="lp-setup-choice__content">
 						<strong><?php esc_html_e( 'List', 'learnpress' ); ?></strong>
@@ -92,7 +92,7 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 	<fieldset class="lp-setup-choice-group lp-setup-choice-group--enrollment">
 		<legend><?php esc_html_e( 'Course Enrollment', 'learnpress' ); ?></legend>
 		<div class="lp-setup-choice lp-setup-choice--wide">
-			<span class="lp-setup-choice__card">
+			<span class="lp-setup-choice__card lp-setup-card">
 				<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'settings[course][auto_enroll]', 'value' => 'yes' === $auto_enroll, 'classes' => 'lp-setup-auto-enroll' ) ); ?>
 				<span class="lp-setup-choice__content">
 					<strong><?php esc_html_e( 'Start courses automatically after purchase', 'learnpress' ); ?></strong>

@@ -82,14 +82,9 @@ $has_enabled_notifications = $enabled_notifications === count( $email_notificati
 		</p>
 	</div>
 
-	<div class="lp-setup-emails__master">
+	<div class="lp-setup-emails__master lp-setup-card">
 		<div class="lp-setup-emails__master-content">
-			<span class="lp-setup-emails__mail-icon" aria-hidden="true">
-				<svg viewBox="0 0 24 24">
-					<rect x="3" y="5" width="18" height="14" rx="2"></rect>
-					<path d="M4 7l8 6 8-6"></path>
-				</svg>
-			</span>
+			<span class="lp-setup-emails__mail-icon lp-icon-envelope-o" aria-hidden="true"></span>
 
 			<strong>
 				<?php esc_html_e( 'Enable All Email Notifications', 'learnpress' ); ?>
@@ -100,7 +95,7 @@ $has_enabled_notifications = $enabled_notifications === count( $email_notificati
 		<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'email_notifications_master', 'value' => $has_enabled_notifications, 'classes' => 'lp-setup-email-master' ) ); ?>
 	</div>
 
-	<div class="lp-setup-emails__table-wrap">
+	<div class="lp-setup-emails__table-wrap lp-setup-card">
 		<table class="lp-setup-emails__table">
 			<thead>
 				<tr>

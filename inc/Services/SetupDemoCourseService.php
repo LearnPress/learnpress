@@ -40,7 +40,7 @@ class SetupDemoCourseService {
 	 * @param callable|null $file_reader Optional callback for reading the JSON source.
 	 */
 	public function __construct( string $json_file = '', ?callable $file_reader = null ) {
-		$this->json_file = $json_file ?: LP_PLUGIN_PATH . '/inc/admin/setup/demo-data-courses.json';
+		$this->json_file   = '' !== $json_file ? $json_file : LP_PLUGIN_PATH . '/inc/admin/setup/demo-data-courses.json';
 		$this->file_reader = $file_reader;
 	}
 
@@ -64,7 +64,7 @@ class SetupDemoCourseService {
 			throw new Exception( __( 'The demo course data file is missing.', 'learnpress' ) );
 		}
 
-		$data    = json_decode( (string) $content, true );
+		$data = json_decode( (string) $content, true );
 		if ( JSON_ERROR_NONE !== json_last_error() || ! is_array( $data ) || ! isset( $data['courses'] ) || ! is_array( $data['courses'] ) ) {
 			throw new Exception( __( 'The demo course data file is invalid.', 'learnpress' ) );
 		}
@@ -74,15 +74,16 @@ class SetupDemoCourseService {
 		}
 
 		$courses = array();
-		$slugs   = array();
+		$titles  = array();
 		foreach ( $data['courses'] as $course ) {
 			$normalized = $this->normalize_course( $course );
-			if ( isset( $slugs[ $normalized['slug'] ] ) ) {
-				throw new Exception( __( 'Every demo course must have a unique slug.', 'learnpress' ) );
+			$title_key  = sanitize_title( $normalized['title'] );
+			if ( isset( $titles[ $title_key ] ) ) {
+				throw new Exception( __( 'Every demo course must have a unique title.', 'learnpress' ) );
 			}
 
-			$slugs[ $normalized['slug'] ] = true;
-			$courses[]                     = $normalized;
+			$titles[ $title_key ] = true;
+			$courses[]            = $normalized;
 		}
 
 		return $courses;
@@ -101,8 +102,8 @@ class SetupDemoCourseService {
 		}
 
 		$course      = $courses[ $index ];
-		$existing_id = $this->find_existing_course( $course['slug'] );
-		$course_id   = $existing_id ?: $this->persist_course( $course );
+		$existing_id = $this->find_existing_course( sanitize_title( $course['title'] ) );
+		$course_id   = $existing_id ? $existing_id : $this->persist_course( $course );
 		$processed   = $index + 1;
 
 		return array(
@@ -127,10 +128,9 @@ class SetupDemoCourseService {
 			throw new Exception( __( 'Each demo course must be an object.', 'learnpress' ) );
 		}
 
-		$slug  = sanitize_title( $course['slug'] ?? '' );
 		$title = sanitize_text_field( $course['title'] ?? '' );
-		if ( '' === $slug || '' === $title ) {
-			throw new Exception( __( 'Every demo course requires a slug and title.', 'learnpress' ) );
+		if ( '' === $title ) {
+			throw new Exception( __( 'Every demo course requires a title.', 'learnpress' ) );
 		}
 
 		$section = $course['section'] ?? array();
@@ -162,7 +162,6 @@ class SetupDemoCourseService {
 		}
 
 		return array(
-			'slug'    => $slug,
 			'title'   => $title,
 			'content' => wp_kses_post( $course['content'] ?? '' ),
 			'excerpt' => sanitize_textarea_field( $course['excerpt'] ?? '' ),
@@ -178,11 +177,11 @@ class SetupDemoCourseService {
 	/**
 	 * Find a course previously created from the same demo source.
 	 *
-	 * @param string $slug Demo course slug.
+	 * @param string $source_key Demo course identifier derived from its title.
 	 *
 	 * @return int
 	 */
-	protected function find_existing_course( string $slug ): int {
+	protected function find_existing_course( string $source_key ): int {
 		$ids = get_posts(
 			array(
 				'post_type'      => LP_COURSE_CPT,
@@ -190,7 +189,7 @@ class SetupDemoCourseService {
 				'fields'         => 'ids',
 				'posts_per_page' => 1,
 				'meta_key'       => self::META_KEY_SOURCE_SLUG,
-				'meta_value'     => $slug,
+				'meta_value'     => $source_key,
 			)
 		);
 
@@ -209,7 +208,6 @@ class SetupDemoCourseService {
 		$course_model = CourseService::instance()->create_info_main(
 			array(
 				'post_title'   => $course['title'],
-				'post_name'    => $course['slug'],
 				'post_content' => $course['content'],
 				'post_excerpt' => $course['excerpt'],
 				'post_status'  => $course['status'],
@@ -253,7 +251,7 @@ class SetupDemoCourseService {
 				);
 			}
 
-			update_post_meta( $course_model->get_id(), self::META_KEY_SOURCE_SLUG, $course['slug'] );
+			update_post_meta( $course_model->get_id(), self::META_KEY_SOURCE_SLUG, sanitize_title( $course['title'] ) );
 		} catch ( Throwable $error ) {
 			$course_model->delete();
 			throw $error;

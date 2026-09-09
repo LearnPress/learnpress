@@ -31,11 +31,11 @@ $paypal_enabled      = 'yes' === $settings->get( 'paypal.enable', 'no' );
 
 	<section class="lp-setup-payment__section">
 		<h3><?php esc_html_e( 'Currency Settings', 'learnpress' ); ?></h3>
-		<div class="lp-setup-currency-panel">
+		<div class="lp-setup-currency-panel lp-setup-card">
 			<div class="lp-setup-currency-presets">
-				<span class="lp-setup-currency-presets__label"><?php esc_html_e( 'QUICK PICK PRESET:', 'learnpress' ); ?></span>
+				<span class="lp-setup-currency-presets__label"><?php esc_html_e( 'Quick Pick preset :', 'learnpress' ); ?></span>
 				<?php foreach ( $currency_presets as $preset_code => $preset ) { ?>
-					<button type="button" class="lp-setup-currency-preset<?php echo $currency === $preset_code ? ' is-active' : ''; ?>" data-currency-preset="<?php echo esc_attr( $preset_code ); ?>">
+					<button type="button" class="button lp-setup-currency-preset<?php echo $currency === $preset_code ? ' is-active' : ''; ?>" data-currency-preset="<?php echo esc_attr( $preset_code ); ?>">
 						<span aria-hidden="true"><?php echo esc_html( $preset['flag'] ); ?></span>
 						<?php echo esc_html( $preset['label'] ); ?>
 					</button>
@@ -81,8 +81,8 @@ $paypal_enabled      = 'yes' === $settings->get( 'paypal.enable', 'no' );
 
 	<section class="lp-setup-payment__section lp-setup-payment__section--gateways">
 		<h3><?php esc_html_e( 'Payment Gateways', 'learnpress' ); ?></h3>
-		<article class="lp-setup-gateway-card">
-			<div class="lp-setup-gateway-card__icon lp-setup-gateway-card__icon--offline" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 18h18M2 21h20M12 3 3 8h18z"/></svg></div>
+		<article class="lp-setup-gateway-card lp-setup-card">
+			<div class="lp-setup-gateway-card__icon lp-setup-gateway-card__icon--offline" aria-hidden="true"><span class="lp-icon-money-bill-alt"></span></div>
 			<div class="lp-setup-gateway-card__content">
 				<strong><?php esc_html_e( 'Offline / Manual Payment', 'learnpress' ); ?></strong>
 				<span><?php esc_html_e( 'Allow students to pay via bank transfer or cash.', 'learnpress' ); ?></span>
@@ -91,12 +91,12 @@ $paypal_enabled      = 'yes' === $settings->get( 'paypal.enable', 'no' );
 			<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'settings[offline-payment][enable]', 'value' => $offline_enabled, 'classes' => 'lp-setup-gateway-toggle' ) ); ?>
 		</article>
 
-		<article class="lp-setup-gateway-card lp-setup-gateway-card--paypal">
+		<article class="lp-setup-gateway-card lp-setup-gateway-card--paypal lp-setup-card">
 			<div class="lp-setup-gateway-card__icon lp-setup-gateway-card__icon--paypal" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9.2 4h6.1c3 0 4.8 1.7 4.3 4.5-.6 3.3-3 5.1-6.4 5.1h-1.7L10.7 18H6.5z"/><path d="M7.2 7h6.1c3 0 4.8 1.7 4.3 4.5-.6 3.3-3 5.1-6.4 5.1H9.5L8.7 21H4.5z"/></svg></div>
 			<div class="lp-setup-gateway-card__content">
 				<strong><?php esc_html_e( 'PayPal Standard', 'learnpress' ); ?></strong>
 				<span><?php esc_html_e( 'Accept credit cards and PayPal balance online worldwide.', 'learnpress' ); ?></span>
-				<a class="lp-setup-connect-paypal" href="<?php echo esc_url( $paypal_settings_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Connect with PayPal', 'learnpress' ); ?></a>
+				<a class="button button-primary lp-setup-connect-paypal" href="<?php echo esc_url( $paypal_settings_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Connect with PayPal', 'learnpress' ); ?></a>
 			</div>
 			<span class="screen-reader-text"><?php esc_html_e( 'Enable PayPal Standard', 'learnpress' ); ?></span>
 			<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'settings[paypal][enable]', 'value' => $paypal_enabled, 'classes' => 'lp-setup-gateway-toggle' ) ); ?>

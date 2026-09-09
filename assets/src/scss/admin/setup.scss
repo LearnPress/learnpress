@@ -1,366 +1,144 @@
-/* The animation code */
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    50% {
-        transform: rotate(180deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes spin-back {
-    0% {
-        transform: rotate(0deg);
-    }
-    50% {
-        transform: rotate(-180deg);
-    }
-    100% {
-        transform: rotate(-360deg);
-    }
-}
+@import "../course-builder/variables";
 
 .lp-setup {
-    background: #FFF;
-}
-.lp-setup, .lp-update-database {
-    color: #777;
+    margin: 0;
+    background: $cb-bg;
+    color: $cb-text-muted;
 
-    h1, h2, h3, h4, h5, h6 {
-        color: #777;
-        font-weight: normal;
-    }
+    input[type='text'],
+    input[type='email'],
+    input[type='number'],
+    input[type='password'],
+    input[type='search'],
+    input[type='tel'],
+    input[type='url'],
+    select,
+    textarea {
+        box-sizing: border-box;
+        min-height: 34px;
+        padding: 6px 12px;
+        border: 1px solid $cb-border-input;
+        border-radius: $cb-radius;
+        color: $cb-text-label;
+        background: $cb-bg;
+        font-size: $cb-font-md;
 
-    h2 {
-        font-size: 1.5rem;
-        border-bottom: 1px solid #EEE;
-        padding-bottom: 20px;
-    }
+        &::placeholder {
+            color: $cb-text-placeholder;
+        }
 
-    p {
-        &.large-text {
-            font-size: 1rem;
-            margin: 0 0 20px 0;
+        &:focus {
+            border-color: $cb-primary;
+            outline: none;
+            box-shadow: $cb-focus-ring;
+        }
+
+        &:disabled {
+            color: $cb-text-placeholder;
+            background: $cb-bg-subtle;
+            cursor: not-allowed;
         }
     }
 
-    a {
-        font-size: 0.8125rem;
+    select {
+        padding-right: 30px;
+        cursor: pointer;
+    }
+
+    .button-primary {
+        border-radius: $cb-radius;
+        border-color: $cb-primary;
+        color: $cb-bg;
+        background: $cb-primary;
+
+        &:hover,
+        &:focus {
+            border-color: $cb-primary-hover;
+            color: $cb-bg;
+            background: $cb-primary-hover;
+        }
+
+        &:focus {
+            box-shadow: $cb-focus-ring;
+        }
+
+        &:disabled,
+        &.disabled {
+            border-color: $cb-border-input;
+            color: $cb-text-placeholder;
+            background: $cb-bg-subtle;
+        }
+
+        &.loading[aria-disabled='true'] {
+            border-color: $cb-primary;
+            color: transparent;
+            background: $cb-primary;
+            opacity: 1;
+        }
+    }
+
+    .button-next.loading {
+        position: relative;
+        color: transparent;
+        text-shadow: none;
+
+        .lp-setup-button__label {
+            visibility: hidden;
+        }
+
+        &::before {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: $cb-bg !important;
+            font-size: $cb-font-lg;
+        }
+    }
+
+    .button:not(.button-primary) {
+        border-radius: $cb-radius;
+        border-color: $cb-border-input;
+        color: $cb-text-secondary;
+        background: $cb-bg;
+
+        &:hover,
+        &:focus {
+            border-color: $cb-primary;
+            color: $cb-primary;
+            background: $cb-bg-hover;
+        }
+    }
+
+    .lp-toggle-enable {
+        .lp-toggle-enable__track {
+            background: $cb-border-input;
+        }
+
+        .lp-toggle-enable__label {
+            color: $cb-text-muted;
+        }
+
+        &.is-enabled {
+            .lp-toggle-enable__track {
+                background: $cb-success;
+            }
+
+            .lp-toggle-enable__label {
+                color: $cb-success;
+            }
+        }
+
+        .lp-toggle-enable__input:focus-visible ~ .lp-toggle-enable__track {
+            outline-color: $cb-primary;
+            box-shadow: $cb-focus-ring;
+        }
     }
 
     .logo {
         text-align: center;
-    }
-
-    #content {
-        max-width: 90%;
-        width: 900px;
-        margin: 40px auto 20px auto;
-    }
-
-    #main {
-        background: #FFF;
-        padding: 20px;
-        border: 1px solid #ececec;
-        margin-bottom: 20px;
-        position: relative;
-
-        .description {
-            font-size: 0.8125rem;
-            font-style: italic;
-        }
-
-        &.loading {
-            &:after {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: 10;
-                background: #FFF;
-                opacity: 0.5;
-            }
-
-            .icon-loading {
-                display: block;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 20px;
-                height: 20px;
-                margin-left: -10px;
-                margin-top: -10px;
-                z-index: 15;
-
-                &:before,
-                &:after {
-                    width: 20px;
-                    height: 20px;
-                    top: 0;
-                    left: 0;
-                    content: '';
-                    position: absolute;
-                }
-
-                &:before {
-                    background: #e2e2e2;
-                    animation-name: spin;
-                    animation-duration: 4s;
-                    animation-iteration-count: infinite;
-                    animation-delay: 0s;
-                }
-
-                &:after {
-                    background: #39a1e5;
-                    animation-name: spin-back;
-                    animation-duration: 4s;
-                    animation-iteration-count: infinite;
-                    animation-delay: 0s;
-                }
-            }
-        }
-    }
-
-    .lp-setup-nav {
-        position: relative;
-    }
-
-    .lp-setup-steps {
-        list-style: none;
-        margin: 0;
-        padding: 0 0 20px 0;
-        display: flex;
-        position: relative;
-
-        li {
-            list-style: none;
-            flex: 1;
-            text-align: center;
-            margin: 0;
-            position: relative;
-
-            &.active {
-                span {
-                    font-weight: bold;
-                    color: #564079;
-                }
-
-                &:before {
-                    content: '';
-                    height: 6px;
-                    width: 100%;
-                    border-radius: 3px;
-                    background: #ffc106;
-                    left: 0;
-                    position: absolute;
-                    bottom: -20px;
-                    z-index: 10;
-                }
-
-                &:after {
-                    width: 8px;
-                    height: 8px;
-                    position: absolute;
-                    background: #ffc106;
-                    transform: rotate(45deg);
-                    left: 50%;
-                    bottom: -18px;
-                    margin-left: -5px;
-                    content: '';
-                }
-            }
-        }
-    }
-
-    .lp-setup-progress,
-    .lp-setup-progress .active {
-        width: 100%;
-        height: 6px;
-        left: 0;
-        bottom: 0;
-        background: #DDD;
-        position: absolute;
-        border-radius: 3px;
-    }
-
-    .lp-setup-progress {
-        .active {
-            background: #ffc106;
-            width: 50%;
-        }
-    }
-
-    footer {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 0 20px;
-        text-align: center;
-    }
-
-    .buttons {
-        text-align: right;
-        border-top: 1px solid #EEE;
-        padding-top: 20px;
-
-        .button-prev {
-            float: left;
-        }
-    }
-    .button-skip-next,
-    .button-skip-prev {
-        position: relative;
-        float: left;
-        margin-right: 4px;
-        border-color: transparent;
-        opacity: 0.7;
-        padding: 0;
-        text-decoration: none;
-
-        &::after {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 0;
-            height: 1px;
-            background: currentColor;
-            content: '';
-            transition: width 0.3s ease;
-        }
-
-        &:hover {
-            opacity: 1;
-
-            &::after {
-                right: auto;
-                left: 0;
-                width: 100%;
-            }
-        }
-    }
-
-    .button-dashboard-page {
-        vertical-align: middle;
-        margin: 5px;
-        display: inline-block;
-    }
-
-    table {
-        width: 100%;
-        font-size: 0.875rem;
-
-        th, td {
-            padding: 8px 8px 8px 0;
-            font-weight: normal;
-            vertical-align: top;
-            text-align: left;
-        }
-
-        th {
-            width: 33%;
-            text-align: left;
-        }
-    }
-
-    .browse-payments {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-
-        li.payment {
-            padding: 0 0 10px 0;
-            margin: 0;
-
-            > h3 {
-                padding: 20px 0;
-                margin: 0;
-            }
-
-            .payment-settings {
-                padding: 0 0 20px 0;
-            }
-
-            .payment-name {
-                img {
-                    max-height: 32px;
-                    vertical-align: middle;
-                    margin-left: 0px;
-                }
-            }
-
-            .payment-desc {
-                font-style: italic;
-            }
-        }
-    }
-
-    .finish-buttons {
-        text-align: right;
-
-        .button {
-            width: 300px;
-            display: inline-block;
-            margin-bottom: 20px;
-            font-size: 1.125rem;
-            height: 40px;
-            line-height: 2.5rem;
-            color: #777;
-            text-align: center;
-
-            &.button-primary {
-                color: #FFF;
-            }
-
-            &:nth-child(odd) {
-                float: left;
-            }
-        }
-    }
-
-    .learn-press-message {
-        background: #FAFAFA;
-        padding: 15px;
-        border-left: 3px solid #05B3FF;
-        margin: 0 0 20px 0;
-        font-size: 0.875rem;
-        border-radius: 4px;
-
-        &.error {
-            border-left-color: #FF0000;
-
-        }
-    }
-
-    #preview-price {
-        font-size: 1.125rem;
-        color: #FF0000;
-    }
-
-    .form-field {
-        th {
-            .learn-press-tip {
-                float: right;
-            }
-        }
-    }
-}
-
-.lp-setup .button-next {
-    position: relative;
-
-    &.loading:before {
-        position: absolute;
-        top: 50%;
-        inset-inline-start: 8px;
-        width: 14px;
-        height: 14px;
-        margin: -7px 0 0;
-        font-size: 14px;
-        line-height: 14px;
     }
 }
 
@@ -391,10 +169,6 @@
         margin: 27px 0 0;
         padding: 0;
         border: 0;
-
-        .lp-setup-nav {
-            display: none;
-        }
     }
 
     .lp-setup-content {
@@ -403,20 +177,16 @@
 
     .lp-setup-welcome {
         h2 {
-            margin: 10px 0 0;
-            padding: 0;
-            border: 0;
-            color: #222;
-            font-size: 48px;
-            font-weight: 600;
+            font-size: 60px;
+            font-weight: 700;
             line-height: 1.2;
+            margin: 8px 0 0 12px;
         }
 
         p {
-            margin: 13px 0 0;
-            color: #555;
-            font-size: 13px;
+            font-size: 16px;
             line-height: 1.5;
+            margin-bottom: 30px;
         }
     }
 
@@ -426,9 +196,9 @@
         box-sizing: border-box;
         min-height: 28px;
         padding: 0 13px;
-        border: 1px solid #7C2AE8;
-        border-radius: 16px;
-        color: #7026C7;
+        border: 1px solid $cb-primary;
+        border-radius: $cb-radius-xl;
+        color: $cb-primary-hover;
         font-size: 12px;
         font-weight: 500;
         line-height: 1;
@@ -439,8 +209,8 @@
         height: 8px;
         margin-right: 7px;
         border-radius: 50%;
-        background: #7C2AE8;
-        box-shadow: 0 0 0 3px #EADAFB;
+        background: $cb-primary;
+        box-shadow: 0 0 0 3px $cb-primary-bland;
     }
 
     .buttons {
@@ -450,33 +220,17 @@
         margin-top: 26px;
         padding: 0;
         border: 0;
-
         .button-next {
             min-height: 40px;
-            padding: 0 20px;
-            border-color: #FFB400;
-            border-radius: 4px;
-            background: #FFB400;
-            color: #FFF;
             font-size: 13px;
             font-weight: 600;
             line-height: 38px;
-            text-shadow: none;
-            box-shadow: none;
-
-            &:hover,
-            &:focus {
-                border-color: #E6A200;
-                background: #E6A200;
-                color: #FFF;
-            }
+            margin-bottom: 16px;
         }
 
         .button-dismiss-setup {
-            margin-top: 12px;
-            color: #555;
-            font-size: 13px;
-            line-height: 1.4;
+            font-size: 16px;
+            line-height: 1.5;
             text-decoration: underline;
             text-underline-offset: 3px;
         }
@@ -528,12 +282,19 @@
         display: none;
     }
 
+    .lp-setup-card {
+        box-sizing: border-box;
+        border: 1px solid $cb-border;
+        border-radius: $cb-radius-lg;
+        background: $cb-bg-card;
+    }
+
     .lp-setup-section-header {
         h2 {
             margin: 0;
             padding: 0;
             border: 0;
-            color: #252525;
+            color: $cb-text;
             font-size: 26px;
             font-weight: 600;
             line-height: 1.25;
@@ -541,7 +302,7 @@
 
         p {
             margin: 8px 0 0;
-            color: #555;
+            color: $cb-text-muted;
             font-size: 15px;
             line-height: 1.5;
         }
@@ -557,7 +318,7 @@
             display: block;
             width: 100%;
             padding: 0;
-            color: #2D2D2D;
+            color: $cb-text;
             font-size: 18px;
             font-weight: 600;
             line-height: 1.4;
@@ -597,16 +358,16 @@
             white-space: nowrap;
 
             &[type='radio']:checked + .lp-setup-choice__card {
-                border-color: #FFB400;
+                border-color: $cb-primary;
 
                 .lp-setup-choice__icon {
-                    color: #FFB400;
-                    background: #FFF7E3;
+                    color: $cb-primary;
+                    background: $cb-primary-bland;
                 }
             }
 
             &:focus-visible + .lp-setup-choice__card {
-                outline: 2px solid #2271B1;
+                outline: 2px solid $cb-primary;
                 outline-offset: 2px;
             }
         }
@@ -618,9 +379,6 @@
         box-sizing: border-box;
         min-height: 89px;
         padding: 18px 19px;
-        border: 1px solid #DDDAD6;
-        border-radius: 9px;
-        background: #FFF;
         transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
@@ -632,9 +390,9 @@
         width: 48px;
         height: 48px;
         margin-right: 16px;
-        border-radius: 9px;
-        color: #999;
-        background: #F5F5F5;
+        border-radius: $cb-radius-md;
+        color: $cb-text-subtle;
+        background: $cb-bg-hover;
 
         svg {
             width: 25px;
@@ -645,6 +403,11 @@
             stroke-linejoin: round;
             stroke-width: 2;
         }
+
+        [class^='lp-icon-'],
+        [class*=' lp-icon-'] {
+            font-size: 25px;
+        }
     }
 
     .lp-setup-choice__content {
@@ -653,7 +416,7 @@
         flex-direction: column;
 
         strong {
-            color: #2D2D2D;
+            color: $cb-text;
             font-size: 16px;
             font-weight: 600;
             line-height: 1.35;
@@ -661,7 +424,7 @@
 
         > span {
             margin-top: 3px;
-            color: #5F5F5F;
+            color: $cb-text-muted;
             font-size: 14px;
             line-height: 1.4;
         }
@@ -685,7 +448,7 @@
 
     .lp-setup-learning-experience__note {
         margin: 34px 0 0;
-        color: #666;
+        color: $cb-text-muted;
         font-size: 15px;
         line-height: 1.5;
         text-align: center;
@@ -703,8 +466,8 @@
         box-sizing: border-box;
         min-height: 88px;
         padding: 14px 32px;
-        border-top: 1px solid #E7E5E2;
-        background: #FFF;
+        border-top: 1px solid $cb-border;
+        background: $cb-bg;
     }
 
     .lp-setup-footer-bar__back {
@@ -716,37 +479,11 @@
             justify-content: center;
             box-sizing: border-box;
             min-width: 86px;
-            min-height: 48px;
-            padding: 0 24px;
-            border: 0;
-            border-radius: 4px;
-            color: #2D2D2D;
-            background: #EEE;
+            height: 48px;
+            padding: 0 18px;
             font-weight: 600;
             line-height: 1;
             text-align: center;
-            box-shadow: none;
-            transition:
-                background-color 0.2s ease,
-                color 0.2s ease,
-                transform 0.15s ease;
-
-            &:hover,
-            &:focus {
-                color: #1D1D1D;
-                background: #E2E2E2;
-                box-shadow: none;
-            }
-
-            &:active {
-                background: #D8D8D8;
-                transform: translateY(1px);
-            }
-
-            &:focus-visible {
-                outline: 2px solid #FFB400;
-                outline-offset: 2px;
-            }
         }
     }
 
@@ -765,7 +502,7 @@
         align-items: center;
         position: relative;
         margin: 0;
-        color: #4C4C4C;
+        color: $cb-text-secondary;
         font-size: 14px;
         white-space: nowrap;
         line-height: 28px;
@@ -773,7 +510,6 @@
         &:not(:last-child):after {
             position: absolute;
             right: -30px;
-            // color: #D9D6D1;
             content: '›';
             font-size: 30px;
             font-weight: 200;
@@ -783,20 +519,20 @@
         }
 
         &.is-active {
-            color: #F5A900;
+            color: $cb-primary;
 
             .lp-setup-stepper__number {
-                color: #FFF;
-                background: #FFB400;
+                color: $cb-bg;
+                background: $cb-primary;
             }
         }
 
         &.is-complete {
-            color: #00A866;
+            color: $cb-success;
 
             .lp-setup-stepper__number {
-                color: #FFF;
-                background: #00AD68;
+                color: $cb-bg;
+                background: $cb-success;
             }
         }
     }
@@ -809,8 +545,8 @@
         height: 28px;
         margin-right: 8px;
         border-radius: 50%;
-        color: #555;
-        background: #E7E5E2;
+        color: $cb-text-muted;
+        background: $cb-border;
         font-size: 14px;
         line-height: 1;
 
@@ -832,34 +568,39 @@
         gap: 18px;
 
         .button-skip-next {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            height: 48px;
             float: none;
             margin: 0;
-            color: #444;
+            padding: 0 4px;
+            border: 0;
+            color: $cb-link;
+            background: transparent;
             font-size: 14px;
             font-weight: 600;
+            line-height: 1;
             opacity: 1;
-            text-decoration: none;
-        }
-
-        .button-next {
-            min-height: 48px;
-            padding: 0 26px;
-            border-color: #FFB400;
-            border-radius: 4px;
-            color: #FFF;
-            background: #FFB400;
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 46px;
-            text-shadow: none;
-            box-shadow: none;
+            text-decoration: underline;
+            text-underline-offset: 2px;
 
             &:hover,
             &:focus {
-                border-color: #E6A200;
-                color: #FFF;
-                background: #E6A200;
+                color: $cb-primary-hover;
+                background: transparent;
+                box-shadow: none;
             }
+        }
+
+        .button-next {
+            min-width: 84px;
+            height: 48px;
+            padding: 0 18px;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1;
         }
     }
 
@@ -927,7 +668,11 @@
     }
 }
 
-.lp-setup-step--learning-experience {
+.lp-setup-step--learning-experience,
+.lp-setup-step--pages,
+.lp-setup-step--payment,
+.lp-setup-step--emails,
+.lp-setup-step--finish {
     #content {
         width: 910px;
         margin-top: 60px;
@@ -955,22 +700,6 @@
 }
 
 .lp-setup-step--pages {
-    #content {
-        width: 910px;
-        margin-top: 60px;
-        margin-bottom: 128px;
-    }
-
-    .lp-setup-footer-bar {
-        padding-right: 120px;
-        padding-left: 120px;
-    }
-
-    .lp-setup-footer-bar__back .button-prev {
-        min-width: 86px;
-        text-align: center;
-    }
-
     .lp-setup-system-pages__list {
         display: flex;
         flex-direction: column;
@@ -986,9 +715,6 @@
         min-height: 82px;
         margin: 0;
         padding: 16px 19px;
-        border: 1px solid #DDDAD6;
-        border-radius: 9px;
-        background: #FFF;
     }
 
     .lp-setup-page-card__content {
@@ -998,7 +724,7 @@
         h3 {
             margin: 0;
             padding: 0;
-            color: #2D2D2D;
+            color: $cb-text;
             font-size: 16px;
             font-weight: 600;
             line-height: 1.4;
@@ -1006,7 +732,7 @@
 
         p {
             margin: 2px 0 0;
-            color: #555;
+            color: $cb-text-muted;
             font-size: 14px;
             line-height: 1.4;
         }
@@ -1026,13 +752,15 @@
         min-height: 34px;
         padding: 5px 12px;
         border: 1px solid;
-        border-radius: 6px;
+        border-radius: $cb-radius;
         font-size: 14px;
         font-weight: 600;
         line-height: 1.3;
         white-space: nowrap;
 
-        svg {
+        svg,
+        [class^='lp-icon-'],
+        [class*=' lp-icon-'] {
             width: 16px;
             height: 16px;
             margin-right: 7px;
@@ -1046,33 +774,35 @@
     }
 
     .lp-setup-page-status--ready {
-        border-color: #00AD68;
-        color: #00A85F;
-        background: #F0FFF7;
+        border-color: $cb-success;
+        color: $cb-success;
+        background: $cb-success-bg;
 
         svg {
-            color: #FFF;
-            background: #00AD68;
+            color: $cb-bg;
+            background: $cb-success;
         }
     }
-
+ 
     .lp-setup-page-status--missing {
-        border-color: #D89B00;
-        color: #9A6D00;
-        background: #FFF8E5;
+        border-color: $cb-warning;
+        color: $cb-warning;
+        background: $cb-warning-bg;
     }
 
     .lp-setup-page-card__edit,
     .lp-setup-page-card__view {
         display: inline-flex;
         align-items: center;
-        color: #444;
+        color: $cb-text-secondary;
         font-size: 14px;
         font-weight: 500;
         line-height: 1.3;
         text-decoration: none;
 
-        svg {
+        svg,
+        [class^='lp-icon-'],
+        [class*=' lp-icon-'] {
             width: 18px;
             height: 18px;
             margin-right: 5px;
@@ -1085,14 +815,7 @@
 
         &:hover,
         &:focus {
-            color: #7C2AE8;
-        }
-    }
-
-    @media (max-width: 1050px) {
-        .lp-setup-footer-bar {
-            padding-right: 32px;
-            padding-left: 32px;
+            color: $cb-primary;
         }
     }
 
@@ -1119,28 +842,12 @@
 }
 
 .lp-setup-step--payment {
-    #content {
-        width: 910px;
-        margin-top: 60px;
-        margin-bottom: 128px;
-    }
-
-    .lp-setup-footer-bar {
-        padding-right: 120px;
-        padding-left: 120px;
-    }
-
-    .lp-setup-footer-bar__back .button-prev {
-        min-width: 86px;
-        text-align: center;
-    }
-
     .lp-setup-payment__section {
         margin-top: 31px;
 
         > h3 {
             margin: 0 0 14px;
-            color: #2D2D2D;
+            color: $cb-text;
             font-size: 18px;
             font-weight: 600;
             line-height: 1.4;
@@ -1149,9 +856,6 @@
 
     .lp-setup-currency-panel {
         overflow: hidden;
-        border: 1px solid #DDDAD6;
-        border-radius: 9px;
-        background: #FFF;
     }
 
     .lp-setup-currency-presets {
@@ -1160,32 +864,22 @@
         gap: 16px;
         min-height: 64px;
         padding: 0 16px;
-        border-bottom: 1px solid #DDDAD6;
+        border-bottom: 1px solid $cb-border;
     }
 
     .lp-setup-currency-presets__label {
         margin-right: 10px;
-        color: #555;
+        color: $cb-text-muted;
         font-size: 14px;
         font-weight: 500;
         white-space: nowrap;
     }
 
     .lp-setup-currency-preset {
-        min-height: 34px;
-        padding: 5px 12px;
-        border: 1px solid #DDDAD6;
-        border-radius: 0;
-        color: #333;
-        background: #FFF;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-
         &.is-active,
         &:hover,
         &:focus {
-            border-color: #FFB400;
+            border-color: $cb-primary;
             outline: 0;
         }
     }
@@ -1202,24 +896,8 @@
         grid-template-columns: 165px minmax(0, 1fr);
         align-items: center;
         gap: 12px;
-        color: #555;
+        color: $cb-text-muted;
         font-size: 15px;
-
-        select,
-        input {
-            box-sizing: border-box;
-            width: 100%;
-            max-width: none;
-            min-height: 48px;
-            margin: 0;
-            padding: 0 14px;
-            border: 1px solid #DDDAD6;
-            border-radius: 9px;
-            color: #333;
-            background-color: #FFF;
-            font-size: 15px;
-            box-shadow: none;
-        }
     }
 
     .lp-setup-payment__section--gateways {
@@ -1232,9 +910,6 @@
         box-sizing: border-box;
         min-height: 88px;
         padding: 18px 20px;
-        border: 1px solid #DDDAD6;
-        border-radius: 9px;
-        background: #FFF;
 
         + .lp-setup-gateway-card {
             margin-top: 16px;
@@ -1258,8 +933,8 @@
         width: 48px;
         height: 48px;
         margin-right: 16px;
-        border-radius: 9px;
-        background: #F6F6F6;
+        border-radius: $cb-radius-md;
+        background: $cb-bg-hover;
 
         svg {
             width: 28px;
@@ -1270,10 +945,15 @@
             stroke-linejoin: round;
             stroke-width: 1.7;
         }
+
+        [class^='lp-icon-'],
+        [class*=' lp-icon-'] {
+            font-size: 28px;
+        }
     }
 
     .lp-setup-gateway-card__icon--offline {
-        color: #FFB400;
+        color: $cb-warning;
     }
 
     .lp-setup-gateway-card__icon--paypal {
@@ -1297,7 +977,7 @@
         flex-direction: column;
 
         strong {
-            color: #2D2D2D;
+            color: $cb-text;
             font-size: 16px;
             font-weight: 600;
             line-height: 1.4;
@@ -1305,7 +985,7 @@
 
         > span {
             margin-top: 2px;
-            color: #555;
+            color: $cb-text-muted;
             font-size: 14px;
             line-height: 1.4;
         }
@@ -1315,35 +995,13 @@
         align-self: flex-start;
         min-height: 40px;
         margin-top: 18px;
-        padding: 0 16px;
-        border-radius: 4px;
-        color: #FFF;
-        background: #0073BD;
         font-size: 14px;
         font-weight: 600;
         line-height: 40px;
         text-decoration: none;
-
-        &:hover,
-        &:focus {
-            color: #FFF;
-            background: #005C99;
-        }
-    }
-
-    @media (max-width: 1050px) {
-        .lp-setup-footer-bar {
-            padding-right: 32px;
-            padding-left: 32px;
-        }
     }
 
     @media (max-width: 700px) {
-        #content {
-            margin-top: 40px;
-            margin-bottom: 120px;
-        }
-
         .lp-setup-currency-presets {
             align-items: stretch;
             flex-wrap: wrap;
@@ -1368,22 +1026,6 @@
     }
 }
 .lp-setup-step--emails {
-    #content {
-        width: 910px;
-        margin-top: 60px;
-        margin-bottom: 128px;
-    }
-
-    .lp-setup-footer-bar {
-        padding-right: 120px;
-        padding-left: 120px;
-    }
-
-    .lp-setup-footer-bar__back .button-prev {
-        min-width: 86px;
-        text-align: center;
-    }
-
     .lp-setup-emails {
         width: 100%;
     }
@@ -1396,9 +1038,8 @@
         min-height: 64px;
         margin-top: 31px;
         padding: 0 18px;
-        border: 1px solid #00AD68;
-        border-radius: 8px;
-        background: #F0FFF7;
+        border-color: $cb-success;
+        background: $cb-success-bg;
     }
 
     .lp-setup-emails__master-content {
@@ -1407,7 +1048,7 @@
         min-width: 0;
 
         strong {
-            color: #2D2D2D;
+            color: $cb-text;
             font-size: 15px;
             font-weight: 600;
             line-height: 1.4;
@@ -1422,25 +1063,17 @@
         width: 22px;
         height: 22px;
         margin-right: 10px;
-        color: #00AD68;
+        color: $cb-success;
 
-        svg {
-            width: 20px;
-            height: 20px;
-            fill: none;
-            stroke: currentColor;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 2;
-        }
+
+		&::before {
+			font-size: 20px;
+		}
     }
 
     .lp-setup-emails__table-wrap {
         overflow: hidden;
         margin-top: 31px;
-        border: 1px solid #DDDAD6;
-        border-radius: 8px;
-        background: #FFF;
     }
 
     .lp-setup-emails__table {
@@ -1458,13 +1091,13 @@
         }
 
         thead {
-            background: #F7F7F7;
+            background: $cb-bg-hover;
 
             th {
                 height: 52px;
                 padding: 0 16px;
                 vertical-align: middle;
-                color: #555;
+                color: $cb-text-muted;
                 font-size: 13px;
                 font-weight: 600;
                 line-height: 1.3;
@@ -1487,7 +1120,7 @@
 
         tbody {
             tr {
-                border-top: 1px solid #E7E5E2;
+                border-top: 1px solid $cb-border;
 
                 &:first-child {
                     border-top: 0;
@@ -1503,14 +1136,14 @@
     }
 
     .lp-setup-emails__name {
-        color: #2D2D2D;
+        color: $cb-text;
         font-size: 14px;
         font-weight: 600;
         line-height: 1.4;
     }
 
     .lp-setup-emails__description {
-        color: #555;
+        color: $cb-text-muted;
         font-size: 14px;
         font-weight: 400;
         line-height: 1.4;
@@ -1524,19 +1157,7 @@
         }
     }
 
-    @media (max-width: 1050px) {
-        .lp-setup-footer-bar {
-            padding-right: 32px;
-            padding-left: 32px;
-        }
-    }
-
     @media (max-width: 700px) {
-        #content {
-            margin-top: 40px;
-            margin-bottom: 120px;
-        }
-
         .lp-setup-emails__master {
             min-height: 60px;
         }
@@ -1551,22 +1172,14 @@
     }
 }
 .lp-setup-step--finish {
-    #content {
-        width: 910px;
-        margin-top: 60px;
-        margin-bottom: 128px;
-    }
-
     #main.lp-setup-main--wizard {
         margin-top: 54px;
     }
 
-    .lp-setup-footer-bar {
-        grid-template-columns: minmax(0, 1fr) auto auto minmax(0, 1fr);
-        column-gap: 24px;
-        padding-right: 120px;
-        padding-left: 120px;
-    }
+	.lp-setup-footer-bar {
+		grid-template-columns: minmax(0, 1fr) auto auto minmax(0, 1fr);
+		column-gap: 24px;
+	}
 
     .lp-setup-footer-bar__back {
         grid-column: 1;
@@ -1600,7 +1213,7 @@
             margin: 18px 0 0;
             padding: 0;
             border: 0;
-            color: #252525;
+            color: $cb-text;
             font-size: 23px;
             font-weight: 600;
             line-height: 1.3;
@@ -1608,7 +1221,7 @@
 
         p {
             margin: 7px 0 0;
-            color: #555;
+            color: $cb-text-muted;
             font-size: 14px;
             line-height: 1.45;
         }
@@ -1621,8 +1234,8 @@
         width: 58px;
         height: 58px;
         border-radius: 50%;
-        color: #EE5B9A;
-        background: #FFF0F7;
+        color: $cb-primary;
+        background: $cb-primary-bland;
 
         svg {
             width: 30px;
@@ -1649,19 +1262,15 @@
     // Common card
     //
     .lp-setup-finish-card {
-        box-sizing: border-box;
         min-height: 383px;
         padding: 20px;
-        border: 1px solid #DDDAD6;
-        border-radius: 8px;
-        background: #FFF;
     }
 
     .lp-setup-finish-card__heading {
         display: flex;
         align-items: center;
         min-height: 24px;
-        color: #2D2D2D;
+        color: $cb-text;
 
         > strong {
             font-size: 16px;
@@ -1678,7 +1287,7 @@
         width: 20px;
         height: 20px;
         margin-right: 9px;
-        color: #00AD68;
+        color: $cb-success;
 
         svg {
             width: 19px;
@@ -1704,20 +1313,20 @@
         align-items: center;
         gap: 20px;
         min-height: 44px;
-        border-top: 1px solid #E7E5E2;
+        border-top: 1px solid $cb-border;
 
         &:first-child {
             border-top: 0;
         }
 
         > span {
-            color: #777;
+            color: $cb-text-subtle;
             font-size: 14px;
             line-height: 1.4;
         }
 
         > strong {
-            color: #333;
+            color: $cb-text;
             font-size: 14px;
             font-weight: 600;
             line-height: 1.4;
@@ -1727,7 +1336,7 @@
         > a {
             display: inline-flex;
             align-items: center;
-            color: #F5A900;
+            color: $cb-link;
             font-size: 14px;
             font-weight: 500;
             line-height: 1.4;
@@ -1739,7 +1348,7 @@
 
             &:hover,
             &:focus {
-                color: #E39B00;
+                color: $cb-primary-hover;
             }
         }
     }
@@ -1748,11 +1357,11 @@
     // Next steps card
     //
     .lp-setup-finish-next {
-        border-color: #00AD68;
-        background: #F0FFF7;
+        border-color: $cb-primary;
+        background: $cb-primary-bland;
 
         .lp-setup-finish-card__heading {
-            color: #00A85F;
+            color: $cb-primary;
         }
     }
 
@@ -1766,50 +1375,20 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-sizing: border-box;
         width: 100%;
         min-height: 40px;
         margin: 0 0 12px;
-        padding: 7px 16px;
-        border: 1px solid #DDDAD6;
-        border-radius: 4px;
-        color: #444;
-        background: #FFF;
-        cursor: pointer;
-        font-family: inherit;
         font-size: 14px;
         font-weight: 500;
         line-height: 1.4;
         text-align: center;
         text-decoration: none;
-        box-shadow: none;
-
-        &:hover,
-        &:focus {
-            border-color: #C8C5C1;
-            color: #222;
-            background: #FFF;
-        }
-    }
-
-    .lp-setup-finish__button--primary {
-        border-color: #FFB400;
-        color: #FFF;
-        background: #FFB400;
-        font-weight: 600;
-
-        &:hover,
-        &:focus {
-            border-color: #E6A200;
-            color: #FFF;
-            background: #E6A200;
-        }
     }
 
     .lp-setup-finish__documentation {
         align-self: center;
         margin-top: 2px;
-        color: #444;
+        color: $cb-text-secondary;
         font-size: 13px;
         font-weight: 500;
         line-height: 1.4;
@@ -1818,7 +1397,7 @@
 
         &:hover,
         &:focus {
-            color: #7C2AE8;
+            color: $cb-primary;
         }
     }
 
@@ -1841,9 +1420,9 @@
         width: 100%;
         margin-bottom: 12px;
         padding: 13px 16px 12px;
-        border: 1px solid #DDDAD6;
-        border-radius: 4px;
-        background: #FFF;
+        border: 1px solid $cb-border;
+        border-radius: $cb-radius-sm;
+        background: $cb-bg;
     }
 
     //
@@ -1883,8 +1462,6 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
-        border-color: #D63638;
-        color: #8A2424;
 
         strong,
         span {
@@ -1895,13 +1472,7 @@
 
     .lp-setup-demo-course__retry {
         margin-top: 3px;
-        padding: 0;
-        border: 0;
-        color: #A36B00;
-        background: transparent;
-        cursor: pointer;
         font-weight: 600;
-        text-decoration: underline;
     }
 
     .lp-setup-demo-course__progress-title,
@@ -1911,7 +1482,7 @@
         min-height: 22px;
 
         strong {
-            color: #444;
+            color: $cb-text-secondary;
             font-size: 14px;
             font-weight: 500;
             line-height: 1.4;
@@ -1927,17 +1498,12 @@
         width: 20px;
         height: 20px;
         margin-right: 8px;
-        color: #00AD68;
+        color: $cb-success;
 
-        svg {
-            width: 19px;
-            height: 19px;
-            fill: none;
-            stroke: currentColor;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 1.8;
-        }
+
+		&::before {
+			font-size: 19px;
+		}
     }
 
     .lp-setup-demo-course__spinner {
@@ -1947,7 +1513,7 @@
     .lp-setup-demo-course__divider {
         height: 1px;
         margin: 11px 0 12px;
-        background: #E7E5E2;
+        background: $cb-border;
     }
 
     .lp-setup-demo-course__status-row {
@@ -1959,7 +1525,7 @@
 
     .lp-setup-demo-course__status-text {
         max-width: 290px;
-        color: #333;
+        color: $cb-text;
         font-size: 13px;
         font-weight: 600;
         line-height: 1.45;
@@ -1971,7 +1537,7 @@
         flex-direction: column;
 
         > strong {
-            color: #333;
+            color: $cb-text;
             font-size: 13px;
             font-weight: 600;
             line-height: 1.45;
@@ -1979,51 +1545,33 @@
 
         > a {
             margin-top: 2px;
-            color: #F5A900;
+            color: $cb-link;
             font-size: 13px;
             font-weight: 500;
             text-decoration: none;
 
             &:hover,
             &:focus {
-                color: #E39B00;
+                color: $cb-primary-hover;
             }
         }
     }
 
     .lp-setup-demo-course__percent {
         flex: 0 0 auto;
-        color: #00AD68;
+        color: $cb-success;
         font-size: 13px;
         font-weight: 600;
     }
 
     .lp-setup-demo-course__bar {
-        overflow: hidden;
-        height: 5px;
+        max-width: none;
         margin-top: 12px;
-        border-radius: 10px;
-        background: #E4E4E4;
-
-        span {
-            display: block;
-            height: 100%;
-            border-radius: inherit;
-            background: #00AD68;
-            transition: width 0.3s ease;
-        }
     }
 
     @keyframes lp-setup-demo-spin {
         to {
             transform: rotate(360deg);
-        }
-    }
-
-    @media (max-width: 1050px) {
-        .lp-setup-footer-bar {
-            padding-right: 32px;
-            padding-left: 32px;
         }
     }
 
