@@ -45,7 +45,7 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 					<?php checked( $course_layout, 'classic' ); ?><?php disabled( $is_block_theme ); ?>>
 				<span class="lp-setup-choice__card lp-setup-card">
 					<span class="lp-setup-choice__icon" aria-hidden="true">
-						<svg viewBox="0 0 24 24" focusable="false"><path d="M5 4h5v16H5zM14 8h5v12h-5z"/></svg>
+						<svg viewBox="0 0 24 24" focusable="false"><path d="M5 4h14v16H5zM5 8h14M8 11h8M8 14h8M8 17h5"/></svg>
 					</span>
 					<span class="lp-setup-choice__content">
 						<strong><?php esc_html_e( 'Classic', 'learnpress' ); ?></strong>
