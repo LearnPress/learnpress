@@ -351,7 +351,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 * @since 4.1.4.1
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function check_answer( WP_REST_Request $request ) {
 		$response = array(
@@ -360,25 +360,26 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		try {
+			$user_id     = get_current_user_id();
+			$item_id     = $request['item_id'] ?? 0;
+			$course_id   = $request['course_id'] ?? 0;
 			$question_id = $request['question_id'] ?? 0;
 			$answered    = $request['answered'] ?? '';
-			$course_id   = $request['course_id'] ?? 0;
-			$quiz_id     = $request['item_id'] ?? 0;
-			$course      = learn_press_get_course( $course_id );
+			$userModel   = UserModel::find( $user_id, true );
 			$checked     = [];
 
 			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
+			if ( ! $courseModel instanceof CourseModel ) {
 				throw new Exception( esc_html__( 'The course is invalid', 'learnpress' ) );
 			}
 
-			$quizPostModel = $courseModel->get_item_model( $quiz_id, LP_QUIZ_CPT );
-			if ( ! $quizPostModel ) {
+			$quizPostModel = $courseModel->get_item_model( $item_id, LP_QUIZ_CPT );
+			if ( ! $quizPostModel instanceof QuizPostModel ) {
 				throw new Exception( esc_html__( 'The quiz is invalid', 'learnpress' ) );
 			}
 
-			// Check question has in quiz
-			$quizQuestionModel = QuizQuestionModel::find( $quiz_id, $question_id );
+			// Check question has in quiz.
+			$quizQuestionModel = QuizQuestionModel::find( $item_id, $question_id );
 			if ( ! $quizQuestionModel ) {
 				throw new Exception( esc_html__( 'The quiz question is invalid', 'learnpress' ) );
 			}
@@ -388,33 +389,32 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'The question is invalid', 'learnpress' ) );
 			}
 
-			// For case user not login
-			if ( $course->is_no_required_enroll() ) {
-				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
-				$checked            = $no_required_enroll->guest_check_question( $question_id, $answered );
-			} else { // For case user logged in
-				$user = learn_press_get_current_user();
-				if ( $user->is_guest() ) {
-					throw new Exception( esc_html__( 'You must be logged in to check answer.', 'learnpress' ) );
+			// For case user not login.
+			if ( ! $userModel && $courseModel->has_no_enroll_requirement() ) {
+				$question            = QuestionPostModel::find( $question_id, true );
+				$checked             = $question->check( $answered );
+				$checked['answered'] = $answered;
+			} else {
+				if ( ! $userModel instanceof UserModel ) {
+					throw new Exception( esc_html__( 'The user is invalid', 'learnpress' ) );
 				}
 
-				$user_course = $user->get_course_data( $course_id );
-				if ( ! $user_course ) {
-					throw new Exception( esc_html__( 'User\'s course no data!', 'learnpress' ) );
+				$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+				if ( ! $userCourseModel instanceof UserCourseModel ) {
+					throw new Exception( esc_html__( 'User not enrolled course!', 'learnpress' ) );
 				}
 
-				$user_quiz = $user_course->get_item( $quiz_id );
-				if ( ! $user_quiz ) {
-					throw new Exception( esc_html__( 'User\'s quiz no data!', 'learnpress' ) );
+				$userQuizModel = $userCourseModel->get_item_attend( $item_id, LP_QUIZ_CPT );
+				if ( ! $userQuizModel instanceof UserQuizModel ) {
+					throw new Exception( esc_html__( 'User quiz is invalid!', 'learnpress' ) );
 				}
 
-				$checked = $user_quiz->instant_check_question( $question_id, $answered );
+				$checked = $userQuizModel->instant_check_question( $question_id, $answered );
 			}
 
-			$question                = learn_press_get_question( $question_id );
-			$response['explanation'] = $question->get_explanation();
+			$response['explanation'] = $questionModel->get_explanation();
 			$response['options']     = learn_press_get_question_options_for_js(
-				$question,
+				$questionModel,
 				array(
 					'include_is_true' => true,
 					'answer'          => $answered,

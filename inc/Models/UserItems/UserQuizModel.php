@@ -5,6 +5,7 @@ namespace LearnPress\Models\UserItems;
 use Exception;
 use LearnPress\Helpers\LPDateTime;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LearnPress\Models\UserItemMeta\UserQuizMetaModel;
@@ -12,7 +13,6 @@ use LearnPress\Models\UserItemResults\UserItemResultModel;
 use LearnPress\Models\UserModel;
 use LP_Debug;
 use LP_Helper;
-use LP_Question;
 use LP_Quiz_CURD;
 use LP_User_Items_Result_DB;
 use Throwable;
@@ -539,6 +539,132 @@ class UserQuizModel extends UserItemModel {
 	}
 
 	/**
+	 * Check if a question has already been checked.
+	 *
+	 * @param int $question_id
+	 *
+	 * @return bool
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function has_checked_question( int $question_id ): bool {
+		return in_array( $question_id, $this->get_checked_questions(), true );
+	}
+
+	/**
+	 * Mark a question as checked.
+	 *
+	 * @param int $question_id
+	 *
+	 * @return void
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function add_checked_question( int $question_id ) {
+		$checked_questions = $this->get_checked_questions();
+
+		if ( ! in_array( $question_id, $checked_questions, true ) ) {
+			$checked_questions[] = $question_id;
+			$this->set_meta_value_for_key( UserQuizMetaModel::KEY_QUESTION_CHECKED, $checked_questions );
+		}
+	}
+
+	/**
+	 * Check user can instant check a question.
+	 *
+	 * @param int $question_id
+	 *
+	 * @return bool
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function can_check_answer( int $question_id = 0 ): bool {
+		$can = false;
+
+		$quizPostModel = $this->get_quiz_post_model();
+		if ( ! $quizPostModel instanceof QuizPostModel ) {
+			return $can;
+		}
+
+		if ( $quizPostModel->has_instant_check()
+			&& $this->get_status() === self::STATUS_STARTED ) {
+			$can = ! $this->has_checked_question( $question_id );
+		}
+
+		return apply_filters(
+			'learn-press/can-instant-check-question',
+			$can,
+			$question_id,
+			$this->item_id,
+			$this->ref_id
+		);
+	}
+
+	/**
+	 * Instant check question.
+	 *
+	 * @param int $question_id
+	 * @param mixed $answered
+	 *
+	 * @return array
+	 * @throws Exception
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function instant_check_question( int $question_id, $answered = null ): array {
+		$question = QuestionPostModel::find( $question_id, true );
+		if ( ! $question ) {
+			throw new Exception( __( 'The question is invalid!', 'learnpress' ) );
+		}
+
+		$can_check = $this->can_check_answer( $question_id );
+		if ( ! $can_check ) {
+			throw new Exception( __( 'Cannot check the answer to the question.', 'learnpress' ) );
+		}
+
+		$answered_check = array(
+			'instant_check' => 1,
+			$question_id    => $answered,
+		);
+
+		$user_item_id = $this->get_user_item_id();
+		if ( $user_item_id ) {
+			$userItemResultModel = UserItemResultModel::find_by_user_item_id( $user_item_id, true );
+			if ( $userItemResultModel instanceof UserItemResultModel ) {
+				$result_instant_check = $userItemResultModel->get_result();
+				if ( ! empty( $result_instant_check['questions'] ) ) {
+					foreach ( $result_instant_check['questions'] as $question_answer_id => $question_answer ) {
+						if ( ! empty( $question_answer['answered'] ) ) {
+							$answered_check[ $question_answer_id ] = $question_answer['answered'];
+						}
+					}
+				}
+			}
+		}
+
+		$result_answer = $this->calculate_quiz_result( $answered_check );
+
+		if ( $user_item_id ) {
+			$userItemResultModel = UserItemResultModel::find_by_user_item_id( $user_item_id, true );
+			if ( ! $userItemResultModel instanceof UserItemResultModel ) {
+				throw new Exception( __( 'Quiz result is invalid.', 'learnpress' ) );
+			}
+
+			$userItemResultModel->set_result( $result_answer );
+			$userItemResultModel->save();
+			$this->add_checked_question( $question_id );
+		}
+
+		$checked = array(
+			'answered' => $answered,
+			'mark'     => $result_answer['questions'][ $question_id ]['mark'] ?? 0,
+			'correct'  => $result_answer['questions'][ $question_id ]['correct'] ?? false,
+		);
+
+		return $checked;
+	}
+
+	/**
 	 * Get result when user completed quiz.
 	 *
 	 * @move from LP_Quiz
@@ -620,7 +746,7 @@ class UserQuizModel extends UserItemModel {
 		$checked_questions        = $this->get_checked_questions();
 
 		foreach ( $question_ids as $question_id ) {
-			$question = LP_Question::get_question( $question_id );
+			$question = QuestionPostModel::find( $question_id, true );
 			$point    = floatval( $question->get_mark() );
 
 			$result['questions'][ $question_id ]             = array();

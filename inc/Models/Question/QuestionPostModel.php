@@ -1,14 +1,5 @@
 <?php
 
-/**
- * Class Question Post Model
- * To replace class LP_Question old
- *
- * @package LearnPress/Classes
- * @version 1.0.0
- * @since 4.2.9
- */
-
 namespace LearnPress\Models\Question;
 
 use Exception;
@@ -19,6 +10,17 @@ use LP_Cache;
 use LP_Debug;
 use LP_Question_Filter;
 
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Class Question Post Model
+ * To replace class LP_Question old
+ *
+ * @package LearnPress/Classes
+ * @version 1.0.1
+ * @since 4.2.9
+ */
+
 class QuestionPostModel extends PostModel {
 	/**
 	 * @var string Post Type
@@ -27,7 +29,7 @@ class QuestionPostModel extends PostModel {
 
 	protected $answer_options = [];
 
-	private $question_type = '';
+	protected $question_type = '';
 
 	/**
 	 * Const meta key
@@ -61,8 +63,16 @@ class QuestionPostModel extends PostModel {
 		}
 
 		$questionPostModel = self::get_item_model_from_db( $filter_post );
-		// Set cache
+
 		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$type        = $questionPostModel->get_type();
+			$model_class = self::get_question_obj_by_type( $type );
+
+			if ( $model_class && class_exists( $model_class )
+				&& is_subclass_of( $model_class, self::class ) ) {
+				$questionPostModel = new $model_class( $questionPostModel );
+			}
+
 			$lpQuizCache->set_cache( $key_cache, $questionPostModel );
 		}
 
@@ -95,6 +105,81 @@ class QuestionPostModel extends PostModel {
 		}
 
 		return $this->answer_options;
+	}
+
+	/**
+	 * Get answer options as array.
+	 * Compatible with learn_press_get_question_options_for_js().
+	 *
+	 * @param array $args
+	 *
+	 * @return array
+	 */
+	public function get_answer_options( $args = [] ): array {
+		$args = wp_parse_args(
+			$args,
+			[
+				'exclude' => '',
+				'map'     => '',
+				'answer'  => '',
+			]
+		);
+
+		if ( $args['exclude'] && is_string( $args['exclude'] ) ) {
+			$exclude = array_map( 'trim', explode( ',', $args['exclude'] ) );
+		} else {
+			$exclude = $args['exclude'];
+		}
+
+		$map = $args['map'];
+
+		$answer_models = $this->get_answer_option();
+		$options       = [];
+
+		foreach ( $answer_models as $answer_model ) {
+			$options[] = [
+				'question_answer_id' => $answer_model->question_answer_id,
+				'question_id'        => $answer_model->question_id,
+				'title'              => $answer_model->title,
+				'value'              => $answer_model->value,
+				'order'              => $answer_model->order,
+				'is_true'            => $answer_model->is_true,
+			];
+		}
+
+		if ( $options && ( $exclude || $map ) ) {
+			$exclude = array_flip( $exclude );
+
+			foreach ( $options as $k => $option ) {
+				$option['title'] = do_shortcode( $option['title'] );
+
+				foreach ( $map as $k_map => $v_map ) {
+					if ( array_key_exists( $k_map, $option ) ) {
+						$option[ $v_map ]  = $option[ $k_map ];
+						$exclude[ $k_map ] = 1;
+					}
+				}
+
+				$options[ $k ] = array_diff_key( $option, $exclude );
+			}
+		}
+
+		return apply_filters( 'learn-press/question/answer-options', $options, $this->get_id() );
+	}
+
+	/**
+	 * Check user answer.
+	 * Override in type-specific subclasses.
+	 *
+	 * @param mixed $user_answer
+	 *
+	 * @return array
+	 */
+	public function check( $user_answer = null ): array {
+		return [
+			'correct' => false,
+			'mark'    => 0,
+		];
 	}
 
 	/**
