@@ -1,47 +1,12 @@
-// Temporary styles for Themes page.
-// TODO: Move tokens to shared variables when UI is finalized.
-
-$lp-theme-accent: #ffb608;
-$lp-theme-accent-hover: #f5ac00;
-$lp-theme-white: #fff;
-$lp-theme-border: #E2E0DB;
-$lp-theme-border-light: #e2e4e7;
-$lp-theme-text-heading: #262626;
-$lp-theme-text-body: #4f4f4f;
-$lp-theme-text-muted: #666666;
-$lp-theme-text-secondary: #666;
-$lp-theme-radius: 6px;
-$lp-theme-button-radius: 4px;
-$lp-theme-font-family: "DM Sans", sans-serif;
+@import "../course-builder/variables";
 
 .learn-press-themes {
 	max-width: 100%;
-	font-family: $lp-theme-font-family;
-
-	.wp-heading-inline {
-		color: $lp-theme-text-heading;
-		font-family: $lp-theme-font-family;
-		font-size: 30px;
-		font-weight: 700;
-		line-height: 120%;
-		letter-spacing: 0;
-	}
-
-	.lp-themes-subtitle {
-		margin: 4px 0 24px;
-
-		color: $lp-theme-text-body;
-		font-size: 16px;
-		font-weight: 400;
-		line-height: 150%;
-	}
-
-	a,
-	button {
-		&:focus {
-			box-shadow: none;
-			outline: none;
-		}
+	color: $cb-text-muted;
+	a:focus-visible,
+	button:focus-visible {
+		outline: none;
+		box-shadow: $cb-focus-ring;
 	}
 }
 
@@ -49,12 +14,13 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 16px;
-	margin-bottom: 30px;
-	padding: 16px;
-	border: 1px solid $lp-theme-border;
-	border-radius: $lp-theme-radius;
-	background: $lp-theme-white;
+	gap: $cb-spacing-lg;
+	margin-bottom: $cb-spacing-3xl;
+	padding: $cb-spacing-lg;
+	border: 1px solid $cb-border;
+	border-radius: $cb-radius-lg;
+	background: $cb-bg-card;
+	box-shadow: $cb-shadow-sm;
 }
 
 .lp-themes-search {
@@ -67,10 +33,10 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 		position: absolute;
 		width: 20px;
 		height: 20px;
-		inset-inline-start: 12px;
+		inset-inline-start: $cb-spacing-md;
 		top: 50%;
 		transform: translateY(-50%);
-		color: #999;
+		color: $cb-text-placeholder;
 		pointer-events: none;
 	}
 }
@@ -78,22 +44,23 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 .learn-press-themes input.lp-themes-search__input {
 	box-sizing: border-box;
 	width: 100%;
-	min-height: 48px;
+	min-height: 36px;
 	margin: 0;
-	padding: 6px 12px;
+	padding: $cb-spacing-xs $cb-spacing-md;
 	padding-inline-start: 40px;
-	border: 1px solid $lp-theme-border;
-	border-radius: $lp-theme-button-radius;
-	background: $lp-theme-white;
-	font-size: 16px;
+	border: 1px solid $cb-border-input;
+	border-radius: $cb-radius;
+	color: $cb-text-label;
+	background: $cb-bg;
+	font-size: $cb-font-md;
 
 	&::placeholder {
-		color: #999;
+		color: $cb-text-placeholder;
 	}
 
 	&:focus {
-		border-color: $lp-theme-accent;
-		box-shadow: 0 0 0 1px $lp-theme-accent;
+		border-color: $cb-primary;
+		box-shadow: $cb-focus-ring;
 		outline: none;
 	}
 }
@@ -106,10 +73,10 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	gap: 8px;
+	gap: $cb-spacing-sm;
 
 	&__count {
-		margin-inline-start: 4px;
+		margin-inline-start: $cb-spacing-xs;
 	}
 
 	&__item {
@@ -117,43 +84,33 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 		align-items: center;
 		justify-content: center;
 
-		min-height: 48px;
-		padding: 7px 14px;
+		min-height: 40px;
+		padding: $cb-spacing-sm $cb-spacing-lg;
 
-		border: 1px solid transparent;
-		border-radius: $lp-theme-button-radius;
+		border: 1px solid $cb-border-input;
+		border-radius: $cb-radius;
 
-		color: $lp-theme-text-heading;
-		background: linear-gradient(
-				0deg,
-				var(--Black-100, #e7e7e7),
-				var(--Black-100, #e7e7e7)
-			),
-			linear-gradient(
-				0deg,
-				rgba(255, 255, 255, 0.2),
-				rgba(255, 255, 255, 0.2)
-			);
-		font-family: $lp-theme-font-family;
-		font-size: 16px;
+		color: $cb-text-secondary;
+		background: $cb-bg;
+		font-size: $cb-font-md;
 		font-weight: 500;
 		line-height: 150%;
 
 		cursor: pointer;
 
-		transition: all 0.2s ease;
+		transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
 
 		&:hover,
 		&:focus {
-			border-color: $lp-theme-accent;
-			color: $lp-theme-accent;
-			background: #fffaf0;
+			border-color: $cb-primary;
+			color: $cb-primary;
+			background: $cb-bg-hover;
 		}
 
 		&.active {
-			border-color: $lp-theme-accent;
-			color: $lp-theme-white;
-			background: $lp-theme-accent;
+			border-color: $cb-primary;
+			color: $cb-bg;
+			background: $cb-primary;
 		}
 	}
 }
@@ -161,9 +118,9 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 .lp-themes-grid {
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
-	gap: 40px;
+	gap: $cb-spacing-2xl;
 
-	margin-bottom: 30px;
+	margin-bottom: $cb-spacing-3xl;
 }
 
 .lp-theme-card {
@@ -176,43 +133,18 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 
 	min-width: 0;
 
-	border: 1px solid $lp-theme-border;
-	border-radius: $lp-theme-radius;
+	border: 1px solid $cb-border;
+	border-radius: $cb-radius-lg;
 
-	background: $lp-theme-white;
+	background: $cb-bg-card;
 
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+	box-shadow: $cb-shadow-sm;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
-	&::after {
-		content: "";
-		position: absolute;
-		inset: 0;
-		z-index: 3;
-		padding: 1px;
-		border-radius: inherit;
-		background: linear-gradient(135deg, #ffb608, #ff6b35, #a855f7);
-		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-		-webkit-mask-composite: xor;
-		mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-		mask-composite: exclude;
-		opacity: 0;
-		pointer-events: none;
-		transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-	}
-
-	&:hover::after,
-	&:focus-within::after {
-		opacity: 1;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		&::after {
-			transition: none;
-		}
-	}
-
-	&[hidden] {
-		display: none !important;
+	&:hover,
+	&:focus-within {
+		border-color: $cb-primary;
+		box-shadow: $cb-shadow-md;
 	}
 
 	&__thumbnail {
@@ -222,41 +154,37 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 
 		width: 100%;
 		box-sizing: border-box;
-		padding: 20px;
+		padding: $cb-spacing-xl;
 		flex-shrink: 0;
 
-		background: $lp-theme-white;
+		background: $cb-bg;
 
 		img {
 			display: block;
 
 			width: 100%;
 			height: auto;
-			border-radius: 4px;
+			border-radius: $cb-radius-md;
 		}
 	}
 
 	&__badge {
 		position: absolute;
 		z-index: 2;
-		top: 25px;
-		right: 25px;
+		top: $cb-spacing-2xl;
+		right: $cb-spacing-2xl;
 
 		display: inline-flex;
 		align-items: center;
 
-		padding: 8px 10px;
+		padding: $cb-spacing-sm $cb-spacing-md;
 
-		border-radius: $lp-theme-button-radius;
+		border-radius: $cb-radius-pill;
 
-		color: $lp-theme-white;
-		background: linear-gradient(
-			135deg,
-			rgba(255, 0, 0, 1) 0%,
-			rgba(175, 0, 184, 1) 100%
-		);
+		color: $cb-bg;
+		background: linear-gradient(135deg, #ff0000 0%, #af00b8 100%);
 
-		font-size: 11px;
+		font-size: $cb-font-xs;
 		font-weight: 600;
 		line-height: 1;
 
@@ -267,20 +195,25 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 		display: flex;
 		flex: 1 1 auto;
 		flex-direction: column;
-
 		min-width: 0;
-		// Thumbnail bottom padding (12px) + content top padding (8px) = 20px.
-		padding: 8px 20px 20px;
+		padding: $cb-spacing-sm $cb-spacing-xl $cb-spacing-xl;
 	}
 
 	&__title {
-		margin: 0 0 8px;
+		display: -webkit-box;
+		overflow: hidden;
 
-		color: $lp-theme-text-heading;
+		min-height: 2.8em;
+		margin: 0 0 $cb-spacing-sm;
 
-		font-size: 18px;
+		color: $cb-text;
+
+		font-size: $cb-font-xl;
 		font-weight: 600;
 		line-height: 1.4;
+
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
 	}
 
 	&__description {
@@ -288,11 +221,11 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 		overflow: hidden;
 
 		min-height: 35px;
-		margin: 0 0 16px;
+		margin: 0 0 $cb-spacing-lg;
 
-		color: $lp-theme-text-muted;
+		color: $cb-text-muted;
 
-		font-size: 14px;
+		font-size: $cb-font-md;
 		font-weight: 400;
 		line-height: 1.45;
 
@@ -301,87 +234,77 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 	}
 	&__footer {
 		display: flex;
-		margin: 0 0 16px;
-		gap: 20px;
+		margin: 0 0 $cb-spacing-lg;
+		gap: $cb-spacing-xl;
 	}
 	&__price {
 		display: flex;
 		align-items: center;
-		gap: 8px;
-
-		margin: 0;
+		gap: $cb-spacing-sm;
 
 		strong {
-			color: #ff3b30;
+			color: $cb-price-red;
 
-			font-size: 18px;
+			font-size: $cb-font-xl;
 			font-weight: 600;
 			line-height: 1.2;
 		}
 
 		del {
-			color: #999;
+			color: $cb-text-placeholder;
 
-			font-size: 14px;
+			font-size: $cb-font-md;
 			font-weight: 400;
 			line-height: 1;
 		}
 	}
 
 	&[data-category="free"] &__price strong {
-		color: #10b981;
+		color: $cb-success;
 	}
 
 	&__meta {
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: $cb-spacing-md;
 
-		margin: 0;
+		color: $cb-text;
 
-		color: $lp-theme-text-heading;
-
-		font-size: 14px;
+		font-size: $cb-font-md;
 		line-height: 1;
 	}
 
 	&__rating {
 		display: inline-flex;
 		align-items: center;
-		gap: 4px;
+		gap: $cb-spacing-xs;
 
-		color: #333;
+		color: $cb-text-secondary;
 
 		white-space: nowrap;
 	}
 
 	&__star {
-		color: $lp-theme-accent;
-
-		font-size: 15px;
+		color: $cb-featured;
 	}
 
 	&__sold {
 		display: inline-flex;
 		align-items: center;
-		gap: 8px;
+		gap: $cb-spacing-sm;
 
 		white-space: nowrap;
 	}
 
 	&__cart {
-		color: $lp-theme-accent;
-
-		font-size: 15px;
-		line-height: 1;
+		color: $cb-primary;
 	}
 
 	&__actions {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
-		gap: 8px;
-
-		margin-top: 0;
+		gap: $cb-spacing-sm;
+		margin-top: auto;
 	}
 
 	&__buy {
@@ -391,16 +314,15 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 		box-sizing: border-box;
 		height: 40px;
 		min-height: 40px;
-		padding: 0 16px;
+		padding: 0 $cb-spacing-lg;
 
-		border: 1px solid $lp-theme-accent;
-		border-radius: $lp-theme-button-radius;
+		border: 1px solid $cb-primary;
+		border-radius: $cb-radius;
 
-		color: $lp-theme-white;
-		background: $lp-theme-accent;
+		color: $cb-bg;
+		background: $cb-primary;
 
-		font-family: $lp-theme-font-family;
-		font-size: 16px;
+		font-size: $cb-font-md;
 		font-weight: 500;
 		line-height: 1.25;
 
@@ -408,15 +330,15 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 		text-decoration: none;
 
 		&:visited {
-			color: $lp-theme-white;
+			color: $cb-bg;
 		}
 
 		&:hover,
 		&:focus,
 		&:active {
-			border-color: $lp-theme-accent-hover;
-			color: $lp-theme-white;
-			background: $lp-theme-accent-hover;
+			border-color: $cb-primary-hover;
+			color: $cb-bg;
+			background: $cb-primary-hover;
 		}
 	}
 
@@ -429,16 +351,15 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 		box-sizing: border-box;
 		height: 40px;
 		min-height: 40px;
-		padding: 0 16px;
+		padding: 0 $cb-spacing-lg;
 
-		border: 1px solid #ddd;
-		border-radius: $lp-theme-button-radius;
+		border: 1px solid $cb-border-input;
+		border-radius: $cb-radius;
 
-		color: $lp-theme-text-secondary;
-		background: $lp-theme-white;
+		color: $cb-text-secondary;
+		background: $cb-bg;
 
-		font-family: $lp-theme-font-family;
-		font-size: 16px;
+		font-size: $cb-font-md;
 		font-weight: 500;
 		line-height: 1.25;
 
@@ -446,76 +367,16 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 		text-decoration: none;
 
 		&:visited {
-			color: $lp-theme-text-secondary;
+			color: $cb-text-secondary;
 		}
 
 		&:hover,
 		&:focus,
 		&:active {
-			border-color: #bbb;
-			color: $lp-theme-text-heading;
-			background: #fafafa;
+			border-color: $cb-primary;
+			color: $cb-primary;
+			background: $cb-bg-hover;
 		}
-	}
-}
-
-/**
- * Increase specificity to override WordPress admin button styles.
- */
-.learn-press-themes .lp-theme-card .lp-theme-card__actions .lp-theme-card__buy {
-	position: relative;
-	isolation: isolate;
-	background: $lp-theme-accent;
-	transition: border-color 0.35s ease;
-
-	&::before {
-		content: "";
-		position: absolute;
-		inset: -1px;
-		z-index: -1;
-		border-radius: inherit;
-		background: linear-gradient(110deg, $lp-theme-accent, #a855f7, $lp-theme-accent);
-		background-size: 250% 100%;
-		opacity: 0;
-		pointer-events: none;
-		transition: opacity 0.35s ease;
-		animation: lp-themes-buy-gradient 3s ease-in-out infinite alternate;
-	}
-
-	&:hover,
-	&:focus-visible,
-	&:active {
-		background: $lp-theme-accent;
-		border-color: transparent;
-		color: $lp-theme-white;
-
-		&::before {
-			opacity: 1;
-		}
-	}
-
-	&:focus-visible {
-		outline: 2px solid $lp-theme-accent-hover;
-		outline-offset: 2px;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		transition: none;
-
-		&::before {
-			transition: none;
-			animation: none;
-		}
-	}
-}
-
-@keyframes lp-themes-buy-gradient {
-	from {
-		background-position: 0% 50%;
-	}
-
-	to {
-		background-position: 100% 50%;
 	}
 }
 
@@ -528,22 +389,22 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 @media (max-width: 1200px) {
 	.lp-themes-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 20px;
+		gap: $cb-spacing-xl;
 	}
 }
 
 @media (max-width: 782px) {
 	.lp-themes-filter {
 		flex-wrap: nowrap;
-		gap: 6px;
+		gap: $cb-spacing-sm;
 		max-width: 100%;
 		overflow-x: auto;
 
 		&__item {
 			flex: 1 0 auto;
 			min-height: 44px;
-			padding: 6px 8px;
-			font-size: 13px;
+			padding: $cb-spacing-xs $cb-spacing-sm;
+			font-size: $cb-font-base;
 			white-space: nowrap;
 		}
 	}
@@ -560,12 +421,12 @@ $lp-theme-font-family: "DM Sans", sans-serif;
 
 @media (max-width: 500px) {
 	.lp-themes-toolbar {
-		padding: 12px;
+		padding: $cb-spacing-md;
 	}
 
 	.lp-themes-filter__item {
-		padding-inline: 6px;
-		font-size: 12px;
+		padding-inline: $cb-spacing-sm;
+		font-size: $cb-font-sm;
 	}
 
 	.lp-themes-grid {
