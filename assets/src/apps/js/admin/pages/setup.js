@@ -17,6 +17,7 @@ class SetupWizard {
 			return;
 		}
 
+		this.resetNextButtons();
 		this.events();
 		this.initToggles();
 		this.syncEmailMaster();
@@ -24,6 +25,8 @@ class SetupWizard {
 	}
 
 	events() {
+		window.addEventListener( 'pageshow', () => this.resetNextButtons() );
+
 		document.addEventListener( 'click', ( e ) => {
 			const nextButton = e.target.closest( '.button-next' );
 			if ( nextButton ) {
@@ -49,6 +52,13 @@ class SetupWizard {
 			currency.dispatchEvent( new Event( 'change', { bubbles: true } ) );
 		} );
 
+	}
+
+	resetNextButtons() {
+		this.elSetupForm.querySelectorAll( '.button-next' ).forEach( ( button ) => {
+			button.removeAttribute( 'aria-disabled' );
+			lpUtils.lpSetLoadingEl( button, 0 );
+		} );
 	}
 
 	initToggles() {

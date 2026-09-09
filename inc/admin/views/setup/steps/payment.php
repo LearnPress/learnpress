@@ -33,7 +33,7 @@ $paypal_enabled      = 'yes' === $settings->get( 'paypal.enable', 'no' );
 		<h3><?php esc_html_e( 'Currency Settings', 'learnpress' ); ?></h3>
 		<div class="lp-setup-currency-panel lp-setup-card">
 			<div class="lp-setup-currency-presets">
-				<span class="lp-setup-currency-presets__label"><?php esc_html_e( 'Quick Pick preset :', 'learnpress' ); ?></span>
+				<span class="lp-setup-currency-presets__label"><?php esc_html_e( 'Quick Pick Preset :', 'learnpress' ); ?></span>
 				<?php foreach ( $currency_presets as $preset_code => $preset ) { ?>
 					<button type="button" class="button lp-setup-currency-preset<?php echo $currency === $preset_code ? ' is-active' : ''; ?>" data-currency-preset="<?php echo esc_attr( $preset_code ); ?>">
 						<span aria-hidden="true"><?php echo esc_html( $preset['flag'] ); ?></span>
