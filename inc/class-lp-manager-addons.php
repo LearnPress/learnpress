@@ -14,8 +14,8 @@ class LP_Manager_Addons {
 	/**
 	 * @var string Link get list addons.
 	 */
-	public $url_list_addons = 'https://learnpress.github.io/learnpress/version-addons.json';
-	//public $url_list_addons   = LP_PLUGIN_URL . '/version-addons.json';
+	// public $url_list_addons = 'https://learnpress.github.io/learnpress/version-addons.json';
+	public $url_list_addons = LP_PLUGIN_URL . 'inc/admin/views/addons/addons-data.json';
 	/**
 	 * @var string $link_addon_action Link download plugin from Thimpress.
 	 */

@@ -103,23 +103,49 @@ const handleNotify = ( status, message ) => {
 };
 // Get addons when js loaded.
 getAddons();
-// Search Addons.
-const searchAddons = ( name ) => {
+// Filter add-ons by status, category, and search query.
+const filterAddons = () => {
 	const elAddonItems = elAddonsPage.querySelectorAll( '.lp-addon-item' );
+	const elActiveTab = elAddonsPage.querySelector( '.nav-tab.nav-tab-active' );
+	const elActiveCategory = elAddonsPage.querySelector( '.lp-addons-category.active' );
+	const elSearch = elAddonsPage.querySelector( '#lp-search-addons__input' );
+	const tabName = elActiveTab ? elActiveTab.dataset.tab : 'all';
+	const category = elActiveCategory ? elActiveCategory.dataset.category : 'all';
+	const keyword = elSearch ? elSearch.value.trim().toLowerCase() : '';
+	const categoryCounts = { all: 0 };
 	let totalItems = 0;
 
 	elAddonItems.forEach( ( elAddonItem ) => {
-		const addonName = elAddonItem.querySelector( 'a' ).textContent;
-		if ( elAddonItem.classList.contains( 'hide' ) ) {
-			return;
+		const addonName = elAddonItem.querySelector( 'a' ).textContent.toLowerCase();
+		const addonCategory = elAddonItem.dataset.category || '';
+		const matchesTab = 'all' === tabName || elAddonItem.classList.contains( tabName );
+
+		if ( matchesTab ) {
+			categoryCounts.all++;
+			categoryCounts[ addonCategory ] = ( categoryCounts[ addonCategory ] || 0 ) + 1;
 		}
 
-		if ( addonName.toLowerCase().includes( name.toLowerCase() ) ) {
-			elAddonItem.classList.remove( 'search-not-found' );
+		const matchesCategory = 'all' === category || addonCategory === category;
+		const matchesSearch = addonName.includes( keyword );
+		const isVisible = matchesTab && matchesCategory && matchesSearch;
+
+		elAddonItem.classList.toggle( 'hide', ! matchesTab );
+		elAddonItem.classList.toggle( 'search-not-found', matchesTab && ! isVisible );
+
+		if ( isVisible ) {
 			totalItems++;
-		} else {
-			elAddonItem.classList.add( 'search-not-found' );
 		}
+	} );
+
+	elAddonsPage.querySelectorAll( '.lp-addons-category' ).forEach( ( elCategory ) => {
+		const count = categoryCounts[ elCategory.dataset.category ] || 0;
+		const elCount = elCategory.querySelector( '.lp-addons-category__count' );
+
+		if ( elCount ) {
+			elCount.textContent = `(${ count })`;
+		}
+
+		elCategory.hidden = 'all' !== elCategory.dataset.category && 0 === count;
 	} );
 
 	setGridItems( totalItems );
@@ -140,18 +166,17 @@ const loadElData = setInterval( () => {
 	} else if ( dataHtml && elAddonsPage && elNotifyActionWrapper ) {
 		elAddonsPage.innerHTML = dataHtml;
 		elLPAddons = elAddonsPage.querySelector( '#lp-addons' );
-		const elNavTabWrapper = document.querySelector( '.lp-nav-tab-wrapper' );
-		if ( ! elNavTabWrapper ) {
+		const elAddonsControls = document.querySelector( '.lp-addons-controls' );
+		if ( ! elAddonsControls ) {
 			clearInterval( loadElData );
 			return;
 		}
 
-		const elNavTabWrapperClone = elNavTabWrapper.cloneNode( true );
-		elAddonsPage.insertBefore( elNavTabWrapperClone, elAddonsPage.children[ 0 ] );
-		elNavTabWrapperClone.style.display = 'flex';
-		elNavTabWrapper.remove();
-		const elNavActive = elNavTabWrapperClone.querySelector( '.nav-tab.nav-tab-active span' );
-		setGridItems( parseInt( elNavActive.textContent ) );
+		const elAddonsControlsClone = elAddonsControls.cloneNode( true );
+		elAddonsPage.insertBefore( elAddonsControlsClone, elAddonsPage.children[ 0 ] );
+		elAddonsControlsClone.hidden = false;
+		elAddonsControls.remove();
+		filterAddons();
 
 		clearInterval( loadElData );
 	}
@@ -230,18 +255,29 @@ document.addEventListener( 'click', ( e ) => {
 
 		if ( action === 'purchase' ) {
 			elItemPurchase.style.display = 'block';
-			elItemPurchase.querySelector( '.purchase-install' ).style.display = 'flex';
+			const elPurchaseInstall = elItemPurchase.querySelector( '.purchase-install' );
+			elPurchaseInstall.style.display = 'flex';
+			elPurchaseInstall.querySelector( '.enter-purchase-code' ).focus();
+			el.classList.remove( 'handling' );
 			return;
 		} else if ( action === 'update-purchase-code' ) {
-			elItemPurchase.querySelector( '.purchase-update' ).style.display = 'flex';
+			const elPurchaseUpdate = elItemPurchase.querySelector( '.purchase-update' );
+			elPurchaseUpdate.style.display = 'flex';
 			elItemPurchase.style.display = 'block';
+			elPurchaseUpdate.querySelector( '.enter-purchase-code' ).focus();
+			el.classList.remove( 'handling' );
 			return;
 		} else if ( action === 'buy' ) {
 			const link = el.dataset.link;
 			window.open( link, '_blank' );
+			el.classList.remove( 'handling' );
 			return;
 		} else if ( action === 'cancel' ) {
 			elItemPurchase.style.display = 'none';
+			elItemPurchase.querySelectorAll( '.purchase-install, .purchase-update' ).forEach( ( panel ) => {
+				panel.style.display = 'none';
+			} );
+			el.classList.remove( 'handling' );
 			return;
 		} else if ( action === 'install' ) {
 			if ( el.dataset.link ) {
@@ -283,6 +319,8 @@ document.addEventListener( 'click', ( e ) => {
 				} else if ( action === 'update-purchase' ) {
 					elItemPurchase.style.display = 'none';
 				}
+
+				filterAddons();
 			}
 
 			el.classList.remove( 'handling' );
@@ -291,30 +329,36 @@ document.addEventListener( 'click', ( e ) => {
 
 	if ( el.classList.contains( 'nav-tab' ) ) {
 		e.preventDefault();
-		const elTabs = document.querySelectorAll( '.nav-tab' );
+		const elTabs = elAddonsPage.querySelectorAll( '.nav-tab' );
 		elTabs.forEach( function( elTab ) {
 			elTab.classList.remove( 'nav-tab-active' );
+			elTab.setAttribute( 'aria-pressed', 'false' );
 		} );
 		el.classList.add( 'nav-tab-active' );
+		el.setAttribute( 'aria-pressed', 'true' );
 		const tabName = el.dataset.tab;
-		const elAddonItems = elAddonsPage.querySelectorAll( '.lp-addon-item' );
 		const elSearch = elAddonsPage.querySelector( '#lp-search-addons__input' );
 		elSearch.value = '';
+		elAddonsPage.querySelectorAll( '.lp-addons-category' ).forEach( ( elCategory ) => {
+			const isActive = 'all' === elCategory.dataset.category;
+			elCategory.classList.toggle( 'active', isActive );
+			elCategory.setAttribute( 'aria-pressed', isActive ? 'true' : 'false' );
+		} );
 
 		urlParams.set( 'tab', tabName );
 		window.history.pushState( {}, '', `${ window.location.pathname }?${ urlParams.toString() }` );
-		let totalItems = 0;
-		elAddonItems.forEach( ( elAddonItem ) => {
-			elAddonItem.classList.remove( 'search-not-found' );
-			if ( 'all' === tabName || elAddonItem.classList.contains( tabName ) ) {
-				elAddonItem.classList.remove( 'hide' );
-				totalItems++;
-			} else {
-				elAddonItem.classList.add( 'hide' );
-			}
-		} );
+		filterAddons();
+	}
 
-		setGridItems( totalItems );
+	if ( el.closest( '.lp-addons-category' ) ) {
+		const elCategory = el.closest( '.lp-addons-category' );
+		e.preventDefault();
+		elAddonsPage.querySelectorAll( '.lp-addons-category' ).forEach( ( item ) => {
+			const isActive = item === elCategory;
+			item.classList.toggle( 'active', isActive );
+			item.setAttribute( 'aria-pressed', isActive ? 'true' : 'false' );
+		} );
+		filterAddons();
 	}
 } );
 
@@ -323,8 +367,7 @@ document.addEventListener( 'input', ( e ) => {
 	const el = e.target;
 
 	if ( 'lp-search-addons__input' === el.id ) {
-		const keyword = el.value;
-		searchAddons( keyword );
+		filterAddons();
 	}
 
 	// Events change input purchase code.
