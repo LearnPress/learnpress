@@ -12,7 +12,6 @@ namespace LearnPress\Ajax;
 
 use Exception;
 use LearnPress\Helpers\Response;
-use LearnPress\Models\UserModel;
 use LearnPress\Services\SetupDemoCourseService;
 use LP_Emails;
 use LP_Helper;
@@ -36,7 +35,7 @@ class SetupWizardAjax extends AbstractAjax {
 		$response = new Response();
 
 		try {
-			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+			if ( ! current_user_can( 'install_plugins' ) ) {
 				throw new Exception( esc_html__( 'You do not have permission to update setup settings.', 'learnpress' ) );
 			}
 
@@ -90,7 +89,7 @@ class SetupWizardAjax extends AbstractAjax {
 		$response = new Response();
 
 		try {
-			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+			if ( ! current_user_can( 'install_plugins' ) ) {
 				throw new Exception( esc_html__( 'You do not have permission to install demo courses.', 'learnpress' ) );
 			}
 

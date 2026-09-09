@@ -22,7 +22,14 @@ defined( 'ABSPATH' ) || exit;
  * Class SetupDemoCourseService
  */
 class SetupDemoCourseService {
-	public const META_KEY_SOURCE_SLUG = '_lp_setup_demo_course_slug';
+	public const META_KEY_SOURCE_ID = '_lp_setup_demo_course_slug';
+
+	/**
+	 * Legacy constant retained for backward compatibility.
+	 *
+	 * @deprecated 4.4.6 Use META_KEY_SOURCE_ID instead.
+	 */
+	public const META_KEY_SOURCE_SLUG = self::META_KEY_SOURCE_ID;
 
 	/**
 	 * @var string
@@ -188,7 +195,7 @@ class SetupDemoCourseService {
 				'post_status'    => 'any',
 				'fields'         => 'ids',
 				'posts_per_page' => 1,
-				'meta_key'       => self::META_KEY_SOURCE_SLUG,
+				'meta_key'       => self::META_KEY_SOURCE_ID,
 				'meta_value'     => $source_key,
 			)
 		);
@@ -205,7 +212,8 @@ class SetupDemoCourseService {
 	 * @throws Throwable
 	 */
 	protected function persist_course( array $course ): int {
-		$course_model = CourseService::instance()->create_info_main(
+		$lesson_models = array();
+		$course_model  = CourseService::instance()->create_info_main(
 			array(
 				'post_title'   => $course['title'],
 				'post_content' => $course['content'],
@@ -239,6 +247,7 @@ class SetupDemoCourseService {
 					LessonPostModel::META_KEY_DURATION     => $lesson['duration'],
 				);
 				$lesson_model->save();
+				$lesson_models[] = $lesson_model;
 				$section->add_items(
 					array(
 						'items' => array(
@@ -251,8 +260,11 @@ class SetupDemoCourseService {
 				);
 			}
 
-			update_post_meta( $course_model->get_id(), self::META_KEY_SOURCE_SLUG, sanitize_title( $course['title'] ) );
+			update_post_meta( $course_model->get_id(), self::META_KEY_SOURCE_ID, sanitize_title( $course['title'] ) );
 		} catch ( Throwable $error ) {
+			foreach ( $lesson_models as $lesson_model ) {
+				$lesson_model->delete();
+			}
 			$course_model->delete();
 			throw $error;
 		}

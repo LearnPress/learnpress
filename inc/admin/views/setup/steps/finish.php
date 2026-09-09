@@ -15,11 +15,8 @@ $profile_page_id = learn_press_get_page_id( 'profile' );
 $courses_page_url = $courses_page_id ? get_permalink( $courses_page_id ) : '';
 $profile_page_url = $profile_page_id ? get_permalink( $profile_page_id ) : '';
 
-$currency           = learn_press_get_currency();
-$settings           = LP_Settings::instance();
-$environment_status = get_option( 'permalink_structure' )
-	? __( 'Passed checks & permalinks ready', 'learnpress' )
-	: __( 'Ready with default permalinks', 'learnpress' );
+$currency = learn_press_get_currency();
+$settings = LP_Settings::instance();
 if ( wp_is_block_theme() ) {
 	$learning_experience = __( 'Managed by Gutenberg theme', 'learnpress' );
 } else {
@@ -93,7 +90,6 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 
 	<div class="lp-setup-finish__grid">
 
-		<!-- Configuration Summary -->
 		<div class="lp-setup-finish-card lp-setup-card lp-setup-finish-summary">
 
 			<div class="lp-setup-finish-card__heading">
@@ -105,13 +101,6 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 			</div>
 
 			<div class="lp-setup-finish-summary__list">
-				<!-- <div class="lp-setup-finish-summary__item">
-					<span><?php esc_html_e( 'Environment:', 'learnpress' ); ?></span>
-
-					<strong>
-						<?php echo esc_html( $environment_status ); ?>
-					</strong>
-				</div> -->
 				<div class="lp-setup-finish-summary__item">
 					<span><?php esc_html_e( 'Learning Experience:', 'learnpress' ); ?></span>
 
@@ -127,6 +116,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 						<a
 							href="<?php echo esc_url( $courses_page_url ); ?>"
 							target="_blank"
+							rel="noopener noreferrer"
 						>
 							<?php esc_html_e( 'View Page', 'learnpress' ); ?>
 
@@ -144,6 +134,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 						<a
 							href="<?php echo esc_url( $profile_page_url ); ?>"
 							target="_blank"
+							rel="noopener noreferrer"
 						>
 							<?php esc_html_e( 'View Page', 'learnpress' ); ?>
 
@@ -182,7 +173,6 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 
 		</div>
 
-		<!-- What to do next -->
 		<div class="lp-setup-finish-card lp-setup-card lp-setup-finish-next">
 
 			<div class="lp-setup-finish-card__heading">
@@ -313,6 +303,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 					class="lp-setup-finish__documentation"
 					href="<?php echo esc_url( LearnPress::$doc_link ); ?>"
 					target="_blank"
+					rel="noopener noreferrer"
 				>
 					<?php esc_html_e( 'Documentation', 'learnpress' ); ?>
 				</a>
