@@ -48,10 +48,7 @@ ob_start();
 			</div>
 			<label class="lp-themes-search">
 				<span class="screen-reader-text"><?php esc_html_e( 'Search themes', 'learnpress' ); ?></span>
-				<svg class="lp-themes-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false">
-					<circle cx="10.5" cy="10.5" r="6.5" />
-					<path d="m16 16 4.5 4.5" />
-				</svg>
+				<span class="lp-themes-search__icon lp-icon-search" aria-hidden="true"></span>
 				<input type="search" class="lp-themes-search__input" placeholder="<?php esc_attr_e( 'Search themes…', 'learnpress' ); ?>" />
 			</label>
 		</div>

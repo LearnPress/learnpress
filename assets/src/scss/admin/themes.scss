@@ -31,12 +31,16 @@
 
 	&__icon {
 		position: absolute;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		width: 20px;
 		height: 20px;
 		inset-inline-start: $cb-spacing-md;
 		top: 50%;
 		transform: translateY(-50%);
 		color: $cb-text-placeholder;
+		font-size: $cb-font-lg;
 		pointer-events: none;
 	}
 }
@@ -286,6 +290,7 @@
 
 	&__star {
 		color: $cb-featured;
+		font-size: $cb-font-lg;
 	}
 
 	&__sold {
@@ -298,6 +303,7 @@
 
 	&__cart {
 		color: $cb-primary;
+		font-size: $cb-font-lg;
 	}
 
 	&__actions {
