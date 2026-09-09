@@ -59,6 +59,10 @@ const Timer = () => {
 			t.push( m % 60 );
 		}
 
+		if ( seconds <= 0 ) {
+			return '00:00'
+		}
+
 		return t.map( ( a ) => {
 			return a < 10 ? `0${ a }` : a;
 		} ).join( separator );

@@ -172,24 +172,26 @@ export function* submitQuiz() {
 	if ( lpQuizSettings.checkNorequizenroll === 1 ) {
 		const keyQuizOff = `quiz_off_${ lpQuizSettings.id }`;
 		const quizDataOffStr = window.localStorage.getItem( keyQuizOff );
-		const quizDataOff = JSON.parse( quizDataOffStr );
-		const keyAnswer = `LP_Quiz_${ itemId }_Answered`;
-		const answerDataStr = localStorage.getItem( keyAnswer );
+		if ( null !== quizDataOffStr ) {
+			const quizDataOff = JSON.parse( quizDataOffStr );
+			const keyAnswer = `LP_Quiz_${ itemId }_Answered`;
+			const answerDataStr = localStorage.getItem( keyAnswer );
 
-		if ( null !== answerDataStr ) {
-			const data = JSON.parse( answerDataStr );
+			if ( null !== answerDataStr ) {
+				const data = JSON.parse( answerDataStr );
 
-			for ( const [ k, v ] of Object.entries( data ) ) {
-				answered[ k ] = v.answered;
+				for ( const [ k, v ] of Object.entries( data ) ) {
+					answered[ k ] = v.answered;
+				}
 			}
+
+			// Added questions not answered
+			quizDataOff.question_ids.forEach( ( question_id ) => {
+				if ( ! answered[ question_id ] ) {
+					answered[ question_id ] = '';
+				}
+			} );
 		}
-
-		// Added questions not answered
-		quizDataOff.question_ids.forEach( ( question_id ) => {
-			if ( ! answered[ question_id ] ) {
-				answered[ question_id ] = '';
-			}
-		} );
 	}
 
 	// Get time spend did quiz - tungnx
@@ -223,6 +225,29 @@ export function* submitQuiz() {
 
 				quizDataOff.status = response.results.status;
 				quizDataOff.results = response.results.results;
+				quizDataOff.results.answered = Object.entries( answered ).reduce( ( resultAnswered, [ questionId, answer ] ) => {
+					resultAnswered[ questionId ] = {
+						...( resultAnswered[ questionId ] || {} ),
+						answered: answer,
+					};
+
+					return resultAnswered;
+				}, quizDataOff.results.answered || {} );
+				const questionOptions = Object.values( quizDataOff.questions || {} ).reduce( ( options, question ) => {
+					if ( question.options ) {
+						options[ question.id ] = question.options;
+					}
+
+					return options;
+				}, quizDataOff.question_options || {} );
+
+				quizDataOff.question_options = Object.entries( response.results.results.questions || {} ).reduce( ( options, [ questionId, question ] ) => {
+					if ( question.options ) {
+						options[ questionId ] = question.options;
+					}
+
+					return options;
+				}, questionOptions );
 
 				window.localStorage.setItem( keyQuizOff, JSON.stringify( quizDataOff ) );
 				window.localStorage.removeItem( 'LP_Quiz_' + lpQuizSettings.id + '_Answered' );

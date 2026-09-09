@@ -144,6 +144,8 @@ $js = array(
 	'results'                => array(),
 	'required_password'      => post_password_required( $quiz->get_id() ),
 	'allow_retake'           => $quizPostModel->get_retake_count() == - 1,
+	'time_spend' => 0,
+	'total_time' => 0,
 );
 
 global $post;
