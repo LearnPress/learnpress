@@ -23,7 +23,6 @@ export const init = ( elem, settings ) => {
 			} else if ( 'completed' === quizDataOff.status ) {
 				settings.results = quizDataOff.results;
 				settings.answered = quizDataOff.results.answered;
-				settings.questions = quizDataOff.results.questions;
 			}
 
 			if ( undefined !== quizDataOff.checked_questions ) {
