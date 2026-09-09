@@ -149,12 +149,18 @@ class UserCourseModel extends UserItemModel {
 						$item = new UserQuizModel( $item );
 						break;
 					default:
-						$item = apply_filters( 'learn-press/userCourseModel/get-item-attend', $item, $this, $item_id, $item_type );
+						$item = apply_filters(
+							'learn-press/userCourseModel/get-item-attend',
+							$item,
+							$this,
+							$item_id,
+							$item_type
+						);
 						break;
 				}
 			}
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $item;

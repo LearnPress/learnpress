@@ -1,20 +1,11 @@
 <?php
 
-/**
- * Class UserItemModel
- * To replace class LP_User_Item
- *
- * @package LearnPress/Classes
- * @version 1.0.4
- * @since 4.2.5
- */
-
 namespace LearnPress\Models\UserItems;
 
 use Exception;
 use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\UserItemsFilter;
-use LearnPress\Iyzico\Support\Log;
+use LearnPress\Helpers\LPDateTime;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
@@ -31,6 +22,16 @@ use LP_User_Items_Filter;
 use stdClass;
 use Throwable;
 
+defined( 'ABSPATH' ) || exit();
+
+/**
+ * Class UserItemModel
+ * To replace class LP_User_Item
+ *
+ * @package LearnPress/Classes
+ * @version 1.0.4
+ * @since 4.2.5
+ */
 class UserItemModel {
 	/**
 	 * Auto increment, Primary key
@@ -556,18 +557,21 @@ class UserItemModel {
 	 * Get total timestamp complete, done item.
 	 *
 	 * @return int
+	 * @since 4.2.5
+	 * @version 1.0.1
 	 */
 	public function get_total_timestamp_completed(): int {
 		$time_interval = 0;
 
-		if ( empty( $this->get_start_time() ) || empty( $this->get_end_time() ) ) {
+		if ( empty( $this->get_start_time() )
+			|| empty( $this->get_end_time() ) ) {
 			return $time_interval;
 		}
 
-		$start = new LP_Datetime( $this->get_start_time() );
-		$end   = new LP_Datetime( $this->get_end_time() );
+		$start = new LPDateTime( $this->get_start_time() );
+		$end   = new LPDateTime( $this->get_end_time() );
 
-		return $end->getTimestamp() - $start->getTimestamp();
+		return $end->get_timestamp() - $start->get_timestamp();
 	}
 
 	/**
@@ -583,8 +587,8 @@ class UserItemModel {
 		if ( ! absint( $duration ) || empty( $this->start_time ) ) {
 			$expire = null;
 		} else {
-			$start      = new LP_Datetime( $this->start_time );
-			$start_time = $start->getTimestamp();
+			$start      = new LPDateTime( $this->get_start_time() );
+			$start_time = $start->get_timestamp();
 			// Convert duration from string to seconds.
 			if ( ! is_numeric( $duration ) ) {
 				$duration = strtotime( $duration ) - time();
