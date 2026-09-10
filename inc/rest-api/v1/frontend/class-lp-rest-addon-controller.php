@@ -61,6 +61,30 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
+	 * Prepare license data returned to the add-ons UI.
+	 *
+	 * @param object $purchase_info Purchase information returned by ThimPress.
+	 * @param string $purchase_code Purchase code.
+	 *
+	 * @return array
+	 */
+	private function prepare_license_response( object $purchase_info, string $purchase_code ): array {
+		$date_expire    = $purchase_info->date_expire ?? '';
+		$license_status = 'active';
+
+		if ( ! empty( $date_expire ) && strtotime( $date_expire ) < strtotime( gmdate( 'Y-m-d' ) ) ) {
+			$license_status = 'expired';
+		}
+
+		return array(
+			'license_status'        => $license_status,
+			'purchase_code_masked'  => LP_Manager_Addons::mask_purchase_code( $purchase_code ),
+			'date_expire'           => $date_expire,
+			'date_expire_formatted' => empty( $date_expire ) ? '' : date_i18n( get_option( 'date_format' ), strtotime( $date_expire ) ),
+		);
+	}
+
+	/**
 	 * Get list addons
 	 *
 	 * @param WP_REST_Request $request
@@ -75,12 +99,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params   = $request->get_params();
 			$lp_addon = LP_Manager_Addons::instance();
-			$res      = wp_remote_get( $lp_addon->url_list_addons, [ 'timeout' => 30 ] );
-			if ( is_wp_error( $res ) ) {
-				throw new Exception( $res->get_error_message() );
-			}
-
-			$addons = LP_Helper::json_decode( wp_remote_retrieve_body( $res ) );
+			$addons = LP_Helper::json_decode( $lp_addon->get_addons_data() );
 
 			// Get list addons purchased.
 			$addons_purchase = LP_Settings::get_option( $lp_addon->key_purchase_addons, [] );
@@ -173,6 +192,17 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 					$link_download = '';
 					$path_file     = '';
 					$package       = '';
+					$is_paid_addon = empty( $addon['is_free'] ) && empty( $addon['is_org'] );
+					$purchase_info = null;
+
+					if ( $is_paid_addon && 'update' === $action && empty( $purchase_code ) ) {
+						$purchase_codes = LP_Settings::get_option( $this->lp_addons->key_purchase_addons, array() );
+						$purchase_code  = $purchase_codes[ $addon['slug'] ] ?? '';
+					}
+
+					if ( $is_paid_addon && 'install' === $action ) {
+						$purchase_info = $this->lp_addons->validate_and_save_purchase_code( $addon['slug'], (string) $purchase_code );
+					}
 
 					if ( $addon['is_org'] ) {
 						$link_download = "{$this->lp_addons->link_org}{$addon['slug']}.{$addon['version']}.zip";
@@ -199,6 +229,10 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 						$lp_file_system->lp_filesystem->delete( $path_file );
 					}
 
+					if ( 'install' === $action && $purchase_info ) {
+						$response->data = $this->prepare_license_response( $purchase_info, (string) $purchase_code );
+					}
+
 					break;
 				case 'activate':
 					if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -211,16 +245,18 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 					$this->lp_addons->deactivate( $addon );
 					break;
 				case 'update-purchase':
-					$key_purchase                   = LP_Settings::get_option( $this->lp_addons->key_purchase_addons, [] );
-					$key_purchase[ $addon['slug'] ] = $purchase_code;
-					LP_Settings::update_option( $this->lp_addons->key_purchase_addons, $key_purchase );
+					$purchase_info  = $this->lp_addons->validate_and_save_purchase_code(
+						$addon['slug'],
+						(string) $purchase_code
+					);
+					$response->data = $this->prepare_license_response( $purchase_info, (string) $purchase_code );
 					break;
 				default:
 					break;
 			}
 
 			$response->status  = 'success';
-			$response->message = sprintf( '"%s" %s <strong>%s</strong>', $addon['name'], $action, __( 'successfully', 'learnpress' ) );
+			$response->message = sprintf( '"%s" %s %s', $addon['name'], $action, __( 'successfully', 'learnpress' ) );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

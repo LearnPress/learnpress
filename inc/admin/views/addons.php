@@ -49,6 +49,8 @@ $addon_categories          = array(
 			$classes_status  = [];
 			$addon_purchased = $addon->purchase_info ?? false;
 			$addon_category  = sanitize_title( $addon->category ?? '' );
+			$date_expired_str      = '';
+			$number_days_remaining = null;
 			// Addon is free or paid.
 			if ( 1 == $addon->is_free ) {
 				++$total_addon_free;
@@ -82,16 +84,11 @@ $addon_categories          = array(
 				$classes_status[] = 'license';
 				++$total_addon_purchased;
 				$date_expired_str = $addon_purchased->date_expire ?? '';
-				// Test
-				//$date_expired_str = '2024-02-01';
-				//$date_expired_str = '2023-01-12';
-				// End
-				$date_expired          = new DateTime( $date_expired_str );
-				$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
-				$date_diff             = date_diff( $date_now, $date_expired );
-				$number_days_remaining = $date_diff->days;
-				if ( $date_diff->invert ) {
-					$number_days_remaining = 0;
+				if ( ! empty( $date_expired_str ) ) {
+					$date_expired          = new DateTime( $date_expired_str );
+					$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
+					$date_diff             = date_diff( $date_now, $date_expired );
+					$number_days_remaining = $date_diff->invert ? 0 : $date_diff->days;
 				}
 			}
 			// Addon is paid on Thimpress
@@ -101,6 +98,12 @@ $addon_categories          = array(
 			} else { // Addon is free
 				$classes_status[] = 'free';
 			}
+			$show_license_panel = ! $is_free && $is_installed;
+			$license_status     = $addon_purchased ? 'active' : 'not-activated';
+			if ( $addon_purchased && 0 === $number_days_remaining ) {
+				$license_status = 'expired';
+			}
+			$purchase_code_masked = LP_Manager_Addons::mask_purchase_code( $purchase_code ?? '' );
 			// Show addons of tab.
 			if ( ! in_array( $active_tab, $classes_status ) && $active_tab != 'all' ) {
 				$classes_status[] = 'hide';
@@ -118,6 +121,24 @@ $addon_categories          = array(
 							</a>
 						</h3>
 					</div>
+					<?php if ( ! $is_free ) { ?>
+						<div class="lp-addon-license lp-addon-license--<?php echo esc_attr( $license_status ); ?>" data-purchase-code-masked="<?php echo esc_attr( $purchase_code_masked ); ?>"<?php echo $show_license_panel ? '' : ' hidden'; ?>>
+							<div class="lp-addon-license__summary">
+								<span><?php esc_html_e( 'License:', 'learnpress' ); ?></span>
+								<strong class="lp-addon-license__status">
+									<?php echo esc_html( 'active' === $license_status ? __( 'Active', 'learnpress' ) : ( 'expired' === $license_status ? __( 'Expired', 'learnpress' ) : ( 'deactivated' === $license_status ? __( 'Deactivated', 'learnpress' ) : __( 'Not Activated', 'learnpress' ) ) ) ); ?>
+								</strong>
+								<span class="lp-addon-license__expiry"<?php echo empty( $date_expired_str ) || 'active' !== $license_status ? ' hidden' : ''; ?>>
+									<?php
+									if ( ! empty( $date_expired_str ) ) {
+										echo esc_html( sprintf( __( '(Updates until %s)', 'learnpress' ), date_i18n( 'F j, Y', strtotime( $date_expired_str ) ) ) );
+									}
+									?>
+								</span>
+							</div>
+							<button class="btn-addon-action lp-addon-license__manage" data-action="update-purchase-code" type="button"><?php esc_html_e( 'Manage', 'learnpress' ); ?></button>
+						</div>
+					<?php } ?>
 					<p class="lp-addon-item__description" title="<?php echo esc_attr( $addon->description ); ?>">
 						<?php echo esc_html( $addon->description ); ?>
 					</p>
@@ -193,10 +214,6 @@ $addon_categories          = array(
 								title="<?php echo sprintf( '%s %s require LP version %s', $addon->name, $version_latest, $addon->require_lp ); ?>">
 							<span class="dashicons dashicons-update"></span><span class="text">Update</span>
 						</button>
-						<button class="btn-addon-action" data-action="update-purchase-code"
-								title="<?php _e( 'Change Purchase Code', 'learnpress' ); ?>">
-							<span class="dashicons dashicons-ellipsis"></span>
-						</button>
 						<button class="btn-addon-action" data-action="install"
 							<?php echo $is_free ? 'data-link="' . $addon->link . '"' : ''; ?>
 						>
@@ -207,14 +224,16 @@ $addon_categories          = array(
 								data-action="purchase"><?php _e( 'Install', 'learnpress' ); ?></button>
 					</div>
 					<div class="lp-addon-item__actions__right">
-						<button class="btn-addon-action" data-action="deactivate">
-							<span class="dashicons dashicons-update"></span><span
-								class="text"><?php _e( 'Deactivate', 'learnpress' ); ?></span>
-						</button>
-						<button class="btn-addon-action" data-action="activate">
-							<span class="dashicons dashicons-update"></span><span
-								class="text"><?php _e( 'Activate', 'learnpress' ); ?></span>
-						</button>
+						<?php if ( 'expired' !== $license_status ) { ?>
+							<button class="btn-addon-action" data-action="deactivate">
+								<span class="dashicons dashicons-update"></span><span
+									class="text"><?php _e( 'Deactivate', 'learnpress' ); ?></span>
+							</button>
+							<button class="btn-addon-action" data-action="activate">
+								<span class="dashicons dashicons-update"></span><span
+									class="text"><?php _e( 'Activate', 'learnpress' ); ?></span>
+							</button>
+						<?php } ?>
 					</div>
 				</div>
 				<div class="lp-addon-item__purchase">
@@ -228,7 +247,7 @@ $addon_categories          = array(
 							</div>
 							<label class="lp-addon-purchase__field">
 								<span class="screen-reader-text"><?php esc_html_e( 'Purchase Code', 'learnpress' ); ?></span>
-								<input type="text" class="enter-purchase-code" placeholder="<?php esc_attr_e( 'Enter Purchase Code', 'learnpress' ); ?>" value="<?php echo esc_attr( $purchase_code ?? '' ); ?>">
+								<input type="text" class="enter-purchase-code" placeholder="<?php esc_attr_e( 'Enter Purchase Code', 'learnpress' ); ?>" value="">
 							</label>
 							<button class="btn-addon-action lp-addon-purchase__submit" data-action="install">
 								<span class="dashicons dashicons-update"></span><span
@@ -250,15 +269,20 @@ $addon_categories          = array(
 							</div>
 							<label class="lp-addon-purchase__field">
 								<span class="screen-reader-text"><?php esc_html_e( 'Purchase Code', 'learnpress' ); ?></span>
-								<input type="text" class="enter-purchase-code" placeholder="<?php esc_attr_e( 'Enter Purchase Code', 'learnpress' ); ?>" value="<?php echo esc_attr( $purchase_code ?? '' ); ?>">
+								<input type="text" class="enter-purchase-code" placeholder="<?php esc_attr_e( 'Enter Purchase Code', 'learnpress' ); ?>" value="<?php echo esc_attr( $purchase_code_masked ); ?>">
 							</label>
 							<button class="btn-addon-action lp-addon-purchase__submit" data-action="update-purchase">
 								<span class="dashicons dashicons-update"></span><span
-									class="text"><?php esc_html_e( 'Save', 'learnpress' ); ?></span>
+									class="text"><?php esc_html_e( 'Submit', 'learnpress' ); ?></span>
+							</button>
+							<div class="lp-addon-purchase__divider">
+								<span><?php esc_html_e( 'Don’t have a code?', 'learnpress' ); ?></span>
+							</div>
+							<button class="btn-addon-action lp-addon-purchase__buy" data-action="buy" data-link="<?php echo esc_url( $addon->link ); ?>">
+								<?php esc_html_e( 'Buy Now', 'learnpress' ); ?>
 							</button>
 						</div>
-						<input type="hidden" name="purchase-code"
-								value="<?php echo esc_attr( $purchase_code ?? '' ); ?>">
+						<input type="hidden" name="purchase-code" value="">
 					</div>
 				</div>
 			</div>

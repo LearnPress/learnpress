@@ -218,7 +218,6 @@
 					&[data-action="update-purchase-code"] {
 						display: inline-flex;
 						align-items: center;
-						padding: 0 5px;
 						height: 12px;
 
 						span {
@@ -459,6 +458,83 @@
 			-webkit-line-clamp: 3;
 		}
 
+		.lp-addon-license {
+			margin: 0 0 $cb-spacing-md;
+			padding: $cb-spacing-md;
+			border: 1px solid rgba( $cb-success, 0.28 );
+			border-radius: $cb-radius-md;
+			color: $cb-text-secondary;
+			background: $cb-success-bg;
+			font-size: $cb-font-sm;
+			line-height: 1.45;
+
+			&__summary {
+				display: flex;
+				align-items: baseline;
+				flex-wrap: wrap;
+				gap: $cb-spacing-xs;
+			}
+
+			&__status {
+				color: $cb-success;
+				font-weight: 600;
+			}
+
+			&__expiry {
+				color: $cb-text-muted;
+			}
+
+			&--not-activated {
+				border-color: rgba( $cb-warning-strong, 0.35 );
+				background: $cb-warning-strong-bg;
+
+				.lp-addon-license__status {
+					color: $cb-warning-strong-text;
+				}
+			}
+
+			&--expired {
+				border-color: rgba( $cb-expired, 0.35 );
+				background: $cb-expired-bg;
+
+				.lp-addon-license__status {
+					color: $cb-expired-text;
+				}
+			}
+
+			&--deactivated {
+				border-color: $cb-border-input;
+				background: $cb-warning-bg;
+
+				.lp-addon-license__status {
+					color: $cb-text-muted;
+				}
+			}
+		}
+
+		.lp-addon-license__manage.btn-addon-action[data-action="update-purchase-code"] {
+			display: inline-flex;
+			width: auto;
+			height: auto;
+			min-height: 0;
+			margin-top: $cb-spacing-xs;
+			padding: 0;
+			border: 0;
+			border-radius: 0;
+			color: $cb-link;
+			background: transparent;
+			font-size: $cb-font-sm;
+			font-weight: 500;
+			line-height: 1.45;
+			text-decoration: underline;
+
+			&:hover,
+			&:focus {
+				color: $cb-primary;
+				background: transparent;
+			}
+		}
+
 		&__meta {
 			display: flex;
 			align-items: center;
@@ -471,6 +547,11 @@
 			a {
 				color: $cb-link;
 				font-weight: 500;
+
+				&:focus {
+					outline: none;
+					box-shadow: none;
+				}
 			}
 
 			> * + *::before {
@@ -524,6 +605,11 @@
 		&__actions__left {
 			flex: 1;
 			justify-content: flex-end;
+		}
+
+		&__actions__right {
+			display: grid;
+			grid-template-columns: max-content;
 		}
 
 		.lp-addon-button,
@@ -602,8 +688,27 @@
 			background: transparent;
 		}
 
-		&.installed.activated [data-action="setting"] {
+		&.installed [data-action="setting"] {
 			display: inline-flex;
+			visibility: hidden;
+		}
+
+		&.installed.activated [data-action="setting"] {
+			visibility: visible;
+		}
+
+		&.installed .lp-addon-item__actions__right .btn-addon-action[data-action="activate"],
+		&.installed .lp-addon-item__actions__right .btn-addon-action[data-action="deactivate"] {
+			grid-area: 1 / 1;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			visibility: hidden;
+		}
+
+		&.installed:not(.activated) .lp-addon-item__actions__right .btn-addon-action[data-action="activate"],
+		&.installed.activated .lp-addon-item__actions__right .btn-addon-action[data-action="deactivate"] {
+			visibility: visible;
 		}
 
 		&__purchase {
@@ -679,6 +784,13 @@
 			outline: none;
 			box-shadow: $cb-focus-ring;
 		}
+
+		&.is-error,
+		&.is-error:focus {
+			border-color: $cb-danger;
+			background: $cb-danger-bg;
+			box-shadow: 0 0 0 3px rgba( $cb-danger, 0.1 );
+		}
 	}
 
 	&__submit.btn-addon-action,
@@ -750,17 +862,17 @@
 	}
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1550px) {
 	#lp-addons,
 	#lp-addons.max-3-items {
-		grid-template-columns: repeat( 4, minmax( 0, 1fr ) );
+		grid-template-columns: repeat( 3, minmax( 0, 1fr ) );
 	}
 }
 
 @media (max-width: 1200px) {
 	#lp-addons,
 	#lp-addons.max-3-items {
-		grid-template-columns: repeat( 3, minmax( 0, 1fr ) );
+		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
 	}
 }
 
@@ -782,6 +894,7 @@
 /*** Tab of Addons Manager ***/
 .lp-addons-controls {
 	margin-bottom: $cb-spacing-xl;
+	padding-right: $cb-spacing-xl;
 
 	&[hidden] {
 		display: none;
@@ -961,19 +1074,47 @@
 		flex-direction: column;
 	}
 
+	.lp-addons-toolbar .lp-addons-filter {
+		width: 100%;
+		min-width: 0;
+	}
+
 	.lp-addons-search {
 		width: 100%;
 	}
 }
 
 @media (max-width: 782px) {
+	.lp-addons-controls {
+		padding-right: 0;
+	}
+
+	.lp-addons-toolbar {
+		padding: $cb-spacing-md;
+
+		.lp-addons-filter {
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			overflow-y: hidden;
+			scrollbar-width: thin;
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.nav-tab {
+			flex: 0 0 auto;
+		}
+	}
+
 	.lp-addons-categories {
 		flex-wrap: nowrap;
 		overflow-x: auto;
+		overflow-y: hidden;
+		scrollbar-width: thin;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.lp-addons-category {
-		flex-shrink: 0;
+		flex: 0 0 auto;
 	}
 }
 

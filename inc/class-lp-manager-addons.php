@@ -15,7 +15,7 @@ class LP_Manager_Addons {
 	 * @var string Link get list addons.
 	 */
 	// public $url_list_addons = 'https://learnpress.github.io/learnpress/version-addons.json';
-	public $url_list_addons = LP_PLUGIN_URL . 'inc/admin/views/addons/addons-data.json';
+	public $path_list_addons = LP_PLUGIN_PATH . 'inc/admin/views/addons/addons-data.json';
 	/**
 	 * @var string $link_addon_action Link download plugin from Thimpress.
 	 */
@@ -65,6 +65,93 @@ class LP_Manager_Addons {
 		}
 
 		return self::$_instance;
+	}
+
+	/**
+	 * Read the bundled add-ons data without making a loopback HTTP request.
+	 *
+	 * @return string
+	 * @throws Exception When the local data file cannot be read.
+	 */
+	public function get_addons_data(): string {
+		if ( ! is_readable( $this->path_list_addons ) ) {
+			throw new Exception( __( 'Add-ons data file is not readable.', 'learnpress' ) );
+		}
+
+		$data = file_get_contents( $this->path_list_addons );
+		if ( false === $data || '' === trim( $data ) ) {
+			throw new Exception( __( 'Add-ons data file is empty.', 'learnpress' ) );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Validate a purchase code with the add-ons service before storing it.
+	 *
+	 * @param string $addon_slug   Add-on slug.
+	 * @param string $purchase_code Purchase code.
+	 *
+	 * @return object Purchase information returned by the service.
+	 * @throws Exception When the code cannot be validated.
+	 */
+	public function validate_and_save_purchase_code( string $addon_slug, string $purchase_code ): object {
+		$purchase_code = trim( $purchase_code );
+
+		if ( empty( $addon_slug ) || empty( $purchase_code ) ) {
+			throw new Exception( __( 'Purchase code is invalid!', 'learnpress' ) );
+		}
+
+		$response = wp_remote_post(
+			$this->link_addons_purchased,
+			array(
+				'method'     => 'POST',
+				'body'       => array(
+					'addons_purchase' => array(
+						$addon_slug => $purchase_code,
+					),
+				),
+				'timeout'    => 30,
+				'user-agent' => site_url(),
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			throw new Exception( $response->get_error_message() );
+		}
+
+		$response_body = wp_remote_retrieve_body( $response );
+		if ( empty( $response_body ) || preg_match( '/^Error.*/', $response_body ) ) {
+			throw new Exception( __( 'Purchase code is invalid!', 'learnpress' ) );
+		}
+
+		$data = LP_Helper::json_decode( $response_body );
+		if ( ! is_object( $data ) || ! isset( $data->{$addon_slug} ) || ! is_object( $data->{$addon_slug} ) ) {
+			throw new Exception( __( 'Purchase code is invalid!', 'learnpress' ) );
+		}
+
+		$key_purchase                = LP_Settings::get_option( $this->key_purchase_addons, array() );
+		$key_purchase[ $addon_slug ] = $purchase_code;
+		LP_Settings::update_option( $this->key_purchase_addons, $key_purchase );
+
+		return $data->{$addon_slug};
+	}
+
+	/**
+	 * Mask a purchase code with 16 asterisks, keeping its final four characters visible.
+	 *
+	 * @param string $purchase_code Purchase code.
+	 *
+	 * @return string
+	 */
+	public static function mask_purchase_code( string $purchase_code ): string {
+		$purchase_code = trim( $purchase_code );
+
+		if ( empty( $purchase_code ) ) {
+			return '';
+		}
+
+		return str_repeat( '*', 16 ) . substr( $purchase_code, -4 );
 	}
 
 	/**

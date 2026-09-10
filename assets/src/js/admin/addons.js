@@ -5,6 +5,7 @@
  * @version 1.0.1
  */
 import API from '../api';
+import * as lpToastify from '../lpToastify.js';
 let elAddonsPage;
 let dataHtml;
 let dataAddons;
@@ -12,8 +13,34 @@ let elLPAddons;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams( queryString );
 const tab = urlParams.get( 'tab' );
-let elNotifyActionWrapper;
 const isHandling = [];
+
+const updateLicensePanel = ( elAddonItem, licenseData ) => {
+	const elLicense = elAddonItem.querySelector( '.lp-addon-license' );
+	if ( ! elLicense || ! licenseData ) {
+		return;
+	}
+
+	const status = licenseData.license_status || 'active';
+	elLicense.hidden = false;
+	elLicense.classList.remove( 'lp-addon-license--active', 'lp-addon-license--not-activated', 'lp-addon-license--expired', 'lp-addon-license--deactivated' );
+	elLicense.classList.add( `lp-addon-license--${ status }` );
+
+	const elStatus = elLicense.querySelector( '.lp-addon-license__status' );
+	const elExpiry = elLicense.querySelector( '.lp-addon-license__expiry' );
+
+	if ( elStatus ) {
+		elStatus.textContent = 'expired' === status ? 'Expired' : 'Active';
+	}
+
+
+	elLicense.dataset.purchaseCodeMasked = licenseData.purchase_code_masked || '';
+
+	if ( elExpiry ) {
+		elExpiry.textContent = licenseData.date_expire_formatted ? `(Updates until ${ licenseData.date_expire_formatted })` : '';
+		elExpiry.hidden = ! licenseData.date_expire_formatted;
+	}
+};
 
 // API get list addons.
 const getAddons = ( set = '' ) => {
@@ -76,30 +103,7 @@ const addonsAction = ( data, callBack ) => {
 };
 // Show notify.
 const handleNotify = ( status, message ) => {
-	const elNotifyAction = elNotifyActionWrapper.querySelector( '.lp-notify-action' );
-	const elNotifyActionNew = elNotifyAction.cloneNode( true );
-	elNotifyActionNew.classList.remove( 'clone' );
-	elNotifyActionWrapper.insertBefore( elNotifyActionNew, elNotifyActionWrapper[ 0 ] );
-	const elSuccess = elNotifyActionNew.querySelector( `.${ elNotifyActionNew.classList.value }__success` );
-	const elFailed = elNotifyActionNew.querySelector( `.${ elNotifyActionNew.classList.value }__error` );
-
-	if ( status === 'success' ) {
-		elSuccess.classList.add( 'show' );
-		elSuccess.querySelector( '.message' ).innerHTML = message;
-	} else {
-		elFailed.classList.add( 'show' );
-		elFailed.querySelector( '.message' ).innerHTML = message;
-	}
-
-	elNotifyActionWrapper.classList.add( 'show' );
-	setTimeout( () => {
-		elNotifyActionNew.remove();
-
-		const elNotifyAction = elNotifyActionWrapper.querySelectorAll( '.lp-notify-action' );
-		if ( elNotifyAction.length === 1 ) {
-			elNotifyActionWrapper.classList.remove( 'show' );
-		}
-	}, status === 'success' ? 3000 : 4000 );
+	lpToastify.show( message, 'success' === status ? 'success' : 'error' );
 };
 // Get addons when js loaded.
 getAddons();
@@ -160,10 +164,9 @@ const setGridItems = ( totalItems ) => {
 };
 // Check element loaded and data API returned.
 const loadElData = setInterval( () => {
-	if ( ! elAddonsPage || ! elNotifyActionWrapper ) {
+	if ( ! elAddonsPage ) {
 		elAddonsPage = document.querySelector( '.lp-addons-page' );
-		elNotifyActionWrapper = document.querySelector( '.lp-notify-action-wrapper' );
-	} else if ( dataHtml && elAddonsPage && elNotifyActionWrapper ) {
+	} else if ( dataHtml && elAddonsPage ) {
 		elAddonsPage.innerHTML = dataHtml;
 		elLPAddons = elAddonsPage.querySelector( '#lp-addons' );
 		const elAddonsControls = document.querySelector( '.lp-addons-controls' );
@@ -188,6 +191,14 @@ document.addEventListener( 'DOMContentLoaded', ( e ) => {
 /*** Events ***/
 document.addEventListener( 'click', ( e ) => {
 	let el = e.target;
+	if ( el.classList.contains( 'enter-purchase-code' ) && el.value.startsWith( '***' ) ) {
+		el.value = '';
+		const elItemPurchase = el.closest( '.lp-addon-item__purchase' );
+		if ( elItemPurchase ) {
+			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value = '';
+		}
+	}
+
 	const tagName = el.tagName.toLowerCase();
 	if ( tagName === 'span' ) {
 		e.preventDefault();
@@ -256,15 +267,23 @@ document.addEventListener( 'click', ( e ) => {
 		if ( action === 'purchase' ) {
 			elItemPurchase.style.display = 'block';
 			const elPurchaseInstall = elItemPurchase.querySelector( '.purchase-install' );
+			const elPurchaseCode = elPurchaseInstall.querySelector( '.enter-purchase-code' );
+			elPurchaseCode.classList.remove( 'is-error' );
+			elPurchaseCode.removeAttribute( 'aria-invalid' );
 			elPurchaseInstall.style.display = 'flex';
-			elPurchaseInstall.querySelector( '.enter-purchase-code' ).focus();
+			elPurchaseCode.focus();
 			el.classList.remove( 'handling' );
 			return;
 		} else if ( action === 'update-purchase-code' ) {
 			const elPurchaseUpdate = elItemPurchase.querySelector( '.purchase-update' );
+			const elPurchaseCode = elPurchaseUpdate.querySelector( '.enter-purchase-code' );
+			const elLicense = elAddonItem.querySelector( '.lp-addon-license' );
+			elPurchaseCode.value = elLicense ? elLicense.dataset.purchaseCodeMasked || '' : '';
+			elPurchaseCode.classList.remove( 'is-error' );
+			elPurchaseCode.removeAttribute( 'aria-invalid' );
+			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value = '';
 			elPurchaseUpdate.style.display = 'flex';
 			elItemPurchase.style.display = 'block';
-			elPurchaseUpdate.querySelector( '.enter-purchase-code' ).focus();
 			el.classList.remove( 'handling' );
 			return;
 		} else if ( action === 'buy' ) {
@@ -297,8 +316,19 @@ document.addEventListener( 'click', ( e ) => {
 		addonsAction( data, function( status, message, data ) {
 			if ( status === 'success' ) {
 				if ( action === 'install' ) {
+					const hadLicense = elAddonItem.classList.contains( 'license' );
 					elAddonItem.classList.add( 'installed', 'activated' );
 					elAddonItem.classList.remove( 'not_installed' );
+					if ( data && data.purchase_code_masked ) {
+						elAddonItem.classList.add( 'license' );
+						updateLicensePanel( elAddonItem, data );
+						if ( ! hadLicense ) {
+							const elNavLicense = document.querySelector( '.nav-tab[data-tab=license] span' );
+							if ( elNavLicense ) {
+								elNavLicense.textContent = parseInt( elNavLicense.textContent ) + 1;
+							}
+						}
+					}
 					elItemPurchase.style.display = 'none';
 					/*elToggleSwitchInput.setAttribute( 'checked', 'checked' );
 					elToggleSwitchInput.setAttribute( 'data-action', 'deactivate' );*/
@@ -307,7 +337,7 @@ document.addEventListener( 'click', ( e ) => {
 					const elNavNoInstalled = document.querySelector( '.nav-tab[data-tab=not_installed] span' );
 					elNavNoInstalled.textContent = parseInt( elNavNoInstalled.textContent ) - 1;
 					elItemPurchase.querySelector( '.purchase-install' ).style.display = 'none';
-					elItemPurchase.querySelector( '.purchase-update' ).querySelector( '.enter-purchase-code' ).value = purchaseCode;
+					elItemPurchase.querySelector( '.purchase-update' ).querySelector( '.enter-purchase-code' ).value = data && data.purchase_code_masked ? data.purchase_code_masked : '';
 				} else if ( action === 'update' ) {
 					const elAddonVersionCurrent = elAddonItem.querySelector( '.addon-version-current' );
 					elAddonVersionCurrent.innerHTML = addon.version;
@@ -317,10 +347,22 @@ document.addEventListener( 'click', ( e ) => {
 				} else if ( action === 'deactivate' ) {
 					elAddonItem.classList.remove( 'activated' );
 				} else if ( action === 'update-purchase' ) {
+					updateLicensePanel( elAddonItem, data );
 					elItemPurchase.style.display = 'none';
+					elItemPurchase.querySelector( '.purchase-update' ).style.display = 'none';
+					elItemPurchase.querySelectorAll( '.enter-purchase-code, input[name=purchase-code]' ).forEach( ( input ) => {
+						input.value = '';
+					} );
 				}
 
 				filterAddons();
+			} else if ( 'install' === action || 'update-purchase' === action ) {
+				const elPurchasePanel = el.closest( '.purchase-install, .purchase-update' );
+				const elPurchaseCode = elPurchasePanel ? elPurchasePanel.querySelector( '.enter-purchase-code' ) : null;
+				if ( elPurchaseCode ) {
+					elPurchaseCode.classList.add( 'is-error' );
+					elPurchaseCode.setAttribute( 'aria-invalid', 'true' );
+				}
 			}
 
 			el.classList.remove( 'handling' );
@@ -373,6 +415,8 @@ document.addEventListener( 'input', ( e ) => {
 	// Events change input purchase code.
 	if ( el.classList.contains( 'enter-purchase-code' ) ) {
 		e.preventDefault();
+		el.classList.remove( 'is-error' );
+		el.removeAttribute( 'aria-invalid' );
 		const purchaseCode = el.value;
 		const elItemPurchase = el.closest( '.lp-addon-item__purchase' );
 
