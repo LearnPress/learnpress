@@ -13,6 +13,7 @@ use Exception;
 use LearnPress\Databases\DataBase;
 use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\UserItemsFilter;
+use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -26,6 +27,9 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Class AdminCourseTools
+ *
+ * @since 4.4.6
+ * @version 1.0.1
  */
 class AdminCourseTools {
 	use Singleton;
@@ -221,7 +225,11 @@ class AdminCourseTools {
 
 			$content->content = Template::combine_components( $section );
 		} catch ( Throwable $exception ) {
-			$content->content = Template::print_message( $exception->getMessage(), 'error', false );
+			$content->content = Template::print_message(
+				$exception->getMessage(),
+				Response::STATUS_ERROR,
+				false
+			);
 		}
 
 		return $content;
@@ -234,12 +242,17 @@ class AdminCourseTools {
 	 *
 	 * @return stdClass
 	 * @since 4.4.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function render_courses_to_reset_progress( array $data ): stdClass {
 		$content = new stdClass();
 
 		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+				throw new Exception( 'Access denied.' );
+			}
+
 			$item_selecting = $data['item_selecting'] ?? [];
 			$search_course  = trim( $data['lp-search-course'] ?? '' );
 			$search_user    = trim( $data['lp-search-user'] ?? '' );
@@ -272,7 +285,10 @@ class AdminCourseTools {
 			$filter_course_attendance->return_string_query = 1;
 			$filter_course_attendance->limit               = -1;
 			$query_course_attendance                       = $db->get_user_items( $filter_course_attendance );
-			$filter->where[]                               = "AND ui.user_item_id IN ({$query_course_attendance})";
+			$filter->where[]                               = sprintf(
+				'AND ui.user_item_id IN (%s)',
+				$query_course_attendance
+			);
 			// End get only courses has items attendance
 
 			// Get only user_id > 0
@@ -372,7 +388,11 @@ class AdminCourseTools {
 
 			$content->content = Template::combine_components( $section );
 		} catch ( Throwable $exception ) {
-			$content->content = Template::print_message( $exception->getMessage(), 'error', false );
+			$content->content = Template::print_message(
+				$exception->getMessage(),
+				Response::STATUS_ERROR,
+				false
+			);
 		}
 
 		return $content;
