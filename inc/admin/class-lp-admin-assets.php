@@ -610,7 +610,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					0,
 					'',
-					array( 'strategy' => 'defer' )
+					array( 'strategy' => 'async' )
 				),
 				'lp-admin-statistic'        => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-statistic' . self::$_min_assets . '.js' ),
