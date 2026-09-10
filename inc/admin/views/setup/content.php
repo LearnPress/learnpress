@@ -35,8 +35,6 @@ $wizard_step_keys = array_keys( $wizard_steps );
 		<?php
 		$step = $wizard->get_current_step( false );
 		?>
-		<input type="hidden" name="lp-setup-nonce"
-			value="<?php echo esc_attr( wp_create_nonce( 'lp-setup-step-' . $step['slug'] ) ); ?>">
 		<input type="hidden" name="lp-setup-step"
 			value="<?php echo esc_attr( $step['slug'] ); ?>">
 		<?php call_user_func( $step['callback'] ); ?>

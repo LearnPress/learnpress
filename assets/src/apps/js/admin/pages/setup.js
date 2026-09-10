@@ -9,6 +9,7 @@ class SetupWizard {
 	static selectors = {
 		elSetupForm: '.lp-setup-wizard-form',
 		elPreviewPrice: '#preview-price',
+		elCurrency: 'select[name="settings[currency][currency]"]',
 	};
 
 	init() {
@@ -21,11 +22,16 @@ class SetupWizard {
 		this.events();
 		this.initToggles();
 		this.syncEmailMaster();
+		this.syncCurrencyPreset();
 		this.initDemoCourseImporter();
 	}
 
 	events() {
 		window.addEventListener( 'pageshow', () => this.resetNextButtons() );
+
+		this.elSetupForm.querySelector( SetupWizard.selectors.elCurrency )?.addEventListener( 'change', () => {
+			this.syncCurrencyPreset();
+		} );
 
 		document.addEventListener( 'click', ( e ) => {
 			const nextButton = e.target.closest( '.button-next' );
@@ -40,15 +46,12 @@ class SetupWizard {
 				return;
 			}
 
-			const currency = this.elSetupForm.querySelector( '#currency' );
+			const currency = this.elSetupForm.querySelector( SetupWizard.selectors.elCurrency );
 			if ( ! currency ) {
 				return;
 			}
 
 			currency.value = preset.dataset.currencyPreset;
-			this.elSetupForm.querySelectorAll( '[data-currency-preset]' ).forEach( ( button ) => {
-				button.classList.toggle( 'is-active', button === preset );
-			} );
 			currency.dispatchEvent( new Event( 'change', { bubbles: true } ) );
 		} );
 
@@ -186,6 +189,17 @@ class SetupWizard {
 
 		const enabledCount = notifications.filter( ( input ) => input.checked ).length;
 		this.setToggleState( master, enabledCount === notifications.length );
+	}
+
+	syncCurrencyPreset() {
+		const currency = this.elSetupForm.querySelector( SetupWizard.selectors.elCurrency );
+		if ( ! currency ) {
+			return;
+		}
+
+		this.elSetupForm.querySelectorAll( '[data-currency-preset]' ).forEach( ( preset ) => {
+			preset.classList.toggle( 'is-active', preset.dataset.currencyPreset === currency.value );
+		} );
 	}
 
 	saveStep( button ) {

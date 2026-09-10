@@ -456,6 +456,7 @@
 
     .lp-setup-footer-bar {
         display: grid;
+		gap: 10px;
         grid-template-columns: minmax(120px, 1fr) auto minmax(220px, 1fr);
         align-items: center;
         position: fixed;
@@ -783,7 +784,7 @@
             background: $cb-success;
         }
     }
- 
+
     .lp-setup-page-status--missing {
         border-color: $cb-warning;
         color: $cb-warning;

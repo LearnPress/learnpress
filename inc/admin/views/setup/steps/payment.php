@@ -8,17 +8,13 @@
  */
 
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
+use LearnPress\Helpers\Config;
 
 defined( 'ABSPATH' ) || exit;
 
-$settings         = LP_Settings::instance();
-$currency         = $settings->get( 'currency', 'USD' );
-$currency_presets = array(
-	'USD' => array( 'flag' => '🇺🇸', 'label' => 'USD ($)' ),
-	'VND' => array( 'flag' => '🇻🇳', 'label' => 'VND (₫)' ),
-	'EUR' => array( 'flag' => '🇪🇺', 'label' => 'EUR (€)' ),
-	'JPY' => array( 'flag' => '🇯🇵', 'label' => 'JPY (¥)' ),
-);
+$settings            = LP_Settings::instance();
+$currency            = $settings->get( 'currency', 'USD' );
+$currency_presets    = Config::instance()->get( 'currency-presets', 'setup-wizard' );
 $paypal_settings_url = admin_url( 'admin.php?page=learn-press-settings&tab=payments&section=paypal' );
 $offline_enabled     = 'yes' === $settings->get( 'offline-payment.enable', 'yes' );
 $paypal_enabled      = 'yes' === $settings->get( 'paypal.enable', 'no' );
@@ -88,7 +84,15 @@ $paypal_enabled      = 'yes' === $settings->get( 'paypal.enable', 'no' );
 				<span><?php esc_html_e( 'Allow students to pay via bank transfer or cash.', 'learnpress' ); ?></span>
 			</div>
 			<span class="screen-reader-text"><?php esc_html_e( 'Enable Offline / Manual Payment', 'learnpress' ); ?></span>
-			<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'settings[offline-payment][enable]', 'value' => $offline_enabled, 'classes' => 'lp-setup-gateway-toggle' ) ); ?>
+			<?php
+			echo AdminTemplate::html_toggle_enable(
+				array(
+					'name' => 'settings[offline-payment][enable]',
+					'value' => $offline_enabled,
+					'classes' => 'lp-setup-gateway-toggle',
+				)
+			);
+			?>
 		</article>
 
 		<article class="lp-setup-gateway-card lp-setup-gateway-card--paypal lp-setup-card">
@@ -99,7 +103,15 @@ $paypal_enabled      = 'yes' === $settings->get( 'paypal.enable', 'no' );
 				<a class="button button-primary lp-setup-connect-paypal" href="<?php echo esc_url( $paypal_settings_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Connect with PayPal', 'learnpress' ); ?></a>
 			</div>
 			<span class="screen-reader-text"><?php esc_html_e( 'Enable PayPal Standard', 'learnpress' ); ?></span>
-			<?php echo AdminTemplate::html_toggle_enable( array( 'name' => 'settings[paypal][enable]', 'value' => $paypal_enabled, 'classes' => 'lp-setup-gateway-toggle' ) ); ?>
+			<?php
+			echo AdminTemplate::html_toggle_enable(
+				array(
+					'name' => 'settings[paypal][enable]',
+					'value' => $paypal_enabled,
+					'classes' => 'lp-setup-gateway-toggle',
+				)
+			);
+			?>
 		</article>
 	</section>
 </section>

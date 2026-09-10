@@ -12,6 +12,7 @@ namespace LearnPress\Ajax;
 
 use Exception;
 use LearnPress\Helpers\Response;
+use LearnPress\Models\UserModel;
 use LearnPress\Services\SetupDemoCourseService;
 use LP_Emails;
 use LP_Helper;
@@ -35,17 +36,12 @@ class SetupWizardAjax extends AbstractAjax {
 		$response = new Response();
 
 		try {
-			if ( ! current_user_can( 'install_plugins' ) ) {
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
 				throw new Exception( esc_html__( 'You do not have permission to update setup settings.', 'learnpress' ) );
 			}
 
 			$form = $this->get_form_data();
 			$step = sanitize_key( $form['lp-setup-step'] ?? '' );
-
-			$nonce = sanitize_text_field( $form['lp-setup-nonce'] ?? '' );
-			if ( ! wp_verify_nonce( $nonce, 'lp-setup-step-' . $step ) ) {
-				throw new Exception( esc_html__( 'The setup request has expired. Please refresh the page and try again.', 'learnpress' ) );
-			}
 
 			$allowed_steps = array( 'welcome', 'learning-experience', 'pages', 'payment', 'emails', 'finish' );
 			if ( ! in_array( $step, $allowed_steps, true ) ) {
@@ -89,7 +85,7 @@ class SetupWizardAjax extends AbstractAjax {
 		$response = new Response();
 
 		try {
-			if ( ! current_user_can( 'install_plugins' ) ) {
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
 				throw new Exception( esc_html__( 'You do not have permission to install demo courses.', 'learnpress' ) );
 			}
 
@@ -99,9 +95,10 @@ class SetupWizardAjax extends AbstractAjax {
 				throw new Exception( esc_html__( 'Invalid demo course index.', 'learnpress' ) );
 			}
 
-			$response->data    = (object) ( new SetupDemoCourseService() )->import_course( (int) $index );
-			$response->status  = Response::STATUS_SUCCESS;
-			$response->message = esc_html__( 'The demo course was processed successfully.', 'learnpress' );
+			$setupDemoCourseService = new SetupDemoCourseService();
+			$response->data         = $setupDemoCourseService->import_course( (int) $index );
+			$response->status       = Response::STATUS_SUCCESS;
+			$response->message      = esc_html__( 'The demo course was processed successfully.', 'learnpress' );
 		} catch ( Throwable $error ) {
 			$response->message = $error->getMessage();
 		}
@@ -217,7 +214,7 @@ class SetupWizardAjax extends AbstractAjax {
 	 * @return void
 	 */
 	protected function save_emails( array $settings ) {
-		$groups = array(
+		$groups        = array(
 			'new_order'                 => array( 'new-order-admin', 'new-order-instructor' ),
 			'order_completed'           => array( 'completed-order-user' ),
 			'course_enrolled'           => array( 'enrolled-course-user' ),
