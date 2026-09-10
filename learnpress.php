@@ -492,8 +492,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/lp-webhooks.php'; // Addon learnpress-2checkout-payment v4.0.1 is using, when update v4.0.2 don't need load it.
 			include_once 'inc/class-lp-request-handler.php';
 
-			include_once 'inc/admin/helpers/class-lp-plugins-helper.php';
-
 			// Todo: tungnx check those files.
 			include_once 'inc/abstracts/abstract-object-query.php';
 			include_once 'inc/class-lp-course-query.php';
