@@ -3,6 +3,7 @@
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\Courses;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 
@@ -445,7 +446,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	 *
 	 * @return WP_REST_Response|LP_REST_Response
 	 * @since 4.2.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_courses( WP_REST_Request $request ) {
 		$res         = new LP_REST_Response();
@@ -458,6 +459,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$params = $this->convert_params_query_courses( $params );
 
 			Courses::handle_params_for_query_courses( $filter, $params );
+			$filter->post_status   = [ PostModel::STATUS_PUBLISH ];
 			$key_cache             = 'api/' . md5( json_encode( $params ) );
 			$key_cache_total       = $key_cache . '_total';
 			$key_cache_total_pages = $key_cache . '_total_pages';
