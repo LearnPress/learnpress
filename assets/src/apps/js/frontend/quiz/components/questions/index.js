@@ -118,7 +118,7 @@ class Questions extends Component {
 
 		return (
 			<>
-				<div tabIndex={ 100 } onKeyUp={ this.nav }>
+				<div onKeyUp={ this.nav }>
 					<div className="quiz-questions" style={ { display: isShow ? '' : 'none' } }>
 						{ questions.map( ( question, index ) => {
 							const isCurrent = questionsPerPage ? false : currentQuestion === question.id;

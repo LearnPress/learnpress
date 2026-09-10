@@ -539,28 +539,15 @@ class UserQuizModel extends UserItemModel {
 	}
 
 	/**
-	 * Check if a question has already been checked.
-	 *
-	 * @param int $question_id
-	 *
-	 * @return bool
-	 * @since 4.2.7.6
-	 * @version 1.0.0
-	 */
-	public function has_checked_question( int $question_id ): bool {
-		return in_array( $question_id, $this->get_checked_questions(), true );
-	}
-
-	/**
 	 * Mark a question as checked.
 	 *
 	 * @param int $question_id
 	 *
 	 * @return void
-	 * @since 4.2.7.6
+	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function add_checked_question( int $question_id ) {
+	public function save_questions_instant_checked( int $question_id ) {
 		$checked_questions = $this->get_checked_questions();
 
 		if ( ! in_array( $question_id, $checked_questions, true ) ) {
@@ -570,33 +557,33 @@ class UserQuizModel extends UserItemModel {
 	}
 
 	/**
-	 * Check user can instant check a question.
+	 * Check user can instantly check a question.
 	 *
 	 * @param int $question_id
 	 *
-	 * @return bool
-	 * @since 4.2.7.6
+	 * @return bool|WP_Error
+	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function can_check_answer( int $question_id = 0 ): bool {
-		$can = false;
-
+	public function can_check_instant_answer( int $question_id = 0 ) {
 		$quizPostModel = $this->get_quiz_post_model();
 		if ( ! $quizPostModel instanceof QuizPostModel ) {
-			return $can;
+			return new WP_Error( 'quiz_invalid', __( 'Quiz is invalid', 'learnpress' ) );
 		}
 
-		if ( $quizPostModel->has_instant_check()
-			&& $this->get_status() === self::STATUS_STARTED ) {
-			$can = ! $this->has_checked_question( $question_id );
+		if ( ! $quizPostModel->has_instant_check() ) {
+			return new WP_Error( 'instant_check_disable', __( 'Instant check is disable', 'learnpress' ) );
+		}
+
+		if ( in_array( $question_id, $this->get_checked_questions() ) ) {
+			return new WP_Error( 'already_checked', __( 'This question is already selected', 'learnpress' ) );
 		}
 
 		return apply_filters(
-			'learn-press/can-instant-check-question',
-			$can,
+			'learn-press/user/can-instant-check-quiz',
+			true,
 			$question_id,
-			$this->item_id,
-			$this->ref_id
+			$this
 		);
 	}
 
@@ -617,7 +604,7 @@ class UserQuizModel extends UserItemModel {
 			throw new Exception( __( 'The question is invalid!', 'learnpress' ) );
 		}
 
-		$can_check = $this->can_check_answer( $question_id );
+		$can_check = $this->can_check_instant_answer( $question_id );
 		if ( ! $can_check ) {
 			throw new Exception( __( 'Cannot check the answer to the question.', 'learnpress' ) );
 		}
@@ -652,7 +639,7 @@ class UserQuizModel extends UserItemModel {
 
 			$userItemResultModel->set_result( $result_answer );
 			$userItemResultModel->save();
-			$this->add_checked_question( $question_id );
+			$this->save_questions_instant_checked( $question_id );
 		}
 
 		$checked = array(
