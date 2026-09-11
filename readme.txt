@@ -301,6 +301,10 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.7 (2026-09-11)
+~ Fixed: security (Props @Karthik Ramakrishnan, @vuxvinh, @Nicat Sultanov, @Sai Praneeth Koti, @Artus KG)
+~ Fixed minor bugs.
+
 = 4.4.6 (2026-09-02) =
 ~ Fixed: security (Props @Yll Berisha).
 ~ Fixed: selected items from content bank "Edit curriculum".

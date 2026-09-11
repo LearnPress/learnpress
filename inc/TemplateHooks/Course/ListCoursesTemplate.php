@@ -119,7 +119,7 @@ class ListCoursesTemplate {
 			[
 				'wrap'     => sprintf(
 					'<ul class="learn-press-courses lp-list-courses-no-css %1$s" data-layout="%1$s">',
-					$skin
+					esc_attr( $skin )
 				),
 				'courses'  => $html_courses,
 				'wrap_end' => '</ul>',
@@ -206,7 +206,7 @@ class ListCoursesTemplate {
 					'wrapper'     => '<div class="course-thumbnail">',
 					'img'         => sprintf(
 						'<a href="%s">%s</a>',
-						$course->get_permalink(),
+						esc_url( $course->get_permalink() ),
 						$singleCourseTemplate->html_image( $course )
 					),
 					'wrapper_end' => '</div>',
@@ -266,14 +266,14 @@ class ListCoursesTemplate {
 					'price'         => $singleCourseTemplate->html_price( $course ),
 					'btn_read_more' => sprintf(
 						'<div class="course-readmore"><a href="%s">%s</a></div>',
-						$course->get_permalink(),
+						esc_url( $course->get_permalink() ),
 						$btn_read_more_text
 					),
 					'btn_view_list' => $show_view_students ? sprintf(
 						'<div class="lp-wrap-btn-view-course-students">
-							<button type="button" class="lp-button lp-btn-view-students" data-course-id="%d" data-course-title="%s">%s</button>
+							<button type="button" class="lp-button lp-btn-view-students" data-course-id="%s" data-course-title="%s">%s</button>
 						</div>',
-						$course->get_id(),
+						esc_attr( $course->get_id() ),
 						esc_attr( $course->get_title() ),
 						esc_html__( 'View List Students', 'learnpress' )
 					) : '',
@@ -299,7 +299,7 @@ class ListCoursesTemplate {
 					'wrapper'                     => '<div class="course-content">',
 					'title'                       => sprintf(
 						'<h3 class="wap-course-title"><a class="course-permalink" href="%s">%s</a></h3>',
-						$course->get_permalink(),
+						esc_url( $course->get_permalink() ),
 						$singleCourseTemplate->html_title( $course )
 					),
 					'featured'                    => $singleCourseTemplate->html_featured( $course ),
@@ -523,7 +523,12 @@ class ListCoursesTemplate {
 		$content = '<ul class="courses-layouts-display-list">';
 		foreach ( $layouts as $k => $v ) {
 			$active   = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
-			$content .= '<li class="courses-layout ' . $active . '" data-layout="' . $k . '">' . $v . '</li>';
+			$content .= sprintf(
+				'<li class="courses-layout %s" data-layout="%s">%s</li>',
+				esc_attr( $active ),
+				esc_attr( $k ),
+				$v
+			);
 		}
 		$content .= '</ul>';
 
@@ -558,7 +563,12 @@ class ListCoursesTemplate {
 
 		$content = '<select name="order_by" class="courses-order-by">';
 		foreach ( $values as $k => $v ) {
-			$content .= '<option value="' . $k . '" ' . selected( $default_value, $k, false ) . '>' . $v . '</option>';
+			$content .= sprintf(
+				'<option value="%s" %s>%s</option>',
+				esc_attr( $k ),
+				selected( $default_value, $k, false ),
+				$v
+			);
 		}
 		$content .= '</select>';
 
@@ -673,7 +683,10 @@ class ListCoursesTemplate {
 			);
 			$view_all      = sprintf(
 				'<a href="%s">%s</a>',
-				add_query_arg( 'c_search', $key_search, learn_press_get_page_link( 'courses' ) ),
+				esc_url( add_query_arg(
+					'c_search',
+					$key_search,
+					learn_press_get_page_link( 'courses' ) ) ),
 				__( 'View All', 'learnpress' )
 			);
 

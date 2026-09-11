@@ -8,13 +8,13 @@
  */
 
 use LearnPress\Ajax\Order\ExportOrderCSVAjax;
-use LearnPress\Databases\DataBase;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\OrderPostFilter;
 use LearnPress\Helpers\LPDateTime;
 use LearnPress\Models\OrderPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
+use LearnPress\Models\UserModel;
 
 if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 	final class LP_Order_Post_Type extends LP_Abstract_Post_Type {
@@ -856,10 +856,17 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * Download order CSV file and delete it after download
 		 *
 		 * @return void
+		 * @since 4.3.2.8
+		 * @version 1.0.1
 		 */
 		public function download_order_csv_file() {
 			$export_id = LP_Request::get_param( 'export_id', '', 'key' );
 			if ( ! isset( $_GET['lp_download_order'] ) || empty( $export_id ) ) {
+				return;
+			}
+
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
 				return;
 			}
 

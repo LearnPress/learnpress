@@ -6,7 +6,7 @@ $msg-info: #007AFF1A;
 
 .learn-press-message {
 	position: relative;
-	//margin: 24px auto;
+	margin: 0 !important; // fix system WP override
 	padding: 10px 20px;
 	//border-top: 5px solid $msg-color;
 	border-radius: var( --lp-border-radius, 5px);
@@ -16,6 +16,7 @@ $msg-info: #007AFF1A;
  	&.error {
 		background-color: $msg-error;
 		color: #FF3B30;
+		border-left: none;
  	}
 
 	&.warning {
