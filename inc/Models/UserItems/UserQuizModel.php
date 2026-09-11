@@ -876,7 +876,7 @@ class UserQuizModel extends UserItemModel {
 				foreach ( $results as $result ) {
 					$user_item_result = new UserItemResultModel( $result );
 					$result_data      = $user_item_result->get_result();
-					$history[] = $result_data;
+					$history[]        = $result_data;
 				}
 			}
 		} catch ( Throwable $e ) {
