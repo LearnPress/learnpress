@@ -23,6 +23,21 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 		<p><?php esc_html_e( 'Choose a few basics for how your courses look and feel.', 'learnpress' ); ?></p>
 	</header>
 
+	<?php if ( $is_block_theme ) : ?>
+		<div class="lp-setup-info" role="status">
+			<span class="lp-setup-info__icon" aria-hidden="true">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+					<circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/>
+					<path d="M12 10.75V17M12 7.25V7.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+				</svg>
+			</span>
+			<span class="lp-setup-info__content">
+				<strong><?php esc_html_e( 'Your current theme supports Gutenberg.', 'learnpress' ); ?></strong>
+				<span><?php esc_html_e( 'These settings are not available because they don’t apply to your theme.', 'learnpress' ); ?></span>
+			</span>
+		</div>
+	<?php endif; ?>
+
 	<fieldset class="lp-setup-choice-group<?php echo esc_attr( $disabled_class ); ?>"<?php echo $is_block_theme ? ' aria-disabled="true"' : ''; ?>>
 		<legend><?php esc_html_e( 'Layout single course', 'learnpress' ); ?></legend>
 		<div class="lp-setup-choice-grid">
