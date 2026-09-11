@@ -4,7 +4,7 @@
  *
  * @author  ThimPres
  * @package LearnPress/Admin/Views
- * @version 3.0.0
+ * @version 3.0.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -26,12 +26,20 @@ $body_classes[]  = 'lp-setup-step--' . sanitize_html_class( $current_step );
 
 	$assets = LP_Admin_Assets::instance();
 	$assets->load_scripts();
+	wp_dequeue_script( 'lp-admin' );
 
 	wp_print_styles( 'buttons' );
 	wp_print_styles( 'common' );
 	wp_print_styles( 'forms' );
 	wp_print_styles( 'lp-admin' );
 	wp_print_styles( 'lp-setup-wizard' );
+
+	// Remove load Jquery
+	global $wp_scripts;
+	$wp_scripts->remove('common');
+	$wp_scripts->remove('jquery');
+	// End remove load Jquery
+
 	do_action( 'admin_print_scripts' );
 	wp_print_scripts( 'lp-setup-wizard' );
 	?>
