@@ -23,6 +23,21 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 		<p><?php esc_html_e( 'Choose a few basics for how your courses look and feel.', 'learnpress' ); ?></p>
 	</header>
 
+	<?php if ( $is_block_theme ) : ?>
+		<div class="lp-setup-info" role="status">
+			<span class="lp-setup-info__icon" aria-hidden="true">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+					<circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/>
+					<path d="M12 10.75V17M12 7.25V7.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+				</svg>
+			</span>
+			<span class="lp-setup-info__content">
+				<strong><?php esc_html_e( 'Your current theme supports Gutenberg.', 'learnpress' ); ?></strong>
+				<span><?php esc_html_e( 'These settings are not available because they don’t apply to your theme.', 'learnpress' ); ?></span>
+			</span>
+		</div>
+	<?php endif; ?>
+
 	<fieldset class="lp-setup-choice-group<?php echo esc_attr( $disabled_class ); ?>"<?php echo $is_block_theme ? ' aria-disabled="true"' : ''; ?>>
 		<legend><?php esc_html_e( 'Layout single course', 'learnpress' ); ?></legend>
 		<div class="lp-setup-choice-grid">
@@ -31,7 +46,9 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 					<?php checked( $course_layout, 'modern' ); ?><?php disabled( $is_block_theme ); ?>>
 				<span class="lp-setup-choice__card lp-setup-card">
 					<span class="lp-setup-choice__icon" aria-hidden="true">
-						<svg viewBox="0 0 24 24" focusable="false"><path d="M4 5h16v14H4zM4 9h16M9 9v10"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+							<path d="M5.83333 3.5H22.1667C23.4553 3.5 24.5 4.54467 24.5 5.83333V22.1667C24.5 23.4553 23.4553 24.5 22.1667 24.5H5.83333C4.54467 24.5 3.5 23.4553 3.5 22.1667V5.83333C3.5 4.54467 4.54467 3.5 5.83333 3.5ZM10.5 3.5V24.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
 					</span>
 					<span class="lp-setup-choice__content">
 						<strong><?php esc_html_e( 'Modern', 'learnpress' ); ?></strong>
@@ -45,7 +62,9 @@ $disabled_class = $is_block_theme ? ' lp-setup-choice-group--disabled' : '';
 					<?php checked( $course_layout, 'classic' ); ?><?php disabled( $is_block_theme ); ?>>
 				<span class="lp-setup-choice__card lp-setup-card">
 					<span class="lp-setup-choice__icon" aria-hidden="true">
-						<svg viewBox="0 0 24 24" focusable="false"><path d="M5 4h14v16H5zM5 8h14M8 11h8M8 14h8M8 17h5"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+							<path d="M16.3328 4.66667H24.4995M16.3328 10.5H24.4995M16.3328 17.5H24.4995M16.3328 23.3333H24.4995M4.66618 3.5H10.4995C11.1438 3.5 11.6662 4.02233 11.6662 4.66667V10.5C11.6662 11.1443 11.1438 11.6667 10.4995 11.6667H4.66618C4.02185 11.6667 3.49951 11.1443 3.49951 10.5V4.66667C3.49951 4.02233 4.02185 3.5 4.66618 3.5ZM4.66618 16.3333H10.4995C11.1438 16.3333 11.6662 16.8557 11.6662 17.5V23.3333C11.6662 23.9777 11.1438 24.5 10.4995 24.5H4.66618C4.02185 24.5 3.49951 23.9777 3.49951 23.3333V17.5C3.49951 16.8557 4.02185 16.3333 4.66618 16.3333Z" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
 					</span>
 					<span class="lp-setup-choice__content">
 						<strong><?php esc_html_e( 'Classic', 'learnpress' ); ?></strong>
