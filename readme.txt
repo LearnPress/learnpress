@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 7.1
-Stable tag: 4.4.6
+Stable tag: 4.4.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -301,340 +301,342 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
-= 4.4.7 (2026-09-11)
-~ Fixed: security (Props @Karthik Ramakrishnan, @vuxvinh, @Nicat Sultanov, @Sai Praneeth Koti, @Artus KG)
-~ Fixed minor bugs.
+= 4.4.7 (2026-09-11) =
+* Fixed: security (Props @Karthik Ramakrishnan, @vuxvinh, @Nicat Sultanov, @Sai Praneeth Koti, @Artus KG)
+* Fixed minor bugs.
+* Update: manager themes screen.
+* Update: setup wizard screen.
 
 = 4.4.6 (2026-09-02) =
-~ Fixed: security (Props @Yll Berisha).
-~ Fixed: selected items from content bank "Edit curriculum".
-~ Fixed: LP profile avatar save wrong path image.
-~ Fixed: button AI.
-~ Fixed: style lp-menu-divider & button AI height.
-~ Fixed: lp-is-mobile.
-~ Fixed: missing old hook declare type Class Submenu.
-~ Fixed: error divider is link 404, set link is #.
-~ Tweak: style table.
-~ Tweak: remove files deprecated use Vue.
-~ Tweak: refactor reset item progress.
-~ Tweak: remove old Reset User Progress function.
-~ Tweak: refactor tool reset progress course.
-~ Tweak: remove old prefix css.
-~ Tweak: plugin_links.
+* Fixed: security (Props @Yll Berisha).
+* Fixed: selected items from content bank "Edit curriculum".
+* Fixed: LP profile avatar save wrong path image.
+* Fixed: button AI.
+* Fixed: style lp-menu-divider & button AI height.
+* Fixed: lp-is-mobile.
+* Fixed: missing old hook declare type Class Submenu.
+* Fixed: error divider is link 404, set link is #.
+* Tweak: style table.
+* Tweak: remove files deprecated use Vue.
+* Tweak: refactor reset item progress.
+* Tweak: remove old Reset User Progress function.
+* Tweak: refactor tool reset progress course.
+* Tweak: remove old prefix css.
+* Tweak: plugin_links.
 
 = 4.4.5 (2026-08-22) =
-~ Added: LearnPress Help Center in the admin menu.
-~ Improved admin menu structure and how submenus are registered.
-~ Improved reusable UI components: form filter, fullscreen, toggle enable.
-~ Improved Students Enrolled screen and course builder persistence.
-~ Improved sample course data creation and deletion.
-~ Added payment settings explore addons promo box.
-~ Fixed: security (Props @Wordfence PRISM, @Moshe Levi, @Badr Azeez).
-~ Fixed: checkout emails not sending when login/register on checkout page.
-~ Fixed: blank value when adding items from Content Bank.
-~ Fixed: incorrect exception handling (Props @sungbyeongchan).
+* Added: LearnPress Help Center in the admin menu.
+* Improved admin menu structure and how submenus are registered.
+* Improved reusable UI components: form filter, fullscreen, toggle enable.
+* Improved Students Enrolled screen and course builder persistence.
+* Improved sample course data creation and deletion.
+* Added payment settings explore addons promo box.
+* Fixed: security (Props @Wordfence PRISM, @Moshe Levi, @Badr Azeez).
+* Fixed: checkout emails not sending when login/register on checkout page.
+* Fixed: blank value when adding items from Content Bank.
+* Fixed: incorrect exception handling (Props @sungbyeongchan).
 
 = 4.4.4 (2026-08-03) =
-~ Fixed: security.
-~ Fixed: minor bugs.
-~ Update some library to latest.
+* Fixed: security.
+* Fixed: minor bugs.
+* Update some library to latest.
 
 = 4.4.3 (2026-07-26) =
-~ Fixed: security.
-~ Fixed: minor bugs.
-~ Tweak: UI/UX statistic.
+* Fixed: security.
+* Fixed: minor bugs.
+* Tweak: UI/UX statistic.
 
 = 4.4.2 (2026-07-11) =
-~ Fixed: security.
-~ Fixed: display Date time on Order.
-~ Fixed: selected method payment on the checkout page.
-~ Fixed: minor bug on Course Builder.
-~ Unregister select2 library.
-~ Added: feature Webhook.
-~ MCP: added function create course/lesson/quiz/question.
-~ Change label Will End to Expiry date.
+* Fixed: security.
+* Fixed: display Date time on Order.
+* Fixed: selected method payment on the checkout page.
+* Fixed: minor bug on Course Builder.
+* Unregister select2 library.
+* Added: feature Webhook.
+* MCP: added function create course/lesson/quiz/question.
+* Change label Will End to Expiry date.
 
 = 4.4.1 (2026-06-26) =
-~ Fixed: security.
-~ Fixed: minor bugs.
+* Fixed: security.
+* Fixed: minor bugs.
 
 = 4.4.0 (2026-06-16) =
-~ Fixed: security.
-~ Fixed: check permission create/edit course/lesson/quiz/question on Course Builder.
-~ Fixed: editor edit question Fill In Blank.
-~ Feature: refund order, support PayPal, option auto refund, refund request, refund time limit.
+* Fixed: security.
+* Fixed: check permission create/edit course/lesson/quiz/question on Course Builder.
+* Fixed: editor edit question Fill In Blank.
+* Feature: refund order, support PayPal, option auto refund, refund request, refund time limit.
 
 = 4.3.9.1 (2026-06-10) =
-~ Fixed: MCP AI assistant.
+* Fixed: MCP AI assistant.
 
 = 4.3.9 (2026-06-08) =
-~ Feature: AI assistant to help students learn better - ask questions about lessons and create questions to check understanding.
-~ Fixed: minor bugs.
+* Feature: AI assistant to help students learn better - ask questions about lessons and create questions to check understanding.
+* Fixed: minor bugs.
 
 = 4.3.8 (2026-06-01) =
-~ Feature: add PayPal subscription support to facilitate payments for the upcoming LP Membership add-on.
-~ Fixed: minor bugs Course Builder.
+* Feature: add PayPal subscription support to facilitate payments for the upcoming LP Membership add-on.
+* Fixed: minor bugs Course Builder.
 
 = 4.3.7 (2026-05-24) =
-~ Fixed security.
-~ Fixed minor bugs.
-~ Compatible with WP 7.0.
+* Fixed security.
+* Fixed minor bugs.
+* Compatible with WP 7.0.
 
 = 4.3.6 (2026-05-03) =
-~ Feature: course builder. For teacher, admin manager course without access WP Admin screen.
-~ Fixed: link profile.
-~ Fixed: save lesson change data course assigned.
-~ Fixed: save author via quick edit.
-~ Fixed: security.
+* Feature: course builder. For teacher, admin manager course without access WP Admin screen.
+* Fixed: link profile.
+* Fixed: save lesson change data course assigned.
+* Fixed: save author via quick edit.
+* Fixed: security.
 
 = 4.3.5 (2026-04-10) =
-~ Added: MCP (Model Context Protocol) support for get information courses, curriculum, lessons, users enroll... with AI.
-~ Fixed: minor bugs.
+* Added: MCP (Model Context Protocol) support for get information courses, curriculum, lessons, users enroll... with AI.
+* Fixed: minor bugs.
 
 = 4.3.4 (2026-03-30) =
-~ Fixed: security.
-~ Fixed: style button AI display on Gutenberg edit course screen.
-~ Fixed: error display content of lesson, question with Elementor.
-~ Tweak: count statistics on Profile Page, exclude courses with status auto-draft.
-~ Added: a feature to generate pretty user slugs instead of usernames (login name), improving user privacy and security.
+* Fixed: security.
+* Fixed: style button AI display on Gutenberg edit course screen.
+* Fixed: error display content of lesson, question with Elementor.
+* Tweak: count statistics on Profile Page, exclude courses with status auto-draft.
+* Added: a feature to generate pretty user slugs instead of usernames (login name), improving user privacy and security.
 	1. Go to LearnPress > Settings > Permalinks > Users Pretty Slug and click "Generate User Slugs" to generate slugs for all users.
 	2. Edit each user, find "LearnPress User Slug" enter pretty slug new for that user.
-~ Tweak: improved the "Read more" button text.
-~ Tweak: style student list.
+* Tweak: improved the "Read more" button text.
+* Tweak: style student list.
 
 = 4.3.3 (2026-03-11) =
-~ Added: a feature display list students enrolled, on the tab LearnPress, Profile Page.
-~ Fixed: security.
-~ Fixed: save lesson preview, but the curriculum not change.
+* Added: a feature display list students enrolled, on the tab LearnPress, Profile Page.
+* Fixed: security.
+* Fixed: save lesson preview, but the curriculum not change.
 
 = 4.3.2.8 (2026-02-25) =
-~ Added: feature export Orders to CSV file.
-~ Tweak: logo on menu admin.
-~ Remove support chatgpt-4o-latest.
+* Added: feature export Orders to CSV file.
+* Tweak: logo on menu admin.
+* Remove support chatgpt-4o-latest.
 
 = 4.3.2.7 (2026-01-22) =
-~ Fixed: minor bugs.
+* Fixed: minor bugs.
 
 = 4.3.2.6 (2026-01-22) =
-~ Tweak: profile social labels.
-~ Tweak: breadcrumb, remove single title course.
-~ Tweak: show label for pages assign to pages of LearnPress.
-~ Fixed: query list orders backend with Pagination config by Admin.
-~ Fixed: styling of the meta area on the single classic course page.
-~ Fixed: styling single classic course page with Astra theme.
-~ Fixed: error link item on order details profile page.
-~ Clean code.
+* Tweak: profile social labels.
+* Tweak: breadcrumb, remove single title course.
+* Tweak: show label for pages assign to pages of LearnPress.
+* Fixed: query list orders backend with Pagination config by Admin.
+* Fixed: styling of the meta area on the single classic course page.
+* Fixed: styling single classic course page with Astra theme.
+* Fixed: error link item on order details profile page.
+* Clean code.
 
 = 4.3.2.5 (2026-01-09) =
-~ Fixed: error enroll course.
+* Fixed: error enroll course.
 
 = 4.3.2.4 (2026-01-07) =
-~ Deprecated: methods learn_press_add_course_buttons, learn_press_remove_course_buttons,
+* Deprecated: methods learn_press_add_course_buttons, learn_press_remove_course_buttons,
 button_retry, course_purchase_button, course_enroll_button, course_continue_button, course_finish_button, course_external_button.
-~ Tweak class LP_User_Factory.
+* Tweak class LP_User_Factory.
 
 = 4.3.2.3 (2025-12-25) =
-~ Fixed security.
-~ Fix statistics count: top  courses sold, top categories sold.
-~ Fixed: function of "required_review" option.
-~ Fixed: show password for template Gutenberg if set.
-~ Edit curriculum: fix error edit link item when add from content bank.
-~ Edit curriculum: fix add item lesson is set Preview via content bank.
-~ Fixed: curriculum edit error with WordPress playground.
-~ Added: shortcode [learn_press_courses].
+* Fixed security.
+* Fix statistics count: top  courses sold, top categories sold.
+* Fixed: function of "required_review" option.
+* Fixed: show password for template Gutenberg if set.
+* Edit curriculum: fix error edit link item when add from content bank.
+* Edit curriculum: fix add item lesson is set Preview via content bank.
+* Fixed: curriculum edit error with WordPress playground.
+* Added: shortcode [learn_press_courses].
 
 = 4.3.2.2 (2025-12-16) =
-~ Fixed: error with addons Assignment, Course Review.
-~ Fixed: error cache when start Quiz.
+* Fixed: error with addons Assignment, Course Review.
+* Fixed: error cache when start Quiz.
 
 = 4.3.2.1 (2025-12-13) =
-~ Fixed: error Class "LP_REST_Orders_Controller" not found, deleted file but missing delete declare REST route.
+* Fixed: error Class "LP_REST_Orders_Controller" not found, deleted file but missing delete declare REST route.
 
 = 4.3.2 (2025-12-12) =
-~ Fixed: security.
-~ Fixed: break style TomSelect for case choose courses on product of Woo.
-~ Tweak: edit course with openAI, added more models: gpt-5.2, gpt-5-mini, gpt-5-nano.
-~ Tweak: query list orders.
-~ Tweak: question tinymce editor sometime error save.
-~ Tweak: display list items of order by pagination.
-~ Tweak: material.
-~ Tweak: adjust lesson completion logic, redirect to the next incomplete item,
+* Fixed: security.
+* Fixed: break style TomSelect for case choose courses on product of Woo.
+* Tweak: edit course with openAI, added more models: gpt-5.2, gpt-5-mini, gpt-5-nano.
+* Tweak: query list orders.
+* Tweak: question tinymce editor sometime error save.
+* Tweak: display list items of order by pagination.
+* Tweak: material.
+* Tweak: adjust lesson completion logic, redirect to the next incomplete item,
 if all items after the current one are already completed,
 search previous lessons to redirect to, if all items completed will not redirect.
 
 = 4.3.1 (2025-11-21) =
-~ Fixed: condition check enable AI.
-~ Fixed: apply image created by AI for feature image course.
-~ Added: buttons generate with AI on edit course Gutenberg screen.
+* Fixed: condition check enable AI.
+* Fixed: apply image created by AI for feature image course.
+* Added: buttons generate with AI on edit course Gutenberg screen.
 
 = 4.3.0 (2025-11-20) =
-~ Fixed: security.
-~ Fixed: error 404 link when add media to editor of Question config.
-~ Fixed: export social use on the "Export Personal Data" tool.
-~ Fixed: display time spend when doing quiz with time not limit.
-~ Beta: apply openAI for generate data course.
-~ Update library sweetalert2 to 11.26.3.
-~ Update library chartjs to 4.5.1.
+* Fixed: security.
+* Fixed: error 404 link when add media to editor of Question config.
+* Fixed: export social use on the "Export Personal Data" tool.
+* Fixed: display time spend when doing quiz with time not limit.
+* Beta: apply openAI for generate data course.
+* Update library sweetalert2 to 11.26.3.
+* Update library chartjs to 4.5.1.
 
 = 4.2.9.4 (2025-10-08) =
-~ Fixed: security.
-~ Fixed: error save config answer option (Question) with LaTeX.
-~ Added: feature export LP user data for GDPR when use tool "Export Personal Data".
+* Fixed: security.
+* Fixed: error save config answer option (Question) with LaTeX.
+* Added: feature export LP user data for GDPR when use tool "Export Personal Data".
 
 = 4.2.9.3 (2025-09-23) =
-~ Fixed: show price's course with case buy with Guest.
-~ Fixed: error don't show popup allow repurchase with theme Gutenberg.
-~ Added: feature eraser LP user data when use tool "Erase Personal Data".
+* Fixed: show price's course with case buy with Guest.
+* Fixed: error don't show popup allow repurchase with theme Gutenberg.
+* Added: feature eraser LP user data when use tool "Erase Personal Data".
 
 = 4.2.9.2 (2025-09-15) =
-~ Fixed: error some hooks emails.
-~ Require PHP 7.4+.
+* Fixed: error some hooks emails.
+* Require PHP 7.4+.
 
 = 4.2.9.1 (2025-09-10) =
-~ Fixed: various deprecated functions for compatibility with PHP 8.4.
-~ Fixed: Addon Sorting Choice case.
-~ Fixed: empty title message when adding an answer to a single-choice question.
-~ Tweak: Gutenberg 'Course Listing' block.
-~ Tweak: can_enroll handling for external links and unauthenticated users.
-~ Tweak: LP_Email_Hooks class updated to use new hook declaration method.
-~ Replace the old Emogrifier class with the CssToInlineStyles library from Composer.
-~ Added: SendEmailAjax class.
-~ Added: LPBackgroundAjax class for background processing.
+* Fixed: various deprecated functions for compatibility with PHP 8.4.
+* Fixed: Addon Sorting Choice case.
+* Fixed: empty title message when adding an answer to a single-choice question.
+* Tweak: Gutenberg 'Course Listing' block.
+* Tweak: can_enroll handling for external links and unauthenticated users.
+* Tweak: LP_Email_Hooks class updated to use new hook declaration method.
+* Replace the old Emogrifier class with the CssToInlineStyles library from Composer.
+* Added: SendEmailAjax class.
+* Added: LPBackgroundAjax class for background processing.
 
 = 4.2.9 (2025-08-27) =
-~ Refactor UI/UX for edit quiz.
-~ Refactor UI/UX for edit question.
-~ Allow assign a question to many quizzes.
-~ Update: set image course offline is full size.
-~ Fixed: enqueue style for Archive, Single course block legacy.
-~ Fixed: conflict with Thrive Architect Editor.
+* Refactor UI/UX for edit quiz.
+* Refactor UI/UX for edit question.
+* Allow assign a question to many quizzes.
+* Update: set image course offline is full size.
+* Fixed: enqueue style for Archive, Single course block legacy.
+* Fixed: conflict with Thrive Architect Editor.
 
 = 4.2.8.7.5 (2025-07-29) =
-~ Fixed: error crop image course by size not check if image exists.
-~ Fixed: translate fields author on Course Filter Widget.
-~ Fixed: error case show info learning with user Guest.
-~ Fixed: error save post_author when enable edit course with Gutenberg.
-~ Load Material files of course via AJAX.
-~ Tweak learn_press_get_course_tabs: change how to set default tab.
+* Fixed: error crop image course by size not check if image exists.
+* Fixed: translate fields author on Course Filter Widget.
+* Fixed: error case show info learning with user Guest.
+* Fixed: error save post_author when enable edit course with Gutenberg.
+* Load Material files of course via AJAX.
+* Tweak learn_press_get_course_tabs: change how to set default tab.
 
 = 4.2.8.7.4 (2025-07-14) =
-~ Use package sweetalert2-neutral instead of sweetalert2.
-~ Fixed: max index post_name column of table learnpress_courses, error with old MYSQL version.
-~ Fix conflict with light box of elementor in single lesson
-~ Gutenberg: tweak list courses block.
-~ Gutenberg: tweak filter course block.
-~ Gutenberg: add course results block.
-~ Gutenberg: add option size for course image block.
-~ Handle cache for course image url.
+* Use package sweetalert2-neutral instead of sweetalert2.
+* Fixed: max index post_name column of table learnpress_courses, error with old MYSQL version.
+* Fix conflict with light box of elementor in single lesson
+* Gutenberg: tweak list courses block.
+* Gutenberg: tweak filter course block.
+* Gutenberg: add course results block.
+* Gutenberg: add option size for course image block.
+* Handle cache for course image url.
 
 = 4.2.8.7.3 (2025-06-30) =
-~ Tweak: tab material.
-~ Edit curriculum: fix error remove section not unassign item from that section.
+* Tweak: tab material.
+* Edit curriculum: fix error remove section not unassign item from that section.
 
 = 4.2.8.7.1 (2025-06-25) =
-~ Fixed: get courses assign to co-instructor on the single instructor page.
-~ Fixed: unset value of some key auto increment when insert data to tables lp_section_items, lp_sections.
-~ Fixed: error sort by on list courses has a mask.
-~ Fixed: permission for instructor when edit curriculum's course.
-~ Update: show 'featured' label on Single Course, List Courses page.
-~ Tweak: image course block Gutenberg.
+* Fixed: get courses assign to co-instructor on the single instructor page.
+* Fixed: unset value of some key auto increment when insert data to tables lp_section_items, lp_sections.
+* Fixed: error sort by on list courses has a mask.
+* Fixed: permission for instructor when edit curriculum's course.
+* Update: show 'featured' label on Single Course, List Courses page.
+* Tweak: image course block Gutenberg.
 
 = 4.2.8.7 (2025-06-17) =
-~ Fixed: error 404 with link profile tab, link lesson with Polylang v3.7 and higher.
-~ Fixed: error enroll many courses can make server hang by send mail on background.
-~ Fixed: translate on format_human_time_diff method.
-~ Update: UI/UX for edit curriculum course.
+* Fixed: error 404 with link profile tab, link lesson with Polylang v3.7 and higher.
+* Fixed: error enroll many courses can make server hang by send mail on background.
+* Fixed: translate on format_human_time_diff method.
+* Update: UI/UX for edit curriculum course.
 
 = 4.2.8.6.1 (2025-06-09) =
-~ Fixed: error widget courses can't interact.
+* Fixed: error widget courses can't interact.
 
 = 4.2.8.6 (2025-06-09) =
-~ Refactor: edit curriculum.
-~ Update: UI/UX for edit curriculum.
-~ Allow: drag/drop item to another section.
-~ Fixed error Deprecated crypt(), when update password on profile.
-~ Fixed: get_instructor_info method.
+* Refactor: edit curriculum.
+* Update: UI/UX for edit curriculum.
+* Allow: drag/drop item to another section.
+* Fixed error Deprecated crypt(), when update password on profile.
+* Fixed: get_instructor_info method.
 
 = 4.2.8.5 (2025-05-21) =
-~ Fixed: missing user email in order summary table.
-~ Fixed: get related courses, set distinct, random list.
-~ Fixed: error avatar author for App API.
-~ Fixed: minor bug Block Gutenberg.
+* Fixed: missing user email in order summary table.
+* Fixed: get related courses, set distinct, random list.
+* Fixed: error avatar author for App API.
+* Fixed: minor bug Block Gutenberg.
 
 = 4.2.8.4 (2025-05-08) =
-~ Fixed: security.
-~ Fixed: error Add Media not working on the edit lesson screen.
-~ Move setting quiz to tab course.
-~ Tweak: list course block Gutenberg.
-~ Tweak: condition check blocks load on template.
-~ Tweak: styles.
+* Fixed: security.
+* Fixed: error Add Media not working on the edit lesson screen.
+* Move setting quiz to tab course.
+* Tweak: list course block Gutenberg.
+* Tweak: condition check blocks load on template.
+* Tweak: styles.
 
 = 4.2.8.3 (2025-04-26) =
-~ Provide: blocks for Gutenberg, build page Single Course, Archive Course, List Course.
-~ Compatible: with WP 6.8.
+* Provide: blocks for Gutenberg, build page Single Course, Archive Course, List Course.
+* Compatible: with WP 6.8.
 
 = 4.2.8.2 (2025-04-03) =
-~ Feature: add filter course by type online/offline.
-~ Tweak: add pagination list quizzes on Profile Page, instead of only default display 5 quizzes.
-~ Tweak: avatar Profile function, new UI/UX.
-~ Tweak page checkout: set link to profile page of User when logged, instead of user link default of WordPress.
-~ Tweak: set priority of hook "pre_get_document_title" to 10, for case plugin SEO can override.
-~ Tweak: layout review order.
-~ Fixed: error get courses status draft on widget list courses for Elementor.
+* Feature: add filter course by type online/offline.
+* Tweak: add pagination list quizzes on Profile Page, instead of only default display 5 quizzes.
+* Tweak: avatar Profile function, new UI/UX.
+* Tweak page checkout: set link to profile page of User when logged, instead of user link default of WordPress.
+* Tweak: set priority of hook "pre_get_document_title" to 10, for case plugin SEO can override.
+* Tweak: layout review order.
+* Fixed: error get courses status draft on widget list courses for Elementor.
 
 = 4.2.8.1 (2025-03-12) =
-~ Hot fix: error Curriculum with old data.
-~ Update: currencies list.
+* Hot fix: error Curriculum with old data.
+* Update: currencies list.
 
 = 4.2.8 (2025-03-06) =
-~ Apply the new curriculum layout for a single course, screen item learning, and apply it to the premium themes.
-~ Optimize: some duplicate query.
-~ Fixed: course protected on single course layout Modern.
-~ Fixed: continue button has character "?" when redirect to item.
-~ Fixed: error get option "evaluate final quiz".
-~ Tweak: logic search item content for the course on screen item learning.
-~ Tweak: sort the newest item learning first on the screen tab "My courses" - Profile.
-~ Tweak: crop image course by "Thumbnail dimensions".
+* Apply the new curriculum layout for a single course, screen item learning, and apply it to the premium themes.
+* Optimize: some duplicate query.
+* Fixed: course protected on single course layout Modern.
+* Fixed: continue button has character "?" when redirect to item.
+* Fixed: error get option "evaluate final quiz".
+* Tweak: logic search item content for the course on screen item learning.
+* Tweak: sort the newest item learning first on the screen tab "My courses" - Profile.
+* Tweak: crop image course by "Thumbnail dimensions".
 
 = 4.2.7.9 (2025-02-24) =
-~ Fixed: error 404 single course with struct permalink is "%course_category%".
-~ Show error message response from PayPal if exists.
-~ Tweak: UserModel class, get_display_name method, with case translate.
-~ Added: hook "learn-press/user-lesson/completed" when completed lesson.
-~ Added: option Store IP Guest to handle checkout with case can't read $_COOKIE from server.
-~ LP_Gateways: tweak init method, allow load gateway instanceof LP_Gateway_Abstract.
-~ Update some text missing text domain.
-~ Tweak: isRestApiLP method REST prefix.
+* Fixed: error 404 single course with struct permalink is "%course_category%".
+* Show error message response from PayPal if exists.
+* Tweak: UserModel class, get_display_name method, with case translate.
+* Added: hook "learn-press/user-lesson/completed" when completed lesson.
+* Added: option Store IP Guest to handle checkout with case can't read $_COOKIE from server.
+* LP_Gateways: tweak init method, allow load gateway instanceof LP_Gateway_Abstract.
+* Update some text missing text domain.
+* Tweak: isRestApiLP method REST prefix.
 
 = 4.2.7.8 (2025-02-17) =
-~ Fixed: send email when user finished course.
-~ Fixed: error PayPal payment can't verify transaction.
-~ Fixed: error change author when edit course.
-~ Tweak: Guest buy/enroll course, login via checkout.
-~ Tweak: course section, question CURD.
+* Fixed: send email when user finished course.
+* Fixed: error PayPal payment can't verify transaction.
+* Fixed: error change author when edit course.
+* Tweak: Guest buy/enroll course, login via checkout.
+* Tweak: course section, question CURD.
 
 = 4.2.7.7 (2025-02-08) =
-~ Fixed: some hosting error 403 when load list courses, complete lesson request.
-~ Fixed: sitemap 404 with items course.
+* Fixed: some hosting error 403 when load list courses, complete lesson request.
+* Fixed: sitemap 404 with items course.
 
 = 4.2.7.6 (2025-02-05) =
-~ Fixed: security.
-~ Fixed: error 404-Page Order received after checkout.
-~ Fixed: error 404-Page Profile sub-page.
-~ Optimize: speed load list courses.
-~ Added: option choose "Layout single course (Modern/Classic)".
-~ Added: option "Curriculum display" (currently apply for layout Modern).
-~ Added: new Modern layout for Single Course.
-~ Added: exclude from search via ?s= for lesson, quiz, order.
-~ Refactor code handle Quiz.
-~ Tweak: layout Single Instructor (change struct layout, display cover image, link edit if exists).
-~ Tweak: courses filter for mobile.
-~ Tweak: layout course offline for mobile.
-~ Allow: display html content on Offline Payment.
-~ Allow: change multiple instructors via Bulk Edit.
+* Fixed: security.
+* Fixed: error 404-Page Order received after checkout.
+* Fixed: error 404-Page Profile sub-page.
+* Optimize: speed load list courses.
+* Added: option choose "Layout single course (Modern/Classic)".
+* Added: option "Curriculum display" (currently apply for layout Modern).
+* Added: new Modern layout for Single Course.
+* Added: exclude from search via ?s= for lesson, quiz, order.
+* Refactor code handle Quiz.
+* Tweak: layout Single Instructor (change struct layout, display cover image, link edit if exists).
+* Tweak: courses filter for mobile.
+* Tweak: layout course offline for mobile.
+* Allow: display html content on Offline Payment.
+* Allow: change multiple instructors via Bulk Edit.
 
 = 4.2.7.5.1 (2025-01-22) =
-~ Fixed: security.
-~ Fixed: minor bugs.
+* Fixed: security.
+* Fixed: minor bugs.
 
 <a href="https://raw.githubusercontent.com/LearnPress/learnpress/develop/changelog.txt">See changelog for all versions.</a>
