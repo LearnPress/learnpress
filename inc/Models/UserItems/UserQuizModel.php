@@ -11,6 +11,8 @@ use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LearnPress\Models\UserItemMeta\UserQuizMetaModel;
 use LearnPress\Models\UserItemResults\UserItemResultModel;
 use LearnPress\Models\UserModel;
+use LearnPress\Databases\UserItemResultsDB;
+use LearnPress\Filters\UserItemResultsFilter;
 use LP_Debug;
 use LP_Helper;
 use LP_Quiz_CURD;
@@ -148,10 +150,10 @@ class UserQuizModel extends UserItemModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function start_quiz() {
-		$can_start = $this->check_can_start();
+	public function handle_start() {
+		$can_start = $this->can_start();
 		if ( is_wp_error( $can_start ) ) {
 			/**
 			 * @var WP_Error $can_start
@@ -178,8 +180,8 @@ class UserQuizModel extends UserItemModel {
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function finish_quiz( array $data = [] ): array {
-		$can_finish = $this->check_can_finish();
+	public function handle_finish( array $data = [] ): array {
+		$can_finish = $this->can_finish();
 		if ( is_wp_error( $can_finish ) ) {
 			throw new Exception( $can_finish->get_error_message() );
 		}
@@ -218,6 +220,8 @@ class UserQuizModel extends UserItemModel {
 		$userItemResultModel->save();
 
 		do_action( 'learn-press/user/quiz-finished', $this->item_id, $this->ref_id, $this->user_id, $this );
+		// @since 4.5.0
+		do_action( 'learnpress/user/quiz-finished', $this );
 
 		$result['status']   = $this->get_status();
 		$result['attempts'] = $this->get_attempts();
@@ -231,9 +235,11 @@ class UserQuizModel extends UserItemModel {
 	 * Retake quiz.
 	 *
 	 * @throws Exception
+	 * @since 4.2.5
+	 * @version 1.0.1
 	 */
-	public function retake() {
-		$can_retake = $this->check_can_retake();
+	public function handle_retake() {
+		$can_retake = $this->can_retake();
 		if ( is_wp_error( $can_retake ) ) {
 			/**
 			 * @var WP_Error $can_retake
@@ -256,16 +262,15 @@ class UserQuizModel extends UserItemModel {
 			$user_quiz_retaken_new->save();
 		}
 
-		//Todo: rewrite by object.
-		//Create new result in table learnpress_user_item_results.
-		LP_User_Items_Result_DB::instance()->insert( $this->get_user_item_id() );
-		// Remove user_item_meta.
-		learn_press_delete_user_item_meta( $this->get_user_item_id(), '_lp_question_checked' );
+		// Remove questions checked (for case enable instant check).
+		$this->delete_meta( UserQuizMetaModel::KEY_QUESTION_CHECKED );
+		//learn_press_delete_user_item_meta( $this->get_user_item_id(), '_lp_question_checked' );
 
-		$this->status     = self::STATUS_STARTED;
-		$this->start_time = gmdate( LPDateTime::FORMAT_MYSQL, time() );
-		$this->end_time   = null;
-		$this->graduation = LP_COURSE_GRADUATION_IN_PROGRESS;
+		$this->status                            = self::STATUS_STARTED;
+		$this->start_time                        = gmdate( LPDateTime::FORMAT_MYSQL, time() );
+		$this->end_time                          = null;
+		$this->graduation                        = LP_COURSE_GRADUATION_IN_PROGRESS;
+		$this->must_create_new_data_table_result = 1;
 		$this->save();
 
 		// Hook old - random quiz using.
@@ -283,9 +288,9 @@ class UserQuizModel extends UserItemModel {
 	 * return bool|WP_Error
 	 *
 	 * @since 4.2.5
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
-	public function check_can_start() {
+	public function can_start() {
 		$can_start = true;
 
 		$userModel = $this->get_user_model();
@@ -312,18 +317,21 @@ class UserQuizModel extends UserItemModel {
 			true
 		);
 		if ( $userQuizModel instanceof UserQuizModel ) {
-			$can_start = new WP_Error( 'started_quiz', __( 'You have already started the quiz.', 'learnpress' ) );
+			$can_start = new WP_Error(
+				'quiz_started',
+				__( 'You have already started the quiz.', 'learnpress' )
+			);
 		}
 
 		// Check user, course of quiz is enrolled.
 		$userCourseModel = $this->get_user_course_model();
 		if ( ! $userCourseModel instanceof UserCourseModel
-			|| $userCourseModel->status !== UserItemModel::STATUS_ENROLLED ) {
+			|| ! $userCourseModel->has_enrolled() ) {
 			$can_start = new WP_Error(
 				'not_errol_course',
 				__( 'Please enroll in the course before starting the quiz.', 'learnpress' )
 			);
-		} elseif ( $userCourseModel->status === UserItemModel::STATUS_FINISHED ) {
+		} elseif ( $userCourseModel->has_finished() ) {
 			$can_start = new WP_Error(
 				'finished_course',
 				__( 'You have already finished the course of this quiz.', 'learnpress' )
@@ -363,7 +371,7 @@ class UserQuizModel extends UserItemModel {
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function check_can_finish() {
+	public function can_finish() {
 		$can_finish = true;
 
 		$userModel = $this->get_user_model();
@@ -382,10 +390,25 @@ class UserQuizModel extends UserItemModel {
 		}
 
 		$userCourseModel = $this->get_user_course_model();
-		if ( ! $userCourseModel instanceof UserCourseModel ) {
+		if ( ! $userCourseModel instanceof UserCourseModel
+		|| ! $userCourseModel->has_enrolled() ) {
 			$can_finish = new WP_Error(
 				'not_enrolled_course',
 				__( 'User is not enrolled in the course.', 'learnpress' )
+			);
+		}
+
+		if ( ! $this->has_started() ) {
+			$can_finish = new WP_Error(
+				'quiz_not_start',
+				__( 'Quiz must start.', 'learnpress' )
+			);
+		}
+
+		if ( $this->has_finished() ) {
+			$can_finish = new WP_Error(
+				'quiz_finished',
+				__( 'You have completed this quiz.', 'learnpress' )
 			);
 		}
 
@@ -407,7 +430,7 @@ class UserQuizModel extends UserItemModel {
 	 * @since 4.2.5
 	 * @version 1.0.1
 	 */
-	public function check_can_retake() {
+	public function can_retake() {
 		$can_retake = true;
 
 		$userModel = $this->get_user_model();
@@ -428,12 +451,12 @@ class UserQuizModel extends UserItemModel {
 		// Check user, course of quiz is enrolled.
 		$userCourseModel = $this->get_user_course_model();
 		if ( ! $userCourseModel instanceof UserCourseModel
-			|| $userCourseModel->get_graduation() !== LP_COURSE_GRADUATION_IN_PROGRESS ) {
+			|| $userCourseModel->get_graduation() !== $userCourseModel::GRADUATION_IN_PROGRESS ) {
 			$can_retake = new WP_Error(
 				'not_errol_course',
 				__( 'Please enroll in the course before starting the quiz.', 'learnpress' )
 			);
-		} elseif ( $userCourseModel->get_status() === LP_COURSE_FINISHED ) {
+		} elseif ( $userCourseModel->has_finished() ) {
 			$can_retake = new WP_Error(
 				'finished_course',
 				__( 'You have already finished the course of this quiz.', 'learnpress' )
@@ -441,14 +464,20 @@ class UserQuizModel extends UserItemModel {
 		}
 
 		// Check user quiz start and completed?.
-		if ( $this->get_status() !== LP_ITEM_COMPLETED ) {
-			$can_retake = new WP_Error( 'not_completed_quiz', __( 'You have not completed the quiz.', 'learnpress' ) );
+		if ( ! $this->has_finished() ) {
+			$can_retake = new WP_Error(
+				'not_completed_quiz',
+				__( 'You have not completed the quiz.', 'learnpress' )
+			);
 		}
 
 		// Check retaken count.
 		$retake_max = $quizPostModel->get_retake_count();
 		if ( $retake_max != -1 && $this->get_remaining_retake() === 0 ) {
-			$can_retake = new WP_Error( 'exceed_retaken_count', __( 'You have exceeded the number of retakes.', 'learnpress' ) );
+			$can_retake = new WP_Error(
+				'exceed_retaken_count',
+				__( 'You have exceeded the number of retakes.', 'learnpress' )
+			);
 		}
 
 		// Hook can retake quiz
@@ -828,21 +857,26 @@ class UserQuizModel extends UserItemModel {
 		$history = array();
 
 		try {
-			$results = LP_User_Items_Result_DB::instance()->get_results(
-				$this->get_user_item_id(),
-				$limit,
-				true
-			);
+			$filter                  = new UserItemResultsFilter();
+			$filter->item_id         = $this->item_id;
+			$filter->item_type       = $this->item_type;
+			$filter->ref_id          = $this->ref_id;
+			$filter->ref_type        = $this->ref_type;
+			$filter->order_by        = UserItemResultsFilter::COL_END_TIME;
+			$filter->order           = 'DESC';
+			$filter->limit           = $limit + 1;
+			$filter->run_query_count = false;
+
+			$results = UserItemResultsDB::getInstance()->get_user_item_results( $filter );
 
 			if ( ! empty( $results ) ) {
+				// Remove the most recent result from the history list.
+				array_shift( $results );
+
 				foreach ( $results as $result ) {
-					if ( $result && is_string( $result ) ) {
-						$result = LP_Helper::json_decode( $result );
-
-						unset( $result->questions );
-
-						$history[] = $result;
-					}
+					$user_item_result = new UserItemResultModel( $result );
+					$result_data      = $user_item_result->get_result();
+					$history[] = $result_data;
 				}
 			}
 		} catch ( Throwable $e ) {
@@ -850,5 +884,27 @@ class UserQuizModel extends UserItemModel {
 		}
 
 		return $history;
+	}
+
+	/**
+	 * Check has finished
+	 *
+	 * @return bool
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function has_started(): bool {
+		return $this->get_status() === self::STATUS_STARTED;
+	}
+
+	/**
+	 * Check has finished
+	 *
+	 * @return bool
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function has_finished(): bool {
+		return $this->get_status() === self::STATUS_COMPLETED;
 	}
 }

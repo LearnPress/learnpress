@@ -197,7 +197,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			if ( $user_quiz_exists instanceof UserQuizModel
 				&& $user_quiz_exists->status === LP_ITEM_COMPLETED ) {
 				$user_quiz = $user_quiz_exists;
-				$user_quiz->retake();
+				$user_quiz->handle_retake();
 				$results['answered'] = []; // Reset answered for js
 				$retaken_count       = $user_quiz->get_retaken_count();
 				$attempts            = $user_quiz->get_attempts();
@@ -206,7 +206,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$user_quiz_new->user_id = $user_id;
 				$user_quiz_new->item_id = $item_id;
 				$user_quiz_new->ref_id  = $course_id;
-				$user_quiz_new->start_quiz();
+				$user_quiz_new->handle_start();
 				$user_quiz = $user_quiz_new;
 			}
 
@@ -335,7 +335,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				'answered' => $answered,
 				'time_spend' => $time_spend,
 			];
-			$result              = $userQuizModel->finish_quiz( $data_send );
+			$result              = $userQuizModel->handle_finish( $data_send );
 			$response['status']  = 'success';
 			$response['results'] = $result;
 		} catch ( Throwable $e ) {

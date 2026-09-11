@@ -10,6 +10,7 @@
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
@@ -1415,7 +1416,7 @@ function learn_press_setup_theme() {
 add_action( 'after_setup_theme', 'learn_press_setup_theme' );
 
 /**
- * @param LP_Question $question
+ * @param LP_Question|QuestionPostModel $question
  * @param array $args
  *
  * @return array

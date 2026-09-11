@@ -751,22 +751,24 @@ class UserItemModel {
 	public function delete() {
 		// Delete metadata of user item.
 		$lp_user_item_meta_db = LP_User_Item_Meta_DB::getInstance();
-		$filter               = new LP_User_Item_Meta_Filter();
+		$filter               = new UserItemsFilter();
 		$filter->where[]      = $lp_user_item_meta_db->wpdb->prepare( 'AND learnpress_user_item_id = %d', $this->get_user_item_id() );
 		$filter->collection   = $lp_user_item_meta_db->tb_lp_user_itemmeta;
 		$lp_user_item_meta_db->delete_execute( $filter );
 		$this->meta_data = null;
 
 		// Delete user item relationships.
-		$lp_user_item_db = UserItemsDB::getInstance();
-		$filter          = new UserItemsFilter();
-		$filter->where[] = $lp_user_item_db->wpdb->prepare( 'AND parent_id = %d', $this->get_user_item_id() );
+		$lp_user_item_db    = UserItemsDB::getInstance();
+		$filter             = new UserItemsFilter();
+		$filter->collection = $lp_user_item_meta_db->tb_lp_user_items;
+		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND parent_id = %d', $this->get_user_item_id() );
 		$lp_user_item_db->delete_execute( $filter );
 
 		// Delete user item.
-		$lp_user_item_db = UserItemsDB::getInstance();
-		$filter          = new UserItemsFilter();
-		$filter->where[] = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->get_user_item_id() );
+		$lp_user_item_db    = UserItemsDB::getInstance();
+		$filter             = new UserItemsFilter();
+		$filter->collection = $lp_user_item_meta_db->tb_lp_user_items;
+		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->get_user_item_id() );
 		$lp_user_item_db->delete_execute( $filter );
 
 		$this->clean_caches();
