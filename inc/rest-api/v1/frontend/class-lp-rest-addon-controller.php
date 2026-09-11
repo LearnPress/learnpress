@@ -70,11 +70,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	 */
 	private function prepare_license_response( object $purchase_info, string $purchase_code ): array {
 		$date_expire    = $purchase_info->date_expire ?? '';
-		$license_status = 'active';
-
-		if ( ! empty( $date_expire ) && strtotime( $date_expire ) < strtotime( gmdate( 'Y-m-d' ) ) ) {
-			$license_status = 'expired';
-		}
+		$license_status = LP_Manager_Addons::get_license_status( $date_expire );
 
 		return array(
 			'license_status'        => $license_status,

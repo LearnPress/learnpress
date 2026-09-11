@@ -155,6 +155,24 @@ class LP_Manager_Addons {
 	}
 
 	/**
+	 * Get the license status for an expiration date.
+	 *
+	 * @param string $date_expire Expiration date.
+	 * @param string $current_date Current date in Y-m-d format.
+	 *
+	 * @return string
+	 */
+	public static function get_license_status( string $date_expire, string $current_date = '' ): string {
+		if ( empty( $date_expire ) ) {
+			return 'active';
+		}
+
+		$current_date = $current_date ?: gmdate( 'Y-m-d' );
+
+		return strtotime( $date_expire ) <= strtotime( $current_date ) ? 'expired' : 'active';
+	}
+
+	/**
 	 * Download addon from Thimpress.
 	 *
 	 * return string

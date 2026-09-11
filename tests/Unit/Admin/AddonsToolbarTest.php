@@ -35,4 +35,14 @@ class AddonsToolbarTest extends TestCase {
 		$this->assertStringContainsString( '$cb-primary', $stylesheet );
 		$this->assertStringContainsString( '$cb-focus-ring', $stylesheet );
 	}
+
+	#[Test]
+	public function addon_script_uses_the_shared_ready_handler_and_releases_failed_actions(): void {
+		$script = file_get_contents( dirname( __DIR__, 3 ) . '/assets/src/js/admin/addons.js' );
+
+		$this->assertIsString( $script );
+		$this->assertStringContainsString( "import * as lpUtils from 'lpAssetsJsPath/utils.js';", $script );
+		$this->assertStringContainsString( 'lpUtils.lpOnElementReady(', $script );
+		$this->assertStringContainsString( 'releaseHandling( addonSlug );', $script );
+	}
 }

@@ -76,4 +76,17 @@ class PurchaseCodeValidationTest extends BrainMonkeyTestCase {
 
 		$this->assertSame( array(), \LP_Settings::$updates );
 	}
+
+	#[Test]
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function license_expiring_today_is_expired(): void {
+		defined( 'ABSPATH' ) || define( 'ABSPATH', '/fake/wp/' );
+		defined( 'LP_PLUGIN_URL' ) || define( 'LP_PLUGIN_URL', 'https://example.test/learnpress/' );
+
+		require_once dirname( __DIR__, 3 ) . '/inc/class-lp-manager-addons.php';
+
+		$this->assertSame( 'expired', \LP_Manager_Addons::get_license_status( '2026-09-11', '2026-09-11' ) );
+		$this->assertSame( 'active', \LP_Manager_Addons::get_license_status( '2026-09-12', '2026-09-11' ) );
+	}
 }

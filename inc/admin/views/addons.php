@@ -25,7 +25,7 @@ $total_addon_update        = 0;
 $total_addon_purchased     = 0;
 $plugins_installed         = get_plugins();
 $plugins_activated         = get_option( 'active_plugins', '' );
-$active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
+$active_tab                = ! empty( $_REQUEST['tab'] ) ? sanitize_key( wp_unslash( $_REQUEST['tab'] ) ) : 'all';
 $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
 $addon_categories          = array(
 	'create-course'          => __( 'Create Course', 'learnpress' ),
@@ -100,12 +100,12 @@ $addon_categories          = array(
 			}
 			$show_license_panel = ! $is_free && $is_installed;
 			$license_status     = $addon_purchased ? 'active' : 'not-activated';
-			if ( $addon_purchased && 0 === $number_days_remaining ) {
-				$license_status = 'expired';
+			if ( $addon_purchased ) {
+				$license_status = LP_Manager_Addons::get_license_status( $date_expired_str );
 			}
 			$purchase_code_masked = LP_Manager_Addons::mask_purchase_code( $purchase_code ?? '' );
 			// Show addons of tab.
-			if ( ! in_array( $active_tab, $classes_status ) && $active_tab != 'all' ) {
+			if ( ! in_array( $active_tab, $classes_status, true ) && 'all' !== $active_tab ) {
 				$classes_status[] = 'hide';
 			}
 			?>
@@ -211,11 +211,11 @@ $addon_categories          = array(
 						}
 						?>
 						<button class="btn-addon-action" data-action="update"
-								title="<?php echo sprintf( '%s %s require LP version %s', $addon->name, $version_latest, $addon->require_lp ); ?>">
+								title="<?php echo esc_attr( sprintf( '%s %s require LP version %s', $addon->name, $version_latest, $addon->require_lp ) ); ?>">
 							<span class="dashicons dashicons-update"></span><span class="text">Update</span>
 						</button>
 						<button class="btn-addon-action" data-action="install"
-							<?php echo $is_free ? 'data-link="' . $addon->link . '"' : ''; ?>
+								<?php echo $is_free ? 'data-link="' . esc_url( $addon->link ) . '"' : ''; ?>
 						>
 							<span class="dashicons dashicons-update"></span><span
 								class="text"><?php _e( 'Install', 'learnpress' ); ?></span>
