@@ -23,10 +23,18 @@ $body_classes[]  = 'lp-setup-step--' . sanitize_html_class( $current_step );
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title><?php esc_html_e( 'LearnPress &rsaquo; Setup Wizard', 'learnpress' ); ?></title>
 	<?php
-	wp_print_scripts( 'lp-setup' );
-	remove_action( 'admin_print_styles', 'print_emoji_styles' );
-	do_action( 'admin_print_styles' );
+
+	$assets = LP_Admin_Assets::instance();
+	$assets->load_scripts();
+
+	wp_enqueue_style( 'buttons' );
+	wp_enqueue_style( 'common' );
+	wp_enqueue_style( 'forms' );
+	wp_enqueue_style( 'lp-admin' );
+	wp_enqueue_style( 'lp-setup-wizard' );
+	wp_enqueue_style( 'lp-tom-select', $assets->url( 'src/css/vendor/tom-select.min.css' ) );
 	do_action( 'admin_print_scripts' );
+	wp_enqueue_script( 'lp-setup-wizard' );
 	?>
 </head>
 <body class="<?php echo esc_attr( implode( ' ', $body_classes ) ); ?>">

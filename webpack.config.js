@@ -11,6 +11,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 module.exports = {
 	...defaultConfig,
 	entry: {
+		// Folder new assets/dist/js
+		'./assets/dist/js/admin/admin-courses': './assets/src/js/admin/admin-courses.js',
+		'./assets/dist/js/admin/edit-course': './assets/src/js/admin/edit-course.js',
+		'./assets/dist/js/admin/edit-quiz': './assets/src/js/admin/edit-quiz.js',
+		'./assets/dist/js/admin/edit-question': './assets/src/js/admin/edit-question.js',
+		'./assets/dist/js/admin/setup-wizard': './assets/src/js/admin/setup-wizard.js',
+		'./assets/dist/js/admin/list-students-enrolled': './assets/src/js/admin/list-students-enrolled.js',
+		'./assets/dist/js/frontend/course-builder': './assets/src/js/frontend/course-builder.js',
+
+		// Folder old assets/js/dist
 		'./assets/js/dist/admin/admin': './assets/src/js/admin/admin.js',
 		'./assets/js/dist/admin/learnpress': './assets/src/js/admin/learnpress.js',
 		'./assets/js/dist/admin/admin-notices': './assets/src/js/admin/admin-notices.js',
@@ -19,15 +29,7 @@ module.exports = {
 		'./assets/js/dist/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
 		'./assets/js/dist/admin/lp-themes': './assets/src/js/admin/lp-themes.js',
 		//'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
-		'./assets/dist/js/admin/admin-courses': './assets/src/js/admin/admin-courses.js',
-		'./assets/dist/js/admin/edit-course': './assets/src/js/admin/edit-course.js',
-		//'./assets/dist/js/admin/edit-curriculum': './assets/src/js/admin/edit-curriculum.js',
-		'./assets/dist/js/admin/edit-quiz': './assets/src/js/admin/edit-quiz.js',
-		'./assets/dist/js/admin/edit-question': './assets/src/js/admin/edit-question.js',
-		//'./assets/js/dist/admin/editor/quiz': './assets/src/apps/js/admin/editor/quiz.js',
-		//'./assets/js/dist/admin/editor/question': './assets/src/apps/js/admin/editor/question.js',
 		'./assets/js/dist/admin/pages/tools': './assets/src/apps/js/admin/pages/tools.js',
-		'./assets/js/dist/admin/pages/setup': './assets/src/apps/js/admin/pages/setup.js',
 		//'./assets/js/dist/admin/pages/statistic': './assets/src/apps/js/admin/pages/statistic.js',
 		'./assets/js/dist/admin/admin-statistic': './assets/src/js/admin/admin-statistic.js',
 		// './assets/js/dist/admin/pages/sync-data': './assets/src/apps/js/admin/pages/sync-data.js',
@@ -37,7 +39,6 @@ module.exports = {
 		'./assets/js/dist/admin/course-material': './assets/src/js/admin/course-material.js',
 		'./assets/js/dist/admin/mcp-api-keys': './assets/src/js/admin/mcp-api-keys.js',
 		'./assets/js/dist/admin/webhooks': './assets/src/js/admin/webhooks.js',
-		'./assets/dist/js/admin/list-students-enrolled': './assets/src/js/admin/list-students-enrolled.js',
 		'./assets/js/dist/loadAJAX': './assets/src/js/loadAJAX.js',
 		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
 
@@ -90,7 +91,6 @@ module.exports = {
 		'./assets/js/dist/frontend/widgets': './assets/src/js/frontend/widgets.js',
 		'./assets/js/dist/frontend/course-filter': './assets/src/js/frontend/course-filter.js',
 		'./assets/js/dist/frontend/ai-assistant': './assets/src/js/frontend/ai-assistant.js',
-		'./assets/dist/js/frontend/course-builder': './assets/src/js/frontend/course-builder.js',
 
 		// Block Gutenberg
 		'./assets/js/dist/blocks/archive-course-legacy': './assets/src/apps/js/blocks/archive-course-legacy/index.js',
