@@ -192,12 +192,12 @@ $addon_categories          = array(
 				<div class="lp-addon-item__actions">
 					<div class="lp-addon-item__price">
 						<?php if ( $is_free ) { ?>
-							<strong class="lp-addon-item__price-current lp-addon-item__price-current--free"><?php esc_html_e( 'Free', 'learnpress' ); ?></strong>
+							<strong class="lp-addon-item__price-regular lp-addon-item__price-regular--free"><?php esc_html_e( 'Free', 'learnpress' ); ?></strong>
+						<?php } elseif ( ! empty( $addon->sale_price ) ) { ?>
+							<strong class="lp-addon-item__price-sale">$<?php echo esc_html( number_format_i18n( $addon->sale_price ) ); ?></strong>
+							<del class="lp-addon-item__price-regular">$<?php echo esc_html( number_format_i18n( $addon->regular_price ?? 0 ) ); ?></del>
 						<?php } else { ?>
-							<strong class="lp-addon-item__price-current">$<?php echo esc_html( number_format_i18n( $addon->price ?? 0 ) ); ?></strong>
-							<?php if ( ! empty( $addon->old_price ) ) { ?>
-								<del class="lp-addon-item__price-old">$<?php echo esc_html( number_format_i18n( $addon->old_price ) ); ?></del>
-							<?php } ?>
+							<strong class="lp-addon-item__price-regular">$<?php echo esc_html( number_format_i18n( $addon->regular_price ?? 0 ) ); ?></strong>
 						<?php } ?>
 					</div>
 					<div class="lp-addon-item__actions__left">

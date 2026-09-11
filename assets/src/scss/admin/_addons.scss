@@ -428,22 +428,30 @@
 			white-space: nowrap;
 		}
 
-		&__price-current {
+		&__price-sale {
 			color: $cb-price-red;
 			font-size: $cb-font-xl;
 			font-weight: 600;
 			line-height: 1.25;
-
-			&--free {
-				color: $cb-success;
-			}
 		}
 
-		&__price-old {
+		&__price-regular {
 			color: $cb-text-placeholder;
 			font-size: $cb-font-lg;
 			line-height: 1;
 			font-weight: 300;
+
+			&:not(del),
+			&--free {
+				color: $cb-price-red;
+				font-size: $cb-font-xl;
+				font-weight: 600;
+				line-height: 1.25;
+			}
+
+			&--free {
+				color: $cb-success;
+			}
 		}
 
 		&__description {

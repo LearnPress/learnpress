@@ -45,4 +45,25 @@ class AddonsToolbarTest extends TestCase {
 		$this->assertStringContainsString( 'lpUtils.lpOnElementReady(', $script );
 		$this->assertStringContainsString( 'releaseHandling( addonSlug );', $script );
 	}
+
+	#[Test]
+	public function addon_prices_use_regular_and_sale_price_fields(): void {
+		$data     = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons/addons-data.json' ) );
+		$template = file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons.php' );
+
+		$this->assertIsObject( $data );
+		foreach ( $data as $addon ) {
+			$this->assertObjectHasProperty( 'regular_price', $addon );
+			$this->assertObjectHasProperty( 'sale_price', $addon );
+			$this->assertObjectNotHasProperty( 'price', $addon );
+			$this->assertObjectNotHasProperty( 'old_price', $addon );
+		}
+
+		$this->assertStringContainsString( '$addon->regular_price', $template );
+		$this->assertStringContainsString( '$addon->sale_price', $template );
+		$this->assertStringContainsString( 'lp-addon-item__price-regular', $template );
+		$this->assertStringContainsString( 'lp-addon-item__price-sale', $template );
+		$this->assertStringNotContainsString( 'lp-addon-item__price-current', $template );
+		$this->assertStringNotContainsString( 'lp-addon-item__price-old', $template );
+	}
 }

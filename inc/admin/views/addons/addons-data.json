@@ -14,8 +14,8 @@
         "setting": "",
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": 10
     },
     "learnpress-scorm": {
         "name": "SCORM add-on for learnpress",
@@ -32,8 +32,8 @@
         "setting": "",
         "order": 0,
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-interactive": {
         "name": "Interactive Add-On for learnpress",
@@ -50,8 +50,8 @@
         "setting": "",
         "order": 0,
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": 19
     },
     "learnpress-klarna-payment": {
         "name": "Klarna Add-On for learnpress",
@@ -68,8 +68,8 @@
         "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=klarna",
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": 10
     },
     "learnpress-exams": {
         "name": "Exam add-on for learnpress",
@@ -86,8 +86,8 @@
         "setting": "course-builder/exams/listing/",
         "order": 0,
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 39,
+        "sale_price": 19
     },
     "learnpress-membership": {
         "name": "Memberships & Subscriptions Add-on for LearnPress",
@@ -104,8 +104,8 @@
         "setting": "wp-admin/admin.php?page=learn-press-membership",
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 49,
+        "sale_price": 39
     },
     "learnpress-2checkout-payment": {
         "name": "2Checkout Add-On for LearnPress",
@@ -122,8 +122,8 @@
         "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=2checkout",
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": ""
     },
     "learnpress-announcements": {
         "name": "Announcement add-on for LearnPress",
@@ -140,8 +140,8 @@
         "setting": "",
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": ""
     },
     "learnpress-assignments": {
         "name": "Assignments Add-On for LearnPress",
@@ -158,8 +158,8 @@
         "setting": "",
         "order": 0,
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 39,
+        "sale_price": ""
     },
     "learnpress-authorizenet-payment": {
         "name": "LearnPress - Authorize.Net Payment",
@@ -176,8 +176,8 @@
         "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=authorizenet",
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": ""
     },
     "learnpress-bbpress": {
         "name": "LearnPress – bbPress Integration",
@@ -195,8 +195,8 @@
             "bbpress/bbpress.php": "BBPress"
         },
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-buddypress": {
         "name": "LearnPress – BuddyPress Integration",
@@ -214,8 +214,8 @@
             "buddypress/bp-loader.php": "Buddypress"
         },
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-certificates": {
         "name": "LearnPress - Certificates",
@@ -232,8 +232,8 @@
         "setting": "wp-admin/admin.php?page=learn-press-settings&tab=certificates",
         "order": 0,
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 39,
+        "sale_price": ""
     },
     "learnpress-co-instructor": {
         "name": "Co-Instructors Add-On for LearnPress",
@@ -248,8 +248,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Manage Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": ""
     },
     "learnpress-collections": {
         "name": "Collections Add-On for LearnPress",
@@ -266,8 +266,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": ""
     },
     "learnpress-coming-soon-courses": {
         "name": "Coming Soon Add-On for LearnPress",
@@ -284,8 +284,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-commission": {
         "name": "Commission add-on for LearnPress",
@@ -302,8 +302,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": ""
     },
     "learnpress-content-drip": {
         "name": "Content Drip add-on for LearnPress",
@@ -320,8 +320,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 39,
+        "sale_price": ""
     },
     "learnpress-course-review": {
         "name": "LearnPress – Course Review",
@@ -338,8 +338,8 @@
         "is_org": 1,
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-frontend-editor": {
         "name": "Frontend Editor Add-On for LearnPress",
@@ -356,8 +356,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Manage Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 60,
+        "sale_price": 49
     },
     "learnpress-gradebook": {
         "name": "Gradebook Add-On for LearnPress",
@@ -374,8 +374,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Manage Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 39,
+        "sale_price": ""
     },
     "learnpress-h5p": {
         "name": "H5P Add-On for LearnPress",
@@ -395,8 +395,8 @@
             "h5p/h5p.php": "H5P"
         },
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": ""
     },
     "learnpress-import-export": {
         "name": "LearnPress Export Import",
@@ -413,8 +413,8 @@
         "is_org": 1,
         "order": 0,
         "category": "Manage Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-live": {
         "name": "Live Course Add-On for LearnPress",
@@ -431,8 +431,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": ""
     },
     "learnpress-mycred": {
         "name": "myCRED Add-On for LearnPress",
@@ -449,8 +449,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": ""
     },
     "learnpress-paid-membership-pro": {
         "name": "Paid Memberships Pro Add-On for LearnPress",
@@ -470,8 +470,8 @@
             "paid-memberships-pro/paid-memberships-pro.php": "Paid Memberships Pro"
         },
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 39,
+        "sale_price": ""
     },
     "learnpress-prerequisites-courses": {
         "name": "LearnPress – Prerequisites Courses",
@@ -488,8 +488,8 @@
         "setting": "",
         "order": 0,
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-qpay": {
         "name": "LearnPress - QPay",
@@ -506,8 +506,8 @@
         "setting": "",
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": 10
     },
     "learnpress-random-quiz": {
         "name": "Random Quiz Add-On for LearnPress",
@@ -524,8 +524,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": ""
     },
     "learnpress-sorting-choice": {
         "name": "Sorting Choice Add-On for LearnPress",
@@ -542,8 +542,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Create Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": ""
     },
     "learnpress-stripe": {
         "name": "Stripe Add-On for LearnPress",
@@ -560,8 +560,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 39,
+        "sale_price": ""
     },
     "learnpress-upsell": {
         "name": "Upsell Add-on for LearnPress",
@@ -578,8 +578,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 49,
+        "sale_price": 29
     },
     "learnpress-students-list": {
         "name": "Student List Add-On for LearnPress",
@@ -596,8 +596,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Manage Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-sepay-payment": {
         "name": "LearnPress – Sepay Payment",
@@ -614,8 +614,8 @@
         "is_org": 1,
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-wishlist": {
         "name": "LearnPress – Course Wishlist",
@@ -632,8 +632,8 @@
         "is_org": 1,
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     },
     "learnpress-woo-payment": {
         "name": "WooCommerce Add-On for LearnPress",
@@ -652,8 +652,8 @@
             "woocommerce/woocommerce.php": "WooCommerce"
         },
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 49,
+        "sale_price": ""
     },
     "learnpress-wpml": {
         "name": "WPML Add-On for LearnPress",
@@ -673,8 +673,8 @@
             "sitepress-multilingual-cms/sitepress.php": "WPML"
         },
         "category": "Manage Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 29,
+        "sale_price": ""
     },
     "learnpress-instamojo-payment": {
         "name": "Instamojo Add-On for LearnPress",
@@ -691,8 +691,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": ""
     },
     "learnpress-razorpay-payment": {
         "name": "Razorpay Add-on for LearnPress",
@@ -709,8 +709,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": ""
     },
     "learnpress-payu-payment": {
         "name": "PayU addon for Learnpress",
@@ -727,8 +727,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": 10
     },
     "learnpress-paystack-payment": {
         "name": "Paystack Addon For Learnpress",
@@ -745,8 +745,8 @@
         "is_org": 0,
         "order": 0,
         "category": "Monetize Course",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 19,
+        "sale_price": 10
     },
     "learnpress-mobile-app": {
         "name": "LearnPress - Mobile App",
@@ -762,7 +762,7 @@
         "setting": "",
         "order": 0,
         "category": "Marketing Optimization",
-        "price": 29,
-        "old_price": 39
+        "regular_price": 0,
+        "sale_price": ""
     }
 }
