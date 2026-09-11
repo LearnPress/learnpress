@@ -733,7 +733,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					$this->url( 'css/admin/setup-wizard' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),
 					array(),
-					1
+					0
 				),
 			)
 		);
