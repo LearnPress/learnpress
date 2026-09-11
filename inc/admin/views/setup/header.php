@@ -27,14 +27,13 @@ $body_classes[]  = 'lp-setup-step--' . sanitize_html_class( $current_step );
 	$assets = LP_Admin_Assets::instance();
 	$assets->load_scripts();
 
-	wp_enqueue_style( 'buttons' );
-	wp_enqueue_style( 'common' );
-	wp_enqueue_style( 'forms' );
-	wp_enqueue_style( 'lp-admin' );
-	wp_enqueue_style( 'lp-setup-wizard' );
-	wp_enqueue_style( 'lp-tom-select', $assets->url( 'src/css/vendor/tom-select.min.css' ) );
+	wp_print_styles( 'buttons' );
+	wp_print_styles( 'common' );
+	wp_print_styles( 'forms' );
+	wp_print_styles( 'lp-admin' );
+	wp_print_styles( 'lp-setup-wizard' );
 	do_action( 'admin_print_scripts' );
-	wp_enqueue_script( 'lp-setup-wizard' );
+	wp_print_scripts( 'lp-setup-wizard' );
 	?>
 </head>
 <body class="<?php echo esc_attr( implode( ' ', $body_classes ) ); ?>">
