@@ -365,11 +365,11 @@ class SingleCourseModernLayout {
 			'wrapper'     => '<div class="clipboard-post">',
 			'input'       => sprintf(
 				'<input class="clipboard-value" type="text" value="%s">',
-				$courseModel->get_permalink()
+				esc_url( $courseModel->get_permalink() )
 			),
 			'button'      => sprintf(
 				'<button class="btn-clipboard" data-copied="%s">%s<span class="tooltip">%s</span></button>',
-				esc_html__( 'Copied!', 'learnpress' ),
+				esc_attr__( 'Copied!', 'learnpress' ),
 				esc_html__( 'Copy', 'learnpress' ),
 				esc_html__( 'Copy to Clipboard', 'learnpress' )
 			),
@@ -423,8 +423,8 @@ class SingleCourseModernLayout {
 
 		$html_instructor_image    = sprintf(
 			'<a href="%s" title="%s">%s</a>',
-			$author->get_url_instructor(),
-			$author->get_display_name(),
+			esc_url( $author->get_url_instructor() ),
+			esc_attr( $author->get_display_name() ),
 			$singleInstructorTemplate->html_avatar( $author )
 		);
 		$section_instructor_meta  = [
@@ -445,7 +445,7 @@ class SingleCourseModernLayout {
 				'wrapper'     => '<div class="lp-section-instructor">',
 				'name'        => sprintf(
 					'<a href="%s">%s</a>',
-					$author->get_url_instructor(),
+					esc_url( $author->get_url_instructor() ),
 					$singleInstructorTemplate->html_display_name( $author )
 				),
 				'meta'        => Template::combine_components( $section_instructor_meta ),

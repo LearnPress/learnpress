@@ -131,7 +131,7 @@ class AdminOrderListTemplate {
 
 		$order_data = array(
 			'action'    => 'export_order_csv',
-			'export_id' => time() . '-' . uniqid(),
+			'export_id' => wp_generate_password( 24, false ),
 		);
 
 		$data_get   = LP_Helper::sanitize_params_submitted( $_GET );

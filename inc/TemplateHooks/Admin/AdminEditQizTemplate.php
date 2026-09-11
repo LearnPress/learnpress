@@ -6,21 +6,26 @@ use Exception;
 use LearnPress\Databases\DataBase;
 use LearnPress\Filters\PostFilter;
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Database;
 use LP_Post_DB;
 use LP_Post_Type_Filter;
 use stdClass;
+use Throwable;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Template Admin Edit Quiz.
  *
  * @since 4.2.9
- * @version 1.0.0
+ * @version 1.0.3
  */
 class AdminEditQizTemplate {
 	use Singleton;
@@ -30,7 +35,7 @@ class AdminEditQizTemplate {
 	 */
 	public $quizPostModel;
 
-	public function init() {
+	public function init(): void {
 		add_action( 'learn-press/admin/edit-quiz/layout', [ $this, 'edit_quiz_layout' ] );
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
 		add_filter(
@@ -94,21 +99,32 @@ class AdminEditQizTemplate {
 	 * Render edit course curriculum html.
 	 *
 	 * @throws Exception
+	 * @since 4.2.9
+	 * @version 1.0.1
 	 */
 	public static function render_edit_quiz( array $data ): stdClass {
-		$quiz_id       = $data['quiz_id'] ?? 0;
-		$quizPostModel = QuizPostModel::find( $quiz_id, true );
-		if ( ! $quizPostModel ) {
-			throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+		$content = new stdClass();
+
+		try {
+			$quiz_id       = $data['quiz_id'] ?? 0;
+			$quizPostModel = QuizPostModel::find( $quiz_id, true );
+			if ( ! $quizPostModel ) {
+				throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+			}
+
+			// Check permission
+			$quizPostModel->check_capabilities_create_item_course();
+
+			self::instance()->quizPostModel = $quizPostModel;
+
+			$content->content = self::instance()->html_edit_quiz( $quizPostModel );
+		} catch ( Throwable $e ) {
+			$content->content = Template::print_message(
+				$e->getMessage(),
+				Response::STATUS_ERROR,
+				false
+			);
 		}
-
-		// Check permission
-		$quizPostModel->check_capabilities_create_item_course();
-
-		self::instance()->quizPostModel = $quizPostModel;
-
-		$content          = new stdClass();
-		$content->content = self::instance()->html_edit_quiz( $quizPostModel );
 
 		return $content;
 	}
@@ -130,7 +146,7 @@ class AdminEditQizTemplate {
 
 		foreach ( $question_ids as $question_id ) {
 			$questionPostModel = QuestionPostModel::find( $question_id, true );
-			$html_questions    .= $this->html_edit_question( $questionPostModel );
+			$html_questions   .= $this->html_edit_question( $questionPostModel );
 		}
 
 		$section_questions = [
@@ -148,10 +164,10 @@ class AdminEditQizTemplate {
 				__( 'Details', 'learnpress' )
 			),
 			'count-questions'  => sprintf(
-				'<div class="total-items" data-count="%s">%s</div>',
+				'<div class="total-items" data-count="%d">%s</div>',
 				$count_questions,
 				sprintf(
-					__( '<span class="count">%1$s</span> %2$s', 'learnpress' ),
+					__( '<span class="count">%1$d</span> %2$s', 'learnpress' ),
 					$count_questions,
 					sprintf(
 						'<span class="one">%s</span><span class="plural">%s</span>',
@@ -197,7 +213,10 @@ class AdminEditQizTemplate {
 				'header'       => sprintf(
 					'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
-					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+					<div class="lp-tinymce-toggle">
+						<span class="lp-icon-angle-down"></span>
+						<span class="lp-icon-angle-up"></span>
+					</div>
 				</div>',
 					__( 'Option Details', 'learnpress' )
 				),
@@ -232,14 +251,14 @@ class AdminEditQizTemplate {
 				'<div data-question-id="%s"
 					class="lp-question-item lp-section-toggle lp-collapse %s"
 					data-question-type="%s">',
-				$question_id,
-				$is_clone ? 'clone lp-hidden' : '',
-				$is_clone ? '' : $questionPostModel->get_type()
+				esc_attr( $question_id ),
+				esc_attr( $is_clone ? 'clone lp-hidden' : '' ),
+				esc_attr( $is_clone ? '' : $questionPostModel->get_type() )
 			),
 			'head'       => '<div class="lp-question-head">',
 			'drag'       => sprintf(
 				'<span class="drag lp-icon-drag" title="%s"></span>',
-				__( 'Drag to reorder section', 'learnpress' )
+				esc_attr__( 'Drag to reorder section', 'learnpress' )
 			),
 			'loading'    => '<span class="lp-icon-spinner"></span>',
 			'title'      => AdminEditQuestionTemplate::instance()->html_input_question_title( $question_title ),
@@ -253,20 +272,30 @@ class AdminEditQizTemplate {
 			),
 			'type'       => sprintf(
 				'<span class="lp-question-type-label">%s</span>',
-				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_type_label() : ''
+				esc_html(
+					$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_type_label() : ''
+				)
 			),
 			'btn-edit'   => sprintf(
 				'<a class="lp-btn-edit-question-title lp-icon-edit-square" title="%s" href="%s" target="_blank"></a>',
-				__( 'Edit question detail', 'learnpress' ),
-				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_edit_link() : '#'
+				esc_attr__( 'Edit question detail', 'learnpress' ),
+				esc_url(
+					$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_edit_link() : '#'
+				)
 			),
 			'btn-delete' => sprintf(
 				'<span class="lp-btn-remove-question lp-icon-trash-o" title="%s" data-title="%s" data-content="%s"></span>',
-				__( 'Remove question', 'learnpress' ),
-				__( 'Are you sure?', 'learnpress' ),
-				__( 'This question will be removed from this quiz. The question will no longer be assigned to this quiz, but will not be permanently deleted.', 'learnpress' )
+				esc_attr__( 'Remove question', 'learnpress' ),
+				esc_attr__( 'Are you sure?', 'learnpress' ),
+				esc_attr__(
+					'This question will be removed from this quiz. The question will no longer be assigned to this quiz, but will not be permanently deleted.',
+					'learnpress'
+				)
 			),
-			'toggle'     => '<div class="lp-question-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
+			'toggle'     => '<div class="lp-question-toggle">
+				<span class="lp-icon-angle-down"></span>
+				<span class="lp-icon-angle-up"></span>
+			</div>',
 			'head_end'   => '</div>',
 			'edit_main'  => $html_edit_main,
 			'wrap_end'   => '</div>',
@@ -387,119 +416,132 @@ class AdminEditQizTemplate {
 	 * @throws Exception
 	 *
 	 * @since 4.2.8.7
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function render_list_items_not_assign( $data ): stdClass {
-		$content                = new stdClass();
-		$quiz_id                = $data['quiz_id'] ?? 0;
-		$item_selecting         = $data['item_selecting'] ?? [];
-		$search_title           = $data['search_title'] ?? '';
-		$paged                  = intval( $data['paged'] ?? 1 );
-		$item_selecting_compare = new stdClass();
+		$content = new stdClass();
 
-		$quizPostModel = QuizPostModel::find( $quiz_id, true );
-		if ( ! $quizPostModel ) {
-			throw new Exception( __( 'Quiz not found', 'learnpress' ) );
-		}
+		try {
+			// Check permission
+			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+				throw new Exception( esc_html__( 'Access denied.', 'learnpress' ) );
+			}
 
-		$lp_posts_db         = LP_Post_DB::getInstance();
-		$filter              = new PostFilter();
-		$filter->only_fields = [
-			'DISTINCT(p.ID) AS ID',
-			'p.post_title',
-			'p.post_type',
-		];
-		$filter->post_type   = LP_QUESTION_CPT;
-		$filter->post_status = [ 'publish' ];
-		$filter->order_by    = 'p.ID';
-		$filter->page        = $paged;
+			$quiz_id                = $data['quiz_id'] ?? 0;
+			$item_selecting         = $data['item_selecting'] ?? [];
+			$search_title           = $data['search_title'] ?? '';
+			$paged                  = intval( $data['paged'] ?? 1 );
+			$item_selecting_compare = new stdClass();
 
-		if ( ! empty( $search_title ) ) {
-			$filter->post_title = $search_title;
-		}
+			$quizPostModel = QuizPostModel::find( $quiz_id, true );
+			if ( ! $quizPostModel ) {
+				throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+			}
 
-		// Old logic: Get all questions not assigned to any quiz.
-		// New logic: Get all questions not assigned to the quiz.
-		$filter->where[] = $lp_posts_db->wpdb->prepare(
-			"AND p.ID NOT IN ( SELECT question_id FROM {$lp_posts_db->tb_lp_quiz_questions} WHERE quiz_id = %d )",
-			$quizPostModel->ID
-		);
+			$lp_posts_db         = LP_Post_DB::getInstance();
+			$filter              = new PostFilter();
+			$filter->only_fields = [
+				'DISTINCT(p.ID) AS ID',
+				'p.post_title',
+				'p.post_type',
+			];
+			$filter->post_type   = LP_QUESTION_CPT;
+			$filter->post_status = [ 'publish' ];
+			$filter->order_by    = 'p.ID';
+			$filter->page        = $paged;
 
+			if ( ! empty( $search_title ) ) {
+				$filter->post_title = $search_title;
+			}
 
-		$total_rows  = 0;
-		$posts       = $lp_posts_db->get_posts( $filter, $total_rows );
-		$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
+			// Old logic: Get all questions not assigned to any quiz.
+			// New logic: Get all questions not assigned to the quiz.
+			$filter->where[] = $lp_posts_db->wpdb->prepare(
+				"AND p.ID NOT IN ( SELECT question_id FROM {$lp_posts_db->tb_lp_quiz_questions} WHERE quiz_id = %d )",
+				$quizPostModel->ID
+			);
 
-		$html_lis = '';
-		if ( empty( $posts ) ) {
-			$html_lis = sprintf( '<li>%s</li>', __( 'No items found', 'learnpress' ) );
-		} else {
-			if ( ! empty( $item_selecting ) ) {
-				foreach ( $item_selecting as $item ) {
-					if ( ! isset( $item['id'] ) || ! isset( $item['type'] ) ) {
+			$total_rows  = 0;
+			$posts       = $lp_posts_db->get_posts( $filter, $total_rows );
+			$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
+
+			$html_lis = '';
+			if ( empty( $posts ) ) {
+				$html_lis = sprintf( '<li>%s</li>', __( 'No items found', 'learnpress' ) );
+			} else {
+				if ( ! empty( $item_selecting ) ) {
+					foreach ( $item_selecting as $item ) {
+						if ( ! isset( $item['id'] ) || ! isset( $item['type'] ) ) {
+							continue;
+						}
+
+						$item_selecting_compare->{$item['id']} = new stdClass();
+					}
+				}
+
+				foreach ( $posts as $post ) {
+					/**
+					 * @var $questionPostModel QuestionPostModel
+					 */
+					$questionPostModel = QuestionPostModel::find( $post->ID, true );
+					if ( ! $questionPostModel ) {
 						continue;
 					}
 
-					$item_selecting_compare->{$item['id']} = new stdClass();
+					$checked = '';
+					if ( isset( $item_selecting_compare->{$post->ID} ) ) {
+						$checked = ' checked="checked"';
+					}
+
+					$title_display = sprintf(
+						'<span class="title">%s<strong>(#%d - %s)</strong></span>',
+						esc_html( $post->post_title ),
+						$post->ID,
+						esc_html( $questionPostModel->get_type_label() )
+					);
+
+					$html_lis .= sprintf(
+						'<li class="lp-select-item">%s%s</li>',
+						sprintf(
+							'<input name="lp-select-item"
+								data-id="%d" data-type-label="%s"
+								data-type="%s"
+								data-title="%s" %s data-edit-link="%s"
+								data-title-selected="%s"
+								type="checkbox" />',
+							esc_attr( $post->ID ?? 0 ),
+							esc_attr( $questionPostModel->get_type_label() ?? '' ),
+							esc_attr( $questionPostModel->get_type() ?? '' ),
+							esc_attr( $title_display ), // For JS display on list selected.
+							esc_attr( $checked ),
+							esc_url( $questionPostModel->get_edit_link() ),
+							esc_attr( $questionPostModel->get_the_title() ?? '' )
+						),
+						$title_display
+					);
 				}
 			}
 
-			foreach ( $posts as $post ) {
-				/**
-				 * @var $questionPostModel QuestionPostModel
-				 */
-				$questionPostModel = QuestionPostModel::find( $post->ID, true );
-				if ( ! $questionPostModel ) {
-					continue;
-				}
+			$section = [
+				'ul'         => '<ul class="list-items">',
+				'items'      => $html_lis,
+				'ul_end'     => '</ul>',
+				'pagination' => Template::instance()->html_pagination(
+					[
+						'total_pages' => $total_pages,
+						'paged'       => $paged,
+					]
+				),
+			];
 
-				$checked = '';
-				if ( isset( $item_selecting_compare->{$post->ID} ) ) {
-					$checked = ' checked="checked"';
-				}
-
-				$title_display = sprintf(
-					'<span class="title">%s<strong>(#%d - %s)</strong></span>',
-					$post->post_title,
-					$post->ID,
-					$questionPostModel->get_type_label()
-				);
-
-				$html_lis .= sprintf(
-					'<li class="lp-select-item">%s%s</li>',
-					sprintf(
-						'<input name="lp-select-item"
-							data-id="%d" data-type-label="%s"
-							data-type="%s"
-							data-title="%s" %s data-edit-link="%s"
-							data-title-selected="%s"
-							type="checkbox" />',
-						esc_attr( $post->ID ?? 0 ),
-						esc_attr( $questionPostModel->get_type_label() ?? '' ),
-						esc_attr( $questionPostModel->get_type() ?? '' ),
-						esc_attr( $title_display ), // For JS display on list selected.
-						esc_attr( $checked ),
-						$questionPostModel->get_edit_link(),
-						esc_attr( $questionPostModel->get_the_title() ?? '' )
-					),
-					$title_display
-				);
-			}
+			$content->content = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			$content->content = Template::print_message(
+				$e->getMessage(),
+				Response::STATUS_ERROR,
+				false
+			);
 		}
-
-		$section = [
-			'ul'         => '<ul class="list-items">',
-			'items'      => $html_lis,
-			'ul_end'     => '</ul>',
-			'pagination' => Template::instance()->html_pagination(
-				[
-					'total_pages' => $total_pages,
-					'paged'       => $paged,
-				]
-			),
-		];
-
-		$content->content = Template::combine_components( $section );
 
 		return $content;
 	}
