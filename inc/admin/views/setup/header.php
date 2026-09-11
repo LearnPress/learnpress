@@ -8,6 +8,13 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+$wizard          = LP_Setup_Wizard::instance();
+$current_step    = $wizard->get_current_step();
+$is_welcome_step = 'welcome' === $current_step;
+$body_classes    = array( 'lp-setup', 'wp-core-ui', 'js' );
+$body_classes[]  = $is_welcome_step ? 'lp-setup--welcome' : 'lp-setup--wizard';
+$body_classes[]  = 'lp-setup-step--' . sanitize_html_class( $current_step );
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -22,11 +29,11 @@ defined( 'ABSPATH' ) || exit;
 	do_action( 'admin_print_scripts' );
 	?>
 </head>
-<body class="lp-setup wp-core-ui js">
+<body class="<?php echo esc_attr( implode( ' ', $body_classes ) ); ?>">
 <div id="content">
 	<div class="logo">
 		<a href="javascript:void(0)">
-			<?php $logoUrl = LP_PLUGIN_URL . 'assets/images/icon-128x128.png'; ?>
-			<img src="<?php echo esc_url_raw( $logoUrl ); ?>">
+			<?php $logo_url = LP_PLUGIN_URL . 'assets/images/lp-logo-row.png'; ?>
+			<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php esc_attr_e( 'LearnPress', 'learnpress' ); ?>">
 		</a>
 	</div>

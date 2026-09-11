@@ -28,6 +28,7 @@ use LearnPress\Ajax\Order\ExportOrderCSVAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\SampleDataAJAX;
+use LearnPress\Ajax\SetupWizardAjax;
 use LearnPress\Ajax\AI\AIAssistantAjax;
 use LearnPress\Ajax\MCP\McpApiKeysAjax;
 use LearnPress\Ajax\Webhook\WebhooksAjax;
@@ -491,8 +492,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/lp-webhooks.php'; // Addon learnpress-2checkout-payment v4.0.1 is using, when update v4.0.2 don't need load it.
 			include_once 'inc/class-lp-request-handler.php';
 
-			include_once 'inc/admin/helpers/class-lp-plugins-helper.php';
-
 			// Todo: tungnx check those files.
 			include_once 'inc/abstracts/abstract-object-query.php';
 			include_once 'inc/class-lp-course-query.php';
@@ -763,6 +762,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					LoadContentViaAjax::catch_lp_ajax();
 					LessonAjax::catch_lp_ajax();
 					SampleDataAJAX::catch_lp_ajax();
+					SetupWizardAjax::catch_lp_ajax();
 					EditCurriculumAjax::catch_lp_ajax();
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
