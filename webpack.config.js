@@ -18,6 +18,8 @@ module.exports = {
 		'./assets/dist/js/admin/edit-question': './assets/src/js/admin/edit-question.js',
 		'./assets/dist/js/admin/setup-wizard': './assets/src/js/admin/setup-wizard.js',
 		'./assets/dist/js/admin/list-students-enrolled': './assets/src/js/admin/list-students-enrolled.js',
+		'./assets/dist/js/admin/lp-themes': './assets/src/js/admin/lp-themes.js',
+		'./assets/dist/js/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
 		'./assets/dist/js/frontend/course-builder': './assets/src/js/frontend/course-builder.js',
 
 		// Folder old assets/js/dist
@@ -26,8 +28,6 @@ module.exports = {
 		'./assets/js/dist/admin/admin-notices': './assets/src/js/admin/admin-notices.js',
 		'./assets/js/dist/admin/admin-order': './assets/src/js/admin/admin-order.js',
 		'./assets/js/dist/admin/admin-orders': './assets/src/js/admin/admin-orders.js',
-		'./assets/js/dist/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
-		'./assets/js/dist/admin/lp-themes': './assets/src/js/admin/lp-themes.js',
 		//'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
 		'./assets/js/dist/admin/pages/tools': './assets/src/apps/js/admin/pages/tools.js',
 		//'./assets/js/dist/admin/pages/statistic': './assets/src/apps/js/admin/pages/statistic.js',

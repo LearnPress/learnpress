@@ -594,16 +594,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array( 'strategy' => 'async' )
 				),
 				'lp-admin-tools'            => new LP_Asset_Key(
-					$this->url( 'js/dist/admin/admin-tools' . self::$_min_assets . '.js' ),
+					$this->url( 'dist/js/admin/admin-tools' . self::$_min_assets . '.js' ),
 					array(),
 					array( 'learnpress_page_learn-press-tools' ),
 					0,
-					1,
+					0,
 					'',
 					array( 'strategy' => 'defer' )
 				),
 				'lp-themes'                 => new LP_Asset_Key(
-					$this->url( 'js/dist/admin/lp-themes' . self::$_min_assets . '.js' ),
+					$this->url( 'dist/js/admin/lp-themes' . self::$_min_assets . '.js' ),
 					array(),
 					array( 'learnpress_page_learn-press-themes' ),
 					0,

@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) or exit;
 <div class="lp-setup-welcome">
 	<div class="lp-setup-welcome__eyebrow">
 		<span class="lp-setup-welcome__eyebrow-dot" aria-hidden="true"></span>
-		<?php esc_html_e( 'Let’s setup your LMS', 'learnpress' ); ?>
+		<?php esc_html_e( 'Let’s set up your LMS', 'learnpress' ); ?>
 	</div>
 
 	<h2><?php esc_html_e( 'Welcome to LearnPress', 'learnpress' ); ?></h2>
