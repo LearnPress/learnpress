@@ -427,8 +427,12 @@ class BuilderEditLessonTemplate {
 		return Template::combine_components( $edit );
 	}
 
+	/**
+	 * @param LessonPostModel $lesson_model
+	 * @return string
+	 */
 	public function edit_desc( $lesson_model ) {
-		$desc            = ! empty( $lesson_model ) ? $lesson_model->get_the_content() : '';
+		$desc            = ! empty( $lesson_model ) ? $lesson_model->post_content : '';
 		$editor_id       = 'lesson_description_editor';
 		$editor_settings = array(
 			'textarea_name' => 'lesson_description',
