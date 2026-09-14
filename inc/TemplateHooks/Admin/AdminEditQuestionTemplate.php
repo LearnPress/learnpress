@@ -250,7 +250,7 @@ class AdminEditQuestionTemplate {
 	 */
 	public function html_edit_question_description( QuestionPostModel $questionPostModel ): string {
 		$question_id          = $questionPostModel->ID;
-		$question_description = $questionPostModel->get_the_content();
+		$question_description = $questionPostModel->post_content;
 		$editor_id            = 'lp-question-description-' . $question_id;
 
 		$section = [

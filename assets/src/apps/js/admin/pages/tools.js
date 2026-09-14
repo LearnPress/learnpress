@@ -3,10 +3,6 @@ import createIndexes from './tools/database/create_indexs';
 import reUpgradeDB from './tools/database/re-upgrade-db';
 import cleanDatabases from './tools/database/clean_database';
 
-import ResetCourseProgress from './tools/reset-course-progress';
-import ResetItemProgress from './tools/reset-item-progress';
-import HandleSampleData from './tools/handle-sample-data';
-
 ( function( $ ) {
 	const $doc = $( document );
 
@@ -47,9 +43,6 @@ import HandleSampleData from './tools/handle-sample-data';
 		createIndexes();
 		reUpgradeDB();
 		cleanDatabases();
-		( new ResetCourseProgress() ).init();
-		( new ResetItemProgress() ).init();
-		( new HandleSampleData() ).init();
 		$doc.on( 'click', '#learn-press-clear-cache', clearHardCache )
 			.on( 'click', 'input[name="enable_hard_cache"]', toggleHardCache );
 	} );

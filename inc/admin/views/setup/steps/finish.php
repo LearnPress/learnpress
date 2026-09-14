@@ -93,7 +93,11 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 		<div class="lp-setup-finish-card lp-setup-card lp-setup-finish-summary">
 
 			<div class="lp-setup-finish-card__heading">
-				<span class="lp-setup-finish-card__heading-icon lp-icon-list-check" aria-hidden="true"></span>
+				<span class="lp-setup-finish-card__heading-icon" aria-hidden="true">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+						<path d="M2.91699 7.27273V3.5C2.91699 2.94772 3.36471 2.5 3.91699 2.5H16.0837C16.6359 2.5 17.0837 2.94772 17.0837 3.5V7.27273M2.91699 7.27273V16.5C2.91699 17.0523 3.36471 17.5 3.91699 17.5H16.0837C16.6359 17.5 17.0837 17.0523 17.0837 16.5V7.27273M2.91699 7.27273H17.0837M14.5079 4.88636H12.2541H10.0003M5.17078 4.88636H5.49275M8.06851 4.88636H7.74654M11.2882 11.3636H14.5079M11.2882 13.4091H13.22M6.45866 10.6818L5.49729 11.6997C5.13331 12.0851 5.13331 12.6876 5.49729 13.073L6.45866 14.0909M8.06851 10.6818L9.02988 11.6997C9.39386 12.0851 9.39386 12.6876 9.02988 13.073L8.06851 14.0909" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</span>
 
 				<strong>
 					<?php esc_html_e( 'Configuration Summary', 'learnpress' ); ?>
@@ -119,8 +123,6 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 							rel="noopener noreferrer"
 						>
 							<?php esc_html_e( 'View Page', 'learnpress' ); ?>
-
-							<span aria-hidden="true">→</span>
 						</a>
 					<?php else : ?>
 						<strong>—</strong>
@@ -137,8 +139,6 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 							rel="noopener noreferrer"
 						>
 							<?php esc_html_e( 'View Page', 'learnpress' ); ?>
-
-							<span aria-hidden="true">→</span>
 						</a>
 					<?php else : ?>
 						<strong>—</strong>
@@ -296,7 +296,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 						admin_url( 'admin.php?page=learn-press-settings' )
 					); ?>"
 				>
-					<?php esc_html_e( 'Go to Settings', 'learnpress' ); ?>
+					<?php esc_html_e( 'Advanced Settings', 'learnpress' ); ?>
 				</a>
 
 				<a
