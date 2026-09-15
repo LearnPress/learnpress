@@ -16,7 +16,7 @@ $checkout = LearnPress::instance()->checkout();
 <?php
 if ( ! is_user_logged_in() ) {
 	$enable_login_on_page_checkout = LP_Settings::get_option( 'enable_login_checkout', 'yes' ) === 'yes';
-	$login_text = sprintf(
+	$login_text                    = sprintf(
 		'<a class="lp-link-login" href="%s">%s</a>',
 		learn_press_get_login_url( LP_Helper::getUrlCurrent() ),
 		__( 'login', 'learnpress' )
@@ -40,8 +40,8 @@ if ( ! is_user_logged_in() ) {
 learn_press_show_message();
 ?>
 	<form method="post" id="learn-press-checkout-form" name="learn-press-checkout-form" class="lp-checkout-form"
-		  tabindex="0" action="<?php echo esc_url_raw( learn_press_get_checkout_url() ); ?>"
-		  enctype="multipart/form-data">
+			tabindex="0" action="<?php echo esc_url_raw( learn_press_get_checkout_url() ); ?>"
+			enctype="multipart/form-data">
 		<?php
 		if ( has_action( 'learn-press/before-checkout-form' ) ) {
 			?>

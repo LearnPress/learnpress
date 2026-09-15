@@ -121,10 +121,6 @@
 		margin: 0;
 	}
 
-	#btn-checkout-account-switch-to-guest {
-		margin-bottom: 60px;
-	}
-
 	.description {
 		float: left;
 	}
@@ -182,51 +178,6 @@
 
 		a {
 			display: inline-block;
-		}
-	}
-
-	input[name="checkout-account-switch-form"] {
-		display: none;
-
-
-		&:not(:checked) {
-
-			+ .lp-checkout-block {
-				display: none;
-				overflow: hidden;
-				height: 0;
-				margin: 0;
-				padding: 0;
-				border: 0;
-				opacity: 0;
-
-				> * {
-					overflow: hidden;
-					height: 0;
-				}
-			}
-		}
-
-		&:checked {
-
-			+ .lp-checkout-block {
-				display: block;
-				overflow: auto;
-				height: auto;
-
-			}
-
-
-		}
-
-		&[value="guest"] {
-
-			&:checked {
-
-				~ #btn-checkout-account-switch-to-guest {
-					display: none;
-				}
-			}
 		}
 	}
 

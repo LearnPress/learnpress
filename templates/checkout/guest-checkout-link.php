@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -15,8 +15,6 @@ if ( ! LearnPress::instance()->checkout()->is_enable_guest_checkout() ) {
 
 esc_html_e( 'Or quick checkout as', 'learnpress' ); ?>
 
-<a href="javascript: void(0);">
-	<label for="checkout-account-switch-to-guest">
-		<?php echo esc_html_x( 'Guest', 'checkout guest link', 'learnpress' ); ?>
-	</label>
+<a href="<?php echo esc_url( LP_Helper::get_link_no_cache( learn_press_get_page_link( 'checkout' ) ) ); ?>">
+	<?php echo esc_html_x( 'Guest', 'checkout guest link', 'learnpress' ); ?>
 </a>.

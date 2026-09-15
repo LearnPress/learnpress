@@ -98,8 +98,15 @@ class LP_Checkout {
 	public function check_validate_fields() {
 		$session                        = LearnPress::instance()->session;
 		$data_session_before_user_login = $session->get_session_data();
-		$checkout_account_type          = LP_Request::get_param( 'checkout-account-switch-form' );
-		$this->checkout_action          = $checkout_account_type;
+		$this->checkout_action          = null;
+
+		if ( isset( $_POST['reg_email'] ) ) {
+			$this->checkout_action = 'register';
+		} elseif ( isset( $_POST['username'] ) ) {
+			$this->checkout_action = 'login';
+		} elseif ( isset( $_POST['guest_email'] ) ) {
+			$this->checkout_action = 'guest';
+		}
 
 		switch ( $this->checkout_action ) {
 			case 'login':

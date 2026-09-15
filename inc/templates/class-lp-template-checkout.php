@@ -40,7 +40,9 @@ class LP_Template_Checkout extends LP_Abstract_Template {
 	}
 
 	public function account_login() {
-		if ( is_user_logged_in() || ! LearnPress::instance()->checkout()->is_enable_login() ) {
+		if ( is_user_logged_in()
+			|| ! LearnPress::instance()->checkout()->is_enable_login()
+			|| ! isset( $_GET['is_form_login'] ) ) {
 			return;
 		}
 
@@ -48,7 +50,10 @@ class LP_Template_Checkout extends LP_Abstract_Template {
 	}
 
 	public function account_register() {
-		if ( is_user_logged_in() || ! LearnPress::instance()->checkout()->is_enable_register() ) {
+		if ( is_user_logged_in()
+			|| ! LearnPress::instance()->checkout()->is_enable_register()
+			|| isset( $_GET['is_form_login'] )
+			|| ! isset( $_GET['is_form_register'] ) ) {
 			return;
 		}
 
@@ -56,7 +61,11 @@ class LP_Template_Checkout extends LP_Abstract_Template {
 	}
 
 	public function guest_checkout() {
-		if ( is_user_logged_in() || ! LearnPress::instance()->checkout()->is_enable_guest_checkout() ) {
+		$is_account_form = isset( $_GET['is_form_login'] ) || isset( $_GET['is_form_register'] );
+
+		if ( is_user_logged_in()
+			|| ! LearnPress::instance()->checkout()->is_enable_guest_checkout()
+			|| $is_account_form ) {
 			return;
 		}
 
