@@ -94,11 +94,11 @@
  			@include appearance(initial);
 			position: relative;
 			z-index: 10;
-			width: 32px;
-			min-width: 32px;
-			height: 32px;
+			width: 26px;
+			min-width: 26px;
+			height: 26px;
 			margin: 0 10px 0 3px;
-			border: 1px solid #cfcfcf;
+			border: 2px solid #cfcfcf;
 			background: #f9fafc;
  			@include border-radius(4px);
 			&::after {
@@ -124,7 +124,7 @@
 				&::after {
 					opacity: 1;
 
-				}
+ 				}
 			}
 
 		}
@@ -159,12 +159,13 @@
 				border-radius: 50%;
 			}
 			&:checked {
+				border-color: #28A746;
 				&::after {
 					content: "";
-					width: 10px;
-					height: 10px;
-					border-radius: 10px;
-					background: #00adff;
+					width: 12px;
+					height: 12px;
+					border-radius: 12px;
+					background: #28A746;
 				}
 			}
 		}
@@ -585,8 +586,8 @@ button[data-counter] {
 		border: none;
 		border-radius: 0;
 		background: #fff;
-		text-transform: uppercase;
-
+		//text-transform: uppercase;
+		font-weight: 600;
 		&:hover {
 			background: var(--lp-secondary-color);
 		}
@@ -933,7 +934,7 @@ button[data-counter] {
 			position: absolute;
 			top: 50%;
 			//margin: -19px 0 0 10px;
-			border-color: #d9e0f1;
+ 			border-color: #d9e0f1;
 			@include transform(translateY(-50%));
 			margin: 0 0 0 10px;
 			@include border-radius(4px);
@@ -972,9 +973,9 @@ button[data-counter] {
 			display: flex;
 			width: 100%;
 			margin: 0;
-			padding: 10px 10px 10px 60px;
+			padding: 10px 10px 10px 50px;
 			border: 1px solid $border-color;
-			color: #666;
+			color: $text-color-accent;
 			font-weight: normal;
 			@include border-radius(4px);
 

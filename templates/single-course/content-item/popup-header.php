@@ -9,26 +9,39 @@
  * @version  4.0.4
  */
 
+use LearnPress\Models\CourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) ||
 	! isset( $completed_items ) || ! isset( $total_items ) ) {
 	return;
 }
+ 
+$courseModel          = CourseModel::find( $course->get_id(), true );
+ 
 ?>
 
 <div id="popup-header">
-	<?php
-	/**
-	 * @since 4.0.6
-	 * @see single-button-toggle-sidebar - 5
-	 */
-	do_action( 'learn-press/single-button-toggle-sidebar' );
-	?>
+	
 	<div class="popup-header__inner">
 		<h2 class="course-title">
-			<a
-				href="<?php echo esc_url_raw( $course->get_permalink() ); ?>"><?php echo wp_kses_post( $course->get_title() ); ?></a>
+			<a href="<?php echo esc_url_raw( $course->get_permalink() ); ?>"><?php echo wp_kses_post( $course->get_title() ); ?></a>
+			
+			<?php 
+				$section_count = $courseModel->get_total_sections();
+				$lesson_count  = $courseModel->count_items( LP_LESSON_CPT );
+
+				echo '<span class="curriculum-info">';
+					printf('<span class="course-count-section">%s</span>',
+						sprintf( _n( '%d Section', '%d Sections', $section_count, 'learnpress' ), $section_count )
+					);
+					printf('<span class="course-count-lesson">%s</span>',
+						sprintf( _n( '%d Lesson', '%d Lessons', $lesson_count, 'learnpress' ), $lesson_count )
+					);
+					printf( '<span class="course-duration">%s</span>', $courseModel->get_duration() );
+				echo '</span>';
+			?>
 		</h2>
 
 		<?php if ( $user->has_enrolled_or_finished( $course->get_id() ) ) : ?>
