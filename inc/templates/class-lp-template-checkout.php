@@ -40,9 +40,15 @@ class LP_Template_Checkout extends LP_Abstract_Template {
 	}
 
 	public function account_login() {
+		$checkout = LearnPress::instance()->checkout();
+
 		if ( is_user_logged_in()
-			|| ! LearnPress::instance()->checkout()->is_enable_login()
-			|| ! isset( $_GET['is_form_login'] ) ) {
+			|| ! $checkout->is_enable_login()
+			|| ( $checkout->is_enable_guest_checkout() && ! isset( $_GET['is_form_login'] ) ) ) {
+			return;
+		}
+
+		if ( isset( $_GET['is_form_register'] ) ) {
 			return;
 		}
 
