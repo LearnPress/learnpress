@@ -167,9 +167,9 @@ class LP_Checkout {
 						throw new Exception( __( 'User registration succeeded but the user cannot be loaded.', 'learnpress' ) );
 					}
 
-					if ( ! wp_check_password( $default_fields['reg_password'], $user->user_pass, $user->ID ) ) {
+					/*if ( ! wp_check_password( $default_fields['reg_password'], $user->user_pass, $user->ID ) ) {
 						throw new Exception( __( 'Incorrect password.', 'learnpress' ) );
-					}
+					}*/
 
 					wp_set_current_user( $user->ID );
 					wp_set_auth_cookie( $user->ID, true, is_ssl() );
