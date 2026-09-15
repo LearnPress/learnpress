@@ -67,6 +67,11 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		if ( $settings ) {
 			LP_Meta_Box_Helper::save_fields( $settings, $_POST );
 		}
+
+		if ( 'paypal' === $section ) {
+			// Delete token for case switch live and sandbox
+			delete_option( 'learn_press_' . LP_Gateway_Paypal::PAYPAL_TOKEN );
+		}
 	}
 
 	/**
