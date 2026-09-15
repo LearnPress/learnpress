@@ -24,10 +24,6 @@
 	grid-gap: 20px;
 	padding-right: 20px;
 
-	&.max-3-items {
-		grid-template-columns: repeat( auto-fit, minmax( 280px, 320px ) );
-	}
-
 	a {
 		text-decoration: none;
 	}
@@ -356,10 +352,6 @@
 	grid-template-columns: repeat( 4, minmax( 0, 1fr ) );
 	gap: $cb-spacing-2xl;
 
-	&.max-3-items {
-		grid-template-columns: repeat( 3, minmax( 0, 1fr ) );
-	}
-
 	.lp-addon-item {
 		overflow: hidden;
 		min-width: 0;
@@ -389,6 +381,13 @@
 			margin-bottom: $cb-spacing-md;
 		}
 
+		&__heading {
+			display: flex;
+			align-items: flex-start;
+			gap: $cb-spacing-sm;
+			min-width: 0;
+		}
+
 		&__content &__image {
 			display: block;
 			width: 48px;
@@ -400,7 +399,9 @@
 
 		&__title {
 			display: -webkit-box;
+			flex: 1;
 			overflow: hidden;
+			min-width: 0;
 			margin: 0;
 			color: $cb-text;
 			font-size: $cb-font-lg;
@@ -418,6 +419,20 @@
 			a:focus {
 				color: $cb-primary;
 			}
+		}
+
+		&__badge {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+			padding: $cb-spacing-xs $cb-spacing-sm;
+			border-radius: $cb-radius-sm;
+			color: $cb-bg;
+			background: $cb-price-red;
+			font-size: $cb-font-xs;
+			font-weight: 600;
+			white-space: nowrap;
 		}
 
 		&__price {
@@ -441,12 +456,15 @@
 			line-height: 1;
 			font-weight: 300;
 
-			&:not(del),
+			&--current,
 			&--free {
-				color: $cb-price-red;
 				font-size: $cb-font-xl;
 				font-weight: 600;
 				line-height: 1.25;
+			}
+
+			&--current {
+				color: $cb-price-red;
 			}
 
 			&--free {
@@ -623,10 +641,9 @@
 		.lp-addon-button,
 		.btn-addon-action {
 			box-sizing: border-box;
-			min-height: 36px;
 			padding: $cb-spacing-sm $cb-spacing-lg;
 			border: 1px solid $cb-primary;
-			border-radius: $cb-radius;
+			border-radius: $cb-radius-lg;
 			color: $cb-bg;
 			background: $cb-primary;
 			font-size: $cb-font-md;
@@ -648,9 +665,7 @@
 			}
 		}
 
-		.lp-addon-button,
-		.lp-addon-item__actions .btn-addon-action[data-action="install"],
-		.lp-addon-item__actions .btn-addon-action[data-action="purchase"] {
+		.lp-addon-button {
 			border-color: $cb-border-input;
 			color: $cb-text-secondary;
 			background: $cb-bg;
@@ -871,35 +886,49 @@
 }
 
 @media (max-width: 1550px) {
-	#lp-addons,
-	#lp-addons.max-3-items {
+	#lp-addons {
 		grid-template-columns: repeat( 3, minmax( 0, 1fr ) );
 	}
 }
 
 @media (max-width: 1200px) {
-	#lp-addons,
-	#lp-addons.max-3-items {
+	#lp-addons {
 		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
 	}
 }
 
 @media (max-width: 960px) {
-	#lp-addons,
-	#lp-addons.max-3-items {
+	#lp-addons {
 		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
 	}
 }
 
 @media (max-width: 782px) {
-	#lp-addons,
-	#lp-addons.max-3-items {
+	#lp-addons {
 		grid-template-columns: 1fr;
 		padding-right: 0;
 	}
 }
 
 /*** Tab of Addons Manager ***/
+.learn-press-addons {
+	max-width: 100%;
+
+	.wp-heading-inline {
+		color: $cb-text;
+		font-size: $cb-font-4xl;
+		font-weight: 600;
+		line-height: 1.25;
+	}
+
+	.lp-addons-page-subtitle {
+		margin: $cb-spacing-xs 0 $cb-spacing-2xl;
+		color: $cb-text-secondary;
+		font-size: $cb-font-lg;
+		line-height: 1.5;
+	}
+}
+
 .lp-addons-controls {
 	margin-bottom: $cb-spacing-xl;
 	padding-right: $cb-spacing-xl;
@@ -916,7 +945,7 @@
 	gap: $cb-spacing-lg;
 	box-sizing: border-box;
 	margin-bottom: $cb-spacing-3xl;
-	padding: $cb-spacing-lg;
+	padding: $cb-spacing-xl;
 	border: 1px solid $cb-border;
 	border-radius: $cb-radius-lg;
 	background: $cb-bg-card;
@@ -929,8 +958,14 @@
 	.lp-addons-filter {
 		display: flex;
 		align-items: center;
-		flex-wrap: wrap;
-		gap: $cb-spacing-sm;
+		flex-wrap: nowrap;
+		gap: $cb-spacing-md;
+		margin: -$cb-spacing-xs;
+		padding: $cb-spacing-xs;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scrollbar-width: thin;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.nav-tab {
@@ -938,14 +973,14 @@
 		align-items: center;
 		justify-content: center;
 		box-sizing: border-box;
-		min-height: 48px;
+		min-height: 49px;
 		margin-left: 0;
-		padding: $cb-spacing-sm $cb-spacing-lg;
-		border: 1px solid $cb-border-input;
-		border-radius: $cb-radius;
-		color: $cb-text-secondary;
-		background: $cb-bg;
-		font-size: $cb-font-md;
+		padding: $cb-spacing-sm $cb-spacing-xl;
+		border: 1px solid transparent;
+		border-radius: $cb-radius-lg;
+		color: $cb-primary;
+		background: $cb-primary-bland;
+		font-size: $cb-font-lg;
 		font-weight: 500;
 		line-height: 1;
 		text-decoration: none;
@@ -983,7 +1018,7 @@
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	gap: $cb-spacing-md;
+	gap: $cb-spacing-sm;
 }
 
 .lp-addons-category {
@@ -991,13 +1026,13 @@
 	align-items: center;
 	justify-content: center;
 	box-sizing: border-box;
-	min-height: 37px;
+	min-height: 42px;
 	padding: $cb-spacing-sm $cb-spacing-lg;
 	border: 1px solid $cb-border-input;
-	border-radius: $cb-radius;
-	color: $cb-text-secondary;
+	border-radius: $cb-radius-lg;
+	color: $cb-text-placeholder;
 	background: $cb-bg;
-	font-size: $cb-font-base;
+	font-size: $cb-font-lg;
 	font-weight: 500;
 	line-height: 150%;
 	cursor: pointer;
@@ -1021,8 +1056,8 @@
 
 	&.active {
 		border-color: $cb-primary;
-		color: $cb-primary-hover;
-		background: $cb-primary-bland;
+		color: $cb-primary;
+		background: $cb-bg;
 	}
 
 	&[hidden] {
@@ -1060,7 +1095,7 @@
 	padding: $cb-spacing-xs $cb-spacing-md;
 	padding-inline-start: 40px;
 	border: 1px solid $cb-border-input;
-	border-radius: $cb-radius;
+	border-radius: $cb-radius-lg;
 	color: $cb-text-label;
 	background: $cb-bg;
 	font-size: $cb-font-md;
@@ -1099,14 +1134,6 @@
 
 	.lp-addons-toolbar {
 		padding: $cb-spacing-md;
-
-		.lp-addons-filter {
-			flex-wrap: nowrap;
-			overflow-x: auto;
-			overflow-y: hidden;
-			scrollbar-width: thin;
-			-webkit-overflow-scrolling: touch;
-		}
 
 		.nav-tab {
 			flex: 0 0 auto;

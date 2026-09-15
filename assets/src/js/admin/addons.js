@@ -147,18 +147,22 @@ const filterAddons = () => {
 		const addonName = elAddonItem
 			.querySelector( 'a' )
 			.textContent.toLowerCase();
-		const addonCategory = elAddonItem.dataset.category || '';
+		const addonCategories = ( elAddonItem.dataset.category || '' )
+			.split( /\s+/ )
+			.filter( Boolean );
 		const matchesTab =
 			'all' === tabName || elAddonItem.classList.contains( tabName );
 
 		if ( matchesTab ) {
 			categoryCounts.all++;
-			categoryCounts[ addonCategory ] =
-				( categoryCounts[ addonCategory ] || 0 ) + 1;
+			addonCategories.forEach( ( addonCategory ) => {
+				categoryCounts[ addonCategory ] =
+					( categoryCounts[ addonCategory ] || 0 ) + 1;
+			} );
 		}
 
 		const matchesCategory =
-			'all' === category || addonCategory === category;
+			'all' === category || addonCategories.includes( category );
 		const matchesSearch = addonName.includes( keyword );
 		const isVisible = matchesTab && matchesCategory && matchesSearch;
 
@@ -188,17 +192,8 @@ const filterAddons = () => {
 			elCategory.hidden =
 				'all' !== elCategory.dataset.category && 0 === count;
 		} );
+};
 
-	setGridItems( totalItems );
-};
-// Set grid style items.
-const setGridItems = ( totalItems ) => {
-	if ( totalItems < 4 ) {
-		elLPAddons.classList.add( 'max-3-items' );
-	} else {
-		elLPAddons.classList.remove( 'max-3-items' );
-	}
-};
 // Render add-ons after both the page element and API data are ready.
 const renderAddonsPage = () => {
 	if ( ! elAddonsPage || ! dataHtml ) {

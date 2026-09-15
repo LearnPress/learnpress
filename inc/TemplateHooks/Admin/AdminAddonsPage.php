@@ -3,7 +3,6 @@
 namespace LearnPress\TemplateHooks\Admin;
 
 use LearnPress\Helpers\Singleton;
-use LearnPress\Helpers\Template;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -32,32 +31,23 @@ class AdminAddonsPage {
 		lp_skeleton_animation_html( 20 );
 		$html_loading = ob_get_clean();
 
-		$section = apply_filters(
-			'learn-press/admin/manager-addons/section',
+		ob_start();
+		?>
+		<p class="lp-addons-page-subtitle">
+			<?php esc_html_e( 'Discover high-performance Premium & Education themes optimized 100% for LearnPress LMS.', 'learnpress' ); ?>
+		</p>
+		<div class="lp-addons-page">
+			<?php echo $html_loading; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted local skeleton markup. ?>
+		</div>
+		<?php
+		$content = ob_get_clean();
+
+		echo AdminTemplate::html_on_wp_admin_screen(
 			array(
-				'label'      => sprintf(
-					'<h1>%s</h1>',
-					__( 'LearnPress Add-ons', 'learnpress' )
-				),
-				'note-theme' => sprintf(
-					'<p style="color: rgba(255,0,0,0.76)"><strong><i>%s</i></strong></p>',
-					__( '* If you use a Premium Theme that includes LearnPress add-ons, you can go to the <strong>Plugins</strong> tab on Dashboard of theme to download or update them.', 'learnpress' )
-				),
-				'note-addon' => sprintf(
-					'<p>%s</p>',
-					sprintf(
-						__( 'If you have purchased a premium add-on separately, you can enter your purchase code (%s) to download or update the add-ons here.', 'learnpress' ),
-						sprintf(
-							'<a href="%s" target="_blank">%s</a>',
-							'https://thimpress.com/my-account/',
-							__( 'get from your account', 'learnpress' )
-						)
-					)
-				),
-				'list'       => sprintf( '<div class="lp-addons-page">%s</div>', $html_loading ),
+				'content' => $content,
+				'title'   => __( 'LearnPress Add-ons New', 'learnpress' ),
+				'id'      => 'learn-press-addons',
 			)
 		);
-
-		echo Template::combine_components( $section );
 	}
 }

@@ -469,6 +469,13 @@
             stroke-width: 2;
         }
 
+		.lp-setup-choice__svg--solid {
+			width: 28px;
+			height: 28px;
+			fill: currentColor;
+			stroke: none;
+		}
+
         [class^='lp-icon-'],
         [class*=' lp-icon-'] {
             font-size: 25px;

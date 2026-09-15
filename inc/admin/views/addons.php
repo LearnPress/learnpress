@@ -29,9 +29,12 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? sanitize_key( wp_unsl
 $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
 $addon_categories          = array(
 	'create-course'          => __( 'Create Course', 'learnpress' ),
-	'monetize-course'        => __( 'Monetize Course', 'learnpress' ),
+	'engagement'             => __( 'Engagement', 'learnpress' ),
+	'learnpress'             => __( 'LearnPress', 'learnpress' ),
 	'manage-course'          => __( 'Manage Course', 'learnpress' ),
 	'marketing-optimization' => __( 'Marketing Optimization', 'learnpress' ),
+	'monetize-course'        => __( 'Monetize Course', 'learnpress' ),
+	'payment'                => __( 'Payment', 'learnpress' ),
 );
 ?>
 <div class="lp-addons-wrapper">
@@ -48,7 +51,7 @@ $addon_categories          = array(
 			$version_current = $addon->version ?? 0;
 			$classes_status  = [];
 			$addon_purchased = $addon->purchase_info ?? false;
-			$addon_category  = sanitize_title( $addon->category ?? '' );
+			$addon_category  = implode( ' ', array_map( 'sanitize_title', $addon->category ?? array() ) );
 			$date_expired_str      = '';
 			$number_days_remaining = null;
 			// Addon is free or paid.
@@ -115,11 +118,16 @@ $addon_categories          = array(
 				<div class="lp-addon-item__content">
 					<div class="lp-addon-item__header">
 						<img class="lp-addon-item__image" src="<?php echo esc_url( $addon->image ); ?>" alt=""/>
-						<h3 class="lp-addon-item__title">
-							<a href="<?php echo esc_url( $addon->link ); ?>" target="_blank" rel="noopener">
-								<?php echo esc_html( $addon->name ); ?>
-							</a>
-						</h3>
+						<div class="lp-addon-item__heading">
+							<h3 class="lp-addon-item__title">
+								<a href="<?php echo esc_url( $addon->link ); ?>" target="_blank" rel="noopener">
+									<?php echo esc_html( $addon->name ); ?>
+								</a>
+							</h3>
+							<?php if ( ! empty( $addon->badge ) ) { ?>
+								<span class="lp-addon-item__badge"><?php echo esc_html( $addon->badge ); ?></span>
+							<?php } ?>
+						</div>
 					</div>
 					<?php if ( ! $is_free ) { ?>
 						<div class="lp-addon-license lp-addon-license--<?php echo esc_attr( $license_status ); ?>" data-purchase-code-masked="<?php echo esc_attr( $purchase_code_masked ); ?>"<?php echo $show_license_panel ? '' : ' hidden'; ?>>
@@ -149,7 +157,7 @@ $addon_categories          = array(
 						<?php if ( ! empty( $addon->link_doc ) ) { ?>
 							<a href="<?php echo esc_url( $addon->link_doc ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Docs', 'learnpress' ); ?></a>
 						<?php } ?>
-						<a href="<?php echo esc_url( $addon->link ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'View details', 'learnpress' ); ?></a>
+						<a href="<?php echo esc_url( $addon->link ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'View Details', 'learnpress' ); ?></a>
 					</div>
 					<?php
 					// Show version latest.
@@ -197,7 +205,7 @@ $addon_categories          = array(
 							<strong class="lp-addon-item__price-sale">$<?php echo esc_html( number_format_i18n( $addon->sale_price ) ); ?></strong>
 							<del class="lp-addon-item__price-regular">$<?php echo esc_html( number_format_i18n( $addon->regular_price ?? 0 ) ); ?></del>
 						<?php } else { ?>
-							<strong class="lp-addon-item__price-regular">$<?php echo esc_html( number_format_i18n( $addon->regular_price ?? 0 ) ); ?></strong>
+							<strong class="lp-addon-item__price-regular lp-addon-item__price-regular--current">$<?php echo esc_html( number_format_i18n( $addon->regular_price ?? 0 ) ); ?></strong>
 						<?php } ?>
 					</div>
 					<div class="lp-addon-item__actions__left">
