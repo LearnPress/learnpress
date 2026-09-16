@@ -71,8 +71,9 @@ table.lp-list-table {
 			&:nth-child(even) {
 				background-color: hsla(0, 0%, 50%, .05);
 			}
+
 			&:hover {
-				background-color: hsla(0, 0%, 50%, .07);
+				background-color: #eff6ff;
 			}
 
 			td {
