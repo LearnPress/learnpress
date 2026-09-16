@@ -45,17 +45,6 @@ $menu_items = apply_filters(
 			'priority'   => 20,
 			'callback'   => [ AdminAddonsPage::instance(), 'html_page' ],
 		],
-		// Themes.
-		'themes'           => [
-			'id'         => 'learn-press-themes',
-			'menu_title' => __( 'Themes', 'learnpress' ),
-			'page_title' => __( 'LearnPress Themes', 'learnpress' ),
-			'capability' => 'manage_options',
-			'priority'   => 20,
-			'callback'   => function () {
-				learn_press_admin_view( 'addons/html-themes' );
-			},
-		],
 		// Settings.
 		'settings'         => [
 			'id'         => 'learn-press-settings',
@@ -74,6 +63,16 @@ $menu_items = apply_filters(
 			'priority'   => 25,
 			'callback'   => function () {
 				learn_press_admin_view( 'help-center/html-help-center' );
+			},
+		],
+		'themes'          => [
+			'id'         => 'learn-press-themes',
+			'menu_title' => __( 'Themes', 'learnpress' ),
+			'page_title' => __( 'LearnPress Themes', 'learnpress' ),
+			'capability' => 'manage_options',
+			'priority'   => 25,
+			'callback'   => function () {
+				learn_press_admin_view( 'themes/html-themes' );
 			},
 		],
 		// Tools.

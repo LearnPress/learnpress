@@ -801,7 +801,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			// Common function used in admin
 			include_once 'lp-admin-functions.php';
 			include_once 'lp-admin-actions.php';
-			require_once LP_PLUGIN_PATH . 'inc/background-process/class-lp-background-query-items.php';
 			include_once 'class-lp-admin-assets.php';
 			LP_Admin_Assets::instance();
 			// For MCP
@@ -818,7 +817,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'editor/class-lp-admin-editor.php';
 			include_once 'class-lp-admin-menu.php';
 			include_once 'helpers/class-lp-outdated-template-helper.php';
-			include_once 'helpers/class-lp-plugins-helper.php';
 			include_once 'class-lp-modal-search-items.php';
 			//include_once 'class-lp-modal-search-users.php';
 			include_once 'class-lp-setup-wizard.php';

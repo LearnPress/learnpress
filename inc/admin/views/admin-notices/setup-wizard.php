@@ -15,7 +15,7 @@ if ( ! isset( $data ) || ! isset( $data['check'] ) || ! $data['check'] ) {
 }
 ?>
 <div id="notice-install" class="lp-notice notice notice-info">
-	<p><?php echo sprintf( '<strong>%s</strong>', __( 'LearnPress LMS is ready to use.', 'learnpress' ) ); ?></p>
+	<p><?php echo sprintf( '<strong>%s</strong>', __( 'LearnPress LMS is ready to set up', 'learnpress' ) ); ?></p>
 	<p>
 		<a class="button button-primary" href="<?php echo admin_url( 'index.php?page=lp-setup' ); ?>"><?php _e( 'Quick Setup', 'learnpress' ); ?></a>
 		<?php

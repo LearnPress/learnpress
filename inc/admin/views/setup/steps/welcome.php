@@ -9,8 +9,13 @@
 
 defined( 'ABSPATH' ) or exit;
 ?>
-<h2><?php _e( 'Welcome to LearnPress', 'learnpress' ); ?></h2>
+<div class="lp-setup-welcome">
+	<div class="lp-setup-welcome__eyebrow">
+		<span class="lp-setup-welcome__eyebrow-dot" aria-hidden="true"></span>
+		<?php esc_html_e( 'Let’s set up your LMS', 'learnpress' ); ?>
+	</div>
 
-<p class="large-text"><?php _e( 'Thanks for choosing LearnPress to sell your online courses!', 'learnpress' ); ?></p>
+	<h2><?php esc_html_e( 'Welcome to LearnPress', 'learnpress' ); ?></h2>
 
-<p class="large-text"><?php _e( 'The following wizard will help you configure your LMS site and get you started quickly.', 'learnpress' ); ?></p>
+	<p><?php esc_html_e( 'Create courses, manage students, and start selling online with LearnPress.', 'learnpress' ); ?></p>
+</div>

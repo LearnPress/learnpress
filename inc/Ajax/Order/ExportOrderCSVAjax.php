@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  * @author ThimPress
  * @package LearnPress\Ajax
  * @since  4.3.2.8
- * @version 1.0.0
+ * @version 1.0.1
  */
 class ExportOrderCSVAjax extends AbstractAjax {
 	/**
@@ -139,6 +139,8 @@ class ExportOrderCSVAjax extends AbstractAjax {
 	 * @param string $export_id
 	 *
 	 * @return string
+	 * @since 4.3.2.8
+	 * @version 1.0.0
 	 */
 	public static function get_export_csv_path( string $export_id = '' ): string {
 		$upload = wp_upload_dir();
@@ -146,6 +148,11 @@ class ExportOrderCSVAjax extends AbstractAjax {
 
 		if ( ! file_exists( $dir ) ) {
 			wp_mkdir_p( $dir );
+		}
+
+		$index_file = $dir . '/index.php';
+		if ( ! file_exists( $index_file ) ) {
+			file_put_contents( $index_file, "<?php\n// Silence is golden.\n" );
 		}
 
 		return $dir . "/lp-orders-{$export_id}.csv";

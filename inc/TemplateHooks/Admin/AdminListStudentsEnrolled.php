@@ -3,9 +3,7 @@
 namespace LearnPress\TemplateHooks\Admin;
 
 use Exception;
-use LearnPress\Databases\PostDB;
 use LearnPress\Databases\UserItemsDB;
-use LearnPress\Filters\PostFilter;
 use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
@@ -318,7 +316,7 @@ class AdminListStudentsEnrolled {
 
 		$html_toolbar = AdminTemplate::html_form_filter(
 			array(
-				'classes'     => 'lp-enrolled-students-form',
+				'form_classes'     => 'lp-enrolled-students-form',
 				'fields'      => $html_fields,
 				'btn_actions' => $html_btn_actions,
 			)
@@ -373,7 +371,7 @@ class AdminListStudentsEnrolled {
 		return AdminTemplate::html_form_filter(
 			array(
 				'id'          => 'lp-modal-enrolled-form',
-				'classes'     => 'lp-enrolled-students-form lp-enrolled-students-form--modal lp-enrolled-students-table-toolbar--modal',
+				'form_classes'     => 'lp-enrolled-students-form lp-enrolled-students-form--modal lp-enrolled-students-table-toolbar--modal',
 				'fields'      => $html_fields,
 				'btn_actions' => $html_btn_actions,
 			)

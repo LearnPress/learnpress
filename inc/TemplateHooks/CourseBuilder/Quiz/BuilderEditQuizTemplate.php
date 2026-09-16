@@ -433,8 +433,14 @@ class BuilderEditQuizTemplate {
 		return Template::combine_components( $edit );
 	}
 
+	/**
+	 * Edit description
+	 *
+	 * @param QuizPostModel|false $quiz_model
+	 * @return string
+	 */
 	public function edit_desc( $quiz_model ) {
-		$desc            = ! empty( $quiz_model ) ? $quiz_model->get_the_content() : '';
+		$desc            = ! empty( $quiz_model ) ? $quiz_model->post_content : '';
 		$editor_id       = 'quiz_description_editor';
 		$editor_settings = array(
 			'textarea_name' => 'quiz_description',
