@@ -45,7 +45,7 @@ table.lp-list-table {
 		th {
 			background: none;
 			border: none;
-			font-size: 1em;
+			//font-size: 1em;
 			padding: 10px 20px;
 			text-align: left;
 
@@ -57,7 +57,7 @@ table.lp-list-table {
 	}
 
 	tbody {
-		font-size: 14px;
+		//font-size: 14px;
 
 		tr {
 			border: none;
@@ -83,6 +83,10 @@ table.lp-list-table {
 					text-decoration: none;
 				}
 			}
+		}
+
+		th {
+			padding: 10px 20px;
 		}
 	}
 
