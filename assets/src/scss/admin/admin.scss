@@ -1,5 +1,7 @@
 @import "../mixin";
 @import "../variables";
+@import "../buttons";
+@include lp-button-styles();
 @import "../message";
 @import "../general";
 // Icon
