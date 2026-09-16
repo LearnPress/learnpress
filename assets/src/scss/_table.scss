@@ -27,12 +27,12 @@ table.lp-list-table {
 	}
 
 	thead {
+		border: none;
 		tr:first-child{
 			td,th{
 				border-block-start: none// fix theme hello elementor
 			}
 		}
-		border: none;
 		tr {
 			border-bottom: 1px solid var(--lp-border-color, #E2E0DB);
 			position: sticky;
