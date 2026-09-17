@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 7.1
-Stable tag: 4.4.7
+Stable tag: 4.4.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -301,8 +301,11 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.8 (2026-09-18) =
+* Fixed: security (Props @yuto hyakumoto, @Wordfence).
+
 = 4.4.7 (2026-09-11) =
-* Fixed: security (Props @Karthik Ramakrishnan, @vuxvinh, @Nicat Sultanov, @Sai Praneeth Koti, @Artus KG)
+* Fixed: security (Props @Karthik Ramakrishnan, @vuxvinh, @Nicat Sultanov, @Sai Praneeth Koti, @Artus KG).
 * Fixed minor bugs.
 * Update: manager themes screen.
 * Update: setup wizard screen.
