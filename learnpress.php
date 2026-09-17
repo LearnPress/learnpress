@@ -632,12 +632,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				include_once 'inc/custom-post-types/question.php';
 				include_once 'inc/custom-post-types/order.php';
 
-				// Flush rewrite rules after CPTs are registered (deferred from activation).
-				if ( get_option( 'lp_flush_rewrite_rules' ) === 'yes' ) {
-					flush_rewrite_rules();
-					delete_option( 'lp_flush_rewrite_rules' );
-				}
-
 				// Polylang
 				if ( defined( 'POLYLANG_VERSION' ) ) {
 					include_once 'inc/ExternalPlugin/Polylang/class-lp-polylang.php';
@@ -909,6 +903,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @version 4.1.4.1
 		 */
 		public function on_activate() {
+			    // Register CPTs before flushing rewrite rules,
+				// because activation hook fires after init has already run,
+				// so lp_main_handle() won't execute during this request.
+				include_once 'inc/custom-post-types/abstract.php';
+				include_once 'inc/custom-post-types/course.php';
+				include_once 'inc/custom-post-types/lesson.php';
+				include_once 'inc/custom-post-types/quiz.php';
+				include_once 'inc/custom-post-types/question.php';
+				include_once 'inc/custom-post-types/order.php';
 			LP_Install::instance()->on_activate();
 		}
 

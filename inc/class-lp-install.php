@@ -373,8 +373,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					LP_Helper::create_page( $data_create_page, "learn_press_{$page}_page_id" );
 				}
 
-				// flush_rewrite_rules();
-				update_option( 'lp_flush_rewrite_rules', 'yes' );
+				flush_rewrite_rules();
 			} catch ( Exception $ex ) {
 				error_log( $ex->getMessage() );
 			}
