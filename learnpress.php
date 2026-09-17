@@ -632,6 +632,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				include_once 'inc/custom-post-types/question.php';
 				include_once 'inc/custom-post-types/order.php';
 
+				// Flush rewrite rules after CPTs are registered (deferred from activation).
+				if ( get_option( 'lp_flush_rewrite_rules' ) === 'yes' ) {
+					flush_rewrite_rules();
+					delete_option( 'lp_flush_rewrite_rules' );
+				}
+
 				// Polylang
 				if ( defined( 'POLYLANG_VERSION' ) ) {
 					include_once 'inc/ExternalPlugin/Polylang/class-lp-polylang.php';
