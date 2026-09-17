@@ -11,6 +11,7 @@ use LearnPress\Databases\PostDB;
 use LearnPress\Filters\QuestionPostFilter;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\Models\WPTables\QuestionsTable;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -31,6 +32,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		protected $_post_type = LP_QUESTION_CPT;
 
 		/**
+		 * @var string
+		 */
+		protected $_screen_list = 'edit-' . LP_QUESTION_CPT;
+
+		/**
 		 * LP_Question_Post_Type constructor.
 		 *
 		 * @param $post_type
@@ -48,6 +54,23 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			// $this->add_map_method( 'before_delete', 'before_delete_question' );
 
 			parent::__construct();
+		}
+
+		/**
+		 * Declare class name of table list questions.
+		 *
+		 * @param string $class_name
+		 * @param array  $args
+		 *
+		 * @return string
+		 * @since 4.2.9.5
+		 */
+		public function wp_list_table_class_name( $class_name, $args ) {
+			if ( $this->check_class_name_handle_table( $args['screen'] ) ) {
+				$class_name = QuestionsTable::class;
+			}
+
+			return $class_name;
 		}
 
 		/**
@@ -306,75 +329,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		}
 
 		/**
-		 * Add columns to admin manage question page
-		 *
-		 * @param array $columns
-		 *
-		 * @return array
-		 */
-		public function columns_head( $columns ) {
-			$pos         = array_search( 'title', array_keys( $columns ) );
-			$new_columns = array(
-				'instructor' => esc_html__( 'Author', 'learnpress' ),
-				LP_QUIZ_CPT  => esc_html__( 'Quiz', 'learnpress' ),
-				'type'       => esc_html__( 'Type', 'learnpress' ),
-			);
-
-			if ( false !== $pos && ! array_key_exists( LP_QUIZ_CPT, $columns ) ) {
-				$columns = array_merge(
-					array_slice( $columns, 0, $pos + 1 ),
-					$new_columns,
-					array_slice( $columns, $pos + 1 )
-				);
-			}
-
-			$user = wp_get_current_user();
-
-			if ( in_array( LP_TEACHER_ROLE, $user->roles ) ) {
-				unset( $columns['instructor'] );
-			}
-
-			if ( ! empty( $columns['author'] ) ) {
-				unset( $columns['author'] );
-			}
-
-			return $columns;
-		}
-
-		/**
-		 * Displaying the content of extra columns
-		 *
-		 * @param $name
-		 * @param $post_id
-		 */
-		public function columns_content( $name, $post_id = 0 ) {
-			switch ( $name ) {
-				case 'instructor':
-					$this->column_instructor( $post_id );
-					break;
-				case 'lp_quiz':
-					$curd = new LP_Question_CURD();
-					// get quiz
-					$quiz = $curd->get_quiz( $post_id );
-
-					if ( $quiz ) {
-						echo '<div><a href="' . esc_url_raw( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
-						echo '<div class="row-actions">';
-						printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), esc_html__( 'Edit', 'learnpress' ) );
-						echo '&nbsp;|&nbsp;';
-						printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), esc_html__( 'View', 'learnpress' ) );
-						echo '</div></div>';
-					} else {
-						esc_html_e( 'Not assigned yet', 'learnpress' );
-					}
-					break;
-				case 'type':
-					echo learn_press_question_name_from_slug( get_post_meta( $post_id, '_lp_type', true ) );
-					break;
-			}
-		}
-
-		/**
 		 * Query lp questions in admin via Post DB
 		 *
 		 * @param array    $posts
@@ -419,6 +373,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$filter        = new QuestionPostFilter();
 				$filter->page  = $paged;
 				$filter->limit = $posts_per_page;
+				$filter->only_fields = [ 'ID, post_title' ];
 				$post_db       = PostDB::getInstance();
 
 				if ( ! empty( $status ) ) {
@@ -483,7 +438,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 				$wp_query->post_count    = count( $lp_questions );
 				$wp_query->found_posts   = $total_rows;
-				$wp_query->max_num_pages = (int) ceil( $total_rows / $posts_per_page );
 				$posts                   = $lp_questions;
 			} catch ( Throwable $e ) {
 				LP_Debug::error_log( $e );
@@ -555,18 +509,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			return $order_by_statement;
 		}*/
-
-		/**
-		 * @param $columns
-		 *
-		 * @return mixed
-		 */
-		public function sortable_columns( $columns ) {
-			$columns['author']      = 'author';
-			$columns[ LP_QUIZ_CPT ] = 'quiz-name';
-
-			return $columns;
-		}
 
 		/**
 		 * @return bool|int

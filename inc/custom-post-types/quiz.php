@@ -11,6 +11,7 @@ use LearnPress\Databases\PostDB;
 use LearnPress\Filters\QuizPostFilter;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\WPTables\QuizzesTable;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -37,6 +38,11 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		protected $_post_type = LP_QUIZ_CPT;
 
 		/**
+		 * @var string
+		 */
+		protected $_screen_list = 'edit-' . LP_QUIZ_CPT;
+
+		/**
 		 * LP_Quiz_Post_Type constructor.
 		 *
 		 * @param $post_type
@@ -53,6 +59,23 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			// add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			parent::__construct();
+		}
+
+		/**
+		 * Declare class name of table list quizzes.
+		 *
+		 * @param string $class_name
+		 * @param array  $args
+		 *
+		 * @return string
+		 * @since 4.2.9.5
+		 */
+		public function wp_list_table_class_name( $class_name, $args ) {
+			if ( $this->check_class_name_handle_table( $args['screen'] ) ) {
+				$class_name = QuizzesTable::class;
+			}
+
+			return $class_name;
 		}
 
 		/**
@@ -230,102 +253,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 
 			do_action( 'learn-press/admin/edit-quiz/layout', $quizPostModel );
-		}
-
-		/**
-		 * Add columns to admin manage quiz page
-		 *
-		 * @param  array $columns
-		 *
-		 * @return array
-		 */
-		public function columns_head( $columns ) {
-			$pos = array_search( 'title', array_keys( $columns ) );
-
-			if ( false !== $pos && ! array_key_exists( LP_COURSE_CPT, $columns ) ) {
-				$columns = array_merge(
-					array_slice( $columns, 0, $pos + 1 ),
-					array(
-						'instructor'      => esc_html__( 'Author', 'learnpress' ),
-						LP_COURSE_CPT     => esc_html__( 'Course', 'learnpress' ),
-						'num_of_question' => esc_html__( 'Questions', 'learnpress' ),
-						'duration'        => esc_html__( 'Duration', 'learnpress' ),
-					),
-					array_slice( $columns, $pos + 1 )
-				);
-			}
-
-			unset( $columns['taxonomy-lesson-tag'] );
-			$user = wp_get_current_user();
-
-			if ( in_array( 'lp_teacher', $user->roles ) ) {
-				unset( $columns['instructor'] );
-			}
-
-			if ( ! empty( $columns['author'] ) ) {
-				unset( $columns['author'] );
-			}
-
-			return $columns;
-		}
-
-		/**
-		 * Display content for custom column
-		 *
-		 * @param string $name
-		 * @param int    $post_id
-		 */
-		public function columns_content( $name, $post_id = 0 ) {
-			$quizPostModel = QuizPostModel::find( $post_id, true );
-			if ( ! $quizPostModel ) {
-				return;
-			}
-
-			switch ( $name ) {
-				case 'instructor':
-					$this->column_instructor( $post_id );
-					break;
-				case 'lp_course':
-					$this->get_courses_of_item( $post_id );
-					break;
-				case 'num_of_question':
-					$count = $quizPostModel->count_questions();
-
-					printf(
-						'<span class="lp-label-counter %s" title="%s">%s</span>',
-						! $count ? 'disabled' : '',
-						$count ?
-							sprintf( _n( '%d question', '%d questions', $count, 'learnpress' ), $count ) :
-							__( 'This quiz has no questions', 'learnpress' ),
-						$count
-					);
-					break;
-				case 'duration':
-					$duration_str  = $quizPostModel->get_duration();
-					$duration_arr  = explode( ' ', $duration_str );
-					$duration      = $duration_arr[0];
-					$duration_type = $duration_arr[1];
-
-					if ( $duration > 0 ) {
-						$duration_str = LP_Datetime::get_string_plural_duration( $duration, $duration_type );
-					} else {
-						$duration_str = __( 'Unlimited', 'learnpress' );
-					}
-
-					echo esc_html( $duration_str );
-					break;
-				case 'preview':
-					printf(
-						'<input type="checkbox" class="learn-press-checkbox learn-press-toggle-item-preview" %s value="%s" data-nonce="%s" />',
-						get_post_meta( $post_id, '_lp_preview', true ) == 'yes' ? ' checked="checked"' : '',
-						$post_id,
-						wp_create_nonce( 'learn-press-toggle-item-preview' )
-					);
-					break;
-				default:
-					break;
-
-			}
 		}
 
 		/**
@@ -519,19 +446,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			return $order_by_statement;
 		}*/
-
-		/**
-		 * @param $columns
-		 *
-		 * @return mixed
-		 */
-		public function sortable_columns( $columns ) {
-			$columns['instructor']      = 'author';
-			$columns[ LP_COURSE_CPT ]   = 'course-name';
-			$columns['num_of_question'] = 'question-count';
-
-			return $columns;
-		}
 
 		/**
 		 * Quiz assigned view.

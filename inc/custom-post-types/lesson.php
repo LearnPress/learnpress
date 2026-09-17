@@ -17,6 +17,7 @@ use LearnPress\Filters\PostFilter;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\PostModel;
+use LearnPress\Models\WPTables\LessonsTable;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -35,6 +36,11 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @var string
 		 */
 		protected $_post_type = LP_LESSON_CPT;
+
+		/**
+		 * @var string
+		 */
+		protected $_screen_list = 'edit-' . LP_LESSON_CPT;
 
 		/**
 		 * LP_Lesson_Post_Type constructor.
@@ -82,6 +88,23 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					}
 				}
 			}
+		}
+
+		/**
+		 * Declare class name of table list lessons.
+		 *
+		 * @param string $class_name
+		 * @param array  $args
+		 *
+		 * @return string
+		 * @since 4.2.9.5
+		 */
+		public function wp_list_table_class_name( $class_name, $args ) {
+			if ( $this->check_class_name_handle_table( $args['screen'] ) ) {
+				$class_name = LessonsTable::class;
+			}
+
+			return $class_name;
 		}
 
 		/**
@@ -370,87 +393,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$curd = new LP_Lesson_CURD();
 			$curd->delete( $post_id );
 		}*/
-
-		/**
-		 * Add columns to admin manage lesson page
-		 *
-		 * @param array $columns
-		 *
-		 * @return array
-		 */
-		public function columns_head( $columns ) {
-			// append new column after title column
-			$pos         = array_search( 'title', array_keys( $columns ) );
-			$new_columns = array(
-				'instructor'  => esc_html__( 'Author', 'learnpress' ),
-				LP_COURSE_CPT => $this->_get_course_column_title(),
-			);
-
-			if ( current_theme_supports( 'post-formats' ) ) {
-				$new_columns['format']   = esc_html__( 'Format', 'learnpress' );
-				$new_columns['duration'] = esc_html__( 'Duration', 'learnpress' );
-			}
-
-			$new_columns['preview'] = esc_html__( 'Preview', 'learnpress' );
-
-			if ( false !== $pos && ! array_key_exists( LP_COURSE_CPT, $columns ) ) {
-				$columns = array_merge(
-					array_slice( $columns, 0, $pos + 1 ),
-					$new_columns,
-					array_slice( $columns, $pos + 1 )
-				);
-
-			}
-
-			unset( $columns['taxonomy-lesson-tag'] );
-			$user = wp_get_current_user();
-
-			if ( in_array( LP_TEACHER_ROLE, $user->roles ) ) {
-				unset( $columns['instructor'] );
-			}
-
-			if ( ! empty( $columns['author'] ) ) {
-				unset( $columns['author'] );
-			}
-
-			return $columns;
-		}
-
-		/**
-		 * Display content for custom column
-		 *
-		 * @param string $name
-		 * @param int    $post_id
-		 */
-		public function columns_content( $name, $post_id = 0 ) {
-			switch ( $name ) {
-				case 'instructor':
-					$this->column_instructor( $post_id );
-					break;
-				case LP_COURSE_CPT:
-					$this->get_courses_of_item( $post_id );
-					break;
-				case 'preview':
-					$lesson_is_preview = 'yes' === get_post_meta( $post_id, '_lp_preview', true );
-					echo $lesson_is_preview ? '<span class="dashicons dashicons-saved" style="color: #00c700"></span>' : '';
-					break;
-				case 'format':
-					learn_press_item_meta_format( $post_id, __( 'Standard', 'learnpress' ) );
-					break;
-			}
-		}
-
-		/**
-		 * @param $columns
-		 *
-		 * @return mixed
-		 */
-		public function sortable_columns( $columns ) {
-			//$columns[ LP_COURSE_CPT ] = 'course-name';
-			$columns['author']        = 'author';
-
-			return $columns;
-		}
 
 		/**
 		 * Lesson assigned view.
