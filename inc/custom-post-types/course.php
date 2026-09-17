@@ -226,6 +226,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					return $posts;
 				}
 
+				// Check screen
+				$curren_screen = get_current_screen();
+				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_COURSE_CPT ) {
+					return $posts;
+				}
+
 				$post_type = $wp_query->get( 'post_type' );
 
 				if ( empty( $post_type ) || $post_type !== LP_COURSE_CPT ) {
@@ -314,9 +320,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$total_rows = 0;
 				$lp_courses = $post_db->get_posts( $filter, $total_rows );
 
-				$wp_query->post_count  = $total_rows;
-				$wp_query->found_posts = $total_rows;
-				$posts                 = $lp_courses;
+				$wp_query->post_count    = count( $lp_courses );
+				$wp_query->found_posts   = $total_rows;
+				$wp_query->max_num_pages = (int) ceil( $total_rows / $posts_per_page );
+				$posts                   = $lp_courses;
 			} catch ( Throwable $e ) {
 				LP_Debug::error_log( $e );
 			}

@@ -7,6 +7,9 @@
  * @version 4.0.0
  */
 
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\QuizPostFilter;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -46,7 +49,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
 
 			add_filter( 'views_edit-' . LP_QUIZ_CPT, array( $this, 'views_pages' ), 10 );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
+			add_action( 'posts_pre_query', array( $this, 'posts_pre_query' ), 999, 2 );
+			// add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			parent::__construct();
 		}
@@ -112,7 +116,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'editor',
 						'revisions',
 					),
-					'hierarchical'        => true,
+					'hierarchical'        => false, // Quizzes have no parent-child hierarchy.
 					'rewrite'             => array(
 						'slug'         => 'quizzes',
 						'hierarchical' => true,
@@ -282,7 +286,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					$this->column_instructor( $post_id );
 					break;
 				case 'lp_course':
-					$this->_get_item_course( $post_id );
+					$this->get_courses_of_item( $post_id );
 					break;
 				case 'num_of_question':
 					$count = $quizPostModel->count_questions();
@@ -325,11 +329,124 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
-		 * @param $fields
+		 * Query lp quizzes in admin via Post DB
 		 *
-		 * @return string
+		 * @param array    $posts
+		 * @param WP_Query $wp_query
+		 *
+		 * @return array|WP_Query
+		 * @since 4.4.8
+		 * @version 1.0.0
 		 */
-		public function posts_fields( $fields ): string {
+		public function posts_pre_query( $posts, $wp_query ) {
+			try {
+				if ( ! is_admin() ) {
+					return $posts;
+				}
+
+				// Check screen
+				$curren_screen = get_current_screen();
+				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_QUIZ_CPT ) {
+					return $posts;
+				}
+
+				$post_type = $wp_query->get( 'post_type' );
+
+				if ( empty( $post_type ) || $post_type !== LP_QUIZ_CPT ) {
+					return $posts;
+				}
+
+				$posts_per_page = get_user_option( "edit_{$post_type}_per_page", get_current_user_id() );
+				if ( empty( $posts_per_page ) ) {
+					$posts_per_page = 20;
+				}
+
+				$paged    = max( 1, get_query_var( 'paged' ) );
+				$author   = $wp_query->get( 'author' );
+				$status   = $wp_query->get( 'post_status' );
+				$search   = $wp_query->get( 's' );
+				$month    = $wp_query->get( 'm' );
+				$orderby  = LP_Request::get_param( 'orderby', '', 'key' );
+				$order    = LP_Request::get_param( 'order', '', 'key' );
+
+				$filter        = new QuizPostFilter();
+				$filter->page  = $paged;
+				$filter->limit = $posts_per_page;
+				$post_db       = PostDB::getInstance();
+
+				if ( ! empty( $status ) ) {
+					$filter->post_status = array( $status );
+				}
+
+				if ( ! empty( $author ) ) {
+					$filter->post_author = absint( $author );
+				}
+
+				if ( ! empty( $search ) ) {
+					$filter->post_title = sanitize_text_field( wp_unslash( $search ) );
+				}
+
+				if ( ! empty( $month ) && is_numeric( $month ) && strlen( (string) $month ) === 6 ) {
+					$filter->where[] = $post_db->wpdb->prepare(
+						'AND YEAR(p.post_date) = %d AND MONTH(p.post_date) = %d',
+						substr( $month, 0, 4 ),
+						substr( $month, 4, 2 )
+					);
+				}
+
+				// Exclude status auto-draft
+				$filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', PostModel::STATUS_AUTO_DRAFT );
+
+				// Add question count field
+				$filter->fields[] = "(SELECT COUNT(*) FROM {$post_db->wpdb->prefix}learnpress_quiz_questions qq_count WHERE qq_count.quiz_id = p.ID) AS question_count";
+
+				// Join sections/courses when sorting by course-name
+				if ( $orderby === 'course-name' ) {
+					$filter->join[] = "LEFT JOIN {$post_db->wpdb->prefix}learnpress_section_items si ON p.ID = si.item_id";
+					$filter->join[] = "LEFT JOIN {$post_db->wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
+					$filter->join[] = "LEFT JOIN {$post_db->wpdb->posts} c ON c.ID = s.section_course_id";
+				}
+
+				// Filter unassigned
+				if ( 'yes' === LP_Request::get_param( 'unassigned', '', 'key' ) ) {
+					$filter->where[] = "AND p.ID NOT IN(
+						SELECT si.item_id
+						FROM {$post_db->wpdb->learnpress_section_items} si
+					)";
+				}
+
+				if ( $orderby === 'course-name' ) {
+					$filter->order_by = 'c.post_title';
+				} elseif ( $orderby === 'question-count' ) {
+					$filter->order_by = 'question_count';
+				} elseif ( $orderby === 'title' ) {
+					$filter->order_by = 'p.post_title';
+				} elseif ( $orderby === 'author' ) {
+					$filter->order_by = 'p.post_author';
+				} elseif ( $orderby === 'date' ) {
+					$filter->order_by = 'p.post_date';
+				} else {
+					$filter->order_by = 'p.menu_order';
+				}
+
+				$filter->order = strtolower( $order ) === 'asc' ? 'ASC' : 'DESC';
+
+				// Get lp quizzes
+				$total_rows = 0;
+				$lp_quizzes = $post_db->get_posts( $filter, $total_rows );
+
+				$wp_query->post_count    = count( $lp_quizzes );
+				$wp_query->found_posts   = $total_rows;
+				$wp_query->max_num_pages = (int) ceil( $total_rows / $posts_per_page );
+				$posts                   = $lp_quizzes;
+			} catch ( Throwable $e ) {
+				LP_Debug::error_log( $e );
+			}
+
+			return $posts;
+		}
+
+		/*public function posts_fields( $fields ): string {
 			global $wpdb;
 
 			if ( ! $this->is_page_list_posts_on_backend() ) {
@@ -345,11 +462,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			return $fields;
 		}
 
-		/**
-		 * @param $join
-		 *
-		 * @return string
-		 */
 		public function posts_join_paged( $join ): string {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $join;
@@ -358,11 +470,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			return $join;
 		}
 
-		/**
-		 * @param $where
-		 *
-		 * @return mixed|string
-		 */
 		public function posts_where_paged( $where ) {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $where;
@@ -387,11 +494,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			return $where;
 		}
 
-		/**
-		 * @param $order_by_statement
-		 *
-		 * @return string
-		 */
 		public function posts_orderby( $order_by_statement ) {
 			global $wpdb;
 
@@ -416,7 +518,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 
 			return $order_by_statement;
-		}
+		}*/
 
 		/**
 		 * @param $columns
