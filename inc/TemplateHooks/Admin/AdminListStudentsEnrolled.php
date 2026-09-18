@@ -606,7 +606,7 @@ class AdminListStudentsEnrolled {
 
 		$section = array(
 			'row'                 => '<tr>',
-			'student-cell-open'   => '<td class="lp-cell-student">',
+			'student-cell-open'   => '<td><div class="lp-cell-student">',
 			'avatar'              => SingleInstructorTemplate::instance()->html_avatar( $userModel ),
 			'meta-open'           => '<div class="lp-meta">',
 			'name'                => sprintf(
@@ -618,7 +618,7 @@ class AdminListStudentsEnrolled {
 				esc_html( $userModel->get_email() )
 			),
 			'meta-close'          => '</div>',
-			'student-cell-close'  => '</td>',
+			'student-cell-close'  => '</div></td>',
 			'course-cell'         => sprintf(
 				'<td class="lp-cell-course"><a href="%s">%s</a></td>',
 				esc_url_raw( $courseModel->get_permalink() ),

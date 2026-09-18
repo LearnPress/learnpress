@@ -389,8 +389,12 @@ class BuilderEditQuestionTemplate {
 		return Template::combine_components( $edit );
 	}
 
+	/**
+	 * @param QuestionPostModel|false $question_model
+	 * @return string
+	 */
 	public function edit_desc( $question_model ) {
-		$desc            = ! empty( $question_model ) ? $question_model->get_the_content() : '';
+		$desc            = ! empty( $question_model ) ? $question_model->post_content : '';
 		$editor_id       = 'question_description_editor';
 		$editor_settings = array(
 			'textarea_name' => 'question_description',

@@ -14,14 +14,8 @@ defined( 'ABSPATH' ) || exit();
 if ( is_user_logged_in() ) {
 	return;
 }
-
-$checked = 'checked="checked"';
-if ( ! is_user_logged_in() && LearnPress::instance()->checkout()->is_enable_guest_checkout() ) {
-	$checked = '';
-}
 ?>
 
-<input type="radio" id="checkout-account-switch-to-login" <?php echo $checked ?> name="checkout-account-switch-form" value="login"/>
 <div id="checkout-account-login" class="lp-checkout-block left">
 
 	<h4><?php esc_html_e( 'Sign in', 'learnpress' ); ?></h4>
@@ -60,8 +54,8 @@ if ( ! is_user_logged_in() && LearnPress::instance()->checkout()->is_enable_gues
 	<p class="lp-checkout-sign-up-link">
 		<?php if ( LearnPress::instance()->checkout()->is_enable_register() ) : ?>
 			<?php esc_html_e( 'Don\'t have an account?', 'learnpress' ); ?>
-			<a href="javascript: void(0);">
-				<label for="checkout-account-switch-to-register"><?php echo esc_html_x( 'Sign up', 'checkout sign up link', 'learnpress' ); ?></label>
+			<a href="<?php echo esc_url( add_query_arg( 'is_form_register', '1', LP_Helper::get_link_no_cache( learn_press_get_page_link( 'checkout' ) ) ) ); ?>">
+				<?php echo esc_html_x( 'Sign up', 'checkout sign up link', 'learnpress' ); ?>
 			</a>.
 		<?php endif; ?>
 

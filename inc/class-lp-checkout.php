@@ -98,8 +98,15 @@ class LP_Checkout {
 	public function check_validate_fields() {
 		$session                        = LearnPress::instance()->session;
 		$data_session_before_user_login = $session->get_session_data();
-		$checkout_account_type          = LP_Request::get_param( 'checkout-account-switch-form' );
-		$this->checkout_action          = $checkout_account_type;
+		$this->checkout_action          = null;
+
+		if ( isset( $_POST['reg_email'] ) ) {
+			$this->checkout_action = 'register';
+		} elseif ( isset( $_POST['username'] ) ) {
+			$this->checkout_action = 'login';
+		} elseif ( isset( $_POST['guest_email'] ) ) {
+			$this->checkout_action = 'guest';
+		}
 
 		switch ( $this->checkout_action ) {
 			case 'login':
@@ -152,20 +159,21 @@ class LP_Checkout {
 				if ( is_wp_error( $user_id ) ) {
 					throw new Exception( $user_id->get_error_message() );
 				} else {
-					$user = wp_signon(
-						array(
-							'user_login'    => $default_fields['reg_email'],
-							'user_password' => $default_fields['reg_password'],
-							'remember'      => 1,
-						),
-						is_ssl()
-					);
+					// Directly authenticate the newly created user to bypass captcha plugins
+					// that hook into 'authenticate'. We already verified the password during registration.
+					$user = get_user_by( 'id', $user_id );
 
-					if ( is_wp_error( $user ) ) {
-						throw new Exception( $user->get_error_message() );
-					} else {
-						wp_set_current_user( $user->ID );
+					if ( ! $user instanceof WP_User ) {
+						throw new Exception( __( 'User registration succeeded but the user cannot be loaded.', 'learnpress' ) );
 					}
+
+					/*if ( ! wp_check_password( $default_fields['reg_password'], $user->user_pass, $user->ID ) ) {
+						throw new Exception( __( 'Incorrect password.', 'learnpress' ) );
+					}*/
+
+					wp_set_current_user( $user->ID );
+					wp_set_auth_cookie( $user->ID, true, is_ssl() );
+					do_action( 'wp_login', $user->user_login, $user );
 				}
 				break;
 			case 'guest':

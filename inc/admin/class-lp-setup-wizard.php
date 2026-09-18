@@ -74,67 +74,11 @@ class LP_Setup_Wizard {
 	 * Display setup page a ignore anything else in the rest
 	 */
 	public function setup_wizard() {
-		if ( 'lp-setup' !== LP_Request::get_param( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
+		if ( 'lp-setup' !== LP_Request::get_param( 'page' )
+			|| ! current_user_can( 'install_plugins' ) ) {
 			return;
 		}
 
-		$assets = LP_Admin_Assets::instance();
-		$min    = '.min';
-		$ver    = LEARNPRESS_VERSION;
-
-		if ( LP_Debug::is_debug() ) {
-			$min = '';
-			$ver = uniqid();
-		}
-
-		// tungnx: fix error with Woocommerce
-		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'register_scripts' ) );
-		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'load_scripts' ), 15 );
-		remove_action(
-			'admin_enqueue_scripts',
-			array(
-				'Automattic\WooCommerce\Admin\Features\Features',
-				'load_scripts',
-			),
-			15
-		);
-		// End fix
-		// @do_action( 'admin_enqueue_scripts' );
-
-		wp_enqueue_style( 'buttons' );
-		wp_enqueue_style( 'common' );
-		wp_enqueue_style( 'forms' );
-		wp_enqueue_style( 'themes' );
-		wp_enqueue_style( 'dashboard' );
-		wp_enqueue_style( 'widgets' );
-		wp_enqueue_style( 'lp-admin', $assets->url( 'css/admin/admin.css' ) );
-		wp_enqueue_style( 'lp-setup', $assets->url( "css/admin/setup{$min}.css" ), array(), $ver );
-		//wp_enqueue_style( 'lp-select2', $assets->url( 'src/css/vendor/select2.min.css' ) );
-		wp_enqueue_style( 'lp-tom-select', $assets->url( 'src/css/vendor/tom-select.min.css' ) );
-
-		//wp_enqueue_script( 'lp-select2', $assets->url( 'src/js/vendor/select2.full.min.js' ) );
-		wp_enqueue_script( 'lp-utils', $assets->url( 'js/dist/utils.js' ) );
-		wp_enqueue_script( 'lp-admin', $assets->url( 'js/dist/admin/admin.js' ), array(), uniqid(), true );
-		$lp_admin_assets = LP_Admin_Assets::instance();
-		$lp_admin_data   = $lp_admin_assets->localize_data_global();
-		wp_localize_script( 'lp-admin', 'lpGlobalSettings', learn_press_global_script_params() );
-		wp_localize_script( 'lp-admin', 'lpDataAdmin', $lp_admin_data );
-		wp_localize_script( 'lp-admin', 'lpData', $lp_admin_data );
-		wp_enqueue_script(
-			'lp-load-ajax',
-			$assets->url( 'js/dist/loadAJAX.js' ),
-			array( 'lp-utils' ),
-			uniqid(),
-			true
-		);
-		wp_register_script(
-			'lp-setup',
-			$assets->url( 'js/dist/admin/pages/setup.js' ),
-			array( 'jquery', 'lp-admin', 'lp-load-ajax' ),
-			uniqid(),
-			true
-		);
-		wp_enqueue_script( 'lp-setup' );
 		learn_press_admin_view( 'setup/header' );
 		learn_press_admin_view( 'setup/content', array( 'steps' => $this->get_steps() ) );
 		learn_press_admin_view( 'setup/footer' );
@@ -166,12 +110,6 @@ class LP_Setup_Wizard {
 						'title'    => __( 'Pages', 'learnpress' ),
 						'callback' => array( $this, 'step_pages' ),
 					),
-					// 'currency' => array(
-					// 'title'            => __( 'Currency', 'learnpress' ),
-					// 'callback'         => array( $this, 'step_currency' ),
-					// 'back_button'      => false,
-					// 'skip_prev_button' => false
-					// ),
 					'payment' => array(
 						'title'    => __( 'Payment & Currency', 'learnpress' ),
 						'callback' => array( $this, 'step_payment' ),
@@ -208,7 +146,7 @@ class LP_Setup_Wizard {
 	 * @return mixed|string
 	 */
 	public function get_current_step( $key = true ) {
-		$current = LP_Request::get_string( 'step' );
+		$current = LP_Request::get_param( 'step' );
 		$steps   = $this->get_steps();
 
 		if ( empty( $steps[ $current ] ) ) {

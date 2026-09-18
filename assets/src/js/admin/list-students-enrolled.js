@@ -172,7 +172,7 @@ export class ListStudentsEnrolled {
 		}
 
 		lpUtils.lpSetLoadingEl( btn, isLoading ? 1 : 0 );
-		btn.disabled = !! isLoading;
+		//btn.disabled = !! isLoading;
 	}
 
 	getAjaxHandle() {
@@ -239,8 +239,7 @@ export class ListStudentsEnrolled {
 		if ( btn ) {
 			if (
 				this.isRequesting ||
-				btn.classList.contains( 'loading' ) ||
-				btn.disabled
+				btn.classList.contains( 'loading' )
 			) {
 				return;
 			}
@@ -289,8 +288,7 @@ export class ListStudentsEnrolled {
 		if ( btn ) {
 			if (
 				this.isRequesting ||
-				btn.classList.contains( 'loading' ) ||
-				btn.disabled
+				btn.classList.contains( 'loading' )
 			) {
 				return;
 			}
