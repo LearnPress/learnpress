@@ -288,18 +288,20 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					$posts_per_page = 20;
 				}
 
-				$paged    = max( 1, get_query_var( 'paged' ) );
-				$author   = $wp_query->get( 'author' );
-				$status   = $wp_query->get( 'post_status' );
-				$search   = $wp_query->get( 's' );
-				$month    = $wp_query->get( 'm' );
-				$orderby  = LP_Request::get_param( 'orderby', '', 'key' );
-				$order    = LP_Request::get_param( 'order', '', 'key' );
+				$paged   = max( 1, get_query_var( 'paged' ) );
+				$author  = $wp_query->get( 'author' );
+				$status  = $wp_query->get( 'post_status' );
+				$search  = $wp_query->get( 's' );
+				$month   = $wp_query->get( 'm' );
+				$orderby = LP_Request::get_param( 'orderby', '', 'key' );
+				$order   = LP_Request::get_param( 'order', '', 'key' );
 
-				$filter        = new QuizPostFilter();
-				$filter->page  = $paged;
-				$filter->limit = $posts_per_page;
-				$post_db       = PostDB::getInstance();
+				$filter              = new QuizPostFilter();
+				$filter->only_fields = [ 'p.ID', 'p.post_title', 'p.post_author', 'p.post_date', 'p.post_date_gmt' ];
+				$filter->field_count = 'p.ID';
+				$filter->page        = $paged;
+				$filter->limit       = $posts_per_page;
+				$post_db             = PostDB::getInstance();
 
 				if ( ! empty( $status ) ) {
 					$filter->post_status = array( $status );
@@ -325,7 +327,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				$filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', PostModel::STATUS_AUTO_DRAFT );
 
 				// Add question count field
-				$filter->fields[] = "(SELECT COUNT(*) FROM {$post_db->wpdb->prefix}learnpress_quiz_questions qq_count WHERE qq_count.quiz_id = p.ID) AS question_count";
+				$filter->only_fields[] = "(SELECT COUNT(*) FROM {$post_db->tb_lp_quiz_questions} qq_count
+					WHERE qq_count.quiz_id = p.ID) AS question_count";
 
 				// Join sections/courses when sorting by course-name
 				if ( $orderby === 'course-name' ) {
@@ -407,13 +410,13 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$where .= $wpdb->prepare(
 					"
-                    AND {$wpdb->posts}.ID NOT IN(
-                        SELECT si.item_id
-                        FROM {$wpdb->learnpress_section_items} si
-                        INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
-                        WHERE p.post_type = %s
-                    )
-                ",
+					AND {$wpdb->posts}.ID NOT IN(
+						SELECT si.item_id
+						FROM {$wpdb->learnpress_section_items} si
+						INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
+						WHERE p.post_type = %s
+					)
+				",
 					LP_QUIZ_CPT
 				);
 			}

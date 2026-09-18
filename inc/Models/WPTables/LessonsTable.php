@@ -4,6 +4,8 @@ namespace LearnPress\Models\WPTables;
 
 use Exception;
 use LearnPress\Helpers\LPDateTime;
+use LearnPress\Helpers\Response;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\LessonPostModel;
 use LP_Abstract_Post_Type;
@@ -69,8 +71,9 @@ class LessonsTable extends WP_Posts_List_Table {
 	 * @return array
 	 */
 	public function get_sortable_columns() {
-		$sortable_columns           = parent::get_sortable_columns();
-		$sortable_columns['author'] = array( 'author', 'asc' );
+		$sortable_columns                  = parent::get_sortable_columns();
+		$sortable_columns['author']        = array( 'author', 'asc' );
+		$sortable_columns[ LP_COURSE_CPT ] = array( 'course-name', 'asc' );
 
 		return $sortable_columns;
 	}
@@ -83,7 +86,11 @@ class LessonsTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_instructor( $post ) {
-		LP_Abstract_Post_Type::column_author( $post );
+		try {
+			LP_Abstract_Post_Type::column_author( $post );
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
+		}
 	}
 
 	/**
@@ -132,11 +139,20 @@ class LessonsTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_lp_preview( $post ) {
-		$lesson_is_preview = 'yes' === get_post_meta( $post->ID, '_lp_preview', true );
+		try {
+			$lessonPostModel = LessonPostModel::find( $post->ID, true );
+			if ( ! $lessonPostModel ) {
+				return;
+			}
 
-		echo $lesson_is_preview
-			? '<span class="lp-icon-eye"></span>'
-			: '<span class="lp-icon-eye-slash"></span>';
+			$lesson_is_preview = 'yes' === get_post_meta( $post->ID, '_lp_preview', true );
+
+			echo $lesson_is_preview
+				? '<span class="lp-icon-eye"></span>'
+				: '<span class="lp-icon-eye-slash"></span>';
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
+		}
 	}
 
 	/**
@@ -147,26 +163,30 @@ class LessonsTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_duration( $post ) {
-		$lessonPostModel = LessonPostModel::find( $post->ID, true );
-		if ( ! $lessonPostModel ) {
-			return;
-		}
-
-		$duration_raw = $lessonPostModel->get_duration();
-		$duration_number = absint( $duration_raw );
-		if ( $duration_number === 0 ) {
-			_e( 'Unlimited', 'learnpress' );
-		} else {
-			$duration_arr    = explode( ' ', $duration_raw );
-			$duration_number = floatval( $duration_arr[0] ?? 0 );
-			$duration_type   = $duration_arr[1] ?? '';
-			if ( empty( $duration_number ) ) {
-				$duration_str = __( 'Lifetime', 'learnpress' );
-			} else {
-				$duration_str = LPDateTime::get_string_plural_duration( $duration_number, $duration_type );
+		try {
+			$lessonPostModel = LessonPostModel::find( $post->ID, true );
+			if ( ! $lessonPostModel ) {
+				return;
 			}
 
-			echo $duration_str;
+			$duration_raw    = $lessonPostModel->get_duration();
+			$duration_number = absint( $duration_raw );
+			if ( $duration_number === 0 ) {
+				_e( 'Unlimited', 'learnpress' );
+			} else {
+				$duration_arr    = explode( ' ', $duration_raw );
+				$duration_number = floatval( $duration_arr[0] ?? 0 );
+				$duration_type   = $duration_arr[1] ?? '';
+				if ( empty( $duration_number ) ) {
+					$duration_str = __( 'Lifetime', 'learnpress' );
+				} else {
+					$duration_str = LPDateTime::get_string_plural_duration( $duration_number, $duration_type );
+				}
+
+				echo $duration_str;
+			}
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
 		}
 	}
 

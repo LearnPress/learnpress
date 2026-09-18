@@ -504,6 +504,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					's'                     => $key,
 					'm'                     => $month,
 					'refund_request_status' => $refund_request_status,
+					'orderby'              => $wp_query->get( 'orderby' ),
+					'order'                => $wp_query->get( 'order' ),
 				);
 				LP_Order::handle_params_query_list_orders( $filter, $param );
 

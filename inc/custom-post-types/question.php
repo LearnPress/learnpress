@@ -43,7 +43,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param mixed
 		 */
 		public function __construct() {
-			add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
+			//add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
 			add_action( 'admin_head', array( $this, 'init' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
@@ -218,7 +218,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'public'            => true,
 					'hierarchical'      => false,
 					'show_ui'           => true,
-					'show_admin_column' => 'true',
+					'show_admin_column' => false,
 					'show_in_nav_menus' => true,
 					'rewrite'           => array(
 						'slug'         => 'question-tag',
@@ -361,20 +361,20 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					$posts_per_page = 20;
 				}
 
-				$paged    = max( 1, get_query_var( 'paged' ) );
-				$author   = $wp_query->get( 'author' );
-				$status   = $wp_query->get( 'post_status' );
-				$search   = $wp_query->get( 's' );
-				$month    = $wp_query->get( 'm' );
-				$orderby  = LP_Request::get_param( 'orderby', '', 'key' );
-				$order    = LP_Request::get_param( 'order', '', 'key' );
-				$quiz_id  = LP_Request::get_int( 'filter_quiz' );
+				$paged   = max( 1, get_query_var( 'paged' ) );
+				$author  = $wp_query->get( 'author' );
+				$status  = $wp_query->get( 'post_status' );
+				$search  = $wp_query->get( 's' );
+				$month   = $wp_query->get( 'm' );
+				$orderby = LP_Request::get_param( 'orderby', '', 'key' );
+				$order   = LP_Request::get_param( 'order', '', 'key' );
+				$quiz_id = LP_Request::get_param( 'filter_quiz' );
 
-				$filter        = new QuestionPostFilter();
-				$filter->page  = $paged;
-				$filter->limit = $posts_per_page;
-				$filter->only_fields = [ 'ID, post_title' ];
-				$post_db       = PostDB::getInstance();
+				$filter              = new QuestionPostFilter();
+				$filter->page        = $paged;
+				$filter->limit       = $posts_per_page;
+				$filter->only_fields = [ 'p.ID', 'p.post_title', 'p.post_author', 'p.post_date', 'p.post_date_gmt' ];
+				$post_db             = PostDB::getInstance();
 
 				if ( ! empty( $status ) ) {
 					$filter->post_status = array( $status );
@@ -433,12 +433,12 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$filter->order = strtolower( $order ) === 'asc' ? 'ASC' : 'DESC';
 
 				// Get lp questions
-				$total_rows  = 0;
+				$total_rows   = 0;
 				$lp_questions = $post_db->get_posts( $filter, $total_rows );
 
-				$wp_query->post_count    = count( $lp_questions );
-				$wp_query->found_posts   = $total_rows;
-				$posts                   = $lp_questions;
+				$wp_query->post_count  = count( $lp_questions );
+				$wp_query->found_posts = $total_rows;
+				$posts                 = $lp_questions;
 			} catch ( Throwable $e ) {
 				LP_Debug::error_log( $e );
 			}
@@ -479,10 +479,10 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				global $wpdb;
 				$where .= " AND {$wpdb->posts}.ID NOT IN(
-                        SELECT qq.question_id
-                        FROM {$wpdb->learnpress_quiz_questions} qq
-                    )
-                ";
+						SELECT qq.question_id
+						FROM {$wpdb->learnpress_quiz_questions} qq
+					)
+				";
 			}
 
 			return $where;

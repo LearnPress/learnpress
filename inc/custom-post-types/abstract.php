@@ -521,7 +521,7 @@ abstract class LP_Abstract_Post_Type {
 	public function get_post_type() {
 		$post_type = get_post_type();
 		if ( ! $post_type ) {
-			$post_type = LP_Request::get_string( 'post_type' );
+			$post_type = LP_Request::get_param( 'post_type' );
 		}
 
 		return $post_type;

@@ -6,14 +6,20 @@ use LearnPress\Databases\QuizQuestionsDB;
 use LearnPress\Filters\QuizQuestionsFilter;
 use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
 use LP_Abstract_Post_Type;
 use Throwable;
 use WP_Post;
 use WP_Posts_List_Table;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * LearnPress Questions Table class.
+ *
+ * @since 4.4.8
+ * @version 1.0.0
  */
 class QuestionsTable extends WP_Posts_List_Table {
 	/**
@@ -57,9 +63,9 @@ class QuestionsTable extends WP_Posts_List_Table {
 	 * @return array
 	 */
 	public function get_sortable_columns() {
-		$sortable_columns             = parent::get_sortable_columns();
-		$sortable_columns['author']   = array( 'author', 'asc' );
-		$sortable_columns[LP_QUIZ_CPT] = array( 'quiz-name', 'asc' );
+		$sortable_columns                = parent::get_sortable_columns();
+		$sortable_columns['author']      = array( 'author', 'asc' );
+		$sortable_columns[ LP_QUIZ_CPT ] = array( 'quiz-name', 'asc' );
 
 		return $sortable_columns;
 	}
@@ -72,7 +78,11 @@ class QuestionsTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_instructor( $post ) {
-		LP_Abstract_Post_Type::column_author( $post );
+		try {
+			LP_Abstract_Post_Type::column_author( $post );
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
+		}
 	}
 
 	/**
@@ -122,6 +132,29 @@ class QuestionsTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_type( $post ) {
-		echo esc_html( learn_press_question_name_from_slug( get_post_meta( $post->ID, '_lp_type', true ) ) );
+		try {
+			if ( empty( $post ) ) {
+				return;
+			}
+
+			$questionPostModel = QuestionPostModel::find( $post->ID ?? 0, true );
+			if ( ! $questionPostModel instanceof QuestionPostModel ) {
+				return;
+			}
+
+			$question_type_label = $questionPostModel->get_type_label();
+			if ( empty( $question_type_label ) ) {
+				$question_type_label = esc_html__( 'Not set', 'learnpress' );
+			}
+
+			echo esc_html( $question_type_label );
+
+			//echo esc_html( learn_press_question_name_from_slug( get_post_meta( $post->ID, '_lp_type', true ) ) );
+		} catch ( Throwable $e ) {
+			Template::print_message(
+				$e->getMessage(),
+				Response::STATUS_ERROR
+			);
+		}
 	}
 }

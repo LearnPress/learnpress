@@ -139,20 +139,21 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					$posts_per_page = 20;
 				}
 
-				$paged    = max( 1, get_query_var( 'paged' ) );
-				$author   = $wp_query->get( 'author' );
-				$status   = $wp_query->get( 'post_status' );
-				$search   = $wp_query->get( 's' );
-				$month    = $wp_query->get( 'm' );
-				$orderby  = LP_Request::get_param( 'orderby', '', 'key' );
-				$order    = LP_Request::get_param( 'order', '', 'key' );
-				$preview  = LP_Request::get_param( 'preview', '', 'key' );
+				$paged     = max( 1, get_query_var( 'paged' ) );
+				$author    = $wp_query->get( 'author' );
+				$status    = $wp_query->get( 'post_status' );
+				$search    = $wp_query->get( 's' );
+				$month     = $wp_query->get( 'm' );
+				$orderby   = LP_Request::get_param( 'orderby', '', 'key' );
+				$order     = LP_Request::get_param( 'order', '', 'key' );
+				$preview   = LP_Request::get_param( 'preview', '', 'key' );
 				$course_id = LP_Request::get_param( 'course', '', 'int' );
 
-				$filter        = new LessonPostFilter();
-				$filter->page  = $paged;
-				$filter->limit = $posts_per_page;
-				$post_db       = PostDB::getInstance();
+				$filter              = new LessonPostFilter();
+				$filter->page        = $paged;
+				$filter->limit       = $posts_per_page;
+				$filter->only_fields = [ 'p.ID', 'p.post_title', 'p.post_author', 'p.post_date', 'p.post_date_gmt' ];
+				$post_db             = PostDB::getInstance();
 
 				if ( ! empty( $status ) ) {
 					$filter->post_status = array( $status );
@@ -168,8 +169,8 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 				// Find lesson assign by course_id
 				if ( ! empty( $course_id ) ) {
-					$filter->join[] = "INNER JOIN {$post_db->tb_lp_section_items} si ON p.ID = si.item_id";
-					$filter->join[] = "INNER JOIN {$post_db->tb_lp_sections} st ON st.section_id = si.section_id";
+					$filter->join[]  = "INNER JOIN {$post_db->tb_lp_section_items} si ON p.ID = si.item_id";
+					$filter->join[]  = "INNER JOIN {$post_db->tb_lp_sections} st ON st.section_id = si.section_id";
 					$filter->where[] = $post_db->wpdb->prepare( 'AND st.section_course_id = %d', $course_id );
 				}
 
@@ -184,6 +185,13 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				// Exclude status auto-draft
 				$filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', PostModel::STATUS_AUTO_DRAFT );
 
+				// Join sections/courses when sorting by course-name
+				if ( $orderby === 'course-name' ) {
+					$filter->join[] = "LEFT JOIN {$post_db->wpdb->prefix}learnpress_section_items si ON p.ID = si.item_id";
+					$filter->join[] = "LEFT JOIN {$post_db->wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
+					$filter->join[] = "LEFT JOIN {$post_db->wpdb->posts} c ON c.ID = s.section_course_id";
+				}
+
 				// Filter unassigned
 				if ( 'yes' === LP_Request::get_param( 'unassigned', '', 'key' ) ) {
 					$filter->where[] = "AND p.ID NOT IN(
@@ -195,24 +203,26 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				// Filter preview.
 				// Non-preview lessons include those that do not have `_lp_preview` meta key.
 				if ( $preview ) {
-					$filter_preview              = new LessonPostFilter();
-					$filter_preview->limit       = -1;
-					$filter_preview->only_fields  = [ PostFilter::COL_ID ];
-					$filter_preview->join[]      = "INNER JOIN {$post_db->wpdb->postmeta} pm ON p.ID = pm.post_id";
-					$filter_preview->where[]     = $post_db->wpdb->prepare(
+					$filter_preview                      = new LessonPostFilter();
+					$filter_preview->limit               = -1;
+					$filter_preview->only_fields         = [ PostFilter::COL_ID ];
+					$filter_preview->join[]              = "INNER JOIN {$post_db->wpdb->postmeta} pm ON p.ID = pm.post_id";
+					$filter_preview->where[]             = $post_db->wpdb->prepare(
 						'AND pm.meta_key = %s AND pm.meta_value = %s',
 						'_lp_preview',
 						'yes'
 					);
 					$filter_preview->return_string_query = true;
 
-					$preview_rows       = $post_db->get_posts( $filter_preview );
+					$preview_rows = $post_db->get_posts( $filter_preview );
 
-					$in = 'no' === $preview ? 'NOT' : '';
+					$in              = 'no' === $preview ? 'NOT' : '';
 					$filter->where[] = "AND p.ID {$in} IN({$preview_rows})";
 				}
 
-				if ( $orderby === 'title' ) {
+				if ( $orderby === 'course-name' ) {
+					$filter->order_by = 'c.post_title';
+				} elseif ( $orderby === 'title' ) {
 					$filter->order_by = 'p.post_title';
 				} elseif ( $orderby === 'author' ) {
 					$filter->order_by = 'p.post_author';
@@ -228,9 +238,9 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				$total_rows = 0;
 				$lp_lessons = $post_db->get_posts( $filter, $total_rows );
 
-				$wp_query->post_count    = count( $lp_lessons );
-				$wp_query->found_posts   = $total_rows;
-				$posts                   = $lp_lessons;
+				$wp_query->post_count  = count( $lp_lessons );
+				$wp_query->found_posts = $total_rows;
+				$posts                 = $lp_lessons;
 			} catch ( Throwable $e ) {
 				LP_Debug::error_log( $e );
 			}
@@ -248,13 +258,13 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$where .= $wpdb->prepare(
 					"
-                    AND {$wpdb->posts}.ID NOT IN(
-                        SELECT si.item_id
-                        FROM {$wpdb->learnpress_section_items} si
-                        INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
-                        WHERE p.post_type = %s
-                    )
-                	",
+					AND {$wpdb->posts}.ID NOT IN(
+						SELECT si.item_id
+						FROM {$wpdb->learnpress_section_items} si
+						INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
+						WHERE p.post_type = %s
+					)
+					",
 					LP_LESSON_CPT
 				);
 			}
@@ -264,11 +274,11 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			if ( $preview ) {
 				$clause = $wpdb->prepare(
 					"
-                    SELECT ID
-                    FROM {$wpdb->posts} p
-                    INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
-                    WHERE pm.meta_value = %s
-                    AND p.post_type = %s",
+					SELECT ID
+					FROM {$wpdb->posts} p
+					INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+					WHERE pm.meta_value = %s
+					AND p.post_type = %s",
 					'_lp_preview',
 					'yes',
 					LP_LESSON_CPT
