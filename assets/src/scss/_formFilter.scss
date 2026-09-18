@@ -43,4 +43,9 @@
 		gap: 8px;
 		align-items: center;
 	}
+
+	input, select {
+		min-height: 40px;
+		padding: 0 12px;
+	}
 }

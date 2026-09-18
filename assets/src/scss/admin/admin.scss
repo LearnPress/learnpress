@@ -656,3 +656,9 @@ body {
 		vertical-align: text-bottom;
 	}
 }
+
+
+// Set table background to white so odd gray rows contrast against WP Admin's gray body background.
+#wpbody-content .lp-list-table {
+	background-color: white;
+}

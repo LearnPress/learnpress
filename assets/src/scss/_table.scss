@@ -1,5 +1,7 @@
 /**
 * Style for table LearnPress
+* @since 4.3.3
+* @version 1.0.1
 */
 
 .lp-table-wrap {
@@ -11,6 +13,7 @@
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
 }
+
 table.lp-list-table {
 	border-collapse: collapse;
 	width: 100%;
@@ -137,12 +140,4 @@ table.lp-list-table {
 			}
 		}
 	}
-}
-
-.lp_profile_course_progress__nav{
-	margin-top: 1rem;
-}
-
-#profile-content-order-details .lp-table-wrap{
-	margin-bottom: 1rem;
 }
