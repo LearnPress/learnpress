@@ -49,3 +49,4 @@ script.sh
 .worktrees/
 AGENTS.md
 .codex/
+.claude/settings.local.json
