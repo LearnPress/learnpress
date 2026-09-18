@@ -918,11 +918,11 @@
 			background: #333;
 		}
 
-		&.loading {
+		/*&.loading {
 			pointer-events: none;
 			opacity: 0.8;
 			@include loading();
-		}
+		}*/
 	}
 
 	.cb-course-edit-tag__btn-cancel,

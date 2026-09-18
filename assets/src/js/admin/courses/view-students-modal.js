@@ -30,7 +30,6 @@ export class ViewStudentsModal {
 		}
 
 		lpUtils.lpSetLoadingEl( btn, isLoading ? 1 : 0 );
-		btn.disabled = !! isLoading;
 	}
 
 	init() {
@@ -88,9 +87,7 @@ export class ViewStudentsModal {
 		if (
 			! btn ||
 			this.isRequesting ||
-			btn.classList.contains( 'loading' ) ||
-			btn.disabled
-		) {
+			btn.classList.contains( 'loading' ) ) {
 			return;
 		}
 
@@ -167,8 +164,7 @@ export class ViewStudentsModal {
 
 		if (
 			this.isRequesting ||
-			btn.classList.contains( 'loading' ) ||
-			btn.disabled
+			btn.classList.contains( 'loading' )
 		) {
 			return;
 		}

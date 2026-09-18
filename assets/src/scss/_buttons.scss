@@ -2,6 +2,29 @@
 * Style for the buttons
 */
 
+@mixin lp-button-styles() {
+	.lp-button {
+		padding: $spacing-base-2x $spacing-base-4x;
+		border: 1px solid $border-color;
+		border-radius: $border-radius-global;
+		color: #374151;
+		//font-size: 0.9em;
+		font-weight: 500;
+		text-decoration: none;
+		cursor: pointer;
+
+		&.loading {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			pointer-events: none;
+			color: rgba(0, 0, 0, 0.2) !important;
+			@include loading();
+		}
+	}
+}
+
 .lp-btn-edit-primary {
 	border: none;
 	background: #135E96FF;
@@ -16,4 +39,19 @@
 		color: #fff;
 		opacity: 1;
 	}
+}
+
+/* 5. Minimal Bottom Line */
+.btn-line::after {
+	content: '';
+	position: absolute;
+	bottom: 0; left: 0;
+	height: 4px; width: 0%;
+	background-color: #38bdf8;
+	animation: lineLoad 2s ease-in-out infinite;
+}
+@keyframes lineLoad {
+	0% { width: 0%; left: 0; }
+	50% { width: 100%; left: 0; }
+	100% { width: 0%; left: 100%; }
 }
