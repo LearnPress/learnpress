@@ -217,34 +217,44 @@ class LP_Jwt_Public {
 	 * @return (int|bool)
 	 */
 	public function determine_current_user( $user_id ) {
-		$rest_prefix   = trailingslashit( rest_get_url_prefix() );
-		$request_uri   = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
-		$valid_api_uri = strpos( $request_uri, $rest_prefix . $this->name . '/' );
+		if ( ! empty( $user_id ) ) {
+			return $user_id;
+		}
+
+		$rest_prefix = trailingslashit( rest_get_url_prefix() );
+		$request_uri = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
 
 		/**
-		 * Only check when rest url has wp-json/learnpress/.
+		 * Only process REST requests.
 		 */
-		if ( ! empty( $user_id ) || $valid_api_uri === false ) {
+		if ( strpos( $request_uri, $rest_prefix ) === false ) {
 			return $user_id;
 		}
 
 		/*
-		 * if the request URI is for validate the token don't do anything,
-		 * this avoid double calls to the validate_token function.
+		 * Skip the token endpoint itself to avoid double validation.
 		 */
-		$validate_token = strpos( $request_uri, '/token' );
-
-		/** All course is public so donot need token */
-		$is_rest_courses = strpos( $request_uri, '/courses' ) || strpos( $request_uri, '/reset-password' ) || strpos( $request_uri, '/course_category' ) || strpos( $request_uri, '/sections/' ) || strpos( $request_uri, '/section-items/' ) || strpos( $request_uri, '/users' );
-
-		if ( $validate_token > 0 ) {
+		if ( strpos( $request_uri, $rest_prefix . $this->namespace . '/token' ) !== false ) {
 			return $user_id;
 		}
+
+		/*
+		 * No Authorization header → let other auth methods (cookie, app passwords) handle it.
+		 */
+		$has_auth = ! empty( $_SERVER['HTTP_AUTHORIZATION'] ) || ! empty( $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] );
+		if ( ! $has_auth ) {
+			return $user_id;
+		}
+
+		/** Public LP endpoints that should not surface auth errors. */
+		$is_public_lp = (bool) ( strpos( $request_uri, '/courses' ) || strpos( $request_uri, '/reset-password' ) || strpos( $request_uri, '/course_category' ) || strpos( $request_uri, '/sections/' ) || strpos( $request_uri, '/section-items/' ) || strpos( $request_uri, '/users' ) );
+
+		$is_lp_api = strpos( $request_uri, $rest_prefix . $this->name . '/' ) !== false;
 
 		$token = $this->validate_token( false );
 
 		if ( is_wp_error( $token ) ) {
-			if ( ! $is_rest_courses ) {
+			if ( $is_lp_api && ! $is_public_lp ) {
 				$this->jwt_error = $token;
 			}
 
