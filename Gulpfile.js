@@ -69,6 +69,7 @@ const releasesFiles = [
 	'!languages/strings/**',
 	'!languages/learnpress-js.pot',
 	'!docs/**',
+	'!flow-chart/**',
 ];
 
 const errorHandler = ( err ) => {
