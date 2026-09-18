@@ -302,7 +302,15 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 == Changelog ==
 
 = 4.4.8 (2026-09-18) =
-* Fixed: security (Props @yuto hyakumoto, @Wordfence).
+* Fixed: security (Props @Yuto Hyakumoto, @Wordfence).
+* Refactor: tables custom post type, lesson, order, question, quiz.
+* Refactor: query list courses, lessons, questions, quizzes on WP Backend list posts.
+* Fixed: PayPal token invalid when switch mode live or sandbox.
+* Fixed: case use captCha plugin, case register, login direct when register user success instead of use wp_signon().
+* Fixed: Edit description Lesson, Quiz, Question on CourseBuilder must get ->post_content instead ->get_the_content() (get_the_content() only use on the Frontend).
+* Style: synchronize table styles checkout, order receiver, orders profile, and my courses profile.
+* Style: btn loading.
+* Style: lp table.
 
 = 4.4.7 (2026-09-11) =
 * Fixed: security (Props @Karthik Ramakrishnan, @vuxvinh, @Nicat Sultanov, @Sai Praneeth Koti, @Artus KG).
