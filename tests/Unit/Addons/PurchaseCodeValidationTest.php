@@ -6,6 +6,7 @@ namespace LearnPress\Tests\Unit\Addons;
 
 use Brain\Monkey\Functions;
 use Exception;
+use LearnPress\Services\AddonService;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -24,8 +25,8 @@ class PurchaseCodeValidationTest extends BrainMonkeyTestCase {
 		defined( 'LP_PLUGIN_URL' ) || define( 'LP_PLUGIN_URL', 'https://example.test/learnpress/' );
 		defined( 'LP_PLUGIN_PATH' ) || define( 'LP_PLUGIN_PATH', dirname( __DIR__, 3 ) . '/' );
 
-		require_once LP_PLUGIN_PATH . 'inc/class-lp-manager-addons.php';
-		$manager = ( new ReflectionClass( \LP_Manager_Addons::class ) )->newInstanceWithoutConstructor();
+		require_once LP_PLUGIN_PATH . 'inc/Services/AddonService.php';
+		$manager = ( new ReflectionClass( AddonService::class ) )->newInstanceWithoutConstructor();
 		$data    = json_decode( $manager->get_addons_data() );
 
 		$this->assertNotNull( $data );
@@ -64,8 +65,8 @@ class PurchaseCodeValidationTest extends BrainMonkeyTestCase {
 			} }'
 		);
 
-		require_once dirname( __DIR__, 3 ) . '/inc/class-lp-manager-addons.php';
-		$manager = ( new ReflectionClass( \LP_Manager_Addons::class ) )->newInstanceWithoutConstructor();
+		require_once dirname( __DIR__, 3 ) . '/inc/Services/AddonService.php';
+		$manager = ( new ReflectionClass( AddonService::class ) )->newInstanceWithoutConstructor();
 
 		try {
 			$manager->validate_and_save_purchase_code( 'learnpress-membership', 'invalid-code' );
@@ -84,9 +85,9 @@ class PurchaseCodeValidationTest extends BrainMonkeyTestCase {
 		defined( 'ABSPATH' ) || define( 'ABSPATH', '/fake/wp/' );
 		defined( 'LP_PLUGIN_URL' ) || define( 'LP_PLUGIN_URL', 'https://example.test/learnpress/' );
 
-		require_once dirname( __DIR__, 3 ) . '/inc/class-lp-manager-addons.php';
+		require_once dirname( __DIR__, 3 ) . '/inc/Services/AddonService.php';
 
-		$this->assertSame( 'expired', \LP_Manager_Addons::get_license_status( '2026-09-11', '2026-09-11' ) );
-		$this->assertSame( 'active', \LP_Manager_Addons::get_license_status( '2026-09-12', '2026-09-11' ) );
+		$this->assertSame( 'expired', AddonService::get_license_status( '2026-09-11', '2026-09-11' ) );
+		$this->assertSame( 'active', AddonService::get_license_status( '2026-09-12', '2026-09-11' ) );
 	}
 }

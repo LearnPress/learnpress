@@ -1,33 +1,50 @@
 <?php
-/**
- * Class LP_Manager_Addons
- *
- * @author  ThimPress
- * @version 1.0.0
- * @since 4.2.1
- */
+
+namespace LearnPress\Services;
+
+use DateTime;
+use Exception;
+use LearnPress\Helpers\Singleton;
+use LP_Helper;
+use LP_Settings;
+use LP_WP_Filesystem;
+use Plugin_Upgrader;
+use Throwable;
+use WP_Ajax_Upgrader_Skin;
 
 defined( 'ABSPATH' ) || exit;
 
-class LP_Manager_Addons {
-	protected static $_instance;
+/**
+ * Class AddonService
+ *
+ * Manage LearnPress add-ons: list, install, update, activate, deactivate,
+ * purchase code validation.
+ *
+ * @package LearnPress\Services
+ * @since 4.2.1
+ * @version 1.0.1
+ */
+class AddonService {
+	use Singleton;
+
 	/**
-	 * @var string Link get list addons.
+	 * @var string Path to local addons data file.
 	 */
-	// public $url_list_addons = 'https://learnpress.github.io/learnpress/version-addons.json';
 	public $path_list_addons = LP_PLUGIN_PATH . 'inc/admin/views/addons/addons-data.json';
 	/**
-	 * @var string $link_addon_action Link download plugin from Thimpress.
+	 * @var string Link download plugin from ThimPress.
 	 */
-	private $link_addon_action    = 'https://updates.thimpress.com/thim-addon-market/download-addon';
-	public $link_addons_purchased = 'https://updates.thimpress.com/thim-addon-market/info-addons-purchased';
-	//public $link_addon_action = 'http://updates/thim-addon-market/download-addon';
+	private $link_addon_action = 'https://updates.thimpress.com/thim-addon-market/download-addon';
 	/**
-	 * @var string $link_addon_action Link active site.
+	 * @var string Link get info addons purchased.
+	 */
+	public $link_addons_purchased = 'https://updates.thimpress.com/thim-addon-market/info-addons-purchased';
+	/**
+	 * @var string Link active site.
 	 */
 	private $link_active_site = 'https://updates.thimpress.com/thim-addon-market/active-site';
 	/**
-	 * @var string link download plugin from org.
+	 * @var string Link download plugin from org.
 	 */
 	public $link_org = 'https://downloads.wordpress.org/plugin/';
 	/**
@@ -39,7 +56,7 @@ class LP_Manager_Addons {
 	 */
 	public $plugin_upgrader;
 	/**
-	 *
+	 * @var string Option key stores purchase codes of addons.
 	 */
 	public $key_purchase_addons = 'purchase_addons';
 
@@ -55,17 +72,11 @@ class LP_Manager_Addons {
 	}
 
 	/**
-	 * Singleton
+	 * Init hooks.
 	 *
-	 * @return LP_Manager_Addons
+	 * @return void
 	 */
-	public static function instance(): LP_Manager_Addons {
-		if ( self::$_instance == null ) {
-			self::$_instance = new self();
-		}
-
-		return self::$_instance;
-	}
+	public function init(): void {}
 
 	/**
 	 * Read the bundled add-ons data without making a loopback HTTP request.
@@ -87,9 +98,65 @@ class LP_Manager_Addons {
 	}
 
 	/**
+	 * Get list addons with purchase info attached.
+	 *
+	 * @return object List addons (stdClass map keyed by slug).
+	 * @throws Exception
+	 */
+	public function get_addons(): object {
+		$addons = LP_Helper::json_decode( $this->get_addons_data() );
+
+		return $this->get_addons_purchased( $addons );
+	}
+
+	/**
+	 * Get list addons purchased and attach purchase_info to each addon.
+	 *
+	 * @param object $addons List addons keyed by slug.
+	 *
+	 * @return object
+	 * @throws Exception
+	 */
+	public function get_addons_purchased( object $addons ): object {
+		$addons_purchase = LP_Settings::get_option( $this->key_purchase_addons, [] );
+		if ( empty( $addons_purchase ) ) {
+			return $addons;
+		}
+
+		$args = [
+			'method'     => 'POST',
+			'body'       => [
+				'addons_purchase' => $addons_purchase,
+			],
+			'timeout'    => 30,
+			'user-agent' => site_url(),
+		];
+
+		$result = wp_remote_post( $this->link_addons_purchased, $args );
+		if ( is_wp_error( $result ) ) {
+			throw new Exception( $result->get_error_message() );
+		}
+
+		$data_str = wp_remote_retrieve_body( $result );
+		if ( preg_match( '/^Error.*/', $data_str ) ) {
+			throw new Exception( $data_str );
+		}
+
+		$data = LP_Helper::json_decode( $data_str );
+
+		foreach ( $addons as $key => $addon ) {
+			if ( isset( $data->{$key} ) ) {
+				$addons->{$key}->purchase_info = $data->{$key};
+			}
+		}
+
+		return $addons;
+	}
+
+	/**
 	 * Validate a purchase code with the add-ons service before storing it.
 	 *
-	 * @param string $addon_slug   Add-on slug.
+	 * @param string $addon_slug    Add-on slug.
 	 * @param string $purchase_code Purchase code.
 	 *
 	 * @return object Purchase information returned by the service.
@@ -157,7 +224,7 @@ class LP_Manager_Addons {
 	/**
 	 * Get the license status for an expiration date.
 	 *
-	 * @param string $date_expire Expiration date.
+	 * @param string $date_expire  Expiration date.
 	 * @param string $current_date Current date in Y-m-d format.
 	 *
 	 * @return string
@@ -173,9 +240,12 @@ class LP_Manager_Addons {
 	}
 
 	/**
-	 * Download addon from Thimpress.
+	 * Download addon from ThimPress.
 	 *
-	 * return string
+	 * @param array  $addon         Addon data.
+	 * @param string $purchase_code Purchase code.
+	 *
+	 * @return string Path to downloaded zip file.
 	 * @throws Exception
 	 */
 	public function download_from_thimpress( array $addon = [], string $purchase_code = '' ): string {
@@ -209,7 +279,7 @@ class LP_Manager_Addons {
 			throw new Exception( $data );
 		}
 
-		// Create file temp zip addon to install with
+		// Create file temp zip addon to install with.
 		$wp_upload_dir = wp_upload_dir( null, false );
 		$name          = 'addon.zip';
 		$path_file     = $wp_upload_dir['basedir'] . DIRECTORY_SEPARATOR . $name;
@@ -221,7 +291,7 @@ class LP_Manager_Addons {
 	/**
 	 * Install plugin.
 	 *
-	 * @param array $addon
+	 * @param array  $addon   Addon data.
 	 * @param string $package The full local path or URI of the package.
 	 *
 	 * @return void
@@ -244,8 +314,8 @@ class LP_Manager_Addons {
 	/**
 	 * Update plugin.
 	 *
-	 * @param array $addon
-	 * @param string $package
+	 * @param array  $addon   Addon data.
+	 * @param string $package The full local path or URI of the package.
 	 *
 	 * @throws Exception
 	 */
@@ -275,9 +345,9 @@ class LP_Manager_Addons {
 	/**
 	 * Activate plugin.
 	 *
-	 * @param array $addon
+	 * @param array $addon Addon data.
 	 *
-	 * @return bool|int|true|WP_Error
+	 * @return bool|int|true|\WP_Error
 	 * @throws Exception
 	 */
 	public function activate( array $addon = [] ) {
@@ -300,7 +370,7 @@ class LP_Manager_Addons {
 	/**
 	 * Deactivate plugin.
 	 *
-	 * @param array $addon
+	 * @param array $addon Addon data.
 	 *
 	 * @return void
 	 */
@@ -311,8 +381,8 @@ class LP_Manager_Addons {
 	/**
 	 * Active site if install plugin via upload zip has "purchase code".
 	 *
-	 * @param $addon_slug
-	 * @param $purchase_code
+	 * @param string $addon_slug    Addon slug.
+	 * @param string $purchase_code Purchase code.
 	 *
 	 * @return void
 	 */
@@ -338,9 +408,9 @@ class LP_Manager_Addons {
 			}
 
 			// Save keys purchase code of addons to table WP Options.
-			$key_purchases                = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
+			$key_purchases                = LP_Settings::get_option( $this->key_purchase_addons, [] );
 			$key_purchases[ $addon_slug ] = $purchase_code;
-			LP_Settings::update_option( LP_Manager_Addons::instance()->key_purchase_addons, $key_purchases );
+			LP_Settings::update_option( $this->key_purchase_addons, $key_purchases );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
@@ -352,13 +422,10 @@ class LP_Manager_Addons {
 	 * @return array
 	 */
 	public function list_addon_new_version(): array {
-		$addon_contr = new LP_REST_Addon_Controller();
-		$request     = new WP_REST_Request();
-		$request->set_param( 'return_obj', true );
-		$addons_rs          = $addon_contr->list_addons( $request );
 		$addons_new_version = [];
-		if ( 'success' === $addons_rs->status ) {
-			$addons  = $addons_rs->data;
+
+		try {
+			$addons  = $this->get_addons();
 			$plugins = get_plugins();
 
 			foreach ( $addons as $addon ) {
@@ -369,6 +436,8 @@ class LP_Manager_Addons {
 					}
 				}
 			}
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $addons_new_version;
@@ -378,35 +447,36 @@ class LP_Manager_Addons {
 	 * Check addons purchased need extend.
 	 *
 	 * @return bool
-	 * @throws Exception
 	 * @since 4.2.5.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function check_addons_purchased_need_extend(): bool {
-		$addon_contr = new LP_REST_Addon_Controller();
-		$request     = new WP_REST_Request();
-		$request->set_param( 'return_obj', true );
-		$addons_rs = $addon_contr->list_addons( $request );
-		foreach ( $addons_rs->data as $addon ) {
-			if ( isset( $addon->purchase_info ) ) {
-				$addon_purchased  = $addon->purchase_info;
-				$date_expired_str = $addon_purchased->date_expire ?? '';
-				// Test
-				//$date_expired_str = '2024-02-01';
-				//$date_expired_str = '2023-01-12';
-				// End
-				$date_expired          = new DateTime( $date_expired_str );
-				$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
-				$date_diff             = date_diff( $date_now, $date_expired );
-				$number_days_remaining = $date_diff->days;
-				if ( $date_diff->invert ) {
-					$number_days_remaining = 0;
-				}
+		try {
+			$addons = $this->get_addons();
 
-				if ( $number_days_remaining <= 60 ) {
-					return true;
+			foreach ( $addons as $addon ) {
+				if ( isset( $addon->purchase_info ) ) {
+					$addon_purchased  = $addon->purchase_info;
+					$date_expired_str = $addon_purchased->date_expire ?? '';
+					if ( empty( $date_expired_str ) ) {
+						continue;
+					}
+
+					$date_expired          = new DateTime( $date_expired_str );
+					$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
+					$date_diff             = date_diff( $date_now, $date_expired );
+					$number_days_remaining = $date_diff->days;
+					if ( $date_diff->invert ) {
+						$number_days_remaining = 0;
+					}
+
+					if ( $number_days_remaining <= 60 ) {
+						return true;
+					}
 				}
 			}
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return false;

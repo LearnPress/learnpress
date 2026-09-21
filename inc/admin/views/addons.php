@@ -7,6 +7,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\Services\AddonService;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -26,7 +27,7 @@ $total_addon_purchased     = 0;
 $plugins_installed         = get_plugins();
 $plugins_activated         = get_option( 'active_plugins', '' );
 $active_tab                = ! empty( $_REQUEST['tab'] ) ? sanitize_key( wp_unslash( $_REQUEST['tab'] ) ) : 'all';
-$keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
+$keys_purchase             = LP_Settings::get_option( AddonService::instance()->key_purchase_addons, [] );
 $addon_categories          = array(
 	'create-course'          => __( 'Create Course', 'learnpress' ),
 	'engagement'             => __( 'Engagement', 'learnpress' ),
@@ -104,9 +105,10 @@ $addon_categories          = array(
 			$show_license_panel = ! $is_free && $is_installed;
 			$license_status     = $addon_purchased ? 'active' : 'not-activated';
 			if ( $addon_purchased ) {
-				$license_status = LP_Manager_Addons::get_license_status( $date_expired_str );
+				$license_status = AddonService::get_license_status( $date_expired_str );
 			}
-			$purchase_code_masked = LP_Manager_Addons::mask_purchase_code( $purchase_code ?? '' );
+
+			$purchase_code_masked = AddonService::mask_purchase_code( $purchase_code ?? '' );
 			// Show addons of tab.
 			if ( ! in_array( $active_tab, $classes_status, true ) && 'all' !== $active_tab ) {
 				$classes_status[] = 'hide';
@@ -114,7 +116,8 @@ $addon_categories          = array(
 			?>
 			<div class="lp-addon-item <?php echo esc_attr( implode( ' ', $classes_status ) ); ?>"
 				data-slug="<?php echo esc_attr( $slug ); ?>"
-				data-category="<?php echo esc_attr( $addon_category ); ?>">
+				data-category="<?php echo esc_attr( $addon_category ); ?>"
+				data-addon="<?php echo esc_attr( htmlentities2( wp_json_encode( $addon ) ) ); ?>">
 				<div class="lp-addon-item__content">
 					<div class="lp-addon-item__header">
 						<img class="lp-addon-item__image" src="<?php echo esc_url( $addon->image ); ?>" alt=""/>
@@ -130,7 +133,8 @@ $addon_categories          = array(
 						</div>
 					</div>
 					<?php if ( ! $is_free ) { ?>
-						<div class="lp-addon-license lp-addon-license--<?php echo esc_attr( $license_status ); ?>" data-purchase-code-masked="<?php echo esc_attr( $purchase_code_masked ); ?>"<?php echo $show_license_panel ? '' : ' hidden'; ?>>
+						<div class="lp-addon-license lp-addon-license--<?php echo esc_attr( $license_status ); ?>"
+							 data-purchase-code-masked="<?php echo esc_attr( $purchase_code_masked ); ?>"<?php echo $show_license_panel ? '' : ' hidden'; ?>>
 							<div class="lp-addon-license__summary">
 								<span><?php esc_html_e( 'License:', 'learnpress' ); ?></span>
 								<strong class="lp-addon-license__status">

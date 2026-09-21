@@ -12,7 +12,6 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 	lp_rest_url = lpDataAdmin.lp_rest_url;
 	lplistAPI.admin = {
 		apiAdminNotice: lp_rest_url + 'lp/v1/admin/tools/admin-notices',
-		apiAddons: lp_rest_url + 'lp/v1/addon/all',
 		apiAddonAction: lp_rest_url + 'lp/v1/addon/action-n',
 		apiAddonsPurchase: lp_rest_url + 'lp/v1/addon/info-addons-purchase',
 		apiSearchCourses: lp_rest_url + 'lp/v1/admin/tools/search-course',

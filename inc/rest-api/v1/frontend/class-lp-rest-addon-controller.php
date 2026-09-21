@@ -3,6 +3,7 @@
 use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LearnPress\Services\AddonService;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -11,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	/**
-	 * @var LP_Manager_Addons $lp_addons
+	 * @var AddonService $lp_addons
 	 */
 	private $lp_addons;
 
@@ -22,8 +23,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 		$this->namespace = 'lp/v1';
 		$this->rest_base = 'addon';
 
-		require_once LP_PLUGIN_PATH . 'inc/class-lp-manager-addons.php';
-		$this->lp_addons = LP_Manager_Addons::instance();
+		$this->lp_addons = AddonService::instance();
 
 		parent::__construct();
 	}
@@ -70,11 +70,11 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	 */
 	private function prepare_license_response( object $purchase_info, string $purchase_code ): array {
 		$date_expire    = $purchase_info->date_expire ?? '';
-		$license_status = LP_Manager_Addons::get_license_status( $date_expire );
+		$license_status = AddonService::get_license_status( $date_expire );
 
 		return array(
 			'license_status'        => $license_status,
-			'purchase_code_masked'  => LP_Manager_Addons::mask_purchase_code( $purchase_code ),
+			'purchase_code_masked'  => AddonService::mask_purchase_code( $purchase_code ),
 			'date_expire'           => $date_expire,
 			'date_expire_formatted' => empty( $date_expire ) ? '' : date_i18n( get_option( 'date_format' ), strtotime( $date_expire ) ),
 		);
@@ -94,40 +94,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$params   = $request->get_params();
-			$lp_addon = LP_Manager_Addons::instance();
-			$addons = LP_Helper::json_decode( $lp_addon->get_addons_data() );
-
-			// Get list addons purchased.
-			$addons_purchase = LP_Settings::get_option( $lp_addon->key_purchase_addons, [] );
-			if ( ! empty( $addons_purchase ) ) {
-				$args = [
-					'method'     => 'POST',
-					'body'       => [
-						'addons_purchase' => $addons_purchase,
-					],
-					'timeout'    => 30,
-					'user-agent' => site_url(),
-				];
-
-				$result = wp_remote_post( $lp_addon->link_addons_purchased, $args );
-				if ( is_wp_error( $result ) ) {
-					throw new Exception( $result->get_error_message() );
-				}
-
-				$data_str = wp_remote_retrieve_body( $result );
-				if ( preg_match( '/^Error.*/', $data_str ) ) {
-					throw new Exception( $data_str );
-				}
-
-				$data = LP_Helper::json_decode( $data_str );
-
-				foreach ( $addons as $key => $addon ) {
-					if ( isset( $data->{$key} ) ) {
-						$addons->{$key}->purchase_info = $data->{$key};
-					}
-				}
-			}
-			// End get list addons purchased.
+			$addons = $this->lp_addons->get_addons();
 
 			if ( isset( $params['return_obj'] ) ) {
 				$response->status = 'success';

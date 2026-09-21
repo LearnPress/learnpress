@@ -22,6 +22,8 @@ use LearnPress\Ajax\BuilderDashboardAjax;
 use LearnPress\Ajax\CourseToolsAjax;
 use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\Ajax\EditCurriculumAjax;
+use LearnPress\Ajax\AddonsAjax;
+use LearnPress\Services\AddonService;
 use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\Order\ExportOrderCSVAjax;
@@ -763,6 +765,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					LessonAjax::catch_lp_ajax();
 					SampleDataAJAX::catch_lp_ajax();
 					SetupWizardAjax::catch_lp_ajax();
+					AddonsAjax::catch_lp_ajax();
 					EditCurriculumAjax::catch_lp_ajax();
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
@@ -828,7 +831,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 							}
 
 							// Call active purchase code for site.
-							LP_Manager_Addons::instance()->active_site( $addon_slug, $purchase_code_content );
+							AddonService::instance()->active_site( $addon_slug, $purchase_code_content );
 						}
 					}
 				}

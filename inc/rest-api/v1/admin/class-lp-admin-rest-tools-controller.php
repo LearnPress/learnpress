@@ -4,6 +4,7 @@ use LearnPress\Filters\Course\CourseJsonFilter;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Services\AddonService;
 
 /**
  * Class LP_REST_Admin_Tools_Controller
@@ -322,14 +323,14 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 						// Show notification addons new version.
 						'lp-addons-new-version'      => [
 							'template'      => 'admin-notices/addons-new-version.php',
-							'addons'        => LP_Manager_Addons::instance()->list_addon_new_version(),
+							'addons'        => AddonService::instance()->list_addon_new_version(),
 							'allow_dismiss' => 1,
 							'dismiss'       => isset( $admin_notices_dismiss['lp-addons-new-version'] ),
 						],
 						// Show notification addons purchased need extend.
 						'lp-addons-purchased-extend' => [
 							'template'      => 'admin-notices/addons-purchased-extend.php',
-							'need-extend'   => LP_Manager_Addons::instance()->check_addons_purchased_need_extend(),
+							'need-extend'   => AddonService::instance()->check_addons_purchased_need_extend(),
 							'allow_dismiss' => 1,
 							'dismiss'       => isset( $admin_notices_dismiss['lp-addons-purchased-extend'] ),
 						],
