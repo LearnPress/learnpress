@@ -279,6 +279,7 @@
 	.number {
 		// padding-right: 10px;
 		// color: #fff;
+		line-height: 1.5;
 		font-size: $font-size-label;
 		// font-weight: 300;
 	}
@@ -356,7 +357,7 @@
 		}
 
 		.learn-press-progress {
-			width: 160px;
+			width: 140px;
 		}
 	}
 }
@@ -932,6 +933,7 @@
 		font-family: 'lp-icon';
 		content: "\e928";
 		line-height: 1;
+		font-size: 1em;
 	}
 
 	&:focus {

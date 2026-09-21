@@ -478,7 +478,7 @@ body.twentyseventeen.learnpress-page {
 	}
 
 	#popup-sidebar {
-		.course-section-header, .lp-course-curriculum .course-item {
+		.course-section-header, .lp-course-curriculum .course-item,.lp-course-curriculum__title {
 			padding-left: 16px;
 			padding-right: 16px;
 		}
@@ -615,9 +615,9 @@ body.twentyseventeen.learnpress-page {
 
 .eduma, .coaching {
 	.lp-course-curriculum {
-		.course-item-order.lp-hidden {
-			display: inline-block !important;
-		}
+		// .course-item-order.lp-hidden {
+		// 	display: inline-block !important;
+		// }
 
 		//.course-section__title {
 		//	text-transform: uppercase;
