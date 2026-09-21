@@ -7,7 +7,11 @@
  * @version 4.0.0
  */
 
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\QuestionPostFilter;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\Models\WPTables\QuestionsTable;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -28,22 +32,45 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		protected $_post_type = LP_QUESTION_CPT;
 
 		/**
+		 * @var string
+		 */
+		protected $_screen_list = 'edit-' . LP_QUESTION_CPT;
+
+		/**
 		 * LP_Question_Post_Type constructor.
 		 *
 		 * @param $post_type
 		 * @param mixed
 		 */
 		public function __construct() {
-			add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
+			//add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
 			add_action( 'admin_head', array( $this, 'init' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
 			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 11 );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
+			add_action( 'posts_pre_query', array( $this, 'posts_pre_query' ), 999, 2 );
+			// add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			// $this->add_map_method( 'before_delete', 'before_delete_question' );
 
 			parent::__construct();
+		}
+
+		/**
+		 * Declare class name of table list questions.
+		 *
+		 * @param string $class_name
+		 * @param array  $args
+		 *
+		 * @return string
+		 * @since 4.2.9.5
+		 */
+		public function wp_list_table_class_name( $class_name, $args ) {
+			if ( $this->check_class_name_handle_table( $args['screen'] ) ) {
+				$class_name = QuestionsTable::class;
+			}
+
+			return $class_name;
 		}
 
 		/**
@@ -191,7 +218,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'public'            => true,
 					'hierarchical'      => false,
 					'show_ui'           => true,
-					'show_admin_column' => 'true',
+					'show_admin_column' => false,
 					'show_in_nav_menus' => true,
 					'rewrite'           => array(
 						'slug'         => 'question-tag',
@@ -302,82 +329,124 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		}
 
 		/**
-		 * Add columns to admin manage question page
+		 * Query lp questions in admin via Post DB
 		 *
-		 * @param array $columns
+		 * @param array    $posts
+		 * @param WP_Query $wp_query
 		 *
-		 * @return array
+		 * @return array|WP_Query
+		 * @since 4.4.8
+		 * @version 1.0.0
 		 */
-		public function columns_head( $columns ) {
-			$pos         = array_search( 'title', array_keys( $columns ) );
-			$new_columns = array(
-				'instructor' => esc_html__( 'Author', 'learnpress' ),
-				LP_QUIZ_CPT  => esc_html__( 'Quiz', 'learnpress' ),
-				'type'       => esc_html__( 'Type', 'learnpress' ),
-			);
+		public function posts_pre_query( $posts, $wp_query ) {
+			try {
+				if ( ! is_admin() ) {
+					return $posts;
+				}
 
-			if ( false !== $pos && ! array_key_exists( LP_QUIZ_CPT, $columns ) ) {
-				$columns = array_merge(
-					array_slice( $columns, 0, $pos + 1 ),
-					$new_columns,
-					array_slice( $columns, $pos + 1 )
-				);
+				// Check screen
+				$curren_screen = get_current_screen();
+				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_QUESTION_CPT ) {
+					return $posts;
+				}
+
+				$post_type = $wp_query->get( 'post_type' );
+
+				if ( empty( $post_type ) || $post_type !== LP_QUESTION_CPT ) {
+					return $posts;
+				}
+
+				$posts_per_page = get_user_option( "edit_{$post_type}_per_page", get_current_user_id() );
+				if ( empty( $posts_per_page ) ) {
+					$posts_per_page = 20;
+				}
+
+				$paged   = max( 1, get_query_var( 'paged' ) );
+				$author  = $wp_query->get( 'author' );
+				$status  = $wp_query->get( 'post_status' );
+				$search  = $wp_query->get( 's' );
+				$month   = $wp_query->get( 'm' );
+				$orderby = LP_Request::get_param( 'orderby', '', 'key' );
+				$order   = LP_Request::get_param( 'order', '', 'key' );
+				$quiz_id = LP_Request::get_param( 'filter_quiz' );
+
+				$filter              = new QuestionPostFilter();
+				$filter->page        = $paged;
+				$filter->limit       = $posts_per_page;
+				$filter->only_fields = [ 'p.ID', 'p.post_title', 'p.post_author', 'p.post_date', 'p.post_date_gmt' ];
+				$post_db             = PostDB::getInstance();
+
+				if ( ! empty( $status ) ) {
+					$filter->post_status = array( $status );
+				}
+
+				if ( ! empty( $author ) ) {
+					$filter->post_author = absint( $author );
+				}
+
+				if ( ! empty( $search ) ) {
+					$filter->post_title = sanitize_text_field( wp_unslash( $search ) );
+				}
+
+				if ( ! empty( $month ) && is_numeric( $month ) && strlen( (string) $month ) === 6 ) {
+					$filter->where[] = $post_db->wpdb->prepare(
+						'AND YEAR(p.post_date) = %d AND MONTH(p.post_date) = %d',
+						substr( $month, 0, 4 ),
+						substr( $month, 4, 2 )
+					);
+				}
+
+				// Exclude status auto-draft
+				$filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', PostModel::STATUS_AUTO_DRAFT );
+
+				// Join quiz questions when needed
+				if ( $quiz_id || $orderby === 'quiz-name' ) {
+					$filter->join[] = "LEFT JOIN {$post_db->wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id";
+					$filter->join[] = "LEFT JOIN {$post_db->wpdb->posts} qz ON qz.ID = qq.quiz_id";
+				}
+
+				// Filter by quiz
+				if ( $quiz_id ) {
+					$filter->where[] = $post_db->wpdb->prepare( 'AND qz.ID = %d', $quiz_id );
+				}
+
+				// Filter unassigned
+				if ( 'yes' === LP_Request::get_param( 'unassigned', '', 'key' ) ) {
+					$filter->where[] = "AND p.ID NOT IN(
+						SELECT qq_un.question_id
+						FROM {$post_db->wpdb->learnpress_quiz_questions} qq_un
+					)";
+				}
+
+				if ( $orderby === 'quiz-name' ) {
+					$filter->order_by = 'qz.post_title';
+				} elseif ( $orderby === 'title' ) {
+					$filter->order_by = 'p.post_title';
+				} elseif ( $orderby === 'author' ) {
+					$filter->order_by = 'p.post_author';
+				} elseif ( $orderby === 'date' ) {
+					$filter->order_by = 'p.post_date';
+				} else {
+					$filter->order_by = 'p.menu_order';
+				}
+
+				$filter->order = strtolower( $order ) === 'asc' ? 'ASC' : 'DESC';
+
+				// Get lp questions
+				$total_rows   = 0;
+				$lp_questions = $post_db->get_posts( $filter, $total_rows );
+
+				$wp_query->post_count  = count( $lp_questions );
+				$wp_query->found_posts = $total_rows;
+				$posts                 = $lp_questions;
+			} catch ( Throwable $e ) {
+				LP_Debug::error_log( $e );
 			}
 
-			$user = wp_get_current_user();
-
-			if ( in_array( LP_TEACHER_ROLE, $user->roles ) ) {
-				unset( $columns['instructor'] );
-			}
-
-			if ( ! empty( $columns['author'] ) ) {
-				unset( $columns['author'] );
-			}
-
-			return $columns;
+			return $posts;
 		}
 
-		/**
-		 * Displaying the content of extra columns
-		 *
-		 * @param $name
-		 * @param $post_id
-		 */
-		public function columns_content( $name, $post_id = 0 ) {
-			switch ( $name ) {
-				case 'instructor':
-					$this->column_instructor( $post_id );
-					break;
-				case 'lp_quiz':
-					$curd = new LP_Question_CURD();
-					// get quiz
-					$quiz = $curd->get_quiz( $post_id );
-
-					if ( $quiz ) {
-						echo '<div><a href="' . esc_url_raw( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
-						echo '<div class="row-actions">';
-						printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), esc_html__( 'Edit', 'learnpress' ) );
-						echo '&nbsp;|&nbsp;';
-						printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), esc_html__( 'View', 'learnpress' ) );
-						echo '</div></div>';
-					} else {
-						esc_html_e( 'Not assigned yet', 'learnpress' );
-					}
-					break;
-				case 'type':
-					echo learn_press_question_name_from_slug( get_post_meta( $post_id, '_lp_type', true ) );
-					break;
-			}
-		}
-
-		/**
-		 * Posts_join_paged.
-		 *
-		 * @param $join
-		 *
-		 * @return string
-		 */
-		public function posts_join_paged( $join ): string {
+		/*public function posts_join_paged( $join ): string {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $join;
 			}
@@ -393,11 +462,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			return $join;
 		}
 
-		/**
-		 * @param $where
-		 *
-		 * @return mixed|string
-		 */
 		public function posts_where_paged( $where ) {
 			static $posts_where_paged = false;
 
@@ -415,20 +479,15 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				global $wpdb;
 				$where .= " AND {$wpdb->posts}.ID NOT IN(
-                        SELECT qq.question_id
-                        FROM {$wpdb->learnpress_quiz_questions} qq
-                    )
-                ";
+						SELECT qq.question_id
+						FROM {$wpdb->learnpress_quiz_questions} qq
+					)
+				";
 			}
 
 			return $where;
 		}
 
-		/**
-		 * @param $order_by_statement
-		 *
-		 * @return string
-		 */
 		public function posts_orderby( $order_by_statement ): string {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $order_by_statement;
@@ -449,19 +508,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			return $order_by_statement;
-		}
-
-		/**
-		 * @param $columns
-		 *
-		 * @return mixed
-		 */
-		public function sortable_columns( $columns ) {
-			$columns['author']      = 'author';
-			$columns[ LP_QUIZ_CPT ] = 'quiz-name';
-
-			return $columns;
-		}
+		}*/
 
 		/**
 		 * @return bool|int

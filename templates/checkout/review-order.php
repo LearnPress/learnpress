@@ -27,8 +27,8 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 
 	<h4><?php esc_html_e( 'Your order', 'learnpress' ); ?></h4>
 
-	<div class="lp-checkout-order__inner">
-		<table>
+	<div class="lp-checkout-order__inner lp-table-wrap">
+		<table class="lp-list-table">
 			<tbody>
 
 			<?php

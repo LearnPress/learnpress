@@ -1397,20 +1397,29 @@ class CourseBuilderAjax extends AbstractAjax {
 
 	/**
 	 * Save Lesson Settings
+	 * @throws Exception
 	 */
 	protected function save_lesson_settings_to_model( LessonPostModel $lessonModel, array $data ) {
+		$must_save = 0;
+
 		if ( isset( $data['_lp_duration'] ) ) {
 			$duration = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '0 minute';
 			$explode  = explode( ' ', $duration );
 			$number   = (float) $explode[0] < 0 ? 0 : absint( $explode[0] );
 			$unit     = $explode[1] ?? 'minute';
 
-			$lessonModel->save_meta_value_by_key( '_lp_duration', $number . ' ' . $unit );
+			$lessonModel->set_meta_value_by_key( $lessonModel::META_KEY_DURATION, $number . ' ' . $unit );
+			$must_save = 1;
 		}
 
 		if ( isset( $data['_lp_preview'] ) ) {
 			$enable = $data['_lp_preview'] === 'yes';
 			$lessonModel->set_preview( $enable );
+			$must_save = 1;
+		}
+
+		if ( $must_save ) {
+			$lessonModel->save();
 		}
 
 		/**

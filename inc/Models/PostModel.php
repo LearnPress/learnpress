@@ -18,6 +18,7 @@ use LearnPress\Filters\FilterBase;
 use LearnPress\Filters\PostFilter;
 use LearnPress\Services\CourseService;
 use LP_Cache;
+use LP_Debug;
 use LP_Post_Meta_DB;
 use LP_Post_Meta_Filter;
 use LP_Post_Type_Filter;
@@ -83,9 +84,7 @@ class PostModel {
 			$this->map_to_object( $data );
 		}
 
-		if ( is_null( $this->meta_data ) ) {
-			$this->meta_data = new stdClass();
-		}
+		$this->get_metadata();
 	}
 
 	/**
@@ -193,10 +192,25 @@ class PostModel {
 				$post_model = new static( $post_rs );
 			}
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $post_model;
+	}
+
+	/**
+	 * Return object metadata
+	 *
+	 * @return stdClass
+	 * @since 4.4.8.1
+	 * @version 1.0.0
+	 */
+	public function get_metadata(): stdClass {
+		if ( is_null( $this->meta_data ) ) {
+			$this->meta_data = new stdClass();
+		}
+
+		return $this->meta_data;
 	}
 
 	/**
@@ -292,14 +306,15 @@ class PostModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.5
+	 * @version 1.0.6
 	 */
 	public function save( bool $force_save = false ) {
 		$data = get_object_vars( $this );
 
-		if ( ! empty( $this->meta_data ) ) {
+		$metadata = $this->get_metadata();
+		if ( ! empty( $key_meta ) ) {
 			$data['meta_input'] = [];
-			foreach ( $this->meta_data as $key_meta => $value_meta ) {
+			foreach ( $metadata as $key_meta => $value_meta ) {
 				$data['meta_input'][ $key_meta ] = $value_meta;
 			}
 		}
@@ -451,10 +466,13 @@ class PostModel {
 	 * @param bool $single
 	 *
 	 * @return false|mixed
+	 * @since 4.2.6.9
+	 * @version 1.0.3
 	 */
 	public function get_meta_value_by_key( string $key, $default_value = false, bool $single = true ) {
-		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
-			return maybe_unserialize( $this->meta_data->{$key} );
+		$metadata = $this->get_metadata();
+		if ( isset( $metadata->{$key} ) ) {
+			return maybe_unserialize( $metadata->{$key} );
 		}
 
 		$value = get_post_meta( $this->ID, $key, $single );
@@ -463,9 +481,26 @@ class PostModel {
 		}
 
 		$value                   = maybe_unserialize( $value );
-		$this->meta_data->{$key} = $value;
+		$this->set_meta_value_by_key( $key, $value );
 
 		return $value;
+	}
+
+	/**
+	 * Set meta value by key
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 *
+	 * @since 4.4.8.1
+	 * @version 1.0.0
+	 * @return void
+	 */
+	public function set_meta_value_by_key( string $key, $value ) {
+		$metadata = $this->get_metadata();
+		$metadata->{$key} = $value;
+
+		$this->meta_data = $metadata;
 	}
 
 	/**
@@ -478,18 +513,21 @@ class PostModel {
 	 * @return void
 	 * @throws Exception
 	 * @since 4.2.6.9
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function save_meta_value_by_key( string $key, $value, bool $fore_update = false ) {
 		// Check permission
 		if ( ! $fore_update ) {
-			if ( ! $this->check_capabilities_update() ) {
+			// Check permission if is item type of course
+			if ( CourseService::check_is_item_type_of_course( $this->post_type )
+				|| LP_QUESTION_CPT === $this->post_type ) {
+				$this->check_capabilities_update_item_course();
+			} elseif ( ! $this->check_capabilities_update() ) {
 				throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
 			}
-			$this->check_capabilities_create_item_course();
 		}
 
-		$this->meta_data->{$key} = $value;
+		$this->set_meta_value_by_key( $key, $value );
 		update_post_meta( $this->ID, $key, $value );
 	}
 

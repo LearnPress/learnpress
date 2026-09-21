@@ -534,17 +534,23 @@ class LP_Helper {
 	 * @param array $tag_args as ['type' => 'text/javascript', 'id' => '']
 	 *
 	 * @return void
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.2.5.5
 	 */
 	public static function print_inline_script_tag( string $name_variable_script, array $data, array $tag_args = [] ) {
-		foreach ( $data as $key => $value ) {
+		/**
+		 * Comment block code reason by security
+		 * wp_json_encode() already produces a valid JavaScript string,
+		 * and there is no reason to decode HTML entities inside data that will be re-inserted with insertAdjacentHTML
+		 * @comment since 4.4.8
+		 */
+		/*foreach ( $data as $key => $value ) {
 			if ( ! is_scalar( $value ) ) {
 				continue;
 			}
 
 			$data[ $key ] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8' );
-		}
+		}*/
 
 		$data_json = wp_json_encode( $data );
 		$script    = '';

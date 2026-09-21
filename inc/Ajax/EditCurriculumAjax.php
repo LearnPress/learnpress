@@ -486,17 +486,17 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function updatePreviewItem call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public static function update_item_preview() {
 		$response = new LP_REST_Response();
 
 		try {
 			$data           = self::check_valid();
-			$course_id      = $data['course_id'] ?? 0;
-			$item_id        = $data['item_id'] ?? 0;
-			$item_type      = $data['item_type'] ?? '';
-			$enable_preview = $data['enable_preview'] ?? 0;
+			$course_id      = absint( $data['course_id'] ?? 0 );
+			$item_id        = absint( $data['item_id'] ?? 0 );
+			$item_type      = LP_Helper::sanitize_params_submitted( $data['item_type'] ?? '' );
+			$enable_preview = absint( $data['enable_preview'] ?? 0 );
 
 			$courseModel = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
@@ -516,6 +516,7 @@ class EditCurriculumAjax extends AbstractAjax {
 			}
 
 			$itemModel->set_preview( $enable_preview == 1 );
+			$itemModel->save();
 
 			// Save course to update preview data of item in the curriculum.
 			$coursePostModel = new CoursePostModel( $courseModel );

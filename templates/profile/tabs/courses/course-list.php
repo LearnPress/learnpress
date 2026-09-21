@@ -24,56 +24,58 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 ?>
 
 <?php if ( $current_page === 1 ) : ?>
-<table class="lp_profile_course_progress lp-list-table">
-	<thead>
-		<tr class="lp_profile_course_progress__item lp_profile_course_progress__header">
-			<th></th>
-			<th><?php esc_html_e( 'Name', 'learnpress' ); ?></th>
-			<th><?php esc_html_e( 'Result', 'learnpress' ); ?></th>
-			<th><?php esc_html_e( 'Expiration time', 'learnpress' ); ?></th>
-			<th><?php esc_html_e( 'End time', 'learnpress' ); ?></th>
-		</tr>
-	</thead>
-	<?php endif; ?>
-	<tbody>
-		<?php
-		foreach ( $course_ids as $id ) {
-			$courseModel = CourseModel::find( $id, true );
-			if ( ! $courseModel ) {
-				continue;
-			}
-
-			$userCourseModel = UserCourseModel::find( $user->get_id(), $id, true );
-			if ( ! $userCourseModel ) {
-				continue;
-			}
-
-			$course_result = $userCourseModel->calculate_course_results();
-			?>
-			<tr class="lp_profile_course_progress__item">
-				<td>
-					<a href="<?php echo $courseModel->get_permalink(); ?>" title="<?php echo $courseModel->get_title(); ?>">
-						<?php echo wp_kses_post( $singleCourseTemplate->html_image( $courseModel ) ); ?>
-					</a>
-				</td>
-				<td>
-					<a href="<?php echo $courseModel->get_permalink(); ?>"
-						title="<?php echo $courseModel->get_title(); ?>">
-						<?php echo wp_kses_post( $singleCourseTemplate->html_title( $courseModel ) ); ?>
-					</a>
-				</td>
-				<td><?php echo esc_html( $course_result['result'] ); ?>%</td>
-				<td>
-					<?php echo $userCourseTemplate->html_expire_date_time( $userCourseModel ); ?>
-				</td>
-				<td><?php echo $userCourseTemplate->html_end_date_time( $userCourseModel ); ?></td>
+<div class="lp-table-wrap">
+	<table class="lp_profile_course_progress lp-list-table">
+		<thead>
+			<tr class="lp_profile_course_progress__item lp_profile_course_progress__header">
+				<th></th>
+				<th><?php esc_html_e( 'Name', 'learnpress' ); ?></th>
+				<th><?php esc_html_e( 'Result', 'learnpress' ); ?></th>
+				<th><?php esc_html_e( 'Expiration time', 'learnpress' ); ?></th>
+				<th><?php esc_html_e( 'End time', 'learnpress' ); ?></th>
 			</tr>
+		</thead>
+		<?php endif; ?>
+		<tbody>
 			<?php
-		}
-		?>
-	</tbody>
-	<?php if ( $current_page === 1 ) : ?>
-</table>
+			foreach ( $course_ids as $id ) {
+				$courseModel = CourseModel::find( $id, true );
+				if ( ! $courseModel ) {
+					continue;
+				}
+
+				$userCourseModel = UserCourseModel::find( $user->get_id(), $id, true );
+				if ( ! $userCourseModel ) {
+					continue;
+				}
+
+				$course_result = $userCourseModel->calculate_course_results();
+				?>
+				<tr class="lp_profile_course_progress__item">
+					<td style="max-width: 100px">
+						<a href="<?php echo $courseModel->get_permalink(); ?>" title="<?php echo $courseModel->get_title(); ?>">
+							<?php echo wp_kses_post( $singleCourseTemplate->html_image( $courseModel ) ); ?>
+						</a>
+					</td>
+					<td>
+						<a href="<?php echo $courseModel->get_permalink(); ?>"
+							title="<?php echo $courseModel->get_title(); ?>">
+							<?php echo wp_kses_post( $singleCourseTemplate->html_title( $courseModel ) ); ?>
+						</a>
+					</td>
+					<td><?php echo esc_html( $course_result['result'] ); ?>%</td>
+					<td>
+						<?php echo $userCourseTemplate->html_expire_date_time( $userCourseModel ); ?>
+					</td>
+					<td><?php echo $userCourseTemplate->html_end_date_time( $userCourseModel ); ?></td>
+				</tr>
+				<?php
+			}
+			?>
+		</tbody>
+		<?php if ( $current_page === 1 ) : ?>
+	</table>
+</div>
 <?php endif; ?>
 
 <?php if ( $num_pages > 1 && $current_page < $num_pages && $current_page === 1 ) : ?>

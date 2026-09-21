@@ -4,11 +4,14 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.2
+ * @version 3.0.3
  */
 
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\CoursePostFilter;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\WPTables\CoursesTable;
 
 defined( 'ABSPATH' ) || exit();
@@ -33,8 +36,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			parent::__construct();
 
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
-			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
-			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
+			add_action( 'posts_pre_query', array( $this, 'posts_pre_query' ), 999, 2 );
+			// add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
+			// add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
 		}
 
 		/**
@@ -207,11 +211,127 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * @param string $fields
+		 * Query lp courses in admin via Post DB
 		 *
-		 * @return string
+		 * @param array    $posts
+		 * @param WP_Query $wp_query
+		 *
+		 * @return array|WP_Query
+		 * @since 4.4.8
+		 * @version 1.0.0
 		 */
-		public function posts_fields( $fields ): string {
+		public function posts_pre_query( $posts, $wp_query ) {
+			try {
+				if ( ! is_admin() ) {
+					return $posts;
+				}
+
+				// Check screen
+				$curren_screen = get_current_screen();
+				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_COURSE_CPT ) {
+					return $posts;
+				}
+
+				$post_type = $wp_query->get( 'post_type' );
+
+				if ( empty( $post_type ) || $post_type !== LP_COURSE_CPT ) {
+					return $posts;
+				}
+
+				// Convert params from WP_Query to CoursePostFilter
+				$posts_per_page = get_user_option( "edit_{$post_type}_per_page", get_current_user_id() );
+				if ( empty( $posts_per_page ) ) {
+					$posts_per_page = 20;
+				}
+
+				$paged        = max( 1, get_query_var( 'paged' ) );
+				$author       = $wp_query->get( 'author' );
+				$status       = $wp_query->get( 'post_status' );
+				$search       = $wp_query->get( 's' );
+				$month        = $wp_query->get( 'm' );
+				$orderby      = LP_Request::get_param( 'orderby', '', 'key' );
+				$order        = LP_Request::get_param( 'order', '', 'key' );
+				$filter_price = LP_Helper::sanitize_params_submitted( $_REQUEST['filter_price'] ?? '' );
+
+				$filter        = new CoursePostFilter();
+				$filter->page  = $paged;
+				$filter->limit = $posts_per_page;
+				$post_db       = PostDB::getInstance();
+
+				if ( ! empty( $status ) ) {
+					$filter->post_status = array( $status );
+				}
+
+				if ( ! empty( $author ) ) {
+					$filter->post_author = absint( $author );
+				}
+
+				if ( ! empty( $search ) ) {
+					$filter->post_title = sanitize_text_field( wp_unslash( $search ) );
+				}
+
+				if ( ! empty( $month ) && is_numeric( $month ) && strlen( (string) $month ) === 6 ) {
+					$filter->where[] = $post_db->wpdb->prepare(
+						'AND YEAR(p.post_date) = %d AND MONTH(p.post_date) = %d',
+						substr( $month, 0, 4 ),
+						substr( $month, 4, 2 )
+					);
+				}
+
+				/*$has_price_filter = false;
+				if ( array_key_exists( 'filter_price', $_REQUEST ) && $filter_price !== '' ) {
+					$filter_price     = floatval( $filter_price );
+					$has_price_filter = true;
+				}
+
+				if ( $orderby === 'price' || $has_price_filter ) {
+					$filter->join[] = "LEFT JOIN {$post_db->wpdb->postmeta} pm_price ON pm_price.post_id = p.ID AND pm_price.meta_key = '_lp_price'";
+				}
+
+				if ( $has_price_filter ) {
+					if ( $filter_price == 0 ) {
+						$filter->where[] = 'AND ( pm_price.meta_value IS NULL || pm_price.meta_value = 0 )';
+					} else {
+						$filter->where[] = $post_db->wpdb->prepare( ' AND ( pm_price.meta_value = %s )', $filter_price );
+					}
+				}*/
+
+				// Exclude status auto-draft
+				$filter->where[] = $post_db->wpdb->prepare( 'AND p.post_status != %s', PostModel::STATUS_AUTO_DRAFT );
+
+				if ( $orderby === 'price' ) {
+					$filter->join[]   = "LEFT JOIN {$post_db->wpdb->postmeta} pm_price
+						ON pm_price.post_id = p.ID
+						AND pm_price.meta_key = '_lp_price'";
+					$filter->order_by = 'CAST(pm_price.meta_value AS UNSIGNED)';
+				} elseif ( $orderby === 'title' ) {
+					$filter->order_by = 'p.post_title';
+				} elseif ( $orderby === 'author' ) {
+					$filter->order_by = 'p.post_author';
+				} elseif ( $orderby === 'date' ) {
+					$filter->order_by = 'p.post_date';
+				} else {
+					$filter->order_by = 'p.menu_order';
+				}
+
+				$filter->order = strtolower( $order ) === 'asc' ? 'ASC' : 'DESC';
+
+				// Get lp courses
+				$total_rows = 0;
+				$lp_courses = $post_db->get_posts( $filter, $total_rows );
+
+				$wp_query->post_count    = count( $lp_courses );
+				$wp_query->found_posts   = $total_rows;
+				$wp_query->max_num_pages = (int) ceil( $total_rows / $posts_per_page );
+				$posts                   = $lp_courses;
+			} catch ( Throwable $e ) {
+				LP_Debug::error_log( $e );
+			}
+
+			return $posts;
+		}
+
+		/*public function posts_fields( $fields ): string {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $fields;
 			}
@@ -249,11 +369,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			return $where;
 		}
 
-		/**
-		 * @param $join
-		 *
-		 * @return string
-		 */
 		public function posts_join_paged( $join ) {
 			global $wpdb;
 
@@ -270,11 +385,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			return $join;
 		}
 
-		/**
-		 * @param $where
-		 *
-		 * @return mixed|string
-		 */
 		public function posts_where_paged( $where ) {
 			global $wpdb;
 
@@ -292,27 +402,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 			}
 
-			/*$not_in = $wpdb->prepare(
-				"
-				SELECT ID
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
-				WHERE pm.meta_value = %s
-				",
-				'_lp_preview_course',
-				'yes'
-			);
-
-			$where .= " AND {$wpdb->posts}.ID NOT IN( {$not_in} )";*/
-
 			return $where;
 		}
 
-		/**
-		 * @param $orderby
-		 *
-		 * @return string
-		 */
 		public function posts_orderby( $orderby ) {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $orderby;
@@ -325,7 +417,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			return $orderby;
-		}
+		}*/
 
 		/**
 		 * Save course post

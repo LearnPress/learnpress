@@ -65,122 +65,124 @@ $userModel = UserModel::find( $user_id, true );
 	do_action( 'learn-press/order/after-received-order-message', $order_received->get_id() );
 
 	?>
-	<table class="order_details">
-		<?php if ( isset( $_GET['key'] ) && ! is_user_logged_in() ) : ?>
-			<tr class="order-key">
-				<th><?php esc_html_e( 'Order Key', 'learnpress' ); ?></th>
+	<div class="lp-table-wrap">
+		<table class="order_details lp-list-table">
+			<?php if ( isset( $_GET['key'] ) && ! is_user_logged_in() ) : ?>
+				<tr class="order-key">
+					<th><?php esc_html_e( 'Order Key', 'learnpress' ); ?></th>
+					<td>
+						<?php echo esc_html( $_GET['key'] ); ?>
+					</td>
+				</tr>
+			<?php endif; ?>
+			<tr class="order">
+				<th><?php esc_html_e( 'Order Number', 'learnpress' ); ?></th>
 				<td>
-					<?php echo esc_html( $_GET['key'] ); ?>
+					<?php echo esc_html( $order_received->get_order_number() ); ?>
 				</td>
 			</tr>
-		<?php endif; ?>
-		<tr class="order">
-			<th><?php esc_html_e( 'Order Number', 'learnpress' ); ?></th>
-			<td>
-				<?php echo esc_html( $order_received->get_order_number() ); ?>
-			</td>
-		</tr>
-		<tr class="status">
-			<th><?php esc_html_e( 'Status', 'learnpress' ); ?></th>
-			<td>
-				<?php
-				$status = $order_received->get_status();
-				echo ucfirst( $order_received::get_status_label( $status ) );
-				?>
-			</td>
-		</tr>
-		<tr class="item">
-			<th><?php esc_html_e( 'Item', 'learnpress' ); ?></th>
-			<td>
-				<?php
-				$links = array();
-				$items = $order_received->get_items();
-				$count = count( $items );
+			<tr class="status">
+				<th><?php esc_html_e( 'Status', 'learnpress' ); ?></th>
+				<td>
+					<?php
+					$status = $order_received->get_status();
+					echo ucfirst( $order_received::get_status_label( $status ) );
+					?>
+				</td>
+			</tr>
+			<tr class="item">
+				<th><?php esc_html_e( 'Item', 'learnpress' ); ?></th>
+				<td>
+					<?php
+					$links = array();
+					$items = $order_received->get_items();
+					$count = count( $items );
 
-				foreach ( $items as $item ) {
-					if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-						$links[] = apply_filters(
-							'learn-press/order-item-not-course-id',
-							__( 'The course does not exist', 'learnpress' ),
-							$item
-						);
-					} else {
-						$course_id = $item['course_id'];
-						$courseModel = CourseModel::find( $course_id, true );
-						$button_course = '';
-						$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
-						if ( $userCourseModel && $userModel ) {
-							// For enrolled or purchased course.
-							$userCourseTemplate = UserCourseTemplate::instance();
-							$singleCourseTemplate = SingleCourseTemplate::instance();
+					foreach ( $items as $item ) {
+						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+							$links[] = apply_filters(
+								'learn-press/order-item-not-course-id',
+								__( 'The course does not exist', 'learnpress' ),
+								$item
+							);
+						} else {
+							$course_id = $item['course_id'];
+							$courseModel = CourseModel::find( $course_id, true );
+							$button_course = '';
+							$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+							if ( $userCourseModel && $userModel ) {
+								// For enrolled or purchased course.
+								$userCourseTemplate = UserCourseTemplate::instance();
+								$singleCourseTemplate = SingleCourseTemplate::instance();
 
-							// Load js button course.
-							wp_enqueue_script( 'lp-single-course' );
+								// Load js button course.
+								wp_enqueue_script( 'lp-single-course' );
 
-							if ( $userCourseModel->has_enrolled() ) {
-								$button_course = $userCourseTemplate->html_btn_continue( $userCourseModel );
-							} elseif ( $userCourseModel->has_purchased() ) {
-								$button_course = $singleCourseTemplate->html_btn_enroll_course( $courseModel, $userModel );
+								if ( $userCourseModel->has_enrolled() ) {
+									$button_course = $userCourseTemplate->html_btn_continue( $userCourseModel );
+								} elseif ( $userCourseModel->has_purchased() ) {
+									$button_course = $singleCourseTemplate->html_btn_enroll_course( $courseModel, $userModel );
+								}
 							}
-						}
 
-						$link = sprintf(
-							'<a href="%s">%s (#%s)</a> %s',
-							get_the_permalink( $item['course_id'] ),
-							get_the_title( $item['course_id'] ),
-							$item['course_id'],
-							$button_course
-						);
+							$link = sprintf(
+								'<a href="%s">%s (#%s)</a> %s',
+								get_the_permalink( $item['course_id'] ),
+								get_the_title( $item['course_id'] ),
+								$item['course_id'],
+								$button_course
+							);
 
-						if ( $count > 1 ) {
-							$link = sprintf( '<li>%s</li>', $link );
+							if ( $count > 1 ) {
+								$link = sprintf( '<li>%s</li>', $link );
+							}
+							$links[] = apply_filters( 'learn-press/order-received-item-link', $link, $item );
 						}
-						$links[] = apply_filters( 'learn-press/order-received-item-link', $link, $item );
 					}
-				}
 
-				if ( $count > 1 ) {
-					echo sprintf( '<ol>%s</ol>', join( '', $links ) );
-				} elseif ( 1 == $count ) {
-					echo implode( '', $links );
-				} else {
-					echo esc_html__( '(No item)', 'learnpress' );
-				}
-				?>
-			</td>
-		</tr>
-		<tr class="date">
-			<th><?php esc_html_e( 'Date', 'learnpress' ); ?></th>
-			<td>
-				<?php
-				echo wp_kses_post(
-					date_i18n(
-						get_option( 'date_format' ),
-						strtotime( $order_received->get_order_date() )
-					)
-				);
-				?>
-			</td>
-		</tr>
-		<tr class="total">
-			<th><?php esc_html_e( 'Total', 'learnpress' ); ?></th>
-			<td>
-				<?php echo wp_kses_post( $order_received->get_formatted_order_total() ); ?>
-			</td>
-		</tr>
-		<?php
-		$method_title = $order_received->get_payment_method_title();
-		if ( $method_title ) :
-			?>
-			<tr class="method">
-				<th><?php esc_html_e( 'Payment Method', 'learnpress' ); ?></th>
-				<td>
-					<?php echo esc_html( $method_title ); ?>
+					if ( $count > 1 ) {
+						echo sprintf( '<ol>%s</ol>', join( '', $links ) );
+					} elseif ( 1 == $count ) {
+						echo implode( '', $links );
+					} else {
+						echo esc_html__( '(No item)', 'learnpress' );
+					}
+					?>
 				</td>
 			</tr>
-		<?php endif; ?>
-		<?php do_action( 'learn-press/order/received/items-table', $order_received ); ?>
-	</table>
+			<tr class="date">
+				<th><?php esc_html_e( 'Date', 'learnpress' ); ?></th>
+				<td>
+					<?php
+					echo wp_kses_post(
+						date_i18n(
+							get_option( 'date_format' ),
+							strtotime( $order_received->get_order_date() )
+						)
+					);
+					?>
+				</td>
+			</tr>
+			<tr class="total">
+				<th><?php esc_html_e( 'Total', 'learnpress' ); ?></th>
+				<td>
+					<?php echo wp_kses_post( $order_received->get_formatted_order_total() ); ?>
+				</td>
+			</tr>
+			<?php
+			$method_title = $order_received->get_payment_method_title();
+			if ( $method_title ) :
+				?>
+				<tr class="method">
+					<th><?php esc_html_e( 'Payment Method', 'learnpress' ); ?></th>
+					<td>
+						<?php echo esc_html( $method_title ); ?>
+					</td>
+				</tr>
+			<?php endif; ?>
+			<?php do_action( 'learn-press/order/received/items-table', $order_received ); ?>
+		</table>
+	</div>
 
 	<?php do_action( 'learn-press/order/received', $order_received ); ?>
 </div>
