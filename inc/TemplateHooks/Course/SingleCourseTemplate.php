@@ -1598,7 +1598,6 @@ class SingleCourseTemplate {
 			'start'       => '<div class="course-section-header">',
  			'info'        => '<div class="course-section-info">',
 			'title'       => sprintf( '<div class="course-section__title">%s</div>', wp_kses_post( $section_name ) ),
-			'description' => $html_section_description,
 			'count_items' => sprintf(
 				'<div class="section-count-items">%s</div>',
 				sprintf(
@@ -1606,6 +1605,7 @@ class SingleCourseTemplate {
 					count( $items )
 				)
 			),
+			'description' => $html_section_description,
 			'info_end'    => '</div>',
 			'toggle'      => '<div class="section-toggle">
 				<i class="lp-icon-angle-down"></i>
