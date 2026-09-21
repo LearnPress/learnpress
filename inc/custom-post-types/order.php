@@ -13,6 +13,7 @@ use LearnPress\Filters\OrderPostFilter;
 use LearnPress\Helpers\LPDateTime;
 use LearnPress\Models\OrderPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\WPTables\OrdersTable;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 
@@ -24,6 +25,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @var string
 		 */
 		protected $_post_type = LP_ORDER_CPT;
+
+		/**
+		 * @var string
+		 */
+		protected $_screen_list = 'edit-' . LP_ORDER_CPT;
+
 		/**
 		 * @var null
 		 */
@@ -64,6 +71,23 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			parent::__construct();
+		}
+
+		/**
+		 * Declare class name of table list orders.
+		 *
+		 * @param string $class_name
+		 * @param array  $args
+		 *
+		 * @return string
+		 * @since 4.2.9.5
+		 */
+		public function wp_list_table_class_name( $class_name, $args ) {
+			if ( $this->check_class_name_handle_table( $args['screen'] ) ) {
+				$class_name = OrdersTable::class;
+			}
+
+			return $class_name;
 		}
 
 		/**
@@ -331,20 +355,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			return $join;
 		}*/
 
-		/**
-		 * Make our custom columns can be sortable
-		 *
-		 * @param $columns
-		 *
-		 * @return mixed
-		 */
-		public function sortable_columns( $columns ) {
-			$columns['order_date']  = 'date';
-			$columns['order_total'] = 'order_total';
-
-			return $columns;
-		}
-
 		public function update_status() {
 			$order_id = ! empty( $_REQUEST['order_id'] ) ? absint( $_REQUEST['order_id'] ) : 0;
 			$status   = ! empty( $_REQUEST['status'] ) ? LP_Helper::sanitize_params_submitted( $_REQUEST['status'] ) : 'Pending';
@@ -494,6 +504,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					's'                     => $key,
 					'm'                     => $month,
 					'refund_request_status' => $refund_request_status,
+					'orderby'              => $wp_query->get( 'orderby' ),
+					'order'                => $wp_query->get( 'order' ),
 				);
 				LP_Order::handle_params_query_list_orders( $filter, $param );
 
@@ -512,177 +524,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			return $posts;
 		}
 
-		/**
-		 *
-		 */
-		public function columns_head( $existing ) {
-
-			// Remove Checkbox - adding it back below
-			if ( isset( $existing['cb'] ) ) {
-				$check = $existing['cb'];
-				unset( $existing['cb'] );
-			}
-
-			// Remove Title - adding it back below
-			if ( isset( $existing['title'] ) ) {
-				unset( $existing['title'] );
-			}
-
-			// Remove Format
-			if ( isset( $existing['format'] ) ) {
-				unset( $existing['format'] );
-			}
-
-			// Remove Author
-			if ( isset( $existing['author'] ) ) {
-				unset( $existing['author'] );
-			}
-
-			// Remove Comments
-			if ( isset( $existing['comments'] ) ) {
-				unset( $existing['comments'] );
-			}
-
-			// Remove Date
-			if ( isset( $existing['date'] ) ) {
-				unset( $existing['date'] );
-			}
-
-			// Remove Builder
-			if ( isset( $existing['builder_layout'] ) ) {
-				unset( $existing['builder_layout'] );
-			}
-
-			$columns['cb']            = '<input type="checkbox" />';
-			$columns['title']         = esc_html__( 'Order', 'learnpress' );
-			$columns['order_student'] = esc_html__( 'Student', 'learnpress' );
-			$columns['order_items']   = esc_html__( 'Purchased', 'learnpress' );
-			$columns['order_date']    = esc_html__( 'Date', 'learnpress' );
-			$columns['order_total']   = esc_html__( 'Total', 'learnpress' );
-			$columns['order_status']  = '<span class="status_head tips" data-tip="' . esc_attr__( 'Status', 'learnpress' ) . '">' . esc_attr__( 'Status', 'learnpress' ) . '</span>';
-
-			$columns = array_merge( $columns, $existing );
-
-			return $columns;
-		}
-
 		public function order_title( $title, $post_id ) {
 			if ( get_post_type( $post_id ) != LP_ORDER_CPT ) {
 				return $title;
 			}
 
 			return learn_press_transaction_order_number( $post_id );
-		}
-
-		/**
-		 * Render column data
-		 *
-		 * @since 3.0.0
-		 * @version 1.0.1
-		 */
-		public function columns_content( $column, $post_id = 0 ) {
-			global $post;
-			$lp_order       = learn_press_get_order( $post->ID );
-			$orderPostModel = OrderPostModel::find_by_id( $post->ID, true );
-
-			switch ( $column ) {
-				case 'order_student':
-					$user_ids = $lp_order->get_users();
-					if ( $user_ids ) {
-						$outputs = array();
-						foreach ( $user_ids as $user_id ) {
-							if ( get_user_by( 'id', $user_id ) ) {
-								$user      = learn_press_get_user( $user_id );
-								$outputs[] = sprintf(
-									'<a href="user-edit.php?user_id=%d">%s (%s)</a><span>%s</span>',
-									$user_id,
-									$user->get_data( 'user_login' ),
-									$user->get_data( 'display_name' ),
-									$user->get_data( 'user_email' )
-								);
-							} elseif ( sizeof( $user_ids ) == 1 ) {
-									$outputs[] = $lp_order->get_customer_name();
-							}
-						}
-						echo join( ', ', $outputs );
-					} else {
-						echo esc_html__( '(Guest)', 'learnpress' );
-					}
-					break;
-				case 'order_status':
-					$lp_order_icons = LP_Order::get_icons_status();
-					$icon           = $lp_order_icons[ $lp_order->get_status() ] ?? '';
-					$badge_html     = '';
-
-					$refund_request_status = $lp_order->get_refund_request();
-					if ( 'pending' === $refund_request_status ) {
-						$badge_html = sprintf(
-							'<span class="lp-order-refund-request-badge">%s</span>',
-							esc_html__( 'Refund Requested', 'learnpress' )
-						);
-					}
-					printf(
-						'<span class="lp-order-status %1$s">%2$s%3$s</span>%4$s',
-						$lp_order->get_status(),
-						$icon,
-						LP_Order::get_status_label( $lp_order->get_status() ),
-						$badge_html
-					);
-					break;
-				case 'order_date':
-					// Check column post_date_gmt is default value
-					if ( $orderPostModel->post_date_gmt === '0000-00-00 00:00:00' ) {
-						$convert_post_date_gmt         = get_gmt_from_date( $orderPostModel->post_date );
-						$orderPostModel->post_date_gmt = $convert_post_date_gmt;
-					}
-
-					$time      = strtotime( $orderPostModel->post_date_gmt );
-					$time_diff = time() - $time;
-
-					$lpDateTimeGMT           = new LPDateTime( $orderPostModel->post_date_gmt );
-					$time_local_format_mysql = $lpDateTimeGMT->format( LPDateTime::FORMAT_MYSQL, 'gmt_to_local' );
-
-					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-						$time_display = $lpDateTimeGMT->format(
-							LPDateTime::FORMAT_HUMAN,
-							'gmt_to_local',
-							true
-						);
-					} else {
-						$time_display = $lpDateTimeGMT->format(
-							LPDateTime::FORMAT_I18N_DATE_TIME,
-							'gmt_to_local',
-							true
-						);
-					}
-
-					echo sprintf(
-						'<abbr title="%s">%s</abbr>',
-						esc_attr( $time_local_format_mysql ),
-						esc_html( $time_display )
-					);
-					break;
-				case 'order_items':
-					do_action( 'learn-press/admin/order-items/layout', $lp_order );
-					break;
-				case 'order_total':
-					echo wp_kses_post( $lp_order->get_formatted_order_total() );
-					$method_title = $lp_order->get_payment_method_title();
-					$method_title = apply_filters( 'learn-press/order-payment-method-title', $method_title, $lp_order );
-
-					if ( ! empty( $method_title ) ) {
-						$method_title_html = sprintf(
-							__( 'Pay via <strong>%s</strong>', 'learnpress' ),
-							$method_title
-						);
-						?>
-						<div class="payment-method-title">
-							<?php echo wp_kses_post( $method_title_html ); ?>
-						</div>
-						<?php
-					}
-					break;
-			}
 		}
 
 		/**

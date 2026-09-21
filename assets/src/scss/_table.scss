@@ -1,5 +1,7 @@
 /**
 * Style for table LearnPress
+* @since 4.3.3
+* @version 1.0.1
 */
 
 .lp-table-wrap {
@@ -17,6 +19,7 @@ table.lp-list-table {
 	width: 100%;
 	margin: 0;
 	min-width: 768px;
+	border: none;
 
 	td {
 		padding: 0;
@@ -27,25 +30,27 @@ table.lp-list-table {
 	}
 
 	thead {
-		background-color: var(--lp-white-grey, #F7F7FB);
 		border: none;
-
+		tr:first-child{
+			td,th{
+				border-block-start: none// fix theme hello elementor
+			}
+		}
 		tr {
 			border-bottom: 1px solid var(--lp-border-color, #E2E0DB);
 			position: sticky;
 			top: 0;
 			z-index: 2;
-			background: #fff;
-
-			&:hover {
-				background: #eff6ff
-			}
+			background-color: var(--lp-white-grey, #F7F7FB);
+ 			//&:hover {
+			//	background: #eff6ff
+			//}
 		}
 
 		th {
 			background: none;
 			border: none;
-			font-size: 1em;
+			//font-size: 1em;
 			padding: 10px 20px;
 			text-align: left;
 
@@ -57,32 +62,41 @@ table.lp-list-table {
 	}
 
 	tbody {
-		font-size: 14px;
+		//font-size: 14px;
 
 		tr {
 			border: none;
-			border-bottom: 1px solid var(--lp-white-grey, #F7F7FB);
-
-			&:hover {
-				background: #eff6ff !important;
-			}
 
 			&:nth-child(odd) {
-				background: #f6f7f7;
+				//background: #f6f7f7;
 			}
 
 			&:nth-child(even) {
-				background: #fff;
+				background-color: hsla(0, 0%, 50%, .05);
+			}
+
+			&:hover {
+				background-color: #eff6ff;
 			}
 
 			td {
 				border: none;
+				border-bottom: 1px solid var(--lp-border-color, #E2E0DB);
 				padding: 10px 20px;
 				text-align: left;
 				a {
 					text-decoration: none;
 				}
 			}
+			&:last-child{
+				td{
+					border-bottom: none;
+				}
+			}
+		}
+
+		th {
+			padding: 10px 20px;
 		}
 	}
 
@@ -92,7 +106,7 @@ table.lp-list-table {
 
 			td, th {
 				border: none;
-
+				border-top: 1px solid var(--lp-border-color, #E2E0DB);
 				>div {
 					padding: 20px;
 				}
@@ -126,12 +140,4 @@ table.lp-list-table {
 			}
 		}
 	}
-}
-
-.lp_profile_course_progress__nav{
-	margin-top: 1rem;
-}
-
-#profile-content-order-details .lp-table-wrap{
-	margin-bottom: 1rem;
 }

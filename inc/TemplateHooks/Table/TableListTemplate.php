@@ -15,8 +15,7 @@ use LearnPress\Helpers\Template;
 class TableListTemplate {
 	use Singleton;
 
-	public function init() {
-	}
+	public function init(): void {}
 
 	/**
 	 * Render the HTML table.
@@ -109,7 +108,7 @@ class TableListTemplate {
 	}
 
 	/**
-	 * Reder the HTML table footer.
+	 * Render the HTML table footer.
 	 *
 	 * @param string $footer_html
 	 *
