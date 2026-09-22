@@ -22,7 +22,6 @@ class AdminAddons {
 		elAddonsPage: '.lp-addons-page',
 		elLPAddons: '#lp-addons',
 		elAddonItem: '.lp-addon-item',
-		elAddonsControls: '.lp-addons-controls',
 		elBtnAction: '.btn-addon-action',
 		elNavTab: '.nav-tab',
 		elNavTabActive: '.nav-tab.nav-tab-active',
@@ -47,32 +46,9 @@ class AdminAddons {
 				return;
 			}
 
-			this.moveControlsToTop();
 			this.filterAddons();
 			this.events();
 		} );
-	}
-
-	/**
-	 * Move the controls block (tabs, search, categories) above the list.
-	 *
-	 * @return void
-	 */
-	moveControlsToTop() {
-		const elAddonsControls = this.elAddonsPage.querySelector(
-			AdminAddons.selectors.elAddonsControls
-		);
-		if ( ! elAddonsControls ) {
-			return;
-		}
-
-		const elAddonsControlsClone = elAddonsControls.cloneNode( true );
-		this.elAddonsPage.insertBefore(
-			elAddonsControlsClone,
-			this.elAddonsPage.children[ 0 ]
-		);
-		elAddonsControlsClone.hidden = false;
-		elAddonsControls.remove();
 	}
 
 	/**
@@ -81,8 +57,40 @@ class AdminAddons {
 	 * @return void
 	 */
 	events() {
-		document.addEventListener( 'click', this.onClick.bind( this ) );
-		document.addEventListener( 'input', this.onInput.bind( this ) );
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: AdminAddons.selectors.elBtnAction,
+				class: this,
+				callBack: this.handleBtnAction.name,
+			},
+			{
+				selector: AdminAddons.selectors.elNavTab,
+				class: this,
+				callBack: this.handleTabClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elCategory,
+				class: this,
+				callBack: this.handleCategoryClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elPurchaseCode,
+				class: this,
+				callBack: this.handlePurchaseCodeClick.name,
+			},
+		] );
+		lpUtils.eventHandlers( 'input', [
+			{
+				selector: AdminAddons.selectors.elSearchInput,
+				class: this,
+				callBack: this.handleSearchInput.name,
+			},
+			{
+				selector: AdminAddons.selectors.elPurchaseCode,
+				class: this,
+				callBack: this.handlePurchaseCodeInput.name,
+			},
+		] );
 	}
 
 	/**
@@ -220,6 +228,9 @@ class AdminAddons {
 		const elAddonItems = this.elAddonsPage.querySelectorAll(
 			selectors.elAddonItem
 		);
+
+		// Count items for each tab
+		this.updateTabCounts( elAddonItems );
 		const elActiveTab = this.elAddonsPage.querySelector(
 			selectors.elNavTabActive
 		);
@@ -234,45 +245,60 @@ class AdminAddons {
 			? elActiveCategory.dataset.category
 			: 'all';
 		const keyword = elSearch ? elSearch.value.trim().toLowerCase() : '';
-		const categoryCounts = { all: 0 };
-		let totalItems = 0;
+		const searchTerms = keyword.split( /\s+/ ).filter( Boolean );
+
+		// Count items for category by tab
+		this.updateCategoryCounts( elAddonItems, tabName );
 
 		elAddonItems.forEach( ( elAddonItem ) => {
+			const addonInfo = JSON.parse( elAddonItem.dataset.addon );
+
 			const addonName = elAddonItem
 				.querySelector( 'a' )
 				.textContent.toLowerCase();
+			const textCompare = addonName + addonInfo.description;
+
 			const addonCategories = ( elAddonItem.dataset.category || '' )
 				.split( /\s+/ )
 				.filter( Boolean );
 			const matchesTab =
 				'all' === tabName || elAddonItem.classList.contains( tabName );
-
-			if ( matchesTab ) {
-				categoryCounts.all++;
-				addonCategories.forEach( ( addonCategory ) => {
-					categoryCounts[ addonCategory ] =
-						( categoryCounts[ addonCategory ] || 0 ) + 1;
-				} );
-			}
-
 			const matchesCategory =
 				'all' === category || addonCategories.includes( category );
-			const matchesSearch = addonName.includes( keyword );
+			const matchesSearch = searchTerms.every( ( term ) => textCompare.includes( term ) );
 			const isVisible = matchesTab && matchesCategory && matchesSearch;
 
 			elAddonItem.classList.toggle( 'hide', ! matchesTab );
 			elAddonItem.classList.toggle(
 				'search-not-found',
-				matchesTab && ! isVisible
+				! isVisible
 			);
+		} );
+	}
 
-			if ( isVisible ) {
-				totalItems++;
+	updateCategoryCounts( elAddonItems, tabName ) {
+		const categoryCounts = { all: 0 };
+
+		elAddonItems.forEach( ( elAddonItem ) => {
+			const matchesTab =
+				'all' === tabName || elAddonItem.classList.contains( tabName );
+
+			if ( ! matchesTab ) {
+				return;
 			}
+
+			categoryCounts.all++;
+			( elAddonItem.dataset.category || '' )
+				.split( /\s+/ )
+				.filter( Boolean )
+				.forEach( ( addonCategory ) => {
+					categoryCounts[ addonCategory ] =
+						( categoryCounts[ addonCategory ] || 0 ) + 1;
+				} );
 		} );
 
 		this.elAddonsPage
-			.querySelectorAll( selectors.elCategory )
+			.querySelectorAll( AdminAddons.selectors.elCategory )
 			.forEach( ( elCategory ) => {
 				const count =
 					categoryCounts[ elCategory.dataset.category ] || 0;
@@ -289,66 +315,62 @@ class AdminAddons {
 			} );
 	}
 
+	updateTabCounts( elAddonItems ) {
+		this.elAddonsPage
+			.querySelectorAll( AdminAddons.selectors.elNavTab )
+			.forEach( ( elNavTab ) => {
+				const tabName = elNavTab.dataset.tab;
+				const count = Array.from( elAddonItems ).filter(
+					( elAddonItem ) =>
+						'all' === tabName ||
+						elAddonItem.classList.contains( tabName )
+				).length;
+				const elCount = elNavTab.querySelector( 'span' );
+
+				if ( elCount ) {
+					elCount.textContent = count;
+				}
+			} );
+	}
+
 	/**
 	 * Handle click events.
 	 *
-	 * @param {Event} e Click event.
+	 * @param {Object} args Click event arguments.
 	 * @return void
 	 */
-	onClick( e ) {
-		if ( ! this.elAddonsPage ) {
+	handlePurchaseCodeClick( args ) {
+		const { target: el } = args;
+
+		if ( ! el.value.startsWith( '***' ) ) {
 			return;
 		}
 
-		let el = e.target;
-		const selectors = AdminAddons.selectors;
-
-		if (
-			el.classList.contains( 'enter-purchase-code' ) &&
-			el.value.startsWith( '***' )
-		) {
-			el.value = '';
-			const elItemPurchase = el.closest( selectors.elItemPurchase );
-			if ( elItemPurchase ) {
-				elItemPurchase.querySelector(
-					'input[name=purchase-code]'
-				).value = '';
-			}
-		}
-
-		const tagName = el.tagName.toLowerCase();
-		if ( tagName === 'span' ) {
-			e.preventDefault();
-			const elBtnAction = el.closest( selectors.elBtnAction );
-			if ( elBtnAction ) {
-				elBtnAction.click();
-			}
-		}
-
-		// Events actions: install, update, activate, deactivate, purchase.
-		if ( el.closest( selectors.elBtnAction ) ) {
-			el = el.closest( selectors.elBtnAction );
-			this.handleBtnAction( e, el );
-		}
-
-		if ( el.classList.contains( 'nav-tab' ) ) {
-			this.handleTabClick( e, el );
-		}
-
-		if ( el.closest( selectors.elCategory ) ) {
-			this.handleCategoryClick( e, el.closest( selectors.elCategory ) );
+		el.value = '';
+		const elItemPurchase = el.closest(
+			AdminAddons.selectors.elItemPurchase
+		);
+		if ( elItemPurchase ) {
+			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value = '';
 		}
 	}
 
 	/**
 	 * Handle addon action button click.
 	 *
-	 * @param {Event}   e   Click event.
-	 * @param {Element} el  Button element.
+	 * @param {Object} args Click event arguments.
 	 * @return void
 	 */
-	handleBtnAction( e, el ) {
+	handleBtnAction( args ) {
+		const { e, target } = args;
 		const selectors = AdminAddons.selectors;
+		const el = target.closest( selectors.elBtnAction );
+
+		// Ignore button type link
+		if ( 'A' === el.tagName ) {
+			return;
+		}
+
 		e.preventDefault();
 		el.classList.add( 'handling' );
 
@@ -398,11 +420,6 @@ class AdminAddons {
 			elItemPurchase.style.display = 'block';
 			el.classList.remove( 'handling' );
 			return;
-		} else if ( action === 'buy' ) {
-			const link = el.dataset.link;
-			window.open( link, '_blank' );
-			el.classList.remove( 'handling' );
-			return;
 		} else if ( action === 'cancel' ) {
 			elItemPurchase.style.display = 'none';
 			elItemPurchase
@@ -414,13 +431,6 @@ class AdminAddons {
 				} );
 			el.classList.remove( 'handling' );
 			return;
-		} else if ( action === 'install' ) {
-			if ( el.dataset.link ) {
-				el.classList.remove( 'handling' );
-				const link = el.dataset.link;
-				window.open( link, '_blank' );
-				return;
-			}
 		}
 
 		// Send request to server.
@@ -456,34 +466,14 @@ class AdminAddons {
 
 		if ( status === 'success' ) {
 			if ( action === 'install' ) {
-				const hadLicense = elAddonItem.classList.contains( 'license' );
 				elAddonItem.classList.add( 'installed', 'activated' );
 				elAddonItem.classList.remove( 'not_installed' );
 				if ( resData && resData.purchase_code_masked ) {
 					elAddonItem.classList.add( 'license' );
 					this.updateLicensePanel( elAddonItem, resData );
-					if ( ! hadLicense ) {
-						const elNavLicense = document.querySelector(
-							'.nav-tab[data-tab=license] span'
-						);
-						if ( elNavLicense ) {
-							elNavLicense.textContent =
-								parseInt( elNavLicense.textContent ) + 1;
-						}
-					}
 				}
 				elItemPurchase.style.display = 'none';
 
-				const elNavInstalled = document.querySelector(
-					'.nav-tab[data-tab=installed] span'
-				);
-				elNavInstalled.textContent =
-					parseInt( elNavInstalled.textContent ) + 1;
-				const elNavNoInstalled = document.querySelector(
-					'.nav-tab[data-tab=not_installed] span'
-				);
-				elNavNoInstalled.textContent =
-					parseInt( elNavNoInstalled.textContent ) - 1;
 				elItemPurchase.querySelector(
 					selectors.elPurchaseInstall
 				).style.display = 'none';
@@ -541,12 +531,13 @@ class AdminAddons {
 	/**
 	 * Handle tab click.
 	 *
-	 * @param {Event}   e  Click event.
-	 * @param {Element} el Tab element.
+	 * @param {Object} args Click event arguments.
 	 * @return void
 	 */
-	handleTabClick( e, el ) {
+	handleTabClick( args ) {
+		const { e, target } = args;
 		const selectors = AdminAddons.selectors;
+		const el = target.closest( selectors.elNavTab );
 		e.preventDefault();
 
 		const elTabs = this.elAddonsPage.querySelectorAll( selectors.elNavTab );
@@ -585,11 +576,14 @@ class AdminAddons {
 	/**
 	 * Handle category click.
 	 *
-	 * @param {Event}   e          Click event.
-	 * @param {Element} elCategory Category element.
+	 * @param {Object} args Click event arguments.
 	 * @return void
 	 */
-	handleCategoryClick( e, elCategory ) {
+	handleCategoryClick( args ) {
+		const { e, target } = args;
+		const elCategory = target.closest(
+			AdminAddons.selectors.elCategory
+		);
 		e.preventDefault();
 
 		this.elAddonsPage
@@ -606,38 +600,35 @@ class AdminAddons {
 	}
 
 	/**
-	 * Handle input events: search, purchase code.
+	 * Handle search input.
 	 *
-	 * @param {Event} e Input event.
 	 * @return void
 	 */
-	onInput( e ) {
-		if ( ! this.elAddonsPage ) {
-			return;
-		}
+	handleSearchInput() {
+		this.filterAddons();
+	}
 
-		const el = e.target;
+	/**
+	 * Handle purchase code input.
+	 *
+	 * @param {Object} args Input event arguments.
+	 * @return void
+	 */
+	handlePurchaseCodeInput( args ) {
+		const { e, target: el } = args;
+		e.preventDefault();
+		el.classList.remove( 'is-error' );
+		el.removeAttribute( 'aria-invalid' );
+		const purchaseCode = el.value;
+		const elItemPurchase = el.closest(
+			AdminAddons.selectors.elItemPurchase
+		);
 
-		if ( 'lp-search-addons__input' === el.id ) {
-			this.filterAddons();
-		}
-
-		// Events change input purchase code.
-		if ( el.classList.contains( 'enter-purchase-code' ) ) {
-			e.preventDefault();
-			el.classList.remove( 'is-error' );
-			el.removeAttribute( 'aria-invalid' );
-			const purchaseCode = el.value;
-			const elItemPurchase = el.closest(
-				AdminAddons.selectors.elItemPurchase
+		if ( elItemPurchase ) {
+			const input = elItemPurchase.querySelector(
+				'input[name=purchase-code]'
 			);
-
-			if ( elItemPurchase ) {
-				const input = elItemPurchase.querySelector(
-					'input[name=purchase-code]'
-				);
-				input.value = purchaseCode;
-			}
+			input.value = purchaseCode;
 		}
 	}
 }

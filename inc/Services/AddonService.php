@@ -5,10 +5,12 @@ namespace LearnPress\Services;
 use DateTime;
 use Exception;
 use LearnPress\Helpers\Singleton;
+use LP_Debug;
 use LP_Helper;
 use LP_Settings;
 use LP_WP_Filesystem;
 use Plugin_Upgrader;
+use stdClass;
 use Throwable;
 use WP_Ajax_Upgrader_Skin;
 
@@ -21,6 +23,7 @@ defined( 'ABSPATH' ) || exit;
  * purchase code validation.
  *
  * @package LearnPress\Services
+ * @change from LP_Manager_Addons class old
  * @since 4.2.1
  * @version 1.0.1
  */
@@ -28,9 +31,9 @@ class AddonService {
 	use Singleton;
 
 	/**
-	 * @var string Path to local addons data file.
+	 * @var string list addons config on the github
 	 */
-	public $path_list_addons = LP_PLUGIN_PATH . 'inc/admin/views/addons/addons-data.json';
+	public $url_list_addons = 'https://learnpress.github.io/learnpress/version-addons.json';
 	/**
 	 * @var string Link download plugin from ThimPress.
 	 */
@@ -79,22 +82,54 @@ class AddonService {
 	public function init(): void {}
 
 	/**
-	 * Read the bundled add-ons data without making a loopback HTTP request.
+	 * Get addons data from the remote source.
 	 *
-	 * @return string
-	 * @throws Exception When the local data file cannot be read.
+	 * @return object
 	 */
-	public function get_addons_data(): string {
-		if ( ! is_readable( $this->path_list_addons ) ) {
-			throw new Exception( __( 'Add-ons data file is not readable.', 'learnpress' ) );
-		}
+	public function get_remote_data(): object {
+		$data = new stdClass();
 
-		$data = file_get_contents( $this->path_list_addons );
-		if ( false === $data || '' === trim( $data ) ) {
-			throw new Exception( __( 'Add-ons data file is empty.', 'learnpress' ) );
+		try {
+			if ( ! empty( $this->url_list_addons ) ) {
+				$response = wp_remote_get(
+					$this->url_list_addons,
+					array(
+						'timeout' => 30,
+					)
+				);
+
+				if ( ! is_wp_error( $response )
+					&& 200 === wp_remote_retrieve_response_code( $response ) ) {
+					$data = LP_Helper::json_decode( wp_remote_retrieve_body( $response ) );
+				}
+			}
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Get list addons from file local - for test.
+	 *
+	 * @return object
+	 * @throws Exception When the local data file cannot be read.
+	 */
+	public function get_local_data(): object {
+		$data = new stdClass();
+		$file = LP_PLUGIN_PATH . 'inc/admin/views/addons/addons-data.json';
+
+		if ( ! file_exists( $file ) || ! is_readable( $file ) ) {
+			return $data;
+		}
+
+		$content = file_get_contents( $file );
+		if ( false === $content ) {
+			return $data;
+		}
+
+		return LP_Helper::json_decode( $content );
 	}
 
 	/**
@@ -104,9 +139,12 @@ class AddonService {
 	 * @throws Exception
 	 */
 	public function get_addons(): object {
-		$addons = LP_Helper::json_decode( $this->get_addons_data() );
+		//$addons = $this->get_local_data();
+		$addons = $this->get_remote_data();
 
-		return $this->get_addons_purchased( $addons );
+		$addons = $this->get_addons_purchased( $addons );
+
+		return apply_filters( 'learn-press/data/addons', $addons );
 	}
 
 	/**

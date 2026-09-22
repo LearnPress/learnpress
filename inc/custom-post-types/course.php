@@ -216,7 +216,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @param array    $posts
 		 * @param WP_Query $wp_query
 		 *
-		 * @return array|WP_Query
+		 * @return array
 		 * @since 4.4.8
 		 * @version 1.0.0
 		 */
@@ -227,6 +227,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 
 				// Check screen
+				if ( ! function_exists( 'get_current_screen' ) ) {
+					return $posts;
+				}
+
 				$curren_screen = get_current_screen();
 				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_COURSE_CPT ) {
 					return $posts;
