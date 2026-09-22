@@ -31,10 +31,10 @@ class AddonsToolbarTest extends TestCase {
 
 	#[Test]
 	public function toolbar_uses_accessible_filter_controls_and_search(): void {
-		$template = file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons.php' );
+		$template = file_get_contents( dirname( __DIR__, 3 ) . '/inc/TemplateHooks/Admin/AdminAddonsPage.php' );
 
 		$this->assertIsString( $template );
-		$this->assertStringContainsString( 'class="lp-addons-toolbar"', $template );
+		$this->assertStringContainsString( 'lp-addons-toolbar', $template );
 		$this->assertStringContainsString( 'class="lp-addons-filter__item', $template );
 		$this->assertStringContainsString( 'aria-pressed=', $template );
 		$this->assertStringContainsString( 'type="search"', $template );
@@ -83,7 +83,7 @@ class AddonsToolbarTest extends TestCase {
 	#[Test]
 	public function addon_prices_use_regular_and_sale_price_fields(): void {
 		$data     = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons/addons-data.json' ) );
-		$template = file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons.php' );
+		$template = file_get_contents( dirname( __DIR__, 3 ) . '/inc/TemplateHooks/Admin/AdminAddonsPage.php' );
 		$styles   = file_get_contents( dirname( __DIR__, 3 ) . '/assets/src/scss/admin/_addons.scss' );
 
 		$this->assertIsObject( $data );
@@ -241,7 +241,7 @@ class AddonsToolbarTest extends TestCase {
 
 	#[Test]
 	public function addon_badge_is_rendered_beside_the_wrapping_title(): void {
-		$template   = file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons.php' );
+		$template   = file_get_contents( dirname( __DIR__, 3 ) . '/inc/TemplateHooks/Admin/AdminAddonsPage.php' );
 		$stylesheet = file_get_contents( dirname( __DIR__, 3 ) . '/assets/src/scss/admin/_addons.scss' );
 
 		$this->assertStringContainsString( 'lp-addon-item__heading', $template );

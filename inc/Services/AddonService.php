@@ -101,6 +101,8 @@ class AddonService {
 				if ( ! is_wp_error( $response )
 					&& 200 === wp_remote_retrieve_response_code( $response ) ) {
 					$data = LP_Helper::json_decode( wp_remote_retrieve_body( $response ) );
+				} else {
+					throw new Exception( $response->get_error_message() );
 				}
 			}
 		} catch ( Throwable $e ) {

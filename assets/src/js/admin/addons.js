@@ -30,7 +30,6 @@ class AdminAddons {
 		elSearchInput: '#lp-search-addons__input',
 		elItemPurchase: '.lp-addon-item__purchase',
 		elPurchaseInstall: '.purchase-install',
-		elPurchaseUpdate: '.purchase-update',
 		elPurchaseCode: '.enter-purchase-code',
 		elLicense: '.lp-addon-license',
 		elAddonVersionCurrent: '.addon-version-current',
@@ -387,48 +386,42 @@ class AdminAddons {
 			return;
 		}
 
-		if ( action === 'purchase' ) {
-			elItemPurchase.style.display = 'block';
+		if ( action === 'purchase' || action === 'update-purchase-code' ) {
 			const elPurchaseInstall = elItemPurchase.querySelector(
 				selectors.elPurchaseInstall
 			);
 			const elPurchaseCode = elPurchaseInstall.querySelector(
 				selectors.elPurchaseCode
 			);
-			elPurchaseCode.classList.remove( 'is-error' );
-			elPurchaseCode.removeAttribute( 'aria-invalid' );
-			elPurchaseInstall.style.display = 'flex';
-			elPurchaseCode.focus();
-			el.classList.remove( 'handling' );
-			return;
-		} else if ( action === 'update-purchase-code' ) {
-			const elPurchaseUpdate = elItemPurchase.querySelector(
-				selectors.elPurchaseUpdate
+			const elPurchaseSubmit = elPurchaseInstall.querySelector(
+				'.lp-addon-purchase__submit'
 			);
-			const elPurchaseCode = elPurchaseUpdate.querySelector(
-				selectors.elPurchaseCode
-			);
-			const elLicense = elAddonItem.querySelector( selectors.elLicense );
-			elPurchaseCode.value = elLicense
-				? elLicense.dataset.purchaseCodeMasked || ''
-				: '';
+
+			if ( action === 'update-purchase-code' ) {
+				const elLicense = elAddonItem.querySelector( selectors.elLicense );
+				elPurchaseCode.value = elLicense
+					? elLicense.dataset.purchaseCodeMasked || ''
+					: '';
+				elPurchaseSubmit.dataset.action = 'update-purchase';
+			} else {
+				elPurchaseCode.value = '';
+				elPurchaseSubmit.dataset.action = 'install';
+			}
+
 			elPurchaseCode.classList.remove( 'is-error' );
 			elPurchaseCode.removeAttribute( 'aria-invalid' );
 			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value =
 				'';
-			elPurchaseUpdate.style.display = 'flex';
+			elPurchaseInstall.style.display = 'flex';
 			elItemPurchase.style.display = 'block';
+			elPurchaseCode.focus();
 			el.classList.remove( 'handling' );
 			return;
 		} else if ( action === 'cancel' ) {
 			elItemPurchase.style.display = 'none';
-			elItemPurchase
-				.querySelectorAll(
-					`${ selectors.elPurchaseInstall }, ${ selectors.elPurchaseUpdate }`
-				)
-				.forEach( ( panel ) => {
-					panel.style.display = 'none';
-				} );
+			elItemPurchase.querySelector(
+				selectors.elPurchaseInstall
+			).style.display = 'none';
 			el.classList.remove( 'handling' );
 			return;
 		}
@@ -468,7 +461,7 @@ class AdminAddons {
 			if ( action === 'install' ) {
 				elAddonItem.classList.add( 'installed', 'activated' );
 				elAddonItem.classList.remove( 'not_installed' );
-				if ( resData && resData.purchase_code_masked ) {
+				if ( resData ) {
 					elAddonItem.classList.add( 'license' );
 					this.updateLicensePanel( elAddonItem, resData );
 				}
@@ -478,11 +471,9 @@ class AdminAddons {
 					selectors.elPurchaseInstall
 				).style.display = 'none';
 				elItemPurchase
-					.querySelector( selectors.elPurchaseUpdate )
+					.querySelector( selectors.elPurchaseInstall )
 					.querySelector( selectors.elPurchaseCode ).value =
-					resData && resData.purchase_code_masked
-						? resData.purchase_code_masked
-						: '';
+					'';
 			} else if ( action === 'update' ) {
 				const elAddonVersionCurrent = elAddonItem.querySelector(
 					selectors.elAddonVersionCurrent
@@ -497,7 +488,7 @@ class AdminAddons {
 				this.updateLicensePanel( elAddonItem, resData );
 				elItemPurchase.style.display = 'none';
 				elItemPurchase.querySelector(
-					selectors.elPurchaseUpdate
+					selectors.elPurchaseInstall
 				).style.display = 'none';
 				elItemPurchase
 					.querySelectorAll(
@@ -514,7 +505,7 @@ class AdminAddons {
 			'update-purchase' === action
 		) {
 			const elPurchasePanel = el.closest(
-				`${ selectors.elPurchaseInstall }, ${ selectors.elPurchaseUpdate }`
+				selectors.elPurchaseInstall
 			);
 			const elPurchaseCode = elPurchasePanel
 				? elPurchasePanel.querySelector( selectors.elPurchaseCode )
