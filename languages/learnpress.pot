@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.8\n"
+"Project-Id-Version: LearnPress 4.4.9-beta-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-18T10:51:35+00:00\n"
+"POT-Creation-Date: 2026-09-22T08:00:59+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -42,7 +42,7 @@ msgstr ""
 #: inc/admin/class-lp-admin-webhooks-table-list.php:25
 #: inc/admin/views/quiz/editor.php:47
 #: inc/admin/views/settings/webhooks-form.php:21
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:183
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:201
 #: templates/global/become-teacher-form.php:35
 #: templates/profile/tabs/courses/course-list.php:32
 msgid "Name"
@@ -124,7 +124,7 @@ msgstr ""
 #: config/profile-tabs.php:59
 #: config/settings/permalink.php:165
 #: config/wp-menus.php:51
-#: inc/admin/views/addons.php:181
+#: inc/admin/views/addons.php:251
 #: inc/TemplateHooks/Admin/AdminSettingsPage.php:308
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:354
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:265
@@ -132,7 +132,7 @@ msgstr ""
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:208
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:212
 #: inc/TemplateHooks/CourseBuilder/Settings/BuilderSettingsTemplate.php:57
-#: learnpress.php:883
+#: learnpress.php:886
 msgid "Settings"
 msgstr ""
 
@@ -170,6 +170,8 @@ msgid "Width"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-button/edit.js:88
+#: inc/admin/views/addons.php:307
+#: inc/admin/views/addons.php:329
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:776
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1943
 #: templates/single-course/buttons/purchase.php:33
@@ -270,7 +272,7 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:19
 #: config/elementor/course/materials.php:76
 #: inc/TemplateHooks/Admin/AI/AdminEditWithAITemplate.php:815
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:185
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:203
 msgid "Size"
 msgstr ""
 
@@ -323,7 +325,7 @@ msgstr ""
 #: config/settings/profile.php:73
 #: inc/admin/views/quiz/editor.php:48
 #: inc/Models/WPTables/QuestionsTable.php:38
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:184
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:202
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:761
 #: inc/Widgets/course-extra.php:30
 msgid "Type"
@@ -331,7 +333,7 @@ msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:20
 #: config/elementor/course/materials.php:81
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:186
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:204
 msgid "Download"
 msgstr ""
 
@@ -510,7 +512,7 @@ msgstr ""
 
 #: assets/src/apps/js/blocks/courses/course-item-template/edit.js:185
 #: config/settings/course.php:121
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:348
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:369
 msgid "Load More"
 msgstr ""
 
@@ -698,7 +700,7 @@ msgstr ""
 #: inc/admin/views/quiz/modal-choose-items.php:55
 #: inc/custom-post-types/question.php:237
 #: inc/custom-post-types/quiz.php:205
-#: inc/custom-post-types/quiz.php:473
+#: inc/custom-post-types/quiz.php:480
 #: inc/Models/WPTables/QuizzesTable.php:37
 #: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:175
 #: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:385
@@ -910,6 +912,7 @@ msgstr ""
 #: inc/admin/class-lp-admin.php:166
 #: inc/admin/lp-admin-functions.php:1451
 #: inc/admin/settings/class-lp-settings-emails.php:157
+#: inc/admin/views/addons.php:27
 #: inc/admin/views/help-center/data-online.php:83
 #: inc/admin/views/help-center/data-online.php:86
 #: inc/admin/views/setup/header.php:52
@@ -969,9 +972,9 @@ msgstr ""
 #: config/course-builder/menus.php:19
 #: inc/admin/class-lp-admin-assets.php:210
 #: inc/admin/views/meta-boxes/course/settings.php:302
-#: inc/custom-post-types/lesson.php:354
-#: inc/custom-post-types/lesson.php:355
-#: inc/custom-post-types/lesson.php:358
+#: inc/custom-post-types/lesson.php:364
+#: inc/custom-post-types/lesson.php:365
+#: inc/custom-post-types/lesson.php:368
 #: inc/TemplateHooks/Course/AdminEditSettingTemplate.php:360
 #: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:249
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderListLessonsTemplate.php:67
@@ -1469,14 +1472,14 @@ msgstr ""
 
 #: config/elementor/course/list-courses.php:43
 #: config/elementor/instructor/single-instructor.php:23
-#: inc/admin/views/setup/steps/learning-experience.php:103
+#: inc/admin/views/setup/steps/learning-experience.php:107
 #: inc/lp-template-functions.php:1351
 msgid "List"
 msgstr ""
 
 #: config/elementor/course/list-courses.php:44
 #: config/elementor/instructor/single-instructor.php:24
-#: inc/admin/views/setup/steps/learning-experience.php:89
+#: inc/admin/views/setup/steps/learning-experience.php:91
 #: inc/lp-template-functions.php:1350
 msgid "Grid"
 msgstr ""
@@ -1594,7 +1597,8 @@ msgid "Button text"
 msgstr ""
 
 #: config/elementor/instructor/become-a-teacher.php:32
-#: inc/admin/views/addons.php:225
+#: inc/admin/views/addons.php:301
+#: inc/admin/views/addons.php:323
 #: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:89
 #: templates/global/become-teacher-form.php:58
 msgid "Submit"
@@ -1769,9 +1773,9 @@ msgstr ""
 #: config/profile-tabs.php:38
 #: config/settings/permalink.php:131
 #: inc/admin/class-lp-admin-assets.php:178
-#: inc/custom-post-types/order.php:541
-#: inc/custom-post-types/order.php:542
-#: inc/custom-post-types/order.php:546
+#: inc/custom-post-types/order.php:558
+#: inc/custom-post-types/order.php:559
+#: inc/custom-post-types/order.php:563
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:64
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:562
 msgid "Orders"
@@ -1888,7 +1892,7 @@ msgstr[1] ""
 #: config/settings/permalink.php:46
 #: inc/class-lp-helper.php:586
 #: inc/course/lp-course-functions.php:411
-#: inc/custom-post-types/lesson.php:356
+#: inc/custom-post-types/lesson.php:366
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseLessonBlockType.php:79
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseOfflineLessonBlockType.php:80
 #: inc/lp-template-functions.php:1102
@@ -3967,12 +3971,11 @@ msgid "Statistics"
 msgstr ""
 
 #: config/wp-menus.php:42
-#: learnpress.php:893
+#: learnpress.php:896
 msgid "Add-ons"
 msgstr ""
 
 #: config/wp-menus.php:43
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:40
 msgid "LearnPress Add-ons"
 msgstr ""
 
@@ -4082,7 +4085,7 @@ msgid "Invalid item"
 msgstr ""
 
 #: inc/admin/class-lp-admin-ajax.php:548
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2190
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2199
 msgid "Permission denied"
 msgstr ""
 
@@ -4149,16 +4152,16 @@ msgid "Previous year"
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:165
-#: inc/admin/views/addons.php:268
+#: inc/admin/views/addons.php:270
 #: inc/admin/views/meta-boxes/order/actions.php:45
 #: inc/admin/views/meta-boxes/order/exports-invoice.php:87
 #: inc/admin/views/statistics/parts/filter-bar.php:69
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:479
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1225
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1369
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1595
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1777
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1923
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1604
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1786
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1932
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:100
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:118
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:194
@@ -4431,7 +4434,7 @@ msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:213
 #: inc/admin/views/dashboard/plugin-status/html-results.php:36
-#: inc/Models/PostModel.php:601
+#: inc/Models/PostModel.php:639
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1152
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1196
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:110
@@ -4445,7 +4448,7 @@ msgstr ""
 #: inc/admin/views/statistics/orders.php:25
 #: inc/admin/views/statistics/overview.php:16
 #: inc/Models/OrderPostModel.php:100
-#: inc/Models/PostModel.php:611
+#: inc/Models/PostModel.php:649
 #: inc/order/class-lp-order.php:292
 #: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:346
 #: inc/templates/class-lp-template-profile.php:118
@@ -4559,6 +4562,7 @@ msgstr ""
 #: inc/admin/class-lp-admin-assets.php:233
 #: inc/admin/class-lp-admin-webhooks-table-list.php:94
 #: inc/admin/class-lp-admin-webhooks-table-list.php:174
+#: inc/admin/views/addons.php:173
 #: inc/admin/views/settings/webhooks-form.php:39
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1072
 msgid "Active"
@@ -4804,6 +4808,7 @@ msgid "Events"
 msgstr ""
 
 #: inc/admin/class-lp-admin-webhooks-table-list.php:29
+#: inc/admin/views/addons.php:44
 #: inc/admin/views/dashboard/plugin-status/html-results.php:37
 msgid "Updated"
 msgstr ""
@@ -4970,6 +4975,8 @@ msgstr ""
 
 #: inc/admin/class-lp-modal-search-items.php:61
 #: inc/admin/class-lp-modal-search-users.php:51
+#: inc/admin/views/addons.php:291
+#: inc/admin/views/addons.php:313
 #: inc/admin/views/course/modal-choose-items.php:66
 #: inc/admin/views/meta-boxes/order/details.php:249
 #: inc/admin/views/quiz/modal-choose-items.php:58
@@ -5229,7 +5236,8 @@ msgid "Quiz id %s does not exist."
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:2040
-#: inc/admin/views/addons.php:264
+#: inc/admin/views/addons.php:40
+#: inc/admin/views/addons.php:79
 #: inc/admin/views/tools/course/html-reset-user-item.php:33
 #: inc/TemplateHooks/Profile/ProfileQuizzesTemplate.php:250
 #: inc/templates/class-lp-template-profile.php:116
@@ -5244,10 +5252,10 @@ msgstr ""
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:970
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1226
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1369
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1596
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1777
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1924
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2022
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1605
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1786
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1933
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2031
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:100
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:119
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:195
@@ -5267,16 +5275,15 @@ msgid "Publish"
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:2055
-#: inc/admin/views/addons.php:164
-#: inc/admin/views/addons.php:266
+#: inc/admin/views/addons.php:42
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:235
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:257
 msgid "Paid"
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:2060
-#: inc/admin/views/addons.php:164
-#: inc/admin/views/addons.php:267
+#: inc/admin/views/addons.php:43
+#: inc/admin/views/addons.php:238
 #: inc/admin/views/themes/data-online.php:110
 #: inc/course/abstract-course.php:674
 #: inc/course/abstract-course.php:713
@@ -5358,6 +5365,7 @@ msgid "Email"
 msgstr ""
 
 #: inc/admin/meta-box/fields/list-emails.php:51
+#: inc/admin/views/addons.php:183
 msgid "Manage"
 msgstr ""
 
@@ -5370,6 +5378,7 @@ msgid "Disable all"
 msgstr ""
 
 #: inc/admin/meta-box/fields/payment-order.php:7
+#: inc/admin/views/addons.php:31
 #: templates/checkout/payment.php:25
 msgid "Payment"
 msgstr ""
@@ -5527,83 +5536,138 @@ msgstr ""
 msgid "Reset Password"
 msgstr ""
 
-#: inc/admin/views/addons.php:127
+#: inc/admin/views/addons.php:25
+#: inc/MCP/Abilities.php:227
+#: inc/TemplateHooks/Admin/AI/AdminCreateCourseAITemplate.php:131
+#: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:656
+msgid "Create Course"
+msgstr ""
+
+#: inc/admin/views/addons.php:26
+msgid "Engagement"
+msgstr ""
+
+#: inc/admin/views/addons.php:28
+msgid "Manage Course"
+msgstr ""
+
+#: inc/admin/views/addons.php:29
+msgid "Marketing Optimization"
+msgstr ""
+
+#: inc/admin/views/addons.php:30
+msgid "Monetize Course"
+msgstr ""
+
+#: inc/admin/views/addons.php:37
+msgid "Filter add-ons"
+msgstr ""
+
+#: inc/admin/views/addons.php:41
+msgid "Installed"
+msgstr ""
+
+#: inc/admin/views/addons.php:45
+msgid "License"
+msgstr ""
+
+#: inc/admin/views/addons.php:46
+msgid "Not Installed"
+msgstr ""
+
+#: inc/admin/views/addons.php:72
+msgid "Search add-ons"
+msgstr ""
+
+#: inc/admin/views/addons.php:74
+msgid "Search add-ons by name…"
+msgstr ""
+
+#: inc/admin/views/addons.php:77
+msgid "Filter add-ons by category"
+msgstr ""
+
+#: inc/admin/views/addons.php:171
+msgid "License:"
+msgstr ""
+
+#: inc/admin/views/addons.php:173
+msgid "Expired"
+msgstr ""
+
+#: inc/admin/views/addons.php:173
+msgid "Deactivated"
+msgstr ""
+
+#: inc/admin/views/addons.php:173
+msgid "Not Activated"
+msgstr ""
+
+#: inc/admin/views/addons.php:178
+#, php-format
+msgid "(Updates until %s)"
+msgstr ""
+
+#: inc/admin/views/addons.php:191
+#: inc/admin/views/tools/html-template.php:56
+msgid "Version"
+msgstr ""
+
+#: inc/admin/views/addons.php:194
+msgid "Docs"
+msgstr ""
+
+#: inc/admin/views/addons.php:196
+msgid "View Details"
+msgstr ""
+
+#: inc/admin/views/addons.php:203
 msgid "Latest version"
 msgstr ""
 
-#: inc/admin/views/addons.php:138
-msgid "Extends Now"
+#: inc/admin/views/addons.php:213
+msgid "Extend now"
 msgstr ""
 
-#: inc/admin/views/addons.php:143
+#: inc/admin/views/addons.php:217
 msgid "Your update and support has expired!"
 msgstr ""
 
-#: inc/admin/views/addons.php:148
+#: inc/admin/views/addons.php:220
 #, php-format
 msgid "You have a license of for this item with %s days of update & support remaining. Please extend the update & support license to keep updating the latest versions & receive customer support from ThimPress before it expires."
 msgstr ""
 
-#: inc/admin/views/addons.php:165
-msgid "WP.org"
-msgstr ""
-
-#: inc/admin/views/addons.php:165
-msgid "Thimpress"
-msgstr ""
-
-#: inc/admin/views/addons.php:191
-msgid "Change Purchase Code"
-msgstr ""
-
-#: inc/admin/views/addons.php:198
-#: inc/admin/views/addons.php:201
+#: inc/admin/views/addons.php:259
+#: inc/admin/views/addons.php:264
+#: inc/admin/views/addons.php:267
 #: inc/admin/views/tools/course/html-install-sample-data.php:65
 msgid "Install"
 msgstr ""
 
-#: inc/admin/views/addons.php:206
+#: inc/admin/views/addons.php:277
 msgid "Deactivate"
 msgstr ""
 
-#: inc/admin/views/addons.php:210
+#: inc/admin/views/addons.php:281
 msgid "Activate"
 msgstr ""
 
-#: inc/admin/views/addons.php:218
-#: inc/admin/views/addons.php:239
+#: inc/admin/views/addons.php:290
+#: inc/admin/views/addons.php:296
+#: inc/admin/views/addons.php:312
+#: inc/admin/views/addons.php:318
 msgid "Purchase Code"
 msgstr ""
 
-#: inc/admin/views/addons.php:220
-#: inc/admin/views/addons.php:240
+#: inc/admin/views/addons.php:297
+#: inc/admin/views/addons.php:319
 msgid "Enter Purchase Code"
 msgstr ""
 
-#: inc/admin/views/addons.php:245
-#: inc/admin/views/meta-boxes/fields/materials.php:82
-#: inc/class-lp-assets.php:184
-#: inc/TemplateHooks/Profile/ProfileTemplate.php:175
-#: inc/TemplateHooks/Profile/ProfileTemplate.php:271
-#: templates/profile/tabs/settings/avatar.php:27
-#: templates/profile/tabs/settings/cover-image.php:23
-msgid "Save"
-msgstr ""
-
-#: inc/admin/views/addons.php:265
-msgid "Installed"
-msgstr ""
-
-#: inc/admin/views/addons.php:269
-msgid "License"
-msgstr ""
-
-#: inc/admin/views/addons.php:270
-msgid "Not Installed"
-msgstr ""
-
-#: inc/admin/views/addons.php:295
-msgid "Search name addon"
+#: inc/admin/views/addons.php:304
+#: inc/admin/views/addons.php:326
+msgid "Don’t have a code?"
 msgstr ""
 
 #: inc/admin/views/admin-notices/addons-new-version.php:27
@@ -5819,7 +5883,7 @@ msgstr ""
 
 #: inc/admin/views/help-center/html-help-center.php:38
 #: inc/admin/views/setup/steps/finish.php:308
-#: learnpress.php:888
+#: learnpress.php:891
 msgid "Documentation"
 msgstr ""
 
@@ -6294,6 +6358,15 @@ msgstr ""
 msgid "Add Course Materials"
 msgstr ""
 
+#: inc/admin/views/meta-boxes/fields/materials.php:82
+#: inc/class-lp-assets.php:184
+#: inc/TemplateHooks/Profile/ProfileTemplate.php:175
+#: inc/TemplateHooks/Profile/ProfileTemplate.php:271
+#: templates/profile/tabs/settings/avatar.php:27
+#: templates/profile/tabs/settings/cover-image.php:23
+msgid "Save"
+msgstr ""
+
 #: inc/admin/views/meta-boxes/fields/materials.php:88
 #: inc/admin/views/meta-boxes/fields/materials.php:144
 msgid "File Title"
@@ -6347,7 +6420,7 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/lesson/settings.php:29
 #: inc/custom-post-types/abstract.php:1147
-#: inc/custom-post-types/lesson.php:328
+#: inc/custom-post-types/lesson.php:338
 #: inc/lp-template-functions.php:1105
 #: inc/Models/WPTables/LessonsTable.php:44
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:183
@@ -7044,7 +7117,7 @@ msgid "Partially enabled"
 msgstr ""
 
 #: inc/admin/views/setup/steps/finish.php:80
-msgid "Setup Complete! Your Academy Is Ready"
+msgid "Setup Complete! Your LMS Is Ready"
 msgstr ""
 
 #: inc/admin/views/setup/steps/finish.php:84
@@ -7164,27 +7237,27 @@ msgstr ""
 msgid "Course Listing"
 msgstr ""
 
-#: inc/admin/views/setup/steps/learning-experience.php:90
+#: inc/admin/views/setup/steps/learning-experience.php:92
 msgid "Show courses in a visual grid."
 msgstr ""
 
-#: inc/admin/views/setup/steps/learning-experience.php:104
+#: inc/admin/views/setup/steps/learning-experience.php:108
 msgid "Show courses in a simple list."
 msgstr ""
 
-#: inc/admin/views/setup/steps/learning-experience.php:112
+#: inc/admin/views/setup/steps/learning-experience.php:116
 msgid "Course Enrollment"
 msgstr ""
 
-#: inc/admin/views/setup/steps/learning-experience.php:117
+#: inc/admin/views/setup/steps/learning-experience.php:121
 msgid "Start courses automatically after purchase"
 msgstr ""
 
-#: inc/admin/views/setup/steps/learning-experience.php:118
+#: inc/admin/views/setup/steps/learning-experience.php:122
 msgid "Students can start learning right away."
 msgstr ""
 
-#: inc/admin/views/setup/steps/learning-experience.php:125
+#: inc/admin/views/setup/steps/learning-experience.php:129
 msgid "Don’t worry, you can always change these settings later! 😊"
 msgstr ""
 
@@ -7970,10 +8043,6 @@ msgstr ""
 msgid "Unversioned (%d)"
 msgstr ""
 
-#: inc/admin/views/tools/html-template.php:56
-msgid "Version"
-msgstr ""
-
 #: inc/admin/views/tools/html-template.php:58
 msgid "Core version"
 msgstr ""
@@ -8226,6 +8295,38 @@ msgstr ""
 #: inc/AI/Assistant/TokenQuotaGuard.php:370
 #, php-format
 msgid "Daily AI usage limit reached (%d tokens). Please try again tomorrow or contact the site administrator."
+msgstr ""
+
+#: inc/Ajax/AddonsAjax.php:54
+#: inc/Ajax/AddonsAjax.php:56
+msgid "You do not have permission."
+msgstr ""
+
+#: inc/Ajax/AddonsAjax.php:61
+#: inc/Ajax/AddonsAjax.php:71
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:143
+#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:127
+msgid "Params is invalid!"
+msgstr ""
+
+#: inc/Ajax/AddonsAjax.php:66
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:138
+msgid "Action is invalid!"
+msgstr ""
+
+#: inc/Ajax/AddonsAjax.php:80
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:152
+msgid "You do not have permission to install plugins."
+msgstr ""
+
+#: inc/Ajax/AddonsAjax.php:130
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:202
+msgid "You do not have permission to activate plugins."
+msgstr ""
+
+#: inc/Ajax/AddonsAjax.php:153
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:222
+msgid "successfully"
 msgstr ""
 
 #: inc/Ajax/AI/AIAssistantAjax.php:57
@@ -8544,16 +8645,16 @@ msgstr ""
 msgid "Invalid lesson status transition"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1528
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1537
 msgid "Quiz title is required"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1546
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1555
 msgid "Create quiz successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1550
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1694
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1559
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1703
 #: inc/Ajax/EditQuizAjax.php:47
 #: inc/Models/Quiz/QuizQuestionModel.php:175
 #: inc/Models/Quiz/QuizQuestionModel.php:211
@@ -8563,80 +8664,80 @@ msgstr ""
 msgid "Quiz not found"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1580
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1603
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1589
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1612
 msgid "Update quiz successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1602
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1611
 msgid "Quiz saved as draft"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1603
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1612
 msgid "Insert quiz successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1655
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1664
 msgid "You are not allowed to duplicate this quiz"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1671
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1680
 msgid "Quiz duplicated successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1698
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1707
 msgid "You are not allowed to delete this quiz"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1710
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1719
 msgid "Cannot move this quiz to trash"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1722
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1731
 msgid "This quiz has been moved to trash."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1726
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1735
 msgid "Quiz must be trashed before deleting."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1732
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1741
 msgid "Cannot delete this quiz."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1734
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1743
 msgid "Delete this quiz successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1750
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1759
 msgid "Quiz cannot be moved to draft"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1753
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1762
 msgid "Quiz cannot be moved to publish"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1761
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1770
 msgid "Quiz has been moved to draft"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1762
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1771
 msgid "Quiz has been moved to publish"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1764
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1773
 msgid "Invalid quiz status transition"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1818
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1827
 msgid "You are not allowed to duplicate this question"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1834
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1843
 msgid "Question duplicated successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1870
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1879
 #: inc/Ajax/EditQuestionAjax.php:82
 #: inc/Models/QuizPostModel.php:242
 #: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:349
@@ -8644,12 +8745,12 @@ msgstr ""
 msgid "Question title is required"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1888
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1897
 msgid "Create question successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1892
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1962
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1901
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1971
 #: inc/Ajax/EditQuestionAjax.php:48
 #: inc/Ajax/EditQuestionAjax.php:77
 #: inc/Ajax/EditQuestionAjax.php:210
@@ -8661,60 +8762,60 @@ msgstr ""
 msgid "Question not found"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1910
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1931
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1919
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1940
 msgid "Update question successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1930
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1939
 msgid "Question saved as draft"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1931
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1940
 msgid "Insert question successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1966
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1975
 msgid "You are not allowed to delete this question"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1973
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1982
 msgid "Cannot move this question to trash"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1975
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1984
 msgid "This question has been moved to trash."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1979
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1988
 msgid "Question must be trashed before deleting."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1985
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1994
 msgid "Cannot delete this question."
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1987
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1996
 msgid "Delete this question successfully"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1998
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2007
 msgid "Question cannot be moved to publish"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2001
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2010
 msgid "Question has been moved to publish"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2011
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2020
 msgid "Question cannot be restored to draft"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2014
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2023
 msgid "Question has been restored to draft"
 msgstr ""
 
-#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2210
+#: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:2219
 msgid "Course Builder settings updated."
 msgstr ""
 
@@ -8836,12 +8937,12 @@ msgstr ""
 
 #: inc/Ajax/EditCurriculumAjax.php:465
 #: inc/Ajax/EditCurriculumAjax.php:515
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:63
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:65
 msgid "Item not found"
 msgstr ""
 
 #: inc/Ajax/EditCurriculumAjax.php:475
-#: inc/Ajax/EditCurriculumAjax.php:525
+#: inc/Ajax/EditCurriculumAjax.php:526
 msgid "Item updated successfully"
 msgstr ""
 
@@ -8968,7 +9069,7 @@ msgid "Missing export id"
 msgstr ""
 
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:67
-#: inc/custom-post-types/order.php:543
+#: inc/custom-post-types/order.php:560
 #: inc/Models/WPTables/OrdersTable.php:33
 #: templates/profile/tabs/orders/list.php:31
 msgid "Order"
@@ -9527,15 +9628,6 @@ msgid_plural "H5Ps"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/class-lp-manager-addons.php:130
-msgid "Install failed!"
-msgstr ""
-
-#: inc/class-lp-manager-addons.php:162
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:385
-msgid "Update failed!"
-msgstr ""
-
 #: inc/class-lp-page-controller.php:238
 #: inc/lp-template-functions.php:313
 msgid "Course Search Results"
@@ -9855,8 +9947,8 @@ msgid "Add a New Course"
 msgstr ""
 
 #: inc/custom-post-types/course.php:59
-#: inc/custom-post-types/lesson.php:360
-#: inc/custom-post-types/order.php:548
+#: inc/custom-post-types/lesson.php:370
+#: inc/custom-post-types/order.php:565
 #: inc/custom-post-types/question.php:240
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:858
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:954
@@ -9944,49 +10036,49 @@ msgstr ""
 msgid "Choose from the most used tags"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:317
+#: inc/custom-post-types/lesson.php:327
 #: inc/custom-post-types/question.php:123
 #: inc/custom-post-types/quiz.php:98
 msgid "Unassigned"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:339
+#: inc/custom-post-types/lesson.php:349
 msgid "No Preview"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:357
+#: inc/custom-post-types/lesson.php:367
 msgid "Add A New Lesson"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:359
+#: inc/custom-post-types/lesson.php:369
 msgid "View Lesson"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:361
+#: inc/custom-post-types/lesson.php:371
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:169
 msgid "Edit Lesson"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:362
+#: inc/custom-post-types/lesson.php:372
 #: inc/MCP/Abilities.php:294
 msgid "Update Lesson"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:363
+#: inc/custom-post-types/lesson.php:373
 msgid "Search Lessons"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:364
+#: inc/custom-post-types/lesson.php:374
 msgid "No lesson found"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:365
+#: inc/custom-post-types/lesson.php:375
 msgid "There was no lesson found in the trash"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:419
-#: inc/custom-post-types/question.php:532
-#: inc/custom-post-types/quiz.php:465
+#: inc/custom-post-types/lesson.php:429
+#: inc/custom-post-types/question.php:542
+#: inc/custom-post-types/quiz.php:472
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:311
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderListLessonsTemplate.php:287
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:372
@@ -10000,52 +10092,52 @@ msgstr ""
 msgid "Order number, course name, etc."
 msgstr ""
 
-#: inc/custom-post-types/order.php:544
+#: inc/custom-post-types/order.php:561
 msgid "Add A New Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:545
-#: inc/custom-post-types/order.php:676
+#: inc/custom-post-types/order.php:562
+#: inc/custom-post-types/order.php:693
 #: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:173
 #: templates/order/order-details.php:27
 msgid "Order Details"
 msgstr ""
 
-#: inc/custom-post-types/order.php:547
+#: inc/custom-post-types/order.php:564
 msgid "View Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:549
+#: inc/custom-post-types/order.php:566
 msgid "Update Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:550
+#: inc/custom-post-types/order.php:567
 msgid "Search Orders"
 msgstr ""
 
-#: inc/custom-post-types/order.php:551
+#: inc/custom-post-types/order.php:568
 msgid "No order found"
 msgstr ""
 
-#: inc/custom-post-types/order.php:552
+#: inc/custom-post-types/order.php:569
 msgid "There was no order found in the trash"
 msgstr ""
 
-#: inc/custom-post-types/order.php:684
+#: inc/custom-post-types/order.php:701
 msgid "Order Actions"
 msgstr ""
 
-#: inc/custom-post-types/order.php:692
+#: inc/custom-post-types/order.php:709
 msgid "Order Exports"
 msgstr ""
 
-#: inc/custom-post-types/order.php:722
+#: inc/custom-post-types/order.php:739
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:414
 #: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:146
 msgid "File not found"
 msgstr ""
 
-#: inc/custom-post-types/order.php:724
+#: inc/custom-post-types/order.php:741
 msgid "Invalid file path"
 msgstr ""
 
@@ -10107,7 +10199,7 @@ msgstr ""
 msgid "There was no questions found in the trash"
 msgstr ""
 
-#: inc/custom-post-types/question.php:540
+#: inc/custom-post-types/question.php:550
 msgid "Questions Options"
 msgstr ""
 
@@ -12073,12 +12165,6 @@ msgstr ""
 msgid "List course enrollments with optional filters and pagination."
 msgstr ""
 
-#: inc/MCP/Abilities.php:227
-#: inc/TemplateHooks/Admin/AI/AdminCreateCourseAITemplate.php:131
-#: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:656
-msgid "Create Course"
-msgstr ""
-
 #: inc/MCP/Abilities.php:228
 msgid "Create a new LearnPress course."
 msgstr ""
@@ -12545,7 +12631,7 @@ msgid "You do not have permission to delete section"
 msgstr ""
 
 #: inc/Models/OrderPostModel.php:112
-#: inc/Models/PostModel.php:605
+#: inc/Models/PostModel.php:643
 #: inc/order/class-lp-order.php:304
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:115
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:462
@@ -12565,22 +12651,22 @@ msgstr ""
 msgid "Refunded"
 msgstr ""
 
-#: inc/Models/PostModel.php:268
-#: inc/Models/PostModel.php:315
+#: inc/Models/PostModel.php:282
+#: inc/Models/PostModel.php:330
 msgid "You do not have permission to create item."
 msgstr ""
 
-#: inc/Models/PostModel.php:284
-#: inc/Models/PostModel.php:487
+#: inc/Models/PostModel.php:298
+#: inc/Models/PostModel.php:526
 #: inc/Models/Question/QuestionAnswerModel.php:177
 msgid "You do not have permission to edit this item."
 msgstr ""
 
-#: inc/Models/PostModel.php:328
+#: inc/Models/PostModel.php:343
 msgid "you do not have permission to edit this item."
 msgstr ""
 
-#: inc/Models/PostModel.php:603
+#: inc/Models/PostModel.php:641
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1151
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1197
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:111
@@ -12588,7 +12674,7 @@ msgstr ""
 msgid "Scheduled"
 msgstr ""
 
-#: inc/Models/PostModel.php:607
+#: inc/Models/PostModel.php:645
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1158
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:112
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:461
@@ -12597,17 +12683,17 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
-#: inc/Models/PostModel.php:609
+#: inc/Models/PostModel.php:647
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1181
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:114
 msgid "Private"
 msgstr ""
 
-#: inc/Models/PostModel.php:613
+#: inc/Models/PostModel.php:651
 msgid "Auto Draft"
 msgstr ""
 
-#: inc/Models/PostModel.php:615
+#: inc/Models/PostModel.php:653
 msgid "Protected"
 msgstr ""
 
@@ -13144,46 +13230,25 @@ msgstr ""
 msgid "Years"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:274
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:275
 msgid "Dismissed!"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:571
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:650
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:572
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:651
 msgid "User or Course is invalid"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:612
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:613
 msgid "Assign users to courses successfully."
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:667
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:668
 msgid "Unassigned users from courses successfully."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:130
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:112
 msgid "Get addons successfully"
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:156
-msgid "Action is invalid!"
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:161
-#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:127
-msgid "Params is invalid!"
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:170
-msgid "You do not have permission to install plugins."
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:205
-msgid "You do not have permission to activate plugins."
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:223
-msgid "successfully"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:420
@@ -13404,6 +13469,11 @@ msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:382
 msgid "Updated."
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:385
+#: inc/Services/AddonService.php:378
+msgid "Update failed!"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:408
@@ -13649,6 +13719,16 @@ msgstr ""
 msgid "User's quiz no data!"
 msgstr ""
 
+#: inc/Services/AddonService.php:210
+#: inc/Services/AddonService.php:233
+#: inc/Services/AddonService.php:238
+msgid "Purchase code is invalid!"
+msgstr ""
+
+#: inc/Services/AddonService.php:346
+msgid "Install failed!"
+msgstr ""
+
 #: inc/Services/OpenAiService.php:145
 msgid "Empty response from OpenAI API."
 msgstr ""
@@ -13789,16 +13869,16 @@ msgid "Last year"
 msgstr ""
 
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:44
-msgid "* If you use a Premium Theme that includes LearnPress add-ons, you can go to the <strong>Plugins</strong> tab on Dashboard of theme to download or update them."
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:427
+msgid "Access denied."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:49
-#, php-format
-msgid "If you have purchased a premium add-on separately, you can enter your purchase code (%s) to download or update the add-ons here."
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:69
+msgid "Discover high-performance Premium & Education themes optimized 100% for LearnPress LMS."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:53
-msgid "get from your account"
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:91
+msgid "LearnPress Add-ons New"
 msgstr ""
 
 #: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:170
@@ -13844,10 +13924,6 @@ msgstr ""
 
 #: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:362
 msgid "Add Question"
-msgstr ""
-
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:427
-msgid "Access denied."
 msgstr ""
 
 #: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:470
@@ -14738,8 +14814,13 @@ msgstr ""
 msgid "Send message"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:110
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:117
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:121
 msgid "Course not found!"
+msgstr ""
+
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:127
+msgid "Lesson not found!"
 msgstr ""
 
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:179

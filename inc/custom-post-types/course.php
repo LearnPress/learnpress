@@ -257,10 +257,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$order        = LP_Request::get_param( 'order', '', 'key' );
 				$filter_price = LP_Helper::sanitize_params_submitted( $_REQUEST['filter_price'] ?? '' );
 
-				$filter        = new CoursePostFilter();
-				$filter->page  = $paged;
-				$filter->limit = $posts_per_page;
-				$post_db       = PostDB::getInstance();
+				$filter              = new CoursePostFilter();
+				$filter->page        = $paged;
+				$filter->limit       = $posts_per_page;
+				$filter->only_fields = array_map(
+					function ( $field ) {
+						return "p.{$field}";
+					},
+					$filter->all_fields
+				);
+				$filter->field_count = 'p.ID';
+				$post_db             = PostDB::getInstance();
 
 				if ( ! empty( $status ) ) {
 					$filter->post_status = array( $status );
