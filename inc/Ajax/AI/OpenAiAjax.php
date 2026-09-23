@@ -207,8 +207,7 @@ class OpenAiAjax extends AbstractAjax {
 			if ( $is_course_builder ) {
 				$course_edit_url = \LearnPress\CourseBuilder\CourseBuilder::get_tab_link(
 					'courses',
-					$coursePostModel->get_id(),
-					'overview'
+					$coursePostModel->get_id()
 				);
 			}
 
