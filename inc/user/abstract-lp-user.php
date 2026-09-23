@@ -646,6 +646,18 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$return = $user_course->complete( LP_COURSE_FINISHED );
 
 				if ( $return ) {
+					/**
+					 * LP_User_Item::complete() writes straight to the table, so it never runs
+					 * UserCourseModel::clean_caches() the way UserItemModel::save() does. The
+					 * cached model still reports the enrollment as in progress, and that cache
+					 * outlives the request wherever a persistent object cache is installed - the
+					 * course then reads back unfinished and keeps offering "Finish course".
+					 */
+					$userCourseModel = UserCourseModel::find( $this->get_id(), $course_id );
+					if ( $userCourseModel instanceof UserCourseModel ) {
+						$userCourseModel->clean_caches();
+					}
+
 					do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
 				}
 			}
