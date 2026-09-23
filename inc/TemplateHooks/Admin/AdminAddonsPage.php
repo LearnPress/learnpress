@@ -118,7 +118,7 @@ class AdminAddonsPage {
 					'wrapper_end' => '</div>',
 				),
 				$addons,
-				$active_tab
+				$data
 			);
 
 			$response->content = Template::combine_components( $section );
@@ -162,9 +162,8 @@ class AdminAddonsPage {
 		);
 
 		$section_tabs = array();
-		foreach ( $tabs as $tab => $name ) {
+		foreach ( $tabs as $tab => $tab_title ) {
 			$active_class = ( $tab === $active_tab ) ? ' nav-tab-active' : '';
-			$tab_title    = apply_filters( 'learn-press/admin/submenu-heading-tab-title', $name, $tab );
 
 			if ( $active_class ) {
 				$section_tabs[ $tab ] = sprintf(
@@ -285,62 +284,67 @@ class AdminAddonsPage {
 	public static function html_addon_item( object $addon, array $data = [] ): string {
 		$state = self::get_addon_classes_and_state( $addon, $data );
 
-		$section = array(
-			'wrapper'     => sprintf(
-				'<div class="lp-addon-item %s" data-slug="%s" data-category="%s" data-addon="%s">',
-				esc_attr( implode( ' ', $state['classes_status'] ) ),
-				esc_attr( $addon->slug ),
-				esc_attr( $state['addon_category'] ),
-				esc_attr( htmlentities2( wp_json_encode( $addon ) ) )
-			),
-			'content'     => '<div class="lp-addon-item__content">',
-			'header'      => self::html_addon_header( $addon ),
-			'license'     => ! $state['is_free']
-				? self::html_addon_license(
+		$section = apply_filters(
+			'learn-press/admin/addons/item',
+			array(
+				'wrapper'     => sprintf(
+					'<div class="lp-addon-item %s" data-slug="%s" data-category="%s" data-addon="%s">',
+					esc_attr( implode( ' ', $state['classes_status'] ) ),
+					esc_attr( $addon->slug ),
+					esc_attr( $state['addon_category'] ),
+					esc_attr( htmlentities2( wp_json_encode( $addon ) ) )
+				),
+				'content'     => '<div class="lp-addon-item__content">',
+				'header'      => self::html_addon_header( $addon ),
+				'license'     => ! $state['is_free']
+					? self::html_addon_license(
+						$addon,
+						array(
+							'license_status'        => $state['license_status'],
+							'number_days_remaining' => $state['number_days_remaining'],
+							'date_expired'          => $state['date_expired'],
+							'purchase_code_masked'  => $state['purchase_code_masked'],
+							'show_license_panel'    => $state['show_license_panel'],
+						)
+					)
+					: '',
+				'description' => sprintf(
+					'<p class="lp-addon-item__description" title="%s">%s</p>',
+					esc_attr( $addon->description ?? '' ),
+					esc_html( $addon->description ?? '' )
+				),
+				'meta'        => self::html_addon_meta(
 					$addon,
 					array(
-						'license_status'        => $state['license_status'],
-						'number_days_remaining' => $state['number_days_remaining'],
-						'date_expired'          => $state['date_expired'],
-						'purchase_code_masked'  => $state['purchase_code_masked'],
-						'show_license_panel'    => $state['show_license_panel'],
+						'version_current' => $state['version_current'],
 					)
-				)
-				: '',
-			'description' => sprintf(
-				'<p class="lp-addon-item__description" title="%s">%s</p>',
-				esc_attr( $addon->description ?? '' ),
-				esc_html( $addon->description ?? '' )
+				),
+				'new_update'  => $state['is_updated']
+					? sprintf(
+						'<span class="new-update">%s: <strong>%s</strong></span>',
+						esc_html__( 'Latest version', 'learnpress' ),
+						esc_html( $state['version_latest'] )
+					)
+					: '',
+				'content_end' => '</div>',
+				'actions'     => self::html_addon_actions(
+					$addon,
+					array(
+						'is_free'      => $state['is_free'],
+						'is_installed' => $state['is_installed'],
+						'is_updated'   => $state['is_updated'],
+					)
+				),
+				'purchase'    => self::html_purchase_panel(
+					$addon,
+					array(
+						'purchase_code_masked' => $state['purchase_code_masked'],
+					)
+				),
+				'wrapper_end' => '</div>',
 			),
-			'meta'        => self::html_addon_meta(
-				$addon,
-				array(
-					'version_current' => $state['version_current'],
-				)
-			),
-			'new_update'  => $state['is_updated']
-				? sprintf(
-					'<span class="new-update">%s: <strong>%s</strong></span>',
-					esc_html__( 'Latest version', 'learnpress' ),
-					esc_html( $state['version_latest'] )
-				)
-				: '',
-			'content_end' => '</div>',
-			'actions'     => self::html_addon_actions(
-				$addon,
-				array(
-					'is_free'      => $state['is_free'],
-					'is_installed' => $state['is_installed'],
-					'is_updated'   => $state['is_updated'],
-				)
-			),
-			'purchase'    => self::html_purchase_panel(
-				$addon,
-				array(
-					'purchase_code_masked' => $state['purchase_code_masked'],
-				)
-			),
-			'wrapper_end' => '</div>',
+			$addon,
+			$data
 		);
 
 		return Template::combine_components( $section );
@@ -363,7 +367,7 @@ class AdminAddonsPage {
 		$is_free               = $addon->is_free ?? 0;
 		$addon_base            = $addon->basename ?? '';
 		$version_latest        = $addon->version ?? 0;
-		$version_current       = 0;
+		$version_current       = $addon->version ?? 0;
 		$classes_status        = array();
 		$addon_purchased       = $addon->purchase_info ?? false;
 		$addon_category        = implode( ' ', array_map( 'sanitize_title', $addon->category ?? array() ) );
@@ -677,45 +681,42 @@ class AdminAddonsPage {
 			array(
 				'install'    => $is_free
 					? sprintf(
-						'<a class="btn-addon-action"
-						data-action="install" href="%s"
+						'<a class="lp-button btn-addon-action" data-action="install" href="%s"
 						target="_blank" rel="noopener">%s</a>',
 						esc_url( $addon->link ?? '' ),
 						esc_html__( 'Install', 'learnpress' )
 					)
 					: sprintf(
-						'<button class="btn-addon-action" data-action="install">
-						<span class="dashicons dashicons-update"></span>
+						'<button class="lp-button btn-addon-action" data-action="install">
 						<span class="text">%s</span>
 					</button>',
 						esc_html__( 'Install', 'learnpress' )
 					),
 				'purchase'   => sprintf(
-					'<button class="btn-addon-action" data-action="purchase">%s</button>',
+					'<button class="lp-button btn-addon-action" data-action="purchase">%s</button>',
 					esc_html__( 'Install', 'learnpress' )
 				),
 				'update'     => sprintf(
-					'<button class="btn-addon-action" data-action="update">
-					<span class="dashicons dashicons-update"></span>
+					'<button class="lp-button btn-addon-action" data-action="update">
 					<span class="text">%s</span>
 				</button>',
 					esc_html__( 'Update', 'learnpress' )
 				),
 				'deactivate' => sprintf(
-					'<button class="btn-addon-action" data-action="deactivate">
-					<span class="dashicons dashicons-update"></span>
+					'<button class="lp-button btn-addon-action" data-action="deactivate">
 					<span class="text">%s</span>
 				</button>',
 					esc_html__( 'Deactivate', 'learnpress' )
 				),
 				'activate'   => sprintf(
-					'<button class="btn-addon-action" data-action="activate">
-						<span class="dashicons dashicons-update"></span>
+					'<button class="lp-button btn-addon-action" data-action="activate">
 						<span class="text">%s</span>
 					</button>',
 					esc_html__( 'Activate', 'learnpress' )
 				),
-			)
+			),
+			$addon,
+			$data
 		);
 
 		$section = array(
@@ -752,7 +753,8 @@ class AdminAddonsPage {
 				esc_html__( 'Purchase Code', 'learnpress' )
 			),
 			'close'       => sprintf(
-				'<button class="btn-addon-action lp-addon-purchase__close" data-action="cancel" type="button" aria-label="%s">',
+				'<button class="btn-addon-action
+					lp-addon-purchase__close" data-action="cancel" type="button" aria-label="%s">',
 				esc_attr__( 'Close', 'learnpress' )
 			),
 			'close_icon'  => '<span class="lp-addon-purchase__close-symbol" aria-hidden="true">&times;</span>',
@@ -768,8 +770,8 @@ class AdminAddonsPage {
 				esc_attr__( 'Enter Purchase Code', 'learnpress' )
 			),
 			'field_end'   => '</label>',
-			'submit'      => '<button class="btn-addon-action lp-addon-purchase__submit" data-action="install" type="button">',
-			'submit_icon' => '<span class="dashicons dashicons-update"></span>',
+			'submit'      => '<button class="lp-button btn-addon-action lp-addon-purchase__submit"
+				data-action="install" type="button">',
 			'submit_text' => sprintf( '<span class="text">%s</span>', esc_html__( 'Submit', 'learnpress' ) ),
 			'submit_end'  => '</button>',
 			'divider'     => sprintf(

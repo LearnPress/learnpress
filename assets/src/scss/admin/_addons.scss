@@ -6,7 +6,7 @@
 	--lp-addon-item-border-color: #c3c4c7;
 }
 
-@media screen and (min-width: 1600px) {
+/*@media screen and (min-width: 1600px) {
 
 	.plugin-card:not(.hide-if-js):nth-child(even) {
 		margin-right: 8px;
@@ -15,7 +15,7 @@
 	.plugin-card:not(.hide-if-js):nth-child(3n) {
 		margin-right: 0;
 	}
-}
+}*/
 
 /*** Style Addons Manager ***/
 #lp-addons {
@@ -37,16 +37,6 @@
 		cursor: pointer;
 
 		&.btn-addon-action {
-			&.handling {
-				span {
-					display: none;
-
-					&.dashicons {
-						display: inline-flex;
-					}
-				}
-			}
-
 			&[data-action="cancel"] {
 				position: absolute;
 				right: 0;
@@ -56,13 +46,16 @@
 				padding: 7px 10px;
 			}
 
-			span.dashicons {
-				align-items: center;
-				display: none;
-				font-size: 1.125em;
-				width: auto;
-				height: auto;
-				animation: rotation 2s infinite linear;
+			&[data-action="update"] {
+				background: #27BF49;
+			}
+
+			&.loading{
+				&:before {
+					//font-size: 1rem;
+					//right: 48%;
+					color: white;
+				}
 			}
 		}
 
@@ -189,10 +182,10 @@
 			&.activated {
 				button, a {
 					&[data-action="setting"] {
-						display: block;
+						display: flex;
 					}
 					&[data-action="deactivate"] {
-						display: block;
+						display: flex;
 					}
 				}
 
@@ -208,7 +201,7 @@
 			&:not(.activated) {
 				button, a {
 					&[data-action="activate"] {
-						display: block;
+						display: flex;
 					}
 				}
 			}
@@ -233,7 +226,7 @@
 			&.purchase {
 				button, a {
 					&[data-action="purchase"] {
-						display: block;
+						display: flex;
 					}
 				}
 			}
@@ -241,7 +234,7 @@
 			&.free {
 				button, a {
 					&[data-action="install"] {
-						display: block;
+						display: flex;
 					}
 				}
 			}
@@ -258,14 +251,14 @@
 		&.update {
 			button {
 				&[data-action="update"] {
-					display: block;
+					display: flex;
 				}
 			}
 		}
 	}
 
 	/***** Toggle *****/
-	.lp-toggle-switch {
+	/*.lp-toggle-switch {
 		.lp-toggle-switch-label{
 			height: 20px;
 			align-items: center;
@@ -343,7 +336,7 @@
 		.dashicons {
 			animation: rotation 2s infinite linear;
 		}
-	}
+	}*/
 
 	.screen-reader-text:focus {
 		clip-path: inset(50%);
@@ -642,7 +635,7 @@
 			grid-template-columns: max-content;
 		}*/
 
-		.lp-addon-button,
+		/*.lp-addon-button,*/
 		.btn-addon-action {
 			box-sizing: border-box;
 			padding: $cb-spacing-sm $cb-spacing-lg;
@@ -669,7 +662,7 @@
 			}
 		}
 
-		.lp-addon-button {
+/*		.lp-addon-button {
 			border-color: $cb-border-input;
 			color: $cb-text-secondary;
 			background: $cb-bg;
@@ -680,7 +673,7 @@
 				color: $cb-primary;
 				background: $cb-bg-hover;
 			}
-		}
+		}*/
 
 		.lp-addon-item__actions .btn-addon-action[data-action="activate"] {
 			border-color: $cb-success;
@@ -701,10 +694,10 @@
 			}
 		}
 
-		.lp-addon-button {
+/*		.lp-addon-button {
 			display: none;
 			align-items: center;
-		}
+		}*/
 
 		.btn-addon-action[data-action="update-purchase-code"] {
 			min-height: 36px;
@@ -750,8 +743,8 @@
 			&__wrapper {
 				height: 100%;
 
-				.purchase-install,
-				.purchase-update {
+				.purchase-install /*,
+				.purchase-update*/ {
 					position: static;
 					box-sizing: border-box;
 					width: 100%;

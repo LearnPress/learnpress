@@ -371,7 +371,7 @@ class AdminAddons {
 		}
 
 		e.preventDefault();
-		el.classList.add( 'handling' );
+		lpUtils.lpSetLoadingEl( el, 1 );
 
 		let purchaseCode = '';
 		const elAddonItem = el.closest( selectors.elAddonItem );
@@ -382,7 +382,7 @@ class AdminAddons {
 		);
 
 		if ( ! addon ) {
-			el.classList.remove( 'handling' );
+			lpUtils.lpSetLoadingEl( el, 0 );
 			return;
 		}
 
@@ -415,14 +415,14 @@ class AdminAddons {
 			elPurchaseInstall.style.display = 'flex';
 			elItemPurchase.style.display = 'block';
 			elPurchaseCode.focus();
-			el.classList.remove( 'handling' );
+			lpUtils.lpSetLoadingEl( el, 0 );
 			return;
 		} else if ( action === 'cancel' ) {
 			elItemPurchase.style.display = 'none';
 			elItemPurchase.querySelector(
 				selectors.elPurchaseInstall
 			).style.display = 'none';
-			el.classList.remove( 'handling' );
+			lpUtils.lpSetLoadingEl( el, 0 );
 			return;
 		}
 
@@ -516,7 +516,7 @@ class AdminAddons {
 			}
 		}
 
-		el.classList.remove( 'handling' );
+		lpUtils.lpSetLoadingEl( el, 0 );
 	}
 
 	/**
