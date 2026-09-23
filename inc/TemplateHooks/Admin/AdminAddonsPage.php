@@ -604,6 +604,14 @@ class AdminAddonsPage {
 			esc_html__( 'View Details', 'learnpress' )
 		);
 
+		if ( ! empty( $addon->setting ) ) {
+			$html .= sprintf(
+				'<a data-action="setting" href="%s" target="_blank" rel="noopener">%s</a>',
+				esc_url( site_url( $addon->setting ) ),
+				esc_html__( 'Settings', 'learnpress' )
+			);
+		}
+
 		return sprintf( '<div class="lp-addon-item__meta">%s</div>', $html );
 	}
 
@@ -653,14 +661,6 @@ class AdminAddonsPage {
 		$is_updated    = $data['is_updated'] ?? false;
 		$actions_left  = '';
 		$actions_right = '';
-
-		if ( ! empty( $addon->setting ) ) {
-			$actions_right .= sprintf(
-				'<a class="lp-addon-button" data-action="setting" href="%s" target="_blank" rel="noopener">%s</a>',
-				esc_url( site_url( $addon->setting ) ),
-				esc_html__( 'Settings', 'learnpress' )
-			);
-		}
 
 		if ( $is_free ) {
 			$actions_right .= sprintf(

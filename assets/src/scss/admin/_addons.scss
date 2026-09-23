@@ -69,10 +69,10 @@
 		&[data-action="update"] {
 			background: #27BF49;
 		}
+	}
 
-		&[data-action="setting"] {
-			background: #2D72DA;
-		}
+	[data-action="setting"] {
+		display: none;
 	}
 
 	.lp-addon-item {
@@ -246,13 +246,13 @@
 				}
 			}
 
-			.lp-addon-item {
+			/*.lp-addon-item {
 				&__actions {
 					&__right {
 						display: none;
 					}
 				}
-			}
+			}*/
 		}
 
 		&.update {
@@ -569,7 +569,7 @@
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
-			gap: $cb-spacing-sm;
+			gap: $cb-spacing-xs;
 			color: $cb-text-subtle;
 			font-size: $cb-font-sm;
 			line-height: 1.4;
