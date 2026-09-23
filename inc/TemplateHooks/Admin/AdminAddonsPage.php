@@ -419,6 +419,7 @@ class AdminAddonsPage {
 				&& isset( $number_days_remaining )
 				&& 0 === $number_days_remaining ) {
 				$license_status = 'expired';
+				$classes_status[] = 'expired';
 			}
 		}
 

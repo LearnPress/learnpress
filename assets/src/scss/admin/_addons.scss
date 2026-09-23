@@ -47,7 +47,9 @@
 			}
 
 			&[data-action="update"] {
-				background: #27BF49;
+				border-color: $cb-badge-blue;
+				color: $cb-bg;
+				background: $cb-badge-blue;
 			}
 
 			&.loading{
@@ -57,10 +59,6 @@
 					color: white;
 				}
 			}
-		}
-
-		&[data-action="update"] {
-			background: #27BF49;
 		}
 	}
 
@@ -188,14 +186,6 @@
 						display: flex;
 					}
 				}
-
-				&.update {
-					button {
-						&[data-action="update"] {
-							display: block;
-						}
-					}
-				}
 			}
 
 			&:not(.activated) {
@@ -249,9 +239,11 @@
 		}
 
 		&.update {
-			button {
-				&[data-action="update"] {
-					display: flex;
+			&:not(.expired) {
+				button {
+					&[data-action="update"] {
+						display: flex;
+					}
 				}
 			}
 		}
