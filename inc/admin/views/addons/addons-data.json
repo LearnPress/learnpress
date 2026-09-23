@@ -32,7 +32,7 @@
         "image": "https://updates.thimpress.com/images/learnpress-stripe.png",
         "link": "https://thimpress.com/product/stripe-add-on-for-learnpress/",
         "link_doc": "https://learnpresslms.com/docs/stripe-payment-add-on-for-learnpress",
-        "setting": "",
+        "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=stripe",
         "is_free": 0,
         "author": "",
         "is_org": 0,

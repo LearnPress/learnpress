@@ -124,20 +124,24 @@
 			margin: 0 calc(var(--lp-addon-item-padding) * -1);
 			display: flex;
 			align-items: center;
+			overflow: auto;
 
 			&__left {
 				flex: 3;
 				display: flex;
-				gap: 5px;
+				gap: $cb-spacing-xs;
 				align-items: center;
 
-				button {
+				button, a {
 					display: none;
 				}
 			}
 
 			&__right {
-				button {
+				display: flex;
+				gap: $cb-spacing-xs;
+
+				button, a {
 					display: none;
 					background: transparent;
 					color: #2271b1;
@@ -183,7 +187,7 @@
 
 		&.installed {
 			&.activated {
-				button {
+				button, a {
 					&[data-action="setting"] {
 						display: block;
 					}
@@ -202,7 +206,7 @@
 			}
 
 			&:not(.activated) {
-				button {
+				button, a {
 					&[data-action="activate"] {
 						display: block;
 					}
@@ -210,7 +214,7 @@
 			}
 
 			&.purchase {
-				button {
+				button, a {
 					&[data-action="update-purchase-code"] {
 						display: inline-flex;
 						align-items: center;
@@ -227,7 +231,7 @@
 
 		&.not_installed {
 			&.purchase {
-				button {
+				button, a {
 					&[data-action="purchase"] {
 						display: block;
 					}
@@ -235,7 +239,7 @@
 			}
 
 			&.free {
-				button {
+				button, a {
 					&[data-action="install"] {
 						display: block;
 					}
@@ -621,22 +625,22 @@
 			border-top: 1px solid $cb-border;
 		}
 
-		&__actions__left,
+		/*&__actions__left,
 		&__actions__right {
 			display: flex;
 			align-items: center;
 			gap: $cb-spacing-sm;
-		}
+		}*/
 
-		&__actions__left {
+		/*&__actions__left {
 			flex: 1;
 			justify-content: flex-end;
-		}
+		}*/
 
-		&__actions__right {
+		/*&__actions__right {
 			display: grid;
 			grid-template-columns: max-content;
-		}
+		}*/
 
 		.lp-addon-button,
 		.btn-addon-action {
@@ -711,12 +715,12 @@
 			background: transparent;
 		}
 
-		&.installed [data-action="setting"] {
+		/*&.installed [data-action="setting"] {
 			display: inline-flex;
 			visibility: hidden;
-		}
+		}*/
 
-		&.installed.activated [data-action="setting"] {
+		/*&.installed.activated [data-action="setting"] {
 			visibility: visible;
 		}
 
@@ -732,7 +736,7 @@
 		&.installed:not(.activated) .lp-addon-item__actions__right .btn-addon-action[data-action="activate"],
 		&.installed.activated .lp-addon-item__actions__right .btn-addon-action[data-action="deactivate"] {
 			visibility: visible;
-		}
+		}*/
 
 		&__purchase {
 			z-index: 5;

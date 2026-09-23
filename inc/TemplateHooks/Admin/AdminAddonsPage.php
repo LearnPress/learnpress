@@ -655,7 +655,7 @@ class AdminAddonsPage {
 		$actions_right = '';
 
 		if ( ! empty( $addon->setting ) ) {
-			$actions_left .= sprintf(
+			$actions_right .= sprintf(
 				'<a class="lp-addon-button" data-action="setting" href="%s" target="_blank" rel="noopener">%s</a>',
 				esc_url( site_url( $addon->setting ) ),
 				esc_html__( 'Settings', 'learnpress' )
@@ -663,24 +663,24 @@ class AdminAddonsPage {
 		}
 
 		if ( $is_free ) {
-			$actions_left .= sprintf(
+			$actions_right .= sprintf(
 				'<a class="btn-addon-action" data-action="install" href="%s" target="_blank" rel="noopener">%s</a>',
 				esc_url( $addon->link ?? '' ),
 				esc_html__( 'Install', 'learnpress' )
 			);
 		} else {
-			$actions_left .= sprintf(
+			$actions_right .= sprintf(
 				'<button class="btn-addon-action" data-action="install"><span class="dashicons dashicons-update"></span><span class="text">%s</span></button>',
 				esc_html__( 'Install', 'learnpress' )
 			);
 		}
 
-		$actions_left .= sprintf(
+		$actions_right .= sprintf(
 			'<button class="btn-addon-action" data-action="purchase">%s</button>',
 			esc_html__( 'Install', 'learnpress' )
 		);
 
-		$actions_left .= sprintf(
+		$actions_right .= sprintf(
 			'<button class="btn-addon-action" data-action="update"><span class="dashicons dashicons-update"></span><span class="text">%s</span></button>',
 			esc_html__( 'Update', 'learnpress' )
 		);
@@ -695,10 +695,11 @@ class AdminAddonsPage {
 			esc_html__( 'Activate', 'learnpress' )
 		);
 
-		$price_html = self::html_addon_price( $addon );
-		$section    = array(
+		$price_html    = self::html_addon_price( $addon );
+		$actions_left .= sprintf( '<div class="lp-addon-item__price">%s</div>', $price_html );
+
+		$section = array(
 			'wrapper'     => '<div class="lp-addon-item__actions">',
-			'price'       => sprintf( '<div class="lp-addon-item__price">%s</div>', $price_html ),
 			'actions_left'  => sprintf( '<div class="lp-addon-item__actions__left">%s</div>', $actions_left ),
 			'actions_right' => sprintf( '<div class="lp-addon-item__actions__right">%s</div>', $actions_right ),
 			'wrapper_end' => '</div>',
@@ -737,7 +738,7 @@ class AdminAddonsPage {
 			</div>',
 			esc_html__( 'Purchase Code', 'learnpress' ),
 			esc_attr__( 'Close', 'learnpress' ),
-			esc_attr__( 'Enter Purchase Code', 'learnpress' ) ,
+			esc_attr__( 'Enter Purchase Code', 'learnpress' ),
 			esc_html__( 'Submit', 'learnpress' ),
 			esc_html__( 'Don\'t have a code?', 'learnpress' ),
 			esc_url( $addon->link ?? '' ),
