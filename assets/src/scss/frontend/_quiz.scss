@@ -64,7 +64,7 @@
 		position: relative;
 		margin: 0 0 18px 0;
 		padding: 10px;
- 		cursor: pointer;
+		cursor: pointer;
 		@include border-radius(4px);
 		@include transition(background linear 0.25s);
 
@@ -85,37 +85,40 @@
 				width: 3px;
 				background: #ddd;
 				content: "";
- 				@include transition(background linear 0.25s);
+				@include transition(background linear 0.25s);
 			}
 		}
 
 		input[type="checkbox"],
 		input[type="radio"] {
- 			@include appearance(initial);
+			@include appearance(initial);
 			position: relative;
-			z-index: 10;
-			width: 26px;
-			min-width: 26px;
-			height: 26px;
+			z-index: 3;
+			width: 24px;
+			min-width: 24px;
+			height: 24px;
 			margin: 0 10px 0 3px;
 			border: 2px solid #cfcfcf;
 			background: #f9fafc;
- 			@include border-radius(4px);
+			@include border-radius(4px);
+
 			&::after {
 				position: absolute;
 				top: 50%;
 				left: 50%;
 				transform: translate(-50%, -50%);
- 			}
+			}
+
 			&:focus {
 				outline: none;
 			}
 
- 			&:checked {
+			&:checked {
 				~ .option-title {
 					.option-title-content {
 						position: relative;
 					}
+
 					&::before {
 						background: #00adff;
 					}
@@ -124,33 +127,36 @@
 				&::after {
 					opacity: 1;
 
- 				}
+				}
 			}
 
 		}
 
-		input[type="checkbox"]{
+		input[type="checkbox"] {
 			&::after {
 				margin-top: 0;
- 			}
+			}
+
 			&::after {
 				width: auto;
 				box-sizing: content-box;
 				height: auto;
 				color: #3db748;
 				font-family: 'lp-icon';
- 				font-size: 16px;
+				font-size: 16px;
 				opacity: 0;
 				content: "\f00c";
 				background: none;
 				border: none;
 			}
+
 			&:checked {
 				&::after {
- 					border: none;
+					border: none;
 				}
 			}
 		}
+
 		input[type="radio"] {
 
 			@include border-radius(50%);
@@ -158,8 +164,10 @@
 			&::before {
 				border-radius: 50%;
 			}
+
 			&:checked {
 				border-color: #28A746;
+
 				&::after {
 					content: "";
 					width: 12px;
@@ -177,16 +185,18 @@
 		&:hover {
 			background: #e1f5ff;
 		}
- 		&.answered-wrong {
- 			input[type="checkbox"] {
-  				&::after {
-					 color: #f00;
+
+		&.answered-wrong {
+			input[type="checkbox"] {
+				&::after {
+					color: #f00;
 				}
 			}
-			input[type="radio"]::after{
-				background:#f00 ;
+
+			input[type="radio"]::after {
+				background: #f00;
 			}
- 		}
+		}
 	}
 }
 
@@ -213,6 +223,7 @@ button[data-counter] {
 
 		.result-message {
 			background: $primary-color-course-item-status;
+
 			&::after {
 				content: "\f00c";
 			}
@@ -229,9 +240,10 @@ button[data-counter] {
 		justify-content: center;
 		@include border-radius($border-radius-global);
 		gap: 8px;
+
 		&::after {
- 			font-family: 'lp-icon';
- 			content: "\f00d";
+			font-family: 'lp-icon';
+			content: "\f00d";
 		}
 	}
 
@@ -246,7 +258,7 @@ button[data-counter] {
 		.result-achieved {
 			padding-bottom: 7px;
 			border-bottom: 1px solid $border-color;
-			//color: #333;
+			//color: $text-color-base;
 			font-size: 1.75em;
 			font-weight: 500;
 			line-height: 1;
@@ -289,9 +301,11 @@ button[data-counter] {
 		.result-statistic-field {
 			display: flex;
 			margin: 0;
+
 			+ li {
-				border-top: 1px dashed  $border-color;
+				border-top: 1px dashed $border-color;
 			}
+
 			span, p {
 				margin: 0;
 				flex: 1;
@@ -315,7 +329,7 @@ button[data-counter] {
 			}
 
 			p {
-				color: #333;
+				color: $text-color-base;
 				font-weight: 500;
 				text-align: right;
 			}
@@ -353,11 +367,12 @@ button[data-counter] {
 		}
 	}
 }
-.lp-sidebar-toggle{
-	&__close{
-		#content-item-quiz{
-			.quiz-status{
-				> div{
+
+.lp-sidebar-toggle {
+	&__close {
+		#content-item-quiz {
+			.quiz-status {
+				> div {
 					max-width: 100%;
 					flex-direction: column;
 					@media (min-width: 426px) {
@@ -367,7 +382,8 @@ button[data-counter] {
 					@media (min-width: 1025px) {
 						max-width: 792px;
 					}
-					.questions-index{
+
+					.questions-index {
 						@media (min-width: 450px) {
 							width: 35%;
 							text-align: inherit;
@@ -376,6 +392,7 @@ button[data-counter] {
 							width: 50%;
 						}
 					}
+
 					> div {
 						@media (min-width: 450px) {
 							width: 65%;
@@ -388,15 +405,17 @@ button[data-counter] {
 						@media (min-width: 1120px) {
 							width: 50%;
 						}
-						.submit-quiz{
-							#button-submit-quiz{
-								@media (max-width:768px){
+
+						.submit-quiz {
+							#button-submit-quiz {
+								@media (max-width: 768px) {
 									white-space: inherit;
 									padding: 8px 16px;
 								}
 							}
 						}
-						.countdown{
+
+						.countdown {
 
 						}
 					}
@@ -404,10 +423,11 @@ button[data-counter] {
 			}
 		}
 	}
-	&__open{
-		#content-item-quiz{
-			.quiz-status{
-				> div{
+
+	&__open {
+		#content-item-quiz {
+			.quiz-status {
+				> div {
 					max-width: 100%;
 					flex-direction: column;
 					@media (min-width: 650px) {
@@ -416,7 +436,8 @@ button[data-counter] {
 					@media (min-width: 1120px) {
 						max-width: 792px;
 					}
-					.questions-index{
+
+					.questions-index {
 						width: 100%;
 						text-align: center;
 						@media (min-width: 650px) {
@@ -427,6 +448,7 @@ button[data-counter] {
 							width: 50%;
 						}
 					}
+
 					> div {
 						width: 100%;
 						justify-content: center;
@@ -447,15 +469,17 @@ button[data-counter] {
 						@media (min-width: 1120px) {
 							width: 50%;
 						}
-						.submit-quiz{
-							#button-submit-quiz{
-								@media (max-width:768px){
+
+						.submit-quiz {
+							#button-submit-quiz {
+								@media (max-width: 768px) {
 									white-space: inherit;
 									padding: 8px 16px;
 								}
 							}
 						}
-						.countdown{
+
+						.countdown {
 
 						}
 					}
@@ -479,9 +503,9 @@ button[data-counter] {
 		width: 100%;
 		max-width: 792px;
 		margin: 0 auto;
-		padding: 8px 16px;
-		border-radius: 4px;
-		background: var(--lp-primary-color);
+		padding: 16px;
+		border-radius: $border-radius-global;
+		background: $bg-grey;
 		justify-content: center;
 		align-items: center;
 
@@ -493,19 +517,19 @@ button[data-counter] {
 			@media (max-width: 480px) {
 				justify-content: center;
 			}
-			.submit-quiz{
-				#button-submit-quiz{
+
+			.submit-quiz {
+				#button-submit-quiz {
 					margin: 0;
 					border-radius: 4px;
 					overflow: hidden;
 					white-space: nowrap;
 				}
 			}
-			.countdown{
-				margin: 0;
-				border-radius: 4px;
-				overflow: hidden;
-				padding: 12px;
+
+			.countdown {
+				display: flex;
+				align-items: center;
 			}
 		}
 
@@ -522,19 +546,19 @@ button[data-counter] {
 		line-height: 1.625em;
 
 		span {
-			color: #333;
+			color: $text-color-base;
 			font-weight: 500;
 		}
 	}
 
 	.countdown {
 		min-height: 38px;
-		color: #333;
+		color: $text-color-base;
 		font-weight: 500;
 		text-align: center;
 
 		.fas {
-			color: #333;
+			color: $text-color-base;
 			font-size: 1em;
 		}
 
@@ -547,7 +571,7 @@ button[data-counter] {
 				position: absolute;
 				width: 40px;
 				height: 40px;
-				border: 4px solid #b1c1e6;
+				border: 4px solid $border-color;
 				border-radius: 50%;
 				content: "";
 
@@ -585,16 +609,17 @@ button[data-counter] {
 		margin: 0 0 0 10px;
 		border: none;
 		border-radius: 0;
-		background: #fff;
+		background: $color-primary;
+		color: $color-white;
 		//text-transform: uppercase;
 		font-weight: 600;
+
 		&:hover {
 			background: var(--lp-secondary-color);
 		}
 	}
 
 	&.submitting {
-
 		.submit-quiz button {
 			background: #ddd;
 		}
@@ -614,7 +639,7 @@ button[data-counter] {
 			display: block;
 			min-width: 20px;
 			padding: 8px;
-			border: 1px solid #ddd;
+			border: 1px solid $border-color;
 			color: #999;
 			background: #f5f5f5;
 			box-shadow: none;
@@ -758,7 +783,7 @@ button[data-counter] {
 		&__title {
 			margin: 0;
 			padding: 0 8px 0 0;
-			color: #333;
+			color: $text-color-base;
 			font-weight: 300;
 		}
 
@@ -787,7 +812,7 @@ button[data-counter] {
 	position: relative;
 	width: 300px;
 	height: 300px;
-	border-color: #ddd;
+	border-color: $border-color;
 
 	&::before {
 		position: absolute;
@@ -797,7 +822,7 @@ button[data-counter] {
 		box-sizing: border-box;
 		width: 100%;
 		height: 100%;
-		border: 10px solid #ddd;
+		border: 10px solid $border-color;
 		border-radius: 50%;
 		content: "";
 	}
@@ -902,7 +927,7 @@ button[data-counter] {
 			}
 
 			.result-achieved {
-				color: #333;
+				color: $text-color-base;
 			}
 
 			.result-message {
@@ -919,6 +944,7 @@ button[data-counter] {
 	.question {
 		margin-bottom: 60px;
 	}
+
 	.question-answers .answer-options {
 		margin: 0;
 		padding: 0;
@@ -929,12 +955,13 @@ button[data-counter] {
 
 	.answer-option {
 		padding: 0;
+
 		input[type="radio"],
 		input[type="checkbox"] {
 			position: absolute;
 			top: 50%;
 			//margin: -19px 0 0 10px;
- 			border-color: #d9e0f1;
+			border-color: #d9e0f1;
 			@include transform(translateY(-50%));
 			margin: 0 0 0 10px;
 			@include border-radius(4px);
@@ -944,11 +971,11 @@ button[data-counter] {
 			}
 
 			&:disabled {
-				border-color: #ddd;
+				border-color: $border-color;
 				background: #f9f9f9;
 
 				&::after {
-					border-color: #ddd;
+					border-color: $border-color;
 				}
 			}
 
@@ -973,7 +1000,7 @@ button[data-counter] {
 			display: flex;
 			width: 100%;
 			margin: 0;
-			padding: 10px 10px 10px 50px;
+			padding: 12px 12px 12px 44px;
 			border: 1px solid $border-color;
 			color: $text-color-accent;
 			font-weight: normal;
@@ -999,8 +1026,7 @@ button[data-counter] {
 		}
 
 		&.answered-wrong {
-
-			.option-title {
+ 			.option-title {
 				border-color: #ff6423;
 			}
 		}
@@ -1009,19 +1035,20 @@ button[data-counter] {
 	.question-title {
 		display: block;
 		margin-top: 0;
-		margin-bottom: 18px;
- 		font-size: 1.125em;
-		font-weight: 500;
+		margin-bottom: $spacing-base-2x;
+		font-size: $font-size-large;
+		font-weight: 600;
 
 		.edit-link {
 			float: right;
-			font-size: 0.875em;
+			font-size: $font-size-label;
 			font-weight: normal;
 		}
 	}
 
 	.question-content {
-		margin-bottom: 30px;
+		margin-bottom: $spacing-base-5x;
+
 		img {
 			//width: 100%;
 			max-width: 100%;
@@ -1029,8 +1056,8 @@ button[data-counter] {
 	}
 
 	.question-response {
-		margin-bottom: 10px;
-		font-size: 0.875em;
+		margin-bottom: $spacing-base-2x;
+		font-size: $font-size-label;
 
 		.label {
 			display: inline-block;
@@ -1074,7 +1101,8 @@ button[data-counter] {
 		background: transparent;
 		font-size: 0;
 		text-decoration: none;
-		border:none;
+		border: none;
+
 		&::before {
 			font-family: 'lp-icon';
 			font-size: 18px;
@@ -1086,11 +1114,11 @@ button[data-counter] {
 			span {
 				position: absolute;
 				bottom: 100%;
-    			left: 100%;
+				left: 100%;
 				width: auto;
 				padding: 6px 9px;
 				border-radius: 2px;
-				color: #333;
+				color: $text-color-base;
 				background: #eee;
 				font-size: 14px;
 				font-weight: 400;
@@ -1147,7 +1175,7 @@ button[data-counter] {
 				code {
 					margin: 0 5px;
 					padding: 0 6px;
-					background: #ddd;
+					background: $border-color;
 					line-height: 1;
 
 					@include border-radius(4px);
@@ -1176,28 +1204,10 @@ button[data-counter] {
 	.attempts-heading {
 		margin-bottom: 15px;
 	}
+
 	table {
 		th, td {
 			text-align: center;
 		}
 	}
-	//table {
-	//	border-spacing: 0;
-	//	border-left: 1px solid $border-color;
-	//	border-top: 1px solid $border-color;
-	//	width: 100%;
-	//
-	//	tr {
-	//		th, td {
-	//			border-right: 1px solid $border-color;
-	//			border-bottom: 1px solid $border-color;
-	//			padding: 5px 15px;
-	//			text-align: center;
-	//		}
-	//
-	//		th {
-	//			font-weight: 500;
-	//		}
-	//	}
-	//}
 }

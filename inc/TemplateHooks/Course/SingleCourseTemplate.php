@@ -1601,7 +1601,7 @@ class SingleCourseTemplate {
 			'count_items' => sprintf(
 				'<div class="section-count-items">%s</div>',
 				sprintf(
-					_n( '%d Lesson', '%d Lessons', count( $items ), 'learnpress' ),
+					_n( '%d Item', '%d Items', count( $items ), 'learnpress' ),
 					count( $items )
 				)
 			),

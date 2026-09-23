@@ -26,23 +26,24 @@ $border-radius-global: var(--lp-border-radius, 5px);
 
 
 //*** Font Size
-$font-size-base: var(--lp-font-size-base, 1em);
-$font-size-large: calc(($font-size-base * 1.25)); // ~18px
-$font-size-small: calc(($font-size-base * 0.925)); // ~12px
-$font-size-label: calc(($font-size-base * 0.86)); // ~11px
+// Approximate values below assume $font-size-base resolves to 16px.
+$font-size-base: var(--lp-font-size-base, 1em); // fallback: 1em
+$font-size-large: calc(($font-size-base * 1.18)); // ~18px
+$font-size-small: calc(($font-size-base * 0.9)); // ~14px
+$font-size-label: calc(($font-size-base * 0.82)); // ~13px
 
 // Typography for H
-$font-size-h1: calc(($font-size-base * 2.15)); // ~36px
-$font-size-h2: calc(($font-size-base * 1.8)); // ~30px
-$font-size-h3: calc(($font-size-base * 1.6)); // ~24px
-$font-size-h4: calc(($font-size-base * 1.25)); // ~18px
-$font-size-h5: calc(($font-size-base * 1.15));
-$font-size-h6: calc(($font-size-base * 0.925)); // ~12px
-$heading-font-weight: 700;
+$font-size-h1: calc(($font-size-base * 2.25)); // ~36px
+$font-size-h2: calc(($font-size-base * 1.85)); // ~30px
+$font-size-h3: calc(($font-size-base * 1.6)); // ~26px
+$font-size-h4: calc(($font-size-base * 1.25)); // ~20px
+$font-size-h5: calc(($font-size-base * 1.15)); // ~18px
+$font-size-h6: calc(($font-size-base * 0.925)); // ~15px
+ $heading-font-weight: 700;
 $link-font-weight: var(--lp-font-weight-link, 600);
 
 // LP Single Item Popup
-$popup_header_height: 70px;
+$popup_header_height: 80px;
 
 // ** Padding item Global
 $spacing-base: 4px;

@@ -250,7 +250,9 @@
 		margin: 0;
 		padding: 0;
 		letter-spacing: unset;
-
+		&::before{
+			display: none;
+		}
 		a {
 			display: -webkit-box;
 			overflow: hidden;
@@ -328,7 +330,7 @@
 			font-size: $font-size-base;
 
 			a {
-				font-size: $font-size-h5;
+				font-size: 1.35em;
 				display: block;
 				margin-bottom: 4px;
 				font-weight: 600;
@@ -375,7 +377,8 @@
 	top: $popup_header_height;
 
 	.search-course {
-
+		padding: 0;
+		margin: 0;
 		// display: flex;
 		// position: absolute;
 		// height: $popup_header_height;
@@ -415,14 +418,15 @@
 		button {
 			position: absolute;
 			top: 0;
-			right: 35px;
-			height: $popup_header_height;
+			right: 40px;
+			height: 70px;
 			padding: 0 12px;
 			border: 0;
 			background: transparent;
-			line-height: 1px;
+			line-height: 1;
 			box-shadow: none;
-			font-size: 1.1rem;
+			font-size: 18px;
+ 			margin: 0;
 
 			&:focus {
 				outline: none;
@@ -430,9 +434,9 @@
 
 			i {
 				color: $text-color-accent;
-				width: 24px;
-				display: flex;
-				justify-content: center;
+				// width: 24px;
+				// display: flex;
+				// justify-content: center;
 			}
 
 			&.clear {
@@ -470,17 +474,18 @@
 
 	.lp-course-curriculum__title {
 		margin: 0;
-		font-size: calc(var(--lp-font-size-base, 1em) * 1.15);
+		font-size: $font-size-h4;
+		font-weight: $link-font-weight;
 		line-height: 70px;
 		position: relative;
-		padding: 0 24px;
+		padding: 0 20px;
 		display: inline-block;
 	}
 
 	.course-curriculum {
 		overflow: auto;
 		position: absolute;
-		top: $popup_header_height;
+		top: 70px;
 		bottom: 0;
 		width: var(--lp-width-popup-curriculum, 475px);
 
@@ -782,32 +787,31 @@
 		max-width: var(--lp-width-content-lesson, 792px);
 		margin-left: auto!important;
 		margin-right: auto!important;
+		position: relative;
 		.prev,
 		.next {
-			display: flex;
-			align-items: center;
-			//line-height: 3.125em;
+ 			//line-height: 3.125em;
 			color: $text-color-accent;
 			line-height: 1.5em;
 
 			a {
-				display: block;
-				color: $text-color-accent;
+ 				color: $text-color-accent;
 				line-height: 1.5em;
-			}
-
-			&::before {
-				color: #999;
-				font-family: 'lp-icon';
-				width: 40px;
-				height: 40px;
-				line-height: 40px;
-				border: 1px solid $border-color;
-				border-radius: 5px;
-				text-align: center;
-				font-size: 24px;
-				//font-size: 0.75em;
-				//font-weight: 900;
+				display: flex;
+				align-items: center;
+				position: relative;
+				gap: 12px;
+				&::before {
+					color: #999;
+					font-family: 'lp-icon';
+					width: 36px;
+					height: 36px;
+					line-height: 34px;
+					border: 1px solid $border-color;
+					border-radius: $border-radius-global;
+					text-align: center;
+					font-size: 20px;
+				}
 			}
 
 			&:hover {
@@ -816,7 +820,7 @@
 					color: var(--lp-primary-color);
 				}
 
-				&::before {
+				a:before {
 					border-color: var(--lp-primary-color);
 					background-color: var(--lp-primary-color);
 					color: $color-white;
@@ -827,16 +831,18 @@
 				}
 			}
 
-			.nav-text {
-				font-weight: normal;
-			}
+			// .nav-text {
+			// 	font-weight: normal;
+			// }
 		}
 
 		.next {
-			flex-direction: row-reverse;
+			a{
+				flex-direction: row-reverse;
+			}
 
-			&::before {
-				margin-left: 10px;
+			a:before {
+				// margin-left: 10px;
 				content: "\f105";
 			}
 		}
@@ -853,42 +859,57 @@
 
 	.prev {
 
-		&::before {
-			margin-right: 10px;
+		a:before {
+			// margin-right: 10px;
 			content: "\f104";
 		}
 
 		.course-item-nav__name {
 			right: auto;
-			left: -30px;
+			left: 0;
 
-			&::before {
+			&::after {
 				right: auto;
-				left: 5px;
+				left: 12px;
 			}
 
-			@media (max-width: 1024px) {
-				left: 15px;
-			}
+			//@media (max-width: 1024px) {
+			//	left: 0;
+			//}
 		}
 	}
 
 	.course-item-nav__name {
 		display: none;
 		position: absolute;
-		top: -20px;
-		right: -30px;
+		top: -24px;
+		right: 0;
 		width: auto;
-		padding: 10px 15px;
-		color: $text-color-accent;
-		background: #ccc;
+		padding: 8px 16px;
+		color: #fff;
+		background: #333;
 		font-size: $font-size-small;
 		line-height: 1;
-
+		border-radius: $border-radius-global;
+		//border: 1px solid $border-color;
+    	font-weight: 600;
+		white-space: nowrap;
+		&:after{
+			content: "";
+			border: 6px solid transparent;
+			border-top: 6px solid #333;
+			border-bottom: 0 none;
+			position: absolute;
+			right: 12px;
+			bottom: -5px;
+		}
 		@media (max-width: 1024px) {
 			top: -25px;
-			right: 15px;
+			right: 0;
 			left: auto;
+			max-width: 90vw;
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 	}
 
@@ -902,13 +923,13 @@
 	//left: var(--lp-width-popup-curriculum,475px);
 	width: 40px;
 	min-width: 40px;
-	line-height: $popup_header_height;
+	line-height: 70px;
 	height: unset;
 	margin: 0;
 	background: transparent;
 	// background: rgba(255, 255, 255, 0.1);
 	// color: $color-white;
-	font-size: 1.4em;
+	font-size: 22px;
 	//box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.15);
 	cursor: pointer;
 	transition: 0.25s;
@@ -1317,13 +1338,16 @@ body {
 					margin-left: 237px;
 					transform: translateX(-50%);
 					background: #fff;
-					padding: 12px 0;
+					padding: 8px 0;
 					//padding-bottom: 10px;
 					.questions-pagination .nav-links{
 						margin-top: 0;
 					}
 					@media (max-width: 768px) {
 						width: 100% !important;
+					}
+					&:empty{
+						display: none;
 					}
 				}
 
@@ -1380,6 +1404,7 @@ body {
 				color: $text-color-base;
 				background-color: transparent;
 				font-weight: normal;
+				font-size: $font-size-small;
 				border: 1px solid $border-color;
 				line-height: 1;
 				border-radius: $border-radius-global;
@@ -1401,7 +1426,7 @@ body {
 
 					&:before {
 						font-family: 'lp-icon';
-						font-size: 24px;
+						font-size: 20px;
 						content: "\f104";
 						//line-height: 40px;
 					}
