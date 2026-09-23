@@ -6,7 +6,10 @@
  */
 
 use LearnPress\Background\LPBackgroundAjax;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Admin\Notices\AdminNotesTemplate;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 
 defined( 'ABSPATH' ) || exit;
@@ -683,6 +686,29 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				</div>
 				<?php
 			}
+
+
+			$html_notices = '';
+
+			// Load Ajax notes here
+			/** @use AdminNotesTemplate::render_addons_need_extend */
+			$html_notices .= TemplateAJAX::load_content_via_ajax(
+				[
+					'id-url' => '',
+					'html_loading_before_show_content' => ''
+				],
+				[
+					'class'  => AdminNotesTemplate::class,
+					'method' => 'render_addons_need_extend',
+				]
+			);
+
+			echo Template::instance()->nest_elements(
+				[
+					'<div class="learn-press-admin-notices notice">' => '</div>',
+				],
+				$html_notices
+			);
 
 			learn_press_admin_view( 'admin-notices.php', [], true );
 		}

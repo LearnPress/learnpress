@@ -502,7 +502,7 @@ class AddonService {
 						continue;
 					}
 
-					$date_expired          = new DateTime( $date_expired_str );
+					$date_expired          = new DateTime( '2020-10-10' );
 					$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
 					$date_diff             = date_diff( $date_now, $date_expired );
 					$number_days_remaining = $date_diff->days;
@@ -516,7 +516,7 @@ class AddonService {
 				}
 			}
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::var_dump( $e );
 		}
 
 		return false;

@@ -13,6 +13,17 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.lp-icon-ico-message-info {
+	&:before {
+		content: "\e92b";
+	}
+}
+.lp-icon-ico-message-warning {
+	&:before {
+		content: "\e92c";
+	}
+}
+
 .lp-icon-plus:before {
 	content: "\f067";
 }
