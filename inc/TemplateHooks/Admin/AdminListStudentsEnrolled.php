@@ -593,7 +593,7 @@ class AdminListStudentsEnrolled {
 		$status_raw   = $graduation !== UserItemModel::GRADUATION_IN_PROGRESS
 			? $userCourseModel->get_graduation()
 			: $userCourseModel->get_status();
-		$status_label = ucfirst( str_replace( array( '-', '_' ), ' ', $status_raw ) );
+		$status_label = $userCourseModel->get_string_i18n( $status_raw );
 		$badge_class  = 'lp-badge--' . sanitize_html_class( $status_raw );
 
 		// Date.
