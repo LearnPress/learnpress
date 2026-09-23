@@ -4,6 +4,7 @@ namespace LearnPress\TemplateHooks\Admin;
 
 use DateTime;
 use Exception;
+use LearnPress\Helpers\LPDateTime;
 use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
@@ -418,7 +419,7 @@ class AdminAddonsPage {
 			if ( ! empty( $date_expired_str )
 				&& isset( $number_days_remaining )
 				&& 0 === $number_days_remaining ) {
-				$license_status = 'expired';
+				$license_status   = 'expired';
 				$classes_status[] = 'expired';
 			}
 		}
@@ -490,10 +491,11 @@ class AdminAddonsPage {
 	public static function html_addon_license( object $addon, array $data = [] ): string {
 		$license_status        = $data['license_status'] ?? '';
 		$number_days_remaining = $data['number_days_remaining'] ?? null;
-		$date_expired          = $data['date_expired'] ?? null;
-		$purchase_code_masked  = $data['purchase_code_masked'] ?? '';
-		$show_license_panel    = $data['show_license_panel'] ?? false;
-		$license_status_label  = 'active' === $license_status
+		/** @var DateTime $date_expired */
+		$date_expired         = $data['date_expired'] ?? null;
+		$purchase_code_masked = $data['purchase_code_masked'] ?? '';
+		$show_license_panel   = $data['show_license_panel'] ?? false;
+		$license_status_label = 'active' === $license_status
 			? __( 'Active', 'learnpress' )
 			: ( 'expired' === $license_status
 				? __( 'Expired', 'learnpress' )
@@ -506,10 +508,12 @@ class AdminAddonsPage {
 
 		$expiry_text = '';
 		if ( ! empty( $date_expired ) ) {
+			$lpDate = new LPDateTime( $date_expired->format( LPDateTime::FORMAT_MYSQL ) );
+
 			$expiry_format = 'expired' === $license_status
 				? __( '(on %s)', 'learnpress' )
 				: __( '(Updates until %s)', 'learnpress' );
-			$expiry_text   = esc_html( sprintf( $expiry_format, date_i18n( 'F j, Y', $date_expired->getTimestamp() ) ) );
+			$expiry_text   = esc_html( sprintf( $expiry_format, $lpDate->format( LPDateTime::FORMAT_I18N_DATE ) ) );
 		}
 
 		$extend_link = '';
