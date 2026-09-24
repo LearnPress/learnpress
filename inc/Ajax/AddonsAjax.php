@@ -4,7 +4,6 @@
  *
  * Handle add-on actions (install, update, activate, deactivate, update-purchase)
  * via the LearnPress AJAX dispatcher.
- * Ported from LP_REST_Addon_Controller::action().
  *
  * @since 4.4.7
  * @version 1.0.0
