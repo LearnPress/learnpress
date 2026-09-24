@@ -149,8 +149,9 @@ class AddonsAjax extends AbstractAjax {
 			$response->status  = Response::STATUS_SUCCESS;
 			$response->message = sprintf(
 				'"%s" %s %s',
-					$addon['name'] ?? '',
-				$action, __( 'successfully', 'learnpress' )
+				$addon['name'] ?? '',
+				$action,
+				__( 'successfully', 'learnpress' )
 			);
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();

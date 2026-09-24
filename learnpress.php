@@ -584,8 +584,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			include_once 'inc/admin/class-lp-admin-ajax.php';
 
-			include_once 'inc/admin/class-lp-admin-notice.php';
-
 			// File handle install LP
 			include_once 'inc/class-lp-install.php';
 
@@ -793,7 +791,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			register_activation_hook( LP_PLUGIN_FILE, array( $this, 'on_activate' ) );
 			register_deactivation_hook( LP_PLUGIN_FILE, array( $this, 'on_deactivate' ) );
 
-			add_action(
+			/*add_action(
 				'plugin_loaded',
 				function ( $plugin ) {
 					// For check wp_remote call normally of WP
@@ -802,7 +800,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 						die;
 					}
 				}
-			);
+			);*/
 
 			// Check require version thim-core on Backend.
 			if ( is_admin() ) {

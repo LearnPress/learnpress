@@ -34,6 +34,7 @@ $msg-border-info: #2E91FA;
 		background-color: $msg-error;
 		color: #FF3B30;
 		border: 1px solid $msg-border-error;
+		padding: 10px 20px; // to override style of WP for this class
 
 		&::before {
 			content: "\f071";
@@ -47,7 +48,7 @@ $msg-border-info: #2E91FA;
 		border: 1px solid $msg-border-warning;
 
 		&::before {
-			content: "\e92c";
+			content: "\f06a";
 			color: $msg-border-warning;
 		}
  	}
@@ -69,7 +70,7 @@ $msg-border-info: #2E91FA;
 		border: 1px solid $msg-border-info;
 
 		&::before {
-			content: "\e92b";
+			content: "\e931";
 			color: $msg-border-info;
 		}
 	}

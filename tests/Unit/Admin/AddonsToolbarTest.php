@@ -19,7 +19,7 @@ class AddonsToolbarTest extends TestCase {
 
 		$this->assertStringContainsString( 'AdminTemplate::html_on_wp_admin_screen', $renderer );
 		$this->assertStringContainsString( 'lp-addons-page-subtitle', $renderer );
-		$this->assertStringContainsString( 'LearnPress Add-ons New', $renderer );
+		$this->assertStringContainsString( 'LearnPress Add-ons', $renderer );
 		$this->assertStringContainsString( 'Discover high-performance Premium & Education themes optimized 100% for LearnPress LMS.', $renderer );
 		$this->assertStringNotContainsString( "'note-theme'", $renderer );
 		$this->assertStringNotContainsString( "'note-addon'", $renderer );
@@ -77,12 +77,12 @@ class AddonsToolbarTest extends TestCase {
 		$this->assertIsString( $script );
 		$this->assertStringContainsString( "import * as lpUtils from 'lpAssetsJsPath/utils.js';", $script );
 		$this->assertStringContainsString( 'lpUtils.lpOnElementReady(', $script );
-		$this->assertStringContainsString( 'releaseHandling( addonSlug );', $script );
+		$this->assertStringContainsString( 'releaseHandling();', $script );
 	}
 
 	#[Test]
 	public function addon_prices_use_regular_and_sale_price_fields(): void {
-		$data     = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons/addons-data.json' ) );
+		$data     = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/config/addons-data.json' ) );
 		$template = file_get_contents( dirname( __DIR__, 3 ) . '/inc/TemplateHooks/Admin/AdminAddonsPage.php' );
 		$styles   = file_get_contents( dirname( __DIR__, 3 ) . '/assets/src/scss/admin/_addons.scss' );
 
@@ -110,7 +110,7 @@ class AddonsToolbarTest extends TestCase {
 
 	#[Test]
 	public function addon_categories_are_non_empty_arrays_using_the_thimpress_taxonomy(): void {
-		$data               = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons/addons-data.json' ) );
+		$data               = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/config/addons-data.json' ) );
 		$allowed_categories = array(
 			'Create Course',
 			'Engagement',
@@ -159,7 +159,7 @@ class AddonsToolbarTest extends TestCase {
 
 	#[Test]
 	public function addons_follow_the_thimpress_catalog_order(): void {
-		$data = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons/addons-data.json' ) );
+		$data = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/config/addons-data.json' ) );
 
 		$this->assertSame(
 			array(
@@ -212,7 +212,7 @@ class AddonsToolbarTest extends TestCase {
 
 	#[Test]
 	public function addons_contain_the_thimpress_discount_badges(): void {
-		$data = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/inc/admin/views/addons/addons-data.json' ) );
+		$data = json_decode( file_get_contents( dirname( __DIR__, 3 ) . '/config/addons-data.json' ) );
 		$badges = array();
 
 		foreach ( $data as $slug => $addon ) {
@@ -228,6 +228,7 @@ class AddonsToolbarTest extends TestCase {
 				'learnpress-membership'      => '20% off',
 				'learnpress-exams'           => '50% off',
 				'learnpress-upsell'          => '40% off',
+				'learnpress-frontend-editor' => '20% off',
 				'learnpress-chat-room'       => '45% off',
 				'learnpress-klarna-payment'  => '45% off',
 				'learnpress-paystack-payment' => '45% off',

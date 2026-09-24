@@ -239,6 +239,28 @@ class LP_Settings {
 		return get_option( $key, $default );
 	}
 
+	/**
+	 * Get list of dismissed admin notices.
+	 *
+	 * @return array
+	 */
+	public static function get_admin_notices_dismiss(): array {
+		return get_option( 'lp_admin_notices_dismiss', [] );
+	}
+
+	/**
+	 * Check if an admin notice has been dismissed.
+	 *
+	 * @param string $key Notice key.
+	 *
+	 * @return bool
+	 */
+	public static function is_admin_notice_dismissed( string $key ): bool {
+		$dismissed = self::get_admin_notices_dismiss();
+
+		return isset( $dismissed[ $key ] );
+	}
+
 	public function get_int( $key ) {
 		$value = $this->get( $key );
 

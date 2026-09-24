@@ -659,15 +659,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				}
 			}
 
-			// Show template file templates override.
-			$page = LP_Request::get_param( 'page' );
-			$tab  = LP_Request::get_param( 'tab' );
-			if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
-				if ( LP_Outdated_Template_Helper::detect_outdated_template() ) {
-					learn_press_admin_view( 'html-admin-notice-templates' );
-				}
-			}
-
 			// Request accept/denied user can become a teacher.
 			$action_become_teacher      = LP_Request::get_param( 'lp-action' );
 			$user_id                    = LP_Request::get_param( 'user_id', 0, 'int' );
@@ -693,7 +684,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				[
 					'method_request' => 'GET',
 					'id_url' => 'admin-notices',
-					'html_loading_before_show_content' => ''
+					'html_loading_before_show_content' => '',
 				],
 				[
 					'class'  => AdminNotesTemplate::class,
@@ -701,14 +692,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				]
 			);
 
+			wp_enqueue_script( 'lp-admin-notices' );
+
 			echo Template::instance()->nest_elements(
 				[
 					'<div class="learn-press-admin-notices notice">' => '</div>',
 				],
 				$html_notices
 			);
-
-			learn_press_admin_view( 'admin-notices.php', [], true );
 		}
 
 		/**

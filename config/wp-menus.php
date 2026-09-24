@@ -40,7 +40,7 @@ $menu_items = apply_filters(
 		'addons'           => [
 			'id'         => 'learn-press-addons',
 			'menu_title' => sprintf(
-				'%s<span class="lp-notify has-addon-update"></span>',
+				'%s<span class="lp-menu-addons update-plugins lp-hidden"></span>',
 				__( 'Add-ons', 'learnpress' )
 			),
 			'page_title' => __( 'LearnPress Add-ons', 'learnpress' ),
