@@ -477,7 +477,7 @@ class AddonService {
 				}
 			}
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::var_dump( $e );
 		}
 
 		return $addons_new_version;

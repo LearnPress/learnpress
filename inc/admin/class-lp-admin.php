@@ -38,7 +38,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$this->includes();
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			//add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
-			add_action( 'all_admin_notices', array( $this, 'admin_notices' ), - 1 );
+			add_action( 'admin_footer', array( $this, 'admin_notices' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 			//add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
@@ -687,19 +687,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				<?php
 			}
 
-
-			$html_notices = '';
-
 			// Load Ajax notes here
-			/** @use AdminNotesTemplate::render_addons_need_extend */
-			$html_notices .= TemplateAJAX::load_content_via_ajax(
+			/** @use AdminNotesTemplate::render_notices */
+			$html_notices = TemplateAJAX::load_content_via_ajax(
 				[
-					'id-url' => '',
+					'method_request' => 'GET',
+					'id_url' => 'admin-notices',
 					'html_loading_before_show_content' => ''
 				],
 				[
 					'class'  => AdminNotesTemplate::class,
-					'method' => 'render_addons_need_extend',
+					'method' => 'render_notices',
 				]
 			);
 

@@ -42,6 +42,8 @@ abstract class AbstractAjax {
 			if ( is_callable( [ $class, $action ] ) ) {
 				call_user_func( [ $class, $action ] );
 			}
+
+			die;
 		}
 	}
 }
