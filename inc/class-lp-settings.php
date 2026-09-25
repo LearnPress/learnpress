@@ -4,8 +4,10 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0.1
+ * @version 1.0.2
  */
+
+use LearnPress\Databases\DataBase;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -72,7 +74,7 @@ class LP_Settings {
 		$lp_settings_cache = new LP_Settings_Cache( true );
 		$lp_options        = $lp_settings_cache->get_lp_settings();
 		if ( false !== $lp_options ) {
-			$this->_options = LP_Helper::json_decode( $lp_options, true );
+			$this->_options = $lp_options;
 
 			return;
 		}
@@ -409,9 +411,10 @@ class LP_Settings {
 	 * Check table learnpress_course is created
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	public static function is_created_tb_courses(): bool {
-		$lp_db = LP_Database::getInstance();
+		$lp_db = DataBase::getInstance();
 		return $lp_db->check_table_exists( $lp_db->tb_lp_courses );
 	}
 
@@ -436,9 +439,10 @@ class LP_Settings {
 	/**
 	 * Check table learnpress_files is created
 	 * @return boolean
+	 * @throws Exception
 	 */
 	public static function is_created_tb_material_files(): bool {
-		$lp_db = LP_Database::getInstance();
+		$lp_db = DataBase::getInstance();
 		return $lp_db->check_table_exists( $lp_db->tb_lp_files );
 	}
 
@@ -446,9 +450,10 @@ class LP_Settings {
 	 * Check table learnpress_mcp_api_keys is created.
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	public static function is_created_tb_mcp_api_keys(): bool {
-		$lp_db = LP_Database::getInstance();
+		$lp_db = DataBase::getInstance();
 		return $lp_db->check_table_exists( $lp_db->tb_lp_mcp_api_keys );
 	}
 
@@ -456,9 +461,10 @@ class LP_Settings {
 	 * Check table learnpress_webhooks is created.
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	public static function is_created_tb_webhooks(): bool {
-		$lp_db = LP_Database::getInstance();
+		$lp_db = DataBase::getInstance();
 		return $lp_db->check_table_exists( $lp_db->tb_lp_webhooks );
 	}
 
