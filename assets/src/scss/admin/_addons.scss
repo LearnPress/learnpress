@@ -1076,27 +1076,33 @@
 	}
 }
 
-.lp-addons-page input.lp-addons-search__input {
-	box-sizing: border-box;
-	width: 100%;
-	min-height: 48px;
-	margin: 0;
-	padding: $cb-spacing-xs $cb-spacing-md;
-	padding-inline-start: 40px;
-	border: 1px solid $cb-border-input;
-	border-radius: $cb-radius-lg;
-	color: $cb-text-label;
-	background: $cb-bg;
-	font-size: $cb-font-md;
-
-	&::placeholder {
-		color: $cb-text-placeholder;
+.lp-addons-page {
+	.lp-addon-notice {
+		margin-bottom: 20px;
 	}
 
-	&:focus {
-		border-color: $cb-primary;
-		outline: none;
-		box-shadow: $cb-focus-ring;
+	input.lp-addons-search__input {
+		box-sizing: border-box;
+		width: 100%;
+		min-height: 48px;
+		margin: 0;
+		padding: $cb-spacing-xs $cb-spacing-md;
+		padding-inline-start: 40px;
+		border: 1px solid $cb-border-input;
+		border-radius: $cb-radius-lg;
+		color: $cb-text-label;
+		background: $cb-bg;
+		font-size: $cb-font-md;
+
+		&::placeholder {
+			color: $cb-text-placeholder;
+		}
+
+		&:focus {
+			border-color: $cb-primary;
+			outline: none;
+			box-shadow: $cb-focus-ring;
+		}
 	}
 }
 

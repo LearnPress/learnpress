@@ -207,6 +207,25 @@ class AdminAddonsPage {
 		$section = apply_filters(
 			'learn-press/admin/addons/page-section',
 			array(
+				'wrapper'     => '<div class="lp-addons-page">',
+				'notice' => sprintf(
+					'<div class="lp-addon-notice">%s</div>',
+					Template::print_message(
+						sprintf(
+							'<div>%s</div>',
+							sprintf(
+								__( 'To download or update add-ons: enter your purchase code (%s), or check your theme\'s plugins tab if using a bundled premium theme.', 'learnpress' ),
+								sprintf(
+									'<a href="%s">%s</a>',
+									'https://thimpress.com/my-account/',
+									__( 'get key', 'learnpress' )
+								),
+							)
+						),
+						'info',
+						false
+					)
+				),
 				'subtitle'    => sprintf(
 					'<p class="lp-addons-page-subtitle">%s</p>',
 					esc_html__(
@@ -214,7 +233,6 @@ class AdminAddonsPage {
 						'learnpress'
 					)
 				),
-				'wrapper'     => '<div class="lp-addons-page">',
 				'addons'      => TemplateAJAX::load_content_via_ajax(
 					array(
 						'id_url' => 'data-addons',

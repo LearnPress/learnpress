@@ -93,7 +93,7 @@ class AddonService {
 
 		try {
 			$lp_cache  = new LP_Cache( true );
-			$key_cache       = 'lp_addons_data';
+			$key_cache = 'lp_addons_data';
 			$dat_cache = $lp_cache->get_cache( $key_cache );
 			if ( false !== $dat_cache ) {
 				return json_decode( wp_json_encode( $dat_cache ) );
