@@ -22,6 +22,8 @@ use LearnPress\Ajax\BuilderDashboardAjax;
 use LearnPress\Ajax\CourseToolsAjax;
 use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\Ajax\EditCurriculumAjax;
+use LearnPress\Ajax\AddonsAjax;
+use LearnPress\Services\AddonService;
 use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\Order\ExportOrderCSVAjax;
@@ -50,10 +52,12 @@ use LearnPress\Shortcodes\CourseMaterialShortcode;
 use LearnPress\Shortcodes\Courses\ListCoursesShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
+use LearnPress\TemplateHooks\Admin\AdminAddonsPage;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
 use LearnPress\TemplateHooks\Admin\AdminStatisticsReportTable;
+use LearnPress\TemplateHooks\Admin\Notices\AdminNotesTemplate;
 use LearnPress\TemplateHooks\Admin\Tools\AdminCourseTools;
 use LearnPress\Statistics\FilterOptionsProvider;
 use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
@@ -201,7 +205,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				// hooks .
 				$this->hooks();
 			} catch ( Throwable $e ) {
-				error_log( __METHOD__ . ': ' . $e->getMessage() );
+				LP_Debug::error_log( $e );
 			}
 		}
 
@@ -399,6 +403,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditSettingTemplate::instance();
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
+			AdminNotesTemplate::instance();
 			AdminCourseTools::instance();
 			CourseMaterialTemplate::instance();
 			CourseAIAssistantTemplate::instance();
@@ -410,6 +415,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminListStudentsEnrolled::instance();
 			AdminStatisticsReportTable::instance();
 			FilterOptionsProvider::register_flush_hooks();
+			AdminAddonsPage::instance();
 			// WP GDPR
 			ErasePersonalData::instance();
 			ExportPersonalData::instance();
@@ -579,8 +585,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			include_once 'inc/admin/class-lp-admin-ajax.php';
-
-			include_once 'inc/admin/class-lp-admin-notice.php';
 
 			// File handle install LP
 			include_once 'inc/class-lp-install.php';
@@ -763,6 +767,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					LessonAjax::catch_lp_ajax();
 					SampleDataAJAX::catch_lp_ajax();
 					SetupWizardAjax::catch_lp_ajax();
+					AddonsAjax::catch_lp_ajax();
 					EditCurriculumAjax::catch_lp_ajax();
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
@@ -788,7 +793,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			register_activation_hook( LP_PLUGIN_FILE, array( $this, 'on_activate' ) );
 			register_deactivation_hook( LP_PLUGIN_FILE, array( $this, 'on_deactivate' ) );
 
-			add_action(
+			/*add_action(
 				'plugin_loaded',
 				function ( $plugin ) {
 					// For check wp_remote call normally of WP
@@ -797,7 +802,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 						die;
 					}
 				}
-			);
+			);*/
 
 			// Check require version thim-core on Backend.
 			if ( is_admin() ) {
@@ -828,7 +833,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 							}
 
 							// Call active purchase code for site.
-							LP_Manager_Addons::instance()->active_site( $addon_slug, $purchase_code_content );
+							AddonService::instance()->active_site( $addon_slug, $purchase_code_content );
 						}
 					}
 				}

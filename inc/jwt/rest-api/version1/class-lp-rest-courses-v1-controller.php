@@ -495,7 +495,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				// Check cache with case not learned
 				$courses_cache = $lp_courses_cache->get_cache( $key_cache );
 				if ( $courses_cache !== false ) {
-					$courses     = json_decode( $courses_cache, true );
+					$courses     = $courses_cache;
 					$total       = (int) $lp_courses_cache->get_cache( $key_cache_total );
 					$total_pages = (int) $lp_courses_cache->get_cache( $key_cache_total_pages );
 

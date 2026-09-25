@@ -216,7 +216,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @param array    $posts
 		 * @param WP_Query $wp_query
 		 *
-		 * @return array|WP_Query
+		 * @return array
 		 * @since 4.4.8
 		 * @version 1.0.0
 		 */
@@ -227,6 +227,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 
 				// Check screen
+				if ( ! function_exists( 'get_current_screen' ) ) {
+					return $posts;
+				}
+
 				$curren_screen = get_current_screen();
 				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_COURSE_CPT ) {
 					return $posts;
@@ -253,10 +257,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$order        = LP_Request::get_param( 'order', '', 'key' );
 				$filter_price = LP_Helper::sanitize_params_submitted( $_REQUEST['filter_price'] ?? '' );
 
-				$filter        = new CoursePostFilter();
-				$filter->page  = $paged;
-				$filter->limit = $posts_per_page;
-				$post_db       = PostDB::getInstance();
+				$filter              = new CoursePostFilter();
+				$filter->page        = $paged;
+				$filter->limit       = $posts_per_page;
+				$filter->only_fields = array_map(
+					function ( $field ) {
+						return "p.{$field}";
+					},
+					$filter->all_fields
+				);
+				$filter->field_count = 'p.ID';
+				$post_db             = PostDB::getInstance();
 
 				if ( ! empty( $status ) ) {
 					$filter->post_status = array( $status );

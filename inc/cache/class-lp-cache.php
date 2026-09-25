@@ -33,7 +33,12 @@ class LP_Cache {
 	 * else only WP Cache
 	 */
 	public function __construct( $has_thim_cache = false ) {
-		$this->key_group      = $this->key_group_parent . '/' . $this->key_group_child;
+		$this->key_group = $this->key_group_parent;
+
+		if ( ! empty( $this->key_group_child ) ) {
+			$this->key_group .= '/' . $this->key_group_child;
+		}
+
 		$this->has_thim_cache = $has_thim_cache;
 	}
 
@@ -54,7 +59,13 @@ class LP_Cache {
 			// Cache thim_cache
 			if ( $this->can_handle_with_thim_cache() ) {
 				$key = "{$this->key_group}/{$key}";
-				Thim_Cache_DB::instance()->set_value( $key, $data, $expire );
+
+				if ( ! is_string( $data ) ) {
+					$data = wp_json_encode( $data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+				}
+
+				$expiration = $expire > 0 ? time() + $expire : 0;
+				Thim_Cache_DB::instance()->set_value( $key, $data, $expiration );
 			}
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
@@ -74,9 +85,10 @@ class LP_Cache {
 		if ( false === $cache && $this->can_handle_with_thim_cache() ) {
 			$key   = "{$this->key_group}/{$key}";
 			$cache = Thim_Cache_DB::instance()->get_value( $key );
-			/*if ( is_string( $cache ) ) {
-				$cache = wp_unslash( $cache );
-			}*/
+			try {
+				$cache = LP_Helper::json_decode( $cache, true );
+			} catch ( Throwable $e ) {
+			}
 		}
 
 		return $cache;
