@@ -222,9 +222,9 @@ class AdminNotesTemplate {
 		}
 
 		$message = sprintf(
-			'<div>%s</div>',
+			'<div style="display: flex; gap: 5px; align-items: center">%s</div>',
 			sprintf(
-				'<p><strong>%s</strong></p><p><a class="button button-primary" href="%s">%s</a>%s</p>',
+				'%s<a class="button button-primary" href="%s">%s</a>%s</p>',
 				__( 'LearnPress LMS is ready to set up', 'learnpress' ),
 				admin_url( 'index.php?page=lp-setup' ),
 				__( 'Quick Setup', 'learnpress' ),
