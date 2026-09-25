@@ -11,6 +11,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\AddonService;
 use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Debug;
 use LP_Helper;
 use LP_Settings;
 use stdClass;
@@ -28,11 +29,173 @@ class AdminAddonsPage {
 	use Singleton;
 
 	/**
-	 * Singleton initialization hook.
+	 * @var array Addons installed, not on wp.org, having newer version. Keyed by plugin basename.
+	 */
+	private $addons_need_update = [];
+
+	/**
+	 * Init hooks.
 	 *
 	 * @return void
 	 */
-	public function init(): void {}
+	public function init(): void {
+		if ( is_admin() ) {
+			// Show update notice for addons not on wp.org on plugins.php page.
+			add_filter( 'site_transient_update_plugins', array( $this, 'inject_update_wp_plugins' ) );
+			add_action( 'load-plugins.php', array( $this, 'wp_update_plugin_message' ) );
+		}
+	}
+
+	/**
+	 * Inject update info of addons not on wp.org into update_plugins transient
+	 * so WP core renders update rows on wp-admin/plugins.php.
+	 *
+	 * @param object $transient Value of site_transient_update_plugins.
+	 *
+	 * @return object
+	 */
+	public function inject_update_wp_plugins( $transient ): object {
+		try {
+			if ( ! is_object( $transient ) ) {
+				$transient = new stdClass();
+			}
+
+			if ( ! isset( $transient->response ) || ! is_array( $transient->response ) ) {
+				$transient->response = [];
+			}
+
+			if ( ! isset( $transient->no_update ) || ! is_array( $transient->no_update ) ) {
+				$transient->no_update = [];
+			}
+
+			$addons  = AddonService::instance()->get_remote_data();
+			$plugins = get_plugins();
+
+			foreach ( $addons as $slug => $addon ) {
+				// Skip addons hosted on wp.org - core already handles them.
+				if ( ! empty( $addon->is_org ) ) {
+					continue;
+				}
+
+				$basename = $addon->basename ?? '';
+				if ( empty( $basename ) || ! isset( $plugins[ $basename ] ) ) {
+					continue;
+				}
+
+				$item = (object) [
+					'id'          => 'learnpress/' . $slug,
+					'slug'        => $slug,
+					'plugin'      => $basename,
+					'new_version' => $addon->version ?? '',
+					'url'         => $addon->link ?? '',
+					'package'     => '',
+					'icons'       => isset( $addon->image ) ? [ 'default' => $addon->image ] : [],
+				];
+
+				$current_version = $plugins[ $basename ]['Version'];
+				if ( ! empty( $item->new_version ) && version_compare( $current_version, $item->new_version, '<' ) ) {
+					$transient->response[ $basename ] = $item;
+				} else {
+					$transient->no_update[ $basename ] = $item;
+				}
+			}
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+
+		return $transient;
+	}
+
+	/**
+	 * Register hooks to append update link into plugin update rows on plugins.php.
+	 * Only for installed addons not on wp.org and having a newer version.
+	 *
+	 * @return void
+	 */
+	public function wp_update_plugin_message(): void {
+		try {
+			$addons  = AddonService::instance()->get_remote_data();
+			$plugins = get_plugins();
+
+			foreach ( $addons as $addon ) {
+				if ( ! empty( $addon->is_org ) ) {
+					continue;
+				}
+
+				$basename = $addon->basename ?? '';
+				if ( empty( $basename ) || ! isset( $plugins[ $basename ] ) ) {
+					continue;
+				}
+
+				$new_version = $addon->version ?? '';
+				if ( empty( $new_version )
+					|| version_compare( $plugins[ $basename ]['Version'], $new_version, '>=' ) ) {
+					continue;
+				}
+
+				$this->addons_need_update[ $basename ] = $addon;
+
+				// Priority 5: run before core wp_plugin_update_row (priority 10) to override it.
+				add_action( "after_plugin_row_{$basename}", array( $this, 'render_custom_update_row' ), 5, 2 );
+			}
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+	}
+
+	/**
+	 * Render custom update row to override core default message.
+	 * Hook: after_plugin_row_{$basename} - priority 5, before core wp_plugin_update_row.
+	 *
+	 * @param string $file        Plugin basename.
+	 * @param array  $plugin_data Plugin data.
+	 *
+	 * @return void
+	 */
+	public function render_custom_update_row( string $file, array $plugin_data ): void {
+		// Remove core default update row to override the message.
+		remove_action( "after_plugin_row_{$file}", 'wp_plugin_update_row' );
+
+		$addon = $this->addons_need_update[ $file ] ?? null;
+		if ( ! $addon ) {
+			return;
+		}
+
+		$wp_list_table = _get_list_table( 'WP_Plugins_List_Table' );
+		$slug          = sanitize_key( $addon->basename ?? $file );
+		$new_version   = $addon->version ?? '';
+		$link_update   = admin_url( 'admin.php?page=learn-press-addons&tab=update' );
+
+		$section = array(
+			'wrap'      => sprintf(
+				'<tr class="plugin-update-tr active" id="%s-update" data-slug="%s" data-plugin="%s">',
+				esc_attr( $slug ),
+				esc_attr( $slug ),
+				esc_attr( $file )
+			),
+			'cell_open'     => sprintf(
+				'<td colspan="%s" class="plugin-update colspanchange">',
+				esc_attr( $wp_list_table->get_column_count() )
+			),
+			'message_open'  => '<div class="update-message notice inline notice-warning notice-alt"><p>',
+			'text'          => sprintf(
+				/* translators: 1: addon name, 2: new version */
+				esc_html__( 'There is a new version of %1$s (v%2$s) available.', 'learnpress' ),
+				esc_html( $addon->name ?? $plugin_data['Name'] ),
+				esc_html( $new_version )
+			),
+			'link'          => sprintf(
+				' <a href="%s">%s</a>',
+				esc_url( $link_update ),
+				esc_html__( 'Go to LearnPress Add-ons page to update.', 'learnpress' )
+			),
+			'message_close' => '</p></div>',
+			'cell_close'    => '</td>',
+			'warp-end'     => '</tr>',
+		);
+
+		echo Template::combine_components( $section );
+	}
 
 	/**
 	 * HTML the LearnPress Add-ons page.

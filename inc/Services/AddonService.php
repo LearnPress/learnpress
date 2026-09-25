@@ -4,7 +4,9 @@ namespace LearnPress\Services;
 
 use DateTime;
 use Exception;
+use LearnPress\Helpers\LPDateTime;
 use LearnPress\Helpers\Singleton;
+use LP_Cache;
 use LP_Debug;
 use LP_Helper;
 use LP_Settings;
@@ -90,6 +92,13 @@ class AddonService {
 		$data = new stdClass();
 
 		try {
+			$lp_cache  = new LP_Cache( true );
+			$key       = 'lp_addons_data';
+			$dat_cache = $lp_cache->get_cache( $key );
+			if ( false !== $dat_cache ) {
+				return $dat_cache;
+			}
+
 			if ( ! empty( $this->url_list_addons ) ) {
 				$response = wp_remote_get(
 					$this->url_list_addons,
@@ -101,6 +110,7 @@ class AddonService {
 				if ( ! is_wp_error( $response )
 					&& 200 === wp_remote_retrieve_response_code( $response ) ) {
 					$data = LP_Helper::json_decode( wp_remote_retrieve_body( $response ) );
+					$lp_cache->set_cache( $key, $data, 5 * HOUR_IN_SECONDS );
 				} else {
 					throw new Exception( $response->get_error_message() );
 				}
@@ -503,7 +513,7 @@ class AddonService {
 					}
 
 					$date_expired          = new DateTime( $date_expired_str );
-					$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
+					$date_now              = new DateTime( gmdate( LPDateTime::FORMAT_MYSQL ) );
 					$date_diff             = date_diff( $date_now, $date_expired );
 					$number_days_remaining = $date_diff->days;
 					if ( $date_diff->invert ) {

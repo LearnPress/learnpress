@@ -52,6 +52,7 @@ use LearnPress\Shortcodes\CourseMaterialShortcode;
 use LearnPress\Shortcodes\Courses\ListCoursesShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
+use LearnPress\TemplateHooks\Admin\AdminAddonsPage;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
@@ -204,7 +205,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				// hooks .
 				$this->hooks();
 			} catch ( Throwable $e ) {
-				error_log( __METHOD__ . ': ' . $e->getMessage() );
+				LP_Debug::error_log( $e );
 			}
 		}
 
@@ -414,6 +415,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminListStudentsEnrolled::instance();
 			AdminStatisticsReportTable::instance();
 			FilterOptionsProvider::register_flush_hooks();
+			AdminAddonsPage::instance();
 			// WP GDPR
 			ErasePersonalData::instance();
 			ExportPersonalData::instance();
