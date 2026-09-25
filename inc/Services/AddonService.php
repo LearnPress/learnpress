@@ -93,10 +93,10 @@ class AddonService {
 
 		try {
 			$lp_cache  = new LP_Cache( true );
-			$key       = 'lp_addons_data';
-			$dat_cache = $lp_cache->get_cache( $key );
+			$key_cache       = 'lp_addons_data';
+			$dat_cache = $lp_cache->get_cache( $key_cache );
 			if ( false !== $dat_cache ) {
-				return $dat_cache;
+				return json_decode( wp_json_encode( $dat_cache ) );
 			}
 
 			if ( ! empty( $this->url_list_addons ) ) {
@@ -110,7 +110,7 @@ class AddonService {
 				if ( ! is_wp_error( $response )
 					&& 200 === wp_remote_retrieve_response_code( $response ) ) {
 					$data = LP_Helper::json_decode( wp_remote_retrieve_body( $response ) );
-					$lp_cache->set_cache( $key, $data, 5 * HOUR_IN_SECONDS );
+					$lp_cache->set_cache( $key_cache, $data, 5 * MINUTE_IN_SECONDS );
 				} else {
 					throw new Exception( $response->get_error_message() );
 				}
@@ -173,6 +173,13 @@ class AddonService {
 			return $addons;
 		}
 
+		$lp_cache     = new LP_Cache( true );
+		$key_cache    = 'addons_purchased_info';
+		$addons_cache = $lp_cache->get_cache( $key_cache );
+		if ( false !== $addons_cache ) {
+			return json_decode( wp_json_encode( $addons_cache ) );
+		}
+
 		$args = [
 			'method'     => 'POST',
 			'body'       => [
@@ -199,6 +206,8 @@ class AddonService {
 				$addons->{$key}->purchase_info = $data->{$key};
 			}
 		}
+
+		$lp_cache->set_cache( $key_cache, $addons );
 
 		return $addons;
 	}
@@ -250,6 +259,8 @@ class AddonService {
 		$key_purchase                = LP_Settings::get_option( $this->key_purchase_addons, array() );
 		$key_purchase[ $addon_slug ] = $purchase_code;
 		LP_Settings::update_option( $this->key_purchase_addons, $key_purchase );
+
+		$this->clear_addons_purchased_cache();
 
 		return $data->{$addon_slug};
 	}
@@ -359,6 +370,8 @@ class AddonService {
 		if ( is_wp_error( $result_active ) ) {
 			throw new Exception( $result_active->get_error_message() );
 		}
+
+		$this->clear_addons_purchased_cache();
 	}
 
 	/**
@@ -390,6 +403,8 @@ class AddonService {
 		if ( $is_activate ) {
 			$this->activate( $addon );
 		}
+
+		$this->clear_addons_purchased_cache();
 	}
 
 	/**
@@ -426,6 +441,16 @@ class AddonService {
 	 */
 	public function deactivate( array $addon = [] ) {
 		deactivate_plugins( $addon['basename'] ?? '' );
+	}
+
+	/**
+	 * Clear cache of addons purchased info.
+	 *
+	 * @return void
+	 */
+	private function clear_addons_purchased_cache(): void {
+		$lp_cache = new LP_Cache( true );
+		$lp_cache->clear( 'addons_purchased_info' );
 	}
 
 	/**
