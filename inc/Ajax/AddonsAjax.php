@@ -15,6 +15,7 @@ use Exception;
 use LearnPress\Helpers\Response;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\AddonService;
+use LearnPress\TemplateHooks\Admin\AdminAddonsPage;
 use LP_Helper;
 use LP_Request;
 use LP_Settings;
@@ -119,10 +120,6 @@ class AddonsAjax extends AbstractAjax {
 						$lp_file_system->lp_filesystem->delete( $path_file );
 					}
 
-					if ( 'install' === $action && $purchase_info ) {
-						$response->data = $this->prepare_license_response( $purchase_info, (string) $purchase_code );
-					}
-
 					break;
 				case 'activate':
 					if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -135,11 +132,10 @@ class AddonsAjax extends AbstractAjax {
 					$this->addon_service->deactivate( $addon );
 					break;
 				case 'update-purchase':
-					$purchase_info  = $this->addon_service->validate_and_save_purchase_code(
+					$purchase_info = $this->addon_service->validate_and_save_purchase_code(
 						$addon['slug'],
 						(string) $purchase_code
 					);
-					$response->data = $this->prepare_license_response( $purchase_info, (string) $purchase_code );
 					break;
 				default:
 					break;
@@ -152,30 +148,29 @@ class AddonsAjax extends AbstractAjax {
 				$action,
 				__( 'successfully', 'learnpress' )
 			);
+
+			$addon_obj = json_decode( wp_json_encode( $addon ) );
+			if ( ! empty( $purchase_info ) ) {
+				$addon_obj->purchase_info = $purchase_info;
+			}
+
+			wp_cache_delete( 'plugins', 'plugins' );
+			$plugins_installed = get_plugins();
+			$plugins_activated = get_option( 'active_plugins', array() );
+			$keys_purchase     = LP_Settings::get_option( $this->addon_service->key_purchase_addons, array() );
+
+			$response->data->html = AdminAddonsPage::html_addon_item(
+				$addon_obj,
+				array(
+					'plugins_installed' => $plugins_installed,
+					'plugins_activated' => $plugins_activated,
+					'keys_purchase'     => $keys_purchase,
+				)
+			);
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
 
 		wp_send_json( $response );
-	}
-
-	/**
-	 * Prepare license data returned to the add-ons UI.
-	 *
-	 * @param object $purchase_info Purchase information returned by ThimPress.
-	 * @param string $purchase_code Purchase code.
-	 *
-	 * @return array
-	 */
-	private function prepare_license_response( object $purchase_info, string $purchase_code ): array {
-		$date_expire    = $purchase_info->date_expire ?? '';
-		$license_status = AddonService::get_license_status( $date_expire );
-
-		return array(
-			'license_status'        => $license_status,
-			'purchase_code_masked'  => AddonService::mask_purchase_code( $purchase_code ),
-			'date_expire'           => $date_expire,
-			'date_expire_formatted' => empty( $date_expire ) ? '' : date_i18n( get_option( 'date_format' ), strtotime( $date_expire ) ),
-		);
 	}
 }

@@ -14,7 +14,6 @@ import * as lpUtils from 'lpAssetsJsPath/utils.js';
 class AdminAddons {
 	constructor() {
 		this.elAddonsPage = null;
-		this.isHandling = [];
 		this.urlParams = new URLSearchParams( window.location.search );
 	}
 
@@ -32,7 +31,6 @@ class AdminAddons {
 		elPurchaseInstall: '.purchase-install',
 		elPurchaseCode: '.enter-purchase-code',
 		elLicense: '.lp-addon-license',
-		elAddonVersionCurrent: '.addon-version-current',
 	};
 
 	init() {
@@ -109,112 +107,53 @@ class AdminAddons {
 	/**
 	 * Send addon action to server via lpAJAXG.
 	 *
-	 * @param {Object}   data     { action_type, addon, purchase_code }
-	 * @param {Function} callBack Callback ( status, message, data ).
+	 * @param {Object} data { action, addon, purchase_code, el, elAddonItem }.
 	 * @return void
 	 */
-	addonsAction( data, callBack ) {
-		const addonSlug = data.addon.slug;
-
-		if ( this.isHandling.indexOf( addonSlug ) !== -1 ) {
-			return;
-		}
-		this.isHandling.push( addonSlug );
-
-		const releaseHandling = () => {
-			const index = this.isHandling.indexOf( addonSlug );
-			if ( -1 !== index ) {
-				this.isHandling.splice( index, 1 );
-			}
-		};
+	addonsAction( data ) {
+		const { action, addon, el, elAddonItem } = data;
+		const selectors = AdminAddons.selectors;
 
 		const params = {
 			action: 'addon_action',
-			action_type: data.action,
-			addon: data.addon,
+			action_type: action,
+			addon,
 			purchase_code: data.purchase_code || '',
 			id_url: 'addon-action',
 		};
 
 		window.lpAJAXG.fetchAJAX( params, {
 			success: ( response ) => {
-				releaseHandling();
-
 				const { status, message, data: resData } = response;
 
-				if ( callBack ) {
-					callBack( status, message, resData );
+				lpToastify.show( message, status );
+
+				if ( status === 'success' && resData?.html ) {
+					elAddonItem.outerHTML = resData.html;
+				} else if (
+					'install' === action ||
+					'update-purchase' === action
+				) {
+					const elPurchasePanel = el.closest(
+						selectors.elPurchaseInstall
+					);
+					const elPurchaseCode = elPurchasePanel
+						? elPurchasePanel.querySelector( selectors.elPurchaseCode )
+						: null;
+					if ( elPurchaseCode ) {
+						elPurchaseCode.classList.add( 'is-error' );
+						elPurchaseCode.setAttribute( 'aria-invalid', 'true' );
+					}
 				}
 
-				this.handleNotify( status, message );
+				//this.filterAddons();
+				lpUtils.lpSetLoadingEl( el, 0 );
 			},
 			error: ( error ) => {
-				releaseHandling();
-				if ( callBack ) {
-					callBack( 'error', error.message );
-				}
-				this.handleNotify( 'error', `error js: ${ error }` );
-				console.log( error );
+				lpUtils.lpSetLoadingEl( el, 0 );
+				lpToastify.show( `error js: ${ error }`, 'error' );
 			},
-			completed: () => {},
 		} );
-	}
-
-	/**
-	 * Show notify.
-	 *
-	 * @param {string} status  Status response.
-	 * @param {string} message Message response.
-	 * @return void
-	 */
-	handleNotify( status, message ) {
-		lpToastify.show(
-			message,
-			'success' === status ? 'success' : 'error'
-		);
-	}
-
-	/**
-	 * Update license panel after install/update-purchase.
-	 *
-	 * @param {Element} elAddonItem Addon item element.
-	 * @param {Object}  licenseData License data from server.
-	 * @return void
-	 */
-	updateLicensePanel( elAddonItem, licenseData ) {
-		const elLicense = elAddonItem.querySelector(
-			AdminAddons.selectors.elLicense
-		);
-		if ( ! elLicense || ! licenseData ) {
-			return;
-		}
-
-		const status = licenseData.license_status || 'active';
-		elLicense.hidden = false;
-		elLicense.classList.remove(
-			'lp-addon-license--active',
-			'lp-addon-license--not-activated',
-			'lp-addon-license--expired',
-			'lp-addon-license--deactivated'
-		);
-		elLicense.classList.add( `lp-addon-license--${ status }` );
-
-		const elStatus = elLicense.querySelector( '.lp-addon-license__status' );
-		const elExpiry = elLicense.querySelector( '.lp-addon-license__expiry' );
-
-		if ( elStatus ) {
-			elStatus.textContent = 'expired' === status ? 'Expired' : 'Active';
-		}
-
-		elLicense.dataset.purchaseCodeMasked =
-			licenseData.purchase_code_masked || '';
-
-		if ( elExpiry ) {
-			elExpiry.textContent = licenseData.date_expire_formatted
-				? `(Updates until ${ licenseData.date_expire_formatted })`
-				: '';
-			elExpiry.hidden = ! licenseData.date_expire_formatted;
-		}
 	}
 
 	/**
@@ -433,90 +372,13 @@ class AdminAddons {
 			).value;
 		}
 
-		const data = { purchase_code: purchaseCode, action, addon };
-		this.addonsAction( data, ( status, message, resData ) => {
-			this.onActionDone( status, resData, {
-				action,
-				addon,
-				el,
-				elAddonItem,
-				elItemPurchase,
-			} );
+		this.addonsAction( {
+			purchase_code: purchaseCode,
+			action,
+			addon,
+			el,
+			elAddonItem,
 		} );
-	}
-
-	/**
-	 * Handle response after addon action.
-	 *
-	 * @param {string} status  Response status.
-	 * @param {Object} resData Response data.
-	 * @param {Object} ctx     Context elements.
-	 * @return void
-	 */
-	onActionDone( status, resData, ctx ) {
-		const { action, addon, el, elAddonItem, elItemPurchase } = ctx;
-		const selectors = AdminAddons.selectors;
-
-		if ( status === 'success' ) {
-			if ( action === 'install' ) {
-				elAddonItem.classList.add( 'installed', 'activated' );
-				elAddonItem.classList.remove( 'not_installed' );
-				if ( resData ) {
-					elAddonItem.classList.add( 'license' );
-					this.updateLicensePanel( elAddonItem, resData );
-				}
-				elItemPurchase.style.display = 'none';
-
-				elItemPurchase.querySelector(
-					selectors.elPurchaseInstall
-				).style.display = 'none';
-				elItemPurchase
-					.querySelector( selectors.elPurchaseInstall )
-					.querySelector( selectors.elPurchaseCode ).value =
-					'';
-			} else if ( action === 'update' ) {
-				const elAddonVersionCurrent = elAddonItem.querySelector(
-					selectors.elAddonVersionCurrent
-				);
-				elAddonVersionCurrent.innerHTML = addon.version;
-				elAddonItem.classList.remove( 'update' );
-			} else if ( action === 'activate' ) {
-				elAddonItem.classList.add( 'activated' );
-			} else if ( action === 'deactivate' ) {
-				elAddonItem.classList.remove( 'activated' );
-			} else if ( action === 'update-purchase' ) {
-				this.updateLicensePanel( elAddonItem, resData );
-				elItemPurchase.style.display = 'none';
-				elItemPurchase.querySelector(
-					selectors.elPurchaseInstall
-				).style.display = 'none';
-				elItemPurchase
-					.querySelectorAll(
-						`${ selectors.elPurchaseCode }, input[name=purchase-code]`
-					)
-					.forEach( ( input ) => {
-						input.value = '';
-					} );
-			}
-
-			this.filterAddons();
-		} else if (
-			'install' === action ||
-			'update-purchase' === action
-		) {
-			const elPurchasePanel = el.closest(
-				selectors.elPurchaseInstall
-			);
-			const elPurchaseCode = elPurchasePanel
-				? elPurchasePanel.querySelector( selectors.elPurchaseCode )
-				: null;
-			if ( elPurchaseCode ) {
-				elPurchaseCode.classList.add( 'is-error' );
-				elPurchaseCode.setAttribute( 'aria-invalid', 'true' );
-			}
-		}
-
-		lpUtils.lpSetLoadingEl( el, 0 );
 	}
 
 	/**

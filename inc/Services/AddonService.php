@@ -456,39 +456,36 @@ class AddonService {
 	/**
 	 * Active site if install plugin via upload zip has "purchase code".
 	 *
-	 * @param string $addon_slug    Addon slug.
+	 * @param string $addon_slug Addon slug.
 	 * @param string $purchase_code Purchase code.
 	 *
 	 * @return void
+	 * @throws Exception
 	 */
-	public function active_site( $addon_slug, $purchase_code ) {
-		try {
-			$args = [
-				'method'     => 'POST',
-				'body'       => [
-					'addon'         => $addon_slug,
-					'purchase_code' => $purchase_code,
-				],
-				'user-agent' => site_url(),
-			];
+	public function active_site( string $addon_slug, string $purchase_code ) {
+		$args = [
+			'method'     => 'POST',
+			'body'       => [
+				'addon'         => $addon_slug,
+				'purchase_code' => $purchase_code,
+			],
+			'user-agent' => site_url(),
+		];
 
-			$result = wp_remote_post( $this->link_active_site, $args );
-			if ( is_wp_error( $result ) ) {
-				throw new Exception( $result->get_error_message() );
-			}
-
-			$data = wp_remote_retrieve_body( $result );
-			if ( preg_match( '/^Error.*/', $data ) ) {
-				throw new Exception( $data );
-			}
-
-			// Save keys purchase code of addons to table WP Options.
-			$key_purchases                = LP_Settings::get_option( $this->key_purchase_addons, [] );
-			$key_purchases[ $addon_slug ] = $purchase_code;
-			LP_Settings::update_option( $this->key_purchase_addons, $key_purchases );
-		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+		$result = wp_remote_post( $this->link_active_site, $args );
+		if ( is_wp_error( $result ) ) {
+			throw new Exception( $result->get_error_message() );
 		}
+
+		$data = wp_remote_retrieve_body( $result );
+		if ( preg_match( '/^Error.*/', $data ) ) {
+			throw new Exception( $data );
+		}
+
+		// Save keys purchase code of addons to table WP Options.
+		$key_purchases                = LP_Settings::get_option( $this->key_purchase_addons, [] );
+		$key_purchases[ $addon_slug ] = $purchase_code;
+		LP_Settings::update_option( $this->key_purchase_addons, $key_purchases );
 	}
 
 	/**
@@ -512,7 +509,7 @@ class AddonService {
 				}
 			}
 		} catch ( Throwable $e ) {
-			LP_Debug::var_dump( $e );
+			LP_Debug::error_log( $e );
 		}
 
 		return $addons_new_version;
