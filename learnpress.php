@@ -186,6 +186,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		/**
 		 * LearnPress constructor.
+		 *
+		 * Runs on every WordPress bootstrap. Order of operations:
+		 * 1. prepare_before_handle() - define constants, autoload, include global files and create the LP_Install instance.
+		 * 2. Register activation/deactivation hooks unconditionally so on_activate() fires when the plugin is activated.
+		 * 3. Stop here if tables are not installed yet; the activation hook will create them.
+		 * 4. On normal requests with tables installed, register the init hook to load CPTs, APIs, settings and integrations.
+		 * 5. Register remaining plugin hooks.
 		 */
 		private function __construct() {
 			/*if ( isset( $_POST['action'] ) && 'heartbeat' === $_POST['action'] ) {
@@ -195,14 +202,17 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			try {
 				$this->prepare_before_handle();
 
+				register_activation_hook( LP_PLUGIN_FILE, array( $this, 'on_activate' ) );
+				register_deactivation_hook( LP_PLUGIN_FILE, array( $this, 'on_deactivate' ) );
+
 				if ( ! LP_Install::instance()->tables_install_done() ) {
 					return;
 				}
 
-				// Must handle in hook init of WordPress, when loaded plugins, theme, user.
+				// init runs after WordPress core, plugins, theme and user are loaded.
 				add_action( 'init', [ $this, 'lp_main_handle' ], - 1000 );
 
-				// hooks .
+				// Register remaining plugin hooks.
 				$this->hooks();
 			} catch ( Throwable $e ) {
 				LP_Debug::error_log( $e );
@@ -790,9 +800,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Add links setting|document|addon on plugins page.
 			add_filter( 'plugin_action_links_' . LP_PLUGIN_BASENAME, array( $this, 'plugin_links' ) );
 
-			register_activation_hook( LP_PLUGIN_FILE, array( $this, 'on_activate' ) );
-			register_deactivation_hook( LP_PLUGIN_FILE, array( $this, 'on_deactivate' ) );
-
 			/*add_action(
 				'plugin_loaded',
 				function ( $plugin ) {
@@ -902,7 +909,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
-		 * Trigger this function while activating Learnpress.
+		 * Activation hook callback.
+		 *
+		 * Including creating database tables, default pages, registering CPTs and flushing rewrite rules.
 		 *
 		 * @since 3.0.0
 		 * @version 4.1.4.1

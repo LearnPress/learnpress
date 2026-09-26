@@ -114,12 +114,11 @@ class DataBase {
 	 * @throws Exception
 	 */
 	public function check_table_exists( string $name_table ) {
-		//return $this->wpdb->query( $this->wpdb->prepare( "SHOW TABLES LIKE '%s'", $name_table ) );
-		$check = $this->wpdb->query( "SELECT 1 FROM `{$name_table}` LIMIT 1" );
-
-		$this->check_execute_has_error();
-
-		return $check;
+		return $this->wpdb->query(
+			$this->wpdb->prepare(
+				"SHOW TABLES LIKE '%s'", $name_table
+			)
+		);
 	}
 
 	/**
