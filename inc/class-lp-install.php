@@ -36,10 +36,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 		protected function __construct() {
 			$this->lp_db = LP_Database::getInstance();
-			// Only run on backend.
-			if ( ! is_admin() ) {
-				return;
-			}
 			ini_set( 'max_execution_time', HOUR_IN_SECONDS );
 			// From LP v4.2.2 temporary run create table thim_cache.
 			// After a long time, will remove this code. Only run create table when activate plugin LP.
@@ -142,11 +138,15 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 		/**
 		 * Create tables required for LP
+		 * @throws Exception
 		 */
 		private function create_tables() {
+			$db = LP_Database::getInstance();
 			$tables = Config::instance()->get( 'tables-v4', 'table' );
 			foreach ( $tables as $table ) {
-				LP_Database::getInstance()->wpdb->query( $table );
+				$db->wpdb->query( $table );
+
+				$db->check_execute_has_error();
 			}
 
 			if ( ! LP_Settings::is_created_tb_thim_cache() ) {
