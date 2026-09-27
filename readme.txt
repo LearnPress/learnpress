@@ -301,14 +301,14 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
-= 4.4.9 (2026-09-26) =
+= 4.4.9 (2026-09-27) =
 * Refactor: Add-ons manager and lp admin notices.
 * Fixed: minor bugs.
 * Fixed: custom post type screen check and quick edit missing fields.
 * Fixed: error 404 course edit URL generation in OpenAi.
 * Fixed: translate enrolled students status badge.
-* Improved: cache handling (lp-cache, thim_cache, AddonService).
 * Updated: icons.
+* Updated: API
 
 = 4.4.8 (2026-09-18) =
 * Fixed: security (Props @Yuto Hyakumoto, @Wordfence).
