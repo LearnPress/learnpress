@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 7.1
-Stable tag: 4.4.8
+Stable tag: 4.4.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -300,6 +300,15 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.4.9 (2026-09-26) =
+* Refactor: Add-ons manager and lp admin notices.
+* Fixed: minor bugs.
+* Fixed: custom post type screen check and quick edit missing fields.
+* Fixed: error 404 course edit URL generation in OpenAi.
+* Fixed: translate enrolled students status badge.
+* Improved: cache handling (lp-cache, thim_cache, AddonService).
+* Updated: icons.
 
 = 4.4.8 (2026-09-18) =
 * Fixed: security (Props @Yuto Hyakumoto, @Wordfence).

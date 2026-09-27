@@ -1,0 +1,3314 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnPress Icon Font Viewer</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- LearnPress Admin CSS -->
+  <link rel="stylesheet" href="../../css/admin/admin.css">
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #161f30;
+      --bg-card: rgba(22, 31, 48, 0.75);
+      --bg-card-hover: rgba(30, 43, 66, 0.95);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(99, 102, 241, 0.5);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent: #6366f1;
+      --accent-rgb: 99, 102, 241;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --success: #10b981;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+      --shadow-hover: 0 10px 30px -4px rgba(99, 102, 241, 0.25);
+      --icon-color: #f8fafc;
+      --icon-size: 32px;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-card-hover: #ffffff;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(99, 102, 241, 0.5);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 10px 25px -4px rgba(99, 102, 241, 0.2);
+      --icon-color: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: rgba(99, 102, 241, 0.12);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .title {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .controls-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-card);
+      position: sticky;
+      top: 1rem;
+      z-index: 100;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 1.1rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.25);
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .control-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-secondary);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+      cursor: pointer;
+      width: 100px;
+    }
+
+    .size-val {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 34px;
+    }
+
+    .color-picker-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--bg-secondary);
+      padding: 0.35rem 0.6rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+
+    .swatch-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .swatch-btn:hover {
+      transform: scale(1.15);
+    }
+
+    .swatch-btn.active {
+      border-color: var(--text-primary);
+      box-shadow: 0 0 0 2px var(--bg-secondary);
+    }
+
+    .btn-group {
+      display: inline-flex;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.25rem;
+      gap: 0.25rem;
+    }
+
+    .btn-icon {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.45rem 0.65rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .btn-icon:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-icon.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .results-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      padding: 0 0.5rem;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .icon-grid.layout-compact {
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .icon-grid.layout-list {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .icon-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .icon-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .icon-preview-box {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+      color: var(--icon-color);
+      transition: transform 0.2s ease;
+    }
+
+    .icon-card:hover .icon-preview-box {
+      transform: scale(1.15);
+    }
+
+    .icon-preview-box i {
+      font-size: var(--icon-size);
+    }
+
+    .icon-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      word-break: break-word;
+      margin-bottom: 0.35rem;
+      max-width: 100%;
+    }
+
+    .icon-meta {
+      display: inline-flex;
+      align-items: center;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--bg-secondary);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .card-actions {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .icon-card:hover .card-actions {
+      opacity: 1;
+    }
+
+    .action-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .layout-list .icon-card {
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+    }
+
+    .layout-list .icon-preview-box {
+      min-height: auto;
+      margin-bottom: 0;
+      width: 60px;
+    }
+
+    .layout-list .icon-name {
+      flex: 1;
+      text-align: left;
+      margin-bottom: 0;
+      padding-left: 1.25rem;
+      font-size: 0.95rem;
+    }
+
+    .layout-list .icon-meta {
+      margin-right: 1.25rem;
+    }
+
+    .layout-list .card-actions {
+      position: static;
+      opacity: 1;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #10b981;
+      color: #ffffff;
+      padding: 0.85rem 1.5rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      max-width: 540px;
+      width: 100%;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.open .modal {
+      transform: scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .modal-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      padding: 2.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-preview i {
+      font-size: 72px;
+      color: var(--accent);
+    }
+
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+
+    .snippet-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .snippet-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .snippet-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .snippet-code {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+    }
+
+    .snippet-copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      transition: background 0.15s ease;
+    }
+
+    .snippet-copy-btn:hover {
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="badge">
+        <i class="lp-icon-check-circle"></i> LearnPress Icon Font Preview
+      </div>
+      <h1 class="title">LearnPress Icons</h1>
+      <p class="subtitle">Toàn bộ 203 icon font từ CSS <code>assets/css/admin/admin.css</code>. Click vào icon để copy class name, mã HTML hoặc mã Unicode.</p>
+    </header>
+
+    <!-- Controls Panel -->
+    <div class="controls-panel">
+      <div class="controls-row">
+        <!-- Search Input -->
+        <div class="search-box">
+          <i class="lp-icon-search search-icon"></i>
+          <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm icon theo tên hoặc mã hex (vd: search, f002, book, user)..." autofocus>
+        </div>
+
+        <!-- Size Slider -->
+        <div class="control-group">
+          <span class="control-label"><i class="lp-icon-expand"></i> Size:</span>
+          <div class="slider-container">
+            <input type="range" id="sizeSlider" min="16" max="72" value="32" step="2">
+            <span class="size-val" id="sizeVal">32px</span>
+          </div>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="control-group">
+          <span class="control-label"><i class="lp-icon-art-and-design"></i> Color:</span>
+          <div class="color-picker-wrap">
+            <button class="swatch-btn active" style="background: #f8fafc;" data-color="#f8fafc" title="Default"></button>
+            <button class="swatch-btn" style="background: #6366f1;" data-color="#6366f1" title="Indigo"></button>
+            <button class="swatch-btn" style="background: #10b981;" data-color="#10b981" title="Emerald"></button>
+            <button class="swatch-btn" style="background: #f59e0b;" data-color="#f59e0b" title="Amber"></button>
+            <button class="swatch-btn" style="background: #ef4444;" data-color="#ef4444" title="Red"></button>
+            <button class="swatch-btn" style="background: #a855f7;" data-color="#a855f7" title="Purple"></button>
+            <button class="swatch-btn" style="background: #ec4899;" data-color="#ec4899" title="Pink"></button>
+          </div>
+        </div>
+
+        <!-- Layout & Theme Toggles -->
+        <div class="control-group">
+          <div class="btn-group">
+            <button id="layoutGrid" class="btn-icon active" title="Grid Layout">
+              <i class="lp-icon-th-large"></i>
+            </button>
+            <button id="layoutCompact" class="btn-icon" title="Compact Layout">
+              <i class="lp-icon-th"></i>
+            </button>
+            <button id="layoutList" class="btn-icon" title="List Layout">
+              <i class="lp-icon-th-list"></i>
+            </button>
+          </div>
+
+          <button id="themeToggle" class="btn-icon" title="Toggle Light / Dark Mode" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <i class="lp-icon-certificate" id="themeIcon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metadata / Stats -->
+    <div class="results-meta">
+      <span id="resultsCount">Hiển thị 203 icons</span>
+      <span>Click vào thẻ để xem chi tiết & copy mã</span>
+    </div>
+
+    <!-- Icon Grid Container -->
+    <div class="icon-grid" id="iconGrid">
+      <div class="icon-card" data-name="alarm-clock" data-class="lp-icon-alarm-clock" data-hex="e909">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-alarm-clock', 'Copied lp-icon-alarm-clock!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-alarm-clock"></i>
+        </div>
+        <div class="icon-name">alarm-clock</div>
+        <span class="icon-meta">\e909</span>
+      </div>
+      <div class="icon-card" data-name="angle-double-down" data-class="lp-icon-angle-double-down" data-hex="f103">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-angle-double-down', 'Copied lp-icon-angle-double-down!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-angle-double-down"></i>
+        </div>
+        <div class="icon-name">angle-double-down</div>
+        <span class="icon-meta">\f103</span>
+      </div>
+      <div class="icon-card" data-name="angle-double-left" data-class="lp-icon-angle-double-left" data-hex="f100">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-angle-double-left', 'Copied lp-icon-angle-double-left!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-angle-double-left"></i>
+        </div>
+        <div class="icon-name">angle-double-left</div>
+        <span class="icon-meta">\f100</span>
+      </div>
+      <div class="icon-card" data-name="angle-double-right" data-class="lp-icon-angle-double-right" data-hex="f101">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-angle-double-right', 'Copied lp-icon-angle-double-right!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-angle-double-right"></i>
+        </div>
+        <div class="icon-name">angle-double-right</div>
+        <span class="icon-meta">\f101</span>
+      </div>
+      <div class="icon-card" data-name="angle-double-up" data-class="lp-icon-angle-double-up" data-hex="f102">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-angle-double-up', 'Copied lp-icon-angle-double-up!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-angle-double-up"></i>
+        </div>
+        <div class="icon-name">angle-double-up</div>
+        <span class="icon-meta">\f102</span>
+      </div>
+      <div class="icon-card" data-name="angle-down" data-class="lp-icon-angle-down" data-hex="f107">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-angle-down', 'Copied lp-icon-angle-down!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-angle-down"></i>
+        </div>
+        <div class="icon-name">angle-down</div>
+        <span class="icon-meta">\f107</span>
+      </div>
+      <div class="icon-card" data-name="angle-left" data-class="lp-icon-angle-left" data-hex="f104">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-angle-left', 'Copied lp-icon-angle-left!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-angle-left"></i>
+        </div>
+        <div class="icon-name">angle-left</div>
+        <span class="icon-meta">\f104</span>
+      </div>
+      <div class="icon-card" data-name="angle-right" data-class="lp-icon-angle-right" data-hex="f105">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-angle-right', 'Copied lp-icon-angle-right!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-angle-right"></i>
+        </div>
+        <div class="icon-name">angle-right</div>
+        <span class="icon-meta">\f105</span>
+      </div>
+      <div class="icon-card" data-name="angle-up" data-class="lp-icon-angle-up" data-hex="f106">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-angle-up', 'Copied lp-icon-angle-up!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-angle-up"></i>
+        </div>
+        <div class="icon-name">angle-up</div>
+        <span class="icon-meta">\f106</span>
+      </div>
+      <div class="icon-card" data-name="arrow-left" data-class="lp-icon-arrow-left" data-hex="f060">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-arrow-left', 'Copied lp-icon-arrow-left!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-arrow-left"></i>
+        </div>
+        <div class="icon-name">arrow-left</div>
+        <span class="icon-meta">\f060</span>
+      </div>
+      <div class="icon-card" data-name="arrow-right" data-class="lp-icon-arrow-right" data-hex="f061">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-arrow-right', 'Copied lp-icon-arrow-right!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-arrow-right"></i>
+        </div>
+        <div class="icon-name">arrow-right</div>
+        <span class="icon-meta">\f061</span>
+      </div>
+      <div class="icon-card" data-name="arrows" data-class="lp-icon-arrows" data-hex="f047">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-arrows', 'Copied lp-icon-arrows!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-arrows"></i>
+        </div>
+        <div class="icon-name">arrows</div>
+        <span class="icon-meta">\f047</span>
+      </div>
+      <div class="icon-card" data-name="arrows-alt" data-class="lp-icon-arrows-alt" data-hex="f0b2">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-arrows-alt', 'Copied lp-icon-arrows-alt!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-arrows-alt"></i>
+        </div>
+        <div class="icon-name">arrows-alt</div>
+        <span class="icon-meta">\f0b2</span>
+      </div>
+      <div class="icon-card" data-name="art-and-design" data-class="lp-icon-art-and-design" data-hex="e90a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-art-and-design', 'Copied lp-icon-art-and-design!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-art-and-design"></i>
+        </div>
+        <div class="icon-name">art-and-design</div>
+        <span class="icon-meta">\e90a</span>
+      </div>
+      <div class="icon-card" data-name="bar-chart" data-class="lp-icon-bar-chart" data-hex="f080">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-bar-chart', 'Copied lp-icon-bar-chart!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-bar-chart"></i>
+        </div>
+        <div class="icon-name">bar-chart</div>
+        <span class="icon-meta">\f080</span>
+      </div>
+      <div class="icon-card" data-name="bar-chart-o" data-class="lp-icon-bar-chart-o" data-hex="f080">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-bar-chart-o', 'Copied lp-icon-bar-chart-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-bar-chart-o"></i>
+        </div>
+        <div class="icon-name">bar-chart-o</div>
+        <span class="icon-meta">\f080</span>
+      </div>
+      <div class="icon-card" data-name="bell-o" data-class="lp-icon-bell-o" data-hex="f0a2">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-bell-o', 'Copied lp-icon-bell-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-bell-o"></i>
+        </div>
+        <div class="icon-name">bell-o</div>
+        <span class="icon-meta">\f0a2</span>
+      </div>
+      <div class="icon-card" data-name="best-customer-experience" data-class="lp-icon-best-customer-experience" data-hex="e90b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-best-customer-experience', 'Copied lp-icon-best-customer-experience!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-best-customer-experience"></i>
+        </div>
+        <div class="icon-name">best-customer-experience</div>
+        <span class="icon-meta">\e90b</span>
+      </div>
+      <div class="icon-card" data-name="book" data-class="lp-icon-book" data-hex="f02d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-book', 'Copied lp-icon-book!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-book"></i>
+        </div>
+        <div class="icon-name">book</div>
+        <span class="icon-meta">\f02d</span>
+      </div>
+      <div class="icon-card" data-name="book-open" data-class="lp-icon-book-open" data-hex="f518">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-book-open', 'Copied lp-icon-book-open!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-book-open"></i>
+        </div>
+        <div class="icon-name">book-open</div>
+        <span class="icon-meta">\f518</span>
+      </div>
+      <div class="icon-card" data-name="bookmark" data-class="lp-icon-bookmark" data-hex="f02e">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-bookmark', 'Copied lp-icon-bookmark!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-bookmark"></i>
+        </div>
+        <div class="icon-name">bookmark</div>
+        <span class="icon-meta">\f02e</span>
+      </div>
+      <div class="icon-card" data-name="bookmark-o" data-class="lp-icon-bookmark-o" data-hex="f097">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-bookmark-o', 'Copied lp-icon-bookmark-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-bookmark-o"></i>
+        </div>
+        <div class="icon-name">bookmark-o</div>
+        <span class="icon-meta">\f097</span>
+      </div>
+      <div class="icon-card" data-name="box" data-class="lp-icon-box" data-hex="e906">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-box', 'Copied lp-icon-box!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-box"></i>
+        </div>
+        <div class="icon-name">box</div>
+        <span class="icon-meta">\e906</span>
+      </div>
+      <div class="icon-card" data-name="briefcase" data-class="lp-icon-briefcase" data-hex="f0b1">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-briefcase', 'Copied lp-icon-briefcase!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-briefcase"></i>
+        </div>
+        <div class="icon-name">briefcase</div>
+        <span class="icon-meta">\f0b1</span>
+      </div>
+      <div class="icon-card" data-name="bullhorn" data-class="lp-icon-bullhorn" data-hex="f0a1">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-bullhorn', 'Copied lp-icon-bullhorn!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-bullhorn"></i>
+        </div>
+        <div class="icon-name">bullhorn</div>
+        <span class="icon-meta">\f0a1</span>
+      </div>
+      <div class="icon-card" data-name="calendar" data-class="lp-icon-calendar" data-hex="f073">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-calendar', 'Copied lp-icon-calendar!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-calendar"></i>
+        </div>
+        <div class="icon-name">calendar</div>
+        <span class="icon-meta">\f073</span>
+      </div>
+      <div class="icon-card" data-name="calendar-o" data-class="lp-icon-calendar-o" data-hex="f133">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-calendar-o', 'Copied lp-icon-calendar-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-calendar-o"></i>
+        </div>
+        <div class="icon-name">calendar-o</div>
+        <span class="icon-meta">\f133</span>
+      </div>
+      <div class="icon-card" data-name="caret-down" data-class="lp-icon-caret-down" data-hex="f0d7">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-caret-down', 'Copied lp-icon-caret-down!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-caret-down"></i>
+        </div>
+        <div class="icon-name">caret-down</div>
+        <span class="icon-meta">\f0d7</span>
+      </div>
+      <div class="icon-card" data-name="caret-left" data-class="lp-icon-caret-left" data-hex="f0d9">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-caret-left', 'Copied lp-icon-caret-left!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-caret-left"></i>
+        </div>
+        <div class="icon-name">caret-left</div>
+        <span class="icon-meta">\f0d9</span>
+      </div>
+      <div class="icon-card" data-name="caret-right" data-class="lp-icon-caret-right" data-hex="f0da">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-caret-right', 'Copied lp-icon-caret-right!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-caret-right"></i>
+        </div>
+        <div class="icon-name">caret-right</div>
+        <span class="icon-meta">\f0da</span>
+      </div>
+      <div class="icon-card" data-name="caret-up" data-class="lp-icon-caret-up" data-hex="f0d8">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-caret-up', 'Copied lp-icon-caret-up!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-caret-up"></i>
+        </div>
+        <div class="icon-name">caret-up</div>
+        <span class="icon-meta">\f0d8</span>
+      </div>
+      <div class="icon-card" data-name="certificate" data-class="lp-icon-certificate" data-hex="f0a3">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-certificate', 'Copied lp-icon-certificate!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-certificate"></i>
+        </div>
+        <div class="icon-name">certificate</div>
+        <span class="icon-meta">\f0a3</span>
+      </div>
+      <div class="icon-card" data-name="certificate-o" data-class="lp-icon-certificate-o" data-hex="e90c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-certificate-o', 'Copied lp-icon-certificate-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-certificate-o"></i>
+        </div>
+        <div class="icon-name">certificate-o</div>
+        <span class="icon-meta">\e90c</span>
+      </div>
+      <div class="icon-card" data-name="check" data-class="lp-icon-check" data-hex="f00c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-check', 'Copied lp-icon-check!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-check"></i>
+        </div>
+        <div class="icon-name">check</div>
+        <span class="icon-meta">\f00c</span>
+      </div>
+      <div class="icon-card" data-name="check-circle" data-class="lp-icon-check-circle" data-hex="f058">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-check-circle', 'Copied lp-icon-check-circle!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-check-circle"></i>
+        </div>
+        <div class="icon-name">check-circle</div>
+        <span class="icon-meta">\f058</span>
+      </div>
+      <div class="icon-card" data-name="check-square-o" data-class="lp-icon-check-square-o" data-hex="f046">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-check-square-o', 'Copied lp-icon-check-square-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-check-square-o"></i>
+        </div>
+        <div class="icon-name">check-square-o</div>
+        <span class="icon-meta">\f046</span>
+      </div>
+      <div class="icon-card" data-name="chevron-down" data-class="lp-icon-chevron-down" data-hex="f078">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-chevron-down', 'Copied lp-icon-chevron-down!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-chevron-down"></i>
+        </div>
+        <div class="icon-name">chevron-down</div>
+        <span class="icon-meta">\f078</span>
+      </div>
+      <div class="icon-card" data-name="chevron-left" data-class="lp-icon-chevron-left" data-hex="f053">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-chevron-left', 'Copied lp-icon-chevron-left!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-chevron-left"></i>
+        </div>
+        <div class="icon-name">chevron-left</div>
+        <span class="icon-meta">\f053</span>
+      </div>
+      <div class="icon-card" data-name="chevron-right" data-class="lp-icon-chevron-right" data-hex="f054">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-chevron-right', 'Copied lp-icon-chevron-right!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-chevron-right"></i>
+        </div>
+        <div class="icon-name">chevron-right</div>
+        <span class="icon-meta">\f054</span>
+      </div>
+      <div class="icon-card" data-name="chevron-up" data-class="lp-icon-chevron-up" data-hex="f077">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-chevron-up', 'Copied lp-icon-chevron-up!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-chevron-up"></i>
+        </div>
+        <div class="icon-name">chevron-up</div>
+        <span class="icon-meta">\f077</span>
+      </div>
+      <div class="icon-card" data-name="circle-o" data-class="lp-icon-circle-o" data-hex="f10c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-circle-o', 'Copied lp-icon-circle-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-circle-o"></i>
+        </div>
+        <div class="icon-name">circle-o</div>
+        <span class="icon-meta">\f10c</span>
+      </div>
+      <div class="icon-card" data-name="circle-thin" data-class="lp-icon-circle-thin" data-hex="f1db">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-circle-thin', 'Copied lp-icon-circle-thin!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-circle-thin"></i>
+        </div>
+        <div class="icon-name">circle-thin</div>
+        <span class="icon-meta">\f1db</span>
+      </div>
+      <div class="icon-card" data-name="clock" data-class="lp-icon-clock" data-hex="e901">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-clock', 'Copied lp-icon-clock!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-clock"></i>
+        </div>
+        <div class="icon-name">clock</div>
+        <span class="icon-meta">\e901</span>
+      </div>
+      <div class="icon-card" data-name="clock-o" data-class="lp-icon-clock-o" data-hex="f017">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-clock-o', 'Copied lp-icon-clock-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-clock-o"></i>
+        </div>
+        <div class="icon-name">clock-o</div>
+        <span class="icon-meta">\f017</span>
+      </div>
+      <div class="icon-card" data-name="close" data-class="lp-icon-close" data-hex="f00d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-close', 'Copied lp-icon-close!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-close"></i>
+        </div>
+        <div class="icon-name">close</div>
+        <span class="icon-meta">\f00d</span>
+      </div>
+      <div class="icon-card" data-name="close-circle" data-class="lp-icon-close-circle" data-hex="e907">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-close-circle', 'Copied lp-icon-close-circle!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-close-circle"></i>
+        </div>
+        <div class="icon-name">close-circle</div>
+        <span class="icon-meta">\e907</span>
+      </div>
+      <div class="icon-card" data-name="co-instructor" data-class="lp-icon-co-instructor" data-hex="e904">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-co-instructor', 'Copied lp-icon-co-instructor!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-co-instructor"></i>
+        </div>
+        <div class="icon-name">co-instructor</div>
+        <span class="icon-meta">\e904</span>
+      </div>
+      <div class="icon-card" data-name="code" data-class="lp-icon-code" data-hex="f121">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-code', 'Copied lp-icon-code!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-code"></i>
+        </div>
+        <div class="icon-name">code</div>
+        <span class="icon-meta">\f121</span>
+      </div>
+      <div class="icon-card" data-name="cog" data-class="lp-icon-cog" data-hex="f013">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-cog', 'Copied lp-icon-cog!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-cog"></i>
+        </div>
+        <div class="icon-name">cog</div>
+        <span class="icon-meta">\f013</span>
+      </div>
+      <div class="icon-card" data-name="cogs" data-class="lp-icon-cogs" data-hex="f085">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-cogs', 'Copied lp-icon-cogs!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-cogs"></i>
+        </div>
+        <div class="icon-name">cogs</div>
+        <span class="icon-meta">\f085</span>
+      </div>
+      <div class="icon-card" data-name="comment" data-class="lp-icon-comment" data-hex="f075">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-comment', 'Copied lp-icon-comment!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-comment"></i>
+        </div>
+        <div class="icon-name">comment</div>
+        <span class="icon-meta">\f075</span>
+      </div>
+      <div class="icon-card" data-name="comment-o" data-class="lp-icon-comment-o" data-hex="f0e5">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-comment-o', 'Copied lp-icon-comment-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-comment-o"></i>
+        </div>
+        <div class="icon-name">comment-o</div>
+        <span class="icon-meta">\f0e5</span>
+      </div>
+      <div class="icon-card" data-name="comment-written" data-class="lp-icon-comment-written" data-hex="e921">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-comment-written', 'Copied lp-icon-comment-written!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-comment-written"></i>
+        </div>
+        <div class="icon-name">comment-written</div>
+        <span class="icon-meta">\e921</span>
+      </div>
+      <div class="icon-card" data-name="community" data-class="lp-icon-community" data-hex="e90d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-community', 'Copied lp-icon-community!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-community"></i>
+        </div>
+        <div class="icon-name">community</div>
+        <span class="icon-meta">\e90d</span>
+      </div>
+      <div class="icon-card" data-name="compress" data-class="lp-icon-compress" data-hex="f066">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-compress', 'Copied lp-icon-compress!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-compress"></i>
+        </div>
+        <div class="icon-name">compress</div>
+        <span class="icon-meta">\f066</span>
+      </div>
+      <div class="icon-card" data-name="concierge-bell" data-class="lp-icon-concierge-bell" data-hex="e90f">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-concierge-bell', 'Copied lp-icon-concierge-bell!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-concierge-bell"></i>
+        </div>
+        <div class="icon-name">concierge-bell</div>
+        <span class="icon-meta">\e90f</span>
+      </div>
+      <div class="icon-card" data-name="content-marketing" data-class="lp-icon-content-marketing" data-hex="e911">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-content-marketing', 'Copied lp-icon-content-marketing!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-content-marketing"></i>
+        </div>
+        <div class="icon-name">content-marketing</div>
+        <span class="icon-meta">\e911</span>
+      </div>
+      <div class="icon-card" data-name="copy" data-class="lp-icon-copy" data-hex="f0c5">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-copy', 'Copied lp-icon-copy!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-copy"></i>
+        </div>
+        <div class="icon-name">copy</div>
+        <span class="icon-meta">\f0c5</span>
+      </div>
+      <div class="icon-card" data-name="course-builder" data-class="lp-icon-course-builder" data-hex="">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-course-builder', 'Copied lp-icon-course-builder!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-course-builder"></i>
+        </div>
+        <div class="icon-name">course-builder</div>
+        
+      </div>
+      <div class="icon-card" data-name="database" data-class="lp-icon-database" data-hex="f1c0">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-database', 'Copied lp-icon-database!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-database"></i>
+        </div>
+        <div class="icon-name">database</div>
+        <span class="icon-meta">\f1c0</span>
+      </div>
+      <div class="icon-card" data-name="desktop" data-class="lp-icon-desktop" data-hex="f108">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-desktop', 'Copied lp-icon-desktop!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-desktop"></i>
+        </div>
+        <div class="icon-name">desktop</div>
+        <span class="icon-meta">\f108</span>
+      </div>
+      <div class="icon-card" data-name="dollar-sign" data-class="lp-icon-dollar-sign" data-hex="e912">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-dollar-sign', 'Copied lp-icon-dollar-sign!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-dollar-sign"></i>
+        </div>
+        <div class="icon-name">dollar-sign</div>
+        <span class="icon-meta">\e912</span>
+      </div>
+      <div class="icon-card" data-name="dot-circle-o" data-class="lp-icon-dot-circle-o" data-hex="f192">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-dot-circle-o', 'Copied lp-icon-dot-circle-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-dot-circle-o"></i>
+        </div>
+        <div class="icon-name">dot-circle-o</div>
+        <span class="icon-meta">\f192</span>
+      </div>
+      <div class="icon-card" data-name="download" data-class="lp-icon-download" data-hex="f019">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-download', 'Copied lp-icon-download!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-download"></i>
+        </div>
+        <div class="icon-name">download</div>
+        <span class="icon-meta">\f019</span>
+      </div>
+      <div class="icon-card" data-name="drag" data-class="lp-icon-drag" data-hex="e922">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-drag', 'Copied lp-icon-drag!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-drag"></i>
+        </div>
+        <div class="icon-name">drag</div>
+        <span class="icon-meta">\e922</span>
+      </div>
+      <div class="icon-card" data-name="dropbox" data-class="lp-icon-dropbox" data-hex="e905">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-dropbox', 'Copied lp-icon-dropbox!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-dropbox"></i>
+        </div>
+        <div class="icon-name">dropbox</div>
+        <span class="icon-meta">\e905</span>
+      </div>
+      <div class="icon-card" data-name="ebook" data-class="lp-icon-ebook" data-hex="e919">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-ebook', 'Copied lp-icon-ebook!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-ebook"></i>
+        </div>
+        <div class="icon-name">ebook</div>
+        <span class="icon-meta">\e919</span>
+      </div>
+      <div class="icon-card" data-name="edit" data-class="lp-icon-edit" data-hex="f044">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-edit', 'Copied lp-icon-edit!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-edit"></i>
+        </div>
+        <div class="icon-name">edit</div>
+        <span class="icon-meta">\f044</span>
+      </div>
+      <div class="icon-card" data-name="edit-square" data-class="lp-icon-edit-square" data-hex="e923">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-edit-square', 'Copied lp-icon-edit-square!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-edit-square"></i>
+        </div>
+        <div class="icon-name">edit-square</div>
+        <span class="icon-meta">\e923</span>
+      </div>
+      <div class="icon-card" data-name="educational-programs" data-class="lp-icon-educational-programs" data-hex="e915">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-educational-programs', 'Copied lp-icon-educational-programs!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-educational-programs"></i>
+        </div>
+        <div class="icon-name">educational-programs</div>
+        <span class="icon-meta">\e915</span>
+      </div>
+      <div class="icon-card" data-name="ellipsis-h" data-class="lp-icon-ellipsis-h" data-hex="f141">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-ellipsis-h', 'Copied lp-icon-ellipsis-h!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-ellipsis-h"></i>
+        </div>
+        <div class="icon-name">ellipsis-h</div>
+        <span class="icon-meta">\f141</span>
+      </div>
+      <div class="icon-card" data-name="ellipsis-v" data-class="lp-icon-ellipsis-v" data-hex="f142">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-ellipsis-v', 'Copied lp-icon-ellipsis-v!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-ellipsis-v"></i>
+        </div>
+        <div class="icon-name">ellipsis-v</div>
+        <span class="icon-meta">\f142</span>
+      </div>
+      <div class="icon-card" data-name="envelope-o" data-class="lp-icon-envelope-o" data-hex="f003">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-envelope-o', 'Copied lp-icon-envelope-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-envelope-o"></i>
+        </div>
+        <div class="icon-name">envelope-o</div>
+        <span class="icon-meta">\f003</span>
+      </div>
+      <div class="icon-card" data-name="exclamation-circle" data-class="lp-icon-exclamation-circle" data-hex="f06a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-exclamation-circle', 'Copied lp-icon-exclamation-circle!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-exclamation-circle"></i>
+        </div>
+        <div class="icon-name">exclamation-circle</div>
+        <span class="icon-meta">\f06a</span>
+      </div>
+      <div class="icon-card" data-name="exclamation-triangle" data-class="lp-icon-exclamation-triangle" data-hex="f071">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-exclamation-triangle', 'Copied lp-icon-exclamation-triangle!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-exclamation-triangle"></i>
+        </div>
+        <div class="icon-name">exclamation-triangle</div>
+        <span class="icon-meta">\f071</span>
+      </div>
+      <div class="icon-card" data-name="expand" data-class="lp-icon-expand" data-hex="f065">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-expand', 'Copied lp-icon-expand!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-expand"></i>
+        </div>
+        <div class="icon-name">expand</div>
+        <span class="icon-meta">\f065</span>
+      </div>
+      <div class="icon-card" data-name="eye" data-class="lp-icon-eye" data-hex="f06e">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-eye', 'Copied lp-icon-eye!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-eye"></i>
+        </div>
+        <div class="icon-name">eye</div>
+        <span class="icon-meta">\f06e</span>
+      </div>
+      <div class="icon-card" data-name="eye-slash" data-class="lp-icon-eye-slash" data-hex="f070">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-eye-slash', 'Copied lp-icon-eye-slash!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-eye-slash"></i>
+        </div>
+        <div class="icon-name">eye-slash</div>
+        <span class="icon-meta">\f070</span>
+      </div>
+      <div class="icon-card" data-name="facebook" data-class="lp-icon-facebook" data-hex="f09a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-facebook', 'Copied lp-icon-facebook!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-facebook"></i>
+        </div>
+        <div class="icon-name">facebook</div>
+        <span class="icon-meta">\f09a</span>
+      </div>
+      <div class="icon-card" data-name="facebook-f" data-class="lp-icon-facebook-f" data-hex="f09a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-facebook-f', 'Copied lp-icon-facebook-f!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-facebook-f"></i>
+        </div>
+        <div class="icon-name">facebook-f</div>
+        <span class="icon-meta">\f09a</span>
+      </div>
+      <div class="icon-card" data-name="failed_courses" data-class="lp-icon-failed_courses" data-hex="e91f">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-failed_courses', 'Copied lp-icon-failed_courses!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-failed_courses"></i>
+        </div>
+        <div class="icon-name">failed_courses</div>
+        <span class="icon-meta">\e91f</span>
+      </div>
+      <div class="icon-card" data-name="file" data-class="lp-icon-file" data-hex="f15b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file', 'Copied lp-icon-file!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file"></i>
+        </div>
+        <div class="icon-name">file</div>
+        <span class="icon-meta">\f15b</span>
+      </div>
+      <div class="icon-card" data-name="file-alt" data-class="lp-icon-file-alt" data-hex="f15c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-alt', 'Copied lp-icon-file-alt!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-alt"></i>
+        </div>
+        <div class="icon-name">file-alt</div>
+        <span class="icon-meta">\f15c</span>
+      </div>
+      <div class="icon-card" data-name="file-archive" data-class="lp-icon-file-archive" data-hex="f1c6">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-archive', 'Copied lp-icon-file-archive!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-archive"></i>
+        </div>
+        <div class="icon-name">file-archive</div>
+        <span class="icon-meta">\f1c6</span>
+      </div>
+      <div class="icon-card" data-name="file-audio" data-class="lp-icon-file-audio" data-hex="f1c7">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-audio', 'Copied lp-icon-file-audio!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-audio"></i>
+        </div>
+        <div class="icon-name">file-audio</div>
+        <span class="icon-meta">\f1c7</span>
+      </div>
+      <div class="icon-card" data-name="file-code" data-class="lp-icon-file-code" data-hex="f1c9">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-code', 'Copied lp-icon-file-code!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-code"></i>
+        </div>
+        <div class="icon-name">file-code</div>
+        <span class="icon-meta">\f1c9</span>
+      </div>
+      <div class="icon-card" data-name="file-download" data-class="lp-icon-file-download" data-hex="f56d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-download', 'Copied lp-icon-file-download!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-download"></i>
+        </div>
+        <div class="icon-name">file-download</div>
+        <span class="icon-meta">\f56d</span>
+      </div>
+      <div class="icon-card" data-name="file-excel" data-class="lp-icon-file-excel" data-hex="f1c3">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-excel', 'Copied lp-icon-file-excel!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-excel"></i>
+        </div>
+        <div class="icon-name">file-excel</div>
+        <span class="icon-meta">\f1c3</span>
+      </div>
+      <div class="icon-card" data-name="file-image" data-class="lp-icon-file-image" data-hex="f1c5">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-image', 'Copied lp-icon-file-image!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-image"></i>
+        </div>
+        <div class="icon-name">file-image</div>
+        <span class="icon-meta">\f1c5</span>
+      </div>
+      <div class="icon-card" data-name="file-movie" data-class="lp-icon-file-movie" data-hex="f1c8">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-movie', 'Copied lp-icon-file-movie!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-movie"></i>
+        </div>
+        <div class="icon-name">file-movie</div>
+        <span class="icon-meta">\f1c8</span>
+      </div>
+      <div class="icon-card" data-name="file-o" data-class="lp-icon-file-o" data-hex="f016">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-o', 'Copied lp-icon-file-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-o"></i>
+        </div>
+        <div class="icon-name">file-o</div>
+        <span class="icon-meta">\f016</span>
+      </div>
+      <div class="icon-card" data-name="file-pdf" data-class="lp-icon-file-pdf" data-hex="f1c1">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-pdf', 'Copied lp-icon-file-pdf!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-pdf"></i>
+        </div>
+        <div class="icon-name">file-pdf</div>
+        <span class="icon-meta">\f1c1</span>
+      </div>
+      <div class="icon-card" data-name="file-photo" data-class="lp-icon-file-photo" data-hex="f1c5">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-photo', 'Copied lp-icon-file-photo!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-photo"></i>
+        </div>
+        <div class="icon-name">file-photo</div>
+        <span class="icon-meta">\f1c5</span>
+      </div>
+      <div class="icon-card" data-name="file-picture" data-class="lp-icon-file-picture" data-hex="f1c5">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-picture', 'Copied lp-icon-file-picture!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-picture"></i>
+        </div>
+        <div class="icon-name">file-picture</div>
+        <span class="icon-meta">\f1c5</span>
+      </div>
+      <div class="icon-card" data-name="file-powerpoint" data-class="lp-icon-file-powerpoint" data-hex="f1c4">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-powerpoint', 'Copied lp-icon-file-powerpoint!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-powerpoint"></i>
+        </div>
+        <div class="icon-name">file-powerpoint</div>
+        <span class="icon-meta">\f1c4</span>
+      </div>
+      <div class="icon-card" data-name="file-sound" data-class="lp-icon-file-sound" data-hex="f1c7">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-sound', 'Copied lp-icon-file-sound!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-sound"></i>
+        </div>
+        <div class="icon-name">file-sound</div>
+        <span class="icon-meta">\f1c7</span>
+      </div>
+      <div class="icon-card" data-name="file-text-o" data-class="lp-icon-file-text-o" data-hex="f0f6">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-text-o', 'Copied lp-icon-file-text-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-text-o"></i>
+        </div>
+        <div class="icon-name">file-text-o</div>
+        <span class="icon-meta">\f0f6</span>
+      </div>
+      <div class="icon-card" data-name="file-video" data-class="lp-icon-file-video" data-hex="f1c8">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-video', 'Copied lp-icon-file-video!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-video"></i>
+        </div>
+        <div class="icon-name">file-video</div>
+        <span class="icon-meta">\f1c8</span>
+      </div>
+      <div class="icon-card" data-name="file-word" data-class="lp-icon-file-word" data-hex="f1c2">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-word', 'Copied lp-icon-file-word!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-word"></i>
+        </div>
+        <div class="icon-name">file-word</div>
+        <span class="icon-meta">\f1c2</span>
+      </div>
+      <div class="icon-card" data-name="file-zip" data-class="lp-icon-file-zip" data-hex="f1c6">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-file-zip', 'Copied lp-icon-file-zip!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-file-zip"></i>
+        </div>
+        <div class="icon-name">file-zip</div>
+        <span class="icon-meta">\f1c6</span>
+      </div>
+      <div class="icon-card" data-name="files-o" data-class="lp-icon-files-o" data-hex="f0c5">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-files-o', 'Copied lp-icon-files-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-files-o"></i>
+        </div>
+        <div class="icon-name">files-o</div>
+        <span class="icon-meta">\f0c5</span>
+      </div>
+      <div class="icon-card" data-name="filter" data-class="lp-icon-filter" data-hex="e91c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-filter', 'Copied lp-icon-filter!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-filter"></i>
+        </div>
+        <div class="icon-name">filter</div>
+        <span class="icon-meta">\e91c</span>
+      </div>
+      <div class="icon-card" data-name="finished_courses" data-class="lp-icon-finished_courses" data-hex="e91e">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-finished_courses', 'Copied lp-icon-finished_courses!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-finished_courses"></i>
+        </div>
+        <div class="icon-name">finished_courses</div>
+        <span class="icon-meta">\e91e</span>
+      </div>
+      <div class="icon-card" data-name="flag" data-class="lp-icon-flag" data-hex="f024">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-flag', 'Copied lp-icon-flag!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-flag"></i>
+        </div>
+        <div class="icon-name">flag</div>
+        <span class="icon-meta">\f024</span>
+      </div>
+      <div class="icon-card" data-name="folder" data-class="lp-icon-folder" data-hex="e92d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-folder', 'Copied lp-icon-folder!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-folder"></i>
+        </div>
+        <div class="icon-name">folder</div>
+        <span class="icon-meta">\e92d</span>
+      </div>
+      <div class="icon-card" data-name="gear" data-class="lp-icon-gear" data-hex="f013">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-gear', 'Copied lp-icon-gear!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-gear"></i>
+        </div>
+        <div class="icon-name">gear</div>
+        <span class="icon-meta">\f013</span>
+      </div>
+      <div class="icon-card" data-name="gears" data-class="lp-icon-gears" data-hex="f085">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-gears', 'Copied lp-icon-gears!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-gears"></i>
+        </div>
+        <div class="icon-name">gears</div>
+        <span class="icon-meta">\f085</span>
+      </div>
+      <div class="icon-card" data-name="gift" data-class="lp-icon-gift" data-hex="f06b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-gift', 'Copied lp-icon-gift!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-gift"></i>
+        </div>
+        <div class="icon-name">gift</div>
+        <span class="icon-meta">\f06b</span>
+      </div>
+      <div class="icon-card" data-name="google" data-class="lp-icon-google" data-hex="f1a0">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-google', 'Copied lp-icon-google!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-google"></i>
+        </div>
+        <div class="icon-name">google</div>
+        <span class="icon-meta">\f1a0</span>
+      </div>
+      <div class="icon-card" data-name="google-plus" data-class="lp-icon-google-plus" data-hex="f0d5">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-google-plus', 'Copied lp-icon-google-plus!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-google-plus"></i>
+        </div>
+        <div class="icon-name">google-plus</div>
+        <span class="icon-meta">\f0d5</span>
+      </div>
+      <div class="icon-card" data-name="google-plus-circle" data-class="lp-icon-google-plus-circle" data-hex="f2b3">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-google-plus-circle', 'Copied lp-icon-google-plus-circle!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-google-plus-circle"></i>
+        </div>
+        <div class="icon-name">google-plus-circle</div>
+        <span class="icon-meta">\f2b3</span>
+      </div>
+      <div class="icon-card" data-name="google-plus-official" data-class="lp-icon-google-plus-official" data-hex="f2b3">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-google-plus-official', 'Copied lp-icon-google-plus-official!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-google-plus-official"></i>
+        </div>
+        <div class="icon-name">google-plus-official</div>
+        <span class="icon-meta">\f2b3</span>
+      </div>
+      <div class="icon-card" data-name="google-plus-square" data-class="lp-icon-google-plus-square" data-hex="f0d4">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-google-plus-square', 'Copied lp-icon-google-plus-square!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-google-plus-square"></i>
+        </div>
+        <div class="icon-name">google-plus-square</div>
+        <span class="icon-meta">\f0d4</span>
+      </div>
+      <div class="icon-card" data-name="graduation-cap" data-class="lp-icon-graduation-cap" data-hex="f19d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-graduation-cap', 'Copied lp-icon-graduation-cap!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-graduation-cap"></i>
+        </div>
+        <div class="icon-name">graduation-cap</div>
+        <span class="icon-meta">\f19d</span>
+      </div>
+      <div class="icon-card" data-name="heart" data-class="lp-icon-heart" data-hex="f004">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-heart', 'Copied lp-icon-heart!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-heart"></i>
+        </div>
+        <div class="icon-name">heart</div>
+        <span class="icon-meta">\f004</span>
+      </div>
+      <div class="icon-card" data-name="heart-o" data-class="lp-icon-heart-o" data-hex="f08a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-heart-o', 'Copied lp-icon-heart-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-heart-o"></i>
+        </div>
+        <div class="icon-name">heart-o</div>
+        <span class="icon-meta">\f08a</span>
+      </div>
+      <div class="icon-card" data-name="home" data-class="lp-icon-home" data-hex="f015">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-home', 'Copied lp-icon-home!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-home"></i>
+        </div>
+        <div class="icon-name">home</div>
+        <span class="icon-meta">\f015</span>
+      </div>
+      <div class="icon-card" data-name="ico-courses" data-class="lp-icon-ico-courses" data-hex="e903">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-ico-courses', 'Copied lp-icon-ico-courses!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-ico-courses"></i>
+        </div>
+        <div class="icon-name">ico-courses</div>
+        <span class="icon-meta">\e903</span>
+      </div>
+      <div class="icon-card" data-name="ico-students" data-class="lp-icon-ico-students" data-hex="e902">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-ico-students', 'Copied lp-icon-ico-students!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-ico-students"></i>
+        </div>
+        <div class="icon-name">ico-students</div>
+        <span class="icon-meta">\e902</span>
+      </div>
+      <div class="icon-card" data-name="icon-h5p" data-class="lp-icon-icon-h5p" data-hex="e92a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-icon-h5p', 'Copied lp-icon-icon-h5p!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-icon-h5p"></i>
+        </div>
+        <div class="icon-name">icon-h5p</div>
+        <span class="icon-meta">\e92a</span>
+      </div>
+      <div class="icon-card" data-name="in_progress_course" data-class="lp-icon-in_progress_course" data-hex="e91d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-in_progress_course', 'Copied lp-icon-in_progress_course!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-in_progress_course"></i>
+        </div>
+        <div class="icon-name">in_progress_course</div>
+        <span class="icon-meta">\e91d</span>
+      </div>
+      <div class="icon-card" data-name="info-circle" data-class="lp-icon-info-circle" data-hex="e931">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-info-circle', 'Copied lp-icon-info-circle!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-info-circle"></i>
+        </div>
+        <div class="icon-name">info-circle</div>
+        <span class="icon-meta">\e931</span>
+      </div>
+      <div class="icon-card" data-name="info-triangle" data-class="lp-icon-info-triangle" data-hex="e932">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-info-triangle', 'Copied lp-icon-info-triangle!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-info-triangle"></i>
+        </div>
+        <div class="icon-name">info-triangle</div>
+        <span class="icon-meta">\e932</span>
+      </div>
+      <div class="icon-card" data-name="instagram" data-class="lp-icon-instagram" data-hex="f16d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-instagram', 'Copied lp-icon-instagram!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-instagram"></i>
+        </div>
+        <div class="icon-name">instagram</div>
+        <span class="icon-meta">\f16d</span>
+      </div>
+      <div class="icon-card" data-name="key" data-class="lp-icon-key" data-hex="f084">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-key', 'Copied lp-icon-key!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-key"></i>
+        </div>
+        <div class="icon-name">key</div>
+        <span class="icon-meta">\f084</span>
+      </div>
+      <div class="icon-card" data-name="language" data-class="lp-icon-language" data-hex="f1ab">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-language', 'Copied lp-icon-language!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-language"></i>
+        </div>
+        <div class="icon-name">language</div>
+        <span class="icon-meta">\f1ab</span>
+      </div>
+      <div class="icon-card" data-name="layers" data-class="lp-icon-layers" data-hex="e91a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-layers', 'Copied lp-icon-layers!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-layers"></i>
+        </div>
+        <div class="icon-name">layers</div>
+        <span class="icon-meta">\e91a</span>
+      </div>
+      <div class="icon-card" data-name="line-chart" data-class="lp-icon-line-chart" data-hex="f201">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-line-chart', 'Copied lp-icon-line-chart!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-line-chart"></i>
+        </div>
+        <div class="icon-name">line-chart</div>
+        <span class="icon-meta">\f201</span>
+      </div>
+      <div class="icon-card" data-name="link" data-class="lp-icon-link" data-hex="e92c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-link', 'Copied lp-icon-link!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-link"></i>
+        </div>
+        <div class="icon-name">link</div>
+        <span class="icon-meta">\e92c</span>
+      </div>
+      <div class="icon-card" data-name="linkedin" data-class="lp-icon-linkedin" data-hex="f0e1">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-linkedin', 'Copied lp-icon-linkedin!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-linkedin"></i>
+        </div>
+        <div class="icon-name">linkedin</div>
+        <span class="icon-meta">\f0e1</span>
+      </div>
+      <div class="icon-card" data-name="linkedin-square" data-class="lp-icon-linkedin-square" data-hex="f08c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-linkedin-square', 'Copied lp-icon-linkedin-square!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-linkedin-square"></i>
+        </div>
+        <div class="icon-name">linkedin-square</div>
+        <span class="icon-meta">\f08c</span>
+      </div>
+      <div class="icon-card" data-name="list" data-class="lp-icon-list" data-hex="f03a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-list', 'Copied lp-icon-list!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-list"></i>
+        </div>
+        <div class="icon-name">list</div>
+        <span class="icon-meta">\f03a</span>
+      </div>
+      <div class="icon-card" data-name="list-check" data-class="lp-icon-list-check" data-hex="e929">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-list-check', 'Copied lp-icon-list-check!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-list-check"></i>
+        </div>
+        <div class="icon-name">list-check</div>
+        <span class="icon-meta">\e929</span>
+      </div>
+      <div class="icon-card" data-name="lock" data-class="lp-icon-lock" data-hex="f023">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-lock', 'Copied lp-icon-lock!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-lock"></i>
+        </div>
+        <div class="icon-name">lock</div>
+        <span class="icon-meta">\f023</span>
+      </div>
+      <div class="icon-card" data-name="lucide" data-class="lp-icon-lucide" data-hex="e918">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-lucide', 'Copied lp-icon-lucide!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-lucide"></i>
+        </div>
+        <div class="icon-name">lucide</div>
+        <span class="icon-meta">\e918</span>
+      </div>
+      <div class="icon-card" data-name="map-marker" data-class="lp-icon-map-marker" data-hex="e91b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-map-marker', 'Copied lp-icon-map-marker!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-map-marker"></i>
+        </div>
+        <div class="icon-name">map-marker</div>
+        <span class="icon-meta">\e91b</span>
+      </div>
+      <div class="icon-card" data-name="map-pin" data-class="lp-icon-map-pin" data-hex="e91b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-map-pin', 'Copied lp-icon-map-pin!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-map-pin"></i>
+        </div>
+        <div class="icon-name">map-pin</div>
+        <span class="icon-meta">\e91b</span>
+      </div>
+      <div class="icon-card" data-name="minus" data-class="lp-icon-minus" data-hex="f068">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-minus', 'Copied lp-icon-minus!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-minus"></i>
+        </div>
+        <div class="icon-name">minus</div>
+        <span class="icon-meta">\f068</span>
+      </div>
+      <div class="icon-card" data-name="mobile" data-class="lp-icon-mobile" data-hex="f10b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-mobile', 'Copied lp-icon-mobile!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-mobile"></i>
+        </div>
+        <div class="icon-name">mobile</div>
+        <span class="icon-meta">\f10b</span>
+      </div>
+      <div class="icon-card" data-name="mobile-phone" data-class="lp-icon-mobile-phone" data-hex="f10b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-mobile-phone', 'Copied lp-icon-mobile-phone!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-mobile-phone"></i>
+        </div>
+        <div class="icon-name">mobile-phone</div>
+        <span class="icon-meta">\f10b</span>
+      </div>
+      <div class="icon-card" data-name="money-bill-alt" data-class="lp-icon-money-bill-alt" data-hex="f0d6">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-money-bill-alt', 'Copied lp-icon-money-bill-alt!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-money-bill-alt"></i>
+        </div>
+        <div class="icon-name">money-bill-alt</div>
+        <span class="icon-meta">\f0d6</span>
+      </div>
+      <div class="icon-card" data-name="monitor" data-class="lp-icon-monitor" data-hex="e917">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-monitor', 'Copied lp-icon-monitor!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-monitor"></i>
+        </div>
+        <div class="icon-name">monitor</div>
+        <span class="icon-meta">\e917</span>
+      </div>
+      <div class="icon-card" data-name="mortar-board" data-class="lp-icon-mortar-board" data-hex="f19d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-mortar-board', 'Copied lp-icon-mortar-board!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-mortar-board"></i>
+        </div>
+        <div class="icon-name">mortar-board</div>
+        <span class="icon-meta">\f19d</span>
+      </div>
+      <div class="icon-card" data-name="my-courses" data-class="lp-icon-my-courses" data-hex="e900">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-my-courses', 'Copied lp-icon-my-courses!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-my-courses"></i>
+        </div>
+        <div class="icon-name">my-courses</div>
+        <span class="icon-meta">\e900</span>
+      </div>
+      <div class="icon-card" data-name="online-class" data-class="lp-icon-online-class" data-hex="e916">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-online-class', 'Copied lp-icon-online-class!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-online-class"></i>
+        </div>
+        <div class="icon-name">online-class</div>
+        <span class="icon-meta">\e916</span>
+      </div>
+      <div class="icon-card" data-name="online-education" data-class="lp-icon-online-education" data-hex="e90e">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-online-education', 'Copied lp-icon-online-education!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-online-education"></i>
+        </div>
+        <div class="icon-name">online-education</div>
+        <span class="icon-meta">\e90e</span>
+      </div>
+      <div class="icon-card" data-name="passed_courses" data-class="lp-icon-passed_courses" data-hex="e920">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-passed_courses', 'Copied lp-icon-passed_courses!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-passed_courses"></i>
+        </div>
+        <div class="icon-name">passed_courses</div>
+        <span class="icon-meta">\e920</span>
+      </div>
+      <div class="icon-card" data-name="pencil-square-o" data-class="lp-icon-pencil-square-o" data-hex="f044">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-pencil-square-o', 'Copied lp-icon-pencil-square-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-pencil-square-o"></i>
+        </div>
+        <div class="icon-name">pencil-square-o</div>
+        <span class="icon-meta">\f044</span>
+      </div>
+      <div class="icon-card" data-name="pending_course" data-class="lp-icon-pending_course" data-hex="e927">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-pending_course', 'Copied lp-icon-pending_course!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-pending_course"></i>
+        </div>
+        <div class="icon-name">pending_course</div>
+        <span class="icon-meta">\e927</span>
+      </div>
+      <div class="icon-card" data-name="phone" data-class="lp-icon-phone" data-hex="f095">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-phone', 'Copied lp-icon-phone!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-phone"></i>
+        </div>
+        <div class="icon-name">phone</div>
+        <span class="icon-meta">\f095</span>
+      </div>
+      <div class="icon-card" data-name="pie-chart" data-class="lp-icon-pie-chart" data-hex="f200">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-pie-chart', 'Copied lp-icon-pie-chart!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-pie-chart"></i>
+        </div>
+        <div class="icon-name">pie-chart</div>
+        <span class="icon-meta">\f200</span>
+      </div>
+      <div class="icon-card" data-name="pinterest-p" data-class="lp-icon-pinterest-p" data-hex="f231">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-pinterest-p', 'Copied lp-icon-pinterest-p!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-pinterest-p"></i>
+        </div>
+        <div class="icon-name">pinterest-p</div>
+        <span class="icon-meta">\f231</span>
+      </div>
+      <div class="icon-card" data-name="pinterest-square" data-class="lp-icon-pinterest-square" data-hex="f0d3">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-pinterest-square', 'Copied lp-icon-pinterest-square!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-pinterest-square"></i>
+        </div>
+        <div class="icon-name">pinterest-square</div>
+        <span class="icon-meta">\f0d3</span>
+      </div>
+      <div class="icon-card" data-name="play-circle-o" data-class="lp-icon-play-circle-o" data-hex="f01d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-play-circle-o', 'Copied lp-icon-play-circle-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-play-circle-o"></i>
+        </div>
+        <div class="icon-name">play-circle-o</div>
+        <span class="icon-meta">\f01d</span>
+      </div>
+      <div class="icon-card" data-name="plus" data-class="lp-icon-plus" data-hex="f067">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-plus', 'Copied lp-icon-plus!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-plus"></i>
+        </div>
+        <div class="icon-name">plus</div>
+        <span class="icon-meta">\f067</span>
+      </div>
+      <div class="icon-card" data-name="published_course" data-class="lp-icon-published_course" data-hex="e926">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-published_course', 'Copied lp-icon-published_course!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-published_course"></i>
+        </div>
+        <div class="icon-name">published_course</div>
+        <span class="icon-meta">\e926</span>
+      </div>
+      <div class="icon-card" data-name="puzzle-piece" data-class="lp-icon-puzzle-piece" data-hex="f12e">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-puzzle-piece', 'Copied lp-icon-puzzle-piece!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-puzzle-piece"></i>
+        </div>
+        <div class="icon-name">puzzle-piece</div>
+        <span class="icon-meta">\f12e</span>
+      </div>
+      <div class="icon-card" data-name="question" data-class="lp-icon-question" data-hex="f128">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-question', 'Copied lp-icon-question!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-question"></i>
+        </div>
+        <div class="icon-name">question</div>
+        <span class="icon-meta">\f128</span>
+      </div>
+      <div class="icon-card" data-name="question-circle" data-class="lp-icon-question-circle" data-hex="f059">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-question-circle', 'Copied lp-icon-question-circle!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-question-circle"></i>
+        </div>
+        <div class="icon-name">question-circle</div>
+        <span class="icon-meta">\f059</span>
+      </div>
+      <div class="icon-card" data-name="question-circle-o" data-class="lp-icon-question-circle-o" data-hex="f29c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-question-circle-o', 'Copied lp-icon-question-circle-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-question-circle-o"></i>
+        </div>
+        <div class="icon-name">question-circle-o</div>
+        <span class="icon-meta">\f29c</span>
+      </div>
+      <div class="icon-card" data-name="refresh" data-class="lp-icon-refresh" data-hex="f021">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-refresh', 'Copied lp-icon-refresh!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-refresh"></i>
+        </div>
+        <div class="icon-name">refresh</div>
+        <span class="icon-meta">\f021</span>
+      </div>
+      <div class="icon-card" data-name="remove" data-class="lp-icon-remove" data-hex="f00d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-remove', 'Copied lp-icon-remove!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-remove"></i>
+        </div>
+        <div class="icon-name">remove</div>
+        <span class="icon-meta">\f00d</span>
+      </div>
+      <div class="icon-card" data-name="search" data-class="lp-icon-search" data-hex="f002">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-search', 'Copied lp-icon-search!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-search"></i>
+        </div>
+        <div class="icon-name">search</div>
+        <span class="icon-meta">\f002</span>
+      </div>
+      <div class="icon-card" data-name="send" data-class="lp-icon-send" data-hex="e92e">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-send', 'Copied lp-icon-send!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-send"></i>
+        </div>
+        <div class="icon-name">send</div>
+        <span class="icon-meta">\e92e</span>
+      </div>
+      <div class="icon-card" data-name="share-alt" data-class="lp-icon-share-alt" data-hex="f1e0">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-share-alt', 'Copied lp-icon-share-alt!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-share-alt"></i>
+        </div>
+        <div class="icon-name">share-alt</div>
+        <span class="icon-meta">\f1e0</span>
+      </div>
+      <div class="icon-card" data-name="shopping-cart" data-class="lp-icon-shopping-cart" data-hex="f07a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-shopping-cart', 'Copied lp-icon-shopping-cart!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-shopping-cart"></i>
+        </div>
+        <div class="icon-name">shopping-cart</div>
+        <span class="icon-meta">\f07a</span>
+      </div>
+      <div class="icon-card" data-name="sidebar-left" data-class="lp-icon-sidebar-left" data-hex="e928">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-sidebar-left', 'Copied lp-icon-sidebar-left!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-sidebar-left"></i>
+        </div>
+        <div class="icon-name">sidebar-left</div>
+        <span class="icon-meta">\e928</span>
+      </div>
+      <div class="icon-card" data-name="sidebar-right" data-class="lp-icon-sidebar-right" data-hex="e92b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-sidebar-right', 'Copied lp-icon-sidebar-right!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-sidebar-right"></i>
+        </div>
+        <div class="icon-name">sidebar-right</div>
+        <span class="icon-meta">\e92b</span>
+      </div>
+      <div class="icon-card" data-name="sign-in" data-class="lp-icon-sign-in" data-hex="f090">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-sign-in', 'Copied lp-icon-sign-in!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-sign-in"></i>
+        </div>
+        <div class="icon-name">sign-in</div>
+        <span class="icon-meta">\f090</span>
+      </div>
+      <div class="icon-card" data-name="sign-out" data-class="lp-icon-sign-out" data-hex="f08b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-sign-out', 'Copied lp-icon-sign-out!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-sign-out"></i>
+        </div>
+        <div class="icon-name">sign-out</div>
+        <span class="icon-meta">\f08b</span>
+      </div>
+      <div class="icon-card" data-name="signal" data-class="lp-icon-signal" data-hex="f012">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-signal', 'Copied lp-icon-signal!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-signal"></i>
+        </div>
+        <div class="icon-name">signal</div>
+        <span class="icon-meta">\f012</span>
+      </div>
+      <div class="icon-card" data-name="spinner" data-class="lp-icon-spinner" data-hex="f110">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-spinner', 'Copied lp-icon-spinner!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-spinner"></i>
+        </div>
+        <div class="icon-name">spinner</div>
+        <span class="icon-meta">\f110</span>
+      </div>
+      <div class="icon-card" data-name="square-o" data-class="lp-icon-square-o" data-hex="f096">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-square-o', 'Copied lp-icon-square-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-square-o"></i>
+        </div>
+        <div class="icon-name">square-o</div>
+        <span class="icon-meta">\f096</span>
+      </div>
+      <div class="icon-card" data-name="star" data-class="lp-icon-star" data-hex="f005">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-star', 'Copied lp-icon-star!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-star"></i>
+        </div>
+        <div class="icon-name">star</div>
+        <span class="icon-meta">\f005</span>
+      </div>
+      <div class="icon-card" data-name="star-o" data-class="lp-icon-star-o" data-hex="f006">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-star-o', 'Copied lp-icon-star-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-star-o"></i>
+        </div>
+        <div class="icon-name">star-o</div>
+        <span class="icon-meta">\f006</span>
+      </div>
+      <div class="icon-card" data-name="stopwatch" data-class="lp-icon-stopwatch" data-hex="f2f2">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-stopwatch', 'Copied lp-icon-stopwatch!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-stopwatch"></i>
+        </div>
+        <div class="icon-name">stopwatch</div>
+        <span class="icon-meta">\f2f2</span>
+      </div>
+      <div class="icon-card" data-name="student_completed" data-class="lp-icon-student_completed" data-hex="e925">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-student_completed', 'Copied lp-icon-student_completed!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-student_completed"></i>
+        </div>
+        <div class="icon-name">student_completed</div>
+        <span class="icon-meta">\e925</span>
+      </div>
+      <div class="icon-card" data-name="student_in_progress" data-class="lp-icon-student_in_progress" data-hex="e924">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-student_in_progress', 'Copied lp-icon-student_in_progress!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-student_in_progress"></i>
+        </div>
+        <div class="icon-name">student_in_progress</div>
+        <span class="icon-meta">\e924</span>
+      </div>
+      <div class="icon-card" data-name="target" data-class="lp-icon-target" data-hex="e910">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-target', 'Copied lp-icon-target!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-target"></i>
+        </div>
+        <div class="icon-name">target</div>
+        <span class="icon-meta">\e910</span>
+      </div>
+      <div class="icon-card" data-name="television" data-class="lp-icon-television" data-hex="f26c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-television', 'Copied lp-icon-television!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-television"></i>
+        </div>
+        <div class="icon-name">television</div>
+        <span class="icon-meta">\f26c</span>
+      </div>
+      <div class="icon-card" data-name="th" data-class="lp-icon-th" data-hex="f00a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-th', 'Copied lp-icon-th!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-th"></i>
+        </div>
+        <div class="icon-name">th</div>
+        <span class="icon-meta">\f00a</span>
+      </div>
+      <div class="icon-card" data-name="th-large" data-class="lp-icon-th-large" data-hex="f009">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-th-large', 'Copied lp-icon-th-large!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-th-large"></i>
+        </div>
+        <div class="icon-name">th-large</div>
+        <span class="icon-meta">\f009</span>
+      </div>
+      <div class="icon-card" data-name="th-list" data-class="lp-icon-th-list" data-hex="f00b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-th-list', 'Copied lp-icon-th-list!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-th-list"></i>
+        </div>
+        <div class="icon-name">th-list</div>
+        <span class="icon-meta">\f00b</span>
+      </div>
+      <div class="icon-card" data-name="thumbs-o-down" data-class="lp-icon-thumbs-o-down" data-hex="f088">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-thumbs-o-down', 'Copied lp-icon-thumbs-o-down!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-thumbs-o-down"></i>
+        </div>
+        <div class="icon-name">thumbs-o-down</div>
+        <span class="icon-meta">\f088</span>
+      </div>
+      <div class="icon-card" data-name="thumbs-o-up" data-class="lp-icon-thumbs-o-up" data-hex="f087">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-thumbs-o-up', 'Copied lp-icon-thumbs-o-up!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-thumbs-o-up"></i>
+        </div>
+        <div class="icon-name">thumbs-o-up</div>
+        <span class="icon-meta">\f087</span>
+      </div>
+      <div class="icon-card" data-name="tiktok-alt" data-class="lp-icon-tiktok-alt" data-hex="e908">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-tiktok-alt', 'Copied lp-icon-tiktok-alt!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-tiktok-alt"></i>
+        </div>
+        <div class="icon-name">tiktok-alt</div>
+        <span class="icon-meta">\e908</span>
+      </div>
+      <div class="icon-card" data-name="times" data-class="lp-icon-times" data-hex="f00d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-times', 'Copied lp-icon-times!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-times"></i>
+        </div>
+        <div class="icon-name">times</div>
+        <span class="icon-meta">\f00d</span>
+      </div>
+      <div class="icon-card" data-name="trash-o" data-class="lp-icon-trash-o" data-hex="f014">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-trash-o', 'Copied lp-icon-trash-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-trash-o"></i>
+        </div>
+        <div class="icon-name">trash-o</div>
+        <span class="icon-meta">\f014</span>
+      </div>
+      <div class="icon-card" data-name="tv" data-class="lp-icon-tv" data-hex="f26c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-tv', 'Copied lp-icon-tv!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-tv"></i>
+        </div>
+        <div class="icon-name">tv</div>
+        <span class="icon-meta">\f26c</span>
+      </div>
+      <div class="icon-card" data-name="twitter" data-class="lp-icon-twitter" data-hex="f099">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-twitter', 'Copied lp-icon-twitter!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-twitter"></i>
+        </div>
+        <div class="icon-name">twitter</div>
+        <span class="icon-meta">\f099</span>
+      </div>
+      <div class="icon-card" data-name="unlock" data-class="lp-icon-unlock" data-hex="f09c">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-unlock', 'Copied lp-icon-unlock!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-unlock"></i>
+        </div>
+        <div class="icon-name">unlock</div>
+        <span class="icon-meta">\f09c</span>
+      </div>
+      <div class="icon-card" data-name="user" data-class="lp-icon-user" data-hex="f007">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-user', 'Copied lp-icon-user!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-user"></i>
+        </div>
+        <div class="icon-name">user</div>
+        <span class="icon-meta">\f007</span>
+      </div>
+      <div class="icon-card" data-name="user-circle" data-class="lp-icon-user-circle" data-hex="f2bd">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-user-circle', 'Copied lp-icon-user-circle!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-user-circle"></i>
+        </div>
+        <div class="icon-name">user-circle</div>
+        <span class="icon-meta">\f2bd</span>
+      </div>
+      <div class="icon-card" data-name="user-edit" data-class="lp-icon-user-edit" data-hex="f4ff">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-user-edit', 'Copied lp-icon-user-edit!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-user-edit"></i>
+        </div>
+        <div class="icon-name">user-edit</div>
+        <span class="icon-meta">\f4ff</span>
+      </div>
+      <div class="icon-card" data-name="user-graduate" data-class="lp-icon-user-graduate" data-hex="f501">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-user-graduate', 'Copied lp-icon-user-graduate!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-user-graduate"></i>
+        </div>
+        <div class="icon-name">user-graduate</div>
+        <span class="icon-meta">\f501</span>
+      </div>
+      <div class="icon-card" data-name="user-secret" data-class="lp-icon-user-secret" data-hex="f21b">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-user-secret', 'Copied lp-icon-user-secret!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-user-secret"></i>
+        </div>
+        <div class="icon-name">user-secret</div>
+        <span class="icon-meta">\f21b</span>
+      </div>
+      <div class="icon-card" data-name="video-camera" data-class="lp-icon-video-camera" data-hex="f03d">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-video-camera', 'Copied lp-icon-video-camera!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-video-camera"></i>
+        </div>
+        <div class="icon-name">video-camera</div>
+        <span class="icon-meta">\f03d</span>
+      </div>
+      <div class="icon-card" data-name="warning" data-class="lp-icon-warning" data-hex="f071">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-warning', 'Copied lp-icon-warning!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-warning"></i>
+        </div>
+        <div class="icon-name">warning</div>
+        <span class="icon-meta">\f071</span>
+      </div>
+      <div class="icon-card" data-name="warning-octagon" data-class="lp-icon-warning-octagon" data-hex="e92f">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-warning-octagon', 'Copied lp-icon-warning-octagon!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-warning-octagon"></i>
+        </div>
+        <div class="icon-name">warning-octagon</div>
+        <span class="icon-meta">\e92f</span>
+      </div>
+      <div class="icon-card" data-name="warning-octagon-o" data-class="lp-icon-warning-octagon-o" data-hex="e930">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-warning-octagon-o', 'Copied lp-icon-warning-octagon-o!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-warning-octagon-o"></i>
+        </div>
+        <div class="icon-name">warning-octagon-o</div>
+        <span class="icon-meta">\e930</span>
+      </div>
+      <div class="icon-card" data-name="website" data-class="lp-icon-website" data-hex="e913">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-website', 'Copied lp-icon-website!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-website"></i>
+        </div>
+        <div class="icon-name">website</div>
+        <span class="icon-meta">\e913</span>
+      </div>
+      <div class="icon-card" data-name="worldwide-security" data-class="lp-icon-worldwide-security" data-hex="e914">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-worldwide-security', 'Copied lp-icon-worldwide-security!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-worldwide-security"></i>
+        </div>
+        <div class="icon-name">worldwide-security</div>
+        <span class="icon-meta">\e914</span>
+      </div>
+      <div class="icon-card" data-name="youtube-play" data-class="lp-icon-youtube-play" data-hex="f16a">
+        <div class="card-actions">
+          <button class="action-btn" title="Copy Class" onclick="copyText('lp-icon-youtube-play', 'Copied lp-icon-youtube-play!')">
+            <i class="lp-icon-copy"></i>
+          </button>
+        </div>
+        <div class="icon-preview-box">
+          <i class="lp-icon-youtube-play"></i>
+        </div>
+        <div class="icon-name">youtube-play</div>
+        <span class="icon-meta">\f16a</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-preview">
+        <i id="modalIconPreview" class=""></i>
+      </div>
+      <h3 class="modal-title" id="modalIconName">lp-icon-name</h3>
+
+      <div class="snippet-group">
+        <div class="snippet-item">
+          <span class="snippet-label">HTML Tag</span>
+          <div class="snippet-code">
+            <span id="snippetHtml">&lt;i class="lp-icon-plus"&gt;&lt;/i&gt;</span>
+            <button class="snippet-copy-btn" onclick="copySnippet('snippetHtml')">Copy</button>
+          </div>
+        </div>
+
+        <div class="snippet-item">
+          <span class="snippet-label">Class Name</span>
+          <div class="snippet-code">
+            <span id="snippetClass">lp-icon-plus</span>
+            <button class="snippet-copy-btn" onclick="copySnippet('snippetClass')">Copy</button>
+          </div>
+        </div>
+
+        <div class="snippet-item">
+          <span class="snippet-label">CSS Unicode / Content</span>
+          <div class="snippet-code">
+            <span id="snippetUnicode">\f067</span>
+            <button class="snippet-copy-btn" onclick="copySnippet('snippetUnicode')">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <i class="lp-icon-check"></i> <span id="toastMsg">Copied to clipboard!</span>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const icons = [{"class": "lp-icon-alarm-clock", "name": "alarm-clock", "unicode": "\\e909", "hex": "e909"}, {"class": "lp-icon-angle-double-down", "name": "angle-double-down", "unicode": "\\f103", "hex": "f103"}, {"class": "lp-icon-angle-double-left", "name": "angle-double-left", "unicode": "\\f100", "hex": "f100"}, {"class": "lp-icon-angle-double-right", "name": "angle-double-right", "unicode": "\\f101", "hex": "f101"}, {"class": "lp-icon-angle-double-up", "name": "angle-double-up", "unicode": "\\f102", "hex": "f102"}, {"class": "lp-icon-angle-down", "name": "angle-down", "unicode": "\\f107", "hex": "f107"}, {"class": "lp-icon-angle-left", "name": "angle-left", "unicode": "\\f104", "hex": "f104"}, {"class": "lp-icon-angle-right", "name": "angle-right", "unicode": "\\f105", "hex": "f105"}, {"class": "lp-icon-angle-up", "name": "angle-up", "unicode": "\\f106", "hex": "f106"}, {"class": "lp-icon-arrow-left", "name": "arrow-left", "unicode": "\\f060", "hex": "f060"}, {"class": "lp-icon-arrow-right", "name": "arrow-right", "unicode": "\\f061", "hex": "f061"}, {"class": "lp-icon-arrows", "name": "arrows", "unicode": "\\f047", "hex": "f047"}, {"class": "lp-icon-arrows-alt", "name": "arrows-alt", "unicode": "\\f0b2", "hex": "f0b2"}, {"class": "lp-icon-art-and-design", "name": "art-and-design", "unicode": "\\e90a", "hex": "e90a"}, {"class": "lp-icon-bar-chart", "name": "bar-chart", "unicode": "\\f080", "hex": "f080"}, {"class": "lp-icon-bar-chart-o", "name": "bar-chart-o", "unicode": "\\f080", "hex": "f080"}, {"class": "lp-icon-bell-o", "name": "bell-o", "unicode": "\\f0a2", "hex": "f0a2"}, {"class": "lp-icon-best-customer-experience", "name": "best-customer-experience", "unicode": "\\e90b", "hex": "e90b"}, {"class": "lp-icon-book", "name": "book", "unicode": "\\f02d", "hex": "f02d"}, {"class": "lp-icon-book-open", "name": "book-open", "unicode": "\\f518", "hex": "f518"}, {"class": "lp-icon-bookmark", "name": "bookmark", "unicode": "\\f02e", "hex": "f02e"}, {"class": "lp-icon-bookmark-o", "name": "bookmark-o", "unicode": "\\f097", "hex": "f097"}, {"class": "lp-icon-box", "name": "box", "unicode": "\\e906", "hex": "e906"}, {"class": "lp-icon-briefcase", "name": "briefcase", "unicode": "\\f0b1", "hex": "f0b1"}, {"class": "lp-icon-bullhorn", "name": "bullhorn", "unicode": "\\f0a1", "hex": "f0a1"}, {"class": "lp-icon-calendar", "name": "calendar", "unicode": "\\f073", "hex": "f073"}, {"class": "lp-icon-calendar-o", "name": "calendar-o", "unicode": "\\f133", "hex": "f133"}, {"class": "lp-icon-caret-down", "name": "caret-down", "unicode": "\\f0d7", "hex": "f0d7"}, {"class": "lp-icon-caret-left", "name": "caret-left", "unicode": "\\f0d9", "hex": "f0d9"}, {"class": "lp-icon-caret-right", "name": "caret-right", "unicode": "\\f0da", "hex": "f0da"}, {"class": "lp-icon-caret-up", "name": "caret-up", "unicode": "\\f0d8", "hex": "f0d8"}, {"class": "lp-icon-certificate", "name": "certificate", "unicode": "\\f0a3", "hex": "f0a3"}, {"class": "lp-icon-certificate-o", "name": "certificate-o", "unicode": "\\e90c", "hex": "e90c"}, {"class": "lp-icon-check", "name": "check", "unicode": "\\f00c", "hex": "f00c"}, {"class": "lp-icon-check-circle", "name": "check-circle", "unicode": "\\f058", "hex": "f058"}, {"class": "lp-icon-check-square-o", "name": "check-square-o", "unicode": "\\f046", "hex": "f046"}, {"class": "lp-icon-chevron-down", "name": "chevron-down", "unicode": "\\f078", "hex": "f078"}, {"class": "lp-icon-chevron-left", "name": "chevron-left", "unicode": "\\f053", "hex": "f053"}, {"class": "lp-icon-chevron-right", "name": "chevron-right", "unicode": "\\f054", "hex": "f054"}, {"class": "lp-icon-chevron-up", "name": "chevron-up", "unicode": "\\f077", "hex": "f077"}, {"class": "lp-icon-circle-o", "name": "circle-o", "unicode": "\\f10c", "hex": "f10c"}, {"class": "lp-icon-circle-thin", "name": "circle-thin", "unicode": "\\f1db", "hex": "f1db"}, {"class": "lp-icon-clock", "name": "clock", "unicode": "\\e901", "hex": "e901"}, {"class": "lp-icon-clock-o", "name": "clock-o", "unicode": "\\f017", "hex": "f017"}, {"class": "lp-icon-close", "name": "close", "unicode": "\\f00d", "hex": "f00d"}, {"class": "lp-icon-close-circle", "name": "close-circle", "unicode": "\\e907", "hex": "e907"}, {"class": "lp-icon-co-instructor", "name": "co-instructor", "unicode": "\\e904", "hex": "e904"}, {"class": "lp-icon-code", "name": "code", "unicode": "\\f121", "hex": "f121"}, {"class": "lp-icon-cog", "name": "cog", "unicode": "\\f013", "hex": "f013"}, {"class": "lp-icon-cogs", "name": "cogs", "unicode": "\\f085", "hex": "f085"}, {"class": "lp-icon-comment", "name": "comment", "unicode": "\\f075", "hex": "f075"}, {"class": "lp-icon-comment-o", "name": "comment-o", "unicode": "\\f0e5", "hex": "f0e5"}, {"class": "lp-icon-comment-written", "name": "comment-written", "unicode": "\\e921", "hex": "e921"}, {"class": "lp-icon-community", "name": "community", "unicode": "\\e90d", "hex": "e90d"}, {"class": "lp-icon-compress", "name": "compress", "unicode": "\\f066", "hex": "f066"}, {"class": "lp-icon-concierge-bell", "name": "concierge-bell", "unicode": "\\e90f", "hex": "e90f"}, {"class": "lp-icon-content-marketing", "name": "content-marketing", "unicode": "\\e911", "hex": "e911"}, {"class": "lp-icon-copy", "name": "copy", "unicode": "\\f0c5", "hex": "f0c5"}, {"class": "lp-icon-course-builder", "name": "course-builder", "unicode": "", "hex": ""}, {"class": "lp-icon-database", "name": "database", "unicode": "\\f1c0", "hex": "f1c0"}, {"class": "lp-icon-desktop", "name": "desktop", "unicode": "\\f108", "hex": "f108"}, {"class": "lp-icon-dollar-sign", "name": "dollar-sign", "unicode": "\\e912", "hex": "e912"}, {"class": "lp-icon-dot-circle-o", "name": "dot-circle-o", "unicode": "\\f192", "hex": "f192"}, {"class": "lp-icon-download", "name": "download", "unicode": "\\f019", "hex": "f019"}, {"class": "lp-icon-drag", "name": "drag", "unicode": "\\e922", "hex": "e922"}, {"class": "lp-icon-dropbox", "name": "dropbox", "unicode": "\\e905", "hex": "e905"}, {"class": "lp-icon-ebook", "name": "ebook", "unicode": "\\e919", "hex": "e919"}, {"class": "lp-icon-edit", "name": "edit", "unicode": "\\f044", "hex": "f044"}, {"class": "lp-icon-edit-square", "name": "edit-square", "unicode": "\\e923", "hex": "e923"}, {"class": "lp-icon-educational-programs", "name": "educational-programs", "unicode": "\\e915", "hex": "e915"}, {"class": "lp-icon-ellipsis-h", "name": "ellipsis-h", "unicode": "\\f141", "hex": "f141"}, {"class": "lp-icon-ellipsis-v", "name": "ellipsis-v", "unicode": "\\f142", "hex": "f142"}, {"class": "lp-icon-envelope-o", "name": "envelope-o", "unicode": "\\f003", "hex": "f003"}, {"class": "lp-icon-exclamation-circle", "name": "exclamation-circle", "unicode": "\\f06a", "hex": "f06a"}, {"class": "lp-icon-exclamation-triangle", "name": "exclamation-triangle", "unicode": "\\f071", "hex": "f071"}, {"class": "lp-icon-expand", "name": "expand", "unicode": "\\f065", "hex": "f065"}, {"class": "lp-icon-eye", "name": "eye", "unicode": "\\f06e", "hex": "f06e"}, {"class": "lp-icon-eye-slash", "name": "eye-slash", "unicode": "\\f070", "hex": "f070"}, {"class": "lp-icon-facebook", "name": "facebook", "unicode": "\\f09a", "hex": "f09a"}, {"class": "lp-icon-facebook-f", "name": "facebook-f", "unicode": "\\f09a", "hex": "f09a"}, {"class": "lp-icon-failed_courses", "name": "failed_courses", "unicode": "\\e91f", "hex": "e91f"}, {"class": "lp-icon-file", "name": "file", "unicode": "\\f15b", "hex": "f15b"}, {"class": "lp-icon-file-alt", "name": "file-alt", "unicode": "\\f15c", "hex": "f15c"}, {"class": "lp-icon-file-archive", "name": "file-archive", "unicode": "\\f1c6", "hex": "f1c6"}, {"class": "lp-icon-file-audio", "name": "file-audio", "unicode": "\\f1c7", "hex": "f1c7"}, {"class": "lp-icon-file-code", "name": "file-code", "unicode": "\\f1c9", "hex": "f1c9"}, {"class": "lp-icon-file-download", "name": "file-download", "unicode": "\\f56d", "hex": "f56d"}, {"class": "lp-icon-file-excel", "name": "file-excel", "unicode": "\\f1c3", "hex": "f1c3"}, {"class": "lp-icon-file-image", "name": "file-image", "unicode": "\\f1c5", "hex": "f1c5"}, {"class": "lp-icon-file-movie", "name": "file-movie", "unicode": "\\f1c8", "hex": "f1c8"}, {"class": "lp-icon-file-o", "name": "file-o", "unicode": "\\f016", "hex": "f016"}, {"class": "lp-icon-file-pdf", "name": "file-pdf", "unicode": "\\f1c1", "hex": "f1c1"}, {"class": "lp-icon-file-photo", "name": "file-photo", "unicode": "\\f1c5", "hex": "f1c5"}, {"class": "lp-icon-file-picture", "name": "file-picture", "unicode": "\\f1c5", "hex": "f1c5"}, {"class": "lp-icon-file-powerpoint", "name": "file-powerpoint", "unicode": "\\f1c4", "hex": "f1c4"}, {"class": "lp-icon-file-sound", "name": "file-sound", "unicode": "\\f1c7", "hex": "f1c7"}, {"class": "lp-icon-file-text-o", "name": "file-text-o", "unicode": "\\f0f6", "hex": "f0f6"}, {"class": "lp-icon-file-video", "name": "file-video", "unicode": "\\f1c8", "hex": "f1c8"}, {"class": "lp-icon-file-word", "name": "file-word", "unicode": "\\f1c2", "hex": "f1c2"}, {"class": "lp-icon-file-zip", "name": "file-zip", "unicode": "\\f1c6", "hex": "f1c6"}, {"class": "lp-icon-files-o", "name": "files-o", "unicode": "\\f0c5", "hex": "f0c5"}, {"class": "lp-icon-filter", "name": "filter", "unicode": "\\e91c", "hex": "e91c"}, {"class": "lp-icon-finished_courses", "name": "finished_courses", "unicode": "\\e91e", "hex": "e91e"}, {"class": "lp-icon-flag", "name": "flag", "unicode": "\\f024", "hex": "f024"}, {"class": "lp-icon-folder", "name": "folder", "unicode": "\\e92d", "hex": "e92d"}, {"class": "lp-icon-gear", "name": "gear", "unicode": "\\f013", "hex": "f013"}, {"class": "lp-icon-gears", "name": "gears", "unicode": "\\f085", "hex": "f085"}, {"class": "lp-icon-gift", "name": "gift", "unicode": "\\f06b", "hex": "f06b"}, {"class": "lp-icon-google", "name": "google", "unicode": "\\f1a0", "hex": "f1a0"}, {"class": "lp-icon-google-plus", "name": "google-plus", "unicode": "\\f0d5", "hex": "f0d5"}, {"class": "lp-icon-google-plus-circle", "name": "google-plus-circle", "unicode": "\\f2b3", "hex": "f2b3"}, {"class": "lp-icon-google-plus-official", "name": "google-plus-official", "unicode": "\\f2b3", "hex": "f2b3"}, {"class": "lp-icon-google-plus-square", "name": "google-plus-square", "unicode": "\\f0d4", "hex": "f0d4"}, {"class": "lp-icon-graduation-cap", "name": "graduation-cap", "unicode": "\\f19d", "hex": "f19d"}, {"class": "lp-icon-heart", "name": "heart", "unicode": "\\f004", "hex": "f004"}, {"class": "lp-icon-heart-o", "name": "heart-o", "unicode": "\\f08a", "hex": "f08a"}, {"class": "lp-icon-home", "name": "home", "unicode": "\\f015", "hex": "f015"}, {"class": "lp-icon-ico-courses", "name": "ico-courses", "unicode": "\\e903", "hex": "e903"}, {"class": "lp-icon-ico-students", "name": "ico-students", "unicode": "\\e902", "hex": "e902"}, {"class": "lp-icon-icon-h5p", "name": "icon-h5p", "unicode": "\\e92a", "hex": "e92a"}, {"class": "lp-icon-in_progress_course", "name": "in_progress_course", "unicode": "\\e91d", "hex": "e91d"}, {"class": "lp-icon-info-circle", "name": "info-circle", "unicode": "\\e931", "hex": "e931"}, {"class": "lp-icon-info-triangle", "name": "info-triangle", "unicode": "\\e932", "hex": "e932"}, {"class": "lp-icon-instagram", "name": "instagram", "unicode": "\\f16d", "hex": "f16d"}, {"class": "lp-icon-key", "name": "key", "unicode": "\\f084", "hex": "f084"}, {"class": "lp-icon-language", "name": "language", "unicode": "\\f1ab", "hex": "f1ab"}, {"class": "lp-icon-layers", "name": "layers", "unicode": "\\e91a", "hex": "e91a"}, {"class": "lp-icon-line-chart", "name": "line-chart", "unicode": "\\f201", "hex": "f201"}, {"class": "lp-icon-link", "name": "link", "unicode": "\\e92c", "hex": "e92c"}, {"class": "lp-icon-linkedin", "name": "linkedin", "unicode": "\\f0e1", "hex": "f0e1"}, {"class": "lp-icon-linkedin-square", "name": "linkedin-square", "unicode": "\\f08c", "hex": "f08c"}, {"class": "lp-icon-list", "name": "list", "unicode": "\\f03a", "hex": "f03a"}, {"class": "lp-icon-list-check", "name": "list-check", "unicode": "\\e929", "hex": "e929"}, {"class": "lp-icon-lock", "name": "lock", "unicode": "\\f023", "hex": "f023"}, {"class": "lp-icon-lucide", "name": "lucide", "unicode": "\\e918", "hex": "e918"}, {"class": "lp-icon-map-marker", "name": "map-marker", "unicode": "\\e91b", "hex": "e91b"}, {"class": "lp-icon-map-pin", "name": "map-pin", "unicode": "\\e91b", "hex": "e91b"}, {"class": "lp-icon-minus", "name": "minus", "unicode": "\\f068", "hex": "f068"}, {"class": "lp-icon-mobile", "name": "mobile", "unicode": "\\f10b", "hex": "f10b"}, {"class": "lp-icon-mobile-phone", "name": "mobile-phone", "unicode": "\\f10b", "hex": "f10b"}, {"class": "lp-icon-money-bill-alt", "name": "money-bill-alt", "unicode": "\\f0d6", "hex": "f0d6"}, {"class": "lp-icon-monitor", "name": "monitor", "unicode": "\\e917", "hex": "e917"}, {"class": "lp-icon-mortar-board", "name": "mortar-board", "unicode": "\\f19d", "hex": "f19d"}, {"class": "lp-icon-my-courses", "name": "my-courses", "unicode": "\\e900", "hex": "e900"}, {"class": "lp-icon-online-class", "name": "online-class", "unicode": "\\e916", "hex": "e916"}, {"class": "lp-icon-online-education", "name": "online-education", "unicode": "\\e90e", "hex": "e90e"}, {"class": "lp-icon-passed_courses", "name": "passed_courses", "unicode": "\\e920", "hex": "e920"}, {"class": "lp-icon-pencil-square-o", "name": "pencil-square-o", "unicode": "\\f044", "hex": "f044"}, {"class": "lp-icon-pending_course", "name": "pending_course", "unicode": "\\e927", "hex": "e927"}, {"class": "lp-icon-phone", "name": "phone", "unicode": "\\f095", "hex": "f095"}, {"class": "lp-icon-pie-chart", "name": "pie-chart", "unicode": "\\f200", "hex": "f200"}, {"class": "lp-icon-pinterest-p", "name": "pinterest-p", "unicode": "\\f231", "hex": "f231"}, {"class": "lp-icon-pinterest-square", "name": "pinterest-square", "unicode": "\\f0d3", "hex": "f0d3"}, {"class": "lp-icon-play-circle-o", "name": "play-circle-o", "unicode": "\\f01d", "hex": "f01d"}, {"class": "lp-icon-plus", "name": "plus", "unicode": "\\f067", "hex": "f067"}, {"class": "lp-icon-published_course", "name": "published_course", "unicode": "\\e926", "hex": "e926"}, {"class": "lp-icon-puzzle-piece", "name": "puzzle-piece", "unicode": "\\f12e", "hex": "f12e"}, {"class": "lp-icon-question", "name": "question", "unicode": "\\f128", "hex": "f128"}, {"class": "lp-icon-question-circle", "name": "question-circle", "unicode": "\\f059", "hex": "f059"}, {"class": "lp-icon-question-circle-o", "name": "question-circle-o", "unicode": "\\f29c", "hex": "f29c"}, {"class": "lp-icon-refresh", "name": "refresh", "unicode": "\\f021", "hex": "f021"}, {"class": "lp-icon-remove", "name": "remove", "unicode": "\\f00d", "hex": "f00d"}, {"class": "lp-icon-search", "name": "search", "unicode": "\\f002", "hex": "f002"}, {"class": "lp-icon-send", "name": "send", "unicode": "\\e92e", "hex": "e92e"}, {"class": "lp-icon-share-alt", "name": "share-alt", "unicode": "\\f1e0", "hex": "f1e0"}, {"class": "lp-icon-shopping-cart", "name": "shopping-cart", "unicode": "\\f07a", "hex": "f07a"}, {"class": "lp-icon-sidebar-left", "name": "sidebar-left", "unicode": "\\e928", "hex": "e928"}, {"class": "lp-icon-sidebar-right", "name": "sidebar-right", "unicode": "\\e92b", "hex": "e92b"}, {"class": "lp-icon-sign-in", "name": "sign-in", "unicode": "\\f090", "hex": "f090"}, {"class": "lp-icon-sign-out", "name": "sign-out", "unicode": "\\f08b", "hex": "f08b"}, {"class": "lp-icon-signal", "name": "signal", "unicode": "\\f012", "hex": "f012"}, {"class": "lp-icon-spinner", "name": "spinner", "unicode": "\\f110", "hex": "f110"}, {"class": "lp-icon-square-o", "name": "square-o", "unicode": "\\f096", "hex": "f096"}, {"class": "lp-icon-star", "name": "star", "unicode": "\\f005", "hex": "f005"}, {"class": "lp-icon-star-o", "name": "star-o", "unicode": "\\f006", "hex": "f006"}, {"class": "lp-icon-stopwatch", "name": "stopwatch", "unicode": "\\f2f2", "hex": "f2f2"}, {"class": "lp-icon-student_completed", "name": "student_completed", "unicode": "\\e925", "hex": "e925"}, {"class": "lp-icon-student_in_progress", "name": "student_in_progress", "unicode": "\\e924", "hex": "e924"}, {"class": "lp-icon-target", "name": "target", "unicode": "\\e910", "hex": "e910"}, {"class": "lp-icon-television", "name": "television", "unicode": "\\f26c", "hex": "f26c"}, {"class": "lp-icon-th", "name": "th", "unicode": "\\f00a", "hex": "f00a"}, {"class": "lp-icon-th-large", "name": "th-large", "unicode": "\\f009", "hex": "f009"}, {"class": "lp-icon-th-list", "name": "th-list", "unicode": "\\f00b", "hex": "f00b"}, {"class": "lp-icon-thumbs-o-down", "name": "thumbs-o-down", "unicode": "\\f088", "hex": "f088"}, {"class": "lp-icon-thumbs-o-up", "name": "thumbs-o-up", "unicode": "\\f087", "hex": "f087"}, {"class": "lp-icon-tiktok-alt", "name": "tiktok-alt", "unicode": "\\e908", "hex": "e908"}, {"class": "lp-icon-times", "name": "times", "unicode": "\\f00d", "hex": "f00d"}, {"class": "lp-icon-trash-o", "name": "trash-o", "unicode": "\\f014", "hex": "f014"}, {"class": "lp-icon-tv", "name": "tv", "unicode": "\\f26c", "hex": "f26c"}, {"class": "lp-icon-twitter", "name": "twitter", "unicode": "\\f099", "hex": "f099"}, {"class": "lp-icon-unlock", "name": "unlock", "unicode": "\\f09c", "hex": "f09c"}, {"class": "lp-icon-user", "name": "user", "unicode": "\\f007", "hex": "f007"}, {"class": "lp-icon-user-circle", "name": "user-circle", "unicode": "\\f2bd", "hex": "f2bd"}, {"class": "lp-icon-user-edit", "name": "user-edit", "unicode": "\\f4ff", "hex": "f4ff"}, {"class": "lp-icon-user-graduate", "name": "user-graduate", "unicode": "\\f501", "hex": "f501"}, {"class": "lp-icon-user-secret", "name": "user-secret", "unicode": "\\f21b", "hex": "f21b"}, {"class": "lp-icon-video-camera", "name": "video-camera", "unicode": "\\f03d", "hex": "f03d"}, {"class": "lp-icon-warning", "name": "warning", "unicode": "\\f071", "hex": "f071"}, {"class": "lp-icon-warning-octagon", "name": "warning-octagon", "unicode": "\\e92f", "hex": "e92f"}, {"class": "lp-icon-warning-octagon-o", "name": "warning-octagon-o", "unicode": "\\e930", "hex": "e930"}, {"class": "lp-icon-website", "name": "website", "unicode": "\\e913", "hex": "e913"}, {"class": "lp-icon-worldwide-security", "name": "worldwide-security", "unicode": "\\e914", "hex": "e914"}, {"class": "lp-icon-youtube-play", "name": "youtube-play", "unicode": "\\f16a", "hex": "f16a"}];
+
+    const grid = document.getElementById("iconGrid");
+    const searchInput = document.getElementById("searchInput");
+    const resultsCount = document.getElementById("resultsCount");
+    const sizeSlider = document.getElementById("sizeSlider");
+    const sizeVal = document.getElementById("sizeVal");
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMsg");
+    const themeToggle = document.getElementById("themeToggle");
+    const detailModal = document.getElementById("detailModal");
+    const modalClose = document.getElementById("modalClose");
+
+    const layoutGrid = document.getElementById("layoutGrid");
+    const layoutCompact = document.getElementById("layoutCompact");
+    const layoutList = document.getElementById("layoutList");
+
+    // Attach click events on static cards
+    function attachCardEvents() {
+      document.querySelectorAll(".icon-card").forEach(card => {
+        card.onclick = (e) => {
+          if (e.target.closest(".action-btn")) return;
+          const cls = card.getAttribute("data-class");
+          const hex = card.getAttribute("data-hex");
+          openModal({ class: cls, hex: hex });
+        };
+      });
+    }
+
+    attachCardEvents();
+
+    function renderIcons(filtered) {
+      grid.innerHTML = "";
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <i class="lp-icon-search" style="font-size: 48px; opacity: 0.4; margin-bottom: 1rem;"></i>
+            <h3>Không tìm thấy icon phù hợp</h3>
+            <p>Thử tìm với từ khóa hoặc mã hex khác</p>
+          </div>
+        `;
+        resultsCount.innerText = "Không tìm thấy icon";
+        return;
+      }
+
+      resultsCount.innerText = `Hiển thị ${filtered.length} / ${icons.length} icons`;
+
+      filtered.forEach(icon => {
+        const card = document.createElement("div");
+        card.className = "icon-card";
+        card.setAttribute("data-name", icon.name);
+        card.setAttribute("data-class", icon.class);
+        card.setAttribute("data-hex", icon.hex);
+        card.onclick = (e) => {
+          if (e.target.closest(".action-btn")) return;
+          openModal(icon);
+        };
+
+        const hexBadge = icon.hex ? `<span class="icon-meta">\\${icon.hex}</span>` : "";
+
+        card.innerHTML = `
+          <div class="card-actions">
+            <button class="action-btn" title="Copy Class" onclick="copyText('${icon.class}', 'Copied class ${icon.class}!')">
+              <i class="lp-icon-copy"></i>
+            </button>
+          </div>
+          <div class="icon-preview-box">
+            <i class="${icon.class}"></i>
+          </div>
+          <div class="icon-name">${icon.name}</div>
+          ${hexBadge}
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const filtered = icons.filter(item => 
+        item.name.toLowerCase().includes(q) ||
+        item.class.toLowerCase().includes(q) ||
+        (item.hex && item.hex.toLowerCase().includes(q))
+      );
+      renderIcons(filtered);
+    });
+
+    sizeSlider.addEventListener("input", (e) => {
+      const sz = e.target.value + "px";
+      document.documentElement.style.setProperty("--icon-size", sz);
+      sizeVal.innerText = sz;
+    });
+
+    document.querySelectorAll(".swatch-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".swatch-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const color = btn.getAttribute("data-color");
+        document.documentElement.style.setProperty("--icon-color", color);
+      });
+    });
+
+    layoutGrid.addEventListener("click", () => {
+      grid.className = "icon-grid";
+      layoutGrid.classList.add("active");
+      layoutCompact.classList.remove("active");
+      layoutList.classList.remove("active");
+    });
+
+    layoutCompact.addEventListener("click", () => {
+      grid.className = "icon-grid layout-compact";
+      layoutCompact.classList.add("active");
+      layoutGrid.classList.remove("active");
+      layoutList.classList.remove("active");
+    });
+
+    layoutList.addEventListener("click", () => {
+      grid.className = "icon-grid layout-list";
+      layoutList.classList.add("active");
+      layoutGrid.classList.remove("active");
+      layoutCompact.classList.remove("active");
+    });
+
+    themeToggle.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+    });
+
+    function copyText(text, msg = "Copied to clipboard!") {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(msg);
+      }).catch(() => {
+        const temp = document.createElement("textarea");
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        showToast(msg);
+      });
+    }
+
+    function copySnippet(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      copyText(text, `Copied: ${text}`);
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      toastMsg.innerText = msg;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2200);
+    }
+
+    function openModal(icon) {
+      document.getElementById("modalIconPreview").className = icon.class;
+      document.getElementById("modalIconName").innerText = icon.class;
+      document.getElementById("snippetHtml").innerText = `<i class="${icon.class}"></i>`;
+      document.getElementById("snippetClass").innerText = icon.class;
+      document.getElementById("snippetUnicode").innerText = icon.hex ? ("\\" + icon.hex) : "N/A";
+      detailModal.classList.add("open");
+    }
+
+    modalClose.addEventListener("click", () => {
+      detailModal.classList.remove("open");
+    });
+
+    detailModal.addEventListener("click", (e) => {
+      if (e.target === detailModal) {
+        detailModal.classList.remove("open");
+      }
+    });
+  </script>
+</body>
+</html>

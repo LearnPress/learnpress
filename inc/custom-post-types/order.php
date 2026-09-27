@@ -476,6 +476,16 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					return $posts;
 				}
 
+				// Check screen
+				if ( ! function_exists( 'get_current_screen' ) ) {
+					return $posts;
+				}
+
+				$curren_screen = get_current_screen();
+				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_ORDER_CPT ) {
+					return $posts;
+				}
+
 				$post_type = $wp_query->get( 'post_type' );
 
 				if ( empty( $post_type ) || $post_type != LP_ORDER_CPT ) {
@@ -495,8 +505,15 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$month                 = $wp_query->get( 'm' );
 				$refund_request_status = LP_Request::get_param( 'refund_request_status', '', 'key', 'get' );
 
-				$filter = new OrderPostFilter();
-				$param  = array(
+				$filter              = new OrderPostFilter();
+				$filter->only_fields = array_map(
+					function ( $field ) {
+						return "p.{$field}";
+					},
+					$filter->all_fields
+				);
+				$filter->field_count = 'p.ID';
+				$param               = array(
 					'paged'                 => $paged,
 					'posts_per_page'        => $posts_per_page,
 					'author'                => $user_of_order,

@@ -3,7 +3,6 @@
 namespace LearnPress\TemplateHooks\Admin;
 
 use LearnPress\Helpers\Singleton;
-use LP_Admin_Notice;
 use LP_Cache;
 use LP_Helper;
 
@@ -37,7 +36,6 @@ class AdminToolsPage {
 				'assign_course'   => __( 'Assign/Unassigned Course', 'learnpress' ),
 				'database'        => __( 'Database', 'learnpress' ),
 				'template'        => __( 'Templates', 'learnpress' ),
-				'lp_beta_version' => __( 'LearnPress Beta Version', 'learnpress' ),
 				'cache'           => __( 'Cache', 'learnpress' ),
 			)
 		);
@@ -114,18 +112,6 @@ class AdminToolsPage {
 				echo sprintf(
 					'<form action="" method="post"><button class="button button-primary" type="submit">%s</button></form>',
 					esc_html__( 'Clear all cache', 'learnpress' )
-				);
-				break;
-			case 'lp_beta_version':
-				$lp_beta_version_info = LP_Admin_Notice::check_lp_beta_version();
-				learn_press_admin_view(
-					'admin-notices/beta-version',
-					array(
-						'data' => array(
-							'check' => 1,
-							'info'  => $lp_beta_version_info,
-						),
-					)
 				);
 				break;
 			default:

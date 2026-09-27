@@ -3,9 +3,15 @@ $msg-success:#EBF8E5;
 $msg-error: #FEE5E5;
 $msg-waring: #FEF7E6;
 $msg-info: #007AFF1A;
+$msg-border-success: #28A746;
+$msg-border-error: #E31A1A;
+$msg-border-warning: #F8A100;
+$msg-border-info: #2E91FA;
 
 .learn-press-message {
 	position: relative;
+	display: flex;
+	align-items: center;
 	margin: 0 !important; // fix system WP override
 	padding: 10px 20px;
 	//border-top: 5px solid $msg-color;
@@ -13,25 +19,60 @@ $msg-info: #007AFF1A;
 	background-color: #E5F7FF;
 	color: #007AFF;
 	max-width: 100%;
+
+	&::before {
+		display: inline-block;
+		margin-right: 8px;
+		font-family: 'lp-icon';
+		font-size: 20px;
+		font-style: normal;
+		font-weight: normal;
+		line-height: 1;
+	}
+
  	&.error {
 		background-color: $msg-error;
 		color: #FF3B30;
-		border-left: none;
+		border: 1px solid $msg-border-error;
+		padding: 10px 20px; // to override style of WP for this class
+
+		&::before {
+			content: "\f071";
+			color: $msg-border-error;
+		}
  	}
 
 	&.warning {
 		background-color: $msg-waring;
 		color: #FF9500;
+		border: 1px solid $msg-border-warning;
+
+		&::before {
+			content: "\f06a";
+			color: $msg-border-warning;
+		}
  	}
 
 	&.success {
 		background-color: $msg-success;
 		color :#3AB500;
+		border: 1px solid $msg-border-success;
+
+		&::before {
+			content: "\f058";
+			color: $msg-border-success;
+		}
 	}
 
 	&.info {
 		background-color: $msg-info;
 		color :#007AFF;
+		border: 1px solid $msg-border-info;
+
+		&::before {
+			content: "\e931";
+			color: $msg-border-info;
+		}
 	}
 
 	a {

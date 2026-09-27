@@ -6,7 +6,10 @@
  */
 
 use LearnPress\Background\LPBackgroundAjax;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Admin\Notices\AdminNotesTemplate;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 
 defined( 'ABSPATH' ) || exit;
@@ -35,7 +38,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$this->includes();
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			//add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
-			add_action( 'all_admin_notices', array( $this, 'admin_notices' ), - 1 );
+			add_action( 'admin_footer', array( $this, 'admin_notices' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 			//add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
@@ -656,15 +659,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				}
 			}
 
-			// Show template file templates override.
-			$page = LP_Request::get_param( 'page' );
-			$tab  = LP_Request::get_param( 'tab' );
-			if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
-				if ( LP_Outdated_Template_Helper::detect_outdated_template() ) {
-					learn_press_admin_view( 'html-admin-notice-templates' );
-				}
-			}
-
 			// Request accept/denied user can become a teacher.
 			$action_become_teacher      = LP_Request::get_param( 'lp-action' );
 			$user_id                    = LP_Request::get_param( 'user_id', 0, 'int' );
@@ -684,7 +678,28 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				<?php
 			}
 
-			learn_press_admin_view( 'admin-notices.php', [], true );
+			// Load Ajax notes here
+			/** @use AdminNotesTemplate::render_notices */
+			$html_notices = TemplateAJAX::load_content_via_ajax(
+				[
+					'method_request' => 'GET',
+					'id_url' => 'admin-notices',
+					'html_loading_before_show_content' => '',
+				],
+				[
+					'class'  => AdminNotesTemplate::class,
+					'method' => 'render_notices',
+				]
+			);
+
+			wp_enqueue_script( 'lp-admin-notices' );
+
+			echo Template::instance()->nest_elements(
+				[
+					'<div class="learn-press-admin-notices notice">' => '</div>',
+				],
+				$html_notices
+			);
 		}
 
 		/**

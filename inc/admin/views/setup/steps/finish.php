@@ -77,7 +77,7 @@ $email_status = $enabled_email_count === count( $summary_email_ids )
 		</div>
 
 		<h2>
-			<?php esc_html_e( 'Setup Complete! Your Academy Is Ready', 'learnpress' ); ?>
+			<?php esc_html_e( 'Setup Complete! Your LMS Is Ready', 'learnpress' ); ?>
 		</h2>
 
 		<p>

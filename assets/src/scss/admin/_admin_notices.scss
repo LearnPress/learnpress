@@ -1,0 +1,28 @@
+$cb-danger: #dc2626 !default;
+
+.learn-press-admin-notices {
+	padding: 0;
+	border: none;
+	background: transparent;
+
+	.lp-target {
+		display: grid;
+		gap: 10px;
+	}
+
+	.btn-lp-notice-dismiss {
+		position: absolute;
+		top: 15px;
+		right: 20px;
+		color: #898989;
+
+		&:hover {
+			cursor: pointer;
+			color: $cb-danger
+		}
+	}
+
+	&.notice a, a {
+		text-decoration: none;
+	}
+}

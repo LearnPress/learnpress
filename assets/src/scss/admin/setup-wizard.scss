@@ -469,6 +469,13 @@
             stroke-width: 2;
         }
 
+		.lp-setup-choice__svg--solid {
+			width: 28px;
+			height: 28px;
+			fill: currentColor;
+			stroke: none;
+		}
+
         [class^='lp-icon-'],
         [class*=' lp-icon-'] {
             font-size: 25px;
@@ -884,6 +891,16 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             stroke-width: 1.6;
+        }
+
+        [class^='lp-icon-'],
+        [class*=' lp-icon-'] {
+            display: inline-flex;
+            flex: 0 0 18px;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            line-height: 1;
         }
 
         &:hover,
@@ -1453,11 +1470,6 @@
 
         .lp-setup-finish-card__heading {
             color: $cb-text;
-
-            > strong {
-                font-size: 20px;
-                font-weight: 600;
-            }
         }
 
         .lp-setup-finish-card__heading-icon {
@@ -1576,7 +1588,7 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
-
+        margin-bottom: 12px !important;
         strong,
         span {
             font-size: 13px;

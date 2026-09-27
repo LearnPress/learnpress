@@ -345,6 +345,10 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				}
 
 				// Check screen
+				if ( ! function_exists( 'get_current_screen' ) ) {
+					return $posts;
+				}
+
 				$curren_screen = get_current_screen();
 				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_QUESTION_CPT ) {
 					return $posts;
@@ -373,7 +377,13 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$filter              = new QuestionPostFilter();
 				$filter->page        = $paged;
 				$filter->limit       = $posts_per_page;
-				$filter->only_fields = [ 'p.ID', 'p.post_title', 'p.post_author', 'p.post_date', 'p.post_date_gmt' ];
+				$filter->only_fields = array_map(
+					function ( $field ) {
+						return "p.{$field}";
+					},
+					$filter->all_fields
+				);
+				$filter->field_count = 'p.ID';
 				$post_db             = PostDB::getInstance();
 
 				if ( ! empty( $status ) ) {

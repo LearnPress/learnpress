@@ -312,7 +312,7 @@ class PostModel {
 		$data = get_object_vars( $this );
 
 		$metadata = $this->get_metadata();
-		if ( ! empty( $key_meta ) ) {
+		if ( ! empty( $metadata ) ) {
 			$data['meta_input'] = [];
 			foreach ( $metadata as $key_meta => $value_meta ) {
 				$data['meta_input'][ $key_meta ] = $value_meta;
