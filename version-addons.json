@@ -856,7 +856,7 @@
     "learnpress-buddypress": {
         "name": "LearnPress – BuddyPress Integration",
         "basename": "learnpress-buddypress/learnpress-buddypress.php",
-        "version": "4.0.0",
+        "version": "4.0.3",
         "require_lp": "4.2.0",
         "description": "LearnPress - BuddyPress Integration provides a powerful yet simple social network for everyone.",
         "image": "https://ps.w.org/learnpress-buddypress/assets/icon-128x128.png?rev=2394946",
