@@ -303,6 +303,7 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 = 4.4.9 (2026-09-27) =
 * Refactor: Add-ons manager and lp admin notices.
+* Fixed: security (Props @Khoa Dang, @Wordfence, @Hyebin Noh)
 * Fixed: minor bugs.
 * Fixed: custom post type screen check and quick edit missing fields.
 * Fixed: error 404 course edit URL generation in OpenAi.
