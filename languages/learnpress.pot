@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27T10:00:07+00:00\n"
+"POT-Creation-Date: 2026-09-28T01:42:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -88,14 +88,6 @@ msgstr ""
 msgid "Add Blank"
 msgstr ""
 
-#: assets/src/apps/js/blocks/archive-course/edit.js:11
-msgid "Archive Course"
-msgstr ""
-
-#: assets/src/apps/js/blocks/archive-course/edit.js:15
-msgid "This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it"
-msgstr ""
-
 #: assets/src/apps/js/blocks/archive-course-legacy/edit.js:11
 msgid "Archive Course (Legacy)"
 msgstr ""
@@ -119,7 +111,6 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-quiz/edit.js:17
 #: assets/src/apps/js/blocks/course-elements/course-student/edit.js:17
 #: assets/src/apps/js/blocks/course-elements/course-title/edit.js:26
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:10
 #: assets/src/apps/js/blocks/course-filter/edit.js:10
 #: assets/src/apps/js/blocks/courses/course-item-template/edit.js:214
 #: assets/src/apps/js/blocks/instructor-elements/instructor-background/edit.js:25
@@ -395,21 +386,51 @@ msgstr ""
 msgid "Make the title a link"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/button-reset-filter/edit.js:8
+#: assets/src/apps/js/blocks/course-filter/edit.js:12
+msgid "Show title"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:22
+#: config/widgets/course/filter-course.php:14
+msgid "Level of category to display on Frontend"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:34
+#: config/elementor/course/filter-course-el.php:135
+#: config/widgets/course/filter-course.php:25
+msgid "Load widget via REST"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:44
+#: config/widgets/course/filter-course.php:30
+msgid "Hide field has count is zero"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:54
+#: config/elementor/course/filter-course-el.php:146
+#: config/widgets/course/filter-course.php:35
+msgid "Enable Keyword Search Suggestion"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-filter/edit.js:66
+#: config/widgets/course/filter-course.php:11
+#: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:37
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:297
+msgid "Course Filter"
+msgstr ""
+
 #: assets/src/apps/js/blocks/course-filter-elements/button-reset-filter/edit.js:8
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:807
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:168
 msgid "Reset"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/button-submit-filter/edit.js:8
 #: assets/src/apps/js/blocks/course-filter-elements/button-submit-filter/edit.js:8
 #: inc/TemplateHooks/Admin/AI/AdminEditWithAITemplate.php:387
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:779
 msgid "Apply"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-author-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-author-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:43
 #: config/widgets/course/filter-course.php:65
@@ -423,7 +444,6 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-categories-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-categories-filter/edit.js:9
 #: inc/custom-post-types/course.php:114
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:558
@@ -432,55 +452,6 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:12
-#: config/elementor/course/filter-course-el.php:430
-#: config/elementor/instructor/become-a-teacher.php:20
-#: config/elementor/instructor/become-a-teacher.php:46
-#: config/elementor/login-user-form.php:19
-#: config/elementor/register-user-form.php:19
-#: config/widgets/course/filter-course.php:9
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:38
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:58
-#: inc/admin/views/setup/setup-stripe.php:7
-#: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:422
-#: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:384
-#: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:428
-#: inc/Widgets/course-extra.php:25
-#: inc/Widgets/course-info.php:32
-#: inc/Widgets/course-progress.php:29
-#: inc/Widgets/featured-courses.php:28
-#: inc/Widgets/popular-courses.php:24
-#: inc/Widgets/recent-courses.php:29
-msgid "Title"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:22
-#: assets/src/apps/js/blocks/course-filter/edit.js:22
-#: config/widgets/course/filter-course.php:14
-msgid "Level of category to display on Frontend"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:34
-#: assets/src/apps/js/blocks/course-filter/edit.js:34
-#: config/elementor/course/filter-course-el.php:135
-#: config/widgets/course/filter-course.php:25
-msgid "Load widget via REST"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:44
-#: assets/src/apps/js/blocks/course-filter/edit.js:44
-#: config/widgets/course/filter-course.php:30
-msgid "Hide field has count is zero"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-filter/edit.js:54
-#: assets/src/apps/js/blocks/course-filter/edit.js:54
-#: config/elementor/course/filter-course-el.php:146
-#: config/widgets/course/filter-course.php:35
-msgid "Enable Keyword Search Suggestion"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/course-level-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-level-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:44
 #: config/widgets/course/filter-course.php:69
@@ -493,7 +464,6 @@ msgstr ""
 msgid "Level"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-price-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-price-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:40
 #: config/elementor/course/list-courses.php:123
@@ -506,7 +476,6 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-search-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-search-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:488
 #: inc/admin/views/search-author-field.php:79
@@ -520,7 +489,6 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: assets/src/apps/js/blocks/course-filter/course-tag-filter/edit.js:9
 #: assets/src/apps/js/blocks/course-filter-elements/course-tag-filter/edit.js:9
 #: config/wp-menus.php:101
 #: config/wp-menus.php:102
@@ -528,17 +496,6 @@ msgstr ""
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:536
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:946
 msgid "Tags"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/edit.js:12
-msgid "Show title"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/edit.js:66
-#: config/widgets/course/filter-course.php:11
-#: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:37
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:297
-msgid "Course Filter"
 msgstr ""
 
 #: assets/src/apps/js/blocks/courses/course-item-template/edit.js:162
@@ -648,22 +605,6 @@ msgstr ""
 msgid "Add nofollow attribute"
 msgstr ""
 
-#: assets/src/apps/js/blocks/item-curriculum-course/edit.js:13
-msgid "Item Curriculum Course"
-msgstr ""
-
-#: assets/src/apps/js/blocks/item-curriculum-course/edit.js:17
-msgid "This is an editor placeholder for the Item Curriculum Course page. Content will render content of single item curriculum course. Should be not remove it"
-msgstr ""
-
-#: assets/src/apps/js/blocks/single-course/edit.js:11
-msgid "Single Course"
-msgstr ""
-
-#: assets/src/apps/js/blocks/single-course/edit.js:15
-msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
-msgstr ""
-
 #: assets/src/apps/js/blocks/single-course-legacy/edit.js:11
 msgid "Single Course (Legacy)"
 msgstr ""
@@ -702,21 +643,6 @@ msgstr ""
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:276
 #: templates/profile/tabs/settings/avatar.php:28
 msgid "Cancel"
-msgstr ""
-
-#: assets/js/dist/frontend/profile.min.js:131
-#: assets/js/dist/frontend/profile.min.js:131
-msgid "The file size is too large. You need to upload a file < 2MB."
-msgstr ""
-
-#: assets/js/dist/frontend/profile.min.js:133
-#: assets/js/dist/frontend/profile.min.js:133
-msgid "The image size must be greater than or equal to %1$sx%2$spx"
-msgstr ""
-
-#: assets/js/dist/frontend/profile.min.js:146
-#: assets/js/dist/frontend/profile.min.js:146
-msgid "Are you sure you want to remove your avatar?"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:94
@@ -974,17 +900,6 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:116
 msgid "Submitting…"
-msgstr ""
-
-#: assets/src/js/admin/admin.js:107
-msgid "Search by user"
-msgstr ""
-
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:700
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:705
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:710
-#: assets/src/js/admin/edit-curriculum/edit-course-ai.js:723
-msgid "Edit with AI"
 msgstr ""
 
 #: assets/src/js/frontend/course-builder/builder-form-state.js:174
@@ -1400,6 +1315,27 @@ msgstr ""
 
 #: config/elementor/course/filter-course-el.php:416
 msgid "Toggle Offset Y (px)"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:430
+#: config/elementor/instructor/become-a-teacher.php:20
+#: config/elementor/instructor/become-a-teacher.php:46
+#: config/elementor/login-user-form.php:19
+#: config/elementor/register-user-form.php:19
+#: config/widgets/course/filter-course.php:9
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:38
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:58
+#: inc/admin/views/setup/setup-stripe.php:7
+#: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:422
+#: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:384
+#: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:428
+#: inc/Widgets/course-extra.php:25
+#: inc/Widgets/course-info.php:32
+#: inc/Widgets/course-progress.php:29
+#: inc/Widgets/featured-courses.php:28
+#: inc/Widgets/popular-courses.php:24
+#: inc/Widgets/recent-courses.php:29
+msgid "Title"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:441

@@ -309,7 +309,7 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 * Fixed: error 404 course edit URL generation in OpenAi.
 * Fixed: translate enrolled students status badge.
 * Updated: icons.
-* Updated: API
+* Updated: API.
 
 = 4.4.8 (2026-09-18) =
 * Fixed: security (Props @Yuto Hyakumoto, @Wordfence).
