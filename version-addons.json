@@ -48,7 +48,7 @@
     "learnpress-membership": {
         "name": "Memberships & Subscriptions Add-on for LearnPress",
         "basename": "learnpress-membership/learnpress-membership.php",
-        "version": "4.0.2",
+        "version": "4.0.3",
         "require_lp": "4.4.1",
         "description": "Turn a LearnPress site into a membership-based course business with lifetime plans, recurring subscriptions, free trials, and plan-based course access.",
         "image": "https://updates.thimpress.com/images/learnpress-membership.png",
