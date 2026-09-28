@@ -923,7 +923,7 @@
     "learnpress-sepay-payment": {
         "name": "LearnPress – Sepay Payment",
         "basename": "learnpress-sepay-payment/learnpress-sepay-payment.php",
-        "version": "4.0.0",
+        "version": "4.0.3",
         "require_lp": "4.2.8",
         "description": "SePay Add-on cho LearnPress cung cấp cho người dùng LearnPress giải pháp thanh toán hiện đại, tự động và bảo mật cao, được xây dựng trên nền tảng công nghệ Open Banking.",
         "image": "https://updates.thimpress.com/images/learnpress-sepay-payment.png",
