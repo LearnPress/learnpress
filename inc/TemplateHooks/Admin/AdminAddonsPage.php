@@ -509,14 +509,7 @@ class AdminAddonsPage {
 					)
 					: '',
 				'content_end' => '</div>',
-				'actions'     => self::html_addon_actions(
-					$addon,
-					array(
-						'is_free'      => $state['is_free'],
-						'is_installed' => $state['is_installed'],
-						'is_updated'   => $state['is_updated'],
-					)
-				),
+				'actions'     => self::html_addon_actions( $addon ),
 				'purchase'    => self::html_purchase_panel(
 					$addon,
 					array(
@@ -861,11 +854,10 @@ class AdminAddonsPage {
 	 * @return string
 	 */
 	public static function html_addon_actions( object $addon, array $data = [] ): string {
-		$is_free       = $data['is_free'] ?? false;
 		$section_right = apply_filters(
 			'learn-press/admin/addons/actions/section_right',
 			array(
-				'install'    => $is_free
+				'install'    => $addon->is_free && ! $addon->is_org
 					? sprintf(
 						'<a class="lp-button btn-addon-action" data-action="install" href="%s"
 						target="_blank" rel="noopener">%s</a>',
