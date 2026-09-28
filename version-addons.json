@@ -790,7 +790,7 @@
     "learnpress-course-review": {
         "name": "LearnPress – Course Review",
         "basename": "learnpress-course-review/learnpress-course-review.php",
-        "version": "4.1.9",
+        "version": "4.2.0",
         "require_lp": "4.2.2",
         "description": "LearnPress Course Review bring review feature to your course. Now, student can rate and give review for the course they take on a LearnPress site.",
         "image": "https://ps.w.org/learnpress-course-review/assets/icon-128x128.png",
@@ -812,7 +812,7 @@
     "learnpress-wishlist": {
         "name": "LearnPress – Course Wishlist",
         "basename": "learnpress-wishlist/learnpress-wishlist.php",
-        "version": "4.0.9",
+        "version": "4.1.1",
         "require_lp": "4.3.2.7",
         "description": "LearnPress Wishlist bring wishlist feature for LearnPress. It allows you to add your favorite course to a list to take later.",
         "image": "https://ps.w.org/learnpress-wishlist/assets/icon-128x128.png?rev=2394366",
@@ -834,7 +834,7 @@
     "learnpress-import-export": {
         "name": "LearnPress Export Import",
         "basename": "learnpress-import-export/learnpress-import-export.php",
-        "version": "4.0.2",
+        "version": "4.1.6",
         "require_lp": "4.2.0",
         "description": "LearnPress Export/Import bring you feature to export course, lesson, quiz, question from a LearnPress site to back up or bring to another LearnPress site.",
         "image": "https://ps.w.org/learnpress-import-export/assets/icon-128x128.png?rev=2394948",
