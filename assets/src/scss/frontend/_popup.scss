@@ -106,7 +106,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding-left: 15px;
-		padding-right: 15px;
+		// padding-right: 15px;
 		column-gap: 10px;
 
 		@media (max-width: 1024px) {
@@ -635,6 +635,119 @@
 	}
 }
 
+.popup-right-sidebar {
+	flex: 0 0 67px;
+	width: 67px;
+ 	border-left: 1px solid $border-color;
+	top: $popup_header_height;
+	position: relative;
+	height: calc(100vh - #{$popup_header_height});
+	display: flex;
+	flex-direction: column;
+	padding: 16px 12px;
+	transition: flex-basis 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	will-change: flex-basis, width;
+	transform: translateZ(0);
+	user-select: none;
+	box-sizing: border-box;
+	z-index: 2;
+	overflow: hidden;
+
+	&.is-expanded {
+		flex: 0 0 200px;
+		width: 200px;
+	}
+
+	&__toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 42px;
+		height: 42px;
+		margin-bottom: 12px;
+		border-radius: 8px;
+		cursor: pointer;
+		font-size: 24px;
+		color: $text-color-accent;
+		transition: background-color 0.2s ease, color 0.2s ease;
+
+		&:hover {
+			background: $bg-grey;
+			color: $color-black;
+		} 
+		.is-collapsed &{
+			background: $bg-grey;
+		}
+		.is-expanded &{
+			&::before{
+				content: "\e92b";
+			}
+		}
+	}
+
+	&__items {
+		list-style: none !important;
+		margin: 0!important;
+		padding: 0!important;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		flex: 1;
+	}
+
+	&__item {
+		margin: 0;
+		padding: 8px 9px;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		border-radius: 8px;
+		color:$text-color-base;
+		font-weight: 500;
+		cursor: pointer;
+		white-space: nowrap;
+		overflow: hidden;
+		box-sizing: border-box;
+		transition: background-color 0.2s ease, color 0.2s ease;
+
+		&:hover {
+			background: $bg-grey;
+			color: $color-black;
+		}
+
+		// Active tab state (highlighted in gold/orange)
+		&.active {
+			background: var(--lp-primary-color, #f5a623);
+			color: $color-white;
+
+			&:hover {
+				filter: brightness(0.95);
+				color: $color-white;
+			}
+		}
+	}
+
+	&__icon {
+		color: currentColor;
+		font-size: 24px;
+	}
+
+	&__text {
+		margin-left: 8px;
+		opacity: 0;
+		visibility: hidden; 
+		transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+	}
+
+	&.is-expanded {
+		.popup-right-sidebar__text {
+			opacity: 1;
+			visibility: visible; 
+			transition: opacity 0.22s ease 0.08s, transform 0.22s ease 0.08s;
+		}
+	}
+}
+
 #popup-content {
 	overflow: auto;
 	position: relative;
@@ -741,7 +854,7 @@
 	}
 
 	&::-webkit-scrollbar {
-		width: 8px;
+		width: 3px;
 	}
 
 	&::-webkit-scrollbar-thumb {
@@ -1127,9 +1240,9 @@ body {
 		}
 	}
 
-	#popup-content {
-		min-width: 100vw;
-	}
+	// #popup-content {
+	// 	min-width: 100vw;
+	// }
 }
 
 .course-curriculum {
