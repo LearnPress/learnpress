@@ -17,6 +17,11 @@ $config[ UserModel::ROLE_INSTRUCTOR ] = apply_filters(
 	'learn-press/role/instructor/capabilities_default',
 	[
 		'label'               => 'Instructor',
+		'capabilities'        => [
+			'read',
+			'upload_files',
+			//'edit_posts'
+		],
 		'prefix_capabilities' => [
 			'publish',
 			'edit',

@@ -127,6 +127,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				// flush_rewrite_rules();
 			}
 
+			// Set roles and capabilities.
+			learn_press_add_user_roles();
+
 			// Rebuilds them with LP CPTs and pages on next request.
 			flush_rewrite_rules();
 
