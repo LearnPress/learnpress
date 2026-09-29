@@ -98,8 +98,11 @@ class AddonsAjax extends AbstractAjax {
 					if ( ! empty( $addon['is_org'] ) ) {
 						$link_download = "{$this->addon_service->link_org}{$addon['slug']}.{$addon['version']}.zip";
 					} else {
-						// Allow active key for site if site active on DB "updates" is empty.
-						$this->addon_service->active_site( $addon['slug'], $purchase_code );
+						if ( 'install' === $action ) {
+							// Allow active key for site if site active on DB "updates" is empty.
+							$this->addon_service->active_site( $addon['slug'], $purchase_code );
+						}
+
 						// Download addon from ThimPress server.
 						$path_file = $this->addon_service->download_from_thimpress( $addon, $purchase_code );
 					}

@@ -816,31 +816,38 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
 			}
 
-			// Save key purchase addon when install via file download from Thimpress.
+			// Check and save key purchase addon when install via file download from Thimpress.
 			add_action(
 				'upgrader_process_complete',
 				function ( $plugin_upgrader ) {
-					if ( ! empty( $plugin_upgrader->result ) ) {
-						$res         = $plugin_upgrader->result;
-						$path_source = $res['destination'] ?? '';
-						if ( empty( $path_source ) ) {
-							return;
-						}
-
-						$key_purchase_path = realpath( $path_source . '/purchase-code.txt' );
-						if ( file_exists( $key_purchase_path ) ) {
-							$purchase_code_content = file_get_contents( $key_purchase_path );
-							if ( empty( $purchase_code_content ) ) {
+					if ( ! empty(
+						$plugin_upgrader->result
+						|| ! isset( $_POST['lp-load-ajax'] )
+					) ) {
+						try {
+							$res         = $plugin_upgrader->result;
+							$path_source = $res['destination'] ?? '';
+							if ( empty( $path_source ) ) {
 								return;
 							}
 
-							$addon_slug = $res['destination_name'] ?? '';
-							if ( empty( $addon_slug ) ) {
-								return;
-							}
+							$key_purchase_path = realpath( $path_source . '/purchase-code.txt' );
+							if ( file_exists( $key_purchase_path ) ) {
+								$purchase_code_content = file_get_contents( $key_purchase_path );
+								if ( empty( $purchase_code_content ) ) {
+									return;
+								}
 
-							// Call active purchase code for site.
-							AddonService::instance()->active_site( $addon_slug, $purchase_code_content );
+								$addon_slug = $res['destination_name'] ?? '';
+								if ( empty( $addon_slug ) ) {
+									return;
+								}
+
+								// Call active purchase code for site.
+								AddonService::instance()->active_site( $addon_slug, $purchase_code_content );
+							}
+						} catch ( Throwable $e ) {
+							LP_Debug::error_log( $e );
 						}
 					}
 				}
