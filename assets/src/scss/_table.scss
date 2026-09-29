@@ -54,6 +54,34 @@ table.lp-list-table {
 			padding: 10px 20px;
 			text-align: left;
 
+			&.sortable,
+			&.sorted {
+				> a {
+					display: flex;
+					align-items: center;
+					gap: 0.5em;
+				}
+			}
+
+			.sorting-indicator {
+				display: inline-flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 0.05em;
+				height: 20px;
+				margin: 0;
+				padding: 0;
+
+				i {
+					color: #aaa;
+					height: 10px;
+
+					&.is-active {
+						color: #000;
+					}
+				}
+			}
+
 			td {
 				border: none;
 				padding: 0;
