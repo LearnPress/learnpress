@@ -222,7 +222,7 @@ button[data-counter] {
 	&.passed {
 
 		.result-message {
-			background: $primary-color-course-item-status;
+			background: $color-price;
 
 			&::after {
 				content: "\f00c";
@@ -368,126 +368,126 @@ button[data-counter] {
 	}
 }
 
-.lp-sidebar-toggle {
-	&__close {
-		#content-item-quiz {
-			.quiz-status {
-				> div {
-					max-width: 100%;
-					flex-direction: column;
-					@media (min-width: 426px) {
-						flex-direction: row;
-						justify-content: space-between;
-					}
-					@media (min-width: 1025px) {
-						max-width: 792px;
-					}
+// .lp-sidebar-toggle {
+// 	&__close {
+// 		#content-item-quiz {
+// 			.quiz-status {
+// 				> div {
+// 					max-width: 100%;
+// 					flex-direction: column;
+// 					@media (min-width: 426px) {
+// 						flex-direction: row;
+// 						justify-content: space-between;
+// 					}
+// 					@media (min-width: 1025px) {
+// 						max-width: 792px;
+// 					}
 
-					.questions-index {
-						@media (min-width: 450px) {
-							width: 35%;
-							text-align: inherit;
-						}
-						@media (min-width: 1120px) {
-							width: 50%;
-						}
-					}
+// 					.questions-index {
+// 						@media (min-width: 450px) {
+// 							width: 35%;
+// 							text-align: inherit;
+// 						}
+// 						@media (min-width: 1120px) {
+// 							width: 50%;
+// 						}
+// 					}
 
-					> div {
-						@media (min-width: 450px) {
-							width: 65%;
-							justify-content: end;
-							flex: auto;
-						}
-						@media (min-width: 768px) {
-							width: 50%;
-						}
-						@media (min-width: 1120px) {
-							width: 50%;
-						}
+// 					> div {
+// 						@media (min-width: 450px) {
+// 							width: 65%;
+// 							justify-content: end;
+// 							flex: auto;
+// 						}
+// 						@media (min-width: 768px) {
+// 							width: 50%;
+// 						}
+// 						@media (min-width: 1120px) {
+// 							width: 50%;
+// 						}
 
-						.submit-quiz {
-							#button-submit-quiz {
-								@media (max-width: 768px) {
-									white-space: inherit;
-									padding: 8px 16px;
-								}
-							}
-						}
+// 						.submit-quiz {
+// 							#button-submit-quiz {
+// 								@media (max-width: 768px) {
+// 									white-space: inherit;
+// 									padding: 8px 16px;
+// 								}
+// 							}
+// 						}
 
-						.countdown {
+// 						.countdown {
 
-						}
-					}
-				}
-			}
-		}
-	}
+// 						}
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
 
-	&__open {
-		#content-item-quiz {
-			.quiz-status {
-				> div {
-					max-width: 100%;
-					flex-direction: column;
-					@media (min-width: 650px) {
-						flex-direction: row;
-					}
-					@media (min-width: 1120px) {
-						max-width: 792px;
-					}
+// 	&__open {
+// 		#content-item-quiz {
+// 			.quiz-status {
+// 				> div {
+// 					max-width: 100%;
+// 					flex-direction: column;
+// 					@media (min-width: 650px) {
+// 						flex-direction: row;
+// 					}
+// 					@media (min-width: 1120px) {
+// 						max-width: 792px;
+// 					}
 
-					.questions-index {
-						width: 100%;
-						text-align: center;
-						@media (min-width: 650px) {
-							width: 35%;
-							text-align: inherit;
-						}
-						@media (min-width: 1120px) {
-							width: 50%;
-						}
-					}
+// 					.questions-index {
+// 						width: 100%;
+// 						text-align: center;
+// 						@media (min-width: 650px) {
+// 							width: 35%;
+// 							text-align: inherit;
+// 						}
+// 						@media (min-width: 1120px) {
+// 							width: 50%;
+// 						}
+// 					}
 
-					> div {
-						width: 100%;
-						justify-content: center;
-						flex-direction: column-reverse;
-						gap: 0;
-						@media (min-width: 490px) {
-							flex-direction: row-reverse;
-						}
-						@media (min-width: 650px) {
-							width: 65%;
-							gap: 12px;
-							justify-content: end;
-							flex: auto;
-						}
-						@media (min-width: 768px) {
-							width: 50%;
-						}
-						@media (min-width: 1120px) {
-							width: 50%;
-						}
+// 					> div {
+// 						width: 100%;
+// 						justify-content: center;
+// 						flex-direction: column-reverse;
+// 						gap: 0;
+// 						@media (min-width: 490px) {
+// 							flex-direction: row-reverse;
+// 						}
+// 						@media (min-width: 650px) {
+// 							width: 65%;
+// 							gap: 12px;
+// 							justify-content: end;
+// 							flex: auto;
+// 						}
+// 						@media (min-width: 768px) {
+// 							width: 50%;
+// 						}
+// 						@media (min-width: 1120px) {
+// 							width: 50%;
+// 						}
 
-						.submit-quiz {
-							#button-submit-quiz {
-								@media (max-width: 768px) {
-									white-space: inherit;
-									padding: 8px 16px;
-								}
-							}
-						}
+// 						.submit-quiz {
+// 							#button-submit-quiz {
+// 								@media (max-width: 768px) {
+// 									white-space: inherit;
+// 									padding: 8px 16px;
+// 								}
+// 							}
+// 						}
 
-						.countdown {
+// 						.countdown {
 
-						}
-					}
-				}
-			}
-		}
-	}
-}
+// 						}
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
 .quiz-status {
 	position: sticky;
@@ -514,6 +514,7 @@ button[data-counter] {
 			flex-direction: row-reverse;
 			flex: 0 0 50%;
 			align-items: center;
+			gap: 12px;
 			@media (max-width: 480px) {
 				justify-content: center;
 			}
@@ -540,14 +541,11 @@ button[data-counter] {
 
 	.questions-index {
 		display: inline-block;
-		color: #666;
-		font-size: 1em;
-		font-weight: 400;
-		line-height: 1.625em;
+		color: $text-color-accent; 
 
 		span {
 			color: $text-color-base;
-			font-weight: 500;
+			font-weight: 600;
 		}
 	}
 
@@ -557,51 +555,51 @@ button[data-counter] {
 		font-weight: 500;
 		text-align: center;
 
-		.fas {
-			color: $text-color-base;
-			font-size: 1em;
-		}
+		// .fas {
+		// 	color: $text-color-base;
+		// 	font-size: 1em;
+		// }
 
-		.clock {
-			display: none;
-			width: 40px;
-			height: 40px;
+		// .clock {
+		// 	display: none;
+		// 	width: 40px;
+		// 	height: 40px;
 
-			&::before {
-				position: absolute;
-				width: 40px;
-				height: 40px;
-				border: 4px solid $border-color;
-				border-radius: 50%;
-				content: "";
+		// 	&::before {
+		// 		position: absolute;
+		// 		width: 40px;
+		// 		height: 40px;
+		// 		border: 4px solid $border-color;
+		// 		border-radius: 50%;
+		// 		content: "";
 
-				@include box-sizing(border-box);
-			}
+		// 		@include box-sizing(border-box);
+		// 	}
 
-			.circle-progress-bar {
-				display: inline-block;
-				position: relative;
-				width: 40px;
-				height: 40px;
-				stroke: #5383f7;
+		// 	.circle-progress-bar {
+		// 		display: inline-block;
+		// 		position: relative;
+		// 		width: 40px;
+		// 		height: 40px;
+		// 		stroke: #5383f7;
 
-				.circle-progress-bar__circle {
-					transition: 0.35s stroke-dashoffset;
-					transform: rotate(-90deg);
-					transform-origin: 50% 50%;
-				}
-			}
+		// 		.circle-progress-bar__circle {
+		// 			transition: 0.35s stroke-dashoffset;
+		// 			transform: rotate(-90deg);
+		// 			transform-origin: 50% 50%;
+		// 		}
+		// 	}
 
-			&.x {
+		// 	&.x {
 
-				.circle-progress-bar__circle {
-					stroke: #f00;
-				}
-			}
-		}
+		// 		.circle-progress-bar__circle {
+		// 			stroke: #f00;
+		// 		}
+		// 	}
+		// }
 
 		i {
-			margin: 0 5px 0 0;
+			margin: 0 4px 0 0;
 		}
 	}
 

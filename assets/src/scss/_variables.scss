@@ -2,7 +2,7 @@
 $item-preview: #059de9;
 $primary-bg-duration: #c0c0c0;
 $primary-bg-questions: #9672cf;
-$primary-color-course-item-status: #3bb54a;
+$color-price: #3bb54a;
 $bg-course-featured: #FF2828;
 
 //** color global
@@ -39,7 +39,7 @@ $font-size-h3: calc(($font-size-base * 1.6)); // ~26px
 $font-size-h4: calc(($font-size-base * 1.25)); // ~20px
 $font-size-h5: calc(($font-size-base * 1.15)); // ~18px
 $font-size-h6: calc(($font-size-base * 0.925)); // ~15px
- $heading-font-weight: 700;
+$heading-font-weight: 700;
 $link-font-weight: var(--lp-font-weight-link, 600);
 
 // LP Single Item Popup
