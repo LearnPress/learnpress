@@ -22,7 +22,6 @@
 	display: grid;
 	grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
 	grid-gap: 20px;
-	padding-right: 20px;
 
 	a {
 		text-decoration: none;
@@ -373,6 +372,7 @@
 		&__heading {
 			display: flex;
 			align-items: flex-start;
+			align-items: center;
 			gap: $cb-spacing-sm;
 			min-width: 0;
 		}
@@ -630,22 +630,36 @@
 		/*.lp-addon-button,*/
 		.btn-addon-action {
 			box-sizing: border-box;
-			padding: $cb-spacing-sm $cb-spacing-lg;
-			border: 1px solid $cb-primary;
-			border-radius: $cb-radius-lg;
+			padding: 6px $cb-spacing-sm;
+			border: 1px solid transparent;
+			border-radius: $cb-radius-md;
 			color: $cb-bg;
 			background: $cb-primary;
 			font-size: $cb-font-md;
 			font-weight: 500;
-			line-height: 1.25;
+			line-height: 1.4;
 			text-decoration: none;
-			transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+			cursor: pointer;
+			transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 
 			&:hover,
 			&:focus {
-				border-color: $cb-primary-hover;
+				border-color: transparent;
 				color: $cb-bg;
 				background: $cb-primary-hover;
+			}
+
+			&:active {
+				border-color: transparent;
+				background: $cb-primary-wp-hover;
+				color: $cb-bg;
+			}
+
+			&:disabled {
+				border-color: transparent;
+				background: $cb-border-input;
+				color: $cb-bg;
+				cursor: not-allowed;
 			}
 
 			&:focus-visible {
@@ -922,7 +936,6 @@
 
 .lp-addons-controls {
 	margin-bottom: $cb-spacing-xl;
-	padding-right: $cb-spacing-xl;
 
 	&[hidden] {
 		display: none;
@@ -930,23 +943,33 @@
 }
 
 .lp-addons-toolbar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: $cb-spacing-lg;
+	position: relative;
 	box-sizing: border-box;
 	margin-bottom: $cb-spacing-3xl;
-	padding: $cb-spacing-xl;
 	border: 1px solid $cb-border;
 	border-radius: $cb-radius-lg;
 	background: $cb-bg-card;
 	box-shadow: $cb-shadow-sm;
+	overflow: hidden;
 
 	&[hidden] {
 		display: none;
 	}
 
+	&__primary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: $cb-spacing-lg;
+		box-sizing: border-box;
+		padding: $cb-spacing-xl;
+		border-bottom: 1px solid $cb-border;
+		border-top-left-radius: inherit;
+		border-top-right-radius: inherit;
+	}
+
 	.lp-addons-filter {
+		position: relative;
 		display: flex;
 		align-items: center;
 		flex-wrap: nowrap;
@@ -957,6 +980,23 @@
 		overflow-y: hidden;
 		scrollbar-width: thin;
 		-webkit-overflow-scrolling: touch;
+
+		&__toggle {
+			display: none;
+		}
+
+		&__menu {
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap;
+			gap: $cb-spacing-md;
+			margin: -$cb-spacing-xs;
+			padding: $cb-spacing-xs;
+			overflow-x: auto;
+			overflow-y: hidden;
+			scrollbar-width: thin;
+			-webkit-overflow-scrolling: touch;
+		}
 	}
 
 	.nav-tab {
@@ -964,25 +1004,39 @@
 		align-items: center;
 		justify-content: center;
 		box-sizing: border-box;
-		min-height: 49px;
+		min-height: 40px;
 		margin-left: 0;
-		padding: $cb-spacing-sm $cb-spacing-xl;
+		padding: $cb-spacing-sm $cb-spacing-md;
 		border: 1px solid transparent;
-		border-radius: $cb-radius-lg;
+		border-radius: $cb-radius-md;
 		color: $cb-primary;
 		background: $cb-primary-bland;
-		font-size: $cb-font-lg;
+		font-size: $cb-font-md;
 		font-weight: 500;
 		line-height: 1;
 		text-decoration: none;
 		white-space: nowrap;
-		transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+		cursor: pointer;
+		transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 
 		&:hover,
 		&:focus {
-			border-color: $cb-primary;
-			color: $cb-primary;
-			background: $cb-bg-hover;
+			border-color: transparent;
+			color: $cb-primary-hover;
+			background: darken( $cb-primary-bland, 4% );
+		}
+
+		&:active {
+			border-color: transparent;
+			color: $cb-primary-wp-hover;
+			background: darken( $cb-primary-bland, 8% );
+		}
+
+		&:disabled {
+			border-color: transparent;
+			color: $cb-bg;
+			background: $cb-border-input;
+			cursor: not-allowed;
 		}
 
 		&:focus-visible {
@@ -992,15 +1046,21 @@
 	}
 
 	.nav-tab-active {
-		border-color: $cb-primary;
+		border-color: transparent;
 		color: $cb-bg;
 		background: $cb-primary;
 
 		&:hover,
 		&:focus {
-			border-color: $cb-primary-hover;
+			border-color: transparent;
 			color: $cb-bg;
 			background: $cb-primary-hover;
+		}
+
+		&:active {
+			border-color: transparent;
+			color: $cb-bg;
+			background: $cb-primary-wp-hover;
 		}
 	}
 }
@@ -1008,47 +1068,74 @@
 .lp-addons-categories {
 	display: flex;
 	align-items: center;
-	flex-wrap: wrap;
-	gap: $cb-spacing-sm;
+	flex-wrap: nowrap;
+	gap: $cb-spacing-2xl;
+	box-sizing: border-box;
+	padding: $cb-spacing-md $cb-spacing-xl;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scrollbar-width: thin;
+	-webkit-overflow-scrolling: touch;
 }
 
 .lp-addons-category {
+	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	box-sizing: border-box;
 	min-height: 42px;
-	padding: $cb-spacing-sm $cb-spacing-lg;
-	border: 1px solid $cb-border-input;
-	border-radius: $cb-radius-lg;
+	padding: $cb-spacing-xs 0;
+	border: 1px solid transparent;
+	border-color: transparent;
+	border-radius: 0;
 	color: $cb-text-placeholder;
-	background: $cb-bg;
-	font-size: $cb-font-lg;
+	background: transparent;
+	font-size: $cb-font-md;
 	font-weight: 500;
 	line-height: 150%;
+	white-space: nowrap;
 	cursor: pointer;
-	transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+	transition: color 0.2s ease;
+
+	&::after {
+		content: '';
+		position: absolute;
+		bottom: 2px;
+		left: 0;
+		right: 0;
+		height: 2px;
+		border-radius: 2px;
+		background: transparent;
+		transition: background-color 0.2s ease;
+	}
 
 	&__count {
-		margin-inline-start: $cb-spacing-xs;
+		display: none;
 	}
 
 	&:hover,
 	&:focus {
-		border-color: $cb-primary;
+		border-color: transparent;
 		color: $cb-primary;
-		background: $cb-bg-hover;
+		background: transparent;
 	}
 
 	&:focus-visible {
 		outline: none;
-		box-shadow: $cb-focus-ring;
+		box-shadow: none;
+		color: $cb-primary;
 	}
 
 	&.active {
-		border-color: $cb-primary;
+		border-color: transparent;
 		color: $cb-primary;
-		background: $cb-bg;
+		background: transparent;
+		font-weight: 600;
+
+		&::after {
+			background: $cb-primary;
+		}
 	}
 
 	&[hidden] {
@@ -1057,15 +1144,86 @@
 }
 
 .lp-addons-search {
-	position: relative;
+	position: static;
 	flex-shrink: 0;
-	width: 360px;
-	max-width: 100%;
 
-	&__icon {
+	&__btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		width: 40px;
+		height: 40px;
+		min-width: 40px;
+		min-height: 40px;
+		padding: 0;
+		border: 1px solid $cb-border-input;
+		border-radius: $cb-radius-lg;
+		color: $cb-text;
+		background: $cb-bg;
+		cursor: pointer;
+		transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+
+		.lp-addons-search__icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			color: $cb-text;
+			font-size: $cb-font-lg;
+		}
+
+		&:hover,
+		&:focus {
+			border-color: $cb-primary;
+			color: $cb-primary;
+			background: $cb-bg-hover;
+
+			.lp-addons-search__icon {
+				color: $cb-primary;
+			}
+		}
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: $cb-focus-ring;
+		}
+	}
+
+	&__field {
+		display: none;
+	}
+
+	&.is-open {
+		.lp-addons-search__btn {
+			display: none;
+		}
+
+		.lp-addons-search__field {
+			position: absolute;
+			inset: 0;
+			z-index: 10;
+			display: flex;
+			align-items: center;
+			gap: $cb-spacing-sm;
+			box-sizing: border-box;
+			padding: $cb-spacing-md $cb-spacing-xl;
+			border-radius: inherit;
+			background: $cb-bg;
+		}
+	}
+
+	&__input-wrap {
+		position: relative;
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		align-items: center;
+	}
+
+	&__field-icon {
 		position: absolute;
 		top: 50%;
-		inset-inline-start: $cb-spacing-md;
+		inset-inline-start: 16px;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -1075,6 +1233,89 @@
 		font-size: $cb-font-lg;
 		transform: translateY(-50%);
 		pointer-events: none;
+		z-index: 2;
+	}
+
+	&__btn-clear {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		height: 48px;
+		min-height: 48px;
+		padding: 0 $cb-spacing-xl;
+		border: 1px solid transparent;
+		border-radius: $cb-radius-lg;
+		font-size: $cb-font-md;
+		font-weight: 500;
+		line-height: 1;
+		cursor: pointer;
+		white-space: nowrap;
+		flex-shrink: 0;
+		transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+		&:disabled {
+			cursor: not-allowed;
+			border-color: transparent;
+			background: $cb-border-input;
+			color: $cb-bg;
+		}
+
+		&:not(:disabled) {
+			border-color: transparent;
+			background: $cb-primary;
+			color: $cb-bg;
+
+			&:hover,
+			&:focus {
+				border-color: transparent;
+				background: $cb-primary-hover;
+				color: $cb-bg;
+			}
+
+			&:active {
+				border-color: transparent;
+				background: $cb-primary-wp-hover;
+				color: $cb-bg;
+			}
+
+			&:focus-visible {
+				outline: none;
+				box-shadow: $cb-focus-ring;
+			}
+		}
+	}
+
+	&__close {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		width: 48px;
+		height: 48px;
+		min-width: 48px;
+		min-height: 48px;
+		padding: 0;
+		border: 1px solid transparent;
+		border-radius: $cb-radius-lg;
+		background: transparent;
+		color: $cb-text-placeholder;
+		font-size: 26px;
+		line-height: 1;
+		cursor: pointer;
+		flex-shrink: 0;
+		transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+		&:hover,
+		&:focus {
+			background: $cb-bg-hover;
+			color: $cb-text;
+		}
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: $cb-focus-ring;
+		}
 	}
 }
 
@@ -1086,15 +1327,26 @@
 	input.lp-addons-search__input {
 		box-sizing: border-box;
 		width: 100%;
+		height: 48px;
 		min-height: 48px;
 		margin: 0;
-		padding: $cb-spacing-xs $cb-spacing-md;
-		padding-inline-start: 40px;
+		padding: $cb-spacing-xs $cb-spacing-lg;
+		padding-inline-start: 48px;
+		padding-inline-end: 16px;
 		border: 1px solid $cb-border-input;
 		border-radius: $cb-radius-lg;
 		color: $cb-text-label;
 		background: $cb-bg;
 		font-size: $cb-font-md;
+
+		/* Hide native webkit search cancel button to avoid duplicate x icons */
+		&::-webkit-search-decoration,
+		&::-webkit-search-cancel-button,
+		&::-webkit-search-results-button,
+		&::-webkit-search-results-decoration {
+			-webkit-appearance: none;
+			display: none;
+		}
 
 		&::placeholder {
 			color: $cb-text-placeholder;
@@ -1108,45 +1360,332 @@
 	}
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1024px) {
 	.lp-addons-toolbar {
-		align-items: stretch;
-		flex-direction: column;
-	}
+		overflow: visible;
 
-	.lp-addons-toolbar .lp-addons-filter {
-		width: 100%;
-		min-width: 0;
-	}
+		&__primary {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			padding: $cb-spacing-md $cb-spacing-xl;
+			border-bottom: none;
+		}
 
-	.lp-addons-search {
-		width: 100%;
+		.lp-addons-filter {
+			display: contents;
+
+			&__toggle {
+				order: 1;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				gap: $cb-spacing-xs;
+				box-sizing: border-box;
+				height: 40px;
+				min-height: 40px;
+				padding: 0 $cb-spacing-md;
+				border: 1px solid transparent;
+				border-radius: $cb-radius-lg;
+				color: $cb-bg;
+				background: $cb-primary;
+				cursor: pointer;
+				font-size: $cb-font-md;
+				font-weight: 500;
+				line-height: 1;
+				transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+
+				svg,
+				.lp-addons-filter__toggle-icon {
+					width: 16px;
+					height: 16px;
+					stroke: currentColor;
+					display: block;
+					color: $cb-bg;
+				}
+
+				.lp-addons-filter__toggle-text {
+					color: $cb-bg;
+					font-size: $cb-font-md;
+					font-weight: 500;
+					line-height: 1;
+				}
+
+				&:hover,
+				&:focus {
+					border-color: transparent;
+					color: $cb-bg;
+					background: $cb-primary-hover;
+
+					svg,
+					.lp-addons-filter__toggle-icon,
+					.lp-addons-filter__toggle-text {
+						color: $cb-bg;
+					}
+				}
+
+				&.has-filter {
+					border-color: transparent;
+					color: $cb-bg;
+					background: $cb-primary-hover;
+
+					svg,
+					.lp-addons-filter__toggle-icon,
+					.lp-addons-filter__toggle-text {
+						color: $cb-bg;
+					}
+				}
+
+				&:active {
+					border-color: transparent;
+					color: $cb-bg;
+					background: $cb-primary-wp-hover;
+				}
+
+				&:focus-visible {
+					outline: none;
+					box-shadow: $cb-focus-ring;
+				}
+			}
+
+			&__menu {
+				display: none;
+			}
+		}
+
+		.lp-addons-search {
+			order: 2;
+			margin-inline-start: auto;
+			flex: 0 1 360px;
+			max-width: 420px;
+
+			&__btn {
+				display: none;
+			}
+
+			&__field {
+				position: static;
+				display: flex;
+				align-items: center;
+				gap: $cb-spacing-xs;
+				box-sizing: border-box;
+				padding: 0;
+				border-radius: inherit;
+				background: transparent;
+			}
+
+			&__close {
+				display: none;
+			}
+
+			&__btn-clear {
+				height: 40px;
+				min-height: 40px;
+				padding: 0 $cb-spacing-md;
+				font-size: $cb-font-sm;
+			}
+		}
+
+		input.lp-addons-search__input {
+			height: 40px;
+			min-height: 40px;
+		}
+
+		.lp-addons-categories {
+			display: none;
+		}
+
+		&.is-filter-open {
+			.lp-addons-filter__toggle {
+				border-color: transparent;
+				color: $cb-bg;
+				background: $cb-primary-hover;
+
+				svg,
+				.lp-addons-filter__toggle-icon,
+				.lp-addons-filter__toggle-text {
+					color: $cb-bg;
+				}
+			}
+
+			.lp-addons-filter__menu {
+				order: 3;
+				display: flex;
+				flex-wrap: wrap;
+				gap: $cb-spacing-sm;
+				box-sizing: border-box;
+				width: calc(100% + #{$cb-spacing-xl} * 2);
+				margin: $cb-spacing-md (-$cb-spacing-xl) (-$cb-spacing-md);
+				padding: $cb-spacing-lg $cb-spacing-xl;
+				border-top: 1px solid $cb-border;
+				background: $cb-bg-card;
+
+				&::before {
+					content: 'Status';
+					display: block;
+					width: 100%;
+					font-size: $cb-font-sm;
+					font-weight: 600;
+					color: $cb-text-muted;
+					margin-bottom: $cb-spacing-xs;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+				}
+
+				.nav-tab {
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					min-height: 38px;
+					padding: $cb-spacing-xs $cb-spacing-md;
+					border-radius: $cb-radius-md;
+					font-size: $cb-font-sm;
+					font-weight: 500;
+					line-height: 1.2;
+					white-space: nowrap;
+
+					span {
+						margin-inline-start: $cb-spacing-xs;
+						font-size: $cb-font-xs;
+						opacity: 0.85;
+					}
+				}
+			}
+
+			.lp-addons-categories {
+				display: flex;
+				flex-wrap: wrap;
+				gap: $cb-spacing-sm;
+				box-sizing: border-box;
+				width: 100%;
+				padding: $cb-spacing-lg $cb-spacing-xl;
+				border-top: 1px solid $cb-border;
+				background: $cb-bg-card;
+				overflow: visible;
+
+				&::before {
+					content: 'Categories';
+					display: block;
+					width: 100%;
+					font-size: $cb-font-sm;
+					font-weight: 600;
+					color: $cb-text-muted;
+					margin-bottom: $cb-spacing-xs;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+				}
+
+				.lp-addons-category {
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					min-height: 38px;
+					padding: $cb-spacing-xs $cb-spacing-md;
+					border: 1px solid $cb-border;
+					border-color: $cb-border;
+					border-radius: $cb-radius-md;
+					font-size: $cb-font-sm;
+					font-weight: 500;
+					line-height: 1.2;
+					color: $cb-text-secondary;
+					background: $cb-bg-subtle;
+					white-space: nowrap;
+
+					&::after {
+						display: none;
+					}
+
+					&:hover,
+					&:focus {
+						border-color: $cb-primary;
+						color: $cb-primary;
+						background: $cb-primary-bland;
+					}
+
+					&.active {
+						border-color: transparent;
+						color: $cb-bg;
+						background: $cb-primary;
+						font-weight: 600;
+					}
+				}
+			}
+		}
 	}
 }
 
 @media (max-width: 782px) {
-	.lp-addons-controls {
-		padding-right: 0;
-	}
-
 	.lp-addons-toolbar {
-		padding: $cb-spacing-md;
-
-		.nav-tab {
-			flex: 0 0 auto;
+		&__primary {
+			padding: $cb-spacing-md;
 		}
-	}
 
-	.lp-addons-categories {
-		flex-wrap: nowrap;
-		overflow-x: auto;
-		overflow-y: hidden;
-		scrollbar-width: thin;
-		-webkit-overflow-scrolling: touch;
-	}
+		.lp-addons-search {
+			flex: 0 0 auto;
+			max-width: none;
+			position: static;
 
-	.lp-addons-category {
-		flex: 0 0 auto;
+			&__btn {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				box-sizing: border-box;
+				width: 40px;
+				height: 40px;
+				min-width: 40px;
+				min-height: 40px;
+			}
+
+			&__field {
+				display: none;
+			}
+
+			&.is-open {
+				.lp-addons-search__btn {
+					display: none;
+				}
+
+				.lp-addons-search__field {
+					position: absolute;
+					inset: 0;
+					z-index: 10;
+					display: flex;
+					align-items: center;
+					gap: $cb-spacing-xs;
+					box-sizing: border-box;
+					padding: $cb-spacing-sm $cb-spacing-md;
+					border-radius: inherit;
+					background: $cb-bg;
+				}
+
+				.lp-addons-search__close {
+					display: inline-flex;
+					width: 40px;
+					height: 40px;
+					min-width: 40px;
+					min-height: 40px;
+				}
+
+				.lp-addons-search__btn-clear {
+					height: 40px;
+					min-height: 40px;
+					padding: 0 $cb-spacing-md;
+				}
+			}
+		}
+
+		&.is-filter-open {
+			.lp-addons-filter__menu {
+				width: calc(100% + #{$cb-spacing-md} * 2);
+				margin: $cb-spacing-md (-$cb-spacing-md) (-$cb-spacing-md);
+				padding: $cb-spacing-md;
+			}
+
+			.lp-addons-categories {
+				padding: $cb-spacing-md;
+			}
+		}
 	}
 }
 
