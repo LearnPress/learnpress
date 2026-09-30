@@ -903,7 +903,9 @@
 .learn-press-addons {
 	max-width: 100%;
 
-	.wp-heading-inline {
+	.wp-heading-inline,
+	.lp-addons-page-title {
+		margin: 0;
 		color: $cb-text;
 		font-size: $cb-font-4xl;
 		font-weight: 600;
@@ -911,7 +913,7 @@
 	}
 
 	.lp-addons-page-subtitle {
-		margin: $cb-spacing-xs 0 $cb-spacing-2xl;
+		margin: 0 0 $cb-spacing-2xl;
 		color: $cb-text-secondary;
 		font-size: $cb-font-lg;
 		line-height: 1.5;

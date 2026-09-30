@@ -1,9 +1,14 @@
 $cb-danger: #dc2626 !default;
 
 .learn-press-admin-notices {
+	margin: 0;
 	padding: 0;
 	border: none;
 	background: transparent;
+
+	&:has(.learn-press-message) {
+		margin: 15px 0;
+	}
 
 	.lp-target {
 		display: grid;

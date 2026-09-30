@@ -208,7 +208,7 @@ class AdminAddonsPage {
 			'learn-press/admin/addons/page-section',
 			array(
 				'wrapper'     => '<div class="lp-addons-page">',
-				'notice' => sprintf(
+				'notice'      => sprintf(
 					'<div class="lp-addon-notice">%s</div>',
 					Template::print_message(
 						sprintf(
@@ -225,6 +225,10 @@ class AdminAddonsPage {
 						'info',
 						false
 					)
+				),
+				'title'       => sprintf(
+					'<h1 class="lp-addons-page-title">%s</h1>',
+					esc_html__( 'LearnPress Add-ons New', 'learnpress' )
 				),
 				'subtitle'    => sprintf(
 					'<p class="lp-addons-page-subtitle">%s</p>',
@@ -250,7 +254,7 @@ class AdminAddonsPage {
 		echo AdminTemplate::html_on_wp_admin_screen(
 			array(
 				'content' => Template::combine_components( $section ),
-				'title'   => __( 'LearnPress Add-ons', 'learnpress' ),
+				'title'   => '',
 				'id'      => 'learn-press-addons',
 			)
 		);
