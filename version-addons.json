@@ -608,7 +608,7 @@
     "learnpress-interactive": {
         "name": "Interactive Add-On for learnpress",
         "basename": "learnpress-interactive/learnpress-interactive.php",
-        "version": "4.0.0",
+        "version": "4.0.1",
         "require_lp": "4.4.4",
         "description": "Interactive lets you build slide decks and flashcards and display them anywhere on your site via shortcode.",
         "image": "https://updates.thimpress.com/images/learnpress-interactive.png",
