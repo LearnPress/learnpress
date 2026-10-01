@@ -124,7 +124,10 @@ table.lp-list-table {
 		}
 
 		th {
+			border: none;
+			border-bottom: 1px solid var(--lp-border-color, #E2E0DB);
 			padding: 10px 20px;
+			text-align: left;
 		}
 	}
 
