@@ -31,7 +31,7 @@
           "ligatures": "",
           "prevSize": 32,
           "code": 59650,
-          "name": "ico-students",
+          "name": "students",
           "tempChar": ""
         },
         {
@@ -40,7 +40,7 @@
           "ligatures": "",
           "prevSize": 32,
           "code": 59651,
-          "name": "ico-courses",
+          "name": "courses",
           "tempChar": ""
         },
         {
@@ -1695,7 +1695,7 @@
           "isMulticolor": false,
           "isMulticolor2": false,
           "tags": [
-            "ico-students"
+            "students"
           ],
           "defaultCode": 59650,
           "grid": 20,
@@ -1709,7 +1709,7 @@
           "isMulticolor": false,
           "isMulticolor2": false,
           "tags": [
-            "ico-courses"
+            "courses"
           ],
           "defaultCode": 59651,
           "grid": 20,
