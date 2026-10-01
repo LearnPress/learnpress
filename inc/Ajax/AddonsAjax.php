@@ -91,16 +91,13 @@ class AddonsAjax extends AbstractAjax {
 						$purchase_code  = $purchase_codes[ $addon['slug'] ] ?? '';
 					}
 
-					if ( $is_paid_addon && 'install' === $action ) {
-						$purchase_info = $this->addon_service->validate_and_save_purchase_code( $addon['slug'], (string) $purchase_code );
-					}
-
 					if ( ! empty( $addon['is_org'] ) ) {
 						$link_download = "{$this->addon_service->link_org}{$addon['slug']}.{$addon['version']}.zip";
 					} else {
 						if ( 'install' === $action ) {
 							// Allow active key for site if site active on DB "updates" is empty.
 							$this->addon_service->active_site( $addon['slug'], $purchase_code );
+							$purchase_info = $this->addon_service->validate_and_save_purchase_code( $addon['slug'], $purchase_code );
 						}
 
 						// Download addon from ThimPress server.
@@ -135,10 +132,17 @@ class AddonsAjax extends AbstractAjax {
 					$this->addon_service->deactivate( $addon );
 					break;
 				case 'update-purchase':
-					$purchase_info = $this->addon_service->validate_and_save_purchase_code(
+					// If empty, try key old activated
+					if ( empty( $purchase_code ) ) {
+						$purchase_codes = lp_settings::get_option( $this->addon_service->key_purchase_addons, array() );
+						$purchase_code  = $purchase_codes[ $addon['slug'] ] ?? '';
+					}
+
+					$this->addon_service->active_site(
 						$addon['slug'],
-						(string) $purchase_code
+						$purchase_code
 					);
+					$purchase_info = $this->addon_service->validate_and_save_purchase_code( $addon['slug'], $purchase_code );
 					break;
 				default:
 					break;
