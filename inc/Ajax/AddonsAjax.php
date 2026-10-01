@@ -97,9 +97,12 @@ class AddonsAjax extends AbstractAjax {
 						if ( 'install' === $action ) {
 							// Allow active key for site if site active on DB "updates" is empty.
 							$this->addon_service->active_site( $addon['slug'], $purchase_code );
-							$purchase_info = $this->addon_service->validate_and_save_purchase_code( $addon['slug'], $purchase_code );
 						}
 
+						$purchase_info = $this->addon_service->validate_and_save_purchase_code(
+							$addon['slug'],
+							$purchase_code
+						);
 						// Download addon from ThimPress server.
 						$path_file = $this->addon_service->download_from_thimpress( $addon, $purchase_code );
 					}
