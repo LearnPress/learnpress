@@ -859,6 +859,49 @@
 
 		&__toggle {
 			display: none;
+
+			&-content {
+				display: inline-grid;
+				grid-template-columns: 1fr;
+				grid-template-rows: 1fr;
+				align-items: center;
+				justify-items: center;
+			}
+
+			&-state {
+				grid-area: 1 / 1;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				gap: $lp-spacing-xs;
+				white-space: nowrap;
+				transition: opacity 0.15s ease, visibility 0.15s ease;
+
+				&--filter {
+					opacity: 1;
+					visibility: visible;
+				}
+
+				&--close {
+					opacity: 0;
+					visibility: hidden;
+					pointer-events: none;
+				}
+			}
+
+			&[aria-expanded="true"] {
+				.lp-addons-filter__toggle-state--filter {
+					opacity: 0;
+					visibility: hidden;
+					pointer-events: none;
+				}
+
+				.lp-addons-filter__toggle-state--close {
+					opacity: 1;
+					visibility: visible;
+					pointer-events: auto;
+				}
+			}
 		}
 
 		&__menu {
@@ -1261,6 +1304,7 @@
 				box-sizing: border-box;
 				height: 40px;
 				min-height: 40px;
+				min-width: 94px;
 				padding: 0 $lp-spacing-md;
 				border: 1px solid transparent;
 				border-radius: $lp-radius-sm;
@@ -1270,7 +1314,37 @@
 				font-size: $lp-font-sm;
 				font-weight: $lp-font-weight-medium;
 				line-height: $lp-line-height-150;
+				white-space: nowrap;
 				transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+
+				&-content {
+					display: inline-grid;
+					grid-template-columns: 1fr;
+					grid-template-rows: 1fr;
+					align-items: center;
+					justify-items: center;
+				}
+
+				&-state {
+					grid-area: 1 / 1;
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					gap: $lp-spacing-xs;
+					white-space: nowrap;
+					transition: opacity 0.15s ease, visibility 0.15s ease;
+
+					&--filter {
+						opacity: 1;
+						visibility: visible;
+					}
+
+					&--close {
+						opacity: 0;
+						visibility: hidden;
+						pointer-events: none;
+					}
+				}
 
 				svg,
 				.lp-addons-filter__toggle-icon {
@@ -1279,6 +1353,7 @@
 					stroke: currentColor;
 					display: block;
 					color: $lp-bg;
+					flex-shrink: 0;
 				}
 
 				.lp-addons-filter__toggle-text {
@@ -1317,6 +1392,24 @@
 					border-color: transparent;
 					color: $lp-bg;
 					background: $lp-primary-wp-hover;
+				}
+
+				&[aria-expanded="true"] {
+					border-color: transparent;
+					color: $lp-bg;
+					background: $lp-primary-hover;
+
+					.lp-addons-filter__toggle-state--filter {
+						opacity: 0;
+						visibility: hidden;
+						pointer-events: none;
+					}
+
+					.lp-addons-filter__toggle-state--close {
+						opacity: 1;
+						visibility: visible;
+						pointer-events: auto;
+					}
 				}
 
 				&:focus-visible {
@@ -1378,10 +1471,16 @@
 				color: $lp-bg;
 				background: $lp-primary-hover;
 
-				svg,
-				.lp-addons-filter__toggle-icon,
-				.lp-addons-filter__toggle-text {
-					color: $lp-bg;
+				.lp-addons-filter__toggle-state--filter {
+					opacity: 0;
+					visibility: hidden;
+					pointer-events: none;
+				}
+
+				.lp-addons-filter__toggle-state--close {
+					opacity: 1;
+					visibility: visible;
+					pointer-events: auto;
 				}
 			}
 

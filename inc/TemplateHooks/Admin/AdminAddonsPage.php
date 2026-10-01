@@ -375,15 +375,27 @@ class AdminAddonsPage {
 			'filter'              => sprintf(
 				'<div class="lp-addons-filter" role="group" aria-label="%s">
 					<button type="button" class="lp-addons-filter__toggle" aria-label="%s" aria-expanded="false" aria-haspopup="true">
-						<svg class="lp-addons-filter__toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-							<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-						</svg>
-						<span class="lp-addons-filter__toggle-text">%s</span>
+						<span class="lp-addons-filter__toggle-content">
+							<span class="lp-addons-filter__toggle-state lp-addons-filter__toggle-state--filter">
+								<svg class="lp-addons-filter__toggle-icon lp-addons-filter__toggle-icon--filter" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+									<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+								</svg>
+								<span class="lp-addons-filter__toggle-text">%s</span>
+							</span>
+							<span class="lp-addons-filter__toggle-state lp-addons-filter__toggle-state--close">
+								<svg class="lp-addons-filter__toggle-icon lp-addons-filter__toggle-icon--close" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+									<line x1="18" y1="6" x2="6" y2="18"></line>
+									<line x1="6" y1="6" x2="18" y2="18"></line>
+								</svg>
+								<span class="lp-addons-filter__toggle-text">%s</span>
+							</span>
+						</span>
 					</button>
 					<div class="lp-addons-filter__menu">',
 				esc_attr__( 'Filter add-ons', 'learnpress' ),
 				esc_attr__( 'Filter add-ons', 'learnpress' ),
-				esc_html__( 'Filter', 'learnpress' )
+				esc_html__( 'Filter', 'learnpress' ),
+				esc_html__( 'Close', 'learnpress' )
 			),
 			'tabs'                => Template::combine_components( $section_tabs ),
 			'filter_end'          => '</div></div>',
