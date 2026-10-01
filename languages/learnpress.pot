@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.9\n"
+"Project-Id-Version: LearnPress 4.4.9.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-28T01:42:35+00:00\n"
+"POT-Creation-Date: 2026-10-01T10:44:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -124,7 +124,7 @@ msgstr ""
 #: config/profile-tabs.php:59
 #: config/settings/permalink.php:165
 #: config/wp-menus.php:54
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:807
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:800
 #: inc/TemplateHooks/Admin/AdminSettingsPage.php:308
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:354
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:265
@@ -132,7 +132,7 @@ msgstr ""
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:208
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:212
 #: inc/TemplateHooks/CourseBuilder/Settings/BuilderSettingsTemplate.php:57
-#: learnpress.php:895
+#: learnpress.php:902
 msgid "Settings"
 msgstr ""
 
@@ -170,7 +170,7 @@ msgid "Width"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-button/edit.js:88
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:970
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:962
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:776
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1943
 #: templates/single-course/buttons/purchase.php:33
@@ -1598,7 +1598,7 @@ msgstr ""
 
 #: config/elementor/instructor/become-a-teacher.php:32
 #: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:89
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:961
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:953
 #: templates/global/become-teacher-form.php:58
 msgid "Submit"
 msgstr ""
@@ -3890,23 +3890,23 @@ msgid "Enable default fields"
 msgstr ""
 
 #: config/settings/profile.php:44
-#: inc/user/lp-user-functions.php:1316
 #: inc/user/lp-user-functions.php:1318
+#: inc/user/lp-user-functions.php:1320
 #: templates/profile/tabs/settings/basic-information.php:33
 msgid "First name"
 msgstr ""
 
 #: config/settings/profile.php:51
-#: inc/user/lp-user-functions.php:1329
 #: inc/user/lp-user-functions.php:1331
+#: inc/user/lp-user-functions.php:1333
 #: templates/profile/tabs/settings/basic-information.php:39
 msgid "Last name"
 msgstr ""
 
 #: config/settings/profile.php:58
 #: config/settings/profile.php:70
-#: inc/user/lp-user-functions.php:1342
 #: inc/user/lp-user-functions.php:1344
+#: inc/user/lp-user-functions.php:1346
 #: templates/profile/tabs/settings/basic-information.php:45
 msgid "Display name"
 msgstr ""
@@ -3970,7 +3970,7 @@ msgid "Statistics"
 msgstr ""
 
 #: config/wp-menus.php:44
-#: learnpress.php:905
+#: learnpress.php:912
 msgid "Add-ons"
 msgstr ""
 
@@ -4161,7 +4161,7 @@ msgstr ""
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1604
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1786
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1932
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:889
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:881
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:100
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:118
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:194
@@ -4563,7 +4563,7 @@ msgstr ""
 #: inc/admin/class-lp-admin-webhooks-table-list.php:94
 #: inc/admin/class-lp-admin-webhooks-table-list.php:174
 #: inc/admin/views/settings/webhooks-form.php:39
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:680
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:673
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:1072
 msgid "Active"
 msgstr ""
@@ -4978,7 +4978,7 @@ msgstr ""
 #: inc/admin/views/course/modal-choose-items.php:66
 #: inc/admin/views/meta-boxes/order/details.php:249
 #: inc/admin/views/quiz/modal-choose-items.php:58
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:944
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:936
 #: inc/TemplateHooks/Admin/AI/AdminCreateCourseAITemplate.php:655
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:105
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:88
@@ -5288,7 +5288,7 @@ msgstr ""
 #: inc/jwt/rest-api/version1/class-lp-rest-checkout-v1-controller.php:233
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:897
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:331
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:830
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:823
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:253
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:445
 #: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:572
@@ -5365,7 +5365,7 @@ msgid "Email"
 msgstr ""
 
 #: inc/admin/meta-box/fields/list-emails.php:51
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:764
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:757
 msgid "Manage"
 msgstr ""
 
@@ -5712,7 +5712,7 @@ msgstr ""
 
 #: inc/admin/views/help-center/html-help-center.php:38
 #: inc/admin/views/setup/steps/finish.php:308
-#: learnpress.php:900
+#: learnpress.php:907
 msgid "Documentation"
 msgstr ""
 
@@ -7622,9 +7622,9 @@ msgid "Course price"
 msgstr ""
 
 #: inc/admin/views/tools/course/html-install-sample-data.php:65
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:873
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:879
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:883
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:865
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:871
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:875
 msgid "Install"
 msgstr ""
 
@@ -7863,7 +7863,7 @@ msgid "Unversioned (%d)"
 msgstr ""
 
 #: inc/admin/views/tools/html-template.php:56
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:787
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:780
 msgid "Version"
 msgstr ""
 
@@ -8140,11 +8140,11 @@ msgstr ""
 msgid "You do not have permission to install plugins."
 msgstr ""
 
-#: inc/Ajax/AddonsAjax.php:126
+#: inc/Ajax/AddonsAjax.php:129
 msgid "You do not have permission to activate plugins."
 msgstr ""
 
-#: inc/Ajax/AddonsAjax.php:149
+#: inc/Ajax/AddonsAjax.php:159
 msgid "successfully"
 msgstr ""
 
@@ -9455,7 +9455,7 @@ msgstr ""
 
 #: inc/class-lp-query-list-table.php:32
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:910
-#: inc/TemplateHooks/Table/TableListTemplate.php:149
+#: inc/TemplateHooks/Table/TableListTemplate.php:212
 msgid "item"
 msgid_plural "items"
 msgstr[0] ""
@@ -9466,7 +9466,7 @@ msgid "items"
 msgstr ""
 
 #: inc/class-lp-query-list-table.php:150
-#: inc/TemplateHooks/Table/TableListTemplate.php:158
+#: inc/TemplateHooks/Table/TableListTemplate.php:221
 msgid "Displaying {{from}} to {{to}} of {{total}} {{item_name}}."
 msgstr ""
 
@@ -13230,18 +13230,6 @@ msgstr ""
 msgid "Gateway is not enable."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-gateway-webhook-controller.php:109
-msgid "Invalid webhook request."
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-gateway-webhook-controller.php:112
-msgid "Too many webhook requests."
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-gateway-webhook-controller.php:114
-msgid "Webhook payload too large."
-msgstr ""
-
 #: inc/rest-api/v1/frontend/class-lp-rest-instructor-controller.php:80
 msgid "No instructor found!"
 msgstr ""
@@ -13430,7 +13418,7 @@ msgid "Avatar updated"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:244
-#: inc/user/lp-user-functions.php:780
+#: inc/user/lp-user-functions.php:782
 msgid "The user is invalid"
 msgstr ""
 
@@ -13838,68 +13826,68 @@ msgstr ""
 msgid "Latest version"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:682
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:675
 msgid "Expired"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:684
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:677
 msgid "Deactivated"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:685
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:678
 msgid "Not Activated"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:695
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:688
 #, php-format
 msgid "(on %s)"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:696
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:689
 #, php-format
 msgid "(Updates until %s)"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:705
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:715
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:698
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:708
 msgid "Extend now"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:720
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:713
 #, php-format
 msgid "You have a license for this item with %s day(s) of update & support remaining. Please extend your update & support license to continue receiving the latest versions and customer support from Thimpress before it expires."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:747
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:740
 msgid "License:"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:795
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:788
 msgid "Docs"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:801
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:794
 msgid "View Details"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:895
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:887
 msgid "Deactivate"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:901
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:893
 msgid "Activate"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:939
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:952
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:931
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:944
 msgid "Purchase Code"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:956
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:948
 msgid "Enter Purchase Code"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminAddonsPage.php:965
+#: inc/TemplateHooks/Admin/AdminAddonsPage.php:957
 msgid "Don't have a code?"
 msgstr ""
 
@@ -15928,35 +15916,35 @@ msgstr ""
 msgid "quizzes"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:174
+#: inc/user/lp-user-functions.php:176
 msgid "Want to become an instructor?"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:785
+#: inc/user/lp-user-functions.php:787
 msgid "Enter the old password!"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:790
+#: inc/user/lp-user-functions.php:792
 msgid "The old password is incorrect!"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:797
+#: inc/user/lp-user-functions.php:799
 msgid "Incorrect confirmation password!"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1292
+#: inc/user/lp-user-functions.php:1294
 msgid "Facebook Profile"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1295
+#: inc/user/lp-user-functions.php:1297
 msgid "X Profile"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1298
+#: inc/user/lp-user-functions.php:1300
 msgid "Youtube Channel"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1301
+#: inc/user/lp-user-functions.php:1303
 msgid "Linkedin Profile"
 msgstr ""
 
