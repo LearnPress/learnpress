@@ -1,0 +1,381 @@
+// =============================================================================
+// LearnPress — Global Design System Tokens
+// Source of Truth: Figma "BackEnd - Design System" (node-id=3188:604)
+// Shared across LearnPress Core, Admin pages, and all Add-ons
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// 1. Color Palette: Primary (Tím)
+// -----------------------------------------------------------------------------
+$lp-color-primary-50:   #eef1ff !default;
+$lp-color-primary-100:  #e1e4fe !default;
+$lp-color-primary-200:  #c9cffc !default;
+$lp-color-primary-300:  #a7affa !default;
+$lp-color-primary-400:  #8485f5 !default;
+$lp-color-primary-500:  #7067ed !default;
+$lp-color-primary-600:  #5e48e0 !default; // 600-P (Primary Main)
+$lp-color-primary-700:  #533cc6 !default;
+$lp-color-primary-800:  #4433a0 !default;
+$lp-color-primary-900:  #3a307f !default;
+
+// Semantic Primary Shorthands
+$lp-primary:            $lp-color-primary-500 !default; // #7067ed
+$lp-primary-hover:      $lp-color-primary-600 !default; // #5e48e0
+$lp-primary-bland:      $lp-color-primary-50 !default;  // #eef1ff
+$lp-primary-wp-hover:   $lp-color-primary-700 !default; // #533cc6
+$lp-primary-active:     $lp-color-primary-700 !default;
+
+// -----------------------------------------------------------------------------
+// 2. Color Palette: Secondary (Xanh dương / Cyan)
+// -----------------------------------------------------------------------------
+$lp-color-secondary-50: #ecfdff !default;
+$lp-color-secondary-100:#cff9fe !default;
+$lp-color-secondary-200:#a5f0fc !default;
+$lp-color-secondary-300:#67e3f9 !default;
+$lp-color-secondary-400:#22ccee !default;
+$lp-color-secondary-500:#06aed4 !default; // 500-S (Secondary Main)
+$lp-color-secondary-600:#088ab2 !default;
+$lp-color-secondary-700:#0e7090 !default;
+$lp-color-secondary-800:#0e7090 !default;
+$lp-color-secondary-900:#164c63 !default;
+
+// Semantic Secondary Shorthands
+$lp-secondary:          $lp-color-secondary-500 !default;
+$lp-secondary-hover:    $lp-color-secondary-600 !default;
+$lp-secondary-bland:    $lp-color-secondary-50 !default;
+
+// -----------------------------------------------------------------------------
+// 3. Color Palette: Neutral & Grayscale
+// -----------------------------------------------------------------------------
+$lp-color-white:        #ffffff !default;
+$lp-color-neutral-50:   #f7f7f7 !default;
+$lp-color-neutral-100:  #eeeeee !default;
+$lp-color-neutral-200:  #e1e1e1 !default;
+$lp-color-neutral-300:  #cfcfcf !default;
+$lp-color-neutral-400:  #aaaaaa !default;
+$lp-color-neutral-500:  #898989 !default;
+$lp-color-neutral-600:  #626262 !default;
+$lp-color-neutral-700:  #4f4f4f !default;
+$lp-color-neutral-800:  #313131 !default;
+$lp-color-neutral-900:  #111111 !default;
+$lp-color-black:        #000000 !default;
+
+// Neutral Shorthands
+$lp-white:              $lp-color-white !default;
+$lp-black:              $lp-color-black !default;
+$lp-gray-50:            $lp-color-neutral-50 !default;
+$lp-gray-100:           $lp-color-neutral-100 !default;
+$lp-gray-200:           $lp-color-neutral-200 !default;
+$lp-gray-300:           $lp-color-neutral-300 !default;
+$lp-gray-400:           $lp-color-neutral-400 !default;
+$lp-gray-500:           $lp-color-neutral-500 !default;
+$lp-gray-600:           $lp-color-neutral-600 !default;
+$lp-gray-700:           $lp-color-neutral-700 !default;
+$lp-gray-800:           $lp-color-neutral-800 !default;
+$lp-gray-900:           $lp-color-neutral-900 !default;
+
+// -----------------------------------------------------------------------------
+// 4. Color Palette: Danger / Error (Đỏ)
+// -----------------------------------------------------------------------------
+$lp-color-danger-50:    #feebe9 !default;
+$lp-color-danger-100:   #fedcd7 !default;
+$lp-color-danger-200:   #fcb7ae !default;
+$lp-color-danger-300:   #f46e69 !default;
+$lp-color-danger-400:   #fe4a40 !default;
+$lp-color-danger-500:   #ff361d !default;
+$lp-color-danger-600:   #f5291f !default;
+$lp-color-danger-700:   #e31a1a !default; // 700-D (Danger Main)
+$lp-color-danger-800:   #d60b11 !default;
+$lp-color-danger-900:   #c80000 !default;
+
+// Semantic Danger Shorthands
+$lp-danger:             $lp-color-danger-700 !default; // #e31a1a
+$lp-danger-bg:          $lp-color-danger-50 !default;  // #feebe9
+$lp-danger-text:        $lp-color-danger-800 !default; // #d60b11
+$lp-danger-dark:        $lp-color-danger-900 !default; // #c80000
+$lp-price-red:          $lp-color-danger-700 !default;
+
+// -----------------------------------------------------------------------------
+// 5. Color Palette: Warning (Vàng / Cam)
+// -----------------------------------------------------------------------------
+$lp-color-warning-50:   #fef8e1 !default;
+$lp-color-warning-100:  #fcecb3 !default;
+$lp-color-warning-200:  #fae083 !default;
+$lp-color-warning-300:  #f9d550 !default;
+$lp-color-warning-400:  #f8cb2b !default;
+$lp-color-warning-500:  #f8c20e !default;
+$lp-color-warning-600:  #f8b404 !default;
+$lp-color-warning-700:  #f8a100 !default; // 700-W (Warning Main)
+$lp-color-warning-800:  #f89100 !default;
+$lp-color-warning-900:  #f87200 !default;
+
+// Semantic Warning Shorthands
+$lp-warning:            $lp-color-warning-400 !default;
+$lp-warning-bg:         $lp-color-neutral-50 !default;
+$lp-warning-strong:     $lp-color-warning-700 !default; // #f8a100
+$lp-warning-strong-bg:  $lp-color-warning-50 !default;  // #fef8e1
+$lp-warning-strong-text:#b45309 !default;
+
+// Expired
+$lp-expired:            $lp-color-warning-800 !default;
+$lp-expired-bg:         $lp-color-warning-50 !default;
+$lp-expired-text:       $lp-color-warning-900 !default;
+$lp-featured:           $lp-color-warning-400 !default;
+
+// -----------------------------------------------------------------------------
+// 6. Color Palette: Success (Xanh lá)
+// -----------------------------------------------------------------------------
+$lp-color-success-50:   #e7f6e9 !default;
+$lp-color-success-100:  #c5e9ca !default;
+$lp-color-success-200:  #9fdaa8 !default;
+$lp-color-success-300:  #76cd85 !default;
+$lp-color-success-400:  #56c26a !default;
+$lp-color-success-500:  #32b64f !default;
+$lp-color-success-600:  #28a746 !default; // 600-S (Success Main)
+$lp-color-success-700:  #1a953a !default;
+$lp-color-success-800:  #0a842f !default;
+$lp-color-success-900:  #00641b !default;
+
+// Semantic Success Shorthands
+$lp-success:            $lp-color-success-600 !default; // #28a746
+$lp-success-bg:         $lp-color-success-50 !default;  // #e7f6e9
+$lp-success-text:       $lp-color-success-700 !default; // #1a953a
+
+// -----------------------------------------------------------------------------
+// 7. Color Palette: Info (Xanh biển)
+// -----------------------------------------------------------------------------
+$lp-color-info-50:      #e3f1fe !default;
+$lp-color-info-100:     #bcdcfe !default;
+$lp-color-info-200:     #91c7fe !default;
+$lp-color-info-300:     #65b1fc !default;
+$lp-color-info-400:     #46a1fc !default;
+$lp-color-info-500:     #2e91fa !default; // 500-I (Info Main)
+$lp-color-info-600:     #2f82eb !default;
+$lp-color-info-700:     #2d70d8 !default;
+$lp-color-info-800:     #2a5fc5 !default;
+$lp-color-info-900:     #2640a6 !default;
+
+// Semantic Info & Links
+$lp-info:               $lp-color-info-500 !default; // #2e91fa
+$lp-info-bg:            $lp-color-info-50 !default;  // #e3f1fe
+$lp-badge-blue:         $lp-color-info-500 !default;
+$lp-link:               $lp-color-info-500 !default; // #2e91fa
+
+// -----------------------------------------------------------------------------
+// 8. Semantic Text Tokens
+// -----------------------------------------------------------------------------
+$lp-text:               $lp-color-neutral-900 !default; // #111111 (or #1e1e1e)
+$lp-text-muted:         $lp-color-neutral-600 !default; // #626262
+$lp-text-label:         $lp-color-neutral-900 !default; // #111111
+$lp-text-secondary:     $lp-color-neutral-700 !default; // #4f4f4f
+$lp-text-placeholder:   $lp-color-neutral-500 !default; // #898989
+$lp-text-subtle:        $lp-color-neutral-500 !default; // #898989
+$lp-text-heading:       $lp-color-neutral-900 !default;
+
+// -----------------------------------------------------------------------------
+// 9. Semantic Background Tokens
+// -----------------------------------------------------------------------------
+$lp-bg:                 $lp-color-white !default;       // #ffffff
+$lp-bg-hover:           $lp-color-neutral-50 !default;  // #f7f7f7
+$lp-bg-subtle:          $lp-color-neutral-50 !default;  // #f7f7f7
+$lp-bg-card:            $lp-color-white !default;       // #ffffff
+
+// -----------------------------------------------------------------------------
+// 10. Semantic Border Tokens
+// -----------------------------------------------------------------------------
+$lp-border:             $lp-color-neutral-200 !default; // #e1e1e1
+$lp-border-light:       $lp-color-neutral-100 !default; // #eeeeee
+$lp-border-input:       $lp-color-neutral-300 !default; // #cfcfcf
+$lp-border-hover:       $lp-color-neutral-500 !default; // #898989
+$lp-border-focus:       $lp-color-primary-500 !default; // #7067ed
+
+// -----------------------------------------------------------------------------
+// 11. Shadows & Elevation (Figma: Shadow)
+// -----------------------------------------------------------------------------
+$lp-shadow-sm:          0 0 10px rgba(0, 0, 0, 0.07) !default;
+$lp-shadow-md:          0 0 15px rgba(0, 0, 0, 0.10) !default;
+$lp-shadow-lg:          0 0 25px rgba(0, 0, 0, 0.15) !default;
+$lp-shadow-dropdown:    0 0 15px rgba(0, 0, 0, 0.10) !default;
+$lp-shadow-highlight:   #c8b4fb 0 0 20px 1px !default;
+$lp-focus-ring:         0 0 0 3px rgba(112, 103, 237, 0.15) !default;
+$lp-focus-ring-blue:    0 0 0 3px rgba(46, 145, 250, 0.15) !default;
+
+// -----------------------------------------------------------------------------
+// 12. Spacing Scale (Figma: Spacing)
+// -----------------------------------------------------------------------------
+$lp-spacing-1px:        1px !default;
+$lp-spacing-1:          4px !default;   // 0.25rem
+$lp-spacing-2:          8px !default;   // 0.5rem
+$lp-spacing-3:          12px !default;  // 0.75rem
+$lp-spacing-4:          16px !default;  // 1rem
+$lp-spacing-5:          20px !default;  // 1.25rem
+$lp-spacing-6:          24px !default;  // 1.5rem
+$lp-spacing-7:          28px !default;  // 1.75rem
+$lp-spacing-8:          32px !default;  // 2rem
+$lp-spacing-9:          36px !default;  // 2.25rem
+$lp-spacing-10:         40px !default;  // 2.5rem
+$lp-spacing-11:         44px !default;  // 2.75rem
+$lp-spacing-12:         48px !default;  // 3rem
+$lp-spacing-14:         56px !default;  // 3.5rem
+$lp-spacing-16:         64px !default;  // 4rem
+$lp-spacing-20:         80px !default;  // 5rem
+$lp-spacing-24:         96px !default;  // 6rem
+$lp-spacing-25:         100px !default; // 6.25rem
+
+// Named Spacing Shorthands
+$lp-spacing-xs:         $lp-spacing-1 !default;  // 4px
+$lp-spacing-sm:         $lp-spacing-2 !default;  // 8px
+$lp-spacing-md:         $lp-spacing-3 !default;  // 12px
+$lp-spacing-lg:         $lp-spacing-4 !default;  // 16px
+$lp-spacing-xl:         $lp-spacing-5 !default;  // 20px
+$lp-spacing-2xl:        $lp-spacing-6 !default;  // 24px
+$lp-spacing-3xl:        $lp-spacing-8 !default;  // 32px
+$lp-spacing-4xl:        $lp-spacing-10 !default; // 40px
+
+// -----------------------------------------------------------------------------
+// 13. Border Radius (Figma: Border radius)
+// -----------------------------------------------------------------------------
+$lp-radius-xs:          6px !default;   // Small Button, Segmented, Arrow (Border Radius Xs)
+$lp-radius-sm:          10px !default;  // Medium Button, Input, Select (Border Radius Sm)
+$lp-radius-lg:          12px !default;  // Large Button, Image in Card, Modal (Border Radius Lg)
+$lp-radius-xl:          16px !default;  // Card (Border Radius Xl)
+$lp-radius-pill:        20px !default;
+$lp-radius-full:        9999px !default;
+
+// Default Radius
+$lp-radius:             $lp-radius-xs !default; // 6px
+$lp-radius-md:          8px !default;
+
+// -----------------------------------------------------------------------------
+// 14. Typography (Figma: Typography)
+// Font family: Inter, Roboto, sans-serif
+// -----------------------------------------------------------------------------
+$lp-font-family:        'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !default;
+
+// Font Sizes (Headings)
+$lp-font-display:       60px !default;  // Line height 125% (75px), Weight 700
+$lp-font-h1:            48px !default;  // Line height 125% (60px), Weight 700
+$lp-font-h2:            36px !default;  // Line height 125% (45px), Weight 600
+$lp-font-h3:            32px !default;  // Line height 125% (40px), Weight 600
+$lp-font-h4:            24px !default;  // Line height 125% (30px), Weight 600
+$lp-font-h5:            20px !default;  // Line height 150% (30px), Weight 600
+$lp-font-h6:            16px !default;  // Line height 150% (24px), Weight 600
+
+// Font Sizes (Body & Text)
+$lp-font-text-lg:       18px !default;  // Line height 150% (27px)
+$lp-font-text-md:       16px !default;  // Line height 150% (24px) - Base Body
+$lp-font-text-sm:       14px !default;  // Line height 150% (21px) - Small / Label
+$lp-font-text-xs:       12px !default;  // Line height 160% (19.2px) - Caption / Overline
+
+// Modular Size Shorthands
+$lp-font-xs:            $lp-font-text-xs !default; // 12px
+$lp-font-sm:            $lp-font-text-sm !default; // 14px
+$lp-font-base:          14px !default;
+$lp-font-md:            $lp-font-text-md !default; // 16px
+$lp-font-lg:            $lp-font-text-lg !default; // 18px
+$lp-font-xl:            $lp-font-h5 !default;      // 20px
+$lp-font-2xl:           $lp-font-h4 !default;      // 24px
+$lp-font-3xl:           $lp-font-h3 !default;      // 32px
+$lp-font-4xl:           $lp-font-h1 !default;      // 48px
+
+// Font Weights
+$lp-font-weight-regular: 400 !default;
+$lp-font-weight-medium:  500 !default;
+$lp-font-weight-semibold:600 !default;
+$lp-font-weight-bold:    700 !default;
+
+// Line Heights
+$lp-line-height-125:    1.25 !default;
+$lp-line-height-150:    1.50 !default;
+$lp-line-height-160:    1.60 !default;
+
+// -----------------------------------------------------------------------------
+// 15. Layout Dimensions
+// -----------------------------------------------------------------------------
+$lp-top-header-height:        60px !default;
+$lp-sidebar-width:            260px !default;
+$lp-wp-adminbar-height:        32px !default;
+$lp-wp-adminbar-height-mobile: 46px !default;
+
+// =============================================================================
+// Backward Compatibility ($cb-*) Aliases
+// =============================================================================
+$cb-primary:            $lp-primary !default;
+$cb-primary-hover:      $lp-primary-hover !default;
+$cb-primary-bland:      $lp-primary-bland !default;
+$cb-primary-wp-hover:   $lp-primary-wp-hover !default;
+
+$cb-text:               $lp-text !default;
+$cb-text-muted:         $lp-text-muted !default;
+$cb-text-label:         $lp-text-label !default;
+$cb-text-secondary:     $lp-text-secondary !default;
+$cb-text-placeholder:   $lp-text-placeholder !default;
+$cb-text-subtle:        $lp-text-subtle !default;
+
+$cb-link:               $lp-link !default;
+
+$cb-border:             $lp-border !default;
+$cb-border-light:       $lp-border-light !default;
+$cb-border-input:       $lp-border-input !default;
+
+$cb-bg:                 $lp-bg !default;
+$cb-bg-hover:           $lp-bg-hover !default;
+$cb-bg-subtle:          $lp-bg-subtle !default;
+$cb-bg-card:            $lp-bg-card !default;
+
+$cb-success:            $lp-success !default;
+$cb-success-bg:         $lp-success-bg !default;
+$cb-danger:             $lp-danger !default;
+$cb-danger-bg:          $lp-danger-bg !default;
+$cb-danger-text:        $lp-danger-text !default;
+$cb-danger-dark:        $lp-danger-dark !default;
+$cb-warning:            $lp-warning !default;
+$cb-warning-bg:         $lp-warning-bg !default;
+$cb-warning-strong:     $lp-warning-strong !default;
+$cb-warning-strong-bg:  $lp-warning-strong-bg !default;
+$cb-warning-strong-text:$lp-warning-strong-text !default;
+$cb-expired:            $lp-expired !default;
+$cb-expired-bg:         $lp-expired-bg !default;
+$cb-expired-text:       $lp-expired-text !default;
+$cb-info:               $lp-info !default;
+$cb-info-bg:            $lp-info-bg !default;
+$cb-badge-blue:         $lp-badge-blue !default;
+$cb-featured:           $lp-featured !default;
+$cb-price-red:          $lp-price-red !default;
+
+$cb-shadow-sm:          $lp-shadow-sm !default;
+$cb-shadow-md:          $lp-shadow-md !default;
+$cb-shadow-lg:          $lp-shadow-lg !default;
+$cb-shadow-dropdown:    $lp-shadow-dropdown !default;
+$cb-shadow-highlight:   $lp-shadow-highlight !default;
+$cb-focus-ring:         $lp-focus-ring !default;
+
+$cb-spacing-xs:         $lp-spacing-xs !default;
+$cb-spacing-sm:         $lp-spacing-sm !default;
+$cb-spacing-md:         $lp-spacing-md !default;
+$cb-spacing-lg:         $lp-spacing-lg !default;
+$cb-spacing-xl:         $lp-spacing-xl !default;
+$cb-spacing-2xl:        $lp-spacing-2xl !default;
+$cb-spacing-3xl:        $lp-spacing-3xl !default;
+
+$cb-radius-sm:          $lp-radius-xs !default;
+$cb-radius:             $lp-radius !default;
+$cb-radius-md:          $lp-radius-md !default;
+$cb-radius-lg:          $lp-radius-lg !default;
+$cb-radius-xl:          $lp-radius-xl !default;
+$cb-radius-pill:        $lp-radius-pill !default;
+
+$cb-font-xs:            11px !default;
+$cb-font-sm:            $lp-font-sm !default;
+$cb-font-base:          13px !default;
+$cb-font-md:            14px !default;
+$cb-font-lg:            16px !default;
+$cb-font-xl:            18px !default;
+$cb-font-2xl:           20px !default;
+$cb-font-3xl:           24px !default;
+$cb-font-4xl:           32px !default;
+
+$cb-top-header-height:  $lp-top-header-height !default;
+$cb-sidebar-width:      $lp-sidebar-width !default;
+$wp-adminbar-height:    $lp-wp-adminbar-height !default;
+$wp-adminbar-height-mobile: $lp-wp-adminbar-height-mobile !default;

@@ -1,9 +1,9 @@
-@import "../course-builder/variables";
+@import "../variables-global";
 
 :root {
-	--lp-addon-item-padding: 10px;
-	--lp-border-radius: 3px;
-	--lp-addon-item-border-color: #c3c4c7;
+	--lp-addon-item-padding: #{$lp-spacing-xl};
+	--lp-border-radius: #{$lp-radius-sm};
+	--lp-addon-item-border-color: #{$lp-border};
 }
 
 /*@media screen and (min-width: 1600px) {
@@ -46,9 +46,9 @@
 			}
 
 			&[data-action="update"] {
-				border-color: $cb-badge-blue;
-				color: $cb-bg;
-				background: $cb-badge-blue;
+				border-color: $lp-badge-blue;
+				color: $lp-bg;
+				background: $lp-badge-blue;
 			}
 
 			&.loading{
@@ -119,7 +119,7 @@
 			&__left {
 				flex: 3;
 				display: flex;
-				gap: $cb-spacing-xs;
+				gap: $lp-spacing-xs;
 				align-items: center;
 
 				button, a {
@@ -129,7 +129,7 @@
 
 			&__right {
 				display: flex;
-				gap: $cb-spacing-xs;
+				gap: $lp-spacing-xs;
 
 				button, a {
 					display: none;
@@ -338,23 +338,23 @@
 /*** Add-ons card redesign ***/
 #lp-addons {
 	grid-template-columns: repeat( 4, minmax( 0, 1fr ) );
-	gap: $cb-spacing-2xl;
+	gap: $lp-spacing-xl;
 
 	.lp-addon-item {
 		overflow: hidden;
 		min-width: 0;
 		min-height: 280px;
-		padding: $cb-spacing-xl;
-		border: 1px solid $cb-border-input;
-		border-radius: $cb-radius-lg;
-		background: $cb-bg-card;
-		box-shadow: $cb-shadow-sm;
+		padding: $lp-spacing-xl;
+		border: 1px solid $lp-border;
+		border-radius: $lp-radius-sm;
+		background: $lp-bg-card;
+		box-shadow: $lp-shadow-sm;
 		transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
 		&:hover,
 		&:focus-within {
-			border-color: $cb-primary;
-			box-shadow: $cb-shadow-md;
+			border-color: $lp-primary;
+			box-shadow: $lp-shadow-md;
 		}
 
 		&__content {
@@ -365,15 +365,15 @@
 		&__header {
 			display: grid;
 			grid-template-columns: 48px minmax( 0, 1fr );
-			gap: $cb-spacing-md;
-			margin-bottom: $cb-spacing-md;
+			gap: $lp-spacing-md;
+			margin-bottom: $lp-spacing-md;
 		}
 
 		&__heading {
 			display: flex;
 			align-items: flex-start;
 			align-items: center;
-			gap: $cb-spacing-sm;
+			gap: $lp-spacing-sm;
 			min-width: 0;
 		}
 
@@ -382,7 +382,7 @@
 			width: 48px;
 			height: 48px;
 			margin: 0;
-			border-radius: $cb-radius-md;
+			border-radius: $lp-radius-sm;
 			object-fit: cover;
 		}
 
@@ -392,10 +392,10 @@
 			overflow: hidden;
 			min-width: 0;
 			margin: 0;
-			color: $cb-text;
-			font-size: $cb-font-lg;
-			font-weight: 600;
-			line-height: 1.4;
+			color: $lp-text;
+			font-size: $lp-font-md;
+			font-weight: $lp-font-weight-medium;
+			line-height: $lp-line-height-150;
 			-webkit-box-orient: vertical;
 			-webkit-line-clamp: 2;
 
@@ -406,7 +406,7 @@
 
 			a:hover,
 			a:focus {
-				color: $cb-primary;
+				color: $lp-primary;
 			}
 		}
 
@@ -415,11 +415,11 @@
 			align-items: center;
 			justify-content: center;
 			flex-shrink: 0;
-			padding: $cb-spacing-xs $cb-spacing-sm;
-			border-radius: $cb-radius-sm;
-			color: $cb-bg;
-			background: $cb-price-red;
-			font-size: $cb-font-xs;
+			padding: $lp-spacing-xs $lp-spacing-sm;
+			border-radius: $lp-radius-sm;
+			color: $lp-bg;
+			background: $lp-price-red;
+			font-size: $lp-font-xs;
 			font-weight: 600;
 			white-space: nowrap;
 		}
@@ -428,101 +428,102 @@
 			display: flex;
 			align-items: baseline;
 			flex-shrink: 0;
-			gap: $cb-spacing-xs;
+			gap: $lp-spacing-xs;
 			white-space: nowrap;
 		}
 
 		&__price-sale {
-			color: $cb-price-red;
-			font-size: $cb-font-xl;
-			font-weight: 600;
-			line-height: 1.25;
+			color: $lp-price-red;
+			font-size: $lp-font-lg;
+			font-weight: $lp-font-weight-medium;
+			line-height: $lp-line-height-150;
 		}
 
 		&__price-regular {
-			color: $cb-text-placeholder;
-			font-size: $cb-font-lg;
-			line-height: 1;
-			font-weight: 300;
+			color: $lp-text-placeholder;
+			font-size: $lp-font-sm;
+			line-height: $lp-line-height-150;
+			font-weight: $lp-font-weight-regular;
 
 			&--current,
 			&--free {
-				font-size: $cb-font-xl;
-				font-weight: 600;
-				line-height: 1.25;
+				font-size: $lp-font-lg;
+				font-weight: $lp-font-weight-medium;
+				line-height: $lp-line-height-150;
 			}
 
 			&--current {
-				color: $cb-price-red;
+				color: $lp-price-red;
 			}
 
 			&--free {
-				color: $cb-success;
+				color: $lp-success;
 			}
 		}
 
 		&__description {
 			display: -webkit-box;
 			overflow: hidden;
-			min-height: 4.35em;
-			margin: 0 0 $cb-spacing-sm;
-			color: $cb-text-muted;
-			font-size: $cb-font-md;
-			line-height: 1.45;
+			min-height: 4.5em;
+			margin: 0 0 $lp-spacing-sm;
+			color: $lp-text-secondary;
+			font-size: $lp-font-sm;
+			font-weight: $lp-font-weight-regular;
+			line-height: $lp-line-height-150;
 			-webkit-box-orient: vertical;
 			-webkit-line-clamp: 3;
 		}
 
 		.lp-addon-license {
-			margin: 0 0 $cb-spacing-md;
-			padding: $cb-spacing-md;
-			border: 1px solid rgba( $cb-success, 0.28 );
-			border-radius: $cb-radius-md;
-			color: $cb-text-secondary;
-			background: $cb-success-bg;
-			font-size: $cb-font-sm;
-			line-height: 1.45;
+			margin: 0 0 $lp-spacing-md;
+			padding: $lp-spacing-md;
+			border: 1px solid $lp-success;
+			border-radius: $lp-radius-md;
+			color: $lp-text-secondary;
+			background: $lp-success-bg;
+			font-size: $lp-font-xs;
+			line-height: $lp-line-height-160;
 
 			&__summary {
 				display: flex;
 				align-items: baseline;
 				flex-wrap: wrap;
-				gap: $cb-spacing-xs;
+				gap: $lp-spacing-xs;
 			}
 
 			&__status {
-				color: $cb-success;
-				font-weight: 600;
+				color: $lp-success;
+				font-weight: $lp-font-weight-semibold;
 			}
 
 			&__expiry {
-				color: $cb-text-muted;
+				color: $lp-text-muted;
 			}
 
 			&--not-activated {
-				border-color: rgba( $cb-warning-strong, 0.35 );
-				background: $cb-warning-strong-bg;
+				border-color: rgba( $lp-warning-strong, 0.35 );
+				background: $lp-warning-strong-bg;
 
 				.lp-addon-license__status {
-					color: $cb-warning-strong-text;
+					color: $lp-warning-strong-text;
 				}
 			}
 
 			&--expired {
-				border-color: rgba( $cb-expired, 0.35 );
-				background: $cb-expired-bg;
+				border-color: rgba( $lp-expired, 0.35 );
+				background: $lp-expired-bg;
 
 				.lp-addon-license__status {
-					color: $cb-expired-text;
+					color: $lp-expired-text;
 				}
 			}
 
 			&--deactivated {
-				border-color: $cb-border-input;
-				background: $cb-warning-bg;
+				border-color: $lp-border-input;
+				background: $lp-warning-bg;
 
 				.lp-addon-license__status {
-					color: $cb-text-muted;
+					color: $lp-text-muted;
 				}
 			}
 		}
@@ -532,20 +533,20 @@
 			width: auto;
 			height: auto;
 			min-height: 0;
-			margin-top: $cb-spacing-xs;
+			margin-top: $lp-spacing-xs;
 			padding: 0;
 			border: 0;
 			border-radius: 0;
-			color: $cb-link;
+			color: $lp-link;
 			background: transparent;
-			font-size: $cb-font-sm;
-			font-weight: 500;
-			line-height: 1.45;
+			font-size: $lp-font-xs;
+			font-weight: $lp-font-weight-semibold;
+			line-height: $lp-line-height-160;
 			text-decoration: underline;
 
 			&:hover,
 			&:focus {
-				color: $cb-primary;
+				color: $lp-primary;
 				background: transparent;
 			}
 		}
@@ -554,14 +555,14 @@
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
-			gap: $cb-spacing-xs;
-			color: $cb-text-subtle;
-			font-size: $cb-font-sm;
-			line-height: 1.4;
+			gap: $lp-spacing-xs;
+			color: $lp-text-subtle;
+			font-size: $lp-font-xs;
+			line-height: $lp-line-height-160;
 
 			a {
-				color: $cb-link;
-				font-weight: 500;
+				color: $lp-link;
+				font-weight: $lp-font-weight-semibold;
 
 				&:focus {
 					outline: none;
@@ -570,8 +571,8 @@
 			}
 
 			> * + *::before {
-				margin-inline-end: $cb-spacing-sm;
-				color: $cb-border-input;
+				margin-inline-end: $lp-spacing-sm;
+				color: $lp-border-input;
 				content: "|";
 			}
 		}
@@ -579,42 +580,42 @@
 		.new-update,
 		.need-extend {
 			display: block;
-			margin-top: $cb-spacing-sm;
-			font-size: $cb-font-sm;
-			line-height: 1.45;
+			margin-top: $lp-spacing-sm;
+			font-size: $lp-font-xs;
+			line-height: $lp-line-height-160;
 		}
 
 		.new-update {
-			color: $cb-success;
+			color: $lp-success;
 		}
 
 		.need-extend {
-			color: $cb-danger-text;
+			color: $lp-danger-text;
 		}
 
 		.need-extend__link {
-			color: $cb-danger;
+			color: $lp-danger;
 			font-weight: 500;
 			text-decoration: underline;
 		}
 
 		.need-extend__days {
-			color: $cb-danger;
+			color: $lp-danger;
 		}
 
 		&__actions {
-			gap: $cb-spacing-sm;
+			gap: $lp-spacing-sm;
 			min-height: 41px;
-			margin: $cb-spacing-xl 0 0;
-			padding: $cb-spacing-md 0 0;
-			border-top: 1px solid $cb-border;
+			margin: $lp-spacing-xl 0 0;
+			padding: $lp-spacing-md 0 0;
+			border-top: 1px solid $lp-border;
 		}
 
 		/*&__actions__left,
 		&__actions__right {
 			display: flex;
 			align-items: center;
-			gap: $cb-spacing-sm;
+			gap: $lp-spacing-sm;
 		}*/
 
 		/*&__actions__left {
@@ -630,14 +631,14 @@
 		/*.lp-addon-button,*/
 		.btn-addon-action {
 			box-sizing: border-box;
-			padding: 6px $cb-spacing-sm;
+			padding: 6px $lp-spacing-sm;
 			border: 1px solid transparent;
-			border-radius: $cb-radius-md;
-			color: $cb-bg;
-			background: $cb-primary;
-			font-size: $cb-font-md;
-			font-weight: 500;
-			line-height: 1.4;
+			border-radius: $lp-radius-sm;
+			color: $lp-bg;
+			background: $lp-primary;
+			font-size: $lp-font-sm;
+			font-weight: $lp-font-weight-medium;
+			line-height: $lp-line-height-150;
 			text-decoration: none;
 			cursor: pointer;
 			transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
@@ -645,58 +646,58 @@
 			&:hover,
 			&:focus {
 				border-color: transparent;
-				color: $cb-bg;
-				background: $cb-primary-hover;
+				color: $lp-bg;
+				background: $lp-primary-hover;
 			}
 
 			&:active {
 				border-color: transparent;
-				background: $cb-primary-wp-hover;
-				color: $cb-bg;
+				background: $lp-primary-wp-hover;
+				color: $lp-bg;
 			}
 
 			&:disabled {
 				border-color: transparent;
-				background: $cb-border-input;
-				color: $cb-bg;
+				background: $lp-border-input;
+				color: $lp-bg;
 				cursor: not-allowed;
 			}
 
 			&:focus-visible {
 				outline: none;
-				box-shadow: $cb-focus-ring;
+				box-shadow: $lp-focus-ring;
 			}
 		}
 
 /*		.lp-addon-button {
-			border-color: $cb-border-input;
-			color: $cb-text-secondary;
-			background: $cb-bg;
+			border-color: $lp-border-input;
+			color: $lp-text-secondary;
+			background: $lp-bg;
 
 			&:hover,
 			&:focus {
-				border-color: $cb-primary;
-				color: $cb-primary;
-				background: $cb-bg-hover;
+				border-color: $lp-primary;
+				color: $lp-primary;
+				background: $lp-bg-hover;
 			}
 		}*/
 
 		.lp-addon-item__actions .btn-addon-action[data-action="activate"] {
-			border-color: $cb-success;
-			color: $cb-bg;
-			background: $cb-success;
+			border-color: $lp-success;
+			color: $lp-bg;
+			background: $lp-success;
 		}
 
 		.lp-addon-item__actions .btn-addon-action[data-action="deactivate"] {
-			border-color: $cb-danger;
-			color: $cb-danger;
-			background: $cb-bg;
+			border-color: $lp-danger;
+			color: $lp-danger;
+			background: $lp-bg;
 
 			&:hover,
 			&:focus {
-				border-color: $cb-danger;
-				color: $cb-danger-text;
-				background: $cb-danger-bg;
+				border-color: $lp-danger;
+				color: $lp-danger-text;
+				background: $lp-danger-bg;
 			}
 		}
 
@@ -708,9 +709,9 @@
 		.btn-addon-action[data-action="update-purchase-code"] {
 			min-height: 36px;
 			height: 36px;
-			padding: 0 $cb-spacing-sm;
+			padding: 0 $lp-spacing-sm;
 			border-color: transparent;
-			color: $cb-text-muted;
+			color: $lp-text-muted;
 			background: transparent;
 		}
 
@@ -741,9 +742,9 @@
 			z-index: 5;
 			inset: 0;
 			box-sizing: border-box;
-			padding: $cb-spacing-xl;
+			padding: $lp-spacing-xl;
 			border-radius: inherit;
-			background: $cb-bg-card;
+			background: $lp-bg-card;
 			text-transform: none;
 
 			&__wrapper {
@@ -760,7 +761,7 @@
 					border-radius: 0;
 					background: transparent;
 					box-shadow: none;
-					gap: $cb-spacing-lg;
+					gap: $lp-spacing-lg;
 				}
 			}
 		}
@@ -772,10 +773,10 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: $cb-spacing-md;
-		color: $cb-text;
-		font-size: $cb-font-md;
-		line-height: 1.4;
+		gap: $lp-spacing-md;
+		color: $lp-text;
+		font-size: $lp-font-sm;
+		line-height: $lp-line-height-150;
 	}
 
 	&__field {
@@ -784,38 +785,38 @@
 
 	&__title {
 		display: block;
-		color: $cb-text;
-		font-size: $cb-font-md;
-		font-weight: 600;
+		color: $lp-text;
+		font-size: $lp-font-sm;
+		font-weight: $lp-font-weight-medium;
 	}
 
 	&__field input.enter-purchase-code {
 		box-sizing: border-box;
 		width: 100%;
 		min-height: 48px;
-		padding: $cb-spacing-sm $cb-spacing-md;
-		border: 1px solid $cb-border-input;
-		border-radius: $cb-radius;
-		color: $cb-text-label;
-		background: $cb-bg;
-		font-size: $cb-font-md;
+		padding: $lp-spacing-sm $lp-spacing-md;
+		border: 1px solid $lp-border-input;
+		border-radius: $lp-radius-sm;
+		color: $lp-text-label;
+		background: $lp-bg;
+		font-size: $lp-font-sm;
 		box-shadow: none;
 
 		&::placeholder {
-			color: $cb-text-placeholder;
+			color: $lp-text-placeholder;
 		}
 
 		&:focus {
-			border-color: $cb-primary;
+			border-color: $lp-primary;
 			outline: none;
-			box-shadow: $cb-focus-ring;
+			box-shadow: $lp-focus-ring;
 		}
 
 		&.is-error,
 		&.is-error:focus {
-			border-color: $cb-danger;
-			background: $cb-danger-bg;
-			box-shadow: 0 0 0 3px rgba( $cb-danger, 0.1 );
+			border-color: $lp-danger;
+			background: $lp-danger-bg;
+			box-shadow: 0 0 0 3px rgba( $lp-danger, 0.1 );
 		}
 	}
 
@@ -829,15 +830,15 @@
 	}
 
 	&__buy.btn-addon-action {
-		border-color: $cb-border-input;
-		color: $cb-text-secondary;
-		background: $cb-bg;
+		border-color: $lp-border-input;
+		color: $lp-text-secondary;
+		background: $lp-bg;
 
 		&:hover,
 		&:focus {
-			border-color: $cb-primary;
-			color: $cb-primary;
-			background: $cb-bg-hover;
+			border-color: $lp-primary;
+			color: $lp-primary;
+			background: $lp-bg-hover;
 		}
 	}
 
@@ -851,21 +852,21 @@
 		min-height: 32px;
 		padding: 0;
 		border: 0;
-		color: $cb-text-muted;
+		color: $lp-text-muted;
 		background: transparent;
-		font-size: $cb-font-lg;
+		font-size: $lp-font-lg;
 
 		&:hover,
 		&:focus {
-			color: $cb-primary;
-			background: $cb-bg-hover;
+			color: $lp-primary;
+			background: $lp-bg-hover;
 		}
 	}
 
 	&__close-symbol {
 		display: block;
 		font-family: Arial, sans-serif;
-		font-size: $cb-font-3xl;
+		font-size: $lp-font-3xl;
 		font-weight: 300;
 		line-height: 1;
 	}
@@ -873,16 +874,16 @@
 	&__divider {
 		display: flex;
 		align-items: center;
-		gap: $cb-spacing-sm;
-		color: $cb-text-muted;
-		font-size: $cb-font-sm;
+		gap: $lp-spacing-sm;
+		color: $lp-text-muted;
+		font-size: $lp-font-sm;
 		white-space: nowrap;
 
 		&::before,
 		&::after {
 			width: 100%;
 			height: 1px;
-			background: $cb-border;
+			background: $lp-border;
 			content: "";
 		}
 	}
@@ -920,22 +921,23 @@
 	.wp-heading-inline,
 	.lp-addons-page-title {
 		margin: 0;
-		color: $cb-text;
-		font-size: $cb-font-4xl;
-		font-weight: 600;
-		line-height: 1.25;
+		color: $lp-text;
+		font-size: $lp-font-3xl;
+		font-weight: $lp-font-weight-semibold;
+		line-height: $lp-line-height-125;
 	}
 
 	.lp-addons-page-subtitle {
-		margin: 0 0 $cb-spacing-2xl;
-		color: $cb-text-secondary;
-		font-size: $cb-font-lg;
-		line-height: 1.5;
+		margin: 0 0 $lp-spacing-2xl;
+		color: $lp-text-secondary;
+		font-size: $lp-font-md;
+		font-weight: $lp-font-weight-regular;
+		line-height: $lp-line-height-150;
 	}
 }
 
 .lp-addons-controls {
-	margin-bottom: $cb-spacing-xl;
+	margin-bottom: $lp-spacing-xl;
 
 	&[hidden] {
 		display: none;
@@ -945,11 +947,11 @@
 .lp-addons-toolbar {
 	position: relative;
 	box-sizing: border-box;
-	margin-bottom: $cb-spacing-3xl;
-	border: 1px solid $cb-border;
-	border-radius: $cb-radius-lg;
-	background: $cb-bg-card;
-	box-shadow: $cb-shadow-sm;
+	margin-bottom: $lp-spacing-3xl;
+	border: 1px solid $lp-border;
+	border-radius: $lp-radius-sm;
+	background: $lp-bg-card;
+	box-shadow: $lp-shadow-sm;
 	overflow: hidden;
 
 	&[hidden] {
@@ -960,10 +962,10 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: $cb-spacing-lg;
+		gap: $lp-spacing-lg;
 		box-sizing: border-box;
-		padding: $cb-spacing-xl;
-		border-bottom: 1px solid $cb-border;
+		padding: $lp-spacing-xl;
+		border-bottom: 1px solid $lp-border;
 		border-top-left-radius: inherit;
 		border-top-right-radius: inherit;
 	}
@@ -973,9 +975,9 @@
 		display: flex;
 		align-items: center;
 		flex-wrap: nowrap;
-		gap: $cb-spacing-md;
-		margin: -$cb-spacing-xs;
-		padding: $cb-spacing-xs;
+		gap: $lp-spacing-md;
+		margin: -$lp-spacing-xs;
+		padding: $lp-spacing-xs;
 		overflow-x: auto;
 		overflow-y: hidden;
 		scrollbar-width: thin;
@@ -989,9 +991,9 @@
 			display: flex;
 			align-items: center;
 			flex-wrap: nowrap;
-			gap: $cb-spacing-md;
-			margin: -$cb-spacing-xs;
-			padding: $cb-spacing-xs;
+			gap: $lp-spacing-md;
+			margin: -$lp-spacing-xs;
+			padding: $lp-spacing-xs;
 			overflow-x: auto;
 			overflow-y: hidden;
 			scrollbar-width: thin;
@@ -1006,14 +1008,14 @@
 		box-sizing: border-box;
 		min-height: 40px;
 		margin-left: 0;
-		padding: $cb-spacing-sm $cb-spacing-md;
+		padding: $lp-spacing-sm $lp-spacing-md;
 		border: 1px solid transparent;
-		border-radius: $cb-radius-md;
-		color: $cb-primary;
-		background: $cb-primary-bland;
-		font-size: $cb-font-md;
-		font-weight: 500;
-		line-height: 1;
+		border-radius: $lp-radius-sm;
+		color: $lp-primary;
+		background: $lp-primary-bland;
+		font-size: $lp-font-sm;
+		font-weight: $lp-font-weight-medium;
+		line-height: $lp-line-height-150;
 		text-decoration: none;
 		white-space: nowrap;
 		cursor: pointer;
@@ -1022,45 +1024,45 @@
 		&:hover,
 		&:focus {
 			border-color: transparent;
-			color: $cb-primary-hover;
-			background: darken( $cb-primary-bland, 4% );
+			color: $lp-primary-hover;
+			background: darken( $lp-primary-bland, 4% );
 		}
 
 		&:active {
 			border-color: transparent;
-			color: $cb-primary-wp-hover;
-			background: darken( $cb-primary-bland, 8% );
+			color: $lp-primary-wp-hover;
+			background: darken( $lp-primary-bland, 8% );
 		}
 
 		&:disabled {
 			border-color: transparent;
-			color: $cb-bg;
-			background: $cb-border-input;
+			color: $lp-bg;
+			background: $lp-border-input;
 			cursor: not-allowed;
 		}
 
 		&:focus-visible {
 			outline: none;
-			box-shadow: $cb-focus-ring;
+			box-shadow: $lp-focus-ring;
 		}
 	}
 
 	.nav-tab-active {
 		border-color: transparent;
-		color: $cb-bg;
-		background: $cb-primary;
+		color: $lp-bg;
+		background: $lp-primary;
 
 		&:hover,
 		&:focus {
 			border-color: transparent;
-			color: $cb-bg;
-			background: $cb-primary-hover;
+			color: $lp-bg;
+			background: $lp-primary-hover;
 		}
 
 		&:active {
 			border-color: transparent;
-			color: $cb-bg;
-			background: $cb-primary-wp-hover;
+			color: $lp-bg;
+			background: $lp-primary-wp-hover;
 		}
 	}
 }
@@ -1069,9 +1071,9 @@
 	display: flex;
 	align-items: center;
 	flex-wrap: nowrap;
-	gap: $cb-spacing-2xl;
+	gap: $lp-spacing-2xl;
 	box-sizing: border-box;
-	padding: $cb-spacing-md $cb-spacing-xl;
+	padding: $lp-spacing-md $lp-spacing-xl;
 	overflow-x: auto;
 	overflow-y: hidden;
 	scrollbar-width: thin;
@@ -1085,15 +1087,15 @@
 	justify-content: center;
 	box-sizing: border-box;
 	min-height: 42px;
-	padding: $cb-spacing-xs 0;
+	padding: $lp-spacing-xs 0;
 	border: 1px solid transparent;
 	border-color: transparent;
 	border-radius: 0;
-	color: $cb-text-placeholder;
+	color: $lp-text-placeholder;
 	background: transparent;
-	font-size: $cb-font-md;
-	font-weight: 500;
-	line-height: 150%;
+	font-size: $lp-font-sm;
+	font-weight: $lp-font-weight-medium;
+	line-height: $lp-line-height-150;
 	white-space: nowrap;
 	cursor: pointer;
 	transition: color 0.2s ease;
@@ -1117,24 +1119,24 @@
 	&:hover,
 	&:focus {
 		border-color: transparent;
-		color: $cb-primary;
+		color: $lp-primary;
 		background: transparent;
 	}
 
 	&:focus-visible {
 		outline: none;
 		box-shadow: none;
-		color: $cb-primary;
+		color: $lp-primary;
 	}
 
 	&.active {
 		border-color: transparent;
-		color: $cb-primary;
+		color: $lp-primary;
 		background: transparent;
-		font-weight: 600;
+		font-weight: $lp-font-weight-semibold;
 
 		&::after {
-			background: $cb-primary;
+			background: $lp-primary;
 		}
 	}
 
@@ -1157,10 +1159,10 @@
 		min-width: 40px;
 		min-height: 40px;
 		padding: 0;
-		border: 1px solid $cb-border-input;
-		border-radius: $cb-radius-lg;
-		color: $cb-text;
-		background: $cb-bg;
+		border: 1px solid $lp-border;
+		border-radius: $lp-radius-sm;
+		color: $lp-text;
+		background: $lp-bg;
 		cursor: pointer;
 		transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
 
@@ -1168,24 +1170,24 @@
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			color: $cb-text;
-			font-size: $cb-font-lg;
+			color: $lp-text;
+			font-size: $lp-font-lg;
 		}
 
 		&:hover,
 		&:focus {
-			border-color: $cb-primary;
-			color: $cb-primary;
-			background: $cb-bg-hover;
+			border-color: $lp-primary;
+			color: $lp-primary;
+			background: $lp-bg-hover;
 
 			.lp-addons-search__icon {
-				color: $cb-primary;
+				color: $lp-primary;
 			}
 		}
 
 		&:focus-visible {
 			outline: none;
-			box-shadow: $cb-focus-ring;
+			box-shadow: $lp-focus-ring;
 		}
 	}
 
@@ -1204,11 +1206,11 @@
 			z-index: 10;
 			display: flex;
 			align-items: center;
-			gap: $cb-spacing-sm;
+			gap: $lp-spacing-sm;
 			box-sizing: border-box;
-			padding: $cb-spacing-md $cb-spacing-xl;
+			padding: $lp-spacing-md $lp-spacing-xl;
 			border-radius: inherit;
-			background: $cb-bg;
+			background: $lp-bg;
 		}
 	}
 
@@ -1229,8 +1231,8 @@
 		justify-content: center;
 		width: 20px;
 		height: 20px;
-		color: $cb-text-placeholder;
-		font-size: $cb-font-lg;
+		color: $lp-text-placeholder;
+		font-size: $lp-font-lg;
 		transform: translateY(-50%);
 		pointer-events: none;
 		z-index: 2;
@@ -1243,12 +1245,12 @@
 		box-sizing: border-box;
 		height: 48px;
 		min-height: 48px;
-		padding: 0 $cb-spacing-xl;
+		padding: 0 $lp-spacing-xl;
 		border: 1px solid transparent;
-		border-radius: $cb-radius-lg;
-		font-size: $cb-font-md;
-		font-weight: 500;
-		line-height: 1;
+		border-radius: $lp-radius-sm;
+		font-size: $lp-font-sm;
+		font-weight: $lp-font-weight-medium;
+		line-height: $lp-line-height-150;
 		cursor: pointer;
 		white-space: nowrap;
 		flex-shrink: 0;
@@ -1257,31 +1259,31 @@
 		&:disabled {
 			cursor: not-allowed;
 			border-color: transparent;
-			background: $cb-border-input;
-			color: $cb-bg;
+			background: $lp-border-input;
+			color: $lp-bg;
 		}
 
 		&:not(:disabled) {
 			border-color: transparent;
-			background: $cb-primary;
-			color: $cb-bg;
+			background: $lp-primary;
+			color: $lp-bg;
 
 			&:hover,
 			&:focus {
 				border-color: transparent;
-				background: $cb-primary-hover;
-				color: $cb-bg;
+				background: $lp-primary-hover;
+				color: $lp-bg;
 			}
 
 			&:active {
 				border-color: transparent;
-				background: $cb-primary-wp-hover;
-				color: $cb-bg;
+				background: $lp-primary-wp-hover;
+				color: $lp-bg;
 			}
 
 			&:focus-visible {
 				outline: none;
-				box-shadow: $cb-focus-ring;
+				box-shadow: $lp-focus-ring;
 			}
 		}
 	}
@@ -1297,9 +1299,9 @@
 		min-height: 48px;
 		padding: 0;
 		border: 1px solid transparent;
-		border-radius: $cb-radius-lg;
+		border-radius: $lp-radius-sm;
 		background: transparent;
-		color: $cb-text-placeholder;
+		color: $lp-text-placeholder;
 		font-size: 26px;
 		line-height: 1;
 		cursor: pointer;
@@ -1308,13 +1310,13 @@
 
 		&:hover,
 		&:focus {
-			background: $cb-bg-hover;
-			color: $cb-text;
+			background: $lp-bg-hover;
+			color: $lp-text;
 		}
 
 		&:focus-visible {
 			outline: none;
-			box-shadow: $cb-focus-ring;
+			box-shadow: $lp-focus-ring;
 		}
 	}
 }
@@ -1330,14 +1332,14 @@
 		height: 48px;
 		min-height: 48px;
 		margin: 0;
-		padding: $cb-spacing-xs $cb-spacing-lg;
+		padding: $lp-spacing-xs $lp-spacing-lg;
 		padding-inline-start: 48px;
 		padding-inline-end: 16px;
-		border: 1px solid $cb-border-input;
-		border-radius: $cb-radius-lg;
-		color: $cb-text-label;
-		background: $cb-bg;
-		font-size: $cb-font-md;
+		border: 1px solid $lp-border;
+		border-radius: $lp-radius-sm;
+		color: $lp-text-label;
+		background: $lp-bg;
+		font-size: $lp-font-sm;
 
 		/* Hide native webkit search cancel button to avoid duplicate x icons */
 		&::-webkit-search-decoration,
@@ -1349,13 +1351,13 @@
 		}
 
 		&::placeholder {
-			color: $cb-text-placeholder;
+			color: $lp-text-placeholder;
 		}
 
 		&:focus {
-			border-color: $cb-primary;
+			border-color: $lp-primary;
 			outline: none;
-			box-shadow: $cb-focus-ring;
+			box-shadow: $lp-focus-ring;
 		}
 	}
 }
@@ -1369,7 +1371,7 @@
 			flex-wrap: wrap;
 			align-items: center;
 			justify-content: space-between;
-			padding: $cb-spacing-md $cb-spacing-xl;
+			padding: $lp-spacing-md $lp-spacing-xl;
 			border-bottom: none;
 		}
 
@@ -1381,19 +1383,19 @@
 				display: inline-flex;
 				align-items: center;
 				justify-content: center;
-				gap: $cb-spacing-xs;
+				gap: $lp-spacing-xs;
 				box-sizing: border-box;
 				height: 40px;
 				min-height: 40px;
-				padding: 0 $cb-spacing-md;
+				padding: 0 $lp-spacing-md;
 				border: 1px solid transparent;
-				border-radius: $cb-radius-lg;
-				color: $cb-bg;
-				background: $cb-primary;
+				border-radius: $lp-radius-sm;
+				color: $lp-bg;
+				background: $lp-primary;
 				cursor: pointer;
-				font-size: $cb-font-md;
-				font-weight: 500;
-				line-height: 1;
+				font-size: $lp-font-sm;
+				font-weight: $lp-font-weight-medium;
+				line-height: $lp-line-height-150;
 				transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 
 				svg,
@@ -1402,50 +1404,50 @@
 					height: 16px;
 					stroke: currentColor;
 					display: block;
-					color: $cb-bg;
+					color: $lp-bg;
 				}
 
 				.lp-addons-filter__toggle-text {
-					color: $cb-bg;
-					font-size: $cb-font-md;
-					font-weight: 500;
-					line-height: 1;
+					color: $lp-bg;
+					font-size: $lp-font-sm;
+					font-weight: $lp-font-weight-medium;
+					line-height: $lp-line-height-150;
 				}
 
 				&:hover,
 				&:focus {
 					border-color: transparent;
-					color: $cb-bg;
-					background: $cb-primary-hover;
+					color: $lp-bg;
+					background: $lp-primary-hover;
 
 					svg,
 					.lp-addons-filter__toggle-icon,
 					.lp-addons-filter__toggle-text {
-						color: $cb-bg;
+						color: $lp-bg;
 					}
 				}
 
 				&.has-filter {
 					border-color: transparent;
-					color: $cb-bg;
-					background: $cb-primary-hover;
+					color: $lp-bg;
+					background: $lp-primary-hover;
 
 					svg,
 					.lp-addons-filter__toggle-icon,
 					.lp-addons-filter__toggle-text {
-						color: $cb-bg;
+						color: $lp-bg;
 					}
 				}
 
 				&:active {
 					border-color: transparent;
-					color: $cb-bg;
-					background: $cb-primary-wp-hover;
+					color: $lp-bg;
+					background: $lp-primary-wp-hover;
 				}
 
 				&:focus-visible {
 					outline: none;
-					box-shadow: $cb-focus-ring;
+					box-shadow: $lp-focus-ring;
 				}
 			}
 
@@ -1468,7 +1470,7 @@
 				position: static;
 				display: flex;
 				align-items: center;
-				gap: $cb-spacing-xs;
+				gap: $lp-spacing-xs;
 				box-sizing: border-box;
 				padding: 0;
 				border-radius: inherit;
@@ -1482,8 +1484,8 @@
 			&__btn-clear {
 				height: 40px;
 				min-height: 40px;
-				padding: 0 $cb-spacing-md;
-				font-size: $cb-font-sm;
+				padding: 0 $lp-spacing-md;
+				font-size: $lp-font-sm;
 			}
 		}
 
@@ -1499,13 +1501,13 @@
 		&.is-filter-open {
 			.lp-addons-filter__toggle {
 				border-color: transparent;
-				color: $cb-bg;
-				background: $cb-primary-hover;
+				color: $lp-bg;
+				background: $lp-primary-hover;
 
 				svg,
 				.lp-addons-filter__toggle-icon,
 				.lp-addons-filter__toggle-text {
-					color: $cb-bg;
+					color: $lp-bg;
 				}
 			}
 
@@ -1513,22 +1515,22 @@
 				order: 3;
 				display: flex;
 				flex-wrap: wrap;
-				gap: $cb-spacing-sm;
+				gap: $lp-spacing-sm;
 				box-sizing: border-box;
-				width: calc(100% + #{$cb-spacing-xl} * 2);
-				margin: $cb-spacing-md (-$cb-spacing-xl) (-$cb-spacing-md);
-				padding: $cb-spacing-lg $cb-spacing-xl;
-				border-top: 1px solid $cb-border;
-				background: $cb-bg-card;
+				width: calc(100% + #{$lp-spacing-xl} * 2);
+				margin: $lp-spacing-md (-$lp-spacing-xl) (-$lp-spacing-md);
+				padding: $lp-spacing-lg $lp-spacing-xl;
+				border-top: 1px solid $lp-border;
+				background: $lp-bg-card;
 
 				&::before {
 					content: 'Status';
 					display: block;
 					width: 100%;
-					font-size: $cb-font-sm;
+					font-size: $lp-font-sm;
 					font-weight: 600;
-					color: $cb-text-muted;
-					margin-bottom: $cb-spacing-xs;
+					color: $lp-text-muted;
+					margin-bottom: $lp-spacing-xs;
 					text-transform: uppercase;
 					letter-spacing: 0.5px;
 				}
@@ -1538,16 +1540,16 @@
 					align-items: center;
 					justify-content: center;
 					min-height: 38px;
-					padding: $cb-spacing-xs $cb-spacing-md;
-					border-radius: $cb-radius-md;
-					font-size: $cb-font-sm;
+					padding: $lp-spacing-xs $lp-spacing-md;
+					border-radius: $lp-radius-md;
+					font-size: $lp-font-sm;
 					font-weight: 500;
 					line-height: 1.2;
 					white-space: nowrap;
 
 					span {
-						margin-inline-start: $cb-spacing-xs;
-						font-size: $cb-font-xs;
+						margin-inline-start: $lp-spacing-xs;
+						font-size: $lp-font-xs;
 						opacity: 0.85;
 					}
 				}
@@ -1556,22 +1558,22 @@
 			.lp-addons-categories {
 				display: flex;
 				flex-wrap: wrap;
-				gap: $cb-spacing-sm;
+				gap: $lp-spacing-sm;
 				box-sizing: border-box;
 				width: 100%;
-				padding: $cb-spacing-lg $cb-spacing-xl;
-				border-top: 1px solid $cb-border;
-				background: $cb-bg-card;
+				padding: $lp-spacing-lg $lp-spacing-xl;
+				border-top: 1px solid $lp-border;
+				background: $lp-bg-card;
 				overflow: visible;
 
 				&::before {
 					content: 'Categories';
 					display: block;
 					width: 100%;
-					font-size: $cb-font-sm;
+					font-size: $lp-font-sm;
 					font-weight: 600;
-					color: $cb-text-muted;
-					margin-bottom: $cb-spacing-xs;
+					color: $lp-text-muted;
+					margin-bottom: $lp-spacing-xs;
 					text-transform: uppercase;
 					letter-spacing: 0.5px;
 				}
@@ -1581,15 +1583,15 @@
 					align-items: center;
 					justify-content: center;
 					min-height: 38px;
-					padding: $cb-spacing-xs $cb-spacing-md;
-					border: 1px solid $cb-border;
-					border-color: $cb-border;
-					border-radius: $cb-radius-md;
-					font-size: $cb-font-sm;
+					padding: $lp-spacing-xs $lp-spacing-md;
+					border: 1px solid $lp-border;
+					border-color: $lp-border;
+					border-radius: $lp-radius-md;
+					font-size: $lp-font-sm;
 					font-weight: 500;
 					line-height: 1.2;
-					color: $cb-text-secondary;
-					background: $cb-bg-subtle;
+					color: $lp-text-secondary;
+					background: $lp-bg-subtle;
 					white-space: nowrap;
 
 					&::after {
@@ -1598,15 +1600,15 @@
 
 					&:hover,
 					&:focus {
-						border-color: $cb-primary;
-						color: $cb-primary;
-						background: $cb-primary-bland;
+						border-color: $lp-primary;
+						color: $lp-primary;
+						background: $lp-primary-bland;
 					}
 
 					&.active {
 						border-color: transparent;
-						color: $cb-bg;
-						background: $cb-primary;
+						color: $lp-bg;
+						background: $lp-primary;
 						font-weight: 600;
 					}
 				}
@@ -1618,7 +1620,7 @@
 @media (max-width: 782px) {
 	.lp-addons-toolbar {
 		&__primary {
-			padding: $cb-spacing-md;
+			padding: $lp-spacing-md;
 		}
 
 		.lp-addons-search {
@@ -1652,11 +1654,11 @@
 					z-index: 10;
 					display: flex;
 					align-items: center;
-					gap: $cb-spacing-xs;
+					gap: $lp-spacing-xs;
 					box-sizing: border-box;
-					padding: $cb-spacing-sm $cb-spacing-md;
+					padding: $lp-spacing-sm $lp-spacing-md;
 					border-radius: inherit;
-					background: $cb-bg;
+					background: $lp-bg;
 				}
 
 				.lp-addons-search__close {
@@ -1670,20 +1672,20 @@
 				.lp-addons-search__btn-clear {
 					height: 40px;
 					min-height: 40px;
-					padding: 0 $cb-spacing-md;
+					padding: 0 $lp-spacing-md;
 				}
 			}
 		}
 
 		&.is-filter-open {
 			.lp-addons-filter__menu {
-				width: calc(100% + #{$cb-spacing-md} * 2);
-				margin: $cb-spacing-md (-$cb-spacing-md) (-$cb-spacing-md);
-				padding: $cb-spacing-md;
+				width: calc(100% + #{$lp-spacing-md} * 2);
+				margin: $lp-spacing-md (-$lp-spacing-md) (-$lp-spacing-md);
+				padding: $lp-spacing-md;
 			}
 
 			.lp-addons-categories {
-				padding: $cb-spacing-md;
+				padding: $lp-spacing-md;
 			}
 		}
 	}
