@@ -1,0 +1,418 @@
+/**
+ * BackEnd Components.
+ */
+
+@import "../variables-backend";
+
+// Page Header
+.lp-be-page-header {
+	margin-bottom: $lp-spacing-2xl;
+}
+
+.wrap h1.lp-be-page-title,
+.wrap .wp-heading-inline.lp-be-page-title,
+.wrap .lp-be-page-title,
+h1.lp-be-page-title,
+.lp-be-page-title {
+	margin: 0;
+	padding: 0;
+	color: $lp-text;
+	font-size: $lp-font-3xl;
+	font-weight: $lp-font-weight-semibold;
+	line-height: $lp-line-height-125;
+}
+
+.wrap p.lp-be-page-subtitle,
+.wrap .lp-be-page-subtitle,
+p.lp-be-page-subtitle,
+.lp-be-page-subtitle {
+	margin: 0 0 $lp-spacing-2xl;
+	padding: 0;
+	color: $lp-text-secondary;
+	font-size: $lp-font-md;
+	font-weight: $lp-font-weight-regular;
+	line-height: $lp-line-height-150;
+}
+
+// Button
+.lp-be-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: $lp-spacing-xs;
+	box-sizing: border-box;
+	height: 40px;
+	min-height: 40px;
+	padding: 0 $lp-spacing-lg;
+	border: 1px solid $lp-border;
+	border-radius: $lp-radius-sm; // 10px from Figma
+	color: $lp-text;
+	background: $lp-bg;
+	font-size: $lp-font-sm;
+	font-weight: $lp-font-weight-medium;
+	line-height: 1;
+	text-decoration: none;
+	cursor: pointer;
+	white-space: nowrap;
+	outline: none;
+	box-shadow: none;
+	transform: none;
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+	&:visited {
+		color: inherit;
+	}
+
+	&:focus,
+	&:focus-visible,
+	&:active {
+		border-radius: inherit !important;
+		outline: none !important;
+		box-shadow: none !important;
+		transform: none !important;
+	}
+
+	&:disabled,
+	&.is-disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+
+	// Sizes
+	&--sm {
+		height: 32px;
+		min-height: 32px;
+		padding: 0 $lp-spacing-md;
+		border-radius: $lp-radius-xs;
+		font-size: $lp-font-xs;
+	}
+
+	&--md {
+		height: 40px;
+		min-height: 40px;
+		padding: 0 $lp-spacing-lg;
+		border-radius: $lp-radius-md;
+		font-size: $lp-font-sm;
+	}
+
+	&--lg {
+		height: 48px;
+		min-height: 48px;
+		padding: 0 $lp-spacing-xl;
+		border-radius: $lp-radius-md;
+		font-size: $lp-font-md;
+	}
+
+	// Variants
+	&--primary {
+		border-color: transparent;
+		color: $lp-bg;
+		background: $lp-primary;
+
+		&:hover,
+		&:focus {
+			border-color: transparent;
+			color: $lp-bg;
+			background: $lp-primary-hover;
+		}
+
+		&:active {
+			border-color: transparent;
+			color: $lp-bg;
+			background: $lp-primary-active;
+		}
+	}
+
+	&--secondary {
+		border-color: transparent;
+		color: $lp-primary;
+		background: $lp-primary-bland;
+
+		&:hover,
+		&:focus {
+			border-color: transparent;
+			color: $lp-primary-hover;
+			background: darken($lp-primary-bland, 4%);
+		}
+
+		&:active {
+			border-color: transparent;
+			color: $lp-primary-active;
+			background: darken($lp-primary-bland, 8%);
+		}
+	}
+
+	&--outline {
+		border-color: $lp-primary;
+		color: $lp-primary;
+		background: $lp-bg;
+
+		&:hover,
+		&:focus {
+			border-color: $lp-primary;
+			color: $lp-primary;
+			background: $lp-primary-bland;
+		}
+
+		&:active {
+			border-color: $lp-primary-active;
+			color: $lp-primary-active;
+			background: darken($lp-primary-bland, 4%);
+			outline: none !important;
+			box-shadow: none !important;
+			transform: none !important;
+		}
+	}
+
+	&--danger {
+		border-color: transparent;
+		color: $lp-bg;
+		background: $lp-danger;
+
+		&:hover,
+		&:focus {
+			border-color: transparent;
+			color: $lp-bg;
+			background: $lp-color-danger-800;
+		}
+
+		&:active {
+			border-color: transparent;
+			color: $lp-bg;
+			background: $lp-color-danger-900;
+		}
+	}
+
+	&--ghost {
+		border-color: transparent;
+		color: $lp-text-secondary;
+		background: transparent;
+
+		&:hover,
+		&:focus {
+			color: $lp-text;
+			background: $lp-bg-hover;
+		}
+	}
+}
+
+// Toolbar
+.lp-be-toolbar {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: $lp-spacing-lg;
+	box-sizing: border-box;
+	margin-bottom: $lp-spacing-3xl;
+	padding: $lp-spacing-xl;
+	border: 1px solid $lp-border;
+	border-radius: $lp-radius-sm;
+	background: $lp-bg-card;
+	box-shadow: $lp-shadow-sm;
+
+	&__start,
+	&__left {
+		display: flex;
+		align-items: center;
+		gap: $lp-spacing-md;
+		flex-wrap: wrap;
+	}
+
+	&__end,
+	&__right {
+		display: flex;
+		align-items: center;
+		gap: $lp-spacing-md;
+		margin-inline-start: auto;
+	}
+
+	&__actions {
+		display: flex;
+		align-items: center;
+		gap: $lp-spacing-sm;
+	}
+}
+
+// Form Input & Search
+.lp-be-input {
+	box-sizing: border-box;
+	height: 40px;
+	min-height: 40px;
+	padding: $lp-spacing-xs $lp-spacing-md;
+	border: 1px solid $lp-border;
+	border-radius: $lp-radius-sm;
+	background: $lp-bg;
+	color: $lp-text;
+	font-size: $lp-font-sm;
+	line-height: $lp-line-height-150;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+	&::placeholder {
+		color: $lp-text-placeholder;
+	}
+
+	&:focus {
+		border-color: $lp-primary;
+		outline: none;
+		box-shadow: $lp-focus-ring;
+	}
+
+	&:disabled {
+		background: $lp-bg-hover;
+		cursor: not-allowed;
+	}
+}
+
+.lp-be-search-field {
+	position: relative;
+	flex-shrink: 0;
+	width: 360px;
+	max-width: 100%;
+
+	&__input {
+		box-sizing: border-box;
+		width: 100%;
+		height: 40px;
+		min-height: 40px;
+		margin: 0;
+		padding: $lp-spacing-xs $lp-spacing-lg;
+		padding-inline-start: 40px;
+		padding-inline-end: 16px;
+		border: 1px solid $lp-border;
+		border-radius: $lp-radius-sm;
+		color: $lp-text;
+		background: $lp-bg;
+		font-size: $lp-font-sm;
+		line-height: $lp-line-height-150;
+		transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+		&::-webkit-search-decoration,
+		&::-webkit-search-cancel-button,
+		&::-webkit-search-results-button,
+		&::-webkit-search-results-decoration {
+			-webkit-appearance: none;
+			display: none;
+		}
+
+		&::placeholder {
+			color: $lp-text-placeholder;
+		}
+
+		&:focus {
+			border-color: $lp-primary;
+			outline: none;
+			box-shadow: $lp-focus-ring;
+		}
+	}
+
+	&__icon {
+		position: absolute;
+		top: 50%;
+		inset-inline-start: 14px;
+		transform: translateY(-50%);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		color: $lp-text-placeholder;
+		font-size: $lp-font-lg;
+		pointer-events: none;
+		z-index: 2;
+	}
+}
+
+.wrap input.lp-be-search-field__input {
+	height: 40px;
+	min-height: 40px;
+	padding-inline-start: 40px;
+	padding-inline-end: 16px;
+	line-height: $lp-line-height-150;
+}
+
+.lp-be-search-field--lg input.lp-be-search-field__input,
+.wrap .lp-be-search-field--lg input.lp-be-search-field__input {
+	height: 48px;
+	min-height: 48px;
+	border-radius: $lp-radius-lg;
+	font-size: $lp-font-md;
+	padding-inline-start: 44px;
+}
+
+// Nav Tabs
+.lp-be-nav-tabs {
+	display: flex;
+	align-items: center;
+	gap: $lp-spacing-md;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	flex-wrap: wrap;
+}
+
+.lp-be-nav-tab {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	min-height: 40px;
+	padding: $lp-spacing-sm $lp-spacing-md;
+	border: 1px solid transparent;
+	border-radius: $lp-radius-sm;
+	color: $lp-primary;
+	background: $lp-primary-bland;
+	font-size: $lp-font-sm;
+	font-weight: $lp-font-weight-medium;
+	line-height: 1;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+
+	&:hover,
+	&:focus {
+		border-color: transparent;
+		color: $lp-primary-hover;
+		background: darken($lp-primary-bland, 4%);
+	}
+
+	&:active {
+		border-color: transparent;
+		color: $lp-primary-wp-hover;
+		background: darken($lp-primary-bland, 8%);
+	}
+
+	&.is-active,
+	&.active,
+	&.nav-tab-active,
+	&[aria-selected="true"],
+	&[aria-pressed="true"] {
+		border-color: transparent;
+		color: $lp-bg;
+		background: $lp-primary;
+
+		&:hover,
+		&:focus {
+			border-color: transparent;
+			color: $lp-bg;
+			background: $lp-primary-hover;
+		}
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: $lp-focus-ring;
+	}
+}
+
+
+// Grid
+.lp-be-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: $lp-spacing-xl;
+
+	@media (max-width: 782px) {
+		grid-template-columns: 1fr;
+	}
+}

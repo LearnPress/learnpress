@@ -227,11 +227,11 @@ class AdminAddonsPage {
 					)
 				),
 				'title'       => sprintf(
-					'<h1 class="lp-addons-page-title">%s</h1>',
+					'<h1 class="lp-be-page-title">%s</h1>',
 					esc_html__( 'LearnPress Add-ons New', 'learnpress' )
 				),
 				'subtitle'    => sprintf(
-					'<p class="lp-addons-page-subtitle">%s</p>',
+					'<p class="lp-be-page-subtitle">%s</p>',
 					esc_html__(
 						'Discover high-performance Premium & Education themes optimized 100% for LearnPress LMS.',
 						'learnpress'

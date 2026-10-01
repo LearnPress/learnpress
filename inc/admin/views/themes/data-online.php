@@ -13,12 +13,12 @@ defined( 'ABSPATH' ) || exit;
 ?>
 
 <div class="learn-press-themes">
-	<div class="lp-themes-toolbar">
-		<div class="lp-themes-filter">
+	<div class="lp-themes-toolbar lp-be-toolbar">
+		<div class="lp-themes-filter lp-be-nav-tabs">
 
 			<button
 				type="button"
-				class="lp-themes-filter__item active"
+				class="lp-themes-filter__item lp-be-nav-tab active"
 				data-category="all"
 				aria-pressed="true"
 			>
@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
 
 			<button
 				type="button"
-				class="lp-themes-filter__item"
+				class="lp-themes-filter__item lp-be-nav-tab"
 				data-category="paid"
 				aria-pressed="false"
 			>
@@ -36,7 +36,7 @@ defined( 'ABSPATH' ) || exit;
 
 			<button
 				type="button"
-				class="lp-themes-filter__item"
+				class="lp-themes-filter__item lp-be-nav-tab"
 				data-category="free"
 				aria-pressed="false"
 			>
@@ -44,10 +44,10 @@ defined( 'ABSPATH' ) || exit;
 			</button>
 
 		</div>
-		<label class="lp-themes-search">
-			<span class="screen-reader-text"><?php esc_html_e( 'Search themes', 'learnpress' ); ?></span>
-			<span class="lp-themes-search__icon lp-icon-search" aria-hidden="true"></span>
-			<input type="search" class="lp-themes-search__input" placeholder="<?php esc_attr_e( 'Search themes…', 'learnpress' ); ?>" />
+		<label class="lp-themes-search lp-be-search-field">
+			<span class="screen-reader-text"><?php esc_html_e( 'Search theme by name', 'learnpress' ); ?></span>
+			<span class="lp-themes-search__icon lp-be-search-field__icon lp-icon-search" aria-hidden="true"></span>
+			<input type="search" class="lp-themes-search__input lp-be-search-field__input" placeholder="<?php esc_attr_e( 'Search theme by name', 'learnpress' ); ?>" />
 		</label>
 	</div>
 
