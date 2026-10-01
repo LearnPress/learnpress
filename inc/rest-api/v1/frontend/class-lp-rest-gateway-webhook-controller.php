@@ -53,7 +53,7 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 		 *
 		 * @return Response
 		 * @since 4.3.7
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function listen_subscription_webhook( WP_REST_Request $request ): Response {
 			$response   = new Response();
@@ -79,6 +79,7 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 				 * @var LP_Gateway_Paypal|LP_Gateway_Stripe $gateway
 				 */
 				$gateway->capture_subscription_webhook( $request );
+				$response->status = Response::STATUS_SUCCESS;
 			} catch ( Throwable $e ) {
 				LP_Debug::log_to_comment( 'Webhook error: ' . $gateway_id . ' - ' . $e->getMessage() );
 				LP_Debug::error_log( $e );
@@ -86,50 +87,6 @@ if ( ! class_exists( 'LP_REST_Gateway_Webhook_Controller' ) ) {
 			}
 
 			return $response;
-		}
-
-		/**
-		 * Build sanitized REST error response for public webhook endpoint.
-		 *
-		 * Internal provider error details are logged server-side, while API
-		 * response returns a generic/safe message by status class.
-		 *
-		 * @param Throwable $error
-		 *
-		 * @return WP_REST_Response
-		 */
-		protected function build_error_response( Throwable $error ): WP_REST_Response {
-			$status = absint( $error->getCode() );
-			if ( $status < 100 || $status > 599 ) {
-				$status = 400;
-			}
-
-			$error_code      = 'lp_subscription_webhook_error';
-			$private_message = (string) $error->getMessage();
-			$public_message  = __( 'Invalid webhook request.', 'learnpress' );
-
-			if ( 429 === $status ) {
-				$public_message = __( 'Too many webhook requests.', 'learnpress' );
-			} elseif ( 413 === $status ) {
-				$public_message = __( 'Webhook payload too large.', 'learnpress' );
-			}
-
-			error_log(
-				sprintf(
-					'LP subscription webhook error [%s]: %s',
-					$error_code,
-					$private_message
-				)
-			);
-
-			return new WP_REST_Response(
-				array(
-					'status'  => 'error',
-					'code'    => $error_code,
-					'message' => $public_message,
-				),
-				$status
-			);
 		}
 	}
 }
