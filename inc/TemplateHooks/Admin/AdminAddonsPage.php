@@ -339,12 +339,11 @@ class AdminAddonsPage {
 		);
 		$addon_categories = array(
 			'create-course'          => __( 'Create Course', 'learnpress' ),
-			'engagement'             => __( 'Engagement', 'learnpress' ),
-			'learnpress'             => __( 'LearnPress', 'learnpress' ),
 			'manage-course'          => __( 'Manage Course', 'learnpress' ),
-			'marketing-optimization' => __( 'Marketing Optimization', 'learnpress' ),
 			'monetize-course'        => __( 'Monetize Course', 'learnpress' ),
 			'payment'                => __( 'Payment', 'learnpress' ),
+			'engagement'             => __( 'Engagement', 'learnpress' ),
+			'marketing-optimization' => __( 'Marketing Optimization', 'learnpress' ),
 		);
 
 		$section_tabs = array();

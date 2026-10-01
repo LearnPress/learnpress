@@ -6,16 +6,6 @@
 	--lp-addon-item-border-color: #{$lp-border};
 }
 
-/*@media screen and (min-width: 1600px) {
-
-	.plugin-card:not(.hide-if-js):nth-child(even) {
-		margin-right: 8px;
-	}
-
-	.plugin-card:not(.hide-if-js):nth-child(3n) {
-		margin-right: 0;
-	}
-}*/
 
 /*** Style Addons Manager ***/
 #lp-addons {
@@ -31,7 +21,7 @@
 		padding: 6.5px 17px;
 		background: rgba(151, 71, 255, 1);
 		color: white;
-		border-radius: 3px;
+		border-radius: $lp-radius-md;
 		border: none;
 		cursor: pointer;
 
@@ -69,7 +59,7 @@
 		background: white;
 		padding: var(--lp-addon-item-padding);
 		border: 1px solid var(--lp-addon-item-border-color);
-		border-radius: 3px;
+		border-radius: $lp-radius-sm;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -227,14 +217,6 @@
 					}
 				}
 			}
-
-			/*.lp-addon-item {
-				&__actions {
-					&__right {
-						display: none;
-					}
-				}
-			}*/
 		}
 
 		&.update {
@@ -247,87 +229,6 @@
 			}
 		}
 	}
-
-	/***** Toggle *****/
-	/*.lp-toggle-switch {
-		.lp-toggle-switch-label{
-			height: 20px;
-			align-items: center;
-			margin-bottom: 0;
-			background: #b4b9be;
-			cursor: pointer;
-			display: inline-flex;
-			justify-content: space-between;
-			position: relative;
-			transition: left 0.15s ease-out;
-			border-radius: 100px;
-
-			&:after {
-				background: #FFFFFF;
-				content: "";
-				display: block;
-				position: absolute;
-				left: 4px;
-				width: 12px;
-				height: 12px;
-				transition: all 0.25s ease-in-out;
-				border-radius: 50%;
-			}
-
-			&::before {
-				left: 0;
-			}
-
-			.toggle-on,
-			.toggle-off {
-				opacity: 1;
-				padding-left: 6px;
-				padding-right: 6px;
-				font-size: 0.8em;
-				line-height: 1.125em;
-			}
-
-			.toggle-on {
-				color: #fff;
-				opacity: 0;
-				padding-right: 0;
-				width: 12px;
-			}
-
-			.toggle-off {
-				width: 12px;
-				color: #777;
-				padding-left: 0;
-			}
-		}
-
-		input.lp-toggle-switch-input{
-			display: none;
-
-			&:checked{
-				+ label{
-					background: #0073aa;
-
-					&:after {
-						left: auto;
-						right: 5px;
-						background: #ffffff;
-					}
-					.toggle-on {
-						opacity: 1;
-					}
-
-					.toggle-off {
-						opacity: 0;
-					}
-				}
-			}
-		}
-
-		.dashicons {
-			animation: rotation 2s infinite linear;
-		}
-	}*/
 
 	.screen-reader-text:focus {
 		clip-path: inset(50%);
@@ -416,7 +317,7 @@
 			justify-content: center;
 			flex-shrink: 0;
 			padding: $lp-spacing-xs $lp-spacing-sm;
-			border-radius: $lp-radius-sm;
+			border-radius: $lp-radius-xs;
 			color: $lp-bg;
 			background: $lp-price-red;
 			font-size: $lp-font-xs;
@@ -633,7 +534,7 @@
 			box-sizing: border-box;
 			padding: 6px $lp-spacing-sm;
 			border: 1px solid transparent;
-			border-radius: $lp-radius-sm;
+			border-radius: $lp-radius-md;
 			color: $lp-bg;
 			background: $lp-primary;
 			font-size: $lp-font-sm;
@@ -701,11 +602,6 @@
 			}
 		}
 
-/*		.lp-addon-button {
-			display: none;
-			align-items: center;
-		}*/
-
 		.btn-addon-action[data-action="update-purchase-code"] {
 			min-height: 36px;
 			height: 36px;
@@ -714,29 +610,6 @@
 			color: $lp-text-muted;
 			background: transparent;
 		}
-
-		/*&.installed [data-action="setting"] {
-			display: inline-flex;
-			visibility: hidden;
-		}*/
-
-		/*&.installed.activated [data-action="setting"] {
-			visibility: visible;
-		}
-
-		&.installed .lp-addon-item__actions__right .btn-addon-action[data-action="activate"],
-		&.installed .lp-addon-item__actions__right .btn-addon-action[data-action="deactivate"] {
-			grid-area: 1 / 1;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			visibility: hidden;
-		}
-
-		&.installed:not(.activated) .lp-addon-item__actions__right .btn-addon-action[data-action="activate"],
-		&.installed.activated .lp-addon-item__actions__right .btn-addon-action[data-action="deactivate"] {
-			visibility: visible;
-		}*/
 
 		&__purchase {
 			z-index: 5;
@@ -796,7 +669,7 @@
 		min-height: 48px;
 		padding: $lp-spacing-sm $lp-spacing-md;
 		border: 1px solid $lp-border-input;
-		border-radius: $lp-radius-sm;
+		border-radius: $lp-radius-lg;
 		color: $lp-text-label;
 		background: $lp-bg;
 		font-size: $lp-font-sm;
@@ -827,6 +700,7 @@
 		justify-content: center;
 		width: 100%;
 		min-height: 40px;
+		border-radius: $lp-radius-sm;
 	}
 
 	&__buy.btn-addon-action {
@@ -1090,7 +964,7 @@
 	padding: $lp-spacing-xs 0;
 	border: 1px solid transparent;
 	border-color: transparent;
-	border-radius: 0;
+	border-radius: $lp-radius-sm $lp-radius-sm 0 0;
 	color: $lp-text-placeholder;
 	background: transparent;
 	font-size: $lp-font-sm;
