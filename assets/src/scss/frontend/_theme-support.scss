@@ -564,6 +564,23 @@ body.twentyseventeen.learnpress-page {
 }
 
 .coaching {
+	&.nofixcss_learn{
+		&.learnpress-v4 #popup-header .popup-header__inner .course-title a:hover{
+			color: $color-primary;
+		}
+		#popup-header {
+			border-bottom: 1px solid var(--lp-border-color, #E1E1E1);
+			background: var(--lp-bg-color-lesson, #fff);
+		}
+		.learn-press-progress__active{
+			--thim-button-text-color: var(--thim-body-primary-color,#ffb606);
+		}
+		#popup-sidebar .search-course{
+			input[name=s],button i{
+    			color: var(--lp-color-base, #333);
+			}
+		} 
+	}
 	&:not(.nofixcss_learn) {
 		&.learnpress-v4 .lp-archive-courses #popup-course {
 			#popup-sidebar .search-course {

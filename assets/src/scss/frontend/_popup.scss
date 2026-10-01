@@ -636,8 +636,8 @@
 }
 
 .popup-right-sidebar {
-	flex: 0 0 67px;
-	width: 67px;
+	flex: 0 0 var(--lp-width-sidebar-right, 67px);
+	width: var(--lp-width-sidebar-right, 67px);
  	border-left: 1px solid $border-color;
 	top: $popup_header_height;
 	position: relative;
@@ -656,6 +656,9 @@
 	&.is-expanded {
 		flex: 0 0 200px;
 		width: 200px;
+		+ #popup-footer{
+			--lp-width-sidebar-right: 200px;
+		}
 	}
 
 	&__toggle {
@@ -827,8 +830,7 @@
 		&.completed {
 			display: flex;
 			flex-direction: row-reverse;
-			//margin-top: 32px;
-			border-color: transparent;
+ 			border-color: transparent;
 			color: #fff;
 			background: #3db748;
 			align-items: center;
@@ -836,8 +838,8 @@
 			float: left;
 
 			i {
-				margin-left: 9px;
-				font-size: 0.8em;
+				margin-left: 8px;
+				font-size: 14px;
 			}
 		}
 	}
@@ -878,7 +880,7 @@
 #popup-footer {
 	position: fixed;
 	z-index: 99;
-	right: 0;
+	right: var(--lp-width-sidebar-right, 67px);
 	bottom: 0;
 	left: var(--lp-width-popup-curriculum, 475px);
 	//max-width: var(--lp-width-content-lesson, 792px);
@@ -888,8 +890,8 @@
 	border-top: 1px solid #ebebeb;
 	background: $bg-color-lesson;
 	// Smooth animation for zoom in/out
-	transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-	will-change: left;
+	transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1), right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	will-change: left, right;
 	transform: translateZ(0); // GPU acceleration
 
 	@media (max-width: 1024px) {
@@ -1178,7 +1180,10 @@ body {
 		//
 		//}
 		#popup-content #sidebar-toggle {
-			margin-left: -16px;
+			margin-left: 0;
+			&::before {
+				float:none;
+			}
 		}
 
 		#sidebar-toggle {
