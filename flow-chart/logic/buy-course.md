@@ -4,19 +4,17 @@
 flowchart TD
     Start([Open the course page]) --> CanBuy{Can the course be purchased?}
     CanBuy -->|No| Message[Show why the course cannot be purchased]
-    CanBuy -->|Yes| Buy[Show the Buy Now button]
+    CanBuy -->|Yes| BuyCourse[Show the Buy Course button]
 
-    Buy --> Request[User requests to purchase]
-    Request --> Valid{Is the request still valid?}
-    Valid -->|No| Error[Show an error]
-    Valid -->|Yes| Repurchase{Has the user owned this course before?}
+    BuyCourse --> Request[User requests to purchase]
+    Request --> Repurchase{Has the user owned this course before?}
     Repurchase -->|Yes| Choice[Choose to keep or reset progress]
     Repurchase -->|No| Cart[Add the course to the cart]
     Choice --> Cart
 
     Cart --> Checkout[Go to checkout]
     Checkout --> CheckoutValid{Is the checkout information valid?}
-    CheckoutValid -->|No| Error
+    CheckoutValid -->|No| Error[Show an error]
     CheckoutValid -->|Yes| Payment{Is payment required?}
     Payment -->|Yes| Pay[Pay with the selected payment method]
     Pay --> PaySuccess{Was the payment successful?}
