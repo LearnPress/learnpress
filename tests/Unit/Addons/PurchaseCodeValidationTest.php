@@ -69,7 +69,7 @@ class PurchaseCodeValidationTest extends BrainMonkeyTestCase {
 		$manager = ( new ReflectionClass( AddonService::class ) )->newInstanceWithoutConstructor();
 
 		try {
-			$manager->validate_and_save_purchase_code( 'learnpress-membership', 'invalid-code' );
+			$manager->get_addon_purchase_info( 'learnpress-membership', 'invalid-code' );
 			$this->fail( 'An invalid purchase code must be rejected.' );
 		} catch ( Exception $e ) {
 			$this->assertStringContainsString( 'invalid', strtolower( $e->getMessage() ) );

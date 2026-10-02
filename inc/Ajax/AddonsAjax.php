@@ -99,7 +99,7 @@ class AddonsAjax extends AbstractAjax {
 							$this->addon_service->active_site( $addon['slug'], $purchase_code );
 						}
 
-						$purchase_info = $this->addon_service->validate_and_save_purchase_code(
+						$purchase_info = $this->addon_service->get_addon_purchase_info(
 							$addon['slug'],
 							$purchase_code
 						);
@@ -145,7 +145,7 @@ class AddonsAjax extends AbstractAjax {
 						$addon['slug'],
 						$purchase_code
 					);
-					$purchase_info = $this->addon_service->validate_and_save_purchase_code( $addon['slug'], $purchase_code );
+					$purchase_info = $this->addon_service->get_addon_purchase_info( $addon['slug'], $purchase_code );
 					break;
 				default:
 					break;
