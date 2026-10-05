@@ -12,9 +12,9 @@ defined('ABSPATH') || exit;
 ?>
 
 <div id="popup-right-sidebar" class="popup-right-sidebar is-collapsed">
-	<span class="popup-right-sidebar__toggle lp-icon-sidebar-left"></span>
+	<span class="popup-right-sidebar__toggle lp-icon-puzzle-piece" title="<?php esc_attr_e( 'Toggle Sidebar', 'learnpress' ); ?>"></span>
 	<ul class="popup-right-sidebar__items">
-		<li class="popup-right-sidebar__item item-notes active">
+		<li class="popup-right-sidebar__item item-notes">
 			<span class="popup-right-sidebar__icon lp-icon-notes"></span>
 			<span class="popup-right-sidebar__text"><?php esc_html_e('Notes', 'learnpress'); ?></span>
 		</li>
@@ -33,5 +33,5 @@ defined('ABSPATH') || exit;
 			<span class="popup-right-sidebar__icon lp-icon-light"></span>
 			<span class="popup-right-sidebar__text"><?php esc_html_e('Light Mode', 'learnpress'); ?></span>
 		</li>
-	</ul>
+	</ul> 
 </div>

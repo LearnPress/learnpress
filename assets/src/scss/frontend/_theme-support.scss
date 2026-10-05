@@ -2,9 +2,12 @@
  * CSS for overriding some style defaults of themes
  */
 body {
+
 	//--lp-font-size-base: 16px;
-	div.entry-content > {
-		div.learnpress, div.learnpress:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
+	div.entry-content> {
+
+		div.learnpress,
+		div.learnpress:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
 			--responsive--aligndefault-width: 100%;
 			max-width: var(--lp-content-width, 100%);
 		}
@@ -23,7 +26,9 @@ body {
 //}
 // Theme Divi
 .lp-archive-courses {
-	ul, ol {
+
+	ul,
+	ol {
 		list-style-type: decimal;
 		list-style-position: inside;
 		padding: 0 0 1.5em;
@@ -48,8 +53,14 @@ body {
 	}
 }
 
-.learnpress, .learnpress-profile {
-	#left-area ul, .entry-content ul, .et-l--body ul, .et-l--footer ul, .et-l--header ul {
+.learnpress,
+.learnpress-profile {
+
+	#left-area ul,
+	.entry-content ul,
+	.et-l--body ul,
+	.et-l--footer ul,
+	.et-l--header ul {
 		padding: 0;
 		list-style: none !important;
 	}
@@ -84,7 +95,8 @@ body {
 	.comment-respond .comment-form {
 		margin: 0;
 
-		> p, > div {
+		>p,
+		>div {
 			padding: 0;
 		}
 	}
@@ -164,7 +176,7 @@ body {
 		}
 	}
 
-	div.entry-content > {
+	div.entry-content> {
 
 		div.learnpress {
 			--responsive--aligndefault-width: 100%;
@@ -215,6 +227,7 @@ body.twentyseventeen.learnpress-page {
 	#primary {
 		article {
 			&.page {
+
 				.entry-header,
 				.lp-entry-content {
 					width: 100%;
@@ -232,6 +245,7 @@ body.twentyseventeen.learnpress-page {
 				#primary {
 					article {
 						&.page {
+
 							.entry-header,
 							.lp-entry-content {
 								width: 100%;
@@ -409,13 +423,16 @@ body.twentyseventeen.learnpress-page {
 		--lp-white-grey: transparent;
 		--lp-border-radius: 0;
 		--lp-primary-color: var(--thim-body-primary-color, inherit);
+
 		.course-section {
 			border-width: 0 0 1px 0;
 			margin-bottom: 0;
+
 			&:last-child {
 				border-width: 0;
 			}
 		}
+
 		.course-item-ico {
 			color: $color-primary;
 		}
@@ -423,7 +440,9 @@ body.twentyseventeen.learnpress-page {
 
 	#tab-curriculum {
 		.lp-course-curriculum {
-			.course-section-header, .course-item {
+
+			.course-section-header,
+			.course-item {
 				padding-left: 0;
 				padding-right: 0;
 			}
@@ -436,16 +455,18 @@ body.twentyseventeen.learnpress-page {
 }
 
 .eduma {
-	&.nofixcss_learn{
+	&.nofixcss_learn {
 		#popup-header {
 			border-bottom: 1px solid var(--lp-border-color, #E1E1E1);
 		}
-		.learn-press-progress__active{
-			--thim-button-text-color: var(--thim-body-primary-color,#ffb606);
+
+		.learn-press-progress__active {
+			--thim-button-text-color: var(--thim-body-primary-color, #ffb606);
 		}
 	}
+
 	&:not(.nofixcss_learn) {
-		.sc_heading + .lp-course-curriculum {
+		.sc_heading+.lp-course-curriculum {
 			.lp-course-curriculum__title {
 				display: none;
 			}
@@ -479,18 +500,22 @@ body.twentyseventeen.learnpress-page {
 						color: #fff;
 					}
 				}
-				.course-item-nav__name{
+
+				.course-item-nav__name {
 					color: #fff;
 				}
 			}
 
 			#popup-content #learn-press-quiz-app .questions-pagination .page-numbers {
-				&.current, &:hover {
+
+				&.current,
+				&:hover {
 					color: var(--lp-color-white, #fff);
 				}
 			}
 		}
 	}
+
 	#learn-press-content-item .content-item-wrap .quiz-buttons.align-center .button-left.fixed {
 		background: var(--lp-bg-color-lesson, #fff);
 	}
@@ -522,65 +547,145 @@ body.twentyseventeen.learnpress-page {
 	}
 }
 
-.course-builder {
-	.lp-course-curriculum {
-		--lp-white-grey: #f2f2f2;
-		--lp-border-color: #e6e6e6;
+.course-builder{
 
-		.course-sections {
-			border: 1px solid var(--lp-border-color, #e6e6e6);
-			border-radius: var(--lp-border-radius, 5px);
-			overflow: hidden;
+	&.nofixcss_learn {
+		.lp-single-course.lp-4 #popup-header .popup-header__inner .course-title a:hover {
+			color: $color-primary;
 		}
+		#popup-footer{
+			max-width: unset;
+		}
+		#popup-course #popup-header {
+			border-bottom: 1px solid var(--lp-border-color, #E1E1E1);
+			background: var(--lp-bg-color-lesson, #fff);
+		}
+	}
 
-		.course-section {
-			margin: 0;
-			border-radius: 0;
-			border-width: 1px 0 0 0;
+	&:not(.nofixcss_learn) {
+		.lp-single-course #popup-course {
+			#popup-header {
+				.thim-course-item-popup-left {
+					height: 70px;
+				}
 
-			&:first-child {
-				border: none;
+				.items-progress {
+					height: 70px;
+					line-height: 70px;
+					justify-content: center;
+				}
+
+				#sidebar-toggle.toggle-content-item::before {
+					float: none;
+				}
+			}
+
+			#popup-sidebar {
+				top: 70px;
+
+				.search-course {
+					input[name=s] {
+						padding: 0 !important;
+						color: var(--thim-font-title-color, #333333);
+					}
+
+					button {
+						right: 10px;
+						left: auto;
+
+						i {
+							color: var(--thim-font-title-color, #333333);
+						}
+					}
+				}
+			}
+
+			#popup-footer {
+				.course-item-nav {
+					overflow: visible;
+					max-width: unset;
+					padding: 12px 0;
+				}
 			}
 		}
-	}
 
-	#popup-sidebar .lp-course-curriculum {
-		--lp-border-radius: 0;
-	}
-
-	.course-tab-panels {
 		.lp-course-curriculum {
+			--lp-white-grey: #f2f2f2;
+			--lp-border-color: #e6e6e6;
+
 			.course-sections {
-				border: none;
+				border: 1px solid var(--lp-border-color, #e6e6e6);
+				border-radius: var(--lp-border-radius, 5px);
+				overflow: hidden;
 			}
 
-			.course-section-header, .course-item {
-				padding-left: 0;
-				--lp-white-grey: trasparent;
-				padding-right: 0;
+			.course-section {
+				margin: 0;
+				border-radius: 0;
+				border-width: 1px 0 0 0;
+
+				&:first-child {
+					border: none;
+				}
 			}
 		}
+
+		#popup-sidebar .lp-course-curriculum {
+			--lp-border-radius: 0;
+		}
+
+		.course-tab-panels {
+			.lp-course-curriculum {
+				.course-sections {
+					border: none;
+				}
+
+				.course-section-header,
+				.course-item {
+					padding-left: 0;
+					--lp-white-grey: trasparent;
+					padding-right: 0;
+				}
+			}
+		}
+
+		.content-item-wrap {
+			.quiz-buttons.align-center .button-left.fixed {
+				max-width: unset;
+			}
+			 .questions-pagination .nav-links .page-numbers{
+				&:hover, &.current {
+					background: transparent;
+				}
+			 }
+		} 
 	}
 }
 
 .coaching {
-	&.nofixcss_learn{
-		&.learnpress-v4 #popup-header .popup-header__inner .course-title a:hover{
+	&.nofixcss_learn {
+		&.learnpress-v4 #popup-header .popup-header__inner .course-title a:hover {
 			color: $color-primary;
 		}
+
 		#popup-header {
 			border-bottom: 1px solid var(--lp-border-color, #E1E1E1);
 			background: var(--lp-bg-color-lesson, #fff);
 		}
-		.learn-press-progress__active{
-			--thim-button-text-color: var(--thim-body-primary-color,#ffb606);
+
+		.learn-press-progress__active {
+			--thim-button-text-color: var(--thim-body-primary-color, #ffb606);
 		}
-		#popup-sidebar .search-course{
-			input[name=s],button i{
-    			color: var(--lp-color-base, #333);
+
+		#popup-sidebar .search-course {
+
+			input[name=s],
+			button i {
+				color: var(--lp-color-base, #333);
 			}
-		} 
+		}
 	}
+
 	&:not(.nofixcss_learn) {
 		&.learnpress-v4 .lp-archive-courses #popup-course {
 			#popup-sidebar .search-course {
@@ -609,6 +714,7 @@ body.twentyseventeen.learnpress-page {
 		.content-item-wrap .questions-pagination .nav-links .page-numbers.current,
 		&.learnpress-v4 #popup-course #popup-content #learn-press-content-item .content-item-scrollable .questions-pagination {
 			margin-top: 0;
+
 			.page-numbers.current {
 				padding: 12px 16px;
 				color: #fff;
@@ -619,7 +725,8 @@ body.twentyseventeen.learnpress-page {
 
 // Fix for thim ekit 1.2.9.1
 
-.demo-marketplace, .demo-ecommerce {
+.demo-marketplace,
+.demo-ecommerce {
 	.thim-ekit-tablist {
 		.lp-course-curriculum__title {
 			display: none;
@@ -682,7 +789,10 @@ body.twentyseventeen.learnpress-page {
 	}
 }
 
-.business-consulting, .demo-business-v2, .business-coaching, .demo-healthy-coaching {
+.business-consulting,
+.demo-business-v2,
+.business-coaching,
+.demo-healthy-coaching {
 	.lp-course-curriculum__title {
 		display: none;
 	}

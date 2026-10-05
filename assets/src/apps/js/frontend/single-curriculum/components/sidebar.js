@@ -72,25 +72,10 @@ export const Sidebar = () => {
 	// Right Sidebar Toggle (open / close)
 	const rightSidebar = document.querySelector( '#popup-right-sidebar' );
 	if ( rightSidebar ) {
-		const isExpandedCookie = window.LP?.Cookies ? LP.Cookies.get( 'popup-right-sidebar-expanded' ) : null;
-
-		// Restore saved state from cookie
-		if ( isExpandedCookie === 'yes' ) {
-			rightSidebar.classList.add( 'is-expanded' );
-			rightSidebar.classList.remove( 'is-collapsed' );
-		} else {
-			rightSidebar.classList.remove( 'is-expanded' );
-			rightSidebar.classList.add( 'is-collapsed' );
-		}
-
 		const toggleRightSidebar = () => {
 			const willExpand = ! rightSidebar.classList.contains( 'is-expanded' );
 			rightSidebar.classList.toggle( 'is-expanded', willExpand );
 			rightSidebar.classList.toggle( 'is-collapsed', ! willExpand );
-
-			if ( window.LP?.Cookies ) {
-				LP.Cookies.set( 'popup-right-sidebar-expanded', willExpand ? 'yes' : 'no' );
-			}
 		};
 
 		const toggleBtn = rightSidebar.querySelector( '.popup-right-sidebar__toggle' );

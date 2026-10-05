@@ -29,7 +29,7 @@
 		.content-item-wrap {
 			.quiz-buttons.align-center {
 				.button-left.fixed {
-					margin-left: 0 !important;
+					left: 0;
 				}
 			}
 		}
@@ -636,86 +636,102 @@
 }
 
 .popup-right-sidebar {
-	flex: 0 0 var(--lp-width-sidebar-right, 67px);
-	width: var(--lp-width-sidebar-right, 67px);
- 	border-left: 1px solid $border-color;
-	top: $popup_header_height;
-	position: relative;
-	height: calc(100vh - #{$popup_header_height});
-	display: flex;
+	position: fixed;
+	right: 0;
+	top: $popup_header_height + 32px;
+ 	display: flex;
 	flex-direction: column;
-	padding: 16px 12px;
-	transition: flex-basis 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	will-change: flex-basis, width;
-	transform: translateZ(0);
+	padding: 14px 12px;
 	user-select: none;
 	box-sizing: border-box;
-	z-index: 2;
-	overflow: hidden;
+	z-index: 99;
+	transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-	&.is-expanded {
-		flex: 0 0 200px;
-		width: 200px;
-		+ #popup-footer{
-			--lp-width-sidebar-right: 200px;
-		}
-	}
-
-	&__toggle {
+	// Sticky Toggle button (always fixed at top right)
+	&__toggle { 
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		width: 42px;
 		height: 42px;
-		margin-bottom: 12px;
 		border-radius: 8px;
 		cursor: pointer;
-		font-size: 24px;
+		font-size: 22px;
 		color: $text-color-accent;
-		transition: background-color 0.2s ease, color 0.2s ease;
+		background: #fff; 
+		transition: all 0.22s ease;
+		flex-shrink: 0;
 
 		&:hover {
 			background: $bg-grey;
 			color: $color-black;
-		} 
-		.is-collapsed &{
-			background: $bg-grey;
 		}
-		.is-expanded &{
-			&::before{
-				content: "\e92b";
-			}
+
+		// When sidebar is open:
+		.popup-right-sidebar:not(.is-collapsed) & {
+			background: $bg-grey;
+			border-color: transparent;
+			box-shadow: none; 
 		}
 	}
 
+	// Collapsed state: icon list is hidden, only toggle button is visible
+	&.is-collapsed {
+		pointer-events: none;
+
+		.popup-right-sidebar__toggle {
+			pointer-events: auto;
+		}
+
+		.popup-right-sidebar__items {
+			opacity: 0;
+			visibility: hidden;
+			pointer-events: none;
+			transform: translateX(18px);
+			max-height: 0;
+			overflow: hidden;
+		}
+	}
+
+	// Items list (appears below the sticky toggle button)
 	&__items {
 		list-style: none !important;
-		margin: 0!important;
-		padding: 0!important;
+		margin: 8px 0 0 !important;
+		padding: 0px !important;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-		flex: 1;
+		background: #fff; 
+ 		transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease;
+		// max-height: 500px;
 	}
 
 	&__item {
+		position: relative;
 		margin: 0;
-		padding: 8px 9px;
-		width: 100%;
+		padding: 0;
+		width: 42px;
+		height: 42px;
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		border-radius: 8px;
-		color:$text-color-base;
+		color: $text-color-base;
 		font-weight: 500;
 		cursor: pointer;
-		white-space: nowrap;
-		overflow: hidden;
 		box-sizing: border-box;
 		transition: background-color 0.2s ease, color 0.2s ease;
 
 		&:hover {
 			background: $bg-grey;
 			color: $color-black;
+
+			// Slide-out text label on hover (from right to left)
+			.popup-right-sidebar__text {
+				opacity: 1;
+				visibility: visible;
+				transform: translateY(-50%) translateX(0);
+			}
 		}
 
 		// Active tab state (highlighted in gold/orange)
@@ -732,23 +748,45 @@
 
 	&__icon {
 		color: currentColor;
-		font-size: 24px;
+		font-size: 22px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
+	// Tooltip text sliding out smoothly from right to left
 	&__text {
-		margin-left: 8px;
+		position: absolute;
+		right: calc(100% + 10px);
+		top: 50%;
+		transform: translateY(-50%) translateX(10px);
+		background: $text-color-base;
+		color: #fff;
+		border: 1px solid $border-color; 
+		padding: 6px 12px;
+		border-radius: 6px;
+		font-size: $font-size-label;
+		font-weight: 600;
+		white-space: nowrap;
+		pointer-events: none;
 		opacity: 0;
-		visibility: hidden; 
-		transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
-	}
+		visibility: hidden;
+		transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+		            transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+		            visibility 0.2s;
+		z-index: 105;
 
-	&.is-expanded {
-		.popup-right-sidebar__text {
-			opacity: 1;
-			visibility: visible; 
-			transition: opacity 0.22s ease 0.08s, transform 0.22s ease 0.08s;
+		&::after {
+			content: "";
+			position: absolute;
+			left: 100%;
+			top: 50%;
+			transform: translateY(-50%);
+			border-width: 5px;
+			border-style: solid;
+			border-color: transparent transparent transparent $text-color-base;
 		}
-	}
+	} 
 }
 
 #popup-content {
@@ -856,7 +894,7 @@
 	}
 
 	&::-webkit-scrollbar {
-		width: 3px;
+		width: 6px;
 	}
 
 	&::-webkit-scrollbar-thumb {
@@ -875,12 +913,17 @@
 		position: fixed;
 		margin-left: -65px;
 	}
+	// &:has(+ .popup-right-sidebar.is-expanded) {
+	// 	#learn-press-quiz-app .button-left.fixed{
+	// 		--lp-width-sidebar-right: 200px
+	// 	}
+	// }
 }
 
 #popup-footer {
 	position: fixed;
 	z-index: 99;
-	right: var(--lp-width-sidebar-right, 67px);
+	right: 0;
 	bottom: 0;
 	left: var(--lp-width-popup-curriculum, 475px);
 	//max-width: var(--lp-width-content-lesson, 792px);
@@ -890,8 +933,8 @@
 	border-top: 1px solid #ebebeb;
 	background: $bg-color-lesson;
 	// Smooth animation for zoom in/out
-	transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1), right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-	will-change: left, right;
+	transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	will-change: left;
 	transform: translateZ(0); // GPU acceleration
 
 	@media (max-width: 1024px) {
@@ -1451,22 +1494,37 @@ body {
 				&.fixed {
 					position: fixed;
 					z-index: 999;
+					right: 0;
 					bottom: 0;
-					left: 50%;
-					width: 100%;
-					max-width: var(--lp-width-content-lesson, 792px);
+					left: var(--lp-width-popup-curriculum, 475px);
 					height: auto;
-					margin-left: 237px;
-					transform: translateX(-50%);
+					// border-top: 1px solid #ebebeb;
+					background: var(--lp-bg-color-lesson, #fff);
+					transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+					will-change: left;
+					transform: translateZ(0);
+					.questions-pagination{
+						max-width: var(--lp-width-content-lesson, 792px);
+						margin: 0 auto;
+					}
+					// position: fixed;
+					// z-index: 999;
+					// bottom: 0;
+					// left: 50%;
+					// width: 100%;
+					// max-width: var(--lp-width-content-lesson, 792px);
+					// height: auto;
+					// margin-left: 237px;
+					// transform: translateX(-50%);
 					background: #fff;
 					padding: 8px 0;
 					//padding-bottom: 10px;
 					.questions-pagination .nav-links{
 						margin-top: 0;
 					}
-					@media (max-width: 768px) {
-						width: 100% !important;
-					}
+					// @media (max-width: 768px) {
+					// 	width: 100% !important;
+					// }
 					&:empty{
 						display: none;
 					}
