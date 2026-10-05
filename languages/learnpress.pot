@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.9.1\n"
+"Project-Id-Version: LearnPress 4.4.9.2-beta-2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-01T10:44:39+00:00\n"
+"POT-Creation-Date: 2026-10-05T04:29:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -415,7 +415,7 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-filter/edit.js:66
 #: config/widgets/course/filter-course.php:11
 #: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:37
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:297
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:298
 msgid "Course Filter"
 msgstr ""
 
@@ -479,8 +479,8 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-filter-elements/course-search-filter/edit.js:9
 #: config/elementor/course/filter-course-el.php:488
 #: inc/admin/views/search-author-field.php:79
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:313
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:367
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:314
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:368
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:195
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:146
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderListLessonsTemplate.php:95
@@ -1877,7 +1877,7 @@ msgstr ""
 #: inc/custom-post-types/abstract.php:975
 #: inc/Models/WPTables/LessonsTable.php:200
 #: inc/Models/WPTables/QuizzesTable.php:35
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:497
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:498
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:557
 #: inc/TemplateHooks/CourseBuilder/CourseBuilderTemplate.php:637
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:69
@@ -4247,7 +4247,7 @@ msgstr ""
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:72
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1693
 #: inc/Models/WPTables/OrdersTable.php:38
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:509
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:510
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:575
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1194
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:155
@@ -4341,9 +4341,9 @@ msgstr ""
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseStudentBlockType.php:79
 #: inc/Models/WPTables/CoursesTable.php:56
 #: inc/Models/WPTables/OrdersTable.php:34
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:300
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:358
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:493
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:301
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:359
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:494
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:570
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:804
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:203
@@ -11882,7 +11882,7 @@ msgstr ""
 msgid "Cart page"
 msgstr ""
 
-#: inc/lp-core-functions.php:2149
+#: inc/lp-core-functions.php:2152
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1275
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:1298
 #: inc/TemplateHooks/CourseBuilder/CourseBuilderTemplate.php:673
@@ -11891,60 +11891,60 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: inc/lp-core-functions.php:2150
+#: inc/lp-core-functions.php:2153
 msgid "Get A Passing Grade"
 msgstr ""
 
-#: inc/lp-core-functions.php:2156
+#: inc/lp-core-functions.php:2159
 msgid "Evaluate by the number of completed lessons per the total number of lessons."
 msgstr ""
 
-#: inc/lp-core-functions.php:2157
+#: inc/lp-core-functions.php:2160
 msgid "E.g: If a course has 10 lessons and a user completes 5 lessons, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:2159
+#: inc/lp-core-functions.php:2162
 msgid "Evaluate by the result of the final quiz in the course. You have to add a quiz at the end of the course."
 msgstr ""
 
-#: inc/lp-core-functions.php:2165
+#: inc/lp-core-functions.php:2168
 msgid "Evaluate by the number of passed quizzes per the total number of quizzes."
 msgstr ""
 
-#: inc/lp-core-functions.php:2166
+#: inc/lp-core-functions.php:2169
 msgid "E.g: If the course has 10 quizzes and the user passes 5 quizzes, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:2173
+#: inc/lp-core-functions.php:2176
 msgid "Evaluate by the number of correct answers per the total number of questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:2174
+#: inc/lp-core-functions.php:2177
 msgid "E.g: If the course has 10 questions and the user corrects 5 questions, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:2179
+#: inc/lp-core-functions.php:2182
 msgid "Evaluate by the number of achieved scores per the total score of the questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:2187
+#: inc/lp-core-functions.php:2190
 msgid "Evaluate via lessons"
 msgstr ""
 
-#: inc/lp-core-functions.php:2192
+#: inc/lp-core-functions.php:2195
 msgid "Evaluate via results of the final quiz"
 msgstr ""
 
-#: inc/lp-core-functions.php:2199
+#: inc/lp-core-functions.php:2202
 msgid "Evaluate via passed quizzes"
 msgstr ""
 
-#: inc/lp-core-functions.php:2204
+#: inc/lp-core-functions.php:2207
 #: inc/Models/CourseModel.php:592
 msgid "Evaluate via questions"
 msgstr ""
 
-#: inc/lp-core-functions.php:2209
+#: inc/lp-core-functions.php:2212
 msgid "Evaluate via mark"
 msgstr ""
 
@@ -13358,7 +13358,7 @@ msgid "Updated."
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:385
-#: inc/Services/AddonService.php:400
+#: inc/Services/AddonService.php:399
 msgid "Update failed!"
 msgstr ""
 
@@ -13611,7 +13611,7 @@ msgstr ""
 msgid "Purchase code is invalid!"
 msgstr ""
 
-#: inc/Services/AddonService.php:366
+#: inc/Services/AddonService.php:365
 msgid "Install failed!"
 msgstr ""
 
@@ -14027,55 +14027,55 @@ msgstr ""
 msgid "Match any value in a set of words. Use fill, blank, or question to match any value in the set."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:142
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:143
 msgid "You do not have permission to view enrolled students."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:299
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:300
 msgid "Search course..."
-msgstr ""
-
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:302
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:359
-msgid "Enter student name or email"
 msgstr ""
 
 #: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:303
 #: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:360
+msgid "Enter student name or email"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:304
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:361
 msgid "Start Date"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:305
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:306
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:521
 msgid "End date"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:314
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:368
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:315
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:369
 msgid "Clear Filter"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:361
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:362
 msgid "End Date"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:396
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:397
 msgid "Loading"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:459
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:460
 msgid "No students found."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:501
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:502
 msgid "Enrolled Date"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:505
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:506
 msgid "Progress"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:525
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:526
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:901
 msgid "student"
 msgid_plural "students"

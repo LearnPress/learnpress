@@ -19,17 +19,17 @@ class LP_Helper {
 	 * @return mixed
 	 */
 	public static function maybe_unserialize( $string ) {
-		if ( is_string( $string ) ) {
-
-			$unserialized = maybe_unserialize( $string );
-			if ( ! $unserialized && strlen( $string ) ) {
+		if ( is_string( $string ) && is_serialized( $string ) ) {
+			$string       = trim( $string );
+			$unserialized = @unserialize( $string, array( 'allowed_classes' => false ) );
+			if ( false === $unserialized && 'b:0;' !== $string ) {
 				$string = preg_replace_callback(
 					'!s:(\d+):"(.*?)";!s',
 					array( __CLASS__, '_unserialize_replace_callback' ),
 					$string
 				);
 
-				$unserialized = maybe_unserialize( $string );
+				$unserialized = @unserialize( $string, array( 'allowed_classes' => false ) );
 			}
 
 			$string = $unserialized;
@@ -354,6 +354,9 @@ class LP_Helper {
 					break;
 				case 'float':
 					$value = (float) $value;
+					break;
+				case 'email':
+					$value = sanitize_email( $value );
 					break;
 				default:
 					if ( is_callable( $type_content ) ) {
