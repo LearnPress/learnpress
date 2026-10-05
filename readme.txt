@@ -301,6 +301,11 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.9.1 (2026-10-01) =
+~ Fixed: role instructor can't access WP Admin when install new.
+~ Fixed: active purchase code.
+~ Fixed: icons students, courses.
+
 = 4.4.9 (2026-09-27) =
 * Refactor: Add-ons manager and lp admin notices.
 * Fixed: security (Props @Khoa Dang, @Wordfence, @Hyebin Noh)

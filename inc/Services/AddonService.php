@@ -213,7 +213,7 @@ class AddonService {
 	}
 
 	/**
-	 * Validate a purchase code with the add-ons service before storing it.
+	 * Get purchase info for an add-on from the ThimPress service and persist the code locally.
 	 *
 	 * @param string $addon_slug    Add-on slug.
 	 * @param string $purchase_code Purchase code.
@@ -221,7 +221,7 @@ class AddonService {
 	 * @return object Purchase information returned by the service.
 	 * @throws Exception When the code cannot be validated.
 	 */
-	public function validate_and_save_purchase_code( string $addon_slug, string $purchase_code ): object {
+	public function get_addon_purchase_info( string $addon_slug, string $purchase_code ): object {
 		$purchase_code = trim( $purchase_code );
 
 		if ( empty( $addon_slug ) || empty( $purchase_code ) ) {
@@ -256,11 +256,11 @@ class AddonService {
 			throw new Exception( __( 'Purchase code is invalid!', 'learnpress' ) );
 		}
 
-		$key_purchase                = LP_Settings::get_option( $this->key_purchase_addons, array() );
+		/*$key_purchase                = LP_Settings::get_option( $this->key_purchase_addons, array() );
 		$key_purchase[ $addon_slug ] = $purchase_code;
 		LP_Settings::update_option( $this->key_purchase_addons, $key_purchase );
 
-		$this->clear_addons_purchased_cache();
+		$this->clear_addons_purchased_cache();*/
 
 		return $data->{$addon_slug};
 	}
@@ -325,7 +325,6 @@ class AddonService {
 		if ( 0 == $addon['is_free'] ) {
 			$key_purchase                   = LP_Settings::get_option( $this->key_purchase_addons, [] );
 			$key_purchase[ $addon['slug'] ] = $purchase_code;
-			LP_Settings::update_option( $this->key_purchase_addons, $key_purchase );
 
 			$args['body']['purchase_code'] = $purchase_code;
 		}
@@ -486,6 +485,7 @@ class AddonService {
 		$key_purchases                = LP_Settings::get_option( $this->key_purchase_addons, [] );
 		$key_purchases[ $addon_slug ] = $purchase_code;
 		LP_Settings::update_option( $this->key_purchase_addons, $key_purchases );
+		$this->clear_addons_purchased_cache();
 	}
 
 	/**

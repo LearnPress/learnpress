@@ -2088,9 +2088,12 @@ function learn_press_global_script_params(): array {
  * @since 3.3.0
  */
 function learn_press_get_question_support_answer_options() {
-	$questions = learn_press_get_question_support_feature( 'answer-options' );
-
-	return apply_filters( 'learn-press/questions-support-answer-options', $questions );
+	return array(
+		'true_or_false',
+		'single_choice',
+		'multi_choice',
+		'fill_in_blanks',
+	);
 }
 
 /**

@@ -78,7 +78,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @since 3.3.0
 		 */
-		public function wp_loaded() {
+		/*public function wp_loaded() {
 			$default_support_options = apply_filters(
 				'learn-press/default-question-types-support-answer-options',
 				array(
@@ -92,7 +92,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			foreach ( $default_support_options as $type ) {
 				LP_Global::add_object_feature( 'question.' . $type, 'answer-options', 'yes' );
 			}
-		}
+		}*/
 
 		/**
 		 * Add filters to lesson view.
