@@ -20,6 +20,7 @@
 }
 
 .lp-themes-toolbar {
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -31,6 +32,7 @@
 	border-radius: $lp-radius-md; // 8px
 	background: $lp-bg;
 	box-shadow: none;
+	overflow: hidden;
 }
 
 .lp-themes-filter {
@@ -40,10 +42,16 @@
 	gap: $lp-spacing-md; // 12px
 	margin: 0;
 	padding: 0;
-	overflow-x: auto;
-	overflow-y: hidden;
-	scrollbar-width: thin;
-	-webkit-overflow-scrolling: touch;
+	&__toggle {
+		display: none;
+	}
+
+	&__menu {
+		display: flex;
+		align-items: center;
+		gap: $lp-spacing-md;
+		min-width: 0;
+	}
 
 	&__count {
 		margin-inline-start: $lp-spacing-xs;
@@ -66,15 +74,117 @@
 }
 
 .lp-themes-search {
-	position: relative;
+	position: static;
 	flex-shrink: 0;
-	width: 400px; // 400px in Figma
-	max-width: 100%;
+	margin-inline-start: auto;
+
+	&__btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		width: 40px;
+		height: 40px;
+		min-width: 40px;
+		min-height: 40px;
+		padding: 0;
+		border: 1px solid $lp-border;
+		border-radius: $lp-radius-sm;
+		color: $lp-text;
+		background: $lp-bg;
+		cursor: pointer;
+		transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+
+		.lp-icon-search {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			color: $lp-text;
+			font-size: $lp-font-lg;
+		}
+
+		&:hover,
+		&:focus {
+			border-color: $lp-primary;
+			color: $lp-primary;
+			background: $lp-bg-hover;
+
+			.lp-icon-search {
+				color: $lp-primary;
+			}
+		}
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: $lp-focus-ring;
+		}
+	}
+
+	&__field {
+		position: absolute;
+		inset: 0;
+		z-index: 10;
+		display: none;
+		align-items: center;
+		gap: $lp-spacing-sm;
+		box-sizing: border-box;
+		padding: $lp-spacing-md $lp-spacing-xl;
+		border-radius: inherit;
+		background: $lp-bg;
+	}
+
+	&.is-open {
+		.lp-themes-search__btn {
+			display: none;
+		}
+
+		.lp-themes-search__field {
+			display: flex;
+		}
+	}
+
+	&__close {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		width: 40px;
+		height: 40px;
+		min-width: 40px;
+		min-height: 40px;
+		padding: 0;
+		border: 1px solid transparent;
+		border-radius: $lp-radius-sm;
+		color: $lp-text-placeholder;
+		background: transparent;
+		font-size: 26px;
+		line-height: 1;
+		cursor: pointer;
+		flex-shrink: 0;
+		transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+		&:hover,
+		&:focus {
+			background: $lp-bg-hover;
+			color: $lp-text;
+		}
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: $lp-focus-ring;
+		}
+	}
+
+	&__input-wrap {
+		position: relative;
+		display: block;
+		flex: 1;
+		min-width: 0;
+	}
 
 	&__icon {
 		position: absolute;
 		top: 50%;
-		inset-inline-start: 12px;
+		inset-inline-start: 16px;
 		transform: translateY(-50%);
 		display: inline-flex;
 		align-items: center;
@@ -82,7 +192,7 @@
 		width: 20px;
 		height: 20px;
 		color: $lp-text-placeholder;
-		font-size: $lp-font-md;
+		font-size: $lp-font-lg;
 		pointer-events: none;
 		z-index: 2;
 	}
@@ -95,16 +205,14 @@
 	height: 40px;
 	min-height: 40px;
 	margin: 0;
-	padding: 9.5px 14px;
-	padding-inline-start: 40px;
-	padding-inline-end: 14px;
+	padding: $lp-spacing-xs $lp-spacing-lg;
+	padding-inline-start: 48px;
+	padding-inline-end: 16px;
 	border: 1px solid $lp-border;
-	border-radius: $lp-radius-lg; // 12px
-	color: $lp-text;
+	border-radius: $lp-radius-sm;
+	color: $lp-text-label;
 	background: $lp-bg;
-	font-size: $lp-font-sm; // 14px
-	line-height: $lp-line-height-150;
-	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	font-size: $lp-font-sm;
 
 	&::-webkit-search-decoration,
 	&::-webkit-search-cancel-button,
@@ -120,8 +228,8 @@
 
 	&:focus {
 		border-color: $lp-primary;
-		box-shadow: $lp-focus-ring;
 		outline: none;
+		box-shadow: $lp-focus-ring;
 	}
 }
 
@@ -458,32 +566,94 @@
 		gap: $lp-spacing-xl;
 	}
 
+}
+
+@media (max-width: 1024px) {
 	.lp-themes-toolbar {
-		align-items: stretch;
-		flex-direction: column;
+		flex-wrap: wrap;
+		gap: $lp-spacing-md;
+		overflow: visible;
 	}
 
 	.lp-themes-filter {
-		width: 100%;
-		min-width: 0;
+		display: contents;
+
+		&__toggle {
+			order: 1;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: $lp-spacing-xs;
+			box-sizing: border-box;
+			min-width: 94px;
+			height: 40px;
+			min-height: 40px;
+			padding: 0 $lp-spacing-md;
+			border: 1px solid transparent;
+			border-radius: $lp-radius-sm;
+			color: $lp-bg;
+			background: $lp-primary;
+			font-size: $lp-font-sm;
+			font-weight: $lp-font-weight-medium;
+			cursor: pointer;
+
+			&:hover,
+			&:focus-visible,
+			&[aria-expanded="true"] {
+				background: $lp-primary-hover;
+				outline: none;
+				box-shadow: $lp-focus-ring;
+			}
+		}
+
+		&__menu {
+			position: absolute;
+			top: 100%;
+			inset-inline: 0;
+			z-index: 9;
+			display: none;
+			flex-wrap: wrap;
+			padding: $lp-spacing-md;
+			border: 1px solid $lp-border;
+			border-radius: $lp-radius-sm;
+			background: $lp-bg;
+			box-shadow: $lp-shadow-md;
+		}
+	}
+
+	.lp-themes-toolbar.is-filter-open .lp-themes-filter__menu {
+		display: flex;
+	}
+
+	.lp-themes-toolbar.is-filter-open .lp-themes-filter__toggle {
+		background: $lp-primary-hover;
 	}
 
 	.lp-themes-search {
-		width: 100%;
+		order: 2;
+		margin-inline-start: auto;
+
+		&__field {
+			gap: $lp-spacing-xs;
+			padding: $lp-spacing-sm $lp-spacing-md;
+		}
+
+		&__close {
+			width: 40px;
+			height: 40px;
+			min-width: 40px;
+			min-height: 40px;
+		}
+	}
+
+	.learn-press-themes input.lp-themes-search__input,
+	.wrap .lp-themes-search input.lp-themes-search__input {
+		height: 40px;
+		min-height: 40px;
 	}
 }
 
 @media (max-width: 782px) {
-	.lp-themes-filter__item {
-		flex: 0 0 auto;
-	}
-
-	.lp-themes-toolbar {
-		padding: $lp-spacing-md;
-	}
-}
-
-@media (max-width: 500px) {
 	.lp-themes-toolbar {
 		padding: $lp-spacing-md;
 	}
@@ -491,6 +661,12 @@
 	.lp-themes-filter__item {
 		padding-inline: $lp-spacing-sm;
 		font-size: $lp-font-sm;
+	}
+}
+
+@media (max-width: 500px) {
+	.lp-themes-toolbar {
+		padding: $lp-spacing-md;
 	}
 
 	.lp-themes-grid {

@@ -14,8 +14,12 @@ export class LPThemes {
 		container: '.learn-press-themes',
 		elListThemes: '.lp-themes-grid',
 		filter: '.lp-themes-filter__item',
+		filterToggle: '.lp-themes-filter__toggle',
 		count: '.lp-themes-filter__count',
 		search: '.lp-themes-search__input',
+		searchContainer: '.lp-themes-search',
+		searchButton: '.lp-themes-search__btn',
+		searchClose: '.lp-themes-search__close',
 		card: '.lp-theme-card',
 		title: '.lp-theme-card__title',
 		description: '.lp-theme-card__description',
@@ -56,6 +60,91 @@ export class LPThemes {
 				class: this,
 			},
 		] );
+
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: LPThemes.selectors.searchButton,
+				callBack: this.openSearch.name,
+				class: this,
+			},
+			{
+				selector: LPThemes.selectors.searchClose,
+				callBack: this.closeSearch.name,
+				class: this,
+			},
+			{
+				selector: LPThemes.selectors.filterToggle,
+				callBack: this.toggleFilterMenu.name,
+				class: this,
+			},
+		] );
+
+		document.addEventListener( 'click', ( event ) => {
+			const toolbar = this.container?.querySelector( '.lp-themes-toolbar' );
+			if (
+				toolbar?.classList.contains( 'is-filter-open' ) &&
+				! toolbar.contains( event.target )
+			) {
+				this.toggleFilterMenu( false );
+			}
+		} );
+
+		document.addEventListener( 'keydown', ( event ) => {
+			if ( 'Escape' === event.key ) {
+				this.closeSearch();
+				this.toggleFilterMenu( false );
+			}
+		} );
+	}
+
+	/** Toggle the tablet and mobile category menu. */
+	toggleFilterMenu( open ) {
+		const toolbar = this.container.querySelector( '.lp-themes-toolbar' );
+		const button = this.container.querySelector(
+			LPThemes.selectors.filterToggle
+		);
+		if ( ! toolbar || ! button ) {
+			return;
+		}
+
+		const shouldOpen =
+			typeof open === 'boolean'
+				? open
+				: ! toolbar.classList.contains( 'is-filter-open' );
+		toolbar.classList.toggle( 'is-filter-open', shouldOpen );
+		button.setAttribute( 'aria-expanded', shouldOpen ? 'true' : 'false' );
+	}
+
+	/** Open the compact search field. */
+	openSearch() {
+		const search = this.container.querySelector( LPThemes.selectors.searchContainer );
+		if ( ! search ) {
+			return;
+		}
+
+		this.toggleFilterMenu( false );
+		search.classList.add( 'is-open' );
+		search.querySelector( LPThemes.selectors.searchButton )?.setAttribute( 'aria-expanded', 'true' );
+		search.querySelector( LPThemes.selectors.search )?.focus();
+	}
+
+	/** Close the compact search field. */
+	closeSearch() {
+		if ( ! this.container ) {
+			return;
+		}
+
+		const search = this.container.querySelector( LPThemes.selectors.searchContainer );
+		if ( ! search ) {
+			return;
+		}
+		if ( ! search.classList.contains( 'is-open' ) ) {
+			return;
+		}
+
+		search.classList.remove( 'is-open' );
+		search.querySelector( LPThemes.selectors.searchButton )?.setAttribute( 'aria-expanded', 'false' );
+		search.querySelector( LPThemes.selectors.searchButton )?.focus();
 	}
 
 	/**
@@ -100,6 +189,7 @@ export class LPThemes {
 		}
 
 		e.preventDefault();
+		this.toggleFilterMenu( false );
 		container
 			.querySelectorAll( LPThemes.selectors.filter )
 			.forEach( ( item ) => {
