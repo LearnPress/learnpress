@@ -1,0 +1,44 @@
+# Plan — student-notes
+
+## Steps
+- [ ] Step 1: Table — `tb_lp_notes` in `DataBase.php`, `create_table_notes()` + `LP_Settings::is_created_tb_notes()` guard in `class-lp-install.php`
+- [ ] Step 2: `NoteFilter`, `NoteDB` (get_notes, stats counts), `NoteModel` (find / save / delete / get_anchor) + tests
+- [ ] Step 3: `NoteService` — can_create, can_manage (owner), can_view (owner/admin/course author), validate payload + tests
+- [ ] Step 4: `NoteAjax` — note_list / note_save / note_delete; register in `learnpress.php` AJAX catch list
+- [ ] Step 5: `CourseNoteTemplate` — launcher icon, panel markup on `wp_footer`, localize data; only on lesson items, setting enabled
+- [ ] Step 6: JS panel — list / add text note / edit / delete via `window.lpAJAXG`, Toastify messages
+- [ ] Step 7: JS highlight — selection → floating "Add Note", build anchor, re-anchor + render `<mark>`, orphan handling, AJAX item switch
+- [ ] Step 8: Read-only view for admin/instructor via `?lp_note_user=`
+- [ ] Step 9: Backend "Student Notes" page — stats, `html_form_filter()` + `html_tom_select()`, `TableListTemplate`, `html_pagination()`
+- [ ] Step 10: Cleanup hooks, GDPR exporter/eraser, enable setting
+- [ ] Step 11: SCSS, `npm run build`, PHPCS, PHPUnit, manual test (classic + modern layout)
+
+## Files to create
+| File | Purpose |
+|------|---------|
+| `inc/Databases/NoteDB.php` | Queries for notes table |
+| `inc/Filters/NoteFilter.php` | Query criteria |
+| `inc/Models/Note/NoteModel.php` | Note entity |
+| `inc/Services/NoteService.php` | Permissions + business rules |
+| `inc/Ajax/NoteAjax.php` | Frontend AJAX handlers |
+| `inc/TemplateHooks/Course/CourseNoteTemplate.php` | Launcher + panel |
+| `inc/TemplateHooks/Admin/AdminStudentNotesTemplate.php` | Backend page |
+| `assets/src/js/frontend/course-notes.js` | Panel + highlight logic |
+| `assets/src/scss/frontend/_course-notes.scss` | Styles |
+| `tests/test-note-db.php`, `tests/test-note-service.php` | Tests |
+
+## Files to modify
+| File | Change |
+|------|--------|
+| `inc/Databases/DataBase.php` | Add `$tb_lp_notes` |
+| `inc/class-lp-install.php` | Create table |
+| `inc/settings/...` (LP_Settings) | `is_created_tb_notes()` |
+| `learnpress.php` | Register `NoteAjax::catch_lp_ajax()`, init templates |
+| `inc/admin/class-lp-admin-menu.php` | "Student Notes" submenu |
+| Webpack config | New JS entry |
+
+## Format code when create file done run > php vendor/squizlabs/php_codesniffer/bin/phpcs --standard=phpcs.xml [file-name]
+
+## Open questions
+- Frontend for admin/instructor = read-only view of one student's notes via `?lp_note_user=` (assumed — confirm)
+- Instructor submenu capability: which cap gates the page for `lp_teacher` role? (check existing instructor-accessible admin pages)
