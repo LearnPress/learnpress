@@ -116,13 +116,10 @@ class AdminNotesTemplate {
 		}
 
 		$message = sprintf(
-			'<div>%s</div>',
-			sprintf(
-				'<strong>wp_remote</strong>: %s. <a href="%s">%s</a>',
-				$result->get_error_message(),
-				esc_url( admin_url( 'site-health.php' ) ),
-				esc_html__( 'Check Site Health', 'learnpress' )
-			)
+			'<strong>wp_remote</strong>: %s. <a href="%s">%s</a>',
+			$result->get_error_message(),
+			esc_url( admin_url( 'site-health.php' ) ),
+			esc_html__( 'Check Site Health', 'learnpress' )
 		);
 
 		return Template::print_message( $message, 'error', false );
@@ -140,17 +137,14 @@ class AdminNotesTemplate {
 			return '';
 		}
 
-		$message = sprintf(
-			'<div>%s</div>',
-			sprintf(
-			/* translators: 1: expected plugin basename wrapped in strong, 2: current plugin basename wrapped in strong */
-				__(
-					'The LearnPress plugin base directory must be %1$s (case-sensitive) to ensure all functions work properly and are fully operational (currently %2$s).',
-					'learnpress'
-				),
-				'<strong>learnpress/learnpress.php</strong>',
-				'<strong>' . LP_PLUGIN_BASENAME . '</strong>'
-			)
+		$message =  sprintf(
+		/* translators: 1: expected plugin basename wrapped in strong, 2: current plugin basename wrapped in strong */
+			__(
+				'The LearnPress plugin base directory must be %1$s (case-sensitive) to ensure all functions work properly and are fully operational (currently %2$s).',
+				'learnpress'
+			),
+			'<strong>learnpress/learnpress.php</strong>',
+			'<strong>' . LP_PLUGIN_BASENAME . '</strong>'
 		);
 
 		return Template::print_message( $message, 'warning', false );
@@ -162,6 +156,7 @@ class AdminNotesTemplate {
 	 * @param array $data Request arguments.
 	 *
 	 * @return string
+	 * @throws Exception
 	 */
 	public static function html_lp_upgrade_db( array $data = [] ): string {
 		if ( ! LP_Updater::instance()->check_lp_db_need_upgrade() ) {
@@ -169,16 +164,13 @@ class AdminNotesTemplate {
 		}
 
 		$message = sprintf(
-			'<div>%s</div>',
-			sprintf(
-				'%s
-					<div style="margin-top: 0.5em">
-						<a class="button lp-btn-go-upgrade-db" data-context="message" href="%s">%s</a>
-					</div>',
-				__( '<strong>LearnPress update</strong> – We need to update your database to the latest version.', 'learnpress' ),
-				admin_url( 'admin.php?page=learn-press-tools&tab=database&action=upgrade-db' ),
-				esc_html__( 'Go to Update', 'learnpress' )
-			)
+			'%s
+				<div style="margin-top: 0.5em">
+					<a class="button lp-btn-go-upgrade-db" data-context="message" href="%s">%s</a>
+				</div>',
+			__( '<strong>LearnPress update</strong> – We need to update your database to the latest version.', 'learnpress' ),
+			admin_url( 'admin.php?page=learn-press-tools&tab=database&action=upgrade-db' ),
+			esc_html__( 'Go to Update', 'learnpress' )
 		);
 
 		return Template::print_message( $message, 'warning', false );
@@ -198,11 +190,8 @@ class AdminNotesTemplate {
 		}
 
 		$message = sprintf(
-			'<div>%s</div>',
-			sprintf(
-				'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.',
-				admin_url( 'options-permalink.php' )
-			)
+			'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.',
+			admin_url( 'options-permalink.php' )
 		);
 
 		return Template::print_message( $message, 'warning', false );
@@ -292,14 +281,11 @@ class AdminNotesTemplate {
 		}
 
 		$message = sprintf(
-			'<div>%s</div>',
-			sprintf(
-				'%1$s <strong><a style="color: #E64B50" href="%2$s">%3$s</a></strong>%4$s',
-				esc_html__( 'You have LearnPress Add-on licenses that need to be extended.', 'learnpress' ),
-				esc_url( admin_url( 'admin.php?page=learn-press-addons&tab=license' ) ),
-				esc_html__( 'Check now!', 'learnpress' ),
-				self::html_button_dismiss( 'lp-addons-purchased-extend' )
-			)
+			'%1$s <strong><a style="color: #E64B50" href="%2$s">%3$s</a></strong>%4$s',
+			esc_html__( 'You have LearnPress Add-on licenses that need to be extended.', 'learnpress' ),
+			esc_url( admin_url( 'admin.php?page=learn-press-addons&tab=license' ) ),
+			esc_html__( 'Check now!', 'learnpress' ),
+			self::html_button_dismiss( 'lp-addons-purchased-extend' )
 		);
 
 		return Template::print_message(
@@ -344,25 +330,22 @@ class AdminNotesTemplate {
 		);
 
 		$message = sprintf(
-			'<div>%s</div>',
-			sprintf(
-				'<h3>%1$s</h3>
-				<p>%2$s</p>
-				<p>
-					<a class="button" href="%3$s" target="_blank">%4$s</a>
-					<a class="button" href="%5$s" target="_blank">%6$s</a>
-					<a class="button" href="%7$s" target="_blank">%8$s</a>
-				</p>%9$s',
-				esc_html( $title ),
-				esc_html( $description ),
-				esc_url( $link_download ),
-				__( 'Download', 'learnpress' ),
-				esc_url( $link_feedback ),
-				__( 'Feedback', 'learnpress' ),
-				esc_url( $link_changelog ),
-				__( 'Changelog', 'learnpress' ),
-				self::html_button_dismiss( 'lp-beta-version' )
-			)
+			'<h3>%1$s</h3>
+			<p>%2$s</p>
+			<p>
+				<a class="button" href="%3$s" target="_blank">%4$s</a>
+				<a class="button" href="%5$s" target="_blank">%6$s</a>
+				<a class="button" href="%7$s" target="_blank">%8$s</a>
+			</p>%9$s',
+			esc_html( $title ),
+			esc_html( $description ),
+			esc_url( $link_download ),
+			__( 'Download', 'learnpress' ),
+			esc_url( $link_feedback ),
+			__( 'Feedback', 'learnpress' ),
+			esc_url( $link_changelog ),
+			__( 'Changelog', 'learnpress' ),
+			self::html_button_dismiss( 'lp-beta-version' )
 		);
 
 		return Template::print_message( $message, 'info', false );
