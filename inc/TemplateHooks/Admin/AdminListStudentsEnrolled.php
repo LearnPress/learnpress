@@ -101,6 +101,7 @@ class AdminListStudentsEnrolled {
 				'enableUpdateParamsUrl' => false,
 			);
 
+			/** @use self::render_enrolled_students $call_back */
 			$call_back = array(
 				'class'  => self::class,
 				'method' => 'render_enrolled_students',

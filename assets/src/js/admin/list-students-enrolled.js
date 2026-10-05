@@ -13,11 +13,11 @@ export class ListStudentsEnrolled {
 	constructor() {
 		this.instructorId = null;
 		this.elContainer = null;
-		this.isRequesting = false;
 	}
 
 	static selectors = {
 		elContainer: '.lp-enrolled-students',
+		elLayout: '.lp-students-enrolled-layout',
 		elForm: '.lp-enrolled-students-form',
 		elLPTarget: '.lp-target',
 		elCourseNameInput: '.lp-enrolled-filter-course-name',
@@ -63,13 +63,11 @@ export class ListStudentsEnrolled {
 		lpUtils.eventHandlers( 'click', [
 			{
 				selector: ListStudentsEnrolled.selectors.elBtnSearch,
-				class: this,
-				callBack: this.searchStudents.name,
+				callBack: this.searchStudents.bind( this ),
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elBtnClear,
-				class: this,
-				callBack: this.clearFilters.name,
+				callBack: this.clearFilters.bind( this ),
 			},
 		] );
 
@@ -77,26 +75,22 @@ export class ListStudentsEnrolled {
 		lpUtils.eventHandlers( 'keydown', [
 			{
 				selector: ListStudentsEnrolled.selectors.elSearchInput,
-				class: this,
-				callBack: this.triggerBtnSearch.name,
+				callBack: this.triggerBtnSearch.bind( this ),
 				checkIsEventEnter: true,
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elCourseNameInput,
-				class: this,
-				callBack: this.triggerBtnSearch.name,
+				callBack: this.triggerBtnSearch.bind( this ),
 				checkIsEventEnter: true,
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elStartDateInput,
-				class: this,
-				callBack: this.triggerBtnSearch.name,
+				callBack: this.triggerBtnSearch.bind( this ),
 				checkIsEventEnter: true,
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elEndDateInput,
-				class: this,
-				callBack: this.triggerBtnSearch.name,
+				callBack: this.triggerBtnSearch.bind( this ),
 				checkIsEventEnter: true,
 			},
 		] );
@@ -104,13 +98,11 @@ export class ListStudentsEnrolled {
 		lpUtils.eventHandlers( 'change', [
 			{
 				selector: ListStudentsEnrolled.selectors.elStartDateInput,
-				class: this,
-				callBack: this.checkDatesRange.name,
+				callBack: this.checkDatesRange.bind( this ),
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elEndDateInput,
-				class: this,
-				callBack: this.checkDatesRange.name,
+				callBack: this.checkDatesRange.bind( this ),
 			},
 		] );
 	}
@@ -139,16 +131,19 @@ export class ListStudentsEnrolled {
 		}
 
 		const startDateInput = elForm.querySelector(
-			ListStudentsEnrolled.selectors.elStartDateInput,
+			ListStudentsEnrolled.selectors.elStartDateInput
 		);
 		const endDateInput = elForm.querySelector(
-			ListStudentsEnrolled.selectors.elEndDateInput,
+			ListStudentsEnrolled.selectors.elEndDateInput
 		);
 
 		if ( elInput === startDateInput ) {
 			if ( startDateInput.value ) {
 				endDateInput.min = startDateInput.value;
-				if ( endDateInput.value && endDateInput.value < startDateInput.value ) {
+				if (
+					endDateInput.value &&
+					endDateInput.value < startDateInput.value
+				) {
 					endDateInput.value = startDateInput.value;
 				}
 			} else {
@@ -157,7 +152,10 @@ export class ListStudentsEnrolled {
 		} else if ( elInput === endDateInput ) {
 			if ( endDateInput.value ) {
 				startDateInput.max = endDateInput.value;
-				if ( startDateInput.value && startDateInput.value > endDateInput.value ) {
+				if (
+					startDateInput.value &&
+					startDateInput.value > endDateInput.value
+				) {
 					startDateInput.value = endDateInput.value;
 				}
 			} else {
@@ -236,19 +234,16 @@ export class ListStudentsEnrolled {
 		const btn = args?.target?.closest(
 			ListStudentsEnrolled.selectors.elBtnSearch
 		);
-		if ( btn ) {
-			if (
-				this.isRequesting ||
-				btn.classList.contains( 'loading' )
-			) {
-				return;
-			}
-		} else if ( this.isRequesting ) {
+
+		if ( ! btn ) {
 			return;
 		}
 
 		const elForm = btn.closest( ListStudentsEnrolled.selectors.elForm );
-		const elLPTarget = this.elContainer.querySelector(
+		const elLayout = elForm.closest(
+			ListStudentsEnrolled.selectors.elLayout
+		);
+		const elLPTarget = elLayout.querySelector(
 			ListStudentsEnrolled.selectors.elLPTarget
 		);
 		if ( ! elLPTarget || ! elForm ) {
@@ -285,19 +280,16 @@ export class ListStudentsEnrolled {
 		const btn = args?.target?.closest(
 			ListStudentsEnrolled.selectors.elBtnClear
 		);
-		if ( btn ) {
-			if (
-				this.isRequesting ||
-				btn.classList.contains( 'loading' )
-			) {
-				return;
-			}
-		} else if ( this.isRequesting ) {
+
+		if ( ! btn ) {
 			return;
 		}
 
 		const elForm = btn.closest( ListStudentsEnrolled.selectors.elForm );
-		const elLPTarget = this.elContainer.querySelector(
+		const elLayout = elForm.closest(
+			ListStudentsEnrolled.selectors.elLayout
+		);
+		const elLPTarget = elLayout.querySelector(
 			ListStudentsEnrolled.selectors.elLPTarget
 		);
 		if ( ! elLPTarget || ! elForm ) {
@@ -334,12 +326,10 @@ export class ListStudentsEnrolled {
 	reloadContent( elLPTarget, dataSend, btn = null ) {
 		const ajaxHandle = this.getAjaxHandle();
 		if ( ! ajaxHandle ) {
-			this.isRequesting = false;
 			this.setButtonLoadingState( btn, false );
 			return;
 		}
 
-		this.isRequesting = true;
 		ajaxHandle.showHideLoading( elLPTarget, 1 );
 
 		const callBack = {
@@ -351,7 +341,6 @@ export class ListStudentsEnrolled {
 			},
 			error: ( error ) => console.error( error ),
 			completed: () => {
-				this.isRequesting = false;
 				ajaxHandle.showHideLoading( elLPTarget, 0 );
 				this.setButtonLoadingState( btn, false );
 			},
