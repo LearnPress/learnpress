@@ -468,6 +468,18 @@ class LP_Settings {
 		return $lp_db->check_table_exists( $lp_db->tb_lp_webhooks );
 	}
 
+	/**
+	 * Check table learnpress_notes is created.
+	 *
+	 * @return bool
+	 * @throws Exception
+	 * @since 4.4.9.2
+	 */
+	public static function is_created_tb_notes(): bool {
+		$lp_db = DataBase::getInstance();
+		return $lp_db->check_table_exists( $lp_db->tb_lp_notes );
+	}
+
 	public static function lp_material_file_types(): array {
 		return array(
 			'txt'      => 'text/plain',
