@@ -979,7 +979,7 @@ class AdminAddonsPage {
 				esc_attr__( 'Enter Purchase Code', 'learnpress' )
 			),
 			'field_end'   => '</label>',
-			'submit'      => '<button class="lp-button btn-addon-action lp-addon-purchase__submit"
+			'submit'      => '<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--primary lp-addon-purchase__submit"
 				data-action="install" type="button">',
 			'submit_text' => sprintf( '<span class="text">%s</span>', esc_html__( 'Submit', 'learnpress' ) ),
 			'submit_end'  => '</button>',
@@ -988,7 +988,7 @@ class AdminAddonsPage {
 				esc_html__( 'Don\'t have a code?', 'learnpress' )
 			),
 			'buy'         => sprintf(
-				'<a class="btn-addon-action lp-addon-purchase__buy" href="%s" target="_blank" rel="noopener">%s</a>',
+				'<a class="btn-addon-action lp-addon-purchase__buy lp-be-btn lp-be-btn--outline" href="%s" target="_blank" rel="noopener">%s</a>',
 				esc_url( $addon->link ?? '' ),
 				esc_html__( 'Buy Now', 'learnpress' )
 			),

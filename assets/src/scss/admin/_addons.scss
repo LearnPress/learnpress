@@ -575,27 +575,9 @@
 		}
 	}
 
-	&__submit.btn-addon-action,
-	&__buy.btn-addon-action {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
+	&__submit,
+	&__buy {
 		width: 100%;
-		min-height: 40px;
-		border-radius: $lp-radius-sm;
-	}
-
-	&__buy.btn-addon-action {
-		border-color: $lp-border-input;
-		color: $lp-text-secondary;
-		background: $lp-bg;
-
-		&:hover,
-		&:focus {
-			border-color: $lp-primary;
-			color: $lp-primary;
-			background: $lp-bg-hover;
-		}
 	}
 
 	&__close.btn-addon-action[data-action="cancel"] {
