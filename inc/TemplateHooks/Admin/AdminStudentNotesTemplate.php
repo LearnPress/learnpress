@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
  * Admin page: Student Notes.
  *
  * Admins review all notes; instructors only notes of courses they author / co-instruct.
- * Server rendered: filters, sorting and pagination are GET params of the page URL.
+ * Server rendered: filters and pagination are GET params of the page URL. Newest notes first.
  *
  * @since 4.4.9.2
  * @version 1.0.0
@@ -32,17 +32,6 @@ class AdminStudentNotesTemplate {
 	const PAGE_SLUG = 'learn-press-student-notes';
 	const PER_PAGE  = 20;
 	const EXCERPT   = 80;
-
-	/**
-	 * Sortable columns: request key => SQL column.
-	 */
-	const SORT_COLUMNS = array(
-		'student' => 'u.display_name',
-		'course'  => 'c.post_title',
-		'lesson'  => 'l.post_title',
-		'type'    => 'n.note_type',
-		'created' => 'n.created_at',
-	);
 
 	public function init() {
 	}
@@ -75,17 +64,13 @@ class AdminStudentNotesTemplate {
 	 * @return array
 	 */
 	public function get_request_args(): array {
-		$orderby = LP_Request::get_param( 'orderby', 'created', 'key', 'get' );
-		$order   = strtolower( LP_Request::get_param( 'order', 'desc', 'key', 'get' ) );
-		$type    = LP_Request::get_param( 'note_type', '', 'key', 'get' );
+		$type = LP_Request::get_param( 'note_type', '', 'key', 'get' );
 
 		return array(
 			'student'   => absint( LP_Request::get_param( 'student', 0, 'int', 'get' ) ),
 			'course'    => absint( LP_Request::get_param( 'course', 0, 'int', 'get' ) ),
 			'note_type' => in_array( $type, array( NoteModel::TYPE_TEXT, NoteModel::TYPE_HIGHLIGHT ), true ) ? $type : '',
 			's'         => trim( LP_Request::get_param( 's', '', 'text', 'get' ) ),
-			'orderby'   => isset( self::SORT_COLUMNS[ $orderby ] ) ? $orderby : 'created',
-			'order'     => 'asc' === $order ? 'asc' : 'desc',
 			'paged'     => max( 1, absint( LP_Request::get_param( 'paged', 1, 'int', 'get' ) ) ),
 		);
 	}
@@ -105,8 +90,6 @@ class AdminStudentNotesTemplate {
 				'course'    => $args['course'] ?? 0,
 				'note_type' => $args['note_type'] ?? '',
 				's'         => $args['s'] ?? '',
-				'orderby'   => $args['orderby'] ?? '',
-				'order'     => $args['order'] ?? '',
 			),
 			$change
 		);
@@ -194,9 +177,9 @@ class AdminStudentNotesTemplate {
 		$filter        = $this->apply_request_filters( clone $scope, $args );
 		$filter->limit = self::PER_PAGE;
 		$filter->page  = $args['paged'];
-		$filter->order = strtoupper( $args['order'] );
-		// note_id breaks ties (same second) so pages never overlap.
-		$filter->order_by    = self::SORT_COLUMNS[ $args['orderby'] ] . ' ' . $filter->order . ', n.note_id';
+		// Newest first; note_id breaks ties (same second) so pages never overlap.
+		$filter->order_by    = 'n.created_at DESC, n.note_id';
+		$filter->order       = NoteFilter::ORDER_DESC;
 		$filter->field_count = NoteFilter::COL_NOTE_ID;
 		$total_rows          = 0;
 		$rows                = $db->get_notes( $filter, $total_rows );
@@ -301,8 +284,6 @@ class AdminStudentNotesTemplate {
 		};
 
 		$fields = sprintf( '<input type="hidden" name="page" value="%s">', esc_attr( self::PAGE_SLUG ) )
-			. sprintf( '<input type="hidden" name="orderby" value="%s">', esc_attr( $args['orderby'] ) )
-			. sprintf( '<input type="hidden" name="order" value="%s">', esc_attr( $args['order'] ) )
 			. $field(
 				__( 'Student', 'learnpress' ),
 				str_replace(
@@ -409,23 +390,9 @@ class AdminStudentNotesTemplate {
 
 		$header = array();
 		foreach ( $columns as $key => $title ) {
-			$sortable = isset( self::SORT_COLUMNS[ $key ] );
-			$sorted   = $sortable && $args['orderby'] === $key;
-			$next     = $sorted && 'asc' === $args['order'] ? 'desc' : 'asc';
-
 			$header[ $key ] = array(
-				'class'      => 'lp-col-' . $key,
-				'title'      => esc_html( $title ),
-				'sortable'   => $sortable,
-				'sorted'     => $sorted,
-				'sort_order' => $args['order'],
-				'sort_url'   => $sortable ? $this->get_page_url(
-					$args,
-					array(
-						'orderby' => $key,
-						'order'   => $next,
-					)
-				) : '',
+				'class' => 'lp-col-' . $key,
+				'title' => esc_html( $title ),
 			);
 		}
 
