@@ -45,7 +45,7 @@ $wizard_step_keys = array_keys( $wizard_steps );
 						<span class="lp-setup-button__label"><?php echo wp_kses_post( $step['next_button'] ); ?></span>
 					</button>
 					<a class="button-dismiss-setup" href="<?php echo esc_url( admin_url( 'index.php' ) ); ?>">
-						<?php esc_html_e( 'Dismiss Setup Wizard', 'learnpress' ); ?>
+						<?php esc_html_e( 'Back to Dashboard', 'learnpress' ); ?>
 					</a>
 				</div>
 			<?php } else { ?>
@@ -90,7 +90,7 @@ $wizard_step_keys = array_keys( $wizard_steps );
 							</button>
 						<?php } else { ?>
 							<a class="lp-button button-link button-skip-next" href="<?php echo esc_url( $next_url ); ?>">
-								<?php esc_html_e( 'Skip this step', 'learnpress' ); ?>
+								<?php esc_html_e( 'Skip This Step', 'learnpress' ); ?>
 							</a>
 							<button type="button" class="lp-button button button-next button-primary" data-next-url="<?php echo esc_url( $next_url ); ?>">
 								<span class="lp-setup-button__label"><?php echo ! empty( $step['next_button'] ) ? wp_kses_post( $step['next_button'] ) : esc_html__( 'Next', 'learnpress' ); ?></span>
