@@ -19,6 +19,7 @@ export class LPThemes {
 		search: '.lp-themes-search__input',
 		searchContainer: '.lp-themes-search',
 		searchButton: '.lp-themes-search__btn',
+		searchClear: '.lp-themes-search__btn-clear',
 		searchClose: '.lp-themes-search__close',
 		card: '.lp-theme-card',
 		title: '.lp-theme-card__title',
@@ -65,6 +66,11 @@ export class LPThemes {
 			{
 				selector: LPThemes.selectors.searchButton,
 				callBack: this.openSearch.name,
+				class: this,
+			},
+			{
+				selector: LPThemes.selectors.searchClear,
+				callBack: this.clearSearch.name,
 				class: this,
 			},
 			{
@@ -125,6 +131,7 @@ export class LPThemes {
 		this.toggleFilterMenu( false );
 		search.classList.add( 'is-open' );
 		search.querySelector( LPThemes.selectors.searchButton )?.setAttribute( 'aria-expanded', 'true' );
+		this.updateSearchClearBtnState();
 		search.querySelector( LPThemes.selectors.search )?.focus();
 	}
 
@@ -144,7 +151,31 @@ export class LPThemes {
 
 		search.classList.remove( 'is-open' );
 		search.querySelector( LPThemes.selectors.searchButton )?.setAttribute( 'aria-expanded', 'false' );
+		this.updateSearchClearBtnState();
 		search.querySelector( LPThemes.selectors.searchButton )?.focus();
+	}
+
+	/** Clear the search input field and re-filter themes. */
+	clearSearch( args ) {
+		if ( args?.e ) {
+			args.e.preventDefault();
+		}
+		const search = this.container?.querySelector( LPThemes.selectors.search );
+		if ( search ) {
+			search.value = '';
+			this.updateSearchClearBtnState();
+			this.filterThemes();
+			search.focus();
+		}
+	}
+
+	/** Update disabled state of clear search button. */
+	updateSearchClearBtnState() {
+		const search = this.container?.querySelector( LPThemes.selectors.search );
+		const clearBtn = this.container?.querySelector( LPThemes.selectors.searchClear );
+		if ( clearBtn && search ) {
+			clearBtn.disabled = ! search.value.trim();
+		}
 	}
 
 	/**
@@ -210,6 +241,7 @@ export class LPThemes {
 	filterThemes() {
 		const container = this.container;
 		const search = container.querySelector( LPThemes.selectors.search );
+		this.updateSearchClearBtnState();
 		const query = search ? search.value.trim().toLowerCase() : '';
 		const searchTerms = query.split( /\s+/ ).filter( Boolean );
 		const active = container.querySelector(

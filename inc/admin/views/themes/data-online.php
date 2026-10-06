@@ -58,8 +58,9 @@ defined( 'ABSPATH' ) || exit;
 				<label class="lp-themes-search__input-wrap lp-be-search__input-wrap">
 					<span class="screen-reader-text"><?php esc_html_e( 'Search theme by name', 'learnpress' ); ?></span>
 					<span class="lp-themes-search__icon lp-be-search__icon lp-icon-search" aria-hidden="true"></span>
-					<input type="search" class="lp-themes-search__input lp-be-search__input" placeholder="<?php esc_attr_e( 'Search theme by name', 'learnpress' ); ?>" />
+					<input type="search" class="lp-themes-search__input lp-be-search__input" placeholder="<?php esc_attr_e( 'Search theme by name', 'learnpress' ); ?>" autocomplete="off" />
 				</label>
+				<button type="button" class="lp-themes-search__btn-clear lp-be-search__btn-clear" disabled><?php esc_html_e( 'Clear', 'learnpress' ); ?></button>
 				<button type="button" class="lp-themes-search__close lp-be-search__close" aria-label="<?php esc_attr_e( 'Close search', 'learnpress' ); ?>"><span aria-hidden="true">&times;</span></button>
 			</div>
 		</div>
