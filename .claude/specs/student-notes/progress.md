@@ -46,7 +46,6 @@
 - Opening Notes closes AI Assistant and vice versa (`lp-footer-panel:open` document event)
 - Frontend for admin/instructor = read-only view of a student's notes via `?lp_note_user=` (assumed, user said "continue")
 - Admin/instructor cannot edit or delete student notes (view only)
-- Admin page: mockup is only a wireframe; keep its layout, style with default WP admin components (`.postbox`, native selects, `.button`, `wp-list-table` + responsive `toggle-row`, `tablenav-pages`, `get_avatar()`); no column sorting, newest first; full note shown in the LP modal (SweetAlert2 + server-rendered `<template>`, `assets/src/js/admin/student-notes.js`, like the View Students / Statistics report modals); Type shown as colored pills (highlight yellow, text green)
 - Edit keeps item/type/anchor; only content changes
 - Note text output must always be escaped (`esc_html` / `textContent`); a lone "<" is stored as-is, "x<y" style input is stored as "x&lt;y"
 

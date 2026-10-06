@@ -18,7 +18,6 @@ module.exports = {
 		'./assets/dist/js/admin/edit-question': './assets/src/js/admin/edit-question.js',
 		'./assets/dist/js/admin/setup-wizard': './assets/src/js/admin/setup-wizard.js',
 		'./assets/dist/js/admin/list-students-enrolled': './assets/src/js/admin/list-students-enrolled.js',
-		'./assets/dist/js/admin/student-notes': './assets/src/js/admin/student-notes.js',
 		'./assets/dist/js/admin/lp-themes': './assets/src/js/admin/lp-themes.js',
 		'./assets/dist/js/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
 		'./assets/dist/js/frontend/course-builder': './assets/src/js/frontend/course-builder.js',

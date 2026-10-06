@@ -594,15 +594,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					array( 'strategy' => 'async' )
 				),
-				'lp-admin-student-notes'    => new LP_Asset_Key(
-					$this->url( 'dist/js/admin/student-notes' . self::$_min_assets . '.js' ),
-					array(),
-					array( 'learnpress_page_learn-press-student-notes' ),
-					0,
-					1,
-					'',
-					array( 'strategy' => 'defer' )
-				),
 				'lp-admin-tools'            => new LP_Asset_Key(
 					$this->url( 'dist/js/admin/admin-tools' . self::$_min_assets . '.js' ),
 					array(),
