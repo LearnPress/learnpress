@@ -33,18 +33,6 @@ class AdminStudentNotesTemplate {
 	const EXCERPT   = 80;
 
 	public function init() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
-	}
-
-	/**
-	 * ThickBox (WP default admin modal) for the note details.
-	 *
-	 * @param string $hook_suffix Admin page hook.
-	 */
-	public function enqueue_assets( $hook_suffix ) {
-		if ( 'learnpress_page_' . self::PAGE_SLUG === $hook_suffix ) {
-			add_thickbox();
-		}
 	}
 
 	/**
@@ -536,7 +524,11 @@ class AdminStudentNotesTemplate {
 				'type'    => $td(
 					'type',
 					__( 'Type', 'learnpress' ),
-					esc_html( $is_highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) )
+					sprintf(
+						'<span class="lp-student-notes__type lp-student-notes__type--%1$s">%2$s</span>',
+						esc_attr( $note->note_type ),
+						esc_html( $is_highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) )
+					)
 				),
 				'content' => $td(
 					'content',
@@ -564,7 +556,8 @@ class AdminStudentNotesTemplate {
 	}
 
 	/**
-	 * Content cell: short quote + note, and a "View note" link opening the details in ThickBox.
+	 * Content cell: short quote + note, and a "View note" button opening the details in the LP modal
+	 * (SweetAlert2, assets/src/js/admin/student-notes.js).
 	 *
 	 * @param NoteModel $note      Note.
 	 * @param array     $meta      Label => HTML (already escaped) shown in the modal.
@@ -582,7 +575,7 @@ class AdminStudentNotesTemplate {
 		}
 
 		$detail = sprintf(
-			'<div id="%1$s" style="display:none;">
+			'<template id="%1$s">
 				<div class="lp-student-notes__detail">
 					<table class="form-table" role="presentation"><tbody>%2$s</tbody></table>
 					%3$s
@@ -590,7 +583,7 @@ class AdminStudentNotesTemplate {
 					<p>%5$s</p>
 					%6$s
 				</div>
-			</div>',
+			</template>',
 			esc_attr( $detail_id ),
 			$rows,
 			'' !== $quote
@@ -608,9 +601,9 @@ class AdminStudentNotesTemplate {
 		);
 
 		return sprintf(
-			'%1$s<a href="%2$s" class="thickbox lp-student-notes__view" title="%3$s">%4$s</a>%5$s',
+			'%1$s<button type="button" class="button-link lp-student-notes__view" data-template="%2$s" data-title="%3$s">%4$s</button>%5$s',
 			$this->html_note_text( $this->excerpt( $quote, 60 ), $this->excerpt( $note->content, self::EXCERPT ) ),
-			esc_url( '#TB_inline?width=640&height=480&inlineId=' . $detail_id ),
+			esc_attr( $detail_id ),
 			esc_attr__( 'Student note', 'learnpress' ),
 			esc_html__( 'View note', 'learnpress' ),
 			$detail

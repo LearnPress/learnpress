@@ -130,12 +130,39 @@
 	}
 
 	&__view {
-		display: inline-block;
 		margin-top: 2px;
+	}
+
+	// Note type pill, easy to tell apart at a glance.
+	&__type {
+		display: inline-block;
+		padding: 1px 10px;
+		border: 1px solid;
+		border-radius: 999px;
+		font-size: 12px;
+		line-height: 1.7;
+		white-space: nowrap;
+
+		&--highlight {
+			border-color: #dba617;
+			background: #fcf9e8;
+			color: #996800;
+		}
+
+		&--text {
+			border-color: #68de7c;
+			background: #edfaef;
+			color: #007017;
+		}
 	}
 }
 
-// Note details inside ThickBox (rendered outside .lp-student-notes).
+// Note details inside the LP modal (SweetAlert2, rendered outside .lp-student-notes).
+.lp-student-notes-modal .swal2-html-container {
+	font-size: 13px;
+	text-align: left;
+}
+
 .lp-student-notes__detail {
 	.form-table {
 		margin-top: 0;
