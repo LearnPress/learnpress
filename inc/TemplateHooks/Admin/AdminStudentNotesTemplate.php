@@ -8,11 +8,8 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Note\NoteModel;
-use LearnPress\Models\UserModel;
 use LearnPress\Services\NoteService;
 use LearnPress\TemplateHooks\Course\CourseNoteTemplate;
-use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
-use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LP_Debug;
 use LP_Request;
 use Throwable;
@@ -36,6 +33,18 @@ class AdminStudentNotesTemplate {
 	const EXCERPT   = 80;
 
 	public function init() {
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+	}
+
+	/**
+	 * ThickBox (WP default admin modal) for the note details.
+	 *
+	 * @param string $hook_suffix Admin page hook.
+	 */
+	public function enqueue_assets( $hook_suffix ) {
+		if ( 'learnpress_page_' . self::PAGE_SLUG === $hook_suffix ) {
+			add_thickbox();
+		}
 	}
 
 	/**
@@ -216,13 +225,13 @@ class AdminStudentNotesTemplate {
 	 */
 	public function html_description(): string {
 		return sprintf(
-			'<p class="lp-student-notes__description">%s</p>',
+			'<p class="description">%s</p>',
 			esc_html__( 'Review notes saved by students across LearnPress courses and lessons.', 'learnpress' )
 		);
 	}
 
 	/**
-	 * Stat cards.
+	 * Stat boxes (WP .postbox).
 	 *
 	 * @param array $stats NoteDB::get_stats().
 	 *
@@ -238,7 +247,7 @@ class AdminStudentNotesTemplate {
 		$html = '';
 		foreach ( $cards as $key => $label ) {
 			$html .= sprintf(
-				'<div class="lp-student-notes__stat"><span class="lp-student-notes__stat-label">%s</span><span class="lp-student-notes__stat-value">%s</span></div>',
+				'<div class="postbox"><div class="inside"><p class="lp-student-notes__stat-label">%1$s</p><p class="lp-student-notes__stat-value">%2$s</p></div></div>',
 				esc_html( $label ),
 				esc_html( number_format_i18n( (int) ( $stats[ $key ] ?? 0 ) ) )
 			);
@@ -248,7 +257,7 @@ class AdminStudentNotesTemplate {
 	}
 
 	/**
-	 * Filter form (GET).
+	 * Filters box (WP .postbox) with a GET form.
 	 *
 	 * @param array    $args    Request args.
 	 * @param object[] $users   Students having notes.
@@ -275,96 +284,80 @@ class AdminStudentNotesTemplate {
 			NoteModel::TYPE_TEXT      => __( 'Text', 'learnpress' ),
 		);
 
-		$field = static function ( string $label, string $input, string $id, string $hint = '' ): string {
+		$select = static function ( string $id, string $name, array $options, string $value ): string {
+			$html = '';
+			foreach ( $options as $key => $label ) {
+				$html .= sprintf(
+					'<option value="%1$s"%2$s>%3$s</option>',
+					esc_attr( $key ),
+					selected( $value, (string) $key, false ),
+					esc_html( $label )
+				);
+			}
+
+			return sprintf( '<select id="%1$s" name="%2$s">%3$s</select>', esc_attr( $id ), esc_attr( $name ), $html );
+		};
+
+		$field = static function ( string $id, string $label, string $input ): string {
 			return sprintf(
-				'<div class="filter-field"><label for="%1$s">%2$s</label>%3$s%4$s</div>',
+				'<div class="lp-student-notes__field"><label for="%1$s">%2$s</label>%3$s</div>',
 				esc_attr( $id ),
 				esc_html( $label ),
-				$input,
-				$hint ? sprintf( '<p class="description">%s</p>', esc_html( $hint ) ) : ''
+				$input
 			);
 		};
 
-		$fields = sprintf( '<input type="hidden" name="page" value="%s">', esc_attr( self::PAGE_SLUG ) )
+		$fields = $field(
+			'lp-student-notes-student',
+			__( 'Student', 'learnpress' ),
+			$select( 'lp-student-notes-student', 'student', $user_options, $args['student'] ? (string) $args['student'] : '' )
+		)
 			. $field(
-				__( 'Student', 'learnpress' ),
-				str_replace(
-					'<select ',
-					'<select id="lp-student-notes-student" ',
-					AdminTemplate::html_tom_select(
-						array(
-							'name'          => 'student',
-							'options'       => $user_options,
-							'default_value' => $args['student'] ? (string) $args['student'] : '',
-						)
-					)
-				),
-				'lp-student-notes-student',
-				__( 'Search by student name or email.', 'learnpress' )
-			)
-			. $field(
-				__( 'Course', 'learnpress' ),
-				str_replace(
-					'<select ',
-					'<select id="lp-student-notes-course" ',
-					AdminTemplate::html_tom_select(
-						array(
-							'name'          => 'course',
-							'options'       => $course_options,
-							'default_value' => $args['course'] ? (string) $args['course'] : '',
-						)
-					)
-				),
 				'lp-student-notes-course',
-				__( 'Search by course title.', 'learnpress' )
+				__( 'Course', 'learnpress' ),
+				$select( 'lp-student-notes-course', 'course', $course_options, $args['course'] ? (string) $args['course'] : '' )
 			)
 			. $field(
+				'lp-student-notes-type',
 				__( 'Type', 'learnpress' ),
-				str_replace(
-					'<select ',
-					'<select id="lp-student-notes-type" ',
-					AdminTemplate::html_tom_select(
-						array(
-							'name'          => 'note_type',
-							'options'       => $type_options,
-							'default_value' => $args['note_type'],
-						)
-					)
-				),
-				'lp-student-notes-type'
+				$select( 'lp-student-notes-type', 'note_type', $type_options, $args['note_type'] )
 			)
 			. $field(
+				'lp-student-notes-search',
 				__( 'Search', 'learnpress' ),
 				sprintf(
 					'<input id="lp-student-notes-search" type="search" name="s" value="%1$s" placeholder="%2$s">',
 					esc_attr( $args['s'] ),
 					esc_attr__( 'Student, course, lesson, note', 'learnpress' )
-				),
-				'lp-student-notes-search'
+				)
 			);
 
-		$actions = sprintf(
-			'<a class="button lp-student-notes__reset" href="%1$s">%2$s</a><button type="submit" class="button button-primary">%3$s</button>',
-			esc_url( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) ),
-			esc_html__( 'Reset', 'learnpress' ),
-			esc_html__( 'Apply Filter', 'learnpress' )
-		);
-
 		return sprintf(
-			'<div class="lp-student-notes__filters"><h2>%s</h2>%s</div>',
+			'<div class="postbox lp-student-notes__filters">
+				<div class="postbox-header"><h2 class="hndle">%1$s</h2></div>
+				<div class="inside">
+					<form method="get" action="%2$s">
+						<input type="hidden" name="page" value="%3$s">
+						<div class="lp-student-notes__fields">%4$s</div>
+						<p class="lp-student-notes__actions">
+							<button type="submit" class="button button-primary">%5$s</button>
+							<a class="button" href="%6$s">%7$s</a>
+						</p>
+					</form>
+				</div>
+			</div>',
 			esc_html__( 'Filters', 'learnpress' ),
-			AdminTemplate::html_form_filter(
-				array(
-					'form_classes' => 'lp-student-notes__form',
-					'fields'       => $fields,
-					'btn_actions'  => $actions,
-				)
-			)
+			esc_url( admin_url( 'admin.php' ) ),
+			esc_attr( self::PAGE_SLUG ),
+			$fields,
+			esc_html__( 'Apply Filter', 'learnpress' ),
+			esc_url( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) ),
+			esc_html__( 'Reset', 'learnpress' )
 		);
 	}
 
 	/**
-	 * Notes table with page result and pagination.
+	 * Notes table (WP list table markup).
 	 *
 	 * @param object[] $rows       Rows from NoteDB::get_notes() with join_details.
 	 * @param array    $args       Request args.
@@ -373,72 +366,103 @@ class AdminStudentNotesTemplate {
 	 * @return string
 	 */
 	public function html_table( array $rows, array $args, int $total_rows ): string {
-		if ( empty( $rows ) ) {
-			return sprintf(
-				'<div class="lp-student-notes__table">%s</div>',
-				Template::print_message( __( 'No notes found.', 'learnpress' ), 'info', false )
-			);
-		}
-
-		$columns = array(
-			'student' => __( 'Student', 'learnpress' ),
-			'course'  => __( 'Course', 'learnpress' ),
-			'lesson'  => __( 'Lesson', 'learnpress' ),
-			'type'    => __( 'Type', 'learnpress' ),
-			'content' => __( 'Content', 'learnpress' ),
-			'created' => __( 'Created', 'learnpress' ),
-			'actions' => __( 'Actions', 'learnpress' ),
-		);
-
-		$header = array();
-		foreach ( $columns as $key => $title ) {
-			$header[ $key ] = array(
-				'class' => 'lp-col-' . $key,
-				'title' => esc_html( $title ),
-			);
-		}
-
-		$rows_html = '';
-		foreach ( $rows as $row ) {
-			$rows_html .= $this->html_row( $row );
-		}
-
-		$total_pages = (int) ceil( $total_rows / self::PER_PAGE );
-		$footer      = sprintf(
-			'<div class="lp-student-notes__footer lp-enrolled-students-table-footer"><span class="lp-enrolled-students-table-footer__count">%1$s</span>%2$s</div>',
-			TableListTemplate::instance()->html_page_result(
-				array(
-					'paged'      => $args['paged'],
-					'per_page'   => self::PER_PAGE,
-					'total_rows' => $total_rows,
-					'item_name'  => _n( 'note', 'notes', $total_rows, 'learnpress' ),
-				)
-			),
-			Template::instance()->html_pagination(
-				array(
-					'total_pages' => $total_pages,
-					'paged'       => $args['paged'],
-					'base'        => add_query_arg( 'paged', '%#%', $this->get_page_url( $args ) ),
-					'format'      => '',
-				)
+		$columns = apply_filters(
+			'learn-press/admin/student-notes/table/columns',
+			array(
+				'student' => __( 'Student', 'learnpress' ),
+				'course'  => __( 'Course', 'learnpress' ),
+				'lesson'  => __( 'Lesson', 'learnpress' ),
+				'type'    => __( 'Type', 'learnpress' ),
+				'content' => __( 'Content', 'learnpress' ),
+				'created' => __( 'Created', 'learnpress' ),
+				'actions' => __( 'Actions', 'learnpress' ),
 			)
 		);
 
-		$table_args = apply_filters(
-			'learn-press/admin/student-notes/table/args',
-			array(
-				'class_table' => 'lp-enrolled-students-table lp-student-notes-table',
-				'header'      => $header,
-				'body'        => array( 'rows_html' => $rows_html ),
+		$head = '';
+		foreach ( $columns as $key => $title ) {
+			$head .= sprintf(
+				'<th scope="col" class="manage-column column-%1$s%2$s">%3$s</th>',
+				esc_attr( $key ),
+				'student' === $key ? ' column-primary' : '',
+				esc_html( $title )
+			);
+		}
+
+		$body = '';
+		foreach ( $rows as $row ) {
+			$body .= $this->html_row( $row );
+		}
+
+		if ( '' === $body ) {
+			$body = sprintf(
+				'<tr class="no-items"><td class="colspanchange" colspan="%1$d">%2$s</td></tr>',
+				count( $columns ),
+				esc_html__( 'No notes found.', 'learnpress' )
+			);
+		}
+
+		return sprintf(
+			'<div class="lp-student-notes__table-wrap"><table class="wp-list-table widefat striped table-view-list lp-student-notes__table"><thead><tr>%1$s</tr></thead><tbody>%2$s</tbody><tfoot><tr>%1$s</tr></tfoot></table></div>%3$s',
+			$head,
+			$body,
+			$this->html_tablenav( $args, $total_rows )
+		);
+	}
+
+	/**
+	 * WP list table pagination ("tablenav-pages").
+	 *
+	 * @param array $args       Request args.
+	 * @param int   $total_rows Total rows.
+	 *
+	 * @return string
+	 */
+	public function html_tablenav( array $args, int $total_rows ): string {
+		$total_pages = max( 1, (int) ceil( $total_rows / self::PER_PAGE ) );
+		$current     = min( $args['paged'], $total_pages );
+		$url         = function ( int $page ) use ( $args ): string {
+			return esc_url( add_query_arg( 'paged', $page, $this->get_page_url( $args ) ) );
+		};
+		$link        = static function ( bool $enabled, string $href, string $css_class, string $label, string $symbol ): string {
+			if ( ! $enabled ) {
+				return sprintf( '<span class="tablenav-pages-navspan button disabled" aria-hidden="true">%s</span>', $symbol );
+			}
+
+			return sprintf(
+				'<a class="%1$s button" href="%2$s"><span class="screen-reader-text">%3$s</span><span aria-hidden="true">%4$s</span></a>',
+				esc_attr( $css_class ),
+				$href,
+				esc_html( $label ),
+				$symbol
+			);
+		};
+
+		$pagination = sprintf(
+			'<span class="pagination-links">%1$s %2$s <span class="paging-input"><span class="tablenav-paging-text">%3$s</span></span> %4$s %5$s</span>',
+			$link( $current > 1, $url( 1 ), 'first-page', __( 'First page', 'learnpress' ), '&laquo;' ),
+			$link( $current > 1, $url( $current - 1 ), 'prev-page', __( 'Previous page', 'learnpress' ), '&lsaquo;' ),
+			sprintf(
+				/* translators: 1: current page, 2: total pages */
+				esc_html__( '%1$s of %2$s', 'learnpress' ),
+				number_format_i18n( $current ),
+				sprintf( '<span class="total-pages">%s</span>', number_format_i18n( $total_pages ) )
 			),
-			$rows,
-			$args
+			$link( $current < $total_pages, $url( $current + 1 ), 'next-page', __( 'Next page', 'learnpress' ), '&rsaquo;' ),
+			$link( $current < $total_pages, $url( $total_pages ), 'last-page', __( 'Last page', 'learnpress' ), '&raquo;' )
 		);
 
 		return sprintf(
-			'<div class="lp-student-notes__table"><div class="lp-enrolled-students-table-wrap">%s</div>%s</div>',
-			TableListTemplate::instance()->html_table( $table_args ),
-			$footer
+			'<div class="tablenav bottom"><div class="tablenav-pages%1$s"><span class="displaying-num">%2$s</span>%3$s</div><br class="clear"></div>',
+			$total_pages <= 1 ? ' one-page' : '',
+			esc_html(
+				sprintf(
+					/* translators: %s: number of notes */
+					_n( '%s note', '%s notes', $total_rows, 'learnpress' ),
+					number_format_i18n( $total_rows )
+				)
+			),
+			$pagination
 		);
 	}
 
@@ -458,12 +482,11 @@ class AdminStudentNotesTemplate {
 			? add_query_arg( CourseNoteTemplate::PARAM_NOTE_USER, $note->user_id, $item_link ) . '#lp-note-' . $note->get_note_id()
 			: '';
 		$timestamp    = strtotime( $note->created_at . ' UTC' );
-		$user         = UserModel::find( $note->user_id, true );
 
-		// Same student cell as the Students page.
+		// Same as the WP Users list: avatar + name, email below.
 		$student = sprintf(
-			'<div class="lp-cell-student">%1$s<div class="lp-meta"><span class="lp-name">%2$s</span><span class="lp-email">%3$s</span></div></div>',
-			$user ? SingleInstructorTemplate::instance()->html_avatar( $user ) : '',
+			'<div class="lp-student-notes__student">%1$s<div><strong>%2$s</strong><br><span class="description">%3$s</span></div></div>',
+			get_avatar( $note->user_id, 32 ),
 			esc_html( $row->display_name ? $row->display_name : '#' . $note->user_id ),
 			esc_html( $row->user_email ?? '' )
 		);
@@ -473,20 +496,14 @@ class AdminStudentNotesTemplate {
 			? sprintf( '<a href="%1$s" target="_blank" rel="noopener">%2$s</a>', esc_url( $course->get_permalink() ), esc_html( $course_title ) )
 			: esc_html( $course_title );
 
-		$lesson = $row->item_title ? $row->item_title : '#' . $note->item_id;
-		$lesson = $item_link
-			? sprintf( '<a href="%1$s" target="_blank" rel="noopener">%2$s</a>', esc_url( $item_link ), esc_html( $lesson ) )
-			: esc_html( $lesson );
-
-		$type = sprintf(
-			'<span class="lp-badge %1$s">%2$s</span>',
-			$is_highlight ? 'lp-badge--learning' : 'lp-badge--enrolled',
-			esc_html( $is_highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) )
-		);
+		$lesson_title = $row->item_title ? $row->item_title : '#' . $note->item_id;
+		$lesson_html  = $item_link
+			? sprintf( '<a href="%1$s" target="_blank" rel="noopener">%2$s</a>', esc_url( $item_link ), esc_html( $lesson_title ) )
+			: esc_html( $lesson_title );
 
 		$created = $timestamp
 			? sprintf(
-				'%1$s<span class="lp-student-notes__time">%2$s</span>',
+				'%1$s<br>%2$s',
 				esc_html( wp_date( get_option( 'date_format' ), $timestamp ) ),
 				esc_html( wp_date( get_option( 'time_format' ), $timestamp ) )
 			)
@@ -500,17 +517,43 @@ class AdminStudentNotesTemplate {
 			)
 			: '';
 
+		// data-colname + .toggle-row: WP list table responsive view (handled by wp-admin common.js).
+		$td = static function ( string $key, string $label, string $html ): string {
+			return sprintf( '<td class="column-%1$s" data-colname="%2$s">%3$s</td>', esc_attr( $key ), esc_attr( $label ), $html );
+		};
+
 		$section = apply_filters(
 			'learn-press/admin/student-notes/row/section',
 			array(
 				'tr'      => sprintf( '<tr data-note-id="%d">', $note->get_note_id() ),
-				'student' => sprintf( '<td class="lp-col-student">%s</td>', $student ),
-				'course'  => sprintf( '<td class="lp-col-course lp-cell-course">%s</td>', $course_html ),
-				'lesson'  => sprintf( '<td class="lp-col-lesson lp-cell-course">%s</td>', $lesson ),
-				'type'    => sprintf( '<td class="lp-col-type">%s</td>', $type ),
-				'content' => sprintf( '<td class="lp-col-content">%s</td>', $this->html_content( $note ) ),
-				'created' => sprintf( '<td class="lp-col-created">%s</td>', $created ),
-				'actions' => sprintf( '<td class="lp-col-actions">%s</td>', $action ),
+				'student' => sprintf(
+					'<td class="column-student column-primary">%1$s<button type="button" class="toggle-row"><span class="screen-reader-text">%2$s</span></button></td>',
+					$student,
+					esc_html__( 'Show more details', 'learnpress' )
+				),
+				'course'  => $td( 'course', __( 'Course', 'learnpress' ), $course_html ),
+				'lesson'  => $td( 'lesson', __( 'Lesson', 'learnpress' ), $lesson_html ),
+				'type'    => $td(
+					'type',
+					__( 'Type', 'learnpress' ),
+					esc_html( $is_highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) )
+				),
+				'content' => $td(
+					'content',
+					__( 'Content', 'learnpress' ),
+					$this->html_content(
+						$note,
+						array(
+							__( 'Student', 'learnpress' ) => $student,
+							__( 'Course', 'learnpress' )  => $course_html,
+							__( 'Lesson', 'learnpress' )  => $lesson_html,
+							__( 'Created', 'learnpress' ) => $created,
+						),
+						$open_link
+					)
+				),
+				'created' => $td( 'created', __( 'Created', 'learnpress' ), $created ),
+				'actions' => $td( 'actions', __( 'Actions', 'learnpress' ), $action ),
 				'tr_end'  => '</tr>',
 			),
 			$note,
@@ -521,40 +564,93 @@ class AdminStudentNotesTemplate {
 	}
 
 	/**
-	 * Content cell: excerpt, expandable to the highlighted text + full note.
+	 * Content cell: short quote + note, and a "View note" link opening the details in ThickBox.
 	 *
-	 * @param NoteModel $note Note.
+	 * @param NoteModel $note      Note.
+	 * @param array     $meta      Label => HTML (already escaped) shown in the modal.
+	 * @param string    $open_link Lesson URL focused on the note.
 	 *
 	 * @return string
 	 */
-	public function html_content( NoteModel $note ): string {
-		$is_highlight = NoteModel::TYPE_HIGHLIGHT === $note->note_type;
-		$text         = '' !== $note->content ? $note->content : $note->highlight_text;
-		// Plain text: cut by characters (wp_html_excerpt() would strip text like "1<2").
-		$excerpt = preg_replace( '/\s+/u', ' ', $text );
-		if ( mb_strlen( $excerpt ) > self::EXCERPT ) {
-			$excerpt = rtrim( mb_substr( $excerpt, 0, self::EXCERPT ) ) . '…';
-		}
-		$is_long = $excerpt !== $text || $is_highlight;
+	public function html_content( NoteModel $note, array $meta = array(), string $open_link = '' ): string {
+		$quote     = NoteModel::TYPE_HIGHLIGHT === $note->note_type ? $note->highlight_text : '';
+		$detail_id = 'lp-note-detail-' . $note->get_note_id();
 
-		if ( ! $is_long ) {
-			return sprintf( '<span class="lp-student-notes__excerpt">%s</span>', esc_html( $text ) );
+		$rows = '';
+		foreach ( $meta as $label => $html ) {
+			$rows .= sprintf( '<tr><th scope="row">%1$s</th><td>%2$s</td></tr>', esc_html( $label ), $html );
 		}
 
-		$full = '';
-		if ( $is_highlight ) {
-			$full .= sprintf( '<blockquote>%s</blockquote>', esc_html( $note->highlight_text ) );
-		}
-
-		if ( '' !== $note->content ) {
-			$full .= sprintf( '<p>%s</p>', nl2br( esc_html( $note->content ) ) );
-		}
+		$detail = sprintf(
+			'<div id="%1$s" style="display:none;">
+				<div class="lp-student-notes__detail">
+					<table class="form-table" role="presentation"><tbody>%2$s</tbody></table>
+					%3$s
+					<h3>%4$s</h3>
+					<p>%5$s</p>
+					%6$s
+				</div>
+			</div>',
+			esc_attr( $detail_id ),
+			$rows,
+			'' !== $quote
+				? sprintf( '<h3>%1$s</h3><blockquote>%2$s</blockquote>', esc_html__( 'Highlighted text', 'learnpress' ), nl2br( esc_html( $quote ) ) )
+				: '',
+			esc_html__( 'Note', 'learnpress' ),
+			'' !== $note->content ? nl2br( esc_html( $note->content ) ) : sprintf( '<em>%s</em>', esc_html__( 'No note content.', 'learnpress' ) ),
+			$open_link
+				? sprintf(
+					'<p><a class="button button-primary" href="%1$s" target="_blank" rel="noopener">%2$s</a></p>',
+					esc_url( $open_link ),
+					esc_html__( 'Open Lesson', 'learnpress' )
+				)
+				: ''
+		);
 
 		return sprintf(
-			'<details class="lp-student-notes__content"><summary><span class="lp-student-notes__excerpt">%1$s</span><span class="lp-icon lp-icon-eye" title="%2$s" aria-hidden="true"></span><span class="screen-reader-text">%2$s</span></summary><div class="lp-student-notes__full">%3$s</div></details>',
-			esc_html( $excerpt ),
-			esc_attr__( 'View full note', 'learnpress' ),
-			$full
+			'%1$s<a href="%2$s" class="thickbox lp-student-notes__view" title="%3$s">%4$s</a>%5$s',
+			$this->html_note_text( $this->excerpt( $quote, 60 ), $this->excerpt( $note->content, self::EXCERPT ) ),
+			esc_url( '#TB_inline?width=640&height=480&inlineId=' . $detail_id ),
+			esc_attr__( 'Student note', 'learnpress' ),
+			esc_html__( 'View note', 'learnpress' ),
+			$detail
 		);
+	}
+
+	/**
+	 * Quote + note text.
+	 *
+	 * @param string $quote Highlighted text.
+	 * @param string $text  Note content.
+	 *
+	 * @return string
+	 */
+	protected function html_note_text( string $quote, string $text ): string {
+		$html = '';
+		if ( '' !== $quote ) {
+			$html .= sprintf( '<span class="lp-student-notes__quote">&ldquo;%s&rdquo;</span>', esc_html( $quote ) );
+		}
+
+		if ( '' !== $text ) {
+			$html .= sprintf( '<span class="lp-student-notes__text">%s</span>', nl2br( esc_html( $text ) ) );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Cut plain text by characters (wp_html_excerpt() would strip text like "1<2").
+	 *
+	 * @param string $text   Text.
+	 * @param int    $length Max length.
+	 *
+	 * @return string
+	 */
+	protected function excerpt( string $text, int $length ): string {
+		if ( mb_strlen( $text ) <= $length ) {
+			return $text;
+		}
+
+		return rtrim( mb_substr( preg_replace( '/\s+/u', ' ', $text ), 0, $length ) ) . '…';
 	}
 }

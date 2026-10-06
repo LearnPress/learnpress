@@ -1,148 +1,48 @@
 /**
  * Admin page: Student Notes.
- *
- * Boxes follow the WP .postbox look; the table reuses the Students page styles.
+ * Uses default WP admin components (.postbox, form fields, .button, .wp-list-table, .tablenav);
+ * only layout glue lives here.
  *
  * @since 4.4.9.2
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 .lp-student-notes {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-	margin-top: 8px;
+	margin-top: 12px;
 
-	&__description {
+	> .description {
+		margin: 0 0 16px;
+	}
+
+	.postbox {
+		margin-bottom: 20px;
+	}
+
+	.postbox-header .hndle {
 		margin: 0;
-		color: #646970;
+		padding: 8px 12px;
+		font-size: 14px;
+		line-height: 1.4;
 	}
 
 	&__stats {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 16px;
+		gap: 20px;
 
 		@media screen and (max-width: 782px) {
 			grid-template-columns: 1fr;
-		}
-	}
-
-	// WP .postbox look.
-	&__stat,
-	&__filters,
-	&__table {
-		padding: 16px 20px;
-		border: 1px solid #c3c4c7;
-		background: #fff;
-		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
-	}
-
-	&__stat {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	&__stat-label {
-		color: #50575e;
-		font-size: 13px;
-	}
-
-	&__stat-value {
-		color: #1d2327;
-		font-size: 23px;
-		font-weight: 400;
-		line-height: 1.3;
-	}
-
-	&__filters {
-		h2 {
-			margin: -16px -20px 16px;
-			padding: 10px 20px;
-			border-bottom: 1px solid #c3c4c7;
-			font-size: 14px;
-			font-weight: 600;
-			line-height: 1.4;
+			gap: 0;
 		}
 
-		.lp-form-filter {
-			margin-bottom: 0;
-
-			// Hints under some fields must not push the others down.
-			.lp-form-filter__fields {
-				align-items: flex-start;
-			}
-
-			.filter-field {
-				max-width: none;
-			}
-
-			.description {
-				margin: 0;
-			}
-
-			input[type="search"] {
-				width: 100%;
-			}
-		}
-	}
-
-	&__table {
-		overflow-x: auto;
-
-		.lp-enrolled-students-table-wrap,
-		.lp-table-wrap {
-			margin-top: 0;
-		}
-	}
-
-	&__time {
-		display: block;
-		color: #94a3b8;
-		font-size: 12px;
-	}
-
-	.lp-col-content {
-		min-width: 220px;
-		max-width: 360px;
-	}
-
-	&__content {
-		summary {
-			display: flex;
-			align-items: flex-start;
-			gap: 6px;
-			cursor: pointer;
-			list-style: none;
-
-			&::-webkit-details-marker {
-				display: none;
-			}
-
-			.lp-icon {
-				margin-top: 3px;
-				color: #94a3b8;
-			}
+		// WP gives .postbox a 255px min-width.
+		.postbox {
+			min-width: 0;
 		}
 
-		&[open] summary .lp-student-notes__excerpt {
-			display: none;
-		}
-	}
-
-	&__excerpt {
-		overflow-wrap: anywhere;
-	}
-
-	&__full {
-		overflow-wrap: anywhere;
-
-		blockquote {
-			margin: 0 0 6px;
-			padding: 4px 8px;
-			border-left: 3px solid #3b82f6;
-			background: #f1f5f9;
+		.inside {
+			margin: 0;
+			padding: 12px 16px;
 		}
 
 		p {
@@ -150,16 +50,130 @@
 		}
 	}
 
-	&__footer {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		justify-content: space-between;
-		gap: 12px;
-		margin-top: 16px;
+	&__stat-label {
+		color: #646970;
+	}
 
-		.learn-press-pagination {
-			margin: 0;
+	&__stat-value {
+		margin-top: 4px !important;
+		color: #1d2327;
+		font-size: 23px;
+		line-height: 1.3;
+	}
+
+	&__fields {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 12px 16px;
+
+		@media screen and (max-width: 1100px) {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
+
+		@media screen and (max-width: 600px) {
+			grid-template-columns: 1fr;
+		}
+
+		select,
+		input[type="search"] {
+			width: 100%;
+			max-width: none;
+		}
+	}
+
+	&__field label {
+		display: block;
+		margin-bottom: 4px;
+		font-weight: 600;
+	}
+
+	&__actions {
+		margin: 12px 0 0;
+	}
+
+	// Columns (auto table layout: let the content column take the space).
+	&__table-wrap {
+		overflow-x: auto;
+	}
+
+	&__table {
+		.column-actions {
+			white-space: nowrap;
+		}
+
+		.column-content {
+			width: 32%;
+			overflow-wrap: anywhere;
+		}
+
+	}
+
+	&__student {
+		display: flex;
+		gap: 10px;
+		align-items: flex-start;
+
+		.avatar {
+			flex-shrink: 0;
+			border-radius: 50%;
+		}
+	}
+
+	&__quote {
+		display: block;
+		color: #646970;
+		font-style: italic;
+	}
+
+	&__text {
+		display: block;
+	}
+
+	&__view {
+		display: inline-block;
+		margin-top: 2px;
+	}
+}
+
+// Note details inside ThickBox (rendered outside .lp-student-notes).
+.lp-student-notes__detail {
+	.form-table {
+		margin-top: 0;
+
+		th,
+		td {
+			padding: 8px 10px 8px 0;
+		}
+
+		th {
+			width: 90px;
+		}
+
+	}
+
+	.lp-student-notes__student {
+		display: flex;
+		gap: 10px;
+
+		.avatar {
+			border-radius: 50%;
+		}
+	}
+
+	h3 {
+		margin: 16px 0 6px;
+		font-size: 14px;
+	}
+
+	blockquote {
+		margin: 0;
+		padding: 8px 12px;
+		border-left: 4px solid #c3c4c7;
+		background: #f6f7f7;
+		font-style: italic;
+	}
+
+	p {
+		overflow-wrap: anywhere;
 	}
 }
