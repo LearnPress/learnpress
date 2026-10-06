@@ -314,9 +314,7 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 
 		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
 
-		ob_start();
-		$template->render_widget();
-		$output = ob_get_clean();
+		$output = $template->layout_ai_assistant_on_learning_content_bar();
 
 		$this->assertSame( '', $output );
 		$this->assertSame( array(), CourseAIAssistantTemplateState::$scripts );
@@ -329,13 +327,12 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 
 		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
 
-		// free_chat_enabled = false â†’ input area must be absent, quick-only modifier must appear.
-		$html = $template->html_panel( false, \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions() );
+		// free_chat_enabled = false â†’ input area must be absent.
+		$html = $template->html_panel_footer( false, \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions() );
 
 		$this->assertStringNotContainsString( 'lp-ai-assistant__input', $html );
 		$this->assertStringNotContainsString( 'lp-ai-assistant__send-btn', $html );
 		$this->assertStringContainsString( 'lp-ai-assistant__quick-actions', $html );
-		$this->assertStringContainsString( 'lp-ai-assistant-panel--quick-only', $html );
 	}
 
 	#[RunInSeparateProcess]
@@ -345,12 +342,11 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 
 		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
 
-		// free_chat_enabled = true â†’ textarea + send button must be present, modifier must be absent.
-		$html = $template->html_panel( true, \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions() );
+		// free_chat_enabled = true â†’ textarea + send button must be present.
+		$html = $template->html_panel_footer( true, \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions() );
 
 		$this->assertStringContainsString( 'lp-ai-assistant__input-area', $html );
 		$this->assertStringContainsString( 'lp-ai-assistant__send-btn', $html );
-		$this->assertStringNotContainsString( 'lp-ai-assistant-panel--quick-only', $html );
 	}
 
 	#[RunInSeparateProcess]
@@ -365,7 +361,7 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		);
 
 		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
-		$html     = $template->html_quick_actions( \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions() );
+		$html     = $template->html_panel_footer( true, \LearnPress\AI\Assistant\AIAssistantController::get_enabled_actions() );
 
 		$this->assertStringNotContainsString( 'Summarize Lesson', $html );
 		$this->assertStringContainsString( 'Explain Concept', $html );
@@ -390,9 +386,7 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 
 		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
 
-		ob_start();
-		$template->render_widget();
-		$output = ob_get_clean();
+		$output = $template->layout_ai_assistant_on_learning_content_bar();
 
 		$this->assertSame( '', $output );
 		$this->assertSame( array(), CourseAIAssistantTemplateState::$scripts );
@@ -417,10 +411,8 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		);
 
 		$template = \LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate::instance();
-
-		ob_start();
-		$template->render_widget();
-		$output = ob_get_clean();
+		$template->enqueue_assets();
+		$output = $template->layout_ai_assistant_on_learning_content_bar();
 
 		$this->assertStringContainsString( 'id="lp-ai-assistant"', $output );
 		$this->assertStringContainsString( 'Smart Review', $output );
@@ -471,11 +463,11 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 		// add_action() is a no-op here, so drive the wp_enqueue_scripts callback directly.
 		$template->enqueue_assets();
 
-		ob_start();
-		$template->render_widget();
-		$output = ob_get_clean();
+		$output = $template->layout_ai_assistant_on_learning_content_bar();
 
 		$this->assertStringContainsString( 'id="lp-ai-assistant"', $output );
+		$this->assertStringContainsString( 'id="lp-ai-assistant-template"', $output );
+		$this->assertStringNotContainsString( 'lp-ai-assistant__toggle', $output );
 		$this->assertContains( 'lp-ai-assistant', CourseAIAssistantTemplateState::$scripts );
 		$this->assertContains( 'lp-ai-assistant', CourseAIAssistantTemplateState::$styles );
 		$this->assertStringContainsString( '"lessonId":15', (string) CourseAIAssistantTemplateState::$inline_data );
@@ -507,17 +499,10 @@ class CourseAIAssistantTemplateTest extends BrainMonkeyTestCase {
 
 		$template->enqueue_assets();
 
-		ob_start();
-		$template->render_widget();
-		$panel = ob_get_clean();
+		$panel = $template->layout_ai_assistant_on_learning_content_bar();
 
-		ob_start();
-		$template->render_launcher();
-		$launcher = ob_get_clean();
-
-		// No markup, no launcher, no assets and no localized config leak on denial.
+		// No markup, no assets and no localized config leak on denial.
 		$this->assertSame( '', $panel );
-		$this->assertSame( '', $launcher );
 		$this->assertSame( array(), CourseAIAssistantTemplateState::$scripts );
 		$this->assertSame( array(), CourseAIAssistantTemplateState::$styles );
 		$this->assertSame( '', (string) CourseAIAssistantTemplateState::$inline_data );

@@ -30,8 +30,8 @@
 
 	&__head {
 		display: flex;
-		height: 70px;
-		padding: 0 20px;
+		height: 64px;
+		padding: 20px;
 		border-bottom: 1px solid $border-color;
 		align-items: center;
 		justify-content: space-between;
@@ -67,8 +67,17 @@
 
 	&__content {
 		overflow: auto;
-		height: calc(100% - 70px);
+		height: calc(100% - 64px);
 		padding: 20px;
+	}
+
+	.lp-learning-bar-item-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		height: 100%;
+		box-sizing: border-box;
 	}
 }
 

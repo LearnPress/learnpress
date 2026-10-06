@@ -26,7 +26,7 @@ class LearningTemplate {
 				'head'        => sprintf(
 					'<div class="lp-addon-content-bar__head">
 						<div class="lp-addon-content-bar__left">Note ...</div>
-						<span type="button" class="lp-icon-close" aria-label="%s"></span>
+						<span type="button" class="lp-icon-close" aria-label="%1$s" title="%1$s"></span>
 					</div>',
 					esc_attr__( 'Close', 'learnpress' )
 				),

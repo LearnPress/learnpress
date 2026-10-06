@@ -1,6 +1,8 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 class LearningContentBar {
+	static eventRendered = 'lp-learning-content-bar-rendered';
+
 	static selectors = {
 		contentBar: '.lp-addon-content-bar',
 		rightSidebarItem: '.popup-right-sidebar__item',
@@ -31,13 +33,61 @@ class LearningContentBar {
 		] );
 	}
 
-	open() {
+	open( args ) {
+		const { e, target } = args;
+		const elItem = target.closest(
+			`${ LearningContentBar.selectors.rightSidebarItem }`
+		);
+		if ( ! elItem ) {
+			return;
+		}
+
 		const contentBar = document.querySelector(
 			LearningContentBar.selectors.contentBar
 		);
+		if ( ! contentBar ) {
+			return;
+		}
 
-		if ( contentBar ) {
-			contentBar.classList.add( 'open' );
+		contentBar.classList.add( 'open' );
+
+		const template = elItem.querySelector( 'template' );
+		const headTarget = contentBar.querySelector(
+			'.lp-addon-content-bar__left'
+		);
+		const contentTarget = contentBar.querySelector(
+			'.lp-addon-content-bar__content'
+		);
+
+		if ( template && headTarget && contentTarget ) {
+			const head = template.content.querySelector(
+				'.lp-learning-bar-item-head'
+			);
+			const content = template.content.querySelector(
+				'.lp-learning-bar-item-content'
+			);
+
+			if ( head ) {
+				headTarget.innerHTML = '';
+				headTarget.appendChild( head.cloneNode( true ) );
+			}
+
+			if ( content ) {
+				contentTarget.innerHTML = '';
+				contentTarget.appendChild( content.cloneNode( true ) );
+			}
+
+			const contentRoot = contentTarget.firstElementChild;
+
+			document.dispatchEvent(
+				new CustomEvent( LearningContentBar.eventRendered, {
+					detail: {
+						item: elItem.dataset.learningBarItem || '',
+						contentBar,
+						contentRoot,
+					},
+				} )
+			);
 		}
 	}
 
