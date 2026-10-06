@@ -17,6 +17,11 @@ $config[ UserModel::ROLE_INSTRUCTOR ] = apply_filters(
 	'learn-press/role/instructor/capabilities_default',
 	[
 		'label'               => 'Instructor',
+		'capabilities'        => [
+			'read',
+			'upload_files',
+			'edit_posts' // Required by WooCommerce for wp-admin access. Ideally instructors should only manage courses, not posts.
+		],
 		'prefix_capabilities' => [
 			'publish',
 			'edit',

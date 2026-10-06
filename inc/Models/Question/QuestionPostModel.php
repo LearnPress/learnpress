@@ -14,6 +14,7 @@ namespace LearnPress\Models\Question;
 use Exception;
 use LearnPress\Databases\QuestionAnswersDB;
 use LearnPress\Filters\QuestionAnswersFilter;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\PostModel;
 use LP_Cache;
 use LP_Debug;
@@ -198,21 +199,25 @@ class QuestionPostModel extends PostModel {
 	 * @return mixed
 	 */
 	public function get_hint() {
-		return $this->get_meta_value_by_key( self::META_KEY_HINT, '' );
+		return Template::sanitize_html_content(
+			(string) $this->get_meta_value_by_key( self::META_KEY_HINT, '' )
+		);
 	}
 
 	/**
 	 * @return mixed
 	 */
 	public function get_explanation() {
-		return $this->get_meta_value_by_key( self::META_KEY_EXPLANATION, '' );
+		return Template::sanitize_html_content(
+			(string) $this->get_meta_value_by_key( self::META_KEY_EXPLANATION, '' )
+		);
 	}
 
 	/**
 	 * @return mixed
 	 */
 	public function get_mark() {
-		return $this->get_meta_value_by_key( self::META_KEY_MARK, 1 );
+		return (float) $this->get_meta_value_by_key( self::META_KEY_MARK, 1 );
 	}
 
 	/**

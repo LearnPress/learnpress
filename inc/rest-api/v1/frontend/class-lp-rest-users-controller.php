@@ -360,6 +360,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			$user_quiz->complete();
 
+			/**
+			 * Clear cache result quiz
+			 * Cache set on @see LP_User_Item_Quiz::get_results, and start_quiz() clears the same
+			 * key. Without this the next read still serves the in-progress result and the
+			 * submitted answers all come back as skipped.
+			 */
+			$user_quiz->clear_results_cache();
+
 			do_action( 'learn-press/user/quiz-finished', $item_id, $course_id, $user_id, $user_quiz );
 
 			$result['status']    = $user_quiz->get_status(); // Must be completed

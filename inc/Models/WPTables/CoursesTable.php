@@ -2,18 +2,25 @@
 
 namespace LearnPress\Models\WPTables;
 
+use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Abstract_Post_Type;
 use LP_Helper;
+use Throwable;
 use WP_List_Table;
 use WP_Posts_List_Table;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * LearnPress Courses Table class.
+ * Display list courses on WP admin custom post type
+ *
+ * @since 4.2.9.5
+ * @version 1.0.1
  */
-
 class CoursesTable extends WP_Posts_List_Table {
 	/**
 	 * Get the table columns.
@@ -82,13 +89,17 @@ class CoursesTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_thumbnail( $post ) {
-		$courseModel = CourseModel::find( $post->ID, true );
-		if ( ! $courseModel ) {
-			return;
-		}
+		try {
+			$courseModel = CourseModel::find( $post->ID, true );
+			if ( ! $courseModel ) {
+				return;
+			}
 
-		$singleCourseTemplate = SingleCourseTemplate::instance();
-		echo $singleCourseTemplate->html_image( $courseModel );
+			$singleCourseTemplate = SingleCourseTemplate::instance();
+			echo $singleCourseTemplate->html_image( $courseModel );
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
+		}
 	}
 
 	/**
@@ -101,7 +112,11 @@ class CoursesTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_author( $post ) {
-		LP_Abstract_Post_Type::column_author( $post );
+		try {
+			LP_Abstract_Post_Type::column_author( $post );
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
+		}
 	}
 
 	/**
@@ -114,34 +129,38 @@ class CoursesTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_curriculum( $post ) {
-		$courseModel = CourseModel::find( $post->ID, true );
-		if ( ! $courseModel ) {
-			return;
+		try {
+			$courseModel = CourseModel::find( $post->ID, true );
+			if ( ! $courseModel ) {
+				return;
+			}
+
+			$count_sections = $courseModel->get_total_sections();
+
+			$html_count_item      = '';
+			$item_types_of_course = CourseModel::item_types_support();
+			foreach ( $item_types_of_course as $type ) {
+				$count_items      = $courseModel->count_items( $type );
+				$html_count_item .= sprintf(
+					'<div><strong>%d</strong> %s</div>',
+					$count_items,
+					LP_Helper::get_i18n_string_plural( $count_items, $type, false )
+				);
+			}
+
+			$section = [
+				'count_section' => sprintf(
+					'<div>%d %s</div>',
+					$count_sections,
+					_n( 'Section', 'Sections', $count_sections, 'learnpress' )
+				),
+				'count_item'    => $html_count_item,
+			];
+
+			echo Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
 		}
-
-		$count_sections = $courseModel->get_total_sections();
-
-		$html_count_item      = '';
-		$item_types_of_course = CourseModel::item_types_support();
-		foreach ( $item_types_of_course as $type ) {
-			$count_items      = $courseModel->count_items( $type );
-			$html_count_item .= sprintf(
-				'<div><strong>%d</strong> %s</div>',
-				$count_items,
-				LP_Helper::get_i18n_string_plural( $count_items, $type, false )
-			);
-		}
-
-		$section = [
-			'count_section' => sprintf(
-				'<div>%d %s</div>',
-				$count_sections,
-				_n( 'Section', 'Sections', $count_sections, 'learnpress' )
-			),
-			'count_item'    => $html_count_item,
-		];
-
-		echo Template::combine_components( $section );
 	}
 
 	/**
@@ -154,27 +173,31 @@ class CoursesTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_student( $post ) {
-		$courseModel = CourseModel::find( $post->ID, true );
-		if ( ! $courseModel ) {
-			return;
+		try {
+			$courseModel = CourseModel::find( $post->ID, true );
+			if ( ! $courseModel ) {
+				return;
+			}
+
+			// Count students
+			printf(
+				'<div class="lp-label-counter">%d</div>',
+				$courseModel->count_students()
+			);
+
+			// Button view list students
+			printf(
+				'<a type="button"
+					class="lp-button lp-btn-view-students"
+					data-course-id="%d"
+					data-course-title="%s">%s</a>',
+				$post->ID,
+				esc_attr( $post->post_title ),
+				esc_html__( 'View List', 'learnpress' )
+			);
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
 		}
-
-		// Count students
-		printf(
-			'<div class="lp-label-counter">%d</div>',
-			$courseModel->count_students()
-		);
-
-		// Button view list students
-		printf(
-			'<a type="button"
-				class="lp-button lp-btn-view-students"
-				data-course-id="%d"
-				data-course-title="%s">%s</a>',
-			$post->ID,
-			esc_attr( $post->post_title ),
-			esc_html__( 'View List', 'learnpress' )
-		);
 	}
 
 	/**
@@ -187,11 +210,15 @@ class CoursesTable extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function column_price( $post ) {
-		$courseModel = CourseModel::find( $post->ID, true );
-		if ( ! $courseModel ) {
-			return;
-		}
+		try {
+			$courseModel = CourseModel::find( $post->ID, true );
+			if ( ! $courseModel ) {
+				return;
+			}
 
-		echo SingleCourseTemplate::instance()->html_price( $courseModel );
+			echo SingleCourseTemplate::instance()->html_price( $courseModel );
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
+		}
 	}
 }

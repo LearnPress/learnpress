@@ -149,16 +149,20 @@
 
 @mixin loading(){
 	&:before{
-		display: inline-block;
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		font-family: 'lp-icon';
 		content: "\f110";
 		animation: lp-rotating 1s linear infinite;
-		margin-right: 5px;
+		line-height: 1;
 		font-variant: normal;
 		text-transform: none;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
-		vertical-align: middle;
+		color: black;
 	}
  }
 // mixin for lp-courses-bar

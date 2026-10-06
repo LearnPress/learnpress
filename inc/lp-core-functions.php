@@ -1293,20 +1293,6 @@ function learn_press_get_register_url() {
 }
 
 /**
- * Add a new notice into queue
- *
- * @param string
- * @param string
- *
- * @return mixed
- * @deprecated 4.2.5
- */
-function learn_press_add_notice( $message, $type = 'updated' ) {
-	_deprecated_function( __FUNCTION__, '4.2.5' );
-	LP_Admin_Notice::instance()->add( $message, $type );
-}
-
-/**
  * Set user's cookie
  *
  * @param string $name
@@ -1423,9 +1409,9 @@ function learn_press_parse_request() {
 	// Map query vars to their keys, or get them if endpoints are not supported
 	foreach ( LearnPress::instance()->query_vars as $key => $var ) {
 		if ( isset( $_GET[ $var ] ) ) {
-			$wp->query_vars[ $key ] = LP_Helper::sanitize_params_submitted( $_GET[ $var ] ?? '' );
+			$wp->query_vars[ $key ] = LP_Helper::sanitize_params_submitted( $_GET[ $var ] );
 		} elseif ( isset( $wp->query_vars[ $var ] ) ) {
-			$wp->query_vars[ $key ] = LP_Helper::sanitize_params_submitted( $wp->query_vars[ $var ] ?? '' );
+			$wp->query_vars[ $key ] = LP_Helper::sanitize_params_submitted( $wp->query_vars[ $var ] );
 		}
 	}
 }
@@ -2102,9 +2088,13 @@ function learn_press_global_script_params(): array {
  * @since 3.3.0
  */
 function learn_press_get_question_support_answer_options() {
-	$questions = learn_press_get_question_support_feature( 'answer-options' );
-
-	return apply_filters( 'learn-press/questions-support-answer-options', $questions );
+	return array(
+		'true_or_false',
+		'single_choice',
+		'multi_choice',
+		'fill_in_blanks',
+		'sorting_choice'
+	);
 }
 
 /**

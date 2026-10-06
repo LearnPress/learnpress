@@ -141,6 +141,8 @@ function learn_press_add_user_roles() {
 		LP_ORDER_CPT,
 	];
 
+	UserService::instance()->add_capabilities_for_roles();
+
 	foreach ( $item_types as $item_type ) {
 		UserService::instance()->add_capabilities_for_roles( $item_type );
 	}

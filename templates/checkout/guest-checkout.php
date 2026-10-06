@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -14,8 +14,6 @@ defined( 'ABSPATH' ) || exit();
 $checkout  = LearnPress::instance()->checkout();
 $is_exists = $checkout->checkout_email_exists();
 ?>
-
-<input type="radio" id="checkout-account-switch-to-guest" name="checkout-account-switch-form" value="guest" checked="checked"/>
 
 <div id="checkout-account-guest" class="lp-checkout-block <?php echo esc_attr( $is_exists ? 'email-exists' : '' ); ?>">
 	<h4><?php esc_html_e( 'As Guest', 'learnpress' ); ?></h4>
@@ -32,22 +30,44 @@ $is_exists = $checkout->checkout_email_exists();
 			$divider = '';
 
 			if ( LearnPress::instance()->checkout()->is_enable_login() ) {
-				$signin = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-login">%s</label></a>', esc_html( _x( 'Sign in', 'checkout sign in link', 'learnpress' ) ) );
+				$signin = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url(
+						add_query_arg(
+							'is_form_login',
+							'1',
+							LP_Helper::get_link_no_cache( learn_press_get_page_link( 'checkout' ) )
+						)
+					),
+					esc_html( _x( 'Sign in', 'checkout sign in link', 'learnpress' ) )
+				);
 			}
 
-			if ( LearnPress::instance()->checkout()->is_enable_login() && LearnPress::instance()->checkout()->is_enable_register() ) {
+			if ( LearnPress::instance()->checkout()->is_enable_login()
+				&& LearnPress::instance()->checkout()->is_enable_register() ) {
 				$divider = ',';
 			}
 
 			if ( LearnPress::instance()->checkout()->is_enable_register() ) {
-				$signup = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-register">%s</label></a>', esc_html( _x( 'Sign up', 'checkout sign up link', 'learnpress' ) ) );
+				$signup = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url(
+						add_query_arg(
+							'is_form_register',
+							'1',
+							LP_Helper::get_link_no_cache( learn_press_get_page_link( 'checkout' ) )
+						)
+					),
+					esc_html( _x( 'Sign up', 'checkout sign up link', 'learnpress' ) )
+				);
 			}
 			?>
 
 			<?php if ( LearnPress::instance()->checkout()->is_enable_login() || LearnPress::instance()->checkout()->is_enable_register() ) : ?>
-				<div class="lp-guest-switch-login"><?php echo sprintf( __( 'Or you can %1$s%2$s %3$s now.', 'learnpress' ), $signin, $divider, $signup ); ?></div>
+				<div class="lp-guest-switch-login">
+					<?php echo sprintf( __( 'Or you can %1$s%2$s %3$s now.', 'learnpress' ), $signin, $divider, $signup ); ?>
+				</div>
 			<?php endif; ?>
 		</li>
 	</ul>
-<!--	<input type="hidden" name="learn-press-checkout-nonce" value="--><?php //echo esc_attr( wp_create_nonce( 'learn-press-guest-checkout' ) ); ?><!--"/>-->
 </div>

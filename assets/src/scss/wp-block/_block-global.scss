@@ -224,7 +224,7 @@ Breadcrumb
 		}
 	}
 
-	.lp-button {
+	/*.lp-button {
 		cursor: pointer;
 		border: 1px solid $border-color;
 		border-radius: $border-radius-global;
@@ -241,7 +241,7 @@ Breadcrumb
 			color: #fff;
 			background: $color-primary;
 		}
-	}
+	}*/
 }
 
 .lp-button.btn-finish-course {
@@ -260,10 +260,5 @@ Breadcrumb
 	&:hover {
 		background-color: $color-secondary;
 		border-color: $color-secondary;
-	}
-	&.loading {
-		pointer-events: none;
-		opacity: 0.8;
-		@include loading();
 	}
 }

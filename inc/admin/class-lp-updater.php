@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Databases\DataBase;
+
 /**
  * Class LP_Updater
  *
@@ -35,9 +37,10 @@ class LP_Updater {
 	 * Check LP Database need upgrade.
 	 *
 	 * @return bool|int
-	 * @author tungnx
+	 * @throws Exception
 	 * @version 1.0.1
 	 * @since 4.0.0
+	 * @author tungnx
 	 */
 	public function check_lp_db_need_upgrade() {
 		if ( ! current_user_can( 'administrator' ) ) {
@@ -62,7 +65,7 @@ class LP_Updater {
 		 * For case not have key "learnpress_db_version" on DB, still have columns of learnpress.
 		 * After a long time, need remove fix fast
 		 */
-		$lp_db                                = LP_Database::getInstance();
+		$lp_db                                = DataBase::getInstance();
 		$check_tb_lp_order_items_exists       = $lp_db->check_table_exists( $lp_db->tb_lp_order_items );
 		$check_tb_lp_user_item_results_exists = $lp_db->check_table_exists( $lp_db->tb_lp_user_item_results );
 		$check_col_item_id_on_lp_order_items  = $lp_db->check_col_table( $lp_db->tb_lp_order_items, 'item_id' );

@@ -9,6 +9,7 @@
  */
 
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\UserTemplate;
 
@@ -520,7 +521,7 @@ abstract class LP_Abstract_Post_Type {
 	public function get_post_type() {
 		$post_type = get_post_type();
 		if ( ! $post_type ) {
-			$post_type = LP_Request::get_string( 'post_type' );
+			$post_type = LP_Request::get_param( 'post_type' );
 		}
 
 		return $post_type;
@@ -992,15 +993,18 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @param $post_id
 	 */
-	protected function _get_item_course( $post_id ) {
-		$courses = learn_press_get_item_courses( $post_id );
+	protected function get_courses_of_item( $post_id ) {
+		$courses = CourseSectionItemModel::get_courses_from_item_id(
+			$post_id, get_post_type( $post_id )
+		);
 		if ( $courses ) {
 			foreach ( $courses as $course ) {
-				echo '<div><a href="' . esc_url_raw( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course->ID ) ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+				$course_id = $course->section_course_id;
+				echo '<div><a href="' . esc_url_raw( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course_id ) ) ) ) . '">' . get_the_title( $course_id ) . '</a>';
 				echo '<div class="row-actions">';
-				printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
+				printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course_id ) ), __( 'Edit', 'learnpress' ) );
 				echo '&nbsp;|&nbsp;';
-				printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
+				printf( '<a href="%s">%s</a>', get_the_permalink( $course_id ), __( 'View', 'learnpress' ) );
 
 				if ( $this->_filter_items_by_course() ) {
 					echo '&nbsp;|&nbsp;';

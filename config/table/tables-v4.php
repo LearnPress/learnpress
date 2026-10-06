@@ -228,7 +228,7 @@ return array(
 		CREATE TABLE IF NOT EXISTS {$lp_db->tb_thim_cache} (
 			key_cache VARCHAR (100) NOT NULL UNIQUE,
 			value LONGTEXT NOT NULL,
-			expiration VARCHAR (50),
+			expiration INT UNSIGNED DEFAULT 0,
 			PRIMARY KEY (key_cache)
 		) $collate;
 	",

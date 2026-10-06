@@ -54,7 +54,7 @@ $title-color: #111111;
 		.lp-btn-ai-style {
 			margin-top: 0;
 			margin-bottom: 0;
-		} 
+		}
 	}
 }
 
@@ -667,6 +667,12 @@ $title-color: #111111;
 			display: inline-flex;
 			align-items: center;
 			gap: 8px;
+
+			&.loading {
+				&:before {
+					color: white !important;
+				}
+			}
 
 			&-primary {
 				background-color: $primary-purple;

@@ -137,18 +137,6 @@ p {
 	}
 }
 
-.lp-button {
-	border: 1px solid $border-color;
-	border-radius: $border-radius-global;
-	padding: $spacing-base-2x $spacing-base-4x;
-
-	&.loading {
-		pointer-events: none;
-		opacity: 0.8;
-		@include loading();
-	}
-}
-
 .lp-hidden {
 	display: none !important;
 }

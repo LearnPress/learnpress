@@ -1517,7 +1517,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$limit                 = $param['posts_per_page'] ?? 20;
 			$paged                 = $param['paged'] ?? 1;
 			$refund_request_status = sanitize_key( (string) ( $param['refund_request_status'] ?? '' ) );
-			$order_by              = $param['orderby'] ?? 'date';
+			$order_by              = $param['orderby'] ?? 'menu_order';
 			if ( empty( $order_by ) ) {
 				$order_by = 'ID';
 			} else {
@@ -1532,6 +1532,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 							'post_author',
 							'post_status',
 							'order_total',
+							'menu_order'
 						);
 						if ( ! in_array( $order_by, $allowed_key ) ) {
 							$order_by = 'ID';
@@ -1545,8 +1546,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			if ( $order_by === 'order_total' ) {
 				$post_filter->join[]   = "INNER JOIN {$post_db->tb_postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
-				$post_filter->where[]  = 'AND CAST(pm2.meta_value AS UNSIGNED)';
-				$post_filter->order_by = 'pm2.meta_value';
+				$post_filter->order_by = 'CAST(pm2.meta_value AS DECIMAL(10,2))';
 			} else {
 				$post_filter->order_by = $order_by;
 			}

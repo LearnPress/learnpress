@@ -1,10 +1,4 @@
 <?php
-/**
- * Template hooks Archive Package.
- *
- * @since 1.0.0
- * @version 1.0.0
- */
 namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Template;
@@ -15,10 +9,18 @@ use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Material_Files_DB;
 use stdClass;
 use LP_Global;
-use LP_WP_Filesystem;
 use LP_Settings;
 use Throwable;
 use Exception;
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Template Material course, lesson.
+ *
+ * @since 1.0.0
+ * @version 1.0.1
+ */
 class CourseMaterialTemplate {
 	public static function instance() {
 		static $instance = null;
@@ -72,6 +74,7 @@ class CourseMaterialTemplate {
 			[
 				'id_url'      => 'course-material',
 				'item_id'     => $item_id,
+				'item_type'   => $item ? $item->get_item_type() : LP_COURSE_CPT,
 				'paged'       => 1,
 				'per_page'    => $per_page,
 				'total_pages' => $total_pages,
@@ -102,12 +105,27 @@ class CourseMaterialTemplate {
 			$userModel = UserModel::find( get_current_user_id(), true );
 			$course_id = $args['course_id'] ?? 0;
 			$item_id   = $args['item_id'] ?? 0;
-			if ( get_post_type( $item_id ) === LP_COURSE_CPT ) {
+			$item_type = $args['item_type'] ?? '';
+			if ( empty( $item_type ) ) {
+				$item_type = get_post_type( $item_id );
+			}
+			if ( $item_type === LP_COURSE_CPT ) {
 				$courseModel = CourseModel::find( $item_id, true );
 			} elseif ( $course_id ) {
 				$courseModel = CourseModel::find( $course_id, true );
 			} else {
 				throw new Exception( esc_html__( 'Course not found!', 'learnpress' ) );
+			}
+
+			if ( ! $courseModel instanceof CourseModel ) {
+				throw new Exception( esc_html__( 'Course not found!', 'learnpress' ) );
+			}
+
+			if ( $item_type !== LP_COURSE_CPT ) {
+				$itemModel = $courseModel->get_item_model( $item_id, $item_type );
+				if ( false === $itemModel ) {
+					throw new Exception( esc_html__( 'Lesson not found!', 'learnpress' ) );
+				}
 			}
 
 			$can_show = false;
@@ -146,7 +164,7 @@ class CourseMaterialTemplate {
 			} else {
 				$material_html = '';
 				foreach ( $material_files as $m ) {
-					$material_html .= self::material_item( $m, $args['item_id'] );
+					$material_html .= self::material_item( $m, $args['item_id'], $item_type );
 				}
 				if ( $args['paged'] === 1 ) {
 					$sections         = array(
@@ -189,10 +207,10 @@ class CourseMaterialTemplate {
 		return Template::combine_components( $sections );
 	}
 
-	public static function material_item( $material, $current_item_id ) {
+	public static function material_item( $material, $current_item_id, $item_type = '' ) {
 		$sections = array(
 			'wrap'      => '<tr class="lp-material-item">',
-			'file-name' => self::html_file_name( $material, $current_item_id ),
+			'file-name' => self::html_file_name( $material, $current_item_id, $item_type ),
 			'file-type' => self::html_file_type( $material ),
 			'file-size' => self::html_file_size( $material ),
 			'file-link' => self::html_file_link( $material ),
@@ -209,8 +227,11 @@ class CourseMaterialTemplate {
 	 *
 	 * @return string
 	 */
-	public static function html_file_name( $material, $current_item_id ): string {
-		if ( get_post_type( $current_item_id ) == LP_COURSE_CPT && $material->item_type == LP_LESSON_CPT ) {
+	public static function html_file_name( $material, $current_item_id, $item_type = '' ): string {
+		if ( empty( $item_type ) ) {
+			$item_type = get_post_type( $current_item_id );
+		}
+		if ( $item_type == LP_COURSE_CPT && $material->item_type == LP_LESSON_CPT ) {
 			$html_file_name = sprintf( esc_html( '%1$s ( %2$s )' ), $material->file_name, get_the_title( $material->item_id ) );
 		} else {
 			$html_file_name = sprintf( esc_html( '%s' ), $material->file_name );
