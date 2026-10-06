@@ -74,10 +74,9 @@
 
 	.back-course {
 		padding-left: 24px;
-		padding-right: 24px;
+		padding-right: 26px;
 		line-height: $popup_header_height;
 		font-size: 24px;
-		// background: rgba(255, 255, 255, 0.1);
 		color: $text-color-meta;
 
 		&:hover {
@@ -641,14 +640,14 @@
 	top: $popup_header_height + 32px;
  	display: flex;
 	flex-direction: column;
-	padding: 14px 12px;
+	padding: 12px;
 	user-select: none;
 	box-sizing: border-box;
 	z-index: 99;
 	transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 	// Sticky Toggle button (always fixed at top right)
-	&__toggle { 
+	&__toggle {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -658,7 +657,7 @@
 		cursor: pointer;
 		font-size: 22px;
 		color: $text-color-accent;
-		background: #fff; 
+		background: #fff;
 		transition: all 0.22s ease;
 		flex-shrink: 0;
 
@@ -671,7 +670,7 @@
 		.popup-right-sidebar:not(.is-collapsed) & {
 			background: $bg-grey;
 			border-color: transparent;
-			box-shadow: none; 
+			box-shadow: none;
 		}
 	}
 
@@ -701,7 +700,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-		background: #fff; 
+		background: #fff;
  		transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease;
 		// max-height: 500px;
 	}
@@ -762,7 +761,7 @@
 		transform: translateY(-50%) translateX(10px);
 		background: $text-color-base;
 		color: #fff;
-		border: 1px solid $border-color; 
+		border: 1px solid $border-color;
 		padding: 6px 12px;
 		border-radius: 6px;
 		font-size: $font-size-label;
@@ -786,7 +785,7 @@
 			border-style: solid;
 			border-color: transparent transparent transparent $text-color-base;
 		}
-	} 
+	}
 }
 
 #popup-content {
@@ -1074,7 +1073,7 @@
 
 }
 
-#sidebar-toggle { 
+#sidebar-toggle {
 	width: 40px;
 	min-width: 40px;
 	line-height: 70px;
@@ -1091,7 +1090,7 @@
 	border: none;
 	text-align: center;
 	box-shadow: none;
-	color: var(--lp-color-accent, #666); 
+	color: var(--lp-color-accent, #666);
 	&:after {
 		display: none;
 	}
@@ -1495,23 +1494,23 @@ body {
 					transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 					will-change: left;
 					transform: translateZ(0);
+					background: #fff;
+					padding: 8px 15px;
+
 					.questions-pagination{
 						max-width: var(--lp-width-content-lesson, 792px);
 						margin: 0 auto;
-					} 
-					background: #fff;
-					padding: 8px 15px;
- 					.questions-pagination .nav-links{
+					}
+					.questions-pagination .nav-links{
 						margin-top: 0;
-					} 
+					}
 					&:empty{
 						display: none;
 					}
 				}
 
 				&.nav-center {
-					//height: 50px;
-					margin-left: 0 !important;
+ 					margin-left: 0 !important;
 					margin-bottom: 16px;
 				}
 			}
@@ -1531,7 +1530,7 @@ body {
 					display: none;
 				}
 			}
-		} 
+		}
 	}
 
 	.questions-pagination {
@@ -1615,7 +1614,6 @@ body {
 			width: 20px;
 			height: 20px;
 			transform: translate(0, -50%);
-
 			&::before {
 				font-family: 'lp-icon';
 				font-size: 1.125em;
