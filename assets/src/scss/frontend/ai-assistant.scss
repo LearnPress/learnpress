@@ -162,11 +162,11 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 			color 0.12s ease,
 			transform 0.12s ease;
 
-		&:hover,
+		/*&:hover,
 		&:focus-visible {
 			color: $color-primary;
 			border-color: $color-primary;
-		}
+		}*/
 	}
 
 	&__input-area {

@@ -439,8 +439,9 @@ class CourseAIAssistantTemplate {
 
 		$section_head = [
 			'wrap'    => '<div class="lp-learning-bar-item-head">',
+			'icon' => '<span class="lp-icon lp-icon-ai-assistant"></span>',
 			'title'   => sprintf(
-				'<label class="lp-ai-assistant__title">%s</label>',
+				'<label class="lp-ai-assistant__title lp-learning-bar-item-title">%s</label>',
 				esc_html__( 'AI Learning Assistant', 'learnpress' )
 			),
 			'actions' => sprintf(

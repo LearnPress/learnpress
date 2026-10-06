@@ -36,6 +36,15 @@
 		align-items: center;
 		justify-content: space-between;
 		background: #FFFEEA;
+
+		.lp-learning-bar-item-title {
+			color: #333333;
+		}
+
+		.lp-icon {
+			font-size: 24px;
+			color: $color-primary;
+		}
 	}
 
 	&__left {
@@ -73,6 +82,7 @@
 
 	.lp-learning-bar-item-head {
 		display: flex;
+		gap: 8px;
 		align-items: center;
 		justify-content: space-between;
 		width: 100%;
