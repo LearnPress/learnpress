@@ -3,11 +3,14 @@
 namespace LearnPress\Services;
 
 use Exception;
+use LearnPress\Databases\NoteDB;
+use LearnPress\Filters\NoteFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Note\NoteModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
+use LP_Debug;
 use LP_Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -25,6 +28,58 @@ class NoteService {
 	use Singleton;
 
 	public function init() {
+		// Notes have no meaning without their student, course or lesson.
+		add_action( 'deleted_user', array( $this, 'on_deleted_user' ) );
+		add_action( 'deleted_post', array( $this, 'on_deleted_post' ), 10, 2 );
+	}
+
+	/**
+	 * Delete the notes of a deleted user.
+	 *
+	 * @param int $user_id User ID.
+	 *
+	 * @return void
+	 */
+	public function on_deleted_user( $user_id ) {
+		$this->delete_notes_by( NoteFilter::COL_USER_ID, absint( $user_id ) );
+	}
+
+	/**
+	 * Delete the notes of a permanently deleted course or lesson (not when trashed).
+	 *
+	 * @param int           $post_id Post ID.
+	 * @param \WP_Post|null $post    Post object.
+	 *
+	 * @return void
+	 */
+	public function on_deleted_post( $post_id, $post = null ) {
+		$post_type = $post->post_type ?? get_post_type( $post_id );
+
+		if ( LP_COURSE_CPT === $post_type ) {
+			$this->delete_notes_by( NoteFilter::COL_COURSE_ID, absint( $post_id ) );
+		} elseif ( in_array( $post_type, NoteModel::get_supported_item_types(), true ) ) {
+			$this->delete_notes_by( NoteFilter::COL_ITEM_ID, absint( $post_id ) );
+		}
+	}
+
+	/**
+	 * @param string $column note_id | user_id | course_id | item_id.
+	 * @param int    $id     ID.
+	 *
+	 * @return int Deleted rows.
+	 */
+	protected function delete_notes_by( string $column, int $id ): int {
+		if ( $id <= 0 ) {
+			return 0;
+		}
+
+		try {
+			return NoteDB::getInstance()->delete_notes_by( $column, array( $id ) );
+		} catch ( Exception $e ) {
+			LP_Debug::error_log( $e );
+
+			return 0;
+		}
 	}
 
 	/**

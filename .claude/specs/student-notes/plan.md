@@ -10,7 +10,7 @@
 - [x] Step 7: JS highlight — selection → floating "Add Note", build anchor, re-anchor + render `<mark>`, orphan handling, AJAX item switch
 - [x] Step 8: Read-only view for admin/instructor via `?lp_note_user=`
 - [x] Step 9: Backend "Student Notes" page — stats, `html_form_filter()` + `html_tom_select()`, `TableListTemplate`, `html_pagination()`
-- [ ] Step 10: Cleanup hooks, GDPR exporter/eraser, enable setting
+- [x] Step 10: Cleanup hooks, GDPR exporter/eraser (enable setting: waiting for user decision)
 - [ ] Step 11: SCSS, `npm run build`, PHPCS, PHPUnit, manual test (classic + modern layout)
 
 ## Files to create

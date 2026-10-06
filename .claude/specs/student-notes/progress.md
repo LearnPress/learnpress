@@ -27,10 +27,14 @@
   - `NoteDB`: `join_details` (users u, courses c, items l), `get_note_users()`, `get_note_courses()`
   - Tests: NoteDBTest 8, NoteServiceTest 22, NoteModelTest 18 — pass; browser + CLI verified; test data removed
 
+- Step 10: `NoteService::init()` hooks — `deleted_user` → delete user notes; `deleted_post` (permanent delete only, trash keeps) → course: by course_id, lesson: by item_id. GDPR: `ExportPersonalData::export_user_notes()` (exporter `learnpress-notes`, 50/page), `ErasePersonalData::eraser_user_data()` deletes notes
+  - Tests: NoteServiceTest 25; E2E on Local with temp user/course/lesson (export, trash vs delete, erase, delete user) — user notes #37/#42 untouched
+
 ## In progress
 
 ## Next
-- Step 10: cleanup hooks, GDPR, setting `enable_student_notes` (already read by `NoteService::is_enabled()`, default yes)
+- Decide: settings toggle for `enable_student_notes` (already read by `NoteService::is_enabled()`, default yes)
+- Step 11: final build, PHPCS, manual test
 
 ## Decisions made
 - Custom table `learnpress_notes` (not usermeta / comments)

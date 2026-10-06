@@ -27,6 +27,8 @@ class FakeNoteService extends NoteService {
 	public $saved = [];
 	/** @var NoteModel[] */
 	public $removed = [];
+	/** @var array[] [ column, id ] */
+	public $deleted_by = [];
 
 	protected function find_course( int $course_id ) {
 		return $this->courses[ $course_id ] ?? false;
@@ -59,6 +61,12 @@ class FakeNoteService extends NoteService {
 		$this->removed[] = $note;
 
 		return true;
+	}
+
+	protected function delete_notes_by( string $column, int $id ): int {
+		$this->deleted_by[] = [ $column, $id ];
+
+		return 1;
 	}
 }
 
@@ -207,6 +215,33 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 	public function test_get_item_notes_rejects_other_student(): void {
 		$this->expectException( Exception::class );
 		$this->service->get_item_notes( self::OTHER, self::STUDENT, self::COURSE, self::LESSON );
+	}
+
+	// -------------------------------------------------------------------------
+	// Cleanup hooks
+	// -------------------------------------------------------------------------
+
+	public function test_deleting_user_deletes_their_notes(): void {
+		$this->service->on_deleted_user( self::STUDENT );
+
+		$this->assertSame( [ [ 'user_id', self::STUDENT ] ], $this->service->deleted_by );
+	}
+
+	public function test_deleting_course_or_lesson_deletes_notes(): void {
+		$this->service->on_deleted_post( self::COURSE, (object) [ 'post_type' => 'lp_course' ] );
+		$this->service->on_deleted_post( self::LESSON, (object) [ 'post_type' => 'lp_lesson' ] );
+
+		$this->assertSame(
+			[ [ 'course_id', self::COURSE ], [ 'item_id', self::LESSON ] ],
+			$this->service->deleted_by
+		);
+	}
+
+	public function test_deleting_other_posts_keeps_notes(): void {
+		$this->service->on_deleted_post( 30, (object) [ 'post_type' => 'lp_quiz' ] );
+		$this->service->on_deleted_post( 31, (object) [ 'post_type' => 'post' ] );
+
+		$this->assertSame( [], $this->service->deleted_by );
 	}
 
 	// -------------------------------------------------------------------------
