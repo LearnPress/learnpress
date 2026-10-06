@@ -1,0 +1,114 @@
+#popup-course {
+	--lp-width-addon-content-bar: 400px;
+}
+
+.lp-addon-content-bar {
+	position: fixed;
+	z-index: 100;
+	top: 103px;
+	right: 0;
+	bottom: 0;
+	width: var(--lp-width-addon-content-bar);
+	border-left: 1px solid $border-color;
+	background: var(--lp-bg-color-lesson, #fff);
+	box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transform: translateX(100%);
+	transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+		transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+		visibility 0.35s;
+	will-change: transform;
+
+	&.open {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transform: translateX(0);
+	}
+
+	&__head {
+		display: flex;
+		height: 70px;
+		padding: 0 20px;
+		border-bottom: 1px solid $border-color;
+		align-items: center;
+		justify-content: space-between;
+		background: #FFFEEA;
+	}
+
+	&__left {
+		font-size: $font-size-base;
+		font-weight: $heading-font-weight;
+		color: $text-color-base;
+	}
+
+	.lp-icon-close {
+		display: inline-flex;
+		width: 36px;
+		height: 36px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: $border-radius-global;
+		background: transparent;
+		color: $text-color-accent;
+		font-size: 18px;
+		cursor: pointer;
+		align-items: center;
+		justify-content: center;
+		box-shadow: none;
+
+		&:hover {
+			color: $bg-course-featured;
+		}
+	}
+
+	&__content {
+		overflow: auto;
+		height: calc(100% - 70px);
+		padding: 20px;
+	}
+}
+
+body:has(.lp-addon-content-bar.open) {
+	#popup-content {
+		margin-right: var(--lp-width-addon-content-bar);
+		transition: margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	#popup-footer,
+	.content-item-wrap .quiz-buttons.align-center .button-left.fixed {
+		right: var(--lp-width-addon-content-bar);
+	}
+}
+
+#popup-content {
+	transition: margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#popup-footer,
+.content-item-wrap .quiz-buttons.align-center .button-left.fixed {
+	transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+		left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 1024px) {
+	#popup-course {
+		--lp-width-addon-content-bar: min(360px, calc(100vw - 66px));
+	}
+
+	body:has(.lp-addon-content-bar.open) #popup-content {
+		margin-right: 0;
+	}
+}
+
+@media (max-width: 600px) {
+	body:has(.lp-addon-content-bar.open) {
+		#popup-footer,
+		.content-item-wrap .quiz-buttons.align-center .button-left.fixed {
+			right: 0;
+		}
+	}
+}
