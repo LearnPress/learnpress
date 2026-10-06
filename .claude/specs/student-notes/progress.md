@@ -46,6 +46,7 @@
 - Opening Notes closes AI Assistant and vice versa (`lp-footer-panel:open` document event)
 - Frontend for admin/instructor = read-only view of a student's notes via `?lp_note_user=` (assumed, user said "continue")
 - Admin/instructor cannot edit or delete student notes (view only)
+- Admin page: mockup is only a wireframe; keep its layout but style details like WP/LP (postbox boxes, Students-page table/avatars/`lp-badge`); no column sorting, newest first
 - Edit keeps item/type/anchor; only content changes
 - Note text output must always be escaped (`esc_html` / `textContent`); a lone "<" is stored as-is, "x<y" style input is stored as "x&lt;y"
 

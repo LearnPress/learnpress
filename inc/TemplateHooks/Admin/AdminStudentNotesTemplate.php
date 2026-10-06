@@ -8,8 +8,10 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Note\NoteModel;
+use LearnPress\Models\UserModel;
 use LearnPress\Services\NoteService;
 use LearnPress\TemplateHooks\Course\CourseNoteTemplate;
+use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LP_Debug;
 use LP_Request;
@@ -21,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  * Admin page: Student Notes.
  *
  * Admins review all notes; instructors only notes of courses they author / co-instruct.
- * Server rendered: filters, sorting and pagination are GET params of the page URL.
+ * Server rendered: filters and pagination are GET params of the page URL. Newest notes first.
  *
  * @since 4.4.9.2
  * @version 1.0.0
@@ -32,17 +34,6 @@ class AdminStudentNotesTemplate {
 	const PAGE_SLUG = 'learn-press-student-notes';
 	const PER_PAGE  = 20;
 	const EXCERPT   = 80;
-
-	/**
-	 * Sortable columns: request key => SQL column.
-	 */
-	const SORT_COLUMNS = array(
-		'student' => 'u.display_name',
-		'course'  => 'c.post_title',
-		'lesson'  => 'l.post_title',
-		'type'    => 'n.note_type',
-		'created' => 'n.created_at',
-	);
 
 	public function init() {
 	}
@@ -75,17 +66,13 @@ class AdminStudentNotesTemplate {
 	 * @return array
 	 */
 	public function get_request_args(): array {
-		$orderby = LP_Request::get_param( 'orderby', 'created', 'key', 'get' );
-		$order   = strtolower( LP_Request::get_param( 'order', 'desc', 'key', 'get' ) );
-		$type    = LP_Request::get_param( 'note_type', '', 'key', 'get' );
+		$type = LP_Request::get_param( 'note_type', '', 'key', 'get' );
 
 		return array(
 			'student'   => absint( LP_Request::get_param( 'student', 0, 'int', 'get' ) ),
 			'course'    => absint( LP_Request::get_param( 'course', 0, 'int', 'get' ) ),
 			'note_type' => in_array( $type, array( NoteModel::TYPE_TEXT, NoteModel::TYPE_HIGHLIGHT ), true ) ? $type : '',
 			's'         => trim( LP_Request::get_param( 's', '', 'text', 'get' ) ),
-			'orderby'   => isset( self::SORT_COLUMNS[ $orderby ] ) ? $orderby : 'created',
-			'order'     => 'asc' === $order ? 'asc' : 'desc',
 			'paged'     => max( 1, absint( LP_Request::get_param( 'paged', 1, 'int', 'get' ) ) ),
 		);
 	}
@@ -105,8 +92,6 @@ class AdminStudentNotesTemplate {
 				'course'    => $args['course'] ?? 0,
 				'note_type' => $args['note_type'] ?? '',
 				's'         => $args['s'] ?? '',
-				'orderby'   => $args['orderby'] ?? '',
-				'order'     => $args['order'] ?? '',
 			),
 			$change
 		);
@@ -194,9 +179,9 @@ class AdminStudentNotesTemplate {
 		$filter        = $this->apply_request_filters( clone $scope, $args );
 		$filter->limit = self::PER_PAGE;
 		$filter->page  = $args['paged'];
-		$filter->order = strtoupper( $args['order'] );
-		// note_id breaks ties (same second) so pages never overlap.
-		$filter->order_by    = self::SORT_COLUMNS[ $args['orderby'] ] . ' ' . $filter->order . ', n.note_id';
+		// Newest first; note_id breaks ties (same second) so pages never overlap.
+		$filter->order_by    = 'n.created_at DESC, n.note_id';
+		$filter->order       = NoteFilter::ORDER_DESC;
 		$filter->field_count = NoteFilter::COL_NOTE_ID;
 		$total_rows          = 0;
 		$rows                = $db->get_notes( $filter, $total_rows );
@@ -301,8 +286,6 @@ class AdminStudentNotesTemplate {
 		};
 
 		$fields = sprintf( '<input type="hidden" name="page" value="%s">', esc_attr( self::PAGE_SLUG ) )
-			. sprintf( '<input type="hidden" name="orderby" value="%s">', esc_attr( $args['orderby'] ) )
-			. sprintf( '<input type="hidden" name="order" value="%s">', esc_attr( $args['order'] ) )
 			. $field(
 				__( 'Student', 'learnpress' ),
 				str_replace(
@@ -409,23 +392,9 @@ class AdminStudentNotesTemplate {
 
 		$header = array();
 		foreach ( $columns as $key => $title ) {
-			$sortable = isset( self::SORT_COLUMNS[ $key ] );
-			$sorted   = $sortable && $args['orderby'] === $key;
-			$next     = $sorted && 'asc' === $args['order'] ? 'desc' : 'asc';
-
 			$header[ $key ] = array(
-				'class'      => 'lp-col-' . $key,
-				'title'      => esc_html( $title ),
-				'sortable'   => $sortable,
-				'sorted'     => $sorted,
-				'sort_order' => $args['order'],
-				'sort_url'   => $sortable ? $this->get_page_url(
-					$args,
-					array(
-						'orderby' => $key,
-						'order'   => $next,
-					)
-				) : '',
+				'class' => 'lp-col-' . $key,
+				'title' => esc_html( $title ),
 			);
 		}
 
@@ -436,7 +405,7 @@ class AdminStudentNotesTemplate {
 
 		$total_pages = (int) ceil( $total_rows / self::PER_PAGE );
 		$footer      = sprintf(
-			'<div class="lp-student-notes__footer"><span>%1$s</span>%2$s</div>',
+			'<div class="lp-student-notes__footer lp-enrolled-students-table-footer"><span class="lp-enrolled-students-table-footer__count">%1$s</span>%2$s</div>',
 			TableListTemplate::instance()->html_page_result(
 				array(
 					'paged'      => $args['paged'],
@@ -458,7 +427,7 @@ class AdminStudentNotesTemplate {
 		$table_args = apply_filters(
 			'learn-press/admin/student-notes/table/args',
 			array(
-				'class_table' => 'lp-student-notes-table',
+				'class_table' => 'lp-enrolled-students-table lp-student-notes-table',
 				'header'      => $header,
 				'body'        => array( 'rows_html' => $rows_html ),
 			),
@@ -467,7 +436,7 @@ class AdminStudentNotesTemplate {
 		);
 
 		return sprintf(
-			'<div class="lp-student-notes__table">%s%s</div>',
+			'<div class="lp-student-notes__table"><div class="lp-enrolled-students-table-wrap">%s</div>%s</div>',
 			TableListTemplate::instance()->html_table( $table_args ),
 			$footer
 		);
@@ -489,12 +458,20 @@ class AdminStudentNotesTemplate {
 			? add_query_arg( CourseNoteTemplate::PARAM_NOTE_USER, $note->user_id, $item_link ) . '#lp-note-' . $note->get_note_id()
 			: '';
 		$timestamp    = strtotime( $note->created_at . ' UTC' );
+		$user         = UserModel::find( $note->user_id, true );
 
+		// Same student cell as the Students page.
 		$student = sprintf(
-			'<strong>%1$s</strong><span class="lp-student-notes__email">%2$s</span>',
+			'<div class="lp-cell-student">%1$s<div class="lp-meta"><span class="lp-name">%2$s</span><span class="lp-email">%3$s</span></div></div>',
+			$user ? SingleInstructorTemplate::instance()->html_avatar( $user ) : '',
 			esc_html( $row->display_name ? $row->display_name : '#' . $note->user_id ),
 			esc_html( $row->user_email ?? '' )
 		);
+
+		$course_title = $row->course_title ? $row->course_title : '#' . $note->course_id;
+		$course_html  = $course
+			? sprintf( '<a href="%1$s" target="_blank" rel="noopener">%2$s</a>', esc_url( $course->get_permalink() ), esc_html( $course_title ) )
+			: esc_html( $course_title );
 
 		$lesson = $row->item_title ? $row->item_title : '#' . $note->item_id;
 		$lesson = $item_link
@@ -502,14 +479,14 @@ class AdminStudentNotesTemplate {
 			: esc_html( $lesson );
 
 		$type = sprintf(
-			'<span class="lp-student-notes__badge lp-student-notes__badge--%1$s">%2$s</span>',
-			esc_attr( $note->note_type ),
+			'<span class="lp-badge %1$s">%2$s</span>',
+			$is_highlight ? 'lp-badge--learning' : 'lp-badge--enrolled',
 			esc_html( $is_highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) )
 		);
 
 		$created = $timestamp
 			? sprintf(
-				'<span>%1$s</span><span class="lp-student-notes__time">%2$s</span>',
+				'%1$s<span class="lp-student-notes__time">%2$s</span>',
 				esc_html( wp_date( get_option( 'date_format' ), $timestamp ) ),
 				esc_html( wp_date( get_option( 'time_format' ), $timestamp ) )
 			)
@@ -528,8 +505,8 @@ class AdminStudentNotesTemplate {
 			array(
 				'tr'      => sprintf( '<tr data-note-id="%d">', $note->get_note_id() ),
 				'student' => sprintf( '<td class="lp-col-student">%s</td>', $student ),
-				'course'  => sprintf( '<td class="lp-col-course">%s</td>', esc_html( $row->course_title ? $row->course_title : '#' . $note->course_id ) ),
-				'lesson'  => sprintf( '<td class="lp-col-lesson">%s</td>', $lesson ),
+				'course'  => sprintf( '<td class="lp-col-course lp-cell-course">%s</td>', $course_html ),
+				'lesson'  => sprintf( '<td class="lp-col-lesson lp-cell-course">%s</td>', $lesson ),
 				'type'    => sprintf( '<td class="lp-col-type">%s</td>', $type ),
 				'content' => sprintf( '<td class="lp-col-content">%s</td>', $this->html_content( $note ) ),
 				'created' => sprintf( '<td class="lp-col-created">%s</td>', $created ),

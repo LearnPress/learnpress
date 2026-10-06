@@ -1,8 +1,10 @@
 /**
  * Admin page: Student Notes.
  *
+ * Boxes follow the WP .postbox look; the table reuses the Students page styles.
+ *
  * @since 4.4.9.2
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 .lp-student-notes {
@@ -26,13 +28,14 @@
 		}
 	}
 
+	// WP .postbox look.
 	&__stat,
 	&__filters,
 	&__table {
-		padding: 20px;
-		border: 1px solid #dcdcde;
-		border-radius: 8px;
+		padding: 16px 20px;
+		border: 1px solid #c3c4c7;
 		background: #fff;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 	}
 
 	&__stat {
@@ -47,15 +50,20 @@
 	}
 
 	&__stat-value {
-		font-size: 24px;
-		font-weight: 600;
-		line-height: 1.2;
+		color: #1d2327;
+		font-size: 23px;
+		font-weight: 400;
+		line-height: 1.3;
 	}
 
 	&__filters {
 		h2 {
-			margin: 0 0 16px;
-			font-size: 16px;
+			margin: -16px -20px 16px;
+			padding: 10px 20px;
+			border-bottom: 1px solid #c3c4c7;
+			font-size: 14px;
+			font-weight: 600;
+			line-height: 1.4;
 		}
 
 		.lp-form-filter {
@@ -72,12 +80,10 @@
 
 			.description {
 				margin: 0;
-				font-size: 12px;
 			}
 
 			input[type="search"] {
 				width: 100%;
-				min-height: 36px;
 			}
 		}
 	}
@@ -85,47 +91,16 @@
 	&__table {
 		overflow-x: auto;
 
-		.lp-list-table {
-			th,
-			td {
-				padding: 12px 10px;
-				vertical-align: top;
-				text-align: left;
-			}
-
-			tbody tr + tr td {
-				border-top: 1px solid #f0f0f1;
-			}
+		.lp-enrolled-students-table-wrap,
+		.lp-table-wrap {
+			margin-top: 0;
 		}
 	}
 
-	&__email,
 	&__time {
 		display: block;
-		color: #646970;
+		color: #94a3b8;
 		font-size: 12px;
-	}
-
-	&__badge {
-		display: inline-block;
-		padding: 2px 10px;
-		border: 1px solid;
-		border-radius: 999px;
-		font-size: 12px;
-		line-height: 1.6;
-		white-space: nowrap;
-
-		&--highlight {
-			border-color: #f0b849;
-			background: #fef8e7;
-			color: #8a5a00;
-		}
-
-		&--text {
-			border-color: #68de7c;
-			background: #edfaef;
-			color: #00702a;
-		}
 	}
 
 	.lp-col-content {
@@ -147,7 +122,7 @@
 
 			.lp-icon {
 				margin-top: 3px;
-				color: #646970;
+				color: #94a3b8;
 			}
 		}
 
@@ -164,10 +139,10 @@
 		overflow-wrap: anywhere;
 
 		blockquote {
-			margin: 0 0 8px;
-			padding: 6px 10px;
-			border-left: 3px solid #0ea5e9;
-			background: rgba(14, 165, 233, 0.08);
+			margin: 0 0 6px;
+			padding: 4px 8px;
+			border-left: 3px solid #3b82f6;
+			background: #f1f5f9;
 		}
 
 		p {
