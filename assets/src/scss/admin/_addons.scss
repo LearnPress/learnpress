@@ -1,69 +1,13 @@
 @import "../variables-backend";
 
-:root {
-	--lp-addon-item-padding: #{$lp-spacing-xl};
-	--lp-addon-item-border-color: #{$lp-border};
-}
-
 
 /*** Style Addons Manager ***/
 #lp-addons {
-	display: grid;
-	grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
-	grid-gap: 20px;
-
-	a {
-		text-decoration: none;
-	}
-
-	button {
-		padding: 6.5px 17px;
-		background: rgba(151, 71, 255, 1);
-		color: white;
-		border-radius: $lp-radius-md;
-		border: none;
-		cursor: pointer;
-
-		&.btn-addon-action {
-			&[data-action="cancel"] {
-				position: absolute;
-				right: 0;
-				background: transparent;
-				color: rgba(255, 0, 0, 0.89);
-				top: 0;
-				padding: 7px 10px;
-			}
-
-			&[data-action="update"] {
-				border-color: $lp-badge-blue;
-				color: $lp-bg;
-				background: $lp-badge-blue;
-			}
-
-			&.loading{
-				&:before {
-					//font-size: 1rem;
-					//right: 48%;
-					color: white;
-				}
-			}
-		}
-	}
-
 	[data-action="setting"] {
 		display: none;
 	}
 
 	.lp-addon-item {
-		background: white;
-		padding: var(--lp-addon-item-padding);
-		border: 1px solid var(--lp-addon-item-border-color);
-		border-radius: $lp-radius-sm;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		position: relative;
-
 		input {
 			margin: 0 !important;
 		}
@@ -237,10 +181,15 @@
 
 /*** Add-ons card redesign ***/
 #lp-addons {
+	display: grid;
 	grid-template-columns: repeat( 4, minmax( 0, 1fr ) );
 	gap: $lp-spacing-xl;
 
 	.lp-addon-item {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		position: relative;
 		overflow: hidden;
 		min-width: 0;
 		min-height: 280px;
@@ -511,28 +460,11 @@
 			border-top: 1px solid $lp-border;
 		}
 
-		/*&__actions__left,
-		&__actions__right {
-			display: flex;
-			align-items: center;
-			gap: $lp-spacing-sm;
-		}*/
-
-		/*&__actions__left {
-			flex: 1;
-			justify-content: flex-end;
-		}*/
-
-		/*&__actions__right {
-			display: grid;
-			grid-template-columns: max-content;
-		}*/
-
 		/*.lp-addon-button,*/
 		.btn-addon-action {
 			box-sizing: border-box;
 			padding: 6px $lp-spacing-sm;
-			border: 1px solid transparent;
+			border: 1px solid $lp-primary;
 			border-radius: $lp-radius-md;
 			color: $lp-bg;
 			background: $lp-primary;
@@ -569,18 +501,7 @@
 			}
 		}
 
-/*		.lp-addon-button {
-			border-color: $lp-border-input;
-			color: $lp-text-secondary;
-			background: $lp-bg;
 
-			&:hover,
-			&:focus {
-				border-color: $lp-primary;
-				color: $lp-primary;
-				background: $lp-bg-hover;
-			}
-		}*/
 
 		.lp-addon-item__actions .btn-addon-action[data-action="activate"] {
 			border-color: $lp-success;
@@ -787,27 +708,7 @@
 	}
 }
 
-/*** Tab of Addons Manager ***/
-.learn-press-addons {
-	max-width: 100%;
 
-	.wp-heading-inline,
-	.lp-addons-page-title {
-		margin: 0;
-		color: $lp-text;
-		font-size: $lp-font-3xl;
-		font-weight: $lp-font-weight-semibold;
-		line-height: $lp-line-height-125;
-	}
-
-	.lp-addons-page-subtitle {
-		margin: 0 0 $lp-spacing-2xl;
-		color: $lp-text-secondary;
-		font-size: $lp-font-md;
-		font-weight: $lp-font-weight-regular;
-		line-height: $lp-line-height-150;
-	}
-}
 
 .lp-addons-controls {
 	margin-bottom: $lp-spacing-xl;
@@ -818,29 +719,8 @@
 }
 
 .lp-addons-toolbar {
-	position: relative;
-	box-sizing: border-box;
-	margin-bottom: $lp-spacing-3xl;
-	border: 1px solid $lp-border;
-	border-radius: $lp-radius-sm;
-	background: $lp-bg-card;
-	box-shadow: $lp-shadow-sm;
-	overflow: hidden;
-
 	&[hidden] {
 		display: none;
-	}
-
-	&__primary {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: $lp-spacing-lg;
-		box-sizing: border-box;
-		padding: $lp-spacing-xl;
-		border-bottom: 1px solid $lp-border;
-		border-top-left-radius: inherit;
-		border-top-right-radius: inherit;
 	}
 
 	.lp-addons-filter {
@@ -916,365 +796,11 @@
 			-webkit-overflow-scrolling: touch;
 		}
 	}
-
-	.nav-tab {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		box-sizing: border-box;
-		min-height: 40px;
-		margin-left: 0;
-		padding: $lp-spacing-sm $lp-spacing-md;
-		border: 1px solid transparent;
-		border-radius: $lp-radius-sm;
-		color: $lp-primary;
-		background: $lp-primary-bland;
-		font-size: $lp-font-sm;
-		font-weight: $lp-font-weight-medium;
-		line-height: $lp-line-height-150;
-		text-decoration: none;
-		white-space: nowrap;
-		cursor: pointer;
-		transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
-
-		&:hover,
-		&:focus {
-			border-color: transparent;
-			color: $lp-primary-hover;
-			background: darken( $lp-primary-bland, 4% );
-		}
-
-		&:active {
-			border-color: transparent;
-			color: $lp-primary-wp-hover;
-			background: darken( $lp-primary-bland, 8% );
-		}
-
-		&:disabled {
-			border-color: transparent;
-			color: $lp-bg;
-			background: $lp-border-input;
-			cursor: not-allowed;
-		}
-
-		&:focus-visible {
-			outline: none;
-			box-shadow: $lp-focus-ring;
-		}
-	}
-
-	.nav-tab-active {
-		border-color: transparent;
-		color: $lp-bg;
-		background: $lp-primary;
-
-		&:hover,
-		&:focus {
-			border-color: transparent;
-			color: $lp-bg;
-			background: $lp-primary-hover;
-		}
-
-		&:active {
-			border-color: transparent;
-			color: $lp-bg;
-			background: $lp-primary-wp-hover;
-		}
-	}
-}
-
-.lp-addons-categories {
-	display: flex;
-	align-items: center;
-	flex-wrap: nowrap;
-	gap: $lp-spacing-2xl;
-	box-sizing: border-box;
-	padding: $lp-spacing-md $lp-spacing-xl;
-	overflow-x: auto;
-	overflow-y: hidden;
-	scrollbar-width: thin;
-	-webkit-overflow-scrolling: touch;
-}
-
-.lp-addons-category {
-	position: relative;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	box-sizing: border-box;
-	min-height: 42px;
-	padding: $lp-spacing-xs 0;
-	border: 1px solid transparent;
-	border-color: transparent;
-	border-radius: $lp-radius-sm $lp-radius-sm 0 0;
-	color: $lp-text-placeholder;
-	background: transparent;
-	font-size: $lp-font-sm;
-	font-weight: $lp-font-weight-medium;
-	line-height: $lp-line-height-150;
-	white-space: nowrap;
-	cursor: pointer;
-	transition: color 0.2s ease;
-
-	&::after {
-		content: '';
-		position: absolute;
-		bottom: 2px;
-		left: 0;
-		right: 0;
-		height: 2px;
-		border-radius: 2px;
-		background: transparent;
-		transition: background-color 0.2s ease;
-	}
-
-	&__count {
-		display: none;
-	}
-
-	&:hover,
-	&:focus {
-		border-color: transparent;
-		color: $lp-primary;
-		background: transparent;
-	}
-
-	&:focus-visible {
-		outline: none;
-		box-shadow: none;
-		color: $lp-primary;
-	}
-
-	&.active {
-		border-color: transparent;
-		color: $lp-primary;
-		background: transparent;
-		font-weight: $lp-font-weight-semibold;
-
-		&::after {
-			background: $lp-primary;
-		}
-	}
-
-	&[hidden] {
-		display: none;
-	}
-}
-
-.lp-addons-search {
-	position: static;
-	flex-shrink: 0;
-
-	&__btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		box-sizing: border-box;
-		width: 40px;
-		height: 40px;
-		min-width: 40px;
-		min-height: 40px;
-		padding: 0;
-		border: 1px solid $lp-border;
-		border-radius: $lp-radius-sm;
-		color: $lp-text;
-		background: $lp-bg;
-		cursor: pointer;
-		transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
-
-		.lp-addons-search__icon {
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			color: $lp-text;
-			font-size: $lp-font-lg;
-		}
-
-		&:hover,
-		&:focus {
-			border-color: $lp-primary;
-			color: $lp-primary;
-			background: $lp-bg-hover;
-
-			.lp-addons-search__icon {
-				color: $lp-primary;
-			}
-		}
-
-		&:focus-visible {
-			outline: none;
-			box-shadow: $lp-focus-ring;
-		}
-	}
-
-	&__field {
-		display: none;
-	}
-
-	&.is-open {
-		.lp-addons-search__btn {
-			display: none;
-		}
-
-		.lp-addons-search__field {
-			position: absolute;
-			inset: 0;
-			z-index: 10;
-			display: flex;
-			align-items: center;
-			gap: $lp-spacing-sm;
-			box-sizing: border-box;
-			padding: $lp-spacing-md $lp-spacing-xl;
-			border-radius: inherit;
-			background: $lp-bg;
-		}
-	}
-
-	&__input-wrap {
-		position: relative;
-		flex: 1;
-		min-width: 0;
-		display: flex;
-		align-items: center;
-	}
-
-	&__field-icon {
-		position: absolute;
-		top: 50%;
-		inset-inline-start: 16px;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 20px;
-		height: 20px;
-		color: $lp-text-placeholder;
-		font-size: $lp-font-lg;
-		transform: translateY(-50%);
-		pointer-events: none;
-		z-index: 2;
-	}
-
-	&__btn-clear {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		box-sizing: border-box;
-		height: 48px;
-		min-height: 48px;
-		padding: 0 $lp-spacing-xl;
-		border: 1px solid transparent;
-		border-radius: $lp-radius-sm;
-		font-size: $lp-font-sm;
-		font-weight: $lp-font-weight-medium;
-		line-height: $lp-line-height-150;
-		cursor: pointer;
-		white-space: nowrap;
-		flex-shrink: 0;
-		transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-
-		&:disabled {
-			cursor: not-allowed;
-			border-color: transparent;
-			background: $lp-border-input;
-			color: $lp-bg;
-		}
-
-		&:not(:disabled) {
-			border-color: transparent;
-			background: $lp-primary;
-			color: $lp-bg;
-
-			&:hover,
-			&:focus {
-				border-color: transparent;
-				background: $lp-primary-hover;
-				color: $lp-bg;
-			}
-
-			&:active {
-				border-color: transparent;
-				background: $lp-primary-wp-hover;
-				color: $lp-bg;
-			}
-
-			&:focus-visible {
-				outline: none;
-				box-shadow: $lp-focus-ring;
-			}
-		}
-	}
-
-	&__close {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		box-sizing: border-box;
-		width: 48px;
-		height: 48px;
-		min-width: 48px;
-		min-height: 48px;
-		padding: 0;
-		border: 1px solid transparent;
-		border-radius: $lp-radius-sm;
-		background: transparent;
-		color: $lp-text-placeholder;
-		font-size: 26px;
-		line-height: 1;
-		cursor: pointer;
-		flex-shrink: 0;
-		transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-
-		&:hover,
-		&:focus {
-			background: $lp-bg-hover;
-			color: $lp-text;
-		}
-
-		&:focus-visible {
-			outline: none;
-			box-shadow: $lp-focus-ring;
-		}
-	}
 }
 
 .lp-addons-page {
 	.lp-addon-notice {
 		margin-bottom: 20px;
-	}
-
-	input.lp-addons-search__input {
-		box-sizing: border-box;
-		width: 100%;
-		height: 48px;
-		min-height: 48px;
-		margin: 0;
-		padding: $lp-spacing-xs $lp-spacing-lg;
-		padding-inline-start: 48px;
-		padding-inline-end: 16px;
-		border: 1px solid $lp-border;
-		border-radius: $lp-radius-sm;
-		color: $lp-text-label;
-		background: $lp-bg;
-		font-size: $lp-font-sm;
-
-		/* Hide native webkit search cancel button to avoid duplicate x icons */
-		&::-webkit-search-decoration,
-		&::-webkit-search-cancel-button,
-		&::-webkit-search-results-button,
-		&::-webkit-search-results-decoration {
-			-webkit-appearance: none;
-			display: none;
-		}
-
-		&::placeholder {
-			color: $lp-text-placeholder;
-		}
-
-		&:focus {
-			border-color: $lp-primary;
-			outline: none;
-			box-shadow: $lp-focus-ring;
-		}
 	}
 }
 
@@ -1282,7 +808,8 @@
 	.lp-addons-toolbar {
 		overflow: visible;
 
-		&__primary {
+		&__primary,
+		.lp-be-toolbar__main {
 			display: flex;
 			flex-wrap: wrap;
 			align-items: center;
@@ -1422,45 +949,8 @@
 			}
 		}
 
-		.lp-addons-search {
-			order: 2;
-			margin-inline-start: auto;
-			flex: 0 1 360px;
-			max-width: 420px;
 
-			&__btn {
-				display: none;
-			}
-
-			&__field {
-				position: static;
-				display: flex;
-				align-items: center;
-				gap: $lp-spacing-xs;
-				box-sizing: border-box;
-				padding: 0;
-				border-radius: inherit;
-				background: transparent;
-			}
-
-			&__close {
-				display: none;
-			}
-
-			&__btn-clear {
-				height: 40px;
-				min-height: 40px;
-				padding: 0 $lp-spacing-md;
-				font-size: $lp-font-sm;
-			}
-		}
-
-		input.lp-addons-search__input {
-			height: 40px;
-			min-height: 40px;
-		}
-
-		.lp-addons-categories {
+		.lp-be-categories {
 			display: none;
 		}
 
@@ -1527,7 +1017,7 @@
 				}
 			}
 
-			.lp-addons-categories {
+			.lp-be-categories {
 				display: flex;
 				flex-wrap: wrap;
 				gap: $lp-spacing-sm;
@@ -1550,7 +1040,7 @@
 					letter-spacing: 0.5px;
 				}
 
-				.lp-addons-category {
+				.lp-be-category {
 					display: inline-flex;
 					align-items: center;
 					justify-content: center;
@@ -1591,63 +1081,11 @@
 
 @media (max-width: 782px) {
 	.lp-addons-toolbar {
-		&__primary {
+		&__primary,
+		.lp-be-toolbar__main {
 			padding: $lp-spacing-md;
 		}
 
-		.lp-addons-search {
-			flex: 0 0 auto;
-			max-width: none;
-			position: static;
-
-			&__btn {
-				display: inline-flex;
-				align-items: center;
-				justify-content: center;
-				box-sizing: border-box;
-				width: 40px;
-				height: 40px;
-				min-width: 40px;
-				min-height: 40px;
-			}
-
-			&__field {
-				display: none;
-			}
-
-			&.is-open {
-				.lp-addons-search__btn {
-					display: none;
-				}
-
-				.lp-addons-search__field {
-					position: absolute;
-					inset: 0;
-					z-index: 10;
-					display: flex;
-					align-items: center;
-					gap: $lp-spacing-xs;
-					box-sizing: border-box;
-					padding: $lp-spacing-sm $lp-spacing-md;
-					border-radius: inherit;
-					background: $lp-bg;
-				}
-
-				.lp-addons-search__close {
-					display: inline-flex;
-					width: 40px;
-					height: 40px;
-					min-width: 40px;
-					min-height: 40px;
-				}
-
-				.lp-addons-search__btn-clear {
-					height: 40px;
-					min-height: 40px;
-					padding: 0 $lp-spacing-md;
-				}
-			}
-		}
 
 		&.is-filter-open {
 			.lp-addons-filter__menu {
@@ -1656,7 +1094,7 @@
 				padding: $lp-spacing-md;
 			}
 
-			.lp-addons-categories {
+			.lp-be-categories {
 				padding: $lp-spacing-md;
 			}
 		}

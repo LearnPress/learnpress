@@ -348,30 +348,23 @@ class AdminAddonsPage {
 
 		$section_tabs = array();
 		foreach ( $tabs as $tab => $tab_title ) {
-			$active_class = ( $tab === $active_tab ) ? ' nav-tab-active' : '';
+			$is_active    = ( $tab === $active_tab );
+			$active_class = $is_active ? ' nav-tab-active' : '';
+			$aria_pressed = $is_active ? 'true' : 'false';
 
-			if ( $active_class ) {
-				$section_tabs[ $tab ] = sprintf(
-					'<a class="lp-addons-filter__item nav-tab%s" data-tab="%s" href="#" aria-pressed="true">%s</a>',
-					esc_attr( $active_class ),
-					esc_attr( $tab ),
-					wp_kses_post( $tab_title )
-				);
-			} else {
-				$section_tabs[ $tab ] = sprintf(
-					'<a class="lp-addons-filter__item nav-tab"
-						data-tab="%s" aria-pressed="false" href="?page=learn-press-addons&tab=%s">%s</a>',
-					esc_attr( $tab ),
-					esc_attr( $tab ),
-					wp_kses_post( $tab_title )
-				);
-			}
+			$section_tabs[ $tab ] = sprintf(
+				'<button type="button" class="lp-addons-filter__item nav-tab lp-be-nav-tab%s" data-tab="%s" aria-pressed="%s">%s</button>',
+				esc_attr( $active_class ),
+				esc_attr( $tab ),
+				esc_attr( $aria_pressed ),
+				wp_kses_post( $tab_title )
+			);
 		}
 
 		$section = array(
 			'wrapper'           => '<div class="lp-addons-controls">',
-			'toolbar'             => '<div class="lp-nav-tab-wrapper lp-addons-toolbar">',
-			'toolbar_primary'     => '<div class="lp-addons-toolbar__primary">',
+			'toolbar'           => '<div class="lp-nav-tab-wrapper lp-addons-toolbar lp-be-toolbar">',
+			'toolbar_primary'   => '<div class="lp-addons-toolbar__primary lp-be-toolbar__main">',
 			'filter'              => sprintf(
 				'<div class="lp-addons-filter" role="group" aria-label="%s">
 					<button type="button" class="lp-addons-filter__toggle" aria-label="%s" aria-expanded="false" aria-haspopup="true">
@@ -399,23 +392,23 @@ class AdminAddonsPage {
 			),
 			'tabs'                => Template::combine_components( $section_tabs ),
 			'filter_end'          => '</div></div>',
-			'search'              => '<div class="lp-search-addons lp-addons-search">',
+			'search'              => '<div class="lp-search-addons lp-addons-search lp-be-search">',
 			'search_btn'          => sprintf(
-				'<button type="button" class="lp-addons-search__btn" aria-label="%s" aria-expanded="false">
+				'<button type="button" class="lp-addons-search__btn lp-be-search__btn" aria-label="%s" aria-expanded="false">
 					<span class="lp-addons-search__icon lp-icon-search" aria-hidden="true"></span>
 				</button>',
 				esc_attr__( 'Search add-ons', 'learnpress' )
 			),
 			'search_field'        => sprintf(
-				'<div class="lp-addons-search__field">
+				'<div class="lp-addons-search__field lp-be-search__field">
 					<span class="screen-reader-text">%s</span>
-					<div class="lp-addons-search__input-wrap">
-						<span class="lp-addons-search__field-icon lp-icon-search" aria-hidden="true"></span>
+					<div class="lp-addons-search__input-wrap lp-be-search__input-wrap">
+						<span class="lp-addons-search__field-icon lp-be-search__field-icon lp-icon-search" aria-hidden="true"></span>
 						<input id="lp-search-addons__input"
-							class="lp-addons-search__input" type="search" placeholder="%s" autocomplete="off"/>
+							class="lp-addons-search__input lp-be-search__input" type="search" placeholder="%s" autocomplete="off"/>
 					</div>
-					<button type="button" class="lp-addons-search__btn-clear" disabled>%s</button>
-					<button type="button" class="lp-addons-search__close" aria-label="%s">
+					<button type="button" class="lp-addons-search__btn-clear lp-be-search__btn-clear" disabled>%s</button>
+					<button type="button" class="lp-addons-search__close lp-be-search__close" aria-label="%s">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>',
@@ -449,22 +442,20 @@ class AdminAddonsPage {
 		$addon_categories = $data['addon_categories'] ?? array();
 		$section          = array(
 			'wrapper' => sprintf(
-				'<div class="lp-addons-categories" role="group" aria-label="%s">',
+				'<div class="lp-addons-categories lp-be-categories" role="group" aria-label="%s">',
 				esc_attr__( 'Filter add-ons by category', 'learnpress' )
 			),
 			'all'     => sprintf(
-				'<button type="button" class="lp-addons-category active"
-					data-category="all" aria-pressed="true">%s <span class="lp-addons-category__count"></span>
-				</button>',
+				'<button type="button" class="lp-addons-category lp-be-category active"
+					data-category="all" aria-pressed="true">%s</button>',
 				esc_html__( 'All', 'learnpress' )
 			),
 		);
 
 		foreach ( $addon_categories as $category_slug => $category_label ) {
 			$section[ $category_slug ] = sprintf(
-				'<button type="button" class="lp-addons-category"
-					data-category="%s" aria-pressed="false">%s <span class="lp-addons-category__count"></span>
-				</button>',
+				'<button type="button" class="lp-addons-category lp-be-category"
+					data-category="%s" aria-pressed="false">%s</button>',
 				esc_attr( $category_slug ),
 				esc_html( $category_label )
 			);

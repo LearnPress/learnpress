@@ -50,17 +50,17 @@ defined( 'ABSPATH' ) || exit;
 
 			</div>
 		</div>
-		<div class="lp-themes-search">
-			<button type="button" class="lp-themes-search__btn" aria-label="<?php esc_attr_e( 'Search themes', 'learnpress' ); ?>" aria-expanded="false" aria-controls="lp-themes-search__field">
+		<div class="lp-themes-search lp-be-search">
+			<button type="button" class="lp-themes-search__btn lp-be-search__btn" aria-label="<?php esc_attr_e( 'Search themes', 'learnpress' ); ?>" aria-expanded="false" aria-controls="lp-themes-search__field">
 				<span class="lp-icon-search" aria-hidden="true"></span>
 			</button>
-			<div class="lp-themes-search__field" id="lp-themes-search__field">
-				<label class="lp-themes-search__input-wrap lp-be-search-field">
+			<div class="lp-themes-search__field lp-be-search__field" id="lp-themes-search__field">
+				<label class="lp-themes-search__input-wrap lp-be-search__input-wrap">
 					<span class="screen-reader-text"><?php esc_html_e( 'Search theme by name', 'learnpress' ); ?></span>
-					<span class="lp-themes-search__icon lp-be-search-field__icon lp-icon-search" aria-hidden="true"></span>
-					<input type="search" class="lp-themes-search__input lp-be-search-field__input" placeholder="<?php esc_attr_e( 'Search theme by name', 'learnpress' ); ?>" />
+					<span class="lp-themes-search__icon lp-be-search__icon lp-icon-search" aria-hidden="true"></span>
+					<input type="search" class="lp-themes-search__input lp-be-search__input" placeholder="<?php esc_attr_e( 'Search theme by name', 'learnpress' ); ?>" />
 				</label>
-				<button type="button" class="lp-themes-search__close" aria-label="<?php esc_attr_e( 'Close search', 'learnpress' ); ?>"><span aria-hidden="true">&times;</span></button>
+				<button type="button" class="lp-themes-search__close lp-be-search__close" aria-label="<?php esc_attr_e( 'Close search', 'learnpress' ); ?>"><span aria-hidden="true">&times;</span></button>
 			</div>
 		</div>
 	</div>
