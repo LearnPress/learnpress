@@ -8,6 +8,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\Note\NoteModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
+use LP_Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -191,6 +192,35 @@ class NoteService {
 		}
 
 		return $this->remove( $note );
+	}
+
+	/**
+	 * Note data sent to the frontend (AJAX responses and the initial page data).
+	 * Values are raw plain text: JS must render them with textContent.
+	 *
+	 * @param NoteModel $note Note.
+	 *
+	 * @return array
+	 */
+	public function to_response( NoteModel $note ): array {
+		$data = $note->to_array();
+		unset( $data['user_id'] );
+
+		$timestamp                  = strtotime( $note->created_at . ' UTC' );
+		$data['created_at_display'] = $timestamp
+			? wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $timestamp )
+			: '';
+
+		return $data;
+	}
+
+	/**
+	 * Check student notes are enabled in settings.
+	 *
+	 * @return bool
+	 */
+	public static function is_enabled(): bool {
+		return 'yes' === LP_Settings::get_option( 'enable_student_notes', 'yes' );
 	}
 
 	/**

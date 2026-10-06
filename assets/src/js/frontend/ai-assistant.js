@@ -72,6 +72,13 @@ export class AIAssistantWidget {
 		this.renderHistoryToDOM();
 		this.bindQuizCompletedHook();
 		this.events();
+
+		// Only one learning tool panel (AI Assistant, Notes...) is open at a time.
+		document.addEventListener( 'lp-footer-panel:open', ( e ) => {
+			if ( e.detail?.id !== 'ai-assistant' && ! this.elements.panel.hidden ) {
+				this.closePanel();
+			}
+		} );
 	}
 
 	validateConfig() {
@@ -363,6 +370,7 @@ export class AIAssistantWidget {
 	}
 
 	openPanel() {
+		document.dispatchEvent( new CustomEvent( 'lp-footer-panel:open', { detail: { id: 'ai-assistant' } } ) );
 		this.elements.panel.hidden = false;
 		this.root.setAttribute( 'aria-hidden', 'false' );
 		this.elements.toggleBtn.setAttribute( 'aria-expanded', 'true' );

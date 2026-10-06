@@ -3,7 +3,6 @@
 namespace LearnPress\Ajax;
 
 use Exception;
-use LearnPress\Models\Note\NoteModel;
 use LearnPress\Services\NoteService;
 use LP_Helper;
 use LP_Request;
@@ -45,7 +44,7 @@ class NoteAjax extends AbstractAjax {
 
 			$response->status = 'success';
 			$response->data   = array(
-				'notes'    => array_map( array( $this, 'prepare_note' ), $notes ),
+				'notes'    => array_map( array( NoteService::instance(), 'to_response' ), $notes ),
 				'can_edit' => $viewer_id === $owner_id
 					&& NoteService::instance()->can_create( $viewer_id, $course_id, $item_id ),
 			);
@@ -71,7 +70,7 @@ class NoteAjax extends AbstractAjax {
 
 			$response->status  = 'success';
 			$response->message = $is_new ? __( 'Note added.', 'learnpress' ) : __( 'Note updated.', 'learnpress' );
-			$response->data    = array( 'note' => $this->prepare_note( $note ) );
+			$response->data    = array( 'note' => NoteService::instance()->to_response( $note ) );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
@@ -118,30 +117,15 @@ class NoteAjax extends AbstractAjax {
 			throw new Exception( __( 'Please log in to use notes.', 'learnpress' ) );
 		}
 
+		if ( ! NoteService::is_enabled() ) {
+			throw new Exception( __( 'Notes are disabled.', 'learnpress' ) );
+		}
+
 		$params = LP_Helper::json_decode( LP_Request::get_param( 'data', '', 'wp_check_invalid_utf8', 'post' ), true );
 		if ( ! is_array( $params ) ) {
 			throw new Exception( __( 'Invalid request data.', 'learnpress' ) );
 		}
 
 		return $params;
-	}
-
-	/**
-	 * Note data for the frontend. Values are raw: JS must render them as text.
-	 *
-	 * @param NoteModel $note Note.
-	 *
-	 * @return array
-	 */
-	protected function prepare_note( NoteModel $note ): array {
-		$data = $note->to_array();
-		unset( $data['user_id'] );
-
-		$timestamp                  = strtotime( $note->created_at . ' UTC' );
-		$data['created_at_display'] = $timestamp
-			? wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $timestamp )
-			: '';
-
-		return $data;
 	}
 }

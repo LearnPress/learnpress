@@ -100,6 +100,7 @@ use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentEnrolledTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate;
+use LearnPress\TemplateHooks\Course\CourseNoteTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
@@ -418,6 +419,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminCourseTools::instance();
 			CourseMaterialTemplate::instance();
 			CourseAIAssistantTemplate::instance();
+			CourseNoteTemplate::instance();
 			AdminOrderItemsTemplate::instance();
 			AdminOrderListTemplate::instance();
 			AdminCreateCourseAITemplate::instance();

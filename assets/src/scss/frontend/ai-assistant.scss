@@ -13,21 +13,7 @@ $lp-ai-panel-shadow: -18px 0 40px rgba(68, 46, 102, 0.14);
 $lp-ai-scrollbar-thumb: rgba(68, 46, 102, 0.18);
 $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 
-.lp-footer-launchers {
-	position: fixed;
-	top: 50%;
-	right: 1.5rem;
-	z-index: 9999;
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	transform: translateY(-50%);
-	box-sizing: border-box;
-
-	> * {
-		width: 100%;
-	}
-}
+@import "footer-launchers";
 
 .lp-ai-assistant {
 	position: fixed;
