@@ -2093,6 +2093,7 @@ function learn_press_get_question_support_answer_options() {
 		'single_choice',
 		'multi_choice',
 		'fill_in_blanks',
+		'sorting_choice'
 	);
 }
 
