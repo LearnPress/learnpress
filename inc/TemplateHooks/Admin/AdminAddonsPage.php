@@ -890,35 +890,35 @@ class AdminAddonsPage {
 			array(
 				'install'    => $addon->is_free && ! $addon->is_org
 					? sprintf(
-						'<a class="lp-button btn-addon-action" data-action="install" href="%s"
+						'<a class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm lp-be-btn--primary" data-action="install" href="%s"
 						target="_blank" rel="noopener">%s</a>',
 						esc_url( $addon->link ?? '' ),
 						esc_html__( 'Install', 'learnpress' )
 					)
 					: sprintf(
-						'<button class="lp-button btn-addon-action" data-action="install">
+						'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm lp-be-btn--primary" data-action="install">
 						<span class="text">%s</span>
 					</button>',
 						esc_html__( 'Install', 'learnpress' )
 					),
 				'purchase'   => sprintf(
-					'<button class="lp-button btn-addon-action" data-action="purchase">%s</button>',
+					'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm lp-be-btn--primary" data-action="purchase">%s</button>',
 					esc_html__( 'Install', 'learnpress' )
 				),
 				'update'     => sprintf(
-					'<button class="lp-button btn-addon-action" data-action="update">
+					'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm lp-be-btn--primary" data-action="update">
 					<span class="text">%s</span>
 				</button>',
 					esc_html__( 'Update', 'learnpress' )
 				),
 				'deactivate' => sprintf(
-					'<button class="lp-button btn-addon-action" data-action="deactivate">
+					'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm" data-action="deactivate">
 					<span class="text">%s</span>
 				</button>',
 					esc_html__( 'Deactivate', 'learnpress' )
 				),
 				'activate'   => sprintf(
-					'<button class="lp-button btn-addon-action" data-action="activate">
+					'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm" data-action="activate">
 						<span class="text">%s</span>
 					</button>',
 					esc_html__( 'Activate', 'learnpress' )

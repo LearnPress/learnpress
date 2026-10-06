@@ -180,7 +180,7 @@ defined( 'ABSPATH' ) || exit;
 						<div class="lp-theme-card__actions">
 
 							<a
-								class="lp-theme-card__buy"
+								class="lp-theme-card__buy lp-be-btn lp-be-btn--primary"
 								href="<?php echo esc_url( $theme['buy_url'] ?? '#' ); ?>"
 								target="_blank"
 								rel="noopener noreferrer"
@@ -189,7 +189,7 @@ defined( 'ABSPATH' ) || exit;
 							</a>
 
 							<a
-								class="lp-theme-card__demo"
+								class="lp-theme-card__demo lp-be-btn lp-be-btn--outline"
 								href="<?php echo esc_url( $theme['demo_url'] ?? '#' ); ?>"
 								target="_blank"
 								rel="noopener noreferrer"

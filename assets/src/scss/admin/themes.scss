@@ -240,103 +240,59 @@
 		}
 	}
 
-	&__buy {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		box-sizing: border-box;
-		height: 40px;
-		min-height: 40px;
-		padding: 0 $lp-spacing-lg;
+	
 
-		border: 1px solid $lp-primary;
-		border-radius: $lp-radius-sm !important;
+	// &__demo {
+	// 	display: flex;
+	// 	align-items: center;
+	// 	justify-content: center;
 
-		color: $lp-bg;
-		background: $lp-primary;
+	// 	min-width: 56px;
+	// 	box-sizing: border-box;
+	// 	height: 40px;
+	// 	min-height: 40px;
+	// 	padding: 0 $lp-spacing-lg;
 
-		font-size: $lp-font-sm;
-		font-weight: 500;
-		line-height: 1.25;
+	// 	border: 1px solid $lp-primary;
+	// 	border-radius: $lp-radius-sm !important;
 
-		text-align: center;
-		text-decoration: none;
-		cursor: pointer;
-		transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+	// 	color: $lp-primary;
+	// 	background: $lp-bg;
 
-		&:visited {
-			color: $lp-bg;
-		}
+	// 	font-size: $lp-font-sm;
+	// 	font-weight: 500;
+	// 	line-height: 1.25;
 
-		&:hover,
-		&:focus,
-		&:active {
-			border-color: $lp-primary-hover;
-			color: $lp-bg;
-			background: $lp-primary-hover;
-			border-radius: $lp-radius-sm !important;
-			box-shadow: none !important;
-			outline: none !important;
-		}
+	// 	text-align: center;
+	// 	text-decoration: none;
+	// 	cursor: pointer;
+	// 	transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 
-		&:focus-visible {
-			border-radius: $lp-radius-sm !important;
-			box-shadow: none !important;
-			outline: none !important;
-		}
-	}
+	// 	&:visited {
+	// 		color: $lp-primary;
+	// 	}
 
-	&__demo {
-		display: flex;
-		align-items: center;
-		justify-content: center;
+	// 	&:hover,
+	// 	&:focus,
+	// 	&:active {
+	// 		border-radius: $lp-radius-sm !important;
+	// 		box-shadow: none !important;
+	// 		outline: none !important;
+	// 	}
 
-		min-width: 56px;
-		box-sizing: border-box;
-		height: 40px;
-		min-height: 40px;
-		padding: 0 $lp-spacing-lg;
+	// 	&:hover {
+	// 		border-color: $lp-primary;
+	// 		color: $lp-primary;
+	// 		background: $lp-primary-bland;
+	// 	}
 
-		border: 1px solid $lp-primary;
-		border-radius: $lp-radius-sm !important;
-
-		color: $lp-primary;
-		background: $lp-bg;
-
-		font-size: $lp-font-sm;
-		font-weight: 500;
-		line-height: 1.25;
-
-		text-align: center;
-		text-decoration: none;
-		cursor: pointer;
-		transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-
-		&:visited {
-			color: $lp-primary;
-		}
-
-		&:hover,
-		&:focus,
-		&:active {
-			border-radius: $lp-radius-sm !important;
-			box-shadow: none !important;
-			outline: none !important;
-		}
-
-		&:hover {
-			border-color: $lp-primary;
-			color: $lp-primary;
-			background: $lp-primary-bland;
-		}
-
-		&:focus,
-		&:active {
-			border-color: $lp-primary;
-			color: $lp-primary;
-			background: $lp-primary-bland;
-		}
-	}
+	// 	&:focus,
+	// 	&:active {
+	// 		border-color: $lp-primary;
+	// 		color: $lp-primary;
+	// 		background: $lp-primary-bland;
+	// 	}
+	// }
 }
 
 // Badge

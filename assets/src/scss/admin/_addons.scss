@@ -66,8 +66,6 @@
 
 				button, a {
 					display: none;
-					background: transparent;
-					color: #2271b1;
 				}
 			}
 		}
@@ -460,53 +458,17 @@
 			border-top: 1px solid $lp-border;
 		}
 
-		/*.lp-addon-button,*/
-		.btn-addon-action {
-			box-sizing: border-box;
-			padding: 6px $lp-spacing-sm;
-			border: 1px solid $lp-primary;
-			border-radius: $lp-radius-md;
+		.lp-addon-item__actions .btn-addon-action[data-action="activate"] {
+			border-color: $lp-success;
 			color: $lp-bg;
-			background: $lp-primary;
-			font-size: $lp-font-sm;
-			font-weight: $lp-font-weight-medium;
-			line-height: $lp-line-height-150;
-			text-decoration: none;
-			cursor: pointer;
-			transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+			background: $lp-success;
 
 			&:hover,
 			&:focus {
 				border-color: transparent;
 				color: $lp-bg;
-				background: $lp-primary-hover;
+				background: darken($lp-success, 6%);
 			}
-
-			&:active {
-				border-color: transparent;
-				background: $lp-primary-wp-hover;
-				color: $lp-bg;
-			}
-
-			&:disabled {
-				border-color: transparent;
-				background: $lp-border-input;
-				color: $lp-bg;
-				cursor: not-allowed;
-			}
-
-			&:focus-visible {
-				outline: none;
-				box-shadow: $lp-focus-ring;
-			}
-		}
-
-
-
-		.lp-addon-item__actions .btn-addon-action[data-action="activate"] {
-			border-color: $lp-success;
-			color: $lp-bg;
-			background: $lp-success;
 		}
 
 		.lp-addon-item__actions .btn-addon-action[data-action="deactivate"] {

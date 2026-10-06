@@ -63,13 +63,13 @@ p.lp-be-page-subtitle,
 		color: inherit;
 	}
 
-	&:focus,
-	&:focus-visible,
-	&:active {
-		border-radius: inherit !important;
-		outline: none !important;
-		box-shadow: none !important;
-		transform: none !important;
+	&:focus {
+		outline: none;
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: $lp-focus-ring;
 	}
 
 	&:disabled,
@@ -81,8 +81,8 @@ p.lp-be-page-subtitle,
 
 	// Sizes
 	&--sm {
-		height: 32px;
-		min-height: 32px;
+		height: 33px;
+		min-height: 33px;
 		padding: 0 $lp-spacing-md;
 		border-radius: $lp-radius-xs;
 		font-size: $lp-font-xs;
@@ -110,6 +110,10 @@ p.lp-be-page-subtitle,
 		color: $lp-bg;
 		background: $lp-primary;
 
+		&:visited {
+			color: $lp-bg;
+		}
+
 		&:hover,
 		&:focus {
 			border-color: transparent;
@@ -128,6 +132,10 @@ p.lp-be-page-subtitle,
 		border-color: transparent;
 		color: $lp-primary;
 		background: $lp-primary-bland;
+
+		&:visited {
+			color: $lp-primary;
+		}
 
 		&:hover,
 		&:focus {
@@ -148,6 +156,10 @@ p.lp-be-page-subtitle,
 		color: $lp-primary;
 		background: $lp-bg;
 
+		&:visited {
+			color: $lp-primary;
+		}
+
 		&:hover,
 		&:focus {
 			border-color: $lp-primary;
@@ -159,9 +171,6 @@ p.lp-be-page-subtitle,
 			border-color: $lp-primary-active;
 			color: $lp-primary-active;
 			background: darken($lp-primary-bland, 4%);
-			outline: none !important;
-			box-shadow: none !important;
-			transform: none !important;
 		}
 	}
 
@@ -169,6 +178,10 @@ p.lp-be-page-subtitle,
 		border-color: transparent;
 		color: $lp-bg;
 		background: $lp-danger;
+
+		&:visited {
+			color: $lp-bg;
+		}
 
 		&:hover,
 		&:focus {
@@ -188,6 +201,10 @@ p.lp-be-page-subtitle,
 		border-color: transparent;
 		color: $lp-text-secondary;
 		background: transparent;
+
+		&:visited {
+			color: $lp-text-secondary;
+		}
 
 		&:hover,
 		&:focus {
