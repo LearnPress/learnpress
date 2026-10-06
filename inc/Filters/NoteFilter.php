@@ -83,6 +83,14 @@ class NoteFilter extends FilterBase {
 	public $note_type;
 
 	/**
+	 * Join users (u), course posts (c) and item posts (l) to get
+	 * student name/email, course and item titles, and search/sort by them.
+	 *
+	 * @var bool
+	 */
+	public $join_details = false;
+
+	/**
 	 * @var string
 	 */
 	public $field_count = self::COL_NOTE_ID;

@@ -9,7 +9,7 @@
 - [x] Step 6: JS panel — list / add text note / edit / delete via `window.lpAJAXG`, Toastify messages
 - [x] Step 7: JS highlight — selection → floating "Add Note", build anchor, re-anchor + render `<mark>`, orphan handling, AJAX item switch
 - [x] Step 8: Read-only view for admin/instructor via `?lp_note_user=`
-- [ ] Step 9: Backend "Student Notes" page — stats, `html_form_filter()` + `html_tom_select()`, `TableListTemplate`, `html_pagination()`
+- [x] Step 9: Backend "Student Notes" page — stats, `html_form_filter()` + `html_tom_select()`, `TableListTemplate`, `html_pagination()`
 - [ ] Step 10: Cleanup hooks, GDPR exporter/eraser, enable setting
 - [ ] Step 11: SCSS, `npm run build`, PHPCS, PHPUnit, manual test (classic + modern layout)
 
@@ -38,7 +38,8 @@
 | `config/table/tables-v4.php` | Notes table schema |
 | `inc/class-lp-settings.php` | `is_created_tb_notes()` |
 | `learnpress.php` | Register `NoteAjax::catch_lp_ajax()`, init templates |
-| `inc/admin/class-lp-admin-menu.php` | "Student Notes" submenu |
+| `config/wp-menus.php` | "Student Notes" submenu (cap `edit_lp_courses`) + operations menu group |
+| `assets/src/scss/admin/admin.scss` | Import `_student-notes.scss` |
 | `webpack.config.js` | New JS entry `assets/js/dist/frontend/course-notes` |
 | `inc/class-lp-assets.php` | Register `lp-course-notes` style + script |
 | `assets/src/js/frontend/ai-assistant.js` | `lp-footer-panel:open` event so only one panel is open |

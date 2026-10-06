@@ -195,6 +195,41 @@ class NoteService {
 	}
 
 	/**
+	 * Courses whose notes a user can review in the backend.
+	 *
+	 * @param int $user_id User ID.
+	 *
+	 * @return int[]|null Null = all courses (admin); array (maybe empty) = only these courses.
+	 */
+	public function get_viewable_course_ids( int $user_id ) {
+		if ( $user_id <= 0 ) {
+			return array();
+		}
+
+		if ( $this->is_admin( $user_id ) ) {
+			return null;
+		}
+
+		$course_ids = get_posts(
+			array(
+				'post_type'      => LP_COURSE_CPT,
+				'post_status'    => 'any',
+				'author'         => $user_id,
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+				'no_found_rows'  => true,
+			)
+		);
+
+		/**
+		 * Add courses the user co-instructs (e.g. Co-Instructor add-on).
+		 */
+		$course_ids = apply_filters( 'learn-press/note/viewable-course-ids', $course_ids, $user_id );
+
+		return array_values( array_unique( array_filter( array_map( 'absint', (array) $course_ids ) ) ) );
+	}
+
+	/**
 	 * Note data sent to the frontend (AJAX responses and the initial page data).
 	 * Values are raw plain text: JS must render them with textContent.
 	 *

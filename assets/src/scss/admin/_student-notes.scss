@@ -1,0 +1,190 @@
+/**
+ * Admin page: Student Notes.
+ *
+ * @since 4.4.9.2
+ * @version 1.0.0
+ */
+
+.lp-student-notes {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	margin-top: 8px;
+
+	&__description {
+		margin: 0;
+		color: #646970;
+	}
+
+	&__stats {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 16px;
+
+		@media screen and (max-width: 782px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	&__stat,
+	&__filters,
+	&__table {
+		padding: 20px;
+		border: 1px solid #dcdcde;
+		border-radius: 8px;
+		background: #fff;
+	}
+
+	&__stat {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	&__stat-label {
+		color: #50575e;
+		font-size: 13px;
+	}
+
+	&__stat-value {
+		font-size: 24px;
+		font-weight: 600;
+		line-height: 1.2;
+	}
+
+	&__filters {
+		h2 {
+			margin: 0 0 16px;
+			font-size: 16px;
+		}
+
+		.lp-form-filter {
+			margin-bottom: 0;
+
+			// Hints under some fields must not push the others down.
+			.lp-form-filter__fields {
+				align-items: flex-start;
+			}
+
+			.filter-field {
+				max-width: none;
+			}
+
+			.description {
+				margin: 0;
+				font-size: 12px;
+			}
+
+			input[type="search"] {
+				width: 100%;
+				min-height: 36px;
+			}
+		}
+	}
+
+	&__table {
+		overflow-x: auto;
+
+		.lp-list-table {
+			th,
+			td {
+				padding: 12px 10px;
+				vertical-align: top;
+				text-align: left;
+			}
+
+			tbody tr + tr td {
+				border-top: 1px solid #f0f0f1;
+			}
+		}
+	}
+
+	&__email,
+	&__time {
+		display: block;
+		color: #646970;
+		font-size: 12px;
+	}
+
+	&__badge {
+		display: inline-block;
+		padding: 2px 10px;
+		border: 1px solid;
+		border-radius: 999px;
+		font-size: 12px;
+		line-height: 1.6;
+		white-space: nowrap;
+
+		&--highlight {
+			border-color: #f0b849;
+			background: #fef8e7;
+			color: #8a5a00;
+		}
+
+		&--text {
+			border-color: #68de7c;
+			background: #edfaef;
+			color: #00702a;
+		}
+	}
+
+	.lp-col-content {
+		min-width: 220px;
+		max-width: 360px;
+	}
+
+	&__content {
+		summary {
+			display: flex;
+			align-items: flex-start;
+			gap: 6px;
+			cursor: pointer;
+			list-style: none;
+
+			&::-webkit-details-marker {
+				display: none;
+			}
+
+			.lp-icon {
+				margin-top: 3px;
+				color: #646970;
+			}
+		}
+
+		&[open] summary .lp-student-notes__excerpt {
+			display: none;
+		}
+	}
+
+	&__excerpt {
+		overflow-wrap: anywhere;
+	}
+
+	&__full {
+		overflow-wrap: anywhere;
+
+		blockquote {
+			margin: 0 0 8px;
+			padding: 6px 10px;
+			border-left: 3px solid #0ea5e9;
+			background: rgba(14, 165, 233, 0.08);
+		}
+
+		p {
+			margin: 0;
+		}
+	}
+
+	&__footer {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		margin-top: 16px;
+
+		.learn-press-pagination {
+			margin: 0;
+		}
+	}
+}

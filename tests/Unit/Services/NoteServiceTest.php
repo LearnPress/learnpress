@@ -210,6 +210,27 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 	}
 
 	// -------------------------------------------------------------------------
+	// get_viewable_course_ids
+	// -------------------------------------------------------------------------
+
+	public function test_admin_can_view_all_courses(): void {
+		$this->assertNull( $this->service->get_viewable_course_ids( self::ADMIN ) );
+	}
+
+	public function test_instructor_views_own_courses_plus_filtered(): void {
+		Functions\expect( 'get_posts' )->once()->andReturn( [ 10, '11' ] );
+		Functions\when( 'apply_filters' )->alias(
+			static fn( $hook, $value ) => 'learn-press/note/viewable-course-ids' === $hook ? array_merge( $value, [ 12, 10 ] ) : $value
+		);
+
+		$this->assertSame( [ 10, 11, 12 ], $this->service->get_viewable_course_ids( self::INSTRUCTOR ) );
+	}
+
+	public function test_guest_views_no_course(): void {
+		$this->assertSame( [], $this->service->get_viewable_course_ids( 0 ) );
+	}
+
+	// -------------------------------------------------------------------------
 	// save_note
 	// -------------------------------------------------------------------------
 

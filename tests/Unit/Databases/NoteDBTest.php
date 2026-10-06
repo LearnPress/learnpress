@@ -132,6 +132,35 @@ class NoteDBTest extends BrainMonkeyTestCase {
 		$this->assertStringContainsString( "n.highlight_text LIKE '%50\\%%'", $sql );
 	}
 
+	public function test_join_details_selects_titles_and_searches_them(): void {
+		$filter                  = new NoteFilter();
+		$filter->join_details    = true;
+		$filter->key_word        = 'abc';
+		$filter->run_query_count = false;
+
+		NoteDB::getInstance()->get_notes( $filter );
+		$sql = $this->last_query();
+
+		$this->assertStringContainsString( 'LEFT JOIN wp_users AS u ON u.ID = n.user_id', $sql );
+		$this->assertStringContainsString( 'LEFT JOIN wp_posts AS c ON c.ID = n.course_id', $sql );
+		$this->assertStringContainsString( 'LEFT JOIN wp_posts AS l ON l.ID = n.item_id', $sql );
+		$this->assertStringContainsString( 'c.post_title AS course_title', $sql );
+		$this->assertStringContainsString( "u.user_email LIKE '%abc%'", $sql );
+		$this->assertStringContainsString( "l.post_title LIKE '%abc%'", $sql );
+	}
+
+	public function test_note_users_options_are_distinct_and_scoped(): void {
+		$filter             = new NoteFilter();
+		$filter->course_ids = [ 131 ];
+
+		NoteDB::getInstance()->get_note_users( $filter );
+		$sql = $this->last_query();
+
+		$this->assertStringContainsString( 'SELECT DISTINCT n.user_id AS ID,u.display_name,u.user_email', $sql );
+		$this->assertStringContainsString( 'AND n.course_id IN (131)', $sql );
+		$this->assertStringNotContainsString( 'LIMIT', $sql );
+	}
+
 	public function test_get_stats_counts_distinct_students_and_courses(): void {
 		$this->wpdb->results = [
 			(object) [

@@ -196,7 +196,7 @@ class NoteModel {
 		$filter->item_id         = $item_id;
 		$filter->limit           = -1;
 		$filter->run_query_count = false;
-		$filter->order_by        = 'n.' . NoteFilter::COL_CREATED_AT;
+		$filter->order_by        = 'n.' . NoteFilter::COL_CREATED_AT . ' DESC, n.' . NoteFilter::COL_NOTE_ID;
 		$filter->order           = NoteFilter::ORDER_DESC;
 
 		return static::query( $filter );

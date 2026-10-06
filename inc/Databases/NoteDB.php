@@ -61,6 +61,18 @@ class NoteDB extends DataBase {
 			$filter->fields
 		);
 
+		if ( $filter->join_details ) {
+			$filter->fields = array_merge(
+				$filter->fields,
+				array(
+					'u.display_name',
+					'u.user_email',
+					'c.post_title AS course_title',
+					'l.post_title AS item_title',
+				)
+			);
+		}
+
 		$this->add_where_conditions( $filter );
 
 		$filter = apply_filters( 'learn-press/note/query/filter', $filter );
@@ -116,6 +128,60 @@ class NoteDB extends DataBase {
 			'total_students' => (int) ( $row->total_students ?? 0 ),
 			'total_courses'  => (int) ( $row->total_courses ?? 0 ),
 		);
+	}
+
+	/**
+	 * Distinct students having notes, for filter options.
+	 *
+	 * @param NoteFilter $filter Note query filter (only conditions are used).
+	 *
+	 * @return object[] { ID, display_name, user_email }
+	 * @throws Exception
+	 */
+	public function get_note_users( NoteFilter $filter ): array {
+		$filter->only_fields = array( 'DISTINCT n.user_id AS ID', 'u.display_name', 'u.user_email' );
+		$filter->order_by    = 'u.display_name';
+		$filter->order       = NoteFilter::ORDER_ASC;
+
+		return $this->get_distinct_rows( $filter );
+	}
+
+	/**
+	 * Distinct courses having notes, for filter options.
+	 *
+	 * @param NoteFilter $filter Note query filter (only conditions are used).
+	 *
+	 * @return object[] { ID, post_title }
+	 * @throws Exception
+	 */
+	public function get_note_courses( NoteFilter $filter ): array {
+		$filter->only_fields = array( 'DISTINCT n.course_id AS ID', 'c.post_title' );
+		$filter->order_by    = 'c.post_title';
+		$filter->order       = NoteFilter::ORDER_ASC;
+
+		return $this->get_distinct_rows( $filter );
+	}
+
+	/**
+	 * Run a distinct query built by get_note_users() / get_note_courses().
+	 *
+	 * @param NoteFilter $filter Note query filter.
+	 *
+	 * @return object[]
+	 * @throws Exception
+	 */
+	protected function get_distinct_rows( NoteFilter $filter ): array {
+		$filter->collection       = $this->tb_lp_notes;
+		$filter->collection_alias = 'n';
+		$filter->join_details     = true;
+		$filter->limit            = -1;
+		$filter->run_query_count  = false;
+
+		$this->add_where_conditions( $filter );
+
+		$rows = $this->execute( $filter );
+
+		return is_array( $rows ) ? $rows : array();
 	}
 
 	/**
@@ -214,6 +280,12 @@ class NoteDB extends DataBase {
 	protected function add_where_conditions( NoteFilter $filter ) {
 		$alias = $filter->collection_alias;
 
+		if ( $filter->join_details ) {
+			$filter->join[] = "LEFT JOIN {$this->tb_users} AS u ON u.ID = {$alias}.user_id";
+			$filter->join[] = "LEFT JOIN {$this->tb_posts} AS c ON c.ID = {$alias}.course_id";
+			$filter->join[] = "LEFT JOIN {$this->tb_posts} AS l ON l.ID = {$alias}.item_id";
+		}
+
 		if ( isset( $filter->note_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( "AND {$alias}.note_id = %d", $filter->note_id );
 		}
@@ -251,12 +323,15 @@ class NoteDB extends DataBase {
 		}
 
 		if ( ! empty( $filter->key_word ) ) {
-			$search          = '%' . $this->wpdb->esc_like( $filter->key_word ) . '%';
-			$filter->where[] = $this->wpdb->prepare(
-				"AND ({$alias}.content LIKE %s OR {$alias}.highlight_text LIKE %s)",
-				$search,
-				$search
-			);
+			$search  = '%' . $this->wpdb->esc_like( $filter->key_word ) . '%';
+			$columns = array( "{$alias}.content", "{$alias}.highlight_text" );
+			if ( $filter->join_details ) {
+				$columns = array_merge( $columns, array( 'u.display_name', 'u.user_email', 'c.post_title', 'l.post_title' ) );
+			}
+
+			$conditions = implode( ' OR ', array_map( static fn( $col ) => "{$col} LIKE %s", $columns ) );
+			// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- One placeholder per whitelisted column.
+			$filter->where[] = $this->wpdb->prepare( "AND ({$conditions})", array_fill( 0, count( $columns ), $search ) );
 		}
 	}
 }

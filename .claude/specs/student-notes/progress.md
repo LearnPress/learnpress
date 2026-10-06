@@ -21,10 +21,15 @@
   - Browser-tested on Local (Playwright): selection → Add Note → highlight saved; highlight across `<em>` (2 marks); text note with newlines; empty note blocked; edit; delete (SweetAlert) restores identical HTML; cancel removes pending mark; reload re-anchors; stale position re-located via prefix; orphan shown with message; `#lp-note-{id}` opens + focuses; Esc closes; wide screens push `#popup-content`/header/footer instead of covering; mobile full width; admin `?lp_note_user=2` read-only; quiz page + guest → nothing rendered
   - Test notes + temporary session tokens removed afterwards
 
+- Step 9: `AdminStudentNotesTemplate` (LearnPress → Student Notes): stats (follow filters), GET filters (student/course/type via `html_tom_select` + search over note/quote/student/email/course/lesson), sortable columns (whitelisted, `note_id` tie-break), `html_pagination`, expandable content (`<details>`), "Open Lesson" → `?lp_note_user=&#lp-note-`
+  - Scope: admin = all; instructor = authored courses + `learn-press/note/viewable-course-ids` filter (co-instructor); forcing another course → no rows
+  - Filter options are built server-side from notes in scope (admin-only REST search endpoints would 403 / leak for instructors)
+  - `NoteDB`: `join_details` (users u, courses c, items l), `get_note_users()`, `get_note_courses()`
+  - Tests: NoteDBTest 8, NoteServiceTest 22, NoteModelTest 18 — pass; browser + CLI verified; test data removed
+
 ## In progress
 
 ## Next
-- Step 9: Backend "Student Notes" page
 - Step 10: cleanup hooks, GDPR, setting `enable_student_notes` (already read by `NoteService::is_enabled()`, default yes)
 
 ## Decisions made

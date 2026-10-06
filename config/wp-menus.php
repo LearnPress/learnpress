@@ -11,6 +11,7 @@ use LearnPress\TemplateHooks\Admin\AdminAddonsPage;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
 use LearnPress\TemplateHooks\Admin\AdminSettingsPage;
 use LearnPress\TemplateHooks\Admin\AdminStatisticsReportTable;
+use LearnPress\TemplateHooks\Admin\AdminStudentNotesTemplate;
 use LearnPress\TemplateHooks\Admin\AdminToolsPage;
 
 defined( 'ABSPATH' ) || exit;
@@ -35,6 +36,15 @@ $menu_items = apply_filters(
 			'capability' => 'edit_' . LP_COURSE_CPT . 's',
 			'priority'   => 20,
 			'callback'   => [ AdminListStudentsEnrolled::instance(), 'admin_page_output' ],
+		],
+		// Student Notes.
+		'student-notes'    => [
+			'id'         => AdminStudentNotesTemplate::PAGE_SLUG,
+			'menu_title' => __( 'Student Notes', 'learnpress' ),
+			'page_title' => __( 'Student Notes', 'learnpress' ),
+			'capability' => 'edit_' . LP_COURSE_CPT . 's',
+			'priority'   => 20,
+			'callback'   => [ AdminStudentNotesTemplate::instance(), 'admin_page_output' ],
 		],
 		// Add-ons.
 		'addons'           => [
@@ -121,6 +131,7 @@ $group_menus = apply_filters(
 		'operations' => [
 			'orders'     => 'edit.php?post_type=' . LP_ORDER_CPT,
 			'students'   => 'learn-press-students-enrolled',
+			'student_notes' => AdminStudentNotesTemplate::PAGE_SLUG,
 			'statistics' => 'learn-press-statistics',
 		],
 		'system'     => [
