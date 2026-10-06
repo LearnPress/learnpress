@@ -64,7 +64,7 @@ class NoteModel {
 	public $content = '';
 
 	/**
-	 * Snapshot of the highlighted text.
+	 * Snapshot of the highlighted text (plain text, from anchor quote).
 	 *
 	 * @var string
 	 */
@@ -311,7 +311,7 @@ class NoteModel {
 		$this->item_id   = absint( $this->item_id );
 		$this->item_type = sanitize_key( $this->item_type );
 		$this->note_type = sanitize_key( $this->note_type );
-		$this->content   = trim( sanitize_textarea_field( (string) $this->content ) );
+		$this->content   = self::sanitize_plain_text( (string) $this->content );
 
 		if ( ! $this->user_id || ! $this->course_id || ! $this->item_id ) {
 			throw new Exception( __( 'Invalid note data.', 'learnpress' ) );
@@ -351,11 +351,8 @@ class NoteModel {
 			throw new Exception( __( 'Invalid highlight position.', 'learnpress' ) );
 		}
 
-		$this->highlight_text = trim( sanitize_textarea_field( (string) $this->highlight_text ) );
-		if ( '' === $this->highlight_text ) {
-			$this->highlight_text = trim( sanitize_textarea_field( $this->anchor['quote']['exact'] ) );
-		}
-
+		// Always taken from the anchor so it can't differ from the highlighted text.
+		$this->highlight_text = self::sanitize_plain_text( $this->anchor['quote']['exact'] );
 		if ( '' === $this->highlight_text ) {
 			throw new Exception( __( 'Highlighted text is required.', 'learnpress' ) );
 		}
@@ -411,6 +408,21 @@ class NoteModel {
 				'end'   => $end,
 			),
 		);
+	}
+
+	/**
+	 * Sanitize plain text: strip HTML tags but keep a lone "<" (e.g. "a < b"),
+	 * which sanitize_textarea_field() turns into "&lt;".
+	 * "&lt;" is restored only when it cannot start a tag (not followed by a letter, "/", "!" or "?"),
+	 * so decoding never creates markup (e.g. a typed "&lt;img ...>" stays encoded).
+	 * The value is plain text: always escape it on output.
+	 *
+	 * @param string $value Raw text.
+	 *
+	 * @return string
+	 */
+	public static function sanitize_plain_text( string $value ): string {
+		return trim( preg_replace( '/&lt;(?![a-zA-Z\/!?])/', '<', sanitize_textarea_field( $value ) ) );
 	}
 
 	/**

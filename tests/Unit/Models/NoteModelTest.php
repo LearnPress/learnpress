@@ -22,7 +22,16 @@ class NoteModelTest extends BrainMonkeyTestCase {
 		Functions\when( 'sanitize_key' )->alias(
 			static fn( $v ) => preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $v ) )
 		);
-		Functions\when( 'sanitize_textarea_field' )->alias( static fn( $v ) => strip_tags( (string) $v ) );
+		// Mimic WP: a lone "<" becomes "&lt;" (wp_pre_kses_less_than), then tags are stripped.
+		Functions\when( 'sanitize_textarea_field' )->alias(
+			static fn( $v ) => strip_tags(
+				preg_replace_callback(
+					'%<[^>]*?((?=<)|>|$)%',
+					static fn( $m ) => '>' === substr( $m[0], -1 ) ? $m[0] : str_replace( '<', '&lt;', $m[0] ),
+					(string) $v
+				)
+			)
+		);
 		Functions\when( 'wp_check_invalid_utf8' )->returnArg();
 		Functions\when( 'apply_filters' )->alias( static fn( $hook, $value ) => $value );
 	}
@@ -114,6 +123,45 @@ class NoteModelTest extends BrainMonkeyTestCase {
 		$note->validate();
 
 		$this->assertSame( 'xHello world', $note->content );
+	}
+
+	public function test_content_keeps_lone_less_than_sign(): void {
+		$note = $this->make_note( [ 'content' => "a < b, 1<2\nnext <i>line</i>" ] );
+		$note->validate();
+
+		$this->assertSame( "a < b, 1<2\nnext line", $note->content );
+	}
+
+	public function test_content_never_decodes_into_a_tag(): void {
+		// A typed entity must not become real markup after sanitizing.
+		$note = $this->make_note( [ 'content' => '&lt;img src=x onerror=alert(1)> and x<y and &lt;/b>' ] );
+		$note->validate();
+
+		$this->assertStringNotContainsString( '<img', $note->content );
+		$this->assertStringNotContainsString( '</b', $note->content );
+		$this->assertStringNotContainsString( '<y', $note->content );
+		// WP treats "<y and &lt;/b>" as a tag (it ends with ">") and strips it.
+		$this->assertSame( '&lt;img src=x onerror=alert(1)> and x', $note->content );
+
+		$note = $this->make_note( [ 'content' => 'x<y' ] );
+		$note->validate();
+		$this->assertSame( 'x&lt;y', $note->content );
+	}
+
+	public function test_highlight_text_comes_from_anchor_not_client(): void {
+		$anchor                   = $this->valid_anchor();
+		$anchor['quote']['exact'] = 'if a < b';
+
+		$note = $this->make_note(
+			[
+				'note_type'      => NoteModel::TYPE_HIGHLIGHT,
+				'highlight_text' => 'forged text',
+				'anchor'         => $anchor,
+			]
+		);
+		$note->validate();
+
+		$this->assertSame( 'if a < b', $note->highlight_text );
 	}
 
 	public function test_content_over_max_length_is_rejected(): void {

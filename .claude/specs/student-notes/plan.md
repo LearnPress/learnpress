@@ -3,8 +3,8 @@
 ## Steps
 - [x] Step 1: Table — `tb_lp_notes` in `DataBase.php`, `create_table_notes()` + `LP_Settings::is_created_tb_notes()` guard in `class-lp-install.php`
 - [x] Step 2: `NoteFilter`, `NoteDB` (get_notes, stats counts), `NoteModel` (find / save / delete / get_anchor) + tests
-- [ ] Step 3: `NoteService` — can_create, can_manage (owner), can_view (owner/admin/course author), validate payload + tests
-- [ ] Step 4: `NoteAjax` — note_list / note_save / note_delete; register in `learnpress.php` AJAX catch list
+- [x] Step 3: `NoteService` — can_create, can_manage (owner), can_view (owner/admin/course author), validate payload + tests
+- [x] Step 4: `NoteAjax` — note_list / note_save / note_delete; register in `learnpress.php` AJAX catch list
 - [ ] Step 5: `CourseNoteTemplate` — launcher icon, panel markup on `wp_footer`, localize data; only on lesson items, setting enabled
 - [ ] Step 6: JS panel — list / add text note / edit / delete via `window.lpAJAXG`, Toastify messages
 - [ ] Step 7: JS highlight — selection → floating "Add Note", build anchor, re-anchor + render `<mark>`, orphan handling, AJAX item switch
@@ -42,5 +42,4 @@
 ## Format code when create file done run > php vendor/squizlabs/php_codesniffer/bin/phpcs --standard=phpcs.xml [file-name]
 
 ## Open questions
-- Frontend for admin/instructor = read-only view of one student's notes via `?lp_note_user=` (assumed — confirm)
 - Instructor submenu capability: which cap gates the page for `lp_teacher` role? (check existing instructor-accessible admin pages)

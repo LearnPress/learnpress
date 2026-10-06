@@ -32,6 +32,7 @@ use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\SampleDataAJAX;
 use LearnPress\Ajax\SetupWizardAjax;
 use LearnPress\Ajax\AI\AIAssistantAjax;
+use LearnPress\Ajax\NoteAjax;
 use LearnPress\Ajax\MCP\McpApiKeysAjax;
 use LearnPress\Ajax\Webhook\WebhooksAjax;
 use LearnPress\Ajax\CourseBuilder\CBEditCourseAjax;
@@ -786,6 +787,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					CourseBuilderAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
 					AIAssistantAjax::catch_lp_ajax();
+					NoteAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
 					McpApiKeysAjax::catch_lp_ajax();
 					WebhooksAjax::catch_lp_ajax();
