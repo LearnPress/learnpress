@@ -30,10 +30,12 @@
 - Step 10: `NoteService::init()` hooks — `deleted_user` → delete user notes; `deleted_post` (permanent delete only, trash keeps) → course: by course_id, lesson: by item_id. GDPR: `ExportPersonalData::export_user_notes()` (exporter `learnpress-notes`, 50/page), `ErasePersonalData::eraser_user_data()` deletes notes
   - Tests: NoteServiceTest 25; E2E on Local with temp user/course/lesson (export, trash vs delete, erase, delete user) — user notes #37/#42 untouched
 
+- Setting: LearnPress → Settings → Courses → "Student Notes Settings" → `enable_student_notes` (checkbox, default yes, `learn-press/course-settings-fields/student-notes`). Off → no launcher/panel, AJAX "Notes are disabled."; notes kept; admin page still available
+- Admin table: column sorting removed (user request), newest first
+
 ## In progress
 
 ## Next
-- Decide: settings toggle for `enable_student_notes` (already read by `NoteService::is_enabled()`, default yes)
 - Step 11: final build, PHPCS, manual test
 
 ## Decisions made
