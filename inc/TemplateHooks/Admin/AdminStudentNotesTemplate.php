@@ -2,8 +2,6 @@
 
 namespace LearnPress\TemplateHooks\Admin;
 
-use LearnPress\Databases\NoteDB;
-use LearnPress\Filters\NoteFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -99,61 +97,6 @@ class AdminStudentNotesTemplate {
 	}
 
 	/**
-	 * Base filter restricted to what the current user can view.
-	 *
-	 * @return NoteFilter|false False when the user can view no course.
-	 */
-	protected function get_scope_filter() {
-		$filter     = new NoteFilter();
-		$course_ids = NoteService::instance()->get_viewable_course_ids( get_current_user_id() );
-
-		if ( is_array( $course_ids ) ) {
-			if ( empty( $course_ids ) ) {
-				return false;
-			}
-
-			$filter->course_ids = $course_ids;
-		}
-
-		return $filter;
-	}
-
-	/**
-	 * Apply request filters to a scope filter.
-	 *
-	 * @param NoteFilter $filter Scope filter.
-	 * @param array      $args   Request args.
-	 *
-	 * @return NoteFilter
-	 */
-	protected function apply_request_filters( NoteFilter $filter, array $args ): NoteFilter {
-		$filter->join_details = true;
-
-		if ( $args['course'] ) {
-			// Instructors can only narrow down to their own courses.
-			if ( ! empty( $filter->course_ids ) && ! in_array( $args['course'], $filter->course_ids, true ) ) {
-				$filter->course_ids = array( 0 );
-			} else {
-				$filter->course_id = $args['course'];
-			}
-		}
-
-		if ( $args['student'] ) {
-			$filter->user_id = $args['student'];
-		}
-
-		if ( $args['note_type'] ) {
-			$filter->note_type = $args['note_type'];
-		}
-
-		if ( '' !== $args['s'] ) {
-			$filter->key_word = $args['s'];
-		}
-
-		return $filter;
-	}
-
-	/**
 	 * Whole page content.
 	 *
 	 * @param array $args Request args.
@@ -162,8 +105,8 @@ class AdminStudentNotesTemplate {
 	 * @throws \Exception
 	 */
 	public function html_page( array $args ): string {
-		$scope = $this->get_scope_filter();
-		if ( ! $scope ) {
+		$data = NoteService::instance()->get_admin_list( get_current_user_id(), $args, self::PER_PAGE );
+		if ( ! $data ) {
 			return $this->html_description() . Template::print_message(
 				__( 'You do not have any course to review notes for.', 'learnpress' ),
 				'info',
@@ -171,35 +114,16 @@ class AdminStudentNotesTemplate {
 			);
 		}
 
-		$db = NoteDB::getInstance();
-
-		// List.
-		$filter        = $this->apply_request_filters( clone $scope, $args );
-		$filter->limit = self::PER_PAGE;
-		$filter->page  = $args['paged'];
-		// Newest first; note_id breaks ties (same second) so pages never overlap.
-		$filter->order_by    = 'n.created_at DESC, n.note_id';
-		$filter->order       = NoteFilter::ORDER_DESC;
-		$filter->field_count = NoteFilter::COL_NOTE_ID;
-		$total_rows          = 0;
-		$rows                = $db->get_notes( $filter, $total_rows );
-		$rows                = is_array( $rows ) ? $rows : array();
-
-		// Stats follow the current filters.
-		$stats = $db->get_stats( $this->apply_request_filters( clone $scope, $args ) );
-
-		// Filter options: everything in scope, ignoring the current filters.
-		$users   = $db->get_note_users( clone $scope );
-		$courses = $db->get_note_courses( clone $scope );
+		$rows = $data['rows'];
 
 		$section = apply_filters(
 			'learn-press/admin/student-notes/page/section',
 			array(
 				'wrap'        => '<div class="lp-student-notes">',
 				'description' => $this->html_description(),
-				'stats'       => $this->html_stats( $stats ),
-				'filters'     => $this->html_filters( $args, $users, $courses ),
-				'table'       => $this->html_table( $rows, $args, $total_rows ),
+				'stats'       => $this->html_stats( $data['stats'] ),
+				'filters'     => $this->html_filters( $args, $data['users'], $data['courses'] ),
+				'table'       => $this->html_table( $rows, $args, $data['total_rows'] ),
 				'wrap_end'    => '</div>',
 			),
 			$args,
@@ -286,15 +210,12 @@ class AdminStudentNotesTemplate {
 		$fields = sprintf( '<input type="hidden" name="page" value="%s">', esc_attr( self::PAGE_SLUG ) )
 			. $field(
 				__( 'Student', 'learnpress' ),
-				str_replace(
-					'<select ',
-					'<select id="lp-student-notes-student" ',
-					AdminTemplate::html_tom_select(
-						array(
-							'name'          => 'student',
-							'options'       => $user_options,
-							'default_value' => $args['student'] ? (string) $args['student'] : '',
-						)
+				AdminTemplate::html_tom_select(
+					array(
+						'id'            => 'lp-student-notes-student',
+						'name'          => 'student',
+						'options'       => $user_options,
+						'default_value' => $args['student'] ? (string) $args['student'] : '',
 					)
 				),
 				'lp-student-notes-student',
@@ -302,15 +223,12 @@ class AdminStudentNotesTemplate {
 			)
 			. $field(
 				__( 'Course', 'learnpress' ),
-				str_replace(
-					'<select ',
-					'<select id="lp-student-notes-course" ',
-					AdminTemplate::html_tom_select(
-						array(
-							'name'          => 'course',
-							'options'       => $course_options,
-							'default_value' => $args['course'] ? (string) $args['course'] : '',
-						)
+				AdminTemplate::html_tom_select(
+					array(
+						'id'            => 'lp-student-notes-course',
+						'name'          => 'course',
+						'options'       => $course_options,
+						'default_value' => $args['course'] ? (string) $args['course'] : '',
 					)
 				),
 				'lp-student-notes-course',
@@ -318,15 +236,12 @@ class AdminStudentNotesTemplate {
 			)
 			. $field(
 				__( 'Type', 'learnpress' ),
-				str_replace(
-					'<select ',
-					'<select id="lp-student-notes-type" ',
-					AdminTemplate::html_tom_select(
-						array(
-							'name'          => 'note_type',
-							'options'       => $type_options,
-							'default_value' => $args['note_type'],
-						)
+				AdminTemplate::html_tom_select(
+					array(
+						'id'            => 'lp-student-notes-type',
+						'name'          => 'note_type',
+						'options'       => $type_options,
+						'default_value' => $args['note_type'],
 					)
 				),
 				'lp-student-notes-type'
@@ -455,7 +370,7 @@ class AdminStudentNotesTemplate {
 		$open_link    = $item_link
 			? add_query_arg( CourseNoteTemplate::PARAM_NOTE_USER, $note->user_id, $item_link ) . '#lp-note-' . $note->get_note_id()
 			: '';
-		$timestamp    = strtotime( $note->created_at . ' UTC' );
+		$timestamp    = $note->get_created_timestamp();
 
 		$student = sprintf(
 			'<strong>%1$s</strong><span class="lp-student-notes__email">%2$s</span>',

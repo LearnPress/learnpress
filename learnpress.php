@@ -100,6 +100,7 @@ use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentEnrolledTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate;
+use LearnPress\TemplateHooks\Course\CourseItemLaunchersTemplate;
 use LearnPress\TemplateHooks\Course\CourseNoteTemplate;
 use LearnPress\Services\NoteService;
 use LearnPress\Widgets\LPRegisterWidget;
@@ -419,9 +420,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminNotesTemplate::instance();
 			AdminCourseTools::instance();
 			CourseMaterialTemplate::instance();
+			CourseItemLaunchersTemplate::instance();
 			CourseAIAssistantTemplate::instance();
 			CourseNoteTemplate::instance();
-			NoteService::instance();
 			AdminOrderItemsTemplate::instance();
 			AdminOrderListTemplate::instance();
 			AdminCreateCourseAITemplate::instance();
@@ -434,6 +435,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// WP GDPR
 			ErasePersonalData::instance();
 			ExportPersonalData::instance();
+			// Student Notes: delete notes together with their user / course / lesson.
+			NoteService::instance();
 
 			// Models
 			include_once 'inc/Models/class-lp-rest-response.php';

@@ -6,7 +6,7 @@
  * - Highlights are rendered as <mark class="lp-note-hl"> from the stored anchors.
  *
  * Data: window.lpCourseNotes (CourseNoteTemplate::get_js_data()).
- * Transport: window.lpAJAXG.fetchAJAX (actions lp_note_list / lp_note_save / lp_note_delete).
+ * Transport: window.lpAJAXG.fetchAJAX (actions lp_note_save / lp_note_delete).
  * All note values are plain text and are rendered with textContent only.
  *
  * @since   4.4.9.2
@@ -481,7 +481,7 @@ export class CourseNotes {
 		}
 
 		// Let the user select text inside a highlight without jumping to the panel.
-		if ( ! window.getSelection()?.isCollapsed ) {
+		if ( ! this.getSelection()?.isCollapsed ) {
 			return;
 		}
 
@@ -569,7 +569,7 @@ export class CourseNotes {
 	 * Show the floating button when the selection is inside the lesson content.
 	 */
 	updateSelectionButton() {
-		const selection = window.getSelection();
+		const selection = this.getSelection();
 		if ( ! selection || selection.isCollapsed || ! selection.rangeCount ) {
 			this.hideSelectionButton();
 			return;
@@ -589,7 +589,7 @@ export class CourseNotes {
 		btn.hidden = false;
 
 		const maxLeft = document.documentElement.clientWidth - btn.offsetWidth - 8;
-		const left = Math.max( 8, Math.min( rect.right - btn.offsetWidth / 2, maxLeft ) );
+		const left = Math.max( 8, Math.min( rect.right - ( btn.offsetWidth / 2 ), maxLeft ) );
 		btn.style.left = `${ left + window.scrollX }px`;
 		btn.style.top = `${ rect.bottom + window.scrollY + 8 }px`;
 	}
@@ -610,7 +610,7 @@ export class CourseNotes {
 
 		const anchor = createAnchor( this.contentRoot, range, SCOPE );
 		this.selectionRange = null;
-		window.getSelection()?.removeAllRanges();
+		this.getSelection()?.removeAllRanges();
 		if ( ! anchor ) {
 			return;
 		}
@@ -636,7 +636,7 @@ export class CourseNotes {
 
 	/**
 	 * @param {Object}   dataSend
-	 * @param {Function} onSuccess ( data, message )
+	 * @param {Function} onSuccess   ( data, message )
 	 * @param {Function} onCompleted
 	 */
 	request( dataSend, onSuccess, onCompleted ) {
@@ -659,6 +659,15 @@ export class CourseNotes {
 			error: () => lpToastify.show( this.config.i18n.error, 'error' ),
 			completed: () => onCompleted?.(),
 		} );
+	}
+
+	/**
+	 * Current text selection of the document holding the widget.
+	 *
+	 * @return {Selection|null} selection
+	 */
+	getSelection() {
+		return this.root.ownerDocument.defaultView.getSelection();
 	}
 
 	storageGet( key ) {

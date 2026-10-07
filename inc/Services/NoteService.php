@@ -4,6 +4,8 @@ namespace LearnPress\Services;
 
 use Exception;
 use LearnPress\Databases\NoteDB;
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\CoursePostFilter;
 use LearnPress\Filters\NoteFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\CourseModel;
@@ -95,12 +97,11 @@ class NoteService {
 	public function can_create( int $user_id, int $course_id, int $item_id, string $item_type = LP_LESSON_CPT ): bool {
 		try {
 			$this->check_can_create( $user_id, $course_id, $item_id, $item_type );
-			$can = true;
-		} catch ( Exception $e ) {
-			$can = false;
-		}
 
-		return (bool) apply_filters( 'learn-press/note/can-create', $can, $user_id, $course_id, $item_id, $item_type );
+			return true;
+		} catch ( Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
@@ -217,11 +218,7 @@ class NoteService {
 			);
 			$note->anchor = $data['anchor'] ?? array();
 
-			// Throws the specific reason first, then let the filter have the final say.
 			$this->check_can_create( $user_id, $note->course_id, $note->item_id, $note->item_type );
-			if ( ! apply_filters( 'learn-press/note/can-create', true, $user_id, $note->course_id, $note->item_id, $note->item_type ) ) {
-				throw new Exception( __( 'You do not have permission to add notes to this lesson.', 'learnpress' ) );
-			}
 		}
 
 		return $this->persist( $note );
@@ -255,6 +252,7 @@ class NoteService {
 	 * @param int $user_id User ID.
 	 *
 	 * @return int[]|null Null = all courses (admin); array (maybe empty) = only these courses.
+	 * @throws Exception
 	 */
 	public function get_viewable_course_ids( int $user_id ) {
 		if ( $user_id <= 0 ) {
@@ -265,16 +263,7 @@ class NoteService {
 			return null;
 		}
 
-		$course_ids = get_posts(
-			array(
-				'post_type'      => LP_COURSE_CPT,
-				'post_status'    => 'any',
-				'author'         => $user_id,
-				'fields'         => 'ids',
-				'posts_per_page' => -1,
-				'no_found_rows'  => true,
-			)
-		);
+		$course_ids = $this->find_authored_course_ids( $user_id );
 
 		/**
 		 * Add courses the user co-instructs (e.g. Co-Instructor add-on).
@@ -282,6 +271,99 @@ class NoteService {
 		$course_ids = apply_filters( 'learn-press/note/viewable-course-ids', $course_ids, $user_id );
 
 		return array_values( array_unique( array_filter( array_map( 'absint', (array) $course_ids ) ) ) );
+	}
+
+	/**
+	 * Notes for the admin Student Notes page, restricted to the courses the viewer can review.
+	 *
+	 * @param int   $viewer_id Viewer user ID.
+	 * @param array $args      [ student, course, note_type, s, paged ].
+	 * @param int   $per_page  Rows per page.
+	 *
+	 * @return array|false False when the viewer can review no course, else
+	 *                     [ rows, total_rows, stats, users, courses ] (users/courses: filter options in scope).
+	 * @throws Exception
+	 */
+	public function get_admin_list( int $viewer_id, array $args, int $per_page ) {
+		$scope = $this->get_scope_filter( $viewer_id );
+		if ( ! $scope ) {
+			return false;
+		}
+
+		$db = NoteDB::getInstance();
+
+		$filter        = $this->apply_list_args( clone $scope, $args );
+		$filter->limit = $per_page;
+		$filter->page  = max( 1, (int) ( $args['paged'] ?? 1 ) );
+		$db->order_newest_first( $filter );
+		$total_rows = 0;
+		$rows       = $db->get_notes( $filter, $total_rows );
+
+		return array(
+			'rows'       => is_array( $rows ) ? $rows : array(),
+			'total_rows' => $total_rows,
+			'stats'      => $db->get_stats( $this->apply_list_args( clone $scope, $args ) ),
+			'users'      => $db->get_note_users( clone $scope ),
+			'courses'    => $db->get_note_courses( clone $scope ),
+		);
+	}
+
+	/**
+	 * Base filter restricted to the courses a viewer can review.
+	 *
+	 * @param int $viewer_id Viewer user ID.
+	 *
+	 * @return NoteFilter|false False when the viewer can review no course.
+	 */
+	protected function get_scope_filter( int $viewer_id ) {
+		$filter     = new NoteFilter();
+		$course_ids = $this->get_viewable_course_ids( $viewer_id );
+
+		if ( is_array( $course_ids ) ) {
+			if ( empty( $course_ids ) ) {
+				return false;
+			}
+
+			$filter->course_ids = $course_ids;
+		}
+
+		return $filter;
+	}
+
+	/**
+	 * Apply admin list args to a scope filter.
+	 *
+	 * @param NoteFilter $filter Scope filter.
+	 * @param array      $args   [ student, course, note_type, s ].
+	 *
+	 * @return NoteFilter
+	 */
+	protected function apply_list_args( NoteFilter $filter, array $args ): NoteFilter {
+		$filter->join_details = true;
+		$course_id            = absint( $args['course'] ?? 0 );
+
+		if ( $course_id ) {
+			// Instructors can only narrow down to their own courses.
+			if ( ! empty( $filter->course_ids ) && ! in_array( $course_id, $filter->course_ids, true ) ) {
+				$filter->course_ids = array( 0 );
+			} else {
+				$filter->course_id = $course_id;
+			}
+		}
+
+		if ( ! empty( $args['student'] ) ) {
+			$filter->user_id = absint( $args['student'] );
+		}
+
+		if ( ! empty( $args['note_type'] ) ) {
+			$filter->note_type = (string) $args['note_type'];
+		}
+
+		if ( '' !== ( $args['s'] ?? '' ) ) {
+			$filter->key_word = (string) $args['s'];
+		}
+
+		return $filter;
 	}
 
 	/**
@@ -296,7 +378,7 @@ class NoteService {
 		$data = $note->to_array();
 		unset( $data['user_id'] );
 
-		$timestamp                  = strtotime( $note->created_at . ' UTC' );
+		$timestamp                  = $note->get_created_timestamp();
 		$data['created_at_display'] = $timestamp
 			? wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $timestamp )
 			: '';
@@ -315,6 +397,7 @@ class NoteService {
 
 	/**
 	 * Throw the reason a user cannot create notes on an item.
+	 * The filter `learn-press/note/can-create` has the final say (e.g. allow preview items).
 	 *
 	 * @param int    $user_id   User ID.
 	 * @param int    $course_id Course ID.
@@ -325,27 +408,48 @@ class NoteService {
 	 * @throws Exception
 	 */
 	public function check_can_create( int $user_id, int $course_id, int $item_id, string $item_type ) {
+		$error = $this->get_create_error( $user_id, $course_id, $item_id, $item_type );
+		$can   = apply_filters( 'learn-press/note/can-create', '' === $error, $user_id, $course_id, $item_id, $item_type );
+
+		if ( ! $can ) {
+			throw new Exception( '' !== $error ? $error : __( 'You do not have permission to add notes to this item.', 'learnpress' ) );
+		}
+	}
+
+	/**
+	 * Why a user cannot create notes on an item.
+	 *
+	 * @param int    $user_id   User ID.
+	 * @param int    $course_id Course ID.
+	 * @param int    $item_id   Item ID.
+	 * @param string $item_type Item post type.
+	 *
+	 * @return string Empty when allowed.
+	 */
+	protected function get_create_error( int $user_id, int $course_id, int $item_id, string $item_type ): string {
 		if ( $user_id <= 0 ) {
-			throw new Exception( __( 'Please log in to add notes.', 'learnpress' ) );
+			return __( 'Please log in to add notes.', 'learnpress' );
 		}
 
 		if ( ! in_array( $item_type, NoteModel::get_supported_item_types(), true ) ) {
-			throw new Exception( __( 'Notes are not supported for this item.', 'learnpress' ) );
+			return __( 'Notes are not supported for this item.', 'learnpress' );
 		}
 
 		$course = $this->find_course( $course_id );
 		if ( ! $course ) {
-			throw new Exception( __( 'Course is invalid!', 'learnpress' ) );
+			return __( 'Course is invalid!', 'learnpress' );
 		}
 
 		if ( ! $course->get_item_model( $item_id, $item_type ) ) {
-			throw new Exception( __( 'Lesson is invalid!', 'learnpress' ) );
+			return __( 'This item does not belong to the course.', 'learnpress' );
 		}
 
 		$user_course = $this->find_user_course( $user_id, $course_id );
 		if ( ! $user_course || ! $user_course->has_enrolled_or_finished() ) {
-			throw new Exception( __( 'You must enroll in this course to add notes.', 'learnpress' ) );
+			return __( 'You must enroll in this course to add notes.', 'learnpress' );
 		}
+
+		return '';
 	}
 
 	/**
@@ -374,6 +478,25 @@ class NoteService {
 	 */
 	protected function find_user_course( int $user_id, int $course_id ) {
 		return UserCourseModel::find( $user_id, $course_id, true );
+	}
+
+	/**
+	 * IDs of the courses a user is the author of (any status).
+	 *
+	 * @param int $user_id User ID.
+	 *
+	 * @return int[]
+	 * @throws Exception
+	 */
+	protected function find_authored_course_ids( int $user_id ): array {
+		$filter                  = new CoursePostFilter();
+		$filter->post_author     = $user_id;
+		$filter->only_fields     = array( 'p.ID' );
+		$filter->limit           = -1;
+		$filter->run_query_count = false;
+		$rows                    = PostDB::getInstance()->get_posts( $filter );
+
+		return is_array( $rows ) ? array_map( 'absint', PostDB::get_values_by_key( $rows ) ) : array();
 	}
 
 	/**

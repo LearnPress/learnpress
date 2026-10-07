@@ -29,6 +29,8 @@ class FakeNoteService extends NoteService {
 	public $removed = [];
 	/** @var array[] [ column, id ] */
 	public $deleted_by = [];
+	/** @var int[] */
+	public $authored_course_ids = [];
 
 	protected function find_course( int $course_id ) {
 		return $this->courses[ $course_id ] ?? false;
@@ -61,6 +63,10 @@ class FakeNoteService extends NoteService {
 		$this->removed[] = $note;
 
 		return true;
+	}
+
+	protected function find_authored_course_ids( int $user_id ): array {
+		return $this->authored_course_ids;
 	}
 
 	protected function delete_notes_by( string $column, int $id ): int {
@@ -194,6 +200,25 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 		$this->assertFalse( $this->service->can_create( self::STUDENT, self::COURSE, self::LESSON, 'lp_quiz' ) );
 	}
 
+	public function test_can_create_filter_has_final_say(): void {
+		Functions\when( 'apply_filters' )->alias(
+			static fn( $hook, $value ) => 'learn-press/note/can-create' === $hook ? true : $value
+		);
+
+		// Not enrolled, but an add-on allows it.
+		$this->assertTrue( $this->service->can_create( self::OTHER, self::COURSE, self::LESSON ) );
+	}
+
+	public function test_can_create_filter_can_deny_with_generic_message(): void {
+		Functions\when( 'apply_filters' )->alias(
+			static fn( $hook, $value ) => 'learn-press/note/can-create' === $hook ? false : $value
+		);
+
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'You do not have permission to add notes to this item.' );
+		$this->service->check_can_create( self::STUDENT, self::COURSE, self::LESSON, 'lp_lesson' );
+	}
+
 	// -------------------------------------------------------------------------
 	// can_view
 	// -------------------------------------------------------------------------
@@ -253,7 +278,7 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_instructor_views_own_courses_plus_filtered(): void {
-		Functions\expect( 'get_posts' )->once()->andReturn( [ 10, '11' ] );
+		$this->service->authored_course_ids = [ 10, 11 ];
 		Functions\when( 'apply_filters' )->alias(
 			static fn( $hook, $value ) => 'learn-press/note/viewable-course-ids' === $hook ? array_merge( $value, [ 12, 10 ] ) : $value
 		);

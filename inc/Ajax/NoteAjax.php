@@ -24,38 +24,6 @@ defined( 'ABSPATH' ) || exit;
 class NoteAjax extends AbstractAjax {
 
 	/**
-	 * List notes of a student on a lesson.
-	 *
-	 * data: { course_id, item_id, user_id? } — user_id defaults to the current user;
-	 * another user's notes are returned only to admins / the course instructors.
-	 */
-	public function lp_note_list() {
-		$response = new LP_REST_Response();
-
-		try {
-			$params    = $this->get_params();
-			$viewer_id = get_current_user_id();
-			$owner_id  = absint( $params['user_id'] ?? 0 );
-			$owner_id  = $owner_id > 0 ? $owner_id : $viewer_id;
-			$course_id = absint( $params['course_id'] ?? 0 );
-			$item_id   = absint( $params['item_id'] ?? 0 );
-
-			$notes = NoteService::instance()->get_item_notes( $viewer_id, $owner_id, $course_id, $item_id );
-
-			$response->status = 'success';
-			$response->data   = array(
-				'notes'    => array_map( array( NoteService::instance(), 'to_response' ), $notes ),
-				'can_edit' => $viewer_id === $owner_id
-					&& NoteService::instance()->can_create( $viewer_id, $course_id, $item_id ),
-			);
-		} catch ( Throwable $e ) {
-			$response->message = $e->getMessage();
-		}
-
-		wp_send_json( $response );
-	}
-
-	/**
 	 * Create or update a note of the current user.
 	 *
 	 * data: { note_id?, course_id, item_id, note_type, content, highlight_text?, anchor? }

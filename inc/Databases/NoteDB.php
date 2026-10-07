@@ -185,6 +185,20 @@ class NoteDB extends DataBase {
 	}
 
 	/**
+	 * Order notes newest first.
+	 * note_id breaks ties (same second) so pages never overlap:
+	 * execute() builds "ORDER BY n.created_at DESC, n.note_id DESC".
+	 *
+	 * @param NoteFilter $filter Note query filter.
+	 *
+	 * @return void
+	 */
+	public function order_newest_first( NoteFilter $filter ) {
+		$filter->order_by = 'n.' . NoteFilter::COL_CREATED_AT . ' ' . NoteFilter::ORDER_DESC . ', n.' . NoteFilter::COL_NOTE_ID;
+		$filter->order    = NoteFilter::ORDER_DESC;
+	}
+
+	/**
 	 * Insert a note row.
 	 *
 	 * @param array<string, mixed> $data Note data.

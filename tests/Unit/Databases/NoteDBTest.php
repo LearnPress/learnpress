@@ -188,6 +188,15 @@ class NoteDBTest extends BrainMonkeyTestCase {
 		$this->assertStringNotContainsString( 'LIMIT', $sql );
 	}
 
+	public function test_order_newest_first_breaks_ties_by_note_id(): void {
+		$filter                  = new NoteFilter();
+		$filter->run_query_count = false;
+		NoteDB::getInstance()->order_newest_first( $filter );
+		NoteDB::getInstance()->get_notes( $filter );
+
+		$this->assertStringContainsString( 'ORDER BY n.created_at DESC, n.note_id DESC', $this->last_query() );
+	}
+
 	public function test_delete_notes_by_user(): void {
 		$this->wpdb->affected = 3;
 

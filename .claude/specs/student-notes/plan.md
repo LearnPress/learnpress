@@ -4,7 +4,7 @@
 - [x] Step 1: Table — `tb_lp_notes` in `DataBase.php`, `create_table_notes()` + `LP_Settings::is_created_tb_notes()` guard in `class-lp-install.php`
 - [x] Step 2: `NoteFilter`, `NoteDB` (get_notes, stats counts), `NoteModel` (find / save / delete / get_anchor) + tests
 - [x] Step 3: `NoteService` — can_create, can_manage (owner), can_view (owner/admin/course author), validate payload + tests
-- [x] Step 4: `NoteAjax` — note_list / note_save / note_delete; register in `learnpress.php` AJAX catch list
+- [x] Step 4: `NoteAjax` — note_save / note_delete; register in `learnpress.php` AJAX catch list
 - [x] Step 5: `CourseNoteTemplate` — launcher icon, panel markup on `wp_footer`, localize data; only on lesson items, setting enabled
 - [x] Step 6: JS panel — list / add text note / edit / delete via `window.lpAJAXG`, Toastify messages
 - [x] Step 7: JS highlight — selection → floating "Add Note", build anchor, re-anchor + render `<mark>`, orphan handling, AJAX item switch
@@ -22,6 +22,8 @@
 | `inc/Services/NoteService.php` | Permissions + business rules |
 | `inc/Ajax/NoteAjax.php` | Frontend AJAX handlers |
 | `inc/TemplateHooks/Course/CourseNoteTemplate.php` | Launcher + panel |
+| `inc/TemplateHooks/Course/CourseItemLaunchersTemplate.php` | Shared launchers wrapper + hook (AI Assistant, Notes) |
+| `assets/src/js/admin/student-notes.js` | Admin "View note" modal |
 | `inc/TemplateHooks/Admin/AdminStudentNotesTemplate.php` | Backend page |
 | `assets/src/js/frontend/course-notes.js` | Panel + highlight logic |
 | `assets/src/scss/frontend/course-notes.scss` | Styles (compiled to `assets/css/frontend/course-notes.css`) |
@@ -43,6 +45,8 @@
 | `webpack.config.js` | New JS entry `assets/js/dist/frontend/course-notes` |
 | `inc/class-lp-assets.php` | Register `lp-course-notes` style + script |
 | `assets/src/js/frontend/ai-assistant.js` | `lp-footer-panel:open` event so only one panel is open |
+| `inc/TemplateHooks/Course/CourseAIAssistantTemplate.php` | Launchers wrapper moved to `CourseItemLaunchersTemplate` (const kept as deprecated alias) |
+| `inc/TemplateHooks/Admin/AdminTemplate.php` | `html_tom_select()` optional `id` arg |
 
 ## Format code when create file done run > php vendor/squizlabs/php_codesniffer/bin/phpcs --standard=phpcs.xml [file-name]
 

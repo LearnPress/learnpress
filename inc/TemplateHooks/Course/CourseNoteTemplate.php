@@ -53,7 +53,7 @@ class CourseNoteTemplate {
 
 	public function init() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
-		add_action( CourseAIAssistantTemplate::FOOTER_LAUNCHERS_HOOK, array( $this, 'render_launcher' ), 10 );
+		add_action( CourseItemLaunchersTemplate::HOOK, array( $this, 'render_launcher' ), 10 );
 		add_action( 'wp_footer', array( $this, 'render_panel' ), 10 );
 	}
 
@@ -155,9 +155,7 @@ class CourseNoteTemplate {
 		return apply_filters(
 			'learn-press/course-notes/js-data',
 			array(
-				'mode'            => $render_state['mode'],
 				'canEdit'         => self::MODE_EDIT === $render_state['mode'],
-				'ownerId'         => $render_state['owner_id'],
 				'courseId'        => $render_state['course_id'],
 				'itemId'          => $render_state['item_id'],
 				'itemType'        => $render_state['item_type'],
@@ -166,9 +164,7 @@ class CourseNoteTemplate {
 					'learn-press/course-notes/content-selector',
 					'.content-item-description.lesson-description'
 				),
-				'contentMaxLength' => NoteModel::CONTENT_MAX_LENGTH,
 				'i18n'            => array(
-					'addNote'       => __( 'Add Note', 'learnpress' ),
 					'textNote'      => __( 'Text Note', 'learnpress' ),
 					'highlight'     => __( 'Highlight', 'learnpress' ),
 					'deleteConfirm' => __( 'Delete this note?', 'learnpress' ),

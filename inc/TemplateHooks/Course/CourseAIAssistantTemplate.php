@@ -27,8 +27,10 @@ class CourseAIAssistantTemplate {
 
 	/**
 	 * Shared footer action used to collect launcher buttons inside one wrapper.
+	 *
+	 * @deprecated 4.4.9.2 Use CourseItemLaunchersTemplate::HOOK.
 	 */
-	const FOOTER_LAUNCHERS_HOOK = 'learn-press/course-item-footer-launchers';
+	const FOOTER_LAUNCHERS_HOOK = CourseItemLaunchersTemplate::HOOK;
 
 	/**
 	 * Cached render state for the current request.
@@ -56,8 +58,7 @@ class CourseAIAssistantTemplate {
 
 	protected function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
-		add_action( 'wp_footer', array( $this, 'render_launcher_wrapper' ), 5 );
-		add_action( self::FOOTER_LAUNCHERS_HOOK, array( $this, 'render_launcher' ), 20 );
+		add_action( CourseItemLaunchersTemplate::HOOK, array( $this, 'render_launcher' ), 20 );
 		add_action( 'wp_footer', array( $this, 'render_panel' ), 10 );
 	}
 
@@ -237,21 +238,12 @@ class CourseAIAssistantTemplate {
 
 	/**
 	 * Render the shared footer wrapper for launcher buttons.
+	 *
+	 * @deprecated 4.4.9.2 Rendered by CourseItemLaunchersTemplate::render().
 	 */
 	public function render_launcher_wrapper() {
-		ob_start();
-		do_action( self::FOOTER_LAUNCHERS_HOOK );
-		$launchers_html = trim( ob_get_clean() );
-
-		if ( '' === $launchers_html ) {
-			return;
-		}
-
-		printf(
-			'<div class="lp-footer-launchers" aria-label="%1$s">%2$s</div>',
-			esc_attr__( 'Learning tools', 'learnpress' ),
-			$launchers_html // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		);
+		_deprecated_function( __METHOD__, '4.4.9.2', 'CourseItemLaunchersTemplate::render' );
+		CourseItemLaunchersTemplate::instance()->render();
 	}
 
 	/**

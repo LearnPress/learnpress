@@ -136,6 +136,17 @@ class NoteModel {
 	}
 
 	/**
+	 * Creation time as a Unix timestamp (created_at is stored in UTC).
+	 *
+	 * @return int 0 when unknown.
+	 */
+	public function get_created_timestamp(): int {
+		$timestamp = strtotime( $this->created_at . ' UTC' );
+
+		return $timestamp ? $timestamp : 0;
+	}
+
+	/**
 	 * Check the note belongs to a user.
 	 *
 	 * @param int $user_id User ID.
@@ -196,8 +207,7 @@ class NoteModel {
 		$filter->item_id         = $item_id;
 		$filter->limit           = -1;
 		$filter->run_query_count = false;
-		$filter->order_by        = 'n.' . NoteFilter::COL_CREATED_AT . ' DESC, n.' . NoteFilter::COL_NOTE_ID;
-		$filter->order           = NoteFilter::ORDER_DESC;
+		NoteDB::getInstance()->order_newest_first( $filter );
 
 		return static::query( $filter );
 	}

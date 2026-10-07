@@ -13,7 +13,7 @@
 
 - Step 3: `NoteService` (Singleton) — can_create / check_can_create (reason), can_manage (owner + still enrolled), can_view (owner/admin/course author via `check_user_is_author`), get_item_notes, save_note (update changes content only; owner forced to current user), delete_note. Filters: `learn-press/note/can-create|can-manage|can-view`
   - Tests: `NoteServiceTest` (19) with a FakeNoteService double
-- Step 4: `NoteAjax` — `lp_note_list`, `lp_note_save`, `lp_note_delete` (registered in `learnpress.php`); JSON `data` read raw (`wp_check_invalid_utf8`) so quotes match lesson text
+- Step 4: `NoteAjax` — `lp_note_save`, `lp_note_delete` (registered in `learnpress.php`; `lp_note_list` removed later as unused, notes are rendered with the page); JSON `data` read raw (`wp_check_invalid_utf8`) so quotes match lesson text
   - E2E on Local via `NoteAjax::catch_lp_ajax()`: create/list/edit/delete OK; other user / not enrolled / guest / lesson not in course / bad nonce / admin edit → rejected; admin list → OK with `can_edit:false`
 - Fix: plain text sanitizing (`NoteModel::sanitize_plain_text`) keeps lone "<" but never decodes into a tag (security review finding); `highlight_text` always derived from anchor quote
 
@@ -33,6 +33,9 @@
 - Setting: LearnPress → Settings → Courses → "Student Notes Settings" → `enable_student_notes` (checkbox, default yes, `learn-press/course-settings-fields/student-notes`). Off → no launcher/panel, AJAX "Notes are disabled."; notes kept; admin page still available
 - Admin table: column sorting removed (user request), newest first
 - Admin content cell: eye icon replaced by a "View note" link opening the LP modal (SweetAlert2 + `<template>`, `assets/src/js/admin/student-notes.js`) with student/course/lesson/date, highlighted text, note and Open Lesson
+
+- Code review fixes: ESLint clean (selection via `ownerDocument.defaultView`); admin list data moved to `NoteService::get_admin_list()` (template only renders); `NoteDB::order_newest_first()`; single `learn-press/note/can-create` filter in `check_can_create()` (filter has final say); `AdminTemplate::html_tom_select()` optional `id`; unused `lp_note_list` + JS data keys removed; shared launchers wrapper `CourseItemLaunchersTemplate` (AI const kept as deprecated alias); authored courses via `PostDB` + `CoursePostFilter`; `NoteModel::get_created_timestamp()`
+  - Tests: NoteServiceTest 27, NoteDBTest 9, NoteModelTest 18; browser re-check frontend + admin
 
 ## In progress
 

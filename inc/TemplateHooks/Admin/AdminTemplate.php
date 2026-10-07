@@ -150,6 +150,7 @@ class AdminTemplate {
 	 *     Arguments.
 	 *
 	 *     @type array  $options    Options for select.
+	 *     @type string $id         Optional id attribute for select.
 	 *     @type string $name       Name attribute for select.
 	 *     @type string $class_name Class name for select.
 	 * }
@@ -162,6 +163,7 @@ class AdminTemplate {
 		$html_options = '';
 
 		$options       = $args['options'] ?? [];
+		$id            = $args['id'] ?? '';
 		$name          = $args['name'] ?? '';
 		$class_name    = $args['class_name'] ?? '';
 		$default_value = $args['default_value'] ?? '';
@@ -181,7 +183,8 @@ class AdminTemplate {
 
 		$section = [
 			'select'     => sprintf(
-				'<select name="%s" class="%s lp-tom-select" %s data-struct="%s" data-save="%s">',
+				'<select %sname="%s" class="%s lp-tom-select" %s data-struct="%s" data-save="%s">',
+				$id ? sprintf( 'id="%s" ', esc_attr( $id ) ) : '',
 				esc_attr( $name ),
 				esc_attr( $class_name ),
 				esc_attr( $multiple ),
