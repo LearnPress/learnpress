@@ -62,13 +62,22 @@ class LP_Meta_Box_Duration_Field extends LP_Meta_Box_Field {
 				$custom_attributes[] = esc_attr( $attribute ) . '="' . esc_attr( $custom_attribute ) . '"';
 			}
 		}
+		
+		$dependency_check = $field['dependency'] ?? [];
+		if ( ! empty( $dependency_check ) ) {
+			if ( $dependency_check['is_disable'] ) {
+				$field['wrapper_class'] .= ' lp-option-disabled';
+			}
 
+			$field['wrapper_attr'][] = 'data-dependency=' . $dependency_check['name'];
+		}
+		
 		$html_option = '';
 		foreach ( $duration as $k => $v ) {
 			$html_option .= sprintf( '<option value="%s" %s>%s</option>', $k, selected( $k, $a2, false ), $v );
 		}
 
-		echo '<p class="lp-meta-box__duration form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '">
+		echo '<p class="lp-meta-box__duration form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '" ' . esc_attr( implode( ' ', $field['wrapper_attr'] ?? [] ) ) . '>
 		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
 
 		echo '<input type="number" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" name="' . esc_attr( $field['name'] ) . '[]" id="' . esc_attr( $field['id'] ) . '" value="' . esc_attr( $a1 ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" ' . implode( ' ', $custom_attributes ) . ' /> ';
