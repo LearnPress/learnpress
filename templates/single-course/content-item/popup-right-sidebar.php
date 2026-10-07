@@ -32,7 +32,7 @@ $learning_bar_items = apply_filters(
 ?>
 
 <div id="popup-right-sidebar" class="popup-right-sidebar is-collapsed">
-	<span class="popup-right-sidebar__toggle lp-icon-puzzle-piece" title="<?php esc_attr_e( 'Toggle Sidebar', 'learnpress' ); ?>"></span>
+	<span class="popup-right-sidebar__toggle lp-icon-extend" title="<?php esc_attr_e( 'Toggle Sidebar', 'learnpress' ); ?>"></span>
 	<ul class="popup-right-sidebar__items">
 		<?php foreach ( $learning_bar_items as $item_key => $item ) : ?>
 			<li class="popup-right-sidebar__item" data-learning-bar-item="<?php echo esc_attr( $item_key ); ?>">

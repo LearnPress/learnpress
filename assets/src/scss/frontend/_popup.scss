@@ -115,7 +115,7 @@
 		@media (max-width: 767px) {
 			flex-direction: column;
 			gap: 5px;
-
+			align-items: flex-start;
 			&.can-finish-course .items-progress {
 				display: none;
 			}
@@ -367,7 +367,7 @@
 	overflow: auto;
 	position: relative;
 	// box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.1);
-	flex: 0 0 var(--lp-width-popup-curriculum, 475px);
+	flex: 0 0 var(--lp-width-popup-curriculum, 450px);
 	// Smooth animation for zoom in/out
 	border-right: 1px solid $border-color;
 	transition: flex-basis 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -489,7 +489,7 @@
 		position: absolute;
 		top: 70px;
 		bottom: 0;
-		width: var(--lp-width-popup-curriculum, 475px);
+		width: var(--lp-width-popup-curriculum, 450px);
 
 		&::-webkit-scrollbar-thumb {
 			background: #ccc;
@@ -637,13 +637,13 @@
 .popup-right-sidebar {
 	position: fixed;
 	right: 0;
-	top: $popup_header_height + 32px;
  	display: flex;
 	flex-direction: column;
-	padding: 12px;
+	padding: ($popup_header_height + 12px) 12px 12px;
 	user-select: none;
 	box-sizing: border-box;
 	z-index: 99;
+
 	transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 	// Sticky Toggle button (always fixed at top right)
@@ -924,7 +924,7 @@
 	z-index: 99;
 	right: 0;
 	bottom: 0;
-	left: var(--lp-width-popup-curriculum, 475px);
+	left: var(--lp-width-popup-curriculum, 450px);
  	padding: 0 15px;
 	height: auto;
 	border-top: 1px solid #ebebeb;
@@ -1074,12 +1074,12 @@
 }
 
 #sidebar-toggle {
-	width: 40px;
-	min-width: 40px;
-	line-height: 70px;
-	height: unset;
-	margin: 0;
+	width: 42px;
+ 	line-height: 42px;
+	height: 42px;
+	margin: 12px 0 0;
 	background: transparent;
+	border-radius: 8px;
 	// background: rgba(255, 255, 255, 0.1);
 	// color: $color-white;
 	font-size: 22px;
@@ -1103,8 +1103,9 @@
 		height: auto;
 		font-family: 'lp-icon';
 		content: "\e928";
-		line-height: 1;
+		line-height: unset;
 		font-size: 1em;
+		float: none;
 	}
 
 	&:focus {
@@ -1213,8 +1214,8 @@ body {
 		//}
 		#popup-content #sidebar-toggle {
 			margin-left: 0;
-			&::before {
-				float:none;
+			@media (max-width: 991px) {
+				background: $bg-grey;
 			}
 		}
 
@@ -1488,7 +1489,7 @@ body {
 					z-index: 999;
 					right: 0;
 					bottom: 0;
-					left: var(--lp-width-popup-curriculum, 475px);
+					left: var(--lp-width-popup-curriculum, 450px);
 					height: auto;
  					background: var(--lp-bg-color-lesson, #fff);
 					transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
