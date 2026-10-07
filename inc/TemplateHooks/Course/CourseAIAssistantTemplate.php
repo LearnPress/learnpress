@@ -453,8 +453,16 @@ class CourseAIAssistantTemplate {
 		];
 
 		$section_content = [
-			'wrapper'     => '<div id="lp-ai-assistant" class="lp-learning-bar-item-content lp-ai-assistant" data-lp-ai-config="' . esc_attr( wp_json_encode( $this->get_widget_config( $render_state ) ) ) . '">',
-			'message'     => $this->html_messages(),
+			'wrapper'     => sprintf(
+				'<div id="lp-ai-assistant"
+					class="lp-learning-bar-item-content lp-ai-assistant"
+					data-lp-ai-config="%s">',
+				esc_attr( wp_json_encode( $this->get_widget_config( $render_state ) ) )
+			),
+			'message'     => sprintf(
+				'%s',
+				$this->html_messages()
+			),
 			'footer'      => $this->html_panel_footer(
 				$render_state['free_chat_enabled'],
 				$render_state['enabled_actions']

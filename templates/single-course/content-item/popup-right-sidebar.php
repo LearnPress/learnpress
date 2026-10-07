@@ -14,7 +14,6 @@ use LearnPress\TemplateHooks\Learning\LearningTemplate;
 defined( 'ABSPATH' ) || exit;
 
 $ai_assistant_html = CourseAIAssistantTemplate::instance()->layout_ai_assistant_on_learning_content_bar();
-
 $learning_bar_items = [];
 
 if ( $ai_assistant_html ) {
@@ -31,6 +30,7 @@ $learning_bar_items = apply_filters(
 );
 ?>
 
+<?php if ( $learning_bar_items ) : ?>
 <div id="popup-right-sidebar" class="popup-right-sidebar is-collapsed">
 	<span class="popup-right-sidebar__toggle lp-icon-puzzle-piece" title="<?php esc_attr_e( 'Toggle Sidebar', 'learnpress' ); ?>"></span>
 	<ul class="popup-right-sidebar__items">
@@ -44,3 +44,5 @@ $learning_bar_items = apply_filters(
 	</ul>
 </div>
 <?php echo LearningTemplate::instance()->html_addon_content_bar(); ?>
+<?php endif; ?>
+
