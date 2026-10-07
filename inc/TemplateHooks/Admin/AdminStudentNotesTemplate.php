@@ -463,6 +463,8 @@ class AdminStudentNotesTemplate {
 			esc_html( $row->user_email ?? '' )
 		);
 
+		$course_title = $row->course_title ? $row->course_title : '#' . $note->course_id;
+
 		$lesson = $row->item_title ? $row->item_title : '#' . $note->item_id;
 		$lesson = $item_link
 			? sprintf( '<a href="%1$s" target="_blank" rel="noopener">%2$s</a>', esc_url( $item_link ), esc_html( $lesson ) )
@@ -495,10 +497,22 @@ class AdminStudentNotesTemplate {
 			array(
 				'tr'      => sprintf( '<tr data-note-id="%d">', $note->get_note_id() ),
 				'student' => sprintf( '<td class="lp-col-student">%s</td>', $student ),
-				'course'  => sprintf( '<td class="lp-col-course">%s</td>', esc_html( $row->course_title ? $row->course_title : '#' . $note->course_id ) ),
+				'course'  => sprintf( '<td class="lp-col-course">%s</td>', esc_html( $course_title ) ),
 				'lesson'  => sprintf( '<td class="lp-col-lesson">%s</td>', $lesson ),
 				'type'    => sprintf( '<td class="lp-col-type">%s</td>', $type ),
-				'content' => sprintf( '<td class="lp-col-content">%s</td>', $this->html_content( $note ) ),
+				'content' => sprintf(
+					'<td class="lp-col-content">%s</td>',
+					$this->html_content(
+						$note,
+						array(
+							__( 'Student', 'learnpress' ) => $student,
+							__( 'Course', 'learnpress' )  => esc_html( $course_title ),
+							__( 'Lesson', 'learnpress' )  => $lesson,
+							__( 'Created', 'learnpress' ) => $created,
+						),
+						$open_link
+					)
+				),
 				'created' => sprintf( '<td class="lp-col-created">%s</td>', $created ),
 				'actions' => sprintf( '<td class="lp-col-actions">%s</td>', $action ),
 				'tr_end'  => '</tr>',
@@ -511,40 +525,94 @@ class AdminStudentNotesTemplate {
 	}
 
 	/**
-	 * Content cell: excerpt, expandable to the highlighted text + full note.
+	 * Content cell: short quote + note, and a "View note" button opening the details in the LP modal
+	 * (SweetAlert2, assets/src/js/admin/student-notes.js).
 	 *
-	 * @param NoteModel $note Note.
+	 * @param NoteModel $note      Note.
+	 * @param array     $meta      Label => HTML (already escaped) shown in the modal.
+	 * @param string    $open_link Lesson URL focused on the note.
 	 *
 	 * @return string
 	 */
-	public function html_content( NoteModel $note ): string {
-		$is_highlight = NoteModel::TYPE_HIGHLIGHT === $note->note_type;
-		$text         = '' !== $note->content ? $note->content : $note->highlight_text;
-		// Plain text: cut by characters (wp_html_excerpt() would strip text like "1<2").
-		$excerpt = preg_replace( '/\s+/u', ' ', $text );
-		if ( mb_strlen( $excerpt ) > self::EXCERPT ) {
-			$excerpt = rtrim( mb_substr( $excerpt, 0, self::EXCERPT ) ) . '…';
-		}
-		$is_long = $excerpt !== $text || $is_highlight;
+	public function html_content( NoteModel $note, array $meta = array(), string $open_link = '' ): string {
+		$quote     = NoteModel::TYPE_HIGHLIGHT === $note->note_type ? $note->highlight_text : '';
+		$detail_id = 'lp-note-detail-' . $note->get_note_id();
 
-		if ( ! $is_long ) {
-			return sprintf( '<span class="lp-student-notes__excerpt">%s</span>', esc_html( $text ) );
+		$rows = '';
+		foreach ( $meta as $label => $html ) {
+			$rows .= sprintf( '<tr><th scope="row">%1$s</th><td>%2$s</td></tr>', esc_html( $label ), $html );
 		}
 
-		$full = '';
-		if ( $is_highlight ) {
-			$full .= sprintf( '<blockquote>%s</blockquote>', esc_html( $note->highlight_text ) );
-		}
-
-		if ( '' !== $note->content ) {
-			$full .= sprintf( '<p>%s</p>', nl2br( esc_html( $note->content ) ) );
-		}
+		$detail = sprintf(
+			'<template id="%1$s">
+				<div class="lp-student-notes__detail">
+					<table class="form-table" role="presentation"><tbody>%2$s</tbody></table>
+					%3$s
+					<h3>%4$s</h3>
+					<p>%5$s</p>
+					%6$s
+				</div>
+			</template>',
+			esc_attr( $detail_id ),
+			$rows,
+			'' !== $quote
+				? sprintf( '<h3>%1$s</h3><blockquote>%2$s</blockquote>', esc_html__( 'Highlighted text', 'learnpress' ), nl2br( esc_html( $quote ) ) )
+				: '',
+			esc_html__( 'Note', 'learnpress' ),
+			'' !== $note->content ? nl2br( esc_html( $note->content ) ) : sprintf( '<em>%s</em>', esc_html__( 'No note content.', 'learnpress' ) ),
+			$open_link
+				? sprintf(
+					'<p><a class="button button-primary" href="%1$s" target="_blank" rel="noopener">%2$s</a></p>',
+					esc_url( $open_link ),
+					esc_html__( 'Open Lesson', 'learnpress' )
+				)
+				: ''
+		);
 
 		return sprintf(
-			'<details class="lp-student-notes__content"><summary><span class="lp-student-notes__excerpt">%1$s</span><span class="lp-icon lp-icon-eye" title="%2$s" aria-hidden="true"></span><span class="screen-reader-text">%2$s</span></summary><div class="lp-student-notes__full">%3$s</div></details>',
-			esc_html( $excerpt ),
-			esc_attr__( 'View full note', 'learnpress' ),
-			$full
+			'%1$s<button type="button" class="button-link lp-student-notes__view" data-template="%2$s" data-title="%3$s">%4$s</button>%5$s',
+			$this->html_note_text( $this->excerpt( $quote, 60 ), $this->excerpt( $note->content, self::EXCERPT ) ),
+			esc_attr( $detail_id ),
+			esc_attr__( 'Student note', 'learnpress' ),
+			esc_html__( 'View note', 'learnpress' ),
+			$detail
 		);
+	}
+
+	/**
+	 * Quote + note text.
+	 *
+	 * @param string $quote Highlighted text.
+	 * @param string $text  Note content.
+	 *
+	 * @return string
+	 */
+	protected function html_note_text( string $quote, string $text ): string {
+		$html = '';
+		if ( '' !== $quote ) {
+			$html .= sprintf( '<span class="lp-student-notes__quote">&ldquo;%s&rdquo;</span>', esc_html( $quote ) );
+		}
+
+		if ( '' !== $text ) {
+			$html .= sprintf( '<span class="lp-student-notes__text">%s</span>', nl2br( esc_html( $text ) ) );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Cut plain text by characters (wp_html_excerpt() would strip text like "1<2").
+	 *
+	 * @param string $text   Text.
+	 * @param int    $length Max length.
+	 *
+	 * @return string
+	 */
+	protected function excerpt( string $text, int $length ): string {
+		if ( mb_strlen( $text ) <= $length ) {
+			return $text;
+		}
+
+		return rtrim( mb_substr( preg_replace( '/\s+/u', ' ', $text ), 0, $length ) ) . '…';
 	}
 }

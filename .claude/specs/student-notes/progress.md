@@ -32,6 +32,7 @@
 
 - Setting: LearnPress → Settings → Courses → "Student Notes Settings" → `enable_student_notes` (checkbox, default yes, `learn-press/course-settings-fields/student-notes`). Off → no launcher/panel, AJAX "Notes are disabled."; notes kept; admin page still available
 - Admin table: column sorting removed (user request), newest first
+- Admin content cell: eye icon replaced by a "View note" link opening the LP modal (SweetAlert2 + `<template>`, `assets/src/js/admin/student-notes.js`) with student/course/lesson/date, highlighted text, note and Open Lesson
 
 ## In progress
 
