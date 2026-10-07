@@ -17,8 +17,8 @@ use LearnPress\Services\SetupDemoCourseService;
 use LP_Emails;
 use LP_Helper;
 use LP_Request;
-use LP_Settings;
 use LP_Settings_Cache;
+use LP_Setup_Wizard;
 use Throwable;
 
 defined( 'ABSPATH' ) || exit;
@@ -153,6 +153,9 @@ class SetupWizardAjax extends AbstractAjax {
 	 * @return void
 	 */
 	protected function save_pages() {
+		// LP_Setup_Wizard is only loaded in admin context, so need include here to use.
+		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-setup-wizard.php';
+
 		$page_keys = array(
 			'courses_page_id',
 			'instructors_page_id',
@@ -167,7 +170,7 @@ class SetupWizardAjax extends AbstractAjax {
 			$option_key = 'learn_press_' . $page_key;
 			$page_id    = (int) get_option( $option_key );
 			if ( ! $page_id || 'publish' !== get_post_status( $page_id ) ) {
-				$page_id = (int) \LP_Setup_Wizard::instance()->create_page( $page_key );
+				$page_id = (int) LP_Setup_Wizard::instance()->create_page( $page_key );
 				if ( $page_id ) {
 					update_option( $option_key, $page_id );
 				}
