@@ -215,7 +215,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				// Register remaining plugin hooks.
 				$this->hooks();
 			} catch ( Throwable $e ) {
-				LP_Debug::error_log( $e );
+				error_log( $e->getMessage() );
 			}
 		}
 
