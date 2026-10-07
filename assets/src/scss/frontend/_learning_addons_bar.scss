@@ -11,8 +11,8 @@
 	bottom: 0;
 	width: var(--lp-width-addon-content-bar);
 	border-left: 1px solid $border-color;
-	background: var(--lp-bg-color-lesson, #fff);
-	box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
+	background: #F7F7FB;
+	//box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
@@ -36,15 +36,19 @@
 		border-bottom: 1px solid $border-color;
 		align-items: center;
 		justify-content: space-between;
-		background: #FFFEEA;
+		background: #fff;
 
 		.lp-learning-bar-item-title {
-			color: #333333;
+			flex: 1;
+			color: $text-color-base;
+			font-weight: 600;
+			padding: 0;
+			margin: 0;
 		}
 
 		.lp-icon {
 			font-size: 24px;
-			color: $color-primary;
+			color: $text-color-base;
 		}
 	}
 
@@ -56,8 +60,8 @@
 
 	.lp-icon-close {
 		display: inline-flex;
-		width: 36px;
-		height: 36px;
+		width: 26px;
+		height: 26px;
 		margin: 0;
 		padding: 0;
 		border: 0;

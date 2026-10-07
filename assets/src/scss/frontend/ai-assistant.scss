@@ -20,12 +20,6 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 
 	&__title {
 		flex: 1;
-		min-width: 0;
-		margin: 0;
-		font-size: 1.25rem;
-		font-weight: 600;
-		line-height: 1.25;
-		color: inherit;
 	}
 
 	&__clear-btn {
@@ -52,7 +46,7 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 		flex: 1;
 		min-height: 0;
 		padding: $spacing-base-4x $spacing-base-3x $spacing-base-2x;
-		background: $bg-grey;
+		//background: $bg-grey;
 	}
 
 	&__messages {
