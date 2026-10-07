@@ -82,8 +82,19 @@
 		}
 	}
 
+	// The table fills the box edge to edge; only the footer keeps a padding.
 	&__table {
-		overflow-x: auto;
+		padding: 0;
+		overflow: hidden;
+
+		.lp-table-wrap {
+			border: 0;
+			border-radius: 0;
+		}
+
+		&--empty {
+			padding: 20px;
+		}
 
 		.lp-list-table {
 			th,
@@ -167,7 +178,8 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 12px;
-		margin-top: 16px;
+		padding: 12px 20px;
+		border-top: 1px solid #dcdcde;
 
 		.learn-press-pagination {
 			margin: 0;

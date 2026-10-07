@@ -373,7 +373,7 @@ class AdminStudentNotesTemplate {
 	public function html_table( array $rows, array $args, int $total_rows ): string {
 		if ( empty( $rows ) ) {
 			return sprintf(
-				'<div class="lp-student-notes__table">%s</div>',
+				'<div class="lp-student-notes__table lp-student-notes__table--empty">%s</div>',
 				Template::print_message( __( 'No notes found.', 'learnpress' ), 'info', false )
 			);
 		}
