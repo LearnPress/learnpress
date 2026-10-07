@@ -44,10 +44,13 @@ class AddonsAjax extends AbstractAjax {
 	 * Handle addon action: install, update, activate, deactivate, update-purchase.
 	 *
 	 * @return void
+	 * @since 4.4.9
+	 * @version 1.0.2
 	 */
 	public function addon_action() {
 		$response       = new Response();
 		$lp_file_system = LP_WP_Filesystem::instance();
+		$message = '';
 
 		try {
 			if ( is_multisite() && ! is_super_admin() ) {
@@ -123,6 +126,19 @@ class AddonsAjax extends AbstractAjax {
 						$lp_file_system->lp_filesystem->delete( $path_file );
 					}
 
+					$message = sprintf(
+						/* translators: %s: addon name */
+						__( 'Installed successfully %s', 'learnpress' ),
+						$addon['name'] ?? ''
+					);
+					if ( 'update' === $action ) {
+						$message = sprintf(
+							/* translators: %s: addon name */
+							__( 'Updated successfully %s', 'learnpress' ),
+							$addon['name'] ?? ''
+						);
+					}
+
 					break;
 				case 'activate':
 					if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -130,9 +146,19 @@ class AddonsAjax extends AbstractAjax {
 					}
 
 					$this->addon_service->activate( $addon );
+					$message = sprintf(
+						/* translators: %s: addon name */
+						__( 'Activated successfully %s', 'learnpress' ),
+						$addon['name'] ?? ''
+					);
 					break;
 				case 'deactivate':
 					$this->addon_service->deactivate( $addon );
+					$message = sprintf(
+						/* translators: %s: addon name */
+						__( 'Deactivated successfully %s', 'learnpress' ),
+						$addon['name'] ?? ''
+					);
 					break;
 				case 'update-purchase':
 					// If empty, try key old activated
@@ -146,13 +172,18 @@ class AddonsAjax extends AbstractAjax {
 						$purchase_code
 					);
 					$purchase_info = $this->addon_service->get_addon_purchase_info( $addon['slug'], $purchase_code );
+					$message = sprintf(
+						/* translators: %s: addon name */
+						__( 'Updated purchase code successfully for %s', 'learnpress' ),
+						$addon['name'] ?? ''
+					);
 					break;
 				default:
 					break;
 			}
 
 			$response->status  = Response::STATUS_SUCCESS;
-			$response->message = sprintf(
+			$response->message = ! empty( $message ) ? $message : sprintf(
 				'"%s" %s %s',
 				$addon['name'] ?? '',
 				$action,

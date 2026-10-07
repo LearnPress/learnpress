@@ -68,7 +68,7 @@ class AdminAddonsPage {
 				$transient->no_update = [];
 			}
 
-			$addons  = AddonService::instance()->get_remote_data();
+			$addons  = AddonService::instance()->get_addons();
 			$plugins = get_plugins();
 
 			foreach ( $addons as $slug => $addon ) {
@@ -114,7 +114,7 @@ class AdminAddonsPage {
 	 */
 	public function wp_update_plugin_message(): void {
 		try {
-			$addons  = AddonService::instance()->get_remote_data();
+			$addons  = AddonService::instance()->get_addons();
 			$plugins = get_plugins();
 
 			foreach ( $addons as $addon ) {
