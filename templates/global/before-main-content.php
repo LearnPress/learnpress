@@ -10,6 +10,8 @@
  */
 
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 ?>
 
@@ -31,7 +33,7 @@ defined( 'ABSPATH' ) || exit();
 		}
 		?>
 
-		<?php learn_press_display_message( $message, 'error' ); ?>
+		<?php Template::print_message( $message, 'error' ); ?>
 
 	<?php } ?>
 
