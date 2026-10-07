@@ -19,13 +19,21 @@ class AdminAddons {
 
 	static selectors = {
 		elAddonsPage: '.lp-addons-page',
+		elToolbar: '.lp-addons-toolbar',
 		elLPAddons: '#lp-addons',
 		elAddonItem: '.lp-addon-item',
 		elBtnAction: '.btn-addon-action',
 		elNavTab: '.nav-tab',
 		elNavTabActive: '.nav-tab.nav-tab-active',
+		elFilter: '.lp-addons-filter',
+		elFilterToggle: '.lp-addons-filter__toggle',
+		elFilterMenu: '.lp-addons-filter__menu',
 		elCategory: '.lp-addons-category',
 		elCategoryActive: '.lp-addons-category.active',
+		elSearch: '.lp-addons-search',
+		elSearchBtn: '.lp-addons-search__btn',
+		elSearchBtnClear: '.lp-addons-search__btn-clear',
+		elSearchClose: '.lp-addons-search__close',
 		elSearchInput: '#lp-search-addons__input',
 		elItemPurchase: '.lp-addon-item__purchase',
 		elPurchaseInstall: '.purchase-install',
@@ -43,7 +51,55 @@ class AdminAddons {
 				return;
 			}
 
+			const selectors = AdminAddons.selectors;
+			const urlTab = this.urlParams.get( 'tab' );
+			if ( urlTab ) {
+				const elMatchingTab = this.elAddonsPage.querySelector(
+					`${ selectors.elNavTab }[data-tab="${ urlTab }"]`
+				);
+				if ( elMatchingTab ) {
+					this.elAddonsPage
+						.querySelectorAll( selectors.elNavTab )
+						.forEach( ( elTab ) => {
+							elTab.classList.remove( 'nav-tab-active' );
+							elTab.setAttribute( 'aria-pressed', 'false' );
+						} );
+					elMatchingTab.classList.add( 'nav-tab-active' );
+					elMatchingTab.setAttribute( 'aria-pressed', 'true' );
+				}
+			}
+
+			let elActiveTab = this.elAddonsPage.querySelector(
+				selectors.elNavTabActive
+			);
+			if ( ! elActiveTab ) {
+				elActiveTab =
+					this.elAddonsPage.querySelector(
+						`${ selectors.elNavTab }[data-tab="all"]`
+					) || this.elAddonsPage.querySelector( selectors.elNavTab );
+				if ( elActiveTab ) {
+					elActiveTab.classList.add( 'nav-tab-active' );
+					elActiveTab.setAttribute( 'aria-pressed', 'true' );
+				}
+			}
+
+			let elActiveCategory = this.elAddonsPage.querySelector(
+				selectors.elCategoryActive
+			);
+			if ( ! elActiveCategory ) {
+				elActiveCategory =
+					this.elAddonsPage.querySelector(
+						`${ selectors.elCategory }[data-category="all"]`
+					) || this.elAddonsPage.querySelector( selectors.elCategory );
+				if ( elActiveCategory ) {
+					elActiveCategory.classList.add( 'active' );
+					elActiveCategory.setAttribute( 'aria-pressed', 'true' );
+				}
+			}
+
 			this.filterAddons();
+			this.updateSearchClearBtnState();
+			this.updateFilterToggleState();
 			this.events();
 		} );
 	}
@@ -75,6 +131,26 @@ class AdminAddons {
 				class: this,
 				callBack: this.handlePurchaseCodeClick.name,
 			},
+			{
+				selector: AdminAddons.selectors.elFilterToggle,
+				class: this,
+				callBack: this.handleFilterToggleClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elSearchBtn,
+				class: this,
+				callBack: this.handleSearchBtnClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elSearchBtnClear,
+				class: this,
+				callBack: this.handleSearchClearClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elSearchClose,
+				class: this,
+				callBack: this.handleSearchCloseClick.name,
+			},
 		] );
 		lpUtils.eventHandlers( 'input', [
 			{
@@ -88,6 +164,33 @@ class AdminAddons {
 				callBack: this.handlePurchaseCodeInput.name,
 			},
 		] );
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: AdminAddons.selectors.elSearchInput,
+				class: this,
+				callBack: this.handleSearchKeydown.name,
+			},
+		] );
+
+		document.addEventListener( 'click', ( e ) => {
+			if ( ! this.elAddonsPage ) {
+				return;
+			}
+			const elToolbar = this.elAddonsPage.querySelector(
+				AdminAddons.selectors.elToolbar
+			);
+			if ( elToolbar && elToolbar.classList.contains( 'is-filter-open' ) ) {
+				if ( ! elToolbar.contains( e.target ) ) {
+					this.toggleFilterMenu( false );
+				}
+			}
+		} );
+
+		document.addEventListener( 'keydown', ( e ) => {
+			if ( 'Escape' === e.key ) {
+				this.toggleFilterMenu( false );
+			}
+		} );
 	}
 
 	/**
@@ -122,8 +225,14 @@ class AdminAddons {
 			id_url: 'addon-action',
 		};
 
+		const releaseHandling = () => {
+			lpUtils.lpSetLoadingEl( el, 0 );
+		};
+
 		window.lpAJAXG.fetchAJAX( params, {
 			success: ( response ) => {
+				releaseHandling();
+
 				const { status, message, data: resData } = response;
 
 				lpToastify.show( message, status );
@@ -147,10 +256,9 @@ class AdminAddons {
 				}
 
 				//this.filterAddons();
-				lpUtils.lpSetLoadingEl( el, 0 );
 			},
 			error: ( error ) => {
-				lpUtils.lpSetLoadingEl( el, 0 );
+				releaseHandling();
 				lpToastify.show( `error js: ${ error }`, 'error' );
 			},
 		} );
@@ -405,7 +513,21 @@ class AdminAddons {
 		const elSearch = this.elAddonsPage.querySelector(
 			selectors.elSearchInput
 		);
-		elSearch.value = '';
+		if ( elSearch ) {
+			elSearch.value = '';
+		}
+		const elSearchContainer = this.elAddonsPage.querySelector(
+			selectors.elSearch
+		);
+		if ( elSearchContainer ) {
+			elSearchContainer.classList.remove( 'is-open' );
+			const btn = elSearchContainer.querySelector(
+				selectors.elSearchBtn
+			);
+			if ( btn ) {
+				btn.setAttribute( 'aria-expanded', 'false' );
+			}
+		}
 		this.elAddonsPage
 			.querySelectorAll( selectors.elCategory )
 			.forEach( ( elCategory ) => {
@@ -423,7 +545,85 @@ class AdminAddons {
 			'',
 			`${ window.location.pathname }?${ this.urlParams.toString() }`
 		);
+		this.updateFilterToggleState();
 		this.filterAddons();
+	}
+
+	/**
+	 * Handle filter toggle button click.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleFilterToggleClick( args ) {
+		const { e } = args;
+		e.preventDefault();
+		e.stopPropagation();
+		this.toggleFilterMenu();
+	}
+
+	/**
+	 * Toggle or set filter menu dropdown open state.
+	 *
+	 * @param {boolean|undefined} open Optional boolean to force state.
+	 * @return void
+	 */
+	toggleFilterMenu( open ) {
+		const selectors = AdminAddons.selectors;
+		const elToolbar = this.elAddonsPage.querySelector( selectors.elToolbar );
+		const elFilter = this.elAddonsPage.querySelector( selectors.elFilter );
+		if ( ! elToolbar && ! elFilter ) {
+			return;
+		}
+		const toggleBtn = this.elAddonsPage.querySelector(
+			selectors.elFilterToggle
+		);
+		const shouldOpen =
+			undefined !== open
+				? open
+				: elToolbar
+				? ! elToolbar.classList.contains( 'is-filter-open' )
+				: ! elFilter.classList.contains( 'is-open' );
+
+		if ( elToolbar ) {
+			elToolbar.classList.toggle( 'is-filter-open', shouldOpen );
+		}
+		if ( elFilter ) {
+			elFilter.classList.toggle( 'is-open', shouldOpen );
+		}
+		if ( toggleBtn ) {
+			toggleBtn.setAttribute(
+				'aria-expanded',
+				shouldOpen ? 'true' : 'false'
+			);
+		}
+	}
+
+	/**
+	 * Update filter toggle button has-filter state.
+	 *
+	 * @return void
+	 */
+	updateFilterToggleState() {
+		const selectors = AdminAddons.selectors;
+		const toggleBtn = this.elAddonsPage.querySelector(
+			selectors.elFilterToggle
+		);
+		if ( ! toggleBtn ) {
+			return;
+		}
+		const elActiveTab = this.elAddonsPage.querySelector(
+			selectors.elNavTabActive
+		);
+		const elActiveCategory = this.elAddonsPage.querySelector(
+			selectors.elCategoryActive
+		);
+		const tabName = elActiveTab ? elActiveTab.dataset.tab : 'all';
+		const category = elActiveCategory
+			? elActiveCategory.dataset.category
+			: 'all';
+		const hasFilter = 'all' !== tabName || 'all' !== category;
+		toggleBtn.classList.toggle( 'has-filter', hasFilter );
 	}
 
 	/**
@@ -449,6 +649,7 @@ class AdminAddons {
 					isActive ? 'true' : 'false'
 				);
 			} );
+		this.updateFilterToggleState();
 		this.filterAddons();
 	}
 
@@ -458,7 +659,131 @@ class AdminAddons {
 	 * @return void
 	 */
 	handleSearchInput() {
+		this.updateSearchClearBtnState();
 		this.filterAddons();
+	}
+
+	/**
+	 * Handle search button click to open search overlay.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleSearchBtnClick( args ) {
+		const { e } = args;
+		e.preventDefault();
+		this.toggleFilterMenu( false );
+		const selectors = AdminAddons.selectors;
+		const elSearch = this.elAddonsPage.querySelector(
+			selectors.elSearch
+		);
+		const elSearchInput = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		if ( elSearch ) {
+			elSearch.classList.add( 'is-open' );
+			const btn = elSearch.querySelector( selectors.elSearchBtn );
+			if ( btn ) {
+				btn.setAttribute( 'aria-expanded', 'true' );
+			}
+		}
+		if ( elSearchInput ) {
+			this.updateSearchClearBtnState();
+			elSearchInput.focus();
+		}
+	}
+
+	/**
+	 * Handle search clear button click.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleSearchClearClick( args ) {
+		const { e } = args;
+		e.preventDefault();
+		const selectors = AdminAddons.selectors;
+		const elSearchInput = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		if ( elSearchInput ) {
+			elSearchInput.value = '';
+			this.updateSearchClearBtnState();
+			this.filterAddons();
+			elSearchInput.focus();
+		}
+	}
+
+	/**
+	 * Update disabled state of clear search button.
+	 *
+	 * @return void
+	 */
+	updateSearchClearBtnState() {
+		const selectors = AdminAddons.selectors;
+		const elSearchInput = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		const elClearBtn = this.elAddonsPage.querySelector(
+			selectors.elSearchBtnClear
+		);
+		if ( elClearBtn && elSearchInput ) {
+			elClearBtn.disabled = ! elSearchInput.value.trim();
+		}
+	}
+
+	/**
+	 * Handle search close button click.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleSearchCloseClick( args ) {
+		const { e } = args;
+		e.preventDefault();
+		this.closeSearch();
+	}
+
+	/**
+	 * Handle search input keydown.
+	 *
+	 * @param {Object} args Keydown event arguments.
+	 * @return void
+	 */
+	handleSearchKeydown( args ) {
+		const { e } = args;
+		if ( 'Escape' === e.key ) {
+			e.preventDefault();
+			this.closeSearch();
+		}
+	}
+
+	/**
+	 * Close search overlay and reset query if needed.
+	 *
+	 * @return void
+	 */
+	closeSearch() {
+		const selectors = AdminAddons.selectors;
+		const elSearch = this.elAddonsPage.querySelector(
+			selectors.elSearch
+		);
+		const elSearchInput = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		if ( elSearch ) {
+			elSearch.classList.remove( 'is-open' );
+			const btn = elSearch.querySelector( selectors.elSearchBtn );
+			if ( btn ) {
+				btn.setAttribute( 'aria-expanded', 'false' );
+				btn.focus();
+			}
+		}
+		if ( elSearchInput && elSearchInput.value ) {
+			elSearchInput.value = '';
+			this.filterAddons();
+		}
+		this.updateSearchClearBtnState();
 	}
 
 	/**

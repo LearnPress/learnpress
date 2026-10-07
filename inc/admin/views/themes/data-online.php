@@ -13,12 +13,17 @@ defined( 'ABSPATH' ) || exit;
 ?>
 
 <div class="learn-press-themes">
-	<div class="lp-themes-toolbar">
+	<div class="lp-themes-toolbar lp-be-toolbar">
 		<div class="lp-themes-filter">
+			<button type="button" class="lp-themes-filter__toggle" aria-label="<?php esc_attr_e( 'Filter themes', 'learnpress' ); ?>" aria-expanded="false" aria-haspopup="true">
+				<svg class="lp-themes-filter__toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+				<span><?php esc_html_e( 'Filter', 'learnpress' ); ?></span>
+			</button>
+			<div class="lp-themes-filter__menu lp-be-nav-tabs">
 
 			<button
 				type="button"
-				class="lp-themes-filter__item active"
+				class="lp-themes-filter__item lp-be-nav-tab active"
 				data-category="all"
 				aria-pressed="true"
 			>
@@ -27,7 +32,7 @@ defined( 'ABSPATH' ) || exit;
 
 			<button
 				type="button"
-				class="lp-themes-filter__item"
+				class="lp-themes-filter__item lp-be-nav-tab"
 				data-category="paid"
 				aria-pressed="false"
 			>
@@ -36,19 +41,29 @@ defined( 'ABSPATH' ) || exit;
 
 			<button
 				type="button"
-				class="lp-themes-filter__item"
+				class="lp-themes-filter__item lp-be-nav-tab"
 				data-category="free"
 				aria-pressed="false"
 			>
 				<?php esc_html_e( 'Free Themes', 'learnpress' ); ?> <span class="lp-themes-filter__count"></span>
 			</button>
 
+			</div>
 		</div>
-		<label class="lp-themes-search">
-			<span class="screen-reader-text"><?php esc_html_e( 'Search themes', 'learnpress' ); ?></span>
-			<span class="lp-themes-search__icon lp-icon-search" aria-hidden="true"></span>
-			<input type="search" class="lp-themes-search__input" placeholder="<?php esc_attr_e( 'Search themes…', 'learnpress' ); ?>" />
-		</label>
+		<div class="lp-themes-search lp-be-search">
+			<button type="button" class="lp-themes-search__btn lp-be-search__btn" aria-label="<?php esc_attr_e( 'Search themes', 'learnpress' ); ?>" aria-expanded="false" aria-controls="lp-themes-search__field">
+				<span class="lp-icon-search" aria-hidden="true"></span>
+			</button>
+			<div class="lp-themes-search__field lp-be-search__field" id="lp-themes-search__field">
+				<label class="lp-themes-search__input-wrap lp-be-search__input-wrap">
+					<span class="screen-reader-text"><?php esc_html_e( 'Search theme by name', 'learnpress' ); ?></span>
+					<span class="lp-themes-search__icon lp-be-search__icon lp-icon-search" aria-hidden="true"></span>
+					<input type="search" class="lp-themes-search__input lp-be-search__input" placeholder="<?php esc_attr_e( 'Search theme by name', 'learnpress' ); ?>" autocomplete="off" />
+				</label>
+				<button type="button" class="lp-themes-search__btn-clear lp-be-search__btn-clear" disabled><?php esc_html_e( 'Clear', 'learnpress' ); ?></button>
+				<button type="button" class="lp-themes-search__close lp-be-search__close" aria-label="<?php esc_attr_e( 'Close search', 'learnpress' ); ?>"><span aria-hidden="true">&times;</span></button>
+			</div>
+		</div>
 	</div>
 
 	<?php
@@ -165,7 +180,7 @@ defined( 'ABSPATH' ) || exit;
 						<div class="lp-theme-card__actions">
 
 							<a
-								class="lp-theme-card__buy"
+								class="lp-theme-card__buy lp-be-btn lp-be-btn--primary"
 								href="<?php echo esc_url( $theme['buy_url'] ?? '#' ); ?>"
 								target="_blank"
 								rel="noopener noreferrer"
@@ -174,7 +189,7 @@ defined( 'ABSPATH' ) || exit;
 							</a>
 
 							<a
-								class="lp-theme-card__demo"
+								class="lp-theme-card__demo lp-be-btn lp-be-btn--outline"
 								href="<?php echo esc_url( $theme['demo_url'] ?? '#' ); ?>"
 								target="_blank"
 								rel="noopener noreferrer"

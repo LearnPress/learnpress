@@ -330,6 +330,7 @@ class AdminTemplate {
 				'<h2 class="nav-tab-wrapper">%s</h2>',
 				$html_tabs
 			) : '',
+			'header-end'   => '<hr class="wp-header-end">',
 			'wrap-content' => '<div class="lp-admin-tabs">',
 			'content'      => $content,
 			'wrap-content-end' => '</div>',
