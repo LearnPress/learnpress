@@ -1,11 +1,12 @@
 #popup-course {
 	--lp-width-addon-content-bar: 400px;
+	--lp-popup-header-height: #{$popup_header_height};
 }
 
 .lp-addon-content-bar {
 	position: fixed;
 	z-index: 100;
-	top: 103px;
+	top: var(--lp-popup-header-height);
 	right: 0;
 	bottom: 0;
 	width: var(--lp-width-addon-content-bar);
@@ -91,43 +92,25 @@
 	}
 }
 
-body:has(.lp-addon-content-bar.open) {
-	#popup-content {
-		margin-right: var(--lp-width-addon-content-bar);
-		transition: margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-	}
+body.admin-bar .lp-addon-content-bar {
+	top: calc(var(--lp-popup-header-height) + 32px);
+}
 
-	#popup-footer,
-	.content-item-wrap .quiz-buttons.align-center .button-left.fixed {
-		right: var(--lp-width-addon-content-bar);
+@media screen and (max-width: 782px) {
+	body.admin-bar .lp-addon-content-bar {
+		top: calc(var(--lp-popup-header-height) + 46px);
 	}
 }
 
-#popup-content {
-	transition: margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#popup-footer,
-.content-item-wrap .quiz-buttons.align-center .button-left.fixed {
-	transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-		left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+@media screen and (max-width: 767px) {
+	.lp-addon-content-bar,
+	body.admin-bar .lp-addon-content-bar {
+		top: 46px;
+	}
 }
 
 @media (max-width: 1024px) {
 	#popup-course {
 		--lp-width-addon-content-bar: min(360px, calc(100vw - 66px));
-	}
-
-	body:has(.lp-addon-content-bar.open) #popup-content {
-		margin-right: 0;
-	}
-}
-
-@media (max-width: 600px) {
-	body:has(.lp-addon-content-bar.open) {
-		#popup-footer,
-		.content-item-wrap .quiz-buttons.align-center .button-left.fixed {
-			right: 0;
-		}
 	}
 }
