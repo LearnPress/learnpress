@@ -77,14 +77,11 @@ class LearningContentBar {
 				contentTarget.appendChild( content.cloneNode( true ) );
 			}
 
-			const contentRoot = contentTarget.firstElementChild;
-
 			document.dispatchEvent(
 				new CustomEvent( LearningContentBar.eventRendered, {
 					detail: {
 						item: elItem.dataset.learningBarItem || '',
 						contentBar,
-						contentRoot,
 					},
 				} )
 			);

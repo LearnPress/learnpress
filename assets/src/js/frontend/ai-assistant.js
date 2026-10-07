@@ -10,7 +10,7 @@
  * @since   4.3.5
  * @version 1.0.0
  */
-import * as lpUtils from '../utils.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import SweetAlert from 'sweetalert2';
 
 export class AIAssistantWidget {
@@ -49,7 +49,45 @@ export class AIAssistantWidget {
 		this.activateRoot( root );
 	}
 
-	handleContentBarRendered( e ) {
+	events() {
+		if ( AIAssistantWidget._loadedEvents ) {
+			return;
+		}
+		AIAssistantWidget._loadedEvents = this;
+
+		/*document.addEventListener(
+			AIAssistantWidget.eventContentBarRendered,
+			this.handleContentBarRendered.bind( this )
+		);*/
+
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: AIAssistantWidget.selectors.clearBtn,
+				callBack: this.handleClearClick.bind( this ),
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.sendBtn }`,
+				callBack: this.handleSendClick.bind( this ),
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quickBtn }`,
+				callBack: this.handleQuickActionClick.bind( this ),
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quizOptionBtn }`,
+				callBack: this.handleQuizOptionClick.bind( this ),
+			},
+		] );
+
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.inputEl }`,
+				callBack: this.handleInputKeydown.bind( this ),
+			},
+		] );
+	}
+
+	/*handleContentBarRendered( e ) {
 		if ( e.detail?.item !== 'ai-assistant' ) {
 			return;
 		}
@@ -58,7 +96,7 @@ export class AIAssistantWidget {
 			AIAssistantWidget.selectors.root,
 			( root ) => this.activateRoot( root )
 		);
-	}
+	}*/
 
 	readConfigFromRoot( root ) {
 		const raw = root?.dataset?.lpAiConfig;
@@ -76,122 +114,15 @@ export class AIAssistantWidget {
 	}
 
 	activateRoot( root ) {
-		if ( ! root?.matches( AIAssistantWidget.selectors.root ) ) {
-			return false;
-		}
-
 		this.readConfigFromRoot( root );
-
-		if ( ! this.validateConfig() ) {
-			return false;
-		}
-
-		if ( root === this.root && this.elements.msgList?.isConnected ) {
-			return true;
-		}
-
 		this.root = root;
 		this.cacheElements();
-		if ( ! this.validateDOM() ) {
-			return false;
-		}
 
 		this.storageKey = `lp_ai_chat_${ this.config.itemType }_${ this.config.itemId }`;
 		this.applyInitialState();
 		this.loadHistory();
 		this.renderHistoryToDOM();
 		this.bindQuizCompletedHook();
-
-		return true;
-	}
-
-	ensureActiveRoot() {
-		return this.activateRoot(
-			document.querySelector( AIAssistantWidget.selectors.root )
-		);
-	}
-
-	validateConfig() {
-		if (
-			! this.config ||
-			typeof this.config !== 'object'
-		) {
-			return false;
-		}
-
-		if ( ! this.config.enabled ) {
-			return false;
-		}
-
-		const requiredString = [ 'nonce', 'ajaxUrl' ];
-		for ( const key of requiredString ) {
-			if (
-				typeof this.config[ key ] !== 'string' ||
-				! this.config[ key ]
-			) {
-				return false;
-			}
-		}
-
-		const itemId = Number.isInteger( this.config.itemId )
-			? this.config.itemId
-			: this.config.lessonId;
-		if ( ! Number.isInteger( itemId ) || itemId <= 0 ) {
-			return false;
-		}
-
-		if (
-			! Number.isInteger( this.config.courseId ) ||
-			this.config.courseId <= 0
-		) {
-			return false;
-		}
-
-		/**
-		 * itemType is required and must come from the server-localized config. It is
-		 * never guessed from lessonId or the numeric ID: a course item is
-		 * identified by (courseId, itemType, itemId), and inferring one leg of that
-		 * tuple on the client would let a lesson request address a quiz record.
-		 */
-		if ( ! AIAssistantWidget.itemTypes.includes( this.config.itemType ) ) {
-			return false;
-		}
-
-		this.config.itemId = itemId;
-		this.config.lessonId = itemId; // Backward compatibility for existing AJAX contract.
-		this.config.quizCompleted = !! this.config.quizCompleted;
-		this.config.enabledActions = {
-			summarize: true,
-			explain: true,
-			quick_quiz: true,
-			smart_review: true,
-			...( this.config.enabledActions || {} ),
-		};
-
-		this.config.i18n = {
-			you: this.config?.i18n?.you || 'You',
-			assistant: this.config?.i18n?.assistant || 'AI Assistant',
-			thinking: this.config?.i18n?.thinking || 'Thinking...',
-			sendError:
-				this.config?.i18n?.sendError ||
-				'An error occurred. Please try again.',
-			clearConfirm:
-				this.config?.i18n?.clearConfirm || 'Clear chat history?',
-			explainPrompt:
-				this.config?.i18n?.explainPrompt ||
-				'Explain a concept from this lesson.',
-			quizPrompt:
-				this.config?.i18n?.quizPrompt ||
-				'Create a quick quiz from this lesson.',
-			summarizePrompt:
-				this.config?.i18n?.summarizePrompt ||
-				'Summarize this lesson with key points.',
-			smartReviewPrompt:
-				this.config?.i18n?.smartReviewPrompt ||
-				'Give me a smart review of my quiz results.',
-			quizCorrectTitle: this.config?.i18n?.quizCorrectTitle || 'Correct!',
-			quizWrongTitle: this.config?.i18n?.quizWrongTitle || 'Not correct!',
-		};
 
 		return true;
 	}
@@ -221,11 +152,6 @@ export class AIAssistantWidget {
 		this.elements.smartReviewBtn = this.root.querySelector(
 			AIAssistantWidget.selectors.smartReviewBtn
 		);
-	}
-
-	validateDOM() {
-		// inputEl and sendBtn are optional — absent when free chat is disabled.
-		return !! this.elements.msgList;
 	}
 
 	applyInitialState() {
@@ -270,54 +196,8 @@ export class AIAssistantWidget {
 		this.quizHookBound = true;
 	}
 
-	events() {
-		if ( AIAssistantWidget._loadedEvents ) {
-			return;
-		}
-		AIAssistantWidget._loadedEvents = this;
-
-		document.addEventListener(
-			AIAssistantWidget.eventContentBarRendered,
-			this.handleContentBarRendered.bind( this )
-		);
-
-		lpUtils.eventHandlers( 'click', [
-			{
-				selector: AIAssistantWidget.selectors.clearBtn,
-				class: this,
-				callBack: this.handleClearClick.name,
-			},
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.sendBtn }`,
-				class: this,
-				callBack: this.handleSendClick.name,
-			},
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quickBtn }`,
-				callBack: this.handleQuickActionClick.bind( this ),
-			},
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quizOptionBtn }`,
-				class: this,
-				callBack: this.handleQuizOptionClick.name,
-			},
-		] );
-
-		lpUtils.eventHandlers( 'keydown', [
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.inputEl }`,
-				class: this,
-				callBack: this.handleInputKeydown.name,
-			},
-		] );
-	}
-
 	handleClearClick( args ) {
 		const { e, target } = args;
-
-		if ( ! this.ensureActiveRoot() ) {
-			return;
-		}
 
 		SweetAlert.fire( {
 			title: this.config.i18n.clearConfirm,
@@ -332,19 +212,11 @@ export class AIAssistantWidget {
 
 	handleSendClick( args ) {
 		args.e.preventDefault();
-		if ( ! this.ensureActiveRoot() ) {
-			return;
-		}
-
 		this.sendMessage( this.elements.inputEl?.value ?? '' );
 	}
 
 	handleQuickActionClick( args ) {
 		const { e, target } = args;
-
-		if ( ! this.ensureActiveRoot() ) {
-			return;
-		}
 
 		if ( this.activeQuizState?.is_active ) {
 			return;
@@ -373,10 +245,6 @@ export class AIAssistantWidget {
 
 	handleQuizOptionClick( args ) {
 		args.e.preventDefault();
-		if ( ! this.ensureActiveRoot() ) {
-			return;
-		}
-
 		if ( this.isRequesting || ! this.activeQuizState?.is_active ) {
 			return;
 		}
@@ -401,10 +269,6 @@ export class AIAssistantWidget {
 	}
 
 	handleInputKeydown( args ) {
-		if ( ! this.ensureActiveRoot() ) {
-			return;
-		}
-
 		if ( this.activeQuizState?.is_active ) {
 			return;
 		}
@@ -413,15 +277,6 @@ export class AIAssistantWidget {
 			args.e.preventDefault();
 			this.sendMessage( this.elements.inputEl?.value ?? '' );
 		}
-	}
-
-	getAjaxHandle() {
-		const ajaxHandle = window.lpAJAXG;
-		if ( ! ajaxHandle || typeof ajaxHandle.fetchAJAX !== 'function' ) {
-			return null;
-		}
-
-		return ajaxHandle;
 	}
 
 	setLoadingState( isLoading ) {
@@ -823,8 +678,7 @@ export class AIAssistantWidget {
 			return;
 		}
 
-		const ajaxHandle = this.getAjaxHandle();
-		if ( ! ajaxHandle ) {
+		if ( ! window.lpAJAXG || typeof window.lpAJAXG.fetchAJAX !== 'function' ) {
 			this.appendMessage( 'assistant', this.config.i18n.sendError );
 			return;
 		}
@@ -906,9 +760,20 @@ export class AIAssistantWidget {
 			},
 		};
 
-		ajaxHandle.fetchAJAX( dataSend, callBack );
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 }
 
 const aiAssistantWidget = new AIAssistantWidget();
-aiAssistantWidget.init();
+/**
+ * Event check element #lp-ai-assistant created
+ */
+lpUtils.listenElementCreated( ( node ) => {
+	if ( ! ( node instanceof Element ) ) {
+		return;
+	}
+
+	if ( node.id === 'lp-ai-assistant' ) {
+		aiAssistantWidget.init( node );
+	}
+} );
