@@ -2,7 +2,7 @@
 /**
  * Template hook: AI Assistant floating chat panel on curriculum pages.
  *
- * Two rendering contexts:
+ * Two item types:
  * - Lesson pages: Show quick actions (Summarize, Explain, Mini Quiz) + optional free chat.
  * - Quiz pages:  Show ONLY after user completed the quiz → Smart Review button only.
  *
@@ -33,20 +33,6 @@ class CourseAIAssistantTemplate {
 	 */
 	protected $render_state = false;
 
-	/**
-	 * Whether the render state has already been resolved.
-	 *
-	 * @var bool
-	 */
-	protected $render_state_resolved = false;
-
-	/**
-	 * Whether frontend runtime data has been localized.
-	 *
-	 * @var bool
-	 */
-	protected $script_data_localized = false;
-
 	public static function instance() {
 		static $instance = null;
 
@@ -57,23 +43,7 @@ class CourseAIAssistantTemplate {
 		return $instance;
 	}
 
-	protected function __construct() {
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
-	}
-
-	/**
-	 * Enqueue frontend assets early so launcher markup does not rely on inline styles.
-	 */
-	public function enqueue_assets() {
-		$render_state = $this->get_render_state();
-		if ( ! $render_state ) {
-			return;
-		}
-
-		wp_enqueue_script( 'lp-ai-assistant' );
-		wp_enqueue_style( 'lp-ai-assistant' );
-		$this->localize_script_data( $render_state );
-	}
+	protected function __construct() {}
 
 	/**
 	 * Gate checks — all must pass before rendering.
@@ -84,9 +54,11 @@ class CourseAIAssistantTemplate {
 	 * @return bool
 	 */
 	protected function should_render(): bool {
-
 		$current_page = LP_Page_Controller::page_current();
-		if ( ! in_array( $current_page, array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_QUIZ ), true ) ) {
+		if ( ! in_array(
+			$current_page,
+			array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_QUIZ )
+		) ) {
 			return false;
 		}
 
@@ -102,36 +74,14 @@ class CourseAIAssistantTemplate {
 	}
 
 	/**
-	 * Detect the rendering context.
-	 *
-	 * @return string 'quiz' | 'lesson'
-	 */
-	protected function detect_context(): string {
-		return LP_Global::course_item_quiz() ? 'quiz' : 'lesson';
-	}
-
-	/**
 	 * Resolve and cache the render state for the current request.
 	 *
 	 * @return array|false
 	 */
 	protected function get_render_state() {
-		if ( $this->render_state_resolved ) {
-			return $this->render_state;
-		}
-
-		$this->render_state_resolved = true;
-
-		if ( ! $this->should_render() ) {
-			$this->render_state = false;
-			return $this->render_state;
-		}
-
-		$context   = $this->detect_context();
-		$item      = LP_Global::course_item();
-		$item_id   = $item ? absint( $item->get_id() ) : 0;
-		$item_type = $item ? (string) $item->get_item_type() : '';
+		$item_type = ( $item = LP_Global::course_item() ) ? (string) $item->get_item_type() : '';
 		$course_id = $item ? absint( $item->get_course_id() ) : 0;
+		$item_id   = $item ? absint( $item->get_id() ) : 0;
 		$user_id   = get_current_user_id();
 
 		/**
@@ -153,7 +103,7 @@ class CourseAIAssistantTemplate {
 		$enabled_actions   = AIAssistantController::get_enabled_actions();
 		$free_chat_enabled = LP_Settings::get_option( 'ai_assistant_free_chat', 'no' ) === 'yes';
 
-		if ( $context === 'quiz' ) {
+		if ( $item_type === 'lp_quiz' ) {
 			if ( ! ( $enabled_actions['smart_review'] ?? true ) ) {
 				$this->render_state = false;
 				return $this->render_state;
@@ -184,7 +134,6 @@ class CourseAIAssistantTemplate {
 		}
 
 		$this->render_state = array(
-			'context'           => $context,
 			'item_id'           => $item_id,
 			'item_type'         => $item_type,
 			'course_id'         => $course_id,
@@ -212,8 +161,7 @@ class CourseAIAssistantTemplate {
 			// and the server re-validates it; it is transport, not proof.
 			'itemType'        => $render_state['item_type'],
 			'courseId'        => $render_state['course_id'],
-			'context'         => $render_state['context'],
-			'quizCompleted'   => $render_state['context'] === 'quiz',
+			'quizCompleted'   => $render_state['item_type'] === 'lp_quiz',
 			'quizResult'      => $render_state['quiz_result'],
 			'enabled'         => true,
 			'freeChatEnabled' => $render_state['free_chat_enabled'],
@@ -232,22 +180,6 @@ class CourseAIAssistantTemplate {
 				'quizWrongTitle'    => __( 'Incorrect', 'learnpress' ),
 			),
 		);
-	}
-
-	/**
-	 * Enqueue assets and localize runtime data for the frontend widget.
-	 *
-	 * @param array $render_state Computed render state.
-	 */
-	protected function localize_script_data( array $render_state ) {
-		if ( $this->script_data_localized ) {
-			return;
-		}
-
-		$js_data = wp_json_encode( $this->get_widget_config( $render_state ) );
-
-		wp_add_inline_script( 'lp-ai-assistant', 'window.lpAIAssistant = ' . $js_data . ';', 'before' );
-		$this->script_data_localized = true;
 	}
 
 	/**
@@ -435,7 +367,12 @@ class CourseAIAssistantTemplate {
 			return '';
 		}
 
-		$this->localize_script_data( $render_state );
+		if ( ! $this->should_render() ) {
+			return '';
+		}
+
+		wp_enqueue_script( 'lp-ai-assistant' );
+		wp_enqueue_style( 'lp-ai-assistant' );
 
 		$section_head = [
 			'wrap'    => '<div class="lp-learning-bar-item-head">',

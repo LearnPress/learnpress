@@ -72,14 +72,7 @@ export class AIAssistantWidget {
 			} catch ( _e ) {}
 		}
 
-		if (
-			typeof window.lpAIAssistant === 'object' &&
-			window.lpAIAssistant
-		) {
-			this.config = window.lpAIAssistant;
-		} else {
-			this.config = null;
-		}
+		this.config = null;
 	}
 
 	activateRoot( root ) {
@@ -103,7 +96,7 @@ export class AIAssistantWidget {
 			return false;
 		}
 
-		this.storageKey = `lp_ai_chat_${ this.config.context }_${ this.config.itemId }`;
+		this.storageKey = `lp_ai_chat_${ this.config.itemType }_${ this.config.itemId }`;
 		this.applyInitialState();
 		this.loadHistory();
 		this.renderHistoryToDOM();
@@ -156,7 +149,7 @@ export class AIAssistantWidget {
 
 		/**
 		 * itemType is required and must come from the server-localized config. It is
-		 * never guessed from context, lessonId or the numeric ID: a course item is
+		 * never guessed from lessonId or the numeric ID: a course item is
 		 * identified by (courseId, itemType, itemId), and inferring one leg of that
 		 * tuple on the client would let a lesson request address a quiz record.
 		 */
@@ -166,8 +159,6 @@ export class AIAssistantWidget {
 
 		this.config.itemId = itemId;
 		this.config.lessonId = itemId; // Backward compatibility for existing AJAX contract.
-		this.config.context =
-			this.config.context === 'quiz' ? 'quiz' : 'lesson';
 		this.config.quizCompleted = !! this.config.quizCompleted;
 		this.config.enabledActions = {
 			summarize: true,
@@ -240,7 +231,7 @@ export class AIAssistantWidget {
 	applyInitialState() {
 		if ( this.elements.smartReviewBtn ) {
 			const showSmartReview =
-				this.config.context === 'quiz'
+				this.config.itemType === 'lp_quiz'
 					? this.config.quizCompleted
 					: !! this.config.enabledActions?.smart_review;
 			this.elements.smartReviewBtn.hidden = ! showSmartReview;
@@ -250,7 +241,7 @@ export class AIAssistantWidget {
 	}
 
 	bindQuizCompletedHook() {
-		if ( this.config.context === 'quiz' ) {
+		if ( this.config.itemType === 'lp_quiz' ) {
 			return;
 		}
 
@@ -921,4 +912,3 @@ export class AIAssistantWidget {
 
 const aiAssistantWidget = new AIAssistantWidget();
 aiAssistantWidget.init();
-window.lpAIAssistantWidget = aiAssistantWidget;
