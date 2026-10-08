@@ -18,6 +18,7 @@ use LearnPress\TemplateHooks\CourseBuilder\BuilderPopupTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
+use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LP_WP_Filesystem;
 use Throwable;
 use WP_Query;
@@ -149,15 +150,7 @@ class BuilderListLessonsTemplate {
 			}
 			wp_reset_postdata();
 
-			if ( ! empty( $lessons ) ) {
-				$html_lessons = $this->list_lessons( $lessons );
-			} else {
-				$html_lessons = Template::print_message(
-					sprintf( __( 'No lessons found', 'learnpress' ) ),
-					'info',
-					false
-				);
-			}
+			$html_lessons = $this->list_lessons( $lessons );
 
 			$total_pages     = \LP_Database::get_total_pages( $query_args['posts_per_page'], $total_lessons );
 			$link_tab        = CourseBuilder::get_tab_link( 'lessons' );
@@ -206,23 +199,47 @@ class BuilderListLessonsTemplate {
 				$html_list_lesson .= self::render_lesson( $lesson_model );
 			}
 
-			$header  = '<div class="cb-list-table-header">';
-			$header .= sprintf( '<span>%s</span>', __( 'Lesson Title', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Courses', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Status', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Preview', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Actions', 'learnpress' ) );
-			$header .= '</div>';
+			if ( empty( $html_list_lesson ) ) {
+				$html_list_lesson = sprintf(
+					'<tr class="cb-list-empty-row"><td colspan="6">%s</td></tr>',
+					Template::print_message( __( 'No lessons found', 'learnpress' ), 'info', false )
+				);
+			}
 
-			$sections = [
-				'header'      => $header,
-				'wrapper'     => '<ul class="cb-list-lesson">',
-				'list_lesson' => $html_list_lesson,
-				'wrapper_end' => '</ul>',
+			$table_args = [
+				'class_table' => 'cb-list-table cb-list-lesson',
+				'header'      => [
+					'title'   => [
+						'class' => 'cb-col-title',
+						'title' => __( 'Lesson Title', 'learnpress' ),
+					],
+					'courses' => [
+						'class' => 'cb-col-assigned',
+						'title' => __( 'Courses', 'learnpress' ),
+					],
+					'date'    => [
+						'class' => 'cb-col-date',
+						'title' => __( 'Create Date', 'learnpress' ),
+					],
+					'status'  => [
+						'class' => 'cb-col-status',
+						'title' => __( 'Status', 'learnpress' ),
+					],
+					'preview' => [
+						'class' => 'cb-col-preview',
+						'title' => __( 'Preview', 'learnpress' ),
+					],
+					'actions' => [
+						'class' => 'cb-col-actions',
+						'title' => __( 'Actions', 'learnpress' ),
+					],
+				],
+				'body'        => [
+					'rows_html' => $html_list_lesson,
+				],
 			];
 
-			$content = Template::combine_components( $sections );
+			$content = TableListTemplate::instance()->html_table( $table_args );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -350,15 +367,29 @@ class BuilderListLessonsTemplate {
 				$settings
 			);
 
+			$cell_classes = [
+				'courses'       => 'assigned',
+				'lesson_status' => 'status',
+			];
+			$html_cells   = [];
+			foreach ( $html_content as $key => $html ) {
+				$cell_class         = $cell_classes[ $key ] ?? $key;
+				$html_cells[ $key ] = sprintf(
+					'<td class="cb-col-%s">%s</td>',
+					esc_attr( sanitize_html_class( $cell_class ) ),
+					$html
+				);
+			}
+
 			$section = apply_filters(
 				'learn-press/course-builder/list-lessons/item-li',
 				[
-					'wrapper_li'      => '<li class="lesson">',
-					'wrapper_div'     => sprintf( '<div class="lesson-item" data-lesson-id="%s" data-status="%s">', $lesson['id'], $status ),
-					'lesson_info'     => Template::combine_components( $html_content ),
-					'lesson_action'   => Template::combine_components( $html_action ),
-					'wrapper_div_end' => '</div>',
-					'wrapper_li_end'  => '</li>',
+					'wrapper_li'      => sprintf( '<tr class="lesson lesson-item" data-lesson-id="%s" data-status="%s">', $lesson['id'], $status ),
+					'wrapper_div'     => '',
+					'lesson_info'     => Template::combine_components( $html_cells ),
+					'lesson_action'   => sprintf( '<td class="cb-col-actions">%s</td>', Template::combine_components( $html_action ) ),
+					'wrapper_div_end' => '',
+					'wrapper_li_end'  => '</tr>',
 				],
 				$lesson,
 				$settings

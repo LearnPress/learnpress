@@ -443,11 +443,12 @@ export class BuilderTabQuiz {
 		if ( ! elQuiz || ! html ) {
 			return;
 		}
-		const tmp = document.createElement( 'div' );
-		tmp.innerHTML = html;
-		const newEl = tmp.firstElementChild;
-		if ( newEl ) {
-			elQuiz.replaceWith( newEl );
+
+		const nextQuiz = elQuiz.nextElementSibling;
+		elQuiz.insertAdjacentHTML( 'afterend', html.trim() );
+		const newQuiz = elQuiz.nextElementSibling;
+		if ( newQuiz && newQuiz !== nextQuiz ) {
+			elQuiz.remove();
 		}
 	}
 }
