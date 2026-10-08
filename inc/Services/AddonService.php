@@ -48,6 +48,7 @@ class AddonService {
 	 * @var string Link active site.
 	 */
 	private $link_active_site = 'https://updates.thimpress.com/thim-addon-market/active-site';
+	public $link_extend_site  = 'https://thimpress.com/extend-license/?purchase_code={purchase_code}';
 	/**
 	 * @var string Link download plugin from org.
 	 */
@@ -179,7 +180,7 @@ class AddonService {
 		$key_cache    = 'addons_purchased_info';
 		$addons_cache = $lp_cache->get_cache( $key_cache );
 		if ( false !== $addons_cache ) {
-			$data =  json_decode( wp_json_encode( $addons_cache ) );
+			$data = json_decode( wp_json_encode( $addons_cache ) );
 		} else {
 			$args = [
 				'method'     => 'POST',

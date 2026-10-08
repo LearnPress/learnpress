@@ -322,6 +322,8 @@
 		}
 
 		.lp-addon-license {
+			display: grid;
+			gap: 10px;
 			margin: 0 0 $lp-spacing-md;
 			padding: $lp-spacing-md;
 			border: 1px solid $lp-success;
@@ -380,7 +382,7 @@
 			width: auto;
 			height: auto;
 			min-height: 0;
-			margin-top: $lp-spacing-xs;
+			//margin-top: $lp-spacing-xs;
 			padding: 0;
 			border: 0;
 			border-radius: 0;
@@ -395,6 +397,7 @@
 			&:focus {
 				color: $lp-primary;
 				background: transparent;
+				cursor: pointer;
 			}
 		}
 
@@ -427,7 +430,7 @@
 		.new-update,
 		.need-extend {
 			display: block;
-			margin-top: $lp-spacing-sm;
+			//margin-top: $lp-spacing-sm;
 			font-size: $lp-font-xs;
 			line-height: $lp-line-height-160;
 		}
@@ -598,6 +601,7 @@
 		&:focus {
 			color: $lp-primary;
 			background: $lp-bg-hover;
+			cursor: pointer;
 		}
 	}
 

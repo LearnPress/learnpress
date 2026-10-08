@@ -127,11 +127,6 @@ class AdminAddons {
 				callBack: this.handleCategoryClick.name,
 			},
 			{
-				selector: AdminAddons.selectors.elPurchaseCode,
-				class: this,
-				callBack: this.handlePurchaseCodeClick.name,
-			},
-			{
 				selector: AdminAddons.selectors.elFilterToggle,
 				class: this,
 				callBack: this.handleFilterToggleClick.name,
@@ -380,28 +375,6 @@ class AdminAddons {
 	}
 
 	/**
-	 * Handle click events.
-	 *
-	 * @param {Object} args Click event arguments.
-	 * @return void
-	 */
-	handlePurchaseCodeClick( args ) {
-		const { target: el } = args;
-
-		if ( ! el.value.startsWith( '***' ) ) {
-			return;
-		}
-
-		el.value = '';
-		const elItemPurchase = el.closest(
-			AdminAddons.selectors.elItemPurchase
-		);
-		if ( elItemPurchase ) {
-			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value = '';
-		}
-	}
-
-	/**
 	 * Handle addon action button click.
 	 *
 	 * @param {Object} args Click event arguments.
@@ -443,25 +416,90 @@ class AdminAddons {
 			const elPurchaseSubmit = elPurchaseInstall.querySelector(
 				'.lp-addon-purchase__submit'
 			);
+			const elPurchaseClear = elPurchaseInstall.querySelector(
+				'.lp-addon-purchase__clear'
+			);
+			const elPurchaseCancelClear = elPurchaseInstall.querySelector(
+				'.lp-addon-purchase__cancel-clear'
+			);
+			let hasPurchaseCode = false;
 
 			if ( action === 'update-purchase-code' ) {
 				const elLicense = elAddonItem.querySelector( selectors.elLicense );
 				elPurchaseCode.value = elLicense
 					? elLicense.dataset.purchaseCodeMasked || ''
 					: '';
+				hasPurchaseCode = '' !== elPurchaseCode.value;
 				elPurchaseSubmit.dataset.action = 'update-purchase';
 			} else {
 				elPurchaseCode.value = '';
 				elPurchaseSubmit.dataset.action = 'install';
 			}
 
+			elPurchaseCode.disabled = hasPurchaseCode;
+			elPurchaseSubmit.classList.toggle( 'lp-hidden', hasPurchaseCode );
+			elPurchaseClear.classList.toggle( 'lp-hidden', ! hasPurchaseCode );
+			elPurchaseCancelClear.classList.add( 'lp-hidden' );
 			elPurchaseCode.classList.remove( 'is-error' );
 			elPurchaseCode.removeAttribute( 'aria-invalid' );
 			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value =
 				'';
 			elPurchaseInstall.style.display = 'flex';
 			elItemPurchase.style.display = 'block';
+			if ( ! hasPurchaseCode ) {
+				elPurchaseCode.focus();
+			}
+			lpUtils.lpSetLoadingEl( el, 0 );
+			return;
+		} else if ( action === 'clear-license' ) {
+			const elPurchaseCode = elItemPurchase.querySelector(
+				selectors.elPurchaseCode
+			);
+			const elPurchaseSubmit = elItemPurchase.querySelector(
+				'.lp-addon-purchase__submit'
+			);
+			const elPurchaseClear = elItemPurchase.querySelector(
+				'.lp-addon-purchase__clear'
+			);
+			const elPurchaseCancelClear = elItemPurchase.querySelector(
+				'.lp-addon-purchase__cancel-clear'
+			);
+
+			elPurchaseCode.value = '';
+			elPurchaseCode.disabled = false;
+			elPurchaseCode.classList.remove( 'is-error' );
+			elPurchaseCode.removeAttribute( 'aria-invalid' );
+			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value =
+				'';
+			elPurchaseSubmit.classList.remove( 'lp-hidden' );
+			elPurchaseClear.classList.add( 'lp-hidden' );
+			elPurchaseCancelClear.classList.remove( 'lp-hidden' );
 			elPurchaseCode.focus();
+			lpUtils.lpSetLoadingEl( el, 0 );
+			return;
+		} else if ( action === 'cancel-clear-license' ) {
+			const elLicense = elAddonItem.querySelector( selectors.elLicense );
+			const elPurchaseCode = elItemPurchase.querySelector(
+				selectors.elPurchaseCode
+			);
+			const elPurchaseSubmit = elItemPurchase.querySelector(
+				'.lp-addon-purchase__submit'
+			);
+			const elPurchaseClear = elItemPurchase.querySelector(
+				'.lp-addon-purchase__clear'
+			);
+
+			elPurchaseCode.value = elLicense
+				? elLicense.dataset.purchaseCodeMasked || ''
+				: '';
+			elPurchaseCode.disabled = true;
+			elPurchaseCode.classList.remove( 'is-error' );
+			elPurchaseCode.removeAttribute( 'aria-invalid' );
+			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value =
+				'';
+			elPurchaseSubmit.classList.add( 'lp-hidden' );
+			elPurchaseClear.classList.remove( 'lp-hidden' );
+			el.classList.add( 'lp-hidden' );
 			lpUtils.lpSetLoadingEl( el, 0 );
 			return;
 		} else if ( action === 'cancel' ) {

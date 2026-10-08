@@ -203,7 +203,6 @@ class AdminAddonsPage {
 	 * @return void
 	 */
 	public function html_page() {
-		/** @use self::render_addons */
 		$section = apply_filters(
 			'learn-press/admin/addons/page-section',
 			array(
@@ -237,10 +236,12 @@ class AdminAddonsPage {
 						'learnpress'
 					)
 				),
+				/** @use self::render_addons */
 				'addons'      => TemplateAJAX::load_content_via_ajax(
 					array(
 						'id_url' => 'data-addons',
 						'tab'    => $_REQUEST['tab'] ?? '',
+						'ex-date-test' => $_REQUEST['ex-date-test'] ?? '',
 					),
 					array(
 						'class'  => self::class,
@@ -299,6 +300,7 @@ class AdminAddonsPage {
 							'plugins_activated' => $plugins_activated,
 							'active_tab'        => $active_tab,
 							'keys_purchase'     => $keys_purchase,
+							'ex-date-test'      => $data['ex-date-test'] ?? '',
 						)
 					),
 					'wrapper_end' => '</div>',
@@ -510,16 +512,7 @@ class AdminAddonsPage {
 				'content'     => '<div class="lp-addon-item__content">',
 				'header'      => self::html_addon_header( $addon ),
 				'license'     => ! $state['is_free']
-					? self::html_addon_license(
-						$addon,
-						array(
-							'license_status'        => $state['license_status'],
-							'number_days_remaining' => $state['number_days_remaining'],
-							'date_expired'          => $state['date_expired'],
-							'purchase_code_masked'  => $state['purchase_code_masked'],
-							'show_license_panel'    => $state['show_license_panel'],
-						)
-					)
+					? self::html_addon_license( $addon, $state )
 					: '',
 				'description' => sprintf(
 					'<p class="lp-addon-item__description" title="%s">%s</p>',
@@ -608,7 +601,7 @@ class AdminAddonsPage {
 
 		if ( $addon_purchased ) {
 			$classes_status[] = 'license';
-			$date_expired_str = $addon_purchased->date_expire ?? '';
+			$date_expired_str = ! empty( $data['ex-date-test'] ) ? $data['ex-date-test'] : ( $addon_purchased->date_expire ?? '' );
 			if ( ! empty( $date_expired_str ) ) {
 				$date_expired          = new DateTime( $date_expired_str );
 				$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
@@ -629,7 +622,8 @@ class AdminAddonsPage {
 			}
 		}
 
-		$purchase_code_masked = AddonService::mask_purchase_code( $keys_purchase[ $addon->slug ] ?? '' );
+		$purchase_code        = $keys_purchase[ $addon->slug ] ?? '';
+		$purchase_code_masked = AddonService::mask_purchase_code( $purchase_code );
 
 		if ( ! in_array( $active_tab, $classes_status, true ) && 'all' !== $active_tab ) {
 			$classes_status[] = 'hide';
@@ -645,6 +639,7 @@ class AdminAddonsPage {
 			'license_status'        => $license_status,
 			'number_days_remaining' => $number_days_remaining,
 			'date_expired'          => $date_expired,
+			'purchase_code'         => $purchase_code,
 			'purchase_code_masked'  => $purchase_code_masked,
 			'show_license_panel'    => $show_license_panel,
 			'addon_category'        => $addon_category,
@@ -698,6 +693,7 @@ class AdminAddonsPage {
 		$number_days_remaining = $data['number_days_remaining'] ?? null;
 		/** @var DateTime $date_expired */
 		$date_expired         = $data['date_expired'] ?? null;
+		$purchase_code        = $data['purchase_code'] ?? '';
 		$purchase_code_masked = $data['purchase_code_masked'] ?? '';
 		$show_license_panel   = $data['show_license_panel'] ?? false;
 		$license_status_label = 'active' === $license_status
@@ -721,41 +717,36 @@ class AdminAddonsPage {
 			$expiry_text   = esc_html( sprintf( $expiry_format, $lpDate->format( LPDateTime::FORMAT_I18N_DATE ) ) );
 		}
 
-		$extend_link = '';
-		if ( 'expired' === $license_status ) {
-			$extend_link = sprintf(
-				'<a class="need-extend__link" href="%s" target="_blank" rel="noopener">%s</a>',
-				esc_url( $addon->link ?? '' ),
-				esc_html__( 'Extend now', 'learnpress' )
-			);
-		}
+		$link_extend      = add_query_arg(
+			'purchase_code',
+			$purchase_code,
+			AddonService::instance()->link_extend_site
+		);
+		$html_extend_link = sprintf(
+			'<a class="need-extend__link" href="%s" target="_blank" rel="noopener">%s</a>',
+			esc_url( $link_extend ),
+			esc_html__( 'Extend now', 'learnpress' )
+		);
 
-		$message        = '';
-		$button_extends = '';
+		$html_near_expire = '';
 		if ( ! empty( $addon->purchase_info ) ) {
-			$button_extends = sprintf(
-				'<a class="need-extend__link" href="%s" target="_blank" rel="noopener">%s</a>',
-				esc_url( $addon->link ?? '' ),
-				esc_html__( 'Extend now', 'learnpress' )
-			);
-
 			if ( isset( $number_days_remaining ) && $number_days_remaining > 0 && $number_days_remaining < 61 ) {
-				$message = sprintf(
+				$message_near_expire = sprintf(
 					__( 'You have a license for this item with %s day(s) of update & support remaining. Please extend your update & support license to continue receiving the latest versions and customer support from Thimpress before it expires.', 'learnpress' ),
 					sprintf( '<strong class="need-extend__days">%d</strong>', $number_days_remaining )
 				);
-			} else {
-				$button_extends = '';
+
+				$html_near_expire = sprintf(
+					'<span class="need-extend">%s %s</span>',
+					$message_near_expire,
+					$html_extend_link
+				);
 			}
 		}
 
-		$need_extend = '';
-		if ( ! empty( $message ) || ! empty( $button_extends ) ) {
-			$need_extend = sprintf(
-				'<span class="need-extend">%s %s</span>',
-				$message,
-				$button_extends
-			);
+		$text_btn_to_purchase_code = esc_html__( 'Activate Now', 'learnpress' );
+		if ( ! empty( $purchase_code ) ) {
+			$text_btn_to_purchase_code = esc_html__( 'Change License', 'learnpress' );
 		}
 
 		$section = array(
@@ -779,13 +770,21 @@ class AdminAddonsPage {
 				$expiry_hidden,
 				$expiry_text
 			),
-			'extend_link' => $extend_link,
+			'extend_link' => 'expired' === $license_status ? $html_extend_link : '',
 			'summary_end' => '</div>',
-			'need_extend' => $need_extend,
+			'near_expire' => $html_near_expire,
+			'cancel_btn'  => '<button
+				class="lp-button btn-addon-action lp-be-btn lp-be-btn--outline lp-addon-purchase__cancel-clear lp-hidden"
+				data-action="cancel-clear-license" type="button">',
+			'cancel_text' => sprintf(
+				'<span class="text">%s</span>',
+				esc_html__( 'Cancel', 'learnpress' )
+			),
+			'cancel_end'  => '</button>',
 			'manage'      => sprintf(
 				'<button class="btn-addon-action lp-addon-license__manage"
 					data-action="update-purchase-code" type="button">%s</button>',
-				esc_html__( 'Manage', 'learnpress' )
+				$text_btn_to_purchase_code
 			),
 			'wrapper_end' => '</div>',
 		);
@@ -954,6 +953,9 @@ class AdminAddonsPage {
 	 * @return string
 	 */
 	public static function html_purchase_panel( object $addon, array $data = [] ): string {
+		$purchase_code_masked = $data['purchase_code_masked'] ?? '';
+		$has_purchase_code    = ! empty( $purchase_code_masked );
+
 		$panel = array(
 			'wrapper'     => '<div class="purchase-install">',
 			'header'      => '<div class="lp-addon-purchase__header">',
@@ -975,17 +977,38 @@ class AdminAddonsPage {
 				esc_html__( 'Purchase Code', 'learnpress' )
 			),
 			'field_input' => sprintf(
-				'<input type="text" class="enter-purchase-code" placeholder="%s" value="">',
-				esc_attr__( 'Enter Purchase Code', 'learnpress' )
+				'<input type="text" class="enter-purchase-code" placeholder="%s" value="%s"%s>',
+				esc_attr__( 'Enter Purchase Code', 'learnpress' ),
+				esc_attr( $purchase_code_masked ),
+				$has_purchase_code ? ' disabled' : ''
 			),
 			'field_end'   => '</label>',
-			'submit'      => '<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--primary lp-addon-purchase__submit"
-				data-action="install" type="button">',
-			'submit_text' => sprintf( '<span class="text">%s</span>', esc_html__( 'Submit', 'learnpress' ) ),
+			'submit'      => sprintf(
+				'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--primary lp-addon-purchase__submit%s"
+					data-action="install" type="button">',
+				$has_purchase_code ? ' lp-hidden' : ''
+			),
+			'submit_text' => sprintf( '<span class="text">%s</span>', esc_html__( 'Verify & Activate', 'learnpress' ) ),
 			'submit_end'  => '</button>',
+			'cancel_clear' => '<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--outline lp-addon-purchase__cancel-clear lp-hidden"
+				data-action="cancel-clear-license" type="button">',
+			'cancel_clear_text' => sprintf(
+				'<span class="text">%s</span>',
+				esc_html__( 'Cancel', 'learnpress' )
+			),
+			'cancel_clear_end' => '</button>',
+			'clear'       => sprintf(
+				'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--primary lp-addon-purchase__clear%s"
+					data-action="clear-license" type="button">',
+				$has_purchase_code ? '' : ' lp-hidden'
+			),
+			'clear_text'  => sprintf( '<span class="text">%s</span>', esc_html__( 'Clear License', 'learnpress' ) ),
+			'clear_end'   => '</button>',
 			'divider'     => sprintf(
 				'<div class="lp-addon-purchase__divider"><span>%s</span></div>',
-				esc_html__( 'Don\'t have a code?', 'learnpress' )
+				$has_purchase_code
+					? esc_html__( 'Or', 'learnpress' )
+					: esc_html__( 'Don\'t have a code?', 'learnpress' )
 			),
 			'buy'         => sprintf(
 				'<a class="btn-addon-action lp-addon-purchase__buy lp-be-btn lp-be-btn--outline" href="%s" target="_blank" rel="noopener">%s</a>',

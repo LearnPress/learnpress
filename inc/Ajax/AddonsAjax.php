@@ -50,7 +50,7 @@ class AddonsAjax extends AbstractAjax {
 	public function addon_action() {
 		$response       = new Response();
 		$lp_file_system = LP_WP_Filesystem::instance();
-		$message = '';
+		$message        = '';
 
 		try {
 			if ( is_multisite() && ! is_super_admin() ) {
@@ -161,18 +161,12 @@ class AddonsAjax extends AbstractAjax {
 					);
 					break;
 				case 'update-purchase':
-					// If empty, try key old activated
-					if ( empty( $purchase_code ) ) {
-						$purchase_codes = lp_settings::get_option( $this->addon_service->key_purchase_addons, array() );
-						$purchase_code  = $purchase_codes[ $addon['slug'] ] ?? '';
-					}
-
 					$this->addon_service->active_site(
 						$addon['slug'],
 						$purchase_code
 					);
 					$purchase_info = $this->addon_service->get_addon_purchase_info( $addon['slug'], $purchase_code );
-					$message = sprintf(
+					$message       = sprintf(
 						/* translators: %s: addon name */
 						__( 'Updated purchase code successfully for %s', 'learnpress' ),
 						$addon['name'] ?? ''
