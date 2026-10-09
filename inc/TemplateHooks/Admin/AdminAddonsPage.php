@@ -335,8 +335,8 @@ class AdminAddonsPage {
 			'installed'     => sprintf( '%s (<span></span>)', __( 'Installed', 'learnpress' ) ),
 			'purchase'      => sprintf( '%s (<span></span>)', __( 'Paid', 'learnpress' ) ),
 			'free'          => sprintf( '%s (<span></span>)', __( 'Free', 'learnpress' ) ),
-			'update'        => sprintf( '%s (<span></span>)', __( 'Updated', 'learnpress' ) ),
-			'license'       => sprintf( '%s (<span></span>)', __( 'License', 'learnpress' ) ),
+			'update'        => sprintf( '%s (<span></span>)', __( 'Updated Available', 'learnpress' ) ),
+			'license'       => sprintf( '%s (<span></span>)', __( 'Licensed', 'learnpress' ) ),
 			'not_installed' => sprintf( '%s (<span></span>)', __( 'Not Installed', 'learnpress' ) ),
 		);
 		$addon_categories = array(
