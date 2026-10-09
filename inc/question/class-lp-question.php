@@ -10,6 +10,9 @@
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Question' ) ) {
@@ -327,7 +330,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return mixed
 		 */
 		public function get_explanation() {
-			return apply_filters( 'learn-press/question/explanation', do_shortcode( $this->get_data( 'explanation' ) ), $this->get_id() );
+			$explanation = apply_filters( 'learn-press/question/explanation', do_shortcode( $this->get_data( 'explanation' ) ), $this->get_id() );
+
+			return Template::sanitize_html_content( (string) $explanation );
 		}
 
 		/**
@@ -341,7 +346,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return mixed
 		 */
 		public function get_hint() {
-			return apply_filters( 'learn-press/question/hint', do_shortcode( $this->get_data( 'hint' ) ), $this->get_id() );
+			$hint = apply_filters( 'learn-press/question/hint', do_shortcode( $this->get_data( 'hint' ) ), $this->get_id() );
+
+			return Template::sanitize_html_content( (string) $hint );
 		}
 
 		/**
@@ -518,21 +525,21 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				UPDATE {$wpdb->learnpress_question_answers}
 				SET `order` = CASE
 			";
-				for ( $order = 0, $n = sizeof( $orders ); $order < $n; $order ++ ) {
-					$found_answer = false;
-					foreach ( $answers as $answer ) {
-						if ( $answer->value == $orders[ $order ]['value'] && $answer->name == $orders[ $order ]['text'] ) {
-							$found_answer = $answer;
-							break;
-						}
+			for ( $order = 0, $n = sizeof( $orders ); $order < $n; $order ++ ) {
+				$found_answer = false;
+				foreach ( $answers as $answer ) {
+					if ( $answer->value == $orders[ $order ]['value'] && $answer->name == $orders[ $order ]['text'] ) {
+						$found_answer = $answer;
+						break;
 					}
-					if ( $found_answer === false ) {
-						continue;
-					}
-					$query .= $wpdb->prepare( 'WHEN question_answer_id = %d THEN %d', $found_answer->question_answer_id, $order + 1 ) . "\n";
 				}
-				$query .= sprintf( 'ELSE `order` END WHERE question_id = %d', $this->get_id() );
-				$wpdb->query( $query );
+				if ( $found_answer === false ) {
+					continue;
+				}
+				$query .= $wpdb->prepare( 'WHEN question_answer_id = %d THEN %d', $found_answer->question_answer_id, $order + 1 ) . "\n";
+			}
+			$query .= sprintf( 'ELSE `order` END WHERE question_id = %d', $this->get_id() );
+			$wpdb->query( $query );
 			}*/
 		}
 

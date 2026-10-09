@@ -325,14 +325,17 @@ class ApiKeyAuthenticator {
 			return false;
 		}
 
-		$rest_prefix   = trailingslashit( rest_get_url_prefix() );
-		$is_mcp_target = false;
-		foreach ( $this->get_target_routes() as $route ) {
-			$target_path = $rest_prefix . ltrim( $route, '/' );
-			if ( false !== strpos( $request_uri, $target_path ) ) {
-				$is_mcp_target = true;
-				break;
-			}
+		$request_path = wp_parse_url( $request_uri, PHP_URL_PATH );
+		if ( ! is_string( $request_path ) ) {
+			return false;
+		}
+
+		$rest_prefix     = '/' . trailingslashit( rest_get_url_prefix() );
+		$prefix_position = strpos( $request_path, $rest_prefix );
+		$is_mcp_target   = false;
+		if ( false !== $prefix_position ) {
+			$route         = '/' . ltrim( substr( $request_path, $prefix_position + strlen( $rest_prefix ) ), '/' );
+			$is_mcp_target = $this->route_matches_mcp_target( $route );
 		}
 
 		return (bool) apply_filters( 'learn-press/mcp/api-keys/is-target-rest-request', $is_mcp_target, $request_uri, self::MCP_ROUTE );

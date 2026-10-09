@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 7.1
-Stable tag: 4.4.9
+Stable tag: 4.4.10
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -301,10 +301,15 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.10 (2026-10-09) =
+* Fixed: security (Props @Wordfence, @Kuba, @Wordfence PRISM, @Hunter Sploit, @Artur Chlebicki).
+* Style: themes, addons manager, Course Builder.
+* Fixed: minor bugs.
+
 = 4.4.9.1 (2026-10-01) =
-~ Fixed: role instructor can't access WP Admin when install new.
-~ Fixed: active purchase code.
-~ Fixed: icons students, courses.
+* Fixed: role instructor can't access WP Admin when install new.
+* Fixed: active purchase code.
+* Fixed: icons students, courses.
 
 = 4.4.9 (2026-09-27) =
 * Refactor: Add-ons manager and lp admin notices.

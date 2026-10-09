@@ -16,6 +16,7 @@ use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
+use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LP_WP_Filesystem;
 use Throwable;
 use WP_Query;
@@ -128,15 +129,7 @@ class BuilderListQuizzesTemplate {
 			}
 			wp_reset_postdata();
 
-			if ( ! empty( $quizzes ) ) {
-				$html_quizzes = $this->list_quizzes( $quizzes );
-			} else {
-				$html_quizzes = Template::print_message(
-					sprintf( __( 'No quizzes found', 'learnpress' ) ),
-					'info',
-					false
-				);
-			}
+			$html_quizzes = $this->list_quizzes( $quizzes );
 
 			$total_pages     = \LP_Database::get_total_pages( $query_args['posts_per_page'], $total_quizzes );
 			$link_tab        = CourseBuilder::get_tab_link( 'quizzes' );
@@ -181,28 +174,57 @@ class BuilderListQuizzesTemplate {
 
 		try {
 			$html_list_quiz = '';
+
+			if ( empty( $quizzes ) ) {
+				return Template::print_message(
+					__( 'No quizzes found', 'learnpress' ),
+					'info',
+					false
+				);
+			}
+
 			foreach ( $quizzes as $quiz_model ) {
 				$html_list_quiz .= self::render_quiz( $quiz_model );
 			}
 
-			$header  = '<div class="cb-list-table-header">';
-			$header .= sprintf( '<span>%s</span>', __( 'Quiz Title', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Courses', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Questions', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Duration', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Status', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Actions', 'learnpress' ) );
-			$header .= '</div>';
-
-			$sections = [
-				'header'      => $header,
-				'wrapper'     => '<ul class="cb-list-quiz">',
-				'list_quiz'   => $html_list_quiz,
-				'wrapper_end' => '</ul>',
+			$table_args = [
+				'class_table' => 'cb-list-table cb-list-quiz',
+				'header'      => [
+					'title'           => [
+						'class' => 'cb-col-title',
+						'title' => __( 'Quiz Title', 'learnpress' ),
+					],
+					'courses'         => [
+						'class' => 'cb-col-assigned',
+						'title' => __( 'Courses', 'learnpress' ),
+					],
+					'total_questions' => [
+						'class' => 'cb-col-questions',
+						'title' => __( 'Questions', 'learnpress' ),
+					],
+					'duration'        => [
+						'class' => 'cb-col-duration',
+						'title' => __( 'Duration', 'learnpress' ),
+					],
+					'date'            => [
+						'class' => 'cb-col-date',
+						'title' => __( 'Create Date', 'learnpress' ),
+					],
+					'status'          => [
+						'class' => 'cb-col-status',
+						'title' => __( 'Status', 'learnpress' ),
+					],
+					'actions'         => [
+						'class' => 'cb-col-actions',
+						'title' => __( 'Actions', 'learnpress' ),
+					],
+				],
+				'body'        => [
+					'rows_html' => $html_list_quiz,
+				],
 			];
 
-			$content = Template::combine_components( $sections );
+			$content = TableListTemplate::instance()->html_table( $table_args );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -327,15 +349,30 @@ class BuilderListQuizzesTemplate {
 				$settings
 			);
 
+			$cell_classes = [
+				'courses'         => 'assigned',
+				'total_questions' => 'questions',
+				'quiz_status'     => 'status',
+			];
+			$html_cells   = [];
+			foreach ( $html_content as $key => $html ) {
+				$cell_class         = $cell_classes[ $key ] ?? $key;
+				$html_cells[ $key ] = sprintf(
+					'<td class="cb-col-%s">%s</td>',
+					esc_attr( sanitize_html_class( $cell_class ) ),
+					$html
+				);
+			}
+
 			$section = apply_filters(
 				'learn-press/course-builder/list-quizzes/item-li',
 				[
-					'wrapper_li'      => '<li class="quiz">',
-					'wrapper_div'     => sprintf( '<div class="quiz-item" data-quiz-id="%s" data-status="%s">', $quiz['id'], $status ),
-					'quiz_info'       => Template::combine_components( $html_content ),
-					'quiz_action'     => Template::combine_components( $html_action ),
-					'wrapper_div_end' => '</div>',
-					'wrapper_li_end'  => '</li>',
+					'wrapper_li'      => sprintf( '<tr class="quiz quiz-item" data-quiz-id="%s" data-status="%s">', $quiz['id'], $status ),
+					'wrapper_div'     => '',
+					'quiz_info'       => Template::combine_components( $html_cells ),
+					'quiz_action'     => sprintf( '<td class="cb-col-actions">%s</td>', Template::combine_components( $html_action ) ),
+					'wrapper_div_end' => '',
+					'wrapper_li_end'  => '</tr>',
 				],
 				$quiz,
 				$settings

@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
  * @package LearnPress\Services
  * @change from LP_Manager_Addons class old
  * @since 4.2.1
- * @version 1.0.1
+ * @version 1.0.2
  */
 class AddonService {
 	use Singleton;
@@ -48,6 +48,7 @@ class AddonService {
 	 * @var string Link active site.
 	 */
 	private $link_active_site = 'https://updates.thimpress.com/thim-addon-market/active-site';
+	public $link_extend_site  = 'https://thimpress.com/extend-license/?purchase_code={purchase_code}';
 	/**
 	 * @var string Link download plugin from org.
 	 */
@@ -110,7 +111,7 @@ class AddonService {
 				if ( ! is_wp_error( $response )
 					&& 200 === wp_remote_retrieve_response_code( $response ) ) {
 					$data = LP_Helper::json_decode( wp_remote_retrieve_body( $response ) );
-					$lp_cache->set_cache( $key_cache, $data, 5 * MINUTE_IN_SECONDS );
+					$lp_cache->set_cache( $key_cache, $data, 2 * MINUTE_IN_SECONDS );
 				} else {
 					throw new Exception( $response->get_error_message() );
 				}
@@ -166,6 +167,8 @@ class AddonService {
 	 *
 	 * @return object
 	 * @throws Exception
+	 * @since 4.4.9
+	 * @version 1.0.0
 	 */
 	public function get_addons_purchased( object $addons ): object {
 		$addons_purchase = LP_Settings::get_option( $this->key_purchase_addons, [] );
@@ -177,37 +180,37 @@ class AddonService {
 		$key_cache    = 'addons_purchased_info';
 		$addons_cache = $lp_cache->get_cache( $key_cache );
 		if ( false !== $addons_cache ) {
-			return json_decode( wp_json_encode( $addons_cache ) );
+			$data = json_decode( wp_json_encode( $addons_cache ) );
+		} else {
+			$args = [
+				'method'     => 'POST',
+				'body'       => [
+					'addons_purchase' => $addons_purchase,
+				],
+				'timeout'    => 30,
+				'user-agent' => site_url(),
+			];
+
+			$result = wp_remote_post( $this->link_addons_purchased, $args );
+			if ( is_wp_error( $result ) ) {
+				throw new Exception( $result->get_error_message() );
+			}
+
+			$data_str = wp_remote_retrieve_body( $result );
+			if ( preg_match( '/^Error.*/', $data_str ) ) {
+				throw new Exception( $data_str );
+			}
+
+			$data = LP_Helper::json_decode( $data_str );
+
+			$lp_cache->set_cache( $key_cache, $data, 12 * HOUR_IN_SECONDS );
 		}
-
-		$args = [
-			'method'     => 'POST',
-			'body'       => [
-				'addons_purchase' => $addons_purchase,
-			],
-			'timeout'    => 30,
-			'user-agent' => site_url(),
-		];
-
-		$result = wp_remote_post( $this->link_addons_purchased, $args );
-		if ( is_wp_error( $result ) ) {
-			throw new Exception( $result->get_error_message() );
-		}
-
-		$data_str = wp_remote_retrieve_body( $result );
-		if ( preg_match( '/^Error.*/', $data_str ) ) {
-			throw new Exception( $data_str );
-		}
-
-		$data = LP_Helper::json_decode( $data_str );
 
 		foreach ( $addons as $key => $addon ) {
 			if ( isset( $data->{$key} ) ) {
 				$addons->{$key}->purchase_info = $data->{$key};
 			}
 		}
-
-		$lp_cache->set_cache( $key_cache, $addons );
 
 		return $addons;
 	}

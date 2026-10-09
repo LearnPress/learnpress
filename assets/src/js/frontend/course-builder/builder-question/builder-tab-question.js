@@ -457,11 +457,12 @@ export class BuilderTabQuestion {
 		if ( ! elQuestion || ! html ) {
 			return;
 		}
-		const tmp = document.createElement( 'div' );
-		tmp.innerHTML = html;
-		const newEl = tmp.firstElementChild;
-		if ( newEl ) {
-			elQuestion.replaceWith( newEl );
+
+		const nextQuestion = elQuestion.nextElementSibling;
+		elQuestion.insertAdjacentHTML( 'afterend', html.trim() );
+		const newQuestion = elQuestion.nextElementSibling;
+		if ( newQuestion && newQuestion !== nextQuestion ) {
+			elQuestion.remove();
 		}
 	}
 }
