@@ -1,6 +1,6 @@
 {
     "learnpress-woo-payment": {
-        "name": "WooCommerce Add-On for LearnPress",
+        "name": "WooCommerce Add-on for LearnPress",
         "basename": "learnpress-woo-payment/learnpress-woo-payment.php",
         "version": "4.2.4",
         "require_lp": "4.4.5",
@@ -24,7 +24,7 @@
         "sale_price": ""
     },
     "learnpress-stripe": {
-        "name": "Stripe Add-On for LearnPress",
+        "name": "Stripe Add-on for LearnPress",
         "basename": "learnpress-stripe/learnpress-stripe.php",
         "version": "4.0.8",
         "require_lp": "4.4.5",
@@ -67,7 +67,7 @@
         "sale_price": 39
     },
     "learnpress-exams": {
-        "name": "Exam add-on for learnpress",
+        "name": "Exam Add-on for LearnPress",
         "basename": "learnpress-exams/learnpress-exams.php",
         "version": "4.0.1",
         "require_lp": "4.4.1",
@@ -90,7 +90,7 @@
         "sale_price": 19
     },
     "learnpress-certificates": {
-        "name": "LearnPress - Certificates",
+        "name": "Certificates Add-on for LearnPress",
         "basename": "learnpress-certificates/learnpress-certificates.php",
         "version": "4.2.8",
         "require_lp": "4.4.4",
@@ -111,7 +111,7 @@
         "sale_price": ""
     },
     "learnpress-gradebook": {
-        "name": "Gradebook Add-On for LearnPress",
+        "name": "Gradebook Add-on for LearnPress",
         "basename": "learnpress-gradebook/learnpress-gradebook.php",
         "version": "4.1.4",
         "require_lp": "4.4.4",
@@ -153,11 +153,11 @@
         "sale_price": 29
     },
     "learnpress-assignments": {
-        "name": "Assignments Add-On for LearnPress",
+        "name": "Assignments Add-on for LearnPress",
         "basename": "learnpress-assignments/learnpress-assignments.php",
         "version": "4.2.2",
         "require_lp": "4.4.2",
-        "description": "Assignment Add-on for LearnPress is a great way to assign tasks, essays for your students so they can do at home and submit. Instructors can check students’ work after that and grade the assignment.",
+        "description": "Assignment Add-on for LearnPress lets you assign tasks and essays for students to complete at home and submit. Instructors can then review and grade their work.",
         "image": "https://updates.thimpress.com/images/learnpress-assignments.png",
         "link": "https://thimpress.com/product/assignments-add-on-for-learnpress/",
         "link_doc": "https://learnpresslms.com/docs/assignments-add-on-for-learnpress",
@@ -176,7 +176,7 @@
         "sale_price": ""
     },
     "learnpress-paid-membership-pro": {
-        "name": "Paid Memberships Pro Add-On for LearnPress",
+        "name": "Paid Memberships Pro Add-on for LearnPress",
         "basename": "learnpress-paid-membership-pro/learnpress-paid-memberships-pro.php",
         "version": "4.1.3",
         "require_lp": "4.3.2.4",
@@ -200,11 +200,11 @@
         "sale_price": ""
     },
     "learnpress-frontend-editor": {
-        "name": "Frontend Editor Add-On for LearnPress",
+        "name": "Frontend Editor Add-on for LearnPress",
         "basename": "learnpress-frontend-editor/learnpress-frontend-editor.php",
         "version": "4.1.2",
         "require_lp": "4.4.5",
-        "description": "Frontend Editor add-on for LearnPress enable your courses to be edited from the frontend. Your instructors doesn't need to go to the WP Dashboard to create and edit courses anymore with Frontend Editor add-on.",
+        "description": "Frontend Editor add-on for LearnPress lets instructors create and edit courses directly from the frontend - no need to access the WP Dashboard.",
         "image": "https://updates.thimpress.com/images/learnpress-frontend-editor.png",
         "link": "https://thimpress.com/product/frontend-editor-add-on-for-learnpress/",
         "link_doc": "https://learnpresslms.com/docs/frontend-editor-add-on-for-learnpress/",
@@ -222,7 +222,7 @@
         "sale_price": 49
     },
     "learnpress-content-drip": {
-        "name": "Content Drip add-on for LearnPress",
+        "name": "Content Drip Add-on for LearnPress",
         "basename": "learnpress-content-drip/learnpress-content-drip.php",
         "version": "4.0.9",
         "require_lp": "4.4.3",
@@ -244,7 +244,7 @@
         "sale_price": ""
     },
     "learnpress-live": {
-        "name": "Live Course Add-On for LearnPress",
+        "name": "Live Course Add-on for LearnPress",
         "basename": "learnpress-live/learnpress-live.php",
         "version": "4.0.5",
         "require_lp": "4.3.2.7",
@@ -267,7 +267,7 @@
         "sale_price": ""
     },
     "learnpress-announcements": {
-        "name": "Announcement add-on for LearnPress",
+        "name": "Announcement Add-on for LearnPress",
         "basename": "learnpress-announcements/learnpress-announcements.php",
         "version": "4.1.4",
         "require_lp": "4.2.9.4",
@@ -289,7 +289,7 @@
         "sale_price": ""
     },
     "learnpress-wpml": {
-        "name": "WPML Add-On for LearnPress",
+        "name": "WPML Add-on for LearnPress",
         "basename": "learnpress-wpml/learnpress-wpml.php",
         "version": "4.0.7",
         "require_lp": "4.3.2.7",
@@ -314,7 +314,7 @@
         "sale_price": ""
     },
     "learnpress-co-instructor": {
-        "name": "Co-Instructors Add-On for LearnPress",
+        "name": "Co-Instructors Add-on for LearnPress",
         "basename": "learnpress-co-instructor/learnpress-co-instructor.php",
         "version": "4.1.2",
         "require_lp": "4.4.5",
@@ -334,7 +334,7 @@
         "sale_price": ""
     },
     "learnpress-collections": {
-        "name": "Collections Add-On for LearnPress",
+        "name": "Collections Add-on for LearnPress",
         "basename": "learnpress-collections/learnpress-collections.php",
         "version": "4.1.0",
         "require_lp": "4.4.5",
@@ -356,7 +356,7 @@
         "sale_price": ""
     },
     "learnpress-commission": {
-        "name": "Commission add-on for LearnPress",
+        "name": "Commission Add-on for LearnPress",
         "basename": "learnpress-commission/learnpress-commission.php",
         "version": "4.0.5",
         "require_lp": "4.3.2.5",
@@ -378,7 +378,7 @@
         "sale_price": ""
     },
     "learnpress-sorting-choice": {
-        "name": "Sorting Choice Add-On for LearnPress",
+        "name": "Sorting Choice Add-on for LearnPress",
         "basename": "learnpress-sorting-choice/learnpress-sorting-choice.php",
         "version": "4.0.4",
         "require_lp": "4.2.9",
@@ -400,7 +400,7 @@
         "sale_price": ""
     },
     "learnpress-2checkout-payment": {
-        "name": "2Checkout Add-On for LearnPress",
+        "name": "2Checkout Add-on for LearnPress",
         "basename": "learnpress-2checkout-payment/learnpress-2checkout-payment.php",
         "version": "4.0.2",
         "require_lp": "4.2.0",
@@ -423,7 +423,7 @@
         "sale_price": ""
     },
     "learnpress-authorizenet-payment": {
-        "name": "LearnPress - Authorize.Net Payment",
+        "name": "Authorize.Net Add-on for LearnPress",
         "basename": "learnpress-authorizenet-payment/learnpress-authorizenet-payment.php",
         "version": "4.0.2",
         "require_lp": "4.2.7.7",
@@ -446,11 +446,11 @@
         "sale_price": ""
     },
     "learnpress-chat-room": {
-        "name": "Chat room add-on for learnpress",
+        "name": "Chat Room Add-on for LearnPress",
         "basename": "learnpress-chat-room/learnpress-chat-room.php",
         "version": "4.0.0",
         "require_lp": "4.4.4",
-        "description": "Traditional online courses often leave students feeling isolated, leading to low completion rates and unanswered questions. chat room add-on for learnpress transforms passive video lectures into active learning communities. students get instant feedback from instructors and peers, keeping engagement high while giving course creators an effective tool to foster vibrant student discussions.",
+        "description": "Chat Room add-on for LearnPress turns passive video lectures into active learning communities. Students get instant feedback from instructors and peers, boosting engagement and helping course creators foster vibrant discussions.",
         "image": "https://updates.thimpress.com/images/learnpress-chat-room.png",
         "link": "https://thimpress.com/product/chat-room-add-on-for-learnpress/",
         "link_doc": "https://learnpresslms.com/docs/chatroom-add-on-for-learnpress/",
@@ -468,7 +468,7 @@
         "sale_price": 10
     },
     "learnpress-klarna-payment": {
-        "name": "Klarna Add-On for learnpress",
+        "name": "Klarna Add-On for LearnPress",
         "basename": "learnpress-klarna-payment/learnpress-klarna-payment.php",
         "version": "4.0.0",
         "require_lp": "4.4.2",
@@ -495,7 +495,7 @@
         "basename": "learnpress-razorpay-payment/learnpress-razorpay-payment.php",
         "version": "4.0.3",
         "require_lp": "4.2.6.6",
-        "description": "Razorpay is the only payments solution in India that allows businesses to accept, process and disburse payments with its product suite. It gives you access to all payment modes including credit card, debit card, netbanking, UPI and popular wallets including JioMoney, Mobikwik, Airtel Money, FreeCharge, Ola Money and PayZapp.",
+        "description": "Razorpay is India’s all-in-one payments solution that lets businesses accept, process, and disburse payments. It supports credit/debit cards, netbanking, UPI, and popular wallets like JioMoney, Mobikwik, Airtel Money, FreeCharge, Ola Money, and PayZapp.",
         "image": "https://updates.thimpress.com/images/learnpress-razorpay-payment.png",
         "link": "https://thimpress.com/product/razorpay-add-on-for-learnpress/",
         "link_doc": "https://learnpresslms.com/docs/razorpay-add-on-learnpress/",
@@ -514,7 +514,7 @@
         "sale_price": ""
     },
     "learnpress-instamojo-payment": {
-        "name": "Instamojo Add-On for LearnPress",
+        "name": "Instamojo Add-on for LearnPress",
         "basename": "learnpress-instamojo-payment/learnpress-instamojo-payment.php",
         "version": "4.0.1",
         "require_lp": "4.2.8",
@@ -537,7 +537,7 @@
         "sale_price": ""
     },
     "learnpress-paystack-payment": {
-        "name": "Paystack Addon For Learnpress",
+        "name": "Paystack Add-on for LearnPress",
         "basename": "learnpress-paystack-payment/learnpress-paystack-payment.php",
         "version": "4.0.1",
         "require_lp": "4.2.7.7",
@@ -560,7 +560,7 @@
         "sale_price": 10
     },
     "learnpress-qpay": {
-        "name": "LearnPress - QPay",
+        "name": "QPay Add-on for LearnPress",
         "basename": "learnpress-qpay/learnpress-qpay.php",
         "version": "4.0.1",
         "require_lp": "4.2.9.4",
@@ -583,11 +583,11 @@
         "sale_price": 10
     },
     "learnpress-payu-payment": {
-        "name": "PayU addon for Learnpress",
+        "name": "PayU Add-on for Learnpress",
         "basename": "learnpress-payu-payment/learnpress-payu-payment.php",
         "version": "4.0.0",
         "require_lp": "4.2.7.7",
-        "description": "Multiple Payment Channels: Receive payments via a variety of channels that are suited for both domestic and international customers, including Credit and Debit Cards, Net Banking, Unified Payments Interface (UPI), Digital Wallets, Buy Now, Pay Later (BNPL). And much more!",
+        "description": "Multiple Payment Channels: Accept payments from domestic and international customers via Credit/Debit Cards, Net Banking, UPI, Digital Wallets, BNPL, and more.",
         "image": "https://updates.thimpress.com/images/learnpress-payu-payment.png",
         "link": "https://thimpress.com/product/payu-addon-for-learnpress/",
         "link_doc": "https://learnpresslms.com/docs/payu-add-on-for-learnpress",
@@ -606,7 +606,7 @@
         "sale_price": 10
     },
     "learnpress-interactive": {
-        "name": "Interactive Add-On for learnpress",
+        "name": "Interactive Add-On for LearnPress",
         "basename": "learnpress-interactive/learnpress-interactive.php",
         "version": "4.0.1",
         "require_lp": "4.4.4",
@@ -629,7 +629,7 @@
         "sale_price": 19
     },
     "learnpress-h5p": {
-        "name": "H5P Add-On for LearnPress",
+        "name": "H5P Add-on for LearnPress",
         "basename": "learnpress-h5p/learnpress-h5p.php",
         "version": "4.1.1",
         "require_lp": "4.4.4",
@@ -655,7 +655,7 @@
         "sale_price": ""
     },
     "learnpress-random-quiz": {
-        "name": "Random Quiz Add-On for LearnPress",
+        "name": "Random Quiz Add-on for LearnPress",
         "basename": "learnpress-random-quiz/learnpress-random-quiz.php",
         "version": "4.0.4",
         "require_lp": "4.2.4",
@@ -678,7 +678,7 @@
         "sale_price": ""
     },
     "learnpress-mycred": {
-        "name": "myCRED Add-On for LearnPress",
+        "name": "myCRED Add-on for LearnPress",
         "basename": "learnpress-mycred/learnpress-mycred.php",
         "version": "4.0.2",
         "require_lp": "4.2.8",
@@ -700,11 +700,11 @@
         "sale_price": ""
     },
     "learnpress-scorm": {
-        "name": "SCORM add-on for learnpress",
+        "name": "SCORM Add-on for LearnPress",
         "basename": "learnpress-scorm/learnpress-scorm.php",
         "version": "4.0.0",
         "require_lp": "4.4.4",
-        "description": "Traditional lms platforms require rebuilding course modules from scratch, consuming hours of manual work. scorm add-on for learnpress lets course creators import existing standardized elearning content instantly. instructors can insert packages right from the lesson editor using the 'add scorm' button, keeping interactive quizzes, animations, and tracking modules intact while delivering a smooth learning experience inside wordpress.",
+        "description": "SCORM Add-on for LearnPress lets you import standardized eLearning content instantly - no need to rebuild modules from scratch. Instructors can add packages directly from the lesson editor, keeping interactive quizzes, animations, and tracking intact for a seamless WordPress experience.",
         "image": "https://updates.thimpress.com/images/learnpress-scorm.png",
         "link": "https://thimpress.com/product/scorm-add-on-for-learnpress/",
         "link_doc": "",
@@ -722,7 +722,7 @@
         "sale_price": ""
     },
     "learnpress-students-list": {
-        "name": "Student List Add-On for LearnPress",
+        "name": "Student List Add-on for LearnPress",
         "basename": "learnpress-students-list/learnpress-students-list.php",
         "version": "4.0.4",
         "require_lp": "4.2.8",
@@ -744,11 +744,11 @@
         "sale_price": ""
     },
     "learnpress-coming-soon-courses": {
-        "name": "Coming Soon Add-On for LearnPress",
+        "name": "Coming Soon Add-on for LearnPress",
         "basename": "learnpress-coming-soon-courses/learnpress-coming-soon-courses.php",
         "version": "4.0.8",
         "require_lp": "4.2.9.3",
-        "description": "Coming Soon is a great way to promote your courses and make it desirable for people. You can add a lot of cool features such as text, images, countdown and description of the course that will make a lot easier for people to know all they are wishing about your brand new course!",
+        "description": "Coming Soon helps promote your upcoming courses and build anticipation. Add text, images, a countdown timer, and course description so people can easily learn about your new course.",
         "image": "https://updates.thimpress.com/images/learnpress-coming-soon-courses.png",
         "link": "https://thimpress.com/product/coming-soon-add-on-learnpress/",
         "link_doc": "https://learnpresslms.com/docs/comming-soon-add-ons-for-learnpress",
@@ -832,7 +832,7 @@
         "sale_price": ""
     },
     "learnpress-import-export": {
-        "name": "LearnPress Export Import",
+        "name": "LearnPress – Backup & Migration Tool",
         "basename": "learnpress-import-export/learnpress-import-export.php",
         "version": "4.1.6",
         "require_lp": "4.2.0",
@@ -881,7 +881,7 @@
         "basename": "learnpress-bbpress/learnpress-bbpress.php",
         "version": "4.0.7",
         "require_lp": "4.2.8",
-        "description": "LearnPress bbPress is an add-on for WordPress LMS – LearnPress, which brings forum to your course. Now, teacher can interact with students and students in a course can discuss with each other about the course. LearnPress bbPress simply empower course with feartures of forum.",
+        "description": "LearnPress bbPress adds a forum to your courses so teachers can interact with students and learners can discuss course topics with each other. It simply empowers your courses with full forum features.",
         "image": "https://ps.w.org/learnpress-bbpress/assets/icon-128x128.png?rev=2394951",
         "link": "https://wordpress.org/plugins/learnpress-bbpress/",
         "is_free": 1,
@@ -900,7 +900,7 @@
         "sale_price": ""
     },
     "learnpress-mobile-app": {
-        "name": "LearnPress - Mobile App",
+        "name": "LearnPress Add-on for Mobile App",
         "basename": "learnpress-mobile-app/learnpress-mobile-app.php",
         "version": "4.0.4",
         "require_lp": "4.4.5",
@@ -925,7 +925,7 @@
         "basename": "learnpress-sepay-payment/learnpress-sepay-payment.php",
         "version": "4.0.3",
         "require_lp": "4.2.8",
-        "description": "SePay Add-on cho LearnPress cung cấp cho người dùng LearnPress giải pháp thanh toán hiện đại, tự động và bảo mật cao, được xây dựng trên nền tảng công nghệ Open Banking.",
+        "description": "SePay Add-on cho LearnPress cung cấp giải pháp thanh toán hiện đại, tự động và bảo mật cao dựa trên công nghệ Open Banking.",
         "image": "https://updates.thimpress.com/images/learnpress-sepay-payment.png",
         "link": "https://wordpress.org/plugins/learnpress-sepay-payment/",
         "link_dock": "https://learnpresslms.com/docs/sepay-addon-for-learnpress/setting-sepay-payment",
