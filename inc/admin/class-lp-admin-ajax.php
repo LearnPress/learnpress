@@ -55,19 +55,19 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			do_action( 'learn-press/ajax/admin-load', __CLASS__ );
 
 			$ajax_events = array(
-				'search_items' => 'modal_search_items',
+				//'search_items' => 'modal_search_items',
 				'update-payment-order',
 				// Update ordering of payments when user changing.
 				'update-payment-status',
 				// Enable type payment
 
 				// admin editor
-				'admin_course_editor',
-				'admin_quiz_editor',
-				'admin_question_editor',
+				//'admin_course_editor',
+				//'admin_quiz_editor',
+				//'admin_question_editor',
 				'duplicator',
 				// Duplicate course, lesson, quiz, question.
-				'modal_search_items',
+				//'modal_search_items',
 				// Used to search courses on LP Order
 				//'modal_search_users',
 				// Used to search users on LP Order
@@ -77,7 +77,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				// Used to remove items from LP Order
 				'update_email_status',
 				// Use for enable email on LP Settings
-				'search-authors',
+				//'search-authors',
 				// Used to search username on input some page (list courses, lp orders, quizzes, questions... on the Backend
 				//'skip-notice-install',
 			);
@@ -102,7 +102,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Search user on some pages on the Backend
 		 */
-		public static function search_authors() {
+		/*public static function search_authors() {
 			$args  = array(
 				'orderby'        => 'name',
 				'order'          => 'ASC',
@@ -128,14 +128,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				)
 			);
 			die();
-		}
+		}*/
 
 		/**
 		 * Handle ajax admin course editor.
 		 *
 		 * @since 3.0.0
 		 */
-		public static function admin_course_editor() {
+		/*public static function admin_course_editor() {
 			$editor = LP_Admin_Editor::get_editor_course();
 			self::admin_editor( $editor );
 		}
@@ -145,7 +145,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public static function admin_question_editor() {
+		/*public static function admin_question_editor() {
 			$editor = LP_Admin_Editor::get_editor_question();
 			self::admin_editor( $editor );
 		}
@@ -155,7 +155,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public static function admin_quiz_editor() {
+		/*public static function admin_quiz_editor() {
 			$editor = LP_Admin_Editor::get_editor_quiz();
 			self::admin_editor( $editor );
 		}
@@ -165,7 +165,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.0.2
 		 */
-		public static function admin_editor( &$editor ) {
+		/*public static function admin_editor( &$editor ) {
 			$result = $editor->dispatch();
 
 			if ( is_wp_error( $result ) ) {
@@ -175,7 +175,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			learn_press_send_json_success( $result );
-		}
+		}*/
 
 		/**
 		 * Duplicate course, lesson, quiz, question.
@@ -354,7 +354,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Search items by requesting params.
 		 */
-		public static function modal_search_items() {
+		/*public static function modal_search_items() {
 			$term       = LP_Request::get_param( 'term' );
 			$type       = LP_Request::get_param( 'type' );
 			$context    = LP_Request::get_param( 'context' );
@@ -391,7 +391,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'items' => $search->get_items(),
 				)
 			);
-		}
+		}*/
 
 		/**
 		 * Search items by requesting params.
