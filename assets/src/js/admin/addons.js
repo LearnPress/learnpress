@@ -546,6 +546,9 @@ class AdminAddons {
 		} );
 		el.classList.add( 'nav-tab-active' );
 		el.setAttribute( 'aria-pressed', 'true' );
+		if ( el.scrollIntoView ) {
+			el.scrollIntoView( { inline: 'center', block: 'nearest', behavior: 'smooth' } );
+		}
 
 		const tabName = el.dataset.tab;
 		const elSearch = this.elAddonsPage.querySelector(

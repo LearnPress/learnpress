@@ -454,6 +454,7 @@
 		}
 
 		&__actions {
+			overflow: hidden;
 			gap: $lp-spacing-sm;
 			min-height: 41px;
 			margin: $lp-spacing-xl 0 0;
