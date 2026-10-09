@@ -174,15 +174,17 @@ class BuilderListQuizzesTemplate {
 
 		try {
 			$html_list_quiz = '';
-			foreach ( $quizzes as $quiz_model ) {
-				$html_list_quiz .= self::render_quiz( $quiz_model );
+
+			if ( empty( $quizzes ) ) {
+				return Template::print_message(
+					__( 'No quizzes found', 'learnpress' ),
+					'info',
+					false
+				);
 			}
 
-			if ( empty( $html_list_quiz ) ) {
-				$html_list_quiz = sprintf(
-					'<tr class="cb-list-empty-row"><td colspan="7">%s</td></tr>',
-					Template::print_message( __( 'No quizzes found', 'learnpress' ), 'info', false )
-				);
+			foreach ( $quizzes as $quiz_model ) {
+				$html_list_quiz .= self::render_quiz( $quiz_model );
 			}
 
 			$table_args = [

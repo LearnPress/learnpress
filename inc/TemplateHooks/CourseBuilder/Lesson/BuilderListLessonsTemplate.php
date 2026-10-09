@@ -9,6 +9,7 @@
 namespace LearnPress\TemplateHooks\CourseBuilder\Lesson;
 
 use LearnPress\CourseBuilder\CourseBuilder;
+use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\LessonPostModel;
@@ -195,15 +196,17 @@ class BuilderListLessonsTemplate {
 
 		try {
 			$html_list_lesson = '';
-			foreach ( $lessons as $lesson_model ) {
-				$html_list_lesson .= self::render_lesson( $lesson_model );
+
+			if ( empty( $lessons ) ) {
+				return Template::print_message(
+					__( 'No lessons found', 'learnpress' ),
+					'info',
+					false
+				);
 			}
 
-			if ( empty( $html_list_lesson ) ) {
-				$html_list_lesson = sprintf(
-					'<tr class="cb-list-empty-row"><td colspan="6">%s</td></tr>',
-					Template::print_message( __( 'No lessons found', 'learnpress' ), 'info', false )
-				);
+			foreach ( $lessons as $lesson_model ) {
+				$html_list_lesson .= self::render_lesson( $lesson_model );
 			}
 
 			$table_args = [
@@ -241,7 +244,7 @@ class BuilderListLessonsTemplate {
 
 			$content = TableListTemplate::instance()->html_table( $table_args );
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			$content = Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
 		}
 
 		return $content;

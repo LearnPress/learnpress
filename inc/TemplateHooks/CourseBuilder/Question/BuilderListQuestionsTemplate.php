@@ -177,15 +177,17 @@ class BuilderListQuestionsTemplate {
 
 		try {
 			$html_list_question = '';
-			foreach ( $questions as $question_model ) {
-				$html_list_question .= self::render_question( $question_model );
+
+			if ( empty( $questions ) ) {
+				return Template::print_message(
+					__( 'No questions found', 'learnpress' ),
+					'info',
+					false
+				);
 			}
 
-			if ( empty( $html_list_question ) ) {
-				$html_list_question = sprintf(
-					'<tr class="cb-list-empty-row"><td colspan="6">%s</td></tr>',
-					Template::print_message( __( 'No questions found', 'learnpress' ), 'info', false )
-				);
+			foreach ( $questions as $question_model ) {
+				$html_list_question .= self::render_question( $question_model );
 			}
 
 			$table_args = [
