@@ -95,7 +95,7 @@ class AdminListStudentsEnrolled {
 				'course_id'             => LP_Request::get_param( 'course_id', 0 ),
 				'course_name'           => LP_Request::get_param( 'course_name' ),
 				'paged'                 => 1,
-				'search'                => lp_request::get_param( 'search' ),
+				'student_name'          => lp_request::get_param( 'student_name' ),
 				'start_date'            => LP_Request::get_param( 'start_date' ),
 				'end_date'              => LP_Request::get_param( 'end_date' ),
 				'enableUpdateParamsUrl' => false,
@@ -146,7 +146,7 @@ class AdminListStudentsEnrolled {
 			$course_id   = abs( LP_Helper::sanitize_params_submitted( $data['course_id'] ?? 0, 'int' ) );
 			$paged       = max( 1, abs( LP_Helper::sanitize_params_submitted( $data['paged'] ?? 1, 'int' ) ) );
 			$course_name = LP_Helper::sanitize_params_submitted( $data['course_name'] ?? '' );
-			$search      = LP_Helper::sanitize_params_submitted( $data['search'] ?? '' );
+			$student_name = LP_Helper::sanitize_params_submitted( $data['student_name'] ?? '' );
 			$start_date  = lp_helper::sanitize_params_submitted( $data['start_date'] ?? '' );
 			$end_date    = lp_helper::sanitize_params_submitted( $data['end_date'] ?? '' );
 			$per_page    = self::PER_PAGE;
@@ -196,8 +196,8 @@ class AdminListStudentsEnrolled {
 				);
 			}
 
-			if ( ! empty( $search ) ) {
-				$search_like     = '%' . $lp_db_user_items->wpdb->esc_like( $search ) . '%';
+			if ( ! empty( $student_name ) ) {
+				$search_like     = '%' . $lp_db_user_items->wpdb->esc_like( $student_name ) . '%';
 				$filter->where[] = $lp_db_user_items->wpdb->prepare(
 					'AND ( u.display_name LIKE %s OR u.user_email LIKE %s )',
 					$search_like,
@@ -260,7 +260,7 @@ class AdminListStudentsEnrolled {
 		$data_get        = LP_Helper::sanitize_params_submitted( $_GET );
 		$selected_course = abs( LP_Helper::sanitize_params_submitted( $data_get['course_id'] ?? 0, 'int' ) );
 		$search_course   = LP_Helper::sanitize_params_submitted( $data_get['course_name'] ?? '' );
-		$search_student  = LP_Helper::sanitize_params_submitted( $data_get['search'] ?? '' );
+		$search_student  = LP_Helper::sanitize_params_submitted( $data_get['student_name'] ?? '' );
 		$search_start    = lp_helper::sanitize_params_submitted( $data_get['start_date'] ?? '' );
 		$search_end      = lp_helper::sanitize_params_submitted( $data_get['end_date'] ?? '' );
 
@@ -280,7 +280,7 @@ class AdminListStudentsEnrolled {
 				<input id="lp-enrolled-search-input"
 					class="lp-enrolled-search-input"
 					type="text"
-					name="search" value="%s" placeholder="%s">
+					name="student_name" value="%s" placeholder="%s">
 			</div>
 			<div class="filter-field">
 				<label for="lp-enrolled-filter-start-date">%s</label>
@@ -342,7 +342,7 @@ class AdminListStudentsEnrolled {
 				<label for="lp-modal-enrolled-search-input">%s</label>
 				<input id="lp-modal-enrolled-search-input"
 					class="lp-enrolled-search-input"
-					type="text" name="search" placeholder="%s">
+					type="text" name="student_name" placeholder="%s">
 			</div>
 			<div class="filter-field">
 				<label for="lp-modal-enrolled-filter-start-date">%s</label>
