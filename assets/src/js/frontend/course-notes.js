@@ -301,9 +301,8 @@ export class CourseNotes {
 		this.el.list.textContent = '';
 		this.notes.forEach( ( note ) => this.el.list.appendChild( this.createCard( note ) ) );
 
-		const count = this.notes.length;
 		if ( this.el.empty ) {
-			this.el.empty.hidden = count > 0;
+			this.el.empty.hidden = this.notes.length > 0;
 		}
 	}
 
@@ -436,7 +435,7 @@ export class CourseNotes {
 	 */
 	setActiveNote( noteId, scrollCard = false ) {
 		this.panelRoot?.querySelectorAll( `${ CourseNotes.selectors.card }.is-active` ).forEach( ( el ) => el.classList.remove( 'is-active' ) );
-		document.querySelectorAll( `${ CourseNotes.selectors.mark }.is-active` ).forEach( ( el ) => el.classList.remove( 'is-active' ) );
+		this.contentRoot?.querySelectorAll( `${ CourseNotes.selectors.mark }.is-active` ).forEach( ( el ) => el.classList.remove( 'is-active' ) );
 
 		if ( noteId === null || noteId === undefined ) {
 			return;
@@ -484,14 +483,15 @@ export class CourseNotes {
 			return;
 		}
 
+		// Wrapping highlights preserves the text, so read it once for all anchors.
+		const text = getText( this.contentRoot );
 		// Oldest first, so newer highlights are nested inside older ones.
 		[ ...this.notes ].reverse().forEach( ( note ) => {
 			if ( note.note_type !== TYPE_HIGHLIGHT ) {
 				return;
 			}
 
-			// Offsets are recomputed per note: wrapping does not change the text.
-			const position = locateInText( getText( this.contentRoot ), note.anchor );
+			const position = locateInText( text, note.anchor );
 			if ( ! position || ! wrapPosition( this.contentRoot, position.start, position.end, note.note_id ).length ) {
 				this.orphanedIds.add( String( note.note_id ) );
 			}
@@ -534,7 +534,7 @@ export class CourseNotes {
 	}
 
 	hideSelectionButton() {
-		if ( this.el.selectionBtn && ! this.el.selectionBtn.hidden ) {
+		if ( this.el.selectionBtn ) {
 			this.el.selectionBtn.hidden = true;
 		}
 	}

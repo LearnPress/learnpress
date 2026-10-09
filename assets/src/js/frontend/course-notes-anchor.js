@@ -9,7 +9,7 @@
  * @version 1.0.0
  */
 
-export const CONTEXT_LENGTH = 32;
+const CONTEXT_LENGTH = 32;
 export const MARK_CLASS = 'lp-note-hl';
 
 /**
@@ -18,7 +18,7 @@ export const MARK_CLASS = 'lp-note-hl';
  * @param {Node} root
  * @return {Text[]} text nodes
  */
-export const getTextNodes = ( root ) => {
+const getTextNodes = ( root ) => {
 	const nodes = [];
 	const walker = document.createTreeWalker( root, NodeFilter.SHOW_TEXT );
 	let node = walker.nextNode();
