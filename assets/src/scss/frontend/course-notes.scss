@@ -1,0 +1,152 @@
+/**
+ * Student Notes uses the shared learning bar, LP buttons, forms and messages.
+ * All layout adjustments below are scoped to Notes; system styles stay unchanged.
+ *
+ * @since 4.4.9.2
+ */
+@import "../variables";
+
+$lp-notes-highlight: var(--lp-notes-highlight-color, rgba(14, 165, 233, 0.16));
+$lp-notes-highlight-active: var(--lp-notes-highlight-active-color, rgba(14, 165, 233, 0.34));
+
+mark.lp-note-hl {
+	padding: 0;
+	background: $lp-notes-highlight;
+	color: inherit;
+	cursor: pointer;
+
+	&.is-active,
+	&.is-pending,
+	&:hover {
+		background: $lp-notes-highlight-active;
+	}
+}
+
+.lp-notes__selection-btn {
+	position: absolute;
+	z-index: 10000;
+	background: $color-white;
+}
+
+.lp-notes__body,
+.lp-notes__list,
+.lp-notes__card {
+	display: flex;
+	flex-direction: column;
+	gap: $spacing-base-4x;
+}
+
+// AI's existing stylesheet makes the shared content area a flex container.
+// Restore scrolling and normal content height only while Notes is active.
+.lp-addon-content-bar[data-learning-bar-item="notes"] .lp-addon-content-bar__content {
+	padding: $spacing-base-5x;
+	overflow: auto;
+}
+
+.lp-addon-content-bar .lp-notes__body {
+	flex: none;
+}
+
+.lp-notes__help {
+	align-items: flex-start;
+	padding-right: $spacing-base-10x;
+
+	p {
+		margin: 0;
+	}
+}
+
+.lp-notes__help .lp-notes__help-hint {
+	margin-top: $spacing-base-2x;
+}
+
+.lp-notes__help-dismiss {
+	position: absolute;
+	top: $spacing-base-2x;
+	right: $spacing-base-2x;
+}
+
+.lp-notes__add {
+	width: 100%;
+}
+
+.lp-notes__form,
+.lp-notes__card {
+	padding: $spacing-base-4x;
+	border: 1px solid $border-color;
+	border-radius: $border-radius-global;
+	background: $color-white;
+}
+
+.lp-notes__form-content {
+	min-height: 88px;
+	font-family: inherit;
+	resize: vertical;
+}
+
+.lp-notes__form-actions,
+.lp-notes__card-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: $spacing-base-2x;
+	flex-wrap: wrap;
+}
+
+.lp-notes__form-quote,
+.lp-notes__card-quote {
+	margin: 0;
+	padding: $spacing-base-3x;
+	border: 0;
+	border-left: 3px solid $border-color;
+	background: $lp-notes-highlight;
+	white-space: pre-line;
+	overflow-wrap: anywhere;
+
+	&::before,
+	&::after {
+		content: none;
+	}
+}
+
+.lp-notes__form-quote {
+	max-height: 96px;
+	margin-bottom: $spacing-base-3x;
+	overflow-y: auto;
+}
+
+.lp-notes__card {
+	gap: $spacing-base-2x;
+
+	&.is-active,
+	&:focus-visible {
+		border-color: $color-primary;
+	}
+
+	&:focus {
+		outline: none;
+	}
+
+	&.is-highlight {
+		cursor: pointer;
+	}
+}
+
+.lp-notes__card-content {
+	margin: 0;
+	white-space: pre-line;
+	overflow-wrap: anywhere;
+
+	&:empty {
+		display: none;
+	}
+}
+
+.lp-notes__card-orphaned {
+	margin: 0;
+}
+
+// Keep hidden elements hidden when LP's flex/button/message rules apply.
+.lp-notes [hidden],
+.lp-notes__body [hidden] {
+	display: none;
+}

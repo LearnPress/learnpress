@@ -9,6 +9,8 @@
  * @version  4.0.1
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 $tabs = learn_press_get_course_tabs();
@@ -27,12 +29,12 @@ if ( $lp_user && ! $lp_user instanceof LP_User_Guest ) {
 
 	if ( ! $can_view_course->flag ) {
 		if ( LP_BLOCK_COURSE_FINISHED === $can_view_course->key ) {
-			learn_press_display_message(
+			Template::print_message(
 				esc_html__( 'You finished this course. This course has been blocked', 'learnpress' ),
 				'warning'
 			);
 		} elseif ( LP_BLOCK_COURSE_DURATION_EXPIRE === $can_view_course->key ) {
-			learn_press_display_message(
+			Template::print_message(
 				esc_html__( 'This course has been blocked for expiration', 'learnpress' ),
 				'warning'
 			);

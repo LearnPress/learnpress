@@ -4,8 +4,10 @@ namespace LearnPress\WPGDPR;
 
 use Exception;
 use LearnPress\Databases\DataBase;
+use LearnPress\Databases\NoteDB;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\FilterBase;
+use LearnPress\Filters\NoteFilter;
 use LearnPress\Filters\OrderPostFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -73,6 +75,7 @@ class ErasePersonalData {
 				__( '- Eraser Orders of User', 'learnpress' ),
 				__( '- Eraser attend course of User', 'learnpress' ),
 				__( '- Eraser attend lessons, quizzes... of User', 'learnpress' ),
+				__( '- Eraser notes of User', 'learnpress' ),
 			);
 			$response['done']          = true;
 		} catch ( Throwable $e ) {
@@ -188,6 +191,9 @@ class ErasePersonalData {
 		$filter_usermeta->collection = $db->wpdb->usermeta;
 		$db->delete_execute( $filter_usermeta );
 		// End delete user meta
+
+		// Delete student notes.
+		NoteDB::getInstance()->delete_notes_by( NoteFilter::COL_USER_ID, array( $user_id ) );
 
 		// Find all user item ids of user
 		$filter_user_items          = new LP_User_Items_Filter();

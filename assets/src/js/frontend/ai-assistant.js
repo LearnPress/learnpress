@@ -4,13 +4,13 @@
  * LearnPress runtime implementation:
  * - ES6 class module.
  * - Delegated events via lpUtils.eventHandlers.
- * - Boot via lpUtils.lpOnElementReady.
+ * - Boot via the learning content bar after its template is inserted.
  * - AJAX transport via window.lpAJAXG.fetchAJAX.
  *
  * @since   4.3.5
  * @version 1.0.0
  */
-import * as lpUtils from '../utils.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import SweetAlert from 'sweetalert2';
 
 export class AIAssistantWidget {
@@ -28,9 +28,6 @@ export class AIAssistantWidget {
 
 	static selectors = {
 		root: '#lp-ai-assistant',
-		toggleBtn: '.lp-ai-assistant__toggle',
-		panel: '.lp-ai-assistant__panel',
-		closeBtn: '.lp-ai-assistant__close-btn',
 		clearBtn: '.lp-ai-assistant__clear-btn',
 		msgList: '.lp-ai-assistant__messages',
 		inputEl: '.lp-ai-assistant__input',
@@ -43,129 +40,110 @@ export class AIAssistantWidget {
 		quizOptionBtn: '.lp-ai-assistant__quiz-option',
 	};
 
-	/**
-	 * Curriculum item types the assistant supports.
-	 *
-	 * Mirrors AIAssistantController::get_supported_item_types(). The server re-validates,
-	 * so this only avoids pointless requests.
-	 */
+	static eventContentBarRendered = 'lp-learning-content-bar-rendered';
+
 	static itemTypes = [ 'lp_lesson', 'lp_quiz' ];
 
-	init() {
-		if ( ! this.validateConfig() ) {
+	init( root ) {
+		this.events();
+		this.activateRoot( root );
+	}
+
+	events() {
+		if ( AIAssistantWidget._loadedEvents ) {
 			return;
 		}
+		AIAssistantWidget._loadedEvents = this;
 
-		this.root = document.querySelector( AIAssistantWidget.selectors.root );
-		if ( ! this.root ) {
-			return;
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: AIAssistantWidget.selectors.clearBtn,
+				callBack: this.handleClearClick.bind( this ),
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.sendBtn }`,
+				callBack: this.handleSendClick.bind( this ),
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quickBtn }`,
+				callBack: this.handleQuickActionClick.bind( this ),
+			},
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quizOptionBtn }`,
+				callBack: this.handleQuizOptionClick.bind( this ),
+			},
+		] );
+
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.inputEl }`,
+				callBack: this.handleInputKeydown.bind( this ),
+			},
+		] );
+	}
+
+	readConfigFromRoot( root ) {
+		const raw = root?.dataset?.lpAiConfig;
+		if ( raw ) {
+			try {
+				const parsed = JSON.parse( raw );
+				if ( parsed && typeof parsed === 'object' ) {
+					this.config = parsed;
+					return;
+				}
+			} catch ( _e ) {}
 		}
 
+		this.config = null;
+	}
+
+	activateRoot( root ) {
+		this.readConfigFromRoot( root );
+		this.root = root;
 		this.cacheElements();
-		if ( ! this.validateDOM() ) {
-			return;
-		}
 
-		this.storageKey = `lp_ai_chat_${ this.config.context }_${ this.config.itemId }`;
+		this.storageKey = `lp_ai_chat_${ this.config.itemType }_${ this.config.itemId }`;
 		this.applyInitialState();
 		this.loadHistory();
 		this.renderHistoryToDOM();
 		this.bindQuizCompletedHook();
-		this.events();
-	}
-
-	validateConfig() {
-		if ( typeof window.lpAIAssistant !== 'object' || ! window.lpAIAssistant ) {
-			return false;
-		}
-
-		this.config = window.lpAIAssistant;
-		if ( ! this.config.enabled ) {
-			return false;
-		}
-
-		const requiredString = [ 'nonce', 'ajaxUrl' ];
-		for ( const key of requiredString ) {
-			if ( typeof this.config[ key ] !== 'string' || ! this.config[ key ] ) {
-				return false;
-			}
-		}
-
-		const itemId = Number.isInteger( this.config.itemId ) ? this.config.itemId : this.config.lessonId;
-		if ( ! Number.isInteger( itemId ) || itemId <= 0 ) {
-			return false;
-		}
-
-		if ( ! Number.isInteger( this.config.courseId ) || this.config.courseId <= 0 ) {
-			return false;
-		}
-
-		/**
-		 * itemType is required and must come from the server-localized config. It is
-		 * never guessed from context, lessonId or the numeric ID: a course item is
-		 * identified by (courseId, itemType, itemId), and inferring one leg of that
-		 * tuple on the client would let a lesson request address a quiz record.
-		 */
-		if ( ! AIAssistantWidget.itemTypes.includes( this.config.itemType ) ) {
-			return false;
-		}
-
-		this.config.itemId = itemId;
-		this.config.lessonId = itemId; // Backward compatibility for existing AJAX contract.
-		this.config.context = this.config.context === 'quiz' ? 'quiz' : 'lesson';
-		this.config.quizCompleted = !! this.config.quizCompleted;
-		this.config.enabledActions = {
-			summarize: true,
-			explain: true,
-			quick_quiz: true,
-			smart_review: true,
-			...( this.config.enabledActions || {} ),
-		};
-
-		this.config.i18n = {
-			you: this.config?.i18n?.you || 'You',
-			assistant: this.config?.i18n?.assistant || 'AI Assistant',
-			thinking: this.config?.i18n?.thinking || 'Thinking...',
-			sendError: this.config?.i18n?.sendError || 'An error occurred. Please try again.',
-			clearConfirm: this.config?.i18n?.clearConfirm || 'Clear chat history?',
-			explainPrompt: this.config?.i18n?.explainPrompt || 'Explain a concept from this lesson.',
-			quizPrompt: this.config?.i18n?.quizPrompt || 'Create a quick quiz from this lesson.',
-			summarizePrompt: this.config?.i18n?.summarizePrompt || 'Summarize this lesson with key points.',
-			smartReviewPrompt: this.config?.i18n?.smartReviewPrompt || 'Give me a smart review of my quiz results.',
-			quizCorrectTitle: this.config?.i18n?.quizCorrectTitle || 'Correct!',
-			quizWrongTitle: this.config?.i18n?.quizWrongTitle || 'Not correct!',
-		};
 
 		return true;
 	}
 
 	cacheElements() {
-		this.elements.toggleBtn = document.querySelector( AIAssistantWidget.selectors.toggleBtn );
-		this.elements.panel = this.root.querySelector( AIAssistantWidget.selectors.panel );
-		this.elements.closeBtn = this.root.querySelector( AIAssistantWidget.selectors.closeBtn );
-		this.elements.clearBtn = this.root.querySelector( AIAssistantWidget.selectors.clearBtn );
-		this.elements.msgList = this.root.querySelector( AIAssistantWidget.selectors.msgList );
-		this.elements.inputEl = this.root.querySelector( AIAssistantWidget.selectors.inputEl );
-		this.elements.sendBtn = this.root.querySelector( AIAssistantWidget.selectors.sendBtn );
-		this.elements.inputArea = this.root.querySelector( AIAssistantWidget.selectors.inputArea );
-		this.elements.quickActions = this.root.querySelector( AIAssistantWidget.selectors.quickActions );
-		this.elements.smartReviewBtn = this.root.querySelector( AIAssistantWidget.selectors.smartReviewBtn );
-	}
+		this.elements = {};
+		const contentBar = this.root.closest( '.lp-addon-content-bar' );
 
-	validateDOM() {
-		// inputEl and sendBtn are optional — absent when free chat is disabled.
-		return !! (
-			this.elements.toggleBtn &&
-			this.elements.panel &&
-			this.elements.msgList
+		this.elements.clearBtn = contentBar?.querySelector(
+			AIAssistantWidget.selectors.clearBtn
+		);
+		this.elements.msgList = this.root.querySelector(
+			AIAssistantWidget.selectors.msgList
+		);
+		this.elements.inputEl = this.root.querySelector(
+			AIAssistantWidget.selectors.inputEl
+		);
+		this.elements.sendBtn = this.root.querySelector(
+			AIAssistantWidget.selectors.sendBtn
+		);
+		this.elements.inputArea = this.root.querySelector(
+			AIAssistantWidget.selectors.inputArea
+		);
+		this.elements.quickActions = this.root.querySelector(
+			AIAssistantWidget.selectors.quickActions
+		);
+		this.elements.smartReviewBtn = this.root.querySelector(
+			AIAssistantWidget.selectors.smartReviewBtn
 		);
 	}
 
 	applyInitialState() {
 		if ( this.elements.smartReviewBtn ) {
-			const showSmartReview = this.config.context === 'quiz'
-				? this.config.quizCompleted
-				: !! this.config.enabledActions?.smart_review;
+			const showSmartReview =
+				this.config.itemType === 'lp_quiz'
+					? this.config.quizCompleted
+					: !! this.config.enabledActions?.smart_review;
 			this.elements.smartReviewBtn.hidden = ! showSmartReview;
 		}
 
@@ -173,7 +151,7 @@ export class AIAssistantWidget {
 	}
 
 	bindQuizCompletedHook() {
-		if ( this.config.context === 'quiz' ) {
+		if ( this.config.itemType === 'lp_quiz' ) {
 			return;
 		}
 
@@ -186,92 +164,29 @@ export class AIAssistantWidget {
 			return;
 		}
 
-		hooks.addAction( 'lp-js-quiz-answer', 'learnpress/ai-assistant-smart-review', ( answered, status ) => {
-			if ( String( status || '' ).toLowerCase() !== 'completed' ) {
-				return;
-			}
+		hooks.addAction(
+			'lp-js-quiz-answer',
+			'learnpress/ai-assistant-smart-review',
+			( answered, status ) => {
+				if ( String( status || '' ).toLowerCase() !== 'completed' ) {
+					return;
+				}
 
-			this.config.quizCompleted = true;
-			this.elements.smartReviewBtn.hidden = false;
-		} );
+				this.config.quizCompleted = true;
+				this.elements.smartReviewBtn.hidden = false;
+			}
+		);
 
 		this.quizHookBound = true;
 	}
 
-	events() {
-		if ( AIAssistantWidget._loadedEvents ) {
-			return;
-		}
-		AIAssistantWidget._loadedEvents = this;
-
-		lpUtils.eventHandlers( 'click', [
-			{
-				selector: AIAssistantWidget.selectors.toggleBtn,
-				class: this,
-				callBack: this.handleToggleClick.name,
-			},
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.closeBtn }`,
-				class: this,
-				callBack: this.handleCloseClick.name,
-			},
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.clearBtn }`,
-				class: this,
-				callBack: this.handleClearClick.name,
-			},
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.sendBtn }`,
-				class: this,
-				callBack: this.handleSendClick.name,
-			},
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quickBtn }`,
-				class: this,
-				callBack: this.handleQuickActionClick.name,
-			},
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.quizOptionBtn }`,
-				class: this,
-				callBack: this.handleQuizOptionClick.name,
-			},
-		] );
-
-		lpUtils.eventHandlers( 'keydown', [
-			{
-				selector: `${ AIAssistantWidget.selectors.root } ${ AIAssistantWidget.selectors.inputEl }`,
-				class: this,
-				callBack: this.handleInputKeydown.name,
-			},
-			{
-				selector: 'body',
-				class: this,
-				callBack: this.handleEscapeKeydown.name,
-			},
-		] );
-	}
-
-	handleToggleClick( args ) {
-		args.e.preventDefault();
-		if ( this.elements.panel.hidden ) {
-			this.openPanel();
-		} else {
-			this.closePanel();
-		}
-	}
-
-	handleCloseClick( args ) {
-		args.e.preventDefault();
-		this.closePanel();
-	}
-
 	handleClearClick( args ) {
-		args.e.preventDefault();
+		const { e, target } = args;
+
 		SweetAlert.fire( {
 			title: this.config.i18n.clearConfirm,
 			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonColor: 'var(--lp-primary-color, #ffb606)',
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
 				this.clearHistory();
@@ -285,7 +200,7 @@ export class AIAssistantWidget {
 	}
 
 	handleQuickActionClick( args ) {
-		args.e.preventDefault();
+		const { e, target } = args;
 
 		if ( this.activeQuizState?.is_active ) {
 			return;
@@ -309,7 +224,6 @@ export class AIAssistantWidget {
 			return;
 		}
 
-		this.openPanel();
 		this.sendMessage( prompt, action );
 	}
 
@@ -319,12 +233,18 @@ export class AIAssistantWidget {
 			return;
 		}
 
-		const btn = args.target.closest( AIAssistantWidget.selectors.quizOptionBtn );
+		const btn = args.target.closest(
+			AIAssistantWidget.selectors.quizOptionBtn
+		);
 		if ( ! btn ) {
 			return;
 		}
 
-		const answerText = ( btn.dataset.option || btn.textContent || '' ).trim();
+		const answerText = (
+			btn.dataset.option ||
+			btn.textContent ||
+			''
+		).trim();
 		if ( ! answerText ) {
 			return;
 		}
@@ -343,45 +263,6 @@ export class AIAssistantWidget {
 		}
 	}
 
-	handleEscapeKeydown( args ) {
-		if ( args.e.key !== 'Escape' ) {
-			return;
-		}
-
-		if ( this.elements.panel && ! this.elements.panel.hidden ) {
-			this.closePanel();
-		}
-	}
-
-	getAjaxHandle() {
-		const ajaxHandle = window.lpAJAXG;
-		if ( ! ajaxHandle || typeof ajaxHandle.fetchAJAX !== 'function' ) {
-			return null;
-		}
-
-		return ajaxHandle;
-	}
-
-	openPanel() {
-		this.elements.panel.hidden = false;
-		this.root.setAttribute( 'aria-hidden', 'false' );
-		this.elements.toggleBtn.setAttribute( 'aria-expanded', 'true' );
-		this.elements.toggleBtn.classList.add( 'is-hidden' );
-		this.elements.inputEl?.focus();
-
-		if ( this.elements.msgList ) {
-			this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
-		}
-	}
-
-	closePanel() {
-		this.elements.panel.hidden = true;
-		this.root.setAttribute( 'aria-hidden', 'true' );
-		this.elements.toggleBtn.setAttribute( 'aria-expanded', 'false' );
-		this.elements.toggleBtn.classList.remove( 'is-hidden' );
-		this.elements.toggleBtn.focus();
-	}
-
 	setLoadingState( isLoading ) {
 		this.isRequesting = isLoading;
 		if ( this.elements.sendBtn ) {
@@ -394,11 +275,17 @@ export class AIAssistantWidget {
 
 	setQuizInputMode( isQuizActive ) {
 		if ( this.elements.inputArea ) {
-			this.elements.inputArea.classList.toggle( 'lp-ai-assistant__input-area--hidden', isQuizActive );
+			this.elements.inputArea.classList.toggle(
+				'lp-ai-assistant__input-area--hidden',
+				isQuizActive
+			);
 		}
 
 		if ( this.elements.quickActions ) {
-			this.elements.quickActions.classList.toggle( 'lp-ai-assistant__quick-actions--disabled', isQuizActive );
+			this.elements.quickActions.classList.toggle(
+				'lp-ai-assistant__quick-actions--disabled',
+				isQuizActive
+			);
 		}
 	}
 
@@ -412,7 +299,9 @@ export class AIAssistantWidget {
 
 			const lastReview = [ ...this.history ]
 				.reverse()
-				.find( ( item ) => item?.type === 'quiz_review' && item?.review );
+				.find(
+					( item ) => item?.type === 'quiz_review' && item?.review
+				);
 			this.lastQuizReviewSignature = lastReview?.review
 				? this.getQuizReviewKey( lastReview.review )
 				: '';
@@ -424,7 +313,10 @@ export class AIAssistantWidget {
 
 	saveHistory() {
 		try {
-			localStorage.setItem( this.storageKey, JSON.stringify( this.history ) );
+			localStorage.setItem(
+				this.storageKey,
+				JSON.stringify( this.history )
+			);
 		} catch ( _e ) {
 			// Ignore storage errors.
 		}
@@ -464,11 +356,19 @@ export class AIAssistantWidget {
 	}
 
 	appendMessage( role, text ) {
-		const el = this.createEl( 'div', `lp-ai-assistant__msg lp-ai-assistant__msg--${ role }` );
-		const label = role === 'user' ? this.config.i18n.you : this.config.i18n.assistant;
+		const el = this.createEl(
+			'div',
+			`lp-ai-assistant__msg lp-ai-assistant__msg--${ role }`
+		);
+		const label =
+			role === 'user' ? this.config.i18n.you : this.config.i18n.assistant;
 
-		el.appendChild( this.createEl( 'span', 'lp-ai-assistant__msg-label', label ) );
-		el.appendChild( this.createEl( 'p', 'lp-ai-assistant__msg-text', text ) );
+		el.appendChild(
+			this.createEl( 'span', 'lp-ai-assistant__msg-label', label )
+		);
+		el.appendChild(
+			this.createEl( 'p', 'lp-ai-assistant__msg-text', text )
+		);
 
 		this.elements.msgList.appendChild( el );
 		this.elements.msgList.scrollTop = this.elements.msgList.scrollHeight;
@@ -483,7 +383,10 @@ export class AIAssistantWidget {
 				return;
 			}
 
-			if ( ! message || ! [ 'user', 'assistant' ].includes( message.role ) ) {
+			if (
+				! message ||
+				! [ 'user', 'assistant' ].includes( message.role )
+			) {
 				return;
 			}
 
@@ -505,12 +408,21 @@ export class AIAssistantWidget {
 			return null;
 		}
 
-		const selectedIndex = Number.parseInt( quiz.feedback.selected_index ?? -1, 10 );
-		const correctIndex = Number.parseInt( quiz.feedback.correct_index ?? -1, 10 );
+		const selectedIndex = Number.parseInt(
+			quiz.feedback.selected_index ?? -1,
+			10
+		);
+		const correctIndex = Number.parseInt(
+			quiz.feedback.correct_index ?? -1,
+			10
+		);
 
 		return {
 			question_index: questionIndex,
-			total: Number.parseInt( quiz.total || question.options.length || 0, 10 ),
+			total: Number.parseInt(
+				quiz.total || question.options.length || 0,
+				10
+			),
 			question: question.question || '',
 			options: question.options,
 			selected_index: selectedIndex,
@@ -555,10 +467,17 @@ export class AIAssistantWidget {
 	 * @return {HTMLButtonElement} The option button.
 	 */
 	buildQuizOption( option, index, extraClasses = [] ) {
-		const classes = [ 'lp-ai-assistant__quiz-option', ...extraClasses ].join( ' ' );
+		const classes = [
+			'lp-ai-assistant__quiz-option',
+			...extraClasses,
+		].join( ' ' );
 		const letter = String.fromCharCode( 65 + index );
 
-		const btn = this.createEl( 'button', classes, `${ letter }. ${ String( option ) }` );
+		const btn = this.createEl(
+			'button',
+			classes,
+			`${ letter }. ${ String( option ) }`
+		);
 		btn.type = 'button';
 
 		return btn;
@@ -574,7 +493,11 @@ export class AIAssistantWidget {
 			}
 
 			if ( index === review.selected_index ) {
-				classes.push( review.is_correct ? 'is-selected-correct' : 'is-selected-wrong' );
+				classes.push(
+					review.is_correct
+						? 'is-selected-correct'
+						: 'is-selected-wrong'
+				);
 			}
 
 			const btn = this.buildQuizOption( option, index, classes );
@@ -585,33 +508,60 @@ export class AIAssistantWidget {
 	}
 
 	appendQuizReviewCard( review ) {
-		const card = this.createEl( 'div', 'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--review' );
+		const card = this.createEl(
+			'div',
+			'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--review'
+		);
 		card.dataset.reviewKey = this.getQuizReviewKey( review );
 
-		const optionCount = Array.isArray( review.options ) ? review.options.length : 0;
+		const optionCount = Array.isArray( review.options )
+			? review.options.length
+			: 0;
 		const total = review.total || optionCount;
 
 		card.appendChild(
-			this.createEl( 'div', 'lp-ai-assistant__quiz-head', `Question ${ review.question_index + 1 }/${ total }` )
+			this.createEl(
+				'div',
+				'lp-ai-assistant__quiz-head',
+				`Question ${ review.question_index + 1 }/${ total }`
+			)
 		);
-		card.appendChild( this.createEl( 'div', 'lp-ai-assistant__quiz-question', review.question || '' ) );
+		card.appendChild(
+			this.createEl(
+				'div',
+				'lp-ai-assistant__quiz-question',
+				review.question || ''
+			)
+		);
 
-		const optionsEl = this.createEl( 'div', 'lp-ai-assistant__quiz-options' );
-		this.buildQuizReviewOptions( review ).forEach( ( btn ) => optionsEl.appendChild( btn ) );
+		const optionsEl = this.createEl(
+			'div',
+			'lp-ai-assistant__quiz-options'
+		);
+		this.buildQuizReviewOptions( review ).forEach( ( btn ) =>
+			optionsEl.appendChild( btn )
+		);
 		card.appendChild( optionsEl );
 
 		const feedbackClass = review.is_correct ? 'is-correct' : 'is-wrong';
-		const feedbackEl = this.createEl( 'div', `lp-ai-assistant__quiz-feedback ${ feedbackClass }` );
+		const feedbackEl = this.createEl(
+			'div',
+			`lp-ai-assistant__quiz-feedback ${ feedbackClass }`
+		);
 		feedbackEl.appendChild(
 			this.createEl(
 				'strong',
 				'',
-				review.is_correct ? this.config.i18n.quizCorrectTitle : this.config.i18n.quizWrongTitle
+				review.is_correct
+					? this.config.i18n.quizCorrectTitle
+					: this.config.i18n.quizWrongTitle
 			)
 		);
 
 		if ( review.explanation ) {
-			feedbackEl.appendChild( this.createEl( 'div', '', review.explanation ) );
+			feedbackEl.appendChild(
+				this.createEl( 'div', '', review.explanation )
+			);
 		}
 
 		card.appendChild( feedbackEl );
@@ -620,7 +570,9 @@ export class AIAssistantWidget {
 	}
 
 	renderQuizState() {
-		const oldActiveQuizCard = this.elements.msgList.querySelector( '.lp-ai-assistant__quiz-card--active' );
+		const oldActiveQuizCard = this.elements.msgList.querySelector(
+			'.lp-ai-assistant__quiz-card--active'
+		);
 		if ( oldActiveQuizCard ) {
 			oldActiveQuizCard.remove();
 		}
@@ -650,19 +602,35 @@ export class AIAssistantWidget {
 			return;
 		}
 
-		const card = this.createEl( 'div', 'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--active' );
-		const options = Array.isArray( question.options ) ? question.options : [];
+		const card = this.createEl(
+			'div',
+			'lp-ai-assistant__quiz-card lp-ai-assistant__quiz-card--active'
+		);
+		const options = Array.isArray( question.options )
+			? question.options
+			: [];
 
 		card.appendChild(
 			this.createEl(
 				'div',
 				'lp-ai-assistant__quiz-head',
-				`Question ${ currentIndex + 1 }/${ quiz.total || options.length }`
+				`Question ${ currentIndex + 1 }/${
+					quiz.total || options.length
+				}`
 			)
 		);
-		card.appendChild( this.createEl( 'div', 'lp-ai-assistant__quiz-question', question.question || '' ) );
+		card.appendChild(
+			this.createEl(
+				'div',
+				'lp-ai-assistant__quiz-question',
+				question.question || ''
+			)
+		);
 
-		const optionsEl = this.createEl( 'div', 'lp-ai-assistant__quiz-options' );
+		const optionsEl = this.createEl(
+			'div',
+			'lp-ai-assistant__quiz-options'
+		);
 		options.forEach( ( option, index ) => {
 			const btn = this.buildQuizOption( option, index );
 
@@ -694,8 +662,7 @@ export class AIAssistantWidget {
 			return;
 		}
 
-		const ajaxHandle = this.getAjaxHandle();
-		if ( ! ajaxHandle ) {
+		if ( ! window.lpAJAXG || typeof window.lpAJAXG.fetchAJAX !== 'function' ) {
 			this.appendMessage( 'assistant', this.config.i18n.sendError );
 			return;
 		}
@@ -709,8 +676,13 @@ export class AIAssistantWidget {
 			this.elements.inputEl.value = '';
 		}
 
-		const pendingEl = this.appendMessage( 'assistant', this.config.i18n.thinking );
-		const pendingTextEl = pendingEl.querySelector( '.lp-ai-assistant__msg-text' );
+		const pendingEl = this.appendMessage(
+			'assistant',
+			this.config.i18n.thinking
+		);
+		const pendingTextEl = pendingEl.querySelector(
+			'.lp-ai-assistant__msg-text'
+		);
 		this.setLoadingState( true );
 
 		const dataSend = {
@@ -734,8 +706,13 @@ export class AIAssistantWidget {
 						this.activeQuizState = response?.data?.quiz || null;
 						this.renderQuizState();
 
-						const isQuizCompleted = !! this.activeQuizState?.completed || this.activeQuizState?.is_active === false;
-						if ( isQuizCompleted && this.elements.msgList?.contains( pendingEl ) ) {
+						const isQuizCompleted =
+							!! this.activeQuizState?.completed ||
+							this.activeQuizState?.is_active === false;
+						if (
+							isQuizCompleted &&
+							this.elements.msgList?.contains( pendingEl )
+						) {
 							// Keep completion feedback after the last review card.
 							this.elements.msgList.appendChild( pendingEl );
 						}
@@ -744,12 +721,16 @@ export class AIAssistantWidget {
 						this.renderQuizState();
 					}
 
-					this.history.push( { role: 'assistant', content: response.data.message } );
+					this.history.push( {
+						role: 'assistant',
+						content: response.data.message,
+					} );
 					this.saveHistory();
 				} else {
 					this.activeQuizState = null;
 					this.renderQuizState();
-					pendingTextEl.textContent = response?.message || this.config.i18n.sendError;
+					pendingTextEl.textContent =
+						response?.message || this.config.i18n.sendError;
 				}
 			},
 			error: () => {
@@ -763,11 +744,17 @@ export class AIAssistantWidget {
 			},
 		};
 
-		ajaxHandle.fetchAJAX( dataSend, callBack );
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}
 }
 
 const aiAssistantWidget = new AIAssistantWidget();
-lpUtils.lpOnElementReady( AIAssistantWidget.selectors.root, () => {
-	aiAssistantWidget.init();
+document.addEventListener( AIAssistantWidget.eventContentBarRendered, ( e ) => {
+	if ( e.detail?.item !== 'ai-assistant' ) {
+		return;
+	}
+	const root = e.detail.contentBar.querySelector( AIAssistantWidget.selectors.root );
+	if ( root && root !== aiAssistantWidget.root ) {
+		aiAssistantWidget.init( root );
+	}
 } );

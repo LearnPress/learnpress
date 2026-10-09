@@ -331,7 +331,7 @@
 				.course-item-status {
 
 					&::before {
-						color: $primary-color-course-item-status;
+						color: $color-price;
 					}
 				}
 			}
@@ -492,7 +492,7 @@ body {
 			align-items: center;
 			flex-wrap: wrap;
 			gap: 8px;
-
+			opacity: 0.8;
 			li {
 				display: inline-flex;
 				align-items: center;
@@ -526,7 +526,7 @@ body {
 	}
 
 	.course-section {
-		margin-bottom: 8px;
+		margin-bottom: 12px;
 		border: 1px solid $border-color;
 		border-radius: $border-radius-global;
 		cursor: pointer;
@@ -557,7 +557,7 @@ body {
 
 		.course-section-header {
 			background-color: $bg-grey;
-			padding: 20px;
+			padding: 16px 20px;
 			column-gap: 12px;
 			display: flex;
 			justify-content: space-between;
@@ -565,17 +565,19 @@ body {
 
 		&__title {
 			font-weight: 600;
-			font-size: 1.1em;
-			line-height: 1.3em;
+			font-size: 1em;
+			line-height: 1.5em;
 		}
 
 		&__description {
 			margin: 4px 0 0 0;
+			opacity: 0.8;
+			font-size: $font-size-small;
 		}
 
 		.section-toggle {
 			line-height: 1;
-
+			opacity: 0.8;
 			i {
 				font-size: 24px;
 			}
@@ -584,14 +586,21 @@ body {
 		.course-section-info {
 			margin-left: 0;
 			margin-right: auto;
+			display: flex;
+			justify-content: space-between;
+			flex: 1;
+			column-gap: 8px;
+			flex-wrap: wrap;
 		}
 
 		.section-count-items {
-			min-width: 24px;
-			font-weight: 600;
+			//min-width: 24px;
+			//font-weight: 600;
 			text-align: center;
-			line-height: 1.3;
-			white-space: nowrap;
+			font-size: $font-size-small;
+			opacity: 0.8;
+			//line-height: 1.3;
+			//white-space: nowrap;
 		}
 
 		.course-item {
@@ -604,7 +613,7 @@ body {
 				display: flex;
 				justify-content: space-between;
 				width: 100%;
-				column-gap: 12px;
+				column-gap: 8px;
 				row-gap: 8px;
 				position: relative;
 				align-items: flex-start;
@@ -613,7 +622,7 @@ body {
 
 			&__info {
 				display: flex;
-				column-gap: 12px;
+				column-gap: 8px;
 				row-gap: 8px;
 
 				.course-item-ico {
@@ -624,7 +633,7 @@ body {
 			&__content {
 				display: flex;
 				justify-content: space-between;
-				column-gap: 12px;
+				column-gap: 8px;
 				row-gap: 8px;
 				align-items: baseline;
 				flex: 1;
@@ -635,6 +644,8 @@ body {
 			}
 
 			&__left {
+				font-weight: $link-font-weight;
+				font-size: $font-size-small;
 				&:hover {
 					color: $color-primary;
 				}
@@ -650,6 +661,7 @@ body {
 				flex-wrap: wrap;
 				flex-direction: row-reverse;
 				justify-content: flex-end;
+				font-size: $font-size-label;
 				@media (max-width: 1024px) {
 					width: 100%;
 					order: 3;
@@ -658,7 +670,7 @@ body {
 
 			&__status {
 				.course-item-ico {
-					width: 24px;
+					//width: 24px;
 					display: flex;
 					justify-content: center;
 				}
@@ -733,7 +745,11 @@ body {
 	.course-progress {
 		> div {
 			margin-bottom: 8px;
+			&:last-child{
+			margin-bottom: 0;
 		}
+		}
+		
 		&__line{
 			width: 100%;
 			background: #ccc;
@@ -768,7 +784,10 @@ body {
 			}
 		}
 	}
-	.start-date,.end-date{
+	> div {
 		margin-bottom: 8px;
-	}
+		&:last-child{
+			margin-bottom: 0;
+		}
+	} 
 }

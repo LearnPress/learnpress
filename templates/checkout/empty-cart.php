@@ -9,10 +9,12 @@
  * @version  4.0.0
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 do_action( 'learn-press/before-empty-cart-message' );
 
-learn_press_display_message( esc_html__( 'Your cart is currently empty.', 'learnpress' ), 'error' );
+Template::print_message( esc_html__( 'Your cart is currently empty.', 'learnpress' ), 'error' );
 
 do_action( 'learn-press/after-empty-cart-message' );

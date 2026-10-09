@@ -2,9 +2,12 @@
  * CSS for overriding some style defaults of themes
  */
 body {
+
 	//--lp-font-size-base: 16px;
-	div.entry-content > {
-		div.learnpress, div.learnpress:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
+	div.entry-content> {
+
+		div.learnpress,
+		div.learnpress:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
 			--responsive--aligndefault-width: 100%;
 			max-width: var(--lp-content-width, 100%);
 		}
@@ -17,12 +20,15 @@ body {
 		}
 	}
 }
+
 //.lp-content-area{
 //	font-size: $font-size-base;
 //}
 // Theme Divi
 .lp-archive-courses {
-	ul, ol {
+
+	ul,
+	ol {
 		list-style-type: decimal;
 		list-style-position: inside;
 		padding: 0 0 1.5em;
@@ -47,8 +53,14 @@ body {
 	}
 }
 
-.learnpress, .learnpress-profile {
-	#left-area ul, .entry-content ul, .et-l--body ul, .et-l--footer ul, .et-l--header ul {
+.learnpress,
+.learnpress-profile {
+
+	#left-area ul,
+	.entry-content ul,
+	.et-l--body ul,
+	.et-l--footer ul,
+	.et-l--header ul {
 		padding: 0;
 		list-style: none !important;
 	}
@@ -83,7 +95,8 @@ body {
 	.comment-respond .comment-form {
 		margin: 0;
 
-		> p, > div {
+		>p,
+		>div {
 			padding: 0;
 		}
 	}
@@ -106,13 +119,15 @@ body {
 	padding-right: 15px;
 }
 
-body.astra .course-summary-content .course-detail-info{
+body.astra .course-summary-content .course-detail-info {
 	--lp-color-white: #333;
-    --lp-secondary-color: transparent;
-	.course-title{
+	--lp-secondary-color: transparent;
+
+	.course-title {
 		border-bottom-color: var(--ast-global-color-7);
 	}
 }
+
 .ast-container {
 	--lp-cotainer-padding: 0
 }
@@ -161,7 +176,7 @@ body {
 		}
 	}
 
-	div.entry-content > {
+	div.entry-content> {
 
 		div.learnpress {
 			--responsive--aligndefault-width: 100%;
@@ -212,6 +227,7 @@ body.twentyseventeen.learnpress-page {
 	#primary {
 		article {
 			&.page {
+
 				.entry-header,
 				.lp-entry-content {
 					width: 100%;
@@ -229,6 +245,7 @@ body.twentyseventeen.learnpress-page {
 				#primary {
 					article {
 						&.page {
+
 							.entry-header,
 							.lp-entry-content {
 								width: 100%;
@@ -242,271 +259,39 @@ body.twentyseventeen.learnpress-page {
 	}
 }
 
-// Fix for theme EduPress
-.edu-press:not(.nofixcss), .theme-edu-press:not(.nofixcss) {
-	--lp-font-size-base: 1em;
-	.course-instructor-category {
-		> div:nth-child(2) {
-			label {
-				display: none;
-			}
-
-			a {
-				font-size: 1rem;
-			}
-		}
-
-		.course-categories a {
-			font-weight: normal;
-		}
-	}
-
-	.lp-archive-courses .lp-content-area {
-		.learn-press-courses[data-layout=grid] {
-			.course-categories {
-				position: absolute;
-			}
-
-			.course-content .course-instructor {
-				display: inline;
-			}
-
-			.course-info {
-				> * {
-					display: revert;
-				}
-
-				.course-readmore {
-					width: auto;
-
-					a {
-						padding: 0;
-
-						&:hover {
-							background: transparent;
-							color: var(--thim-body_primary_color);
-						}
-					}
-				}
-			}
-		}
-
-		.course-info {
-			border-top: 1px solid rgba(153, 153, 153, 0.2);
-			padding-top: 20px;
-		}
-
-		.learn-press-courses[data-layout=list] .course-info {
-			margin-top: 50px;
-		}
-	}
-
-	.lp-archive-courses .lp-courses-bar .search-courses {
-		input {
-			height: unset;
-			padding: 10px 20px;
-		}
-
-		button {
-			background-image: none !important;
-
-			i {
-				display: block;
-			}
-		}
-	}
-
-	.lp-archive-courses .lp-content-area .lp-courses-bar .switch-layout .switch-btn {
-		opacity: 1;
-	}
-
-	.learn-press-courses .course-content .course-readmore a {
-		border: none;
-	}
-
-	.lp-user-profile .dashboard-statistic__row .statistic-box {
-		background-color: $bg-grey;
-		min-width: unset;
-		margin-bottom: 0;
-	}
-
-	.learn-press-courses .course-wrap-meta .meta-item::before {
-		font-family: "lp-icon" !important;
-		font-weight: normal !important;
-		margin: 0 !important;
-	}
-
-	&.single-lp_course .lp-archive-courses .learn-press-nav-tabs {
-		background: transparent;
-		border-radius: 0;
-	}
-}
-.lp-4{
+.lp-4 {
 	--lp-font-size-base: 1em;
 }
-// Fix for theme elearningwp
-.elearningwp {
- 	&:not(.nofixcss) {
-		.lp-courses-bar .switch-layout .switch-btn {
-			border: none !important;
-			background-color: unset ! important;
-			padding: 0;
-		}
 
-		.lp-content-area.learn-press-message {
-			padding: 10px 15px;
-		}
-	}
-
-}
-
-// fix for themee course-builder
-.course-builder {
- 	&:not(.nofixcss) {
-		.lp-courses-bar .search-courses button {
-			padding: 0;
-		}
-
-		.lp-courses-bar .courses-order-by {
-			height: unset !important;
-			padding: 8px 35px 8px 15px !important;
-		}
-
-		#learn-press-profile.lp-user-profile.no-bio-user {
-			#profile-sidebar {
-				margin-top: 0 !important;
-			}
-
-			.lp-profile-content-area {
-				align-items: center;
-			}
-		}
-
-		.lp-courses-bar .switch-layout .switch-btn {
-			border-radius: 5px;
-			border: none;
-			padding: 0;
-		}
-
-		#learn-press-profile.lp-user-profile .wrapper-profile-header {
-			padding-bottom: 30px;
-
-			.lp-profile-user-bio {
-				padding-bottom: 0;
-			}
-		}
-	}
- }
-
-// fix for theme eduma
-
-
-.learnpress-v4, .learnpress-v3 {
-	//--lp-font-size-base: 1em;
-	&:not(.nofixcss) {
-		--lp-border-radius-avatar: 0;
-
-		.statistic-box {
-			--thim-lp-profile-bg-color: #F7F7FB;
-		}
-
-		#learn-press-profile.lp-user-profile .learn-press-filters {
-			border: none !important;
-			margin: 0 0 0 -1px 0 !important;
-		}
-
-		.lp-user-profile .lp-profile-left {
-			min-width: unset !important;
-			position: static !important;
-		}
-
-		//#learn-press-profile.lp-user-profile.no-bio-user #profile-sidebar{
-		//	margin-top: 0!important;
-		//}
-		#learn-press-profile .wrapper-profile-header {
-			//margin-bottom: 30px!important;
-			.lp-profile-content-area {
-				min-height: unset;
-				padding-left: 0;
-				display: flex;
-			}
-
-			.lp-profile-left {
-				border: none !important;
-
-				img {
-					border-radius: 50%;
-				}
-			}
-		}
-	}
-
-	// fix css curriculum for theme premium
-	.lp-course-curriculum {
-		--lp-primary-color: var(--thim-body-primary-color, inherit);
-
-		.course-section-header .course-section__title, .section-count-items {
-			font-family: var(--thim-font-title-font-family, inherit);
-		}
-
-		.course-item__link {
-			color: inherit;
-		}
-
-		.course-item-ico {
-			color: $color-primary;
-		}
-
-
-		.course-item__link {
-			column-gap: 8px;
-		}
-
-		.course-section__title {
-			font-size: 1.1em;
-		}
-
-		.section-toggle, .section-count-items {
-			color: $color-primary;
-		}
-	}
-
-	#popup-sidebar {
-		.course-section-header, .lp-course-curriculum .course-item {
-			padding-left: 16px;
-			padding-right: 16px;
-		}
-	}
-}
 
 .learnpress-v4 {
 	.lp-course-curriculum {
 		--lp-white-grey: transparent;
 		--lp-border-radius: 0;
+		--lp-primary-color: var(--thim-body-primary-color, inherit);
 
 		.course-section {
 			border-width: 0 0 1px 0;
+			margin-bottom: 0;
 
 			&:last-child {
 				border-width: 0;
 			}
 		}
 
-		.course-section-header {
-			padding: 0 0 8px 0;
+		.course-item-ico {
+			color: $color-primary;
 		}
+	}
 
-		.course-item {
-			padding-left: 0;
-			padding-right: 0;
-		}
+	#tab-curriculum {
+		.lp-course-curriculum {
 
-		.course-section {
-			margin-bottom: 0;
-		}
-
-		.course-section-header {
-			padding: 24px 0 24px 0;
+			.course-section-header,
+			.course-item {
+				padding-left: 0;
+				padding-right: 0;
+			}
 		}
 	}
 }
@@ -516,110 +301,396 @@ body.twentyseventeen.learnpress-page {
 }
 
 .eduma {
-	&:not(.nofixcss) {
-		.learnpress #learn-press-profile.lp-user-profile .learn-press-filters {
-			padding-bottom: 0 !important;
-			overflow-y: visible;
+	&.nofixcss_learn {
+		#popup-header {
+			border-bottom: 1px solid var(--lp-border-color, #E1E1E1);
 		}
 
-		#learn-press-profile .wrapper-profile-header .lp-profile-content-area {
-			flex-direction: column;
+		.learn-press-progress__active {
+			--thim-button-text-color: var(--thim-body-primary-color, #ffb606);
 		}
 	}
 
-	.lp-course-curriculum {
-		.course-section-header {
-			padding: var(--thim-ekit-padding-lesson, 12px 0);
+	// fix for theme eduma version < Version 5.9.6
+	&:not(.nofixcss_learn) {
+		.sc_heading+.lp-course-curriculum {
+			.lp-course-curriculum__title {
+				display: none;
+			}
+		}
+
+		&.learnpress-v4 .lp-single-course #popup-course {
+			#popup-header {
+				background: var(--lp-bg-color-lesson, #fff);
+				border-bottom: 1px solid var(--lp-border-color, #E1E1E1);
+
+				.course-title a {
+					color: inherit;
+				}
+			}
+
+			#popup-sidebar {
+				z-index: unset;
+			}
+
+			.search-course input[name=s] {
+				padding: 20px;
+				left: 0;
+			}
+
+			#sidebar-toggle:checked::before {
+				color: inherit;
+			}
+
+			#popup-footer {
+				border-top-style: solid;
+
+				.course-item-nav {
+					padding: 12px 0;
+
+					a:hover:before {
+						color: #fff;
+					}
+				}
+
+				.course-item-nav__name {
+					color: #fff;
+				}
+			}
+
+			#popup-content #learn-press-quiz-app .questions-pagination .page-numbers {
+
+				&.current,
+				&:hover {
+					color: var(--lp-color-white, #fff);
+				}
+			}
 		}
 	}
-	.sc_heading + .lp-course-curriculum {
-		.lp-course-curriculum__title {
-			display: none;
+
+	#learn-press-content-item .content-item-wrap .quiz-buttons.align-center .button-left.fixed {
+		background: var(--lp-bg-color-lesson, #fff);
+	}
+
+	@media screen and (max-width: 782px) {
+		&.learnpress-v4 #popup-header {
+			left: 0;
 		}
 	}
+
 }
 
 .ivy-school {
-	&:not(.nofixcss) {
-		.lp-user-profile .lp-user-profile-avatar img {
-			border-radius: 0;
+	// &.single-lp_course .course-curriculum {
+	// 	border: none;
+	// }
+
+	// .lp-course-curriculum {
+	// 	--lp-white-grey: transparent;
+	// 	--lp-border-radius: 0;
+	// 	--lp-primary-color: var(--thim-body-primary-color, inherit);
+
+	// 	//.course-section-header .course-section__title {
+	// 	//	font-family: var(--thim-font-title-font-family, inherit);
+	// 	//}
+
+	// 	.course-item-ico {
+	// 		color: $color-primary;
+	// 	}
+	// }
+	&:not(.nofixcss_learn) {
+		#popup-sidebar {
+			top: auto;
+			border-right: 0;
+			box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.1);
 		}
-	}
 
-	&.single-lp_course .course-curriculum {
-		border: none;
-	}
-
-	.lp-course-curriculum {
-		--lp-white-grey: transparent;
-		--lp-border-radius: 0;
-		--lp-primary-color: var(--thim-body-primary-color, inherit);
-
-		.course-section-header .course-section__title {
-			font-family: var(--thim-font-title-font-family, inherit);
+		#sidebar-toggle {
+			margin: 0;
+			line-height: 70px;
 		}
 
-		.course-item-ico {
-			color: $color-primary;
+		#popup-header {
+			left: var(--lp-width-popup-curriculum, 450px);
+
+			.items-progress {
+				flex-direction: row;
+				align-items: center;
+
+				.number {
+					color: #fff;
+				}
+			}
+		}
+
+		#popup-sidebar {
+			 .lp-course-curriculum__title{
+				display: none;
+			 }
+			.search-course {
+				button {
+					color: #fff;
+					right: 8px;
+				}
+
+				input[name=s] {
+					position: static;
+					background: transparent;
+					padding-left: 20px;
+					width: 100%;
+				}
+			}
+
+		}
+		.content-item-scrollable .learn-press-message{
+			margin-left: auto!important;
+			margin-right: auto!important;
 		}
 	}
 }
 
 .course-builder {
-	.lp-course-curriculum {
-		--lp-white-grey: #f2f2f2;
-		--lp-border-color: #e6e6e6;
 
-		.course-sections {
-			border: 1px solid var(--lp-border-color, #e6e6e6);
-			border-radius: var(--lp-border-radius, 5px);
-			overflow: hidden;
+	&.nofixcss_learn {
+		.lp-single-course.lp-4 #popup-header .popup-header__inner .course-title a:hover {
+			color: $color-primary;
 		}
 
-		.course-section {
+		#popup-footer {
+			max-width: unset;
+		}
+
+		#popup-course #popup-header {
+			border-bottom: 1px solid var(--lp-border-color, #E1E1E1);
+			background: var(--lp-bg-color-lesson, #fff);
+		}
+	}
+
+	// fix for theme course-builder version < Version 3.7.2
+	&:not(.nofixcss_learn) {
+		#sidebar-toggle {
 			margin: 0;
-			border-radius: 0;
-			border-width: 1px 0 0 0;
+		}
 
-			&:first-child {
-				border: none;
+		.lp-single-course #popup-course {
+			#popup-header {
+				.thim-course-item-popup-left {
+					height: 70px;
+				}
+
+				.items-progress {
+					height: 70px;
+					line-height: 70px;
+					justify-content: center;
+				}
+
+				.number {
+					color: #fff;
+				}
+
+				#sidebar-toggle.toggle-content-item::before {
+					float: none;
+				}
+			}
+
+			#popup-sidebar {
+				top: 70px;
+
+				.search-course {
+					input[name=s] {
+						padding: 0 !important;
+						color: var(--thim-font-title-color, #333333);
+					}
+
+					button {
+						right: 10px;
+						left: auto;
+
+						i {
+							color: var(--thim-font-title-color, #333333);
+						}
+					}
+				}
+			}
+
+			#popup-footer {
+				.course-item-nav {
+					overflow: visible;
+					max-width: unset;
+					padding: 12px 0;
+				}
 			}
 		}
-	}
 
-	#popup-sidebar .lp-course-curriculum {
-		--lp-border-radius: 0;
-	}
-
-	.course-tab-panels {
 		.lp-course-curriculum {
+			--lp-white-grey: #f2f2f2;
+			--lp-border-color: #e6e6e6;
+
 			.course-sections {
-				border: none;
+				border: 1px solid var(--lp-border-color, #e6e6e6);
+				border-radius: var(--lp-border-radius, 5px);
+				overflow: hidden;
 			}
 
-			.course-section-header, .course-item {
-				padding-left: 0;
-				--lp-white-grey: trasparent;
-				padding-right: 0;
+			.course-section {
+				margin: 0;
+				border-radius: 0;
+				border-width: 1px 0 0 0;
+
+				&:first-child {
+					border: none;
+				}
+			}
+		}
+
+		#popup-sidebar .lp-course-curriculum {
+			--lp-border-radius: 0;
+		}
+
+		.course-tab-panels {
+			.lp-course-curriculum {
+				.course-sections {
+					border: none;
+				}
+
+				.course-section-header,
+				.course-item {
+					padding-left: 0;
+					--lp-white-grey: trasparent;
+					padding-right: 0;
+				}
+			}
+		}
+
+		.content-item-wrap {
+			.quiz-buttons.align-center .button-left.fixed {
+				max-width: unset;
+			}
+
+			.questions-pagination .nav-links .page-numbers {
+
+				&:hover,
+				&.current {
+					background: transparent;
+				}
+			}
+		}
+
+		@media screen and (max-width: 782px) {
+			.lp-4 #popup-header {
+				left: 0;
+			}
+
+			#popup-header .thim-course-item-popup-left {
+				display: block;
+			}
+		}
+
+		@media screen and (max-width: 480px) {
+			#sidebar-toggle.toggle-content-item {
+				margin-right: 20px;
 			}
 		}
 	}
 }
 
-.eduma, .coaching {
-	.lp-course-curriculum {
-		.course-item-order.lp-hidden {
-			display: inline-block !important;
+.coaching {
+	&.nofixcss_learn {
+		&.learnpress-v4 #popup-header .popup-header__inner .course-title a:hover {
+			color: $color-primary;
 		}
 
-		.course-section__title {
-			text-transform: uppercase;
+		#popup-header {
+			border-bottom: 1px solid var(--lp-border-color, #E1E1E1);
+			background: var(--lp-bg-color-lesson, #fff);
+		}
+
+		.learn-press-progress__active {
+			--thim-button-text-color: var(--thim-body-primary-color, #ffb606);
+		}
+
+		#popup-sidebar .search-course {
+
+			input[name=s],
+			button i {
+				color: var(--lp-color-base, #333);
+			}
+		}
+	}
+
+	// fix for theme course-builder version < Version 3.9.5
+	&:not(.nofixcss_learn) {
+		&.learnpress-v4 .lp-archive-courses #popup-course {
+			#popup-sidebar .search-course {
+				input[name=s] {
+					height: auto;
+					padding-left: 20px;
+					color: var(--thim-font-title-color, #333333);
+					right: 50px;
+				}
+
+				button {
+					right: 10px;
+					left: auto;
+
+					i {
+						color: var(--thim-font-title-color, #333333);
+					}
+				}
+			}
+		}
+
+		#popup-header .course-title a {
+			color: #fff;
+		}
+
+		.content-item-wrap .questions-pagination .nav-links .page-numbers.current,
+		&.learnpress-v4 #popup-course #popup-content #learn-press-content-item .content-item-scrollable .questions-pagination {
+			margin-top: 0;
+
+			.page-numbers.current {
+				padding: 12px 16px;
+				color: #fff;
+			}
 		}
 	}
 }
+
+.elearningwp {
+	&:not(.nofixcss_learn) {
+		.back-course {
+			--lp-color-meta: #fff;
+			--lp-primary-color: #fff;
+		}
+
+		#sidebar-toggle::before {
+			transform: translate(0) !important;
+		}
+
+		#popup-content {
+			margin-top: 70px;
+		}
+
+		#popup-sidebar {
+			top: 70px;
+		}
+
+		@media (max-width: 768px) {
+			#popup-content #sidebar-toggle {
+				margin-top: -56px;
+			}
+
+			.popup-header__inner {
+				padding-left: 60px !important;
+			}
+		}
+	}
+}
+
 // Fix for thim ekit 1.2.9.1
 
-.demo-marketplace, .demo-ecommerce {
+.demo-marketplace,
+.demo-ecommerce {
 	.thim-ekit-tablist {
 		.lp-course-curriculum__title {
 			display: none;
@@ -665,9 +736,10 @@ body.twentyseventeen.learnpress-page {
 		}
 	}
 }
+
 // fix theme coaching
-.demo-life-coaching{
-	.thim-ekit-tablist .lp-course-curriculum{
+.demo-life-coaching {
+	.thim-ekit-tablist .lp-course-curriculum {
 		.course-section {
 			border: none;
 		}
@@ -681,7 +753,10 @@ body.twentyseventeen.learnpress-page {
 	}
 }
 
-.business-consulting, .demo-business-v2, .business-coaching,.demo-healthy-coaching{
+.business-consulting,
+.demo-business-v2,
+.business-coaching,
+.demo-healthy-coaching {
 	.lp-course-curriculum__title {
 		display: none;
 	}
@@ -696,10 +771,12 @@ body.twentyseventeen.learnpress-page {
 				margin-bottom: 0;
 			}
 		}
+
 		.course-section-header {
 			padding: 20px 15px 5px 15px;
 		}
-		.course-item{
+
+		.course-item {
 			padding-left: 15px;
 			padding-right: 15px;
 		}
@@ -707,7 +784,7 @@ body.twentyseventeen.learnpress-page {
 }
 
 .demo-business-v2 {
- 	.thim-ekit-tablist .lp-course-curriculum {
+	.thim-ekit-tablist .lp-course-curriculum {
 		.course-section-header {
 			background-color: var(--thim-bg-color, #f5f5f5);
 			padding: 10px 15px;
@@ -715,27 +792,31 @@ body.twentyseventeen.learnpress-page {
 	}
 }
 
-.business-coaching{
- 	.thim-ekit-tablist .lp-course-curriculum{
+.business-coaching {
+	.thim-ekit-tablist .lp-course-curriculum {
 		.course-section-header {
 			padding: 15px 20px;
 		}
+
 		.course-section__items {
 			padding-left: 20px;
 			padding-right: 20px;
 		}
-		.course-item{
+
+		.course-item {
 			padding-left: 0;
 			padding-right: 0;
-  		}
+		}
 	}
 }
-.demo-healthy-coaching{
+
+.demo-healthy-coaching {
 	.thim-ekit-tablist .lp-course-curriculum {
 		.course-section {
 			border: none;
 			border-radius: 5px;
 		}
+
 		.course-section-header {
 			background: #fff;
 			padding: 10px 15px;
