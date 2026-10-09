@@ -47,5 +47,6 @@ echo AdminTemplate::html_on_wp_admin_screen(
 		'content' => Template::combine_components( $section ),
 		'title'   => '',
 		'id'      => 'learn-press-themes',
+		'hide_notices_wp' => true,
 	)
 );

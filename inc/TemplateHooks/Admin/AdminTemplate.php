@@ -286,9 +286,10 @@ class AdminTemplate {
 			$tab_keys   = array_keys( $tabs );
 			$active_tab = reset( $tab_keys );
 		}
-		$content = $data['content'] ?? '';
-		$title   = $data['title'] ?? '';
-		$id      = $data['id'] ?? '';
+		$content         = $data['content'] ?? '';
+		$title           = $data['title'] ?? '';
+		$id              = $data['id'] ?? '';
+		$hide_notices_wp = $data['hide_notices_wp'] ?? false;
 
 		$classes = array( 'wrap' );
 		if ( $id ) {
@@ -330,7 +331,12 @@ class AdminTemplate {
 				'<h2 class="nav-tab-wrapper">%s</h2>',
 				$html_tabs
 			) : '',
-			'header-end'   => '<hr class="wp-header-end">',
+			'wrap-wp-header-end' => sprintf(
+				'<div class="%s">',
+				$hide_notices_wp ? 'lp-hidden' : ''
+			), // Hide notices of WP insert after wp-header-end
+			'wp-header-end'   => '<hr class="wp-header-end">',
+			'wrap-wp-header-end-close' => '</div>',
 			'wrap-content' => '<div class="lp-admin-tabs">',
 			'content'      => $content,
 			'wrap-content-end' => '</div>',

@@ -257,6 +257,7 @@ class AdminAddonsPage {
 				'content' => Template::combine_components( $section ),
 				'title'   => '',
 				'id'      => 'learn-press-addons',
+				'hide_notices_wp' => true,
 			)
 		);
 	}
