@@ -1002,7 +1002,7 @@ class AdminAddonsPage {
 					data-action="clear-license" type="button">',
 				$has_purchase_code ? '' : ' lp-hidden'
 			),
-			'clear_text'  => sprintf( '<span class="text">%s</span>', esc_html__( 'Clear License', 'learnpress' ) ),
+			'clear_text'  => sprintf( '<span class="text">%s</span>', esc_html__( 'Clear', 'learnpress' ) ),
 			'clear_end'   => '</button>',
 			'divider'     => sprintf(
 				'<div class="lp-addon-purchase__divider"><span>%s</span></div>',
