@@ -328,7 +328,6 @@ export class CourseNotes {
 		card.dataset.noteId = String( note.note_id );
 		card.classList.toggle( 'is-highlight', isHighlight );
 
-		set( '.lp-notes__card-type', isHighlight ? this.config.i18n.highlight : this.config.i18n.textNote );
 		const date = set( '.lp-notes__card-date', note.created_at_display );
 		date?.setAttribute( 'datetime', `${ String( note.created_at ).replace( ' ', 'T' ) }Z` );
 		set( '.lp-notes__card-content', note.content );

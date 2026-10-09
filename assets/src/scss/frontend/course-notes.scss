@@ -131,13 +131,6 @@ mark.lp-note-hl {
 	}
 }
 
-.lp-notes__card-meta {
-	display: flex;
-	justify-content: space-between;
-	gap: $spacing-base-2x;
-	flex-wrap: wrap;
-}
-
 .lp-notes__card-content {
 	margin: 0;
 	white-space: pre-line;

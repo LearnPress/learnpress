@@ -165,8 +165,6 @@ class CourseNoteTemplate {
 					'.content-item-description.lesson-description'
 				),
 				'i18n'            => array(
-					'textNote'      => __( 'Text Note', 'learnpress' ),
-					'highlight'     => __( 'Highlight', 'learnpress' ),
 					'deleteConfirm' => __( 'Delete this note?', 'learnpress' ),
 					'orphaned'      => __( 'The highlighted text was changed or removed from the lesson.', 'learnpress' ),
 					'contentEmpty'  => __( 'Please enter your note.', 'learnpress' ),
@@ -436,7 +434,7 @@ class CourseNoteTemplate {
 			'learn-press/course-notes/html-card-template',
 			array(
 				'wrapper'     => '<template class="lp-notes__card-template"><article class="lp-notes__card" tabindex="-1">',
-				'meta'        => '<div class="lp-notes__card-meta"><span class="lp-notes__card-type"></span><time class="lp-notes__card-date"></time></div>',
+				'meta'        => '<time class="lp-notes__card-date"></time>',
 				'quote'       => '<blockquote class="lp-notes__card-quote" hidden></blockquote>',
 				'orphaned'    => '<p class="lp-notes__card-orphaned" hidden></p>',
 				'content'     => '<p class="lp-notes__card-content"></p>',
