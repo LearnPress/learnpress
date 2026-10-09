@@ -640,7 +640,7 @@
 		// position: fixed;
 		// top: inherit;
 		// margin-top: $popup_header_height + 1px;
-		// width: calc(var(--lp-width-popup-curriculum, 450px) + 1px);
+ 		// width: calc(var(--lp-width-popup-curriculum, 450px) + 1px);
 		// bottom: 0;
 		// background: #fff;
 		// z-index: 9999;
@@ -1618,7 +1618,7 @@ body {
 
 			#popup-sidebar {
 				flex: 0 0 0;
-			}
+ 			}
 		}
 		// &.lp-sidebar-toggle__open {
 		// 	#popup-sidebar {
@@ -1627,7 +1627,7 @@ body {
 		// }
 	}
 	#popup-content {
-		flex: 0 0 100%;
+		flex: 0 0 100%; 
 	}
 	// #popup-footer,.content-item-wrap .quiz-buttons.align-center .button-left.fixed{
 	// 	left: 0;
@@ -1653,9 +1653,9 @@ body {
 			width: 100%;
 		}
 	}
-
-
-
+	 
+	
+	 
 	// #popup-content {
 	// 	min-width: 100vw;
 	// }

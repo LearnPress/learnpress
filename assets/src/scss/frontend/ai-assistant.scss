@@ -374,9 +374,25 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 	}
 }
 
-.lp-addon-content-bar__content:has(.lp-ai-assistant) {
-	display: flex;
-	flex-direction: column;
-	padding: 0;
-	overflow: hidden;
+.lp-addon-content-bar {
+
+	&__left:has(.lp-learning-bar-item-head) {
+		flex: 1;
+		height: 100%;
+		padding: 0;
+	}
+
+	&__content:has(.lp-learning-bar-item-content) {
+		display: flex;
+		flex-direction: column;
+		padding: 0;
+		overflow: hidden;
+	}
+
+	.lp-learning-bar-item-content {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		min-height: 0;
+	}
 }

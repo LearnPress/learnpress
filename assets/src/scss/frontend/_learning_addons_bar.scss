@@ -7,7 +7,7 @@
 	position: fixed;
 	z-index: 100;
 	top: var(--lp-popup-header-height);
-	right: 66px;
+	right: 0;
 	bottom: 0;
 	width: var(--lp-width-addon-content-bar);
 	border-left: 1px solid $border-color;
@@ -53,8 +53,6 @@
 	}
 
 	&__left {
-		flex: 1;
-		height: 100%;
 		font-size: $font-size-base;
 		font-weight: $heading-font-weight;
 		color: $text-color-base;

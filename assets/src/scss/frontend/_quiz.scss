@@ -541,7 +541,7 @@ button[data-counter] {
 
 	.questions-index {
 		display: inline-block;
-		color: $text-color-accent;
+		color: $text-color-accent; 
 
 		span {
 			color: $text-color-base;
@@ -1024,7 +1024,7 @@ button[data-counter] {
 		}
 
 		&.answered-wrong {
-			.option-title {
+ 			.option-title {
 				border-color: #ff6423;
 			}
 		}

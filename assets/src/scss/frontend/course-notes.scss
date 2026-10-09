@@ -1,6 +1,6 @@
 /**
  * Student Notes uses the shared learning bar, LP buttons, forms and messages.
- * Only note layout and lesson highlights need their own styles.
+ * All layout adjustments below are scoped to Notes; system styles stay unchanged.
  *
  * @since 4.4.9.2
  */
@@ -36,16 +36,20 @@ mark.lp-note-hl {
 	gap: $spacing-base-4x;
 }
 
-.lp-notes__body {
-	font-size: $font-size-base;
-	color: $text-color-base;
-	line-height: 1.5;
+// AI's existing stylesheet makes the shared content area a flex container.
+// Restore scrolling and normal content height only while Notes is active.
+.lp-addon-content-bar[data-learning-bar-item="notes"] .lp-addon-content-bar__content {
+	padding: $spacing-base-5x;
+	overflow: auto;
+}
+
+.lp-addon-content-bar .lp-notes__body {
+	flex: none;
 }
 
 .lp-notes__help {
 	align-items: flex-start;
 	padding-right: $spacing-base-10x;
-	font-size: $font-size-small;
 
 	p {
 		margin: 0;
@@ -74,13 +78,8 @@ mark.lp-note-hl {
 	background: $color-white;
 }
 
-.lp-notes__form .form-fields .form-field {
-	margin-bottom: $spacing-base-3x;
-}
-
 .lp-notes__form-content {
 	min-height: 88px;
-	font: inherit;
 	resize: vertical;
 }
 
@@ -99,8 +98,6 @@ mark.lp-note-hl {
 	border: 0;
 	border-left: 3px solid $border-color;
 	background: $lp-notes-highlight;
-	font-size: $font-size-small;
-	font-style: normal;
 	white-space: pre-line;
 	overflow-wrap: anywhere;
 
@@ -124,6 +121,10 @@ mark.lp-note-hl {
 		border-color: $color-primary;
 	}
 
+	&:focus {
+		outline: none;
+	}
+
 	&.is-highlight {
 		cursor: pointer;
 	}
@@ -134,17 +135,6 @@ mark.lp-note-hl {
 	justify-content: space-between;
 	gap: $spacing-base-2x;
 	flex-wrap: wrap;
-	font-size: $font-size-label;
-}
-
-.lp-notes__card-type {
-	font-weight: $link-font-weight;
-}
-
-.lp-notes__card-date,
-.lp-notes__card-orphaned,
-.lp-notes__empty {
-	color: $text-color-meta;
 }
 
 .lp-notes__card-content {
@@ -159,11 +149,6 @@ mark.lp-note-hl {
 
 .lp-notes__card-orphaned {
 	margin: 0;
-	font-size: $font-size-small;
-}
-
-.lp-notes__empty {
-	text-align: center;
 }
 
 // Keep hidden elements hidden when LP's flex/button/message rules apply.

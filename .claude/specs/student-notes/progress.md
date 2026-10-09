@@ -38,8 +38,8 @@
   - Tests: NoteServiceTest 27, NoteDBTest 9, NoteModelTest 18; browser re-check frontend + admin
 
 - Integrated `origin/styles-learning` into `feature/student-notes`: Notes uses `learn-press/learning-bar/items` and the shared `.lp-addon-content-bar`. Removed `CourseItemLaunchersTemplate`, `_footer-launchers.scss`, standalone Notes panel/launcher and footer panel events.
-- Shared learning bar retains each tool's DOM across switches, with programmatic opening for highlights/hash links, Escape/close lifecycle and keyboard support. Fixed sidebar overlapping tool buttons and duplicate textarea/content IDs.
-- Frontend styles reuse `lp-button`, `learn-press-form`, `learn-press-message info`, shared header/layout, spacing/color/font/radius variables. Scoped AI content layout to AI only so Notes scrolls and retains shared padding even when AI is enabled.
+- Shared learning bar retains each tool's DOM across switches, with programmatic opening for highlights/hash links, Escape/close lifecycle and keyboard support. Fixed duplicate textarea/content IDs.
+- Frontend styles reuse `lp-button`, `learn-press-form`, `learn-press-message info`, shared header/layout, spacing/color/font/radius variables. Shared/AI SCSS is unchanged from `styles-learning`; Notes-only selectors keep Notes scrollable even with the existing AI flex layout.
 - Validation: 65 targeted PHPUnit tests (NoteModel, NoteDB, NoteService, Notes template, AI template), PHP lint/PHPCS, JS ESLint, production/development webpack builds and CSS/RTL/mincss builds. Local browser checks: AI/Notes drafts across switches, text CRUD, selection/highlight create/delete, hash opening, admin read-only and mobile bounds. Temporary test notes/session and request-only AI test settings removed after checks.
 
 ## In progress
@@ -57,7 +57,7 @@
 - Anchor: quote (exact/prefix/suffix) + position; orphan fallback
 - Anchor quote strings are not tag-stripped (only invalid UTF-8 removed) so they match lesson text exactly; JS must only use them as text, never as HTML
 - `@since 4.4.9.2` for new code
-- Notes buttons use `.lp-button`; forms/messages reuse the system classes from `styles-learning`. Only note layout and highlight styling are specific to Notes.
+- Notes buttons use `.lp-button`; forms/messages reuse the system classes from `styles-learning`. Only note layout and highlight styling are specific to Notes. Shared frontend SCSS stays identical to `styles-learning`; an active Notes card keeps the yellow border and suppresses its native black focus outline.
 - AI and Notes share one learning content bar. Cached DOM preserves drafts when switching; closing Notes cancels its unsaved form unless a save request is pending.
 - Frontend for admin/instructor = read-only view of a student's notes via `?lp_note_user=` (assumed, user said "continue")
 - Admin/instructor cannot edit or delete student notes (view only)
