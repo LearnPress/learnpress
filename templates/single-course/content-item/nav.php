@@ -21,7 +21,6 @@ if ( $prev_item && $next_item ) {
 	$nav = 'next';
 }
 ?>
-
 <div class="course-item-nav" data-nav="<?php echo esc_attr( $nav ); ?>">
 	<?php if ( $prev_item instanceof LP_Course_Item ) : ?>
 		<div class="prev">
@@ -41,5 +40,4 @@ if ( $prev_item && $next_item ) {
 		</div>
 	<?php endif; ?>
 </div>
-
 

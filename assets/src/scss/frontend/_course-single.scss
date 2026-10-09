@@ -559,7 +559,7 @@
 			//font-size: $font-size-small;
 
 			.free {
-				color: #3AB500;
+				color: $color-price;
 				font-size: $font-size-large;
 			}
 
@@ -571,12 +571,6 @@
 				//font-weight: normal;
 			}
 
-			.course-price-prefix,
-			.course-price-suffix {
-				//font-size: $font-size-small;
-				//opacity: 0.6;
-				//font-weight: normal;
-			}
 			.price{
 				font-size: $font-size-large;
 				font-weight: $link-font-weight;
@@ -690,7 +684,7 @@
 			font-weight: $heading-font-weight;
 
 			.free {
-				color: #3AB500;
+				color: $color-price;
 			}
 
 			.origin-price {

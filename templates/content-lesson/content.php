@@ -9,6 +9,8 @@
  * @version  4.0.0
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 /**
@@ -27,7 +29,7 @@ if ( ! $content ) {
 		$message .= sprintf( '<a href="%s" class="edit-content">%s</a>', esc_url_raw( $lesson->get_edit_link() ), esc_html__( 'Edit', 'learnpress' ) );
 	}
 
-	learn_press_display_message( $message, 'notice' );
+	Template::print_message( $message, 'notice' );
 	return;
 }
 ?>

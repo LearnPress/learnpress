@@ -5,7 +5,7 @@
 - [x] Step 2: `NoteFilter`, `NoteDB` (get_notes, stats counts), `NoteModel` (find / save / delete / get_anchor) + tests
 - [x] Step 3: `NoteService` — can_create, can_manage (owner), can_view (owner/admin/course author), validate payload + tests
 - [x] Step 4: `NoteAjax` — note_save / note_delete; register in `learnpress.php` AJAX catch list
-- [x] Step 5: `CourseNoteTemplate` — launcher icon, panel markup on `wp_footer`, localize data; only on lesson items, setting enabled
+- [x] Step 5: `CourseNoteTemplate` — shared learning bar item/template, selection button + JS data on `wp_footer`; only on lesson items, setting enabled
 - [x] Step 6: JS panel — list / add text note / edit / delete via `window.lpAJAXG`, Toastify messages
 - [x] Step 7: JS highlight — selection → floating "Add Note", build anchor, re-anchor + render `<mark>`, orphan handling, AJAX item switch
 - [x] Step 8: Read-only view for admin/instructor via `?lp_note_user=`
@@ -21,14 +21,12 @@
 | `inc/Models/Note/NoteModel.php` | Note entity |
 | `inc/Services/NoteService.php` | Permissions + business rules |
 | `inc/Ajax/NoteAjax.php` | Frontend AJAX handlers |
-| `inc/TemplateHooks/Course/CourseNoteTemplate.php` | Launcher + panel |
-| `inc/TemplateHooks/Course/CourseItemLaunchersTemplate.php` | Shared launchers wrapper + hook (AI Assistant, Notes) |
+| `inc/TemplateHooks/Course/CourseNoteTemplate.php` | Shared learning bar template + runtime |
 | `assets/src/js/admin/student-notes.js` | Admin "View note" modal |
 | `inc/TemplateHooks/Admin/AdminStudentNotesTemplate.php` | Backend page |
 | `assets/src/js/frontend/course-notes.js` | Panel + highlight logic |
 | `assets/src/scss/frontend/course-notes.scss` | Styles (compiled to `assets/css/frontend/course-notes.css`) |
 | `assets/src/js/frontend/course-notes-anchor.js` | Anchor create/locate/wrap helpers |
-| `assets/src/scss/frontend/_footer-launchers.scss` | Shared launcher wrapper styles (moved from ai-assistant.scss) |
 | `tests/Unit/Databases/NoteDBTest.php`, `tests/Unit/Models/NoteModelTest.php`, `tests/Unit/Services/NoteServiceTest.php` | Tests (repo uses `*Test.php` — PHPUnit only discovers that suffix) |
 
 ## Files to modify
@@ -44,8 +42,8 @@
 | `assets/src/scss/admin/admin.scss` | Import `_student-notes.scss` |
 | `webpack.config.js` | New JS entry `assets/js/dist/frontend/course-notes` |
 | `inc/class-lp-assets.php` | Register `lp-course-notes` style + script |
-| `assets/src/js/frontend/ai-assistant.js` | `lp-footer-panel:open` event so only one panel is open |
-| `inc/TemplateHooks/Course/CourseAIAssistantTemplate.php` | Launchers wrapper moved to `CourseItemLaunchersTemplate` (const kept as deprecated alias) |
+| `assets/src/js/frontend/ai-assistant.js` | Initialize on shared learning bar render; preserve chat state across switches |
+| `assets/src/apps/js/frontend/single-curriculum/learning-content-bar.js` | Cache tool DOM, programmatic open, shared close event and keyboard support |
 | `inc/TemplateHooks/Admin/AdminTemplate.php` | `html_tom_select()` optional `id` arg |
 
 ## Format code when create file done run > php vendor/squizlabs/php_codesniffer/bin/phpcs --standard=phpcs.xml [file-name]

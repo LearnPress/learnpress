@@ -2,8 +2,8 @@
 /**
  * Template hook: Student Notes on the learning page (lesson only).
  *
- * - Launcher button in the shared footer launchers (learn-press/course-item-footer-launchers).
- * - Notes sidebar panel rendered on wp_footer; list/cards are rendered by JS from localized data.
+ * - Notes item registered in the shared learning sidebar.
+ * - Sidebar content is a template; wp_footer renders the selection button and JS data.
  *
  * Modes:
  * - edit:     the enrolled student manages their own notes.
@@ -53,13 +53,13 @@ class CourseNoteTemplate {
 
 	public function init() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
-		add_action( CourseItemLaunchersTemplate::HOOK, array( $this, 'render_launcher' ), 10 );
-		add_action( 'wp_footer', array( $this, 'render_panel' ), 10 );
+		add_filter( 'learn-press/learning-bar/items', array( $this, 'register_learning_bar_item' ) );
+		add_action( 'wp_footer', array( $this, 'render_runtime' ), 10 );
 	}
 
 	/**
 	 * Enqueue assets.
-	 * Data for JS is added in render_panel(): LP registers its script handles after this hook runs.
+	 * Data for JS is added in render_runtime(): LP registers its script handles after this hook runs.
 	 */
 	public function enqueue_assets() {
 		if ( ! $this->get_render_state() ) {
@@ -178,21 +178,25 @@ class CourseNoteTemplate {
 	}
 
 	/**
-	 * Render the launcher button in the shared footer launchers wrapper.
+	 * Add Notes to the shared learning sidebar when the viewer has access.
 	 */
-	public function render_launcher() {
-		if ( ! $this->get_render_state() ) {
-			return;
+	public function register_learning_bar_item( array $items ): array {
+		$render_state = $this->get_render_state();
+		if ( $render_state ) {
+			$items['notes'] = array(
+				'label' => __( 'Notes', 'learnpress' ),
+				'icon'  => 'lp-icon-edit-square',
+				'html'  => $this->html_learning_bar_template( $render_state ),
+			);
 		}
 
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo $this->html_toggle();
+		return $items;
 	}
 
 	/**
-	 * Render the notes panel on wp_footer.
+	 * Render the persistent selection button and runtime data on wp_footer.
 	 */
-	public function render_panel() {
+	public function render_runtime() {
 		$render_state = $this->get_render_state();
 		if ( ! $render_state ) {
 			return;
@@ -210,30 +214,7 @@ class CourseNoteTemplate {
 	}
 
 	/**
-	 * Launcher button.
-	 *
-	 * @return string
-	 */
-	public function html_toggle(): string {
-		$section = apply_filters(
-			'learn-press/course-notes/html-toggle',
-			array(
-				'wrapper'     => sprintf(
-					'<button type="button" class="lp-notes__toggle" aria-label="%s" aria-expanded="false" aria-controls="lp-notes-panel">',
-					esc_attr__( 'Open notes', 'learnpress' )
-				),
-				'icon'        => '<span class="lp-icon lp-icon-edit-square" aria-hidden="true"></span>',
-				'label'       => sprintf( '<span class="lp-notes__toggle-label">%s</span>', esc_html__( 'Notes', 'learnpress' ) ),
-				'count'       => '<span class="lp-notes__toggle-count" hidden></span>',
-				'wrapper_end' => '</button>',
-			)
-		);
-
-		return Template::combine_components( $section );
-	}
-
-	/**
-	 * Root widget: panel + floating "Add Note" selection button + card template.
+	 * Persistent widget for the floating "Add Note" selection button.
 	 *
 	 * @param array $render_state Render state.
 	 *
@@ -249,9 +230,7 @@ class CourseNoteTemplate {
 					'<div id="lp-notes" class="lp-notes lp-notes--%s">',
 					esc_attr( $render_state['mode'] )
 				),
-				'panel'         => $this->html_panel( $render_state ),
 				'selection_btn' => $is_edit ? $this->html_selection_button() : '',
-				'card_template' => $this->html_card_template( $is_edit ),
 				'wrapper_end'   => '</div>',
 			),
 			$render_state
@@ -261,13 +240,13 @@ class CourseNoteTemplate {
 	}
 
 	/**
-	 * Sidebar panel.
+	 * Notes template for the shared learning content bar.
 	 *
 	 * @param array $render_state Render state.
 	 *
 	 * @return string
 	 */
-	public function html_panel( array $render_state ): string {
+	public function html_learning_bar_template( array $render_state ): string {
 		$is_edit = self::MODE_EDIT === $render_state['mode'];
 
 		$body = $is_edit
@@ -277,13 +256,14 @@ class CourseNoteTemplate {
 		$section = apply_filters(
 			'learn-press/course-notes/html-panel',
 			array(
-				'wrapper'     => '<aside id="lp-notes-panel" class="lp-notes__panel" role="dialog" aria-labelledby="lp-notes-title" hidden>',
+				'wrapper'     => '<template id="lp-notes-template">',
 				'header'      => $this->html_header(),
-				'body'        => '<div class="lp-notes__body">',
+				'body'        => '<div id="lp-notes-content" class="lp-learning-bar-item-content lp-notes__body">',
 				'content'     => $body,
 				'list'        => $this->html_list( $is_edit ),
+				'cards'       => $this->html_card_template( $is_edit ),
 				'body_end'    => '</div>',
-				'wrapper_end' => '</aside>',
+				'wrapper_end' => '</template>',
 			),
 			$render_state
 		);
@@ -300,14 +280,10 @@ class CourseNoteTemplate {
 		$section = apply_filters(
 			'learn-press/course-notes/html-header',
 			array(
-				'wrapper'     => '<div class="lp-notes__header">',
+				'wrapper'     => '<div class="lp-learning-bar-item-head">',
 				'title'       => sprintf(
-					'<h2 id="lp-notes-title" class="lp-notes__title"><span class="lp-icon lp-icon-file-text-o" aria-hidden="true"></span>%s</h2>',
+					'<span class="lp-icon lp-icon-edit-square" aria-hidden="true"></span><span class="lp-learning-bar-item-title">%s</span>',
 					esc_html__( 'Notes', 'learnpress' )
-				),
-				'close'       => sprintf(
-					'<button type="button" class="lp-notes__close" aria-label="%1$s" title="%1$s"><span class="lp-icon lp-icon-close" aria-hidden="true"></span></button>',
-					esc_attr__( 'Close notes', 'learnpress' )
 				),
 				'wrapper_end' => '</div>',
 			)
@@ -325,15 +301,14 @@ class CourseNoteTemplate {
 		$section = apply_filters(
 			'learn-press/course-notes/html-help',
 			array(
-				'wrapper'     => '<div class="lp-notes__help">',
-				'icon'        => '<span class="lp-icon lp-icon-info-circle" aria-hidden="true"></span>',
+				'wrapper'     => '<div class="learn-press-message info lp-notes__help">',
 				'text'        => sprintf(
 					'<div class="lp-notes__help-text"><p>%s</p><p class="lp-notes__help-hint">%s</p></div>',
 					esc_html__( 'You can add text notes or highlight content and add notes to specific text.', 'learnpress' ),
 					esc_html__( '* To create a highlight note: select text in the lesson content, then click the "Add Note" button that appears.', 'learnpress' )
 				),
 				'dismiss'     => sprintf(
-					'<button type="button" class="lp-notes__help-dismiss" aria-label="%1$s" title="%1$s"><span class="lp-icon lp-icon-close" aria-hidden="true"></span></button>',
+					'<button type="button" class="lp-notes__help-dismiss lp-icon-close" aria-label="%1$s" title="%1$s"></button>',
 					esc_attr__( 'Hide tip', 'learnpress' )
 				),
 				'wrapper_end' => '</div>',
@@ -350,7 +325,7 @@ class CourseNoteTemplate {
 	 */
 	public function html_add_button(): string {
 		return sprintf(
-			'<button type="button" class="lp-notes__add">%s</button>',
+			'<button type="button" class="lp-button lp-notes__add">%s</button>',
 			esc_html__( 'Add Note', 'learnpress' )
 		);
 	}
@@ -364,19 +339,21 @@ class CourseNoteTemplate {
 		$section = apply_filters(
 			'learn-press/course-notes/html-form',
 			array(
-				'wrapper'     => '<form class="lp-notes__form" novalidate hidden>',
+				'wrapper'     => '<form class="learn-press-form lp-notes__form" novalidate hidden>',
+				'fields'      => '<div class="form-fields"><div class="form-field">',
 				'label'       => sprintf(
-					'<label class="lp-notes__form-label" for="lp-notes-content">%s</label>',
+					'<label class="lp-notes__form-label" for="lp-notes-input">%s</label>',
 					esc_html__( 'Note Content/Edit Note', 'learnpress' )
 				),
 				'quote'       => '<blockquote class="lp-notes__form-quote" hidden></blockquote>',
 				'textarea'    => sprintf(
-					'<textarea id="lp-notes-content" class="lp-notes__form-content" rows="4" maxlength="%1$d" placeholder="%2$s"></textarea>',
+					'<textarea id="lp-notes-input" class="lp-notes__form-content" rows="4" maxlength="%1$d" placeholder="%2$s"></textarea>',
 					NoteModel::CONTENT_MAX_LENGTH,
 					esc_attr__( 'Enter your note here...', 'learnpress' )
 				),
+				'fields_end'  => '</div></div>',
 				'actions'     => sprintf(
-					'<div class="lp-notes__form-actions"><button type="button" class="lp-notes__form-cancel">%1$s</button><button type="submit" class="lp-notes__form-save">%2$s</button></div>',
+					'<div class="lp-notes__form-actions"><button type="button" class="lp-button lp-notes__form-cancel">%1$s</button><button type="submit" class="lp-button lp-notes__form-save">%2$s</button></div>',
 					esc_html__( 'Cancel', 'learnpress' ),
 					esc_html__( 'Save Note', 'learnpress' )
 				),
@@ -399,7 +376,7 @@ class CourseNoteTemplate {
 		$name = $user ? $user->get_display_name() : '#' . $owner_id;
 
 		return sprintf(
-			'<div class="lp-notes__readonly">%s</div>',
+			'<div class="learn-press-message info lp-notes__readonly">%s</div>',
 			sprintf(
 				/* translators: %s: student name */
 				esc_html__( 'You are viewing the notes of %s (read only).', 'learnpress' ),
@@ -433,7 +410,7 @@ class CourseNoteTemplate {
 	 */
 	public function html_selection_button(): string {
 		return sprintf(
-			'<button type="button" class="lp-notes__selection-btn" hidden>%s</button>',
+			'<button type="button" class="lp-button lp-notes__selection-btn" hidden>%s</button>',
 			esc_html__( 'Add Note', 'learnpress' )
 		);
 	}
@@ -449,7 +426,7 @@ class CourseNoteTemplate {
 		$actions = '';
 		if ( $is_edit ) {
 			$actions = sprintf(
-				'<div class="lp-notes__card-actions"><button type="button" class="lp-notes__card-delete">%1$s</button><button type="button" class="lp-notes__card-edit">%2$s</button></div>',
+				'<div class="lp-notes__card-actions"><button type="button" class="lp-button lp-notes__card-delete">%1$s</button><button type="button" class="lp-button lp-notes__card-edit">%2$s</button></div>',
 				esc_html__( 'Delete', 'learnpress' ),
 				esc_html__( 'Edit Note', 'learnpress' )
 			);

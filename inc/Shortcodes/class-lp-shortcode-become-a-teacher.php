@@ -9,6 +9,8 @@
  * @extends  LP_Abstract_Shortcode
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
@@ -98,7 +100,7 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 				if ( empty( $message ) || ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->editor->is_edit_mode() ) ) {
 					learn_press_get_template( 'global/become-teacher-form.php', $atts );
 				} else {
-					learn_press_display_message( $message );
+					Template::print_message( $message );
 				}
 			}
 

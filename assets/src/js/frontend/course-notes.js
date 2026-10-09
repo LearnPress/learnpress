@@ -31,15 +31,11 @@ const TYPE_HIGHLIGHT = 'highlight';
 const SCOPE = 'lesson_content';
 const MIN_SELECTION_LENGTH = 2;
 const HELP_STORAGE_KEY = 'lp-notes-help-hidden';
-const PANEL_OPEN_EVENT = 'lp-footer-panel:open';
 
 export class CourseNotes {
 	static selectors = {
 		root: '#lp-notes',
-		toggle: '.lp-notes__toggle',
-		toggleCount: '.lp-notes__toggle-count',
-		panel: '#lp-notes-panel',
-		close: '.lp-notes__close',
+		content: '#lp-notes-content',
 		help: '.lp-notes__help',
 		helpDismiss: '.lp-notes__help-dismiss',
 		add: '.lp-notes__add',
@@ -70,6 +66,7 @@ export class CourseNotes {
 		this.formState = null;
 		this.selectionRange = null;
 		this.isSaving = false;
+		this.panelRoot = null;
 	}
 
 	init() {
@@ -79,29 +76,12 @@ export class CourseNotes {
 			return;
 		}
 
-		const s = CourseNotes.selectors;
-		this.el = {
-			toggle: document.querySelector( s.toggle ),
-			toggleCount: document.querySelector( s.toggleCount ),
-			panel: this.root.querySelector( s.panel ),
-			help: this.root.querySelector( s.help ),
-			form: this.root.querySelector( s.form ),
-			formQuote: this.root.querySelector( s.formQuote ),
-			formContent: this.root.querySelector( s.formContent ),
-			formSave: this.root.querySelector( s.formSave ),
-			add: this.root.querySelector( s.add ),
-			list: this.root.querySelector( s.list ),
-			empty: this.root.querySelector( s.empty ),
-			cardTemplate: this.root.querySelector( s.cardTemplate ),
-			selectionBtn: this.root.querySelector( s.selectionBtn ),
-		};
+		this.el.selectionBtn = this.root.querySelector( CourseNotes.selectors.selectionBtn );
 
 		this.contentRoot = document.querySelector( this.config.contentSelector );
 		this.notes = Array.isArray( this.config.notes ) ? this.config.notes : [];
 
-		this.initHelp();
 		this.renderHighlights();
-		this.renderList();
 		this.bindEvents();
 		this.openFromHash();
 	}
@@ -110,32 +90,41 @@ export class CourseNotes {
 		const s = CourseNotes.selectors;
 
 		lpUtils.eventHandlers( 'click', [
-			{ selector: s.toggle, class: this, callBack: this.handleToggleClick.name },
-			{ selector: `${ s.root } ${ s.close }`, class: this, callBack: this.handleCloseClick.name },
-			{ selector: `${ s.root } ${ s.helpDismiss }`, class: this, callBack: this.handleHelpDismiss.name },
-			{ selector: `${ s.root } ${ s.add }`, class: this, callBack: this.handleAddClick.name },
-			{ selector: `${ s.root } ${ s.formCancel }`, class: this, callBack: this.handleFormCancel.name },
-			{ selector: `${ s.root } ${ s.cardEdit }`, class: this, callBack: this.handleCardEdit.name },
-			{ selector: `${ s.root } ${ s.cardDelete }`, class: this, callBack: this.handleCardDelete.name },
-			{ selector: `${ s.root } ${ s.card }`, class: this, callBack: this.handleCardClick.name },
+			{ selector: `${ s.content } ${ s.helpDismiss }`, class: this, callBack: this.handleHelpDismiss.name },
+			{ selector: `${ s.content } ${ s.add }`, class: this, callBack: this.handleAddClick.name },
+			{ selector: `${ s.content } ${ s.formCancel }`, class: this, callBack: this.handleFormCancel.name },
+			{ selector: `${ s.content } ${ s.cardEdit }`, class: this, callBack: this.handleCardEdit.name },
+			{ selector: `${ s.content } ${ s.cardDelete }`, class: this, callBack: this.handleCardDelete.name },
+			{ selector: `${ s.content } ${ s.card }`, class: this, callBack: this.handleCardClick.name },
 			{ selector: s.mark, class: this, callBack: this.handleMarkClick.name },
 			{ selector: `${ s.root } ${ s.selectionBtn }`, class: this, callBack: this.handleSelectionBtnClick.name },
 		] );
 
 		lpUtils.eventHandlers( 'submit', [
-			{ selector: `${ s.root } ${ s.form }`, class: this, callBack: this.handleFormSubmit.name },
-		] );
-
-		lpUtils.eventHandlers( 'keydown', [
-			{ selector: 'body', class: this, callBack: this.handleKeydown.name },
+			{ selector: `${ s.content } ${ s.form }`, class: this, callBack: this.handleFormSubmit.name },
 		] );
 
 		window.addEventListener( 'hashchange', () => this.openFromHash() );
 
-		// Close when another learning tool panel (e.g. AI Assistant) opens.
-		document.addEventListener( PANEL_OPEN_EVENT, ( e ) => {
-			if ( e.detail?.id !== 'notes' ) {
-				this.closePanel( false );
+		document.addEventListener( 'lp-learning-content-bar-rendered', ( e ) => {
+			if ( e.detail?.item !== 'notes' ) {
+				return;
+			}
+			const content = e.detail.contentBar.querySelector( s.content );
+			if ( ! content || this.panelRoot === content ) {
+				return;
+			}
+			this.panelRoot = content;
+			for ( const key of [ 'help', 'form', 'formQuote', 'formContent', 'formSave', 'add', 'list', 'empty', 'cardTemplate' ] ) {
+				this.el[ key ] = content.querySelector( s[ key ] );
+			}
+			this.initHelp();
+			this.renderList();
+		} );
+		document.addEventListener( 'lp-learning-content-bar-closed', ( e ) => {
+			if ( e.detail?.item === 'notes' && ! this.isSaving ) {
+				this.closeForm();
+				this.setActiveNote( null );
 			}
 		} );
 
@@ -156,57 +145,10 @@ export class CourseNotes {
 	// Panel
 	// ---------------------------------------------------------------------
 
-	handleToggleClick( args ) {
-		args.e.preventDefault();
-		if ( this.isPanelOpen() ) {
-			this.closePanel();
-		} else {
-			this.openPanel();
-		}
-	}
-
-	handleCloseClick( args ) {
-		args.e.preventDefault();
-		this.closePanel();
-	}
-
-	handleKeydown( args ) {
-		if ( args.e.key === 'Escape' && this.isPanelOpen() ) {
-			this.closePanel();
-		}
-	}
-
-	isPanelOpen() {
-		return this.el.panel && ! this.el.panel.hidden;
-	}
-
 	openPanel() {
-		if ( ! this.el.panel ) {
-			return;
-		}
-
-		this.el.panel.hidden = false;
-		this.el.toggle?.setAttribute( 'aria-expanded', 'true' );
-		document.body.classList.add( 'lp-notes-is-open' );
-		document.dispatchEvent( new CustomEvent( PANEL_OPEN_EVENT, { detail: { id: 'notes' } } ) );
-	}
-
-	/**
-	 * @param {boolean} restoreFocus Move focus back to the launcher.
-	 */
-	closePanel( restoreFocus = true ) {
-		if ( ! this.isPanelOpen() ) {
-			return;
-		}
-
-		this.closeForm();
-		this.setActiveNote( null );
-		this.el.panel.hidden = true;
-		this.el.toggle?.setAttribute( 'aria-expanded', 'false' );
-		document.body.classList.remove( 'lp-notes-is-open' );
-		if ( restoreFocus ) {
-			this.el.toggle?.focus();
-		}
+		document.dispatchEvent( new CustomEvent( 'lp-learning-content-bar-open', {
+			detail: { item: 'notes' },
+		} ) );
 	}
 
 	initHelp() {
@@ -239,7 +181,11 @@ export class CourseNotes {
 	 * @param {Object} state { mode, noteType, noteId?, anchor?, content?, quote? }
 	 */
 	openForm( state ) {
-		if ( ! this.el.form || ! this.config.canEdit ) {
+		if ( ! this.config.canEdit ) {
+			return;
+		}
+		this.openPanel();
+		if ( ! this.el.form ) {
 			return;
 		}
 
@@ -257,7 +203,6 @@ export class CourseNotes {
 			this.el.add.hidden = true;
 		}
 
-		this.openPanel();
 		this.el.formContent.focus();
 	}
 
@@ -359,11 +304,6 @@ export class CourseNotes {
 		const count = this.notes.length;
 		if ( this.el.empty ) {
 			this.el.empty.hidden = count > 0;
-		}
-
-		if ( this.el.toggleCount ) {
-			this.el.toggleCount.textContent = count > 99 ? '99+' : String( count );
-			this.el.toggleCount.hidden = count === 0;
 		}
 	}
 
@@ -496,7 +436,7 @@ export class CourseNotes {
 	 * @param {boolean}            scrollCard
 	 */
 	setActiveNote( noteId, scrollCard = false ) {
-		this.root.querySelectorAll( `${ CourseNotes.selectors.card }.is-active` ).forEach( ( el ) => el.classList.remove( 'is-active' ) );
+		this.panelRoot?.querySelectorAll( `${ CourseNotes.selectors.card }.is-active` ).forEach( ( el ) => el.classList.remove( 'is-active' ) );
 		document.querySelectorAll( `${ CourseNotes.selectors.mark }.is-active` ).forEach( ( el ) => el.classList.remove( 'is-active' ) );
 
 		if ( noteId === null || noteId === undefined ) {

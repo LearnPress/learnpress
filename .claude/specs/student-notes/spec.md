@@ -3,7 +3,7 @@
 > Let enrolled students highlight lesson text and save plain-text notes; let admins and course instructors review them.
 
 ## Goal
-On the learning page, a student selects text inside a lesson and clicks a floating "Add Note" button to save a highlight with an optional note. A Notes panel (opened from the right-side launcher icon) lists, edits and deletes the student's notes for the current lesson and also supports notes that are not tied to a highlight. In the backend, a "Student Notes" page lets admins and course instructors review students' notes.
+On the learning page, a student selects text inside a lesson and clicks a floating "Add Note" button to save a highlight with an optional note. A Notes panel (opened from the shared learning sidebar) lists, edits and deletes the student's notes for the current lesson and also supports notes that are not tied to a highlight. In the backend, a "Student Notes" page lets admins and course instructors review students' notes.
 
 ## Scope (phase 1)
 - **Lesson only** (`lp_lesson`). Quiz support is deferred; keep the schema ready for it (`item_type`, `anchor.scope`).
@@ -57,7 +57,7 @@ Frontend view for admin/instructor: they are not enrolled, so they cannot create
 - [ ] `NoteDB` / `NoteFilter` / `NoteModel`, using the Model/DB pattern with no raw `$wpdb` in the model
 - [ ] `NoteService` for permission checks, validation and the create/update/delete business rules
 - [ ] `NoteAjax` (via `AbstractAjax`, nonce `wp_rest`): `note_list`, `note_save`, `note_delete`
-- [ ] Notes launcher icon in `learn-press/course-item-footer-launchers`, shown only on lesson items
+- [ ] Notes item in `learn-press/learning-bar/items`, shown only on lesson items
 - [ ] Notes panel showing: help box, "Add Note" button, editor (Cancel / Save Note), and a list of note cards (type, date, content, Delete / Edit Note)
 - [ ] Selection handling in `.content-item-description.lesson-description`: show the floating "Add Note" button, save the anchor, and render a `<mark class="lp-note-hl" data-note-id>` highlight
 - [ ] Clicking a highlight focuses its card in the panel, and clicking a card scrolls to its highlight
@@ -82,4 +82,4 @@ Frontend view for admin/instructor: they are not enrolled, so they cannot create
 
 ## References
 - Mockups: learning page with the Notes panel, and the admin "Student Notes" page (provided in chat 2026-10-05)
-- Pattern references: `WebhookDB`, `WebhookFilter`, `WebhookModel`, `CourseAIAssistantTemplate` (launcher hook), `TableListTemplate`
+- Pattern references: `WebhookDB`, `WebhookFilter`, `WebhookModel`, `CourseAIAssistantTemplate` (learning bar template), `TableListTemplate`

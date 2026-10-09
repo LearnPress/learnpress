@@ -68,5 +68,22 @@ export const Sidebar = () => {
 			toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
 		}
 	} );
-};
 
+	// Right Sidebar Toggle (open / close)
+	const rightSidebar = document.querySelector( '#popup-right-sidebar' );
+	if ( rightSidebar ) {
+		const toggleRightSidebar = () => {
+			const willExpand = ! rightSidebar.classList.contains( 'is-expanded' );
+			rightSidebar.classList.toggle( 'is-expanded', willExpand );
+			rightSidebar.classList.toggle( 'is-collapsed', ! willExpand );
+		};
+
+		const toggleBtn = rightSidebar.querySelector( '.popup-right-sidebar__toggle' );
+		if ( toggleBtn ) {
+			toggleBtn.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				toggleRightSidebar();
+			} );
+		}
+	}
+};

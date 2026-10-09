@@ -2,7 +2,7 @@
 
 **Status:** 🟡 In progress
 **Started:** 2026-10-05
-**Last updated:** 2026-10-06
+**Last updated:** 2026-10-09
 
 ## Done
 - Spec + DB design agreed
@@ -37,6 +37,11 @@
 - Code review fixes: ESLint clean (selection via `ownerDocument.defaultView`); admin list data moved to `NoteService::get_admin_list()` (template only renders); `NoteDB::order_newest_first()`; single `learn-press/note/can-create` filter in `check_can_create()` (filter has final say); `AdminTemplate::html_tom_select()` optional `id`; unused `lp_note_list` + JS data keys removed; shared launchers wrapper `CourseItemLaunchersTemplate` (AI const kept as deprecated alias); authored courses via `PostDB` + `CoursePostFilter`; `NoteModel::get_created_timestamp()`
   - Tests: NoteServiceTest 27, NoteDBTest 9, NoteModelTest 18; browser re-check frontend + admin
 
+- Integrated `origin/styles-learning` into `feature/student-notes`: Notes uses `learn-press/learning-bar/items` and the shared `.lp-addon-content-bar`. Removed `CourseItemLaunchersTemplate`, `_footer-launchers.scss`, standalone Notes panel/launcher and footer panel events.
+- Shared learning bar retains each tool's DOM across switches, with programmatic opening for highlights/hash links, Escape/close lifecycle and keyboard support. Fixed sidebar overlapping tool buttons and duplicate textarea/content IDs.
+- Frontend styles reuse `lp-button`, `learn-press-form`, `learn-press-message info`, shared header/layout, spacing/color/font/radius variables. Scoped AI content layout to AI only so Notes scrolls and retains shared padding even when AI is enabled.
+- Validation: 65 targeted PHPUnit tests (NoteModel, NoteDB, NoteService, Notes template, AI template), PHP lint/PHPCS, JS ESLint, production/development webpack builds and CSS/RTL/mincss builds. Local browser checks: AI/Notes drafts across switches, text CRUD, selection/highlight create/delete, hash opening, admin read-only and mobile bounds. Temporary test notes/session and request-only AI test settings removed after checks.
+
 ## In progress
 
 ## Next
@@ -52,8 +57,8 @@
 - Anchor: quote (exact/prefix/suffix) + position; orphan fallback
 - Anchor quote strings are not tag-stripped (only invalid UTF-8 removed) so they match lesson text exactly; JS must only use them as text, never as HTML
 - `@since 4.4.9.2` for new code
-- Notes buttons do not use `.lp-button` (learnpress.css overrides their colors)
-- Opening Notes closes AI Assistant and vice versa (`lp-footer-panel:open` document event)
+- Notes buttons use `.lp-button`; forms/messages reuse the system classes from `styles-learning`. Only note layout and highlight styling are specific to Notes.
+- AI and Notes share one learning content bar. Cached DOM preserves drafts when switching; closing Notes cancels its unsaved form unless a save request is pending.
 - Frontend for admin/instructor = read-only view of a student's notes via `?lp_note_user=` (assumed, user said "continue")
 - Admin/instructor cannot edit or delete student notes (view only)
 - Edit keeps item/type/anchor; only content changes

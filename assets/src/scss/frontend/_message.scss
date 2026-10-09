@@ -46,7 +46,7 @@
 
 		&.passed {
 			background-color: #EBF8E5;
-			color: #3AB500;
+			color: $color-price;
 		}
 		&.failed {
 			background-color: #FDECEC;

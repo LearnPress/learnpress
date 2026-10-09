@@ -1,0 +1,122 @@
+#popup-course {
+	--lp-width-addon-content-bar: 400px;
+	--lp-popup-header-height: #{$popup_header_height};
+}
+
+.lp-addon-content-bar {
+	position: fixed;
+	z-index: 100;
+	top: var(--lp-popup-header-height);
+	right: 66px;
+	bottom: 0;
+	width: var(--lp-width-addon-content-bar);
+	border-left: 1px solid $border-color;
+	background: #F7F7FB;
+	//box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transform: translateX(100%);
+	transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+		transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+		visibility 0.35s;
+	will-change: transform;
+
+	&.open {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transform: translateX(0);
+	}
+
+	&__head {
+		display: flex;
+		height: 64px;
+		padding: 20px;
+		border-bottom: 1px solid $border-color;
+		align-items: center;
+		justify-content: space-between;
+		background: #fff;
+
+		.lp-learning-bar-item-title {
+			flex: 1;
+			color: $text-color-base;
+			font-weight: 600;
+			padding: 0;
+			margin: 0;
+		}
+
+		.lp-icon {
+			font-size: 24px;
+			color: $text-color-base;
+		}
+	}
+
+	&__left {
+		flex: 1;
+		height: 100%;
+		font-size: $font-size-base;
+		font-weight: $heading-font-weight;
+		color: $text-color-base;
+	}
+
+	.lp-icon-close {
+		display: inline-flex;
+		width: 26px;
+		height: 26px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: $border-radius-global;
+		background: transparent;
+		color: $text-color-accent;
+		font-size: 18px;
+		cursor: pointer;
+		align-items: center;
+		justify-content: center;
+		box-shadow: none;
+
+		&:hover {
+			color: $bg-course-featured;
+		}
+	}
+
+	&__content {
+		overflow: auto;
+		height: calc(100% - 64px);
+		padding: 20px;
+	}
+
+	.lp-learning-bar-item-head {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		height: 100%;
+		box-sizing: border-box;
+	}
+}
+
+body.admin-bar .lp-addon-content-bar {
+	top: calc(var(--lp-popup-header-height) + 33px);
+}
+
+@media screen and (max-width: 782px) {
+	body.admin-bar .lp-addon-content-bar {
+		top: calc(var(--lp-popup-header-height) + 46px);
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.lp-addon-content-bar,
+	body.admin-bar .lp-addon-content-bar {
+		top: 46px;
+	}
+}
+
+@media (max-width: 1024px) {
+	#popup-course {
+		--lp-width-addon-content-bar: min(360px, calc(100vw - 66px));
+	}
+}
