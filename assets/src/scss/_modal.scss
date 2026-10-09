@@ -49,11 +49,11 @@
 		z-index: 2;
 		width: auto;
 		max-width: 600px;
-		border-radius: 8px;
+		border-radius: $border-radius-global;
 		text-align: left;
 		vertical-align: middle;
-		background: white;
-		color: black;
+		background: $color-white;
+		color: $color-black;
 
 		h2, h3 {
 			margin: 0;
@@ -61,7 +61,7 @@
 
 		.lp-group-step {
 			h3 {
-				border-bottom: 1px solid #eee;
+				border-bottom: 1px solid $border-color;
 			}
 		}
 
@@ -75,15 +75,15 @@
 	}
 
 	.lp-modal-header {
-		background: #7c60d9;
-		border-bottom: 1px solid #eee;
+		background: $color-primary;
+		border-bottom: 1px solid $border-color;
 		padding: 1em;
 
 		h3 {
 			margin: 0;
-			color: white;
-			//font-size: inherit;
-			font-weight: 400;
+			color: $color-white;
+			font-size: $font-size-h4;
+			// font-weight: 400;
 		}
 	}
 
@@ -101,13 +101,18 @@
 
 	.lp-modal-footer {
 		padding: 20px;
-		background-color: #f9fafb;
+		background-color: $bg-grey;
 		text-align: right;
 	}
 
 	.btn-yes {
-		color: #fff;
-		background-color: #7c60d9;
+		color: $color-white;
+		background-color: $color-primary;
+	}
+	@media (max-width: 480px) {
+		.lp-modal-content {
+			max-width: 90%;
+		}
 	}
 }
 
@@ -121,7 +126,7 @@
 	bottom: 0;
 	left: 0;
 	opacity: 0.5;
-	background: #000;
+	background: $color-black;
 }
 
 #lp-modal-window {
@@ -131,14 +136,14 @@
 	top: 50%;
 	left: 50%;
 	padding: 35px 60px 28px 60px;
-	background: #fff;
+	background: $color-white;
 	transform: translate(-50%, -50%);
 
 	@include border-radius(4px);
 
 	#lp-modal-content {
 		margin: 0 0 24px 0;
-		color: #333;
+		color: $text-color-base;
 		font-weight: 400;
 		text-align: center;
 
