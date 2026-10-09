@@ -1,24 +1,8 @@
 // Lessons tab — uses shared tab-list mixin
 @include tab-list-styles('lesson');
 
-// Grid column definition for lessons:
-// Title(2fr) | Assigned(1.5fr) | Create Date(1fr) | Status(100px) | Preview(80px) | Actions(80px)
-$lesson-grid: 2fr 1.5fr 1fr 100px 80px 80px;
-
 #lp-course-builder {
-	// Table container — wraps header + list
 	.courses-builder__lesson-tab {
-		background: $cb-bg;
-		border: 1px solid $cb-border;
-		border-radius: $cb-radius-md;
-		overflow: visible;
-
-		// Grid scoped to THIS tab wrapper — prevents cascade conflicts
-		.cb-list-table-header,
-		.lesson-item {
-			grid-template-columns: $lesson-grid;
-		}
-
 		.lesson-assigned-courses .label {
 			display: none;
 		}
@@ -63,12 +47,6 @@ $lesson-grid: 2fr 1.5fr 1fr 100px 80px 80px;
 				}
 			}
 		}
-	}
-
-	// Remove border from inner list — container has it
-	.cb-list-lesson {
-		border: none;
-		border-radius: 0;
 	}
 
 	.lesson-status {

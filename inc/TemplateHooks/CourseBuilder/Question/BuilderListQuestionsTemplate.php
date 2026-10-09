@@ -16,6 +16,7 @@ use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderQuizTemplate;
+use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LP_Question;
 use LP_Question_CURD;
 use LP_WP_Filesystem;
@@ -131,15 +132,7 @@ class BuilderListQuestionsTemplate {
 			}
 			wp_reset_postdata();
 
-			if ( ! empty( $questions ) ) {
-				$html_questions = $this->list_questions( $questions );
-			} else {
-				$html_questions = Template::print_message(
-					sprintf( __( 'No questions found', 'learnpress' ) ),
-					'info',
-					false
-				);
-			}
+			$html_questions = $this->list_questions( $questions );
 
 			$total_pages     = \LP_Database::get_total_pages( $query_args['posts_per_page'], $total_questions );
 			$link_tab        = CourseBuilder::get_tab_link( 'questions' );
@@ -188,23 +181,47 @@ class BuilderListQuestionsTemplate {
 				$html_list_question .= self::render_question( $question_model );
 			}
 
-			$header  = '<div class="cb-list-table-header">';
-			$header .= sprintf( '<span>%s</span>', __( 'Question Title', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Quiz', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Create Date', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Status', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Preview', 'learnpress' ) );
-			$header .= sprintf( '<span>%s</span>', __( 'Actions', 'learnpress' ) );
-			$header .= '</div>';
+			if ( empty( $html_list_question ) ) {
+				$html_list_question = sprintf(
+					'<tr class="cb-list-empty-row"><td colspan="6">%s</td></tr>',
+					Template::print_message( __( 'No questions found', 'learnpress' ), 'info', false )
+				);
+			}
 
-			$sections = [
-				'header'        => $header,
-				'wrapper'       => '<ul class="cb-list-question">',
-				'list_question' => $html_list_question,
-				'wrapper_end'   => '</ul>',
+			$table_args = [
+				'class_table' => 'cb-list-table cb-list-question',
+				'header'      => [
+					'title'     => [
+						'class' => 'cb-col-title',
+						'title' => __( 'Question Title', 'learnpress' ),
+					],
+					'quizzes'   => [
+						'class' => 'cb-col-assigned',
+						'title' => __( 'Quiz', 'learnpress' ),
+					],
+					'date'      => [
+						'class' => 'cb-col-date',
+						'title' => __( 'Create Date', 'learnpress' ),
+					],
+					'status'    => [
+						'class' => 'cb-col-status',
+						'title' => __( 'Status', 'learnpress' ),
+					],
+					'type'      => [
+						'class' => 'cb-col-type',
+						'title' => __( 'Preview', 'learnpress' ),
+					],
+					'actions'   => [
+						'class' => 'cb-col-actions',
+						'title' => __( 'Actions', 'learnpress' ),
+					],
+				],
+				'body'        => [
+					'rows_html' => $html_list_question,
+				],
 			];
 
-			$content = Template::combine_components( $sections );
+			$content = TableListTemplate::instance()->html_table( $table_args );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -331,15 +348,29 @@ class BuilderListQuestionsTemplate {
 				$settings
 			);
 
+			$cell_classes = [
+				'quizzes'         => 'assigned',
+				'question_status' => 'status',
+			];
+			$html_cells   = [];
+			foreach ( $html_content as $key => $html ) {
+				$cell_class         = $cell_classes[ $key ] ?? $key;
+				$html_cells[ $key ] = sprintf(
+					'<td class="cb-col-%s">%s</td>',
+					esc_attr( sanitize_html_class( $cell_class ) ),
+					$html
+				);
+			}
+
 			$section = apply_filters(
 				'learn-press/course-builder/list-questions/item-li',
 				[
-					'wrapper_li'      => '<li class="question">',
-					'wrapper_div'     => sprintf( '<div class="question-item" data-question-id="%s" data-status="%s">', $question['id'], $status ),
-					'question_info'   => Template::combine_components( $html_content ),
-					'question_action' => Template::combine_components( $html_action ),
-					'wrapper_div_end' => '</div>',
-					'wrapper_li_end'  => '</li>',
+					'wrapper_li'      => sprintf( '<tr class="question question-item" data-question-id="%s" data-status="%s">', $question['id'], $status ),
+					'wrapper_div'     => '',
+					'question_info'   => Template::combine_components( $html_cells ),
+					'question_action' => sprintf( '<td class="cb-col-actions">%s</td>', Template::combine_components( $html_action ) ),
+					'wrapper_div_end' => '',
+					'wrapper_li_end'  => '</tr>',
 				],
 				$question,
 				$settings
