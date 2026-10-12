@@ -3,7 +3,7 @@
  *
  * - Sidebar panel: list, add text note, edit, delete.
  * - Select text in the lesson content → floating "Add Note" → highlight note.
- * - Highlights are rendered as <mark class="lp-note-hl"> from the stored anchors.
+ * - Only the note clicked in the sidebar is highlighted in the lesson content.
  *
  * Data: window.lpCourseNotes (CourseNoteTemplate::get_js_data()).
  * Transport: window.lpAJAXG.fetchAJAX (actions lp_note_save / lp_note_delete).
@@ -17,7 +17,6 @@ import * as lpUtils from '../utils.js';
 import * as lpToastify from '../lpToastify.js';
 import {
 	createAnchor,
-	getMarks,
 	getText,
 	locateInText,
 	MARK_CLASS,
@@ -25,12 +24,12 @@ import {
 	wrapPosition,
 } from './course-notes-anchor.js';
 
-const PENDING_ID = 'pending';
 const TYPE_TEXT = 'text';
 const TYPE_HIGHLIGHT = 'highlight';
 const SCOPE = 'lesson_content';
 const MIN_SELECTION_LENGTH = 2;
 const HELP_STORAGE_KEY = 'lp-notes-help-hidden';
+const NOTES_PAGE_SIZE = 10;
 
 export class CourseNotes {
 	static selectors = {
@@ -45,6 +44,7 @@ export class CourseNotes {
 		formCancel: '.lp-notes__form-cancel',
 		formSave: '.lp-notes__form-save',
 		list: '.lp-notes__list',
+		showMore: '.lp-notes__show-more',
 		empty: '.lp-notes__empty',
 		cardTemplate: '.lp-notes__card-template',
 		card: '.lp-notes__card',
@@ -60,6 +60,7 @@ export class CourseNotes {
 		this.contentRoot = null;
 		this.el = {};
 		this.notes = [];
+		this.visibleCount = NOTES_PAGE_SIZE;
 		// Note IDs whose highlight could not be found in the lesson.
 		this.orphanedIds = new Set();
 		// Form state: { mode: 'create'|'edit', noteType, noteId, anchor }.
@@ -81,9 +82,8 @@ export class CourseNotes {
 		this.contentRoot = document.querySelector( this.config.contentSelector );
 		this.notes = Array.isArray( this.config.notes ) ? this.config.notes : [];
 
-		this.renderHighlights();
+		this.findOrphanedNotes();
 		this.bindEvents();
-		this.openFromHash();
 	}
 
 	bindEvents() {
@@ -92,19 +92,17 @@ export class CourseNotes {
 		lpUtils.eventHandlers( 'click', [
 			{ selector: `${ s.content } ${ s.helpDismiss }`, class: this, callBack: this.handleHelpDismiss.name },
 			{ selector: `${ s.content } ${ s.add }`, class: this, callBack: this.handleAddClick.name },
+			{ selector: `${ s.content } ${ s.showMore }`, class: this, callBack: this.handleShowMore.name },
 			{ selector: `${ s.content } ${ s.formCancel }`, class: this, callBack: this.handleFormCancel.name },
 			{ selector: `${ s.content } ${ s.cardEdit }`, class: this, callBack: this.handleCardEdit.name },
 			{ selector: `${ s.content } ${ s.cardDelete }`, class: this, callBack: this.handleCardDelete.name },
 			{ selector: `${ s.content } ${ s.card }`, class: this, callBack: this.handleCardClick.name },
-			{ selector: s.mark, class: this, callBack: this.handleMarkClick.name },
 			{ selector: `${ s.root } ${ s.selectionBtn }`, class: this, callBack: this.handleSelectionBtnClick.name },
 		] );
 
 		lpUtils.eventHandlers( 'submit', [
 			{ selector: `${ s.content } ${ s.form }`, class: this, callBack: this.handleFormSubmit.name },
 		] );
-
-		window.addEventListener( 'hashchange', () => this.openFromHash() );
 
 		document.addEventListener( 'lp-learning-content-bar-rendered', ( e ) => {
 			if ( e.detail?.item !== 'notes' ) {
@@ -115,7 +113,7 @@ export class CourseNotes {
 				return;
 			}
 			this.panelRoot = content;
-			for ( const key of [ 'help', 'form', 'formQuote', 'formContent', 'formSave', 'add', 'list', 'empty', 'cardTemplate' ] ) {
+			for ( const key of [ 'help', 'form', 'formQuote', 'formContent', 'formSave', 'add', 'list', 'showMore', 'empty', 'cardTemplate' ] ) {
 				this.el[ key ] = content.querySelector( s[ key ] );
 			}
 			this.initHelp();
@@ -189,10 +187,7 @@ export class CourseNotes {
 			return;
 		}
 
-		// Switching to another form drops the unsaved highlight of the previous one.
-		if ( this.isPendingHighlightForm() ) {
-			this.removePendingHighlight();
-		}
+		this.setActiveNote( null );
 
 		this.formState = state;
 		this.el.formContent.value = state.content || '';
@@ -211,10 +206,6 @@ export class CourseNotes {
 			return;
 		}
 
-		if ( this.isPendingHighlightForm() ) {
-			this.removePendingHighlight();
-		}
-
 		this.formState = null;
 		this.el.form.hidden = true;
 		this.el.formContent.value = '';
@@ -223,10 +214,6 @@ export class CourseNotes {
 		if ( this.el.add ) {
 			this.el.add.hidden = false;
 		}
-	}
-
-	isPendingHighlightForm() {
-		return this.formState?.mode === 'create' && this.formState.noteType === TYPE_HIGHLIGHT;
 	}
 
 	handleFormSubmit( args ) {
@@ -264,13 +251,6 @@ export class CourseNotes {
 				this.notes = this.notes.map( ( n ) => ( String( n.note_id ) === String( note.note_id ) ? note : n ) );
 			} else {
 				this.notes.unshift( note );
-				if ( noteType === TYPE_HIGHLIGHT && this.contentRoot ) {
-					// Keep the pending marks: they become the saved highlight.
-					getMarks( this.contentRoot, PENDING_ID ).forEach( ( mark ) => {
-						mark.dataset.noteId = String( note.note_id );
-						mark.classList.remove( 'is-pending' );
-					} );
-				}
 			}
 
 			this.formState = null;
@@ -299,11 +279,27 @@ export class CourseNotes {
 		}
 
 		this.el.list.textContent = '';
-		this.notes.forEach( ( note ) => this.el.list.appendChild( this.createCard( note ) ) );
+		this.appendVisibleNotes();
 
 		if ( this.el.empty ) {
 			this.el.empty.hidden = this.notes.length > 0;
 		}
+	}
+
+	appendVisibleNotes() {
+		const start = this.el.list.children.length;
+		this.notes.slice( start, this.visibleCount ).forEach( ( note ) => this.el.list.appendChild( this.createCard( note ) ) );
+		if ( this.el.showMore ) {
+			this.el.showMore.hidden = this.visibleCount >= this.notes.length;
+		}
+	}
+
+	handleShowMore( args ) {
+		args.e.preventDefault();
+		const start = this.el.list.children.length;
+		this.visibleCount += NOTES_PAGE_SIZE;
+		this.appendVisibleNotes();
+		this.el.list.children[ start ]?.focus( { preventScroll: true } );
 	}
 
 	/**
@@ -323,7 +319,6 @@ export class CourseNotes {
 			return el;
 		};
 
-		card.id = `lp-note-${ note.note_id }`;
 		card.dataset.noteId = String( note.note_id );
 		card.classList.toggle( 'is-highlight', isHighlight );
 
@@ -405,37 +400,21 @@ export class CourseNotes {
 		}
 
 		const noteId = args.target.closest( CourseNotes.selectors.card )?.dataset.noteId;
-		const marks = this.contentRoot ? getMarks( this.contentRoot, noteId ) : [];
 		this.setActiveNote( noteId );
+		const marks = this.showHighlight( noteId );
 		if ( marks.length ) {
 			marks[ 0 ].scrollIntoView( { behavior: 'smooth', block: 'center' } );
 		}
 	}
 
-	handleMarkClick( args ) {
-		const noteId = args.target.closest( CourseNotes.selectors.mark )?.dataset.noteId;
-		if ( ! noteId || noteId === PENDING_ID || ! this.getNote( noteId ) ) {
-			return;
-		}
-
-		// Let the user select text inside a highlight without jumping to the panel.
-		if ( ! this.getSelection()?.isCollapsed ) {
-			return;
-		}
-
-		this.openPanel();
-		this.setActiveNote( noteId, true );
-	}
-
 	/**
-	 * Mark a note as active in the list and the content.
+	 * Mark a note as active in the list and clear the previous content highlight.
 	 *
 	 * @param {string|number|null} noteId
-	 * @param {boolean}            scrollCard
 	 */
-	setActiveNote( noteId, scrollCard = false ) {
+	setActiveNote( noteId ) {
 		this.panelRoot?.querySelectorAll( `${ CourseNotes.selectors.card }.is-active` ).forEach( ( el ) => el.classList.remove( 'is-active' ) );
-		this.contentRoot?.querySelectorAll( `${ CourseNotes.selectors.mark }.is-active` ).forEach( ( el ) => el.classList.remove( 'is-active' ) );
+		this.clearHighlight();
 
 		if ( noteId === null || noteId === undefined ) {
 			return;
@@ -444,31 +423,6 @@ export class CourseNotes {
 		const card = this.el.list?.querySelector( `[data-note-id="${ CSS.escape( String( noteId ) ) }"]` );
 		if ( card ) {
 			card.classList.add( 'is-active' );
-			if ( scrollCard ) {
-				card.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
-				card.focus( { preventScroll: true } );
-			}
-		}
-
-		if ( this.contentRoot ) {
-			getMarks( this.contentRoot, noteId ).forEach( ( mark ) => mark.classList.add( 'is-active' ) );
-		}
-	}
-
-	/**
-	 * Open the panel on a note from the URL hash (#lp-note-{id}), e.g. from the admin page.
-	 */
-	openFromHash() {
-		const match = window.location.hash.match( /^#lp-note-(\d+)$/ );
-		if ( ! match || ! this.getNote( match[ 1 ] ) ) {
-			return;
-		}
-
-		this.openPanel();
-		this.setActiveNote( match[ 1 ], true );
-		const marks = this.contentRoot ? getMarks( this.contentRoot, match[ 1 ] ) : [];
-		if ( marks.length ) {
-			marks[ 0 ].scrollIntoView( { block: 'center' } );
 		}
 	}
 
@@ -476,32 +430,45 @@ export class CourseNotes {
 	// Highlights
 	// ---------------------------------------------------------------------
 
-	renderHighlights() {
+	findOrphanedNotes() {
 		this.orphanedIds.clear();
 		if ( ! this.contentRoot ) {
 			this.notes.forEach( ( n ) => n.note_type === TYPE_HIGHLIGHT && this.orphanedIds.add( String( n.note_id ) ) );
 			return;
 		}
 
-		// Wrapping highlights preserves the text, so read it once for all anchors.
 		const text = getText( this.contentRoot );
-		// Oldest first, so newer highlights are nested inside older ones.
-		[ ...this.notes ].reverse().forEach( ( note ) => {
+		this.notes.forEach( ( note ) => {
 			if ( note.note_type !== TYPE_HIGHLIGHT ) {
 				return;
 			}
 
 			const position = locateInText( text, note.anchor );
-			if ( ! position || ! wrapPosition( this.contentRoot, position.start, position.end, note.note_id ).length ) {
+			if ( ! position ) {
 				this.orphanedIds.add( String( note.note_id ) );
 			}
 		} );
 	}
 
-	removePendingHighlight() {
-		if ( this.contentRoot ) {
-			unwrap( this.contentRoot, PENDING_ID );
+	showHighlight( noteId ) {
+		const note = this.getNote( noteId );
+		if ( ! this.contentRoot || note?.note_type !== TYPE_HIGHLIGHT ) {
+			return [];
 		}
+
+		const position = locateInText( getText( this.contentRoot ), note.anchor );
+		if ( ! position ) {
+			return [];
+		}
+
+		const marks = wrapPosition( this.contentRoot, position.start, position.end, noteId );
+		marks.forEach( ( mark ) => mark.classList.add( 'is-active' ) );
+		return marks;
+	}
+
+	clearHighlight() {
+		const noteIds = new Set( Array.from( this.contentRoot?.querySelectorAll( CourseNotes.selectors.mark ) || [], ( mark ) => mark.dataset.noteId ) );
+		noteIds.forEach( ( noteId ) => unwrap( this.contentRoot, noteId ) );
 	}
 
 	/**
@@ -553,13 +520,6 @@ export class CourseNotes {
 		if ( ! anchor ) {
 			return;
 		}
-
-		// Drop a previous unsaved highlight before marking the new one.
-		this.removePendingHighlight();
-		this.formState = null;
-		wrapPosition( this.contentRoot, anchor.position.start, anchor.position.end, PENDING_ID ).forEach( ( mark ) =>
-			mark.classList.add( 'is-pending' )
-		);
 
 		this.openForm( {
 			mode: 'create',

@@ -13,11 +13,8 @@ mark.lp-note-hl {
 	padding: 0;
 	background: $lp-notes-highlight;
 	color: inherit;
-	cursor: pointer;
 
-	&.is-active,
-	&.is-pending,
-	&:hover {
+	&.is-active {
 		background: $lp-notes-highlight-active;
 	}
 }

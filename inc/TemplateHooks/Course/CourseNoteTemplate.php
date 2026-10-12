@@ -396,7 +396,8 @@ class CourseNoteTemplate {
 			: __( 'This student has no notes for this lesson.', 'learnpress' );
 
 		return sprintf(
-			'<div class="lp-notes__list" aria-live="polite"></div><p class="lp-notes__empty" hidden>%s</p>',
+			'<div id="lp-notes-list" class="lp-notes__list" aria-live="polite"></div><button type="button" class="lp-button lp-notes__show-more" aria-controls="lp-notes-list" hidden>%1$s</button><p class="lp-notes__empty" hidden>%2$s</p>',
+			esc_html__( 'Show more', 'learnpress' ),
 			esc_html( $empty )
 		);
 	}

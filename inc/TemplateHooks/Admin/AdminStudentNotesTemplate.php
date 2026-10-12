@@ -7,7 +7,6 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Note\NoteModel;
 use LearnPress\Services\NoteService;
-use LearnPress\TemplateHooks\Course\CourseNoteTemplate;
 use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LP_Debug;
 use LP_Request;
@@ -367,9 +366,7 @@ class AdminStudentNotesTemplate {
 		$is_highlight = NoteModel::TYPE_HIGHLIGHT === $note->note_type;
 		$course       = CourseModel::find( $note->course_id, true );
 		$item_link    = $course ? $course->get_item_link( $note->item_id, $note->item_type ) : '';
-		$open_link    = $item_link
-			? add_query_arg( CourseNoteTemplate::PARAM_NOTE_USER, $note->user_id, $item_link ) . '#lp-note-' . $note->get_note_id()
-			: '';
+		$open_link    = $item_link;
 		$timestamp    = $note->get_created_timestamp();
 
 		$student = sprintf(
@@ -445,7 +442,7 @@ class AdminStudentNotesTemplate {
 	 *
 	 * @param NoteModel $note      Note.
 	 * @param array     $meta      Label => HTML (already escaped) shown in the modal.
-	 * @param string    $open_link Lesson URL focused on the note.
+	 * @param string    $open_link Lesson URL.
 	 *
 	 * @return string
 	 */
