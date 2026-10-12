@@ -31,7 +31,7 @@ $learning_bar_items = apply_filters(
 ?>
 
 <?php if ( $learning_bar_items ) : ?>
-<div id="popup-right-sidebar" class="popup-right-sidebar is-collapsed">
+<div id="popup-right-sidebar" class="popup-right-sidebar is-expanded">
 	<span class="popup-right-sidebar__toggle lp-icon-extend" title="<?php esc_attr_e( 'Toggle Sidebar', 'learnpress' ); ?>"></span>
 	<ul class="popup-right-sidebar__items">
 		<?php foreach ( $learning_bar_items as $item_key => $item ) : ?>
