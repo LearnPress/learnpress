@@ -318,7 +318,7 @@ class AddonService {
 		$args           = [
 			'method'     => 'POST',
 			'body'       => [
-				'addon'   => $addon['slug'],
+				'addon'   => $addon['slug'] ?? '',
 				'version' => 'lastest',
 			],
 			'user-agent' => site_url(),
@@ -337,16 +337,24 @@ class AddonService {
 			throw new Exception( $result->get_error_message() );
 		}
 
+		if ( 200 !== wp_remote_retrieve_response_code( $result ) ) {
+			throw new Exception( __( 'Addon download failed!', 'learnpress' ) );
+		}
+
 		$data = wp_remote_retrieve_body( $result );
+		if ( empty( $data ) ) {
+			throw new Exception( __( 'Addon package is empty!', 'learnpress' ) );
+		}
+
 		if ( preg_match( '/^Error.*/', $data ) ) {
 			throw new Exception( $data );
 		}
 
 		// Create file temp zip addon to install with.
-		$wp_upload_dir = wp_upload_dir( null, false );
-		$name          = 'addon.zip';
-		$path_file     = $wp_upload_dir['basedir'] . DIRECTORY_SEPARATOR . $name;
-		$lp_file_system->put_contents( $path_file, $data );
+		$path_file = wp_tempnam( $addon['slug'] . '.zip' );
+		if ( ! $path_file || ! $lp_file_system->put_contents( $path_file, $data ) ) {
+			throw new Exception( __( 'Could not save the addon package!', 'learnpress' ) );
+		}
 
 		return $path_file;
 	}
@@ -398,7 +406,9 @@ class AddonService {
 			'abort_if_destination_exists' => false,
 		];
 		$result       = $this->plugin_upgrader->run( $args_upgrade );
-		if ( ! $result ) {
+		if ( is_wp_error( $result ) ) {
+			throw new Exception( $result->get_error_message() );
+		} elseif ( ! $result ) {
 			throw new Exception( __( 'Update failed!', 'learnpress' ) );
 		}
 
