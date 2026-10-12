@@ -38,10 +38,13 @@ class LP_Jwt_Questions_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'callback'            => array( $this, 'get_item' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => array(
-						'context' => $this->get_context_param(
+						'context'  => $this->get_context_param(
 							array(
 								'default' => 'view',
 							)
+						),
+						'password' => array(
+							'type' => 'string',
 						),
 					),
 				),

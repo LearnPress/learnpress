@@ -33,6 +33,11 @@ if ( ! $quizPostModel instanceof QuizPostModel ) {
 	return;
 }
 
+if ( post_password_required( $quizPostModel->get_id() )
+	&& ! current_user_can( 'edit_post', $quizPostModel->get_id() ) ) {
+	return;
+}
+
 $total_question      = $quizPostModel->count_questions();
 $questions           = array();
 $show_check          = $quizPostModel->has_instant_check();
