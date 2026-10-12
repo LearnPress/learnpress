@@ -61,6 +61,7 @@ export class CourseNotes {
 		this.el = {};
 		this.notes = [];
 		this.visibleCount = NOTES_PAGE_SIZE;
+		this.activeNoteId = null;
 		// Note IDs whose highlight could not be found in the lesson.
 		this.orphanedIds = new Set();
 		// Form state: { mode: 'create'|'edit', noteType, noteId, anchor }.
@@ -106,6 +107,7 @@ export class CourseNotes {
 
 		document.addEventListener( 'lp-learning-content-bar-rendered', ( e ) => {
 			if ( e.detail?.item !== 'notes' ) {
+				this.setActiveNote( null );
 				return;
 			}
 			const content = e.detail.contentBar.querySelector( s.content );
@@ -120,8 +122,10 @@ export class CourseNotes {
 			this.renderList();
 		} );
 		document.addEventListener( 'lp-learning-content-bar-closed', ( e ) => {
-			if ( e.detail?.item === 'notes' && ! this.isSaving ) {
-				this.closeForm();
+			if ( e.detail?.item === 'notes' ) {
+				if ( ! this.isSaving ) {
+					this.closeForm();
+				}
 				this.setActiveNote( null );
 			}
 		} );
@@ -172,14 +176,16 @@ export class CourseNotes {
 
 	handleFormCancel( args ) {
 		args.e.preventDefault();
-		this.closeForm();
+		if ( ! this.isSaving ) {
+			this.closeForm();
+		}
 	}
 
 	/**
 	 * @param {Object} state { mode, noteType, noteId?, anchor?, content?, quote? }
 	 */
 	openForm( state ) {
-		if ( ! this.config.canEdit ) {
+		if ( ! this.config.canEdit || this.isSaving ) {
 			return;
 		}
 		this.openPanel();
@@ -263,6 +269,17 @@ export class CourseNotes {
 
 	setSaving( isSaving ) {
 		this.isSaving = isSaving;
+		const controls = [ 'add', 'formContent', 'formCancel', 'cardEdit', 'cardDelete' ]
+			.map( ( key ) => CourseNotes.selectors[ key ] ).join( ', ' );
+		this.panelRoot?.querySelectorAll( controls ).forEach( ( el ) => {
+			el.disabled = isSaving;
+		} );
+		if ( this.el.selectionBtn ) {
+			this.el.selectionBtn.disabled = isSaving;
+		}
+		if ( isSaving ) {
+			this.hideSelectionButton();
+		}
 		if ( this.el.formSave ) {
 			this.el.formSave.disabled = isSaving;
 			lpUtils.lpSetLoadingEl( this.el.formSave, isSaving ? 1 : 0 );
@@ -276,6 +293,10 @@ export class CourseNotes {
 	renderList() {
 		if ( ! this.el.list || ! this.el.cardTemplate ) {
 			return;
+		}
+
+		if ( this.activeNoteId !== null && ! this.getNote( this.activeNoteId ) ) {
+			this.setActiveNote( null );
 		}
 
 		this.el.list.textContent = '';
@@ -321,6 +342,10 @@ export class CourseNotes {
 
 		card.dataset.noteId = String( note.note_id );
 		card.classList.toggle( 'is-highlight', isHighlight );
+		card.classList.toggle( 'is-active', card.dataset.noteId === this.activeNoteId );
+		card.querySelectorAll( `${ CourseNotes.selectors.cardEdit }, ${ CourseNotes.selectors.cardDelete }` ).forEach( ( el ) => {
+			el.disabled = this.isSaving;
+		} );
 
 		const date = set( '.lp-notes__card-date', note.created_at_display );
 		date?.setAttribute( 'datetime', `${ String( note.created_at ).replace( ' ', 'T' ) }Z` );
@@ -363,6 +388,9 @@ export class CourseNotes {
 	handleCardDelete( args ) {
 		args.e.preventDefault();
 		args.e.stopPropagation();
+		if ( this.isSaving ) {
+			return;
+		}
 		const note = this.getNote( args.target.closest( CourseNotes.selectors.card )?.dataset.noteId );
 		if ( ! note ) {
 			return;
@@ -374,15 +402,13 @@ export class CourseNotes {
 			showCancelButton: true,
 			confirmButtonColor: 'var(--lp-primary-color, #ffb606)',
 		} ).then( ( result ) => {
-			if ( ! result.isConfirmed ) {
+			if ( ! result.isConfirmed || this.isSaving ) {
 				return;
 			}
 
 			this.request( { action: 'lp_note_delete', note_id: note.note_id }, ( data, message ) => {
 				this.notes = this.notes.filter( ( n ) => String( n.note_id ) !== String( note.note_id ) );
-				if ( this.contentRoot ) {
-					unwrap( this.contentRoot, note.note_id );
-				}
+				this.orphanedIds.delete( String( note.note_id ) );
 
 				if ( this.formState?.noteId === note.note_id ) {
 					this.closeForm();
@@ -413,6 +439,7 @@ export class CourseNotes {
 	 * @param {string|number|null} noteId
 	 */
 	setActiveNote( noteId ) {
+		this.activeNoteId = noteId === null || noteId === undefined ? null : String( noteId );
 		this.panelRoot?.querySelectorAll( `${ CourseNotes.selectors.card }.is-active` ).forEach( ( el ) => el.classList.remove( 'is-active' ) );
 		this.clearHighlight();
 
@@ -475,6 +502,10 @@ export class CourseNotes {
 	 * Show the floating button when the selection is inside the lesson content.
 	 */
 	updateSelectionButton() {
+		if ( this.isSaving ) {
+			this.hideSelectionButton();
+			return;
+		}
 		const selection = this.getSelection();
 		if ( ! selection || selection.isCollapsed || ! selection.rangeCount ) {
 			this.hideSelectionButton();
@@ -508,6 +539,9 @@ export class CourseNotes {
 
 	handleSelectionBtnClick( args ) {
 		args.e.preventDefault();
+		if ( this.isSaving ) {
+			return;
+		}
 		const range = this.selectionRange;
 		this.hideSelectionButton();
 		if ( ! range ) {
