@@ -372,7 +372,7 @@ class CourseNoteTemplate {
 					array(
 						'wrapper' => '<article class="lp-notes__card" data-note-id="' . absint( $note['note_id'] ) . '" data-note-type="' . esc_attr( $note['note_type'] ) . '">',
 						'header'  => '<div class="lp-notes__card-meta"><span class="lp-notes__type ' . ( $highlight ? 'is-highlight' : 'is-text' ) . '">' . esc_html( $highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) ) . '</span><span class="lp-notes__card-date">' . esc_html( $note['created_at_display'] ) . '</span></div>',
-						'quote'   => $highlight ? '<div class="lp-notes__quote-label">' . esc_html__( 'Highlighted:', 'learnpress' ) . '</div><blockquote class="lp-notes__card-quote">' . esc_html( $note['highlight_text'] ) . '</blockquote>' : '',
+						'quote'   => $highlight ? '<blockquote class="lp-notes__card-quote">' . esc_html( $note['highlight_text'] ) . '</blockquote>' : '',
 						'content' => '<p class="lp-notes__card-content">' . esc_html( $note['content'] ) . '</p>',
 						'actions' => ! empty( $note['can_manage'] ) ? self::html_card_actions() : '',
 						'end'     => '</article>',
