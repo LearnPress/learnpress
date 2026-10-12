@@ -25,6 +25,118 @@ mark.lp-note-hl {
 	background: $color-white;
 }
 
+.lp-notes__heading {
+	display: flex;
+	align-items: center;
+	gap: $spacing-base-2x;
+}
+
+.lp-addon-content-bar .lp-notes__view-all {
+	white-space: nowrap;
+	margin-inline-end: $spacing-base-2x;
+	font-size: $font-size-small;
+	font-weight: 400;
+	line-height: 1.4;
+
+	&[aria-disabled="true"] {
+		opacity: 0.5;
+		cursor: default;
+	}
+}
+
+.lp-addon-content-bar[data-learning-bar-item="notes"] .lp-addon-content-bar__left {
+	flex: 1;
+	min-width: 0;
+}
+
+.lp-notes__all {
+	text-align: start;
+	color: $text-color-base;
+	font-size: $font-size-base;
+
+	.lp-notes__list {
+		max-height: 60vh;
+		overflow-y: auto;
+		padding: $spacing-base-4x;
+		background: $bg-grey;
+	}
+
+	.lp-notes__lesson {
+		flex-shrink: 0;
+		border: 1px solid $border-color;
+		border-radius: $border-radius-global;
+		background: $color-white;
+		overflow: hidden;
+	}
+
+	.lp-notes__lesson-title {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: $spacing-base-3x;
+		padding: $spacing-base-4x;
+		margin: 0;
+		list-style: none;
+		font-size: inherit;
+		font-weight: $link-font-weight;
+		cursor: pointer;
+		border: 1px solid transparent;
+		overflow-wrap: anywhere;
+
+		&::-webkit-details-marker {
+			display: none;
+		}
+	}
+
+	.lp-notes__lesson[open] > .lp-notes__lesson-title {
+		border-color: $color-primary;
+
+		.lp-icon-angle-down {
+			transform: rotate(180deg);
+		}
+	}
+
+	.lp-notes__lesson-cards {
+		display: flex;
+		flex-direction: column;
+		gap: $spacing-base-3x;
+		padding: $spacing-base-3x;
+	}
+
+	.lp-notes__card-meta {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: $spacing-base-2x;
+		flex-wrap: wrap;
+	}
+
+	.lp-notes__card-date,
+	.lp-notes__quote-label {
+		color: $text-color-meta;
+		font-size: $font-size-label;
+	}
+
+	.lp-notes__type {
+		padding: $spacing-base $spacing-base-2x;
+		border: 1px solid currentColor;
+		border-radius: $spacing-base-5x;
+		font-size: $font-size-label;
+		line-height: 1;
+		color: $color-price;
+		background: color-mix(in srgb, currentColor 8%, transparent);
+
+		&.is-highlight {
+			color: $color-primary;
+		}
+	}
+
+	.lp-notes__card-quote {
+		border-inline-start-color: $color-primary;
+		background: $bg-grey;
+	}
+}
+
 .lp-notes__body,
 .lp-notes__list,
 .lp-notes__card {
@@ -67,7 +179,12 @@ mark.lp-note-hl {
 	width: 100%;
 }
 
-.lp-notes__form,
+.lp-notes__form {
+	padding: 0;
+	border: 0;
+	background: transparent;
+}
+
 .lp-notes__card {
 	padding: $spacing-base-4x;
 	border: 1px solid $border-color;
@@ -144,6 +261,7 @@ mark.lp-note-hl {
 
 // Keep hidden elements hidden when LP's flex/button/message rules apply.
 .lp-notes [hidden],
-.lp-notes__body [hidden] {
+.lp-notes__body [hidden],
+.lp-notes__all [hidden] {
 	display: none;
 }

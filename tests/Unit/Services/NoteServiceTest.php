@@ -6,6 +6,7 @@ namespace LearnPress\Tests\Unit\Services;
 
 use Brain\Monkey\Functions;
 use Exception;
+use LearnPress\Filters\NoteFilter;
 use LearnPress\Models\Note\NoteModel;
 use LearnPress\Services\NoteService;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
@@ -31,6 +32,20 @@ class FakeNoteService extends NoteService {
 	public $deleted_by = [];
 	/** @var int[] */
 	public $authored_course_ids = [];
+	public $course_note_rows = [];
+	public $course_note_total = 0;
+	public $course_note_filter;
+	public $course_notes_detail_filter;
+
+	protected function query_course_notes( NoteFilter $filter, int &$total_rows ): array {
+		if ( $filter->only_fields ) {
+			$this->course_note_filter = $filter;
+			$total_rows = $this->course_note_total;
+			return array_map( static function ( $id ) { return (object) [ 'item_id' => $id ]; }, array_unique( array_column( $this->course_note_rows, 'item_id' ) ) );
+		}
+		$this->course_notes_detail_filter = $filter;
+		return $this->course_note_rows;
+	}
 
 	protected function find_course( int $course_id ) {
 		return $this->courses[ $course_id ] ?? false;
@@ -136,6 +151,10 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 			public function check_user_is_author( $user ): bool {
 				return (int) $user->ID === $this->author_id;
 			}
+
+			public function get_item_link( int $item_id, string $item_type ): string {
+				return 'https://example.test/lesson/' . $item_id;
+			}
 		};
 	}
 
@@ -240,6 +259,66 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 	public function test_get_item_notes_rejects_other_student(): void {
 		$this->expectException( Exception::class );
 		$this->service->get_item_notes( self::OTHER, self::STUDENT, self::COURSE, self::LESSON );
+	}
+
+	public function test_course_notes_scope_and_pagination_include_all_lessons(): void {
+		Functions\when( 'get_option' )->justReturn( 'Y-m-d' );
+		Functions\when( 'wp_date' )->justReturn( '2026-10-12' );
+		$this->service->course_note_rows = [
+			(object) [ 'note_id' => 1, 'user_id' => self::STUDENT, 'course_id' => self::COURSE, 'item_id' => 20, 'item_title' => 'Lesson A', 'content' => 'A', 'created_at' => '2026-10-12 00:00:00' ],
+			(object) [ 'note_id' => 2, 'user_id' => self::STUDENT, 'course_id' => self::COURSE, 'item_id' => 21, 'item_title' => 'Lesson B', 'content' => 'B', 'created_at' => '2026-10-12 00:00:00' ],
+		];
+		$this->service->course_note_total = 25;
+		$data = $this->service->get_course_notes( self::STUDENT, self::STUDENT, self::COURSE, 2 );
+		$filter = $this->service->course_note_filter;
+		$this->assertSame( self::STUDENT, $filter->user_id );
+		$this->assertSame( self::COURSE, $filter->course_id );
+		$this->assertNull( $filter->item_id );
+		$this->assertSame( 2, $filter->page );
+		$this->assertSame( 10, $filter->limit );
+		$this->assertSame( [ 'DISTINCT n.item_id' ], $filter->only_fields );
+		$details = $this->service->course_notes_detail_filter;
+		$this->assertSame( -1, $details->limit );
+		$this->assertTrue( $details->join_details );
+		$this->assertFalse( $details->run_query_count );
+		$this->assertSame( [ 'AND n.item_id IN (20,21)' ], $details->where );
+		$this->assertSame( self::STUDENT, $details->user_id );
+		$this->assertSame( self::COURSE, $details->course_id );
+		$this->assertSame( 25, $data['total_rows'] );
+		$this->assertSame( [ 'Lesson A', 'Lesson B' ], array_column( $data['notes'], 'item_title' ) );
+		$this->assertSame( 'https://example.test/lesson/21', $data['notes'][1]['item_url'] );
+		$this->assertArrayNotHasKey( 'user_id', $data['notes'][0] );
+	}
+
+	public function test_course_notes_keep_a_large_lesson_group_together(): void {
+		Functions\when( 'get_option' )->justReturn( 'Y-m-d' );
+		Functions\when( 'wp_date' )->justReturn( '2026-10-12' );
+		for ( $id = 1; $id <= 25; ++$id ) {
+			$this->service->course_note_rows[] = (object) [ 'note_id' => $id, 'user_id' => self::STUDENT, 'course_id' => self::COURSE, 'item_id' => self::LESSON, 'item_title' => 'Lesson A', 'content' => 'Note ' . $id, 'created_at' => '2026-10-12 00:00:00' ];
+		}
+		$this->service->course_note_total = 1;
+		$data = $this->service->get_course_notes( self::STUDENT, self::STUDENT, self::COURSE );
+		$this->assertCount( 25, $data['notes'] );
+		$this->assertSame( 1, $data['total_rows'] );
+		$this->assertSame( 10, $data['per_page'] );
+	}
+
+	public function test_course_notes_reject_other_student_before_querying(): void {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'You do not have permission to view these notes.' );
+		$this->service->get_course_notes( self::OTHER, self::STUDENT, self::COURSE );
+	}
+
+	public function test_course_instructor_can_review_students_course_notes(): void {
+		$data = $this->service->get_course_notes( self::INSTRUCTOR, self::STUDENT, self::COURSE, 0 );
+		$this->assertSame( [], $data['notes'] );
+		$this->assertSame( 1, $data['page'] );
+	}
+
+	public function test_course_notes_reject_unknown_course(): void {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Course is invalid!' );
+		$this->service->get_course_notes( self::STUDENT, self::STUDENT, 404 );
 	}
 
 	// -------------------------------------------------------------------------
@@ -377,17 +456,35 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 		);
 	}
 
-	public function test_instructor_cannot_update_student_note(): void {
-		$this->existing_note();
+	public function test_admin_and_course_instructor_can_update_and_delete_student_notes(): void {
+		foreach ( [ self::ADMIN, self::INSTRUCTOR ] as $viewer ) {
+			$this->existing_note();
+			$note = $this->service->save_note( $viewer, [ 'note_id' => 99, 'content' => 'Updated' ] );
+			$this->assertSame( 'Updated', $note->content );
+			$this->assertSame( self::STUDENT, $note->user_id );
+			$this->assertTrue( $this->service->delete_note( $viewer, 99 ) );
+		}
+	}
 
+	public function test_unrelated_instructor_cannot_manage_student_notes(): void {
+		$note = $this->existing_note();
+		$note->course_id = 404;
+		$this->assertFalse( $this->service->can_manage( self::INSTRUCTOR, $note ) );
+		$this->assertFalse( $this->service->can_manage( self::OTHER, $note ) );
+		$this->assertFalse( $this->service->can_manage( 0, $note ) );
+	}
+
+	public function test_staff_course_view_does_not_filter_by_student(): void {
+		foreach ( [ self::ADMIN, self::INSTRUCTOR ] as $viewer ) {
+			$this->service->get_course_notes( $viewer, 0, self::COURSE );
+			$this->assertNull( $this->service->course_note_filter->user_id );
+			$this->assertSame( self::COURSE, $this->service->course_note_filter->course_id );
+		}
+	}
+
+	public function test_student_cannot_request_all_students_notes(): void {
 		$this->expectException( Exception::class );
-		$this->service->save_note(
-			self::INSTRUCTOR,
-			[
-				'note_id' => 99,
-				'content' => 'Edited by instructor',
-			]
-		);
+		$this->service->get_course_notes( self::STUDENT, 0, self::COURSE );
 	}
 
 	public function test_update_unknown_note_fails(): void {
@@ -409,7 +506,7 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 	public function test_other_user_cannot_delete(): void {
 		$this->existing_note();
 
-		foreach ( [ self::OTHER, self::INSTRUCTOR, self::ADMIN ] as $user_id ) {
+		foreach ( [ self::OTHER, 0 ] as $user_id ) {
 			try {
 				$this->service->delete_note( $user_id, 99 );
 				$this->fail( "User $user_id should not delete the note." );

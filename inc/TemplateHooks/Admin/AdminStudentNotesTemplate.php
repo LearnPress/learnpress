@@ -49,7 +49,7 @@ class AdminStudentNotesTemplate {
 		echo AdminTemplate::html_on_wp_admin_screen(
 			array(
 				'content' => $content,
-				'title'   => __( 'Student Notes', 'learnpress' ),
+				'title'   => __( 'Notes', 'learnpress' ),
 				'id'      => 'lp-student-notes',
 			)
 		);

@@ -7,7 +7,8 @@
  *
  * Modes:
  * - edit:     the enrolled student manages their own notes.
- * - readonly: an admin / course instructor views a student's notes via `?lp_note_user={user_id}`.
+ * - manage:   admin / course instructor edits or deletes existing student notes.
+ * - readonly: reserved for integrations that allow viewing without management.
  *
  * @since 4.4.9.2
  * @version 1.0.0
@@ -21,10 +22,12 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\Note\NoteModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\NoteService;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Global;
 use LP_Page_Controller;
 use LP_Request;
 use Throwable;
+use stdClass;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -33,6 +36,7 @@ class CourseNoteTemplate {
 
 	const MODE_EDIT     = 'edit';
 	const MODE_READONLY = 'readonly';
+	const MODE_MANAGE   = 'manage';
 
 	/**
 	 * Query param for admins / instructors to view a student's notes.
@@ -55,6 +59,12 @@ class CourseNoteTemplate {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_filter( 'learn-press/learning-bar/items', array( $this, 'register_learning_bar_item' ) );
 		add_action( 'wp_footer', array( $this, 'render_runtime' ), 10 );
+		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'register_ajax_callback' ) );
+	}
+
+	public function register_ajax_callback( array $callbacks ): array {
+		$callbacks[] = self::class . ':render_course_notes';
+		return $callbacks;
 	}
 
 	/**
@@ -122,14 +132,15 @@ class CourseNoteTemplate {
 				return false;
 			}
 
-			$mode = self::MODE_READONLY;
+			$mode = self::MODE_MANAGE;
 		} else {
-			if ( ! $service->can_create( $viewer_id, $course_id, $item_id, $item_type ) ) {
+			$can_create = $service->can_create( $viewer_id, $course_id, $item_id, $item_type );
+			if ( ! $can_create && ! $service->can_view( $viewer_id, 0, $course_id ) ) {
 				return false;
 			}
 
 			$owner_id = $viewer_id;
-			$mode     = self::MODE_EDIT;
+			$mode     = $can_create ? self::MODE_EDIT : self::MODE_MANAGE;
 		}
 
 		$notes = $service->get_item_notes( $viewer_id, $owner_id, $course_id, $item_id );
@@ -155,7 +166,8 @@ class CourseNoteTemplate {
 		return apply_filters(
 			'learn-press/course-notes/js-data',
 			array(
-				'canEdit'         => self::MODE_EDIT === $render_state['mode'],
+				'canEdit'         => in_array( $render_state['mode'], array( self::MODE_EDIT, self::MODE_MANAGE ), true ),
+				'canCreate'       => self::MODE_EDIT === $render_state['mode'],
 				'courseId'        => $render_state['course_id'],
 				'itemId'          => $render_state['item_id'],
 				'itemType'        => $render_state['item_type'],
@@ -169,6 +181,7 @@ class CourseNoteTemplate {
 					'orphaned'      => __( 'The highlighted text was changed or removed from the lesson.', 'learnpress' ),
 					'contentEmpty'  => __( 'Please enter your note.', 'learnpress' ),
 					'error'         => __( 'An error occurred. Please try again.', 'learnpress' ),
+					'courseNotes'   => __( 'All course notes', 'learnpress' ),
 				),
 			),
 			$render_state
@@ -229,6 +242,20 @@ class CourseNoteTemplate {
 					esc_attr( $render_state['mode'] )
 				),
 				'selection_btn' => $is_edit ? $this->html_selection_button() : '',
+				'all_notes'     => '<template class="lp-notes__all-template"><div class="lp-notes__all">' . TemplateAJAX::load_content_via_ajax(
+					array(
+						'course_id'             => $render_state['course_id'],
+						'owner_id'              => $render_state['owner_id'],
+						'paged'                 => 1,
+						'enableUpdateParamsUrl' => false,
+						'enableScrollToView'    => false,
+					),
+					array(
+						'class' => self::class,
+						'method' => 'render_course_notes',
+					)
+				) . '</div></template>',
+				'popup_form'    => '<template class="lp-notes__popup-form-template">' . $this->html_form() . '</template>',
 				'wrapper_end'   => '</div>',
 			),
 			$render_state
@@ -245,11 +272,12 @@ class CourseNoteTemplate {
 	 * @return string
 	 */
 	public function html_learning_bar_template( array $render_state ): string {
-		$is_edit = self::MODE_EDIT === $render_state['mode'];
+		$is_edit    = self::MODE_EDIT === $render_state['mode'];
+		$can_manage = $is_edit || self::MODE_MANAGE === $render_state['mode'];
 
 		$body = $is_edit
 			? $this->html_help() . $this->html_add_button() . $this->html_form()
-			: $this->html_readonly_notice( $render_state['owner_id'] );
+			: ( $can_manage ? $this->html_form() : $this->html_readonly_notice( $render_state['owner_id'] ) );
 
 		$section = apply_filters(
 			'learn-press/course-notes/html-panel',
@@ -259,7 +287,7 @@ class CourseNoteTemplate {
 				'body'        => '<div id="lp-notes-content" class="lp-learning-bar-item-content lp-notes__body">',
 				'content'     => $body,
 				'list'        => $this->html_list( $is_edit ),
-				'cards'       => $this->html_card_template( $is_edit ),
+				'cards'       => $this->html_card_template( $can_manage ),
 				'body_end'    => '</div>',
 				'wrapper_end' => '</template>',
 			),
@@ -278,16 +306,84 @@ class CourseNoteTemplate {
 		$section = apply_filters(
 			'learn-press/course-notes/html-header',
 			array(
-				'wrapper'     => '<div class="lp-learning-bar-item-head">',
+				'wrapper'     => '<div class="lp-learning-bar-item-head lp-notes__header">',
 				'title'       => sprintf(
-					'<span class="lp-icon lp-icon-edit-square" aria-hidden="true"></span><span class="lp-learning-bar-item-title">%s</span>',
+					'<span class="lp-notes__heading"><span class="lp-icon lp-icon-edit-square" aria-hidden="true"></span><span class="lp-learning-bar-item-title">%s</span></span>',
 					esc_html__( 'Notes', 'learnpress' )
+				),
+				'view_all'    => sprintf(
+					'<a href="#" class="lp-notes__view-all" aria-haspopup="dialog">%s</a>',
+					esc_html__( 'View all', 'learnpress' )
 				),
 				'wrapper_end' => '</div>',
 			)
 		);
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Render a page using the shared TemplateAJAX loader and pagination.
+	 * Permissions are checked here because the generic loader also serves guests.
+	 */
+	public static function render_course_notes( array $args ): stdClass {
+		$response = new stdClass();
+		try {
+			if ( ! is_user_logged_in() || ! NoteService::is_enabled() ) {
+				throw new Exception( __( 'Notes are unavailable.', 'learnpress' ) );
+			}
+			$service   = NoteService::instance();
+			$viewer_id = get_current_user_id();
+			$course_id = absint( $args['course_id'] ?? 0 );
+			// Students always see their own notes; instructors/admins see the course.
+			$owner_id          = $service->can_view( $viewer_id, 0, $course_id ) ? 0 : $viewer_id;
+			$data              = $service->get_course_notes( $viewer_id, $owner_id, $course_id, max( 1, (int) ( $args['paged'] ?? 1 ) ) );
+			$cards             = self::html_course_note_groups( $data['notes'] );
+			$response->content = $cards
+				? '<div class="lp-notes__list">' . $cards . '</div>' . Template::instance()->html_pagination(
+					array(
+						'total_pages' => (int) ceil( $data['total_rows'] / $data['per_page'] ),
+						'paged'       => $data['page'],
+					)
+				)
+				: Template::print_message( __( 'No notes for this course yet.', 'learnpress' ), 'info', false );
+		} catch ( Throwable $e ) {
+			$response->content = Template::print_message( $e->getMessage(), 'error', false );
+		}
+		return $response;
+	}
+
+
+	/**
+	 * Group cards by lesson, using native disclosure controls.
+	 */
+	public static function html_course_note_groups( array $notes ): string {
+		$lessons = array();
+		foreach ( $notes as $note ) {
+			$lessons[ $note['item_id'] ][] = $note;
+		}
+		ksort( $lessons, SORT_NUMERIC );
+		$html = '';
+		foreach ( $lessons as $lesson_notes ) {
+			$lesson = $lesson_notes[0];
+			$title  = '' !== $lesson['item_title'] ? $lesson['item_title'] : '#' . $lesson['item_id'];
+			$html  .= '<details class="lp-notes__lesson" open><summary class="lp-notes__lesson-title">' . esc_html( $title ) . '<span class="lp-icon-angle-down" aria-hidden="true"></span></summary><div class="lp-notes__lesson-cards">';
+			foreach ( $lesson_notes as $note ) {
+				$highlight = NoteModel::TYPE_HIGHLIGHT === $note['note_type'];
+				$html     .= Template::combine_components(
+					array(
+						'wrapper' => '<article class="lp-notes__card" data-note-id="' . absint( $note['note_id'] ) . '" data-note-type="' . esc_attr( $note['note_type'] ) . '">',
+						'header'  => '<div class="lp-notes__card-meta"><span class="lp-notes__type ' . ( $highlight ? 'is-highlight' : 'is-text' ) . '">' . esc_html( $highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) ) . '</span><span class="lp-notes__card-date">' . esc_html( $note['created_at_display'] ) . '</span></div>',
+						'quote'   => $highlight ? '<div class="lp-notes__quote-label">' . esc_html__( 'Highlighted:', 'learnpress' ) . '</div><blockquote class="lp-notes__card-quote">' . esc_html( $note['highlight_text'] ) . '</blockquote>' : '',
+						'content' => '<p class="lp-notes__card-content">' . esc_html( $note['content'] ) . '</p>',
+						'actions' => ! empty( $note['can_manage'] ) ? self::html_card_actions() : '',
+						'end'     => '</article>',
+					)
+				);
+			}
+			$html .= '</div></details>';
+		}
+		return $html;
 	}
 
 	/**
@@ -339,15 +435,12 @@ class CourseNoteTemplate {
 			array(
 				'wrapper'     => '<form class="learn-press-form lp-notes__form" novalidate hidden>',
 				'fields'      => '<div class="form-fields"><div class="form-field">',
-				'label'       => sprintf(
-					'<label class="lp-notes__form-label" for="lp-notes-input">%s</label>',
-					esc_html__( 'Note Content/Edit Note', 'learnpress' )
-				),
 				'quote'       => '<blockquote class="lp-notes__form-quote" hidden></blockquote>',
 				'textarea'    => sprintf(
-					'<textarea id="lp-notes-input" class="lp-notes__form-content" rows="4" maxlength="%1$d" placeholder="%2$s"></textarea>',
+					'<textarea id="lp-notes-input" class="lp-notes__form-content" rows="4" maxlength="%1$d" placeholder="%2$s" aria-label="%3$s"></textarea>',
 					NoteModel::CONTENT_MAX_LENGTH,
-					esc_attr__( 'Enter your note here...', 'learnpress' )
+					esc_attr__( 'Enter your note here...', 'learnpress' ),
+					esc_attr__( 'Note content', 'learnpress' )
 				),
 				'fields_end'  => '</div></div>',
 				'actions'     => sprintf(
@@ -415,6 +508,17 @@ class CourseNoteTemplate {
 	}
 
 	/**
+	 * Shared note actions for the sidebar and course popup.
+	 */
+	public static function html_card_actions(): string {
+		return sprintf(
+			'<div class="lp-notes__card-actions"><button type="button" class="lp-button lp-notes__card-delete">%1$s</button><button type="button" class="lp-button lp-notes__card-edit">%2$s</button></div>',
+			esc_html__( 'Delete', 'learnpress' ),
+			esc_html__( 'Edit Note', 'learnpress' )
+		);
+	}
+
+	/**
 	 * Card template cloned by JS for each note. Text values are set with textContent.
 	 *
 	 * @param bool $is_edit Edit mode.
@@ -422,14 +526,7 @@ class CourseNoteTemplate {
 	 * @return string
 	 */
 	public function html_card_template( bool $is_edit ): string {
-		$actions = '';
-		if ( $is_edit ) {
-			$actions = sprintf(
-				'<div class="lp-notes__card-actions"><button type="button" class="lp-button lp-notes__card-delete">%1$s</button><button type="button" class="lp-button lp-notes__card-edit">%2$s</button></div>',
-				esc_html__( 'Delete', 'learnpress' ),
-				esc_html__( 'Edit Note', 'learnpress' )
-			);
-		}
+		$actions = $is_edit ? self::html_card_actions() : '';
 
 		$section = apply_filters(
 			'learn-press/course-notes/html-card-template',

@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
  * Business rules and permissions for student notes.
  *
  * - Create: logged-in student enrolled in (or finished) the course, item assigned to the course.
- * - Edit/delete: the note owner, with the same enrollment check.
+ * - Edit/delete: enrolled note owners, admins and course author/co-instructors.
  * - View: the owner, admins (manage_options) and the course author/co-instructors.
  *
  * @since 4.4.9.2
@@ -113,8 +113,11 @@ class NoteService {
 	 * @return bool
 	 */
 	public function can_manage( int $user_id, NoteModel $note ): bool {
-		$can = $note->is_owner( $user_id )
-			&& $this->can_create( $user_id, $note->course_id, $note->item_id, $note->item_type );
+		$can = $user_id > 0 && (
+			$this->is_admin( $user_id )
+			|| $this->is_course_instructor( $user_id, $note->course_id )
+			|| ( $note->is_owner( $user_id ) && $this->can_create( $user_id, $note->course_id, $note->item_id, $note->item_type ) )
+		);
 
 		return (bool) apply_filters( 'learn-press/note/can-manage', $can, $user_id, $note );
 	}
@@ -177,6 +180,75 @@ class NoteService {
 		}
 
 		return NoteModel::get_user_item_notes( $owner_id, $course_id, $item_id );
+	}
+
+	/**
+	 * Notes across a student's course, paginated by lesson, with lesson links.
+	 *
+	 * @return array{notes:array,total_rows:int,page:int,per_page:int}
+	 * @throws Exception
+	 */
+	public function get_course_notes( int $viewer_id, int $owner_id, int $course_id, int $page = 1 ): array {
+		if ( $owner_id < 0 || ! $this->can_view( $viewer_id, $owner_id, $course_id ) ) {
+			throw new Exception( __( 'You do not have permission to view these notes.', 'learnpress' ) );
+		}
+		$course = $this->find_course( $course_id );
+		if ( ! $course ) {
+			throw new Exception( __( 'Course is invalid!', 'learnpress' ) );
+		}
+
+		$filter              = new NoteFilter();
+		$filter->user_id     = $owner_id > 0 ? $owner_id : null;
+		$filter->course_id   = $course_id;
+		$filter->page        = max( 1, $page );
+		$filter->limit       = 10;
+		$filter->only_fields = array( 'DISTINCT n.item_id' );
+		$filter->field_count = NoteFilter::COL_ITEM_ID;
+		$filter->order_by    = 'n.item_id';
+		$filter->order       = NoteFilter::ORDER_ASC;
+		$total_rows          = 0;
+		// Fetch complete lesson groups so pagination never splits a lesson's notes.
+		$lessons = $this->query_course_notes( $filter, $total_rows );
+		$rows    = array();
+		if ( $lessons ) {
+			$notes_filter                  = new NoteFilter();
+			$notes_filter->user_id         = $owner_id > 0 ? $owner_id : null;
+			$notes_filter->course_id       = $course_id;
+			$notes_filter->limit           = -1;
+			$notes_filter->join_details    = true;
+			$notes_filter->run_query_count = false;
+			$notes_filter->where[]         = 'AND n.item_id IN (' . implode( ',', array_map( 'absint', array_column( $lessons, 'item_id' ) ) ) . ')';
+			$ignored_total                 = 0;
+			$rows                          = $this->query_course_notes( $notes_filter, $ignored_total );
+		}
+		$notes = array();
+		foreach ( $rows as $row ) {
+			$note               = new NoteModel( $row );
+			$data               = $this->to_response( $note );
+			$data['can_manage'] = $this->can_manage( $viewer_id, $note );
+			$data['item_title'] = (string) ( $row->item_title ?? '' );
+			$data['item_url']   = $course->get_item_link( $note->item_id, $note->item_type );
+			$notes[]            = $data;
+		}
+
+		return array(
+			'notes'      => $notes,
+			'total_rows' => $total_rows,
+			'page'       => $filter->page,
+			'per_page'   => $filter->limit,
+		);
+	}
+
+	/**
+	 * @return object[]
+	 * @throws Exception
+	 */
+	protected function query_course_notes( NoteFilter $filter, int &$total_rows ): array {
+		if ( empty( $filter->only_fields ) ) {
+			NoteDB::getInstance()->order_newest_first( $filter );
+		}
+		$rows = NoteDB::getInstance()->get_notes( $filter, $total_rows );
+		return is_array( $rows ) ? $rows : array();
 	}
 
 	/**

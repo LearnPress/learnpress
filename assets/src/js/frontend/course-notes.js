@@ -45,6 +45,7 @@ export class CourseNotes {
 		formSave: '.lp-notes__form-save',
 		list: '.lp-notes__list',
 		showMore: '.lp-notes__show-more',
+		viewAll: '.lp-notes__view-all',
 		empty: '.lp-notes__empty',
 		cardTemplate: '.lp-notes__card-template',
 		card: '.lp-notes__card',
@@ -64,11 +65,20 @@ export class CourseNotes {
 		this.activeNoteId = null;
 		// Note IDs whose highlight could not be found in the lesson.
 		this.orphanedIds = new Set();
-		// Form state: { mode: 'create'|'edit', noteType, noteId, anchor }.
-		this.formState = null;
+		// Form states: { mode: 'create'|'edit', noteType, noteId, anchor }.
+		this.formStates = new WeakMap();
+		this.formPlaceholder = null;
+		this.sidebarEditCard = null;
 		this.selectionRange = null;
 		this.isSaving = false;
 		this.panelRoot = null;
+		this.popupRoot = null;
+		this.popupForm = null;
+		this.popupEditCard = null;
+	}
+
+	get formState() {
+		return this.formStates.get( this.el.form ) || null;
 	}
 
 	init() {
@@ -91,18 +101,19 @@ export class CourseNotes {
 		const s = CourseNotes.selectors;
 
 		lpUtils.eventHandlers( 'click', [
+			{ selector: `.lp-addon-content-bar ${ s.viewAll }`, class: this, callBack: this.handleViewAll.name },
 			{ selector: `${ s.content } ${ s.helpDismiss }`, class: this, callBack: this.handleHelpDismiss.name },
 			{ selector: `${ s.content } ${ s.add }`, class: this, callBack: this.handleAddClick.name },
 			{ selector: `${ s.content } ${ s.showMore }`, class: this, callBack: this.handleShowMore.name },
-			{ selector: `${ s.content } ${ s.formCancel }`, class: this, callBack: this.handleFormCancel.name },
-			{ selector: `${ s.content } ${ s.cardEdit }`, class: this, callBack: this.handleCardEdit.name },
-			{ selector: `${ s.content } ${ s.cardDelete }`, class: this, callBack: this.handleCardDelete.name },
+			{ selector: `${ s.content } ${ s.formCancel }, .lp-notes__all ${ s.formCancel }`, class: this, callBack: this.handleFormCancel.name },
+			{ selector: `${ s.content } ${ s.cardEdit }, .lp-notes__all ${ s.cardEdit }`, class: this, callBack: this.handleCardEdit.name },
+			{ selector: `${ s.content } ${ s.cardDelete }, .lp-notes__all ${ s.cardDelete }`, class: this, callBack: this.handleCardDelete.name },
 			{ selector: `${ s.content } ${ s.card }`, class: this, callBack: this.handleCardClick.name },
 			{ selector: `${ s.root } ${ s.selectionBtn }`, class: this, callBack: this.handleSelectionBtnClick.name },
 		] );
 
 		lpUtils.eventHandlers( 'submit', [
-			{ selector: `${ s.content } ${ s.form }`, class: this, callBack: this.handleFormSubmit.name },
+			{ selector: `${ s.content } ${ s.form }, .lp-notes__all ${ s.form }`, class: this, callBack: this.handleFormSubmit.name },
 		] );
 
 		document.addEventListener( 'lp-learning-content-bar-rendered', ( e ) => {
@@ -115,6 +126,7 @@ export class CourseNotes {
 				return;
 			}
 			this.panelRoot = content;
+			this.el.viewAll = e.detail.contentBar.querySelector( s.viewAll );
 			for ( const key of [ 'help', 'form', 'formQuote', 'formContent', 'formSave', 'add', 'list', 'showMore', 'empty', 'cardTemplate' ] ) {
 				this.el[ key ] = content.querySelector( s[ key ] );
 			}
@@ -130,7 +142,7 @@ export class CourseNotes {
 			}
 		} );
 
-		if ( this.config.canEdit && this.contentRoot && this.el.selectionBtn ) {
+		if ( ( this.config.canCreate ?? this.config.canEdit ) && this.contentRoot && this.el.selectionBtn ) {
 			// Keep the text selection when pressing the floating button.
 			this.el.selectionBtn.addEventListener( 'mousedown', ( e ) => e.preventDefault() );
 
@@ -159,6 +171,73 @@ export class CourseNotes {
 		}
 	}
 
+	handleViewAll( args ) {
+		args.e.preventDefault();
+		if ( this.isSaving ) {
+			return;
+		}
+		const template = this.root.querySelector( '.lp-notes__all-template' );
+		if ( ! template || typeof window.lpAJAXG?.getElements !== 'function' ) {
+			return;
+		}
+		this.setActiveNote( null );
+		this.hideSelectionButton();
+		this.openCourseNotes( template.innerHTML );
+	}
+
+	openCourseNotes( html, onOpen ) {
+		let openedPopup;
+		SweetAlert.fire( {
+			title: this.config.i18n.courseNotes,
+			html,
+			width: 800,
+			showConfirmButton: false,
+			showCloseButton: true,
+			customClass: { popup: 'lp-notes-modal' },
+			allowOutsideClick: () => ! this.isSaving,
+			allowEscapeKey: () => ! this.isSaving,
+			didOpen: ( popup ) => {
+				openedPopup = popup;
+				this.popupRoot = popup;
+				popup.addEventListener( 'click', ( e ) => {
+					if ( this.isSaving && e.target.closest( '.page-numbers' ) ) {
+						e.preventDefault();
+						e.stopPropagation();
+					}
+				}, true );
+				window.lpAJAXG.getElements();
+				onOpen?.();
+			},
+			didClose: () => {
+				if ( this.popupRoot === openedPopup ) {
+					this.closeForm( this.popupForm );
+					this.popupRoot = null;
+				}
+			},
+		} );
+	}
+
+	setCardEditing( card, editing ) {
+		if ( card ) {
+			card.querySelector( '.lp-notes__card-actions' ).hidden = editing;
+			card.querySelector( '.lp-notes__card-content' ).hidden = editing;
+		}
+	}
+
+	attachEditForm( card, form ) {
+		this.setCardEditing( card, true );
+		form.hidden = false;
+		card.appendChild( form );
+	}
+
+	restoreSidebarForm() {
+		if ( this.sidebarEditCard ) {
+			this.setCardEditing( this.sidebarEditCard, false );
+			this.formPlaceholder.after( this.el.form );
+			this.sidebarEditCard = null;
+		}
+	}
+
 	handleHelpDismiss( args ) {
 		args.e.preventDefault();
 		this.el.help.hidden = true;
@@ -171,69 +250,109 @@ export class CourseNotes {
 
 	handleAddClick( args ) {
 		args.e.preventDefault();
-		this.openForm( { mode: 'create', noteType: TYPE_TEXT } );
+		if ( this.config.canCreate ?? this.config.canEdit ) {
+			this.openForm( { mode: 'create', noteType: TYPE_TEXT } );
+		}
 	}
 
 	handleFormCancel( args ) {
 		args.e.preventDefault();
 		if ( ! this.isSaving ) {
-			this.closeForm();
+			this.closeForm( args.target.closest( CourseNotes.selectors.form ) );
 		}
 	}
 
 	/**
-	 * @param {Object} state { mode, noteType, noteId?, anchor?, content?, quote? }
+	 * @param {Object}           state { mode, noteType, noteId?, anchor?, content?, quote? }
+	 * @param {HTMLElement|null} card  Note card for inline editing.
 	 */
-	openForm( state ) {
-		if ( ! this.config.canEdit || this.isSaving ) {
+	openForm( state, card = null ) {
+		const popup = card?.closest( '.lp-notes__all' );
+		if ( this.isSaving || ( ! popup && ! this.config.canEdit ) ) {
 			return;
 		}
-		this.openPanel();
-		if ( ! this.el.form ) {
-			return;
+		let form;
+		if ( popup ) {
+			const source = this.root.querySelector( '.lp-notes__popup-form-template' )?.content.querySelector( CourseNotes.selectors.form ) || this.el.form;
+			if ( ! source ) {
+				return;
+			}
+			this.closeForm( this.popupForm );
+			form = source.cloneNode( true );
+			form.querySelector( CourseNotes.selectors.formContent ).id = `lp-notes-popup-input-${ state.noteId }`;
+			this.popupForm = form;
+			this.popupEditCard = card;
+		} else {
+			this.openPanel();
+			form = this.el.form;
+			if ( ! form ) {
+				return;
+			}
+			this.setActiveNote( null );
+			this.restoreSidebarForm();
+			if ( this.el.add ) {
+				this.el.add.hidden = true;
+			}
+			if ( card ) {
+				if ( ! this.formPlaceholder ) {
+					this.formPlaceholder = document.createComment( 'Notes form' );
+					form.before( this.formPlaceholder );
+				}
+				this.sidebarEditCard = card;
+			}
 		}
-
-		this.setActiveNote( null );
-
-		this.formState = state;
-		this.el.formContent.value = state.content || '';
-		this.el.formQuote.textContent = state.quote || '';
-		this.el.formQuote.hidden = ! state.quote;
-		this.el.form.hidden = false;
-		if ( this.el.add ) {
-			this.el.add.hidden = true;
+		this.formStates.set( form, state );
+		const input = form.querySelector( CourseNotes.selectors.formContent );
+		input.value = state.content || '';
+		const quote = form.querySelector( CourseNotes.selectors.formQuote );
+		quote.textContent = state.mode === 'edit' ? '' : state.quote || '';
+		quote.hidden = ! quote.textContent;
+		form.hidden = false;
+		if ( card ) {
+			this.attachEditForm( card, form );
 		}
-
-		this.el.formContent.focus();
+		input.focus( { preventScroll: state.mode === 'edit' } );
 	}
 
-	closeForm() {
-		if ( ! this.el.form ) {
+	closeForm( form = this.el.form ) {
+		if ( ! form ) {
 			return;
 		}
-
-		this.formState = null;
-		this.el.form.hidden = true;
-		this.el.formContent.value = '';
-		this.el.formQuote.textContent = '';
-		this.el.formQuote.hidden = true;
-		if ( this.el.add ) {
-			this.el.add.hidden = false;
+		if ( form === this.popupForm ) {
+			this.setCardEditing( this.popupEditCard, false );
+			form.remove();
+			this.popupForm = null;
+			this.popupEditCard = null;
+		} else {
+			this.restoreSidebarForm();
+			if ( this.el.add ) {
+				this.el.add.hidden = false;
+			}
 		}
+		this.formStates.delete( form );
+		form.hidden = true;
+		form.querySelector( CourseNotes.selectors.formContent ).value = '';
+		const quote = form.querySelector( CourseNotes.selectors.formQuote );
+		quote.textContent = '';
+		quote.hidden = true;
 	}
 
 	handleFormSubmit( args ) {
 		args.e.preventDefault();
-		if ( ! this.formState || this.isSaving ) {
+		const form = args.target.closest( CourseNotes.selectors.form );
+		const popup = form?.closest( '.lp-notes__all' );
+		const state = this.formStates.get( form );
+		if ( ! state || ! form || this.isSaving ) {
 			return;
 		}
 
-		const content = this.el.formContent.value.trim();
-		const { mode, noteType, noteId, anchor } = this.formState;
+		const input = form.querySelector( CourseNotes.selectors.formContent );
+		const content = input.value.trim();
+		const { mode, noteType, noteId, anchor } = state;
 
 		if ( noteType === TYPE_TEXT && ! content ) {
 			lpToastify.show( this.config.i18n.contentEmpty, 'error' );
-			this.el.formContent.focus();
+			input.focus();
 			return;
 		}
 
@@ -259,21 +378,36 @@ export class CourseNotes {
 				this.notes.unshift( note );
 			}
 
-			this.formState = null;
-			this.closeForm();
+			const card = form.closest( CourseNotes.selectors.card );
+			if ( card ) {
+				card.querySelector( '.lp-notes__card-content' ).textContent = note.content;
+			}
+			this.closeForm( form );
+			if ( ! popup ) {
+				this.setActiveNote( note.note_id );
+			}
 			this.renderList();
-			this.setActiveNote( note.note_id );
 			lpToastify.show( message, 'success' );
 		}, () => this.setSaving( false ) );
 	}
 
 	setSaving( isSaving ) {
 		this.isSaving = isSaving;
+		if ( this.el.viewAll ) {
+			this.el.viewAll.setAttribute( 'aria-disabled', String( isSaving ) );
+		}
 		const controls = [ 'add', 'formContent', 'formCancel', 'cardEdit', 'cardDelete' ]
 			.map( ( key ) => CourseNotes.selectors[ key ] ).join( ', ' );
 		this.panelRoot?.querySelectorAll( controls ).forEach( ( el ) => {
 			el.disabled = isSaving;
 		} );
+		this.popupRoot?.querySelectorAll( 'button, textarea' ).forEach( ( el ) => {
+			el.disabled = isSaving;
+		} );
+		const popupSave = this.popupForm?.querySelector( CourseNotes.selectors.formSave );
+		if ( popupSave ) {
+			lpUtils.lpSetLoadingEl( popupSave, isSaving ? 1 : 0 );
+		}
 		if ( this.el.selectionBtn ) {
 			this.el.selectionBtn.disabled = isSaving;
 		}
@@ -299,8 +433,24 @@ export class CourseNotes {
 			this.setActiveNote( null );
 		}
 
+		const scrollContainer = this.panelRoot.closest( '.lp-addon-content-bar__content' );
+		const scrollTop = scrollContainer?.scrollTop;
+		const editingId = this.sidebarEditCard?.dataset.noteId;
+		this.restoreSidebarForm();
 		this.el.list.textContent = '';
 		this.appendVisibleNotes();
+		if ( editingId ) {
+			const card = this.el.list.querySelector( `[data-note-id="${ CSS.escape( editingId ) }"]` );
+			if ( card ) {
+				this.sidebarEditCard = card;
+				this.attachEditForm( card, this.el.form );
+			} else {
+				this.closeForm();
+			}
+		}
+		if ( scrollContainer ) {
+			scrollContainer.scrollTop = scrollTop;
+		}
 
 		if ( this.el.empty ) {
 			this.el.empty.hidden = this.notes.length > 0;
@@ -368,21 +518,28 @@ export class CourseNotes {
 		return this.notes.find( ( n ) => String( n.note_id ) === String( noteId ) ) || null;
 	}
 
+	getCardNote( card ) {
+		if ( ! card ) {
+			return null;
+		}
+		return card.closest( '.lp-notes__all' ) ? {
+			note_id: card.dataset.noteId,
+			note_type: card.dataset.noteType,
+			content: card.querySelector( '.lp-notes__card-content' ).textContent,
+		} : this.getNote( card.dataset.noteId );
+	}
+
 	handleCardEdit( args ) {
 		args.e.preventDefault();
 		args.e.stopPropagation();
-		const note = this.getNote( args.target.closest( CourseNotes.selectors.card )?.dataset.noteId );
+		const card = args.target.closest( CourseNotes.selectors.card );
+		const note = this.getCardNote( card );
 		if ( ! note ) {
 			return;
 		}
-
 		this.openForm( {
-			mode: 'edit',
-			noteType: note.note_type,
-			noteId: note.note_id,
-			content: note.content,
-			quote: note.note_type === TYPE_HIGHLIGHT ? note.highlight_text : '',
-		} );
+			mode: 'edit', noteType: note.note_type, noteId: note.note_id, content: note.content,
+		}, card );
 	}
 
 	handleCardDelete( args ) {
@@ -391,37 +548,77 @@ export class CourseNotes {
 		if ( this.isSaving ) {
 			return;
 		}
-		const note = this.getNote( args.target.closest( CourseNotes.selectors.card )?.dataset.noteId );
-		if ( ! note ) {
+		const card = args.target.closest( CourseNotes.selectors.card );
+		const popupCard = card?.closest( '.lp-notes__all' ) ? card : null;
+		const noteId = this.getCardNote( card )?.note_id;
+		if ( ! noteId ) {
 			return;
 		}
-
+		// SweetAlert has one active popup. Retain the course view while confirming.
+		const courseContent = popupCard?.closest( '.lp-notes__all' );
+		const scrollTop = courseContent?.querySelector( '.lp-notes__list' )?.scrollTop;
+		if ( courseContent ) {
+			courseContent.remove();
+			this.popupRoot = null;
+		}
 		SweetAlert.fire( {
 			title: this.config.i18n.deleteConfirm,
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: 'var(--lp-primary-color, #ffb606)',
 		} ).then( ( result ) => {
-			if ( ! result.isConfirmed || this.isSaving ) {
-				return;
-			}
-
-			this.request( { action: 'lp_note_delete', note_id: note.note_id }, ( data, message ) => {
-				this.notes = this.notes.filter( ( n ) => String( n.note_id ) !== String( note.note_id ) );
-				this.orphanedIds.delete( String( note.note_id ) );
-
-				if ( this.formState?.noteId === note.note_id ) {
-					this.closeForm();
+			const onConfirmed = () => {
+				if ( result.isConfirmed && ! this.isSaving ) {
+					this.deleteNote( noteId, popupCard );
 				}
-
-				this.renderList();
-				lpToastify.show( message, 'success' );
-			} );
+			};
+			if ( courseContent ) {
+				this.openCourseNotes( courseContent, () => {
+					const list = courseContent.querySelector( '.lp-notes__list' );
+					if ( list ) {
+						list.scrollTop = scrollTop;
+					}
+					onConfirmed();
+				} );
+			} else {
+				onConfirmed();
+			}
 		} );
 	}
 
+	deleteNote( noteId, popupCard = null ) {
+		this.setSaving( true );
+		this.request( { action: 'lp_note_delete', note_id: noteId }, ( data, message ) => {
+			this.notes = this.notes.filter( ( n ) => String( n.note_id ) !== String( noteId ) );
+			this.orphanedIds.delete( String( noteId ) );
+			if ( String( this.formState?.noteId ) === String( noteId ) ) {
+				this.closeForm();
+			}
+			if ( popupCard ) {
+				const group = popupCard.closest( '.lp-notes__lesson' );
+				popupCard.remove();
+				if ( ! group.querySelector( CourseNotes.selectors.card ) ) {
+					const loader = this.popupRoot.querySelector( '.lp-load-ajax-element' );
+					const target = loader?.querySelector( '.lp-target' );
+					if ( target ) {
+						const params = JSON.parse( target.dataset.send );
+						if ( this.popupRoot.querySelectorAll( '.lp-notes__lesson' ).length === 1 ) {
+							params.args.paged = Math.max( 1, ( params.args.paged || 1 ) - 1 );
+						}
+						target.dataset.send = JSON.stringify( params );
+						loader.classList.remove( 'loaded' );
+						window.lpAJAXG.getElements();
+					}
+					group.remove();
+				}
+			}
+			this.renderList();
+			lpToastify.show( message, 'success' );
+		}, () => this.setSaving( false ) );
+	}
+
 	handleCardClick( args ) {
-		if ( args.target.closest( 'button' ) ) {
+		if ( args.target.closest( 'button, form' ) ) {
 			return;
 		}
 

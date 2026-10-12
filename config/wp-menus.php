@@ -40,8 +40,8 @@ $menu_items = apply_filters(
 		// Student Notes.
 		'student-notes'    => [
 			'id'         => AdminStudentNotesTemplate::PAGE_SLUG,
-			'menu_title' => __( 'Student Notes', 'learnpress' ),
-			'page_title' => __( 'Student Notes', 'learnpress' ),
+			'menu_title' => __( 'Notes', 'learnpress' ),
+			'page_title' => __( 'Notes', 'learnpress' ),
 			'capability' => 'edit_' . LP_COURSE_CPT . 's',
 			'priority'   => 20,
 			'callback'   => [ AdminStudentNotesTemplate::instance(), 'admin_page_output' ],
