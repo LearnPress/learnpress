@@ -15,7 +15,7 @@ function setup( t ) {
 		<div id="lp-notes"><button class="lp-notes__selection-btn" hidden></button>
 			<template class="lp-notes__all-template"><div class="lp-notes__all"><div class="lp-load-ajax-element">
 				<div class="loading-first">Loading</div>
-				<div class="lp-target" data-send='{"args":{"course_id":10,"owner_id":5,"paged":1,"enableUpdateParamsUrl":false,"enableScrollToView":false},"callback":{"class":"LearnPress\\\\TemplateHooks\\\\Course\\\\CourseNoteTemplate","method":"render_course_notes"}}'></div>
+				<div class="lp-target" data-send='{"args":{"course_id":10,"paged":1,"enableUpdateParamsUrl":false,"enableScrollToView":false},"callback":{"class":"LearnPress\\\\TemplateHooks\\\\Course\\\\CourseNoteTemplate","method":"render_course_notes"}}'></div>
 				<div class="loading-after"><div class="lp-loading-change lp-hidden"></div></div>
 			</div></div></template>
 		</div>
@@ -188,7 +188,7 @@ test( 'View all uses the shared AJAX loader and numbered pagination without chan
 	assert.equal( modals.length, 1 );
 	assert.equal( calls.length, 1 );
 	assert.equal( calls[ 0 ].data.args.course_id, 10 );
-	assert.equal( calls[ 0 ].data.args.owner_id, 5 );
+	assert.equal( calls[ 0 ].data.args.owner_id, undefined );
 	assert.equal( calls[ 0 ].data.callback.method, 'render_course_notes' );
 	calls[ 0 ].callbacks.success( { status: 'success', data: { content: '<article>Lesson A note</article><a class="page-numbers" href="?paged=2">2</a>' } } );
 	calls[ 0 ].callbacks.completed();

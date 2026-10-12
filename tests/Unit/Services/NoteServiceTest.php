@@ -152,9 +152,6 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 				return (int) $user->ID === $this->author_id;
 			}
 
-			public function get_item_link( int $item_id, string $item_type ): string {
-				return 'https://example.test/lesson/' . $item_id;
-			}
 		};
 	}
 
@@ -286,7 +283,7 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 		$this->assertSame( self::COURSE, $details->course_id );
 		$this->assertSame( 25, $data['total_rows'] );
 		$this->assertSame( [ 'Lesson A', 'Lesson B' ], array_column( $data['notes'], 'item_title' ) );
-		$this->assertSame( 'https://example.test/lesson/21', $data['notes'][1]['item_url'] );
+		$this->assertArrayNotHasKey( 'item_url', $data['notes'][1] );
 		$this->assertArrayNotHasKey( 'user_id', $data['notes'][0] );
 	}
 

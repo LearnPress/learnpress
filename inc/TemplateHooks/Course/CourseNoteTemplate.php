@@ -135,7 +135,7 @@ class CourseNoteTemplate {
 			$mode = self::MODE_MANAGE;
 		} else {
 			$can_create = $service->can_create( $viewer_id, $course_id, $item_id, $item_type );
-			if ( ! $can_create && ! $service->can_view( $viewer_id, 0, $course_id ) ) {
+			if ( ! $can_create && ! $service->can_manage_course( $viewer_id, $course_id ) ) {
 				return false;
 			}
 
@@ -245,7 +245,6 @@ class CourseNoteTemplate {
 				'all_notes'     => '<template class="lp-notes__all-template"><div class="lp-notes__all">' . TemplateAJAX::load_content_via_ajax(
 					array(
 						'course_id'             => $render_state['course_id'],
-						'owner_id'              => $render_state['owner_id'],
 						'paged'                 => 1,
 						'enableUpdateParamsUrl' => false,
 						'enableScrollToView'    => false,
@@ -336,7 +335,7 @@ class CourseNoteTemplate {
 			$viewer_id = get_current_user_id();
 			$course_id = absint( $args['course_id'] ?? 0 );
 			// Students always see their own notes; instructors/admins see the course.
-			$owner_id          = $service->can_view( $viewer_id, 0, $course_id ) ? 0 : $viewer_id;
+			$owner_id          = $service->can_manage_course( $viewer_id, $course_id ) ? 0 : $viewer_id;
 			$data              = $service->get_course_notes( $viewer_id, $owner_id, $course_id, max( 1, (int) ( $args['paged'] ?? 1 ) ) );
 			$cards             = self::html_course_note_groups( $data['notes'] );
 			$response->content = $cards
@@ -352,7 +351,6 @@ class CourseNoteTemplate {
 		}
 		return $response;
 	}
-
 
 	/**
 	 * Group cards by lesson, using native disclosure controls.
@@ -446,7 +444,7 @@ class CourseNoteTemplate {
 				'actions'     => sprintf(
 					'<div class="lp-notes__form-actions"><button type="button" class="lp-button lp-notes__form-cancel">%1$s</button><button type="submit" class="lp-button lp-notes__form-save">%2$s</button></div>',
 					esc_html__( 'Cancel', 'learnpress' ),
-					esc_html__( 'Save Note', 'learnpress' )
+					esc_html__( 'Save', 'learnpress' )
 				),
 				'wrapper_end' => '</form>',
 			)
@@ -514,7 +512,7 @@ class CourseNoteTemplate {
 		return sprintf(
 			'<div class="lp-notes__card-actions"><button type="button" class="lp-button lp-notes__card-delete">%1$s</button><button type="button" class="lp-button lp-notes__card-edit">%2$s</button></div>',
 			esc_html__( 'Delete', 'learnpress' ),
-			esc_html__( 'Edit Note', 'learnpress' )
+			esc_html__( 'Edit', 'learnpress' )
 		);
 	}
 

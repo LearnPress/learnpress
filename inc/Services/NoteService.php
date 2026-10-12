@@ -113,11 +113,8 @@ class NoteService {
 	 * @return bool
 	 */
 	public function can_manage( int $user_id, NoteModel $note ): bool {
-		$can = $user_id > 0 && (
-			$this->is_admin( $user_id )
-			|| $this->is_course_instructor( $user_id, $note->course_id )
-			|| ( $note->is_owner( $user_id ) && $this->can_create( $user_id, $note->course_id, $note->item_id, $note->item_type ) )
-		);
+		$can = $this->can_manage_course( $user_id, $note->course_id )
+			|| ( $note->is_owner( $user_id ) && $this->can_create( $user_id, $note->course_id, $note->item_id, $note->item_type ) );
 
 		return (bool) apply_filters( 'learn-press/note/can-manage', $can, $user_id, $note );
 	}
@@ -132,17 +129,16 @@ class NoteService {
 	 * @return bool
 	 */
 	public function can_view( int $viewer_id, int $owner_id, int $course_id ): bool {
-		$can = false;
-
-		if ( $viewer_id > 0 ) {
-			if ( $viewer_id === $owner_id || $this->is_admin( $viewer_id ) ) {
-				$can = true;
-			} else {
-				$can = $this->is_course_instructor( $viewer_id, $course_id );
-			}
-		}
+		$can = $viewer_id > 0 && ( $viewer_id === $owner_id || $this->can_manage_course( $viewer_id, $course_id ) );
 
 		return (bool) apply_filters( 'learn-press/note/can-view', $can, $viewer_id, $owner_id, $course_id );
+	}
+
+	/**
+	 * Admins and course authors/co-instructors can manage all notes in a course.
+	 */
+	public function can_manage_course( int $user_id, int $course_id ): bool {
+		return $user_id > 0 && ( $this->is_admin( $user_id ) || $this->is_course_instructor( $user_id, $course_id ) );
 	}
 
 	/**
@@ -183,17 +179,19 @@ class NoteService {
 	}
 
 	/**
-	 * Notes across a student's course, paginated by lesson, with lesson links.
+	 * Get course notes in complete lesson groups. Owner ID 0 includes all students.
+	 * Pagination totals count lessons, not individual notes.
 	 *
 	 * @return array{notes:array,total_rows:int,page:int,per_page:int}
 	 * @throws Exception
 	 */
 	public function get_course_notes( int $viewer_id, int $owner_id, int $course_id, int $page = 1 ): array {
-		if ( $owner_id < 0 || ! $this->can_view( $viewer_id, $owner_id, $course_id ) ) {
+		if ( $owner_id < 0
+			|| ( 0 === $owner_id && ! $this->can_manage_course( $viewer_id, $course_id ) )
+			|| ! $this->can_view( $viewer_id, $owner_id, $course_id ) ) {
 			throw new Exception( __( 'You do not have permission to view these notes.', 'learnpress' ) );
 		}
-		$course = $this->find_course( $course_id );
-		if ( ! $course ) {
+		if ( ! $this->find_course( $course_id ) ) {
 			throw new Exception( __( 'Course is invalid!', 'learnpress' ) );
 		}
 
@@ -227,7 +225,6 @@ class NoteService {
 			$data               = $this->to_response( $note );
 			$data['can_manage'] = $this->can_manage( $viewer_id, $note );
 			$data['item_title'] = (string) ( $row->item_title ?? '' );
-			$data['item_url']   = $course->get_item_link( $note->item_id, $note->item_type );
 			$notes[]            = $data;
 		}
 

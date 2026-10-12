@@ -369,7 +369,6 @@ export class CourseNotes {
 			} );
 		}
 
-		this.setSaving( true );
 		this.request( dataSend, ( data, message ) => {
 			const note = data.note;
 			if ( mode === 'edit' ) {
@@ -388,7 +387,7 @@ export class CourseNotes {
 			}
 			this.renderList();
 			lpToastify.show( message, 'success' );
-		}, () => this.setSaving( false ) );
+		} );
 	}
 
 	setSaving( isSaving ) {
@@ -404,19 +403,19 @@ export class CourseNotes {
 		this.popupRoot?.querySelectorAll( 'button, textarea' ).forEach( ( el ) => {
 			el.disabled = isSaving;
 		} );
-		const popupSave = this.popupForm?.querySelector( CourseNotes.selectors.formSave );
-		if ( popupSave ) {
-			lpUtils.lpSetLoadingEl( popupSave, isSaving ? 1 : 0 );
-		}
+
 		if ( this.el.selectionBtn ) {
 			this.el.selectionBtn.disabled = isSaving;
 		}
 		if ( isSaving ) {
 			this.hideSelectionButton();
 		}
-		if ( this.el.formSave ) {
-			this.el.formSave.disabled = isSaving;
-			lpUtils.lpSetLoadingEl( this.el.formSave, isSaving ? 1 : 0 );
+		for ( const form of [ this.el.form, this.popupForm ] ) {
+			const save = form?.querySelector( CourseNotes.selectors.formSave );
+			if ( save ) {
+				save.disabled = isSaving;
+				lpUtils.lpSetLoadingEl( save, isSaving ? 1 : 0 );
+			}
 		}
 	}
 
@@ -587,7 +586,6 @@ export class CourseNotes {
 	}
 
 	deleteNote( noteId, popupCard = null ) {
-		this.setSaving( true );
 		this.request( { action: 'lp_note_delete', note_id: noteId }, ( data, message ) => {
 			this.notes = this.notes.filter( ( n ) => String( n.note_id ) !== String( noteId ) );
 			this.orphanedIds.delete( String( noteId ) );
@@ -614,7 +612,7 @@ export class CourseNotes {
 			}
 			this.renderList();
 			lpToastify.show( message, 'success' );
-		}, () => this.setSaving( false ) );
+		} );
 	}
 
 	handleCardClick( args ) {
@@ -766,17 +764,16 @@ export class CourseNotes {
 
 	/**
 	 * @param {Object}   dataSend
-	 * @param {Function} onSuccess   ( data, message )
-	 * @param {Function} onCompleted
+	 * @param {Function} onSuccess ( data, message )
 	 */
-	request( dataSend, onSuccess, onCompleted ) {
+	request( dataSend, onSuccess ) {
 		const ajaxHandle = window.lpAJAXG;
 		if ( ! ajaxHandle || typeof ajaxHandle.fetchAJAX !== 'function' ) {
 			lpToastify.show( this.config.i18n.error, 'error' );
-			onCompleted?.();
 			return;
 		}
 
+		this.setSaving( true );
 		ajaxHandle.fetchAJAX( dataSend, {
 			success: ( response ) => {
 				if ( response?.status !== 'success' ) {
@@ -787,7 +784,7 @@ export class CourseNotes {
 				onSuccess( response.data || {}, response.message || '' );
 			},
 			error: () => lpToastify.show( this.config.i18n.error, 'error' ),
-			completed: () => onCompleted?.(),
+			completed: () => this.setSaving( false ),
 		} );
 	}
 
