@@ -596,7 +596,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-admin-student-notes'    => new LP_Asset_Key(
 					$this->url( 'dist/js/admin/student-notes' . self::$_min_assets . '.js' ),
-					array(),
+					array( 'lp-load-ajax', 'wp-i18n' ),
 					array( 'learnpress_page_learn-press-student-notes' ),
 					0,
 					1,

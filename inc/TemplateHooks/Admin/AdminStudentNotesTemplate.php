@@ -256,7 +256,7 @@ class AdminStudentNotesTemplate {
 			);
 
 		$actions = sprintf(
-			'<a class="button lp-student-notes__reset" href="%1$s">%2$s</a><button type="submit" class="button button-primary">%3$s</button>',
+			'<a class="lp-button lp-be-btn lp-be-btn--outline lp-student-notes__reset" href="%1$s">%2$s</a><button type="submit" class="lp-button lp-be-btn lp-be-btn--primary">%3$s</button>',
 			esc_url( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) ),
 			esc_html__( 'Reset', 'learnpress' ),
 			esc_html__( 'Apply Filter', 'learnpress' )
@@ -396,13 +396,7 @@ class AdminStudentNotesTemplate {
 			)
 			: '';
 
-		$action = $open_link
-			? sprintf(
-				'<a class="button button-small" href="%1$s" target="_blank" rel="noopener">%2$s</a>',
-				esc_url( $open_link ),
-				esc_html__( 'Open Lesson', 'learnpress' )
-			)
-			: '';
+		$action = $this->html_actions( $note, $open_link );
 
 		$section = apply_filters(
 			'learn-press/admin/student-notes/row/section',
@@ -437,8 +431,36 @@ class AdminStudentNotesTemplate {
 	}
 
 	/**
-	 * Content cell: short quote + note, and a "View note" button opening the details in the LP modal
-	 * (SweetAlert2, assets/src/js/admin/student-notes.js).
+	 * Mutating actions use the same course permissions as the server's note handlers.
+	 */
+	public function html_actions( NoteModel $note, string $open_link = '' ): string {
+		$html    = $open_link
+			? '<a class="lp-button lp-be-btn lp-be-btn--sm lp-be-btn--outline" href="' . esc_url( $open_link ) . '" target="_blank" rel="noopener">' . esc_html__( 'Open Lesson', 'learnpress' ) . '</a>'
+			: '';
+		$service = NoteService::instance();
+		$viewer  = get_current_user_id();
+		if ( $service->can_manage_course( $viewer, $note->course_id ) && $service->can_manage( $viewer, $note ) ) {
+			$template_id = 'lp-note-edit-' . $note->get_note_id();
+			$html       .= sprintf(
+				' <button type="button" class="lp-button lp-be-btn lp-be-btn--sm lp-be-btn--primary" data-note-template="%3$s" data-title="%4$s">%4$s</button> <button type="button" class="lp-button lp-be-btn lp-be-btn--sm lp-be-btn--danger lp-student-notes__delete" data-note-id="%1$d" data-confirm="%2$s">%5$s</button><template id="%3$s"><form class="lp-student-notes__edit-form" data-note-id="%1$d"><p><label for="%3$s-content">%7$s</label></p><textarea id="%3$s-content" name="content" class="swal2-textarea" rows="8" maxlength="%8$d" %9$s>%6$s</textarea><p class="submit"><button type="submit" class="lp-button lp-be-btn lp-be-btn--primary">%10$s</button> <button type="button" class="lp-button lp-be-btn lp-be-btn--outline lp-student-notes__cancel">%11$s</button></p></form></template>',
+				$note->get_note_id(),
+				esc_attr__( 'Delete this note?', 'learnpress' ),
+				esc_attr( $template_id ),
+				esc_html__( 'Edit', 'learnpress' ),
+				esc_html__( 'Delete', 'learnpress' ),
+				esc_textarea( $note->content ),
+				esc_html__( 'Note content', 'learnpress' ),
+				NoteModel::CONTENT_MAX_LENGTH,
+				NoteModel::TYPE_TEXT === $note->note_type ? 'required' : '',
+				esc_html__( 'Save', 'learnpress' ),
+				esc_html__( 'Cancel', 'learnpress' )
+			);
+		}
+		return '<div class="lp-student-notes__actions">' . $html . '</div>';
+	}
+
+	/**
+	 * Content cell: short quote + note, and details opened by the shared LearnPress dialog.
 	 *
 	 * @param NoteModel $note      Note.
 	 * @param array     $meta      Label => HTML (already escaped) shown in the modal.
@@ -474,7 +496,7 @@ class AdminStudentNotesTemplate {
 			'' !== $note->content ? nl2br( esc_html( $note->content ) ) : sprintf( '<em>%s</em>', esc_html__( 'No note content.', 'learnpress' ) ),
 			$open_link
 				? sprintf(
-					'<p><a class="button button-primary" href="%1$s" target="_blank" rel="noopener">%2$s</a></p>',
+					'<p><a class="lp-button lp-be-btn lp-be-btn--primary" href="%1$s" target="_blank" rel="noopener">%2$s</a></p>',
 					esc_url( $open_link ),
 					esc_html__( 'Open Lesson', 'learnpress' )
 				)
@@ -482,7 +504,7 @@ class AdminStudentNotesTemplate {
 		);
 
 		return sprintf(
-			'%1$s<button type="button" class="button-link lp-student-notes__view" data-template="%2$s" data-title="%3$s">%4$s</button>%5$s',
+			'%1$s<button type="button" class="lp-button lp-be-btn lp-be-btn--sm lp-be-btn--secondary" data-note-template="%2$s" data-title="%3$s">%4$s</button>%5$s',
 			$this->html_note_text( $this->excerpt( $quote, 60 ), $this->excerpt( $note->content, self::EXCERPT ) ),
 			esc_attr( $detail_id ),
 			esc_attr__( 'Student note', 'learnpress' ),

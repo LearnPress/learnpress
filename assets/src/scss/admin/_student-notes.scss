@@ -117,6 +117,13 @@
 		font-size: 12px;
 	}
 
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: 8px;
+	}
+
 	&__badge {
 		display: inline-block;
 		padding: 2px 10px;
@@ -156,20 +163,8 @@
 		overflow-wrap: anywhere;
 	}
 
-	&__view {
-		margin-top: 4px;
-		padding: 0;
-		border: 0;
-		background: none;
-		color: #2271b1;
-		font-size: 13px;
-		text-decoration: underline;
-		cursor: pointer;
-
-		&:hover,
-		&:focus {
-			color: #135e96;
-		}
+	.lp-col-content [data-note-template] {
+		margin-top: 8px;
 	}
 
 	&__footer {
@@ -187,10 +182,44 @@
 	}
 }
 
-// Note details in the LP modal (SweetAlert2), rendered outside .lp-student-notes.
-.lp-student-notes-modal .swal2-html-container {
-	font-size: 13px;
-	text-align: left;
+.lp-student-notes__dialog-content {
+	text-align: start;
+	font-size: $lp-font-sm;
+	overflow-wrap: anywhere;
+
+	.form-table {
+		width: 100%;
+
+		th,
+		td {
+			text-align: start;
+		}
+	}
+
+	.lp-student-notes__edit-form {
+		p {
+			margin: 0 0 12px;
+		}
+
+		.swal2-textarea {
+			display: block;
+			box-sizing: border-box;
+			width: 100%;
+			min-height: 160px;
+			margin: 0;
+			font: inherit;
+			text-align: start;
+			resize: vertical;
+		}
+
+		.submit {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin: 16px 0 0;
+			padding: 0;
+		}
+	}
 }
 
 .lp-student-notes__detail {
