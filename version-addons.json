@@ -493,7 +493,7 @@
     "learnpress-razorpay-payment": {
         "name": "Razorpay Add-on for LearnPress",
         "basename": "learnpress-razorpay-payment/learnpress-razorpay-payment.php",
-        "version": "4.0.3",
+        "version": "4.0.4",
         "require_lp": "4.2.6.6",
         "description": "Accept payments in India via UPI, cards, net banking, and wallets with Razorpay.",
         "image": "https://updates.thimpress.com/images/learnpress-razorpay-payment.png",
