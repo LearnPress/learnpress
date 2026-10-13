@@ -38,6 +38,7 @@ class FakeNoteService extends NoteService {
 	public $course_notes_detail_filter;
 
 	protected function query_course_notes( NoteFilter $filter, int &$total_rows ): array {
+		$total_rows = $this->course_note_total;
 		if ( $filter->only_fields ) {
 			$this->course_note_filter = $filter;
 			$total_rows = $this->course_note_total;
@@ -148,6 +149,14 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 				return 'lp_lesson' === $item_type && in_array( $item_id, $this->lesson_ids, true ) ? (object) [ 'ID' => $item_id ] : false;
 			}
 
+			public function get_permalink(): string {
+				return 'https://example.test/course/';
+			}
+
+			public function get_item_link( int $item_id, string $item_type ): string {
+				return 'https://example.test/course/lessons/' . $item_id . '/';
+			}
+
 			public function check_user_is_author( $user ): bool {
 				return (int) $user->ID === $this->author_id;
 			}
@@ -256,6 +265,43 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 	public function test_get_item_notes_rejects_other_student(): void {
 		$this->expectException( Exception::class );
 		$this->service->get_item_notes( self::OTHER, self::STUDENT, self::COURSE, self::LESSON );
+	}
+
+	public function test_profile_notes_are_paginated_and_scoped_to_the_current_user_across_courses(): void {
+		Functions\when( 'get_current_user_id' )->justReturn( self::STUDENT );
+		Functions\when( 'get_option' )->justReturn( 'Y-m-d' );
+		Functions\when( 'wp_date' )->justReturn( '2026-10-12' );
+		$this->service->course_note_rows = [
+			(object) [ 'note_id' => 1, 'user_id' => self::STUDENT, 'course_id' => self::COURSE, 'course_title' => 'Course A', 'item_id' => self::LESSON, 'item_title' => 'Lesson A', 'content' => 'A', 'created_at' => '2026-10-12 00:00:00' ],
+			(object) [ 'note_id' => 2, 'user_id' => self::STUDENT, 'course_id' => 404, 'course_title' => 'Course B', 'item_id' => 21, 'item_title' => 'Lesson B', 'content' => 'B', 'created_at' => '2026-10-12 00:00:00' ],
+		];
+		$this->service->course_note_total = 25;
+		$data = $this->service->get_user_notes( self::STUDENT, 2 );
+		$filter = $this->service->course_notes_detail_filter;
+		$this->assertSame( self::STUDENT, $filter->user_id );
+		$this->assertNull( $filter->course_id );
+		$this->assertNull( $filter->item_id );
+		$this->assertTrue( $filter->join_details );
+		$this->assertSame( 2, $filter->page );
+		$this->assertSame( 10, $filter->limit );
+		$this->assertSame( 25, $data['total_rows'] );
+		$this->assertSame( [ 'Course A', 'Course B' ], array_column( $data['notes'], 'course_title' ) );
+		$this->assertSame( 'https://example.test/course/lessons/20/', $data['notes'][0]['item_url'] );
+		$this->assertSame( '', $data['notes'][1]['item_url'] );
+		$this->assertArrayNotHasKey( 'user_id', $data['notes'][0] );
+	}
+
+	public function test_profile_notes_reject_guests_and_other_owners_before_querying(): void {
+		Functions\when( 'get_current_user_id' )->justReturn( self::STUDENT );
+		foreach ( [ 0, self::OTHER ] as $owner ) {
+			try {
+				$this->service->get_user_notes( $owner );
+				$this->fail( 'An unauthorized owner must not be queried.' );
+			} catch ( Exception $e ) {
+				$this->assertStringContainsString( 'permission', $e->getMessage() );
+			}
+		}
+		$this->assertNull( $this->service->course_notes_detail_filter );
 	}
 
 	public function test_course_notes_scope_and_pagination_include_all_lessons(): void {

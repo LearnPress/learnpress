@@ -177,6 +177,17 @@ mark.lp-note-hl {
 	gap: $spacing-base-4x;
 }
 
+.lp-notes__all.lp-profile-notes {
+	.lp-notes__list {
+		max-height: none;
+	}
+
+	.lp-profile-notes__context {
+		overflow-wrap: anywhere;
+		font-weight: $link-font-weight;
+	}
+}
+
 // AI's existing stylesheet makes the shared content area a flex container.
 // Restore scrolling and normal content height only while Notes is active.
 .lp-addon-content-bar[data-learning-bar-item="notes"] .lp-addon-content-bar__content {

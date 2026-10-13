@@ -179,6 +179,43 @@ class NoteService {
 	}
 
 	/**
+	 * List the signed-in user's own notes across all courses, newest first.
+	 *
+	 * @return array{notes:array,total_rows:int,page:int,per_page:int}
+	 * @throws Exception
+	 */
+	public function get_user_notes( int $user_id, int $page = 1 ): array {
+		if ( $user_id <= 0 || $user_id !== get_current_user_id() ) {
+			throw new Exception( __( 'You do not have permission to view these notes.', 'learnpress' ) );
+		}
+
+		$filter               = new NoteFilter();
+		$filter->user_id      = $user_id;
+		$filter->join_details = true;
+		$filter->page         = max( 1, $page );
+		$filter->limit        = 10;
+		$total_rows           = 0;
+		$rows                 = $this->query_course_notes( $filter, $total_rows );
+		$notes                = array();
+		foreach ( $rows as $row ) {
+			$data                 = $this->to_response( new NoteModel( $row ) );
+			$data['course_title'] = (string) ( $row->course_title ?? '' );
+			$data['item_title']   = (string) ( $row->item_title ?? '' );
+			$course               = $this->find_course( (int) $data['course_id'] );
+			$data['course_url']   = $course ? $course->get_permalink() : '';
+			$data['item_url']     = $course ? $course->get_item_link( (int) $data['item_id'], $data['item_type'] ) : '';
+			$notes[]              = $data;
+		}
+
+		return array(
+			'notes'      => $notes,
+			'total_rows' => $total_rows,
+			'page'       => $filter->page,
+			'per_page'   => $filter->limit,
+		);
+	}
+
+	/**
 	 * Get course notes in complete lesson groups. Owner ID 0 includes all students.
 	 * Pagination totals count lessons, not individual notes.
 	 *

@@ -98,6 +98,7 @@ use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentEnrolledTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileNotesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate;
 use LearnPress\TemplateHooks\Course\CourseNoteTemplate;
@@ -410,6 +411,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			BuilderPopupTemplate::instance();
 			ProfileCoursesTemplate::instance();
 			ProfileStudentEnrolledTemplate::instance();
+			ProfileNotesTemplate::instance();
 
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
