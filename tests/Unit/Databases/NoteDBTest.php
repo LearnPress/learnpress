@@ -9,11 +9,15 @@ use Exception;
 use LearnPress\Databases\NoteDB;
 use LearnPress\Filters\NoteFilter;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use ReflectionProperty;
 
 /**
  * Unit tests for NoteDB SQL building, using a fake wpdb that records queries.
  */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState( false )]
 class NoteDBTest extends BrainMonkeyTestCase {
 
 	/**

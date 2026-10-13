@@ -488,7 +488,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-course-notes'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/course-notes' . self::$_min_assets . '.js' ),
-					array(),
+					array( 'lp-load-ajax', 'lp-single-curriculum' ),
 					array( LP_PAGE_SINGLE_COURSE_CURRICULUM ),
 					1,
 					1,
