@@ -460,11 +460,11 @@ export class BuilderPopup {
 					currentItem = newListItem;
 				}
 			} else if ( data?.list_item_html && ! currentItem.classList.contains( 'section-item' ) ) {
-				const template = document.createElement( 'template' );
-				template.innerHTML = data.list_item_html.trim();
-				const newListItem = template.content.firstElementChild;
-				if ( newListItem ) {
-					currentItem.replaceWith( newListItem );
+				const nextListItem = currentItem.nextElementSibling;
+				currentItem.insertAdjacentHTML( 'afterend', data.list_item_html.trim() );
+				const newListItem = currentItem.nextElementSibling;
+				if ( newListItem && newListItem !== nextListItem ) {
+					currentItem.remove();
 					currentItem = newListItem;
 				}
 			} else {
@@ -623,7 +623,8 @@ export class BuilderPopup {
 						item.classList.contains( `lp-${ type }-item` ) ||
 						item.classList.contains( 'list-item' ) ||
 						item.classList.contains( 'cb-list-item' ) ||
-						item.tagName === 'LI'
+						item.tagName === 'LI' ||
+						item.tagName === 'TR'
 					) {
 						foundItems.add( item );
 					} else {
@@ -657,15 +658,19 @@ export class BuilderPopup {
 			return null;
 		}
 
-		const template = document.createElement( 'template' );
-		template.innerHTML = listItemHtml.trim();
-		const newListItem = template.content.firstElementChild;
+		const emptyRow = listContainer.querySelector( '.cb-list-empty-row' );
+		const firstListItem = listContainer.firstElementChild;
+		listContainer.insertAdjacentHTML( 'afterbegin', listItemHtml.trim() );
+		const newListItem = listContainer.firstElementChild;
 
-		if ( ! newListItem ) {
+		if ( ! newListItem || newListItem === firstListItem ) {
 			return null;
 		}
 
-		listContainer.prepend( newListItem );
+		if ( emptyRow ) {
+			emptyRow.remove();
+		}
+
 		const highlightClassByType = {
 			lesson: 'highlight-new-lesson',
 			quiz: 'highlight-new-quiz',
@@ -690,29 +695,16 @@ export class BuilderPopup {
 	}
 
 	/**
-	 * Find list container for type; create one if tab currently shows empty message.
+	 * Find the table body for the requested list type.
 	 */
 	findListContainer( type ) {
 		const listSelectorByType = {
-			lesson: '.cb-list-lesson',
-			quiz: '.cb-list-quiz',
-			question: '.cb-list-question',
+			lesson: '.cb-list-lesson tbody',
+			quiz: '.cb-list-quiz tbody',
+			question: '.cb-list-question tbody',
 		};
 
-		const tabSelectorByType = {
-			lesson: '.courses-builder__lesson-tab',
-			quiz: '.courses-builder__quiz-tab',
-			question: '.courses-builder__question-tab',
-		};
-
-		const listClassByType = {
-			lesson: 'cb-list-lesson',
-			quiz: 'cb-list-quiz',
-			question: 'cb-list-question',
-		};
-
-		const listSelector =
-			listSelectorByType[ type ] || `.cb-list-${ type }, [data-builder-list="${ type }"]`;
+		const listSelector = listSelectorByType[ type ] || `[data-builder-list="${ type }"]`;
 		if ( ! listSelector ) {
 			return null;
 		}
@@ -722,25 +714,7 @@ export class BuilderPopup {
 			return existingList;
 		}
 
-		const tabContainer = document.querySelector(
-			tabSelectorByType[ type ] || `.courses-builder__${ type }-tab, [data-builder-tab="${ type }"]`
-		);
-		const listClass = listClassByType[ type ] || `cb-list-${ type }`;
-
-		if ( ! tabContainer || ! listClass ) {
-			return null;
-		}
-
-		const emptyMessage = tabContainer.querySelector( '.learn-press-message' );
-		if ( emptyMessage ) {
-			emptyMessage.remove();
-		}
-
-		const listContainer = document.createElement( 'ul' );
-		listContainer.className = listClass;
-		tabContainer.appendChild( listContainer );
-
-		return listContainer;
+		return null;
 	}
 
 	/**

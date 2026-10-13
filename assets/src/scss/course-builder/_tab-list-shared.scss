@@ -1,23 +1,89 @@
 // ============================================
 // Tab List Shared Styles
-// Single flat grid for header + body alignment
+// Shared Course Builder table styles
 // ============================================
 
-// Grid column definitions — shared between header and body
-// Lessons:   Title | Assigned | Create Date | Status | Preview | Actions
-// Quizzes:   Title | Assigned | Duration | Create Date | Status | Actions
-// Questions: Title | Assigned | Create Date | Status | Preview | Actions
+#lp-course-builder {
+	.cb-list-table {
+		table-layout: fixed;
+		font-size: $cb-font-md;
+
+		thead tr {
+			background: #f9fafb;
+			border-bottom-color: #e5e7eb;
+		}
+
+		thead th {
+			padding: 16px 20px;
+			font-weight: 600;
+			font-size: 12px;
+		}
+
+		tbody td {
+			border-color: #f5f5f5;
+			padding: 16px 20px;
+		}
+
+		th,
+		td {
+			vertical-align: middle;
+		}
+
+		.cb-col-title {
+			width: 30%;
+		}
+
+		.cb-col-assigned {
+			width: 24%;
+		}
+
+		.cb-col-status {
+			width: 110px;
+		}
+
+		.cb-col-preview,
+		.cb-col-type,
+		.cb-col-questions,
+		.cb-col-actions {
+			width: 90px;
+		}
+
+		.cb-col-duration,
+		.cb-col-date {
+			width: 120px;
+		}
+
+		&:has( .cb-list-empty-row ) thead {
+			display: none;
+		}
+
+		.cb-list-empty-row td {
+			padding: 0;
+			border: none;
+		}
+	}
+
+	.lp-table-wrap:has( .cb-list-empty-row ) {
+		border: none;
+		overflow: visible;
+	}
+	
+	.lp-table-wrap {
+		border-radius: 8px;
+		border-color: #e5e7eb;
+	}
+
+	table.lp-list-table tbody tr:nth-child(even) {
+		background: #ffffff;
+	}
+
+	table.lp-list-table tbody tr:hover {
+		background: #f9fafb;
+	}
+}
 
 @mixin tab-list-styles( $type ) {
 	#lp-course-builder {
-		// Table container (on the ul)
-		.cb-list-#{$type} {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-			background: $cb-bg;
-		}
-
 		.cb-tab-#{$type}__action {
 			display: flex;
 			justify-content: space-between;
@@ -40,51 +106,8 @@
 			}
 		}
 
-		// ===========================================
-		// Table header — grid defined per tab
-		// ===========================================
-		.cb-list-table-header {
-			display: grid;
-			align-items: center;
-			gap: 0 $cb-spacing-lg;
-			padding: 0 $cb-spacing-2xl;
-			background: $cb-bg-subtle; // #F9FAFB per workflow
-			border-bottom: 1px solid $cb-border; // #E5E7EB separator
-			min-height: 48px;
-			font-size: $cb-font-sm;
-			font-weight: 600;
-			color: $cb-text-secondary;
-
-			span {
-				white-space: nowrap;
-			}
-		}
-
-		// ===========================================
-		// Body row — grid defined per tab
-		// ===========================================
-		.#{$type}-item {
-			display: grid;
-			align-items: center;
-			gap: 0 $cb-spacing-lg;
-			padding: 0 $cb-spacing-2xl;
-			background: $cb-bg;
-			border-bottom: 1px solid $cb-border-light;
-			min-height: 64px;
-			font-size: $cb-font-md;
-			transition: background-color 0.15s ease;
-
-			&:hover {
-				background-color: $cb-bg-subtle;
-			}
-		}
-
-		li:last-child .#{$type}-item {
-			border-bottom: none;
-		}
-
-		.highlight-new-#{$type} {
-			box-shadow: $cb-shadow-highlight;
+		.highlight-new-#{$type} td {
+			box-shadow: inset 0 0 0 1px $cb-primary;
 		}
 
 		// ===========================================
@@ -126,7 +149,6 @@
 			font-size: $cb-font-sm;
 			color: $cb-text-muted;
 			white-space: nowrap;
-			margin-left: $cb-spacing-sm;
 		}
 
 		.#{$type}__preview {

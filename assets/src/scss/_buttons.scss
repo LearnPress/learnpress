@@ -19,7 +19,7 @@
 			align-items: center;
 			justify-content: center;
 			pointer-events: none;
-			color: rgba(0, 0, 0, 0.2) !important;
+			color: rgba(0, 0, 0, 0) !important;
 			@include loading();
 		}
 	}

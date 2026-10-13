@@ -68,7 +68,7 @@ class AdminAddonsPage {
 				$transient->no_update = [];
 			}
 
-			$addons  = AddonService::instance()->get_remote_data();
+			$addons  = AddonService::instance()->get_addons();
 			$plugins = get_plugins();
 
 			foreach ( $addons as $slug => $addon ) {
@@ -114,7 +114,7 @@ class AdminAddonsPage {
 	 */
 	public function wp_update_plugin_message(): void {
 		try {
-			$addons  = AddonService::instance()->get_remote_data();
+			$addons  = AddonService::instance()->get_addons();
 			$plugins = get_plugins();
 
 			foreach ( $addons as $addon ) {
@@ -203,12 +203,11 @@ class AdminAddonsPage {
 	 * @return void
 	 */
 	public function html_page() {
-		/** @use self::render_addons */
 		$section = apply_filters(
 			'learn-press/admin/addons/page-section',
 			array(
 				'wrapper'     => '<div class="lp-addons-page">',
-				'notice' => sprintf(
+				'notice'      => sprintf(
 					'<div class="lp-addon-notice">%s</div>',
 					Template::print_message(
 						sprintf(
@@ -226,17 +225,23 @@ class AdminAddonsPage {
 						false
 					)
 				),
+				'title'       => sprintf(
+					'<h1 class="lp-be-page-title">%s</h1>',
+					esc_html__( 'LearnPress Add-ons New', 'learnpress' )
+				),
 				'subtitle'    => sprintf(
-					'<p class="lp-addons-page-subtitle">%s</p>',
+					'<p class="lp-be-page-subtitle">%s</p>',
 					esc_html__(
 						'Discover high-performance Premium & Education themes optimized 100% for LearnPress LMS.',
 						'learnpress'
 					)
 				),
+				/** @use self::render_addons */
 				'addons'      => TemplateAJAX::load_content_via_ajax(
 					array(
 						'id_url' => 'data-addons',
 						'tab'    => $_REQUEST['tab'] ?? '',
+						'ex-date-test' => $_REQUEST['ex-date-test'] ?? '',
 					),
 					array(
 						'class'  => self::class,
@@ -250,8 +255,9 @@ class AdminAddonsPage {
 		echo AdminTemplate::html_on_wp_admin_screen(
 			array(
 				'content' => Template::combine_components( $section ),
-				'title'   => __( 'LearnPress Add-ons', 'learnpress' ),
+				'title'   => '',
 				'id'      => 'learn-press-addons',
+				'hide_notices_wp' => true,
 			)
 		);
 	}
@@ -276,7 +282,7 @@ class AdminAddonsPage {
 			$addons            = AddonService::instance()->get_addons();
 			$plugins_installed = get_plugins();
 			$plugins_activated = get_option( 'active_plugins', array() );
-			$active_tab        = LP_Helper::sanitize_params_submitted( $data['tab'] ) ?? 'all';
+			$active_tab        = ! empty( $data['tab'] ) ? LP_Helper::sanitize_params_submitted( $data['tab'] ) : 'all';
 			$keys_purchase     = LP_Settings::get_option( AddonService::instance()->key_purchase_addons, array() );
 
 			$section = apply_filters(
@@ -295,6 +301,7 @@ class AdminAddonsPage {
 							'plugins_activated' => $plugins_activated,
 							'active_tab'        => $active_tab,
 							'keys_purchase'     => $keys_purchase,
+							'ex-date-test'      => $data['ex-date-test'] ?? '',
 						)
 					),
 					'wrapper_end' => '</div>',
@@ -323,76 +330,105 @@ class AdminAddonsPage {
 	 * @return string
 	 */
 	public static function html_controls( array $data = [] ): string {
-		$active_tab       = $data['active_tab'] ?? 'all';
+		$active_tab       = ! empty( $data['active_tab'] ) ? $data['active_tab'] : 'all';
 		$tabs             = array(
 			'all'           => sprintf( '%s (<span></span>)', __( 'All', 'learnpress' ) ),
 			'installed'     => sprintf( '%s (<span></span>)', __( 'Installed', 'learnpress' ) ),
 			'purchase'      => sprintf( '%s (<span></span>)', __( 'Paid', 'learnpress' ) ),
 			'free'          => sprintf( '%s (<span></span>)', __( 'Free', 'learnpress' ) ),
-			'update'        => sprintf( '%s (<span></span>)', __( 'Updated', 'learnpress' ) ),
-			'license'       => sprintf( '%s (<span></span>)', __( 'License', 'learnpress' ) ),
+			'update'        => sprintf( '%s (<span></span>)', __( 'Updated Available', 'learnpress' ) ),
+			'license'       => sprintf( '%s (<span></span>)', __( 'Licensed', 'learnpress' ) ),
 			'not_installed' => sprintf( '%s (<span></span>)', __( 'Not Installed', 'learnpress' ) ),
 		);
 		$addon_categories = array(
 			'create-course'          => __( 'Create Course', 'learnpress' ),
-			'engagement'             => __( 'Engagement', 'learnpress' ),
-			'learnpress'             => __( 'LearnPress', 'learnpress' ),
 			'manage-course'          => __( 'Manage Course', 'learnpress' ),
-			'marketing-optimization' => __( 'Marketing Optimization', 'learnpress' ),
 			'monetize-course'        => __( 'Monetize Course', 'learnpress' ),
 			'payment'                => __( 'Payment', 'learnpress' ),
+			'engagement'             => __( 'Engagement', 'learnpress' ),
+			'marketing-optimization' => __( 'Marketing Optimization', 'learnpress' ),
 		);
 
 		$section_tabs = array();
 		foreach ( $tabs as $tab => $tab_title ) {
-			$active_class = ( $tab === $active_tab ) ? ' nav-tab-active' : '';
+			$is_active    = ( $tab === $active_tab );
+			$active_class = $is_active ? ' nav-tab-active' : '';
+			$aria_pressed = $is_active ? 'true' : 'false';
 
-			if ( $active_class ) {
-				$section_tabs[ $tab ] = sprintf(
-					'<a class="lp-addons-filter__item nav-tab%s" data-tab="%s" href="#" aria-pressed="true">%s</a>',
-					esc_attr( $active_class ),
-					esc_attr( $tab ),
-					wp_kses_post( $tab_title )
-				);
-			} else {
-				$section_tabs[ $tab ] = sprintf(
-					'<a class="lp-addons-filter__item nav-tab"
-						data-tab="%s" aria-pressed="false" href="?page=learn-press-addons&tab=%s">%s</a>',
-					esc_attr( $tab ),
-					esc_attr( $tab ),
-					wp_kses_post( $tab_title )
-				);
-			}
+			$section_tabs[ $tab ] = sprintf(
+				'<button type="button" class="lp-addons-filter__item nav-tab lp-be-nav-tab%s" data-tab="%s" aria-pressed="%s">%s</button>',
+				esc_attr( $active_class ),
+				esc_attr( $tab ),
+				esc_attr( $aria_pressed ),
+				wp_kses_post( $tab_title )
+			);
 		}
 
 		$section = array(
 			'wrapper'           => '<div class="lp-addons-controls">',
-			'toolbar'           => '<div class="lp-nav-tab-wrapper lp-addons-toolbar">',
-			'filter'            => sprintf(
-				'<div class="lp-addons-filter" role="group" aria-label="%s">',
-				esc_attr__( 'Filter add-ons', 'learnpress' )
+			'toolbar'           => '<div class="lp-nav-tab-wrapper lp-addons-toolbar lp-be-toolbar">',
+			'toolbar_primary'   => '<div class="lp-addons-toolbar__primary lp-be-toolbar__main">',
+			'filter'              => sprintf(
+				'<div class="lp-addons-filter" role="group" aria-label="%s">
+					<button type="button" class="lp-addons-filter__toggle" aria-label="%s" aria-expanded="false" aria-haspopup="true">
+						<span class="lp-addons-filter__toggle-content">
+							<span class="lp-addons-filter__toggle-state lp-addons-filter__toggle-state--filter">
+								<svg class="lp-addons-filter__toggle-icon lp-addons-filter__toggle-icon--filter" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+									<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+								</svg>
+								<span class="lp-addons-filter__toggle-text">%s</span>
+							</span>
+							<span class="lp-addons-filter__toggle-state lp-addons-filter__toggle-state--close">
+								<svg class="lp-addons-filter__toggle-icon lp-addons-filter__toggle-icon--close" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+									<line x1="18" y1="6" x2="6" y2="18"></line>
+									<line x1="6" y1="6" x2="18" y2="18"></line>
+								</svg>
+								<span class="lp-addons-filter__toggle-text">%s</span>
+							</span>
+						</span>
+					</button>
+					<div class="lp-addons-filter__menu">',
+				esc_attr__( 'Filter add-ons', 'learnpress' ),
+				esc_attr__( 'Filter add-ons', 'learnpress' ),
+				esc_html__( 'Filter', 'learnpress' ),
+				esc_html__( 'Close', 'learnpress' )
 			),
-			'tabs'              => Template::combine_components( $section_tabs ),
-			'filter_end'        => '</div>',
-			'search'            => '<label class="lp-search-addons lp-addons-search">',
-			'search_text'       => sprintf(
-				'<span class="screen-reader-text">%s</span>',
-				esc_html__( 'Search add-ons', 'learnpress' )
+			'tabs'                => Template::combine_components( $section_tabs ),
+			'filter_end'          => '</div></div>',
+			'search'              => '<div class="lp-search-addons lp-addons-search lp-be-search">',
+			'search_btn'          => sprintf(
+				'<button type="button" class="lp-addons-search__btn lp-be-search__btn" aria-label="%s" aria-expanded="false">
+					<span class="lp-addons-search__icon lp-icon-search" aria-hidden="true"></span>
+				</button>',
+				esc_attr__( 'Search add-ons', 'learnpress' )
 			),
-			'search_icon'       => '<span class="lp-addons-search__icon lp-icon-search" aria-hidden="true"></span>',
-			'search_input'      => sprintf(
-				'<input id="lp-search-addons__input"
-					class="lp-addons-search__input" type="search" placeholder="%s"/>',
-				esc_attr__( 'Search add-ons by name…', 'learnpress' )
+			'search_field'        => sprintf(
+				'<div class="lp-addons-search__field lp-be-search__field">
+					<span class="screen-reader-text">%s</span>
+					<div class="lp-addons-search__input-wrap lp-be-search__input-wrap">
+						<span class="lp-addons-search__field-icon lp-be-search__field-icon lp-icon-search" aria-hidden="true"></span>
+						<input id="lp-search-addons__input"
+							class="lp-addons-search__input lp-be-search__input" type="search" placeholder="%s" autocomplete="off"/>
+					</div>
+					<button type="button" class="lp-addons-search__btn-clear lp-be-search__btn-clear" disabled>%s</button>
+					<button type="button" class="lp-addons-search__close lp-be-search__close" aria-label="%s">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>',
+				esc_html__( 'Search add-ons', 'learnpress' ),
+				esc_attr__( 'Search add-ons by name…', 'learnpress' ),
+				esc_html__( 'Clear', 'learnpress' ),
+				esc_attr__( 'Close search', 'learnpress' )
 			),
-			'search_end'        => '</label>',
-			'toolbar_end'       => '</div>',
-			'categories'        => self::html_categories(
+			'search_end'          => '</div>',
+			'toolbar_primary_end' => '</div>',
+			'categories'          => self::html_categories(
 				array(
 					'addon_categories' => $addon_categories,
 				)
 			),
-			'wrapper_end'       => '</div>',
+			'toolbar_end'         => '</div>',
+			'wrapper_end'         => '</div>',
 		);
 
 		return Template::combine_components( $section );
@@ -409,22 +445,20 @@ class AdminAddonsPage {
 		$addon_categories = $data['addon_categories'] ?? array();
 		$section          = array(
 			'wrapper' => sprintf(
-				'<div class="lp-addons-categories" role="group" aria-label="%s">',
+				'<div class="lp-addons-categories lp-be-categories" role="group" aria-label="%s">',
 				esc_attr__( 'Filter add-ons by category', 'learnpress' )
 			),
 			'all'     => sprintf(
-				'<button type="button" class="lp-addons-category active"
-					data-category="all" aria-pressed="true">%s <span class="lp-addons-category__count"></span>
-				</button>',
+				'<button type="button" class="lp-addons-category lp-be-category active"
+					data-category="all" aria-pressed="true">%s</button>',
 				esc_html__( 'All', 'learnpress' )
 			),
 		);
 
 		foreach ( $addon_categories as $category_slug => $category_label ) {
 			$section[ $category_slug ] = sprintf(
-				'<button type="button" class="lp-addons-category"
-					data-category="%s" aria-pressed="false">%s <span class="lp-addons-category__count"></span>
-				</button>',
+				'<button type="button" class="lp-addons-category lp-be-category"
+					data-category="%s" aria-pressed="false">%s</button>',
 				esc_attr( $category_slug ),
 				esc_html( $category_label )
 			);
@@ -479,16 +513,7 @@ class AdminAddonsPage {
 				'content'     => '<div class="lp-addon-item__content">',
 				'header'      => self::html_addon_header( $addon ),
 				'license'     => ! $state['is_free']
-					? self::html_addon_license(
-						$addon,
-						array(
-							'license_status'        => $state['license_status'],
-							'number_days_remaining' => $state['number_days_remaining'],
-							'date_expired'          => $state['date_expired'],
-							'purchase_code_masked'  => $state['purchase_code_masked'],
-							'show_license_panel'    => $state['show_license_panel'],
-						)
-					)
+					? self::html_addon_license( $addon, $state )
 					: '',
 				'description' => sprintf(
 					'<p class="lp-addon-item__description" title="%s">%s</p>',
@@ -577,7 +602,7 @@ class AdminAddonsPage {
 
 		if ( $addon_purchased ) {
 			$classes_status[] = 'license';
-			$date_expired_str = $addon_purchased->date_expire ?? '';
+			$date_expired_str = ! empty( $data['ex-date-test'] ) ? $data['ex-date-test'] : ( $addon_purchased->date_expire ?? '' );
 			if ( ! empty( $date_expired_str ) ) {
 				$date_expired          = new DateTime( $date_expired_str );
 				$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
@@ -598,7 +623,8 @@ class AdminAddonsPage {
 			}
 		}
 
-		$purchase_code_masked = AddonService::mask_purchase_code( $keys_purchase[ $addon->slug ] ?? '' );
+		$purchase_code        = $keys_purchase[ $addon->slug ] ?? '';
+		$purchase_code_masked = AddonService::mask_purchase_code( $purchase_code );
 
 		if ( ! in_array( $active_tab, $classes_status, true ) && 'all' !== $active_tab ) {
 			$classes_status[] = 'hide';
@@ -614,6 +640,7 @@ class AdminAddonsPage {
 			'license_status'        => $license_status,
 			'number_days_remaining' => $number_days_remaining,
 			'date_expired'          => $date_expired,
+			'purchase_code'         => $purchase_code,
 			'purchase_code_masked'  => $purchase_code_masked,
 			'show_license_panel'    => $show_license_panel,
 			'addon_category'        => $addon_category,
@@ -667,6 +694,7 @@ class AdminAddonsPage {
 		$number_days_remaining = $data['number_days_remaining'] ?? null;
 		/** @var DateTime $date_expired */
 		$date_expired         = $data['date_expired'] ?? null;
+		$purchase_code        = $data['purchase_code'] ?? '';
 		$purchase_code_masked = $data['purchase_code_masked'] ?? '';
 		$show_license_panel   = $data['show_license_panel'] ?? false;
 		$license_status_label = 'active' === $license_status
@@ -690,41 +718,36 @@ class AdminAddonsPage {
 			$expiry_text   = esc_html( sprintf( $expiry_format, $lpDate->format( LPDateTime::FORMAT_I18N_DATE ) ) );
 		}
 
-		$extend_link = '';
-		if ( 'expired' === $license_status ) {
-			$extend_link = sprintf(
-				'<a class="need-extend__link" href="%s" target="_blank" rel="noopener">%s</a>',
-				esc_url( $addon->link ?? '' ),
-				esc_html__( 'Extend now', 'learnpress' )
-			);
-		}
+		$link_extend      = add_query_arg(
+			'purchase_code',
+			$purchase_code,
+			AddonService::instance()->link_extend_site
+		);
+		$html_extend_link = sprintf(
+			'<a class="need-extend__link" href="%s" target="_blank" rel="noopener">%s</a>',
+			esc_url( $link_extend ),
+			esc_html__( 'Extend now', 'learnpress' )
+		);
 
-		$message        = '';
-		$button_extends = '';
+		$html_near_expire = '';
 		if ( ! empty( $addon->purchase_info ) ) {
-			$button_extends = sprintf(
-				'<a class="need-extend__link" href="%s" target="_blank" rel="noopener">%s</a>',
-				esc_url( $addon->link ?? '' ),
-				esc_html__( 'Extend now', 'learnpress' )
-			);
-
 			if ( isset( $number_days_remaining ) && $number_days_remaining > 0 && $number_days_remaining < 61 ) {
-				$message = sprintf(
+				$message_near_expire = sprintf(
 					__( 'You have a license for this item with %s day(s) of update & support remaining. Please extend your update & support license to continue receiving the latest versions and customer support from Thimpress before it expires.', 'learnpress' ),
 					sprintf( '<strong class="need-extend__days">%d</strong>', $number_days_remaining )
 				);
-			} else {
-				$button_extends = '';
+
+				$html_near_expire = sprintf(
+					'<span class="need-extend">%s %s</span>',
+					$message_near_expire,
+					$html_extend_link
+				);
 			}
 		}
 
-		$need_extend = '';
-		if ( ! empty( $message ) || ! empty( $button_extends ) ) {
-			$need_extend = sprintf(
-				'<span class="need-extend">%s %s</span>',
-				$message,
-				$button_extends
-			);
+		$text_btn_to_purchase_code = esc_html__( 'Activate Now', 'learnpress' );
+		if ( ! empty( $purchase_code ) ) {
+			$text_btn_to_purchase_code = esc_html__( 'Change License', 'learnpress' );
 		}
 
 		$section = array(
@@ -748,13 +771,21 @@ class AdminAddonsPage {
 				$expiry_hidden,
 				$expiry_text
 			),
-			'extend_link' => $extend_link,
+			'extend_link' => 'expired' === $license_status ? $html_extend_link : '',
 			'summary_end' => '</div>',
-			'need_extend' => $need_extend,
+			'near_expire' => $html_near_expire,
+			'cancel_btn'  => '<button
+				class="lp-button btn-addon-action lp-be-btn lp-be-btn--outline lp-addon-purchase__cancel-clear lp-hidden"
+				data-action="cancel-clear-license" type="button">',
+			'cancel_text' => sprintf(
+				'<span class="text">%s</span>',
+				esc_html__( 'Cancel', 'learnpress' )
+			),
+			'cancel_end'  => '</button>',
 			'manage'      => sprintf(
 				'<button class="btn-addon-action lp-addon-license__manage"
 					data-action="update-purchase-code" type="button">%s</button>',
-				esc_html__( 'Manage', 'learnpress' )
+				$text_btn_to_purchase_code
 			),
 			'wrapper_end' => '</div>',
 		);
@@ -859,35 +890,35 @@ class AdminAddonsPage {
 			array(
 				'install'    => $addon->is_free && ! $addon->is_org
 					? sprintf(
-						'<a class="lp-button btn-addon-action" data-action="install" href="%s"
+						'<a class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm lp-be-btn--primary" data-action="install" href="%s"
 						target="_blank" rel="noopener">%s</a>',
 						esc_url( $addon->link ?? '' ),
 						esc_html__( 'Install', 'learnpress' )
 					)
 					: sprintf(
-						'<button class="lp-button btn-addon-action" data-action="install">
+						'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm lp-be-btn--primary" data-action="install">
 						<span class="text">%s</span>
 					</button>',
 						esc_html__( 'Install', 'learnpress' )
 					),
 				'purchase'   => sprintf(
-					'<button class="lp-button btn-addon-action" data-action="purchase">%s</button>',
+					'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm lp-be-btn--primary" data-action="purchase">%s</button>',
 					esc_html__( 'Install', 'learnpress' )
 				),
 				'update'     => sprintf(
-					'<button class="lp-button btn-addon-action" data-action="update">
+					'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm lp-be-btn--primary" data-action="update">
 					<span class="text">%s</span>
 				</button>',
 					esc_html__( 'Update', 'learnpress' )
 				),
 				'deactivate' => sprintf(
-					'<button class="lp-button btn-addon-action" data-action="deactivate">
+					'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm" data-action="deactivate">
 					<span class="text">%s</span>
 				</button>',
 					esc_html__( 'Deactivate', 'learnpress' )
 				),
 				'activate'   => sprintf(
-					'<button class="lp-button btn-addon-action" data-action="activate">
+					'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--sm" data-action="activate">
 						<span class="text">%s</span>
 					</button>',
 					esc_html__( 'Activate', 'learnpress' )
@@ -923,6 +954,9 @@ class AdminAddonsPage {
 	 * @return string
 	 */
 	public static function html_purchase_panel( object $addon, array $data = [] ): string {
+		$purchase_code_masked = $data['purchase_code_masked'] ?? '';
+		$has_purchase_code    = ! empty( $purchase_code_masked );
+
 		$panel = array(
 			'wrapper'     => '<div class="purchase-install">',
 			'header'      => '<div class="lp-addon-purchase__header">',
@@ -944,20 +978,41 @@ class AdminAddonsPage {
 				esc_html__( 'Purchase Code', 'learnpress' )
 			),
 			'field_input' => sprintf(
-				'<input type="text" class="enter-purchase-code" placeholder="%s" value="">',
-				esc_attr__( 'Enter Purchase Code', 'learnpress' )
+				'<input type="text" class="enter-purchase-code" placeholder="%s" value="%s"%s>',
+				esc_attr__( 'Enter Purchase Code', 'learnpress' ),
+				esc_attr( $purchase_code_masked ),
+				$has_purchase_code ? ' disabled' : ''
 			),
 			'field_end'   => '</label>',
-			'submit'      => '<button class="lp-button btn-addon-action lp-addon-purchase__submit"
-				data-action="install" type="button">',
-			'submit_text' => sprintf( '<span class="text">%s</span>', esc_html__( 'Submit', 'learnpress' ) ),
+			'submit'      => sprintf(
+				'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--primary lp-addon-purchase__submit%s"
+					data-action="install" type="button">',
+				$has_purchase_code ? ' lp-hidden' : ''
+			),
+			'submit_text' => sprintf( '<span class="text">%s</span>', esc_html__( 'Verify & Activate', 'learnpress' ) ),
 			'submit_end'  => '</button>',
+			'cancel_clear' => '<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--outline lp-addon-purchase__cancel-clear lp-hidden"
+				data-action="cancel-clear-license" type="button">',
+			'cancel_clear_text' => sprintf(
+				'<span class="text">%s</span>',
+				esc_html__( 'Cancel', 'learnpress' )
+			),
+			'cancel_clear_end' => '</button>',
+			'clear'       => sprintf(
+				'<button class="lp-button btn-addon-action lp-be-btn lp-be-btn--primary lp-addon-purchase__clear%s"
+					data-action="clear-license" type="button">',
+				$has_purchase_code ? '' : ' lp-hidden'
+			),
+			'clear_text'  => sprintf( '<span class="text">%s</span>', esc_html__( 'Clear', 'learnpress' ) ),
+			'clear_end'   => '</button>',
 			'divider'     => sprintf(
 				'<div class="lp-addon-purchase__divider"><span>%s</span></div>',
-				esc_html__( 'Don\'t have a code?', 'learnpress' )
+				$has_purchase_code
+					? esc_html__( 'Or', 'learnpress' )
+					: esc_html__( 'Don\'t have a code?', 'learnpress' )
 			),
 			'buy'         => sprintf(
-				'<a class="btn-addon-action lp-addon-purchase__buy" href="%s" target="_blank" rel="noopener">%s</a>',
+				'<a class="btn-addon-action lp-addon-purchase__buy lp-be-btn lp-be-btn--outline" href="%s" target="_blank" rel="noopener">%s</a>',
 				esc_url( $addon->link ?? '' ),
 				esc_html__( 'Buy Now', 'learnpress' )
 			),

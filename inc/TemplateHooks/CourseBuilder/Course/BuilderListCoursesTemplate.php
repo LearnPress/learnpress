@@ -205,15 +205,7 @@ class BuilderListCoursesTemplate {
 
 			$total_courses = 0;
 			$courses       = Courses::get_courses( $filter, $total_courses );
-			if ( ! empty( $courses ) ) {
-				$html_courses = $this->list_courses( $courses );
-			} else {
-				$html_courses = Template::print_message(
-					sprintf( __( 'No courses found', 'learnpress' ) ),
-					'info',
-					false
-				);
-			}
+			$html_courses  = $this->list_courses( $courses );
 
 			$data_pagination = [
 				'paged'       => $filter->page,
@@ -253,6 +245,15 @@ class BuilderListCoursesTemplate {
 
 		try {
 			$html_list_course = '';
+
+			if ( empty( $courses ) ) {
+				return Template::print_message(
+					__( 'No courses found', 'learnpress' ),
+					'info',
+					false
+				);
+			}
+
 			foreach ( $courses as $course_obj ) {
 				// Read fresh model to avoid stale post_status in long-lived cache,
 				// especially around future -> publish transitions.

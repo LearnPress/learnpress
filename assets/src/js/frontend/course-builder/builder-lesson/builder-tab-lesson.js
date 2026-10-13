@@ -516,17 +516,20 @@ export class BuilderTabLesson {
 			lesson_id: lessonId,
 			lesson_settings: true,
 			_lp_preview: enablePreview ? 'yes' : '',
+			return_html: 'yes',
 		};
 
 		const callBack = {
 			success: ( response ) => {
-				const { status, message } = response;
+				const { status, message, data } = response;
 				lpToastify.show( message, status );
 
 				if ( status === 'error' ) {
 					// Revert on error
 					icon.classList.toggle( 'lp-icon-eye' );
 					icon.classList.toggle( 'lp-icon-eye-slash' );
+				} else if ( data?.list_item_html ) {
+					this.replaceItemHtml( elLessonItem, data.list_item_html );
 				}
 			},
 			error: ( error ) => {
@@ -547,11 +550,12 @@ export class BuilderTabLesson {
 		if ( ! elLesson || ! html ) {
 			return;
 		}
-		const tmp = document.createElement( 'div' );
-		tmp.innerHTML = html;
-		const newEl = tmp.firstElementChild;
-		if ( newEl ) {
-			elLesson.replaceWith( newEl );
+
+		const nextLesson = elLesson.nextElementSibling;
+		elLesson.insertAdjacentHTML( 'afterend', html.trim() );
+		const newLesson = elLesson.nextElementSibling;
+		if ( newLesson && newLesson !== nextLesson ) {
+			elLesson.remove();
 		}
 	}
 }

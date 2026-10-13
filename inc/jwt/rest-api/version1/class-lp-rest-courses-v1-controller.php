@@ -52,10 +52,13 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'callback'            => array( $this, 'get_item' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => array(
-						'context' => $this->get_context_param(
+						'context'  => $this->get_context_param(
 							array(
 								'default' => 'view',
 							)
+						),
+						'password' => array(
+							'type' => 'string',
 						),
 					),
 				),
@@ -161,17 +164,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	}
 
 	public function get_items_permissions_check( $request ) {
-		$post_type = get_post_type_object( $this->post_type );
-
-		if ( 'edit' === $request['context'] && ! current_user_can( $post_type->cap->edit_posts ) ) {
-			return new WP_Error(
-				'rest_forbidden_context',
-				__( 'Sorry, you are not allowed to edit posts in this post type.' ),
-				array( 'status' => rest_authorization_required_code() )
-			);
-		}
-
-		return true;
+		return parent::get_items_permissions_check( $request );
 	}
 
 	public function get_course_need_login_check( $request ) {
@@ -203,6 +196,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$post = get_post( $post_id );
 
 		if ( ! $post ) {
+			return false;
+		}
+
+		if ( post_password_required( $post )
+			&& empty( $this->password_verified[ $post->ID ] )
+			&& ! current_user_can( 'edit_post', $post->ID ) ) {
 			return false;
 		}
 
@@ -383,6 +382,10 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		return rest_ensure_response( $response );
+	}
+
+	public function get_item_permissions_check( $request ) {
+		return parent::get_item_permissions_check( $request );
 	}
 
 	/**
@@ -868,7 +871,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$data['sale_price'] = floatval( $course->get_sale_price() );
 					break;
 				case 'sale_price_rendered':
-					$data['sale_price_rendered'] = html_entity_decode( learn_press_format_price( $course->get_sale_price(), true ) );
+					$data['sale_price_rendered'] = html_entity_decode(
+						learn_press_format_price( $course->get_sale_price(), true )
+					);
 					break;
 			}
 		}

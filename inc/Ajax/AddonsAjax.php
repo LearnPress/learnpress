@@ -44,10 +44,13 @@ class AddonsAjax extends AbstractAjax {
 	 * Handle addon action: install, update, activate, deactivate, update-purchase.
 	 *
 	 * @return void
+	 * @since 4.4.9
+	 * @version 1.0.3
 	 */
 	public function addon_action() {
 		$response       = new Response();
 		$lp_file_system = LP_WP_Filesystem::instance();
+		$message        = '';
 
 		try {
 			if ( is_multisite() && ! is_super_admin() ) {
@@ -94,15 +97,18 @@ class AddonsAjax extends AbstractAjax {
 					if ( ! empty( $addon['is_org'] ) ) {
 						$link_download = "{$this->addon_service->link_org}{$addon['slug']}.{$addon['version']}.zip";
 					} else {
-						if ( 'install' === $action ) {
-							// Allow active key for site if site active on DB "updates" is empty.
-							$this->addon_service->active_site( $addon['slug'], $purchase_code );
+						if ( $is_paid_addon ) {
+							if ( 'install' === $action ) {
+								// Allow active key for site if site active on DB "updates" is empty.
+								$this->addon_service->active_site( $addon['slug'], $purchase_code );
+							}
+
+							$purchase_info = $this->addon_service->get_addon_purchase_info(
+								$addon['slug'],
+								$purchase_code
+							);
 						}
 
-						$purchase_info = $this->addon_service->get_addon_purchase_info(
-							$addon['slug'],
-							$purchase_code
-						);
 						// Download addon from ThimPress server.
 						$path_file = $this->addon_service->download_from_thimpress( $addon, $purchase_code );
 					}
@@ -113,14 +119,33 @@ class AddonsAjax extends AbstractAjax {
 						$package = $path_file;
 					}
 
-					if ( 'update' === $action ) {
-						$this->addon_service->update( $addon, $package );
-					} else {
-						$this->addon_service->install( $addon, $package );
+					if ( empty( $package ) ) {
+						throw new Exception( __( 'Addon package is invalid!', 'learnpress' ) );
 					}
 
-					if ( ! empty( $path_file ) ) {
-						$lp_file_system->lp_filesystem->delete( $path_file );
+					try {
+						if ( 'update' === $action ) {
+							$this->addon_service->update( $addon, $package );
+						} else {
+							$this->addon_service->install( $addon, $package );
+						}
+					} finally {
+						if ( ! empty( $path_file ) ) {
+							$lp_file_system->lp_filesystem->delete( $path_file );
+						}
+					}
+
+					$message = sprintf(
+						/* translators: %s: addon name */
+						__( 'Installed successfully %s', 'learnpress' ),
+						$addon['name'] ?? ''
+					);
+					if ( 'update' === $action ) {
+						$message = sprintf(
+							/* translators: %s: addon name */
+							__( 'Updated successfully %s', 'learnpress' ),
+							$addon['name'] ?? ''
+						);
 					}
 
 					break;
@@ -130,29 +155,38 @@ class AddonsAjax extends AbstractAjax {
 					}
 
 					$this->addon_service->activate( $addon );
+					$message = sprintf(
+						/* translators: %s: addon name */
+						__( 'Activated successfully %s', 'learnpress' ),
+						$addon['name'] ?? ''
+					);
 					break;
 				case 'deactivate':
 					$this->addon_service->deactivate( $addon );
+					$message = sprintf(
+						/* translators: %s: addon name */
+						__( 'Deactivated successfully %s', 'learnpress' ),
+						$addon['name'] ?? ''
+					);
 					break;
 				case 'update-purchase':
-					// If empty, try key old activated
-					if ( empty( $purchase_code ) ) {
-						$purchase_codes = lp_settings::get_option( $this->addon_service->key_purchase_addons, array() );
-						$purchase_code  = $purchase_codes[ $addon['slug'] ] ?? '';
-					}
-
 					$this->addon_service->active_site(
 						$addon['slug'],
 						$purchase_code
 					);
 					$purchase_info = $this->addon_service->get_addon_purchase_info( $addon['slug'], $purchase_code );
+					$message       = sprintf(
+						/* translators: %s: addon name */
+						__( 'Updated purchase code successfully for %s', 'learnpress' ),
+						$addon['name'] ?? ''
+					);
 					break;
 				default:
-					break;
+					throw new Exception( __( 'Action is invalid!', 'learnpress' ) );
 			}
 
 			$response->status  = Response::STATUS_SUCCESS;
-			$response->message = sprintf(
+			$response->message = ! empty( $message ) ? $message : sprintf(
 				'"%s" %s %s',
 				$addon['name'] ?? '',
 				$action,

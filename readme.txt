@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 7.1
-Stable tag: 4.4.9
+Stable tag: 4.4.11
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -280,6 +280,9 @@ You can find the REST API documentation <a href="https://learnpresslms.com/docs/
 = LearnPress is great, can I contribute to it? =
 Yes, you can and we appreciate it. Join in our <a href="https://github.com/LearnPress/LearnPress/">Github Repository</a>.
 
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the LearnPress plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/844deed6-bf05-42e2-ad12-6c9884a1474c). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 **LearnPress Translation project**
 https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
@@ -301,10 +304,15 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.10 (2026-10-09) =
+* Fixed: security (Props @Wordfence, @Kuba, @Wordfence PRISM, @Hunter Sploit, @Artur Chlebicki).
+* Style: themes, addons manager, Course Builder.
+* Fixed: minor bugs.
+
 = 4.4.9.1 (2026-10-01) =
-~ Fixed: role instructor can't access WP Admin when install new.
-~ Fixed: active purchase code.
-~ Fixed: icons students, courses.
+* Fixed: role instructor can't access WP Admin when install new.
+* Fixed: active purchase code.
+* Fixed: icons students, courses.
 
 = 4.4.9 (2026-09-27) =
 * Refactor: Add-ons manager and lp admin notices.
