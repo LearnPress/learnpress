@@ -38,12 +38,15 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'callback'            => array( $this, 'get_item' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => array(
-						'context'  => $this->get_context_param(
+						'context'          => $this->get_context_param(
 							array(
 								'default' => 'view',
 							)
 						),
-						'password' => array(
+						'password'         => array(
+							'type' => 'string',
+						),
+						'course_password'  => array(
 							'type' => 'string',
 						),
 					),
@@ -57,9 +60,15 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'/' . $this->rest_base . '/start',
 			array(
 				'args' => array(
-					'id' => array(
+					'id'              => array(
 						'description' => esc_html__( 'Quiz ID.', 'learnpress' ),
 						'type'        => 'integer',
+					),
+					'password'        => array(
+						'type' => 'string',
+					),
+					'course_password' => array(
+						'type' => 'string',
 					),
 				),
 				array(
@@ -75,13 +84,19 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'/' . $this->rest_base . '/check_answer',
 			array(
 				'args' => array(
-					'id'          => array(
+					'id'              => array(
 						'description' => esc_html__( 'Quiz ID.', 'learnpress' ),
 						'type'        => 'integer',
 					),
-					'question_id' => array(
+					'question_id'     => array(
 						'description' => esc_html__( 'Question ID.', 'learnpress' ),
 						'type'        => 'integer',
+					),
+					'password'        => array(
+						'type' => 'string',
+					),
+					'course_password' => array(
+						'type' => 'string',
 					),
 				),
 				array(
@@ -97,13 +112,19 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'/' . $this->rest_base . '/finish',
 			array(
 				'args' => array(
-					'id'       => array(
+					'id'              => array(
 						'description' => esc_html__( 'Quiz ID.', 'learnpress' ),
 						'type'        => 'integer',
 					),
-					'answered' => array(
+					'answered'        => array(
 						'description' => esc_html__( 'Answer all questions.', 'learnpress' ),
 						'type'        => 'object',
+					),
+					'password'        => array(
+						'type' => 'string',
+					),
+					'course_password' => array(
+						'type' => 'string',
 					),
 				),
 				array(
@@ -147,6 +168,14 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$post = get_post( $post_id );
 
 		if ( ! $post ) {
+			return false;
+		}
+
+		$course_id = $this->get_course_by_item_id( $post_id );
+		if ( $course_id
+			&& post_password_required( $course_id )
+			&& empty( $this->password_verified[ $course_id ] )
+			&& ! current_user_can( 'edit_post', $course_id ) ) {
 			return false;
 		}
 
@@ -204,7 +233,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	}
 
 	protected function get_course_by_item_id( $item_id ) {
-		static $output;
+		static $output = array();
 
 		global $wpdb;
 
@@ -212,8 +241,8 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return false;
 		}
 
-		if ( ! isset( $output ) ) {
-			$output = $wpdb->get_var(
+		if ( ! array_key_exists( $item_id, $output ) ) {
+			$output[ $item_id ] = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT c.ID FROM {$wpdb->posts} c
 					INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
@@ -225,8 +254,8 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			);
 		}
 
-		if ( $output ) {
-			return absint( $output );
+		if ( $output[ $item_id ] ) {
+			return absint( $output[ $item_id ] );
 		}
 
 		return false;
@@ -846,5 +875,24 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		);
 
 		return $this->add_additional_fields_schema( $schema );
+	}
+
+	public function get_item_permissions_check( $request ) {
+		$post_id   = absint( $request['id'] ?? 0 );
+		$post      = get_post( $post_id );
+		$course_id = $this->get_course_by_item_id( $post_id );
+		unset( $this->password_verified[ $course_id ] );
+
+		$password = $request['course_password'] ?? '';
+		if ( $post && empty( $post->post_password ) && empty( $password ) ) {
+			$password = $request['password'] ?? '';
+		}
+
+		$password_check = $this->verify_post_password( $course_id, $password );
+		if ( is_wp_error( $password_check ) ) {
+			return $password_check;
+		}
+
+		return parent::get_item_permissions_check( $request );
 	}
 }

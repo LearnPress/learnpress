@@ -34,6 +34,21 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 		$course_id = absint( $request['course_id'] );
 		$post      = get_post( $course_id );
 
+		if ( ! $post ) {
+			return new WP_Error( 'lp_section_not_course', __( 'The course does not exist.', 'learnpress' ), array( 'status' => 404 ) );
+		}
+
+		if ( post_password_required( $course_id ) && ! current_user_can( 'edit_post', $course_id ) ) {
+			$password = $request['password'] ?? '';
+			if ( empty( $password ) ) {
+				return new WP_Error( 'lp_password_required', __( 'A password is required to view this resource.', 'learnpress' ), array( 'status' => 403 ) );
+			}
+
+			if ( ! hash_equals( $post->post_password, $password ) ) {
+				return new WP_Error( 'lp_jwt_rest_incorrect_password', __( 'Incorrect post password.', 'learnpress' ), array( 'status' => 403 ) );
+			}
+		}
+
 		$post_status_obj = get_post_status_object( $post->post_status );
 
 		if ( ! $post_status_obj || ! $post_status_obj->public ) {
@@ -168,6 +183,10 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['password'] = array(
+			'description' => __( 'Password for the protected course.', 'learnpress' ),
+			'type'        => 'string',
 		);
 		$params['exclude']  = array(
 			'description'       => __( 'Ensure the result set excludes specific IDs.', 'learnpress' ),

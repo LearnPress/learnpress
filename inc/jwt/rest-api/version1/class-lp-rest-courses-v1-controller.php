@@ -354,11 +354,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$cart     = LearnPress::instance()->cart;
 			$checkout = LP_Checkout::instance();
 
-			if ( ! learn_press_enable_cart() ) {
-				// $order_awaiting_payment = LearnPress::instance()->session->get( 'order_awaiting_payment' );
-				$cart->empty_cart();
-				// LearnPress::instance()->session->set( 'order_awaiting_payment', $order_awaiting_payment );
-			}
+			// Receipt verification is for a single course; clear the cart so
+			// previously-added items are not kept when the cart is enabled.
+			$cart->empty_cart();
 
 			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
 
@@ -553,20 +551,21 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				continue;
 			}
 
-			$courseObjPrepare                 = new stdClass();
-			$courseObjPrepare->id             = (int) $courseObj->ID ?? 0;
-			$courseObjPrepare->name           = html_entity_decode( $course->get_title() );
-			$courseObjPrepare->slug           = $courseObj->post_name ?? get_post_field( 'post_name', $courseObj->ID );
-			$courseObjPrepare->permalink      = get_permalink( $courseObj->ID );
-			$courseObjPrepare->excerpt        = $courseObj->post_excerpt ?? '';
-			$courseObjPrepare->count_students = method_exists( $course, 'count_students' ) ? (int) $course->count_students() : 0;
-			$courseObjPrepare->image          = $course->get_image_url();
-			$author                       = $course->get_author_model();
-			$courseObjPrepare->instructor = ! empty( $author ) ? $this->get_author_info( $author ) : [];
-			$duration                     = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '' );
-			$duration_arr                 = explode( ' ', $duration );
-			$duration_number              = floatval( $duration_arr[0] ?? 0 );
-			$duration_type                = $duration_arr[1] ?? '';
+			$courseObjPrepare                    = new stdClass();
+			$courseObjPrepare->id                = (int) $courseObj->ID ?? 0;
+			$courseObjPrepare->name              = html_entity_decode( $course->get_title() );
+			$courseObjPrepare->slug              = $courseObj->post_name ?? get_post_field( 'post_name', $courseObj->ID );
+			$courseObjPrepare->permalink         = get_permalink( $courseObj->ID );
+			$courseObjPrepare->excerpt           = $courseObj->post_excerpt ?? '';
+			$courseObjPrepare->password_required = ! empty( get_post_field( 'post_password', $courseObj->ID ) );
+			$courseObjPrepare->count_students    = method_exists( $course, 'count_students' ) ? (int) $course->count_students() : 0;
+			$courseObjPrepare->image             = $course->get_image_url();
+			$author                              = $course->get_author_model();
+			$courseObjPrepare->instructor        = ! empty( $author ) ? $this->get_author_info( $author ) : [];
+			$duration                            = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '' );
+			$duration_arr                        = explode( ' ', $duration );
+			$duration_number                     = floatval( $duration_arr[0] ?? 0 );
+			$duration_type                       = $duration_arr[1] ?? '';
 			if ( empty( $duration_number ) ) {
 				$duration_str = __( 'Lifetime', 'learnpress' );
 			} else {
@@ -818,6 +817,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					break;
 				case 'excerpt':
 					$data['excerpt'] = $post->post_excerpt;
+					break;
+				case 'password_required':
+					$data['password_required'] = ! empty( $post->post_password );
 					break;
 				case 'count_students':
 					$data['count_students'] = $course->count_students();
@@ -1424,6 +1426,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'description' => __( 'Retrieves the course excerpt..', 'learnpress' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
+				),
+				'password_required'     => array(
+					'description' => __( 'Whether the course requires a password.', 'learnpress' ),
+					'type'        => 'boolean',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
 				),
 				'duration'              => array(
 					'description' => __( 'Duration', 'learnpress' ),

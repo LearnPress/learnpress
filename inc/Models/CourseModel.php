@@ -263,20 +263,24 @@ class CourseModel {
 	 * Get price
 	 *
 	 * @return float
+	 * @since 4.2.6.9
+	 * @version 1.0.0
 	 */
 	public function get_price(): float {
 		/*if ( ! empty( $this->price ) ) {
 			return $this->price;
 		}*/
 
-		if ( $this->has_sale_price() ) {
+		if ( $this->has_no_enroll_requirement() ) {
+			$price = 0;
+		} elseif ( $this->has_sale_price() ) {
 			$price = $this->get_sale_price();
 		} else {
 			$price = $this->get_regular_price();
 		}
 
 		$this->price                                        = (float) $price;
-		$this->meta_data->{CoursePostModel::META_KEY_PRICE} = (float) $price;
+		$this->meta_data->{CoursePostModel::META_KEY_PRICE} = $this->price;
 
 		return apply_filters( 'learnPress/course/price', (float) $price, $this->get_id() );
 	}
@@ -1074,6 +1078,12 @@ class CourseModel {
 			if ( ! in_array( $this->post_status, [ 'publish', 'private' ] ) ) {
 				$error_code = 'course_not_publish';
 				throw new Exception( __( 'The course is not public', 'learnpress' ) );
+			}
+
+			if ( post_password_required( $this->get_id() )
+				&& ! current_user_can( 'edit_post', $this->get_id() ) ) {
+				$error_code = 'course_password_required';
+				throw new Exception( __( 'This course is password protected.', 'learnpress' ) );
 			}
 
 			$userCourseModel           = UserCourseModel::find( $user_id, $this->get_id(), true );
