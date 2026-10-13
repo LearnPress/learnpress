@@ -77,7 +77,7 @@ class AdminListStudentsEnrolled {
 	/**
 	 * Render initial layout with TemplateAJAX::load_content_via_ajax().
 	 */
-	public function enrolled_students_layout() {
+	public function enrolled_students_layout( array $data = [] ) {
 		try {
 			$page_current = '';
 			if ( function_exists( 'get_current_screen' ) ) {
@@ -90,9 +90,10 @@ class AdminListStudentsEnrolled {
 				}
 			}
 
-			$args = array(
+			$course_id = LP_Request::get_param( 'course_id', $data['course_id'] ?? 0 );
+			$args      = array(
 				'id_url'                => 'lp-enrolled-students',
-				'course_id'             => LP_Request::get_param( 'course_id', 0 ),
+				'course_id'             => $course_id,
 				'course_name'           => LP_Request::get_param( 'course_name' ),
 				'paged'                 => 1,
 				'student_name'          => lp_request::get_param( 'student_name' ),
@@ -132,7 +133,7 @@ class AdminListStudentsEnrolled {
 	 *
 	 * @return stdClass
 	 */
-	public static function render_enrolled_students( array $data ): stdClass {
+	public static function render_enrolled_students( array $data = [] ): stdClass {
 		$content          = new stdClass();
 		$content->content = '';
 
@@ -143,13 +144,13 @@ class AdminListStudentsEnrolled {
 				throw new Exception( esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) );
 			}
 
-			$course_id   = abs( LP_Helper::sanitize_params_submitted( $data['course_id'] ?? 0, 'int' ) );
-			$paged       = max( 1, abs( LP_Helper::sanitize_params_submitted( $data['paged'] ?? 1, 'int' ) ) );
-			$course_name = LP_Helper::sanitize_params_submitted( $data['course_name'] ?? '' );
+			$course_id    = LP_Helper::sanitize_params_submitted( $data['course_id'] ?? 0, 'int' );
+			$paged        = max( 1, abs( LP_Helper::sanitize_params_submitted( $data['paged'] ?? 1, 'int' ) ) );
+			$course_name  = LP_Helper::sanitize_params_submitted( $data['course_name'] ?? '' );
 			$student_name = LP_Helper::sanitize_params_submitted( $data['student_name'] ?? '' );
-			$start_date  = lp_helper::sanitize_params_submitted( $data['start_date'] ?? '' );
-			$end_date    = lp_helper::sanitize_params_submitted( $data['end_date'] ?? '' );
-			$per_page    = self::PER_PAGE;
+			$start_date   = lp_helper::sanitize_params_submitted( $data['start_date'] ?? '' );
+			$end_date     = lp_helper::sanitize_params_submitted( $data['end_date'] ?? '' );
+			$per_page     = self::PER_PAGE;
 
 			// Normalize date range if request is reversed.
 			if ( $start_date && $end_date && strtotime( $start_date ) > strtotime( $end_date ) ) {
