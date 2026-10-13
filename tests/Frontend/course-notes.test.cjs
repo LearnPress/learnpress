@@ -425,3 +425,74 @@ test( 'cancelling the shared Delete popup preserves course page, disclosure stat
 	assert.equal( JSON.parse( target.dataset.send ).args.paged, 2 );
 	assert.equal( view.popup.querySelector( '.lp-notes__delete-prompt' ), null );
 } );
+
+function selectLesson( env, rects ) {
+	const { widget, dom } = env;
+	const range = dom.window.document.createRange();
+	range.selectNodeContents( widget.contentRoot );
+	const selection = dom.window.getSelection();
+	selection.removeAllRanges();
+	selection.addRange( range );
+	const selectedRange = selection.getRangeAt( 0 );
+	selectedRange.getClientRects = () => rects;
+	selectedRange.getBoundingClientRect = () => rects[ 0 ];
+	Object.defineProperty( dom.window.document.documentElement, 'clientWidth', { value: 800, configurable: true } );
+	Object.defineProperty( dom.window, 'innerHeight', { value: 600, configurable: true } );
+	Object.defineProperties( widget.el.selectionBtn, { offsetWidth: { value: 100 }, offsetHeight: { value: 36 } } );
+	return selectedRange;
+}
+
+const selectionRect = ( top, bottom, right = 300 ) => ( { left: 100, right, top, bottom, width: right - 100, height: bottom - top } );
+
+test( 'long selections anchor to a visible line and keep Add Note inside the viewport', ( t ) => {
+	const env = setup( t );
+	const { widget, click } = env;
+	selectLesson( env, [ selectionRect( -100, -80 ), selectionRect( 570, 590, 790 ), selectionRect( 900, 920 ) ] );
+	widget.updateSelectionButton();
+	assert.equal( widget.el.selectionBtn.hidden, false );
+	assert.equal( widget.el.selectionBtn.style.left, '692px' );
+	assert.equal( widget.el.selectionBtn.style.top, '526px' );
+	// The full selection is retained even though only one line anchors the button.
+	click( widget.el.selectionBtn );
+	assert.equal( widget.formState.noteType, 'highlight' );
+	assert.equal( widget.el.formQuote.textContent, widget.contentRoot.textContent );
+} );
+
+test( 'scrolling a lesson pane repositions Add Note and hides it only when the selection is out of view', ( t ) => {
+	const env = setup( t );
+	const { widget, dom } = env;
+	widget.contentRoot.style.overflow = 'auto';
+	widget.contentRoot.getBoundingClientRect = () => ( { left: 80, right: 500, top: 100, bottom: 400 } );
+	const rects = [ selectionRect( 350, 370 ), selectionRect( 650, 670 ) ];
+	selectLesson( env, rects );
+	widget.updateSelectionButton();
+	assert.equal( widget.el.selectionBtn.hidden, false );
+	assert.equal( widget.el.selectionBtn.style.top, '306px' );
+	rects[ 0 ] = selectionRect( 200, 220 );
+	widget.contentRoot.dispatchEvent( new dom.window.Event( 'scroll' ) );
+	assert.equal( widget.el.selectionBtn.hidden, false );
+	assert.equal( widget.el.selectionBtn.style.top, '228px' );
+	rects[ 0 ] = selectionRect( 50, 70 );
+	widget.contentRoot.dispatchEvent( new dom.window.Event( 'scroll' ) );
+	assert.equal( widget.el.selectionBtn.hidden, true );
+	rects[ 0 ] = selectionRect( 150, 170 );
+	widget.contentRoot.dispatchEvent( new dom.window.Event( 'scroll' ) );
+	assert.equal( widget.el.selectionBtn.hidden, false );
+} );
+
+test( 'selection fallback and resize keep the button positioned without page scroll offsets', ( t ) => {
+	const env = setup( t );
+	const { widget, dom } = env;
+	const range = selectLesson( env, [ selectionRect( 100, 120 ) ] );
+	range.getClientRects = () => [];
+	Object.defineProperties( dom.window, { scrollX: { value: 30 }, scrollY: { value: 500 } } );
+	widget.updateSelectionButton();
+	assert.equal( widget.el.selectionBtn.style.left, '250px' );
+	assert.equal( widget.el.selectionBtn.style.top, '128px' );
+	Object.defineProperty( dom.window, 'innerHeight', { value: 150, configurable: true } );
+	dom.window.dispatchEvent( new dom.window.Event( 'resize' ) );
+	assert.equal( widget.el.selectionBtn.style.top, '56px' );
+	dom.window.getSelection().removeAllRanges();
+	widget.updateSelectionButton();
+	assert.equal( widget.el.selectionBtn.hidden, true );
+} );

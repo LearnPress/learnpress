@@ -150,8 +150,8 @@ export class CourseNotes {
 			document.addEventListener( 'mouseup', onSelectionEnd );
 			document.addEventListener( 'keyup', onSelectionEnd );
 			document.addEventListener( 'touchend', onSelectionEnd );
-			document.addEventListener( 'scroll', () => this.hideSelectionButton(), true );
-			window.addEventListener( 'resize', () => this.hideSelectionButton() );
+			document.addEventListener( 'scroll', onSelectionEnd, true );
+			window.addEventListener( 'resize', onSelectionEnd );
 		}
 	}
 
@@ -713,17 +713,46 @@ export class CourseNotes {
 			return;
 		}
 
-		const rects = range.getClientRects();
-		const rect = rects.length ? rects[ rects.length - 1 ] : range.getBoundingClientRect();
+		// A long selection can end outside the viewport or a scrolling lesson pane.
+		// Anchor the button to the last line that is actually visible.
+		const bounds = { left: 0, top: 0, right: document.documentElement.clientWidth, bottom: window.innerHeight };
+		for ( let element = this.contentRoot; element; element = element.parentElement ) {
+			const style = window.getComputedStyle( element );
+			const clipsX = /auto|scroll|hidden|clip/.test( style.overflowX || style.overflow );
+			const clipsY = /auto|scroll|hidden|clip/.test( style.overflowY || style.overflow );
+			if ( clipsX || clipsY ) {
+				const box = element.getBoundingClientRect();
+				if ( clipsX ) {
+					bounds.left = Math.max( bounds.left, box.left );
+					bounds.right = Math.min( bounds.right, box.right );
+				}
+				if ( clipsY ) {
+					bounds.top = Math.max( bounds.top, box.top );
+					bounds.bottom = Math.min( bounds.bottom, box.bottom );
+				}
+			}
+		}
+		const rects = Array.from( range.getClientRects() );
+		if ( ! rects.length ) {
+			rects.push( range.getBoundingClientRect() );
+		}
+		const rect = rects.filter( ( box ) => box.width > 0 && box.height > 0 && box.bottom > bounds.top && box.top < bounds.bottom && box.right > bounds.left && box.left < bounds.right ).pop();
+		if ( ! rect ) {
+			this.hideSelectionButton();
+			return;
+		}
 		const btn = this.el.selectionBtn;
 
 		this.selectionRange = range.cloneRange();
 		btn.hidden = false;
 
-		const maxLeft = document.documentElement.clientWidth - btn.offsetWidth - 8;
-		const left = Math.max( 8, Math.min( rect.right - ( btn.offsetWidth / 2 ), maxLeft ) );
-		btn.style.left = `${ left + window.scrollX }px`;
-		btn.style.top = `${ rect.bottom + window.scrollY + 8 }px`;
+		const maxLeft = bounds.right - btn.offsetWidth - 8;
+		const left = Math.max( bounds.left + 8, Math.min( rect.right - ( btn.offsetWidth / 2 ), maxLeft ) );
+		const maxTop = bounds.bottom - btn.offsetHeight - 8;
+		const below = rect.bottom + 8;
+		const top = Math.max( bounds.top + 8, Math.min( below <= maxTop ? below : rect.top - btn.offsetHeight - 8, maxTop ) );
+		btn.style.left = `${ left }px`;
+		btn.style.top = `${ top }px`;
 	}
 
 	hideSelectionButton() {
