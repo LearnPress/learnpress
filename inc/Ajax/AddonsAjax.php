@@ -45,7 +45,7 @@ class AddonsAjax extends AbstractAjax {
 	 *
 	 * @return void
 	 * @since 4.4.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function addon_action() {
 		$response       = new Response();
@@ -97,15 +97,18 @@ class AddonsAjax extends AbstractAjax {
 					if ( ! empty( $addon['is_org'] ) ) {
 						$link_download = "{$this->addon_service->link_org}{$addon['slug']}.{$addon['version']}.zip";
 					} else {
-						if ( 'install' === $action ) {
-							// Allow active key for site if site active on DB "updates" is empty.
-							$this->addon_service->active_site( $addon['slug'], $purchase_code );
+						if ( $is_paid_addon ) {
+							if ( 'install' === $action ) {
+								// Allow active key for site if site active on DB "updates" is empty.
+								$this->addon_service->active_site( $addon['slug'], $purchase_code );
+							}
+
+							$purchase_info = $this->addon_service->get_addon_purchase_info(
+								$addon['slug'],
+								$purchase_code
+							);
 						}
 
-						$purchase_info = $this->addon_service->get_addon_purchase_info(
-							$addon['slug'],
-							$purchase_code
-						);
 						// Download addon from ThimPress server.
 						$path_file = $this->addon_service->download_from_thimpress( $addon, $purchase_code );
 					}
@@ -116,14 +119,20 @@ class AddonsAjax extends AbstractAjax {
 						$package = $path_file;
 					}
 
-					if ( 'update' === $action ) {
-						$this->addon_service->update( $addon, $package );
-					} else {
-						$this->addon_service->install( $addon, $package );
+					if ( empty( $package ) ) {
+						throw new Exception( __( 'Addon package is invalid!', 'learnpress' ) );
 					}
 
-					if ( ! empty( $path_file ) ) {
-						$lp_file_system->lp_filesystem->delete( $path_file );
+					try {
+						if ( 'update' === $action ) {
+							$this->addon_service->update( $addon, $package );
+						} else {
+							$this->addon_service->install( $addon, $package );
+						}
+					} finally {
+						if ( ! empty( $path_file ) ) {
+							$lp_file_system->lp_filesystem->delete( $path_file );
+						}
 					}
 
 					$message = sprintf(
@@ -173,7 +182,7 @@ class AddonsAjax extends AbstractAjax {
 					);
 					break;
 				default:
-					break;
+					throw new Exception( __( 'Action is invalid!', 'learnpress' ) );
 			}
 
 			$response->status  = Response::STATUS_SUCCESS;

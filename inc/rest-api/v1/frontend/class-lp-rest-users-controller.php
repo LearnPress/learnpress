@@ -1,9 +1,15 @@
 <?php
 
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
+use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserItemMeta\UserQuizMetaModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserItems\UserQuizModel;
+use LearnPress\Models\UserModel;
 
 /**
  * Class LP_REST_Users_Controller
@@ -129,14 +135,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @editor tungnx
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 * @sicne 4.0.0
 	 * @return WP_REST_Response
 	 */
 	public function start_quiz( WP_REST_Request $request ): WP_REST_Response {
 		$user_id   = get_current_user_id();
-		$item_id   = $request['item_id'] ?? 0;
-		$course_id = $request['course_id'] ?? 0;
+		$item_id   = absint( $request['item_id'] ?? 0 );
+		$course_id = absint( $request['course_id'] ?? 0 );
 		$results   = array(
 			'question_ids' => array(),
 			'questions'    => array(),
@@ -148,80 +154,112 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		try {
-			$user   = learn_press_get_user( $user_id );
-			$course = learn_press_get_course( $course_id );
-			$quiz   = learn_press_get_quiz( $item_id );
+			$userModel = UserModel::find( $user_id, true );
+			if ( $user_id > 0 && ! $userModel instanceof UserModel ) {
+				throw new Exception( esc_html__( 'The user is invalid', 'learnpress' ) );
+			}
 
 			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
+			if ( ! $courseModel instanceof CourseModel ) {
 				throw new Exception( esc_html__( 'The course is invalid', 'learnpress' ) );
 			}
 
 			$quizPostModel = $courseModel->get_item_model( $item_id, LP_QUIZ_CPT );
-			if ( ! $quizPostModel ) {
+			if ( ! $quizPostModel instanceof QuizPostModel ) {
 				throw new Exception( esc_html__( 'The quiz is invalid', 'learnpress' ) );
 			}
 
-			$quiz->set_course( $course );
+			if ( post_password_required( $item_id ) && ! current_user_can( 'edit_post', $item_id ) ) {
+				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
+			}
 
 			do_action( 'learn-press/user/before/start-quiz', $item_id, $course_id, $user_id );
 
 			$link = LP_Helper::get_link_no_cache( $courseModel->get_item_link( $item_id, LP_QUIZ_CPT ) );
 
 			// For no required enroll course (no need login)
-			if ( $user->is_guest() && $course->is_no_required_enroll() ) {
-				$no_required_enroll       = new LP_Course_No_Required_Enroll( $course );
-				$response                 = $no_required_enroll->guest_start_quiz( $quiz );
+			if ( ! $userModel && $courseModel->has_no_enroll_requirement() ) {
+				$duration                 = new LP_Duration( $quizPostModel->get_duration() );
+				$question_ids             = $quizPostModel->get_question_ids();
+				$response['status']       = 'success';
+				$results['question_ids']  = $question_ids;
+				$results['questions']     = learn_press_rest_prepare_user_questions(
+					$question_ids,
+					array(
+						'instant_check'       => $quizPostModel->has_instant_check(),
+						'quiz_status'         => LP_ITEM_STARTED,
+						'checked_questions'   => array(),
+						'hinted_questions'    => array(),
+						'answered'            => array(),
+						'show_correct_review' => $quizPostModel->has_show_correct_review(),
+					)
+				);
+				$results['total_time']    = $duration->get();
+				$results['duration']      = $duration->get();
+				$results['status']        = LP_ITEM_STARTED;
+				$results['retaken']       = 0;
+				$results['attempts']      = array();
+				$results['user_item_id']  = 0;
+				$results['answered']      = array();
+				$response['results']      = $results;
 				$response['redirect_url'] = $link;
 
 				return rest_ensure_response( $response );
 			}
 
+			if ( ! $userModel instanceof UserModel ) {
+				throw new Exception( esc_html__( 'You have to log in to start the quiz.', 'learnpress' ) );
+			}
+
+			$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+			if ( ! $userCourseModel instanceof UserCourseModel ) {
+				throw new Exception( esc_html__( 'The user course is invalid', 'learnpress' ) );
+			}
+
 			/**
 			 * Require enroll course
 			 *
-			 * @var UserQuizModel $user_quiz
+			 * @var UserQuizModel $userQuizModel
 			 */
 			$retaken_count             = 0;
 			$attempts                  = [];
-			$filter_user_quiz          = new LP_User_Items_Filter();
-			$filter_user_quiz->user_id = $user_id;
+			$filter_user_quiz          = new UserItemsFilter();
+			$filter_user_quiz->user_id = $userModel->get_id();
 			$filter_user_quiz->item_id = $item_id;
 			$filter_user_quiz->ref_id  = $course_id;
-			$user_quiz_exists          = UserQuizModel::get_user_item_model_from_db( $filter_user_quiz );
-			if ( $user_quiz_exists instanceof UserQuizModel
-				&& $user_quiz_exists->status === LP_ITEM_COMPLETED ) {
-				$user_quiz = $user_quiz_exists;
-				$user_quiz->retake();
+			$userQuizModel             = UserQuizModel::get_user_item_model_from_db( $filter_user_quiz );
+			if ( $userQuizModel instanceof UserQuizModel
+				&& $userQuizModel->status === LP_ITEM_COMPLETED ) {
+				$userQuizModel->retake();
 				$results['answered'] = []; // Reset answered for js
-				$retaken_count       = $user_quiz->get_retaken_count();
-				$attempts            = $user_quiz->get_attempts();
+				$retaken_count       = $userQuizModel->get_retaken_count();
+				$attempts            = $userQuizModel->get_attempts();
 			} else { // Create new user quiz and insert to database.
-				$user_quiz_new          = new UserQuizModel();
-				$user_quiz_new->user_id = $user_id;
-				$user_quiz_new->item_id = $item_id;
-				$user_quiz_new->ref_id  = $course_id;
-				$user_quiz_new->start_quiz();
-				$user_quiz = $user_quiz_new;
+				$userQuizModelNew          = new UserQuizModel();
+				$userQuizModelNew->user_id = $userModel->get_id();
+				$userQuizModelNew->item_id = $item_id;
+				$userQuizModelNew->ref_id  = $course_id;
+				$userQuizModelNew->start_quiz();
+				$userQuizModel = $userQuizModelNew;
 			}
 
-			$user_item_id = $user_quiz->get_user_item_id();
+			$user_item_id = $userQuizModel->get_user_item_id();
 
 			/**
 			 * Clear cache result quiz
 			 * Cache set on @see LP_User_Item_Quiz::get_results
 			 */
 			$lp_quiz_cache = LP_Quiz_Cache::instance();
-			$key_cache     = sprintf( '%d/user/%d/course/%d', $item_id, $user_id, $course_id );
+			$key_cache     = sprintf( '%d/user/%d/course/%d', $item_id, $userModel->get_id(), $course_id );
 			$lp_quiz_cache->clear( $key_cache );
 			// End
 
-			$show_check          = $quiz->get_instant_check();
-			$duration            = $quiz->get_duration();
-			$show_correct_review = $quiz->get_show_correct_review();
-			$question_ids        = $quiz->get_question_ids();
-			$status              = $user_quiz->get_status();
-			$time_remaining      = $user_quiz->get_time_remaining();
+			$show_check          = $quizPostModel->has_instant_check();
+			$duration            = new LP_Duration( $quizPostModel->get_duration() );
+			$show_correct_review = $quizPostModel->has_show_correct_review();
+			$question_ids        = $quizPostModel->get_question_ids();
+			$status              = $userQuizModel->get_status();
+			$time_remaining      = $userQuizModel->get_time_remaining();
 
 			$questions = learn_press_rest_prepare_user_questions(
 				$question_ids,
@@ -238,7 +276,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results['question_ids']  = $question_ids;
 			$results['questions']     = $questions;
 			$results['total_time']    = $time_remaining;
-			$results['duration']      = $duration ? $duration->get() : false;
+			$results['duration']      = $duration->get();
 			$results['status']        = $status; // Must be started
 			$results['retaken']       = $retaken_count;
 			$results['attempts']      = $attempts;
@@ -261,10 +299,9 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 * @editor tungnx
 	 * @modify 4.1.4.1
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function submit_quiz( WP_REST_Request $request ) {
-		//$response = new LP_REST_Response();
 		$response = array(
 			'status'  => 'error',
 			'message' => '',
@@ -272,32 +309,30 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$user_id    = get_current_user_id();
-			$item_id    = $request['item_id'] ?? 0;
-			$course_id  = $request['course_id'] ?? 0;
+			$item_id    = absint( $request['item_id'] ?? 0 );
+			$course_id  = absint( $request['course_id'] ?? 0 );
 			$answered   = $request['answered'] ?? [];
 			$time_spend = $request['time_spend'] ?? 0;
-			$user       = learn_press_get_user( $user_id );
-			$course     = learn_press_get_course( $course_id );
+			$userModel  = UserModel::find( $user_id, true );
 
 			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
+			if ( ! $courseModel instanceof CourseModel ) {
 				throw new Exception( esc_html__( 'The course is invalid', 'learnpress' ) );
 			}
 
 			$quizPostModel = $courseModel->get_item_model( $item_id, LP_QUIZ_CPT );
-			if ( ! $quizPostModel ) {
+			if ( ! $quizPostModel instanceof QuizPostModel ) {
 				throw new Exception( esc_html__( 'The quiz is invalid', 'learnpress' ) );
 			}
 
-			// Use for Review Quiz.
-			$quiz = learn_press_get_quiz( $item_id );
-			if ( ! $quiz ) {
-				throw new Exception( esc_html__( 'The quiz is invalid!', 'learnpress' ) );
+			if ( post_password_required( $item_id ) && ! current_user_can( 'edit_post', $item_id ) ) {
+				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
 			}
-			$quiz->set_course( $course );
 
 			// Course is no required enroll (no need login)
-			if ( $course->is_no_required_enroll() ) {
+			if ( ! $userModel instanceof UserModel && $courseModel->has_no_enroll_requirement() ) {
+				$quiz               = learn_press_get_quiz( $item_id );
+				$course             = learn_press_get_course( $course_id );
 				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
 
 				$result = $no_required_enroll->get_result_quiz( $quiz, $answered );
@@ -308,8 +343,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$result['time_spend'] = $interval;
 				// End
 
-				$result['status'] = LP_ITEM_COMPLETED;
-				//$result['answered']  = $result['questions'];
+				$result['status']    = LP_ITEM_COMPLETED;
 				$result['attempts']  = [];
 				$result['results']   = $result;
 				$response['status']  = 'success';
@@ -318,23 +352,33 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				return rest_ensure_response( $response );
 			}
 
-			$user_course = $user->get_course_data( $course_id );
+			if ( ! $userModel instanceof UserModel ) {
+				throw new Exception(
+					esc_html__( 'You have to log in to submit the quiz.', 'learnpress' )
+				);
+			}
 
 			// Course required enroll
-			if ( ! $user_course ) {
+			$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+			if ( ! $userCourseModel instanceof UserCourseModel ) {
 				throw new Exception( 'User not enrolled course!' );
 			}
 
+			$can_impact_quiz = $userCourseModel->can_impact_item();
+			if ( $can_impact_quiz instanceof WP_Error ) {
+				throw new Exception( $can_impact_quiz->get_error_message() );
+			}
+
 			/**
-			 * @var LP_User_Item_Quiz $user_quiz
+			 * @var UserQuizModel $user_quiz
 			 */
-			$user_quiz = $user_course->get_item( $item_id );
-			if ( ! $user_quiz ) {
-				throw new Exception();
+			$userQuizModel = $userCourseModel->get_item_attend( $item_id, LP_QUIZ_CPT );
+			if ( ! $userQuizModel instanceof UserQuizModel ) {
+				throw new Exception( 'User not started quiz!' );
 			}
 
 			// For case save result when check instant answer
-			$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $user_quiz->get_user_item_id() );
+			$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $userQuizModel->get_user_item_id() );
 			if ( $result_instant_check ) {
 				foreach ( $result_instant_check['questions'] as $question_answer_id => $question_answer ) {
 					if ( ! empty( $question_answer['answered'] ) ) {
@@ -344,21 +388,22 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			// Set end time.
-			$start_time = $user_quiz->get_start_time()->getTimestamp();
-			$user_quiz->set_end_time( $start_time + $time_spend );
+			$start_time              = strtotime( $userQuizModel->get_start_time() );
+			$userQuizModel->end_time = time();
 
 			// Calculate quiz result and save.
-			$result = $user_quiz->calculate_quiz_result( $answered );
+			$result = $userQuizModel->calculate_quiz_result( $answered );
 			// Save
-			LP_User_Items_Result_DB::instance()->update( $user_quiz->get_user_item_id(), wp_json_encode( $result ) );
+			LP_User_Items_Result_DB::instance()->update( $userQuizModel->get_user_item_id(), wp_json_encode( $result ) );
 
 			if ( $result['pass'] ) {
-				$user_quiz->set_graduation( LP_COURSE_GRADUATION_PASSED );
+				$userQuizModel->graduation = ( UserItemModel::GRADUATION_PASSED );
 			} else {
-				$user_quiz->set_graduation( LP_COURSE_GRADUATION_FAILED );
+				$userQuizModel->graduation = UserItemModel::GRADUATION_FAILED;
 			}
 
-			$user_quiz->complete();
+			$userQuizModel->status = UserItemModel::STATUS_COMPLETED;
+			$userQuizModel->save();
 
 			/**
 			 * Clear cache result quiz
@@ -366,12 +411,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			 * key. Without this the next read still serves the in-progress result and the
 			 * submitted answers all come back as skipped.
 			 */
-			$user_quiz->clear_results_cache();
+			$key_cache = sprintf( '%d/user/%d/course/%d', $item_id, $user_id, $course_id );
+			LP_Quiz_Cache::instance()->clear( $key_cache );
 
-			do_action( 'learn-press/user/quiz-finished', $item_id, $course_id, $user_id, $user_quiz );
+			do_action( 'learn-press/user/quiz-finished', $item_id, $course_id, $user_id, $userQuizModel );
 
-			$result['status']    = $user_quiz->get_status(); // Must be completed
-			$result['attempts']  = $user_quiz->get_attempts();
+			$result['status']    = $userQuizModel->get_status(); // Must be completed
+			$result['attempts']  = $userQuizModel->get_attempts();
 			$result['answered']  = $result['questions'];
 			$result['results']   = $result;
 			$response['status']  = 'success';
@@ -389,7 +435,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 * @since 4.1.4.1
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function check_answer( WP_REST_Request $request ) {
 		$response = array(
@@ -398,21 +444,27 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		try {
-			$question_id = $request['question_id'] ?? 0;
+			$user_id     = get_current_user_id();
+			$course_id   = absint( $request['course_id'] ?? 0 );
+			$quiz_id     = absint( $request['item_id'] ?? 0 );
+			$question_id = absint( $request['question_id'] ?? 0 );
 			$answered    = $request['answered'] ?? '';
-			$course_id   = $request['course_id'] ?? 0;
-			$quiz_id     = $request['item_id'] ?? 0;
-			$course      = learn_press_get_course( $course_id );
 			$checked     = [];
 
+			$userModel   = UserModel::find( $user_id, true );
 			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
+			if ( ! $courseModel instanceof CourseModel ) {
 				throw new Exception( esc_html__( 'The course is invalid', 'learnpress' ) );
 			}
 
 			$quizPostModel = $courseModel->get_item_model( $quiz_id, LP_QUIZ_CPT );
-			if ( ! $quizPostModel ) {
+			if ( ! $quizPostModel instanceof QuizPostModel ) {
 				throw new Exception( esc_html__( 'The quiz is invalid', 'learnpress' ) );
+			}
+
+			$questionModel = QuestionPostModel::find( $question_id, true );
+			if ( ! $questionModel ) {
+				throw new Exception( esc_html__( 'The question is invalid', 'learnpress' ) );
 			}
 
 			// Check question has in quiz
@@ -421,32 +473,73 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'The quiz question is invalid', 'learnpress' ) );
 			}
 
-			$questionModel = QuestionPostModel::find( $question_id, true );
-			if ( ! $questionModel ) {
-				throw new Exception( esc_html__( 'The question is invalid', 'learnpress' ) );
-			}
-
 			// For case user not login
-			if ( $course->is_no_required_enroll() ) {
+			if ( ! $userModel && $courseModel->has_no_enroll_requirement() ) {
+				$course             = learn_press_get_course( $course_id );
 				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
 				$checked            = $no_required_enroll->guest_check_question( $question_id, $answered );
 			} else { // For case user logged in
-				$user = learn_press_get_current_user();
-				if ( $user->is_guest() ) {
+				if ( ! $userModel instanceof UserModel ) {
 					throw new Exception( esc_html__( 'You must be logged in to check answer.', 'learnpress' ) );
 				}
 
-				$user_course = $user->get_course_data( $course_id );
-				if ( ! $user_course ) {
+				$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+				if ( ! $userCourseModel instanceof UserCourseModel ) {
 					throw new Exception( esc_html__( 'User\'s course no data!', 'learnpress' ) );
 				}
 
-				$user_quiz = $user_course->get_item( $quiz_id );
-				if ( ! $user_quiz ) {
+				$can_impact_item = $userCourseModel->can_impact_item();
+				if ( $can_impact_item instanceof WP_Error ) {
+					throw new Exception( $can_impact_item->get_error_message() );
+				}
+
+				$userQuizModel = $userCourseModel->get_item_attend( $quiz_id, LP_QUIZ_CPT );
+				if ( ! $userQuizModel instanceof UserQuizModel ) {
 					throw new Exception( esc_html__( 'User\'s quiz no data!', 'learnpress' ) );
 				}
 
-				$checked = $user_quiz->instant_check_question( $question_id, $answered );
+				$question = learn_press_get_question( $question_id );
+				if ( ! $question ) {
+					throw new Exception( __( 'The question is invalid!', 'learnpress' ) );
+				}
+
+				if ( ! $quizPostModel->has_instant_check()
+					|| $userQuizModel->get_status() !== UserQuizModel::STATUS_STARTED
+					|| in_array( $question_id, $userQuizModel->get_checked_questions() ) ) {
+					throw new Exception( __( 'Cannot check the answer to the question.', 'learnpress' ) );
+				}
+
+				$answered_check = array(
+					'instant_check' => 1,
+					$question_id    => $answered,
+				);
+
+				// For case save result when check instant answer
+				$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $userQuizModel->get_user_item_id() );
+				if ( $result_instant_check ) {
+					foreach ( $result_instant_check['questions'] as $question_answer_id => $question_answer ) {
+						if ( ! empty( $question_answer['answered'] ) ) {
+							$answered_check[ $question_answer_id ] = $question_answer['answered'];
+						}
+					}
+				}
+
+				$result_answer = $userQuizModel->calculate_quiz_result( $answered_check );
+
+				LP_User_Items_Result_DB::instance()->update( $userQuizModel->get_user_item_id(), wp_json_encode( $result_answer ) );
+
+				$key_cache = sprintf( '%d/user/%d/course/%d', $quiz_id, $user_id, $course_id );
+				LP_Quiz_Cache::instance()->clear( $key_cache );
+
+				$checked_questions = $userQuizModel->get_checked_questions();
+				$checked_questions = array_merge( $checked_questions, array( $question_id ) );
+				$userQuizModel->set_meta_value_for_key( UserQuizMetaModel::KEY_QUESTION_CHECKED, $checked_questions );
+
+				$checked = array(
+					'answered' => $answered,
+					'mark'     => $result_answer['questions'][ $question_id ]['mark'],
+					'correct'  => $result_answer['questions'][ $question_id ]['correct'],
+				);
 			}
 
 			$question                = learn_press_get_question( $question_id );

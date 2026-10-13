@@ -38,10 +38,13 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'callback'            => array( $this, 'get_item' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => array(
-						'context' => $this->get_context_param(
+						'context'  => $this->get_context_param(
 							array(
 								'default' => 'view',
 							)
+						),
+						'password' => array(
+							'type' => 'string',
 						),
 					),
 				),
@@ -131,6 +134,12 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	 * @return bool Whether the post can be read.
 	 * */
 	public function check_read_permission( $post_id ) {
+		if ( post_password_required( $post_id )
+			&& empty( $this->password_verified[ $post_id ] )
+			&& ! current_user_can( 'edit_post', $post_id ) ) {
+			return false;
+		}
+
 		if ( empty( absint( $post_id ) ) ) {
 			return false;
 		}

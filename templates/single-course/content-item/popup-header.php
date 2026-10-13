@@ -10,7 +10,7 @@
  */
 
 use LearnPress\Models\CourseModel;
-
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) ||
@@ -19,7 +19,7 @@ if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) ||
 }
 
 $courseModel          = CourseModel::find( $course->get_id(), true );
-
+$singleCourseTemplate = SingleCourseTemplate::instance();
 ?>
 
 <div id="popup-header">
@@ -50,7 +50,7 @@ $courseModel          = CourseModel::find( $course->get_id(), true );
 					sprintf( _n( '%d Quiz', '%d Quizzes', $quiz_count, 'learnpress' ), $quiz_count )
 				);
 			}
-			printf( '<span class="course-duration">%s</span>', $courseModel->get_duration() );
+			printf( '<span class="course-duration">%s</span>', $singleCourseTemplate->html_duration($courseModel) );
 			echo '</span>';
 			?>
 		</h2>

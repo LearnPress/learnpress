@@ -1142,7 +1142,6 @@ class UserCourseModel extends UserItemModel {
 			$can_impact_item = new WP_Error( 'user_not_exists', __( 'User not exists!', 'learnpress' ) );
 		}
 
-		$status = $this->get_status();
 		if ( $this->has_canceled() || ! $this->has_enrolled() ) {
 			$can_impact_item = new WP_Error( 'user_not_enroll_course', __( 'You have not enroll this course!', 'learnpress' ) );
 		}
