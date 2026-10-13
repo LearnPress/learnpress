@@ -372,7 +372,7 @@ export class CourseNotes {
 		this.request( dataSend, ( data, message ) => {
 			const note = data.note;
 			if ( mode === 'edit' ) {
-				this.notes = this.notes.map( ( n ) => ( String( n.note_id ) === String( note.note_id ) ? note : n ) );
+				this.notes = this.notes.map( ( n ) => ( String( n.note_id ) === String( note.note_id ) ? { ...n, ...note } : n ) );
 			} else {
 				this.notes.unshift( note );
 			}
@@ -498,6 +498,10 @@ export class CourseNotes {
 
 		const date = set( '.lp-notes__card-date', note.created_at_display );
 		date?.setAttribute( 'datetime', `${ String( note.created_at ).replace( ' ', 'T' ) }Z` );
+		const student = set( '.lp-notes__card-student', note.student_name );
+		if ( student ) {
+			student.hidden = ! note.student_name;
+		}
 		set( '.lp-notes__card-content', note.content );
 
 		const quote = set( '.lp-notes__card-quote', isHighlight ? note.highlight_text : '' );

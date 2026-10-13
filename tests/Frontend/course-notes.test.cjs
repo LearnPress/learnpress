@@ -36,7 +36,7 @@ function setup( t ) {
 						<p class="lp-notes__empty" hidden></p>
 						<template class="lp-notes__card-template">
 							<article class="lp-notes__card" tabindex="-1">
-								<time class="lp-notes__card-date"></time>
+								<time class="lp-notes__card-date"></time><p class="lp-notes__card-student" hidden></p>
 								<p class="lp-notes__card-content"></p>
 								<blockquote class="lp-notes__card-quote"></blockquote>
 								<p class="lp-notes__card-orphaned"></p>
@@ -495,4 +495,24 @@ test( 'selection fallback and resize keep the button positioned without page scr
 	dom.window.getSelection().removeAllRanges();
 	widget.updateSelectionButton();
 	assert.equal( widget.el.selectionBtn.hidden, true );
+} );
+
+
+test( 'staff cards safely show the note owner and preserve it after editing', ( t ) => {
+	const { widget, click, card, requests, submit } = setup( t );
+	widget.notes[ 0 ].student_name = '<img src=x>Student A';
+	widget.renderList();
+	const owner = card( 1 ).querySelector( '.lp-notes__card-student' );
+	assert.equal( owner.hidden, false );
+	assert.equal( owner.textContent, '<img src=x>Student A' );
+	assert.equal( owner.querySelector( 'img' ), null );
+	assert.equal( card( 2 ).querySelector( '.lp-notes__card-student' ).hidden, true );
+	click( card( 1 ).querySelector( '.lp-notes__card-edit' ) );
+	widget.el.formContent.value = 'Updated by staff';
+	submit();
+	const { student_name, ...savedNote } = widget.notes[ 0 ];
+	requests[ 0 ].callbacks.success( { status: 'success', data: { note: { ...savedNote, content: 'Updated by staff' } } } );
+	requests[ 0 ].callbacks.completed();
+	assert.equal( card( 1 ).querySelector( '.lp-notes__card-student' ).textContent, student_name );
+	assert.equal( card( 1 ).querySelector( '.lp-notes__card-content' ).textContent, 'Updated by staff' );
 } );

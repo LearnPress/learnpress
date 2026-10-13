@@ -81,13 +81,13 @@ class CourseNoteTemplateTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_manage_mode_has_edit_delete_without_creating_student_notes(): void {
-		$template = $this->template( array( 'mode' => CourseNoteTemplate::MODE_MANAGE, 'owner_id' => 5, 'course_id' => 10 ) );
+		$template = $this->template( array( 'mode' => CourseNoteTemplate::MODE_MANAGE, 'owner_id' => 0, 'course_id' => 10 ) );
 		$html = $template->register_learning_bar_item( array() )['notes']['html'];
 		$this->assertStringContainsString( 'lp-notes__form', $html );
 		$this->assertStringContainsString( 'lp-notes__card-edit', $html );
 		$this->assertStringContainsString( 'lp-notes__card-delete', $html );
 		$this->assertStringNotContainsString( 'lp-notes__add', $html );
-		$this->assertStringNotContainsString( 'lp-notes__selection-btn', $template->html_widget( array( 'mode' => CourseNoteTemplate::MODE_MANAGE, 'owner_id' => 5, 'course_id' => 10 ) ) );
+		$this->assertStringNotContainsString( 'lp-notes__selection-btn', $template->html_widget( array( 'mode' => CourseNoteTemplate::MODE_MANAGE, 'owner_id' => 0, 'course_id' => 10 ) ) );
 	}
 
 	public function test_course_popup_actions_follow_manage_permission(): void {
@@ -95,9 +95,12 @@ class CourseNoteTemplateTest extends BrainMonkeyTestCase {
 		$note = array( 'note_id' => 1, 'item_id' => 20, 'item_title' => 'Lesson', 'created_at_display' => '', 'note_type' => 'text', 'content' => 'Note', 'can_manage' => false );
 		$this->assertStringNotContainsString( 'lp-notes__card-edit', CourseNoteTemplate::html_course_note_groups( array( $note ) ) );
 		$note['can_manage'] = true;
+		$note['student_name'] = '<script>Student A</script>';
 		$html = CourseNoteTemplate::html_course_note_groups( array( $note ) );
 		$this->assertStringContainsString( 'lp-notes__card-edit', $html );
 		$this->assertStringContainsString( 'lp-notes__card-delete', $html );
+		$this->assertStringContainsString( '&lt;script&gt;Student A&lt;/script&gt;', $html );
+		$this->assertStringNotContainsString( '<script>', $html );
 	}
 
 	public function test_readonly_notes_have_no_edit_or_selection_controls(): void {

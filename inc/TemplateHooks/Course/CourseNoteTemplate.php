@@ -25,7 +25,6 @@ use LearnPress\Services\NoteService;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Global;
 use LP_Page_Controller;
-use LP_Request;
 use Throwable;
 use stdClass;
 
@@ -37,11 +36,6 @@ class CourseNoteTemplate {
 	const MODE_EDIT     = 'edit';
 	const MODE_READONLY = 'readonly';
 	const MODE_MANAGE   = 'manage';
-
-	/**
-	 * Query param for admins / instructors to view a student's notes.
-	 */
-	const PARAM_NOTE_USER = 'lp_note_user';
 
 	/**
 	 * Cached render state for the current request.
@@ -124,26 +118,21 @@ class CourseNoteTemplate {
 		$course_id = absint( $item->get_course_id() );
 		$item_id   = absint( $item->get_id() );
 		$item_type = (string) $item->get_item_type();
-		$owner_id  = absint( LP_Request::get_param( self::PARAM_NOTE_USER, 0, 'int', 'get' ) );
 
-		if ( $owner_id > 0 && $owner_id !== $viewer_id ) {
-			// Admin / course instructor viewing a student's notes.
-			if ( ! $service->can_view( $viewer_id, $owner_id, $course_id ) ) {
-				return false;
-			}
-
-			$mode = self::MODE_MANAGE;
+		if ( $service->can_manage_course( $viewer_id, $course_id ) ) {
+			$owner_id = 0;
+			$mode     = self::MODE_MANAGE;
 		} else {
 			$can_create = $service->can_create( $viewer_id, $course_id, $item_id, $item_type );
-			if ( ! $can_create && ! $service->can_manage_course( $viewer_id, $course_id ) ) {
+			if ( ! $can_create ) {
 				return false;
 			}
 
 			$owner_id = $viewer_id;
-			$mode     = $can_create ? self::MODE_EDIT : self::MODE_MANAGE;
+			$mode     = self::MODE_EDIT;
 		}
 
-		$notes = $service->get_item_notes( $viewer_id, $owner_id, $course_id, $item_id );
+		$notes = $service->get_lesson_notes( $viewer_id, $course_id, $item_id, $item_type );
 
 		return array(
 			'mode'      => $mode,
@@ -151,7 +140,7 @@ class CourseNoteTemplate {
 			'course_id' => $course_id,
 			'item_id'   => $item_id,
 			'item_type' => $item_type,
-			'notes'     => array_map( array( $service, 'to_response' ), $notes ),
+			'notes'     => $notes,
 		);
 	}
 
@@ -372,6 +361,7 @@ class CourseNoteTemplate {
 					array(
 						'wrapper' => '<article class="lp-notes__card" data-note-id="' . absint( $note['note_id'] ) . '" data-note-type="' . esc_attr( $note['note_type'] ) . '">',
 						'header'  => '<div class="lp-notes__card-meta"><span class="lp-notes__type ' . ( $highlight ? 'is-highlight' : 'is-text' ) . '">' . esc_html( $highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) ) . '</span><span class="lp-notes__card-date">' . esc_html( $note['created_at_display'] ) . '</span></div>',
+						'student' => ! empty( $note['student_name'] ) ? '<p class="lp-notes__card-student">' . esc_html( $note['student_name'] ) . '</p>' : '',
 						'quote'   => $highlight ? '<blockquote class="lp-notes__card-quote">' . esc_html( $note['highlight_text'] ) . '</blockquote>' : '',
 						'content' => '<p class="lp-notes__card-content">' . esc_html( $note['content'] ) . '</p>',
 						'actions' => ! empty( $note['can_manage'] ) ? self::html_card_actions() : '',
@@ -531,6 +521,7 @@ class CourseNoteTemplate {
 			array(
 				'wrapper'     => '<template class="lp-notes__card-template"><article class="lp-notes__card" tabindex="-1">',
 				'meta'        => '<time class="lp-notes__card-date"></time>',
+				'student'     => '<p class="lp-notes__card-student" hidden></p>',
 				'quote'       => '<blockquote class="lp-notes__card-quote" hidden></blockquote>',
 				'orphaned'    => '<p class="lp-notes__card-orphaned" hidden></p>',
 				'content'     => '<p class="lp-notes__card-content"></p>',

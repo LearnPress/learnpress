@@ -179,6 +179,47 @@ class NoteService {
 	}
 
 	/**
+	 * Lesson sidebar: course staff see all owners; students see only their own notes.
+	 * Course/item IDs are checked before any notes query.
+	 *
+	 * @return array[]
+	 * @throws Exception
+	 */
+	public function get_lesson_notes( int $viewer_id, int $course_id, int $item_id, string $item_type = LP_LESSON_CPT ): array {
+		if ( $viewer_id <= 0 || $course_id <= 0 || $item_id <= 0
+			|| ! in_array( $item_type, NoteModel::get_supported_item_types(), true ) ) {
+			throw new Exception( __( 'You do not have permission to view these notes.', 'learnpress' ) );
+		}
+		$course = $this->find_course( $course_id );
+		if ( ! $course || ! $course->get_item_model( $item_id, $item_type ) ) {
+			throw new Exception( __( 'This item does not belong to the course.', 'learnpress' ) );
+		}
+		$can_manage = $this->can_manage_course( $viewer_id, $course_id );
+		if ( ! $can_manage && ! $this->can_create( $viewer_id, $course_id, $item_id, $item_type ) ) {
+			throw new Exception( __( 'You do not have permission to view these notes.', 'learnpress' ) );
+		}
+		$filter                  = new NoteFilter();
+		$filter->user_id         = $can_manage ? null : $viewer_id;
+		$filter->course_id       = $course_id;
+		$filter->item_id         = $item_id;
+		$filter->item_type       = $item_type;
+		$filter->limit           = -1;
+		$filter->join_details    = $can_manage;
+		$filter->run_query_count = false;
+		$total_rows              = 0;
+		$rows                    = $this->query_course_notes( $filter, $total_rows );
+		$notes                   = array();
+		foreach ( $rows as $row ) {
+			$data = $this->to_response( new NoteModel( $row ) );
+			if ( $can_manage ) {
+				$data['student_name'] = (string) ( $row->display_name ?? '#' . $row->user_id );
+			}
+			$notes[] = $data;
+		}
+		return $notes;
+	}
+
+	/**
 	 * List the signed-in user's own notes across all courses, newest first.
 	 *
 	 * @return array{notes:array,total_rows:int,page:int,per_page:int}
@@ -262,7 +303,10 @@ class NoteService {
 			$data               = $this->to_response( $note );
 			$data['can_manage'] = $this->can_manage( $viewer_id, $note );
 			$data['item_title'] = (string) ( $row->item_title ?? '' );
-			$notes[]            = $data;
+			if ( 0 === $owner_id ) {
+				$data['student_name'] = (string) ( $row->display_name ?? '#' . $row->user_id );
+			}
+			$notes[] = $data;
 		}
 
 		return array(

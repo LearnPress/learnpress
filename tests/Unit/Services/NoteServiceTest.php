@@ -517,6 +517,50 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 		$this->assertFalse( $this->service->can_manage( 0, $note ) );
 	}
 
+	public function test_admin_and_course_instructor_see_all_lesson_owners_in_the_correct_course(): void {
+		Functions\when( 'get_option' )->justReturn( 'Y-m-d' );
+		Functions\when( 'wp_date' )->justReturn( '2026-10-13' );
+		$this->service->course_note_rows = [
+			(object) [ 'note_id' => 1, 'user_id' => self::STUDENT, 'display_name' => 'Student A', 'course_id' => self::COURSE, 'item_id' => self::LESSON, 'content' => 'A' ],
+			(object) [ 'note_id' => 2, 'user_id' => self::OTHER, 'display_name' => 'Student B', 'course_id' => self::COURSE, 'item_id' => self::LESSON, 'content' => 'B' ],
+		];
+		foreach ( [ self::ADMIN, self::INSTRUCTOR ] as $viewer ) {
+			$notes = $this->service->get_lesson_notes( $viewer, self::COURSE, self::LESSON );
+			$filter = $this->service->course_notes_detail_filter;
+			$this->assertNull( $filter->user_id );
+			$this->assertSame( self::COURSE, $filter->course_id );
+			$this->assertSame( self::LESSON, $filter->item_id );
+			$this->assertSame( LP_LESSON_CPT, $filter->item_type );
+			$this->assertTrue( $filter->join_details );
+			$this->assertSame( [ 'Student A', 'Student B' ], array_column( $notes, 'student_name' ) );
+		}
+	}
+
+	public function test_student_and_enrolled_unrelated_instructor_only_query_their_own_lesson_notes(): void {
+		$this->service->courses[404] = $this->fake_course( self::OTHER, [ self::LESSON ] );
+		$this->service->user_courses[ self::INSTRUCTOR . ':404' ] = $this->fake_user_course( true );
+		foreach ( [ [ self::STUDENT, self::COURSE ], [ self::INSTRUCTOR, 404 ] ] as [ $viewer, $course ] ) {
+			$this->service->get_lesson_notes( $viewer, $course, self::LESSON );
+			$filter = $this->service->course_notes_detail_filter;
+			$this->assertSame( $viewer, $filter->user_id );
+			$this->assertSame( $course, $filter->course_id );
+			$this->assertSame( self::LESSON, $filter->item_id );
+			$this->assertFalse( $filter->join_details );
+		}
+	}
+
+	public function test_lesson_notes_reject_invalid_items_guests_and_instructors_of_another_course_before_querying(): void {
+		$this->service->courses[404] = $this->fake_course( self::OTHER, [ self::LESSON ] );
+		foreach ( [ [ 0, self::COURSE, self::LESSON ], [ self::INSTRUCTOR, 404, self::LESSON ], [ self::ADMIN, self::COURSE, 999 ], [ self::ADMIN, 999, self::LESSON ] ] as [ $viewer, $course, $item ] ) {
+			try {
+				$this->service->get_lesson_notes( $viewer, $course, $item );
+				$this->fail( 'The invalid lesson or unauthorized viewer must be rejected.' );
+			} catch ( Exception $e ) {
+				$this->assertNull( $this->service->course_notes_detail_filter );
+			}
+		}
+	}
+
 	public function test_staff_course_view_does_not_filter_by_student(): void {
 		foreach ( [ self::ADMIN, self::INSTRUCTOR ] as $viewer ) {
 			$this->service->get_course_notes( $viewer, 0, self::COURSE );
