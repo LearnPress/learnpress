@@ -678,7 +678,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			// @deprecated hook since v4.2.7.3
 			//do_action( 'learnpress/rest-api/courses/purchase/before-add-to-cart' );
 
-			$cart_id = $cart->add_to_cart( $course_id, 1, $params );
+			$quantity = isset( $params['quantity'] ) ? absint( $params['quantity'] ) : 1;
+			if ( $quantity <= 0 ) {
+				$quantity = 1;
+			}
+			unset( $params['quantity'] );
+
+			$cart_id = $cart->add_to_cart( $course_id, $quantity, $params );
 			if ( empty( $cart_id ) ) {
 				throw new Exception( __( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 			}

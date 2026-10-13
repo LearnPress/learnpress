@@ -32,11 +32,17 @@ export class RefundOrder {
 
 		lpUtils.eventHandlers( 'click', [
 			{
-				selector: RefundOrder.selectors.action,
+				selector: `${ RefundOrder.selectors.panel } ${ RefundOrder.selectors.action }`,
 				class: this,
 				callBack: this.handleAction.name,
 			},
 		] );
+	}
+
+	escapeHtml( str ) {
+		const div = document.createElement( 'div' );
+		div.textContent = str;
+		return div.innerHTML;
 	}
 
 	getPanelData( panel ) {
@@ -46,7 +52,7 @@ export class RefundOrder {
 			orderId: parseInt( panel.dataset.orderId || '0', 10 ),
 			orderTotal: Number.isNaN( orderTotal ) ? 0 : orderTotal,
 			orderTotalFormatted: panel.dataset.orderTotalFormatted || '',
-			confirmTitle: panel.dataset.confirmTitle || 'Approve refund?',
+			confirmTitle: this.escapeHtml( panel.dataset.confirmTitle || 'Approve refund?' ),
 			confirmText: panel.dataset.confirmText || '',
 			messageLabel: panel.dataset.messageLabel || 'Message to payer',
 			messagePlaceholder: panel.dataset.messagePlaceholder || '',

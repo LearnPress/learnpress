@@ -83,7 +83,7 @@ $order_date = new LP_Datetime( $order->get_data( 'order_date' ) );
 				<tr>
 					<td><?php echo esc_html( $item['name'] ); ?></td>
 					<td><?php echo learn_press_format_price( $item['total'] ?? 0, $currency_symbol ?? '$' ); ?></td>
-					<td>x <?php echo $item['quantity'] ?? 0; ?></td>
+					<td>x <?php echo esc_html( $item['quantity'] ?? 0 ); ?></td>
 					<td><?php echo learn_press_format_price( $item['total'] ?? 0, $currency_symbol ?? '$' ); ?></td>
 				</tr>
 			<?php endforeach; ?>
