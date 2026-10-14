@@ -370,9 +370,14 @@ class PostModel {
 	 *
 	 * @throws Exception
 	 * @since 4.3.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function delete() {
+		// Check permission
+		if ( ! current_user_can( 'delete_post', $this->get_id() ) ) {
+			throw new Exception( __( 'You do not have permission to delete this item.', 'learnpress' ) );
+		}
+
 		wp_delete_post( $this->get_id(), true );
 
 		// Clear cache
@@ -480,7 +485,7 @@ class PostModel {
 			$value = $default_value;
 		}
 
-		$value                   = maybe_unserialize( $value );
+		$value = maybe_unserialize( $value );
 		$this->set_meta_value_by_key( $key, $value );
 
 		return $value;
@@ -497,7 +502,7 @@ class PostModel {
 	 * @return void
 	 */
 	public function set_meta_value_by_key( string $key, $value ) {
-		$metadata = $this->get_metadata();
+		$metadata         = $this->get_metadata();
 		$metadata->{$key} = $value;
 
 		$this->meta_data = $metadata;

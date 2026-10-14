@@ -93,7 +93,7 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 											'learn-press/review-order/cart-item-quantity',
 											sprintf(
 												'<strong class="course-quantity"> &times; %s</strong>',
-												$cart_item['quantity']
+												esc_html( $cart_item['quantity'] )
 											),
 											$cart_item,
 											$cart_item_key

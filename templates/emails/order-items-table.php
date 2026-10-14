@@ -105,7 +105,7 @@ if ( $order->is_manual() ) {
 				<?php echo apply_filters( 'learn-press/email-order-item-name', $item['name'], $item ); ?>
 			</td>
 			<td class="column-quantity">
-				<?php echo apply_filters( 'learn-press/email-order-item-quantity', $item['quantity'], $item ); ?>
+				<?php echo esc_html( apply_filters( 'learn-press/email-order-item-quantity', $item['quantity'], $item ) ); ?>
 			</td>
 			<td class="column-number">
 				<?php echo apply_filters( 'learn-press/email-order-item-cost', learn_press_format_price( $item['total'], learn_press_get_currency_symbol( $order->get_currency() ) ), $item ); ?>

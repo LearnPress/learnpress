@@ -649,6 +649,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					)
 				);
 
+				$item['quantity'] = absint( $item['quantity'] ?? 1 );
+				if ( $item['quantity'] <= 0 ) {
+					$item['quantity'] = 1;
+				}
+
 				switch ( $item_type ) {
 					case LP_COURSE_CPT:
 						$course                     = learn_press_get_course( $item['item_id'] );
@@ -1378,7 +1383,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		public function set_customer_note( $note ) {
-			$this->_set_data( 'customer_note', $note );
+			$this->_set_data( 'customer_note', sanitize_textarea_field( (string) $note ) );
 		}
 
 		public function get_customer_note() {
@@ -1532,7 +1537,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 							'post_author',
 							'post_status',
 							'order_total',
-							'menu_order'
+							'menu_order',
 						);
 						if ( ! in_array( $order_by, $allowed_key ) ) {
 							$order_by = 'ID';

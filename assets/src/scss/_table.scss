@@ -37,6 +37,7 @@ table.lp-list-table {
 			}
 		}
 		tr {
+			border: none;
 			border-bottom: 1px solid var(--lp-border-color, #E2E0DB);
 			position: sticky;
 			top: 0;
@@ -168,6 +169,13 @@ table.lp-list-table {
 						padding-bottom: 0;
 					}
 				}
+			}
+		}
+	}
+	&.profile-list-quizzes{
+		tfoot {
+			td{
+				padding: 10px 20px;
 			}
 		}
 	}

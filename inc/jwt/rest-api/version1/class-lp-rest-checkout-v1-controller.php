@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 
 /**
@@ -128,7 +130,7 @@ class LP_Jwt_Checkout_V1_Controller extends LP_REST_Jwt_Controller {
 
 			// Expose PayPal env so the frontend can render Smart Buttons via @paypal/react-paypal-js.
 			if ( $gateway->get_id() === 'paypal' ) {
-				$paypal_settings = LP_Settings::instance()->get_group( 'paypal' );
+				$paypal_settings  = LP_Settings::instance()->get_group( 'paypal' );
 				$method['config'] = array(
 					'client_id' => (string) $paypal_settings->get( 'app_client_id', '' ),
 					'sandbox'   => $paypal_settings->get( 'paypal_sandbox', 'no' ) === 'yes',
@@ -155,25 +157,28 @@ class LP_Jwt_Checkout_V1_Controller extends LP_REST_Jwt_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$course_id          = absint( $request['course_id'] );
-			$payment_method_str = isset( $request['payment_method'] ) ? sanitize_text_field( $request['payment_method'] ) : '';
-			$notes              = isset( $request['notes'] ) ? sanitize_textarea_field( $request['notes'] ) : '';
+			$course_id          = absint( $request['course_id'] ?? 0 );
+			$payment_method_str = sanitize_text_field( $request['payment_method'] ?? '' );
+			$notes              = sanitize_textarea_field( $request['notes'] ?? '' );
 
-			if ( ! $course_id ) {
-				throw new Exception( esc_html__( 'Missing course_id.', 'learnpress' ) );
-			}
-
-			$course = learn_press_get_course( $course_id );
-			if ( ! $course ) {
+			$user_id     = get_current_user_id();
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel instanceof CourseModel ) {
 				throw new Exception( esc_html__( 'Invalid course.', 'learnpress' ) );
 			}
-
-			$user_id = get_current_user_id();
 
 			// Check if already enrolled.
 			$userCourse = UserCourseModel::find( $user_id, $course_id, true );
 			if ( $userCourse && $userCourse->get_status() ) {
 				throw new Exception( esc_html__( 'You are already enrolled in this course.', 'learnpress' ) );
+			}
+
+			$userModel = UserModel::find( $user_id, true );
+			$can_check = $courseModel->is_free()
+				? $courseModel->can_enroll( $userModel )
+				: $courseModel->can_purchase( $userModel );
+			if ( $can_check instanceof WP_Error ) {
+				throw new Exception( $can_check->get_error_message() );
 			}
 
 			$cart     = LearnPress::instance()->cart;
@@ -266,15 +271,11 @@ class LP_Jwt_Checkout_V1_Controller extends LP_REST_Jwt_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$course_id = absint( $request['course_id'] );
-			$notes     = isset( $request['notes'] ) ? sanitize_textarea_field( $request['notes'] ) : '';
+			$course_id = absint( $request['course_id'] ?? 0 );
+			$notes     = sanitize_textarea_field( $request['notes'] ?? '' );
 
-			if ( ! $course_id ) {
-				throw new Exception( esc_html__( 'Missing course_id.', 'learnpress' ) );
-			}
-
-			$course = learn_press_get_course( $course_id );
-			if ( ! $course ) {
+			$courseModel = coursemodel::find( $course_id, true );
+			if ( ! $courseModel instanceof CourseModel ) {
 				throw new Exception( esc_html__( 'Invalid course.', 'learnpress' ) );
 			}
 
@@ -282,6 +283,14 @@ class LP_Jwt_Checkout_V1_Controller extends LP_REST_Jwt_Controller {
 			$userCourse = UserCourseModel::find( $user_id, $course_id, true );
 			if ( $userCourse && $userCourse->get_status() ) {
 				throw new Exception( esc_html__( 'You are already enrolled in this course.', 'learnpress' ) );
+			}
+
+			$userModel = UserModel::find( $user_id, true );
+			$can_check = $courseModel->is_free()
+				? $courseModel->can_enroll( $userModel )
+				: $courseModel->can_purchase( $userModel );
+			if ( $can_check instanceof WP_Error ) {
+				throw new Exception( $can_check->get_error_message() );
 			}
 
 			$available = LP_Gateways::instance()->get_available_payment_gateways();

@@ -49,9 +49,10 @@ class CBEditCourseAjax extends AbstractAjax {
 		}
 
 		$params      = LP_Helper::json_decode( $params, true );
-		$course_id   = $params['course_id'] ?? 0;
+		$course_id   = absint( $params['course_id'] ?? 0 );
 		$courseModel = CourseModel::find( $course_id, true );
 		if ( $courseModel ) {
+			$courseModel->check_permission();
 			$params['courseModel'] = $courseModel;
 		}
 		$params['userModel'] = $userModel;

@@ -231,6 +231,12 @@ class CourseSectionModel {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
 
+		// Check permission on parent course before creating item to avoid orphaned posts.
+		$coursePostModel = new CoursePostModel( $courseModel );
+		if ( ! $coursePostModel->check_capabilities_update() ) {
+			throw new Exception( __( 'You do not have permission to add item to this course.', 'learnpress' ) );
+		}
+
 		$item_types = CourseModel::item_types_support();
 		if ( ! in_array( $item_type, $item_types ) ) {
 			throw new Exception( __( 'Item type invalid', 'learnpress' ) );

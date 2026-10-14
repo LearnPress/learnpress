@@ -56,6 +56,10 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 						'course_password'  => array(
 							'type' => 'string',
 						),
+						'course_id'        => array( // Add temporary param, still not using @since 4.4.11, use for check item's course
+							'description' => esc_html__( 'The parent course ID.', 'learnpress' ),
+							'type'        => 'integer',
+						),
 					),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
@@ -77,10 +81,16 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'callback'            => array( $this, 'finish_lesson' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => array(
-						'context' => $this->get_context_param(
+						'context'         => $this->get_context_param(
 							array(
 								'default' => 'edit',
 							)
+						),
+						'password'        => array(
+							'type' => 'string',
+						),
+						'course_password' => array(
+							'type' => 'string',
 						),
 					),
 				),
@@ -207,7 +217,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	 * @return void
 	 */
 	protected function get_course_by_item_id( $item_id ) {
-		static $output;
+		static $output = array();
 
 		global $wpdb;
 
@@ -215,8 +225,8 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return false;
 		}
 
-		if ( ! isset( $output ) ) {
-			$output = $wpdb->get_var(
+		if ( ! array_key_exists( $item_id, $output ) ) {
+			$output[ $item_id ] = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT c.ID FROM {$wpdb->posts} c
 					INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
@@ -228,8 +238,8 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			);
 		}
 
-		if ( $output ) {
-			return absint( $output );
+		if ( $output[ $item_id ] ) {
+			return absint( $output[ $item_id ] );
 		}
 
 		return false;

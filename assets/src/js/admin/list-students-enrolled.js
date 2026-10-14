@@ -5,18 +5,16 @@
  * Pagination is handled by loadAJAX.js clickNumberPage (via .page-numbers class).
  *
  * @since 4.3.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 export class ListStudentsEnrolled {
 	constructor() {
-		this.instructorId = null;
-		this.elContainer = null;
+		this.elLayout = null;
 	}
 
 	static selectors = {
-		elContainer: '.lp-enrolled-students',
 		elLayout: '.lp-students-enrolled-layout',
 		elForm: '.lp-enrolled-students-form',
 		elLPTarget: '.lp-target',
@@ -31,22 +29,11 @@ export class ListStudentsEnrolled {
 	};
 
 	init() {
-		this.elContainer = document.querySelector(
-			ListStudentsEnrolled.selectors.elContainer
+		this.elLayout = document.querySelector(
+			ListStudentsEnrolled.selectors.elLayout
 		);
-		if ( ! this.elContainer ) {
+		if ( ! this.elLayout ) {
 			return;
-		}
-
-		const elLPTarget = this.elContainer.querySelector(
-			ListStudentsEnrolled.selectors.elLPTarget
-		);
-		const ajaxHandle = this.getAjaxHandle();
-		if ( elLPTarget && ajaxHandle ) {
-			const dataSend = ajaxHandle.getDataSetCurrent( elLPTarget );
-			if ( dataSend && dataSend.args ) {
-				this.instructorId = dataSend.args.instructor_id;
-			}
 		}
 
 		this.events();
@@ -60,6 +47,8 @@ export class ListStudentsEnrolled {
 		ListStudentsEnrolled._loadedEvents = this;
 
 		// Search/Clear button click.
+		// Capture phase: clicks inside containers that call stopPropagation()
+		// on click (e.g. Headless UI DialogPanel) never reach document on bubble.
 		lpUtils.eventHandlers( 'click', [
 			{
 				selector: ListStudentsEnrolled.selectors.elBtnSearch,
@@ -69,7 +58,7 @@ export class ListStudentsEnrolled {
 				selector: ListStudentsEnrolled.selectors.elBtnClear,
 				callBack: this.clearFilters.bind( this ),
 			},
-		] );
+		], true );
 
 		// Search on Enter key.
 		lpUtils.eventHandlers( 'keydown', [
@@ -93,7 +82,7 @@ export class ListStudentsEnrolled {
 				callBack: this.triggerBtnSearch.bind( this ),
 				checkIsEventEnter: true,
 			},
-		] );
+		], true );
 
 		lpUtils.eventHandlers( 'change', [
 			{
@@ -104,12 +93,12 @@ export class ListStudentsEnrolled {
 				selector: ListStudentsEnrolled.selectors.elEndDateInput,
 				callBack: this.checkDatesRange.bind( this ),
 			},
-		] );
+		], true );
 	}
 
 	// Click button search.
 	triggerBtnSearch() {
-		const buttonSearch = this.elContainer.querySelector(
+		const buttonSearch = this.elLayout.querySelector(
 			ListStudentsEnrolled.selectors.elBtnSearch
 		);
 		if ( buttonSearch ) {
@@ -227,13 +216,12 @@ export class ListStudentsEnrolled {
 	 * @param args
 	 */
 	searchStudents( args ) {
-		const { e } = args;
-		if ( e ) {
-			e.preventDefault();
-		}
-		const btn = args?.target?.closest(
+		const { e, target } = args;
+		const btn = target.closest(
 			ListStudentsEnrolled.selectors.elBtnSearch
 		);
+
+		e.preventDefault();
 
 		if ( ! btn ) {
 			return;
@@ -353,6 +341,6 @@ export class ListStudentsEnrolled {
 // Auto-initialize when DOM is available (for standalone page load).
 const listStudentsEnrolled = new ListStudentsEnrolled();
 
-lpUtils.lpOnElementReady( ListStudentsEnrolled.selectors.elContainer, () => {
+lpUtils.lpOnElementReady( ListStudentsEnrolled.selectors.elLayout, () => {
 	listStudentsEnrolled.init();
 } );

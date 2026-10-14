@@ -173,6 +173,10 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
 			}
 
+			if ( post_password_required( $course_id ) && ! current_user_can( 'edit_post', $course_id ) ) {
+				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
+			}
+
 			do_action( 'learn-press/user/before/start-quiz', $item_id, $course_id, $user_id );
 
 			$link = LP_Helper::get_link_no_cache( $courseModel->get_item_link( $item_id, LP_QUIZ_CPT ) );
@@ -329,6 +333,10 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
 			}
 
+			if ( post_password_required( $course_id ) && ! current_user_can( 'edit_post', $course_id ) ) {
+				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
+			}
+
 			// Course is no required enroll (no need login)
 			if ( ! $userModel instanceof UserModel && $courseModel->has_no_enroll_requirement() ) {
 				$quiz               = learn_press_get_quiz( $item_id );
@@ -460,6 +468,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$quizPostModel = $courseModel->get_item_model( $quiz_id, LP_QUIZ_CPT );
 			if ( ! $quizPostModel instanceof QuizPostModel ) {
 				throw new Exception( esc_html__( 'The quiz is invalid', 'learnpress' ) );
+			}
+
+			if ( post_password_required( $quiz_id ) && ! current_user_can( 'edit_post', $quiz_id ) ) {
+				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
+			}
+
+			if ( post_password_required( $course_id ) && ! current_user_can( 'edit_post', $course_id ) ) {
+				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
 			}
 
 			$questionModel = QuestionPostModel::find( $question_id, true );

@@ -387,7 +387,7 @@ class LP_Checkout {
 		 * Set default fields from request.
 		 */
 		$this->payment_method_str = LP_Request::get_param( 'payment_method' );
-		$this->order_comment      = LP_Request::get_param( 'order_comments' );
+		$this->order_comment      = LP_Request::get_param( 'order_comments', '', 'textarea' );
 		$this->_checkout_email    = LP_Request::get_param( 'checkout-email', '', 'email' );
 		if ( $this->_checkout_email ) {
 			LearnPress::instance()->session->set( 'checkout-email', $this->_checkout_email );

@@ -655,8 +655,16 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 
 	protected function verify_post_password( $post_id, $password ) {
 		$post = get_post( $post_id );
-		if ( ! $post || empty( $post->post_password ) || empty( $password ) ) {
+		if ( ! $post || empty( $post->post_password ) ) {
 			return true;
+		}
+
+		if ( empty( $password ) ) {
+			return new WP_Error(
+				'lp_password_required',
+				__( 'A password is required to view this resource.', 'learnpress' ),
+				array( 'status' => 403 )
+			);
 		}
 
 		if ( ! hash_equals( $post->post_password, $password ) ) {
