@@ -467,6 +467,29 @@
         "regular_price": 19,
         "sale_price": 10
     },
+    "learnpress-paddle-payment": {
+        "name": "Paddle Add-On for LearnPress",
+        "basename": "learnpress-paddle-payment/learnpress-paddle-payment.php",
+        "version": "4.0.0",
+        "require_lp": "4.4.2",
+        "description": "Connect LearnPress to Paddle for global payments, automated tax compliance, and subscriptions.",
+        "image": "https://updates.thimpress.com/images/learnpress-paddle-payment.png",
+        "link": "https://thimpress.com/product/paddle-addon-for-learnpress/",
+        "link_doc": "https://learnpresslms.com/docs/paddle-add-on-for-learnpress-setup-configuration-guide/",
+        "is_free": 0,
+        "author": "",
+        "is_org": 0,
+        "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=paddle",
+        "order": 0,
+        "category": [
+            "LearnPress",
+            "Monetize Course",
+            "Payment"
+        ],
+        "badge": "45% off",
+        "regular_price": 19,
+        "sale_price": 10
+    },
     "learnpress-klarna-payment": {
         "name": "Klarna Add-On for LearnPress",
         "basename": "learnpress-klarna-payment/learnpress-klarna-payment.php",
