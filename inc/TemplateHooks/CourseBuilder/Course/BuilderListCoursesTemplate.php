@@ -474,10 +474,14 @@ class BuilderListCoursesTemplate {
 			];
 
 			foreach ( $action_by_status as $action_status => $action_label ) {
+				$confirm_message        = 'delete' === $action_status
+					? sprintf( ' data-confirm="%s"', esc_attr__( 'Are you sure you want to permanently delete this course?', 'learnpress' ) )
+					: '';
 				$html_action_by_status .= sprintf(
-					'<span class="lp-cb-item-action %s" data-send="%s">%s</span>',
+					'<span class="lp-cb-item-action %s" data-send="%s"%s>%s</span>',
 					$action_status,
 					Template::convert_data_to_json( $data_send_action + [ 'action_type' => $action_status ] ),
+					$confirm_message,
 					$action_label
 				);
 			}

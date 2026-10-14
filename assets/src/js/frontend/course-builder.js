@@ -5,7 +5,9 @@
  * @version 1.0.0
  */
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
+import SweetAlert from 'sweetalert2';
 import { BuilderTabCourse } from './course-builder/builder-course/builder-tab-course.js';
+import { SWAL_ICON_DELETE } from './course-builder/swal-icons.js';
 import { BuilderEditCourse } from './course-builder/builder-course/builder-edit-course.js';
 import { CreateCourseViaAI } from '../admin/courses/generate-with-ai.js';
 import { GenerateWithOpenai } from '../admin/generate-with-openai.js';
@@ -166,7 +168,7 @@ const initHeaderMoreActions = () => {
 		} );
 	};
 
-	document.addEventListener( 'click', ( e ) => {
+	document.addEventListener( 'click', async ( e ) => {
 		const target = e.target;
 		const toggleBtn = target.closest( toggleSelector );
 
@@ -232,6 +234,22 @@ const initHeaderMoreActions = () => {
 				'.lp-cb-item-action-expand-toggle',
 			);
 			const dataSend = JSON.parse( elAction.dataset.send );
+			if ( dataSend.action_type === 'delete' ) {
+				const result = await SweetAlert.fire( {
+					title: elAction.textContent,
+					text: elAction.dataset.confirm,
+					iconHtml: SWAL_ICON_DELETE,
+					customClass: { icon: 'lp-cb-swal-icon-html' },
+					showCloseButton: true,
+					showCancelButton: true,
+					cancelButtonText: lpData.i18n.cancel,
+					confirmButtonText: lpData.i18n.yes,
+					reverseButtons: true,
+				} );
+				if ( ! result.isConfirmed ) {
+					return;
+				}
+			}
 
 			lpUtils.lpSetLoadingEl( elParentActionExpand, 1 );
 			const svg = elParentActionExpand.querySelector( 'svg' );

@@ -1453,10 +1453,13 @@ class CourseModel {
 			throw new Exception( 'Course ID is invalid!' );
 		}
 
-		$filter              = new LP_Course_JSON_Filter();
-		$filter->ID          = $this->ID;
-		$filter->only_fields = [ 'ID' ];
-		$course_rs           = self::get_course_from_db( $filter );
+		// Visibility filters must not hide an existing row from the write path.
+		$course_rs = $lp_course_json_db->wpdb->get_var(
+			$lp_course_json_db->wpdb->prepare(
+				"SELECT ID FROM {$lp_course_json_db->tb_lp_courses} WHERE ID = %d",
+				$this->ID
+			)
+		);
 		// Check if exists course id.
 		if ( empty( $course_rs ) ) { // Insert data.
 			$lp_course_json_db->insert_data( $data );
