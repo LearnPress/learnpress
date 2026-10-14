@@ -490,6 +490,11 @@ class BuilderListCoursesTemplate {
 				'learn-press/course-builder/list-courses/item/action',
 				[
 					'wrapper'                => '<div class="lp-cb-item-action-wrap">',
+					'preview'                => $course_status !== PostModel::STATUS_TRASH ? sprintf(
+						'<a class="btn-preview-course" href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+						esc_url( get_preview_post_link( $course_id ) ),
+						esc_html__( 'Preview', 'learnpress' )
+					) : '',
 					'edit'                   => $course_status !== PostModel::STATUS_TRASH ? sprintf(
 						'<div class="course-action-editor"><a class="btn-edit-course course-edit-permalink" href="%s">%s</a></div>',
 						$edit_link,
