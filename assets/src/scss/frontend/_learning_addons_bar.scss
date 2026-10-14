@@ -11,7 +11,7 @@
 	bottom: 0;
 	width: var(--lp-width-addon-content-bar);
 	border-left: 1px solid $border-color;
-	background: #F7F7FB;
+	background: $bg-grey;
 	//box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
 	opacity: 0;
 	visibility: hidden;
@@ -37,7 +37,7 @@
 		align-items: center;
 		justify-content: space-between;
 		background: #fff;
-
+		gap: 8px;
 		.lp-learning-bar-item-title {
 			flex: 1;
 			color: $text-color-base;
@@ -60,8 +60,6 @@
 
 	.lp-icon-close {
 		display: inline-flex;
-		width: 26px;
-		height: 26px;
 		margin: 0;
 		padding: 0;
 		border: 0;
@@ -75,7 +73,7 @@
 		box-shadow: none;
 
 		&:hover {
-			color: $bg-course-featured;
+			color: $color-primary;
 		}
 	}
 
