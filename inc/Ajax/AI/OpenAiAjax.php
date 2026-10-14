@@ -487,42 +487,53 @@ class OpenAiAjax extends AbstractAjax {
 				$postModel->check_capabilities_update_item_course();
 			}
 
-			if ( ! function_exists( 'media_handle_sideload' ) ) {
-				require_once ABSPATH . 'wp-admin/includes/media.php';
-				require_once ABSPATH . 'wp-admin/includes/file.php';
+			if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/image.php';
 			}
 
 			// model gpt-image-1 only return base64, so don't need to download from url
 			if ( ! empty( $image_base64 ) ) {
-				$decoded_image = base64_decode( $image_base64 );
+				$decoded_image = base64_decode( $image_base64, true );
 				if ( false === $decoded_image || '' === $decoded_image ) {
 					throw new Exception( __( 'Invalid image data.', 'learnpress' ) );
 				}
 
-				$image_info = @getimagesizefromstring( $decoded_image );
-				if ( false === $image_info ) {
+				$image_info    = @getimagesizefromstring( $decoded_image );
+				$allowed_mimes = [
+					'image/png'  => 'png',
+					'image/jpeg' => 'jpg',
+					'image/webp' => 'webp',
+				];
+				$mime_type     = $image_info['mime'] ?? '';
+				if ( false === $image_info || ! isset( $allowed_mimes[ $mime_type ] ) ) {
 					throw new Exception( __( 'Decoded data is not a valid image.', 'learnpress' ) );
 				}
 
-				$tmp                 = wp_tempnam();
-				$lp_wp_filesystem    = LP_WP_Filesystem::instance();
-				$put_contents_result = $lp_wp_filesystem->put_contents( $tmp, $decoded_image );
-				if ( ! $put_contents_result || ! is_readable( $tmp ) ) {
-					throw new Exception( __( 'Decoded image is not readable.', 'learnpress' ) );
-				}
-				$filename = sanitize_file_name( $post_slug . '-' . uniqid() . '.png' );
+				$ext      = $allowed_mimes[ $mime_type ];
+				$filename = sanitize_file_name( ( $post_slug ?: 'ai-image' ) . '-' . uniqid() . '.' . $ext );
 			} else {
 				throw new Exception( __( 'No image data provided.', 'learnpress' ) );
 			}
 
-			$file_array    = [
-				'name'     => $filename,
-				'tmp_name' => $tmp,
+			$upload = wp_upload_bits( $filename, null, $decoded_image );
+			if ( ! empty( $upload['error'] ) ) {
+				throw new Exception( $upload['error'] );
+			}
+
+			$attachment    = [
+				'post_mime_type' => $mime_type,
+				'guid'           => $upload['url'],
+				'post_parent'    => $post_id,
+				'post_title'     => $post_title,
+				'post_content'   => '',
 			];
-			$attachment_id = media_handle_sideload( $file_array, $post_id );
+			$attachment_id = wp_insert_attachment( $attachment, $upload['file'], $post_id, true );
 
 			if ( ! is_wp_error( $attachment_id ) ) {
+				wp_update_attachment_metadata(
+					$attachment_id,
+					wp_generate_attachment_metadata( $attachment_id, $upload['file'] )
+				);
 				set_post_thumbnail( $post_id, $attachment_id );
 			} else {
 				throw new Exception( $attachment_id->get_error_message() );

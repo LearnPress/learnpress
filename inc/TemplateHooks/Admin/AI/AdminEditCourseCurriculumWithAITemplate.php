@@ -323,12 +323,7 @@ class AdminEditCourseCurriculumWithAITemplate {
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Language', 'learnpress' ),
-				AdminTemplate::html_tom_select(
-					[
-						'name'    => 'language',
-						'options' => $options['language'] ?? [],
-					]
-				),
+				'<input type="text" name="language" value="English" placeholder="English" />',
 				esc_html__( 'Sets the output language for all generated course content.', 'learnpress' )
 			),
 			'form-grid-end' => '</div>',

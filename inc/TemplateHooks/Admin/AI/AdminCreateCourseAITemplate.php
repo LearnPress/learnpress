@@ -240,12 +240,7 @@ class AdminCreateCourseAITemplate {
 					<p class="field-description">%s</p>
 				</div>',
 				esc_html__( 'Language', 'learnpress' ),
-				AdminTemplate::html_tom_select(
-					[
-						'name'    => 'language',
-						'options' => $options['language'] ?? [],
-					]
-				),
+				'<input type="text" name="language" value="English" placeholder="English" />',
 				esc_html__( 'Sets the output language for all generated course content.', 'learnpress' )
 			),
 			'tone'          => sprintf(
@@ -555,7 +550,10 @@ class AdminCreateCourseAITemplate {
 		$section = [
 			'wrap'     => '<div class="lp-ai-course-data-preview">',
 			'title'    => sprintf( '<div class="course-title">%s</div>', esc_html( $course_title ) ),
-			'des'      => sprintf( '<div class="course-description">%s</div>', esc_html( $course_description ) ),
+			'des'      => sprintf(
+				'<div class="course-description">%s</div>',
+				Template::sanitize_html_content( $course_description )
+			),
 			'sections' => sprintf( '<ul class="course-sections">%s</ul>', $html_section ),
 			'wrap-end' => '</div>',
 		];

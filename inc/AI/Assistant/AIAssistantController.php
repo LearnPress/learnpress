@@ -8,6 +8,7 @@ use LP_Settings;
 use LP_User;
 use LearnPress\Services\OpenAiService;
 use Exception;
+use Throwable;
 
 /**
  * AI Assistant Controller — validates requests, sanitizes input, calls Agent.
