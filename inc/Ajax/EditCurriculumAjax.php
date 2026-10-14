@@ -37,7 +37,17 @@ class EditCurriculumAjax extends AbstractAjax {
 			throw new Exception( 'Error: params invalid!' );
 		}
 
-		return LP_Helper::json_decode( $params, true );
+		$data        = LP_Helper::json_decode( $params, true );
+		$course_id   = absint( $data['course_id'] ?? 0 );
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		$courseModel->check_permission();
+		$data['courseModel'] = $courseModel;
+
+		return $data;
 	}
 
 	/**
@@ -52,13 +62,8 @@ class EditCurriculumAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
-			$data = self::check_valid();
-
-			$course_id   = $data['course_id'] ?? 0;
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
+			$data        = self::check_valid();
+			$courseModel = $data['courseModel'];
 
 			$section_name = trim( $data['section_name'] ?? '' );
 			if ( empty( $section_name ) ) {
@@ -97,16 +102,11 @@ class EditCurriculumAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
-			$data       = self::check_valid();
-			$course_id  = $data['course_id'] ?? 0;
-			$section_id = $data['section_id'] ?? 0;
+			$data        = self::check_valid();
+			$courseModel = $data['courseModel'];
+			$section_id  = $data['section_id'] ?? 0;
 
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
-
-			$courseSectionModel = CourseSectionModel::find( $section_id, $course_id, true );
+			$courseSectionModel = CourseSectionModel::find( $section_id, $courseModel->get_id(), true );
 			if ( ! $courseSectionModel ) {
 				throw new Exception( __( 'Section not found', 'learnpress' ) );
 			}
@@ -136,16 +136,11 @@ class EditCurriculumAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
-			$data       = self::check_valid();
-			$course_id  = $data['course_id'] ?? 0;
-			$section_id = $data['section_id'] ?? 0;
+			$data        = self::check_valid();
+			$courseModel = $data['courseModel'];
+			$section_id  = $data['section_id'] ?? 0;
 
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
-
-			$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
+			$courseSectionModel = CourseSectionModel::find( $section_id, $courseModel->get_id() );
 			if ( ! $courseSectionModel ) {
 				throw new Exception( __( 'Section not found', 'learnpress' ) );
 			}
@@ -175,15 +170,10 @@ class EditCurriculumAjax extends AbstractAjax {
 
 		try {
 			$data         = self::check_valid();
-			$course_id    = $data['course_id'] ?? 0;
+			$courseModel  = $data['courseModel'];
 			$new_position = $data['new_position'] ?? [];
 			if ( ! is_array( $new_position ) ) {
 				throw new Exception( __( 'Invalid section position', 'learnpress' ) );
-			}
-
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
 			}
 
 			// Update all sections position
@@ -219,16 +209,11 @@ class EditCurriculumAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
-			$data       = self::check_valid();
-			$course_id  = $data['course_id'] ?? 0;
-			$section_id = $data['section_id'] ?? 0;
+			$data        = self::check_valid();
+			$courseModel = $data['courseModel'];
+			$section_id  = $data['section_id'] ?? 0;
 
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
-
-			$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
+			$courseSectionModel = CourseSectionModel::find( $section_id, $courseModel->get_id() );
 			if ( ! $courseSectionModel ) {
 				throw new Exception( __( 'Section not found', 'learnpress' ) );
 			}
@@ -236,7 +221,7 @@ class EditCurriculumAjax extends AbstractAjax {
 			$courseSectionItemModel = $courseSectionModel->create_item_and_add( $data );
 
 			// Reload course model to get updated sections
-			$courseModel = CourseModel::find( $course_id, true );
+			$courseModel = CourseModel::find( $courseModel->get_id(), true );
 
 			$response->data->section_item = $courseSectionItemModel;
 
@@ -274,16 +259,11 @@ class EditCurriculumAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
-			$data       = self::check_valid();
-			$course_id  = $data['course_id'] ?? 0;
-			$section_id = $data['section_id'] ?? 0;
+			$data        = self::check_valid();
+			$courseModel = $data['courseModel'];
+			$section_id  = $data['section_id'] ?? 0;
 
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
-
-			$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
+			$courseSectionModel = CourseSectionModel::find( $section_id, $courseModel->get_id() );
 			if ( ! $courseSectionModel ) {
 				throw new Exception( __( 'Section not found', 'learnpress' ) );
 			}
@@ -294,7 +274,7 @@ class EditCurriculumAjax extends AbstractAjax {
 			}
 
 			// Reload course model to get updated sections
-			$courseModel = CourseModel::find( $course_id, true );
+			$courseModel = CourseModel::find( $courseModel->get_id(), true );
 
 			// Set context_data for Course Builder context
 			$is_course_builder                                    = ! empty( $data['is_course_builder'] );
@@ -341,17 +321,12 @@ class EditCurriculumAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
-			$data       = self::check_valid();
-			$course_id  = $data['course_id'] ?? 0;
-			$section_id = $data['section_id'] ?? 0;
-			$item_id    = $data['item_id'] ?? 0;
+			$data        = self::check_valid();
+			$courseModel = $data['courseModel'];
+			$section_id  = $data['section_id'] ?? 0;
+			$item_id     = $data['item_id'] ?? 0;
 
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
-
-			$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
+			$courseSectionModel = CourseSectionModel::find( $section_id, $courseModel->get_id() );
 			if ( ! $courseSectionModel ) {
 				throw new Exception( __( 'Section not found', 'learnpress' ) );
 			}
@@ -363,7 +338,7 @@ class EditCurriculumAjax extends AbstractAjax {
 			}
 
 			// Delete item from section
-			$courseSectionItemModel->section_course_id = $course_id;
+			$courseSectionItemModel->section_course_id = $courseModel->get_id();
 			$courseSectionItemModel->delete();
 
 			$response->status  = 'success';
@@ -387,19 +362,14 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function sortAbleItem call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function update_item_section_and_position() {
 		$response = new LP_REST_Response();
 
 		try {
-			$data      = self::check_valid();
-			$course_id = $data['course_id'] ?? 0;
-
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
+			$data        = self::check_valid();
+			$courseModel = $data['courseModel'];
 
 			$coursePostModel = new CoursePostModel( $courseModel );
 			$coursePostModel->update_items_position( $data );
@@ -425,29 +395,24 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function updateTitle call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function update_item_of_section() {
 		$response = new LP_REST_Response();
 
 		try {
-			$data       = self::check_valid();
-			$course_id  = $data['course_id'] ?? 0;
-			$section_id = $data['section_id'] ?? 0;
-			$item_id    = $data['item_id'] ?? 0;
-			$item_type  = $data['item_type'] ?? '';
-			$item_title = $data['item_title'] ?? '';
+			$data        = self::check_valid();
+			$courseModel = $data['courseModel'];
+			$section_id  = $data['section_id'] ?? 0;
+			$item_id     = $data['item_id'] ?? 0;
+			$item_type   = $data['item_type'] ?? '';
+			$item_title  = $data['item_title'] ?? '';
 
 			if ( empty( $item_title ) ) {
 				throw new Exception( __( 'Item title is required', 'learnpress' ) );
 			}
 
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
-
-			$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
+			$courseSectionModel = CourseSectionModel::find( $section_id, $courseModel->get_id() );
 			if ( ! $courseSectionModel ) {
 				throw new Exception( __( 'Section not found', 'learnpress' ) );
 			}
@@ -486,22 +451,17 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * JS file edit-section-item.js: function updatePreviewItem call this method.
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public static function update_item_preview() {
 		$response = new LP_REST_Response();
 
 		try {
 			$data           = self::check_valid();
-			$course_id      = absint( $data['course_id'] ?? 0 );
+			$courseModel    = $data['courseModel'];
 			$item_id        = absint( $data['item_id'] ?? 0 );
 			$item_type      = LP_Helper::sanitize_params_submitted( $data['item_type'] ?? '' );
 			$enable_preview = absint( $data['enable_preview'] ?? 0 );
-
-			$courseModel = CourseModel::find( $course_id, true );
-			if ( ! $courseModel ) {
-				throw new Exception( __( 'Course not found', 'learnpress' ) );
-			}
 
 			if ( $item_type !== LP_LESSON_CPT ) {
 				throw new Exception( __( 'Only lesson can be set preview', 'learnpress' ) );
