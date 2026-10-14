@@ -3,6 +3,7 @@
 namespace LearnPress\AI\Assistant;
 
 use LearnPress\Services\OpenAiService;
+use Throwable;
 
 /**
  * AI Assistant Agent - orchestrates the learner-facing conversation loop.
@@ -283,13 +284,14 @@ class Agent {
 	/**
 	 * Send a text-generation request to OpenAI and normalize the first content response.
 	 *
-	 * @param array  $history      Prior role/content messages.
+	 * @param array $history Prior role/content messages.
 	 * @param string $user_message Learner input for this turn.
-	 * @param string $instruction  Intent-specific guidance for the model.
-	 * @param array  $context      Grounded lesson/course context payload.
-	 * @param int    $user_id      Current user ID.
+	 * @param string $instruction Intent-specific guidance for the model.
+	 * @param array $context Grounded lesson/course context payload.
+	 * @param int $user_id Current user ID.
 	 *
 	 * @return string
+	 * @throws Throwable
 	 */
 	private function ask_openai_text( array $history, string $user_message, string $instruction, array $context, int $user_id ): string {
 

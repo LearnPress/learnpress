@@ -159,9 +159,9 @@ export class CreateCourseViaAI {
 				if ( tone && lp_course_ai_setting?.tone ) {
 					tone.tomselect.setValue( lp_course_ai_setting.tone );
 				}
-				const language = popup.querySelector( 'select[name="language"]' );
+				const language = popup.querySelector( 'input[name="language"]' );
 				if ( language && lp_course_ai_setting?.language ) {
-					language.tomselect.setValue( lp_course_ai_setting.language );
+					language.value = lp_course_ai_setting.language;
 				}
 
 				targetAudience.addEventListener( 'change', ( event ) => {
@@ -174,9 +174,8 @@ export class CreateCourseViaAI {
 					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
 				} );
 
-				language.addEventListener( 'change', ( event ) => {
-					const value = language.tomselect.getValue();
-					lp_course_ai_setting.language = value ? [ value ] : [];
+				language.addEventListener( 'input', ( event ) => {
+					lp_course_ai_setting.language = language.value;
 					localStorage.setItem( 'lp_course_ai_setting', JSON.stringify( lp_course_ai_setting ) );
 				} );
 			},

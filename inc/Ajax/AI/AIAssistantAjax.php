@@ -75,7 +75,7 @@ class AIAssistantAjax extends AbstractAjax {
 			$response->status = 'success';
 			$response->data   = $result;
 		} catch ( Throwable $e ) {
-			$response->message = __( 'The AI Assistant is unavailable right now. Please try again later.', 'learnpress' );
+			$response->message = $e->getMessage();
 			$response->data    = $this->normalize_response_data( array() );
 		}
 

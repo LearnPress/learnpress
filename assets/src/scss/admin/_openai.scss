@@ -963,7 +963,10 @@ $title-color: #111111;
 	overflow-y: auto;
 
 	.lp-ai-image-item {
-		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
 
 		img {
 			object-fit: contain;
@@ -971,23 +974,10 @@ $title-color: #111111;
 		}
 
 		.lp-btn-ai-apply-image {
-			position: absolute;
-			top: 5px;
-			right: 0;
-			transform: translateX(-5%);
-			background-color: rgba(0, 0, 0, 0.6);
-			color: #fff;
-			border: none;
-			padding: 6px 12px;
-			border-radius: 4px;
-			font-size: 0.875rem;
-			cursor: pointer;
-			opacity: 0;
-			transition: opacity 0.2s;
-		}
-
-		&:hover .lp-btn-ai-apply-image {
-			opacity: 1;
+			&:hover {
+				background-color: $primary-purple;
+				color: #fff;
+			}
 		}
 	}
 }
