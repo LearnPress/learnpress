@@ -304,6 +304,9 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.11 (2026-10-16) =
+* Fixed: security (Props @Wordfence, @Patchstack, @Ananda Dhakal, @daroo, @MD Mahmidul Hasan).
+
 = 4.4.10 (2026-10-09) =
 * Fixed: security (Props @Wordfence, @Kuba, @Wordfence PRISM, @Hunter Sploit, @Artur Chlebicki).
 * Style: themes, addons manager, Course Builder.
