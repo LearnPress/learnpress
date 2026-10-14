@@ -32,12 +32,12 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 		border: 0;
 		background: transparent;
 		cursor: pointer;
-		font-size: 1rem;
+		font-size: 16px;
 		line-height: 1;
 
 		&:hover,
 		&:focus-visible {
-			color: $bg-course-featured;
+		 	color: $color-primary;
 			outline: none;
 		}
 	}
@@ -140,15 +140,15 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 		min-height: 37px;
 		margin: 0;
 		padding: $spacing-base-2x $spacing-base-3x;
-		border: 1px solid $text-color-base;
+		border: 1px solid $border-color;
 		border-radius: 6px;
 		background: $color-white;
 		box-shadow: none;
 		color: $text-color-base;
-		font-size: 0.875rem;
-		font-weight: 500;
-		line-height: 1.25;
-		text-transform: none;
+		font-size: $font-size-small;
+		//font-weight: 500;
+		//line-height: 1.25;
+		//text-transform: none;
 		white-space: nowrap;
 		transition:
 			border-color 0.12s ease,
@@ -156,15 +156,15 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 			color 0.12s ease,
 			transform 0.12s ease;
 
-		/*&:hover,
-		&:focus-visible {
-			color: $color-primary;
+		&:hover, &:focus-visible {
+			color: $color-white;
+			background: $color-primary;
 			border-color: $color-primary;
-		}*/
+		}
 	}
 
 	&__input-area {
-		background: $color-white;
+		//background: $color-white;
 
 		&--hidden {
 			display: none;
@@ -219,8 +219,9 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 24px;
-		height: 24px;
+		//width: 24px;
+		//height: 24px;
+		font-size: 18px;
 		padding: 0;
 		border: 0;
 		background: transparent;
@@ -231,14 +232,12 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 			color 0.12s ease,
 			transform 0.12s ease,
 			opacity 0.12s ease;
-
+		outline: none;
 		&:hover,
 		&:focus-visible {
 			color: $color-primary;
-			transform: translateX(1px);
-			outline: none;
-
-			svg path {
+			//transform: translateX(1px);
+  			svg path {
 				stroke: $color-primary;
 			}
 		}
