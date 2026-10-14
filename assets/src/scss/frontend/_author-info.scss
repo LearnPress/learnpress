@@ -4,10 +4,6 @@
 	margin-top: 30px;
 	margin-bottom: 30px;
 
-	@media (max-width: 600px) {
-		flex-wrap: wrap;
-	}
-
 	.lp-section-instructor {
 		flex: 1;
 	}
@@ -67,6 +63,13 @@
 			}
 		}
 	}
+	@media (max-width: 600px) {
+		flex-wrap: wrap;
+		gap: 12px;
+		.instructor-avatar{
+			max-width: 100px;
+		}
+	}
 }
 
 .instructor-display-name {
@@ -76,14 +79,12 @@
 .instructor-item-meta {
 	display: inline-flex;
 	border-left: 1px solid $border-color;
-	//margin-left: 12px;
 	padding-left: 20px;
 }
 
 .lp-instructor-meta .instructor-item-meta:first-child {
 	border: none;
 	padding-left: 0;
-	//margin-left: 0;
 }
 
 .wrapper-instructor-total-students, .wrapper-instructor-total-courses {

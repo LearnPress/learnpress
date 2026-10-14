@@ -74,7 +74,7 @@
 
 	.back-course {
 		padding-left: 24px;
-		padding-right: 26px;
+		padding-right: 20px;
 		line-height: $popup_header_height;
 		font-size: 24px;
 		color: $text-color-meta;
@@ -103,7 +103,6 @@
 		justify-content: space-between;
 		align-items: center;
 		padding-left: 20px;
-		// padding-right: 15px;
 		column-gap: 10px;
 
 		@media (max-width: 1024px) {
@@ -111,11 +110,9 @@
 		}
 
 		@media (max-width: 768px) {
-			//flex-direction: column;
-			gap: 4px;
-			padding-left: 60px;
-			//align-items: flex-start;
-			flex-wrap: wrap;
+ 			gap: 4px;
+			padding-left: 50px;
+ 			flex-wrap: wrap;
 			.course-title{
 				flex: 0 0 auto;
 				width: 100%;
@@ -631,25 +628,23 @@
 	}
 
 	@media (max-width: 768px) {
-		// position: fixed;
-		// top: inherit;
-		// margin-top: $popup_header_height + 1px;
- 		// width: calc(var(--lp-width-popup-curriculum, 450px) + 1px);
-		// bottom: 0;
-		// background: #fff;
-		// z-index: 9999;
-		// left: 0;
-		// transform: translateX(-100%);
-		// transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s;
-		// will-change: transform;
-		.search-course {
+		.course-curriculum{
+			top: 60px;
+		}
+ 		.search-course {
 			button {
 				right: 10px;
+				height: 60px;
 			}
 
 			input[name=s] {
 				right: 60px;
+				height: 60px;
 			}
+		}
+		.lp-course-curriculum__title{
+			padding: 0 15px;
+			line-height: 60px;
 		}
 	}
 }
@@ -659,7 +654,7 @@
 	right: 0;
 	display: flex;
 	flex-direction: column;
-	padding: ($popup_header_height + 12px) 12px 12px;
+	padding: ($popup_header_height + 12px) 10px 10px;
 	user-select: none;
 	box-sizing: border-box;
 	z-index: 99;
@@ -671,8 +666,8 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 42px;
-		height: 42px;
+		width: 40px;
+		height: 40px;
 		border-radius: 8px;
 		cursor: pointer;
 		font-size: 22px;
@@ -680,7 +675,8 @@
 		background: #fff;
 		transition: all 0.22s ease;
 		flex-shrink: 0;
-
+		border-color: transparent;
+		box-shadow: none;
 		&:hover {
 			background: $bg-grey;
 			color: $color-black;
@@ -688,7 +684,7 @@
 
 		// When sidebar is open:
 		.popup-right-sidebar:not(.is-collapsed) & {
-			background: $bg-grey;
+			//background: $bg-grey;
 			border-color: transparent;
 			box-shadow: none;
 		}
@@ -716,25 +712,24 @@
 	&__items {
 		list-style: none !important;
 		margin: 8px 0 0 !important;
-		padding: 0px !important;
+		padding: 0 !important;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-		background: #fff;
-		transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease;
-		// max-height: 500px;
-	}
+ 		transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease;
+ 	}
 
 	&__item {
 		position: relative;
 		margin: 0;
 		padding: 0;
-		width: 42px;
-		height: 42px;
+		width: 40px;
+		height: 40px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		border-radius: 8px;
+		background: #fff;
 		color: $text-color-base;
 		font-weight: 500;
 		cursor: pointer;
@@ -744,9 +739,7 @@
 		&:hover {
 			background: $bg-grey;
 			color: $color-black;
-
-			// Slide-out text label on hover (from right to left)
-			.popup-right-sidebar__text {
+ 			.popup-right-sidebar__text {
 				opacity: 1;
 				visibility: visible;
 				transform: translateY(-50%) translateX(0);
@@ -810,12 +803,19 @@
 	@media (max-width: 768px) {
 		bottom: 60px;
 		flex-direction: column-reverse;
+		padding: 12px 15px;
 		.popup-right-sidebar__toggle{
+			width: 36px;
+			height: 36px;
 			background: $bg-grey;
 			color: $color-black;
 		}
+		&__item{
+			width: 36px;
+			height: 36px;
+		}
 		&__items {
-			margin: 0 0 8px 0 !important;
+ 			margin: 0 0 8px 0 !important;
 			flex-direction: column-reverse;
 		}
 	}
@@ -948,12 +948,14 @@
 
 	@media (max-width: 768px) {
 		#sidebar-toggle {
-			margin-left: 0;
+			margin-left: -5px!important;
 			left: 10px;
 			margin-top: -60px;
 			z-index: 999;
+			.lp-sidebar-toggle__open &{
+				color: $color-primary;
+			}
 		}
-
 	}
 }
 
@@ -1248,7 +1250,7 @@ body {
 	&.lp-sidebar-toggle__close {
 
 		#popup-content #sidebar-toggle {
-			margin-left: 0;
+			margin-left: -10px;
 		}
 
 		#sidebar-toggle {
@@ -1311,7 +1313,9 @@ body {
 	}
 }
 
-
+#learn-press-item-comments{
+	margin-bottom: 30px;
+}
 .content-item-wrap {
 	width: var(--lp-width-content-lesson, 792px);
 	max-width: 100%;
@@ -1322,7 +1326,7 @@ body {
 
 	@media (max-width: 1024px) {
 		width: 100%;
-		--lp-item-padding: 40px;
+		--lp-item-padding: 30px;
 	}
 
 	.course-item-title {
@@ -1614,18 +1618,10 @@ body {
 				flex: 0 0 0;
  			}
 		}
-		// &.lp-sidebar-toggle__open {
-		// 	#popup-sidebar {
-		// 		transform: translateX(0);
-		// 	}
-		// }
 	}
 	#popup-content {
 		flex: 0 0 100%;
 	}
-	// #popup-footer,.content-item-wrap .quiz-buttons.align-center .button-left.fixed{
-	// 	left: 0;
-	// }
 }
 @media screen and (max-width: 480px) {
 
