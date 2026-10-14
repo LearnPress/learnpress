@@ -278,7 +278,7 @@
 			overflow: hidden;
 			position: relative;
 			height: 6px;
-			background: #ccc;
+			background: $bg-grey;
 			@include border-radius( 5px );
 
 			.progress-active {
@@ -312,7 +312,7 @@
 			top: 0;
 			width: 100%;
 			height: 100%;
-			background: #ccc;
+			background: $bg-grey;
 			content: '';
 		}
 	}

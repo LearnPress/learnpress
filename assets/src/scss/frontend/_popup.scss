@@ -76,7 +76,7 @@
 		padding-left: 24px;
 		padding-right: 20px;
 		line-height: $popup_header_height;
-		font-size: 24px;
+		font-size: 22px;
 		color: $text-color-meta;
 
 		&:hover {
@@ -110,7 +110,7 @@
 		}
 
 		@media (max-width: 768px) {
- 			gap: 4px;
+ 			column-gap: 4px;
 			padding-left: 50px;
  			flex-wrap: wrap;
 			.course-title{
@@ -730,7 +730,7 @@
 		justify-content: center;
 		border-radius: 8px;
 		background: #fff;
-		color: $text-color-base;
+		color: $text-color-accent;
 		font-weight: 500;
 		cursor: pointer;
 		box-sizing: border-box;
@@ -1172,7 +1172,11 @@
 		row-gap: 4px;
 	}
 }
-
+.learn-press-comments{
+	.comment-reply-title,.title-comments{
+		font-size: $font-size-h3;
+	}
+}
 /***********/
 body.course-item-popup {
 	overflow-y: hidden;
