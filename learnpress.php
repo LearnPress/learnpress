@@ -441,14 +441,14 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/handle-steps/class-lp-handle-upgrade-db-steps.php';
 
 			// LP Cache
-			include_once 'inc/cache/class-lp-cache.php';
-			include_once 'inc/cache/class-lp-courses-cache.php';
-			include_once 'inc/cache/class-lp-course-cache.php';
-			include_once 'inc/cache/class-lp-quiz-cache.php';
-			include_once 'inc/cache/class-lp-question-cache.php';
-			include_once 'inc/cache/class-lp-session-cache.php';
-			include_once 'inc/cache/class-lp-settings-cache.php';
-			include_once 'inc/cache/class-lp-user-items-cache.php';
+			include_once 'inc/Cache/class-lp-cache.php';
+			include_once 'inc/Cache/class-lp-courses-cache.php';
+			include_once 'inc/Cache/class-lp-course-cache.php';
+			include_once 'inc/Cache/class-lp-quiz-cache.php';
+			include_once 'inc/Cache/class-lp-question-cache.php';
+			include_once 'inc/Cache/class-lp-session-cache.php';
+			include_once 'inc/Cache/class-lp-settings-cache.php';
+			include_once 'inc/Cache/class-lp-user-items-cache.php';
 
 			// Background processes.
 			LPBackgroundTrigger::instance();
