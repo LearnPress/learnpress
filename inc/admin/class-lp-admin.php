@@ -6,6 +6,7 @@
  */
 
 use LearnPress\Background\LPBackgroundAjax;
+use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Admin\Notices\AdminNotesTemplate;
@@ -953,7 +954,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @since 4.3.0
 		 */
 		public function add_course_builder_button( $post ) {
-			if ( ! $post || LP_COURSE_CPT !== $post->post_type ) {
+			if ( ! $post || LP_COURSE_CPT !== $post->post_type || ! CourseBuilder::can_view_course_builder() ) {
 				return;
 			}
 
