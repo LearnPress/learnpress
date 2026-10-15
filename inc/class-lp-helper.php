@@ -5,6 +5,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\Cache\LPSettingsCache;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -270,11 +271,11 @@ class LP_Helper {
 			$args = array_merge(
 				[
 					'post_title'     => '',
-					'post_name'      => '',
+					//'post_name'      => '',
 					'post_status'    => 'publish',
 					'post_type'      => 'page',
 					'comment_status' => 'closed',
-					'post_content'   => '',
+					//'post_content'   => '',
 					'post_author'    => get_current_user_id(),
 				],
 				$args
@@ -286,7 +287,7 @@ class LP_Helper {
 			}
 
 			update_option( $key_option, $page_id );
-			$lp_settings_cache = new LP_Settings_Cache( true );
+			$lp_settings_cache = new LPSettingsCache( true );
 			$lp_settings_cache->clean_lp_settings();
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );

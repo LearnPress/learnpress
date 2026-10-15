@@ -366,27 +366,27 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 					if ( $page === 'courses' ) {
 						$page_title = 'Courses';
-						$page_slug  = $page;
+						//$page_slug  = $page;
 					} elseif ( 'single_instructor' === $page ) {
 						$page_title = 'Instructor';
-						$page_slug  = 'instructor';
+						//$page_slug  = 'instructor';
 					} elseif ( 'instructors' === $page ) {
 						$page_title = 'Instructors';
-						$page_slug  = $page;
+						//$page_slug  = $page;
 					} elseif ( 'become_a_teacher' === $page ) {
 						$page_title = 'Become an Instructor';
-						$page_slug  = $page;
+						//$page_slug  = $page;
 					} elseif ( 'term_conditions' === $page ) {
 						$page_title = 'Terms and Conditions';
-						$page_slug  = $page;
+						//$page_slug  = $page;
 					} else {
 						$page_title = ucwords( str_replace( '_', ' ', $page ) );
-						$page_slug  = 'lp-' . str_replace( '_', '-', $page );
+						//$page_slug  = 'lp-' . str_replace( '_', '-', $page );
 					}
 
 					$data_create_page = array(
 						'post_title' => $page_title,
-						'post_name'  => $page_slug,
+						//'post_name'  => $page_slug,
 					);
 					LP_Helper::create_page( $data_create_page, "learn_press_{$page}_page_id" );
 				}
