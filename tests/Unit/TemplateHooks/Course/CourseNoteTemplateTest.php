@@ -109,7 +109,9 @@ class CourseNoteTemplateTest extends BrainMonkeyTestCase {
 		$html = CourseNoteTemplate::html_course_note_groups( array( $note ) );
 		$this->assertStringContainsString( 'lp-notes__card-edit', $html );
 		$this->assertStringContainsString( 'lp-notes__card-delete', $html );
-		$this->assertStringContainsString( '&lt;script&gt;Student A&lt;/script&gt;', $html );
+		$this->assertStringNotContainsString( 'Student A', $html );
+		$this->assertStringNotContainsString( 'lp-notes__card-student', $html );
+		$this->assertStringNotContainsString( 'lp-notes__card-student', $this->template( false )->html_card_template( true ) );
 		$this->assertStringNotContainsString( '<script>', $html );
 	}
 

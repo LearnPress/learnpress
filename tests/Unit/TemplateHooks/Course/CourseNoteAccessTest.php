@@ -46,14 +46,14 @@ class CourseNoteAccessTest extends BrainMonkeyTestCase {
 		return ( new ReflectionClass( LessonAccessTemplateStub::class ) )->newInstanceWithoutConstructor();
 	}
 
-	public function test_admin_and_course_instructor_resolve_to_all_owners_and_can_create(): void {
+	public function test_admin_and_course_instructor_resolve_to_own_notes_and_can_create(): void {
 		foreach ( [ 1, 7 ] as $viewer ) {
 			$this->viewer = $viewer;
 			$template = $this->template();
 			$state = $template->get_render_state();
-			$this->assertSame( CourseNoteTemplate::MODE_MANAGE, $state['mode'] );
-			$this->assertSame( 0, $state['owner_id'] );
-			$this->assertCount( 2, $state['notes'] );
+			$this->assertSame( CourseNoteTemplate::MODE_EDIT, $state['mode'] );
+			$this->assertSame( $viewer, $state['owner_id'] );
+			$this->assertCount( 1, $state['notes'] );
 			$this->assertSame( [ $viewer, 10, 20, LP_LESSON_CPT ], $this->service->request );
 			$this->assertTrue( $template->js_data( $state )['canEdit'] );
 			$this->assertTrue( $state['can_create'] );
@@ -79,9 +79,9 @@ class CourseNoteAccessTest extends BrainMonkeyTestCase {
 		}
 	}
 
-	public function test_view_all_derives_scope_from_permissions_and_ignores_client_owner(): void {
+	public function test_view_all_uses_current_user_for_every_role_and_ignores_client_owner(): void {
 		Functions\when( 'wp_kses_post' )->returnArg();
-		foreach ( [ 1 => 0, 7 => 0, 5 => 5, 8 => 8 ] as $viewer => $owner ) {
+		foreach ( [ 1 => 1, 7 => 7, 5 => 5, 8 => 8 ] as $viewer => $owner ) {
 			$this->viewer = $viewer;
 			CourseNoteTemplate::render_course_notes( [ 'course_id' => 10, 'owner_id' => 999, 'user_id' => 999, 'paged' => 2 ] );
 			$this->assertSame( [ $viewer, $owner, 10, 2 ], $this->service->course_request );
@@ -109,7 +109,7 @@ class LessonAccessServiceStub extends NoteService {
 
 	public function get_lesson_notes( int $viewer_id, int $course_id, int $item_id, string $item_type = LP_LESSON_CPT ): array {
 		$this->request = [ $viewer_id, $course_id, $item_id, $item_type ];
-		return $this->can_manage_course( $viewer_id, $course_id ) ? [ [ 'note_id' => 1 ], [ 'note_id' => 2 ] ] : [ [ 'note_id' => 1 ] ];
+		return [ [ 'note_id' => 1 ] ];
 	}
 
 	public function get_course_notes( int $viewer_id, int $owner_id, int $course_id, int $page = 1 ): array {

@@ -22,7 +22,8 @@ defined( 'ABSPATH' ) || exit;
  *
  * - Create: logged-in student enrolled in (or finished) the course, item assigned to the course.
  * - Edit/delete: enrolled note owners, admins and course author/co-instructors.
- * - View: the owner, admins (manage_options) and the course author/co-instructors.
+ * - Frontend lists: the current user's own notes, regardless of role.
+ * - Admin review: admins (manage_options) and the course author/co-instructors.
  *
  * @since 4.4.9.2
  */
@@ -179,7 +180,7 @@ class NoteService {
 	}
 
 	/**
-	 * Lesson sidebar: course staff see all owners; students see only their own notes.
+	 * Lesson sidebar: every user sees only their own notes.
 	 * Course/item IDs are checked before any notes query.
 	 *
 	 * @return array[]
@@ -199,21 +200,18 @@ class NoteService {
 			throw new Exception( __( 'You do not have permission to view these notes.', 'learnpress' ) );
 		}
 		$filter                  = new NoteFilter();
-		$filter->user_id         = $can_manage ? null : $viewer_id;
+		$filter->user_id         = $viewer_id;
 		$filter->course_id       = $course_id;
 		$filter->item_id         = $item_id;
 		$filter->item_type       = $item_type;
 		$filter->limit           = -1;
-		$filter->join_details    = $can_manage;
+		$filter->join_details    = false;
 		$filter->run_query_count = false;
 		$total_rows              = 0;
 		$rows                    = $this->query_course_notes( $filter, $total_rows );
 		$notes                   = array();
 		foreach ( $rows as $row ) {
 			$data = $this->to_response( new NoteModel( $row ) );
-			if ( $can_manage ) {
-				$data['student_name'] = (string) ( $row->display_name ?? '#' . $row->user_id );
-			}
 			$notes[] = $data;
 		}
 		return $notes;
@@ -257,15 +255,14 @@ class NoteService {
 	}
 
 	/**
-	 * Get course notes in complete lesson groups. Owner ID 0 includes all students.
+	 * Get the current user's frontend course notes in complete lesson groups.
 	 * Pagination totals count lessons, not individual notes.
 	 *
 	 * @return array{notes:array,total_rows:int,page:int,per_page:int}
 	 * @throws Exception
 	 */
 	public function get_course_notes( int $viewer_id, int $owner_id, int $course_id, int $page = 1 ): array {
-		if ( $owner_id < 0
-			|| ( 0 === $owner_id && ! $this->can_manage_course( $viewer_id, $course_id ) )
+		if ( $viewer_id <= 0 || $owner_id !== $viewer_id
 			|| ! $this->can_view( $viewer_id, $owner_id, $course_id ) ) {
 			throw new Exception( __( 'You do not have permission to view these notes.', 'learnpress' ) );
 		}
@@ -274,7 +271,7 @@ class NoteService {
 		}
 
 		$filter              = new NoteFilter();
-		$filter->user_id     = $owner_id > 0 ? $owner_id : null;
+		$filter->user_id     = $viewer_id;
 		$filter->course_id   = $course_id;
 		$filter->page        = max( 1, $page );
 		$filter->limit       = 10;
@@ -288,7 +285,7 @@ class NoteService {
 		$rows    = array();
 		if ( $lessons ) {
 			$notes_filter                  = new NoteFilter();
-			$notes_filter->user_id         = $owner_id > 0 ? $owner_id : null;
+			$notes_filter->user_id         = $viewer_id;
 			$notes_filter->course_id       = $course_id;
 			$notes_filter->limit           = -1;
 			$notes_filter->join_details    = true;
@@ -303,9 +300,6 @@ class NoteService {
 			$data               = $this->to_response( $note );
 			$data['can_manage'] = $this->can_manage( $viewer_id, $note );
 			$data['item_title'] = (string) ( $row->item_title ?? '' );
-			if ( 0 === $owner_id ) {
-				$data['student_name'] = (string) ( $row->display_name ?? '#' . $row->user_id );
-			}
 			$notes[] = $data;
 		}
 

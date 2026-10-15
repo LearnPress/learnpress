@@ -6,8 +6,7 @@
  * - Sidebar content is a template; wp_footer renders the selection button and JS data.
  *
  * Modes:
- * - edit:     the enrolled student manages their own notes.
- * - manage:   admin / course instructor edits or deletes existing student notes.
+ * - edit:     the current user manages their own notes.
  * - readonly: reserved for integrations that allow viewing without management.
  *
  * @since 4.4.9.2
@@ -120,18 +119,12 @@ class CourseNoteTemplate {
 		$item_type = (string) $item->get_item_type();
 
 		$can_create = $service->can_create( $viewer_id, $course_id, $item_id, $item_type );
-		if ( $service->can_manage_course( $viewer_id, $course_id ) ) {
-			// Admin / course instructor: manage all students' notes and still take their own.
-			$owner_id = 0;
-			$mode     = self::MODE_MANAGE;
-		} else {
-			if ( ! $can_create ) {
-				return false;
-			}
-
-			$owner_id = $viewer_id;
-			$mode     = self::MODE_EDIT;
+		if ( ! $can_create ) {
+			return false;
 		}
+
+		$owner_id = $viewer_id;
+		$mode     = self::MODE_EDIT;
 
 		$notes = $service->get_lesson_notes( $viewer_id, $course_id, $item_id, $item_type );
 
@@ -337,8 +330,8 @@ class CourseNoteTemplate {
 			$service   = NoteService::instance();
 			$viewer_id = get_current_user_id();
 			$course_id = absint( $args['course_id'] ?? 0 );
-			// Students always see their own notes; instructors/admins see the course.
-			$owner_id          = $service->can_manage_course( $viewer_id, $course_id ) ? 0 : $viewer_id;
+			// Frontend notes always belong to the signed-in user, regardless of role.
+			$owner_id          = $viewer_id;
 			$data              = $service->get_course_notes( $viewer_id, $owner_id, $course_id, max( 1, (int) ( $args['paged'] ?? 1 ) ) );
 			$cards             = self::html_course_note_groups( $data['notes'] );
 			$response->content = $cards
@@ -375,7 +368,6 @@ class CourseNoteTemplate {
 					array(
 						'wrapper' => '<article class="lp-notes__card" data-note-id="' . absint( $note['note_id'] ) . '" data-note-type="' . esc_attr( $note['note_type'] ) . '">',
 						'header'  => '<div class="lp-notes__card-meta"><span class="lp-notes__type ' . ( $highlight ? 'is-highlight' : 'is-text' ) . '">' . esc_html( $highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) ) . '</span><span class="lp-notes__card-date">' . esc_html( $note['created_at_display'] ) . '</span></div>',
-						'student' => ! empty( $note['student_name'] ) ? '<p class="lp-notes__card-student">' . esc_html( $note['student_name'] ) . '</p>' : '',
 						'quote'   => $highlight ? '<blockquote class="lp-notes__card-quote">' . esc_html( $note['highlight_text'] ) . '</blockquote>' : '',
 						'content' => '<p class="lp-notes__card-content">' . esc_html( $note['content'] ) . '</p>',
 						'actions' => ! empty( $note['can_manage'] ) ? self::html_card_actions() : '',
@@ -535,7 +527,6 @@ class CourseNoteTemplate {
 			array(
 				'wrapper'     => '<template class="lp-notes__card-template"><article class="lp-notes__card" tabindex="-1">',
 				'meta'        => '<time class="lp-notes__card-date"></time>',
-				'student'     => '<p class="lp-notes__card-student" hidden></p>',
 				'quote'       => '<blockquote class="lp-notes__card-quote" hidden></blockquote>',
 				'orphaned'    => '<p class="lp-notes__card-orphaned" hidden></p>',
 				'content'     => '<p class="lp-notes__card-content"></p>',

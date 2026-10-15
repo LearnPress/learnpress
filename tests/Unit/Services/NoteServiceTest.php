@@ -363,10 +363,19 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 		$this->service->get_course_notes( self::OTHER, self::STUDENT, self::COURSE );
 	}
 
-	public function test_course_instructor_can_review_students_course_notes(): void {
-		$data = $this->service->get_course_notes( self::INSTRUCTOR, self::STUDENT, self::COURSE, 0 );
-		$this->assertSame( [], $data['notes'] );
-		$this->assertSame( 1, $data['page'] );
+	public function test_staff_cannot_request_another_users_frontend_course_notes(): void {
+		foreach ( [ self::ADMIN, self::INSTRUCTOR ] as $viewer ) {
+			foreach ( [ 0, self::STUDENT ] as $owner ) {
+				try {
+					$this->service->get_course_notes( $viewer, $owner, self::COURSE );
+					$this->fail( 'Frontend course notes must be restricted to the viewer.' );
+				} catch ( Exception $e ) {
+					$this->assertSame( 'You do not have permission to view these notes.', $e->getMessage() );
+					$this->assertNull( $this->service->course_note_filter );
+					$this->assertNull( $this->service->course_notes_detail_filter );
+				}
+			}
+		}
 	}
 
 	public function test_course_notes_reject_unknown_course(): void {
@@ -528,7 +537,7 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 		$this->assertFalse( $this->service->can_manage( 0, $note ) );
 	}
 
-	public function test_admin_and_course_instructor_see_all_lesson_owners_in_the_correct_course(): void {
+	public function test_admin_and_course_instructor_only_query_own_lesson_notes(): void {
 		Functions\when( 'get_option' )->justReturn( 'Y-m-d' );
 		Functions\when( 'wp_date' )->justReturn( '2026-10-13' );
 		$this->service->course_note_rows = [
@@ -538,12 +547,12 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 		foreach ( [ self::ADMIN, self::INSTRUCTOR ] as $viewer ) {
 			$notes = $this->service->get_lesson_notes( $viewer, self::COURSE, self::LESSON );
 			$filter = $this->service->course_notes_detail_filter;
-			$this->assertNull( $filter->user_id );
+			$this->assertSame( $viewer, $filter->user_id );
 			$this->assertSame( self::COURSE, $filter->course_id );
 			$this->assertSame( self::LESSON, $filter->item_id );
 			$this->assertSame( LP_LESSON_CPT, $filter->item_type );
-			$this->assertTrue( $filter->join_details );
-			$this->assertSame( [ 'Student A', 'Student B' ], array_column( $notes, 'student_name' ) );
+			$this->assertFalse( $filter->join_details );
+			$this->assertSame( [], array_column( $notes, 'student_name' ) );
 		}
 	}
 
@@ -572,10 +581,17 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 		}
 	}
 
-	public function test_staff_course_view_does_not_filter_by_student(): void {
+	public function test_staff_course_view_filters_by_current_user(): void {
+		Functions\when( 'get_option' )->justReturn( 'Y-m-d' );
+		Functions\when( 'wp_date' )->justReturn( '2026-10-15' );
 		foreach ( [ self::ADMIN, self::INSTRUCTOR ] as $viewer ) {
-			$this->service->get_course_notes( $viewer, 0, self::COURSE );
-			$this->assertNull( $this->service->course_note_filter->user_id );
+			$this->service->course_note_rows = [
+				(object) [ 'note_id' => 1, 'user_id' => $viewer, 'course_id' => self::COURSE, 'item_id' => self::LESSON, 'content' => 'My note' ],
+			];
+			$data = $this->service->get_course_notes( $viewer, $viewer, self::COURSE );
+			$this->assertSame( $viewer, $this->service->course_note_filter->user_id );
+			$this->assertSame( $viewer, $this->service->course_notes_detail_filter->user_id );
+			$this->assertArrayNotHasKey( 'student_name', $data['notes'][0] );
 			$this->assertSame( self::COURSE, $this->service->course_note_filter->course_id );
 		}
 	}
