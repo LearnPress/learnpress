@@ -72,7 +72,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'select_user' => esc_html__( 'Select users', 'learnpress' ),
 				),
 				'current_screen'           => $screen ? $screen->id : '',
-				'show_search_author_field' => empty( $html_search_author_field ) ? 0 : $html_search_author_field,
+				'show_search_author_field' => empty( $html_search_author_field ) ? '0' : $html_search_author_field,
 				'toast'                    => array(
 					'gravity'     => 'bottom',
 					'position'    => 'center',
