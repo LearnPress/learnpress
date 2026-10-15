@@ -46,7 +46,7 @@ class CourseNoteAccessTest extends BrainMonkeyTestCase {
 		return ( new ReflectionClass( LessonAccessTemplateStub::class ) )->newInstanceWithoutConstructor();
 	}
 
-	public function test_admin_and_course_instructor_resolve_to_all_owners_including_when_enrolled(): void {
+	public function test_admin_and_course_instructor_resolve_to_all_owners_and_can_create(): void {
 		foreach ( [ 1, 7 ] as $viewer ) {
 			$this->viewer = $viewer;
 			$template = $this->template();
@@ -56,7 +56,8 @@ class CourseNoteAccessTest extends BrainMonkeyTestCase {
 			$this->assertCount( 2, $state['notes'] );
 			$this->assertSame( [ $viewer, 10, 20, LP_LESSON_CPT ], $this->service->request );
 			$this->assertTrue( $template->js_data( $state )['canEdit'] );
-			$this->assertFalse( $template->js_data( $state )['canCreate'] );
+			$this->assertTrue( $state['can_create'] );
+			$this->assertTrue( $template->js_data( $state )['canCreate'] );
 		}
 	}
 
@@ -103,7 +104,7 @@ class LessonAccessServiceStub extends NoteService {
 	}
 
 	public function can_create( int $viewer_id, int $course_id, int $item_id, string $item_type = LP_LESSON_CPT ): bool {
-		return 10 === $course_id && in_array( $viewer_id, [ 5, 7 ], true );
+		return 10 === $course_id && in_array( $viewer_id, [ 1, 5, 7 ], true );
 	}
 
 	public function get_lesson_notes( int $viewer_id, int $course_id, int $item_id, string $item_type = LP_LESSON_CPT ): array {

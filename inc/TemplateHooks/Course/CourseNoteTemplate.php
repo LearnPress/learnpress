@@ -119,11 +119,12 @@ class CourseNoteTemplate {
 		$item_id   = absint( $item->get_id() );
 		$item_type = (string) $item->get_item_type();
 
+		$can_create = $service->can_create( $viewer_id, $course_id, $item_id, $item_type );
 		if ( $service->can_manage_course( $viewer_id, $course_id ) ) {
+			// Admin / course instructor: manage all students' notes and still take their own.
 			$owner_id = 0;
 			$mode     = self::MODE_MANAGE;
 		} else {
-			$can_create = $service->can_create( $viewer_id, $course_id, $item_id, $item_type );
 			if ( ! $can_create ) {
 				return false;
 			}
@@ -135,13 +136,25 @@ class CourseNoteTemplate {
 		$notes = $service->get_lesson_notes( $viewer_id, $course_id, $item_id, $item_type );
 
 		return array(
-			'mode'      => $mode,
-			'owner_id'  => $owner_id,
-			'course_id' => $course_id,
-			'item_id'   => $item_id,
-			'item_type' => $item_type,
-			'notes'     => $notes,
+			'mode'       => $mode,
+			'can_create' => $can_create,
+			'owner_id'   => $owner_id,
+			'course_id'  => $course_id,
+			'item_id'    => $item_id,
+			'item_type'  => $item_type,
+			'notes'      => $notes,
 		);
+	}
+
+	/**
+	 * Check the viewer can add new notes in this render state.
+	 *
+	 * @param array $render_state Render state.
+	 *
+	 * @return bool
+	 */
+	protected function can_create_notes( array $render_state ): bool {
+		return self::MODE_EDIT === $render_state['mode'] || ! empty( $render_state['can_create'] );
 	}
 
 	/**
@@ -156,7 +169,7 @@ class CourseNoteTemplate {
 			'learn-press/course-notes/js-data',
 			array(
 				'canEdit'         => in_array( $render_state['mode'], array( self::MODE_EDIT, self::MODE_MANAGE ), true ),
-				'canCreate'       => self::MODE_EDIT === $render_state['mode'],
+				'canCreate'       => $this->can_create_notes( $render_state ),
 				'courseId'        => $render_state['course_id'],
 				'itemId'          => $render_state['item_id'],
 				'itemType'        => $render_state['item_type'],
@@ -221,7 +234,7 @@ class CourseNoteTemplate {
 	 * @return string
 	 */
 	public function html_widget( array $render_state ): string {
-		$is_edit = self::MODE_EDIT === $render_state['mode'];
+		$can_create = $this->can_create_notes( $render_state );
 
 		$section = apply_filters(
 			'learn-press/course-notes/html-widget',
@@ -230,7 +243,7 @@ class CourseNoteTemplate {
 					'<div id="lp-notes" class="lp-notes lp-notes--%s">',
 					esc_attr( $render_state['mode'] )
 				),
-				'selection_btn' => $is_edit ? $this->html_selection_button() : '',
+				'selection_btn' => $can_create ? $this->html_selection_button() : '',
 				'all_notes'     => '<template class="lp-notes__all-template"><div class="lp-notes__all">' . TemplateAJAX::load_content_via_ajax(
 					array(
 						'course_id'             => $render_state['course_id'],
@@ -262,8 +275,9 @@ class CourseNoteTemplate {
 	public function html_learning_bar_template( array $render_state ): string {
 		$is_edit    = self::MODE_EDIT === $render_state['mode'];
 		$can_manage = $is_edit || self::MODE_MANAGE === $render_state['mode'];
+		$can_create = $this->can_create_notes( $render_state );
 
-		$body = $is_edit
+		$body = $can_create
 			? $this->html_help() . $this->html_add_button() . $this->html_form()
 			: ( $can_manage ? $this->html_form() : $this->html_readonly_notice( $render_state['owner_id'] ) );
 
@@ -274,7 +288,7 @@ class CourseNoteTemplate {
 				'header'      => $this->html_header(),
 				'body'        => '<div id="lp-notes-content" class="lp-learning-bar-item-content lp-notes__body">',
 				'content'     => $body,
-				'list'        => $this->html_list( $is_edit ),
+				'list'        => $this->html_list( $can_create ),
 				'cards'       => $this->html_card_template( $can_manage ),
 				'body_end'    => '</div>',
 				'wrapper_end' => '</template>',

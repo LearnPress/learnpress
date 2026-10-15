@@ -209,8 +209,19 @@ class NoteServiceTest extends BrainMonkeyTestCase {
 
 	public function test_not_enrolled_user_cannot_create(): void {
 		$this->assertFalse( $this->service->can_create( self::OTHER, self::COURSE, self::LESSON ) );
-		// No user course row at all (e.g. instructor / admin).
-		$this->assertFalse( $this->service->can_create( self::INSTRUCTOR, self::COURSE, self::LESSON ) );
+		// No user course row at all, and not staff of this course.
+		$this->assertFalse( $this->service->can_create( 8, self::COURSE, self::LESSON ) );
+	}
+
+	public function test_admin_and_course_instructor_can_create_without_enrolling(): void {
+		$this->assertTrue( $this->service->can_create( self::ADMIN, self::COURSE, self::LESSON ) );
+		$this->assertTrue( $this->service->can_create( self::INSTRUCTOR, self::COURSE, self::LESSON ) );
+		// Still limited to lessons of the course.
+		$this->assertFalse( $this->service->can_create( self::INSTRUCTOR, self::COURSE, 404 ) );
+		$this->assertFalse( $this->service->can_create( self::ADMIN, self::COURSE, self::LESSON, 'lp_quiz' ) );
+
+		$note = $this->service->save_note( self::INSTRUCTOR, [ 'course_id' => self::COURSE, 'item_id' => self::LESSON, 'content' => 'Mine' ] );
+		$this->assertSame( self::INSTRUCTOR, $note->user_id );
 	}
 
 	public function test_cannot_create_on_lesson_not_in_course(): void {

@@ -90,6 +90,16 @@ class CourseNoteTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringNotContainsString( 'lp-notes__selection-btn', $template->html_widget( array( 'mode' => CourseNoteTemplate::MODE_MANAGE, 'owner_id' => 0, 'course_id' => 10 ) ) );
 	}
 
+	public function test_manage_mode_with_create_permission_has_add_and_selection_buttons(): void {
+		$state    = array( 'mode' => CourseNoteTemplate::MODE_MANAGE, 'can_create' => true, 'owner_id' => 0, 'course_id' => 10 );
+		$template = $this->template( $state );
+		$html     = $template->register_learning_bar_item( array() )['notes']['html'];
+		$this->assertStringContainsString( 'class="lp-button lp-notes__add"', $html );
+		$this->assertStringContainsString( 'lp-notes__card-edit', $html );
+		$this->assertStringContainsString( 'lp-notes__card-delete', $html );
+		$this->assertStringContainsString( 'lp-notes__selection-btn', $template->html_widget( $state ) );
+	}
+
 	public function test_course_popup_actions_follow_manage_permission(): void {
 		$this->template( false );
 		$note = array( 'note_id' => 1, 'item_id' => 20, 'item_title' => 'Lesson', 'created_at_display' => '', 'note_type' => 'text', 'content' => 'Note', 'can_manage' => false );

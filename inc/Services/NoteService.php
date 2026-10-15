@@ -594,6 +594,11 @@ class NoteService {
 			return __( 'This item does not belong to the course.', 'learnpress' );
 		}
 
+		// Admin / course instructor can take notes on the course without enrolling.
+		if ( $this->can_manage_course( $user_id, $course_id ) ) {
+			return '';
+		}
+
 		$user_course = $this->find_user_course( $user_id, $course_id );
 		if ( ! $user_course || ! $user_course->has_enrolled_or_finished() ) {
 			return __( 'You must enroll in this course to add notes.', 'learnpress' );
