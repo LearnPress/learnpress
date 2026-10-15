@@ -5,9 +5,7 @@
  * - Notes item registered in the shared learning sidebar.
  * - Sidebar content is a template; wp_footer renders the selection button and JS data.
  *
- * Modes:
- * - edit:     the current user manages their own notes.
- * - readonly: reserved for integrations that allow viewing without management.
+ * The current user manages only their own notes.
  *
  * @since 4.4.9.2
  * @version 1.0.0
@@ -19,7 +17,6 @@ use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Note\NoteModel;
-use LearnPress\Models\UserModel;
 use LearnPress\Services\NoteService;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Global;
@@ -32,9 +29,7 @@ defined( 'ABSPATH' ) || exit;
 class CourseNoteTemplate {
 	use Singleton;
 
-	const MODE_EDIT     = 'edit';
-	const MODE_READONLY = 'readonly';
-	const MODE_MANAGE   = 'manage';
+	const MODE_EDIT = 'edit';
 
 	/**
 	 * Cached render state for the current request.
@@ -147,7 +142,7 @@ class CourseNoteTemplate {
 	 * @return bool
 	 */
 	protected function can_create_notes( array $render_state ): bool {
-		return self::MODE_EDIT === $render_state['mode'] || ! empty( $render_state['can_create'] );
+		return ! empty( $render_state['can_create'] );
 	}
 
 	/**
@@ -161,7 +156,7 @@ class CourseNoteTemplate {
 		return apply_filters(
 			'learn-press/course-notes/js-data',
 			array(
-				'canEdit'         => in_array( $render_state['mode'], array( self::MODE_EDIT, self::MODE_MANAGE ), true ),
+				'canEdit'         => self::MODE_EDIT === $render_state['mode'],
 				'canCreate'       => $this->can_create_notes( $render_state ),
 				'courseId'        => $render_state['course_id'],
 				'itemId'          => $render_state['item_id'],
@@ -267,12 +262,11 @@ class CourseNoteTemplate {
 	 */
 	public function html_learning_bar_template( array $render_state ): string {
 		$is_edit    = self::MODE_EDIT === $render_state['mode'];
-		$can_manage = $is_edit || self::MODE_MANAGE === $render_state['mode'];
 		$can_create = $this->can_create_notes( $render_state );
 
 		$body = $can_create
 			? $this->html_help() . $this->html_add_button() . $this->html_form()
-			: ( $can_manage ? $this->html_form() : $this->html_readonly_notice( $render_state['owner_id'] ) );
+			: $this->html_form();
 
 		$section = apply_filters(
 			'learn-press/course-notes/html-panel',
@@ -281,8 +275,8 @@ class CourseNoteTemplate {
 				'header'      => $this->html_header(),
 				'body'        => '<div id="lp-notes-content" class="lp-learning-bar-item-content lp-notes__body">',
 				'content'     => $body,
-				'list'        => $this->html_list( $can_create ),
-				'cards'       => $this->html_card_template( $can_manage ),
+				'list'        => $this->html_list(),
+				'cards'       => $this->html_card_template( $is_edit ),
 				'body_end'    => '</div>',
 				'wrapper_end' => '</template>',
 			),
@@ -450,37 +444,12 @@ class CourseNoteTemplate {
 	}
 
 	/**
-	 * Notice shown to admin / instructor viewing a student's notes.
-	 *
-	 * @param int $owner_id Student ID.
-	 *
-	 * @return string
-	 */
-	public function html_readonly_notice( int $owner_id ): string {
-		$user = UserModel::find( $owner_id, true );
-		$name = $user ? $user->get_display_name() : '#' . $owner_id;
-
-		return sprintf(
-			'<div class="learn-press-message info lp-notes__readonly">%s</div>',
-			sprintf(
-				/* translators: %s: student name */
-				esc_html__( 'You are viewing the notes of %s (read only).', 'learnpress' ),
-				'<strong>' . esc_html( $name ) . '</strong>'
-			)
-		);
-	}
-
-	/**
 	 * Notes list container, filled by JS.
 	 *
-	 * @param bool $is_edit Edit mode.
-	 *
 	 * @return string
 	 */
-	public function html_list( bool $is_edit ): string {
-		$empty = $is_edit
-			? __( 'No notes yet. Add your first note for this lesson.', 'learnpress' )
-			: __( 'This student has no notes for this lesson.', 'learnpress' );
+	public function html_list(): string {
+		$empty = __( 'No notes yet. Add your first note for this lesson.', 'learnpress' );
 
 		return sprintf(
 			'<div id="lp-notes-list" class="lp-notes__list" aria-live="polite"></div><button type="button" class="lp-button lp-notes__show-more" aria-controls="lp-notes-list" hidden>%1$s</button><p class="lp-notes__empty" hidden>%2$s</p>',

@@ -498,10 +498,6 @@ export class CourseNotes {
 
 		const date = set( '.lp-notes__card-date', note.created_at_display );
 		date?.setAttribute( 'datetime', `${ String( note.created_at ).replace( ' ', 'T' ) }Z` );
-		const student = set( '.lp-notes__card-student', note.student_name );
-		if ( student ) {
-			student.hidden = ! note.student_name;
-		}
 		set( '.lp-notes__card-content', note.content );
 
 		const quote = set( '.lp-notes__card-quote', isHighlight ? note.highlight_text : '' );

@@ -14,7 +14,7 @@ class CourseNoteTemplateTest extends BrainMonkeyTestCase {
 		Functions\when( 'apply_filters' )->returnArg( 2 );
 		Functions\when( 'htmlentities2' )->returnArg();
 		Functions\when( 'lp_skeleton_animation_html' )->alias( static function () { echo 'Loading'; } );
-		$reflection = new ReflectionClass( CourseNoteLayoutStub::class );
+		$reflection = new ReflectionClass( CourseNoteTemplate::class );
 		$template   = $reflection->newInstanceWithoutConstructor();
 		$reflection->getProperty( 'render_state_resolved' )->setValue( $template, true );
 		$reflection->getProperty( 'render_state' )->setValue( $template, $state );
@@ -40,7 +40,7 @@ class CourseNoteTemplateTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_editable_notes_use_shared_bar_and_persistent_selection_button(): void {
-		$state    = array( 'mode' => CourseNoteTemplate::MODE_EDIT, 'owner_id' => 1, 'course_id' => 10 );
+		$state    = array( 'mode' => CourseNoteTemplate::MODE_EDIT, 'can_create' => true, 'owner_id' => 1, 'course_id' => 10 );
 		$template = $this->template( $state );
 		$items    = $template->register_learning_bar_item( array() );
 		$html     = $items['notes']['html'];
@@ -80,26 +80,6 @@ class CourseNoteTemplateTest extends BrainMonkeyTestCase {
 		$this->assertTrue( strpos( $html, 'Lesson B' ) > strrpos( $html, 'is-text' ) );
 	}
 
-	public function test_manage_mode_has_edit_delete_without_creating_student_notes(): void {
-		$template = $this->template( array( 'mode' => CourseNoteTemplate::MODE_MANAGE, 'owner_id' => 0, 'course_id' => 10 ) );
-		$html = $template->register_learning_bar_item( array() )['notes']['html'];
-		$this->assertStringContainsString( 'lp-notes__form', $html );
-		$this->assertStringContainsString( 'lp-notes__card-edit', $html );
-		$this->assertStringContainsString( 'lp-notes__card-delete', $html );
-		$this->assertStringNotContainsString( 'lp-notes__add', $html );
-		$this->assertStringNotContainsString( 'lp-notes__selection-btn', $template->html_widget( array( 'mode' => CourseNoteTemplate::MODE_MANAGE, 'owner_id' => 0, 'course_id' => 10 ) ) );
-	}
-
-	public function test_manage_mode_with_create_permission_has_add_and_selection_buttons(): void {
-		$state    = array( 'mode' => CourseNoteTemplate::MODE_MANAGE, 'can_create' => true, 'owner_id' => 0, 'course_id' => 10 );
-		$template = $this->template( $state );
-		$html     = $template->register_learning_bar_item( array() )['notes']['html'];
-		$this->assertStringContainsString( 'class="lp-button lp-notes__add"', $html );
-		$this->assertStringContainsString( 'lp-notes__card-edit', $html );
-		$this->assertStringContainsString( 'lp-notes__card-delete', $html );
-		$this->assertStringContainsString( 'lp-notes__selection-btn', $template->html_widget( $state ) );
-	}
-
 	public function test_course_popup_actions_follow_manage_permission(): void {
 		$this->template( false );
 		$note = array( 'note_id' => 1, 'item_id' => 20, 'item_title' => 'Lesson', 'created_at_display' => '', 'note_type' => 'text', 'content' => 'Note', 'can_manage' => false );
@@ -115,22 +95,4 @@ class CourseNoteTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringNotContainsString( '<script>', $html );
 	}
 
-	public function test_readonly_notes_have_no_edit_or_selection_controls(): void {
-		$state    = array( 'mode' => CourseNoteTemplate::MODE_READONLY, 'owner_id' => 1, 'course_id' => 10 );
-		$template = $this->template( $state );
-		$html = $template->register_learning_bar_item( array() )['notes']['html'];
-
-		$this->assertStringContainsString( 'lp-notes__readonly', $html );
-		$this->assertStringContainsString( 'lp-notes__list', $html );
-		$this->assertStringNotContainsString( 'lp-notes__form', $html );
-		$this->assertStringNotContainsString( 'lp-notes__card-edit', $html );
-		$this->assertStringNotContainsString( 'lp-notes__card-delete', $html );
-		$this->assertStringNotContainsString( 'lp-notes__selection-btn', $template->html_widget( $state ) );
-	}
-}
-
-class CourseNoteLayoutStub extends CourseNoteTemplate {
-	public function html_readonly_notice( int $owner_id ): string {
-		return '<div class="lp-notes__readonly">Read only</div>';
-	}
 }
