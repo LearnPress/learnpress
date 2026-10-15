@@ -2,6 +2,7 @@
 
 namespace LearnPress\TemplateHooks\Admin;
 
+use LearnPress\Cache\LPSettingsCache;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
@@ -10,7 +11,6 @@ use LP_Helper;
 use LP_Request;
 use LP_Settings_Addons;
 use LP_Settings_Advanced;
-use LP_Settings_Cache;
 use LP_Settings_Courses;
 
 defined( 'ABSPATH' ) || exit();
@@ -378,7 +378,7 @@ class AdminSettingsPage {
 		do_action( 'learn-press/update-settings/updated' );
 
 		// Clear cache settings.
-		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_settings_cache = new LPSettingsCache( true );
 		$lp_settings_cache->clean_lp_settings();
 
 		// Flush rewrite rules after save settings.

@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+use LearnPress\Cache\LPSettingsCache;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\UserModel;
@@ -311,7 +312,7 @@ abstract class LP_Abstract_Post_Type {
 			// Todo: check is pages of LP
 			if ( 'page' === get_post_type( $post_id ) ) {
 				// Clear cache LP settings
-				$lp_settings_cache = new LP_Settings_Cache( true );
+				$lp_settings_cache = new LPSettingsCache( true );
 				$lp_settings_cache->clean_lp_settings();
 			}
 

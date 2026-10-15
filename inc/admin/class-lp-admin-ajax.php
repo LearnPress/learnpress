@@ -12,6 +12,7 @@
  * Prevent loading this file directly
  */
 
+use LearnPress\Cache\LPSettingsCache;
 use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
@@ -304,7 +305,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$response[ $payment->id ] = $payment->enable( $status == 'yes' );
 
-			$lp_settings_cache = new LP_Settings_Cache( true );
+			$lp_settings_cache = new LPSettingsCache( true );
 			$lp_settings_cache->clean_lp_settings();
 
 			learn_press_send_json( $response );
@@ -345,7 +346,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 			}
 
-			$lp_settings_cache = new LP_Settings_Cache( true );
+			$lp_settings_cache = new LPSettingsCache( true );
 			$lp_settings_cache->clean_lp_settings();
 
 			learn_press_send_json( $response );

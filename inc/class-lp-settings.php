@@ -7,6 +7,7 @@
  * @version 1.0.2
  */
 
+use LearnPress\Cache\LPSettingsCache;
 use LearnPress\Databases\DataBase;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -46,7 +47,7 @@ class LP_Settings {
 				$this->_options = $data;
 			}
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 	}
 
@@ -71,7 +72,7 @@ class LP_Settings {
 	 */
 	protected function _load_options() {
 		// Check cache exists
-		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_settings_cache = new LPSettingsCache( true );
 		$lp_options        = $lp_settings_cache->get_lp_settings();
 		if ( false !== $lp_options ) {
 			$this->_options = $lp_options;
@@ -83,8 +84,9 @@ class LP_Settings {
 		$query = $wpdb->prepare(
 			"SELECT option_name, option_value
 			FROM {$wpdb->options}
-			WHERE option_name LIKE %s",
-			$wpdb->esc_like( $this->_prefix ) . '%'
+			WHERE option_name LIKE %s OR option_name LIKE %s",
+			$wpdb->esc_like( $this->_prefix ) . '%',
+			$wpdb->esc_like( 'lp_' ) . '%'
 		);
 
 		$options = $wpdb->get_results( $query );
@@ -94,7 +96,7 @@ class LP_Settings {
 			}
 
 			// Set cache
-			$lp_settings_cache->set_lp_settings( json_encode( $this->_options ) );
+			$lp_settings_cache->set_lp_settings( $this->_options );
 		}
 	}
 
@@ -217,7 +219,7 @@ class LP_Settings {
 	 */
 	public static function update_option( $name, $value, $prefix = 'learn_press_' ) {
 		update_option( "{$prefix}{$name}", $value );
-		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_settings_cache = new LPSettingsCache( true );
 		$lp_settings_cache->clean_lp_settings();
 	}
 

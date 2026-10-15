@@ -11,13 +11,13 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\Cache\LPSettingsCache;
 use LearnPress\Helpers\Response;
 use LearnPress\Models\UserModel;
 use LearnPress\Services\SetupDemoCourseService;
 use LP_Emails;
 use LP_Helper;
 use LP_Request;
-use LP_Settings_Cache;
 use LP_Setup_Wizard;
 use Throwable;
 
@@ -64,7 +64,7 @@ class SetupWizardAjax extends AbstractAjax {
 					break;
 			}
 
-			( new LP_Settings_Cache( true ) )->clean_lp_settings();
+			( new LPSettingsCache( true ) )->clean_lp_settings();
 			do_action( 'learn-press/setup-wizard/update-settings', $settings, $step );
 
 			$response->status  = Response::STATUS_SUCCESS;
