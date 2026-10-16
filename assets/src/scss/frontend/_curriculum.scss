@@ -567,6 +567,7 @@ body {
 			font-weight: 600;
 			font-size: 1em;
 			line-height: 1.5em;
+			flex: 1; 
 		}
 
 		&__description {
@@ -739,6 +740,14 @@ body {
 			margin-bottom: 8px;
  			.course-item,.course-section-header {
 				padding: 12px 15px;
+			}
+			// &__title {
+			// 	flex: auto;
+				
+			// }
+			.course-section-info{
+				flex-direction: column;
+				align-items: flex-start;
 			}
 		}
 	}
