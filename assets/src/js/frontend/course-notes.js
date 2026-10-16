@@ -496,8 +496,6 @@ export class CourseNotes {
 			el.disabled = this.isSaving;
 		} );
 
-		const date = set( '.lp-notes__card-date', note.created_at_display );
-		date?.setAttribute( 'datetime', `${ String( note.created_at ).replace( ' ', 'T' ) }Z` );
 		set( '.lp-notes__card-content', note.content );
 
 		const quote = set( '.lp-notes__card-quote', isHighlight ? note.highlight_text : '' );

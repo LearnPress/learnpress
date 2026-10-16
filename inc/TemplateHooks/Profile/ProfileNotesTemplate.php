@@ -126,7 +126,7 @@ class ProfileNotesTemplate {
 				array(
 					'wrapper' => '<article class="lp-notes__card">',
 					'context' => '<div class="lp-profile-notes__context">' . $course_html . '<span aria-hidden="true"> / </span>' . $item_html . '</div>',
-					'meta'    => '<div class="lp-notes__card-meta"><span class="lp-notes__type ' . ( $highlight ? 'is-highlight' : 'is-text' ) . '">' . esc_html( $highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) ) . '</span><span class="lp-notes__card-date">' . esc_html( $note['created_at_display'] ) . '</span></div>',
+					'meta'    => '<div class="lp-notes__card-meta"><span class="lp-notes__card-date">' . esc_html( $note['created_at_display'] ) . '</span></div>',
 					'quote'   => $highlight ? '<blockquote class="lp-notes__card-quote">' . esc_html( $note['highlight_text'] ) . '</blockquote>' : '',
 					'content' => '<p class="lp-notes__card-content">' . esc_html( $note['content'] ) . '</p>',
 					'end'     => '</article>',

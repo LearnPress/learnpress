@@ -91,7 +91,6 @@ mark.lp-note-hl {
 		max-height: 60vh;
 		overflow-y: auto;
 		padding: $spacing-base-4x;
-		background: $bg-grey;
 	}
 
 	.lp-notes__lesson {
@@ -113,7 +112,7 @@ mark.lp-note-hl {
 		font-size: inherit;
 		font-weight: $link-font-weight;
 		cursor: pointer;
-		border: 1px solid transparent;
+		background: $bg-grey;
 		overflow-wrap: anywhere;
 
 		&::-webkit-details-marker {
@@ -122,8 +121,6 @@ mark.lp-note-hl {
 	}
 
 	.lp-notes__lesson[open] > .lp-notes__lesson-title {
-		border-color: $color-primary;
-
 		.lp-icon-angle-down {
 			transform: rotate(180deg);
 		}
@@ -139,7 +136,7 @@ mark.lp-note-hl {
 	.lp-notes__card-meta {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: flex-end;
 		gap: $spacing-base-2x;
 		flex-wrap: wrap;
 	}
@@ -147,20 +144,6 @@ mark.lp-note-hl {
 	.lp-notes__card-date {
 		color: $text-color-meta;
 		font-size: $font-size-label;
-	}
-
-	.lp-notes__type {
-		padding: $spacing-base $spacing-base-2x;
-		border: 1px solid currentColor;
-		border-radius: $spacing-base-5x;
-		font-size: $font-size-label;
-		line-height: 1;
-		color: $color-price;
-		background: color-mix(in srgb, currentColor 8%, transparent);
-
-		&.is-highlight {
-			color: $color-primary;
-		}
 	}
 
 	.lp-notes__card-quote {
@@ -218,8 +201,12 @@ mark.lp-note-hl {
 	right: $spacing-base-2x;
 }
 
-.lp-notes__add {
+.lp-button.lp-notes__add {
 	width: 100%;
+	min-height: 37px;
+	padding: $spacing-base-2x $spacing-base-3x;
+	font-size: $font-size-small;
+	line-height: 19px;
 }
 
 .lp-notes__form {
@@ -247,6 +234,23 @@ mark.lp-note-hl {
 	justify-content: flex-end;
 	gap: $spacing-base-2x;
 	flex-wrap: wrap;
+}
+
+.lp-notes__card-actions .lp-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	min-height: 32px;
+	margin: 0;
+	padding: 0;
+	font-size: 16px;
+	line-height: 1;
+
+	&:focus-visible {
+		outline: 2px solid $color-primary;
+		outline-offset: 2px;
+	}
 }
 
 .lp-notes__form-quote,

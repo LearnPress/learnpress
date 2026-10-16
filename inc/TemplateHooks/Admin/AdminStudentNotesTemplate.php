@@ -61,12 +61,9 @@ class AdminStudentNotesTemplate {
 	 * @return array
 	 */
 	public function get_request_args(): array {
-		$type = LP_Request::get_param( 'note_type', '', 'key', 'get' );
-
 		return array(
 			'student'   => absint( LP_Request::get_param( 'student', 0, 'int', 'get' ) ),
 			'course'    => absint( LP_Request::get_param( 'course', 0, 'int', 'get' ) ),
-			'note_type' => in_array( $type, array( NoteModel::TYPE_TEXT, NoteModel::TYPE_HIGHLIGHT ), true ) ? $type : '',
 			's'         => trim( LP_Request::get_param( 's', '', 'text', 'get' ) ),
 			'paged'     => max( 1, absint( LP_Request::get_param( 'paged', 1, 'int', 'get' ) ) ),
 		);
@@ -85,7 +82,6 @@ class AdminStudentNotesTemplate {
 			array(
 				'student'   => $args['student'] ?? 0,
 				'course'    => $args['course'] ?? 0,
-				'note_type' => $args['note_type'] ?? '',
 				's'         => $args['s'] ?? '',
 			),
 			$change
@@ -190,12 +186,6 @@ class AdminStudentNotesTemplate {
 			$course_options[ (string) $course->ID ] = $course->post_title ? $course->post_title : '#' . $course->ID;
 		}
 
-		$type_options = array(
-			''                         => __( 'All types', 'learnpress' ),
-			NoteModel::TYPE_HIGHLIGHT => __( 'Highlight', 'learnpress' ),
-			NoteModel::TYPE_TEXT      => __( 'Text', 'learnpress' ),
-		);
-
 		$field = static function ( string $label, string $input, string $id, string $hint = '' ): string {
 			return sprintf(
 				'<div class="filter-field"><label for="%1$s">%2$s</label>%3$s%4$s</div>',
@@ -232,18 +222,6 @@ class AdminStudentNotesTemplate {
 				),
 				'lp-student-notes-course',
 				__( 'Search by course title.', 'learnpress' )
-			)
-			. $field(
-				__( 'Type', 'learnpress' ),
-				AdminTemplate::html_tom_select(
-					array(
-						'id'            => 'lp-student-notes-type',
-						'name'          => 'note_type',
-						'options'       => $type_options,
-						'default_value' => $args['note_type'],
-					)
-				),
-				'lp-student-notes-type'
 			)
 			. $field(
 				__( 'Search', 'learnpress' ),
@@ -296,7 +274,6 @@ class AdminStudentNotesTemplate {
 			'student' => __( 'Student', 'learnpress' ),
 			'course'  => __( 'Course', 'learnpress' ),
 			'lesson'  => __( 'Lesson', 'learnpress' ),
-			'type'    => __( 'Type', 'learnpress' ),
 			'content' => __( 'Content', 'learnpress' ),
 			'created' => __( 'Created', 'learnpress' ),
 			'actions' => __( 'Actions', 'learnpress' ),
@@ -363,7 +340,6 @@ class AdminStudentNotesTemplate {
 	 */
 	public function html_row( $row ): string {
 		$note         = new NoteModel( $row );
-		$is_highlight = NoteModel::TYPE_HIGHLIGHT === $note->note_type;
 		$course       = CourseModel::find( $note->course_id, true );
 		$item_link    = $course ? $course->get_item_link( $note->item_id, $note->item_type ) : '';
 		$open_link    = $item_link;
@@ -382,12 +358,6 @@ class AdminStudentNotesTemplate {
 			? sprintf( '<a href="%1$s" target="_blank" rel="noopener">%2$s</a>', esc_url( $item_link ), esc_html( $lesson ) )
 			: esc_html( $lesson );
 
-		$type = sprintf(
-			'<span class="lp-student-notes__badge lp-student-notes__badge--%1$s">%2$s</span>',
-			esc_attr( $note->note_type ),
-			esc_html( $is_highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) )
-		);
-
 		$created = $timestamp
 			? sprintf(
 				'<span>%1$s</span><span class="lp-student-notes__time">%2$s</span>',
@@ -405,7 +375,6 @@ class AdminStudentNotesTemplate {
 				'student' => sprintf( '<td class="lp-col-student">%s</td>', $student ),
 				'course'  => sprintf( '<td class="lp-col-course">%s</td>', esc_html( $course_title ) ),
 				'lesson'  => sprintf( '<td class="lp-col-lesson">%s</td>', $lesson ),
-				'type'    => sprintf( '<td class="lp-col-type">%s</td>', $type ),
 				'content' => sprintf(
 					'<td class="lp-col-content">%s</td>',
 					$this->html_content(

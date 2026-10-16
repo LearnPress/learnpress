@@ -77,7 +77,7 @@ class CourseNoteTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringContainsString( '&lt;script&gt;', $html );
 		$this->assertStringContainsString( '&lt;b&gt;Quote&lt;/b&gt;', $html );
 		$this->assertStringNotContainsString( '<script>', $html );
-		$this->assertTrue( strpos( $html, 'Lesson B' ) > strrpos( $html, 'is-text' ) );
+		$this->assertTrue( strpos( $html, 'Lesson B' ) > strpos( $html, 'Lesson A' ) );
 	}
 
 	public function test_course_popup_actions_follow_manage_permission(): void {

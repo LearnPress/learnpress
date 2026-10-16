@@ -361,7 +361,7 @@ class CourseNoteTemplate {
 				$html     .= Template::combine_components(
 					array(
 						'wrapper' => '<article class="lp-notes__card" data-note-id="' . absint( $note['note_id'] ) . '" data-note-type="' . esc_attr( $note['note_type'] ) . '">',
-						'header'  => '<div class="lp-notes__card-meta"><span class="lp-notes__type ' . ( $highlight ? 'is-highlight' : 'is-text' ) . '">' . esc_html( $highlight ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ) ) . '</span><span class="lp-notes__card-date">' . esc_html( $note['created_at_display'] ) . '</span></div>',
+						'header'  => '<div class="lp-notes__card-meta"><span class="lp-notes__card-date">' . esc_html( $note['created_at_display'] ) . '</span></div>',
 						'quote'   => $highlight ? '<blockquote class="lp-notes__card-quote">' . esc_html( $note['highlight_text'] ) . '</blockquote>' : '',
 						'content' => '<p class="lp-notes__card-content">' . esc_html( $note['content'] ) . '</p>',
 						'actions' => ! empty( $note['can_manage'] ) ? self::html_card_actions() : '',
@@ -475,9 +475,9 @@ class CourseNoteTemplate {
 	 */
 	public static function html_card_actions(): string {
 		return sprintf(
-			'<div class="lp-notes__card-actions"><button type="button" class="lp-button lp-notes__card-delete">%1$s</button><button type="button" class="lp-button lp-notes__card-edit">%2$s</button></div>',
-			esc_html__( 'Delete', 'learnpress' ),
-			esc_html__( 'Edit', 'learnpress' )
+			'<div class="lp-notes__card-actions"><button type="button" class="lp-button lp-notes__card-delete" aria-label="%1$s" title="%1$s"><span class="lp-icon-trash-o" aria-hidden="true"></span></button><button type="button" class="lp-button lp-notes__card-edit" aria-label="%2$s" title="%2$s"><span class="lp-icon-edit" aria-hidden="true"></span></button></div>',
+			esc_attr__( 'Delete', 'learnpress' ),
+			esc_attr__( 'Edit', 'learnpress' )
 		);
 	}
 
@@ -495,7 +495,6 @@ class CourseNoteTemplate {
 			'learn-press/course-notes/html-card-template',
 			array(
 				'wrapper'     => '<template class="lp-notes__card-template"><article class="lp-notes__card" tabindex="-1">',
-				'meta'        => '<time class="lp-notes__card-date"></time>',
 				'quote'       => '<blockquote class="lp-notes__card-quote" hidden></blockquote>',
 				'orphaned'    => '<p class="lp-notes__card-orphaned" hidden></p>',
 				'content'     => '<p class="lp-notes__card-content"></p>',

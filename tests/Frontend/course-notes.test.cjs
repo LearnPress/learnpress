@@ -36,7 +36,6 @@ function setup( t ) {
 						<p class="lp-notes__empty" hidden></p>
 						<template class="lp-notes__card-template">
 							<article class="lp-notes__card" tabindex="-1">
-								<time class="lp-notes__card-date"></time>
 								<p class="lp-notes__card-content"></p>
 								<blockquote class="lp-notes__card-quote"></blockquote>
 								<p class="lp-notes__card-orphaned"></p>
