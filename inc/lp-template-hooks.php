@@ -330,11 +330,13 @@ add_action(
  * @see LP_Template_Course::popup_header()
  * @see LP_Template_Course::popup_sidebar()
  * @see LP_Template_Course::popup_content()
+ * @see LP_Template_Course::popup_right_sidebar()
  * @see LP_Template_Course::popup_footer()
  */
 add_action( 'learn-press/single-item-summary', LearnPress::instance()->template( 'course' )->func( 'popup_header' ), 10 );
 add_action( 'learn-press/single-item-summary', LearnPress::instance()->template( 'course' )->func( 'popup_sidebar' ), 20 );
 add_action( 'learn-press/single-item-summary', LearnPress::instance()->template( 'course' )->func( 'popup_content' ), 30 );
+add_action( 'learn-press/single-item-summary', LearnPress::instance()->template( 'course' )->func( 'popup_right_sidebar' ), 35 );
 add_action( 'learn-press/single-item-summary', LearnPress::instance()->template( 'course' )->func( 'popup_footer' ), 40 );
 
 /**

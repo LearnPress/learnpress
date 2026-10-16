@@ -276,12 +276,12 @@ class SingleCourseClassicTemplate {
 
 			if ( ! $can_view_course->flag ) {
 				if ( LP_BLOCK_COURSE_FINISHED === $can_view_course->key ) {
-					learn_press_display_message(
+					Template::print_message(
 						esc_html__( 'You finished this course. This course has been blocked', 'learnpress' ),
 						'warning'
 					);
 				} elseif ( LP_BLOCK_COURSE_DURATION_EXPIRE === $can_view_course->key ) {
-					learn_press_display_message(
+					Template::print_message(
 						esc_html__( 'This course has been blocked for expiration', 'learnpress' ),
 						'warning'
 					);

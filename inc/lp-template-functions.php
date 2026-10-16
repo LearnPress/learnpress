@@ -605,11 +605,7 @@ function learn_press_add_message( $message, $type = 'success', $options = array(
 }
 
 function learn_press_get_message( $message, $type = 'success' ) {
-	ob_start();
-	learn_press_display_message( $message, $type );
-	$message = ob_get_clean();
-
-	return $message;
+	return Template::print_message( $message, $type, false );
 }
 
 /**
@@ -1078,7 +1074,7 @@ if ( ! function_exists( 'learn_press_course_remaining_time' ) ) {
 	function learn_press_course_remaining_time() {
 		$user = learn_press_get_current_user();
 		if ( ! $user->has_finished_course( get_the_ID() ) && $text = learn_press_get_course( get_the_ID() )->get_user_duration_html( $user->get_id() ) ) {
-			learn_press_display_message( $text );
+			Template::print_message( $text );
 		}
 	}
 }

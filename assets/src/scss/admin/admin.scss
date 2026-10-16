@@ -40,6 +40,7 @@
 @import "openai";
 @import "../popupSweetAlert";
 @import "enrolled-students-table";
+@import "student-notes";
 @import "../table";
 @import "../formFilter";
 @import "../fullScreen";
@@ -586,7 +587,7 @@ body {
             width: 100%;
             height: 100%;
             border-radius: 3px;
-            background: var(--lp-primary-color);
+            background: $color-price;
             @include transition(0.5s);
         }
 
@@ -597,7 +598,7 @@ body {
             top: 0;
             width: 100%;
             height: 100%;
-            background: #ccc;
+            background: $bg-grey;
             content: "";
         }
     }

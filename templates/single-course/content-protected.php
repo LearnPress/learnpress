@@ -9,6 +9,8 @@
  * @version  4.0.1
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $can_view_item ) || $can_view_item->flag ) {
@@ -38,4 +40,4 @@ if ( ! is_user_logged_in() ) {
 	$message = $can_view_item->message;
 }
 
-learn_press_display_message( $message, 'learn-press-content-protected-message error' );
+Template::print_message( $message, 'error' );

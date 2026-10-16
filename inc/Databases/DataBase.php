@@ -31,6 +31,7 @@ class DataBase {
 	public $tb_lp_sessions;
 	public $tb_lp_files;
 	public $tb_lp_webhooks;
+	public $tb_lp_notes;
 	public $tb_thim_cache;
 	public $tb_lp_mcp_api_keys;
 	private $collate         = '';
@@ -66,6 +67,7 @@ class DataBase {
 		$this->tb_lp_sessions            = $prefix . 'learnpress_sessions';
 		$this->tb_lp_files               = $prefix . 'learnpress_files';
 		$this->tb_lp_webhooks            = $prefix . 'learnpress_webhooks';
+		$this->tb_lp_notes               = $prefix . 'learnpress_notes';
 		$this->tb_thim_cache             = $prefix . 'thim_cache';
 		$this->tb_lp_mcp_api_keys        = $prefix . 'learnpress_mcp_api_keys';
 		$this->wpdb->hide_errors();

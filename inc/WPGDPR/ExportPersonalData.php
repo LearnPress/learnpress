@@ -2,7 +2,10 @@
 namespace LearnPress\WPGDPR;
 
 use Exception;
+use LearnPress\Databases\NoteDB;
+use LearnPress\Filters\NoteFilter;
 use LearnPress\Helpers\Singleton;
+use LearnPress\Models\Note\NoteModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
@@ -44,6 +47,10 @@ class ExportPersonalData {
 		$exporters['learnpress-orders']           = array(
 			'exporter_friendly_name' => __( 'LearnPress Orders Data Exporter', 'learnpress' ),
 			'callback'               => array( $this, 'export_user_orders' ),
+		);
+		$exporters['learnpress-notes']            = array(
+			'exporter_friendly_name' => __( 'LearnPress Student Notes Exporter', 'learnpress' ),
+			'callback'               => array( $this, 'export_user_notes' ),
 		);
 		return $exporters;
 	}
@@ -604,5 +611,85 @@ class ExportPersonalData {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Export notes the user wrote on lessons.
+	 *
+	 * @param string $email Email.
+	 * @param int    $page  Page.
+	 *
+	 * @return array
+	 * @throws Exception
+	 * @since 4.4.9.2
+	 */
+	public function export_user_notes( $email, $page = 1 ) {
+		$per_page     = 50;
+		$export_items = array();
+		$user         = get_user_by( 'email', $email );
+		if ( ! $user ) {
+			return array(
+				'data' => $export_items,
+				'done' => true,
+			);
+		}
+
+		$filter                  = new NoteFilter();
+		$filter->user_id         = $user->ID;
+		$filter->join_details    = true;
+		$filter->limit           = $per_page;
+		$filter->page            = max( 1, (int) $page );
+		$filter->order_by        = 'n.note_id';
+		$filter->order           = NoteFilter::ORDER_ASC;
+		$filter->run_query_count = false;
+		$rows                    = NoteDB::getInstance()->get_notes( $filter );
+		$rows                    = is_array( $rows ) ? $rows : array();
+
+		foreach ( $rows as $row ) {
+			$note = new NoteModel( $row );
+			$data = array(
+				array(
+					'name'  => __( 'Course', 'learnpress' ),
+					'value' => $row->course_title ? $row->course_title : '#' . $note->course_id,
+				),
+				array(
+					'name'  => __( 'Lesson', 'learnpress' ),
+					'value' => $row->item_title ? $row->item_title : '#' . $note->item_id,
+				),
+				array(
+					'name'  => __( 'Type', 'learnpress' ),
+					'value' => NoteModel::TYPE_HIGHLIGHT === $note->note_type ? __( 'Highlight', 'learnpress' ) : __( 'Text', 'learnpress' ),
+				),
+			);
+
+			if ( '' !== $note->highlight_text ) {
+				$data[] = array(
+					'name'  => __( 'Highlighted text', 'learnpress' ),
+					'value' => $note->highlight_text,
+				);
+			}
+
+			$data[] = array(
+				'name'  => __( 'Note', 'learnpress' ),
+				'value' => $note->content,
+			);
+			$data[] = array(
+				'name'  => __( 'Created', 'learnpress' ),
+				'value' => $note->created_at,
+			);
+
+			$export_items[] = array(
+				'group_id'          => 'learnpress-notes',
+				'group_label'       => __( 'LearnPress Student Notes', 'learnpress' ),
+				'group_description' => __( 'Notes and highlights the user saved on lessons.', 'learnpress' ),
+				'item_id'           => 'lp-note-' . $note->get_note_id(),
+				'data'              => $data,
+			);
+		}
+
+		return array(
+			'data' => $export_items,
+			'done' => count( $rows ) < $per_page,
+		);
 	}
 }

@@ -29,6 +29,16 @@ document.addEventListener( 'click', ( e ) => {
 		e.preventDefault();
 		toggleSectionAll( target );
 	}
+
+	const elSearchForm = target.closest( 'form.search-course' );
+	if ( ! elSearchForm ) {
+		return;
+	}
+
+	if ( target.closest( 'button.clear' ) ) {
+		e.preventDefault();
+		resetSearchForm( elSearchForm );
+	}
 } );
 
 /**
@@ -51,11 +61,43 @@ document.addEventListener( 'submit', ( e ) => {
 	const target = e.target;
 
 	// Stop enter form search
-	if ( target.closest( 'form.search-course' ) ) {
-		e.preventDefault();
+	const elSearchForm = target.closest( 'form.search-course' );
+
+	if ( ! elSearchForm ) {
+		return;
 	}
+
+	const elSearchInput = elSearchForm.querySelector( 'input[name="s"]' );
+	elSearchForm.classList.add( 'active' );
+	elSearchInput.focus();
+	e.preventDefault();
+} );
+
+document.addEventListener( 'keydown', ( e ) => {
+	if ( e.key !== 'Escape' ) {
+		return;
+	}
+
+	const elSearchForm = e.target.closest( 'form.search-course' );
+	if ( ! elSearchForm || ! elSearchForm.classList.contains( 'active' ) ) {
+		return;
+	}
+
+	e.preventDefault();
+	resetSearchForm( elSearchForm );
 } );
 // End events
+
+const resetSearchForm = ( elSearchForm ) => {
+	const elSearchInput = elSearchForm.querySelector( 'input[name="s"]' );
+
+	if ( elSearchInput ) {
+		elSearchInput.value = '';
+	}
+
+	elSearchForm.classList.remove( 'active' );
+	searchItemCourse( '' );
+};
 
 const toggleSectionAll = ( elToggleAllSections ) => {
 	const elCurriculum = elToggleAllSections.closest( '.lp-course-curriculum' );

@@ -12,6 +12,8 @@
 /**
  * Prevent loading this file directly
  */
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcode_Course_Curriculum' ) ) {
@@ -43,7 +45,7 @@ if ( ! class_exists( 'LP_Shortcode_Course_Curriculum' ) ) {
 			require_once realpath( LP_PLUGIN_PATH . '/inc/course/class-model-user-can-view-course-item.php' );
 
 			if ( ! $post || ( LP_COURSE_CPT !== get_post_type( $post->ID ) ) ) {
-				learn_press_display_message( __( 'Invalid course.', 'learnpress' ), 'error' );
+				Template::print_message( __( 'Invalid course.', 'learnpress' ), 'error' );
 			} else {
 				setup_postdata( $post );
 				learn_press_get_template( 'single-course/tabs/curriculum.php' );

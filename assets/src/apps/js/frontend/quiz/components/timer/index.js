@@ -66,7 +66,7 @@ const Timer = () => {
 
 	return (
 		<div className="countdown">
-			<i className="lp-icon-stopwatch"></i>
+			<i className="lp-icon-clock"></i>
 			<span>{ formatTime() }</span>
 			<input type="hidden" name="lp-quiz-time-spend" value={ timeSpend } />
 		</div>

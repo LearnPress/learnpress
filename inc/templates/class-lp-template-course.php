@@ -488,6 +488,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/content-item/popup-sidebar' );
 	}
 
+	public function popup_right_sidebar() {
+		learn_press_get_template( 'single-course/content-item/popup-right-sidebar' );
+	}
+
 	/**
 	 * Get single item's course
 	 */

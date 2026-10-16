@@ -10,6 +10,7 @@ use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentEnrolledTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileNotesTemplate;
 
 $settings         = LP_Settings::instance();
 $default_settings = array(
@@ -40,6 +41,13 @@ $default_settings = array(
 		'callback' => [ ProfileOrdersTemplate::class, 'tab_content' ],
 		'priority' => 25,
 		'icon'     => '<i class="lp-icon-shopping-cart"></i>',
+	),
+	'notes'             => array(
+		'title'    => esc_html__( 'Notes', 'learnpress' ),
+		'slug'     => $settings->get( 'profile_endpoints.notes', 'notes' ),
+		'callback' => [ ProfileNotesTemplate::class, 'tab_content' ],
+		'priority' => 26,
+		'icon'     => '<i class="lp-icon-edit-square"></i>',
 	),
 	'order-details'     => array(
 		'title'    => esc_html__( 'Order details', 'learnpress' ),

@@ -303,6 +303,27 @@ return apply_filters(
 			)
 		),
 		apply_filters(
+			'learn-press/course-settings-fields/student-notes',
+			array(
+				array(
+					'type'  => 'title',
+					'title' => esc_html__( 'Student Notes Settings', 'learnpress' ),
+					'id'    => 'lp_metabox_student_notes_setting',
+				),
+				array(
+					'title'   => esc_html__( 'Enable Student Notes', 'learnpress' ),
+					'id'      => 'enable_student_notes',
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'Let enrolled students highlight lesson content and save notes. Existing notes are kept when disabled.', 'learnpress' ),
+				),
+				array(
+					'type' => 'sectionend',
+					'id'   => 'lp_metabox_student_notes_setting',
+				),
+			)
+		),
+		apply_filters(
 			'learn-press/course-settings-fields/instructor',
 			array(
 				array(

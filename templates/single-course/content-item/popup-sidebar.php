@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
 			aria-label="<?php echo esc_html_x( 'Search for course content', 'Search for course content', 'learnpress' ); ?>">
 			<i class="lp-icon-search"></i>
 		</button>
-		<button type="button" class="clear"></button>
+		<button type="button" class="clear"><i class="lp-icon-times"></i></button>
 	</form>
 
 	<?php

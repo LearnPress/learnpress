@@ -224,6 +224,27 @@ return array(
 			KEY status (status)
 		) $collate;
 	",
+	$lp_db->tb_lp_notes               => "
+		CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_notes} (
+			note_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL,
+			course_id bigint(20) unsigned NOT NULL,
+			item_id bigint(20) unsigned NOT NULL,
+			item_type varchar(45) NOT NULL DEFAULT 'lp_lesson',
+			note_type varchar(20) NOT NULL DEFAULT 'text',
+			content longtext NULL,
+			highlight_text text NULL,
+			anchor longtext NULL,
+			created_at datetime NOT NULL,
+			updated_at datetime NULL DEFAULT NULL,
+			PRIMARY KEY (note_id),
+			KEY user_item (user_id, item_id),
+			KEY user_course (user_id, course_id),
+			KEY course_id (course_id),
+			KEY item_id (item_id),
+			KEY created_at (created_at)
+		) $collate;
+	",
 	$lp_db->tb_thim_cache             => "
 		CREATE TABLE IF NOT EXISTS {$lp_db->tb_thim_cache} (
 			key_cache VARCHAR (100) NOT NULL UNIQUE,

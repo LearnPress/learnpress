@@ -44,7 +44,7 @@ button {
 		padding: 12px 24px;
 		border: 1px solid $border-color;
 		color: $text-color-base;
-		background: transparent;
+		background: var(--lp-btn-bg-color, transparent);
 		box-shadow: unset;
 		font-family: inherit;
 		font-weight: $input-font-weight;
