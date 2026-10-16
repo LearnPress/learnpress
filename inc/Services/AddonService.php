@@ -4,9 +4,9 @@ namespace LearnPress\Services;
 
 use DateTime;
 use Exception;
+use LearnPress\Cache\LPCache;
 use LearnPress\Helpers\LPDateTime;
 use LearnPress\Helpers\Singleton;
-use LP_Cache;
 use LP_Debug;
 use LP_Helper;
 use LP_Settings;
@@ -93,11 +93,11 @@ class AddonService {
 		$data = new stdClass();
 
 		try {
-			$lp_cache  = new LP_Cache( true );
-			$key_cache = 'lp_addons_data';
-			$dat_cache = $lp_cache->get_cache( $key_cache );
-			if ( false !== $dat_cache ) {
-				return json_decode( wp_json_encode( $dat_cache ) );
+			$lp_cache   = new LPCache( true );
+			$key_cache  = 'lp_addons_data';
+			$data_cache = $lp_cache->get_cache( $key_cache, 'object' );
+			if ( false !== $data_cache ) {
+				return $data_cache;
 			}
 
 			if ( ! empty( $this->url_list_addons ) ) {
@@ -176,11 +176,11 @@ class AddonService {
 			return $addons;
 		}
 
-		$lp_cache     = new LP_Cache( true );
+		$lp_cache     = new LPCache( true );
 		$key_cache    = 'addons_purchased_info';
-		$addons_cache = $lp_cache->get_cache( $key_cache );
+		$addons_cache = $lp_cache->get_cache( $key_cache, 'object' );
 		if ( false !== $addons_cache ) {
-			$data = json_decode( wp_json_encode( $addons_cache ) );
+			$data = $addons_cache;
 		} else {
 			$args = [
 				'method'     => 'POST',
@@ -461,7 +461,7 @@ class AddonService {
 	 * @return void
 	 */
 	private function clear_addons_purchased_cache(): void {
-		$lp_cache = new LP_Cache( true );
+		$lp_cache = new LPCache( true );
 		$lp_cache->clear( 'addons_purchased_info' );
 	}
 
