@@ -162,7 +162,7 @@ class LP_Cache {
 			if ( false === $keys ) {
 				$keys_cache = array();
 			} else {
-				$keys_cache = LP_Helper::json_decode( $keys, true );
+				$keys_cache = is_array( $keys ) ? $keys : LP_Helper::json_decode( $keys, true );
 			}
 
 			$keys_cache[] = $key_cache_new;
@@ -185,7 +185,9 @@ class LP_Cache {
 			if ( false === $keys_cache_of_group_str ) {
 				return;
 			}
-			$keys_cache_of_group = LP_Helper::json_decode( $keys_cache_of_group_str, true );
+			$keys_cache_of_group = is_array( $keys_cache_of_group_str )
+				? $keys_cache_of_group_str
+				: LP_Helper::json_decode( $keys_cache_of_group_str, true );
 			if ( ! empty( $keys_cache_of_group ) ) {
 				foreach ( $keys_cache_of_group as $key ) {
 					// Clear cache by key

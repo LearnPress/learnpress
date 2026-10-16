@@ -137,30 +137,30 @@ $lp-ai-scrollbar-track: rgba(68, 46, 102, 0.08);
 		align-items: center;
 		justify-content: center;
 		width: 100%;
-		min-height: 37px;
-		margin: 0;
-		padding: $spacing-base-2x $spacing-base-3x;
-		border: 1px solid $border-color;
-		border-radius: 6px;
-		background: $color-white;
-		box-shadow: none;
-		color: $text-color-base;
-		font-size: $font-size-small;
+		//min-height: 37px;
+		//margin: 0;
+		//padding: $spacing-base-2x $spacing-base-3x;
+		//border: 1px solid $border-color;
+		//border-radius: 6px;
+		//background: $color-white;
+		//box-shadow: none;
+		//color: $text-color-base;
+		//font-size: $font-size-small;
 		//font-weight: 500;
 		//line-height: 1.25;
 		//text-transform: none;
-		white-space: nowrap;
-		transition:
-			border-color 0.12s ease,
-			background-color 0.12s ease,
-			color 0.12s ease,
-			transform 0.12s ease;
-
-		&:hover, &:focus-visible {
-			color: $color-white;
-			background: $color-primary;
-			border-color: $color-primary;
-		}
+		//white-space: nowrap;
+		//transition:
+		//	border-color 0.12s ease,
+		//	background-color 0.12s ease,
+		//	color 0.12s ease,
+		//	transform 0.12s ease;
+		//
+		//&:hover, &:focus-visible {
+		//	color: $color-white;
+		//	background: $color-primary;
+		//	border-color: $color-primary;
+		//}
 	}
 
 	&__input-area {

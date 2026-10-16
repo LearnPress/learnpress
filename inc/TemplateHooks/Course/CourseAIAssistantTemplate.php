@@ -253,28 +253,28 @@ class CourseAIAssistantTemplate {
 
 		if ( $enabled_actions['explain'] ?? true ) {
 			$buttons[] = sprintf(
-				'<button type="button" class="lp-ai-assistant__quick-btn" data-lp-ai-action="explain">%s</button>',
+				'<button type="button" class="lp-button lp-ai-assistant__quick-btn" data-lp-ai-action="explain">%s</button>',
 				esc_html__( 'Explain Concept', 'learnpress' )
 			);
 		}
 
 		if ( $enabled_actions['quick_quiz'] ?? true ) {
 			$buttons[] = sprintf(
-				'<button type="button" class="lp-ai-assistant__quick-btn" data-lp-ai-action="quick-quiz">%s</button>',
+				'<button type="button" class="lp-button lp-ai-assistant__quick-btn" data-lp-ai-action="quick-quiz">%s</button>',
 				esc_html__( 'Quick Quiz', 'learnpress' )
 			);
 		}
 
 		if ( $enabled_actions['summarize'] ?? true ) {
 			$buttons[] = sprintf(
-				'<button type="button" class="lp-ai-assistant__quick-btn" data-lp-ai-action="summarize">%s</button>',
+				'<button type="button" class="lp-button lp-ai-assistant__quick-btn" data-lp-ai-action="summarize">%s</button>',
 				esc_html__( 'Summarize Lesson', 'learnpress' )
 			);
 		}
 
 		if ( $enabled_actions['smart_review'] ?? true ) {
 			$buttons[] = sprintf(
-				'<button type="button" class="lp-ai-assistant__quick-btn lp-ai-assistant__smart-review-btn" data-lp-ai-action="smart-review">%s</button>',
+				'<button type="button" class="lp-button lp-ai-assistant__quick-btn lp-ai-assistant__smart-review-btn" data-lp-ai-action="smart-review">%s</button>',
 				esc_html__( 'Smart Review', 'learnpress' )
 			);
 		}
