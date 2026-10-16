@@ -448,8 +448,6 @@ class BuilderListCoursesTemplate {
 				$settings
 			);
 
-			$more_actions_icon = LP_WP_Filesystem::get_icon_svg( 'ico-cb-more.svg' );
-
 			// Set action by status
 			$action_by_status = [];
 			if ( $course_status === PostModel::STATUS_TRASH ) {
@@ -500,10 +498,9 @@ class BuilderListCoursesTemplate {
 						$edit_link,
 						__( 'Edit', 'learnpress' )
 					) : '',
-					'action_expanded_button' => sprintf(
-						'<div class="lp-cb-item-action-expand-toggle lp-button">%s</div>',
-						$more_actions_icon
-					),
+					'action_expanded_button' => '<div class="lp-cb-item-action-expand-toggle lp-button">
+													<span class="lp-icon-ellipsis-v"></span>
+												</div>',
 					'action_wrap'            => '<div class="lp-cb-item-action-expand lp-hidden">',
 					'action'                 => $html_action_by_status,
 					'action_wrap_end'        => '</div>',
