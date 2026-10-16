@@ -80,7 +80,7 @@ class AdminThemesDataTemplate {
 
 			$response = wp_remote_get(
 				self::$url_themes_data,
-				array( 'timeout' => 30, )
+				array( 'timeout' => 30 )
 			);
 
 			if ( ! is_wp_error( $response )
