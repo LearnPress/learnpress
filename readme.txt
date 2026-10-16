@@ -306,6 +306,11 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 = 4.4.11 (2026-10-16) =
 * Fixed: security (Props @Wordfence, @Patchstack, @Ananda Dhakal, @daroo, @MD Mahmidul Hasan).
+* Fixed: minor bugs.
+* Added: feature private student notes for lessons and courses on learning screen, manager on LP profile, WP backend.
+* Updated: style AI assistant.
+* Updated: style learning screen, display add-ons bar.
+* Updated: UI generate data via AI.
 
 = 4.4.10 (2026-10-09) =
 * Fixed: security (Props @Wordfence, @Kuba, @Wordfence PRISM, @Hunter Sploit, @Artur Chlebicki).
