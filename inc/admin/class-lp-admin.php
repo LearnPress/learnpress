@@ -8,6 +8,7 @@
 use LearnPress\Background\LPBackgroundAjax;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\TemplateHooks\Admin\Notices\AdminNotesTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
@@ -895,12 +896,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @return string
 		 * @author tungnx
 		 * @since  3.2.7.5
-		 * @version 4.0.1
+		 * @version 4.0.2
 		 */
 		public function lp_course_set_link_item_backend( $post_link = '', $post_id = 0, $new_title = '', $new_slug = '', $post = null ) {
 			try {
 				if ( in_array( $post->post_type, CourseModel::item_types_support() ) ) {
-					$course_id_of_item = LP_Course_DB::getInstance()->get_course_by_item_id( $post->ID );
+					$courses_from_item = CourseSectionItemModel::get_courses_from_item_id( $post->ID, $post->post_type );
+					$course_id_of_item = $courses_from_item[0]->section_course_id ?? 0;
 					if ( $course_id_of_item ) {
 						$course = learn_press_get_course( $course_id_of_item );
 						if ( $course ) {

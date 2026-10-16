@@ -12,6 +12,7 @@ use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserModel;
@@ -268,7 +269,7 @@ class BuilderListLessonsTemplate {
 			'id'            => $lesson_model->get_id(),
 			'title'         => $lesson_model->post_title,
 			'status'        => $lesson_model->post_status,
-			'courses'       => BuilderEditLessonTemplate::instance()->get_assigned( $lesson_model->get_id() ),
+			'courses'       => CourseSectionItemModel::get_courses_from_item_id( $lesson_model->get_id(), LP_LESSON_CPT ),
 			'author'        => $author_name,
 			'preview'       => get_post_meta( $lesson_model->get_id(), '_lp_preview', true ),
 			'date_modified' => lp_jwt_prepare_date_response( $lesson_model->post_date_gmt ),
@@ -278,14 +279,10 @@ class BuilderListLessonsTemplate {
 			$html_courses = '';
 			$assigned     = '--';
 			if ( ! empty( $lesson['courses'] ) ) {
-				$courses = is_array( $lesson['courses'] ) && isset( $lesson['courses']['id'] )
-					? array( $lesson['courses'] )
-					: $lesson['courses'];
-
 				$course_htmls = array();
-				foreach ( $courses as $course ) {
-					$course_id    = $course['id'] ?? 0;
-					$course_title = $course['title'] ?? '';
+				foreach ( $lesson['courses'] as $course ) {
+					$course_id    = $course->section_course_id ?? 0;
+					$course_title = $course_id ? get_the_title( $course_id ) : '';
 
 					if ( $course_id && $course_title ) {
 						$course_link    = BuilderCourseTemplate::instance()->get_link_edit( $course_id );

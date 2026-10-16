@@ -18,7 +18,7 @@ use LearnPress\Databases\Course\CourseSectionItemsDB;
 use LearnPress\Filters\PostFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
-use LP_Course_Cache;
+use LearnPress\Cache\LPCourseCache;
 use LP_Course_DB;
 use LP_Course_Item;
 use LP_Course_JSON_DB;
@@ -980,7 +980,7 @@ class CourseModel {
 	 */
 	public function get_total_user_enrolled_or_purchased(): int {
 		$total           = 0;
-		$lp_course_cache = new LP_Course_Cache( true );
+		$lp_course_cache = new LPCourseCache( true );
 
 		try {
 			$total = $lp_course_cache->get_total_students_enrolled_or_purchased( $this->get_id() );
@@ -1384,7 +1384,7 @@ class CourseModel {
 		$filter_course     = new LP_Course_JSON_Filter();
 		$filter_course->ID = $course_id;
 		$key_cache         = "courseModel/find/id/{$course_id}";
-		$lp_course_cache   = new LP_Course_Cache();
+		$lp_course_cache   = new LPCourseCache();
 
 		// Check cache
 		if ( $check_cache ) {
@@ -1495,7 +1495,7 @@ class CourseModel {
 	 */
 	public function clean_caches() {
 		$key_cache       = "courseModel/find/id/{$this->ID}";
-		$lp_course_cache = new LP_Course_Cache();
+		$lp_course_cache = new LPCourseCache();
 		$lp_course_cache->clear( $key_cache );
 
 		// Clear cache image urls, store with many sizes

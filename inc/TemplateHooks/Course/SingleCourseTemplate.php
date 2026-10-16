@@ -8,6 +8,7 @@
 
 namespace LearnPress\TemplateHooks\Course;
 
+use LearnPress\Cache\LPCourseCache;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -306,7 +307,7 @@ class SingleCourseTemplate {
 			}
 
 			// Check cache before get image url
-			$cache     = new \LP_Course_Cache();
+			$cache     = new LPCourseCache();
 			$key_cache = 'image_url/' . $courseModel->get_id();
 			if ( is_array( $size_img_send ) && count( $size_img_send ) === 2 ) {
 				$key_cache .= '/' . implode( 'x', $size_img_send );

@@ -2,6 +2,8 @@
 
 namespace LearnPress\Cache;
 
+defined( 'ABSPATH' ) || exit();
+
 /**
  * Manage cached LearnPress settings.
  *

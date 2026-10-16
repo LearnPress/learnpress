@@ -13,6 +13,8 @@ use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
@@ -278,18 +280,20 @@ class BuilderEditLessonTemplate {
 	}
 
 	public function assigned_course( $lesson_model ) {
-		$assign_course = ! empty( $lesson_model ) ? $this->get_assigned( $lesson_model->get_id() ) : '';
+		$assign_course = ! empty( $lesson_model ) ?
+			CourseSectionItemModel::get_courses_from_item_id( $lesson_model->get_id(), LP_LESSON_CPT )
+			: '';
 		$html_courses  = '';
-		$assigned      = sprintf( '<span class="lesson-not-assigned">%s</span>', __( 'Not assigned yet', 'learnpress' ) );
-		if ( ! empty( $assign_course ) ) {
-			$courses = is_array( $assign_course ) && isset( $assign_course['id'] )
-				? array( $assign_course )
-				: $assign_course;
+		$assigned      = sprintf(
+			'<span class="lesson-not-assigned">%s</span>',
+			__( 'Not assigned yet', 'learnpress' )
+		);
 
+		if ( ! empty( $assign_course ) ) {
 			$course_htmls = array();
-			foreach ( $courses as $course ) {
-				$course_id    = $course['id'] ?? 0;
-				$course_title = $course['title'] ?? '';
+			foreach ( $assign_course as $course ) {
+				$course_id    = $course->section_course_id ?? 0;
+				$course_title = $course_id ? get_the_title( $course_id ) : '';
 
 				if ( $course_id && $course_title ) {
 					$course_link    = BuilderCourseTemplate::instance()->get_link_edit( $course_id );
@@ -333,7 +337,11 @@ class BuilderEditLessonTemplate {
 		if ( $post_id ) {
 			$current_status = $post && ! empty( $post->post_status ) ? sanitize_key( $post->post_status ) : '';
 			if ( 'draft' !== $current_status ) {
-				$course_id_of_item = \LP_Course_DB::getInstance()->get_course_by_item_id( $post_id );
+				$courses_from_item = CourseSectionItemModel::get_courses_from_item_id(
+					$post_id,
+					LP_LESSON_CPT
+				);
+				$course_id_of_item = $courses_from_item[0]->section_course_id ?? 0;
 				if ( $course_id_of_item ) {
 					$course = learn_press_get_course( $course_id_of_item );
 					if ( $course ) {
@@ -459,18 +467,5 @@ class BuilderEditLessonTemplate {
 		];
 
 		return Template::combine_components( $edit );
-	}
-
-	public function get_assigned( $id ) {
-		$courses = learn_press_get_item_courses( $id );
-
-		if ( empty( $courses ) ) {
-			return array();
-		}
-
-		return array(
-			'id'    => $courses[0]->ID,
-			'title' => $courses[0]->post_title ?? '',
-		);
 	}
 }

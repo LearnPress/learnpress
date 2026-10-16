@@ -265,14 +265,10 @@ class BuilderListQuizzesTemplate {
 			$html_courses = '';
 			$assigned     = '--';
 			if ( ! empty( $quiz['courses'] ) ) {
-				$courses = is_array( $quiz['courses'] ) && isset( $quiz['courses']['id'] )
-					? array( $quiz['courses'] )
-					: $quiz['courses'];
-
 				$course_htmls = array();
-				foreach ( $courses as $course ) {
-					$course_id    = $course['id'] ?? 0;
-					$course_title = $course['title'] ?? '';
+				foreach ( $quiz['courses'] as $course ) {
+					$course_id    = $course->section_course_id ?? 0;
+					$course_title = $course_id ? get_the_title( $course_id ) : '';
 
 					if ( $course_id && $course_title ) {
 						$course_link    = BuilderCourseTemplate::instance()->get_link_edit( $course_id );

@@ -908,6 +908,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @since 4.1.4
 		 * @version 1.0.1
 		 * @return int
+		 * @deprecated 4.4.11
 		 */
 		public function get_total_user_enrolled(): int {
 			$total           = 0;
