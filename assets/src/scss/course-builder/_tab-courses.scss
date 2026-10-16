@@ -454,7 +454,8 @@
 		}
 	}
 
-	// Edit button - Purple primary button
+	// Course action buttons
+	.btn-preview-course,
 	.btn-edit-course {
 		display: inline-flex;
 		align-items: center;
@@ -471,7 +472,20 @@
 		color: $cb-bg;
 		transition: all 0.2s;
 		white-space: nowrap;
+	}
 
+	.btn-preview-course {
+		border: 1px solid $cb-primary;
+		background: $cb-bg;
+		color: $cb-primary;
+
+		&:hover {
+			background: $cb-primary-bland;
+			color: $cb-primary-hover;
+		}
+	}
+
+	.btn-edit-course {
 		&:hover {
 			background: $cb-primary-hover;
 		}

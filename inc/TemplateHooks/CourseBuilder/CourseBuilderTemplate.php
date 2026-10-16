@@ -720,6 +720,10 @@ class CourseBuilderTemplate {
 	 * Show link to Course Builder in admin bar
 	 */
 	public function add_admin_bar_menu( $wp_admin_bar ) {
+		if ( ! CourseBuilder::can_view_course_builder() ) {
+			return;
+		}
+
 		$href  = CourseBuilder::get_link_course_builder();
 		$title = esc_html__( 'Course Builder', 'learnpress' );
 
