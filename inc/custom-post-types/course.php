@@ -218,7 +218,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return array
 		 * @since 4.4.8
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function posts_pre_query( $posts, $wp_query ) {
 			try {
@@ -287,6 +287,35 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						substr( $month, 0, 4 ),
 						substr( $month, 4, 2 )
 					);
+				}
+
+				// Filter by taxonomies (course_category, course_tag).
+				foreach ( array( LP_COURSE_CATEGORY_TAX, LP_COURSE_TAXONOMY_TAG ) as $taxonomy ) {
+					$term_slugs = $wp_query->get( $taxonomy );
+					if ( empty( $term_slugs ) ) {
+						$term_slugs = LP_Request::get_param( $taxonomy, '', 'key' );
+					}
+
+					if ( empty( $term_slugs ) ) {
+						continue;
+					}
+
+					$tt_ids = array();
+					foreach ( explode( ',', $term_slugs ) as $slug ) {
+						$term = get_term_by( 'slug', sanitize_title( $slug ), $taxonomy );
+						if ( $term && ! is_wp_error( $term ) ) {
+							$tt_ids[] = (int) $term->term_taxonomy_id;
+						}
+					}
+
+					if ( empty( $tt_ids ) ) {
+						continue;
+					}
+
+					$alias            = 'tr_' . $taxonomy;
+					$filter->join[]   = "INNER JOIN {$post_db->wpdb->term_relationships} {$alias}
+						ON {$alias}.object_id = p.ID";
+					$filter->where[] = 'AND ' . $alias . '.term_taxonomy_id IN (' . implode( ',', $tt_ids ) . ')';
 				}
 
 				/*$has_price_filter = false;

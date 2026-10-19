@@ -99,7 +99,7 @@ $menu_items = apply_filters(
 		],
 		// Taxonomy sub-menus - no callback, only the URL as the slug.
 		'categories'       => [
-			'id'         => 'edit-tags.php?taxonomy=course_category',
+			'id'         => 'edit-tags.php?taxonomy=course_category&post_type=' . LP_COURSE_CPT,
 			'menu_title' => __( 'Categories', 'learnpress' ),
 			'page_title' => __( 'Categories', 'learnpress' ),
 			'capability' => 'manage_options',
@@ -107,7 +107,7 @@ $menu_items = apply_filters(
 			'callback'   => false,
 		],
 		'tags'             => [
-			'id'         => 'edit-tags.php?taxonomy=course_tag',
+			'id'         => 'edit-tags.php?taxonomy=course_tag&post_type=' . LP_COURSE_CPT,
 			'menu_title' => __( 'Tags', 'learnpress' ),
 			'page_title' => __( 'Tags', 'learnpress' ),
 			'capability' => 'manage_options',
