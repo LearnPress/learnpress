@@ -2,6 +2,7 @@
 
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserLessonModel;
 use LearnPress\Models\UserModel;
 
@@ -44,10 +45,20 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'callback'            => array( $this, 'get_item' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => array(
-						'context' => $this->get_context_param(
+						'context'          => $this->get_context_param(
 							array(
 								'default' => 'view',
 							)
+						),
+						'password'         => array(
+							'type' => 'string',
+						),
+						'course_password'  => array(
+							'type' => 'string',
+						),
+						'course_id'        => array( // Add temporary param, still not using @since 4.4.11, use for check item's course
+							'description' => esc_html__( 'The parent course ID.', 'learnpress' ),
+							'type'        => 'integer',
 						),
 					),
 				),
@@ -70,15 +81,30 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'callback'            => array( $this, 'finish_lesson' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => array(
-						'context' => $this->get_context_param(
+						'context'         => $this->get_context_param(
 							array(
 								'default' => 'edit',
 							)
+						),
+						'password'        => array(
+							'type' => 'string',
+						),
+						'course_password' => array(
+							'type' => 'string',
 						),
 					),
 				),
 			)
 		);
+	}
+
+	/**
+	 * Allow guests/unauthenticated users to query the list endpoint (filtered by slug).
+	 * Per-item visibility is still enforced by check_read_permission, which only
+	 * allows preview items for guests.
+	 */
+	public function get_items_permissions_check( $request ) {
+		return true;
 	}
 
 	/**
@@ -101,6 +127,20 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return false;
 		}
 
+		if ( post_password_required( $post )
+			&& empty( $this->password_verified[ $post->ID ] )
+			&& ! current_user_can( 'edit_post', $post->ID ) ) {
+			return false;
+		}
+
+		$course_id = $this->get_course_by_item_id( $post_id );
+		if ( $course_id
+			&& post_password_required( $course_id )
+			&& empty( $this->password_verified[ $course_id ] )
+			&& ! current_user_can( 'edit_post', $course_id ) ) {
+			return false;
+		}
+
 		if ( lp_rest_check_post_permissions( $this->post_type, 'read', $post_id ) ) {
 			return true;
 		}
@@ -110,6 +150,18 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return false;
 		}
 
+		// Allow guests and unenrolled users to read items marked as preview.
+		$course_id = $this->get_course_by_item_id( $post_id );
+		if ( $course_id ) {
+			$course = learn_press_get_course( $course_id );
+			if ( $course ) {
+				$item = $course->get_item( $post_id );
+				if ( $item && $item->is_preview() ) {
+					return true;
+				}
+			}
+		}
+
 		$user_id = get_current_user_id();
 
 		if ( ! $user_id ) {
@@ -117,9 +169,6 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		$user = learn_press_get_user( $user_id );
-
-		// Get course ID by lesson ID assigned.
-		$course_id = $this->get_course_by_item_id( $post_id );
 
 		if ( empty( $course_id ) ) {
 			return false;
@@ -168,7 +217,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	 * @return void
 	 */
 	protected function get_course_by_item_id( $item_id ) {
-		static $output;
+		static $output = array();
 
 		global $wpdb;
 
@@ -176,8 +225,8 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return false;
 		}
 
-		if ( ! isset( $output ) ) {
-			$output = $wpdb->get_var(
+		if ( ! array_key_exists( $item_id, $output ) ) {
+			$output[ $item_id ] = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT c.ID FROM {$wpdb->posts} c
 					INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
@@ -189,8 +238,8 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			);
 		}
 
-		if ( $output ) {
-			return absint( $output );
+		if ( $output[ $item_id ] ) {
+			return absint( $output[ $item_id ] );
 		}
 
 		return false;
@@ -230,11 +279,56 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				LP_COURSE_CPT,
 				true
 			);
+
+			// Auto-create user lesson item if user is enrolled but never opened the lesson.
 			if ( ! $userLessonModel instanceof UserLessonModel ) {
-				throw new Exception( __( 'You have not started lesson', 'learnpress' ) );
+				$userCourseModel = UserCourseModel::find( get_current_user_id(), $course_id, true );
+				if ( ! $userCourseModel instanceof UserCourseModel || ! $userCourseModel->has_enrolled_or_finished() ) {
+					throw new Exception( __( 'You must enroll the course first.', 'learnpress' ) );
+				}
+
+				$userLessonModel            = new UserLessonModel();
+				$userLessonModel->user_id   = get_current_user_id();
+				$userLessonModel->item_id   = $id;
+				$userLessonModel->item_type = $lessonModel->post_type;
+				$userLessonModel->ref_id    = $course_id;
+				$userLessonModel->ref_type  = LP_COURSE_CPT;
+				$userLessonModel->parent_id = $userCourseModel->get_user_item_id();
+				$userLessonModel->status    = LP_ITEM_STARTED;
+				$userLessonModel->save();
+			} elseif ( empty( $userLessonModel->parent_id ) ) {
+				// Repair legacy rows that were created without parent_id — without it, the lesson
+				// won't be counted by UserCourseModel::count_items_completed().
+				$userCourseModel = UserCourseModel::find( get_current_user_id(), $course_id, true );
+				if ( $userCourseModel instanceof UserCourseModel ) {
+					$userLessonModel->parent_id = $userCourseModel->get_user_item_id();
+					$userLessonModel->save();
+				}
 			}
 
 			$userLessonModel->set_complete();
+
+			// Recalculate course progress and persist to learnpress_user_item_results.
+			$userCourseModel = $userLessonModel->get_user_course_model();
+			if ( $userCourseModel instanceof UserCourseModel ) {
+				$course_results = $userCourseModel->calculate_course_results( true );
+				LP_User_Items_Result_DB::instance()->update(
+					$userCourseModel->get_user_item_id(),
+					wp_json_encode( $course_results )
+				);
+
+				// Auto-finish the course when evaluation criteria are met.
+				$can_finish = $userCourseModel->can_finish();
+				if ( $can_finish === true && ! is_wp_error( $can_finish ) ) {
+					try {
+						$userCourseModel->set_finish();
+					} catch ( Throwable $finishError ) {
+						// Non-fatal — user can still click Finish manually.
+						error_log( __METHOD__ . ' auto-finish: ' . $finishError->getMessage() );
+					}
+				}
+			}
+
 			$response->status  = 'success';
 			$response->message = esc_html__( 'Congrats! You have completed the lesson successfully', 'learnpress' );
 		} catch ( Throwable $th ) {
@@ -631,5 +725,24 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		return $response;
+	}
+
+	public function get_item_permissions_check( $request ) {
+		$post_id   = absint( $request['id'] ?? 0 );
+		$post      = get_post( $post_id );
+		$course_id = $this->get_course_by_item_id( $post_id );
+		unset( $this->password_verified[ $course_id ] );
+
+		$password = $request['course_password'] ?? '';
+		if ( $post && empty( $post->post_password ) && empty( $password ) ) {
+			$password = $request['password'] ?? '';
+		}
+
+		$password_check = $this->verify_post_password( $course_id, $password );
+		if ( is_wp_error( $password_check ) ) {
+			return $password_check;
+		}
+
+		return parent::get_item_permissions_check( $request );
 	}
 }

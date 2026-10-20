@@ -43,8 +43,9 @@
 		}
 
 		.ts-control {
-			min-height: 35px;
+			min-height: 32px;
 			padding: 4px;
+			border: 1px solid #949494;
 
 			input[type=text] {
 				min-width: 30px;

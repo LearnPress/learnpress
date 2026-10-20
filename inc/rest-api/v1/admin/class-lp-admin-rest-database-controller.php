@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Databases\DataBase;
+
 /**
  * Class LP_REST_Users_Controller
  *
@@ -88,6 +90,7 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request .
 	 *
 	 * @return void
+	 * @throws Exception
 	 */
 	public function agree_terms_upgrade( WP_REST_Request $request ) {
 		$result = new LP_REST_Response();
@@ -128,10 +131,11 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 
 	/**
 	 * Get Steps upgrade completed.
+	 * @throws Exception
 	 */
 	public function get_steps() {
 		$lp_updater      = LP_Updater::instance();
-		$lp_db           = LP_Database::getInstance();
+		$lp_db           = DataBase::getInstance();
 		$steps_completed = array();
 		$steps_default   = array();
 
@@ -162,7 +166,7 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function check_DB_valid_to_re_upgrade() {
 		$response                       = new LP_REST_Response();
-		$lp_db                          = LP_Database::getInstance();
+		$lp_db                          = DataBase::getInstance();
 		$response->data->can_re_upgrade = 0;
 
 		$col_start_time_gmt_exist = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
@@ -185,7 +189,7 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function delete_tb_lp_upgrade_db() {
 		$response                       = new LP_REST_Response();
-		$lp_db                          = LP_Database::getInstance();
+		$lp_db                          = DataBase::getInstance();
 		$response->data->can_re_upgrade = 0;
 		$tables                         = array(
 			$lp_db->tb_lp_user_items,

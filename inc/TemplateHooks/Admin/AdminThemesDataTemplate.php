@@ -3,6 +3,7 @@
 namespace LearnPress\TemplateHooks\Admin;
 
 use Exception;
+use LearnPress\Cache\LPCache;
 use LP_Helper;
 use stdClass;
 use Throwable;
@@ -70,26 +71,31 @@ class AdminThemesDataTemplate {
 		$data = array();
 
 		try {
-			if ( ! empty( self::$url_themes_data ) ) {
-				$response = wp_remote_get(
-					self::$url_themes_data,
-					array(
-						'timeout' => 30,
-					)
-				);
+			$lp_cache   = new LPCache( true );
+			$key_cache  = 'lp_themes_data';
+			$data_cache = $lp_cache->get_cache( $key_cache, 'array' );
+			if ( false !== $data_cache ) {
+				return $data_cache;
+			}
 
-				if ( ! is_wp_error( $response )
-					&& 200 === wp_remote_retrieve_response_code( $response ) ) {
-					$data = LP_Helper::json_decode(
-						wp_remote_retrieve_body( $response ),
-						true
-					);
-				}
+			$response = wp_remote_get(
+				self::$url_themes_data,
+				array( 'timeout' => 30 )
+			);
+
+			if ( ! is_wp_error( $response )
+				&& 200 === wp_remote_retrieve_response_code( $response ) ) {
+				$data = LP_Helper::json_decode(
+					wp_remote_retrieve_body( $response ),
+					true
+				);
 			}
 
 			// Get data local
 			if ( empty( $data ) || ! is_array( $data ) ) {
 				$data = self::get_local_data();
+			} else {
+				$lp_cache->set_cache( $key_cache, $data, 24 * HOUR_IN_SECONDS );
 			}
 		} catch ( Throwable $e ) {
 			$data = array();

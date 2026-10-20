@@ -129,7 +129,7 @@ export class BuilderSettings {
 
 		this.isSaving = true;
 		this.shouldRetryOnCompleted = false;
-		lpToastify.show( 'Updating settings...', 'info', { duration: 1800 } );
+		//lpToastify.show( 'Updating settings...', 'info', { duration: 1800 } );
 
 		window.lpAJAXG.fetchAJAX( this.getPayloadForSave(), {
 			success: ( response ) => {

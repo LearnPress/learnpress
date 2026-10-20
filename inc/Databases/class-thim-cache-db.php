@@ -1,17 +1,17 @@
 <?php
-/**
- * Class Thim_Cache_DB
- *
- * @author tungnx
- * @version 1.0.0
- * @since 4.2.2
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( class_exists( 'Thim_Cache_DB' ) ) {
 	return;
 }
 
+/**
+ * Class Thim_Cache_DB
+ *
+ * @author tungnx
+ * @version 1.0.1
+ * @since 4.2.2
+ */
 class Thim_Cache_DB {
 	private static $_instance = null;
 	private $action = null; // one of insert/update
@@ -63,16 +63,26 @@ class Thim_Cache_DB {
 	 */
 	public function get_value( string $key_cache ) {
 		$sql = $this->wpdb->prepare(
-			"SELECT `value` FROM {$this->table_name} WHERE `key_cache` = %s",
+			"SELECT `value`, `expiration` FROM {$this->table_name} WHERE `key_cache` = %s",
 			$key_cache
 		);
 
-		$result = $this->wpdb->get_var( $sql );
+		$result = $this->wpdb->get_row( $sql );
 		if ( is_null( $result ) ) {
 			return false;
 		}
 
-		return $result;
+		$expiration = (int) ( $result->expiration ?? 0 );
+		if ( $expiration > 0 && $expiration < time() ) {
+			try {
+				$this->remove_cache( $key_cache );
+			} catch ( Throwable $e ) {
+				LP_Debug::error_log( $e );
+			}
+			return false;
+		}
+
+		return $result->value;
 	}
 
 	/**

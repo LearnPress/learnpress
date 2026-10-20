@@ -215,7 +215,7 @@ $lpDateTime = new LPDateTime( $oderPostModel->post_date_gmt );
 			<?php $note = $post->post_excerpt; ?>
 			<?php if ( ! empty( $note ) ) : ?>
 				<label><?php esc_html_e( 'Customer Note', 'learnpress' ); ?></label>
-				<p class="order-note description"><?php echo wp_kses_post( $note ); ?></p>
+				<p class="order-note description"><?php echo esc_html( $note ); ?></p>
 			<?php endif; ?>
 		</div>
 	</div>

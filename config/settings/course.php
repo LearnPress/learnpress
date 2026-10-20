@@ -37,7 +37,7 @@ return apply_filters(
 					'type'  => 'title',
 				),
 				array(
-					'title'   => esc_html__( 'Layout single course', 'learnpress' ),
+					'title'   => esc_html__( 'Single course layout', 'learnpress' ),
 					'desc'    => esc_html__( 'Layout default display for single course. (Not apply for theme Gutenberg)', 'learnpress' ),
 					'id'      => 'layout_single_course',
 					'default' => $layout_single_course_default,
@@ -299,6 +299,27 @@ return apply_filters(
 				array(
 					'type' => 'sectionend',
 					'id'   => 'lp_course_material_setting',
+				),
+			)
+		),
+		apply_filters(
+			'learn-press/course-settings-fields/student-notes',
+			array(
+				array(
+					'type'  => 'title',
+					'title' => esc_html__( 'Student Notes Settings', 'learnpress' ),
+					'id'    => 'lp_metabox_student_notes_setting',
+				),
+				array(
+					'title'   => esc_html__( 'Enable Student Notes', 'learnpress' ),
+					'id'      => 'enable_student_notes',
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'Let enrolled students highlight lesson content and save notes. Existing notes are kept when disabled.', 'learnpress' ),
+				),
+				array(
+					'type' => 'sectionend',
+					'id'   => 'lp_metabox_student_notes_setting',
 				),
 			)
 		),

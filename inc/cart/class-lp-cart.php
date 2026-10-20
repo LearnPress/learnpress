@@ -117,10 +117,12 @@ class LP_Cart {
 				)
 			);
 
-			// Fixed security, quantity must be > 0
-			if ( (int) $this->_cart_content[ $cart_id ]['quantity'] <= 0 ) {
-				$this->_cart_content[ $cart_id ]['quantity'] = 1;
+			// Fixed security, quantity must be a positive integer.
+			$quantity = absint( $this->_cart_content[ $cart_id ]['quantity'] );
+			if ( $quantity <= 0 ) {
+				$quantity = 1;
 			}
+			$this->_cart_content[ $cart_id ]['quantity'] = $quantity;
 
 			// Update cart to session DB.
 			$this->update_session( $this->_cart_content );

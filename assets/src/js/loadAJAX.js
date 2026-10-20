@@ -2,17 +2,10 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.1.0
+ * @version 1.1.1
  */
 
-import {
-	lpAddQueryArgs,
-	lpFetchAPI,
-	listenElementCreated,
-	lpOnElementReady,
-	lpGetCurrentURLNoParam,
-	lpShowHideEl,
-} from './utils.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 // Handle general parameter in the Frontend and Backend
 let lpSettings = {};
@@ -25,7 +18,7 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 
 const lpAJAX = () => {
 	const classLPTarget = '.lp-target';
-	const urlCurrent = lpGetCurrentURLNoParam();
+	const urlCurrent = lpUtils.lpGetCurrentURLNoParam();
 
 	return {
 		autoLoadAPIs: () => {
@@ -51,57 +44,96 @@ const lpAJAX = () => {
 			} else {
 				params.args = JSON.stringify( params.args );
 				params.callback = JSON.stringify( params.callback );
-				url = lpAddQueryArgs( url, params );
+				url = lpUtils.lpAddQueryArgs( url, params );
 			}
 
-			lpFetchAPI( url, option, callBack );
+			lpUtils.lpFetchAPI( url, option, callBack );
 		},
 		fetchAJAX: ( params, callBack ) => {
 			let urlAjax = lpSettings.lpAjaxUrl;
 
 			// Set param id_url for identify.
-			if ( params.hasOwnProperty( 'args' ) && params.args.hasOwnProperty( 'id_url' ) ) {
-				urlAjax = lpAddQueryArgs( urlAjax, { id_url: params.args.id_url } );
+			if (
+				params.hasOwnProperty( 'args' ) &&
+				params.args.hasOwnProperty( 'id_url' )
+			) {
+				urlAjax = lpUtils.lpAddQueryArgs( urlAjax, {
+					id_url: params.args.id_url,
+				} );
 			} else if ( params.hasOwnProperty( 'id_url' ) ) {
-				urlAjax = lpAddQueryArgs( urlAjax, { id_url: params.id_url } );
+				urlAjax = lpUtils.lpAddQueryArgs( urlAjax, {
+					id_url: params.id_url,
+				} );
 			}
 			// Set param lang here if exits, for detect translate
 			if ( lpSettings.urlParams.hasOwnProperty( 'lang' ) ) {
-				urlAjax = lpAddQueryArgs( urlAjax, { lang: lpSettings.urlParams.lang } );
+				urlAjax = lpUtils.lpAddQueryArgs( urlAjax, {
+					lang: lpSettings.urlParams.lang,
+				} );
 			}
 
-			const formData = new FormData();
-			const action = params.hasOwnProperty( 'action' ) ? params.action : 'load_content_via_ajax';
-			formData.append( 'nonce', lpSettings.nonce );
-			formData.append( 'lp-load-ajax', action );
-			formData.append( 'data', JSON.stringify( params ) );
-			const dataSend = {
-				method: 'POST',
-				headers: {},
-				body: formData,
-			};
+			const action = params.hasOwnProperty( 'action' )
+				? params.action
+				: 'load_content_via_ajax';
+			const isGet =
+				params.hasOwnProperty( 'method_request' ) &&
+				'GET' === String( params.method_request ).toUpperCase();
+			let dataSend;
+
+			if ( isGet ) {
+				// Don't send method_request back to server; keep URL shorter.
+				const paramsForSend = { ...params };
+				delete paramsForSend.method_request;
+
+				urlAjax = lpUtils.lpAddQueryArgs( urlAjax, {
+					nonce: lpSettings.nonce,
+					'lp-load-ajax': action,
+					data: JSON.stringify( paramsForSend ),
+				} );
+
+				dataSend = {
+					method: 'GET',
+					headers: {},
+				};
+			} else {
+				const formData = new FormData();
+				formData.append( 'nonce', lpSettings.nonce );
+				formData.append( 'lp-load-ajax', action );
+				formData.append( 'data', JSON.stringify( params ) );
+
+				dataSend = {
+					method: 'POST',
+					headers: {},
+					body: formData,
+				};
+			}
 
 			if ( 0 !== parseInt( lpSettings.user_id ) ) {
 				dataSend.headers[ 'X-WP-Nonce' ] = lpSettings.nonce;
 			}
 
-			lpFetchAPI( urlAjax, dataSend, callBack );
+			lpUtils.lpFetchAPI( urlAjax, dataSend, callBack );
 		},
 		getElements: () => {
 			// Finds all elements with the class '.lp-load-ajax-element'
-			const elements = document.querySelectorAll( '.lp-load-ajax-element:not(.loaded)' );
+			const elements = document.querySelectorAll(
+				'.lp-load-ajax-element:not(.loaded)'
+			);
 			//console.log( 'getElements', elements );
 			if ( elements.length ) {
 				elements.forEach( ( element ) => {
 					//console.log( 'Element handing', element );
-					const elTarget = element.querySelector( `${ classLPTarget }` );
+					const elTarget = element.querySelector(
+						`${ classLPTarget }`
+					);
 					if ( ! elTarget ) {
 						return;
 					}
 
 					const dataObj = JSON.parse( elTarget.dataset.send );
 					const dataSend = { ...dataObj };
-					const elLoadingFirst = element.querySelector( '.loading-first' );
+					const elLoadingFirst =
+						element.querySelector( '.loading-first' );
 
 					const callBack = {
 						success: ( response ) => {
@@ -118,7 +150,11 @@ const lpAJAX = () => {
 						},
 						completed: () => {
 							if ( typeof wp !== 'undefined' && wp.hooks ) {
-								wp.hooks.doAction( 'lp-ajax-completed', element, dataSend );
+								wp.hooks.doAction(
+									'lp-ajax-completed',
+									element,
+									dataSend
+								);
 							}
 
 							window.lpAJAXG.getElements();
@@ -175,10 +211,16 @@ const lpAJAX = () => {
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
 
 			// Set url params to reload page.
-			if ( ! dataSend.args.hasOwnProperty( 'enableUpdateParamsUrl' ) ||
-				dataSend.args.enableUpdateParamsUrl ) {
+			if (
+				! dataSend.args.hasOwnProperty( 'enableUpdateParamsUrl' ) ||
+				dataSend.args.enableUpdateParamsUrl
+			) {
 				lpSettings.urlParams.paged = dataSend.args.paged;
-				window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpSettings.urlParams ) );
+				window.history.pushState(
+					{},
+					'',
+					lpUtils.lpAddQueryArgs( urlCurrent, lpSettings.urlParams )
+				);
 			}
 			// End.
 
@@ -191,7 +233,10 @@ const lpAJAX = () => {
 				! dataSend.args.hasOwnProperty( 'enableScrollToView' ) ||
 				dataSend.args.enableScrollToView
 			) {
-				const elLPTargetY = elLPTarget.getBoundingClientRect().top + window.scrollY - 100;
+				const elLPTargetY =
+					elLPTarget.getBoundingClientRect().top +
+					window.scrollY -
+					100;
 				window.scrollTo( { top: elLPTargetY } );
 			}
 
@@ -219,9 +264,12 @@ const lpAJAX = () => {
 			return ( elLPTarget.dataset.send = JSON.stringify( dataSend ) );
 		},
 		showHideLoading: ( elLPTarget, status ) => {
-			const elLoading = elLPTarget.nextElementSibling?.querySelector( '.lp-loading-change' );
+			const elLoading =
+				elLPTarget.nextElementSibling?.querySelector(
+					'.lp-loading-change'
+				);
 			if ( elLoading ) {
-				lpShowHideEl( elLoading, status );
+				lpUtils.lpShowHideEl( elLoading, status );
 			}
 		},
 	};
@@ -238,7 +286,7 @@ document.addEventListener( 'click', function ( e ) {
 } );
 
 // Listen element created
-listenElementCreated( ( node ) => {
+lpUtils.listenElementCreated( ( node ) => {
 	if ( node.classList.contains( 'lp-load-ajax-element' ) ) {
 		//console.log( 'Element created', node );
 		window.lpAJAXG.getElements();
@@ -246,7 +294,7 @@ listenElementCreated( ( node ) => {
 } );
 
 // Listen element ready
-lpOnElementReady( '.lp-load-ajax-element', ( element ) => {
+lpUtils.lpOnElementReady( '.lp-load-ajax-element', ( element ) => {
 	//console.log( 'Element ready', element );
 	window.lpAJAXG.getElements();
 } );

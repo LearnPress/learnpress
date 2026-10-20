@@ -501,6 +501,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Invalid course!', 'learnpress' ) );
 			}
 
+			if ( post_password_required( $course_id )
+				&& ! current_user_can( 'edit_post', $course_id ) ) {
+				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
+			}
+
 			$user_id    = get_current_user_id();
 			$user       = UserModel::find( $user_id, true );
 			$can_enroll = $course->can_enroll( $user );
@@ -537,9 +542,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$cart     = LearnPress::instance()->cart;
 				$checkout = LP_Checkout::instance();
 
-				if ( ! learn_press_enable_cart() ) {
-					$cart->empty_cart();
-				}
+				$cart->empty_cart();
 
 				$cart_id = $cart->add_to_cart( $course_id );
 				if ( ! $cart_id ) {
@@ -549,6 +552,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				if ( is_user_logged_in() ) {
 					$order_id = $checkout->create_order();
 					$order    = new LP_Order( $order_id );
+
+					// Security: free enrollment must never complete a paid order.
+					if ( floatval( $order->get_total() ) > 0 ) {
+						$cart->empty_cart();
+						throw new Exception( esc_html__( 'Invalid enrollment: the order total is not zero.', 'learnpress' ) );
+					}
+
 					$order->payment_complete();
 
 					$cart->empty_cart();
@@ -668,7 +678,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			// @deprecated hook since v4.2.7.3
 			//do_action( 'learnpress/rest-api/courses/purchase/before-add-to-cart' );
 
-			$cart_id = $cart->add_to_cart( $course_id, 1, $params );
+			$quantity = isset( $params['quantity'] ) ? absint( $params['quantity'] ) : 1;
+			if ( $quantity <= 0 ) {
+				$quantity = 1;
+			}
+			unset( $params['quantity'] );
+
+			$cart_id = $cart->add_to_cart( $course_id, $quantity, $params );
 			if ( empty( $cart_id ) ) {
 				throw new Exception( __( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 			}

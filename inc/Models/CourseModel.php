@@ -18,7 +18,7 @@ use LearnPress\Databases\Course\CourseSectionItemsDB;
 use LearnPress\Filters\PostFilter;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
-use LP_Course_Cache;
+use LearnPress\Cache\LPCourseCache;
 use LP_Course_DB;
 use LP_Course_Item;
 use LP_Course_JSON_DB;
@@ -263,20 +263,24 @@ class CourseModel {
 	 * Get price
 	 *
 	 * @return float
+	 * @since 4.2.6.9
+	 * @version 1.0.0
 	 */
 	public function get_price(): float {
 		/*if ( ! empty( $this->price ) ) {
 			return $this->price;
 		}*/
 
-		if ( $this->has_sale_price() ) {
+		if ( $this->has_no_enroll_requirement() ) {
+			$price = 0;
+		} elseif ( $this->has_sale_price() ) {
 			$price = $this->get_sale_price();
 		} else {
 			$price = $this->get_regular_price();
 		}
 
 		$this->price                                        = (float) $price;
-		$this->meta_data->{CoursePostModel::META_KEY_PRICE} = (float) $price;
+		$this->meta_data->{CoursePostModel::META_KEY_PRICE} = $this->price;
 
 		return apply_filters( 'learnPress/course/price', (float) $price, $this->get_id() );
 	}
@@ -976,7 +980,7 @@ class CourseModel {
 	 */
 	public function get_total_user_enrolled_or_purchased(): int {
 		$total           = 0;
-		$lp_course_cache = new LP_Course_Cache( true );
+		$lp_course_cache = new LPCourseCache( true );
 
 		try {
 			$total = $lp_course_cache->get_total_students_enrolled_or_purchased( $this->get_id() );
@@ -1074,6 +1078,12 @@ class CourseModel {
 			if ( ! in_array( $this->post_status, [ 'publish', 'private' ] ) ) {
 				$error_code = 'course_not_publish';
 				throw new Exception( __( 'The course is not public', 'learnpress' ) );
+			}
+
+			if ( post_password_required( $this->get_id() )
+				&& ! current_user_can( 'edit_post', $this->get_id() ) ) {
+				$error_code = 'course_password_required';
+				throw new Exception( __( 'This course is password protected.', 'learnpress' ) );
 			}
 
 			$userCourseModel           = UserCourseModel::find( $user_id, $this->get_id(), true );
@@ -1374,7 +1384,7 @@ class CourseModel {
 		$filter_course     = new LP_Course_JSON_Filter();
 		$filter_course->ID = $course_id;
 		$key_cache         = "courseModel/find/id/{$course_id}";
-		$lp_course_cache   = new LP_Course_Cache();
+		$lp_course_cache   = new LPCourseCache();
 
 		// Check cache
 		if ( $check_cache ) {
@@ -1485,7 +1495,7 @@ class CourseModel {
 	 */
 	public function clean_caches() {
 		$key_cache       = "courseModel/find/id/{$this->ID}";
-		$lp_course_cache = new LP_Course_Cache();
+		$lp_course_cache = new LPCourseCache();
 		$lp_course_cache->clear( $key_cache );
 
 		// Clear cache image urls, store with many sizes

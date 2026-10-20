@@ -5,19 +5,17 @@
  * Pagination is handled by loadAJAX.js clickNumberPage (via .page-numbers class).
  *
  * @since 4.3.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
 export class ListStudentsEnrolled {
 	constructor() {
-		this.instructorId = null;
-		this.elContainer = null;
-		this.isRequesting = false;
+		this.elLayout = null;
 	}
 
 	static selectors = {
-		elContainer: '.lp-enrolled-students',
+		elLayout: '.lp-students-enrolled-layout',
 		elForm: '.lp-enrolled-students-form',
 		elLPTarget: '.lp-target',
 		elCourseNameInput: '.lp-enrolled-filter-course-name',
@@ -31,22 +29,11 @@ export class ListStudentsEnrolled {
 	};
 
 	init() {
-		this.elContainer = document.querySelector(
-			ListStudentsEnrolled.selectors.elContainer
+		this.elLayout = document.querySelector(
+			ListStudentsEnrolled.selectors.elLayout
 		);
-		if ( ! this.elContainer ) {
+		if ( ! this.elLayout ) {
 			return;
-		}
-
-		const elLPTarget = this.elContainer.querySelector(
-			ListStudentsEnrolled.selectors.elLPTarget
-		);
-		const ajaxHandle = this.getAjaxHandle();
-		if ( elLPTarget && ajaxHandle ) {
-			const dataSend = ajaxHandle.getDataSetCurrent( elLPTarget );
-			if ( dataSend && dataSend.args ) {
-				this.instructorId = dataSend.args.instructor_id;
-			}
 		}
 
 		this.events();
@@ -60,64 +47,58 @@ export class ListStudentsEnrolled {
 		ListStudentsEnrolled._loadedEvents = this;
 
 		// Search/Clear button click.
+		// Capture phase: clicks inside containers that call stopPropagation()
+		// on click (e.g. Headless UI DialogPanel) never reach document on bubble.
 		lpUtils.eventHandlers( 'click', [
 			{
 				selector: ListStudentsEnrolled.selectors.elBtnSearch,
-				class: this,
-				callBack: this.searchStudents.name,
+				callBack: this.searchStudents.bind( this ),
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elBtnClear,
-				class: this,
-				callBack: this.clearFilters.name,
+				callBack: this.clearFilters.bind( this ),
 			},
-		] );
+		], true );
 
 		// Search on Enter key.
 		lpUtils.eventHandlers( 'keydown', [
 			{
 				selector: ListStudentsEnrolled.selectors.elSearchInput,
-				class: this,
-				callBack: this.triggerBtnSearch.name,
+				callBack: this.triggerBtnSearch.bind( this ),
 				checkIsEventEnter: true,
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elCourseNameInput,
-				class: this,
-				callBack: this.triggerBtnSearch.name,
+				callBack: this.triggerBtnSearch.bind( this ),
 				checkIsEventEnter: true,
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elStartDateInput,
-				class: this,
-				callBack: this.triggerBtnSearch.name,
+				callBack: this.triggerBtnSearch.bind( this ),
 				checkIsEventEnter: true,
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elEndDateInput,
-				class: this,
-				callBack: this.triggerBtnSearch.name,
+				callBack: this.triggerBtnSearch.bind( this ),
 				checkIsEventEnter: true,
 			},
-		] );
+		], true );
 
 		lpUtils.eventHandlers( 'change', [
 			{
 				selector: ListStudentsEnrolled.selectors.elStartDateInput,
-				class: this,
-				callBack: this.checkDatesRange.name,
+				callBack: this.checkDatesRange.bind( this ),
 			},
 			{
 				selector: ListStudentsEnrolled.selectors.elEndDateInput,
-				class: this,
-				callBack: this.checkDatesRange.name,
+				callBack: this.checkDatesRange.bind( this ),
 			},
-		] );
+		], true );
 	}
 
 	// Click button search.
 	triggerBtnSearch() {
-		const buttonSearch = this.elContainer.querySelector(
+		const buttonSearch = this.elLayout.querySelector(
 			ListStudentsEnrolled.selectors.elBtnSearch
 		);
 		if ( buttonSearch ) {
@@ -139,16 +120,19 @@ export class ListStudentsEnrolled {
 		}
 
 		const startDateInput = elForm.querySelector(
-			ListStudentsEnrolled.selectors.elStartDateInput,
+			ListStudentsEnrolled.selectors.elStartDateInput
 		);
 		const endDateInput = elForm.querySelector(
-			ListStudentsEnrolled.selectors.elEndDateInput,
+			ListStudentsEnrolled.selectors.elEndDateInput
 		);
 
 		if ( elInput === startDateInput ) {
 			if ( startDateInput.value ) {
 				endDateInput.min = startDateInput.value;
-				if ( endDateInput.value && endDateInput.value < startDateInput.value ) {
+				if (
+					endDateInput.value &&
+					endDateInput.value < startDateInput.value
+				) {
 					endDateInput.value = startDateInput.value;
 				}
 			} else {
@@ -157,7 +141,10 @@ export class ListStudentsEnrolled {
 		} else if ( elInput === endDateInput ) {
 			if ( endDateInput.value ) {
 				startDateInput.max = endDateInput.value;
-				if ( startDateInput.value && startDateInput.value > endDateInput.value ) {
+				if (
+					startDateInput.value &&
+					startDateInput.value > endDateInput.value
+				) {
 					startDateInput.value = endDateInput.value;
 				}
 			} else {
@@ -229,26 +216,22 @@ export class ListStudentsEnrolled {
 	 * @param args
 	 */
 	searchStudents( args ) {
-		const { e } = args;
-		if ( e ) {
-			e.preventDefault();
-		}
-		const btn = args?.target?.closest(
+		const { e, target } = args;
+		const btn = target.closest(
 			ListStudentsEnrolled.selectors.elBtnSearch
 		);
-		if ( btn ) {
-			if (
-				this.isRequesting ||
-				btn.classList.contains( 'loading' )
-			) {
-				return;
-			}
-		} else if ( this.isRequesting ) {
+
+		e.preventDefault();
+
+		if ( ! btn ) {
 			return;
 		}
 
 		const elForm = btn.closest( ListStudentsEnrolled.selectors.elForm );
-		const elLPTarget = this.elContainer.querySelector(
+		const elLayout = elForm.closest(
+			ListStudentsEnrolled.selectors.elLayout
+		);
+		const elLPTarget = elLayout.querySelector(
 			ListStudentsEnrolled.selectors.elLPTarget
 		);
 		if ( ! elLPTarget || ! elForm ) {
@@ -285,19 +268,16 @@ export class ListStudentsEnrolled {
 		const btn = args?.target?.closest(
 			ListStudentsEnrolled.selectors.elBtnClear
 		);
-		if ( btn ) {
-			if (
-				this.isRequesting ||
-				btn.classList.contains( 'loading' )
-			) {
-				return;
-			}
-		} else if ( this.isRequesting ) {
+
+		if ( ! btn ) {
 			return;
 		}
 
 		const elForm = btn.closest( ListStudentsEnrolled.selectors.elForm );
-		const elLPTarget = this.elContainer.querySelector(
+		const elLayout = elForm.closest(
+			ListStudentsEnrolled.selectors.elLayout
+		);
+		const elLPTarget = elLayout.querySelector(
 			ListStudentsEnrolled.selectors.elLPTarget
 		);
 		if ( ! elLPTarget || ! elForm ) {
@@ -334,12 +314,10 @@ export class ListStudentsEnrolled {
 	reloadContent( elLPTarget, dataSend, btn = null ) {
 		const ajaxHandle = this.getAjaxHandle();
 		if ( ! ajaxHandle ) {
-			this.isRequesting = false;
 			this.setButtonLoadingState( btn, false );
 			return;
 		}
 
-		this.isRequesting = true;
 		ajaxHandle.showHideLoading( elLPTarget, 1 );
 
 		const callBack = {
@@ -351,7 +329,6 @@ export class ListStudentsEnrolled {
 			},
 			error: ( error ) => console.error( error ),
 			completed: () => {
-				this.isRequesting = false;
 				ajaxHandle.showHideLoading( elLPTarget, 0 );
 				this.setButtonLoadingState( btn, false );
 			},
@@ -364,6 +341,6 @@ export class ListStudentsEnrolled {
 // Auto-initialize when DOM is available (for standalone page load).
 const listStudentsEnrolled = new ListStudentsEnrolled();
 
-lpUtils.lpOnElementReady( ListStudentsEnrolled.selectors.elContainer, () => {
+lpUtils.lpOnElementReady( ListStudentsEnrolled.selectors.elLayout, () => {
 	listStudentsEnrolled.init();
 } );

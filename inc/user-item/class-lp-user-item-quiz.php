@@ -208,7 +208,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		$lp_quiz_cache = LP_Quiz_Cache::instance();
 
-		$key_cache = sprintf( '%d/user/%d/course/%d', $this->get_item_id(), $this->get_user_id(), $this->get_course_id() );
+		$key_cache = $this->get_results_cache_key();
 		$result    = $lp_quiz_cache->get_cache( $key_cache );
 
 		if ( false === $result || $force ) {
@@ -227,6 +227,29 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$result['graduationText'] = $this->get_graduation_text();
 
 		return $prop ? $result[ $prop ] : new LP_Quiz_Results( $result );
+	}
+
+	/**
+	 * Key of the cache filled by @see LP_User_Item_Quiz::get_results.
+	 *
+	 * @return string
+	 */
+	public function get_results_cache_key(): string {
+		return sprintf( '%d/user/%d/course/%d', $this->get_item_id(), $this->get_user_id(), $this->get_course_id() );
+	}
+
+	/**
+	 * Drop the cached result of this quiz for this user.
+	 *
+	 * get_results() caches what it calculates, and that cache outlives the request wherever a
+	 * persistent object cache is installed. Anything that rewrites the stored result must clear
+	 * it, or the next read serves the result from before the write - a quiz submitted after the
+	 * in-progress result was cached comes back with every question still unanswered.
+	 *
+	 * @return void
+	 */
+	public function clear_results_cache() {
+		LP_Quiz_Cache::instance()->clear( $this->get_results_cache_key() );
 	}
 
 	/**
@@ -766,6 +789,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$result_answer = $this->calculate_quiz_result( $answered_check );
 
 		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), json_encode( $result_answer ) );
+		$this->clear_results_cache();
 		$this->add_checked_question( $question_id );
 
 		$checked['answered'] = $answered;

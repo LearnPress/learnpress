@@ -150,6 +150,7 @@ class AdminTemplate {
 	 *     Arguments.
 	 *
 	 *     @type array  $options    Options for select.
+	 *     @type string $id         Optional id attribute for select.
 	 *     @type string $name       Name attribute for select.
 	 *     @type string $class_name Class name for select.
 	 * }
@@ -162,6 +163,7 @@ class AdminTemplate {
 		$html_options = '';
 
 		$options       = $args['options'] ?? [];
+		$id            = $args['id'] ?? '';
 		$name          = $args['name'] ?? '';
 		$class_name    = $args['class_name'] ?? '';
 		$default_value = $args['default_value'] ?? '';
@@ -181,7 +183,8 @@ class AdminTemplate {
 
 		$section = [
 			'select'     => sprintf(
-				'<select name="%s" class="%s lp-tom-select" %s data-struct="%s" data-save="%s">',
+				'<select %sname="%s" class="%s lp-tom-select" %s data-struct="%s" data-save="%s">',
+				$id ? sprintf( 'id="%s" ', esc_attr( $id ) ) : '',
 				esc_attr( $name ),
 				esc_attr( $class_name ),
 				esc_attr( $multiple ),
@@ -286,9 +289,10 @@ class AdminTemplate {
 			$tab_keys   = array_keys( $tabs );
 			$active_tab = reset( $tab_keys );
 		}
-		$content = $data['content'] ?? '';
-		$title   = $data['title'] ?? '';
-		$id      = $data['id'] ?? '';
+		$content         = $data['content'] ?? '';
+		$title           = $data['title'] ?? '';
+		$id              = $data['id'] ?? '';
+		$hide_notices_wp = $data['hide_notices_wp'] ?? false;
 
 		$classes = array( 'wrap' );
 		if ( $id ) {
@@ -330,6 +334,12 @@ class AdminTemplate {
 				'<h2 class="nav-tab-wrapper">%s</h2>',
 				$html_tabs
 			) : '',
+			'wrap-wp-header-end' => sprintf(
+				'<div class="%s">',
+				$hide_notices_wp ? 'lp-hidden' : ''
+			), // Hide notices of WP insert after wp-header-end
+			'wp-header-end'   => '<hr class="wp-header-end">',
+			'wrap-wp-header-end-close' => '</div>',
 			'wrap-content' => '<div class="lp-admin-tabs">',
 			'content'      => $content,
 			'wrap-content-end' => '</div>',

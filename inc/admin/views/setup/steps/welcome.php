@@ -17,5 +17,5 @@ defined( 'ABSPATH' ) or exit;
 
 	<h2><?php esc_html_e( 'Welcome to LearnPress', 'learnpress' ); ?></h2>
 
-	<p><?php esc_html_e( 'Create courses, manage students, and start selling online with LearnPress.', 'learnpress' ); ?></p>
+	<p><?php esc_html_e( 'Create courses, manage students, and sell courses online with LearnPress.', 'learnpress' ); ?></p>
 </div>

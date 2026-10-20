@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+use LearnPress\Cache\LPSettingsCache;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\UserModel;
@@ -130,7 +131,6 @@ abstract class LP_Abstract_Post_Type {
 		// add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
 		add_action( 'admin_footer', array( $this, 'admin_footer_scripts' ) );
 
-		//add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 		add_action( 'admin_print_scripts', array( $this, 'remove_auto_save_script' ) );
 
 		// Remove wp-auth-check and heartbeat script on post type of LearnPress
@@ -311,7 +311,7 @@ abstract class LP_Abstract_Post_Type {
 			// Todo: check is pages of LP
 			if ( 'page' === get_post_type( $post_id ) ) {
 				// Clear cache LP settings
-				$lp_settings_cache = new LP_Settings_Cache( true );
+				$lp_settings_cache = new LPSettingsCache( true );
 				$lp_settings_cache->clean_lp_settings();
 			}
 
@@ -383,18 +383,20 @@ abstract class LP_Abstract_Post_Type {
 	 * @return void
 	 * @author tungnx
 	 * @since 4.1.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function before_trash_post( int $post_id ) {
 		try {
 			// Case move item's course to trash
 			$course_item_types = CourseModel::item_types_support();
-			if ( ! in_array( get_post_type( $post_id ), $course_item_types ) ) {
+			$item_type         = get_post_type( $post_id );
+			if ( ! in_array( $item_type, $course_item_types ) ) {
 				return;
 			}
 
 			// Set course id of item when item assign on course is trashed
-			$course_of_item = LP_Course_DB::getInstance()->get_course_by_item_id( $post_id );
+			$courses_from_item = CourseSectionItemModel::get_courses_from_item_id( $post_id, $item_type );
+			$course_of_item    = $courses_from_item[0]->section_course_id ?? 0;
 			if ( $course_of_item ) {
 				$this->course_of_item_trashed = $course_of_item;
 			}
@@ -1088,67 +1090,5 @@ abstract class LP_Abstract_Post_Type {
 
 	public function row_actions( $actions, $post ) {
 		return $actions;
-	}
-
-	/**
-	 * @deprecated 4.1.6.9
-	 */
-	public function updated_messages( $messages ) {
-		$post             = get_post();
-		$post_type        = get_post_type( $post );
-		$post_type_object = get_post_type_object( $this->_post_type );
-		if ( $this->_post_type !== $post_type ) {
-			return $messages;
-		}
-		$messages[ $this->_post_type ] = array(
-			0  => '', // Unused. Messages start at index 1.
-			1  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'updated.', 'learnpress' ) ),
-			2  => __( 'Custom field updated.', 'learnpress' ),
-			3  => __( 'Custom field deleted.', 'learnpress' ),
-			4  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'updated.', 'learnpress' ) ),
-			/* translators: %s: date and time of the revision */
-			5  => isset( $_GET['revision'] ) ? sprintf( __( 'The lesson has been restored to revision from %s', 'learnpress' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-			6  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'published.', 'learnpress' ) ),
-			7  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'saved.', 'learnpress' ) ),
-			8  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'submitted.', 'learnpress' ) ),
-			9  => sprintf(
-				sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'scheduled for: <strong>%1$s</strong>.', 'learnpress' ) ),
-				// translators: Publish box date format, see http://php.net/date
-				date_i18n( __( 'M j, Y @ G:i', 'learnpress' ), strtotime( $post->post_date ) )
-			),
-			10 => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'draft updated.', 'learnpress' ) ),
-		);
-
-		if ( $post_type_object->publicly_queryable ) {
-			$permalink = get_permalink( $post->ID );
-
-			$view_link = sprintf( ' <a href="%s">%s</a>', esc_url_raw( $permalink ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
-			switch ( $this->_post_type ) {
-				case LP_LESSON_CPT:
-				case LP_QUIZ_CPT:
-					//$view_link = learn_press_get_item_course_id( $post->ID, $post->post_type ) ? $view_link : '';
-					$view_link = LP_Course_DB::getInstance()->get_course_by_item_id( $post->ID ) ? $view_link : '';
-					break;
-				case LP_ORDER_CPT:
-					$order     = learn_press_get_order( $post->ID );
-					$view_link = $order->get_view_order_url();
-					$view_link = sprintf( ' <a href="%s">%s</a>', esc_url_raw( $view_link ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
-					break;
-				case LP_QUESTION_CPT:
-					$view_link = '';
-					break;
-			}
-			$messages[ $this->_post_type ][1] .= $view_link;
-			$messages[ $this->_post_type ][6] .= $view_link;
-			$messages[ $this->_post_type ][9] .= $view_link;
-
-			$preview_permalink = learn_press_get_preview_url( $post->ID );
-
-			$preview_link                       = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url_raw( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
-			$messages[ $this->_post_type ][8]  .= $preview_link;
-			$messages[ $this->_post_type ][10] .= $preview_link;
-		}
-
-		return $messages;
 	}
 }

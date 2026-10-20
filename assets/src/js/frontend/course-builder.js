@@ -5,7 +5,9 @@
  * @version 1.0.0
  */
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
+import SweetAlert from 'sweetalert2';
 import { BuilderTabCourse } from './course-builder/builder-course/builder-tab-course.js';
+import { SWAL_ICON_DELETE } from './course-builder/swal-icons.js';
 import { BuilderEditCourse } from './course-builder/builder-course/builder-edit-course.js';
 import { CreateCourseViaAI } from '../admin/courses/generate-with-ai.js';
 import { GenerateWithOpenai } from '../admin/generate-with-openai.js';
@@ -25,32 +27,49 @@ import { initElsTomSelect } from 'lpAssetsJsPath/admin/init-tom-select.js';
 import { Utils } from 'lpAssetsJsPath/admin/utils-admin.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify';
 
+let createCourseAiInitialized = false;
+let editCourseAiInitialized = false;
+
+/**
+ * Initialize delegated AI actions after Course Builder content is mounted.
+ * The Frontend Editor fetches its course markup asynchronously, after this
+ * bundle's initial page setup has already run.
+ *
+ * @param {HTMLElement|Document} container Content that may contain AI buttons.
+ */
+const initCourseBuilderAi = ( container = document ) => {
+	if (
+		! createCourseAiInitialized &&
+		container.querySelector( '.lp-btn-generate-course-with-ai, .lp-btn-warning-enable-ai' )
+	) {
+		new CreateCourseViaAI( {
+			autoInsertButton: false,
+			isCourseBuilder: true,
+			redirectDelayMs: 1200,
+		} );
+		createCourseAiInitialized = true;
+	}
+
+	if (
+		! editCourseAiInitialized &&
+		container.querySelector( '.cb-course-edit-ai-btn.lp-btn-generate-with-ai' )
+	) {
+		new GenerateWithOpenai( {
+			autoInsertButtons: false,
+			isCourseBuilder: true,
+		} );
+		editCourseAiInitialized = true;
+	}
+};
+
+window.lpCourseBuilderInitAi = initCourseBuilderAi;
+
 // Initialize all builder components
 const initBuilderComponents = () => {
 	try {
 		new BuilderTabCourse();
-		new BuilderEditCourse();
-
-		const hasCreateCourseAiButton = document.querySelector(
-			'.lp-btn-generate-course-with-ai, .lp-btn-warning-enable-ai'
-		);
-		if ( hasCreateCourseAiButton ) {
-			new CreateCourseViaAI( {
-				autoInsertButton: false,
-				isCourseBuilder: true,
-				redirectDelayMs: 1200,
-			} );
-		}
-
-		const hasEditCourseAiButton = document.querySelector(
-			'.cb-course-edit-ai-btn.lp-btn-generate-with-ai'
-		);
-		if ( hasEditCourseAiButton ) {
-			new GenerateWithOpenai( {
-				autoInsertButtons: false,
-				isCourseBuilder: true,
-			} );
-		}
+		initCourseEditor();
+		initCourseBuilderAi();
 
 		new BuilderTabLesson();
 		new BuilderEditLesson();
@@ -74,6 +93,35 @@ const initBuilderComponents = () => {
 		console.error( 'Error initializing builder components:', e );
 	}
 };
+
+const initializedCourseEditors = new WeakSet();
+
+/**
+ * Initialize the Course Builder edit form after it has been mounted dynamically.
+ *
+ * @param {HTMLElement} container Optional container holding the editor markup.
+ * @return {boolean} Whether the editor was initialized.
+ */
+const initCourseEditor = ( container = document ) => {
+	const editElement = container.matches?.( '.cb-section__course-edit' )
+		? container
+		: container.querySelector?.( '.cb-section__course-edit' );
+
+	if ( ! editElement || initializedCourseEditors.has( editElement ) ) {
+		return false;
+	}
+
+	try {
+		new BuilderEditCourse();
+		initializedCourseEditors.add( editElement );
+		return true;
+	} catch ( error ) {
+		console.error( 'Error initializing Course Builder edit form:', error );
+		return false;
+	}
+};
+
+window.lpCourseBuilderInitCourseEditor = initCourseEditor;
 
 /**
  * Initialize sidebar collapse/expand toggle
@@ -166,7 +214,7 @@ const initHeaderMoreActions = () => {
 		} );
 	};
 
-	document.addEventListener( 'click', ( e ) => {
+	document.addEventListener( 'click', async ( e ) => {
 		const target = e.target;
 		const toggleBtn = target.closest( toggleSelector );
 
@@ -232,6 +280,22 @@ const initHeaderMoreActions = () => {
 				'.lp-cb-item-action-expand-toggle',
 			);
 			const dataSend = JSON.parse( elAction.dataset.send );
+			if ( dataSend.action_type === 'delete' ) {
+				const result = await SweetAlert.fire( {
+					title: elAction.textContent,
+					text: elAction.dataset.confirm,
+					iconHtml: SWAL_ICON_DELETE,
+					customClass: { icon: 'lp-cb-swal-icon-html' },
+					showCloseButton: true,
+					showCancelButton: true,
+					cancelButtonText: lpData.i18n.cancel,
+					confirmButtonText: lpData.i18n.yes,
+					reverseButtons: true,
+				} );
+				if ( ! result.isConfirmed ) {
+					return;
+				}
+			}
 
 			lpUtils.lpSetLoadingEl( elParentActionExpand, 1 );
 			const svg = elParentActionExpand.querySelector( 'svg' );

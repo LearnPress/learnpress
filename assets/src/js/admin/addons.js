@@ -1,341 +1,858 @@
 /**
- * Script handle admin notices.
+ * Admin Add-ons page JS handler as a class.
  *
- * @since 4.1.7.3.2
- * @version 1.0.1
+ * Add-ons list is rendered server-side via AdminAddonsPage::render_addons()
+ * through TemplateAJAX::load_content_via_ajax(). This class only handles
+ * UI interactions and addon actions via window.lpAJAXG.
+ *
+ * @since 4.4.7
+ * @version 1.0.0
  */
-import API from '../api';
-let elAddonsPage;
-let dataHtml;
-let dataAddons;
-let elLPAddons;
-const queryString = window.location.search;
-const urlParams = new URLSearchParams( queryString );
-const tab = urlParams.get( 'tab' );
-let elNotifyActionWrapper;
-const isHandling = [];
+import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import * as lpUtils from 'lpAssetsJsPath/utils.js';
 
-// API get list addons.
-const getAddons = ( set = '' ) => {
-	const params = tab ? `?tab=${ tab }` : `?${ set }`;
-	fetch( API.admin.apiAddons + params, {
-		method: 'GET',
-		headers: {
-			'X-WP-Nonce': lpDataAdmin.nonce,
-		},
-	} ).then( ( res ) =>
-		res.json()
-	).then( ( res ) => {
-		// console.log(data);
-		const { status, message, data } = res;
-		if ( status === 'success' ) {
-			dataHtml = data.html;
-			dataAddons = data.addons;
-		} else {
-			dataHtml = message;
-		}
-	} ).catch( ( err ) => {
-		console.log( err );
-	} );
-};
-// API send action install, update, activate, deactivate.
-const addonsAction = ( data, callBack ) => {
-	const addonSlug = data.addon.slug;
-
-	if ( isHandling.indexOf( addonSlug ) !== -1 ) {
-		return;
-	}
-	isHandling.push( addonSlug );
-
-	fetch( API.admin.apiAddonAction, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-WP-Nonce': lpDataAdmin.nonce,
-		},
-		body: JSON.stringify( { ...data } ),
-	} ).then( ( res ) =>
-		res.json()
-	).then( ( res ) => {
-		const indexAddonHanding = isHandling.indexOf( addonSlug );
-		if ( indexAddonHanding !== -1 ) {
-			isHandling.splice( indexAddonHanding, 1 );
-		}
-
-		const { status, message, data } = res;
-
-		if ( callBack ) {
-			callBack( status, message, data );
-		}
-
-		handleNotify( status, message );
-	} ).catch( ( err ) => {
-		handleNotify( 'error', `error js: ${ err }` );
-		console.log( err );
-	} );
-};
-// Show notify.
-const handleNotify = ( status, message ) => {
-	const elNotifyAction = elNotifyActionWrapper.querySelector( '.lp-notify-action' );
-	const elNotifyActionNew = elNotifyAction.cloneNode( true );
-	elNotifyActionNew.classList.remove( 'clone' );
-	elNotifyActionWrapper.insertBefore( elNotifyActionNew, elNotifyActionWrapper[ 0 ] );
-	const elSuccess = elNotifyActionNew.querySelector( `.${ elNotifyActionNew.classList.value }__success` );
-	const elFailed = elNotifyActionNew.querySelector( `.${ elNotifyActionNew.classList.value }__error` );
-
-	if ( status === 'success' ) {
-		elSuccess.classList.add( 'show' );
-		elSuccess.querySelector( '.message' ).innerHTML = message;
-	} else {
-		elFailed.classList.add( 'show' );
-		elFailed.querySelector( '.message' ).innerHTML = message;
+class AdminAddons {
+	constructor() {
+		this.elAddonsPage = null;
+		this.urlParams = new URLSearchParams( window.location.search );
 	}
 
-	elNotifyActionWrapper.classList.add( 'show' );
-	setTimeout( () => {
-		elNotifyActionNew.remove();
+	static selectors = {
+		elAddonsPage: '.lp-addons-page',
+		elToolbar: '.lp-addons-toolbar',
+		elLPAddons: '#lp-addons',
+		elAddonItem: '.lp-addon-item',
+		elBtnAction: '.btn-addon-action',
+		elNavTab: '.nav-tab',
+		elNavTabActive: '.nav-tab.nav-tab-active',
+		elFilter: '.lp-addons-filter',
+		elFilterToggle: '.lp-addons-filter__toggle',
+		elFilterMenu: '.lp-addons-filter__menu',
+		elCategory: '.lp-addons-category',
+		elCategoryActive: '.lp-addons-category.active',
+		elSearch: '.lp-addons-search',
+		elSearchBtn: '.lp-addons-search__btn',
+		elSearchBtnClear: '.lp-addons-search__btn-clear',
+		elSearchClose: '.lp-addons-search__close',
+		elSearchInput: '#lp-search-addons__input',
+		elItemPurchase: '.lp-addon-item__purchase',
+		elPurchaseInstall: '.purchase-install',
+		elPurchaseCode: '.enter-purchase-code',
+		elLicense: '.lp-addon-license',
+	};
 
-		const elNotifyAction = elNotifyActionWrapper.querySelectorAll( '.lp-notify-action' );
-		if ( elNotifyAction.length === 1 ) {
-			elNotifyActionWrapper.classList.remove( 'show' );
-		}
-	}, status === 'success' ? 3000 : 4000 );
-};
-// Get addons when js loaded.
-getAddons();
-// Search Addons.
-const searchAddons = ( name ) => {
-	const elAddonItems = elAddonsPage.querySelectorAll( '.lp-addon-item' );
-	let totalItems = 0;
+	init() {
+		// Content is injected via AJAX into .lp-target, wait for #lp-addons.
+		lpUtils.lpOnElementReady( AdminAddons.selectors.elLPAddons, () => {
+			this.elAddonsPage = document.querySelector(
+				AdminAddons.selectors.elAddonsPage
+			);
+			if ( ! this.elAddonsPage ) {
+				return;
+			}
 
-	elAddonItems.forEach( ( elAddonItem ) => {
-		const addonName = elAddonItem.querySelector( 'a' ).textContent;
-		if ( elAddonItem.classList.contains( 'hide' ) ) {
-			return;
-		}
-
-		if ( addonName.toLowerCase().includes( name.toLowerCase() ) ) {
-			elAddonItem.classList.remove( 'search-not-found' );
-			totalItems++;
-		} else {
-			elAddonItem.classList.add( 'search-not-found' );
-		}
-	} );
-
-	setGridItems( totalItems );
-};
-// Set grid style items.
-const setGridItems = ( totalItems ) => {
-	if ( totalItems < 4 ) {
-		elLPAddons.classList.add( 'max-3-items' );
-	} else {
-		elLPAddons.classList.remove( 'max-3-items' );
-	}
-};
-// Check element loaded and data API returned.
-const loadElData = setInterval( () => {
-	if ( ! elAddonsPage || ! elNotifyActionWrapper ) {
-		elAddonsPage = document.querySelector( '.lp-addons-page' );
-		elNotifyActionWrapper = document.querySelector( '.lp-notify-action-wrapper' );
-	} else if ( dataHtml && elAddonsPage && elNotifyActionWrapper ) {
-		elAddonsPage.innerHTML = dataHtml;
-		elLPAddons = elAddonsPage.querySelector( '#lp-addons' );
-		const elNavTabWrapper = document.querySelector( '.lp-nav-tab-wrapper' );
-		if ( ! elNavTabWrapper ) {
-			clearInterval( loadElData );
-			return;
-		}
-
-		const elNavTabWrapperClone = elNavTabWrapper.cloneNode( true );
-		elAddonsPage.insertBefore( elNavTabWrapperClone, elAddonsPage.children[ 0 ] );
-		elNavTabWrapperClone.style.display = 'flex';
-		elNavTabWrapper.remove();
-		const elNavActive = elNavTabWrapperClone.querySelector( '.nav-tab.nav-tab-active span' );
-		setGridItems( parseInt( elNavActive.textContent ) );
-
-		clearInterval( loadElData );
-	}
-}, 1 );
-
-document.addEventListener( 'DOMContentLoaded', ( e ) => {
-} );
-
-/*** Events ***/
-document.addEventListener( 'click', ( e ) => {
-	let el = e.target;
-	const tagName = el.tagName.toLowerCase();
-	if ( tagName === 'span' ) {
-		e.preventDefault();
-		const elBtnAction = el.closest( '.btn-addon-action' );
-		if ( elBtnAction ) {
-			elBtnAction.click();
-		}
-	}
-
-	// Events actions: activate, deactivate.
-	/*if ( el.classList.contains( 'lp-toggle-switch-label' ) ) {
-		//e.preventDefault();
-
-		const elAddonItem = el.closest( '.lp-addon-item' );
-		const idLabel = el.getAttribute( 'for' );
-		const elInput = document.querySelector( `#${ idLabel }` );
-		const action = elInput.getAttribute( 'data-action' );
-		const addon = dataAddons[ elAddonItem.dataset.slug ];
-		const addonSlug = addon.slug;
-		const parent = el.closest( '.lp-toggle-switch' );
-		const label = parent.querySelector( `label[for=${ idLabel }]` );
-		const dashicons = parent.querySelector( '.dashicons-update' );
-		dashicons.style.display = 'inline-block';
-		label.style.display = 'none';
-		const data = { action, addon };
-		addonsAction( data, function( status, message, data ) {
-			const elAddon = document.querySelector( `#${ addonSlug }` );
-			if ( elAddon ) {
-				const parent = elAddon.closest( '.lp-toggle-switch' );
-				if ( parent ) {
-					const dashicons = parent.querySelector( '.dashicons-update' );
-					dashicons.style.display = 'none';
-					if ( action === 'deactivate' ) {
-						elAddon.setAttribute( 'data-action', 'activate' );
-					} else if ( action === 'activate' ) {
-						elAddon.setAttribute( 'data-action', 'deactivate' );
-					}
-					const label = parent.querySelector( `label[for=${ addonSlug }]` );
-					label.style.display = 'inline-flex';
+			const selectors = AdminAddons.selectors;
+			const urlTab = this.urlParams.get( 'tab' );
+			if ( urlTab ) {
+				const elMatchingTab = this.elAddonsPage.querySelector(
+					`${ selectors.elNavTab }[data-tab="${ urlTab }"]`
+				);
+				if ( elMatchingTab ) {
+					this.elAddonsPage
+						.querySelectorAll( selectors.elNavTab )
+						.forEach( ( elTab ) => {
+							elTab.classList.remove( 'nav-tab-active' );
+							elTab.setAttribute( 'aria-pressed', 'false' );
+						} );
+					elMatchingTab.classList.add( 'nav-tab-active' );
+					elMatchingTab.setAttribute( 'aria-pressed', 'true' );
 				}
 			}
 
-			if ( status === 'success' ) {
-				if ( action === 'deactivate' ) {
-					elAddonItem.classList.remove( 'activated' );
+			let elActiveTab = this.elAddonsPage.querySelector(
+				selectors.elNavTabActive
+			);
+			if ( ! elActiveTab ) {
+				elActiveTab =
+					this.elAddonsPage.querySelector(
+						`${ selectors.elNavTab }[data-tab="all"]`
+					) || this.elAddonsPage.querySelector( selectors.elNavTab );
+				if ( elActiveTab ) {
+					elActiveTab.classList.add( 'nav-tab-active' );
+					elActiveTab.setAttribute( 'aria-pressed', 'true' );
 				}
-				if ( action === 'activate' ) {
-					elAddonItem.classList.add( 'activated' );
+			}
+
+			let elActiveCategory = this.elAddonsPage.querySelector(
+				selectors.elCategoryActive
+			);
+			if ( ! elActiveCategory ) {
+				elActiveCategory =
+					this.elAddonsPage.querySelector(
+						`${ selectors.elCategory }[data-category="all"]`
+					) || this.elAddonsPage.querySelector( selectors.elCategory );
+				if ( elActiveCategory ) {
+					elActiveCategory.classList.add( 'active' );
+					elActiveCategory.setAttribute( 'aria-pressed', 'true' );
+				}
+			}
+
+			this.filterAddons();
+			this.updateSearchClearBtnState();
+			this.updateFilterToggleState();
+			this.events();
+		} );
+	}
+
+	/**
+	 * Register events.
+	 *
+	 * @return void
+	 */
+	events() {
+		lpUtils.eventHandlers( 'click', [
+			{
+				selector: AdminAddons.selectors.elBtnAction,
+				class: this,
+				callBack: this.handleBtnAction.name,
+			},
+			{
+				selector: AdminAddons.selectors.elNavTab,
+				class: this,
+				callBack: this.handleTabClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elCategory,
+				class: this,
+				callBack: this.handleCategoryClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elFilterToggle,
+				class: this,
+				callBack: this.handleFilterToggleClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elSearchBtn,
+				class: this,
+				callBack: this.handleSearchBtnClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elSearchBtnClear,
+				class: this,
+				callBack: this.handleSearchClearClick.name,
+			},
+			{
+				selector: AdminAddons.selectors.elSearchClose,
+				class: this,
+				callBack: this.handleSearchCloseClick.name,
+			},
+		] );
+		lpUtils.eventHandlers( 'input', [
+			{
+				selector: AdminAddons.selectors.elSearchInput,
+				class: this,
+				callBack: this.handleSearchInput.name,
+			},
+			{
+				selector: AdminAddons.selectors.elPurchaseCode,
+				class: this,
+				callBack: this.handlePurchaseCodeInput.name,
+			},
+		] );
+		lpUtils.eventHandlers( 'keydown', [
+			{
+				selector: AdminAddons.selectors.elSearchInput,
+				class: this,
+				callBack: this.handleSearchKeydown.name,
+			},
+		] );
+
+		document.addEventListener( 'click', ( e ) => {
+			if ( ! this.elAddonsPage ) {
+				return;
+			}
+			const elToolbar = this.elAddonsPage.querySelector(
+				AdminAddons.selectors.elToolbar
+			);
+			if ( elToolbar && elToolbar.classList.contains( 'is-filter-open' ) ) {
+				if ( ! elToolbar.contains( e.target ) ) {
+					this.toggleFilterMenu( false );
 				}
 			}
 		} );
-	}*/
 
-	// Events actions: install, update, delete.
-	if ( el.closest( '.btn-addon-action' ) ) {
-		el = el.closest( '.btn-addon-action' );
+		document.addEventListener( 'keydown', ( e ) => {
+			if ( 'Escape' === e.key ) {
+				this.toggleFilterMenu( false );
+			}
+		} );
+	}
+
+	/**
+	 * Get addon data embedded on the item element.
+	 *
+	 * @param {Element} elAddonItem Addon item element.
+	 * @return {Object|null}
+	 */
+	getAddonData( elAddonItem ) {
+		try {
+			return JSON.parse( elAddonItem.dataset.addon );
+		} catch ( e ) {
+			return null;
+		}
+	}
+
+	/**
+	 * Send addon action to server via lpAJAXG.
+	 *
+	 * @param {Object} data { action, addon, purchase_code, el, elAddonItem }.
+	 * @return void
+	 */
+	addonsAction( data ) {
+		const { action, addon, el, elAddonItem } = data;
+		const selectors = AdminAddons.selectors;
+
+		const params = {
+			action: 'addon_action',
+			action_type: action,
+			addon,
+			purchase_code: data.purchase_code || '',
+			id_url: 'addon-action',
+		};
+
+		const releaseHandling = () => {
+			lpUtils.lpSetLoadingEl( el, 0 );
+		};
+
+		window.lpAJAXG.fetchAJAX( params, {
+			success: ( response ) => {
+				releaseHandling();
+
+				const { status, message, data: resData } = response;
+
+				lpToastify.show( message, status );
+
+				if ( status === 'success' && resData?.html ) {
+					elAddonItem.outerHTML = resData.html;
+				} else if (
+					'install' === action ||
+					'update-purchase' === action
+				) {
+					const elPurchasePanel = el.closest(
+						selectors.elPurchaseInstall
+					);
+					const elPurchaseCode = elPurchasePanel
+						? elPurchasePanel.querySelector( selectors.elPurchaseCode )
+						: null;
+					if ( elPurchaseCode ) {
+						elPurchaseCode.classList.add( 'is-error' );
+						elPurchaseCode.setAttribute( 'aria-invalid', 'true' );
+					}
+				}
+
+				//this.filterAddons();
+			},
+			error: ( error ) => {
+				releaseHandling();
+				lpToastify.show( `error js: ${ error }`, 'error' );
+			},
+		} );
+	}
+
+	/**
+	 * Filter add-ons by status, category, and search query.
+	 *
+	 * @return void
+	 */
+	filterAddons() {
+		const selectors = AdminAddons.selectors;
+		const elAddonItems = this.elAddonsPage.querySelectorAll(
+			selectors.elAddonItem
+		);
+
+		// Count items for each tab
+		this.updateTabCounts( elAddonItems );
+		const elActiveTab = this.elAddonsPage.querySelector(
+			selectors.elNavTabActive
+		);
+		const elActiveCategory = this.elAddonsPage.querySelector(
+			selectors.elCategoryActive
+		);
+		const elSearch = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		const tabName = elActiveTab ? elActiveTab.dataset.tab : 'all';
+		const category = elActiveCategory
+			? elActiveCategory.dataset.category
+			: 'all';
+		const keyword = elSearch ? elSearch.value.trim().toLowerCase() : '';
+		const searchTerms = keyword.split( /\s+/ ).filter( Boolean );
+
+		// Count items for category by tab
+		this.updateCategoryCounts( elAddonItems, tabName );
+
+		elAddonItems.forEach( ( elAddonItem ) => {
+			const addonInfo = JSON.parse( elAddonItem.dataset.addon );
+
+			const addonName = elAddonItem
+				.querySelector( 'a' )
+				.textContent.toLowerCase();
+			const textCompare = addonName + addonInfo.description;
+
+			const addonCategories = ( elAddonItem.dataset.category || '' )
+				.split( /\s+/ )
+				.filter( Boolean );
+			const matchesTab =
+				'all' === tabName || elAddonItem.classList.contains( tabName );
+			const matchesCategory =
+				'all' === category || addonCategories.includes( category );
+			const matchesSearch = searchTerms.every( ( term ) => textCompare.includes( term ) );
+			const isVisible = matchesTab && matchesCategory && matchesSearch;
+
+			elAddonItem.classList.toggle( 'hide', ! matchesTab );
+			elAddonItem.classList.toggle(
+				'search-not-found',
+				! isVisible
+			);
+		} );
+	}
+
+	updateCategoryCounts( elAddonItems, tabName ) {
+		const categoryCounts = { all: 0 };
+
+		elAddonItems.forEach( ( elAddonItem ) => {
+			const matchesTab =
+				'all' === tabName || elAddonItem.classList.contains( tabName );
+
+			if ( ! matchesTab ) {
+				return;
+			}
+
+			categoryCounts.all++;
+			( elAddonItem.dataset.category || '' )
+				.split( /\s+/ )
+				.filter( Boolean )
+				.forEach( ( addonCategory ) => {
+					categoryCounts[ addonCategory ] =
+						( categoryCounts[ addonCategory ] || 0 ) + 1;
+				} );
+		} );
+
+		this.elAddonsPage
+			.querySelectorAll( AdminAddons.selectors.elCategory )
+			.forEach( ( elCategory ) => {
+				const count =
+					categoryCounts[ elCategory.dataset.category ] || 0;
+				const elCount = elCategory.querySelector(
+					'.lp-addons-category__count'
+				);
+
+				if ( elCount ) {
+					elCount.textContent = `(${ count })`;
+				}
+
+				elCategory.hidden =
+					'all' !== elCategory.dataset.category && 0 === count;
+			} );
+	}
+
+	updateTabCounts( elAddonItems ) {
+		this.elAddonsPage
+			.querySelectorAll( AdminAddons.selectors.elNavTab )
+			.forEach( ( elNavTab ) => {
+				const tabName = elNavTab.dataset.tab;
+				const count = Array.from( elAddonItems ).filter(
+					( elAddonItem ) =>
+						'all' === tabName ||
+						elAddonItem.classList.contains( tabName )
+				).length;
+				const elCount = elNavTab.querySelector( 'span' );
+
+				if ( elCount ) {
+					elCount.textContent = count;
+				}
+			} );
+	}
+
+	/**
+	 * Handle addon action button click.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleBtnAction( args ) {
+		const { e, target } = args;
+		const selectors = AdminAddons.selectors;
+		const el = target.closest( selectors.elBtnAction );
+
+		// Ignore button type link
+		if ( 'A' === el.tagName ) {
+			return;
+		}
+
 		e.preventDefault();
-		el.classList.add( 'handling' );
-		let purchaseCode = '';
-		const elAddonItem = el.closest( '.lp-addon-item' );
-		const addon = dataAddons[ elAddonItem.dataset.slug ];
-		const action = el.dataset.action;
-		const elItemPurchase = elAddonItem.querySelector( '.lp-addon-item__purchase' );
-		//const elToggleSwitchInput = elAddonItem.querySelector( '.lp-toggle-switch-input' );
+		lpUtils.lpSetLoadingEl( el, 1 );
 
-		if ( action === 'purchase' ) {
-			elItemPurchase.style.display = 'block';
-			elItemPurchase.querySelector( '.purchase-install' ).style.display = 'flex';
+		let purchaseCode = '';
+		const elAddonItem = el.closest( selectors.elAddonItem );
+		const addon = this.getAddonData( elAddonItem );
+		const action = el.dataset.action;
+		const elItemPurchase = elAddonItem.querySelector(
+			selectors.elItemPurchase
+		);
+
+		if ( ! addon ) {
+			lpUtils.lpSetLoadingEl( el, 0 );
 			return;
-		} else if ( action === 'update-purchase-code' ) {
-			elItemPurchase.querySelector( '.purchase-update' ).style.display = 'flex';
+		}
+
+		if ( action === 'purchase' || action === 'update-purchase-code' ) {
+			const elPurchaseInstall = elItemPurchase.querySelector(
+				selectors.elPurchaseInstall
+			);
+			const elPurchaseCode = elPurchaseInstall.querySelector(
+				selectors.elPurchaseCode
+			);
+			const elPurchaseSubmit = elPurchaseInstall.querySelector(
+				'.lp-addon-purchase__submit'
+			);
+			const elPurchaseClear = elPurchaseInstall.querySelector(
+				'.lp-addon-purchase__clear'
+			);
+			const elPurchaseCancelClear = elPurchaseInstall.querySelector(
+				'.lp-addon-purchase__cancel-clear'
+			);
+			let hasPurchaseCode = false;
+
+			if ( action === 'update-purchase-code' ) {
+				const elLicense = elAddonItem.querySelector( selectors.elLicense );
+				elPurchaseCode.value = elLicense
+					? elLicense.dataset.purchaseCodeMasked || ''
+					: '';
+				hasPurchaseCode = '' !== elPurchaseCode.value;
+				elPurchaseSubmit.dataset.action = 'update-purchase';
+			} else {
+				elPurchaseCode.value = '';
+				elPurchaseSubmit.dataset.action = 'install';
+			}
+
+			elPurchaseCode.disabled = hasPurchaseCode;
+			elPurchaseSubmit.classList.toggle( 'lp-hidden', hasPurchaseCode );
+			elPurchaseClear.classList.toggle( 'lp-hidden', ! hasPurchaseCode );
+			elPurchaseCancelClear.classList.add( 'lp-hidden' );
+			elPurchaseCode.classList.remove( 'is-error' );
+			elPurchaseCode.removeAttribute( 'aria-invalid' );
+			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value =
+				'';
+			elPurchaseInstall.style.display = 'flex';
 			elItemPurchase.style.display = 'block';
+			if ( ! hasPurchaseCode ) {
+				elPurchaseCode.focus();
+			}
+			lpUtils.lpSetLoadingEl( el, 0 );
 			return;
-		} else if ( action === 'buy' ) {
-			const link = el.dataset.link;
-			window.open( link, '_blank' );
+		} else if ( action === 'clear-license' ) {
+			const elPurchaseCode = elItemPurchase.querySelector(
+				selectors.elPurchaseCode
+			);
+			const elPurchaseSubmit = elItemPurchase.querySelector(
+				'.lp-addon-purchase__submit'
+			);
+			const elPurchaseClear = elItemPurchase.querySelector(
+				'.lp-addon-purchase__clear'
+			);
+			const elPurchaseCancelClear = elItemPurchase.querySelector(
+				'.lp-addon-purchase__cancel-clear'
+			);
+
+			elPurchaseCode.value = '';
+			elPurchaseCode.disabled = false;
+			elPurchaseCode.classList.remove( 'is-error' );
+			elPurchaseCode.removeAttribute( 'aria-invalid' );
+			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value =
+				'';
+			elPurchaseSubmit.classList.remove( 'lp-hidden' );
+			elPurchaseClear.classList.add( 'lp-hidden' );
+			elPurchaseCancelClear.classList.remove( 'lp-hidden' );
+			elPurchaseCode.focus();
+			lpUtils.lpSetLoadingEl( el, 0 );
+			return;
+		} else if ( action === 'cancel-clear-license' ) {
+			const elLicense = elAddonItem.querySelector( selectors.elLicense );
+			const elPurchaseCode = elItemPurchase.querySelector(
+				selectors.elPurchaseCode
+			);
+			const elPurchaseSubmit = elItemPurchase.querySelector(
+				'.lp-addon-purchase__submit'
+			);
+			const elPurchaseClear = elItemPurchase.querySelector(
+				'.lp-addon-purchase__clear'
+			);
+
+			elPurchaseCode.value = elLicense
+				? elLicense.dataset.purchaseCodeMasked || ''
+				: '';
+			elPurchaseCode.disabled = true;
+			elPurchaseCode.classList.remove( 'is-error' );
+			elPurchaseCode.removeAttribute( 'aria-invalid' );
+			elItemPurchase.querySelector( 'input[name=purchase-code]' ).value =
+				'';
+			elPurchaseSubmit.classList.add( 'lp-hidden' );
+			elPurchaseClear.classList.remove( 'lp-hidden' );
+			el.classList.add( 'lp-hidden' );
+			lpUtils.lpSetLoadingEl( el, 0 );
 			return;
 		} else if ( action === 'cancel' ) {
 			elItemPurchase.style.display = 'none';
+			elItemPurchase.querySelector(
+				selectors.elPurchaseInstall
+			).style.display = 'none';
+			lpUtils.lpSetLoadingEl( el, 0 );
 			return;
-		} else if ( action === 'install' ) {
-			if ( el.dataset.link ) {
-				el.classList.remove( 'handling' );
-				const link = el.dataset.link;
-				window.open( link, '_blank' );
-				return;
-			}
 		}
 
 		// Send request to server.
 		if ( elItemPurchase ) {
-			purchaseCode = elItemPurchase.querySelector( 'input[name=purchase-code]' ).value;
+			purchaseCode = elItemPurchase.querySelector(
+				'input[name=purchase-code]'
+			).value;
 		}
 
-		const data = { purchase_code: purchaseCode, action, addon };
-		addonsAction( data, function( status, message, data ) {
-			if ( status === 'success' ) {
-				if ( action === 'install' ) {
-					elAddonItem.classList.add( 'installed', 'activated' );
-					elAddonItem.classList.remove( 'not_installed' );
-					elItemPurchase.style.display = 'none';
-					/*elToggleSwitchInput.setAttribute( 'checked', 'checked' );
-					elToggleSwitchInput.setAttribute( 'data-action', 'deactivate' );*/
-					const elNavInstalled = document.querySelector( '.nav-tab[data-tab=installed] span' );
-					elNavInstalled.textContent = parseInt( elNavInstalled.textContent ) + 1;
-					const elNavNoInstalled = document.querySelector( '.nav-tab[data-tab=not_installed] span' );
-					elNavNoInstalled.textContent = parseInt( elNavNoInstalled.textContent ) - 1;
-					elItemPurchase.querySelector( '.purchase-install' ).style.display = 'none';
-					elItemPurchase.querySelector( '.purchase-update' ).querySelector( '.enter-purchase-code' ).value = purchaseCode;
-				} else if ( action === 'update' ) {
-					const elAddonVersionCurrent = elAddonItem.querySelector( '.addon-version-current' );
-					elAddonVersionCurrent.innerHTML = addon.version;
-					elAddonItem.classList.remove( 'update' );
-				} else if ( action === 'activate' ) {
-					elAddonItem.classList.add( 'activated' );
-				} else if ( action === 'deactivate' ) {
-					elAddonItem.classList.remove( 'activated' );
-				} else if ( action === 'update-purchase' ) {
-					elItemPurchase.style.display = 'none';
-				}
-			}
-
-			el.classList.remove( 'handling' );
+		this.addonsAction( {
+			purchase_code: purchaseCode,
+			action,
+			addon,
+			el,
+			elAddonItem,
 		} );
 	}
 
-	if ( el.classList.contains( 'nav-tab' ) ) {
+	/**
+	 * Handle tab click.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleTabClick( args ) {
+		const { e, target } = args;
+		const selectors = AdminAddons.selectors;
+		const el = target.closest( selectors.elNavTab );
 		e.preventDefault();
-		const elTabs = document.querySelectorAll( '.nav-tab' );
-		elTabs.forEach( function( elTab ) {
+
+		const elTabs = this.elAddonsPage.querySelectorAll( selectors.elNavTab );
+		elTabs.forEach( ( elTab ) => {
 			elTab.classList.remove( 'nav-tab-active' );
+			elTab.setAttribute( 'aria-pressed', 'false' );
 		} );
 		el.classList.add( 'nav-tab-active' );
+		el.setAttribute( 'aria-pressed', 'true' );
+		if ( el.scrollIntoView ) {
+			el.scrollIntoView( { inline: 'center', block: 'nearest', behavior: 'smooth' } );
+		}
+
 		const tabName = el.dataset.tab;
-		const elAddonItems = elAddonsPage.querySelectorAll( '.lp-addon-item' );
-		const elSearch = elAddonsPage.querySelector( '#lp-search-addons__input' );
-		elSearch.value = '';
-
-		urlParams.set( 'tab', tabName );
-		window.history.pushState( {}, '', `${ window.location.pathname }?${ urlParams.toString() }` );
-		let totalItems = 0;
-		elAddonItems.forEach( ( elAddonItem ) => {
-			elAddonItem.classList.remove( 'search-not-found' );
-			if ( 'all' === tabName || elAddonItem.classList.contains( tabName ) ) {
-				elAddonItem.classList.remove( 'hide' );
-				totalItems++;
-			} else {
-				elAddonItem.classList.add( 'hide' );
+		const elSearch = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		if ( elSearch ) {
+			elSearch.value = '';
+		}
+		const elSearchContainer = this.elAddonsPage.querySelector(
+			selectors.elSearch
+		);
+		if ( elSearchContainer ) {
+			elSearchContainer.classList.remove( 'is-open' );
+			const btn = elSearchContainer.querySelector(
+				selectors.elSearchBtn
+			);
+			if ( btn ) {
+				btn.setAttribute( 'aria-expanded', 'false' );
 			}
-		} );
+		}
+		this.elAddonsPage
+			.querySelectorAll( selectors.elCategory )
+			.forEach( ( elCategory ) => {
+				const isActive = 'all' === elCategory.dataset.category;
+				elCategory.classList.toggle( 'active', isActive );
+				elCategory.setAttribute(
+					'aria-pressed',
+					isActive ? 'true' : 'false'
+				);
+			} );
 
-		setGridItems( totalItems );
+		this.urlParams.set( 'tab', tabName );
+		window.history.pushState(
+			{},
+			'',
+			`${ window.location.pathname }?${ this.urlParams.toString() }`
+		);
+		this.updateFilterToggleState();
+		this.filterAddons();
 	}
-} );
 
-/*** Event search addons. ***/
-document.addEventListener( 'input', ( e ) => {
-	const el = e.target;
-
-	if ( 'lp-search-addons__input' === el.id ) {
-		const keyword = el.value;
-		searchAddons( keyword );
-	}
-
-	// Events change input purchase code.
-	if ( el.classList.contains( 'enter-purchase-code' ) ) {
+	/**
+	 * Handle filter toggle button click.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleFilterToggleClick( args ) {
+		const { e } = args;
 		e.preventDefault();
+		e.stopPropagation();
+		this.toggleFilterMenu();
+	}
+
+	/**
+	 * Toggle or set filter menu dropdown open state.
+	 *
+	 * @param {boolean|undefined} open Optional boolean to force state.
+	 * @return void
+	 */
+	toggleFilterMenu( open ) {
+		const selectors = AdminAddons.selectors;
+		const elToolbar = this.elAddonsPage.querySelector( selectors.elToolbar );
+		const elFilter = this.elAddonsPage.querySelector( selectors.elFilter );
+		if ( ! elToolbar && ! elFilter ) {
+			return;
+		}
+		const toggleBtn = this.elAddonsPage.querySelector(
+			selectors.elFilterToggle
+		);
+		const shouldOpen =
+			undefined !== open
+				? open
+				: elToolbar
+				? ! elToolbar.classList.contains( 'is-filter-open' )
+				: ! elFilter.classList.contains( 'is-open' );
+
+		if ( elToolbar ) {
+			elToolbar.classList.toggle( 'is-filter-open', shouldOpen );
+		}
+		if ( elFilter ) {
+			elFilter.classList.toggle( 'is-open', shouldOpen );
+		}
+		if ( toggleBtn ) {
+			toggleBtn.setAttribute(
+				'aria-expanded',
+				shouldOpen ? 'true' : 'false'
+			);
+		}
+	}
+
+	/**
+	 * Update filter toggle button has-filter state.
+	 *
+	 * @return void
+	 */
+	updateFilterToggleState() {
+		const selectors = AdminAddons.selectors;
+		const toggleBtn = this.elAddonsPage.querySelector(
+			selectors.elFilterToggle
+		);
+		if ( ! toggleBtn ) {
+			return;
+		}
+		const elActiveTab = this.elAddonsPage.querySelector(
+			selectors.elNavTabActive
+		);
+		const elActiveCategory = this.elAddonsPage.querySelector(
+			selectors.elCategoryActive
+		);
+		const tabName = elActiveTab ? elActiveTab.dataset.tab : 'all';
+		const category = elActiveCategory
+			? elActiveCategory.dataset.category
+			: 'all';
+		const hasFilter = 'all' !== tabName || 'all' !== category;
+		toggleBtn.classList.toggle( 'has-filter', hasFilter );
+	}
+
+	/**
+	 * Handle category click.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleCategoryClick( args ) {
+		const { e, target } = args;
+		const elCategory = target.closest(
+			AdminAddons.selectors.elCategory
+		);
+		e.preventDefault();
+
+		this.elAddonsPage
+			.querySelectorAll( AdminAddons.selectors.elCategory )
+			.forEach( ( item ) => {
+				const isActive = item === elCategory;
+				item.classList.toggle( 'active', isActive );
+				item.setAttribute(
+					'aria-pressed',
+					isActive ? 'true' : 'false'
+				);
+			} );
+		this.updateFilterToggleState();
+		this.filterAddons();
+	}
+
+	/**
+	 * Handle search input.
+	 *
+	 * @return void
+	 */
+	handleSearchInput() {
+		this.updateSearchClearBtnState();
+		this.filterAddons();
+	}
+
+	/**
+	 * Handle search button click to open search overlay.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleSearchBtnClick( args ) {
+		const { e } = args;
+		e.preventDefault();
+		this.toggleFilterMenu( false );
+		const selectors = AdminAddons.selectors;
+		const elSearch = this.elAddonsPage.querySelector(
+			selectors.elSearch
+		);
+		const elSearchInput = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		if ( elSearch ) {
+			elSearch.classList.add( 'is-open' );
+			const btn = elSearch.querySelector( selectors.elSearchBtn );
+			if ( btn ) {
+				btn.setAttribute( 'aria-expanded', 'true' );
+			}
+		}
+		if ( elSearchInput ) {
+			this.updateSearchClearBtnState();
+			elSearchInput.focus();
+		}
+	}
+
+	/**
+	 * Handle search clear button click.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleSearchClearClick( args ) {
+		const { e } = args;
+		e.preventDefault();
+		const selectors = AdminAddons.selectors;
+		const elSearchInput = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		if ( elSearchInput ) {
+			elSearchInput.value = '';
+			this.updateSearchClearBtnState();
+			this.filterAddons();
+			elSearchInput.focus();
+		}
+	}
+
+	/**
+	 * Update disabled state of clear search button.
+	 *
+	 * @return void
+	 */
+	updateSearchClearBtnState() {
+		const selectors = AdminAddons.selectors;
+		const elSearchInput = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		const elClearBtn = this.elAddonsPage.querySelector(
+			selectors.elSearchBtnClear
+		);
+		if ( elClearBtn && elSearchInput ) {
+			elClearBtn.disabled = ! elSearchInput.value.trim();
+		}
+	}
+
+	/**
+	 * Handle search close button click.
+	 *
+	 * @param {Object} args Click event arguments.
+	 * @return void
+	 */
+	handleSearchCloseClick( args ) {
+		const { e } = args;
+		e.preventDefault();
+		this.closeSearch();
+	}
+
+	/**
+	 * Handle search input keydown.
+	 *
+	 * @param {Object} args Keydown event arguments.
+	 * @return void
+	 */
+	handleSearchKeydown( args ) {
+		const { e } = args;
+		if ( 'Escape' === e.key ) {
+			e.preventDefault();
+			this.closeSearch();
+		}
+	}
+
+	/**
+	 * Close search overlay and reset query if needed.
+	 *
+	 * @return void
+	 */
+	closeSearch() {
+		const selectors = AdminAddons.selectors;
+		const elSearch = this.elAddonsPage.querySelector(
+			selectors.elSearch
+		);
+		const elSearchInput = this.elAddonsPage.querySelector(
+			selectors.elSearchInput
+		);
+		if ( elSearch ) {
+			elSearch.classList.remove( 'is-open' );
+			const btn = elSearch.querySelector( selectors.elSearchBtn );
+			if ( btn ) {
+				btn.setAttribute( 'aria-expanded', 'false' );
+				btn.focus();
+			}
+		}
+		if ( elSearchInput && elSearchInput.value ) {
+			elSearchInput.value = '';
+			this.filterAddons();
+		}
+		this.updateSearchClearBtnState();
+	}
+
+	/**
+	 * Handle purchase code input.
+	 *
+	 * @param {Object} args Input event arguments.
+	 * @return void
+	 */
+	handlePurchaseCodeInput( args ) {
+		const { e, target: el } = args;
+		e.preventDefault();
+		el.classList.remove( 'is-error' );
+		el.removeAttribute( 'aria-invalid' );
 		const purchaseCode = el.value;
-		const elItemPurchase = el.closest( '.lp-addon-item__purchase' );
+		const elItemPurchase = el.closest(
+			AdminAddons.selectors.elItemPurchase
+		);
 
 		if ( elItemPurchase ) {
-			const input = elItemPurchase.querySelector( 'input[name=purchase-code]' );
+			const input = elItemPurchase.querySelector(
+				'input[name=purchase-code]'
+			);
 			input.value = purchaseCode;
 		}
 	}
-} );
+}
+
+const adminAddons = new AdminAddons();
+adminAddons.init();
+
+export default AdminAddons;

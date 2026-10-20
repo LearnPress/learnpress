@@ -5,6 +5,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\Cache\LPSettingsCache;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,17 +20,17 @@ class LP_Helper {
 	 * @return mixed
 	 */
 	public static function maybe_unserialize( $string ) {
-		if ( is_string( $string ) ) {
-
-			$unserialized = maybe_unserialize( $string );
-			if ( ! $unserialized && strlen( $string ) ) {
+		if ( is_string( $string ) && is_serialized( $string ) ) {
+			$string       = trim( $string );
+			$unserialized = @unserialize( $string, array( 'allowed_classes' => false ) );
+			if ( false === $unserialized && 'b:0;' !== $string ) {
 				$string = preg_replace_callback(
 					'!s:(\d+):"(.*?)";!s',
 					array( __CLASS__, '_unserialize_replace_callback' ),
 					$string
 				);
 
-				$unserialized = maybe_unserialize( $string );
+				$unserialized = @unserialize( $string, array( 'allowed_classes' => false ) );
 			}
 
 			$string = $unserialized;
@@ -270,11 +271,11 @@ class LP_Helper {
 			$args = array_merge(
 				[
 					'post_title'     => '',
-					'post_name'      => '',
+					//'post_name'      => '',
 					'post_status'    => 'publish',
 					'post_type'      => 'page',
 					'comment_status' => 'closed',
-					'post_content'   => '',
+					//'post_content'   => '',
 					'post_author'    => get_current_user_id(),
 				],
 				$args
@@ -286,7 +287,7 @@ class LP_Helper {
 			}
 
 			update_option( $key_option, $page_id );
-			$lp_settings_cache = new LP_Settings_Cache( true );
+			$lp_settings_cache = new LPSettingsCache( true );
 			$lp_settings_cache->clean_lp_settings();
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -354,6 +355,9 @@ class LP_Helper {
 					break;
 				case 'float':
 					$value = (float) $value;
+					break;
+				case 'email':
+					$value = sanitize_email( $value );
 					break;
 				default:
 					if ( is_callable( $type_content ) ) {

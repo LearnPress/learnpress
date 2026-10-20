@@ -260,7 +260,7 @@ class Buttons extends Component {
 				<div className={ classNames.join( ' ' ) }>
 					<div
 						className={ `button-left` + ( ( status === 'started' || isReviewing ) ? navPositionClass : '' ) }
-						style={ styles }
+						//style={ styles }
 					>
 
 						{ ( ( status === 'completed' && canRetry ) || -1 !== [ '', 'viewed' ].indexOf( status ) ) && ! isReviewing && ! requiredPassword && (

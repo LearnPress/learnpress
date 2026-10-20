@@ -7,7 +7,7 @@
 		padding: $spacing-base-2x $spacing-base-4x;
 		border: 1px solid $border-color;
 		border-radius: $border-radius-global;
-		color: #374151;
+		color: $text-color-base;
 		//font-size: 0.9em;
 		font-weight: 500;
 		text-decoration: none;
@@ -15,11 +15,11 @@
 
 		&.loading {
 			position: relative;
-			display: flex;
+			display: inline-flex;
 			align-items: center;
 			justify-content: center;
 			pointer-events: none;
-			color: rgba(0, 0, 0, 0.2) !important;
+			color: rgba(0, 0, 0, 0) !important;
 			@include loading();
 		}
 	}

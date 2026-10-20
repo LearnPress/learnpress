@@ -43,6 +43,7 @@ return <<<XML
     </task_instructions>
 
     <output_format>
+    	- Must language output is $language
         - You MUST respond valid JSON array object.
         - Do not include any introductory text, explanations, or markdown code fences like ```json.
         - The JSON structure must strictly follow this example:

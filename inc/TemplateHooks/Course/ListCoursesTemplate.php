@@ -86,7 +86,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return stdClass { content: string_html }
 	 * @since 4.2.5.7
-	 * @version 1.0.5
+	 * @version 1.0.6
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
 		$filter = new LP_Course_Filter();
@@ -112,21 +112,23 @@ class ListCoursesTemplate {
 				$course        = CourseModel::find( $courseObj->ID, true );
 				$html_courses .= static::render_course( $course, $settings );
 			}
-		}
 
-		$section_courses = apply_filters(
-			'learn-press/layout/list-courses/section/courses',
-			[
-				'wrap'     => sprintf(
-					'<ul class="learn-press-courses lp-list-courses-no-css %1$s" data-layout="%1$s">',
-					esc_attr( $skin )
-				),
-				'courses'  => $html_courses,
-				'wrap_end' => '</ul>',
-			],
-			$courses,
-			$settings
-		);
+			$section_courses = apply_filters(
+				'learn-press/layout/list-courses/section/courses',
+				[
+					'wrap'     => sprintf(
+						'<ul class="learn-press-courses lp-list-courses-no-css %1$s" data-layout="%1$s">',
+						esc_attr( $skin )
+					),
+					'courses'  => $html_courses,
+					'wrap_end' => '</ul>',
+				],
+				$courses,
+				$settings
+			);
+
+			$html_courses = Template::combine_components( $section_courses );
+		}
 
 		$section_top = apply_filters(
 			'learn-press/layout/list-courses/section/top',
@@ -164,7 +166,7 @@ class ListCoursesTemplate {
 			'learn-press/layout/list-courses/section',
 			[
 				'top'        => Template::combine_components( $section_top ),
-				'courses'    => Template::combine_components( $section_courses ),
+				'courses'    => $html_courses,
 				'pagination' => $html_pagination,
 			],
 			$courses,

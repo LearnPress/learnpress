@@ -5,6 +5,7 @@
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
  * Version: 4.5.0-beta-1
+ * Version: 4.4.12-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -22,6 +23,8 @@ use LearnPress\Ajax\BuilderDashboardAjax;
 use LearnPress\Ajax\CourseToolsAjax;
 use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\Ajax\EditCurriculumAjax;
+use LearnPress\Ajax\AddonsAjax;
+use LearnPress\Services\AddonService;
 use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\Order\ExportOrderCSVAjax;
@@ -30,6 +33,7 @@ use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Ajax\SampleDataAJAX;
 use LearnPress\Ajax\SetupWizardAjax;
 use LearnPress\Ajax\AI\AIAssistantAjax;
+use LearnPress\Ajax\NoteAjax;
 use LearnPress\Ajax\MCP\McpApiKeysAjax;
 use LearnPress\Ajax\Webhook\WebhooksAjax;
 use LearnPress\Ajax\CourseBuilder\CBEditCourseAjax;
@@ -50,10 +54,12 @@ use LearnPress\Shortcodes\CourseMaterialShortcode;
 use LearnPress\Shortcodes\Courses\ListCoursesShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
+use LearnPress\TemplateHooks\Admin\AdminAddonsPage;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
 use LearnPress\TemplateHooks\Admin\AdminStatisticsReportTable;
+use LearnPress\TemplateHooks\Admin\Notices\AdminNotesTemplate;
 use LearnPress\TemplateHooks\Admin\Tools\AdminCourseTools;
 use LearnPress\Statistics\FilterOptionsProvider;
 use LearnPress\TemplateHooks\Admin\AI\AdminCreateCourseAITemplate;
@@ -93,8 +99,11 @@ use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentEnrolledTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileNotesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate;
+use LearnPress\TemplateHooks\Course\CourseNoteTemplate;
+use LearnPress\Services\NoteService;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
@@ -182,6 +191,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		/**
 		 * LearnPress constructor.
+		 *
+		 * Runs on every WordPress bootstrap. Order of operations:
+		 * 1. prepare_before_handle() - define constants, autoload, include global files and create the LP_Install instance.
+		 * 2. Register activation/deactivation hooks unconditionally so on_activate() fires when the plugin is activated.
+		 * 3. Stop here if tables are not installed yet; the activation hook will create them.
+		 * 4. On normal requests with tables installed, register the init hook to load CPTs, APIs, settings and integrations.
+		 * 5. Register remaining plugin hooks.
 		 */
 		private function __construct() {
 			/*if ( isset( $_POST['action'] ) && 'heartbeat' === $_POST['action'] ) {
@@ -191,17 +207,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			try {
 				$this->prepare_before_handle();
 
+				register_activation_hook( LP_PLUGIN_FILE, array( $this, 'on_activate' ) );
+				register_deactivation_hook( LP_PLUGIN_FILE, array( $this, 'on_deactivate' ) );
+
 				if ( ! LP_Install::instance()->tables_install_done() ) {
 					return;
 				}
 
-				// Must handle in hook init of WordPress, when loaded plugins, theme, user.
+				// init runs after WordPress core, plugins, theme and user are loaded.
 				add_action( 'init', [ $this, 'lp_main_handle' ], - 1000 );
 
-				// hooks .
+				// Register remaining plugin hooks.
 				$this->hooks();
 			} catch ( Throwable $e ) {
-				error_log( __METHOD__ . ': ' . $e->getMessage() );
+				error_log( $e->getMessage() );
 			}
 		}
 
@@ -393,15 +412,18 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			BuilderPopupTemplate::instance();
 			ProfileCoursesTemplate::instance();
 			ProfileStudentEnrolledTemplate::instance();
+			ProfileNotesTemplate::instance();
 
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
 			AdminEditSettingTemplate::instance();
 			AdminEditQizTemplate::instance();
 			AdminEditQuestionTemplate::instance();
+			AdminNotesTemplate::instance();
 			AdminCourseTools::instance();
 			CourseMaterialTemplate::instance();
 			CourseAIAssistantTemplate::instance();
+			CourseNoteTemplate::instance();
 			AdminOrderItemsTemplate::instance();
 			AdminOrderListTemplate::instance();
 			AdminCreateCourseAITemplate::instance();
@@ -410,9 +432,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminListStudentsEnrolled::instance();
 			AdminStatisticsReportTable::instance();
 			FilterOptionsProvider::register_flush_hooks();
+			AdminAddonsPage::instance();
 			// WP GDPR
 			ErasePersonalData::instance();
 			ExportPersonalData::instance();
+			// Student Notes: delete notes together with their user / course / lesson.
+			NoteService::instance();
 
 			// Models
 			include_once 'inc/Models/class-lp-rest-response.php';
@@ -425,14 +450,14 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/handle-steps/class-lp-handle-upgrade-db-steps.php';
 
 			// LP Cache
-			include_once 'inc/cache/class-lp-cache.php';
-			include_once 'inc/cache/class-lp-courses-cache.php';
-			include_once 'inc/cache/class-lp-course-cache.php';
-			include_once 'inc/cache/class-lp-quiz-cache.php';
-			include_once 'inc/cache/class-lp-question-cache.php';
-			include_once 'inc/cache/class-lp-session-cache.php';
-			include_once 'inc/cache/class-lp-settings-cache.php';
-			include_once 'inc/cache/class-lp-user-items-cache.php';
+			include_once 'inc/Cache/class-lp-cache.php';
+			include_once 'inc/Cache/class-lp-courses-cache.php';
+			include_once 'inc/Cache/class-lp-course-cache.php';
+			include_once 'inc/Cache/class-lp-quiz-cache.php';
+			include_once 'inc/Cache/class-lp-question-cache.php';
+			include_once 'inc/Cache/class-lp-session-cache.php';
+			include_once 'inc/Cache/class-lp-settings-cache.php';
+			include_once 'inc/Cache/class-lp-user-items-cache.php';
 
 			// Background processes.
 			LPBackgroundTrigger::instance();
@@ -580,8 +605,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			include_once 'inc/admin/class-lp-admin-ajax.php';
 
-			include_once 'inc/admin/class-lp-admin-notice.php';
-
 			// File handle install LP
 			include_once 'inc/class-lp-install.php';
 
@@ -705,7 +728,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					}
 				}*/
 			} catch ( Throwable $e ) {
-				LP_Debug::error_log( $e );
+				error_log( $e->getMessage() );
 			}
 		}
 
@@ -763,6 +786,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					LessonAjax::catch_lp_ajax();
 					SampleDataAJAX::catch_lp_ajax();
 					SetupWizardAjax::catch_lp_ajax();
+					AddonsAjax::catch_lp_ajax();
 					EditCurriculumAjax::catch_lp_ajax();
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
@@ -771,6 +795,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					CourseBuilderAjax::catch_lp_ajax();
 					OpenAiAjax::catch_lp_ajax();
 					AIAssistantAjax::catch_lp_ajax();
+					NoteAjax::catch_lp_ajax();
 					ExportOrderCSVAjax::catch_lp_ajax();
 					McpApiKeysAjax::catch_lp_ajax();
 					WebhooksAjax::catch_lp_ajax();
@@ -785,10 +810,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Add links setting|document|addon on plugins page.
 			add_filter( 'plugin_action_links_' . LP_PLUGIN_BASENAME, array( $this, 'plugin_links' ) );
 
-			register_activation_hook( LP_PLUGIN_FILE, array( $this, 'on_activate' ) );
-			register_deactivation_hook( LP_PLUGIN_FILE, array( $this, 'on_deactivate' ) );
-
-			add_action(
+			/*add_action(
 				'plugin_loaded',
 				function ( $plugin ) {
 					// For check wp_remote call normally of WP
@@ -797,38 +819,45 @@ if ( ! class_exists( 'LearnPress' ) ) {
 						die;
 					}
 				}
-			);
+			);*/
 
 			// Check require version thim-core on Backend.
 			if ( is_admin() ) {
 				add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
 			}
 
-			// Save key purchase addon when install via file download from Thimpress.
+			// Check and save key purchase addon when install via file download from Thimpress.
 			add_action(
 				'upgrader_process_complete',
 				function ( $plugin_upgrader ) {
-					if ( ! empty( $plugin_upgrader->result ) ) {
-						$res         = $plugin_upgrader->result;
-						$path_source = $res['destination'] ?? '';
-						if ( empty( $path_source ) ) {
-							return;
-						}
-
-						$key_purchase_path = realpath( $path_source . '/purchase-code.txt' );
-						if ( file_exists( $key_purchase_path ) ) {
-							$purchase_code_content = file_get_contents( $key_purchase_path );
-							if ( empty( $purchase_code_content ) ) {
+					if ( ! empty(
+						$plugin_upgrader->result
+						|| ! isset( $_POST['lp-load-ajax'] )
+					) ) {
+						try {
+							$res         = $plugin_upgrader->result;
+							$path_source = $res['destination'] ?? '';
+							if ( empty( $path_source ) ) {
 								return;
 							}
 
-							$addon_slug = $res['destination_name'] ?? '';
-							if ( empty( $addon_slug ) ) {
-								return;
-							}
+							$key_purchase_path = realpath( $path_source . '/purchase-code.txt' );
+							if ( file_exists( $key_purchase_path ) ) {
+								$purchase_code_content = file_get_contents( $key_purchase_path );
+								if ( empty( $purchase_code_content ) ) {
+									return;
+								}
 
-							// Call active purchase code for site.
-							LP_Manager_Addons::instance()->active_site( $addon_slug, $purchase_code_content );
+								$addon_slug = $res['destination_name'] ?? '';
+								if ( empty( $addon_slug ) ) {
+									return;
+								}
+
+								// Call active purchase code for site.
+								AddonService::instance()->active_site( $addon_slug, $purchase_code_content );
+							}
+						} catch ( Throwable $e ) {
+							LP_Debug::error_log( $e );
 						}
 					}
 				}
@@ -897,7 +926,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
-		 * Trigger this function while activating Learnpress.
+		 * Activation hook callback.
+		 *
+		 * Including creating database tables, default pages, registering CPTs and flushing rewrite rules.
 		 *
 		 * @since 3.0.0
 		 * @version 4.1.4.1

@@ -1,0 +1,241 @@
+/**
+ * Admin page: Student Notes.
+ *
+ * @since 4.4.9.2
+ * @version 1.0.0
+ */
+
+.lp-student-notes {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	margin-top: 8px;
+
+	&__description {
+		margin: 0;
+		color: #646970;
+	}
+
+	&__stats {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 16px;
+
+		@media screen and (max-width: 782px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	&__stat,
+	&__filters,
+	&__table {
+		padding: 20px;
+		border: 1px solid #dcdcde;
+		border-radius: 8px;
+		background: #fff;
+	}
+
+	&__stat {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	&__stat-label {
+		color: #50575e;
+		font-size: 13px;
+	}
+
+	&__stat-value {
+		font-size: 24px;
+		font-weight: 600;
+		line-height: 1.2;
+	}
+
+	&__filters {
+		h2 {
+			margin: 0 0 16px;
+			font-size: 16px;
+		}
+
+		.lp-form-filter {
+			margin-bottom: 0;
+
+			// Hints under some fields must not push the others down.
+			.lp-form-filter__fields {
+				align-items: flex-start;
+			}
+
+			.filter-field {
+				max-width: none;
+			}
+
+			.description {
+				margin: 0;
+				font-size: 12px;
+			}
+
+			input[type="search"] {
+				width: 100%;
+				min-height: 36px;
+			}
+		}
+	}
+
+	// The table fills the box edge to edge; only the footer keeps a padding.
+	&__table {
+		padding: 0;
+		overflow: hidden;
+
+		.lp-table-wrap {
+			border: 0;
+			border-radius: 0;
+		}
+
+		&--empty {
+			padding: 20px;
+		}
+
+		.lp-list-table {
+			th,
+			td {
+				padding: 12px 10px;
+				vertical-align: top;
+				text-align: left;
+			}
+
+			tbody tr + tr td {
+				border-top: 1px solid #f0f0f1;
+			}
+		}
+	}
+
+	&__email,
+	&__time {
+		display: block;
+		color: #646970;
+		font-size: 12px;
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: 8px;
+	}
+
+	.lp-col-content {
+		min-width: 220px;
+		max-width: 360px;
+	}
+
+	// Content cell: short quote + note, then a "View note" link opening the LP modal.
+	&__quote {
+		color: #646970;
+		font-style: italic;
+	}
+
+	&__quote,
+	&__text {
+		display: block;
+		overflow-wrap: anywhere;
+	}
+
+	.lp-col-content [data-note-template] {
+		margin-top: 8px;
+	}
+
+	&__footer {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 12px 20px;
+		border-top: 1px solid #dcdcde;
+
+		.learn-press-pagination {
+			margin: 0;
+		}
+	}
+}
+
+.lp-student-notes__dialog-content {
+	text-align: start;
+	font-size: $lp-font-sm;
+	overflow-wrap: anywhere;
+
+	.form-table {
+		width: 100%;
+
+		th,
+		td {
+			text-align: start;
+		}
+	}
+
+	.lp-student-notes__edit-form {
+		p {
+			margin: 0 0 12px;
+		}
+
+		.swal2-textarea {
+			display: block;
+			box-sizing: border-box;
+			width: 100%;
+			min-height: 160px;
+			margin: 0;
+			font: inherit;
+			text-align: start;
+			resize: vertical;
+		}
+
+		.submit {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin: 16px 0 0;
+			padding: 0;
+		}
+	}
+}
+
+.lp-student-notes__detail {
+	.form-table {
+		margin-top: 0;
+
+		th,
+		td {
+			padding: 8px 10px 8px 0;
+			vertical-align: top;
+		}
+
+		th {
+			width: 90px;
+		}
+	}
+
+	.lp-student-notes__email,
+	.lp-student-notes__time {
+		display: block;
+		color: #646970;
+		font-size: 12px;
+	}
+
+	h3 {
+		margin: 16px 0 6px;
+		font-size: 14px;
+	}
+
+	blockquote {
+		margin: 0;
+		padding: 8px 12px;
+		border-left: 4px solid #c3c4c7;
+		background: #f6f7f7;
+		font-style: italic;
+	}
+
+	p {
+		overflow-wrap: anywhere;
+	}
+}

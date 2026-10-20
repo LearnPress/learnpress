@@ -77,7 +77,7 @@ class AdminListStudentsEnrolled {
 	/**
 	 * Render initial layout with TemplateAJAX::load_content_via_ajax().
 	 */
-	public function enrolled_students_layout() {
+	public function enrolled_students_layout( array $data = [] ) {
 		try {
 			$page_current = '';
 			if ( function_exists( 'get_current_screen' ) ) {
@@ -90,17 +90,19 @@ class AdminListStudentsEnrolled {
 				}
 			}
 
-			$args = array(
+			$course_id = LP_Request::get_param( 'course_id', $data['course_id'] ?? 0 );
+			$args      = array(
 				'id_url'                => 'lp-enrolled-students',
-				'course_id'             => LP_Request::get_param( 'course_id', 0 ),
+				'course_id'             => $course_id,
 				'course_name'           => LP_Request::get_param( 'course_name' ),
 				'paged'                 => 1,
-				'search'                => lp_request::get_param( 'search' ),
+				'student_name'          => lp_request::get_param( 'student_name' ),
 				'start_date'            => LP_Request::get_param( 'start_date' ),
 				'end_date'              => LP_Request::get_param( 'end_date' ),
 				'enableUpdateParamsUrl' => false,
 			);
 
+			/** @use self::render_enrolled_students $call_back */
 			$call_back = array(
 				'class'  => self::class,
 				'method' => 'render_enrolled_students',
@@ -131,7 +133,7 @@ class AdminListStudentsEnrolled {
 	 *
 	 * @return stdClass
 	 */
-	public static function render_enrolled_students( array $data ): stdClass {
+	public static function render_enrolled_students( array $data = [] ): stdClass {
 		$content          = new stdClass();
 		$content->content = '';
 
@@ -142,13 +144,13 @@ class AdminListStudentsEnrolled {
 				throw new Exception( esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) );
 			}
 
-			$course_id   = abs( LP_Helper::sanitize_params_submitted( $data['course_id'] ?? 0, 'int' ) );
-			$paged       = max( 1, abs( LP_Helper::sanitize_params_submitted( $data['paged'] ?? 1, 'int' ) ) );
-			$course_name = LP_Helper::sanitize_params_submitted( $data['course_name'] ?? '' );
-			$search      = LP_Helper::sanitize_params_submitted( $data['search'] ?? '' );
-			$start_date  = lp_helper::sanitize_params_submitted( $data['start_date'] ?? '' );
-			$end_date    = lp_helper::sanitize_params_submitted( $data['end_date'] ?? '' );
-			$per_page    = self::PER_PAGE;
+			$course_id    = LP_Helper::sanitize_params_submitted( $data['course_id'] ?? 0, 'int' );
+			$paged        = max( 1, abs( LP_Helper::sanitize_params_submitted( $data['paged'] ?? 1, 'int' ) ) );
+			$course_name  = LP_Helper::sanitize_params_submitted( $data['course_name'] ?? '' );
+			$student_name = LP_Helper::sanitize_params_submitted( $data['student_name'] ?? '' );
+			$start_date   = lp_helper::sanitize_params_submitted( $data['start_date'] ?? '' );
+			$end_date     = lp_helper::sanitize_params_submitted( $data['end_date'] ?? '' );
+			$per_page     = self::PER_PAGE;
 
 			// Normalize date range if request is reversed.
 			if ( $start_date && $end_date && strtotime( $start_date ) > strtotime( $end_date ) ) {
@@ -195,8 +197,8 @@ class AdminListStudentsEnrolled {
 				);
 			}
 
-			if ( ! empty( $search ) ) {
-				$search_like     = '%' . $lp_db_user_items->wpdb->esc_like( $search ) . '%';
+			if ( ! empty( $student_name ) ) {
+				$search_like     = '%' . $lp_db_user_items->wpdb->esc_like( $student_name ) . '%';
 				$filter->where[] = $lp_db_user_items->wpdb->prepare(
 					'AND ( u.display_name LIKE %s OR u.user_email LIKE %s )',
 					$search_like,
@@ -259,7 +261,7 @@ class AdminListStudentsEnrolled {
 		$data_get        = LP_Helper::sanitize_params_submitted( $_GET );
 		$selected_course = abs( LP_Helper::sanitize_params_submitted( $data_get['course_id'] ?? 0, 'int' ) );
 		$search_course   = LP_Helper::sanitize_params_submitted( $data_get['course_name'] ?? '' );
-		$search_student  = LP_Helper::sanitize_params_submitted( $data_get['search'] ?? '' );
+		$search_student  = LP_Helper::sanitize_params_submitted( $data_get['student_name'] ?? '' );
 		$search_start    = lp_helper::sanitize_params_submitted( $data_get['start_date'] ?? '' );
 		$search_end      = lp_helper::sanitize_params_submitted( $data_get['end_date'] ?? '' );
 
@@ -279,7 +281,7 @@ class AdminListStudentsEnrolled {
 				<input id="lp-enrolled-search-input"
 					class="lp-enrolled-search-input"
 					type="text"
-					name="search" value="%s" placeholder="%s">
+					name="student_name" value="%s" placeholder="%s">
 			</div>
 			<div class="filter-field">
 				<label for="lp-enrolled-filter-start-date">%s</label>
@@ -341,7 +343,7 @@ class AdminListStudentsEnrolled {
 				<label for="lp-modal-enrolled-search-input">%s</label>
 				<input id="lp-modal-enrolled-search-input"
 					class="lp-enrolled-search-input"
-					type="text" name="search" placeholder="%s">
+					type="text" name="student_name" placeholder="%s">
 			</div>
 			<div class="filter-field">
 				<label for="lp-modal-enrolled-filter-start-date">%s</label>
@@ -593,7 +595,9 @@ class AdminListStudentsEnrolled {
 		$status_raw   = $graduation !== UserItemModel::GRADUATION_IN_PROGRESS
 			? $userCourseModel->get_graduation()
 			: $userCourseModel->get_status();
-		$status_label = ucfirst( str_replace( array( '-', '_' ), ' ', $status_raw ) );
+		$status_label = $graduation !== UserItemModel::GRADUATION_IN_PROGRESS
+			? $userCourseModel->get_graduation_label()
+			: $userCourseModel->get_status_label();
 		$badge_class  = 'lp-badge--' . sanitize_html_class( $status_raw );
 
 		// Date.

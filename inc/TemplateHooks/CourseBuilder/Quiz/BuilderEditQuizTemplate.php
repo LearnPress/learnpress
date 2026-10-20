@@ -17,6 +17,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
@@ -387,15 +388,10 @@ class BuilderEditQuizTemplate {
 		$html_courses  = '';
 		$assigned      = sprintf( '<span class="quiz-not-assigned">%s</span>', __( 'Not assigned yet', 'learnpress' ) );
 		if ( ! empty( $assign_course ) ) {
-			$courses = is_array( $assign_course ) && isset( $assign_course['id'] )
-				? array( $assign_course )
-				: $assign_course;
-
 			$course_htmls = array();
-			foreach ( $courses as $course ) {
-				$course_id    = $course['id'] ?? 0;
-				$course_title = $course['title'] ?? '';
-
+			foreach ( $assign_course as $course ) {
+				$course_id    = $course->section_course_id ?? 0;
+				$course_title = $course_id ? get_the_title( $course_id ) : '';
 				if ( $course_id && $course_title ) {
 					$course_link    = BuilderCourseTemplate::instance()->get_link_edit( $course_id );
 					$course_htmls[] = sprintf(
@@ -419,7 +415,6 @@ class BuilderEditQuizTemplate {
 
 		return $html_courses;
 	}
-
 
 	public function edit_title( $quiz_model ) {
 		$title = ! empty( $quiz_model ) ? $quiz_model->get_the_title() : '';
@@ -487,7 +482,11 @@ class BuilderEditQuizTemplate {
 		if ( $post_id ) {
 			$current_status = $post && ! empty( $post->post_status ) ? sanitize_key( $post->post_status ) : '';
 			if ( 'draft' !== $current_status ) {
-				$course_id_of_item = \LP_Course_DB::getInstance()->get_course_by_item_id( $post_id );
+				$courses_from_item = CourseSectionItemModel::get_courses_from_item_id(
+					$post_id,
+					LP_QUIZ_CPT
+				);
+				$course_id_of_item = $courses_from_item[0]->section_course_id ?? 0;
 				if ( $course_id_of_item ) {
 					$course = learn_press_get_course( $course_id_of_item );
 					if ( $course ) {
@@ -601,15 +600,6 @@ class BuilderEditQuizTemplate {
 	}
 
 	public function get_assigned( $id ) {
-		$courses = learn_press_get_item_courses( $id );
-
-		if ( empty( $courses ) ) {
-			return array();
-		}
-
-		return array(
-			'id'    => $courses[0]->ID,
-			'title' => $courses[0]->post_title ?? '',
-		);
+		return CourseSectionItemModel::get_courses_from_item_id( $id, LP_QUIZ_CPT );
 	}
 }

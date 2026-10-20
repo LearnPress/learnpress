@@ -19,12 +19,25 @@
 			flex: 1 1 0;
 			min-width: 0;
 		}
+
+		@media screen and (max-width: 782px) {
+			& > * {
+				flex: 1 1 calc(50%);
+			}
+		}
+
+		@media screen and (max-width: 500px) {
+			& > * {
+				flex: 1 1 100%;
+			}
+		}
 	}
 
 	.filter-field {
 		display: flex;
 		flex-direction: column;
 		gap: 5px;
+		max-width: 200px;
 
 		label {
 			text-align: left;
@@ -47,5 +60,21 @@
 	input, select {
 		min-height: 40px;
 		padding: 0 12px;
+	}
+
+	// Fix for tom-select inside
+	.lp-tom-select.ts-wrapper {
+		width: 100%;
+		min-width: auto;
+
+
+		/*&.dropdown-active {
+			width: 100%;
+		}*/
+
+		.ts-control {
+			min-height: 40px;
+			padding: 0 12px;
+		}
 	}
 }

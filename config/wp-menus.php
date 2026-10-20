@@ -11,6 +11,7 @@ use LearnPress\TemplateHooks\Admin\AdminAddonsPage;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
 use LearnPress\TemplateHooks\Admin\AdminSettingsPage;
 use LearnPress\TemplateHooks\Admin\AdminStatisticsReportTable;
+use LearnPress\TemplateHooks\Admin\AdminStudentNotesTemplate;
 use LearnPress\TemplateHooks\Admin\AdminToolsPage;
 
 defined( 'ABSPATH' ) || exit;
@@ -36,10 +37,22 @@ $menu_items = apply_filters(
 			'priority'   => 20,
 			'callback'   => [ AdminListStudentsEnrolled::instance(), 'admin_page_output' ],
 		],
+		// Student Notes.
+		'student-notes'    => [
+			'id'         => AdminStudentNotesTemplate::PAGE_SLUG,
+			'menu_title' => __( 'Notes', 'learnpress' ),
+			'page_title' => __( 'Notes', 'learnpress' ),
+			'capability' => 'edit_' . LP_COURSE_CPT . 's',
+			'priority'   => 20,
+			'callback'   => [ AdminStudentNotesTemplate::instance(), 'admin_page_output' ],
+		],
 		// Add-ons.
 		'addons'           => [
 			'id'         => 'learn-press-addons',
-			'menu_title' => __( 'Add-ons', 'learnpress' ) . '<span class="lp-notify has-addon-update"></span>',
+			'menu_title' => sprintf(
+				'%s<span class="lp-menu-addons update-plugins lp-hidden"></span>',
+				__( 'Add-ons', 'learnpress' )
+			),
 			'page_title' => __( 'LearnPress Add-ons', 'learnpress' ),
 			'capability' => 'manage_options',
 			'priority'   => 20,
@@ -86,7 +99,7 @@ $menu_items = apply_filters(
 		],
 		// Taxonomy sub-menus - no callback, only the URL as the slug.
 		'categories'       => [
-			'id'         => 'edit-tags.php?taxonomy=course_category',
+			'id'         => 'edit-tags.php?taxonomy=course_category&post_type=' . LP_COURSE_CPT,
 			'menu_title' => __( 'Categories', 'learnpress' ),
 			'page_title' => __( 'Categories', 'learnpress' ),
 			'capability' => 'manage_options',
@@ -94,7 +107,7 @@ $menu_items = apply_filters(
 			'callback'   => false,
 		],
 		'tags'             => [
-			'id'         => 'edit-tags.php?taxonomy=course_tag',
+			'id'         => 'edit-tags.php?taxonomy=course_tag&post_type=' . LP_COURSE_CPT,
 			'menu_title' => __( 'Tags', 'learnpress' ),
 			'page_title' => __( 'Tags', 'learnpress' ),
 			'capability' => 'manage_options',
@@ -118,6 +131,7 @@ $group_menus = apply_filters(
 		'operations' => [
 			'orders'     => 'edit.php?post_type=' . LP_ORDER_CPT,
 			'students'   => 'learn-press-students-enrolled',
+			'student_notes' => AdminStudentNotesTemplate::PAGE_SLUG,
 			'statistics' => 'learn-press-statistics',
 		],
 		'system'     => [

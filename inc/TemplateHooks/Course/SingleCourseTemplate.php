@@ -8,6 +8,7 @@
 
 namespace LearnPress\TemplateHooks\Course;
 
+use LearnPress\Cache\LPCourseCache;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -306,7 +307,7 @@ class SingleCourseTemplate {
 			}
 
 			// Check cache before get image url
-			$cache     = new \LP_Course_Cache();
+			$cache     = new LPCourseCache();
 			$key_cache = 'image_url/' . $courseModel->get_id();
 			if ( is_array( $size_img_send ) && count( $size_img_send ) === 2 ) {
 				$key_cache .= '/' . implode( 'x', $size_img_send );
@@ -1596,18 +1597,21 @@ class SingleCourseTemplate {
 
 		$section_header = [
 			'start'       => '<div class="course-section-header">',
+			'info'        => '<div class="course-section-info">',
+			'title'       => sprintf( '<div class="course-section__title">%s</div>', wp_kses_post( $section_name ) ),
+			'count_items' => sprintf(
+				'<div class="section-count-items">%s</div>',
+				sprintf(
+					_n( '%d Item', '%d Items', count( $items ), 'learnpress' ),
+					count( $items )
+				)
+			),
+			'description' => $html_section_description,
+			'info_end'    => '</div>',
 			'toggle'      => '<div class="section-toggle">
 				<i class="lp-icon-angle-down"></i>
 				<i class="lp-icon-angle-up"></i>
 			</div>',
-			'info'        => '<div class="course-section-info">',
-			'title'       => sprintf( '<div class="course-section__title">%s</div>', wp_kses_post( $section_name ) ),
-			'description' => $html_section_description,
-			'info_end'    => '</div>',
-			'count_items' => sprintf(
-				'<div class="section-count-items">%d</div>',
-				count( $items )
-			),
 			'end'         => '</div>',
 		];
 

@@ -323,22 +323,21 @@ class UserQuizModel extends UserItemModel {
 			);
 		}
 
-		// Check user, course of quiz is enrolled.
+		// Check user, course of quiz can impact item.
 		$userCourseModel = $this->get_user_course_model();
-		if ( ! $userCourseModel instanceof UserCourseModel
-			|| ! $userCourseModel->has_enrolled() ) {
+		if ( ! $userCourseModel instanceof UserCourseModel ) {
 			$can_start = new WP_Error(
 				'not_errol_course',
 				__( 'Please enroll in the course before starting the quiz.', 'learnpress' )
 			);
-		} elseif ( $userCourseModel->has_finished() ) {
-			$can_start = new WP_Error(
-				'finished_course',
-				__( 'You have already finished the course of this quiz.', 'learnpress' )
-			);
 		} else {
-			// Set Parent id for user quiz to save DB.
-			$this->parent_id = $userCourseModel->get_user_item_id();
+			$can_impact_item = $userCourseModel->can_impact_item();
+			if ( $can_impact_item instanceof WP_Error ) {
+				$can_start = $can_impact_item;
+			} else {
+				// Set Parent id for user quiz to save DB.
+				$this->parent_id = $userCourseModel->get_user_item_id();
+			}
 		}
 
 		// Hook old.
@@ -390,12 +389,16 @@ class UserQuizModel extends UserItemModel {
 		}
 
 		$userCourseModel = $this->get_user_course_model();
-		if ( ! $userCourseModel instanceof UserCourseModel
-		|| ! $userCourseModel->has_enrolled() ) {
+		if ( ! $userCourseModel instanceof UserCourseModel ) {
 			$can_finish = new WP_Error(
 				'not_enrolled_course',
 				__( 'User is not enrolled in the course.', 'learnpress' )
 			);
+		}
+
+		$can_impact_quiz = $userCourseModel->can_impact_item();
+		if ( $can_impact_quiz instanceof WP_Error ) {
+			$can_finish = $can_impact_quiz;
 		}
 
 		if ( ! $this->has_started() ) {
@@ -428,7 +431,7 @@ class UserQuizModel extends UserItemModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function can_retake() {
 		$can_retake = true;
@@ -450,17 +453,16 @@ class UserQuizModel extends UserItemModel {
 
 		// Check user, course of quiz is enrolled.
 		$userCourseModel = $this->get_user_course_model();
-		if ( ! $userCourseModel instanceof UserCourseModel
-			|| $userCourseModel->get_graduation() !== $userCourseModel::GRADUATION_IN_PROGRESS ) {
+		if ( ! $userCourseModel instanceof UserCourseModel ) {
 			$can_retake = new WP_Error(
 				'not_errol_course',
 				__( 'Please enroll in the course before starting the quiz.', 'learnpress' )
 			);
-		} elseif ( $userCourseModel->has_finished() ) {
-			$can_retake = new WP_Error(
-				'finished_course',
-				__( 'You have already finished the course of this quiz.', 'learnpress' )
-			);
+		}
+
+		$can_impact_item = $userCourseModel->can_impact_item();
+		if ( $can_impact_item instanceof WP_Error ) {
+			$can_retake = $can_impact_item;
 		}
 
 		// Check user quiz start and completed?.

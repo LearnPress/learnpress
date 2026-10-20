@@ -36,10 +36,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 		protected function __construct() {
 			$this->lp_db = LP_Database::getInstance();
-			// Only run on backend.
-			if ( ! is_admin() ) {
-				return;
-			}
 			ini_set( 'max_execution_time', HOUR_IN_SECONDS );
 			// From LP v4.2.2 temporary run create table thim_cache.
 			// After a long time, will remove this code. Only run create table when activate plugin LP.
@@ -69,6 +65,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				$this->create_table_webhooks();
 			}
 
+			// Runtime migration for Student Notes table.
+			if ( ! LP_Settings::is_created_tb_notes() ) {
+				$this->create_table_notes();
+			}
+
 			// Set roles and capabilities.
 			learn_press_add_user_roles();
 
@@ -89,14 +90,22 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		}
 
 		/**
-		 * Do something after LP is activated.
+		 * Run installation tasks when LearnPress is activated.
+		 *
+		 * 1. Create required database tables.
+		 * 2. Stop here if table creation failed.
+		 * 3. Save the current database version.
+		 * 4. Register LearnPress custom post types and taxonomies.
+		 * 5. Create default pages (courses, profile, checkout, become a teacher, etc.).
+		 * 6. Set permalink structure to post name if not configured.
+		 * 7. Soft flush rewrite rules so WordPress rebuilds them with LP CPTs and pages on the next request.
 		 *
 		 * @since 4.0.0
 		 */
 		public function on_activate() {
 			$this->create_tables();
 
-			if ( ! self::tables_install_done() ) {
+			if ( ! $this->tables_install_done() ) {
 				return;
 			}
 
@@ -105,6 +114,14 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				// Save database version of LP
 				update_option( LP_KEY_DB_VERSION, LearnPress::instance()->db_version );
 			}
+
+			// Register custom post type and taxonomies .
+			include_once LP_PLUGIN_PATH . 'inc/custom-post-types/abstract.php';
+			include_once LP_PLUGIN_PATH . 'inc/custom-post-types/course.php';
+			include_once LP_PLUGIN_PATH . 'inc/custom-post-types/lesson.php';
+			include_once LP_PLUGIN_PATH . 'inc/custom-post-types/quiz.php';
+			include_once LP_PLUGIN_PATH . 'inc/custom-post-types/question.php';
+			include_once LP_PLUGIN_PATH . 'inc/custom-post-types/order.php';
 
 			// Create pages default.
 			self::create_pages();
@@ -115,6 +132,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				// flush_rewrite_rules();
 			}
 
+			// Set roles and capabilities.
+			learn_press_add_user_roles();
+
+			// Rebuilds them with LP CPTs and pages on next request.
+			flush_rewrite_rules();
+
 			// Force option users_can_register to ON.
 			/*if ( ! get_option( 'users_can_register' ) ) {
 				update_option( 'users_can_register', 1 );
@@ -123,38 +146,44 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 		/**
 		 * Create tables required for LP
+		 * @throws Exception
 		 */
 		private function create_tables() {
-			try {
-				$tables = Config::instance()->get( 'tables-v4', 'table' );
-				foreach ( $tables as $table ) {
-					LP_Database::getInstance()->wpdb->query( $table );
-				}
+			$db = LP_Database::getInstance();
+			$tables = Config::instance()->get( 'tables-v4', 'table' );
+			foreach ( $tables as $table ) {
+				$db->wpdb->query( $table );
 
-				if ( ! LP_Settings::is_created_tb_thim_cache() ) {
-					$this->create_table_thim_cache();
-				}
-
-				if ( ! LP_Settings::is_created_tb_material_files() ) {
-					$this->create_table_learnpress_files();
-				}
-
-				// Ensure MCP API keys table exists for activation/upgrade flows.
-				// Keep this explicit guard in addition to tables-v4 config loading.
-				if ( ! LP_Settings::is_created_tb_mcp_api_keys() ) {
-					$this->create_table_mcp_api_keys();
-				}
-
-				// Ensure Webhooks table exists for activation/upgrade flows.
-				// Keep this explicit guard in addition to tables-v4 config loading.
-				if ( ! LP_Settings::is_created_tb_webhooks() ) {
-					$this->create_table_webhooks();
-				}
-
-				update_option( 'learn_press_check_tables', 'yes' );
-			} catch ( Throwable $e ) {
-				error_log( $e->getMessage() );
+				$db->check_execute_has_error();
 			}
+
+			if ( ! LP_Settings::is_created_tb_thim_cache() ) {
+				$this->create_table_thim_cache();
+			}
+
+			if ( ! LP_Settings::is_created_tb_material_files() ) {
+				$this->create_table_learnpress_files();
+			}
+
+			// Ensure MCP API keys table exists for activation/upgrade flows.
+			// Keep this explicit guard in addition to tables-v4 config loading.
+			if ( ! LP_Settings::is_created_tb_mcp_api_keys() ) {
+				$this->create_table_mcp_api_keys();
+			}
+
+			// Ensure Webhooks table exists for activation/upgrade flows.
+			// Keep this explicit guard in addition to tables-v4 config loading.
+			if ( ! LP_Settings::is_created_tb_webhooks() ) {
+				$this->create_table_webhooks();
+			}
+
+			// Ensure Student Notes table exists for activation/upgrade flows.
+			// Keep this explicit guard in addition to tables-v4 config loading.
+			if ( ! LP_Settings::is_created_tb_notes() ) {
+				$this->create_table_notes();
+			}
+
+			update_option( 'learn_press_check_tables', 'yes' );
 		}
 
 		/**
@@ -332,6 +361,44 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		}
 
 		/**
+		 * Create table learnpress_notes.
+		 *
+		 * @since 4.4.9.2
+		 * @return void
+		 */
+		public function create_table_notes() {
+			global $wpdb;
+
+			try {
+				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+
+				$sql = "CREATE TABLE IF NOT EXISTS {$this->lp_db->tb_lp_notes} (
+					note_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					user_id bigint(20) unsigned NOT NULL,
+					course_id bigint(20) unsigned NOT NULL,
+					item_id bigint(20) unsigned NOT NULL,
+					item_type varchar(45) NOT NULL DEFAULT 'lp_lesson',
+					note_type varchar(20) NOT NULL DEFAULT 'text',
+					content longtext NULL,
+					highlight_text text NULL,
+					anchor longtext NULL,
+					created_at datetime NOT NULL,
+					updated_at datetime NULL DEFAULT NULL,
+					PRIMARY KEY (note_id),
+					KEY user_item (user_id, item_id),
+					KEY user_course (user_id, course_id),
+					KEY course_id (course_id),
+					KEY item_id (item_id),
+					KEY created_at (created_at)
+				) $collation";
+
+				$wpdb->query( $sql );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		/**
 		 * Create default pages for LP
 		 */
 		public static function create_pages() {
@@ -348,32 +415,30 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 					if ( $page === 'courses' ) {
 						$page_title = 'Courses';
-						$page_slug  = $page;
+						//$page_slug  = $page;
 					} elseif ( 'single_instructor' === $page ) {
 						$page_title = 'Instructor';
-						$page_slug  = 'instructor';
+						//$page_slug  = 'instructor';
 					} elseif ( 'instructors' === $page ) {
 						$page_title = 'Instructors';
-						$page_slug  = $page;
+						//$page_slug  = $page;
 					} elseif ( 'become_a_teacher' === $page ) {
 						$page_title = 'Become an Instructor';
-						$page_slug  = $page;
+						//$page_slug  = $page;
 					} elseif ( 'term_conditions' === $page ) {
 						$page_title = 'Terms and Conditions';
-						$page_slug  = $page;
+						//$page_slug  = $page;
 					} else {
 						$page_title = ucwords( str_replace( '_', ' ', $page ) );
-						$page_slug  = 'lp-' . str_replace( '_', '-', $page );
+						//$page_slug  = 'lp-' . str_replace( '_', '-', $page );
 					}
 
 					$data_create_page = array(
 						'post_title' => $page_title,
-						'post_name'  => $page_slug,
+						//'post_name'  => $page_slug,
 					);
 					LP_Helper::create_page( $data_create_page, "learn_press_{$page}_page_id" );
 				}
-
-				flush_rewrite_rules();
 			} catch ( Exception $ex ) {
 				error_log( $ex->getMessage() );
 			}
@@ -385,9 +450,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * @return bool
 		 */
 		public function tables_install_done(): bool {
-			$install_done = get_option( 'learn_press_check_tables', 'no' );
-			if ( is_multisite() && 'yes' !== $install_done ) {
+			$install_done = 'yes' === get_option( 'learn_press_check_tables', 'no' );
+			if ( ! $install_done ) {
 				$this->create_tables();
+				$install_done = 'yes' === get_option( 'learn_press_check_tables', 'no' );
 			}
 
 			return $install_done;

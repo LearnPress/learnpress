@@ -118,15 +118,15 @@ input[type="password"] {
 		.form-field {
 			margin: 0 0 20px 0;
 
-			& > label {
-				font-style: italic;
-			}
+			// & > label {
+			// 	font-style: italic;
+			// }
 
 			label {
 				display: block;
-				font-size: $font-size-label;
-				font-weight: $heading-font-weight;
-				margin: 0 0 10px 0;
+				// font-size: $font-size-label;
+				// font-weight: $heading-font-weight;
+				margin: 0 0 8px 0;
 			}
 
  			input[type="email"],

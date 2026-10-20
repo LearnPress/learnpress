@@ -5,7 +5,7 @@
  * This class handles the AJAX request to edit the curriculum of a course.
  *
  * @since 4.2.9
- * @version 1.0.0
+ * @version 1.0.2
  */
 
 namespace LearnPress\Ajax;
@@ -58,6 +58,8 @@ class EditQuestionAjax extends AbstractAjax {
 	 *
 	 * JS file edit-quiz.js: function updateQuestionTitle call this method.
 	 *
+	 * @since 4.2.9
+	 * @version 1.0.1
 	 */
 	public static function update_question() {
 		$response = new LP_REST_Response();
@@ -90,18 +92,23 @@ class EditQuestionAjax extends AbstractAjax {
 			}
 
 			if ( false !== $question_hint ) {
+				$question_hint = Template::sanitize_html_content( $question_hint );
 				$questionPostModel->save_meta_value_by_key( QuestionPostModel::META_KEY_HINT, $question_hint );
 			}
 
 			if ( false !== $question_explanation ) {
+				$question_explanation = Template::sanitize_html_content( $question_explanation );
 				$questionPostModel->save_meta_value_by_key( QuestionPostModel::META_KEY_EXPLANATION, $question_explanation );
 			}
 
 			if ( false !== $question_mark ) {
+				$question_mark = (float) $question_mark;
 				$questionPostModel->save_meta_value_by_key( QuestionPostModel::META_KEY_MARK, $question_mark );
 			}
 
 			if ( false !== $question_type ) {
+				$question_type = LP_Helper::sanitize_params_submitted( $question_type, 'key' );
+
 				if ( ! in_array( $question_type, array_keys( QuestionPostModel::get_types() ), true ) ) {
 					throw new Exception( __( 'Invalid question type', 'learnpress' ) );
 				}

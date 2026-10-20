@@ -216,9 +216,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @param array    $posts
 		 * @param WP_Query $wp_query
 		 *
-		 * @return array|WP_Query
+		 * @return array
 		 * @since 4.4.8
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function posts_pre_query( $posts, $wp_query ) {
 			try {
@@ -227,6 +227,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 
 				// Check screen
+				if ( ! function_exists( 'get_current_screen' ) ) {
+					return $posts;
+				}
+
 				$curren_screen = get_current_screen();
 				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_COURSE_CPT ) {
 					return $posts;
@@ -253,10 +257,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$order        = LP_Request::get_param( 'order', '', 'key' );
 				$filter_price = LP_Helper::sanitize_params_submitted( $_REQUEST['filter_price'] ?? '' );
 
-				$filter        = new CoursePostFilter();
-				$filter->page  = $paged;
-				$filter->limit = $posts_per_page;
-				$post_db       = PostDB::getInstance();
+				$filter              = new CoursePostFilter();
+				$filter->page        = $paged;
+				$filter->limit       = $posts_per_page;
+				$filter->only_fields = array_map(
+					function ( $field ) {
+						return "p.{$field}";
+					},
+					$filter->all_fields
+				);
+				$filter->field_count = 'p.ID';
+				$post_db             = PostDB::getInstance();
 
 				if ( ! empty( $status ) ) {
 					$filter->post_status = array( $status );
@@ -276,6 +287,35 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						substr( $month, 0, 4 ),
 						substr( $month, 4, 2 )
 					);
+				}
+
+				// Filter by taxonomies (course_category, course_tag).
+				foreach ( array( LP_COURSE_CATEGORY_TAX, LP_COURSE_TAXONOMY_TAG ) as $taxonomy ) {
+					$term_slugs = $wp_query->get( $taxonomy );
+					if ( empty( $term_slugs ) ) {
+						$term_slugs = LP_Request::get_param( $taxonomy, '', 'key' );
+					}
+
+					if ( empty( $term_slugs ) ) {
+						continue;
+					}
+
+					$tt_ids = array();
+					foreach ( explode( ',', $term_slugs ) as $slug ) {
+						$term = get_term_by( 'slug', sanitize_title( $slug ), $taxonomy );
+						if ( $term && ! is_wp_error( $term ) ) {
+							$tt_ids[] = (int) $term->term_taxonomy_id;
+						}
+					}
+
+					if ( empty( $tt_ids ) ) {
+						continue;
+					}
+
+					$alias            = 'tr_' . $taxonomy;
+					$filter->join[]   = "INNER JOIN {$post_db->wpdb->term_relationships} {$alias}
+						ON {$alias}.object_id = p.ID";
+					$filter->where[] = 'AND ' . $alias . '.term_taxonomy_id IN (' . implode( ',', $tt_ids ) . ')';
 				}
 
 				/*$has_price_filter = false;

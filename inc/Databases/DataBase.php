@@ -31,7 +31,9 @@ class DataBase {
 	public $tb_lp_sessions;
 	public $tb_lp_files;
 	public $tb_lp_webhooks;
+	public $tb_lp_notes;
 	public $tb_thim_cache;
+	public $tb_lp_mcp_api_keys;
 	private $collate         = '';
 	public $max_index_length = '191';
 
@@ -65,7 +67,9 @@ class DataBase {
 		$this->tb_lp_sessions            = $prefix . 'learnpress_sessions';
 		$this->tb_lp_files               = $prefix . 'learnpress_files';
 		$this->tb_lp_webhooks            = $prefix . 'learnpress_webhooks';
+		$this->tb_lp_notes               = $prefix . 'learnpress_notes';
 		$this->tb_thim_cache             = $prefix . 'thim_cache';
+		$this->tb_lp_mcp_api_keys        = $prefix . 'learnpress_mcp_api_keys';
 		$this->wpdb->hide_errors();
 		$this->set_collate();
 	}
@@ -109,9 +113,14 @@ class DataBase {
 	 * @param string $name_table
 	 *
 	 * @return bool|int
+	 * @throws Exception
 	 */
 	public function check_table_exists( string $name_table ) {
-		return $this->wpdb->query( $this->wpdb->prepare( "SHOW TABLES LIKE '%s'", $name_table ) );
+		return $this->wpdb->query(
+			$this->wpdb->prepare(
+				"SHOW TABLES LIKE '%s'", $name_table
+			)
+		);
 	}
 
 	/**
@@ -151,6 +160,7 @@ class DataBase {
 	 */
 	public function check_col_table( string $name_table = '', string $name_col = '' ) {
 		$query = $this->wpdb->prepare( "SHOW COLUMNS FROM $name_table LIKE '%s'", $name_col );
+		//$query = $this->wpdb->prepare( "SHOW COLUMNS FROM $name_table WHERE Field = '%s'", $name_col );
 
 		return $this->wpdb->query( $query );
 	}

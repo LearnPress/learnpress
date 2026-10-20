@@ -144,7 +144,7 @@
 			border-radius: 4px;
 			background-color: var(--lp-button-background-color);
 			color: var(--lp-button-color);
-
+			cursor: pointer;
 			&:focus {
 				outline: none;
 			}

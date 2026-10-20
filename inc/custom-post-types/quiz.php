@@ -272,6 +272,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				}
 
 				// Check screen
+				if ( ! function_exists( 'get_current_screen' ) ) {
+					return $posts;
+				}
+
 				$curren_screen = get_current_screen();
 				if ( ! $curren_screen || $curren_screen->id !== 'edit-' . LP_QUIZ_CPT ) {
 					return $posts;
@@ -297,10 +301,13 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				$order   = LP_Request::get_param( 'order', '', 'key' );
 
 				$filter              = new QuizPostFilter();
-				$filter->only_fields = [ 'p.ID', 'p.post_title', 'p.post_author', 'p.post_date', 'p.post_date_gmt' ];
+				$filter->only_fields = array_map(
+					function ( $field ) {
+						return "p.{$field}";
+					},
+					$filter->all_fields
+				);
 				$filter->field_count = 'p.ID';
-				$filter->page        = $paged;
-				$filter->limit       = $posts_per_page;
 				$post_db             = PostDB::getInstance();
 
 				if ( ! empty( $status ) ) {

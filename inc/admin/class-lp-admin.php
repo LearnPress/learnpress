@@ -6,7 +6,12 @@
  */
 
 use LearnPress\Background\LPBackgroundAjax;
+use LearnPress\CourseBuilder\CourseBuilder;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CourseSectionItemModel;
+use LearnPress\TemplateHooks\Admin\Notices\AdminNotesTemplate;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 
 defined( 'ABSPATH' ) || exit;
@@ -35,7 +40,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$this->includes();
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			//add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
-			add_action( 'all_admin_notices', array( $this, 'admin_notices' ), - 1 );
+			add_action( 'all_admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 			//add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
@@ -656,15 +661,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				}
 			}
 
-			// Show template file templates override.
-			$page = LP_Request::get_param( 'page' );
-			$tab  = LP_Request::get_param( 'tab' );
-			if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
-				if ( LP_Outdated_Template_Helper::detect_outdated_template() ) {
-					learn_press_admin_view( 'html-admin-notice-templates' );
-				}
-			}
-
 			// Request accept/denied user can become a teacher.
 			$action_become_teacher      = LP_Request::get_param( 'lp-action' );
 			$user_id                    = LP_Request::get_param( 'user_id', 0, 'int' );
@@ -684,7 +680,28 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				<?php
 			}
 
-			learn_press_admin_view( 'admin-notices.php', [], true );
+			// Load Ajax notes here
+			/** @use AdminNotesTemplate::render_notices */
+			$html_notices = TemplateAJAX::load_content_via_ajax(
+				[
+					'method_request' => 'GET',
+					'id_url' => 'admin-notices',
+					'html_loading_before_show_content' => '',
+				],
+				[
+					'class'  => AdminNotesTemplate::class,
+					'method' => 'render_notices',
+				]
+			);
+
+			wp_enqueue_script( 'lp-admin-notices' );
+
+			echo Template::instance()->nest_elements(
+				[
+					'<div class="learn-press-admin-notices notice">' => '</div>',
+				],
+				$html_notices
+			);
 		}
 
 		/**
@@ -880,12 +897,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @return string
 		 * @author tungnx
 		 * @since  3.2.7.5
-		 * @version 4.0.1
+		 * @version 4.0.2
 		 */
 		public function lp_course_set_link_item_backend( $post_link = '', $post_id = 0, $new_title = '', $new_slug = '', $post = null ) {
 			try {
 				if ( in_array( $post->post_type, CourseModel::item_types_support() ) ) {
-					$course_id_of_item = LP_Course_DB::getInstance()->get_course_by_item_id( $post->ID );
+					$courses_from_item = CourseSectionItemModel::get_courses_from_item_id( $post->ID, $post->post_type );
+					$course_id_of_item = $courses_from_item[0]->section_course_id ?? 0;
 					if ( $course_id_of_item ) {
 						$course = learn_press_get_course( $course_id_of_item );
 						if ( $course ) {
@@ -938,7 +956,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @since 4.3.0
 		 */
 		public function add_course_builder_button( $post ) {
-			if ( ! $post || LP_COURSE_CPT !== $post->post_type ) {
+			if ( ! $post || LP_COURSE_CPT !== $post->post_type || ! CourseBuilder::can_view_course_builder() ) {
 				return;
 			}
 

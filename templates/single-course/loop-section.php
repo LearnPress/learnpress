@@ -9,6 +9,8 @@
  * @version  4.0.2
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 /**
@@ -76,7 +78,7 @@ $items = $section->get_items();
 	<?php do_action( 'learn-press/before-section-content', $section, $course->get_id() ); ?>
 
 	<?php if ( ! $items ) : ?>
-		<?php learn_press_display_message( __( 'No items in this section', 'learnpress' ) ); ?>
+		<?php Template::print_message( __( 'No items in this section', 'learnpress' ) ); ?>
 	<?php else : ?>
 
 		<ul class="section-content">

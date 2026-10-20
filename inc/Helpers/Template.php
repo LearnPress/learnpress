@@ -326,7 +326,7 @@ class Template {
 	 *
 	 * @return void|string
 	 * @since 4.2.6.9.3
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public static function print_message( string $message, string $status = 'success', bool $has_print = true ) {
 		if ( empty( $message ) ) {
@@ -339,7 +339,10 @@ class Template {
 
 		$section = [
 			'wrapper'     => sprintf( '<div class="learn-press-message %s">', esc_attr( $status ) ),
-			'content'     => wp_kses_post( $message ),
+			'content'     => sprintf(
+				'<div>%s</div>',
+				wp_kses_post( $message )
+			),
 			'wrapper_end' => '</div>',
 		];
 

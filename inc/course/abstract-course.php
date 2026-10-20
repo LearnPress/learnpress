@@ -649,6 +649,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					update_post_meta( $this->get_id(), '_lp_price', $price );
 				}*/
 
+				if ( $this->get_data( 'no_required_enroll', 'no' ) === 'yes' ) {
+					$price = 0;
+				}
+
 				LP_Course_Cache::cache_load_first( 'set', $key_cache, $price );
 			}
 
@@ -904,6 +908,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @since 4.1.4
 		 * @version 1.0.1
 		 * @return int
+		 * @deprecated 4.4.11
 		 */
 		public function get_total_user_enrolled(): int {
 			$total           = 0;

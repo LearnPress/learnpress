@@ -10,6 +10,8 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 
 	protected $hierarchical = false;
 
+	protected $password_verified = array();
+
 	protected function get_object( $id ) {
 		return new WP_Error( 'invalid-method', sprintf( __( "The method '%s' not implemented. It must be overridden in the subclass.", 'learnpress' ), __METHOD__ ), array( 'status' => 405 ) );
 	}
@@ -37,7 +39,15 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 	}
 
 	public function get_item_permissions_check( $request ) {
-		if ( $this->post_type !== get_post_type( (int) $request['id'] ) ) {
+		$post_id = absint( $request['id'] ?? 0 );
+		unset( $this->password_verified[ $post_id ] );
+
+		$password_check = $this->verify_post_password( $post_id, $request['password'] ?? '' );
+		if ( is_wp_error( $password_check ) ) {
+			return $password_check;
+		}
+
+		if ( $this->post_type !== get_post_type( $post_id ) ) {
 			return new WP_Error( 'lp_jwt_rest_not_in_post_type', __( 'Sorry, You cannot view this item.', 'learnpress' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
@@ -51,6 +61,12 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 	}
 
 	public function check_read_permission( $post_id ) {
+		if ( post_password_required( $post_id )
+			&& empty( $this->password_verified[ $post_id ] )
+			&& ! current_user_can( 'edit_post', $post_id ) ) {
+			return false;
+		}
+
 		if ( ! lp_rest_check_post_permissions( $this->post_type, 'read', $post_id ) ) {
 			return false;
 		}
@@ -635,5 +651,32 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		}
 
 		return apply_filters( "rest_{$this->post_type}_collection_params", $params, $this->post_type );
+	}
+
+	protected function verify_post_password( $post_id, $password ) {
+		$post = get_post( $post_id );
+		if ( ! $post || empty( $post->post_password ) ) {
+			return true;
+		}
+
+		if ( empty( $password ) ) {
+			return new WP_Error(
+				'lp_password_required',
+				__( 'A password is required to view this resource.', 'learnpress' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		if ( ! hash_equals( $post->post_password, $password ) ) {
+			return new WP_Error(
+				'lp_jwt_rest_incorrect_password',
+				__( 'Incorrect post password.', 'learnpress' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		$this->password_verified[ $post_id ] = true;
+
+		return true;
 	}
 }

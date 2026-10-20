@@ -34,6 +34,7 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return int
 	 * @throws Exception
+	 * @deprecated 4.1.11 instead use CourseSectionItemModel::get_courses_from_item_id()
 	 */
 	public function get_course_by_item_id( $item_id = 0 ): int {
 		// Get cache

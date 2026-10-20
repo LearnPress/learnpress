@@ -53,11 +53,7 @@ class TableListTemplate {
 		$html_th = '';
 
 		foreach ( $data as $item ) {
-			$html_th .= sprintf(
-				'<th class="%s">%s</th>',
-				esc_attr( $item['class'] ?? '' ),
-				wp_kses_post( $item['title'] ?? '' )
-			);
+			$html_th .= $this->html_header_sort( $item );
 		}
 
 		$section = [
@@ -69,6 +65,73 @@ class TableListTemplate {
 		];
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Render a single sortable/non-sortable column header.
+	 *
+	 * Mirrors WordPress WP_List_Table column headers, replacing the
+	 * default .sorting-indicator pseudo-element icon with lp-icon carets.
+	 *
+	 * Expected item keys:
+	 * - class       : CSS class(es) for the <th>.
+	 * - title       : Column title.
+	 * - sortable    : Whether the column supports sorting.
+	 * - sort_url    : URL to use when the header is clicked (required when sortable).
+	 * - sorted      : Whether this column is the currently sorted one.
+	 * - sort_order  : Current sort order, 'asc' or 'desc' (default 'asc').
+	 *
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	public function html_header_sort( array $item = [] ): string {
+		$classes  = array_filter( [ (string) ( $item['class'] ?? '' ) ] );
+		$sortable = ! empty( $item['sortable'] );
+		$sorted   = $sortable && ! empty( $item['sorted'] );
+		$order    = $sorted ? strtolower( (string) ( $item['sort_order'] ?? 'asc' ) ) : '';
+		if ( ! in_array( $order, [ 'asc', 'desc' ], true ) ) {
+			$order = 'asc';
+		}
+
+		if ( $sortable ) {
+			$classes[] = $sorted ? 'sorted' : 'sortable';
+			if ( $sorted ) {
+				$classes[] = $order;
+			}
+		}
+
+		$title = wp_kses_post( $item['title'] ?? '' );
+		$class = implode( ' ', $classes );
+
+		if ( ! $sortable ) {
+			return sprintf(
+				'<th scope="col" class="%s">%s</th>',
+				esc_attr( $class ),
+				$title
+			);
+		}
+
+		$up_active   = $sorted && 'asc' === $order ? ' is-active' : '';
+		$down_active = $sorted && 'desc' === $order ? ' is-active' : '';
+		$sort_url    = $item['sort_url'] ?? '#';
+
+		return sprintf(
+			'<th scope="col" class="%s">
+				<a href="%s">
+				<span>%s</span>
+				<span class="sorting-indicator">
+					<i class="lp-icon-caret-up%4$s"></i>
+					<i class="lp-icon-caret-down%5$s"></i>
+				</span>
+				</a>
+			</th>',
+			esc_attr( $class ),
+			esc_url( $sort_url ),
+			$title,
+			esc_attr( $up_active ),
+			esc_attr( $down_active )
+		);
 	}
 
 	/**

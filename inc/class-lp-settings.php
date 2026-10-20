@@ -4,8 +4,11 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0.1
+ * @version 1.0.2
  */
+
+use LearnPress\Cache\LPSettingsCache;
+use LearnPress\Databases\DataBase;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -44,7 +47,7 @@ class LP_Settings {
 				$this->_options = $data;
 			}
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 	}
 
@@ -69,10 +72,10 @@ class LP_Settings {
 	 */
 	protected function _load_options() {
 		// Check cache exists
-		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_settings_cache = new LPSettingsCache( true );
 		$lp_options        = $lp_settings_cache->get_lp_settings();
 		if ( false !== $lp_options ) {
-			$this->_options = LP_Helper::json_decode( $lp_options, true );
+			$this->_options = $lp_options;
 
 			return;
 		}
@@ -81,8 +84,9 @@ class LP_Settings {
 		$query = $wpdb->prepare(
 			"SELECT option_name, option_value
 			FROM {$wpdb->options}
-			WHERE option_name LIKE %s",
-			$wpdb->esc_like( $this->_prefix ) . '%'
+			WHERE option_name LIKE %s OR option_name LIKE %s",
+			$wpdb->esc_like( $this->_prefix ) . '%',
+			$wpdb->esc_like( 'lp_' ) . '%'
 		);
 
 		$options = $wpdb->get_results( $query );
@@ -92,7 +96,7 @@ class LP_Settings {
 			}
 
 			// Set cache
-			$lp_settings_cache->set_lp_settings( json_encode( $this->_options ) );
+			$lp_settings_cache->set_lp_settings( $this->_options );
 		}
 	}
 
@@ -215,7 +219,7 @@ class LP_Settings {
 	 */
 	public static function update_option( $name, $value, $prefix = 'learn_press_' ) {
 		update_option( "{$prefix}{$name}", $value );
-		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_settings_cache = new LPSettingsCache( true );
 		$lp_settings_cache->clean_lp_settings();
 	}
 
@@ -237,6 +241,28 @@ class LP_Settings {
 		}
 
 		return get_option( $key, $default );
+	}
+
+	/**
+	 * Get list of dismissed admin notices.
+	 *
+	 * @return array
+	 */
+	public static function get_admin_notices_dismiss(): array {
+		return get_option( 'lp_admin_notices_dismiss', [] );
+	}
+
+	/**
+	 * Check if an admin notice has been dismissed.
+	 *
+	 * @param string $key Notice key.
+	 *
+	 * @return bool
+	 */
+	public static function is_admin_notice_dismissed( string $key ): bool {
+		$dismissed = self::get_admin_notices_dismiss();
+
+		return isset( $dismissed[ $key ] );
 	}
 
 	public function get_int( $key ) {
@@ -387,9 +413,10 @@ class LP_Settings {
 	 * Check table learnpress_course is created
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	public static function is_created_tb_courses(): bool {
-		$lp_db = LP_Database::getInstance();
+		$lp_db = DataBase::getInstance();
 		return $lp_db->check_table_exists( $lp_db->tb_lp_courses );
 	}
 
@@ -414,9 +441,10 @@ class LP_Settings {
 	/**
 	 * Check table learnpress_files is created
 	 * @return boolean
+	 * @throws Exception
 	 */
 	public static function is_created_tb_material_files(): bool {
-		$lp_db = LP_Database::getInstance();
+		$lp_db = DataBase::getInstance();
 		return $lp_db->check_table_exists( $lp_db->tb_lp_files );
 	}
 
@@ -424,9 +452,10 @@ class LP_Settings {
 	 * Check table learnpress_mcp_api_keys is created.
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	public static function is_created_tb_mcp_api_keys(): bool {
-		$lp_db = LP_Database::getInstance();
+		$lp_db = DataBase::getInstance();
 		return $lp_db->check_table_exists( $lp_db->tb_lp_mcp_api_keys );
 	}
 
@@ -434,10 +463,23 @@ class LP_Settings {
 	 * Check table learnpress_webhooks is created.
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	public static function is_created_tb_webhooks(): bool {
-		$lp_db = LP_Database::getInstance();
+		$lp_db = DataBase::getInstance();
 		return $lp_db->check_table_exists( $lp_db->tb_lp_webhooks );
+	}
+
+	/**
+	 * Check table learnpress_notes is created.
+	 *
+	 * @return bool
+	 * @throws Exception
+	 * @since 4.4.9.2
+	 */
+	public static function is_created_tb_notes(): bool {
+		$lp_db = DataBase::getInstance();
+		return $lp_db->check_table_exists( $lp_db->tb_lp_notes );
 	}
 
 	public static function lp_material_file_types(): array {

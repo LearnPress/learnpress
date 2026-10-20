@@ -69,9 +69,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'cancel'           => esc_html__( 'Cancel' ),
 					'generate_with_ai' => esc_html__( 'Generate with AI', 'learnpress' ),
 					'confirm_close_ai' => esc_html__( 'Are you sure you want to close? Generate data will stop.', 'learnpress' ),
+					'select_user' => esc_html__( 'Select users', 'learnpress' ),
 				),
 				'current_screen'           => $screen ? $screen->id : '',
-				'show_search_author_field' => empty( $html_search_author_field ) ? 0 : $html_search_author_field,
+				'show_search_author_field' => empty( $html_search_author_field ) ? '0' : $html_search_author_field,
 				'toast'                    => array(
 					'gravity'     => 'bottom',
 					'position'    => 'center',
@@ -592,6 +593,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					'',
 					array( 'strategy' => 'async' )
+				),
+				'lp-admin-student-notes'    => new LP_Asset_Key(
+					$this->url( 'dist/js/admin/student-notes' . self::$_min_assets . '.js' ),
+					array( 'lp-load-ajax', 'wp-i18n' ),
+					array( 'learnpress_page_learn-press-student-notes' ),
+					0,
+					1,
+					'',
+					array( 'strategy' => 'defer' )
 				),
 				'lp-admin-tools'            => new LP_Asset_Key(
 					$this->url( 'dist/js/admin/admin-tools' . self::$_min_assets . '.js' ),

@@ -31,6 +31,7 @@ const releasesFiles = [
 	'assets/src/**',
 	'!assets/src/scss/**',
 	'!assets/src/app/**',
+	'!assets/src/view-icons/**',
 	'!assets/**/*.js.map',
 	'!assets/**/*.dev.js',
 	'!assets/**/*bak*',

@@ -84,10 +84,10 @@ class LessonPostModel extends PostModel {
 	 *
 	 * @return void
 	 * @throws Exception
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.2.8.6
 	 */
 	public function set_preview( bool $enable = true ) {
-		$this->save_meta_value_by_key( LessonPostModel::META_KEY_PREVIEW, $enable ? 'yes' : 'no' );
+		$this->set_meta_value_by_key( self::META_KEY_PREVIEW, $enable ? 'yes' : 'no' );
 	}
 }

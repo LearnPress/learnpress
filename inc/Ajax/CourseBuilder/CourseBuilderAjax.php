@@ -1111,6 +1111,8 @@ class CourseBuilderAjax extends AbstractAjax {
 		try {
 			$data         = self::check_valid_lesson();
 			$lesson_id    = $data['lesson_id'] ?? 0;
+			$has_title    = array_key_exists( 'lesson_title', $data );
+			$has_content  = array_key_exists( 'lesson_description', $data );
 			$title        = LP_Helper::sanitize_params_submitted( $data['lesson_title'] ?? '' );
 			$description  = LP_Helper::sanitize_params_submitted(
 				$data['lesson_description'] ?? '',
@@ -1133,7 +1135,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			);
 			$restore_with_custom_slug = false;
 
-			if ( empty( $title ) ) {
+			if ( ( $insert || $has_title ) && empty( $title ) ) {
 				throw new Exception( __( 'Lesson title is required', 'learnpress' ) );
 			}
 
@@ -1179,21 +1181,37 @@ class CourseBuilderAjax extends AbstractAjax {
 					'post_status' => $target_status,
 				);*/
 
-				if ( defined( 'ELEMENTOR_VERSION' ) ) {
+				if ( defined( 'ELEMENTOR_VERSION' ) && array_key_exists( 'is_elementor', $data ) ) {
 					\Elementor\Plugin::$instance->documents->get( $lesson_id )->set_is_built_with_elementor( ! empty( $is_elementor ) );
 				}
 
-				$lesson_model->post_title   = $title;
-				$lesson_model->post_content = $description;
-				$lesson_model->post_status  = $target_status;
+				$must_save_lesson = false;
+				if ( $has_title ) {
+					$lesson_model->post_title = $title;
+					$must_save_lesson         = true;
+				}
+
+				if ( $has_content ) {
+					$lesson_model->post_content = $description;
+					$must_save_lesson           = true;
+				}
+
+				if ( ! empty( $target_status ) ) {
+					$lesson_model->post_status = $target_status;
+					$must_save_lesson          = true;
+				}
+
 				if ( ! empty( $lesson_slug ) ) {
 					$lesson_model->post_name = $lesson_slug;
+					$must_save_lesson        = true;
 				}
 
 				//$restore_with_custom_slug = $this->prepare_desired_slug_for_restore( $lesson_id, $target_status, $lesson_slug );
 
 				//$update = wp_update_post( $update_arg );
-				$lesson_model->save();
+				if ( $must_save_lesson ) {
+					$lesson_model->save();
+				}
 
 				/*if ( $restore_with_custom_slug ) {
 					$this->sync_slug_after_restore( $lesson_id, $lesson_slug );
@@ -1215,7 +1233,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			// Remove lesson from curriculum if status is not public
-			if ( $target_status !== 'publish' ) {
+			if ( ! empty( $target_status ) && $target_status !== 'publish' ) {
 				$this->remove_course_item_from_curriculum( $lesson_id, $course_id );
 			}
 
@@ -1242,7 +1260,7 @@ class CourseBuilderAjax extends AbstractAjax {
 				}
 			}
 
-			$lesson_model_for_html = LessonPostModel::find( $lesson_id, true );
+			$lesson_model_for_html = LessonPostModel::find( $lesson_id, false );
 			if ( $return_html ) {
 				$response->data->list_item_html = $lesson_model_for_html
 					? BuilderListLessonsTemplate::render_lesson( $lesson_model_for_html )
@@ -1277,7 +1295,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$data         = self::check_valid_lesson();
 			$lesson_id    = $data['lesson_id'] ?? 0;
 			$status       = $data['status'] ?? 'trash';
-			$lesson_model = $data['lesson_model'] ?? [];
+			$lesson_model = LessonPostModel::find( $lesson_id, false );
 			$lesson_slug  = ! empty( $data['lesson_permalink'] )
 				? sanitize_title( wp_unslash( (string) $data['lesson_permalink'] ) )
 				: '';
@@ -1381,7 +1399,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			if ( 'delete' !== $status ) {
-				$lesson_model_new     = LessonPostModel::find( $lesson_id, true );
+				$lesson_model_new     = LessonPostModel::find( $lesson_id, false );
 				$response->data->html = $lesson_model_new ? BuilderListLessonsTemplate::render_lesson( $lesson_model_new ) : '';
 			}
 
@@ -1397,20 +1415,29 @@ class CourseBuilderAjax extends AbstractAjax {
 
 	/**
 	 * Save Lesson Settings
+	 * @throws Exception
 	 */
 	protected function save_lesson_settings_to_model( LessonPostModel $lessonModel, array $data ) {
+		$must_save = 0;
+
 		if ( isset( $data['_lp_duration'] ) ) {
 			$duration = ! empty( $data['_lp_duration'] ) ? str_replace( ',', ' ', $data['_lp_duration'] ) : '0 minute';
 			$explode  = explode( ' ', $duration );
 			$number   = (float) $explode[0] < 0 ? 0 : absint( $explode[0] );
 			$unit     = $explode[1] ?? 'minute';
 
-			$lessonModel->save_meta_value_by_key( '_lp_duration', $number . ' ' . $unit );
+			$lessonModel->set_meta_value_by_key( $lessonModel::META_KEY_DURATION, $number . ' ' . $unit );
+			$must_save = 1;
 		}
 
 		if ( isset( $data['_lp_preview'] ) ) {
 			$enable = $data['_lp_preview'] === 'yes';
 			$lessonModel->set_preview( $enable );
+			$must_save = 1;
+		}
+
+		if ( $must_save ) {
+			$lessonModel->save();
 		}
 
 		/**
@@ -1685,7 +1712,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$data       = self::check_valid_quiz();
 			$quiz_id    = $data['quiz_id'] ?? 0;
 			$status     = $data['status'] ?? 'trash';
-			$quiz_model = $data['quiz_model'] ?? [];
+			$quiz_model = QuizPostModel::find( $quiz_id, false );
 			$quiz_slug  = ! empty( $data['quiz_permalink'] )
 				? sanitize_title( wp_unslash( (string) $data['quiz_permalink'] ) )
 				: '';
@@ -1789,7 +1816,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 
 			if ( 'delete' !== $status ) {
-				$fresh_quiz_model     = QuizPostModel::find( $quiz_id, true );
+				$fresh_quiz_model     = QuizPostModel::find( $quiz_id, false );
 				$response->data->html = $fresh_quiz_model
 					? BuilderListQuizzesTemplate::render_quiz( $fresh_quiz_model )
 					: '';
@@ -1956,7 +1983,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$data           = self::check_valid_question();
 			$question_id    = $data['question_id'] ?? 0;
 			$status         = $data['status'] ?? 'trash';
-			$question_model = $data['question_model'] ?? [];
+			$question_model = QuestionPostModel::find( $question_id, false );
 
 			if ( ! $question_model ) {
 				throw new Exception( __( 'Question not found', 'learnpress' ) );
@@ -2022,7 +2049,7 @@ class CourseBuilderAjax extends AbstractAjax {
 			$response->data->button_title = __( 'Publish', 'learnpress' );
 
 			if ( 'delete' !== $status ) {
-				$fresh_question_model = QuestionPostModel::find( $question_id, true );
+				$fresh_question_model = QuestionPostModel::find( $question_id, false );
 				$response->data->html = $fresh_question_model
 					? BuilderListQuestionsTemplate::render_question( $fresh_question_model )
 					: '';

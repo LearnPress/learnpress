@@ -17,6 +17,7 @@ namespace LearnPress\TemplateHooks;
 
 use Exception;
 use LearnPress\Helpers\Template;
+use LP_Debug;
 use stdClass;
 use Throwable;
 
@@ -57,6 +58,7 @@ class TemplateAJAX {
 				'args'     => $args,
 				'callback' => $callback,
 				'id'       => $target_id,
+				'method_request' => $args['method_request'] ?? 'POST',
 			];
 
 			// Remove argument html no need send via AJAX.
@@ -110,7 +112,7 @@ class TemplateAJAX {
 				$el_loading_after_content_loaded
 			);
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ' ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return Template::instance()->nest_elements( $html_wrapper, $html_content );

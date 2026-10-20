@@ -18,6 +18,7 @@ module.exports = {
 		'./assets/dist/js/admin/edit-question': './assets/src/js/admin/edit-question.js',
 		'./assets/dist/js/admin/setup-wizard': './assets/src/js/admin/setup-wizard.js',
 		'./assets/dist/js/admin/list-students-enrolled': './assets/src/js/admin/list-students-enrolled.js',
+		'./assets/dist/js/admin/student-notes': './assets/src/js/admin/student-notes.js',
 		'./assets/dist/js/admin/lp-themes': './assets/src/js/admin/lp-themes.js',
 		'./assets/dist/js/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
 		'./assets/dist/js/frontend/course-builder': './assets/src/js/frontend/course-builder.js',
@@ -91,6 +92,7 @@ module.exports = {
 		'./assets/js/dist/frontend/widgets': './assets/src/js/frontend/widgets.js',
 		'./assets/js/dist/frontend/course-filter': './assets/src/js/frontend/course-filter.js',
 		'./assets/js/dist/frontend/ai-assistant': './assets/src/js/frontend/ai-assistant.js',
+		'./assets/js/dist/frontend/course-notes': './assets/src/js/frontend/course-notes.js',
 
 		// Block Gutenberg
 		'./assets/js/dist/blocks/archive-course-legacy': './assets/src/apps/js/blocks/archive-course-legacy/index.js',

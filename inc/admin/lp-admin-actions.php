@@ -215,12 +215,12 @@ function learn_press_admin_course_tabs() {
 				'id'   => 'edit-lp_course',
 			),
 			20 => array(
-				'link' => 'edit-tags.php?taxonomy=course_category',
+				'link' => 'edit-tags.php?taxonomy=course_category&post_type=' . LP_COURSE_CPT,
 				'name' => esc_html__( 'Categories', 'learnpress' ),
 				'id'   => 'edit-course_category',
 			),
 			30 => array(
-				'link' => 'edit-tags.php?taxonomy=course_tag',
+				'link' => 'edit-tags.php?taxonomy=course_tag&post_type=' . LP_COURSE_CPT,
 				'name' => esc_html__( 'Tags', 'learnpress' ),
 				'id'   => 'edit-course_tag',
 			),

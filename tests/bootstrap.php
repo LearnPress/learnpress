@@ -51,4 +51,4 @@ if ( ! class_exists( 'WP_Error' ) ) {
 // ── Legacy (non-PSR-4) LP classes required by CourseModel ────────────────────
 // These are loaded manually because they use class-lp-* naming, not PSR-4.
 require_once dirname( __DIR__ ) . '/inc/class-lp-datetime.php';
-require_once dirname( __DIR__ ) . '/inc/cache/class-lp-cache.php';
+require_once dirname( __DIR__ ) . '/inc/Cache/class-lp-cache.php';
