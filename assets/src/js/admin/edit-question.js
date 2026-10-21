@@ -1427,6 +1427,8 @@ export class EditQuestion {
 						`${ EditQuestion.selectors.elFibOptionComparisonInput }:checked`
 					);
 
+				dataAnswers.meta_data[ blankId ] =
+					dataAnswers.meta_data[ blankId ] || {};
 				dataAnswers.meta_data[ blankId ].match_case =
 					elFibOptionMatchCaseInput.checked ? 1 : 0;
 				dataAnswers.meta_data[ blankId ].comparison =

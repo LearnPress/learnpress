@@ -220,10 +220,14 @@ class EditQuestionAjax extends AbstractAjax {
 			if ( $questionPostModel->get_type() === 'fill_in_blanks' ) {
 				$questionPostFIBModel = new QuestionPostFIBModel( $questionPostModel );
 				// Update title
-				$questionAnswerModel        = new QuestionAnswerModel( $question_answers );
-				$content                    = $question_answers['title'] ?? '';
-				$meta_data                  = $question_answers['meta_data'] ?? [];
-				$questionAnswerModel->title = $questionPostFIBModel->convert_content_from_editor_to_db( $content );
+				$questionAnswerModel              = new QuestionAnswerModel( $question_answers );
+				$questionAnswerModel->question_id = $question_id;
+				$content                          = $question_answers['title'] ?? '';
+				$meta_data                        = $question_answers['meta_data'] ?? [];
+				$questionAnswerModel->title       = $questionPostFIBModel->convert_content_from_editor_to_db( $content );
+				$questionAnswerModel->value       = learn_press_random_value();
+				$questionAnswerModel->order       = 1;
+				$questionAnswerModel->is_true     = 'yes';
 				$questionAnswerModel->save();
 				// Update meta value for fill in blanks
 				$pattern = '#<span class="lp-question-fib-input" data-id="([^"]+)">([^<]+)<\/span>#';

@@ -1701,7 +1701,12 @@ if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
+	/**
+	 * @deprecated v4.5.0
+	 */
 	function learn_press_duplicate_question( $question_id = null, $quiz_id = null, $args = array() ) {
+		_deprecated_function( __FUNCTION__, '4.5.0' );
+		return 0;
 		if ( ! $question_id || ! get_post( $question_id ) ) {
 			return new WP_Error( sprintf( __( 'Question id %s does not exist.', 'learnpress' ), $question_id ) );
 		}
@@ -1783,8 +1788,12 @@ if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_duplicate_quiz' ) ) {
-
+	/**
+	 * @deprecated v4.5.0
+	 */
 	function learn_press_duplicate_quiz( $quiz_id = null, $args = array() ) {
+		_deprecated_function( __FUNCTION__, '4.5.0' );
+		return 0;
 		global $wpdb;
 
 		$new_quiz_id = learn_press_duplicate_post( $quiz_id, $args, true );

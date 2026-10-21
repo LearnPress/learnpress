@@ -7,7 +7,9 @@
  * @version 1.0.1
  */
 
-$lp_db = LP_Database::getInstance();
+use LearnPress\Databases\DataBase;
+
+$lp_db = DataBase::getInstance();
 
 $collate = $lp_db->wpdb->has_cap( 'collation' ) ? $lp_db->wpdb->get_charset_collate() : '';
 
@@ -50,6 +52,15 @@ return array(
 			`order` bigint(20) unsigned NOT NULL DEFAULT '1',
 			is_true varchar(3),
 			PRIMARY KEY (question_answer_id),
+			KEY question_id (question_id)
+		) $collate;
+	",
+	$lp_db->tb_lp_question_answer_config    => "
+		CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_question_answer_config} (
+			question_answer_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			question_id bigint(20) unsigned NOT NULL DEFAULT '0',
+			answers longtext NOT NULL COMMENT 'Store answers of question in JSON format.',
+			primary key (question_answer_id),
 			KEY question_id (question_id)
 		) $collate;
 	",
@@ -235,6 +246,27 @@ return array(
 			PRIMARY KEY (webhook_id),
 			KEY user_id (user_id),
 			KEY status (status)
+		) $collate;
+	",
+	$lp_db->tb_lp_notes               => "
+		CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_notes} (
+			note_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL,
+			course_id bigint(20) unsigned NOT NULL,
+			item_id bigint(20) unsigned NOT NULL,
+			item_type varchar(45) NOT NULL DEFAULT 'lp_lesson',
+			note_type varchar(20) NOT NULL DEFAULT 'text',
+			content longtext NULL,
+			highlight_text text NULL,
+			anchor longtext NULL,
+			created_at datetime NOT NULL,
+			updated_at datetime NULL DEFAULT NULL,
+			PRIMARY KEY (note_id),
+			KEY user_item (user_id, item_id),
+			KEY user_course (user_id, course_id),
+			KEY course_id (course_id),
+			KEY item_id (item_id),
+			KEY created_at (created_at)
 		) $collate;
 	",
 	$lp_db->tb_thim_cache             => "

@@ -96,9 +96,11 @@ if ( ! $check_lp_need_upgrade_db ) {
 			<h2>Upgrade finished</h2>
 			<div class="pd-2em">
 				<div class="learn-press-message">
-					<p>You have upgraded the database from plugin LearnPress successfully.</p>
-					<p>You can use the LearnPress functions and LearnPress add-ons now.</p>
-					<p>Read more document <a href="<?php echo LearnPress::$doc_link; ?>">LearnPress</a></p>
+					<div>
+						<p>You have upgraded the database from plugin LearnPress successfully.</p>
+						<p>You can use the LearnPress functions and LearnPress add-ons now.</p>
+						<p>Read more document <a href="<?php echo LearnPress::$doc_link; ?>">LearnPress</a></p>
+					</div>
 				</div>
 			</div>
 		</div>

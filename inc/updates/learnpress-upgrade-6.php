@@ -36,6 +36,8 @@ class LP_Upgrade_6 extends LP_Handle_Upgrade_Steps {
 	 * @see modify_tb_lp_user_item_results
 	 * @see modify_tb_lp_user_items
 	 * @see update_data_for_tb_lp_user_item_results
+	 * @see create_new_table_question_answer
+	 * @see sync_question_answers
 	 * @see finish_upgrade
 	 */
 	protected function __construct() {
@@ -64,6 +66,16 @@ class LP_Upgrade_6 extends LP_Handle_Upgrade_Steps {
 							'update_data_for_tb_lp_user_item_results',
 							'Update data for table learnpress_user_item_results',
 							'Update data for columns: user_id, guest_key, item_id, item_type'
+						),
+						'create_new_table_question_answer'          => new LP_Step(
+							'create_new_table_question_answer',
+							'Create table learnpress_question_answer_config',
+							'Create new table store answers of question in JSON format'
+						),
+						'sync_question_answers'                     => new LP_Step(
+							'sync_question_answers',
+							'Sync question answers to new table',
+							'Migrate data from learnpress_question_answers to learnpress_question_answer_config'
 						),
 						'finish_upgrade'                           => new LP_Step(
 							'finish_upgrade',
@@ -162,6 +174,167 @@ class LP_Upgrade_6 extends LP_Handle_Upgrade_Steps {
 			$lp_db->check_execute_has_error();
 
 			$response = $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
+		} catch ( Exception $e ) {
+			$response->message = $this->error_step( $response->name, $e->getMessage() );
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Create table learnpress_question_answer_config.
+	 * Store answers of question in JSON format.
+	 *
+	 * @return LP_Step
+	 */
+	protected function create_new_table_question_answer(): LP_Step {
+		$response = new LP_Step( __FUNCTION__, 'Create table learnpress_question_answer_config' );
+		$lp_db    = DataBase::getInstance();
+
+		try {
+			$collate = $lp_db->get_collate();
+
+			$lp_db->wpdb->query(
+				"
+				CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_question_answer_config} (
+					question_answer_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					question_id bigint(20) unsigned NOT NULL DEFAULT '0',
+					answers longtext NOT NULL COMMENT 'Store answers of question in JSON format.',
+					PRIMARY KEY (question_answer_id),
+					KEY question_id (question_id)
+				) $collate;
+				"
+			);
+			$lp_db->check_execute_has_error();
+
+			$response = $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
+		} catch ( Exception $e ) {
+			$response->message = $this->error_step( $response->name, $e->getMessage() );
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Sync question answers from old tables to learnpress_question_answer_config.
+	 *
+	 * Read data from learnpress_question_answers and learnpress_question_answermeta,
+	 * group answers per question and store as JSON in the new table.
+	 * Process 50 questions per request. Old tables are read-only.
+	 *
+	 * @param array $data
+	 *
+	 * @return LP_Step
+	 */
+	protected function sync_question_answers( array $data ): LP_Step {
+		$response = new LP_Step( __FUNCTION__, 'Sync question answers' );
+		$lp_db    = DataBase::getInstance();
+		$wpdb     = $lp_db->wpdb;
+		$limit    = 50;
+
+		try {
+			$total_questions = (int) $wpdb->get_var(
+				"SELECT COUNT(DISTINCT question_id) FROM {$lp_db->tb_lp_question_answers}"
+			);
+
+			if ( 0 === $total_questions ) {
+				return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished - no data to sync' );
+			}
+
+			// Get next 50 question_ids not synced yet (resumable).
+			$question_ids = $wpdb->get_col(
+				$wpdb->prepare(
+					"
+					SELECT DISTINCT qa.question_id
+					FROM {$lp_db->tb_lp_question_answers} qa
+					LEFT JOIN {$lp_db->tb_lp_question_answer_config} qac ON qac.question_id = qa.question_id
+					WHERE qac.question_id IS NULL
+					ORDER BY qa.question_id ASC
+					LIMIT %d
+					",
+					$limit
+				)
+			);
+
+			if ( empty( $question_ids ) ) {
+				return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
+			}
+
+			$question_ids_in = implode( ',', array_map( 'absint', $question_ids ) );
+
+			// Get all answers of these questions.
+			$answer_rows = $wpdb->get_results(
+				"
+				SELECT question_answer_id, question_id, title, `value`, `order`, is_true
+				FROM {$lp_db->tb_lp_question_answers}
+				WHERE question_id IN ({$question_ids_in})
+				ORDER BY `order` ASC
+				"
+			);
+			$lp_db->check_execute_has_error();
+
+			// Get all meta of these answers.
+			$answer_ids    = wp_list_pluck( $answer_rows, 'question_answer_id' );
+			$answer_ids_in = implode( ',', array_map( 'absint', $answer_ids ) );
+			$meta_rows     = [];
+			if ( ! empty( $answer_ids_in ) ) {
+				$meta_rows = $wpdb->get_results(
+					"
+					SELECT learnpress_question_answer_id, meta_key, meta_value
+					FROM {$lp_db->tb_lp_question_answermeta}
+					WHERE learnpress_question_answer_id IN ({$answer_ids_in})
+					"
+				);
+				$lp_db->check_execute_has_error();
+			}
+
+			// Group meta per answer.
+			$meta_by_answer = [];
+			foreach ( $meta_rows as $meta_row ) {
+				$meta_by_answer[ $meta_row->learnpress_question_answer_id ][ $meta_row->meta_key ] = maybe_unserialize( $meta_row->meta_value );
+			}
+
+			// Group answers per question and insert into new table.
+			$answers_by_question = [];
+			foreach ( $answer_rows as $answer_row ) {
+				$answer = array(
+					'title'              => $answer_row->title,
+					'value'              => $answer_row->value,
+					'order'              => (int) $answer_row->order,
+					'is_true'            => $answer_row->is_true,
+				);
+
+				if ( ! empty( $meta_by_answer[ $answer_row->question_answer_id ] ) ) {
+					$answer['meta'] = $meta_by_answer[ $answer_row->question_answer_id ];
+				}
+
+				$answers_by_question[ $answer_row->question_id ][] = $answer;
+			}
+
+			foreach ( $answers_by_question as $question_id => $answers ) {
+				$wpdb->insert(
+					$lp_db->tb_lp_question_answer_config,
+					array(
+						'question_id' => $question_id,
+						'answers'     => wp_json_encode( $answers ),
+					)
+				);
+			}
+			$lp_db->check_execute_has_error();
+
+			$synced   = (int) $wpdb->get_var(
+				"SELECT COUNT(DISTINCT question_id) FROM {$lp_db->tb_lp_question_answer_config}"
+			);
+			$finished = $synced >= $total_questions;
+
+			if ( $finished ) {
+				return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
+			}
+
+			$percent           = floatval( number_format( $synced * 100 / $total_questions, 2 ) );
+			$response->percent = $percent;
+			$response->status  = 'success';
+			$response->message = sprintf( 'Synced %d/%d questions', $synced, $total_questions );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
 		}
