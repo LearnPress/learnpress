@@ -163,8 +163,14 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		);
 	}
 
+	/**
+	 * Always set return true, done change it.
+	 *
+	 * @param $request
+	 * @return true
+	 */
 	public function get_items_permissions_check( $request ) {
-		return parent::get_items_permissions_check( $request );
+		return true;
 	}
 
 	public function get_course_need_login_check( $request ) {
