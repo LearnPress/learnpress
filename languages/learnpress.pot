@@ -2,68 +2,17 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.11-beta-1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
+"Project-Id-Version: LearnPress 4.4.12-beta-1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lp-branch\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T08:44:27+00:00\n"
+"POT-Creation-Date: 2026-10-21T03:54:33+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
-
-#: assets/js/dist/admin/pages/tools.min.js:118
-msgid "Reset Course Progress"
-msgstr ""
-
-#: assets/js/dist/admin/pages/tools.min.js:120
-msgid "This action will reset course progress of all users who have enrolled."
-msgstr ""
-
-#: assets/js/dist/admin/pages/tools.min.js:121
-msgid "Search results only show if courses have user data."
-msgstr ""
-
-#: assets/js/dist/admin/pages/tools.min.js:124
-msgid "Search course by name"
-msgstr ""
-
-#: assets/js/dist/admin/pages/tools.min.js:154
-#: inc/admin/meta-box/fields/payment-order.php:8
-msgid "ID"
-msgstr ""
-
-#: assets/js/dist/admin/pages/tools.min.js:155
-#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:17
-#: config/elementor/course/materials.php:66
-#: config/settings/profile.php:67
-#: inc/admin/class-lp-admin-webhooks-table-list.php:25
-#: inc/admin/views/quiz/editor.php:47
-#: inc/admin/views/settings/webhooks-form.php:21
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:201
-#: templates/global/become-teacher-form.php:35
-#: templates/profile/tabs/courses/course-list.php:32
-msgid "Name"
-msgstr ""
-
-#: assets/js/dist/admin/pages/tools.min.js:156
-#: config/profile-tabs.php:60
-#: config/settings/open-ai-modal.php:46
-#: config/wp-menus.php:34
-#: config/wp-menus.php:35
-#: inc/admin/class-lp-admin-assets.php:240
-#: inc/admin/views/statistics/users.php:15
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:58
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:571
-#: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:349
-msgid "Students"
-msgstr ""
-
-#: assets/js/dist/admin/pages/tools.min.js:185
-msgid "Reset now"
-msgstr ""
 
 #: assets/src/apps/js/admin/react/question/index.js:288
 msgid "Words fill"
@@ -317,6 +266,18 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:11
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1269
 msgid "Course Material"
+msgstr ""
+
+#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:17
+#: config/elementor/course/materials.php:66
+#: config/settings/profile.php:67
+#: inc/admin/class-lp-admin-webhooks-table-list.php:25
+#: inc/admin/views/quiz/editor.php:47
+#: inc/admin/views/settings/webhooks-form.php:21
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:201
+#: templates/global/become-teacher-form.php:35
+#: templates/profile/tabs/courses/course-list.php:32
+msgid "Name"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:18
@@ -1830,6 +1791,18 @@ msgstr ""
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:55
 #: inc/admin/views/meta-boxes/order/details.php:59
 msgid "Order details"
+msgstr ""
+
+#: config/profile-tabs.php:60
+#: config/settings/open-ai-modal.php:46
+#: config/wp-menus.php:34
+#: config/wp-menus.php:35
+#: inc/admin/class-lp-admin-assets.php:240
+#: inc/admin/views/statistics/users.php:15
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:58
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:571
+#: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:349
+msgid "Students"
 msgstr ""
 
 #: config/profile-tabs.php:72
@@ -4187,7 +4160,7 @@ msgstr ""
 #: inc/admin/views/settings/webhooks-form.php:36
 #: inc/admin/views/setup/steps/emails.php:111
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:72
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1706
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1712
 #: inc/Models/WPTables/OrdersTable.php:38
 #: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:511
 #: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:575
@@ -5216,7 +5189,7 @@ msgstr ""
 #: inc/course/abstract-course.php:717
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:233
 #: inc/jwt/rest-api/version1/class-lp-rest-checkout-v1-controller.php:238
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:904
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:910
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:338
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:854
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:253
@@ -5310,6 +5283,10 @@ msgstr ""
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:347
 #: templates/checkout/payment.php:25
 msgid "Payment"
+msgstr ""
+
+#: inc/admin/meta-box/fields/payment-order.php:8
+msgid "ID"
 msgstr ""
 
 #: inc/admin/meta-box/fields/payment-order.php:36
@@ -5783,7 +5760,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/lesson/settings.php:17
 #: inc/admin/views/meta-boxes/quiz/settings.php:23
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseDurationBlockType.php:79
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1437
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1443
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:624
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:764
 #: inc/Models/WPTables/LessonsTable.php:42
@@ -10469,7 +10446,7 @@ msgid "List Courses by Page"
 msgstr ""
 
 #: inc/ExternalPlugin/Elementor/Widgets/Course/Sections/CoursePriceElementor.php:20
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1478
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1484
 msgid "Course Price"
 msgstr ""
 
@@ -11039,7 +11016,7 @@ msgstr ""
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:75
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:100
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:125
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1351
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1357
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:39
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:75
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:554
@@ -11061,38 +11038,38 @@ msgstr ""
 msgid "Receipt data."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:265
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:271
 msgid "Receipt data is empty."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:272
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:278
 msgid "The secret key is empty."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:298
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:324
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:304
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:330
 msgid "Cannot verify the receipt"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:304
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:315
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:350
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:310
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:321
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:356
 msgid "The course ID is invalid."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:364
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:370
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:549
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:689
 msgid "Error: The course cannot be added to the cart."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:375
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:381
 msgid "Verify Receipt Data successfully."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:570
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:612
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:840
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:576
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:618
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:846
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:419
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:428
 #: inc/Models/WPTables/LessonsTable.php:181
@@ -11103,261 +11080,261 @@ msgstr ""
 msgid "Lifetime"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:641
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:647
 msgid "Error: No Course ID available."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:648
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:654
 msgid "Cannot finish this course."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:654
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:660
 msgid "Error: Cannot finish this course."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:658
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:664
 msgid "Congrats! You have completed the Course."
 msgstr ""
 
 #. translators: %s: post type
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:693
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:699
 #: inc/jwt/rest-api/version1/class-lp-rest-posts-controller.php:164
 #, php-format
 msgid "Cannot create existing %s."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1180
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1186
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:175
 #, php-format
 msgid "%s days"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1181
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1187
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:176
 #, php-format
 msgid "%s hours"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1182
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1188
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:177
 #, php-format
 msgid "%s mins"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1183
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1189
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:178
 #, php-format
 msgid "%s secs"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1357
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1363
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:560
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:206
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:700
 msgid "Course name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1362
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1368
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:565
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:211
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:705
 msgid "Course slug."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1367
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1373
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:570
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:216
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:710
 msgid "Course URL."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1374
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1380
 msgid "Course Image URL."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1380
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1386
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:577
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:223
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:717
 msgid "The date the Course was created, in the site's timezone."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1387
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1393
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:583
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:229
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:723
 msgid "The date the Course was created, as GMT."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1394
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1400
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:589
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:235
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:729
 msgid "The date the Course was last modified, in the site's timezone."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1401
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1407
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:595
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:241
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:735
 msgid "The date the Course was last modified, as GMT."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1408
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1414
 msgid "Display courses if they are on sale."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1414
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1420
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:601
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:247
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:741
 msgid "Course status (post status)."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1421
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1427
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:608
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:254
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:748
 msgid "Course content."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1426
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1432
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:613
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:259
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:753
 msgid "Retrieves the course excerpt.."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1431
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1437
 msgid "Whether the course requires a password."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1442
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1448
 msgid "Count the number of enrolled students."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1448
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1454
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:618
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:758
 msgid "Can finish the course"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1454
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1460
 msgid "Can retake the course"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1460
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1466
 msgid "Total retakes"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1466
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1472
 msgid "Retaken"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1472
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1478
 msgid "Course Review add-on"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1484
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1490
 msgid "Course Price Rendered"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1490
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1496
 msgid "Course Origin Price"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1496
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1502
 msgid "Course Origin Price Rendered"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1502
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1508
 msgid "Course Sale Price"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1508
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1514
 msgid "Course Sale Price Rendered"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1514
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1520
 msgid "List of categories."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1521
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1527
 msgid "Category ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1526
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1532
 msgid "Category name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1532
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1538
 msgid "Category slug."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1541
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1547
 msgid "List of tags."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1548
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1554
 msgid "Tag ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1553
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1559
 msgid "Tag name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1559
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1586
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1565
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1592
 msgid "Tag slug."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1568
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1607
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1574
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1613
 msgid "Retrieves the course sections and items.."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1575
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1581
 msgid "User ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1580
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1586
 msgid "Display name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1592
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1598
 msgid "Social Infor."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1598
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1604
 msgid "Total courses and students of the instructor."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1614
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1620
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:14
 msgid "Section ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1619
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1625
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:137
 msgid "Section name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1624
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1630
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:14
 msgid "Course ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1629
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1635
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:142
 msgid "Section description."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1634
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1640
 msgid "Section items."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1639
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1659
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1645
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1665
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:634
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:269
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:774
@@ -11365,12 +11342,12 @@ msgstr ""
 msgid "Item ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1644
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1650
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:815
 msgid "Item Type."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1649
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1655
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:644
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:279
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:784
@@ -11378,53 +11355,53 @@ msgstr ""
 msgid "Item slug."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1654
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1660
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:820
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:849
 msgid "Item title."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1664
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1670
 msgid "Percent."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1669
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1675
 msgid "Duration."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1674
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1680
 msgid "Graduation."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1679
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1685
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:666
 msgid "Status."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1684
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1690
 msgid "Locked."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1694
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1700
 msgid "List of course user data."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1701
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1707
 msgid "Graduation"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1712
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1718
 #: inc/WPGDPR/ExportPersonalData.php:261
 msgid "Start time"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1718
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1724
 #: inc/WPGDPR/ExportPersonalData.php:262
 #: templates/profile/tabs/courses/course-list.php:35
 msgid "End time"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1724
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1730
 #: templates/profile/tabs/courses/course-list.php:34
 msgid "Expiration time"
 msgstr ""
