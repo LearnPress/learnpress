@@ -9,14 +9,14 @@ if ( class_exists( 'Thim_Cache_DB' ) ) {
  * Class Thim_Cache_DB
  *
  * @author tungnx
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.2
  */
 class Thim_Cache_DB {
 	private static $_instance = null;
-	private $action = null; // one of insert/update
-	const ACTION_INSERT = 'insert';
-	const ACTION_UPDATE = 'update';
+	private $action           = null; // one of insert/update
+	const ACTION_INSERT       = 'insert';
+	const ACTION_UPDATE       = 'update';
 
 	/**
 	 * Set action for thim cache (one of insert/update)
@@ -94,29 +94,16 @@ class Thim_Cache_DB {
 	 * @return bool|int|mysqli_result|resource|null
 	 */
 	public function set_value( string $key_cache, string $value, int $expire = 0 ) {
-		$action = self::ACTION_INSERT;
-
-		// Auto check exist key_cache
-		$value_old = $this->get_value( $key_cache );
-		if ( false !== $value_old ) {
-			$action = self::ACTION_UPDATE;
-		}
-
-		if ( self::ACTION_UPDATE === $action ) { // Update
-			$sql = $this->wpdb->prepare(
-				"UPDATE {$this->table_name} SET value = %s, expiration = %d WHERE key_cache = %s",
-				$value,
-				$expire,
-				$key_cache
-			);
-		} else { // Insert
-			$sql = $this->wpdb->prepare(
-				"INSERT INTO {$this->table_name} (key_cache, value, expiration) VALUES (%s, %s, %d)",
-				$key_cache,
-				$value,
-				$expire
-			);
-		}
+		// Use ON DUPLICATE KEY UPDATE to avoid duplicate key error
+		// when two processes insert the same key concurrently.
+		$sql = $this->wpdb->prepare(
+			"INSERT INTO {$this->table_name} (key_cache, value, expiration)
+			VALUES (%s, %s, %d)
+			ON DUPLICATE KEY UPDATE value = VALUES(value), expiration = VALUES(expiration)",
+			$key_cache,
+			$value,
+			$expire
+		);
 
 		return $this->wpdb->query( $sql );
 	}
