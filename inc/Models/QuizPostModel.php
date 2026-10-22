@@ -12,6 +12,7 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress\Databases\QuizQuestionsDB;
+use LearnPress\Filters\QuestionPostFilter;
 use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
@@ -108,7 +109,7 @@ class QuizPostModel extends PostModel {
 	 * @param array $statuses
 	 *
 	 * @return int[]
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.7.6
 	 */
 	public function get_question_ids( array $statuses = [ 'publish' ] ): array {
@@ -116,15 +117,15 @@ class QuizPostModel extends PostModel {
 		$question_ids   = [];
 
 		try {
-			$filter              = new LP_Question_Filter();
+			$filter              = new QuestionPostFilter();
 			$filter->ID          = $this->get_id();
-			$filter->post_status = $statuses;
+			$filter->post_status = $statuses ?? [ PostModel::STATUS_PUBLISH ];
 			$question_ids        = $lp_question_db->get_list_question_ids_of_quiz( $filter );
 
 			// Hook old
 			if ( has_filter( 'learn-press/quiz/get-question-ids' ) ) {
-				$quiz_old              = new LP_Quiz( $this->get_id() );
-				$course_id_of_quiz_old = $quiz_old->get_course_id();
+				$course_ids            = CourseSectionItemModel::get_courses_from_item_id( $this->get_id(), $this->post_type );
+				$course_id_of_quiz_old = $course_ids[0] ? $course_ids[0]->section_course_id : 0;
 
 				$question_ids = apply_filters(
 					'learn-press/quiz/get-question-ids',

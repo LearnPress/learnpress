@@ -96,8 +96,12 @@ class UserQuizModel extends UserItemModel {
 	 * @editor tungnx
 	 * @version 1.0.1
 	 * @since 3.2.0
+	 * @deprecated 4.4.12
 	 */
 	public function get_question_ids( string $context = 'display' ): array {
+		_deprecated_function( __METHOD__, '4.4.12' );
+		return [];
+
 		$curd         = new LP_Quiz_CURD();
 		$question_ids = $curd->read_question_ids( $this->item_id, $context );
 		$question_ids = apply_filters( 'learn-press/quiz/get-question-ids', $question_ids, $this->item_id, $this->ref_id, $context );

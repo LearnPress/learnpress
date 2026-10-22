@@ -392,7 +392,7 @@ class QuestionTools {
 	 */
 	protected static function reorder_question( QuizPostModel $quiz, int $question_id, int $position ): void {
 		// Editor context: reorder across all question statuses, not just published.
-		$ids = array_map( 'absint', $quiz->get_question_ids( array( 'publish', 'pending', 'draft' ) ) );
+		$ids = array_map( 'absint', $quiz->get_question_ids() );
 		$ids = array_values( array_diff( $ids, array( $question_id ) ) );
 
 		if ( $position > 0 ) {
@@ -415,7 +415,7 @@ class QuestionTools {
 	 */
 	protected static function current_order( QuizPostModel $quiz, int $question_id ): int {
 		// Editor context: include all statuses so non-published questions report a real order.
-		$ids = array_values( array_map( 'absint', $quiz->get_question_ids( array( 'publish', 'pending', 'draft' ) ) ) );
+		$ids = array_values( array_map( 'absint', $quiz->get_question_ids() ) );
 		$pos = array_search( $question_id, $ids, true );
 
 		return false === $pos ? 0 : ( (int) $pos + 1 );
