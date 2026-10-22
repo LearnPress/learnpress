@@ -379,6 +379,7 @@ class QuestionTools {
 			}
 			$model->delete();
 		}
+		$question->save_answers_config();
 	}
 
 	/**

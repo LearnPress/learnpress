@@ -13,6 +13,9 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+use LearnPress\Models\Question\QuestionAnswerConfigModel;
+use LearnPress\Models\Question\QuestionPostModel;
+
 if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 	/**
@@ -181,7 +184,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_question->get_type() );
 
 				// duplicate answer
-				$this->duplicate_answer( $question_id, $new_question_id );
+				$result = $this->duplicate_answer( $question_id, $new_question_id );
+				if ( is_wp_error( $result ) ) {
+					return $result;
+				}
 
 				do_action( 'learn-press/item/after-duplicate', $question_id, $new_question_id, $args );
 
@@ -205,6 +211,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				// Get all answer of question
 				$filter_get_answer_options               = new LP_Question_Answers_Filter();
 				$filter_get_answer_options->question_ids = [ $question_id ];
+				$filter_get_answer_options->limit        = -1;
 				$answer_options                          = $lp_question_answers_db->get_question_answers( $filter_get_answer_options );
 
 				if ( $answer_options ) {
@@ -252,7 +259,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 						$question_answermeta_rs       = $lp_db->execute( $filter_get );
 
 						foreach ( $question_answermeta_rs as $question_answermeta ) {
-							$lp_db->wpdb->insert(
+							$inserted = $lp_db->wpdb->insert(
 								$lp_db->tb_lp_question_answermeta,
 								array(
 									'learnpress_question_answer_id' => $question_answer_id_new,
@@ -261,11 +268,24 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 								),
 								array( '%d', '%s', '%s' )
 							);
+							if ( false === $inserted ) {
+								throw new Exception( __( 'Failed to duplicate answer meta', 'learnpress' ) );
+							}
 						}
 					}
 				}
+
+				if ( QuestionAnswerConfigModel::is_support() ) {
+					$question = QuestionPostModel::find( (int) $question_id_clone );
+					if ( ! $question ) {
+						throw new Exception( __( 'Question not found', 'learnpress' ) );
+					}
+
+					$question->sync_answers_config();
+				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
+				return new WP_Error( 'lp/question/curd/duplicate/err', $e->getMessage() );
 			}
 		}
 

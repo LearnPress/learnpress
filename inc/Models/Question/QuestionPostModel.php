@@ -4,6 +4,7 @@ namespace LearnPress\Models\Question;
 
 use Exception;
 use LearnPress\Databases\QuestionAnswersDB;
+use LearnPress\Filters\FilterBase;
 use LearnPress\Filters\QuestionAnswersFilter;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\PostModel;
@@ -327,6 +328,93 @@ class QuestionPostModel extends PostModel {
 			$questionAnswerModel = new QuestionAnswerModel( $answer );
 			$questionAnswerModel->save();
 			$answers[ $index ]['question_answer_id'] = $questionAnswerModel->question_answer_id;
+		}
+
+		$this->save_answers_config();
+
+		return $answers;
+	}
+
+	/**
+	 * Save answers config
+	 * @throws Exception
+	 */
+	public function save_answers_config(): void {
+		if ( ! QuestionAnswerConfigModel::is_support() ) {
+			return;
+		}
+
+		$answers = $this->get_legacy_answers_config();
+		$config  = QuestionAnswerConfigModel::find_by_question_id( $this->get_id(), true );
+		if ( ! $config ) {
+			$config              = new QuestionAnswerConfigModel();
+			$config->question_id = $this->get_id();
+		}
+
+		$config->set_answers( $answers );
+		$config->save();
+	}
+
+	/**
+	 * Get answers config
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	public function get_answers_config(): array {
+		if ( QuestionAnswerConfigModel::is_support() ) {
+			$config = QuestionAnswerConfigModel::find_by_question_id( $this->get_id() );
+			if ( $config ) {
+				return $config->get_answers();
+			}
+		}
+
+		return $this->get_legacy_answers_config();
+	}
+
+	/**
+	 * Get legacy answers config
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	protected function get_legacy_answers_config(): array {
+		$db                      = QuestionAnswersDB::getInstance();
+		$filter                  = new QuestionAnswersFilter();
+		$filter->question_id     = $this->get_id();
+		$filter->limit           = -1;
+		$filter->run_query_count = false;
+		$filter->order_by        = 'qa.`order` ASC, qa.question_answer_id';
+		$filter->order           = 'ASC';
+		$rows                    = $db->get_question_answers( $filter );
+		$answers                 = [];
+
+		foreach ( $rows as $row ) {
+			$answer = [
+				'title'   => $row->title,
+				'value'   => $row->value,
+				'order'   => $row->order,
+				'is_true' => $row->is_true,
+			];
+
+			$meta_filter                   = new FilterBase();
+			$meta_filter->collection       = $db->tb_lp_question_answermeta;
+			$meta_filter->collection_alias = 'qam';
+			$meta_filter->fields           = [ 'qam.meta_key', 'qam.meta_value' ];
+			$meta_filter->where[]          = $db->wpdb->prepare(
+				'AND qam.learnpress_question_answer_id = %d',
+				$row->question_answer_id
+			);
+			$meta_filter->limit            = -1;
+			$meta_filter->run_query_count  = false;
+			$meta_filter->order_by         = 'qam.meta_id';
+			$meta_filter->order            = 'ASC';
+
+			foreach ( $db->execute( $meta_filter ) as $meta ) {
+				$answer['meta'][ $meta->meta_key ] = maybe_unserialize( $meta->meta_value );
+			}
+
+			$answers[] = $answer;
 		}
 
 		return $answers;

@@ -7,6 +7,7 @@
  * @version 3.0.1
  */
 
+use LearnPress\Databases\DataBase;
 use LearnPress\Helpers\Config;
 
 defined( 'ABSPATH' ) || exit();
@@ -35,7 +36,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		);
 
 		protected function __construct() {
-			$this->lp_db = LP_Database::getInstance();
+			$tables = Config::instance()->get( 'tables-v5', 'table' );
+
+			$this->lp_db = DataBase::getInstance();
 			ini_set( 'max_execution_time', HOUR_IN_SECONDS );
 			// From LP v4.2.2 temporary run create table thim_cache.
 			// After a long time, will remove this code. Only run create table when activate plugin LP.
@@ -69,6 +72,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! LP_Settings::is_created_tb_notes() ) {
 				$this->create_table_notes();
 			}
+
+			// Since v4.5.0 - Create table question_answer_config if not exits.
+			$question_answer_config_table = $tables[ $this->lp_db->tb_lp_question_answer_config ];
+			$this->lp_db->wpdb->query( $question_answer_config_table );
 
 			// Set roles and capabilities.
 			learn_press_add_user_roles();
@@ -149,7 +156,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * @throws Exception
 		 */
 		private function create_tables() {
-			$db = LP_Database::getInstance();
+			$db     = $this->lp_db;
 			$tables = Config::instance()->get( 'tables-v4', 'table' );
 			foreach ( $tables as $table ) {
 				$db->wpdb->query( $table );

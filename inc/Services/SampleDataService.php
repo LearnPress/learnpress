@@ -24,6 +24,7 @@ use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\PostModel;
+use LearnPress\Models\Question\QuestionAnswerConfigModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
 use LearnPress\Models\QuizPostModel;
@@ -610,11 +611,23 @@ class SampleDataService {
 				'order'       => $order + 1,
 			);
 
-			$wpdb->insert(
+			$inserted = $wpdb->insert(
 				$wpdb->learnpress_question_answers,
 				$data,
 				array( '%d', '%s', '%s', '%s', '%d' )
 			);
+			if ( false === $inserted ) {
+				throw new Exception( 'Failed to create sample question answer: ' . $wpdb->last_error );
+			}
+		}
+
+		if ( QuestionAnswerConfigModel::is_support() ) {
+			$question = QuestionPostModel::find( (int) $question_id );
+			if ( ! $question ) {
+				throw new Exception( __( 'Question not found', 'learnpress' ) );
+			}
+
+			$question->save_answers_config();
 		}
 	}
 
