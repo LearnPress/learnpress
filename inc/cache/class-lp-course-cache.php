@@ -69,5 +69,6 @@ class LP_Course_Cache extends LP_Cache {
 	public function clean_total_students_enrolled_or_purchased( $course_id ) {
 		$key = "{$course_id}/{$this->key_total_students_enrolled_or_purchased}";
 		$this->clear( $key );
+		LP_Cache::cache_load_first( 'clear', $key );
 	}
 }

@@ -85,10 +85,6 @@ class LP_Cache {
 		if ( false === $cache && $this->can_handle_with_thim_cache() ) {
 			$key   = "{$this->key_group}/{$key}";
 			$cache = Thim_Cache_DB::instance()->get_value( $key );
-			try {
-				$cache = LP_Helper::json_decode( $cache, true );
-			} catch ( Throwable $e ) {
-			}
 		}
 
 		return $cache;

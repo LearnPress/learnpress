@@ -428,7 +428,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				// Clear cache count students many courses.
 				$lp_courses_cache = new LP_Courses_Cache( true );
 				$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_STUDENT_COURSES );
-				$lp_course_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_COURSES_FREE );
+				$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_COURSES_FREE );
 				// Clear cache user course.
 				$lp_user_items_cache = new LP_User_Items_Cache();
 				$lp_user_items_cache->clean_user_items_by_course( $this->get_id() );
