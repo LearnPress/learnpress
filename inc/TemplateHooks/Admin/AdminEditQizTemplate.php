@@ -112,8 +112,10 @@ class AdminEditQizTemplate {
 				throw new Exception( __( 'Quiz not found', 'learnpress' ) );
 			}
 
-			// Check permission
-			$quizPostModel->check_capabilities_create_item_course();
+			// Check permission on this quiz, it contains the answer keys.
+			if ( ! $quizPostModel->check_capabilities_update() ) {
+				throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+			}
 
 			self::instance()->quizPostModel = $quizPostModel;
 

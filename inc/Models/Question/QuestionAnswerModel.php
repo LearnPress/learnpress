@@ -172,10 +172,32 @@ class QuestionAnswerModel {
 	 * @throws Exception
 	 */
 	public function check_capabilities_update() {
+		$question_id = $this->get_stored_question_id();
+		if ( ! $question_id ) {
+			throw new Exception( __( 'Question answer not found', 'learnpress' ) );
+		}
+
 		$user = wp_get_current_user();
-		if ( ! user_can( $user, 'edit_' . LP_LESSON_CPT, $this->question_id ) ) {
+		if ( ! user_can( $user, 'edit_' . LP_LESSON_CPT, $question_id ) ) {
 			throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
 		}
+	}
+
+	/**
+	 * Get question_id stored in DB for this answer.
+	 * The question_id sent in the request is not trusted for existing answers.
+	 *
+	 * @return int|null Null if the answer does not exist.
+	 * @throws Exception
+	 */
+	protected function get_stored_question_id(): ?int {
+		if ( empty( $this->question_answer_id ) ) {
+			return null;
+		}
+
+		$stored = self::find( (int) $this->question_answer_id, true );
+
+		return $stored ? (int) $stored->question_id : null;
 	}
 
 	/**
@@ -207,7 +229,9 @@ class QuestionAnswerModel {
 			$this->question_answer_id   = $db->insert_data( $args );
 		} else { // Update data.
 			$this->check_capabilities_update();
-			$args['where_key'] = 'question_answer_id';
+			// Never let the request move the answer to another question.
+			$args['data']['question_id'] = $this->get_stored_question_id();
+			$args['where_key']           = 'question_answer_id';
 			$db->update_data( $args );
 		}
 

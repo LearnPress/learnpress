@@ -106,7 +106,7 @@ class AdminEditCurriculumTemplate {
 		self::instance()->context_data = $data; // Store context data for filters
 
 		$coursePostModel = new CoursePostModel( $courseModel );
-		if ( ! $coursePostModel->check_capabilities_create() ) {
+		if ( ! $coursePostModel->check_capabilities_update() ) {
 			throw new Exception( __( 'You do not have permission to edit this course', 'learnpress' ) );
 		}
 
