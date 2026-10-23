@@ -1,7 +1,20 @@
 {
   "permissions": {
-    "allow": [],
-    "deny": []
-  },
-  "env": {}
+    "allow": [
+      "Bash(vendor/bin/phpcs:*)",
+      "Bash(vendor/bin/phpcbf:*)",
+      "Bash(vendor/bin/phpunit:*)",
+      "Bash(composer dump-autoload:*)",
+      "Bash(node --test:*)",
+      "Bash(npm run build:*)",
+      "Bash(git diff:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  }
 }

@@ -83,7 +83,6 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 				return;
 			}
 
-			//LearnPress::instance()->session->remove( 'order_awaiting_payment' );
 			//LearnPress::instance()->cart->empty_cart();
 			//learn_press_print_messages();
 

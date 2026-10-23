@@ -1,17 +1,26 @@
+---
+paths:
+  - "tests/**"
+  - "phpunit.xml"
+---
+
 # Testing Rules — LearnPress
 
 ## Framework
-- PHPUnit for unit/integration tests
-- Config: `phpunit.xml`
-- Tests location: `tests/`
+- PHPUnit with Brain Monkey + Mockery (no WordPress test install needed)
+- Config: `phpunit.xml` (suite `unit` → `tests/Unit`), bootstrap `tests/bootstrap.php`
+- Base class: `LearnPress\Tests\Helpers\BrainMonkeyTestCase`
+- Reference example: `tests/Unit/Databases/NoteDBTest.php`
 
 ## Standards
-- Run phpcs before committing: `php vendor/squizlabs/php_codesniffer/bin/phpcs --standard=phpcs.xml <file>`
+- File: `tests/Unit/<Area>/<ClassName>Test.php` mirroring the `inc/` subdirectory — PHPUnit only discovers the `*Test.php` suffix
+- Namespace: `LearnPress\Tests\Unit\<Area>`; method names `test_<method>_<scenario>`
 - All new Model/Service methods should have corresponding tests
-- Test file naming: `test-<class-name>.php`
+- Run phpcs on new test files: `vendor/bin/phpcs --standard=phpcs.xml <file>`
 
 ## Guidelines
-- Mock WordPress functions when unit testing
-- Use `WP_UnitTestCase` for integration tests
-- Test both success and error paths
-- Verify database state changes in integration tests
+- Stub WordPress functions with `Brain\Monkey\Functions` (translation and escape functions are already stubbed by the base class)
+- Mock dependencies with Mockery
+- Test success, error and edge paths
+- For DB classes, assert queries against a fake `wpdb` instead of a real database
+- Run tests by file (`vendor/bin/phpunit tests/Unit/<Area>/<ClassName>Test.php`); the full suite currently has unrelated failures

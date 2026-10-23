@@ -2,59 +2,42 @@
 
 ## Overview
 LearnPress is a WordPress LMS (Learning Management System) plugin.
-- **Language:** PHP 7.4+
-- **Framework:** WordPress
-- **JS Build:** Webpack + Babel
-- **CSS:** SCSS → compiled CSS
-- **Testing:** PHPUnit, phpcs (WordPress Coding Standards)
+- **Language:** PHP 7.4+, WordPress
+- **JS Build:** `@wordpress/scripts` (Webpack + Babel); vanilla JS in `assets/src/js/`
+- **CSS:** SCSS → compiled CSS (gulp)
+- **Testing:** PHPUnit (Brain Monkey), phpcs (WordPress Coding Standards)
+- Entry point: `learnpress.php`; PSR-4 maps `LearnPress\` → `inc/`
 
-## Architecture
-- Entry point: `learnpress.php`
-- Autoloading: PSR-4 maps the `LearnPress\` namespace to `inc/`
-- Core classes: `inc/`
-- Models: `inc/Models/` (PostModel pattern)
-- Database layer: `inc/Databases/` (DB classes with `wpdb`)
-- Services: `inc/Services/`
-- AJAX handlers: `inc/Ajax/`
-- Query filters: `inc/Filters/`
-- Template hooks: `inc/TemplateHooks/`
-- Shared helpers: `inc/Helpers/`
-- Templates: `templates/`
-- Assets (JS/CSS): `assets/`
-- JavaScript source: `assets/src/js/` (vanilla JavaScript)
-- Config: `config/`
+## Workflow when changing code (MUST)
+1. Before editing, follow `.claude/rules/architecture.md` and `.claude/rules/security.md` (always loaded). Before touching JS, read `.claude/rules/javascript.md`; before writing tests, read `.claude/rules/testing.md`
+2. Reuse existing classes/helpers first — search `inc/` before creating anything new
+3. After adding or moving a PSR-4 class: `composer dump-autoload`
+4. Every new/changed PHP file must pass `vendor/bin/phpcs --standard=phpcs.xml <file>` (issues on changed lines)
+5. Every new Model/DB/Service method must have a unit test, run by file
+6. If the work belongs to a spec in `.claude/specs/<slug>/` (even outside `/spec-resume`): tick `plan.md`, and before ending the turn rewrite "Resume here" and add a Log entry in `progress.md`
+7. Report what was verified (phpcs, tests) — and what was not
 
-## Code Standards
-- Follow WordPress Coding Standards (phpcs.xml)
-- Use PSR-4 for new PHP classes under `inc/`; namespace segments must mirror subdirectories and class names must match filenames
-- Do not add manual `require` or `include` statements for PSR-4 classes
-- Run `composer dump-autoload` after adding or moving PSR-4 classes
-- Use Model/DB pattern instead of raw `$wpdb` queries where possible
-- Prefer `PostModel::find()` / `PostModel::delete()` over direct SQL
+Hard rules (never violate): no raw `$_GET`/`$_POST`/`$_REQUEST` (use `LP_Request::get_param()`); no SQL without `$wpdb->prepare()`; no unescaped output; nonce + capability check on every AJAX/form/admin action; no raw `$wpdb` in Models; do not edit compiled files in `assets/js/`, `assets/css/`, `assets/dist/`.
 
 ## Key Conventions
 - Post types: `lp_course`, `lp_lesson`, `lp_quiz`, `lp_question`, `lp_order`
 - Custom tables: `learnpress_*` prefix
 - Hooks: `learn-press/*` or `learnpress/*` filter/action naming
-- Singleton pattern for main classes
-- JavaScript in `assets/src/js/` must use vanilla JavaScript and reuse exports from `assets/src/js/utils.js` when equivalent utilities exist
-- Import Toastify notifications from `assets/src/js/lpToastify.js`
-- Use the pre-enqueued `window.lpAJAXG` for LearnPress AJAX; do not import `assets/src/js/loadAJAX.js`
-- Reuse `AdminTemplate::html_form_filter()` for admin filters with multiple fields and actions
-- Reuse `AdminTemplate::html_toggle_enable()` for enable/disable toggle controls
-- Reuse `AdminTemplate::html_tom_select()` for Tom Select controls
-- Reuse `AdminTemplate::editor_tinymce()` for TinyMCE editors
-- Reuse `Template::print_message()` for LearnPress status messages
-- Reuse `Template::instance()->html_pagination()` for pagination markup
 
-## Testing
-- PHPUnit config: `phpunit.xml`
-- Tests directory: `tests/`
-
-## Build
-- `npm run build` — production build
-- `npm run dev` — development watch
+## Commands
+- PHPCS: `vendor/bin/phpcs --standard=phpcs.xml <file>` (fix: `vendor/bin/phpcbf --standard=phpcs.xml <file>`)
+- PHPUnit (one file): `vendor/bin/phpunit tests/Unit/<Area>/<ClassName>Test.php`
+- Frontend JS tests: `node --test tests/Frontend/<name>.test.cjs`
+- Autoload: `composer dump-autoload` after adding or moving PSR-4 classes
+- `npm run build` — production build; `npm run start` — development watch
+- `gulp styles && gulp mincss` — compile SCSS
 
 ## Specs & Planning
-- Feature specs: `.claude/specs/<feature-slug>/`
-- Workflow: `/new-spec`, `/plan-spec`, `/resume`, `/status`
+- Feature specs: `.claude/specs/<feature-slug>/` (`spec.md`, `plan.md`, `progress.md`)
+- Workflow: `/spec-new <slug> <desc>` → `/spec-plan <slug>` → `/spec-resume <slug> [task]`
+- Change request / bug / follow-up on an existing spec: `/spec-plan <slug> <change>` (adds a Phase) or directly `/spec-resume <slug> <fix>`
+- `/spec-status` — overview of all specs and what to do next
+
+## Claude Code setup
+- Skills: `/lp-code-review`, `/security-audit`, `/test-writer` (each runs in its matching subagent)
+- Subagents: `code-reviewer`, `security-reviewer`, `test-writer`

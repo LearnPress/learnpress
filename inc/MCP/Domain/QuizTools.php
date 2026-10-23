@@ -331,10 +331,8 @@ class QuizTools {
 	protected static function map_questions( QuizPostModel $quiz, bool $privileged ): array {
 		$questions = array();
 		$order     = 0;
-		// Privileged editors see drafts/pending questions; students see published only.
-		$statuses = $privileged ? array( 'publish', 'pending', 'draft' ) : array( 'publish' );
 
-		foreach ( $quiz->get_question_ids( $statuses ) as $question_id ) {
+		foreach ( $quiz->get_question_ids() as $question_id ) {
 			$question = QuestionPostModel::find( (int) $question_id, true );
 			if ( ! $question instanceof QuestionPostModel ) {
 				continue;

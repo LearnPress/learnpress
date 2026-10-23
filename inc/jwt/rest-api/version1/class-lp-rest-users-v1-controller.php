@@ -946,11 +946,15 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 		// Check cache with cache get instructors.
 		if ( isset( $prepared_args['role__in'] ) ) {
-			$users       = $lp_cache->get_cache( $key_cache_list_instructors );
+			$users_cache = $lp_cache->get_cache( $key_cache_list_instructors );
+			if ( $users_cache !== false ) {
+				$users = $users_cache;
+			}
+
 			$total_users = $lp_cache->get_cache( $key_cache_list_instructors . '/total' );
 		}
 
-		if ( $users === false ) {
+		if ( empty( $users ) ) {
 			// Query max 10 instructors only.
 			$prepared_args['number'] = 10;
 

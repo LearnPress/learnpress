@@ -344,9 +344,7 @@ class LP_Cart {
 
 		$this->_cart_content = array();
 		$lp_session          = LearnPress::instance()->session;
-		$lp_session->remove( 'order_awaiting_payment', true );
 		$lp_session->remove( 'cart', true );
-		//unset( LearnPress::instance()->session->order_awaiting_payment );
 		//unset( LearnPress::instance()->session->cart );
 
 		do_action( 'learn-press/cart/emptied' );

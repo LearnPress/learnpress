@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Services\SessionGuestKeyService;
+
 /**
  * Class LP_Session_Handler
  *
@@ -71,15 +73,18 @@ class LP_Session_Handler {
 		// Set data for user Guest.
 		if ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
 			$this->set_session_expiration( $expire_time_for_guest );
+			$key_service = SessionGuestKeyService::instance();
 
 			if ( LP_Settings::is_store_ip_customer() ) {
-				$this->_customer_id = LP_Helper::get_client_ip();
+				$client_ip          = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) );
+				$this->_customer_id = $key_service->ip_key( $client_ip );
 			} else { // Store data in COOKIE
 				$cookie = $this->get_cookie_data();
 				// If cookie exists, set data from cookie for guest
 				if ( empty( $cookie ) ) {
 					// Create new cookie and session for user Guest.
-					$this->_customer_id = apply_filters( 'lp/cookie/guest-id', 'g-' . uniqid() );
+					$guest_id           = $key_service->generate_guest_key();
+					$this->_customer_id = $guest_id;
 					$this->set_customer_session_cookie();
 				} else {
 					$this->_customer_id = $cookie;
@@ -133,13 +138,19 @@ class LP_Session_Handler {
 
 	/**
 	 * Set cookie for user guest.
+	 * Cookie value is signed key, override cookie not exists or invalid.
 	 *
 	 * @return LP_Session_Handler
+	 * @version 1.0.1
 	 */
 	public function set_customer_session_cookie(): LP_Session_Handler {
-		// Set the cookie
-		if ( ! isset( $_COOKIE[ $this->_cookie ] ) ) {
-			learn_press_setcookie( $this->_cookie, $this->_customer_id, $this->_session_expiration );
+		$customer_id = (string) $this->_customer_id;
+		if ( $this->get_cookie_data() !== $customer_id ) {
+			learn_press_setcookie(
+				$this->_cookie,
+				SessionGuestKeyService::instance()->sign( $customer_id ),
+				$this->_session_expiration
+			);
 		}
 
 		return $this;
@@ -159,16 +170,21 @@ class LP_Session_Handler {
 	}
 
 	/**
-	 * Get cookie of guest.
+	 * Get session key of guest from cookie.
+	 * Only accept key signed by server, return empty string if cookie invalid.
 	 *
 	 * @return string
+	 * @version 1.0.1
 	 */
 	public function get_cookie_data(): string {
 		if ( empty( $_COOKIE[ $this->_cookie ] ) || ! is_string( $_COOKIE[ $this->_cookie ] ) ) {
 			return '';
 		}
 
-		return $_COOKIE[ $this->_cookie ];
+		// Value is validated by verify signature, not sanitize to keep signature.
+		$cookie_value = wp_unslash( $_COOKIE[ $this->_cookie ] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+		return SessionGuestKeyService::instance()->verify( $cookie_value );
 	}
 
 	/**
