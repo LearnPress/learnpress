@@ -1,48 +1,31 @@
 # Architecture Rules — LearnPress
 
 ## Directory Structure
-- `inc/Models/` — Data models (PostModel, DB-backed models)
-- `inc/Databases/` — Database abstraction layer (table-specific DB classes)
-- `inc/Services/` — Business logic services
-- `inc/Ajax/` — AJAX request handlers
-- `inc/Filters/` — Query filter and criteria objects
-- `inc/TemplateHooks/` — Hook-based template rendering and composition
-- `inc/Helpers/` — Reusable shared utilities
+- `inc/Models/` — Data models (PostModel, DB-backed models); business logic, no raw `$wpdb`
+- `inc/Databases/` — Table-specific DB classes; all query execution lives here
+- `inc/Filters/` — Query criteria objects passed to DB classes
+- `inc/Services/` — Business logic for complex operations
+- `inc/Ajax/` — AJAX request handling, validation and responses
+- `inc/TemplateHooks/` — Hook registration and template composition
+- `inc/Helpers/` — Generic reusable utilities only (no domain logic)
 - `inc/admin/` — WordPress admin functionality
-- `templates/` — Frontend template files
-- `assets/src/` — Source JS/SCSS files
-- `assets/src/js/` — Vanilla JavaScript source files
-- `assets/js/`, `assets/css/` — Compiled output
-- `assets/dist/js/` — Compiled output
+- `templates/` — Frontend template files (logic-free)
+- `config/` — Configuration
+- `assets/src/` — Source JS/SCSS; `assets/js/`, `assets/css/`, `assets/dist/js/` — compiled output (do not edit)
 
-## Patterns
-- **PSR-4 autoloading:** Map the `LearnPress\` namespace to `inc/`; namespaces and class paths must match exactly
-- **Model/DB separation:** Models handle business logic, DB classes handle queries
-- **PostModel pattern:** Custom post types extend PostModel for CRUD
-- **Singleton:** Main plugin classes use singleton pattern
-- **Service layer:** Complex operations go through Service classes
-- **Filter/Action hooks:** Use `learn-press/*` namespace
-
-## Rules
-- Use PSR-4 for new PHP classes under `inc/`; do not add manual `require` or `include` statements for them
-- Use the `LearnPress\` root namespace and mirror the directory structure below `inc/` (for example, `inc/Services/Foo.php` uses `LearnPress\Services\Foo`)
-- Use StudlyCaps class names and matching filenames
-- Run `composer dump-autoload` after adding or moving PSR-4 classes
+## PHP
+- New classes under `inc/` use PSR-4: `LearnPress\` root namespace mirrors the directory (`inc/Services/Foo.php` → `LearnPress\Services\Foo`), StudlyCaps class names matching filenames
+- Never add `require`/`include` for PSR-4 classes; run `composer dump-autoload` after adding or moving them
 - Never use raw `$wpdb` in Models — delegate to DB classes
-- Always use `PostModel::find()` for loading post-type entities
-- Keep templates logic-free — use template tags or pass data from controllers
+- Load post-type entities with `PostModel::find()`; prefer `PostModel::delete()` over direct SQL
+- Main plugin classes use the singleton pattern
+- Keep templates logic-free — pass data from TemplateHooks or use template tags
 - REST endpoints must validate permissions via `permission_callback`
-- Use `inc/Ajax/` for AJAX request handling, validation, and responses
-- Use `inc/Filters/` to carry query criteria; keep query execution in database classes
-- Use `inc/TemplateHooks/` for hook registration and template composition; keep template files logic-free
-- Keep `inc/Helpers/` generic and reusable; put domain business logic in Services or Models
-- Use `AdminTemplate::html_form_filter()` for admin filters with multiple fields and actions
-- Use `AdminTemplate::html_toggle_enable()` for enable/disable toggle controls
-- Use `AdminTemplate::html_tom_select()` for Tom Select controls
-- Use `AdminTemplate::editor_tinymce()` for TinyMCE editors
-- Use `Template::print_message()` for LearnPress status messages
-- Use `Template::instance()->html_pagination()` for pagination markup
-- Write files in `assets/src/js/` with vanilla JavaScript
-- Reuse functions from `assets/src/js/utils.js` when an equivalent utility exists instead of duplicating them
-- Import Toastify notifications from `assets/src/js/lpToastify.js`
-- Use the pre-enqueued `window.lpAJAXG` for LearnPress AJAX; do not import `assets/src/js/loadAJAX.js`
+
+## Reuse existing UI helpers
+- `AdminTemplate::html_form_filter()` — admin filters with multiple fields and actions
+- `AdminTemplate::html_toggle_enable()` — enable/disable toggles
+- `AdminTemplate::html_tom_select()` — Tom Select controls
+- `AdminTemplate::editor_tinymce()` — TinyMCE editors
+- `Template::print_message()` — LearnPress status messages
+- `Template::instance()->html_pagination()` — pagination markup

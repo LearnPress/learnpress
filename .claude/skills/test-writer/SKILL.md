@@ -1,34 +1,12 @@
-# Skill: Test Writer
+---
+name: test-writer
+description: Write PHPUnit unit tests (Brain Monkey + Mockery) for LearnPress classes and functions. Use when creating Model/DB/Service classes, fixing bugs (regression tests), or refactoring.
+argument-hint: "<class | file | method>"
+context: fork
+agent: test-writer
+---
 
-## Description
-Write PHPUnit tests for LearnPress plugin classes and functions.
+Write PHPUnit unit tests for: $ARGUMENTS
 
-## When to use
-- When creating new Model/Service classes
-- When fixing bugs (regression tests)
-- When refactoring existing code
-
-## Guidelines
-- Use `WP_UnitTestCase` for integration tests
-- Mock external dependencies
-- Test file: `tests/test-<class-name>.php`
-- Cover success, error, and edge cases
-- Assert database state changes for DB operations
-
-## Template
-```php
-class Test_ClassName extends WP_UnitTestCase {
-    public function setUp(): void {
-        parent::setUp();
-        // Setup
-    }
-
-    public function test_method_name_success() {
-        // Arrange, Act, Assert
-    }
-
-    public function test_method_name_failure() {
-        // Arrange, Act, Assert
-    }
-}
-```
+If no target is given above, cover the Model/DB/Service methods added or changed in `git diff`.
+Follow your process, run the tests and phpcs, and report the tests added with the final result.
