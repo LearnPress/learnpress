@@ -455,8 +455,6 @@ class LP_Checkout {
 		);
 
 		try {
-			$lp_session = LearnPress::instance()->session;
-
 			do_action( 'learn-press/before-checkout' );
 
 			$cart = LearnPress::instance()->cart;
@@ -526,15 +524,9 @@ class LP_Checkout {
 				}
 			}
 
-			// Create order if not handle done.
-			$order_id = $lp_session->get( 'order_awaiting_payment', 0 );
-			if ( ! $order_id ) {
-				$order_id = $this->create_order();
-				if ( is_wp_error( $order_id ) ) {
-					throw new Exception( $order_id->get_error_message() );
-				}
-
-				$lp_session->set( 'order_awaiting_payment', $order_id, true );
+			$order_id = $this->create_order();
+			if ( is_wp_error( $order_id ) ) {
+				throw new Exception( $order_id->get_error_message() );
 			}
 
 			// allow Third-party hook: send email and more...
