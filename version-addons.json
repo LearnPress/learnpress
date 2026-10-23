@@ -631,7 +631,7 @@
     "learnpress-interactive": {
         "name": "Interactive Add-On for LearnPress",
         "basename": "learnpress-interactive/learnpress-interactive.php",
-        "version": "4.0.1",
+        "version": "4.0.2",
         "require_lp": "4.4.4",
         "description": "Create interactive content to make learning more engaging.",
         "image": "https://updates.thimpress.com/images/learnpress-interactive.png",
