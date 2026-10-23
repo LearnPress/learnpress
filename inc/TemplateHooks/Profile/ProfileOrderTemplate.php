@@ -99,10 +99,15 @@ class ProfileOrderTemplate {
 	 *
 	 * @return stdClass
 	 * @since 4.3.2
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function render_order_details( array $args ): stdClass {
 		$content = new stdClass();
+
+		// Require authentication for this callback
+		if ( ! is_user_logged_in() ) {
+			return $content;
+		}
 
 		$order_id = $args['order_id'] ?? 0;
 		$paged    = $args['paged'] ?? 1;
@@ -114,7 +119,8 @@ class ProfileOrderTemplate {
 			$can_view = true;
 		} else {
 			$order = learn_press_get_order( $order_id );
-			if ( $order && (int) $order->get_user_id() === $user_id ) {
+			// Require logged-in user (user_id > 0) before comparing ownership
+			if ( $order && $user_id > 0 && (int) $order->get_user_id() === $user_id ) {
 				$can_view = true;
 			}
 		}
