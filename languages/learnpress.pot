@@ -2,17 +2,68 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.4.12-beta-1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lp-branch\n"
+"Project-Id-Version: LearnPress 4.4.12\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-21T03:54:33+00:00\n"
+"POT-Creation-Date: 2026-10-23T08:06:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
+
+#: assets/js/dist/admin/pages/tools.min.js:118
+msgid "Reset Course Progress"
+msgstr ""
+
+#: assets/js/dist/admin/pages/tools.min.js:120
+msgid "This action will reset course progress of all users who have enrolled."
+msgstr ""
+
+#: assets/js/dist/admin/pages/tools.min.js:121
+msgid "Search results only show if courses have user data."
+msgstr ""
+
+#: assets/js/dist/admin/pages/tools.min.js:124
+msgid "Search course by name"
+msgstr ""
+
+#: assets/js/dist/admin/pages/tools.min.js:154
+#: inc/admin/meta-box/fields/payment-order.php:8
+msgid "ID"
+msgstr ""
+
+#: assets/js/dist/admin/pages/tools.min.js:155
+#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:17
+#: config/elementor/course/materials.php:66
+#: config/settings/profile.php:67
+#: inc/admin/class-lp-admin-webhooks-table-list.php:25
+#: inc/admin/views/quiz/editor.php:47
+#: inc/admin/views/settings/webhooks-form.php:21
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:201
+#: templates/global/become-teacher-form.php:35
+#: templates/profile/tabs/courses/course-list.php:32
+msgid "Name"
+msgstr ""
+
+#: assets/js/dist/admin/pages/tools.min.js:156
+#: config/profile-tabs.php:60
+#: config/settings/open-ai-modal.php:46
+#: config/wp-menus.php:34
+#: config/wp-menus.php:35
+#: inc/admin/class-lp-admin-assets.php:240
+#: inc/admin/views/statistics/users.php:15
+#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:58
+#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:571
+#: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:349
+msgid "Students"
+msgstr ""
+
+#: assets/js/dist/admin/pages/tools.min.js:185
+msgid "Reset now"
+msgstr ""
 
 #: assets/src/apps/js/admin/react/question/index.js:288
 msgid "Words fill"
@@ -266,18 +317,6 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:11
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1269
 msgid "Course Material"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-elements/course-material/edit.js:17
-#: config/elementor/course/materials.php:66
-#: config/settings/profile.php:67
-#: inc/admin/class-lp-admin-webhooks-table-list.php:25
-#: inc/admin/views/quiz/editor.php:47
-#: inc/admin/views/settings/webhooks-form.php:21
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:201
-#: templates/global/become-teacher-form.php:35
-#: templates/profile/tabs/courses/course-list.php:32
-msgid "Name"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:18
@@ -646,7 +685,7 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:196
 #: inc/admin/views/meta-boxes/question/settings.php:21
 #: inc/admin/views/quiz/question-meta.php:28
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:173
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:175
 msgid "Points"
 msgstr ""
 
@@ -671,8 +710,8 @@ msgstr ""
 #: inc/custom-post-types/quiz.php:205
 #: inc/custom-post-types/quiz.php:480
 #: inc/Models/WPTables/QuizzesTable.php:37
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:175
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:385
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:177
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:387
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:355
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderListQuestionsTemplate.php:50
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderListQuizzesTemplate.php:203
@@ -720,7 +759,7 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:220
 #: inc/admin/views/meta-boxes/question/settings.php:34
 #: inc/admin/views/quiz/question-meta.php:39
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:201
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:203
 msgid "Hint"
 msgstr ""
 
@@ -803,7 +842,7 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:199
 #: inc/admin/views/meta-boxes/question/settings.php:39
 #: inc/admin/views/quiz/question-meta.php:50
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:229
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:231
 msgid "Explanation"
 msgstr ""
 
@@ -1011,7 +1050,7 @@ msgstr ""
 #: inc/class-lp-helper.php:602
 #: inc/custom-post-types/question.php:236
 #: inc/custom-post-types/quiz.php:204
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:174
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:176
 #: inc/TemplateHooks/Admin/AI/AdminCreateCourseAITemplate.php:507
 #: inc/TemplateHooks/CourseBuilder/CourseBuilderTemplate.php:640
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:209
@@ -1300,7 +1339,7 @@ msgstr ""
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:172
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:273
 #: inc/TemplateHooks/Order/AdminOrderItemsTemplate.php:319
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:199
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:205
 #: templates/checkout/order-received.php:94
 #: templates/order/order-details.php:32
 msgid "Item"
@@ -1577,7 +1616,7 @@ msgstr ""
 #: inc/admin/views/settings/mcp-api-keys-form.php:45
 #: inc/admin/views/setup/setup-stripe.php:11
 #: inc/admin/views/setup/steps/emails.php:107
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:262
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:264
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:677
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderEditLessonTemplate.php:464
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:414
@@ -1791,18 +1830,6 @@ msgstr ""
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:55
 #: inc/admin/views/meta-boxes/order/details.php:59
 msgid "Order details"
-msgstr ""
-
-#: config/profile-tabs.php:60
-#: config/settings/open-ai-modal.php:46
-#: config/wp-menus.php:34
-#: config/wp-menus.php:35
-#: inc/admin/class-lp-admin-assets.php:240
-#: inc/admin/views/statistics/users.php:15
-#: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:58
-#: inc/TemplateHooks/Admin/AdminStatisticsReportTable.php:571
-#: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:349
-msgid "Students"
 msgstr ""
 
 #: config/profile-tabs.php:72
@@ -4368,7 +4395,7 @@ msgstr ""
 #: inc/Models/OrderPostModel.php:100
 #: inc/Models/PostModel.php:654
 #: inc/order/class-lp-order.php:292
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:346
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:352
 #: inc/templates/class-lp-template-profile.php:118
 msgid "Pending"
 msgstr ""
@@ -4386,8 +4413,8 @@ msgstr ""
 #: inc/Ajax/Order/ExportOrderCSVAjax.php:71
 #: inc/Models/WPTables/OrdersTable.php:36
 #: inc/TemplateHooks/Order/AdminOrderItemsTemplate.php:322
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:200
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:232
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:206
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:238
 #: templates/checkout/order-received.php:167
 #: templates/checkout/review-order.php:152
 #: templates/emails/order-items-table.php:120
@@ -5285,10 +5312,6 @@ msgstr ""
 msgid "Payment"
 msgstr ""
 
-#: inc/admin/meta-box/fields/payment-order.php:8
-msgid "ID"
-msgstr ""
-
 #: inc/admin/meta-box/fields/payment-order.php:36
 msgid "Need more payment options?"
 msgstr ""
@@ -5458,7 +5481,7 @@ msgstr ""
 #: inc/admin/views/question/actions.php:12
 #: inc/admin/views/quiz/editor.php:35
 #: inc/admin/views/quiz/question-meta.php:12
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:164
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:166
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:149
 msgid "Details"
 msgstr ""
@@ -5537,10 +5560,10 @@ msgid "Select items"
 msgstr ""
 
 #: inc/admin/views/course/section.php:49
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:289
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:753
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:771
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:820
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:291
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:755
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:773
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:822
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:253
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:444
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:221
@@ -6009,7 +6032,7 @@ msgid "<br /><strong>Note! </strong>There is no final quiz in the course. Please
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/settings.php:577
-#: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:88
+#: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:91
 #: inc/TemplateHooks/Course/AdminEditSettingTemplate.php:617
 #, php-format
 msgid "Edit: %s"
@@ -6268,7 +6291,7 @@ msgid "In order to change the order user, please change the order status to \"Pe
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/details.php:206
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:310
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:316
 #: templates/order/order-details.php:126
 msgid "Order key:"
 msgstr ""
@@ -6310,7 +6333,7 @@ msgid "Payment Medthod"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/refund-request-panel.php:27
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:373
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:379
 msgid "Refund amount:"
 msgstr ""
 
@@ -6377,7 +6400,7 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/question/settings.php:22
 #: inc/admin/views/quiz/question-meta.php:33
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:181
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:183
 msgid "Points for choosing the correct answer."
 msgstr ""
 
@@ -6388,7 +6411,7 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/question/settings.php:40
 #: inc/admin/views/quiz/question-meta.php:55
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:238
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:240
 msgid "The explanation will be displayed when students click the \"Check Answer\" button."
 msgstr ""
 
@@ -6446,10 +6469,10 @@ msgstr ""
 
 #: inc/admin/views/question/answer.php:17
 #: inc/admin/views/quiz/question-answer.php:18
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:464
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:535
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:606
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:670
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:466
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:537
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:608
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:672
 #: inc/TemplateHooks/CourseBuilder/BuilderPopupTemplate.php:356
 msgid "Answers"
 msgstr ""
@@ -6476,7 +6499,7 @@ msgid "Remove all blanks"
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:10
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:775
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:777
 msgid "Clear content"
 msgstr ""
 
@@ -6485,7 +6508,7 @@ msgid "Options"
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:34
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:836
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:838
 msgid "Match case"
 msgstr ""
 
@@ -6494,22 +6517,22 @@ msgid "Match two words in case sensitive."
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:37
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:844
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:846
 msgid "Comparison"
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:41
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:858
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:860
 msgid "Equal"
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:42
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:859
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:861
 msgid "Match two words are equality."
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:47
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:873
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:875
 msgid "Range"
 msgstr ""
 
@@ -6518,7 +6541,7 @@ msgid "Match any number in a range. Use <code>100, 200</code> to match any value
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:53
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:888
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:890
 msgid "Any"
 msgstr ""
 
@@ -6536,7 +6559,7 @@ msgid "Actions"
 msgstr ""
 
 #: inc/admin/views/quiz/editor.php:64
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:348
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:350
 msgid "Create a new question"
 msgstr ""
 
@@ -8437,7 +8460,7 @@ msgstr ""
 #: inc/Models/Quiz/QuizQuestionModel.php:175
 #: inc/Models/Quiz/QuizQuestionModel.php:211
 #: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:112
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:438
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:440
 #: inc/TemplateHooks/CourseBuilder/Quiz/BuilderEditQuizTemplate.php:66
 msgid "Quiz not found"
 msgstr ""
@@ -8517,9 +8540,9 @@ msgstr ""
 
 #: inc/Ajax/CourseBuilder/CourseBuilderAjax.php:1897
 #: inc/Ajax/EditQuestionAjax.php:84
-#: inc/Models/QuizPostModel.php:242
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:349
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:327
+#: inc/Models/QuizPostModel.php:243
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:351
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:329
 msgid "Question title is required"
 msgstr ""
 
@@ -8532,9 +8555,9 @@ msgstr ""
 #: inc/Ajax/EditQuestionAjax.php:48
 #: inc/Ajax/EditQuestionAjax.php:79
 #: inc/Ajax/EditQuestionAjax.php:217
-#: inc/Models/Question/QuestionAnswerModel.php:226
-#: inc/Models/QuizPostModel.php:323
-#: inc/Models/QuizPostModel.php:383
+#: inc/Models/Question/QuestionAnswerModel.php:250
+#: inc/Models/QuizPostModel.php:324
+#: inc/Models/QuizPostModel.php:384
 #: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:92
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderEditQuestionTemplate.php:65
 msgid "Question not found"
@@ -8720,12 +8743,12 @@ msgid "Only lesson can be set preview"
 msgstr ""
 
 #: inc/Ajax/EditQuestionAjax.php:113
-#: inc/Models/QuizPostModel.php:246
+#: inc/Models/QuizPostModel.php:247
 msgid "Invalid question type"
 msgstr ""
 
 #: inc/Ajax/EditQuestionAjax.php:126
-#: inc/Models/QuizPostModel.php:286
+#: inc/Models/QuizPostModel.php:287
 msgid "Question type not found"
 msgstr ""
 
@@ -8734,9 +8757,9 @@ msgid "Question update successfully"
 msgstr ""
 
 #: inc/Ajax/EditQuestionAjax.php:158
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:526
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:597
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:661
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:528
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:599
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:663
 msgid "Answer title is required"
 msgstr ""
 
@@ -8753,6 +8776,7 @@ msgid "Invalid request!"
 msgstr ""
 
 #: inc/Ajax/EditQuestionAjax.php:305
+#: inc/Models/Question/QuestionAnswerModel.php:177
 msgid "Question answer not found"
 msgstr ""
 
@@ -8774,7 +8798,7 @@ msgid "Question position updated successfully"
 msgstr ""
 
 #: inc/Ajax/LessonAjax.php:46
-#: inc/class-lp-checkout.php:491
+#: inc/class-lp-checkout.php:489
 #: inc/Services/NoteService.php:270
 #: inc/Services/NoteService.php:584
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:371
@@ -9206,12 +9230,12 @@ msgstr ""
 msgid "No payment method is selected"
 msgstr ""
 
-#: inc/class-lp-checkout.php:464
+#: inc/class-lp-checkout.php:462
 #: templates/checkout/empty-cart.php:18
 msgid "Your cart is currently empty."
 msgstr ""
 
-#: inc/class-lp-checkout.php:471
+#: inc/class-lp-checkout.php:469
 msgid "Type item buy invalid!"
 msgstr ""
 
@@ -9849,7 +9873,7 @@ msgstr ""
 
 #: inc/custom-post-types/order.php:562
 #: inc/custom-post-types/order.php:693
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:173
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:179
 #: templates/order/order-details.php:27
 msgid "Order Details"
 msgstr ""
@@ -9916,7 +9940,7 @@ msgstr ""
 
 #: inc/custom-post-types/question.php:234
 #: inc/custom-post-types/question.php:235
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:368
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:370
 msgid "Question Bank"
 msgstr ""
 
@@ -10287,8 +10311,8 @@ msgid "Send this email to the instructor when they have finished the course."
 msgstr ""
 
 #: inc/emails/instructor/class-lp-email-instructor-accepted.php:28
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:348
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:349
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:354
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:355
 msgid "Accepted"
 msgstr ""
 
@@ -12274,7 +12298,7 @@ msgstr ""
 msgid "Quiz moved to trash. Question relationships and posts are preserved. Restore from WP admin and re-add to the section to recover."
 msgstr ""
 
-#: inc/MCP/Domain/QuizTools.php:406
+#: inc/MCP/Domain/QuizTools.php:404
 msgid "Quiz is not assigned to a course; cannot move or reorder."
 msgstr ""
 
@@ -12558,7 +12582,9 @@ msgstr ""
 
 #: inc/Models/PostModel.php:298
 #: inc/Models/PostModel.php:531
-#: inc/Models/Question/QuestionAnswerModel.php:177
+#: inc/Models/Question/QuestionAnswerModel.php:182
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:117
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:97
 msgid "You do not have permission to edit this item."
 msgstr ""
 
@@ -12605,7 +12631,7 @@ msgstr ""
 msgid "You do not have permission to create answer."
 msgstr ""
 
-#: inc/Models/Question/QuestionAnswerModel.php:239
+#: inc/Models/Question/QuestionAnswerModel.php:263
 msgid "At least two answer is required."
 msgstr ""
 
@@ -12664,12 +12690,12 @@ msgstr ""
 msgid "False"
 msgstr ""
 
-#: inc/Models/QuizPostModel.php:316
-#: inc/Models/QuizPostModel.php:362
+#: inc/Models/QuizPostModel.php:317
+#: inc/Models/QuizPostModel.php:363
 msgid "Question IDs are required"
 msgstr ""
 
-#: inc/Models/QuizPostModel.php:388
+#: inc/Models/QuizPostModel.php:389
 msgid "Question not found in quiz"
 msgstr ""
 
@@ -12713,36 +12739,36 @@ msgstr ""
 msgid "You have not started course"
 msgstr ""
 
-#: inc/Models/UserItems/UserQuizModel.php:226
-#: inc/Models/UserItems/UserQuizModel.php:303
+#: inc/Models/UserItems/UserQuizModel.php:230
+#: inc/Models/UserItems/UserQuizModel.php:307
 msgid "User is invalid."
 msgstr ""
 
-#: inc/Models/UserItems/UserQuizModel.php:231
-#: inc/Models/UserItems/UserQuizModel.php:308
+#: inc/Models/UserItems/UserQuizModel.php:235
+#: inc/Models/UserItems/UserQuizModel.php:312
 msgid "Quiz is invalid."
 msgstr ""
 
-#: inc/Models/UserItems/UserQuizModel.php:236
-#: inc/Models/UserItems/UserQuizModel.php:313
+#: inc/Models/UserItems/UserQuizModel.php:240
+#: inc/Models/UserItems/UserQuizModel.php:317
 msgid "Course is invalid."
 msgstr ""
 
-#: inc/Models/UserItems/UserQuizModel.php:248
+#: inc/Models/UserItems/UserQuizModel.php:252
 msgid "You have already started the quiz."
 msgstr ""
 
-#: inc/Models/UserItems/UserQuizModel.php:256
-#: inc/Models/UserItems/UserQuizModel.php:321
+#: inc/Models/UserItems/UserQuizModel.php:260
+#: inc/Models/UserItems/UserQuizModel.php:325
 #: inc/user/class-lp-user.php:530
 msgid "Please enroll in the course before starting the quiz."
 msgstr ""
 
-#: inc/Models/UserItems/UserQuizModel.php:332
+#: inc/Models/UserItems/UserQuizModel.php:336
 msgid "You have not completed the quiz."
 msgstr ""
 
-#: inc/Models/UserItems/UserQuizModel.php:338
+#: inc/Models/UserItems/UserQuizModel.php:342
 msgid "You have exceeded the number of retakes."
 msgstr ""
 
@@ -13029,7 +13055,7 @@ msgid "Auto approved"
 msgstr ""
 
 #: inc/order/lp-order-functions.php:600
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:347
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:353
 msgid "Rejected"
 msgstr ""
 
@@ -13065,16 +13091,16 @@ msgstr ""
 msgid "Congrats! You have re-taken this quiz. Please wait a moment and the page will reload"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:51
+#: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:54
 msgid "No Course ID available!"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:57
+#: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:60
 #: inc/rest-api/v1/frontend/class-lp-rest-profile-controller.php:488
 msgid "No Course available!"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:95
+#: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:98
 msgid "No Quiz in this course!"
 msgstr ""
 
@@ -13851,7 +13877,7 @@ msgid "LearnPress Add-ons New"
 msgstr ""
 
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:277
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:427
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:429
 msgid "Access denied."
 msgstr ""
 
@@ -13989,139 +14015,139 @@ msgstr ""
 msgid "Don't have a code?"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:170
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:172
 #, php-format
 msgid "<span class=\"count\">%1$d</span> %2$s"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:221
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:112
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:223
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:114
 msgid "Option Details"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:261
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:263
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:233
 msgid "Drag to reorder section"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:281
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:283
 msgid "Edit question detail"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:288
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:290
 msgid "Remove question"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:290
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:292
 msgid "This question will be removed from this quiz. The question will no longer be assigned to this quiz, but will not be permanently deleted."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:315
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:376
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:317
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:378
 msgid "Select question type"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:330
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:391
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:332
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:393
 msgid "Question type is required"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:361
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:363
 msgid "Enter title question and choice type"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:362
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:364
 msgid "Add Question"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:470
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:472
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:669
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:139
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:145
 msgid "No items found"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:210
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:212
 msgid "The instructions for the user to select the right answer. The text will be shown when users click the \"Hint\" button."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:295
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:297
 msgid "Config Your Answer"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:326
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:328
 msgid "Update question title"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:402
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:404
 msgid "Create Question Type"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:465
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:536
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:607
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:671
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:467
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:538
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:609
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:673
 msgid "Corrects"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:527
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:598
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:662
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:529
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:600
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:664
 msgid "Add Option"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:732
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:734
 msgid "Select a word in the passage above and click \"Insert a new blank\" to make that word a blank for filling."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:740
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:742
 msgid "Enter answer correct on here"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:741
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:743
 msgid "This text inserted to blank"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:742
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:744
 msgid "You must select a text or position on Editor to insert new blank."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:744
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:746
 msgid "Insert new blank"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:754
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:756
 msgid "This action will delete all blanks in the editor, only keep text content."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:755
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:757
 msgid "Delete all blanks on this editor."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:757
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:759
 msgid "Delete all blanks"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:762
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:764
 msgid "Save content"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:772
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:774
 msgid "This action will delete all content in the editor."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:773
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:775
 msgid "Clear all content on this editor."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:821
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:823
 msgid "Delete this blank and keep text"
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:874
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:876
 msgid "Match any number in a range. Use 100, 200 to match any value from 100 to 200."
 msgstr ""
 
-#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:889
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:891
 msgid "Match any value in a set of words. Use fill, blank, or question to match any value in the set."
 msgstr ""
 
@@ -15855,22 +15881,22 @@ msgstr ""
 msgid "You have not added any notes yet."
 msgstr ""
 
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:226
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:232
 #: templates/checkout/review-order.php:138
 #: templates/order/order-details.php:112
 msgid "Subtotal"
 msgstr ""
 
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:318
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:324
 #: templates/order/order-details.php:131
 msgid "Order status:"
 msgstr ""
 
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:358
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:364
 msgid "Refund request:"
 msgstr ""
 
-#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:407
+#: inc/TemplateHooks/Profile/ProfileOrderTemplate.php:413
 msgid "Refund note:"
 msgstr ""
 
