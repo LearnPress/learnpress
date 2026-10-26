@@ -92,8 +92,8 @@
     "learnpress-certificates": {
         "name": "Certificates Add-on for LearnPress",
         "basename": "learnpress-certificates/learnpress-certificates.php",
-        "version": "4.2.8",
-        "require_lp": "4.4.4",
+        "version": "4.2.9",
+        "require_lp": "4.4.11",
         "description": "Design and award custom certificates to students upon course completion.",
         "image": "https://updates.thimpress.com/images/learnpress-certificates.png",
         "link": "https://thimpress.com/product/certificates-add-on-for-learnpress/",
