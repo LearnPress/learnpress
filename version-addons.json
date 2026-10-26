@@ -224,7 +224,7 @@
     "learnpress-content-drip": {
         "name": "Content Drip Add-on for LearnPress",
         "basename": "learnpress-content-drip/learnpress-content-drip.php",
-        "version": "4.0.9",
+        "version": "4.0.10",
         "require_lp": "4.4.3",
         "description": "Unlock lessons progressively by schedule or after students complete prerequisites.",
         "image": "https://updates.thimpress.com/images/learnpress-content-drip.png",
