@@ -457,6 +457,13 @@ class LP_Checkout {
 		try {
 			do_action( 'learn-press/before-checkout' );
 
+			// Not logged in: only allow guest checkout, or login/register via the checkout form (handled in validate_checkout_fields).
+			if ( ! is_user_logged_in()
+				&& ! $this->is_enable_guest_checkout()
+				&& ! in_array( LP_Request::get_param( 'checkout-account-switch-form' ), [ 'login', 'register' ], true ) ) {
+				throw new Exception( __( 'Please login to enroll in the course!', 'learnpress' ) );
+			}
+
 			$cart = LearnPress::instance()->cart;
 			if ( $cart->is_empty() ) {
 				throw new Exception( __( 'Your cart is currently empty.', 'learnpress' ) );
