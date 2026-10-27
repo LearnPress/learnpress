@@ -125,8 +125,8 @@ $group_menus = apply_filters(
 			'lessons'         => 'edit.php?post_type=' . LP_LESSON_CPT,
 			'quizzes'         => 'edit.php?post_type=' . LP_QUIZ_CPT,
 			'questions'       => 'edit.php?post_type=' . LP_QUESTION_CPT,
-			'course_category' => 'edit-tags.php?taxonomy=course_category',
-			'course_tag'      => 'edit-tags.php?taxonomy=course_tag',
+			'course_category' => 'edit-tags.php?taxonomy=course_category&post_type=lp_course',
+			'course_tag'      => 'edit-tags.php?taxonomy=course_tag&post_type=lp_course',
 		],
 		'operations' => [
 			'orders'     => 'edit.php?post_type=' . LP_ORDER_CPT,
