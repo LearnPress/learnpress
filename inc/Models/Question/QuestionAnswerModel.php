@@ -235,6 +235,11 @@ class QuestionAnswerModel {
 		}
 
 		$this->clean_caches();
+
+		// Sync to question_answer_config new table for backward compatibility
+		$questionPostModel = $this->get_question_post_model();
+		$questionPostModel->save_answers_config( $questionPostModel->get_answer_option() );
+		// End
 	}
 
 	/**
@@ -281,6 +286,11 @@ class QuestionAnswerModel {
 
 		// Clear cache
 		$this->clean_caches();
+
+		// Sync to question_answer_config new table for backward compatibility
+		$questionPostModel = $this->get_question_post_model();
+		$questionPostModel->save_answers_config( $questionPostModel->get_answer_option() );
+		// End
 	}
 
 	/**

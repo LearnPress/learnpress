@@ -104,9 +104,11 @@ class LPCache {
 	 * The WordPress object cache is checked first. A persistent-cache hit is
 	 * restored to the WordPress object cache before being returned.
 	 *
-	 * @since 4.4.11
-	 *
 	 * @param string $key Cache key.
+	 * @param string $type_data_get Type of data to get, only apply for thim cache.
+	 *
+	 * @since 4.4.11
+	 * @version 1.0.1
 	 * @return mixed|false Cached value on success, false on a cache miss.
 	 */
 	public function get_cache( string $key, $type_data_get = '' ) {
@@ -129,6 +131,12 @@ class LPCache {
 						break;
 					case 'array':
 						$cache = LP_Helper::json_decode( $cache, true );
+						break;
+					default:
+						$cache = LP_Helper::json_decode( $cache );
+						if ( class_exists( $type_data_get ) ) {
+							$cache = new $type_data_get( $cache );
+						}
 						break;
 				}
 			} catch ( Throwable $e ) {

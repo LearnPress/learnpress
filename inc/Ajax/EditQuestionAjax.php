@@ -170,12 +170,6 @@ class EditQuestionAjax extends AbstractAjax {
 				throw new Exception( __( 'Question not found', 'learnpress' ) );
 			}
 
-			$answerConfigModel = QuestionAnswerConfigModel::find_by_question_id( $question_id, true );
-			if ( ! $answerConfigModel ) {
-				$answerConfigModel              = new QuestionAnswerConfigModel();
-				$answerConfigModel->question_id = $question_id;
-			}
-
 			if ( $questionPostModel->get_type() === 'fill_in_blanks' ) {
 				$questionPostFIBModel = new QuestionPostFIBModel( $questionPostModel );
 
@@ -291,9 +285,7 @@ class EditQuestionAjax extends AbstractAjax {
 			}
 
 			// For save new table question_answer_config - @since 4.5.0
-			$answerConfigModel->set_answers( $answers_save );
-			$answerConfigModel->save();
-			//$questionPostModel->save_answers_config();
+			$questionPostModel->save_answers_config( $answers_save );
 
 			$response->status  = 'success';
 			$response->message = __( 'Answer of Question update successfully', 'learnpress' );

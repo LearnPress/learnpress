@@ -319,7 +319,7 @@ class QuestionPostModel extends PostModel {
 		foreach ( $answers as $index => $answer ) {
 			$answer = array(
 				'question_id' => $this->get_id(),
-				'title'       => $answer['title'],
+				'title'       => $answer['title'] ?? '',
 				'value'       => $answer['value'] ?? '',
 				'is_true'     => $answer['is_true'] ?? '',
 				'order'       => $index + 1,
@@ -330,94 +330,31 @@ class QuestionPostModel extends PostModel {
 			$answers[ $index ]['question_answer_id'] = $questionAnswerModel->question_answer_id;
 		}
 
-		$this->save_answers_config();
+		// For save new table question_answer_config - @since 4.5.0
+		$this->save_answers_config( $answers );
 
 		return $answers;
 	}
 
 	/**
-	 * Save answers config
+	 * Save answers config (new table)
 	 * @throws Exception
-	 */
-	public function save_answers_config(): void {
-		if ( ! QuestionAnswerConfigModel::is_support() ) {
-			return;
-		}
-
-		$answers = $this->get_legacy_answers_config();
-		$config  = QuestionAnswerConfigModel::find_by_question_id( $this->get_id(), true );
-		if ( ! $config ) {
-			$config              = new QuestionAnswerConfigModel();
-			$config->question_id = $this->get_id();
-		}
-
-		$config->set_answers( $answers );
-		$config->save();
-	}
-
-	/**
-	 * Get answers config
 	 *
-	 * @return array
-	 * @throws Exception
+	 * @since 4.5.0
+	 * @version 1.0.0
 	 */
-	public function get_answers_config(): array {
-		if ( QuestionAnswerConfigModel::is_support() ) {
-			$config = QuestionAnswerConfigModel::find_by_question_id( $this->get_id() );
-			if ( $config ) {
-				return $config->get_answers();
-			}
+	public function save_answers_config( $answers ): void {
+		$answerConfigModel = QuestionAnswerConfigModel::find_by_question_id(
+			$this->get_id(),
+			true
+		);
+		if ( ! $answerConfigModel instanceof QuestionAnswerConfigModel ) {
+			$answerConfigModel              = new QuestionAnswerConfigModel();
+			$answerConfigModel->question_id = $this->get_id();
 		}
 
-		return $this->get_legacy_answers_config();
-	}
-
-	/**
-	 * Get legacy answers config
-	 *
-	 * @return array
-	 * @throws Exception
-	 */
-	protected function get_legacy_answers_config(): array {
-		$db                      = QuestionAnswersDB::getInstance();
-		$filter                  = new QuestionAnswersFilter();
-		$filter->question_id     = $this->get_id();
-		$filter->limit           = -1;
-		$filter->run_query_count = false;
-		$filter->order_by        = 'qa.`order` ASC, qa.question_answer_id';
-		$filter->order           = 'ASC';
-		$rows                    = $db->get_question_answers( $filter );
-		$answers                 = [];
-
-		foreach ( $rows as $row ) {
-			$answer = [
-				'title'   => $row->title,
-				'value'   => $row->value,
-				'order'   => $row->order,
-				'is_true' => $row->is_true,
-			];
-
-			$meta_filter                   = new FilterBase();
-			$meta_filter->collection       = $db->tb_lp_question_answermeta;
-			$meta_filter->collection_alias = 'qam';
-			$meta_filter->fields           = [ 'qam.meta_key', 'qam.meta_value' ];
-			$meta_filter->where[]          = $db->wpdb->prepare(
-				'AND qam.learnpress_question_answer_id = %d',
-				$row->question_answer_id
-			);
-			$meta_filter->limit            = -1;
-			$meta_filter->run_query_count  = false;
-			$meta_filter->order_by         = 'qam.meta_id';
-			$meta_filter->order            = 'ASC';
-
-			foreach ( $db->execute( $meta_filter ) as $meta ) {
-				$answer['meta'][ $meta->meta_key ] = maybe_unserialize( $meta->meta_value );
-			}
-
-			$answers[] = $answer;
-		}
-
-		return $answers;
+		$answerConfigModel->set_answers( $answers );
+		$answerConfigModel->save();
 	}
 
 	/**

@@ -595,8 +595,9 @@ class SampleDataService {
 	/**
 	 * Create answers for a question.
 	 *
-	 * @param int    $question_id
+	 * @param int $question_id
 	 * @param string $type
+	 * @throws Exception
 	 */
 	protected function create_question_answers( $question_id, $type ) {
 		global $wpdb;
@@ -621,13 +622,10 @@ class SampleDataService {
 			}
 		}
 
-		if ( QuestionAnswerConfigModel::is_support() ) {
-			$question = QuestionPostModel::find( (int) $question_id );
-			if ( ! $question ) {
-				throw new Exception( __( 'Question not found', 'learnpress' ) );
-			}
-
-			$question->save_answers_config();
+		// For save new table question_answer_config - @since 4.5.0
+		$questionPostModel = QuestionPostModel::find( $question_id, true );
+		if ( $questionPostModel ) {
+			$questionPostModel->save_answers_config( $answers );
 		}
 	}
 

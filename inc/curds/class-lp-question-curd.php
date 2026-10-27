@@ -206,13 +206,12 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		public function duplicate_answer( $question_id, $question_id_clone ) {
 			$lp_db                  = LP_Database::getInstance();
 			$lp_question_answers_db = LP_Question_Answers_DB::getInstance();
+			$questionPostModel      = QuestionPostModel::find( (int) $question_id, true );
+			$questionModelClone     = QuestionPostModel::find( (int) $question_id_clone, true );
 
 			try {
 				// Get all answer of question
-				$filter_get_answer_options               = new LP_Question_Answers_Filter();
-				$filter_get_answer_options->question_ids = [ $question_id ];
-				$filter_get_answer_options->limit        = -1;
-				$answer_options                          = $lp_question_answers_db->get_question_answers( $filter_get_answer_options );
+				$answer_options = $questionPostModel->get_answer_option();
 
 				if ( $answer_options ) {
 					foreach ( $answer_options as $answer_option ) {
@@ -275,13 +274,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					}
 				}
 
-				if ( QuestionAnswerConfigModel::is_support() ) {
-					$question = QuestionPostModel::find( (int) $question_id_clone );
-					if ( ! $question ) {
-						throw new Exception( __( 'Question not found', 'learnpress' ) );
-					}
-
-					$question->sync_answers_config();
+				if ( $questionModelClone ) {
+					$questionModelClone->save_answers_config( $answer_options );
 				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
@@ -382,7 +376,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$question_id = $question->get_id();
 
 			// If not new Question or not change type return
-			$old_type    = get_post_meta( $question_id, '_lp_type', true );
+			$old_type = get_post_meta( $question_id, '_lp_type', true );
 			if ( ! empty( $old_type ) && $old_type === $new_type ) {
 				return;
 			}
@@ -822,7 +816,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 						'order'       => $index + 1,
 					);
 					$new_answers[] = $this->add_answer( $new_question->get_type(), $insert );
-				};
+				}
 
 				return $new_answers;
 			}

@@ -131,7 +131,7 @@ class QuestionAnswerConfigModel {
 		$cache     = new LPCache();
 
 		if ( $check_cache ) {
-			$model = $cache->get_cache( $key_cache );
+			$model = $cache->get_cache( $key_cache, QuestionAnswerConfigModel::class );
 			if ( $model instanceof QuestionAnswerConfigModel ) {
 				return $model;
 			}

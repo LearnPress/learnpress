@@ -19,8 +19,7 @@ use LearnPress\Models\Quiz\QuizQuestionModel;
 use LP_Cache;
 use LP_Question;
 use LP_Question_DB;
-use LP_Question_Filter;
-use LP_Quiz;
+
 use LP_Quiz_Filter;
 use Throwable;
 
@@ -278,8 +277,10 @@ class QuizPostModel extends PostModel {
 
 					$questionAnswerModel = new QuestionAnswerModel( $answer );
 					$questionAnswerModel->save();
-					$answers[ $index ]['question_answer_id'] = $questionAnswerModel->question_answer_id;
 				}
+
+				// For save new table question_answer_config - @since 4.5.0
+				$questionPostTyeModel->save_answers_config( $question_options );
 			} elseif ( method_exists( $questionPostTyeModel, 'create_default_answers' ) ) {
 				$questionPostTyeModel->create_default_answers();
 			}
