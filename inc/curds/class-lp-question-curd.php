@@ -201,7 +201,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @param $question_id     | origin question
 		 * @param $question_id_clone | new question
 		 * @version 3.0.1
-		 * @since 1.0.1
+		 * @since 1.0.2
 		 */
 		public function duplicate_answer( $question_id, $question_id_clone ) {
 			$lp_db                  = LP_Database::getInstance();
@@ -209,7 +209,22 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$questionPostModel      = QuestionPostModel::find( (int) $question_id, true );
 			$questionModelClone     = QuestionPostModel::find( (int) $question_id_clone, true );
 
+			if ( ! $questionPostModel ) {
+				return new WP_Error( 'question_answer_duplicate_err', 'Oops! Question not found' );
+			}
+
+			if ( ! $questionModelClone ) {
+				return new WP_Error( 'question_answer_duplicate_err', 'Oops! Question clone not found' );
+			}
+
 			try {
+				// New types only have JSON config, copy as-is - @since 4.5.0
+				if ( ! $questionPostModel->is_legacy_answer_type() ) {
+					$questionModelClone->save_answers_config( $questionPostModel->get_answers_config() );
+
+					return true;
+				}
+
 				// Get all answer of question
 				$answer_options = $questionPostModel->get_answer_option();
 
@@ -274,13 +289,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					}
 				}
 
-				if ( $questionModelClone ) {
-					$questionModelClone->save_answers_config( $answer_options );
-				}
+				$questionModelClone->save_answers_config( $answer_options );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
-				return new WP_Error( 'lp/question/curd/duplicate/err', $e->getMessage() );
+				return new WP_Error( 'question_answer_duplicate_err', $e->getMessage() );
 			}
+
+			return true;
 		}
 
 		/**

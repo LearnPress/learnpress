@@ -187,6 +187,7 @@ class OpenAiAjax extends AbstractAjax {
 							$data_answers[] = [
 								'title'   => $option,
 								'is_true' => ( $option === $correct_answer ) ? 'yes' : 'no',
+								'value'   => learn_press_random_value(),
 								'order'   => $index + 1,
 							];
 						}

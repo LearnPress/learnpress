@@ -221,7 +221,7 @@ function learn_press_uniqid( $prefix = '' ) {
 	return apply_filters( 'learn-press/generate-hash', $prefix . $hash, $prefix );
 }
 
-function learn_press_random_value( $len = 8 ) {
+function learn_press_random_value( $len = 10 ) {
 	return substr( md5( uniqid( mt_rand(), true ) ), 0, $len );
 }
 

@@ -73,6 +73,7 @@ class QuestionTools {
 					$options[] = array(
 						'title'   => Sanitizer::text( $answer['title'] ?? '' ),
 						'is_true' => Sanitizer::boolean( $answer['is_correct'] ?? false ) ? 'yes' : '',
+						'value'   => learn_press_random_value(),
 					);
 				}
 			}

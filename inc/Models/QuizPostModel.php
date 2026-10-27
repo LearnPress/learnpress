@@ -266,17 +266,24 @@ class QuizPostModel extends PostModel {
 			 */
 			$questionPostTyeModel = new $questionClassName( $questionPostModelNew );
 			if ( ! empty( $question_options ) ) {
-				foreach ( $question_options as $index => $answer ) {
-					$answer = array(
-						'question_id' => $questionPostTyeModel->get_id(),
-						'title'       => $answer['title'],
-						'value'       => $questionPostTyeModel->random_value(),
-						'is_true'     => $answer['is_true'] ?? '',
-						'order'       => $index + 1,
-					);
+				// Legacy types save answers with fixed keys on old tables, new types only save JSON config.
+				if ( $questionPostTyeModel->is_legacy_answer_type() ) {
+					foreach ( $question_options as $index => $answer ) {
+						$answer = array(
+							'question_id' => $questionPostTyeModel->get_id(),
+							'title'       => $answer['title'] ?? '',
+							'value'       => $answer['value'] ?? $questionPostTyeModel->random_value(),
+							'is_true'     => $answer['is_true'] ?? 'no',
+							'order'       => $index + 1,
+						);
 
-					$questionAnswerModel = new QuestionAnswerModel( $answer );
-					$questionAnswerModel->save();
+						$questionAnswerModel = new QuestionAnswerModel( $answer );
+						$questionAnswerModel->save();
+
+						// Same value, order as old table for save config.
+						$question_options[ $index ]['value'] = $answer['value'];
+						$question_options[ $index ]['order'] = $answer['order'];
+					}
 				}
 
 				// For save new table question_answer_config - @since 4.5.0

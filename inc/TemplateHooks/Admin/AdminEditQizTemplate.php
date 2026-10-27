@@ -3,9 +3,8 @@
 namespace LearnPress\TemplateHooks\Admin;
 
 use Exception;
-use LearnPress\Databases\DataBase;
+use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Filters\PostFilter;
-use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
@@ -15,7 +14,6 @@ use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Database;
 use LP_Post_DB;
-use LP_Post_Type_Filter;
 use stdClass;
 use Throwable;
 
@@ -353,6 +351,7 @@ class AdminEditQizTemplate {
 					[
 						'id_url'  => 'create-question-add-to-quiz',
 						'quiz_id' => $this->quizPostModel->get_id(),
+						/** @use EditQuizAjax::create_question_add_to_quiz */
 						'action'  => 'create_question_add_to_quiz',
 					]
 				),

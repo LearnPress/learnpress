@@ -164,6 +164,7 @@ class EditQuestionAjax extends AbstractAjax {
 			$question_id      = $data['question_id'] ?? 0;
 			$question_answers = $data['answers'] ?? [];
 			$question_answers = LP_Helper::sanitize_params_submitted( $question_answers, 'html', false );
+			$answers_save     = $question_answers;
 
 			$questionPostModel = QuestionPostModel::find( $question_id, true );
 			if ( ! $questionPostModel ) {
@@ -179,7 +180,7 @@ class EditQuestionAjax extends AbstractAjax {
 							$question_answers['title'] ?? ''
 						),
 						'value'   => $question_answers['value'] ?? learn_press_random_value(),
-						//'order'   => 1,
+						'order'   => 1,
 						//'is_true' => 'yes',
 					],
 				];
@@ -189,10 +190,10 @@ class EditQuestionAjax extends AbstractAjax {
 				$questionAnswerModel->question_id = $question_id;
 				$content                          = $question_answers['title'] ?? '';
 				$meta_data                        = $question_answers['meta_data'] ?? [];
-				$questionAnswerModel->title       = $questionPostFIBModel->convert_content_from_editor_to_db( $content );
-				$questionAnswerModel->value       = learn_press_random_value();
-				$questionAnswerModel->order       = 1;
-				$questionAnswerModel->is_true     = 'yes';
+				$questionAnswerModel->title       = $answers_save[0]['title'];
+				$questionAnswerModel->value       = $answers_save[0]['value'];
+				$questionAnswerModel->order       = $answers_save[0]['order'];
+				//$questionAnswerModel->is_true     = 'yes';
 				$questionAnswerModel->save();
 				// Update meta value for fill in blanks
 				$pattern = '#<span class="lp-question-fib-input" data-id="([^"]+)">([^<]+)<\/span>#';
@@ -237,7 +238,7 @@ class EditQuestionAjax extends AbstractAjax {
 				$answers_save[0]['meta'] = [
 					QuestionAnswerModel::META_KEY_BLANKS => $meta_data,
 				];
-			} else {
+			} elseif ( $questionPostModel->is_legacy_answer_type() ) {
 				$answers_save      = [];
 				$existing_answers  = $questionPostModel->get_answer_option();
 				$answer_ids        = array_map(
@@ -272,7 +273,7 @@ class EditQuestionAjax extends AbstractAjax {
 					$questionAnswerModel->save();
 
 					$answers_save[] = [
-						'title'   => $answer['title'] ?? 0,
+						'title'   => $answer['title'] ?? '',
 						'value'   => $answer['value'],
 						'order'   => $answer['order'] ?? count( $question_answers ) + 1,
 						'is_true' => $answer['is_true'] ?? '',
