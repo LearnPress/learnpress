@@ -333,7 +333,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$access_token = function_exists( 'learnpress_mobile_iap_settings' ) ? learnpress_in_app_purchase_get_access_token( $platform ) : learnpress_in_app_purchase_get_access_token();
 
 				$verify = wp_remote_get(
-					'https://androidpublisher.googleapis.com/androidpublisher/v3/applications/' . $package_name . '/purchases/products/' . $course_id . '/tokens/' . $purchase_token,
+					'https://androidpublisher.googleapis.com/androidpublisher/v3/applications/' . rawurlencode( $package_name ) . '/purchases/products/' . $course_id . '/tokens/' . rawurlencode( $purchase_token ),
 					array(
 						'headers' => array(
 							'Content-Type'  => 'application/json',
@@ -343,10 +343,33 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					)
 				);
 
+				if ( is_wp_error( $verify ) ) {
+					throw new Exception( __( 'Cannot verify the receipt', 'learnpress' ) );
+				}
+
 				$body = json_decode( wp_remote_retrieve_body( $verify ) );
 
 				if ( isset( $body->error->message ) ) {
 					throw new Exception( $body->error->message );
+				}
+
+				// Fail closed: only a successful reply with purchaseState 0 (Purchased) is accepted.
+				if ( 200 !== wp_remote_retrieve_response_code( $verify ) || ! is_object( $body ) || ! isset( $body->purchaseState ) || 0 !== (int) $body->purchaseState ) {
+					throw new Exception( __( 'Cannot verify the receipt', 'learnpress' ) );
+				}
+
+				// A purchase token can only unlock one account.
+				$token_owners = get_users(
+					array(
+						'meta_key'   => '_lp_iap_google_token', // phpcs:ignore WordPress.DB.SlowDBQuery
+						'meta_value' => $purchase_token, // phpcs:ignore WordPress.DB.SlowDBQuery
+						'fields'     => 'ID',
+						'number'     => 1,
+					)
+				);
+
+				if ( ! empty( $token_owners ) ) {
+					throw new Exception( __( 'The receipt has already been used.', 'learnpress' ) );
 				}
 			}
 
@@ -375,6 +398,10 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$order    = new LP_Order( $order_id );
 				$order->payment_complete();
 				$cart->empty_cart();
+
+				if ( ! $is_ios ) {
+					add_user_meta( get_current_user_id(), '_lp_iap_google_token', $purchase_token );
+				}
 			}
 
 			$response->status  = 'success';
