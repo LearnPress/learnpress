@@ -210,10 +210,7 @@ class QuestionAnswerModel {
 	 */
 	public function save() {
 		$db   = QuestionAnswersDB::getInstance();
-		$data = [];
-		foreach ( get_object_vars( $this ) as $property => $value ) {
-			$data[ $property ] = $value;
-		}
+		$data = get_object_vars( $this );
 
 		$args = [
 			'data'       => $data,

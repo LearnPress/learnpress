@@ -27,6 +27,7 @@ defined( 'LP_INC_PATH' )      || define( 'LP_INC_PATH', dirname( __DIR__ ) . '/i
 defined( 'LP_VERSION' )       || define( 'LP_VERSION', '4.0.0-test' );
 defined( 'LP_QUIZ_CPT' )      || define( 'LP_QUIZ_CPT', 'lp_quiz' );
 defined( 'LP_LESSON_CPT' )    || define( 'LP_LESSON_CPT', 'lp_lesson' );
+defined( 'LP_QUESTION_CPT' )  || define( 'LP_QUESTION_CPT', 'lp_question' );
 defined( 'LP_COURSE_CPT' )    || define( 'LP_COURSE_CPT', 'lp_course' );
 defined( 'LP_TEACHER_ROLE' )  || define( 'LP_TEACHER_ROLE', 'lp_teacher' );
 

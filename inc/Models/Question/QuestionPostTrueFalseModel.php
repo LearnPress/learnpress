@@ -53,16 +53,27 @@ class QuestionPostTrueFalseModel extends QuestionPostModel {
 		$return = parent::check( $user_answer );
 
 		try {
-			$answer_models = $this->get_answer_option();
+			$answer_models = $this->get_answers_for_legacy_type();
 			if ( $answer_models ) {
 				foreach ( $answer_models as $option ) {
-					if ( $option->is_true === 'yes'
-						&& $option->value == $user_answer ) {
-						$return = [
-							'correct' => true,
-							'mark'    => floatval( $this->get_mark() ),
-						];
-						break;
+					if ( $option instanceof QuestionAnswerModel ) {
+						if ( $option->is_true === 'yes'
+							&& $option->value == $user_answer ) {
+							$return = [
+								'correct' => true,
+								'mark' => floatval( $this->get_mark() ),
+							];
+							break;
+						}
+					} elseif ( is_array( $option ) ) {
+						if ( ( $option['is_true'] ?? '' ) === 'yes'
+							&& ( $option['value'] ?? '' ) == $user_answer ) {
+							$return = [
+								'correct' => true,
+								'mark' => floatval( $this->get_mark() ),
+							];
+							break;
+						}
 					}
 				}
 			}

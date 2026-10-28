@@ -59,18 +59,28 @@ class QuestionPostMultipleChoiceModel extends QuestionPostModel {
 		settype( $user_answer, 'array' );
 
 		try {
-			$answer_models = $this->get_answer_option();
+			$answer_models = $this->get_answers_for_legacy_type();
 			if ( $answer_models ) {
 				$correct = true;
 				foreach ( $answer_models as $option ) {
+					if ( $option instanceof QuestionAnswerModel ) {
+						$value   = $option->value;
+						$is_true = $option->is_true;
+					} elseif ( is_array( $option ) ) {
+						$value   = $option['value'] ?? '';
+						$is_true = $option['is_true'] ?? '';
+					} else {
+						continue;
+					}
+
 					$selected = false;
-					if ( in_array( $option->value, $user_answer ) ) {
+					if ( in_array( $value, $user_answer ) ) {
 						$selected = true;
 					}
 
-					if ( $selected && $option->is_true !== 'yes' ) {
+					if ( $selected && $is_true !== 'yes' ) {
 						$correct = false;
-					} elseif ( ! $selected && $option->is_true === 'yes' ) {
+					} elseif ( ! $selected && $is_true === 'yes' ) {
 						$correct = false;
 					}
 

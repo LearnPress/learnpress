@@ -4,13 +4,13 @@ namespace LearnPress\Models\Question;
 
 use Exception;
 use LearnPress\Databases\QuestionAnswersDB;
-use LearnPress\Filters\FilterBase;
 use LearnPress\Filters\QuestionAnswersFilter;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\PostModel;
 use LP_Cache;
 use LP_Debug;
 use LP_Question_Filter;
+use Throwable;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  * To replace class LP_Question old
  *
  * @package LearnPress/Classes
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.9
  */
 
@@ -31,6 +31,11 @@ class QuestionPostModel extends PostModel {
 
 	protected $answer_options = [];
 
+	/**
+	 * @var QuestionAnswerModel[] Answers read from new table question_answer_config
+	 */
+	protected $answer_options_config = [];
+
 	protected $question_type = '';
 
 	/**
@@ -40,6 +45,21 @@ class QuestionPostModel extends PostModel {
 	const META_KEY_MARK        = '_lp_mark';
 	const META_KEY_HINT        = '_lp_hint';
 	const META_KEY_EXPLANATION = '_lp_explanation';
+
+	/**
+	 * Question types store answers with fixed keys: title, value, is_true, order.
+	 * Also save on old tables learnpress_question_answers, learnpress_question_answermeta.
+	 * Other types store free-form JSON on table learnpress_question_answer_config.
+	 *
+	 * @since 4.5.0
+	 */
+	const LEGACY_ANSWER_TYPES = [
+		'true_or_false',
+		'single_choice',
+		'multi_choice',
+		'fill_in_blanks',
+		'sorting_choice',
+	];
 
 	/**
 	 * Get post question by ID
@@ -82,10 +102,40 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Get answers config (new table) as stored, not map keys.
+	 * Use for all types, new types read their JSON by this method.
+	 *
+	 * @return array
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function get_answers_config(): array {
+		try {
+			$answerConfigModel = QuestionAnswerConfigModel::find_by_question_id(
+				$this->get_id(),
+				true
+			);
+			if ( $answerConfigModel instanceof QuestionAnswerConfigModel ) {
+				return $answerConfigModel->get_answers();
+			}
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+
+		return [];
+	}
+
+	/**
 	 * Get answer options for question
+	 * From old table learnpress_question_answers
+	 * If code new use get_answers_for_legacy_type() to instead
 	 */
 	public function get_answer_option() {
 		try {
+			if ( ! $this->is_legacy_answer_type() ) {
+				return $this->answer_options;
+			}
+
 			if ( empty( $this->answer_options ) ) {
 				$db                  = QuestionAnswersDB::getInstance();
 				$filter              = new QuestionAnswersFilter();
@@ -107,6 +157,92 @@ class QuestionPostModel extends PostModel {
 		}
 
 		return $this->answer_options;
+	}
+
+	/**
+	 * Get answer options for legacy types, read from new table question_answer_config.
+	 * If question has not config, read from old tables via get_answer_option().
+	 *
+	 * @return QuestionAnswerModel[]|array[] array[] if read from config, QuestionAnswerModel[] if read from old tables
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.5.0
+	 */
+	public function get_answers_for_legacy_type(): array {
+		if ( ! empty( $this->answer_options_config ) ) {
+			return $this->answer_options_config;
+		}
+
+		// Only show log for DEV
+		if ( ! $this->is_legacy_answer_type() ) {
+			error_log( 'Question type is not legacy' );
+			return $this->answer_options_config;
+		}
+
+		try {
+			$answers = $this->get_answers_config();
+			if ( empty( $answers ) ) {
+				return $this->get_answer_option();
+			}
+
+			// Return answers config as stored (array), each type check both QuestionAnswerModel and array.
+			$this->answer_options_config = $answers;
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+
+			return $this->get_answer_option();
+		}
+
+		return $this->answer_options_config;
+	}
+
+	/**
+	 * Map answers config (JSON) of legacy types to QuestionAnswerModel, same as read from old tables.
+	 * Answer config not store question_answer_id, so it is always null.
+	 *
+	 * @param array $answers
+	 *
+	 * @return QuestionAnswerModel[]
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	protected function normalize_config_answers_to_model_legacy( array $answers ): array {
+		$is_fib         = $this->get_type() === 'fill_in_blanks';
+		$answer_options = [];
+
+		foreach ( array_values( $answers ) as $index => $answer ) {
+			$answer = (array) $answer;
+			// Values as string, same as read from old tables.
+			$data = [
+				'question_answer_id' => null,
+				'question_id'        => (string) $this->get_id(),
+				'title'              => (string) ( $answer['title'] ?? '' ),
+				'value'              => (string) ( $answer['value'] ?? '' ),
+				'order'              => (string) ( $answer['order'] ?? $index + 1 ),
+				'is_true'            => (string) ( $answer['is_true'] ?? '' ),
+			];
+
+			if ( $is_fib ) {
+				$meta                        = (array) ( $answer['meta'] ?? [] );
+				$data['meta_data']           = $meta[ QuestionAnswerModel::META_KEY_BLANKS ] ?? $answer['meta_data'] ?? '';
+				$data['is_get_all_metadata'] = true;
+			}
+
+			$answer_options[] = [
+				'index' => $index,
+				'model' => new QuestionAnswerModel( $data ),
+			];
+		}
+
+		// Sort by order ASC as old tables, keep position when same order.
+		usort(
+			$answer_options,
+			function ( $a, $b ) {
+				return [ (int) $a['model']->order, $a['index'] ] <=> [ (int) $b['model']->order, $b['index'] ];
+			}
+		);
+
+		return array_column( $answer_options, 'model' );
 	}
 
 	/**
@@ -249,6 +385,18 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Check type question is legacy answer type.
+	 * Legacy type: answers have fixed keys (title, value, is_true, order) and save on old tables.
+	 *
+	 * @return bool
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function is_legacy_answer_type(): bool {
+		return in_array( $this->get_type(), self::LEGACY_ANSWER_TYPES, true );
+	}
+
+	/**
 	 * Check type question is valid
 	 *
 	 * @param string $type
@@ -316,18 +464,20 @@ class QuestionPostModel extends PostModel {
 	public function create_default_answers(): array {
 		$answers = $this->get_default_answers();
 
-		foreach ( $answers as $index => $answer ) {
-			$answer = array(
-				'question_id' => $this->get_id(),
-				'title'       => $answer['title'] ?? '',
-				'value'       => $answer['value'] ?? '',
-				'is_true'     => $answer['is_true'] ?? '',
-				'order'       => $index + 1,
-			);
+		if ( $this->is_legacy_answer_type() ) {
+			foreach ( $answers as $index => $answer ) {
+				$answer = array(
+					'question_id' => $this->get_id(),
+					'title' => $answer['title'] ?? '',
+					'value' => $answer['value'] ?? '',
+					'is_true' => $answer['is_true'] ?? '',
+					'order' => $index + 1,
+				);
 
-			$questionAnswerModel = new QuestionAnswerModel( $answer );
-			$questionAnswerModel->save();
-			$answers[ $index ]['question_answer_id'] = $questionAnswerModel->question_answer_id;
+				$questionAnswerModel = new QuestionAnswerModel( $answer );
+				$questionAnswerModel->save();
+				$answers[ $index ]['question_answer_id'] = $questionAnswerModel->question_answer_id;
+			}
 		}
 
 		// For save new table question_answer_config - @since 4.5.0
@@ -338,12 +488,15 @@ class QuestionPostModel extends PostModel {
 
 	/**
 	 * Save answers config (new table)
-	 * @throws Exception
+	 * Save array answers as-is, not prepare keys.
 	 *
+	 * @param array $answers
+	 *
+	 * @throws Exception
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function save_answers_config( $answers ): void {
+	public function save_answers_config( array $answers ): void {
 		$answerConfigModel = QuestionAnswerConfigModel::find_by_question_id(
 			$this->get_id(),
 			true

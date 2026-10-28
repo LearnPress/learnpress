@@ -28,6 +28,7 @@
 	"require": {
 		"ext-json": "*",
 		"ext-ctype": "*",
+		"ext-mbstring": "*",
 		"tijsverkoyen/css-to-inline-styles": "v2.4.0",
 		"symfony/css-selector": "^5.4"
 	},

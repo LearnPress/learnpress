@@ -295,6 +295,9 @@ export class EditQuestion {
 			editor.settings.force_p_newlines = false;
 			editor.settings.forced_root_block = '';
 			editor.settings.force_br_newlines = true;
+			// Same as WP editor, not encode chars to named entities (e.g. à → &agrave;)
+			editor.settings.entity_encoding = 'raw';
+			editor.settings.entities = '38,amp,60,lt,62,gt';
 
 			// Config use absolute url
 			editor.settings.relative_urls = false;
@@ -1060,7 +1063,8 @@ export class EditQuestion {
 			id: uniquid,
 			match_case: 0,
 			comparison: 'equal',
-			fill: selectedText,
+			// selectedText is HTML, fill store text
+			fill: this.decodeHtml( selectedText ),
 			index: 1,
 			open: false,
 		};
@@ -1434,6 +1438,15 @@ export class EditQuestion {
 
 				dataAnswers.meta_data[ blankId ] =
 					dataAnswers.meta_data[ blankId ] || {};
+
+				// Sync fill with text of blank in editor, text can change after inserted
+				const elBlank = editor.dom.select(
+					`.${ EditQuestion.selectors.elQuestionFibInput }[data-id="${ blankId }"]`
+				);
+				if ( elBlank[ 0 ] ) {
+					dataAnswers.meta_data[ blankId ].fill = elBlank[ 0 ].textContent;
+				}
+
 				dataAnswers.meta_data[ blankId ].match_case =
 					elFibOptionMatchCaseInput.checked ? 1 : 0;
 				dataAnswers.meta_data[ blankId ].comparison =

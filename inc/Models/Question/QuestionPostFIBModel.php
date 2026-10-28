@@ -2,6 +2,7 @@
 
 namespace LearnPress\Models\Question;
 
+use Exception;
 use LP_Debug;
 use Throwable;
 
@@ -51,6 +52,43 @@ class QuestionPostFIBModel extends QuestionPostModel {
 			},
 			$content
 		);
+	}
+
+	/**
+	 * Get blanks (meta _blanks) from content of editor.
+	 * Fill always get from content, because fill client send may be stale (text of blank changed after inserted)
+	 * or HTML entities (e.g. H&agrave; nội).
+	 * Options match_case, comparison and other keys get from client.
+	 * Blank not in content will be removed.
+	 *
+	 * @param string $content Content of editor, blank format <span class="lp-question-fib-input" data-id="">fill</span>
+	 * @param array $client_blanks Blanks client send, key is blank id.
+	 *
+	 * @return array
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function get_blanks_from_editor_content( string $content, array $client_blanks = [] ): array {
+		$blanks  = [];
+		$pattern = '#<span class="lp-question-fib-input" data-id="([^"]+)">([^<]+)<\/span>#';
+		preg_match_all( $pattern, $content, $matches, PREG_SET_ORDER );
+
+		foreach ( $matches as $match ) {
+			$blank_id     = $match[1];
+			$client_blank = (array) ( $client_blanks[ $blank_id ] ?? [] );
+
+			$blanks[ $blank_id ] = array_merge(
+				$client_blank,
+				[
+					'id'         => $blank_id,
+					'fill'       => html_entity_decode( $match[2], ENT_QUOTES, 'UTF-8' ),
+					'match_case' => $client_blank['match_case'] ?? 0,
+					'comparison' => ! empty( $client_blank['comparison'] ) ? $client_blank['comparison'] : 'equal',
+				]
+			);
+		}
+
+		return $blanks;
 	}
 
 	/**
@@ -135,10 +173,11 @@ class QuestionPostFIBModel extends QuestionPostModel {
 	 * @param string $content
 	 * @param int $answer_id
 	 * @param mixed $answered
+	 * @param mixed $blanks Blanks of answer (meta _blanks). Null to read from old table by $answer_id. @since 4.5.0
 	 *
 	 * @return array
 	 */
-	public function get_answer_data( string $content, int $answer_id, $answered = '' ): array {
+	public function get_answer_data( string $content, int $answer_id, $answered = '', $blanks = null ): array {
 		$output = array();
 
 		if ( ! empty( $content ) ) {
@@ -168,11 +207,11 @@ class QuestionPostFIBModel extends QuestionPostModel {
 						$answer = '';
 					}
 
-					$is_correct = false;
-					$blanks     = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
+					$is_correct    = false;
+					$answer_blanks = $blanks ?? learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
 
-					if ( ! empty( $blanks ) ) {
-						$is_correct = $this->check_answer( $blanks[ $ids ] ?? array(), $answer );
+					if ( ! empty( $answer_blanks ) ) {
+						$is_correct = $this->check_answer( $answer_blanks[ $ids ] ?? array(), $answer );
 					}
 
 					$output[ $ids ]['is_correct'] = $is_correct;
@@ -191,6 +230,7 @@ class QuestionPostFIBModel extends QuestionPostModel {
 	 * @param array $args
 	 *
 	 * @return array
+	 * @throws Exception
 	 */
 	public function get_answer_options( $args = [] ): array {
 		$args = wp_parse_args(
@@ -204,14 +244,31 @@ class QuestionPostFIBModel extends QuestionPostModel {
 
 		$options = parent::get_answer_options();
 
+		// Blanks of answers, key same as option question_answer_id (answer id, or value if read from config).
+		$blanks_by_answer = [];
+		foreach ( $this->get_answers_for_legacy_type() as $answer_model ) {
+			if ( $answer_model instanceof QuestionAnswerModel ) {
+				if ( $answer_model->is_get_all_metadata ) {
+					$blanks_by_answer[ $answer_model->question_answer_id ?? $answer_model->value ] = $answer_model->meta_data;
+				}
+			} elseif ( is_array( $answer_model ) ) {
+				$answer_key = $answer_model['question_answer_id'] ?? $answer_model['value'] ?? '';
+
+				$blanks_by_answer[ $answer_key ] = $this->get_blanks_of_answer( $answer_model );
+			}
+		}
+
 		if ( $options ) {
 			foreach ( $options as $k => $option ) {
-				$answer_id = $option['question_answer_id'] ?? 0;
+				$answer_key = $option['question_answer_id'] ?? 0;
+				// Answer read from config has value instead of id.
+				$answer_id = is_numeric( $answer_key ) ? (int) $answer_key : 0;
 				$title     = $option['title'];
+				$blanks    = $blanks_by_answer[ $answer_key ] ?? null;
 
 				$option['ids']       = $this->fib_get_ids( $title );
 				$option['title_api'] = wp_strip_all_tags( $this->match_shortcode_api( $title, $answer_id, true, $args['answer'] ) );
-				$option['answers']   = $this->get_answer_data( $title, $answer_id, $args['answer'] );
+				$option['answers']   = $this->get_answer_data( $title, $answer_id, $args['answer'], $blanks );
 
 				if ( $args['exclude'] && is_string( $args['exclude'] ) ) {
 					$exclude = array_map( 'trim', explode( ',', $args['exclude'] ) );
@@ -247,10 +304,10 @@ class QuestionPostFIBModel extends QuestionPostModel {
 		settype( $user_answer, 'array' );
 
 		try {
-			$answer_models = $this->get_answer_option();
-			if ( $answer_models ) {
-				foreach ( $answer_models as $answer_model ) {
-					$blanks = $answer_model->meta_data;
+			$answers = $this->get_answers_for_legacy_type();
+			if ( $answers ) {
+				foreach ( $answers as $answer ) {
+					$blanks = $this->get_blanks_of_answer( $answer );
 					if ( ! is_array( $blanks ) ) {
 						$blanks = array();
 					}
@@ -295,6 +352,30 @@ class QuestionPostFIBModel extends QuestionPostModel {
 	}
 
 	/**
+	 * Get blanks (meta _blanks) of answer.
+	 * Answer read from old tables is QuestionAnswerModel, from config is array.
+	 *
+	 * @param QuestionAnswerModel|array $answer
+	 *
+	 * @return mixed
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function get_blanks_of_answer( $answer ) {
+		if ( $answer instanceof QuestionAnswerModel ) {
+			return $answer->meta_data;
+		}
+
+		if ( is_array( $answer ) ) {
+			$meta = (array) ( $answer['meta'] ?? [] );
+
+			return $meta['_blanks'] ?? $answer['meta_data'] ?? null;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Check answer fill in blank.
 	 *
 	 * @param array $blank
@@ -303,7 +384,9 @@ class QuestionPostFIBModel extends QuestionPostModel {
 	 * @return bool
 	 */
 	public function check_answer( array $blank, $user_fill ): bool {
-		$fill       = trim( $blank['fill'] ?? '' );
+		// Fill may saved as HTML entities (e.g. H&agrave; nội) by TinyMCE, decode to compare with text user typed.
+		$fill       = html_entity_decode( (string) ( $blank['fill'] ?? '' ), ENT_QUOTES, 'UTF-8' );
+		$fill       = trim( str_replace( "\u{00A0}", ' ', $fill ) );
 		$comparison = ! empty( $blank['comparison'] ) ? $blank['comparison'] : false;
 		$match_case = ! empty( $blank['match_case'] );
 		$user_fill  = trim( $user_fill );
@@ -326,17 +409,23 @@ class QuestionPostFIBModel extends QuestionPostModel {
 				$words = array_map( 'trim', explode( ',', $fill ) );
 
 				if ( ! $match_case ) {
-					$words     = array_map( 'strtolower', $words );
-					$user_fill = strtolower( $user_fill );
+					// mb_strtolower for multibyte chars (e.g. Vietnamese), strtolower only lowers ASCII.
+					$words     = array_map(
+						function ( $word ) {
+							return mb_strtolower( $word, 'UTF-8' );
+						},
+						$words
+					);
+					$user_fill = mb_strtolower( $user_fill, 'UTF-8' );
 				}
 
 				$blank_correct = in_array( $user_fill, $words, true );
 				break;
 			default:
 				if ( $match_case ) {
-					$blank_correct = strcmp( $user_fill, $fill ) == 0;
+					$blank_correct = $user_fill === $fill;
 				} else {
-					$blank_correct = strcasecmp( mb_strtolower( $user_fill, 'UTF-8' ), mb_strtolower( $fill, 'UTF-8' ) ) == 0;
+					$blank_correct = mb_strtolower( $user_fill, 'UTF-8' ) === mb_strtolower( $fill, 'UTF-8' );
 				}
 		}
 
