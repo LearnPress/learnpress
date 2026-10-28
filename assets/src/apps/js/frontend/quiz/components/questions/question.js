@@ -96,10 +96,13 @@ class Question extends Component {
 	};
 
 	render() {
-		const { question, isShow, isShowIndex, isShowHint, status, results } =
+		const { question, isShow, isShowIndex, isShowHint, status, results, isCorrect } =
 			this.props;
 
-		if (
+		// Result of instant check, results not update when check, options not have isTrue when not show correct answer.
+		if ( typeof isCorrect !== 'undefined' ) {
+			question.correct = isCorrect;
+		} else if (
 			results &&
 			results.questions &&
 			results.questions[ question.id ]
@@ -262,7 +265,7 @@ class Question extends Component {
 
 export default compose( [
 	withSelect( ( select, { question: { id } } ) => {
-		const { getData, getQuestionAnswered, getQuestionMark } =
+		const { getData, getQuestionAnswered, getQuestionMark, isCorrect } =
 			select( 'learnpress/quiz' );
 
 		return {
@@ -274,6 +277,7 @@ export default compose( [
 			numPages: getData( 'numPages' ),
 			mark: getQuestionMark( id ) || '',
 			results: getData( 'results' ),
+			isCorrect: isCorrect( id ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

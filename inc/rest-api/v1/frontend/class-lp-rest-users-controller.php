@@ -457,8 +457,9 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$response['options']     = learn_press_get_question_options_for_js(
 				$questionModel,
 				array(
-					'include_is_true' => $quizPostModel->has_instant_check(),
-					'answer'          => $answered,
+					'include_is_true'     => $quizPostModel->has_instant_check(),
+					'show_correct_answer' => $quizPostModel->has_instant_check() && $quizPostModel->has_show_correct_review(),
+					'answer'              => $answered,
 				)
 			);
 			$response['result']      = $checked;

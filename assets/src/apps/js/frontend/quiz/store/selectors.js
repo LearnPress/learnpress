@@ -154,8 +154,17 @@ export function isCheckedAnswer( state, id ) {
 	return checkedQuestions.indexOf( id ) !== -1;
 }
 
+/**
+ * Result correct of question from server (instant check or submit).
+ *
+ * @param {Object} state - Global state for app.
+ * @param {number} id
+ * @return {boolean|undefined} undefined if question not checked yet.
+ */
 export function isCorrect( state, id ) {
+	const correct = get( state, `userQuiz.answered.${ id }.correct` );
 
+	return typeof correct === 'undefined' ? undefined : !! correct;
 }
 
 /**

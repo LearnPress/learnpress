@@ -285,7 +285,14 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 					$option['title']     = apply_filters( 'learn-press/question/fib/regex-content', $title, $option['question_answer_id'], $is_true, $fib_answer );
 					$option['ids']       = $this->fib_get_ids( $title );
 					$option['title_api'] = wp_strip_all_tags( $this->match_shortcode_api( $title, $option['question_answer_id'], $is_true, $fib_answer ) );
-					$option['answers']   = $is_true ? $this->get_answer_data( $title, $option['question_answer_id'], $fib_answer ) : array();
+					$show_result         = $is_true || ! empty( $args['show_result'] );
+					$option['answers']   = $show_result ? $this->get_answer_data( $title, $option['question_answer_id'], $fib_answer ) : array();
+					// Not show fill (correct answer), only result of each blank.
+					if ( ! $is_true ) {
+						foreach ( $option['answers'] as $blank_id => $blank_data ) {
+							unset( $option['answers'][ $blank_id ]['correct'] );
+						}
+					}
 
 					foreach ( $map as $k_map => $v_map ) {
 						if ( array_key_exists( $k_map, $option ) ) {

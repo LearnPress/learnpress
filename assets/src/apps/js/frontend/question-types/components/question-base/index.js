@@ -56,8 +56,17 @@ class QuestionBase extends Component {
 	};
 
 	/**
-	 * Only show correct answer
-	 * status = completed
+	 * Show result of user's answer (correct/incorrect), not show correct answer.
+	 * When question checked (instant check) or quiz completed.
+	 */
+	maybeShowResult = () => {
+		const { status, isCheckedAnswer } = this.props;
+
+		return status === 'completed' || !! isCheckedAnswer;
+	};
+
+	/**
+	 * Show correct answer (options must choose), only when option "Show the correct answer" enabled.
 	 * todo: check isset answered but if skip it will not show.
 	 *
 	 * @author Nhamdv
@@ -67,8 +76,8 @@ class QuestionBase extends Component {
 			this.props;
 
 		return (
-			( status === 'completed' && showCorrectReview ) ||
-			( isCheckedAnswer && ! isReviewing )
+			!! showCorrectReview &&
+			( status === 'completed' || ( isCheckedAnswer && ! isReviewing ) )
 		);
 	};
 
@@ -220,7 +229,7 @@ class QuestionBase extends Component {
 		const isCorrect = checker.call( this );
 
 		return (
-			this.maybeShowCorrectAnswer() && (
+			this.maybeShowResult() && (
 				<div
 					className={
 						`question-response` +

@@ -74,7 +74,7 @@ class QuestionFillInBlanks extends QuestionBase {
 				getMark = mark.toFixed( 2 );
 			}
 		}
-		return this.maybeShowCorrectAnswer() && (
+		return this.maybeShowResult() && (
 			<div className="question-response correct">
 				<span className="label">{ __( 'Points', 'learnpress' ) }</span>
 				<span className="point">{ `${ getMark }/${ question.point } ${ __( 'point', 'learnpress' ) }` }</span>
@@ -85,11 +85,13 @@ class QuestionFillInBlanks extends QuestionBase {
 	};
 
 	convertInputField = ( option ) => {
-		const { answered, isReviewing, showCorrectReview, isCheckedAnswer } = this.props;
+		const { answered, isReviewing } = this.props;
 
 		let title = option.title;
 
 		const answers = option?.answers;
+		const showResult = this.maybeShowResult();
+		const showCorrectAnswer = this.maybeShowCorrectAnswer();
 
 		option.ids.map( ( id, index ) => {
 			const textReplace = '{{FIB_' + id + '}}';
@@ -98,17 +100,22 @@ class QuestionFillInBlanks extends QuestionBase {
 			const answerID = answers ? answers?.[ id ] : undefined;
 
 			if ( answerID || isReviewing ) {
-				elContent += `<span class="lp-fib-answered ${ ( showCorrectReview || isCheckedAnswer ) && answerID?.correct ? ( answerID?.isCorrect ? 'correct' : 'fail' ) : '' }">`;
+				// answerID.correct (fill) not send when option "Show the correct answer" off, only isCorrect.
+				const showFill = showCorrectAnswer && !! answerID?.correct;
 
-				if ( ! answerID?.isCorrect ) {
+				elContent += `<span class="lp-fib-answered ${ showResult && answerID?.isCorrect !== undefined ? ( answerID.isCorrect ? 'correct' : 'fail' ) : '' }">`;
+
+				if ( ! answerID?.isCorrect || ! showFill ) {
 					elContent += `<span class="lp-fib-answered__answer">${ answered?.[ id ] ?? '' }</span>`;
 				}
 
-				if ( ! answerID?.isCorrect && answerID?.correct ) {
+				if ( ! answerID?.isCorrect && showFill ) {
 					elContent += ' → ';
 				}
 
-				elContent += `<span class="lp-fib-answered__fill">${ answerID?.correct ?? '' }</span>`;
+				if ( showFill ) {
+					elContent += `<span class="lp-fib-answered__fill">${ answerID.correct }</span>`;
+				}
 				elContent += '</span>';
 			} else {
 				elContent += '<div class="lp-fib-input" style="display: inline-block; width: auto;">';

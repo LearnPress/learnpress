@@ -226,21 +226,36 @@ class QuestionPostFIBModel extends QuestionPostModel {
 
 	/**
 	 * Get answer options for FIB.
+	 * Title replace shortcode fib to {{FIB_id}}, not show fill (correct answer) to student.
+	 * Answers data has correct fill only when not exclude is_true.
+	 * $args['show_result'] true and exclude is_true: answers has result of each blank, without fill.
 	 *
 	 * @param array $args
 	 *
 	 * @return array
 	 * @throws Exception
+	 * @version 1.0.1
 	 */
 	public function get_answer_options( $args = [] ): array {
 		$args = wp_parse_args(
 			$args,
 			[
-				'exclude' => '',
-				'map'     => '',
-				'answer'  => '',
+				'exclude'     => '',
+				'map'         => '',
+				'answer'      => '',
+				'show_result' => false,
 			]
 		);
+
+		if ( $args['exclude'] && is_string( $args['exclude'] ) ) {
+			$exclude = array_map( 'trim', explode( ',', $args['exclude'] ) );
+		} else {
+			$exclude = (array) $args['exclude'];
+		}
+		$exclude     = array_flip( array_filter( $exclude ) );
+		$map         = is_array( $args['map'] ) ? $args['map'] : [];
+		$show_answer = ! isset( $exclude['is_true'] );
+		$show_result = $show_answer || ! empty( $args['show_result'] );
 
 		$options = parent::get_answer_options();
 
@@ -266,26 +281,29 @@ class QuestionPostFIBModel extends QuestionPostModel {
 				$title     = $option['title'];
 				$blanks    = $blanks_by_answer[ $answer_key ] ?? null;
 
+				$title_content = apply_filters( 'learn-press/question/fib/regex-content', $title, $answer_id, $show_answer, $args['answer'] );
+				// Always replace shortcode fib remain (hook removed or changed), avoid show fill.
+				$title_content = $this->match_shortcode_api( (string) $title_content, $answer_id, $show_answer, $args['answer'] );
+
+				$option['title']     = $title_content;
 				$option['ids']       = $this->fib_get_ids( $title );
-				$option['title_api'] = wp_strip_all_tags( $this->match_shortcode_api( $title, $answer_id, true, $args['answer'] ) );
-				$option['answers']   = $this->get_answer_data( $title, $answer_id, $args['answer'], $blanks );
-
-				if ( $args['exclude'] && is_string( $args['exclude'] ) ) {
-					$exclude = array_map( 'trim', explode( ',', $args['exclude'] ) );
-				} else {
-					$exclude = $args['exclude'];
-				}
-
-				$exclude = array_flip( $exclude );
-
-				foreach ( $args['map'] as $k_map => $v_map ) {
-					if ( array_key_exists( $k_map, $option ) ) {
-						$option[ $v_map ]  = $option[ $k_map ];
-						$exclude[ $k_map ] = 1;
+				$option['title_api'] = wp_strip_all_tags( $title_content );
+				$option['answers']   = $show_result ? $this->get_answer_data( $title, $answer_id, $args['answer'], $blanks ) : [];
+				if ( ! $show_answer ) {
+					foreach ( $option['answers'] as $blank_id => $blank_data ) {
+						unset( $option['answers'][ $blank_id ]['correct'] );
 					}
 				}
 
-				$options[ $k ] = array_diff_key( $option, $exclude );
+				$exclude_option = $exclude;
+				foreach ( $map as $k_map => $v_map ) {
+					if ( array_key_exists( $k_map, $option ) ) {
+						$option[ $v_map ]         = $option[ $k_map ];
+						$exclude_option[ $k_map ] = 1;
+					}
+				}
+
+				$options[ $k ] = array_diff_key( $option, $exclude_option );
 			}
 		}
 
@@ -385,8 +403,11 @@ class QuestionPostFIBModel extends QuestionPostModel {
 	 */
 	public function check_answer( array $blank, $user_fill ): bool {
 		// Fill may saved as HTML entities (e.g. H&agrave; nội) by TinyMCE, decode to compare with text user typed.
-		$fill       = html_entity_decode( (string) ( $blank['fill'] ?? '' ), ENT_QUOTES, 'UTF-8' );
-		$fill       = trim( str_replace( "\u{00A0}", ' ', $fill ) );
+		$fill       = html_entity_decode(
+			(string) ( $blank['fill'] ?? '' ),
+			ENT_QUOTES,
+			'UTF-8'
+		);
 		$comparison = ! empty( $blank['comparison'] ) ? $blank['comparison'] : false;
 		$match_case = ! empty( $blank['match_case'] );
 		$user_fill  = trim( $user_fill );

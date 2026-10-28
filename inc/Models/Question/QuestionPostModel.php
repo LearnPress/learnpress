@@ -10,7 +10,9 @@ use LearnPress\Models\PostModel;
 use LP_Cache;
 use LP_Debug;
 use LP_Question_Filter;
+use ReflectionMethod;
 use Throwable;
+use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -350,13 +352,6 @@ class QuestionPostModel extends PostModel {
 			return '';
 		}
 
-		// For addon sorting choice old <= v4.0.1
-		if ( class_exists( 'LP_Addon_Sorting_Choice_Preload' ) && $type === 'sorting_choice' ) {
-			if ( version_compare( LP_ADDON_SORTING_CHOICE_VER, '4.0.1', '<=' ) ) {
-				return QuestionSortingChoiceModel::class;
-			}
-		}
-
 		switch ( $type ) {
 			case 'true_or_false':
 				return QuestionPostTrueFalseModel::class;
@@ -366,9 +361,43 @@ class QuestionPostModel extends PostModel {
 				return QuestionPostSingleChoiceModel::class;
 			case 'fill_in_blanks':
 				return QuestionPostFIBModel::class;
+			case 'sorting_choice':
+				// Addon sorting choice old (model not declare check), use model of LP to check answer.
+				$model_class = apply_filters( 'learn-press/question-object-by-type', '', $type );
+				if ( ! self::is_class_declare_check( $model_class ) ) {
+					$model_class = QuestionSortingChoiceModel::class;
+				}
+
+				return $model_class;
 			default:
 				return apply_filters( 'learn-press/question-object-by-type', '', $type );
 		}
+	}
+
+	/**
+	 * Check class is model question and declare method check, not inherit from QuestionPostModel.
+	 *
+	 * @param mixed $model_class
+	 *
+	 * @return bool
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public static function is_class_declare_check( $model_class ): bool {
+		if ( ! is_string( $model_class ) || ! class_exists( $model_class )
+			|| ! is_subclass_of( $model_class, self::class ) ) {
+			return false;
+		}
+
+		try {
+			$method = new ReflectionMethod( $model_class, 'check' );
+
+			return $method->getDeclaringClass()->getName() !== self::class;
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+
+		return false;
 	}
 
 	/**
@@ -506,6 +535,11 @@ class QuestionPostModel extends PostModel {
 			$answerConfigModel->question_id = $this->get_id();
 		}
 
+		$check_answers_valid = $this->check_answers_valid_before_save( $answers );
+		if ( $check_answers_valid instanceof WP_Error ) {
+			throw new Exception( $check_answers_valid->get_error_message() );
+		}
+
 		$answerConfigModel->set_answers( $answers );
 		$answerConfigModel->save();
 	}
@@ -547,5 +581,15 @@ class QuestionPostModel extends PostModel {
 	 */
 	public function check_capabilities_update(): bool {
 		return current_user_can( 'edit_' . LP_LESSON_CPT, $this->ID );
+	}
+
+	/**
+	 * Check format answers valid before save
+	 *
+	 * @param $answers
+	 * @return true|WP_Error
+	 */
+	public function check_answers_valid_before_save( $answers ) {
+		return true;
 	}
 }

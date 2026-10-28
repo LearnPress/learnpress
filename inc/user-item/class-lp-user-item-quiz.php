@@ -551,8 +551,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					$result['questions'][ $question_id ]['options']     = learn_press_get_question_options_for_js(
 						$question,
 						array(
-							'include_is_true' => in_array( $question_id, $checked_questions ) || get_post_meta( $quiz->get_id(), '_lp_show_correct_review', true ) === 'yes',
-							'answer'          => $answered[ $question_id ] ?? '',
+							'include_is_true'     => in_array( $question_id, $checked_questions ) || get_post_meta( $quiz->get_id(), '_lp_show_correct_review', true ) === 'yes',
+							'show_correct_answer' => get_post_meta( $quiz->get_id(), '_lp_show_correct_review', true ) === 'yes',
+							'answer'              => $answered[ $question_id ] ?? '',
 						)
 					);
 				}

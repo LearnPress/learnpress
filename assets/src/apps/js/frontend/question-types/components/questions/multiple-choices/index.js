@@ -37,22 +37,20 @@ class QuestionMultipleChoices extends QuestionBase {
 		const { answered, question } = this.props;
 		const optionClass = [ ...this.state.optionClass ];
 
-		if ( this.maybeShowCorrectAnswer() ) {
-			if ( option.isTrue === 'yes' ) {
-				optionClass.push( 'answer-correct' );
-			}
+		if ( this.maybeShowCorrectAnswer() && option.isTrue === 'yes' ) {
+			optionClass.push( 'answer-correct' );
+		}
 
-			if ( answered ) {
-				const isSelected = answered.indexOf( option.value ) !== -1;
+		if ( this.maybeShowResult() && answered ) {
+			const isSelected = answered.indexOf( option.value ) !== -1;
 
-				if (
-					option.isTrue === 'yes' ||
-					( isSelected && question.correct )
-				) {
-					isSelected && optionClass.push( 'answered-correct' );
-				} else {
-					isSelected && optionClass.push( 'answered-wrong' );
-				}
+			if (
+				option.isTrue === 'yes' ||
+				( isSelected && question.correct )
+			) {
+				isSelected && optionClass.push( 'answered-correct' );
+			} else {
+				isSelected && optionClass.push( 'answered-wrong' );
 			}
 		}
 

@@ -765,10 +765,11 @@ class UserQuizModel extends UserItemModel {
 		$result['question_count'] = $quizPostModel->count_questions();
 		$result['time_spend']     = $this->get_time_spend();
 		$result['passing_grade']  = $quizPostModel->get_passing_grade();
-		$checked_questions        = $this->get_checked_questions();
 
 		foreach ( $question_ids as $question_id ) {
-			$question = QuestionPostModel::find( $question_id, true );
+			//$question = QuestionPostModel::find( $question_id, true );
+			// Temporary not get cache for case of QuestionSortingChoiceModel, when addon sorting choice update for this model will use cache again
+			$question = QuestionPostModel::find( $question_id );
 			$point    = floatval( $question->get_mark() );
 
 			$result['questions'][ $question_id ]             = array();
@@ -806,13 +807,18 @@ class UserQuizModel extends UserItemModel {
 				$result['questions'][ $question_id ]['mark']    = 0;
 			}
 
-			if ( $quizPostModel->has_instant_check() && ! array_key_exists( 'instant_check', $answered ) ) {
-				$result['questions'][ $question_id ]['explanation'] = $question->get_explanation();
-				$result['questions'][ $question_id ]['options']     = learn_press_get_question_options_for_js(
+			// Submit quiz: options has result of user's answer, correct answer only when option "Show the correct answer" enabled.
+			if ( ! array_key_exists( 'instant_check', $answered ) ) {
+				if ( $quizPostModel->has_instant_check() ) {
+					$result['questions'][ $question_id ]['explanation'] = $question->get_explanation();
+				}
+
+				$result['questions'][ $question_id ]['options'] = learn_press_get_question_options_for_js(
 					$question,
 					array(
-						'include_is_true' => in_array( $question_id, $checked_questions ) || $quizPostModel->has_show_correct_review(),
-						'answer'          => $answered[ $question_id ] ?? '',
+						'include_is_true'     => true,
+						'show_correct_answer' => $quizPostModel->has_show_correct_review(),
+						'answer'              => $answered[ $question_id ] ?? '',
 					)
 				);
 			}
