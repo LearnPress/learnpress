@@ -1,4 +1,8 @@
 <?php
+
+use LearnPress\Models\Question\QuestionAnswerModel;
+use LearnPress\Models\Question\QuestionPostFIBModel;
+
 class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	protected $namespace = 'learnpress/v1';
 
@@ -566,39 +570,60 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				}
 
 				$question_obj = $q['object'] ?? null;
-				if ( ! $question_obj || ! method_exists( $question_obj, 'get_data' ) ) {
+				if ( ! $question_obj instanceof QuestionPostFIBModel ) {
 					continue;
 				}
 
-				$question_id    = $q['id'] ?? 0;
-				$answer_options = $question_obj->get_data( 'answer_options' );
-				if ( empty( $answer_options ) || ! is_array( $answer_options ) ) {
+				$question_id = $q['id'] ?? 0;
+				$answers     = $question_obj->get_answers_for_legacy_type();
+				if ( empty( $answers ) ) {
 					continue;
 				}
 
-				$first_answer    = reset( $answer_options );
-				$raw_content     = $first_answer['title'] ?? '';
-				$answer_id       = $first_answer['question_answer_id'] ?? 0;
-				$user_answer     = $answered[ $question_id ]['answered'] ?? '';
-				$revealed        = $show_check || $status === 'completed';
+				// Answer from old tables is QuestionAnswerModel, from config is array (no id).
+				$first_answer = reset( $answers );
+				if ( $first_answer instanceof QuestionAnswerModel ) {
+					$raw_content = (string) $first_answer->title;
+					$answer_id   = (int) $first_answer->question_answer_id;
+				} elseif ( is_array( $first_answer ) ) {
+					$raw_content = (string) ( $first_answer['title'] ?? '' );
+					$answer_id   = 0;
+				} else {
+					continue;
+				}
 
-				$q['content'] = apply_filters(
+				$user_answer = $answered[ $question_id ]['answered'] ?? '';
+				// Result of each blank when question checked or quiz completed, fill (correct answer) only when show correct review.
+				$revealed     = in_array( $question_id, (array) $checked_questions ) || $status === 'completed';
+				$show_correct = $revealed && $show_correct_review;
+
+				$content = apply_filters(
 					'learn-press/question/fib/regex-content',
 					$raw_content,
 					$answer_id,
-					$revealed,
+					$show_correct,
 					$user_answer
 				);
+				// Always replace shortcode fib remain, avoid show fill.
+				$q['content'] = $question_obj->match_shortcode_api( (string) $content, $answer_id, $show_correct, $user_answer );
 
 				// FIB has no answer "options" in radio/checkbox sense; clear them.
 				$q['options'] = array();
 
-				if ( $revealed && method_exists( $question_obj, 'get_answer_data' ) ) {
-					$q['fib_answers'] = $question_obj->get_answer_data(
+				if ( $revealed ) {
+					$fib_answers = $question_obj->get_answer_data(
 						$raw_content,
 						$answer_id,
-						$user_answer
+						$user_answer,
+						$question_obj->get_blanks_of_answer( $first_answer )
 					);
+					if ( ! $show_correct ) {
+						foreach ( $fib_answers as $blank_id => $blank_data ) {
+							unset( $fib_answers[ $blank_id ]['correct'] );
+						}
+					}
+
+					$q['fib_answers'] = $fib_answers;
 				}
 			}
 			unset( $q );

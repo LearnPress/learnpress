@@ -459,21 +459,37 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
-	 * @return mixed
+	 * Get hint of question.
+	 * Same as LP_Question::get_hint() old: do shortcode, filter 'learn-press/question/hint'.
+	 *
+	 * @return string
+	 * @version 1.0.1
 	 */
 	public function get_hint() {
-		return Template::sanitize_html_content(
-			(string) $this->get_meta_value_by_key( self::META_KEY_HINT, '' )
+		$hint = apply_filters(
+			'learn-press/question/hint',
+			do_shortcode( (string) $this->get_meta_value_by_key( self::META_KEY_HINT, '' ) ),
+			$this->get_id()
 		);
+
+		return Template::sanitize_html_content( (string) $hint );
 	}
 
 	/**
-	 * @return mixed
+	 * Get explanation of question.
+	 * Same as LP_Question::get_explanation() old: do shortcode, filter 'learn-press/question/explanation'.
+	 *
+	 * @return string
+	 * @version 1.0.1
 	 */
 	public function get_explanation() {
-		return Template::sanitize_html_content(
-			(string) $this->get_meta_value_by_key( self::META_KEY_EXPLANATION, '' )
+		$explanation = apply_filters(
+			'learn-press/question/explanation',
+			do_shortcode( (string) $this->get_meta_value_by_key( self::META_KEY_EXPLANATION, '' ) ),
+			$this->get_id()
 		);
+
+		return Template::sanitize_html_content( (string) $explanation );
 	}
 
 	/**

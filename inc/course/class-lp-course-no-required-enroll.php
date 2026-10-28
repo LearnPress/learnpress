@@ -142,7 +142,11 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		public function guest_check_question( $question_id, $answered = null ) {
 			$checked = false;
 			if ( isset( $question_id ) && isset( $answered ) ) {
-				$question            = learn_press_get_question( $question_id );
+				$question = \LearnPress\Models\Question\QuestionPostModel::find( (int) $question_id, true );
+				if ( ! $question instanceof \LearnPress\Models\Question\QuestionPostModel ) {
+					return false;
+				}
+
 				$checked             = $question->check( $answered );
 				$checked['answered'] = $answered;
 			}

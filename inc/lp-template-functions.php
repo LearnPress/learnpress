@@ -1441,29 +1441,28 @@ function learn_press_get_question_options_for_js( $question, $args = array() ) {
 		$args['show_correct_answer'] = $args['include_is_true'];
 	}
 
-	if ( $args['cryptoJsAes'] ) {
-		$options = array_values( $question->get_answer_options() );
+	$exclude_option_key = array( 'question_id', 'order' );
+	if ( ! $args['include_is_true'] || ! $args['show_correct_answer'] ) {
+		$exclude_option_key[] = 'is_true';
+	}
 
+	// Same args for encrypt or not, avoid send correct answer when encrypt.
+	$options = array_values(
+		$question->get_answer_options(
+			array(
+				'exclude'     => $exclude_option_key,
+				'map'         => array( 'question_answer_id' => 'uid' ),
+				'answer'      => $args['answer'],
+				'show_result' => (bool) $args['include_is_true'],
+			)
+		)
+	);
+
+	if ( $args['cryptoJsAes'] ) {
 		$key     = uniqid();
 		$options = array(
 			'data' => cryptoJsAesEncrypt( $key, wp_json_encode( $options ) ),
 			'key'  => $key,
-		);
-	} else {
-		$exclude_option_key = array( 'question_id', 'order' );
-		if ( ! $args['include_is_true'] || ! $args['show_correct_answer'] ) {
-			$exclude_option_key[] = 'is_true';
-		}
-
-		$options = array_values(
-			$question->get_answer_options(
-				array(
-					'exclude'     => $exclude_option_key,
-					'map'         => array( 'question_answer_id' => 'uid' ),
-					'answer'      => $args['answer'],
-					'show_result' => (bool) $args['include_is_true'],
-				)
-			)
 		);
 	}
 

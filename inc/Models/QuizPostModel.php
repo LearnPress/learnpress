@@ -17,7 +17,6 @@ use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
 use LP_Cache;
-use LP_Question;
 use LP_Question_DB;
 
 use LP_Quiz_Filter;
@@ -177,8 +176,8 @@ class QuizPostModel extends PostModel {
 		$mark      = 0;
 
 		foreach ( $questions as $question_id ) {
-			$question = LP_Question::get_question( $question_id );
-			if ( $question ) {
+			$question = QuestionPostModel::find( (int) $question_id, true );
+			if ( $question instanceof QuestionPostModel ) {
 				$mark += $question->get_mark();
 			}
 		}
