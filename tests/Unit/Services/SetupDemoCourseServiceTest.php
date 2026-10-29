@@ -20,6 +20,22 @@ class SetupDemoCourseServiceTest extends BrainMonkeyTestCase {
 		Functions\when( 'sanitize_key' )->returnArg();
 		Functions\when( 'wp_kses_post' )->returnArg();
 		Functions\when( 'admin_url' )->alias( static fn( $path ) => 'https://example.test/wp-admin/' . $path );
+
+		// Same as LP_Helper::json_decode(), class not loaded in bootstrap.
+		if ( ! class_exists( 'LP_Helper', false ) ) {
+			eval(
+				'class LP_Helper {
+					public static function json_decode( string $json, bool $assoc = false ) {
+						$data = json_decode( $json, $assoc );
+						if ( json_last_error() !== JSON_ERROR_NONE ) {
+							throw new Exception( "JSON decode: " . json_last_error_msg() );
+						}
+
+						return $data;
+					}
+				}'
+			);
+		}
 	}
 
 	protected function tearDown(): void {
@@ -32,17 +48,17 @@ class SetupDemoCourseServiceTest extends BrainMonkeyTestCase {
 		$courses = $service->load_courses();
 
 		$this->assertCount( 1, $courses );
-		$this->assertSame( 'Course One', $courses[0]['title'] );
+		$this->assertSame( 'Course One', $courses[0]['post_title'] );
 		$this->assertArrayNotHasKey( 'slug', $courses[0] );
 		$this->assertCount( 5, $courses[0]['section']['lessons'] );
 	}
 
-	public function test_load_courses_rejects_invalid_lesson_count(): void {
-		$data = $this->course_data();
-		array_pop( $data['section']['lessons'] );
+	public function test_load_courses_rejects_lesson_without_title(): void {
+		$data                                   = $this->course_data();
+		$data['section']['lessons'][0]['title'] = '';
 
 		$this->expectException( Exception::class );
-		$this->expectExceptionMessage( 'exactly five lessons' );
+		$this->expectExceptionMessage( 'Every demo lesson requires a title.' );
 		$this->make_service( array( $data ) )->load_courses();
 	}
 
@@ -52,7 +68,7 @@ class SetupDemoCourseServiceTest extends BrainMonkeyTestCase {
 		$courses = $this->make_service( array( $data, $data ) )->load_courses();
 
 		$this->assertCount( 2, $courses );
-		$this->assertSame( $courses[0]['title'], $courses[1]['title'] );
+		$this->assertSame( $courses[0]['post_title'], $courses[1]['post_title'] );
 	}
 
 	public function test_import_course_returns_dynamic_progress(): void {

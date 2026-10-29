@@ -29,6 +29,9 @@ class UserModelTest extends BrainMonkeyTestCase {
 	 * @param array $meta  key → value pairs written to meta_data
 	 */
 	private function make_user( array $props = [], array $meta = [] ): UserModel {
+		// maybe_unserialize is called for every meta read — return the value unchanged.
+		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+
 		$data = array_merge(
 			[
 				'ID'           => 1,

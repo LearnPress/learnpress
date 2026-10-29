@@ -52,7 +52,10 @@ class SubscriptionManagerTest extends BrainMonkeyTestCase {
 
 		// Reset LP_Subscription_Manager singleton.
 		$ref = new ReflectionProperty( \LP_Subscription_Manager::class, '_instance' );
-		$ref->setAccessible( true );
+		// setAccessible() is needed only for PHP < 8.1, deprecated since PHP 8.5.
+		if ( PHP_VERSION_ID < 80100 ) {
+			$ref->setAccessible( true );
+		}
 		$ref->setValue( null, null );
 
 		// Common WP function stubs.
@@ -80,7 +83,10 @@ class SubscriptionManagerTest extends BrainMonkeyTestCase {
 		$manager = new \LP_Subscription_Manager();
 
 		$ref = new ReflectionProperty( \LP_Subscription_Manager::class, 'event_store' );
-		$ref->setAccessible( true );
+		// setAccessible() is needed only for PHP < 8.1, deprecated since PHP 8.5.
+		if ( PHP_VERSION_ID < 80100 ) {
+			$ref->setAccessible( true );
+		}
 		$ref->setValue( $manager, $store_mock );
 
 		return array(

@@ -34,9 +34,10 @@ class CourseModelTest extends BrainMonkeyTestCase {
 		// maybe_unserialize is called for every meta read — return the value unchanged.
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
 
-		$data              = array_merge( [ 'ID' => 1, 'post_status' => 'publish' ], $props );
-		$course            = new CourseModel( $data );
-		$course->meta_data = (object) $meta;
+		$data   = array_merge( [ 'ID' => 1, 'post_status' => 'publish' ], $props );
+		$course = new CourseModel( $data );
+		// get_price() check no enroll requirement first, default 'no' to not read post meta.
+		$course->meta_data = (object) array_merge( [ CoursePostModel::META_KEY_NO_REQUIRED_ENROLL => 'no' ], $meta );
 
 		return $course;
 	}

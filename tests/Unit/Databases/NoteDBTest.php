@@ -15,6 +15,8 @@ use ReflectionProperty;
 
 /**
  * Unit tests for NoteDB SQL building, using a fake wpdb that records queries.
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 #[RunTestsInSeparateProcesses]
 #[PreserveGlobalState( false )]
@@ -90,7 +92,10 @@ class NoteDBTest extends BrainMonkeyTestCase {
 
 		// Reset singleton so it picks up the fake wpdb.
 		$prop = new ReflectionProperty( NoteDB::class, '_instance' );
-		$prop->setAccessible( true );
+		// setAccessible() is needed only for PHP < 8.1, deprecated since PHP 8.5.
+		if ( PHP_VERSION_ID < 80100 ) {
+			$prop->setAccessible( true );
+		}
 		$prop->setValue( null, null );
 	}
 

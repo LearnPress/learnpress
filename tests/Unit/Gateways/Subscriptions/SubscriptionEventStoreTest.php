@@ -35,7 +35,10 @@ class SubscriptionEventStoreTest extends BrainMonkeyTestCase {
 
 		// Reset singleton so each test gets a fresh instance.
 		$ref = new ReflectionProperty( \LP_Subscription_Event_Store::class, '_instance' );
-		$ref->setAccessible( true );
+		// setAccessible() is needed only for PHP < 8.1, deprecated since PHP 8.5.
+		if ( PHP_VERSION_ID < 80100 ) {
+			$ref->setAccessible( true );
+		}
 		$ref->setValue( null, null );
 	}
 

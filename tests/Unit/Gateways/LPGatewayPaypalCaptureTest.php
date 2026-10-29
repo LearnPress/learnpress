@@ -7,6 +7,13 @@ namespace LearnPress\Tests\Unit\Gateways;
 use Brain\Monkey\Functions;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
 
+/**
+ * Unit tests for LP_Gateway_Paypal::capture_payment_for_order().
+ * Run in separate processes: LP_Order, LP_Settings, LP_Helper are stubbed by eval.
+ *
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 	private string $paypal_token_option = '';
 
@@ -91,9 +98,17 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 		if ( ! class_exists( '\\LP_Order', false ) ) {
 			eval(
 				'class LP_Order {
-					public $updated_status = "";
-					public function update_status( $status ) {
-						$this->updated_status = (string) $status;
+					public $transaction_id = "";
+					public $completed_with = "";
+					public $notes = array();
+					public function get_transaction_id() {
+						return $this->transaction_id;
+					}
+					public function payment_complete( $transaction_id = "" ) {
+						$this->completed_with = (string) $transaction_id;
+					}
+					public function add_note( $note ) {
+						$this->notes[] = (string) $note;
 					}
 				}'
 			);
@@ -108,12 +123,25 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 		}
 	}
 
-	private function new_gateway_without_constructor(): \LP_Gateway_Paypal {
+	private function new_gateway_without_constructor( bool $has_client = true ): \LP_Gateway_Paypal {
 		$reflection = new \ReflectionClass( '\\LP_Gateway_Paypal' );
 		$gateway    = $reflection->newInstanceWithoutConstructor();
 
+		if ( $has_client ) {
+			foreach ( array( 'client_id' => 'client_123', 'client_secret' => 'secret_123' ) as $property => $value ) {
+				$prop = $reflection->getProperty( $property );
+				if ( PHP_VERSION_ID < 80100 ) {
+					$prop->setAccessible( true );
+				}
+				$prop->setValue( $gateway, $value );
+			}
+		}
+
 		$api_url = $reflection->getProperty( 'api_url' );
-		$api_url->setAccessible( true );
+		// setAccessible() is needed only for PHP < 8.1, deprecated since PHP 8.5.
+		if ( PHP_VERSION_ID < 80100 ) {
+			$api_url->setAccessible( true );
+		}
 		$api_url->setValue( $gateway, 'https://api-m.paypal.com/' );
 
 		return $gateway;
@@ -158,107 +186,153 @@ class LPGatewayPaypalCaptureTest extends BrainMonkeyTestCase {
 		$this->load_gateway_dependencies();
 	}
 
-	public function test_capture_payment_returns_false_when_token_is_missing(): void {
-		$this->set_paypal_token_option( '' );
-
-		Functions\expect( 'wp_remote_post' )->never();
-
-		$gateway = $this->new_gateway_without_constructor();
-		$result  = $gateway->capture_payment_for_order( 'PAYPAL_ORDER_1' );
-
-		$this->assertFalse( $result );
-	}
-
-	public function test_capture_payment_returns_false_when_remote_request_fails(): void {
+	/**
+	 * Save a not expired token, so get_access_token() not request PayPal.
+	 */
+	private function set_valid_token(): void {
 		$this->set_paypal_token_option(
-			wp_json_encode(
+			json_encode(
 				array(
 					'access_token' => 'token_123',
 					'token_type'   => 'Bearer',
+					'lp_time_end'  => time() + 3600,
 				)
 			)
 		);
+	}
 
+	private function capture_response( array $capture ): array {
+		return array(
+			'response' => array( 'code' => 201 ),
+			'body'     => json_encode(
+				array(
+					'status'         => 'COMPLETED',
+					'purchase_units' => array(
+						array( 'payments' => array( 'captures' => array( $capture ) ) ),
+					),
+				)
+			),
+		);
+	}
+
+	public function test_capture_payment_throws_when_client_id_is_missing(): void {
+		Functions\expect( 'wp_remote_post' )->never();
+
+		$this->expectException( \Exception::class );
+		$this->expectExceptionMessage( 'Paypal Client id is required.' );
+
+		$this->new_gateway_without_constructor( false )->capture_payment_for_order( 'PAYPAL_ORDER_1' );
+	}
+
+	public function test_capture_payment_throws_when_remote_request_fails(): void {
+		$this->set_valid_token();
 		Functions\expect( 'wp_remote_post' )
 			->once()
 			->andReturn( new \WP_Error( 'http_error', 'request failed' ) );
 
-		$gateway = $this->new_gateway_without_constructor();
-		$result  = $gateway->capture_payment_for_order( 'PAYPAL_ORDER_2' );
+		$this->expectException( \Exception::class );
+		$this->expectExceptionMessage( 'request failed' );
 
-		$this->assertFalse( $result );
+		$this->new_gateway_without_constructor()->capture_payment_for_order( 'PAYPAL_ORDER_2' );
 	}
 
-	public function test_capture_payment_returns_false_when_http_code_is_not_201(): void {
-		$this->set_paypal_token_option(
-			wp_json_encode(
-				array(
-					'access_token' => 'token_123',
-					'token_type'   => 'Bearer',
-				)
-			)
-		);
-
+	public function test_capture_payment_throws_paypal_error_description(): void {
+		$this->set_valid_token();
 		Functions\expect( 'wp_remote_post' )
 			->once()
 			->andReturn(
 				array(
-					'response' => array(
-						'code' => 422,
-					),
-					'body'     => '{}',
-				)
-			);
-
-		$gateway = $this->new_gateway_without_constructor();
-		$result  = $gateway->capture_payment_for_order( 'PAYPAL_ORDER_3' );
-
-		$this->assertFalse( $result );
-	}
-
-	public function test_capture_payment_returns_true_and_updates_order_status_when_completed(): void {
-		$this->set_paypal_token_option(
-			wp_json_encode(
-				array(
-					'access_token' => 'token_123',
-					'token_type'   => 'Bearer',
-				)
-			)
-		);
-
-		Functions\expect( 'wp_remote_post' )
-			->once()
-			->andReturn(
-				array(
-					'response' => array(
-						'code' => 201,
-					),
-					'body'     => wp_json_encode(
+					'response' => array( 'code' => 422 ),
+					'body'     => json_encode(
 						array(
-							'status'         => 'COMPLETED',
-							'purchase_units' => array(
-								array(
-									'payments' => array(
-										'captures' => array(
-											array(
-												'custom_id' => 777,
-											),
-										),
-									),
-								),
-							),
+							'debug_id' => 'abc',
+							'details'  => array( array( 'description' => 'Order already captured.' ) ),
 						)
 					),
 				)
 			);
 
-		$order = new \LP_Order();
-		Functions\when( 'learn_press_get_order' )->justReturn( $order );
+		$this->expectException( \Exception::class );
+		$this->expectExceptionMessage( 'Order already captured.' );
 
-		$gateway = $this->new_gateway_without_constructor();
-		$result  = $gateway->capture_payment_for_order( 'PAYPAL_ORDER_4' );
+		$this->new_gateway_without_constructor()->capture_payment_for_order( 'PAYPAL_ORDER_3' );
+	}
+
+	public function test_capture_payment_returns_false_when_response_has_no_capture(): void {
+		$this->set_valid_token();
+		Functions\expect( 'wp_remote_post' )
+			->once()
+			->andReturn(
+				array(
+					'response' => array( 'code' => 201 ),
+					'body'     => '{}',
+				)
+			);
+
+		$this->assertFalse( $this->new_gateway_without_constructor()->capture_payment_for_order( 'PAYPAL_ORDER_4' ) );
+	}
+
+	public function test_capture_payment_returns_false_when_capture_has_no_order_id(): void {
+		$this->set_valid_token();
+		Functions\expect( 'wp_remote_post' )
+			->once()
+			->andReturn( $this->capture_response( array( 'id' => 'CAPTURE_1', 'status' => 'COMPLETED' ) ) );
+
+		$this->assertFalse( $this->new_gateway_without_constructor()->capture_payment_for_order( 'PAYPAL_ORDER_5' ) );
+	}
+
+	public function test_capture_payment_completes_order_when_capture_completed(): void {
+		$this->set_valid_token();
+		Functions\expect( 'wp_remote_post' )
+			->once()
+			->andReturn(
+				$this->capture_response(
+					array(
+						'id'        => 'CAPTURE_1',
+						'custom_id' => 777,
+						'status'    => 'COMPLETED',
+					)
+				)
+			);
+		Functions\when( 'wp_date' )->justReturn( '2026-10-28 10:00:00' );
+		Functions\when( 'wp_timezone_string' )->justReturn( 'UTC' );
+
+		$order = new \LP_Order();
+		// setUp() stubbed learn_press_get_order with when(), override it the same way.
+		Functions\when( 'learn_press_get_order' )->alias(
+			static function ( $order_id ) use ( $order ) {
+				return 777 === $order_id ? $order : false;
+			}
+		);
+
+		$result = $this->new_gateway_without_constructor()->capture_payment_for_order( 'PAYPAL_ORDER_6' );
 
 		$this->assertTrue( $result );
-		$this->assertSame( LP_ORDER_COMPLETED, $order->updated_status );
+		$this->assertSame( 'CAPTURE_1', $order->completed_with );
+		$this->assertCount( 1, $order->notes );
+		$this->assertStringContainsString( 'CAPTURE_1', $order->notes[0] );
+	}
+
+	public function test_capture_payment_not_complete_again_when_transaction_id_same(): void {
+		$this->set_valid_token();
+		Functions\expect( 'wp_remote_post' )
+			->once()
+			->andReturn(
+				$this->capture_response(
+					array(
+						'id'        => 'CAPTURE_1',
+						'custom_id' => 777,
+						'status'    => 'COMPLETED',
+					)
+				)
+			);
+
+		$order                 = new \LP_Order();
+		$order->transaction_id = 'CAPTURE_1';
+		Functions\when( 'learn_press_get_order' )->justReturn( $order );
+
+		$this->assertTrue( $this->new_gateway_without_constructor()->capture_payment_for_order( 'PAYPAL_ORDER_7' ) );
+		$this->assertSame( '', $order->completed_with );
+		$this->assertSame( array(), $order->notes );
 	}
 }
