@@ -337,7 +337,9 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringContainsString( 'class="answer-options lp-sorting-choice" data-sorted="1"', $html );
 		$this->assertLessThan( strpos( $html, 'value="v2"' ), strpos( $html, 'value="v1"' ) );
 		$this->assertStringContainsString( 'name="learn-press-question-5[]"', $html );
-		$this->assertStringContainsString( 'draggable="true"', $html );
+		// Editable: no readonly class (state is not attribute draggable, Sortable changes it).
+		$this->assertStringNotContainsString( 'lp-sorting-choice--readonly', $html );
+		$this->assertStringNotContainsString( 'draggable', $html );
 		$this->assertStringNotContainsString( 'lp-sorting-choice__position', $html );
 	}
 
@@ -375,7 +377,7 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 
 		$this->assertSame( 2, substr_count( $html, 'answered-wrong' ) );
 		$this->assertStringContainsString( '<span class="lp-sorting-choice__position">2</span>', $html );
-		$this->assertStringNotContainsString( 'draggable', $html );
+		$this->assertStringContainsString( 'class="answer-options lp-sorting-choice lp-sorting-choice--readonly"', $html );
 		$this->assertStringContainsString( 'question-response incorrect', $html );
 	}
 

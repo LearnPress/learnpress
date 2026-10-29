@@ -75,7 +75,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 				),
 				'_lp_pagination'           => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Pagination', 'learnpress' ),
-					esc_html__( 'The number of displayed questions on each page.', 'learnpress' ),
+					esc_html__( 'The number of displayed questions on each page. Set 0 for all questions on one page.', 'learnpress' ),
 					'1',
 					array(
 						'type_input'        => 'number',

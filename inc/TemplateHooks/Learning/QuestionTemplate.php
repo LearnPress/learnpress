@@ -109,10 +109,10 @@ class QuestionTemplate {
 				$args['hidden'] ? ' style="display: none;"' : ''
 			),
 			'title'       => $this->html_title( $questionPostModel, $args ),
+			'hint'        => $args['show_hint'] ? $this->html_hint( $questionPostModel ) : '',
 			'content'     => $this->html_content( $questionPostModel ),
 			'answers'     => $this->html_answers( $questionPostModel, $args ),
 			'explanation' => $this->html_explanation( $explanation ),
-			'hint'        => $args['show_hint'] ? $this->html_hint( $questionPostModel ) : '',
 			'footer'      => $args['footer'],
 			'wrapper_end' => '</div>',
 		];
@@ -142,7 +142,10 @@ class QuestionTemplate {
 			'index'       => $index > 0 ? sprintf( '<span class="question-index">%d.</span>', $index ) : '',
 			'title'       => sprintf( '<span>%s</span>', wp_kses_post( $questionPostModel->get_the_title() ) ),
 			'hint'        => $show_hint
-				? sprintf( '<button type="button" class="btn-show-hint"><span>%s</span></button>', esc_html__( 'Hint', 'learnpress' ) )
+				? sprintf(
+					'<span class="btn-show-hint"><span>%s</span></span>',
+					esc_html__( 'View hint', 'learnpress' )
+				)
 				: '',
 			'edit_link'   => $edit_link
 				? sprintf( '<span class="edit-link"><a href="%s">%s</a></span>', esc_url( $edit_link ), esc_html__( 'Edit', 'learnpress' ) )
@@ -497,9 +500,8 @@ class QuestionTemplate {
 			}
 
 			$html_options .= sprintf(
-				'<li class="%1$s"%2$s><span class="lp-sorting-choice__handle"></span><input type="hidden" class="option-sort" name="%3$s" value="%4$s"%5$s/><span class="option-title">%6$s</span>%7$s</li>',
+				'<li class="%1$s"><span class="lp-sorting-choice__handle"></span><input type="hidden" class="option-sort" name="%2$s" value="%3$s"%4$s/><span class="option-title">%5$s</span>%6$s</li>',
 				esc_attr( implode( ' ', $classes ) ),
-				$disabled ? '' : ' draggable="true"',
 				$is_started ? esc_attr( 'learn-press-question-' . $question_id . '[]' ) : '',
 				$is_started ? esc_attr( $value ) : '',
 				$disabled ? ' disabled' : '',
@@ -511,8 +513,10 @@ class QuestionTemplate {
 		$section = [
 			'wrapper'     => '<div class="question-answers">',
 			'options'     => sprintf(
-				'<ul id="answer-options-%d" class="answer-options lp-sorting-choice"%s>%s</ul>',
+				'<ul id="answer-options-%d" class="answer-options lp-sorting-choice%s"%s>%s</ul>',
 				$question_id,
+				// Not draggable (checked, review): Sortable toggles attribute draggable of li, so state is a class.
+				$disabled ? ' lp-sorting-choice--readonly' : '',
 				// JS only counts the question as answered after user sorted (options are shuffled by server).
 				empty( $answered ) ? '' : ' data-sorted="1"',
 				$html_options

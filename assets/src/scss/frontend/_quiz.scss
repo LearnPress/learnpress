@@ -541,7 +541,7 @@ button[data-counter] {
 
 	.questions-index {
 		display: inline-block;
-		color: $text-color-accent; 
+		color: $text-color-accent;
 
 		span {
 			color: $text-color-base;
@@ -1100,6 +1100,7 @@ button[data-counter] {
 		font-size: 0;
 		text-decoration: none;
 		border: none;
+		display: inline-block;
 
 		&::before {
 			font-family: 'lp-icon';
@@ -1107,23 +1108,36 @@ button[data-counter] {
 			content: "\f059";
 		}
 
-		&:hover {
+		cursor: pointer;
 
-			span {
-				position: absolute;
-				bottom: 100%;
-				left: 100%;
-				width: auto;
-				padding: 6px 9px;
-				border-radius: 2px;
-				color: $text-color-base;
-				background: #eee;
-				font-size: 14px;
-				font-weight: 400;
-				line-height: 1;
-				white-space: nowrap;
-				text-transform: none;
-			}
+		// Tooltip is the text of button, show on hover / focus.
+		// stylelint-disable-next-line no-descending-specificity -- other "span" rules are of other blocks.
+		span {
+			visibility: hidden;
+			position: absolute;
+			z-index: 10;
+			bottom: calc(100% + 8px);
+			left: 50%;
+			width: auto;
+			padding: 8px 16px;
+			border-radius: var(--lp-border-radius, 5px);
+			opacity: 0;
+			color: #fff;
+			background: #333;
+			font-size: 14px;
+			font-weight: 600;
+			line-height: 1;
+			white-space: nowrap;
+			text-transform: none;
+			transition: opacity 0.15s;
+			transform: translateX(-50%);
+			pointer-events: none;
+		}
+
+		&:hover span,
+		&:focus-visible span {
+			visibility: visible;
+			opacity: 1;
 		}
 	}
 

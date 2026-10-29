@@ -41,8 +41,8 @@ const doingHtml = ( timer = 'data-duration="600" data-remaining="5" data-time-sp
 			</div>
 			<div class="question question-sorting_choice" data-id="104" data-page="4" style="display: none;">
 				<ul class="answer-options lp-sorting-choice">
-					<li class="answer-option" draggable="true"><input type="hidden" class="option-sort" value="v2"/></li>
-					<li class="answer-option" draggable="true"><input type="hidden" class="option-sort" value="v1"/></li>
+					<li class="answer-option"><span class="lp-sorting-choice__handle"></span><input type="hidden" class="option-sort" value="v2"/></li>
+					<li class="answer-option"><span class="lp-sorting-choice__handle"></span><input type="hidden" class="option-sort" value="v1"/></li>
 				</ul>
 			</div>
 		</div>
@@ -297,6 +297,19 @@ test( 'instant check info hides when question answered', ( t ) => {
 	change( radio );
 
 	assert.equal( elInfo.hidden, true );
+} );
+
+test( 'sorting list readonly (checked) is not sortable', ( t ) => {
+	const { sortables } = setup( t, doingHtml().replace( 'class="answer-options lp-sorting-choice"', 'class="answer-options lp-sorting-choice lp-sorting-choice--readonly"' ) );
+
+	assert.equal( sortables.length, 0 );
+} );
+
+test( 'style of sorting handle does not depend on attribute draggable (Sortable sets draggable="false" after drag)', () => {
+	const scss = read( 'assets/src/scss/frontend/user-quiz.scss' );
+
+	assert.ok( ! /\[draggable/.test( scss ) );
+	assert.ok( scss.includes( 'lp-sorting-choice--readonly' ) );
 } );
 
 test( 'sorting list is draggable and saves order on drop', ( t ) => {

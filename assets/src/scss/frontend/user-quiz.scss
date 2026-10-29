@@ -37,10 +37,6 @@
 			border-radius: 4px;
 			background: $color-white;
 
-			&[draggable="true"] {
-				cursor: move;
-			}
-
 			&.sortable-ghost {
 				opacity: 0.4;
 			}
@@ -78,7 +74,12 @@
 			}
 		}
 
-		.answer-option:not([draggable="true"]) .lp-sorting-choice__handle {
+		// State by class, not attribute draggable: Sortable sets draggable="false" on li after each drag.
+		&:not(.lp-sorting-choice--readonly) .answer-option {
+			cursor: move;
+		}
+
+		&.lp-sorting-choice--readonly .lp-sorting-choice__handle {
 			display: none;
 		}
 

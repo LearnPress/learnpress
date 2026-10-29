@@ -191,6 +191,7 @@ export class UserQuiz {
 		elCheckInfo: '.instant-check__info',
 		elHintContent: '.question-hint-content',
 		elSortList: '.lp-sorting-choice',
+		elSortListEditable: '.lp-sorting-choice:not(.lp-sorting-choice--readonly)',
 		elHeader: '.popup-header__inner',
 		elFormFinishCourse: 'form.form-button-finish-course',
 		elBtnFinishCourseLoaded: 'form.form-button-finish-course[data-user-quiz-loaded] button',
@@ -670,8 +671,8 @@ export class UserQuiz {
 	 * Drag & drop options of sorting choice.
 	 */
 	initSortable() {
-		this.elWrap.querySelectorAll( `${ UserQuiz.selectors.elDoing } ${ UserQuiz.selectors.elSortList }` ).forEach( ( elList ) => {
-			if ( elList.dataset.sortable || ! elList.querySelector( 'li[draggable="true"]' ) ) {
+		this.elWrap.querySelectorAll( `${ UserQuiz.selectors.elDoing } ${ UserQuiz.selectors.elSortListEditable }` ).forEach( ( elList ) => {
+			if ( elList.dataset.sortable ) {
 				return;
 			}
 
