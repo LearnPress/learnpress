@@ -601,11 +601,13 @@ class QuestionPostModel extends PostModel {
 
 	/**
 	 * Check format answers valid before save
+	 * Want to use must remove save_answers_config on old class QuestionAnswerModel::save
 	 *
 	 * @param $answers
 	 * @return true|WP_Error
 	 */
 	public function check_answers_valid_before_save( $answers ) {
+		// Implement from child
 		return true;
 	}
 }

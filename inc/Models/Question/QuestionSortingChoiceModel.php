@@ -4,6 +4,7 @@ namespace LearnPress\Models\Question;
 
 use LP_Debug;
 use Throwable;
+use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -157,7 +158,22 @@ class QuestionSortingChoiceModel extends QuestionPostModel {
 		return $new_options;
 	}
 
-	/*public function check_answers_valid_before_save( $answers ) {
 
+	/**
+	 * Check answers valid before save.
+	 * Want to use must remove save_answers_config on old class QuestionAnswerModel::save
+	 *
+	 * @param $answers
+	 * @return true|WP_Error
+	 */
+	/*public function check_answers_valid_before_save( $answers ) {
+		if ( empty( $answers ) || count( $answers ) < 3 ) {
+			return new WP_Error(
+				'question/sorting-choice-error',
+				esc_html__( 'Answer must have at least 3 options', 'learnpress' )
+			);
+		}
+
+		return true;
 	}*/
 }
