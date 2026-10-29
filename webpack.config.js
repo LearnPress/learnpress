@@ -22,6 +22,7 @@ module.exports = {
 		'./assets/dist/js/admin/lp-themes': './assets/src/js/admin/lp-themes.js',
 		'./assets/dist/js/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
 		'./assets/dist/js/frontend/course-builder': './assets/src/js/frontend/course-builder.js',
+		'./assets/dist/js/frontend/user-quiz': './assets/src/js/frontend/user-quiz.js',
 
 		// Folder old assets/js/dist
 		'./assets/js/dist/admin/admin': './assets/src/js/admin/admin.js',

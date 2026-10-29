@@ -56,8 +56,10 @@
 		"prettier": "npm:wp-prettier@^3.0.3",
 		"read-file": "^0.2.0",
 		"sass": "1.78.0",
-		"stylelint": "^15.11.0",
-		"stylelint-order": "^6.0.3"
+		"@wordpress/stylelint-config": "^23.42.0",
+		"stylelint": "^16.26.1",
+		"stylelint-order": "^6.0.3",
+		"typescript": "~5.9.3"
 	},
 	"_comment": "sweetalert2 11.22.2 source origin but denied domain .ru, .su, .by, and .рф.",
 	"dependencies": {

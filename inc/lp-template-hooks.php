@@ -25,6 +25,7 @@ use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
+use LearnPress\TemplateHooks\UserItem\UserQuizTemplate;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -484,7 +485,8 @@ add_action(
 	LearnPress::instance()->template( 'course' )->callback( 'content-quiz/title.php' ),
 	5
 );
-add_action( 'learn-press/content-item-summary/lp_quiz', LearnPress::instance()->template( 'course' )->callback( 'content-quiz/js' ), 25 );
+// @since 4.5.0 quiz rendered by PHP (UserQuizTemplate) + user-quiz.js, replace React app (content-quiz/js.php).
+add_action( 'learn-press/content-item-summary/lp_quiz', [ UserQuizTemplate::instance(), 'print_quiz_content' ], 25 );
 // add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_course_item', 5 ); // comment by tungnx
 //add_action( 'learn-press/after-single-course', 'learn_press_single_course_args', 5 );
 add_filter( 'document_title_parts', 'learn_press_single_document_title_parts', 5 );

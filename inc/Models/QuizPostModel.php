@@ -102,6 +102,39 @@ class QuizPostModel extends PostModel {
 	}
 
 	/**
+	 * Get number of questions displayed on each page.
+	 * 0 is show all questions on one page, meta not set is 1 question per page.
+	 *
+	 * @return int
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function get_pagination(): int {
+		// get_meta_value_by_key() treats '0' as empty and returns default, so read raw value first.
+		$metadata = $this->get_metadata();
+		if ( ! isset( $metadata->{self::META_KEY_PAGINATION} ) ) {
+			$value = get_post_meta( $this->get_id(), self::META_KEY_PAGINATION, true );
+			$this->set_meta_value_by_key( self::META_KEY_PAGINATION, '' === $value ? 1 : $value );
+		}
+
+		return absint( $this->get_meta_value_by_key( self::META_KEY_PAGINATION, 1 ) );
+	}
+
+	/**
+	 * Check option review has enabled.
+	 *
+	 * @return bool
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function has_review(): bool {
+		return $this->get_meta_value_by_key(
+			self::META_KEY_REVIEW,
+			'yes'
+		) === 'yes';
+	}
+
+	/**
 	 * Get all question's ids of the quiz.
 	 *
 	 * @param array $statuses

@@ -29,6 +29,7 @@ defined( 'LP_QUIZ_CPT' )      || define( 'LP_QUIZ_CPT', 'lp_quiz' );
 defined( 'LP_LESSON_CPT' )    || define( 'LP_LESSON_CPT', 'lp_lesson' );
 defined( 'LP_QUESTION_CPT' )  || define( 'LP_QUESTION_CPT', 'lp_question' );
 defined( 'LP_COURSE_CPT' )    || define( 'LP_COURSE_CPT', 'lp_course' );
+defined( 'LP_ORDER_CPT' )     || define( 'LP_ORDER_CPT', 'lp_order' );
 defined( 'LP_TEACHER_ROLE' )  || define( 'LP_TEACHER_ROLE', 'lp_teacher' );
 
 // ── WordPress stub classes ────────────────────────────────────────────────────

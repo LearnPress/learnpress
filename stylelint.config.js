@@ -1,10 +1,16 @@
 'use strict';
 
 module.exports = {
-	extends: [ '@wordpress/stylelint-config', 'prettier-stylelint/index.js' ],
+	// Source is SCSS; stylistic rules are a plugin since stylelint 16.
+	extends: [ '@wordpress/stylelint-config/scss-stylistic' ],
 	plugins: 'stylelint-order',
 	rules: {
-		'max-line-length': 255,
+		'@stylistic/max-line-length': 255,
+		// Class names use BEM (block__element--modifier) on whole project.
+		'selector-class-pattern': [
+			'^[a-z0-9]+(-[a-z0-9]+)*(__[a-z0-9]+(-[a-z0-9]+)*)?(--[a-z0-9]+(-[a-z0-9]+)*)?$',
+			{ message: 'Selector should use lowercase, hyphens and BEM (block__element--modifier)' },
+		],
 		'declaration-block-no-duplicate-properties': [
 			true,
 			{

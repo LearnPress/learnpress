@@ -92,7 +92,7 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 			[
 				'form'     => sprintf(
 					'<form class="lp-form form-button form-button-finish-course" method="post" data-confirm="%s">',
-					__( 'Do you want to finish the course?', 'learnpress' )
+					esc_attr__( 'Do you want to finish the course?', 'learnpress' )
 				),
 				'btn'      => sprintf(
 					'<button class="lp-button btn-finish-course">%s</button>',

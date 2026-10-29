@@ -3,6 +3,7 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\LPDateTime;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Question\QuestionPostModel;
@@ -14,7 +15,6 @@ use LearnPress\Models\UserModel;
 use LearnPress\Databases\UserItemResultsDB;
 use LearnPress\Filters\UserItemResultsFilter;
 use LP_Debug;
-use LP_Helper;
 use LP_Quiz_CURD;
 use LP_User_Items_Result_DB;
 use Throwable;
@@ -598,7 +598,7 @@ class UserQuizModel extends UserItemModel {
 	 *
 	 * @return bool|WP_Error
 	 * @since 4.5.0
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function can_check_instant_answer( int $question_id = 0 ) {
 		$quizPostModel = $this->get_quiz_post_model();
@@ -608,6 +608,17 @@ class UserQuizModel extends UserItemModel {
 
 		if ( ! $quizPostModel->has_instant_check() ) {
 			return new WP_Error( 'instant_check_disable', __( 'Instant check is disable', 'learnpress' ) );
+		}
+
+		// Same as finish quiz: user must be enrolled and course can impact item (not finished, not expired).
+		$userCourseModel = $this->get_user_course_model();
+		if ( ! $userCourseModel instanceof UserCourseModel ) {
+			return new WP_Error( 'not_enrolled_course', __( 'User is not enrolled in the course.', 'learnpress' ) );
+		}
+
+		$can_impact_item = $userCourseModel->can_impact_item();
+		if ( $can_impact_item instanceof WP_Error ) {
+			return $can_impact_item;
 		}
 
 		if ( in_array( $question_id, $this->get_checked_questions() ) ) {
@@ -631,7 +642,7 @@ class UserQuizModel extends UserItemModel {
 	 * @return array
 	 * @throws Exception
 	 * @since 4.5.0
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function instant_check_question( int $question_id, $answered = null ): array {
 		$question = QuestionPostModel::find( $question_id, true );
@@ -640,7 +651,9 @@ class UserQuizModel extends UserItemModel {
 		}
 
 		$can_check = $this->can_check_instant_answer( $question_id );
-		if ( ! $can_check ) {
+		if ( is_wp_error( $can_check ) ) {
+			throw new Exception( $can_check->get_error_message() );
+		} elseif ( ! $can_check ) {
 			throw new Exception( __( 'Cannot check the answer to the question.', 'learnpress' ) );
 		}
 
@@ -862,7 +875,7 @@ class UserQuizModel extends UserItemModel {
 	 * @param int $limit
 	 *
 	 * @return array
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.2.7.6
 	 */
 	public function get_history( int $limit = 3 ): array {
@@ -870,11 +883,12 @@ class UserQuizModel extends UserItemModel {
 
 		try {
 			$filter                  = new UserItemResultsFilter();
+			$filter->user_id         = $this->user_id;
 			$filter->item_id         = $this->item_id;
 			$filter->item_type       = $this->item_type;
 			$filter->ref_id          = $this->ref_id;
 			$filter->ref_type        = $this->ref_type;
-			$filter->order_by        = UserItemResultsFilter::COL_END_TIME;
+			$filter->order_by        = UserItemsFilter::COL_END_TIME;
 			$filter->order           = 'DESC';
 			$filter->limit           = $limit + 1;
 			$filter->run_query_count = false;

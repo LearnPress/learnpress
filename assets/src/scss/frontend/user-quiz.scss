@@ -1,0 +1,113 @@
+/**
+ * User quiz (UserQuizTemplate + user-quiz.js).
+ * Markup keeps class names of the old React app, styles of _quiz.scss, _popup.scss still apply.
+ * Only styles of new states, and rules scoped to #learn-press-quiz-app (old wrapper) are copied here.
+ *
+ * @since 4.5.0
+ */
+@import "../variables";
+
+#learn-press-user-quiz {
+	// Same as #learn-press-quiz-app.
+	margin-bottom: 40px;
+
+	// .lp-button is display inline-flex, attribute hidden must win (button finish below questions, check info).
+	[hidden] {
+		display: none !important;
+	}
+
+	.lp-button:disabled {
+		cursor: not-allowed;
+	}
+
+	// Sorting choice (new in core).
+	.lp-sorting-choice {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		.answer-option {
+			display: flex;
+			position: relative;
+			align-items: center;
+			gap: 12px;
+			margin: 0 0 10px;
+			padding: 12px;
+			border: 1px solid $border-color;
+			border-radius: 4px;
+			background: $color-white;
+
+			&[draggable="true"] {
+				cursor: move;
+			}
+
+			&.sortable-ghost {
+				opacity: 0.4;
+			}
+
+			&.sortable-chosen {
+				border-color: $color-primary;
+			}
+
+			&.answered-correct {
+				border-color: #4caf50;
+			}
+
+			&.answered-wrong {
+				border-color: #ff6423;
+			}
+
+			// Reset style of .question .answer-option .option-title (space for radio / checkbox).
+			.option-title {
+				flex: 1;
+				padding: 0;
+				border: none;
+
+				&:hover {
+					background: transparent;
+				}
+			}
+		}
+
+		.lp-sorting-choice__handle {
+			color: $text-color-base;
+
+			&::before {
+				font-family: lp-icon; /* stylelint-disable-line font-family-no-missing-generic-family-keyword -- icon font */
+				content: "\e922"; // lp-icon-drag
+			}
+		}
+
+		.answer-option:not([draggable="true"]) .lp-sorting-choice__handle {
+			display: none;
+		}
+
+		.lp-sorting-choice__position {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 24px;
+			height: 24px;
+			padding: 0 6px;
+			border-radius: 12px;
+			color: $color-white;
+			background: #4caf50;
+			font-size: $font-size-small;
+			line-height: 1;
+		}
+
+		.answered-wrong .lp-sorting-choice__position {
+			background: #ff6423;
+		}
+	}
+}
+
+// Theme Eduma: same as #learn-press-quiz-app on _theme-support.scss.
+// stylelint-disable-next-line selector-class-pattern -- class nofixcss_learn of theme Eduma.
+.eduma:not(.nofixcss_learn).learnpress-v4 .lp-single-course #popup-course #popup-content #learn-press-user-quiz .questions-pagination .page-numbers {
+
+	&.current,
+	&:hover {
+		color: var(--lp-color-white, #fff);
+	}
+}
