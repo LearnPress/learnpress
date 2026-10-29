@@ -6,7 +6,7 @@
  * - Replace HTML returned (screen, checked question).
  * - Collect answers of user, save on localStorage to restore when reload page.
  * - Timer, pagination of questions, hint, review, sorting drag & drop.
- * - Guest (course no required enroll): time and retaken count are kept on localStorage.
+ * - Guest (not logged in, course no required enroll): see ./user-quiz/guest.js.
  *
  * @since 4.5.0
  * @version 1.0.0
@@ -15,6 +15,7 @@ import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
 import * as lpUtils from '../utils.js';
 import * as lpToastify from '../lpToastify.js';
+import { UserQuizGuest } from './user-quiz/guest.js';
 
 /**
  * Get answer of a question from its inputs.
@@ -207,6 +208,7 @@ export class UserQuiz {
 		this.submitAfterRequest = false;
 		this.i18n = {};
 		this.timer = null;
+		this.guest = new UserQuizGuest( this );
 	}
 
 	init() {
@@ -221,7 +223,8 @@ export class UserQuiz {
 
 			this.onScreenRendered();
 			this.events();
-			this.maybeResumeGuest();
+			this.guest.maybeRestoreCompleted();
+			this.guest.maybeResume();
 		} );
 	}
 
@@ -275,20 +278,10 @@ export class UserQuiz {
 	 */
 	doStart( elBtn, isRetake = false, isResume = false ) {
 		this.request( elBtn, ( data ) => {
-			if ( this.isGuest ) {
-				if ( isRetake ) {
-					const retaken = ( parseInt( this.storageGet( this.getStorageKey( 'Guest_Retaken' ) ) ) || 0 ) + 1;
-					this.storageSet( this.getStorageKey( 'Guest_Retaken' ), String( retaken ) );
-				}
-
-				if ( ! isResume ) {
-					this.storageSet( this.getStorageKey( 'Guest' ), JSON.stringify( { startAt: Date.now() } ) );
-				}
-			}
+			this.guest.onStart( isRetake, isResume );
 
 			if ( ! isResume ) {
-				this.storageRemove( this.getStorageKey() );
-				this.storageRemove( this.getStorageKey( 'Page' ) );
+				this.clearStorage();
 			}
 
 			this.renderScreen( data.content, data.status );
@@ -321,9 +314,8 @@ export class UserQuiz {
 			elBtn,
 			( data ) => {
 				this.stopTimer();
-				this.storageRemove( this.getStorageKey() );
-				this.storageRemove( this.getStorageKey( 'Page' ) );
-				this.storageRemove( this.getStorageKey( 'Guest' ) );
+				this.clearStorage();
+				this.guest.onSubmit( data );
 				this.renderScreen( data.content, data.status );
 				this.afterSubmit( data );
 			},
@@ -346,6 +338,12 @@ export class UserQuiz {
 			return;
 		}
 
+		// Checked once, cannot check again (same as server: already_checked).
+		if ( elQuestion.querySelector( '.question-response' )
+			|| this.guest.getCheckedIds().includes( parseInt( elQuestion.dataset.id ) ) ) {
+			return;
+		}
+
 		const answer = getQuestionAnswer( elQuestion );
 		if ( answer === null ) {
 			return;
@@ -364,6 +362,7 @@ export class UserQuiz {
 				elQuestion.replaceWith( elQuestionNew );
 				this.updateEarnedPoint( data );
 				this.saveAnswers();
+				this.guest.saveChecked( elQuestionNew.dataset.id || elQuestion.dataset.id, answer, data );
 
 				if ( window.wp?.hooks ) {
 					window.wp.hooks.doAction( 'lp-user-quiz/question-checked', elQuestionNew, data, this.quizId );
@@ -562,12 +561,10 @@ export class UserQuiz {
 		let remainingStart = parseInt( elCountdown.dataset.remaining ) || 0;
 		let timeSpendStart = parseInt( elCountdown.dataset.timeSpend ) || 0;
 
-		if ( this.isGuest ) {
-			const guest = this.getGuestState();
-			if ( guest?.startAt ) {
-				timeSpendStart = Math.max( 0, Math.floor( ( Date.now() - guest.startAt ) / 1000 ) );
-				remainingStart = Math.max( 0, duration - timeSpendStart );
-			}
+		const guestTimeSpend = this.guest.getTimeSpend();
+		if ( guestTimeSpend !== null ) {
+			timeSpendStart = guestTimeSpend;
+			remainingStart = Math.max( 0, duration - timeSpendStart );
 		}
 
 		const startedAt = Date.now();
@@ -651,6 +648,7 @@ export class UserQuiz {
 	onScreenRendered() {
 		const elDoing = this.elWrap.querySelector( UserQuiz.selectors.elDoing );
 		if ( elDoing ) {
+			this.guest.restoreChecked();
 			this.restoreAnswers();
 			this.showPage( elDoing, parseInt( this.storageGet( this.getStorageKey( 'Page' ) ) ) || 1 );
 			this.initSortable();
@@ -658,7 +656,7 @@ export class UserQuiz {
 			this.startTimer();
 		}
 
-		this.updateGuestRetake();
+		this.guest.updateRetake();
 
 		if ( window.wp?.hooks ) {
 			// Hook old of React app, used by add-ons.
@@ -798,55 +796,6 @@ export class UserQuiz {
 	}
 
 	// ---------------------------------------------------------------------
-	// Guest
-	// ---------------------------------------------------------------------
-
-	getGuestState() {
-		try {
-			return JSON.parse( this.storageGet( this.getStorageKey( 'Guest' ) ) || 'null' );
-		} catch ( e ) {
-			return null;
-		}
-	}
-
-	/**
-	 * Guest reload page when doing quiz: server render intro (not save), start again to keep time and answers.
-	 */
-	maybeResumeGuest() {
-		if ( ! this.isGuest || ! this.getGuestState()?.startAt ) {
-			return;
-		}
-
-		const elBtn = this.elWrap.querySelector( `${ UserQuiz.selectors.elBtnStart }:not(${ UserQuiz.selectors.elBtnRetake })` );
-		if ( elBtn ) {
-			this.doStart( elBtn, false, true );
-		}
-	}
-
-	/**
-	 * Guest: retaken count saved on browser, show remaining on button retake, hide when no remaining.
-	 */
-	updateGuestRetake() {
-		if ( ! this.isGuest ) {
-			return;
-		}
-
-		const elBtn = this.elWrap.querySelector( UserQuiz.selectors.elBtnRetake );
-		const retakeMax = parseInt( elBtn?.dataset.retakeMax ) || 0;
-		if ( ! elBtn || retakeMax <= 0 ) {
-			return;
-		}
-
-		const remaining = retakeMax - ( parseInt( this.storageGet( this.getStorageKey( 'Guest_Retaken' ) ) ) || 0 );
-		if ( remaining <= 0 ) {
-			elBtn.remove();
-			return;
-		}
-
-		elBtn.textContent = `${ elBtn.textContent.replace( /\s*\(\d+\)$/, '' ) } (${ remaining })`;
-	}
-
-	// ---------------------------------------------------------------------
 	// Request
 	// ---------------------------------------------------------------------
 
@@ -958,7 +907,12 @@ export class UserQuiz {
 		}
 
 		elDoing.querySelectorAll( UserQuiz.selectors.elQuestion ).forEach( ( elQuestion ) => {
-			const answer = getQuestionAnswer( elQuestion );
+			let answer = getQuestionAnswer( elQuestion );
+			// Question checked (guest): inputs may be locked, use answer saved when checked.
+			if ( answer === null ) {
+				answer = this.guest.getCheckedAnswer( elQuestion.dataset.id );
+			}
+
 			if ( answer !== null ) {
 				answered[ elQuestion.dataset.id ] = answer;
 			}
@@ -993,10 +947,15 @@ export class UserQuiz {
 		} );
 	}
 
+	clearStorage() {
+		[ 'Answered', 'Page' ].forEach( ( suffix ) => this.storageRemove( this.getStorageKey( suffix ) ) );
+		this.guest.clear();
+	}
+
 	/**
 	 * Key has user id and course id: users on the same browser, a quiz in many courses do not share data.
 	 *
-	 * @param {string} suffix 'Answered' (default), 'Page', 'Guest', 'Guest_Retaken'
+	 * @param {string} suffix 'Answered' (default), 'Page', 'Guest', 'Guest_Retaken', ... see guest.js
 	 * @return {string} key
 	 */
 	getStorageKey( suffix = 'Answered' ) {
