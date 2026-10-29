@@ -1,4 +1,15 @@
 <?php
+namespace LearnPress\TemplateHooks\Learning;
+
+use LearnPress\Helpers\LPDateTime;
+use LearnPress\Helpers\Singleton;
+use LearnPress\Helpers\Template;
+use LearnPress\Models\QuizPostModel;
+use LP_Duration;
+use Throwable;
+
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Template hooks Quiz.
  *
@@ -7,16 +18,6 @@
  * @since 4.5.0
  * @version 1.0.0
  */
-
-namespace LearnPress\TemplateHooks\Learning;
-
-use LearnPress\Helpers\Singleton;
-use LearnPress\Helpers\Template;
-use LearnPress\Models\QuizPostModel;
-use LP_Duration;
-
-defined( 'ABSPATH' ) || exit;
-
 class QuizTemplate {
 	use Singleton;
 
@@ -61,7 +62,7 @@ class QuizTemplate {
 			[
 				'duration'        => [
 					'title'   => __( 'Duration:', 'learnpress' ),
-					'content' => $duration > 0 ? $this->format_duration( $duration ) : '--',
+					'content' => $this->html_duration( $quizPostModel ),
 				],
 				'passing-grade'   => [
 					'title'   => __( 'Passing grade:', 'learnpress' ),
@@ -78,7 +79,10 @@ class QuizTemplate {
 		$html_items = '';
 		foreach ( $fields as $name => $field ) {
 			$html_items .= sprintf(
-				'<li class="quiz-intro-item quiz-intro-item--%1$s"><div class="quiz-intro-item__title">%2$s</div><span class="quiz-intro-item__content">%3$s</span></li>',
+				'<li class="quiz-intro-item quiz-intro-item--%1$s">
+							<div class="quiz-intro-item__title">%2$s</div>
+							<span class="quiz-intro-item__content">%3$s</span>
+						</li>',
 				esc_attr( $name ),
 				wp_kses_post( $field['title'] ?? '' ),
 				wp_kses_post( $field['content'] ?? '' )
@@ -97,22 +101,41 @@ class QuizTemplate {
 	}
 
 	/**
-	 * Format seconds to HH:MM:SS.
+	 * Get html duration course.
 	 *
-	 * @param int $seconds
+	 * @param QuizPostModel $quizPostModel
+	 * @param array $args
 	 *
 	 * @return string
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function format_duration( int $seconds ): string {
-		$seconds = max( 0, $seconds );
+	public function html_duration( QuizPostModel $quizPostModel, array $args = [] ): string {
+		$content = '';
 
-		return sprintf(
-			'%02d:%02d:%02d',
-			floor( $seconds / 3600 ),
-			floor( ( $seconds % 3600 ) / 60 ),
-			$seconds % 60
-		);
+		try {
+			$duration        = $quizPostModel->get_duration();
+			$duration_arr    = explode( ' ', $duration );
+			$duration_number = floatval( $duration_arr[0] ?? 0 );
+			$duration_type   = $duration_arr[1] ?? '';
+			if ( empty( $duration_number ) ) {
+				$duration_str = __( 'Unlimited', 'learnpress' );
+			} else {
+				$duration_str = LPDateTime::get_string_plural_duration( $duration_number, $duration_type );
+			}
+
+			$html_wrapper = [
+				'<span class="question-duration">' => '</span>',
+			];
+			$content      = Template::instance()->nest_elements( $html_wrapper, $duration_str );
+		} catch ( Throwable $e ) {
+			$content = Template::print_message(
+				$e->getMessage(),
+				'error',
+				false
+			);
+		}
+
+		return $content;
 	}
 }

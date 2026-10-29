@@ -37,32 +37,6 @@ defined( 'ABSPATH' ) || exit;
 
 class UserQuizAjax extends AbstractAjax {
 	/**
-	 * Actions allow to call via 'lp-load-ajax'.
-	 * Helper methods are protected, but still callable from AbstractAjax (parent scope), so must whitelist.
-	 */
-	const ACTIONS = [
-		'user_start_quiz',
-		'user_retake_quiz',
-		'user_submit_quiz',
-		'user_check_question',
-	];
-
-	/**
-	 * Only handle actions of this class.
-	 *
-	 * @return void
-	 * @since 4.5.0
-	 * @version 1.0.0
-	 */
-	public static function catch_lp_ajax() {
-		if ( ! in_array( LP_Request::get_param( 'lp-load-ajax' ), self::ACTIONS, true ) ) {
-			return;
-		}
-
-		parent::catch_lp_ajax();
-	}
-
-	/**
 	 * User start quiz.
 	 * Guest (course no required enroll) is not saved, only get HTML doing quiz.
 	 *
@@ -88,8 +62,6 @@ class UserQuizAjax extends AbstractAjax {
 			if ( ! $context['is_guest'] ) {
 				$userQuizModel = $this->create_user_quiz( $userModel->get_id(), $quizPostModel->get_id(), $courseModel->get_id() );
 				$userQuizModel->handle_start();
-
-				$this->clear_quiz_cache( $quizPostModel->get_id(), $userModel->get_id(), $courseModel->get_id() );
 			}
 
 			$response->data->content = $this->get_template()->html_doing_quiz( $courseModel, $quizPostModel, $userQuizModel );
@@ -126,14 +98,18 @@ class UserQuizAjax extends AbstractAjax {
 
 			$userQuizModel = false;
 			if ( ! $context['is_guest'] ) {
-				$userQuizModel = $this->find_user_quiz( $userModel->get_id(), $quizPostModel->get_id(), $courseModel->get_id() );
+				$userQuizModel = UserQuizModel::find_user_item(
+					$userModel->get_id(),
+					$quizPostModel->get_id(),
+					LP_QUIZ_CPT,
+					$courseModel->get_id(),
+					LP_COURSE_CPT
+				);
 				if ( ! $userQuizModel instanceof UserQuizModel ) {
 					throw new Exception( esc_html__( 'You have not started the quiz.', 'learnpress' ) );
 				}
 
 				$userQuizModel->handle_retake();
-
-				$this->clear_quiz_cache( $quizPostModel->get_id(), $userModel->get_id(), $courseModel->get_id() );
 			}
 
 			$response->data->content = $this->get_template()->html_doing_quiz( $courseModel, $quizPostModel, $userQuizModel );
@@ -170,7 +146,7 @@ class UserQuizAjax extends AbstractAjax {
 			$answered      = $this->sanitize_answered( $params['answered'] ?? [], $quizPostModel->get_question_ids() );
 			$userQuizModel = false;
 			if ( ! $context['is_guest'] ) {
-				$userQuizModel = $this->find_user_quiz( $userModel->get_id(), $quizPostModel->get_id(), $courseModel->get_id() );
+				$userQuizModel = UserQuizModel::find_user_item( $userModel->get_id(), $quizPostModel->get_id(), LP_QUIZ_CPT, $courseModel->get_id(), LP_COURSE_CPT );
 				if ( ! $userQuizModel instanceof UserQuizModel ) {
 					throw new Exception( esc_html__( 'User quiz is invalid!', 'learnpress' ) );
 				}
@@ -185,8 +161,6 @@ class UserQuizAjax extends AbstractAjax {
 						'time_spend' => $time_spend,
 					]
 				);
-
-				$this->clear_quiz_cache( $quizPostModel->get_id(), $userModel->get_id(), $courseModel->get_id() );
 			} else {
 				// Guest: calculate result, not save.
 				$result               = $this->create_user_quiz( 0, $quizPostModel->get_id(), $courseModel->get_id() )->calculate_quiz_result( $answered );
@@ -227,9 +201,8 @@ class UserQuizAjax extends AbstractAjax {
 		$response = new Response();
 
 		try {
-			$params = $this->get_params();
-			// User can edit post view content password protected, same as old.
-			$context = $this->get_context( $params, true );
+			$params  = $this->get_params();
+			$context = $this->get_context( $params );
 			/**
 			 * @var CourseModel $courseModel
 			 * @var QuizPostModel $quizPostModel
@@ -257,7 +230,7 @@ class UserQuizAjax extends AbstractAjax {
 				$checked             = $questionPostModel->check( $answered );
 				$checked['answered'] = $answered;
 			} else {
-				$userQuizModel = $this->find_user_quiz( $userModel->get_id(), $quizPostModel->get_id(), $courseModel->get_id() );
+				$userQuizModel = UserQuizModel::find_user_item( $userModel->get_id(), $quizPostModel->get_id(), LP_QUIZ_CPT, $courseModel->get_id(), LP_COURSE_CPT );
 				// Check on quiz completed will change result saved.
 				if ( ! $userQuizModel instanceof UserQuizModel || ! $userQuizModel->has_started() ) {
 					throw new Exception( esc_html__( 'User quiz is invalid!', 'learnpress' ) );
@@ -414,18 +387,17 @@ class UserQuizAjax extends AbstractAjax {
 	 * Course valid, quiz is item of course, not password protected, user enrolled (or guest when course no required enroll).
 	 *
 	 * @param array $params [ quiz_id, course_id ]
-	 * @param bool $allow_editor_password allow user can edit post view content password protected (instant check)
 	 *
 	 * @return array [ courseModel, quizPostModel, userModel, userCourseModel, is_guest ]
 	 * @throws Exception
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	protected function get_context( array $params, bool $allow_editor_password = false ): array {
+	protected function get_context( array $params ): array {
 		$quiz_id   = absint( $params['quiz_id'] ?? 0 );
 		$course_id = absint( $params['course_id'] ?? 0 );
 
-		$courseModel = $this->find_course( $course_id );
+		$courseModel = CourseModel::find( $course_id, true );
 		if ( ! $courseModel instanceof CourseModel ) {
 			throw new Exception( esc_html__( 'The course is invalid', 'learnpress' ) );
 		}
@@ -437,17 +409,13 @@ class UserQuizAjax extends AbstractAjax {
 		}
 
 		foreach ( [ $quiz_id, $course_id ] as $post_id ) {
-			if ( post_password_required( $post_id )
-				&& ! ( $allow_editor_password && current_user_can( 'edit_post', $post_id ) ) ) {
+			if ( post_password_required( $post_id ) ) {
 				throw new Exception( esc_html__( 'This content is password protected.', 'learnpress' ) );
 			}
 		}
 
 		$user_id   = get_current_user_id();
-		$userModel = $this->find_user( $user_id );
-		if ( $user_id > 0 && ! $userModel instanceof UserModel ) {
-			throw new Exception( esc_html__( 'The user is invalid', 'learnpress' ) );
-		}
+		$userModel = UserModel::find( $user_id, true );
 
 		$context = [
 			'courseModel'     => $courseModel,
@@ -468,7 +436,7 @@ class UserQuizAjax extends AbstractAjax {
 			return $context;
 		}
 
-		$userCourseModel = $this->find_user_course( $userModel->get_id(), $courseModel->get_id() );
+		$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
 		if ( ! $userCourseModel instanceof UserCourseModel ) {
 			throw new Exception( esc_html__( 'User not enrolled course!', 'learnpress' ) );
 		}
@@ -478,46 +446,6 @@ class UserQuizAjax extends AbstractAjax {
 		return $context;
 	}
 
-	/**
-	 * @param int $course_id
-	 *
-	 * @return CourseModel|false
-	 */
-	protected function find_course( int $course_id ) {
-		return CourseModel::find( $course_id, true );
-	}
-
-	/**
-	 * @param int $user_id
-	 *
-	 * @return UserModel|false
-	 */
-	protected function find_user( int $user_id ) {
-		return $user_id > 0 ? UserModel::find( $user_id, true ) : false;
-	}
-
-	/**
-	 * @param int $user_id
-	 * @param int $course_id
-	 *
-	 * @return UserCourseModel|false
-	 */
-	protected function find_user_course( int $user_id, int $course_id ) {
-		return UserCourseModel::find( $user_id, $course_id, true );
-	}
-
-	/**
-	 * Get user quiz from database (not cache), data must be latest to change status.
-	 *
-	 * @param int $user_id
-	 * @param int $quiz_id
-	 * @param int $course_id
-	 *
-	 * @return UserQuizModel|false
-	 */
-	protected function find_user_quiz( int $user_id, int $quiz_id, int $course_id ) {
-		return UserQuizModel::find_user_item( $user_id, $quiz_id, LP_QUIZ_CPT, $course_id, LP_COURSE_CPT );
-	}
 
 	/**
 	 * @param int $question_id
@@ -565,22 +493,5 @@ class UserQuizAjax extends AbstractAjax {
 	 */
 	protected function get_template(): UserQuizTemplate {
 		return UserQuizTemplate::instance();
-	}
-
-	/**
-	 * Clear cache result quiz of user, cache set on LP_User_Item_Quiz::get_results.
-	 *
-	 * @param int $quiz_id
-	 * @param int $user_id
-	 * @param int $course_id
-	 *
-	 * @return void
-	 */
-	protected function clear_quiz_cache( int $quiz_id, int $user_id, int $course_id ) {
-		try {
-			LP_Quiz_Cache::instance()->clear( sprintf( '%d/user/%d/course/%d', $quiz_id, $user_id, $course_id ) );
-		} catch ( Throwable $e ) {
-			LP_Debug::error_log( $e );
-		}
 	}
 }

@@ -17,6 +17,7 @@ use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
 use LP_Cache;
+use LP_Debug;
 use LP_Question_DB;
 
 use LP_Quiz_Filter;
@@ -177,7 +178,7 @@ class QuizPostModel extends PostModel {
 				$question_ids = array();
 			}
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $question_ids;

@@ -123,37 +123,6 @@ const formatTimer = ( seconds, total ) => {
 };
 
 /**
- * Page numbers to show, same as old (end size 1, mid size 1).
- *
- * @param {number} current
- * @param {number} total
- * @param {number} endSize
- * @param {number} midSize
- * @return {Array} numbers and 'dots'
- */
-const getPageNumbers = ( current, total, endSize = 1, midSize = 1 ) => {
-	const pages = [];
-	let dots = false;
-
-	for ( let number = 1; number <= total; number++ ) {
-		if (
-			number === current ||
-			number <= endSize ||
-			( number >= current - midSize && number <= current + midSize ) ||
-			number > total - endSize
-		) {
-			pages.push( number );
-			dots = true;
-		} else if ( dots ) {
-			pages.push( 'dots' );
-			dots = false;
-		}
-	}
-
-	return pages;
-};
-
-/**
  * Replace %1$d, %2$d... (and %d in order) of text.
  *
  * @param {string} text
@@ -183,8 +152,8 @@ export class UserQuiz {
 		elBtnHint: '.btn-show-hint',
 		elBtnReview: '.lp-button.review-quiz',
 		elBtnBackResult: '.lp-button.back-quiz',
-		elBtnPage: '.questions-pagination .page-numbers[data-page]',
-		elPagination: '.questions-pagination',
+		elBtnPage: '.questions-pagination a.page-numbers',
+		elPaginationItem: '.questions-pagination__item',
 		elQuestionsIndex: '.questions-index',
 		elCountdown: '.countdown',
 		elInputTimeSpend: 'input[name="lp-quiz-time-spend"]',
@@ -339,8 +308,8 @@ export class UserQuiz {
 		}
 
 		// Checked once, cannot check again (same as server: already_checked).
-		if ( elQuestion.querySelector( '.question-response' )
-			|| this.guest.getCheckedIds().includes( parseInt( elQuestion.dataset.id ) ) ) {
+		if ( elQuestion.querySelector( '.question-response' ) ||
+			this.guest.getCheckedIds().includes( parseInt( elQuestion.dataset.id ) ) ) {
 			return;
 		}
 
@@ -448,7 +417,9 @@ export class UserQuiz {
 			return;
 		}
 
-		this.showPage( elScope, parseInt( elBtn.dataset.page ) || 1 );
+		// Link of page ends with '#page-{n}', paginate_links() can add query of current URL before it (AJAX request).
+		args.e.preventDefault();
+		this.showPage( elScope, parseInt( elBtn.getAttribute( 'href' )?.match( /#page-(\d+)$/ )?.[ 1 ] ) || 1 );
 		this.scrollToTop();
 	}
 
@@ -469,10 +440,10 @@ export class UserQuiz {
 			elQuestion.style.display = ( parseInt( elQuestion.dataset.page ) || 1 ) === page ? '' : 'none';
 		} );
 
-		const elPagination = elScope.querySelector( UserQuiz.selectors.elPagination );
-		if ( elPagination ) {
-			elPagination.innerHTML = this.htmlPageNumbers( page, numPages );
-		}
+		// Pagination of each page is rendered by PHP, show the one of current page.
+		elScope.querySelectorAll( UserQuiz.selectors.elPaginationItem ).forEach( ( elItem ) => {
+			elItem.hidden = ( parseInt( elItem.dataset.page ) || 1 ) !== page;
+		} );
 
 		const elIndex = elScope.querySelector( UserQuiz.selectors.elQuestionsIndex );
 		if ( elIndex ) {
@@ -497,40 +468,6 @@ export class UserQuiz {
 		if ( elScope.matches( UserQuiz.selectors.elDoing ) ) {
 			this.storageSet( this.getStorageKey( 'Page' ), String( page ) );
 		}
-	}
-
-	/**
-	 * HTML page links, same markup as old.
-	 *
-	 * @param {number} current
-	 * @param {number} numPages
-	 * @return {string} html
-	 */
-	htmlPageNumbers( current, numPages ) {
-		if ( numPages <= 1 ) {
-			return '';
-		}
-
-		let html = '<div class="nav-links">';
-		if ( current > 1 ) {
-			html += `<button type="button" class="page-numbers prev" data-type="question-navx" data-page="${ current - 1 }">${ this.i18n.prev || 'Prev' }</button>`;
-		}
-
-		getPageNumbers( current, numPages ).forEach( ( number ) => {
-			if ( number === 'dots' ) {
-				html += '<span class="page-numbers dots">&hellip;</span>';
-			} else if ( number === current ) {
-				html += `<span class="page-numbers current">${ number }</span>`;
-			} else {
-				html += `<button type="button" class="page-numbers" data-page="${ number }">${ number }</button>`;
-			}
-		} );
-
-		if ( current < numPages ) {
-			html += `<button type="button" class="page-numbers next" data-type="question-navx" data-page="${ current + 1 }">${ this.i18n.next || 'Next' }</button>`;
-		}
-
-		return html + '</div>';
 	}
 
 	scrollToTop() {

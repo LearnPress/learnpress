@@ -9,6 +9,7 @@
 namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Cache\LPCourseCache;
+use LearnPress\Helpers\LPDateTime;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -42,7 +43,7 @@ class SingleCourseTemplate {
 	 */
 	public $currentItemModel = false;
 
-	public function init() {
+	public function init(): void {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
 	}
 
@@ -650,7 +651,7 @@ class SingleCourseTemplate {
 			if ( empty( $duration_number ) ) {
 				$duration_str = __( 'Lifetime', 'learnpress' );
 			} else {
-				$duration_str = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
+				$duration_str = LPDateTime::get_string_plural_duration( $duration_number, $duration_type );
 			}
 
 			$html_wrapper = [

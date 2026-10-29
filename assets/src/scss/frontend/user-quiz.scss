@@ -20,6 +20,74 @@
 		cursor: not-allowed;
 	}
 
+	// Pagination of questions rendered by Template::html_pagination() (nav > ul > li > a), same look as old .nav-links of _popup.scss.
+	.questions-pagination {
+
+		.learn-press-pagination {
+			margin: 6px 0 0;
+		}
+
+		ul.page-numbers {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 4px;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+
+			// Flex: link fills the height of li, so prev / next (no vertical padding) are as high as page numbers.
+			> li {
+				display: flex;
+				margin: 0;
+			}
+		}
+
+		.page-numbers {
+
+			&:not(ul) {
+				display: flex;
+				margin: 0;
+				padding: 12px 16px;
+				border: 1px solid $border-color;
+				border-radius: $border-radius-global;
+				color: $text-color-base;
+				background-color: transparent;
+				font-size: $font-size-small;
+				font-weight: 400;
+				line-height: 1;
+				text-decoration: none;
+				align-items: center;
+				justify-content: center;
+			}
+
+			&.current,
+			&:not(ul):hover {
+				border-color: $color-primary;
+				color: $color-white;
+				background-color: $color-primary;
+			}
+
+			&.dots {
+				border: none;
+
+				&:hover {
+					color: inherit;
+					background-color: transparent;
+				}
+			}
+
+			&.prev,
+			&.next {
+				padding: 0 16px;
+			}
+
+			i {
+				font-size: 20px;
+			}
+		}
+	}
+
 	// Sorting choice (new in core).
 	.lp-sorting-choice {
 		margin: 0;

@@ -1313,8 +1313,6 @@ class CourseModel {
 				case LP_QUIZ_CPT:
 					$item = QuizPostModel::find( $item_id, true );
 					break;
-				case LP_QUESTION_CPT:
-					break;
 				default:
 					$item = apply_filters( 'learn-press/course/get-item-model', $item, $item_id, $item_type, $this );
 					break;

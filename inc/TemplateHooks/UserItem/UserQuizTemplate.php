@@ -15,6 +15,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserItems\UserQuizModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Learning\QuestionTemplate;
@@ -135,7 +136,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			case UserQuizModel::STATUS_STARTED:
 				$html = $this->html_doing_quiz( $courseModel, $quizPostModel, $userQuizModel );
 				break;
-			case UserQuizModel::STATUS_COMPLETED:
+			case UserItemModel::STATUS_COMPLETED:
 				$html = $this->html_completed( $courseModel, $quizPostModel, $userQuizModel->get_result(), $userQuizModel );
 				break;
 			default:
@@ -210,17 +211,23 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 * @param CourseModel $courseModel
 	 * @param QuizPostModel $quizPostModel
 	 * @param UserQuizModel|false $userQuizModel
+	 * @param array $args
 	 *
 	 * @return string
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function html_doing_quiz( CourseModel $courseModel, QuizPostModel $quizPostModel, $userQuizModel = false ): string {
+	public function html_doing_quiz(
+		CourseModel $courseModel,
+		QuizPostModel $quizPostModel,
+		$userQuizModel = false,
+		array $args = []
+	): string {
 		$question_ids = $quizPostModel->get_question_ids();
-		$total        = count( $question_ids );
+		$total        = $quizPostModel->count_questions();
 		$per_page     = $quizPostModel->get_pagination();
 		$num_pages    = $per_page > 0 ? (int) ceil( $total / $per_page ) : 1;
-		$duration     = ( new LP_Duration( $quizPostModel->get_duration() ) )->get();
+		$duration     = (float) $quizPostModel->get_duration();
 		$remaining    = $duration;
 		$time_spend   = 0;
 		$result       = [];
@@ -581,8 +588,42 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	}
 
 	/**
+	 * HTML pagination of questions: one pagination per page (Template::html_pagination), JS only shows the one of current page.
+	 * Link of page is '#page-{n}', JS reads the page number from it.
+	 *
+	 * @param int $num_pages
+	 *
+	 * @return string
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function html_questions_pagination( int $num_pages ): string {
+		if ( $num_pages <= 1 ) {
+			return '';
+		}
+
+		$html = '';
+		for ( $page = 1; $page <= $num_pages; $page++ ) {
+			$html .= sprintf(
+				'<div class="questions-pagination__item" data-page="%1$d"%2$s>%3$s</div>',
+				$page,
+				1 === $page ? '' : ' hidden',
+				Template::instance()->html_pagination(
+					[
+						'total_pages' => $num_pages,
+						'paged'       => $page,
+						'base'        => '#page-%#%',
+					]
+				)
+			);
+		}
+
+		return sprintf( '<div class="questions-pagination">%s</div>', $html );
+	}
+
+	/**
 	 * HTML buttons below questions when doing quiz: pagination, finish.
-	 * Pagination links are built by JS, finish button shows on last page.
+	 * Finish button shows on last page (JS).
 	 *
 	 * @param CourseModel $courseModel
 	 * @param QuizPostModel $quizPostModel
@@ -601,7 +642,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			'left'        => sprintf(
 				'<div class="button-left %1$s">%2$s</div>',
 				$this->get_nav_class(),
-				$num_pages > 1 ? sprintf( '<div class="questions-pagination" data-num-pages="%d"></div>', $num_pages ) : ''
+				$this->html_questions_pagination( $num_pages )
 			),
 			'right'       => sprintf(
 				'<div class="button-right">%s</div>',
@@ -869,7 +910,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			'buttons'     => sprintf(
 				'<div class="quiz-buttons align-center"><div class="button-left %1$s">%2$s</div><div class="button-right"><button type="button" class="lp-button back-quiz">%3$s</button></div></div>',
 				$this->get_nav_class(),
-				$num_pages > 1 ? sprintf( '<div class="questions-pagination" data-num-pages="%d"></div>', $num_pages ) : '',
+				$this->html_questions_pagination( $num_pages ),
 				esc_html__( 'Result', 'learnpress' )
 			),
 			'wrapper_end' => '</div>',
