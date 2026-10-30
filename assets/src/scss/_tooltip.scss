@@ -1,0 +1,170 @@
+/**
+ * Tooltip - pure CSS, no JavaScript.
+ *
+ * USAGE
+ *   <span class="lp-tooltip" data-tip="message">?</span>
+ *
+ * CONFIG (all in HTML)
+ *   data-tip="..."        Text shown in the bubble (required).
+ *   data-pos="..."        Side of the trigger: top (default), bottom, left, right.
+ *   style="--lp-tip-width: 300px"   Max width of the bubble (default 200px).
+ *   style="--lp-tip-bg: #0073aa"    Bubble and arrow color (default dark gray).
+ *   style="--lp-tip-color: #fff"    Text color.
+ *
+ * EXAMPLE
+ *   <span class="lp-tooltip" data-tip="Hiện ở dưới" data-pos="bottom">?</span>
+ *   <span class="lp-tooltip" data-tip="Dài hơn" style="--lp-tip-width: 320px" tabindex="0">?</span>
+ *
+ * NOTES
+ *   - Shows on hover. Add tabindex="0" to make it show on keyboard focus too.
+ *   - Do not put it inside an element with overflow: hidden, or the bubble gets clipped.
+ *   - Text wraps automatically inside --lp-tip-width.
+ */
+
+.lp-tooltip {
+	--lp-tip-bg: #1f2937;
+	--lp-tip-color: #fff;
+	--lp-tip-width: 200px;
+	--lp-tip-gap: 8px;
+
+	position: relative;
+	display: inline-block;
+	//cursor: help;
+
+	// Bubble (text) and arrow (triangle) are both pseudo-elements.
+	&::after,
+	&::before {
+		position: absolute;
+		z-index: 99999;
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transition: opacity 0.15s ease, transform 0.15s ease;
+	}
+
+	&::after {
+		content: attr(data-tip);
+		width: max-content;
+		max-width: var(--lp-tip-width);
+		padding: 6px 10px;
+		border-radius: 4px;
+		background: var(--lp-tip-bg);
+		color: var(--lp-tip-color);
+		font-size: 12px;
+		font-weight: 400;
+		font-style: normal;
+		line-height: 1.4;
+		text-align: left;
+		white-space: normal;
+	}
+
+	&::before {
+		content: "";
+		width: 0;
+		height: 0;
+		border: 6px solid transparent;
+	}
+
+	// Top (default)
+	&::after {
+		bottom: calc(100% + var(--lp-tip-gap));
+		left: 50%;
+		transform: translate(-50%, 4px);
+	}
+
+	&::before {
+		bottom: calc(100% + var(--lp-tip-gap) - 6px);
+		left: 50%;
+		margin-left: -6px;
+		border-top-color: var(--lp-tip-bg);
+		border-bottom-width: 0;
+	}
+
+	// Bottom
+	&[data-pos="bottom"] {
+		&::after {
+			top: calc(100% + var(--lp-tip-gap));
+			bottom: auto;
+			transform: translate(-50%, -4px);
+		}
+
+		&::before {
+			top: calc(100% + var(--lp-tip-gap) - 6px);
+			bottom: auto;
+			border-top-width: 0;
+			border-bottom-color: var(--lp-tip-bg);
+			border-bottom-width: 6px;
+		}
+	}
+
+	// Left (bubble appears to the left of the trigger)
+	&[data-pos="left"] {
+		&::after {
+			right: calc(100% + var(--lp-tip-gap));
+			bottom: auto;
+			left: auto;
+			top: 50%;
+			transform: translate(4px, -50%);
+		}
+
+		&::before {
+			right: calc(100% + var(--lp-tip-gap) - 6px);
+			bottom: auto;
+			left: auto;
+			top: 50%;
+			margin: -6px 0 0;
+			border-top-width: 6px;
+			border-bottom-width: 6px;
+			border-left-width: 6px;
+			border-right-width: 0;
+			border-left-color: var(--lp-tip-bg);
+		}
+	}
+
+	// Right (bubble appears to the right of the trigger)
+	&[data-pos="right"] {
+		&::after {
+			left: calc(100% + var(--lp-tip-gap));
+			bottom: auto;
+			right: auto;
+			top: 50%;
+			transform: translate(-4px, -50%);
+		}
+
+		&::before {
+			left: calc(100% + var(--lp-tip-gap) - 6px);
+			bottom: auto;
+			right: auto;
+			top: 50%;
+			margin: -6px 0 0;
+			border-top-width: 6px;
+			border-bottom-width: 6px;
+			border-right-width: 6px;
+			border-left-width: 0;
+			border-right-color: var(--lp-tip-bg);
+		}
+	}
+
+	// Show on hover or keyboard focus
+	&:hover,
+	&:focus-visible {
+		&::after,
+		&::before {
+			opacity: 1;
+			visibility: visible;
+		}
+
+		&::after {
+			transform: translate(-50%, 0);
+		}
+
+		&[data-pos="bottom"]::after {
+			transform: translate(-50%, 0);
+		}
+
+		&[data-pos="left"]::after,
+		&[data-pos="right"]::after {
+			transform: translate(0, -50%);
+		}
+	}
+}

@@ -508,21 +508,6 @@ $remove-icon-color: #e74c3c;
 	}
 }
 
-.lp-label-counter {
-	display: inline-block;
-	height: 20px;
-	padding: 0 10px;
-	border-radius: 20px;
-	color: #fff;
-	background: #2196f3;
-	font-weight: bold;
-	line-height: 1.25rem;
-
-	&.disabled {
-		background: #ddd;
-	}
-}
-
 @keyframes spin {
 	100% {
 		-webkit-transform: rotate(360deg);

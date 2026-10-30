@@ -71,25 +71,9 @@ class ProfileStudentEnrolledTemplate {
 	 * @return string
 	 */
 	public function tab_content( $tab_key = '', $profile_tab = null, $user = null ): string {
-		$profile      = LP_Profile::instance();
-		$user         = is_object( $user ) ? $user : $profile->get_user();
-		$user_current = $profile->get_user_current();
-
-		if ( ! is_object( $user ) || ! method_exists( $user, 'can_create_course' ) || ! method_exists( $user, 'get_id' ) ) {
-			return '';
-		}
-
-		if ( ! is_object( $user_current ) || ! method_exists( $user_current, 'get_id' ) ) {
-			return '';
-		}
-
-		if ( ! $user->can_create_course() || (int) $user->get_id() !== (int) $user_current->get_id() ) {
-			return '';
-		}
-
 		ob_start();
 		echo '<div class="lp-enrolled-students">';
-		AdminListStudentsEnrolled::instance()->enrolled_students_layout( (int) $user->get_id() );
+		AdminListStudentsEnrolled::instance()->enrolled_students_layout();
 		echo '</div>';
 
 		return ob_get_clean();
