@@ -207,6 +207,17 @@ class AdminAddonsPage {
 			'learn-press/admin/addons/page-section',
 			array(
 				'wrapper'     => '<div class="lp-addons-page">',
+				/*'title'       => sprintf(
+					'<h1 class="lp-be-page-title">%s</h1>',
+					esc_html__( 'LearnPress Add-ons New', 'learnpress' )
+				),*/
+				'subtitle'    => sprintf(
+					'<p class="lp-be-page-subtitle">%s</p>',
+					esc_html__(
+						'Extend and power up your online courses with official LearnPress add-ons and integrations.',
+						'learnpress'
+					)
+				),
 				'notice'      => sprintf(
 					'<div class="lp-addon-notice">%s</div>',
 					Template::print_message(
@@ -223,17 +234,6 @@ class AdminAddonsPage {
 						),
 						'info',
 						false
-					)
-				),
-				/*'title'       => sprintf(
-					'<h1 class="lp-be-page-title">%s</h1>',
-					esc_html__( 'LearnPress Add-ons New', 'learnpress' )
-				),*/
-				'subtitle'    => sprintf(
-					'<p class="lp-be-page-subtitle">%s</p>',
-					esc_html__(
-						'Discover high-performance Premium & Education themes optimized 100% for LearnPress LMS.',
-						'learnpress'
 					)
 				),
 				/** @use self::render_addons */
