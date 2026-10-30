@@ -6,6 +6,10 @@ $cb-danger: #dc2626 !default;
 	border: none;
 	background: transparent;
 
+	&.notice {
+		margin: 0;
+	}
+
 	&:has(.learn-press-message) {
 		margin: 15px 0;
 	}

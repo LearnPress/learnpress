@@ -225,10 +225,10 @@ class AdminAddonsPage {
 						false
 					)
 				),
-				'title'       => sprintf(
+				/*'title'       => sprintf(
 					'<h1 class="lp-be-page-title">%s</h1>',
 					esc_html__( 'LearnPress Add-ons New', 'learnpress' )
-				),
+				),*/
 				'subtitle'    => sprintf(
 					'<p class="lp-be-page-subtitle">%s</p>',
 					esc_html__(
@@ -255,7 +255,7 @@ class AdminAddonsPage {
 		echo AdminTemplate::html_on_wp_admin_screen(
 			array(
 				'content' => Template::combine_components( $section ),
-				'title'   => '',
+				'title'   => esc_html__( 'LearnPress Add-ons', 'learnpress' ),
 				'id'      => 'learn-press-addons',
 				'hide_notices_wp' => true,
 			)
