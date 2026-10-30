@@ -187,6 +187,11 @@ class LP_Checkout {
 				break;
 		}
 
+		// Check not enable guest checkout
+		if ( ! is_user_logged_in() && ! $this->is_enable_guest_checkout() ) {
+			throw new Exception( __( 'You must be logged in to checkout.', 'learnpress' ) );
+		}
+
 		// Set session, cart for user have just login/register success.
 		if ( in_array( $this->checkout_action, [ 'login', 'register' ] ) ) {
 			foreach ( $data_session_before_user_login as $key => $item ) {
