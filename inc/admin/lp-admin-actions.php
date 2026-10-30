@@ -195,6 +195,7 @@ add_action( 'admin_footer', 'learn_press_active_course_menu' );
  * Display tabs related to course in admin when user
  * viewing/editing course/category/tags.
  */
+/*
 function learn_press_admin_course_tabs() {
 	if ( ! is_admin() ) {
 		return;
@@ -275,6 +276,7 @@ function learn_press_admin_course_tabs() {
 	}
 }
 add_action( 'all_admin_notices', 'learn_press_admin_course_tabs' );
+*/
 
 /**
  * Create some warning messages:
