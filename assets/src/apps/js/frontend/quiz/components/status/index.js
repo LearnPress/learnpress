@@ -17,7 +17,7 @@ const Status = () => {
 		}
 
 		const $sc = $pc.find( '.content-item-scrollable:eq(1)' );
-		const $qs = $pc.find( '.quiz-status' );
+		const $qs = $pc.find( '.quiz-doing-bar-info' );
 		const pcTop = $qs.offset().top - 92;
 		let isFixed = false;
 
@@ -76,7 +76,7 @@ const Status = () => {
 	const duration = getData( 'duration' );
 	const userMark = getUserMark();
 
-	const classNames = [ 'quiz-status' ];
+	const classNames = [ 'quiz-doing-bar-info' ];
 
 	const start = ( ( currentPage - 1 ) * questionsPerPage ) + 1;
 	let end = start + questionsPerPage - 1;

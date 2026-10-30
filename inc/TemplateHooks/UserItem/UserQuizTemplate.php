@@ -247,7 +247,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 				$total,
 				$num_pages
 			),
-			'status'      => $this->html_status_bar(
+			'bar_info'    => $this->html_doing_bar_info(
 				$courseModel,
 				$quizPostModel,
 				[
@@ -270,7 +270,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	}
 
 	/**
-	 * HTML status bar when doing quiz: questions index, earned point, button finish, timer.
+	 * HTML info bar when doing quiz: questions index, earned point, button finish, timer.
 	 *
 	 * @param CourseModel $courseModel
 	 * @param QuizPostModel $quizPostModel
@@ -280,19 +280,25 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function html_status_bar( CourseModel $courseModel, QuizPostModel $quizPostModel, array $data ): string {
+	public function html_doing_bar_info( CourseModel $courseModel, QuizPostModel $quizPostModel, array $data ): string {
 		$total = (int) ( $data['total'] ?? 0 );
 		$end   = (int) ( $data['per_page'] ?? 0 ) > 0 ? min( (int) $data['per_page'], $total ) : $total;
 
 		$section = [
-			'wrapper'     => '<div class="quiz-status"><div>',
-			'index'       => sprintf( '<div class="questions-index">%s</div>', $this->html_questions_index( 1, $end, $total ) ),
+			'wrapper'     => '<div class="quiz-doing-bar-info"><div>',
+			'index'       => sprintf(
+				'<div class="questions-index">%s</div>',
+				$this->html_questions_index( 1, $end, $total )
+			),
 			'point'       => sprintf(
 				'<div class="current-point">%s</div>',
 				sprintf(
 					/* translators: %s: point */
 					esc_html__( 'Earned Point: %s', 'learnpress' ),
-					'<span class="current-point__value">' . esc_html( (string) ( $data['user_mark'] ?? 0 ) ) . '</span>'
+					sprintf(
+						'<span class="current-point__value">%s</span>',
+						esc_html( (string) ( $data['user_mark'] ?? 0 ) )
+					)
 				)
 			),
 			'submit'      => sprintf(
@@ -304,7 +310,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		];
 
 		return Template::combine_components(
-			apply_filters( 'learn-press/user/quiz/html-status-bar', $section, $courseModel, $quizPostModel, $data )
+			apply_filters( 'learn-press/user/quiz/html-doing-bar-info', $section, $courseModel, $quizPostModel, $data )
 		);
 	}
 
