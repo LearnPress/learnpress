@@ -1,166 +1,11 @@
 <?php
 /**
- * Defines the functions which called by hooks
- */
-
-/***************************************/
-
-/**
- * Filter post types the user can access in admin
- *
- * @param $query
- * @editor tungnx
- * @modify 4.1.4 - comment - not use make redundancy
- */
-/*function _learn_press_set_user_items( $query ) {
-	global $post_type, $pagenow, $wpdb;
-
-	if ( ! function_exists( 'wp_get_current_user' ) ) {
-		include( ABSPATH . 'wp-includes/pluggable.php' );
-	}
-
-	if ( ! did_action( 'plugin_loaded' ) || current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
-		return $query;
-	}
-
-	if ( ! in_array(
-		$post_type,
-		apply_filters(
-			'learn-press/filter-user-access-types',
-			array(
-				LP_COURSE_CPT,
-				LP_LESSON_CPT,
-				LP_QUIZ_CPT,
-				LP_QUESTION_CPT,
-			)
-		)
-	) ) {
-		return;
-	}
-
-	$items = $wpdb->get_col(
-		$wpdb->prepare(
-			"SELECT ID FROM $wpdb->posts
-					WHERE post_type = %s
-					AND post_author = %d",
-			$post_type,
-			get_current_user_id()
-		)
-	);
-
-	if ( count( $items ) == 0 ) {
-		$query->set( 'post_type', 'no-item-access' );
-	} else {
-		$query->set( 'post__in', $items );
-	}
-	add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
-}
-
-add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );*/
-
-/**
- * Restrict user views
- *
- * @param $views
- *
- * @return mixed
- * @editor tungnx
- * @modify 4.1.4 - comment - not see use anywhere
- */
-/*function _learn_press_restrict_view_items( $views ) {
-	$post_type = get_query_var( 'post_type' );
-	$new_views = array(
-		'all'     => __( 'All', 'learnpress' ),
-		'publish' => __( 'Published', 'learnpress' ),
-		'private' => __( 'Private', 'learnpress' ),
-		'pending' => __( 'Pending Review', 'learnpress' ),
-		'future'  => __( 'Scheduled', 'learnpress' ),
-		'draft'   => __( 'Draft', 'learnpress' ),
-		'trash'   => __( 'Trash', 'learnpress' ),
-	);
-
-	$url = 'edit.php';
-
-	foreach ( $new_views as $view => $name ) {
-		$query = array(
-			'post_type' => $post_type,
-		);
-		if ( $view == 'all' ) {
-			$query['all_posts'] = 1;
-			$class              = ( get_query_var( 'all_posts' ) == 1 || ( get_query_var( 'post_status' ) == '' && get_query_var( 'author' ) == '' ) ) ? ' class="current"' : '';
-		} else {
-			$query['post_status'] = $view;
-			$class                = ( get_query_var( 'post_status' ) == $view ) ? ' class="current"' : '';
-		}
-		$result = new WP_Query( $query );
-
-		if ( $result->found_posts > 0 ) {
-			$views[ $view ] = sprintf(
-				'<a href="%s"' . $class . '>' . $name . ' <span class="count">(%d)</span></a>',
-				esc_url_raw( add_query_arg( $query, $url ) ),
-				$result->found_posts
-			);
-		} else {
-			unset( $views[ $view ] );
-		}
-	}
-
-	unset( $views['mine'] );
-
-	return $views;
-}*/
-
-/**
- * Update permalink structure for course
- */
-// function learn_press_update_permalink_structure() {
-// 	global $pagenow;
-
-// 	if ( $pagenow != 'options-permalink.php' ) {
-// 		return;
-// 	}
-
-// 	if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
-// 		return;
-// 	}
-
-// 	$rewrite_prefix      = '';
-// 	$permalink_structure = ! empty( $_REQUEST['permalink_structure'] ) ? $_REQUEST['permalink_structure'] : '';
-
-// 	if ( $permalink_structure ) {
-// 		$rewrite_prefix = array();
-// 		$segs           = explode( '/', $permalink_structure );
-
-// 		if ( sizeof( $segs ) ) {
-// 			foreach ( $segs as $seg ) {
-// 				if ( strpos( $seg, '%' ) !== false || $seg == 'archives' ) {
-// 					break;
-// 				}
-// 				$rewrite_prefix[] = $seg;
-// 			}
-// 		}
-
-// 		$rewrite_prefix = array_filter( $rewrite_prefix );
-
-// 		if ( sizeof( $rewrite_prefix ) ) {
-// 			$rewrite_prefix = join( '/', $rewrite_prefix ) . '/';
-// 		} else {
-// 			$rewrite_prefix = '';
-// 		}
-// 	}
-
-// 	update_option( 'learn_press_permalink_structure', $rewrite_prefix );
-// }
-// add_action( 'init', 'learn_press_update_permalink_structure' );
-
-/**
  * Active Courses menu under LearnPress
  * when user is editing course and course
  * category.
  */
 function learn_press_active_course_menu() {
-	$post_type = LP_Request::get( 'post_type' );
-
+	$post_type = LP_Request::get_param( 'post_type' );
 	if ( ! $post_type ) {
 		return;
 	}
@@ -177,7 +22,7 @@ function learn_press_active_course_menu() {
 				$current.parent( 'li' ).addClass( 'current' );
 			}
 
-			<?php if ( $post_type === LP_COURSE_CPT && LP_Request::get( 'taxonomy' ) === 'course_category' ) { ?>
+			<?php if ( $post_type === LP_COURSE_CPT && LP_Request::get_param( 'taxonomy' ) === 'course_category' ) { ?>
 				$( 'body' ).removeClass( 'sticky-menu' );
 				$lpMainMenu.addClass( 'wp-has-current-submenu wp-menu-open' ).removeClass( 'wp-not-current-submenu' );
 				$lpMainMenu.children( 'a' ).addClass( 'wp-has-current-submenu wp-menu-open' ).removeClass( 'wp-not-current-submenu' );
@@ -277,27 +122,4 @@ function learn_press_admin_course_tabs() {
 }
 add_action( 'all_admin_notices', 'learn_press_admin_course_tabs' );
 */
-
-/**
- * Create some warning messages:
- *  + LP Profile page is not setup
- *  + LP Checkout page is not setup
- */
-if ( ! function_exists( 'lp_remove_admin_warning' ) ) {
-	function lp_remove_admin_warning() {
-		if ( isset( $_POST['action'] ) && $_POST['action'] === 'lp_remove_admin_warning' && isset( $_POST['name'] ) ) {
-			if ( empty( $transient_profile ) ) {
-				set_transient( $_POST['name'], true, 60 * 60 * 12 );
-			}
-
-			echo 'success';
-			wp_die();
-
-		}
-
-		echo 'error';
-		wp_die();
-	}
-}
-//add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 
