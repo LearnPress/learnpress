@@ -207,8 +207,7 @@ class AdminStudentNotesTemplate {
 						'default_value' => $args['student'] ? (string) $args['student'] : '',
 					)
 				),
-				'lp-student-notes-student',
-				__( 'Search by student name or email.', 'learnpress' )
+				'lp-student-notes-student'
 			)
 			. $field(
 				__( 'Course', 'learnpress' ),
@@ -220,8 +219,7 @@ class AdminStudentNotesTemplate {
 						'default_value' => $args['course'] ? (string) $args['course'] : '',
 					)
 				),
-				'lp-student-notes-course',
-				__( 'Search by course title.', 'learnpress' )
+				'lp-student-notes-course'
 			)
 			. $field(
 				__( 'Search', 'learnpress' ),

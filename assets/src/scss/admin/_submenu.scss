@@ -151,4 +151,11 @@
 			text-indent: -9999px;
 		}
 	}
+
+	.opensub {
+		.wp-submenu {
+			overflow: auto;
+			max-height: 800px;
+		}
+	}
 }
