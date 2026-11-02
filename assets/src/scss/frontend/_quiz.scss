@@ -522,7 +522,7 @@ button[data-counter] {
 			}
 
 			.submit-quiz {
-				#button-submit-quiz {
+				.lp-button {
 					margin: 0;
 					border-radius: 4px;
 					overflow: hidden;
@@ -1192,4 +1192,17 @@ button[data-counter] {
 			text-align: center;
 		}
 	}
+}
+
+.questions-pagination {
+	position: fixed;
+	z-index: 999;
+	right: 0;
+	bottom: 0;
+	text-align: center;
+	left: var(--lp-width-popup-curriculum, 450px);
+	background: var(--lp-bg-color-lesson, #fff);
+	transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	transform: translateZ(0);
+	padding: 8px 15px;
 }

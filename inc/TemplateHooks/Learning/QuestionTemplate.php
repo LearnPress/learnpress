@@ -61,68 +61,6 @@ class QuestionTemplate {
 	}
 
 	/**
-	 * HTML of a question: title, content, answers, explanation, hint, footer.
-	 *
-	 * Args extend parse_answer_args():
-	 * index: number show before title (0 to hide).
-	 * show_explanation: show explanation (question checked or quiz completed).
-	 * edit_link: link edit question (only for user can edit).
-	 * footer: HTML buttons below question (instant check...).
-	 * page: page of question in quiz.
-	 * hidden: hide question (not in current page).
-	 *
-	 * @param QuestionPostModel $questionPostModel
-	 * @param array $args
-	 *
-	 * @return string
-	 * @since 4.5.0
-	 * @version 1.0.0
-	 */
-	public function html_question( QuestionPostModel $questionPostModel, array $args = [] ): string {
-		$args = array_merge(
-			[
-				'index'            => 0,
-				'show_explanation' => false,
-				'edit_link'        => '',
-				'footer'           => '',
-				'page'             => 1,
-				'hidden'           => false,
-			],
-			$this->parse_answer_args( $args )
-		);
-
-		$classes = [ 'question', 'question-' . $questionPostModel->get_type() ];
-		if ( $args['show_correct'] ) {
-			$classes[] = 'question-answered';
-		}
-
-		$explanation = $args['show_explanation'] ? (string) $questionPostModel->get_explanation() : '';
-		// Hint (button + content) not show when has explanation, same as old.
-		$args['show_hint'] = '' === $explanation && '' !== (string) $questionPostModel->get_hint();
-
-		$section = [
-			'wrapper'     => sprintf(
-				'<div class="%1$s" data-id="%2$d" data-page="%3$d"%4$s>',
-				esc_attr( implode( ' ', $classes ) ),
-				$questionPostModel->get_id(),
-				(int) $args['page'],
-				$args['hidden'] ? ' style="display: none;"' : ''
-			),
-			'title'       => $this->html_title( $questionPostModel, $args ),
-			'hint'        => $args['show_hint'] ? $this->html_hint( $questionPostModel ) : '',
-			'content'     => $this->html_content( $questionPostModel ),
-			'answers'     => $this->html_answers( $questionPostModel, $args ),
-			'explanation' => $this->html_explanation( $explanation ),
-			'footer'      => $args['footer'],
-			'wrapper_end' => '</div>',
-		];
-
-		return Template::combine_components(
-			apply_filters( 'learn-press/question/html-question', $section, $questionPostModel, $args )
-		);
-	}
-
-	/**
 	 * HTML title of question: index, title, button hint, link edit.
 	 *
 	 * @param QuestionPostModel $questionPostModel
@@ -133,15 +71,16 @@ class QuestionTemplate {
 	 * @version 1.0.0
 	 */
 	public function html_title( QuestionPostModel $questionPostModel, array $args = [] ): string {
-		$index     = (int) ( $args['index'] ?? 0 );
-		$edit_link = (string) ( $args['edit_link'] ?? '' );
-		$show_hint = $args['show_hint'] ?? ( '' !== (string) $questionPostModel->get_hint() );
+		$index = (int) ( $args['index'] ?? 0 );
 
 		$section = [
 			'wrapper'     => '<h4 class="question-title">',
 			'index'       => $index > 0 ? sprintf( '<span class="question-index">%d.</span>', $index ) : '',
-			'title'       => sprintf( '<span>%s</span>', wp_kses_post( $questionPostModel->get_the_title() ) ),
-			'hint'        => $show_hint
+			'title'       => sprintf(
+				'<span>%s</span>',
+				wp_kses_post( $questionPostModel->get_the_title() )
+			),
+			'hint'        => $args['show_hint'] ?? $this->html_hint( $questionPostModel )
 				? sprintf(
 					'<span class="btn-show-hint lp-tooltip" data-tip="%s" tabindex="0">
 						<span class="lp-icon-question-circle"></span>
@@ -149,8 +88,14 @@ class QuestionTemplate {
 					esc_attr__( 'View hint', 'learnpress' )
 				)
 				: '',
-			'edit_link'   => $edit_link
-				? sprintf( '<span class="edit-link"><a href="%s">%s</a></span>', esc_url( $edit_link ), esc_html__( 'Edit', 'learnpress' ) )
+			'edit_link'   => $questionPostModel->check_capabilities_update()
+				? sprintf(
+					'<span class="edit-link">
+						<a href="%s">%s</a>
+					</span>',
+					esc_url( $questionPostModel->get_edit_link() ),
+					esc_html__( 'Edit', 'learnpress' )
+				)
 				: '',
 			'wrapper_end' => '</h4>',
 		];
@@ -181,21 +126,27 @@ class QuestionTemplate {
 	/**
 	 * HTML explanation of question.
 	 *
-	 * @param string $explanation
-	 *
+	 * @param QuestionPostModel $questionPostModel
+	 * @param array $args
 	 * @return string
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function html_explanation( string $explanation ): string {
-		if ( '' === $explanation ) {
+	public function html_explanation( QuestionPostModel $questionPostModel, array $args = [] ): string {
+		$explanation = (string) $questionPostModel->get_explanation();
+		if ( empty( $explanation ) ) {
 			return '';
 		}
 
+		$explanation = do_shortcode( $explanation );
+
 		return sprintf(
-			'<div class="question-explanation-content"><strong class="explanation-title">%s:</strong><div>%s</div></div>',
+			'<div class="question-explanation-content">
+					<strong class="explanation-title">%s:</strong>
+					<div>%s</div>
+				</div>',
 			esc_html__( 'Explanation', 'learnpress' ),
-			wp_kses_post( $explanation )
+			Template::sanitize_html_content( $explanation )
 		);
 	}
 
@@ -203,19 +154,25 @@ class QuestionTemplate {
 	 * HTML hint of question, hidden until user click button hint.
 	 *
 	 * @param QuestionPostModel $questionPostModel
+	 * @param array $args
 	 *
 	 * @return string
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function html_hint( QuestionPostModel $questionPostModel ): string {
-		$hint = (string) $questionPostModel->get_hint();
-		if ( '' === $hint ) {
+	public function html_hint( QuestionPostModel $questionPostModel, array $args = [] ): string {
+		$hint = $questionPostModel->get_hint();
+		if ( empty( $hint ) ) {
 			return '';
 		}
 
+		$hint = do_shortcode( $hint );
+
 		return sprintf(
-			'<div class="question-hint-content" style="display: none;"><strong class="hint-title">%s:</strong><div>%s</div></div>',
+			'<div class="question-hint-content" style="display: none;">
+				<strong class="hint-title">%s:</strong>
+				<div>%s</div>
+			</div>',
 			esc_html__( 'Hint', 'learnpress' ),
 			wp_kses_post( $hint )
 		);
@@ -551,7 +508,10 @@ class QuestionTemplate {
 		$point      = $this->get_point( $questionPostModel );
 
 		$html = sprintf(
-			'<div class="question-response %1$s"><span class="label">%2$s</span><span class="point">%3$s</span></div>',
+			'<div class="question-response %1$s">
+					<span class="label">%2$s</span>
+					<span class="point">%3$s</span>
+				</div>',
 			$is_correct ? 'correct' : 'incorrect',
 			$is_correct ? esc_html__( 'Correct', 'learnpress' ) : esc_html__( 'Incorrect', 'learnpress' ),
 			esc_html(
@@ -583,7 +543,16 @@ class QuestionTemplate {
 		}
 
 		$html = sprintf(
-			'<div class="question-response correct"><span class="label">%1$s</span><span class="point">%2$s</span><span class="lp-fib-note"><span style="background: #00adff"></span>%3$s</span><span class="lp-fib-note"><span style="background: #d85554"></span>%4$s</span></div>',
+			'<div class="question-response correct">
+				<span class="label">%1$s</span>
+				<span class="point">%2$s</span>
+				<span class="lp-fib-note">
+					<span style="background: #00adff"></span>%3$s
+				</span>
+				<span class="lp-fib-note">
+					<span style="background: #d85554"></span>%4$s
+				</span>
+			</div>',
 			esc_html__( 'Points', 'learnpress' ),
 			esc_html(
 				sprintf(
@@ -610,7 +579,7 @@ class QuestionTemplate {
 	 * @version 1.0.0
 	 */
 	public function get_point( QuestionPostModel $questionPostModel ): float {
-		$mark = (float) $questionPostModel->get_mark();
+		$mark = $questionPostModel->get_mark();
 
 		return $mark > 0 ? $mark : 1;
 	}

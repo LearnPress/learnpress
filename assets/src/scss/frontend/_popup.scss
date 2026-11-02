@@ -23,7 +23,7 @@
 	}
 }
 
-.lp-sidebar-toggle {
+/*.lp-sidebar-toggle {
 
 	&__close {
 		.content-item-wrap {
@@ -34,7 +34,7 @@
 			}
 		}
 	}
-}
+}*/
 
 .course-item-nav {
 	display: flex;
@@ -254,7 +254,7 @@
 	background: var(--lp-bg-color-lesson, #fff);
 	align-items: center;
 	transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-	will-change: left;
+	//will-change: left;
 	transform: translateZ(0);
 
 	.course-title {
@@ -974,7 +974,7 @@
 	background: $bg-color-lesson;
 	// Smooth animation for zoom in/out
 	transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-	will-change: left;
+	//will-change: left;
 	transform: translateZ(0); // GPU acceleration
 
 
@@ -1450,7 +1450,7 @@ body {
 		//	}
 		//}
 
-		&.align-center {
+		/*&.align-center {
 			display: block;
 			text-align: center;
 
@@ -1490,7 +1490,7 @@ body {
 					margin-bottom: 16px;
 				}
 			}
-		}
+		}*/
 
 		&:not(.infinity) {
 

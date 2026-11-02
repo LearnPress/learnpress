@@ -480,11 +480,11 @@ add_action( 'learn-press/after-checkout-form', LearnPress::instance()->template(
 // ******************************************************************************************************************* //
 
 //add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
-add_action(
+/*add_action(
 	'learn-press/before-content-item-summary/lp_quiz',
 	LearnPress::instance()->template( 'course' )->callback( 'content-quiz/title.php' ),
 	5
-);
+);*/
 // @since 4.5.0 quiz rendered by PHP (UserQuizTemplate) + user-quiz.js, replace React app (content-quiz/js.php).
 add_action( 'learn-press/content-item-summary/lp_quiz', [ UserQuizTemplate::instance(), 'print_quiz_content' ], 25 );
 // add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_course_item', 5 ); // comment by tungnx

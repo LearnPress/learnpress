@@ -386,7 +386,7 @@ body.twentyseventeen.learnpress-page {
 		}
 	}
 
-	#learn-press-content-item .content-item-wrap .quiz-buttons.align-center .button-left.fixed {
+	#learn-press-content-item .content-item-wrap .quiz-buttons .button-left.fixed {
 		background: var(--lp-bg-color-lesson, #fff);
 	}
 
@@ -580,7 +580,7 @@ body.twentyseventeen.learnpress-page {
 		}
 
 		.content-item-wrap {
-			.quiz-buttons.align-center .button-left.fixed {
+			.quiz-buttons .button-left.fixed {
 				max-width: unset;
 			}
 

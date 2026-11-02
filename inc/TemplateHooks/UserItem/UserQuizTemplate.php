@@ -11,6 +11,7 @@
 
 namespace LearnPress\TemplateHooks\UserItem;
 
+use LearnPress\Databases\DataBase;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Question\QuestionPostModel;
@@ -72,12 +73,18 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 * @param CourseModel $courseModel
 	 * @param QuizPostModel $quizPostModel
 	 * @param UserModel|false $userModel
+	 * @param array $args
 	 *
 	 * @return string
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function html_quiz_content( CourseModel $courseModel, QuizPostModel $quizPostModel, $userModel = false ): string {
+	public function html_quiz_content(
+		CourseModel $courseModel,
+		QuizPostModel $quizPostModel,
+		$userModel = false,
+		array $args = []
+	): string {
 		$quiz_id = $quizPostModel->get_id();
 
 		if ( post_password_required( $quiz_id )
@@ -101,14 +108,24 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 
 		$section = [
 			'wrapper'     => sprintf(
-				'<div id="learn-press-user-quiz" class="lp-user-quiz" data-quiz-id="%d" data-course-id="%d" data-status="%s">',
-				$quiz_id,
-				$courseModel->get_id(),
+				'<div id="learn-press-user-quiz"
+					class="lp-user-quiz"
+					data-quiz-id="%d"
+					data-course-id="%d"
+					data-status="%s">',
+				esc_attr( $quiz_id ),
+				esc_attr( $courseModel->get_id() ),
 				esc_attr( $status )
 			),
-			'description' => $userQuizModel instanceof UserQuizModel ? '' : QuizTemplate::instance()->html_description( $quizPostModel ),
+			'title'       => sprintf(
+				'<h1 class="course-item-title quiz-title">%s</h1>',
+				$quizPostModel->get_the_title()
+			),
+			'description' => $userQuizModel instanceof UserQuizModel
+				? ''
+				: QuizTemplate::instance()->html_description( $quizPostModel ),
 			'screen'      => $quizPostModel->count_questions() > 0
-				? $this->html_screen( $courseModel, $quizPostModel, $userQuizModel )
+				? $this->html_screen( $courseModel, $quizPostModel, $userQuizModel, $args )
 				: Template::print_message( __( 'You haven\'t any question!', 'learnpress' ), 'info', false ),
 			'wrapper_end' => '</div>',
 		];
@@ -124,12 +141,18 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 * @param CourseModel $courseModel
 	 * @param QuizPostModel $quizPostModel
 	 * @param UserQuizModel|false $userQuizModel
+	 * @param array $args
 	 *
 	 * @return string
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function html_screen( CourseModel $courseModel, QuizPostModel $quizPostModel, $userQuizModel = false ): string {
+	public function html_screen(
+		CourseModel $courseModel,
+		QuizPostModel $quizPostModel,
+		$userQuizModel = false,
+		array $args = []
+	): string {
 		$status = $userQuizModel instanceof UserQuizModel ? $userQuizModel->get_status() : '';
 
 		switch ( $status ) {
@@ -205,7 +228,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	}
 
 	/**
-	 * HTML of the doing quiz screen: status bar (timer), questions, buttons.
+	 * HTML of the doing quiz screen: status bar (timer), questions, pagination, button finish.
 	 * Guest (course no required enroll) has not user quiz model, data is default.
 	 *
 	 * @param CourseModel $courseModel
@@ -226,7 +249,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		$question_ids = $quizPostModel->get_question_ids();
 		$total        = $quizPostModel->count_questions();
 		$per_page     = $quizPostModel->get_pagination();
-		$num_pages    = $per_page > 0 ? (int) ceil( $total / $per_page ) : 1;
+		$num_pages    = $per_page > 0 ? DataBase::get_total_pages( $per_page, $total ) : 1;
 		$duration     = (float) $quizPostModel->get_duration();
 		$remaining    = $duration;
 		$time_spend   = 0;
@@ -242,7 +265,10 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 
 		$section = [
 			'wrapper'     => sprintf(
-				'<div class="lp-quiz-doing" data-per-page="%d" data-total="%d" data-num-pages="%d">',
+				'<div class="lp-quiz-doing"
+					data-per-page="%d"
+					data-total="%d"
+					data-num-pages="%d">',
 				$per_page,
 				$total,
 				$num_pages
@@ -260,7 +286,9 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 				]
 			),
 			'questions'   => $this->html_questions( $courseModel, $quizPostModel, $question_ids, $userQuizModel, $result ),
-			'buttons'     => $this->html_doing_buttons( $courseModel, $quizPostModel, $num_pages ),
+			// Hidden when has many pages, JS shows on last page.
+			'btn-finish'  => $this->html_btn_finish( $courseModel, $quizPostModel, $num_pages > 1 ),
+			'pagination'  => $this->html_questions_pagination( $num_pages ),
 			'wrapper_end' => '</div>',
 		];
 
@@ -290,20 +318,11 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 				'<div class="questions-index">%s</div>',
 				$this->html_questions_index( 1, $end, $total )
 			),
-			'point'       => sprintf(
-				'<div class="current-point">%s</div>',
-				sprintf(
-					/* translators: %s: point */
-					esc_html__( 'Earned Point: %s', 'learnpress' ),
-					sprintf(
-						'<span class="current-point__value">%s</span>',
-						esc_html( (string) ( $data['user_mark'] ?? 0 ) )
-					)
-				)
-			),
 			'submit'      => sprintf(
-				'<div><div class="submit-quiz">%s</div>%s</div>',
-				$this->html_btn_finish( $courseModel, $quizPostModel, 'button-submit-quiz' ),
+				'<div>
+					<div class="submit-quiz">%s</div>%s
+				</div>',
+				$this->html_btn_finish( $courseModel, $quizPostModel ),
 				$this->html_timer( (int) ( $data['duration'] ?? 0 ), (int) ( $data['remaining'] ?? 0 ), (int) ( $data['time_spend'] ?? 0 ) )
 			),
 			'wrapper_end' => '</div></div>',
@@ -353,10 +372,17 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		$seconds = $duration > 0 ? $remaining : $time_spend;
 
 		$html = sprintf(
-			'<div class="countdown" data-duration="%1$d" data-remaining="%2$d" data-time-spend="%3$d"><i class="lp-icon-clock"></i><span>%4$s</span><input type="hidden" name="lp-quiz-time-spend" value="%3$d"/></div>',
-			$duration,
-			$remaining,
-			$time_spend,
+			'<div class="countdown"
+				data-duration="%1$d"
+				data-remaining="%2$d"
+				data-time-spend="%3$d">
+				<i class="lp-icon-clock"></i>
+				<span>%4$s</span>
+				<input type="hidden" name="lp-quiz-time-spend" value="%3$d"/>
+			</div>',
+			esc_attr( $duration ),
+			esc_attr( $remaining ),
+			esc_attr( $time_spend ),
 			esc_html( $this->format_timer( $seconds, $duration > 0 ? $duration : $seconds ) )
 		);
 
@@ -431,6 +457,67 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	}
 
 	/**
+	 * HTML of a question: title, content, answers, explanation, hint, footer.
+	 *
+	 * Args extend parse_answer_args():
+	 * index: number show before title (0 to hide).
+	 * show_explanation: show explanation (question checked or quiz completed).
+	 * footer: HTML buttons below question (instant check...).
+	 * page: page of question in quiz.
+	 * hidden: hide question (not in current page).
+	 *
+	 * @param QuestionPostModel $questionPostModel
+	 * @param array $args
+	 *
+	 * @return string
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function html_question( QuestionPostModel $questionPostModel, array $args = [] ): string {
+		$args = array_merge(
+			[
+				'index'            => 0,
+				'show_explanation' => false,
+				'footer'           => '',
+				'page'             => 1,
+				'hidden'           => false,
+			],
+			QuestionTemplate::instance()->parse_answer_args( $args )
+		);
+
+		$classes = [ 'question', 'question-' . $questionPostModel->get_type() ];
+		if ( $args['show_correct'] ) {
+			$classes[] = 'question-answered';
+		}
+
+		// Question checked will not show hint.
+		if ( $args['show_explanation'] ) {
+			$args['show_hint'] = false;
+		}
+
+		$section = [
+			'wrapper'     => sprintf(
+				'<div class="%1$s" data-id="%2$d" data-page="%3$d"%4$s>',
+				esc_attr( implode( ' ', $classes ) ),
+				$questionPostModel->get_id(),
+				(int) $args['page'],
+				$args['hidden'] ? ' style="display: none;"' : ''
+			),
+			'title'       => QuestionTemplate::instance()->html_title( $questionPostModel, $args ),
+			'hint'        => ( $args['show_hint'] ?? false ) ? QuestionTemplate::instance()->html_hint( $questionPostModel ) : '',
+			'content'     => QuestionTemplate::instance()->html_content( $questionPostModel ),
+			'answers'     => QuestionTemplate::instance()->html_answers( $questionPostModel, $args ),
+			'explanation' => $args['show_explanation'] ? QuestionTemplate::instance()->html_explanation( $questionPostModel ) : '',
+			'footer'      => $args['footer'],
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components(
+			apply_filters( 'learn-press/question/html-question', $section, $questionPostModel, $args )
+		);
+	}
+
+	/**
 	 * HTML a question when doing quiz.
 	 * $checked is result of instant check [answered, mark, correct], null when not checked.
 	 *
@@ -445,11 +532,18 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function html_question_doing( CourseModel $courseModel, QuizPostModel $quizPostModel, QuestionPostModel $questionPostModel, int $index, $checked = null, ?bool $hidden = null ): string {
+	public function html_question_doing(
+		CourseModel $courseModel,
+		QuizPostModel $quizPostModel,
+		QuestionPostModel $questionPostModel,
+		int $index,
+		$checked = null,
+		?bool $hidden = null
+	): string {
 		$is_checked = is_array( $checked );
 		$page       = $this->get_page_of_question( $quizPostModel, $index );
 
-		return QuestionTemplate::instance()->html_question(
+		return $this->html_question(
 			$questionPostModel,
 			[
 				'index'            => $index + 1,
@@ -462,7 +556,6 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 				'correct'          => $checked['correct'] ?? null,
 				'mark'             => $checked['mark'] ?? 0,
 				'show_explanation' => $is_checked,
-				'edit_link'        => $this->get_question_edit_link( $questionPostModel ),
 				'footer'           => $is_checked ? '' : $this->html_btn_instant_check( $courseModel, $quizPostModel, $questionPostModel ),
 			]
 		);
@@ -512,19 +605,6 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	}
 
 	/**
-	 * Link edit question, only for user can edit.
-	 *
-	 * @param QuestionPostModel $questionPostModel
-	 *
-	 * @return string
-	 * @since 4.5.0
-	 * @version 1.0.0
-	 */
-	public function get_question_edit_link( QuestionPostModel $questionPostModel ): string {
-		return current_user_can( 'edit_post', $questionPostModel->get_id() ) ? (string) $questionPostModel->get_edit_link() : '';
-	}
-
-	/**
 	 * HTML button instant check question, only when quiz enable instant check.
 	 *
 	 * @param CourseModel $courseModel
@@ -563,18 +643,20 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 *
 	 * @param CourseModel $courseModel
 	 * @param QuizPostModel $quizPostModel
-	 * @param string $id_attr id of button, button on status bar has id 'button-submit-quiz' same as old
 	 * @param bool $hidden
 	 *
 	 * @return string
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function html_btn_finish( CourseModel $courseModel, QuizPostModel $quizPostModel, string $id_attr = '', bool $hidden = false ): string {
+	public function html_btn_finish( CourseModel $courseModel, QuizPostModel $quizPostModel, bool $hidden = false ): string {
 		$html = sprintf(
-			'<button type="button" class="lp-button%1$s"%2$s%3$s data-title="%4$s" data-content="%5$s" data-send="%6$s">%7$s</button>',
-			$id_attr ? '' : ' submit-quiz',
-			$id_attr ? ' id="' . esc_attr( $id_attr ) . '"' : '',
+			'<button type="button"
+				class="lp-button submit-quiz"%1$s
+				data-title="%2$s"
+				data-content="%3$s"
+				data-send="%4$s">%5$s
+			</button>',
 			$hidden ? ' hidden' : '',
 			// Confirm popup (SweetAlert) read data-title, data-content.
 			esc_attr__( 'Finish Quiz', 'learnpress' ),
@@ -590,7 +672,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			esc_html__( 'Finish Quiz', 'learnpress' )
 		);
 
-		return apply_filters( 'learn-press/user/quiz/html-button-finish', $html, $courseModel, $quizPostModel, $id_attr, $hidden );
+		return apply_filters( 'learn-press/user/quiz/html-button-finish', $html, $courseModel, $quizPostModel, $hidden );
 	}
 
 	/**
@@ -625,42 +707,6 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		}
 
 		return sprintf( '<div class="questions-pagination">%s</div>', $html );
-	}
-
-	/**
-	 * HTML buttons below questions when doing quiz: pagination, finish.
-	 * Finish button shows on last page (JS).
-	 *
-	 * @param CourseModel $courseModel
-	 * @param QuizPostModel $quizPostModel
-	 * @param int $num_pages
-	 *
-	 * @return string
-	 * @since 4.5.0
-	 * @version 1.0.0
-	 */
-	public function html_doing_buttons( CourseModel $courseModel, QuizPostModel $quizPostModel, int $num_pages ): string {
-		$section = [
-			'wrapper'     => sprintf(
-				'<div class="quiz-buttons align-center is-first%s">',
-				$num_pages <= 1 ? ' is-last' : ''
-			),
-			'left'        => sprintf(
-				'<div class="button-left %1$s">%2$s</div>',
-				$this->get_nav_class(),
-				$this->html_questions_pagination( $num_pages )
-			),
-			'right'       => sprintf(
-				'<div class="button-right">%s</div>',
-				// Hidden when has many pages, JS shows on last page.
-				$this->html_btn_finish( $courseModel, $quizPostModel, '', $num_pages > 1 )
-			),
-			'wrapper_end' => '</div>',
-		];
-
-		return Template::combine_components(
-			apply_filters( 'learn-press/user/quiz/html-doing-buttons', $section, $courseModel, $quizPostModel, $num_pages )
-		);
 	}
 
 	/**
@@ -887,20 +933,19 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			$question_result = (array) ( $result_questions[ $question_id ] ?? [] );
 			$page            = $this->get_page_of_question( $quizPostModel, $index );
 
-			$html_questions .= QuestionTemplate::instance()->html_question(
+			$html_questions .= $this->html_question(
 				$questionPostModel,
 				[
 					'index'            => $index + 1,
 					'page'             => $page,
 					'hidden'           => $page > 1,
-					'status'           => UserQuizModel::STATUS_COMPLETED,
+					'status'           => UserItemModel::STATUS_COMPLETED,
 					'answered'         => $question_result['answered'] ?? null,
 					'show_result'      => true,
 					'show_correct'     => $quizPostModel->has_show_correct_review(),
 					'correct'          => $question_result['correct'] ?? false,
 					'mark'             => $question_result['mark'] ?? 0,
 					'show_explanation' => true,
-					'edit_link'        => $this->get_question_edit_link( $questionPostModel ),
 				]
 			);
 		}
@@ -914,7 +959,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			),
 			'questions'   => sprintf( '<div class="quiz-questions">%s</div>', $html_questions ),
 			'buttons'     => sprintf(
-				'<div class="quiz-buttons align-center"><div class="button-left %1$s">%2$s</div><div class="button-right"><button type="button" class="lp-button back-quiz">%3$s</button></div></div>',
+				'<div class="quiz-buttons"><div class="button-left %1$s">%2$s</div><div class="button-right"><button type="button" class="lp-button back-quiz">%3$s</button></div></div>',
 				$this->get_nav_class(),
 				$this->html_questions_pagination( $num_pages ),
 				esc_html__( 'Result', 'learnpress' )

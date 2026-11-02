@@ -465,14 +465,8 @@ class QuestionPostModel extends PostModel {
 	 * @return string
 	 * @version 1.0.1
 	 */
-	public function get_hint() {
-		$hint = apply_filters(
-			'learn-press/question/hint',
-			do_shortcode( (string) $this->get_meta_value_by_key( self::META_KEY_HINT, '' ) ),
-			$this->get_id()
-		);
-
-		return Template::sanitize_html_content( (string) $hint );
+	public function get_hint(): string {
+		return (string) $this->get_meta_value_by_key( self::META_KEY_HINT, '' );
 	}
 
 	/**
@@ -482,14 +476,8 @@ class QuestionPostModel extends PostModel {
 	 * @return string
 	 * @version 1.0.1
 	 */
-	public function get_explanation() {
-		$explanation = apply_filters(
-			'learn-press/question/explanation',
-			do_shortcode( (string) $this->get_meta_value_by_key( self::META_KEY_EXPLANATION, '' ) ),
-			$this->get_id()
-		);
-
-		return Template::sanitize_html_content( (string) $explanation );
+	public function get_explanation(): string {
+		return (string) $this->get_meta_value_by_key( self::META_KEY_EXPLANATION, '' );
 	}
 
 	/**

@@ -146,8 +146,8 @@ export class UserQuiz {
 		elQuestion: '.question[data-id]',
 		elBtnStart: '.lp-button.start',
 		elBtnRetake: '.retake-quiz',
-		elBtnFinish: '#button-submit-quiz, .lp-button.submit-quiz',
-		elBtnFinishStatusBar: '#button-submit-quiz',
+		elBtnFinish: '.lp-button.submit-quiz',
+		elBtnFinishStatusBar: '.quiz-doing-bar-info .lp-button.submit-quiz',
 		elBtnCheck: '.lp-button.instant-check',
 		elBtnHint: '.btn-show-hint',
 		elBtnReview: '.lp-button.review-quiz',
@@ -461,7 +461,7 @@ export class UserQuiz {
 		} );
 
 		// Finish button below questions shows on last page.
-		elScope.querySelectorAll( '.quiz-buttons .lp-button.submit-quiz' ).forEach( ( elBtn ) => {
+		elScope.querySelectorAll( ':scope > .lp-button.submit-quiz' ).forEach( ( elBtn ) => {
 			elBtn.hidden = ! isLast;
 		} );
 
