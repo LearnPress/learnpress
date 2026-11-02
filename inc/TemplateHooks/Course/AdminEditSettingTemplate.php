@@ -553,6 +553,8 @@ class AdminEditSettingTemplate {
 					$author_id,
 					array(
 						'options'           => $options,
+						'value'             => $author_id,
+						'data-saved'        => $author_id,
 						'style'             => 'min-width:200px;',
 						'tom_select'        => true,
 						'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ],
