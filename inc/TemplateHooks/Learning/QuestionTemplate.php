@@ -143,8 +143,10 @@ class QuestionTemplate {
 			'title'       => sprintf( '<span>%s</span>', wp_kses_post( $questionPostModel->get_the_title() ) ),
 			'hint'        => $show_hint
 				? sprintf(
-					'<span class="btn-show-hint"><span>%s</span></span>',
-					esc_html__( 'View hint', 'learnpress' )
+					'<span class="btn-show-hint lp-tooltip" data-tip="%s" tabindex="0">
+						<span class="lp-icon-question-circle"></span>
+					</span>',
+					esc_attr__( 'View hint', 'learnpress' )
 				)
 				: '',
 			'edit_link'   => $edit_link
