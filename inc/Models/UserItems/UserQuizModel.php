@@ -548,7 +548,7 @@ class UserQuizModel extends UserItemModel {
 				$result['questions'][ $question_id ]['mark']    = 0;
 			}
 
-			if ( $quizPostModel->get_meta_value_by_key( QuizPostModel::META_KEY_REVIEW, 'yes' ) === 'yes' && ! array_key_exists( 'instant_check', $answered ) ) {
+			if ( $quizPostModel->get_meta_value_by_key( QuizPostModel::META_KEY_SHOW_CORRECT_REVIEW, 'yes' ) === 'yes' && ! array_key_exists( 'instant_check', $answered ) ) {
 				$result['questions'][ $question_id ]['explanation'] = $question->get_explanation();
 				$result['questions'][ $question_id ]['options']     = learn_press_get_question_options_for_js(
 					$question,
