@@ -5,7 +5,9 @@
 */
 
 .lp-form-filter {
-	display: grid;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
 	gap: 12px;
 	margin-bottom: 24px;
 
@@ -49,9 +51,11 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		min-height: 40px;
 	}
 
 	&__actions {
+		flex: 0 0 auto;
 		display: flex;
 		gap: 8px;
 		align-items: center;

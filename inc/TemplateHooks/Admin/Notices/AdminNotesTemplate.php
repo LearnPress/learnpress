@@ -241,24 +241,25 @@ class AdminNotesTemplate {
 			return '';
 		}
 
-		$addons_html_arr = [];
-		foreach ( $addons as $addon ) {
-			$addons_html_arr[] = sprintf(
-				'<a href="%s" class="">%s</a>',
-				admin_url( 'admin.php?page=learn-press-addons&tab=update' ),
-				$addon->name
-			);
-		}
-
-		$addons_html = implode( ', ', $addons_html_arr );
-
+		$total   = count( $addons );
 		$message = sprintf(
-			'<div class="lp-addons-new-version-totals" data-total="%d">%s</div>',
-			count( $addons ),
-			sprintf(
-				'%s: %s',
-				__( 'New version available', 'learnpress' ),
-				$addons_html
+			'<div class="lp-addons-new-version-totals"
+					data-total="%d">
+					<a href="%s" class="">%s</a>
+				</div>',
+			$total,
+			esc_url( admin_url( 'admin.php?page=learn-press-addons&tab=update' ) ),
+			esc_html(
+				sprintf(
+					/* translators: %d: number of add-ons with an update available */
+					_n(
+						'%d Add-on has an update available.',
+						'%d Add-ons have an update available.',
+						$total,
+						'learnpress'
+					),
+					$total
+				)
 			)
 		);
 

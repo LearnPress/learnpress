@@ -18,10 +18,10 @@ $section = apply_filters(
 	'learn-press/admin/themes/page-section',
 	array(
 		'wrapper'     => '<div class="lp-themes-page">',
-		'title'       => sprintf(
+		/*'title'       => sprintf(
 			'<h1 class="lp-be-page-title">%s</h1>',
 			esc_html__( 'Recommended Themes for LearnPress', 'learnpress' )
-		),
+		),*/
 		'subtitle'    => sprintf(
 			'<p class="lp-be-page-subtitle">%s</p>',
 			esc_html__(
@@ -45,7 +45,7 @@ $section = apply_filters(
 echo AdminTemplate::html_on_wp_admin_screen(
 	array(
 		'content' => Template::combine_components( $section ),
-		'title'   => '',
+		'title'   => esc_html__( 'Recommended Themes for LearnPress', 'learnpress' ),
 		'id'      => 'learn-press-themes',
 		'hide_notices_wp' => true,
 	)
