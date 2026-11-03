@@ -272,4 +272,43 @@ class LPDateTime {
 
 		return apply_filters( 'learn-press/i18n/plural_duration', $duration_str, $duration_number, $duration_type );
 	}
+
+	/**
+	 * Convert duration string to seconds.
+	 * Ex: '4 minute' => 240, '2 hours' => 7200, '1 week' => 604800, '90' => 90 (no unit is seconds).
+	 * Unit: minute, hour, day, week (singular or plural, case-insensitive).
+	 * Invalid string returns 0.
+	 *
+	 * @param string $duration
+	 *
+	 * @return int
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public static function get_duration_in_seconds( string $duration ): int {
+		$units = [
+			'second' => 1,
+			'minute' => MINUTE_IN_SECONDS,
+			'hour'   => HOUR_IN_SECONDS,
+			'day'    => DAY_IN_SECONDS,
+			'week'   => WEEK_IN_SECONDS,
+		];
+
+		if ( ! preg_match( '/(\d+)\s+(second|minute|hour|day|week)/i', $duration, $matches ) ) {
+			return 0;
+		}
+
+		$number = (float) $matches[1];
+		$unit   = strtolower( $matches[2] );
+
+		if ( '' === $unit ) {
+			return (int) $number;
+		}
+
+		if ( ! isset( $units[ $unit ] ) ) {
+			return 0;
+		}
+
+		return (int) round( $number * $units[ $unit ] );
+	}
 }

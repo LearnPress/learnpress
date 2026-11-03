@@ -184,7 +184,7 @@ return apply_filters(
 				),
 			)
 		),
-		apply_filters(
+		/*apply_filters(
 			'learn-press/course-settings-fields/quiz',
 			array(
 				array(
@@ -204,7 +204,7 @@ return apply_filters(
 					'id'   => 'lp_metabox_setting_quiz',
 				),
 			)
-		),
+		),*/
 		apply_filters(
 			'learn-press/course-settings-fields/material',
 			array(

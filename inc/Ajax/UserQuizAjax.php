@@ -64,7 +64,13 @@ class UserQuizAjax extends AbstractAjax {
 				$userQuizModel->handle_start();
 			}
 
-			$response->data->content = $this->get_template()->html_doing_quiz( $courseModel, $quizPostModel, $userQuizModel );
+			$response->data->content = $this->get_template()->html_doing_quiz(
+				[
+					'courseModel'   => $courseModel,
+					'quizPostModel' => $quizPostModel,
+					'userQuizModel' => $userQuizModel,
+				]
+			);
 			$response->data->status  = UserQuizModel::STATUS_STARTED;
 			$response->status        = Response::STATUS_SUCCESS;
 		} catch ( Throwable $e ) {
@@ -112,7 +118,13 @@ class UserQuizAjax extends AbstractAjax {
 				$userQuizModel->handle_retake();
 			}
 
-			$response->data->content = $this->get_template()->html_doing_quiz( $courseModel, $quizPostModel, $userQuizModel );
+			$response->data->content = $this->get_template()->html_doing_quiz(
+				[
+					'courseModel'   => $courseModel,
+					'quizPostModel' => $quizPostModel,
+					'userQuizModel' => $userQuizModel,
+				]
+			);
 			$response->data->status  = UserQuizModel::STATUS_STARTED;
 			$response->status        = Response::STATUS_SUCCESS;
 		} catch ( Throwable $e ) {
@@ -146,7 +158,13 @@ class UserQuizAjax extends AbstractAjax {
 			$answered      = $this->sanitize_answered( $params['answered'] ?? [], $quizPostModel->get_question_ids() );
 			$userQuizModel = false;
 			if ( ! $context['is_guest'] ) {
-				$userQuizModel = UserQuizModel::find_user_item( $userModel->get_id(), $quizPostModel->get_id(), LP_QUIZ_CPT, $courseModel->get_id(), LP_COURSE_CPT );
+				$userQuizModel = UserQuizModel::find_user_item(
+					$userModel->get_id(),
+					$quizPostModel->get_id(),
+					LP_QUIZ_CPT,
+					$courseModel->get_id(),
+					LP_COURSE_CPT
+				);
 				if ( ! $userQuizModel instanceof UserQuizModel ) {
 					throw new Exception( esc_html__( 'User quiz is invalid!', 'learnpress' ) );
 				}
@@ -163,16 +181,27 @@ class UserQuizAjax extends AbstractAjax {
 				);
 			} else {
 				// Guest: calculate result, not save.
-				$result               = $this->create_user_quiz( 0, $quizPostModel->get_id(), $courseModel->get_id() )->calculate_quiz_result( $answered );
+				$result               = $this->create_user_quiz(
+					0,
+					$quizPostModel->get_id(),
+					$courseModel->get_id()
+				)->calculate_quiz_result( $answered );
 				$result['time_spend'] = gmdate( 'H:i:s', $time_spend );
 			}
 
 			$graduation = $userQuizModel instanceof UserQuizModel ? $userQuizModel->get_graduation() : '';
 			if ( empty( $graduation ) ) {
-				$graduation = ! empty( $result['pass'] ) ? UserQuizModel::GRADUATION_PASSED : UserQuizModel::GRADUATION_FAILED;
+				$graduation = ! empty( $result['pass'] ) ? UserItemModel::GRADUATION_PASSED : UserItemModel::GRADUATION_FAILED;
 			}
 
-			$response->data->content    = $this->get_template()->html_completed( $courseModel, $quizPostModel, $result, $userQuizModel );
+			$response->data->content    = $this->get_template()->html_completed(
+				[
+					'courseModel'   => $courseModel,
+					'quizPostModel' => $quizPostModel,
+					'result'        => $result,
+					'userQuizModel' => $userQuizModel,
+				]
+			);
 			$response->data->status     = UserItemModel::STATUS_COMPLETED;
 			$response->data->graduation = $graduation;
 			// Summary only, result of each question is not sent (review can be disabled).

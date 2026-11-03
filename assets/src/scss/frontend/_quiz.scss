@@ -794,8 +794,8 @@ button[data-counter] {
 	}
 }
 
-.question-explanation-content,
-.question-hint-content {
+.question-explanation,
+.question-hint {
 	margin-bottom: 20px;
 	padding: 10px 15px;
 	background: #f5f5f5;
@@ -1032,7 +1032,7 @@ button[data-counter] {
 		}
 	}
 
-	.question-title {
+	.user-question-title {
 		display: block;
 		margin-top: 0;
 		margin-bottom: $spacing-base-2x;
@@ -1187,11 +1187,11 @@ button[data-counter] {
 		margin-bottom: 15px;
 	}
 
-	table {
+	/*table {
 		th, td {
 			text-align: center;
 		}
-	}
+	}*/
 }
 
 .questions-pagination {

@@ -47,5 +47,9 @@ class QuizQuestionsFilter extends FilterBase {
 	/**
 	 * @var int[]
 	 */
-	public $quiz_ids = array();
+	public array $quiz_ids = array();
+	/**
+	 * @var string
+	 */
+	public $field_count = self::COL_QUIZ_QUESTION_ID;
 }

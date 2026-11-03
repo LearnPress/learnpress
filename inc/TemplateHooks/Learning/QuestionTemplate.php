@@ -61,7 +61,7 @@ class QuestionTemplate {
 	}
 
 	/**
-	 * HTML title of question: index, title, button hint, link edit.
+	 * HTML title of question
 	 *
 	 * @param QuestionPostModel $questionPostModel
 	 * @param array $args
@@ -71,37 +71,14 @@ class QuestionTemplate {
 	 * @version 1.0.0
 	 */
 	public function html_title( QuestionPostModel $questionPostModel, array $args = [] ): string {
-		$index = (int) ( $args['index'] ?? 0 );
-
-		$section = [
-			'wrapper'     => '<h4 class="question-title">',
-			'index'       => $index > 0 ? sprintf( '<span class="question-index">%d.</span>', $index ) : '',
-			'title'       => sprintf(
-				'<span>%s</span>',
+		return apply_filters(
+			'learn-press/question/html-title',
+			sprintf(
+				"<span class='question-title'>%s</span>",
 				wp_kses_post( $questionPostModel->get_the_title() )
 			),
-			'hint'        => $args['show_hint'] ?? $this->html_hint( $questionPostModel )
-				? sprintf(
-					'<span class="btn-show-hint lp-tooltip" data-tip="%s" tabindex="0">
-						<span class="lp-icon-question-circle"></span>
-					</span>',
-					esc_attr__( 'View hint', 'learnpress' )
-				)
-				: '',
-			'edit_link'   => $questionPostModel->check_capabilities_update()
-				? sprintf(
-					'<span class="edit-link">
-						<a href="%s">%s</a>
-					</span>',
-					esc_url( $questionPostModel->get_edit_link() ),
-					esc_html__( 'Edit', 'learnpress' )
-				)
-				: '',
-			'wrapper_end' => '</h4>',
-		];
-
-		return Template::combine_components(
-			apply_filters( 'learn-press/question/html-title', $section, $questionPostModel, $args )
+			$questionPostModel,
+			$args
 		);
 	}
 
@@ -141,7 +118,7 @@ class QuestionTemplate {
 		$explanation = do_shortcode( $explanation );
 
 		return sprintf(
-			'<div class="question-explanation-content">
+			'<div class="question-explanation">
 					<strong class="explanation-title">%s:</strong>
 					<div>%s</div>
 				</div>',
@@ -169,7 +146,7 @@ class QuestionTemplate {
 		$hint = do_shortcode( $hint );
 
 		return sprintf(
-			'<div class="question-hint-content" style="display: none;">
+			'<div class="question-hint">
 				<strong class="hint-title">%s:</strong>
 				<div>%s</div>
 			</div>',

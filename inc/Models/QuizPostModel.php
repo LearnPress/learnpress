@@ -4,23 +4,21 @@
  * Class Quiz Post Model
  *
  * @package LearnPress/Classes
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.7.6
  */
 
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Cache\LPCache;
 use LearnPress\Databases\QuizQuestionsDB;
-use LearnPress\Filters\QuestionPostFilter;
+use LearnPress\Filters\QuizPostFilter;
+use LearnPress\Filters\QuizQuestionsFilter;
 use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
-use LP_Cache;
 use LP_Debug;
-use LP_Question_DB;
-
-use LP_Quiz_Filter;
 use Throwable;
 
 
@@ -52,15 +50,15 @@ class QuizPostModel extends PostModel {
 	 * @return false|static
 	 */
 	public static function find( int $post_id, bool $check_cache = false ) {
-		$filter_post     = new LP_Quiz_Filter();
+		$filter_post     = new QuizPostFilter();
 		$filter_post->ID = $post_id;
 
 		$key_cache   = "quizPostModel/find/{$post_id}";
-		$lpQuizCache = new LP_Cache();
+		$lpQuizCache = new LPCache();
 
 		// Check cache
 		if ( $check_cache ) {
-			$quizPostModel = $lpQuizCache->get_cache( $key_cache );
+			$quizPostModel = $lpQuizCache->get_cache( $key_cache, self::class );
 			if ( $quizPostModel instanceof QuizPostModel ) {
 				return $quizPostModel;
 			}
@@ -141,18 +139,21 @@ class QuizPostModel extends PostModel {
 	 * @param array $statuses
 	 *
 	 * @return int[]
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.2.7.6
 	 */
 	public function get_question_ids( array $statuses = [ 'publish' ] ): array {
-		$lp_question_db = LP_Question_DB::getInstance();
+		$lp_question_db = QuizQuestionsDB::getInstance();
 		$question_ids   = [];
 
 		try {
-			$filter              = new QuestionPostFilter();
-			$filter->ID          = $this->get_id();
-			$filter->post_status = $statuses ?? [ PostModel::STATUS_PUBLISH ];
-			$question_ids        = $lp_question_db->get_list_question_ids_of_quiz( $filter );
+			$filter                      = new QuizQuestionsFilter();
+			$filter->only_fields         = [ QuizQuestionsFilter::COL_QUESTION_ID ];
+			$filter->field_count         = QuizQuestionsFilter::COL_QUESTION_ID;
+			$filter->quiz_id             = $this->get_id();
+			$filter->return_string_query = true;
+			$query_str                   = $lp_question_db->get_quiz_questions( $filter );
+			$question_ids                = $lp_question_db->wpdb->get_col( $query_str );
 
 			// Hook old
 			if ( has_filter( 'learn-press/quiz/get-question-ids' ) ) {
