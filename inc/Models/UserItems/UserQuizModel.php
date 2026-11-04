@@ -635,6 +635,7 @@ class UserQuizModel extends UserItemModel {
 
 	/**
 	 * Instant check question.
+	 * Result saved has only the question checking and the questions checked before.
 	 *
 	 * @param int $question_id
 	 * @param mixed $answered
@@ -642,7 +643,7 @@ class UserQuizModel extends UserItemModel {
 	 * @return array
 	 * @throws Exception
 	 * @since 4.5.0
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function instant_check_question( int $question_id, $answered = null ): array {
 		$question = QuestionPostModel::find( $question_id, true );
@@ -657,37 +658,47 @@ class UserQuizModel extends UserItemModel {
 			throw new Exception( __( 'Cannot check the answer to the question.', 'learnpress' ) );
 		}
 
+		// Questions checked before, can_check_instant_answer() ensures the question checking is not one of them.
+		$questions_checked = array_map( 'absint', $this->get_checked_questions() );
+
 		$answered_check = array(
 			'instant_check' => 1,
 			$question_id    => $answered,
 		);
 
-		$user_item_id = $this->get_user_item_id();
-		if ( $user_item_id ) {
-			$userItemResultModel = UserItemResultModel::find_by_user_item_id( $user_item_id, true );
-			if ( $userItemResultModel instanceof UserItemResultModel ) {
-				$result_instant_check = $userItemResultModel->get_result();
-				if ( ! empty( $result_instant_check['questions'] ) ) {
-					foreach ( $result_instant_check['questions'] as $question_answer_id => $question_answer ) {
-						if ( ! empty( $question_answer['answered'] ) ) {
-							$answered_check[ $question_answer_id ] = $question_answer['answered'];
-						}
-					}
+		$user_item_id        = $this->get_user_item_id();
+		$userItemResultModel = $user_item_id ? UserItemResultModel::find_by_user_item_id( $user_item_id, true ) : false;
+
+		// Answers of questions checked before, they are calculated again with the question checking.
+		if ( $userItemResultModel instanceof UserItemResultModel ) {
+			$questions_result = $this->filter_questions_checked(
+				$userItemResultModel->get_result()['questions'] ?? array(),
+				$questions_checked
+			);
+
+			foreach ( $questions_result as $question_checked_id => $question_result ) {
+				$answered_checked = $question_result['answered'] ?? '';
+				if ( ! empty( $answered_checked ) ) {
+					$answered_check[ $question_checked_id ] = $answered_checked;
 				}
 			}
 		}
 
 		$result_answer = $this->calculate_quiz_result( $answered_check );
 
-		if ( $user_item_id ) {
-			$userItemResultModel = UserItemResultModel::find_by_user_item_id( $user_item_id, true );
-			if ( ! $userItemResultModel instanceof UserItemResultModel ) {
-				throw new Exception( __( 'Quiz result is invalid.', 'learnpress' ) );
-			}
+		// calculate_quiz_result() returns all questions of quiz, keep only questions checked, not leak the others.
+		$questions_checked[]        = $question_id;
+		$result_answer['questions'] = $this->filter_questions_checked(
+			$result_answer['questions'] ?? array(),
+			$questions_checked
+		);
 
+		if ( $userItemResultModel instanceof UserItemResultModel ) {
 			$userItemResultModel->set_result( $result_answer );
 			$userItemResultModel->save();
 			$this->save_questions_instant_checked( $question_id );
+		} elseif ( $user_item_id ) {
+			throw new Exception( __( 'Quiz result is invalid.', 'learnpress' ) );
 		}
 
 		$checked = array(
@@ -697,6 +708,23 @@ class UserQuizModel extends UserItemModel {
 		);
 
 		return $checked;
+	}
+
+	/**
+	 * Keep only results of questions user has checked (instant check), drop the other questions.
+	 * Result of quiz when doing must not hold questions not checked yet.
+	 *
+	 * @param array $questions [ question_id => [ answered, mark, correct ] ]
+	 * @param array $question_ids_checked
+	 *
+	 * @return array same shape as $questions
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function filter_questions_checked( array $questions, array $question_ids_checked ): array {
+		$question_ids_checked = array_map( 'absint', $question_ids_checked );
+
+		return array_intersect_key( $questions, array_flip( $question_ids_checked ) );
 	}
 
 	/**

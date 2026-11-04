@@ -355,7 +355,7 @@ class AdminEditQuestionTemplate {
 				$html = self::html_answer_type_single_choice( $questionPostModel );
 				break;
 			case 'multi_choice':
-				$html = self::html_answer_type_multiple_choice( $questionPostModel );
+				$html = self::html_answer_type_multi_choice( $questionPostModel );
 				break;
 			case 'fill_in_blanks':
 				$html = self::html_answer_type_fill_in_blanks( $questionPostModel );
@@ -550,7 +550,7 @@ class AdminEditQuestionTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_answer_type_multiple_choice( QuestionPostModel $questionPostModel ): string {
+	public function html_answer_type_multi_choice( QuestionPostModel $questionPostModel ): string {
 		$name_checkbox = 'lp-input-answer-set-true-' . $questionPostModel->ID;
 		$answers       = $questionPostModel->get_answer_option();
 		$answers[]     = null;

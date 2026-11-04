@@ -403,14 +403,14 @@ class QuestionPostModel extends PostModel {
 	/**
 	 * Get type question
 	 *
-	 * @return string|float
+	 * @return string
 	 */
-	public function get_type() {
+	public function get_type(): string {
 		if ( empty( $this->question_type ) ) {
 			$this->question_type = $this->get_meta_value_by_key( self::META_KEY_TYPE, '' );
 		}
 
-		return $this->question_type;
+		return (string) $this->question_type;
 	}
 
 	/**

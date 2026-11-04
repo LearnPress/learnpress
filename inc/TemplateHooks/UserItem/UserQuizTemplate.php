@@ -468,26 +468,24 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		}
 
 		$html_questions = '';
-		foreach ( array_values( $question_ids ) as $index => $question_id ) {
+		foreach ( $question_ids as $index => $question_id ) {
 			$questionPostModel = QuestionPostModel::find( (int) $question_id, true );
 			if ( ! $questionPostModel instanceof QuestionPostModel ) {
 				continue;
 			}
 
-			$is_checked = in_array( (int) $question_id, $checked_questions, true );
+			$args['questionPostModel'] = $questionPostModel;
+			$args['position']          = $index;
+			$args['result_questions']  = $result_questions;
 
-			$html_questions .= $this->html_question(
-				[
-					'courseModel'       => $args['courseModel'],
-					'quizPostModel'     => $quizPostModel,
-					'questionPostModel' => $questionPostModel,
-					'position'          => $index,
-					'checked'           => $is_checked ? (array) ( $result_questions[ $question_id ] ?? [] ) : null,
-				]
-			);
+			$html_questions .= $this->html_question( $args );
 		}
 
-		return sprintf( '<div class="quiz-questions">%s</div>', $html_questions );
+		return apply_filters(
+			'learn-press/user/quiz/html-questions',
+			sprintf( '<div class="quiz-questions">%s</div>', $html_questions ),
+			$args
+		);
 	}
 
 	/**
@@ -501,67 +499,64 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 *
 	 * Default args are built for doing quiz from:
 	 * position: position of question in quiz, start 0.
-	 * checked: result of instant check [answered, mark, correct], null when not checked.
+	 * result_questions: array of question results keyed by question_id, each has [answered, mark, correct].
 	 * hidden: default hide when question not on first page.
 	 * Other args (review...) override the default.
 	 *
-	 * @param array $args [ courseModel, quizPostModel, questionPostModel, position, checked, ...extra args above ]
+	 * @param array $args [ courseModel, quizPostModel, questionPostModel, position, result_questions, ...extra args above ]
 	 *
 	 * @return string
 	 * @since 4.5.0
 	 * @version 1.1.0
 	 */
 	public function html_question( array $args ): string {
-		$courseModel   = $args['courseModel'];
-		$quizPostModel = $args['quizPostModel'];
+		$courseModel       = $args['courseModel'];
+		$quizPostModel     = $args['quizPostModel'];
+		$questionPostModel = $args['questionPostModel'];
+		$userQuizModel     = $args['userQuizModel'] ?? false;
+		$result_questions  = $args['result_questions'] ?? [];
+		$action_type       = $args['action_type'] ?? '';
+		$is_guest          = $args['is_guest'] ?? false;
 
-		if ( ! $quizPostModel instanceof QuizPostModel ) {
+		if ( ! $quizPostModel instanceof QuizPostModel
+			|| ! $questionPostModel instanceof QuestionPostModel ) {
 			return '';
 		}
 
-		$questionPostModel = $args['questionPostModel'];
-		$position          = (int) ( $args['position'] ?? 0 );
-		$checked           = $args['checked'] ?? null;
-		$is_checked        = is_array( $checked );
+		$questionTemplate        = QuestionTemplate::instance();
+		$question_answer_checked = $result_questions[ $questionPostModel->get_id() ] ?? false;
+
+		$show_explanation = false;
+		if ( $userQuizModel instanceof UserQuizModel ) {
+			$show_explanation = $userQuizModel->has_finished()
+				|| ( $question_answer_checked && ! empty( $question_answer_checked['answered'] ) );
+		} elseif ( $is_guest
+			&& ( $action_type === 'instant_check_question'
+				|| $action_type === 'submit_quiz' ) ) {
+			$show_explanation = true;
+		}
 
 		$index     = (int) ( $args['position'] ?? 0 );
 		$total     = $quizPostModel->count_questions();
 		$per_page  = $quizPostModel->get_pagination();
 		$num_pages = $per_page > 0 ? DataBase::get_total_pages( $per_page, $total ) : 1;
-		$count = $quizPostModel->count_questions();
-
-		$page = $per_page > 0 ? (int) floor( $index / $per_page ) + 1 : 1;
-
-		unset( $args['position'], $args['checked'] );
+		$count     = $quizPostModel->count_questions();
+		$page      = $per_page > 0 ? (int) floor( $index / $per_page ) + 1 : 1;
 
 		// Default args of question when doing quiz, caller can override (review...).
 		$args = array_merge(
 			[
-				'index'            => $position + 1,
-				'page'             => $page,
-				'hidden'           => $page > 1,
-				'status'           => UserQuizModel::STATUS_STARTED,
-				'answered'         => $is_checked ? ( $checked['answered'] ?? null ) : null,
-				'show_result'      => $is_checked,
-				'show_correct'     => $is_checked && $quizPostModel->has_show_correct_review(),
-				'correct'          => $checked['correct'] ?? null,
-				'mark'             => $checked['mark'] ?? 0,
-				'show_explanation' => $is_checked,
+				'show_result'      => $show_explanation, // Show result when question checked or quiz completed
+				'show_correct'     => $show_explanation && $quizPostModel->has_show_correct_review(),
+				'correct'          => $question_answer_checked['correct'] ?? null,
+				'mark'             => $question_answer_checked['mark'] ?? 0,
 			],
 			$args
 		);
 
-		$args = array_merge( $args, QuestionTemplate::instance()->parse_answer_args( $args ) );
-
 		$classes = [ 'question', 'question-' . $questionPostModel->get_type() ];
 		if ( $args['show_correct'] ) {
 			$classes[] = 'question-answered';
-		}
-
-		// Question checked will not show hint.
-		$args['show_hint'] = true;
-		if ( $args['show_explanation'] ) {
-			$args['show_hint'] = false;
 		}
 
 		$section = [
@@ -569,17 +564,17 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 				'<div class="%1$s" data-id="%2$d" data-page="%3$d"%4$s>',
 				esc_attr( implode( ' ', $classes ) ),
 				$questionPostModel->get_id(),
-				(int) $args['page'],
-				$args['hidden'] ? ' style="display: none;"' : ''
+				$page,
+				$action_type === 'instant_check_question' ? '' : ' style="display: none;"'
 			),
 			'title'       => $this->html_question_title( $args ),
 			'hint'        => sprintf(
 				'<div class="question-hint-content" style="display: none;">%s</div>',
-				QuestionTemplate::instance()->html_hint( $questionPostModel )
+				$questionTemplate->html_hint( $questionPostModel )
 			),
-			'content'     => QuestionTemplate::instance()->html_content( $questionPostModel ),
-			'answers'     => QuestionTemplate::instance()->html_answers( $questionPostModel, $args ),
-			'explanation' => $args['show_explanation'] ? QuestionTemplate::instance()->html_explanation( $questionPostModel ) : '',
+			'content'     => $questionTemplate->html_content( $questionPostModel ),
+			'answers'     => $questionTemplate->html_answers( $questionPostModel, $args ),
+			'explanation' => $show_explanation ? $questionTemplate->html_explanation( $questionPostModel ) : '',
 			'btn-instant-check' => $this->html_btn_instant_check( $args ),
 			'wrapper_end' => '</div>',
 		];
@@ -610,15 +605,34 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 * @version 1.1.0
 	 */
 	public function html_question_title( array $args ): string {
+		$userQuizModel     = $args['userQuizModel'] ?? false;
 		$questionPostModel = $args['questionPostModel'];
+		$action_type       = $args['action_type'] ?? '';
+		$is_guest          = $args['is_guest'] ?? false;
 		$questionTemplate  = QuestionTemplate::instance();
-		$index             = (int) ( $args['index'] ?? 0 );
+		$index             = (int) ( $args['position'] ?? 0 );
+		$index            += 1;
+
+		if ( ! $questionPostModel instanceof QuestionPostModel ) {
+			return '';
+		}
+
+		$show_hint = true;
+		if ( $userQuizModel instanceof UserQuizModel ) {
+			if ( ! $userQuizModel->has_started() ) {
+				$show_hint = false;
+			}
+		} elseif ( $is_guest
+			&& ( $action_type === 'instant_check_question'
+				|| $action_type === 'submit_quiz' ) ) {
+			$show_hint = false;
+		}
 
 		$section = [
 			'wrapper'     => '<h4 class="user-question-title">',
 			'index'       => $index > 0 ? sprintf( '<span class="question-index">%d.</span>', $index ) : '',
 			'title'       => $questionTemplate->html_title( $questionPostModel ),
-			'icon-hint'        => ! empty( $args['show_hint'] ) && ! empty( $questionTemplate->html_hint( $questionPostModel ) )
+			'icon-hint'        => $show_hint && ! empty( $questionTemplate->html_hint( $questionPostModel ) )
 				? sprintf(
 					'<span class="btn-show-hint lp-tooltip" data-tip="%s" tabindex="0">
 						<span class="lp-icon-question-circle"></span>
@@ -639,37 +653,8 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		];
 
 		return Template::combine_components(
-			apply_filters( 'learn-press/question/html-title', $section, $questionPostModel, $args )
+			apply_filters( 'learn-press/question/html-title', $section, $args )
 		);
-	}
-
-	/**
-	 * HTML a question after user instant check, JS replace the question element by it.
-	 *
-	 * @param CourseModel $courseModel
-	 * @param QuizPostModel $quizPostModel
-	 * @param QuestionPostModel $questionPostModel
-	 * @param array $checked result of instant check [answered, mark, correct]
-	 *
-	 * @return string
-	 * @since 4.5.0
-	 * @version 1.0.0
-	 */
-	public function html_check_quiz( CourseModel $courseModel, QuizPostModel $quizPostModel, QuestionPostModel $questionPostModel, array $checked ): string {
-		$index = array_search( $questionPostModel->get_id(), array_map( 'absint', $quizPostModel->get_question_ids() ), true );
-
-		$html = $this->html_question(
-			[
-				'courseModel'       => $courseModel,
-				'quizPostModel'     => $quizPostModel,
-				'questionPostModel' => $questionPostModel,
-				'position'          => false === $index ? 0 : (int) $index,
-				'checked'           => $checked,
-				'hidden'            => false, // User is viewing this question.
-			]
-		);
-
-		return apply_filters( 'learn-press/user/quiz/html-check-question', $html, $courseModel, $quizPostModel, $questionPostModel, $checked );
 	}
 
 	/**
@@ -685,8 +670,16 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		$courseModel       = $args['courseModel'];
 		$quizPostModel     = $args['quizPostModel'];
 		$questionPostModel = $args['questionPostModel'];
+		$result_questions  = $args['result_questions'];
 
-		if ( ! $quizPostModel->has_instant_check() ) {
+		if ( ! $courseModel instanceof CourseModel
+			|| ! $quizPostModel instanceof QuizPostModel
+			|| ! $questionPostModel instanceof QuestionPostModel
+			|| ! $quizPostModel->has_instant_check() ) {
+			return '';
+		}
+
+		if ( isset( $result_questions[ $questionPostModel->get_id() ] ) ) {
 			return '';
 		}
 
@@ -708,7 +701,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			esc_html__( 'You need to answer the question before checking the answer key.', 'learnpress' )
 		);
 
-		return apply_filters( 'learn-press/user/quiz/html-button-instant-check', $html, $courseModel, $quizPostModel, $questionPostModel );
+		return apply_filters( 'learn-press/user/quiz/html-button-instant-check', $html, $args );
 	}
 
 	/**
@@ -745,15 +738,16 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			Template::convert_data_to_json(
 				[
 					'id_url'    => 'user-submit-quiz',
-					'action'    => 'user_submit_quiz', // UserQuizAjax::user_submit_quiz
-					'quiz_id'   => $quizPostModel->get_id(),
+					'action'    => 'user_submit_quiz',
+					/** @use UserQuizAjax::user_submit_quiz */
+					'quiz_id' => $quizPostModel->get_id(),
 					'course_id' => $courseModel->get_id(),
 				]
 			),
 			esc_html__( 'Finish Quiz', 'learnpress' )
 		);
 
-		return apply_filters( 'learn-press/user/quiz/html-button-finish', $html, $courseModel, $quizPostModel, $hidden );
+		return apply_filters( 'learn-press/user/quiz/html-button-finish', $html, $args );
 	}
 
 	/**
@@ -843,11 +837,11 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		$passing_grade = (float) ( ! empty( $result['passing_grade'] ) ? $result['passing_grade'] : $quizPostModel->get_passing_grade() );
 
 		$graduation = $userQuizModel instanceof UserQuizModel ? $userQuizModel->get_graduation() : '';
-		if ( ! in_array( $graduation, [ UserQuizModel::GRADUATION_PASSED, UserQuizModel::GRADUATION_FAILED ], true ) ) {
+		if ( ! in_array( $graduation, [ UserItemModel::GRADUATION_PASSED, UserItemModel::GRADUATION_FAILED ], true ) ) {
 			if ( isset( $result['pass'] ) ) {
-				$graduation = $result['pass'] ? UserQuizModel::GRADUATION_PASSED : UserQuizModel::GRADUATION_FAILED;
+				$graduation = $result['pass'] ? UserItemModel::GRADUATION_PASSED : UserItemModel::GRADUATION_FAILED;
 			} else {
-				$graduation = $percent >= $passing_grade ? UserQuizModel::GRADUATION_PASSED : UserQuizModel::GRADUATION_FAILED;
+				$graduation = $percent >= $passing_grade ? UserItemModel::GRADUATION_PASSED : UserItemModel::GRADUATION_FAILED;
 			}
 		}
 
@@ -1035,22 +1029,17 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 				continue;
 			}
 
-			$question_result = (array) ( $result_questions[ $question_id ] ?? [] );
-
 			$html_questions .= $this->html_question(
-				[
-					'courseModel'       => $courseModel,
-					'quizPostModel'     => $quizPostModel,
-					'questionPostModel' => $questionPostModel,
-					'position'          => $index,
-					'status'            => UserItemModel::STATUS_COMPLETED,
-					'answered'          => $question_result['answered'] ?? null,
-					'show_result'       => true,
-					'show_correct'      => $quizPostModel->has_show_correct_review(),
-					'correct'           => $question_result['correct'] ?? false,
-					'mark'              => $question_result['mark'] ?? 0,
-					'show_explanation'  => true,
-				]
+				array_merge(
+					$args,
+					[
+						'questionPostModel' => $questionPostModel,
+						'position'          => $index,
+						'result_questions'  => $result_questions,
+						'show_result'       => true,
+						'show_correct'      => $quizPostModel->has_show_correct_review(),
+					]
+				)
 			);
 		}
 

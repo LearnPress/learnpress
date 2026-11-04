@@ -64,13 +64,7 @@ class UserQuizAjax extends AbstractAjax {
 				$userQuizModel->handle_start();
 			}
 
-			$response->data->content = $this->get_template()->html_doing_quiz(
-				[
-					'courseModel'   => $courseModel,
-					'quizPostModel' => $quizPostModel,
-					'userQuizModel' => $userQuizModel,
-				]
-			);
+			$response->data->content = $this->get_template()->html_doing_quiz( $context );
 			$response->data->status  = UserQuizModel::STATUS_STARTED;
 			$response->status        = Response::STATUS_SUCCESS;
 		} catch ( Throwable $e ) {
@@ -118,13 +112,7 @@ class UserQuizAjax extends AbstractAjax {
 				$userQuizModel->handle_retake();
 			}
 
-			$response->data->content = $this->get_template()->html_doing_quiz(
-				[
-					'courseModel'   => $courseModel,
-					'quizPostModel' => $quizPostModel,
-					'userQuizModel' => $userQuizModel,
-				]
-			);
+			$response->data->content = $this->get_template()->html_doing_quiz( $context );
 			$response->data->status  = UserQuizModel::STATUS_STARTED;
 			$response->status        = Response::STATUS_SUCCESS;
 		} catch ( Throwable $e ) {
@@ -195,12 +183,11 @@ class UserQuizAjax extends AbstractAjax {
 			}
 
 			$response->data->content    = $this->get_template()->html_completed(
-				[
-					'courseModel'   => $courseModel,
-					'quizPostModel' => $quizPostModel,
-					'result'        => $result,
-					'userQuizModel' => $userQuizModel,
-				]
+				array_merge(
+					$context,
+					compact( 'result', 'userQuizModel' ),
+					[ 'action_type' => 'submit_quiz' ]
+				)
 			);
 			$response->data->status     = UserItemModel::STATUS_COMPLETED;
 			$response->data->graduation = $graduation;
@@ -255,6 +242,7 @@ class UserQuizAjax extends AbstractAjax {
 
 			$answered = $this->sanitize_answer( $params['answered'] ?? '' );
 
+			$userQuizModel = false;
 			if ( $context['is_guest'] ) {
 				$checked             = $questionPostModel->check( $answered );
 				$checked['answered'] = $answered;
@@ -268,7 +256,36 @@ class UserQuizAjax extends AbstractAjax {
 				$checked = $userQuizModel->instant_check_question( $question_id, $answered );
 			}
 
-			$response->data->content = $this->get_template()->html_check_quiz( $courseModel, $quizPostModel, $questionPostModel, $checked );
+			$result_questions = [ $questionPostModel->get_id() => $checked ];
+
+			$position    = array_search( $questionPostModel->get_id(), array_map( 'absint', $quizPostModel->get_question_ids() ), true );
+			$action_type = 'instant_check_question';
+
+			$response->data->content = $this->get_template()->html_question(
+				compact(
+					'courseModel',
+					'quizPostModel',
+					'questionPostModel',
+					'userQuizModel',
+					'result_questions',
+					'position',
+					'action_type'
+				)
+			);
+
+			$response->data->content = $this->get_template()->html_question(
+				array_merge(
+					$context,
+					compact(
+						'questionPostModel',
+						'userQuizModel',
+						'result_questions',
+						'position',
+						'action_type'
+					)
+				)
+			);
+
 			$response->data->correct = (bool) ( $checked['correct'] ?? false );
 			$response->data->mark    = (float) ( $checked['mark'] ?? 0 );
 			// Point of question default 1 when not set, same as display.
