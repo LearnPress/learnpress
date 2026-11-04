@@ -1639,7 +1639,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$lp_order_id = $webhook_data['resource']['custom'] ?? $webhook_data['resource']['custom_id'] ?? '';
 			$lp_order    = learn_press_get_order( $lp_order_id );
 			if ( ! $lp_order ) {
-				error_log( 'LearnPress order is invalid: ' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
+				//error_log( 'LearnPress order is invalid: ' . json_encode( $webhook_data, JSON_UNESCAPED_UNICODE ) );
 				return;
 			}
 			$webhook_data['lp_order_id'] = $lp_order_id;

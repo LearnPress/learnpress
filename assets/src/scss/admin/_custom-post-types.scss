@@ -89,6 +89,7 @@
 			img {
 				width: 100%;
 				height: auto;
+				border-radius: 5px;
 			}
 			@media only screen and (max-width: 782px) {
 				display: none;
@@ -147,6 +148,7 @@
 
 	.column-student {
 		width: 60px;
+		text-align: center;
 	}
 
 	.column-taxonomy-course_category {

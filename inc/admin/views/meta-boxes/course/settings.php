@@ -505,6 +505,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					$author_id,
 					array(
 						'options'           => $options,
+						'value'             => $author_id,
+						'data-saved'        => $author_id,
 						'style'             => 'min-width:200px;',
 						'tom_select'        => true,
 						'custom_attributes' => [

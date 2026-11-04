@@ -1012,12 +1012,17 @@ class CourseModel {
 	 * Check global settings `enrolled_students_number`
 	 * and add the fake value if both are set.
 	 *
+	 * @param bool $include_fake
 	 * @return int
 	 * @move from LP_Abstract_Course
+	 * @since 4.2.7.2
+	 * @version 1.0.0
 	 */
-	public function count_students(): int {
-		$total  = $this->get_total_user_enrolled_or_purchased();
-		$total += $this->get_fake_students();
+	public function count_students( bool $include_fake = true ): int {
+		$total = $this->get_total_user_enrolled_or_purchased();
+		if ( $include_fake ) {
+			$total += $this->get_fake_students();
+		}
 
 		return $total;
 	}

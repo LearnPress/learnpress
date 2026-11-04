@@ -1,6 +1,6 @@
 .lp-admin-tabs {
 	position: relative;
-	margin-top: 20px;
+	margin-top: 8px;
 	&.has-sections{
 		display: flex;
 	}
@@ -149,6 +149,13 @@
 			pointer-events: none;
 			overflow: hidden;
 			text-indent: -9999px;
+		}
+	}
+
+	.opensub {
+		.wp-submenu {
+			overflow: auto;
+			max-height: 800px;
 		}
 	}
 }

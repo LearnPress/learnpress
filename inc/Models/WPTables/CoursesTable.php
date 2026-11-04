@@ -179,22 +179,30 @@ class CoursesTable extends WP_Posts_List_Table {
 				return;
 			}
 
-			// Count students
-			printf(
-				'<div class="lp-label-counter">%d</div>',
-				$courseModel->count_students()
+			$count_student = $courseModel->count_students( false );
+
+			$wrap = $count_student > 0 ? [
+				sprintf(
+					'<a type="button"
+					class="lp-button lp-btn-view-students lp-tooltip"
+					data-tip="%s"
+					tabindex="0"
+					data-course-id="%d"
+					data-course-title="%s">',
+					esc_attr__( 'View students', 'learnpress' ),
+					$courseModel->get_id(),
+					esc_attr( $courseModel->get_title() )
+				) => '</a>',
+			] : [];
+
+			$content = sprintf(
+				'<div class="lp-course-student-counter">
+							<span class="lp-icon-user"></span> %d
+						</div>',
+				$count_student
 			);
 
-			// Button view list students
-			printf(
-				'<a type="button"
-					class="lp-button lp-btn-view-students"
-					data-course-id="%d"
-					data-course-title="%s">%s</a>',
-				$post->ID,
-				esc_attr( $post->post_title ),
-				esc_html__( 'View List', 'learnpress' )
-			);
+			echo Template::instance()->nest_elements( $wrap, $content );
 		} catch ( Throwable $e ) {
 			Template::print_message( $e->getMessage(), Response::STATUS_ERROR );
 		}
