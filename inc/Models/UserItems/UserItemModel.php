@@ -643,7 +643,7 @@ class UserItemModel {
 	 *
 	 * @return string
 	 * @since 4.4.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_status_label(): string {
 		switch ( $this->get_status() ) {
@@ -664,7 +664,11 @@ class UserItemModel {
 				break;
 		}
 
-		return (string) $value;
+		return (string) apply_filters(
+			'learn-press/userItemModel/status-label',
+			$value,
+			$this
+		);
 	}
 
 	/**
@@ -672,7 +676,7 @@ class UserItemModel {
 	 *
 	 * @return string
 	 * @since 4.4.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_graduation_label(): string {
 		switch ( $this->get_graduation() ) {
@@ -690,7 +694,11 @@ class UserItemModel {
 				break;
 		}
 
-		return (string) $value;
+		return (string) apply_filters(
+			'learn-press/userItemModel/graduation-label',
+			$value,
+			$this
+		);
 	}
 
 	/**

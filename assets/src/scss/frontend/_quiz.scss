@@ -722,6 +722,7 @@ button[data-counter] {
 
 .quiz-intro {
 	display: flex;
+	gap: 40px;
 	margin: 0 0 20px;
 	padding: 0;
 	list-style: none;
@@ -735,7 +736,6 @@ button[data-counter] {
 
 	&-item {
 		display: flex;
-		margin: 0 40px 0 0;
 		align-items: center;
 
 		@media (max-width: 768px) {

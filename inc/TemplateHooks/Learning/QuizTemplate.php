@@ -54,8 +54,16 @@ class QuizTemplate {
 	 * @version 1.0.0
 	 */
 	public function html_meta( QuizPostModel $quizPostModel ): string {
-		$duration = ( new LP_Duration( $quizPostModel->get_duration() ) )->get();
-		$grade    = $quizPostModel->get_passing_grade();
+		$grade = $quizPostModel->get_passing_grade();
+
+		$html_passing_grade = '--';
+		if ( $grade > 0 ) {
+			$html_passing_grade = sprintf(
+				'<span class="lp-tooltip" data-tip="%s" tabindex="0">%s%%</span>',
+				esc_attr__( 'Minimum percentage of total points to pass the quiz', 'learnpress' ),
+				$grade
+			);
+		}
 
 		$fields = apply_filters(
 			'learn-press/quiz/meta-fields',
@@ -66,7 +74,7 @@ class QuizTemplate {
 				],
 				'passing-grade'   => [
 					'title'   => __( 'Passing grade:', 'learnpress' ),
-					'content' => $grade > 0 ? (string) $grade : '--',
+					'content' => $html_passing_grade,
 				],
 				'questions-count' => [
 					'title'   => __( 'Questions:', 'learnpress' ),

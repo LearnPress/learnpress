@@ -161,23 +161,11 @@ class UserItemBaseTemplate {
 			return $html;
 		}
 
-		$label = '';
-		switch ( $graduation ) {
-			case UserItemModel::GRADUATION_PASSED:
-				$label = __( 'Passed', 'learnpress' );
-				break;
-			case UserItemModel::GRADUATION_FAILED:
-				$label = __( 'Failed', 'learnpress' );
-				break;
-			default:
-				break;
-		}
-
 		$html = sprintf(
 			'<div class="lp-user-item graduation %s">%s%s</div>',
 			$graduation,
 			sprintf( '<span class="lp-icon lp-icon-%s"></span>', $graduation ),
-			$label
+			$userItemModel->get_graduation_label()
 		);
 
 		return apply_filters( 'learn-press/user-item-model/html-graduation', $html, $userItemModel );
