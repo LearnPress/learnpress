@@ -498,47 +498,43 @@ button[data-counter] {
 	right: 0;
 	left: 0;
 	margin: 0 0 35px 0;
+	display: flex;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 792px;
+	padding: 16px;
+	border-radius: $border-radius-global;
+	background: $bg-grey;
+	justify-content: space-between;
+	align-items: center;
 
-	> div {
+	&__right {
 		display: flex;
-		box-sizing: border-box;
-		width: 100%;
-		max-width: 792px;
-		margin: 0 auto;
-		padding: 16px;
-		border-radius: $border-radius-global;
-		background: $bg-grey;
-		justify-content: center;
+		flex-direction: row-reverse;
+		flex: 0 0 50%;
 		align-items: center;
+		gap: 12px;
+		@media (max-width: 480px) {
+			justify-content: center;
+		}
 
-		> div {
+		.submit-quiz {
+			.lp-button {
+				margin: 0;
+				border-radius: 4px;
+				overflow: hidden;
+				white-space: nowrap;
+			}
+		}
+
+		.countdown {
 			display: flex;
-			flex-direction: row-reverse;
-			flex: 0 0 50%;
 			align-items: center;
-			gap: 12px;
-			@media (max-width: 480px) {
-				justify-content: center;
-			}
-
-			.submit-quiz {
-				.lp-button {
-					margin: 0;
-					border-radius: 4px;
-					overflow: hidden;
-					white-space: nowrap;
-				}
-			}
-
-			.countdown {
-				display: flex;
-				align-items: center;
-			}
 		}
+	}
 
-		.current-point {
-			display: none;
-		}
+	.current-point {
+		display: none;
 	}
 
 	.questions-index {

@@ -11,6 +11,7 @@
 
 namespace LearnPress\TemplateHooks\UserItem;
 
+use LearnPress\Ajax\UserQuizAjax;
 use LearnPress\Databases\DataBase;
 use LearnPress\Helpers\LPDateTime;
 use LearnPress\Helpers\Template;
@@ -244,15 +245,11 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 * @version 1.1.0
 	 */
 	public function html_doing_quiz( array $args ): string {
-		$courseModel   = $args['courseModel'];
-		$quizPostModel = $args['quizPostModel'];
-		$userQuizModel = $args['userQuizModel'] ?? false;
+		$courseModel   = $args['courseModel'] ?? false;
+		$quizPostModel = $args['quizPostModel'] ?? false;
 
-		if ( ! $courseModel instanceof CourseModel ) {
-			return '';
-		}
-
-		if ( ! $quizPostModel instanceof QuizPostModel ) {
+		if ( ! $courseModel instanceof CourseModel
+			|| ! $quizPostModel instanceof QuizPostModel ) {
 			return '';
 		}
 
@@ -272,14 +269,12 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			),
 			'bar-info'    => $this->html_doing_bar_info( $args ),
 			'questions'   => $this->html_questions( $args ),
-			// Hidden when has many pages, JS shows on last page.
-			//'btn-finish'  => $this->html_btn_finish( array_merge( $args, [ 'hidden' => $num_pages > 1 ] ) ),
 			'pagination'  => $this->html_questions_pagination( [ 'num_pages' => $num_pages ] ),
 			'wrap-end' => '</div>',
 		];
 
 		return Template::combine_components(
-			apply_filters( 'learn-press/user/quiz/html-doing', $section, $courseModel, $quizPostModel, $userQuizModel )
+			apply_filters( 'learn-press/user/quiz/html-doing', $section, $args )
 		);
 	}
 
@@ -293,8 +288,8 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 * @version 1.1.0
 	 */
 	public function html_doing_bar_info( array $args ): string {
-		$courseModel   = $args['courseModel'];
-		$quizPostModel = $args['quizPostModel'];
+		$courseModel   = $args['courseModel'] ?? false;
+		$quizPostModel = $args['quizPostModel'] ?? false;
 
 		if ( ! $courseModel instanceof CourseModel
 			|| ! $quizPostModel instanceof QuizPostModel ) {
@@ -308,25 +303,27 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		$end = $per_page > 0 ? min( $per_page, $num_pages ) : $num_pages;
 
 		$section = [
-			'wrapper'     => '<div class="quiz-doing-bar-info"><div>',
+			'wrapper'     => '<div class="quiz-doing-bar-info">',
 			'index'       => sprintf(
 				'<div class="questions-index">%s</div>',
 				$this->html_questions_index(
 					[
-						'start' => 1,
-						'end'   => $end,
-						'total' => $total,
+						'start'     => 1,
+						'end'       => $end,
+						'total'     => $total,
+						'per_page'  => $per_page,
+						'num_pages' => $num_pages,
 					]
 				)
 			),
 			'submit'      => sprintf(
-				'<div>
+				'<div class="quiz-doing-bar-info__right">
 					<div class="submit-quiz">%s</div>%s
 				</div>',
 				$this->html_btn_finish( $args ),
 				$this->html_timer( $args )
 			),
-			'wrapper_end' => '</div></div>',
+			'wrapper_end' => '</div>',
 		];
 
 		return Template::combine_components(
@@ -335,28 +332,48 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	}
 
 	/**
-	 * HTML questions index of current page: "Question 1 of 10", "Question 1 to 5 of 10".
+	 * HTML questions index of current page: "10 questions", "Question 1 of 10", "Question 1 to 5 of 10".
 	 *
-	 * @param array $args [ start, end, total ]
+	 * @param array $args [ start, end, total, per_page, num_pages ]
 	 *
 	 * @return string
 	 * @since 4.5.0
 	 * @version 1.1.0
 	 */
 	public function html_questions_index( array $args ): string {
-		$start = (int) ( $args['start'] ?? 1 );
-		$end   = (int) ( $args['end'] ?? 0 );
-		$total = (int) ( $args['total'] ?? 0 );
+		$start     = (int) ( $args['start'] ?? 1 );
+		$end       = (int) ( $args['end'] ?? 0 );
+		$total     = (int) ( $args['total'] ?? 0 );
+		$per_page  = (int) ( $args['per_page'] ?? 0 );
+		$num_pages = (int) ( $args['num_pages'] ?? 1 );
 
-		if ( $end > $start ) {
-			/* translators: 1: first question of page, 2: last question of page, 3: total questions */
-			$text = sprintf( __( 'Question <span>%1$d to %2$d of %3$d</span>', 'learnpress' ), $start, $end, $total );
-		} else {
-			/* translators: 1: question number, 2: total questions */
-			$text = sprintf( __( 'Question <span>%1$d of %2$d</span>', 'learnpress' ), $start, $total );
-		}
+		$html = '';
 
-		return wp_kses_post( $text );
+		// Case 1: num_pages = 1 - show total questions
+		$html .= sprintf(
+			'<span class="index-total%s">%s</span>',
+			$num_pages === 1 ? '' : ' lp-hidden',
+			sprintf( _n( '%s question', '%s questions', $total, 'learnpress' ), $total )
+		);
+
+		// Case 2: per_page = 1 and num_pages > 1 - show single question index
+		$html .= sprintf(
+			'<span class="index-single%s">Question <span class="i-current">%d</span> of %d</span>',
+			$num_pages > 1 && $per_page === 1 ? '' : ' lp-hidden',
+			$start,
+			$total
+		);
+
+		// Case 3: per_page > 1 and num_pages > 1 - show range
+		$html .= sprintf(
+			'<span class="index-range%s">Question <span class="i-start">%d</span> to <span class="i-end">%d</span> of %d</span>',
+			$num_pages > 1 && $per_page > 1 ? '' : ' lp-hidden',
+			$start,
+			$end,
+			$total
+		);
+
+		return $html;
 	}
 
 	/**
@@ -536,12 +553,9 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			$show_explanation = true;
 		}
 
-		$index     = (int) ( $args['position'] ?? 0 );
-		$total     = $quizPostModel->count_questions();
-		$per_page  = $quizPostModel->get_pagination();
-		$num_pages = $per_page > 0 ? DataBase::get_total_pages( $per_page, $total ) : 1;
-		$count     = $quizPostModel->count_questions();
-		$page      = $per_page > 0 ? (int) floor( $index / $per_page ) + 1 : 1;
+		$index    = (int) ( $args['position'] ?? 0 );
+		$per_page = $quizPostModel->get_pagination();
+		$page     = $per_page > 0 ? (int) floor( $index / $per_page ) + 1 : 1;
 
 		// Default args of question when doing quiz, caller can override (review...).
 		$args = array_merge(
@@ -559,17 +573,20 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			$classes[] = 'question-answered';
 		}
 
+		if ( $action_type !== 'instant_check_question' ) {
+			//$classes[] = 'lp-hidden';
+		}
+
 		$section = [
 			'wrapper'     => sprintf(
-				'<div class="%1$s" data-id="%2$d" data-page="%3$d"%4$s>',
+				'<div class="%1$s" data-id="%2$d" data-page="%3$d">',
 				esc_attr( implode( ' ', $classes ) ),
 				$questionPostModel->get_id(),
 				$page,
-				$action_type === 'instant_check_question' ? '' : ' style="display: none;"'
 			),
 			'title'       => $this->html_question_title( $args ),
 			'hint'        => sprintf(
-				'<div class="question-hint-content" style="display: none;">%s</div>',
+				'<div class="question-hint-content lp-hidden">%s</div>',
 				$questionTemplate->html_hint( $questionPostModel )
 			),
 			'content'     => $questionTemplate->html_content( $questionPostModel ),
@@ -578,17 +595,6 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			'btn-instant-check' => $this->html_btn_instant_check( $args ),
 			'wrapper_end' => '</div>',
 		];
-
-		// Add button finish if it is the last question.
-		/*if ( $index === $count - 1 ) {
-			$section['btn-finish'] = sprintf(
-				'<div class="question"
-					data-id="-123"
-					data-page="%d">%s</div>',
-				$page,
-				$this->html_btn_finish( $args )
-			);
-		}*/
 
 		return Template::combine_components(
 			apply_filters( 'learn-press/question/html-question', $section, $questionPostModel, $args )
@@ -691,7 +697,8 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			Template::convert_data_to_json(
 				[
 					'id_url'      => 'user-check-question',
-					'action'      => 'user_check_question', // UserQuizAjax::user_check_question
+					/** @use UserQuizAjax::user_check_answer_question */
+					'action'      => 'user_check_answer_question',
 					'quiz_id'     => $quizPostModel->get_id(),
 					'course_id'   => $courseModel->get_id(),
 					'question_id' => $questionPostModel->get_id(),
@@ -770,7 +777,9 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 		$html = '';
 		for ( $page = 1; $page <= $num_pages; $page++ ) {
 			$html .= sprintf(
-				'<div class="questions-pagination__item" data-page="%1$d"%2$s>%3$s</div>',
+				'<div class="questions-pagination__item"
+					data-page="%1$d"%2$s>%3$s
+				</div>',
 				$page,
 				1 === $page ? '' : ' hidden',
 				Template::instance()->html_pagination(
@@ -966,7 +975,8 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			Template::convert_data_to_json(
 				[
 					'id_url'    => 'user-retake-quiz',
-					'action'    => 'user_retake_quiz', // UserQuizAjax::user_retake_quiz
+					/** @use UserQuizAjax::user_retake_quiz */
+					'action'    => 'user_retake_quiz',
 					'quiz_id'   => $quizPostModel->get_id(),
 					'course_id' => $courseModel->get_id(),
 				]
@@ -1045,7 +1055,10 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 
 		$section = [
 			'wrapper'     => sprintf(
-				'<div class="lp-quiz-review" style="display: none;" data-per-page="%d" data-total="%d" data-num-pages="%d">',
+				'<div class="lp-quiz-review lp-hidden"
+						data-per-page="%d"
+						data-total="%d"
+						data-num-pages="%d">',
 				$per_page,
 				count( $question_ids ),
 				$num_pages

@@ -54,19 +54,26 @@ class UserQuizAjax extends AbstractAjax {
 			 * @var QuizPostModel $quizPostModel
 			 * @var UserModel|false $userModel
 			 */
-			[ 'courseModel' => $courseModel, 'quizPostModel' => $quizPostModel, 'userModel' => $userModel ] = $context;
-
-			do_action( 'learn-press/user/before/start-quiz', $quizPostModel->get_id(), $courseModel->get_id(), get_current_user_id() );
+			[
+				'courseModel' => $courseModel,
+				'quizPostModel' => $quizPostModel,
+				'userModel' => $userModel,
+			] = $context;
 
 			$userQuizModel = false;
 			if ( ! $context['is_guest'] ) {
-				$userQuizModel = $this->create_user_quiz( $userModel->get_id(), $quizPostModel->get_id(), $courseModel->get_id() );
+				$userQuizModel = $this->create_user_quiz(
+					$userModel->get_id(),
+					$quizPostModel->get_id(),
+					$courseModel->get_id()
+				);
 				$userQuizModel->handle_start();
 			}
 
-			$response->data->content = $this->get_template()->html_doing_quiz( $context );
-			$response->data->status  = UserQuizModel::STATUS_STARTED;
-			$response->status        = Response::STATUS_SUCCESS;
+			$context['userQuizModel'] = $userQuizModel;
+			$response->data->content  = $this->get_user_quiz_template()->html_doing_quiz( $context );
+			$response->data->status   = UserQuizModel::STATUS_STARTED;
+			$response->status         = Response::STATUS_SUCCESS;
 		} catch ( Throwable $e ) {
 			$response->message = $this->get_error_message( $e );
 		}
@@ -112,7 +119,7 @@ class UserQuizAjax extends AbstractAjax {
 				$userQuizModel->handle_retake();
 			}
 
-			$response->data->content = $this->get_template()->html_doing_quiz( $context );
+			$response->data->content = $this->get_user_quiz_template()->html_doing_quiz( $context );
 			$response->data->status  = UserQuizModel::STATUS_STARTED;
 			$response->status        = Response::STATUS_SUCCESS;
 		} catch ( Throwable $e ) {
@@ -182,7 +189,7 @@ class UserQuizAjax extends AbstractAjax {
 				$graduation = ! empty( $result['pass'] ) ? UserItemModel::GRADUATION_PASSED : UserItemModel::GRADUATION_FAILED;
 			}
 
-			$response->data->content    = $this->get_template()->html_completed(
+			$response->data->content    = $this->get_user_quiz_template()->html_completed(
 				array_merge(
 					$context,
 					compact( 'result', 'userQuizModel' ),
@@ -213,7 +220,7 @@ class UserQuizAjax extends AbstractAjax {
 	 * @since 4.5.0
 	 * @version 1.0.0
 	 */
-	public function user_check_question() {
+	public function user_check_answer_question() {
 		$response = new Response();
 
 		try {
@@ -261,7 +268,7 @@ class UserQuizAjax extends AbstractAjax {
 			$position    = array_search( $questionPostModel->get_id(), array_map( 'absint', $quizPostModel->get_question_ids() ), true );
 			$action_type = 'instant_check_question';
 
-			$response->data->content = $this->get_template()->html_question(
+			$response->data->content = $this->get_user_quiz_template()->html_question(
 				compact(
 					'courseModel',
 					'quizPostModel',
@@ -273,7 +280,7 @@ class UserQuizAjax extends AbstractAjax {
 				)
 			);
 
-			$response->data->content = $this->get_template()->html_question(
+			$response->data->content = $this->get_user_quiz_template()->html_question(
 				array_merge(
 					$context,
 					compact(
@@ -537,7 +544,7 @@ class UserQuizAjax extends AbstractAjax {
 	/**
 	 * @return UserQuizTemplate
 	 */
-	protected function get_template(): UserQuizTemplate {
+	protected function get_user_quiz_template(): UserQuizTemplate {
 		return UserQuizTemplate::instance();
 	}
 }

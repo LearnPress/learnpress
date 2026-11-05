@@ -122,21 +122,6 @@ const formatTimer = ( seconds, total ) => {
 	return `${ pad( seconds / 3600 ) }:${ pad( ( seconds % 3600 ) / 60 ) }:${ pad( seconds % 60 ) }`;
 };
 
-/**
- * Replace %1$d, %2$d... (and %d in order) of text.
- *
- * @param {string} text
- * @param {Array}  args
- * @return {string} text
- */
-const replacePlaceholders = ( text, ...args ) => {
-	let i = 0;
-	return text.replace( /%(?:(\d+)\$)?[ds]/g, ( match, position ) => {
-		const value = position ? args[ position - 1 ] : args[ i++ ];
-		return value === undefined ? match : String( value );
-	} );
-};
-
 export class UserQuiz {
 	static selectors = {
 		elWrap: '#learn-press-user-quiz',
@@ -369,7 +354,7 @@ export class UserQuiz {
 			return;
 		}
 
-		elHint.style.display = elHint.style.display === 'none' ? '' : 'none';
+		elHint.classList.toggle( 'lp-hidden' );
 	}
 
 	showReview( args ) {
@@ -397,8 +382,8 @@ export class UserQuiz {
 			return;
 		}
 
-		elResultWrap.style.display = isReview ? 'none' : '';
-		elReview.style.display = isReview ? '' : 'none';
+		elResultWrap.classList.toggle( 'lp-hidden', isReview );
+		elReview.classList.toggle( 'lp-hidden', ! isReview );
 		if ( isReview ) {
 			this.showPage( elReview, 1 );
 		}
@@ -437,7 +422,7 @@ export class UserQuiz {
 		elScope.dataset.currentPage = String( page );
 
 		elScope.querySelectorAll( UserQuiz.selectors.elQuestion ).forEach( ( elQuestion ) => {
-			elQuestion.style.display = ( parseInt( elQuestion.dataset.page ) || 1 ) === page ? '' : 'none';
+			elQuestion.classList.toggle( 'lp-hidden', ( parseInt( elQuestion.dataset.page ) || 1 ) !== page );
 		} );
 
 		// Pagination of each page is rendered by PHP, show the one of current page.
@@ -447,11 +432,29 @@ export class UserQuiz {
 
 		const elIndex = elScope.querySelector( UserQuiz.selectors.elQuestionsIndex );
 		if ( elIndex ) {
-			const start = perPage > 0 ? ( ( page - 1 ) * perPage ) + 1 : 1;
-			const end = perPage > 0 ? Math.min( start + perPage - 1, total ) : total;
-			elIndex.innerHTML = end > start
-				? replacePlaceholders( this.i18n.question_index_range || 'Question <span>%1$d to %2$d of %3$d</span>', start, end, total )
-				: replacePlaceholders( this.i18n.question_index || 'Question <span>%1$d of %2$d</span>', start, total );
+			// Only update dynamic content when num_pages > 1
+			if ( numPages > 1 ) {
+				const start = perPage > 0 ? ( ( page - 1 ) * perPage ) + 1 : 1;
+				const end = perPage > 0 ? Math.min( start + perPage - 1, total ) : total;
+
+				if ( perPage === 1 ) {
+					// Update single question index
+					const elCurrent = elIndex.querySelector( '.i-current' );
+					if ( elCurrent ) {
+						elCurrent.textContent = start;
+					}
+				} else {
+					// Update range index
+					const elStart = elIndex.querySelector( '.i-start' );
+					const elEnd = elIndex.querySelector( '.i-end' );
+					if ( elStart ) {
+						elStart.textContent = start;
+					}
+					if ( elEnd ) {
+						elEnd.textContent = end;
+					}
+				}
+			}
 		}
 
 		const isLast = page === numPages;

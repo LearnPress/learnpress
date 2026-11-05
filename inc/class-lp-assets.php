@@ -207,10 +207,6 @@ class LP_Assets extends LP_Abstract_Assets {
 					'error'                => esc_html__( 'Error', 'learnpress' ),
 					'prev'                 => esc_html__( 'Prev', 'learnpress' ),
 					'next'                 => esc_html__( 'Next', 'learnpress' ),
-					/* translators: 1: question number, 2: total questions */
-					'question_index'       => wp_kses_post( __( 'Question <span>%1$d of %2$d</span>', 'learnpress' ) ),
-					/* translators: 1: first question of page, 2: last question of page, 3: total questions */
-					'question_index_range' => wp_kses_post( __( 'Question <span>%1$d to %2$d of %3$d</span>', 'learnpress' ) ),
 				],
 			],
 		];
