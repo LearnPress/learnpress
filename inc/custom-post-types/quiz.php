@@ -301,6 +301,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				$order   = LP_Request::get_param( 'order', '', 'key' );
 
 				$filter              = new QuizPostFilter();
+				$filter->page        = $paged;
+				$filter->limit       = $posts_per_page;
 				$filter->only_fields = array_map(
 					function ( $field ) {
 						return "p.{$field}";

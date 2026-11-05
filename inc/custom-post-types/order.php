@@ -506,6 +506,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$refund_request_status = LP_Request::get_param( 'refund_request_status', '', 'key', 'get' );
 
 				$filter              = new OrderPostFilter();
+				$filter->page        = $paged;
+				$filter->limit       = $posts_per_page;
 				$filter->only_fields = array_map(
 					function ( $field ) {
 						return "p.{$field}";
