@@ -89,6 +89,26 @@
 		}
 	}
 
+	.answer-option {
+		border: 1px solid $border-color;
+
+		&.answered-correct {
+			border-color: #4caf50;
+
+			.option-title {
+				border: none;
+			}
+		}
+
+		&.answered-wrong {
+			border-color: #ff6423;
+
+			.option-title {
+				border: none;
+			}
+		}
+	}
+
 	// Sorting choice (new in core).
 	.lp-sorting-choice {
 		margin: 0;
@@ -102,9 +122,12 @@
 			gap: 12px;
 			margin: 0 0 10px;
 			padding: 12px;
-			border: 1px solid $border-color;
 			border-radius: 4px;
 			background: $color-white;
+
+			&:hover {
+				cursor: move;
+			}
 
 			&.sortable-ghost {
 				opacity: 0.4;
@@ -112,14 +135,6 @@
 
 			&.sortable-chosen {
 				border-color: $color-primary;
-			}
-
-			&.answered-correct {
-				border-color: #4caf50;
-			}
-
-			&.answered-wrong {
-				border-color: #ff6423;
 			}
 
 			// Reset style of .question .answer-option .option-title (space for radio / checkbox).

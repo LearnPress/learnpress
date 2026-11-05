@@ -79,7 +79,7 @@
 				vertical-align: middle;
 			}
 
-			&::before {
+			/*&::before {
 				position: absolute;
 				top: 0;
 				bottom: 0;
@@ -88,7 +88,7 @@
 				background: #ddd;
 				content: "";
 				@include transition(background linear 0.25s);
-			}
+			}*/
 		}
 
 		input[type="checkbox"],
@@ -530,6 +530,10 @@ button[data-counter] {
 		.countdown {
 			display: flex;
 			align-items: center;
+
+			.lp-icon-stopwatch {
+				font-size: $font-size-small;
+			}
 		}
 	}
 
@@ -992,12 +996,16 @@ button[data-counter] {
 			}
 		}
 
+		&:hover {
+			cursor: pointer;
+		}
+
 		.option-title {
 			display: flex;
 			width: 100%;
 			margin: 0;
 			padding: 12px 12px 12px 44px;
-			border: 1px solid $border-color;
+			//border: 1px solid $border-color;
 			color: $text-color-accent;
 			font-weight: normal;
 			@include border-radius(4px);
@@ -1007,12 +1015,12 @@ button[data-counter] {
 			}
 		}
 
-		.option-title {
+		/*.option-title {
 
 			&::before {
 				display: none;
 			}
-		}
+		}*/
 
 		&.answer-correct {
 

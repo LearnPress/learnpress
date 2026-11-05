@@ -449,7 +449,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 				data-duration="%1$d"
 				data-remaining="%2$d"
 				data-time-spend="%3$d">
-				<i class="lp-icon-clock"></i>
+				<i class="lp-icon-stopwatch"></i>
 				<span>%4$s</span>
 				<input type="hidden" name="lp-quiz-time-spend" value="%3$d"/>
 			</div>',

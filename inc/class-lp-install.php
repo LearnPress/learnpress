@@ -77,6 +77,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			$question_answer_config_table = $tables[ $this->lp_db->tb_lp_question_answer_config ];
 			$this->lp_db->wpdb->query( $question_answer_config_table );
 
+			// Since v4.5.0 - Check and add missing columns to user_item_results table.
+			$this->check_and_add_columns_user_item_results();
+
 			// Set roles and capabilities.
 			learn_press_add_user_roles();
 
@@ -400,6 +403,41 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				) $collation";
 
 				$wpdb->query( $sql );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Check and add missing columns to user_item_results table.
+		 *
+		 * @since 4.5.0
+		 * @return void
+		 */
+		private function check_and_add_columns_user_item_results() {
+			try {
+				$table_name = $this->lp_db->tb_lp_user_item_results;
+
+				// Define columns from tables-v5.php
+				$columns = [
+					'user_id'        => 'bigint(20) unsigned NOT NULL DEFAULT \'0\'',
+					'guest_key'      => 'varchar(64) not null default \'\' COMMENT \'Key to identify users not logged in.\'',
+					'item_id'        => 'bigint(20) unsigned NOT NULL DEFAULT \'0\'',
+					'item_type'      => 'varchar(45) NOT NULL DEFAULT \'\'',
+					'start_time'     => 'datetime NULL DEFAULT NULL',
+					'end_time'       => 'datetime NULL DEFAULT NULL',
+					'status'         => 'varchar(45) NOT NULL DEFAULT \'\'',
+					'graduation'     => 'varchar(20) NULL DEFAULT NULL',
+					'ref_id'         => 'bigint(20) unsigned NOT NULL DEFAULT \'0\'',
+					'ref_type'       => 'varchar(45) DEFAULT \'\'',
+					'parent_result_id' => 'bigint(20) unsigned NOT NULL DEFAULT \'0\'',
+					'extra_data'     => 'longtext COMMENT \'Store more data type JSON.\'',
+				];
+
+				// Add each column if it doesn't exist
+				foreach ( $columns as $column_name => $column_type ) {
+					$this->lp_db->add_col_table( $table_name, $column_name, $column_type );
+				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}

@@ -148,7 +148,11 @@ class UserQuizAjax extends AbstractAjax {
 			 * @var QuizPostModel $quizPostModel
 			 * @var UserModel|false $userModel
 			 */
-			[ 'courseModel' => $courseModel, 'quizPostModel' => $quizPostModel, 'userModel' => $userModel ] = $context;
+			[
+				'courseModel' => $courseModel,
+				'quizPostModel' => $quizPostModel,
+				'userModel' => $userModel
+			] = $context;
 
 			$answered      = $this->sanitize_answered( $params['answered'] ?? [], $quizPostModel->get_question_ids() );
 			$userQuizModel = false;
