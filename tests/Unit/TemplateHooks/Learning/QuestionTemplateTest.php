@@ -6,7 +6,10 @@ namespace LearnPress\Tests\Unit\TemplateHooks\Learning;
 
 use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
+use LearnPress\Models\Question\QuestionPostFIBModel;
 use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserItems\UserQuizModel;
 use LearnPress\TemplateHooks\Learning\QuestionTemplate;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
 use Mockery;
@@ -14,62 +17,100 @@ use Mockery;
 /**
  * Unit tests for QuestionTemplate answer renderers.
  *
- * Strategy: QuestionPostModel is a partial mock, get_answer_options() returns options the same way
- * the model does: is_true only when not excluded, so tests also check what the template asks for.
+ * Strategy: QuestionPostModel is a partial mock, get_answers_for_legacy_type() returns the answers config,
+ * answer of user and result come from args['result_questions'], quiz settings from args['quizPostModel'].
  */
 class QuestionTemplateTest extends BrainMonkeyTestCase {
-
-	/**
-	 * @var array last args passed to get_answer_options()
-	 */
-	private $options_args = [];
 
 	protected function setUp(): void {
 		parent::setUp();
 
 		Functions\when( 'wp_kses_post' )->returnArg( 1 );
-		$this->options_args = [];
+		Functions\when( 'do_shortcode' )->returnArg( 1 );
+		Functions\when( 'wp_kses_allowed_html' )->justReturn( [] );
+		Functions\when( 'wp_kses' )->returnArg( 1 );
+		Functions\when( 'esc_attr' )->returnArg( 1 );
+		Functions\when( 'esc_html' )->alias(
+			static function ( $text ) {
+				return htmlspecialchars( (string) $text, ENT_QUOTES );
+			}
+		);
+		if ( ! class_exists( 'LP_Debug', false ) ) {
+			eval( 'class LP_Debug { public static function error_log( $e ) {} }' );
+		}
 	}
 
 	/**
 	 * @param string $type
-	 * @param array $options options with is_true, removed when template excludes it.
+	 * @param array $options answers config
 	 * @param float $mark
+	 * @param string $class
 	 *
 	 * @return QuestionPostModel|Mockery\MockInterface
 	 */
-	private function make_question( string $type, array $options, float $mark = 2 ) {
-		$question = Mockery::mock( QuestionPostModel::class )->makePartial();
+	private function make_question( string $type, array $options, float $mark = 2, string $class = QuestionPostModel::class ) {
+		$question = Mockery::mock( $class )->makePartial();
 		$question->shouldReceive( 'get_id' )->andReturn( 5 );
 		$question->shouldReceive( 'get_type' )->andReturn( $type );
 		$question->shouldReceive( 'get_mark' )->andReturn( $mark );
-		$question->shouldReceive( 'get_answer_options' )->andReturnUsing(
-			function ( $args ) use ( $options ) {
-				$this->options_args = $args;
-				$exclude            = array_flip( $args['exclude'] );
-
-				return array_map(
-					static function ( $option ) use ( $exclude ) {
-						return array_diff_key( $option, $exclude );
-					},
-					$options
-				);
-			}
-		);
+		$question->shouldReceive( 'get_answers_for_legacy_type' )->andReturn( $options );
 
 		return $question;
+	}
+
+	/**
+	 * @return QuizPostModel|Mockery\MockInterface
+	 */
+	private function make_quiz() {
+		$quiz = Mockery::mock( QuizPostModel::class );
+		$quiz->shouldReceive( 'has_review' )->andReturn( true );
+		$quiz->shouldReceive( 'has_show_correct_review' )->andReturn( true );
+
+		return $quiz;
+	}
+
+	/**
+	 * User quiz started: answers are editable (input has name, value and no disabled).
+	 *
+	 * @return UserQuizModel|Mockery\MockInterface
+	 */
+	private function make_user_quiz( bool $started = true ) {
+		$userQuizModel = Mockery::mock( UserQuizModel::class )->makePartial();
+		$userQuizModel->shouldReceive( 'has_started' )->andReturn( $started );
+
+		return $userQuizModel;
+	}
+
+	/**
+	 * Args for html_answers().
+	 *
+	 * @param mixed $answered answer of user, null when not answered
+	 * @param array $args
+	 */
+	private function make_args( $answered = null, array $args = [] ): array {
+		$result = [];
+		if ( null !== $answered ) {
+			$result = [ 5 => [ 'answered' => $answered ] ];
+		}
+
+		return array_merge(
+			[
+				'quizPostModel'    => $this->make_quiz(),
+				'userQuizModel'    => $this->make_user_quiz(),
+				'result_questions' => $result,
+			],
+			$args
+		);
 	}
 
 	private function choice_options(): array {
 		return [
 			[
-				'uid'     => 11,
 				'title'   => 'Option A',
 				'value'   => 'a',
 				'is_true' => 'yes',
 			],
 			[
-				'uid'     => 12,
 				'title'   => 'Option B',
 				'value'   => 'b',
 				'is_true' => 'no',
@@ -77,15 +118,35 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 		];
 	}
 
-	private function fib_options( array $answers = [] ): array {
-		return [
+	/**
+	 * FIB question: blanks are read by the model helpers, mock them.
+	 *
+	 * @param array $blank_answers result of each blank, key is blank id.
+	 *
+	 * @return QuestionPostFIBModel|Mockery\MockInterface
+	 */
+	private function make_fib_question( array $blank_answers = [] ) {
+		$question = $this->make_question(
+			'fill_in_blanks',
 			[
-				'uid'     => 21,
-				'title'   => 'Hello {{FIB_x1}} and {{FIB_x2}}',
-				'ids'     => [ 'x1', 'x2' ],
-				'answers' => $answers,
+				[
+					'uid'   => 21,
+					'title' => 'Hello {{FIB_x1}} and {{FIB_x2}}',
+				],
 			],
-		];
+			2,
+			QuestionPostFIBModel::class
+		);
+		$question->shouldReceive( 'get_blanks_of_answer' )->andReturn( [] );
+		$question->shouldReceive( 'fib_get_ids' )->andReturn( [ 'x1', 'x2' ] );
+		$question->shouldReceive( 'match_shortcode_api' )->andReturnUsing(
+			static function ( string $content ) {
+				return $content;
+			}
+		);
+		$question->shouldReceive( 'get_answer_data' )->andReturn( $blank_answers );
+
+		return $question;
 	}
 
 	// -------------------------------------------------------------------------
@@ -106,13 +167,14 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 	public function test_choice_doing_has_no_correct_markers(): void {
 		$html = QuestionTemplate::instance()->html_answers(
 			$this->make_question( 'single_choice', $this->choice_options() ),
-			[ 'status' => 'started' ]
+			$this->make_args()
 		);
 
-		$this->assertContains( 'is_true', $this->options_args['exclude'] );
 		$this->assertStringContainsString( '<ul id="answer-options-5" class="answer-options">', $html );
-		$this->assertStringContainsString( 'type="radio" class="option-check" name="learn-press-question-5" id="learn-press-answer-option-11" value="a"', $html );
-		$this->assertStringContainsString( '<label for="learn-press-answer-option-11" class="option-title">Option A</label>', $html );
+		$this->assertStringContainsString( 'id="learn-press-answer-option-5-0"', $html );
+		$this->assertStringContainsString( 'name="learn-press-question-5"', $html );
+		$this->assertStringContainsString( 'value="a"', $html );
+		$this->assertStringContainsString( '<label for="learn-press-answer-option-5-0" class="option-title">Option A</label>', $html );
 		$this->assertStringNotContainsString( 'answer-correct', $html );
 		$this->assertStringNotContainsString( 'answered-', $html );
 		$this->assertStringNotContainsString( 'question-response', $html );
@@ -122,10 +184,7 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 	public function test_choice_doing_restores_answered(): void {
 		$html = QuestionTemplate::instance()->html_answers(
 			$this->make_question( 'single_choice', $this->choice_options() ),
-			[
-				'status'   => 'started',
-				'answered' => 'b',
-			]
+			$this->make_args( 'b' )
 		);
 
 		$this->assertStringContainsString( 'value="b" checked', $html );
@@ -135,14 +194,20 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 	public function test_multi_choice_uses_checkbox(): void {
 		$html = QuestionTemplate::instance()->html_answers(
 			$this->make_question( 'multi_choice', $this->choice_options() ),
-			[
-				'status'   => 'started',
-				'answered' => [ 'a', 'b' ],
-			]
+			$this->make_args( [ 'a', 'b' ] )
 		);
 
 		$this->assertSame( 2, substr_count( $html, 'type="checkbox"' ) );
 		$this->assertSame( 2, substr_count( $html, ' checked' ) );
+	}
+
+	public function test_choice_without_quiz_renders_nothing(): void {
+		$html = QuestionTemplate::instance()->html_answers(
+			$this->make_question( 'single_choice', $this->choice_options() ),
+			[]
+		);
+
+		$this->assertSame( '', $html );
 	}
 
 	// -------------------------------------------------------------------------
@@ -152,64 +217,81 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 	public function test_choice_checked_with_show_correct_marks_answers(): void {
 		$html = QuestionTemplate::instance()->html_answers(
 			$this->make_question( 'single_choice', $this->choice_options() ),
-			[
-				'status'       => 'started',
-				'answered'     => 'b',
-				'show_result'  => true,
-				'show_correct' => true,
-				'correct'      => false,
-			]
+			$this->make_args(
+				'b',
+				[
+					'show_result'  => true,
+					'show_correct' => true,
+					'correct'      => false,
+				]
+			)
 		);
 
-		$this->assertNotContains( 'is_true', $this->options_args['exclude'] );
 		$this->assertStringContainsString( '<li class="answer-option answer-correct">', $html );
 		$this->assertStringContainsString( '<li class="answer-option answered-wrong">', $html );
 		$this->assertSame( 2, substr_count( $html, ' disabled' ) );
-		$this->assertStringContainsString( '<div class="question-response incorrect"><span class="label">Incorrect</span><span class="point">0/2 point</span></div>', $html );
+		$this->assertStringContainsString( 'question-response incorrect', $html );
+		$this->assertStringContainsString( '0/2 point', $html );
 	}
 
 	public function test_choice_checked_without_show_correct_uses_server_result(): void {
 		$html = QuestionTemplate::instance()->html_answers(
 			$this->make_question( 'true_or_false', $this->choice_options() ),
-			[
-				'status'       => 'started',
-				'answered'     => 'a',
-				'show_result'  => true,
-				'show_correct' => false,
-				'correct'      => true,
-			]
+			$this->make_args(
+				'b',
+				[
+					'show_result'  => true,
+					'show_correct' => false,
+					'correct'      => true,
+				]
+			)
 		);
 
-		$this->assertContains( 'is_true', $this->options_args['exclude'] );
+		// is_true is not read when not show correct, the result of server decides.
 		$this->assertStringNotContainsString( 'answer-correct', $html );
 		$this->assertStringContainsString( '<li class="answer-option answered-correct">', $html );
-		$this->assertStringContainsString( '<span class="label">Correct</span><span class="point">2/2 point</span>', $html );
+		$this->assertStringContainsString( 'question-response correct', $html );
+		$this->assertStringContainsString( '2/2 point', $html );
 	}
 
 	public function test_choice_review_has_no_input_name_and_value(): void {
 		$html = QuestionTemplate::instance()->html_answers(
 			$this->make_question( 'single_choice', $this->choice_options() ),
-			[
-				'status'      => 'completed',
-				'answered'    => 'a',
-				'show_result' => true,
-				'correct'     => true,
-			]
+			$this->make_args(
+				'a',
+				[
+					'userQuizModel' => $this->make_user_quiz( false ),
+					'show_result'   => true,
+					'correct'       => true,
+				]
+			)
 		);
 
-		$this->assertStringContainsString( 'name="" id="learn-press-answer-option-11" value="" checked disabled', $html );
+		$this->assertStringContainsString( 'name=""', $html );
+		$this->assertMatchesRegularExpression( '/id="learn-press-answer-option-5-0"\s+value="" checked disabled/', $html );
 	}
 
-	public function test_choice_uid_fallback_when_missing(): void {
-		$options = $this->choice_options();
-		unset( $options[0]['uid'] );
+	public function test_choice_reads_answers_from_question_snapshot(): void {
+		$snapshot = [
+			'answers_config' => [
+				[
+					'title'   => 'From snapshot',
+					'value'   => 's1',
+					'is_true' => 'yes',
+				],
+			],
+		];
+		$question = Mockery::mock( QuestionPostModel::class )->makePartial();
+		$question->shouldReceive( 'get_id' )->andReturn( 5 );
+		$question->shouldReceive( 'get_type' )->andReturn( 'single_choice' );
+		$question->shouldReceive( 'get_answers_for_legacy_type' )->never();
 
-		$html = QuestionTemplate::instance()->html_answers(
-			$this->make_question( 'single_choice', $options ),
-			[ 'status' => 'started' ]
-		);
+		$args                                              = $this->make_args( 's1' );
+		$args['result_questions'][5]['questionSnapshot']   = $snapshot;
+		$html = QuestionTemplate::instance()->html_answers( $question, $args );
 
-		$this->assertStringContainsString( 'id="learn-press-answer-option-5-0"', $html );
+		$this->assertStringContainsString( 'From snapshot', $html );
+		$this->assertStringContainsString( 'value="s1" checked', $html );
 	}
 
 	// -------------------------------------------------------------------------
@@ -218,11 +300,8 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 
 	public function test_fib_doing_renders_inputs_and_restores_answered(): void {
 		$html = QuestionTemplate::instance()->html_answers(
-			$this->make_question( 'fill_in_blanks', $this->fib_options() ),
-			[
-				'status'   => 'started',
-				'answered' => [ 'x1' => 'world' ],
-			]
+			$this->make_fib_question(),
+			$this->make_args( [ 'x1' => 'world' ] )
 		);
 
 		$this->assertStringContainsString( '<div class="lp-fib-content"><div>Hello ', $html );
@@ -235,63 +314,60 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 
 	public function test_fib_review_with_show_correct_shows_fill(): void {
 		$html = QuestionTemplate::instance()->html_answers(
-			$this->make_question(
-				'fill_in_blanks',
-				$this->fib_options(
-					[
-						'x1' => [
-							'is_correct' => true,
-							'answer'     => 'world',
-							'correct'    => 'world',
-						],
-						'x2' => [
-							'is_correct' => false,
-							'answer'     => '<b>bad</b>',
-							'correct'    => 'good',
-						],
-					]
-				),
-				2
+			$this->make_fib_question(
+				[
+					'x1' => [
+						'is_correct' => true,
+						'answer'     => 'world',
+						'correct'    => 'world',
+					],
+					'x2' => [
+						'is_correct' => false,
+						'answer'     => '<b>bad</b>',
+						'correct'    => 'good',
+					],
+				]
 			),
-			[
-				'status'       => 'completed',
-				'show_result'  => true,
-				'show_correct' => true,
-				'mark'         => 1.5,
-			]
+			$this->make_args(
+				[
+					'x1' => 'world',
+					'x2' => '<b>bad</b>',
+				],
+				[
+					'show_result'  => true,
+					'show_correct' => true,
+					'mark'         => 1.5,
+				]
+			)
 		);
 
 		$this->assertStringContainsString( '<span class="lp-fib-answered correct"><span class="lp-fib-answered__fill">world</span></span>', $html );
 		$this->assertStringContainsString( '<span class="lp-fib-answered fail"><span class="lp-fib-answered__answer">&lt;b&gt;bad&lt;/b&gt;</span> &rarr; <span class="lp-fib-answered__fill">good</span></span>', $html );
-		$this->assertStringContainsString( '<span class="point">1.50/2 point</span>', $html );
+		$this->assertStringContainsString( '1.50/2 point', $html );
 		$this->assertStringContainsString( 'lp-fib-note', $html );
 	}
 
 	public function test_fib_review_without_show_correct_hides_fill(): void {
 		$html = QuestionTemplate::instance()->html_answers(
-			$this->make_question(
-				'fill_in_blanks',
-				$this->fib_options(
-					[
-						'x1' => [
-							'is_correct' => false,
-							'answer'     => 'wrong',
-							// correct (fill) is removed by model when not show correct, test template does not rely on it.
-							'correct'    => 'world',
-						],
-					]
-				)
+			$this->make_fib_question(
+				[
+					'x1' => [
+						'is_correct' => false,
+						'answer'     => 'wrong',
+					],
+				]
 			),
-			[
-				'status'       => 'completed',
-				'show_result'  => true,
-				'show_correct' => false,
-			]
+			$this->make_args(
+				[ 'x1' => 'wrong' ],
+				[
+					'show_result'  => true,
+					'show_correct' => false,
+				]
+			)
 		);
 
 		$this->assertStringContainsString( '<span class="lp-fib-answered fail"><span class="lp-fib-answered__answer">wrong</span></span>', $html );
 		$this->assertStringNotContainsString( 'lp-fib-answered__fill', $html );
-		$this->assertStringNotContainsString( 'world', $html );
 	}
 
 	// -------------------------------------------------------------------------
@@ -299,43 +375,27 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 	// -------------------------------------------------------------------------
 
 	private function sorting_options(): array {
-		// Model returns random order, key sorting = correct position when not exclude is_true.
+		// Config order is the correct order.
 		return [
 			[
-				'title'   => 'Second',
-				'value'   => 'v2',
-				'is_true' => 'yes',
-				'sorting' => 1,
+				'title' => 'First',
+				'value' => 'v1',
 			],
 			[
-				'title'   => 'First',
-				'value'   => 'v1',
-				'is_true' => 'yes',
-				'sorting' => 0,
+				'title' => 'Second',
+				'value' => 'v2',
 			],
 		];
 	}
 
 	public function test_sorting_doing_uses_answered_order(): void {
-		$options = array_map(
-			static function ( $option ) {
-				unset( $option['sorting'] );
-
-				return $option;
-			},
-			$this->sorting_options()
-		);
-
 		$html = QuestionTemplate::instance()->html_answers(
-			$this->make_question( 'sorting_choice', $options ),
-			[
-				'status'   => 'started',
-				'answered' => [ 'v1', 'v2' ],
-			]
+			$this->make_question( 'sorting_choice', $this->sorting_options() ),
+			$this->make_args( [ 'v2', 'v1' ] )
 		);
 
 		$this->assertStringContainsString( 'class="answer-options lp-sorting-choice" data-sorted="1"', $html );
-		$this->assertLessThan( strpos( $html, 'value="v2"' ), strpos( $html, 'value="v1"' ) );
+		$this->assertLessThan( strpos( $html, 'value="v1"' ), strpos( $html, 'value="v2"' ) );
 		$this->assertStringContainsString( 'name="learn-press-question-5[]"', $html );
 		// Editable: no readonly class (state is not attribute draggable, Sortable changes it).
 		$this->assertStringNotContainsString( 'lp-sorting-choice--readonly', $html );
@@ -344,18 +404,9 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_sorting_not_answered_has_no_sorted_flag(): void {
-		$options = array_map(
-			static function ( $option ) {
-				unset( $option['sorting'] );
-
-				return $option;
-			},
-			$this->sorting_options()
-		);
-
 		$html = QuestionTemplate::instance()->html_answers(
-			$this->make_question( 'sorting_choice', $options ),
-			[ 'status' => 'started' ]
+			$this->make_question( 'sorting_choice', $this->sorting_options() ),
+			$this->make_args()
 		);
 
 		// Options are shuffled by server, untouched question must not be counted as answered by JS.
@@ -366,13 +417,15 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 	public function test_sorting_review_with_show_correct_marks_positions(): void {
 		$html = QuestionTemplate::instance()->html_answers(
 			$this->make_question( 'sorting_choice', $this->sorting_options() ),
-			[
-				'status'       => 'completed',
-				'answered'     => [ 'v2', 'v1' ],
-				'show_result'  => true,
-				'show_correct' => true,
-				'correct'      => false,
-			]
+			$this->make_args(
+				[ 'v2', 'v1' ],
+				[
+					'userQuizModel' => $this->make_user_quiz( false ),
+					'show_result'   => true,
+					'show_correct'  => true,
+					'correct'       => false,
+				]
+			)
 		);
 
 		$this->assertSame( 2, substr_count( $html, 'answered-wrong' ) );
@@ -386,17 +439,22 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 	// -------------------------------------------------------------------------
 
 	public function test_invalid_type_shows_message(): void {
-		$html = QuestionTemplate::instance()->html_answers( $this->make_question( 'unknown_type', [] ) );
+		$html = QuestionTemplate::instance()->html_answers(
+			$this->make_question( 'unknown_type', [] ),
+			$this->make_args()
+		);
 
-		$this->assertSame( '<div class="question-types">Question <code>unknown_type</code> invalid!</div>', $html );
+		$this->assertSame( '<div class="question-types">Question <span>unknown_type</span> invalid!</div>', $html );
 	}
 
 	public function test_addon_type_rendered_by_filter(): void {
 		Filters\expectApplied( 'learn-press/question/html-answers' )
-			->once()
 			->andReturn( '<div class="addon-type"></div>' );
 
-		$html = QuestionTemplate::instance()->html_answers( $this->make_question( 'addon_type', [] ) );
+		$html = QuestionTemplate::instance()->html_answers(
+			$this->make_question( 'addon_type', [] ),
+			$this->make_args()
+		);
 
 		$this->assertSame( '<div class="addon-type"></div>', $html );
 	}
@@ -411,97 +469,5 @@ class QuestionTemplateTest extends BrainMonkeyTestCase {
 		$this->assertSame( '2', $template->format_point( 2.0 ) );
 		$this->assertSame( '1.50', $template->format_point( 1.5 ) );
 		$this->assertSame( '0', $template->format_point( 0.0 ) );
-	}
-
-	// -------------------------------------------------------------------------
-	// html_question
-	// -------------------------------------------------------------------------
-
-	/**
-	 * @param string $hint
-	 * @param string $explanation
-	 *
-	 * @return QuestionPostModel|Mockery\MockInterface
-	 */
-	private function make_full_question( string $hint = 'The hint', string $explanation = 'The explanation' ) {
-		$question = $this->make_question( 'single_choice', $this->choice_options() );
-		$question->shouldReceive( 'get_the_title' )->andReturn( 'What is it?' );
-		$question->shouldReceive( 'get_hint' )->andReturn( $hint );
-		$question->shouldReceive( 'get_explanation' )->andReturn( $explanation );
-
-		return $question;
-	}
-
-	public function test_html_question_doing(): void {
-		Functions\when( 'learn_press_get_question_content_display' )->justReturn( '<p>Content</p>' );
-
-		$html = QuestionTemplate::instance()->html_question(
-			$this->make_full_question(),
-			[
-				'status' => 'started',
-				'index'  => 3,
-				'footer' => '<button class="footer-btn"></button>',
-			]
-		);
-
-		$this->assertStringStartsWith( '<div class="question question-single_choice" data-id="5" data-page="1">', $html );
-		$this->assertStringContainsString( '<h4 class="question-title"><span class="question-index">3.</span><span>What is it?</span><button type="button" class="btn-show-hint"><span>Hint</span></button></h4>', $html );
-		$this->assertStringContainsString( '<div class="question-content"><p>Content</p></div>', $html );
-		$this->assertStringContainsString( 'class="question-answers"', $html );
-		$this->assertStringContainsString( '<div class="question-hint-content" style="display: none;">', $html );
-		$this->assertStringNotContainsString( 'question-explanation-content', $html );
-		$this->assertStringNotContainsString( 'The explanation', $html );
-		$this->assertStringContainsString( '<button class="footer-btn"></button></div>', $html );
-	}
-
-	public function test_html_question_hidden_on_other_page(): void {
-		Functions\when( 'learn_press_get_question_content_display' )->justReturn( '' );
-
-		$html = QuestionTemplate::instance()->html_question(
-			$this->make_full_question(),
-			[
-				'page'   => 2,
-				'hidden' => true,
-			]
-		);
-
-		$this->assertStringStartsWith( '<div class="question question-single_choice" data-id="5" data-page="2" style="display: none;">', $html );
-		$this->assertStringNotContainsString( 'question-content', $html );
-	}
-
-	public function test_html_question_checked_shows_explanation_not_hint(): void {
-		Functions\when( 'learn_press_get_question_content_display' )->justReturn( '' );
-
-		$html = QuestionTemplate::instance()->html_question(
-			$this->make_full_question(),
-			[
-				'status'           => 'started',
-				'answered'         => 'a',
-				'show_result'      => true,
-				'show_correct'     => true,
-				'correct'          => true,
-				'show_explanation' => true,
-			]
-		);
-
-		$this->assertStringStartsWith( '<div class="question question-single_choice question-answered"', $html );
-		$this->assertStringContainsString( '<div class="question-explanation-content"><strong class="explanation-title">Explanation:</strong><div>The explanation</div></div>', $html );
-		$this->assertStringNotContainsString( 'question-hint-content', $html );
-		// Button hint goes with hint content.
-		$this->assertStringNotContainsString( 'btn-show-hint', $html );
-	}
-
-	public function test_html_question_no_hint_button_when_no_hint_and_edit_link(): void {
-		Functions\when( 'learn_press_get_question_content_display' )->justReturn( '' );
-
-		$html = QuestionTemplate::instance()->html_question(
-			$this->make_full_question( '', '' ),
-			[ 'edit_link' => 'https://example.com/edit' ]
-		);
-
-		$this->assertStringNotContainsString( 'btn-show-hint', $html );
-		$this->assertStringNotContainsString( 'question-hint-content', $html );
-		$this->assertStringNotContainsString( 'question-index', $html );
-		$this->assertStringContainsString( '<span class="edit-link"><a href="https://example.com/edit">Edit</a></span>', $html );
 	}
 }

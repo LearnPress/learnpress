@@ -1287,7 +1287,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 					esc_html( $attempt['mark'] ?? 0 ),
 					esc_html( ! empty( $attempt['passing_grade'] ) ? $attempt['passing_grade'] . '%' : '-' ),
 					esc_html( number_format( (float) ( $attempt['result'] ?? 0 ), 2, '.', '' ) ),
-					esc_html( $userQuizModel->get_graduation_label() )
+					esc_html( learn_press_get_graduation_text( $graduation ) )
 				);
 			}
 

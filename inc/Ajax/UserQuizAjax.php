@@ -274,18 +274,6 @@ class UserQuizAjax extends AbstractAjax {
 			$action_type = 'instant_check_question';
 
 			$response->data->content = $this->get_user_quiz_template()->html_question(
-				compact(
-					'courseModel',
-					'quizPostModel',
-					'questionPostModel',
-					'userQuizModel',
-					'result_questions',
-					'position',
-					'action_type'
-				)
-			);
-
-			$response->data->content = $this->get_user_quiz_template()->html_question(
 				array_merge(
 					$context,
 					compact(

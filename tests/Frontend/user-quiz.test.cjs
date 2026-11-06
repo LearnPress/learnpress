@@ -12,13 +12,19 @@ const withoutImports = ( source ) => source.replace( /import[\s\S]*?from '[^']+'
 const dataSend = ( data ) => JSON.stringify( { quiz_id: 20, course_id: 30, ...data } ).replace( /"/g, '&quot;' );
 const submitSend = dataSend( { id_url: 'user-submit-quiz', action: 'user_submit_quiz' } );
 
+// One pagination per page (UserQuizTemplate::html_questions_pagination), links end with #page-{n}.
+const paginationHtml = ( numPages ) => Array.from( { length: numPages }, ( _, i ) => `
+	<div class="questions-pagination__item" data-page="${ i + 1 }"${ i ? ' hidden' : '' }>
+		<a class="page-numbers" href="#page-${ i + 1 }">${ i + 1 }</a>
+	</div>` ).join( '' );
+
 // Markup same as UserQuizTemplate::html_doing_quiz (shortened), 1 question per page.
 const doingHtml = ( timer = 'data-duration="600" data-remaining="5" data-time-spend="595"' ) => `
 	<div class="lp-quiz-doing" data-per-page="1" data-total="4" data-num-pages="4">
 		<div class="quiz-status"><div>
-			<div class="questions-index">Question <span>1 of 4</span></div>
+			<div class="questions-index"><span class="index-single">Question <span class="i-current">1</span> of 4</span></div>
 			<div class="current-point">Earned Point: <span class="current-point__value">1</span></div>
-			<div><div class="submit-quiz"><button type="button" class="lp-button" id="button-submit-quiz" data-title="Finish Quiz" data-content="Are you sure to submit the quiz?" data-send="${ submitSend }">Finish Quiz</button></div>
+			<div><div class="submit-quiz"><button type="button" class="lp-button submit-quiz" id="button-submit-quiz" data-title="Finish Quiz" data-content="Are you sure to submit the quiz?" data-send="${ submitSend }">Finish Quiz</button></div>
 			<div class="countdown" ${ timer }><i class="lp-icon-clock"></i><span>00:05</span><input type="hidden" name="lp-quiz-time-spend" value="595"/></div></div>
 		</div></div>
 		<div class="quiz-questions">
@@ -28,27 +34,26 @@ const doingHtml = ( timer = 'data-duration="600" data-remaining="5" data-time-sp
 					<li class="answer-option"><input type="radio" class="option-check" name="learn-press-question-101" value="a"/></li>
 					<li class="answer-option"><input type="radio" class="option-check" name="learn-press-question-101" value="b"/></li>
 				</ul>
-				<div class="question-hint-content" style="display: none;">The hint</div>
+				<div class="question-hint-content lp-hidden">The hint</div>
 				<button type="button" class="lp-button instant-check" data-send="${ dataSend( { id_url: 'user-check-question', action: 'user_check_question', question_id: 101 } ) }">Check answers<div class="instant-check__info">Need answer</div></button>
 			</div>
-			<div class="question question-multi_choice" data-id="102" data-page="2" style="display: none;">
+			<div class="question question-multi_choice lp-hidden" data-id="102" data-page="2">
 				<input type="checkbox" class="option-check" name="learn-press-question-102" value="a"/>
 				<input type="checkbox" class="option-check" name="learn-press-question-102" value="b"/>
 				<input type="checkbox" class="option-check" name="learn-press-question-102" value="c"/>
 			</div>
-			<div class="question question-fill_in_blanks" data-id="103" data-page="3" style="display: none;">
+			<div class="question question-fill_in_blanks lp-hidden" data-id="103" data-page="3">
 				<div class="lp-fib-content"><div>Hello <div class="lp-fib-input"><input type="text" data-id="b1" value=""/></div> and <div class="lp-fib-input"><input type="text" data-id="b2" value=""/></div></div></div>
 			</div>
-			<div class="question question-sorting_choice" data-id="104" data-page="4" style="display: none;">
+			<div class="question question-sorting_choice lp-hidden" data-id="104" data-page="4">
 				<ul class="answer-options lp-sorting-choice">
 					<li class="answer-option"><span class="lp-sorting-choice__handle"></span><input type="hidden" class="option-sort" value="v2"/></li>
 					<li class="answer-option"><span class="lp-sorting-choice__handle"></span><input type="hidden" class="option-sort" value="v1"/></li>
 				</ul>
 			</div>
 		</div>
-		<div class="quiz-buttons align-center is-first">
-			<div class="button-left fixed"><div class="questions-pagination" data-num-pages="4"></div></div>
-			<div class="button-right"><button type="button" class="lp-button submit-quiz" hidden data-title="Finish Quiz" data-content="Sure?" data-send="${ submitSend }">Finish Quiz</button></div>
+		<div class="quiz-buttons is-first">
+			<div class="questions-pagination">${ paginationHtml( 4 ) }</div>
 		</div>
 	</div>`;
 
@@ -67,13 +72,13 @@ const completedHtml = ( retakeLabel = 'Retake (2)' ) => `
 				<div class="button-right"><button type="button" class="lp-button review-quiz">Review</button></div>
 			</div>
 		</div>
-		<div class="lp-quiz-review" style="display: none;" data-per-page="1" data-total="2" data-num-pages="2">
+		<div class="lp-quiz-review lp-hidden" data-per-page="1" data-total="2" data-num-pages="2">
 			<div class="quiz-questions">
 				<div class="question" data-id="101" data-page="1"></div>
-				<div class="question" data-id="102" data-page="2" style="display: none;"></div>
+				<div class="question lp-hidden" data-id="102" data-page="2"></div>
 			</div>
-			<div class="quiz-buttons align-center"><div class="button-left fixed"><div class="questions-pagination" data-num-pages="2"></div></div>
-			<div class="button-right"><button type="button" class="lp-button back-quiz">Result</button></div></div>
+			<div class="quiz-buttons"><div class="questions-pagination">${ paginationHtml( 2 ) }</div>
+			<button type="button" class="lp-button back-quiz">Result</button></div>
 		</div>
 	</div>`;
 
@@ -99,7 +104,8 @@ function setup( t, screenHtml = doingHtml(), status = 'started', options = {} ) 
 
 	const utils = read( 'assets/src/js/utils.js' );
 	const events = utils.slice( utils.indexOf( 'export const eventHandlers =' ), utils.indexOf( '/**\n * Debounce' ) ).replace( 'export const', 'const' );
-	const source = withoutImports( read( 'assets/src/js/frontend/user-quiz.js' ) )
+	const guestSource = withoutImports( read( 'assets/src/js/frontend/user-quiz/guest.js' ) ).replace( 'export class', 'class' );
+	const source = guestSource + '\n' + withoutImports( read( 'assets/src/js/frontend/user-quiz.js' ) )
 		.replace( 'export class', 'class' )
 		.split( 'const userQuiz = new UserQuiz();' )[ 0 ];
 
@@ -134,7 +140,7 @@ function setup( t, screenHtml = doingHtml(), status = 'started', options = {} ) 
 	vm.runInContext(
 		`${ events }\nlpUtils.eventHandlers = eventHandlers;\n${ source }
 		globalThis.UserQuiz = UserQuiz; globalThis.getQuestionAnswer = getQuestionAnswer; globalThis.setQuestionAnswer = setQuestionAnswer;
-		globalThis.formatTimer = formatTimer; globalThis.getPageNumbers = getPageNumbers; globalThis.replacePlaceholders = replacePlaceholders;`,
+		globalThis.formatTimer = formatTimer;`,
 		context
 	);
 	dom.window.lpAJAXG = { fetchAJAX: ( data, callbacks ) => requests.push( { data, callbacks } ) };
@@ -169,7 +175,7 @@ function setup( t, screenHtml = doingHtml(), status = 'started', options = {} ) 
 		intervals.filter( Boolean ).forEach( ( fn ) => fn() );
 	};
 	const visibleQuestions = ( scope = '.lp-quiz-doing' ) => [ ...dom.window.document.querySelectorAll( `${ scope } .question[data-id]` ) ]
-		.filter( ( el ) => el.style.display !== 'none' )
+		.filter( ( el ) => ! el.classList.contains( 'lp-hidden' ) )
 		.map( ( el ) => el.dataset.id );
 
 	return {
@@ -204,18 +210,13 @@ const finishFormHtml = finishCourseHtml.replace( ' method="post"', ' method="pos
 // Helpers
 // -------------------------------------------------------------------------
 
-test( 'formatTimer, getPageNumbers, replacePlaceholders', ( t ) => {
+test( 'formatTimer', ( t ) => {
 	const { context } = setup( t );
 
 	assert.equal( context.formatTimer( 0, 600 ), '00:00' );
 	assert.equal( context.formatTimer( 599, 600 ), '09:59' );
 	assert.equal( context.formatTimer( 3605, 7200 ), '01:00:05' );
 
-	assert.deepEqual( [ ...context.getPageNumbers( 1, 3 ) ], [ 1, 2, 3 ] );
-	assert.deepEqual( [ ...context.getPageNumbers( 5, 10 ) ], [ 1, 'dots', 4, 5, 6, 'dots', 10 ] );
-	assert.deepEqual( [ ...context.getPageNumbers( 1, 10 ) ], [ 1, 2, 'dots', 10 ] );
-
-	assert.equal( context.replacePlaceholders( 'Question <span>%1$d to %2$d of %3$d</span>', 1, 5, 10 ), 'Question <span>1 to 5 of 10</span>' );
 } );
 
 // -------------------------------------------------------------------------
@@ -329,27 +330,23 @@ test( 'sorting list is draggable and saves order on drop', ( t ) => {
 // Pagination / hint
 // -------------------------------------------------------------------------
 
-test( 'pagination shows one page, builds links and finish button on last page', ( t ) => {
+test( 'pagination shows one page, switches page by links and keeps index', ( t ) => {
 	const { dom, $, click, visibleQuestions } = setup( t );
+	const visiblePagination = () => [ ...dom.window.document.querySelectorAll( '.questions-pagination__item' ) ].filter( ( el ) => ! el.hidden ).map( ( el ) => el.dataset.page );
 
 	assert.deepEqual( visibleQuestions(), [ '101' ] );
-	assert.equal( $( '.questions-pagination .page-numbers.current' ).textContent, '1' );
-	assert.equal( $( '.questions-pagination .page-numbers.prev' ), null );
-	assert.ok( $( '.questions-pagination .page-numbers.next' ) );
-	assert.equal( $( '.questions-index' ).innerHTML, 'Question <span>1 of 4</span>' );
-	assert.equal( $( '.quiz-buttons .lp-button.submit-quiz' ).hidden, true );
+	assert.deepEqual( visiblePagination(), [ '1' ] );
+	assert.equal( $( '.i-current' ).textContent, '1' );
 
-	click( $( '.questions-pagination .page-numbers.next' ) );
+	click( $( '.questions-pagination__item[data-page="2"] a' ) );
 	assert.deepEqual( visibleQuestions(), [ '102' ] );
-	assert.equal( $( '.questions-index' ).innerHTML, 'Question <span>2 of 4</span>' );
+	assert.deepEqual( visiblePagination(), [ '2' ] );
+	assert.equal( $( '.i-current' ).textContent, '2' );
 	assert.equal( dom.window.localStorage.getItem( 'LP_Quiz_7_30_20_Page' ), '2' );
-	assert.ok( $( '.questions-pagination .page-numbers.prev' ) );
 
-	click( $( '.questions-pagination .page-numbers[data-page="4"]' ) );
+	click( $( '.questions-pagination__item[data-page="4"] a' ) );
 	assert.deepEqual( visibleQuestions(), [ '104' ] );
-	assert.equal( $( '.quiz-buttons .lp-button.submit-quiz' ).hidden, false );
 	assert.ok( $( '.lp-quiz-doing > .quiz-buttons' ).classList.contains( 'is-last' ) );
-	assert.equal( $( '.questions-pagination .page-numbers.next' ), null );
 } );
 
 test( 'current page is restored after reload', ( t ) => {
@@ -363,9 +360,9 @@ test( 'hint toggles on click', ( t ) => {
 	const elHint = $( '.question[data-id="101"] .question-hint-content' );
 
 	click( $( '.btn-show-hint span' ) );
-	assert.equal( elHint.style.display, '' );
+	assert.equal( elHint.classList.contains( 'lp-hidden' ), false );
 	click( $( '.btn-show-hint' ) );
-	assert.equal( elHint.style.display, 'none' );
+	assert.equal( elHint.classList.contains( 'lp-hidden' ), true );
 } );
 
 // -------------------------------------------------------------------------
@@ -495,17 +492,16 @@ test( 'review toggles result and review questions without request', ( t ) => {
 	const { $, click, requests, visibleQuestions } = setup( t, completedHtml(), 'completed' );
 
 	click( $( '.review-quiz' ) );
-	assert.equal( $( '.lp-quiz-result-wrap' ).style.display, 'none' );
-	assert.equal( $( '.lp-quiz-review' ).style.display, '' );
+	assert.equal( $( '.lp-quiz-result-wrap' ).classList.contains( 'lp-hidden' ), true );
+	assert.equal( $( '.lp-quiz-review' ).classList.contains( 'lp-hidden' ), false );
 	assert.deepEqual( visibleQuestions( '.lp-quiz-review' ), [ '101' ] );
-	assert.ok( $( '.lp-quiz-review .questions-pagination .page-numbers.next' ) );
 
-	click( $( '.lp-quiz-review .questions-pagination .page-numbers.next' ) );
+	click( $( '.lp-quiz-review .questions-pagination__item[data-page="2"] a' ) );
 	assert.deepEqual( visibleQuestions( '.lp-quiz-review' ), [ '102' ] );
 
 	click( $( '.back-quiz' ) );
-	assert.equal( $( '.lp-quiz-result-wrap' ).style.display, '' );
-	assert.equal( $( '.lp-quiz-review' ).style.display, 'none' );
+	assert.equal( $( '.lp-quiz-result-wrap' ).classList.contains( 'lp-hidden' ), false );
+	assert.equal( $( '.lp-quiz-review' ).classList.contains( 'lp-hidden' ), true );
 	assert.equal( requests.length, 0 );
 } );
 

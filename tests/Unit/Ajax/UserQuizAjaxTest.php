@@ -43,6 +43,11 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 	 */
 	private $template_args = [];
 
+	/**
+	 * @var array number of calls of redefined finders, key is Class::method
+	 */
+	private $finder_calls = [];
+
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -78,7 +83,8 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 		\LP_Request::$params = [];
 		\LP_Debug::$logged   = [];
 
-		$this->sent = null;
+		$this->sent         = null;
+		$this->finder_calls = [];
 		Functions\when( 'wp_send_json' )->alias(
 			function ( $response ) {
 				$this->sent = $response;
@@ -157,10 +163,11 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 	 */
 	private function make_ajax( array $finders, string $doing_html = '<div class="lp-quiz-doing"></div>' ) {
 		$ajax = Mockery::mock( UserQuizAjax::class )->makePartial()->shouldAllowMockingProtectedMethods();
-		$ajax->shouldReceive( 'find_course' )->andReturn( $finders['course'] ?? false );
-		$ajax->shouldReceive( 'find_user' )->andReturn( $finders['user'] ?? false );
-		$ajax->shouldReceive( 'find_user_course' )->andReturn( $finders['user_course'] ?? false );
-		$ajax->shouldReceive( 'find_user_quiz' )->andReturn( $finders['user_quiz'] ?? false );
+		// Models are found by static methods, redefine them (Patchwork) instead of querying DB.
+		$this->redefine_finder( CourseModel::class . '::find', $finders['course'] ?? false );
+		$this->redefine_finder( UserModel::class . '::find', $finders['user'] ?? false );
+		$this->redefine_finder( UserCourseModel::class . '::find', $finders['user_course'] ?? false );
+		$this->redefine_finder( UserQuizModel::class . '::find_user_item', $finders['user_quiz'] ?? false );
 		$ajax->shouldReceive( 'find_question' )->andReturn( $finders['question'] ?? false );
 		$ajax->shouldReceive( 'html_btn_finish_course' )->andReturn( $finders['html_finish_course'] ?? '' );
 		if ( isset( $finders['new_user_quiz'] ) ) {
@@ -173,6 +180,14 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 		$this->template_args = [];
 		$template            = Mockery::mock( UserQuizTemplate::class );
 		$template->shouldReceive( 'html_doing_quiz' )->andReturn( $doing_html );
+		$template->shouldReceive( 'html_guest_doing_quiz' )->andReturn( $doing_html );
+		$template->shouldReceive( 'html_guest_completed' )->andReturnUsing(
+			function ( ...$args ) {
+				$this->template_args['html_guest_completed'] = $args;
+
+				return '<div class="lp-quiz-completed"></div>';
+			}
+		);
 		$template->shouldReceive( 'html_completed' )->andReturnUsing(
 			function ( ...$args ) {
 				$this->template_args['html_completed'] = $args;
@@ -180,16 +195,31 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				return '<div class="lp-quiz-completed"></div>';
 			}
 		);
-		$template->shouldReceive( 'html_check_quiz' )->andReturnUsing(
+		$template->shouldReceive( 'html_question' )->andReturnUsing(
 			function ( ...$args ) {
-				$this->template_args['html_check_quiz'] = $args;
+				$this->template_args['html_question'] = $args;
 
 				return '<div class="question"></div>';
 			}
 		);
-		$ajax->shouldReceive( 'get_template' )->andReturn( $template );
+		$ajax->shouldReceive( 'get_user_quiz_template' )->andReturn( $template );
 
 		return $ajax;
+	}
+
+	/**
+	 * @param string $method Class::method
+	 * @param mixed $result
+	 */
+	private function redefine_finder( string $method, $result ): void {
+		\Patchwork\redefine(
+			$method,
+			function () use ( $method, $result ) {
+				$this->finder_calls[ $method ] = ( $this->finder_calls[ $method ] ?? 0 ) + 1;
+
+				return $result;
+			}
+		);
 	}
 
 	private function valid_data(): array {
@@ -286,7 +316,8 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 		$this->make_ajax( [ 'course' => $this->make_course() ] )->user_start_quiz();
 
 		$this->assertSame( 'error', $this->sent->status );
-		$this->assertSame( 'The user is invalid', $this->sent->message );
+		// User id logged in but user not found: treated as guest, course requires enroll.
+		$this->assertSame( 'You have to log in to start the quiz.', $this->sent->message );
 	}
 
 	public function test_error_when_guest_and_course_required_enroll(): void {
@@ -331,8 +362,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'new_user_quiz' => $userQuizModel,
 			]
 		);
-		$ajax->shouldReceive( 'clear_quiz_cache' )->once()->with( 20, 7, 30 );
-		Actions\expectDone( 'learn-press/user/before/start-quiz' )->once()->with( 20, 30, 7 );
 
 		$ajax->user_start_quiz();
 
@@ -355,7 +384,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'new_user_quiz' => $userQuizModel,
 			]
 		);
-		$ajax->shouldReceive( 'clear_quiz_cache' )->never();
 
 		$ajax->user_start_quiz();
 
@@ -369,7 +397,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 
 		$ajax = $this->make_ajax( [ 'course' => $this->make_course( null, true ) ], '<div>guest</div>' );
 		$ajax->shouldReceive( 'create_user_quiz' )->never();
-		$ajax->shouldReceive( 'clear_quiz_cache' )->never();
 
 		$ajax->user_start_quiz();
 
@@ -395,7 +422,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'user_quiz'   => $userQuizModel,
 			]
 		);
-		$ajax->shouldReceive( 'clear_quiz_cache' )->once()->with( 20, 7, 30 );
 
 		$ajax->user_retake_quiz();
 
@@ -446,7 +472,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 		Functions\when( 'get_current_user_id' )->justReturn( 0 );
 
 		$ajax = $this->make_ajax( [ 'course' => $this->make_course( null, true ) ] );
-		$ajax->shouldReceive( 'find_user_quiz' )->never();
 
 		$ajax->user_retake_quiz();
 
@@ -456,17 +481,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 	// -------------------------------------------------------------------------
 	// catch_lp_ajax whitelist
 	// -------------------------------------------------------------------------
-
-	public function test_catch_lp_ajax_ignores_helper_methods(): void {
-		\LP_Request::$params['lp-load-ajax'] = 'get_context';
-		$_REQUEST['lp-load-ajax']            = 'get_context';
-		Functions\expect( 'wp_verify_nonce' )->never();
-
-		UserQuizAjax::catch_lp_ajax();
-
-		unset( $_REQUEST['lp-load-ajax'] );
-		$this->assertNull( $this->sent );
-	}
 
 	public function test_catch_lp_ajax_checks_nonce_for_allowed_action(): void {
 		\LP_Request::$params['lp-load-ajax'] = 'user_start_quiz';
@@ -548,7 +562,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'html_finish_course' => '<form class="form-button-finish-course"></form>',
 			]
 		);
-		$ajax->shouldReceive( 'clear_quiz_cache' )->once()->with( 20, 7, 30 );
 
 		$ajax->user_submit_quiz();
 
@@ -559,7 +572,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 		// Result of each question is not sent.
 		$this->assertArrayNotHasKey( 'questions', $this->sent->data->results );
 		$this->assertSame( 50, $this->sent->data->results['result'] );
-		$this->assertSame( $userQuizModel, $this->template_args['html_completed'][3] );
+		$this->assertSame( $userQuizModel, $this->template_args['html_completed'][0]['userQuizModel'] );
 		$this->assertSame( '<form class="form-button-finish-course"></form>', $this->sent->data->html_finish_course );
 	}
 
@@ -589,7 +602,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'user_quiz'   => $userQuizModel,
 			]
 		);
-		$ajax->shouldReceive( 'clear_quiz_cache' );
 
 		$ajax->user_submit_quiz();
 
@@ -616,7 +628,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'user_quiz'   => $userQuizModel,
 			]
 		);
-		$ajax->shouldReceive( 'clear_quiz_cache' );
 
 		$ajax->user_submit_quiz();
 
@@ -653,7 +664,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'user_quiz'   => $userQuizModel,
 			]
 		);
-		$ajax->shouldReceive( 'clear_quiz_cache' )->never();
 
 		$ajax->user_submit_quiz();
 
@@ -684,8 +694,6 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'guest_user_quiz' => $userQuizModelFake,
 			]
 		);
-		$ajax->shouldReceive( 'find_user_quiz' )->never();
-		$ajax->shouldReceive( 'clear_quiz_cache' )->never();
 		$ajax->shouldReceive( 'html_btn_finish_course' )->never();
 
 		$ajax->user_submit_quiz();
@@ -693,8 +701,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 		$this->assertSame( 'success', $this->sent->status );
 		$this->assertSame( 'failed', $this->sent->data->graduation );
 		$this->assertSame( '', $this->sent->data->html_finish_course );
-		$this->assertSame( '00:01:05', $this->template_args['html_completed'][2]['time_spend'] );
-		$this->assertFalse( $this->template_args['html_completed'][3] );
+		$this->assertSame( '00:01:05', $this->template_args['html_completed'][0]['result']['time_spend'] );
 	}
 
 	public function test_submit_quiz_guest_time_spend_not_more_than_duration(): void {
@@ -714,7 +721,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 		)->user_submit_quiz();
 
 		$this->assertSame( 'success', $this->sent->status );
-		$this->assertSame( '00:01:00', $this->template_args['html_completed'][2]['time_spend'] );
+		$this->assertSame( '00:01:00', $this->template_args['html_completed'][0]['result']['time_spend'] );
 	}
 
 	public function test_submit_quiz_password_protected_even_editor(): void {
@@ -762,7 +769,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'user'        => $this->make_user(),
 				'user_course' => Mockery::mock( UserCourseModel::class ),
 			]
-		)->user_check_question();
+		)->user_check_answer_question();
 
 		$this->assertSame( 'error', $this->sent->status );
 		$this->assertSame( 'Instant check is disable', $this->sent->message );
@@ -778,7 +785,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'user_course' => Mockery::mock( UserCourseModel::class ),
 				'question'    => $this->make_question(),
 			]
-		)->user_check_question();
+		)->user_check_answer_question();
 
 		$this->assertSame( 'error', $this->sent->status );
 		$this->assertSame( 'The quiz question is invalid', $this->sent->message );
@@ -793,7 +800,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'user'        => $this->make_user(),
 				'user_course' => Mockery::mock( UserCourseModel::class ),
 			]
-		)->user_check_question();
+		)->user_check_answer_question();
 
 		$this->assertSame( 'error', $this->sent->status );
 		$this->assertSame( 'The question is invalid', $this->sent->message );
@@ -824,7 +831,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'user_quiz'   => $userQuizModel,
 				'question'    => $question,
 			]
-		)->user_check_question();
+		)->user_check_answer_question();
 
 		$this->assertSame( 'success', $this->sent->status );
 		$this->assertSame( '<div class="question"></div>', $this->sent->data->content );
@@ -832,7 +839,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 		$this->assertSame( 2.0, $this->sent->data->mark );
 		$this->assertSame( 1.0, $this->sent->data->point );
 		$this->assertSame( 0.0, $this->sent->data->minus );
-		$this->assertSame( $question, $this->template_args['html_check_quiz'][2] );
+		$this->assertSame( $question, $this->template_args['html_question'][0]['questionPostModel'] );
 	}
 
 	public function test_check_question_wrong_with_negative_marking_sends_minus(): void {
@@ -852,7 +859,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'course'   => $this->make_course( $this->make_quiz( true, true ), true ),
 				'question' => $question,
 			]
-		)->user_check_question();
+		)->user_check_answer_question();
 
 		$this->assertSame( 'success', $this->sent->status );
 		$this->assertSame( 1.0, $this->sent->data->minus );
@@ -873,7 +880,7 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'user_quiz'   => $userQuizModel,
 				'question'    => $this->make_question(),
 			]
-		)->user_check_question();
+		)->user_check_answer_question();
 
 		$this->assertSame( 'error', $this->sent->status );
 		$this->assertSame( 'User quiz is invalid!', $this->sent->message );
@@ -897,40 +904,23 @@ class UserQuizAjaxTest extends BrainMonkeyTestCase {
 				'question' => $question,
 			]
 		);
-		$ajax->shouldReceive( 'find_user_quiz' )->never();
 
-		$ajax->user_check_question();
+		$ajax->user_check_answer_question();
 
+		$this->assertArrayNotHasKey( UserQuizModel::class . '::find_user_item', $this->finder_calls );
 		$this->assertSame( 'success', $this->sent->status );
 		$this->assertFalse( $this->sent->data->correct );
-		$this->assertSame( 'a', $this->template_args['html_check_quiz'][3]['answered'] );
+		$this->assertSame( 'a', $this->template_args['html_question'][0]['result_questions'][$question->get_id()]['answered'] );
 	}
 
-	public function test_check_question_editor_can_pass_password(): void {
+	public function test_check_question_password_protected_even_editor(): void {
 		$this->set_data( $this->check_data() );
 		Functions\when( 'post_password_required' )->justReturn( true );
 		Functions\when( 'current_user_can' )->justReturn( true );
 
-		$userQuizModel = Mockery::mock( UserQuizModel::class );
-		$userQuizModel->shouldReceive( 'has_started' )->andReturn( true );
-		$userQuizModel->shouldReceive( 'instant_check_question' )->once()->andReturn(
-			[
-				'answered' => 'a',
-				'mark'     => 0,
-				'correct'  => false,
-			]
-		);
+		$this->make_ajax( [ 'course' => $this->make_course() ] )->user_check_answer_question();
 
-		$this->make_ajax(
-			[
-				'course'      => $this->make_course(),
-				'user'        => $this->make_user(),
-				'user_course' => Mockery::mock( UserCourseModel::class ),
-				'user_quiz'   => $userQuizModel,
-				'question'    => $this->make_question(),
-			]
-		)->user_check_question();
-
-		$this->assertSame( 'success', $this->sent->status );
+		$this->assertSame( 'error', $this->sent->status );
+		$this->assertSame( 'This content is password protected.', $this->sent->message );
 	}
 }

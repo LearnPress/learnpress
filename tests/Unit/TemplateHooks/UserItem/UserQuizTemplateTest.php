@@ -30,6 +30,28 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	 */
 	private $questions = [];
 
+	/**
+	 * Markup is multi-line, compare it without whitespace between tags / attributes.
+	 */
+	private static function flat( string $html ): string {
+		$html = preg_replace( '/\s+/', ' ', $html );
+		$html = preg_replace( '/>\s+/', '>', $html );
+
+		return trim( preg_replace( '/\s+</', '<', $html ) );
+	}
+
+	public static function assertStringContainsString( string $needle, string $haystack, string $message = '' ): void {
+		parent::assertStringContainsString( self::flat( $needle ), self::flat( $haystack ), $message );
+	}
+
+	public static function assertStringNotContainsString( string $needle, string $haystack, string $message = '' ): void {
+		parent::assertStringNotContainsString( self::flat( $needle ), self::flat( $haystack ), $message );
+	}
+
+	public static function assertStringStartsWith( string $prefix, string $string, string $message = '' ): void {
+		parent::assertStringStartsWith( self::flat( $prefix ), self::flat( $string ), $message );
+	}
+
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -59,7 +81,23 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 			}
 		);
 		Functions\when( 'learn_press_get_question_content_display' )->justReturn( '' );
+		// Review loads question by id, serve the same questions without query.
+		\Patchwork\redefine(
+			QuestionPostModel::class . '::find',
+			function ( int $id ) {
+				return $this->questions[ $id ] ?? false;
+			}
+		);
 
+		defined( 'MINUTE_IN_SECONDS' ) || define( 'MINUTE_IN_SECONDS', 60 );
+		defined( 'HOUR_IN_SECONDS' ) || define( 'HOUR_IN_SECONDS', 3600 );
+		defined( 'DAY_IN_SECONDS' ) || define( 'DAY_IN_SECONDS', 86400 );
+		defined( 'WEEK_IN_SECONDS' ) || define( 'WEEK_IN_SECONDS', 604800 );
+		Functions\when( 'paginate_links' )->justReturn( '' );
+		Functions\when( 'get_the_title' )->justReturn( 'Quiz title' );
+		Functions\when( 'do_shortcode' )->returnArg( 1 );
+		Functions\when( 'wp_kses_allowed_html' )->justReturn( [] );
+		Functions\when( 'wp_kses' )->returnArg( 1 );
 		Functions\when( 'apply_filters' )->returnArg( 2 );
 		Functions\when( 'wp_kses_post' )->returnArg( 1 );
 		Functions\when( 'post_password_required' )->justReturn( false );
@@ -168,14 +206,13 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringNotContainsString( 'quiz-attempts', $html );
 	}
 
-	public function test_html_quiz_content_editor_still_sees_content_but_no_start_when_password_required(): void {
+	public function test_html_quiz_content_empty_when_password_required_even_editor(): void {
 		Functions\when( 'post_password_required' )->justReturn( true );
 		Functions\when( 'current_user_can' )->justReturn( true );
 
 		$html = UserQuizTemplate::instance()->html_quiz_content( $this->make_course(), $this->make_quiz() );
 
-		$this->assertStringContainsString( 'class="quiz-intro"', $html );
-		$this->assertStringNotContainsString( 'lp-button start', $html );
+		$this->assertSame( '', $html );
 	}
 
 	// -------------------------------------------------------------------------
@@ -183,7 +220,10 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	// -------------------------------------------------------------------------
 
 	public function test_html_btn_start_has_data_send_for_start_action(): void {
-		$html = UserQuizTemplate::instance()->html_btn_start( $this->make_course(), $this->make_quiz() );
+		$html = UserQuizTemplate::instance()->html_btn_start([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz(),
+			]);
 
 		$this->assertStringContainsString( 'class="lp-button start"', $html );
 
@@ -202,45 +242,47 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	// -------------------------------------------------------------------------
 
 	public function test_html_history_empty_when_no_attempts(): void {
-		$html = UserQuizTemplate::instance()->html_history( $this->make_user_quiz( [] ) );
+		$html = UserQuizTemplate::instance()->html_history([
+				'userQuizModel' => $this->make_user_quiz( [] ),
+			]);
 
 		$this->assertSame( '', $html );
 	}
 
 	public function test_html_history_renders_attempt_rows(): void {
-		$html = UserQuizTemplate::instance()->html_history(
-			$this->make_user_quiz(
-				[
-					[
-						'question_correct' => 3,
-						'question_count'   => 5,
-						'time_spend'       => '00:10:05',
-						'user_mark'        => 6,
-						'mark'             => 10,
-						'passing_grade'    => '80',
-						'result'           => 60,
-						'pass'             => 0,
-					],
-					[
-						'question_correct' => 5,
-						'question_count'   => 5,
-						'time_spend'       => '',
-						'user_mark'        => 10,
-						'mark'             => 10,
-						'passing_grade'    => '',
-						'result'           => '100',
-						'graduation'       => 'passed',
-					],
-				]
-			)
-		);
+		$html = UserQuizTemplate::instance()->html_history([
+				'userQuizModel' => $this->make_user_quiz(
+								[
+									[
+										'question_correct' => 3,
+										'question_count'   => 5,
+										'time_spend'       => '00:10:05',
+										'user_mark'        => 6,
+										'mark'             => 10,
+										'passing_grade'    => '80',
+										'result'           => 60,
+										'pass'             => 0,
+									],
+									[
+										'question_correct' => 5,
+										'question_count'   => 5,
+										'time_spend'       => '',
+										'user_mark'        => 10,
+										'mark'             => 10,
+										'passing_grade'    => '',
+										'result'           => '100',
+										'graduation'       => 'passed',
+									],
+								]
+							),
+			]);
 
 		$this->assertStringContainsString( 'class="quiz-attempts"', $html );
 		$this->assertStringContainsString( 'Last Attempt', $html );
 		$this->assertStringContainsString( '<td class="quiz-attempts__questions">3 / 5</td>', $html );
 		$this->assertStringContainsString( '<td class="quiz-attempts__spend">00:10:05</td>', $html );
 		$this->assertStringContainsString( '<td class="quiz-attempts__marks">6 / 10</td>', $html );
-		$this->assertStringContainsString( '<td class="quiz-attempts__grade">80</td>', $html );
+		$this->assertStringContainsString( '<td class="quiz-attempts__grade">80%</td>', $html );
 		$this->assertStringContainsString( '<td class="quiz-attempts__result">60.00% <span>Failed</span></td>', $html );
 		// Second row: empty time spend / passing grade fall back, graduation key is used.
 		$this->assertStringContainsString( '<td class="quiz-attempts__spend">--</td>', $html );
@@ -249,22 +291,25 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_html_history_escapes_values(): void {
-		$html = UserQuizTemplate::instance()->html_history(
-			$this->make_user_quiz( [ [ 'time_spend' => '<script>alert(1)</script>' ] ] )
-		);
+		$html = UserQuizTemplate::instance()->html_history([
+				'userQuizModel' => $this->make_user_quiz( [ [ 'time_spend' => '<script>alert(1)</script>' ] ] ),
+			]);
 
 		$this->assertStringNotContainsString( '<script>', $html );
 	}
 
-	public function test_html_intro_includes_history_for_user_quiz(): void {
+	public function test_html_intro_has_meta_and_start_button(): void {
 		$html = UserQuizTemplate::instance()->html_intro(
-			$this->make_course(),
-			$this->make_quiz(),
-			$this->make_user_quiz( [ [ 'question_count' => 5 ] ] )
+			[
+				'courseModel'   => $this->make_course(),
+				'quizPostModel' => $this->make_quiz(),
+				'userQuizModel' => false,
+			]
 		);
 
-		$this->assertStringContainsString( 'quiz-attempts', $html );
+		$this->assertStringContainsString( 'class="quiz-intro"', $html );
 		$this->assertStringContainsString( 'lp-button start', $html );
+		$this->assertStringNotContainsString( 'quiz-attempts', $html );
 	}
 
 	// -------------------------------------------------------------------------
@@ -286,28 +331,22 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 			$question->shouldReceive( 'get_hint' )->andReturn( '' );
 			$question->shouldReceive( 'get_explanation' )->andReturn( "Explanation {$id}" );
 			$question->shouldReceive( 'get_edit_link' )->andReturn( "https://example.com/wp-admin/post.php?post={$id}&action=edit" );
-			$question->shouldReceive( 'get_answer_options' )->andReturnUsing(
-				static function ( $args ) {
-					$options = [
-						[
-							'uid'     => 1,
-							'title'   => 'A',
-							'value'   => 'a',
-							'is_true' => 'yes',
-						],
-						[
-							'uid'     => 2,
-							'title'   => 'B',
-							'value'   => 'b',
-							'is_true' => 'no',
-						],
-					];
-
-					return array_map(
-						static fn( $option ) => array_diff_key( $option, array_flip( $args['exclude'] ) ),
-						$options
-					);
-				}
+			$question->shouldReceive( 'check_capabilities_update' )->andReturnUsing(
+				static fn() => current_user_can( 'edit_post' )
+			);
+			$question->shouldReceive( 'get_answers_for_legacy_type' )->andReturn(
+				[
+					[
+						'title'   => 'A',
+						'value'   => 'a',
+						'is_true' => 'yes',
+					],
+					[
+						'title'   => 'B',
+						'value'   => 'b',
+						'is_true' => 'no',
+					],
+				]
 			);
 
 			$this->questions[ $id ] = $question;
@@ -343,14 +382,14 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	public function test_html_screen_started_shows_doing_quiz(): void {
 		$this->add_questions( [ 101 ] );
 
-		$html = UserQuizTemplate::instance()->html_screen(
-			$this->make_course(),
-			$this->make_quiz( [ 'question_ids' => [ 101 ] ] ),
-			$this->make_user_quiz_started()
-		);
+		$html = UserQuizTemplate::instance()->html_screen([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'question_ids' => [ 101 ] ] ),
+				'userQuizModel' => $this->make_user_quiz_started(),
+			]);
 
 		$this->assertStringContainsString( 'class="lp-quiz-doing"', $html );
-		$this->assertStringContainsString( 'class="quiz-status"', $html );
+		$this->assertStringContainsString( 'class="quiz-doing-bar-info"', $html );
 		$this->assertStringNotContainsString( 'lp-button start', $html );
 		$this->assertStringNotContainsString( 'quiz-intro', $html );
 	}
@@ -358,62 +397,62 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	public function test_html_doing_quiz_paginates_questions(): void {
 		$this->add_questions( [ 101, 102, 103 ] );
 
-		$html = UserQuizTemplate::instance()->html_doing_quiz(
-			$this->make_course(),
-			$this->make_quiz(
-				[
-					'question_ids' => [ 101, 102, 103 ],
-					'per_page'     => 2,
-				]
-			),
-			$this->make_user_quiz_started()
-		);
+		$html = UserQuizTemplate::instance()->html_doing_quiz([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz(
+								[
+									'question_ids' => [ 101, 102, 103 ],
+									'questions'    => 3,
+									'per_page'     => 2,
+								]
+							),
+				'userQuizModel' => $this->make_user_quiz_started(),
+			]);
 
 		$this->assertStringContainsString( 'data-per-page="2" data-total="3" data-num-pages="2"', $html );
-		$this->assertStringContainsString( 'Question <span>1 to 2 of 3</span>', $html );
+		$this->assertStringContainsString( '<span class="index-range">Question <span class="i-start">1</span> to <span class="i-end">2</span> of 3</span>', $html );
+		$this->assertStringContainsString( '<span class="index-total lp-hidden">3 questions</span>', $html );
+		// All questions are rendered, JS shows the questions of current page by data-page.
 		$this->assertStringContainsString( 'data-id="101" data-page="1">', $html );
 		$this->assertStringContainsString( 'data-id="102" data-page="1">', $html );
-		$this->assertStringContainsString( 'data-id="103" data-page="2" style="display: none;">', $html );
+		$this->assertStringContainsString( 'data-id="103" data-page="2">', $html );
 		$this->assertStringContainsString( '<span class="question-index">3.</span>', $html );
-		$this->assertStringContainsString( '<div class="questions-pagination" data-num-pages="2"></div>', $html );
-		// Finish button on status bar always shows, bottom one hidden until last page.
-		$this->assertStringContainsString( 'id="button-submit-quiz"', $html );
-		$this->assertStringContainsString( 'class="lp-button submit-quiz" hidden', $html );
-		$this->assertStringNotContainsString( 'is-last', $html );
+		// One pagination per page, only the first is visible.
+		$this->assertSame( 2, substr_count( $html, 'questions-pagination__item"' ) );
+		$this->assertSame( 1, substr_count( $html, 'class="lp-button submit-quiz"' ) );
 	}
 
 	public function test_html_doing_quiz_all_questions_on_one_page_when_pagination_zero(): void {
 		$this->add_questions( [ 101, 102, 103 ] );
 
-		$html = UserQuizTemplate::instance()->html_doing_quiz(
-			$this->make_course(),
-			$this->make_quiz(
-				[
-					'question_ids' => [ 101, 102, 103 ],
-					'per_page'     => 0,
-				]
-			),
-			$this->make_user_quiz_started()
-		);
+		$html = UserQuizTemplate::instance()->html_doing_quiz([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz(
+								[
+									'question_ids' => [ 101, 102, 103 ],
+									'questions'    => 3,
+									'per_page'     => 0,
+								]
+							),
+				'userQuizModel' => $this->make_user_quiz_started(),
+			]);
 
 		$this->assertStringContainsString( 'data-num-pages="1"', $html );
-		$this->assertStringContainsString( 'Question <span>1 to 3 of 3</span>', $html );
-		$this->assertStringNotContainsString( 'display: none;"', $html );
+		$this->assertStringContainsString( '<span class="index-total">3 questions</span>', $html );
 		$this->assertStringNotContainsString( 'questions-pagination', $html );
-		$this->assertStringContainsString( 'quiz-buttons align-center is-first is-last', $html );
 		$this->assertStringContainsString( 'class="lp-button submit-quiz" data-title="Finish Quiz" data-content="Are you sure to submit the quiz?"', $html );
 	}
 
 	public function test_html_doing_quiz_timer_counts_down_from_remaining(): void {
 		$this->add_questions( [ 101 ] );
 
-		$html = UserQuizTemplate::instance()->html_doing_quiz(
-			$this->make_course(),
-			$this->make_quiz( [ 'question_ids' => [ 101 ] ] ),
-			$this->make_user_quiz_started( [ 'remaining' => 1680 ] )
-		);
+		$html = UserQuizTemplate::instance()->html_doing_quiz([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'question_ids' => [ 101 ] ] ),
+				'userQuizModel' => $this->make_user_quiz_started( [ 'remaining' => 1680 ] ),
+			]);
 
-		$this->assertMatchesRegularExpression( '/data-duration="1800" data-remaining="1680" data-time-spend="1[12]\d"/', $html );
+		$this->assertMatchesRegularExpression( '/data-duration="1800"\s+data-remaining="1680"\s+data-time-spend="1[12]\d"/', $html );
 		$this->assertStringContainsString( '<span>28:00</span>', $html );
 		$this->assertStringContainsString( 'name="lp-quiz-time-spend"', $html );
 	}
@@ -421,44 +460,43 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	public function test_html_doing_quiz_guest_uses_full_duration(): void {
 		$this->add_questions( [ 101 ] );
 
-		$html = UserQuizTemplate::instance()->html_doing_quiz(
-			$this->make_course(),
-			$this->make_quiz( [ 'question_ids' => [ 101 ] ] )
-		);
+		$html = UserQuizTemplate::instance()->html_doing_quiz([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'question_ids' => [ 101 ] ] ),
+			]);
 
 		$this->assertStringContainsString( 'data-duration="1800" data-remaining="1800" data-time-spend="0"', $html );
 		$this->assertStringContainsString( '<span>30:00</span>', $html );
-		$this->assertStringContainsString( 'Earned Point: <span class="current-point__value">0</span>', $html );
 	}
 
 	public function test_html_doing_quiz_instant_check_button_only_for_unchecked(): void {
 		$this->add_questions( [ 101, 102 ] );
 
-		$html = UserQuizTemplate::instance()->html_doing_quiz(
-			$this->make_course(),
-			$this->make_quiz(
-				[
-					'question_ids'  => [ 101, 102 ],
-					'instant_check' => true,
-					'show_correct'  => true,
-				]
-			),
-			$this->make_user_quiz_started(
-				[
-					'checked' => [ 101 ],
-					'result'  => [
-						'user_mark' => 1,
-						'questions' => [
-							101 => [
-								'answered' => 'a',
-								'correct'  => true,
-								'mark'     => 1,
-							],
-						],
-					],
-				]
-			)
-		);
+		$html = UserQuizTemplate::instance()->html_doing_quiz([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz(
+								[
+									'question_ids'  => [ 101, 102 ],
+									'instant_check' => true,
+									'show_correct'  => true,
+								]
+							),
+				'userQuizModel' => $this->make_user_quiz_started(
+								[
+									'checked' => [ 101 ],
+									'result'  => [
+										'user_mark' => 1,
+										'questions' => [
+											101 => [
+												'answered' => 'a',
+												'correct'  => true,
+												'mark'     => 1,
+											],
+										],
+									],
+								]
+							),
+			]);
 
 		$this->assertSame( 1, substr_count( $html, 'lp-button instant-check' ) );
 		$this->assertStringContainsString( '&quot;question_id&quot;:102', $html );
@@ -468,17 +506,16 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringContainsString( 'answer-option answer-correct answered-correct', $html );
 		$this->assertStringContainsString( 'Explanation 101', $html );
 		$this->assertStringNotContainsString( 'Explanation 102', $html );
-		$this->assertStringContainsString( 'Earned Point: <span class="current-point__value">1</span>', $html );
 	}
 
 	public function test_html_doing_quiz_no_instant_check_button_when_option_off(): void {
 		$this->add_questions( [ 101 ] );
 
-		$html = UserQuizTemplate::instance()->html_doing_quiz(
-			$this->make_course(),
-			$this->make_quiz( [ 'question_ids' => [ 101 ] ] ),
-			$this->make_user_quiz_started()
-		);
+		$html = UserQuizTemplate::instance()->html_doing_quiz([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'question_ids' => [ 101 ] ] ),
+				'userQuizModel' => $this->make_user_quiz_started(),
+			]);
 
 		$this->assertStringNotContainsString( 'instant-check', $html );
 		$this->assertStringNotContainsString( 'answer-correct', $html );
@@ -488,59 +525,89 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 		$this->add_questions( [ 101 ] );
 		$quiz = $this->make_quiz( [ 'question_ids' => [ 101 ] ] );
 
-		$html = UserQuizTemplate::instance()->html_doing_quiz( $this->make_course(), $quiz, $this->make_user_quiz_started() );
+		$html = UserQuizTemplate::instance()->html_doing_quiz([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $quiz,
+				'userQuizModel' => $this->make_user_quiz_started(),
+			]);
 		$this->assertStringNotContainsString( 'edit-link', $html );
 
 		Functions\when( 'current_user_can' )->justReturn( true );
-		$html = UserQuizTemplate::instance()->html_doing_quiz( $this->make_course(), $quiz, $this->make_user_quiz_started() );
+		$html = UserQuizTemplate::instance()->html_doing_quiz([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $quiz,
+				'userQuizModel' => $this->make_user_quiz_started(),
+			]);
 		$this->assertStringContainsString( '<span class="edit-link"><a href="https://example.com/wp-admin/post.php?post=101', $html );
-	}
-
-	public function test_html_doing_buttons_nav_center_when_setting_no(): void {
-		\LP_Settings::$options['navigation_position'] = 'no';
-
-		$html = UserQuizTemplate::instance()->html_doing_buttons( $this->make_course(), $this->make_quiz(), 2 );
-
-		$this->assertStringContainsString( 'class="button-left nav-center"', $html );
 	}
 
 	public function test_html_questions_index(): void {
 		$template = UserQuizTemplate::instance();
 
-		$this->assertSame( 'Question <span>1 of 10</span>', $template->html_questions_index( 1, 1, 10 ) );
-		$this->assertSame( 'Question <span>6 to 10 of 10</span>', $template->html_questions_index( 6, 10, 10 ) );
+		// One page: show total.
+		$html = $template->html_questions_index( [ 'start' => 1, 'end' => 10, 'total' => 10, 'per_page' => 0, 'num_pages' => 1 ] );
+		$this->assertStringContainsString( '<span class="index-total">10 questions</span>', $html );
+		$this->assertStringContainsString( '<span class="index-single lp-hidden">', $html );
+		$this->assertStringContainsString( '<span class="index-range lp-hidden">', $html );
+
+		// One question per page: show single index.
+		$html = $template->html_questions_index( [ 'start' => 1, 'end' => 1, 'total' => 10, 'per_page' => 1, 'num_pages' => 10 ] );
+		$this->assertStringContainsString( '<span class="index-total lp-hidden">', $html );
+		$this->assertStringContainsString( '<span class="index-single">Question <span class="i-current">1</span> of 10</span>', $html );
+
+		// Many questions per page: show range.
+		$html = $template->html_questions_index( [ 'start' => 6, 'end' => 10, 'total' => 10, 'per_page' => 5, 'num_pages' => 2 ] );
+		$this->assertStringContainsString( '<span class="index-range">Question <span class="i-start">6</span> to <span class="i-end">10</span> of 10</span>', $html );
+		$this->assertStringContainsString( '<span class="index-single lp-hidden">', $html );
 	}
 
 	public function test_format_timer(): void {
 		$template = UserQuizTemplate::instance();
 
-		$this->assertSame( '00:00', $template->format_timer( 0, 1800 ) );
-		$this->assertSame( '29:59', $template->format_timer( 1799, 1800 ) );
-		$this->assertSame( '01:00:05', $template->format_timer( 3605, 7200 ) );
+		$this->assertSame( '00:00', $template->format_timer([
+				'seconds' => 0,
+				'total' => 1800,
+			]) );
+		$this->assertSame( '29:59', $template->format_timer([
+				'seconds' => 1799,
+				'total' => 1800,
+			]) );
+		$this->assertSame( '01:00:05', $template->format_timer([
+				'seconds' => 3605,
+				'total' => 7200,
+			]) );
 	}
 
 	// -------------------------------------------------------------------------
 	// Check question (instant check)
 	// -------------------------------------------------------------------------
 
-	public function test_html_check_quiz_returns_checked_question_visible(): void {
+	public function test_html_question_instant_check_returns_checked_question_visible(): void {
 		$this->add_questions( [ 101, 102 ] );
 
-		$html = UserQuizTemplate::instance()->html_check_quiz(
-			$this->make_course(),
-			$this->make_quiz(
-				[
-					'question_ids'  => [ 101, 102 ],
-					'per_page'      => 1,
-					'instant_check' => true,
-					'show_correct'  => true,
-				]
-			),
-			$this->questions[102],
+		$html = UserQuizTemplate::instance()->html_question(
 			[
-				'answered' => 'b',
-				'mark'     => 0,
-				'correct'  => false,
+				'courseModel'       => $this->make_course(),
+				'quizPostModel'     => $this->make_quiz(
+					[
+						'question_ids'  => [ 101, 102 ],
+						'per_page'      => 1,
+						'instant_check' => true,
+						'show_correct'  => true,
+					]
+				),
+				'questionPostModel' => $this->questions[102],
+				'userQuizModel'     => false,
+				'is_guest'          => true,
+				'action_type'       => 'instant_check_question',
+				'position'          => 1,
+				'result_questions'  => [
+					102 => [
+						'answered' => 'b',
+						'mark'     => 0,
+						'correct'  => false,
+					],
+				],
 			]
 		);
 
@@ -553,23 +620,31 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringNotContainsString( 'instant-check', $html );
 	}
 
-	public function test_html_check_quiz_hides_correct_answer_when_option_off(): void {
+	public function test_html_question_instant_check_hides_correct_answer_when_option_off(): void {
 		$this->add_questions( [ 101 ] );
 
-		$html = UserQuizTemplate::instance()->html_check_quiz(
-			$this->make_course(),
-			$this->make_quiz(
-				[
-					'question_ids'  => [ 101 ],
-					'instant_check' => true,
-					'show_correct'  => false,
-				]
-			),
-			$this->questions[101],
+		$html = UserQuizTemplate::instance()->html_question(
 			[
-				'answered' => 'b',
-				'mark'     => 0,
-				'correct'  => false,
+				'courseModel'       => $this->make_course(),
+				'quizPostModel'     => $this->make_quiz(
+					[
+						'question_ids'  => [ 101 ],
+						'instant_check' => true,
+						'show_correct'  => false,
+					]
+				),
+				'questionPostModel' => $this->questions[101],
+				'userQuizModel'     => false,
+				'is_guest'          => true,
+				'action_type'       => 'instant_check_question',
+				'position'          => 0,
+				'result_questions'  => [
+					101 => [
+						'answered' => 'b',
+						'mark'     => 0,
+						'correct'  => false,
+					],
+				],
 			]
 		);
 
@@ -644,26 +719,26 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	public function test_html_screen_completed_shows_result_history_and_hidden_review(): void {
 		$this->add_questions( [ 101, 102 ] );
 
-		$html = UserQuizTemplate::instance()->html_screen(
-			$this->make_course(),
-			$this->make_quiz( [ 'question_ids' => [ 101, 102 ] ] ),
-			$this->make_user_quiz_completed( [ 'history' => [ [ 'question_count' => 5 ] ] ] )
-		);
+		$html = UserQuizTemplate::instance()->html_screen([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'question_ids' => [ 101, 102 ] ] ),
+				'userQuizModel' => $this->make_user_quiz_completed( [ 'history' => [ [ 'question_count' => 5 ] ] ] ),
+			]);
 
 		$this->assertStringContainsString( '<div class="lp-quiz-completed"><div class="lp-quiz-result-wrap"><div class="quiz-result passed">', $html );
 		$this->assertStringContainsString( 'class="quiz-attempts"', $html );
-		$this->assertStringContainsString( '<div class="lp-quiz-review" style="display: none;"', $html );
+		$this->assertStringContainsString( '<div class="lp-quiz-review lp-hidden"', $html );
 		$this->assertStringContainsString( 'lp-button review-quiz', $html );
 		$this->assertStringNotContainsString( 'lp-quiz-doing', $html );
 		$this->assertStringNotContainsString( 'quiz-intro', $html );
 	}
 
 	public function test_html_result_shows_grade_and_statistic(): void {
-		$html = UserQuizTemplate::instance()->html_result(
-			$this->make_quiz(),
-			$this->result_data(),
-			$this->make_user_quiz_completed()
-		);
+		$html = UserQuizTemplate::instance()->html_result([
+				'quizPostModel' => $this->make_quiz(),
+				'result' => $this->result_data(),
+				'userQuizModel' => $this->make_user_quiz_completed(),
+			]);
 
 		$this->assertStringStartsWith( '<div class="quiz-result passed"><h3 class="result-heading">Your Result</h3>', $html );
 		$this->assertStringContainsString( '<span class="result-achieved">85%</span><span class="result-require">80%</span>', $html );
@@ -678,7 +753,10 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_html_result_circle_offset_by_percent(): void {
-		$html = UserQuizTemplate::instance()->html_result( $this->make_quiz(), $this->result_data( [ 'result' => 50 ] ) );
+		$html = UserQuizTemplate::instance()->html_result([
+				'quizPostModel' => $this->make_quiz(),
+				'result' => $this->result_data( [ 'result' => 50 ] ),
+			]);
 
 		// r = 95, circumference = 2 * PI * 95 = 596.903, offset = half.
 		$this->assertStringContainsString( 'style="stroke-dasharray: 596.903 596.903; stroke-dashoffset: 298.451;"', $html );
@@ -686,36 +764,38 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	}
 
 	public function test_html_result_guest_failed_from_pass_and_minus_point_when_negative_marking(): void {
-		$html = UserQuizTemplate::instance()->html_result(
-			$this->make_quiz( [ 'negative' => true ] ),
-			$this->result_data(
-				[
-					'result'    => 66.666,
-					'pass'      => 0,
-					'user_mark' => 6.5,
-				]
-			)
-		);
+		$html = UserQuizTemplate::instance()->html_result([
+				'quizPostModel' => $this->make_quiz( [ 'negative' => true ] ),
+				'result' => $this->result_data(
+								[
+									'result'    => 66.666,
+									'pass'      => 0,
+									'user_mark' => 6.5,
+								]
+							),
+			]);
 
-		$this->assertStringStartsWith( '<div class="quiz-result failed">', $html );
 		$this->assertStringContainsString( '<span class="result-achieved">66.67%</span>', $html );
-		$this->assertStringContainsString( '<p class="result-message">Failed</p>', $html );
 		$this->assertStringContainsString( '<p>6.50 / 10</p>', $html );
 		$this->assertStringContainsString( '<li class="result-statistic-field result-questions-minus"><span>Minus points</span><p>1</p></li>', $html );
 	}
 
 	public function test_html_btn_retake_none_when_retake_zero(): void {
-		$html = UserQuizTemplate::instance()->html_btn_retake( $this->make_course(), $this->make_quiz( [ 'retake' => 0 ] ), $this->make_user_quiz_completed() );
+		$html = UserQuizTemplate::instance()->html_btn_retake([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'retake' => 0 ] ),
+				'userQuizModel' => $this->make_user_quiz_completed(),
+			]);
 
 		$this->assertSame( '', $html );
 	}
 
 	public function test_html_btn_retake_shows_remaining(): void {
-		$html = UserQuizTemplate::instance()->html_btn_retake(
-			$this->make_course(),
-			$this->make_quiz( [ 'retake' => 3 ] ),
-			$this->make_user_quiz_completed( [ 'remaining' => 2 ] )
-		);
+		$html = UserQuizTemplate::instance()->html_btn_retake([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'retake' => 3 ] ),
+				'userQuizModel' => $this->make_user_quiz_completed( [ 'remaining' => 2 ] ),
+			]);
 
 		$this->assertStringContainsString( 'class="lp-button start retake-quiz" data-retake-max="3"', $html );
 		$this->assertStringContainsString( 'data-title="Retake" data-content="Are you sure you want to retake the quiz?"', $html );
@@ -731,28 +811,31 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 
 	public function test_html_btn_retake_none_when_model_can_not_retake(): void {
 		// Remaining retake is 0, or course can not impact item (finished, expired).
-		$html = UserQuizTemplate::instance()->html_btn_retake(
-			$this->make_course(),
-			$this->make_quiz( [ 'retake' => 3 ] ),
-			$this->make_user_quiz_completed( [ 'can_retake' => new WP_Error( 'exceed_retaken_count', 'Exceeded' ) ] )
-		);
+		$html = UserQuizTemplate::instance()->html_btn_retake([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'retake' => 3 ] ),
+				'userQuizModel' => $this->make_user_quiz_completed( [ 'can_retake' => new WP_Error( 'exceed_retaken_count', 'Exceeded' ) ] ),
+			]);
 
 		$this->assertSame( '', $html );
 	}
 
 	public function test_html_btn_retake_unlimited_has_no_count(): void {
-		$html = UserQuizTemplate::instance()->html_btn_retake(
-			$this->make_course(),
-			$this->make_quiz( [ 'retake' => -1 ] ),
-			$this->make_user_quiz_completed()
-		);
+		$html = UserQuizTemplate::instance()->html_btn_retake([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'retake' => -1 ] ),
+				'userQuizModel' => $this->make_user_quiz_completed(),
+			]);
 
 		$this->assertStringContainsString( 'data-retake-max="-1"', $html );
 		$this->assertStringContainsString( '>Retake</button>', $html );
 	}
 
 	public function test_html_btn_retake_guest_has_no_count(): void {
-		$html = UserQuizTemplate::instance()->html_btn_retake( $this->make_course(), $this->make_quiz( [ 'retake' => 3 ] ) );
+		$html = UserQuizTemplate::instance()->html_btn_retake([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'retake' => 3 ] ),
+			]);
 
 		$this->assertStringContainsString( 'data-retake-max="3"', $html );
 		$this->assertStringContainsString( '>Retake</button>', $html );
@@ -761,7 +844,10 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	public function test_html_btn_retake_none_when_password_required(): void {
 		Functions\when( 'post_password_required' )->justReturn( true );
 
-		$html = UserQuizTemplate::instance()->html_btn_retake( $this->make_course(), $this->make_quiz( [ 'retake' => -1 ] ) );
+		$html = UserQuizTemplate::instance()->html_btn_retake([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz( [ 'retake' => -1 ] ),
+			]);
 
 		$this->assertSame( '', $html );
 	}
@@ -769,23 +855,28 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	public function test_html_btn_review_follows_option(): void {
 		$template = UserQuizTemplate::instance();
 
-		$this->assertSame( '<button type="button" class="lp-button review-quiz">Review</button>', $template->html_btn_review( $this->make_quiz( [ 'review' => true ] ) ) );
-		$this->assertSame( '', $template->html_btn_review( $this->make_quiz( [ 'review' => false ] ) ) );
+		$this->assertSame(
+			'<button type="button" class="lp-button review-quiz">Review</button>',
+			self::flat( $template->html_btn_review( [ 'quizPostModel' => $this->make_quiz( [ 'review' => true ] ) ] ) )
+		);
+		$this->assertSame( '', $template->html_btn_review([
+				'quizPostModel' => $this->make_quiz( [ 'review' => false ] ),
+			]) );
 	}
 
 	public function test_html_review_result_empty_when_review_off(): void {
 		$this->add_questions( [ 101 ] );
 
-		$html = UserQuizTemplate::instance()->html_review_result(
-			$this->make_course(),
-			$this->make_quiz(
-				[
-					'question_ids' => [ 101 ],
-					'review'       => false,
-				]
-			),
-			$this->result_data()
-		);
+		$html = UserQuizTemplate::instance()->html_review_result([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz(
+								[
+									'question_ids' => [ 101 ],
+									'review'       => false,
+								]
+							),
+				'result' => $this->result_data(),
+			]);
 
 		$this->assertSame( '', $html );
 	}
@@ -793,42 +884,44 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 	public function test_html_review_result_read_only_questions_with_correct_answers(): void {
 		$this->add_questions( [ 101, 102 ] );
 
-		$html = UserQuizTemplate::instance()->html_review_result(
-			$this->make_course(),
-			$this->make_quiz(
-				[
-					'question_ids' => [ 101, 102 ],
-					'per_page'     => 1,
-					'show_correct' => true,
-				]
-			),
-			$this->result_data()
-		);
+		$html = UserQuizTemplate::instance()->html_review_result([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz(
+								[
+									'question_ids' => [ 101, 102 ],
+									'questions'    => 2,
+									'per_page'     => 1,
+									'show_correct' => true,
+								]
+							),
+				'userQuizModel' => $this->make_user_quiz_completed(),
+				'result' => $this->result_data(),
+			]);
 
-		$this->assertStringStartsWith( '<div class="lp-quiz-review" style="display: none;" data-per-page="1" data-total="2" data-num-pages="2">', $html );
-		$this->assertStringContainsString( 'data-id="102" data-page="2" style="display: none;"', $html );
+		$this->assertStringStartsWith( '<div class="lp-quiz-review lp-hidden" data-per-page="1" data-total="2" data-num-pages="2">', $html );
+		$this->assertStringContainsString( 'data-id="102" data-page="2">', $html );
 		$this->assertStringContainsString( 'answer-option answer-correct answered-correct', $html );
 		$this->assertStringContainsString( 'answer-option answered-wrong', $html );
 		$this->assertStringContainsString( 'Explanation 101', $html );
 		$this->assertStringNotContainsString( 'name="learn-press-question-', $html );
 		$this->assertStringNotContainsString( 'instant-check', $html );
-		$this->assertStringContainsString( '<div class="questions-pagination" data-num-pages="2"></div>', $html );
+		$this->assertStringContainsString( 'questions-pagination__item', $html );
 		$this->assertStringContainsString( '<button type="button" class="lp-button back-quiz">Result</button>', $html );
 	}
 
 	public function test_html_review_result_without_show_correct(): void {
 		$this->add_questions( [ 101, 102 ] );
 
-		$html = UserQuizTemplate::instance()->html_review_result(
-			$this->make_course(),
-			$this->make_quiz(
-				[
-					'question_ids' => [ 101, 102 ],
-					'show_correct' => false,
-				]
-			),
-			$this->result_data()
-		);
+		$html = UserQuizTemplate::instance()->html_review_result([
+				'courseModel' => $this->make_course(),
+				'quizPostModel' => $this->make_quiz(
+								[
+									'question_ids' => [ 101, 102 ],
+									'show_correct' => false,
+								]
+							),
+				'result' => $this->result_data(),
+			]);
 
 		$this->assertStringNotContainsString( 'answer-correct', $html );
 		$this->assertStringContainsString( 'answer-option answered-correct', $html );

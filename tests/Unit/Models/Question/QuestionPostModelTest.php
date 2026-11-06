@@ -61,7 +61,7 @@ class QuestionPostModelTest extends BrainMonkeyTestCase {
 				$this->default_answers = $default_answers;
 			}
 
-			public function get_type() {
+			public function get_type(): string {
 				return $this->question_type;
 			}
 
@@ -94,7 +94,7 @@ class QuestionPostModelTest extends BrainMonkeyTestCase {
 				$this->legacy_answers = [ new QuestionAnswerModel( [ 'question_answer_id' => 99 ] ) ];
 			}
 
-			public function get_type() {
+			public function get_type(): string {
 				return $this->question_type;
 			}
 
@@ -127,7 +127,7 @@ class QuestionPostModelTest extends BrainMonkeyTestCase {
 				$this->question_type = $type;
 			}
 
-			public function get_type() {
+			public function get_type(): string {
 				return $this->question_type;
 			}
 		};
@@ -431,56 +431,20 @@ class QuestionPostModelTest extends BrainMonkeyTestCase {
 		};
 	}
 
-	private function stub_hint_explanation(): void {
-		Functions\when( 'wp_kses_allowed_html' )->justReturn( [] );
-		Functions\when( 'wp_kses' )->alias( fn( $content ) => strip_tags( $content, '<strong>' ) );
-		Functions\when( 'do_shortcode' )->alias( fn( $content ) => str_replace( '[b]', '<strong>B</strong>', $content ) );
-	}
-
-	public function test_get_hint_do_shortcode_and_sanitize(): void {
-		$this->stub_hint_explanation();
-
-		$question = $this->make_question_with_meta( [ QuestionPostModel::META_KEY_HINT => 'Hint [b]<script>x</script>' ] );
-
-		$this->assertSame( 'Hint <strong>B</strong>x', $question->get_hint() );
-	}
-
-	public function test_get_hint_apply_filter_with_question_id(): void {
-		$this->stub_hint_explanation();
-		Filters\expectApplied( 'learn-press/question/hint' )
-			->once()
-			->with( 'Hint <strong>B</strong>', 15 )
-			->andReturn( 'Filtered <script>bad</script>' );
-
+	public function test_get_hint_returns_raw_meta(): void {
 		$question = $this->make_question_with_meta( [ QuestionPostModel::META_KEY_HINT => 'Hint [b]' ] );
 
-		// Filter result still sanitized.
-		$this->assertSame( 'Filtered bad', $question->get_hint() );
+		// Shortcode and sanitize are handled by QuestionTemplate::html_hint().
+		$this->assertSame( 'Hint [b]', $question->get_hint() );
 	}
 
 	public function test_get_hint_empty_meta_returns_empty(): void {
-		$this->stub_hint_explanation();
-
 		$this->assertSame( '', $this->make_question_with_meta( [] )->get_hint() );
 	}
 
-	public function test_get_explanation_do_shortcode_and_sanitize(): void {
-		$this->stub_hint_explanation();
-
-		$question = $this->make_question_with_meta( [ QuestionPostModel::META_KEY_EXPLANATION => 'Why [b]<script>x</script>' ] );
-
-		$this->assertSame( 'Why <strong>B</strong>x', $question->get_explanation() );
-	}
-
-	public function test_get_explanation_apply_filter_with_question_id(): void {
-		$this->stub_hint_explanation();
-		Filters\expectApplied( 'learn-press/question/explanation' )
-			->once()
-			->with( 'Why <strong>B</strong>', 15 )
-			->andReturn( 'Filtered' );
-
+	public function test_get_explanation_returns_raw_meta(): void {
 		$question = $this->make_question_with_meta( [ QuestionPostModel::META_KEY_EXPLANATION => 'Why [b]' ] );
 
-		$this->assertSame( 'Filtered', $question->get_explanation() );
+		$this->assertSame( 'Why [b]', $question->get_explanation() );
 	}
 }

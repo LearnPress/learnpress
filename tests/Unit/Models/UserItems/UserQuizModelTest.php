@@ -55,9 +55,10 @@ class UserQuizModelTest extends BrainMonkeyTestCase {
 	 *
 	 * @return UserQuizModel|Mockery\MockInterface
 	 */
-	private function make_user_quiz( $can_check ) {
+	private function make_user_quiz( $can_check, array $questions_checked = [] ) {
 		$userQuizModel = Mockery::mock( UserQuizModel::class )->makePartial();
 		$userQuizModel->shouldReceive( 'can_check_instant_answer' )->with( 5 )->andReturn( $can_check );
+		$userQuizModel->shouldReceive( 'get_checked_questions' )->andReturn( $questions_checked );
 
 		return $userQuizModel;
 	}
@@ -121,6 +122,74 @@ class UserQuizModelTest extends BrainMonkeyTestCase {
 			],
 			$checked
 		);
+	}
+
+	/**
+	 * Result returned only has the question checking, questions not checked are dropped.
+	 */
+	public function test_instant_check_question_keeps_only_questions_checked(): void {
+		$this->stub_question_found();
+		$userQuizModel = $this->make_user_quiz( true, [ 7 ] );
+		$userQuizModel->shouldReceive( 'get_user_item_id' )->andReturn( 0 );
+		$userQuizModel->shouldReceive( 'calculate_quiz_result' )
+			->once()
+			->andReturn(
+				[
+					'questions' => [
+						5 => [
+							'answered' => 'a',
+							'mark'     => 2,
+							'correct'  => true,
+						],
+						7 => [
+							'answered' => 'b',
+							'mark'     => 1,
+							'correct'  => true,
+						],
+						// Question not checked yet, must not be kept.
+						9 => [ 'answered' => '' ],
+					],
+				]
+			);
+
+		$checked = $userQuizModel->instant_check_question( 5, 'a' );
+
+		$this->assertSame(
+			[
+				'answered' => 'a',
+				'mark'     => 2,
+				'correct'  => true,
+			],
+			$checked
+		);
+	}
+
+	// -------------------------------------------------------------------------
+	// filter_questions_checked
+	// -------------------------------------------------------------------------
+
+	public function test_filter_questions_checked_keeps_only_questions_checked(): void {
+		$userQuizModel = new UserQuizModel();
+
+		$questions = [
+			5 => [ 'answered' => 'a' ],
+			7 => [ 'answered' => 'b' ],
+			9 => [ 'answered' => '' ],
+		];
+
+		$this->assertSame(
+			[
+				5 => [ 'answered' => 'a' ],
+				7 => [ 'answered' => 'b' ],
+			],
+			$userQuizModel->filter_questions_checked( $questions, [ '5', 7 ] )
+		);
+	}
+
+	public function test_filter_questions_checked_empty_when_no_question_checked(): void {
+		$userQuizModel = new UserQuizModel();
+
+		$this->assertSame( [], $userQuizModel->filter_questions_checked( [ 5 => [ 'answered' => 'a' ] ], [] ) );
 	}
 
 	// -------------------------------------------------------------------------

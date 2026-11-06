@@ -85,9 +85,9 @@ class QuizTemplateTest extends BrainMonkeyTestCase {
 
 		$this->assertStringStartsWith( '<ul class="quiz-intro">', $html );
 		$this->assertStringContainsString( 'quiz-intro-item--duration', $html );
-		$this->assertStringContainsString( '<span class="quiz-intro-item__content">00:30:00</span>', $html );
+		$this->assertStringContainsString( '<span class="question-duration">30 Minutes</span>', $html );
 		$this->assertStringContainsString( 'quiz-intro-item--passing-grade', $html );
-		$this->assertStringContainsString( '<span class="quiz-intro-item__content">80</span>', $html );
+		$this->assertStringContainsString( '>80%</span>', $html );
 		$this->assertStringContainsString( 'quiz-intro-item--questions-count', $html );
 		$this->assertStringContainsString( '<span class="quiz-intro-item__content">5</span>', $html );
 	}
@@ -95,7 +95,9 @@ class QuizTemplateTest extends BrainMonkeyTestCase {
 	public function test_html_meta_shows_dashes_when_no_duration_and_no_grade(): void {
 		$html = QuizTemplate::instance()->html_meta( $this->make_quiz( [ 'duration' => '0 minute', 'grade' => 0.0 ] ) );
 
-		$this->assertSame( 2, substr_count( $html, '<span class="quiz-intro-item__content">--</span>' ) );
+		// Passing grade shows a dash; zero duration shows "Unlimited".
+		$this->assertSame( 1, substr_count( $html, '<span class="quiz-intro-item__content">--</span>' ) );
+		$this->assertStringContainsString( 'Unlimited', $html );
 	}
 
 	public function test_html_meta_fields_filter_can_add_field(): void {
@@ -116,18 +118,5 @@ class QuizTemplateTest extends BrainMonkeyTestCase {
 
 		$this->assertStringContainsString( 'quiz-intro-item--custom', $html );
 		$this->assertStringContainsString( '<span class="quiz-intro-item__content">Value</span>', $html );
-	}
-
-	// -------------------------------------------------------------------------
-	// format_duration
-	// -------------------------------------------------------------------------
-
-	public function test_format_duration(): void {
-		$template = QuizTemplate::instance();
-
-		$this->assertSame( '00:00:00', $template->format_duration( 0 ) );
-		$this->assertSame( '01:01:01', $template->format_duration( 3661 ) );
-		$this->assertSame( '25:00:00', $template->format_duration( 90000 ) );
-		$this->assertSame( '00:00:00', $template->format_duration( -5 ) );
 	}
 }
