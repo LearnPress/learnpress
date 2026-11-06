@@ -440,6 +440,8 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			if ( $duration > 0 ) {
 				$remaining = $userQuizModel->get_time_remaining();
 			}
+		} else {
+			$remaining = $duration;
 		}
 
 		$seconds = $duration > 0 ? $remaining : $time_spend;
@@ -519,13 +521,11 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			return '';
 		}
 
-		$checked_questions = [];
-		$result_questions  = [];
-		$question_ids      = $quizPostModel->get_question_ids();
+		$result_questions = [];
+		$question_ids     = $quizPostModel->get_question_ids();
 
 		if ( $userQuizModel instanceof UserQuizModel ) {
-			$checked_questions = array_map( 'absint', $userQuizModel->get_checked_questions() );
-			$result_questions  = $userQuizModel->get_result()['questions'] ?? [];
+			$result_questions = $userQuizModel->get_result()['questions'] ?? [];
 		}
 
 		$html_questions = '';
@@ -867,8 +867,9 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 *   - userQuizModel: UserQuizModel instance or false.
 	 *
 	 * @return string HTML of the completed screen.
-	 * @since 4.5.0
+	 * @throws Exception
 	 * @version 1.0.0
+	 * @since 4.5.0
 	 */
 	public function html_completed( array $args ): string {
 		$userQuizModel = $args['userQuizModel'] ?? false;
@@ -1014,8 +1015,9 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 *   - userQuizModel: UserQuizModel instance or false.
 	 *
 	 * @return string HTML of the retake button.
-	 * @since 4.5.0
+	 * @throws Exception
 	 * @version 1.0.0
+	 * @since 4.5.0
 	 */
 	public function html_btn_retake( array $args ): string {
 		$courseModel   = $args['courseModel'] ?? false;
@@ -1105,6 +1107,39 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	}
 
 	/**
+	 * Get QuestionPostModel from snapshot in result without query.
+	 * Snapshot preserves question data at save time (title, answers) to avoid changes from current question.
+	 *
+	 * @param array $question_result
+	 *
+	 * @return QuestionPostModel|false
+	 */
+	private function get_question_model_from_result( array $question_result ) {
+		$snapshot = $question_result['questionSnapshot'] ?? false;
+		if ( empty( $snapshot ) || ! is_array( $snapshot ) || empty( $snapshot['ID'] ) ) {
+			return false;
+		}
+
+		$question_class = QuestionPostModel::get_question_obj_by_type(
+			(string) ( $snapshot['question_type'] ?? '' )
+		);
+		if ( ! $question_class || ! class_exists( $question_class ) ) {
+			return false;
+		}
+
+		// Snapshot keys differ from model properties.
+		$snapshot['post_title']   = $snapshot['post_title'] ?? '';
+		$snapshot['post_content'] = $snapshot['post_content'] ?? '';
+		// Decoded JSON is array, model expects stdClass.
+		$snapshot['meta_data'] = (object) ( $snapshot['meta_data'] ?? [] );
+
+		/** @var QuestionPostModel $questionModel */
+		$questionModel = new $question_class( $snapshot );
+
+		return $questionModel;
+	}
+
+	/**
 	 * Render HTML of the review questions section after quiz completion.
 	 * Hidden until user clicks the review button.
 	 * Only renders when quiz review option is enabled to avoid exposing answers when not allowed.
@@ -1136,9 +1171,15 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 
 		$html_questions = '';
 		foreach ( $question_ids as $index => $question_id ) {
-			$questionPostModel = QuestionPostModel::find( (int) $question_id, true );
+			// Snapshot of question saved in result, keep rendering when question was deleted, no query.
+			$question_result = (array) ( $result_questions[ $question_id ] ?? [] );
+			// Load question data from result if not exists will query
+			$questionPostModel = $this->get_question_model_from_result( $question_result );
 			if ( ! $questionPostModel instanceof QuestionPostModel ) {
-				continue;
+				$questionPostModel = QuestionPostModel::find( $question_id );
+				if ( ! $questionPostModel instanceof QuestionPostModel ) {
+					continue;
+				}
 			}
 
 			$html_questions .= $this->html_question(

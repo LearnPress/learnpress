@@ -3,6 +3,7 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\LPDateTime;
 use LearnPress\Models\CourseModel;
@@ -17,6 +18,7 @@ use LearnPress\Filters\UserItemResultsFilter;
 use LP_Debug;
 use LP_Quiz_CURD;
 use LP_User_Items_Result_DB;
+use stdClass;
 use Throwable;
 use WP_Error;
 
@@ -646,8 +648,8 @@ class UserQuizModel extends UserItemModel {
 	 * @version 1.0.2
 	 */
 	public function instant_check_question( int $question_id, $answered = null ): array {
-		$question = QuestionPostModel::find( $question_id, true );
-		if ( ! $question ) {
+		$questionPostModel = QuestionPostModel::find( $question_id, true );
+		if ( ! $questionPostModel ) {
 			throw new Exception( __( 'The question is invalid!', 'learnpress' ) );
 		}
 
@@ -752,16 +754,10 @@ class UserQuizModel extends UserItemModel {
 		);
 
 		try {
-			$result_tmp = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
-			if ( $result_tmp ) {
-				if ( isset( $result_tmp['user_mark'] ) && $result_tmp['user_mark'] < 0 ) {
-					$result_tmp['user_mark'] = 0;
-				}
-
-				$result = $result_tmp;
+			$userQuizResultModel = UserItemResultModel::find_by_user_item_id( $this->get_user_item_id(), true );
+			if ( $userQuizResultModel instanceof UserItemResultModel ) {
+				return $userQuizResultModel->get_result();
 			}
-
-			return $result;
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
@@ -775,8 +771,9 @@ class UserQuizModel extends UserItemModel {
 	 * @param array $answered [question_id => answered, 'instant_check' => 0]
 	 *
 	 * @return array
-	 * @since 4.2.5
+	 * @throws Exception
 	 * @version 1.0.0
+	 * @since 4.2.5
 	 */
 	public function calculate_quiz_result( array $answered ): array {
 		$result = array(
@@ -808,19 +805,46 @@ class UserQuizModel extends UserItemModel {
 		$result['passing_grade']  = $quizPostModel->get_passing_grade();
 
 		foreach ( $question_ids as $question_id ) {
-			//$question = QuestionPostModel::find( $question_id, true );
+			// $questionPostModel = QuestionPostModel::find( $question_id, true );
 			// Temporary not get cache for case of QuestionSortingChoiceModel, when addon sorting choice update for this model will use cache again
-			$question = QuestionPostModel::find( $question_id );
-			$point    = floatval( $question->get_mark() );
+			$questionPostModel = QuestionPostModel::find( $question_id );
+			if ( ! $questionPostModel instanceof QuestionPostModel ) {
+				continue;
+			}
 
-			$result['questions'][ $question_id ]             = array();
-			$result['questions'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
+			if ( $questionPostModel->is_legacy_answer_type() ) {
+				$answers_config = $questionPostModel->get_answers_for_legacy_type();
+			} else {
+				$answers_config = $questionPostModel->get_answers_config();
+			}
+
+			$questionPostModel->get_all_metadata();
+			$point = floatval( $questionPostModel->get_mark() );
+
+			// Set question snapshot, for case get question from this, not query question present, if question deleted still keep info
+			$questionSnapShort                   = [];
+			$questionSnapShort['ID']             = $questionPostModel->get_id();
+			$questionSnapShort['question_type']  = $questionPostModel->get_type();
+			$questionSnapShort['post_title']     = $questionPostModel->post_title;
+			$questionSnapShort['post_content']   = $questionPostModel->post_content;
+			$questionSnapShort['meta_data']      = (array) $questionPostModel->get_all_metadata();
+			$questionSnapShort['answers_config'] = json_decode( json_encode( $answers_config ), true );
+			// End set question snapshot
+
+			$result['questions'][ $question_id ]                     = array();
+			$result['questions'][ $question_id ]['questionSnapshot'] = $questionSnapShort;
+			$result['questions'][ $question_id ]['answered']         = $answered[ $question_id ] ?? '';
 
 			if ( isset( $answered[ $question_id ] ) ) { // User's answer
 				++$result['question_answered'];
 
-				$check = $question->check( $answered[ $question_id ] );
-				$point = apply_filters( 'learn-press/user/calculate-quiz-result/point', $point, $question, $check );
+				$check = $questionPostModel->check( $answered[ $question_id ] );
+				$point = apply_filters(
+					'learn-press/user/calculate-quiz-result/point',
+					$point,
+					$questionPostModel,
+					$check
+				);
 				if ( $check['correct'] ) {
 					++$result['question_correct'];
 					$result['user_mark'] += $point;
@@ -849,20 +873,21 @@ class UserQuizModel extends UserItemModel {
 			}
 
 			// Submit quiz: options has result of user's answer, correct answer only when option "Show the correct answer" enabled.
-			if ( ! array_key_exists( 'instant_check', $answered ) ) {
+			// Comment this code, code only use for API LP_Jwt_Quiz_V1_Controller::submit_quiz -> LP_REST_Users_Controller::submit_quiz
+			/*if ( ! array_key_exists( 'instant_check', $answered ) ) {
 				if ( $quizPostModel->has_instant_check() ) {
-					$result['questions'][ $question_id ]['explanation'] = $question->get_explanation();
+					$result['questions'][ $question_id ]['explanation'] = $questionPostModel->get_explanation();
 				}
 
 				$result['questions'][ $question_id ]['options'] = learn_press_get_question_options_for_js(
-					$question,
+					$questionPostModel,
 					array(
 						'include_is_true'     => true,
 						'show_correct_answer' => $quizPostModel->has_show_correct_review(),
 						'answer'              => $answered[ $question_id ] ?? '',
 					)
 				);
-			}
+			}*/
 		}
 
 		if ( $result['user_mark'] < 0 ) {

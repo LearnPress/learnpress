@@ -6,6 +6,7 @@
  * @author  ThimPress
  * @package LearnPress/Classes
  * @version 4.0.9
+ * @deprecated 4.5.0
  */
 defined( 'ABSPATH' ) || exit();
 if ( ! class_exists( 'LP_Course' ) ) {

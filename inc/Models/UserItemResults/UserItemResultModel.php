@@ -2,6 +2,7 @@
 namespace LearnPress\Models\UserItemResults;
 
 use Exception;
+use LearnPress\Cache\LPCache;
 use LearnPress\Databases\UserItemResultsDB;
 use LearnPress\Filters\UserItemResultsFilter;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -246,11 +247,11 @@ class UserItemResultModel extends UserItemModel {
 		$filter               = new UserItemResultsFilter();
 		$filter->user_item_id = $user_item_id;
 
-		$lp_cache = new LP_Cache();
+		$lp_cache = new LPCache();
 
 		// Check cache
 		if ( $check_cache ) {
-			$userItemModel = $lp_cache->get_cache( $key_cache );
+			$userItemModel = $lp_cache->get_cache( $key_cache, self::class );
 			if ( $userItemModel instanceof UserItemResultModel ) {
 				return new static( $userItemModel );
 			}

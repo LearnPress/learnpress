@@ -34,11 +34,11 @@ class QuestionPostModel extends PostModel {
 	protected $answer_options = [];
 
 	/**
-	 * @var QuestionAnswerModel[] Answers read from new table question_answer_config
+	 * Answers read from new table question_answer_config
 	 */
 	protected $answer_options_config = [];
 
-	protected $question_type = '';
+	public $question_type = '';
 
 	/**
 	 * Const meta key

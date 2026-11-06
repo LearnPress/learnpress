@@ -368,11 +368,32 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'User quiz is invalid!', 'learnpress' ) );
 			}
 
-			$data_send           = [
+			$data_send = [
 				'answered' => $answered,
 				'time_spend' => $time_spend,
 			];
-			$result              = $userQuizModel->handle_finish( $data_send );
+			$result    = $userQuizModel->handle_finish( $data_send );
+
+			// Run code old to
+			$question_ids = $quizPostModel->get_question_ids();
+			foreach ( $question_ids as $question_id ) {
+				$questionPostModel = QuestionPostModel::find( $question_id, true );
+
+				if ( $quizPostModel->has_instant_check() ) {
+					$result['questions'][ $question_id ]['explanation'] = $questionPostModel->get_explanation();
+				}
+
+				$result['questions'][ $question_id ]['options'] = learn_press_get_question_options_for_js(
+					$questionPostModel,
+					array(
+						'include_is_true'     => true,
+						'show_correct_answer' => $quizPostModel->has_show_correct_review(),
+						'answer'              => $answered[ $question_id ] ?? '',
+					)
+				);
+			}
+			// End
+
 			$response['status']  = 'success';
 			$response['results'] = $result;
 		} catch ( Throwable $e ) {

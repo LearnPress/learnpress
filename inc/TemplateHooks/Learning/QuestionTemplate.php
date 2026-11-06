@@ -230,74 +230,6 @@ class QuestionTemplate {
 	}
 
 	/**
-	 * Answers of question for display, read from get_answers_for_legacy_type().
-	 * An answer is QuestionAnswerModel (old tables) or array (new table question_answer_config),
-	 * both are normalized to one shape: uid, title, value, is_true, answer (the source answer).
-	 * is_true is empty when not show correct answers, avoid leaking correct answers.
-	 *
-	 * @param QuestionPostModel $questionPostModel
-	 * @param array $args
-	 *
-	 * @return array
-	 * @since 4.5.0
-	 * @version 1.0.1
-	 */
-	public function get_answers( QuestionPostModel $questionPostModel, array $args ): array {
-		$answers = [];
-
-		try {
-			$answers = $questionPostModel->get_answers_for_legacy_type();
-		} catch ( Throwable $e ) {
-			LP_Debug::error_log( $e );
-		}
-
-		$options = [];
-		foreach ( array_values( $answers ) as $index => $answer ) {
-			if ( $answer instanceof QuestionAnswerModel ) {
-				$uid     = $answer->question_answer_id;
-				$title   = $answer->title;
-				$value   = $answer->value;
-				$order   = $answer->order;
-				$is_true = $answer->is_true;
-			} else {
-				$answer_arr = (array) $answer;
-				$uid        = $answer_arr['question_answer_id'] ?? '';
-				$title      = $answer_arr['title'] ?? '';
-				$value      = $answer_arr['value'] ?? '';
-				$order      = $answer_arr['order'] ?? $index + 1;
-				$is_true    = $answer_arr['is_true'] ?? '';
-			}
-
-			$options[] = [
-				// Sort keys, removed before return.
-				'index'   => $index,
-				'order'   => (int) $order,
-				'uid'     => (string) ( $uid ?? '' ),
-				'title'   => (string) $title,
-				'value'   => (string) $value,
-				// is_true leaks the correct answer, only read it when showing correct answers.
-				'is_true' => $args['show_correct'] ? (string) $is_true : '',
-				// Source answer, type-specific code reads what it needs (FIB blanks).
-				'answer'  => $answer,
-			];
-		}
-
-		// Sort by order ASC as old tables do, keep position when same order.
-		usort(
-			$options,
-			function ( $a, $b ) {
-				return [ $a['order'], $a['index'] ] <=> [ $b['order'], $b['index'] ];
-			}
-		);
-
-		foreach ( $options as $k => $option ) {
-			unset( $options[ $k ]['index'], $options[ $k ]['order'] );
-		}
-
-		return apply_filters( 'learn-press/question/answers-for-display', array_values( $options ), $questionPostModel, $args );
-	}
-
-	/**
 	 * Random order of options, different from original order when has more than one option.
 	 * Same as QuestionSortingChoiceModel::shuffle_options(), that one is protected.
 	 *
@@ -348,8 +280,11 @@ class QuestionTemplate {
 									: '';
 		$disabled                = ( $args['show_result'] ?? false ) || ! $is_started;
 
-		$html_options   = '';
-		$answers_config = $questionPostModel->get_answers_for_legacy_type();
+		$html_options = '';
+
+		$answers_config = isset( $question_answer_checked['questionSnapshot'] )
+			? $question_answer_checked['questionSnapshot']['answers_config']
+			: $questionPostModel->get_answers_for_legacy_type();
 		foreach ( $answers_config as $index => $option ) {
 			if ( $option instanceof QuestionAnswerModel ) {
 				$option_arr = (array) $option;
@@ -427,7 +362,9 @@ class QuestionTemplate {
 		$answered                = is_scalar( $question_answer_checked['answered'] ?? null ) ? (string) $question_answer_checked['answered'] : '';
 
 		$html_options   = '';
-		$answers_config = $questionPostModel->get_answers_for_legacy_type();
+		$answers_config = isset( $question_answer_checked['questionSnapshot'] )
+			? $question_answer_checked['questionSnapshot']['answers_config']
+			: $questionPostModel->get_answers_for_legacy_type();
 		foreach ( $answers_config as $index => $option ) {
 			if ( $option instanceof QuestionAnswerModel ) {
 				$option_arr = (array) $option;
@@ -454,7 +391,14 @@ class QuestionTemplate {
 
 			$input_id      = 'learn-press-answer-option-' . $uid;
 			$html_options .= sprintf(
-				'<li class="%1$s"><input type="radio" class="option-check" name="%2$s" id="%3$s" value="%4$s"%5$s%6$s/><label for="%3$s" class="option-title">%7$s</label></li>',
+				'<li class="%1$s">
+					<input type="radio"
+						class="option-check"
+						name="%2$s"
+						id="%3$s"
+						value="%4$s"%5$s%6$s/>
+						<label for="%3$s" class="option-title">%7$s</label>
+					</li>',
 				esc_attr( implode( ' ', $classes ) ),
 				$is_started ? esc_attr( 'learn-press-question-' . $question_id ) : '',
 				esc_attr( $input_id ),
@@ -503,7 +447,9 @@ class QuestionTemplate {
 		$answered                = array_map( 'strval', (array) ( $question_answer_checked['answered'] ?? [] ) );
 
 		$html_options   = '';
-		$answers_config = $questionPostModel->get_answers_for_legacy_type();
+		$answers_config = isset( $question_answer_checked['questionSnapshot'] )
+			? $question_answer_checked['questionSnapshot']['answers_config']
+			: $questionPostModel->get_answers_for_legacy_type();
 		foreach ( $answers_config as $index => $option ) {
 			if ( $option instanceof QuestionAnswerModel ) {
 				$option_arr = (array) $option;
@@ -642,7 +588,9 @@ class QuestionTemplate {
 		$show_result = $show_answer || ! empty( $args['show_result'] );
 
 		$html_options   = '';
-		$answers_config = $questionPostModel->get_answers_for_legacy_type();
+		$answers_config = isset( $question_answer_checked['questionSnapshot'] )
+			? $question_answer_checked['questionSnapshot']['answers_config']
+			: $questionPostModel->get_answers_for_legacy_type();
 		foreach ( $answers_config as $option ) {
 			if ( $option instanceof QuestionAnswerModel ) {
 				$option_arr = (array) $option;
@@ -731,7 +679,9 @@ class QuestionTemplate {
 
 		// Was QuestionSortingChoiceModel::get_answer_options(): correct position, then random order.
 		$options        = [];
-		$answers_config = $questionPostModel->get_answers_for_legacy_type();
+		$answers_config = isset( $question_answer_checked['questionSnapshot'] )
+			? $question_answer_checked['questionSnapshot']['answers_config']
+			: $questionPostModel->get_answers_for_legacy_type();
 		foreach ( array_values( $answers_config ) as $position => $option ) {
 			if ( $option instanceof QuestionAnswerModel ) {
 				$option_arr = (array) $option;

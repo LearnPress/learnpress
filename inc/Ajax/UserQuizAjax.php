@@ -119,6 +119,7 @@ class UserQuizAjax extends AbstractAjax {
 				$userQuizModel->handle_retake();
 			}
 
+			$context['action_type']  = 'user_retake_quiz';
 			$response->data->content = $this->get_user_quiz_template()->html_doing_quiz( $context );
 			$response->data->status  = UserQuizModel::STATUS_STARTED;
 			$response->status        = Response::STATUS_SUCCESS;

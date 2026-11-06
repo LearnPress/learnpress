@@ -951,7 +951,7 @@ button[data-counter] {
 	}
 }
 
-.question {
+#learn-press-user-quiz .question {
 
 	.answer-option {
 		padding: 0;
@@ -1024,15 +1024,15 @@ button[data-counter] {
 
 		&.answer-correct {
 
-			.option-title {
+			//.option-title {
 				border-color: #4caf50;
-			}
+			//}
 		}
 
 		&.answered-wrong {
- 			.option-title {
+ 			//.option-title {
 				border-color: #ff6423;
-			}
+			//}
 		}
 	}
 
