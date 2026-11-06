@@ -52,7 +52,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			//$this->add_map_method( 'before_delete', 'before_delete_quiz' );
 
-			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
+			//add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
 
 			add_filter( 'views_edit-' . LP_QUIZ_CPT, array( $this, 'views_pages' ), 10 );
 			add_action( 'posts_pre_query', array( $this, 'posts_pre_query' ), 999, 2 );
@@ -156,8 +156,9 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Load data for quiz editor.
 		 *
 		 * @since 3.0.0
+		 * @deprecated 4.5.0
 		 */
-		public function data_quiz_editor() {
+		/*public function data_quiz_editor() {
 			if ( LP_QUIZ_CPT !== get_post_type() ) {
 				return;
 			}
@@ -217,7 +218,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					)
 				)
 			);
-		}
+		}*/
 
 		/**
 		 * Delete all questions assign to quiz.
