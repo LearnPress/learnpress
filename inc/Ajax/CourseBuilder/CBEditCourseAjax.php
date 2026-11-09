@@ -172,23 +172,13 @@ class CBEditCourseAjax extends AbstractAjax {
 					$coursePostModel->post_name = $course_permalink;
 				}
 
-				// Meta data
+				// Get all metadata to save, not use $courseModel->meta_data
 				$coursePostModel->meta_data = $coursePostModel->get_all_metadata();
 
-				//$meta_before = array_map( 'serialize', (array) $coursePostModel->meta_data );
 				if ( $settings ) {
 					$courseBuilderAjax = new CourseBuilderAjax();
 					$courseBuilderAjax->save_course_settings_to_model( $coursePostModel, $data );
 				}
-
-				// Only save meta changed, meta loaded from course JSON can overwrite meta of other sources.
-				/*$meta_changed = new stdClass();
-				foreach ( $coursePostModel->meta_data as $meta_key => $meta_value ) {
-					if ( ( $meta_before[ $meta_key ] ?? null ) !== serialize( $meta_value ) ) {
-						$meta_changed->{$meta_key} = $meta_value;
-					}
-				}
-				$coursePostModel->meta_data = $meta_changed;*/
 
 				$coursePostModel->save();
 
