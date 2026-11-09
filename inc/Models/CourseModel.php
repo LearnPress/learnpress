@@ -26,6 +26,8 @@ use LP_Course_JSON_Filter;
 use LP_Datetime;
 use LP_Debug;
 use LP_Helper;
+use LP_Meta_Box_Course;
+use LP_Meta_Box_Field;
 use LP_Section_Items_Filter;
 use LP_Settings;
 use stdClass;
@@ -1449,6 +1451,33 @@ class CourseModel {
 		$lp_course_json_db = LP_Course_JSON_DB::getInstance();
 
 		$courseObjToJSON = clone $this;
+
+		// Save only course meta keys to avoid conflicts with plugins like Elementor, another plugins
+		include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
+		$lp_meta_box_course = new LP_Meta_Box_Course();
+		$ground_fields      = $lp_meta_box_course->metabox( $this->ID );
+		$meta_keys          = [];
+		foreach ( $ground_fields as $fields ) {
+			if ( ! isset( $fields['content'] ) ) {
+				continue;
+			}
+			foreach ( $fields['content'] as $meta_key => $option ) {
+				$option->id = $meta_key;
+				if ( ! $option instanceof LP_Meta_Box_Field ) {
+					continue;
+				}
+
+				$meta_keys[] = $meta_key;
+			}
+		}
+
+		foreach ( $courseObjToJSON->meta_data as $key => $value ) {
+			if ( ! in_array( $key, $meta_keys ) ) {
+				unset( $courseObjToJSON->meta_data->{$key} );
+			}
+		}
+		// End only save meta-key of course
+
 		unset( $courseObjToJSON->post_content );
 		unset( $courseObjToJSON->json );
 		$this->json = json_encode( $courseObjToJSON, JSON_UNESCAPED_UNICODE );
