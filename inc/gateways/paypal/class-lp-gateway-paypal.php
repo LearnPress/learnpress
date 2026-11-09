@@ -85,6 +85,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		protected $subscription_webhook_id = '';
 
 		const PAYPAL_TOKEN = 'paypal_token';
+		/**
+		 * Order meta holding the PayPal webhook event ids already processed, as a JSON array.
+		 */
+		const META_WEBHOOK_EVENT_PROCESSED = '_lp_paypal_webhook_event_processed';
 
 		/**
 		 * LP_Gateway_Paypal constructor.
@@ -1617,7 +1621,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @throws Exception
 		 * @since 4.3.7
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function capture_subscription_webhook( WP_REST_Request $request ) {
 			$webhook_data = LP_Helper::json_decode( $request->get_body(), true );
@@ -1643,6 +1647,13 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				return;
 			}
 			$webhook_data['lp_order_id'] = $lp_order_id;
+
+			// PayPal re-sends an event until it gets a 2xx answer, and may deliver it more than once.
+			$event_id = sanitize_text_field( (string) ( $webhook_data['id'] ?? '' ) );
+			if ( $this->is_webhook_event_processed( $lp_order->get_id(), $event_id ) ) {
+				// Code 200: acknowledged, PayPal must not re-send it.
+				throw new Exception( __( 'PayPal webhook event already processed.', 'learnpress' ), 200 );
+			}
 
 			// Webhook billing subscription create
 			$is_billing_subscription_created = $this->capture_billing_subscription_create( $lp_order, $webhook_data );
@@ -1686,6 +1697,51 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			// Dispatch webhook
 			$this->process_subscription_by_status( $lp_order, $lp_subscription_status_set_to_handle, $webhook_data );
+
+			if ( '' !== $event_id ) {
+				$event_ids   = $this->get_webhook_events_processed( $lp_order->get_id() );
+				$event_ids[] = $event_id;
+				update_post_meta( $lp_order->get_id(), self::META_WEBHOOK_EVENT_PROCESSED, wp_json_encode( $event_ids ) );
+			}
+		}
+
+		/**
+		 * Get PayPal webhook event ids already processed for the order.
+		 *
+		 * @param int $order_id
+		 *
+		 * @return string[]
+		 * @since 4.4.14
+		 * @version 1.0.0
+		 */
+		public function get_webhook_events_processed( int $order_id ): array {
+			$value = get_post_meta( $order_id, self::META_WEBHOOK_EVENT_PROCESSED, true );
+			if ( empty( $value ) || ! is_string( $value ) ) {
+				return array();
+			}
+
+			// Not LP_Helper::json_decode(): it throws on invalid JSON, which would answer 500 forever.
+			$event_ids = json_decode( $value, true );
+
+			return is_array( $event_ids ) ? $event_ids : array();
+		}
+
+		/**
+		 * Check a PayPal webhook event was already processed for the order.
+		 *
+		 * @param int    $order_id
+		 * @param string $event_id PayPal webhook event id (WH-...).
+		 *
+		 * @return bool
+		 * @since 4.4.14
+		 * @version 1.0.0
+		 */
+		public function is_webhook_event_processed( int $order_id, string $event_id ): bool {
+			if ( '' === $event_id ) {
+				return false;
+			}
+
+			return in_array( $event_id, $this->get_webhook_events_processed( $order_id ), true );
 		}
 
 		/**
@@ -1741,6 +1797,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return void
 		 * @throws Exception When the LearnPress order is invalid, the PayPal event type is missing, or no subscription status can be resolved.
+		 * @throws Exception Code 200 when the parent LP Order is already completed (event acknowledged, not processed).
 		 * @since 4.3.7
 		 * @version 1.0.0
 		 */
@@ -1769,7 +1826,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			 * The next for renewal only get via payment, not return subscription
 			 */
 			if ( $lp_order->is_completed() ) {
-				throw new Exception( __( 'Ignore lp order completed with subscription activated.', 'learnpress' ), 400 );
+				throw new Exception(
+					__( 'Ignore lp order completed with subscription activated.', 'learnpress' ),
+					200
+				);
 			}
 
 			$event_type = $webhook_data['event_type'] ?? '';
@@ -1857,7 +1917,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param array $webhook_data
 		 *
 		 * @return true|void
-		 * @throws Exception When the sale resource is invalid or does not match the stored subscription id.
+		 * @throws Exception When the sale resource is invalid; code 200 when it does not match the stored subscription id.
 		 * @since 4.3.7
 		 * @version 1.0.0
 		 */
@@ -1881,7 +1941,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			// Verify subscription id receiver sample with subscription id on LP Order
 			$subscription_id = get_post_meta( $lp_order->get_id(), self::META_SUBSCRIPTION_ID, true );
 			if ( $billing_agreement_id !== $subscription_id ) {
-				throw new Exception( __( 'PayPal billing subscription not same with subscription on LP Order.', 'learnpress' ), 400 );
+				throw new Exception(
+					__( 'PayPal billing subscription not same with subscription on LP Order.', 'learnpress' ),
+					200
+				);
 			}
 
 			// Save payment data to combine with subscription status defined by LP later, not for renewal
