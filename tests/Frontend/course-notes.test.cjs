@@ -9,7 +9,7 @@ const { JSDOM } = require( 'jsdom' );
 const read = ( file ) => fs.readFileSync( path.resolve( __dirname, '../../', file ), 'utf8' );
 const withoutImports = ( source ) => source.replace( /import[\s\S]*?from '[^']+';/g, '' );
 
-function setup( t ) {
+function setup( t, beforeInit = () => {} ) {
 	const dom = new JSDOM( `
 		<div id="lesson">Alpha beta gamma delta</div>
 		<div id="lp-notes"><button class="lp-notes__selection-btn" hidden></button>
@@ -127,6 +127,7 @@ function setup( t ) {
 	dom.window.lpAJAXG = { fetchAJAX: ( data, callbacks ) => requests.push( { data, callbacks } ) };
 	const widget = new context.CourseNotes();
 	new context.LearningContentBar().init();
+	beforeInit( dom.window.document );
 	widget.init();
 	const click = ( el ) => el.dispatchEvent( new dom.window.MouseEvent( 'click', { bubbles: true, cancelable: true } ) );
 	const open = ( item ) => click( dom.window.document.querySelector( `.popup-right-sidebar__item[data-learning-bar-item="${ item }"]` ) );
@@ -134,8 +135,36 @@ function setup( t ) {
 	const card = ( id ) => widget.el.list.querySelector( `[data-note-id="${ id }"]` );
 	const submit = () => widget.el.form.dispatchEvent( new dom.window.Event( 'submit', { bubbles: true, cancelable: true } ) );
 	const marks = () => [ ...widget.contentRoot.querySelectorAll( 'mark' ) ];
-	open( 'notes' );
+	if ( dom.window.document.querySelector( '[data-learning-bar-item="notes"]' ) ) {
+		open( 'notes' );
+	}
 	return { widget, requests, click, open, close, card, submit, marks, dom, context, modals, confirmations, setConfirmation: ( result ) => { confirmationResult = result; } };
+}
+
+for ( const missing of [ 'sidebar', 'form' ] ) {
+	test( `Add Note stays disabled when the learning template omits the Notes ${ missing }`, ( t ) => {
+		const { dom, widget, requests, click } = setup( t, ( document ) => {
+			const sidebar = document.querySelector( '[data-learning-bar-item="notes"]' );
+			if ( missing === 'sidebar' ) {
+				sidebar.remove();
+			} else {
+				sidebar.querySelector( 'template' ).content.querySelector( '.lp-notes__form' ).remove();
+			}
+			// The runtime popup form must not enable adding notes without a sidebar form.
+			document.querySelector( '#lp-notes' ).insertAdjacentHTML( 'beforeend', '<template class="lp-notes__popup-form-template"><form class="lp-notes__form"></form></template>' );
+		} );
+		const document = dom.window.document;
+		const range = document.createRange();
+		range.selectNodeContents( document.querySelector( '#lesson' ) );
+		dom.window.getSelection().addRange( range );
+		document.dispatchEvent( new dom.window.MouseEvent( 'mouseup', { bubbles: true } ) );
+		const button = document.querySelector( '.lp-notes__selection-btn' );
+		assert.equal( button.hidden, true );
+		click( button );
+		assert.equal( document.querySelectorAll( '.lp-notes__form:not([hidden])' ).length, 0 );
+		assert.equal( widget.contentRoot, null );
+		assert.equal( requests.length, 0 );
+	} );
 }
 
 test( 'pending saves block changing or cancelling the form and recover after errors', ( t ) => {
