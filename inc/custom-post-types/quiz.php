@@ -107,6 +107,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Register quiz post type.
 		 */
 		public function args_register_post_type(): array {
+			$quizPostModelTemp = new QuizPostModel();
+
 			$args = apply_filters(
 				'lp_quiz_post_type_args',
 				array(
@@ -124,14 +126,27 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'not_found'          => sprintf( __( 'You haven\'t had any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
 						'not_found_in_trash' => esc_html__( 'There was no quiz found in the trash', 'learnpress' ),
 					),
-					'public'              => true,
-					'publicly_queryable'  => true,
+					/**
+					 * Set false to hide from:
+					 * - Frontend: single URLs, archive pages, search results, author archives
+					 * - Feeds: RSS/Atom feeds
+					 * - Sitemaps: WordPress default and SEO plugin sitemaps
+					 * - Nav menus: cannot add to Appearance > Menus
+					 * Still visible in admin because show_ui and show_in_menu are true.
+					 */
+					'public'              => false,
+					/**
+					 * Allow frontend URL queries (e.g., example.com/lesson/slug) even when public is false.
+					 * LearnPress uses this for course item URLs, but has additional 404 protection logic.
+					 */
+					'publicly_queryable'  => false,
 					'show_ui'             => true,
 					'has_archive'         => false,
 					'capability_type'     => LP_LESSON_CPT,
 					'map_meta_cap'        => true,
 					'show_in_menu'        => 'learn_press',
-					'show_in_rest'        => true,
+					// Enable REST API wp-json/wp/v2/lp_quiz/{id} use for Gutenberg
+					'show_in_rest'        => $quizPostModelTemp->check_capabilities_create(),
 					'show_in_admin_bar'   => true,
 					'show_in_nav_menus'   => true,
 					'supports'            => array(
