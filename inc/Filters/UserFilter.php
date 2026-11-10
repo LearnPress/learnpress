@@ -75,6 +75,21 @@ class UserFilter extends FilterBase {
 	public $user_status;
 
 	/**
+	 * @var string[] List of roles, user must have at least one of them.
+	 */
+	public $roles = [];
+
+	/**
+	 * @var string Keyword search on login, nicename, email, display name.
+	 */
+	public $search = '';
+
+	/**
+	 * @var int[] List of user ids to exclude.
+	 */
+	public $exclude_ids = [];
+
+	/**
 	 * @var string
 	 */
 	public $field_count = self::COL_ID;
