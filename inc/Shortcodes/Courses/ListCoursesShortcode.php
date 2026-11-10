@@ -73,7 +73,9 @@ class ListCoursesShortcode extends AbstractShortcode {
 				'learn-press/layout/list-courses/shortcode/section',
 				[
 					'wrap'     => sprintf(
-						'<ul class="learn-press-courses lp-list-courses-no-css %1$s learn-press-courses-shortcode" data-layout="%1$s">',
+						'<ul class="learn-press-courses
+							lp-list-courses-no-css %1$s learn-press-courses-shortcode"
+							data-layout="%1$s">',
 						esc_attr( $skin )
 					),
 					'courses'  => wp_kses_post( $html_courses ),

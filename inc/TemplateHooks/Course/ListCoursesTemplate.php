@@ -17,6 +17,8 @@ use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Course;
 use LP_Course_Filter;
 use LP_Database;
+use LP_Helper;
+use LP_Request;
 use LP_Settings;
 use LP_Settings_Courses;
 use LP_User_Items_DB;
@@ -24,6 +26,7 @@ use LP_User_Items_Filter;
 use LP_WP_Filesystem;
 use stdClass;
 use Throwable;
+use WP_Query;
 use WP_Term;
 
 class ListCoursesTemplate {
@@ -37,12 +40,84 @@ class ListCoursesTemplate {
 	}
 
 	public function allow_callback( $callbacks ) {
-		/**
-		 * @uses self::render_courses()
-		 */
 		$callbacks[] = get_class( $this ) . ':render_courses';
 
 		return $callbacks;
+	}
+
+	/**
+	 * Get params on URL allow to query list courses.
+	 *
+	 * Security: only accept keys on the allow-list, never copy all $_GET,
+	 * because args are passed to TemplateAJAX::load_content_via_ajax() (printed to page) and to query courses.
+	 * Use instead of lp_archive_skeleton_get_args() when args go to load_content_via_ajax().
+	 *
+	 * @return array
+	 * @since 4.4.14
+	 * @version 1.0.0
+	 */
+	public static function get_params_url(): array {
+		/**
+		 * Keys on URL allow to filter list courses.
+		 * Add-ons add fields to form filter courses must add keys via this hook.
+		 */
+		$keys_allow = apply_filters(
+			'learn-press/list-courses/params-url/keys-allow',
+			[
+				'paged',
+				'order_by',
+				'order',
+				'sort_by',
+				'c_search',
+				'c_authors',
+				'c_level',
+				'c_type',
+				'term_id',
+				'tag_id',
+				'c_review_star', // Add-on Course Review: filter by rating.
+				'lang',
+				'pll-current-lang',
+			]
+		);
+
+		$args = [];
+		foreach ( (array) $keys_allow as $key ) {
+			$value = LP_Request::get_param( (string) $key, '', 'text', 'get' );
+			if ( '' !== $value && [] !== $value ) {
+				$args[ $key ] = $value;
+			}
+		}
+
+		// Values below are detected by server, not from request.
+		global $wp_query;
+		if ( $wp_query instanceof WP_Query && ! empty( $wp_query->get( 'paged' ) ) ) {
+			$args['paged'] = $wp_query->get( 'paged' );
+		}
+
+		$is_course_category = learn_press_is_course_category();
+		if ( $is_course_category || learn_press_is_course_tag() ) {
+			$term = get_queried_object();
+			if ( $term instanceof WP_Term ) {
+				$args[ $is_course_category ? 'page_term_id_current' : 'page_tag_id_current' ] = $term->term_id;
+				$args['page_term_url'] = get_term_link( $term );
+			}
+		}
+
+		// Hook of lp_archive_skeleton_get_args(), keep for compatible (ex: Polylang add current lang).
+		$args = apply_filters( 'lp/template/archive-course/skeleton/args', $args );
+		if ( ! is_array( $args ) ) {
+			$args = [];
+		}
+
+		// html_* are printed raw by TemplateAJAX::load_content_via_ajax(), only caller set them.
+		unset(
+			$args['html_no_load_ajax_first'],
+			$args['html_loading_before_show_content'],
+			$args['html_loading_after_content_loaded']
+		);
+
+		// Values from request are unslashed above, so not unslash again.
+		return LP_Helper::sanitize_params_submitted( $args, 'text', false );
 	}
 
 	/**
@@ -59,10 +134,11 @@ class ListCoursesTemplate {
 
 		$callback = [
 			'class'  => get_class( $this ),
+			/** @use self::render_courses */
 			'method' => 'render_courses',
 		];
 
-		$args                          = lp_archive_skeleton_get_args();
+		$args                          = self::get_params_url();
 		$args['id_url']                = 'list-courses-default';
 		$args['courses_load_ajax']     = LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0;
 		$args['courses_first_no_ajax'] = LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0;
@@ -685,10 +761,13 @@ class ListCoursesTemplate {
 			);
 			$view_all      = sprintf(
 				'<a href="%s">%s</a>',
-				esc_url( add_query_arg(
-					'c_search',
-					$key_search,
-					learn_press_get_page_link( 'courses' ) ) ),
+				esc_url(
+					add_query_arg(
+						'c_search',
+						$key_search,
+						learn_press_get_page_link( 'courses' )
+					)
+				),
 				__( 'View All', 'learnpress' )
 			);
 

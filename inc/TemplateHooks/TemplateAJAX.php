@@ -81,14 +81,24 @@ class TemplateAJAX {
 				$data['args'] = new stdClass();
 			}
 
-			$data_send = esc_attr( htmlentities2( json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) );
+			// Encode data_send
+			$data_send = esc_attr(
+				htmlentities2(
+					json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )
+				)
+			);
+			// Security: encode square brackets so do_shortcode() cannot run shortcodes from request params inside the attribute.
+			$data_send = str_replace( [ '[', ']' ], [ '&#91;', '&#93;' ], $data_send );
+			// End encode data_send
+
 			ob_start();
 			lp_skeleton_animation_html( 10 );
 			$el_loading_before_show_content_default = ob_get_clean();
 
 			$el_loading_before_show_content = sprintf(
 				'<div class="loading-first">%s</div>',
-				$args['html_loading_before_show_content'] ?? $el_loading_before_show_content_default
+				$args['html_loading_before_show_content']
+					?? $el_loading_before_show_content_default
 			);
 			if ( isset( $args['html_no_load_ajax_first'] ) ) {
 				$el_loading_before_show_content = '';
@@ -96,7 +106,8 @@ class TemplateAJAX {
 
 			$el_loading_after_content_loaded = sprintf(
 				'<div class="loading-after">%s</div>',
-				$args['html_loading_after_content_loaded'] ?? '<div class="lp-loading-change lp-hidden"></div>'
+				$args['html_loading_after_content_loaded']
+					?? '<div class="lp-loading-change lp-hidden"></div>'
 			);
 
 			$html_el_target = sprintf(

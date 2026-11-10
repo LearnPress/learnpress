@@ -74,7 +74,8 @@ class ListCoursesBlockType extends AbstractBlockType {
 		$html = '';
 
 		try {
-			$args                 = lp_archive_skeleton_get_args();
+			// Security: only get params allow on URL, not all $_GET.
+			$args                 = ListCoursesTemplate::get_params_url();
 			$args['id_url']       = 'gutenberg-list-courses';
 			$args['attributes']   = $attributes;
 			$args['parsed_block'] = $block->parsed_block;

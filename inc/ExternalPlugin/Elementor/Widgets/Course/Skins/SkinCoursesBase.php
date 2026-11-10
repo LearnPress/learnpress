@@ -53,10 +53,8 @@ class SkinCoursesBase extends LPSkinBase {
 			$settings['url_current']   = LP_Helper::getUrlCurrent();
 
 			// Merge params filter form url
-			$settings = array_merge(
-				$settings,
-				lp_archive_skeleton_get_args()
-			);
+			// Security: only get params allow on URL, not all $_GET (can override settings of widget).
+			$settings = array_merge( $settings, ListCoursesTemplate::get_params_url() );
 
 			$html_wrapper_widget = [
 				'<div class="list-courses-elm-wrapper">' => '</div>',
@@ -151,7 +149,7 @@ class SkinCoursesBase extends LPSkinBase {
 
 		// Handle layout
 		ob_start();
-		$data_rs     = [
+		$data_rs = [
 			'total_rows'       => $total_rows,
 			'paged'            => $paged,
 			'courses_per_page' => $courses_per_page,
@@ -167,7 +165,7 @@ class SkinCoursesBase extends LPSkinBase {
 
 		$html_lis = '';
 		foreach ( $courses as $courseObj ) {
-			$course = learn_press_get_course( $courseObj->ID );
+			$course    = learn_press_get_course( $courseObj->ID );
 			$html_lis .= static::render_course( $course, $settings );
 		}
 		$section_list = [
