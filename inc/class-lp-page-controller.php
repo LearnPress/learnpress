@@ -99,6 +99,9 @@ class LP_Page_Controller {
 
 			// Rewrite lesson comment links
 			add_filter( 'get_comment_link', array( $this, 'edit_lesson_comment_links' ), 10, 2 );
+			// Not expose course's items (and comments of them) on RSS/Atom feeds.
+			add_filter( 'posts_where', array( $this, 'exclude_course_items_from_feed' ), 10, 2 );
+			add_filter( 'comment_feed_where', array( $this, 'exclude_course_items_from_feed' ), 10, 2 );
 			// Active menu
 			add_filter( 'wp_nav_menu_objects', [ $this, 'menu_active' ], 10, 1 );
 			// Canonical
@@ -1265,6 +1268,47 @@ class LP_Page_Controller {
 		}
 
 		return $link;
+	}
+
+	/**
+	 * Exclude course's items (lesson, quiz, question, assignment) and comments of them from WP feeds.
+	 *
+	 * Hooked to 'posts_where' (posts feed) and 'comment_feed_where' (comments feed).
+	 * The comments feed of site joins comments with all published posts, any post type,
+	 * so comments on lessons of paid courses would be listed for everyone.
+	 *
+	 * @param string $where The WHERE clause of the query.
+	 * @param WP_Query $query
+	 *
+	 * @return string
+	 * @since 4.4.14
+	 * @version 1.0.0
+	 */
+	public function exclude_course_items_from_feed( $where, $query ) {
+		if ( ! $query instanceof WP_Query || ! $query->is_feed() ) {
+			return $where;
+		}
+
+		$post_types   = CourseModel::item_types_support();
+		$post_types[] = LP_QUESTION_CPT;
+		$post_types   = array_values( array_filter( array_map( 'sanitize_key', $post_types ) ) );
+		if ( empty( $post_types ) ) {
+			return $where;
+		}
+
+		global $wpdb;
+		$format_in = LP_Helper::format_query_IN( $post_types );
+
+		if ( 'comment_feed_where' === current_filter() ) {
+			// Use sub query, because the comments feed of a single post does not join posts table.
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+			$where .= $wpdb->prepare( " AND {$wpdb->comments}.comment_post_ID NOT IN ( SELECT ID FROM {$wpdb->posts} WHERE post_type IN ({$format_in}) )", $post_types );
+		} else {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+			$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_type NOT IN ({$format_in})", $post_types );
+		}
+
+		return $where;
 	}
 
 	/**
