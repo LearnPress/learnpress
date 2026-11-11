@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Helpers\Response;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\Courses;
@@ -147,7 +148,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'verify_receipt' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'get_course_need_login_check' ),
 				'args'                => array(
 					'context'      => $this->get_context_param(
 						array(
@@ -258,7 +259,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	}
 
 	public function verify_receipt( $request ) {
-		$response = new LP_REST_Response();
+		$response = new Response();
 		$receipt  = ! empty( $request['receipt-data'] ) ? $request['receipt-data'] : '';
 		$is_ios   = ! empty( $request['is-ios'] ) ? true : false;
 
@@ -278,7 +279,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					throw new Exception( __( 'The secret key is empty.', 'learnpress' ) );
 				}
 
-				$url = LP_Settings::instance()->get( 'in_app_purchase_apple_sandbox' ) === 'yes' ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+				$url = LP_Settings::instance()->get( 'in_app_purchase_apple_sandbox' ) === 'yes'
+					? 'https://sandbox.itunes.apple.com/verifyReceipt'
+					: 'https://buy.itunes.apple.com/verifyReceipt';
 
 				$verify = wp_remote_post(
 					$url,
@@ -319,6 +322,38 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 				if ( ! in_array( $course_id, $course_ids ) ) {
 					throw new Exception( __( 'The course ID is invalid.', 'learnpress' ) );
+				}
+
+				// Extract transaction_id from the latest receipt info for this product.
+				$transaction_id = '';
+				foreach ( $latest_receipt_info as $receipt_item ) {
+					if ( isset( $receipt_item->product_id ) && absint( $receipt_item->product_id ) === $course_id ) {
+						$transaction_id = ! empty( $receipt_item->transaction_id ) ? $receipt_item->transaction_id : '';
+						break;
+					}
+				}
+
+				if ( empty( $transaction_id ) ) {
+					// Fallback: use original_transaction_id from the first receipt item.
+					$transaction_id = ! empty( $latest_receipt_info[0]->original_transaction_id ) ? $latest_receipt_info[0]->original_transaction_id : '';
+				}
+
+				if ( empty( $transaction_id ) ) {
+					throw new Exception( __( 'Cannot verify the receipt', 'learnpress' ) );
+				}
+
+				// An Apple transaction ID can only unlock one account.
+				$transaction_owners = get_users(
+					array(
+						'meta_key'   => '_lp_iap_apple_transaction', // phpcs:ignore WordPress.DB.SlowDBQuery
+						'meta_value' => $transaction_id, // phpcs:ignore WordPress.DB.SlowDBQuery
+						'fields'     => 'ID',
+						'number'     => 1,
+					)
+				);
+
+				if ( ! empty( $transaction_owners ) ) {
+					throw new Exception( __( 'The receipt has already been used.', 'learnpress' ) );
 				}
 			} else {
 				$receipt        = json_decode( $receipt, true );
@@ -399,16 +434,16 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$order->payment_complete();
 				$cart->empty_cart();
 
-				if ( ! $is_ios ) {
+				if ( $is_ios ) {
+					add_user_meta( get_current_user_id(), '_lp_iap_apple_transaction', $transaction_id );
+				} else {
 					add_user_meta( get_current_user_id(), '_lp_iap_google_token', $purchase_token );
 				}
 			}
 
 			$response->status  = 'success';
 			$response->message = esc_html__( 'Verify Receipt Data successfully.', 'learnpress' );
-		} catch ( \Throwable $th ) {
-			error_log( $th->getMessage() );
-			$response->status  = 'error';
+		} catch ( Throwable $th ) {
 			$response->message = $th->getMessage();
 		}
 
