@@ -258,6 +258,25 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return learn_press_get_course( $id );
 	}
 
+	/**
+	 * Atomically claim an in-app purchase receipt (unique option_name + INSERT IGNORE).
+	 *
+	 * @param string $key Option name derived from the Apple transaction ID / Google purchase token.
+	 *
+	 * @return bool False if the receipt was already claimed.
+	 */
+	protected function claim_iap_receipt( string $key ): bool {
+		global $wpdb;
+
+		return (bool) $wpdb->query(
+			$wpdb->prepare(
+				"INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %d, 'no')",
+				$key,
+				get_current_user_id()
+			)
+		);
+	}
+
 	public function verify_receipt( $request ) {
 		$response = new Response();
 		$receipt  = ! empty( $request['receipt-data'] ) ? $request['receipt-data'] : '';
@@ -266,6 +285,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		// Get request header.
 		$platform = ! empty( $request->get_header( 'x-platform' ) ) ? sanitize_text_field( $request->get_header( 'x-platform' ) ) : '';
 		$password = function_exists( 'learnpress_mobile_iap_settings' ) ? learnpress_mobile_iap_settings( $platform )['apple_token_secret'] : LP_Settings::instance()->get( 'in_app_purchase_apple_shared_secret', '' );
+		$claim_key = '';
 
 		try {
 			if ( empty( $receipt ) ) {
@@ -324,35 +344,35 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					throw new Exception( __( 'The course ID is invalid.', 'learnpress' ) );
 				}
 
-				// Extract transaction_id from the latest receipt info for this product.
-				$transaction_id = '';
+				// Collect every transaction of this product: a re-purchase puts the old and the new transaction in one receipt.
+				$transaction_ids = array();
 				foreach ( $latest_receipt_info as $receipt_item ) {
-					if ( isset( $receipt_item->product_id ) && absint( $receipt_item->product_id ) === $course_id ) {
-						$transaction_id = ! empty( $receipt_item->transaction_id ) ? $receipt_item->transaction_id : '';
-						break;
+					if ( isset( $receipt_item->product_id ) && absint( $receipt_item->product_id ) === $course_id && ! empty( $receipt_item->transaction_id ) ) {
+						$transaction_ids[] = $receipt_item->transaction_id;
 					}
 				}
 
-				if ( empty( $transaction_id ) ) {
+				if ( empty( $transaction_ids ) && ! empty( $latest_receipt_info[0]->original_transaction_id ) ) {
 					// Fallback: use original_transaction_id from the first receipt item.
-					$transaction_id = ! empty( $latest_receipt_info[0]->original_transaction_id ) ? $latest_receipt_info[0]->original_transaction_id : '';
+					$transaction_ids[] = $latest_receipt_info[0]->original_transaction_id;
 				}
 
-				if ( empty( $transaction_id ) ) {
+				if ( empty( $transaction_ids ) ) {
 					throw new Exception( __( 'Cannot verify the receipt', 'learnpress' ) );
 				}
 
-				// An Apple transaction ID can only unlock one account.
-				$transaction_owners = get_users(
-					array(
-						'meta_key'   => '_lp_iap_apple_transaction', // phpcs:ignore WordPress.DB.SlowDBQuery
-						'meta_value' => $transaction_id, // phpcs:ignore WordPress.DB.SlowDBQuery
-						'fields'     => 'ID',
-						'number'     => 1,
-					)
-				);
+				// An Apple transaction ID can only unlock one account: use the first one not claimed yet.
+				foreach ( array_unique( $transaction_ids ) as $transaction_id ) {
+					$claim_key = '_lp_iap_apple_' . md5( $transaction_id );
 
-				if ( ! empty( $transaction_owners ) ) {
+					if ( $this->claim_iap_receipt( $claim_key ) ) {
+						break;
+					}
+
+					$claim_key = '';
+				}
+
+				if ( empty( $claim_key ) ) {
 					throw new Exception( __( 'The receipt has already been used.', 'learnpress' ) );
 				}
 			} else {
@@ -406,6 +426,14 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				if ( ! empty( $token_owners ) ) {
 					throw new Exception( __( 'The receipt has already been used.', 'learnpress' ) );
 				}
+
+				// The check above covers tokens recorded by older versions; this claim blocks concurrent requests.
+				$claim_key = '_lp_iap_google_' . md5( $purchase_token );
+
+				if ( ! $this->claim_iap_receipt( $claim_key ) ) {
+					$claim_key = '';
+					throw new Exception( __( 'The receipt has already been used.', 'learnpress' ) );
+				}
 			}
 
 			$course = learn_press_get_course( $course_id );
@@ -434,9 +462,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$order->payment_complete();
 				$cart->empty_cart();
 
-				if ( $is_ios ) {
-					add_user_meta( get_current_user_id(), '_lp_iap_apple_transaction', $transaction_id );
-				} else {
+				if ( ! $is_ios ) {
 					add_user_meta( get_current_user_id(), '_lp_iap_google_token', $purchase_token );
 				}
 			}
@@ -444,6 +470,10 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$response->status  = 'success';
 			$response->message = esc_html__( 'Verify Receipt Data successfully.', 'learnpress' );
 		} catch ( Throwable $th ) {
+			// Order not created: release the claim so a legit buyer can retry.
+			if ( ! empty( $claim_key ) ) {
+				delete_option( $claim_key );
+			}
 			$response->message = $th->getMessage();
 		}
 
