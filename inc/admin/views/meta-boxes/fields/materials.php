@@ -78,8 +78,6 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 								can-upload="<?php esc_attr_e( $can_upload ); ?>">
 							<?php esc_html_e( 'Add Course Materials', 'learnpress' ); ?>
 						</button>
-						<button class="button button-primary" id="btn-lp--save-material"
-								type="button"><?php esc_html_e( 'Save', 'learnpress' ); ?></button>
 					</div>
 					<input type="hidden" id="material-max-file-size" value="<?php esc_attr_e( $max_file_size ); ?>"/>
 					<div id="lp-material--add-material-template" hidden>
