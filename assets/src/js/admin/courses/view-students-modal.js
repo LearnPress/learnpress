@@ -20,6 +20,7 @@ export class ViewStudentsModal {
 		endDateInput: '#lp-modal-enrolled-filter-end-date',
 		searchBtn: '.lp-enrolled-btn-search-modal',
 		clearBtn: '.lp-enrolled-btn-clear-modal',
+		viewDetailBtn: '.lp-btn-view-students-detail',
 		modalSearchFields:
 			'#lp-modal-enrolled-search-input, #lp-modal-enrolled-filter-start-date, #lp-modal-enrolled-filter-end-date',
 	};
@@ -169,7 +170,7 @@ export class ViewStudentsModal {
 			return;
 		}
 
-		form.reset();
+		lpUtils.resetForm( form );
 		this.setButtonLoadingState( btn, true );
 		this.loadEnrolledStudents(
 			this.activeCourseId,
@@ -182,12 +183,37 @@ export class ViewStudentsModal {
 		return SweetAlert.getPopup ? SweetAlert.getPopup() : null;
 	}
 
-	getModalToolbarHtml() {
+	/**
+	 * Get modal toolbar HTML.
+	 *
+	 * @param {Object} args
+	 * @return {string}
+	 */
+	getModalToolbarHtml( args = {} ) {
+		const { courseName = '' } = args;
 		const template = document.querySelector(
 			ViewStudentsModal.selectors.toolbarTemplate
 		);
+		if ( ! template ) {
+			return '';
+		}
 
-		return template ? template.innerHTML : '';
+		// Work on a copy so the original template is not modified.
+		const elWrap = document.createElement( 'div' );
+		elWrap.innerHTML = template.innerHTML;
+
+		const elBtnDetail = elWrap.querySelector(
+			ViewStudentsModal.selectors.viewDetailBtn
+		);
+
+		// Set param course_name
+		if ( elBtnDetail && courseName ) {
+			elBtnDetail.href = lpUtils.lpAddQueryArgs( elBtnDetail.href, {
+				course_name: courseName,
+			} ).toString();
+		}
+
+		return elWrap.innerHTML;
 	}
 
 	getModalTargetHtml() {
@@ -271,7 +297,9 @@ export class ViewStudentsModal {
 	}
 
 	openModal( courseId, courseTitle, elTrigger = null ) {
-		const modalToolbarHtml = this.getModalToolbarHtml();
+		const modalToolbarHtml = this.getModalToolbarHtml( {
+			courseName: courseTitle,
+		} );
 		const modalTargetHtml = this.getModalTargetHtml();
 
 		if ( ! modalToolbarHtml || ! modalTargetHtml ) {

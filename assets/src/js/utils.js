@@ -276,6 +276,34 @@ export const mergeDataWithDatForm = ( elForm, dataHandle ) => {
 };
 
 /**
+ * Reset all fields of form to empty, select to first option.
+ * Not use form.reset(), because it restores values rendered by server (e.g. from URL params).
+ *
+ * @param elForm
+ */
+export const resetForm = ( elForm ) => {
+	if ( ! elForm ) {
+		return;
+	}
+
+	Array.from( elForm.elements ).forEach( ( elField ) => {
+		const tagName = elField.tagName;
+		const type = elField.type;
+
+		if ( tagName === 'SELECT' ) {
+			elField.selectedIndex = 0;
+		} else if ( type === 'checkbox' || type === 'radio' ) {
+			elField.checked = false;
+		} else if (
+			( tagName === 'INPUT' || tagName === 'TEXTAREA' ) &&
+			! [ 'hidden', 'button', 'submit', 'reset' ].includes( type )
+		) {
+			elField.value = '';
+		}
+	} );
+};
+
+/**
  * Event trigger
  * For each list of event handlers, listen event on document.
  *

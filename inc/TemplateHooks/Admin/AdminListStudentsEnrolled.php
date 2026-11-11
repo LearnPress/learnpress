@@ -310,8 +310,12 @@ class AdminListStudentsEnrolled {
 		);
 
 		$html_btn_actions = sprintf(
-			'<button type="button" class="lp-button lp-enrolled-btn-search">%s</button>
-			<button type="button" class="lp-button lp-enrolled-btn-clear">%s</button>',
+			'<button type="button" class="lp-button
+				lp-enrolled-btn-search lp-be-btn lp-be-btn--outline">%s
+			</button>
+			<button type="button" class="lp-button lp-enrolled-btn-clear
+				lp-be-btn lp-be-btn--outline">%s
+			</button>',
 			esc_html__( 'Search', 'learnpress' ),
 			esc_html__( 'Clear Filter', 'learnpress' )
 		);
@@ -344,30 +348,24 @@ class AdminListStudentsEnrolled {
 				<input id="lp-modal-enrolled-search-input"
 					class="lp-enrolled-search-input"
 					type="text" name="student_name" placeholder="%s">
-			</div>
-			<div class="filter-field">
-				<label for="lp-modal-enrolled-filter-start-date">%s</label>
-				<input id="lp-modal-enrolled-filter-start-date"
-					class="lp-enrolled-filter-start-date"
-					type="date" name="start_date" placeholder="mm/dd/yyyy">
-			</div>
-			<div class="filter-field">
-				<label for="lp-modal-enrolled-filter-end-date">%s</label>
-				<input id="lp-modal-enrolled-filter-end-date"
-					class="lp-enrolled-filter-end-date"
-					type="date" name="end_date" placeholder="mm/dd/yyyy">
 			</div>',
 			esc_html__( 'Student', 'learnpress' ),
 			esc_attr__( 'Enter student name or email', 'learnpress' ),
-			esc_html__( 'Start Date', 'learnpress' ),
-			esc_html__( 'End Date', 'learnpress' )
 		);
 
 		$html_btn_actions = sprintf(
-			'<button type="button" class="lp-button lp-enrolled-btn-search-modal">%s</button>
-			<button type="button" class="lp-button lp-enrolled-btn-clear-modal">%s</button>',
+			'<button type="button" class="lp-button lp-enrolled-btn-search-modal
+				lp-be-btn lp-be-btn--outline">%s
+			</button>
+			<button type="button" class="lp-button lp-enrolled-btn-clear-modal
+				lp-be-btn lp-be-btn--outline">%s
+			</button>
+			<a href="%s" class="lp-button lp-btn-view-students-detail
+				lp-be-btn lp-be-btn--primary">%s</a>',
 			esc_html__( 'Search', 'learnpress' ),
-			esc_html__( 'Clear Filter', 'learnpress' )
+			esc_html__( 'Clear Filter', 'learnpress' ),
+			esc_url_raw( admin_url( 'admin.php?page=learn-press-students-enrolled' ) ),
+			esc_html__( 'View Details', 'learnpress' )
 		);
 
 		return AdminTemplate::html_form_filter(
@@ -401,6 +399,7 @@ class AdminListStudentsEnrolled {
 
 		$call_back = array(
 			'class'  => self::class,
+			/** @use self::render_enrolled_students */
 			'method' => 'render_enrolled_students',
 		);
 
@@ -435,13 +434,13 @@ class AdminListStudentsEnrolled {
 			return;
 		}
 
-		echo '<script type="text/html" id="lp-tmpl-enrolled-students-toolbar-modal">';
+		echo '<template id="lp-tmpl-enrolled-students-toolbar-modal">';
 		echo $this->html_toolbar_modal();
-		echo '</script>';
+		echo '</template>';
 
-		echo '<script type="text/html" id="lp-tmpl-enrolled-students-target-modal">';
+		echo '<template id="lp-tmpl-enrolled-students-target-modal">';
 		echo $this->html_modal_students_target();
-		echo '</script>';
+		echo '</template>';
 	}
 
 	/**
@@ -624,8 +623,18 @@ class AdminListStudentsEnrolled {
 			'meta-close'          => '</div>',
 			'student-cell-close'  => '</div></td>',
 			'course-cell'         => sprintf(
-				'<td class="lp-cell-course"><a href="%s">%s</a></td>',
-				esc_url_raw( $courseModel->get_permalink() ),
+				'<td class="lp-cell-course">
+					<a href="%s">%s</a>
+				</td>',
+				esc_url_raw(
+					add_query_arg(
+						[
+							'page'        => 'learn-press-students-enrolled',
+							'course_name' => rawurlencode( $courseModel->post_title ),
+						],
+						admin_url( 'admin.php' )
+					)
+				),
 				$courseModel->get_title()
 			),
 			'date-cell'           => sprintf(

@@ -392,11 +392,11 @@
 	padding: 0 10px;
 	border-radius: 20px;
 	color: #94a3b8;
-	background: #f8fafc;
-	font-weight: bold;
+	background: #eef7fb;
+	//font-weight: bold;
 	line-height: 1.25rem;
 	transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-	box-shadow: 0 1px 3px rgba(29, 78, 216, 0.08);
+	//box-shadow: 0 1px 3px rgba(29, 78, 216, 0.08);
 
 	&.disabled {
 		background: #ddd;
@@ -405,13 +405,13 @@
 
 a {
 	.lp-course-student-counter {
-		color: #1d4ed8;
-		background: #eff6ff;
+		color: #235af3;
+		background: #d4e8fb;
 
 		&:hover {
 			background: #2563eb;
 			color: white;
-			box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+			//box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 			transform: translateY(-1.5px);
 		}
 	}

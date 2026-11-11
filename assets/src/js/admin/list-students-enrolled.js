@@ -291,7 +291,7 @@ export class ListStudentsEnrolled {
 
 		this.setButtonLoadingState( btn, true );
 
-		elForm.reset();
+		lpUtils.resetForm( elForm );
 		this.syncCourseIdFromName( elForm );
 
 		const dataSend = ajaxHandle.getDataSetCurrent( elLPTarget );
