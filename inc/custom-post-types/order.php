@@ -168,14 +168,25 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function save_post( int $post_id, ?WP_Post $post = null, bool $is_update = false ) {
 			try {
-				$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
-				if ( isset( $backtrace[6]['class'] ) && $backtrace[6]['class'] === LP_Order_CURD::class ) {
+				// Only the wp-admin order edit screen may drive this handler (never front-end/AJAX/REST paths).
+				if ( ! is_admin() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
 					return;
 				}
 
 				if ( wp_is_post_revision( $post_id ) ) {
 					return;
 				}
+
+				if ( ! $post instanceof WP_Post || $post->post_type !== LP_ORDER_CPT ) {
+					return;
+				}
+
+				// Request-supplied fields are processed only with capability + nonce check.
+				$can_process_request = current_user_can( 'edit_post', $post_id )
+					&& wp_verify_nonce(
+						LP_Request::get_param( '_wpnonce', '', 'key', 'post' ),
+						'update-post_' . $post_id
+					);
 
 				// For create LP Order manual on Backend
 				$order = learn_press_get_order( $post_id );
@@ -189,12 +200,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$order->set_created_via( $created_via );
 				}
 
-				if ( isset( $_POST['order-customer'] ) && $order->is_manual() ) {
-					$user_id = LP_Request::get_param( 'order-customer' );
+				if ( $can_process_request && isset( $_POST['order-customer'] ) && $order->is_manual() ) {
+					$user_id = LP_Request::get_param( 'order-customer', 0, 'int', 'post' );
 					$order->set_user_id( $user_id );
 				}
 
-				$status = LP_Request::get_param( 'order-status' );
+				$status = $can_process_request ? LP_Request::get_param( 'order-status', '', 'key', 'post' ) : '';
 				if ( ! empty( $status ) ) {
 					$order->update_status( $status );
 				} elseif ( $post->post_status === 'auto-draft' ) {
@@ -202,6 +213,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				$order->save();
+				$orderPostModel = OrderPostModel::find_by_id( $post->ID, true );
+				$orderPostModel->clean_caches();
 			} catch ( Throwable $e ) {
 				error_log( __METHOD__ . ':' . $e->getMessage() );
 			}
