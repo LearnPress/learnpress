@@ -1160,7 +1160,7 @@
 	@include vertical-tab-navigation;
 	@include shared-form-fields;
 
-	.lp-meta-box-course-panels::before {
+	/*.lp-meta-box-course-panels::before {
 		content: attr( data-tab-title );
 		display: block;
 		font-size: 24px;
@@ -1168,7 +1168,7 @@
 		color: #1e1e1e;
 		margin-bottom: 25px;
 		line-height: 1.2;
-	}
+	}*/
 
 	._lp_show_correct_review_field {
 		.description {

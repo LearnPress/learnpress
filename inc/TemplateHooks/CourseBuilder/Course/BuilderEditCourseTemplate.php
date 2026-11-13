@@ -1398,7 +1398,7 @@ class BuilderEditCourseTemplate {
 	 * @return array
 	 */
 	public function filter_course_builder_settings_tabs( array $tabs ): array {
-		$allowed_tabs = [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material' ];
+		$allowed_tabs = [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material', 'more_features' ];
 
 		foreach ( array_keys( $tabs ) as $tab_key ) {
 			if ( ! in_array( $tab_key, $allowed_tabs, true ) ) {

@@ -739,7 +739,7 @@ body.lp-popup-open {
 		}
 	}
 
-	.lp-meta-box-course-panels::before {
+	/*.lp-meta-box-course-panels::before {
 		content: attr( data-tab-title );
 		display: block;
 		font-size: 18px;
@@ -747,7 +747,7 @@ body.lp-popup-open {
 		color: #1e1e1e;
 		margin-bottom: 20px;
 		line-height: 1.2;
-	}
+	}*/
 
 	.cb-section__question-title-assigned,
 	.cb-section__quiz-title-assigned {

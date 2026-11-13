@@ -7,8 +7,8 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		add_btn = document.getElementById( 'btn-lp--add-material' ),
 		group_template = document.getElementById( 'lp-material--add-material-template' ),
 		material__group_container = document.getElementById( 'lp-material--group-container' ),
-		material_tab = document.getElementById( 'lp-material-container' ),
-		material_save_btn = document.getElementById( 'btn-lp--save-material' );
+		material_tab = document.getElementById( 'lp-material-container' );
+		//material_save_btn = document.getElementById( 'btn-lp--save-material' );
 	const getResponse = async ( ele, postID ) => {
 		const elementMaterial = document.querySelector( '.lp-material--table tbody' );
 		try {
@@ -117,14 +117,14 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	} );
 
 	//save all material files
-	material_save_btn.addEventListener( 'click', function( event ) {
+	/*material_save_btn.addEventListener( 'click', function( event ) {
 		const materials = material__group_container.querySelectorAll( '.lp-material--group' );
 		if ( materials.length > 0 ) {
 			// material_save_btn.classList.add( 'loading' );
 			lpSaveMaterial( materials, false, material_save_btn );
 			// material_save_btn.classList.remove( 'loading' );
 		}
-	} );
+	} );*/
 	function lpSaveMaterial( materials, is_single = false, target ) {
 		if ( materials.length > 0 ) {
 			let material_data = [];

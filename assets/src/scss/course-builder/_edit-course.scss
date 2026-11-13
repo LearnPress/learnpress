@@ -1023,7 +1023,7 @@
 	}
 }
 
-.lp-meta-box-course-panels::before {
+/*.lp-meta-box-course-panels::before {
 	content: attr( data-tab-title );
 	display: block;
 	font-size: 24px;
@@ -1031,13 +1031,13 @@
 	color: #1e1e1e;
 	margin-bottom: 25px;
 	line-height: 1.2;
-}
+}*/
 
 @include vertical-tab-navigation;
 
 .lp-meta-box__course-tab__content {
 	flex-grow: 1;
-	padding: 30px 0;
+	//padding: 30px 0;
 	background: #fff;
 }
 
@@ -2552,7 +2552,7 @@
 // Settings panel styles
 // =============================================
 
-.lp-meta-box-course-panels::before {
+/*.lp-meta-box-course-panels::before {
 	content: attr( data-tab-title );
 	display: block;
 	font-size: 24px;
@@ -2560,7 +2560,7 @@
 	color: #1e1e1e;
 	margin-bottom: 25px;
 	line-height: 1.2;
-}
+}*/
 
 // Settings tab layout - ClassPress style
 .lp-meta-box__course-tab {
@@ -2617,7 +2617,7 @@ ul.lp-meta-box__course-tab__tabs {
 
 .lp-meta-box__course-tab__content {
 	flex-grow: 1;
-	padding: 30px 0;
+	//padding: 30px 0;
 	background: #fff;
 }
 

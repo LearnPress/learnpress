@@ -3,8 +3,7 @@
 use LearnPress\Helpers\Config;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
-use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
-use LearnPress\TemplateHooks\TemplateAJAX;
+use LearnPress\TemplateHooks\Admin\Course\AdminCourseTabMoreFeatures;
 
 class LP_Meta_Box_Course extends LP_Meta_Box {
 	/**
@@ -102,8 +101,20 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'priority' => 60,
 					'content'  => $this->lp_material( $post_id ),
 				),
+				'more_features' => array(
+					'label'    => esc_html__( 'More Features', 'learnpress' ),
+					'target'   => 'more_features_course_data',
+					'icon'     => 'dashicons-admin-plugins',
+					'priority' => 1000,
+					'content'  => $this->lp_more_features( $post_id ),
+				),
 			)
 		);
+
+		// Add-on recommendations are only for administrators.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			unset( $tabs['more_features'] );
+		}
 
 		$tabs = apply_filters( 'learnpress/course/metabox/tabs', $tabs, $post_id );
 
@@ -524,6 +535,34 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			array(
 				'_lp_course_material' => new LP_Meta_Box_Material_Fields(),
 			)
+		);
+	}
+
+	/**
+	 * Tab "More Features": recommended add-ons not installed yet.
+	 *
+	 * @param int $thepostid Course ID.
+	 *
+	 * @return array
+	 * @since 4.4.15
+	 */
+	public function lp_more_features( $thepostid ) {
+		$field = new class() extends LP_Meta_Box_Field {
+			public function output( $thepostid ) {
+				// HTML is built and escaped in the template class.
+				echo AdminCourseTabMoreFeatures::instance()->html_more_features(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				return '';
+			}
+
+			// Nothing is stored in post meta for this tab.
+			public function meta_value( $thepostid ) {
+				return '';
+			}
+		};
+
+		return apply_filters(
+			'learn-press/course/meta-box/fields/more-features',
+			array( '_lp_more_features' => $field )
 		);
 	}
 

@@ -1,0 +1,212 @@
+/**
+ * Course settings tab: More Features (recommended add-ons).
+ * Shared by wp-admin (admin.scss) and Course Builder (course-builder.scss),
+ * so only plain values are used here (no entry-specific variables/mixins).
+ *
+ * @since 4.4.15
+ * @version 1.0.0
+ */
+
+@keyframes lp-more-features-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.lp-more-features {
+	//padding: 24px 0 8px;
+	box-sizing: border-box;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	[hidden] {
+		display: none !important;
+	}
+
+	.lp-more-features__title {
+		margin: 0 0 8px;
+		padding: 0;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.4;
+		color: #1e1e1e;
+	}
+
+	.lp-more-features__list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.lp-more-features__item {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		margin: 0;
+		padding: 14px 0;
+		max-height: 200px;
+		overflow: hidden;
+		border-bottom: 1px solid #e5e7eb;
+		transition: max-height 0.25s ease, opacity 0.25s ease, padding 0.25s ease, border-width 0.25s ease;
+
+		&.is-removing {
+			max-height: 0;
+			padding-top: 0;
+			padding-bottom: 0;
+			border-bottom-width: 0;
+			opacity: 0;
+		}
+
+		&.is-entering {
+			animation: lp-more-features-fade-in 0.3s ease;
+		}
+	}
+
+	.lp-more-features__icon {
+		flex: 0 0 40px;
+		width: 40px;
+		height: 40px;
+		margin: 0;
+		border-radius: 8px;
+		object-fit: cover;
+	}
+
+	.lp-more-features__info {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	.lp-more-features__name {
+		margin: 0 0 2px;
+		padding: 0;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.4;
+		color: #1e1e1e;
+	}
+
+	.lp-more-features__desc {
+		margin: 0;
+		font-size: 13px;
+		line-height: 1.5;
+		color: #646970;
+	}
+
+	// Buttons are self-contained: the WP `.button` style is not loaded on the Course Builder page.
+	.lp-more-features__learn,
+	.lp-more-features__reset {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 32px;
+		margin: 0;
+		padding: 0 12px;
+		border: 1px solid #2271b1;
+		border-radius: 3px;
+		font-size: 13px;
+		line-height: 2;
+		color: #2271b1;
+		background: #fff;
+		text-decoration: none;
+		white-space: nowrap;
+		cursor: pointer;
+	}
+
+	.lp-more-features__learn {
+		flex: 0 0 auto;
+
+		&:hover,
+		&:focus {
+			color: #135e96;
+			border-color: #135e96;
+			background: #f6f7f7;
+		}
+	}
+
+	.lp-more-features__dismiss {
+		flex: 0 0 auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 4px;
+		background: transparent;
+		box-shadow: none;
+		color: #8c8f94;
+		cursor: pointer;
+
+		.dashicons {
+			width: 20px;
+			height: 20px;
+			font-size: 20px;
+		}
+
+		&:hover,
+		&:focus {
+			color: #1e1e1e;
+			background: transparent;
+		}
+	}
+
+	.lp-more-features__empty,
+	.lp-more-features__none {
+		margin: 0;
+		padding: 20px 0;
+		font-size: 13px;
+		color: #646970;
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.lp-more-features__footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding-top: 16px;
+	}
+
+	.lp-more-features__discover,
+	.lp-more-features__reset-link {
+		color: #2271b1;
+		font-size: 13px;
+		text-decoration: none;
+
+		&:hover,
+		&:focus {
+			color: #135e96;
+			text-decoration: underline;
+		}
+	}
+
+	.lp-more-features__reset {
+		margin-left: auto;
+
+		&:hover,
+		&:focus {
+			color: #135e96;
+			border-color: #135e96;
+			background: #f6f7f7;
+		}
+	}
+
+	@media screen and (max-width: 600px) {
+		.lp-more-features__item {
+			flex-wrap: wrap;
+		}
+
+		.lp-more-features__info {
+			flex-basis: calc(100% - 56px);
+		}
+	}
+}

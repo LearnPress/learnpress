@@ -7,7 +7,9 @@
 import { EditCourseCurriculum } from './edit-course/edit-curriculum.js';
 import { GenerateWithOpenai } from './generate-with-openai.js';
 import { EditCurriculumAi } from './edit-course/edit-curriculum/edit-curriculum-ai.js';
+import { bootMoreFeatures } from './edit-course/more-features.js';
 
 new EditCourseCurriculum();
 new GenerateWithOpenai();
 new EditCurriculumAi();
+bootMoreFeatures();
