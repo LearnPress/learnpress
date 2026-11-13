@@ -79,13 +79,15 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$args['id_url']       = 'gutenberg-list-courses';
 			$args['attributes']   = $attributes;
 			$args['parsed_block'] = $block->parsed_block;
-			$courseQuery          = $attributes['courseQuery'] ?? [];
-			$load_ajax            = $courseQuery['load_ajax'] ?? false;
-			$callback             = [
+			// Security: sign block tree, so client can not supply its own tree via AJAX.
+			$args['parsed_block_sig'] = self::sign_parsed_block( $block->parsed_block );
+			$courseQuery              = $attributes['courseQuery'] ?? [];
+			$load_ajax                = $courseQuery['load_ajax'] ?? false;
+			$callback                 = [
 				'class'  => get_class( $this ),
 				'method' => 'render_courses',
 			];
-			$html_wrapper         = [
+			$html_wrapper             = [
 				'<div class="lp-list-courses-default">' => '</div>',
 			];
 
@@ -122,6 +124,54 @@ class ListCoursesBlockType extends AbstractBlockType {
 	}
 
 	/**
+	 * Create signature for parsed block, generated on server only.
+	 *
+	 * @param array $parsed_block
+	 *
+	 * @return string
+	 */
+	public static function sign_parsed_block( array $parsed_block ): string {
+		return wp_hash( 'lp_list_courses_block|' . wp_json_encode( self::normalize_for_sign( $parsed_block ) ) );
+	}
+
+	/**
+	 * Normalize data before sign, so JSON round trip (PHP -> HTML -> JS -> PHP)
+	 * gives the same signature: whole float become int (JS drops 1.0), keys sorted.
+	 *
+	 * @param mixed $data
+	 *
+	 * @return mixed
+	 */
+	private static function normalize_for_sign( $data ) {
+		if ( is_float( $data ) && floor( $data ) === $data && abs( $data ) < PHP_INT_MAX ) {
+			return (int) $data;
+		}
+
+		if ( ! is_array( $data ) ) {
+			return $data;
+		}
+
+		$data = array_map( [ self::class, 'normalize_for_sign' ], $data );
+		if ( array_keys( $data ) !== range( 0, count( $data ) - 1 ) ) {
+			ksort( $data, SORT_STRING );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Verify signature of parsed block.
+	 *
+	 * @param array  $parsed_block
+	 * @param string $sig
+	 *
+	 * @return bool
+	 */
+	public static function verify_parsed_block( array $parsed_block, string $sig ): bool {
+		return '' !== $sig && hash_equals( self::sign_parsed_block( $parsed_block ), $sig );
+	}
+
+	/**
 	 * Render template list courses with settings param.
 	 *
 	 * @param array $settings
@@ -134,7 +184,12 @@ class ListCoursesBlockType extends AbstractBlockType {
 		$content          = new stdClass();
 		$content->content = '';
 
-		$parsed_block         = $settings['parsed_block'] ?? '';
+		$parsed_block = $settings['parsed_block'] ?? '';
+		if ( ! is_array( $parsed_block ) ||
+			! self::verify_parsed_block( $parsed_block, (string) ( $settings['parsed_block_sig'] ?? '' ) ) ) {
+			return $content;
+		}
+
 		$attributes           = $settings['attributes'] ?? [];
 		$courseQuery          = $attributes['courseQuery'] ?? [];
 		$total_rows           = 0;

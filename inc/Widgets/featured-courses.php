@@ -87,8 +87,9 @@ if ( ! class_exists( 'LP_Widget_Featured_Courses' ) ) {
 			$instance['css_class']        = $instance['css_class'] ?? '';
 			$instance['bottom_link_text'] = $instance['bottom_link_text'] ?? esc_html__( 'Go to Courses', 'learnpress' );
 
-			$filter        = new LP_Course_Filter();
-			$filter->limit = $instance['limit'];
+			$filter              = new LP_Course_Filter();
+			$filter->limit       = min( max( 1, absint( $instance['limit'] ) ), 50 );
+			$filter->post_status = [ 'publish' ];
 
 			$courses = LP_Course_DB::getInstance()->get_featured_courses( $filter );
 

@@ -56,6 +56,11 @@ class SkinCoursesBase extends LPSkinBase {
 			// Security: only get params allow on URL, not all $_GET (can override settings of widget).
 			$settings = array_merge( $settings, ListCoursesTemplate::get_params_url() );
 
+			// Security: sign template id (server side), so client can not render any post by id.
+			$settings['lp_el_template_id_sig'] = CoursesLoopItem::sign_template_id(
+				$settings['lp_el_skin_courses_loop_item_template_id'] ?? 0
+			);
+
 			$html_wrapper_widget = [
 				'<div class="list-courses-elm-wrapper">' => '</div>',
 			];

@@ -66,7 +66,10 @@ if ( ! class_exists( 'LP_Widget_Course_Extra' ) ) {
 			$classes[]             = $instance['css_class'];
 
 			$course_id = absint( $instance['course_id'] );
-			$course    = learn_press_get_course( $course_id );
+			if ( 'publish' !== get_post_status( $course_id ) || post_password_required( $course_id ) ) {
+				return '';
+			}
+			$course = learn_press_get_course( $course_id );
 
 			if ( ! $course ) {
 				return new WP_Error( 'no_course', esc_html__( 'No Course found!', 'learnpress' ) );
