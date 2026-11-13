@@ -380,6 +380,9 @@ class LP_Page_Controller {
 		 */
 		global $lpCourseModel;
 		$lpCourseModel = CourseModel::find( $course->get_id(), true );
+		if ( ! $lpCourseModel ) {
+			return $post;
+		}
 
 		/**
 		 * @deprecated v4.1.6.1 LearnPress::instance()->global['course'], $GLOBALS['course']
@@ -404,6 +407,11 @@ class LP_Page_Controller {
 			$post_item = learn_press_get_post_by_name( $vars['course-item'], $item_type );
 
 			if ( ! $post_item ) {
+				return $post;
+			}
+
+			// Item must belong to the requested course, prevent cross-course content disclosure.
+			if ( ! $lpCourseModel->get_section_of_item( $post_item->ID, $item_type ) ) {
 				return $post;
 			}
 

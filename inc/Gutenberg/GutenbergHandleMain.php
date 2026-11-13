@@ -161,6 +161,14 @@ class GutenbergHandleMain {
 			$lp_course_item = learn_press_get_post_by_name( $vars['course-item'] ?? '', $item_type );
 			$item_types     = CourseModel::item_types_support();
 			if ( $lp_course_item && in_array( $lp_course_item->post_type, $item_types ) ) {
+				// Item must belong to the queried course.
+				$course_queried = get_queried_object();
+				$courseModel    = $course_queried && isset( $course_queried->ID ) ?
+					CourseModel::find( $course_queried->ID, true ) : false;
+				if ( ! $courseModel || ! $courseModel->get_section_of_item( $lp_course_item->ID, $lp_course_item->post_type ) ) {
+					return $query_result;
+				}
+
 				$singleCourseItemBlockTemplate = new SingleCourseItemBlockTemplate();
 				$block_custom                  = $this->is_custom_block_template( $template_type, $singleCourseItemBlockTemplate->slug );
 				if ( $block_custom ) {
