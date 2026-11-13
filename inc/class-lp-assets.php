@@ -443,6 +443,16 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
+				// Only register, enqueued by AdminInputSearchSuggest::layout().
+				'lp-input-search-suggest'   => new LP_Asset_Key(
+					self::url( 'dist/js/admin/lp-input-search-suggest' . self::$_min_assets . '.js' ),
+					[ 'lp-load-ajax' ],
+					[],
+					1,
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
 				'lp-widgets'                => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/widgets' . self::$_min_assets . '.js' ),
 					[ 'lp-course-filter' ],

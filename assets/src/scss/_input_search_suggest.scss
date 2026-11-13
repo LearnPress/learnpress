@@ -1,0 +1,134 @@
+/**
+ * Input search suggest (autocomplete).
+ * HTML: AdminInputSearchSuggest::layout(), JS: assets/src/js/lp-input-search-suggest.js
+ */
+.lp-wrap-input-search-suggest {
+	position: relative;
+	display: inline-block;
+	min-width: 250px;
+	max-width: 100%;
+
+	.lp-input-search-suggest {
+		width: 100%;
+		margin: 0;
+	}
+
+	// Inside a form filter: fill the field column.
+	.lp-form-filter & {
+		display: block;
+		min-width: 0;
+	}
+
+	// Loading while fetching.
+	&.loading .lp-input-search-suggest {
+		background-image: linear-gradient(90deg, transparent 0%, #2271b1 50%, transparent 100%);
+		background-repeat: no-repeat;
+		background-size: 40% 2px;
+		background-position: -40% 100%;
+		animation: lp-input-search-suggest-loading 1s linear infinite;
+	}
+
+	// Dropdown below the input. No decoration here: the box has no height while the list is empty.
+	.lp-search-suggest-result {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		z-index: 9999;
+		margin-top: 2px;
+
+		.learn-press-message {
+			margin: 0;
+		}
+	}
+
+	.lp-search-suggest-list {
+		margin: 0;
+		padding: 4px 0;
+		max-height: 240px;
+		overflow-y: auto;
+		list-style: none;
+		background: #fff;
+		border: 1px solid #c3c4c7;
+		border-radius: 4px;
+		box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+	}
+
+	.lp-search-suggest-item,
+	.lp-search-suggest-empty {
+		margin: 0;
+		padding: 6px 12px;
+		line-height: 1.4;
+		overflow-wrap: anywhere;
+	}
+
+	.lp-search-suggest-item {
+		cursor: pointer;
+
+		&:hover,
+		&.is-active {
+			background: #f0f6fc;
+			color: #2271b1;
+		}
+	}
+
+	// Multiple select: checkbox before the label.
+	.lp-search-suggest-item--multiple {
+		display: flex;
+		align-items: flex-start;
+		gap: 8px;
+
+		.lp-search-suggest-checkbox {
+			flex: 0 0 auto;
+			width: 16px;
+			height: 16px;
+			min-height: 0;
+			margin: 2px 0 0;
+			padding: 0;
+			cursor: pointer;
+		}
+
+		&.is-selected {
+			font-weight: 600;
+		}
+	}
+
+	// Multiple select: button "Clear all", first row of the list.
+	.lp-search-suggest-actions {
+		margin: 0;
+		padding: 2px 12px 6px;
+		border-bottom: 1px solid #f0f0f1;
+		text-align: right;
+
+		.lp-search-suggest-clear-all {
+			min-height: 0;
+			padding: 0;
+			border: 0;
+			background: none;
+			color: #b32d2e;
+			font-size: 12px;
+			line-height: 1.4;
+			cursor: pointer;
+
+			&:hover,
+			&:focus {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.lp-search-suggest-empty {
+		color: #646970;
+		font-style: italic;
+	}
+}
+
+@keyframes lp-input-search-suggest-loading {
+	from {
+		background-position: -40% 100%;
+	}
+
+	to {
+		background-position: 140% 100%;
+	}
+}

@@ -231,7 +231,10 @@ export class ListStudentsEnrolled {
 		const elLayout = elForm.closest(
 			ListStudentsEnrolled.selectors.elLayout
 		);
-		const elLPTarget = elLayout.querySelector(
+		const elTableWrap = elLayout.querySelector(
+			'.lp-enrolled-students-table-wrap'
+		);
+		const elLPTarget = elTableWrap.closest(
 			ListStudentsEnrolled.selectors.elLPTarget
 		);
 		if ( ! elLPTarget || ! elForm ) {
@@ -277,7 +280,10 @@ export class ListStudentsEnrolled {
 		const elLayout = elForm.closest(
 			ListStudentsEnrolled.selectors.elLayout
 		);
-		const elLPTarget = elLayout.querySelector(
+		const elTableWrap = elLayout.querySelector(
+			'.lp-enrolled-students-table-wrap'
+		);
+		const elLPTarget = elTableWrap.closest(
 			ListStudentsEnrolled.selectors.elLPTarget
 		);
 		if ( ! elLPTarget || ! elForm ) {
@@ -293,6 +299,12 @@ export class ListStudentsEnrolled {
 
 		lpUtils.resetForm( elForm );
 		this.syncCourseIdFromName( elForm );
+		// resetForm() skips hidden inputs: clear the course selected by the search suggest input.
+		elForm
+			.querySelectorAll( '.lp-input-search-suggest-value' )
+			.forEach( ( elInputValue ) => {
+				elInputValue.value = '';
+			} );
 
 		const dataSend = ajaxHandle.getDataSetCurrent( elLPTarget );
 		dataSend.args = lpUtils.mergeDataWithDatForm(

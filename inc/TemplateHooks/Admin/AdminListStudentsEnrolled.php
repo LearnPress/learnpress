@@ -11,6 +11,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Admin\InputSuggest\AdminInputSearchCourseSuggest;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
@@ -259,22 +260,36 @@ class AdminListStudentsEnrolled {
 		$courses = array();
 
 		$data_get        = LP_Helper::sanitize_params_submitted( $_GET );
-		$selected_course = abs( LP_Helper::sanitize_params_submitted( $data_get['course_id'] ?? 0, 'int' ) );
-		$search_course   = LP_Helper::sanitize_params_submitted( $data_get['course_name'] ?? '' );
+		$selected_course = LP_Helper::sanitize_params_submitted( $data_get['course_id'] ?? 0, 'int' );
 		$search_student  = LP_Helper::sanitize_params_submitted( $data_get['student_name'] ?? '' );
 		$search_start    = lp_helper::sanitize_params_submitted( $data_get['start_date'] ?? '' );
 		$search_end      = lp_helper::sanitize_params_submitted( $data_get['end_date'] ?? '' );
 
+		// Course selected (from URL), show its title in the search input.
+		$selected_course_title = '';
+		if ( $selected_course > 0 ) {
+			$courseModel = CourseModel::find( $selected_course, true );
+			if ( $courseModel instanceof CourseModel ) {
+				$selected_course_title = $courseModel->post_title;
+			} else {
+				$selected_course = 0;
+			}
+		}
+
+		$html_search_course = AdminInputSearchCourseSuggest::instance()->layout(
+			[
+				'id'          => 'lp-enrolled-filter-course-name',
+				'name'        => 'course_id',
+				'value'       => $selected_course > 0 ? $selected_course : '',
+				'text'        => $selected_course_title,
+				'placeholder' => __( 'Search course...', 'learnpress' ),
+			]
+		);
+
 		$html_fields = sprintf(
 			'<div class="filter-field">
 				<label for="lp-enrolled-filter-course-name">%s</label>
-				<input id="lp-enrolled-filter-course-name"
-					class="lp-enrolled-filter-course-name"
-					type="text"
-					name="course_name"
-					list="lp-enrolled-course-list"
-					value="%s"
-					placeholder="%s">
+				%s
 			</div>
 			<div class="filter-field">
 				<label for="lp-enrolled-search-input">%s</label>
@@ -294,19 +309,16 @@ class AdminListStudentsEnrolled {
 			<div class="filter-field">
 				<label for="lp-enrolled-filter-end-date">%s</label>
 				<input id="lp-enrolled-filter-end-date" class="lp-enrolled-filter-end-date" type="date" name="end_date" value="%s" placeholder="mm/dd/yyyy">
-			</div>
-			<datalist id="lp-enrolled-course-list">%s</datalist>',
+			</div>',
 			esc_html__( 'Course Filter', 'learnpress' ),
-			esc_attr( $search_course ),
-			esc_attr__( 'Search course...', 'learnpress' ),
-			esc_html__( 'Student', 'learnpress' ),
+			$html_search_course,
+			esc_html__( 'Student Filter', 'learnpress' ),
 			esc_attr( $search_student ),
 			esc_attr__( 'Enter student name or email', 'learnpress' ),
 			esc_html__( 'Start Date', 'learnpress' ),
 			esc_attr( $search_start ),
 			esc_html__( 'End date', 'learnpress' ),
-			esc_attr( $search_end ),
-			''
+			esc_attr( $search_end )
 		);
 
 		$html_btn_actions = sprintf(
@@ -629,8 +641,8 @@ class AdminListStudentsEnrolled {
 				esc_url_raw(
 					add_query_arg(
 						[
-							'page'        => 'learn-press-students-enrolled',
-							'course_name' => rawurlencode( $courseModel->post_title ),
+							'page'      => 'learn-press-students-enrolled',
+							'course_id' => $courseModel->get_id(),
 						],
 						admin_url( 'admin.php' )
 					)

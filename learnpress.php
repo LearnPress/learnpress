@@ -58,6 +58,8 @@ use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Admin\AdminListStudentsEnrolled;
 use LearnPress\TemplateHooks\Admin\AdminStatisticsReportTable;
+use LearnPress\TemplateHooks\Admin\InputSuggest\AdminInputSearchCourseSuggest;
+use LearnPress\TemplateHooks\Admin\InputSuggest\AdminInputSearchUserSuggest;
 use LearnPress\TemplateHooks\Admin\Notices\AdminNotesTemplate;
 use LearnPress\TemplateHooks\Admin\Tools\AdminCourseTools;
 use LearnPress\Statistics\FilterOptionsProvider;
@@ -420,6 +422,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditQuestionTemplate::instance();
 			AdminNotesTemplate::instance();
 			AdminCourseTools::instance();
+			AdminInputSearchCourseSuggest::instance();
+			AdminInputSearchUserSuggest::instance();
 			CourseMaterialTemplate::instance();
 			CourseAIAssistantTemplate::instance();
 			CourseNoteTemplate::instance();

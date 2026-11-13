@@ -603,6 +603,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					array( 'strategy' => 'defer' )
 				),
+				// Only register, enqueued by AdminInputSearchSuggest::layout().
+				'lp-input-search-suggest'   => new LP_Asset_Key(
+					$this->url( 'dist/js/admin/lp-input-search-suggest' . self::$_min_assets . '.js' ),
+					array( 'lp-load-ajax' ),
+					array(),
+					1,
+					1,
+					'',
+					array( 'strategy' => 'defer' )
+				),
 				'lp-admin-tools'            => new LP_Asset_Key(
 					$this->url( 'dist/js/admin/admin-tools' . self::$_min_assets . '.js' ),
 					array(),

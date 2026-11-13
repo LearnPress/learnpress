@@ -21,6 +21,7 @@ module.exports = {
 		'./assets/dist/js/admin/student-notes': './assets/src/js/admin/student-notes.js',
 		'./assets/dist/js/admin/lp-themes': './assets/src/js/admin/lp-themes.js',
 		'./assets/dist/js/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
+		'./assets/dist/js/admin/lp-input-search-suggest': './assets/src/js/lp-input-search-suggest.js',
 		'./assets/dist/js/frontend/course-builder': './assets/src/js/frontend/course-builder.js',
 
 		// Folder old assets/js/dist

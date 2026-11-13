@@ -36,11 +36,16 @@ class TemplateAJAX {
 	 *
 	 * @return string
 	 * @since 4.2.5.7
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function load_content_via_ajax( array $args = [], array $callback = [] ): string {
+		$classes      = $args['classes'] ?? '';
 		$html_wrapper = [
-			'<div class="lp-load-ajax-element">' => '</div>',
+			sprintf(
+				'<div class="lp-load-ajax-element" %s>',
+				esc_attr( $classes )
+			)
+			=> '</div>',
 		];
 		$html_content = '';
 
