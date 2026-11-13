@@ -21,7 +21,7 @@
  * When an item is selected, event `lp-search-suggest-selected` is dispatched on the wrapper (bubbles),
  * detail: { id, text, elWrap }.
  *
- * @since 4.4.15
+ * @since 4.4.14
  * @version 1.0.0
  */
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
@@ -169,7 +169,7 @@ export class LpInputSearchSuggest {
 			this.getItemsSelected( els );
 		} else {
 			// The text changed, so the selected ID is no longer valid.
-			elInputValue.value = '';
+			elInputValue.value = elInput.value;
 		}
 
 		const token = this.newToken( elInput );

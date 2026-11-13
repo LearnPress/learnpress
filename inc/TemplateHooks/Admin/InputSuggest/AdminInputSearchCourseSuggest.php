@@ -17,7 +17,7 @@ use Throwable;
  *
  * Usage: echo AdminInputSearchCourseSuggest::instance()->layout( [ 'name' => 'course_id' ] );
  *
- * @since 4.4.15
+ * @since 4.4.14
  * @version 1.0.0
  */
 class AdminInputSearchCourseSuggest extends AdminInputSearchSuggest {
@@ -57,7 +57,6 @@ class AdminInputSearchCourseSuggest extends AdminInputSearchSuggest {
 			'enableScrollToView'      => false,
 			'enableUpdateParamsUrl'   => false,
 		];
-		$args = self::args_ajax_type_select( $args, $data );
 
 		/** @use self::render_courses */
 		$callback = [
@@ -91,7 +90,12 @@ class AdminInputSearchCourseSuggest extends AdminInputSearchSuggest {
 
 			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
 				if ( ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
-					throw new Exception( esc_html__( 'You do not have permission to search courses.', 'learnpress' ) );
+					throw new Exception(
+						esc_html__(
+							'You do not have permission to search courses.',
+							'learnpress'
+						)
+					);
 				}
 
 				$filter->post_author = get_current_user_id();
@@ -105,7 +109,7 @@ class AdminInputSearchCourseSuggest extends AdminInputSearchSuggest {
 			$filter->only_fields = [ 'ID', 'post_title' ];
 			$filter->post_title  = $search;
 			// All statuses of the admin list, without trash (and auto-draft, excluded by the DB class).
-			$filter->post_status     = [ 'publish', 'private', 'draft', 'pending', 'future' ];
+			$filter->post_status     = [ 'publish' ];
 			$filter->order_by        = 'post_title';
 			$filter->limit           = self::LIMIT;
 			$filter->page            = 1;

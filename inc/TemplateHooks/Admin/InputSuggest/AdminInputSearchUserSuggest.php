@@ -57,7 +57,6 @@ class AdminInputSearchUserSuggest extends AdminInputSearchSuggest {
 			'enableScrollToView'      => false,
 			'enableUpdateParamsUrl'   => false,
 		];
-		$args = self::args_ajax_type_select( $args, $data );
 
 		/** @use self::render_users */
 		$callback = [
@@ -118,7 +117,7 @@ class AdminInputSearchUserSuggest extends AdminInputSearchSuggest {
 				}
 			}
 
-			$content->content = self::html_list_result( $items, [ 'type_select' => self::get_type_select( $data ) ] );
+			$content->content = self::html_list_result( $items );
 		} catch ( Throwable $e ) {
 			$content->content = Template::print_message( $e->getMessage(), 'error', false );
 		}

@@ -56,16 +56,13 @@ class AdminInputSearchSuggest {
 	public function layout( array $data = [] ): string {
 		wp_enqueue_script( self::SCRIPT_HANDLE );
 
-		$is_multiple = self::get_type_select( $data ) === self::TYPE_SELECT_MULTIPLE;
-		if ( $is_multiple && ! isset( $data['value'] ) ) {
-			$data['value'] = implode( ',', array_column( (array) ( $data['items_selected'] ?? [] ), 'id' ) );
-		}
+		$is_multiple = ( $data['type_select'] ?? '' ) === self::TYPE_SELECT_MULTIPLE;
 
 		$section = [
 			'wrap'         => sprintf(
-				'<div class="lp-wrap-input-search-suggest %s"%s>',
+				'<div class="lp-wrap-input-search-suggest %s" %s>',
 				esc_attr( $data['class-wrap'] ?? '' ),
-				$is_multiple ? sprintf( ' data-type-select="%s"', esc_attr( self::TYPE_SELECT_MULTIPLE ) ) : ''
+				$is_multiple ? 'data-type-select="multiple"' : ''
 			),
 			'input_search' => sprintf(
 				'<input type="text"
@@ -74,7 +71,7 @@ class AdminInputSearchSuggest {
 					autocomplete="off"
 					value="%s"
 					placeholder="%s">',
-				! empty( $data['id'] ) ? sprintf( ' id="%s"', esc_attr( $data['id'] ) ) : '',
+				! empty( $data['id'] ) ? sprintf( 'id="%s"', esc_attr( $data['id'] ) ) : '',
 				esc_attr( $data['text'] ?? '' ),
 				esc_attr( $data['placeholder'] ?? '' )
 			),
@@ -87,9 +84,7 @@ class AdminInputSearchSuggest {
 				esc_attr( $data['value'] ?? '' )
 			),
 			'result'       => sprintf(
-				'<div class="lp-search-suggest-result%s">%s</div>',
-				// Multiple: the list of selected items is printed, hidden until the input is focused.
-				$is_multiple ? ' lp-hidden' : '',
+				'<div class="lp-search-suggest-result lp-hidden">%s</div>',
 				$data['html_result'] ?? ''
 			),
 			'wrap_end'     => '</div>',
@@ -106,9 +101,9 @@ class AdminInputSearchSuggest {
 	 *
 	 * @return string
 	 */
-	public static function html_list_result( array $items = [], array $args = [] ): string {
+	public static function html_list_result( array $items = [], array $data = [] ): string {
 		$section     = [ 'wrap' => '<ul class="lp-search-suggest-list">' ];
-		$is_multiple = self::get_type_select( $args ) === self::TYPE_SELECT_MULTIPLE;
+		$is_multiple = ( $data['type_select'] ?? '' ) === self::TYPE_SELECT_MULTIPLE;
 
 		// Multiple: button to unselect all items, JS hides it when no item is selected.
 		if ( $is_multiple ) {
@@ -122,27 +117,28 @@ class AdminInputSearchSuggest {
 
 		foreach ( $items as $key => $item ) {
 			$text = (string) ( $item['text'] ?? '' );
+			$id   = $item['id'] ?? 0;
 
 			if ( $is_multiple ) {
 				$checked                   = ! empty( $item['checked'] );
 				$section[ 'item-' . $key ] = sprintf(
-					'<li class="lp-search-suggest-item lp-search-suggest-item--multiple%s"
+					'<li class="lp-search-suggest-item lp-search-suggest-item--multiple %s"
 						data-id="%s"
 						data-text="%s"
 						data-type-select="%s">
 						<input type="checkbox"
 							class="lp-search-suggest-checkbox"
 							tabindex="-1"
-							value="%s"%s>%s (#%s)
+							value="%s" %s>%s (#%s)
 					</li>',
-					$checked ? ' is-selected' : '',
-					esc_attr( $item['id'] ?? 0 ),
+					$checked ? 'is-selected' : '',
+					esc_attr( $id ),
 					esc_attr( $text ),
 					esc_attr( self::TYPE_SELECT_MULTIPLE ),
-					esc_attr( $item['id'] ?? 0 ),
-					$checked ? ' checked' : '',
-					esc_html( $item['label'] ?? $text ),
-					esc_html( $item['id'] ?? 0 )
+					esc_attr( $id ),
+					$checked ? 'checked' : '',
+					esc_html( $text ),
+					esc_html( $id )
 				);
 				continue;
 			}
@@ -169,52 +165,6 @@ class AdminInputSearchSuggest {
 		$section['wrap_end'] = '</ul>';
 
 		return Template::combine_components( $section );
-	}
-
-	/**
-	 * Get the type select from the data of layout(), the args of html_list_result() or the data sent via AJAX.
-	 *
-	 * @param array $data
-	 *
-	 * @return string 'multiple' or '' (single), other values are ignored.
-	 */
-	protected static function get_type_select( array $data ): string {
-		return ( $data['type_select'] ?? '' ) === self::TYPE_SELECT_MULTIPLE ? self::TYPE_SELECT_MULTIPLE : '';
-	}
-
-	/**
-	 * Add the args of the multiple select to the args of TemplateAJAX::load_content_via_ajax().
-	 *
-	 * @param array $args args of TemplateAJAX::load_content_via_ajax()
-	 * @param array $data data of layout()
-	 *
-	 * @return array
-	 */
-	protected static function args_ajax_type_select( array $args, array $data ): array {
-		if ( self::get_type_select( $data ) !== self::TYPE_SELECT_MULTIPLE ) {
-			return $args;
-		}
-
-		// Sent via AJAX, the callback renders the items with checkbox.
-		$args['type_select'] = self::TYPE_SELECT_MULTIPLE;
-
-		// Items selected: printed in the target, JS lists them when the input is focused.
-		$items_selected = [];
-		foreach ( (array) ( $data['items_selected'] ?? [] ) as $item ) {
-			if ( is_array( $item ) ) {
-				$item['checked']  = true;
-				$items_selected[] = $item;
-			}
-		}
-
-		if ( ! empty( $items_selected ) ) {
-			$args['html_no_load_ajax_first'] = self::html_list_result(
-				$items_selected,
-				[ 'type_select' => self::TYPE_SELECT_MULTIPLE ]
-			);
-		}
-
-		return $args;
 	}
 
 	/**

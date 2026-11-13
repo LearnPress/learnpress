@@ -12,6 +12,7 @@ use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Admin\InputSuggest\AdminInputSearchCourseSuggest;
+use LearnPress\TemplateHooks\Admin\InputSuggest\AdminInputSearchUserSuggest;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
@@ -95,9 +96,8 @@ class AdminListStudentsEnrolled {
 			$args      = array(
 				'id_url'                => 'lp-enrolled-students',
 				'course_id'             => $course_id,
-				'course_name'           => LP_Request::get_param( 'course_name' ),
 				'paged'                 => 1,
-				'student_name'          => lp_request::get_param( 'student_name' ),
+				'student_id'          => lp_request::get_param( 'student_id' ),
 				'start_date'            => LP_Request::get_param( 'start_date' ),
 				'end_date'              => LP_Request::get_param( 'end_date' ),
 				'enableUpdateParamsUrl' => false,
@@ -142,16 +142,32 @@ class AdminListStudentsEnrolled {
 			// Check permission
 			if ( ! current_user_can( UserModel::ROLE_ADMINISTRATOR )
 				&& ! current_user_can( UserModel::ROLE_INSTRUCTOR ) ) {
-				throw new Exception( esc_html__( 'You do not have permission to view enrolled students.', 'learnpress' ) );
+				throw new Exception(
+					esc_html__(
+						'You do not have permission to view enrolled students.',
+						'learnpress'
+					)
+				);
 			}
 
-			$course_id    = LP_Helper::sanitize_params_submitted( $data['course_id'] ?? 0, 'int' );
-			$paged        = max( 1, abs( LP_Helper::sanitize_params_submitted( $data['paged'] ?? 1, 'int' ) ) );
-			$course_name  = LP_Helper::sanitize_params_submitted( $data['course_name'] ?? '' );
-			$student_name = LP_Helper::sanitize_params_submitted( $data['student_name'] ?? '' );
-			$start_date   = lp_helper::sanitize_params_submitted( $data['start_date'] ?? '' );
-			$end_date     = lp_helper::sanitize_params_submitted( $data['end_date'] ?? '' );
-			$per_page     = self::PER_PAGE;
+			$course_id  = LP_Helper::sanitize_params_submitted( $data['course_id'] ?? 0 );
+			$paged      = max(
+				1,
+				abs( LP_Helper::sanitize_params_submitted( $data['paged'] ?? 1, 'int' ) )
+			);
+			$student_id = LP_Helper::sanitize_params_submitted( $data['student_id'] ?? 0 );
+			$start_date = lp_helper::sanitize_params_submitted( $data['start_date'] ?? '' );
+			$end_date   = lp_helper::sanitize_params_submitted( $data['end_date'] ?? '' );
+			$per_page   = self::PER_PAGE;
+
+			// For case param course_id is course name too
+			if ( ! is_numeric( $course_id ) ) {
+				$course_name = $course_id;
+			}
+
+			if ( ! is_numeric( $student_id ) ) {
+				$student_name = $student_id;
+			}
 
 			// Normalize date range if request is reversed.
 			if ( $start_date && $end_date && strtotime( $start_date ) > strtotime( $end_date ) ) {
@@ -198,7 +214,12 @@ class AdminListStudentsEnrolled {
 				);
 			}
 
-			if ( ! empty( $student_name ) ) {
+			if ( $student_id > 0 ) {
+				$filter->where[] = $lp_db_user_items->wpdb->prepare(
+					'AND ui.user_id = %d',
+					$student_id
+				);
+			} elseif ( ! empty( $student_name ) ) {
 				$search_like     = '%' . $lp_db_user_items->wpdb->esc_like( $student_name ) . '%';
 				$filter->where[] = $lp_db_user_items->wpdb->prepare(
 					'AND ( u.display_name LIKE %s OR u.user_email LIKE %s )',
@@ -278,13 +299,35 @@ class AdminListStudentsEnrolled {
 
 		$html_search_course = AdminInputSearchCourseSuggest::instance()->layout(
 			[
-				'id'          => 'lp-enrolled-filter-course-name',
 				'name'        => 'course_id',
 				'value'       => $selected_course > 0 ? $selected_course : '',
 				'text'        => $selected_course_title,
 				'placeholder' => __( 'Search course...', 'learnpress' ),
 			]
 		);
+
+		// Student filter: search suggest for administrator (the search of users is for administrator only),
+		// instructor keeps the text input to search by name or email.
+		if ( current_user_can( UserModel::ROLE_ADMINISTRATOR ) ) {
+			$html_search_student = AdminInputSearchUserSuggest::instance()->layout(
+				[
+					'id'          => 'lp-enrolled-search-input',
+					'name'        => 'student_id',
+					'value'       => '',
+					'text'        => '',
+					'placeholder' => __( 'Search student...', 'learnpress' ),
+				]
+			);
+		} else {
+			$html_search_student = sprintf(
+				'<input id="lp-enrolled-search-input"
+					class="lp-enrolled-search-input"
+					type="text"
+					name="student_id" value="%s" placeholder="%s">',
+				esc_attr( $search_student ),
+				esc_attr__( 'Enter student name or email', 'learnpress' )
+			);
+		}
 
 		$html_fields = sprintf(
 			'<div class="filter-field">
@@ -293,10 +336,7 @@ class AdminListStudentsEnrolled {
 			</div>
 			<div class="filter-field">
 				<label for="lp-enrolled-search-input">%s</label>
-				<input id="lp-enrolled-search-input"
-					class="lp-enrolled-search-input"
-					type="text"
-					name="student_name" value="%s" placeholder="%s">
+				%s
 			</div>
 			<div class="filter-field">
 				<label for="lp-enrolled-filter-start-date">%s</label>
@@ -313,8 +353,7 @@ class AdminListStudentsEnrolled {
 			esc_html__( 'Course Filter', 'learnpress' ),
 			$html_search_course,
 			esc_html__( 'Student Filter', 'learnpress' ),
-			esc_attr( $search_student ),
-			esc_attr__( 'Enter student name or email', 'learnpress' ),
+			$html_search_student,
 			esc_html__( 'Start Date', 'learnpress' ),
 			esc_attr( $search_start ),
 			esc_html__( 'End date', 'learnpress' ),
@@ -359,7 +398,7 @@ class AdminListStudentsEnrolled {
 				<label for="lp-modal-enrolled-search-input">%s</label>
 				<input id="lp-modal-enrolled-search-input"
 					class="lp-enrolled-search-input"
-					type="text" name="student_name" placeholder="%s">
+					type="text" name="student_id" placeholder="%s">
 			</div>',
 			esc_html__( 'Student', 'learnpress' ),
 			esc_attr__( 'Enter student name or email', 'learnpress' ),
@@ -582,7 +621,7 @@ class AdminListStudentsEnrolled {
 	 * HTML builder: single student row.
 	 *
 	 * @param UserCourseModel $userCourseModel
-	 *
+	 * @param array $data
 	 * @return string
 	 */
 	private function html_student_row( UserCourseModel $userCourseModel, array $data = [] ): string {

@@ -190,7 +190,7 @@ export class ViewStudentsModal {
 	 * @return {string}
 	 */
 	getModalToolbarHtml( args = {} ) {
-		const { courseName = '' } = args;
+		const { courseName = '', courseId = '' } = args;
 		const template = document.querySelector(
 			ViewStudentsModal.selectors.toolbarTemplate
 		);
@@ -209,7 +209,7 @@ export class ViewStudentsModal {
 		// Set param course_name
 		if ( elBtnDetail && courseName ) {
 			elBtnDetail.href = lpUtils.lpAddQueryArgs( elBtnDetail.href, {
-				course_name: courseName,
+				course_id: courseId,
 			} ).toString();
 		}
 
@@ -299,6 +299,7 @@ export class ViewStudentsModal {
 	openModal( courseId, courseTitle, elTrigger = null ) {
 		const modalToolbarHtml = this.getModalToolbarHtml( {
 			courseName: courseTitle,
+			courseId: courseId,
 		} );
 		const modalTargetHtml = this.getModalTargetHtml();
 
