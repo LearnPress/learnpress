@@ -157,6 +157,22 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
+		 * Orders can only be saved by users able to manage them, never by the order's own buyer/author.
+		 *
+		 * @param int $post_id
+		 *
+		 * @return bool
+		 */
+		public function check_post( int $post_id = 0 ): bool {
+			if ( ! current_user_can( ADMIN_ROLE )
+				&& ! current_user_can( 'edit_post', $post_id ) ) {
+				return false;
+			}
+
+			return parent::check_post( $post_id );
+		}
+
+		/**
 		 * Save order post.
 		 *
 		 * @param int     $post_id
