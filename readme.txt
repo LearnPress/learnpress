@@ -304,9 +304,11 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
-= 4.4.14 (2026-11-14) =
+= 4.4.14 (2026-11-16) =
 * Fixed: security.
 * Fixed: minor bugs.
+* Students enrolled: update search suggest for course, student
+* Course edit: add tab more features.
 
 = 4.4.13 (2026-10-30) =
 * Fixed: security (Props @Alveni).
