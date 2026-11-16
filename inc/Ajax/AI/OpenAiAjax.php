@@ -47,6 +47,7 @@ class OpenAiAjax extends AbstractAjax {
 			$data_str = LP_Request::get_param( 'data' );
 			$params   = LP_Helper::json_decode( $data_str, true );
 			$prompt   = Config::instance()->get( 'prompt-create-course', 'settings/openAi', compact( 'params' ) );
+			$prompt   = apply_filters( 'lp-openai-prompt-create-course', $prompt, $params );
 
 			$response->data    = $prompt;
 			$response->status  = 'success';
@@ -259,6 +260,8 @@ class OpenAiAjax extends AbstractAjax {
 					$prompt = '';
 					break;
 			}
+
+			$prompt = apply_filters( 'lp-openai-prompt-generated', $prompt, $params, $lp_prompt_type );
 
 			$response->data    = $prompt;
 			$response->status  = 'success';
