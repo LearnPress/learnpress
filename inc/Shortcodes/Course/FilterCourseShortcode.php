@@ -1,14 +1,19 @@
 <?php
-/**
- * Shortcode display single instructor.
- */
+
 namespace LearnPress\Shortcodes\Course;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Shortcodes\AbstractShortcode;
+use Throwable;
 
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Shortcode display filter course.
+ */
 class FilterCourseShortcode extends AbstractShortcode {
 	use singleton;
+
 	protected $shortcode_name = 'filter_course';
 
 	/**
@@ -32,7 +37,7 @@ class FilterCourseShortcode extends AbstractShortcode {
 			);
 			do_action( 'learn-press/filter-courses/layout', $data );
 			$content = ob_get_clean();
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( $e->getMessage() );
 		}
@@ -40,4 +45,3 @@ class FilterCourseShortcode extends AbstractShortcode {
 		return $content;
 	}
 }
-

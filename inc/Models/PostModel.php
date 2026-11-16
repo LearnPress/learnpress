@@ -13,11 +13,11 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress;
+use LearnPress\Cache\LPCache;
 use LearnPress\Databases\PostDB;
 use LearnPress\Filters\FilterBase;
 use LearnPress\Filters\PostFilter;
 use LearnPress\Services\CourseService;
-use LP_Cache;
 use LP_Debug;
 use LP_Post_Meta_DB;
 use LP_Post_Meta_Filter;
@@ -139,13 +139,7 @@ class PostModel {
 
 		$type      = ( new static() )->post_type;
 		$key_cache = "postModel/find/{$post_id}/" . $type;
-		$lp_cache  = new LP_Cache();
-
-		// Check first load cache
-		$postModel = LP_Cache::cache_load_first( 'get', $key_cache );
-		if ( false !== $postModel ) {
-			return $postModel;
-		}
+		$lp_cache  = new LPCache();
 
 		// Check cache
 		if ( $check_cache ) {
@@ -160,7 +154,6 @@ class PostModel {
 		if ( $postModel instanceof PostModel ) {
 			$lp_cache->set_cache( $key_cache, $postModel );
 		}
-		LP_Cache::cache_load_first( 'set', $key_cache, $postModel );
 
 		return $postModel;
 	}
@@ -388,9 +381,14 @@ class PostModel {
 	 * Clean caches.
 	 *
 	 * @return void
+	 * @since 4.2.6.9
+	 * @version 1.0.1
 	 */
 	public function clean_caches() {
 		// Clear cache.
+		$key_cache = "postModel/find/{$this->get_id()}/" . $this->post_type;
+		$lp_cache  = new LPCache();
+		$lp_cache->clear( $key_cache );
 	}
 
 	/**

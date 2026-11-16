@@ -84,8 +84,9 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 				$instance['css_class']        = $instance['css_class'] ?? '';
 				$instance['bottom_link_text'] = $instance['bottom_link_text'] ?? esc_html__( 'Go to Courses', 'learnpress' );
 
-				$filter        = new LP_Course_Filter();
-				$filter->limit = $instance['limit'];
+				$filter              = new LP_Course_Filter();
+				$filter->limit       = min( max( 1, absint( $instance['limit'] ) ), 50 );
+				$filter->post_status = [ 'publish' ];
 				$lp_course_db->get_courses_order_by_popular( $filter );
 				$courses = $lp_course_db->get_courses( $filter );
 				$courses = $lp_course_db->get_values_by_key( $courses, 'ID' );

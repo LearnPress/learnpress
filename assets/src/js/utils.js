@@ -24,6 +24,11 @@ export const lpFetchAPI = ( url, data = {}, functions = {} ) => {
 	}
 
 	fetch( url, { method: 'GET', ...data } )
+		.then( ( response ) =>
+			'function' === typeof functions.checkResponse
+				? functions.checkResponse( response )
+				: response
+		)
 		.then( ( response ) => response.json() )
 		.then( ( response ) => {
 			if ( 'function' === typeof functions.success ) {
@@ -273,6 +278,34 @@ export const mergeDataWithDatForm = ( elForm, dataHandle ) => {
 	dataHandle = { ...dataHandle, ...dataForm };
 
 	return dataHandle;
+};
+
+/**
+ * Reset all fields of form to empty, select to first option.
+ * Not use form.reset(), because it restores values rendered by server (e.g. from URL params).
+ *
+ * @param elForm
+ */
+export const resetForm = ( elForm ) => {
+	if ( ! elForm ) {
+		return;
+	}
+
+	Array.from( elForm.elements ).forEach( ( elField ) => {
+		const tagName = elField.tagName;
+		const type = elField.type;
+
+		if ( tagName === 'SELECT' ) {
+			elField.selectedIndex = 0;
+		} else if ( type === 'checkbox' || type === 'radio' ) {
+			elField.checked = false;
+		} else if (
+			( tagName === 'INPUT' || tagName === 'TEXTAREA' ) &&
+			! [ 'hidden', 'button', 'submit', 'reset' ].includes( type )
+		) {
+			elField.value = '';
+		}
+	} );
 };
 
 /**

@@ -53,9 +53,12 @@ class SkinCoursesBase extends LPSkinBase {
 			$settings['url_current']   = LP_Helper::getUrlCurrent();
 
 			// Merge params filter form url
-			$settings = array_merge(
-				$settings,
-				lp_archive_skeleton_get_args()
+			// Security: only get params allow on URL, not all $_GET (can override settings of widget).
+			$settings = array_merge( $settings, ListCoursesTemplate::get_params_url() );
+
+			// Security: sign template id (server side), so client can not render any post by id.
+			$settings['lp_el_template_id_sig'] = CoursesLoopItem::sign_template_id(
+				$settings['lp_el_skin_courses_loop_item_template_id'] ?? 0
 			);
 
 			$html_wrapper_widget = [
@@ -126,6 +129,8 @@ class SkinCoursesBase extends LPSkinBase {
 
 		$filter               = new LP_Course_Filter();
 		$settings['order_by'] = $courses_order_by;
+		// Security: settings can come from request (AJAX args), only show published courses.
+		$settings['c_status'] = 'publish';
 		Courses::handle_params_for_query_courses( $filter, $settings );
 		// Term
 		$filter->term_ids = array_merge( $filter->term_ids, $courses_category_ids );
@@ -151,7 +156,7 @@ class SkinCoursesBase extends LPSkinBase {
 
 		// Handle layout
 		ob_start();
-		$data_rs     = [
+		$data_rs = [
 			'total_rows'       => $total_rows,
 			'paged'            => $paged,
 			'courses_per_page' => $courses_per_page,
@@ -167,7 +172,7 @@ class SkinCoursesBase extends LPSkinBase {
 
 		$html_lis = '';
 		foreach ( $courses as $courseObj ) {
-			$course = learn_press_get_course( $courseObj->ID );
+			$course    = learn_press_get_course( $courseObj->ID );
 			$html_lis .= static::render_course( $course, $settings );
 		}
 		$section_list = [

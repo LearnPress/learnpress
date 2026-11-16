@@ -11,7 +11,6 @@ namespace LearnPress\TemplateHooks\CourseBuilder;
 
 use Exception;
 use LearnPress\CourseBuilder\CourseBuilder;
-use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\LessonPostModel;
@@ -43,28 +42,6 @@ class BuilderPopupTemplate {
 
 		return $callbacks;
 	}
-
-	/**
-	 * Validate object-level permission before rendering popup content.
-	 *
-	 * @param string $item_type
-	 * @param int    $item_id
-	 *
-	 * @throws Exception
-	 */
-	/*private static function ensure_popup_access( string $item_type, int $item_id ) {
-		if ( $item_id > 0 ) {
-			if ( ! CourseBuilderAccessPolicy::can_edit_item( $item_type, $item_id ) ) {
-				throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
-			}
-
-			return;
-		}
-
-		if ( ! CourseBuilderAccessPolicy::can_create_item_type( $item_type ) ) {
-			throw new Exception( __( "Sorry, you don't have permission to create this item", 'learnpress' ) );
-		}
-	}*/
 
 	/**
 	 * Get popup wrapper HTML structure.
@@ -155,7 +132,6 @@ class BuilderPopupTemplate {
 	public static function render_lesson_popup( array $args = [] ): stdClass {
 		$response  = new stdClass();
 		$lesson_id = absint( $args['lesson_id'] ?? 0 );
-		//self::ensure_popup_access( LP_LESSON_CPT, $lesson_id );
 
 		$lesson_model = $lesson_id ? LessonPostModel::find( $lesson_id, true ) : null;
 
@@ -226,7 +202,6 @@ class BuilderPopupTemplate {
 	public static function render_quiz_popup( array $args = [] ): stdClass {
 		$response = new stdClass();
 		$quiz_id  = absint( $args['quiz_id'] ?? 0 );
-		//self::ensure_popup_access( LP_QUIZ_CPT, $quiz_id );
 
 		$quiz_model = $quiz_id ? QuizPostModel::find( $quiz_id, true ) : null;
 
@@ -289,7 +264,6 @@ class BuilderPopupTemplate {
 	public static function render_question_popup( array $args = [] ): stdClass {
 		$response    = new stdClass();
 		$question_id = absint( $args['question_id'] ?? 0 );
-		//self::ensure_popup_access( LP_QUESTION_CPT, $question_id );
 
 		$question_model = $question_id ? QuestionPostModel::find( $question_id, true ) : null;
 

@@ -23,6 +23,7 @@ import { BuilderDashboard } from './course-builder/builder-dashboard.js';
 import { BuilderSettings } from './course-builder/builder-settings.js';
 import { getFormState } from './course-builder/builder-form-state.js';
 import { EditCurriculumAi } from '../admin/edit-course/edit-curriculum/edit-curriculum-ai.js';
+import { bootMoreFeatures } from '../admin/edit-course/more-features.js';
 import { initElsTomSelect } from 'lpAssetsJsPath/admin/init-tom-select.js';
 import { Utils } from 'lpAssetsJsPath/admin/utils-admin.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify';
@@ -356,6 +357,9 @@ document.addEventListener( 'submit', ( e ) => {
 
 // Initialize components
 initBuilderComponents();
+
+// Settings tab "More Features" (also renders when the tab is loaded later).
+bootMoreFeatures();
 
 // Events
 document.addEventListener( 'click', ( e ) => {

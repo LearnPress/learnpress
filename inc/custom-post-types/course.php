@@ -490,8 +490,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				// Get all metadata of post
 				$all_metadata           = $courseModel->get_post_model()->get_all_metadata();
 				$courseModel->meta_data = $all_metadata;
-				// Temporary unset _elementor_page_assets of El, reason by method get_all_metadata get not use maybe_unserialize, make save invalid serialize
-				$courseModel->meta_data->_elementor_page_assets = [];
 
 				// Merge object post and courseModel
 				$new_obj     = (array) $post;

@@ -95,17 +95,28 @@ class LP_User extends LP_Abstract_User {
 	 * Check the user can access to an item inside course.
 	 *
 	 * @param int $item_id Course's item Id.
-	 * @param LP_Model_User_Can_View_Course_Item $view Course Id.
+	 * @param LP_Model_User_Can_View_Course_Item $view Course access decision.
+	 * @param int $course_id Optional. When set, item must be assigned to this course.
 	 *
 	 * @author  tungnx
 	 * @return LP_Model_User_Can_View_Course_Item
 	 * @since 4.0.0
 	 */
-	public function can_view_item( int $item_id = 0, $view = null ): LP_Model_User_Can_View_Course_Item {
+	public function can_view_item( int $item_id = 0, $view = null, int $course_id = 0 ): LP_Model_User_Can_View_Course_Item {
 		$view_new = null;
 
 		if ( ! $view instanceof LP_Model_User_Can_View_Course_Item ) {
 			return new LP_Model_User_Can_View_Course_Item();
+		}
+
+		if ( $course_id ) {
+			$course = learn_press_get_course( $course_id );
+			if ( ! $course || ! $course->has_item( $item_id ) ) {
+				$denied          = new LP_Model_User_Can_View_Course_Item();
+				$denied->key     = 'item_not_in_course';
+				$denied->message = esc_html__( 'This item does not belong to the course.', 'learnpress' );
+				return $denied;
+			}
 		}
 
 		$item = LP_Course_Item::get_item( $item_id );

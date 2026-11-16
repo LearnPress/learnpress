@@ -60,6 +60,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp_rest_url'              => get_rest_url(),
 				'lp_rest_load_ajax'        => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ), // @deprecated 4.3.0
 				'lpAjaxUrl'                => LP_Settings::url_handle_lp_ajax(),
+				'ajaxUrl'                  => admin_url( 'admin-ajax.php' ),
 				'nonce'                    => wp_create_nonce( 'wp_rest' ),
 				'courses_url'              => learn_press_get_page_link( 'courses' ),
 				'urlParams'                => lp_archive_skeleton_get_args(),
@@ -599,6 +600,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array( 'lp-load-ajax', 'wp-i18n' ),
 					array( 'learnpress_page_learn-press-student-notes' ),
 					0,
+					1,
+					'',
+					array( 'strategy' => 'defer' )
+				),
+				// Only register, enqueued by AdminInputSearchSuggest::layout().
+				'lp-input-search-suggest'   => new LP_Asset_Key(
+					$this->url( 'dist/js/admin/lp-input-search-suggest' . self::$_min_assets . '.js' ),
+					array( 'lp-load-ajax' ),
+					array(),
+					1,
 					1,
 					'',
 					array( 'strategy' => 'defer' )

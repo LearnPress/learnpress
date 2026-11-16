@@ -172,6 +172,9 @@ class CBEditCourseAjax extends AbstractAjax {
 					$coursePostModel->post_name = $course_permalink;
 				}
 
+				// Get all metadata to save, not use $courseModel->meta_data
+				$coursePostModel->meta_data = $coursePostModel->get_all_metadata();
+
 				if ( $settings ) {
 					$courseBuilderAjax = new CourseBuilderAjax();
 					$courseBuilderAjax->save_course_settings_to_model( $coursePostModel, $data );

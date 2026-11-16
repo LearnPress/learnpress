@@ -16,6 +16,7 @@ use LearnPress\Filters\LessonPostFilter;
 use LearnPress\Filters\PostFilter;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\CourseSectionItemModel;
+use LearnPress\Models\LessonPostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\WPTables\LessonsTable;
 
@@ -358,6 +359,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * Register lesson post type.
 		 */
 		public function args_register_post_type(): array {
+			$lessonPostModel = new LessonPostModel();
 
 			return array(
 				'labels'              => array(
@@ -374,10 +376,22 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'not_found'          => esc_html__( 'No lesson found', 'learnpress' ),
 					'not_found_in_trash' => esc_html__( 'There was no lesson found in the trash', 'learnpress' ),
 				),
-				'public'              => true,
+				/**
+				 * Set false to hide from:
+				 * - Frontend: single URLs, archive pages, search results, author archives
+				 * - Feeds: RSS/Atom feeds
+				 * - Sitemaps: WordPress default and SEO plugin sitemaps
+				 * - Nav menus: cannot add to Appearance > Menus
+				 * Still visible in admin because show_ui and show_in_menu are true.
+				 */
+				'public'              => false,
+				/**
+				 * Allow frontend URL queries (e.g., example.com/lesson/slug) even when public is false.
+				 * LearnPress uses this for course item URLs, but has additional 404 protection logic.
+				 */
+				'publicly_queryable'  => false,
 				'query_var'           => true,
 				'taxonomies'          => array( 'lesson_tag' ),
-				'publicly_queryable'  => true,
 				'show_ui'             => true,
 				'has_archive'         => false,
 				'capability_type'     => LP_LESSON_CPT,
@@ -385,7 +399,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				'show_in_menu'        => 'learn_press',
 				'show_in_admin_bar'   => true,
 				'show_in_nav_menus'   => true,
-				'show_in_rest'        => learn_press_user_maybe_is_a_teacher(),
+				'show_in_rest'        => $lessonPostModel->check_capabilities_create(),
 				'supports'            => array(
 					'title',
 					'editor',

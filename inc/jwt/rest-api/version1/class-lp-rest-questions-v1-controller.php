@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * @deprecated 4.4.14
+ */
 class LP_Jwt_Questions_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	protected $namespace = 'learnpress/v1';
 

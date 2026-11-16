@@ -10,7 +10,6 @@ namespace LearnPress\TemplateHooks\CourseBuilder\Course;
 
 use Exception;
 use LearnPress\CourseBuilder\CourseBuilder;
-use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -66,10 +65,6 @@ class BuilderEditCourseTemplate {
 			if ( empty( $item_id ) ) {
 				throw new Exception( __( 'Invalid course ID', 'learnpress' ) );
 			}
-
-			/*if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'courses', $item_id ) ) {
-				throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
-			}*/
 
 			$is_create_new = $item_id === CourseBuilder::POST_NEW;
 			$courseModel   = false;
@@ -1398,7 +1393,7 @@ class BuilderEditCourseTemplate {
 	 * @return array
 	 */
 	public function filter_course_builder_settings_tabs( array $tabs ): array {
-		$allowed_tabs = [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material' ];
+		$allowed_tabs = [ 'general', 'offline', 'price', 'extra', 'assessment', 'author', 'material', 'more_features' ];
 
 		foreach ( array_keys( $tabs ) as $tab_key ) {
 			if ( ! in_array( $tab_key, $allowed_tabs, true ) ) {

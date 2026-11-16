@@ -73,6 +73,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			// Set link item course when edit on Backend | tungnx
 			add_filter( 'get_sample_permalink_html', array( $this, 'lp_course_set_link_item_backend' ), 10, 5 );
+			// Items course are not public, WP core does not print the permalink box, so print it.
+			add_action( 'edit_form_before_permalink', array( $this, 'print_permalink_box_item_course' ) );
 
 			// Add "Edit with Course Builder" button below title area for courses
 			add_action( 'edit_form_after_title', array( $this, 'add_course_builder_button' ) );
@@ -906,7 +908,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					$course_id_of_item = $courses_from_item[0]->section_course_id ?? 0;
 					if ( $course_id_of_item ) {
 						$course = learn_press_get_course( $course_id_of_item );
-						if ( $course ) {
+						if ( $course && 'publish' !== get_post_status( $course_id_of_item ) ) {
+							$post_link = sprintf(
+								'<div id="learn-press-box-edit-slug"><span>%s</span></div>',
+								esc_html__( 'Permalink is only available when the course of this item is published.', 'learnpress' )
+							);
+						} elseif ( $course ) {
 							$link_item           = urldecode( $course->get_item_link( $post->ID ) );
 							$post_slug           = $post->post_name;
 							$link_item_edit_slug = preg_replace( '/' . $post_slug . '$/', '', $link_item );
@@ -922,14 +929,23 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 							unset( $slug_arr[ $count_slug - 2 ] );
 							$link_item_edit_slug = implode( '/', $slug_arr );
 
-							$post_link  = '<strong>Permalink: </strong>';
-							$post_link .= '<span id="sample-permalink">';
-							$post_link .= '<a href="' . $link_item . '">' . $link_item_edit_slug . '<span id="editable-post-name">' . $post_slug . '</span>/</a>';
-							$post_link .= '</span>';
-							$post_link .= '&lrm;<span id="edit-slug-buttons">';
-							$post_link .= '<button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink">Edit</button>';
-							$post_link .= '</span>';
-							$post_link .= '<span id="editable-post-name-full">' . $post_slug . '</span>';
+							$post_link = sprintf(
+								'<strong>Permalink: </strong>
+									<span id="sample-permalink">
+										<a href="%s">%s<span id="editable-post-name">%s</span>/</a>
+									</span>&lrm;
+									<span id="edit-slug-buttons">
+										<button type="button"
+											class="edit-slug button button-small hide-if-no-js"
+											aria-label="Edit permalink">Edit
+										</button>
+									</span>
+									<span id="editable-post-name-full">%s</span>',
+								esc_url( $link_item ),
+								esc_html( $link_item_edit_slug ),
+								esc_html( $post_slug ),
+								esc_html( $post_slug )
+							);
 						}
 					} else {
 						$post_link_message = '<span>' . __(
@@ -946,6 +962,40 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return $post_link;
+		}
+
+		/**
+		 * Print permalink box (link item via course) on edit item course screen.
+		 *
+		 * Items course (lesson, quiz) register with public = false,
+		 * so WP core does not print #edit-slug-box (edit-form-advanced.php).
+		 * Link HTML is built by lp_course_set_link_item_backend via filter "get_sample_permalink_html",
+		 * the same filter used by ajax "sample-permalink" when editing slug.
+		 *
+		 * @param WP_Post $post
+		 *
+		 * @return void
+		 * @since 4.4.14
+		 * @version 1.0.0
+		 */
+		public function print_permalink_box_item_course( $post ) {
+			if ( ! $post instanceof WP_Post || 'auto-draft' === $post->post_status
+				|| ! in_array( $post->post_type, CourseModel::item_types_support(), true ) ) {
+				return;
+			}
+
+			// WP core prints the box itself if post type is public.
+			$post_type_object = get_post_type_object( $post->post_type );
+			if ( ! $post_type_object || $post_type_object->public ) {
+				return;
+			}
+
+			printf(
+				'<div class="inside">
+					<div id="edit-slug-box" class="hide-if-no-js">%s</div>
+				</div>',
+				wp_kses_post( get_sample_permalink_html( $post ) )
+			);
 		}
 
 		/**

@@ -72,14 +72,11 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						echo sprintf( __( 'And allow upload only these types: %s.', 'learnpress' ), $accept_file_type );
 						?>
 					</div>
-					<hr>
 					<div class="lp-material-btn-wrap">
 						<button class="button button-primary" id="btn-lp--add-material" type="button"
 								can-upload="<?php esc_attr_e( $can_upload ); ?>">
 							<?php esc_html_e( 'Add Course Materials', 'learnpress' ); ?>
 						</button>
-						<button class="button button-primary" id="btn-lp--save-material"
-								type="button"><?php esc_html_e( 'Save', 'learnpress' ); ?></button>
 					</div>
 					<input type="hidden" id="material-max-file-size" value="<?php esc_attr_e( $max_file_size ); ?>"/>
 					<div id="lp-material--add-material-template" hidden>

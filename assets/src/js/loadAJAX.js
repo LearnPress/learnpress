@@ -2,7 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.1.1
+ * @version 1.1.2
  */
 
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
@@ -15,6 +15,41 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 	lpSettings = lpData;
 }
 // End Handle general parameter in the Frontend and Backend
+
+// Refresh nonce for case HTML is cached (nonce on page is expired or belongs to another session).
+let promiseRefreshNonce = null;
+const lpRefreshNonce = () => {
+	if ( promiseRefreshNonce ) {
+		return promiseRefreshNonce;
+	}
+
+	if ( ! lpSettings.ajaxUrl ) {
+		return Promise.resolve( false );
+	}
+
+	const urlNonce = lpUtils.lpAddQueryArgs( lpSettings.ajaxUrl, {
+		action: 'rest-nonce',
+	} );
+
+	promiseRefreshNonce = fetch( urlNonce, { credentials: 'same-origin' } )
+		.then( ( res ) => ( res.ok ? res.text() : '' ) )
+		.then( ( nonce ) => {
+			nonce = nonce.trim();
+			// Guest receives "0", so only accept a real nonce.
+			if ( ! /^[a-f0-9]{10}$/.test( nonce ) ) {
+				return false;
+			}
+
+			lpSettings.nonce = nonce;
+			return true;
+		} )
+		.catch( () => false )
+		.finally( () => {
+			promiseRefreshNonce = null;
+		} );
+
+	return promiseRefreshNonce;
+};
 
 const lpAJAX = () => {
 	const classLPTarget = '.lp-target';
@@ -78,41 +113,70 @@ const lpAJAX = () => {
 			const isGet =
 				params.hasOwnProperty( 'method_request' ) &&
 				'GET' === String( params.method_request ).toUpperCase();
-			let dataSend;
 
-			if ( isGet ) {
-				// Don't send method_request back to server; keep URL shorter.
-				const paramsForSend = { ...params };
-				delete paramsForSend.method_request;
+			// Build request each time, because nonce is in URL/FormData and can be refreshed.
+			const buildRequest = () => {
+				let url = urlAjax;
+				let dataSend;
 
-				urlAjax = lpUtils.lpAddQueryArgs( urlAjax, {
-					nonce: lpSettings.nonce,
-					'lp-load-ajax': action,
-					data: JSON.stringify( paramsForSend ),
-				} );
+				if ( isGet ) {
+					// Don't send method_request back to server; keep URL shorter.
+					const paramsForSend = { ...params };
+					delete paramsForSend.method_request;
 
-				dataSend = {
-					method: 'GET',
-					headers: {},
-				};
-			} else {
-				const formData = new FormData();
-				formData.append( 'nonce', lpSettings.nonce );
-				formData.append( 'lp-load-ajax', action );
-				formData.append( 'data', JSON.stringify( params ) );
+					url = lpUtils.lpAddQueryArgs( url, {
+						nonce: lpSettings.nonce,
+						'lp-load-ajax': action,
+						data: JSON.stringify( paramsForSend ),
+					} );
 
-				dataSend = {
-					method: 'POST',
-					headers: {},
-					body: formData,
-				};
-			}
+					dataSend = {
+						method: 'GET',
+						headers: {},
+					};
+				} else {
+					const formData = new FormData();
+					formData.append( 'nonce', lpSettings.nonce );
+					formData.append( 'lp-load-ajax', action );
+					formData.append( 'data', JSON.stringify( params ) );
 
-			if ( 0 !== parseInt( lpSettings.user_id ) ) {
-				dataSend.headers[ 'X-WP-Nonce' ] = lpSettings.nonce;
-			}
+					dataSend = {
+						method: 'POST',
+						headers: {},
+						body: formData,
+					};
+				}
 
-			lpUtils.lpFetchAPI( urlAjax, dataSend, callBack );
+				if ( 0 !== parseInt( lpSettings.user_id ) ) {
+					dataSend.headers[ 'X-WP-Nonce' ] = lpSettings.nonce;
+				}
+
+				return { url, dataSend };
+			};
+
+			const request = buildRequest();
+
+			lpUtils.lpFetchAPI( request.url, request.dataSend, {
+				...callBack,
+				checkResponse: ( response ) => {
+					if ( '1' !== response.headers.get( 'X-LP-Nonce-Invalid' ) ) {
+						return response;
+					}
+
+					// Nonce invalid (HTML cached): get new nonce, retry one time.
+					return lpRefreshNonce().then( ( refreshed ) => {
+						if ( ! refreshed ) {
+							return response;
+						}
+
+						const requestRetry = buildRequest();
+						return fetch( requestRetry.url, {
+							method: 'GET',
+							...requestRetry.dataSend,
+						} );
+					} );
+				},
+			} );
 		},
 		getElements: () => {
 			// Finds all elements with the class '.lp-load-ajax-element'

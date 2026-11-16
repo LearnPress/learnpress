@@ -88,6 +88,12 @@ export class CourseNotes {
 			return;
 		}
 
+		// Custom learning templates may omit the Notes sidebar and its form.
+		const template = document.querySelector( '[data-learning-bar-item="notes"] template' );
+		if ( ! template?.content.querySelector( CourseNotes.selectors.form ) ) {
+			return;
+		}
+
 		this.el.selectionBtn = this.root.querySelector( CourseNotes.selectors.selectionBtn );
 
 		this.contentRoot = document.querySelector( this.config.contentSelector );

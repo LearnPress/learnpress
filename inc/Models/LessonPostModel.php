@@ -90,4 +90,22 @@ class LessonPostModel extends PostModel {
 	public function set_preview( bool $enable = true ) {
 		$this->set_meta_value_by_key( self::META_KEY_PREVIEW, $enable ? 'yes' : 'no' );
 	}
+
+	/**
+	 * Check capabilities create question
+	 *
+	 * @return bool
+	 */
+	public function check_capabilities_create(): bool {
+		return current_user_can( 'edit_' . LP_LESSON_CPT . 's' );
+	}
+
+	/**
+	 * Check capabilities update question
+	 *
+	 * @return bool
+	 */
+	public function check_capabilities_update(): bool {
+		return current_user_can( 'edit_' . LP_LESSON_CPT, $this->ID );
+	}
 }

@@ -1,5 +1,8 @@
 <?php
 
+use LearnPress\Cache\LPCache;
+use LearnPress\Databases\UserDB;
+use LearnPress\Filters\UserFilter;
 use LearnPress\Models\UserModel;
 
 /**
@@ -853,167 +856,81 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
-		// Fixed security, with request ?context=edit
-		if ( isset( $_REQUEST['context'] ) ) {
-			die();
-		}
-
-		// Retrieve the list of registered collection query parameters.
-		$registered = $this->get_collection_params();
-
-		/*
-		 * This array defines mappings between public API query parameters whose
-		 * values are accepted as-passed, and their internal WP_Query parameter
-		 * name equivalents (some are the same). Only values which are also
-		 * present in $registered will be set.
-		 */
-		$parameter_mappings = array(
-			'exclude'  => 'exclude',
-			'include'  => 'include',
-			'order'    => 'order',
-			'per_page' => 'number',
-			'search'   => 'search',
-			'roles'    => 'role__in',
-			'slug'     => 'nicename__in',
-		);
-
-		$roles = $request->get_param( 'roles' );
-		if ( ! empty( $roles ) && $roles == [ UserModel::ROLE_ADMINISTRATOR ] ) {
-			return new WP_Error(
-				'rest_forbidden',
-				__( 'You are not allowed.' ),
-				array( 'status' => rest_authorization_required_code() )
-			);
-		}
-
-		// Always only get instructors and administrators.
-		$request['roles'] = [ UserModel::ROLE_INSTRUCTOR, UserModel::ROLE_ADMINISTRATOR ];
-
-		$prepared_args = array();
-
-		/*
-		 * For each known parameter which is both registered and present in the request,
-		 * set the parameter's value on the query $prepared_args.
-		 */
-		foreach ( $parameter_mappings as $api_param => $wp_param ) {
-			if ( isset( $registered[ $api_param ], $request[ $api_param ] ) ) {
-				$prepared_args[ $wp_param ] = $request[ $api_param ];
-			}
-		}
-
-		if ( isset( $registered['offset'] ) && ! empty( $request['offset'] ) ) {
-			$prepared_args['offset'] = $request['offset'];
-		} else {
-			$prepared_args['offset'] = ( $request['page'] - 1 ) * $prepared_args['number'];
-		}
-
-		if ( isset( $registered['orderby'] ) ) {
-			$orderby_possibles        = array(
-				'id'              => 'ID',
-				'include'         => 'include',
-				'name'            => 'display_name',
-				'registered_date' => 'registered',
-				'slug'            => 'user_nicename',
-				'include_slugs'   => 'nicename__in',
-				'email'           => 'user_email',
-				'url'             => 'user_url',
-			);
-			$prepared_args['orderby'] = $orderby_possibles[ $request['orderby'] ];
-		}
-
-		if ( isset( $registered['who'] ) && ! empty( $request['who'] ) && 'authors' === $request['who'] ) {
-			$prepared_args['who'] = 'authors';
-		}
-
-		if ( ! empty( $prepared_args['search'] ) ) {
-			$prepared_args['search'] = '*' . $prepared_args['search'] . '*';
-		}
-		/**
-		 * Filters WP_User_Query arguments when querying users via the REST API.
-		 *
-		 * @link https://developer.wordpress.org/reference/classes/wp_user_query/
-		 *
-		 * @since 4.7.0
-		 *
-		 * @param array           $prepared_args Array of arguments for WP_User_Query.
-		 * @param WP_REST_Request $request       The REST API request.
-		 */
-		$prepared_args = apply_filters( 'rest_user_query', $prepared_args, $request );
-
 		$users                      = array();
-		$lp_cache                   = new LP_Cache();
-		$key_cache_list_instructors = 'lp_get_instructors';
+		$lp_cache                   = new LPCache();
+		$key_cache_list_instructors = 'lp_get_instructors_app';
 
 		// Check cache with cache get instructors.
-		if ( isset( $prepared_args['role__in'] ) ) {
-			$users_cache = $lp_cache->get_cache( $key_cache_list_instructors );
-			if ( $users_cache !== false ) {
-				$users = $users_cache;
-			}
-
-			$total_users = $lp_cache->get_cache( $key_cache_list_instructors . '/total' );
+		$users_cache = $lp_cache->get_cache( $key_cache_list_instructors );
+		if ( $users_cache !== false ) {
+			$users = $users_cache;
 		}
 
-		if ( empty( $users ) ) {
-			// Query max 10 instructors only.
-			$prepared_args['number'] = 10;
+		try {
+			$user_db = UserDB::getInstance();
 
-			$query        = new WP_User_Query( $prepared_args );
-			$users_result = $query->get_results();
-			$total_users  = $query->get_total();
+			if ( empty( $users ) ) {
+				$total_users = 0;
+				$filter      = new UserFilter();
 
-			foreach ( $users_result as $user ) {
-				$data = $this->prepare_item_for_response( $user, $request );
+				// Option learn_press_show_admin_on_list_instructors: if enabled, include role administrator.
+				$roles = [ UserModel::ROLE_INSTRUCTOR ];
+				if ( 'yes' === LP_Settings::get_option( 'show_admin_on_list_instructors', 'no' ) ) {
+					$roles[] = UserModel::ROLE_ADMINISTRATOR;
+				}
 
-				$user = $this->prepare_response_for_collection( $data );
-				unset( $user['custom_register'] );
-				unset( $user['is_super_admin'] );
-				$users[] = $user;
+				// Only users who have published courses, order by total courses.
+				global $wpdb;
+				$filter->join[]   = $wpdb->prepare(
+					"INNER JOIN ( SELECT post_author, COUNT(ID) AS total_courses FROM {$wpdb->posts}
+					WHERE post_type = %s AND post_status = %s GROUP BY post_author )
+					AS lp_c ON lp_c.post_author = u.ID",
+					LP_COURSE_CPT,
+					'publish'
+				);
+				$filter->fields[] = 'lp_c.total_courses';
+
+				$filter->roles           = $roles;
+				$filter->order_by        = 'lp_c.total_courses';
+				$filter->order           = 'DESC';
+				$filter->limit           = 5;
+				$filter->run_query_count = false;
+				$users_result            = $user_db->get_users( $filter, $total_users );
+
+				foreach ( (array) $users_result as $user ) {
+					$user_id   = (int) $user->ID;
+					$userModel = UserModel::find( $user_id, true );
+					if ( ! $userModel instanceof UserModel ) {
+						continue;
+					}
+
+					$statistic = LP_Profile::instance( $user_id )->get_statistic_info();
+					$users[]   = array(
+						'id'              => $user_id,
+						'nickname'        => $userModel->get_display_name(),
+						'name'            => $userModel->get_display_name(),
+						'avatar_url'      => $this->get_profile_avatar( $user_id ),
+						'description'     => $userModel->get_description(),
+						'instructor_data' => array(
+							'total_courses' => (int) ( $user->total_courses ?? $statistic['total_courses'] ?? 0 ),
+							'total_users'   => $statistic['total_users'] ?? 0,
+						),
+					);
+				}
+
+				// Set cache with cache get instructors.
+				$lp_cache->set_cache( $key_cache_list_instructors, $users );
+				$lp_cache->set_cache( $key_cache_list_instructors . '/total', $total_users );
 			}
-
-			// Set cache with cache get instructors.
-			$lp_cache->set_cache( $key_cache_list_instructors, $users );
-			$lp_cache->set_cache( $key_cache_list_instructors . '/total', $total_users );
+		} catch ( Throwable $e ) {
+			return new WP_Error(
+				'rest_users_error',
+				$e->getMessage(),
+				array( 'status' => 500 )
+			);
 		}
 
 		$response = rest_ensure_response( $users );
-
-		// Store pagination values for headers then unset for count query.
-		$per_page = (int) $prepared_args['number'];
-		$page     = ceil( ( ( (int) $prepared_args['offset'] ) / $per_page ) + 1 );
-
-		$prepared_args['fields'] = 'ID';
-
-		if ( $total_users < 1 ) {
-			// Out-of-bounds, run the query again without LIMIT for total count.
-			unset( $prepared_args['number'], $prepared_args['offset'] );
-			$count_query = new WP_User_Query( $prepared_args );
-			$total_users = $count_query->get_total();
-		}
-
-		$response->header( 'X-WP-Total', (int) $total_users );
-
-		$max_pages = ceil( $total_users / $per_page );
-
-		$response->header( 'X-WP-TotalPages', (int) $max_pages );
-
-		$base = add_query_arg( urlencode_deep( $request->get_query_params() ), rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) ) );
-		if ( $page > 1 ) {
-			$prev_page = $page - 1;
-
-			if ( $prev_page > $max_pages ) {
-				$prev_page = $max_pages;
-			}
-
-			$prev_link = add_query_arg( 'page', $prev_page, $base );
-			$response->link_header( 'prev', $prev_link );
-		}
-		if ( $max_pages > $page ) {
-			$next_page = $page + 1;
-			$next_link = add_query_arg( 'page', $next_page, $base );
-
-			$response->link_header( 'next', $next_link );
-		}
 
 		return $response;
 	}

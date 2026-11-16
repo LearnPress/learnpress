@@ -35,6 +35,9 @@ body {
 @import 'course-builder/tab-lessons';
 @import 'course-builder/tab-settings';
 
+// Course settings tab: More Features (shared with wp-admin)
+@import 'admin/course_tab_more_features';
+
 // Edit views
 @import 'course-builder/edit-course';
 @import 'course-builder/edit-lesson';

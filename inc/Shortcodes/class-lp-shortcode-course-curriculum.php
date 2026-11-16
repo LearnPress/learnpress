@@ -56,6 +56,5 @@ if ( ! class_exists( 'LP_Shortcode_Course_Curriculum' ) ) {
 
 			return $output;
 		}
-
 	}
 }

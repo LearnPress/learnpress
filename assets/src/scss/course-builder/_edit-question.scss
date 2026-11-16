@@ -252,7 +252,7 @@
 		@include vertical-tab-navigation;
 		@include shared-form-fields;
 
-		.lp-meta-box-course-panels::before {
+		/*.lp-meta-box-course-panels::before {
 			content: attr( data-tab-title );
 			display: block;
 			font-size: 24px;
@@ -260,7 +260,7 @@
 			color: #1e1e1e;
 			margin-bottom: 25px;
 			line-height: 1.2;
-		}
+		}*/
 
 		@media ( max-width: 768px ) {
 			.lp-meta-box__course-tab {

@@ -1046,6 +1046,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return LP_Lesson|LP_Quiz|boolean
 		 */
 		public function get_item( $item_id ) {
+			// Item must belong to this course, prevent cross-course content disclosure.
+			if ( ! $this->has_item( absint( $item_id ) ) ) {
+				return false;
+			}
+
 			$item = LP_Course_Item::get_item( $item_id );
 			if ( $item instanceof LP_Course_Item ) {
 				$item->set_course( $this->get_id() );

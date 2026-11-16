@@ -138,7 +138,7 @@ class LP_Jwt_Section_Items_V1_Controller extends LP_REST_Jwt_Controller {
 		$can_view_item = new LP_Model_User_Can_View_Course_Item();
 		if ( $user ) {
 			$can_view_content_course = $user->can_view_content_course( absint( $course_id ) );
-			$can_view_item           = $user->can_view_item( $item_id, $can_view_content_course );
+			$can_view_item           = $user->can_view_item( $item_id, $can_view_content_course, (int) $course_id );
 		}
 
 		if ( rest_is_field_included( 'id', $fields ) ) {
