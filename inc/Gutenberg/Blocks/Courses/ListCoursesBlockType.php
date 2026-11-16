@@ -190,6 +190,8 @@ class ListCoursesBlockType extends AbstractBlockType {
 			return $content;
 		}
 
+		// Security: settings come from request (AJAX args), only show published courses.
+		$settings['c_status'] = 'publish';
 		$attributes           = $settings['attributes'] ?? [];
 		$courseQuery          = $attributes['courseQuery'] ?? [];
 		$total_rows           = 0;

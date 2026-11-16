@@ -132,6 +132,11 @@ class Courses {
 			$filter->post_status = [ 'publish' ];
 		}
 
+		// Security: params can come from request (AJAX args), only user can edit courses is allowed to query non-public status.
+		if ( [ 'publish' ] !== array_values( (array) $filter->post_status ) && ! current_user_can( 'edit_lp_courses' ) ) {
+			$filter->post_status = [ 'publish' ];
+		}
+
 		/**
 		 * Sort by
 		 * 1. on_sale

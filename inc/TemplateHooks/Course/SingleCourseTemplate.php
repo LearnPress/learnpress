@@ -1423,7 +1423,14 @@ class SingleCourseTemplate {
 
 			global $withcomments, $post;
 
-			$post = get_post( $course_id );
+			$post_course = get_post( absint( $course_id ) );
+			// Security: course_id come from request, only render comments of course user can view.
+			if ( ! $post_course || LP_COURSE_CPT !== $post_course->post_type
+				|| post_password_required( $post_course ) ) {
+				return $response;
+			}
+
+			$post = $post_course;
 			if ( $post->comment_status !== 'open' ) {
 				return $response;
 			} else {

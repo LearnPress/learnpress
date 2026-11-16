@@ -129,6 +129,8 @@ class SkinCoursesBase extends LPSkinBase {
 
 		$filter               = new LP_Course_Filter();
 		$settings['order_by'] = $courses_order_by;
+		// Security: settings can come from request (AJAX args), only show published courses.
+		$settings['c_status'] = 'publish';
 		Courses::handle_params_for_query_courses( $filter, $settings );
 		// Term
 		$filter->term_ids = array_merge( $filter->term_ids, $courses_category_ids );

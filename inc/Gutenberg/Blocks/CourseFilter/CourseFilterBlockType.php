@@ -4,6 +4,7 @@ namespace LearnPress\Gutenberg\Blocks\CourseFilter;
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LP_Debug;
+use LP_Widget;
 use Throwable;
 /**
  * Class CourseFilterBlockType
@@ -52,9 +53,12 @@ class CourseFilterBlockType extends AbstractBlockType {
 				'class_wrapper_form'        => 'lp-form-course-filter',
 			];
 
-			$data = [
+			$instance_json = wp_json_encode( $instance );
+			$data          = [
 				'widget'   => 'learnpress_widget_course_filter',
-				'instance' => wp_json_encode( $instance ),
+				'instance' => $instance_json,
+				// Security: sign instance (server side), REST API only accept instance signed.
+				'hash'     => LP_Widget::sign_instance( 'learnpress_widget_course_filter', (string) $instance_json ),
 			];
 
 			if ( $show_in_rest ) {

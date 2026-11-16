@@ -165,7 +165,9 @@ class ListCoursesTemplate {
 	 * @version 1.0.6
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
-		$filter = new LP_Course_Filter();
+		// Security: settings can come from request (AJAX args), list courses public only show published.
+		$settings['c_status'] = 'publish';
+		$filter               = new LP_Course_Filter();
 		Courses::handle_params_for_query_courses( $filter, $settings );
 
 		$total_rows                   = 0;
