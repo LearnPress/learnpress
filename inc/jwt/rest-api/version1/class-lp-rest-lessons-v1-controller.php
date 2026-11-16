@@ -176,7 +176,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		$can_view_content_course = $user->can_view_content_course( $course_id );
 
-		$can_view_item = $user->can_view_item( $post_id, $can_view_content_course );
+		$can_view_item = $user->can_view_item( $post_id, $can_view_content_course, (int) $course_id );
 
 		if ( ! $can_view_item->flag ) {
 			return false;
