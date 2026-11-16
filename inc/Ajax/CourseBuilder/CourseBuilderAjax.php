@@ -13,7 +13,6 @@ use DateTimeZone;
 use Exception;
 use LearnPress\Ajax\AbstractAjax;
 use LearnPress\CourseBuilder\CourseBuilder;
-use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Helpers\Response;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -28,9 +27,7 @@ use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderListCoursesTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Lesson\BuilderListLessonsTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderListQuestionsTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\Question\BuilderQuestionTemplate;
 use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderListQuizzesTemplate;
-use LearnPress\TemplateHooks\CourseBuilder\Quiz\BuilderQuizTemplate;
 use LP_Course_CURD;
 use LP_Helper;
 use LP_Lesson_CURD;
@@ -860,7 +857,12 @@ class CourseBuilderAjax extends AbstractAjax {
 			$course_id   = $data['course_id'] ?? 0;
 			$courseModel = $data['course_model'];
 
-			if ( absint( $courseModel->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+			if ( empty( $courseModel ) ) {
+				throw new Exception( __( 'Course is invalid', 'learnpress' ) );
+			}
+
+			if ( absint( $courseModel->post_author ) !== get_current_user_id()
+				&& ! current_user_can( 'manage_options' ) ) {
 				throw new Exception( __( 'You are not allowed to duplicate this course', 'learnpress' ) );
 			}
 
@@ -910,14 +912,24 @@ class CourseBuilderAjax extends AbstractAjax {
 
 		try {
 			$data        = self::check_valid_course();
-			$course_id   = $data['course_id'] ?? 0;
-			$courseModel = $data['course_model'];
-			$status      = $data['status'] ?? 'trash';
+			$course_id   = absint( $data['course_id'] ?? 0 );
+			$courseModel = $data['course_model'] ?? '';
+			$status      = sanitize_key( $data['status'] ?? 'trash' );
 
-			$co_instructor_ids = get_post_meta( $course_id, '_lp_co_teacher', false );
-			$co_instructor_ids = ! empty( $co_instructor_ids ) ? $co_instructor_ids : array();
+			// Only existing lp_course posts can be handled.
+			if ( empty( $courseModel ) || ! $courseModel instanceof CourseModel
+				|| get_post_type( $course_id ) !== LP_COURSE_CPT ) {
+				throw new Exception( __( 'Course is invalid', 'learnpress' ) );
+			}
 
-			if ( absint( $courseModel->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) && ! in_array( get_current_user_id(), $co_instructor_ids ) ) {
+			$user_id           = get_current_user_id();
+			$co_instructor_ids = array_map( 'absint', (array) get_post_meta( $course_id, '_lp_co_teacher', false ) );
+
+			$can_manage = current_user_can( 'manage_options' )
+				|| absint( $courseModel->post_author ) === $user_id
+				|| in_array( $user_id, $co_instructor_ids, true );
+
+			if ( ! $can_manage || ! current_user_can( 'edit_post', $course_id ) ) {
 				throw new Exception( __( 'You are not allowed to delete this course', 'learnpress' ) );
 			}
 
@@ -1068,6 +1080,10 @@ class CourseBuilderAjax extends AbstractAjax {
 			$data         = self::check_valid_lesson();
 			$lesson_id    = $data['lesson_id'] ?? 0;
 			$lesson_model = $data['lesson_model'];
+
+			if ( empty( $lesson_model ) ) {
+				throw new Exception( __( 'Lesson is invalid', 'learnpress' ) );
+			}
 
 			if ( absint( $lesson_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
 				throw new Exception( __( 'You are not allowed to duplicate this lesson', 'learnpress' ) );
@@ -1678,6 +1694,10 @@ class CourseBuilderAjax extends AbstractAjax {
 			$quiz_id    = $data['quiz_id'] ?? 0;
 			$quiz_model = $data['quiz_model'];
 
+			if ( empty( $quiz_model ) ) {
+				throw new Exception( __( 'Quiz is invalid', 'learnpress' ) );
+			}
+
 			if ( absint( $quiz_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
 				throw new Exception( __( 'You are not allowed to duplicate this quiz', 'learnpress' ) );
 			}
@@ -1841,7 +1861,12 @@ class CourseBuilderAjax extends AbstractAjax {
 			$question_id    = $data['question_id'] ?? 0;
 			$question_model = $data['question_model'];
 
-			if ( absint( $question_model->post_author ) !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+			if ( empty( $question_model ) ) {
+				throw new Exception( __( 'Question is invalid', 'learnpress' ) );
+			}
+
+			if ( absint( $question_model->post_author ) !== get_current_user_id()
+				&& ! current_user_can( 'manage_options' ) ) {
 				throw new Exception( __( 'You are not allowed to duplicate this question', 'learnpress' ) );
 			}
 

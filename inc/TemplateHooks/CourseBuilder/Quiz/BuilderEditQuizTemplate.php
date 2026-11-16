@@ -9,7 +9,6 @@
 namespace LearnPress\TemplateHooks\CourseBuilder\Quiz;
 
 use Exception;
-use LearnPress\CourseBuilder\CourseBuilderAccessPolicy;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\CourseBuilder\Course\BuilderCourseTemplate;
 use LearnPress\CourseBuilder\CourseBuilder;
@@ -52,10 +51,6 @@ class BuilderEditQuizTemplate {
 			if ( empty( $item_id ) ) {
 				throw new Exception( __( 'Invalid quiz ID', 'learnpress' ) );
 			}
-
-			/*if ( ! CourseBuilderAccessPolicy::can_access_tab_post( 'quizzes', $item_id ) ) {
-				throw new Exception( __( "Sorry, you don't have permission to access this content", 'learnpress' ) );
-			}*/
 
 			$is_create_new = $item_id === CourseBuilder::POST_NEW;
 			$quizModel     = false;
