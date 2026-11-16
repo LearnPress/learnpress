@@ -155,7 +155,7 @@
     "learnpress-assignments": {
         "name": "Assignments Add-on for LearnPress",
         "basename": "learnpress-assignments/learnpress-assignments.php",
-        "version": "4.2.2",
+        "version": "4.2.3",
         "require_lp": "4.4.2",
         "description": "Assign tasks and essays for students to submit, then review and grade them.",
         "image": "https://updates.thimpress.com/images/learnpress-assignments.png",
