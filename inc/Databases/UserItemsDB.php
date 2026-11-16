@@ -109,4 +109,36 @@ class UserItemsDB extends DataBase {
 
 		return $this->execute( $filter, $total_rows );
 	}
+
+	/**
+	 * Count distinct students (exist in users table) who enrolled, finished or purchased a course.
+	 *
+	 * @param int $course_id
+	 *
+	 * @return int
+	 * @throws Exception
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function get_total_users_enrolled_by_course( int $course_id ): int {
+		$filter              = new UserItemsFilter();
+		$filter->only_fields = [ 'DISTINCT(user_id) AS user_id' ];
+		$filter->item_id     = $course_id;
+		$filter->item_type   = LP_COURSE_CPT;
+		$filter->field_count = 'ui.user_id';
+		$filter->join[]      = "INNER JOIN {$this->tb_users} AS u ON ui.user_id = u.ID";
+		$filter->where[]     = 'AND ui.user_id > 0';
+		$filter->where[]     = $this->wpdb->prepare(
+			'AND ( ui.status = %s OR ui.status = %s OR ui.status = %s )',
+			LP_COURSE_ENROLLED,
+			LP_COURSE_FINISHED,
+			LP_COURSE_PURCHASED
+		);
+		$filter->query_count = true;
+
+		$total = 0;
+		$this->get_user_items( $filter, $total );
+
+		return $total;
+	}
 }

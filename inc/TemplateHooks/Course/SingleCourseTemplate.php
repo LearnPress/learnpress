@@ -508,7 +508,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.4
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_count_student( $course ): string {
 		if ( $course instanceof LP_Course ) {
@@ -519,10 +519,9 @@ class SingleCourseTemplate {
 			return '';
 		}
 
-		$count_student  = $course->get_total_user_enrolled_or_purchased();
-		$count_student += $course->get_fake_students();
-		$content        = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) );
-		$html_wrapper   = [
+		$count_student = $course->count_students();
+		$content       = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) );
+		$html_wrapper  = [
 			'<div class="course-count-student">' => '</div>',
 		];
 

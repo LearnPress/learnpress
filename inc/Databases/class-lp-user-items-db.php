@@ -140,7 +140,8 @@ class LP_User_Items_DB extends LP_Database {
 			$filter->where[]      = $this->wpdb->prepare( 'AND ui.user_item_id IN (' . $user_item_ids_format . ')', $filter->user_item_ids );
 		}
 
-		if ( $filter->user_id !== false ) {
+		// null (default of filter) or false = do not filter by user. 0 = guest.
+		if ( null !== $filter->user_id && false !== $filter->user_id ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.user_id = %d', $filter->user_id );
 		}
 

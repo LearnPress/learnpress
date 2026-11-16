@@ -15,14 +15,6 @@ class LPCourseCache extends LPCache {
 	protected $key_group_child                          = 'course';
 	protected $key_total_students_enrolled_or_purchased = 'total-students-enrolled-or-purchased';
 
-	public static function instance(): self {
-		if ( is_null( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
 	public function set_total_students_enrolled_or_purchased( int $course_id, int $total ): bool {
 		$key = "{$course_id}/{$this->key_total_students_enrolled_or_purchased}";
 		return $this->set_cache( $key, $total );
