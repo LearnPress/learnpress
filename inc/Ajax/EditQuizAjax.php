@@ -107,7 +107,8 @@ class EditQuizAjax extends AbstractAjax {
 			 */
 			foreach ( $questions_added as $quizQuestionModel ) {
 				$questionPostModel = $quizQuestionModel->get_question_post_model();
-				$response->data->html_edit_question[ $quizQuestionModel->question_id ] = AdminEditQizTemplate::instance()->html_edit_question( $questionPostModel );
+				$response->data->html_edit_question[ $quizQuestionModel->question_id ] =
+					AdminEditQizTemplate::instance()->html_edit_question( $questionPostModel );
 			}
 
 			$response->status  = 'success';
