@@ -69,7 +69,7 @@
     "learnpress-exams": {
         "name": "Exam Add-on for LearnPress",
         "basename": "learnpress-exams/learnpress-exams.php",
-        "version": "4.0.1",
+        "version": "4.0.2",
         "require_lp": "4.4.1",
         "description": "Create timed exams quickly by reusing questions from your question bank.",
         "image": "https://updates.thimpress.com/images/learnpress-exams.png",
