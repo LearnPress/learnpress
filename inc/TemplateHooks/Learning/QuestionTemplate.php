@@ -19,6 +19,7 @@ use LearnPress\Models\Question\QuestionPostFIBModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserQuizModel;
+use LearnPress\SortingChoice\Models\QuestionSortingChoiceModel;
 use LP_Debug;
 use Throwable;
 
@@ -206,6 +207,12 @@ class QuestionTemplate {
 					if ( ! is_plugin_active( 'learnpress-sorting-choice/learnpress-sorting-choice.php' ) ) {
 						break;
 					}
+
+					$model_class = QuestionSortingChoiceModel::class;
+					if ( QuestionPostModel::is_class_declare_check( $model_class ) ) {
+						break;
+					}
+
 					$html = $this->html_answer_type_sorting_choice( $questionPostModel, $args );
 					break;
 				default:

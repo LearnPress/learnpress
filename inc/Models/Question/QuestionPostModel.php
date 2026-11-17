@@ -375,7 +375,8 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
-	 * Check class is model question and declare method check, not inherit from QuestionPostModel.
+	 * Check class is model question and declare method check,
+	 * only for case of addon Sorting Choice.
 	 *
 	 * @param mixed $model_class
 	 *
