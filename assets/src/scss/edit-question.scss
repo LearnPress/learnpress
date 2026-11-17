@@ -253,3 +253,8 @@ $border-color: #c3c4c7;
 		}
 	}
 }
+
+// Question type is not registered (e.g. addon deactivated).
+.lp-question-type-not-exist {
+	color: #d63638;
+}

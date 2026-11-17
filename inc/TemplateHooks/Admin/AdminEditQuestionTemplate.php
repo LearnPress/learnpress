@@ -287,15 +287,28 @@ class AdminEditQuestionTemplate {
 	public function html_edit_question_by_type( QuestionPostModel $questionPostModel ): string {
 		$html_answers_config = AdminEditQuestionTemplate::instance()->html_answer_option( $questionPostModel );
 
+		$type_label = $questionPostModel->get_type_label();
+		if ( empty( $type_label ) ) {
+			$type_label = sprintf(
+				'<span class="lp-question-type-not-exist">%s</span>',
+				esc_html__( 'Type does not exist', 'learnpress' )
+			);
+		} else {
+			$type_label = sprintf(
+				'<span class="lp-question-type-label">%s</span>',
+				esc_html( $type_label )
+			);
+		}
+
 		$section = [
 			'wrap'           => '<div class="lp-question-data-edit lp-question-by-type">',
 			'header'         => sprintf(
 				'<div class="lp-question-data-edit-header">
 					<label>%s</label>
-					<span class="lp-question-type-label">%s</span>
+					%s
 				</div>',
 				__( 'Config Your Answer', 'learnpress' ),
-				esc_html( $questionPostModel->get_type_label() )
+				$type_label
 			),
 			/*'button-save'    => sprintf(
 				'<button type="button" class="lp-btn-update-question-answer button lp-hidden">%s</button>',

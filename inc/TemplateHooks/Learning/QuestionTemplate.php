@@ -203,6 +203,9 @@ class QuestionTemplate {
 					$html = $this->html_answer_type_fill_in_blanks( $questionPostModel, $args );
 					break;
 				case 'sorting_choice':
+					if ( ! is_plugin_active( 'learnpress-sorting-choice/learnpress-sorting-choice.php' ) ) {
+						break;
+					}
 					$html = $this->html_answer_type_sorting_choice( $questionPostModel, $args );
 					break;
 				default:
