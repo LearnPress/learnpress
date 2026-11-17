@@ -841,10 +841,21 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return bool
 		 */
 		public function is_selected_option( $answer, $answered = false ): bool {
+			// Compare as strings so booleans and arrays never match by loose comparison.
+			$to_string = static function ( $value ): string {
+				if ( is_bool( $value ) ) {
+					return $value ? 'true' : 'false';
+				}
+
+				return is_scalar( $value ) ? (string) $value : '';
+			};
+
+			$value = $to_string( $answer['value'] ?? '' );
+
 			if ( is_array( $answered ) ) {
-				$is_selected = in_array( $answer['value'], $answered );
+				$is_selected = in_array( $value, array_map( $to_string, $answered ), true );
 			} else {
-				$is_selected = $answer['value'] === $answered;
+				$is_selected = $value === $to_string( $answered );
 			}
 
 			return apply_filters( 'learn-press/question/is-selected-option', $is_selected, $answer, $answered, $this->get_id() );

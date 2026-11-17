@@ -68,12 +68,19 @@ if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
 		 */
 		public function check( $user_answer = null ) {
 			$return = parent::check();
+			if ( is_bool( $user_answer ) ) {
+				$user_answer = $user_answer ? 'true' : 'false';
+			}
+			if ( ! is_scalar( $user_answer ) || '' === (string) $user_answer ) {
+				return $return;
+			}
+			$user_answer = (string) $user_answer;
 			try {
 				$answers = $this->get_answers();
 				if ( $answers ) {
 					foreach ( $answers as $key => $option ) {
 						$data = $option->get_data();
-						if ( $data['is_true'] == 'yes' && $data['value'] == $user_answer ) {
+						if ( $data['is_true'] === 'yes' && (string) $data['value'] === $user_answer ) {
 							$return['correct'] = true;
 							$return['mark']    = floatval( $this->get_mark() );
 							break;

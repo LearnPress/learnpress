@@ -64,17 +64,17 @@ class QuestionPostMultipleChoiceModel extends QuestionPostModel {
 				$correct = true;
 				foreach ( $answer_models as $option ) {
 					if ( $option instanceof QuestionAnswerModel ) {
-						$value   = $option->value;
+						$value   = (string) $option->value;
 						$is_true = $option->is_true;
 					} elseif ( is_array( $option ) ) {
-						$value   = $option['value'] ?? '';
+						$value   = (string) ( $option['value'] ?? '' );
 						$is_true = $option['is_true'] ?? '';
 					} else {
 						continue;
 					}
 
 					$selected = false;
-					if ( in_array( $value, $user_answer ) ) {
+					if ( in_array( $value, $user_answer, true ) ) {
 						$selected = true;
 					}
 
