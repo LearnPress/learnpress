@@ -158,14 +158,16 @@ class QuizPostModel extends PostModel {
 			// Hook old
 			if ( has_filter( 'learn-press/quiz/get-question-ids' ) ) {
 				$course_ids            = CourseSectionItemModel::get_courses_from_item_id( $this->get_id(), $this->post_type );
-				$course_id_of_quiz_old = $course_ids[0] ? $course_ids[0]->section_course_id : 0;
+				if ( ! empty( $course_ids ) ) {
+					$course_id_of_quiz_old = $course_ids[0] ? $course_ids[0]->section_course_id : 0;
 
-				$question_ids = apply_filters(
-					'learn-press/quiz/get-question-ids',
-					$question_ids,
-					$this->get_id(),
-					$course_id_of_quiz_old
-				);
+					$question_ids = apply_filters(
+						'learn-press/quiz/get-question-ids',
+						$question_ids,
+						$this->get_id(),
+						$course_id_of_quiz_old
+					);
+				}
 			}
 
 			$question_ids = apply_filters(
