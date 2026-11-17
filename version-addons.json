@@ -680,7 +680,7 @@
     "learnpress-random-quiz": {
         "name": "Random Quiz Add-on for LearnPress",
         "basename": "learnpress-random-quiz/learnpress-random-quiz.php",
-        "version": "4.0.4",
+        "version": "4.0.5",
         "require_lp": "4.2.4",
         "description": "Shuffle quiz questions so each student gets a unique test on every attempt.",
         "image": "https://updates.thimpress.com/images/learnpress-random-quiz.png",
