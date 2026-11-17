@@ -8,6 +8,7 @@ use LearnPress\Filters\QuizQuestionsFilter;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
 use LP_Cache;
+use LP_Quiz_Cache;
 use stdClass;
 use Throwable;
 
@@ -233,7 +234,12 @@ class QuizQuestionModel {
 	 */
 	public function clean_caches() {
 		$key_cache       = "quizQuestion/find/{$this->quiz_id}/{$this->question_id}";
-		$lp_course_cache = new LP_Cache();
-		$lp_course_cache->clear( $key_cache );
+		$lp_cache = new LP_Cache();
+		$lp_cache->clear( $key_cache );
+
+		// Clear quiz question cache
+		$lp_quiz_cache = LP_Quiz_Cache::instance();
+		$key_cache = "$this->quiz_id/question_ids";
+		$lp_quiz_cache->clear( $key_cache );
 	}
 }
