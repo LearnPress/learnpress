@@ -304,6 +304,9 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.4.15 (2026-11-17) =
+* Hot fix.
+
 = 4.4.14 (2026-11-16) =
 * Fixed: security.
 * Fixed: minor bugs.
