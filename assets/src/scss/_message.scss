@@ -30,6 +30,10 @@ $msg-border-info: #2E91FA;
 		line-height: 1;
 	}
 
+	&.hidden-icon::before {
+		display: none;
+	}
+
  	&.error {
 		background-color: $msg-error;
 		color: #FF3B30;

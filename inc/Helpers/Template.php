@@ -323,12 +323,18 @@ class Template {
 	 * @param string $message
 	 * @param string $status 'success', 'warning', 'error, 'info'
 	 * @param bool $has_print since 4.2.7.6, true for print, false for return
+	 * @param array $args
 	 *
 	 * @return void|string
 	 * @since 4.2.6.9.3
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
-	public static function print_message( string $message, string $status = 'success', bool $has_print = true ) {
+	public static function print_message(
+		string $message,
+		string $status = 'success',
+		bool $has_print = true,
+		array $args = []
+	) {
 		if ( empty( $message ) ) {
 			if ( $has_print ) {
 				return;
@@ -337,8 +343,14 @@ class Template {
 			}
 		}
 
+		$hidden_icon = isset( $args['hidden_icon'] );
+
 		$section = [
-			'wrapper'     => sprintf( '<div class="learn-press-message %s">', esc_attr( $status ) ),
+			'wrapper'     => sprintf(
+				'<div class="learn-press-message %s %s">',
+				esc_attr( $status ),
+				$hidden_icon ? 'hidden-icon' : ''
+			),
 			'content'     => sprintf(
 				'<div>%s</div>',
 				wp_kses_post( $message )
