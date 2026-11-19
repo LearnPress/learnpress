@@ -380,7 +380,7 @@
     "learnpress-sorting-choice": {
         "name": "Sorting Choice Add-on for LearnPress",
         "basename": "learnpress-sorting-choice/learnpress-sorting-choice.php",
-        "version": "4.0.4",
+        "version": "4.0.5",
         "require_lp": "4.2.9",
         "description": "Add sorting and sequence question types to make your quizzes more interactive.",
         "image": "https://updates.thimpress.com/images/learnpress-sorting-choice.png",
