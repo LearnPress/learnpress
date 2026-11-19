@@ -508,6 +508,33 @@ test( 'scrolling a lesson pane repositions Add Note and hides it only when the s
 	assert.equal( widget.el.selectionBtn.hidden, false );
 } );
 
+test( 'fixed learning popups ignore outer body clipping while retaining lesson pane bounds', ( t ) => {
+	const env = setup( t );
+	const { widget, dom, click } = env;
+	const document = dom.window.document;
+	document.body.style.overflow = 'hidden';
+	document.body.getBoundingClientRect = () => ( { left: 0, right: 800, top: 32, bottom: 123 } );
+	const popup = document.createElement( 'div' );
+	popup.style.position = 'fixed';
+	widget.contentRoot.before( popup );
+	popup.appendChild( widget.contentRoot );
+	widget.contentRoot.style.overflow = 'auto';
+	widget.contentRoot.getBoundingClientRect = () => ( { left: 80, right: 500, top: 100, bottom: 400 } );
+	const rects = [ selectionRect( 350, 370 ) ];
+	selectLesson( env, rects );
+	widget.updateSelectionButton();
+	assert.equal( widget.el.selectionBtn.hidden, false );
+	assert.equal( widget.el.selectionBtn.style.top, '306px' );
+	click( widget.el.selectionBtn );
+	assert.equal( widget.formState.noteType, 'highlight' );
+	assert.equal( widget.el.form.hidden, false );
+
+	rects[ 0 ] = selectionRect( 450, 470 );
+	selectLesson( env, rects );
+	widget.updateSelectionButton();
+	assert.equal( widget.el.selectionBtn.hidden, true );
+} );
+
 test( 'selection fallback and resize keep the button positioned without page scroll offsets', ( t ) => {
 	const env = setup( t );
 	const { widget, dom } = env;

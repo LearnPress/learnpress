@@ -735,6 +735,11 @@ export class CourseNotes {
 					bounds.bottom = Math.min( bounds.bottom, box.bottom );
 				}
 			}
+			// Learning popups are fixed to the viewport. Their outer page wrappers
+			// (including Eduma's short, overflow-hidden body) do not clip the lesson.
+			if ( style.position === 'fixed' ) {
+				break;
+			}
 		}
 		const rects = Array.from( range.getClientRects() );
 		if ( ! rects.length ) {
