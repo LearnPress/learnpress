@@ -204,27 +204,27 @@ class AdminListStudentsEnrolled {
 				$filter->where[] = $lp_db_user_items->wpdb->prepare( 'AND p.post_author = %d', $instructor_id );
 			}
 
-			if ( $course_id > 0 ) {
-				$filter->item_id = $course_id;
-			} elseif ( ! empty( $course_name ) ) {
+			if ( ! empty( $course_name ) ) {
 				$course_name_like = '%' . $lp_db_user_items->wpdb->esc_like( $course_name ) . '%';
 				$filter->where[]  = $lp_db_user_items->wpdb->prepare(
 					'AND p.post_title LIKE %s',
 					$course_name_like
 				);
+			} elseif ( $course_id > 0 ) {
+				$filter->item_id = $course_id;
 			}
 
-			if ( $student_id > 0 ) {
-				$filter->where[] = $lp_db_user_items->wpdb->prepare(
-					'AND ui.user_id = %d',
-					$student_id
-				);
-			} elseif ( ! empty( $student_name ) ) {
+			if ( ! empty( $student_name ) ) {
 				$search_like     = '%' . $lp_db_user_items->wpdb->esc_like( $student_name ) . '%';
 				$filter->where[] = $lp_db_user_items->wpdb->prepare(
 					'AND ( u.display_name LIKE %s OR u.user_email LIKE %s )',
 					$search_like,
 					$search_like
+				);
+			} elseif ( $student_id > 0 ) {
+				$filter->where[] = $lp_db_user_items->wpdb->prepare(
+					'and ui.user_id = %d',
+					$student_id
 				);
 			}
 
@@ -507,8 +507,12 @@ class AdminListStudentsEnrolled {
 			$section_empty = array(
 				'wrap'     => '<div class="lp-enrolled-students-table-wrap">',
 				'empty'    => sprintf(
-					'<div class="lp-enrolled-empty"><p>%s</p></div>',
-					esc_html__( 'No students found.', 'learnpress' )
+					'%s',
+					Template::print_message(
+						esc_html__( 'No students found.', 'learnpress' ),
+						'info',
+						false
+					)
 				),
 				'wrap-end' => '</div>',
 			);
