@@ -194,11 +194,11 @@ class AdminEditQizTemplate {
 	/**
 	 * HTML for edit question.
 	 *
-	 * @param $questionPostModel
-	 *
+	 * @param null $questionPostModel
+	 * @param array $data
 	 * @return string
 	 */
-	public function html_edit_question( $questionPostModel = null ): string {
+	public function html_edit_question( $questionPostModel = null, array $data = [] ): string {
 		$is_clone       = false;
 		$question_id    = 0;
 		$question_title = '';
@@ -247,15 +247,13 @@ class AdminEditQizTemplate {
 		}
 
 		$type_label = $questionPostModel instanceof QuestionPostModel
-			? $questionPostModel->get_type_label() :
-			'';
-
-		if ( empty( $type_label ) ) {
-			$type_label = sprintf(
-				'<span class="lp-question-type-not-exist">%s</span>',
-				__( 'Type does not exist', 'learnpress' )
-			);
-		}
+			? ( ! empty( $questionPostModel->get_type_label() )
+				? $questionPostModel->get_type_label()
+				: sprintf(
+					'<span class="lp-question-type-not-exist">%s</span>',
+					__( 'Type does not exist', 'learnpress' )
+				) )
+			: '';
 
 		$section = [
 			'wrap'       => sprintf(
