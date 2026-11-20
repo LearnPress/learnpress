@@ -196,3 +196,26 @@
 		color: var(--lp-color-white, #fff);
 	}
 }
+
+// Fix for theme set pagination
+.questions-pagination {
+	ul.page-numbers {
+		width: auto !important;
+		height: auto !important;
+
+		.next, .prev {
+			&::before {
+				display: none !important;
+			}
+		}
+	}
+}
+
+// Fix for theme set question-answers
+.question-answers {
+	input:checked {
+		&:before {
+			display: none !important;
+		}
+	}
+}
