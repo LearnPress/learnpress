@@ -194,8 +194,18 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 					$file_path = str_replace( wp_upload_dir()['baseurl'], '', $file_handle_upload['url'] );
 				} elseif ( $method == 'external' ) {
-					$file_path   = sanitize_url( $material['link'] );
-					$file_info   = pathinfo( $file_path );
+					$file_path = sanitize_url( $material['link'] ?? '', [ 'http', 'https' ] );
+					// Block SSRF: only public http(s) URLs (rejects loopback, private/link-local IPs, odd ports).
+					if ( empty( $file_path ) || ! wp_http_validate_url( $file_path ) ) {
+						$error_messages .= sprintf(
+							esc_html__( 'An error occurred while checking %1$s. %2$s', 'learnpress' ),
+							$label,
+							esc_html__( 'The external link is invalid or not allowed.', 'learnpress' )
+						);
+						continue;
+					}
+
+					$file_info   = pathinfo( wp_parse_url( $file_path, PHP_URL_PATH ) ?: '' );
 					$file_extend = $file_info['extension'] ?? '';
 					if ( ! $file_extend ) {
 						$file_type = __( 'Unknown', 'learnpress' );

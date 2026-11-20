@@ -266,7 +266,8 @@ class CourseMaterialTemplate {
 			$args      = array(
 				'timeout' => 0.1,
 			);
-			$file_head = wp_remote_head( $material->file_path, $args );
+			// Safe variant sets reject_unsafe_urls: blocks SSRF to internal/loopback hosts (also for links saved earlier).
+			$file_head = wp_safe_remote_head( $material->file_path, $args );
 
 			if ( is_wp_error( $file_head )
 				|| ! isset( $file_head['headers']['content-length'] )
