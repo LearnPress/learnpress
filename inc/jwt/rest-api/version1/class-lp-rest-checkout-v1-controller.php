@@ -316,37 +316,8 @@ class LP_Jwt_Checkout_V1_Controller extends LP_REST_Jwt_Controller {
 			$lp_order_id = $this->reuse_or_create_order( $checkout, $course_id );
 			$lp_order    = new LP_Order( $lp_order_id );
 
-			// Create PayPal order via v2 API directly so we can read the id (for SDK).
-			$data_token = $paypal_gateway->get_access_token();
-			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
-				throw new Exception( esc_html__( 'Invalid PayPal access token.', 'learnpress' ) );
-			}
-
-			$params = $paypal_gateway->get_order_args( $lp_order );
-
-			$paypal_response = wp_remote_post(
-				$paypal_gateway->api_url . 'v2/checkout/orders',
-				array(
-					'body'    => json_encode( $params ),
-					'headers' => array(
-						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
-						'Content-Type'  => 'application/json',
-					),
-					'timeout' => 60,
-				)
-			);
-
-			$paypal_result = LP_Helper::json_decode( wp_remote_retrieve_body( $paypal_response ) );
-
-			if ( isset( $paypal_result->error ) ) {
-				throw new Exception( $paypal_result->error_description ?? 'PayPal error' );
-			}
-			if ( isset( $paypal_result->name ) && isset( $paypal_result->details[0] ) ) {
-				throw new Exception( $paypal_result->details[0]->description );
-			}
-			if ( empty( $paypal_result->id ) ) {
-				throw new Exception( esc_html__( 'Invalid PayPal order response.', 'learnpress' ) );
-			}
+			// Create PayPal order via v2 API (for SDK); the gateway binds its id to the LP order server-side.
+			$paypal_result = $paypal_gateway->create_paypal_order( $lp_order );
 
 			$cart->empty_cart();
 
@@ -379,52 +350,26 @@ class LP_Jwt_Checkout_V1_Controller extends LP_REST_Jwt_Controller {
 			if ( ! isset( $available['paypal'] ) ) {
 				throw new Exception( esc_html__( 'PayPal is not enabled.', 'learnpress' ) );
 			}
+			/** @var LP_Gateway_Paypal $paypal_gateway */
 			$paypal_gateway = $available['paypal'];
 
-			$data_token_str = LP_Settings::get_option( 'paypal_token' );
-			$data_token     = json_decode( $data_token_str );
-			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
-				$data_token = $paypal_gateway->get_access_token();
-			}
-
-			$capture_response = wp_remote_post(
-				$paypal_gateway->api_url . 'v2/checkout/orders/' . $paypal_order_id . '/capture',
-				array(
-					'headers' => array(
-						'Content-Type'  => 'application/json',
-						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
-					),
-					'timeout' => 60,
-				)
-			);
-
-			$code        = wp_remote_retrieve_response_code( $capture_response );
-			$body        = wp_remote_retrieve_body( $capture_response );
-			$transaction = LP_Helper::json_decode( $body );
-
-			if ( $code !== 201 || ! isset( $transaction->status ) || $transaction->status !== 'COMPLETED' ) {
-				$msg = isset( $transaction->details[0]->description )
-					? $transaction->details[0]->description
-					: esc_html__( 'Could not capture PayPal payment.', 'learnpress' );
-				throw new Exception( $msg );
-			}
-
-			$lp_order_id = 0;
-			if ( isset( $transaction->purchase_units[0]->payments->captures[0]->custom_id ) ) {
-				$lp_order_id = absint( $transaction->purchase_units[0]->payments->captures[0]->custom_id );
-			}
-			if ( ! $lp_order_id ) {
+			// Resolve the LP order from the PayPal order id this site created, never from custom_id.
+			$lp_order = $paypal_gateway->get_lp_order_by_paypal_order_id( $paypal_order_id );
+			if ( ! $lp_order ) {
 				throw new Exception( esc_html__( 'Could not resolve order.', 'learnpress' ) );
 			}
 
-			$lp_order = new LP_Order( $lp_order_id );
-
-			// Defense in depth: only allow the LP order's owner to finalize it.
+			// Only allow the LP order's owner to finalize it.
 			if ( (int) $lp_order->get_user_id() !== get_current_user_id() ) {
 				throw new Exception( esc_html__( 'You are not allowed to capture this order.', 'learnpress' ) );
 			}
 
-			$lp_order->update_status( LP_ORDER_COMPLETED );
+			// Same capture + amount/currency check as the classic PayPal return URL.
+			if ( ! $paypal_gateway->capture_payment_for_order( $paypal_order_id ) ) {
+				throw new Exception( esc_html__( 'Could not capture PayPal payment.', 'learnpress' ) );
+			}
+
+			$lp_order = new LP_Order( $lp_order->get_id() );
 			$this->clear_awaiting_session();
 
 			$response->status      = 'success';

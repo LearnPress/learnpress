@@ -8,6 +8,8 @@
  * @version 3.0.3
  */
 
+use LearnPress\Databases\PostDB;
+use LearnPress\Filters\OrderPostFilter;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 
@@ -89,6 +91,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Order meta holding the PayPal webhook event ids already processed, as a JSON array.
 		 */
 		const META_WEBHOOK_EVENT_PROCESSED = '_lp_paypal_webhook_event_processed';
+		/**
+		 * Order meta holding the PayPal order ids this site created for the LP order.
+		 * Used to bind a PayPal order to its LP order server-side, so capture never trusts custom_id alone.
+		 */
+		const META_PAYPAL_ORDER_ID = '_lp_paypal_order_id';
 
 		/**
 		 * LP_Gateway_Paypal constructor.
@@ -148,11 +155,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Listen callback, webhook payment from PayPal.
 		 */
 		public function check_webhook_callback() {
-			if ( ! isset( $_GET['paypay_express_checkout'] ) ) {
+			if ( '' === LP_Request::get_param( 'paypay_express_checkout', '', 'text', 'get' ) ) {
 				return;
 			}
 
-			$paypal_order_id = LP_Request::get_param( 'token' );
+			$paypal_order_id = (string) LP_Request::get_param( 'token', '', 'text', 'get' );
 			if ( empty( $paypal_order_id ) ) {
 				return;
 			}
@@ -388,40 +395,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function create_payment_url( LP_Order $order ): string {
 			$checkout_url = '';
-			$params       = $this->get_order_args( $order );
+			$result       = $this->create_paypal_order( $order );
 
-			$data_token = $this->get_access_token();
-			$response   = wp_remote_post(
-				$this->api_url . 'v2/checkout/orders',
-				array(
-					'body'    => json_encode( $params ),
-					'headers' => array(
-						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
-						'Content-Type'  => 'application/json',
-					),
-					'timeout' => 60,
-				)
-			);
-
-			$result = LP_Helper::json_decode( wp_remote_retrieve_body( $response ) );
-			if ( isset( $result->error ) ) {
-				throw new Exception( $result->error_description );
-			}
-
-			/**
-			 * Error response
-			 *
-			 * https://developer.paypal.com/api/rest/reference/orders/v2/errors/
-			 */
-			if ( isset( $result->name ) && isset( $result->details[0] ) ) {
-				throw new Exception( $result->details[0]->description );
-			}
-
-			if ( empty( $result->id ) ) {
-				throw new Exception( __( 'Invalid Paypal checkout', 'learnpress' ) );
-			}
-
-			foreach ( $result->links as $link ) {
+			foreach ( $result->links ?? array() as $link ) {
 				if ( $link->rel === 'payer-action' ) {
 					$checkout_url = $link->href;
 					break;
@@ -436,20 +412,153 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Capture payment for order
+		 * Create a PayPal order (v2) and store its id on the LP order.
+		 * Capture handlers use this stored id to find the LP order, instead of trusting custom_id.
+		 *
+		 * @param LP_Order $order
+		 *
+		 * @return object PayPal create-order response.
+		 * @throws Exception
+		 * @since 4.5.1
+		 * @version 1.0.0
+		 */
+		public function create_paypal_order( LP_Order $order ) {
+			$data_token = $this->get_access_token();
+			$response   = wp_remote_post(
+				$this->api_url . 'v2/checkout/orders',
+				array(
+					'body'    => wp_json_encode( $this->get_order_args( $order ) ),
+					'headers' => array(
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+						'Content-Type'  => 'application/json',
+					),
+					'timeout' => 60,
+				)
+			);
+
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message() );
+			}
+
+			$result = LP_Helper::json_decode( wp_remote_retrieve_body( $response ) );
+			if ( isset( $result->error ) ) {
+				throw new Exception( $result->error_description ?? __( 'PayPal error', 'learnpress' ) );
+			}
+
+			// https://developer.paypal.com/api/rest/reference/orders/v2/errors/
+			if ( isset( $result->name ) && isset( $result->details[0] ) ) {
+				throw new Exception( $result->details[0]->description );
+			}
+
+			if ( empty( $result->id ) ) {
+				throw new Exception( __( 'Invalid Paypal checkout', 'learnpress' ) );
+			}
+
+			// Not unique: customer can retry payment on the same LP order.
+			add_post_meta( $order->get_id(), self::META_PAYPAL_ORDER_ID, (string) $result->id );
+
+			return $result;
+		}
+
+		/**
+		 * Get the LP order this site created the PayPal order for.
+		 *
+		 * @param string $paypal_order_id
+		 *
+		 * @return LP_Order|null Null when id is malformed or not bound to exactly one LP order.
+		 * @throws Exception
+		 * @since 4.5.1
+		 */
+		public function get_lp_order_by_paypal_order_id( string $paypal_order_id ) {
+			if ( ! preg_match( '/^[A-Z0-9]{1,64}$/', $paypal_order_id ) ) {
+				return null;
+			}
+
+			$post_db                 = PostDB::getInstance();
+			$filter                  = new OrderPostFilter();
+			$filter->only_fields[]   = 'p.ID';
+			$filter->post_status     = array_keys( LP_Order::get_order_statuses() );
+			$filter->join[]          = "INNER JOIN $post_db->tb_postmeta AS pm ON p.ID = pm.post_id";
+			$filter->where[]         = $post_db->wpdb->prepare(
+				'AND pm.meta_key = %s AND pm.meta_value = %s',
+				self::META_PAYPAL_ORDER_ID,
+				$paypal_order_id
+			);
+			$filter->limit           = 2;
+			$filter->run_query_count = false;
+			$order_ids               = PostDB::get_values_by_key( (array) $post_db->get_posts( $filter ) );
+
+			// PayPal order id must belong to exactly one LP order.
+			if ( count( $order_ids ) !== 1 ) {
+				return null;
+			}
+
+			$lp_order = learn_press_get_order( (int) $order_ids[0] );
+
+			return $lp_order instanceof LP_Order ? $lp_order : null;
+		}
+
+		/**
+		 * Check the PayPal capture pays the LP order in full: status, custom_id, currency, amount.
+		 * On failure, add a note to the LP order and throw.
+		 *
+		 * @param LP_Order $lp_order
+		 * @param object   $capture purchase_units[0].payments.captures[0] of the capture response.
+		 *
+		 * @return void
+		 * @throws Exception
+		 * @since 4.5.1
+		 */
+		public function validate_capture_for_order( LP_Order $lp_order, $capture ) {
+			$error = '';
+			if ( ! is_object( $capture ) || ( $capture->status ?? '' ) !== 'COMPLETED' || empty( $capture->id ) ) {
+				$error = __( 'PayPal capture is not completed.', 'learnpress' );
+			} elseif ( absint( $capture->custom_id ?? 0 ) !== (int) $lp_order->get_id() ) {
+				$error = __( 'PayPal capture does not belong to this order.', 'learnpress' );
+			} elseif ( strtoupper( (string) ( $capture->amount->currency_code ?? '' ) ) !== strtoupper( (string) $lp_order->get_currency() )
+				|| ! is_numeric( $capture->amount->value ?? '' )
+				// Compare in cents to avoid float precision issues.
+				|| (int) round( (float) $capture->amount->value * 100 ) !== (int) round( (float) $lp_order->get_total() * 100 ) ) {
+				$error = sprintf(
+					/* translators: 1: captured amount, 2: order total */
+					__( 'PayPal captured amount %1$s does not match order total %2$s.', 'learnpress' ),
+					( $capture->amount->value ?? '' ) . ' ' . ( $capture->amount->currency_code ?? '' ),
+					$lp_order->get_total() . ' ' . $lp_order->get_currency()
+				);
+			}
+
+			if ( '' !== $error ) {
+				$lp_order->add_note( $error );
+				throw new Exception( $error );
+			}
+		}
+
+		/**
+		 * Capture payment for order.
+		 * LP order is found by the PayPal order id this site stored, and is completed only
+		 * when the capture pays it in full.
 		 *
 		 * @param string $paypal_order_id
 		 * https://developer.paypal.com/docs/api/orders/v2/#orders_capture
 		 *
 		 * @return bool True when capture is completed and order status is updated.
 		 * @throws Exception
-		 * @version 1.0.2
+		 * @version 1.0.3
 		 * @since 4.2.4
 		 */
 		public function capture_payment_for_order( string $paypal_order_id ): bool {
+			$lp_order = $this->get_lp_order_by_paypal_order_id( $paypal_order_id );
+			if ( ! $lp_order ) {
+				return false;
+			}
+
+			if ( $lp_order->has_status( LP_ORDER_COMPLETED ) ) {
+				return true;
+			}
+
 			$data_token = $this->get_access_token();
 			$response   = wp_remote_post(
-				$this->api_url . 'v2/checkout/orders/' . $paypal_order_id . '/capture',
+				$this->api_url . 'v2/checkout/orders/' . rawurlencode( $paypal_order_id ) . '/capture',
 				array(
 					'headers' => array(
 						'Content-Type'  => 'application/json',
@@ -463,48 +572,26 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( $response->get_error_message() );
 			}
 
-			$body          = wp_remote_retrieve_body( $response );
-			$response_data = LP_Helper::json_decode( $body );
+			$response_data = LP_Helper::json_decode( wp_remote_retrieve_body( $response ) );
 			if ( isset( $response_data->debug_id ) ) {
-				throw new Exception( $response_data->details[0]->description );
+				throw new Exception( $response_data->details[0]->description ?? __( 'PayPal error', 'learnpress' ) );
 			}
 
 			$capture = $response_data->purchase_units[0]->payments->captures[0] ?? null;
-			if ( empty( $capture ) ) {
-				return false;
-			}
+			$this->validate_capture_for_order( $lp_order, $capture );
 
-			$order_id = absint( $capture->custom_id ?? 0 );
-			if ( $order_id <= 0 ) {
-				return false;
-			}
+			$lp_order->payment_complete( (string) $capture->id );
+			$lp_order->add_note(
+				sprintf(
+					/* translators: 1: capture id, 2: date, 3: timezone */
+					__( 'PayPal payment %1$s completed at %2$s %3$s', 'learnpress' ),
+					$capture->id,
+					wp_date( 'Y-m-d H:i:s' ),
+					wp_timezone_string()
+				)
+			);
 
-			$capture_id = $capture->id ?? '';
-			if ( empty( $capture_id ) ) {
-				return false;
-			}
-
-			$lp_order = learn_press_get_order( $order_id );
-			if ( $lp_order instanceof LP_Order && $capture->status === 'COMPLETED' ) {
-				$transaction_id = $lp_order->get_transaction_id();
-				if ( $transaction_id === $capture_id ) {
-					return true;
-				}
-
-				$lp_order->payment_complete( $capture_id );
-
-				$lp_order->add_note(
-					sprintf(
-						__( 'PayPal payment %1$s completed at %2$s %3$s', 'learnpress' ),
-						$capture_id,
-						wp_date( 'Y-m-d H:i:s' ),
-						wp_timezone_string()
-					)
-				);
-				return true;
-			}
-
-			return false;
+			return true;
 		}
 
 		/**
