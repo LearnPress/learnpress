@@ -307,6 +307,7 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 = 4.5.0 (2026-11-20) =
 * Refactor storing results and question answers for quizzes.
 * Fix: minor bugs.
+* Fix: security.
 
 = 4.4.15 (2026-11-17) =
 * Hot fix.
