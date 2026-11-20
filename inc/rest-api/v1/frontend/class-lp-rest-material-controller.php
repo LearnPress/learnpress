@@ -205,7 +205,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 						continue;
 					}
 
-					$file_info   = pathinfo( wp_parse_url( $file_path, PHP_URL_PATH ) ?: '' );
+					$url_path    = wp_parse_url( $file_path, PHP_URL_PATH );
+					$file_info   = pathinfo( is_string( $url_path ) ? $url_path : '' );
 					$file_extend = $file_info['extension'] ?? '';
 					if ( ! $file_extend ) {
 						$file_type = __( 'Unknown', 'learnpress' );
