@@ -384,12 +384,12 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				 * - Nav menus: cannot add to Appearance > Menus
 				 * Still visible in admin because show_ui and show_in_menu are true.
 				 */
-				'public'              => false,
+				'public'              => true,
 				/**
 				 * Allow frontend URL queries (e.g., example.com/lesson/slug) even when public is false.
 				 * LearnPress uses this for course item URLs, but has additional 404 protection logic.
 				 */
-				'publicly_queryable'  => false,
+				'publicly_queryable'  => true,
 				'query_var'           => true,
 				'taxonomies'          => array( 'lesson_tag' ),
 				'show_ui'             => true,
