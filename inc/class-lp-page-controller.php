@@ -830,13 +830,13 @@ class LP_Page_Controller {
 				return $q;
 			}
 
-			// Exclude item not assign
+			// Handle 404 if user are viewing course item directly.
+			// Must run for search queries too, e.g. /?s=&post_type=lp_lesson.
+			$this->set_link_item_course_default_wp_to_page_404( $q );
+
 			if ( $q->is_search() ) {
 				return $q;
 			}
-
-			// Handle 404 if user are viewing course item directly.
-			$this->set_link_item_course_default_wp_to_page_404( $q );
 
 			// set 404 if viewing single instructor but not logged
 			$slug_instructor = get_query_var( 'instructor_name' );
@@ -873,7 +873,11 @@ class LP_Page_Controller {
 			)
 		);
 
-		if ( ! isset( $q->query_vars['post_type'] ) || ! in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
+		// post_type can be a string or an array (?post_type[]=lp_lesson), check both.
+		$post_type_query    = $q->query_vars['post_type'] ?? '';
+		$post_types_query   = array_filter( array_map( 'strval', array_filter( (array) $post_type_query, 'is_scalar' ) ) );
+		$post_types_protect = array_values( array_intersect( $post_types_query, (array) $post_type_apply_404 ) );
+		if ( empty( $post_types_protect ) ) {
 			return;
 		}
 
@@ -883,30 +887,42 @@ class LP_Page_Controller {
 			$post_author   = 0;
 
 			if ( $user ) {
-				if ( isset( $_GET['preview_id'] ) ) {
-					$post_id     = absint( $_GET['preview_id'] );
-					$post        = get_post( $post_id );
-					$post_author = $post->post_author;
-				} elseif ( isset( $_GET['preview'] ) && isset( $_GET['p'] ) ) {
-					$post_id     = absint( $_GET['p'] );
-					$post        = get_post( $post_id );
-					$post_author = $post->post_author;
-				} else {
-					$post_author = LP_Database::getInstance()->getPostAuthorByTypeAndSlug( $q->query_vars['post_type'] ?? '', $q->query_vars['name'] ?? '' );
+				$preview_id = LP_Request::get_param( 'preview_id', 0, 'int', 'get' );
+				$preview    = LP_Request::get_param( 'preview', '', 'text', 'get' );
+				$p          = LP_Request::get_param( 'p', 0, 'int', 'get' );
+				if ( $preview_id ) {
+					$post        = get_post( $preview_id );
+					$post_author = $post ? (int) $post->post_author : 0;
+				} elseif ( '' !== $preview && $p ) {
+					$post        = get_post( $p );
+					$post_author = $post ? (int) $post->post_author : 0;
+				} elseif ( is_string( $post_type_query ) ) {
+					$post_author = LP_Database::getInstance()->getPostAuthorByTypeAndSlug( $post_type_query, (string) ( $q->query_vars['name'] ?? '' ) );
 				}
 
 				if ( $user->has_cap( 'administrator' ) ) {
 					$flag_load_404 = false;
-				} elseif ( $user->has_cap( LP_TEACHER_ROLE ) && $post_author == $user->ID ) {
+				} elseif ( $user->has_cap( LP_TEACHER_ROLE ) && $post_author && $post_author === (int) $user->ID ) {
 					$flag_load_404 = false;
 				}
 			}
 
 			$flag_load_404 = apply_filters( 'learnpress/page/set-link-item-course-404', $flag_load_404, $post_author, $user );
-
-			if ( $flag_load_404 ) {
-				self::set_page_404();
+			if ( ! $flag_load_404 ) {
+				return;
 			}
+
+			// Query also asks for other post types: drop course item types, keep the rest.
+			$post_types_allow = array_values( array_diff( $post_types_query, $post_types_protect ) );
+			if ( ! empty( $post_types_allow ) ) {
+				$q->set( 'post_type', $post_types_allow );
+
+				return;
+			}
+
+			// Return no posts, so item content is never rendered even if a template ignores 404.
+			$q->set( 'post__in', array( 0 ) );
+			self::set_page_404();
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
