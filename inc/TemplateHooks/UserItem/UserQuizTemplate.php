@@ -46,29 +46,33 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 *
 	 * @return void
 	 * @since 4.5.0
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function print_quiz_content(): void {
 		global $lpCourseModel;
 
-		$courseModel = $lpCourseModel;
-		if ( ! $courseModel instanceof CourseModel ) {
-			return;
+		try {
+			$courseModel = $lpCourseModel;
+			if ( ! $courseModel instanceof CourseModel ) {
+				return;
+			}
+
+			$quiz = LP_Global::course_item_quiz();
+			if ( ! $quiz ) {
+				return;
+			}
+
+			$quizPostModel = QuizPostModel::find( $quiz->get_id(), true );
+			if ( ! $quizPostModel instanceof QuizPostModel ) {
+				return;
+			}
+
+			$userModel = UserModel::find( get_current_user_id(), true );
+
+			echo $this->html_quiz_content( $courseModel, $quizPostModel, $userModel );
+		} catch ( Throwable $e ) {
+			Template::print_message( $e->getMessage(), 'error' );
 		}
-
-		$quiz = LP_Global::course_item_quiz();
-		if ( ! $quiz ) {
-			return;
-		}
-
-		$quizPostModel = QuizPostModel::find( $quiz->get_id(), true );
-		if ( ! $quizPostModel instanceof QuizPostModel ) {
-			return;
-		}
-
-		$userModel = UserModel::find( get_current_user_id(), true );
-
-		echo $this->html_quiz_content( $courseModel, $quizPostModel, $userModel );
 	}
 
 	/**
@@ -81,8 +85,9 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 * @param array $args Additional arguments.
 	 *
 	 * @return string HTML of the quiz content.
-	 * @since 4.5.0
+	 * @throws Exception
 	 * @version 1.0.0
+	 * @since 4.5.0
 	 */
 	public function html_quiz_content(
 		CourseModel $courseModel,
@@ -157,8 +162,9 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 *   - userQuizModel: UserQuizModel instance or false.
 	 *
 	 * @return string HTML of the screen.
-	 * @since 4.5.0
+	 * @throws Exception
 	 * @version 1.0.0
+	 * @since 4.5.0
 	 */
 	public function html_screen( array $args ): string {
 		$userQuizModel = $args['userQuizModel'] ?? false;
@@ -817,7 +823,8 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 
 	/**
 	 * Render HTML of the questions pagination.
-	 * Creates one pagination per page, JavaScript shows only the current page's pagination.
+	 * Only one list (prev, all page numbers, next) with the same classes as paginate_links(),
+	 * state of page 1 is rendered here, JavaScript (UserQuiz.showPage) toggles it when page changes.
 	 * Page links use '#page-{n}' format for JavaScript to read.
 	 *
 	 * @param array $args Arguments containing:
@@ -825,7 +832,7 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 	 *
 	 * @return string HTML of the pagination.
 	 * @since 4.5.0
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_questions_pagination( array $args ): string {
 		$num_pages = (int) ( $args['num_pages'] ?? 0 );
@@ -834,25 +841,35 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 			return '';
 		}
 
-		$html = '';
+		$html = '<li class="lp-hidden">
+				<a class="prev page-numbers" href="#page-1">
+					<i class="lp-icon-angle-left"></i>
+				</a>
+			</li>';
 		for ( $page = 1; $page <= $num_pages; $page++ ) {
 			$html .= sprintf(
-				'<div class="questions-pagination__item"
-					data-page="%1$d"%2$s>%3$s
-				</div>',
-				$page,
-				1 === $page ? '' : ' hidden',
-				Template::instance()->html_pagination(
-					[
-						'total_pages' => $num_pages,
-						'paged'       => $page,
-						'base'        => '#page-%#%',
-					]
-				)
+				'<li>
+					<a class="page-numbers%1$s"%2$s href="#page-%3$d">%3$d</a>
+				</li>',
+				1 === $page ? ' current' : '',
+				1 === $page ? ' aria-current="page"' : '',
+				$page
 			);
 		}
+		$html .= '<li>
+			<a class="next page-numbers" href="#page-2">
+				<i class="lp-icon-angle-right"></i>
+			</a>
+		</li>';
 
-		return sprintf( '<div class="questions-pagination">%s</div>', $html );
+		return sprintf(
+			'<div class="questions-pagination">
+				<nav class="learn-press-pagination navigation pagination">
+					<ul class="page-numbers">%s</ul>
+				</nav>
+			</div>',
+			$html
+		);
 	}
 
 	/**

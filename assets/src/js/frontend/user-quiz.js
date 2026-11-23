@@ -9,7 +9,7 @@
  * - Guest (not logged in, course no required enroll): see ./user-quiz/guest.js.
  *
  * @since 4.5.0
- * @version 1.0.0
+ * @version 1.0.1
  */
 import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
@@ -137,8 +137,8 @@ export class UserQuiz {
 		elBtnHint: '.btn-show-hint',
 		elBtnReview: '.lp-button.review-quiz',
 		elBtnBackResult: '.lp-button.back-quiz',
-		elBtnPage: '.questions-pagination a.page-numbers',
-		elPaginationItem: '.questions-pagination__item',
+		elBtnPage: '.questions-pagination a.page-numbers:not(.current)',
+		elPagination: '.questions-pagination',
 		elQuestionsIndex: '.questions-index',
 		elCountdown: '.countdown',
 		elInputTimeSpend: 'input[name="lp-quiz-time-spend"]',
@@ -402,14 +402,14 @@ export class UserQuiz {
 			return;
 		}
 
-		// Link of page ends with '#page-{n}', paginate_links() can add query of current URL before it (AJAX request).
+		// Link of page is '#page-{n}' (UserQuizTemplate::html_questions_pagination).
 		args.e.preventDefault();
 		this.showPage( elScope, parseInt( elBtn.getAttribute( 'href' )?.match( /#page-(\d+)$/ )?.[ 1 ] ) || 1 );
 		this.scrollToTop();
 	}
 
 	/**
-	 * Show questions of page, build page links, update questions index, finish button.
+	 * Show questions of page, toggle page links, update questions index, finish button.
 	 *
 	 * @param {Element} elScope .lp-quiz-doing or .lp-quiz-review
 	 * @param {number}  page
@@ -425,9 +425,23 @@ export class UserQuiz {
 			elQuestion.classList.toggle( 'lp-hidden', ( parseInt( elQuestion.dataset.page ) || 1 ) !== page );
 		} );
 
-		// Pagination of each page is rendered by PHP, show the one of current page.
-		elScope.querySelectorAll( UserQuiz.selectors.elPaginationItem ).forEach( ( elItem ) => {
-			elItem.hidden = ( parseInt( elItem.dataset.page ) || 1 ) !== page;
+		// Pagination is one list (all page numbers) rendered by PHP, move current page and toggle prev / next.
+		elScope.querySelectorAll( UserQuiz.selectors.elPagination ).forEach( ( elPagination ) => {
+			elPagination.querySelectorAll( 'a.page-numbers:not(.prev):not(.next)' ).forEach( ( elLink ) => {
+				const num = parseInt( elLink.getAttribute( 'href' ).match( /#page-(\d+)$/ )?.[ 1 ] );
+				elLink.classList.toggle( 'current', num === page );
+				if ( num === page ) {
+					elLink.setAttribute( 'aria-current', 'page' );
+				} else {
+					elLink.removeAttribute( 'aria-current' );
+				}
+			} );
+
+			[ [ 'a.prev', page - 1 ], [ 'a.next', page + 1 ] ].forEach( ( [ selector, toPage ] ) => {
+				const elLink = elPagination.querySelector( selector );
+				elLink?.setAttribute( 'href', `#page-${ toPage }` );
+				elLink?.parentElement.classList.toggle( 'lp-hidden', toPage < 1 || toPage > numPages );
+			} );
 		} );
 
 		const elIndex = elScope.querySelector( UserQuiz.selectors.elQuestionsIndex );

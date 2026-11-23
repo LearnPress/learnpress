@@ -418,8 +418,8 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringContainsString( 'data-id="102" data-page="1">', $html );
 		$this->assertStringContainsString( 'data-id="103" data-page="2">', $html );
 		$this->assertStringContainsString( '<span class="question-index">3.</span>', $html );
-		// One pagination per page, only the first is visible.
-		$this->assertSame( 2, substr_count( $html, 'questions-pagination__item"' ) );
+		// One pagination list for all pages.
+		$this->assertSame( 1, substr_count( $html, '<ul class="page-numbers">' ) );
 		$this->assertSame( 1, substr_count( $html, 'class="lp-button submit-quiz"' ) );
 	}
 
@@ -882,6 +882,35 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 		$this->assertSame( '', $html );
 	}
 
+	public function test_html_questions_pagination_empty_when_one_page(): void {
+		$this->assertSame( '', UserQuizTemplate::instance()->html_questions_pagination( [ 'num_pages' => 1 ] ) );
+	}
+
+	public function test_html_questions_pagination_one_list_for_all_pages(): void {
+		$html = UserQuizTemplate::instance()->html_questions_pagination( [ 'num_pages' => 2 ] );
+
+		$this->assertSame( 1, substr_count( $html, '<nav class="learn-press-pagination navigation pagination"><ul class="page-numbers">' ) );
+		$this->assertSame( 4, substr_count( $html, '<li' ) );
+		$this->assertStringNotContainsString( 'dots', $html );
+		$this->assertStringNotContainsString( 'questions-pagination__item', $html );
+		$this->assertStringContainsString( '<li class="lp-hidden"><a class="prev page-numbers" href="#page-1">', $html );
+		$this->assertStringContainsString( '<li><a class="page-numbers current" aria-current="page" href="#page-1">1</a></li>', $html );
+		$this->assertStringContainsString( '<li><a class="page-numbers" href="#page-2">2</a></li>', $html );
+		$this->assertStringContainsString( '<li><a class="next page-numbers" href="#page-2">', $html );
+	}
+
+	public function test_html_questions_pagination_shows_all_page_numbers_without_dots(): void {
+		$html = UserQuizTemplate::instance()->html_questions_pagination( [ 'num_pages' => 10 ] );
+
+		// 10 numbers + prev + next, only prev is hidden on page 1.
+		$this->assertSame( 12, substr_count( $html, '<li' ) );
+		$this->assertSame( 1, substr_count( $html, 'lp-hidden' ) );
+		$this->assertStringNotContainsString( 'dots', $html );
+		foreach ( range( 2, 10 ) as $page ) {
+			$this->assertStringContainsString( sprintf( '<li><a class="page-numbers" href="#page-%1$d">%1$d</a></li>', $page ), $html );
+		}
+	}
+
 	public function test_html_review_result_read_only_questions_with_correct_answers(): void {
 		$this->add_questions( [ 101, 102 ] );
 
@@ -906,7 +935,7 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringContainsString( 'Explanation 101', $html );
 		$this->assertStringNotContainsString( 'name="learn-press-question-', $html );
 		$this->assertStringNotContainsString( 'instant-check', $html );
-		$this->assertStringContainsString( 'questions-pagination__item', $html );
+		$this->assertStringContainsString( '<a class="page-numbers" href="#page-2">2</a>', $html );
 		$this->assertStringContainsString( '<button type="button" class="lp-button back-quiz">Result</button>', $html );
 	}
 

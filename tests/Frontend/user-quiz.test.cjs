@@ -12,11 +12,13 @@ const withoutImports = ( source ) => source.replace( /import[\s\S]*?from '[^']+'
 const dataSend = ( data ) => JSON.stringify( { quiz_id: 20, course_id: 30, ...data } ).replace( /"/g, '&quot;' );
 const submitSend = dataSend( { id_url: 'user-submit-quiz', action: 'user_submit_quiz' } );
 
-// One pagination per page (UserQuizTemplate::html_questions_pagination), links end with #page-{n}.
-const paginationHtml = ( numPages ) => Array.from( { length: numPages }, ( _, i ) => `
-	<div class="questions-pagination__item" data-page="${ i + 1 }"${ i ? ' hidden' : '' }>
-		<a class="page-numbers" href="#page-${ i + 1 }">${ i + 1 }</a>
-	</div>` ).join( '' );
+// One list of all pages (UserQuizTemplate::html_questions_pagination), JS sets current page and prev / next.
+const paginationHtml = ( numPages ) => `<nav class="learn-press-pagination navigation pagination"><ul class="page-numbers">
+	<li><a class="prev page-numbers" href="#page-1"></a></li>
+	${ Array.from( { length: numPages }, ( _, i ) => `
+		<li><a class="page-numbers" href="#page-${ i + 1 }">${ i + 1 }</a></li>` ).join( '' ) }
+	<li><a class="next page-numbers" href="#page-2"></a></li>
+</ul></nav>`;
 
 // Markup same as UserQuizTemplate::html_doing_quiz (shortened), 1 question per page.
 const doingHtml = ( timer = 'data-duration="600" data-remaining="5" data-time-spend="595"' ) => `
@@ -332,21 +334,56 @@ test( 'sorting list is draggable and saves order on drop', ( t ) => {
 
 test( 'pagination shows one page, switches page by links and keeps index', ( t ) => {
 	const { dom, $, click, visibleQuestions } = setup( t );
-	const visiblePagination = () => [ ...dom.window.document.querySelectorAll( '.questions-pagination__item' ) ].filter( ( el ) => ! el.hidden ).map( ( el ) => el.dataset.page );
+	const currentPage = () => $( '.questions-pagination .page-numbers.current' ).textContent;
 
 	assert.deepEqual( visibleQuestions(), [ '101' ] );
-	assert.deepEqual( visiblePagination(), [ '1' ] );
+	assert.equal( currentPage(), '1' );
+	assert.equal( $( '.questions-pagination .current' ).getAttribute( 'aria-current' ), 'page' );
 	assert.equal( $( '.i-current' ).textContent, '1' );
 
-	click( $( '.questions-pagination__item[data-page="2"] a' ) );
+	click( $( '.questions-pagination a[href="#page-2"]:not(.next)' ) );
 	assert.deepEqual( visibleQuestions(), [ '102' ] );
-	assert.deepEqual( visiblePagination(), [ '2' ] );
+	assert.equal( currentPage(), '2' );
+	assert.equal( dom.window.document.querySelectorAll( '.questions-pagination [aria-current]' ).length, 1 );
 	assert.equal( $( '.i-current' ).textContent, '2' );
 	assert.equal( dom.window.localStorage.getItem( 'LP_Quiz_7_30_20_Page' ), '2' );
 
-	click( $( '.questions-pagination__item[data-page="4"] a' ) );
+	click( $( '.questions-pagination a.next' ) );
+	assert.deepEqual( visibleQuestions(), [ '103' ] );
+
+	click( $( '.questions-pagination a[href="#page-4"]:not(.next)' ) );
 	assert.deepEqual( visibleQuestions(), [ '104' ] );
 	assert.ok( $( '.lp-quiz-doing > .quiz-buttons' ).classList.contains( 'is-last' ) );
+	assert.ok( $( '.questions-pagination a.next' ).parentElement.classList.contains( 'lp-hidden' ) );
+
+	click( $( '.questions-pagination a.prev' ) );
+	assert.deepEqual( visibleQuestions(), [ '103' ] );
+} );
+
+test( 'pagination shows all page numbers, moves current and toggles prev / next', ( t ) => {
+	const { $, click } = setup( t, `
+		<div class="lp-quiz-doing" data-per-page="1" data-total="10" data-num-pages="10">
+			<div class="quiz-questions"></div>
+			<div class="quiz-buttons"><div class="questions-pagination">${ paginationHtml( 10 ) }</div></div>
+		</div>` );
+	const shown = () => [ ...$( '.questions-pagination ul' ).children ]
+		.filter( ( elLi ) => ! elLi.classList.contains( 'lp-hidden' ) )
+		.map( ( elLi ) => elLi.textContent.trim() || elLi.firstElementChild.classList[ 0 ] );
+	const numbers = [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ];
+	const currentPage = () => $( '.questions-pagination .page-numbers.current' ).textContent;
+
+	assert.deepEqual( shown(), [ ...numbers, 'next' ] );
+	assert.equal( currentPage(), '1' );
+
+	click( $( '.questions-pagination a[href="#page-8"]:not(.next)' ) );
+	assert.deepEqual( shown(), [ 'prev', ...numbers, 'next' ] );
+	assert.equal( currentPage(), '8' );
+	assert.equal( $( '.questions-pagination a.prev' ).getAttribute( 'href' ), '#page-7' );
+	assert.equal( $( '.questions-pagination a.next' ).getAttribute( 'href' ), '#page-9' );
+
+	click( $( '.questions-pagination a[href="#page-10"]:not(.next)' ) );
+	assert.deepEqual( shown(), [ 'prev', ...numbers ] );
+	assert.equal( currentPage(), '10' );
 } );
 
 test( 'current page is restored after reload', ( t ) => {
@@ -496,7 +533,7 @@ test( 'review toggles result and review questions without request', ( t ) => {
 	assert.equal( $( '.lp-quiz-review' ).classList.contains( 'lp-hidden' ), false );
 	assert.deepEqual( visibleQuestions( '.lp-quiz-review' ), [ '101' ] );
 
-	click( $( '.lp-quiz-review .questions-pagination__item[data-page="2"] a' ) );
+	click( $( '.lp-quiz-review .questions-pagination a[href="#page-2"]:not(.next)' ) );
 	assert.deepEqual( visibleQuestions( '.lp-quiz-review' ), [ '102' ] );
 
 	click( $( '.back-quiz' ) );
