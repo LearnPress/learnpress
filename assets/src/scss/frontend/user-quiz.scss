@@ -269,10 +269,10 @@
 
 // Thim Ekit: only on desktop, on mobile the sidebar is hidden.
 @media (min-width: 769px) {
-
+	
 	// stylelint-disable-next-line selector-class-pattern -- class of Thim Ekit.
 	body:not(.lp-sidebar-toggle__close) .thim-ekit-single-item__data .questions-pagination {
-		left: 449px !important;
+		left: var(--thim-width-sidebar-items, 449px) !important;
 	}
 }
 
