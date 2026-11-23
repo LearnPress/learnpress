@@ -21,6 +21,44 @@
 		cursor: not-allowed;
 	}
 
+	// Mobile: right part (finish button + timer) is not fixed 50%, wraps to a new line when not enough space.
+	.quiz-doing-bar-info {
+
+		@media (max-width: 768px) {
+			flex-wrap: wrap;
+			gap: 8px 12px;
+			margin-bottom: 24px;
+			padding: 12px;
+
+			&__right {
+				flex: 1 1 auto;
+				justify-content: flex-start; // row-reverse: flex-start is the right side.
+				gap: 8px;
+			}
+
+			.countdown {
+				min-height: 0;
+			}
+		}
+
+		@media (max-width: 480px) {
+
+			.questions-index {
+				flex: 1 1 100%;
+			}
+
+			&__right {
+				flex-basis: 100%;
+				justify-content: space-between;
+			}
+
+			.submit-quiz .lp-button {
+				padding: 8px 16px;
+				white-space: normal;
+			}
+		}
+	}
+
 	// Pagination of questions rendered by Template::html_pagination() (nav > ul > li > a), same look as old .nav-links of _popup.scss.
 	.questions-pagination {
 
@@ -202,6 +240,11 @@
 	ul.page-numbers {
 		width: auto !important;
 		height: auto !important;
+		border: none !important;
+
+		&:hover {
+			background: none !important;
+		}
 
 		.next, .prev {
 			&::before {
@@ -216,6 +259,43 @@
 	input:checked {
 		&:before {
 			display: none !important;
+		}
+	}
+
+	input {
+		left: 0 !important;
+	}
+}
+
+// Thim Ekit: only on desktop, on mobile the sidebar is hidden.
+@media (min-width: 769px) {
+
+	// stylelint-disable-next-line selector-class-pattern -- class of Thim Ekit.
+	body:not(.lp-sidebar-toggle__close) .thim-ekit-single-item__data .questions-pagination {
+		left: 449px !important;
+	}
+}
+
+// Sidebar hidden: pagination (position fixed) is full width, same as #popup-footer.
+.lp-sidebar-toggle__close .questions-pagination {
+	left: 0;
+}
+
+@media (max-width: 768px) {
+
+	body:not(.lp-sidebar-toggle__open) .questions-pagination {
+		left: 0 !important;
+	}
+
+	.questions-pagination {
+		padding: 8px 12px;
+
+		ul.page-numbers {
+			gap: 4px;
+		}
+
+		.page-numbers:not(ul) {
+			padding: 10px 12px !important;
 		}
 	}
 }
