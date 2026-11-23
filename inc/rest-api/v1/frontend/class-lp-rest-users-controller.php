@@ -348,8 +348,9 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$result['time_spend'] = $interval;
 				// End
 
-				$result['status'] = UserItemModel::STATUS_COMPLETED;
-				//$result['answered']  = $result['questions'];
+				// Guest: summary only, result of each question is not sent (not leak answer key, review can be disabled).
+				$result              = array_diff_key( $result, array_flip( [ 'questions', 'answered', 'results', 'attempts' ] ) );
+				$result['status']    = UserItemModel::STATUS_COMPLETED;
 				$result['attempts']  = [];
 				$result['results']   = $result;
 				$response['status']  = 'success';
@@ -374,10 +375,20 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			];
 			$result    = $userQuizModel->handle_finish( $data_send );
 
+			// Never send question snapshot (answers_config has is_true) to client.
+			$result = UserQuizModel::remove_questions_snapshot( $result );
+
+			// Correct answer only when quiz allow review and show correct answer.
+			$show_correct_answer = $quizPostModel->has_review()
+				&& $quizPostModel->has_show_correct_review();
+
 			// Run code old to
 			$question_ids = $quizPostModel->get_question_ids();
 			foreach ( $question_ids as $question_id ) {
 				$questionPostModel = QuestionPostModel::find( $question_id, true );
+				if ( ! $questionPostModel instanceof QuestionPostModel ) {
+					continue;
+				}
 
 				if ( $quizPostModel->has_instant_check() ) {
 					$result['questions'][ $question_id ]['explanation'] = $questionPostModel->get_explanation();
@@ -387,7 +398,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					$questionPostModel,
 					array(
 						'include_is_true'     => true,
-						'show_correct_answer' => $quizPostModel->has_show_correct_review(),
+						'show_correct_answer' => $show_correct_answer,
 						'answer'              => $answered[ $question_id ] ?? '',
 					)
 				);

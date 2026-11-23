@@ -304,4 +304,85 @@ class UserQuizModelTest extends BrainMonkeyTestCase {
 		$this->assertInstanceOf( WP_Error::class, $can_check );
 		$this->assertSame( 'already_checked', $can_check->get_error_code() );
 	}
+
+	/**
+	 * Build a quiz result shaped like UserQuizModel::handle_finish() returns.
+	 */
+	private function make_finished_result(): array {
+		$snapshot = array(
+			'ID'             => 492,
+			'question_type'  => 'single_choice',
+			'answers_config' => array(
+				array(
+					'title'   => 'First option',
+					'value'   => 'a',
+					'is_true' => '',
+				),
+				array(
+					'title'   => 'Third option',
+					'value'   => 'c',
+					'is_true' => 'yes',
+				),
+			),
+			'meta_data'      => array( '_lp_explanation' => 'Secret' ),
+		);
+
+		$result              = array(
+			'questions' => array(
+				492 => array(
+					'questionSnapshot' => $snapshot,
+					'answered'         => '',
+					'correct'          => false,
+					'mark'             => 0,
+				),
+			),
+			'mark'      => 1,
+			'user_mark' => 0,
+			'pass'      => 0,
+		);
+		$result['answered']  = $result['questions'];
+		$result['results']   = $result;
+		$result['attempts']  = array();
+
+		return $result;
+	}
+
+	public function test_remove_questions_snapshot_strips_answer_key_everywhere(): void {
+		$result = UserQuizModel::remove_questions_snapshot( $this->make_finished_result() );
+
+		$json = json_encode( $result ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$this->assertStringNotContainsString( 'questionSnapshot', $json );
+		$this->assertStringNotContainsString( 'is_true', $json );
+		$this->assertStringNotContainsString( 'answers_config', $json );
+		$this->assertStringNotContainsString( 'Secret', $json );
+	}
+
+	public function test_remove_questions_snapshot_keeps_summary_and_verdict(): void {
+		$result = UserQuizModel::remove_questions_snapshot( $this->make_finished_result() );
+
+		$this->assertSame( 1, $result['mark'] );
+		$this->assertSame( 0, $result['pass'] );
+		$this->assertSame(
+			array(
+				'answered' => '',
+				'correct'  => false,
+				'mark'     => 0,
+			),
+			$result['questions'][492]
+		);
+		$this->assertSame( $result['questions'], $result['answered'] );
+		$this->assertSame( $result['questions'], $result['results']['questions'] );
+	}
+
+	public function test_remove_questions_snapshot_handles_object_and_empty(): void {
+		$question                   = new \stdClass();
+		$question->questionSnapshot = array( 'answers_config' => array() );
+		$question->answered         = 'a';
+
+		$result = UserQuizModel::remove_questions_snapshot( array( 'questions' => array( 5 => $question ) ) );
+		$this->assertFalse( isset( $result['questions'][5]->questionSnapshot ) );
+		$this->assertSame( 'a', $result['questions'][5]->answered );
+
+		$this->assertSame( array( 'pass' => 1 ), UserQuizModel::remove_questions_snapshot( array( 'pass' => 1 ) ) );
+	}
 }

@@ -3,6 +3,7 @@
 use LearnPress\Cache\LPCache;
 use LearnPress\Databases\UserDB;
 use LearnPress\Filters\UserFilter;
+use LearnPress\Models\UserItems\UserQuizModel;
 use LearnPress\Models\UserModel;
 
 /**
@@ -780,7 +781,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 							'graduation' => $item->get_graduation() ?? '',
 							'start_time' => $item->get_start_time() ? lp_jwt_prepare_date_response( $item->get_start_time()->toSql( false ) ) : '',
 							'end_time'   => $item->get_end_time() ? lp_jwt_prepare_date_response( $item->get_end_time()->toSql( false ) ) : '',
-							'data'       => $filter !== 'in-progress' ? $item->calculate_quiz_result() : array(),
+							// Stored result has question snapshot (answers_config with is_true), must not send to client.
+							'data'       => $filter !== 'in-progress' ? UserQuizModel::remove_questions_snapshot( (array) $item->calculate_quiz_result() ) : array(),
 							'attempt'    => $filter !== 'in-progress' ? $item->get_attempts() : array(),
 						);
 					}

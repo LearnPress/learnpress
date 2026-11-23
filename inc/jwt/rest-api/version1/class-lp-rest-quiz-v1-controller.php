@@ -2,6 +2,7 @@
 
 use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostFIBModel;
+use LearnPress\Models\UserItems\UserQuizModel;
 
 class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	protected $namespace = 'learnpress/v1';
@@ -521,8 +522,11 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$output['total_time'] = $user_quiz->get_timestamp_remaining();
 
 			if ( $quiz_results ) {
-				$output['results'] = $quiz_results->get();
-				$answered          = $quiz_results->getQuestions();
+				// Stored result has question snapshot (answers_config with is_true), must not send to client.
+				$output['results'] = UserQuizModel::remove_questions_snapshot( (array) $quiz_results->get( null, array() ) );
+				$answered          = UserQuizModel::remove_questions_snapshot(
+					array( 'questions' => (array) $quiz_results->getQuestions() )
+				)['questions'];
 				$question_ids      = $quiz_results->getQuestions( 'ids' );
 			}
 

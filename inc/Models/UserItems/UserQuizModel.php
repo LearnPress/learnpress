@@ -713,6 +713,43 @@ class UserQuizModel extends UserItemModel {
 	}
 
 	/**
+	 * Remove question snapshots from a quiz result before sending it to the client.
+	 *
+	 * The snapshot holds answers_config (with is_true = correct answer) and meta_data of each question.
+	 * It is only for storage and server-side rendering of the review (that respects quiz settings),
+	 * it must never be returned by REST/JWT APIs, because it discloses the answer key of the quiz.
+	 *
+	 * Handles keys 'questions', 'answered' and nested 'results' (shape returned by handle_finish()).
+	 *
+	 * @param array $result
+	 *
+	 * @return array
+	 * @since 4.5.1
+	 * @version 1.0.0
+	 */
+	public static function remove_questions_snapshot( array $result ): array {
+		foreach ( array( 'questions', 'answered' ) as $key ) {
+			if ( empty( $result[ $key ] ) || ! is_array( $result[ $key ] ) ) {
+				continue;
+			}
+
+			foreach ( $result[ $key ] as $question_id => $question_result ) {
+				if ( is_array( $question_result ) ) {
+					unset( $result[ $key ][ $question_id ]['questionSnapshot'] );
+				} elseif ( is_object( $question_result ) ) {
+					unset( $result[ $key ][ $question_id ]->questionSnapshot );
+				}
+			}
+		}
+
+		if ( ! empty( $result['results'] ) && is_array( $result['results'] ) ) {
+			$result['results'] = self::remove_questions_snapshot( $result['results'] );
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Keep only results of questions user has checked (instant check), drop the other questions.
 	 * Result of quiz when doing must not hold questions not checked yet.
 	 *
