@@ -22,6 +22,7 @@ class QuizPostModelTest extends BrainMonkeyTestCase {
 	 */
 	private function make_quiz( array $meta = [] ): QuizPostModel {
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 
 		$quiz            = new QuizPostModel( [ 'ID' => 10 ] );
 		$quiz->meta_data = (object) $meta;
@@ -36,6 +37,7 @@ class QuizPostModelTest extends BrainMonkeyTestCase {
 	 */
 	private function make_quiz_no_meta( $value ): QuizPostModel {
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 		Functions\when( 'get_post_meta' )->justReturn( $value );
 
 		return new QuizPostModel( [ 'ID' => 10 ] );

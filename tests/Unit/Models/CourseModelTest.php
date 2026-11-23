@@ -19,6 +19,15 @@ use stdClass;
  */
 class CourseModelTest extends BrainMonkeyTestCase {
 
+	protected function setUp(): void {
+		parent::setUp();
+
+		// Models decode meta via LP_Helper::maybe_unserialize() (objects not allowed).
+		if ( ! class_exists( '\\LP_Helper', false ) ) {
+			require_once LP_INC_PATH . 'class-lp-helper.php';
+		}
+	}
+
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
@@ -33,6 +42,7 @@ class CourseModelTest extends BrainMonkeyTestCase {
 	private function make_course( array $meta = [], array $props = [] ): CourseModel {
 		// maybe_unserialize is called for every meta read — return the value unchanged.
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 
 		$data   = array_merge( [ 'ID' => 1, 'post_status' => 'publish' ], $props );
 		$course = new CourseModel( $data );
@@ -72,6 +82,7 @@ class CourseModelTest extends BrainMonkeyTestCase {
 
 	public function test_constructor_with_null_initialises_defaults(): void {
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 
 		$course = new CourseModel();
 
@@ -82,6 +93,7 @@ class CourseModelTest extends BrainMonkeyTestCase {
 
 	public function test_constructor_maps_array_data(): void {
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 
 		$course = new CourseModel( [ 'ID' => 99, 'post_status' => 'draft', 'post_title' => 'Hello' ] );
 
@@ -92,6 +104,7 @@ class CourseModelTest extends BrainMonkeyTestCase {
 
 	public function test_constructor_maps_object_data(): void {
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 
 		$data              = new stdClass();
 		$data->ID          = 42;
@@ -105,6 +118,7 @@ class CourseModelTest extends BrainMonkeyTestCase {
 
 	public function test_map_to_object_ignores_unknown_properties(): void {
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 
 		$course = new CourseModel();
 		$course->map_to_object( [ 'nonexistent_prop' => 'value', 'ID' => 7 ] );

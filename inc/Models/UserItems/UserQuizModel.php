@@ -3,6 +3,7 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LP_Helper;
 use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\UserItemsFilter;
 use LearnPress\Helpers\LPDateTime;
@@ -564,7 +565,7 @@ class UserQuizModel extends UserItemModel {
 	 */
 	public function get_checked_questions(): array {
 		$value_str = $this->get_meta_value_from_key( UserQuizMetaModel::KEY_QUESTION_CHECKED, [] );
-		$value     = maybe_unserialize( $value_str );
+		$value     = LP_Helper::maybe_unserialize( $value_str );
 
 		if ( $value ) {
 			$value = (array) $value;

@@ -73,6 +73,7 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 
 		$this->questions = [];
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 		Functions\when( 'wp_cache_get' )->alias(
 			function ( $key ) {
 				$id = (int) substr( (string) $key, strlen( 'questionPostModel/find/' ) );

@@ -870,17 +870,18 @@ class CourseModel {
 	 *
 	 * @return false|mixed
 	 * @since 4.2.6.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function get_meta_value_by_key( string $key, $default_value = false, bool $single = true ) {
+		// Meta values are already unserialized by WP; never instantiate objects from them (PHP Object Injection).
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
-			$value = maybe_unserialize( $this->meta_data->{$key} );
+			$value = LP_Helper::maybe_unserialize( $this->meta_data->{$key} );
 		} else {
 			$coursePost = new CoursePostModel( $this );
 			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
-		$value                   = maybe_unserialize( $value );
+		$value                   = LP_Helper::maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;

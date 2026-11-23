@@ -374,7 +374,10 @@ class CourseTools {
 			$meta[ CoursePostModel::META_KEY_DURATION ] = Sanitizer::text( $args['duration'] );
 		}
 		if ( array_key_exists( 'level', $args ) ) {
-			$meta[ CoursePostModel::META_KEY_LEVEL ] = Sanitizer::text( $args['level'] );
+			$level = sanitize_key( (string) $args['level'] );
+			if ( '' === $level || array_key_exists( $level, lp_course_level() ) ) {
+				$meta[ CoursePostModel::META_KEY_LEVEL ] = $level;
+			}
 		}
 		if ( array_key_exists( 'requirements', $args ) && is_array( $args['requirements'] ) ) {
 			$meta[ CoursePostModel::META_KEY_REQUIREMENTS ] = array_map( array( Sanitizer::class, 'text' ), $args['requirements'] );

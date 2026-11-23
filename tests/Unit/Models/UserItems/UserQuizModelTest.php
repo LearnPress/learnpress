@@ -45,6 +45,7 @@ class UserQuizModelTest extends BrainMonkeyTestCase {
 	 */
 	private function stub_question_found(): void {
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 		Functions\when( 'wp_cache_get' )->justReturn( new QuestionPostModel( [ 'ID' => 5 ] ) );
 	}
 

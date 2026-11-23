@@ -10,6 +10,7 @@ namespace LearnPress\Models;
  */
 
 use Exception;
+use LP_Helper;
 use LearnPress\Databases\Course\CourseJsonDB;
 use LearnPress\Databases\UserItemsDB;
 use LearnPress\Filters\Course\CourseJsonFilter;
@@ -191,12 +192,12 @@ class UserModel {
 	 * @param mixed $default_value
 	 *
 	 * @sicne 4.2.6.9
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 * @return false|mixed
 	 */
 	public function get_meta_value_by_key( string $key, $default_value = false ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
-			return maybe_unserialize( $this->meta_data->{$key} );
+			return LP_Helper::maybe_unserialize( $this->meta_data->{$key} );
 		}
 
 		$value = get_user_meta( $this->ID, $key, true );
@@ -204,7 +205,7 @@ class UserModel {
 			$value = $default_value;
 		}
 
-		$this->meta_data->{$key} = maybe_unserialize( $value );
+		$this->meta_data->{$key} = LP_Helper::maybe_unserialize( $value );
 
 		return $value;
 	}

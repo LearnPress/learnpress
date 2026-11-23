@@ -18,6 +18,15 @@ use stdClass;
  */
 class UserModelTest extends BrainMonkeyTestCase {
 
+	protected function setUp(): void {
+		parent::setUp();
+
+		// Models decode meta via LP_Helper::maybe_unserialize() (objects not allowed).
+		if ( ! class_exists( '\\LP_Helper', false ) ) {
+			require_once LP_INC_PATH . 'class-lp-helper.php';
+		}
+	}
+
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
@@ -31,6 +40,7 @@ class UserModelTest extends BrainMonkeyTestCase {
 	private function make_user( array $props = [], array $meta = [] ): UserModel {
 		// maybe_unserialize is called for every meta read — return the value unchanged.
 		Functions\when( 'maybe_unserialize' )->returnArg( 1 );
+		Functions\when( 'is_serialized' )->justReturn( false );
 
 		$data = array_merge(
 			[

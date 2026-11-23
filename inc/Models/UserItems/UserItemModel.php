@@ -364,7 +364,7 @@ class UserItemModel {
 	 */
 	public function get_meta_value_from_key( string $key, $default_value = false, bool $get_extra = false ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
-			return maybe_unserialize( $this->meta_data->{$key} );
+			return LP_Helper::maybe_unserialize( $this->meta_data->{$key} );
 		}
 
 		$user_item_metadata = $this->get_meta_model_from_key( $key );
@@ -379,7 +379,7 @@ class UserItemModel {
 				$data = $user_item_metadata->meta_value;
 			}
 
-			$this->meta_data->{$key} = maybe_unserialize( $data );
+			$this->meta_data->{$key} = LP_Helper::maybe_unserialize( $data );
 		} else {
 			$data = $default_value;
 		}

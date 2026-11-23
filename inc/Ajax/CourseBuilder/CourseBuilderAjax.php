@@ -623,16 +623,29 @@ class CourseBuilderAjax extends AbstractAjax {
 			}
 		}
 
+		// Level must be one of the registered levels.
+		if ( isset( $data['_lp_level'] ) ) {
+			$level = sanitize_key( (string) $data['_lp_level'] );
+			if ( '' === $level || array_key_exists( $level, lp_course_level() ) ) {
+				$courseModel->meta_data->{CoursePostModel::META_KEY_LEVEL} = $level;
+			}
+		}
+
 		$simple_fields = [
 			'_lp_course_repurchase_option' => CoursePostModel::META_KEY_COURSE_REPURCHASE_OPTION,
-			'_lp_level'                    => CoursePostModel::META_KEY_LEVEL,
 			'_lp_featured_review'          => CoursePostModel::META_KEY_FEATURED_REVIEW,
 			'_lp_external_link_buy_course' => CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE,
 		];
 
 		foreach ( $simple_fields as $key => $meta_key ) {
 			if ( isset( $data[ $key ] ) ) {
-				$courseModel->meta_data->{$meta_key} = sanitize_text_field( $data[ $key ] );
+				$value = sanitize_text_field( (string) $data[ $key ] );
+				// Never persist PHP-serialized payloads (PHP Object Injection).
+				if ( is_serialized( $value ) ) {
+					continue;
+				}
+
+				$courseModel->meta_data->{$meta_key} = $value;
 			}
 		}
 

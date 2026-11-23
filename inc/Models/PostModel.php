@@ -12,6 +12,7 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LP_Helper;
 use LearnPress;
 use LearnPress\Cache\LPCache;
 use LearnPress\Databases\PostDB;
@@ -475,7 +476,7 @@ class PostModel {
 	public function get_meta_value_by_key( string $key, $default_value = false, bool $single = true ) {
 		$metadata = $this->get_metadata();
 		if ( isset( $metadata->{$key} ) ) {
-			return maybe_unserialize( $metadata->{$key} );
+			return LP_Helper::maybe_unserialize( $metadata->{$key} );
 		}
 
 		$value = get_post_meta( $this->ID, $key, $single );
@@ -483,7 +484,7 @@ class PostModel {
 			$value = $default_value;
 		}
 
-		$value = maybe_unserialize( $value );
+		$value = LP_Helper::maybe_unserialize( $value );
 		$this->set_meta_value_by_key( $key, $value );
 
 		return $value;
