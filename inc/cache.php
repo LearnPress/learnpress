@@ -588,12 +588,11 @@ class LP_Object_Cache {
 	 *
 	 * Called upon object destruction, which should be when PHP ends.
 	 *
-	 * @return true Always returns true.
+	 * @return void
 	 * @since 2.0.8
 	 *
 	 */
 	public function __destruct() {
-		return true;
 	}
 }
 
