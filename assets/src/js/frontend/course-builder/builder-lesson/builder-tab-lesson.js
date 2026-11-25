@@ -2,6 +2,7 @@ import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
 import { SWAL_ICON_DELETE, SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
+import { getCBActionNonce } from '../builder-nonce.js';
 
 export class BuilderTabLesson {
 	constructor() {
@@ -124,6 +125,7 @@ export class BuilderTabLesson {
 
 				const dataSend = {
 					action: 'duplicate_lesson',
+					lp_action_nonce: getCBActionNonce(),
 					args: {
 						id_url: 'duplicate-lesson',
 					},
@@ -201,6 +203,7 @@ export class BuilderTabLesson {
 
 				const dataSend = {
 					action: 'move_trash_lesson',
+					lp_action_nonce: getCBActionNonce(),
 					args: {
 						id_url: 'move-trash-lesson',
 					},
@@ -247,6 +250,7 @@ export class BuilderTabLesson {
 
 		const dataSend = {
 			action: 'move_trash_lesson',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'move-trash-lesson',
 			},
@@ -291,6 +295,7 @@ export class BuilderTabLesson {
 
 		const dataSend = {
 			action: 'move_trash_lesson',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'move-trash-lesson',
 			},
@@ -353,6 +358,7 @@ export class BuilderTabLesson {
 
 				const dataSend = {
 					action: 'move_trash_lesson',
+					lp_action_nonce: getCBActionNonce(),
 					args: {
 						id_url: 'move-trash-lesson',
 					},
@@ -512,6 +518,7 @@ export class BuilderTabLesson {
 
 		const dataSend = {
 			action: 'builder_update_lesson',
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: 'builder-update-lesson' },
 			lesson_id: lessonId,
 			lesson_settings: true,

@@ -42,6 +42,13 @@ class CourseToolsAjax extends AbstractAjax {
 	];
 
 	/**
+	 * Nonce required for all actions of class, see AbstractAjax::$action_nonce.
+	 *
+	 * @var string
+	 */
+	protected static $action_nonce = 'lp_course_tools_nonce';
+
+	/**
 	 * Register AJAX callbacks with the abstract dispatcher.
 	 *
 	 * @return void

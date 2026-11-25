@@ -6,10 +6,12 @@
  * @var array<string, string>         $events
  */
 
+use LearnPress\Ajax\Webhook\WebhooksAjax;
+
 defined( 'ABSPATH' ) || exit;
 ?>
 
-<div class="lp-webhooks-section">
+<div class="lp-webhooks-section" data-nonce="<?php echo esc_attr( WebhooksAjax::create_action_nonce() ); ?>">
 	<div id="lp-webhook-editor-holder" style="display:none;">
 		<div id="lp-webhook-editor" class="lp-webhook-editor" style="max-height:70vh; overflow:auto; padding:4px 6px 0; text-align:left;">
 			<h2 id="lp-webhook-editor-title" style="margin-top: 0;"><?php esc_html_e( 'Create Webhook', 'learnpress' ); ?></h2>

@@ -5,6 +5,7 @@
  * @version 1.0.0
  */
 
+use LearnPress\Ajax\CourseToolsAjax;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Admin\AdminTemplate;
 use LearnPress\TemplateHooks\Admin\Tools\AdminCourseTools;
@@ -22,11 +23,13 @@ defined( 'ABSPATH' ) or die();
 			data-template="#lp-tmpl-select-items-to-reset-progress"
 			data-message-resetting="%1$s"
 			data-message-choose="%2$s"
+			data-nonce="%3$s"
 			class="lp-button button lp-btn-show-popup-items-to-select lp-btn-choose-item-to-reset-progress">
 			%2$s
 		</button>',
 		esc_html__( 'Resetting item progress', 'learnpress' ),
-		esc_html__( 'Choose data to reset progress', 'learnpress' )
+		esc_html__( 'Choose data to reset progress', 'learnpress' ),
+		esc_attr( CourseToolsAjax::create_action_nonce() )
 	); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	$item_types   = learn_press_course_get_support_item_types();

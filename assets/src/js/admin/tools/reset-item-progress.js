@@ -148,6 +148,7 @@ export default class ResetItemProgress {
 			{
 				id_url: 'item-reset-progress-tool',
 				action: 'reset_progress_items_course',
+				lp_action_nonce: this.btnChooseItems?.dataset.nonce || '',
 				user_item_ids: userItemIds,
 			},
 			{
@@ -201,6 +202,7 @@ export default class ResetItemProgress {
 			{
 				id_url: 'item-reset-progress-tool',
 				action: 'reset_progress_items_course',
+				lp_action_nonce: this.btnChooseItems?.dataset.nonce || '',
 				reset_all: 1,
 				...formData,
 			},

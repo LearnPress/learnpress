@@ -37,6 +37,13 @@ class SampleDataAJAX extends AbstractAjax {
 	];
 
 	/**
+	 * Nonce required for all actions of class, see AbstractAjax::$action_nonce.
+	 *
+	 * @var string
+	 */
+	protected static $action_nonce = 'lp_sample_data_nonce';
+
+	/**
 	 * Install sample course data via AJAX.
 	 *
 	 * @return void

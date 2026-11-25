@@ -303,7 +303,10 @@ import * as lpUtils from '../utils.js';
 	};
 
 	const runRequest = ( dataSend, callbacks = {} ) => {
-		ajaxHandle.fetchAJAX( dataSend, {
+		// Nonce of webhook actions, printed only on this page.
+		const elSection = document.querySelector( '.lp-webhooks-section' );
+
+		ajaxHandle.fetchAJAX( { ...dataSend, lp_action_nonce: elSection?.dataset.nonce || '' }, {
 			success: ( response ) => {
 				if ( typeof callbacks.success === 'function' ) {
 					callbacks.success( response );

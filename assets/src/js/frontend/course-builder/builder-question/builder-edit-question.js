@@ -4,6 +4,7 @@ import SweetAlert from 'sweetalert2';
 import { EditQuestion } from 'lpAssetsJsPath/admin/edit-question.js';
 import { SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
 import { getFormState } from '../builder-form-state.js';
+import { getCBActionNonce } from '../builder-nonce.js';
 
 export class BuilderEditQuestion {
 	constructor() {
@@ -172,6 +173,7 @@ export class BuilderEditQuestion {
 		const dataSend = {
 			...questionData,
 			action: 'builder_update_question',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'builder-update-question',
 			},
@@ -877,6 +879,7 @@ export class BuilderEditQuestion {
 		const dataSend = {
 			...questionData,
 			action: 'builder_update_question',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'builder-update-question',
 			},
@@ -1019,6 +1022,7 @@ export class BuilderEditQuestion {
 		const dataSend = {
 			...questionData,
 			action: 'builder_update_question',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'builder-update-question',
 			},
@@ -1116,6 +1120,7 @@ export class BuilderEditQuestion {
 		const questionData = this.getQuestionDataForUpdate();
 		const dataSend = {
 			action: 'move_trash_question',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'move-trash-question',
 			},
@@ -1211,6 +1216,7 @@ export class BuilderEditQuestion {
 
 		const dataSend = {
 			action: 'duplicate_question',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'duplicate-question',
 			},

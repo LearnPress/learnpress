@@ -108,6 +108,7 @@ class SetupWizard {
 		window.lpAJAXG.fetchAJAX(
 			{
 				action: this.demoCourse.dataset.action,
+				lp_action_nonce: this.elSetupForm.querySelector( '[name="lp_action_nonce"]' )?.value || '',
 				index: this.demoCourseIndex,
 				id_url: 'setup-demo-course',
 			},

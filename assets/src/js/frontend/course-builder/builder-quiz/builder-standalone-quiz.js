@@ -17,6 +17,7 @@ import SweetAlert from 'sweetalert2';
 import { BuilderEditQuiz } from './builder-edit-quiz.js';
 import { SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
 import { getFormState } from '../builder-form-state.js';
+import { getCBActionNonce } from '../builder-nonce.js';
 
 export class BuilderStandaloneQuiz {
 	constructor() {
@@ -226,6 +227,7 @@ export class BuilderStandaloneQuiz {
 		const dataSend = {
 			...quizData,
 			action: 'builder_update_quiz',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'builder-update-quiz',
 			},
@@ -924,6 +926,7 @@ export class BuilderStandaloneQuiz {
 		const dataSend = {
 			...quizData,
 			action: 'builder_update_quiz',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'builder-update-quiz',
 			},
@@ -1062,6 +1065,7 @@ export class BuilderStandaloneQuiz {
 		const dataSend = {
 			...quizData,
 			action: 'builder_update_quiz',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'builder-update-quiz',
 			},
@@ -1159,6 +1163,7 @@ export class BuilderStandaloneQuiz {
 		const dataSend = {
 			quiz_id: quizId,
 			action: 'move_trash_quiz',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'builder-trash-quiz',
 			},
@@ -1255,6 +1260,7 @@ export class BuilderStandaloneQuiz {
 		const dataSend = {
 			quiz_id: quizId,
 			action: 'duplicate_quiz',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'duplicate-quiz',
 			},

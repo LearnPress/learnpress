@@ -2,6 +2,7 @@ import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import SweetAlert from 'sweetalert2';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import { SWAL_ICON_DELETE, SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
+import { getCBActionNonce } from '../builder-nonce.js';
 
 export class BuilderTabCourse {
 	constructor() {
@@ -111,6 +112,7 @@ export class BuilderTabCourse {
 
 				const dataSend = {
 					action: 'duplicate_course',
+					lp_action_nonce: getCBActionNonce(),
 					args: { id_url: 'duplicate-course' },
 					course_id: courseId,
 				};
@@ -178,6 +180,7 @@ export class BuilderTabCourse {
 
 				const dataSend = {
 					action: 'move_trash_course',
+					lp_action_nonce: getCBActionNonce(),
 					args: { id_url: 'move-trash-course' },
 					course_id: courseId,
 				};
@@ -250,6 +253,7 @@ export class BuilderTabCourse {
 
 		const dataSend = {
 			action: 'move_trash_course',
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: 'move-trash-course' },
 			course_id: courseId || 0,
 			status: 'draft',
@@ -307,6 +311,7 @@ export class BuilderTabCourse {
 			if ( result.isConfirmed ) {
 				const dataSend = {
 					action: 'move_trash_course',
+					lp_action_nonce: getCBActionNonce(),
 					args: { id_url: 'move-trash-course' },
 					course_id: courseId,
 					status: 'delete',

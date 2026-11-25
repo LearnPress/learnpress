@@ -30,6 +30,13 @@ class WebhooksAjax extends AbstractAjax {
 	];
 
 	/**
+	 * Nonce required for all actions of class, see AbstractAjax::$action_nonce.
+	 *
+	 * @var string
+	 */
+	protected static $action_nonce = 'lp_webhooks_nonce';
+
+	/**
 	 * @var string
 	 */
 	protected static $required_capability = 'manage_options';

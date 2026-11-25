@@ -118,6 +118,7 @@ import * as lpUtils from '../utils.js';
 
 		const dataSend = {
 			action: actions.create || 'mcp_create_api_key',
+			lp_action_nonce: elSubmit.dataset.nonce || '',
 			user_id: elUser ? elUser.value : '',
 			description: elDescription ? elDescription.value : '',
 			permissions: elPermissions ? elPermissions.value : 'read',

@@ -7,6 +7,8 @@
  * @var array<string,string>|null         $message
  */
 
+use LearnPress\Ajax\MCP\McpApiKeysAjax;
+
 defined( 'ABSPATH' ) || exit;
 
 $default_user = get_current_user_id();
@@ -61,7 +63,7 @@ $permissions  = 'read';
 		</table>
 
 		<p>
-			<button type="button" class="button button-primary" id="lp-mcp-key-submit"><?php esc_html_e( 'Generate API Key', 'learnpress' ); ?></button>
+			<button type="button" class="button button-primary" id="lp-mcp-key-submit" data-nonce="<?php echo esc_attr( McpApiKeysAjax::create_action_nonce() ); ?>"><?php esc_html_e( 'Generate API Key', 'learnpress' ); ?></button>
 			<span id="lp-mcp-key-status" style="margin-left: 10px;"></span>
 		</p>
 

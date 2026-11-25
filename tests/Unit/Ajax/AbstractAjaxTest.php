@@ -34,6 +34,30 @@ class AbstractAjaxDeclaredFixture extends AbstractAjax {
 }
 
 /**
+ * Fixture: class declares nonce for all its actions.
+ */
+class AbstractAjaxNonceFixture extends AbstractAjax {
+	/**
+	 * @var string[]
+	 */
+	protected static $actions = [ 'do_with_nonce' ];
+
+	/**
+	 * @var string
+	 */
+	protected static $action_nonce = 'lp_fixture_nonce';
+
+	/**
+	 * @var string[] methods called
+	 */
+	public static $called = [];
+
+	public function do_with_nonce() {
+		self::$called[] = 'do_with_nonce';
+	}
+}
+
+/**
  * Fixture: class not declare allow-list (as addons), legacy behavior.
  */
 class AbstractAjaxLegacyFixture extends AbstractAjax {
@@ -59,7 +83,9 @@ class AbstractAjaxTest extends BrainMonkeyTestCase {
 			eval(
 				'class LP_Request {
 					public static array $params = array();
+					public static array $types = array();
 					public static function get_param( string $key, $default = null, $type = "", $method = "" ) {
+						self::$types[ $key ] = $type;
 						return self::$params[ $key ] ?? $default;
 					}
 				}'
@@ -67,9 +93,12 @@ class AbstractAjaxTest extends BrainMonkeyTestCase {
 		}
 
 		AbstractAjaxDeclaredFixture::$called = [];
+		AbstractAjaxNonceFixture::$called    = [];
 		AbstractAjaxLegacyFixture::$called   = [];
 		Functions\when( 'wp_verify_nonce' )->justReturn( 1 );
 		Functions\when( 'is_user_logged_in' )->justReturn( true );
+		Functions\when( 'wp_json_encode' )->alias( 'json_encode' );
+		Functions\when( 'sanitize_text_field' )->returnArg();
 	}
 
 	protected function tearDown(): void {
@@ -83,12 +112,35 @@ class AbstractAjaxTest extends BrainMonkeyTestCase {
 	 *
 	 * @param string $action
 	 */
-	private function request( string $action ): void {
+	private function request( string $action, array $data = [] ): void {
 		$_REQUEST['lp-load-ajax'] = $action;
 		\LP_Request::$params      = [
 			'lp-load-ajax' => $action,
 			'nonce'        => 'nonce',
+			'data'         => wp_json_encode( $data ),
 		];
+	}
+
+	/**
+	 * Stub nonce functions: valid nonce is "<nonce action>-ok".
+	 *
+	 * @return array verify calls, each item [ nonce, nonce action ].
+	 */
+	private function stub_action_nonce(): array {
+		$calls = [];
+		Functions\when( 'wp_create_nonce' )->alias(
+			static function ( $nonce_action ) {
+				return $nonce_action . '-ok';
+			}
+		);
+		Functions\when( 'wp_verify_nonce' )->alias(
+			static function ( $nonce, $nonce_action ) use ( &$calls ) {
+				$calls[] = [ $nonce, $nonce_action ];
+				return $nonce === $nonce_action . '-ok' ? 1 : false;
+			}
+		);
+
+		return $calls;
 	}
 
 	public function test_is_action_allowed_declared_only_allow_list() {
@@ -150,5 +202,101 @@ class AbstractAjaxTest extends BrainMonkeyTestCase {
 		$this->assertFalse( EditCurriculumAjax::is_action_allowed( 'check_valid' ) );
 		$this->assertTrue( LoadContentViaAjax::is_action_allowed( 'load_content_via_ajax' ) );
 		$this->assertFalse( LoadContentViaAjax::is_action_allowed( 'catch_lp_ajax' ) );
+	}
+
+	public function test_create_action_nonce_of_class() {
+		$this->stub_action_nonce();
+
+		$this->assertSame( 'lp_fixture_nonce-ok', AbstractAjaxNonceFixture::create_action_nonce() );
+		$this->assertSame( '', AbstractAjaxDeclaredFixture::create_action_nonce() );
+	}
+
+	public function test_verify_action_nonce_class_not_declare_return_true() {
+		$this->request( 'do_allowed' );
+
+		$this->assertTrue( AbstractAjaxDeclaredFixture::verify_action_nonce() );
+	}
+
+	public function test_verify_action_nonce_valid() {
+		$this->stub_action_nonce();
+		$this->request( 'do_with_nonce', [ 'lp_action_nonce' => 'lp_fixture_nonce-ok' ] );
+
+		$this->assertTrue( AbstractAjaxNonceFixture::verify_action_nonce() );
+	}
+
+	public function test_verify_action_nonce_read_data_not_sanitize_text() {
+		$this->stub_action_nonce();
+		$this->request( 'do_with_nonce', [ 'name' => 'a<b', 'url' => 'c>d', 'lp_action_nonce' => 'lp_fixture_nonce-ok' ] );
+		if ( ! property_exists( \LP_Request::class, 'types' ) ) {
+			$this->markTestSkipped( 'LP_Request stub of another test is loaded.' );
+		}
+
+		$this->assertTrue( AbstractAjaxNonceFixture::verify_action_nonce() );
+		$this->assertSame( 'trim', \LP_Request::$types['data'] );
+	}
+
+	public function test_verify_action_nonce_missing_or_invalid() {
+		$this->stub_action_nonce();
+
+		$this->request( 'do_with_nonce' );
+		$this->assertFalse( AbstractAjaxNonceFixture::verify_action_nonce() );
+
+		// The general nonce 'wp_rest' is not accepted.
+		$this->request( 'do_with_nonce', [ 'lp_action_nonce' => 'wp_rest-ok' ] );
+		$this->assertFalse( AbstractAjaxNonceFixture::verify_action_nonce() );
+
+		$this->request( 'do_with_nonce', [ 'lp_action_nonce' => [ 'lp_fixture_nonce-ok' ] ] );
+		$this->assertFalse( AbstractAjaxNonceFixture::verify_action_nonce() );
+
+		// Invalid JSON must not throw.
+		\LP_Request::$params['data'] = '{invalid';
+		$this->assertFalse( AbstractAjaxNonceFixture::verify_action_nonce() );
+	}
+
+	public function test_catch_lp_ajax_reject_action_without_action_nonce() {
+		$this->stub_action_nonce();
+		\LP_Request::$params = [];
+		$sent                = null;
+		Functions\when( 'wp_send_json' )->alias(
+			static function ( $response ) use ( &$sent ) {
+				$sent = $response;
+			}
+		);
+
+		$_REQUEST['lp-load-ajax'] = 'do_with_nonce';
+		\LP_Request::$params      = [
+			'lp-load-ajax' => 'do_with_nonce',
+			'nonce'        => 'wp_rest-ok',
+			'data'         => json_encode( [] ),
+		];
+		AbstractAjaxNonceFixture::catch_lp_ajax();
+
+		$this->assertSame( [], AbstractAjaxNonceFixture::$called );
+		$this->assertSame( 'error', $sent->status );
+	}
+
+	public function test_catch_lp_ajax_call_action_with_valid_action_nonce() {
+		$this->stub_action_nonce();
+		$_REQUEST['lp-load-ajax'] = 'do_with_nonce';
+		\LP_Request::$params      = [
+			'lp-load-ajax' => 'do_with_nonce',
+			'nonce'        => 'wp_rest-ok',
+			'data'         => json_encode( [ 'lp_action_nonce' => 'lp_fixture_nonce-ok' ] ),
+		];
+		AbstractAjaxNonceFixture::catch_lp_ajax();
+
+		$this->assertSame( [ 'do_with_nonce' ], AbstractAjaxNonceFixture::$called );
+	}
+
+	public function test_core_classes_declare_action_nonces() {
+		$this->stub_action_nonce();
+
+		$this->assertSame( 'lp_sample_data_nonce-ok', \LearnPress\Ajax\SampleDataAJAX::create_action_nonce() );
+		$this->assertSame( 'lp_setup_wizard_nonce-ok', \LearnPress\Ajax\SetupWizardAjax::create_action_nonce() );
+		$this->assertSame( 'lp_course_tools_nonce-ok', \LearnPress\Ajax\CourseToolsAjax::create_action_nonce() );
+		$this->assertSame( 'lp_mcp_api_keys_nonce-ok', \LearnPress\Ajax\MCP\McpApiKeysAjax::create_action_nonce() );
+		$this->assertSame( 'lp_webhooks_nonce-ok', \LearnPress\Ajax\Webhook\WebhooksAjax::create_action_nonce() );
+		$this->assertSame( 'lp_course_builder_nonce-ok', \LearnPress\Ajax\CourseBuilder\CourseBuilderAjax::create_action_nonce() );
+		$this->assertSame( '', \LearnPress\Ajax\LoadContentViaAjax::create_action_nonce() );
 	}
 }

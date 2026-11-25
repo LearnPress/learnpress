@@ -9,6 +9,7 @@
 namespace LearnPress\TemplateHooks\CourseBuilder;
 
 use Exception;
+use LearnPress\Ajax\CourseBuilder\CourseBuilderAjax;
 use LearnPress\CourseBuilder\CourseBuilder;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
@@ -95,7 +96,11 @@ class CourseBuilderTemplate {
 			];
 
 			$layout = [
-				'wrapper'     => '<div class="learn-press-course-builder">',
+				// Nonce of CourseBuilderAjax, only printed on Course Builder page.
+				'wrapper'     => sprintf(
+					'<div class="learn-press-course-builder" data-lp-action-nonce="%s">',
+					esc_attr( CourseBuilderAjax::create_action_nonce() )
+				),
 				'header'      => $this->html_header( $data ),
 				'body'        => '<div class="lp-cb-body">',
 				'sidebar'     => $this->html_sidebar( $data ),

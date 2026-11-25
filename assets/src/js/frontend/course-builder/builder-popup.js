@@ -13,6 +13,7 @@ import { SWAL_ICON_TRASH_DRAFT } from './swal-icons.js';
 import { BuilderEditQuiz } from './builder-quiz/builder-edit-quiz.js';
 import { BuilderEditQuestion } from './builder-question/builder-edit-question.js';
 import { BuilderMaterial } from './builder-lesson/builder-material.js';
+import { getCBActionNonce } from './builder-nonce.js';
 
 export class BuilderPopup {
 	constructor() {
@@ -1133,6 +1134,7 @@ export class BuilderPopup {
 		const dataSend = {
 			...formData,
 			action: actionMap[ this.currentType ] || `builder_update_${ this.currentType }`,
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: `builder-update-${ this.currentType }` },
 			[ `${ this.currentType }_status` ]: targetStatus,
 			return_html: 'yes',
@@ -1219,6 +1221,7 @@ export class BuilderPopup {
 		const dataSend = {
 			...formData,
 			action: actionMap[ this.currentType ] || `builder_update_${ this.currentType }`,
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: `builder-update-${ this.currentType }` },
 			[ `${ this.currentType }_status` ]: 'draft',
 			return_html: 'yes',
@@ -1372,6 +1375,7 @@ export class BuilderPopup {
 
 		const dataSend = {
 			action: actionMap[ this.currentType ] || `move_trash_${ this.currentType }`,
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: `move-trash-${ this.currentType }` },
 			[ `${ this.currentType }_id` ]: this.currentId,
 		};

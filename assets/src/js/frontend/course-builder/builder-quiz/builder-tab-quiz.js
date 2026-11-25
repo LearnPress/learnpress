@@ -2,6 +2,7 @@ import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
 import SweetAlert from 'sweetalert2';
 import { SWAL_ICON_DELETE, SWAL_ICON_DUPLICATE, SWAL_ICON_TRASH_DRAFT } from '../swal-icons.js';
+import { getCBActionNonce } from '../builder-nonce.js';
 
 export class BuilderTabQuiz {
 	constructor() {
@@ -117,6 +118,7 @@ export class BuilderTabQuiz {
 
 				const dataSend = {
 					action: 'duplicate_quiz',
+					lp_action_nonce: getCBActionNonce(),
 					args: {
 						id_url: 'duplicate-quiz',
 					},
@@ -175,6 +177,7 @@ export class BuilderTabQuiz {
 
 				const dataSend = {
 					action: 'move_trash_quiz',
+					lp_action_nonce: getCBActionNonce(),
 					args: {
 						id_url: 'move-trash-quiz',
 					},
@@ -221,6 +224,7 @@ export class BuilderTabQuiz {
 
 		const dataSend = {
 			action: 'move_trash_quiz',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'move-trash-quiz',
 			},
@@ -265,6 +269,7 @@ export class BuilderTabQuiz {
 
 		const dataSend = {
 			action: 'move_trash_quiz',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'move-trash-quiz',
 			},
@@ -326,6 +331,7 @@ export class BuilderTabQuiz {
 
 				const dataSend = {
 					action: 'move_trash_quiz',
+					lp_action_nonce: getCBActionNonce(),
 					args: {
 						id_url: 'move-trash-quiz',
 					},

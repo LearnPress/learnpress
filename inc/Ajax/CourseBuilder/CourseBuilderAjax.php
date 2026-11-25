@@ -64,6 +64,14 @@ class CourseBuilderAjax extends AbstractAjax {
 	];
 
 	/**
+	 * Nonce required for all actions of class, see AbstractAjax::$action_nonce.
+	 * Printed on wrapper of Course Builder page (CourseBuilderTemplate::layout).
+	 *
+	 * @var string
+	 */
+	protected static $action_nonce = 'lp_course_builder_nonce';
+
+	/**
 	 * Check permissions and validate parameters.
 	 *
 	 * @throws Exception

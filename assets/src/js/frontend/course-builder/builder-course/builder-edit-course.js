@@ -5,6 +5,7 @@ import { EditCourseCurriculum } from 'lpAssetsJsPath/admin/edit-course/edit-curr
 import { MetaboxExtraInfo } from './extra-info.js';
 import { getFormState } from '../builder-form-state.js';
 import { SWAL_ICON_DUPLICATE } from '../swal-icons.js';
+import { getCBActionNonce } from '../builder-nonce.js';
 
 export class BuilderEditCourse {
 	constructor() {
@@ -916,6 +917,7 @@ export class BuilderEditCourse {
 
 		const dataSend = {
 			action: 'add_course_category',
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: 'add-course-category' },
 			name: categoryName,
 			parent: parentId,
@@ -1017,6 +1019,7 @@ export class BuilderEditCourse {
 
 		const dataSend = {
 			action: 'add_course_category',
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: 'add-course-category' },
 			name: categoryName,
 			parent: parentId,
@@ -2046,6 +2049,7 @@ export class BuilderEditCourse {
 
 		const dataSend = {
 			action: 'duplicate_course',
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: 'duplicate-course' },
 			course_id: courseId,
 		};
@@ -2082,6 +2086,7 @@ export class BuilderEditCourse {
 		const courseData = this.getCourseDataForUpdate();
 		const dataSend = {
 			action: 'move_trash_course',
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: 'move-trash-course' },
 			course_id: courseData.course_id,
 		};
@@ -2127,6 +2132,7 @@ export class BuilderEditCourse {
 		const dataSend = {
 			...courseData,
 			action: 'save_course_settings',
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: 'save-course-settings' },
 		};
 
@@ -2183,6 +2189,7 @@ export class BuilderEditCourse {
 
 		const dataSend = {
 			action: 'add_course_tag',
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: 'add-course-tag' },
 			name: tagName,
 		};

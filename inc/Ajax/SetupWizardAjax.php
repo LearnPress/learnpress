@@ -38,6 +38,13 @@ class SetupWizardAjax extends AbstractAjax {
 	];
 
 	/**
+	 * Nonce required for all actions of class, see AbstractAjax::$action_nonce.
+	 *
+	 * @var string
+	 */
+	protected static $action_nonce = 'lp_setup_wizard_nonce';
+
+	/**
 	 * Save the current wizard step.
 	 *
 	 * @return void

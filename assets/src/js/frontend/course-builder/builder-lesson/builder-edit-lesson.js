@@ -1,5 +1,6 @@
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import { getCBActionNonce } from '../builder-nonce.js';
 
 export class BuilderEditLesson {
 	constructor() {
@@ -609,6 +610,7 @@ export class BuilderEditLesson {
 		const dataSend = {
 			...lessonData,
 			action: 'builder_update_lesson',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'builder-update-lesson',
 			},
@@ -702,6 +704,7 @@ export class BuilderEditLesson {
 		const dataSend = {
 			...lessonData,
 			action: 'builder_update_lesson',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'builder-update-lesson',
 			},
@@ -782,6 +785,7 @@ export class BuilderEditLesson {
 		const lessonData = this.getLessonDataForUpdate();
 		const dataSend = {
 			action: 'move_trash_lesson',
+			lp_action_nonce: getCBActionNonce(),
 			args: {
 				id_url: 'move-trash-lesson',
 			},

@@ -5,6 +5,7 @@
  * @version 1.2.0
  */
 import * as lpToastify from 'lpAssetsJsPath/lpToastify.js';
+import { getCBActionNonce } from './builder-nonce.js';
 
 export class BuilderSettings {
 	constructor() {
@@ -159,6 +160,7 @@ export class BuilderSettings {
 	getPayloadForSave() {
 		return {
 			action: 'save_global_settings',
+			lp_action_nonce: getCBActionNonce(),
 			args: { id_url: 'save-global-settings' },
 			hide_instructor_access_admin_screen: this.getCurrentValue(),
 			course_builder_logo_id: this.getLogoId(),

@@ -8,6 +8,7 @@
 
 namespace LearnPress\Ajax;
 
+use LearnPress\Helpers\Response;
 use LP_Request;
 
 /**
@@ -25,6 +26,23 @@ abstract class AbstractAjax {
 	 * @since 4.5.1
 	 */
 	protected static $actions = [];
+
+	/**
+	 * Nonce action of class (besides the general 'wp_rest'), required for all actions of class.
+	 * Empty: not required.
+	 * Nonce must be printed only in HTML of page use it (not in LP_Assets, not in HTML return via AJAX),
+	 * JS sends it via field 'lp_action_nonce' of 'data'.
+	 * So a JS on another page (ex: post content) can't call these actions, even if user has permission.
+	 *
+	 * @var string
+	 * @since 4.5.1
+	 */
+	protected static $action_nonce = '';
+
+	/**
+	 * Field name of 'data' contains nonce of action.
+	 */
+	const FIELD_ACTION_NONCE = 'lp_action_nonce';
 
 	public static function catch_lp_ajax() {
 		if ( ! empty( $_REQUEST['lp-load-ajax'] ) ) {
@@ -56,10 +74,55 @@ abstract class AbstractAjax {
 				}
 			}
 
+			if ( ! static::verify_action_nonce() ) {
+				$response          = new Response();
+				$response->message = __(
+					'Your session has expired, please reload the page and try again.',
+					'learnpress'
+				);
+				wp_send_json( $response );
+				return;
+			}
+
 			if ( is_callable( [ $class, $action ] ) ) {
 				call_user_func( [ $class, $action ] );
 			}
 		}
+	}
+
+	/**
+	 * Create nonce of class to print in HTML of page use it.
+	 *
+	 * @return string empty if class not declare $action_nonce.
+	 * @since 4.5.1
+	 */
+	public static function create_action_nonce(): string {
+		if ( empty( static::$action_nonce ) ) {
+			return '';
+		}
+
+		return wp_create_nonce( static::$action_nonce );
+	}
+
+	/**
+	 * Verify nonce of class sent via field 'lp_action_nonce' of 'data', if class declares $action_nonce.
+	 *
+	 * @return bool
+	 * @since 4.5.1
+	 */
+	public static function verify_action_nonce(): bool {
+		if ( empty( static::$action_nonce ) ) {
+			return true;
+		}
+
+		$data   = LP_Request::get_param( 'data', '', 'trim' );
+		$params = is_string( $data ) ? json_decode( $data, true ) : null;
+		$nonce  = is_array( $params ) ? ( $params[ self::FIELD_ACTION_NONCE ] ?? '' ) : '';
+		if ( ! is_string( $nonce ) || '' === $nonce ) {
+			return false;
+		}
+
+		return false !== wp_verify_nonce( sanitize_text_field( $nonce ), static::$action_nonce );
 	}
 
 	/**
@@ -80,7 +143,14 @@ abstract class AbstractAjax {
 		}
 
 		// Methods of dispatcher must never call via request (ex: catch_lp_ajax call itself is infinite recursion).
-		if ( in_array( strtolower( $action ), [ 'catch_lp_ajax', 'is_action_allowed', '__construct' ], true ) ) {
+		$methods_dispatcher = [
+			'catch_lp_ajax',
+			'is_action_allowed',
+			'create_action_nonce',
+			'verify_action_nonce',
+			'__construct',
+		];
+		if ( in_array( strtolower( $action ), $methods_dispatcher, true ) ) {
 			return false;
 		}
 

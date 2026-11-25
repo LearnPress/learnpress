@@ -7,6 +7,9 @@
  * @version 3.0.0
  */
 
+use LearnPress\Ajax\AbstractAjax;
+use LearnPress\Ajax\SetupWizardAjax;
+
 defined( 'ABSPATH' ) or exit;
 $wizard = LP_Setup_Wizard::instance();
 
@@ -37,6 +40,8 @@ $wizard_step_keys = array_keys( $wizard_steps );
 		?>
 		<input type="hidden" name="lp-setup-step"
 			value="<?php echo esc_attr( $step['slug'] ); ?>">
+		<input type="hidden" name="<?php echo esc_attr( AbstractAjax::FIELD_ACTION_NONCE ); ?>"
+			value="<?php echo esc_attr( SetupWizardAjax::create_action_nonce() ); ?>">
 		<?php call_user_func( $step['callback'] ); ?>
 		<?php if ( ! $wizard->is_last_step() || $is_finish_step ) { ?>
 			<?php if ( $is_welcome_step ) { ?>

@@ -5,6 +5,9 @@
  * @version 3.0.2
  */
 
+use LearnPress\Ajax\AbstractAjax;
+use LearnPress\Ajax\SampleDataAJAX;
+
 defined( 'ABSPATH' ) || die();
 
 $message_install   = esc_html__( 'Are you sure you want to install the sample course data?', 'learnpress' );
@@ -15,6 +18,9 @@ $message_uninstall = esc_html__( 'Are you sure you want to delete the sample cou
 	<h2><?php _e( 'Install Sample Data', 'learnpress' ); ?></h2>
 	<p><?php _e( 'Create a <strong>Sample course</strong> with lessons and quizzes. The content will be filled with <strong>Lorem</strong> text.', 'learnpress' ); ?></p>
 	<form class="lp-form-handle-sample-data lp-install-sample__options lp-hidden">
+		<input type="hidden"
+				name="<?php echo esc_attr( AbstractAjax::FIELD_ACTION_NONCE ); ?>"
+				value="<?php echo esc_attr( SampleDataAJAX::create_action_nonce() ); ?>">
 		<fieldset>
 			<ul>
 				<li>
