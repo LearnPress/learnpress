@@ -495,6 +495,20 @@ class Template {
 	}
 
 	/**
+	 * Encode square brackets so the content cannot be parsed by do_shortcode().
+	 * Hex entities are used because core's unescape_invalid_shortcodes() converts &#91; / &#93; back to [ ].
+	 *
+	 * @param string $content
+	 *
+	 * @return string
+	 * @since 4.3.2.6
+	 * @version 1.0.0
+	 */
+	public static function neutralize_shortcode_brackets( string $content ): string {
+		return str_replace( [ '[', ']' ], [ '&#x5B;', '&#x5D;' ], $content );
+	}
+
+	/**
 	 * Generate breadcrumb HTML.
 	 *
 	 * @param array $args
@@ -546,6 +560,9 @@ class Template {
 				$html_content .= $args['delimiter'];
 			}
 		}
+
+		// Security: encode square brackets so do_shortcode() cannot run shortcodes from crumb text.
+		$html_content = self::neutralize_shortcode_brackets( $html_content );
 
 		$section = apply_filters(
 			'learn_press/breadcrumb/html-section',

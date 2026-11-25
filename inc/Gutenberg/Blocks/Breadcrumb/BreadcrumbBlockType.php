@@ -62,6 +62,8 @@ class BreadcrumbBlockType extends AbstractBlockType {
 			$template->breadcrumb( $args );
 			$html_breadcrumb = ob_get_clean();*/
 			$html = $this->get_output( Template::html_breadcrumb( $args ) );
+			// Security: block output runs before do_shortcode() on the_content, neutralize shortcode brackets.
+			$html = Template::neutralize_shortcode_brackets( $html );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

@@ -394,11 +394,22 @@ class LP_Breadcrumb {
 	private function search_trail() {
 		if ( is_search() ) {
 			$this->add_crumb( sprintf( __( 'Search results for &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() ), esc_url_raw( remove_query_arg( 'paged' ) ) );
-		} elseif ( ! empty( $_GET['c_search'] ) ) {
+		} else {
+			$c_search = LP_Request::get_param( 'c_search', '', 'text', 'get' );
+			if ( ! is_string( $c_search ) ) {
+				return;
+			}
+
+			// Security: strip square brackets so request text can never be parsed as a shortcode.
+			$c_search = trim( str_replace( [ '[', ']' ], '', $c_search ) );
+			if ( '' === $c_search ) {
+				return;
+			}
+
 			$this->add_crumb(
 				sprintf(
 					__( 'Search results for &ldquo;%s&rdquo;', 'learnpress' ),
-					esc_html( $_GET['c_search'] )
+					esc_html( $c_search )
 				)
 			);
 		}
