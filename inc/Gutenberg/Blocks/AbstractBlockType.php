@@ -2,6 +2,7 @@
 namespace LearnPress\Gutenberg\Blocks;
 
 use LearnPress\Gutenberg\Utils\StyleAttributes;
+use LearnPress\Helpers\Template;
 use WP_Block;
 use WP_Block_Type;
 
@@ -41,6 +42,14 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	 * @var string Class hash - Field of LP
 	 */
 	protected $class_hash = '';
+	/**
+	 * Output of block can contain request data (URL params...), encode shortcode brackets on get_output().
+	 * Block render callback runs on do_blocks (the_content priority 9), before do_shortcode (priority 11).
+	 *
+	 * @var bool
+	 * @since 4.3.2.6
+	 */
+	protected $neutralize_shortcode_output = false;
 
 	public function __construct() {
 		$this->source_js = $this->get_source_js();
@@ -147,11 +156,18 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	 */
 	protected function get_output( string $content, string $tag = 'div', array $extra_attributes = [] ): string {
 		$wrapper = get_block_wrapper_attributes( $extra_attributes );
-		return sprintf(
+		$output  = sprintf(
 			"<$tag %s>%s</$tag>",
 			$wrapper,
 			$content
 		);
+
+		// Security: block output contains request data, prevent shortcode injection.
+		if ( $this->neutralize_shortcode_output ) {
+			$output = Template::neutralize_shortcode_brackets( $output );
+		}
+
+		return $output;
 	}
 
 	protected function get_output_with_class_hash( $attributes, $content, $properties = array(), $exclude = array() ) {

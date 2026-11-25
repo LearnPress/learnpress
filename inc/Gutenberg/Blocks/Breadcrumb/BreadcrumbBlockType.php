@@ -14,6 +14,8 @@ use Throwable;
  */
 class BreadcrumbBlockType extends AbstractBlockType {
 	public $block_name = 'breadcrumb';
+	// Security: output contains c_search from URL, encode shortcode brackets.
+	protected $neutralize_shortcode_output = true;
 
 	public function get_supports(): array {
 		return [
@@ -61,9 +63,8 @@ class BreadcrumbBlockType extends AbstractBlockType {
 			$template = new LP_Template_General();
 			$template->breadcrumb( $args );
 			$html_breadcrumb = ob_get_clean();*/
+			// Security: neutralize shortcode brackets via get_output() ($neutralize_shortcode_output).
 			$html = $this->get_output( Template::html_breadcrumb( $args ) );
-			// Security: block output runs before do_shortcode() on the_content, neutralize shortcode brackets.
-			$html = Template::neutralize_shortcode_brackets( $html );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

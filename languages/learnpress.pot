@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-25T02:42:53+00:00\n"
+"POT-Creation-Date: 2026-11-25T08:23:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: learnpress\n"
@@ -325,7 +325,7 @@ msgstr ""
 #: inc/admin/views/quiz/editor.php:48
 #: inc/Models/WPTables/QuestionsTable.php:38
 #: inc/TemplateHooks/Course/CourseMaterialTemplate.php:202
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:761
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:762
 #: inc/Widgets/course-extra.php:30
 #: inc/WPGDPR/ExportPersonalData.php:660
 msgid "Type"
@@ -415,21 +415,21 @@ msgstr ""
 
 #: assets/src/apps/js/blocks/course-filter/edit.js:66
 #: config/widgets/course/filter-course.php:11
-#: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:38
+#: inc/Gutenberg/Blocks/CourseFilter/CourseFilterBlockType.php:40
 #: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:353
 msgid "Course Filter"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-filter-elements/button-reset-filter/edit.js:8
 #: inc/TemplateHooks/Admin/AdminStudentNotesTemplate.php:237
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:807
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:808
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:168
 msgid "Reset"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-filter-elements/button-submit-filter/edit.js:8
 #: inc/TemplateHooks/Admin/AI/AdminEditWithAITemplate.php:382
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:779
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:780
 msgid "Apply"
 msgstr ""
 
@@ -442,7 +442,7 @@ msgstr ""
 #: inc/Models/WPTables/QuestionsTable.php:36
 #: inc/Models/WPTables/QuizzesTable.php:36
 #: inc/TemplateHooks/Course/AdminEditSettingTemplate.php:552
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:621
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:622
 msgid "Author"
 msgstr ""
 
@@ -471,7 +471,7 @@ msgstr ""
 #: config/elementor/course/list-courses.php:123
 #: config/widgets/course/filter-course.php:53
 #: inc/Models/WPTables/CoursesTable.php:64
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:299
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:300
 #: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:225
 #: inc/WPGDPR/ExportPersonalData.php:362
 #: templates/emails/order-items-table.php:89
@@ -484,7 +484,7 @@ msgstr ""
 #: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:370
 #: inc/TemplateHooks/Admin/AdminListStudentsEnrolled.php:416
 #: inc/TemplateHooks/Admin/AdminStudentNotesTemplate.php:225
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:195
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:196
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderListCoursesTemplate.php:146
 #: inc/TemplateHooks/CourseBuilder/Lesson/BuilderListLessonsTemplate.php:98
 #: inc/TemplateHooks/CourseBuilder/Question/BuilderListQuestionsTemplate.php:78
@@ -495,7 +495,7 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-filter-elements/course-tag-filter/edit.js:9
 #: config/wp-menus.php:111
 #: config/wp-menus.php:112
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:536
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:537
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:941
 msgid "Tags"
 msgstr ""
@@ -3971,7 +3971,7 @@ msgstr ""
 
 #: config/wp-menus.php:103
 #: config/wp-menus.php:104
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:343
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:344
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:797
 #: inc/TemplateHooks/CourseBuilder/Course/BuilderEditCourseTemplate.php:845
 msgid "Categories"
@@ -5194,7 +5194,7 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:2064
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:235
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:337
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:257
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:258
 msgid "Paid"
 msgstr ""
 
@@ -5207,7 +5207,7 @@ msgstr ""
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:972
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:338
 #: inc/TemplateHooks/Admin/AdminAddonsPage.php:854
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:253
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:254
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:447
 #: inc/TemplateHooks/CourseBuilder/Dashboard/BuilderDashboardTemplate.php:572
 #: inc/WPGDPR/ExportPersonalData.php:403
@@ -6822,7 +6822,7 @@ msgid "%1$s Single / %2$s Listing"
 msgstr ""
 
 #: inc/admin/views/setup/steps/finish.php:35
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:730
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:731
 msgid "Offline"
 msgstr ""
 
@@ -8720,6 +8720,7 @@ msgstr ""
 #: inc/Ajax/EditCurriculumAjax.php:268
 #: inc/Ajax/EditCurriculumAjax.php:331
 #: inc/Ajax/EditCurriculumAjax.php:417
+#: inc/Models/CoursePostModel.php:238
 msgid "Section not found"
 msgstr ""
 
@@ -8748,7 +8749,7 @@ msgstr ""
 
 #: inc/Ajax/EditCurriculumAjax.php:337
 #: inc/Ajax/EditCurriculumAjax.php:422
-#: inc/Models/CoursePostModel.php:241
+#: inc/Models/CoursePostModel.php:250
 msgid "Item not found in section"
 msgstr ""
 
@@ -9303,7 +9304,7 @@ msgid "Author: %s"
 msgstr ""
 
 #: inc/class-lp-breadcrumb.php:396
-#: inc/class-lp-breadcrumb.php:400
+#: inc/class-lp-breadcrumb.php:411
 #, php-format
 msgid "Search results for &ldquo;%s&rdquo;"
 msgstr ""
@@ -11041,7 +11042,7 @@ msgstr ""
 msgid "Path file %s not exists"
 msgstr ""
 
-#: inc/Helpers/Template.php:516
+#: inc/Helpers/Template.php:530
 #: inc/lp-deprecated.php:860
 msgctxt "breadcrumb"
 msgid "Home"
@@ -15354,15 +15355,15 @@ msgstr ""
 msgid "Search Course"
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:702
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:703
 msgid "Levels"
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:729
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:730
 msgid "Online"
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:793
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:794
 msgid "Done"
 msgstr ""
 

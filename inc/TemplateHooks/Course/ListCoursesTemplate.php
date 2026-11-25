@@ -664,7 +664,7 @@ class ListCoursesTemplate {
 			action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
 			<input type="search" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
 					name="c_search"
-					value="<?php echo esc_attr( $s ); ?>">
+					value="<?php echo Template::neutralize_shortcode_brackets( esc_attr( is_scalar( $s ) ? (string) $s : '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by esc_attr(). ?>">
 			<button type="submit" name="lp-btn-search-courses"><i class="lp-icon-search"></i></button>
 		</form>
 		<?php

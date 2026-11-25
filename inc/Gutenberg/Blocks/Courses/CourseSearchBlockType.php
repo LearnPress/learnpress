@@ -14,6 +14,8 @@ use Throwable;
  */
 class CourseSearchBlockType extends AbstractBlockType {
 	public $block_name = 'course-search';
+	// Security: output contains c_search from URL, encode shortcode brackets.
+	protected $neutralize_shortcode_output = true;
 
 	public function get_supports(): array {
 		return [

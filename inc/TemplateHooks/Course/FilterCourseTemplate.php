@@ -172,12 +172,13 @@ class FilterCourseTemplate {
 
 		try {
 			$this->check_param_url_has_lang( $data );
-			$value    = LP_Request::get_param( 'c_search' );
-			$value    = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
-			$content  = sprintf(
+			$value   = LP_Request::get_param( 'c_search' );
+			$value   = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
+			$content = sprintf(
 				'<input type="text" name="c_search" placeholder="%s" value="%s" class="%s" data-search-suggest="%d">',
 				esc_html__( 'Search Course', 'learnpress' ),
-				esc_attr( $value ),
+				// Security: value from request, block output runs before do_shortcode(), neutralize shortcode brackets.
+				Template::neutralize_shortcode_brackets( esc_attr( is_scalar( $value ) ? (string) $value : '' ) ),
 				esc_attr( 'lp-course-filter-search' ),
 				esc_attr( $data['search_suggestion'] ?? 1 )
 			);

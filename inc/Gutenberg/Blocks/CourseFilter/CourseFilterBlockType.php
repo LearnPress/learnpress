@@ -13,6 +13,8 @@ use Throwable;
  */
 class CourseFilterBlockType extends AbstractBlockType {
 	public $block_name = 'course-filter';
+	// Security: output contains c_search from URL, encode shortcode brackets.
+	protected $neutralize_shortcode_output = true;
 
 	/**
 	 * Render content of block tag
