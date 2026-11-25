@@ -24,7 +24,7 @@ if ( 'undefined' !== typeof lpData ) {
 	lplistAPI.frontend = {
 		apiWidgets: lp_rest_url + 'lp/v1/widgets/api',
 		apiCourses: lp_rest_url + 'lp/v1/courses/archive-course', // Deprecated API, don't load from v4.3.7
-		apiAJAX: lp_rest_url + 'lp/v1/load_content_via_ajax/', // Deprecated since 4.3.0
+		//apiAJAX: lp_rest_url + 'lp/v1/load_content_via_ajax/', // Deprecated since 4.3.0
 		apiProfileCoverImage: lp_rest_url + 'lp/v1/profile/cover-image',
 	};
 }

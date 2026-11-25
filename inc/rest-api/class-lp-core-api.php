@@ -30,7 +30,7 @@ class LP_Core_API extends LP_Abstract_API {
 			'class-lp-rest-widgets-controller.php',
 			'class-lp-rest-material-controller.php',
 			'class-lp-rest-instructor-controller.php',
-			'class-lp-rest-ajax-controller.php',
+			//'class-lp-rest-ajax-controller.php', // @deprecated 4.3.0, use LoadContentViaAjax (lp-ajax-handle).
 			'class-lp-rest-gateway-webhook-controller.php',
 		);
 
@@ -54,7 +54,7 @@ class LP_Core_API extends LP_Abstract_API {
 			'LP_REST_Widgets_Controller',
 			'LP_Rest_Material_Controller',
 			'LP_REST_Instructor_Controller',
-			'LP_REST_AJAX_Controller',
+			//'LP_REST_AJAX_Controller', // @deprecated 4.3.0, use LoadContentViaAjax (lp-ajax-handle).
 			'LP_REST_Gateway_Webhook_Controller',
 		);
 

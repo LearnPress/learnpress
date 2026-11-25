@@ -7,7 +7,7 @@
  * 1. Create html has class .lp-load-ajax-element attach setting, args want to handle on Template.
  * 2. Create html element target to attach content via AJAX.
  * 3. (loadAJAX.js) JS detect html element target and send data to server.
- * 4. (LP_REST_AJAX_Controller) Server receive data, call callback Class::Method and render content.
+ * 4. (LoadContentViaAjax::load_content_via_ajax) Server receive data, call callback Class::Method and render content.
  *
  * @since 4.2.5.7
  * @version 1.0.1

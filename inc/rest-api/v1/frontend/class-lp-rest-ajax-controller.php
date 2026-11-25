@@ -4,6 +4,7 @@
  *
  * @since 4.2.5.7
  * @version 1.0.1
+ * @deprecated 4.5.1
  */
 
 class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {

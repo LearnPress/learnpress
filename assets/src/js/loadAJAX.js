@@ -197,7 +197,7 @@ const lpAJAX = () => {
 					const dataObj = JSON.parse( elTarget.dataset.send );
 					const dataSend = { ...dataObj };
 					// Security: markup (ex: post content) must not choose server action, only allow 'load_content_via_ajax'.
-					delete dataSend.action;
+					dataSend.action = 'load_content_via_ajax';
 					const elLoadingFirst =
 						element.querySelector( '.loading-first' );
 
@@ -258,7 +258,7 @@ const lpAJAX = () => {
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
 			// Security: markup (ex: post content) must not choose server action, only allow 'load_content_via_ajax'.
-			delete dataSend.action;
+			dataSend.action = 'load_content_via_ajax';
 			if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
 				dataSend.args.paged = 1;
 			}
