@@ -870,7 +870,7 @@ class CourseModel {
 	 *
 	 * @return false|mixed
 	 * @since 4.2.6.9
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function get_meta_value_by_key( string $key, $default_value = false, bool $single = true ) {
 		// Meta values are already unserialized by WP; never instantiate objects from them (PHP Object Injection).
@@ -881,7 +881,6 @@ class CourseModel {
 			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
-		$value                   = LP_Helper::maybe_unserialize( $value );
 		$this->meta_data->{$key} = $value;
 
 		return $value;
@@ -936,9 +935,13 @@ class CourseModel {
 	 * @return string
 	 */
 	public function get_external_link(): string {
-		return esc_url_raw(
-			$this->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' )
-		);
+		$link = $this->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
+		// Stored value must be a plain URL string; ignore anything else (e.g. legacy serialized payloads).
+		if ( ! is_string( $link ) || '' === $link || is_serialized( $link ) ) {
+			return '';
+		}
+
+		return esc_url_raw( $link );
 	}
 
 	/**

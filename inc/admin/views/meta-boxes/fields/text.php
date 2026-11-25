@@ -108,6 +108,17 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 			}
 		}
 
+		if ( is_string( $meta_value ) ) {
+			// Never persist PHP-serialized payloads (PHP Object Injection).
+			if ( is_serialized( $meta_value ) ) {
+				$meta_value = '';
+			}
+
+			if ( 'url' === ( $this->extra['sanitize_type'] ?? '' ) && '' !== $meta_value ) {
+				$meta_value = esc_url_raw( $meta_value, array( 'http', 'https' ) );
+			}
+		}
+
 		update_post_meta( $post_id, $this->id, $meta_value );
 
 		return $meta_value;

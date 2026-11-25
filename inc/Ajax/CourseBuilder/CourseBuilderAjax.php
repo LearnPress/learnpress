@@ -634,8 +634,20 @@ class CourseBuilderAjax extends AbstractAjax {
 		$simple_fields = [
 			'_lp_course_repurchase_option' => CoursePostModel::META_KEY_COURSE_REPURCHASE_OPTION,
 			'_lp_featured_review'          => CoursePostModel::META_KEY_FEATURED_REVIEW,
-			'_lp_external_link_buy_course' => CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE,
 		];
+
+		// External link must be a valid URL; never persist serialized payloads (PHP Object Injection).
+		if ( isset( $data['_lp_external_link_buy_course'] ) ) {
+			$external_link = trim( (string) $data['_lp_external_link_buy_course'] );
+			if ( '' === $external_link ) {
+				$courseModel->meta_data->{CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE} = '';
+			} elseif ( ! is_serialized( $external_link ) ) {
+				$external_link = esc_url_raw( $external_link, [ 'http', 'https' ] );
+				if ( '' !== $external_link ) {
+					$courseModel->meta_data->{CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE} = $external_link;
+				}
+			}
+		}
 
 		foreach ( $simple_fields as $key => $meta_key ) {
 			if ( isset( $data[ $key ] ) ) {

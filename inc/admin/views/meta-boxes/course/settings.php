@@ -273,7 +273,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					esc_html__( 'Normally used for offline classes. Ex: link to a contact page. Format: https://google.com', 'learnpress' ),
 					'',
 					array(
-						'desc_tip' => 'You can apply for case: user register form.<br> You accept for user can learn courses by add manual order on backend',
+						'desc_tip'      => 'You can apply for case: user register form.<br> You accept for user can learn courses by add manual order on backend',
+						'sanitize_type' => 'url',
 					)
 				),
 			),

@@ -517,9 +517,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							if ( ! empty( $value_saved ) ) {
 								$courseModel->meta_data->{$meta_key} = $value_saved;
 							} else {
-								$courseModel->meta_data->{$meta_key} = maybe_unserialize(
-									get_post_meta( $courseModel->ID, $meta_key, true )
-								);
+								$courseModel->meta_data->{$meta_key} = get_post_meta( $courseModel->ID, $meta_key, true );
 							}
 						} elseif ( ! $is_update ) {
 							if ( isset( $courseModel->meta_data->{$meta_key} ) ) {
