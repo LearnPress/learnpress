@@ -296,6 +296,8 @@ window.lpCourseFilter = {
 			const elLPTarget = elListCourseTarget.querySelector( '.lp-target' );
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
+			// Security: markup (ex: post content) must not choose server action, only allow 'load_content_via_ajax'.
+			dataSend.action = 'load_content_via_ajax';
 
 			// Show loading list courses
 			window.lpAJAXG.showHideLoading( elListCourseTarget, 1 );

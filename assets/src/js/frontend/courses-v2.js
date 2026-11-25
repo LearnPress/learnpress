@@ -75,6 +75,8 @@ window.lpCoursesList = ( () => {
 			const elLoading = btnLoadMore.querySelector( classLoading );
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
+			// Security: markup (ex: post content) must not choose server action, only allow 'load_content_via_ajax'.
+			dataSend.action = 'load_content_via_ajax';
 			if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
 				dataSend.args.paged = 1;
 			}
@@ -138,6 +140,8 @@ window.lpCoursesList = ( () => {
 
 				const dataObj = JSON.parse( elLPTarget.dataset.send );
 				const dataSend = { ...dataObj }; // Clone object
+				// Security: markup (ex: post content) must not choose server action, only allow 'load_content_via_ajax'.
+				dataSend.action = 'load_content_via_ajax';
 
 				if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
 					dataSend.args.paged = 1;
@@ -213,6 +217,8 @@ window.lpCoursesList = ( () => {
 
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
+			// Security: markup (ex: post content) must not choose server action, only allow 'load_content_via_ajax'.
+			dataSend.action = 'load_content_via_ajax';
 			dataSend.args.paged = 1;
 			dataSend.args.order_by = target.value || '';
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
@@ -274,6 +280,8 @@ window.lpCoursesList = ( () => {
 			e.preventDefault();
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
+			// Security: markup (ex: post content) must not choose server action, only allow 'load_content_via_ajax'.
+			dataSend.action = 'load_content_via_ajax';
 
 			const keyword = target.value;
 			dataSend.args.c_search = keyword || '';
