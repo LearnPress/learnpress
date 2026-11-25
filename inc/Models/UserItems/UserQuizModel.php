@@ -601,9 +601,14 @@ class UserQuizModel extends UserItemModel {
 	 *
 	 * @return bool|WP_Error
 	 * @since 4.5.0
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function can_check_instant_answer( int $question_id = 0 ) {
+		// Only an attempt in progress can be checked, check on a completed attempt will rewrite its result saved.
+		if ( ! $this->has_started() ) {
+			return new WP_Error( 'quiz_not_started', __( 'The quiz is not in progress.', 'learnpress' ) );
+		}
+
 		$quizPostModel = $this->get_quiz_post_model();
 		if ( ! $quizPostModel instanceof QuizPostModel ) {
 			return new WP_Error( 'quiz_invalid', __( 'Quiz is invalid', 'learnpress' ) );

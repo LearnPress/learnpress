@@ -420,7 +420,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 * @since 4.1.4.1
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function check_answer( WP_REST_Request $request ) {
 		$response = array(
@@ -478,7 +478,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				}
 
 				$userQuizModel = $userCourseModel->get_item_attend( $quiz_id, LP_QUIZ_CPT );
-				if ( ! $userQuizModel instanceof UserQuizModel ) {
+				// Check on quiz completed will change result saved.
+				if ( ! $userQuizModel instanceof UserQuizModel || ! $userQuizModel->has_started() ) {
 					throw new Exception( esc_html__( 'User quiz is invalid!', 'learnpress' ) );
 				}
 

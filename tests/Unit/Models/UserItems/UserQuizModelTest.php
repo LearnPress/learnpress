@@ -239,11 +239,12 @@ class UserQuizModelTest extends BrainMonkeyTestCase {
 	 *
 	 * @return UserQuizModel|Mockery\MockInterface
 	 */
-	private function make_user_quiz_to_check( bool $instant_check, $userCourseModel, array $checked_questions = [] ) {
+	private function make_user_quiz_to_check( bool $instant_check, $userCourseModel, array $checked_questions = [], string $status = UserQuizModel::STATUS_STARTED ) {
 		$quizPostModel = Mockery::mock( QuizPostModel::class );
 		$quizPostModel->shouldReceive( 'has_instant_check' )->andReturn( $instant_check );
 
 		$userQuizModel = Mockery::mock( UserQuizModel::class )->makePartial();
+		$userQuizModel->shouldReceive( 'get_status' )->andReturn( $status );
 		$userQuizModel->shouldReceive( 'get_quiz_post_model' )->andReturn( $quizPostModel );
 		$userQuizModel->shouldReceive( 'get_user_course_model' )->andReturn( $userCourseModel );
 		$userQuizModel->shouldReceive( 'get_checked_questions' )->andReturn( $checked_questions );
@@ -295,6 +296,26 @@ class UserQuizModelTest extends BrainMonkeyTestCase {
 		$can_check = $userQuizModel->can_check_instant_answer( 5 );
 
 		$this->assertSame( $error, $can_check );
+	}
+
+	public function test_can_check_instant_answer_error_when_quiz_completed(): void {
+		// Check on a completed attempt must not rewrite its result saved.
+		$userQuizModel = $this->make_user_quiz_to_check( true, $this->make_user_course(), [], UserQuizModel::STATUS_COMPLETED );
+
+		$can_check = $userQuizModel->can_check_instant_answer( 5 );
+
+		$this->assertInstanceOf( WP_Error::class, $can_check );
+		$this->assertSame( 'quiz_not_started', $can_check->get_error_code() );
+	}
+
+	public function test_instant_check_question_throws_when_quiz_completed(): void {
+		$this->stub_question_found();
+		Functions\when( '__' )->returnArg( 1 );
+		$userQuizModel = $this->make_user_quiz_to_check( true, $this->make_user_course(), [], UserQuizModel::STATUS_COMPLETED );
+
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'The quiz is not in progress.' );
+		$userQuizModel->instant_check_question( 5, 'a' );
 	}
 
 	public function test_can_check_instant_answer_error_when_already_checked(): void {
