@@ -456,7 +456,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// LP Cache
 			include_once 'inc/Cache/class-lp-cache.php';
 			include_once 'inc/Cache/class-lp-courses-cache.php';
-			include_once 'inc/Cache/class-lp-course-cache.php';
+			//include_once 'inc/Cache/class-lp-course-cache.php';
 			include_once 'inc/Cache/class-lp-quiz-cache.php';
 			include_once 'inc/Cache/class-lp-question-cache.php';
 			include_once 'inc/Cache/class-lp-session-cache.php';

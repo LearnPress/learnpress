@@ -418,21 +418,19 @@ class UserCourseModel extends UserItemModel {
 			}
 
 			if ( $this->is_finished() ) {
-				// Get result from lp_user_item_results
-				//return LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+				// Get result snapshot saved when the course was finished.
 				$userCourseResult = UserItemResultModel::find_by_user_item_id(
 					$this->get_user_item_id(),
 					true
 				);
 				if ( $userCourseResult instanceof UserItemResultModel ) {
-					return array_merge(
-						$results,
-						$userCourseResult->get_result()
-					);
+					$result_saved = $userCourseResult->get_result();
+					if ( ! empty( $result_saved ) && is_array( $result_saved ) ) {
+						return array_merge( $results, $result_saved );
+					}
 				}
-			}
-
-			if ( $this->status !== LP_COURSE_ENROLLED ) {
+				// No snapshot saved (e.g. legacy data): calculate from the current progress below.
+			} elseif ( $this->status !== LP_COURSE_ENROLLED ) {
 				return $results;
 			}
 
@@ -1053,12 +1051,14 @@ class UserCourseModel extends UserItemModel {
 		$this->save();
 
 		// Save the full course results snapshot to user_item_results for history.
+		// Create the row when missing (legacy enrollments may not have one), else the snapshot is lost.
 		$userItemResult = UserItemResultModel::find_by_user_item_id( $this->get_user_item_id() );
-		if ( $userItemResult instanceof UserItemResultModel ) {
-			$userItemResult->set_result( $course_results );
-			$userItemResult->save();
-			//LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $course_results ) );
+		if ( ! $userItemResult instanceof UserItemResultModel ) {
+			$userItemResult = new UserItemResultModel( $this );
+			$userItemResult->set_user_item_id( $this->get_user_item_id() );
 		}
+		$userItemResult->set_result( $course_results );
+		$userItemResult->save();
 
 		do_action( 'learn-press/user-course-finished', $this->item_id, $this->user_id, $this->get_user_item_id() );
 		do_action( 'learn-press/user-course/finished', $this );
