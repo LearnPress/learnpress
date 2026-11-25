@@ -48,7 +48,7 @@
     "learnpress-membership": {
         "name": "Memberships & Subscriptions Add-on for LearnPress",
         "basename": "learnpress-membership/learnpress-membership.php",
-        "version": "4.0.4",
+        "version": "4.0.5",
         "require_lp": "4.4.1",
         "description": "Sell course memberships and subscriptions for steady recurring revenue.",
         "image": "https://updates.thimpress.com/images/learnpress-membership.png",
