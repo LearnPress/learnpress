@@ -69,10 +69,39 @@ class InstructorBackgroundBlockType extends AbstractSingleInstructorBlockType {
 	}
 
 	public function get_inline_style( $attributes ) {
-		$size     = isset( $attributes['size'] ) ? sprintf( 'background-size: %s;', $attributes['size'] ) : 'background-size: cover;';
-		$position = isset( $attributes['position'] ) ? sprintf( 'background-position: %s;', $attributes['position'] ) : 'background-position: center;';
-		$repeat   = isset( $attributes['repeat'] ) ? 'background-repeat: repeat;' : 'background-repeat: no-repeat;';
-		return '.' . $this->class_hash . ' .lp-user-cover-image_background {' . $size . $position . $repeat . '}';
+		$size     = $this->sanitize_css_value( $attributes['size'] ?? '', 'cover' );
+		$position = $this->sanitize_css_value( $attributes['position'] ?? '', 'center' );
+		$repeat   = ! empty( $attributes['repeat'] ) ? 'repeat' : 'no-repeat';
+
+		return sprintf(
+			'.%s .lp-user-cover-image_background {background-size: %s;background-position: %s;background-repeat: %s;}',
+			sanitize_html_class( $this->class_hash ),
+			$size,
+			$position,
+			$repeat
+		);
+	}
+
+	/**
+	 * Only allow simple CSS values (keywords, numbers, units, percent) to prevent CSS injection.
+	 *
+	 * @param mixed  $value
+	 * @param string $default_value
+	 *
+	 * @return string
+	 * @since 4.5.1
+	 */
+	protected function sanitize_css_value( $value, string $default_value ): string {
+		if ( ! is_string( $value ) ) {
+			return $default_value;
+		}
+
+		$value = trim( $value );
+		if ( '' === $value || ! preg_match( '/^[a-zA-Z0-9.%\s-]+$/', $value ) ) {
+			return $default_value;
+		}
+
+		return $value;
 	}
 
 	public function inline_styles( $attributes ) {

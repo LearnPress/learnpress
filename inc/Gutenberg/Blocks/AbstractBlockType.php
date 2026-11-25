@@ -163,8 +163,12 @@ abstract class AbstractBlockType extends WP_Block_Type {
 		$class                     = $class_default ? $class_default : '';
 		$style                     = '';
 
-		if ( ! empty( $classes ) ) {
-			$class .= ' ' . $classes;
+		if ( ! empty( $classes ) && is_string( $classes ) ) {
+			// className comes from stored block markup (user-controlled), sanitize each token.
+			$class_tokens = array_filter( array_map( 'sanitize_html_class', preg_split( '/\s+/', $classes ) ) );
+			if ( ! empty( $class_tokens ) ) {
+				$class .= ' ' . implode( ' ', $class_tokens );
+			}
 		}
 
 		if ( ! empty( $class_hash ) ) {
@@ -175,16 +179,16 @@ abstract class AbstractBlockType extends WP_Block_Type {
 			$class .= ' ' . $border_classes_and_styles['classes'];
 		}
 
-		if ( ! empty( $border_classes_and_styles['classes'] ) ) {
-			$style = sprintf( 'style="%s"', $border_classes_and_styles['styles'] );
+		if ( ! empty( $border_classes_and_styles['styles'] ) ) {
+			$style = sprintf( 'style="%s"', esc_attr( $border_classes_and_styles['styles'] ) );
 		}
 
 		ob_start();
-		echo sprintf(
+		printf(
 			'<div class="%s" %s>%s</div>',
-			$class,
-			$style,
-			$content
+			esc_attr( $class ),
+			$style, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- value escaped above.
+			$content // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- block content rendered by the block itself.
 		);
 		$output = ob_get_clean();
 		return $output;
