@@ -2,7 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.1.2
+ * @version 1.1.3
  */
 
 import * as lpUtils from 'lpAssetsJsPath/utils.js';
@@ -196,6 +196,8 @@ const lpAJAX = () => {
 
 					const dataObj = JSON.parse( elTarget.dataset.send );
 					const dataSend = { ...dataObj };
+					// Security: markup (ex: post content) must not choose server action, only allow 'load_content_via_ajax'.
+					delete dataSend.action;
 					const elLoadingFirst =
 						element.querySelector( '.loading-first' );
 
@@ -255,6 +257,8 @@ const lpAJAX = () => {
 
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
+			// Security: markup (ex: post content) must not choose server action, only allow 'load_content_via_ajax'.
+			delete dataSend.action;
 			if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
 				dataSend.args.paged = 1;
 			}
@@ -322,7 +326,11 @@ const lpAJAX = () => {
 			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		},
 		getDataSetCurrent: ( elLPTarget ) => {
-			return JSON.parse( elLPTarget.dataset.send );
+			const dataSend = JSON.parse( elLPTarget.dataset.send );
+			// Security: markup (ex: post content) must not choose server action.
+			delete dataSend.action;
+
+			return dataSend;
 		},
 		setDataSetCurrent: ( elLPTarget, dataSend ) => {
 			return ( elLPTarget.dataset.send = JSON.stringify( dataSend ) );

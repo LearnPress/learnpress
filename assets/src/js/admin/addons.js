@@ -218,6 +218,10 @@ class AdminAddons {
 			addon,
 			purchase_code: data.purchase_code || '',
 			id_url: 'addon-action',
+			nonce_addon_action:
+				'undefined' !== typeof lpDataAdmin
+					? lpDataAdmin.nonce_addon_action || ''
+					: '',
 		};
 
 		const releaseHandling = () => {

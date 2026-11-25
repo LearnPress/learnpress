@@ -161,6 +161,39 @@ class AddonService {
 	}
 
 	/**
+	 * Get addon data from LearnPress add-ons list (server side) by slug.
+	 *
+	 * Security: use this instead of addon data sent from request,
+	 * so basename/slug/version can't be forged.
+	 *
+	 * @param string $slug Addon slug.
+	 *
+	 * @return array Empty if not found.
+	 * @throws Exception
+	 * @since 4.5.1
+	 * @version 1.0.0
+	 */
+	public function get_addon_by_slug( string $slug ): array {
+		if ( '' === $slug ) {
+			return [];
+		}
+
+		$addons = $this->get_addons();
+		if ( ! isset( $addons->{$slug} ) || ! is_object( $addons->{$slug} ) ) {
+			return [];
+		}
+
+		$addon = json_decode( wp_json_encode( $addons->{$slug} ), true );
+		if ( ! is_array( $addon ) || empty( $addon['basename'] ) ) {
+			return [];
+		}
+
+		$addon['slug'] = $slug;
+
+		return $addon;
+	}
+
+	/**
 	 * Get list addons purchased and attach purchase_info to each addon.
 	 *
 	 * @param object $addons List addons keyed by slug.

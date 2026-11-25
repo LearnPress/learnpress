@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Ajax\AddonsAjax;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -62,6 +63,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lpAjaxUrl'                => LP_Settings::url_handle_lp_ajax(),
 				'ajaxUrl'                  => admin_url( 'admin-ajax.php' ),
 				'nonce'                    => wp_create_nonce( 'wp_rest' ),
+				// Only on LearnPress Add-ons page.
+				'nonce_addon_action'       => $screen && 'learnpress_page_learn-press-addons' === $screen->id
+					&& current_user_can( 'activate_plugins' )
+					? wp_create_nonce( AddonsAjax::NONCE_ACTION ) : '',
 				'courses_url'              => learn_press_get_page_link( 'courses' ),
 				'urlParams'                => lp_archive_skeleton_get_args(),
 				'i18n'                     => array(

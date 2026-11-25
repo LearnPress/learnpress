@@ -6,7 +6,7 @@
  * via the LearnPress AJAX dispatcher.
  *
  * @since 4.4.7
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\Ajax;
@@ -29,6 +29,11 @@ defined( 'ABSPATH' ) || exit;
  */
 class AddonsAjax extends AbstractAjax {
 	/**
+	 * Nonce action for addon_action, only print on LearnPress Add-ons page.
+	 */
+	const NONCE_ACTION = 'lp_addon_action';
+
+	/**
 	 * @var AddonService
 	 */
 	private $addon_service;
@@ -45,7 +50,7 @@ class AddonsAjax extends AbstractAjax {
 	 *
 	 * @return void
 	 * @since 4.4.9
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function addon_action() {
 		$response       = new Response();
@@ -64,14 +69,30 @@ class AddonsAjax extends AbstractAjax {
 				throw new Exception( __( 'Params is invalid!', 'learnpress' ) );
 			}
 
+			// Security: require nonce for this action, the general nonce 'wp_rest' is not enough.
+			if ( ! wp_verify_nonce(
+				sanitize_text_field( $params['nonce_addon_action'] ?? '' ),
+				self::NONCE_ACTION
+			) ) {
+				throw new Exception( __( 'Invalid request!', 'learnpress' ) );
+			}
+
 			$action = sanitize_key( $params['action_type'] ?? '' );
 			if ( empty( $action ) ) {
 				throw new Exception( __( 'Action is invalid!', 'learnpress' ) );
 			}
 
-			$addon = $params['addon'] ?? [];
-			if ( empty( $addon ) || ! is_array( $addon ) ) {
+			$addon_request = $params['addon'] ?? [];
+			if ( empty( $addon_request ) || ! is_array( $addon_request ) ) {
 				throw new Exception( __( 'Params is invalid!', 'learnpress' ) );
+			}
+
+			// Security: only accept add-on from LearnPress add-ons list (server side), not data from request.
+			$addon = $this->addon_service->get_addon_by_slug(
+				sanitize_key( $addon_request['slug'] ?? '' )
+			);
+			if ( empty( $addon ) ) {
+				throw new Exception( __( 'Add-on is invalid!', 'learnpress' ) );
 			}
 
 			$purchase_code = sanitize_text_field( $params['purchase_code'] ?? '' );
@@ -162,6 +183,10 @@ class AddonsAjax extends AbstractAjax {
 					);
 					break;
 				case 'deactivate':
+					if ( ! current_user_can( 'activate_plugins' ) ) {
+						throw new Exception( __( 'You do not have permission to deactivate plugins.', 'learnpress' ) );
+					}
+
 					$this->addon_service->deactivate( $addon );
 					$message = sprintf(
 						/* translators: %s: addon name */
