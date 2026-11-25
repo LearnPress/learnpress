@@ -45,6 +45,26 @@ use Throwable;
 
 class SendEmailAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'send_mail_order_status_pending_to_processing',
+		'send_mail_order_status_pending_to_completed',
+		'send_mail_order_status_update_to_completed',
+		'send_mail_order_status_update_to_cancelled',
+		'send_mail_order_status_update_to_refunded',
+		'send_mail_order_refund_requested',
+		'send_mail_users_enrolled_courses',
+		'send_mail_user_enrolled_course',
+		'send_mail_user_course_finished',
+		'send_mail_become_a_teacher_request',
+		'send_mail_become_a_teacher_accept',
+		'send_mail_become_a_teacher_deny',
+	];
+
+	/**
 	 * Send mail when order status update to complete
 	 *
 	 * @since 4.2.9.1

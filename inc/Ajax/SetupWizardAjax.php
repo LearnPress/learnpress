@@ -28,6 +28,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class SetupWizardAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'lp_setup_wizard_save_step',
+		'lp_setup_import_demo_course',
+	];
+
+	/**
 	 * Save the current wizard step.
 	 *
 	 * @return void

@@ -22,6 +22,15 @@ defined( 'ABSPATH' ) || exit;
  * @since 4.4.9.2
  */
 class NoteAjax extends AbstractAjax {
+	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'lp_note_save',
+		'lp_note_delete',
+	];
 
 	/**
 	 * Create or update a note of the current user.

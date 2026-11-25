@@ -27,6 +27,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class SampleDataAJAX extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'lp_install_sample_data',
+		'lp_uninstall_sample_data',
+	];
+
+	/**
 	 * Install sample course data via AJAX.
 	 *
 	 * @return void

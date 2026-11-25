@@ -16,6 +16,17 @@ defined( 'ABSPATH' ) || exit;
  */
 class McpApiKeysAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'mcp_create_api_key',
+		'mcp_update_api_key',
+		'mcp_regenerate_api_key',
+	];
+
+	/**
 	 * @var string
 	 */
 	protected static $required_capability = 'manage_options';

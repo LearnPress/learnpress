@@ -19,6 +19,15 @@ defined( 'ABSPATH' ) || exit;
  * @version 1.0.2
  */
 class LoadContentViaAjax extends AbstractAjax {
+	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'load_content_via_ajax',
+	];
+
 	public function load_content_via_ajax() {
 		$response = new Response();
 

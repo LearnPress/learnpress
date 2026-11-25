@@ -17,15 +17,25 @@ use LP_Request;
  * Because not specify a specific class.
  */
 abstract class AbstractAjax {
+	/**
+	 * Methods allowed to call via param 'lp-load-ajax'.
+	 * Empty: any public method is allowed (backward compatible for addons not declared yet).
+	 *
+	 * @var string[]
+	 * @since 4.5.1
+	 */
+	protected static $actions = [];
+
 	public static function catch_lp_ajax() {
 		if ( ! empty( $_REQUEST['lp-load-ajax'] ) ) {
 			$action = LP_Request::get_param( 'lp-load-ajax' );
 			$nonce  = LP_Request::get_param( 'nonce' );
-			$class  = new static();
 
-			if ( ! method_exists( $class, $action ) ) {
+			if ( ! static::is_action_allowed( $action ) ) {
 				return;
 			}
+
+			$class = new static();
 
 			/**
 			 * For case cache HTML, nonce of guest is cached (expired), so is not required.
@@ -50,5 +60,30 @@ abstract class AbstractAjax {
 				call_user_func( [ $class, $action ] );
 			}
 		}
+	}
+
+	/**
+	 * Check action can call via 'lp-load-ajax'.
+	 *
+	 * @param mixed $action
+	 *
+	 * @return bool
+	 * @since 4.5.1
+	 */
+	public static function is_action_allowed( $action ): bool {
+		if ( ! is_string( $action ) || '' === $action ) {
+			return false;
+		}
+
+		if ( ! empty( static::$actions ) ) {
+			return in_array( $action, static::$actions, true );
+		}
+
+		// Methods of dispatcher must never call via request (ex: catch_lp_ajax call itself is infinite recursion).
+		if ( in_array( strtolower( $action ), [ 'catch_lp_ajax', 'is_action_allowed', '__construct' ], true ) ) {
+			return false;
+		}
+
+		return method_exists( static::class, $action );
 	}
 }

@@ -27,6 +27,18 @@ use Throwable;
  */
 class EditQuizAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'create_question_add_to_quiz',
+		'add_questions_to_quiz',
+		'remove_question_from_quiz',
+		'update_questions_position',
+	];
+
+	/**
 	 * Check permissions and validate parameters.
 	 *
 	 * @throws Exception

@@ -22,6 +22,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class RefundOrderAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'request_refund_order',
+		'admin_handle_request_refund',
+	];
+
+	/**
 	 * Customer request refund order from profile page.
 	 *
 	 * @since 4.4.0

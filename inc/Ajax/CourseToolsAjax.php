@@ -32,6 +32,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class CourseToolsAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'reset_progress_courses',
+		'reset_progress_items_course',
+	];
+
+	/**
 	 * Register AJAX callbacks with the abstract dispatcher.
 	 *
 	 * @return void

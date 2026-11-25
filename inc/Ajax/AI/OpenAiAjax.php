@@ -32,6 +32,21 @@ use Throwable;
  */
 class OpenAiAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'openai_generate_prompt_course',
+		'openai_generate_data_course',
+		'openai_create_course',
+		'openai_generate_prompt',
+		'openai_generate_data',
+		'openai_generate_image',
+		'openai_apply_image_feature',
+	];
+
+	/**
 	 * Generate prompt course with AI
 	 */
 	public function openai_generate_prompt_course() {

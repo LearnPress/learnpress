@@ -29,6 +29,16 @@ use WP_Post;
 
 class CBEditCourseAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'cb_save_course',
+		'cb_quick_edit_save_course',
+	];
+
+	/**
 	 * Check permissions and validate parameters.
 	 *
 	 * @throws Exception

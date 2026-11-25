@@ -37,6 +37,18 @@ defined( 'ABSPATH' ) || exit;
 
 class UserQuizAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'user_start_quiz',
+		'user_retake_quiz',
+		'user_submit_quiz',
+		'user_check_answer_question',
+	];
+
+	/**
 	 * User start quiz.
 	 * Guest (course no required enroll) is not saved, only get HTML doing quiz.
 	 *

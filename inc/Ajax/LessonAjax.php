@@ -24,6 +24,15 @@ use WP_Error;
 
 class LessonAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'user_complete_lesson',
+	];
+
+	/**
 	 * User complete lesson ajax handler.
 	 *
 	 * @since 4.2.7.6

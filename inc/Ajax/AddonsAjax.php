@@ -29,6 +29,15 @@ defined( 'ABSPATH' ) || exit;
  */
 class AddonsAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'addon_action',
+	];
+
+	/**
 	 * Nonce action for addon_action, only print on LearnPress Add-ons page.
 	 */
 	const NONCE_ACTION = 'lp_addon_action';

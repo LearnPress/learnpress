@@ -40,6 +40,30 @@ use Throwable;
 
 class CourseBuilderAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'save_courses',
+		'save_course_settings',
+		'duplicate_course',
+		'move_trash_course',
+		'add_course_category',
+		'add_course_tag',
+		'duplicate_lesson',
+		'builder_update_lesson',
+		'move_trash_lesson',
+		'builder_update_quiz',
+		'duplicate_quiz',
+		'move_trash_quiz',
+		'duplicate_question',
+		'builder_update_question',
+		'move_trash_question',
+		'save_global_settings',
+	];
+
+	/**
 	 * Check permissions and validate parameters.
 	 *
 	 * @throws Exception

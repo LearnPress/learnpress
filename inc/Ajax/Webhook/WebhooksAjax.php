@@ -18,6 +18,18 @@ defined( 'ABSPATH' ) || exit;
  */
 class WebhooksAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'create_webhook',
+		'update_webhook',
+		'delete_webhook',
+		'regenerate_webhook_secret',
+	];
+
+	/**
 	 * @var string
 	 */
 	protected static $required_capability = 'manage_options';

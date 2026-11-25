@@ -26,6 +26,14 @@ use Throwable;
  * @since 4.3.5
  */
 class AIAssistantAjax extends AbstractAjax {
+	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'openai_assistant_chat',
+	];
 
 	/**
 	 * Handle assistant chat request from a logged-in learner.

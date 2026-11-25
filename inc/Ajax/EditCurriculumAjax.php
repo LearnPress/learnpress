@@ -24,6 +24,24 @@ use Throwable;
 
 class EditCurriculumAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'course_add_section',
+		'course_update_section',
+		'course_delete_section',
+		'course_update_section_position',
+		'create_item_add_to_section',
+		'add_items_to_section',
+		'delete_item_from_section',
+		'update_item_section_and_position',
+		'update_item_of_section',
+		'update_item_preview',
+	];
+
+	/**
 	 * Check permissions and validate parameters.
 	 *
 	 * @throws Exception

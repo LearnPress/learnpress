@@ -32,6 +32,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class EditQuestionAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'update_question',
+		'update_question_answers_config',
+	];
+
+	/**
 	 * Check permissions and validate parameters.
 	 *
 	 * @throws Exception

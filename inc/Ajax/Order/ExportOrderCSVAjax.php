@@ -26,6 +26,15 @@ defined( 'ABSPATH' ) || exit;
  */
 class ExportOrderCSVAjax extends AbstractAjax {
 	/**
+	 * Methods allowed to call via 'lp-load-ajax'.
+	 *
+	 * @var string[]
+	 */
+	protected static $actions = [
+		'export_order_csv',
+	];
+
+	/**
 	 * Export orders to CSV file, action call from js file: export-order.js
 	 *
 	 * @return void
