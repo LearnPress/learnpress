@@ -211,7 +211,7 @@ class CoursePostModel extends PostModel {
 	 * @return void
 	 * @throws Exception
 	 * @since 4.3.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function update_items_position( array $data ) {
 		// Check permission
@@ -222,12 +222,21 @@ class CoursePostModel extends PostModel {
 		$courseModel = $this->get_course_model();
 
 		$items_position         = $data['items_position'] ?? [];
-		$item_id_change         = $data['item_id_change'] ?? 0;
-		$section_id_new_of_item = $data['section_id_new_of_item'] ?? 0;
-		$section_id_old_of_item = $data['section_id_old_of_item'] ?? 0;
+		$item_id_change         = absint( $data['item_id_change'] ?? 0 );
+		$section_id_new_of_item = absint( $data['section_id_new_of_item'] ?? 0 );
+		$section_id_old_of_item = absint( $data['section_id_old_of_item'] ?? 0 );
 
 		if ( ! is_array( $items_position ) ) {
 			throw new Exception( __( 'Invalid item position', 'learnpress' ) );
+		}
+
+		// Both sections must belong to this course, prevent moving items across courses (IDOR).
+		$course_id = (int) $this->get_id();
+		foreach ( [ $section_id_old_of_item, $section_id_new_of_item ] as $section_id_check ) {
+			if ( empty( $section_id_check )
+				|| ! CourseSectionModel::find( $section_id_check, $course_id, false ) instanceof CourseSectionModel ) {
+				throw new Exception( __( 'Section not found', 'learnpress' ) );
+			}
 		}
 
 		// Find item of section id old
