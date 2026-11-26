@@ -10,6 +10,7 @@ use LearnPress\Databases\UserItemResultsDB;
 use LearnPress\Filters\UserItemResultsFilter;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserItemMeta\UserQuizMetaModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserQuizModel;
 use LearnPress\Tests\Helpers\BrainMonkeyTestCase;
@@ -406,5 +407,74 @@ class UserQuizModelTest extends BrainMonkeyTestCase {
 		$this->assertSame( 'a', $result['questions'][5]->answered );
 
 		$this->assertSame( array( 'pass' => 1 ), UserQuizModel::remove_questions_snapshot( array( 'pass' => 1 ) ) );
+	}
+
+	/**
+	 * extra_data is stored as JSON: encode via wp_json_encode, decode via LP_Helper::json_decode.
+	 */
+	private function stub_extra_data_json(): void {
+		if ( ! class_exists( 'LP_Helper' ) ) {
+			require_once LP_ABSPATH . 'inc/class-lp-helper.php';
+		}
+
+		Functions\when( 'wp_json_encode' )->alias( 'json_encode' );
+	}
+
+	public function test_get_retaken_count_reads_extra_data_first(): void {
+		$userQuizModel = Mockery::mock( UserQuizModel::class )->makePartial();
+		$this->stub_extra_data_json();
+		$userQuizModel->set_extra_data( [ UserQuizMetaModel::KEY_RETAKEN_COUNT => 3 ] );
+		$userQuizModel->shouldNotReceive( 'get_meta_value_from_key' );
+
+		$this->assertSame( 3, $userQuizModel->get_retaken_count() );
+	}
+
+	public function test_get_retaken_count_extra_data_zero_wins_over_meta(): void {
+		$userQuizModel = Mockery::mock( UserQuizModel::class )->makePartial();
+		$this->stub_extra_data_json();
+		$userQuizModel->set_extra_data( [ UserQuizMetaModel::KEY_RETAKEN_COUNT => 0 ] );
+		$userQuizModel->shouldNotReceive( 'get_meta_value_from_key' );
+
+		$this->assertSame( 0, $userQuizModel->get_retaken_count() );
+	}
+
+	public function test_get_retaken_count_falls_back_to_meta_when_key_missing_in_extra_data(): void {
+		$userQuizModel = Mockery::mock( UserQuizModel::class )->makePartial();
+		$this->stub_extra_data_json();
+		$userQuizModel->set_extra_data( [ 'other_key' => 'x' ] );
+		$userQuizModel->shouldReceive( 'get_meta_value_from_key' )
+			->with( UserQuizMetaModel::KEY_RETAKEN_COUNT, 0 )
+			->andReturn( '2' );
+
+		$this->assertSame( 2, $userQuizModel->get_retaken_count() );
+	}
+
+	public function test_get_retaken_count_falls_back_to_meta_when_extra_data_null(): void {
+		$userQuizModel             = Mockery::mock( UserQuizModel::class )->makePartial();
+		$userQuizModel->extra_data = null;
+		$userQuizModel->shouldReceive( 'get_meta_value_from_key' )
+			->with( UserQuizMetaModel::KEY_RETAKEN_COUNT, 0 )
+			->andReturn( 0 );
+
+		$this->assertSame( 0, $userQuizModel->get_retaken_count() );
+	}
+
+	public function test_set_retaken_count_stores_meta_and_extra_data_keeping_other_keys(): void {
+		$userQuizModel = Mockery::mock( UserQuizModel::class )->makePartial();
+		$this->stub_extra_data_json();
+		$userQuizModel->set_extra_data( [ 'other_key' => 'x' ] );
+		$userQuizModel->shouldReceive( 'set_meta_value_for_key' )
+			->once()
+			->with( UserQuizMetaModel::KEY_RETAKEN_COUNT, 4 );
+
+		$userQuizModel->set_retaken_count( 4 );
+
+		$this->assertSame(
+			[
+				'other_key'                         => 'x',
+				UserQuizMetaModel::KEY_RETAKEN_COUNT => 4,
+			],
+			$userQuizModel->get_extra_data()
+		);
 	}
 }

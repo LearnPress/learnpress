@@ -10,7 +10,6 @@ use LearnPress\Helpers\LPDateTime;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
-use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LearnPress\Models\UserItemMeta\UserQuizMetaModel;
 use LearnPress\Models\UserItemResults\UserItemResultModel;
 use LearnPress\Models\UserModel;
@@ -243,7 +242,7 @@ class UserQuizModel extends UserItemModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function handle_retake() {
 		$can_retake = $this->can_retake();
@@ -254,20 +253,8 @@ class UserQuizModel extends UserItemModel {
 			throw new Exception( $can_retake->get_error_message() );
 		}
 
-		// Update retaken count.
-		$user_quiz_retaken = $this->get_meta_model_from_key( UserQuizMetaModel::KEY_RETAKEN_COUNT );
-		if ( $user_quiz_retaken instanceof UserItemMetaModel ) {
-			$number_retaken = absint( $user_quiz_retaken->meta_value );
-			++$number_retaken;
-			$user_quiz_retaken->meta_value = $number_retaken;
-			$user_quiz_retaken->save();
-		} else {
-			$user_quiz_retaken_new                          = new UserQuizMetaModel();
-			$user_quiz_retaken_new->learnpress_user_item_id = $this->get_user_item_id();
-			$user_quiz_retaken_new->meta_key                = UserQuizMetaModel::KEY_RETAKEN_COUNT;
-			$user_quiz_retaken_new->meta_value              = 1;
-			$user_quiz_retaken_new->save();
-		}
+		// Update retaken count, extra_data is saved with save() below.
+		$this->set_retaken_count( $this->get_retaken_count() + 1 );
 
 		// Remove questions checked (for case enable instant check).
 		$this->delete_meta( UserQuizMetaModel::KEY_QUESTION_CHECKED );
@@ -549,12 +536,38 @@ class UserQuizModel extends UserItemModel {
 
 	/**
 	 * Get number retaken count.
-	 * @move from LP_Quiz
 	 *
+	 * Read from column extra_data (table learnpress_user_items) first,
+	 * if not exists fallback to user item meta (old data).
+	 *
+	 * @move from LP_Quiz
 	 * @return integer
+	 * @version 1.0.1
 	 */
 	public function get_retaken_count(): int {
+		$extra_data = $this->get_extra_data();
+		if ( array_key_exists( UserQuizMetaModel::KEY_RETAKEN_COUNT, $extra_data ) ) {
+			return absint( $extra_data[ UserQuizMetaModel::KEY_RETAKEN_COUNT ] );
+		}
+
 		return absint( $this->get_meta_value_from_key( UserQuizMetaModel::KEY_RETAKEN_COUNT, 0 ) );
+	}
+
+	/**
+	 * Set retaken count of user quiz.
+	 * Store on user item meta and column extra_data with the same key.
+	 *
+	 * Meta is saved immediately, extra_data is saved when call save().
+	 *
+	 * @param int $count
+	 *
+	 * @return void
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function set_retaken_count( int $count ) {
+		$this->set_meta_value_for_key( UserQuizMetaModel::KEY_RETAKEN_COUNT, $count );
+		$this->set_extra_data_by_key_value( UserQuizMetaModel::KEY_RETAKEN_COUNT, $count );
 	}
 
 	/**
