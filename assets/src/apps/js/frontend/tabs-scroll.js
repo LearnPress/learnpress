@@ -1,3 +1,6 @@
+/**
+ * @deprecated 4.5.1 not imported, moved to SingleCourse::initTabsDragScroll, scrollTabToCenter (assets/src/js/frontend/single-course.js).
+ */
 export default function TabsDragScroll() {
 	// Selectors and DOM elements
 	const TabsDragScroll = document.querySelector('.TabsDragScroll');

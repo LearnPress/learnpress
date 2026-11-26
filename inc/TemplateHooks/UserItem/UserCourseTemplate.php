@@ -8,6 +8,7 @@
 
 namespace LearnPress\TemplateHooks\UserItem;
 
+use LearnPress\Ajax\UserItem\UserCourseAjax;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\QuizPostModel;
@@ -127,7 +128,7 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_btn_retake( UserCourseModel $userCourseModel ): string {
 		$retake_remaining = $userCourseModel->can_retake();
@@ -136,9 +137,22 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 			return '';
 		}
 
+		// JS handle retake, enqueue here because button can be shown on any page (shortcode, block).
+		wp_enqueue_script( 'lp-single-course-v2' );
+
 		$html_btn = sprintf(
-			'<button type="submit" class="lp-button button-retake-course">%s (%d)</button>',
-			__( 'Retake course', 'learnpress' ),
+			'<button type="submit" class="lp-button button-retake-course" data-title="%s" data-content="%s" data-send="%s">%s (%d)</button>',
+			esc_attr__( 'Retake course', 'learnpress' ),
+			esc_attr__( 'Do you want to retake the course?', 'learnpress' ),
+			Template::convert_data_to_json(
+				[
+					'id_url'    => 'user-retake-course',
+					/** @use UserCourseAjax::user_retake_course */
+					'action'    => 'user_retake_course',
+					'course_id' => $userCourseModel->item_id,
+				]
+			),
+			esc_html__( 'Retake course', 'learnpress' ),
 			$retake_remaining
 		);
 
@@ -146,8 +160,9 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 			'learn-press/course/html-button-retake',
 			[
 				'form'         => sprintf(
-					'<form name="lp-form-retake-course" class="lp-form-retake-course" method="post" data-confirm="%s">',
-					esc_html__( 'Do you want to retake the course', 'learnpress' )
+					'<form name="lp-form-retake-course" class="lp-form-retake-course" method="post" data-confirm="%s" data-lp-action-nonce="%s">',
+					esc_attr__( 'Do you want to retake the course', 'learnpress' ),
+					esc_attr( UserCourseAjax::create_action_nonce() )
 				),
 				'input'        => sprintf(
 					'<input type="hidden" name="retake-course" value="%d"/>',

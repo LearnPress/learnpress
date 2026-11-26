@@ -55,7 +55,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'args'                => [],
 				),
 			),
-			'purchase-course'        => array(
+			/**
+			 * Enroll, purchase course moved to AJAX UserCourseAjax::user_enroll_course, user_purchase_course (web),
+			 * logic on UserCourseService (JWT API learnpress/v1/courses/enroll uses too).
+			 *
+			 * @deprecated 4.5.1
+			 */
+			/*'purchase-course'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'purchase_course' ),
@@ -68,8 +74,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'callback'            => array( $this, 'enroll_courses' ),
 					'permission_callback' => '__return_true',
 				),
-			),
-			'retake-course'          => array(
+			),*/
+			/**
+			 * Retake course moved to AJAX UserCourseAjax::user_retake_course (web),
+			 * JWT API learnpress/v1/courses/retake (app).
+			 *
+			 * @deprecated 4.5.1
+			 */
+			/*'retake-course'          => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'retake_course' ),
@@ -80,7 +92,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						'type' => 'int',
 					),
 				),
-			),
+			),*/
 			/*'archive-course'         => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
@@ -122,13 +134,19 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			),
-			'continue-course'        => array(
+			/**
+			 * Button continue course is rendered with link by UserCourseTemplate::html_btn_continue,
+			 * template single-course/buttons/continue.php (form.continue-course) is not loaded.
+			 *
+			 * @deprecated 4.5.1
+			 */
+			/*'continue-course'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'continue_course' ),
 					'permission_callback' => '__return_true',
 				),
-			),
+			),*/
 		);
 
 		parent::register_routes();
@@ -481,16 +499,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 	/**
 	 * Rest API for Enroll in single course.
+	 * Moved to UserCourseService::enroll (AJAX UserCourseAjax::user_enroll_course, JWT enroll_course).
 	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return LP_REST_Response
 	 * @author Nhamdv
 	 * @editor tungnx
 	 * @version 1.0.3
 	 * @since 4.0.0
+	 * @deprecated 4.5.1
 	 */
-	public function enroll_courses( WP_REST_Request $request ): LP_REST_Response {
+	/*public function enroll_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
 
@@ -523,10 +540,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 				do_action( 'learnpress/user/course-enrolled', $userCourse->ref_id, $course_id, $user->get_id() );
 
-				/**
-				 * Send mail user enrolled course
-				 * @uses SendEmailAjax::send_mail_user_enrolled_course()
-				 */
+				// Send mail user enrolled course
+				// @uses SendEmailAjax::send_mail_user_enrolled_course()
 				$data_send = [
 					$userCourse->ref_id,
 					$course_id,
@@ -596,18 +611,16 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return $response;
-	}
+	}*/
 
 	/**
 	 * Rest API for Purchase course in single course.
+	 * Moved to UserCourseService::purchase (AJAX UserCourseAjax::user_purchase_course).
 	 *
-	 * @param WP_REST_Request $request .
-	 *
-	 * @return WP_REST_Response|WP_Error
-	 * @throws Exception .
 	 * @author Nhamdv
+	 * @deprecated 4.5.1
 	 */
-	public function purchase_course( WP_REST_Request $request ) {
+	/*public function purchase_course( WP_REST_Request $request ) {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
 		$params         = $request->get_params();
@@ -717,16 +730,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return rest_ensure_response( $response );
-	}
+	}*/
 
 	/**
 	 * Rest API for retake course.
+	 * Moved to UserCourseAjax::user_retake_course (web) and LP_REST_Courses_V1_Controller::retake_course (app).
 	 *
-	 * @param WP_REST_Request $request .
-	 *
-	 * @throws Exception .
+	 * @deprecated 4.5.1
 	 */
-	public function retake_course( WP_REST_Request $request ) {
+	/*public function retake_course( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 
 		try {
@@ -767,7 +779,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return $response;
-	}
+	}*/
 
 	/**
 	 * @param WP_REST_Request $request
@@ -830,14 +842,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 	/**
 	 * Rest API for get item continue in single course.
+	 * Button continue course is rendered with link by UserCourseTemplate::html_btn_continue.
 	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return LP_REST_Response
 	 * @since 4.1.4
 	 * @version 1.0.5
+	 * @deprecated 4.5.1
 	 */
-	public function continue_course( WP_REST_Request $request ): LP_REST_Response {
+	/*public function continue_course( WP_REST_Request $request ): LP_REST_Response {
 		$params         = $request->get_params();
 		$response       = new LP_REST_Response();
 		$response->data = '';
@@ -905,5 +916,5 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return $response;
-	}
+	}*/
 }

@@ -209,6 +209,15 @@ class LP_Assets extends LP_Abstract_Assets {
 					'next'                 => esc_html__( 'Next', 'learnpress' ),
 				],
 			],
+			// window.lpSingleCourseV2Settings, confirm retake course, popup repurchase.
+			'lp-single-course-v2' => [
+				'i18n' => [
+					// JS puts these into HTML, so escape here.
+					'yes'    => esc_html__( 'Yes', 'learnpress' ),
+					'cancel' => esc_html__( 'Cancel', 'learnpress' ),
+					'error'  => esc_html__( 'Error', 'learnpress' ),
+				],
+			],
 		];
 
 		return apply_filters( 'learnpress/frontend/localize_script', $localize_script );
@@ -526,6 +535,16 @@ class LP_Assets extends LP_Abstract_Assets {
 					self::url( 'dist/js/frontend/user-quiz' . self::$_min_assets . '.js' ),
 					array( 'lp-load-ajax', 'wp-hooks', 'lp-single-curriculum' ),
 					array( LP_PAGE_QUIZ ),
+					0,
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
+				// Retake course (UserCourseAjax), enqueue also on UserCourseTemplate::html_btn_retake (shortcode, block).
+				'lp-single-course-v2'       => new LP_Asset_Key(
+					self::url( 'dist/js/frontend/single-course' . self::$_min_assets . '.js' ),
+					array( 'lp-load-ajax' ),
+					array( LP_PAGE_SINGLE_COURSE ),
 					0,
 					1,
 					'',

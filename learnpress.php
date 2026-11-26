@@ -38,6 +38,7 @@ use LearnPress\Ajax\Webhook\WebhooksAjax;
 use LearnPress\Ajax\CourseBuilder\CBEditCourseAjax;
 use LearnPress\Ajax\SendEmailAjax;
 use LearnPress\Ajax\UserQuizAjax;
+use LearnPress\Ajax\UserItem\UserCourseAjax;
 use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
@@ -806,6 +807,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					CBEditCourseAjax::catch_lp_ajax();
 					CourseToolsAjax::catch_lp_ajax();
 					UserQuizAjax::catch_lp_ajax();
+					UserCourseAjax::catch_lp_ajax();
 
 					do_action( 'learn-press/register-ajax-handlers' );
 				},

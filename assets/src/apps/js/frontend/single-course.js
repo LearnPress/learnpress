@@ -1,13 +1,13 @@
 import SingleCourse from './single-course/index';
-import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item';
-import lpModalOverlay from '../utils/lp-modal-overlay';
-import courseCurriculumSkeleton from './single-curriculum/skeleton';
-import lpMaterialsLoad from './material';
-import TabsDragScroll from './tabs-scroll';
-import { lpSetLoadingEl } from '../../../js/utils.js';
-import Toastify from 'toastify-js';
+//import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item'; // @deprecated 4.5.1 single course page has not .lp-btn-complete-item, .lp-btn-finish-course (still used on page item - single-curriculum.js).
+//import lpModalOverlay from '../utils/lp-modal-overlay'; // @deprecated 4.5.1 only used by enroll, purchase course.
+//import courseCurriculumSkeleton from './single-curriculum/skeleton'; // @deprecated 4.5.1 REST lazy-load course-curriculum is disabled.
+//import lpMaterialsLoad from './material'; // @deprecated 4.5.1 moved to SingleCourse::loadMoreMaterial (assets/src/js/frontend/single-course.js).
+//import TabsDragScroll from './tabs-scroll'; // @deprecated 4.5.1 moved to SingleCourse::initTabsDragScroll, scrollTabToCenter (assets/src/js/frontend/single-course.js).
+//import { lpSetLoadingEl } from '../../../js/utils.js'; // @deprecated 4.5.1 only used by enroll, purchase course.
+//import Toastify from 'toastify-js'; // @deprecated 4.5.1 only used by enroll, purchase course.
 import 'toastify-js/src/toastify.css';
-import LPCopyToClipboard from '../../../js/frontend/copy-to-clipboard.js';
+//import LPCopyToClipboard from '../../../js/frontend/copy-to-clipboard.js'; // @deprecated 4.5.1 moved to SingleCourse::toggleShare, copyToClipboard (assets/src/js/frontend/single-course.js).
 
 export default SingleCourse;
 
@@ -19,7 +19,13 @@ export const init = () => {
 
 const $ = jQuery;
 
-const initCourseTabs = function() {
+/**
+ * Set active nav tab, save tab chose to cookie 'course-tab'.
+ *
+ * @deprecated 4.5.1 moved to SingleCourse::changeCourseTab (assets/src/js/frontend/single-course.js),
+ * cookie 'course-tab' is removed (not read).
+ */
+/*const initCourseTabs = function() {
 	$( '#learn-press-course-tabs' ).on(
 		'change',
 		'input[name="learn-press-course-tab-radio"]',
@@ -31,9 +37,14 @@ const initCourseTabs = function() {
 			$( 'label[for="' + $( e.target ).attr( 'id' ) + '"]' ).closest( 'li' ).addClass( 'active' ).siblings().removeClass( 'active' );
 		}
 	);
-};
+};*/
 
-const initCourseSidebar = function initCourseSidebar() {
+/**
+ * Fixed course sidebar when scroll (add class slide-down, slide-top).
+ *
+ * @deprecated 4.5.1 replaced by CSS position sticky (assets/src/scss/frontend/_course-sidebar.scss).
+ */
+/*const initCourseSidebar = function initCourseSidebar() {
 	const $sidebar = $( '.course-summary-sidebar' );
 
 	if ( ! $sidebar.length ) {
@@ -71,10 +82,15 @@ const initCourseSidebar = function initCourseSidebar() {
 	};
 
 	$window.on( 'scroll.fixed-course-sidebar', onScroll ).trigger( 'scroll.fixed-course-sidebar' );
-};
+};*/
 
-// Rest API Enroll course - Nhamdv.
-const enrollCourse = () => {
+/**
+ * Enroll, purchase course via REST API lp/v1/courses/enroll-course, purchase-course.
+ *
+ * @deprecated 4.5.1 moved to SingleCourse::enrollCourse, purchaseCourse (assets/src/js/frontend/single-course.js),
+ * AJAX UserCourseAjax::user_enroll_course, user_purchase_course.
+ */
+/*const enrollCourse = () => {
 	const formEnrolls = document.querySelectorAll( 'form.enroll-course' );
 
 	if ( formEnrolls.length > 0 ) {
@@ -246,9 +262,14 @@ const purchaseCourse = () => {
 			} );
 		} );
 	}
-};
+};*/
 
-const retakeCourse = () => {
+/**
+ * Retake course via REST API lp/v1/courses/retake-course.
+ *
+ * @deprecated 4.5.1 moved to assets/src/js/frontend/single-course.js (AJAX UserCourseAjax::user_retake_course).
+ */
+/*const retakeCourse = () => {
 	const elFormRetakeCourses = document.querySelectorAll( '.lp-form-retake-course' );
 
 	if ( ! elFormRetakeCourses.length ) {
@@ -300,7 +321,7 @@ const retakeCourse = () => {
 			}
 		);
 	} );
-};
+};*/
 
 // Rest API load content course progress - Nhamdv.
 /*const courseProgress = () => {
@@ -349,7 +370,12 @@ const retakeCourse = () => {
 	};
 };*/
 
-const accordionExtraTab = () => {
+/**
+ * Accordion extra boxes (requirements, features, target audiences).
+ *
+ * @deprecated 4.5.1 moved to SingleCourse::toggleExtraBox (assets/src/js/frontend/single-course.js).
+ */
+/*const accordionExtraTab = () => {
 	const elements = document.querySelectorAll( '.course-extra-box' );
 	[ ...elements ].map( ( ele ) => {
 		const title = ele.querySelector( '.course-extra-box__title' );
@@ -376,9 +402,15 @@ const accordionExtraTab = () => {
 			}
 		} );
 	} );
-};
+};*/
 
-const courseContinue = () => {
+/**
+ * Show button continue course, get link via REST API lp/v1/courses/continue-course.
+ *
+ * @deprecated 4.5.1 button continue is rendered with link by UserCourseTemplate::html_btn_continue,
+ * template single-course/buttons/continue.php (form.continue-course) is not loaded.
+ */
+/*const courseContinue = () => {
 	const formContinue = document.querySelectorAll( 'form.continue-course' );
 	if ( formContinue.length && lpData.user_id > 0 ) {
 		const getResponse = async ( ele ) => {
@@ -403,34 +435,40 @@ const courseContinue = () => {
 			}
 		} );
 	}
-};
+};*/
 
 export {
-	initCourseTabs,
-	initCourseSidebar,
-	enrollCourse,
+	//initCourseTabs, // @deprecated 4.5.1
+	//initCourseSidebar, // @deprecated 4.5.1
+	//enrollCourse, // @deprecated 4.5.1
 };
 
 document.addEventListener( 'DOMContentLoaded', function() {
 	const $popup = $( '#popup-course' );
 	let timerClearScroll;
 	const $curriculum = $( '#learn-press-course-curriculum' );
-	accordionExtraTab();
-	initCourseTabs();
-	initCourseSidebar();
-	enrollCourse();
-	purchaseCourse();
-	retakeCourse();
+	//accordionExtraTab(); // @deprecated 4.5.1
+	//initCourseTabs(); // @deprecated 4.5.1
+	//initCourseSidebar(); // @deprecated 4.5.1
+	//enrollCourse(); // @deprecated 4.5.1
+	//purchaseCourse(); // @deprecated 4.5.1
+	//retakeCourse(); // @deprecated 4.5.1
 	//courseProgress();
-	courseContinue();
-	lpModalOverlayCompleteItem.init();
-	lpMaterialsLoad();
+	//courseContinue(); // @deprecated 4.5.1
+	//lpModalOverlayCompleteItem.init(); // @deprecated 4.5.1
+	//lpMaterialsLoad(); // @deprecated 4.5.1
 	//courseCurriculumSkeleton();
-	TabsDragScroll();
-	LPCopyToClipboard();
+	//TabsDragScroll(); // @deprecated 4.5.1
+	//LPCopyToClipboard(); // @deprecated 4.5.1
 } );
 
-const detectedElCurriculum = setInterval( function() {
+/**
+ * Lazy load curriculum via REST API lp/v1/lazy-load/course-curriculum (old template has .learnpress-course-curriculum).
+ *
+ * @deprecated 4.5.1 REST API course-curriculum, course-curriculum-items are disabled,
+ * tab curriculum uses SingleCourseTemplate::html_curriculum (no .learnpress-course-curriculum, setInterval never stopped).
+ */
+/*const detectedElCurriculum = setInterval( function() {
 	const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
 	if ( elementCurriculum ) {
 		courseCurriculumSkeleton();
@@ -442,5 +480,5 @@ const detectedElCurriculum = setInterval( function() {
 // Add callback for Thimkits
 LP.Hook.addAction( 'lp_course_curriculum_skeleton', function( id ) {
 	courseCurriculumSkeleton( id );
-} );
+} );*/
 

@@ -7,6 +7,7 @@ use LearnPress\Models\Courses;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
+use LearnPress\Services\UserCourseService;
 
 class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	protected $namespace = 'learnpress/v1';
@@ -688,14 +689,37 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return $data;
 	}
 
+	/**
+	 * Enroll course.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 * @version 1.0.1
+	 */
 	public function enroll_course( $request ) {
-		if ( ! class_exists( 'LP_REST_Courses_Controller' ) ) {
-			include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php';
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$course_id   = absint( $request['id'] ?? 0 );
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel instanceof CourseModel ) {
+				throw new Exception( esc_html__( 'Invalid course!', 'learnpress' ) );
+			}
+
+			$userModel = UserModel::find( get_current_user_id(), true );
+			$result    = UserCourseService::instance()->enroll( $courseModel, $userModel );
+
+			$response->status         = 'success';
+			$response->message        = $result['message'];
+			$response->data->redirect = esc_url_raw( $result['redirect'] );
+		} catch ( Throwable $e ) {
+			$response->status  = 'error';
+			$response->message = $e->getMessage();
 		}
 
-		$course_controller = new LP_REST_Courses_Controller();
-
-		return $course_controller->enroll_courses( $request );
+		return $response;
 	}
 
 	public function finish_course( $request ) {
@@ -732,17 +756,53 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return rest_ensure_response( $response );
 	}
 
+	/**
+	 * Retake course.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 * @since 4.2.7.6
+	 * @version 1.0.1
+	 */
 	public function retake_course( $request ) {
 		$response = new LP_REST_Response();
 
 		try {
-			if ( ! class_exists( 'LP_REST_Courses_Controller' ) ) {
-				include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php';
+			$course_id = absint( $request['id'] ?? 0 );
+			if ( ! $course_id ) {
+				throw new Exception( esc_html__( 'Invalid params', 'learnpress' ) );
 			}
 
-			$course_controller = new LP_REST_Courses_Controller();
-			$response          = $course_controller->retake_course( $request );
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel instanceof CourseModel ) {
+				throw new Exception( esc_html__( 'Invalid course', 'learnpress' ) );
+			}
+
+			$userModel = UserModel::find( get_current_user_id(), true );
+			if ( ! $userModel instanceof UserModel ) {
+				throw new Exception( esc_html__( 'Invalid user', 'learnpress' ) );
+			}
+
+			$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+			if ( ! $userCourseModel instanceof UserCourseModel ) {
+				throw new Exception( esc_html__( 'Invalid user course', 'learnpress' ) );
+			}
+
+			$userCourseModel->handle_retake();
+
+			$item_continue = $userCourseModel->get_item_continue();
+			if ( $item_continue ) {
+				$link_continue = $courseModel->get_item_link( $item_continue->ID );
+			} else {
+				$link_continue = $courseModel->get_permalink();
+			}
+
+			$response->status             = 'success';
+			$response->message            = esc_html__( 'Now you can begin this course', 'learnpress' );
+			$response->data->url_redirect = esc_url_raw( $link_continue );
 		} catch ( Throwable $e ) {
+			$response->status  = 'error';
 			$response->message = $e->getMessage();
 		}
 

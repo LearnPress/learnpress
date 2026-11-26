@@ -1,3 +1,6 @@
+// @deprecated 4.5.1 not imported, moved to SingleCourse::toggleShare, closeShareOutside, copyToClipboard
+// (assets/src/js/frontend/single-course.js).
+
 function LPClick( element, iconBtn, inner ) {
 	const wrappers = document.querySelectorAll( element );
 

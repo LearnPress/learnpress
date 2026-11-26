@@ -2,7 +2,7 @@
 
 **Status:** ✅ Complete
 **Started:** 2026-09-18
-**Last updated:** 2026-09-18
+**Last updated:** 2026-11-26
 
 ## Done
 1. Step 1: Built the authoritative flow inventory for button visibility, REST cart insertion, repurchase, checkout validation, order/payment completion, and order-status-driven user-course updates.
@@ -24,3 +24,10 @@
 
 ## Blockers / Notes
 - None. Implementation and structural validation are complete.
+
+## Resume here
+- Nothing pending. Flowchart `flow-chart/logic/purchase-course-code.md` follows the AJAX purchase flow (since 4.5.1).
+
+## Log
+- 2026-11-26: Updated `flow-chart/logic/purchase-course-code.md` for the new purchase flow: REST `lp/v1/courses/purchase-course` and `purchaseCourse()` (apps single-course.js) are deprecated; request now goes `SingleCourse::purchaseCourse` (assets/src/js/frontend/single-course.js) -> `lp-load-ajax=user_purchase_course` -> `AbstractAjax::catch_lp_ajax` (wp_rest nonce, action nonce for logged-in only) -> `UserCourseAjax::user_purchase_course` -> `UserCourseService::purchase`; repurchase popup is SweetAlert. Checkout/order part unchanged. Verified structurally (balanced brackets, no undefined node ids, fences); not rendered with Mermaid (no local renderer).
+

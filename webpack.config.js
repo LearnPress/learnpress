@@ -24,6 +24,7 @@ module.exports = {
 		'./assets/dist/js/admin/lp-input-search-suggest': './assets/src/js/lp-input-search-suggest.js',
 		'./assets/dist/js/frontend/course-builder': './assets/src/js/frontend/course-builder.js',
 		'./assets/dist/js/frontend/user-quiz': './assets/src/js/frontend/user-quiz.js',
+		'./assets/dist/js/frontend/single-course': './assets/src/js/frontend/single-course.js',
 
 		// Folder old assets/js/dist
 		'./assets/js/dist/admin/admin': './assets/src/js/admin/admin.js',

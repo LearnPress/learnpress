@@ -8,6 +8,7 @@
 
 namespace LearnPress\TemplateHooks\Course;
 
+use LearnPress\Ajax\UserItem\UserCourseAjax;
 use LearnPress\Cache\LPCourseCache;
 use LearnPress\Helpers\LPDateTime;
 use LearnPress\Helpers\Singleton;
@@ -773,8 +774,16 @@ class SingleCourseTemplate {
 			}
 		} else {
 			$html_btn = sprintf(
-				'<button class="lp-button button-purchase-course">%s</button>',
-				__( 'Buy Now', 'learnpress' )
+				'<button class="lp-button button-purchase-course" data-send="%s">%s</button>',
+				Template::convert_data_to_json(
+					[
+						'id_url'    => 'user-purchase-course',
+						/** @use UserCourseAjax::user_purchase_course */
+						'action'    => 'user_purchase_course',
+						'course_id' => $courseModel->get_id(),
+					]
+				),
+				esc_html__( 'Buy Now', 'learnpress' )
 			);
 		}
 
@@ -786,6 +795,9 @@ class SingleCourseTemplate {
 				$userModel
 			);
 		}
+
+		// JS handle purchase, enqueue here because button can be shown on any page (shortcode, block).
+		wp_enqueue_script( 'lp-single-course-v2' );
 
 		$class_guest_checkout = LP_Checkout::instance()->is_enable_guest_checkout() ? 'guest_checkout' : '';
 
@@ -815,8 +827,9 @@ class SingleCourseTemplate {
 			'learn-press/course/html-button-purchase',
 			[
 				'form'     => sprintf(
-					'<form name="purchase-course" class="purchase-course %s" method="post">',
-					esc_attr( $class_guest_checkout )
+					'<form name="purchase-course" class="purchase-course %s" method="post" data-lp-action-nonce="%s">',
+					esc_attr( $class_guest_checkout ),
+					esc_attr( UserCourseAjax::create_action_nonce() )
 				),
 				'input'    => sprintf(
 					'<input type="hidden" name="purchase-course" value="%d"/>',
@@ -857,14 +870,25 @@ class SingleCourseTemplate {
 			}
 		} else {
 			$html_btn = sprintf(
-				'<button type="submit" class="lp-button button-enroll-course">%s</button>',
-				__( 'Start Now', 'learnpress' )
+				'<button type="submit" class="lp-button button-enroll-course" data-send="%s">%s</button>',
+				Template::convert_data_to_json(
+					[
+						'id_url'    => 'user-enroll-course',
+						/** @use UserCourseAjax::user_enroll_course */
+						'action'    => 'user_enroll_course',
+						'course_id' => $courseModel->get_id(),
+					]
+				),
+				esc_html__( 'Start Now', 'learnpress' )
 			);
 		}
 
 		if ( empty( $html_btn ) ) {
 			return $html_btn;
 		}
+
+		// JS handle enroll, enqueue here because button can be shown on any page (shortcode, block).
+		wp_enqueue_script( 'lp-single-course-v2' );
 
 		// Hook old
 		$html_hook_before_old = '';
@@ -898,7 +922,10 @@ class SingleCourseTemplate {
 		$section = apply_filters(
 			'learn-press/course/html-button-enroll',
 			[
-				'form'            => '<form name="enroll-course" class="enroll-course" method="post">',
+				'form'            => sprintf(
+					'<form name="enroll-course" class="enroll-course" method="post" data-lp-action-nonce="%s">',
+					esc_attr( UserCourseAjax::create_action_nonce() )
+				),
 				'hook_before_old' => $html_hook_before_old,
 				'input'           => sprintf(
 					'<input type="hidden" name="enroll-course" value="%s"/>',

@@ -1,4 +1,9 @@
 import * as Util from '../../../js/utils.js';
+/**
+ * Load more materials.
+ * Used on page item of course (single-curriculum.js).
+ * Single course page uses SingleCourse::loadMoreMaterial (assets/src/js/frontend/single-course.js) since 4.5.1.
+ */
 export default function lpMaterialsLoad() {
 	document.addEventListener( 'click', function( e ) {
 		const target = e.target;

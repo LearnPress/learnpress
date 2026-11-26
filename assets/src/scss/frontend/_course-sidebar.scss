@@ -81,23 +81,35 @@
 		}
 	}
 
-	&.slide-down {
+	// Sticky sidebar when scroll, replace JS initCourseSidebar (slide-down, slide-top) @since 4.5.1.
+	// Parent .lp-entry-content is flex row, sidebar is stretched to height of content column.
+	@media (min-width: 769px) {
+		align-self: stretch;
 
-		@media (min-width: 769px) {
-			.course-summary-sidebar__inner {
-				position: fixed;
-				top: 0;
-			}
+		.course-summary-sidebar__inner {
+			position: sticky;
+			top: 32px;
 		}
 	}
 
-	&.slide-top {
-		@media (min-width: 1200px) {
-			.course-summary-sidebar__inner {
-				// position: absolute;
-			}
-		}
-	}
+	// @deprecated 4.5.1 classes were added by JS initCourseSidebar.
+	//&.slide-down {
+	//
+	//	@media (min-width: 769px) {
+	//		.course-summary-sidebar__inner {
+	//			position: fixed;
+	//			top: 0;
+	//		}
+	//	}
+	//}
+	//
+	//&.slide-top {
+	//	@media (min-width: 1200px) {
+	//		.course-summary-sidebar__inner {
+	//			// position: absolute;
+	//		}
+	//	}
+	//}
 }
 
 .lp-course-buttons:empty{

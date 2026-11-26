@@ -816,6 +816,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 			)
 		);
 
+		// JS accordion extra boxes (SingleCourse::toggleExtraBox).
+		wp_enqueue_script( 'lp-single-course-v2' );
+
 		$is_checked = 0;
 		foreach ( $boxes as $box ) {
 
