@@ -213,13 +213,17 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
-	 * Remove items' of course and user learned
+	 * Remove items' of course and user learned.
 	 *
-	 * @param LP_User_Items_Filter|UserItemsFilter $filter .
+	 * Deletes the child rows (lessons, quizzes...) of a user course and their user_itemmeta.
+	 * The user course row and its meta (e.g. _lp_retaken_count) are kept.
 	 *
-	 * @return bool|int
+	 * @param LP_User_Items_Filter|UserItemsFilter $filter $filter->parent_id, $filter->user_id, $filter->limit
+	 *
+	 * @return bool|int Number of child rows deleted, or false on error.
 	 * @throws Exception .
-	 * @TODO tungnx - recheck this function
+	 * @since 4.0.0
+	 * @version 1.0.1
 	 */
 	public function remove_items_of_user_course( $filter ) {
 		$query_extra = '';
@@ -230,18 +234,31 @@ class LP_User_Items_DB extends LP_Database {
 		}
 
 		if ( - 1 < $filter->limit ) {
-			$query_extra .= " LIMIT $filter->limit";
+			$query_extra .= ' LIMIT ' . absint( $filter->limit );
 		}
 
-		$query = $this->wpdb->prepare(
-			"DELETE FROM {$this->tb_lp_user_items}
-			WHERE parent_id = %d
-			$query_extra;
-			",
-			$filter->parent_id
+		$child_ids = $this->wpdb->get_col(
+			$this->wpdb->prepare(
+				"SELECT user_item_id FROM {$this->tb_lp_user_items}
+				WHERE parent_id = %d
+				$query_extra
+				",
+				$filter->parent_id
+			)
 		);
 
-		return $this->wpdb->query( $query );
+		if ( empty( $child_ids ) ) {
+			return 0;
+		}
+
+		$filter_delete                = new LP_User_Items_Filter();
+		$filter_delete->user_id       = $filter->user_id;
+		$filter_delete->user_item_ids = array_map( 'absint', $child_ids );
+
+		// Delete meta of child rows first, so no orphan user_itemmeta is left.
+		$this->remove_user_itemmeta( $filter_delete );
+
+		return $this->remove_user_item_ids( $filter_delete );
 	}
 
 	/*public function get_item_status( $item_id, $course_id ) {
