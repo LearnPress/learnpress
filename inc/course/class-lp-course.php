@@ -7,6 +7,7 @@
  * @version 4.0.1
  */
 
+use LearnPress\Cache\LPCourseCache;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 
@@ -263,7 +264,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			try {
 				// Get cache
-				$lp_course_cache = LP_Course_Cache::instance();
+				$lp_course_cache = new LPCourseCache();
 				$key_cache       = "$course_id/first_item_id";
 				$first_item_id   = $lp_course_cache->get_cache( $key_cache );
 
@@ -422,8 +423,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$this->delete_user_item_and_result( $user_course_ids );
 
 				// Clear cache total students enrolled.
-				$lp_course_cache = new LP_Course_Cache( true );
-				$lp_course_cache->clean_total_students_enrolled( $this->get_id() );
+				$lp_course_cache = new LPCourseCache( true );
 				$lp_course_cache->clean_total_students_enrolled_or_purchased( $this->get_id() );
 				// Clear cache count students many courses.
 				$lp_courses_cache = new LP_Courses_Cache( true );
@@ -698,7 +698,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				return $courseModel->get_section_items();
 
 				// Get cache
-				$lp_course_cache = LP_Course_Cache::instance();
+				$lp_course_cache = new LPCourseCache();
 				$key_cache       = "$course_id/sections_items";
 				$sections_items  = $lp_course_cache->get_cache( $key_cache );
 
@@ -739,7 +739,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$sections_items  = [];
 			$course_id       = $this->get_id();
 			$lp_course_db    = LP_Course_DB::getInstance();
-			$lp_course_cache = LP_Course_Cache::instance();
+			$lp_course_cache = new LPCourseCache();
 			$key_cache       = "$course_id/sections_items";
 
 			try {

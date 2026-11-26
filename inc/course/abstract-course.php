@@ -7,6 +7,7 @@
  * @version 4.0.0
  */
 
+use LearnPress\Cache\LPCourseCache;
 use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
@@ -631,7 +632,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_price() {
 			$key_cache = "{$this->get_id()}/price";
-			$price     = LP_Course_Cache::cache_load_first( 'get', $key_cache );
+			$price     = LP_Cache::cache_load_first( 'get', $key_cache );
 
 			if ( false === $price ) {
 				if ( $this->has_sale_price() ) {
@@ -653,7 +654,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$price = 0;
 				}
 
-				LP_Course_Cache::cache_load_first( 'set', $key_cache, $price );
+				LP_Cache::cache_load_first( 'set', $key_cache, $price );
 			}
 
 			return apply_filters( 'learn-press/course/price', $price, $this->get_id() );
@@ -911,18 +912,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @deprecated 4.4.11
 		 */
 		public function get_total_user_enrolled(): int {
-			$total           = 0;
-			$lp_course_cache = new LP_Course_Cache( true );
+			$total = 0;
 
 			try {
-				$total = $lp_course_cache->get_total_students_enrolled( $this->get_id() );
-				if ( false !== $total ) {
-					return $total;
-				}
-
+				// Cache total-students-enrolled is removed since 4.5.1, query directly (method deprecated).
 				$lp_course_db = LP_Course_DB::getInstance();
-				$total        = $lp_course_db->get_total_user_enrolled( $this->get_id() );
-				$lp_course_cache->set_total_students_enrolled( $this->get_id(), $total );
+				$total        = (int) $lp_course_db->get_total_user_enrolled( $this->get_id() );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}
@@ -940,14 +935,14 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$key_cache           = "{$this->get_id()}/total-students-include-fake";
 
 			try {
-				$total_user_enrolled = LP_Course_Cache::cache_load_first( 'get', $key_cache );
+				$total_user_enrolled = LP_Cache::cache_load_first( 'get', $key_cache );
 
 				if ( false === $total_user_enrolled ) {
 					$lp_course_db         = LP_Course_DB::getInstance();
 					$total_user_enrolled  = $lp_course_db->get_total_user_enrolled( $this->get_id() );
 					$total_user_enrolled += $this->get_fake_students();
 
-					LP_Course_Cache::cache_load_first( 'set', $key_cache, $total_user_enrolled );
+					LP_Cache::cache_load_first( 'set', $key_cache, $total_user_enrolled );
 				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
@@ -965,7 +960,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_total_user_enrolled_or_purchased(): int {
 			$total           = 0;
-			$lp_course_cache = new LP_Course_Cache( true );
+			$lp_course_cache = new LPCourseCache( true );
 
 			try {
 				$total = $lp_course_cache->get_total_students_enrolled_or_purchased( $this->get_id() );

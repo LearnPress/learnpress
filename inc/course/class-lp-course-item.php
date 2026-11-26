@@ -368,7 +368,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 */
 		public static function get_item( $item_id = 0, $course_id = 0 ) {
 			/*
-			$lp_course_cache = LP_Course_Cache::instance();
+			$lp_course_cache = new LPCourseCache();
 			$key_cache       = sprintf( '%d/item_id/%d', $course_id, $item_id );
 			$item            = $lp_course_cache->get_cache( $key_cache );*/
 

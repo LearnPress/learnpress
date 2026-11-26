@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class LP_Course_Cache
+ * Class LP_User_Items_Cache
  *
  * @author tungnx
  * @since 4.0.9

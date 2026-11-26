@@ -6,6 +6,7 @@
  * @since 3.2.7.5
  */
 
+use LearnPress\Cache\LPCourseCache;
 use LearnPress\Models\CourseModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -38,7 +39,7 @@ class LP_Course_DB extends LP_Database {
 	 */
 	public function get_course_by_item_id( $item_id = 0 ): int {
 		// Get cache
-		$lp_course_cache = LP_Course_Cache::instance();
+		$lp_course_cache = new LPCourseCache();
 		$key_cache       = "$item_id/course_id_of_item_id";
 		$course_id       = $lp_course_cache->get_cache( $key_cache );
 

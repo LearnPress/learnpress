@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Cache\LPCourseCache;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
@@ -321,9 +322,8 @@ function learn_press_update_user_item_field( array $fields = array(), $where = f
 		if ( isset( $updated_item->item_type )
 			&& LP_COURSE_CPT === $updated_item->item_type
 			&& isset( $updated_item->item_id ) ) {
-			$lp_course_cache = new LP_Course_Cache( true );
-			$lp_course_cache->clean_total_students_enrolled( $updated_item->item_id );
-			$lp_course_cache->clean_total_students_enrolled_or_purchased( $updated_item->item_id );
+			$lp_course_cache = new LPCourseCache( true );
+			$lp_course_cache->clean_total_students_enrolled_or_purchased( (int) $updated_item->item_id );
 			// Clear cache count students many courses.
 			$lp_courses_cache = new LP_Courses_Cache( true );
 			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_STUDENT_COURSES );
