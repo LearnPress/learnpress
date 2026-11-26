@@ -162,4 +162,58 @@ class UserCourseModelTest extends BrainMonkeyTestCase {
 		$this->assertSame( 0, $results['result'] );
 		$this->assertSame( 0, $results['count_items'] );
 	}
+
+	public function test_get_retaken_count_reads_extra_data_first(): void {
+		$userCourseModel = Mockery::mock( UserCourseModel::class )->makePartial();
+		$userCourseModel->set_extra_data( [ UserCourseModel::META_KEY_RETAKEN_COUNT => 3 ] );
+		$userCourseModel->shouldNotReceive( 'get_meta_value_from_key' );
+
+		$this->assertSame( 3, $userCourseModel->get_retaken_count() );
+	}
+
+	public function test_get_retaken_count_extra_data_zero_wins_over_meta(): void {
+		$userCourseModel = Mockery::mock( UserCourseModel::class )->makePartial();
+		$userCourseModel->set_extra_data( [ UserCourseModel::META_KEY_RETAKEN_COUNT => 0 ] );
+		$userCourseModel->shouldNotReceive( 'get_meta_value_from_key' );
+
+		$this->assertSame( 0, $userCourseModel->get_retaken_count() );
+	}
+
+	public function test_get_retaken_count_falls_back_to_meta_when_key_missing_in_extra_data(): void {
+		$userCourseModel = Mockery::mock( UserCourseModel::class )->makePartial();
+		$userCourseModel->set_extra_data( [ 'other_key' => 'x' ] );
+		$userCourseModel->shouldReceive( 'get_meta_value_from_key' )
+			->with( UserCourseModel::META_KEY_RETAKEN_COUNT, 0 )
+			->andReturn( '2' );
+
+		$this->assertSame( 2, $userCourseModel->get_retaken_count() );
+	}
+
+	public function test_get_retaken_count_falls_back_to_meta_when_extra_data_null(): void {
+		$userCourseModel             = Mockery::mock( UserCourseModel::class )->makePartial();
+		$userCourseModel->extra_data = null;
+		$userCourseModel->shouldReceive( 'get_meta_value_from_key' )
+			->with( UserCourseModel::META_KEY_RETAKEN_COUNT, 0 )
+			->andReturn( 0 );
+
+		$this->assertSame( 0, $userCourseModel->get_retaken_count() );
+	}
+
+	public function test_set_retaken_count_stores_meta_and_extra_data_keeping_other_keys(): void {
+		$userCourseModel = Mockery::mock( UserCourseModel::class )->makePartial();
+		$userCourseModel->set_extra_data( [ 'other_key' => 'x' ] );
+		$userCourseModel->shouldReceive( 'set_meta_value_for_key' )
+			->once()
+			->with( UserCourseModel::META_KEY_RETAKEN_COUNT, 4 );
+
+		$userCourseModel->set_retaken_count( 4 );
+
+		$this->assertSame(
+			[
+				'other_key'                            => 'x',
+				UserCourseModel::META_KEY_RETAKEN_COUNT => 4,
+			],
+			$userCourseModel->get_extra_data()
+		);
+	}
 }

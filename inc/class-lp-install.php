@@ -79,6 +79,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			// Since v4.5.0 - Check and add missing columns to user_item_results table.
 			$this->check_and_add_columns_user_item_results();
+			$this->check_and_add_columns_user_items();
 
 			// Set roles and capabilities.
 			learn_press_add_user_roles();
@@ -438,6 +439,26 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				foreach ( $columns as $column_name => $column_type ) {
 					$this->lp_db->add_col_table( $table_name, $column_name, $column_type );
 				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Check and add missing columns to user_items table.
+		 * Fresh install creates table from tables-v4 (no column extra_data) and sets db_version = 6,
+		 * so upgrade 6 (add column extra_data) is never run.
+		 *
+		 * @since 4.5.0
+		 * @return void
+		 */
+		private function check_and_add_columns_user_items() {
+			try {
+				$this->lp_db->add_col_table(
+					$this->lp_db->tb_lp_user_items,
+					'extra_data',
+					'longtext COMMENT \'Store more data type JSON.\''
+				);
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}

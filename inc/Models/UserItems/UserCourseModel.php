@@ -4,7 +4,7 @@
  * Class UserItemModel
  *
  * @package LearnPress/Classes
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.5
  */
 
@@ -559,10 +559,37 @@ class UserCourseModel extends UserItemModel {
 	/**
 	 * Get retaken count of user attend course.
 	 *
+	 * Read from column extra_data (table learnpress_user_items) first,
+	 * if not exists fallback to user item meta (old data).
+	 *
 	 * @return int
+	 * @since 4.2.7.3
+	 * @version 1.0.1
 	 */
 	public function get_retaken_count(): int {
+		$extra_data = $this->get_extra_data();
+		if ( array_key_exists( self::META_KEY_RETAKEN_COUNT, $extra_data ) ) {
+			return (int) $extra_data[ self::META_KEY_RETAKEN_COUNT ];
+		}
+
 		return (int) $this->get_meta_value_from_key( self::META_KEY_RETAKEN_COUNT, 0 );
+	}
+
+	/**
+	 * Set retaken count of user attend course.
+	 * Store on user item meta and column extra_data with the same key.
+	 *
+	 * Meta is saved immediately, extra_data is saved when call save().
+	 *
+	 * @param int $count
+	 *
+	 * @return void
+	 * @since 4.5.0
+	 * @version 1.0.0
+	 */
+	public function set_retaken_count( int $count ) {
+		$this->set_meta_value_for_key( self::META_KEY_RETAKEN_COUNT, $count );
+		$this->set_extra_data_by_key_value( self::META_KEY_RETAKEN_COUNT, $count );
 	}
 
 	/**
@@ -1081,7 +1108,7 @@ class UserCourseModel extends UserItemModel {
 		$this->graduation = self::GRADUATION_IN_PROGRESS;
 		$this->start_time = gmdate( LP_Datetime::$format, time() );
 		$this->end_time   = null;
-		$this->set_meta_value_for_key( self::META_KEY_RETAKEN_COUNT, $this->get_retaken_count() + 1 );
+		$this->set_retaken_count( $this->get_retaken_count() + 1 );
 		$this->must_create_new_data_table_result = 1;
 		$this->save();
 
@@ -1122,7 +1149,7 @@ class UserCourseModel extends UserItemModel {
 		$this->graduation = self::GRADUATION_IN_PROGRESS;
 		$this->start_time = gmdate( LP_Datetime::$format, time() );
 		$this->end_time   = null;
-		$this->set_meta_value_for_key( self::META_KEY_RETAKEN_COUNT, 0 );
+		$this->set_retaken_count( 0 );
 		$this->must_create_new_data_table_result = 1;
 		$this->save();
 

@@ -8,7 +8,7 @@ namespace LearnPress\Filters;
  * Filter query for learnpress_user_items table
  *
  * @since  4.2.9.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 class UserItemsFilter extends FilterBase {
 	const COL_USER_ITEM_ID = 'user_item_id';
@@ -22,6 +22,7 @@ class UserItemsFilter extends FilterBase {
 	const COL_REF_ID       = 'ref_id';
 	const COL_REF_TYPE     = 'ref_type';
 	const COL_PARENT_ID    = 'parent_id';
+	const COL_EXTRA_DATA   = 'extra_data';
 	/**
 	 * @var string[] all fields of table
 	 */
@@ -37,6 +38,7 @@ class UserItemsFilter extends FilterBase {
 		self::COL_REF_ID,
 		self::COL_REF_TYPE,
 		self::COL_PARENT_ID,
+		self::COL_EXTRA_DATA,
 	];
 	/**
 	 * @var int
