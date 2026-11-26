@@ -311,4 +311,15 @@ class LPDateTime {
 
 		return (int) round( $number * $units[ $unit ] );
 	}
+
+	/**
+	 * Check date is null
+	 *
+	 * @return bool
+	 * @sicne 4.5.1
+	 * @version 1.0.0
+	 */
+	public function is_null(): bool {
+		return empty( $this->raw_date ) || $this->raw_date === '0000-00-00 00:00:00';
+	}
 }
