@@ -88,7 +88,8 @@ module.exports = {
 		'./assets/js/dist/frontend/instructors': './assets/src/apps/js/frontend/instructors.js',
 		'./assets/js/dist/frontend/become-teacher': './assets/src/js/frontend/become-teacher.js',
 		'./assets/js/dist/frontend/checkout': './assets/src/js/frontend/checkout.js',
-		'./assets/js/dist/frontend/single-course': './assets/src/apps/js/frontend/single-course.js',
+		// @deprecated 4.5.1 not registered, handle lp-single-course uses ./assets/dist/js/frontend/single-course.
+		//'./assets/js/dist/frontend/single-course': './assets/src/apps/js/frontend/single-course.js',
 		'./assets/js/dist/frontend/single-curriculum': './assets/src/apps/js/frontend/single-curriculum.js',
 		'./assets/js/dist/frontend/lesson': './assets/src/apps/js/frontend/lesson.js',
 		'./assets/js/dist/frontend/custom': './assets/src/apps/js/frontend/custom.js',

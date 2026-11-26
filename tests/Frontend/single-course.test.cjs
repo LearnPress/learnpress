@@ -37,7 +37,6 @@ function setup( t, html = retakeHtml(), options = {} ) {
 	const confirmation = { result: { isConfirmed: options.confirmed ?? true } };
 	const toasts = [];
 	const hrefs = [];
-	const reloads = [];
 	let elPopup = null;
 	const context = {
 		window: dom.window,
@@ -83,16 +82,12 @@ function setup( t, html = retakeHtml(), options = {} ) {
 	Object.defineProperty( dom.window, 'location', {
 		value: {
 			replace: ( url ) => redirects.push( url ),
-			reload: () => reloads.push( true ),
 			set href( url ) {
 				hrefs.push( url );
 			},
 		},
 		configurable: true,
 	} );
-	if ( options.navigationType ) {
-		dom.window.performance.getEntriesByType = () => [ { type: options.navigationType } ];
-	}
 
 	const singleCourse = new context.SingleCourse();
 	singleCourse.init();
@@ -116,7 +111,7 @@ function setup( t, html = retakeHtml(), options = {} ) {
 		return event;
 	};
 
-	return { dom, doc, elBtn, elMessage, click, submit, flush, requests, timeouts, redirects, hrefs, reloads, toasts, confirmations, singleCourse };
+	return { dom, doc, elBtn, elMessage, click, submit, flush, requests, timeouts, redirects, hrefs, toasts, confirmations, singleCourse };
 }
 
 test( 'click retake sends data-send with action nonce of form', async ( t ) => {
@@ -290,7 +285,7 @@ const extraBox = ( title, { active = false, content = true } = {} ) => `
 		<h3 class="course-extra-box__title"><span>${ title }</span></h3>
 		${ content ? `<div class="course-extra-box__content"><div class="course-extra-box__content-inner"><ul><li>${ title } item</li></ul></div></div>` : '' }
 	</div>`;
-const extraBoxesHtml = extraBox( 'Requirements', { active: true } ) + extraBox( 'Features' ) + extraBox( 'Target audiences' );
+const extraBoxesHtml = extraBox( 'Requirements' ) + extraBox( 'Features' ) + extraBox( 'Target audiences' );
 
 function setupExtraBoxes( t, html = extraBoxesHtml ) {
 	const ctx = setup( t, html );
@@ -308,13 +303,22 @@ function setupExtraBoxes( t, html = extraBoxesHtml ) {
 	return { ...ctx, boxes, content, clickTitle, transitionEnd };
 }
 
-test( 'extra boxes are collapsed when load page', ( t ) => {
-	const { boxes, content } = setupExtraBoxes( t );
+test( 'extra boxes are not changed by JS when load page (collapsed by CSS)', ( t ) => {
+	const { boxes, content } = setupExtraBoxes( t, extraBox( 'Requirements', { active: true } ) + extraBox( 'Features' ) );
 
+	assert.equal( boxes[ 0 ].classList.contains( 'active' ), true );
 	boxes.forEach( ( elBox, i ) => {
-		assert.equal( elBox.classList.contains( 'active' ), false );
-		assert.equal( content( i ).style.height, '0px' );
+		assert.equal( content( i ).style.height, '' );
 	} );
+} );
+
+test( 'click title of box active (theme renders .active) collapses it', ( t ) => {
+	const { boxes, content, clickTitle } = setupExtraBoxes( t, extraBox( 'Requirements', { active: true } ) + extraBox( 'Features' ) );
+
+	clickTitle( 0 );
+
+	assert.equal( boxes[ 0 ].classList.contains( 'active' ), false );
+	assert.equal( content( 0 ).style.height, '0px' );
 } );
 
 test( 'click title expands box and collapses others', ( t ) => {
@@ -526,29 +530,6 @@ test( 'purchase repurchase: close popup does not send again', async ( t ) => {
 	assert.equal( requests.length, 1 );
 } );
 
-test( 'reload page when back from browser cache (single course)', ( t ) => {
-	const { dom, reloads } = setup( t, enrollHtml, { navigationType: 'back_forward' } );
-
-	dom.window.dispatchEvent( new dom.window.Event( 'pageshow' ) );
-
-	assert.equal( reloads.length, 1 );
-} );
-
-test( 'not reload page when navigate normally', ( t ) => {
-	const { dom, reloads } = setup( t, enrollHtml, { navigationType: 'navigate' } );
-
-	dom.window.dispatchEvent( new dom.window.Event( 'pageshow' ) );
-
-	assert.equal( reloads.length, 0 );
-} );
-
-test( 'not listen pageshow on page is not single course', ( t ) => {
-	const { dom, reloads } = setup( t, purchaseHtml, { navigationType: 'back_forward' } );
-
-	dom.window.dispatchEvent( new dom.window.Event( 'pageshow' ) );
-
-	assert.equal( reloads.length, 0 );
-} );
 
 // Markup same as CourseMaterialTemplate (content loaded via load_content_via_ajax).
 const materialSend = ( paged = 1 ) => JSON.stringify( {

@@ -1,4 +1,10 @@
-import SingleCourse from './single-course/index';
+/**
+ * Single course (old).
+ *
+ * @deprecated 4.5.1 all features moved to assets/src/js/frontend/single-course.js (class SingleCourse)
+ * or not used (code commented). Handle lp-single-course loads the new file, this file is not built (webpack entry commented).
+ */
+//import SingleCourse from './single-course/index'; // @deprecated 4.5.1 component empty, Sidebar() only for page item (single-curriculum.js).
 //import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item'; // @deprecated 4.5.1 single course page has not .lp-btn-complete-item, .lp-btn-finish-course (still used on page item - single-curriculum.js).
 //import lpModalOverlay from '../utils/lp-modal-overlay'; // @deprecated 4.5.1 only used by enroll, purchase course.
 //import courseCurriculumSkeleton from './single-curriculum/skeleton'; // @deprecated 4.5.1 REST lazy-load course-curriculum is disabled.
@@ -9,13 +15,14 @@ import SingleCourse from './single-course/index';
 import 'toastify-js/src/toastify.css';
 //import LPCopyToClipboard from '../../../js/frontend/copy-to-clipboard.js'; // @deprecated 4.5.1 moved to SingleCourse::toggleShare, copyToClipboard (assets/src/js/frontend/single-course.js).
 
-export default SingleCourse;
+// @deprecated 4.5.1 not called (entry has not library).
+/*export default SingleCourse;
 
 export const init = () => {
 	wp.element.render(
 		<SingleCourse />,
 	);
-};
+};*/
 
 const $ = jQuery;
 

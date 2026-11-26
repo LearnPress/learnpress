@@ -803,7 +803,7 @@ class SingleCourseTemplate {
 		}
 
 		// JS handle purchase, enqueue here because button can be shown on any page (shortcode, block).
-		wp_enqueue_script( 'lp-single-course-v2' );
+		wp_enqueue_script( 'lp-single-course' );
 
 		$class_guest_checkout = LP_Checkout::instance()->is_enable_guest_checkout() ? 'guest_checkout' : '';
 
@@ -894,7 +894,7 @@ class SingleCourseTemplate {
 		}
 
 		// JS handle enroll, enqueue here because button can be shown on any page (shortcode, block).
-		wp_enqueue_script( 'lp-single-course-v2' );
+		wp_enqueue_script( 'lp-single-course' );
 
 		// Hook old
 		$html_hook_before_old = '';

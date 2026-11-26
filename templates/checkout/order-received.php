@@ -17,9 +17,9 @@ use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 
 defined( 'ABSPATH' ) || exit();
 
-$user_id   = get_current_user_id();
+$user_id    = get_current_user_id();
 $lp_profile = learn_press_get_profile( $user_id );
-$userModel = UserModel::find( $user_id, true );
+$userModel  = UserModel::find( $user_id, true );
 ?>
 <div class="lp-content-area">
 	<?php
@@ -106,13 +106,13 @@ $userModel = UserModel::find( $user_id, true );
 								$item
 							);
 						} else {
-							$course_id = $item['course_id'];
-							$courseModel = CourseModel::find( $course_id, true );
-							$button_course = '';
+							$course_id       = $item['course_id'];
+							$courseModel     = CourseModel::find( $course_id, true );
+							$button_course   = '';
 							$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
 							if ( $userCourseModel && $userModel ) {
 								// For enrolled or purchased course.
-								$userCourseTemplate = UserCourseTemplate::instance();
+								$userCourseTemplate   = UserCourseTemplate::instance();
 								$singleCourseTemplate = SingleCourseTemplate::instance();
 
 								// Load js button course.

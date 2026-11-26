@@ -46,7 +46,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/buttons' );
 	}
 
+	/**
+	 * @deprecated v4.5.1
+	 */
 	public function course_graduation() {
+		return '';
 		$user   = learn_press_get_current_user();
 		$course = learn_press_get_course();
 
@@ -817,7 +821,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 
 		// JS accordion extra boxes (SingleCourse::toggleExtraBox).
-		wp_enqueue_script( 'lp-single-course-v2' );
+		wp_enqueue_script( 'lp-single-course' );
 
 		$is_checked = 0;
 		foreach ( $boxes as $box ) {

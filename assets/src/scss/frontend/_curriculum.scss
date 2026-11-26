@@ -567,7 +567,7 @@ body {
 			font-weight: 600;
 			font-size: 1em;
 			line-height: 1.5em;
-			flex: 1; 
+			flex: 1;
 		}
 
 		&__description {
@@ -743,7 +743,7 @@ body {
 			}
 			// &__title {
 			// 	flex: auto;
-				
+
 			// }
 			.course-section-info{
 				flex-direction: column;
@@ -755,6 +755,9 @@ body {
 
 // Course Progress
 .info-learning {
+	display: grid;
+	gap: 10px;
+
 	.course-progress {
 		> div {
 			margin-bottom: 8px;
@@ -797,10 +800,10 @@ body {
 		//	}
 		//}
 	}
-	> div {
+	/*> div {
 		margin-bottom: 8px;
 		&:last-child{
 			margin-bottom: 0;
 		}
-	}
+	}*/
 }

@@ -35,7 +35,6 @@ export class SingleCourse {
 		elFormPurchase: 'form.purchase-course',
 		elBtnPurchase: '.button-purchase-course[data-send]',
 		elRepurchaseOption: '[name=_lp_allow_repurchase_type]',
-		elCourseDetailInfo: '.course-detail-info',
 		elFormRetake: '.lp-form-retake-course',
 		elBtnRetake: '.button-retake-course[data-send]',
 		elAjaxMessage: '.lp-ajax-message',
@@ -69,9 +68,7 @@ export class SingleCourse {
 	}
 
 	init() {
-		this.initExtraBoxes();
-		this.initTabsDragScroll();
-		this.reloadWhenBackForward();
+		//this.initTabsDragScroll();
 		this.events();
 	}
 
@@ -288,16 +285,6 @@ export class SingleCourse {
 				action: 'user_retake_course',
 			}
 		);
-	}
-
-	/**
-	 * Collapse all extra boxes when load page.
-	 * Script is loaded 'defer', so HTML is parsed.
-	 */
-	initExtraBoxes() {
-		document.querySelectorAll( SingleCourse.selectors.elExtraBox ).forEach( ( elBox ) => {
-			this.collapseExtraBox( elBox );
-		} );
 	}
 
 	/**
@@ -610,22 +597,6 @@ export class SingleCourse {
 					lpUtils.lpSetLoadingEl( elBtn, 0 );
 				}
 			},
-		} );
-	}
-
-	/**
-	 * Reload single course page when back (browser restores page from cache), to update buttons of course.
-	 */
-	reloadWhenBackForward() {
-		if ( ! document.querySelector( SingleCourse.selectors.elCourseDetailInfo ) ) {
-			return;
-		}
-
-		window.addEventListener( 'pageshow', ( event ) => {
-			const navigation = window.performance?.getEntriesByType?.( 'navigation' )?.[ 0 ];
-			if ( event.persisted || navigation?.type === 'back_forward' ) {
-				window.location.reload();
-			}
 		} );
 	}
 

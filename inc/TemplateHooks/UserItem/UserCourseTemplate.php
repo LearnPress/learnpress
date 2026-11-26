@@ -138,7 +138,7 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 		}
 
 		// JS handle retake, enqueue here because button can be shown on any page (shortcode, block).
-		wp_enqueue_script( 'lp-single-course-v2' );
+		wp_enqueue_script( 'lp-single-course' );
 
 		$html_btn = sprintf(
 			'<button type="submit" class="lp-button button-retake-course" data-title="%s" data-content="%s" data-confirm-yes="%s" data-confirm-cancel="%s" data-send="%s">%s (%d)</button>',

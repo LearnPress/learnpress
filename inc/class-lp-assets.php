@@ -388,20 +388,14 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-single-course'          => new LP_Asset_Key(
-					self::url( 'js/dist/frontend/single-course' . self::$_min_assets . '.js' ),
-					array_merge(
-						$wp_js,
-						array(
-							'lp-global',
-							'lp-utils',
-						)
-					),
+				'lp-single-course'       => new LP_Asset_Key(
+					self::url( 'dist/js/frontend/single-course' . self::$_min_assets . '.js' ),
+					array( 'lp-load-ajax' ),
 					array( LP_PAGE_SINGLE_COURSE ),
 					0,
-					0,
+					1,
 					'',
-					[ 'strategy' => 'defer' ]
+					[ 'strategy' => 'async' ]
 				),
 				/*'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
@@ -519,16 +513,6 @@ class LP_Assets extends LP_Abstract_Assets {
 					1,
 					'',
 					[ 'strategy' => 'defer' ]
-				),
-				// Retake course (UserCourseAjax), enqueue also on UserCourseTemplate::html_btn_retake (shortcode, block).
-				'lp-single-course-v2'       => new LP_Asset_Key(
-					self::url( 'dist/js/frontend/single-course' . self::$_min_assets . '.js' ),
-					array( 'lp-load-ajax' ),
-					array( LP_PAGE_SINGLE_COURSE ),
-					0,
-					1,
-					'',
-					[ 'strategy' => 'async' ]
 				),
 			)
 		);

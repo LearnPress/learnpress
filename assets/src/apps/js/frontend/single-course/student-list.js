@@ -1,3 +1,6 @@
+/**
+ * @deprecated 4.5.1 not imported, REST API lp/v1/lazy-load/student-list and markup .learnpress-course-student-list are removed.
+ */
 
 const studentListCourse = () => {
 	const elementStudentList = document.querySelector( '.learnpress-course-student-list' );

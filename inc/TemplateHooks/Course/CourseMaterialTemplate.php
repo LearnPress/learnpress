@@ -88,7 +88,7 @@ class CourseMaterialTemplate {
 		// JS load more materials of course (SingleCourse::loadMoreMaterial).
 		// Page item of course uses single-curriculum.js (material.js), not enqueue to avoid load twice.
 		if ( ! $item ) {
-			wp_enqueue_script( 'lp-single-course-v2' );
+			wp_enqueue_script( 'lp-single-course' );
 		}
 
 		$callback = array(
