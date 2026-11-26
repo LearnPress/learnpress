@@ -12,7 +12,7 @@ const withoutImports = ( source ) => source.replace( /import[\s\S]*?from '[^']+'
 const retakeSend = ( data = {} ) => JSON.stringify( { id_url: 'user-retake-course', action: 'user_retake_course', course_id: 30, ...data } ).replace( /"/g, '&quot;' );
 
 // Markup same as UserCourseTemplate::html_btn_retake.
-const confirmAttrs = 'data-title="Retake course" data-content="Do you want to retake the course?"';
+const confirmAttrs = 'data-title="Retake course" data-content="Do you want to retake the course?" data-confirm-yes="Đồng ý" data-confirm-cancel="Hủy"';
 const retakeHtml = ( send = retakeSend(), attrs = confirmAttrs ) => `
 	<form name="lp-form-retake-course" class="lp-form-retake-course" method="post" data-confirm="Do you want to retake the course" data-lp-action-nonce="nonce-123">
 		<input type="hidden" name="retake-course" value="30"/>
@@ -70,9 +70,6 @@ function setup( t, html = retakeHtml(), options = {} ) {
 	vm.createContext( context );
 	vm.runInContext( `${ events }\nlpUtils.eventHandlers = eventHandlers;\n${ source }\nglobalThis.SingleCourse = SingleCourse;`, context );
 
-	if ( options.i18n !== false ) {
-		dom.window.lpSingleCourseV2Settings = { i18n: { yes: 'Đồng ý', cancel: 'Hủy' } };
-	}
 	// Same window.lpAJAXG of loadAJAX.js (getDataSetCurrent removes action).
 	dom.window.lpAJAXG = {
 		fetchAJAX: ( data, callbacks ) => requests.push( { data, callbacks } ),
@@ -230,7 +227,7 @@ test( 'button without data-send (old template) is ignored', async ( t ) => {
 	assert.equal( requests.length, 0 );
 } );
 
-test( 'confirm SweetAlert with title, content and localized buttons', async ( t ) => {
+test( 'confirm SweetAlert with title, content and buttons text from data attributes', async ( t ) => {
 	const { click, flush, confirmations } = setup( t );
 
 	click();
@@ -244,8 +241,8 @@ test( 'confirm SweetAlert with title, content and localized buttons', async ( t 
 	assert.equal( confirmations[ 0 ].cancelButtonText, 'Hủy' );
 } );
 
-test( 'confirm uses default buttons text when not localized', async ( t ) => {
-	const { click, flush, confirmations } = setup( t, retakeHtml(), { i18n: false } );
+test( 'confirm uses default buttons text when button has not data-confirm-yes, data-confirm-cancel', async ( t ) => {
+	const { click, flush, confirmations } = setup( t, retakeHtml( retakeSend(), 'data-title="Retake course" data-content="Do you want to retake the course?"' ) );
 
 	click();
 	await flush();
@@ -391,7 +388,7 @@ const purchaseHtml = `
 		<input type="hidden" name="addon_plan" value="gold"/>
 		<input type="checkbox" name="extras" value="a" checked/>
 		<input type="checkbox" name="extras" value="b" checked/>
-		<button class="lp-button button-purchase-course" data-send="${ send( { id_url: 'user-purchase-course', action: 'user_purchase_course' } ) }">Buy Now</button>
+		<button class="lp-button button-purchase-course" data-confirm-yes="Đồng ý" data-confirm-cancel="Hủy" data-send="${ send( { id_url: 'user-purchase-course', action: 'user_purchase_course' } ) }">Buy Now</button>
 	</form>`;
 
 test( 'submit form enroll sends action enroll with nonce', ( t ) => {

@@ -198,26 +198,6 @@ class LP_Assets extends LP_Abstract_Assets {
 				'default_avatar'    => get_avatar_url( get_current_user_id() ),
 			),
 			'lp-quiz'      => learn_press_single_quiz_args(),
-			// window.lpUserQuizSettings, strings same as UserQuizTemplate::html_questions_index().
-			'lp-user-quiz' => [
-				'i18n' => [
-					// JS puts these into HTML, so escape here.
-					'yes'                  => esc_html__( 'Yes', 'learnpress' ),
-					'cancel'               => esc_html__( 'Cancel', 'learnpress' ),
-					'error'                => esc_html__( 'Error', 'learnpress' ),
-					'prev'                 => esc_html__( 'Prev', 'learnpress' ),
-					'next'                 => esc_html__( 'Next', 'learnpress' ),
-				],
-			],
-			// window.lpSingleCourseV2Settings, confirm retake course, popup repurchase.
-			'lp-single-course-v2' => [
-				'i18n' => [
-					// JS puts these into HTML, so escape here.
-					'yes'    => esc_html__( 'Yes', 'learnpress' ),
-					'cancel' => esc_html__( 'Cancel', 'learnpress' ),
-					'error'  => esc_html__( 'Error', 'learnpress' ),
-				],
-			],
 		];
 
 		return apply_filters( 'learnpress/frontend/localize_script', $localize_script );
@@ -548,7 +528,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					1,
 					'',
-					[ 'strategy' => 'defer' ]
+					[ 'strategy' => 'async' ]
 				),
 			)
 		);

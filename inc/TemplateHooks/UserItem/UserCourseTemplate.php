@@ -141,9 +141,11 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 		wp_enqueue_script( 'lp-single-course-v2' );
 
 		$html_btn = sprintf(
-			'<button type="submit" class="lp-button button-retake-course" data-title="%s" data-content="%s" data-send="%s">%s (%d)</button>',
+			'<button type="submit" class="lp-button button-retake-course" data-title="%s" data-content="%s" data-confirm-yes="%s" data-confirm-cancel="%s" data-send="%s">%s (%d)</button>',
 			esc_attr__( 'Retake course', 'learnpress' ),
 			esc_attr__( 'Do you want to retake the course?', 'learnpress' ),
+			esc_attr__( 'Yes', 'learnpress' ),
+			esc_attr__( 'Cancel', 'learnpress' ),
 			Template::convert_data_to_json(
 				[
 					'id_url'    => 'user-retake-course',

@@ -97,7 +97,7 @@ function setup( t, screenHtml = doingHtml(), status = 'started', options = {} ) 
 			<li class="course-item course-item-20 status-started"><div class="course-item__status"><span class="completed"></span></div></li>
 			<li class="course-item course-item-21"><div class="course-item__status"><span class="completed"></span></div></li>
 		</ul></div>
-		<div id="learn-press-user-quiz" class="lp-user-quiz" data-quiz-id="20" data-course-id="30" data-status="${ status }">${ screenHtml }</div>`,
+		<div id="learn-press-user-quiz" class="lp-user-quiz" data-quiz-id="20" data-course-id="30" data-status="${ status }" data-text-yes="Đồng ý" data-text-cancel="Hủy" data-text-error="Lỗi">${ screenHtml }</div>`,
 		{ url: 'https://example.test/course/quiz/' }
 	);
 	t.after( () => dom.window.close() );
@@ -146,7 +146,6 @@ function setup( t, screenHtml = doingHtml(), status = 'started', options = {} ) 
 		context
 	);
 	dom.window.lpAJAXG = { fetchAJAX: ( data, callbacks ) => requests.push( { data, callbacks } ) };
-	dom.window.lpUserQuizSettings = { i18n: { yes: 'Yes', cancel: 'Cancel', error: 'Error', prev: 'Prev', next: 'Next' } };
 	dom.window.lpData = { user_id: options.userId ?? 7 };
 	dom.window.lpGlobalSettings = { option_enable_popup_confirm_finish: options.popupConfirmFinish ?? 'yes' };
 	dom.window.setInterval = ( fn ) => {
@@ -510,8 +509,9 @@ test( 'retake needs SweetAlert confirm', async ( t ) => {
 	assert.equal( confirmations.length, 1 );
 	assert.equal( confirmations[ 0 ].title, 'Retake' );
 	assert.equal( confirmations[ 0 ].text, 'Are you sure you want to retake the quiz?' );
-	assert.equal( confirmations[ 0 ].confirmButtonText, 'Yes' );
-	assert.equal( confirmations[ 0 ].cancelButtonText, 'Cancel' );
+	// Text of buttons from data-text-yes, data-text-cancel of wrapper.
+	assert.equal( confirmations[ 0 ].confirmButtonText, 'Đồng ý' );
+	assert.equal( confirmations[ 0 ].cancelButtonText, 'Hủy' );
 	assert.equal( requests.length, 0 );
 
 	setConfirmation( { isConfirmed: true } );

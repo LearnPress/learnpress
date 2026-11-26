@@ -774,7 +774,13 @@ class SingleCourseTemplate {
 			}
 		} else {
 			$html_btn = sprintf(
-				'<button class="lp-button button-purchase-course" data-send="%s">%s</button>',
+				'<button class="lp-button button-purchase-course"
+					data-confirm-yes="%s"
+					data-confirm-cancel="%s"
+					data-send="%s">%s</button>',
+				// Text buttons of popup repurchase.
+				esc_attr__( 'Yes', 'learnpress' ),
+				esc_attr__( 'Cancel', 'learnpress' ),
 				Template::convert_data_to_json(
 					[
 						'id_url'    => 'user-purchase-course',

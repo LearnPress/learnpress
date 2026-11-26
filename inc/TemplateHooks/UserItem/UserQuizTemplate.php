@@ -120,10 +120,17 @@ class UserQuizTemplate extends UserItemBaseTemplate {
 					class="lp-user-quiz"
 					data-quiz-id="%d"
 					data-course-id="%d"
-					data-status="%s">',
+					data-status="%s"
+					data-text-yes="%s"
+					data-text-cancel="%s"
+					data-text-error="%s">',
 				esc_attr( $quiz_id ),
 				esc_attr( $courseModel->get_id() ),
-				esc_attr( $status )
+				esc_attr( $status ),
+				// Text for JS (buttons of popup confirm, error).
+				esc_attr__( 'Yes', 'learnpress' ),
+				esc_attr__( 'Cancel', 'learnpress' ),
+				esc_attr__( 'Error', 'learnpress' )
 			),
 			'title'       => sprintf(
 				'<h1 class="course-item-title quiz-title">%s</h1>',

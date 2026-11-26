@@ -172,8 +172,12 @@ export class UserQuiz {
 			this.courseId = parseInt( elWrap.dataset.courseId ) || 0;
 			this.userId = parseInt( window.lpData?.user_id ) || 0;
 			this.isGuest = 0 === this.userId;
-			// Localized by LP_Assets::_get_script_data() (handle lp-user-quiz).
-			this.i18n = window.lpUserQuizSettings?.i18n || {};
+			// Text from data-text-* of wrapper (UserQuizTemplate).
+			this.i18n = {
+				yes: elWrap.dataset.textYes || '',
+				cancel: elWrap.dataset.textCancel || '',
+				error: elWrap.dataset.textError || '',
+			};
 
 			this.onScreenRendered();
 			this.events();

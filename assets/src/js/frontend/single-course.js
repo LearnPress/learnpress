@@ -6,7 +6,8 @@
  * - Nonce of actions (UserCourseAjax::$action_nonce) is read from attribute data-lp-action-nonce of form,
  *   send via field 'lp_action_nonce'.
  *
- * - Confirm (SweetAlert) when button has data-title.
+ * - Confirm (SweetAlert) when button has data-title, text of buttons from data-confirm-yes, data-confirm-cancel.
+ *   Popup repurchase reads text of buttons from data-confirm-yes, data-confirm-cancel of button Buy Now.
  * - Error is shown on .lp-ajax-message of form, or toast when form has not it.
  *
  * Enroll, purchase course (form submit): replace REST API lp/v1/courses/enroll-course, purchase-course.
@@ -65,12 +66,9 @@ export class SingleCourse {
 
 	constructor() {
 		this.isRequesting = false;
-		this.i18n = {};
 	}
 
 	init() {
-		// Localized by LP_Assets::_get_script_data() (handle lp-single-course-v2).
-		this.i18n = window.lpSingleCourseV2Settings?.i18n || {};
 		this.initExtraBoxes();
 		this.initTabsDragScroll();
 		this.reloadWhenBackForward();
@@ -83,16 +81,16 @@ export class SingleCourse {
 		}
 		SingleCourse._loadedEvents = true;
 
-		const handler = ( selector, callBack ) => ( { selector, class: this, callBack } );
+		const handler = ( selector, callBack ) => ( { selector, callBack } );
 
 		lpUtils.eventHandlers( 'click', [
-			handler( SingleCourse.selectors.elBtnRetake, this.retakeCourse.name ),
-			handler( SingleCourse.selectors.elExtraBoxTitle, this.toggleExtraBox.name ),
-			handler( SingleCourse.selectors.elBtnLoadMoreMaterial, this.loadMoreMaterial.name ),
-			handler( SingleCourse.selectors.elTabDragScrollItem, this.scrollTabToCenter.name ),
-			handler( SingleCourse.selectors.elShareToggleIcon, this.toggleShare.name ),
-			handler( SingleCourse.selectors.elShareToggleClose, this.closeShareByButton.name ),
-			handler( SingleCourse.selectors.elBtnClipboard, this.copyToClipboard.name ),
+			handler( SingleCourse.selectors.elBtnRetake, this.retakeCourse.bind( this ) ),
+			handler( SingleCourse.selectors.elExtraBoxTitle, this.toggleExtraBox.bind( this ) ),
+			handler( SingleCourse.selectors.elBtnLoadMoreMaterial, this.loadMoreMaterial.bind( this ) ),
+			handler( SingleCourse.selectors.elTabDragScrollItem, this.scrollTabToCenter.bind( this ) ),
+			handler( SingleCourse.selectors.elShareToggleIcon, this.toggleShare.bind( this ) ),
+			handler( SingleCourse.selectors.elShareToggleClose, this.closeShareByButton.bind( this ) ),
+			handler( SingleCourse.selectors.elBtnClipboard, this.copyToClipboard.bind( this ) ),
 		] );
 
 		// Click outside social share: close it.
@@ -104,13 +102,13 @@ export class SingleCourse {
 		} );
 
 		lpUtils.eventHandlers( 'change', [
-			handler( SingleCourse.selectors.elCourseTabRadio, this.changeCourseTab.name ),
+			handler( SingleCourse.selectors.elCourseTabRadio, this.changeCourseTab.bind( this ) ),
 		] );
 
 		lpUtils.eventHandlers( 'submit', [
-			handler( SingleCourse.selectors.elFormEnroll, this.enrollCourse.name ),
-			handler( SingleCourse.selectors.elFormPurchase, this.purchaseCourse.name ),
-			handler( SingleCourse.selectors.elFormRetake, this.preventSubmit.name ),
+			handler( SingleCourse.selectors.elFormEnroll, this.enrollCourse.bind( this ) ),
+			handler( SingleCourse.selectors.elFormPurchase, this.purchaseCourse.bind( this ) ),
+			handler( SingleCourse.selectors.elFormRetake, this.preventSubmit.bind( this ) ),
 		] );
 	}
 
@@ -205,8 +203,8 @@ export class SingleCourse {
 			html: data.html || '',
 			showCloseButton: true,
 			showCancelButton: true,
-			cancelButtonText: this.i18n.cancel || 'Cancel',
-			confirmButtonText: this.i18n.yes || 'Yes',
+			cancelButtonText: elBtn.dataset.confirmCancel || 'Cancel',
+			confirmButtonText: elBtn.dataset.confirmYes || 'Yes',
 			reverseButtons: true,
 			preConfirm: () => {
 				const elOption = SweetAlert.getPopup()?.querySelector( `${ SingleCourse.selectors.elRepurchaseOption }:checked` );
@@ -592,7 +590,7 @@ export class SingleCourse {
 			success: ( response ) => {
 				const { status, message, data } = response || {};
 				if ( status !== 'success' ) {
-					lpToastify.show( this.toText( message ) || this.i18n.error || 'Error', 'error' );
+					lpToastify.show( this.toText( message ) || 'Error', 'error' );
 					return;
 				}
 
@@ -662,8 +660,8 @@ export class SingleCourse {
 			icon: 'warning',
 			showCloseButton: true,
 			showCancelButton: true,
-			cancelButtonText: this.i18n.cancel || 'Cancel',
-			confirmButtonText: this.i18n.yes || 'Yes',
+			cancelButtonText: elBtn.dataset.confirmCancel || 'Cancel',
+			confirmButtonText: elBtn.dataset.confirmYes || 'Yes',
 			reverseButtons: true,
 		} ).then( ( result ) => {
 			if ( result.isConfirmed ) {
@@ -715,7 +713,7 @@ export class SingleCourse {
 			return;
 		}
 
-		lpToastify.show( this.toText( message ) || this.i18n.error || 'Error', 'error' );
+		lpToastify.show( this.toText( message ) || 'Error', 'error' );
 	}
 
 	/**

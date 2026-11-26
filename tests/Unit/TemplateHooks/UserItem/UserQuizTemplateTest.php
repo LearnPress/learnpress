@@ -201,6 +201,10 @@ class UserQuizTemplateTest extends BrainMonkeyTestCase {
 		$this->assertStringContainsString( 'data-quiz-id="20"', $html );
 		$this->assertStringContainsString( 'data-course-id="30"', $html );
 		$this->assertStringContainsString( 'data-status=""', $html );
+		// Text for JS (popup confirm, error), replace localize lpUserQuizSettings.
+		$this->assertStringContainsString( 'data-text-yes="Yes"', $html );
+		$this->assertStringContainsString( 'data-text-cancel="Cancel"', $html );
+		$this->assertStringContainsString( 'data-text-error="Error"', $html );
 		$this->assertStringContainsString( '<div class="quiz-content"><p>Quiz description</p></div>', $html );
 		$this->assertStringContainsString( 'class="quiz-intro"', $html );
 		$this->assertStringContainsString( 'lp-button start', $html );
