@@ -67,7 +67,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 *
 		 * @throws Exception
 		 * @since 4.1.3
-		 * @version 1.0.4
+		 * @version 1.0.5
 		 */
 		protected function save_post() {
 			if ( ! current_user_can( 'edit_lp_courses' ) ) {
@@ -79,6 +79,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			unset( $courseModel->first_item_id );
 			unset( $courseModel->total_items );
 			unset( $courseModel->sections_items );
+			unset( $courseModel->sections_items_edit );
 			unset( $courseModel->meta_data->_lp_final_quiz );
 			unset( $courseModel->categories );
 			unset( $courseModel->tags );
@@ -86,10 +87,15 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$courseModel->get_author_model();
 			$courseModel->get_first_item_id();
 			$courseModel->get_total_items();
-			$sections_items = $courseModel->get_section_items();
-			// Update for case data old, section_order and item_order begin = 0
-			$section_curd = new LP_Section_CURD( $courseModel->get_id() );
-			$section_ids  = LP_Database::get_values_by_key( $sections_items, 'section_id' );
+			$courseModel->get_section_items();
+			/**
+			 * Update for case data old, section_order and item_order begin = 0
+			 * Use items of all statuses (draft, pending, trash...), not only publish,
+			 * so items not publish keep their position in section.
+			 */
+			$sections_items = $courseModel->get_section_items_for_edit();
+			$section_curd   = new LP_Section_CURD( $courseModel->get_id() );
+			$section_ids    = LP_Database::get_values_by_key( $sections_items, 'section_id' );
 			$section_curd->update_sections_order( $section_ids );
 
 			foreach ( $sections_items as $section_items ) {
@@ -116,9 +122,17 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			// New hook from v4.2.6.9
 			do_action( 'learnPress/background/course/save', $courseModel, $this->data );
 
-			/**
-			 * Clean cache courses
-			 */
+			self::clean_cache_courses();
+		}
+
+		/**
+		 * Clean cache of list courses (query courses, count free courses, app).
+		 *
+		 * @return void
+		 * @since 4.3.3
+		 * @version 1.0.0
+		 */
+		public static function clean_cache_courses() {
 			$keys_cache = LP_Courses_Cache::instance()->get_cache( LP_Courses_Cache::$keys );
 			if ( $keys_cache ) {
 				foreach ( $keys_cache as $key ) {
@@ -130,8 +144,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			// Clear total courses free.
 			$lp_courses_cache = new LP_Courses_Cache( true );
 			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_COURSES_FREE );
-			// End
-
 			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_QUERY_COURSES_APP );
 		}
 

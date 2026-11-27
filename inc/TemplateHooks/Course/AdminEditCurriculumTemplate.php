@@ -126,11 +126,13 @@ class AdminEditCurriculumTemplate {
 	public function html_edit_curriculum( CourseModel $courseModel ): string {
 		$html_sections = '';
 
-		// Get sections items
-		$sections_items = $courseModel->get_section_items();
+		// Get sections items, include items not publish (draft, pending, private, future, trash).
+		$sections_items = $courseModel->get_section_items_for_edit();
 		$count_sections = count( $sections_items );
+		$count_items    = 0;
 
 		foreach ( $sections_items as $section_items ) {
+			$count_items   += count( $section_items->items ?? [] );
 			$html_sections .= $this->html_edit_section( $courseModel, $section_items );
 		}
 
@@ -163,10 +165,10 @@ class AdminEditCurriculumTemplate {
 			),
 			'count-items'     => sprintf(
 				'<div class="total-items" data-count="%s">%s</div>',
-				$courseModel->count_items(),
+				$count_items,
 				sprintf(
 					__( '<span class="count">%1$s</span> %2$s', 'learnpress' ),
-					$courseModel->count_items(),
+					$count_items,
 					sprintf(
 						'<span class="one">%s</span><span class="plural">%s</span>',
 						__( 'Item', 'learnpress' ),
@@ -417,12 +419,17 @@ class AdminEditCurriculumTemplate {
 		 */
 		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
 
+		// Status of item, item not publish still keep position in section.
+		$item_status = $item->post_status ?? ( $itemModel->post_status ?? 'publish' );
+		$item_status = $is_clone || empty( $item_status ) ? 'publish' : sanitize_key( $item_status );
+
 		$edit_button = apply_filters(
 			'learn-press/admin/curriculum/section-item/edit-button',
-			sprintf(
+			// WP not allow edit post in trash.
+			'trash' === $item_status ? '' : sprintf(
 				'<li title="%s"><a href="%s" target="_blank" class="lp-icon-edit-square edit-link"></a></li>',
-				__( 'Edit item detail', 'learnpress' ),
-				$itemModel ? $itemModel->get_edit_link() : ''
+				esc_attr__( 'Edit item detail', 'learnpress' ),
+				$itemModel ? esc_url( $itemModel->get_edit_link() ) : ''
 			),
 			$item,
 			$itemModel,
@@ -431,6 +438,11 @@ class AdminEditCurriculumTemplate {
 
 		$section_action = [
 			'wrap'     => '<ul class="item-actions">',
+			'status'   => sprintf(
+				'<li class="lp-item-status"><span class="item-status %1$s">%2$s</span></li>',
+				esc_attr( $item_status ),
+				esc_html( self::get_item_status_label( $item_status ) )
+			),
 			'preview'  => sprintf(
 				'<li title="%s" class="lp-btn-set-preview-item"><a class="%s"></a></li>',
 				__( 'Enable/Disable Preview', 'learnpress' ),
@@ -459,10 +471,12 @@ class AdminEditCurriculumTemplate {
 
 		$section = [
 			'li'           => sprintf(
-				'<li data-item-id="%s" data-item-type="%s" class="section-item %s %s">',
-				$item_id,
-				$item_type,
-				$item_type,
+				'<li data-item-id="%s" data-item-type="%s" data-item-status="%s" class="section-item %s status-%s %s">',
+				esc_attr( $item_id ),
+				esc_attr( $item_type ),
+				esc_attr( $item_status ),
+				esc_attr( $item_type ),
+				esc_attr( $item_status ),
 				$is_clone ? 'clone lp-hidden' : ''
 			),
 			'drag'         => sprintf(
@@ -490,6 +504,34 @@ class AdminEditCurriculumTemplate {
 		];
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Get label of item status.
+	 *
+	 * @param string $status
+	 *
+	 * @return string
+	 * @since 4.3.3
+	 * @version 1.0.0
+	 */
+	public static function get_item_status_label( string $status ): string {
+		$labels = [
+			'publish' => __( 'Published', 'learnpress' ),
+			'draft'   => __( 'Draft', 'learnpress' ),
+			'pending' => __( 'Pending', 'learnpress' ),
+			'private' => __( 'Private', 'learnpress' ),
+			'future'  => __( 'Scheduled', 'learnpress' ),
+			'trash'   => __( 'Trash', 'learnpress' ),
+		];
+
+		$label = $labels[ $status ] ?? '';
+		if ( '' === $label && function_exists( 'get_post_status_object' ) ) {
+			$status_obj = get_post_status_object( $status );
+			$label      = $status_obj->label ?? $status;
+		}
+
+		return (string) apply_filters( 'learn-press/admin/curriculum/item-status-label', $label, $status );
 	}
 
 	public function html_section_item_actions(): string {

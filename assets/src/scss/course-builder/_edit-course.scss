@@ -2956,11 +2956,15 @@ ul.lp-meta-box__course-tab__tabs {
 		ul.item-actions {
 			display: flex;
 			gap: 4px;
-			opacity: 0.3;
-			transition: opacity 0.2s;
 			list-style: none;
 			margin: 0;
 			padding: 0;
+
+			// Dim action buttons only, status badge always visible.
+			li:not(.lp-item-status) {
+				opacity: 0.3;
+				transition: opacity 0.2s;
+			}
 
 			li {
 				display: flex;
@@ -2991,8 +2995,18 @@ ul.lp-meta-box__course-tab__tabs {
 			}
 		}
 
-		.section-item:hover ul.item-actions {
+		.section-item:hover ul.item-actions li {
 			opacity: 1;
+		}
+
+		// Status badge of item not publish, inside item actions.
+		ul.item-actions li.lp-item-status {
+			width: auto;
+			height: auto;
+
+			&:hover {
+				background: none;
+			}
 		}
 
 		// Hide preview button for non-lesson items (quiz, assignment, etc.)

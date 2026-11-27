@@ -84,14 +84,13 @@ class LP_Post_Type_Actions {
 	 * @return mixed
 	 */
 	public function pre_trash_post( $null, $post ) {
-		if ( $this->is_course_item( $post ) ) {
-			$curd       = new LP_Course_CURD();
-			$course_ids = $curd->get_course_by_item( $post->ID );
-
-			if ( $course_ids ) {
-				$this->add( 'item-courses-' . $post->ID, $course_ids );
-			}
-		} elseif ( $this->is_course( $post ) ) {
+		/**
+		 * Course item trashed keep position in sections of course.
+		 * Only remove item from sections when item deleted permanently.
+		 * @see \LearnPress\Services\CourseItemStatusService
+		 * @since 4.3.3
+		 */
+		if ( $this->is_course( $post ) ) {
 			$this->add( 'trashed-course', $post->ID );
 		}
 
@@ -99,20 +98,8 @@ class LP_Post_Type_Actions {
 	}
 
 	public function trashed_post( $post_id ) {
-		if ( $this->is_course_item( $post_id ) ) {
-			$course_ids = $this->get( 'item-courses-' . $post_id );
-
-			if ( $course_ids ) {
-				$curd = new LP_Course_CURD();
-
-				foreach ( $course_ids as $course_id ) {
-					$curd->remove_item( $post_id, $course_id );
-					//do_action( 'learn-press/removed-course-item', $course_id );
-				}
-
-				$this->delete( 'item-courses-' . $post_id );
-			}
-		} elseif ( $this->is_course( $post_id ) ) {
+		// Course item trashed keep position in sections of course, since 4.3.3.
+		if ( $this->is_course( $post_id ) ) {
 			do_action( 'learn-press/trashed-course', $post_id );
 		} elseif ( get_post_type( $post_id ) == LP_QUESTION_CPT ) {
 			global $wpdb;

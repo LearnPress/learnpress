@@ -602,6 +602,64 @@ $spacing-section: 12px;
 		.lp-btn-cancel-update-item-title {
 			border: none;
 		}
+
+		// Status badge of item (same colors as Course Builder post-status-badge).
+		.item-status {
+			display: inline-flex;
+			align-items: center;
+			flex-shrink: 0;
+			padding: 2px 10px;
+			font-size: 0.75rem;
+			font-weight: 500;
+			line-height: 1.5;
+			border-radius: 20px;
+			white-space: nowrap;
+
+			&.publish {
+				color: #28a746;
+				background: #e7f6e9;
+			}
+
+			&.draft {
+				color: #666;
+				background: #f0f0f0;
+			}
+
+			&.pending {
+				color: #1e40af;
+				background: #dbeafe;
+			}
+
+			&.private {
+				color: #6b21a8;
+				background: #f3e8ff;
+			}
+
+			&.future {
+				color: #92400e;
+				background: #fef3c7;
+			}
+
+			&.trash {
+				color: #991b1b;
+				background: #fee2e2;
+			}
+		}
+
+		// Item not publish: still keep position, but dimmed (hidden on frontend).
+		&:not(.status-publish):not(.clone) {
+			background: #fafafa;
+
+			input,
+			.item-ico-type {
+				opacity: 0.65;
+			}
+		}
+
+		.item-actions .lp-item-status {
+			display: inline-flex;
+			align-items: center;
+		}
 	}
 
 	.lp-add-item-type, .section-item {

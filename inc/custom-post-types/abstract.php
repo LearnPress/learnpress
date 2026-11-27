@@ -383,26 +383,11 @@ abstract class LP_Abstract_Post_Type {
 	 * @return void
 	 * @author tungnx
 	 * @since 4.1.6.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function before_trash_post( int $post_id ) {
-		try {
-			// Case move item's course to trash
-			$course_item_types = CourseModel::item_types_support();
-			$item_type         = get_post_type( $post_id );
-			if ( ! in_array( $item_type, $course_item_types ) ) {
-				return;
-			}
-
-			// Set course id of item when item assign on course is trashed
-			$courses_from_item = CourseSectionItemModel::get_courses_from_item_id( $post_id, $item_type );
-			$course_of_item    = $courses_from_item[0]->section_course_id ?? 0;
-			if ( $course_of_item ) {
-				$this->course_of_item_trashed = $course_of_item;
-			}
-		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
-		}
+		// Implement from child.
+		// Course item trashed keep position in sections, courses refreshed by CourseItemStatusService, since 4.3.3.
 	}
 
 	/**
@@ -434,19 +419,8 @@ abstract class LP_Abstract_Post_Type {
 	 * @author tungnx
 	 */
 	public function trashed_post( int $post_id ) {
-		// Implement from child
-		// Check is item type of course
-		$course_item_types = learn_press_get_course_item_types();
-		if ( ! in_array( get_post_type( $post_id ), $course_item_types ) ) {
-			return;
-		}
-
-		if ( $this->course_of_item_trashed ) {
-			// Save course when item assign on course is trashed
-			$course_id = $this->course_of_item_trashed;
-			LP_Course_Post_Type::instance()->save_post( $course_id, null, true );
-			$this->course_of_item_trashed = 0;
-		}
+		// Implement from child.
+		// Course item trashed keep position in sections, courses refreshed by CourseItemStatusService, since 4.3.3.
 	}
 
 	public function column_instructor( $post_id = 0 ) {
@@ -660,20 +634,14 @@ abstract class LP_Abstract_Post_Type {
 				);
 				$wpdb->query( $query );
 			}
-		} elseif ( learn_press_is_support_course_item_type( $post_type ) ) {
-
-			// If item is not published then delete it from courses
-			if ( $post_status !== 'publish' ) {
-				$query = $wpdb->prepare(
-					"
-                    DELETE FROM {$wpdb->learnpress_section_items}
-                    WHERE item_id = %d
-                	",
-					$post->ID
-				);
-				$wpdb->query( $query );
-			}
 		}
+
+		/**
+		 * Course item (lesson, quiz...) not publish keep position in sections of course.
+		 * Only remove item from sections when item deleted permanently.
+		 * @see \LearnPress\Services\CourseItemStatusService::on_before_delete_post()
+		 * @since 4.3.3
+		 */
 	}
 
 	/**

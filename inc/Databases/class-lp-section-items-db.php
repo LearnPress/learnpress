@@ -139,8 +139,11 @@ class LP_Section_Items_DB extends LP_Database {
 	 * @param int $course_id
 	 *
 	 * @throws Exception
+	 * Only delete rows of items not exists in table posts (deleted permanently),
+	 * items not publish (draft, pending, private, future, trash) keep position in sections.
+	 *
 	 * @since 4.2.6.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function delete_item_not_in_tb_post( int $course_id ) {
 		$filter_section = $this->wpdb->prepare(
@@ -148,8 +151,8 @@ class LP_Section_Items_DB extends LP_Database {
 			FROM $this->tb_lp_section_items AS si
 			INNER JOIN $this->tb_lp_sections AS s ON si.section_id = s.section_id
 			AND s.section_course_id = %d
-			WHERE item_id NOT IN (SELECT ID FROM $this->tb_posts WHERE post_status = 'publish')
-            ",
+			LEFT JOIN $this->tb_posts AS p ON si.item_id = p.ID
+			WHERE p.ID IS NULL",
 			$course_id
 		);
 

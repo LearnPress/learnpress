@@ -107,6 +107,7 @@ use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseAIAssistantTemplate;
 use LearnPress\TemplateHooks\Course\CourseNoteTemplate;
 use LearnPress\Services\NoteService;
+use LearnPress\Services\CourseItemStatusService;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
@@ -443,6 +444,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ExportPersonalData::instance();
 			// Student Notes: delete notes together with their user / course / lesson.
 			NoteService::instance();
+			// Course items keep position on status change, refresh curriculum of courses.
+			CourseItemStatusService::instance();
 
 			// Models
 			include_once 'inc/Models/class-lp-rest-response.php';

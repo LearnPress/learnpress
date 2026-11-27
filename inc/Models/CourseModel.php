@@ -102,9 +102,15 @@ class CourseModel {
 	 */
 	public $total_items;
 	/**
-	 * @var array list sections items
+	 * @var array list sections items (only items publish), use for frontend.
 	 */
 	public $sections_items;
+	/**
+	 * @var array|null list sections items for edit curriculum (items publish, draft, pending, private, future, trash).
+	 * Saved to json of course, only valid when $sections_items is set.
+	 * @since 4.3.3
+	 */
+	public $sections_items_edit;
 	/**
 	 * @var array|null cached items of course (per instance)
 	 */
@@ -490,6 +496,34 @@ class CourseModel {
 	}
 
 	/**
+	 * Get sections and items of course for edit curriculum (admin).
+	 *
+	 * Include items of all statuses (not only publish),
+	 * each item has field post_status.
+	 * Read from key 'sections_items_edit' (json of course) if exists, else query from tables sections.
+	 * Key 'sections_items_edit' only valid when 'sections_items' is set,
+	 * when 'sections_items' reset (curriculum changed), it is calculated again.
+	 * Frontend must use get_section_items().
+	 *
+	 * @return array
+	 * @since 4.3.3
+	 * @version 1.0.1
+	 */
+	public function get_section_items_for_edit(): array {
+		if ( isset( $this->sections_items, $this->sections_items_edit ) && is_array( $this->sections_items_edit ) ) {
+			return $this->sections_items_edit;
+		}
+
+		try {
+			$this->sections_items_edit = $this->get_sections_and_items_course_from_db_and_sort( true );
+		} catch ( Throwable $e ) {
+			$this->sections_items_edit = [];
+		}
+
+		return $this->sections_items_edit;
+	}
+
+	/**
 	 * Get only items of course
 	 *
 	 * @return array
@@ -679,22 +713,28 @@ class CourseModel {
 	 * Get all sections and items from database, then handle sort
 	 * Only call when data change or not set
 	 *
+	 * @param bool $for_edit true: get items of all statuses for edit curriculum (admin), not only publish.
+	 *
 	 * @return array
 	 * @since 4.1.6.9
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 * @author tungnx
 	 */
-	private function get_sections_and_items_course_from_db_and_sort(): array {
+	private function get_sections_and_items_course_from_db_and_sort( bool $for_edit = false ): array {
 		$sections_items = [];
 		$course_id      = $this->get_id();
 		$lp_course_db   = LP_Course_DB::getInstance();
 
 		try {
-			$sections_results       = $lp_course_db->get_sections( $course_id );
-			$sections_items_results = $lp_course_db->get_full_sections_and_items_course( $course_id );
-			$count_items            = count( $sections_items_results );
-			$index_items_last       = $count_items - 1;
-			$section_current        = 0;
+			$sections_results = $lp_course_db->get_sections( $course_id );
+			if ( $for_edit ) {
+				$sections_items_results = $lp_course_db->get_sections_and_items_for_edit( $course_id );
+			} else {
+				$sections_items_results = $lp_course_db->get_full_sections_and_items_course( $course_id );
+			}
+			$count_items      = count( $sections_items_results );
+			$index_items_last = $count_items - 1;
+			$section_current  = 0;
 
 			/**
 			 * @var $section_order_plus int
@@ -724,10 +764,15 @@ class CourseModel {
 				$item->item_order = $item_order;
 				$item->type       = $sections_item->item_type;
 				$item->item_type  = $sections_item->item_type;
-				$item_tmp         = LP_Course_Item::get_item( $item->id );
-				if ( $item_tmp ) {
-					$item->title   = html_entity_decode( $item_tmp->get_title() );
-					$item->preview = $item_tmp->is_preview();
+				if ( $for_edit ) {
+					$item->post_status = $sections_item->post_status ?? '';
+					$item->title       = html_entity_decode( $sections_item->post_title ?? '' );
+				} else {
+					$item_tmp = LP_Course_Item::get_item( $item->id );
+					if ( $item_tmp ) {
+						$item->title   = html_entity_decode( $item_tmp->get_title() );
+						$item->preview = $item_tmp->is_preview();
+					}
 				}
 
 				if ( $section_new != $section_current ) {
@@ -1452,6 +1497,11 @@ class CourseModel {
 		}
 
 		$lp_course_json_db = LP_Course_JSON_DB::getInstance();
+
+		// Sections items changed (reset), sections items for edit must calculate again.
+		if ( ! isset( $this->sections_items ) ) {
+			$this->sections_items_edit = null;
+		}
 
 		$courseObjToJSON = clone $this;
 

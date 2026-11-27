@@ -105,6 +105,38 @@ class LP_Course_DB extends LP_Database {
 	}
 
 	/**
+	 * Get sections and items of course for edit curriculum (admin).
+	 * Include items of all statuses (not only publish), with field post_status of item.
+	 *
+	 * @param int $course_id
+	 *
+	 * @return array|object|stdClass[]|null
+	 * @throws Exception
+	 * @since 4.3.3
+	 * @version 1.0.1
+	 */
+	public function get_sections_and_items_for_edit( int $course_id = 0 ) {
+		$query = $this->wpdb->prepare(
+			"SELECT si.*, s.section_course_id, s.section_name, s.section_order, s.section_description,
+			p.post_status, p.post_title
+			FROM {$this->tb_lp_section_items} AS si
+			INNER JOIN {$this->tb_lp_sections} AS s
+			ON si.section_id = s.section_id
+			INNER JOIN {$this->tb_posts} AS p
+			ON si.item_id = p.ID
+			WHERE s.section_course_id = %d
+			ORDER BY s.section_order, si.item_order",
+			$course_id
+		);
+
+		$sections_items = $this->wpdb->get_results( $query );
+
+		$this->check_execute_has_error();
+
+		return $sections_items;
+	}
+
+	/**
 	 * Get all sections' course
 	 *
 	 * @param int $course_id
