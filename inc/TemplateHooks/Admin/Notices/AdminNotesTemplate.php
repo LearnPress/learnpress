@@ -134,7 +134,7 @@ class AdminNotesTemplate {
 	 */
 	public static function html_check_plugin_base( array $data = [] ): string {
 		if ( ! AdminNoticeService::check_plugin_base() ) {
-			//return '';
+			return '';
 		}
 
 		$message = sprintf(
@@ -160,7 +160,7 @@ class AdminNotesTemplate {
 	 */
 	public static function html_lp_upgrade_db( array $data = [] ): string {
 		if ( ! LP_Updater::instance()->check_lp_db_need_upgrade() ) {
-			//return '';
+			return '';
 		}
 
 		$message = sprintf(
@@ -186,7 +186,7 @@ class AdminNotesTemplate {
 	public static function html_lp_permalink( array $data = [] ): string {
 		$permalink_structure = get_option( 'permalink_structure' );
 		if ( ! empty( $permalink_structure ) ) {
-			//return '';
+			return '';
 		}
 
 		$message = sprintf(
@@ -207,7 +207,7 @@ class AdminNotesTemplate {
 	public static function html_lp_setup_wizard( array $data = [] ): string {
 		if ( get_option( 'learn_press_setup_wizard_completed', false ) ||
 			LP_Settings::is_admin_notice_dismissed( 'lp-setup-wizard' ) ) {
-			//return '';
+			return '';
 		}
 
 		$message = sprintf(
@@ -235,7 +235,7 @@ class AdminNotesTemplate {
 
 		$addons = AddonService::instance()->list_addon_new_version();
 		if ( empty( $addons ) ) {
-			//return '';
+			return '';
 		}
 
 		$total   = count( $addons );
@@ -275,7 +275,7 @@ class AdminNotesTemplate {
 	public static function html_addons_need_extend( array $data = [] ): string {
 		if ( LP_Settings::is_admin_notice_dismissed( 'lp-addons-purchased-extend' ) ||
 			! AddonService::instance()->check_addons_purchased_need_extend() ) {
-			//return '';
+			return '';
 		}
 
 		$message = sprintf(
@@ -303,13 +303,13 @@ class AdminNotesTemplate {
 	public static function html_lp_beta_version( array $data = [] ): string {
 		$lp_beta_version_info = AdminNoticeService::check_lp_beta_version();
 		if ( ! $lp_beta_version_info instanceof stdClass ) {
-			//return '';
+			return '';
 		}
 
 		$admin_notices_dismiss = get_option( 'lp_admin_notices_dismiss', [] );
 		if ( isset( $admin_notices_dismiss['lp-beta-version'] ) ||
 			! AddonService::instance()->check_addons_purchased_need_extend() ) {
-			//return '';
+			return '';
 		}
 
 		$version        = $lp_beta_version_info->version ?? '';
