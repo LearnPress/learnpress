@@ -343,7 +343,7 @@ class Template {
 			}
 		}
 
-		$classes = (string) $args['classes'] ?? '';
+		$classes = (string) ( $args['classes'] ?? '' );
 
 		$section = [
 			'wrapper'     => sprintf(

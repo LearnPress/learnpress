@@ -328,7 +328,7 @@ class AdminNotesTemplate {
 		);
 
 		$message = sprintf(
-			'<h3>%1$s</h3>
+			'<div style="font-weight: bold">%1$s</div>
 			<p>%2$s</p>
 			<p>
 				<a class="" href="%3$s" target="_blank">%4$s</a>
