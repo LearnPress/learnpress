@@ -134,7 +134,7 @@ class AdminNotesTemplate {
 	 */
 	public static function html_check_plugin_base( array $data = [] ): string {
 		if ( ! AdminNoticeService::check_plugin_base() ) {
-			return '';
+			//return '';
 		}
 
 		$message =  sprintf(
@@ -147,7 +147,7 @@ class AdminNotesTemplate {
 			'<strong>' . LP_PLUGIN_BASENAME . '</strong>'
 		);
 
-		return Template::print_message( $message, 'warning', false );
+		return Template::print_message( $message, 'warning', false, [ 'classes' => 'hidden-icon' ] );
 	}
 
 	/**
@@ -160,20 +160,20 @@ class AdminNotesTemplate {
 	 */
 	public static function html_lp_upgrade_db( array $data = [] ): string {
 		if ( ! LP_Updater::instance()->check_lp_db_need_upgrade() ) {
-			return '';
+			//return '';
 		}
 
 		$message = sprintf(
 			'%s
-				<div style="margin-top: 0.5em">
-					<a class="button lp-btn-go-upgrade-db" data-context="message" href="%s">%s</a>
+				<div style="display: inline-flex">
+					<a class="lp-button lp-btn-on-message" data-context="message" href="%s">%s</a>
 				</div>',
 			__( '<strong>LearnPress update</strong> – We need to update your database to the latest version.', 'learnpress' ),
 			admin_url( 'admin.php?page=learn-press-tools&tab=database&action=upgrade-db' ),
 			esc_html__( 'Go to Update', 'learnpress' )
 		);
 
-		return Template::print_message( $message, 'warning', false );
+		return Template::print_message( $message, 'warning', false, ['classes' => 'lp-be'] );
 	}
 
 	/**
@@ -207,13 +207,13 @@ class AdminNotesTemplate {
 	public static function html_lp_setup_wizard( array $data = [] ): string {
 		if ( get_option( 'learn_press_setup_wizard_completed', false ) ||
 			LP_Settings::is_admin_notice_dismissed( 'lp-setup-wizard' ) ) {
-			return '';
+			//return '';
 		}
 
 		$message = sprintf(
 			'<div style="display: flex; gap: 5px; align-items: center">%s</div>',
 			sprintf(
-				'%s<a class="button button-primary" href="%s">%s</a>%s</p>',
+				'%s<a class="lp-button lp-btn-on-message" href="%s">%s</a>%s</p>',
 				__( 'LearnPress LMS is ready to set up', 'learnpress' ),
 				admin_url( 'index.php?page=lp-setup' ),
 				__( 'Quick Setup', 'learnpress' ),
@@ -238,7 +238,7 @@ class AdminNotesTemplate {
 
 		$addons = AddonService::instance()->list_addon_new_version();
 		if ( empty( $addons ) ) {
-			return '';
+			//return '';
 		}
 
 		$total   = count( $addons );
@@ -278,7 +278,7 @@ class AdminNotesTemplate {
 	public static function html_addons_need_extend( array $data = [] ): string {
 		if ( LP_Settings::is_admin_notice_dismissed( 'lp-addons-purchased-extend' ) ||
 			! AddonService::instance()->check_addons_purchased_need_extend() ) {
-			return '';
+			//return '';
 		}
 
 		$message = sprintf(
@@ -292,7 +292,8 @@ class AdminNotesTemplate {
 		return Template::print_message(
 			$message,
 			'info',
-			false
+			false,
+			[ 'classes' => 'lp-be' ]
 		);
 	}
 
@@ -306,13 +307,13 @@ class AdminNotesTemplate {
 	public static function html_lp_beta_version( array $data = [] ): string {
 		$lp_beta_version_info = AdminNoticeService::check_lp_beta_version();
 		if ( ! $lp_beta_version_info instanceof stdClass ) {
-			return '';
+			//return '';
 		}
 
 		$admin_notices_dismiss = get_option( 'lp_admin_notices_dismiss', [] );
 		if ( isset( $admin_notices_dismiss['lp-beta-version'] ) ||
 			! AddonService::instance()->check_addons_purchased_need_extend() ) {
-			return '';
+			//return '';
 		}
 
 		$version        = $lp_beta_version_info->version ?? '';
@@ -334,7 +335,7 @@ class AdminNotesTemplate {
 			'<h3>%1$s</h3>
 			<p>%2$s</p>
 			<p>
-				<a class="button" href="%3$s" target="_blank">%4$s</a>
+				<a class="lp-button lp-btn-on-message" href="%3$s" target="_blank">%4$s</a>
 				<a class="button" href="%5$s" target="_blank">%6$s</a>
 				<a class="button" href="%7$s" target="_blank">%8$s</a>
 			</p>%9$s',

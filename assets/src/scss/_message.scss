@@ -1,8 +1,7 @@
-$msg-color: #00adff;
-$msg-success:#EBF8E5;
-$msg-error: #FEE5E5;
-$msg-waring: #FEF7E6;
-$msg-info: #007AFF1A;
+$msg-success: #E7F6E9;
+$msg-error: #FFEBED;
+$msg-waring: #FEF8E1;
+$msg-info: #E3F1FE;
 $msg-border-success: #28A746;
 $msg-border-error: #E31A1A;
 $msg-border-warning: #F8A100;
@@ -13,11 +12,10 @@ $msg-border-info: #2E91FA;
 	display: flex;
 	align-items: center;
 	margin: 0 !important; // fix system WP override
-	padding: 10px;
-	//border-top: 5px solid $msg-color;
+	padding: 16px;
 	border-radius: var( --lp-border-radius, 5px);
 	background-color: #E5F7FF;
-	color: #007AFF;
+	color: #111111;
 	max-width: 100%;
 
 	&::before {
@@ -36,7 +34,7 @@ $msg-border-info: #2E91FA;
 
  	&.error {
 		background-color: $msg-error;
-		color: #FF3B30;
+		//color: #FF3B30;
 		border: 1px solid $msg-border-error;
 		padding: 10px 20px; // to override style of WP for this class
 
@@ -48,7 +46,7 @@ $msg-border-info: #2E91FA;
 
 	&.warning {
 		background-color: $msg-waring;
-		color: #FF9500;
+		//color: #FF9500;
 		border: 1px solid $msg-border-warning;
 
 		&::before {
@@ -59,7 +57,7 @@ $msg-border-info: #2E91FA;
 
 	&.success {
 		background-color: $msg-success;
-		color :#3AB500;
+		//color :#3AB500;
 		border: 1px solid $msg-border-success;
 
 		&::before {
@@ -70,7 +68,7 @@ $msg-border-info: #2E91FA;
 
 	&.info {
 		background-color: $msg-info;
-		color :#007AFF;
+		//color :#007AFF;
 		border: 1px solid $msg-border-info;
 
 		&::before {
@@ -81,6 +79,105 @@ $msg-border-info: #2E91FA;
 
 	a {
 		text-decoration: underline;
+	}
+
+	// Style card for backend: white bg, left color bar, tag, actions, close.
+	&.lp-be {
+		--lp-msg-color: #{$msg-border-info};
+		--lp-msg-tag-bg: #{$msg-info};
+
+		align-items: center;
+		gap: 12px;
+		padding: 16px;
+		border: none;
+		border-left: 3px solid var(--lp-msg-color);
+		border-radius: 8px;
+		background-color: #fff;
+		color: #111;
+		font-size: 15px;
+		line-height: 1.4;
+
+		&::before {
+			margin-right: 0;
+			color: var(--lp-msg-color);
+			font-size: 18px;
+		}
+
+		&.error {
+			--lp-msg-color: #{$msg-border-error};
+			--lp-msg-tag-bg: #{$msg-error};
+		}
+
+		&.warning {
+			--lp-msg-color: #{$msg-border-warning};
+			--lp-msg-tag-bg: #FFF4DE;
+		}
+
+		&.success {
+			--lp-msg-color: #{$msg-border-success};
+			--lp-msg-tag-bg: #{$msg-success};
+		}
+
+		&.info {
+			--lp-msg-color: #{$msg-border-info};
+			--lp-msg-tag-bg: #{$msg-info};
+		}
+
+		.lp-message-tag {
+			flex-shrink: 0;
+			padding: 4px 8px;
+			border-radius: 4px;
+			background-color: var(--lp-msg-tag-bg);
+			color: var(--lp-msg-color);
+			font-size: 12px;
+			font-weight: 500;
+			line-height: 1.2;
+			text-transform: uppercase;
+		}
+
+		.lp-message-actions {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-left: auto;
+			flex-shrink: 0;
+
+			.button,
+			.lp-button {
+				padding: 6px 10px;
+				border: none;
+				border-radius: 6px;
+				background-color: #6B21A8;
+				color: #fff;
+				font-size: 14px;
+				line-height: 1.4;
+				text-decoration: none;
+				cursor: pointer;
+
+				&:hover {
+					opacity: .9;
+				}
+			}
+		}
+
+		.lp-message-close {
+			padding: 0;
+			border: none;
+			background: transparent;
+			color: #666;
+			font-size: 0;
+			cursor: pointer;
+
+			&::before {
+				content: "\f00d";
+				font-family: 'lp-icon';
+				font-size: 16px;
+			}
+
+			&:hover {
+				color: #111;
+			}
+		}
 	}
 }
 

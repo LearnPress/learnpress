@@ -22,6 +22,16 @@
 			color: rgba(0, 0, 0, 0) !important;
 			@include loading();
 		}
+
+		&.lp-btn-on-message {
+			padding: 6px 8px;
+			font-family: Roboto, sans-serif;
+			background: #712DB3;
+			border: none;
+			border-radius: 8px;
+			color: white !important;
+			font-size: 14px;
+		}
 	}
 }
 
@@ -46,7 +56,7 @@
 	content: '';
 	position: absolute;
 	bottom: 0; left: 0;
-	height: 4px; width: 0%;
+	height: 4px; width: 0;
 	background-color: #38bdf8;
 	animation: lineLoad 2s ease-in-out infinite;
 }
