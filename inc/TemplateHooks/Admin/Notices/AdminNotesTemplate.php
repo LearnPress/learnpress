@@ -330,7 +330,7 @@ class AdminNotesTemplate {
 		$message = sprintf(
 			'<div style="font-weight: bold">%1$s</div>
 			<p>%2$s</p>
-			<p>
+			<p style="display: flex; gap: 10px">
 				<a class="" href="%3$s" target="_blank">%4$s</a>
 				<a class="" href="%5$s" target="_blank">%6$s</a>
 				<a class="" href="%7$s" target="_blank">%8$s</a>
