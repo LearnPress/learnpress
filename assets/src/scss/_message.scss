@@ -85,7 +85,7 @@ $msg-border-info: #2E91FA;
 
 	// Style card for backend: white bg, left color bar, tag, actions, close.
 	&.lp-be {
-		border-radius: unset;
+		/*border-radius: unset;
 		--lp-msg-color: #{$msg-border-info};
 		--lp-msg-tag-bg: #{$msg-info};
 
@@ -129,7 +129,7 @@ $msg-border-info: #2E91FA;
 		&.info {
 			--lp-msg-color: #{$msg-border-info};
 			--lp-msg-tag-bg: #{$msg-info};
-		}
+		}*/
 	}
 }
 

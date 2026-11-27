@@ -233,8 +233,7 @@ class AdminAddonsPage {
 							)
 						),
 						'info',
-						false,
-						[ 'classes' => 'lp-be' ]
+						false
 					)
 				),
 				/** @use self::render_addons */
