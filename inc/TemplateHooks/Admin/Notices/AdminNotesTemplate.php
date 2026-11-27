@@ -137,7 +137,7 @@ class AdminNotesTemplate {
 			return '';
 		}
 
-		$message =  sprintf(
+		$message = sprintf(
 		/* translators: 1: expected plugin basename wrapped in strong, 2: current plugin basename wrapped in strong */
 			__(
 				'The LearnPress plugin base directory must be %1$s (case-sensitive) to ensure all functions work properly and are fully operational (currently %2$s).',
@@ -147,7 +147,7 @@ class AdminNotesTemplate {
 			'<strong>' . LP_PLUGIN_BASENAME . '</strong>'
 		);
 
-		return Template::print_message( $message, 'warning', false );
+		return Template::print_message( $message, 'warning', false, [ 'classes' => 'hidden-icon' ] );
 	}
 
 	/**
@@ -165,8 +165,8 @@ class AdminNotesTemplate {
 
 		$message = sprintf(
 			'%s
-				<div style="margin-top: 0.5em">
-					<a class="button lp-btn-go-upgrade-db" data-context="message" href="%s">%s</a>
+				<div style="display: inline-flex">
+					<a class="" data-context="message" href="%s">%s</a>
 				</div>',
 			__( '<strong>LearnPress update</strong> – We need to update your database to the latest version.', 'learnpress' ),
 			admin_url( 'admin.php?page=learn-press-tools&tab=database&action=upgrade-db' ),
@@ -194,7 +194,7 @@ class AdminNotesTemplate {
 			admin_url( 'options-permalink.php' )
 		);
 
-		return Template::print_message( $message, 'warning', false );
+		return Template::print_message( $message, 'error', false );
 	}
 
 	/**
@@ -211,14 +211,11 @@ class AdminNotesTemplate {
 		}
 
 		$message = sprintf(
-			'<div style="display: flex; gap: 5px; align-items: center">%s</div>',
-			sprintf(
-				'%s<a class="button button-primary" href="%s">%s</a>%s</p>',
-				__( 'LearnPress LMS is ready to set up', 'learnpress' ),
-				admin_url( 'index.php?page=lp-setup' ),
-				__( 'Quick Setup', 'learnpress' ),
-				self::html_button_dismiss( 'lp-setup-wizard' )
-			)
+			'%s <a class="" href="%s">%s</a>%s',
+			__( 'LearnPress LMS is ready to set up.', 'learnpress' ),
+			admin_url( 'index.php?page=lp-setup' ),
+			__( 'Quick Setup', 'learnpress' ),
+			self::html_button_dismiss( 'lp-setup-wizard' )
 		);
 
 		return Template::print_message( $message, 'success', false );
@@ -331,12 +328,12 @@ class AdminNotesTemplate {
 		);
 
 		$message = sprintf(
-			'<h3>%1$s</h3>
+			'<div style="font-weight: bold">%1$s</div>
 			<p>%2$s</p>
-			<p>
-				<a class="button" href="%3$s" target="_blank">%4$s</a>
-				<a class="button" href="%5$s" target="_blank">%6$s</a>
-				<a class="button" href="%7$s" target="_blank">%8$s</a>
+			<p style="display: flex; gap: 10px">
+				<a class="" href="%3$s" target="_blank">%4$s</a>
+				<a class="" href="%5$s" target="_blank">%6$s</a>
+				<a class="" href="%7$s" target="_blank">%8$s</a>
 			</p>%9$s',
 			esc_html( $title ),
 			esc_html( $description ),
@@ -349,7 +346,7 @@ class AdminNotesTemplate {
 			self::html_button_dismiss( 'lp-beta-version' )
 		);
 
-		return Template::print_message( $message, 'info', false );
+		return Template::print_message( $message, 'info', false, [ 'classes' => 'hidden-icon' ] );
 	}
 
 	/**

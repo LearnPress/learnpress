@@ -343,13 +343,13 @@ class Template {
 			}
 		}
 
-		$hidden_icon = isset( $args['hidden_icon'] );
+		$classes = (string) ( $args['classes'] ?? '' );
 
 		$section = [
 			'wrapper'     => sprintf(
 				'<div class="learn-press-message %s %s">',
 				esc_attr( $status ),
-				$hidden_icon ? 'hidden-icon' : ''
+				esc_attr( $classes )
 			),
 			'content'     => sprintf(
 				'<div>%s</div>',
