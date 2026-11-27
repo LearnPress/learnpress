@@ -22,16 +22,6 @@
 			color: rgba(0, 0, 0, 0) !important;
 			@include loading();
 		}
-
-		&.lp-btn-on-message {
-			padding: 6px 8px;
-			font-family: Roboto, sans-serif;
-			background: #712DB3;
-			border: none;
-			border-radius: 8px;
-			color: white !important;
-			font-size: 14px;
-		}
 	}
 }
 

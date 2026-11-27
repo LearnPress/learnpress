@@ -79,22 +79,30 @@ $msg-border-info: #2E91FA;
 
 	a {
 		text-decoration: underline;
+		color: #712DB3 !important;
+		font-weight: bold;
 	}
 
 	// Style card for backend: white bg, left color bar, tag, actions, close.
 	&.lp-be {
+		border-radius: unset;
 		--lp-msg-color: #{$msg-border-info};
 		--lp-msg-tag-bg: #{$msg-info};
 
 		align-items: center;
 		gap: 12px;
-		padding: 16px;
-		border: none;
-		border-left: 3px solid var(--lp-msg-color);
-		border-radius: 8px;
+		padding: 12px;
+		border-left: 4px solid var(--lp-msg-color);
+		//border-right: 1px solid #ccd0d4;
+		//border-top: 1px solid #ccd0d4;
+		//border-bottom: 1px solid #ccd0d4;
+		border-right: 1px solid var(--lp-msg-color);
+		border-top: 1px solid var(--lp-msg-color);
+		border-bottom: 1px solid var(--lp-msg-color);
+		//border-radius: 8px;
 		background-color: #fff;
 		color: #111;
-		font-size: 15px;
+		font-size: 14px;
 		line-height: 1.4;
 
 		&::before {
@@ -121,62 +129,6 @@ $msg-border-info: #2E91FA;
 		&.info {
 			--lp-msg-color: #{$msg-border-info};
 			--lp-msg-tag-bg: #{$msg-info};
-		}
-
-		.lp-message-tag {
-			flex-shrink: 0;
-			padding: 4px 8px;
-			border-radius: 4px;
-			background-color: var(--lp-msg-tag-bg);
-			color: var(--lp-msg-color);
-			font-size: 12px;
-			font-weight: 500;
-			line-height: 1.2;
-			text-transform: uppercase;
-		}
-
-		.lp-message-actions {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			margin-left: auto;
-			flex-shrink: 0;
-
-			.button,
-			.lp-button {
-				padding: 6px 10px;
-				border: none;
-				border-radius: 6px;
-				background-color: #6B21A8;
-				color: #fff;
-				font-size: 14px;
-				line-height: 1.4;
-				text-decoration: none;
-				cursor: pointer;
-
-				&:hover {
-					opacity: .9;
-				}
-			}
-		}
-
-		.lp-message-close {
-			padding: 0;
-			border: none;
-			background: transparent;
-			color: #666;
-			font-size: 0;
-			cursor: pointer;
-
-			&::before {
-				content: "\f00d";
-				font-family: 'lp-icon';
-				font-size: 16px;
-			}
-
-			&:hover {
-				color: #111;
-			}
 		}
 	}
 }
